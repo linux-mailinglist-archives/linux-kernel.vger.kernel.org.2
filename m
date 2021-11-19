@@ -2,196 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 365CF45722F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:53:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF96457233
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:53:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236068AbhKSP4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 10:56:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50686 "EHLO
+        id S236092AbhKSP4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 10:56:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236042AbhKSP4n (ORCPT
+        with ESMTP id S234297AbhKSP4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 10:56:43 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1810FC06173E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 07:53:41 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id r11so44454485edd.9
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 07:53:41 -0800 (PST)
+        Fri, 19 Nov 2021 10:56:46 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72BCDC061574;
+        Fri, 19 Nov 2021 07:53:44 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id u1so18875157wru.13;
+        Fri, 19 Nov 2021 07:53:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=j6ZBHEuBMINUI0NHynx/JAd182zvPE30UGgO4LSxZT8=;
-        b=cLFaCrFUDWnjM6RN44xaIUWGhlA8AjiwIjNMiFnJqzFbwcCLaR6yZdIpS3XgyfSgbk
-         b+DRNaySfaXQUmTRqpOy7OP6qlDUSpFFdyJSmTW/fn1hHKhWMtQJR6HftSM0RBnDWNDM
-         QbOa7oEN/xYZlgy4yy5pnup7ZkqxiSKzMcWMo=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=kHaNRUFisXjYgHBC5B676Xg2I2fpmEyhpkjhdGVDAKM=;
+        b=ZdsrF1YMpdZEaLIT879zO5XP/0/GIL8TxMBkQ+oBsQDHC1XffTe15Xo3zOi3CfQsIW
+         SfVZp4yHJp3z6FO0MsoJXz0l5pt72hEQWvDyTiTNXJ65m72213zH2YphOawDgUHrqFZg
+         tf1fwGadrOC01WL4AAOUCOhNnAIBOhdtZDBp3yH4MwsBVM9OKuO6vgyh1H8JHe9c3xY1
+         UcZo8yTpxG5QeCXLSEf6W72WVbX+H0+LNvX6UNtwHB7Trtj91sRqcosYwE/7fDXi08aS
+         XGvGFyrXuKCwi0OFOk6jB9JJC6OpJTiJYJKoFXtDW03cMkWwti8iZlRh1DJ1Q3TKYKQR
+         epJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=j6ZBHEuBMINUI0NHynx/JAd182zvPE30UGgO4LSxZT8=;
-        b=lGVd/no+Fg66Pqh5wEDdmJqPojCM3vlhwBSm/AXeBaE5E61u87TdNAUjSH0xjl2fXc
-         m6LS+/tZmtb/fR7zauoOVVyixz5NzDS4ncu+xDI25R2DBdju3v57s2/4CB47LljcWSn2
-         JfrDmglv1r32aYWRm60aR8mNmBOQx6OUfSc/bd7hXG1kjaDBTbTv5i1v3S3wB0s/M2ib
-         i0AYGfbOjBcBhMFhta+H7b9MIBaCTWRTuVUK7g5vUpoS96rs5D9GCxIIXcxTZdu9E2B8
-         F20aLBdTZdTwBqNtgW79M5spCAg8Ys4b9i6AXVbtpTXJU1jdc9qpgtpOdzIaAFl66gKc
-         d/uA==
-X-Gm-Message-State: AOAM532jNF8EhnzsQIr2ja1J0SUdupWWrA6xDr0hVm1yWgZSkFEDpWRv
-        AIXD3M6Bd46ZVxaeBnjCi1Ww9Q==
-X-Google-Smtp-Source: ABdhPJyLTIXW2cwncUjF6nOaAAumf42PL7T8ocCSEESmqxIgDOARKf7XOwdXaq6ojG/YVWRcdZwvog==
-X-Received: by 2002:a17:907:7f8b:: with SMTP id qk11mr9088107ejc.176.1637337219520;
-        Fri, 19 Nov 2021 07:53:39 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id r18sm96198eje.90.2021.11.19.07.53.38
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=kHaNRUFisXjYgHBC5B676Xg2I2fpmEyhpkjhdGVDAKM=;
+        b=X5VuDoz3JHL8C6Le9YgZzV08TolGKWpu3HaH5FNrza8JQKRu3YoRbovjxtLLBUKjEm
+         n0Lm72c7kCSej9Y+UeNBmoVKV4C4lJgbyEQcLC6PnVJZLB7T+PFZ5faaEa2HoItmtBg1
+         daYONpXWG9hgV84yTonu3klK5MgxP0TldOhpDLBNdSdw61rUhXcRexA4HeKYmhThAwTy
+         +mObJt1Ev/ZsyL2u+pH9sjO3U+urYZRnqNUSo9OeM4cXk9DfM2ZT5kcQy4CuKMSSOTZG
+         XQFrFXuc4iFJr2LXcRt3th85Xp2BP2FV05pxzUs8rjcadfoxKeQk+OZcsdyyATTemQpK
+         gPYQ==
+X-Gm-Message-State: AOAM532M51xYYZdu3wbB86icRJwvmQfOnItdfzdZ0BLkv27UFr9bUmxE
+        dNOqXgwuf818XaNtlD5h0pg=
+X-Google-Smtp-Source: ABdhPJwoTWQYUCPa9Te8PwG+K8gFrG5i33W0fugyKvlgWtaRFt6efNHW+zbBPrEgEzqCPEArSG3Bvw==
+X-Received: by 2002:a5d:69ce:: with SMTP id s14mr8340988wrw.25.1637337222991;
+        Fri, 19 Nov 2021 07:53:42 -0800 (PST)
+Received: from kista.localnet (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
+        by smtp.gmail.com with ESMTPSA id m2sm12397317wml.15.2021.11.19.07.53.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 07:53:39 -0800 (PST)
-Date:   Fri, 19 Nov 2021 16:53:37 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Pekka Paalanen <ppaalanen@gmail.com>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Brian Norris <briannorris@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Doug Anderson <dianders@chromium.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        linux-input@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] drm/input_helper: Add new input-handling helper
-Message-ID: <YZfIgd8s7uGXAD2X@phenom.ffwll.local>
-Mail-Followup-To: Pekka Paalanen <ppaalanen@gmail.com>,
-        Rob Clark <robdclark@gmail.com>, Rob Clark <robdclark@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Brian Norris <briannorris@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Doug Anderson <dianders@chromium.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        linux-input@vger.kernel.org
-References: <20211117224841.3442482-1-briannorris@chromium.org>
- <20211117144807.v2.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid>
- <20211118123928.545dec8a@eldfell>
- <CAF6AEGuc9JbOsC4Lrvoqo8VzMHq+7ru7Y6_UwoZaGV2wHQ6E5g@mail.gmail.com>
- <20211119115419.505155b5@eldfell>
+        Fri, 19 Nov 2021 07:53:42 -0800 (PST)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, Samuel Holland <samuel@sholland.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, linux-sunxi@lists.linux.dev,
+        Samuel Holland <samuel@sholland.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH 2/2] media: cedrus: Add support for the D1 variant
+Date:   Fri, 19 Nov 2021 16:53:41 +0100
+Message-ID: <5766379.lOV4Wx5bFT@kista>
+In-Reply-To: <20211119031519.23430-2-samuel@sholland.org>
+References: <20211119031519.23430-1-samuel@sholland.org> <20211119031519.23430-2-samuel@sholland.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211119115419.505155b5@eldfell>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 11:54:19AM +0200, Pekka Paalanen wrote:
-> On Thu, 18 Nov 2021 15:30:38 -0800
-> Rob Clark <robdclark@gmail.com> wrote:
+Hi Samuel!
+
+Dne petek, 19. november 2021 ob 04:15:18 CET je Samuel Holland napisal(a):
+> D1 has a unique variant of the video engine, which appears to drop the
+> VP8 support found on most earlier variants.
 > 
-> > On Thu, Nov 18, 2021 at 2:39 AM Pekka Paalanen <ppaalanen@gmail.com> wrote:
-> > >
-> > > On Wed, 17 Nov 2021 14:48:40 -0800
-> > > Brian Norris <briannorris@chromium.org> wrote:
-> > >  
-> > > > A variety of applications have found it useful to listen to
-> > > > user-initiated input events to make decisions within a DRM driver, given
-> > > > that input events are often the first sign that we're going to start
-> > > > doing latency-sensitive activities:
-> > > >
-> > > >  * Panel self-refresh: software-directed self-refresh (e.g., with
-> > > >    Rockchip eDP) is especially latency sensitive. In some cases, it can
-> > > >    take 10s of milliseconds for a panel to exit self-refresh, which can
-> > > >    be noticeable. Rockchip RK3399 Chrome OS systems have always shipped
-> > > >    with an input_handler boost, that preemptively exits self-refresh
-> > > >    whenever there is input activity.
-> > > >
-> > > >  * GPU drivers: on GPU-accelerated desktop systems, we may need to
-> > > >    render new frames immediately after user activity. Powering up the
-> > > >    GPU can take enough time that it is worthwhile to start this process
-> > > >    as soon as there is input activity. Many Chrome OS systems also ship
-> > > >    with an input_handler boost that powers up the GPU.
-> > > >
-> > > > This patch provides a small helper library that abstracts some of the
-> > > > input-subsystem details around picking which devices to listen to, and
-> > > > some other boilerplate. This will be used in the next patch to implement
-> > > > the first bullet: preemptive exit for panel self-refresh.
-> > > >
-> > > > Bits of this are adapted from code the Android and/or Chrome OS kernels
-> > > > have been carrying for a while.
-> > > >
-> > > > Signed-off-by: Brian Norris <briannorris@chromium.org>
-> > > > ---  
-> > >
-> > > Thanks Simon for the CC.
-> > >
-> > > Hi Brian,
-> > >
-> > > while this feature in general makes sense and sounds good, to start
-> > > warming up display hardware early when something might start to happen,
-> > > this particular proposal has many problems from UAPI perspective (as it
-> > > has none). Comments below.
-> > >
-> > > Btw. if PSR is that slow to wake up from, how much do you actually gain
-> > > from this input event watching? I would imagine the improvement to not
-> > > be noticeable.
-> > >
-> > > I think some numbers about how much this feature helps would be really
-> > > good, even if they are quite specific use cases. You also need to
-> > > identify the userspace components, because I think different display
-> > > servers are very different in their reaction speed.
-> > >
-> > > If KMS gets a pageflip or modeset in no time after an input event, then
-> > > what's the gain. OTOH, if the display server is locking on to vblank,
-> > > there might be a delay worth avoiding. But then, is it worth
-> > > short-circuiting the wake-up in kernel vs. adding a new ioctl that
-> > > userspace could hit to start the warming up process?  
-> > 
-> > In my measurements, it takes userspace a frame or two to respond and
-> > get to the point of starting to build cmdstream (before eventually
-> > doing atomic/pageflip ioctl).. possibly longer if you don't also have
-> > a similar boost mechanism to spool up cpufreq
-> > 
-> > But the important thing, IMO, is that atomic/pageflip ioctl is the
-> > cumulation of a long sequence of events.. input-boost is letting
-> > whatever it may be (PSR exit, GPU resume, etc) happen in parallel with
-> > that long sequence.
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> ---
 > 
-> Right, exactly. That is why I was musing about a *new* ioctl that
-> userspace could hit as soon as any input device fd (or network fd!)
-> shows signs of life. Would that be enough, avoiding all the annoying
-> questions about which input and DRM devices should participate here
-> (and what about non-input devices that still want to trigger the
-> warm-up, like network traffic, e.g. remote control?), or does it really
-> need to be kernel internal to be fast enough?
+>  drivers/staging/media/sunxi/cedrus/cedrus.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
 > 
-> As Brian wrote about his quick hack to test that via debugfs, sounds
-> like the userspace solution would be totally sufficient.
+> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus.c b/drivers/staging/
+media/sunxi/cedrus/cedrus.c
+> index c76fc97d97a0..4a4b714b0f26 100644
+> --- a/drivers/staging/media/sunxi/cedrus/cedrus.c
+> +++ b/drivers/staging/media/sunxi/cedrus/cedrus.c
+> @@ -580,6 +580,14 @@ static const struct cedrus_variant 
+sun8i_r40_cedrus_variant = {
+>  	.mod_rate	= 297000000,
+>  };
+>  
+> +static const struct cedrus_variant sun20i_d1_cedrus_variant = {
+> +	.capabilities	= CEDRUS_CAPABILITY_UNTILED |
+> +			  CEDRUS_CAPABILITY_MPEG2_DEC |
+> +			  CEDRUS_CAPABILITY_H264_DEC |
+> +			  CEDRUS_CAPABILITY_H265_DEC,
 
-Random idea ... should we perhaps let userspace connect the boosting? I.e.
-we do a bunch of standardized boost targets (render clocks, display sr
-exit), and userspace can then connect it to whichever input device it
-wants to?
+Did you check if VP8 really doesn't work? It would be strange because it 
+shares decoding blocks with H264 and VP8 is present in (almost) all SoCs.
 
-That also avoids the multi-user lol of us boosting the wrong seat, we
-could do a drm ioctl where you pass it an eventfd and essentially say
-"listen to this mkay?" That way the boosting would also neatly get passed
-along with compositors as we vt switch them, in case you have one that's
-all tablet, and another one (console emulation) that's kbd only.
+Best regards,
+Jernej
 
-Also this avoids the latency problem perhaps of a compositor which just
-dumbly paints every frame because it's VR or something like that, so never
-any sr exit possible.
+> +	.mod_rate	= 432000000,
+> +};
+> +
+>  static const struct cedrus_variant sun50i_a64_cedrus_variant = {
+>  	.capabilities	= CEDRUS_CAPABILITY_UNTILED |
+>  			  CEDRUS_CAPABILITY_MPEG2_DEC |
+> @@ -637,6 +645,10 @@ static const struct of_device_id cedrus_dt_match[] = {
+>  		.compatible = "allwinner,sun8i-r40-video-engine",
+>  		.data = &sun8i_r40_cedrus_variant,
+>  	},
+> +	{
+> +		.compatible = "allwinner,sun20i-d1-video-engine",
+> +		.data = &sun20i_d1_cedrus_variant,
+> +	},
+>  	{
+>  		.compatible = "allwinner,sun50i-a64-video-engine",
+>  		.data = &sun50i_a64_cedrus_variant,
+> -- 
+> 2.32.0
+> 
+> 
 
-Just an idea, compositor people pls shred it :-)
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+
