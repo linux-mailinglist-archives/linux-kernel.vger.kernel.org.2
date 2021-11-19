@@ -2,183 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3394579BE
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 00:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F324579C0
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 00:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236145AbhKSXy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 18:54:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45876 "EHLO
+        id S236188AbhKSXzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 18:55:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234335AbhKSXy4 (ORCPT
+        with ESMTP id S236169AbhKSXzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 18:54:56 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F192C061748
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 15:51:54 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id g18so10618777pfk.5
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 15:51:54 -0800 (PST)
+        Fri, 19 Nov 2021 18:55:11 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71D6BC061748
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 15:52:09 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id l8so11836180ilv.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 15:52:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gateworks-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BODgI+WH9LDVPfnVoZrz8d3kpc2ZwF9HgTMT9m1WMDQ=;
-        b=6oYTnLaHwy9ijpC6lNTNV6Qkj2pZqSmjviJstsVZsZP0/+D50bGRVCOSNcnlrcLvw+
-         QAGdsMcr/2GxGj2l/vnyThoZA/kAPTn5SbqVqvzihWfmVGHn25aUwLc1xJ56lp5/r1gs
-         FWqjp4e1lqvWB5XA2xe8CTiL7HltqlnWrQf7FGjhksEohu1BJ04N3OYL0Cm9IO+C6bOE
-         K8+NnUheB0nFJRCcC0JAdX02mc+xgVC7A7uTQP8o2aJ5ljJpH751/Vw9JwX5tvvFTF6a
-         RDNRdfg6YJTKJWiucUhEEDK8nCA5psGA1aNS53szgd3vHFfFH6COAlsB0mcbIUhbtSqk
-         tIGQ==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=so2gk/5AZEjMY3nWK7CNUI1iXSFuxuvDle8HcKAOX/c=;
+        b=LFTwklklzKMU7ZAjMtzjxKN/H0jszJdVrvqnFtPODlVaivynF//mjT8vRcxtKDK6hb
+         Wi3TMf9KCU9F2wGelPVxenjy9fgvLs4g88ao6Vv4UuhhODyhJOUiV3mSvlxLYGt3BlKG
+         cnsWFzZtf1pmbtSOMQikuVEENIfFN0aRPd9FQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BODgI+WH9LDVPfnVoZrz8d3kpc2ZwF9HgTMT9m1WMDQ=;
-        b=GmEJXwPhz1O6/Iz2eg0sECd4zCoIlXQeGJqfxRgPJbiYHvyLI6JSvGoP72rARzDybk
-         63f/Hg+BnYc3J0uXjDlFXKBHUz7ung7fWyBar5PPFUNv2l3Ze3RvdNgSPEQzGmoutTem
-         7LZm8+N9Fau4kixvGFx+lv6imBZdvMKafVQMR/gYsDmaiOYtdwoKj9bGsJmgVSQKKn1S
-         2l4SwPjIAFQvpyL/n1/ogW4Kw51e9qOHUUFERZ/oENjvzuOjhzfuFMg7Y2N6ovZdW3Gb
-         eKnGAOBa0NvwFjPAfCvd3Q4bXNVHdgLnjNylXKsSxt+6Xg9dYZULkszlN+9NnyfsScri
-         lz5g==
-X-Gm-Message-State: AOAM532ohV1fh+X9b4eO5kOQ1TD1+vNr9eIkM1eGwKUldZ4wUsj0F6Be
-        5S3AGui4nhjkLx2mcqLAYumDr/04kmdhuWg1QyMt1Q==
-X-Google-Smtp-Source: ABdhPJzMB8p8ddmaSy56jyawOAPXfj6DxYfYBB3H9qwDBj8andYHK6U8EliK1jklUWV3cYAdwsMq1nvEqhbR6YkBIqk=
-X-Received: by 2002:aa7:8149:0:b0:44c:916c:1fdb with SMTP id
- d9-20020aa78149000000b0044c916c1fdbmr26820650pfn.34.1637365913491; Fri, 19
- Nov 2021 15:51:53 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=so2gk/5AZEjMY3nWK7CNUI1iXSFuxuvDle8HcKAOX/c=;
+        b=eEQPL5tfiG1z/+3BeUWdblphnea4GLFbHywIcHpIPrEMov6zBnA1QpvMiJOtSvOpVX
+         +S6AYJibzXKxugECb4wxnPfyXzMuQrBWjnJCqszJrYhFkbjb9OiR5nmUQT7/sEiYdHvU
+         cqfQTDxCfU3j/Hyky7L7qKguxc/s9XQQDwAh66x8M/Cf+HSXckb7Vd+vPZ1B63pplh5h
+         T7a+ExWi9AfaMvQl9SXwtTtfIs57EMrecJ2px4ot+SKwDifgkTAjrKnn1gD/jCASdh6D
+         V6lDVvWPDinkyZCkGivIAqxbdMVOQ7IO6BpRef3CmTrIQ/TTV7QvFCSGwLn8asAeLvqp
+         U3/Q==
+X-Gm-Message-State: AOAM533AwJw3tum2Ek2ZqiJNJXPjbB+uLY+wTH40t9SrvAXweF/zQh2V
+        8rbOgaveIq/KFTAdu+at2fcVTw==
+X-Google-Smtp-Source: ABdhPJwoq+KJT6B7ZpuMqzjqi1HYdWvG0G1UirLL4aK7CDqfywwZYaEdzqT9M+w/DD8fRIu3s7jd9Q==
+X-Received: by 2002:a05:6e02:12cc:: with SMTP id i12mr7469577ilm.110.1637365928839;
+        Fri, 19 Nov 2021 15:52:08 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id i8sm917805ilu.84.2021.11.19.15.52.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Nov 2021 15:52:08 -0800 (PST)
+Subject: Re: [PATCH] selftests: mqueue|vDSO: fix convert pointer warnings
+To:     Anders Roxell <anders.roxell@linaro.org>, shuah@kernel.org
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20211105162940.3319021-1-anders.roxell@linaro.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <7a002d31-589c-0e1d-3ea9-6c7fa4423ee5@linuxfoundation.org>
+Date:   Fri, 19 Nov 2021 16:52:07 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20211106155427.753197-1-aford173@gmail.com> <CAMty3ZDi+FMLBooi2jt=dPKVC8PhaBWLgtjoe3m=GHCNiqDqQw@mail.gmail.com>
-In-Reply-To: <CAMty3ZDi+FMLBooi2jt=dPKVC8PhaBWLgtjoe3m=GHCNiqDqQw@mail.gmail.com>
-From:   Tim Harvey <tharvey@gateworks.com>
-Date:   Fri, 19 Nov 2021 15:51:42 -0800
-Message-ID: <CAJ+vNU3sCk2r2TX0=-N76wWxWNna7qnYnruxVxPTGD8L6yVtug@mail.gmail.com>
-Subject: Re: [PATCH V2 1/5] soc: imx: imx8m-blk-ctrl: Fix imx8mm mipi reset
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Adam Ford <aford173@gmail.com>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Schrempf Frieder <frieder.schrempf@kontron.de>,
-        linux-media <linux-media@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        cstevens@beaconembedded.com, Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peng Fan <peng.fan@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Device Tree Mailing List <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Marek Vasut <marex@denx.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211105162940.3319021-1-anders.roxell@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 10:55 PM Jagan Teki <jagan@amarulasolutions.com> wrote:
->
-> On Sat, Nov 6, 2021 at 9:24 PM Adam Ford <aford173@gmail.com> wrote:
-> >
-> > Most of the blk-ctrl reset bits are found in one register, however
-> > there are two bits in offset 8 for pulling the MIPI DPHY out of reset
-> > and these need to be set when IMX8MM_DISPBLK_PD_MIPI_CSI is brought
-> > out of reset or the MIPI_CSI hangs.
-> >
-> > Fixes: 926e57c065df ("soc: imx: imx8m-blk-ctrl: add DISP blk-ctrl")
-> > Signed-off-by: Adam Ford <aford173@gmail.com>
-> > ---
-> >
-> > V2:  Make a note that the extra register is only for Mini/Nano DISPLAY_BLK_CTRL
-> >      Rename the new register to mipi_phy_rst_mask
-> >      Encapsulate the edits to this register with an if-statement
->
-> This is DPHY reset mask, not sure we can handle this via blk-ctrl.
-> Marek has similar patch to support this [1]. we need to phandle the
-> phy in host node in order to work this.
->
-> However this current patch change seems directly handling dphy reset
-> which indeed fine me as well.
->
-> >
-> >  drivers/soc/imx/imx8m-blk-ctrl.c | 18 ++++++++++++++++++
-> >  1 file changed, 18 insertions(+)
-> >
-> > diff --git a/drivers/soc/imx/imx8m-blk-ctrl.c b/drivers/soc/imx/imx8m-blk-ctrl.c
-> > index 519b3651d1d9..581eb4bc7f7d 100644
-> > --- a/drivers/soc/imx/imx8m-blk-ctrl.c
-> > +++ b/drivers/soc/imx/imx8m-blk-ctrl.c
-> > @@ -17,6 +17,7 @@
-> >
-> >  #define BLK_SFT_RSTN   0x0
-> >  #define BLK_CLK_EN     0x4
-> > +#define BLK_MIPI_RESET_DIV     0x8 /* Mini/Nano DISPLAY_BLK_CTRL only */
-> >
-> >  struct imx8m_blk_ctrl_domain;
-> >
-> > @@ -36,6 +37,15 @@ struct imx8m_blk_ctrl_domain_data {
-> >         const char *gpc_name;
-> >         u32 rst_mask;
-> >         u32 clk_mask;
-> > +
-> > +       /*
-> > +        * i.MX8M Mini and Nano have a third DISPLAY_BLK_CTRL register
-> > +        * which is used to control the reset for the MIPI Phy.
-> > +        * Since it's only present in certain circumstances,
-> > +        * an if-statement should be used before setting and clearing this
-> > +        * register.
-> > +        */
-> > +       u32 mipi_phy_rst_mask;
->
-> May be dphy_rst_mask (above comment may not be required, as it
-> understand directly with commit message).
->
-> >  };
-> >
-> >  #define DOMAIN_MAX_CLKS 3
-> > @@ -78,6 +88,8 @@ static int imx8m_blk_ctrl_power_on(struct generic_pm_domain *genpd)
-> >
-> >         /* put devices into reset */
-> >         regmap_clear_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
-> > +       if (data->mipi_phy_rst_mask)
-> > +               regmap_clear_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
-> >
-> >         /* enable upstream and blk-ctrl clocks to allow reset to propagate */
-> >         ret = clk_bulk_prepare_enable(data->num_clks, domain->clks);
-> > @@ -99,6 +111,8 @@ static int imx8m_blk_ctrl_power_on(struct generic_pm_domain *genpd)
-> >
-> >         /* release reset */
-> >         regmap_set_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
-> > +       if (data->mipi_phy_rst_mask)
-> > +               regmap_set_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
-> >
-> >         /* disable upstream clocks */
-> >         clk_bulk_disable_unprepare(data->num_clks, domain->clks);
-> > @@ -120,6 +134,9 @@ static int imx8m_blk_ctrl_power_off(struct generic_pm_domain *genpd)
-> >         struct imx8m_blk_ctrl *bc = domain->bc;
-> >
-> >         /* put devices into reset and disable clocks */
-> > +       if (data->mipi_phy_rst_mask)
-> > +               regmap_clear_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
-> > +
-> >         regmap_clear_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
-> >         regmap_clear_bits(bc->regmap, BLK_CLK_EN, data->clk_mask);
-> >
-> > @@ -488,6 +505,7 @@ static const struct imx8m_blk_ctrl_domain_data imx8mm_disp_blk_ctl_domain_data[]
-> >                 .gpc_name = "mipi-csi",
-> >                 .rst_mask = BIT(3) | BIT(4),
-> >                 .clk_mask = BIT(10) | BIT(11),
-> > +               .mipi_phy_rst_mask = BIT(16) | BIT(17),
->
-> DPHY has BIT(17) for Master reset and BIT(16) for Slave reset. I think
-> we just need master reset to enable. I've tested only BIT(17) on
-> mipi-dsi gpc and it is working.
->
+On 11/5/21 10:29 AM, Anders Roxell wrote:
+> When building selftests, mqueue and vDSO the following shows up:
+> 
+> warning: passing 'int *' to parameter of type 'unsigned int *' converts between pointers to integer types with different sign [-Wpointer-sign]
+> 
+> warning: passing 'const char *' to parameter of type 'const unsigned char *' converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+> 
+> The code looked OK so what normally are done are, adding the compiler
+> directive to hide the warnings '-Wno-pointer-sign'.
+> 
 
-Jagan,
+Would be nice to see the lines of code that are generating these warns.
 
-In my testing I had to use BIT(16) | BIT(17) in order to capture via CSI.
+I don't want to see the warnings suppressed all together in the Makefile.
+I don't see any point in doing so and it will suppress real problems in
+the future.
 
-Best regards,
+I won't be accepting this patch.
 
-Tim
+thanks,
+-- Shuah
