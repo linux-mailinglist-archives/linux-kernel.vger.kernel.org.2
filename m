@@ -2,144 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF0D4567E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 03:10:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F362F4567FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 03:19:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233938AbhKSCNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 21:13:40 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:27143 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbhKSCNj (ORCPT
+        id S234077AbhKSCWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 21:22:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233475AbhKSCWf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 21:13:39 -0500
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HwKnl2Wczz1DJWr;
-        Fri, 19 Nov 2021 10:08:11 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 19 Nov 2021 10:10:36 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Fri, 19 Nov
- 2021 10:10:36 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-block@vger.kernel.org>
-CC:     <axboe@kernel.dk>, <justin@coraid.com>
-Subject: [PATCH] aoe: fix UAF in tx()
-Date:   Fri, 19 Nov 2021 10:17:43 +0800
-Message-ID: <20211119021743.1124606-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 18 Nov 2021 21:22:35 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D262EC061574;
+        Thu, 18 Nov 2021 18:19:34 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id z5so36032343edd.3;
+        Thu, 18 Nov 2021 18:19:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:from:to:cc:subject:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hb5aPgBnkKqCPy5/Q4m/uS3CM2nzkIbj5X/U4QcG1nI=;
+        b=Pa2/jq6HSjmIt72rJbja71HdzXCrXUqt97EHT4c2xzU2Ac/4XUJiYqYln0hHd2+G7l
+         0mhXkitK4PVdkcWEgiXUPJPYsH+sXxptXia5iq5bKroNDO0RbfTzuK7c8gyM0SZT2sOg
+         hoehN1sNMDDBrNpSORF0BdDgUszA5Dm3asJt7IAB7V6NFenHLzD2Q0rICydtbERnqph8
+         SgYIRNEkaqBHXWJ4rA/n5BpF/nl9LLRe4FjIjFGeySGHtWYu0+c6Ox9hWIyRfvKM2Yq7
+         cyOT611H/VoD3lIhAuTqMSdcSERe2+rYEoxciblt5x+J03CrL9G+93e67zRMeihtDBqN
+         pg5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:from:to:cc:subject:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hb5aPgBnkKqCPy5/Q4m/uS3CM2nzkIbj5X/U4QcG1nI=;
+        b=fa8O0WA9KVFMxmhG33gm6lsWrETMNDOvkWUUbaOnp3PVB7hQMTP6nog+N5MZKiiqSW
+         MjjhYuMHvUmFrleAPwGQ7oBzP5PyZPhOCHOKqpAYmaUnXWcidBH6KMq9MWHPdctmbxoF
+         G/NtzUudNdhdtklEUlPdsL/E2sL9Iv/X9HrnOBkf1779cJwzT0DZJQ28xXhdlTp4rTo1
+         pk9qUzy7xJkjdDBJexZV+eRcFZ0Br4rJ9clhhUZtwsdOciUN8xsfOFFgC22uZBUHDbU1
+         dJHDpLGh+HJ4U+psTV+XJxkh6HRPxgklDbsksWL2wuGIAA6d4qaolM1toEnm86ln+S9t
+         wPkQ==
+X-Gm-Message-State: AOAM5313/prt5qukLSDEKswdWhhxWtJtbsD9U/6UYT8d61da8PUz3QLY
+        j34+EImpU1cuJfXmNcHPMZR0xnmXj+g=
+X-Google-Smtp-Source: ABdhPJz1T6eKOiQwkS82Fhkxyp7kR0T2pWtdmxOgGn9QKAeg0kKbmzbBkxtrR61o2kEIt1qAKN9TGQ==
+X-Received: by 2002:a17:907:1b06:: with SMTP id mp6mr2802959ejc.275.1637288373297;
+        Thu, 18 Nov 2021 18:19:33 -0800 (PST)
+Received: from Ansuel-xps. (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
+        by smtp.gmail.com with ESMTPSA id l16sm860409edb.59.2021.11.18.18.19.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 18:19:33 -0800 (PST)
+Message-ID: <619709b5.1c69fb81.83cb5.4150@mx.google.com>
+X-Google-Original-Message-ID: <YZcJsuH/1yMaRkoX@Ansuel-xps.>
+Date:   Fri, 19 Nov 2021 03:19:30 +0100
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [net-next PATCH 14/19] net: dsa: qca8k: add support for
+ mdb_add/del
+References: <20211117210451.26415-1-ansuelsmth@gmail.com>
+ <20211117210451.26415-15-ansuelsmth@gmail.com>
+ <20211119020657.77os25yh4vhiukvi@skbuf>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211119020657.77os25yh4vhiukvi@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got a UAF report when doing fuzz test:
+On Fri, Nov 19, 2021 at 04:06:57AM +0200, Vladimir Oltean wrote:
+> On Wed, Nov 17, 2021 at 10:04:46PM +0100, Ansuel Smith wrote:
+> > Add support for mdb add/del function. The ARL table is used to insert
+> > the rule. A new search function is introduced to search the rule and add
+> > additional port to it. If every port is removed from the rule, it's
+> > removed. It's set STATIC in the ARL table (aka it doesn't age) to not be
+> > flushed by fast age function.
+> > 
+> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> > ---
+> >  drivers/net/dsa/qca8k.c | 82 +++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 82 insertions(+)
+> > 
+> > diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+> > index dda99263fe8c..a217c842ab45 100644
+> > --- a/drivers/net/dsa/qca8k.c
+> > +++ b/drivers/net/dsa/qca8k.c
+> > @@ -417,6 +417,23 @@ qca8k_fdb_flush(struct qca8k_priv *priv)
+> >  	mutex_unlock(&priv->reg_mutex);
+> >  }
+> >  
+> > +static int
+> > +qca8k_fdb_search(struct qca8k_priv *priv, struct qca8k_fdb *fdb, const u8 *mac, u16 vid)
+> > +{
+> > +	int ret;
+> > +
+> > +	mutex_lock(&priv->reg_mutex);
+> 
+> If I were you, I'd create a locking scheme where the entire FDB entry is
+> updated under the same critical section. Right now you're relying on the
+> rtnl_mutex serializing calls to ->port_mdb_add()/->port_mdb_del(). But
+> that might change. Don't leave that task to someone that has non-expert
+> knowledge of the driver.
+>
 
-[14631.865133][ T1288] BUG: KASAN: use-after-free in __dev_queue_xmit+0x1cf/0x1cd0
-[14631.866261][ T1288] Read of size 8 at addr ffff8881207d08e0 by task aoe_tx0/1288
-[14631.867316][ T1288]
-[14631.867667][ T1288] CPU: 1 PID: 1288 Comm: aoe_tx0 Not tainted 5.16.0-rc1 #580
-[14631.868672][ T1288] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-[14631.870021][ T1288] Call Trace:
-[14631.870481][ T1288]  <TASK>
-[14631.870883][ T1288]  dump_stack_lvl+0xec/0x139
-[14631.872267][ T1288]  print_address_description.constprop.11+0x41/0x60
-[14631.874610][ T1288]  kasan_report.cold.16+0x83/0xdf
-[14631.876825][ T1288]  __dev_queue_xmit+0x1cf/0x1cd0
-[14631.888195][ T1288]  tx+0x5d/0xa0
-[14631.889338][ T1288]  kthread+0x13d/0x210
-[14631.892438][ T1288]  kthread+0x259/0x2a0
-[14631.893704][ T1288]  ret_from_fork+0x1f/0x30
-[14631.894325][ T1288]  </TASK>
-[14631.894738][ T1288]
-[14631.895055][ T1288] Allocated by task 22185:
-[14631.895679][ T1288]  kasan_save_stack+0x1c/0x40
-[14631.896336][ T1288]  __kasan_kmalloc+0x82/0xa0
-[14631.896965][ T1288]  kvmalloc_node+0xb2/0x120
-[14631.897590][ T1288]  alloc_netdev_mqs+0x96/0x7e0
-[14631.898244][ T1288]  __tun_chr_ioctl+0x16bd/0x2a50
-[14631.898925][ T1288]  __x64_sys_ioctl+0x116/0x170
-[14631.899592][ T1288]  do_syscall_64+0x34/0xb0
-[14631.900210][ T1288]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[14631.901026][ T1288]
-[14631.901343][ T1288] Freed by task 22185:
-[14631.901900][ T1288]  kasan_save_stack+0x1c/0x40
-[14631.902546][ T1288]  kasan_set_track+0x21/0x30
-[14631.903179][ T1288]  kasan_set_free_info+0x20/0x30
-[14631.903862][ T1288]  __kasan_slab_free+0xc6/0x100
-[14631.904533][ T1288]  kfree+0xc3/0x1d0
-[14631.905065][ T1288]  kvfree+0x43/0x50
-[14631.905593][ T1288]  device_release+0x5b/0x120
-[14631.906245][ T1288]  kobject_put+0x120/0x1c0
-[14631.906861][ T1288]  netdev_run_todo+0x433/0x590
-[14631.907526][ T1288]  tun_chr_close+0x7b/0xb0
-[14631.908136][ T1288]  __fput+0x178/0x5b0
-[14631.908692][ T1288]  task_work_run+0xa7/0xf0
-[14631.909301][ T1288]  do_exit+0x7f3/0x1a00
-[14631.909878][ T1288]  do_group_exit+0x99/0x180
-[14631.910492][ T1288]  __x64_sys_exit_group+0x28/0x30
-[14631.911186][ T1288]  do_syscall_64+0x34/0xb0
-[14631.911812][ T1288]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[14631.912629][ T1288]
-[14631.912949][ T1288] The buggy address belongs to the object at ffff8881207d0000
-[14631.912949][ T1288]  which belongs to the cache kmalloc-cg-16k of size 16384
-[14631.914900][ T1288] The buggy address is located 2272 bytes inside of
-[14631.914900][ T1288]  16384-byte region [ffff8881207d0000, ffff8881207d4000)
-[14631.916739][ T1288] The buggy address belongs to the page:
-[14631.917511][ T1288] page:0000000060187b1d refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1207d0
-[14631.918919][ T1288] head:0000000060187b1d order:3 compound_mapcount:0 compound_pincount:0
-[14631.920068][ T1288] flags: 0x57ff00000010200(slab|head|node=1|zone=2|lastcpupid=0x7ff)
-[14631.921188][ T1288] raw: 057ff00000010200 ffffea0002b90a08 ffff888100002018 ffff88800a843f00
-[14631.922372][ T1288] raw: 0000000000000000 ffff8881207d0000 0000000100000001 0000000000000000
-[14631.922918][ T5332] Bluetooth: hci0: command 0x0409 tx timeout
-[14631.923545][ T1288] page dumped because: kasan: bad access detected
-[14631.923553][ T1288]
-[14631.925582][ T1288] Memory state around the buggy address:
-[14631.926347][ T1288]  ffff8881207d0780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[14631.927452][ T1288]  ffff8881207d0800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[14631.928546][ T1288] >ffff8881207d0880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[14631.929629][ T1288]                                                        ^
-[14631.930600][ T1288]  ffff8881207d0900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[14631.931693][ T1288]  ffff8881207d0980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+Ok will change the logic and do the search and add/del operation in one
+lock.
 
-After skb queued into skbtxq, the net device of skb may be freed before it's
-sent in tx(), then it leads a UAF. So hold the reference of device to avoid
-the device been freed, put the reference after dev_queue_xmit().
+> > +	qca8k_fdb_write(priv, vid, 0, mac, 0);
+> > +	ret = qca8k_fdb_access(priv, QCA8K_FDB_SEARCH, -1);
+> > +	if (ret < 0)
+> > +		goto exit;
+> > +
+> > +	ret = qca8k_fdb_read(priv, fdb);
+> > +exit:
+> > +	mutex_unlock(&priv->reg_mutex);
+> > +	return ret;
+> > +}
+> > +
+> >  static int
+> >  qca8k_vlan_access(struct qca8k_priv *priv, enum qca8k_vlan_cmd cmd, u16 vid)
+> >  {
+> > @@ -1959,6 +1976,69 @@ qca8k_port_fdb_dump(struct dsa_switch *ds, int port,
+> >  	return 0;
+> >  }
+> >  
+> > +static int
+> > +qca8k_port_mdb_add(struct dsa_switch *ds, int port,
+> > +		   const struct switchdev_obj_port_mdb *mdb)
+> > +{
+> > +	struct qca8k_priv *priv = ds->priv;
+> > +	struct qca8k_fdb fdb = { 0 };
+> > +	const u8 *addr = mdb->addr;
+> > +	u8 port_mask = BIT(port);
+> 
+> This doesn't really need to be kept in a temporary variable as it is
+> only used once.
+> 
+> > +	u16 vid = mdb->vid;
+> > +	int ret;
+> > +
+> > +	/* Check if entry already exist */
+> > +	ret = qca8k_fdb_search(priv, &fdb, addr, vid);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> > +	/* Rule exist. Delete first */
+> > +	if (!fdb.aging) {
+> > +		ret = qca8k_fdb_del(priv, addr, fdb.port_mask, vid);
+> > +		if (ret)
+> > +			return ret;
+> > +	}
+> > +
+> > +	/* Add port to fdb portmask */
+> > +	fdb.port_mask |= port_mask;
+> > +
+> > +	return qca8k_port_fdb_insert(priv, addr, fdb.port_mask, vid);
+> > +}
+> > +
+> > +static int
+> > +qca8k_port_mdb_del(struct dsa_switch *ds, int port,
+> > +		   const struct switchdev_obj_port_mdb *mdb)
+> > +{
+> > +	struct qca8k_priv *priv = ds->priv;
+> > +	struct qca8k_fdb fdb = { 0 };
+> > +	const u8 *addr = mdb->addr;
+> > +	u8 port_mask = BIT(port);
+> > +	u16 vid = mdb->vid;
+> > +	int ret;
+> > +
+> > +	/* Check if entry already exist */
+> > +	ret = qca8k_fdb_search(priv, &fdb, addr, vid);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> > +	/* Rule doesn't exist. Why delete? */
+> 
+> Because refcounting is hard. In fact with VLANs it is quite possible to
+> delete an absent entry. For MDBs and FDBs, the bridge should now error
+> out before it even reaches to you.
+> 
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/block/aoe/aoenet.c | 2 ++
- 1 file changed, 2 insertions(+)
+So in this specific case I should simply return 0 to correctly decrement
+the ref, correct? 
 
-diff --git a/drivers/block/aoe/aoenet.c b/drivers/block/aoe/aoenet.c
-index 63773a90581d..f2cb5d42cc6a 100644
---- a/drivers/block/aoe/aoenet.c
-+++ b/drivers/block/aoe/aoenet.c
-@@ -64,6 +64,7 @@ tx(int id) __must_hold(&txlock)
- 			pr_warn("aoe: packet could not be sent on %s.  %s\n",
- 				ifp ? ifp->name : "netif",
- 				"consider increasing tx_queue_len");
-+		dev_put(ifp);
- 		spin_lock_irq(&txlock);
- 	}
- 	return 0;
-@@ -117,6 +118,7 @@ aoenet_xmit(struct sk_buff_head *queue)
- 
- 	skb_queue_walk_safe(queue, skb, tmp) {
- 		__skb_unlink(skb, queue);
-+		dev_hold(skb->dev);
- 		spin_lock_irqsave(&txlock, flags);
- 		skb_queue_tail(&skbtxq, skb);
- 		spin_unlock_irqrestore(&txlock, flags);
+> > +	if (!fdb.aging)
+> > +		return -EINVAL;
+> > +
+> > +	ret = qca8k_fdb_del(priv, addr, port_mask, vid);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* Only port in the rule is this port. Don't re insert */
+> > +	if (fdb.port_mask == port_mask)
+> > +		return 0;
+> > +
+> > +	/* Remove port from port mask */
+> > +	fdb.port_mask &= ~port_mask;
+> > +
+> > +	return qca8k_port_fdb_insert(priv, addr, fdb.port_mask, vid);
+> > +}
+> > +
+> >  static int
+> >  qca8k_port_mirror_add(struct dsa_switch *ds, int port,
+> >  		      struct dsa_mall_mirror_tc_entry *mirror,
+> > @@ -2160,6 +2240,8 @@ static const struct dsa_switch_ops qca8k_switch_ops = {
+> >  	.port_fdb_add		= qca8k_port_fdb_add,
+> >  	.port_fdb_del		= qca8k_port_fdb_del,
+> >  	.port_fdb_dump		= qca8k_port_fdb_dump,
+> > +	.port_mdb_add		= qca8k_port_mdb_add,
+> > +	.port_mdb_del		= qca8k_port_mdb_del,
+> >  	.port_mirror_add	= qca8k_port_mirror_add,
+> >  	.port_mirror_del	= qca8k_port_mirror_del,
+> >  	.port_vlan_filtering	= qca8k_port_vlan_filtering,
+> > -- 
+> > 2.32.0
+> > 
+> 
+
 -- 
-2.25.1
-
+	Ansuel
