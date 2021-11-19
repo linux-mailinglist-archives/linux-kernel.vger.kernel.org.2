@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F014745711F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 15:48:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F944570F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 15:46:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236163AbhKSOvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 09:51:13 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:54720 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236033AbhKSOu6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 09:50:58 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AJBfcYK028223;
-        Fri, 19 Nov 2021 15:47:49 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=HQiQh8c5C3HZmbe0r9dHM4pAO2C0djI19XsXNNKnkn0=;
- b=FXj6Hib4yx9dxIpzNP1A89Ab8NjstqcjA0aYZD0gcEK4GfBAJU53D6Cflpy74MJt55F2
- HqxDW8GvYc3lGkpPeg+bjcdvar5xZvupeTypj6unZPGlgKzQEcj+165uBR3R0GjDjNJy
- U3XM49XXBvwLcnsKA5onUnr+7MJ+FyMo5OdQxtbe/cEJd6hpGiBNsy9CHGvShQlF4dZ7
- o3Hvbdng0So69ZT+QJGAK1lDCQ9lQRghPC+ZrdczED/PoOYy7RW09M6HGDLxFNaKLn5F
- 6il1HzpKMBpOXDwrVZ86/TlOaiR63auzuDecsKY0pGxgp0Jzj7tckfSyHsdV4LGXHUwh +Q== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ce6b1k0nj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Nov 2021 15:47:49 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B64B410002A;
-        Fri, 19 Nov 2021 15:47:48 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id AEE74231DF2;
-        Fri, 19 Nov 2021 15:47:48 +0100 (CET)
-Received: from localhost (10.75.127.47) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.26; Fri, 19 Nov 2021 15:47:48
- +0100
-From:   Olivier Moysan <olivier.moysan@foss.st.com>
-To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        <arnaud.pouliquen@foss.st.com>, <fabrice.gasnier@foss.st.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Olivier Moysan <olivier.moysan@foss.st.com>
-Subject: [PATCH 9/9] ARM: dts: stm32: adapt i2s node to spi binding on stm32mp15xx-dk
-Date:   Fri, 19 Nov 2021 15:45:51 +0100
-Message-ID: <20211119144551.7577-10-olivier.moysan@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211119144551.7577-1-olivier.moysan@foss.st.com>
-References: <20211119144551.7577-1-olivier.moysan@foss.st.com>
+        id S235905AbhKSOtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 09:49:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40380 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234402AbhKSOtj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 09:49:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 022A761546;
+        Fri, 19 Nov 2021 14:46:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637333197;
+        bh=zCcY+VFf57S76r68pFY7JNDJn5iVG1TUoLBjwC2jrB8=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=NaY+nuvS8ONJeAbhT5jC1TrqeOBSZc1Ss+MvcP6G2buRvoiXmZl7ogsQ/YWmy3VKW
+         PyBt/uhIcxt1bqubCXpQqI2llQwULERHG6pRhYhJQ/alFbzxTh9xi6LaaBPwsit/XG
+         WnHBc/Tg93vbr5VpeeSkkO2lMhL9vbVriXuPxZTtNUey0Yz7h51b7dbbpPaDAGK7zC
+         vfUYn6PhacuC2+Y31govhapKzCTzkIMFJc5VymLHOJhsfHrdr9biMqJ7HeSqHYGjBi
+         LAvyYq950zeeFoPuJ4++DDDmh9wvy47GhZbWJLMKzBd7MdjbGqmA7Sjop72hyfTKBh
+         YsxDWqaP9p9xg==
+Date:   Fri, 19 Nov 2021 15:46:20 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Michael Zaidman <michael.zaidman@gmail.com>
+cc:     benjamin.tissoires@redhat.com, aaron.jones@ftdichip.com,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-i2c@vger.kernel.org,
+        Germain Hebert <germain.hebert@ca.abb.com>
+Subject: Re: [PATCH v1] HID: ft260: fix i2c probing for hwmon devices
+In-Reply-To: <20211023193957.5002-1-michael.zaidman@gmail.com>
+Message-ID: <nycvar.YFH.7.76.2111191546070.16505@cbobk.fhfr.pm>
+References: <20211023193957.5002-1-michael.zaidman@gmail.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-19_09,2021-11-17_01,2020-04-07_01
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In DT check utility, the spi2s2 node is identified as an spi node.
-The check_spi_bus_reg() function issues a warning "missing or empty
-reg property" if reg property is not defined in child nodes.
-Add reg property to STM32 I2S port node on STM32MP15XX-DK board
-to match this requirement and add related unit-address in node name.
+On Sat, 23 Oct 2021, Michael Zaidman wrote:
 
-Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
----
- arch/arm/boot/dts/stm32mp15xx-dkx.dtsi | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> The below scenario causes the kernel NULL pointer dereference failure:
+> 1. sudo insmod hid-ft260.ko
+> 2. sudo modprobe lm75
+> 3. unplug USB hid-ft260
+> 4. plug USB hid-ft260
+> 
+> [  +0.000006] Call Trace:
+> [  +0.000004]  __i2c_smbus_xfer.part.0+0xd1/0x310
+> [  +0.000007]  ? ft260_smbus_write+0x140/0x140 [hid_ft260]
+> [  +0.000005]  __i2c_smbus_xfer+0x2b/0x80
+> [  +0.000004]  i2c_smbus_xfer+0x61/0xf0
+> [  +0.000005]  i2c_default_probe+0xf9/0x130
+> [  +0.000004]  i2c_detect_address+0x84/0x160
+> [  +0.000004]  ? kmem_cache_alloc_trace+0xf6/0x200
+> [  +0.000009]  ? i2c_detect.isra.0+0x69/0x130
+> [  +0.000005]  i2c_detect.isra.0+0xbf/0x130
+> [  +0.000004]  ? __process_new_driver+0x30/0x30
+> [  +0.000004]  __process_new_adapter+0x18/0x20
+> [  +0.000004]  bus_for_each_drv+0x84/0xd0
+> [  +0.000003]  i2c_register_adapter+0x1e4/0x400
+> [  +0.000005]  i2c_add_adapter+0x5c/0x80
+> [  +0.000004]  ft260_probe.cold+0x222/0x2e2 [hid_ft260]
+> [  +0.000006]  hid_device_probe+0x10e/0x170 [hid]
+> [  +0.000009]  really_probe+0xff/0x460
+> [  +0.000004]  driver_probe_device+0xe9/0x160
+> [  +0.000003]  __device_attach_driver+0x71/0xd0
+> [  +0.000004]  ? driver_allows_async_probing+0x50/0x50
+> [  +0.000004]  bus_for_each_drv+0x84/0xd0
+> [  +0.000002]  __device_attach+0xde/0x1e0
+> [  +0.000004]  device_initial_probe+0x13/0x20
+> [  +0.000004]  bus_probe_device+0x8f/0xa0
+> [  +0.000003]  device_add+0x333/0x5f0
+> 
+> It happened when i2c core probed for the devices associated with the lm75
+> driver by invoking 2c_detect()-->..-->ft260_smbus_write() from within the
+> ft260_probe before setting the adapter data with i2c_set_adapdata().
+> 
+> Moving the i2c_set_adapdata() before i2c_add_adapter() fixed the failure.
+> 
+> Signed-off-by: Michael Zaidman <michael.zaidman@gmail.com>
+> Signed-off-by: Germain Hebert <germain.hebert@ca.abb.com>
 
-diff --git a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
-index ff7dabfeb322..36187089c073 100644
---- a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
-@@ -437,7 +437,8 @@
- 	pinctrl-1 = <&i2s2_sleep_pins_a>;
- 	status = "okay";
- 
--	i2s2_port: port {
-+	i2s2_port: port@0 {
-+		reg = <0>;
- 		i2s2_endpoint: endpoint {
- 			remote-endpoint = <&sii9022_tx_endpoint>;
- 			format = "i2s";
+Applied, thanks.
+
 -- 
-2.17.1
+Jiri Kosina
+SUSE Labs
 
