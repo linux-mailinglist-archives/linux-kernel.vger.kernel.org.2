@@ -2,243 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3E43456B0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 08:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCB8456B0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 08:43:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232200AbhKSHpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 02:45:50 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:51548 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbhKSHpu (ORCPT
+        id S232838AbhKSHp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 02:45:57 -0500
+Received: from esa5.fujitsucc.c3s2.iphmx.com ([68.232.159.76]:48059 "EHLO
+        esa5.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232301AbhKSHpz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 02:45:50 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AJ7gXvY026575;
-        Fri, 19 Nov 2021 01:42:33 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1637307753;
-        bh=aURgQjKNEA+cBJfEgNbo13xu2bl+tUi1w76bXP0DgFs=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=BDM5KBkjzRSem4B3RLN6dG0eUnofCtwkKfHKj+YtTifBzmSnoU9IeH5S36vDBSMzG
-         7tZ972+zOSH4UWUv748WBYXl3T+4Hellk7pP20/lHUcbtGAxhFQkvwDEa6VoATNcrk
-         EY4txWdVb9X9LGswmhXUPP+7NDjgnHTh0K+mIXvE=
-Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AJ7gXS8127851
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 19 Nov 2021 01:42:33 -0600
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 19
- Nov 2021 01:42:32 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Fri, 19 Nov 2021 01:42:32 -0600
-Received: from [10.250.232.185] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AJ7gSS2010913;
-        Fri, 19 Nov 2021 01:42:29 -0600
-Subject: Re: [PATCH RFC 2/2] phy: phy-can-transceiver: Add support for setting
- mux
-To:     Peter Rosin <peda@axentia.se>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Nishanth Menon <nm@ti.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, <linux-can@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20211111164313.649-1-a-govindraju@ti.com>
- <20211111164313.649-3-a-govindraju@ti.com>
- <20211112084027.b2t2beqiiodnwjtv@pengutronix.de>
- <085ec3c0-75c6-f3c2-9999-348098fd88f9@ti.com>
- <f933048c-099f-054a-6563-671cf2a2e2af@axentia.se>
- <8be2b770-9c4c-ce41-4c49-27fa30b4afee@ti.com>
- <b8b0c7c4-3006-071b-d68f-8b18d24a1f72@axentia.se>
- <f47dc612-adea-4dfb-f2fd-d67b5df6ed50@ti.com>
- <3f13a769-f8ef-dbe8-f2c6-ff197af8eddf@axentia.se>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <c4efbcd3-8071-7fd2-0f3a-bc42acdfd2ac@ti.com>
-Date:   Fri, 19 Nov 2021 13:12:28 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 19 Nov 2021 02:45:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+  t=1637307774; x=1668843774;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=DED2Gpt5jA3cTBvgBdR1TfvvrEEyfd/VbnAmqvPgczg=;
+  b=fBPilo93qJLEk2N0TV1xJP/qw1ITbE8GW2cdzlYxLWaWT5O9gFFVMaxu
+   pfmghyINhPUwLD5LiXiWNkOsqEx/AL5hRAtYTPXkY4Ty1YPaEumEcS/wt
+   9zxhEti38qjrgli6OL24ZX/uRYZk4avE23TU6O7YQxUtyd9PAdwFNp5Y3
+   sDvktG9KD1HiHwdbtU3JLKM69E50oJRdvu7eAKHcVk3//AgNTq2ppwpyP
+   SQxjIRJ/hFk4tVJiem8HExP89nxTHljghUgZmnF64+iIp325W8J9SLtFZ
+   R0rAoHGPwMdH/T594cFu1/QnRrjK1iSaN+jS+vsEf2VBXZf5xNL05TZ06
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="44185932"
+X-IronPort-AV: E=Sophos;i="5.87,246,1631545200"; 
+   d="scan'208";a="44185932"
+Received: from mail-os0jpn01lp2106.outbound.protection.outlook.com (HELO JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.106])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 16:42:50 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=me+GFjvnurNYA95GWGqOK49cD+p2fqePF1R+oJe/63gTlP5xYqxjXdvSe8ZJWlv6AP4O559ceiM7qSST2/B7IhMGB0EE+WrtN4R9Rv+oNc2kyKNB3lUFkw4tV5a3u5h63IZJXw2nav8B+wznnBJKXanMrnndkmSczs0Vr2YP31Oli0PZmtKkl5gNKifQGi4r/yfdf/jlJe3H+jNryLF5w5bUA0ca97FqCNzewDvJEtAQS1WUNgVChqr2qbIr6Xx4BTY1tIP2cfFyJEjQ923cIIanXo3phxGNXLA5mBfuOn+m61z5ojjPt6FeNYO/rRdq6j5k97QyxGrg6kxUKLr01g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6GZcd12wFOaCHs0PsvNP03Qya7qUTiT6xxkT9rtD4PQ=;
+ b=cxBUQaCmIFdcaI03gH3jKatBCR2Et4lzjtwD6dWcNGQgdTdnusO7G6GnEhvSnWqM94l26UOFn+8PetWUX8myr9iK7VtO9CpPNAMV6gYCP+M6ejy5M4oc1CoT4/qYS+f8RBys5cjmLuIJ4/ficbOzS1kdFKX17BCXo7ZPlkZ+/UFQ2+QFixh8QRNHhkflDlEttwDUUbAVduqmY7gQA+TZDC75eUFei1vFwgk4GKOvrKi/m4bL5W1AMKQKboqQeuMn1VrILxzdYKyjG4s3Vlh5/j257+HQOMiZVqWVgBihpezOHkW4IxAd/xlHMQtnHkajC4iDg5KDzCtp3TmPE8MCeA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6GZcd12wFOaCHs0PsvNP03Qya7qUTiT6xxkT9rtD4PQ=;
+ b=HI+g5cr23nHviIkAjBI3RnhFgZc6C5LpJI1dj53Wef0rket/zuaxKn9C/Ywc0YfW8jYFpGpNP3/AHhe1Zef6qm7OX6+yWAqGwhA9oVqySmWYjIW4BXyZ4jeNpsuEKDPaoC9cKjLvNdv3TDYQR7rEjyq1jUomSQUxzHQ19ctVxhI=
+Received: from TYCPR01MB6160.jpnprd01.prod.outlook.com (2603:1096:400:4f::8)
+ by TYAPR01MB2606.jpnprd01.prod.outlook.com (2603:1096:404:8d::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26; Fri, 19 Nov
+ 2021 07:42:46 +0000
+Received: from TYCPR01MB6160.jpnprd01.prod.outlook.com
+ ([fe80::9097:d9f3:3ce8:c65f]) by TYCPR01MB6160.jpnprd01.prod.outlook.com
+ ([fe80::9097:d9f3:3ce8:c65f%2]) with mapi id 15.20.4713.022; Fri, 19 Nov 2021
+ 07:42:46 +0000
+From:   "ishii.shuuichir@fujitsu.com" <ishii.shuuichir@fujitsu.com>
+To:     "rafael@kernel.org" <rafael@kernel.org>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "guohanjun@huawei.com" <guohanjun@huawei.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "ishii.shuuichir@fujitsu.com" <ishii.shuuichir@fujitsu.com>
+Subject: RE: [PATCH] acpi/tables: Add AEST in ACPI Table Definition
+Thread-Topic: [PATCH] acpi/tables: Add AEST in ACPI Table Definition
+Thread-Index: AQHX0fwdbkefXsM8TESWclCf3iAcSKwKje3w
+Date:   Fri, 19 Nov 2021 07:42:46 +0000
+Message-ID: <TYCPR01MB6160D24642F184E35B6A062DE99C9@TYCPR01MB6160.jpnprd01.prod.outlook.com>
+References: <20211105041635.1481738-1-ishii.shuuichir@fujitsu.com>
+In-Reply-To: <20211105041635.1481738-1-ishii.shuuichir@fujitsu.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: =?iso-2022-jp?B?TVNJUF9MYWJlbF9hNzI5NWNjMS1kMjc5LTQyYWMtYWI0ZC0zYjBmNGZl?=
+ =?iso-2022-jp?B?Y2UwNTBfQWN0aW9uSWQ9OTE5MDcwYjQtNmM3Yy00YzJkLWFlNzEtMmYy?=
+ =?iso-2022-jp?B?NDQ0MmNjZjcyO01TSVBfTGFiZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFi?=
+ =?iso-2022-jp?B?NGQtM2IwZjRmZWNlMDUwX0NvbnRlbnRCaXRzPTA7TVNJUF9MYWJlbF9h?=
+ =?iso-2022-jp?B?NzI5NWNjMS1kMjc5LTQyYWMtYWI0ZC0zYjBmNGZlY2UwNTBfRW5hYmxl?=
+ =?iso-2022-jp?B?ZD10cnVlO01TSVBfTGFiZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFiNGQt?=
+ =?iso-2022-jp?B?M2IwZjRmZWNlMDUwX01ldGhvZD1TdGFuZGFyZDtNU0lQX0xhYmVsX2E3?=
+ =?iso-2022-jp?B?Mjk1Y2MxLWQyNzktNDJhYy1hYjRkLTNiMGY0ZmVjZTA1MF9OYW1lPUZV?=
+ =?iso-2022-jp?B?SklUU1UtUkVTVFJJQ1RFRBskQiJMJT8lUhsoQjtNU0lQX0xhYmVsX2E3?=
+ =?iso-2022-jp?B?Mjk1Y2MxLWQyNzktNDJhYy1hYjRkLTNiMGY0ZmVjZTA1MF9TZXREYXRl?=
+ =?iso-2022-jp?B?PTIwMjEtMTEtMTlUMDc6NDI6MDVaO01TSVBfTGFiZWxfYTcyOTVjYzEt?=
+ =?iso-2022-jp?B?ZDI3OS00MmFjLWFiNGQtM2IwZjRmZWNlMDUwX1NpdGVJZD1hMTlmMTIx?=
+ =?iso-2022-jp?B?ZC04MWUxLTQ4NTgtYTlkOC03MzZlMjY3ZmQ0Yzc7?=
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3577fa11-5a8a-48be-b546-08d9ab302db5
+x-ms-traffictypediagnostic: TYAPR01MB2606:
+x-microsoft-antispam-prvs: <TYAPR01MB2606D8ED7C9503817201B37AE99C9@TYAPR01MB2606.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4303;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: VdPfBWWLhTwVsKUQYei+QObHGS05sSIex19Da+XXNGopC0M5YiWGu036hX6K5NIIm3loNmiIgX+VvTibilhi9GojDEAKgUXvwyFiHWOzZp1agkbN3elqdjOa5Sbl+qAD2ZdxTwc8qbhWEKf8ZsnAx5N6UkqToMN/UsljCfDi4j9Vxfrxuvd4qieaKz69zCaR5FpUiT5fgeLg7NEveuupTv6ZyG5CzGMO8VOVQHlAW2TTZ3c268oBmKo/Oe66CMT6s0tSMpIXENxyt4PicUZYz46ucHknOR30rn7SIsFLxY05NdhMv0ZDm4SyN5RKbkTcCE362xeMoUVAShywyg8xuLV9MjfPyGrDvJr98FzAihN86PEQQWSBbGlfuDv654eQleXloKzRUp5fW9jcp8E6xLUsFzEyrFskJXqCOUgkLQta+2H7fW7KGM/Tywo4ifXy/qSfF9kusgf5xgxjdJcI/P3AV1fWThJxFEfho6znXacHiyYEzs3qyPR3XMwsFl6ee7fo3QCBJW0fd4CG3/9Jt645KNXXC/fOYMiO+jaq1FzSsDurxI13jFnEvk8TRBSG9ap5gBeyJRM65kwpaKcnLATcCWd3cukP8yJz0ddOtgeCA61MVvqhl1yV2eXlsrKQXTCkwcp5hpcRuovNTp54pAIxKtwFNUNwtGj5gYBoiELEM1Bz3u+bwH4imZoxPIB93uUtSdrbrErWryFaLDWLXw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB6160.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(85182001)(122000001)(26005)(38070700005)(7696005)(9686003)(508600001)(4326008)(71200400001)(52536014)(8676002)(86362001)(83380400001)(2906002)(82960400001)(5660300002)(33656002)(66446008)(8936002)(66476007)(316002)(66556008)(64756008)(107886003)(110136005)(54906003)(53546011)(76116006)(6506007)(55016002)(186003)(66946007)(38100700002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-2022-jp?B?YTVKSUIvNGN3TmptNUxEMVpNZXUrb0M0dEJCWEVuNDhsSTgwU3liT3lv?=
+ =?iso-2022-jp?B?bnR3cjZWbXEvU0x6dUtReXdteUZhOEE5Q2dIWlQvZnY2c3R2SXJrRWdJ?=
+ =?iso-2022-jp?B?TE5CanFSYXllYzhBd0lEelVVOE9iZm9qR2Y1bUJVcVhaT0x1SEFEVUV6?=
+ =?iso-2022-jp?B?bjRkT20xVGFHUlA2S0d3U0FML0tINHVseDRRYVpUS0h6bkEyWGZUK3FB?=
+ =?iso-2022-jp?B?YUxRNnlLb1RyMmpaKzBuVENVQmY4YmszV2xjb05PVDlJTlN5RjhUbDA2?=
+ =?iso-2022-jp?B?eG9FVjg4bDRzakhpNmR1eDZHcFEvOVg0dlFXZnVLR05EelFLY2hTUHlJ?=
+ =?iso-2022-jp?B?NHdSc0VDZEs4cDdSODkzbFRuUnBCNnpKOGRaeDY5djFLV1pQeDczWWU2?=
+ =?iso-2022-jp?B?RkIxZHp2T3FFWkUxN0lBRkJGVmM2TXF3em13UUJmenZqSllqQVlGZnQz?=
+ =?iso-2022-jp?B?anlZZkpqSlRJQjZtWERBY2dWT2pRNEZWTVZaeUUwR2c5bDhXYkVMSyty?=
+ =?iso-2022-jp?B?R2NjYXhqaXdxWE1acHBGUGhubVFlZ0RTWFRRbi9KYVNUYTR1ZG1DY0xB?=
+ =?iso-2022-jp?B?VUJzU1gzVWdFV2F1SnNTV2lvY2hQd2pYbEhZdjFkWHIrYnpiekR5NHJG?=
+ =?iso-2022-jp?B?Vkxvdkg0K09KSkd1R2hTRnpEeUo3VDV4V01MSlJ0ZU1URzVtOHQ1MlJU?=
+ =?iso-2022-jp?B?RGVOQUlQcmhUdFlWK1cwZzN2THppbUdzUndDb2c0dmlRUWsyOG50L0la?=
+ =?iso-2022-jp?B?UXViT3Jsc0JQalBrcGkwaGVGdXBJeWE5QVJ0SnFpckkvek83ak92N01l?=
+ =?iso-2022-jp?B?RzdmZTB3SWdCcVhxa0RhbG9oYjJKMFNoQklkZGIrM08yWTl2d0RKTVFp?=
+ =?iso-2022-jp?B?L0NjSVNsdnJabG1Sc1RXa2NZRmpGRnNFUzIzMzZVNFUvVnJiTHpibjFM?=
+ =?iso-2022-jp?B?SUIwZ1o2V1ZyUmszVFRzdHY0YnFBUXJXNTVxQlZvKytMaG5ieCtrL1M5?=
+ =?iso-2022-jp?B?YUc2UWFpMzJqbXc2cmlXeG5JUDBCV01pK0lUVExMUDRqUUswLzVZK21m?=
+ =?iso-2022-jp?B?T3RHVFA2eEJQUVlkOWk2SHM3ZHVJYUt1NDF4ZXhjQ2FERTlSWCt6enN2?=
+ =?iso-2022-jp?B?bmRTSFZ0TWdPTm5OWlFaeGUrczJ1UmVQbTU3TFBRWEJNUlVwQWI3S29y?=
+ =?iso-2022-jp?B?c09qTG5oV3JZSGVvZ2E0clFTeE1yOERvNm41N1RyVDJrWnNQYnJIY0Rs?=
+ =?iso-2022-jp?B?dktXL0xPK0VKcnp6dGpxWmhjN3lpVG1raVNDdWlUelJ1dUV0TW1HaDJO?=
+ =?iso-2022-jp?B?UXEraE9IK0l4NEloeWRsUEFmY205K1ZVTDViRlpwMWVUUzdqdHdnenNa?=
+ =?iso-2022-jp?B?MklPSVJ4ZnhPOEplbzUrZlJleFVOQTJLdzB4SzZEQlhOZDhYOUpaZ0hV?=
+ =?iso-2022-jp?B?blVGMzFOd0doUGJnMlViYU4zOG13dTlvOGRRK0hXdnFFQWxtVGV0R09v?=
+ =?iso-2022-jp?B?WVhVNEpyTnJ3ZjJDWGE3dHZjN0ZBYVJ3OHVoYzJhVm1DSkphaXgvam5V?=
+ =?iso-2022-jp?B?eFBwUS93V0drYlF4NXZoTFBTT1h2S2pkbzJJaWdFNWVKbE9RUGhldEtx?=
+ =?iso-2022-jp?B?ZFdiUTZnL0x0Wk1jdXNpVkV1a1dEVS9jRy9LWjlQSkFxY1ZuL29uY3F6?=
+ =?iso-2022-jp?B?TDBhS256UFBxQ09GQzhuc203WU0yemo3QVFEMVF6YWN4Qk5xZG1xYXJn?=
+ =?iso-2022-jp?B?UnNsYmhrUWlEbXF3VWdLNzB1SEl4bmxpejAwQ3l1aE5DREE3LzFPOFRk?=
+ =?iso-2022-jp?B?SFZleGk4SnRlNWRvRmx5MUVPbFVDOWpkUUdxRTB2L09OVFEyRnhITWky?=
+ =?iso-2022-jp?B?MWUzV1pNbk5uby8zbzVka1hDZDZFMHFjNlJkbmlEcG5udnVCMWNQNDVi?=
+ =?iso-2022-jp?B?bGlqK1k5aXJCVGhYeE1jWWdweXFIUExOTTRoMWttYTZUMEppMTBzYzFC?=
+ =?iso-2022-jp?B?bFFSS1lRVVZES0xnZk1YWk9JY09SSnhhMk4yWDRvYnVaN1lkcHB1dWZq?=
+ =?iso-2022-jp?B?N0FyVjRranN6eDk1OG11NmJFckVJT0RkcFNUb3dmQWRRQmhpSTNQdWZW?=
+ =?iso-2022-jp?B?RmdUSWFNYjZJUVhzSWhoVjUxbjVyYUcyOUZiRXZNNzNJTXpmeGxsRCs4?=
+ =?iso-2022-jp?B?bk1UeHhrTFlScXFiUUtQNWZ3UjIvUTR6VzltR29sWHZQVW1JQVgrRW1R?=
+ =?iso-2022-jp?B?RjFMY2ZXcHg1aUx2SUhWVzBiaDNCeHNvR0VwdTlNOUF3MStJSmttYlpq?=
+ =?iso-2022-jp?B?SHB4NHNFd3FXRUo5Sldqak9iS3JONWRCMC9rWDZpWEkrT2JHc3VxKzFY?=
+ =?iso-2022-jp?B?S2tVWXhld2dZTGdzajE0eDZmTUJqWllVbWgxN1NXZGRHUTJKSmxjTVBH?=
+ =?iso-2022-jp?B?Y0dlRkpnPT0=?=
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <3f13a769-f8ef-dbe8-f2c6-ff197af8eddf@axentia.se>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB6160.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3577fa11-5a8a-48be-b546-08d9ab302db5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Nov 2021 07:42:46.2283
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3FsX4yH1zqUn9AolHF79Z7w68t5NYthPM+stOyCjbGN0LCMrfaS1JxBt99uYXhm0OmH+Evr9goQVht5E9g3MVnEF8KXeJ8s+wXfz4qtsY/g=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB2606
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+Ping?
 
-On 18/11/21 6:14 pm, Peter Rosin wrote:
->>> Ok, I see what you mean now, sorry for being dense. If we allow this then
->>> there is a need to add a special value that means all/many states (such as
->>> -1 or something such) so that a mux-control can be used simultaneously by
->>> drivers "pointing at" a specific state like you want to do, and by the
->>> existing "application" style drivers that wraps the whole mux control.
->>>
->>> I.e. something like this
->>>
->>> 	mux: mux {
->>> 		compatible = "mux-gpio";
->>> 		...
->>>
->>> 		#mux-control-cells = <1>; /* one more than previously */
->>> 	};
->>>
->>> 	phy {
->>> 		...
->>>
->>> 		mux-control = <&mux 3>; /* point to specific state */
->>> 	};
->>>
->>> 	i2c-mux {
->>> 		compatible = "i2c-mux-gpmux";
->>> 		parent = <&i2c0>
->>> 		mux-control = <&mux (-1)>; /* many states needed */
->>>
->>> 		...
->>>
->>> 		i2c@1 {
->>> 			eeprom@50 {
->>> 				...
->>> 			};
->>> 		};
->>>
->>> 		i2c@2 {
->>> 			...
->>> 		};
->>> 	};
->>>
->>> Yes, I realize that accesses to the eeprom cannot happen if the mux is
->>> constantly selected and locked in state 3 by the phy, and that a mux with
->>> one channel being a phy and other channels being I2C might not be
->>> realistic, but the same gpio lines might control several muxes that are
->>> used for separate signals solving at least the latter "problem" with this
->>> completely made up example. Anyway, the above is in principle, and HW
->>> designs are sometimes too weird for words.
->>>
->>
->> This is almost exactly what I was intending to implement except for one
->> more change. The state of the mux will always be represented using the
->> second argument(i.e. #mux-control-cells = <2>).
->>
->> For example,
->> mux-controls = <&mux 0 1>, <&mux 1 0>;
->>
->>
->> With this I think we wouldn't need a special value for all or many states.
-> 
-> But you do. Several consumers need to be able to point to the same mux
-> control. If some of these consumers need one state, and some other need
-> all/many, the consumers needing many needs to be able to say that. Listing
-> many entries in mux-control = <>; is misleading since then the binding implies
-> that you could have different mux controls for each state, which is not
-> possible, at least not in the current implementations. It would also be
-> wasteful to needlessly establish links to the same mux control multiple
-> times, and the binding would cause bloated device trees even if you tried
-> to optimize this in the drivers. Therefore, I require a special value so
-> that consumers can continue to point at the mux control as a whole, even
-> if some other consumers of the same mux control wants to point at a specific
-> state.
-> 
-
-
-Understood. One issue that I see is that we certainly can not use the
-first argument for representing state as it will result in errors for
-current users.
-
-I feel that the safest way to go would be by using a second argument to
-represent the state or to represent multiple states can be used by the
-driver. The issue that I see with this approach is that currently the
-fist argument is used to select the line number from the mux and if the
-we use two arguments like this,
-
-mux-controls = <&mux 0 -1>
-
-then this would mean that line nnumber 0 in the mux could use multiple
-states and for a driver to use mutiple lines we would need to add an
-entry for each line which would bloat the code a well increase the
-complexity in the drivers while using devm_mux_get(). So, one solution
-that I could think of is to use a "-1" for the first argument too. This
-would indicate that the driver would need to toggle multiple lines in
-the mux
-
-For example,
-
-1) mux-controls = <&mux -1 3> // the driver would need to set the mux
-lines to 3 for enabling it
-
-2) mux-controls = <&mux -1 -1> //the driver would need to set the mux
-lines and multiple states in the mux
-
-3) mux-controls = <&mux 0 1> // the driver would need to set the zeroth
-mux line to 1
-
-I do see that, going with this method would make <&mux ^\d*$ ^\d*$>(i.e.
-any positive number in the first argument) redundant as it can be
-represented with <&mux -1 *>. However, I think is the only way so that
-existing users will not see issues.
-
-
->>>> One more question that I had is, if the number of arguments match the
->>>> #mux-control-cells and if the number of arguments are greater than 1 why
->>>> is an error being returned?
->>>
->>> Changing that would require a bindings update anyway, so I simply
->>> disallowed it as an error. Not much thought went into the decision,
->>> as it couldn't be wrong to do what is being done with the bindings
->>> that exist. That said, I have no problem lifting this restriction,
->>> if there's a matching bindings update that makes it all fit.
->>>
->>
->> Sure, I think making a change in
->>
->> Documentation/devicetree/bindings/mux/gpio-mux.yaml, should be good
->> enough I assume.
-> 
-> Well, the new way to bind has very little to do with this being a gpio
-> mux. There is no reason not to allow this way to bind for any of the
-> other muxes. That said, the reg-mux binding has this:
-> 
->   '#mux-control-cells':
->     const: 1
-> 
-> Similarly, the adi,adg792a has explicit wording on how #mux-control-cells
-> works (but being a txt binding it is not checked, but that does not matter,
-> bindings should be correct). I now notice that this is missing from the
-> adi,adgs1408 binding, but that's an oversight.
-> 
-> The mux-controller binding has this:
->   '#mux-control-cells':
->     enum: [ 0, 1 ]
-> 
-> The mux-consumer binding should probably be updated with some words
-> on this subject too.
-> 
-> So, all mux bindings need updates when this door is opened. And, in order
-> to add this in a compatible way, the old way to bind with 0/1 cells needs
-> to continue to both work and be allowed.
-> 
-> I think it is easiest to add something common to the mux-controller
-> binding and then have the specific bindings simply inherit it from there
-> instead of adding (almost) the same words to all the driver bindings.
-> 
-
-Understood, I will try to add changes in the common mux-controller
-bindings itself and then reference it in the gpio-mux bindings
-
-Thanks,
-Aswath
-
-> Cheers,
-> Peter
-> 
->> Thank you for the comments. I'll post a respin of this series, with the
->> above changes.
+> -----Original Message-----
+> From: Shuuichirou Ishii <ishii.shuuichir@fujitsu.com>
+> Sent: Friday, November 5, 2021 1:17 PM
+> To: rafael@kernel.org; lenb@kernel.org; linux-acpi@vger.kernel.org;
+> linux-kernel@vger.kernel.org
+> Cc: lorenzo.pieralisi@arm.com; guohanjun@huawei.com; sudeep.holla@arm.com=
+;
+> linux-arm-kernel@lists.infradead.org; Ishii, Shuuichirou/=1B$B@P0f=1B(B =
+=1B$B<~0lO:=1B(B
+> <ishii.shuuichir@fujitsu.com>
+> Subject: [PATCH] acpi/tables: Add AEST in ACPI Table Definition
+>=20
+> When We added AEST using the Upgrading ACPI tables via initrd function,
+> the kernel could not recognize the AEST, so We added AEST the ACPI table
+> definition.
+>=20
+> Signed-off-by: Shuuichirou Ishii <ishii.shuuichir@fujitsu.com>
+> ---
+>  drivers/acpi/tables.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c
+> index 71419eb16e09..2699bf7e21ab 100644
+> --- a/drivers/acpi/tables.c
+> +++ b/drivers/acpi/tables.c
+> @@ -500,7 +500,7 @@ static const char table_sigs[][ACPI_NAMESEG_SIZE]
+> __initconst =3D {
+>  	ACPI_SIG_WDDT, ACPI_SIG_WDRT, ACPI_SIG_DSDT, ACPI_SIG_FADT,
+>  	ACPI_SIG_PSDT, ACPI_SIG_RSDT, ACPI_SIG_XSDT, ACPI_SIG_SSDT,
+>  	ACPI_SIG_IORT, ACPI_SIG_NFIT, ACPI_SIG_HMAT, ACPI_SIG_PPTT,
+> -	ACPI_SIG_NHLT };
+> +	ACPI_SIG_NHLT, ACPI_SIG_AEST };
+>=20
+>  #define ACPI_HEADER_SIZE sizeof(struct acpi_table_header)
+>=20
+> --
+> 2.27.0
 
