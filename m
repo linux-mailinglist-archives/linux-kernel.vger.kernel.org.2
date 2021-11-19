@@ -2,118 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5E14567CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 03:04:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0860A4567D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 03:04:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233830AbhKSCHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 21:07:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230151AbhKSCHM (ORCPT
+        id S233805AbhKSCHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 21:07:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:51224 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230151AbhKSCHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 21:07:12 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C13F6C061574;
-        Thu, 18 Nov 2021 18:04:10 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id g14so35797969edb.8;
-        Thu, 18 Nov 2021 18:04:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5U+fmJZ5z4ee9LAYq89MnpSRpGij+LFUJBmX6S7mdDA=;
-        b=EMBhsz7kTfVLqNRNNuECt3JvSen5Khg7xcbsKn8n6OlqgAGB+VF+IS7BAlzaVn+k/P
-         e85lueG7xaVjTzUV1tg9oIbxthDnix6ZGoWteSDoth1DPBW54wihjKvaSfjqt8xsCYUn
-         Voodk2TG+HiXawX4hd3P/qpKYahWEUAJxSqtPBd+wvMdwrtroJ8NSR2Ief/pnAKvYNSZ
-         Qwf49ORF8tYBl0l/yl8RRdePWuSs0I30XM9VowJZFBguetPzeCUyz8/xuIWJZoiP0KjF
-         XlxPazs+YKcJzSAN4mgNMZVeYSFmCyJ0DGtxXjX3RscyBDnvmOq11X0TI7LdLvdGB/ZX
-         CnEQ==
+        Thu, 18 Nov 2021 21:07:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637287473;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AGSOSbx9KHQS8zqvecKfdTvOeLPt7uvQMecFRR7horI=;
+        b=bbDWT5e+tycB/WXU9BvRrHLSmmBrPl/Tle9hZjZ3uZ7ZyXg/1+kiZuOS8OGGBcEgCKrLU7
+        8wDn6QmKU6DbzGoEL9WQhpZ48wSDEo7vRHEUPCA2Bp3UNtPmBObOtvOj4mA2XDLJIyhCVX
+        O9Cn2MLG+1j38eqlJV2w7yLv4Q4Kssw=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-447-dmLNkaz8ObGOt0xtRLQagA-1; Thu, 18 Nov 2021 21:04:32 -0500
+X-MC-Unique: dmLNkaz8ObGOt0xtRLQagA-1
+Received: by mail-qv1-f70.google.com with SMTP id q9-20020ad45749000000b003bdeb0612c5so7643818qvx.8
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 18:04:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5U+fmJZ5z4ee9LAYq89MnpSRpGij+LFUJBmX6S7mdDA=;
-        b=IN7UNe4ZZG08dzXEKLzkdGiXOSPI3/DqKrro1oxzBglQ5I648MgFB6l5SzTLcCtyEv
-         2jhOen/ssm5rKVuX2a7SrtUfQzV091ZuvZdxTT5lzAJmTcSsA9hdgWM+bsxgcWF9F1lZ
-         4RVlkWwwzvqyzchHwEOr+FI8HTSfGMh+51OtVqeiFGpTnPAe3FPznZAIgWLzTiRi5i5x
-         ep7so/BbMM/RqHUtgeIQ/GrHsP0Zjl4F6xpGPGBQjZGTrPJSR3hhxktBQaDDbKvZPc/l
-         hYhPWy+Oq6kbgnf+idSDIICqs5J/1A6ZsWT8f4T6EQUvBWLvSH3adtzVFiBIpdJzKxKb
-         qPUA==
-X-Gm-Message-State: AOAM530Q+cisYg9EjjFJvqB6mT8N4Q2/+VKpDBK/HIBEIYdbATvnBbXy
-        xBRCCRcfGbji2kDE6/q4yTI=
-X-Google-Smtp-Source: ABdhPJzf5mz+1hgIDMHKvDOG9HsfeLaSKsD0PNHZKvb1XzC3zDDPwDa4SKqQ6TRJA7r2H5+RJV3lIA==
-X-Received: by 2002:a17:906:9459:: with SMTP id z25mr2844815ejx.331.1637287449268;
-        Thu, 18 Nov 2021 18:04:09 -0800 (PST)
-Received: from localhost.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.googlemail.com with ESMTPSA id gz26sm539610ejc.100.2021.11.18.18.04.07
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AGSOSbx9KHQS8zqvecKfdTvOeLPt7uvQMecFRR7horI=;
+        b=NKVmXcw74gyYC+NFTl+tfH/x0d76GAHqv1LjxoQ+Ef6ixYHFF30JuDzSu1BCuSCnEQ
+         7pV0nidcseq74pCNeyyJvSxmuGGxSoH8Yz57bgOgiMOVFlRwbD05y2/16jRm3dDan2Nb
+         5oUrivpEIEsI7V4x9k+m9EYGVFgjsP4nQFyB/SMq/cOaPR6flhp0ubn2VLXABEyfp4YI
+         uTG2Xn8+T8qhggakFxd5nJN5G5QTT1PGmvxKPQbKbfw/Lx6kTcDKau4vePuHzPuO3Wxk
+         RzVJAmpAJbJKlDpfGJ/EB+DUoydVNjMpzAUtnB4ZnLLNZq6JzcmhPziExLWk27s7rSrr
+         wL2g==
+X-Gm-Message-State: AOAM5326YG+AmYutIcM1MJkiR9gy4MGIF7Y0fnpuj7iqMj5cc8IY7HBK
+        /TOVjiSVW16oS4+YjFzohxpRiZsxwhux9RajzxCAYVCnnMqIemGpopr2UQlM4x1Xdpjkl07p+A+
+        8K+c/u0tTCCjL84am25tdX5I5
+X-Received: by 2002:a05:620a:bd6:: with SMTP id s22mr25531291qki.306.1637287471823;
+        Thu, 18 Nov 2021 18:04:31 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxuCUqQL54jg/D75F3PqUIH6vspq7qRyOaik1SrsMas8wVNJJ8wVqJFn1+vXReR5poHB6M+1g==
+X-Received: by 2002:a05:620a:bd6:: with SMTP id s22mr25531253qki.306.1637287471523;
+        Thu, 18 Nov 2021 18:04:31 -0800 (PST)
+Received: from treble ([2600:1700:6e32:6c00::35])
+        by smtp.gmail.com with ESMTPSA id 139sm841883qkn.37.2021.11.18.18.04.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 18:04:09 -0800 (PST)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
+        Thu, 18 Nov 2021 18:04:30 -0800 (PST)
+Date:   Thu, 18 Nov 2021 18:04:27 -0800
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Holger =?utf-8?Q?Hoffst=C3=A4tte?= 
+        <holger@applied-asynchrony.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Justin Forbes <jmforbes@linuxtx.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
         Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        Jonathan McDowell <noodles@earth.li>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Robert Marko <robert.marko@sartura.hr>
-Subject: [net PATCH 2/2] net: dsa: qca8k: fix MTU calculation
-Date:   Fri, 19 Nov 2021 03:03:50 +0100
-Message-Id: <20211119020350.32324-2-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211119020350.32324-1-ansuelsmth@gmail.com>
-References: <20211119020350.32324-1-ansuelsmth@gmail.com>
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH 5.15 000/923] 5.15.3-rc3 review
+Message-ID: <20211119020427.2y5esq2czquwmvwc@treble>
+References: <20211117101657.463560063@linuxfoundation.org>
+ <YZV02RCRVHIa144u@fedora64.linuxtx.org>
+ <55c7b316-e03d-9e91-d74c-fea63c469b3b@applied-asynchrony.com>
+ <CAHk-=wjHbKfck1Ws4Y0pUZ7bxdjU9eh2WK0EFsv65utfeVkT9Q@mail.gmail.com>
+ <20211118080627.GH174703@worktop.programming.kicks-ass.net>
+ <20211118081852.GM174730@worktop.programming.kicks-ass.net>
+ <YZYfYOcqNqOyZ8Yo@hirez.programming.kicks-ass.net>
+ <YZZC3Shc0XA/gHK9@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YZZC3Shc0XA/gHK9@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Marko <robert.marko@sartura.hr>
+On Thu, Nov 18, 2021 at 01:11:09PM +0100, Peter Zijlstra wrote:
+> On Thu, Nov 18, 2021 at 10:39:44AM +0100, Peter Zijlstra wrote:
+> > On Thu, Nov 18, 2021 at 09:18:52AM +0100, Peter Zijlstra wrote:
+> > > On Thu, Nov 18, 2021 at 09:06:27AM +0100, Peter Zijlstra wrote:
+> > > > On Wed, Nov 17, 2021 at 03:50:17PM -0800, Linus Torvalds wrote:
+> > > > 
+> > > > > I really don't think the WCHAN code should use unwinders at all. It's
+> > > > > too damn fragile, and it's too easily triggered from user space.
+> > > > 
+> > > > On x86, esp. with ORC, it pretty much has to. The thing is, the ORC
+> > > > unwinder has been very stable so far. I'm guessing there's some really
+> > > > stupid thing going on, like for example trying to unwind a freed stack.
+> > > > 
+> > > > I *just* managed to reproduce, so let me go have a poke.
+> > > 
+> > > Confirmed, with the below it no longer reproduces. Now, let me go undo
+> > > that and fix the unwinder to not explode while trying to unwind nothing.
+> > 
+> > OK, so the bug is firmly with 5d1ceb3969b6 ("x86: Fix __get_wchan() for
+> > !STACKTRACE") which lost the try_get_task_stack() that stack_trace_*()
+> > does.
+> > 
+> > We can ofc trivially re-instate that, but I'm now running with the
+> > below which I suppose is a better fix, hmm?
+> > 
+> > (obv I still need to look a the other two unwinders)
+> 
+> I now have the below, the only thing missing is that there's a
+> user_mode() call on a stack based regs. Now on x86_64 we can
+> __get_kernel_nofault() regs->cs and call it a day, but on i386 we have
+> to also fetch regs->flags.
+> 
+> Is this really the way to go?
 
-qca8k has a global MTU, so its tracking the MTU per port to make sure
-that the largest MTU gets applied.
-Since it uses the frame size instead of MTU the driver MTU change function
-will then add the size of Ethernet header and checksum on top of MTU.
+Please no.  Can we just add a check in unwind_start() to ensure the
+caller did try_get_task_stack()?
 
-The driver currently populates the per port MTU size as Ethernet frame
-length + checksum which equals 1518.
-
-The issue is that then MTU change function will go through all of the
-ports, find the largest MTU and apply the Ethernet header + checksum on
-top of it again, so for a desired MTU of 1500 you will end up with 1536.
-
-This is obviously incorrect, so to correct it populate the per port struct
-MTU with just the MTU and not include the Ethernet header + checksum size
-as those will be added by the MTU change function.
-
-Fixes: f58d2598cf70 ("net: dsa: qca8k: implement the port MTU callbacks")
-Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- drivers/net/dsa/qca8k.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-index d7bcecbc1c53..147ca39531a3 100644
---- a/drivers/net/dsa/qca8k.c
-+++ b/drivers/net/dsa/qca8k.c
-@@ -1256,8 +1256,12 @@ qca8k_setup(struct dsa_switch *ds)
- 		/* Set initial MTU for every port.
- 		 * We have only have a general MTU setting. So track
- 		 * every port and set the max across all port.
-+		 * Set per port MTU to 1500 as the MTU change function
-+		 * will add the overhead and if its set to 1518 then it
-+		 * will apply the overhead again and we will end up with
-+		 * MTU of 1536 instead of 1518
- 		 */
--		priv->port_mtu[i] = ETH_FRAME_LEN + ETH_FCS_LEN;
-+		priv->port_mtu[i] = ETH_DATA_LEN;
- 	}
- 
- 	/* Special GLOBAL_FC_THRESH value are needed for ar8327 switch */
 -- 
-2.32.0
+Josh
 
