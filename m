@@ -2,146 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D59457713
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 20:35:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C65D4457728
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 20:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235919AbhKSTit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 14:38:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44954 "EHLO
+        id S236047AbhKSTmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 14:42:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232664AbhKSTir (ORCPT
+        with ESMTP id S232664AbhKSTmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 14:38:47 -0500
+        Fri, 19 Nov 2021 14:42:25 -0500
 Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64A15C06173E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 11:35:45 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id r25so10032946edq.7
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 11:35:45 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F347C061574;
+        Fri, 19 Nov 2021 11:39:23 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id v1so13565041edx.2;
+        Fri, 19 Nov 2021 11:39:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6ETuyJWwJFmb5zyOlM+RsYMtsddGkivK7tN9v32DkWw=;
-        b=r45mWu3jbzyMOsyawFAmUd0DoVaBZmAGSij/fcdkDpxUYcmGtCnI85pdPVfwJXZeBc
-         5VKPU1g8A3e6Uyl4awBjZSwRtXEihIsAzZp+6UjktP5n9cwjSSkUCcD+T3cYidlhl2F1
-         ONdXmqhFuOsFlGKPhxvepAPFOpCdy6gsWLiKn2q3DiS9w+V6Toz3vf5rxN4k0MMa1TdR
-         mRD6aCVmgF1/bGGzJe5FkGfEIjIVfAJWfwT2eoUhKlvEGjMOuD0kkTUWYg7XWGWppSVF
-         ZzfKFkSpMXBDza8Wcb948X4Qizd/TahsQSGw1SjB59OBiwJglBTspdFdYNE9V+Yyfuor
-         06Ew==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2xNNoAi2GIsyk3l3UxgkgmZxFVoCKBDgvYlrq0c7iLM=;
+        b=hYo/RTI/s3eBgaG76Z307y4cq5TphEKQjsPtoqUz5gRyXBwnonIGaqckU3hcIcwAy6
+         lu/h82xAbX8SE9Pzqw1dhnzQMcNNiUt6UqqpcMffhf3akAwsZuYkm264vE8/0rWtQnXZ
+         Xik0HxKR6jt2Xrn47r5XNtiAgOC+TGJI8DZvROiGOE7lvglZC2darTl6t6dic+9u0mRN
+         3e7YVil6YBiEHT7jGdISNkL3IiaoXR9akpRQkE5Wf7+0D7cOpyMcrfPyyYQElBtu9+WJ
+         IvR/4MqHPIPOlBf4fw+yk/FSAPaLVNIYK6iBAghTZY0l5AK8UJDW+c1kkMiSSYr4T+1E
+         sZng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6ETuyJWwJFmb5zyOlM+RsYMtsddGkivK7tN9v32DkWw=;
-        b=A9WU2ncWVwWQQ+oLEeg3XoQxLEmdIpsuj7DcXi7CWLZrNBmloR5+TqyyKBYqNjJcxD
-         d/RR7/9sKRGXJN8cUrygr+Qc0bCMg2htyMSSXfG9pzvvFH1OcLsXjMEJbsNQ4gUyPEAq
-         Ypw5k9ay1E07cfRO0hjQbDVxT184VF3h+QY9BtGMjQ3z85rFeDzi7dNK4kD9f+yaFwhu
-         2lxlciM47YYj3C617jWl1hsNpPm3WBWX7eUXmlREtK2lekj9acb2pZfKFhvCN+Qiz7oa
-         he23A+Cn6sGqb+DCHF+LJB2dOLZecNp2I0j6224zeXWct0BoqS/iQodZ8ikvw7+LMU3n
-         r4WA==
-X-Gm-Message-State: AOAM530OOHfe7hG+IL4En92BoLwu+zZwqCuRRcIIzg1KhGwSOQDcbL9F
-        yf60u1yv8ZOAWhCS4NNp5CY7zCDCfzFCoDSeNTU47w==
-X-Google-Smtp-Source: ABdhPJyS1KV7hzfkCD78KVd/SZZPMK74U7/2L/WTnHYSHnLy6FDG3ByJouNr9GQAX+XOGGUl01G4Sa5t0tsFbKIknpw=
-X-Received: by 2002:a05:6402:50d4:: with SMTP id h20mr28524459edb.52.1637350543916;
- Fri, 19 Nov 2021 11:35:43 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2xNNoAi2GIsyk3l3UxgkgmZxFVoCKBDgvYlrq0c7iLM=;
+        b=3dduz+e0kkLvvWjshshjlrleCmKWPVyj6lO/FmMVOJnn/QVTBbAsSBitp+72nbQkOr
+         KB/rUaXUyc3Hl+sgEI7ndlAA753rWi5KZcQ9G9YczdI5fWkbq9GpszvPt7xZavnqtvPl
+         Oho5WpP4IWKgfbTvE5onoKzOoiv8DWuGz4zB+1zi1ZaPi8Uuvwe6UU/1Hz4SRmCx1UF8
+         0L+eXpubr+eoCGU7+wUtwHQW6K9uZeMzWJB+ZdvuGKK+5eBbDHT8FMPZqZM7/1f6GQAL
+         20S1IIusCdpjhhm6Zvd0fchg3PfHLH77SpdLJUBahCbFmacOZYPCRuCDBeJdEfa+k61d
+         p1Mw==
+X-Gm-Message-State: AOAM531PidFn5VecY5iSF8lRRIOZ8+iAFrv9zj+G/9LwlNLWREHcbVWT
+        jLysmmKEbGPW0JYx01XaSUI=
+X-Google-Smtp-Source: ABdhPJwDat8zQQKTl+SsQGumIsyNY9OIbGFSKpXFxEiQVy3Cd+iAk+rXCsXK41mJgJHNjFSzZkRg6Q==
+X-Received: by 2002:a50:9510:: with SMTP id u16mr27810395eda.134.1637350761679;
+        Fri, 19 Nov 2021 11:39:21 -0800 (PST)
+Received: from localhost.localdomain (catv-176-63-2-222.catv.broadband.hu. [176.63.2.222])
+        by smtp.googlemail.com with ESMTPSA id sb19sm327521ejc.120.2021.11.19.11.39.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 11:39:21 -0800 (PST)
+From:   "Saheed O. Bolarinwa" <refactormyself@gmail.com>
+To:     helgaas@kernel.org
+Cc:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hch@infradead.org, hch@lst.de
+Subject: [RFC PATCH v5 0/4] PCI/ASPM: Remove struct aspm_latency
+Date:   Fri, 19 Nov 2021 20:37:28 +0100
+Message-Id: <20211119193732.12343-1-refactormyself@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20211118132317.15898-1-brgl@bgdev.pl> <20211118132317.15898-2-brgl@bgdev.pl>
- <YZaH8rsMyUztOX/r@smile.fi.intel.com> <CAMRc=MdR_RGLLPJ5Hqetj5_7ZQfUXOijEoVp3uR7cgEDHKnchA@mail.gmail.com>
- <YZbCq5Xcohm/t/FP@smile.fi.intel.com>
-In-Reply-To: <YZbCq5Xcohm/t/FP@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Fri, 19 Nov 2021 20:35:33 +0100
-Message-ID: <CAMRc=MdBhm-+oDiBdYQJZXYEko8rGhZtHQfu6p3DFy_a3aJOZw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] gpiolib: check the 'ngpios' property in core
- gpiolib code
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 10:16 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Thu, Nov 18, 2021 at 09:12:59PM +0100, Bartosz Golaszewski wrote:
-> > On Thu, Nov 18, 2021 at 6:06 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Thu, Nov 18, 2021 at 02:23:17PM +0100, Bartosz Golaszewski wrote:
-> > > > Several drivers read the 'ngpios' device property on their own, but
-> > > > since it's defined as a standard GPIO property in the device tree bindings
-> > > > anyway, it's a good candidate for generalization. If the driver didn't
-> > > > set its gc->ngpio, try to read the 'ngpios' property from the GPIO
-> > > > device's firmware node before bailing out.
-> > >
-> > > ...
-> > >
-> > > >       if (gc->ngpio == 0) {
-> > > > -             chip_err(gc, "tried to insert a GPIO chip with zero lines\n");
-> > > > -             ret = -EINVAL;
-> > > > -             goto err_free_descs;
-> > > > +             ret = device_property_read_u32(&gdev->dev, "ngpios", &ngpios);
-> > > > +             if (ret) {
-> > > > +                     chip_err(gc, "tried to insert a GPIO chip with zero lines\n");
-> > > > +                     ret = -EINVAL;
-> > > > +                     goto err_free_descs;
-> > > > +             }
-> > > > +
-> > > > +             gc->ngpio = ngpios;
-> > > >       }
-> > >
-> > > This should be
-> > >
-> > >         if (gc->ngpio == 0) {
-> > >                 ret = device_property_read_u32(&gdev->dev, "ngpios", &ngpios);
-> > >                 if (ret)
-> > >                         return ret;
-> >
-> > But device_property_read_u32() returning -ENODATA means there's no
-> > such property, which should actually be converted to -EINVAL as the
-> > caller wanting to create the chip provided invalid configuration - in
-> > this case: a chip with 0 lines. In case of the non-array variant of
-> > read_u32 that's also the only error that can be returned so this bit
-> > looks right to me.
->
-> So, what is so special about -EINVAL? Why -ENODATA is not good enough which
-> will exactly explain to the caller what's going on, no?
->
+To validate and set link latency capability, `struct aspm_latency` and
+related members defined within `struct pcie_link_state` are used.
+However, since there are not many access to theses values, it is
+possible to directly access and compute these values.
 
-Let's imagine the user sets gc->ngpio = 0 incorrectly thinking it'll
-make gpiolib set it to some sane default. Then gpiochip_add_data()
-returns -ENODATA (No data available). This is confusing IMO. But if we
-convert it to -EINVAL, it now says "Invalid value" which points to the
-wrong configuration.
+Doing this will also reduce the dependency on `struct pcie_link_state`.
 
-ENODATA means "device tree property is not present" in this case but
-the problem is that user supplies the gpiolib with invalid
-configuration. EINVAL is the right error here.
+The series removes `struct aspm_latency` and related members within
+`struct pcie_link_state`. All latencies are now calculated when needed.
 
-Bart
 
-> > >                 gc->ngpio = ngpios;
-> > >         }
-> > >
-> > >         if (gc->ngpio == 0) {
-> > >                 chip_err(gc, "tried to insert a GPIO chip with zero lines\n");
-> > >                 ret = -EINVAL;
-> > >                 goto err_free_descs;
->
-> When the caller intended to create a chip with 0 GPIOs they will get an error
-> as you wish with an error message.
->
+VERSION CHANGES:
+- v2:
+»       - directly access downstream by calling `pci_function_0()`
+»         instead of using the `struct pcie_link_state`
+- v3:
+»       - rebase on Linux 5.15-rc2
+- v4
+»       - Create a seprate path to move pci_function_0() upward
+- v5
+	- shorten long lines as noted in the review
 
-Yes, as it was before.
+MERGE NOTICE:
+These series are based on
+»       'commit fa55b7dcdc43 ("Linux 5.16-rc1")'
 
-Bart
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-> > >         }
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+Bolarinwa O. Saheed (1):
+  PCI/ASPM: Move pci_function_0() upward
+
+Saheed O. Bolarinwa (3):
+  PCI/ASPM: Do not cache link latencies
+  PCI/ASPM: Remove struct pcie_link_state.acceptable
+  PCI/ASPM: Remove struct aspm_latency
+
+ drivers/pci/pcie/aspm.c | 95 +++++++++++++++++++----------------------
+ 1 file changed, 44 insertions(+), 51 deletions(-)
+
+-- 
+2.20.1
+
