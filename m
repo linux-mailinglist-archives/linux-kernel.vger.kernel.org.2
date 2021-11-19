@@ -2,103 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C8B456BB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 09:37:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BBD7456BBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 09:38:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231577AbhKSIj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 03:39:56 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:56620 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbhKSIj4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 03:39:56 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        id S232671AbhKSIkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 03:40:09 -0500
+Received: from a.mx.secunet.com ([62.96.220.36]:48628 "EHLO a.mx.secunet.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232151AbhKSIkH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 03:40:07 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id 3F4532057A;
+        Fri, 19 Nov 2021 09:37:04 +0100 (CET)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 46b0vgaYYJNZ; Fri, 19 Nov 2021 09:37:03 +0100 (CET)
+Received: from mailout1.secunet.com (mailout1.secunet.com [62.96.220.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 9C6FD1FD39;
-        Fri, 19 Nov 2021 08:36:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1637311013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ks9COcNFxKQzgqXBap70A20Sb9cIEMl/0mhoBpeYJoo=;
-        b=JRNnkaQGN5QYi0vFk1Ex6ce2Dkdg3gwiEMIlHJwoDzJUtisX9oYdNI9KqJ14TrUbdvgKSv
-        kwjsN76l49WoRyTAOmyoBy84x0cNI1dVX4HwnbVMisoY0dbfYeqoXKwOwQD+bU/rw+Vtsy
-        0fyDO2jQcA/SbTKpZB9QR4d+vEN83sI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1637311013;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ks9COcNFxKQzgqXBap70A20Sb9cIEMl/0mhoBpeYJoo=;
-        b=/XMlDqKR6OdLGXBTh+U2C1baAjQSEVpEoFuGEcdQ/aFa/BnAI2CMphO28C/mJDT4XjkAEo
-        yiICY0cb4vwwTQAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 105D813DD5;
-        Fri, 19 Nov 2021 08:36:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id K3v8ASVil2ESXgAAMHmgww
-        (envelope-from <jroedel@suse.de>); Fri, 19 Nov 2021 08:36:53 +0000
-Date:   Fri, 19 Nov 2021 09:36:51 +0100
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Michael Sterritt <sterritt@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-coco@lists.linux.dev, marcorr@google.com, pgonda@google.com
-Subject: Re: [PATCH] Fix SEV-ES INS/OUTS instructions for word, dword, and
- qword.
-Message-ID: <YZdiI8N4+6Xt5b++@suse.de>
-References: <20211118021326.4134850-1-sterritt@google.com>
+        by a.mx.secunet.com (Postfix) with ESMTPS id B4971204FD;
+        Fri, 19 Nov 2021 09:37:03 +0100 (CET)
+Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
+        by mailout1.secunet.com (Postfix) with ESMTP id A3D7380004A;
+        Fri, 19 Nov 2021 09:37:03 +0100 (CET)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Fri, 19 Nov 2021 09:37:03 +0100
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Fri, 19 Nov
+ 2021 09:37:03 +0100
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id F15493180491; Fri, 19 Nov 2021 09:37:02 +0100 (CET)
+Date:   Fri, 19 Nov 2021 09:37:02 +0100
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     <cgel.zte@gmail.com>
+CC:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        "David Ahern" <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        luo penghao <luo.penghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH linux-next] ipv6/esp6: Remove structure variables and
+ alignment statements
+Message-ID: <20211119083702.GM427717@gauss3.secunet.de>
+References: <20211104031931.30714-1-luo.penghao@zte.com.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211118021326.4134850-1-sterritt@google.com>
+In-Reply-To: <20211104031931.30714-1-luo.penghao@zte.com.cn>
+X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
-
-On Wed, Nov 17, 2021 at 06:13:26PM -0800, Michael Sterritt wrote:
-> Properly type the operands being passed to __put_user()/__get_user().
-> Otherwise, these routines truncate data for dependent instructions
-> (e.g., INSW) and only read/write one byte.
+On Thu, Nov 04, 2021 at 03:19:31AM +0000, cgel.zte@gmail.com wrote:
+> From: luo penghao <luo.penghao@zte.com.cn>
 > 
-> Tested: Tested by sending a string with `REP OUTSW` to a port and then
-> reading it back in with `REP INSW` on the same port. Previous behavior
-> was to only send and receive the first char of the size. For example,
-> word operations for "abcd" would only read/write "ac". With change, the
-> full string is now written and read back.
+> The definition of this variable is just to find the length of the
+> structure after aligning the structure. The PTR alignment function
+> is to optimize the size of the structure. In fact, it doesn't seem
+> to be of much use, because both members of the structure are of
+> type u32.
+> So I think that the definition of the variable and the
+> corresponding alignment can be deleted, the value of extralen can
+> be directly passed in the size of the structure.
+> 
+> The clang_analyzer complains as follows:
+> 
+> net/ipv6/esp6.c:117:27 warning:
+> 
+> Value stored to 'extra' during its initialization is never read
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
 
-Thanks for fixing this! When you re-send, please change the subject to
-
-	x86/sev-es: Fix SEV-ES INS/OUTS instructions for word, dword, and qword
-
-Regards,
-
--- 
-Jörg Rödel
-jroedel@suse.de
-
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5
-90409 Nürnberg
-Germany
- 
-(HRB 36809, AG Nürnberg)
-Geschäftsführer: Ivo Totev
-
+Applied to ipsec-next, thanks!
