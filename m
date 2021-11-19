@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C7F457357
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:45:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C679A457358
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236671AbhKSQsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 11:48:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34404 "EHLO
+        id S236691AbhKSQsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 11:48:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236660AbhKSQsA (ORCPT
+        with ESMTP id S236664AbhKSQsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 11:48:00 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492A4C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:44:58 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id b4so9096532pgh.10
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:44:58 -0800 (PST)
+        Fri, 19 Nov 2021 11:48:01 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF89C06173E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:45:00 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id n85so9801395pfd.10
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:45:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=rivosinc-com.20210112.gappssmtp.com; s=20210112;
         h=subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding:cc:from:to;
-        bh=WImAJJVVV8ZgGF59Y6Sx47rmH1oD9rXqn7A8Z+idAIs=;
-        b=wlYyLzgts1gwjmOaIa5kyKYhHq15ZIXkOGQsAjLIKlvBtlnvrAwHzTuQyksqdfQwNL
-         aRlJ67mEDDghlu72xwYXPl/dhhlmKjB9kmaJydHAPyTT2celbRdIEAVMfekKPlwpsYr4
-         pzk90gBJxvkEDcJGYKyPFe2llZ4U964sWAAH48R6hq+vw3I7YzRbCfNETFBw/yLfcT2+
-         +MUGajcOcuZEwoVTLtmIskt9GboqyJJyJk4Ig+AJiJQIfmB/IZqLzy6+8jzDmWOqpLQQ
-         F5sjy05+XE1+xXFiN/ktINtBXmDo5JyWADkGH9VHFPUdRFWkHjKx+oxFgsfJGOv6Lbs6
-         Wm8w==
+        bh=2p/KFqt/ZADbSAzTepwM8vdeVayJBy01ZQFHi24kNM4=;
+        b=cXnJ0Mef1u3KUxfz8OHEsN9OmkwYgvnraNTsYjxJ3MKnYEEgXZ6tL8esNvtPN7wU1w
+         eS3lCzYiXMSKF5+CIgCIVmeBCko/kXof2cYYqfacqIbcOXtyVQRBhykpy/U/s/ShQ998
+         YX+OKMNiZMmmFvEMYuhLN1Z+JagtuSoH12V079RIVC+hdG2WtbYOOrbk7QAMp9WELrru
+         U6UX6SLSX0TgO4F6G2W4uIrleo+0q5LzDSEmgb7GgCop8AK2agifKlfmSx3Snc0uaucB
+         SLyMjykEZf5UPbXoqRFRtyKxa9Ag9kQ7XBG7cXl07O9jLpiPC4KqVN+nFcvyucJuclts
+         xKZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding:cc:from:to;
-        bh=WImAJJVVV8ZgGF59Y6Sx47rmH1oD9rXqn7A8Z+idAIs=;
-        b=2ReUh+S9YP23LP/VsuehcFJLUjG7XMGnVXC6TeDf83xFQPk4EQQW8MvKxIpmg07zvu
-         nLZXKQ1MALhnE4DokxgBRTDq7hdxV8rwe+DBQu7KGXFZkAhhPJn/rJYyfJJMnzbiWZ7J
-         rvN2d5J8jI9vOysYanIg3BV/r6UpUN92GypCmfU1pqLwPO1sTbhG8EZ45kat7YpTYYCf
-         axpMAAH5DdeByAg85TwiDS7+7jGaenKnkLyt+NrtqyB3d4OvR1IUZJROwH9yG6jTkExT
-         /tm0CnBGjfOKdpxo8LJcLhV8j839uqPGcF9I8aj35tid9bI5RbsDb4kmVvHSXsP6lojW
-         +c8g==
-X-Gm-Message-State: AOAM530SGt/WWz86k+D6iG5rrQmPu2swe5Iodw726q9P9EekusOoTF+h
-        jzT7beloLmtM62NE0QMte2Ct/g==
-X-Google-Smtp-Source: ABdhPJzt2WvKizh2kBYa7g3K+Fk3f7u7YeoZpgNqJX9bVrif3hlfLVR3zLqx59eLwQFyQFhFeWlYsA==
-X-Received: by 2002:a05:6a00:99b:b0:49f:eab4:4e7e with SMTP id u27-20020a056a00099b00b0049feab44e7emr24191675pfg.63.1637340297859;
-        Fri, 19 Nov 2021 08:44:57 -0800 (PST)
+        bh=2p/KFqt/ZADbSAzTepwM8vdeVayJBy01ZQFHi24kNM4=;
+        b=JkJnG1njtzsbwQ6ovCpldijsSbcW9lh3bpKRvzywZcUXIZivayoAVjzdTHr3UygqUB
+         lv9t4hOCa0E1cW1uCmTn+xSMz8Zs4SRMxQZdEnJ6jz/IibO4x0fN3KSNE6d2DTvukz7v
+         3u5Dvjm5ambRNLwtUqy0K9vug2MuUWhlxWfZ8+JNNYDD9TeHfe+AMKqdL/ybf2IxPv3U
+         YU3Ja1/m8iUrDI3hYRXILIoDAJBSQDmblVL5nphEE0UvIhz44oxRf4V4lCDclASc9Cuc
+         HMjXzeQ1V88hg3DCE6CTUxQfmNRZcB0ScXkHRfyN7bqEG+qEPQvjUaCdzB/Cn1S+XMMh
+         lnbw==
+X-Gm-Message-State: AOAM533QAkP8GLwSJ3OSpRVI4gOKvnTUHwzenqonRBy7e0hYfJda8f9b
+        WsSL8r0t23Vyz3Yt4+cDNgZedg==
+X-Google-Smtp-Source: ABdhPJz4LrUZWT0R8rNhNOefr57C60C60P7WGoXavFq81PH0cgQ01ztvYBneRGwD/QO2VStrNrY7+g==
+X-Received: by 2002:a05:6a00:148d:b0:49f:def7:9cfe with SMTP id v13-20020a056a00148d00b0049fdef79cfemr24944991pfu.69.1637340299119;
+        Fri, 19 Nov 2021 08:44:59 -0800 (PST)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id e10sm187273pfv.140.2021.11.19.08.44.57
+        by smtp.gmail.com with ESMTPSA id lb4sm12657350pjb.18.2021.11.19.08.44.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 08:44:57 -0800 (PST)
-Subject: [PATCH 05/12] RISC-V: defconfigs: Sort CONFIG_SOC_POLARFIRE
-Date:   Fri, 19 Nov 2021 08:44:06 -0800
-Message-Id: <20211119164413.29052-6-palmer@rivosinc.com>
+        Fri, 19 Nov 2021 08:44:58 -0800 (PST)
+Subject: [PATCH 06/12] RISC-V: defconfigs: Sort CONFIG_PTP_1588_CLOCK
+Date:   Fri, 19 Nov 2021 08:44:07 -0800
+Message-Id: <20211119164413.29052-7-palmer@rivosinc.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211119164413.29052-1-palmer@rivosinc.com>
 References: <20211119164413.29052-1-palmer@rivosinc.com>
@@ -72,7 +72,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 From: Palmer Dabbelt <palmer@rivosinc.com>
 
 This should have no functional change, it just sorts
-CONFIG_SOC_POLARFIRE the same way savedefconfig does.
+CONFIG_PTP_1588_CLOCK the same way savedefconfig does.  This only
+touches the rv64 defconfig because rv32_defconfig was already sorted
+correctly.
 
 Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
 ---
@@ -80,20 +82,20 @@ Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-index 96c2a3615bcd..0f4fe5790fb5 100644
+index 0f4fe5790fb5..fa9017c60b3d 100644
 --- a/arch/riscv/configs/defconfig
 +++ b/arch/riscv/configs/defconfig
-@@ -15,9 +15,9 @@ CONFIG_CHECKPOINT_RESTORE=y
- CONFIG_BLK_DEV_INITRD=y
- CONFIG_EXPERT=y
- # CONFIG_SYSFS_SYSCALL is not set
-+CONFIG_SOC_MICROCHIP_POLARFIRE=y
- CONFIG_SOC_SIFIVE=y
- CONFIG_SOC_VIRT=y
--CONFIG_SOC_MICROCHIP_POLARFIRE=y
- CONFIG_SMP=y
- CONFIG_HOTPLUG_CPU=y
- CONFIG_VIRTUALIZATION=y
+@@ -71,9 +71,9 @@ CONFIG_HW_RANDOM=y
+ CONFIG_HW_RANDOM_VIRTIO=y
+ CONFIG_SPI=y
+ CONFIG_SPI_SIFIVE=y
++# CONFIG_PTP_1588_CLOCK is not set
+ CONFIG_GPIOLIB=y
+ CONFIG_GPIO_SIFIVE=y
+-# CONFIG_PTP_1588_CLOCK is not set
+ CONFIG_POWER_RESET=y
+ CONFIG_DRM=m
+ CONFIG_DRM_RADEON=m
 -- 
 2.32.0
 
