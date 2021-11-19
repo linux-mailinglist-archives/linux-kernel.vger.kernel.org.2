@@ -2,74 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33614456E12
+	by mail.lfdr.de (Postfix) with ESMTP id D8EEC456E14
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 12:16:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235005AbhKSLR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 06:17:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhKSLR6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 06:17:58 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D19C061574;
-        Fri, 19 Nov 2021 03:14:56 -0800 (PST)
-Date:   Fri, 19 Nov 2021 12:14:53 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637320494;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+/VZyAtjdIn8jdD6pqRkSFjT2FGF/KDnvfFXvodzNkY=;
-        b=NDT9FK7bxmZz20TXrs22ieexWO/hQkopYIQyPVA2J/Xlmx3xlaaLvwxfCBYyOv2/3+7cRi
-        7nLgKVNLmwZOXL8WArAKpP+CA0NZxRR1Dva3c5qHCNJqaxCFWEYzu1B36OkUXzclE7Cl5D
-        6Cuy1eJoeEey8t9w/d5rzB4MkIQlvl4NDekV9wtH9Ujoejm6EMDKtq36I9oF4qxkXcM+im
-        SM+72tgBt2DON8acL6QA9ZtnW+NpVM/eZGHN3LBI7sl5TqCgIMLep7FitZOlV/D3UorHOz
-        NEWOhegjiPcfj7jqP5ndgmfo0FNJK4mMBKzbBOe7GVRJRdatUjsWUlRCuGnc7A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637320494;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+/VZyAtjdIn8jdD6pqRkSFjT2FGF/KDnvfFXvodzNkY=;
-        b=X3IQ588Q521jn3d13jhA828FCytG9/ilRet9GDhHrSsYlUqR3ye+W+aOxzkKyRVPZIMYA0
-        tqXGCZW/15LgBvAg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH v2 0/3] irqchip/gic-v3-its: Fix LPI pending table
- handling vs PREEMPT_RT
-Message-ID: <20211119111453.gqly3pyll3eluqap@linutronix.de>
-References: <20211027151506.2085066-1-valentin.schneider@arm.com>
+        id S235008AbhKSLSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 06:18:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229521AbhKSLSw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 06:18:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFE3E619E5;
+        Fri, 19 Nov 2021 11:15:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637320548;
+        bh=ebn6eQi/XNLS2skGGx7gx0OtfsV07+MOad09equp6yw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hNpSNkFJOwMFWSdpSEhVFHmNZU+gMq3dwh9sWexAkJHYVM5JlRKQ8TOaVO3TIa008
+         GH3r3adtdSq7twfK2f+WzmjbgqN/pm0LgHDutYJc2IIdMU2GEbjlJFZ66eDI8OBsIJ
+         C/+YmhxarTia93z1jMsiesF2HpTiNKbyeBMEkPhQ=
+Date:   Fri, 19 Nov 2021 12:15:45 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "Acked-by: Jani Nikula" <jani.nikula@intel.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.15 808/917] drm: fb_helper: improve CONFIG_FB dependency
+Message-ID: <YZeHYcPsjUMJ6x+q@kroah.com>
+References: <20211115165428.722074685@linuxfoundation.org>
+ <20211115165456.391822721@linuxfoundation.org>
+ <9fdb2bf1-de52-1b9d-4783-c61ce39e8f51@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211027151506.2085066-1-valentin.schneider@arm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9fdb2bf1-de52-1b9d-4783-c61ce39e8f51@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-27 16:15:03 [+0100], Valentin Schneider wrote:
-> Hi folks,
-Hi,
-
-> This is my take at fixing [1]. Reading about the LPI tables situation was
-> entertaining.
+On Fri, Nov 19, 2021 at 08:50:05AM +0100, Jiri Slaby wrote:
+> On 15. 11. 21, 18:05, Greg Kroah-Hartman wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > [ Upstream commit 9d6366e743f37d36ef69347924ead7bcc596076e ]
 > 
-> Tested against kexec on an Ampere eMAG. Seems to be working fine atop
-> 5.15-rc6. On the other hand, I can only issue one kexec from
-> 5.15-rc6-rt12 - if I then issue another one on the new kernel, I get tasks
-> hanging. That is true even without my patches and without
-> CONFIG_PREEMPT_RT.
+> Hi,
+> 
+> this breaks build on openSUSE's armv7hl config:
+> $ wget -O .config https://raw.githubusercontent.com/openSUSE/kernel-source/stable/config/armv7hl/default
+> $ make -j168 CROSS_COMPILE=arm-suse-linux-gnueabi- ARCH=arm vmlinux
+> ...
+>   LD      .tmp_vmlinux.btf
+> arm-suse-linux-gnueabi-ld: drivers/gpu/drm/panel/panel-simple.o: in function
+> `panel_simple_probe':
+> drivers/gpu/drm/panel/panel-simple.c:803: undefined reference to
+> `drm_panel_dp_aux_backlight'
+> $ grep -E 'CONFIG_(DRM|FB|DRM_KMS_HELPER|DRM_FBDEV_EMULATION)\>' .config
+> CONFIG_DRM=y
+> CONFIG_DRM_KMS_HELPER=m
+> CONFIG_DRM_FBDEV_EMULATION=y
+> CONFIG_FB=y
+> 
+> 5.16-rc1 builds just fine -- investigating why…
 
-What is the status of this? I haven't seen any replies, is this just
-sitting to be merged?
+Ok, will go revert that, thanks.
 
-Sebastian
+greg k-h
