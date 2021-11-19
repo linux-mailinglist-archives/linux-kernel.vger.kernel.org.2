@@ -2,94 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 244CB456736
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 02:04:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5580B456739
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 02:04:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232444AbhKSBHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 20:07:07 -0500
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:39888 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230133AbhKSBHG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 20:07:06 -0500
-Received: by mail-ot1-f41.google.com with SMTP id r10-20020a056830080a00b0055c8fd2cebdso14145343ots.6;
-        Thu, 18 Nov 2021 17:04:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=v917wAgzhWr2HX1sCSNueTi9WROJRtpV947wxT/gCV4=;
-        b=7Q+fnu2f5svckYVosDafST+AL1l7FECkPVud/tA4zYB9bv3XztZUSRklWBbXRGqtgJ
-         hdCoudlv/mpLzDbI04D3mLTuCQhAc/LjqnWAZQfoAnXE8E61Q1fPaL5vk4LKuuZXMF1w
-         cxDEn1jkP4BrB5uyx166i8r+pImxDyFExPad+2w/t+F+5baVun/HwxuP4vhWlg1eELJL
-         xQRFlBRbCK5QafqSgC9eXaAMEGDbBzT0dXgyVQmkzUIQbOQeNv76nKcIRdl5rsC/W/2Z
-         GNL1wCgYZ2h3UjYAHCN/7vlv1YxAFDO1kAMwNVmrt0VuIzVQxD72cyR3JYoKZV9tU6s6
-         X9Xg==
-X-Gm-Message-State: AOAM530cF4wxPWGHd0zc1CK4q6vl+8dYP4FGEDiQVLo+dpZOba5O+MC3
-        QIgWQgNq+sbUFA5bwHlKHA==
-X-Google-Smtp-Source: ABdhPJzT4HF64KJ/W7x22WnoWZt3RmG6X26Hyge4RAK7kStsVzG/azanpwHaxBYlSirwF+K2Q92CKw==
-X-Received: by 2002:a9d:3cc:: with SMTP id f70mr1304438otf.253.1637283845501;
-        Thu, 18 Nov 2021 17:04:05 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id j14sm392504oil.43.2021.11.18.17.04.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 17:04:04 -0800 (PST)
-Received: (nullmailer pid 2143262 invoked by uid 1000);
-        Fri, 19 Nov 2021 01:04:04 -0000
-Date:   Thu, 18 Nov 2021 19:04:04 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     Dong Aisheng <aisheng.dong@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 12/12] dt-bindings: serial: fsl-lpuart: Add i.MX8DXL
- compatible
-Message-ID: <YZb4BClv4fXU65yz@robh.at.kernel.org>
-References: <1636566415-22750-1-git-send-email-abel.vesa@nxp.com>
- <1636566415-22750-13-git-send-email-abel.vesa@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1636566415-22750-13-git-send-email-abel.vesa@nxp.com>
+        id S233898AbhKSBHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 20:07:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233866AbhKSBHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 20:07:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8882610E9;
+        Fri, 19 Nov 2021 01:04:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1637283869;
+        bh=d+jScWzSF+d1/BExI5Xo0llKnxV+zdz/xcXpB+YM/BE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nCAdhKb+EeTQ6E9hx89/ge6Ru1IOPb55oNsdsIuC1Qhsy1ldI+Gl7qJgU53CzvOWR
+         xXo/Q05D+by5aiZ3efc4u47rjymaB8SWjh3FLMLEW73MJ8YnmmeJd5EPjLzj4BjKMR
+         oPWahSBY9lXH8h/4E6LNODzRNpgd8mkUv01qo0EA=
+Date:   Thu, 18 Nov 2021 17:04:26 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     broonie@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: mmotm 2021-11-18-15-47 uploaded (<linux/proc_fs.h>)
+Message-Id: <20211118170426.bfcd00c159aba815ffc282d3@linux-foundation.org>
+In-Reply-To: <db0b9313-fef6-2977-9b1c-4c830edea5c5@infradead.org>
+References: <20211118234743.-bgoWMQfK%akpm@linux-foundation.org>
+        <db0b9313-fef6-2977-9b1c-4c830edea5c5@infradead.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 07:46:55PM +0200, Abel Vesa wrote:
-> Add i.MX8DXL lpuart compatible to the bindings documentation.
-> 
-> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
-> ---
->  Documentation/devicetree/bindings/serial/fsl-lpuart.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml b/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
-> index dc1f0e07cbd4..fa8a602ccb22 100644
-> --- a/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
-> +++ b/Documentation/devicetree/bindings/serial/fsl-lpuart.yaml
-> @@ -27,6 +27,10 @@ properties:
->        - items:
->            - const: fsl,imx8qm-lpuart
->            - const: fsl,imx8qxp-lpuart
-> +      - items:
-> +          - const: fsl,imx8dxl-lpuart
-> +          - const: fsl,imx8qxp-lpuart
-> +          - const: fsl,imx7ulp-lpuart
+On Thu, 18 Nov 2021 16:53:30 -0800 Randy Dunlap <rdunlap@infradead.org> wrote:
 
-I'm confused why 8dxl is compatible with 7ulp, but 8qm is not? From the 
-driver, it looks like the difference is clocks.
+> On 11/18/21 3:47 PM, akpm@linux-foundation.org wrote:
+> > The mm-of-the-moment snapshot 2021-11-18-15-47 has been uploaded to
+> > 
+> >     https://www.ozlabs.org/~akpm/mmotm/
+> > 
+> > mmotm-readme.txt says
+> > 
+> > README for mm-of-the-moment:
+> > 
+> > https://www.ozlabs.org/~akpm/mmotm/
+> > 
+> > This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+> > more than once a week.
+> > 
+> > You will need quilt to apply these patches to the latest Linus release (5.x
+> > or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+> > https://ozlabs.org/~akpm/mmotm/series
+> > 
+> > The file broken-out.tar.gz contains two datestamp files: .DATE and
+> > .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+> > followed by the base kernel version against which this patch series is to
+> > be applied.
+> 
+> Hi,
+> 
+> I get hundreds of warnings from <linux/proc_fs.h>:
+> 
+> from proc-make-the-proc_create-stubs-static-inlines.patch:
+> 
+> ../include/linux/proc_fs.h:186:2: error: parameter name omitted
+> ../include/linux/proc_fs.h:186:32: error: parameter name omitted
+> ../include/linux/proc_fs.h:186:63: error: parameter name omitted
 
->  
->    reg:
->      maxItems: 1
-> -- 
-> 2.31.1
-> 
-> 
+Nobody uses PROC_FS=n ;)
+
+--- a/include/linux/proc_fs.h~proc-make-the-proc_create-stubs-static-inlines-fix
++++ a/include/linux/proc_fs.h
+@@ -179,12 +179,14 @@ static inline struct proc_dir_entry *pro
+ #define proc_create_single(name, mode, parent, show) ({NULL;})
+ #define proc_create_single_data(name, mode, parent, show, data) ({NULL;})
+ 
+-static inline struct proc_dir_entry *proc_create(
+-	const char *, umode_t, struct proc_dir_entry *, const struct proc_ops *)
++static inline struct proc_dir_entry *
++proc_create(const char *name, umode_t mode, struct proc_dir_entry *parent,
++	    const struct proc_ops *proc_ops)
+ { return NULL; }
+ 
+-static inline struct proc_dir_entry *proc_create_data(
+-	const char *, umode_t, struct proc_dir_entry *, const struct proc_ops *, void *)
++static inline struct proc_dir_entry *
++proc_create_data(const char *name, umode_t mode, struct proc_dir_entry *parent,
++		 const struct proc_ops *proc_ops, void *data)
+ { return NULL; }
+ 
+ static inline void proc_set_size(struct proc_dir_entry *de, loff_t size) {}
+_
+
