@@ -2,155 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CACC7456E03
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 12:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF375456E0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 12:12:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235002AbhKSLNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 06:13:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234973AbhKSLNU (ORCPT
+        id S234891AbhKSLPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 06:15:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28684 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232004AbhKSLPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 06:13:20 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D320C061574;
-        Fri, 19 Nov 2021 03:10:19 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id b13so7894737plg.2;
-        Fri, 19 Nov 2021 03:10:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:content-language:to:cc
-         :references:from:organization:subject:in-reply-to
-         :content-transfer-encoding;
-        bh=RBmftx8r18XYvlPfX3k5O7sa5Z338CPAboNhPJkfLgg=;
-        b=q0oPBUaZ0U0r9znR8JdCJLamOYmBQwv8iA9t3v+RXQSAXoPEvzVLjFG9BxRdhLdul1
-         GAJj7RsLjmDrEAMOw4x/XrJRTzKIqut5wo4H1/EM3pA2d3wfFng7B2E0G4mic1Nf+spm
-         RT5hcO2cLhjtBeF2yjjBVI1JSmoBua6+lGk+UEak7PN1KlZc7e2ccCt+dKqxa+20KYKo
-         mZGUDgLfhZE6RG8207VcAl967LTRC9IctO8dHi1DG5VLs/vlSe6O0unHMurY9k+ZJPTW
-         ARLiv/H64Npxmycs841KoO5ANoqVoSvFSoK+1e38hTqPx6NcUiClcE21fy2K9LeWMZpa
-         fjOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=RBmftx8r18XYvlPfX3k5O7sa5Z338CPAboNhPJkfLgg=;
-        b=gC97sLN9zOHswzjd/A3rBNGll4n526wbt2gQHX3LjBvu6KMCQhoNEKf6BhRJtE2xfY
-         xB4iXx0AdZMQTHqxCgS6WpwVzplwmeoFLdWpfxBdQxWNec+irkoxSbxxxlBVo0kokzpS
-         VkD+BgOqCnPIpVXeEw1s5ovGCHLCgU4DqhnPRIW6HXoxrvW+u2udlqYznaiHS2mPPhMr
-         YmpNA7j4QDkLFVwQ0ZyzSe+xU4OxjEpYQtK7hKAKj7xOzRjO8mV4amjhuM9L4q8TpTD8
-         B/Ztt0cowg2UhZGNB8eJppH2luScV5Je4wa+dQFPz+oNooDHQq1s4cLtQwneBYhPzLuL
-         ZU1w==
-X-Gm-Message-State: AOAM5333WZYpDWkCj0sfRRdBpu2mOO93vMRj3y74G5gxAgT2f/ooZ28D
-        zYED1MFLfGmo/7JpDPAQFYE=
-X-Google-Smtp-Source: ABdhPJxwOWKtpmR5D2EMTK99IVxhK1F72XBgpPhQjAYdug9PuR1Djar/lDbRP4xPXRRYEBHFOgmtkw==
-X-Received: by 2002:a17:903:245:b0:143:c5ba:8bd8 with SMTP id j5-20020a170903024500b00143c5ba8bd8mr51405081plh.64.1637320218872;
-        Fri, 19 Nov 2021 03:10:18 -0800 (PST)
-Received: from [192.168.255.10] ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id x17sm2379616pfa.209.2021.11.19.03.10.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Nov 2021 03:10:18 -0800 (PST)
-Message-ID: <87a11cd6-55aa-025c-2e74-7dc91d82798a@gmail.com>
-Date:   Fri, 19 Nov 2021 19:10:09 +0800
+        Fri, 19 Nov 2021 06:15:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637320342;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v9aM8Q9WTgCdAcq1DwTYBIbHacVjNPNyPuk3SIn5Ogo=;
+        b=L68nIsvyS5LHQ7LIZ1yuCUbZ7hR3v2s2GXLypu1k/osc6egBYBg719oKkzdLWYCne9eIXO
+        22ifVj7se1A/u8YXmOs4+WUoEdUnG9sYstmqAMrR9jv7QAKGz/Nv7F4VEKHXunhRqLwzwv
+        P7EWktap1rt2OIArIehMsn8OJeBylSQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-12-q9Xl1pdfPpq0qtRHegRmsg-1; Fri, 19 Nov 2021 06:12:19 -0500
+X-MC-Unique: q9Xl1pdfPpq0qtRHegRmsg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0E1B81006AA0;
+        Fri, 19 Nov 2021 11:12:17 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-3.gru2.redhat.com [10.97.112.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0B6196060F;
+        Fri, 19 Nov 2021 11:12:11 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id C39744172ED4; Fri, 19 Nov 2021 08:11:50 -0300 (-03)
+Date:   Fri, 19 Nov 2021 08:11:50 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Cc:     linux-arm-kernel@lists.infradead.org, maz@kernel.org,
+        rostedt@goodmis.org, james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
+        mingo@redhat.com, nilal@redhat.com
+Subject: Re: [RFC PATCH 2/2] KVM: arm64: export cntvoff in debugfs
+Message-ID: <20211119111150.GA43513@fuller.cnet>
+References: <20211119102117.22304-1-nsaenzju@redhat.com>
+ <20211119102117.22304-3-nsaenzju@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.0
-Content-Language: en-US
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>
-References: <20211116122030.4698-1-likexu@tencent.com>
- <20211116122030.4698-4-likexu@tencent.com>
- <85286356-8005-8a4d-927c-c3d70c723161@redhat.com>
- <e3b3ad6f-b48a-24fa-a242-e28d2422a7f3@gmail.com>
- <50caf3b7-3f06-10ec-ab65-e3637243eb09@redhat.com>
-From:   Like Xu <like.xu.linux@gmail.com>
-Organization: Tencent
-Subject: Re: [PATCH 3/4] KVM: x86/pmu: Reuse find_perf_hw_id() and drop
- find_fixed_event()
-In-Reply-To: <50caf3b7-3f06-10ec-ab65-e3637243eb09@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211119102117.22304-3-nsaenzju@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/11/2021 6:29 pm, Paolo Bonzini wrote:
-> On 11/19/21 08:16, Like Xu wrote:
->>
->> It's proposed to get [V2] merged and continue to review the fixes from [1] 
->> seamlessly,
->> and then further unify all fixed/gp stuff including intel_find_fixed_event() 
->> as a follow up.
+On Fri, Nov 19, 2021 at 11:21:18AM +0100, Nicolas Saenz Julienne wrote:
+> While using cntvct as the raw clock for tracing, it's possible to
+> synchronize host/guest traces just by knowing the virtual offset applied
+> to the guest's virtual counter.
 > 
-> I agree and I'll review it soon.  Though, why not add the
+> This is also the case on x86 when TSC is available. The offset is
+> exposed in debugfs as 'tsc-offset' on a per vcpu basis. So let's
+> implement the same for arm64.
 > 
-> +            && (pmc_is_fixed(pmc) ||
-> +            pmu->available_event_types & (1 << i)))
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+
+Hi Nicolas,
+
+ARM:
+
+CNTVCTSS_EL0, Counter-timer Self-Synchronized Virtual Count register
+The CNTVCTSS_EL0 characteristics are:
+
+Purpose
+Holds the 64-bit virtual count value. The virtual count value is equal to the 
+physical count value visible in CNTPCT_EL0 minus the virtual offset visible in CNTVOFF_EL2.
+					   ^^^^^
+
+x86:
+
+24.6.5 Time-Stamp Counter Offset and Multiplier
+The VM-execution control fields include a 64-bit TSC-offset field. If the “RDTSC exiting” control is 0 and the “use
+TSC offsetting” control is 1, this field controls executions of the RDTSC and RDTSCP instructions. It also controls
+executions of the RDMSR instruction that read from the IA32_TIME_STAMP_COUNTER MSR. For all of these, the
+value of the TSC offset is added to the value of the time-stamp counter, and the sum is returned to guest software
+			   ^^^^^
+in EDX:EAX.
+
+So it would be nice to keep the formula consistent for userspace:
+
+GUEST_CLOCK_VAL = HOST_CLOCK_VAL + CLOCK_OFFSET
+
+So would have to add a negative sign to the value to userspace.
+
+Other than that, both the clock value (VCNTPCT_EL0) and the offset
+(CNTVOFF_EL2) are not modified during guest execution? That is, CNTVOFF_EL2 is
+written once during guest initialization.
+
+
+> ---
+>  arch/arm64/include/asm/kvm_host.h |  1 +
+>  arch/arm64/kvm/Makefile           |  2 +-
+>  arch/arm64/kvm/arch_timer.c       |  2 +-
+>  arch/arm64/kvm/debugfs.c          | 25 +++++++++++++++++++++++++
+>  include/kvm/arm_arch_timer.h      |  3 +++
+>  5 files changed, 31 insertions(+), 2 deletions(-)
+>  create mode 100644 arch/arm64/kvm/debugfs.c
+> 
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 2a5f7f38006f..130534c9079e 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -29,6 +29,7 @@
+>  #include <asm/thread_info.h>
+>  
+>  #define __KVM_HAVE_ARCH_INTC_INITIALIZED
+> +#define __KVM_HAVE_ARCH_VCPU_DEBUGFS
+>  
+>  #define KVM_HALT_POLL_NS_DEFAULT 500000
+>  
+> diff --git a/arch/arm64/kvm/Makefile b/arch/arm64/kvm/Makefile
+> index 989bb5dad2c8..17be7cf770f2 100644
+> --- a/arch/arm64/kvm/Makefile
+> +++ b/arch/arm64/kvm/Makefile
+> @@ -14,7 +14,7 @@ kvm-y := $(KVM)/kvm_main.o $(KVM)/coalesced_mmio.o $(KVM)/eventfd.o \
+>  	 $(KVM)/vfio.o $(KVM)/irqchip.o $(KVM)/binary_stats.o \
+>  	 arm.o mmu.o mmio.o psci.o perf.o hypercalls.o pvtime.o \
+>  	 inject_fault.o va_layout.o handle_exit.o \
+> -	 guest.o debug.o reset.o sys_regs.o \
+> +	 guest.o debug.o debugfs.o reset.o sys_regs.o \
+>  	 vgic-sys-reg-v3.o fpsimd.o pmu.o \
+>  	 arch_timer.o trng.o\
+>  	 vgic/vgic.o vgic/vgic-init.o \
+> diff --git a/arch/arm64/kvm/arch_timer.c b/arch/arm64/kvm/arch_timer.c
+> index 3df67c127489..ee69387f7fb6 100644
+> --- a/arch/arm64/kvm/arch_timer.c
+> +++ b/arch/arm64/kvm/arch_timer.c
+> @@ -82,7 +82,7 @@ u64 timer_get_cval(struct arch_timer_context *ctxt)
+>  	}
+>  }
+>  
+> -static u64 timer_get_offset(struct arch_timer_context *ctxt)
+> +u64 timer_get_offset(struct arch_timer_context *ctxt)
+>  {
+>  	struct kvm_vcpu *vcpu = ctxt->vcpu;
+>  
+> diff --git a/arch/arm64/kvm/debugfs.c b/arch/arm64/kvm/debugfs.c
+> new file mode 100644
+> index 000000000000..f0f5083ea8d4
+> --- /dev/null
+> +++ b/arch/arm64/kvm/debugfs.c
+> @@ -0,0 +1,25 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (C) 2021 Red Hat Inc.
+> + */
+> +
+> +#include <linux/kvm_host.h>
+> +#include <linux/debugfs.h>
+> +
+> +#include <kvm/arm_arch_timer.h>
+> +
+> +static int vcpu_get_cntv_offset(void *data, u64 *val)
+> +{
+> +	struct kvm_vcpu *vcpu = (struct kvm_vcpu *)data;
+> +
+> +	*val = timer_get_offset(vcpu_vtimer(vcpu));
+> +
+> +	return 0;
+> +}
+> +
+> +DEFINE_SIMPLE_ATTRIBUTE(vcpu_cntvoff_fops, vcpu_get_cntv_offset, NULL, "%lld\n");
+> +
+> +void kvm_arch_create_vcpu_debugfs(struct kvm_vcpu *vcpu, struct dentry *debugfs_dentry)
+> +{
+> +	debugfs_create_file("cntvoff", 0444, debugfs_dentry, vcpu, &vcpu_cntvoff_fops);
+> +}
+> diff --git a/include/kvm/arm_arch_timer.h b/include/kvm/arm_arch_timer.h
+> index 51c19381108c..de0cd9be825c 100644
+> --- a/include/kvm/arm_arch_timer.h
+> +++ b/include/kvm/arm_arch_timer.h
+> @@ -106,4 +106,7 @@ void kvm_arm_timer_write_sysreg(struct kvm_vcpu *vcpu,
+>  u32 timer_get_ctl(struct arch_timer_context *ctxt);
+>  u64 timer_get_cval(struct arch_timer_context *ctxt);
+>  
+> +/* Nedded for debugfs */
+> +u64 timer_get_offset(struct arch_timer_context *ctxt);
+> +
+>  #endif
+> -- 
+> 2.33.1
+> 
 > 
 
-If we have a fixed ctr 0 for "retired instructions" event
-but the bit 01 of the guest CPUID 0AH.EBX leaf is masked,
-
-thus in that case, we got true from "pmc_is_fixed(pmc)"
-and false from "pmu->available_event_types & (1 << i)",
-
-thus it will break and continue to program a perf_event for pmc.
-
-(SDM says, Bit 01: Instruction retired event not available if 1 or if EAX[31:24]<2.)
-
-But the right behavior is that KVM should not program perf_event
-for this pmc since this event should not be available (whether it's gp or fixed)
-and the counter msr pair can be accessed but does not work.
-
-The proposal final code may look like :
-
-/* UMask and Event Select Encodings for Intel CPUID Events */
-static inline bool is_intel_cpuid_event(u8 event_select, u8 unit_mask)
-{
-	if ((!unit_mask && event_select == 0x3C) ||
-	    (!unit_mask && event_select == 0xC0) ||
-	    (unit_mask == 0x01 && event_select == 0x3C) ||
-	    (unit_mask == 0x4F && event_select == 0x2E) ||
-	    (unit_mask == 0x41 && event_select == 0x2E) ||
-	    (!unit_mask && event_select == 0xC4) ||
-	    (!unit_mask && event_select == 0xC5))
-		return true;
-
-	/* the unimplemented topdown.slots event check is kipped. */
-	return false;
-}
-
-static unsigned int intel_pmc_perf_hw_id(struct kvm_pmc *pmc)
-{
-	struct kvm_pmu *pmu = pmc_to_pmu(pmc);
-	u8 event_select = pmc->eventsel & ARCH_PERFMON_EVENTSEL_EVENT;
-	u8 unit_mask = (pmc->eventsel & ARCH_PERFMON_EVENTSEL_UMASK) >> 8;
-	int i;
-
-	for (i = 0; i < PERF_COUNT_HW_MAX; i++) {
-		if (kernel_generic_events[i].eventsel != event_select ||
-		    kernel_generic_events[i].unit_mask != unit_mask)
-			continue;
-
-		if (is_intel_cpuid_event(event_select, unit_mask) &&
-		    !test_bit(i, pmu->avail_cpuid_events))
-			return PERF_COUNT_HW_MAX + 1;
-
-		break;
-	}
-
-	return (i == PERF_COUNT_HW_MAX) ? i : kernel_generic_events[i].event_type;
-}
-
-
-> version in v2 of this patch? :)
-> 
-> Paolo
-> 
->> [1] https://lore.kernel.org/kvm/20211112095139.21775-1-likexu@tencent.com/
->> [V2] https://lore.kernel.org/kvm/20211119064856.77948-1-likexu@tencent.com/
-> 
