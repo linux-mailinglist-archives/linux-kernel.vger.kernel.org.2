@@ -2,337 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51424456BA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 09:27:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C01F2456BA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 09:26:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234339AbhKSI36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 03:29:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234325AbhKSI34 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 03:29:56 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3117BC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 00:26:55 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id bi37so39834127lfb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 00:26:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bWPQmGnHcehMBB3SwvUF/xfssRM6SH6r0sA5W7hPfr4=;
-        b=QsAJ5NnzUCr3im7z37fwSmLL/Nq7te1rI7pJ1JzQlepCme1Y9K8fQIj44OpD0PvCFR
-         FLgOTe18MyZ/+lhBKS+h+Ajq4XNJRZZZc2LYdpvlwauM/gj8ULvtdbVzcQTEyxwtUwAR
-         W3Cl5b300EtVTr9gpu8vmtdGPuWVGlaJluh0CFKIa6qccFyY69vfwJXP/V/vqj5CkoiT
-         o1Q76SYDX92bgGqjLJjx8AJtl2bgX37XDxlUog+uAvHiM5vRYDBT2wTB80JRBhQdRudw
-         Q6YgDxRTR3hxPlWIybWYMYJNQ7Z00R20avvoMcx7Je6ICHYaWal4Ug9osZCZSQAwXx2D
-         2GmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bWPQmGnHcehMBB3SwvUF/xfssRM6SH6r0sA5W7hPfr4=;
-        b=O9K/Vbv/KmqqcnhaAw3zS0JlVeb0p9/Z6WRzPuJjK2mQpPX+guK/HpCPZWCI3iyy7R
-         JIuvUSTOhRlHJ/watR1MbwU4pyWDHylWIX+9s26Is9vE0+0bj3aqRsE/CeAsLzllvGIA
-         sT8jx9Zwv25KTddlvWjwQCOuvwsz6REld1oz0X4sIo+5Ry/gSu81l/OOWE/uks/l2ucq
-         AkBnlB1v9p0iv49al6OwjGeDXvmVwaNin8XthPhDLN1wivyXRdjgpbKCHso8lGTHo9Kb
-         W3YyCf/YpKGnY+RVIVYL2NRG4sx6xnm+By02IQiE/vpVSoLmB+FKC6oM79PVQim+TFbg
-         ITLA==
-X-Gm-Message-State: AOAM531UJoZGVB4WtWJUVXZ0qUwBhbgTzTaP1BvE4QURnfjmPFwpSreF
-        Rf9NAAQAcnO0dF3eD8E3uePR68prTNflOGPH1TMFMQ==
-X-Google-Smtp-Source: ABdhPJyPQ1jPK2RcqWpAokLI3EYBJwFuP8KI91bIs/Y62x4NfRocGFGQuAPSdPLwI9tg1YT8KETCBRJiezG+cm8bptE=
-X-Received: by 2002:a05:6512:2292:: with SMTP id f18mr30425740lfu.18.1637310413390;
- Fri, 19 Nov 2021 00:26:53 -0800 (PST)
+        id S234201AbhKSI3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 03:29:52 -0500
+Received: from mga03.intel.com ([134.134.136.65]:56273 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231570AbhKSI3v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 03:29:51 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="234328256"
+X-IronPort-AV: E=Sophos;i="5.87,246,1631602800"; 
+   d="scan'208";a="234328256"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 00:26:50 -0800
+X-IronPort-AV: E=Sophos;i="5.87,246,1631602800"; 
+   d="scan'208";a="473471484"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 00:26:48 -0800
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 6C1E520556;
+        Fri, 19 Nov 2021 10:26:46 +0200 (EET)
+Date:   Fri, 19 Nov 2021 10:26:46 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     Eugen Hristev <eugen.hristev@microchip.com>,
+        leonl@leopardimaging.com, linux-media@vger.kernel.org,
+        skomatineni@nvidia.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: i2c: imx274: implement enum_mbus_code
+Message-ID: <YZdfxvIWCovVrpAu@paasikivi.fi.intel.com>
+References: <20211118154009.307430-1-eugen.hristev@microchip.com>
+ <fa26e991-9228-7ed7-833a-b296e6b32afc@lucaceresoli.net>
+ <YZaMtGhqaXIOLhox@paasikivi.fi.intel.com>
+ <f7a04ae1-de4f-2e76-1baa-7bafb970dc10@lucaceresoli.net>
 MIME-Version: 1.0
-References: <20211118164240.623551-1-dietmar.eggemann@arm.com>
-In-Reply-To: <20211118164240.623551-1-dietmar.eggemann@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 19 Nov 2021 09:26:42 +0100
-Message-ID: <CAKfTPtC4URVKZvJfgGs9ZaxBr+x1H7239aTYAUi=2gX5c15aqw@mail.gmail.com>
-Subject: Re: [PATCH v2] sched/fair: Replace CFS internal cpu_util() with cpu_util_cfs()
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f7a04ae1-de4f-2e76-1baa-7bafb970dc10@lucaceresoli.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Nov 2021 at 17:42, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->
-> cpu_util_cfs() was created by commit d4edd662ac16 ("sched/cpufreq: Use
-> the DEADLINE utilization signal") to enable the access to CPU
-> utilization from the Schedutil CPUfreq governor.
->
-> Commit a07630b8b2c1 ("sched/cpufreq/schedutil: Use util_est for OPP
-> selection") added util_est support later.
->
-> The only thing cpu_util() is doing on top of what cpu_util_cfs() already
-> does is to clamp the return value to the [0..capacity_orig] capacity
-> range of the CPU. Integrating this into cpu_util_cfs() is not harming
-> the existing users (Schedutil and CPUfreq cooling (latter via
-> sched_cpu_util() wrapper)).
->
-> For straightforwardness, prefer to keep using `int cpu` as the function
-> parameter over using `struct rq *rq` which might avoid some calls to
-> cpu_rq(cpu) -> per_cpu(runqueues, cpu) -> RELOC_HIDE().
-> Update cfs_util()'s documentation and reuse it for cpu_util_cfs().
-> Remove cpu_util().
->
-> Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Hi Luca,
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+On Thu, Nov 18, 2021 at 06:39:09PM +0100, Luca Ceresoli wrote:
+> Hi,
+> 
+> On 18/11/21 18:26, Sakari Ailus wrote:
+> > Hi Luca,
+> > 
+> > On Thu, Nov 18, 2021 at 06:11:35PM +0100, Luca Ceresoli wrote:
+> >> Hi Eugen,
+> >>
+> >> On 18/11/21 16:40, Eugen Hristev wrote:
+> >>> Current driver supports only SRGGB 10 bit RAW bayer format.
+> >>> Add the enum_mbus_code implementation to report this format supported.
+> >>>
+> >>>  # v4l2-ctl -d /dev/v4l-subdev3 --list-subdev-mbus-codes
+> >>> ioctl: VIDIOC_SUBDEV_ENUM_MBUS_CODE (pad=0)
+> >>>         0x300f: MEDIA_BUS_FMT_SRGGB10_1X10
+> >>>  #
+> >>>
+> >>> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+> >>
+> >> Generally OK, but I have a few minor comments.
+> >>
+> >>> ---
+> >>>  drivers/media/i2c/imx274.c | 14 ++++++++++++++
+> >>>  1 file changed, 14 insertions(+)
+> >>>
+> >>> diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
+> >>> index 2e804e3b70c4..25a4ef8f6187 100644
+> >>> --- a/drivers/media/i2c/imx274.c
+> >>> +++ b/drivers/media/i2c/imx274.c
+> >>> @@ -1909,7 +1909,21 @@ static int imx274_set_frame_interval(struct stimx274 *priv,
+> >>>  	return err;
+> >>>  }
+> >>>  
+> >>> +static int imx274_enum_mbus_code(struct v4l2_subdev *sd,
+> >>> +				 struct v4l2_subdev_state *sd_state,
+> >>> +				 struct v4l2_subdev_mbus_code_enum *code)
+> >>> +{
+> >>> +	if (code->index > 0)
+> >>> +		return -EINVAL;
+> >>
+> >> Many driver do check code->pad too, so you might want to do
+> >>
+> >> 	if (code->pad > 0 || code->index > 0)
+> >> 		return -EINVAL;
+> > 
+> > The caller will have checked the pad exists, and there's a single one on
+> > the subdev I suppose.
+> 
+> Thanks for your explanation. That's very reasonable indeed.
+> 
+> Now, why do many drivers do that? Old checks that later turned useless
+> and nobody ever removed?
 
-Thanks
+Some of those exists, that's for sure. The check was added to the callers a
+few years ago I think. Many drivers also have more pads but then they
+typically return something else than -EINVAL for the other pads.
 
-> ---
->  kernel/sched/core.c              |  2 +-
->  kernel/sched/cpufreq_schedutil.c |  2 +-
->  kernel/sched/fair.c              | 71 ++++----------------------------
->  kernel/sched/sched.h             | 44 ++++++++++++++++++--
->  4 files changed, 50 insertions(+), 69 deletions(-)
->
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index f2611b9cf503..a86865ebbe2f 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -7123,7 +7123,7 @@ unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
->
->  unsigned long sched_cpu_util(int cpu, unsigned long max)
->  {
-> -       return effective_cpu_util(cpu, cpu_util_cfs(cpu_rq(cpu)), max,
-> +       return effective_cpu_util(cpu, cpu_util_cfs(cpu), max,
->                                   ENERGY_UTIL, NULL);
->  }
->  #endif /* CONFIG_SMP */
-> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> index e7af18857371..26778884d9ab 100644
-> --- a/kernel/sched/cpufreq_schedutil.c
-> +++ b/kernel/sched/cpufreq_schedutil.c
-> @@ -168,7 +168,7 @@ static void sugov_get_util(struct sugov_cpu *sg_cpu)
->
->         sg_cpu->max = max;
->         sg_cpu->bw_dl = cpu_bw_dl(rq);
-> -       sg_cpu->util = effective_cpu_util(sg_cpu->cpu, cpu_util_cfs(rq), max,
-> +       sg_cpu->util = effective_cpu_util(sg_cpu->cpu, cpu_util_cfs(sg_cpu->cpu), max,
->                                           FREQUENCY_UTIL, NULL);
->  }
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 13950beb01a2..6ddc2013e033 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -1502,7 +1502,6 @@ struct task_numa_env {
->
->  static unsigned long cpu_load(struct rq *rq);
->  static unsigned long cpu_runnable(struct rq *rq);
-> -static unsigned long cpu_util(int cpu);
->  static inline long adjust_numa_imbalance(int imbalance,
->                                         int dst_running, int dst_weight);
->
-> @@ -1569,7 +1568,7 @@ static void update_numa_stats(struct task_numa_env *env,
->
->                 ns->load += cpu_load(rq);
->                 ns->runnable += cpu_runnable(rq);
-> -               ns->util += cpu_util(cpu);
-> +               ns->util += cpu_util_cfs(cpu);
->                 ns->nr_running += rq->cfs.h_nr_running;
->                 ns->compute_capacity += capacity_of(cpu);
->
-> @@ -3240,7 +3239,7 @@ static inline void cfs_rq_util_change(struct cfs_rq *cfs_rq, int flags)
->                  * As is, the util number is not freq-invariant (we'd have to
->                  * implement arch_scale_freq_capacity() for that).
->                  *
-> -                * See cpu_util().
-> +                * See cpu_util_cfs().
->                  */
->                 cpufreq_update_util(rq, flags);
->         }
-> @@ -5509,11 +5508,9 @@ static inline void hrtick_update(struct rq *rq)
->  #endif
->
->  #ifdef CONFIG_SMP
-> -static inline unsigned long cpu_util(int cpu);
-> -
->  static inline bool cpu_overutilized(int cpu)
->  {
-> -       return !fits_capacity(cpu_util(cpu), capacity_of(cpu));
-> +       return !fits_capacity(cpu_util_cfs(cpu), capacity_of(cpu));
->  }
->
->  static inline void update_overutilized_status(struct rq *rq)
-> @@ -6456,58 +6453,6 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
->         return target;
->  }
->
-> -/**
-> - * cpu_util - Estimates the amount of capacity of a CPU used by CFS tasks.
-> - * @cpu: the CPU to get the utilization of
-> - *
-> - * The unit of the return value must be the one of capacity so we can compare
-> - * the utilization with the capacity of the CPU that is available for CFS task
-> - * (ie cpu_capacity).
-> - *
-> - * cfs_rq.avg.util_avg is the sum of running time of runnable tasks plus the
-> - * recent utilization of currently non-runnable tasks on a CPU. It represents
-> - * the amount of utilization of a CPU in the range [0..capacity_orig] where
-> - * capacity_orig is the cpu_capacity available at the highest frequency
-> - * (arch_scale_freq_capacity()).
-> - * The utilization of a CPU converges towards a sum equal to or less than the
-> - * current capacity (capacity_curr <= capacity_orig) of the CPU because it is
-> - * the running time on this CPU scaled by capacity_curr.
-> - *
-> - * The estimated utilization of a CPU is defined to be the maximum between its
-> - * cfs_rq.avg.util_avg and the sum of the estimated utilization of the tasks
-> - * currently RUNNABLE on that CPU.
-> - * This allows to properly represent the expected utilization of a CPU which
-> - * has just got a big task running since a long sleep period. At the same time
-> - * however it preserves the benefits of the "blocked utilization" in
-> - * describing the potential for other tasks waking up on the same CPU.
-> - *
-> - * Nevertheless, cfs_rq.avg.util_avg can be higher than capacity_curr or even
-> - * higher than capacity_orig because of unfortunate rounding in
-> - * cfs.avg.util_avg or just after migrating tasks and new task wakeups until
-> - * the average stabilizes with the new running time. We need to check that the
-> - * utilization stays within the range of [0..capacity_orig] and cap it if
-> - * necessary. Without utilization capping, a group could be seen as overloaded
-> - * (CPU0 utilization at 121% + CPU1 utilization at 80%) whereas CPU1 has 20% of
-> - * available capacity. We allow utilization to overshoot capacity_curr (but not
-> - * capacity_orig) as it useful for predicting the capacity required after task
-> - * migrations (scheduler-driven DVFS).
-> - *
-> - * Return: the (estimated) utilization for the specified CPU
-> - */
-> -static inline unsigned long cpu_util(int cpu)
-> -{
-> -       struct cfs_rq *cfs_rq;
-> -       unsigned int util;
-> -
-> -       cfs_rq = &cpu_rq(cpu)->cfs;
-> -       util = READ_ONCE(cfs_rq->avg.util_avg);
-> -
-> -       if (sched_feat(UTIL_EST))
-> -               util = max(util, READ_ONCE(cfs_rq->avg.util_est.enqueued));
-> -
-> -       return min_t(unsigned long, util, capacity_orig_of(cpu));
-> -}
-> -
->  /*
->   * cpu_util_without: compute cpu utilization without any contributions from *p
->   * @cpu: the CPU which utilization is requested
-> @@ -6528,7 +6473,7 @@ static unsigned long cpu_util_without(int cpu, struct task_struct *p)
->
->         /* Task has no contribution or is new */
->         if (cpu != task_cpu(p) || !READ_ONCE(p->se.avg.last_update_time))
-> -               return cpu_util(cpu);
-> +               return cpu_util_cfs(cpu);
->
->         cfs_rq = &cpu_rq(cpu)->cfs;
->         util = READ_ONCE(cfs_rq->avg.util_avg);
-> @@ -6592,7 +6537,7 @@ static unsigned long cpu_util_without(int cpu, struct task_struct *p)
->         /*
->          * Utilization (estimated) can exceed the CPU capacity, thus let's
->          * clamp to the maximum CPU capacity to ensure consistency with
-> -        * the cpu_util call.
-> +        * cpu_util.
->          */
->         return min_t(unsigned long, util, capacity_orig_of(cpu));
->  }
-> @@ -6624,7 +6569,7 @@ static unsigned long cpu_util_next(int cpu, struct task_struct *p, int dst_cpu)
->                  * During wake-up, the task isn't enqueued yet and doesn't
->                  * appear in the cfs_rq->avg.util_est.enqueued of any rq,
->                  * so just add it (if needed) to "simulate" what will be
-> -                * cpu_util() after the task has been enqueued.
-> +                * cpu_util after the task has been enqueued.
->                  */
->                 if (dst_cpu == cpu)
->                         util_est += _task_util_est(p);
-> @@ -8681,7 +8626,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
->                 struct rq *rq = cpu_rq(i);
->
->                 sgs->group_load += cpu_load(rq);
-> -               sgs->group_util += cpu_util(i);
-> +               sgs->group_util += cpu_util_cfs(i);
->                 sgs->group_runnable += cpu_runnable(rq);
->                 sgs->sum_h_nr_running += rq->cfs.h_nr_running;
->
-> @@ -9699,7 +9644,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
->                         break;
->
->                 case migrate_util:
-> -                       util = cpu_util(cpu_of(rq));
-> +                       util = cpu_util_cfs(i);
->
->                         /*
->                          * Don't try to pull utilization from a CPU with one
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index f0b249ec581d..2733f15c5859 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -2942,16 +2942,52 @@ static inline unsigned long cpu_util_dl(struct rq *rq)
->         return READ_ONCE(rq->avg_dl.util_avg);
->  }
->
-> -static inline unsigned long cpu_util_cfs(struct rq *rq)
-> +/**
-> + * cpu_util_cfs() - Estimates the amount of CPU capacity used by CFS tasks.
-> + * @cpu: the CPU to get the utilization for.
-> + *
-> + * The unit of the return value must be the same as the one of CPU capacity
-> + * so that CPU utilization can be compared with CPU capacity.
-> + *
-> + * CPU utilization is the sum of running time of runnable tasks plus the
-> + * recent utilization of currently non-runnable tasks on that CPU.
-> + * It represents the amount of CPU capacity currently used by CFS tasks in
-> + * the range [0..max CPU capacity] with max CPU capacity being the CPU
-> + * capacity at f_max.
-> + *
-> + * The estimated CPU utilization is defined as the maximum between CPU
-> + * utilization and sum of the estimated utilization of the currently
-> + * runnable tasks on that CPU. It preserves a utilization "snapshot" of
-> + * previously-executed tasks, which helps better deduce how busy a CPU will
-> + * be when a long-sleeping task wakes up. The contribution to CPU utilization
-> + * of such a task would be significantly decayed at this point of time.
-> + *
-> + * CPU utilization can be higher than the current CPU capacity
-> + * (f_curr/f_max * max CPU capacity) or even the max CPU capacity because
-> + * of rounding errors as well as task migrations or wakeups of new tasks.
-> + * CPU utilization has to be capped to fit into the [0..max CPU capacity]
-> + * range. Otherwise a group of CPUs (CPU0 util = 121% + CPU1 util = 80%)
-> + * could be seen as over-utilized even though CPU1 has 20% of spare CPU
-> + * capacity. CPU utilization is allowed to overshoot current CPU capacity
-> + * though since this is useful for predicting the CPU capacity required
-> + * after task migrations (scheduler-driven DVFS).
-> + *
-> + * Return: (Estimated) utilization for the specified CPU.
-> + */
-> +static inline unsigned long cpu_util_cfs(int cpu)
->  {
-> -       unsigned long util = READ_ONCE(rq->cfs.avg.util_avg);
-> +       struct cfs_rq *cfs_rq;
-> +       unsigned long util;
-> +
-> +       cfs_rq = &cpu_rq(cpu)->cfs;
-> +       util = READ_ONCE(cfs_rq->avg.util_avg);
->
->         if (sched_feat(UTIL_EST)) {
->                 util = max_t(unsigned long, util,
-> -                            READ_ONCE(rq->cfs.avg.util_est.enqueued));
-> +                            READ_ONCE(cfs_rq->avg.util_est.enqueued));
->         }
->
-> -       return util;
-> +       return min(util, capacity_orig_of(cpu));
->  }
->
->  static inline unsigned long cpu_util_rt(struct rq *rq)
-> --
-> 2.25.1
->
+-- 
+Sakari Ailus
