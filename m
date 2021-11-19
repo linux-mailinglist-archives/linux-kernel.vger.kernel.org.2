@@ -2,82 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443FC456B48
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 09:05:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A24456B49
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 09:06:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233877AbhKSIIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 03:08:30 -0500
-Received: from szxga03-in.huawei.com ([45.249.212.189]:28157 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhKSII3 (ORCPT
+        id S233896AbhKSIIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 03:08:50 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:52470 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231939AbhKSIIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 03:08:29 -0500
-Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HwTgw63svz8vX1;
-        Fri, 19 Nov 2021 16:03:40 +0800 (CST)
-Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
- dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 19 Nov 2021 16:05:26 +0800
-Received: from [10.174.178.247] (10.174.178.247) by
- dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 19 Nov 2021 16:05:25 +0800
-Subject: Re: [PATCH] acpi/tables: Add AEST in ACPI Table Definition
-To:     Shuuichirou Ishii <ishii.shuuichir@fujitsu.com>,
-        <rafael@kernel.org>, <lenb@kernel.org>,
-        <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <lorenzo.pieralisi@arm.com>, <sudeep.holla@arm.com>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20211105041635.1481738-1-ishii.shuuichir@fujitsu.com>
-From:   Hanjun Guo <guohanjun@huawei.com>
-Message-ID: <a71761c6-5b8a-a4d5-c65a-7d3b3cd0d92f@huawei.com>
-Date:   Fri, 19 Nov 2021 16:05:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20211105041635.1481738-1-ishii.shuuichir@fujitsu.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.247]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500002.china.huawei.com (7.185.36.229)
-X-CFilter-Loop: Reflected
+        Fri, 19 Nov 2021 03:08:49 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R501e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UxIduoC_1637309144;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UxIduoC_1637309144)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 19 Nov 2021 16:05:46 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     jens.wiklander@linaro.org
+Cc:     sumit.garg@linaro.org, op-tee@lists.trustedfirmware.org,
+        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH -next] optee: Fix NULL but dereferenced coccicheck error
+Date:   Fri, 19 Nov 2021 16:05:43 +0800
+Message-Id: <1637309143-53528-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/11/5 12:16, Shuuichirou Ishii wrote:
-> When We added AEST using the Upgrading ACPI tables via initrd function,
-> the kernel could not recognize the AEST, so We added AEST the ACPI table
-> definition.
+Eliminate the following coccicheck warning:
+./drivers/tee/optee/smc_abi.c:1508:12-15: ERROR: optee is NULL but
+dereferenced.
 
-Maybe "so add the AEST table to the list to enable the table upgrade
-function." is better?
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Fixes: 'commit 6749e69c4dad ("optee: add asynchronous notifications")'
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/tee/optee/smc_abi.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-> 
-> Signed-off-by: Shuuichirou Ishii <ishii.shuuichir@fujitsu.com>
-> ---
->   drivers/acpi/tables.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c
-> index 71419eb16e09..2699bf7e21ab 100644
-> --- a/drivers/acpi/tables.c
-> +++ b/drivers/acpi/tables.c
-> @@ -500,7 +500,7 @@ static const char table_sigs[][ACPI_NAMESEG_SIZE] __initconst = {
->   	ACPI_SIG_WDDT, ACPI_SIG_WDRT, ACPI_SIG_DSDT, ACPI_SIG_FADT,
->   	ACPI_SIG_PSDT, ACPI_SIG_RSDT, ACPI_SIG_XSDT, ACPI_SIG_SSDT,
->   	ACPI_SIG_IORT, ACPI_SIG_NFIT, ACPI_SIG_HMAT, ACPI_SIG_PPTT,
-> -	ACPI_SIG_NHLT };
-> +	ACPI_SIG_NHLT, ACPI_SIG_AEST };
->   
->   #define ACPI_HEADER_SIZE sizeof(struct acpi_table_header)
+diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
+index 92759d7..1f471ff 100644
+--- a/drivers/tee/optee/smc_abi.c
++++ b/drivers/tee/optee/smc_abi.c
+@@ -1505,8 +1505,6 @@ static int optee_probe(struct platform_device *pdev)
+ 	kfree(optee);
+ err_free_pool:
+ 	tee_shm_pool_free(pool);
+-	if (optee->smc.memremaped_shm)
+-		memunmap(optee->smc.memremaped_shm);
+ 	return rc;
+ }
+ 
+-- 
+1.8.3.1
 
-Other than that, I'm fine with this patch.
-
-Acked-by: Hanjun Guo <guohanjun@huawei.com>
-
-Thanks
-Hanjun
