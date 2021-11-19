@@ -2,73 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B13456F1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 13:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D13456F20
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 13:53:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234650AbhKSMyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 07:54:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233297AbhKSMyG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 07:54:06 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 724CFC06173E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 04:51:04 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id x15so42359405edv.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 04:51:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=mTe6rsF1WlocKfWRCIawejpNJl6lRYSIlYxDz8jltlQ=;
-        b=HAAO30K4kkkX/h9+P35xQ5fLsJTIX2g8t2+sx8sokz5fRZwWfcs9h5f/Ih22EtaR7E
-         sgcJhfHzNaN2XiD5RZ+Q5oGAAiUU0S4AmieI+TFqV6X9HHg45OvFAI4fTdSB5vvgD1vz
-         EPL0LfPuoivc0aI0v8tTwl46/qMZn6gwfMODw2CrqvB62Yn1Zfd/xH/yfDkMoJaVbe81
-         NL0D34kDvnMZn9XlfbJKq209jU07z1RkLXebO+SKpUKqcNNjOq2JjTzQmKbpoX+XRzzI
-         z5UvSBQfu8j8fJIGvSNHfU2Nsj9ZNDDnGGbQifjP4TqlgzLQeZzvLSUEu42L7EzhvAVx
-         F7nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=mTe6rsF1WlocKfWRCIawejpNJl6lRYSIlYxDz8jltlQ=;
-        b=ZsmbF9Y4b/XbL0mjhaQvbSNuWXo4QIjrp5ex7EZAwbHfK5PIc53BvaTXkWQa9GhAON
-         b2qoPoWUFoebkUnkxpLy5Mlv0r0YyZ9vDXryKWfXwNQoW4DlcznxwsSA68RvXC0DF9aX
-         /zcrjI35jb83t+jlVhC5HhtFnIoE83hnmZXWh5BOAE0wU8Zhuk7Hl7T7ChG0tsjzim72
-         EdaBABTUsluX/XTTsbPOr1SN7U6GGhEcXrPIR+u8AcUZ1oK/MbQqlOeeCT2LJAgw89vI
-         BKA1FBoSfKwrys2t9f38s6pzaBlxHYJpEtzsULl+x29wNNIFhK84OrDEqDyLTKxaimy2
-         xpFw==
-X-Gm-Message-State: AOAM533DZIOdtniOpVhNhAiVMQPSHviOcH2Zg/FxkOoSK/fvdu0FQ6ql
-        NGh9LojyoTbmjYObWvszbN0AvBhxcd7F2IUdTPk=
-X-Google-Smtp-Source: ABdhPJzppEBocZcKwRwKDlYVElFs/oYyqy0wvWyuvBbE+FVLkHj0kweHWh1FLme6zh7HtgPLj+9rdvVbdrAVyHLStnE=
-X-Received: by 2002:a17:906:cd03:: with SMTP id oz3mr7731983ejb.252.1637326262997;
- Fri, 19 Nov 2021 04:51:02 -0800 (PST)
+        id S234684AbhKSM4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 07:56:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231877AbhKSM4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 07:56:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45B0A604DC;
+        Fri, 19 Nov 2021 12:53:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637326426;
+        bh=+Kt93THZnyzv4oTsiBnwCrWWk1U7yDOV2BzetDj91v4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WgV86sF16EWK8Mhim/6jUIGPjyddpha6JOu21Al3eeCwrtfpS/X91+CBVrz6MvVWf
+         pq8xI/35ntNHpjwaQGTnI/Scyp8LFYlIcmHTeTN2VHsNAAJx9bfCWznzTAy0a3lxnO
+         w3W/5nmPIm+KulYk2NwWF7qvvM4NOfjDoD95HlR8=
+Date:   Fri, 19 Nov 2021 13:53:44 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     jeyr@codeaurora.org
+Cc:     linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org,
+        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
+Subject: Re: [PATCH v3] misc: fastrpc: fix improper packet size calculation
+Message-ID: <YZeeWMGFev2D+4zr@kroah.com>
+References: <1632224895-32661-1-git-send-email-jeyr@codeaurora.org>
+ <YUnHbiQDZK/+tTAp@kroah.com>
+ <9c5c13a393b64a4527f7be7ca42734d2@codeaurora.org>
+ <YUnSt9B4hAe3y2k2@kroah.com>
+ <df24334190f8b7cb517e440bee8f2784@codeaurora.org>
+ <56123f5e39e4cc7691da5d0d61468a97@codeaurora.org>
 MIME-Version: 1.0
-Reply-To: zahirikeen@gmail.com
-Sender: www.ups.usa01@gmail.com
-Received: by 2002:a17:907:9207:0:0:0:0 with HTTP; Fri, 19 Nov 2021 04:51:02
- -0800 (PST)
-From:   Zahiri Keen <zahirikeen2@gmail.com>
-Date:   Fri, 19 Nov 2021 12:51:02 +0000
-X-Google-Sender-Auth: JNRhAcNQut4tDmkSBQnTSVUZPTE
-Message-ID: <CABpS9gZnH7psw-oizVvBnXSuPsb=_J9jgN28Z76YBKq3vnUYrw@mail.gmail.com>
-Subject: Good day to you,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56123f5e39e4cc7691da5d0d61468a97@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good Day,
+On Fri, Nov 19, 2021 at 06:19:27PM +0530, jeyr@codeaurora.org wrote:
+> On 2021-09-21 18:43, jeyr@codeaurora.org wrote:
+> > On 2021-09-21 18:10, Greg KH wrote:
+> > > On Tue, Sep 21, 2021 at 06:03:42PM +0530, jeyr@codeaurora.org wrote:
+> > > > On 2021-09-21 17:22, Greg KH wrote:
+> > > > > On Tue, Sep 21, 2021 at 05:18:15PM +0530, Jeya R wrote:
+> > > > > > The buffer list is sorted and this is not being considered while
+> > > > > > calculating packet size. This would lead to improper copy length
+> > > > > > calculation for non-dmaheap buffers which would eventually cause
+> > > > > > sending improper buffers to DSP.
+> > > > > >
+> > > > > > Fixes: c68cfb718c8f ("misc: fastrpc: Add support for context Invoke
+> > > > > > method")
+> > > > > > Signed-off-by: Jeya R <jeyr@codeaurora.org>
+> > > > > > Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> > > > >
+> > > > > Does this also need to go to the stable kernels?
+> > > > Yes, this needs to go to stable kernels also as this fixes a
+> > > > potential issue
+> > > > which is easily reproducible.
+> > > 
+> > > 
+> > > 
+> > > > 
+> > > > >
+> > > > > > ---
+> > > > > > Changes in v3:
+> > > > > > - relocate patch change list
+> > > > > >
+> > > > > > Changes in v2:
+> > > > > > - updated commit message to proper format
+> > > > > > - added fixes tag to commit message
+> > > > > > - removed unnecessary variable initialization
+> > > > > > - removed length check during payload calculation
+> > > > > >
+> > > > > >  drivers/misc/fastrpc.c | 10 ++++++----
+> > > > > >  1 file changed, 6 insertions(+), 4 deletions(-)
+> > > > > >
+> > > > > > diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+> > > > > > index beda610..69d45c4 100644
+> > > > > > --- a/drivers/misc/fastrpc.c
+> > > > > > +++ b/drivers/misc/fastrpc.c
+> > > > > > @@ -719,16 +719,18 @@ static int fastrpc_get_meta_size(struct
+> > > > > > fastrpc_invoke_ctx *ctx)
+> > > > > >  static u64 fastrpc_get_payload_size(struct fastrpc_invoke_ctx *ctx,
+> > > > > > int metalen)
+> > > > > >  {
+> > > > > >  	u64 size = 0;
+> > > > > > -	int i;
+> > > > > > +	int oix;
+> > > > >
+> > > > > What does "oix" stand for?  What was wrong with i?
+> > > > It is just a general convention we use. "oix" is used to iterate
+> > > > through
+> > > > sorted overlap buffer list and use "i" to get corresponding
+> > > > unsorted list
+> > > > index. We follow the same convention at other places also, for
+> > > > example:
+> > > > fastrpc_get_args function.
+> > > 
+> > > That is the only place it is used in all of the whole kernel tree.  It
+> > > is not a normal variable for a loop, so who is "we" here?
+> > The convention was followed for the same file(fastrpc.c). As part of
+> > fastrpc_get_args
+> > function, while iterating through sorted buffer list, oix is used as
+> > index and to
+> > get unsorted index "raix", it is using "i". Just following the same way
+> > here to
+> > have better understanding. Please let me know if this is a concern, it
+> > can be updated
+> > to "i", "j" etc.
+> > 
+> > -- Thanks
+> > > 
+> > > thanks,
+> > > 
+> > > greg k-h
+> Hello Greg,
+> 
+> Is this bug-fix patch planned to be released?
 
-I know this email might come to you as a surprise because is coming
-from someone you haven=E2=80=99t met with before.
+Released in what way?
 
-I am Mr. Zahiri Keen, the bank manager with BOA bank i contact you for
-a deal relating to the funds which are in my position I shall furnish
-you with more detail once your response.
+I do not see it in any tree anywhere, perhaps it needs to be resubmitted
+to be accepted?
 
-Regards,
-Mr.Zahiri
+thanks,
+
+greg k-h
