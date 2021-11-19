@@ -2,180 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 622D3457164
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:06:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2FA45716A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:07:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233856AbhKSPJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 10:09:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39948 "EHLO
+        id S233713AbhKSPKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 10:10:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230209AbhKSPJe (ORCPT
+        with ESMTP id S230209AbhKSPKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 10:09:34 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BED7C061574;
-        Fri, 19 Nov 2021 07:06:32 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id p18so8781400wmq.5;
-        Fri, 19 Nov 2021 07:06:32 -0800 (PST)
+        Fri, 19 Nov 2021 10:10:09 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FC4C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 07:07:07 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id t30so18627022wra.10
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 07:07:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=9LghidGzK5wVxoEesb/L8gTDRQW74I1XzqD+h7Ydxd8=;
-        b=ThJg3WF09aFCTuH2nUMR2RjPEiyZEHH/Ew5m2/uZZSMAXSP+tUthdSO1fmjo2qKWeU
-         45Hn8Hgn91hV5q+U6rorUGLM2sMuPDHYa9LJlaaq4CGvWIdUAiWRzi7l32411ezoz7Ed
-         UfEhsgFqn/TYVjlTQ1x6OtTfh4ZgxcGVNdiY8dyFmAyRcy8suheoHZR/1Dey0LgdcvG+
-         mankWsi9N4kQ6WRh+ekZfYzxKW7qeB6RN1v8FkSZ+4tesaMcXM8Cgfdtx8KejMMX8Vg5
-         5KEZ1IPldun0lw36a/VB9DNib6XHhQiudT9RMvJEyRiGROFsOfg9l4q11bv5IhtZMxc3
-         R0yA==
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5jqMl8Z0Hf/N/KXYecsVzaYCxNDJh+mMv+jjLKwsb28=;
+        b=G55pasOzodUHvhH6LId0UJoQllxGkntw85VTDgTYUqbRnzcJFKgn+r55vywU5JB+rd
+         XXvFZSw13rpwa/LxvsU4Z6UOSsOhZJMpT6yYX2ImRhIlWTr+RtxMETDaqKs6Oune/+SM
+         Yzh9Ph84fQY8vCIC3nIzEJLvBz2hlJyNdasU8aQEyx76m5pubQhvZRL2q1ynjujo7nkq
+         Oi3zai5zTT7WH6/oSLUxnsfnAGzhi14eK517QIO+T3xNvPXzerVgxeHVNrcu5EvjbxpN
+         5ovi9K1QB1xmmdr2fhDIPoRVwqtGH5eeqhTgl8Uubg8R2odK8JAGpQAWEl+QVzIQ/j+E
+         ACMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=9LghidGzK5wVxoEesb/L8gTDRQW74I1XzqD+h7Ydxd8=;
-        b=nbCB00TCBy5D3lyYmHEG/qV2Y4ZsHAUIaF4gCWgOnkRNVNciPWtlob6uISdOjhq2CD
-         vPYAcGLBKJxUIsOKdRGc6BvGMrqeVZKPrZK4H9mDZHf7GHHGQj7n5nObsBh2HlTKTbWd
-         yYJ7i+sZ2jk7dEUrXjB8+d+ceM97WToKbG/zzWLzQ8I1/GUU3Nj6rlYM3j16GP+hQeam
-         YPtHVkF/fpe6INCKBsVf9bRegCwbKhLk+hPIl6bD2QTFNJm81QYQh2HhyUMx0ZZ6rjIM
-         EApIpSTBUYvr4r3zLz4Vr1CKwTWTwF6j5+En3nliBOKk8kyKWLdB2Nedw/NCkmd47sWQ
-         lFKw==
-X-Gm-Message-State: AOAM531z1V463rK4bEw729uHnPaT1CJgXXWKrXtMCepiKp1A02wENoJb
-        7dRl8ccy9KPltv1zLXA+bdQ=
-X-Google-Smtp-Source: ABdhPJzu9ei/pAU2yn2kzxvlKTIuV+OQKa9BIy8XnEer1U+7uUmszt8b/HqJvarFM0xoXQ8IPgXm6g==
-X-Received: by 2002:a1c:6a0e:: with SMTP id f14mr409487wmc.58.1637334391087;
-        Fri, 19 Nov 2021 07:06:31 -0800 (PST)
-Received: from [192.168.0.160] ([170.253.36.171])
-        by smtp.gmail.com with ESMTPSA id u23sm29930wru.21.2021.11.19.07.06.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Nov 2021 07:06:30 -0800 (PST)
-Message-ID: <434296d3-8fe1-f1d2-ee9d-ea25d6c4e43e@gmail.com>
-Date:   Fri, 19 Nov 2021 16:06:27 +0100
+        bh=5jqMl8Z0Hf/N/KXYecsVzaYCxNDJh+mMv+jjLKwsb28=;
+        b=Q89pypUqCq0CKl7Or/4zZa4bwcwF/idWxX5Vrb5ASdD3ZwppFgVJpKDyk7GEaMT/LU
+         dVCmA75l8Enp0ZCLXRuVOQYEytfGzWcH5KZ1zSegOdIlHPA+1gSj/UTXh/ObkQ0NogMK
+         qDLzJcMq6BG0KvuVOk4YNXKVaC11opDhAA+dtE05FWadEU/8BNhEvg8LgWTaznFiUFh6
+         /TNVRnLVZtUkXGrfTFsn2mCjsJ+itXdt6eJyJc8u46+wqrKZe5Sb7hRQx1PNjvQ3+koW
+         j5Nv30oGBZUiCt7QA51PzqZHHdGltfbnoKBWSdQSv8nttmZQmSzw9/Ovin92De3ft8sq
+         8Mow==
+X-Gm-Message-State: AOAM533oNDXdwaCoAfEE474RdPMsW11j73/vYR3PoSOlH3k0E72OpwDb
+        9vOXz9TeAAXCNjox6THnHopyFA==
+X-Google-Smtp-Source: ABdhPJzC2IgYKRKHsRJ1a9sTXbJ7zyfPtn4OHTdf9LMDllVeg2BuC3OTMx+v7hqp+bYdTJyT/ibTjg==
+X-Received: by 2002:a5d:4e0b:: with SMTP id p11mr8013629wrt.88.1637334425922;
+        Fri, 19 Nov 2021 07:07:05 -0800 (PST)
+Received: from debian-brgl.home ([2a01:cb1d:334:ac00:7d50:ff5:f5c1:e225])
+        by smtp.gmail.com with ESMTPSA id r62sm3046160wmr.35.2021.11.19.07.07.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 07:07:05 -0800 (PST)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [GIT PULL] gpio: fixes for v5.16-rc2
+Date:   Fri, 19 Nov 2021 16:07:03 +0100
+Message-Id: <20211119150703.8326-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH 00/17] Add memberof(), split some headers, and slightly
- simplify code
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ajit Khaparde <ajit.khaparde@broadcom.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Borislav Petkov <bp@suse.de>,
-        Corey Minyard <cminyard@mvista.com>, Chris Mason <clm@fb.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        David Sterba <dsterba@suse.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "John S . Gruber" <JohnSGruber@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ketan Mukadam <ketan.mukadam@broadcom.com>,
-        Len Brown <lenb@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
-        intel-gfx@lists.freedesktop.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-btrfs@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <20211119113644.1600-1-alx.manpages@gmail.com>
- <CAK8P3a0qT9tAxFkLN_vJYRcocDW2TcBq79WcYKZFyAG0udZx5Q@mail.gmail.com>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-In-Reply-To: <CAK8P3a0qT9tAxFkLN_vJYRcocDW2TcBq79WcYKZFyAG0udZx5Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+Linus,
 
-On 11/19/21 15:47, Arnd Bergmann wrote:
-> On Fri, Nov 19, 2021 at 12:36 PM Alejandro Colomar
-> <alx.manpages@gmail.com> wrote:
->>
->> Alejandro Colomar (17):
->>   linux/container_of.h: Add memberof(T, m)
->>   Use memberof(T, m) instead of explicit NULL dereference
->>   Replace some uses of memberof() by its wrappers
->>   linux/memberof.h: Move memberof() to separate header
->>   linux/typeof_member.h: Move typeof_member() to a separate header
->>   Simplify sizeof(typeof_member()) to sizeof_field()
->>   linux/NULL.h: Move NULL to a separate header
->>   linux/offsetof.h: Move offsetof(T, m) to a separate header
->>   linux/offsetof.h: Implement offsetof() in terms of memberof()
->>   linux/container_of.h: Implement container_of_safe() in terms of
->>     container_of()
->>   linux/container_of.h: Cosmetic
->>   linux/container_of.h: Remove unnecessary cast to (void *)
-> 
-> My feeling is that this takes the separation too far: by having this many header
-> files that end up being included from practically every single .c file
-> in the kernel,
-> I think you end up making compile speed worse overall.
-> 
-> If your goal is to avoid having to recompile as much of the kernel
-> after touching
-> a header, I think a better approach is to help untangle the dependencies, e.g.
-> by splitting out type definitions from headers with inline functions (most
-> indirect header dependencies are on type definitions) and by focusing on
-> linux/fs.h, linux/sched.h, linux/mm.h and how they interact with the rest of the
-> headers. At the moment, these are included in most .c files and they in turn
-> include a ton of other headers.
+Please pull the following set of fixes for the next RC.
 
-Yes, I would like to untangle the dependencies.
+Best Regards,
+Bartosz Golaszewski
 
-The main reason I started doing this splitting
-is because I wouldn't be able to include
-<linux/stddef.h> in some headers,
-because it pulled too much stuff that broke unrelated things.
+The following changes since commit fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf:
 
-So that's why I started from there.
+  Linux 5.16-rc1 (2021-11-14 13:56:52 -0800)
 
-I for example would like to get NULL in memberof()
-without puling anything else,
-so <linux/NULL.h> makes sense for that.
+are available in the Git repository at:
 
-It's clear that every .c wants NULL,
-but it's not so clear that every .c wants
-everything that <linux/stddef.h> pulls indirectly.
+  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.16-rc2
 
-But I'll note that linux/fs.h, linux/sched.h, linux/mm.h are
-interesting headers for further splitting.
+for you to fetch changes up to d6912b1251b47e6b04ea8c8881dfb35a6e7a3e29:
 
+  gpio: rockchip: needs GENERIC_IRQ_CHIP to fix build errors (2021-11-16 09:41:44 +0100)
 
-BTW, I also have a longstanding doubt about
-how header files are organized in the kernel,
-and which headers can and cannot be included
-from which other files.
+----------------------------------------------------------------
+gpio fixes for v5.16-rc2
 
-For example I see that files in samples or scripts or tools,
-that redefine many things such as offsetof() or ARRAY_SIZE(),
-and I don't know if there's a good reason for that,
-or if I should simply remove all that stuff and
-include <linux/offsetof.h> everywhere I see offsetof() being used.
+- fix a coccicheck warning in gpio-virtio
+- fix gpio selftests build issues
+- fix a Kconfig issue in gpio-rockchip
 
+----------------------------------------------------------------
+Kent Gibson (2):
+      selftests: gpio: fix uninitialised variable warning
+      selftests: gpio: restore CFLAGS options
 
+Li Zhijian (1):
+      selftests: gpio: fix gpio compiling error
 
-Thanks,
-Alex
+Randy Dunlap (1):
+      gpio: rockchip: needs GENERIC_IRQ_CHIP to fix build errors
 
--- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
+Yang Li (1):
+      gpio: virtio: remove unneeded semicolon
+
+ drivers/gpio/Kconfig                            | 1 +
+ drivers/gpio/gpio-virtio.c                      | 2 +-
+ tools/testing/selftests/gpio/Makefile           | 1 +
+ tools/testing/selftests/gpio/gpio-mockup-cdev.c | 2 +-
+ 4 files changed, 4 insertions(+), 2 deletions(-)
