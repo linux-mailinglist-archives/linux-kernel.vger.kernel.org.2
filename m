@@ -2,123 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D03A3456701
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 01:49:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5433456704
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 01:49:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233750AbhKSAwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 19:52:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233677AbhKSAwL (ORCPT
+        id S233798AbhKSAwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 19:52:18 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:35660 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233763AbhKSAwQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 19:52:11 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36740C061748
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 16:49:10 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id o4so7762282pfp.13
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 16:49:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YkjqUce/1zqYHDkxw9V7Si4C/wiUvY/ejgdoaWtU7F8=;
-        b=jL6F9Zche60wZHnQlER4i/xqZ3DP8G7Gq9xGPcG9eBsxJWTOy5lFFOkwIk3mtjfcQL
-         U41MpmKVn6zEsh62rGkJrvtAYFcwOGBgO/FlRk6VFu32M8F5facBkEEAmiuLPY/kKQJy
-         ooehKrAvJHP3zPIIZVa08byehi4/l4Mdd1M9o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YkjqUce/1zqYHDkxw9V7Si4C/wiUvY/ejgdoaWtU7F8=;
-        b=lZBazJWaS73RyB72V6OSAl0SSdaukM72Jmkhbk2XzhYUExhzOQY65XQnPGiab6z0uS
-         ZuDXEaSP6XxCq5OeUW55LSonE7f13P9w76QYOMy59rjH5LwI0Z5EV8CDjapA4LcySzG7
-         d1d8BzE4f67JbpFGlxFiIqrQY8qXYnmZdnoOFxexJIHyss4eBiZaUWUP8WpV/CY6SzP+
-         z3PwucseWaCnSJzlFVxD7hOmanohMPseQYyzatkTkmNBJM8/z0km/ThMCdfhmm0OyanO
-         sIPUteDc7Ms+bSWE4/V7zMD2kEfsVsxoki093ZvnDMHSN0C3ANy/nSPFEO84HHiqkga6
-         dlmA==
-X-Gm-Message-State: AOAM53205gLP1uqjsIRCs3m2Tsn9iSGo5WhRhSvpNFuqp9JZu08behl0
-        9XgbRSFv/7kNgxqK4EQvDBsZWQ==
-X-Google-Smtp-Source: ABdhPJxTD6mxab3V0M9TiW8Iu48GasUWYhWvJ+1aDKuxh2PgLilRu1tiucEhi6AW+c2986+esm2T1Q==
-X-Received: by 2002:a63:8f02:: with SMTP id n2mr14171803pgd.270.1637282949612;
-        Thu, 18 Nov 2021 16:49:09 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v7sm600065pgv.86.2021.11.18.16.49.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 16:49:09 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Lennert Buytenhek <buytenh@wantstofly.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        wengjianfeng <wengjianfeng@yulong.com>,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Allen Pais <allen.lkml@gmail.com>,
-        Zheyu Ma <zheyuma97@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH v2] mwl8k: Use named struct for memcpy() region
-Date:   Thu, 18 Nov 2021 16:49:05 -0800
-Message-Id: <20211119004905.2348143-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        Thu, 18 Nov 2021 19:52:16 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R561e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0UxFMHV9_1637282952;
+Received: from 192.168.2.97(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0UxFMHV9_1637282952)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 19 Nov 2021 08:49:13 +0800
+Message-ID: <a585633c-4687-d7b7-80b8-da487a42bedc@linux.alibaba.com>
+Date:   Fri, 19 Nov 2021 08:49:12 +0800
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1855; h=from:subject; bh=wjitypM7IZy7p429Ylbn1QQyHwpCfiE22AwHT6cE62I=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhlvSAYieAM1UQZUMb9M+xQqwVE1xR69PM80ynJIvX SkYa5KCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYZb0gAAKCRCJcvTf3G3AJk1nD/ 9UFKaIfW/bPmnHzqdwTZBLyiLd9/zO1j7AQI449efBugIp6lvSSbD39hmsdd5WeOCQXbMtYbga4AZO oTkXOD0NbrZyIS4snpGf6Ge5t09H4PsuKPyq6nA+CjyrWqeyu8CCPq6ccwr29MkiOMEMAAo44gGQtj PsDyMGhJQcLJU1Btl2wnwby+KTeYev9gCtJL3Q80AzfdjvS4QcyWDFjBxXp7favmeJfs/DLf5m93vc GmS0M7Ot8lnTxuPvQa7UKiaHCOLiqg9nl8peFln9XEVFuz1jqxj9RxXxX8o5wSMsecdCxMXQ1MralQ UlpJpnI6OwBu8fGmVVBXwmi8qiwbWXmaIkXlQ1WVTD7oWJHmGuyeZ17I2nGHh4C27mribAqFJDY9y/ hCZvDgSh9GKn6Kf6iP3VMJMLAjh9SpjCiaaFTDQEwNf6SjHR49kAVnluoFnR/uHMuKm/x4yMq7PbMO 8Hz/5zkyllqJTW1srqtpu51EJ9qhXCbP5WOuKRld4ptCHOozVLSWqM30TbdatdZqH7UyNj8ajWDBgH WsOp8T3oYochanHmNM95kXAqe4WOeCEuQHVzJNcJVizR2sVGZwHt9IY3TxW64igc8WYuGuqFSkX9Ra 1qvGwG8ydxlkRpeDzJYfeRpYAN6I7588hnQSsZ9pe4viTRXxiDwTWOK3A5tw==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH 13/15] KVM: SVM: Add and use svm_register_cache_reset()
+Content-Language: en-US
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+References: <20211108124407.12187-1-jiangshanlai@gmail.com>
+ <20211108124407.12187-14-jiangshanlai@gmail.com>
+ <937c373e-80f4-38d9-b45a-a655dcb66569@redhat.com>
+ <55654594-9967-37d2-335b-5035f99212fe@linux.alibaba.com>
+ <f2a99afc-6ce6-459d-05d5-a2e396af96d4@redhat.com>
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+In-Reply-To: <f2a99afc-6ce6-459d-05d5-a2e396af96d4@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memcpy(), memmove(), and memset(), avoid
-intentionally writing across neighboring fields.
 
-Use named struct in struct mwl8k_cmd_set_key around members key_material,
-tkip_tx_mic_key, and tkip_rx_mic_key so they can be referenced
-together. This will allow memcpy() and sizeof() to more easily reason
-about sizes, improve readability, and avoid future warnings about writing
-beyond the end of key_material.
 
-"pahole" shows no size nor member offset changes to struct
-mwl8k_cmd_set_key. "objdump -d" shows no object code changes.
+On 2021/11/19 01:54, Paolo Bonzini wrote:
+> On 11/18/21 17:28, Lai Jiangshan wrote:
+>> Using VMX_REGS_DIRTY_SET and SVM_REGS_DIRTY_SET and making the code
+>> similar is my intent for patch12,13.  If it causes confusing, I would
+>> like to make a second thought.  SVM_REGS_DIRTY_SET does be special
+>> in svm where VCPU_EXREG_CR3 is in it by definition, but it is not
+>> added into SVM_REGS_DIRTY_SET in the patch just for optimization to allow
+>> the compiler optimizes the line of code out.
+> 
+> I think this is where we disagree.  In my opinion it is enough to
+> document that CR3 _can_ be out of date, but it doesn't have to be marked
+> dirty because its dirty bit is effectively KVM_REQ_LOAD_MMU_PGD.
+> 
+> For VMX, it is important to clear VCPU_EXREG_CR3 because the combination
+> "avail=0, dirty=1" is nonsensical:
+> 
+>      av d
+>      0  0    in VMCS
+>      0  1    *INVALID*
+>      1  0    in vcpu->arch
+>      1  1    in vcpu->arch, needs store
+> 
+> But on SVM, VCPU_EXREG_CR3 is always available.
+> 
+> Thinking more about it, it makes more sense for VMX to reset _all_
+> bits of dirty to 0, just like it was before your change, but doing
+> so even earlier in vmx_vcpu_run.
+> 
+> I appreciate that VMX_REGS_LAZY_UPDATE_SET is useful for documentation,
+> but it's also important that the values in avail/dirty make sense as
+> a pair.
+> 
+> So here is what I would do:
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-v1->v2: fixed wide indent, also not actually using struct_group
----
- drivers/net/wireless/marvell/mwl8k.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+Reviewed-by: Lai Jiangshan <laijs@linux.alibaba.com>
 
-diff --git a/drivers/net/wireless/marvell/mwl8k.c b/drivers/net/wireless/marvell/mwl8k.c
-index 529e325498cd..864a2ba9efee 100644
---- a/drivers/net/wireless/marvell/mwl8k.c
-+++ b/drivers/net/wireless/marvell/mwl8k.c
-@@ -4225,9 +4225,11 @@ struct mwl8k_cmd_set_key {
- 	__le32 key_info;
- 	__le32 key_id;
- 	__le16 key_len;
--	__u8 key_material[MAX_ENCR_KEY_LENGTH];
--	__u8 tkip_tx_mic_key[MIC_KEY_LENGTH];
--	__u8 tkip_rx_mic_key[MIC_KEY_LENGTH];
-+	struct {
-+		__u8 key_material[MAX_ENCR_KEY_LENGTH];
-+		__u8 tkip_tx_mic_key[MIC_KEY_LENGTH];
-+		__u8 tkip_rx_mic_key[MIC_KEY_LENGTH];
-+	} tkip;
- 	__le16 tkip_rsc_low;
- 	__le32 tkip_rsc_high;
- 	__le16 tkip_tsc_low;
-@@ -4375,7 +4377,7 @@ static int mwl8k_cmd_encryption_set_key(struct ieee80211_hw *hw,
- 		goto done;
- 	}
- 
--	memcpy(cmd->key_material, key->key, keymlen);
-+	memcpy(&cmd->tkip, key->key, keymlen);
- 	cmd->action = cpu_to_le32(action);
- 
- 	rc = mwl8k_post_pervif_cmd(hw, vif, &cmd->header);
--- 
-2.30.2
 
+> 
+> diff --git a/arch/x86/kvm/kvm_cache_regs.h b/arch/x86/kvm/kvm_cache_regs.h
+> index 6e6d0d01f18d..ac3d3bd662f4 100644
+> --- a/arch/x86/kvm/kvm_cache_regs.h
+> +++ b/arch/x86/kvm/kvm_cache_regs.h
+> @@ -43,6 +43,13 @@ BUILD_KVM_GPR_ACCESSORS(r14, R14)
+>   BUILD_KVM_GPR_ACCESSORS(r15, R15)
+>   #endif
+> 
+> +/*
+> + * avail  dirty
+> + * 0      0      register in VMCS/VMCB
+> + * 0      1      *INVALID*
+> + * 1      0      register in vcpu->arch
+> + * 1      1      register in vcpu->arch, needs to be stored back
+> + */
+>   static inline bool kvm_register_is_available(struct kvm_vcpu *vcpu,
+>                            enum kvm_reg reg)
+>   {
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 6fce61fc98e3..72ae67e214b5 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -6635,6 +6635,7 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
+>           vmcs_writel(GUEST_RSP, vcpu->arch.regs[VCPU_REGS_RSP]);
+>       if (kvm_register_is_dirty(vcpu, VCPU_REGS_RIP))
+>           vmcs_writel(GUEST_RIP, vcpu->arch.regs[VCPU_REGS_RIP]);
+> +    vcpu->arch.regs_dirty = 0;
+> 
+>       cr3 = __get_current_cr3_fast();
+>       if (unlikely(cr3 != vmx->loaded_vmcs->host_state.cr3)) {
+> @@ -6729,7 +6730,7 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
+>       loadsegment(es, __USER_DS);
+>   #endif
+> 
+> -    vmx_register_cache_reset(vcpu);
+> +    vcpu->arch.regs_avail &= ~VMX_REGS_LAZY_LOAD_SET;
+> 
+>       pt_guest_exit(vmx);
+> 
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index 4df2ac24ffc1..f978699480e3 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -473,19 +473,21 @@ BUILD_CONTROLS_SHADOW(pin, PIN_BASED_VM_EXEC_CONTROL)
+>   BUILD_CONTROLS_SHADOW(exec, CPU_BASED_VM_EXEC_CONTROL)
+>   BUILD_CONTROLS_SHADOW(secondary_exec, SECONDARY_VM_EXEC_CONTROL)
+> 
+> -static inline void vmx_register_cache_reset(struct kvm_vcpu *vcpu)
+> -{
+> -    vcpu->arch.regs_avail = ~((1 << VCPU_REGS_RIP) | (1 << VCPU_REGS_RSP)
+> -                  | (1 << VCPU_EXREG_RFLAGS)
+> -                  | (1 << VCPU_EXREG_PDPTR)
+> -                  | (1 << VCPU_EXREG_SEGMENTS)
+> -                  | (1 << VCPU_EXREG_CR0)
+> -                  | (1 << VCPU_EXREG_CR3)
+> -                  | (1 << VCPU_EXREG_CR4)
+> -                  | (1 << VCPU_EXREG_EXIT_INFO_1)
+> -                  | (1 << VCPU_EXREG_EXIT_INFO_2));
+> -    vcpu->arch.regs_dirty = 0;
+> -}
+> +/*
+> + * VMX_REGS_LAZY_LOAD_SET - The set of registers that will be updated in the
+> + * cache on demand.  Other registers not listed here are synced to
+> + * the cache immediately after VM-Exit.
+> + */
+> +#define VMX_REGS_LAZY_LOAD_SET    ((1 << VCPU_REGS_RIP) |         \
+> +                (1 << VCPU_REGS_RSP) |          \
+> +                (1 << VCPU_EXREG_RFLAGS) |      \
+> +                (1 << VCPU_EXREG_PDPTR) |       \
+> +                (1 << VCPU_EXREG_SEGMENTS) |    \
+> +                (1 << VCPU_EXREG_CR0) |         \
+> +                (1 << VCPU_EXREG_CR3) |         \
+> +                (1 << VCPU_EXREG_CR4) |         \
+> +                (1 << VCPU_EXREG_EXIT_INFO_1) | \
+> +                (1 << VCPU_EXREG_EXIT_INFO_2))
+> 
+>   static inline struct kvm_vmx *to_kvm_vmx(struct kvm *kvm)
+>   {
+> 
+> and likewise for SVM:
+> 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index eb2a2609cae8..4b22aa7d55d0 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -3944,6 +3944,7 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+>           vcpu->arch.regs[VCPU_REGS_RSP] = svm->vmcb->save.rsp;
+>           vcpu->arch.regs[VCPU_REGS_RIP] = svm->vmcb->save.rip;
+>       }
+> +    vcpu->arch.regs_dirty = 0;
+> 
+>       if (unlikely(svm->vmcb->control.exit_code == SVM_EXIT_NMI))
+>           kvm_before_interrupt(vcpu);
+> @@ -3978,7 +3978,7 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+>           vcpu->arch.apf.host_apf_flags =
+>               kvm_read_and_reset_apf_flags();
+> 
+> -    kvm_register_clear_available(vcpu, VCPU_EXREG_PDPTR);
+> +    vcpu->arch.regs_avail &= ~SVM_REGS_LAZY_LOAD_SET;
+> 
+>       /*
+>        * We need to handle MC intercepts here before the vcpu has a chance to
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index 32769d227860..b3c3c3098216 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -321,6 +321,16 @@ static inline bool vmcb_is_dirty(struct vmcb *vmcb, int bit)
+>           return !test_bit(bit, (unsigned long *)&vmcb->control.clean);
+>   }
+> 
+> +/*
+> + * Only the PDPTRs are loaded on demand into the shadow MMU.  All other
+> + * fields are synchronized in handle_exit, because accessing the VMCB is cheap.
+> + *
+> + * CR3 might be out of date in the VMCB but it is not marked dirty; instead,
+> + * KVM_REQ_LOAD_MMU_PGD is always requested when the cached vcpu->arch.cr3
+> + * is changed.  svm_load_mmu_pgd() then syncs the new CR3 value into the VMCB.
+> + */
+> +#define SVM_REGS_LAZY_LOAD_SET    (1 << VCPU_EXREG_PDPTR)
+> +
+>   static inline struct vcpu_svm *to_svm(struct kvm_vcpu *vcpu)
+>   {
+>       return container_of(vcpu, struct vcpu_svm, vcpu);
+> 
