@@ -2,108 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53348456EFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 13:45:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 390CA456F06
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 13:46:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235311AbhKSMsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 07:48:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230385AbhKSMsH (ORCPT
+        id S235350AbhKSMtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 07:49:04 -0500
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:44475 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235328AbhKSMtC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 07:48:07 -0500
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C23CC061574;
-        Fri, 19 Nov 2021 04:45:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1637325904;
-        bh=KC11muGBGBkkp5sLwFID+9dMZgpYQl97DyJqkTb+W+s=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=GbBVeRnL7HML6p7NyN7VAmkSbR5T7l8wt+L0oTOPxGgZ8ZwLjdLN80QDMebg5r4Km
-         f3LIf5P4E0vCplwKZ25Vv6y5YmjKIA1OgsWKX63MGllxUz5+aVi2TTjXw3+RdiKPNq
-         9H4Z2ST63q3qwhQKUC2SAnXznO92Yw4dp3OPpvNQ=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id A433D12805A8;
-        Fri, 19 Nov 2021 07:45:04 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 0jGiuwE0eec2; Fri, 19 Nov 2021 07:45:04 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1637325904;
-        bh=KC11muGBGBkkp5sLwFID+9dMZgpYQl97DyJqkTb+W+s=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=GbBVeRnL7HML6p7NyN7VAmkSbR5T7l8wt+L0oTOPxGgZ8ZwLjdLN80QDMebg5r4Km
-         f3LIf5P4E0vCplwKZ25Vv6y5YmjKIA1OgsWKX63MGllxUz5+aVi2TTjXw3+RdiKPNq
-         9H4Z2ST63q3qwhQKUC2SAnXznO92Yw4dp3OPpvNQ=
-Received: from [IPv6:2601:5c4:4300:c551::c447] (unknown [IPv6:2601:5c4:4300:c551::c447])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 4BB47128035A;
-        Fri, 19 Nov 2021 07:45:03 -0500 (EST)
-Message-ID: <1349346e1d5daca991724603d1495ec311cac058.camel@HansenPartnership.com>
-Subject: Re: [RFC PATCH 0/4] namespacefs: Proof-of-Concept
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, mingo@redhat.com, hagen@jauu.net,
-        rppt@kernel.org, akpm@linux-foundation.org, vvs@virtuozzo.com,
-        shakeelb@google.com, christian.brauner@ubuntu.com,
-        mkoutny@suse.com, Linux Containers <containers@lists.linux.dev>
-Date:   Fri, 19 Nov 2021 07:45:01 -0500
-In-Reply-To: <20211118142440.31da20b3@gandalf.local.home>
-References: <20211118181210.281359-1-y.karadz@gmail.com>
-         <87a6i1xpis.fsf@email.froward.int.ebiederm.org>
-         <20211118142440.31da20b3@gandalf.local.home>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Fri, 19 Nov 2021 07:49:02 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.west.internal (Postfix) with ESMTP id CCFDD2B017C0;
+        Fri, 19 Nov 2021 07:45:59 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Fri, 19 Nov 2021 07:46:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=TqzbqJgsp3679OQmdBXFlQSiQsI
+        NdU6mFESgQ8pHy3U=; b=P8yWYMJ4ldNfTJ1Uuo/qe4HtjRk30T/ijkHDqSk9qF0
+        S4l2QPD1WZzmBkRy953FXIfsuigdU5pCXxBz++mCwAt9AdGLwvfmDt+TSDJ6FWCA
+        Xg0HjeVwidxiXtJWf39w8XziCUJlTAqux33qyEakDhmnB/eUWo/3ZI5DhMSbszWg
+        OggJuPGN2zsSBABArK64S9g3DLsMkiO4/QvI4bAQyBwt6oqpmkN4Sk8JR0Mqfa/8
+        4Bq/BHLFUH37GNNoFPO0+bDj38IL5vQnUSiTOaxTpJ5dIL2+R5JYN+zYcV3/hsM8
+        HFnDM2XHL8dhTsPeUhj47/YPs6d3T/+bsQzSZnP92Aw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=TqzbqJ
+        gsp3679OQmdBXFlQSiQsINdU6mFESgQ8pHy3U=; b=LAZoalZlbqjrxnrZPiyVD+
+        AEr79KUmS1vQJq8Jfwx0nnP8G2wChf8PTMIZSTfZiVl1xCj3WbkCflWAsv12Fk31
+        /uXfcmICNDWlPlHGkUC0xZQbPiqADiM/Pl2v/4BnpRniVhGHzfzhoVeSuWFS4+rh
+        Qxjo5KT5HYte09m3n6vBmTAvnHzX4EPYetFb5QsrmNHKsXSftgorecoVMJQVjjYY
+        Gl11W3wUWj8/VYN5i3MAH+XfLv0tEPlkXDAVbK/Viq1s79dK+UiQQQemRNBnk1DE
+        ueeqDS6nxLZVSvMqJhmnMoUnl0U9l0LNKDNrkkYQJhrw4wRgbYqgsyk/1lmfzOJQ
+        ==
+X-ME-Sender: <xms:hpyXYeg0V9SL-cv7DKbqw_xfZD4TmbhN56HVHyWU2OXEgzrgR-YYXw>
+    <xme:hpyXYfASgACjIBuvl-OAl0yhayEjgjJtYiDkX5eD_SJtaSa2m9AaYfeZlK04sHomo
+    OTgY3EccsiFtw>
+X-ME-Received: <xmr:hpyXYWEILNQLDQXs_tQQfMNdtCAureGe4KzBPKxRP8X9Dl1sPa4LwU9ZZ3DumyHqZgVCYpS9IL_0wcw-j8Vfu971eOmGzL9W>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeekgdegvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
+    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
+    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
+    gtohhm
+X-ME-Proxy: <xmx:hpyXYXQjlgK3s6HWctahE0FxOKgc-4AdOdul6OJso96Pn2m4EdUbvg>
+    <xmx:hpyXYbwU-4C43CJN-pN9qzpf0HU8uRUfQfC11W9PI6Hk_OwfZrT05g>
+    <xmx:hpyXYV5YvyW7me1XhxAWDEW_ECJzSWj1UBMpNVp760HTGe-sm2G5rg>
+    <xmx:h5yXYQKIZWp-fAU1-jisda9eASqo99w6aF9niPuopxGIAR-OC1dFJ_w-GJk>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 19 Nov 2021 07:45:58 -0500 (EST)
+Date:   Fri, 19 Nov 2021 13:45:23 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Tadeusz Struk <tadeusz.struk@linaro.org>
+Cc:     stable@vger.kernel.org,
+        syzbot+662448179365dddc1880@syzkaller.appspotmail.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xieyongji@bytedance.com, Christoph Hellwig <hch@lst.de>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: general protection fault in bdev_read_page
+Message-ID: <YZecY2gAFjoNtxZO@kroah.com>
+References: <7e6c4c23-f071-f33b-7bd4-da11980d34c6@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7e6c4c23-f071-f33b-7bd4-da11980d34c6@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-11-18 at 14:24 -0500, Steven Rostedt wrote:
-> On Thu, 18 Nov 2021 12:55:07 -0600
-> ebiederm@xmission.com (Eric W. Biederman) wrote:
+On Thu, Nov 18, 2021 at 03:08:06PM -0800, Tadeusz Struk wrote:
+> Hi,
+> This has triggered in 5.10.77 yesterday [1], and I was able to
+> reproduce it on 5.10.80 using the C repro from android-54 [2].
+> What happens is that the function do_mpage_readpage() calls
+> bdev_read_page() [3] passing in bdev == NULL, and bdev_read_page()
+> crashes here [4]. This happens in 5.15 down to 5.10, but it is fixed
+> in 5.16-rc1. I bisected it to the first good commit, which is:
 > 
-> > It is not correct to use inode numbers as the actual names for
-> > namespaces.
-> > 
-> > I can not see anything else you can possibly uses as names for
-> > namespaces.
+> af3c570fb0df ("loop: Use blk_validate_block_size() to validate block size")
 > 
-> This is why we used inode numbers.
+> The root cause seems to be loss of precision in loop_configure(),
+> when it calls loop_validate_block_size() in [5]. The config->block_size
+> is an uint32 and the bsize param passed to loop_validate_block_size() is
+> unsigned short. The reproducer sets up a loop device with the block size
+> equal to 0x20000400, which is bigger than USHRT_MAX.
+> The loop_validate_block_size() returns 0, but uses the invalid size
+> to setup the device. The new helper changes the bsize param type to uint,
+> and the issue goes away.
 > 
-> > To allow container migration between machines and similar things
-> > the you wind up needing a namespace for your names of namespaces.
+> To fix this for the older kernels can we please have the two commits:
 > 
-> Is this why you say inode numbers are incorrect?
+> 570b1cac4776 ("block: Add a helper to validate the block size")
+> af3c570fb0df ("loop: Use blk_validate_block_size() to validate block size")
+> 
+> applied to 5.15, 5.14, and 5.10.
+> The first one needs to be back ported, but the second applies cleanly.
+> I will follow up back ports for each version in few minutes.
 
-The problem is you seem to have picked on one orchestration system
-without considering all the uses of namespaces and how this would
-impact them.  So let me explain why inode numbers are incorrect and it
-will possibly illuminate some of the cans of worms you're opening.
+All now queued up, thanks.
 
-We have a container checkpoint/restore system called CRIU that can be
-used to snapshot the state of a pid subtree and restore it.  It can be
-used for the entire system or piece of it.  It is also used by some
-orchestration systems to live migrate containers.  Any property of a
-container system that has meaning must be saved and restored by CRIU.
-
-The inode number is simply a semi random number assigned to the
-namespace.  it shows up in /proc/<pid>/ns but nowhere else and isn't
-used by anything.  When CRIU migrates or restores containers, all the
-namespaces that compose them get different inode values on the restore.
-If you want to make the inode number equivalent to the container name,
-they'd have to restore to the previous number because you've made it a
-property of the namespace.  The way everything is set up now, that's
-just not possible and never will be.  Inode numbers are a 32 bit space
-and can't be globally unique.  If you want a container name, it will
-have to be something like a new UUID and that's the first problem you
-should tackle.
-
-James
-
-
+greg k-h
