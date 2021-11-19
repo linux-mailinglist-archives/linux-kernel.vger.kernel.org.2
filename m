@@ -2,81 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC74456F93
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:27:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F9C456F96
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:28:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235292AbhKSNaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 08:30:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234531AbhKSNaH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 08:30:07 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC7DC06173E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 05:27:05 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id e144so12728152iof.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 05:27:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:in-reply-to:references:subject:message-id:date
-         :mime-version:content-transfer-encoding;
-        bh=tTFVd1nWcx3/XcFWQghei7zJBEBnxYkZz8vTHO1fGeE=;
-        b=AUEqQdV3wtCQoHQw3uXtTZQMCIea9TPMKqSH9B1cD/8co4jzDGxflGe06I87v4A9qZ
-         jc5tKvG64fJDptVFDLqT/yBxbv9cKwLkJOodF0z3YLG+EqKKJaXV8iU3GqeisaoIL0Mw
-         TBanQ1f2qFDNkSwU2cn14jYVXl5OlB64IXXKchqXlVGlLk7sLzh1Jar1N9guEthfUUwT
-         yXlX078M0Xbx0RnCnFAkRDhxr4wxRw+wU3RjbSgt58pAwmsRDnxk+ZCQP9yQm0MCS4SN
-         Biu6Cr5RGg7EiSSW28CI+jbgqzijwh5imiGNmDkypWlXexx752rNPvboyYI+NIW+FqBM
-         rIMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
-         :message-id:date:mime-version:content-transfer-encoding;
-        bh=tTFVd1nWcx3/XcFWQghei7zJBEBnxYkZz8vTHO1fGeE=;
-        b=uC2YOhsNRjTnXJhZse0vVv8qCAH2tFXTE3d+q1yjqvOlusI9CB7163sC9/4H+DtWhw
-         6WquxVd/aB591KimNSCXcpie+0ExxdN4njk+2aOvyMRQhU8ULI2PzO2ATqt6zSoOGak1
-         NU0TunOZrjP7vSrAoEvk5cfuqif5OtE7Po0Sg+9A6JeGaCuqbIelBQ6NKq5XnjWKYu8L
-         T5k4YnSR98xV/cqHP9+ESI+Tj1zg5JbjTmkKvGzjzz7RpLvUlgHdpOd0p7TucCWx9yrE
-         qdUB/e5tDonVew9yog02Iw1ZwS7vx4IW1vuRHxlDQuwTtTVqZE16CL9Dto7RRuME2X2a
-         ElNg==
-X-Gm-Message-State: AOAM530ikp8xg7rseX3E1WclQbdIclQs/mo8rxEdIMUM2y4b/gAkvq5k
-        0QcabjP+3guJ98dKN7yLh5Q4KA==
-X-Google-Smtp-Source: ABdhPJwdxk/QYrODedQdeDW6RHtyFLfIZTB8qh42VRCoIaNIJD7RZfljKbgcdEogIBxcUWxGA8GhDw==
-X-Received: by 2002:a05:6602:164a:: with SMTP id y10mr5237113iow.123.1637328424840;
-        Fri, 19 Nov 2021 05:27:04 -0800 (PST)
-Received: from [127.0.1.1] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id n12sm2027960ilk.80.2021.11.19.05.27.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 05:27:04 -0800 (PST)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     tj@kernel.org, Yu Kuai <yukuai3@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, yi.zhang@huawei.com
-In-Reply-To: <20211102020705.2321858-1-yukuai3@huawei.com>
-References: <20211102020705.2321858-1-yukuai3@huawei.com>
-Subject: Re: [PATCH] blk-cgroup: fix missing put device in error path from blkg_conf_pref()
-Message-Id: <163732842185.43918.10012034831708951012.b4-ty@kernel.dk>
-Date:   Fri, 19 Nov 2021 06:27:01 -0700
+        id S235409AbhKSNbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 08:31:07 -0500
+Received: from mga11.intel.com ([192.55.52.93]:8560 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232869AbhKSNbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 08:31:07 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="231893535"
+X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
+   d="scan'208";a="231893535"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 05:28:05 -0800
+X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
+   d="scan'208";a="737059327"
+Received: from taoki-mobl3.gar.corp.intel.com ([10.254.64.179])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 05:28:01 -0800
+Message-ID: <aaa08cd0912576c3848eaacccc9d09273ddc73f9.camel@linux.intel.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: ITMT support for overclocked
+ system
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Michael Larabel <Michael@MichaelLarabel.com>, lenb@kernel.org,
+        rafael@kernel.org, viresh.kumar@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        ricardo.neri@intel.com, tim.c.chen@intel.com, peterz@infradead.org,
+        arjan@linux.intel.com
+Date:   Fri, 19 Nov 2021 05:27:57 -0800
+In-Reply-To: <a2a18288-fa7c-02fb-6376-730777823637@MichaelLarabel.com>
+References: <20211119051801.1432724-1-srinivas.pandruvada@linux.intel.com>
+         <a2a18288-fa7c-02fb-6376-730777823637@MichaelLarabel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Nov 2021 10:07:05 +0800, Yu Kuai wrote:
-> If blk_queue_enter() failed due to queue is dying, the
-> blkdev_put_no_open() is needed because blkcg_conf_open_bdev() succeeded.
+On Fri, 2021-11-19 at 05:19 -0600, Michael Larabel wrote:
+> On 11/18/21 23:18, Srinivas Pandruvada wrote:
+> > On systems with overclocking enabled, CPPC Highest Performance can
+> > be
+> > hard coded to 0xff. In this case even if we have cores with
+> > different
+> > highest performance, ITMT can't be enabled as the current
+> > implementation
+> > depends on CPPC Highest Performance.
+> > 
+> > On such systems we can use MSR_HWP_CAPABILITIES maximum performance
+> > field
+> > when CPPC.Highest Performance is 0xff.
+> > 
+> > Due to legacy reasons, we can't solely depend on
+> > MSR_HWP_CAPABILITIES as
+> > in some older systems CPPC Highest Performance is the only way to
+> > identify
+> > different performing cores.
+> > 
+> > Reported-by: Michael Larabel <Michael@MichaelLarabel.com>
+> > Signed-off-by: Srinivas Pandruvada < 
+> > srinivas.pandruvada@linux.intel.com>
+> > ---
+> > This patch was tested on one Alder Lake system by enabling
+> > Overclocking.
+> > Once overclocking is enabled, we see
+> > $cat /sys/devices/system/cpu/cpu*/acpi_cppc/highest_perf
+> > 255 (P-Cores)
+> > 255 (P-Cores
+> > ...
+> > ...
+> > 255 (E-Cores)
+> > 255 (E-Cores)
+> > The real max performance for CPUs on this system was
+> > 0x40 for P-cores and 0x26 for E-cores.
+> > With this change applied we will see
+> > $cat /proc/sys/kernel/sched_itmt_enabled
+> > 1
+> > The resultant ITMT priorities
+> > for P-core 0x40, P-core HT sibling 0x10 and E-core 0x26
 > 
 > 
+> With this patch I can confirm that now sched_itmt_enabled = 1 and 
+> correct highest_perf with the ASUS ROG STRIX Z690-E GAMING WIFI board
+> on 
+> the latest BIOS. Thanks.
+> 
+> Tested-by: Michael Larabel <Michael@MichaelLarabel.com>
+> 
 
-Applied, thanks!
+Thanks Michael for confirming.
 
-[1/1] blk-cgroup: fix missing put device in error path from blkg_conf_pref()
-      commit: 15c30104965101b8e76b24d27035569d6613a7d6
+-Srinivas
 
-Best regards,
--- 
-Jens Axboe
+> Michael
+> 
+> 
+> > 
+> >   drivers/cpufreq/intel_pstate.c | 10 ++++++++++
+> >   1 file changed, 10 insertions(+)
+> > 
+> > diff --git a/drivers/cpufreq/intel_pstate.c
+> > b/drivers/cpufreq/intel_pstate.c
+> > index 815df3daae9d..3106e62ffb25 100644
+> > --- a/drivers/cpufreq/intel_pstate.c
+> > +++ b/drivers/cpufreq/intel_pstate.c
+> > @@ -338,6 +338,8 @@ static void
+> > intel_pstste_sched_itmt_work_fn(struct work_struct *work)
+> >   
+> >   static DECLARE_WORK(sched_itmt_work,
+> > intel_pstste_sched_itmt_work_fn);
+> >   
+> > +#define CPPC_MAX_PERF  U8_MAX
+> > +
+> >   static void intel_pstate_set_itmt_prio(int cpu)
+> >   {
+> >         struct cppc_perf_caps cppc_perf;
+> > @@ -348,6 +350,14 @@ static void intel_pstate_set_itmt_prio(int
+> > cpu)
+> >         if (ret)
+> >                 return;
+> >   
+> > +       /*
+> > +        * On some systems with overclocking enabled,
+> > CPPC.highest_perf is hardcoded to 0xff.
+> > +        * In this case we can't use CPPC.highest_perf to enable
+> > ITMT.
+> > +        * In this case we can look at MSR_HWP_CAPABILITIES bits
+> > [8:0] to decide.
+> > +        */
+> > +       if (cppc_perf.highest_perf == CPPC_MAX_PERF)
+> > +               cppc_perf.highest_perf =
+> > HWP_HIGHEST_PERF(READ_ONCE(all_cpu_data[cpu]->hwp_cap_cached));
+> > +
+> >         /*
+> >          * The priorities can be set regardless of whether or not
+> >          * sched_set_itmt_support(true) has been called and it is
+> > valid to
 
 
