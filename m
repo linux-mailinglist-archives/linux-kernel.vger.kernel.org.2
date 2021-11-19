@@ -2,180 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D9CA4572F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:29:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A45F1457315
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:35:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236418AbhKSQcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 11:32:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233713AbhKSQcy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 11:32:54 -0500
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F64C06173E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:29:52 -0800 (PST)
-Received: by mail-il1-x132.google.com with SMTP id i9so5257404ilu.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:29:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=NA+2l6X3VrlJxsJamfaAblN1iQr9G5GeyeDjrzqWldE=;
-        b=pWYGr8brYDg2I9xcuGuhurThossAPr1q87fBQPqCiM2BAja4C7uFnX65Fix38gLbMR
-         at4/FYFXGd1o9zn1i0YRa4Hl3P62bx1s2GsXPKOGSzrVsAT1Xw8HlYNWbORdzoDIOeqe
-         0qslCNUJ66VzbM5OECQeydfyhNNqUWwGP6afEEwmpoOMoNIZnNaZfchouPoszwNYzV1v
-         y1bimltU6qqxfdJSKgW6NjHgo6foggqrexAHaTR5BhNExaTs0kreVzSvKeiuvCJBGMM5
-         4hhlHH8MqKp2ss3LA9dpdsxQOKHOGkUr880PDTOgcILg0r5nps7M4Bb//54zUt1tJBXH
-         UXjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=NA+2l6X3VrlJxsJamfaAblN1iQr9G5GeyeDjrzqWldE=;
-        b=3+3QA1rhAYY2VyJ9mfk7WAXe1lZ11JDyt8VF5/YRQb+UZo+izvt/Ds6x11dLbNQqhc
-         ZPC6pyYt8sz96qgg/eDVm3Esb7p2P45YdsYVxg406Q4WTOHo20iLskTYG44nO2bKfjRp
-         ZxAXpTFYPTcI/wAdLhh+kV1PMCEHE8mjGtqddm0M/9xn3G9EpxYcrQjgpPlfNYAoWfCd
-         WJoLzzZOV2dYDoCw9CWvnxpYBb8kHcBGo/duAsICz+cW43O0X7Wwe0ZSO7cHylIT6PK5
-         Rw5uOx3cw/Ug70R8ibCsW++fsvMpDi4q84Ja8pHCUBT7vGUnjWRM/KX9mjUMm2X0yCSV
-         +M8A==
-X-Gm-Message-State: AOAM530dGPnYuX0aGk4uEgDwwKwUptYjkria5yWRkiHoXaViKmw87le+
-        9z59eH0LQVDq+nd8yLoKZbSNyQ==
-X-Google-Smtp-Source: ABdhPJy9+PK69iHyuVZcAK9TkCljtUM0G3YiAMHQdYjwnsW/n1HgnSVsWmM0mEP/36cqcfaj9/5ecQ==
-X-Received: by 2002:a92:d343:: with SMTP id a3mr5688828ilh.136.1637339392190;
-        Fri, 19 Nov 2021 08:29:52 -0800 (PST)
-Received: from nicolas-tpx395.localdomain (mtl.collabora.ca. [66.171.169.34])
-        by smtp.gmail.com with ESMTPSA id c7sm108143iob.28.2021.11.19.08.29.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 08:29:51 -0800 (PST)
-Message-ID: <7f94eaacfddb8c5434c17f1e069ea87a17657ce9.camel@ndufresne.ca>
-Subject: Re: [RFC 0/5] arm64: imx8mm: Enable Hantro VPUs
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Adam Ford <aford173@gmail.com>, Tim Harvey <tharvey@gateworks.com>
-Cc:     linux-media <linux-media@vger.kernel.org>,
-        Schrempf Frieder <frieder.schrempf@kontron.de>,
-        Marek Vasut <marek.vasut@gmail.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        cstevens@beaconembedded.com,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Alice Guo <alice.guo@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        "open list:HANTRO VPU CODEC DRIVER" 
-        <linux-rockchip@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>
-Date:   Fri, 19 Nov 2021 11:29:48 -0500
-In-Reply-To: <CAHCN7x+0LwwU_rEST+TZxGquswGKL19gnTy9WLofsXtGAtWqdw@mail.gmail.com>
-References: <20211106183802.893285-1-aford173@gmail.com>
-         <718f7f6d6cd564d031c1963f1590c62d549ae725.camel@ndufresne.ca>
-         <CAHCN7xKM9RUE7z-+ug1on+D=nDoEm589R4m03ofys92Aq75ZVQ@mail.gmail.com>
-         <8db00a4b6faa99c940d9bc86e17161eb0db5efe3.camel@ndufresne.ca>
-         <CAJ+vNU28UJffFv9jQ2KryJMudqYxvCaoVOVcU5dPqRA209iN6A@mail.gmail.com>
-         <d91532c2c0772f9aa708ead36b2a97203727a7ea.camel@ndufresne.ca>
-         <CAJ+vNU3H-V+bPoZ3qKead45h=W7AhQK6Lhjrx5ssdF4c_qfe=A@mail.gmail.com>
-         <CAHCN7x+0LwwU_rEST+TZxGquswGKL19gnTy9WLofsXtGAtWqdw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
+        id S236520AbhKSQiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 11:38:06 -0500
+Received: from pegase2.c-s.fr ([93.17.235.10]:54571 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234515AbhKSQiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 11:38:06 -0500
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Hwj1y0P6Wz9sS7;
+        Fri, 19 Nov 2021 17:35:02 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ScUWaeylmfz1; Fri, 19 Nov 2021 17:35:01 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Hwj1x6TGcz9sS4;
+        Fri, 19 Nov 2021 17:35:01 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C63F38B7E7;
+        Fri, 19 Nov 2021 17:35:01 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id AVSSndVnRXwL; Fri, 19 Nov 2021 17:35:01 +0100 (CET)
+Received: from [192.168.203.70] (unknown [192.168.203.70])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B921B8B765;
+        Fri, 19 Nov 2021 17:35:00 +0100 (CET)
+Message-ID: <7f4e7d24-6eb0-5ecf-3497-61c3633046bd@csgroup.eu>
+Date:   Fri, 19 Nov 2021 17:35:00 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH] powerpc/signal32: Use struct_group() to zero spe regs
+Content-Language: fr-FR
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        kernel test robot <lkp@intel.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+References: <20211118203604.1288379-1-keescook@chromium.org>
+ <1e312cbd-cd52-ddce-f839-db765173c526@csgroup.eu>
+ <202111190824.AEBBE1328@keescook>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+In-Reply-To: <202111190824.AEBBE1328@keescook>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam, Tim,
 
-[...]
-> > > > Nicolas and Adam,
-> > > > 
-> > > > For the H1 patches in this series: I've been able to test the IMX8MM
-> > > > H1 JPEG encode using GStreamer 1.18.5:
-> > > > $ gst-inspect-1.0 | grep -e "v4l2.*enc"
-> > > > video4linux2:  v4l2jpegenc: V4L2 JPEG Encoder
-> > > > $ gst-launch-1.0 videotestsrc ! jpegenc ! rtpjpegpay ! udpsink
-> > >                                   ^ v4l2jpegenc
-> > > 
-> > > This is just a transcript error ?
-> > 
-> > Nicolas,
-> > 
-> > No! Thanks for catching my mistake. I was testing with software encode... ooops!
-> > 
-> > 'gst-launch-1.0 videotestsrc ! v4l2jpegenc ! fakesink' actually hangs
-> > the board so likely a power-domain issue there?
+
+Le 19/11/2021 à 17:28, Kees Cook a écrit :
+> On Fri, Nov 19, 2021 at 08:46:27AM +0000, LEROY Christophe wrote:
+>>
+>>
+>> Le 18/11/2021 à 21:36, Kees Cook a écrit :
+>>> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+>>> field bounds checking for memset(), avoid intentionally writing across
+>>> neighboring fields.
+>>>
+>>> Add a struct_group() for the spe registers so that memset() can correctly reason
+>>> about the size:
+>>>
+>>>      In function 'fortify_memset_chk',
+>>>          inlined from 'restore_user_regs.part.0' at arch/powerpc/kernel/signal_32.c:539:3:
+>>>      >> include/linux/fortify-string.h:195:4: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]
+>>>        195 |    __write_overflow_field();
+>>>            |    ^~~~~~~~~~~~~~~~~~~~~~~~
+>>>
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>> Signed-off-by: Kees Cook <keescook@chromium.org>
+>>
+>> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>
+>> However, is it really worth adding that grouping ? Wouldn't it be
+>> cleaner to handle evr[] and acc separately ? Now that we are using
+>> unsafe variants of get/put user performance wouldn't be impacted.
 > 
-> The v4l2-compliance tests fail on the h1 decoder with a hang, but I
-> think we're writing to registers which are not documented in the Mini
-> TRM.  The Mini TRM doesn't explicitly show the JPEG encoding as a
-> feature, but some of the registers state JPEG, but because some of the
-> registers written for the H1 are not documented in the TRM.  If those
-> registers are restricted or not in this SoC, I am concerned that it
-> might be related.  I'll try to run some more tests this weekend to
-> check on the status of the power-domain stuff.
+> I'm fine with whatever is desired here. I reworked an earlier version of
+> this patch based on mpe's feedback, so I can certain rework it again. :)
 
-To verify if the HW support JPEG encoding you can read SWREG63 bit 25. This is
-in the TRM, just not labelled properly. To mimic the decoding side, would be "HW
-synthesis config register X" with the bit labelled SW_ENC_JPEG_PROF (but
-PROF/profile is on or off). If your board hang while reading this, you likely
-didn't get the power bit right.
+Well, with oddities like the below, it may not be straight forward. If 
+the objective is to enable FORTIFY_SOURCE, maybe that's good enough.
 
-IMX8 has an undocumented control block thing that we have been fighting with in
-imx8q,  perhaps that's your issue. Few driver was proposed, we are still pending
-on NXP solution to be submitted (they asked us to wait, still waiting =)).
+Let see if Michael has any opinion.
 
-> > 
-> > > 
-> > > > host=192.168.1.146 port=5000
-> > > > viewed on client@192.168.1.146 via:
-> > > > $ gst-launch-1.0 udpsrc port=5000 ! application/x-rtp,payload=96 !
-> > > > rtpjpegdepay ! jpegdec ! autovideosink
-> > > > 
-> > > > For the G1/G2 patches in the series I don't see any Gstreamer
-> > > > 'v4l2.*dec' elements. Perhaps I need a newer version of Gstreamer.
-> > > 
-> > > Most likely yes, I suggest building gstreamer/ branch "main", GStreamer has now
-> > > a single repository. We are very close to 1.20, which will include stable API
-> > > support of H264, MPEG2 and VP8 decoding.
-> > > 
-> > 
-> > Ok, let me see if I can navigate through the build process and I'll
-> > get back to you.
-> > 
-> > Thanks,
-> > 
-> > Tim
-> > 
-> > > > 
-> > > > I have CSI capture and DSI display currently working on
-> > > > imx8mm-venice-gw73xx-0x that I can play with. The CSI sensor only
-> > > > supports RAW8/RAW10 (and gstreamer currently only supports RAW8) and I
-> > > > can't efficiently convert to something the JPEG encoder likes without
-> > > > bayer2rgbneon (a libneon version).
-> > > > 
-> > > > I see from the IMX8MMRM that the 2D GPU supports scaling etc with a
-> > > > wide range of data formats but I'm not sure how to tap into this as
-> > > > that hardware is managed by the vivante driver. On the IMX6QDL there
-> > > > is a separate IPU block that Philipp Zabel wrote a nice mem2mem
-> > > > csc/scaler driver for but I don't see any equivalent currently for
-> > > > IMX8MM.
-> > > > 
-> > > > Best regards,
-> > > > 
-> > > > Tim
-> > > 
 
+> 
+>>
+>> I have some doubts about things like:
+>>
+>> 	unsafe_copy_to_user(&frame->mc_vregs, current->thread.evr,
+>> 				    ELF_NEVRREG * sizeof(u32), failed);
+>>
+>> Because as far as I can see, ELF_NEVRREG is 34 but mc_vregs is a table
+>> of 33 u32 and is at the end of the structure:
+>>
+>> 	struct mcontext {
+>> 		elf_gregset_t	mc_gregs;
+>> 		elf_fpregset_t	mc_fregs;
+>> 		unsigned long	mc_pad[2];
+>> 		elf_vrregset_t	mc_vregs __attribute__((__aligned__(16)));
+>> 	};
+>>
+>> 	typedef elf_vrreg_t elf_vrregset_t[ELF_NVRREG];
+>>
+>> 	# define ELF_NEVRREG	34	/* includes acc (as 2) */
+>> 	# define ELF_NVRREG	33	/* includes vscr */
+> 
+> I don't know these internals very well -- do you want me to change this
+> specifically somehow? With the BUILD_BUG_ON()s added, there's no binary
+> change here -- I wanted to make sure nothing was different in the
+> output.
+> 
+
+Neither do I. I was just scared by what I saw while reviewing your 
+patch. A cleanup is probably required but it can be another patch.
+
+Christophe
