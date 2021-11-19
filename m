@@ -2,93 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B264945695A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 05:53:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF5D45695C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 05:56:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232210AbhKSE40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 23:56:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42424 "EHLO
+        id S232597AbhKSE7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 23:59:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbhKSE4Y (ORCPT
+        with ESMTP id S229675AbhKSE7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 23:56:24 -0500
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5DED4C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 20:53:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=gqlxegaNjjpmliJ2YUphkr3nRsImY8w2y2NUeQorNDM=; b=fOo+/m3lMdQZF
-        fW7XTylRWcD1NiPBoqvPUM4FdA6mX4F1K/rZGswkTlQ/v2UjbukqLKYXexF7v8wd
-        /DOrR0oGZ6eJOkJm6cIKbnmu7neDvWTBOZ4KrasQsTBKalUVzWaPFBLFTsnARlpT
-        59dbF1xaw29lNEom6XOO+5/rwtE7fI=
-Received: from xhacker (unknown [101.86.18.22])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDHzU25LZdh+gliAQ--.1195S2;
-        Fri, 19 Nov 2021 12:53:13 +0800 (CST)
-Date:   Fri, 19 Nov 2021 12:46:08 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] arm64: extable: remove unsed ex_handler_t definition
-Message-ID: <20211119124608.3f03380b@xhacker>
+        Thu, 18 Nov 2021 23:59:43 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8408BC061574;
+        Thu, 18 Nov 2021 20:56:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=lRXCjMK29T4/gyG/Olue4fZUtwEPwf37PoJ0RXT5pcw=; b=YE4Z1fWRmbHFZRmHKFnSFoCrjc
+        wPOlPiSvjjjo2t1RVo5E/dGZr180IL9bJAbKWhjW6G2Xm+6Uxuo+oyiCEp/RVDm3JvkR7oySDCXy6
+        CUFFEwrGsz0m5JKrjBw7FvD6i4qsF8AMB7SEtNafbY0nBrX4V0GK7W2oIXwQ376kzG0Zsq/Le0mK1
+        EvefdA0qfRPBoCIRhW2uV1BjoVH0C3jBh0RfvUIOQUlxHcdFh+GmpaiTGDzxwcedvsVDSIP+8lpB0
+        gYUl9VkvT/3eGgn0NwK/GJ1sY6/UMq0GUmlPi+liamF73zmuNZPefIYgHpLMcyXybtW8ktuJxfSbD
+        1c33pqzg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mnvx1-009Trx-Vj; Fri, 19 Nov 2021 04:56:40 +0000
+Subject: Re: ERROR: modpost: "mips_cm_unlock_other"
+ [drivers/pci/controller/pcie-mt7621.ko] undefined!
+To:     kernel test robot <lkp@intel.com>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>
+References: <202111180317.mNAFaXap-lkp@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <ae386c44-c358-e8c8-ab86-2e27ce72df33@infradead.org>
+Date:   Thu, 18 Nov 2021 20:56:38 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <202111180317.mNAFaXap-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygDHzU25LZdh+gliAQ--.1195S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7GFy3uw4xXFyUuFWxCr1xKrg_yoWfurb_Z3
-        4IyaykWryFyr1SyryrW3ZxCry0k34vqryUJFsYqrZYyF97XrWrCrWqqFnakr1vgFWS9r1v
-        93Z7Jr15Kr42qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbrkYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z2
-        80aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAK
-        zVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx
-        8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCa
-        FVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_Jr
-        Wlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j
-        6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WF
-        yUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4U
-        YxBIdaVFxhVjvjDU0xZFpf9x07jY6wZUUUUU=
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <jszhang@kernel.org>
+On 11/17/21 11:09 AM, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   ee1703cda8dc777e937dec172da55beaf1a74919
+> commit: 2bdd5238e756aac3ecbffc7c22b884485e84062e PCI: mt7621: Add MediaTek MT7621 PCIe host controller driver
+> date:   4 weeks ago
+> config: mips-allmodconfig (attached as .config)
+> compiler: mips-linux-gcc (GCC) 11.2.0
+> reproduce (this is a W=1 build):
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2bdd5238e756aac3ecbffc7c22b884485e84062e
+>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>          git fetch --no-tags linus master
+>          git checkout 2bdd5238e756aac3ecbffc7c22b884485e84062e
+>          # save the attached .config to linux build tree
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=mips
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>, old ones prefixed by <<):
+> 
+> ERROR: modpost: missing MODULE_LICENSE() in drivers/pci/controller/pcie-mt7621.o
+>>> ERROR: modpost: "mips_cm_unlock_other" [drivers/pci/controller/pcie-mt7621.ko] undefined!
+>>> ERROR: modpost: "mips_cpc_base" [drivers/pci/controller/pcie-mt7621.ko] undefined!
+>>> ERROR: modpost: "mips_cm_lock_other" [drivers/pci/controller/pcie-mt7621.ko] undefined!
+>>> ERROR: modpost: "mips_cm_is64" [drivers/pci/controller/pcie-mt7621.ko] undefined!
+>>> ERROR: modpost: "mips_gcr_base" [drivers/pci/controller/pcie-mt7621.ko] undefined!
 
-The ex_handler_t type was introduced in commit d6e2cc564775 ("arm64:
-extable: add `type` and `data` fields"), but has never been used, and
-is unnecessary. Remove it.
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-Acked-by: Mark Rutland <mark.rutland@arm.com>
+This is one way to fix these build errors. Is that what the MIPS people
+want to do or should their be APIs to access these base addresses and
+mips_cm_is64 data?
+
 ---
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH] mips: kernel: export mips-cm and mips-cpc data & functions for pcie-mt7621
 
-Since v1:
- - update commit msg as Mark suggested, thank Mark
- - add Mark's Acked-by tag
+Fixes these build errors:
 
- arch/arm64/mm/extable.c | 3 ---
- 1 file changed, 3 deletions(-)
+ERROR: modpost: "mips_cm_unlock_other" [drivers/pci/controller/pcie-mt7621.ko] undefined!
+ERROR: modpost: "mips_cpc_base" [drivers/pci/controller/pcie-mt7621.ko] undefined!
+ERROR: modpost: "mips_cm_lock_other" [drivers/pci/controller/pcie-mt7621.ko] undefined!
+ERROR: modpost: "mips_cm_is64" [drivers/pci/controller/pcie-mt7621.ko] undefined!
+ERROR: modpost: "mips_gcr_base" [drivers/pci/controller/pcie-mt7621.ko] undefined!
 
-diff --git a/arch/arm64/mm/extable.c b/arch/arm64/mm/extable.c
-index c3d53811a15e..c0181e60cc98 100644
---- a/arch/arm64/mm/extable.c
-+++ b/arch/arm64/mm/extable.c
-@@ -10,9 +10,6 @@
- #include <asm/asm-extable.h>
- #include <asm/ptrace.h>
- 
--typedef bool (*ex_handler_t)(const struct exception_table_entry *,
--			     struct pt_regs *);
--
- static inline unsigned long
- get_ex_fixup(const struct exception_table_entry *ex)
- {
--- 
-2.33.0
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Paul Burton <paulburton@kernel.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
+Cc: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org
+---
+  arch/mips/kernel/mips-cm.c  |    6 ++++++
+  arch/mips/kernel/mips-cpc.c |    2 ++
+  2 files changed, 8 insertions(+)
 
+--- linux-next-20211118.orig/arch/mips/kernel/mips-cm.c
++++ linux-next-20211118/arch/mips/kernel/mips-cm.c
+@@ -5,6 +5,7 @@
+   */
+  
+  #include <linux/errno.h>
++#include <linux/export.h>
+  #include <linux/percpu.h>
+  #include <linux/spinlock.h>
+  
+@@ -12,8 +13,11 @@
+  #include <asm/mipsregs.h>
+  
+  void __iomem *mips_gcr_base;
++EXPORT_SYMBOL(mips_gcr_base);
++
+  void __iomem *mips_cm_l2sync_base;
+  int mips_cm_is64;
++EXPORT_SYMBOL(mips_cm_is64);
+  
+  static char *cm2_tr[8] = {
+  	"mem",	"gcr",	"gic",	"mmio",
+@@ -352,6 +356,7 @@ void mips_cm_lock_other(unsigned int clu
+  	 */
+  	mb();
+  }
++EXPORT_SYMBOL(mips_cm_lock_other);
+  
+  void mips_cm_unlock_other(void)
+  {
+@@ -368,6 +373,7 @@ void mips_cm_unlock_other(void)
+  
+  	preempt_enable();
+  }
++EXPORT_SYMBOL(mips_cm_unlock_other);
+  
+  void mips_cm_error_report(void)
+  {
+--- linux-next-20211118.orig/arch/mips/kernel/mips-cpc.c
++++ linux-next-20211118/arch/mips/kernel/mips-cpc.c
+@@ -5,6 +5,7 @@
+   */
+  
+  #include <linux/errno.h>
++#include <linux/export.h>
+  #include <linux/percpu.h>
+  #include <linux/of.h>
+  #include <linux/of_address.h>
+@@ -13,6 +14,7 @@
+  #include <asm/mips-cps.h>
+  
+  void __iomem *mips_cpc_base;
++EXPORT_SYMBOL(mips_cpc_base);
+  
+  static DEFINE_PER_CPU_ALIGNED(spinlock_t, cpc_core_lock);
+  
 
