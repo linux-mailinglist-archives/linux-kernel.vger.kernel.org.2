@@ -2,230 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50AD0456FD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:45:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65288456FD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235563AbhKSNs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 08:48:56 -0500
-Received: from mga02.intel.com ([134.134.136.20]:30410 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235424AbhKSNsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 08:48:55 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="221631928"
-X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
-   d="gz'50?scan'50,208,50";a="221631928"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 05:45:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
-   d="gz'50?scan'50,208,50";a="673216764"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 19 Nov 2021 05:45:51 -0800
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mo4D8-0004aA-Tj; Fri, 19 Nov 2021 13:45:50 +0000
-Date:   Fri, 19 Nov 2021 21:45:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: [mcgrof-next:20211118-sysctl-cleanups-set-04-v2 36/36]
- fs/namespace.c:4615:77: error: macro "register_sysctl_init" passed 3
- arguments, but takes just 2
-Message-ID: <202111192110.vIX6RuX5-lkp@intel.com>
+        id S235574AbhKSNtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 08:49:18 -0500
+Received: from mail-dm6nam12on2075.outbound.protection.outlook.com ([40.107.243.75]:4128
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235524AbhKSNtR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 08:49:17 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Vxv/HtcmjSDNhT8EIwlgwsb+V3QjsHVZz/K4M/M/Tb2FUNkCwCQxN/bDnyB6LuR6Pi+WX/V265reqMWjedrgmaZh976RLgeQ0WqgYdo0pDaBBz+5f53Fzw8ZzoVtbCiqsl8mKmwAWfWkMGWFrqbRfOHulJXqPv1aDGB89Rbch61DFeK5VMfCipkTQcGP6rwFbacCDoqycV6q5v5W/BpyOYfBKf+81gD6QTmN7xFarI3NGY0CKUWGIGQQ+/T1JPHfEIW+VQnBm0JelIfJZdkEsZtq58VF6vBJ3mVSAaOcO74S5R6+apa+gtGSsH5NFAoESSYsgXwKX+kj2LqRYULw0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TrSZgZZYXCfLNEryAeRITgqbQoKNoHF/FlU/O7fNMSw=;
+ b=DZG8jAeBDPDkL+F+7TSs8Bi4cDpLlg2grxB1q1C9GuPEVJ35eHMyiMZix06X4SwwZMSNSlczcWeUdg6l6lMNxX0euAM3MQjXb9jw40dzIFA3s/9KROPBS+YkPKdjC6dMhnBY2ytGZmdLo4Z0gHz/F8nxaFWzGpPEwbE1cx+0UoDz9L+3jAeNIBXafB7iSCEfLT3jBc8xY/q7EZEduHhB0mnnwkuqo8dYDh3Bes/CO6Y9URzUygVM4nNEl2Ja8/bvdbeAmrffbSVdREZdaFQZEPAv9rrw2nXUXnppK3LgkYoYkISJzKGLgyC7ETEn87WCismmoJkHI45YrattHvOmJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TrSZgZZYXCfLNEryAeRITgqbQoKNoHF/FlU/O7fNMSw=;
+ b=COZgd956+JzHZDKhmi4j1yhQX9sosVLBFbkpGgEO8Qb90KbsPgxaqBXfEBoPiUfVM3waRSlFgZp9HPvadJVEIQoPlniwa4OEnzlgLN11DAWUscagMxbgGoxqJbxy0G0k2cR/JHk6tOzoDKNrwKap3h2tENp3eTetkUjMmjiL0k4=
+Received: from DS7PR06CA0013.namprd06.prod.outlook.com (2603:10b6:8:2a::13) by
+ BN6PR02MB3234.namprd02.prod.outlook.com (2603:10b6:405:65::35) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4713.19; Fri, 19 Nov 2021 13:46:13 +0000
+Received: from DM3NAM02FT057.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:8:2a:cafe::bb) by DS7PR06CA0013.outlook.office365.com
+ (2603:10b6:8:2a::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21 via Frontend
+ Transport; Fri, 19 Nov 2021 13:46:13 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ DM3NAM02FT057.mail.protection.outlook.com (10.13.5.64) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4713.19 via Frontend Transport; Fri, 19 Nov 2021 13:46:13 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Fri, 19 Nov 2021 05:46:11 -0800
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Fri, 19 Nov 2021 05:46:11 -0800
+Envelope-to: git@xilinx.com,
+ robh+dt@kernel.org,
+ gregkh@linuxfoundation.org,
+ linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ linux-usb@vger.kernel.org
+Received: from [172.23.64.8] (port=38273 helo=xhdvnc108.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <manish.narani@xilinx.com>)
+        id 1mo4DS-0006h0-Sn; Fri, 19 Nov 2021 05:46:11 -0800
+Received: by xhdvnc108.xilinx.com (Postfix, from userid 16987)
+        id 14856604A7; Fri, 19 Nov 2021 19:16:10 +0530 (IST)
+From:   Manish Narani <manish.narani@xilinx.com>
+To:     <gregkh@linuxfoundation.org>, <robh+dt@kernel.org>,
+        <michal.simek@xilinx.com>, <manish.narani@xilinx.com>
+CC:     <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <git@xilinx.com>
+Subject: [PATCH] dt-bindings: usb: dwc3-xilinx: Convert USB DWC3 bindings
+Date:   Fri, 19 Nov 2021 19:16:08 +0530
+Message-ID: <1637329568-31756-1-git-send-email-manish.narani@xilinx.com>
+X-Mailer: git-send-email 2.1.1
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="ibTvN161/egqYuK8"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b3aab792-3783-4549-07db-08d9ab62f3a7
+X-MS-TrafficTypeDiagnostic: BN6PR02MB3234:
+X-Microsoft-Antispam-PRVS: <BN6PR02MB3234A503FF2DFB214DE3A236C19C9@BN6PR02MB3234.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Ym+nmTCGVQz6xtYv6e0T/kZzsMA26ANVQP1UJVcxkbOQMRig4Yv0P+8CPyV1bDOkc/017PvyrVMTr06KB/bFcn/+io6FMAANBgRLIFqQPmwN8ftfdjSZG/ryMpaDCHlKXcpAJrTRTIjusvYzPcvWCxg+SPHZVhEb3ccaeSSU4MoZxvnIGAa3xURPd1Kz4e8TjTP3SgKrHblTljXL86O3hCS1jk3iKbjKFkuJ8EC10yXtZzdVUAZwdePtCK4+6pqQ93gN9r6XH50WszmjFRfBZu/tCk1lr5nbJ1o8Rxr8jEObp3MrIoVWCIIC/Ba/OPeUpWArRw/0cIIuK9In/q9pWBNJYsvr+ZSAq/ZCkbDP2Yajb6+9jPEky+ck+ZwfBDcmpPiGDhTg9+vq5fGHol0zVO6JAyroG8tZT3wdte7HIpv5I7lJ7VJYQquAf28DGThAcULier+5UQytDUOJn2YMgU4k5px4SmS5FU1y+ajuOBcx68RXQ38pBT1dj7J8p2e86fTJs4Wwn7ogR0P9bMfJ46dhZ02PBHXDFxd4WeUXplxRAEccYooiFF/qi4Yba7+e55AU/WrxO1gtDp0pVsRwAtB9He3V6tFF/mwFBLFWsGKMs1WjkntUS6advRzn0UhMyh87dIIz4SizIu2U2dmbwFcjk4FyiG1KzrdKTy0G2XTe/WdygzF6ajuhWaHPuhNnhIqX7SNKvAS80GpIU9YfrxiuscW8McL+xyEU670aqkEhv57yQErxU3tibnbCMxODvvYCPSYdfWUNgzslmsaZJie65GOw82NsysL6enQeBUSJMOzfSbJ7ZJ7ci1u+zcYPuy54DbS34kDCeQuZqXzk3KWmaCZPsKIFVhguFfEqlY4=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(46966006)(36840700001)(4326008)(36860700001)(47076005)(70586007)(26005)(82310400003)(42186006)(426003)(7049001)(356005)(2906002)(336012)(107886003)(7636003)(6266002)(186003)(8936002)(83380400001)(8676002)(70206006)(110136005)(54906003)(2616005)(36756003)(508600001)(44832011)(5660300002)(966005)(316002)(36906005)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2021 13:46:13.1680
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b3aab792-3783-4549-07db-08d9ab62f3a7
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT057.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR02MB3234
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Convert USB DWC3 bindings to DT schema format using json-schema.
 
---ibTvN161/egqYuK8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git 20211118-sysctl-cleanups-set-04-v2
-head:   3110d41a56792588bd2f64621080948b0fceb6ab
-commit: 3110d41a56792588bd2f64621080948b0fceb6ab [36/36] fs: move namespace sysctls and declare fs base directory
-config: nds32-allnoconfig (attached as .config)
-compiler: nds32le-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/commit/?id=3110d41a56792588bd2f64621080948b0fceb6ab
-        git remote add mcgrof-next https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git
-        git fetch --no-tags mcgrof-next 20211118-sysctl-cleanups-set-04-v2
-        git checkout 3110d41a56792588bd2f64621080948b0fceb6ab
-        # save the attached .config to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=nds32 SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   fs/namespace.c: In function 'init_fs_namespace_sysctls':
->> fs/namespace.c:4615:77: error: macro "register_sysctl_init" passed 3 arguments, but takes just 2
-    4615 |         register_sysctl_init("fs", fs_namespace_sysctls, "namespace_sysctls");
-         |                                                                             ^
-   In file included from include/linux/key.h:17,
-                    from include/linux/cred.h:13,
-                    from include/linux/sched/signal.h:10,
-                    from include/linux/rcuwait.h:6,
-                    from include/linux/percpu-rwsem.h:7,
-                    from include/linux/fs.h:33,
-                    from include/uapi/linux/aio_abi.h:31,
-                    from include/linux/syscalls.h:77,
-                    from fs/namespace.c:11:
-   include/linux/sysctl.h:233: note: macro "register_sysctl_init" defined here
-     233 | #define register_sysctl_init(path, table) __register_sysctl_init(path, table, #table)
-         | 
->> fs/namespace.c:4615:9: error: 'register_sysctl_init' undeclared (first use in this function); did you mean 'register_sysctl_paths'?
-    4615 |         register_sysctl_init("fs", fs_namespace_sysctls, "namespace_sysctls");
-         |         ^~~~~~~~~~~~~~~~~~~~
-         |         register_sysctl_paths
-   fs/namespace.c:4615:9: note: each undeclared identifier is reported only once for each function it appears in
-   At top level:
-   fs/namespace.c:4601:25: warning: 'fs_namespace_sysctls' defined but not used [-Wunused-variable]
-    4601 | static struct ctl_table fs_namespace_sysctls[] = {
-         |                         ^~~~~~~~~~~~~~~~~~~~
-
-
-vim +/register_sysctl_init +4615 fs/namespace.c
-
-  4612	
-  4613	static int __init init_fs_namespace_sysctls(void)
-  4614	{
-> 4615		register_sysctl_init("fs", fs_namespace_sysctls, "namespace_sysctls");
-  4616		return 0;
-  4617	}
-  4618	early_initcall(init_fs_namespace_sysctls);
-  4619	
-
+Signed-off-by: Manish Narani <manish.narani@xilinx.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ .../devicetree/bindings/usb/dwc3-xilinx.txt        |  56 ----------
+ .../devicetree/bindings/usb/dwc3-xilinx.yaml       | 119 +++++++++++++++++++++
+ 2 files changed, 119 insertions(+), 56 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/usb/dwc3-xilinx.txt
+ create mode 100644 Documentation/devicetree/bindings/usb/dwc3-xilinx.yaml
 
---ibTvN161/egqYuK8
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+diff --git a/Documentation/devicetree/bindings/usb/dwc3-xilinx.txt b/Documentation/devicetree/bindings/usb/dwc3-xilinx.txt
+deleted file mode 100644
+index 04813a4..00000000
+--- a/Documentation/devicetree/bindings/usb/dwc3-xilinx.txt
++++ /dev/null
+@@ -1,56 +0,0 @@
+-Xilinx SuperSpeed DWC3 USB SoC controller
+-
+-Required properties:
+-- compatible:	May contain "xlnx,zynqmp-dwc3" or "xlnx,versal-dwc3"
+-- reg:		Base address and length of the register control block
+-- clocks:	A list of phandles for the clocks listed in clock-names
+-- clock-names:	Should contain the following:
+-  "bus_clk"	 Master/Core clock, have to be >= 125 MHz for SS
+-		 operation and >= 60MHz for HS operation
+-
+-  "ref_clk"	 Clock source to core during PHY power down
+-- resets:	A list of phandles for resets listed in reset-names
+-- reset-names:
+-  "usb_crst"	 USB core reset
+-  "usb_hibrst"	 USB hibernation reset
+-  "usb_apbrst"	 USB APB reset
+-
+-Required child node:
+-A child node must exist to represent the core DWC3 IP block. The name of
+-the node is not important. The content of the node is defined in dwc3.txt.
+-
+-Optional properties for snps,dwc3:
+-- dma-coherent:	Enable this flag if CCI is enabled in design. Adding this
+-		flag configures Global SoC bus Configuration Register and
+-		Xilinx USB 3.0 IP - USB coherency register to enable CCI.
+-- interrupt-names: Should contain the following:
+-  "dwc_usb3"	USB gadget mode interrupts
+-  "otg"		USB OTG mode interrupts
+-  "hiber"	USB hibernation interrupts
+-
+-Example device node:
+-
+-		usb@0 {
+-			#address-cells = <0x2>;
+-			#size-cells = <0x1>;
+-			compatible = "xlnx,zynqmp-dwc3";
+-			reg = <0x0 0xff9d0000 0x0 0x100>;
+-			clock-names = "bus_clk", "ref_clk";
+-			clocks = <&clk125>, <&clk125>;
+-			resets = <&zynqmp_reset ZYNQMP_RESET_USB1_CORERESET>,
+-				 <&zynqmp_reset ZYNQMP_RESET_USB1_HIBERRESET>,
+-				 <&zynqmp_reset ZYNQMP_RESET_USB1_APB>;
+-			reset-names = "usb_crst", "usb_hibrst", "usb_apbrst";
+-			ranges;
+-
+-			dwc3@fe200000 {
+-				compatible = "snps,dwc3";
+-				reg = <0x0 0xfe200000 0x40000>;
+-				interrupt-names = "dwc_usb3", "otg", "hiber";
+-				interrupts = <0 65 4>, <0 69 4>, <0 75 4>;
+-				phys = <&psgtr 2 PHY_TYPE_USB3 0 2>;
+-				phy-names = "usb3-phy";
+-				dr_mode = "host";
+-				dma-coherent;
+-			};
+-		};
+diff --git a/Documentation/devicetree/bindings/usb/dwc3-xilinx.yaml b/Documentation/devicetree/bindings/usb/dwc3-xilinx.yaml
+new file mode 100644
+index 00000000..193c69a6
+--- /dev/null
++++ b/Documentation/devicetree/bindings/usb/dwc3-xilinx.yaml
+@@ -0,0 +1,119 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/usb/dwc3-xilinx.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Xilinx SuperSpeed DWC3 USB SoC controller
++
++maintainers:
++  - Manish Narani <manish.narani@xilinx.com>
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - xlnx,zynqmp-dwc3
++          - xlnx,versal-dwc3
++  reg:
++    maxItems: 1
++
++  "#address-cells":
++    enum: [ 1, 2 ]
++
++  "#size-cells":
++    enum: [ 1, 2 ]
++
++  ranges: true
++
++  power-domains:
++    description: specifies a phandle to PM domain provider node
++    maxItems: 1
++
++  clocks:
++    description:
++      A list of phandle and clock-specifier pairs for the clocks
++      listed in clock-names.
++    items:
++      - description: Master/Core clock, has to be >= 125 MHz
++          for SS operation and >= 60MHz for HS operation.
++      - description: Clock source to core during PHY power down.
++
++  clock-names:
++    items:
++      - const: bus_clk
++      - const: ref_clk
++
++  resets:
++    description:
++      A list of phandles for resets listed in reset-names.
++
++    items:
++      - description: USB core reset
++      - description: USB hibernation reset
++      - description: USB APB reset
++
++  reset-names:
++    items:
++      - const: usb_crst
++      - const: usb_hibrst
++      - const: usb_apbrst
++
++# Required child node:
++
++patternProperties:
++  "^usb@[0-9a-f]+$":
++    $ref: snps,dwc3.yaml#
++
++required:
++  - compatible
++  - reg
++  - "#address-cells"
++  - "#size-cells"
++  - ranges
++  - power-domains
++  - clocks
++  - clock-names
++  - resets
++  - reset-names
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/dma/xlnx-zynqmp-dpdma.h>
++    #include <dt-bindings/power/xlnx-zynqmp-power.h>
++    #include <dt-bindings/reset/xlnx-zynqmp-resets.h>
++    #include <dt-bindings/clock/xlnx-zynqmp-clk.h>
++    #include <dt-bindings/reset/xlnx-zynqmp-resets.h>
++    #include <dt-bindings/phy/phy.h>
++    axi {
++        #address-cells = <2>;
++        #size-cells = <2>;
++
++        usb@0 {
++            #address-cells = <0x2>;
++            #size-cells = <0x2>;
++            compatible = "xlnx,zynqmp-dwc3";
++            reg = <0x0 0xff9d0000 0x0 0x100>;
++            clocks = <&zynqmp_clk USB0_BUS_REF>, <&zynqmp_clk USB3_DUAL_REF>;
++            clock-names = "bus_clk", "ref_clk";
++            power-domains = <&zynqmp_firmware PD_USB_0>;
++            resets = <&zynqmp_reset ZYNQMP_RESET_USB1_CORERESET>,
++                     <&zynqmp_reset ZYNQMP_RESET_USB1_HIBERRESET>,
++                     <&zynqmp_reset ZYNQMP_RESET_USB1_APB>;
++            reset-names = "usb_crst", "usb_hibrst", "usb_apbrst";
++            ranges;
++
++            usb@fe200000 {
++                compatible = "snps,dwc3";
++                reg = <0x0 0xfe200000 0x0 0x40000>;
++                interrupt-names = "dwc_usb3";
++                interrupts = <0 65 4>;
++                phys = <&psgtr 2 PHY_TYPE_USB3 0 2>;
++                phy-names = "usb3-phy";
++                dr_mode = "host";
++                dma-coherent;
++            };
++        };
++    };
+-- 
+2.1.1
 
-H4sICECil2EAAy5jb25maWcAnFxbc9u2s3/vp+CkM2famVxsOUnTOeMHiAQlVCRBE6AueeEo
-Eu1oIks+urTN+fRnAZAiSC6U/E9nGtvYxX2x+9vFgr/+8qtHzqf98/K0WS232+/eU7krD8tT
-ufYeN9vyv72AewmXHg2YfAvM0WZ3/vfdbn28G3gf3t5+fHvz5rC69SblYVduPX+/e9w8naH+
-Zr/75ddffJ6EbFT4fjGlmWA8KSSdy/tXuv62fLNVrb15Wq2830a+/7t3e/t28PbmlVWPiQIo
-99/rolHT1v3t7c3g5ubCHJFkdKFdionQbSR50wYU1WyDuz+aFqJAsQ7DoGGFIpzVItxYwx1D
-20TExYhL3rTSIRQ8l2kuUTpLIpbQHinhRZrxkEW0CJOCSJk1LCx7KGY8mzQlcpxRApNJQg7/
-FJIIRYT9+NUb6e3desfydH5pdmiY8QlNCtggEadW0wmTBU2mBclgzixm8v5uAK3Ug+NxqoYk
-qZDe5ujt9ifVcMMwo1nGM5tUrx/3SVQv4KtXTQ2bUJBccqTyMGew/IJEUlWtCgMakjySeshI
-8ZgLmZCY3r/6bbfflb9bXYoZSdHRi4WYstTHZ0akPy4ecppTlO5nXIgipjHPFmq/iD9G+XJB
-Iza0SXqbYE+94/nL8fvxVD432zSiCc2Yr7dcjPnMOhcWxR+ztC0eAY8JS6DsV6/crb39Y6eD
-biuSxbSYwvxhM6J+Jz7s0oROaSJFLVdy81wejtiYx5+LFGrxgPl6AFUxSDRQWBDh66fJKGXM
-RuMio0IPMhNtnmp2vdHoMQ7TsDXAS5NAKKrJos21K9YTSzNK41TCUBNqZLJZKZtmz7oun/Io
-TyTJFugUK66eVPhp/k4uj9+8E8zPW8Lgjqfl6egtV6v9eXfa7J6aZZfMnxRQoSC+z6Evlozs
-gQxFoDSKT0FKgQM/vqlg6Hr8xDj0eDM/90RfImAsiwJo9njgz4LOQVAkcuCFYbari7p+NaR2
-V027bGJ+QefHJmPQkx0huigipWhALsYslPe3fzQ7yxI5Ae0T0i7PnZm1WH0t1+dtefAey+Xp
-fCiPurgaKEK1zV2cRswHpRuCLIIa5/lofP/qzWzz/LLdrDanN49gpE9fD/vz09f7D5YS80fA
-m2ITUVpPpAR22l7vXIJRES6VlLloKQtcJH9M/UnKYXXU6ZQ8ww+2AL5Aa3Y9YpfiDQWobjgH
-PpE0QJkyGhH8+AyjCVSealOQ4ZWHnMuiLxnNRvAU1Av7DOaWZ0p/wY+YJH7rMHfZBPyCSS9o
-FhnZFZ2CHoOpYmr9G2k3a9FTxeGYJKA7LY3DBZtXOtHWQ0pam7+H+aj5g0YhrEFmNTIkAqaS
-tzrKAbJ1/gQxsFpJuc0v2CghkY2h9JjsAm057AIxBkNp4TNmYSfGizwzyqsmB1MGw6yWxJos
-NDIkWcbs5ZsolkUs+iVmskqKJJu29lVtgEYNIS480A0NgrZY1saJTKkWl6JtHit8nJaHx/3h
-eblblR79u9yBziSgFnylNcFg2TbJagTVwT/ZYj2waWwaK7QxaMmIiPIhnBcjGi1sRyQAwwl+
-RCMyxGQd2rJbUWywL9mI1kjM2VoRgtWLmAD1AaLN459gHJMsAEiC75IY52EI4DQl0DnsOQBL
-2cailr1V0BqEDF3pNmS+qNVA3A0QaEQAzmWgtGC+oJ8QBpHH/dLxjAKssVwChbBAARYiT1Oe
-WQQBUHIiM9DnfVoIGoCSLFrA30XrSKUjSYawGBEIARyZQWWptLX05PeXEv7WRelhvyqPx/3B
-CxvjVYsEoImhkv8kYCRpCQtQIiYl9GCI6DKHaY4pW6jrAzxWm8SI6OAURU1uP+AWR9PurtBu
-nLTgSptBu55Fmd5ZaigJAIRq6VKKv3g/aUl+l/xpMnR2yMz8AybUJrnH9R+xzTImaQUhcBdm
-mBCUAPswSmKlLEDOcAs9ntXSV+RJww9IEgAlPjI9qGjgai5t4wUtjHH5vD9891adqMKl2jQW
-AJdkcYcZ8YaorLS9NTVlgKPCmnyLtao3lIehoPL+5t/hjfmvURbokC86I1MbJO5vLxYrtnCt
-1ijakQCEWwRyaBzjGjdaZ9U2KaGNMRuX6/YGk2EgDD7c2GsBJXc3+DExreDN3EMzPVt0GYrR
-JPt/AOSCZVo+lc9gmLz9i1oMS5+QDFxokYsUdIbCL4INo5Yhrmi4zo5RZe3stRX9WB5WXzen
-cqWG+2ZdvkBldISwy0VomUqjd8F3DiMyEn0FrM2/npbmHHNuYS9dfjcYgmiBABXdahmFFkFr
-GA1fHaWC2FALxKWIyOdFIaMh8Ifalls2Q/La4awr8CCPQA0BotFoT6GdTrd0DuMxASMr6hRp
-nxbGMQMTKxBcYOahoF3v1I58Pn3zZXks1943Ixgvh/3jZmvc08asXmPr2t4fbFg9blBHsQKo
-1NozDfNErNDzTTONamWw6JIyvS1XuXInhmLUCdUgHoekI9C71/2Sz9yFWRTHbIhjJEUT4Drx
-lEROBhM+BCPsZwtwTXjS2510eTht1KppVdKGnCSTTOrAWzBVzg6GcGMRcNGwWqg+ZK3i5kh2
-ejQBLt54wq1BxA8A+Y2TGIBMqumgs7X4JoshxYFdzTEMH1Bt0R5FE/XUiyhSUMN5osRBHXk7
-KqrpOsZq6NdoaF1tnF2VbWJVW68Q/bdcnU/LL9tSx+Y9DfxPrdUbsiSMpTrruIgYsvAzljqk
-zHDETPgYBgJvMch1hPiyhq5R2RY8vmIFQJXKFlalcz/KBfhkysWTNAZ/wKIa25xKvTjamr7v
-KCe/K/eWgI/U1iid3QP7tXcoYmTedRQ5jkkKa6MOSJDdv7/58+PFeFMQM/DZNAKbxC2NGVE4
-TAr+4MAoxlHY55Rz/KB/1tqM44FpFVE1E1UmaOKaJwxVjRRsTdu/NBo8T01Mf1eW66N32ntf
-l3+XnvYRwR7CzqvtXtc+Q7A8LT2yUn6DF+93m9P+UOv6ev1I3N2SSnpcdTt4ChEgK1ZM+6HS
-oPx7Ay5xcNj83XWsfZ+0o0INNNisqhoev4hpExYwDvSYRqlD3YByl3Ea4gAYljoJiDKsrpiv
-bj5kWQxGt4oo94YZbg7P/ywPpbfdL9flwTpGM/AZVTDTPkggApcGW9csF24T7bsyp4ZTHa6s
-B++rfeqO6wJ6QFBn2upZuqPrEiunhU5ZHaK0bX9/R0wo/3z01nqL28ZjzGDd8BHaVdpL2QiJ
-LidZXKNtf787HfZbHeK2RJCp2MrjEuQL3OXTfrXf2sDm/1W/mcOI85G65qu2rScBsnw6LEHV
-VoNf68Hb/TsYejtVT9vqOnE4b7HEoEAgrYtZHto6j4dgv5jsXgw2VKX1ZUap3YCJXeCkCR/+
-1SpQGhiEsVXWsrRcwV0Q7ikoZmNf7NHxKc1c8WNAMcpEXMNwvV1JpoCExfnlZX842RKpyovQ
-RyWyVceYy81xhck1nJt4oaaHxyMTwOsiB52hpquOEa6AwI6ihLmKfc0LEYQUtyn+oLseBo/Q
-NOOxd+zP2lCKP+/8+Ud06p2qlWD/uzzC2TieDudnHck8fgU5XXunw3J3VHweOAcg0LBImxf1
-a1vq/+Pa5rRv4SwuvTAdEevM7P/ZKUXmPe8VNvR+O5T/c96Aa+uxgf97a6b+mONCNE1JwvCN
-b22zicT5glUl1nrWGwdE5bC07ssIC3QegGOvfcfVHdaRFfmROBaJcXdFkmxEpdbs/Rvs3cv5
-5JwSS0wCRANbVEEBbjEc1cgVQzJMAs6noJPYEZoyTDGRGZt3mfTI8mN52CqNvKnVcOusVfU5
-GMbOQe+w/MUX1xno9Ed0wFOOhXPjF1N3QhdDThy3W9YUro9fqFviKyw6aIwrwoqB5/4Y3AlK
-ccRdjaTjTTRSHLP3uPiMl4e1PorsHfeU7LTWQKiEArTFEYlpX3lXwo81enEFMXk1fYIeWa5A
-VCzNXB8AaUX4p3ZGD08EjzQGT4S6YYK/bc6awQrGzKyyJhYpLYJyzoIOoK+xacLmf34Ct2jR
-CtZEdET8hS5GVysKYGf0ZazCeL1NEIC/ltsKQfQ2gETFp8GHm16tZL97owlHU13rXsRIVG3k
-JJPg0jluiw2PYCH4g1c5fD+ZO26TDcfQjz/ezefXWEgkKSDmvyQZqVH9BOuP2CrTmoofcpIM
-PyIVORRREaU/akRzgQcf0fmPWOEvOifgcARsxHzYfxz+18ubdlVNbU/aItKrmIDoasfHoaqS
-PIrUMbrWuQ6+dVF9fUAY+PK8PiG4DkpjVpjrcnyOcMKuXDlC72CTcPvnw//dQHQDqqKFa9Sm
-O9AOuZA6F8G4WOgK99WPMRMDHztUqhiNdFnsFvedQ+hS5iiPccK4CzdqFJT2owupTL3Vdr/6
-1ocFQCpuP3z6ZDLMdHYFT0h0CYDpuIOXjhcqEKtMOLj+KvWxgCIdjAZZi1OlIk976LD0Tl9L
-b7le6/AjiKnu9vjWxo390VijZ4kvMzwIM0oZd4WDZ7f4YvAZuNHKKXGkW2m6ulSI8PMwnvXC
-KLUkjmkWO+LCOlUx4JjZEGKIX7wI7HIfNChB2YedGJbxZc7b0+bxvFvp0G9lWBFTEocKyMYU
-tBeoLd9xChuuceQHuNQqnlidIweIBfKYfXw/uC1AjPEmxtIH908wH79VVk1MaJxGuDLTA5Af
-7/78w0kW8YcbXDo0dSF8xw4rsmQFie/uPswLKXxyZRXkQzz/hHteV7fF0lB0lEfOhInMx1Gb
-T1GlFNOAkQKI9Y0ZrugopqJMXaSeidodli9fN6sj1muQxT1+FZux/WsrZNOODR2Wz6X35fz4
-CHo36Dvk4RCdAlrNBKyWq2/bzdPXk/dfHghw3zFqMJkfqFx2IaqYGB6GIP4kUhkjV1jruNf1
-nk3X+91xv9XO8ct2+b2Sh75+NnGIHnZtFcPPKI8B7n66wekZn4n7wQdr43/Q+yUg2N1sS2Hx
-POnj1zELsBVWxah7YLFfgDVoSD72WTu9pZ0tNsTFuhbg2HFOaex2vxI6A/Ae4OjBXA2zIWDL
-NnCqTycoMTBNrXCB9I2k4BBHac1e4MjE0WMyzEPr1qZZ8kXiF+pFgqtJlRk7piTFw7Gdhq3Z
-5XPwSlJXcC53OH7T0EUAhAi6gE17yeJtCBnTJMfp6u1Aj1zF61aH/XH/ePLG31/Kw5up93Qu
-j21v5xLzuc5qIYuMOoEjmEfQh677hZHrtmfEoyBkYowIi04C8CPrFrIuUVcSKbHTQ6F3ACAV
-tz2mqrQgc6Z+jhzRAIszZHMVl40dm1b5TVMf35LxTF3OKozYN0Eay4n9+dCCG/UIookA46X6
-bSVrST9l8vbmxiSr4ueV+RlXTysAFsqP73EDgPZutUFYNOS4D8q4Su9wGbqsfN6fypfDfoVh
-qIzGXKqQKg7+kcqm0Zfn4xPaXhqL+mDgLbZqdvTwjCHQQMDYfquuRfgOvJrNy+/e8aVcbR4v
-dzzNFczzdv8ExWLvt4ZXm2uEbKzsYb9cr/bProoo3QQt5um78FCWx9USLNHD/sAeXI38iFXz
-bt7Gc1cDPZrt3ESbU2mow/Nmu1Z2sF4kZKNU4GQOq67wWCIzHvV83Drg/tOt6+YfzsstrJNz
-IVG6LQbqDVFPBuYqu+dfV5sY9RJm+CnpsVypWEGiMKOOG5O5dOJs/WQLP6EOZZXO+kBT3dWs
-YJRI6Dt7qB5oNeoHfJ+uQ2K902q1Yw0nVXlizhCDcjMdUmHc8PGi9TinMRbVtaxiQKcLvrZP
-EhPb9KkyrGjj1SaqhJDm4AHAO6kMkXbWih8XE3D0FZYa9PutPfUft9kdZEATnxbgxWQ0cfjc
-Fl9wfcaGSZBo6hAD4FIBOAa+V/yg5uJki8H6RfBvyq53ms5JMfiUxCq+gqPIFpdaPufSYa+j
-dMTBd1ykxD4+gYz0YSLZrQ/7zdreVJIEGXcg7ZrdwosEt4pJN/hmgP1MXeutNrsnNLAs8RiC
-ys6LCjlGh4Q0abl76nYQazJ0xL0Ec1h5EbHYdWTV+DL4PaGO93jV2w0cT7cvjKoMB1D5ZtNb
-521KIhaoNwqhzuQTDsQDWnJQOLJZgHZ3hfbeRcsoU69rhIv+l5s0d5NGoXCOdCivdJew6ErV
-cOCuqR6otWX2MnsF4MLWPUxdZpJLC44+1NOvuxW98wQCquH5nDYHKGFX2mmQcMlCh0kzNJ0F
-hDdNrtR+yLnjwlhdKYXCKQWG7Fxala7soFV5Gx2yEe7l6msnSiOQtLsaqRtuwx68yXj8LpgG
-+sggJ4YJ/ufHjzeuUeVB2CPV/eBtG+eai3chke/oXP0LFsrRu8m5dfQ9hbruk3iFmMgr5wJo
-/fNdq5prwzbm/1ie13udD9pMp7Y54KUU7eOhiybdiKJNvLyhtAt1liM4lAwMfK85wFhRkLUd
-0Yo+oVliZ/XrJ5Z2A+4kPvMDWbfa0PYnbnuQwkRMTF6rY+Ujh4glzOcBtkCMF7MHO3Gupfar
-i9zV+bA5fcfiOBPquBwW1M+VUimCmAoNKCXAQtelouG9SgwxraejDfVDPq2HfJ4umgd7rccq
-XTZXIEQCfFU8MaxYP7ex1otVUm8zT2Lls0Uivn+l0kSUR/9a/aOSgl5/Xz4vX6vUoJfN7vVx
-+VhCg5v1a5VK8qRW+PWXl8dXrQc6X5eHdblTuKJZfDs3erPbnDbL7eZ/Ox9N0d/eMG9Bul8R
-0CSVpq8W6TIPh3GomdWrSQdvLdzmWyOfacbVO8ZILWGg36XYnSNk/KIBn17nzRCyOs3Vckdo
-rWOorCHvWYBo8+WwhD4P+/Nps+s+buglQ9cAgUmVewswqJ+aCiKf+CCOoUpnaz/MtlkimtRU
-S1VkgQu0Z+r7GkkeD/FvD2Tkcu9pTRl0ms+kAxlm/u1HF6WQtzcBw18EKDKTeYGlaQJNP3G1
-me8GcF6i0JHYWTFEzKfDxSekqqG8dw1FsZBsRhzZIIYD9stF/ehs2UnAr+oiNtSdOfIhM/+T
-wzVS9/qONWqA7Gc4h9jzilqkbOV3UX1CRQjtdxKmSL/BjEnaLg9i652XfpsAJYpNa0f76gaK
-YTARydTFzZgqR7nzZE21p4P9ild958DcFfyIy09zhEVRVVwZ6UyRQNPVBP3Yok29kNTTiDYp
-oz3ugGXgSF0o9tWEelZnnrxf2wXJYwYi1dK82UOhvneAVAORCQP7oTbIad1zpdF6+qnbJeOd
-edQEaLwgYhwF7M5JzJzE6Boxzt2t+nEaMOSVu6LlF2Lb2q2+mccfuvTlAJbxm07VWD+XxycM
-gFRfVOm+JezSlclxOCnWm3jzbSiGpav71f1jpPLrpzSqjeH9H06Oh5xRef/+8vaNCqEwZ6+F
-95Z0LRICYtOXLpyjd4/eTGoRDznoy4JmmfqGC2pknetbXes+vwAWfKM/0wPuzurbUbOuTPkB
-eYyVQU/FjGTJ/e3N4L29xBlL9RfK1Lcz8EsZ8y0dABywH+gRMTMGvKUfGQIcjlVqinVkOhQ9
-EMAq0cI+RT89q9a7nko+g/LL+elJ4Q0rVbzla5ER0/6GI9n+8ggKBelDQTBkpUHuxAdi/c20
-/6vkSnYahoHor+QIUpU/4BCipEVkUxYquFUl6glakQTx+cySxB4vQdxaO/I6Hr+x/V7tYrps
-ttFsAkYxSWZhoBl2rWVIDLRHwm+bFM0mRa4qId4tfJeJSi/EBznpC4tapo/F3AV67B1pd4+c
-PsumkZSbqYSHz72gZbBTwGg+tSitoKggJvhUozCTwuBvUF5vwy7IANFPN7acw+nzYoBFiLYQ
-NJfuoxqRj8dpXaJkADkT3VnZtQ8aTX67eg7UVnUoOYGWeJTeM2kXWPFzklTG9DFAxttJZV53
-A0Qx9CRuF3xMY//Tw49+PIdheK98Ah1ZUdl4v6yR3teKj0emXXtgz7L7/aNys1ML5f4P9+/M
-JidC8UrRABLCmMV67amZx0xGf0diIq6+syWvwJYP4WKLkKSuO8fJnJhyT5F8Bxt37rmWGWL1
-pF3BjpI6LVCinruvo+rg/mbZg1LKNQvgrTSn42bATxjJSA0Ejx2k/kloorzKHO9LWEnU6a14
-5pHnQuJar2+PpduwzDJ0PNL2A+rR0TqLr9/91+nSi9MPpKn5Y2HwMXH5Mus+VELAsEZRvZzF
-L3E87PcjMtJ1toRNYBpGDTgpCxDpVuDM6b8tSk7WwlUAAA==
-
---ibTvN161/egqYuK8--
