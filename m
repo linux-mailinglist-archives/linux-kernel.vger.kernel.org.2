@@ -2,212 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4253457050
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 15:08:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C5C457054
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 15:09:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233489AbhKSOLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 09:11:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:45550 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229879AbhKSOLv (ORCPT
+        id S235680AbhKSOMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 09:12:12 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:11275 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229879AbhKSOML (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 09:11:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637330929;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jN4WjOAkWoUtiKPZNQoaUJG8avVgmC/Le66zQC7VoVM=;
-        b=Zg3H8pIztwHyelH88IQ85apSWckcvPeVlmRdYTmhJ7T/uZf18Gza1HsoaYE2feY3TT++VU
-        0xtAmLBsItqnehpLXd6UQQoa95MSfioi1ZjjiAwDRNsZ9TvXTJc7neyUjhVLXb0BjXgrlU
-        w1LMc6aIbdVesWX6N3Ag0DhtQ1G+mGM=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-281-EG0xHOs0NpCQnFi7czoBrQ-1; Fri, 19 Nov 2021 09:08:47 -0500
-X-MC-Unique: EG0xHOs0NpCQnFi7czoBrQ-1
-Received: by mail-ed1-f71.google.com with SMTP id v9-20020a50d849000000b003dcb31eabaaso8519750edj.13
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 06:08:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=jN4WjOAkWoUtiKPZNQoaUJG8avVgmC/Le66zQC7VoVM=;
-        b=AZC4XSesOWHF1xnCLYUo4dGzKnUZ6BzEW8zj6+v/30TFagqTXyNt06et6NBbd6quWV
-         pqCryx59898LclLWbLM/vXvJBrZEkcGk76pm4KikIjnPiovHzl0krJl3mH0tKTDikGae
-         W7i1NwtorMcJLSnGDhodkVPzTEOyMnfKOz0PwPMgiDae1Fs6MiPx8E0+jrXRfCKISCRL
-         5iw17xPeoFDu7hM47IWJ7G9FPgs8SV3rv9Zd3k5WM3pvnqXix1JK+4GqOJaxyXMZWxqp
-         7GLI6755x3wm/i+JRi4Y1D0UP3lgKlwWVbfuO4oU8uJA8BfjtbwY6nObjS/pljocrxU+
-         lDSg==
-X-Gm-Message-State: AOAM530H83x3IyUk1dZc5wYuubhtTE4IbDgAq/a3vpxnJXe0iYo0JDn6
-        ePrTT69y2CNaZHi22dY8IoT+AEUoaGa2OLHpqnviPzZkvZaFvzymL3M8Wlj+7MdVKxcUqgLSRN5
-        F5S+psWs2GVw+gvX2nkeWKPNZ
-X-Received: by 2002:a05:6402:1d52:: with SMTP id dz18mr614079edb.285.1637330926393;
-        Fri, 19 Nov 2021 06:08:46 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyBBDJqXXbkTVKaY1hTFb+riWuY9Gq0S04kV0V25hqYzTj3o1w2ICeUTTcTTFdU3c8meCEo5w==
-X-Received: by 2002:a05:6402:1d52:: with SMTP id dz18mr614043edb.285.1637330926170;
-        Fri, 19 Nov 2021 06:08:46 -0800 (PST)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id y17sm1702342edd.31.2021.11.19.06.08.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 06:08:45 -0800 (PST)
-Date:   Fri, 19 Nov 2021 15:08:44 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Sohaib Mohamed <sohaib.amhmd@gmail.com>
-Cc:     Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: 'perf stat --bpf-counters test' failures
-Message-ID: <YZev7KClb/ud43Lc@krava>
-References: <YZeYX305gA0ut9N8@kernel.org>
+        Fri, 19 Nov 2021 09:12:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1637330950; x=1668866950;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=RzKaAcngVk8ke6sw4Hmes1jEcz67SzLurWxT4aZMDsQ=;
+  b=LB0Xko3FFjwMvdYXlpKECp57Ih7gr7BlYMS+qiFm8HbiewyMTfTWI2IF
+   WwFWoZz2IqHUU8TPBhptWl5d6lKhaQ2eav0egthc9qgsKUjciAv791JWL
+   V/HIZDQT3JHdqwm89zMzkksgb5R2p6sNAuo99sDfMw6u3sdFMlmEFddut
+   s=;
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 19 Nov 2021 06:09:09 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 06:09:08 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Fri, 19 Nov 2021 06:09:08 -0800
+Received: from [10.50.57.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Fri, 19 Nov
+ 2021 06:09:04 -0800
+Message-ID: <92acd810-28c1-6f6f-512a-a961311dfa88@quicinc.com>
+Date:   Fri, 19 Nov 2021 19:39:01 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YZeYX305gA0ut9N8@kernel.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCHv4 2/2] arm64/io: Add a header for mmio access
+ instrumentation
+Content-Language: en-US
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Will Deacon <will@kernel.org>, <rostedt@goodmis.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        <quic_psodagud@quicinc.com>, <gregkh@linuxfoundation.org>,
+        <arnd@arndb.de>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <mingo@redhat.com>
+References: <cover.1636973694.git.quic_saipraka@quicinc.com>
+ <9396fbdc415a3096ab271868960372b21479e4fb.1636973694.git.quic_saipraka@quicinc.com>
+ <87a6i06ytr.wl-maz@kernel.org>
+From:   Sai Prakash Ranjan <quic_saipraka@quicinc.com>
+In-Reply-To: <87a6i06ytr.wl-maz@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 09:28:15AM -0300, Arnaldo Carvalho de Melo wrote:
-> 
-> After I updated to fedora 35 I started seeing the errors below,
-> it may well not be related to that, maybe something on libbpf, haven't
-> investigated, have you seen this?
+On 11/19/2021 7:18 PM, Marc Zyngier wrote:
+> On Mon, 15 Nov 2021 11:33:30 +0000,
+> Sai Prakash Ranjan <quic_saipraka@quicinc.com> wrote:
+>> The new generic header mmio-instrumented.h will keep arch code clean
+>> and separate from instrumented version which traces mmio register
+>> accesses. This instrumented header is generic and can be used by other
+>> architectures as well. Also add a generic flag (__DISABLE_TRACE_MMIO__)
+>> which is used to disable MMIO tracing in nVHE and if required can be
+>> used to disable tracing for specific drivers.
+>>
+>> Signed-off-by: Sai Prakash Ranjan <quic_saipraka@quicinc.com>
+>> ---
+>>   arch/arm64/include/asm/io.h       | 25 ++++-------
+>>   arch/arm64/kvm/hyp/nvhe/Makefile  |  2 +-
+>>   include/linux/mmio-instrumented.h | 70 +++++++++++++++++++++++++++++++
+>>   3 files changed, 80 insertions(+), 17 deletions(-)
+>>   create mode 100644 include/linux/mmio-instrumented.h
+>>
+>> diff --git a/arch/arm64/include/asm/io.h b/arch/arm64/include/asm/io.h
+>> index 7fd836bea7eb..a635aaaf81b9 100644
+>> --- a/arch/arm64/include/asm/io.h
+>> +++ b/arch/arm64/include/asm/io.h
+>> @@ -10,6 +10,7 @@
+>>   
+>>   #include <linux/types.h>
+>>   #include <linux/pgtable.h>
+>> +#include <linux/mmio-instrumented.h>
+>>   
+>>   #include <asm/byteorder.h>
+>>   #include <asm/barrier.h>
+>> @@ -21,32 +22,27 @@
+>>   /*
+>>    * Generic IO read/write.  These perform native-endian accesses.
+>>    */
+>> -#define __raw_writeb __raw_writeb
+>> -static inline void __raw_writeb(u8 val, volatile void __iomem *addr)
+>> +static inline void arch_raw_writeb(u8 val, volatile void __iomem *addr)
+>>   {
+>>   	asm volatile("strb %w0, [%1]" : : "rZ" (val), "r" (addr));
+>>   }
+>>   
+>> -#define __raw_writew __raw_writew
+>> -static inline void __raw_writew(u16 val, volatile void __iomem *addr)
+>> +static inline void arch_raw_writew(u16 val, volatile void __iomem *addr)
+>>   {
+>>   	asm volatile("strh %w0, [%1]" : : "rZ" (val), "r" (addr));
+>>   }
+>>   
+>> -#define __raw_writel __raw_writel
+>> -static __always_inline void __raw_writel(u32 val, volatile void __iomem *addr)
+>> +static __always_inline void arch_raw_writel(u32 val, volatile void __iomem *addr)
+>>   {
+>>   	asm volatile("str %w0, [%1]" : : "rZ" (val), "r" (addr));
+>>   }
+>>   
+>> -#define __raw_writeq __raw_writeq
+>> -static inline void __raw_writeq(u64 val, volatile void __iomem *addr)
+>> +static inline void arch_raw_writeq(u64 val, volatile void __iomem *addr)
+>>   {
+>>   	asm volatile("str %x0, [%1]" : : "rZ" (val), "r" (addr));
+>>   }
+>>   
+>> -#define __raw_readb __raw_readb
+>> -static inline u8 __raw_readb(const volatile void __iomem *addr)
+>> +static inline u8 arch_raw_readb(const volatile void __iomem *addr)
+>>   {
+>>   	u8 val;
+>>   	asm volatile(ALTERNATIVE("ldrb %w0, [%1]",
+>> @@ -56,8 +52,7 @@ static inline u8 __raw_readb(const volatile void __iomem *addr)
+>>   	return val;
+>>   }
+>>   
+>> -#define __raw_readw __raw_readw
+>> -static inline u16 __raw_readw(const volatile void __iomem *addr)
+>> +static inline u16 arch_raw_readw(const volatile void __iomem *addr)
+>>   {
+>>   	u16 val;
+>>   
+>> @@ -68,8 +63,7 @@ static inline u16 __raw_readw(const volatile void __iomem *addr)
+>>   	return val;
+>>   }
+>>   
+>> -#define __raw_readl __raw_readl
+>> -static __always_inline u32 __raw_readl(const volatile void __iomem *addr)
+>> +static __always_inline u32 arch_raw_readl(const volatile void __iomem *addr)
+>>   {
+>>   	u32 val;
+>>   	asm volatile(ALTERNATIVE("ldr %w0, [%1]",
+>> @@ -79,8 +73,7 @@ static __always_inline u32 __raw_readl(const volatile void __iomem *addr)
+>>   	return val;
+>>   }
+>>   
+>> -#define __raw_readq __raw_readq
+>> -static inline u64 __raw_readq(const volatile void __iomem *addr)
+>> +static inline u64 arch_raw_readq(const volatile void __iomem *addr)
+>>   {
+>>   	u64 val;
+>>   	asm volatile(ALTERNATIVE("ldr %0, [%1]",
+>> diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
+>> index c3c11974fa3b..ff56d2165ea9 100644
+>> --- a/arch/arm64/kvm/hyp/nvhe/Makefile
+>> +++ b/arch/arm64/kvm/hyp/nvhe/Makefile
+>> @@ -4,7 +4,7 @@
+>>   #
+>>   
+>>   asflags-y := -D__KVM_NVHE_HYPERVISOR__ -D__DISABLE_EXPORTS
+>> -ccflags-y := -D__KVM_NVHE_HYPERVISOR__ -D__DISABLE_EXPORTS
+>> +ccflags-y := -D__KVM_NVHE_HYPERVISOR__ -D__DISABLE_EXPORTS -D__DISABLE_TRACE_MMIO__
+>>   
+>>   hostprogs := gen-hyprel
+>>   HOST_EXTRACFLAGS += -I$(objtree)/include
+>> diff --git a/include/linux/mmio-instrumented.h b/include/linux/mmio-instrumented.h
+>> new file mode 100644
+>> index 000000000000..99979c025cc1
+>> --- /dev/null
+>> +++ b/include/linux/mmio-instrumented.h
+>> @@ -0,0 +1,70 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +/*
+>> + * Copyright (c) 2021 Qualcomm Innovation Center, Inc. All rights reserved.
+>> + */
+>> +
+>> +#ifndef _LINUX_MMIO_INSTRUMENTED_H
+>> +#define _LINUX_MMIO_INSTRUMENTED_H
+>> +
+>> +#include <linux/tracepoint-defs.h>
+>> +
+>> +/*
+>> + * Tracepoint and MMIO logging symbols should not be visible at EL2(HYP) as
+>> + * there is no way to execute them and any such MMIO access from EL2 will
+>> + * explode instantly (Words of Marc Zyngier). So introduce a generic flag
+>> + * __DISABLE_TRACE_MMIO__ to disable MMIO tracing in nVHE and other drivers
+>> + * if required.
+>> + */
+> This Gospel would be better placed next to the code that defines the
+> macro, given that this is an arch-independent include file, and hardly
+> anyone understands the quirks of a nVHE KVM (and only nVHE, something
+> that the comment fails to capture).
+>
+> 	M.
+>
 
-yep, it seems the perf bench is broken so the counts won't correlated
-if I revert this one:
-  92723ea0f11d perf bench: Fix two memory leaks detected with ASan
+I'll move the comment and include nVHE in the comment as well.
 
-it works for me again.. it seems to break -t option
-
-Sohaib, could you please check on that?
-
-	[root@dell-r440-01 perf]# ./perf bench sched messaging -g 1 -l 100 -t
-	# Running 'sched/messaging' benchmark:
-	RRRperf: CLIENT: ready write: Bad file descriptor
-	Rperf: SENDER: write: Bad file descriptor
-
-thanks,
-jirka
-
-> 
-> ⬢[acme@toolbox perf]$ perf -vv
-> perf version 5.16.rc1.gfa2b5229b222
->                  dwarf: [ on  ]  # HAVE_DWARF_SUPPORT
->     dwarf_getlocations: [ on  ]  # HAVE_DWARF_GETLOCATIONS_SUPPORT
->                  glibc: [ on  ]  # HAVE_GLIBC_SUPPORT
->          syscall_table: [ on  ]  # HAVE_SYSCALL_TABLE_SUPPORT
->                 libbfd: [ on  ]  # HAVE_LIBBFD_SUPPORT
->                 libelf: [ on  ]  # HAVE_LIBELF_SUPPORT
->                libnuma: [ on  ]  # HAVE_LIBNUMA_SUPPORT
-> numa_num_possible_cpus: [ on  ]  # HAVE_LIBNUMA_SUPPORT
->                libperl: [ on  ]  # HAVE_LIBPERL_SUPPORT
->              libpython: [ on  ]  # HAVE_LIBPYTHON_SUPPORT
->               libslang: [ on  ]  # HAVE_SLANG_SUPPORT
->              libcrypto: [ on  ]  # HAVE_LIBCRYPTO_SUPPORT
->              libunwind: [ on  ]  # HAVE_LIBUNWIND_SUPPORT
->     libdw-dwarf-unwind: [ on  ]  # HAVE_DWARF_SUPPORT
->                   zlib: [ on  ]  # HAVE_ZLIB_SUPPORT
->                   lzma: [ on  ]  # HAVE_LZMA_SUPPORT
->              get_cpuid: [ on  ]  # HAVE_AUXTRACE_SUPPORT
->                    bpf: [ on  ]  # HAVE_LIBBPF_SUPPORT
->                    aio: [ on  ]  # HAVE_AIO_SUPPORT
->                   zstd: [ on  ]  # HAVE_ZSTD_SUPPORT
->                libpfm4: [ OFF ]  # HAVE_LIBPFM
-> ⬢[acme@toolbox perf]$
-> 
-> This is with what I have now in my perf/urgent branch, the csets there
-> aren't related:
-> 
-> ⬢[acme@toolbox perf]$ git log --oneline torvalds/master..
-> b194c9cd09dd98af (HEAD -> perf/urgent, quaco/perf/urgent, acme/tmp.perf/urgent, acme/perf/urgent) perf evsel: Fix memory leaks relating to unit
-> d9fc706108c15f8b perf report: Fix memory leaks around perf_tip()
-> 0ca1f534a776cc7d perf hist: Fix memory leak of a perf_hpp_fmt
-> 8b8dcc3720d57d88 tools headers UAPI: Sync MIPS syscall table file changed by new futex_waitv syscall
-> e8c04ea0fef5731d tools build: Fix removal of feature-sync-compare-and-swap feature detection
-> 9e1a8d9f683260d5 perf inject: Fix ARM SPE handling
-> 92723ea0f11d9249 perf bench: Fix two memory leaks detected with ASan
-> cb5a63feae2d963c perf test sample-parsing: Fix branch_stack entry endianness check
-> 162b944598344fd7 tools headers UAPI: Sync x86's asm/kvm.h with the kernel sources
-> db4b284029099224 perf sort: Fix the 'p_stage_cyc' sort key behavior
-> 4d03c75363eeca86 perf sort: Fix the 'ins_lat' sort key behavior
-> 784e8adda4cdb3e2 perf sort: Fix the 'weight' sort key behavior
-> 70f9c9b2df1dd12c perf tools: Set COMPAT_NEED_REALLOCARRAY for CONFIG_AUXTRACE=1
-> ccb05590c4325ce5 perf tests wp: Remove unused functions on s390
-> 346e91998cba46b6 tools headers UAPI: Sync linux/kvm.h with the kernel sources
-> b075c1d81e7d0e96 tools headers cpufeatures: Sync with the kernel sources
-> ⬢[acme@toolbox perf]$
-> 
-> - Arnaldo
-> 
-> [acme@quaco perf]$ uname -a
-> Linux quaco 5.14.17-301.fc35.x86_64 #1 SMP Mon Nov 8 13:57:43 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
-> 
-> 91: perf stat --bpf-counters test                                   :RRRRRRRRRRRRR FAILED!
-> 92: Check Arm CoreSight trace data recording and synthesized samples: Skip
-> 93: Check Arm SPE trace data recording and synthesized samples      : Skip
-> 94: Check open filename arg using perf trace + vfs_getname          : Ok
-> [root@quaco ~]# perf test 91
-> 91: perf stat --bpf-counters test                                   :RRRRRRRRRRRRR FAILED!
-> [root@quaco ~]# perf test 91
-> 91: perf stat --bpf-counters test                                   :RRRRRRRRRRRRR FAILED!
-> [root@quaco ~]# perf test 91
-> 91: perf stat --bpf-counters test                                   :RRRRRRRRRRRR FAILED!
-> [root@quaco ~]# perf test 91
-> 91: perf stat --bpf-counters test                                   :RRRRRRRRRRRRRRRRRR Ok
-> [root@quaco ~]# perf test 91
-> 91: perf stat --bpf-counters test                                   :RRRRRRRRR FAILED!
-> [root@quaco ~]# perf test 91
-> 91: perf stat --bpf-counters test                                   :RRRRRRRRRRR Ok
-> [root@quaco ~]# perf test 91
-> 91: perf stat --bpf-counters test                                   :RRRRRRRRRRRRRRR Ok
-> [root@quaco ~]# uname -a
-> Linux quaco 5.14.17-301.fc35.x86_64 #1 SMP Mon Nov 8 13:57:43 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
-> [root@quaco ~]# set -o vi
-> [root@quaco ~]# perf test -v 91
-> 91: perf stat --bpf-counters test                                   :
-> --- start ---
-> test child forked, pid 30079
-> RRRRRRRRRRRRRRRRRThe difference between 31599305 and 36265639 are greater than 10%.
-> test child finished with -1
-> ---- end ----
-> perf stat --bpf-counters test: FAILED!
-> [root@quaco ~]# perf test -v 91
-> 91: perf stat --bpf-counters test                                   :
-> --- start ---
-> test child forked, pid 30170
-> RRRRRRRRRRRRRRRRRRRRRRRRThe difference between 33311934 and 36973889 are greater than 10%.
-> test child finished with -1
-> ---- end ----
-> perf stat --bpf-counters test: FAILED!
-> [root@quaco ~]# perf test -v 91
-> 91: perf stat --bpf-counters test                                   :
-> --- start ---
-> test child forked, pid 30257
-> RRRRRRRRRRRRRRRRRThe difference between 31420157 and 36680527 are greater than 10%.
-> test child finished with -1
-> ---- end ----
-> perf stat --bpf-counters test: FAILED!
-> [root@quaco ~]# perf test -v 91
-> 91: perf stat --bpf-counters test                                   :
-> --- start ---
-> test child forked, pid 30341
-> RRRRRRRRRRRRRRRRRRRThe difference between 32451720 and 36750342 are greater than 10%.
-> test child finished with -1
-> ---- end ----
-> perf stat --bpf-counters test: FAILED!
-> [root@quaco ~]# perf test -v 91
-> 91: perf stat --bpf-counters test                                   :
-> --- start ---
-> test child forked, pid 30433
-> RRRRRRRRRRRRRRRRRRtest child finished with 0
-> ---- end ----
-> perf stat --bpf-counters test: Ok
-> [root@quaco ~]#
-> 
-
+Thanks,
+Sai
