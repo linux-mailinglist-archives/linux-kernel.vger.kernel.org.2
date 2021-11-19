@@ -2,108 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704C2457337
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:38:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C64A745734A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:42:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236582AbhKSQlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 11:41:14 -0500
-Received: from mga02.intel.com ([134.134.136.20]:44020 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235289AbhKSQlN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 11:41:13 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="221662535"
-X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
-   d="scan'208";a="221662535"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 08:38:11 -0800
-X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
-   d="scan'208";a="537156505"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 08:38:02 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mo6te-008atg-H8;
-        Fri, 19 Nov 2021 18:37:54 +0200
-Date:   Fri, 19 Nov 2021 18:37:54 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, LKML <linux-kernel@vger.kernel.org>,
-        Ajit Khaparde <ajit.khaparde@broadcom.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Borislav Petkov <bp@suse.de>,
-        Corey Minyard <cminyard@mvista.com>, Chris Mason <clm@fb.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        David Sterba <dsterba@suse.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "John S . Gruber" <JohnSGruber@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ketan Mukadam <ketan.mukadam@broadcom.com>,
-        Len Brown <lenb@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>
-Subject: Re: [PATCH 00/17] Add memberof(), split some headers, and slightly
- simplify code
-Message-ID: <YZfS4lCt8rMZ7UlS@smile.fi.intel.com>
-References: <20211119113644.1600-1-alx.manpages@gmail.com>
- <CAK8P3a0qT9tAxFkLN_vJYRcocDW2TcBq79WcYKZFyAG0udZx5Q@mail.gmail.com>
- <434296d3-8fe1-f1d2-ee9d-ea25d6c4e43e@gmail.com>
- <CAK8P3a2yVXw9gf8-BNvX_rzectNoiy0MqGKvBcXydiUSrc_fCA@mail.gmail.com>
- <f751fb48-d19c-88af-452e-680994a586b4@gmail.com>
+        id S236608AbhKSQpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 11:45:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233036AbhKSQpN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 11:45:13 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F5E3C06173E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:42:11 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id w33-20020a17090a6ba400b001a722a06212so9248913pjj.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:42:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6usG8MiQSxUWW8t4LIS6CwwnjV4gadMypuBMhJfOTXg=;
+        b=SJ/5hd7oOStu335XYv6nQAV6FVZqLIf9hAnFjiCDZVNARjObPclqPpfkPEbcoEKEcw
+         UL7tgGQ7+lX1lEDpzzXPu1KfbxDez6M63n1J7dtwKmWViDnGvVnQc++e3Ymsvm2kDgpJ
+         Vk6m5PtLG9oteHM0/wRxT6/CxDWmhUxiO3Bjk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6usG8MiQSxUWW8t4LIS6CwwnjV4gadMypuBMhJfOTXg=;
+        b=Oc19fIcx1yuD2Hh4D4oWv9b4gpmb9x7rtGZAvk/0OTWyhuwAUZd9YwdX6CfSIPdQ5X
+         e1R9UMz8tHkp9FYYg4ef0twJb7SCebIMNzY7oqQFFRTY/zhhfiREwHRFpjlnnMpkgQ/E
+         lns7MyIpt9dQ+JtSaidOwLiOIBQx+TEXi/JkAF3GS4uznOGSrXIVbpJnHdQ0pPOQ1Kd4
+         G3e6SCMhlVTUTu/1/boNJOsO0D5BG0N3B4WV6MuLAVJejA2a897o2SZfvpH7sRy+M05o
+         19R8utedz/2Go4ZQddB1F2xY8Mvbt9Wa4MqTn+Q8wozQUlyrtE7OmxNE+Z8N9TjiBpNs
+         nxrw==
+X-Gm-Message-State: AOAM5309Gahfd1mlOSgZKEmQ7nZEDibRgaNfkUh46SV8Hu2JI4rnVR/M
+        FNzOmH7c8M2AGJy3D7HnGXq7Xw==
+X-Google-Smtp-Source: ABdhPJxJ0yfws7sNNKBoF+QxKvxIZXPDJEJBvkkmJPuM3LXNvCkaPrbM3z7R/EkI+PBoP+BKqrRXXA==
+X-Received: by 2002:a17:902:cb8a:b0:141:f601:d5f1 with SMTP id d10-20020a170902cb8a00b00141f601d5f1mr79797842ply.77.1637340131104;
+        Fri, 19 Nov 2021 08:42:11 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id t12sm11083635pjo.44.2021.11.19.08.42.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 08:42:10 -0800 (PST)
+Date:   Fri, 19 Nov 2021 08:42:08 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        kernel test robot <lkp@intel.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: Re: [PATCH] powerpc/signal32: Use struct_group() to zero spe regs
+Message-ID: <202111190839.B6EC699B1@keescook>
+References: <20211118203604.1288379-1-keescook@chromium.org>
+ <1e312cbd-cd52-ddce-f839-db765173c526@csgroup.eu>
+ <202111190824.AEBBE1328@keescook>
+ <7f4e7d24-6eb0-5ecf-3497-61c3633046bd@csgroup.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f751fb48-d19c-88af-452e-680994a586b4@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <7f4e7d24-6eb0-5ecf-3497-61c3633046bd@csgroup.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 05:12:19PM +0100, Alejandro Colomar (man-pages) wrote:
-> On 11/19/21 16:57, Arnd Bergmann wrote:
+On Fri, Nov 19, 2021 at 05:35:00PM +0100, Christophe Leroy wrote:
+> Neither do I. I was just scared by what I saw while reviewing your patch. A
+> cleanup is probably required but it can be another patch.
 
-...
-
-> > On the plus side, I did see something on the order of a 30%
-> > compile speed improvement with clang, which is insane
-> > given that this only removed dead definitions.
-> 
-> Huh!
-> 
-> I'd like to see the kernel some day
-> not having _any_ hidden dependencies.
-
-It's neither feasible nor practical. If we know the hard dependencies between
-headers, why should we not use implicit inclusion?
-
-We all know that bitmap.h includes bitops.h and this is good and a must, why
-to avoid this?
+Heh, understood! For my end, my objective with the fortify work is to
+either split cross-member memcpy() calls (which is usually undesirable) or
+add a struct group so it can be seen as a "single member" memcpy again
+(and usually results in 0 differences in binary output). :)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Kees Cook
