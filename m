@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97578457154
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:03:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FDD8457155
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:03:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233116AbhKSPGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 10:06:34 -0500
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:42061 "EHLO
+        id S233130AbhKSPGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 10:06:37 -0500
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:55323 "EHLO
         relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232958AbhKSPGa (ORCPT
+        with ESMTP id S233189AbhKSPGc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 10:06:30 -0500
+        Fri, 19 Nov 2021 10:06:32 -0500
 Received: (Authenticated sender: herve.codina@bootlin.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPA id 5E8281C0019;
-        Fri, 19 Nov 2021 15:03:27 +0000 (UTC)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPA id 5C01F1C0017;
+        Fri, 19 Nov 2021 15:03:29 +0000 (UTC)
 From:   Herve Codina <herve.codina@bootlin.com>
 To:     Miquel Raynal <miquel.raynal@bootlin.com>,
         Richard Weinberger <richard@nod.at>,
@@ -22,9 +22,9 @@ To:     Miquel Raynal <miquel.raynal@bootlin.com>,
 Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
         Herve Codina <herve.codina@bootlin.com>,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v3 3/4] mtd: rawnand: fsmc: Take instruction delay into account
-Date:   Fri, 19 Nov 2021 16:03:15 +0100
-Message-Id: <20211119150316.43080-4-herve.codina@bootlin.com>
+Subject: [PATCH v3 4/4] mtd: rawnand: fsmc: Fix timing computation
+Date:   Fri, 19 Nov 2021 16:03:16 +0100
+Message-Id: <20211119150316.43080-5-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211119150316.43080-1-herve.codina@bootlin.com>
 References: <20211119150316.43080-1-herve.codina@bootlin.com>
@@ -34,46 +34,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The FSMC NAND controller should apply a delay after the
-instruction has been issued on the bus.
-The FSMC NAND controller driver did not handle this delay.
+Under certain circumstances, the timing settings calculated by
+the FSMC NAND controller driver were inaccurate.
+These settings led to incorrect data reads or fallback to
+timing mode 0 depending on the NAND chip used.
 
-Add this waiting delay in the FSMC NAND controller driver.
+The timing computation did not take into account the following
+constraint given in SPEAr3xx reference manual:
+  twait >= tCEA - (tset * TCLK) + TOUTDEL + TINDEL
 
-Fixes: 4da712e70294 ("mtd: nand: fsmc: use ->exec_op()")
+Enhance the timings calculation by taking into account this
+additional constraint.
+
+This change has no impact on slow timing modes such as mode 0.
+Indeed, on mode 0, computed values are the same with and
+without the patch.
+
+NANDs which previously stayed in mode 0 because of fallback to
+mode 0 can now work at higher speeds and NANDs which were not
+working at all because of the corrupted data work at high
+speeds without troubles.
+
+Overall improvement on a Micron/MT29F1G08 (flash_speed tool):
+                        mode0       mode3
+eraseblock write speed  3220 KiB/s  4511 KiB/s
+eraseblock read speed   4491 KiB/s  7529 KiB/s
+
+Fixes: d9fb079571833 ("mtd: nand: fsmc: add support for SDR timings")
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
-Changes v1 -> v2:
+Changes v1 to v2:
 - Commit log reword
+- Added performance details in commit log
+- Used #define for TOUTDEL and TINDEL and
+  Fixed coding style
+- Used max3()
 
 Changes v2 -> v3:
+- Improved commit log
 - Added 'Fixes' reference
+- Changed comment in source code
 
- drivers/mtd/nand/raw/fsmc_nand.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/mtd/nand/raw/fsmc_nand.c | 32 ++++++++++++++++++++++++--------
+ 1 file changed, 24 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-index 658f0cbe7ce8..0a6c9ef0ea8b 100644
+index 0a6c9ef0ea8b..6b2bda815b88 100644
 --- a/drivers/mtd/nand/raw/fsmc_nand.c
 +++ b/drivers/mtd/nand/raw/fsmc_nand.c
-@@ -15,6 +15,7 @@
+@@ -94,6 +94,14 @@
  
- #include <linux/clk.h>
- #include <linux/completion.h>
-+#include <linux/delay.h>
- #include <linux/dmaengine.h>
- #include <linux/dma-direction.h>
- #include <linux/dma-mapping.h>
-@@ -664,6 +665,9 @@ static int fsmc_exec_op(struct nand_chip *chip, const struct nand_operation *op,
- 						instr->ctx.waitrdy.timeout_ms);
- 			break;
- 		}
+ #define FSMC_BUSY_WAIT_TIMEOUT	(1 * HZ)
+ 
++/*
++ * According to SPEAr300 Reference Manual (RM0082)
++ *  TOUDEL = 7ns (Output delay from the flip-flops to the board)
++ *  TINDEL = 5ns (Input delay from the board to the flipflop)
++ */
++#define TOUTDEL	7000
++#define TINDEL	5000
 +
-+		if (instr->delay_ns)
-+			ndelay(instr->delay_ns);
- 	}
+ struct fsmc_nand_timings {
+ 	u8 tclr;
+ 	u8 tar;
+@@ -278,7 +286,7 @@ static int fsmc_calc_timings(struct fsmc_nand_data *host,
+ {
+ 	unsigned long hclk = clk_get_rate(host->clk);
+ 	unsigned long hclkn = NSEC_PER_SEC / hclk;
+-	u32 thiz, thold, twait, tset;
++	u32 thiz, thold, twait, tset, twait_min;
  
- 	return ret;
+ 	if (sdrt->tRC_min < 30000)
+ 		return -EOPNOTSUPP;
+@@ -310,13 +318,6 @@ static int fsmc_calc_timings(struct fsmc_nand_data *host,
+ 	else if (tims->thold > FSMC_THOLD_MASK)
+ 		tims->thold = FSMC_THOLD_MASK;
+ 
+-	twait = max(sdrt->tRP_min, sdrt->tWP_min);
+-	tims->twait = DIV_ROUND_UP(twait / 1000, hclkn) - 1;
+-	if (tims->twait == 0)
+-		tims->twait = 1;
+-	else if (tims->twait > FSMC_TWAIT_MASK)
+-		tims->twait = FSMC_TWAIT_MASK;
+-
+ 	tset = max(sdrt->tCS_min - sdrt->tWP_min,
+ 		   sdrt->tCEA_max - sdrt->tREA_max);
+ 	tims->tset = DIV_ROUND_UP(tset / 1000, hclkn) - 1;
+@@ -325,6 +326,21 @@ static int fsmc_calc_timings(struct fsmc_nand_data *host,
+ 	else if (tims->tset > FSMC_TSET_MASK)
+ 		tims->tset = FSMC_TSET_MASK;
+ 
++	/*
++	 * According to SPEAr300 Reference Manual (RM0082) which gives more
++	 * information related to FSMSC timings than the SPEAr600 one (RM0305),
++	 *   twait >= tCEA - (tset * TCLK) + TOUTDEL + TINDEL
++	 */
++	twait_min = sdrt->tCEA_max - ((tims->tset + 1) * hclkn * 1000)
++		    + TOUTDEL + TINDEL;
++	twait = max3(sdrt->tRP_min, sdrt->tWP_min, twait_min);
++
++	tims->twait = DIV_ROUND_UP(twait / 1000, hclkn) - 1;
++	if (tims->twait == 0)
++		tims->twait = 1;
++	else if (tims->twait > FSMC_TWAIT_MASK)
++		tims->twait = FSMC_TWAIT_MASK;
++
+ 	return 0;
+ }
+ 
 -- 
 2.31.1
 
