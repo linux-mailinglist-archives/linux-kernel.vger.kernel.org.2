@@ -2,299 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03651457871
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 23:01:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE129457876
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 23:08:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234141AbhKSWEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 17:04:33 -0500
-Received: from mga17.intel.com ([192.55.52.151]:60948 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233731AbhKSWEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 17:04:30 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10173"; a="215214907"
-X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
-   d="scan'208";a="215214907"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 14:01:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
-   d="scan'208";a="537247336"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 19 Nov 2021 14:01:26 -0800
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1moBwj-00050R-Jo; Fri, 19 Nov 2021 22:01:25 +0000
-Date:   Sat, 20 Nov 2021 06:00:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 7284bd9822f33a3be80ac6d92b4540d6dcfb5219
-Message-ID: <61981e86.olCjAinSjXP5OWRH%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S233731AbhKSWLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 17:11:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229675AbhKSWLE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 17:11:04 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18038C061574;
+        Fri, 19 Nov 2021 14:08:02 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id n8so9162930plf.4;
+        Fri, 19 Nov 2021 14:08:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=oVfWHfQ93NSK7GJnUuUHGV5hxlYSbDYnzx268qbi4wQ=;
+        b=DrMbXeGjsBIOvXymVZJLXz0Ts4VKlFMQ5+D7t0BLGO+nSns99UoImMQ9dQM0V0/ta2
+         r/sq4+URBIiypx6oehS67YaPhLRyyffvsT0rpxqeSnr2KqoITs3pMhUioRLhKi5lWom3
+         81D2ZM2EUp2J++43GaGS0+b3uBalOb8gDQPPRgJXYTI4Ct2JPhhS75oc7Wiw26GVm9Wa
+         jny0uMveQ8QfTp8Az1ufaowlqbh74o37KX0QjmhiHhH4tNIDbHcMV3CSOJJZRzdIC5ft
+         lhHmgpwIt6RJbgRxCeUwO8B7qvjoS7AMGB4ihBK+9oXZ9/Gs+HPDtfXO7QvBoLLU0E2/
+         A4jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=oVfWHfQ93NSK7GJnUuUHGV5hxlYSbDYnzx268qbi4wQ=;
+        b=S4wUAUKwFEH2mciN7hlhefHr7nnEYRq7q3OWf6Qslujs78i3lSmRbX4r1iZnM96m4A
+         NOUtnJ9lMgklbbXEP8CoF1V/znlBSfMeVGZX70L1oHNY66QRgYgAXyLbgq68ks26XquX
+         Oj+JXwjHEWGehhDFybXDkBr/hMmsb0L+SoPMHJHrOZBo01foEooSUMSKQYJGoiKd2xPm
+         rTBYQuOG0IDHKzfLIauGxySTF7ERC8TazzRHXKFquXd6Tilnln3HkEzej5qxe7cQoy3F
+         mSwZjy3HSz78RZsJRLvVM6lom677IlOz0/xgYh+t2PMO2xH9c68Py6ibNhZ7o4DCk5R0
+         YTBg==
+X-Gm-Message-State: AOAM530fx/faRozCgr/Adugpj0rGJ7XFI8KlzMcBmGL7S/swTbipYefd
+        txeM9d1ZX9LfzxQK1O6aPIrItc+yvtvJuw==
+X-Google-Smtp-Source: ABdhPJy6hljmQzcSBrpyEVHVbSYVTYLUiWYEJ667fFb1TruKTPKZac2o/MSnsjCJGs1XfIEGMWjF2w==
+X-Received: by 2002:a17:90a:c78f:: with SMTP id gn15mr3814496pjb.54.1637359681068;
+        Fri, 19 Nov 2021 14:08:01 -0800 (PST)
+Received: from stbsrv-and-01.and.broadcom.net ([192.19.11.250])
+        by smtp.gmail.com with ESMTPSA id t2sm612940pfd.36.2021.11.19.14.07.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 14:08:00 -0800 (PST)
+From:   Jim Quinlan <jim2101024@gmail.com>
+To:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, jim2101024@gmail.com,
+        james.quinlan@broadcom.com
+Cc:     devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        linux-kernel@vger.kernel.org (open list),
+        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        Saenz Julienne <nsaenzjulienne@suse.de>
+Subject: [PATCH v9 0/7] PCI: brcmstb: root port turns on sub-device power
+Date:   Fri, 19 Nov 2021 17:07:47 -0500
+Message-Id: <20211119220756.18628-1-jim2101024@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 7284bd9822f33a3be80ac6d92b4540d6dcfb5219  Merge branch 'locking/core'
+v9  -- Simplify where this mechanism works: instead of looking for
+       regulators below every bridge, just look for them at the
+       bridge under the root bus (root port).  Now there is no
+       modification of portdrv_{pci,core}.c in this submission.
+    -- Although Pali is working on support for probing native
+       PCIe controller drivers, this work may take some time to
+       implement and it still might not be able to accomodate
+       our driver's requirements (e.g. vreg suspend/resume control).
+    -- Move regulator suspend/resume control to Brcm RC driver.  It
+       must reside there because (a) in order to know when to
+       initiate linkup during resume and (b) to turn on the
+       regulators before any config-space accesses occur.
+    -- Commit message spelling, word choice (Bjorn, Krzysztof)
+    -- Refactor a small commit that was ignoring a funcs' return
+       values (Bjorn).
+    -- Here is a summary of this mechanism:
 
-elapsed time: 722m
+       If:
+           -- PCIe RC driver sets pci_ops {add,remove)_bus to
+              pci_subdev_regulators_{add,remove}_bus during its probe.
+           -- There is a DT node "RB" under the host bridge DT node.
+           -- During the RC driver's pci_host_probe() the add_bus callback
+              is invoked where (bus->parent && pci_is_root_bus(bus->parent)
+              is true
 
-configs tested: 236
-configs skipped: 3
+       Then:
+           -- A struct subdev_regulators structure will be allocated and
+              assigned to bus->dev.driver_data.
+           -- regulator_bulk_{get,enable}() will be invoked on &bus->dev
+              and the former will search for and process any
+              vpcie{12v,3v3,3v3aux}-supply properties that reside in node "RB".
+           -- The regulators will be turned off/on for any unbind/bind operations.
+           -- The regulators will be turned off/on for any suspend/resumes, but
+              only if the RC driver handles this on its own.  This will appear
+              in a later commit for the pcie-brcmstb.c driver.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+v8  -- Only the two binding commits and the "Change brcm_phy_stop()" commit
+       are unchanged.
+    -- The code has been moved to portdrv_pci.c and bus.c.  The regulators   
+       are placed in bus->dev.driver_data (bus->sysdata is already occupied
+       by the Broadcom PCIe).  Two functions, pci_subdev_regulators_{add,remove}_bus()
+       are created to turn the regulators on/off.  The pcie_portdriver also sets
+       its pci_driver methods suspend and resume when the conditions are
+       right for this feature.  (Robh for suggestions, although I probably
+       erred in following them).
+    -- Have the root complex return 0xffffffff on accesses even when
+       the link is down and the HW doesn't support such accesses (PaliR).
+    -- Just call devm_bulk_regulator_get() on standard supplies; don't
+       bother pre-scanning the DT for them (MarkB).
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20211119
-i386                 randconfig-c001-20211118
-mips                 randconfig-c004-20211118
-powerpc                         ps3_defconfig
-sh                                  defconfig
-arc                      axs103_smp_defconfig
-ia64                          tiger_defconfig
-ia64                         bigsur_defconfig
-sh                           se7722_defconfig
-mips                      fuloong2e_defconfig
-mips                        omega2p_defconfig
-arm                             rpc_defconfig
-sparc64                             defconfig
-sh                           sh2007_defconfig
-powerpc                        warp_defconfig
-arm                        mvebu_v7_defconfig
-sh                        dreamcast_defconfig
-arm                         orion5x_defconfig
-arm                            pleb_defconfig
-xtensa                              defconfig
-xtensa                           alldefconfig
-mips                       lemote2f_defconfig
-arm                  colibri_pxa300_defconfig
-arm                           h3600_defconfig
-arc                    vdk_hs38_smp_defconfig
-riscv                    nommu_virt_defconfig
-mips                   sb1250_swarm_defconfig
-powerpc                      walnut_defconfig
-arm                        mvebu_v5_defconfig
-mips                         mpc30x_defconfig
-powerpc                      acadia_defconfig
-s390                          debug_defconfig
-powerpc                 mpc8540_ads_defconfig
-mips                malta_qemu_32r6_defconfig
-arm                           omap1_defconfig
-arm                         palmz72_defconfig
-arc                     nsimosci_hs_defconfig
-nios2                               defconfig
-arm                           stm32_defconfig
-arm                        realview_defconfig
-s390                             alldefconfig
-powerpc                      pcm030_defconfig
-arm                     eseries_pxa_defconfig
-powerpc                     powernv_defconfig
-sh                           se7750_defconfig
-powerpc                   bluestone_defconfig
-mips                     loongson2k_defconfig
-arc                         haps_hs_defconfig
-mips                     loongson1b_defconfig
-mips                          malta_defconfig
-arm                         lubbock_defconfig
-arc                          axs103_defconfig
-powerpc                      chrp32_defconfig
-powerpc                     tqm8541_defconfig
-powerpc                 mpc834x_itx_defconfig
-arm                         s5pv210_defconfig
-m68k                        stmark2_defconfig
-powerpc                 mpc836x_rdk_defconfig
-mips                      bmips_stb_defconfig
-nds32                               defconfig
-arm                       cns3420vb_defconfig
-arm                       netwinder_defconfig
-powerpc                      katmai_defconfig
-arm                      integrator_defconfig
-powerpc                     pseries_defconfig
-arc                        nsim_700_defconfig
-powerpc                     tqm8555_defconfig
-arm                         s3c2410_defconfig
-powerpc                     mpc5200_defconfig
-powerpc                       maple_defconfig
-mips                           gcw0_defconfig
-mips                           ip22_defconfig
-arm                        spear3xx_defconfig
-m68k                         amcore_defconfig
-mips                    maltaup_xpa_defconfig
-arm                     am200epdkit_defconfig
-sh                           se7343_defconfig
-powerpc                  mpc885_ads_defconfig
-powerpc                      pasemi_defconfig
-powerpc                     rainier_defconfig
-riscv             nommu_k210_sdcard_defconfig
-arm                          collie_defconfig
-m68k                             alldefconfig
-arc                     haps_hs_smp_defconfig
-sh                   sh7770_generic_defconfig
-mips                       bmips_be_defconfig
-m68k                            mac_defconfig
-sh                        edosk7760_defconfig
-arm                      pxa255-idp_defconfig
-h8300                     edosk2674_defconfig
-arm                             mxs_defconfig
-sh                               allmodconfig
-arm                            hisi_defconfig
-mips                           ip27_defconfig
-openrisc                 simple_smp_defconfig
-i386                             alldefconfig
-sh                          sdk7786_defconfig
-arm                            mmp2_defconfig
-powerpc                 mpc837x_mds_defconfig
-sh                   sh7724_generic_defconfig
-mips                         db1xxx_defconfig
-arm                        cerfcube_defconfig
-arm                          pxa168_defconfig
-m68k                          multi_defconfig
-arm                              alldefconfig
-xtensa                          iss_defconfig
-microblaze                          defconfig
-arm                           sunxi_defconfig
-s390                       zfcpdump_defconfig
-powerpc                      ppc40x_defconfig
-powerpc                        icon_defconfig
-arm                           tegra_defconfig
-ia64                            zx1_defconfig
-openrisc                            defconfig
-powerpc                      cm5200_defconfig
-ia64                             alldefconfig
-arm                       imx_v6_v7_defconfig
-m68k                          sun3x_defconfig
-powerpc64                        alldefconfig
-powerpc                 mpc834x_mds_defconfig
-mips                 decstation_r4k_defconfig
-mips                           rs90_defconfig
-arm                         mv78xx0_defconfig
-sh                        sh7785lcr_defconfig
-arm                  randconfig-c002-20211118
-arm                  randconfig-c002-20211119
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20211119
-x86_64               randconfig-a003-20211119
-x86_64               randconfig-a002-20211119
-x86_64               randconfig-a001-20211119
-x86_64               randconfig-a006-20211119
-x86_64               randconfig-a004-20211119
-i386                 randconfig-a006-20211119
-i386                 randconfig-a003-20211119
-i386                 randconfig-a001-20211119
-i386                 randconfig-a005-20211119
-i386                 randconfig-a004-20211119
-i386                 randconfig-a002-20211119
-x86_64               randconfig-a015-20211118
-x86_64               randconfig-a012-20211118
-x86_64               randconfig-a011-20211118
-x86_64               randconfig-a013-20211118
-x86_64               randconfig-a016-20211118
-x86_64               randconfig-a014-20211118
-i386                 randconfig-a016-20211120
-i386                 randconfig-a015-20211120
-i386                 randconfig-a012-20211120
-i386                 randconfig-a013-20211120
-i386                 randconfig-a014-20211120
-i386                 randconfig-a011-20211120
-i386                 randconfig-a016-20211118
-i386                 randconfig-a014-20211118
-i386                 randconfig-a012-20211118
-i386                 randconfig-a011-20211118
-i386                 randconfig-a013-20211118
-i386                 randconfig-a015-20211118
-arc                  randconfig-r043-20211119
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
+v7  -- RobH suggested putting the "vpcixxx-supply" property under the
+       bridge-node rather than the endpoint device node.  Also, he said to
+       use the pci-ops add_bus/remove methods.  Doing so simplifies the
+       code greatly and three commits were dropped.  Thanks!
 
-clang tested configs:
-i386                 randconfig-c001-20211118
-x86_64               randconfig-c007-20211118
-arm                  randconfig-c002-20211118
-s390                 randconfig-c005-20211118
-powerpc              randconfig-c003-20211118
-riscv                randconfig-c006-20211118
-mips                 randconfig-c004-20211118
-i386                 randconfig-c001-20211119
-x86_64               randconfig-c007-20211119
-arm                  randconfig-c002-20211119
-s390                 randconfig-c005-20211119
-powerpc              randconfig-c003-20211119
-riscv                randconfig-c006-20211119
-x86_64               randconfig-a005-20211118
-x86_64               randconfig-a003-20211118
-x86_64               randconfig-a001-20211118
-x86_64               randconfig-a002-20211118
-x86_64               randconfig-a006-20211118
-x86_64               randconfig-a004-20211118
-i386                 randconfig-a006-20211118
-i386                 randconfig-a003-20211118
-i386                 randconfig-a001-20211118
-i386                 randconfig-a005-20211118
-i386                 randconfig-a004-20211118
-i386                 randconfig-a002-20211118
-x86_64               randconfig-a015-20211119
-x86_64               randconfig-a011-20211119
-x86_64               randconfig-a012-20211119
-x86_64               randconfig-a013-20211119
-x86_64               randconfig-a016-20211119
-x86_64               randconfig-a014-20211119
-hexagon              randconfig-r045-20211119
-hexagon              randconfig-r041-20211119
-riscv                randconfig-r042-20211119
-s390                 randconfig-r044-20211119
+    -- Rob also suggested (I think) having this patchset be a general
+       feature which is activated by an OF property under the bridge node.
+       I tried to do that but realized that our root complex driver
+       controls the regulators with its dev_pm_ops and there is no way to
+       transfer this control when using general mechanism.  Note that
+       although the regulator core deals with suspend, our RC driver wants
+       the right to sometimes to preclude this for WOL scenarios.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+    -- One commit was added to change the response to the return value of
+       the pci_ops add_bus() method.  Currently, an error causes a WARNING,
+       a dev_err(...), and continues to return the child bus.  The
+       modification was, for returning -ENOLINK only, to skip WARNING &
+       dev_err() and return NULL.  This is necessary for our RC HW, as if
+       the code continues on it will do a pci_read_config_dword() for the
+       vendor/id, and our HW flags a CPU abort (instead of returning
+       0xffffffff) when the is no pcie-link established.
+
+       [NOTE: MarkB, I did not add one of your two "Reviewed-by"s
+              because the commit had a decent amount of change.]
+
+v6   -- Dropped the idea of a placeholder regulator
+        property (brcm-ep-a-supply). (MarkB)
+     -- device_initialize() now called once.  Two
+        commits were added for this.  (GKH)
+     -- In two cases, separated a single function 
+        into two or more functions (MarkB)
+     -- "(void)foo();" => "foo()".  Note that although
+        foo() returns an int, in this instance it is being
+	invoked within a function returning void, and foo()
+	already executes a dev_err() on error. (MarkB)
+     -- Added a commit to correct PCIe interrupts in YAML.
+     -- Removed "device_type = "pci";" for the EP node
+        in the YAML example.
+     -- Updated the URL related to the voltage regulator
+        names on GitHub.  Note that I added vpciev3v3aux.
+
+v5 [NOTE: It has been a while since v4.  Sorry]
+     -- See "PCI: allow for callback to prepare nascent subdev"
+        commit message for the cornerstone of this patchset
+        and the reasons behind it.  This is a new commit.
+     -- The RC driver now looks into its DT children and
+        turns on regulators for a sub-device, and this occurs
+	prior to PCIe link as it must.
+     -- Dropped commits not related to the focus of this patchset.
+
+v4 [NOTE: I'm not sure this fixes RobH and MarkB constraints but I'd
+          like to use this pullreq as a basis for future discussion.]
+   [Commit: Add bindings for ...]
+     -- Fix syntax error in YAML bindings example (RobH)
+     -- {vpcie12v,vpcie3v3}-supply props are back in root complex DT node
+        (I believe RobH said this was okay)
+   [Commit: Add control of ..]
+     -- Do not do global search for regulator; now we look specifically
+        for the property {vpcie12v,vpcie3v3}-supply in the root complex
+	DT node and then call devm_regulator_bulk_get() (MarkB)
+     -- Use devm_regulator_bulk_get() (Bjorn)
+     -- s/EP/slot0 device/ (Bjorn)
+     -- Spelling, capitalization (Bjorn)
+     -- Have brcm_phy_stop() return a void (Bjorn)
+   [Commit: Do not turn off ...]
+     -- Capitalization (Bjorn)
+   [Commit: Check return value ...]
+     -- Commit message content (Bjorn)
+     -- Move 6/6 hunk to 2/6 where it belongs (Bjorn)
+     -- Move the rest of 6/6 before all other commits (Bjorn)
+
+v3 -- Driver now searches for EP DT subnode for any regulators to turn on.
+      If present, these regulators have the property names
+      "vpcie12v-supply" and "vpcie3v3-supply".  The existence of these
+      regulators in the EP subnode are currently pending as a pullreq
+      in pci-bus.yaml at
+      https://github.com/devicetree-org/dt-schema/pull/54
+      (MarkB, RobH).
+   -- Check return of brcm_set_regulators() (Florian)
+   -- Specify one regulator string per line for easier update (Florian)
+   -- Author/Committer/Signoff email changed from that of V2 from
+      'james.quinlan@broadcom.com' to 'jim2101024@gmail.com'.
+
+v2 -- Use regulator bulk API rather than multiple calls (MarkB).
+
+v1 -- Bindings are added for fixed regulators that may power the EP device.
+   -- The brcmstb RC driver is modified to control these regulators
+      during probe, suspend, and resume.
+   -- 7216 type SOCs have additional error reporting HW and a
+      panic handler is added to dump its info.
+   -- A missing return value check is added.
+
+
+Jim Quinlan (7):
+  PCI: brcmstb: Fix function return value handling
+  dt-bindings: PCI: Correct brcmstb interrupts, interrupt-map.
+  dt-bindings: PCI: Add bindings for Brcmstb EP voltage regulators
+  PCI: Add mechanism to turn on subdev regulators
+  PCI: brcmstb: Split brcm_pcie_setup() into two funcs
+  PCI: brcmstb: Add control of subdevice voltage regulators
+  PCI: brcmstb: Do not turn off WOL regulators on suspend
+
+ .../bindings/pci/brcm,stb-pcie.yaml           |  31 ++-
+ drivers/pci/bus.c                             |  67 ++++++
+ drivers/pci/controller/pcie-brcmstb.c         | 209 +++++++++++++++---
+ drivers/pci/pci.h                             |   8 +
+ 4 files changed, 277 insertions(+), 38 deletions(-)
+
+
+base-commit: ee1703cda8dc777e937dec172da55beaf1a74919
+prerequisite-patch-id: 0905430e81a95900a1366916fe2940b848317a7c
+prerequisite-patch-id: 710896210c50354d87f6025fe0bd1b89981138eb
+prerequisite-patch-id: 97d3886cb911cb12ef3d514fdfff2a0ab11e8570
+prerequisite-patch-id: 241f1e1878fc177d941f4982ca12779a29feb62b
+prerequisite-patch-id: d856608825e2294297db5d7f88f8c180f3e5a1f2
+prerequisite-patch-id: 92bcbc9772fb4d248157bcf35e799ac37be8ee45
+prerequisite-patch-id: 6f4b1aac459bb54523ade0e87c04e9d6c45bd9f5
+prerequisite-patch-id: 090ee7a3112a4ecb03805b23ed10e2c96b3b34ed
+-- 
+2.17.1
+
