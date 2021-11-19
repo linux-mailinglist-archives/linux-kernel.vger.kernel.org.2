@@ -2,136 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DEE545791D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 23:51:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C202457905
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 23:47:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234360AbhKSWyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 17:54:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45268 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231231AbhKSWyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 17:54:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8D3D61AF0;
-        Fri, 19 Nov 2021 22:51:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637362277;
-        bh=7GznTvTop0lokx6cVFXD5gAa4aQh8V7B6/e5YII3q+s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=myHT6n+iTdJAVtBDiVhYqckUNcJ+EDbIYXS0uuIdTsfnvP+szrY5uqph2BBn9e0/2
-         TDtJLUsOVQqscqgGVRCWOfChRwRg1XSGlCL9RoSqOq3ZabIFZridCqfyIGLoZ/Ar+r
-         MwxRA/kwWuS1Sbt8aw0hHSzbdSFuIdrrBJ7dP6TrFNc1gUDv4+Lyf9rQgLoIrUehS6
-         Q4ZRWzOD7Vs3LJGKebNcwS4z0e20Rx8HtKfVhWFkNFTjKDcNM3gtzpGBNgaqHTnk/4
-         Q0BXPYwsrUOYJ2C2FYvPseXSBBd/+KWq+6iPtXVRea6naG/Alrx/615p9T+42Rb3mN
-         O+Of3dC9PM2Og==
-Date:   Fri, 19 Nov 2021 16:51:15 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hch@infradead.org, hch@lst.de
-Subject: Re: [RFC PATCH v5 0/4] PCI/ASPM: Remove struct aspm_latency
-Message-ID: <20211119225115.GA1980058@bhelgaas>
+        id S234928AbhKSWuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 17:50:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234549AbhKSWuD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 17:50:03 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF62BC061574;
+        Fri, 19 Nov 2021 14:47:00 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id h63so9764820pgc.12;
+        Fri, 19 Nov 2021 14:47:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Oc0ol4V+6f1FUJ4tw/CYx1vddRWZjt85+l1yOQxtvDQ=;
+        b=jSizSv4oOdRjv7BP02RkpKfuuEMos/m3sJYsGjimaXxyBBf8BUkOFlbFu6Ume4rVc6
+         qryWpQkDCaYedMEa9UzM9eytzwNvGXq0vcelhJFJlnsv8UbTTJlTXHgl78nReskDZPzH
+         c6qdE3AGRPoQ2XSQjo6icN92qJ50NmFvHq+7G6kI2wm7941CNv/YYb75JXLQ8P9v3N90
+         FCqvrvOgVroizP4SXMc8rXetdJFSX2oJj2+9LVYZ1d0mORoUvxlz6nKHyp4V8RrTwpdP
+         VJOaXyRv2TMFYiqh15V4teiK2MPO+TPJ8QRSC3t5z74RurpaYJ8bufUiK/jgtFE2bbt3
+         LbNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Oc0ol4V+6f1FUJ4tw/CYx1vddRWZjt85+l1yOQxtvDQ=;
+        b=v/Dl4i4u8pgz6i55koeMivwRdxLYdm3tZ7MZ1h1WuU7wBV6HxSVMT6k5M15TTDBzd/
+         7De8+lgb5TStApeB/bcp+7RC0iq8vPQycKKTeeHHfXml3Oqog34Ne3qE4/ALt8pUi1p7
+         xv2oCR49XjBx9Km+E2LyQqX4eatubMcDd0qyxZLfZbaeNQb0116NW3yLunoryjbSmkjJ
+         FUQIaysQ30u+9PNp/eJJLYghTCq8b1mV1xKlM4AFSn8KiFXFTt3aFQrk+gNOpIF5VeSG
+         G9AnuIueT4NSCc0mZb05IBc7rAzfVbTwRcX/IAHBRIubJXSuYmYF9lH7ZBidPzjAaAQO
+         xujQ==
+X-Gm-Message-State: AOAM531hJfzX4jX3LGeEiwSfFHIowidi7o3nJiJsMTbBARNiZGJgfL15
+        bBXBhwJvS8wE9YS5bN1uFXs+m2h6w6M=
+X-Google-Smtp-Source: ABdhPJwdZyLppiJ42MmyCru5whIXHzj7Wo0ZcF/f5JOkbefQ/XFrPGLKce6g4uJgG/fKJx88eX28Gw==
+X-Received: by 2002:a63:494f:: with SMTP id y15mr19778226pgk.257.1637362020412;
+        Fri, 19 Nov 2021 14:47:00 -0800 (PST)
+Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
+        by smtp.gmail.com with ESMTPSA id t67sm631440pfd.24.2021.11.19.14.46.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 14:46:59 -0800 (PST)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/2] drm/msm/gpu: Fix idle_work time
+Date:   Fri, 19 Nov 2021 14:51:56 -0800
+Message-Id: <20211119225157.984706-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211119193732.12343-1-refactormyself@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 08:37:28PM +0100, Saheed O. Bolarinwa wrote:
-> To validate and set link latency capability, `struct aspm_latency` and
-> related members defined within `struct pcie_link_state` are used.
-> However, since there are not many access to theses values, it is
-> possible to directly access and compute these values.
-> 
-> Doing this will also reduce the dependency on `struct pcie_link_state`.
-> 
-> The series removes `struct aspm_latency` and related members within
-> `struct pcie_link_state`. All latencies are now calculated when needed.
-> 
-> 
-> VERSION CHANGES:
-> - v2:
-> »       - directly access downstream by calling `pci_function_0()`
-> »         instead of using the `struct pcie_link_state`
-> - v3:
-> »       - rebase on Linux 5.15-rc2
-> - v4
-> »       - Create a seprate path to move pci_function_0() upward
-> - v5
-> 	- shorten long lines as noted in the review
-> 
-> MERGE NOTICE:
-> These series are based on
-> »       'commit fa55b7dcdc43 ("Linux 5.16-rc1")'
-> 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> 
-> Bolarinwa O. Saheed (1):
->   PCI/ASPM: Move pci_function_0() upward
-> 
-> Saheed O. Bolarinwa (3):
->   PCI/ASPM: Do not cache link latencies
->   PCI/ASPM: Remove struct pcie_link_state.acceptable
->   PCI/ASPM: Remove struct aspm_latency
-> 
->  drivers/pci/pcie/aspm.c | 95 +++++++++++++++++++----------------------
->  1 file changed, 44 insertions(+), 51 deletions(-)
+From: Rob Clark <robdclark@chromium.org>
 
-Applied to pci/aspm for v5.17, thanks very much!  We're chipping away
-at the cruft in aspm.c little by little.
+This was supposed to be a relative timer, not absolute.
 
-I made the following changes.  Some whitespace; the rest to take
-advantage of the fact that Device Capabilities is read-only and Amey
-added a cache of it with 691392448065 ("PCI: Cache PCIe Device
-Capabilities register")
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/gpu/drm/msm/msm_gpu_devfreq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-That commit uses FIELD_GET(), which is kind of slick and might be
-useful in aspm.c as well.
+diff --git a/drivers/gpu/drm/msm/msm_gpu_devfreq.c b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+index 43468919df61..7285041c737e 100644
+--- a/drivers/gpu/drm/msm/msm_gpu_devfreq.c
++++ b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+@@ -228,5 +228,5 @@ void msm_devfreq_idle(struct msm_gpu *gpu)
+ 	struct msm_gpu_devfreq *df = &gpu->devfreq;
+ 
+ 	msm_hrtimer_queue_work(&df->idle_work, ms_to_ktime(1),
+-			       HRTIMER_MODE_ABS);
++			       HRTIMER_MODE_REL);
+ }
+-- 
+2.33.1
 
-diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-index e29611080a90..c6d2e76e0502 100644
---- a/drivers/pci/pcie/aspm.c
-+++ b/drivers/pci/pcie/aspm.c
-@@ -378,7 +378,7 @@ static void encode_l12_threshold(u32 threshold_us, u32 *scale, u32 *value)
- 
- static void pcie_aspm_check_latency(struct pci_dev *endpoint)
- {
--	u32 reg32, latency, encoding, lnkcap_up, lnkcap_dw;
-+	u32 latency, encoding, lnkcap_up, lnkcap_dw;
- 	u32 l1_switch_latency = 0, latency_up_l0s;
- 	u32 latency_up_l1, latency_dw_l0s, latency_dw_l1;
- 	u32 acceptable_l0s, acceptable_l1;
-@@ -390,24 +390,22 @@ static void pcie_aspm_check_latency(struct pci_dev *endpoint)
- 		return;
- 
- 	link = endpoint->bus->self->link_state;
--	pcie_capability_read_dword(endpoint, PCI_EXP_DEVCAP, &reg32);
-+
- 	/* Calculate endpoint L0s acceptable latency */
--	encoding = (reg32 & PCI_EXP_DEVCAP_L0S) >> 6;
-+	encoding = (endpoint->devcap & PCI_EXP_DEVCAP_L0S) >> 6;
- 	acceptable_l0s = calc_l0s_acceptable(encoding);
-+
- 	/* Calculate endpoint L1 acceptable latency */
--	encoding = (reg32 & PCI_EXP_DEVCAP_L1) >> 9;
-+	encoding = (endpoint->devcap & PCI_EXP_DEVCAP_L1) >> 9;
- 	acceptable_l1 = calc_l1_acceptable(encoding);
- 
- 	while (link) {
--		struct pci_dev *dev = pci_function_0(
--					link->pdev->subordinate);
-+		struct pci_dev *dev = pci_function_0(link->pdev->subordinate);
- 
- 		/* Read direction exit latencies */
--		pcie_capability_read_dword(link->pdev,
--					   PCI_EXP_LNKCAP,
-+		pcie_capability_read_dword(link->pdev, PCI_EXP_LNKCAP,
- 					   &lnkcap_up);
--		pcie_capability_read_dword(dev,
--					   PCI_EXP_LNKCAP,
-+		pcie_capability_read_dword(dev, PCI_EXP_LNKCAP,
- 					   &lnkcap_dw);
- 		latency_up_l0s = calc_l0s_latency(lnkcap_up);
- 		latency_up_l1 = calc_l1_latency(lnkcap_up);
