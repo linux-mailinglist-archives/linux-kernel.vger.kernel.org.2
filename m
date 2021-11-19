@@ -2,202 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B32457246
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:00:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E08457248
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:00:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236135AbhKSQDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 11:03:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52148 "EHLO
+        id S236152AbhKSQDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 11:03:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236125AbhKSQDM (ORCPT
+        with ESMTP id S236125AbhKSQD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 11:03:12 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A71C06173E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:00:10 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id k21so13351465ioh.4
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:00:10 -0800 (PST)
+        Fri, 19 Nov 2021 11:03:29 -0500
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33D1BC06173E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:00:27 -0800 (PST)
+Received: by mail-qt1-x82a.google.com with SMTP id p19so9843425qtw.12
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:00:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=CzDhnBYrIWCmbBZJRky5D2oCgX/sSqmYTvB1Vt37Vfo=;
-        b=fa0xr6f09xAV9zx/WfI/tmWv8Ikuoej2kMVUW+OEWPKoIZzssNw+T4Y3TZExLu7nej
-         VfCp5u1dC1ST5uNKwNufcB40fJ3jagxMBeZbJ6R64qjQtImtlnaZXhwsMgACaWdm7+9Q
-         rP4RARCPmG2Bcj+JDkMxRMlbitADjShkbCLSJXQuG+X+7tHijelRW4UBVKmdsEHpLL8R
-         nvlw6vz6H0spXdWfvNjoiQYVzIxHJ/D3+gdo7HThJZsiqPCoLzRs2mifLOMLAfOOyHMP
-         EX4DrS0QDp2lRf+uBmA5hrQ1tepvALcWHA2F6Rr59JqN3tJ8EmhrABLSX7LFL4G8aEO7
-         SOlA==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VtV9HHXd4X5WRhcYz4pKiiL6eAEsTLpENVV+xmm0B1E=;
+        b=gsJUvh5WctLgXnshRJv4wGg2JAgnGdSqNb3S1bmxpaDvTOBEX8LcgLW/+JvwTzVB37
+         v5K7AG9csFvUa4d1e8VMH07tEJ/4GXeXR0y5xTNeGGDEbPPYGPgXDzn7G4nizRSxv1eO
+         ORYsNAAPbkIfEb6NsGnWQ8GCPrvVKrf/49w0ZT27g2F3XOg052ttHxyU5wmveX2QAeR0
+         /CkUMXANh4cDh+HorkLPLoxEa1f7SRa67fSFzDU/E1oWa7A8N6PtOVfUv80pyqxAxqRj
+         YJDGrR6Uf5+iNfe0u7fumnhfivIpDOd+RCAzSsT04BV51dAxqsTNgRzPecBJz4DuF5VH
+         RdEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=CzDhnBYrIWCmbBZJRky5D2oCgX/sSqmYTvB1Vt37Vfo=;
-        b=7wkazfH3QEVRMoFhBMzZr53ve+/Oo4ynoHx8un6IgdZjldYASciQi9Q1qtG/07FVpm
-         EgBygTsGZntVDDmzCPV3K1Ez5rS0JM8lnzCAwNGoWgBHweMfjq6GCmq7qtBarQLi+/09
-         6K99M8kbZrYvrsWqJIRbBvBSNMLGRJTWVGCbQJ5UPsxCQ7ocVT+FYCT6P4xpOsidvhSN
-         WG2aS+rDIvJtEeyO7VnD0Y6vnereCal9hICNwaVpyuCs409KVRa/UMtwU6Jct104LmWX
-         fhvPvR9P4rLE/YF1aJXtrBdEB9JIMjK0tnV7/xtIolF4zmY3O9McGYuqmKslHPgIj5Kc
-         Q/DA==
-X-Gm-Message-State: AOAM531nOshE2duShU612B95IDqkatJtKeNN4MePi+S9rqf+n+keaUFb
-        IzcIYdBpqLV/2+jg1StRCz2mNA==
-X-Google-Smtp-Source: ABdhPJxKzuc5TzSBPZkYIoBfS4UseX9DrbkBy7awo0aGJZ6Z8Ph8k5D3DAv6+0Qic/hHB26SMRGDNg==
-X-Received: by 2002:a05:6638:25c8:: with SMTP id u8mr28978236jat.23.1637337609816;
-        Fri, 19 Nov 2021 08:00:09 -0800 (PST)
-Received: from nicolas-tpx395.localdomain (mtl.collabora.ca. [66.171.169.34])
-        by smtp.gmail.com with ESMTPSA id l1sm66114ioj.29.2021.11.19.08.00.08
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VtV9HHXd4X5WRhcYz4pKiiL6eAEsTLpENVV+xmm0B1E=;
+        b=oBHQRWH0SGEFMrQRjjS+Hi+mjsEv7jFLYU0p07M4GWZSN9/SOOKBuQ9v92hbDH6jCI
+         rNS16yCgSVUlhxAy/DI4XVyO4lS19BzVKkbXzsFplk/QkDQkR6OCJglbKUITqYrzxdne
+         sHQG4PB8nADOhX5FRaH5DLklinNJjDSq1j5AxfOzyKQUEzLHtoMD/n2p3na3yDCHPm9b
+         E1kZlN9TJg3SzsPEl5hE7fhWggwbugdP3ZKmgqb3RAZyrT3dY9sbMUM8FhVbByjNumWI
+         7NncbEID7fNVQ7YoKL/+cCN3aFOo84vjQ4GOdMKW8nOGhPmufpgXMCB7x1Ppkli53hgC
+         zJRw==
+X-Gm-Message-State: AOAM533F0Zoxu1HFnCJ/dNIO5ER5+YX2+w5iXrhy9hFxv8mkzwy03LbV
+        k967bDqM6U3kGyKb7kFI9VrJsQ==
+X-Google-Smtp-Source: ABdhPJxKednFIP8LV5fXPBeBBtPHTY7W03I8IO74iFi+Vm9ZxLiGU52DJu0TAbPkEtajZX/lLl8ZnA==
+X-Received: by 2002:a05:622a:349:: with SMTP id r9mr7258679qtw.213.1637337626383;
+        Fri, 19 Nov 2021 08:00:26 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id j20sm54140qko.117.2021.11.19.08.00.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 08:00:09 -0800 (PST)
-Message-ID: <5d23258a954eb0076cacf89d6c88b5e6ef13695f.camel@ndufresne.ca>
-Subject: Re: [PATCH] media: hantro: Hook up RK3399 JPEG encoder output
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Chen-Yu Tsai <wenst@chromium.org>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Date:   Fri, 19 Nov 2021 11:00:07 -0500
-In-Reply-To: <20211119074654.470729-1-wenst@chromium.org>
-References: <20211119074654.470729-1-wenst@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
+        Fri, 19 Nov 2021 08:00:25 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mo6JL-00CHtq-W3; Fri, 19 Nov 2021 12:00:24 -0400
+Date:   Fri, 19 Nov 2021 12:00:23 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Chao Peng <chao.p.peng@linux.intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, qemu-devel@nongnu.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J . Bruce Fields" <bfields@fieldses.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
+        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com
+Subject: Re: [RFC v2 PATCH 01/13] mm/shmem: Introduce F_SEAL_GUEST
+Message-ID: <20211119160023.GI876299@ziepe.ca>
+References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
+ <20211119134739.20218-2-chao.p.peng@linux.intel.com>
+ <20211119151943.GH876299@ziepe.ca>
+ <df11d753-6242-8f7c-cb04-c095f68b41fa@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <df11d753-6242-8f7c-cb04-c095f68b41fa@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le vendredi 19 novembre 2021 à 15:46 +0800, Chen-Yu Tsai a écrit :
-> The JPEG encoder found in the Hantro H1 encoder block only produces a
-> raw entropy-encoded scan. The driver is responsible for building a JPEG
-> compliant bitstream and placing the entropy-encoded scan in it. Right
-> now the driver uses a bounce buffer for the hardware to output the raw
-> scan to.
-> 
-> In commit e765dba11ec2 ("hantro: Move hantro_enc_buf_finish to JPEG
-> codec_ops.done"), the code that copies the raw scan from the bounce
-> buffer to the capture buffer was moved, but was only hooked up for the
-> Hantro H1 (then RK3288) variant. The RK3399 variant was broken,
-> producing a JPEG bitstream without the scan, and the capture buffer's
-> .bytesused field unset.
-> 
-> Fix this by duplicating the code that is executed when the JPEG encoder
-> finishes encoding a frame. As the encoded length is read back from
-> hardware, and the variants having different register layouts, the
-> code is duplicated rather than shared.
-> 
-> Fixes: e765dba11ec2 ("hantro: Move hantro_enc_buf_finish to JPEG codec_ops.done")
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> ---
-> This was developed on the downstream ChromeOS 5.10 kernel (with a hack
-> for .data_offset) and tested with ChromeOS's jpeg_encode_accelerator_unittest
-> patched to accept non-JFIF JPEG streams (https://crrev.com/c/3291480).
-> 
-> This was then forward-ported to mainline (name and filename changes) and
-> compile tested only.
+On Fri, Nov 19, 2021 at 04:39:15PM +0100, David Hildenbrand wrote:
 
-Tested with GStreamer on top of 5.16-rc1 from media_stage.git. Not perfect but
-at least the the output it valid. Test command was:
-
-  gst-launch-1.0 videotestsrc num-buffers=2 ! v4l2jpegenc ! filesink
-location=test.jpg
-
-Notice that I encode two frames, it seems like the draining flow is broken in
-this driver. GStreamer will queue the frame and issue CMD_START immediately, the
-driver will skip the encode, leaving me with an empty file.
-
-Tested-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-
+> > If qmeu can put all the guest memory in a memfd and not map it, then
+> > I'd also like to see that the IOMMU can use this interface too so we
+> > can have VFIO working in this configuration.
 > 
-> ---
->  .../staging/media/hantro/hantro_h1_jpeg_enc.c   |  2 +-
->  drivers/staging/media/hantro/hantro_hw.h        |  3 ++-
->  .../media/hantro/rockchip_vpu2_hw_jpeg_enc.c    | 17 +++++++++++++++++
->  drivers/staging/media/hantro/rockchip_vpu_hw.c  |  5 +++--
->  4 files changed, 23 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c b/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c
-> index 56cf261a8e95..9cd713c02a45 100644
-> --- a/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c
-> +++ b/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c
-> @@ -140,7 +140,7 @@ int hantro_h1_jpeg_enc_run(struct hantro_ctx *ctx)
->  	return 0;
->  }
->  
-> -void hantro_jpeg_enc_done(struct hantro_ctx *ctx)
-> +void hantro_h1_jpeg_enc_done(struct hantro_ctx *ctx)
->  {
->  	struct hantro_dev *vpu = ctx->dev;
->  	u32 bytesused = vepu_read(vpu, H1_REG_STR_BUF_LIMIT) / 8;
-> diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
-> index 267a6d33a47b..60d4602d33ed 100644
-> --- a/drivers/staging/media/hantro/hantro_hw.h
-> +++ b/drivers/staging/media/hantro/hantro_hw.h
-> @@ -239,7 +239,8 @@ int hantro_h1_jpeg_enc_run(struct hantro_ctx *ctx);
->  int rockchip_vpu2_jpeg_enc_run(struct hantro_ctx *ctx);
->  int hantro_jpeg_enc_init(struct hantro_ctx *ctx);
->  void hantro_jpeg_enc_exit(struct hantro_ctx *ctx);
-> -void hantro_jpeg_enc_done(struct hantro_ctx *ctx);
-> +void hantro_h1_jpeg_enc_done(struct hantro_ctx *ctx);
-> +void rockchip_vpu2_jpeg_enc_done(struct hantro_ctx *ctx);
->  
->  dma_addr_t hantro_h264_get_ref_buf(struct hantro_ctx *ctx,
->  				   unsigned int dpb_idx);
-> diff --git a/drivers/staging/media/hantro/rockchip_vpu2_hw_jpeg_enc.c b/drivers/staging/media/hantro/rockchip_vpu2_hw_jpeg_enc.c
-> index 991213ce1610..5d9ff420f0b5 100644
-> --- a/drivers/staging/media/hantro/rockchip_vpu2_hw_jpeg_enc.c
-> +++ b/drivers/staging/media/hantro/rockchip_vpu2_hw_jpeg_enc.c
-> @@ -171,3 +171,20 @@ int rockchip_vpu2_jpeg_enc_run(struct hantro_ctx *ctx)
->  
->  	return 0;
->  }
-> +
-> +void rockchip_vpu2_jpeg_enc_done(struct hantro_ctx *ctx)
-> +{
-> +	struct hantro_dev *vpu = ctx->dev;
-> +	u32 bytesused = vepu_read(vpu, VEPU_REG_STR_BUF_LIMIT) / 8;
-> +	struct vb2_v4l2_buffer *dst_buf = hantro_get_dst_buf(ctx);
-> +
-> +	/*
-> +	 * TODO: Rework the JPEG encoder to eliminate the need
-> +	 * for a bounce buffer.
-> +	 */
-> +	memcpy(vb2_plane_vaddr(&dst_buf->vb2_buf, 0) +
-> +	       ctx->vpu_dst_fmt->header_size,
-> +	       ctx->jpeg_enc.bounce_buffer.cpu, bytesused);
-> +	vb2_set_plane_payload(&dst_buf->vb2_buf, 0,
-> +			      ctx->vpu_dst_fmt->header_size + bytesused);
-> +}
-> diff --git a/drivers/staging/media/hantro/rockchip_vpu_hw.c b/drivers/staging/media/hantro/rockchip_vpu_hw.c
-> index d4f52957cc53..0c22039162a0 100644
-> --- a/drivers/staging/media/hantro/rockchip_vpu_hw.c
-> +++ b/drivers/staging/media/hantro/rockchip_vpu_hw.c
-> @@ -343,7 +343,7 @@ static const struct hantro_codec_ops rk3066_vpu_codec_ops[] = {
->  		.run = hantro_h1_jpeg_enc_run,
->  		.reset = rockchip_vpu1_enc_reset,
->  		.init = hantro_jpeg_enc_init,
-> -		.done = hantro_jpeg_enc_done,
-> +		.done = hantro_h1_jpeg_enc_done,
->  		.exit = hantro_jpeg_enc_exit,
->  	},
->  	[HANTRO_MODE_H264_DEC] = {
-> @@ -371,7 +371,7 @@ static const struct hantro_codec_ops rk3288_vpu_codec_ops[] = {
->  		.run = hantro_h1_jpeg_enc_run,
->  		.reset = rockchip_vpu1_enc_reset,
->  		.init = hantro_jpeg_enc_init,
-> -		.done = hantro_jpeg_enc_done,
-> +		.done = hantro_h1_jpeg_enc_done,
->  		.exit = hantro_jpeg_enc_exit,
->  	},
->  	[HANTRO_MODE_H264_DEC] = {
-> @@ -399,6 +399,7 @@ static const struct hantro_codec_ops rk3399_vpu_codec_ops[] = {
->  		.run = rockchip_vpu2_jpeg_enc_run,
->  		.reset = rockchip_vpu2_enc_reset,
->  		.init = hantro_jpeg_enc_init,
-> +		.done = rockchip_vpu2_jpeg_enc_done,
->  		.exit = hantro_jpeg_enc_exit,
->  	},
->  	[HANTRO_MODE_H264_DEC] = {
+> In QEMU we usually want to (and must) be able to access guest memory
+> from user space, with the current design we wouldn't even be able to
+> temporarily mmap it -- which makes sense for encrypted memory only. The
+> corner case really is encrypted memory. So I don't think we'll see a
+> broad use of this feature outside of encrypted VMs in QEMU. I might be
+> wrong, most probably I am :)
 
+Interesting..
+
+The non-encrypted case I had in mind is the horrible flow in VFIO to
+support qemu re-execing itself (VFIO_DMA_UNMAP_FLAG_VADDR).
+
+Here VFIO is connected to a VA in a mm_struct that will become invalid
+during the kexec period, but VFIO needs to continue to access it. For
+IOMMU cases this is OK because the memory is already pinned, but for
+the 'emulated iommu' used by mdevs pages are pinned dynamically. qemu
+needs to ensure that VFIO can continue to access the pages across the
+kexec, even though there is nothing to pin_user_pages() on.
+
+This flow would work a lot better if VFIO was connected to the memfd
+that is storing the guest memory. Then it naturally doesn't get
+disrupted by exec() and we don't need the mess in the kernel..
+
+I was wondering if we could get here using the direct_io APIs but this
+would do the job too.
+
+> Apart from the special "encrypted memory" semantics, I assume nothing
+> speaks against allowing for mmaping these memfds, for example, for any
+> other VFIO use cases.
+
+We will eventually have VFIO with "encrypted memory". There was a talk
+in LPC about the enabling work for this.
+
+So, if the plan is to put fully encrpyted memory inside a memfd, then
+we still will eventually need a way to pull the pfns it into the
+IOMMU, presumably along with the access control parameters needed to
+pass to the secure monitor to join a PCI device to the secure memory.
+
+Jason
