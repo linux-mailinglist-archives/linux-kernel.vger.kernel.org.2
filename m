@@ -2,140 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D46E0456BD8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 09:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E203456BDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 09:51:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234466AbhKSIuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 03:50:24 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:17487 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbhKSIuU (ORCPT
+        id S232415AbhKSIyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 03:54:22 -0500
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:54028
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231321AbhKSIyV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 03:50:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1637311639; x=1668847639;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=5kcHApZk+ywaaFYN2hC9iqX8vhCmRFBvCWl222E/+FI=;
-  b=F10xWAt7SU83JX9A0d+8kdbKs1OkhOCYUCR9ZT2komF7tsOSElvIzcTJ
-   CM7O2eCwL7AaJPWjfMC12AvJ+RxNIFGFj/D5IJM4xZT04zZIYvFaObIEe
-   UnR9K+5w4n2zQG7H5Gm5PIlm34LGpw/fwLdKP0eWUADkDVs56yTeH3CfH
-   o9O4oBCATrgmbsscmjTIL0FrUyBU0NzLfnU1ck2VkSfFZpnftxuRZiw21
-   s3SD03ZThFo2E58JVOyBxG5utVG9n2qi7XxeLcsyz1aQVZU25/CxYvnly
-   4U+Sb6AAZ/er2Gd0+RV25pQVRkdDw5LPteFvj3RjqEN5/N+411Eov0SB0
-   A==;
-IronPort-SDR: 4ew9yvnm78cp96fbZS5lwNOtBh72D/9gAnM5hCZ64EeOSVb3JocUndm2rmeYaG6OZTl4pL4HQY
- XEuVaWx2FYiCbZ/8Hj2RGpXrNmbOBgc9a2ZvVz/+KA51LR+W1+auHxTEiC5W3aW9rFKbc2Esma
- oftKYTAMR/1OTSrEx4EUcxg4HKNNCTkl5AAna1fxJxpn1w+vMBS3ee9cx3SqtYZSn3qOatcXW8
- /PV2Z+Up4sZrtEhrYQDShMi3pHSvVloXSfVb1UTOlz0ithpRcIbVWueC/JQ4dBKSMJWRCeGWlx
- ZnRAX0eOZCGAxOHJ7fsyHiW8
-X-IronPort-AV: E=Sophos;i="5.87,246,1631602800"; 
-   d="scan'208";a="139692921"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Nov 2021 01:47:18 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 19 Nov 2021 01:47:17 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Fri, 19 Nov 2021 01:47:17 -0700
-Date:   Fri, 19 Nov 2021 09:49:05 +0100
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Sean Anderson <sean.anderson@seco.com>
-CC:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <robh+dt@kernel.org>,
-        <p.zabel@pengutronix.de>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 3/5] net: lan966x: add port module support
-Message-ID: <20211119084905.u2orewcwuge6oani@soft-dev3-1.localhost>
-References: <20211117091858.1971414-1-horatiu.vultur@microchip.com>
- <20211117091858.1971414-4-horatiu.vultur@microchip.com>
- <YZTRUfvPPu5qf7mE@shell.armlinux.org.uk>
- <20211118095703.owsb2nen5hb5vjz2@soft-dev3-1.localhost>
- <YZYj9fwCeWdIZJOt@shell.armlinux.org.uk>
- <20211118125928.tav7k5xlbnhrgp3o@soft-dev3-1.localhost>
- <YZZVn6jve4BvSqyX@shell.armlinux.org.uk>
- <e973b8e6-f8ca-eec9-f5ac-9ae401deea81@seco.com>
- <YZZ7KwKw8i6EPcFL@shell.armlinux.org.uk>
- <5768b2bb-b417-0ea8-5d80-3e8872ee9ad3@seco.com>
+        Fri, 19 Nov 2021 03:54:21 -0500
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 566D33F1D2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:51:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1637311876;
+        bh=ruWD3Wl39Eqs8sRNy3uOmfu7ln2HYc2tNhOSYl6noSE=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=JQXV4Rf4hcCzPgxUOsdVpZqDZvPuNRlnRmSpKzwEnbNXkt6vOM9r9XgKyToTj6mzm
+         1Yjw/IGTLMW++m+PXVOigRvCZplXGsO6eA79bu5USZtbMh/4Rl1pi/q5u95l6kjFui
+         NZ2bonvwZ7s+MtWE5W0q0YYBioLlk9bBJJUiviG5Ewkgh7fOrlxrvBgOlPSqVeE/It
+         YH0T6xYYsZc/2tuv1jjT+XDx4/23TB1T3OLSaYpRTIKrKgPGegwGMmIfqLFVQb+JpI
+         fgpkn9C/++643L+5kMhu/4YK6Z+xqlezzI0YBHJN0/dNJjYJgVoTVt1lFesmOpoj9G
+         22c2UqBOCU4jw==
+Received: by mail-lf1-f70.google.com with SMTP id z12-20020a0565120c0c00b004037427efb7so6083659lfu.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 00:51:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=ruWD3Wl39Eqs8sRNy3uOmfu7ln2HYc2tNhOSYl6noSE=;
+        b=BY82A6m4/aU1U4valrH2HNs8SsFOmoglAyAghpU6N1QSUy0w4LEVPQ5XCpFw1yckEL
+         zaUt9dSwNswvBzKjAH+naqGzHyvzwlfhGd3U1N2lspe0F+Lp0wRwwP7mWt0yxBuPXSfZ
+         kjB7F9rOfSK5i1q+269WSpeGGEMnPuLmcLzLMmlK7CzwkSNxmIVTVny2Djmdq8rHU0ZG
+         /GDJsYG4PmR4Z6jtXfDk7E4afzJyYYv860jdamnnlwrqLPwrC2WMr1d0ySJetLGACnFw
+         k0mS8sj15pGSakMa6zH28jjdMICzn+hqEGx4Lgr9jnKLriIKU3gwQsYi0eAIVvDYtIAC
+         NwEw==
+X-Gm-Message-State: AOAM530+43aDaevSGu6DcBje2C+VUvRboD2LuM2BLZcHj+oXXNCezUrX
+        WpLkUdcH82SugAkuPjUNs/kyttU+GHFARUOTWrzIEByxrZFHb4EEqcEzOScTB7MZFlpT5k54nxk
+        5nNZQFJ5xmjoBAaL1htaTYuybCRshzBVQBKw4rHJFZA==
+X-Received: by 2002:a05:6512:12c4:: with SMTP id p4mr30587567lfg.278.1637311875759;
+        Fri, 19 Nov 2021 00:51:15 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw+iEh/iZtWU1gI+foH3w3Hp3x+lsgB/cHQqt6q8Cw5Axi/8v3Ctkkj7xHHxnTJ4a8Jj0tsug==
+X-Received: by 2002:a05:6512:12c4:: with SMTP id p4mr30587544lfg.278.1637311875517;
+        Fri, 19 Nov 2021 00:51:15 -0800 (PST)
+Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id r3sm299007lfc.114.2021.11.19.00.51.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Nov 2021 00:51:14 -0800 (PST)
+Message-ID: <a2854a71-6a6e-5ad6-4e4c-050c15126797@canonical.com>
+Date:   Fri, 19 Nov 2021 09:51:13 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <5768b2bb-b417-0ea8-5d80-3e8872ee9ad3@seco.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v3 2/2] i2c: exynos5: add support for ExynosAutov9 SoC
+Content-Language: en-US
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Chanho Park <chanho61.park@samsung.com>,
+        Jaewon Kim <jaewon02.kim@samsung.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <CGME20211112010603epcas2p339d1a6ef3df7cdbe61c87c8afa541fd0@epcas2p3.samsung.com>
+ <20211112010137.149174-1-jaewon02.kim@samsung.com>
+ <20211112010137.149174-3-jaewon02.kim@samsung.com>
+ <CAPLW+4==X+irRBKHiDfgJeAb0oDKkzbcWERFs7Y3=PSOg0+qAw@mail.gmail.com>
+ <001401d7da86$f7ebd660$e7c38320$@samsung.com>
+ <da9bd8cc-9415-6db7-024e-8d50b5f666f7@canonical.com>
+ <CAPLW+4n2hZ1c9BuOo4JtKLZp48fH81xUr0GSaJoc21=ad2vv1Q@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <CAPLW+4n2hZ1c9BuOo4JtKLZp48fH81xUr0GSaJoc21=ad2vv1Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sean,
-
-The 11/18/2021 11:18, Sean Anderson wrote:
+On 16/11/2021 16:31, Sam Protsenko wrote:
+> On Tue, 16 Nov 2021 at 11:32, Krzysztof Kozlowski
+> <krzysztof.kozlowski@canonical.com> wrote:
+>>
+>> On 16/11/2021 02:12, Chanho Park wrote:
+>>>> With this patch the Exynos850 HSI2C becomes functional. The only nit-pick
+>>>> from my side (just a food for thought): do we want to configure USI
+>>>> related config inside of particular drivers (SPI, I2C, UART)? Or it would
+>>>> be better design to implement some platform driver for that, so we can
+>>>> choose USI configuration (SPI/I2C/UART) in device tree? I think this
+>>>> series is good to be merged as is, but we should probably consider all
+>>>> upsides and downsides of each option, for the future work.
+>>>
+>>> I'm also considering how to support this USI configuration gracefully.
+>>> Current version of USI is v2 which means there is a v1 version as well. It might be a non-upstream SoC so we don't need to consider it so far.
+>>> But, there is a possibility that the USI hw version can be bumped for future SoCs.
+>>>
+>>> As you probably know, earlier version of the product kernel has a USI SoC driver[1] and it was designed to be configured the USI settings by device tree.
+>>>
+>>> Option1) Make a USI driver under soc/samsung/ like [1].
+>>> Option2) Use more generic driver such as "reset driver"? This might be required to extend the reset core driver.
+>>> Option3) Each USI driver(uart/i2c/spi) has its own USI configurations respectively and expose some configurations which can be variable as device tree.
+>>>
+>>> [1]: https://github.com/ianmacd/d2s/blob/master/drivers/soc/samsung/usi_v2.c
+>>
+>> I don't have user manuals, so all my knowledge here is based on
+>> Exynos9825 vendor source code, therefore it is quite limited. In
+>> devicetree the USI devices have their own nodes - but does it mean it's
+>> separate SFR range dedicated to USI? Looks like that, especially that
+>> address space is just for one register (4 bytes).
+>>
+>> In such case having separate dedicated driver makes sense and you would
+>> only have to care about driver ordering (e.g. via device links or phandles).
+>>
+>> Option 2 looks interesting - reusing reset framework to set proper USI
+>> mode, however this looks more like a hack. As you said Chanho, if there
+>> is a USI version 3, this reset framework might not be sufficient.
+>>
+>> In option 3 each driver (UART/I2C/SPI) would need to receive second IO
+>> range and toggle some registers, which could be done via shared
+>> function. If USI v3 is coming, all such drivers could get more complicated.
+>>
+>> I think option 1 is the cleanest and extendable in future. It's easy to
+>> add usi-v3 or whatever without modifying the UART/I2C/SPI drivers. It
+>> also nicely encapsulates USI-related stuff in separate driver. Probe
+>> ordering should not be a problem now.
+>>
+>> But as I said, I don't have even the big picture here, so I rely on your
+>> opinions more.
+>>
 > 
-> On 11/18/21 11:11 AM, Russell King (Oracle) wrote:
-> > On Thu, Nov 18, 2021 at 10:36:58AM -0500, Sean Anderson wrote:
-> > > Hi Russell,
-> > > 
-> > > On 11/18/21 8:31 AM, Russell King (Oracle) wrote:
-> > > > On Thu, Nov 18, 2021 at 01:59:28PM +0100, Horatiu Vultur wrote:
-> > > > > The 11/18/2021 09:59, Russell King (Oracle) wrote:
-> > > > > > Another approach would be to split phylink_mii_c22_pcs_decode_state()
-> > > > > > so that the appropriate decode function is selected depending on the
-> > > > > > interface state, which may be a better idea.
-> > > > >
-> > > > > I have tried to look for phylink_mii_c22_pcs_decode_state() and I
-> > > > > have found it only here [1], and seems that it depends on [2]. But not
-> > > > > much activity happened to these series since October.
-> > > > > Do you think they will still get in?
-> > > >
-> > > > I don't see any reason the first two patches should not be sent. I'm
-> > > > carrying the second one locally because I use it in some changes I've
-> > > > made to the mv88e6xxx code - as I mentioned in the patchwork entry you
-> > > > linked to. See:
-> > > >
-> > > >   http://git.armlinux.org.uk/cgit/linux-arm.git/log/?h=net-queue
-> > > >
-> > > >   "net: phylink: Add helpers for c22 registers without MDIO"
-> > > >
-> > > > Although I notice I committed it to my tree with the wrong author. :(
-> > > >
-> > > > Sean, please can you submit the mdiodev patch and this patch for
-> > > > net-next as they have general utility? Thanks.
-> > > 
-> > > The mdiodev patch is already in the tree as 0ebecb2644c8 ("net: mdio:
-> > > Add helper functions for accessing MDIO devices"). The c22 patch is
-> > > submitted as [1].
-> > > 
-> > > --Sean
-> > > 
-> > > [1] https://lore.kernel.org/netdev/20211022160959.3350916-1-sean.anderson@seco.com/
-> > 
-> > Patchwork says its deferrred:
-> > 
-> > https://patchwork.kernel.org/project/netdevbpf/patch/20211022160959.3350916-1-sean.anderson@seco.com/
-> > 
-> > However, it does apply to current net-next, but Jakub did ask for
-> > it to be resubmitted.
+> To provide more context, USI registers are split across two different
+> register maps:
 > 
-> Well, he suggested that I would have to resubmit it. But I ordered the
-> patches such that they would apply cleanly in what I thought was the
-> most likely scenario (which indeed come to pass). So I didn't think it
-> was necessary to resend.
+>     - USI protocol configuration (where we choose which protocol to
+> use: HSI2C, SPI or UART) is done via *_SW_CONF registers, from System
+> Register SFR range. To access those SW_CONF registers we need to
+> either:
+>         (Option 3) pass System Register registers to corresponding
+> driver (HSI2C/SPI/UART) via syscon
+>         (Option 1) or implement separate USI driver, so we can choose
+> desired protocol in device tree; in that case I guess System Register
+> registers should be passed via syscon to USI driver
+>     - USI registers (like USI_CON register, which contains USI_RESET
+> bit) are contained in the same SFR range as corresponding
+> HSI2C/SPI/UART IP-core. Or rather HSI2C/SPI/UART IP-cores are
+> encapsulated within USI block(s). So to access registers like USI_CON
+> we only need to use memory already passed to corresponding
+> HSI2C/SPI/UART driver via "reg" property.
 > 
-> > Given that patches are being quickly applied to net-next, I suggest
-> > resubmission may be just what's neeeded!
+> So I'd say ideally we should do next:
+>   - modify USI registers (like USI_CON) in corresponding
+> HSI2C/SPI/UART drivers; but because all HSI2C/SPI/UART drivers share
+> the same USI registers, we might want to pull USI register offsets and
+> bits to some common header file, for example (to not duplicate that
+> code in drivers)
+>   - implement separate USI driver to control SW_CONF registers from
+> System Register module (Option 1), so we can choose desired protocol
+> in device tree (in some USI node, not in HSI2C node)
+>   - also, it probably makes sense to group all USI related nodes in
+> some separate *-usi.dtsi file; that would reduce confusion, given that
+> we have even more encapsulation in Exynos850 thanks to CMGP (Common
+> GPIO) block
 > 
-> Resent.
+> My suggestion is to take this patch as is, and then we can work on USI
+> driver implementation/upstreaming. 
 
-Thanks for resubmission the patch!
-Unfortunately, your patch introduced a new warning, so it got in
-the state "Changes Required". So I think you will need to send a new
-version.
+No, you cannot later rework it. It becomes a binding which you need to
+support.
 
-[1] https://patchwork.kernel.org/project/netdevbpf/patch/20211118161430.2547168-1-sean.anderson@seco.com/
+> Right now we don't have much of
+> device tree files that use USI HSI2C driver, so it'll be fairly easy
+> to fix those dts's once we implemented USI driver. 
 
-> 
-> --Sean
+Once sysreg solution is accepted, it's removal would be ABI break.
+Please do not rush with incomplete solutions.
 
--- 
-/Horatiu
+> That will also
+> unblock me with submitting dev board support (dts files) I'm working
+> on right now. Krzysztof, please let me know if I'm wrong and if we
+> shouldn't change dts API too much, so it's mandatory to implement USI
+> driver before accepting this patch.
+
+David's point of USIv1 points me to the separate driver solution.
+
+
+Best regards,
+Krzysztof
