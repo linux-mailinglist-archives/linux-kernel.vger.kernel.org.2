@@ -2,90 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1007456821
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 03:32:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F7A456829
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 03:33:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234157AbhKSCfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 21:35:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230519AbhKSCfM (ORCPT
+        id S234199AbhKSCgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 21:36:52 -0500
+Received: from pv50p00im-ztdg10011201.me.com ([17.58.6.39]:44784 "EHLO
+        pv50p00im-ztdg10011201.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234186AbhKSCgw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 21:35:12 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA103C061574;
-        Thu, 18 Nov 2021 18:32:10 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id t5so36371992edd.0;
-        Thu, 18 Nov 2021 18:32:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:from:to:cc:subject:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=k5Yckb9RccWlUPuQszFg2wwJUvNEZLblC9QZZqMbmgU=;
-        b=DvGxjBToMvr2TsmjQ/DNINNjU167vtTaQlb12Qh778zVzSkB+XKckKoxHpRyHFdeMD
-         aU2vwAMxzPwcoigLbKWZTCH5xIvo602M2Qtei8eVvdO1+my5NdpKjGE7Ktj3i6iIMwAd
-         SGPuLWduCyGaFx+XM+JXwaf2m0PvvbnEdNsIitmAugr/HNlGFIXEWd6UF4Y7cFA72OFc
-         ukKkbpAnm4oUHIPD/jUdC7iXg2zoamZXMOQgNb1TQOQCaagORqrdev4NP9p6n0cHw4Y9
-         bY9ppe5LDuRjKMZI3IuE9lio8tF+2LAM1Uc9OSrAUlCRsdc1rvoRrUab/uLjOPz7mg3x
-         vO5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:to:cc:subject:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=k5Yckb9RccWlUPuQszFg2wwJUvNEZLblC9QZZqMbmgU=;
-        b=tQNAORnigGAFFxyhMC0Mccez8NV5guvcBJC6wRqNdd8PPTQoODq2JZH0yw702nzgyF
-         TinB8mffTdsY6oYvVDA6bv62heNoBUpoUWo1v0FG8sszqsdqe4ZAUAyzeBUeQOwrPNeV
-         4sTvSfimg/aRjOvx2OQy8u0FG3rDqgueZdWr3hKuCT2xtMqkFDQ/VoByj+1l2jkx4a18
-         kBVKBUo7lV88iap38o86ZYG49/zVItNq/cVhGJ4IrstqXNJ0E+01ShPxy8ur4delWGQX
-         sCA9Tieh3cSIBMYfGwEDYRq6aGQD0kr0Xz+xkpR2BQ/dANJRlRR2UfdyppbcHjWiahcb
-         ejew==
-X-Gm-Message-State: AOAM533nupY3VPEKSjqcedZu55O10WjzEKB4g6wF2IUrxm0w4TNOAd/E
-        MOLx9nHKsV2/94VI6dWxf+U=
-X-Google-Smtp-Source: ABdhPJwy/Yh77mSyrSUM9YB9p1B2D3NYUl+mFdSBRRnkcavYeBzWAqhtXZXzsK8nuw5ApBPcxeW0iA==
-X-Received: by 2002:aa7:c902:: with SMTP id b2mr18633435edt.320.1637289129437;
-        Thu, 18 Nov 2021 18:32:09 -0800 (PST)
-Received: from Ansuel-xps. (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.gmail.com with ESMTPSA id e7sm816521edk.3.2021.11.18.18.32.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 18:32:09 -0800 (PST)
-Message-ID: <61970ca9.1c69fb81.c7bcc.3d36@mx.google.com>
-X-Google-Original-Message-ID: <YZcMpqRuvH63ki7Z@Ansuel-xps.>
-Date:   Fri, 19 Nov 2021 03:32:06 +0100
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [net-next PATCH 18/19] net: dsa: qca8k: use
- device_get_match_data instead of the OF variant
-References: <20211117210451.26415-1-ansuelsmth@gmail.com>
- <20211117210451.26415-19-ansuelsmth@gmail.com>
- <20211119022136.p5adloeuertpyh4n@skbuf>
+        Thu, 18 Nov 2021 21:36:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
+        s=1a1hai; t=1637289231;
+        bh=MZKYUMaOyQnQ8TaDJIy72hzgvGFyqpWiXAoMhA8s6OI=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=bhHQxmKUuudwk1T/d1/xsM9ri12yhcDhywV9tDnuZReOfVEP3ztsAGNw4SVQVjDIV
+         FMrvRKkbczae3taIW7eCYo/oHXI+fW3wHBk1zpc3+adZlVUAPTuXvwaPWXFK2ITwpz
+         kG2TpUUYHnQ0LPF7X3+1/09dURXDIcLTEmXczeV0RdxRhpHnW9vzBaxmke7SCnaewH
+         eafZK8ctW30v+026ghv7dqdMDs8bFjSYrEDjK9anM7hVbOYHizpsmBuLXJ1GdGuyBV
+         Caj4h1vjORJj62cBYZiyvT0r9VOlCwnqgD7ouwlgLDpIeC5NOulCVy8t7T3YwErnbZ
+         PUiM9K+/SpiUQ==
+Received: from localhost.localdomain (unknown [58.240.82.166])
+        by pv50p00im-ztdg10011201.me.com (Postfix) with ESMTPSA id 3BD702A043C;
+        Fri, 19 Nov 2021 02:33:48 +0000 (UTC)
+From:   wangyangbo <yangbonis@icloud.com>
+To:     axboe@kernel.dk
+Cc:     penguin-kernel@i-love.sakura.ne.jp, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wangyangbo <yangbonis@icloud.com>
+Subject: [PATCH v2] loop: check loop_control_ioctl parameter in range of minor
+Date:   Fri, 19 Nov 2021 10:32:25 +0800
+Message-Id: <20211119023224.22191-1-yangbonis@icloud.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20211118023640.32559-1-yangbonis@icloud.com>
+References: <20211118023640.32559-1-yangbonis@icloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211119022136.p5adloeuertpyh4n@skbuf>
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.425,18.0.790
+ definitions=2021-11-19_02:2021-11-17,2021-11-19 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2009150000 definitions=main-2111190010
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 04:21:36AM +0200, Vladimir Oltean wrote:
-> On Wed, Nov 17, 2021 at 10:04:50PM +0100, Ansuel Smith wrote:
-> > Drop of_platform include and device_get_match_data instead of the OF
-> > variant.
-> > 
-> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> > ---
-> 
-> Why? Any ACPI device coming?
+loop_control_ioctl call add_disk of block layer, but may pass number beyond MAX MINOR.
+So check loop_control_ioctl parameter in range of minor, and delete redundant code.
 
-No ACPI device coming. Notice we could drop an extra include.
-Is using device API wrong for OF only drivers?
-Just asking will drop if it can cause any problem or confusion.
+Reproduce:
+touch file
+losetup /dev/loop1048576 file
+losetup /dev/loop0 file
 
+Problem:
+sysfs: cannot create duplicate filename '/dev/block/7:0'
+CPU: 0 PID: 529 Comm: losetup Not tainted 5.14.16-arch1-1 #1 ad87b876fa2ab6fdbd995dc1c9aab0ad8f767b2c
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+Call Trace:
+ dump_stack_lvl+0x46/0x5a
+ sysfs_warn_dup.cold+0x17/0x24
+ sysfs_do_create_link_sd+0xbe/0xd0
+ device_add+0x580/0x970
+ ? dev_set_name+0x5b/0x80
+ __device_add_disk+0xb5/0x2f0
+ loop_add+0x236/0x290 [loop 2ed923fc8fbd84fdc093bf55ac085973636a3936]
+ loop_control_ioctl+0x7f/0x1f0 [loop 2ed923fc8fbd84fdc093bf55ac085973636a3936]
+ __x64_sys_ioctl+0x82/0xb0
+ do_syscall_64+0x5c/0x80
+ ? syscall_exit_to_user_mode+0x23/0x40
+ ? do_syscall_64+0x69/0x80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7ff3e8ba259b
+Code: ff ff ff 85 c0 79 9b 49 c7 c4 ff ff ff ff 5b 5d 4c 89 e0 41 5c c3 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a5 a8 0c 00 f7 d8 64 89 01 48
+RSP: 002b:00007ffe6d2eaa18 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007ffe6d2eb038 RCX: 00007ff3e8ba259b
+RDX: 0000000000000000 RSI: 0000000000004c80 RDI: 0000000000000003
+RBP: 00007ffe6d2eaae0 R08: 1999999999999999 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
+R13: 00007ffe6d2eaa24 R14: 0000560b131bd200 R15: 0000560b131c44a0
+---
+ drivers/block/loop.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+index a154cab6cd98..9e9d164b2a65 100644
+--- a/drivers/block/loop.c
++++ b/drivers/block/loop.c
+@@ -2102,11 +2102,6 @@ static int loop_control_remove(int idx)
+ 	struct loop_device *lo;
+ 	int ret;
+ 
+-	if (idx < 0) {
+-		pr_warn("deleting an unspecified loop device is not supported.\n");
+-		return -EINVAL;
+-	}
+-		
+ 	/* Hide this loop device for serialization. */
+ 	ret = mutex_lock_killable(&loop_ctl_mutex);
+ 	if (ret)
+@@ -2145,7 +2140,7 @@ static int loop_control_remove(int idx)
+ 	return ret;
+ }
+ 
+-static int loop_control_get_free(int idx)
++static int loop_control_get_free(void)
+ {
+ 	struct loop_device *lo;
+ 	int id, ret;
+@@ -2168,13 +2163,17 @@ static int loop_control_get_free(int idx)
+ static long loop_control_ioctl(struct file *file, unsigned int cmd,
+ 			       unsigned long parm)
+ {
++	if (parm > MINORMASK) {
++		pr_warn("ioctl parameter is out of max_minor.\n");
++		return -EINVAL;
++	}
+ 	switch (cmd) {
+ 	case LOOP_CTL_ADD:
+ 		return loop_add(parm);
+ 	case LOOP_CTL_REMOVE:
+ 		return loop_control_remove(parm);
+ 	case LOOP_CTL_GET_FREE:
+-		return loop_control_get_free(parm);
++		return loop_control_get_free();
+ 	default:
+ 		return -ENOSYS;
+ 	}
 -- 
-	Ansuel
+2.20.1
+
