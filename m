@@ -2,98 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6A445689F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 04:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D7E4568A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 04:33:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233455AbhKSDcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 22:32:04 -0500
-Received: from szxga03-in.huawei.com ([45.249.212.189]:28154 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232417AbhKSDcD (ORCPT
+        id S233225AbhKSDgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 22:36:42 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:36161 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231964AbhKSDgl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 22:32:03 -0500
-Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HwMXz71LJz8vTY;
-        Fri, 19 Nov 2021 11:27:15 +0800 (CST)
-Received: from [10.174.179.200] (10.174.179.200) by
- dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.20; Fri, 19 Nov 2021 11:29:00 +0800
-Subject: Re: [PATCH net v2] net: vlan: fix a UAF in vlan_dev_real_dev()
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     Petr Machata <petrm@nvidia.com>, <davem@davemloft.net>,
-        <jgg@nvidia.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20211102021218.955277-1-william.xuanziyang@huawei.com>
- <87k0h9bb9x.fsf@nvidia.com>
- <20211115094940.138d86dc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <87a6i3t2zg.fsf@nvidia.com> <7f7cbbec-8c4e-a2dc-787b-570d1049a6b4@huawei.com>
- <20211118061735.5357f739@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
-Message-ID: <c240e0e0-256c-698b-4a98-47490869faa3@huawei.com>
-Date:   Fri, 19 Nov 2021 11:29:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 18 Nov 2021 22:36:41 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 1A4733201D40;
+        Thu, 18 Nov 2021 22:33:40 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Thu, 18 Nov 2021 22:33:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=HcpAtjbCxVLVCdO/fc3cclnSG7
+        r71145LdITVbNqVN4=; b=XJ/5jzxMb+5m/x3+/N579fLniSfJVFnjh5RB5VCDiA
+        ezNVhvwkhdtRhsN70GbPeL5XkcCG1VipNH3XdSEoGBMuxBKWWyJO4Dbsqkoh1u9g
+        RNDcxGkyotOOxkbfAUor7SG5ZsbrqAERLQ/QUgGE3AFA8iSqkpziLJYMNwsHgnLV
+        zVg/izO70cGpAs2C8MPQKbVNjwz5JawkRIAeqC2x3j0eIbXDkJER2EPtLtvaXV5j
+        6vKe+C5M2ufbpL4q1AB5dPMqo1QZQ4TuY3yihOEIs93grvHp9fH3ax+aBR98FcXz
+        Ci0Ntrw5dzf0AR6NYKjc6KEn+EoLw29vyxbQqNWCIvVg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=HcpAtjbCxVLVCdO/f
+        c3cclnSG7r71145LdITVbNqVN4=; b=iP/p3CIEAxWYOKlKy0UE67a92zQoPBlD6
+        svB+aCDreR+SrwlMeqRQwNXXGdRrk+8Yhxi8j4bsiKeZ/oA4E/S4ROFVi01MyGow
+        uRFLJmUEtJ24ytNvO25TL9GWgA9tKiLzlsKXlmzu9Mf2pOJnWm5NX3iVhtZ9HE+J
+        tAlAxHlf6R1HqNayIsrek5igAHgPDV02ik7rQRWBXP6/FpnTQVUa8SM+Bd2oRQvo
+        TArrlDB6SstSy4XircznJ62BENz2PJFNbhXzeKEGdbUCMrYPWMc4Fw9Ggoou3grE
+        zhgBLPHBa+9+/PmnPYECp0+JPNhiJG8Kj94hfdqm1uJvNLth7vltA==
+X-ME-Sender: <xms:ExuXYWZjJCPvO1z9VshvKGeJ6YVo8gLMPe18zZVGhXw41KKjpGdluA>
+    <xme:ExuXYZYSygXUlTdXUiCS9RrMWzS34YiH6peo0MJc_8q79yHQyflO8nDveWzwJwO0L
+    V25TFtW_eOkCJhdlA>
+X-ME-Received: <xmr:ExuXYQ8GZTEGj66LHqfIICvW2xiS0v-uHAAWqcHYsv1tIXBkQFe3bGnB6WvsiMRo8EnB8YknvMWew4DcXRcJFZbe3PSxtcEZZSxfAeS3Yyds7JBlDAr5zru7erEjzfuLwpA1BQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeejgdehlecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
+    ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrfgrth
+    htvghrnhepieetkefhheduudfgledtudefjeejfeegveehkeeufffhhfejkeehiefftdev
+    tdevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsh
+    grmhhuvghlsehshhholhhlrghnugdrohhrgh
+X-ME-Proxy: <xmx:ExuXYYp6LKihcyz9rn8leYYQcWEAOb3p5D88RDi2qu80c4mV90iwuQ>
+    <xmx:ExuXYRrtg3CnnmFt_7KhP75l-5CV7xQJS9VtT1CjSkc-MkhByEyLCw>
+    <xmx:ExuXYWTsDxByYqIGOmNCxDvLzHtU3t1_H5oxW2eiMTbBEd-nGm_tZQ>
+    <xmx:ExuXYVeQLevht3aQPJgEyd8v61mBoNM74iudvgwKFoZTvWz-R-S-nA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 18 Nov 2021 22:33:38 -0500 (EST)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-sunxi@lists.linux.dev
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        Samuel Holland <samuel@sholland.org>
+Subject: [PATCH v3 0/4] clk: sunxi-ng: Module support
+Date:   Thu, 18 Nov 2021 21:33:33 -0600
+Message-Id: <20211119033338.25486-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20211118061735.5357f739@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="gbk"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.200]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeml757-chm.china.huawei.com (10.1.199.137)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Thu, 18 Nov 2021 09:46:24 +0800 Ziyang Xuan (William) wrote:
->>>> I think we should move the dev_hold() to ndo_init(), otherwise 
->>>> it's hard to reason if destructor was invoked or not if
->>>> register_netdevice() errors out.  
->>>
->>> Ziyang Xuan, do you intend to take care of this?
->>> .  
->>
->> I am reading the related processes according to the problem scenario.
->> And I will give a more clear sequence and root cause as soon as possible
->> by some necessary tests.
-> 
-> Okay, I still don't see the fix. 
-> 
-> Petr would you mind submitting since you have a repro handy?
-> .
-The sequence for the problem maybe as following:
+This series allows the CCU core and drivers to be loaded/unloaded as
+modules. As part of this, patch 3 converts most of the early OF clock
+providers to platform drivers.
 
-=============================================================
-# create vlan device
-vlan_newlink [assume real_dev refcnt == 2 just referenced by itself]
-	register_vlan_dev
-		register_netdevice(vlan_dev) [success]
-		netdev_upper_dev_link [failed]
-		unregister_netdevice(vlan_dev) [failure process]
-		...
-		netdev_run_todo [vlan_dev]
-			vlan_dev_free(vlan_dev) [priv_destructor cb]
-				dev_put(real_dev) [real_dev refcnt == 1]
+Changes in v3:
+ - Also export helper functions.
 
-# delete real device
-unregister_netdevice(real_dev) [real_dev refcnt == 1]
-	unregister_netdevice_many
-		dev_put(real_dev) [real_dev refcnt == 0]
-		net_set_todo(real_dev)
-...
-netdev_run_todo [real_dev]
-	netdev_wait_allrefs(real_dev) [real_dev refcnt == 0]
-		pr_emerg("unregister_netdevice: ...", ...)
+Changes in v2:
+ - Export symbols to the SUNXI_CCU namespace.
 
-I am thinking about how to fix the problem. priv_destructor() of the
-net_device referenced not only by net_set_todo() but also failure process
-in register_netdevice().
+Changes in v1:
+ - Patches 1-3 of 8 were merged.
+ - Name modules using Makefile logic, not by renaming the source files.
+   (Drop patch 4 of 8.)
 
-I need some time to test my some ideas. And anyone has good ideas, please
-do not be stingy.
+Samuel Holland (4):
+  clk: sunxi-ng: Export symbols used by CCU drivers
+  clk: sunxi-ng: Allow drivers to be built as modules
+  clk: sunxi-ng: Convert early providers to platform drivers
+  clk: sunxi-ng: Allow the CCU core to be built as a module
 
-Thank you!
+ drivers/clk/Makefile                     |  2 +-
+ drivers/clk/sunxi-ng/Kconfig             | 39 +++++-----
+ drivers/clk/sunxi-ng/Makefile            | 97 +++++++++++++++---------
+ drivers/clk/sunxi-ng/ccu-sun4i-a10.c     | 58 ++++++++------
+ drivers/clk/sunxi-ng/ccu-sun50i-a100-r.c |  4 +-
+ drivers/clk/sunxi-ng/ccu-sun50i-a100.c   |  4 +-
+ drivers/clk/sunxi-ng/ccu-sun50i-a64.c    |  7 +-
+ drivers/clk/sunxi-ng/ccu-sun50i-h6-r.c   | 56 +++++++++-----
+ drivers/clk/sunxi-ng/ccu-sun50i-h6.c     |  7 +-
+ drivers/clk/sunxi-ng/ccu-sun50i-h616.c   | 33 +++++---
+ drivers/clk/sunxi-ng/ccu-sun6i-a31.c     | 40 +++++++---
+ drivers/clk/sunxi-ng/ccu-sun8i-a23.c     | 35 ++++++---
+ drivers/clk/sunxi-ng/ccu-sun8i-a33.c     | 40 +++++++---
+ drivers/clk/sunxi-ng/ccu-sun8i-a83t.c    |  7 +-
+ drivers/clk/sunxi-ng/ccu-sun8i-de2.c     |  9 ++-
+ drivers/clk/sunxi-ng/ccu-sun8i-h3.c      | 62 ++++++++++-----
+ drivers/clk/sunxi-ng/ccu-sun8i-r.c       | 65 +++++++++-------
+ drivers/clk/sunxi-ng/ccu-sun8i-r40.c     |  6 +-
+ drivers/clk/sunxi-ng/ccu-sun8i-v3s.c     | 57 ++++++++------
+ drivers/clk/sunxi-ng/ccu-sun9i-a80-de.c  |  7 +-
+ drivers/clk/sunxi-ng/ccu-sun9i-a80-usb.c |  7 +-
+ drivers/clk/sunxi-ng/ccu-sun9i-a80.c     |  7 +-
+ drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c | 38 +++++++---
+ drivers/clk/sunxi-ng/ccu_common.c        |  6 ++
+ drivers/clk/sunxi-ng/ccu_div.c           |  1 +
+ drivers/clk/sunxi-ng/ccu_frac.c          |  6 ++
+ drivers/clk/sunxi-ng/ccu_gate.c          |  4 +
+ drivers/clk/sunxi-ng/ccu_mp.c            |  2 +
+ drivers/clk/sunxi-ng/ccu_mult.c          |  1 +
+ drivers/clk/sunxi-ng/ccu_mux.c           |  6 ++
+ drivers/clk/sunxi-ng/ccu_nk.c            |  1 +
+ drivers/clk/sunxi-ng/ccu_nkm.c           |  1 +
+ drivers/clk/sunxi-ng/ccu_nkmp.c          |  1 +
+ drivers/clk/sunxi-ng/ccu_nm.c            |  1 +
+ drivers/clk/sunxi-ng/ccu_phase.c         |  1 +
+ drivers/clk/sunxi-ng/ccu_reset.c         |  1 +
+ drivers/clk/sunxi-ng/ccu_sdm.c           |  6 ++
+ drivers/mmc/host/Kconfig                 |  1 +
+ include/linux/clk/sunxi-ng.h             | 15 ----
+ 39 files changed, 490 insertions(+), 251 deletions(-)
 
+-- 
+2.32.0
 
