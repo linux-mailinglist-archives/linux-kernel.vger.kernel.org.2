@@ -2,117 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C29BC456EC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 13:21:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2463E456EC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 13:23:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234879AbhKSMYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 07:24:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58264 "EHLO
+        id S234923AbhKSM06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 07:26:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234715AbhKSMYN (ORCPT
+        with ESMTP id S234715AbhKSM05 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 07:24:13 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B0FC06173E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 04:21:11 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id d24so17908761wra.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 04:21:11 -0800 (PST)
+        Fri, 19 Nov 2021 07:26:57 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98512C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 04:23:55 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id e3so42021900edu.4
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 04:23:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ij7er2470Y2wPBGgkUoSGjBv9MApKpAoPSAbl3vcFGM=;
-        b=JiC1txByfspEffoX8zfmeVfIBE3jhZB/PZ7F1nQhhz92MRm9YRHfoBGSDJGiQTIpOo
-         jVaBi+Bw46dyRupANHaLOawHjD3Wn+t0zHAQh1QQfh+/47uRjDQCgvLuwKlf8jV46Rc4
-         6jXA2isUv3fxDFTbjHzl1QySpWmSzD0fdCdun4lLxz7kI/YGr81zF+wV7+C0weYrtLjz
-         WWBuZoiAaWCGdK9QFghF9gvtPce1anQ5oos66FK+0eVDq63Rs03vdjESnkn8jdiFmxNS
-         kdbgCM9EWxfBP7LOefkd02EyRq2q1BMkATbyKXdfw/I9J5sKjQ3z42IC8KfTApRmAmcJ
-         GLsA==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MuH5rThjE7AvNyMQmLc848IhLLeZHT+gUERcim6VkF0=;
+        b=TS7FXlTOmqFvzipR3Itk3Umc3qnNUwe1nhkqpQ3ILKjuKdzftSFs5TWRRF6vx8BDrw
+         xo7wHlm9E0oPaWn7gqXPWK5JiYcZdIjmr0lm+cq0RXkUhIEKPHN1nKwYCPSaA2WC+8I4
+         oQrt43EyZO9s9wbf4fmbHzhyK3f63c4tCqJwrpBp90ey7guZkq4fLcmKH2K+IPAqiskK
+         XRg2+pyyzwD4obSerJeoMPQesqFMGTib3mypObujRuzBTlbbDIPpp4OPpigvUv0TzaWq
+         ninMtt+ALRK08dB2/n0TPyhlLnfQqbdX/5fSPDosXFpXwLbPuNZZXkgKHyATu0lGoNXf
+         g3Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ij7er2470Y2wPBGgkUoSGjBv9MApKpAoPSAbl3vcFGM=;
-        b=s2x7SYxUM5AI9GTqyNk8CYtheNtCYG6KxOGIwo2pehsos4w6HbVXTRB0qH5s06+kq4
-         G9c9+niFHapohLAueiAbWSyLX/l1a2jGsjUlXeFJrHPh/BjJ9dHlFzfgJyRjzr8JOcUo
-         gbMNhLD05yP26joSYhtvV4mCpFYkDk08zfo6L9LA/1ZP54txF/O7f571fpLXvVy+qRIa
-         pGDr6P7FPNeFnE3kJ8yNRXkbdkDcU2ZmDdtEao6OiVV0xg+g0oUzgq38jgH8H6H1LVvp
-         zQrTnz7aD7cGs30GPfvPGl7Qxsj1AokCtHs7eRKv5HkhS147+3sM8lGQ91M/pBuEauLf
-         V0ww==
-X-Gm-Message-State: AOAM530zWfOCShBd2u6mmkzHYCYv1tXv4CrERPFupvH61uGCiwcUfGqo
-        PYeyEfAWm0Yw5MpXfqNbHcIl9vDzUWqaus21dTGpxV1eTaU=
-X-Google-Smtp-Source: ABdhPJwpDih1Nz/ks8ZhQSJ1ATWfx3j/ZKzyQDFL08MT6G9WVQEczM3Z4uSFbhMCXYw9f5AP4oVpWgv71qyALRREcfA=
-X-Received: by 2002:a05:6000:1a45:: with SMTP id t5mr6835921wry.306.1637324469654;
- Fri, 19 Nov 2021 04:21:09 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MuH5rThjE7AvNyMQmLc848IhLLeZHT+gUERcim6VkF0=;
+        b=ZJQPfw2S3gXfeB/bTsZfLYLPGjlYDvGfswiG/WhW/PyX0fBsV6AZpyExWI951JJ5gc
+         KIO5ZXAuR5brvQjORfAiF4oadP6P3mzzXTyuCbBv2italY/SRacB5lztV1aPkyOAmlpq
+         /0c3qKJl4vZcyrueiJVPK1s+fV9mMztmWd7YsMB0OIhWTMcGb8PeZleJqglznaK9rbW6
+         lhmmR+ExjF35uxcTrNzyzhaK240Hp36s4q0XFbW1WngIwhjXUNjdLoye/7+kYIHCgES7
+         qHhEqRAbMYlCvCkJ5lX8b6WJEAUxYWL44Ieh7PcUkfuVjCp30yHvjI5iuVaiDDLYp5Fk
+         sCfw==
+X-Gm-Message-State: AOAM530lF3bQPrUmG6FqKP3wgl8gMhxhveBjTbfYkvte1ZQRSddJufgi
+        GxMtSaFYY8qJm5tvzqbdhOk=
+X-Google-Smtp-Source: ABdhPJw9Zm7yVICd9q+JFfPFVWC1qPYjYnJmCimRDll3RhU37qa5+ki2ImYNo+W1f0glxr/vN0Gi1w==
+X-Received: by 2002:a17:906:3c46:: with SMTP id i6mr7038004ejg.371.1637324634120;
+        Fri, 19 Nov 2021 04:23:54 -0800 (PST)
+Received: from alb3rt0-VirtualBox ([151.22.100.250])
+        by smtp.gmail.com with ESMTPSA id b14sm1392741edw.6.2021.11.19.04.23.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 04:23:53 -0800 (PST)
+Date:   Fri, 19 Nov 2021 13:23:51 +0100
+From:   Alberto Merciai <alb3rt0.m3rciai@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
+        forest@alittletooquiet.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] staging: vt6655: refactor camelcase uCurrRSSI to
+ current_rssi
+Message-ID: <20211119122351.GA2519@alb3rt0-VirtualBox>
+References: <20211118202718.GA152832@t470p>
+ <20211119085138.GR26989@kadam>
 MIME-Version: 1.0
-References: <20211117060241.611391-1-anup.patel@wdc.com> <CAOnJCU+KZn2JnZg-FZcJ7PXRpGo5SyOmdUYFeJgBenPO9xxE1w@mail.gmail.com>
-In-Reply-To: <CAOnJCU+KZn2JnZg-FZcJ7PXRpGo5SyOmdUYFeJgBenPO9xxE1w@mail.gmail.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Fri, 19 Nov 2021 17:50:58 +0530
-Message-ID: <CAAhSdy0jaPPBNkXkt5-jj+LWCm+XiC0G2udK2C7n1f2TqBPCmg@mail.gmail.com>
-Subject: Re: [PATCH] RISC-V: KVM: Fix incorrect KVM_MAX_VCPUS value
-To:     Atish Patra <atishp@atishpatra.org>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        kvm-riscv@lists.infradead.org, KVM General <kvm@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211119085138.GR26989@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 1:23 PM Atish Patra <atishp@atishpatra.org> wrote:
->
-> On Tue, Nov 16, 2021 at 10:03 PM Anup Patel <anup.patel@wdc.com> wrote:
-> >
-> > The KVM_MAX_VCPUS value is supposed to be aligned with number of
-> > VMID bits in the hgatp CSR but the current KVM_MAX_VCPUS value
-> > is aligned with number of ASID bits in the satp CSR.
-> >
-> > Fixes: 99cdc6c18c2d ("RISC-V: Add initial skeletal KVM support")
-> > Signed-off-by: Anup Patel <anup.patel@wdc.com>
+I'm using the master branch of 
+https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/
+
+Alberto
+
+On Fri, Nov 19, 2021 at 11:51:38AM +0300, Dan Carpenter wrote:
+> On Thu, Nov 18, 2021 at 09:27:18PM +0100, Alberto Merciai wrote:
+> > Replace camelcase variable "uCurrRSSI" (current Received Signal Strength
+> > Indicator) into linux kernel coding style equivalent
+> > variable "current_rssi".
+> > 
+> > Signed-off-by: Alberto Merciai <alb3rt0.m3rciai@gmail.com>
 > > ---
-> >  arch/riscv/include/asm/kvm_host.h | 8 +++-----
-> >  1 file changed, 3 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/arch/riscv/include/asm/kvm_host.h b/arch/riscv/include/asm/kvm_host.h
-> > index 25ba21f98504..2639b9ee48f9 100644
-> > --- a/arch/riscv/include/asm/kvm_host.h
-> > +++ b/arch/riscv/include/asm/kvm_host.h
-> > @@ -12,14 +12,12 @@
-> >  #include <linux/types.h>
-> >  #include <linux/kvm.h>
-> >  #include <linux/kvm_types.h>
-> > +#include <asm/csr.h>
-> >  #include <asm/kvm_vcpu_fp.h>
-> >  #include <asm/kvm_vcpu_timer.h>
-> >
-> > -#ifdef CONFIG_64BIT
-> > -#define KVM_MAX_VCPUS                  (1U << 16)
-> > -#else
-> > -#define KVM_MAX_VCPUS                  (1U << 9)
-> > -#endif
-> > +#define KVM_MAX_VCPUS                  \
-> > +       ((HGATP_VMID_MASK >> HGATP_VMID_SHIFT) + 1)
-> >
-> >  #define KVM_HALT_POLL_NS_DEFAULT       500000
-> >
-> > --
-> > 2.25.1
-> >
->
->
-> Reviewed-by: Atish Patra <atishp@rivosinc.com>
-
-I have queued this patch for fixes.
-
-Thanks,
-Anup
-
->
-> --
-> Regards,
-> Atish
+> > 
+> > v2
+> > - correct mailing list
+> 
+> Are you using the staging-next tree?
+> 
+> regards,
+> dan carpenter
+> 
