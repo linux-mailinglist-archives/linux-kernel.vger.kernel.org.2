@@ -2,90 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D585F45721B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BCE645721D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:49:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235999AbhKSPwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 10:52:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229936AbhKSPwD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 10:52:03 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C500C061574;
-        Fri, 19 Nov 2021 07:49:01 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id b12so18879120wrh.4;
-        Fri, 19 Nov 2021 07:49:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=meEjyOFEk8NLwqmQYbedVmiXvkxGhx3w8P4bOKYAV/Q=;
-        b=qrgfQVMTtExx+nPYfWUhM3GkoqKoggaX20OQRUwYcalgg+n8coEr2frtfljckN7C9V
-         Py30PwdeXK4mYpM0PpjiTHnUzN362xqXFU5sTXmVBfHiv8MkKuqgouYu9b/nirUS0FO0
-         VYpq9YIzG9KwCwNt0GcfQf57Fv5hCHof1yjk86S0uXWzzxFDxEuALSK4vu1taQGE9WaS
-         U6H2cbJQLYBSEMypRuglCYr7xIqmeX5KSOVaZo37bcZ7yxm+K3FXgvZJeRAZLxd4q/le
-         R3TGHFlmisk9jEyyLNg+GewPe66cN8M3Ars9GQHoWqSttx1vhx5d2IR2r+20tlCzKa6z
-         IjAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=meEjyOFEk8NLwqmQYbedVmiXvkxGhx3w8P4bOKYAV/Q=;
-        b=tVLZsirBYToizNKZVXoNxulaDUqwi9IcucrX+vKHfNy0KeovHGM7RqBjNMCpILNfJM
-         Vgmyz5M9xIJ2Hf+4H+gUrmwugBwo2BAfRZpKDq5W26wPpHiDG/AFXjOTwQbLvJkZwNT7
-         f8izh0yvYQ8M6fvnSkx6JD5KMdb+imVAly2qEpiUiAX0v40VC8WJeS6AysAJ94Cq808R
-         dioFzzEPQHG1pxGidWLZGdZuEMQL0A09Y+rGdRCd0c8vvUX+CWH9SRzqnU+F+eaKSFEv
-         Xosdvb2Z/z5gA/IsqtNv149qi5fJXzGwcV+pOS0+rUHZxkyUJRjZPpURDKrXdw804TSE
-         taUg==
-X-Gm-Message-State: AOAM531jkT7+UkRAJFhMgck1khOqauDATNifTzh5WqYDrebhHAjhac2s
-        wKDAoRWj/0fKuXJ7Oh6mKGtcBjMCR7i/tg==
-X-Google-Smtp-Source: ABdhPJyi+uZ1amKREnxjcMgf1RhYUF7WME7H0ITXU52PZrELCYo3ygvIGD13OHR893HvJtxjjsH2Kg==
-X-Received: by 2002:a5d:588b:: with SMTP id n11mr8808652wrf.344.1637336939749;
-        Fri, 19 Nov 2021 07:48:59 -0800 (PST)
-Received: from kista.localnet (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
-        by smtp.gmail.com with ESMTPSA id l5sm33096wml.20.2021.11.19.07.48.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 07:48:59 -0800 (PST)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Samuel Holland <samuel@sholland.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        Ondrej Jirman <megous@megous.com>,
-        Samuel Holland <samuel@sholland.org>
-Subject: Re: [PATCH v4] Input: sun4i-lradc-keys -  Add wakup support
-Date:   Fri, 19 Nov 2021 16:48:58 +0100
-Message-ID: <2604187.mvXUDI8C0e@kista>
-In-Reply-To: <20211119025415.18642-1-samuel@sholland.org>
-References: <20211119025415.18642-1-samuel@sholland.org>
+        id S236023AbhKSPwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 10:52:41 -0500
+Received: from mga09.intel.com ([134.134.136.24]:27637 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229936AbhKSPwk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 10:52:40 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="234264295"
+X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
+   d="scan'208";a="234264295"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 07:49:38 -0800
+X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
+   d="scan'208";a="507943302"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 07:49:37 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mo68p-008aGa-Rz;
+        Fri, 19 Nov 2021 17:49:31 +0200
+Date:   Fri, 19 Nov 2021 17:49:31 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 00/17] Add memberof(), split some headers, and slightly
+ simplify code
+Message-ID: <YZfHi0GXk129wmQE@smile.fi.intel.com>
+References: <20211119113644.1600-1-alx.manpages@gmail.com>
+ <CAK8P3a0qT9tAxFkLN_vJYRcocDW2TcBq79WcYKZFyAG0udZx5Q@mail.gmail.com>
+ <434296d3-8fe1-f1d2-ee9d-ea25d6c4e43e@gmail.com>
+ <YZfEHZa3f5MXeqoH@smile.fi.intel.com>
+ <f1a90f53-060e-2960-3926-e30b44a1be28@gmail.com>
+ <4a39bc52-53ff-ca79-8d34-4310b2894f43@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4a39bc52-53ff-ca79-8d34-4310b2894f43@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-
-Dne petek, 19. november 2021 ob 03:54:15 CET je Samuel Holland napisal(a):
-> From: Ondrej Jirman <megous@megous.com>
+On Fri, Nov 19, 2021 at 04:43:04PM +0100, Alejandro Colomar (man-pages) wrote:
+> On 11/19/21 16:38, Alejandro Colomar (man-pages) wrote:
+> > On 11/19/21 16:34, Andy Shevchenko wrote:
+> >> On Fri, Nov 19, 2021 at 04:06:27PM +0100, Alejandro Colomar (man-pages) wrote:
+> >>> Yes, I would like to untangle the dependencies.
+> >>>
+> >>> The main reason I started doing this splitting
+> >>> is because I wouldn't be able to include
+> >>> <linux/stddef.h> in some headers,
+> >>> because it pulled too much stuff that broke unrelated things.
+> >>>
+> >>> So that's why I started from there.
+> >>>
+> >>> I for example would like to get NULL in memberof()
+> >>> without puling anything else,
+> >>> so <linux/NULL.h> makes sense for that.
+> >>
+> >> I don't believe that the code that uses NULL won't include types.h.
+> > 
+> > I'm not sure about the error I got (I didn't write it down),
+> > but I got a compilation error.
+> > That's why I split NULL.
 > 
-> Allow the driver to wake the system on key press if the "wakeup-source"
-> property is provided in the device tree. Using the LRADC as a wakeup
-> source requires keeping the AVCC domain active during sleep. Since this
-> has a nontrivial impact on power consumption (sometimes doubling it),
-> disable the LRADC wakeup source by default.
+> Now that I think about it twice,
+> since I'm rewriting these changes from scratch,
+> I think the error might have been
+> not due to pulling too much stuff,
+> but due to circular dependencies.
 > 
-> Signed-off-by: Ondrej Jirman <megous@megous.com>
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> Having more granularity
+> helps precisely define the dependencies.
+> 
+> I think the problem was in
+> <linux/memberof.h> requiring NULL from <linux/stddef.h>
+> <linux/stddef.h> requiring memberof() from <linux/memberof.h>
+> or something like that.
 
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+There is no memberof.h in the kernel. Something is done wrongly on your series.
 
-Best regards,
-Jernej
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
