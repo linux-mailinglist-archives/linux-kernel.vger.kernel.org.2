@@ -2,93 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0EFB456EAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 13:05:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3DF456EB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 13:07:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234687AbhKSMI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 07:08:28 -0500
-Received: from smtp1.axis.com ([195.60.68.17]:15691 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230520AbhKSMI2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 07:08:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1637323527;
-  x=1668859527;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=57/QJ6in35nvPvU4ig8kvOqeNLXlQjO2HkYYKefPH8A=;
-  b=V5HnyaO7fWb+WPv8Upjj+2s7EMr0DowlAdcyp0uRsC7VXfhKhhXpngGV
-   GvneCUueSqCRRW44bN72sgXYbZIBrt7okQyP4D/aybGpqvn1crFFGNKsD
-   enQqJ5+qMYWXt9zitWVgVbfYUKpq7nwVUuiss/ECgVepHcyd7ZX9z10i9
-   UyN5m35FXL3PqOlgLYIPBg5i5HVLwgFqcA64C77+prYoYtMCM2dNYhcch
-   uZuzCPj2A8o2LZETIg+lcOOUW7M3fEwDyPhOpTrR542lz7C+PH7VmUhKR
-   8QTZuOuAd1l8x5qmFdOMbyoH3muFk7DtX2iUN3bKJHja8VeGDfLUhmrNS
-   A==;
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-CC:     <kernel@axis.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-Subject: [PATCH] af_unix: fix regression in read after shutdown
-Date:   Fri, 19 Nov 2021 13:05:21 +0100
-Message-ID: <20211119120521.18813-1-vincent.whitchurch@axis.com>
-X-Mailer: git-send-email 2.33.1
+        id S234722AbhKSMKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 07:10:38 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:26332 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230520AbhKSMKh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 07:10:37 -0500
+Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HwZzZ4pBgzbhvX;
+        Fri, 19 Nov 2021 20:02:34 +0800 (CST)
+Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
+ dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 19 Nov 2021 20:07:31 +0800
+Received: from use12-sp2.huawei.com (10.67.189.20) by
+ dggpemm500007.china.huawei.com (7.185.36.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 19 Nov 2021 20:07:31 +0800
+From:   Jubin Zhong <zhongjubin@huawei.com>
+To:     <lasse.collin@tukaani.org>, <akpm@linux-foundation.org>
+CC:     <wangfangpeng1@huawei.com>, <liaohua4@huawei.com>,
+        <zhongjubin@huawei.com>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] kbuild: Enable armthumb BCJ filter for Thumb-2 kernel
+Date:   Fri, 19 Nov 2021 20:07:27 +0800
+Message-ID: <1637323647-19988-1-git-send-email-zhongjubin@huawei.com>
+X-Mailer: git-send-email 1.8.5.6
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+X-Originating-IP: [10.67.189.20]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500007.china.huawei.com (7.185.36.183)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On kernels before v5.15, calling read() on a unix socket after
-shutdown(SHUT_RD) or shutdown(SHUT_RDWR) would return the data
-previously written or EOF.  But now, while read() after
-shutdown(SHUT_RD) still behaves the same way, read() after
-shutdown(SHUT_RDWR) always fails with -EINVAL.
+xz_wrap.sh use $SRCARCH to detect the BCJ filter. However, assigning
+arm BCJ filter to Thumb-2 kernel is not optimal. In my case, about 5%
+decrease of image size is observed with armthumb BCJ filter:
 
-This behaviour change was apparently inadvertently introduced as part of
-a bug fix for a different regression caused by the commit adding sockmap
-support to af_unix, commit 94531cfcbe79c359 ("af_unix: Add
-unix_stream_proto for sockmap").  Those commits, for unclear reasons,
-started setting the socket state to TCP_CLOSE on shutdown(SHUT_RDWR),
-while this state change had previously only been done in
-unix_release_sock().
+Test results:
+  hardware:      QEMU emulator version 3.1.0
+  config:        vexpress_defconfig with THUMB2_KERNEL & KERNEL_XZ on
+  arm BCJ:       4029808
+  armthumb BCJ:  3827280
 
-Restore the original behaviour.  The sockmap tests in
-tests/selftests/bpf continue to pass after this patch.
+Choose armthumb BCJ filter for Thumb-2 kernel to make smaller images.
 
-Fixes: d0c6416bd7091647f60 ("unix: Fix an issue in unix_shutdown causing the other end read/write failures")
-Link: https://lore.kernel.org/lkml/20211111140000.GA10779@axis.com/
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Signed-off-by: Jubin Zhong <zhongjubin@huawei.com>
 ---
- net/unix/af_unix.c | 3 ---
- 1 file changed, 3 deletions(-)
+ lib/decompress_unxz.c | 3 +++
+ scripts/xz_wrap.sh    | 5 +++++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-index 78e08e82c08c..b0bfc78e421c 100644
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -2882,9 +2882,6 @@ static int unix_shutdown(struct socket *sock, int mode)
+diff --git a/lib/decompress_unxz.c b/lib/decompress_unxz.c
+index 9f4262e..7d6b952 100644
+--- a/lib/decompress_unxz.c
++++ b/lib/decompress_unxz.c
+@@ -131,6 +131,9 @@
+ #ifdef CONFIG_ARM
+ #	define XZ_DEC_ARM
+ #endif
++#ifdef CONFIG_THUMB2_KERNEL
++#	define XZ_DEC_ARMTHUMB
++#endif
+ #ifdef CONFIG_IA64
+ #	define XZ_DEC_IA64
+ #endif
+diff --git a/scripts/xz_wrap.sh b/scripts/xz_wrap.sh
+index 76e9cbc..47409bb 100755
+--- a/scripts/xz_wrap.sh
++++ b/scripts/xz_wrap.sh
+@@ -8,6 +8,7 @@
+ # This file has been put into the public domain.
+ # You can do whatever you want with this file.
+ #
++. include/config/auto.conf
  
- 	unix_state_lock(sk);
- 	sk->sk_shutdown |= mode;
--	if ((sk->sk_type == SOCK_STREAM || sk->sk_type == SOCK_SEQPACKET) &&
--	    mode == SHUTDOWN_MASK)
--		sk->sk_state = TCP_CLOSE;
- 	other = unix_peer(sk);
- 	if (other)
- 		sock_hold(other);
+ BCJ=
+ LZMA2OPTS=
+@@ -20,4 +21,8 @@ case $SRCARCH in
+ 	sparc)          BCJ=--sparc ;;
+ esac
+ 
++if [ -n "${CONFIG_THUMB2_KERNEL}" ];then
++	BCJ=--armthumb
++fi
++
+ exec $XZ --check=crc32 $BCJ --lzma2=$LZMA2OPTS,dict=32MiB
 -- 
-2.33.1
+1.8.5.6
 
