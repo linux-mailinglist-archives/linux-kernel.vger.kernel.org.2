@@ -2,102 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CF6456A47
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 07:32:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06AA1456A4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 07:34:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbhKSGfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 01:35:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbhKSGfy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 01:35:54 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5580DC06173E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 22:32:53 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id gt5so7189755pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 22:32:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=accesio-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pitqVTnR52sCvxpnb0+Tu14MFJWNMqrMhYyHvSknELA=;
-        b=xz3H6UmTjG0kI/uDX9MZflaKyd9H1dTdKXv3Yyb44XFzwDLc98A1WXNgSXd1NEjTZu
-         +3K/7hU6SK/+wYJ4dMIl14LrIFYtcGL5q4d+qDkyagN4vb5Zp6ZPh40BjExTxgz6nts4
-         K2A6TfaWw8FPnASm/4JhITJLb3cD7r22BijeCUxt9INV1yggI54hsX8snXO0GGvI5+PM
-         HsvkKvy5d4C9Oif/WYUnTKlN6cYB/GhHMLBgBk4I2LkwjxPbH41xnFXezn68hjDKZCJy
-         STKCToI6NEyP9DhfLwxV+lxVhDP8fMh3r3wKLKupgd5M00wrfzdqeCSDHtLZqxOSH4EI
-         4oTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pitqVTnR52sCvxpnb0+Tu14MFJWNMqrMhYyHvSknELA=;
-        b=hjNXVPF0TAYBk2mJqPR907bslXwc2PNIspi0krCV5Y2ABWIeHRrlSa2qbYnnr9nOYA
-         r+0lrus1CMCfyUspgsa2HxridpYfSO20NYbG7/EyoT5pLZRPC26O+UCtn+TVXfGE0R/N
-         lWYQf5Sq3PyCNTxzL0DN/at1XXSqOX17s933WStu7z7sDR0YupQfDvPuMoYyvoFryTEl
-         TVWQI7STcJfmKacLscS2VLl71/HOEEiIeGClUL8GAn5kZRMtb+p7qqRQ2JJ5xY59mB2G
-         TU4sMxtm83VxeXn+lcCE49ilh5gKtM4Rr8zETMB+QO5WlJE7zuhnZQzl2EC2w3RRKbtw
-         HjJw==
-X-Gm-Message-State: AOAM532AYIOpV25BMHTwpsPoXRFClVPjc6ZyvMa9yaBtdIceuZtKba0o
-        DhVS/2eYjlD9T81xCVD58dEh
-X-Google-Smtp-Source: ABdhPJytghvkGiCOGjcJVx6q7f8229wvM4d8skJfb4j1wJr7PoZsOIpWZJHI83dI0UzwgXMVAgSzJA==
-X-Received: by 2002:a17:90b:17cc:: with SMTP id me12mr1787160pjb.179.1637303572868;
-        Thu, 18 Nov 2021 22:32:52 -0800 (PST)
-Received: from [172.16.8.241] ([98.149.220.160])
-        by smtp.gmail.com with ESMTPSA id h18sm1667272pfh.172.2021.11.18.22.32.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Nov 2021 22:32:52 -0800 (PST)
-Subject: Re: [PATCH v1 0/2] serial: 8250_pci: Split Pericom driver
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Cc:     Jiri Slaby <jirislaby@kernel.org>
-References: <20211117145750.43911-1-andriy.shevchenko@linux.intel.com>
-From:   Jay Dolan <jay.dolan@accesio.com>
-Message-ID: <b99aabbe-add9-9c1e-ed4b-8850c69233de@accesio.com>
-Date:   Thu, 18 Nov 2021 22:32:51 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231446AbhKSGhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 01:37:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49176 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229457AbhKSGhM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 01:37:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47A6461101;
+        Fri, 19 Nov 2021 06:34:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637303650;
+        bh=NOGQh8//ImED3ZSXNLHFe1B3kwT9YtEODJhVob7C6yc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L4m9B/6ruVNnPZ9qqEZT4IXH0vD+W+HobXTFi6lCquqNHPT4QPbtj/0/A0RCXEgDe
+         SIJW1spW0ZD1KpiPRJZ+Ou4GvZJO1+GZY9D2CwpjlSZcEwM/MB+M5ctM8OmvqEb+Ph
+         iVgJNkayooFHFKKFA3hJikAog/V7cLiF07zXXphs=
+Date:   Fri, 19 Nov 2021 07:34:08 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Chris Rankin <rankincj@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+Subject: Re: [OOPS] Linux 5.14.19 crashes and burns!
+Message-ID: <YZdFYFpTswGqO/o1@kroah.com>
+References: <CAK2bqV+NuRYNU0dHni9Cmfvi5CZ7Ycp6rGrNRDLzrdU9xkSXaw@mail.gmail.com>
+ <99d07599-3d72-d389-cfc2-f463230037a5@leemhuis.info>
+ <ed000478-2a60-0066-c337-a04bffc112b1@leemhuis.info>
+ <YZYc6uSpp76Sz4vO@kroah.com>
+ <YZZdUxGbKJKz0x8i@kroah.com>
+ <CAK2bqVJyi-g0b=dSDPS5ELb1d8joKark4k4+6AGQdtuM81k2kg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211117145750.43911-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK2bqVJyi-g0b=dSDPS5ELb1d8joKark4k4+6AGQdtuM81k2kg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/21 6:57 AM, Andy Shevchenko wrote:
-> Split Pericom driver to a separate module.
-> While at it, re-enable high baud rates.
+On Thu, Nov 18, 2021 at 11:02:30PM +0000, Chris Rankin wrote:
+> Hi,
 > 
-> Jay, can you, please, test this on as many hardware as you have?
+> Yes, 5.14.20 fixes the boot problem in 5.14.19. Thank you. However,
+> this WARNING is still present, as with every other 5.14.x kernel I
+> have been able to test:
 > 
-> The series depends on the fix-series: https://lore.kernel.org/linux-serial/20211117145502.43645-1-andriy.shevchenko@linux.intel.com/T/#u
-> 
-> Andy Shevchenko (1):
->    serial: 8250_pci: Split out Pericom driver
-> 
-> Jay Dolan (1):
->    serial: 8250_pericom: Re-enable higher baud rates
-> 
->   drivers/tty/serial/8250/8250_pci.c     | 405 +------------------------
->   drivers/tty/serial/8250/8250_pericom.c | 217 +++++++++++++
->   drivers/tty/serial/8250/Kconfig        |   8 +
->   drivers/tty/serial/8250/Makefile       |   1 +
->   4 files changed, 231 insertions(+), 400 deletions(-)
->   create mode 100644 drivers/tty/serial/8250/8250_pericom.c
-> 
+> [   95.796055] ------------[ cut here ]------------
+> [   95.819648] WARNING: CPU: 3 PID: 1 at
+> drivers/gpu/drm/ttm/ttm_bo.c:409 ttm_bo_release+0x1c/0x266 [ttm]
 
-I have my current state here: 
-https://github.com/accesio/linux/blob/split-pericom-driver/drivers/tty/serial/8250/8250_pericom.c
+Does this work with 5.15.3?
 
-* Change port type to UPIO_PORT
-* Add in pericom_do_startup() because the UPF_MAGIC_MULTIPLIER doesn't 
-stick.
+I would suggest asking the graphics developers about this, as this is
+their code :)
 
-When I'm testing baud rates greater than baud_base I'm seeing strange 
-things on the scope. Maybe I'm just tired, and it's human error. I 
-should be able to get back to it and get it done on Saturday.
+thanks,
+
+greg k-h
