@@ -2,180 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D011745794A
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 00:06:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A86457951
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 00:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235021AbhKSXJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 18:09:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231799AbhKSXJm (ORCPT
+        id S235373AbhKSXLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 18:11:13 -0500
+Received: from bedivere.hansenpartnership.com ([96.44.175.130]:46712 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234515AbhKSXLN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 18:09:42 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39FEDC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 15:06:40 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id a9so20643640wrr.8
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 15:06:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j5Bm6GFDqvCvEks5+2GBalxiRD09Ld7eWnlGUNeBUoc=;
-        b=mNDwHjW2oz+HfDbxHtyFf7WSdf32/0p73Qm9GO85+RGzvRrFehth3w2Iy10JXu9yTB
-         MGvCSL13sq2g6frfzOw89QMyzvHvmX5tHdm//OzINvpQ7e8qK4EAsmSCF0S/8rQntkJ/
-         qX5TizAi+1sfdTXljYaDpzbz/HT72pydusGYfv78G75Q8nZOeDe/gl9N2lycBmDk3zgc
-         TrT0rS5Epk+pDktDpG9GOZTedCUacLg7lLXloeT9xFqVCwwYONvsO8/vcmR8LpJ1WZ2/
-         Wij1Arn/2TVq8eFITZNBriq2dT9AdHHyuMZ6obo2OFIhcK/1+jq/80XK9yMf/HycnicW
-         3h0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j5Bm6GFDqvCvEks5+2GBalxiRD09Ld7eWnlGUNeBUoc=;
-        b=xqa/QqGLLzh4R3j6Fg0TNCzQoPuoHSggyukkMVC5GEipgmwGD0ljHhKdJcvE71fsko
-         AR6yRBS3fiT1xt1RPgnYvQYRtMEydFYBTfKqvZpAc0uKvhPwQSHEsTHrQnnvAbhhC/xq
-         QL5Pyf07HWFURP+P/fCPqyY8JKWBu6i8dRncDD8VP/mtdyj5cg7IgU2JqidbYupJh70f
-         zZJaNGULnG0VbHm2sY/JG68NpMn4NSsKrAoj48ZjhBZcJFANpdQm7mdcICFhG9XdyTSo
-         l0JRQQ6L2h1n9o6g5rLKvXNX+R3wVxmpTExD2LgX/Amb0q0xxHLbzk+TxDKSpWxtk9W6
-         ClwQ==
-X-Gm-Message-State: AOAM531mGKzJqgi83yzOhNA29YFTs+1RiNqWgDSzjki6q1bzrVGxq4bj
-        Y5Ix/fhulyeMujcU91luXlctIeWQN8iVvQ8KdQfV9g==
-X-Google-Smtp-Source: ABdhPJyrMgIG/a8S4H9KsimMiekpPxuoBYt3lru7w/keGNIc+zIDQ3xrI8hnsAR1feNcNq1+KQT7UjygKxBq3LCYgkM=
-X-Received: by 2002:a05:6000:1564:: with SMTP id 4mr12310691wrz.9.1637363198576;
- Fri, 19 Nov 2021 15:06:38 -0800 (PST)
-MIME-Version: 1.0
-References: <20211118190329.1925388-1-dlatypov@google.com> <CABVgOSnfuYnLOHLvRn5EQ_pghh+Q=-ewxTyRoB-oEOsEsx_O6g@mail.gmail.com>
- <CAGS_qxppxgsZi4-D=DkirXNx2qeFozn_njhtZVCYPaVhAno-TQ@mail.gmail.com>
-In-Reply-To: <CAGS_qxppxgsZi4-D=DkirXNx2qeFozn_njhtZVCYPaVhAno-TQ@mail.gmail.com>
-From:   David Gow <davidgow@google.com>
-Date:   Sat, 20 Nov 2021 07:06:27 +0800
-Message-ID: <CABVgOSmT95SuLPfm7ARQ9erUeDkMuji1zCxPQnfyRwqOW-91mg@mail.gmail.com>
-Subject: Re: [PATCH] kunit: tool: reconfigure when the used kunitconfig changes
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     brendanhiggins@google.com, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org
+        Fri, 19 Nov 2021 18:11:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1637363290;
+        bh=laxDKxmG+P97wO7dtGHj+3jiOfUeKS0Sn2sT1b7ShXc=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=v/KNMjzPZToYdSq6Qudjqu60hXcUBlQdtSCE59nfxb4a+uLsT+IwwytrBV9fDwBnl
+         oO5fQi29ydnMW8B08V6QiHGifiU1A27fSMBFDLIHVbchf8yG2SHhPcdqSdF4/GHzly
+         JLViMwja6ECLOnB1BEoS3hZ19aD0BgdHuryzTgGg=
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id A63261280D24;
+        Fri, 19 Nov 2021 18:08:10 -0500 (EST)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 3c7umqUnNlQ9; Fri, 19 Nov 2021 18:08:10 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1637363290;
+        bh=laxDKxmG+P97wO7dtGHj+3jiOfUeKS0Sn2sT1b7ShXc=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=v/KNMjzPZToYdSq6Qudjqu60hXcUBlQdtSCE59nfxb4a+uLsT+IwwytrBV9fDwBnl
+         oO5fQi29ydnMW8B08V6QiHGifiU1A27fSMBFDLIHVbchf8yG2SHhPcdqSdF4/GHzly
+         JLViMwja6ECLOnB1BEoS3hZ19aD0BgdHuryzTgGg=
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4300:c551::c447])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 4B1151280D14;
+        Fri, 19 Nov 2021 18:08:09 -0500 (EST)
+Message-ID: <cc6783315193be5acb0e2e478e2827d1ad76ba2a.camel@HansenPartnership.com>
+Subject: Re: [RFC PATCH 0/4] namespacefs: Proof-of-Concept
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, mingo@redhat.com, hagen@jauu.net,
+        rppt@kernel.org, akpm@linux-foundation.org, vvs@virtuozzo.com,
+        shakeelb@google.com, christian.brauner@ubuntu.com,
+        mkoutny@suse.com, Linux Containers <containers@lists.linux.dev>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Date:   Fri, 19 Nov 2021 18:08:08 -0500
+In-Reply-To: <20211119114910.177c80d6@gandalf.local.home>
+References: <20211118181210.281359-1-y.karadz@gmail.com>
+         <87a6i1xpis.fsf@email.froward.int.ebiederm.org>
+         <20211118142440.31da20b3@gandalf.local.home>
+         <1349346e1d5daca991724603d1495ec311cac058.camel@HansenPartnership.com>
+         <20211119092758.1012073e@gandalf.local.home>
+         <f6ca1f5bdb3b516688f291d9685a6a59f49f1393.camel@HansenPartnership.com>
+         <20211119114736.5d9dcf6c@gandalf.local.home>
+         <20211119114910.177c80d6@gandalf.local.home>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 20, 2021 at 5:17 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> On Thu, Nov 18, 2021 at 11:04 PM David Gow <davidgow@google.com> wrote:
-> >
-> > On Fri, Nov 19, 2021 at 3:03 AM 'Daniel Latypov' via KUnit Development
-> > <kunit-dev@googlegroups.com> wrote:
-> > >
-> > > Problem: currently, if you remove something from your kunitconfig,
-> > > kunit.py will not regenerate the .config file.
-> > > The same thing happens if you did --kunitconfig_add=CONFIG_KASAN=y [1]
-> > > and then ran again without it. Your new run will still have KASAN.
-> > >
-> > > The reason is that kunit.py won't regenerate the .config file if it's a
-> > > superset of the kunitconfig. This speeds it up a bit for iterating.
-> > >
-> > > This patch adds an additional check that forces kunit.py to regenerate
-> > > the .config file if the current kunitconfig doesn't match the previous
-> > > one.
-> > >
-> > > What this means:
-> > > * deleting entries from .kunitconfig works as one would expect
-> > > * dropping  a --kunitconfig_add also triggers a rebuild
-> > > * you can still edit .config directly to turn on new options
-> > >
-> > > We implement this by creating a `last_used_kunitconfig` file in the
-> > > build directory (so .kunit, by default) after we generate the .config.
-> > > When comparing the kconfigs, we compare python sets, so duplicates and
-> > > permutations don't trip us up.
-> > >
-> > > The majority of this patch is adding unit tests for the existing logic
-> > > and for the new case where `last_used_kunitconfig` differs.
-> > >
-> > > [1] https://lore.kernel.org/linux-kselftest/20211106013058.2621799-2-dlatypov@google.com/
-> > >
-> > > Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> > > ---
-> >
-> > Note that this patch has some prerequisites before it applies cleanly,
-> > notably this series:
-> > https://patchwork.kernel.org/project/linux-kselftest/list/?series=576317
-> >
-> > I'm also seeing a couple of issues with this, though I haven't had a
-> > chance to track down the cause fully, so it could just be another
-> > missing prerequisite, or me doing something silly.
-> >
-> > In particular:
-> > - Removing items from .kunit/.kunitconfig still wasn't triggering a reconfig.
->
-> This is an edge case that only comes up the absolute first time you
-> switch to using kunit.py with this change.
->
-> If there's no last_used_kunitconfig file, this new check doesn't do anything.
-> See how it returns False when the file doesn't exist in _kconfig_changed().
->
-> Given you hit the error below about last_used_kunitconfig not
-> existing, I'm 99% this is what you ran into.
->
-> The file is currently only generated if we actually call `make oldefconfig`.
-> So if you just run `kunit.py run` a few times after this change with
-> no config changes, last_used_kunitconfig won't be created, and the new
-> check won't kick in.
->
-> We can avoid this one-time confusion by
-> * make _kconfig_changed() return True if last_used_kunitconfig doesn't
-> exist, since maybe the config did change.
-> * or always write last_used_kunitconfig on every invocation.
->
-> The first would trigger a false positive the first time a user uses
-> kunit.py after this change goes in.
-> It also lightly penalizes the user for messing with `last_used_kunitconfig`.
+[trying to reconstruct cc list, since the cc: field is bust again]
+> On Fri, 19 Nov 2021 11:47:36 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > > Can we back up and ask what problem you're trying to solve before
+> > > we start introducing new objects like namespace name?
+> 
+> TL;DR; verison:
+> 
+> We want to be able to install a container on a machine that will let
+> us view all namespaces currently defined on that machine and which
+> tasks are associated with them.
+> 
+> That's basically it.
 
-This seems like a good compromise to me: people are likely to get this
-change only after a major kernel release, and re-configuring then
-(even if not strictly necessary) doesn't seem totally silly. Equally,
-I think it's best for the behaviour to change exactly when the change
-goes in, rather than some unspecified time afterwards.
+So you mentioned kubernetes.  Have you tried
 
->
-> The second adds some overhead that isn't really necessary most of the time.
-> It also won't help with the absolute first time you run kunit.py after
-> this change.
-> But it will make it so the second time onwards will have the logic enabled.
->
-> So I'd personally prefer we leave it as-is.
-> To most users, this will be a transparent change, so there's no
-> expectations about it coming into play immediately.
+kubectl get pods --all-namespaces
 
-As mentioned above, I'd prefer this be a little less transparent and
-come into play immediately. I don't think one extra reconfigure will
-be a problem for most users, and it'll be obvious it's caused by an
-update. Equally, I don't expect people will mess with
-`last_used_kunitconfig`, so that shouldn't be a problem?
+?
 
->
-> > - Running with --arch=x86_64 was giving me a "FileNotFoundError:
->
-> Ah, this should be unrelated to --arch.
-> os.remove() throws an exception if the argument doesn't exist.
->
-> So the fix is
-> + if os.path.exists(old_path)
->       os.remove(old_path)  # write_to_file appends to the file
+The point is that orchestration systems usually have interfaces to get
+this information, even if the kernel doesn't.  In fact, userspace is
+almost certainly the best place to construct this from.
 
-Ah... makes sense. Let's fix this in the next revision.
+To look at this another way, what if you were simply proposing the
+exact same thing but for the process tree.  The push back would be that
+we can get that all in userspace and there's even a nice tool (pstree)
+to do it which simply walks the /proc interface.  Why, then, do we have
+to do nstree in the kernel when we can get all the information in
+exactly the same way (walking the process tree)?
 
-> And ah, that didn't get caught by the added unit test since
-> build_config() is mocked out and it's in there, no build_reconfig().
->
->
+James
 
-So, could we have these changes for v2:
-- Reconfigure if there's no last_used_kunitconfig
-- Fix the os.remove() issue if last_used_kunitconfig doesn't exist.
-- Note the dependencies for this to merge cleanly in the email.
 
-Does that sound sensible?
 
--- David
