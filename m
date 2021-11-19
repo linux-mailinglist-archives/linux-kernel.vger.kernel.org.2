@@ -2,160 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 508FE456B0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 08:45:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97791456B16
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 08:47:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231875AbhKSHsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 02:48:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52238 "EHLO
+        id S232249AbhKSHuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 02:50:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229922AbhKSHsh (ORCPT
+        with ESMTP id S229457AbhKSHuA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 02:48:37 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60DE7C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 23:45:36 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mnyaS-0000Qv-94; Fri, 19 Nov 2021 08:45:32 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mnyaR-000Qqq-7r; Fri, 19 Nov 2021 08:45:30 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mnyaQ-0004cr-1S; Fri, 19 Nov 2021 08:45:30 +0100
-Date:   Fri, 19 Nov 2021 08:45:29 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-spi@vger.kernel.org, Ralph Siemsen <ralph.siemsen@linaro.org>
-Subject: Re: [PATCH] spi: docs: improve the SPI userspace API documentation
-Message-ID: <20211119074529.cvi5zldkuofl4nl5@pengutronix.de>
-References: <20211118213143.2345041-1-javierm@redhat.com>
+        Fri, 19 Nov 2021 02:50:00 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30CE2C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 23:46:59 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id y7so7568232plp.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 23:46:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NBNCtCfqZurLfKPQYW4MDFzz8IQkjaKhoSv1g1++xxc=;
+        b=jqpginvm/vLrNZxTGFU4ndyCA+Jy+2RIfESFUWEQqcEBVweBM32Ekf8kfLeNOV5u0p
+         7pOkviWwOlxUELyU5MJJo0iLXUffbfWtEkqGQgU+8vXF5KHBqnIQxjdgYeEbPihIRYCs
+         6Wce0sbJzAdfCCX4i+JujESBrn6/W1Mvfvcf0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NBNCtCfqZurLfKPQYW4MDFzz8IQkjaKhoSv1g1++xxc=;
+        b=UxjGSHYxv2ouz3W2Z2X2/rXDoQT9rkhjwxAWa2fsAcqDXEc3jPRXhIsg56LWVqmcIA
+         0nZnAkfkXeIrdZABkZrUeytcTNhH9AHUhNLV7Ktx2rjwxhlgzCqwg4LquPqUsg88l5/w
+         9nr7PBhSehFHnU8UtMVV2PETExVlSKw0qOsZffBe/UAhBq0onUlqPStEh4ul4yENXXD1
+         NiFXVkRHf7uhY3gXVXVVLFVKv7wydkM4qMJPQtHJOOurRINiNt64eB+euoSHAgKgUuka
+         70uOlQyUagYyhRh6Qwq0Dvy3KgmHlRvPdWW4pZsKUwUnCTCkV5SNxFMVRegXi6R4oqjh
+         1h1Q==
+X-Gm-Message-State: AOAM532OlY6rWm3krbL79vPYRjuWZI5LAyYY4m4TFd8zu0rMFh0cfHtX
+        rp1i/8cmA4d9FUk2l/0PFW6i/g==
+X-Google-Smtp-Source: ABdhPJyFmPMYwHPxr+FyJ3stDNWysKqief+fvUPuIW24yLnrFAjmZiZUA23UfnYdhPzXTT1lpcoTXw==
+X-Received: by 2002:a17:90a:e012:: with SMTP id u18mr2272529pjy.103.1637308018800;
+        Thu, 18 Nov 2021 23:46:58 -0800 (PST)
+Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:1e9e:88c0:7cad:9b21])
+        by smtp.gmail.com with ESMTPSA id t4sm1919051pfg.155.2021.11.18.23.46.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 23:46:58 -0800 (PST)
+From:   Chen-Yu Tsai <wenst@chromium.org>
+To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] media: hantro: Hook up RK3399 JPEG encoder output
+Date:   Fri, 19 Nov 2021 15:46:54 +0800
+Message-Id: <20211119074654.470729-1-wenst@chromium.org>
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="deyep7z4ekkvfmlh"
-Content-Disposition: inline
-In-Reply-To: <20211118213143.2345041-1-javierm@redhat.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The JPEG encoder found in the Hantro H1 encoder block only produces a
+raw entropy-encoded scan. The driver is responsible for building a JPEG
+compliant bitstream and placing the entropy-encoded scan in it. Right
+now the driver uses a bounce buffer for the hardware to output the raw
+scan to.
 
---deyep7z4ekkvfmlh
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In commit e765dba11ec2 ("hantro: Move hantro_enc_buf_finish to JPEG
+codec_ops.done"), the code that copies the raw scan from the bounce
+buffer to the capture buffer was moved, but was only hooked up for the
+Hantro H1 (then RK3288) variant. The RK3399 variant was broken,
+producing a JPEG bitstream without the scan, and the capture buffer's
+.bytesused field unset.
 
-On Thu, Nov 18, 2021 at 10:31:43PM +0100, Javier Martinez Canillas wrote:
-> This doc is fairly outdated and only uses legacy device instantiation
-> terminology. Let us update it and also mention the OF and ACPI device
-> tables, to make easier for users to figure out how should be defined.
->=20
-> Also, mention that devices bind could be done in user-space now using
-> the "driver_override" sysfs entry.
->=20
-> Suggested-by: Ralph Siemsen <ralph.siemsen@linaro.org>
-> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-> ---
->=20
->  Documentation/spi/spidev.rst | 34 +++++++++++++++++++++++++++++-----
->  1 file changed, 29 insertions(+), 5 deletions(-)
->=20
-> diff --git a/Documentation/spi/spidev.rst b/Documentation/spi/spidev.rst
-> index f05dbc5ccdbc..ec0986ae6170 100644
-> --- a/Documentation/spi/spidev.rst
-> +++ b/Documentation/spi/spidev.rst
-> @@ -29,15 +29,39 @@ of the driver stack) that are not accessible to users=
-pace.
-> =20
->  DEVICE CREATION, DRIVER BINDING
->  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
-> -The simplest way to arrange to use this driver is to just list it in the
-> -spi_board_info for a device as the driver it should use:  the "modalias"
-> -entry is "spidev", matching the name of the driver exposing this API.
-> +
-> +The spidev driver contains lists of SPI devices that are supported for
-> +the different hardware topology representations.
-> +
-> +The following are the SPI device tables supported by the spidev driver:
-> +
-> +    - struct spi_device_id spidev_spi_ids[]: list of devices that can be
-> +      bound when these are defined using a struct spi_board_info with a
-> +      .modalias field matching one of the entries in the table.
-> +
-> +    - struct of_device_id spidev_dt_ids[]: list of devices that can be
-> +      bound when these are defined using a Device Tree node that has a
-> +      compatible string matching one of the entries in the table.
-> +
-> +    - struct acpi_device_id spidev_acpi_ids[]: list of devices that can
-> +      be bound when these are defined using a ACPI device object with a
-> +      _HID matching one of the entries in the table.
-> +
-> +NOTE: it used to be supported to define an SPI device using the "spidev"
-> +      name.  For example as .modalias =3D "spidev" or compatible =3D "sp=
-idev".
-> +      But this is no longer supported by the Linux kernel and instead a
-> +      real SPI device name as listed in one of the tables should be used.
-> +
->  Set up the other device characteristics (bits per word, SPI clocking,
->  chipselect polarity, etc) as usual, so you won't always need to override
->  them later.
-> =20
-> -(Sysfs also supports userspace driven binding/unbinding of drivers to
-> -devices.  That mechanism might be supported here in the future.)
-> +Sysfs also supports userspace driven binding/unbinding of drivers to
-> +devices.  The mechanism works by writing to the device "driver_overrride"
-> +entry.  For example:
+Fix this by duplicating the code that is executed when the JPEG encoder
+finishes encoding a frame. As the encoded length is read back from
+hardware, and the variants having different register layouts, the
+code is duplicated rather than shared.
 
-I'd write here:
+Fixes: e765dba11ec2 ("hantro: Move hantro_enc_buf_finish to JPEG codec_ops.done")
+Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+---
+This was developed on the downstream ChromeOS 5.10 kernel (with a hack
+for .data_offset) and tested with ChromeOS's jpeg_encode_accelerator_unittest
+patched to accept non-JFIF JPEG streams (https://crrev.com/c/3291480).
 
-	Sysfs also supports userspace driven binding/unbinding of
-	drivers to devices that don't bind automatically using one of
-	the tables above. To make the spidev driver bind to such a
-	device, use:
+This was then forward-ported to mainline (name and filename changes) and
+compile tested only.
 
-> +
-> +    echo spidev > /sys/bus/spi/devices/spiX.Y/driver_override
-> +    echo spiB.C > /sys/bus/spi/drivers/spidev/bind
-> =20
->  When you do that, the sysfs node for the SPI device will include a child
->  device node with a "dev" attribute that will be understood by udev or md=
-ev.
+---
+ .../staging/media/hantro/hantro_h1_jpeg_enc.c   |  2 +-
+ drivers/staging/media/hantro/hantro_hw.h        |  3 ++-
+ .../media/hantro/rockchip_vpu2_hw_jpeg_enc.c    | 17 +++++++++++++++++
+ drivers/staging/media/hantro/rockchip_vpu_hw.c  |  5 +++--
+ 4 files changed, 23 insertions(+), 4 deletions(-)
 
-What is "that" here? (Maybe this refers to "Set up the other device
-characteristics [...] as usual"? Is the effect still accurate?
+diff --git a/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c b/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c
+index 56cf261a8e95..9cd713c02a45 100644
+--- a/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c
++++ b/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c
+@@ -140,7 +140,7 @@ int hantro_h1_jpeg_enc_run(struct hantro_ctx *ctx)
+ 	return 0;
+ }
+ 
+-void hantro_jpeg_enc_done(struct hantro_ctx *ctx)
++void hantro_h1_jpeg_enc_done(struct hantro_ctx *ctx)
+ {
+ 	struct hantro_dev *vpu = ctx->dev;
+ 	u32 bytesused = vepu_read(vpu, H1_REG_STR_BUF_LIMIT) / 8;
+diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
+index 267a6d33a47b..60d4602d33ed 100644
+--- a/drivers/staging/media/hantro/hantro_hw.h
++++ b/drivers/staging/media/hantro/hantro_hw.h
+@@ -239,7 +239,8 @@ int hantro_h1_jpeg_enc_run(struct hantro_ctx *ctx);
+ int rockchip_vpu2_jpeg_enc_run(struct hantro_ctx *ctx);
+ int hantro_jpeg_enc_init(struct hantro_ctx *ctx);
+ void hantro_jpeg_enc_exit(struct hantro_ctx *ctx);
+-void hantro_jpeg_enc_done(struct hantro_ctx *ctx);
++void hantro_h1_jpeg_enc_done(struct hantro_ctx *ctx);
++void rockchip_vpu2_jpeg_enc_done(struct hantro_ctx *ctx);
+ 
+ dma_addr_t hantro_h264_get_ref_buf(struct hantro_ctx *ctx,
+ 				   unsigned int dpb_idx);
+diff --git a/drivers/staging/media/hantro/rockchip_vpu2_hw_jpeg_enc.c b/drivers/staging/media/hantro/rockchip_vpu2_hw_jpeg_enc.c
+index 991213ce1610..5d9ff420f0b5 100644
+--- a/drivers/staging/media/hantro/rockchip_vpu2_hw_jpeg_enc.c
++++ b/drivers/staging/media/hantro/rockchip_vpu2_hw_jpeg_enc.c
+@@ -171,3 +171,20 @@ int rockchip_vpu2_jpeg_enc_run(struct hantro_ctx *ctx)
+ 
+ 	return 0;
+ }
++
++void rockchip_vpu2_jpeg_enc_done(struct hantro_ctx *ctx)
++{
++	struct hantro_dev *vpu = ctx->dev;
++	u32 bytesused = vepu_read(vpu, VEPU_REG_STR_BUF_LIMIT) / 8;
++	struct vb2_v4l2_buffer *dst_buf = hantro_get_dst_buf(ctx);
++
++	/*
++	 * TODO: Rework the JPEG encoder to eliminate the need
++	 * for a bounce buffer.
++	 */
++	memcpy(vb2_plane_vaddr(&dst_buf->vb2_buf, 0) +
++	       ctx->vpu_dst_fmt->header_size,
++	       ctx->jpeg_enc.bounce_buffer.cpu, bytesused);
++	vb2_set_plane_payload(&dst_buf->vb2_buf, 0,
++			      ctx->vpu_dst_fmt->header_size + bytesused);
++}
+diff --git a/drivers/staging/media/hantro/rockchip_vpu_hw.c b/drivers/staging/media/hantro/rockchip_vpu_hw.c
+index d4f52957cc53..0c22039162a0 100644
+--- a/drivers/staging/media/hantro/rockchip_vpu_hw.c
++++ b/drivers/staging/media/hantro/rockchip_vpu_hw.c
+@@ -343,7 +343,7 @@ static const struct hantro_codec_ops rk3066_vpu_codec_ops[] = {
+ 		.run = hantro_h1_jpeg_enc_run,
+ 		.reset = rockchip_vpu1_enc_reset,
+ 		.init = hantro_jpeg_enc_init,
+-		.done = hantro_jpeg_enc_done,
++		.done = hantro_h1_jpeg_enc_done,
+ 		.exit = hantro_jpeg_enc_exit,
+ 	},
+ 	[HANTRO_MODE_H264_DEC] = {
+@@ -371,7 +371,7 @@ static const struct hantro_codec_ops rk3288_vpu_codec_ops[] = {
+ 		.run = hantro_h1_jpeg_enc_run,
+ 		.reset = rockchip_vpu1_enc_reset,
+ 		.init = hantro_jpeg_enc_init,
+-		.done = hantro_jpeg_enc_done,
++		.done = hantro_h1_jpeg_enc_done,
+ 		.exit = hantro_jpeg_enc_exit,
+ 	},
+ 	[HANTRO_MODE_H264_DEC] = {
+@@ -399,6 +399,7 @@ static const struct hantro_codec_ops rk3399_vpu_codec_ops[] = {
+ 		.run = rockchip_vpu2_jpeg_enc_run,
+ 		.reset = rockchip_vpu2_enc_reset,
+ 		.init = hantro_jpeg_enc_init,
++		.done = rockchip_vpu2_jpeg_enc_done,
+ 		.exit = hantro_jpeg_enc_exit,
+ 	},
+ 	[HANTRO_MODE_H264_DEC] = {
+-- 
+2.34.0.rc2.393.gf8c9666880-goog
 
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---deyep7z4ekkvfmlh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGXVhcACgkQwfwUeK3K
-7Anytgf7Bz4gByZdX3Ket1iLFvyR857aWGo6UcIKLwloxvlvbt+rLs8wXYu8s1mb
-AlolduBZsm0XH2XTvGgnXZdWKwBEVtZfw/K0ljq01KtQ1nQajcAZMv5/aaKoDc1r
-gM8MBmzu6DpLFmhIzQIFPYhqw8CWmmC3zbZF1XhOYdExpUUoSaS8Wa3+Zu9SV3XG
-W985dwebxZeU7xJ6SoAoxSTiLzis5r6iIXvQgLK55g1CEeMPLme6QZslbLFMfv5n
-+KRL1uAqnuTDruzJb/29UYxcJNuibuMedClczzA4tWI6xBDdZqkfqjdgXI0joIRq
-WHWvz6AN1UPwMpqRgdzph+4LpChD9w==
-=di6v
------END PGP SIGNATURE-----
-
---deyep7z4ekkvfmlh--
