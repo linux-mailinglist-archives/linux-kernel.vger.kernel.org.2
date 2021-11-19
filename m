@@ -2,180 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DAAA45718D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:19:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 419D545718F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:20:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234728AbhKSPWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 10:22:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233489AbhKSPWr (ORCPT
+        id S234788AbhKSPXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 10:23:53 -0500
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:43782 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230064AbhKSPXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 10:22:47 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F052C06173E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 07:19:45 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id q14so9742483qtx.10
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 07:19:45 -0800 (PST)
+        Fri, 19 Nov 2021 10:23:51 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0+oKCHlqOeL41R0XCrWbPi4i3qyXHn6RmL7MeAl4NL8=;
-        b=lPGpGcid8QXwelr7zzSt5VTkDWstEKhmIVZjDI/gptTZ1XB8fRlCJsY82dS22YEbbI
-         GADEuew95VumLWojAcQF6/3Rj7N9VtmARWHCGzMlbaVOuA5B2Iy8CEcEelQIeeRTPjCb
-         /UriGVwYo5CnjPZCDlOVP8JIARNcJaTQUz01jDwgOeu3eE5FmpCC10B9LQ/D1G1T0tx4
-         iQg2Eg0YoxH/lMrAwoMlca7V5PAbid3j8gMabaFjohga4jUqveMxv4mUiSKJmYsSXZJ9
-         w9340v2YmW88xNRP0Sl+7ZXF9oISeC5mr2uPkE4vqO+Lek1l1/D1zTf+VnU59MujzXzD
-         zgyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0+oKCHlqOeL41R0XCrWbPi4i3qyXHn6RmL7MeAl4NL8=;
-        b=fV3Qt5B5eVJY/70fnbsbBAJOH+781malaVexvbYxvCBEFZoJ76s7PgKOK3xFXoT5HV
-         Tc4Chc217NW5Y/YpNkc0uUIJI4jJStPHQ1mte0zky3B+VHBuY/c0KNHjGsskBn5vBfb6
-         vdu8m6mEUO01rJS/WF5vStNIjTXkX/D8dvmWY4rUDf+IcTYYzwEym+Mn2WtdbhB6mtNA
-         UnOV8mDRdQDWOGSXosaSMLg6ijc8FMZVZNdszmE7567ocauRSyoACOtDOoSS/bRAV6hF
-         FwI9sxq/UHLd7LQfFmvWA45jEy2OzsEGhqT8/AElACfgriliqTLa/Ju3MkuFY4F8LTdz
-         TI5A==
-X-Gm-Message-State: AOAM533Fbm6P2aKwvxw8OdhhodA6XrjJZUbABlY0T/7jCABHEUKhKIk1
-        lLlLmEh3XbIE+NLZ5toJo3w0+g==
-X-Google-Smtp-Source: ABdhPJzBFCjiPUEhMyOCMWRnIUW5f5YGg2HohyzeoXo1q5KwzNya5wlMfrrS3JbWjHX+xZcOYu6I9Q==
-X-Received: by 2002:a05:622a:1a93:: with SMTP id s19mr7169174qtc.291.1637335184307;
-        Fri, 19 Nov 2021 07:19:44 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id o126sm11039qke.11.2021.11.19.07.19.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 07:19:43 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mo5fz-00CHGM-Aq; Fri, 19 Nov 2021 11:19:43 -0400
-Date:   Fri, 19 Nov 2021 11:19:43 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Chao Peng <chao.p.peng@linux.intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        qemu-devel@nongnu.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        "J . Bruce Fields" <bfields@fieldses.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
-        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com,
-        david@redhat.com
-Subject: Re: [RFC v2 PATCH 01/13] mm/shmem: Introduce F_SEAL_GUEST
-Message-ID: <20211119151943.GH876299@ziepe.ca>
-References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
- <20211119134739.20218-2-chao.p.peng@linux.intel.com>
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1637335250; x=1668871250;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Mt3C3Hu5WtObbim4daMDmr125MdIPSYL7I7jQTBfW5E=;
+  b=B4qqhWrnjZ5qmOz7COmzzdD+75qHXCH9YVPLgGE5L/8zQ4CnovTKYG5l
+   SgTj2oLjywWtteU6e+CYmhiWj4GGXIkt5CgrC1e67FaKO90mSnkSV+bUo
+   wRGwTiBvh3isEo7Gf/dPfQPfzgP2mFS3rvxaAxsvLQQFqQsMIEU86msCQ
+   Y=;
+Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 19 Nov 2021 07:20:49 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 07:20:49 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Fri, 19 Nov 2021 07:20:48 -0800
+Received: from [10.50.57.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Fri, 19 Nov
+ 2021 07:20:02 -0800
+Message-ID: <440b7e8b-a15b-c394-9797-65226717b1d4@quicinc.com>
+Date:   Fri, 19 Nov 2021 20:49:53 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211119134739.20218-2-chao.p.peng@linux.intel.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCHv4 1/2] tracing: Add register read/write tracing support
+Content-Language: en-US
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Will Deacon <will@kernel.org>, <rostedt@goodmis.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        <quic_psodagud@quicinc.com>, <gregkh@linuxfoundation.org>,
+        <arnd@arndb.de>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <mingo@redhat.com>, Prasad Sodagudi <psodagud@codeaurora.org>
+References: <cover.1636973694.git.quic_saipraka@quicinc.com>
+ <4bd519d008cac6b319be7c5ce144e741f7210031.1636973694.git.quic_saipraka@quicinc.com>
+ <87bl2g6z2v.wl-maz@kernel.org>
+ <6148397c-0565-d1ca-2f53-d15adcb9b6b8@quicinc.com>
+ <878rxk6xhg.wl-maz@kernel.org>
+From:   Sai Prakash Ranjan <quic_saipraka@quicinc.com>
+In-Reply-To: <878rxk6xhg.wl-maz@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 09:47:27PM +0800, Chao Peng wrote:
-> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-> 
-> The new seal type provides semantics required for KVM guest private
-> memory support. A file descriptor with the seal set is going to be used
-> as source of guest memory in confidential computing environments such as
-> Intel TDX and AMD SEV.
-> 
-> F_SEAL_GUEST can only be set on empty memfd. After the seal is set
-> userspace cannot read, write or mmap the memfd.
-> 
-> Userspace is in charge of guest memory lifecycle: it can allocate the
-> memory with falloc or punch hole to free memory from the guest.
-> 
-> The file descriptor passed down to KVM as guest memory backend. KVM
-> register itself as the owner of the memfd via memfd_register_guest().
-> 
-> KVM provides callback that needed to be called on fallocate and punch
-> hole.
-> 
-> memfd_register_guest() returns callbacks that need be used for
-> requesting a new page from memfd.
-> 
-> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
->  include/linux/memfd.h      |  24 ++++++++
->  include/linux/shmem_fs.h   |   9 +++
->  include/uapi/linux/fcntl.h |   1 +
->  mm/memfd.c                 |  33 +++++++++-
->  mm/shmem.c                 | 123 ++++++++++++++++++++++++++++++++++++-
->  5 files changed, 186 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/memfd.h b/include/linux/memfd.h
-> index 4f1600413f91..ff920ef28688 100644
-> +++ b/include/linux/memfd.h
-> @@ -4,13 +4,37 @@
->  
->  #include <linux/file.h>
->  
-> +struct guest_ops {
-> +	void (*invalidate_page_range)(struct inode *inode, void *owner,
-> +				      pgoff_t start, pgoff_t end);
-> +	void (*fallocate)(struct inode *inode, void *owner,
-> +			  pgoff_t start, pgoff_t end);
-> +};
-> +
-> +struct guest_mem_ops {
-> +	unsigned long (*get_lock_pfn)(struct inode *inode, pgoff_t offset,
-> +				      bool alloc, int *order);
-> +	void (*put_unlock_pfn)(unsigned long pfn);
-> +
-> +};
+On 11/19/2021 7:47 PM, Marc Zyngier wrote:
+> On Fri, 19 Nov 2021 14:07:09 +0000,
+> Sai Prakash Ranjan <quic_saipraka@quicinc.com> wrote:
+>> On 11/19/2021 7:13 PM, Marc Zyngier wrote:
+>>> On Mon, 15 Nov 2021 11:33:29 +0000,
+>>> Sai Prakash Ranjan <quic_saipraka@quicinc.com> wrote:
+>>>> From: Prasad Sodagudi <psodagud@codeaurora.org>
+>>>>
+> [...]
+>
+>>>> Reason why we wouldn't need value along with mmio write log is
+>>>> that value can be easily deduced from the caller_name+offset which is
+>>>> printed already by the rwmmio trace events which gives the exact
+>>>> location of mmio writes and the value is easily known from the driver.
+>>> That's a very narrow view of what can be written in an MMIO
+>>> registers. We write dynamic values at all times, and if we are able to
+>>> trace MMIO writes, then the value written out must be part of the trace.
+>>>
+>>> I'd rather you try and get to the bottom of this issue rather than
+>>> paper over it.
+>>>
+>>> Thanks,
+>>>
+>>> 	M.
+>>>
+>> Sure, idea was to put it out in the open if anyone has any idea as
+>> to what might be happening there since the version where directly
+>> instrumenting the raw read/write accessors in arm64/asm/io.h was
+>> working fine casting doubts if this has to do something with
+>> inlining as Arnd mentioned before.
+> Yup. I wouldn't be surprised if MMIO accessors were getting directly
+> inlined at the wrong location and creating havoc. For example:
+>
+> 	writel(readl(addr1) | 1, addr2);
+>
+> If you're not careful about capturing the result of the read rather
+> than the read itself, you can end-up with something really funky. No
+> idea if that's what is happening, but a disassembly of the generated
+> code could tell you.
+>
+> 	M.
+>
 
-Ignoring confidential compute for a moment
+I did that initially (compare the disassembly in working and non-working 
+case) but didn't find
+anything noticeable, maybe I need to look some more. Thanks for the 
+suggestion.
 
-If qmeu can put all the guest memory in a memfd and not map it, then
-I'd also like to see that the IOMMU can use this interface too so we
-can have VFIO working in this configuration.
-
-As designed the above looks useful to import a memfd to a VFIO
-container but could you consider some more generic naming than calling
-this 'guest' ?
-
-Along the same lines, to support fast migration, we'd want to be able
-to send these things to the RDMA subsytem as well so we can do data
-xfer. Very similar to VFIO.
-
-Also, shouldn't this be two patches? F_SEAL is not really related to
-these acessors, is it?
-
-> +extern inline int memfd_register_guest(struct inode *inode, void *owner,
-> +				       const struct guest_ops *guest_ops,
-> +				       const struct guest_mem_ops **guest_mem_ops);
-
-Why does this take an inode and not a file *?
-
-> +int shmem_register_guest(struct inode *inode, void *owner,
-> +			 const struct guest_ops *guest_ops,
-> +			 const struct guest_mem_ops **guest_mem_ops)
-> +{
-> +	struct shmem_inode_info *info = SHMEM_I(inode);
-> +
-> +	if (!owner)
-> +		return -EINVAL;
-> +
-> +	if (info->guest_owner && info->guest_owner != owner)
-> +		return -EPERM;
-
-And this looks like it means only a single subsytem can use this API
-at once, not so nice..
-
-Jason
+Thanks,
+Sai
