@@ -2,76 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16234456E01
+	by mail.lfdr.de (Postfix) with ESMTP id CACC7456E03
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 12:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234978AbhKSLNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 06:13:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
+        id S235002AbhKSLNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 06:13:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhKSLNU (ORCPT
+        with ESMTP id S234973AbhKSLNU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 19 Nov 2021 06:13:20 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92568C061574;
-        Fri, 19 Nov 2021 03:10:18 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id x7so7713233pjn.0;
-        Fri, 19 Nov 2021 03:10:18 -0800 (PST)
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D320C061574;
+        Fri, 19 Nov 2021 03:10:19 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id b13so7894737plg.2;
+        Fri, 19 Nov 2021 03:10:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6cWAmlDlAF59x4LqcOU/XShYfmYEgb4772Ge0zuawgQ=;
-        b=ks3fFLzUFxnyfEU6VkMBuDy9Ur6tgo8k6gs9eRJyRE3XRvxt7oqPmCCzMczBDEwkJp
-         Ob5J5llfw8vqiGruy+OC4KFtXmIY8MPOGGjHloaUXpgvry4nY3rWG1Hc90hPxMVbKPsw
-         MRWEd+/O274lMNedkRjozFMLU1rYY8Nno+Zx+LIURGwVoqY/bkI1vHyayL2UQObs66CG
-         rdrMebdPSoL1yHlMLmskAqoaZ4I4gz1UeibUqaP6wxlpzqqayzrBC7VZ0SzHE3hgHwbl
-         4RQAaO59BcM8aJtyfSTD9DadiQQvikEkU3XfB6yW/Te3fbfxkYPO16dQ7cBk7+kF4mio
-         J9SA==
+        h=message-id:date:mime-version:user-agent:content-language:to:cc
+         :references:from:organization:subject:in-reply-to
+         :content-transfer-encoding;
+        bh=RBmftx8r18XYvlPfX3k5O7sa5Z338CPAboNhPJkfLgg=;
+        b=q0oPBUaZ0U0r9znR8JdCJLamOYmBQwv8iA9t3v+RXQSAXoPEvzVLjFG9BxRdhLdul1
+         GAJj7RsLjmDrEAMOw4x/XrJRTzKIqut5wo4H1/EM3pA2d3wfFng7B2E0G4mic1Nf+spm
+         RT5hcO2cLhjtBeF2yjjBVI1JSmoBua6+lGk+UEak7PN1KlZc7e2ccCt+dKqxa+20KYKo
+         mZGUDgLfhZE6RG8207VcAl967LTRC9IctO8dHi1DG5VLs/vlSe6O0unHMurY9k+ZJPTW
+         ARLiv/H64Npxmycs841KoO5ANoqVoSvFSoK+1e38hTqPx6NcUiClcE21fy2K9LeWMZpa
+         fjOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6cWAmlDlAF59x4LqcOU/XShYfmYEgb4772Ge0zuawgQ=;
-        b=K/HaTuT9cZZwV0Ly+sRblNpN9HmyLuS/FxQIHyVhNAlwcO2JF4le4LimrIlCETL4Eu
-         7mgclrYP7ya+R8U81y0TY+RJbs+CFVuolNyi4Dus6Fgb7wr34fDM8fnozPE6rhM0Nhiy
-         fV45YGAZWU4OTiYXg1BI/GSfsJhiesD84bWtNprkn6147nhAqoogkir1LEOmNpUDK7IB
-         RnnrNIogy4P2dU1c1EKb7YSBRlcrzIO7g7+7k2lPlbgSPiL4HkoEwlqID/HwXsR+NshG
-         MfxZde+iI7JNuJFgai/8w+pg6JemyMvsFENM+IOuQmmfblnmJ0yMhE4RYwlfx1RT0mE2
-         lY5A==
-X-Gm-Message-State: AOAM531KyC8Ndk7Qo+E5AWqn0e+7Rla4FBXoAQZcpont0r+7vpv45gZh
-        bb0SQENZZmj4QUcWqJpdmHOmTLwV41Rc5NBm
-X-Google-Smtp-Source: ABdhPJxV+Pk1GPCfZmTWufJoVNVs22CQ7LdNAReT9GuuuFE4f7nR5BbG9XzKTJpNj27B+JUr9T7PzA==
-X-Received: by 2002:a17:902:bd88:b0:143:d318:76e6 with SMTP id q8-20020a170902bd8800b00143d31876e6mr33099354pls.66.1637320218081;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:organization:subject
+         :in-reply-to:content-transfer-encoding;
+        bh=RBmftx8r18XYvlPfX3k5O7sa5Z338CPAboNhPJkfLgg=;
+        b=gC97sLN9zOHswzjd/A3rBNGll4n526wbt2gQHX3LjBvu6KMCQhoNEKf6BhRJtE2xfY
+         xB4iXx0AdZMQTHqxCgS6WpwVzplwmeoFLdWpfxBdQxWNec+irkoxSbxxxlBVo0kokzpS
+         VkD+BgOqCnPIpVXeEw1s5ovGCHLCgU4DqhnPRIW6HXoxrvW+u2udlqYznaiHS2mPPhMr
+         YmpNA7j4QDkLFVwQ0ZyzSe+xU4OxjEpYQtK7hKAKj7xOzRjO8mV4amjhuM9L4q8TpTD8
+         B/Ztt0cowg2UhZGNB8eJppH2luScV5Je4wa+dQFPz+oNooDHQq1s4cLtQwneBYhPzLuL
+         ZU1w==
+X-Gm-Message-State: AOAM5333WZYpDWkCj0sfRRdBpu2mOO93vMRj3y74G5gxAgT2f/ooZ28D
+        zYED1MFLfGmo/7JpDPAQFYE=
+X-Google-Smtp-Source: ABdhPJxwOWKtpmR5D2EMTK99IVxhK1F72XBgpPhQjAYdug9PuR1Djar/lDbRP4xPXRRYEBHFOgmtkw==
+X-Received: by 2002:a17:903:245:b0:143:c5ba:8bd8 with SMTP id j5-20020a170903024500b00143c5ba8bd8mr51405081plh.64.1637320218872;
         Fri, 19 Nov 2021 03:10:18 -0800 (PST)
-Received: from theprophet ([2406:7400:63:2c47:da89:58f9:fd04:7bf9])
-        by smtp.gmail.com with ESMTPSA id z19sm2522822pfe.181.2021.11.19.03.10.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 03:10:17 -0800 (PST)
-Date:   Fri, 19 Nov 2021 16:40:07 +0530
-From:   Naveen Naidu <naveennaidu479@gmail.com>
-To:     bhelgaas@google.com
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        skhan@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, gregkh@linuxfoundation.org
-Subject: Re: [PATCH v4 1/1] PCI: Add KUnit tests for __pci_read_base()
-Message-ID: <20211119111007.ihxnziwbwo7u4wzx@theprophet>
-References: <cover.1637319848.git.naveennaidu479@gmail.com>
- <a049a89cc673492d12415ebd5195a2b50c2b5626.1637319848.git.naveennaidu479@gmail.com>
+Received: from [192.168.255.10] ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id x17sm2379616pfa.209.2021.11.19.03.10.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Nov 2021 03:10:18 -0800 (PST)
+Message-ID: <87a11cd6-55aa-025c-2e74-7dc91d82798a@gmail.com>
+Date:   Fri, 19 Nov 2021 19:10:09 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a049a89cc673492d12415ebd5195a2b50c2b5626.1637319848.git.naveennaidu479@gmail.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.0
+Content-Language: en-US
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>
+References: <20211116122030.4698-1-likexu@tencent.com>
+ <20211116122030.4698-4-likexu@tencent.com>
+ <85286356-8005-8a4d-927c-c3d70c723161@redhat.com>
+ <e3b3ad6f-b48a-24fa-a242-e28d2422a7f3@gmail.com>
+ <50caf3b7-3f06-10ec-ab65-e3637243eb09@redhat.com>
+From:   Like Xu <like.xu.linux@gmail.com>
+Organization: Tencent
+Subject: Re: [PATCH 3/4] KVM: x86/pmu: Reuse find_perf_hw_id() and drop
+ find_fixed_event()
+In-Reply-To: <50caf3b7-3f06-10ec-ab65-e3637243eb09@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg, I added you to the CC list, because you left comments on the v3 [1]
-of the patch. Apologies if that was not the case and sorry for the noise
-^^'.
+On 19/11/2021 6:29 pm, Paolo Bonzini wrote:
+> On 11/19/21 08:16, Like Xu wrote:
+>>
+>> It's proposed to get [V2] merged and continue to review the fixes from [1] 
+>> seamlessly,
+>> and then further unify all fixed/gp stuff including intel_find_fixed_event() 
+>> as a follow up.
+> 
+> I agree and I'll review it soon.  Though, why not add the
+> 
+> +            && (pmc_is_fixed(pmc) ||
+> +            pmu->available_event_types & (1 << i)))
+> 
 
-Thanks,
-Naveen
+If we have a fixed ctr 0 for "retired instructions" event
+but the bit 01 of the guest CPUID 0AH.EBX leaf is masked,
 
-[1]:
-https://lore.kernel.org/linux-pci/cover.1637250854.git.naveennaidu479@gmail.com/T/#m0e0231f1dd9a70bc127736d436aefe79c9838115
+thus in that case, we got true from "pmc_is_fixed(pmc)"
+and false from "pmu->available_event_types & (1 << i)",
+
+thus it will break and continue to program a perf_event for pmc.
+
+(SDM says, Bit 01: Instruction retired event not available if 1 or if EAX[31:24]<2.)
+
+But the right behavior is that KVM should not program perf_event
+for this pmc since this event should not be available (whether it's gp or fixed)
+and the counter msr pair can be accessed but does not work.
+
+The proposal final code may look like :
+
+/* UMask and Event Select Encodings for Intel CPUID Events */
+static inline bool is_intel_cpuid_event(u8 event_select, u8 unit_mask)
+{
+	if ((!unit_mask && event_select == 0x3C) ||
+	    (!unit_mask && event_select == 0xC0) ||
+	    (unit_mask == 0x01 && event_select == 0x3C) ||
+	    (unit_mask == 0x4F && event_select == 0x2E) ||
+	    (unit_mask == 0x41 && event_select == 0x2E) ||
+	    (!unit_mask && event_select == 0xC4) ||
+	    (!unit_mask && event_select == 0xC5))
+		return true;
+
+	/* the unimplemented topdown.slots event check is kipped. */
+	return false;
+}
+
+static unsigned int intel_pmc_perf_hw_id(struct kvm_pmc *pmc)
+{
+	struct kvm_pmu *pmu = pmc_to_pmu(pmc);
+	u8 event_select = pmc->eventsel & ARCH_PERFMON_EVENTSEL_EVENT;
+	u8 unit_mask = (pmc->eventsel & ARCH_PERFMON_EVENTSEL_UMASK) >> 8;
+	int i;
+
+	for (i = 0; i < PERF_COUNT_HW_MAX; i++) {
+		if (kernel_generic_events[i].eventsel != event_select ||
+		    kernel_generic_events[i].unit_mask != unit_mask)
+			continue;
+
+		if (is_intel_cpuid_event(event_select, unit_mask) &&
+		    !test_bit(i, pmu->avail_cpuid_events))
+			return PERF_COUNT_HW_MAX + 1;
+
+		break;
+	}
+
+	return (i == PERF_COUNT_HW_MAX) ? i : kernel_generic_events[i].event_type;
+}
+
+
+> version in v2 of this patch? :)
+> 
+> Paolo
+> 
+>> [1] https://lore.kernel.org/kvm/20211112095139.21775-1-likexu@tencent.com/
+>> [V2] https://lore.kernel.org/kvm/20211119064856.77948-1-likexu@tencent.com/
+> 
