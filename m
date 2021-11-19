@@ -2,108 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19246457299
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ACE845729E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:16:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236340AbhKSQTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 11:19:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33220 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231173AbhKSQTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 11:19:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02F0861B1E;
-        Fri, 19 Nov 2021 16:16:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637338578;
-        bh=DbyFG980UjgDc0Eo4ZdzZ0DrMVHoyUPbMFz2sbyZPbo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=at1/MQeMeZXCD/1cKxeuG2gAvE+1fHs7SNg1xUcIoO+IICAY8i1xNAP/Aj4X2FRVL
-         eAPAo7qz5422vGaLNNaYN/c+BO6FEvrwSJLJ+SrPRHDBsPqIQ3bhyq4mj+ynbZQEmv
-         0zQe7duaX6FnyRMqiSePrCSpBbWSB+3v76Bw/zJfzUi9uM2PjQEk60oXi8fPjdZm7a
-         GDhu8NddQd//3wtGFfUNKQ8PNZS9yjXmGJE6/+jA9H8qGVFuh4rK+IBPy8A0DvKnr3
-         Mo2OrOeICrgl2hnv8aCgMYydPMBY+Mgp/+b+eO36VNAF/6ey7SErHLP6BDBuxCCyQp
-         U9/xo5IkrV5jw==
-Date:   Fri, 19 Nov 2021 16:16:12 +0000
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     rkardell <rkardell@mida.se>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: dvb: mt352, change i2c read buffer from stack,
- to kernel space
-Message-ID: <20211119161612.1e5eb32a@sal.lan>
-In-Reply-To: <cdb8ea1d-0bd6-ec1d-e72f-0298f286170a@mida.se>
-References: <cdb8ea1d-0bd6-ec1d-e72f-0298f286170a@mida.se>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S236365AbhKSQTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 11:19:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236354AbhKSQTg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 11:19:36 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D1DC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:16:34 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id c32so45723092lfv.4
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:16:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PT99iXBgpFIqepfqqbxcYIJQ3M5siuSp1UK8d1YL76U=;
+        b=jHnYvtbACgEqbUWh2jxPk+A/JrzDhbXD8GN8W5j+q116oOn4I3SOuYu6WXCtrrggre
+         F7RpoUb/u9Up8UEnvaefDtRgviWR4D0TRw1rW/Phwc80x7ZOoDd8O2dfgi/c+ROR+lX5
+         Yy2fFiZqBJ5+RA1uTtjpnhhyj1hCKxOF02fIylR+5hy8M6tyWFndK21K7bQVKGshQUbZ
+         i/FNRVp4LEQcjTlUBmMdV3GUS7OuM5jx1rMJe4MjQZPdej9ePypZgGW9aGrETXY4QiZp
+         kerRyGX2XuCWsfQK8QYTwunTBoAEJdQvm1+FgZtHsirRQWxrNm3WV5XlSKSARBFjr8R5
+         GQrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PT99iXBgpFIqepfqqbxcYIJQ3M5siuSp1UK8d1YL76U=;
+        b=sprpQsquKOsZ0DmNnOKsuCjKKTdHn+nbD5ZrmqBgexd9MttTK/1N5LOrn8ELb9JBp+
+         yOu4HmY7DFOCSnM43s/kITtk9Jit58hF+g885S65Ss4BuFKnyXsF3SIpGKajioeOVn7A
+         4uQYZj33xrTJDM6/CILIDWXO3RcYMxvNiPwGZBluFEqwD0hRKMMEoSj2uzmFyqLMO5Ln
+         5sf3qN6a3ynSlEsZFZnqFDQSJ1xgAeJL23zW9JhkDhf0yzhTPVnYm3rr6wQIcj6DVXux
+         idJw6/bH/Atsq+A8vCn2YWMRg5bILggveAHNFBMLC88/NzBX0qCG8m/COXkPXe/Sb8XZ
+         4AUw==
+X-Gm-Message-State: AOAM5300MV/6I8dRBjHC9jRsNziT4s4LcnMY06TD7f8GAJVpqEkzKlKo
+        Jupiaysj2Ib8bZg7BZxYiXhDYJwHtQxrVCXa7AH9SA==
+X-Google-Smtp-Source: ABdhPJyWR8stzdTiCGjrREyonaNUfQgQWz4uaz8HWtQNIMD89ICA71wJAEljhEu8NgU+6QnOvVwM8eP3k2kVjE8qGLw=
+X-Received: by 2002:a2e:9f15:: with SMTP id u21mr26972655ljk.132.1637338591736;
+ Fri, 19 Nov 2021 08:16:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20211110220731.2396491-1-brijesh.singh@amd.com>
+ <20211110220731.2396491-44-brijesh.singh@amd.com> <CAMkAt6q3D4h=01XhHcxXTEwbWLM9CnAaq+6vgNzxyqzt+X00UQ@mail.gmail.com>
+ <ff3ceeb5-e120-fe07-2a0c-4cd51f552db8@amd.com>
+In-Reply-To: <ff3ceeb5-e120-fe07-2a0c-4cd51f552db8@amd.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Fri, 19 Nov 2021 09:16:20 -0700
+Message-ID: <CAMkAt6pAcM-+odnagFTiaY7PPGE1CfAt27x=tG=-4UU9c+dQXA@mail.gmail.com>
+Subject: Re: [PATCH v7 43/45] virt: Add SEV-SNP guest driver
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 7 Oct 2021 13:44:06 +0200
-rkardell <rkardell@mida.se> escreveu:
+On Thu, Nov 18, 2021 at 10:32 AM Brijesh Singh <brijesh.singh@amd.com> wrote:
+>
+>
+>
+> On 11/17/21 5:34 PM, Peter Gonda wrote:
+>
+>
+> >> +The guest ioctl should be issued on a file descriptor of the /dev/sev-guest device.
+> >> +The ioctl accepts struct snp_user_guest_request. The input and output structure is
+> >> +specified through the req_data and resp_data field respectively. If the ioctl fails
+> >> +to execute due to a firmware error, then fw_err code will be set.
+> >
+> > Should way say what it will be set to? Also Sean pointed out on CCP
+> > driver that 0 is strange to set the error to, its a uint so we cannot
+> > do -1 like we did there. What about all FFs?
+> >
+>
+> Sure, all FF's works, I can document and use it.
+>
+>
+> >> +static inline u64 __snp_get_msg_seqno(struct snp_guest_dev *snp_dev)
+> >> +{
+> >> +       u64 count;
+> >
+> > I may be overly paranoid here but how about
+> > `lockdep_assert_held(&snp_cmd_mutex);` when writing or reading
+> > directly from this data?
+> >
+>
+> Sure, I can do it.
+>
+> ...
+>
+> >> +
+> >> +       if (rc)
+> >> +               return rc;
+> >> +
+> >> +       rc = verify_and_dec_payload(snp_dev, resp_buf, resp_sz);
+> >> +       if (rc) {
+> >> +               /*
+> >> +                * The verify_and_dec_payload() will fail only if the hypervisor is
+> >> +                * actively modifiying the message header or corrupting the encrypted payload.
+> > modifiying
+> >> +                * This hints that hypervisor is acting in a bad faith. Disable the VMPCK so that
+> >> +                * the key cannot be used for any communication.
+> >> +                */
+> >
+> > This looks great, thanks for changes Brijesh. Should we mention in
+> > comment here or at snp_disable_vmpck() the AES-GCM issues with
+> > continuing to use the key? Or will future updaters to this code
+> > understand already?
+> >
+>
+> Sure, I can add comment about the AES-GCM.
+>
+> ...
+>
+> >> +
+> >> +/* See SNP spec SNP_GUEST_REQUEST section for the structure */
+> >> +enum msg_type {
+> >> +       SNP_MSG_TYPE_INVALID = 0,
+> >> +       SNP_MSG_CPUID_REQ,
+> >> +       SNP_MSG_CPUID_RSP,
+> >> +       SNP_MSG_KEY_REQ,
+> >> +       SNP_MSG_KEY_RSP,
+> >> +       SNP_MSG_REPORT_REQ,
+> >> +       SNP_MSG_REPORT_RSP,
+> >> +       SNP_MSG_EXPORT_REQ,
+> >> +       SNP_MSG_EXPORT_RSP,
+> >> +       SNP_MSG_IMPORT_REQ,
+> >> +       SNP_MSG_IMPORT_RSP,
+> >> +       SNP_MSG_ABSORB_REQ,
+> >> +       SNP_MSG_ABSORB_RSP,
+> >> +       SNP_MSG_VMRK_REQ,
+> >> +       SNP_MSG_VMRK_RSP,
+> >
+> > Did you want to include MSG_ABSORB_NOMA_REQ and MSG_ABSORB_NOMA_RESP here?
+> >
+>
+> Yes, I can includes those for the completeness.
+>
+> ...
+>
+> >> +struct snp_report_req {
+> >> +       /* message version number (must be non-zero) */
+> >> +       __u8 msg_version;
+> >> +
+> >> +       /* user data that should be included in the report */
+> >> +       __u8 user_data[64];
+> >
+> > Are we missing the 'vmpl' field here? Does those default all requests
+> > to be signed with VMPL0? Users might want to change that, they could
+> > be using a paravisor.
+> >
+>
+> Good question, so far I was thinking that guest kernel will provide its
+> vmpl level instead of accepted the vmpl level from the userspace. Do you
+> see a need for a userspace to provide this information ?
 
-> Solve problem with initialization of Mega Sky 580 USB DVB (and other=20
-> using mt352), error when reading i2c id.
+That seems fine. I am just confused because we are just encrypting
+this struct as the payload for the PSP. Doesn't the message require a
+struct that looks like 'snp_report_req_user_data' below?
 
-This patch is full of 0xa0 characters instead of spaces, causing it
-to be rejected. Probably either your e-mailer of your text editor is doing
-something wrong. Please fix and resend.
+snp_report_req{
+       /* message version number (must be non-zero) */
+       __u8 msg_version;
 
-Thanks!
-Mauro
+      /* user data that should be included in the report */
+       struct snp_report_req_user_data;
+};
 
->=20
->=20
-> Signed-off-by: rkl099 <rkardell@mida.se>
-> ---
->  =C2=A0drivers/media/dvb-frontends/mt352.c | 9 ++++++---
->  =C2=A01 file changed, 6 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/media/dvb-frontends/mt352.c=20
-> b/drivers/media/dvb-frontends/mt352.c
-> index 399d5c519..d7f33558d 100644
-> --- a/drivers/media/dvb-frontends/mt352.c
-> +++ b/drivers/media/dvb-frontends/mt352.c
-> @@ -69,7 +69,7 @@ static int mt352_read_register(struct mt352_state*=20
-> state, u8 reg)
->  =C2=A0{
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u8 b0 [] =3D { reg };
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u8 b1 [] =3D { 0 };
-> +=C2=A0=C2=A0=C2=A0 u8 *b1=3Dkmalloc(1,GFP_KERNEL);
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct i2c_msg msg [] =3D { {=
- .addr =3D state->config.demod_address,
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .flags =3D =
-0,
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .buf =3D b0=
-, .len =3D 1 },
-> @@ -82,12 +82,15 @@ static int mt352_read_register(struct mt352_state*=20
-> state, u8 reg)
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret !=3D 2) {
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 printk("%s: readreg error (reg=3D%d, ret=3D=3D%i)\n",
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __func__, reg,=
- ret);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 kfree(b1);
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 return ret;
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> -
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return b1[0];
-> +=C2=A0=C2=A0=C2=A0 ret=3Db1[0];
-> +=C2=A0=C2=A0=C2=A0 kfree(b1);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->  =C2=A0}
->=20
-> +
->  =C2=A0static int mt352_sleep(struct dvb_frontend* fe)
->  =C2=A0{
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 static u8 mt352_softdown[] =
-=3D { CLOCK_CTL, 0x20, 0x08 };
+struct snp_report_req_user_data {
+  u8 user_data[64];
+  u32 vmpl;
+  u32 reserved;
+};
+
+
+>
+>
+> thanks
