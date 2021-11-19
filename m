@@ -2,96 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C754576AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 19:47:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D07F4576AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 19:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235563AbhKSSup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 13:50:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230399AbhKSSup (ORCPT
+        id S235804AbhKSSvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 13:51:19 -0500
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:34695 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230519AbhKSSvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 13:50:45 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B83EC061574;
-        Fri, 19 Nov 2021 10:47:43 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id x7so8629039pjn.0;
-        Fri, 19 Nov 2021 10:47:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fCBSzU46G4SS0iEFmAqgHj4QLejQ8PNHbA3f1NrvDA0=;
-        b=GQ57N/3DijEsK5fCwI4i1tyrM726LEfvBBnbeDmzMJ9bD0WCZCKX5RWUhV9xXEOXMo
-         +lX2el/D8m36zDQ/1KhxMdIm1ksh+bfc9c6Q8MV9t/vKWsPjaNc+eV8ePKz9cmQovR6N
-         VsF3KuWdE9J8jq5j8wrCkEKmVf4fiFfNjnu84Yb7g5JXswCWyev3ERQ8zoqvUwdoVzJP
-         215mVCE2d7RByhxMmdQsw1QoWIMYxjAXoTgZjtfVYP623paq+GZChLVbNguxPf4GfD2x
-         QY1gLYuUk2nVr7QYkaBT7IX/J8lOScHUvef5kwoWxYgEcvI2BF6Xeu4q6J/c7oSOX8fh
-         76CA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fCBSzU46G4SS0iEFmAqgHj4QLejQ8PNHbA3f1NrvDA0=;
-        b=lElitO0inznyY0t4kLzZgCGVSGtOOYyaX/9IS9nHXD2NEVntts9Bhpczwd4TBNNsC3
-         287dFfr3WBSVxWi1OrnovpHc+2tfZPq0O6lQj7eRrz0ZPFVWh4T8Nw94Y07Xbd1V1gNQ
-         WxJmfHe0D5MhXAsfsFqrlfU3BAS9tSRDpDYDo28a7LvcKipNdCdRJ82pENeunVuGp5C3
-         upMlTa2CR7bH4FHrQmvZZ9yJ8EpBV6E7y7S2ZNBVAAFQe6DUk3sGbOLQchhefHfONlUh
-         NLkawtPP/OVzRIBdO7AjfQf/LSUwIzf/ODN1Tj7wkBQWfX+X8H/nvUGEQhRIexlQgPde
-         GBPg==
-X-Gm-Message-State: AOAM531Cnfl36e9EO2XgDX/C86ipkNP+NfFL8k75Aj7w81WbTCQpTnRc
-        S+x6LCFYcRv2sFolbjtps/LihxtgjLoWjf1E
-X-Google-Smtp-Source: ABdhPJy3D6EzBlZCmfxm7POLFPCwwy6Y4TCVha2tfPlgiuEXFZwBiYZ9cHuPwEYQL/qVIOxa6MowGw==
-X-Received: by 2002:a17:90a:134f:: with SMTP id y15mr2194193pjf.158.1637347662840;
-        Fri, 19 Nov 2021 10:47:42 -0800 (PST)
-Received: from localhost.localdomain ([115.27.208.93])
-        by smtp.gmail.com with ESMTPSA id q18sm383860pfj.46.2021.11.19.10.47.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 19 Nov 2021 10:47:42 -0800 (PST)
-From:   Yeqi Fu <fufuyqqqqqq@gmail.com>
-To:     hkallweit1@gmail.com, nic_swsd@realtek.com, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yeqi Fu <fufuyqqqqqq@gmail.com>
-Subject: [PATCH] r8169: Apply configurations to the L0s/L1 entry delay of RTL8105e and RTL8401
-Date:   Sat, 20 Nov 2021 02:47:09 +0800
-Message-Id: <20211119184709.19209-1-fufuyqqqqqq@gmail.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+        Fri, 19 Nov 2021 13:51:17 -0500
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 8DA9460006;
+        Fri, 19 Nov 2021 18:48:12 +0000 (UTC)
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Zev Weiss <zev@bewilderbeest.net>, linux-mtd@lists.infradead.org
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Michael Walle <michael@walle.cc>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Tian Tao <tiantao6@hisilicon.com>, Petr Malat <oss@malat.biz>,
+        Jon Hunter <jonathanh@nvidia.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: core: clear out unregistered devices a bit more
+Date:   Fri, 19 Nov 2021 19:48:12 +0100
+Message-Id: <20211119184812.1481781-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20211015185049.3318-1-zev@bewilderbeest.net>
+References: 
 MIME-Version: 1.0
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'67bcbe202b487a2e4d9da586b63e4df632655568'
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We properly configure the L0s/L1 entry delay in the startup functions of
-RTL8105e and RTL8401 through rtl_set_def_aspm_entry_latency(), which will
-avoid local denial of service.
+On Fri, 2021-10-15 at 18:50:48 UTC, Zev Weiss wrote:
+> This allows an MTD device that has been unregistered to be easily
+> re-registered later without triggering spurious "already registered"
+> warnings in mtd_device_parse_register() and add_mtd_device().
+> 
+> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
 
-Signed-off-by: Yeqi Fu <fufuyqqqqqq@gmail.com>
----
- drivers/net/ethernet/realtek/r8169_main.c | 2 ++
- 1 file changed, 2 insertions(+)
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
-diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-index bbe21db20417..4f533007a456 100644
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -3420,6 +3420,7 @@ static void rtl_hw_start_8401(struct rtl8169_private *tp)
- 		{ 0x07,	0xffff, 0x8e68 },
- 	};
- 
-+	rtl_set_def_aspm_entry_latency(tp);
- 	rtl_ephy_init(tp, e_info_8401);
- 	RTL_W8(tp, Config3, RTL_R8(tp, Config3) & ~Beacon_en);
- }
-@@ -3437,6 +3438,7 @@ static void rtl_hw_start_8105e_1(struct rtl8169_private *tp)
- 		{ 0x0a,	0, 0x0020 }
- 	};
- 
-+	rtl_set_def_aspm_entry_latency(tp);
- 	/* Force LAN exit from ASPM if Rx/Tx are not idle */
- 	RTL_W32(tp, FuncEvent, RTL_R32(tp, FuncEvent) | 0x002800);
- 
--- 
-2.30.1 (Apple Git-130)
-
+Miquel
