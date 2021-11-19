@@ -2,107 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCADD456A9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 08:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD62456A8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 07:59:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233118AbhKSHEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 02:04:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232201AbhKSHEO (ORCPT
+        id S232653AbhKSHC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 02:02:27 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.164]:12406 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231264AbhKSHC0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 02:04:14 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E33C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 23:01:13 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id b4so7831522pgh.10
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 23:01:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8p47yJxzaBJgNNK9+SElB+OrwH4KzAUJIu2lK10OypQ=;
-        b=ZFJp0TCSWOWZQLnddVGFqUo/BIk9uNJMrRJsftAkkoK6ow4kFS83Ak2vm8Q1OznVbq
-         XQIbiA3I6euCEcpoR7tb4RKEIUPEMM1rMwWZts/jH3P/q1ubzOllq8nmO8FM0VUpCHal
-         oN8nNd0nKS7F0H2DFNXnR7QI4HWQbr3o2B7ewEd7nhIov0pV47qqmX2VGfWCi+b631cr
-         ZAINWCszY2VwH9e3BOe8P6iSESPETqfLrY0uKQRx9WdFlOMZAFE/97UmOzhXGWCA+7xd
-         zqVHgyQnSPG/jujDfjIqNV48d2oUelaq8h1fmD6qtAKbdmkNUveex44E0JtSYmIXQrsJ
-         2iBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8p47yJxzaBJgNNK9+SElB+OrwH4KzAUJIu2lK10OypQ=;
-        b=UfpREYh9h+G2bZMjrkYBKFiBn581ppml45PXiP//RTx9PT8l2BlXzmOqwDg2dzSzas
-         gdPUo7BBMj1CzHskqp+M1WdxIJhJ1g2oSCzkcOFXiBPbwn2pUnxFG6TGAWwnFeYY5+nJ
-         QCJWRjYJ8/GDA9TzGhjQYsSrss1+yF4rHUcQusK7EUhenkvnsdwodpPgJnx6Ir2K3F5s
-         I9FO4iD/kn9LGnU4C7qAIsqA7zwKc3rPbRdVLX1y5VUsxkX9lF7Sj5kGt4Yyf+ryb+ne
-         +f5Fh+sz7jofzOMOSyckwgfHcYQgfihkwsj8c39uzwChIA8z0nRy1TCnx0g7Cf0lEa5G
-         5vYA==
-X-Gm-Message-State: AOAM5324YJrOaBm+5MnfLp8BmXIT7lu/5vKOIdHADIkAcQi08O4pPL2K
-        aO+WCCSGoEahAnX76Ap+0l7L8Q==
-X-Google-Smtp-Source: ABdhPJzkUTCrq95HBFbLoKRFLMhkI67/vAcmTT2UP14n374SY0AA9/tSZSr0LfdDYqLGUIgEoenSwg==
-X-Received: by 2002:a62:b606:0:b0:47b:e32f:9ca with SMTP id j6-20020a62b606000000b0047be32f09camr61248842pff.57.1637305272927;
-        Thu, 18 Nov 2021 23:01:12 -0800 (PST)
-Received: from localhost.localdomain ([139.177.225.245])
-        by smtp.gmail.com with ESMTPSA id r2sm1255382pgm.4.2021.11.18.23.01.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 18 Nov 2021 23:01:12 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        duanxiongchun@bytedance.com, zhengqi.arch@bytedance.com,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [RFC PATCH] x86/fault: move might_sleep() out of mmap read lock
-Date:   Fri, 19 Nov 2021 14:58:31 +0800
-Message-Id: <20211119065831.31406-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        Fri, 19 Nov 2021 02:02:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637305163;
+    s=strato-dkim-0002; d=chronox.de;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=O/YcdRCsAW4PWbVTFX7FFzo3cfU7U3Y7Cmf6XywN7qA=;
+    b=fOjift2vSfiZ3UFSL4YV5f8UjiD4U2Edc8x1ceM5nv/q0tx1WLekCaKjpWm2LcPueZ
+    YXDOSvTONB82jRPGFjJgopheE2yYkA69u2Hy1kZ1xOiP/1184x+zQeHiHvD3/HRsmm/n
+    hiMpQpFbUf4tfI2F8lwiEcUQPvsKueln8ueoYtpkU3x8HLj62cJGHFCFsuwM/ZJDOcrr
+    7ClJ3vyt6ZWlk1/u4B6qBCmHzhcJVI2jnk/HCBbg1GAa5GEmxNb7ASAtRQhBNbWSpN3k
+    O25xACKG0afwIgucxrVHIjHhsl8hupVoKdoKnt2wVgS8B+b/Jjrrso6cG+oiCh0gSFnQ
+    3KvQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPZJ/SWpaI="
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+    by smtp.strato.de (RZmta 47.34.5 DYNA|AUTH)
+    with ESMTPSA id U02dfbxAJ6xMu3y
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Fri, 19 Nov 2021 07:59:22 +0100 (CET)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     herbert@gondor.apana.org.au
+Cc:     ebiggers@kernel.org, jarkko@kernel.org,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        dhowells@redhat.com, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
+        simo@redhat.com
+Subject: [PATCH v4 3/4] security: DH - remove dead code for zero padding
+Date:   Fri, 19 Nov 2021 07:58:44 +0100
+Message-ID: <20729897.4csPzL39Zc@positron.chronox.de>
+In-Reply-To: <4642773.OV4Wx5bFTl@positron.chronox.de>
+References: <4642773.OV4Wx5bFTl@positron.chronox.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mmap lock is supposed to be a contended lock sometimes, scheduling
-to other task with holding mmap read lock does not seems to be a wise
-choice. So move it to the front of mmap_read_trylock(). Although
-mmap_read_lock() implies a might_sleep(), I think redundant check is
-not a problem since this task is about to sleep and it is not a hot
-path.
+Remove the specific code that adds a zero padding that was intended
+to be invoked when the DH operation result was smaller than the
+modulus. However, this cannot occur any more these days because the
+function mpi_write_to_sgl is used in the code path that calculates the
+shared secret in dh_compute_value. This MPI service function guarantees
+that leading zeros are introduced as needed to ensure the resulting data
+is exactly as long as the modulus. This implies that the specific code
+to add zero padding is dead code which can be safely removed.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Stephan Mueller <smueller@chronox.de>
+Acked-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
 ---
- arch/x86/mm/fault.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ security/keys/dh.c | 25 ++++---------------------
+ 1 file changed, 4 insertions(+), 21 deletions(-)
 
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index 4bfed53e210e..22fd1dfafa3d 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -1323,6 +1323,8 @@ void do_user_addr_fault(struct pt_regs *regs,
- 	}
- #endif
+diff --git a/security/keys/dh.c b/security/keys/dh.c
+index 1abfa70ed6e1..56e12dae4534 100644
+--- a/security/keys/dh.c
++++ b/security/keys/dh.c
+@@ -141,7 +141,7 @@ static void kdf_dealloc(struct kdf_sdesc *sdesc)
+  * 'dlen' must be a multiple of the digest size.
+  */
+ static int kdf_ctr(struct kdf_sdesc *sdesc, const u8 *src, unsigned int slen,
+-		   u8 *dst, unsigned int dlen, unsigned int zlen)
++		   u8 *dst, unsigned int dlen)
+ {
+ 	struct shash_desc *desc = &sdesc->shash;
+ 	unsigned int h = crypto_shash_digestsize(desc->tfm);
+@@ -158,22 +158,6 @@ static int kdf_ctr(struct kdf_sdesc *sdesc, const u8 *src, unsigned int slen,
+ 		if (err)
+ 			goto err;
  
-+	might_sleep();
-+
- 	/*
- 	 * Kernel-mode access to the user address space should only occur
- 	 * on well-defined single instructions listed in the exception
-@@ -1346,13 +1348,6 @@ void do_user_addr_fault(struct pt_regs *regs,
+-		if (zlen && h) {
+-			u8 tmpbuffer[32];
+-			size_t chunk = min_t(size_t, zlen, sizeof(tmpbuffer));
+-			memset(tmpbuffer, 0, chunk);
+-
+-			do {
+-				err = crypto_shash_update(desc, tmpbuffer,
+-							  chunk);
+-				if (err)
+-					goto err;
+-
+-				zlen -= chunk;
+-				chunk = min_t(size_t, zlen, sizeof(tmpbuffer));
+-			} while (zlen);
+-		}
+-
+ 		if (src && slen) {
+ 			err = crypto_shash_update(desc, src, slen);
+ 			if (err)
+@@ -198,7 +182,7 @@ static int kdf_ctr(struct kdf_sdesc *sdesc, const u8 *src, unsigned int slen,
+ 
+ static int keyctl_dh_compute_kdf(struct kdf_sdesc *sdesc,
+ 				 char __user *buffer, size_t buflen,
+-				 uint8_t *kbuf, size_t kbuflen, size_t lzero)
++				 uint8_t *kbuf, size_t kbuflen)
+ {
+ 	uint8_t *outbuf = NULL;
+ 	int ret;
+@@ -211,7 +195,7 @@ static int keyctl_dh_compute_kdf(struct kdf_sdesc *sdesc,
+ 		goto err;
+ 	}
+ 
+-	ret = kdf_ctr(sdesc, kbuf, kbuflen, outbuf, outbuf_len, lzero);
++	ret = kdf_ctr(sdesc, kbuf, kbuflen, outbuf, outbuf_len);
+ 	if (ret)
+ 		goto err;
+ 
+@@ -384,8 +368,7 @@ long __keyctl_dh_compute(struct keyctl_dh_params __user *params,
  		}
- retry:
- 		mmap_read_lock(mm);
--	} else {
--		/*
--		 * The above down_read_trylock() might have succeeded in
--		 * which case we'll have missed the might_sleep() from
--		 * down_read():
--		 */
--		might_sleep();
- 	}
  
- 	vma = find_vma(mm, address);
+ 		ret = keyctl_dh_compute_kdf(sdesc, buffer, buflen, outbuf,
+-					    req->dst_len + kdfcopy->otherinfolen,
+-					    outlen - req->dst_len);
++					    req->dst_len + kdfcopy->otherinfolen);
+ 	} else if (copy_to_user(buffer, outbuf, req->dst_len) == 0) {
+ 		ret = req->dst_len;
+ 	} else {
 -- 
-2.11.0
+2.33.1
+
+
+
 
