@@ -2,216 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF46F45764C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 19:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD4045764E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 19:21:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232853AbhKSSXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 13:23:15 -0500
-Received: from bedivere.hansenpartnership.com ([96.44.175.130]:46704 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231751AbhKSSXO (ORCPT
+        id S233721AbhKSSYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 13:24:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231751AbhKSSYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 13:23:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1637346012;
-        bh=Y88sxabhj9CGU3Tbdikvp0XrX7xemk5smViQuCFxuE8=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=El4Dc4Gais46ZDSUQxmWrUlE9Alk2WtJS2Griz8monbOzTB0WecDo7CUJqMk4jOOq
-         JwmUZz1TfO4Pce5i90z3FoDiRUt1O/9HxhRz5nVzaJro/dLFz1PIpToA+ITu3SlEqV
-         1f6RU2f7V6FUZm6aIj2daYrLXz8/jxRAsgjiwR8I=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 92FE61280C1F;
-        Fri, 19 Nov 2021 13:20:12 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id sDxXRArctZ4u; Fri, 19 Nov 2021 13:20:12 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1637346012;
-        bh=Y88sxabhj9CGU3Tbdikvp0XrX7xemk5smViQuCFxuE8=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=El4Dc4Gais46ZDSUQxmWrUlE9Alk2WtJS2Griz8monbOzTB0WecDo7CUJqMk4jOOq
-         JwmUZz1TfO4Pce5i90z3FoDiRUt1O/9HxhRz5nVzaJro/dLFz1PIpToA+ITu3SlEqV
-         1f6RU2f7V6FUZm6aIj2daYrLXz8/jxRAsgjiwR8I=
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4300:c551::c447])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 0CAA7128010E;
-        Fri, 19 Nov 2021 13:20:11 -0500 (EST)
-Message-ID: <0a508ff31bbfa9cd73c24713c54a29ac459e3254.camel@HansenPartnership.com>
-Subject: [GIT PULL] SCSI fixes for 5.16-rc1
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Fri, 19 Nov 2021 13:20:10 -0500
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Fri, 19 Nov 2021 13:24:41 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED06C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 10:21:39 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id g18so10042773pfk.5
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 10:21:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5lDjGwaLStX0YuF6X4qKDjVvX33y5EJ3EcAHIHofVYs=;
+        b=Gg68D7+NRLoihQXvo2MkeMqRaJNvBqxEaQGb3LhwdToXCi2zv4dX0OZw5O5XAbuIf7
+         k66KnrXo+4Rg0sbM49HCZJ2/SoUlDJHJ2UbBVRdHGBAeDXwvZOQfzUi80IiEjBjXvxgO
+         AuYT29UFM7/aANaFS/nd4NImAs1oTFL8szHN/N7H0HJagAi+jBNPX/p/ozLbIGR3dKsn
+         Lod+as3RORU2OksSKaOiWXeID77MSffOhVav7TnAfjLsi8Rttm1JUFgncn4gN2Zyb9dU
+         KPK5rDrrsG5w0UOoVJ4mQSYnpcAvlxnJLEoMOMlYoQu4MFMTyX76UGecplEILgmk3vYZ
+         dWLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=5lDjGwaLStX0YuF6X4qKDjVvX33y5EJ3EcAHIHofVYs=;
+        b=Uo01aZtdwXW9wFTL8N2JWUaLdELI8ZUbhB+qMbqFarAqYuKupBcJ2PnZW3kutEFy69
+         fXZRJ7MobphdoxgmGU5SCCBKkeceb5j4+I+OElZvxZ5qzkCssAXOJfs2PK8N1TE7dvpO
+         L1NkSFwg20hZ4eZeJLPe+2HAzmyTGILgkEzm4XFREqeXL+ffXqH72GmIJErXqLPKQDEr
+         lZezGGI3KzbF+6Ut5DMIlcSBfFSvdtjn8WqvZkxlmjYPEWyyHcao/p+ZvwDG34RP/zjP
+         1Wt5p+NFCmYrgyHfhF8mIAHKg3+tB979Nd2OAfR/FG3Bl0l76fCh2HHdrasMOfi744xl
+         g5RA==
+X-Gm-Message-State: AOAM531Zz9Hj2O8Ru1sG8+mCPJ/R7GFaEomrmI/crB4rvXBkL8mktRjk
+        XLk7yhvW1n4ypM/mcRLx848=
+X-Google-Smtp-Source: ABdhPJxUnRUZPlQ+xy3cvarH0Xj9D8ZawPd7IJA9TqDKvtd4AiLILq1TixU7XvAqkPVyayKGGO/ilg==
+X-Received: by 2002:a63:3348:: with SMTP id z69mr18864195pgz.177.1637346099083;
+        Fri, 19 Nov 2021 10:21:39 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:9e42:f629:9f4e:600f])
+        by smtp.gmail.com with ESMTPSA id l21sm11582938pjt.24.2021.11.19.10.21.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 10:21:38 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Fri, 19 Nov 2021 10:21:37 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v2 7/9] locking/rwlocks: introduce write_lock_nested
+Message-ID: <YZfrMTAXV56HFWJY@google.com>
+References: <20211115185909.3949505-1-minchan@kernel.org>
+ <20211115185909.3949505-8-minchan@kernel.org>
+ <20211119103516.24uhxrkdcy4vq25k@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211119103516.24uhxrkdcy4vq25k@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Six fixes, five in drivers (ufs, qla2xxx, iscsi) and one core change to
-fix a regression in user space device state setting, which is used by
-the iscsi daemons to effect device recovery.
+On Fri, Nov 19, 2021 at 11:35:16AM +0100, Sebastian Andrzej Siewior wrote:
+> On 2021-11-15 10:59:07 [-0800], Minchan Kim wrote:
+> > diff --git a/include/linux/rwlock_rt.h b/include/linux/rwlock_rt.h
+> > index 49c1f3842ed5..efd6da62c893 100644
+> > --- a/include/linux/rwlock_rt.h
+> > +++ b/include/linux/rwlock_rt.h
+> > @@ -28,6 +28,7 @@ extern void rt_read_lock(rwlock_t *rwlock);
+> >  extern int rt_read_trylock(rwlock_t *rwlock);
+> >  extern void rt_read_unlock(rwlock_t *rwlock);
+> >  extern void rt_write_lock(rwlock_t *rwlock);
+> > +extern void rt_write_lock_nested(rwlock_t *rwlock, int subclass);
+> >  extern int rt_write_trylock(rwlock_t *rwlock);
+> >  extern void rt_write_unlock(rwlock_t *rwlock);
+> >
+> > @@ -83,6 +84,11 @@ static __always_inline void write_lock(rwlock_t *rwlock)
+> >  	rt_write_lock(rwlock);
+> >  }
+> >  
+> > +static __always_inline void write_lock_nested(rwlock_t *rwlock, int subclass)
+> > +{
+> > +	rt_write_lock_nested(rwlock, subclass);
+> > +}
+> > +
+> 
+> These two hunks as-is don't work. You need a CONFIG_DEBUG_LOCK_ALLOC block and
+> in the !CONFIG_DEBUG_LOCK_ALLOC case you need
+> 
+> #define rt_write_lock_nested(lock, subclass)     rt_write_lock(((void)(subclass), (lock)))
 
-The patch is available here:
+Guess you meant #define write_lock_nested.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+> 
+> >  static __always_inline void write_lock_bh(rwlock_t *rwlock)
+> >  {
+> >  	local_bh_disable();
+> > diff --git a/kernel/locking/spinlock_rt.c b/kernel/locking/spinlock_rt.c
+> > index b2e553f9255b..b82d346f1e00 100644
+> > --- a/kernel/locking/spinlock_rt.c
+> > +++ b/kernel/locking/spinlock_rt.c
+> > @@ -239,6 +239,18 @@ void __sched rt_write_lock(rwlock_t *rwlock)
+> >  }
+> >  EXPORT_SYMBOL(rt_write_lock);
+> >  
+> > +#ifdef CONFIG_DEBUG_LOCK_ALLOC
+> > +void __sched rt_write_lock_nested(rwlock_t *rwlock, int subclass)
+> > +{
+> > +	___might_sleep(__FILE__, __LINE__, 0);
+> 
+> This _must_ be rtlock_might_resched() like it is done in rt_write_lock()
+> above.
 
-The short changelog is:
+I should have Cced you. Thanks for the catch.
+If it's fine, Andrew, could you fold it?
 
-Adrian Hunter (2):
-      scsi: ufs: core: Fix another task management completion race
-      scsi: ufs: core: Fix task management completion timeout race
+Thank you.
 
-Bart Van Assche (1):
-      scsi: ufs: core: Improve SCSI abort handling
+From 81f8721bc76d5f8c94770e53c6ad2e41aec8ab21 Mon Sep 17 00:00:00 2001
+From: Minchan Kim <minchan@kernel.org>
+Date: Fri, 19 Nov 2021 10:15:00 -0800
+Subject: [PATCH] locking/rwlocks: fix write_lock_nested for RT
 
-Ewan D. Milne (1):
-      scsi: qla2xxx: Fix mailbox direction flags in qla2xxx_get_adapter_id()
+Fix build break of write_lock_nested for RT.
 
-Mike Christie (2):
-      scsi: core: sysfs: Fix hang when device state is set via sysfs
-      scsi: iscsi: Unblock session then wake up error handler
-
-And the diffstat:
-
- drivers/scsi/qla2xxx/qla_mbx.c      |  6 ++----
- drivers/scsi/scsi_sysfs.c           | 30 +++++++++++++++++++-----------
- drivers/scsi/scsi_transport_iscsi.c |  6 +++---
- drivers/scsi/ufs/ufshcd.c           |  9 ++-------
- 4 files changed, 26 insertions(+), 25 deletions(-)
-
-With full diff below.
-
-James
-
+Suggested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Minchan Kim <minchan@kernel.org>
 ---
+ include/linux/rwlock_rt.h    | 4 ++++
+ kernel/locking/spinlock_rt.c | 2 +-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_mbx.c b/drivers/scsi/qla2xxx/qla_mbx.c
-index 73a353153d33..10d2655ef676 100644
---- a/drivers/scsi/qla2xxx/qla_mbx.c
-+++ b/drivers/scsi/qla2xxx/qla_mbx.c
-@@ -1695,10 +1695,8 @@ qla2x00_get_adapter_id(scsi_qla_host_t *vha, uint16_t *id, uint8_t *al_pa,
- 		mcp->in_mb |= MBX_13|MBX_12|MBX_11|MBX_10;
- 	if (IS_FWI2_CAPABLE(vha->hw))
- 		mcp->in_mb |= MBX_19|MBX_18|MBX_17|MBX_16;
--	if (IS_QLA27XX(vha->hw) || IS_QLA28XX(vha->hw)) {
--		mcp->in_mb |= MBX_15;
--		mcp->out_mb |= MBX_7|MBX_21|MBX_22|MBX_23;
--	}
-+	if (IS_QLA27XX(vha->hw) || IS_QLA28XX(vha->hw))
-+		mcp->in_mb |= MBX_15|MBX_21|MBX_22|MBX_23;
- 
- 	mcp->tov = MBX_TOV_SECONDS;
- 	mcp->flags = 0;
-diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
-index 55addd78fde4..7afcec250f9b 100644
---- a/drivers/scsi/scsi_sysfs.c
-+++ b/drivers/scsi/scsi_sysfs.c
-@@ -792,6 +792,7 @@ store_state_field(struct device *dev, struct device_attribute *attr,
- 	int i, ret;
- 	struct scsi_device *sdev = to_scsi_device(dev);
- 	enum scsi_device_state state = 0;
-+	bool rescan_dev = false;
- 
- 	for (i = 0; i < ARRAY_SIZE(sdev_states); i++) {
- 		const int len = strlen(sdev_states[i].name);
-@@ -810,20 +811,27 @@ store_state_field(struct device *dev, struct device_attribute *attr,
- 	}
- 
- 	mutex_lock(&sdev->state_mutex);
--	ret = scsi_device_set_state(sdev, state);
--	/*
--	 * If the device state changes to SDEV_RUNNING, we need to
--	 * run the queue to avoid I/O hang, and rescan the device
--	 * to revalidate it. Running the queue first is necessary
--	 * because another thread may be waiting inside
--	 * blk_mq_freeze_queue_wait() and because that call may be
--	 * waiting for pending I/O to finish.
--	 */
--	if (ret == 0 && state == SDEV_RUNNING) {
-+	if (sdev->sdev_state == SDEV_RUNNING && state == SDEV_RUNNING) {
-+		ret = count;
-+	} else {
-+		ret = scsi_device_set_state(sdev, state);
-+		if (ret == 0 && state == SDEV_RUNNING)
-+			rescan_dev = true;
-+	}
-+	mutex_unlock(&sdev->state_mutex);
-+
-+	if (rescan_dev) {
-+		/*
-+		 * If the device state changes to SDEV_RUNNING, we need to
-+		 * run the queue to avoid I/O hang, and rescan the device
-+		 * to revalidate it. Running the queue first is necessary
-+		 * because another thread may be waiting inside
-+		 * blk_mq_freeze_queue_wait() and because that call may be
-+		 * waiting for pending I/O to finish.
-+		 */
- 		blk_mq_run_hw_queues(sdev->request_queue, true);
- 		scsi_rescan_device(dev);
- 	}
--	mutex_unlock(&sdev->state_mutex);
- 
- 	return ret == 0 ? count : -EINVAL;
- }
-diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
-index 78343d3f9385..554b6f784223 100644
---- a/drivers/scsi/scsi_transport_iscsi.c
-+++ b/drivers/scsi/scsi_transport_iscsi.c
-@@ -1899,12 +1899,12 @@ static void session_recovery_timedout(struct work_struct *work)
- 	}
- 	spin_unlock_irqrestore(&session->lock, flags);
- 
--	if (session->transport->session_recovery_timedout)
--		session->transport->session_recovery_timedout(session);
--
- 	ISCSI_DBG_TRANS_SESSION(session, "Unblocking SCSI target\n");
- 	scsi_target_unblock(&session->dev, SDEV_TRANSPORT_OFFLINE);
- 	ISCSI_DBG_TRANS_SESSION(session, "Completed unblocking SCSI target\n");
-+
-+	if (session->transport->session_recovery_timedout)
-+		session->transport->session_recovery_timedout(session);
+diff --git a/include/linux/rwlock_rt.h b/include/linux/rwlock_rt.h
+index efd6da62c893..8544ff05e594 100644
+--- a/include/linux/rwlock_rt.h
++++ b/include/linux/rwlock_rt.h
+@@ -84,10 +84,14 @@ static __always_inline void write_lock(rwlock_t *rwlock)
+ 	rt_write_lock(rwlock);
  }
  
- static void __iscsi_unblock_session(struct work_struct *work)
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index afd38142b1c0..13c09dbd99b9 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -6453,9 +6453,8 @@ static irqreturn_t ufshcd_tmc_handler(struct ufs_hba *hba)
- 	irqreturn_t ret = IRQ_NONE;
- 	int tag;
++#ifdef CONFIG_DEBUG_LOCK_ALLOC
+ static __always_inline void write_lock_nested(rwlock_t *rwlock, int subclass)
+ {
+ 	rt_write_lock_nested(rwlock, subclass);
+ }
++#else
++#define write_lock_nested(lock, subclass)	rt_write_lock(((void)(subclass), (lock)))
++#endif
  
--	pending = ufshcd_readl(hba, REG_UTP_TASK_REQ_DOOR_BELL);
--
- 	spin_lock_irqsave(hba->host->host_lock, flags);
-+	pending = ufshcd_readl(hba, REG_UTP_TASK_REQ_DOOR_BELL);
- 	issued = hba->outstanding_tasks & ~pending;
- 	for_each_set_bit(tag, &issued, hba->nutmrs) {
- 		struct request *req = hba->tmf_rqs[tag];
-@@ -6616,11 +6615,6 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
- 	err = wait_for_completion_io_timeout(&wait,
- 			msecs_to_jiffies(TM_CMD_TIMEOUT));
- 	if (!err) {
--		/*
--		 * Make sure that ufshcd_compl_tm() does not trigger a
--		 * use-after-free.
--		 */
--		req->end_io_data = NULL;
- 		ufshcd_add_tm_upiu_trace(hba, task_tag, UFS_TM_ERR);
- 		dev_err(hba->dev, "%s: task management cmd 0x%.2x timed-out\n",
- 				__func__, tm_function);
-@@ -7116,6 +7110,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
- 		goto release;
- 	}
- 
-+	lrbp->cmd = NULL;
- 	err = SUCCESS;
- 
- release:
+ static __always_inline void write_lock_bh(rwlock_t *rwlock)
+ {
+diff --git a/kernel/locking/spinlock_rt.c b/kernel/locking/spinlock_rt.c
+index b82d346f1e00..b501aef820d5 100644
+--- a/kernel/locking/spinlock_rt.c
++++ b/kernel/locking/spinlock_rt.c
+@@ -242,7 +242,7 @@ EXPORT_SYMBOL(rt_write_lock);
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ void __sched rt_write_lock_nested(rwlock_t *rwlock, int subclass)
+ {
+-	___might_sleep(__FILE__, __LINE__, 0);
++	rtlock_might_resched();
+ 	rwlock_acquire(&rwlock->dep_map, subclass, 0, _RET_IP_);
+ 	rwbase_write_lock(&rwlock->rwbase, TASK_RTLOCK_WAIT);
+ 	rcu_read_lock();
+-- 
+2.34.0.rc2.393.gf8c9666880-goog
 
