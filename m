@@ -2,270 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 103B7456716
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 01:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E32E245671B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 01:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233816AbhKSA5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 19:57:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233805AbhKSA5v (ORCPT
+        id S231215AbhKSA7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 19:59:41 -0500
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:45731 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229457AbhKSA7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 19:57:51 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C9FC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 16:54:51 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id r10-20020a056830080a00b0055c8fd2cebdso14109616ots.6
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 16:54:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=YtbzYcH20HCvxqP+/jnZdYoOJLvfi4p9cYsZ82G0wxg=;
-        b=YSnwXhgG+0sOhhkkxQeMAYOVA85727/2DFwIjcMcfM/zcjtmmeC1PIyXziCTpkvPXt
-         wljKrwBJEJE7wOsVd1n8S2q+pf/4KXSpBswfDCjylJAL4OU9ceH8BPCdBbySaMhljf4k
-         tZbmbP9GTznrgxAwaqf/T4p69Tq4loztfAzhI=
+        Thu, 18 Nov 2021 19:59:40 -0500
+Received: by mail-oi1-f172.google.com with SMTP id 7so18235374oip.12;
+        Thu, 18 Nov 2021 16:56:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=YtbzYcH20HCvxqP+/jnZdYoOJLvfi4p9cYsZ82G0wxg=;
-        b=bM7Oze1yug6CINBswxT9I97w7SaLkQoe+SNrhO5G1z/HlnYMDy2NzGpTP3vu0Z0Mk7
-         LvA4hVfVW55u17niV8uGC4s6HufOUwNFXl4vQtDP6ocu3gOcDU4WLtgfwttywE0kFxBP
-         h4/0OVGjdjsNQOkWO4LWa3QdOWGo+WfBgf7oxrVwWah+DUInVpUfh0uFHATK6Z7J+i6T
-         x81POasjHf+LwOokcfAsG+kjdMup7BQH+JnrR5qn6kLmWztMrP0sUUiHhIIertP2kZSO
-         5bnsQuVQHer0jMovUBlxOk/ldwN68SdmJ+olxNUBm4xYBngE6KBy3DIT11/cMMzggpMD
-         5ubw==
-X-Gm-Message-State: AOAM533DCH0miR5cFunenUH66B6UOcx9tW2ppZIh9+NXx5607cCdV75o
-        D0EAVLc2Ebr0SQUouYa6cxlaNkpgQAqY94LcuXrGMQ==
-X-Google-Smtp-Source: ABdhPJyDd0hrbleHezY0hLWJtqvrTiRAue5bx79zJQJU08DkPgzeJPBPBOXM/6epGLykUFqeI1tAQP9RrBpuGgDBAuE=
-X-Received: by 2002:a05:6830:30b7:: with SMTP id g23mr1190918ots.159.1637283290320;
- Thu, 18 Nov 2021 16:54:50 -0800 (PST)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 19 Nov 2021 01:54:49 +0100
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FblWdZzTmtm3bIbXZfzQ6UnCfRPnd8fWW2DruBGboXE=;
+        b=o5j1tqEAXyMGFj0IuLYzY7yazp8zEeamjrBhneH/xBQRZdQoWZB1YNtai69TpAgpFQ
+         O36QoLNWt814tJPtM7rvcbDcc62XxzDXrnVo2bt8O2RpbMhJzBQBN+xuTlE8VK/njJTz
+         kYdKzFS4tMEsfl7dCYBxVIN7DVvP/WS6ce3YC8uOc+K2llh2oQW/W0EqApm7JV/f47p7
+         4fdCrIsVCFSXwhzTglgKQA+z1xKOoyRiZvOpxTYcLiUR8MY5ZvBj4dCl+JvehFqnoSpq
+         lS6kSbWPjkoIrqkg+k5olmzxg+lR3VqnyP2ZgnaTVt65Z7g11/1Qkc2Eb+FxvZ0jUkGh
+         UVVQ==
+X-Gm-Message-State: AOAM531Vsm24847sWjcYFOP8FhwIqebbTvgqxwTnpghI5MXVSwAMOVIx
+        aBXqu/9zy9KWvgm5MBtEwA==
+X-Google-Smtp-Source: ABdhPJy2qMX6FHzZOE4p8oJzzDfxNPdO5Zi0i1YQmh8/YIlFVsIj1A27GQO4kTOohuJFQaktpRa6Kg==
+X-Received: by 2002:a05:6808:1058:: with SMTP id c24mr1278442oih.58.1637283399487;
+        Thu, 18 Nov 2021 16:56:39 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id r22sm328480oij.36.2021.11.18.16.56.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 16:56:38 -0800 (PST)
+Received: (nullmailer pid 2130222 invoked by uid 1000);
+        Fri, 19 Nov 2021 00:56:38 -0000
+Date:   Thu, 18 Nov 2021 18:56:38 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Abel Vesa <abel.vesa@nxp.com>
+Cc:     Fabio Estevam <festevam@gmail.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>, linux-i2c@vger.kernel.org,
+        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH v4 01/12] dt-bindings: i2c: imx-lpi2c: Fix i.MX 8QM
+ compatible matching
+Message-ID: <YZb2Rqx6OXTPNhgD@robh.at.kernel.org>
+References: <1636566415-22750-1-git-send-email-abel.vesa@nxp.com>
+ <1636566415-22750-2-git-send-email-abel.vesa@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <1637250620-8926-4-git-send-email-pillair@codeaurora.org>
-References: <1637250620-8926-1-git-send-email-pillair@codeaurora.org> <1637250620-8926-4-git-send-email-pillair@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Fri, 19 Nov 2021 01:54:49 +0100
-Message-ID: <CAE-0n5371rNqs6+_ZRtPDqOb7WCrzXUHbxGMjPAdVeLsGgX8_w@mail.gmail.com>
-Subject: Re: [PATCH v9 3/3] remoteproc: qcom: q6v5_wpss: Add support for
- sc7280 WPSS
-To:     Rakesh Pillai <pillair@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
-        ohad@wizery.com, p.zabel@pengutronix.de, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sibis@codeaurora.org, mpubbise@codeaurora.org, kuabhs@chromium.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1636566415-22750-2-git-send-email-abel.vesa@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rakesh Pillai (2021-11-18 07:50:20)
-> Add support for PIL loading of WPSS processor for SC7280
-> - WPSS boot will be requested by the wifi driver and hence
->   disable auto-boot for WPSS.
-> - Add a separate shutdown sequence handler for WPSS.
-> - Add multiple power-domain voting support
-> - Parse firmware-name from dtsi entry
->
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+On Wed, 10 Nov 2021 19:46:44 +0200, Abel Vesa wrote:
+> The i.MX 8QM DTS files use two compatibles, so update the binding to fix
+> dtbs_check warnings like:
+> 
+>   arch/arm64/boot/dts/freescale/imx8qm-mek.dt.yaml: i2c@5a800000:
+>     compatible: ['fsl,imx8qm-lpi2c', 'fsl,imx7ulp-lpi2c'] is too long
+> 
+> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
 > ---
+>  Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
 
-Just a couple nitpicks. Otherwise looks good to me.
-
->  drivers/remoteproc/qcom_q6v5_adsp.c | 222 +++++++++++++++++++++++++++++++++---
->  1 file changed, 206 insertions(+), 16 deletions(-)
->
-> diff --git a/drivers/remoteproc/qcom_q6v5_adsp.c b/drivers/remoteproc/qcom_q6v5_adsp.c
-> index 098362e6..34a6b73 100644
-> --- a/drivers/remoteproc/qcom_q6v5_adsp.c
-> +++ b/drivers/remoteproc/qcom_q6v5_adsp.c
-> @@ -32,6 +32,7 @@
->
->  /* time out value */
->  #define ACK_TIMEOUT                    1000
-> +#define ACK_TIMEOUT_US                 1000000
->  #define BOOT_FSM_TIMEOUT               10000
->  /* mask values */
->  #define EVB_MASK                       GENMASK(27, 4)
-> @@ -51,6 +52,8 @@
->  #define QDSP6SS_CORE_CBCR      0x20
->  #define QDSP6SS_SLEEP_CBCR     0x3c
->
-> +#define QCOM_Q6V5_RPROC_PROXY_PD_MAX   3
-> +
->  struct adsp_pil_data {
->         int crash_reason_smem;
->         const char *firmware_name;
-> @@ -58,9 +61,13 @@ struct adsp_pil_data {
->         const char *ssr_name;
->         const char *sysmon_name;
->         int ssctl_id;
-> +       bool is_wpss;
-> +       bool auto_boot;
->
->         const char **clk_ids;
->         int num_clks;
-> +       const char **proxy_pd_names;
-> +       const char *load_state;
->  };
->
->  struct qcom_adsp {
-> @@ -93,11 +100,146 @@ struct qcom_adsp {
->         void *mem_region;
->         size_t mem_size;
->
-> +       struct device *proxy_pds[QCOM_Q6V5_RPROC_PROXY_PD_MAX];
-> +       size_t proxy_pd_count;
-> +
->         struct qcom_rproc_glink glink_subdev;
->         struct qcom_rproc_ssr ssr_subdev;
->         struct qcom_sysmon *sysmon;
-> +
-> +       int (*shutdown)(struct qcom_adsp *adsp);
->  };
->
-> +static int qcom_rproc_pds_attach(struct device *dev, struct device **devs,
-
-Can 'devs' be replaced by 'struct qcom_adsp'? And then we can compare
-the size against ARRAY_SIZE(adsp->proxy_pds) instead of the #define.
-
-> +                                const char **pd_names)
-> +{
-> +       size_t num_pds = 0;
-> +       int ret;
-> +       int i;
-> +
-> +       if (!pd_names)
-> +               return 0;
-> +
-> +       /* Handle single power domain */
-> +       if (dev->pm_domain) {
-> +               devs[0] = dev;
-> +               pm_runtime_enable(dev);
-> +               return 1;
-> +       }
-> +
-> +       while (pd_names[num_pds])
-> +               num_pds++;
-> +
-> +       if (num_pds > QCOM_Q6V5_RPROC_PROXY_PD_MAX)
-> +               return -E2BIG;
-> +
-> +       for (i = 0; i < num_pds; i++) {
-> +               devs[i] = dev_pm_domain_attach_by_name(dev, pd_names[i]);
-> +               if (IS_ERR_OR_NULL(devs[i])) {
-> +                       ret = PTR_ERR(devs[i]) ? : -ENODATA;
-> +                       goto unroll_attach;
-> +               }
-> +       }
-> +
-> +       return num_pds;
-> +
-> +unroll_attach:
-> +       for (i--; i >= 0; i--)
-> +               dev_pm_domain_detach(devs[i], false);
-> +
-> +       return ret;
-> +}
-> +
-> +static void qcom_rproc_pds_detach(struct qcom_adsp *adsp, struct device **pds,
-> +                                 size_t pd_count)
-> +{
-> +       struct device *dev = adsp->dev;
-> +       int i;
-> +
-> +       /* Handle single power domain */
-> +       if (dev->pm_domain && pd_count) {
-> +               pm_runtime_disable(dev);
-> +               return;
-> +       }
-> +
-> +       for (i = 0; i < pd_count; i++)
-> +               dev_pm_domain_detach(pds[i], false);
-> +}
-> +
-> +static int qcom_rproc_pds_enable(struct qcom_adsp *adsp, struct device **pds,
-> +                                size_t pd_count)
-> +{
-> +       int ret;
-> +       int i;
-> +
-> +       for (i = 0; i < pd_count; i++) {
-> +               dev_pm_genpd_set_performance_state(pds[i], INT_MAX);
-> +               ret = pm_runtime_get_sync(pds[i]);
-> +               if (ret < 0) {
-> +                       pm_runtime_put_noidle(pds[i]);
-> +                       dev_pm_genpd_set_performance_state(pds[i], 0);
-> +                       goto unroll_pd_votes;
-> +               }
-> +       }
-> +
-> +       return 0;
-> +
-> +unroll_pd_votes:
-> +       for (i--; i >= 0; i--) {
-> +               dev_pm_genpd_set_performance_state(pds[i], 0);
-> +               pm_runtime_put(pds[i]);
-> +       }
-> +
-> +       return ret;
-> +}
-> +
-> +static void qcom_rproc_pds_disable(struct qcom_adsp *adsp, struct device **pds,
-> +                                  size_t pd_count)
-> +{
-> +       int i;
-> +
-> +       for (i = 0; i < pd_count; i++) {
-> +               dev_pm_genpd_set_performance_state(pds[i], 0);
-> +               pm_runtime_put(pds[i]);
-> +       }
-> +}
-> +
-> +static int qcom_wpss_shutdown(struct qcom_adsp *adsp)
-> +{
-> +       unsigned int val;
-> +
-> +       regmap_write(adsp->halt_map, adsp->halt_lpass + LPASS_HALTREQ_REG, 1);
-> +
-> +       /* Wait for halt ACK from QDSP6 */
-> +       regmap_read_poll_timeout(adsp->halt_map,
-> +                                adsp->halt_lpass + LPASS_HALTACK_REG, val,
-> +                                val, 1000, ACK_TIMEOUT_US);
-> +
-> +       /* Assert the WPSS PDC Reset */
-> +       reset_control_assert(adsp->pdc_sync_reset);
-> +       /* Place the WPSS processor into reset */
-> +       reset_control_assert(adsp->restart);
-> +       /* wait after asserting subsystem restart from AOSS */
-> +       usleep_range(200, 205);
-> +       /* Remove the WPSS reset */
-> +       reset_control_deassert(adsp->restart);
-> +       /* De-assert the WPSS PDC Reset */
-> +       reset_control_deassert(adsp->pdc_sync_reset);
-
-Please add newlines between comments and previous code. The above chunk
-is really hard to read.
-
-> +
-> +       usleep_range(100, 105);
-> +
-> +       clk_bulk_disable_unprepare(adsp->num_clks, adsp->clks);
-> +
-> +       regmap_write(adsp->halt_map, adsp->halt_lpass + LPASS_HALTREQ_REG, 0);
-> +
-> +       /* Wait for halt ACK from QDSP6 */
-> +       regmap_read_poll_timeout(adsp->halt_map,
-> +                                adsp->halt_lpass + LPASS_HALTACK_REG, val,
-> +                                !val, 1000, ACK_TIMEOUT_US);
-> +
-> +       return 0;
-> +}
-> +
->  static int qcom_adsp_shutdown(struct qcom_adsp *adsp)
->  {
->         unsigned long timeout;
+Acked-by: Rob Herring <robh@kernel.org>
