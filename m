@@ -2,128 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626A145796A
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 00:15:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13E2A45796D
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 00:16:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234989AbhKSXSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 18:18:46 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:43195 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231166AbhKSXSo (ORCPT
+        id S235135AbhKSXTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 18:19:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231166AbhKSXTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 18:18:44 -0500
+        Fri, 19 Nov 2021 18:19:23 -0500
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0338C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 15:16:20 -0800 (PST)
+Received: by mail-qt1-x835.google.com with SMTP id z9so10938455qtj.9
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 15:16:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637363742; x=1668899742;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=EOeE/8u2GgZp5oSglVkU0d1h/BBJ7rE0E0fhZsedy1Q=;
-  b=DuNxh7xv6uAmdXZZJbVqkgHdC3ySGAH+Q6bu0CcqJ6mb3mk91UnygqSX
-   O02ZyUjY8oAFvDBKO8lFyUI78KliBh9wtXxT6SblL4crw5QQVqvj4KANP
-   fsxfwFsbxSTyCh0j7QLIYLMLIOYDI5P/0Vf2kqwFXJc0fmPKnn9xO83vq
-   0=;
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 19 Nov 2021 15:15:41 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 15:15:41 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Fri, 19 Nov 2021 15:15:40 -0800
-Received: from abhinavk-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Fri, 19 Nov 2021 15:15:40 -0800
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        <freedreno@lists.freedesktop.org>, <gregkh@linuxfoundation.org>,
-        <robdclark@gmail.com>, <seanpaul@chromium.org>,
-        <swboyd@chromium.org>, <nganji@codeaurora.org>,
-        <aravindh@codeaurora.org>, <dmitry.baryshkov@linaro.org>,
-        <akhilpo@codeaurora.org>
-Subject: mailmap: add and update email addresses
-Date:   Fri, 19 Nov 2021 15:15:25 -0800
-Message-ID: <1637363725-17732-1-git-send-email-quic_abhinavk@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=fbwBJ/7tiZLlAuTyZOPjLj3If2zENx0mjR578iDfOxc=;
+        b=1LQa7aZRgvqMkeKew1B2mxBN5z+USyumxJWCWTLNOi1sJQY2TsOJjxcEJd426ke5wj
+         eaypq55uSRNBK5tpr9fL6ZtZ4QJiP326mmEITMpqmhSgmE1q20oJtey/YiahYF3Z55MJ
+         qEi5Eev3BylFxPt6YqhSWDfAHjox2p9UOISooubR4WdLLu/uSPzaDR50K9oF8D4Ey6kt
+         Rki0oJ4v8zjYG2qivZ/cnohgJHyGuE6NUggpvOpfQYR4yvNtXzBM57R6TH3v/fGbMKGl
+         dnPZFrmSzmFMevlxGCkNdmQ5Or7zR1Skm954alYGy28UF2+6nxgIuh9bXCtAR/lRMQt+
+         c69Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=fbwBJ/7tiZLlAuTyZOPjLj3If2zENx0mjR578iDfOxc=;
+        b=mJkIQwsKflpOiYyOM2Umy6fbUQ/3Q5nnZv/DbJOGwq1nCMrvhLct8E+3eA2SwhW+Eu
+         ehNEhcZ1ZBhQ+/i2WKJVqtvLF9ZilSxUTv3JFDHwBOPAtmvtFg7it7cg/0uV6fXSvvJZ
+         Y6vVIboeUVE1QjqLvnDf9igaN6Df3o1YWgxlRpuCh+6R0/n7h77kNfLfPB2mbl+61yas
+         nNOu9rbf5zi+p3JX5AIPJ+tyJU2lkB1SdApbhIL9e25tySz3W5XJmOO30JfqNe1AD5AQ
+         aj0Cd8LGiM+5JelAlgC5uZvRXC1q4VC2Ain4PICjHjij0lj6PH9Mk06WrkjC/15X6HNe
+         oUnw==
+X-Gm-Message-State: AOAM533VTv65MFrfXvEvk25k/aa8jN8iiFhAq32EC0OKVpWJPfrt52EW
+        6uCRgpmuDdH8rXYB9q7bZLJepUY+hRAJQA==
+X-Google-Smtp-Source: ABdhPJxhHil83yjfhbXuAPxha0HpNEFVV+oaR1l3ki1U2O/b9xob0LbHwhNjMoyt6mKNRcxfExyA1w==
+X-Received: by 2002:a05:622a:391:: with SMTP id j17mr10615333qtx.228.1637363779886;
+        Fri, 19 Nov 2021 15:16:19 -0800 (PST)
+Received: from xanadu.home (modemcable108.170-21-96.mc.videotron.ca. [96.21.170.108])
+        by smtp.gmail.com with ESMTPSA id k85sm538099qke.134.2021.11.19.15.16.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 15:16:19 -0800 (PST)
+Date:   Fri, 19 Nov 2021 18:16:18 -0500 (EST)
+From:   Nicolas Pitre <npitre@baylibre.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+cc:     alexandre.belloni@bootlin.com, boris.brezillon@collabora.com,
+        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] i3c/master: Fix a potentially infinite loop in
+ 'hci_dat_v1_get_index()'
+In-Reply-To: <0cdf3cb10293ead1acd271fdb8a70369c298c082.1637186628.git.christophe.jaillet@wanadoo.fr>
+Message-ID: <6s9184r-99rn-nr27-174s-r2nqn1o294n9@onlyvoer.pbz>
+References: <0cdf3cb10293ead1acd271fdb8a70369c298c082.1637186628.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add and also update the email addresses to prepare for
-the transition to the new ones.
+On Wed, 17 Nov 2021, Christophe JAILLET wrote:
 
-Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
----
- .mailmap | 8 ++++++++
- 1 file changed, 8 insertions(+)
+> The code in 'hci_dat_v1_get_index()' really looks like a hand coded version
+> of 'for_each_set_bit()', except that a +1 is missing when searching for the
+> next set bit.
+> 
+> This really looks odd and it seems that it will loop until 'dat_w0_read()'
+> returns the expected result.
+> 
+> So use 'for_each_set_bit()' instead. It is less verbose and should be more
+> correct.
+> 
+> Fixes: 9ad9a52cce28 ("i3c/master: introduce the mipi-i3c-hci driver")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-diff --git a/.mailmap b/.mailmap
-index 6e84911..92f4cd7 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -10,10 +10,12 @@
- # Please keep this list dictionary sorted.
- #
- Aaron Durbin <adurbin@google.com>
-+Abhinav Kumar <quic_abhinavk@quicinc.com> <abhinavk@codeaurora.org>
- Adam Oldham <oldhamca@gmail.com>
- Adam Radford <aradford@gmail.com>
- Adriana Reus <adi.reus@gmail.com> <adriana.reus@intel.com>
- Adrian Bunk <bunk@stusta.de>
-+Akhil P Oommen <quic_akhilpo@quicinc.com> <akhilpo@codeaurora.org>
- Alan Cox <alan@lxorguk.ukuu.org.uk>
- Alan Cox <root@hraefn.swansea.linux.org.uk>
- Aleksandar Markovic <aleksandar.markovic@mips.com> <aleksandar.markovic@imgtec.com>
-@@ -162,6 +164,7 @@ Jeff Layton <jlayton@kernel.org> <jlayton@redhat.com>
- Jens Axboe <axboe@suse.de>
- Jens Osterkamp <Jens.Osterkamp@de.ibm.com>
- Jernej Skrabec <jernej.skrabec@gmail.com> <jernej.skrabec@siol.net>
-+Jessica Zhang <quic_jesszhan@quicinc.com> <jesszhan@codeaurora.org>
- Jiri Slaby <jirislaby@kernel.org> <jirislaby@gmail.com>
- Jiri Slaby <jirislaby@kernel.org> <jslaby@novell.com>
- Jiri Slaby <jirislaby@kernel.org> <jslaby@suse.com>
-@@ -181,6 +184,7 @@ Juha Yrjola <at solidboot.com>
- Juha Yrjola <juha.yrjola@nokia.com>
- Juha Yrjola <juha.yrjola@solidboot.com>
- Julien Thierry <julien.thierry.kdev@gmail.com> <julien.thierry@arm.com>
-+Kalyan Thota <quic_kalyant@quicinc.com> <kalyan_t@codeaurora.org>
- Kay Sievers <kay.sievers@vrfy.org>
- Kees Cook <keescook@chromium.org> <kees.cook@canonical.com>
- Kees Cook <keescook@chromium.org> <keescook@google.com>
-@@ -192,9 +196,11 @@ Kenneth W Chen <kenneth.w.chen@intel.com>
- Konstantin Khlebnikov <koct9i@gmail.com> <khlebnikov@yandex-team.ru>
- Konstantin Khlebnikov <koct9i@gmail.com> <k.khlebnikov@samsung.com>
- Koushik <raghavendra.koushik@neterion.com>
-+Krishna Manikandan <quic_mkrishn@quicinc.com> <mkrishn@codeaurora.org>
- Krzysztof Kozlowski <krzk@kernel.org> <k.kozlowski.k@gmail.com>
- Krzysztof Kozlowski <krzk@kernel.org> <k.kozlowski@samsung.com>
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-+Kuogee Hsieh <quic_khsieh@quicinc.com> <khsieh@codeaurora.org>
- Leonardo Bras <leobras.c@gmail.com> <leonardo@linux.ibm.com>
- Leonid I Ananiev <leonid.i.ananiev@intel.com>
- Leon Romanovsky <leon@kernel.org> <leon@leon.nu>
-@@ -300,6 +306,7 @@ Qais Yousef <qsyousef@gmail.com> <qais.yousef@imgtec.com>
- Quentin Monnet <quentin@isovalent.com> <quentin.monnet@netronome.com>
- Quentin Perret <qperret@qperret.net> <quentin.perret@arm.com>
- Rafael J. Wysocki <rjw@rjwysocki.net> <rjw@sisk.pl>
-+Rajeev Nandan <quic_rajeevny@quicinc.com> <rajeevny@codeaurora.org>
- Rajesh Shah <rajesh.shah@intel.com>
- Ralf Baechle <ralf@linux-mips.org>
- Ralf Wildenhues <Ralf.Wildenhues@gmx.de>
-@@ -314,6 +321,7 @@ Rui Saraiva <rmps@joel.ist.utl.pt>
- Sachin P Sant <ssant@in.ibm.com>
- Sakari Ailus <sakari.ailus@linux.intel.com> <sakari.ailus@iki.fi>
- Sam Ravnborg <sam@mars.ravnborg.org>
-+Sankeerth Billakanti <quic_sbillaka@quicinc.com> <sbillaka@codeaurora.org>
- Santosh Shilimkar <santosh.shilimkar@oracle.org>
- Santosh Shilimkar <ssantosh@kernel.org>
- Sarangdhar Joshi <spjoshi@codeaurora.org>
--- 
-2.7.4
+Acked-by: Nicolas Pitre <npitre@baylibre.com>
 
+> ---
+> Speculative fix. Untested.
+> ---
+>  drivers/i3c/master/mipi-i3c-hci/dat_v1.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/i3c/master/mipi-i3c-hci/dat_v1.c b/drivers/i3c/master/mipi-i3c-hci/dat_v1.c
+> index 783e551a2c85..97bb49ff5b53 100644
+> --- a/drivers/i3c/master/mipi-i3c-hci/dat_v1.c
+> +++ b/drivers/i3c/master/mipi-i3c-hci/dat_v1.c
+> @@ -160,9 +160,7 @@ static int hci_dat_v1_get_index(struct i3c_hci *hci, u8 dev_addr)
+>  	unsigned int dat_idx;
+>  	u32 dat_w0;
+>  
+> -	for (dat_idx = find_first_bit(hci->DAT_data, hci->DAT_entries);
+> -	     dat_idx < hci->DAT_entries;
+> -	     dat_idx = find_next_bit(hci->DAT_data, hci->DAT_entries, dat_idx)) {
+> +	for_each_set_bit(dat_idx, hci->DAT_data, hci->DAT_entries) {
+>  		dat_w0 = dat_w0_read(dat_idx);
+>  		if (FIELD_GET(DAT_0_DYNAMIC_ADDRESS, dat_w0) == dev_addr)
+>  			return dat_idx;
+> -- 
+> 2.30.2
+> 
+> 
+> -- 
+> linux-i3c mailing list
+> linux-i3c@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-i3c
+> 
