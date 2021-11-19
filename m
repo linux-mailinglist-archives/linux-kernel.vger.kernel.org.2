@@ -2,175 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD250456F8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:26:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC74456F93
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:27:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235441AbhKSN32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 08:29:28 -0500
-Received: from mga05.intel.com ([192.55.52.43]:41520 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229457AbhKSN31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 08:29:27 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="320626464"
-X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
-   d="scan'208";a="320626464"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 05:26:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
-   d="scan'208";a="455775799"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga006.jf.intel.com with ESMTP; 19 Nov 2021 05:26:24 -0800
-Received: from fmsmsx609.amr.corp.intel.com (10.18.126.89) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Fri, 19 Nov 2021 05:26:23 -0800
-Received: from fmsmsx605.amr.corp.intel.com (10.18.126.85) by
- fmsmsx609.amr.corp.intel.com (10.18.126.89) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Fri, 19 Nov 2021 05:26:23 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Fri, 19 Nov 2021 05:26:23 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.173)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Fri, 19 Nov 2021 05:26:23 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Fth9Zc/VjWzEMpTJBF9HTH9wvDfipHnUv4u8FVt4hpIht0HX7K/VnjRSC2cKVM3S0FnSTiwCEgHqGAxajYt25dBOS1zHcTLTb14QemAVmQU75bEC0eZmo4n2n5/jiOniQnp6gwRdwXpSOx/kLnyI7vDmB5eyf4XavfWTfS/EfTKTeeSOJLtqh5kDiEFfIgTN+lT5UVcfmK/p7Zqk9qobVDp45CGiY3Ji9r4fESiI9vqEIiWHHXO1mALRByGQVt2BMBocBKhH5+XSppNpbTMCY8mhLKqLDJU2YmGbRUK7OZ9NXX5w1ZkxrZZrBtNDjzM0JUekPyT1MP/lTvDcjMSdlg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pR4uaMCPzA9KQtzm05vWYj88Hcx6YbqxSAW7c9i/EEY=;
- b=Z2dBVicwX79FhP7RYOVk9qOXUXMDd+zDTlEjknFzpG0jpCjpov25PybDHUwb9QQuJnbYlAsagX+BmFUcA3wcrezSsUnXvERbqxwGRUfbajeDy/daa1lUX7pLKGShrawKss+bnVmdVtz0OlDbwL89P11ngGIU1JBB7XC0P2Ir0sh0X+G9Lqp5z9vZfx5zUQwk5x8YPv+bsgRLn7tsm3b8e7yH3uGPXK6y3QlPJ7TwSV2JAWHvkmUSVtWb2FRNppQm0WfNf7nbcPl4OoTuLE1CX/deIYkkQJo2CJC6Sp9yP5SiCL7AX4QkYA5TKr9JhhfyabhK9eydIWQIc2847soIsw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pR4uaMCPzA9KQtzm05vWYj88Hcx6YbqxSAW7c9i/EEY=;
- b=SiHOVt+3SKN4XMy2j4hov0LS90hkYPdaZzijH7/m29wFavAfozwHwu69IDHRshgE3DM9pbqFlfBHH837ADSXT2I8pqzP3+ikr/JrWrd8NjcxbPM3UkS9h/iiVXdECDTNIlbfh2zxrlH8Z7BgjEyU+j74JZNzOE1u0fA07R4lk+0=
-Received: from BYAPR11MB3367.namprd11.prod.outlook.com (2603:10b6:a03:79::29)
- by BY5PR11MB3958.namprd11.prod.outlook.com (2603:10b6:a03:18e::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.18; Fri, 19 Nov
- 2021 13:26:20 +0000
-Received: from BYAPR11MB3367.namprd11.prod.outlook.com
- ([fe80::d9a0:60c3:b2b2:14ce]) by BYAPR11MB3367.namprd11.prod.outlook.com
- ([fe80::d9a0:60c3:b2b2:14ce%7]) with mapi id 15.20.4690.027; Fri, 19 Nov 2021
- 13:26:20 +0000
-From:   "G, GurucharanX" <gurucharanx.g@intel.com>
-To:     Colin King <colin.king@canonical.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [Intel-wired-lan] [PATCH] net: ixgbevf: Remove redundant
- initialization of variable ret_val
-Thread-Topic: [Intel-wired-lan] [PATCH] net: ixgbevf: Remove redundant
- initialization of variable ret_val
-Thread-Index: AQHXpjovOl/CLm9KvkeHcWpZSVrvs6wLRX6g
-Date:   Fri, 19 Nov 2021 13:26:20 +0000
-Message-ID: <BYAPR11MB3367B7C420AA4FE8F5E41D10FC9C9@BYAPR11MB3367.namprd11.prod.outlook.com>
-References: <20210910115100.45429-1-colin.king@canonical.com>
-In-Reply-To: <20210910115100.45429-1-colin.king@canonical.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 17465d01-16c2-428e-f1bf-08d9ab602cc7
-x-ms-traffictypediagnostic: BY5PR11MB3958:
-x-microsoft-antispam-prvs: <BY5PR11MB3958FB6C20F9B5269624F903FC9C9@BY5PR11MB3958.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:546;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Y8GXTbmMIlNWwBiOkHY7Vtp4T8ECJ7xBoRUrjJeLApPKjIeVIaV16T2GFjk+IPfzCpASLHHX919C30B5XM+ZVJU3BwLpBX8R2uKZTKPJGi/r63p4J0pLuLDVyTZ6+JXKQxKlBjJBTXRIYCgqUMk7Dgqa1qAMTY1XIvIbrJLc1RDaVk8ougnsScRVPjVeyxz5JGWhnn8VY6FYpp1GqMDYY91MR7SWxHTDWXb4s5lJVn/3JIYtSlkrqzHYBkkQo2ApzRezlqzpd0hV2AXh8JQQul10Sqhq+C+Rso7m4qDjRllk6+6rlknJGD/oXehiRy4YarfiOZFg1llRgVWAjbtkNDiZaZ4two+pZs+Tap6RCW9jpuHVdxzKRbFeQ9qs9PJaFuuQvnlxRxtHRuQOTvlfQPShXI6oQNoHJ4DwNPNVUV6T9SxF2gPs7/ZyauIKJXcdPGcS3lqsvjeqixvQ1jYLbI6tbjMCL9HAqr5nvU21OuTWMzzPRlITmNUADITd/CrVIIpEFdKW50/RIWmJ3/7e9QRRGbRyx2F0N53EVyPmFLR5w4RrnGILx7UrcvYjWk4eSzXkxJbyNpJlEsbXR90RuaTvuGHh0M6essZA9PncfXRKiN016dU1KQsJPr8ScpMOrTDpAOYAkck6lyBUf/mp/Lhq1GzOuCDTvLlBY70Ie472uGrBPjtMaoJ9rJNtKt5ogY8fqguoZQoEXeimKv4sGg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3367.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(110136005)(54906003)(71200400001)(86362001)(4326008)(316002)(52536014)(66476007)(66556008)(83380400001)(8936002)(2906002)(6506007)(66946007)(26005)(5660300002)(186003)(55016002)(122000001)(33656002)(9686003)(508600001)(76116006)(53546011)(38100700002)(82960400001)(64756008)(66446008)(7696005)(8676002)(4744005)(38070700005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?SL/UgMFAgSnaDfNOv960yJT1czGf0Fa4ezRPFG6KgCEGigRecZe4O04k20Iv?=
- =?us-ascii?Q?4F/4Ki5wJIpxuCd6Ajw6d5HpB9QDtdFXLBq5NtoV6pNxccEOL9Rrp2mxzDPc?=
- =?us-ascii?Q?9BpHfHhRAaH99Gkh6caD7WOZH7wVfqUHDmkTOR+nnW1quiDnl2gWZt598jx2?=
- =?us-ascii?Q?KYITWOcS8Qp7sYrkXrKJiQEPMZdxVP3xbD+JDZHcl/PrkG++waQDLninQNPl?=
- =?us-ascii?Q?iRcqJA8n1TL3rHGXAwksD54F3hPVdEcEj7zGmDh1TblEnzxhNtwjSvzHdZWK?=
- =?us-ascii?Q?lbLUv+LIa4oWmnIsa9Scklbo4w0N+pigkBJfPIPQfqzuPJroSNAbAZteF/XP?=
- =?us-ascii?Q?G6nax/EYCaVXBbZaZaWuBZ9e6y7tt5BampIn3r+8pfu9m8W6M1XMtNmDUECG?=
- =?us-ascii?Q?Dvzuc63T+MjScFrNgAIoDuGSVXGjBZ0YR850jpbJH32vMUbdKomaBpWK5maB?=
- =?us-ascii?Q?1bZu6Ip0PVjw6XQCwVNzAfufUKnkZ7UYtfz0tX3MmXqRExndUa6QdJfcVWAU?=
- =?us-ascii?Q?qfsllMAiZymzfCRWtwJY1TJdLuvDptP1aoaaYVBhlrAFq+v1OWiZl7K+k6Yb?=
- =?us-ascii?Q?ZHLomaFN/ub76WCuQhF3sGk3GlgtKAVSigIA1KMSe8WhfSMOArQs8HcvpTei?=
- =?us-ascii?Q?WqgLRvBBQEEVQK91kyZ7phIBglZ5moYh98umQ87UPjJnqnalm8HPOzS0vRUA?=
- =?us-ascii?Q?7IXfUIdJLCeZVMWlrbyFbtf4OgIUAQ10ZAgu/jUWKpMQoCSMm7n8a03PfP1P?=
- =?us-ascii?Q?ZGjD15o5J9IUpTvQljaA+UU8RYtIs84Q7KYNc9Vl4ji6yb6FbNmBZvBExMab?=
- =?us-ascii?Q?wN3WLW3rGfHmWey8bxHIWP2lcoautqcZmznQ6L9J5L0GGUtFRC3rhmxqh2Xn?=
- =?us-ascii?Q?fhOfxJmXm1YnJL2OVROeXbe5oliwFDsy18U2RdlpZ7P2hgRANndY10qXuHXz?=
- =?us-ascii?Q?aOSqrqWNPN12FbMDnLQK4nSPNZmrLx+fSdar808ipMcDPN/XmDT1vYNkYFok?=
- =?us-ascii?Q?WBeTmZh9tO6G0D3Brq6FR5TFm4mmEfLxmqFEyc7yqHRzwJ5nsDNif+IsR3rJ?=
- =?us-ascii?Q?3l1b/1BKgVEOFuLtGnZSjfJo4sTv16jDb/BwkphZlaPBmHR7lROJ0I8EYgbt?=
- =?us-ascii?Q?u892WP2DOQ6ZTGqOGcZE7BUP7SX6lLSHFw4mz7fn2tUs8HjY7zQP8JTxsQdu?=
- =?us-ascii?Q?nd9o04gECCdU2kviQK4XJruERpeDfj3SB1mLgJ/lc7r43ot4pAMU0qd1pL11?=
- =?us-ascii?Q?oiX1sgSAE8ri3lnxRTUa2zDe3NGMbDih19Og6G3t1wzFqU3ZMTqFSXVvbvH3?=
- =?us-ascii?Q?+0N0RTpBj+3KwO5aVZHdIPqbVCfS/xZuZdkG6y2BGCwSBm7SfTAzyC0Tzi3A?=
- =?us-ascii?Q?PIf8W/GEp9qmKkPhMDpfBfkP0Fbr6XAArPq48bUzK46R15q3Gl3as5VGv4Pr?=
- =?us-ascii?Q?F0yW+zGelsMoiRJ6LdV2AQuM8Gwb3B1NeijvMhaVjOu82Le2AYStplJS7D6Y?=
- =?us-ascii?Q?FiGPidXNczVyXr9DjpqK+CggB6+CxP8+82umZHYal8h8WFk0MSV3gsOsoB7C?=
- =?us-ascii?Q?B1uNgXbDnkUpTNvpIpleKaHX/07oBXa20RQ2E2l++w/RlXlHsVSDPBVdxNYg?=
- =?us-ascii?Q?Ew=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S235292AbhKSNaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 08:30:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234531AbhKSNaH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 08:30:07 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC7DC06173E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 05:27:05 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id e144so12728152iof.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 05:27:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:in-reply-to:references:subject:message-id:date
+         :mime-version:content-transfer-encoding;
+        bh=tTFVd1nWcx3/XcFWQghei7zJBEBnxYkZz8vTHO1fGeE=;
+        b=AUEqQdV3wtCQoHQw3uXtTZQMCIea9TPMKqSH9B1cD/8co4jzDGxflGe06I87v4A9qZ
+         jc5tKvG64fJDptVFDLqT/yBxbv9cKwLkJOodF0z3YLG+EqKKJaXV8iU3GqeisaoIL0Mw
+         TBanQ1f2qFDNkSwU2cn14jYVXl5OlB64IXXKchqXlVGlLk7sLzh1Jar1N9guEthfUUwT
+         yXlX078M0Xbx0RnCnFAkRDhxr4wxRw+wU3RjbSgt58pAwmsRDnxk+ZCQP9yQm0MCS4SN
+         Biu6Cr5RGg7EiSSW28CI+jbgqzijwh5imiGNmDkypWlXexx752rNPvboyYI+NIW+FqBM
+         rIMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
+         :message-id:date:mime-version:content-transfer-encoding;
+        bh=tTFVd1nWcx3/XcFWQghei7zJBEBnxYkZz8vTHO1fGeE=;
+        b=uC2YOhsNRjTnXJhZse0vVv8qCAH2tFXTE3d+q1yjqvOlusI9CB7163sC9/4H+DtWhw
+         6WquxVd/aB591KimNSCXcpie+0ExxdN4njk+2aOvyMRQhU8ULI2PzO2ATqt6zSoOGak1
+         NU0TunOZrjP7vSrAoEvk5cfuqif5OtE7Po0Sg+9A6JeGaCuqbIelBQ6NKq5XnjWKYu8L
+         T5k4YnSR98xV/cqHP9+ESI+Tj1zg5JbjTmkKvGzjzz7RpLvUlgHdpOd0p7TucCWx9yrE
+         qdUB/e5tDonVew9yog02Iw1ZwS7vx4IW1vuRHxlDQuwTtTVqZE16CL9Dto7RRuME2X2a
+         ElNg==
+X-Gm-Message-State: AOAM530ikp8xg7rseX3E1WclQbdIclQs/mo8rxEdIMUM2y4b/gAkvq5k
+        0QcabjP+3guJ98dKN7yLh5Q4KA==
+X-Google-Smtp-Source: ABdhPJwdxk/QYrODedQdeDW6RHtyFLfIZTB8qh42VRCoIaNIJD7RZfljKbgcdEogIBxcUWxGA8GhDw==
+X-Received: by 2002:a05:6602:164a:: with SMTP id y10mr5237113iow.123.1637328424840;
+        Fri, 19 Nov 2021 05:27:04 -0800 (PST)
+Received: from [127.0.1.1] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id n12sm2027960ilk.80.2021.11.19.05.27.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 05:27:04 -0800 (PST)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     tj@kernel.org, Yu Kuai <yukuai3@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, yi.zhang@huawei.com
+In-Reply-To: <20211102020705.2321858-1-yukuai3@huawei.com>
+References: <20211102020705.2321858-1-yukuai3@huawei.com>
+Subject: Re: [PATCH] blk-cgroup: fix missing put device in error path from blkg_conf_pref()
+Message-Id: <163732842185.43918.10012034831708951012.b4-ty@kernel.dk>
+Date:   Fri, 19 Nov 2021 06:27:01 -0700
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3367.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 17465d01-16c2-428e-f1bf-08d9ab602cc7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Nov 2021 13:26:20.5327
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2j6fQNupH3wDRgBL43ubLTyx5n1MFD6ttR8ST5hIXpBpMoT3nKRLO/+2WxtA4XLbaT8Z4oa8CRQMh7XeSqys8w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB3958
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2 Nov 2021 10:07:05 +0800, Yu Kuai wrote:
+> If blk_queue_enter() failed due to queue is dying, the
+> blkdev_put_no_open() is needed because blkcg_conf_open_bdev() succeeded.
+> 
+> 
+
+Applied, thanks!
+
+[1/1] blk-cgroup: fix missing put device in error path from blkg_conf_pref()
+      commit: 15c30104965101b8e76b24d27035569d6613a7d6
+
+Best regards,
+-- 
+Jens Axboe
 
 
-> -----Original Message-----
-> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of C=
-olin
-> King
-> Sent: Friday, September 10, 2021 5:21 PM
-> To: Brandeburg, Jesse <jesse.brandeburg@intel.com>; Nguyen, Anthony L
-> <anthony.l.nguyen@intel.com>; David S . Miller <davem@davemloft.net>;
-> Jakub Kicinski <kuba@kernel.org>; intel-wired-lan@lists.osuosl.org;
-> netdev@vger.kernel.org
-> Cc: kernel-janitors@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: [Intel-wired-lan] [PATCH] net: ixgbevf: Remove redundant initial=
-ization
-> of variable ret_val
->=20
-> From: Colin Ian King <colin.king@canonical.com>
->=20
-> The variable ret_val is being initialized with a value that is never read=
-, it is
-> being updated later on. The assignment is redundant and can be removed.
->=20
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/net/ethernet/intel/ixgbevf/vf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-
-Tested-by: Gurucharan G <gurucharanx.g@intel.com> (A Contingent worker at I=
-ntel)
