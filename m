@@ -2,223 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8778345717B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:15:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DAAA45718D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:19:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234595AbhKSPSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 10:18:51 -0500
-Received: from mail-bn7nam10on2063.outbound.protection.outlook.com ([40.107.92.63]:20449
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234215AbhKSPSu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 10:18:50 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f6wc8pEmdItDiZ32yxU7VjzfoVs5EH82eHslRJo8hQs0ZK/WOXMXue66hW5Nl1tzWgZxHXhhc5Fpaw8kqDit+KHazy4Rmn9+pmIvVoex3Y0qfvCH79Bp6zRK0x79oHDuDsx9KZzR09TTxmKLRWQXwUnK4BcVnc5Z9nSEd4k/ulhnGMxviXIS9ocJZAeQzeFcV7qq4no7eaB72Rs/Eyj1hERSOUr7WDtMj2L1cbdVhsK972xfAZHRkh/dVUqKRiyBS8m++/eB4bP+pYuCiAkbd1EiO4PLEPe7UiB2DfhHVSn2zhByQdhUVY8gt/e6FuEe+derb8vyabtBkbP6mpt0zg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4yrSofEBhZpwvpRTMblsOnfvLh8m4n/jxceqL5EzAKI=;
- b=jj5b4o70ZbQwzlOEPnNx62jrrY0cAKG7yGpJfmlssvIe8L+cg3iFh0y5BJDP4Linr0+LmBVoC+pUY6oVRiqEKfRgv+7QPCrtxfx8sncXUPEY78r8oNdbbBqtZfBop0fYn+WCsdBF2tkOpPJsOfaL3IlCk9v8TLPFeeIA6SckMHC5/NJBCHohw4u4ZxRDs6p6c56/X5NUhMXjMO4Jm6LKFPvdVGPGbPG8Wicf0KR/YBDpx6xzsjxiWScOUnwvVB0zjraTFmaF/e7Nl/nsCDqtNreVIffAgv6pbvyMnJX2VL6oin4s05pweIHUtW1mQJ3j/aTaQj83HvBvvshKEChc6Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4yrSofEBhZpwvpRTMblsOnfvLh8m4n/jxceqL5EzAKI=;
- b=i4nEHx6RCWnAgd/g6DXKXWe+WubUXIKs/Y8QuiiyLA3TkhbhY2qY0qkkz/ykyWKZeHp2xKY0NDQadF/WnoHpdQuRWOpx1lFd0QBF12WCz0w86wkKRmJEoKwm9RfjdoemjAX0yMEUuL+TN6IwDuniusizUor8mKRXlsP3Eg4qHTfOjazqFbs2MRGBqKDTcMeTokloVn+qVskeRBReFRRklWWBMrTMA7khX8Tkmn5iDpE1hIAnL2e85skTmV5q/HdU0TP62/35kHwneBOAQPDXLkgdqfEQxX6Lld9WPzoMnJhYTUOivgB07rxbSZX5bPy2ZjbAxuW2JIZpM0Nptxn/2A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB3823.namprd12.prod.outlook.com (2603:10b6:208:168::26)
- by BL0PR12MB4723.namprd12.prod.outlook.com (2603:10b6:208:8a::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Fri, 19 Nov
- 2021 15:15:46 +0000
-Received: from MN2PR12MB3823.namprd12.prod.outlook.com
- ([fe80::dc47:e67:877f:f19e]) by MN2PR12MB3823.namprd12.prod.outlook.com
- ([fe80::dc47:e67:877f:f19e%7]) with mapi id 15.20.4713.022; Fri, 19 Nov 2021
- 15:15:46 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org,
-        iommu@lists.linux-foundation.org
-Subject: Re: [RFC PATCH 0/3] Use pageblock_order for cma and alloc_contig_range alignment.
-Date:   Fri, 19 Nov 2021 10:15:40 -0500
-X-Mailer: MailMate (1.14r5846)
-Message-ID: <AEFF28CF-0ED8-450F-96A4-A6CD59CB1F3D@nvidia.com>
-In-Reply-To: <3083463d-978b-fbe6-dadf-670d400ed437@suse.cz>
-References: <20211115193725.737539-1-zi.yan@sent.com>
- <3083463d-978b-fbe6-dadf-670d400ed437@suse.cz>
-Content-Type: multipart/signed;
- boundary="=_MailMate_BA5FD4CA-F731-40C8-83B1-99F88B116305_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: BL1PR13CA0163.namprd13.prod.outlook.com
- (2603:10b6:208:2bd::18) To MN2PR12MB3823.namprd12.prod.outlook.com
- (2603:10b6:208:168::26)
+        id S234728AbhKSPWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 10:22:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233489AbhKSPWr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 10:22:47 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F052C06173E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 07:19:45 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id q14so9742483qtx.10
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 07:19:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0+oKCHlqOeL41R0XCrWbPi4i3qyXHn6RmL7MeAl4NL8=;
+        b=lPGpGcid8QXwelr7zzSt5VTkDWstEKhmIVZjDI/gptTZ1XB8fRlCJsY82dS22YEbbI
+         GADEuew95VumLWojAcQF6/3Rj7N9VtmARWHCGzMlbaVOuA5B2Iy8CEcEelQIeeRTPjCb
+         /UriGVwYo5CnjPZCDlOVP8JIARNcJaTQUz01jDwgOeu3eE5FmpCC10B9LQ/D1G1T0tx4
+         iQg2Eg0YoxH/lMrAwoMlca7V5PAbid3j8gMabaFjohga4jUqveMxv4mUiSKJmYsSXZJ9
+         w9340v2YmW88xNRP0Sl+7ZXF9oISeC5mr2uPkE4vqO+Lek1l1/D1zTf+VnU59MujzXzD
+         zgyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0+oKCHlqOeL41R0XCrWbPi4i3qyXHn6RmL7MeAl4NL8=;
+        b=fV3Qt5B5eVJY/70fnbsbBAJOH+781malaVexvbYxvCBEFZoJ76s7PgKOK3xFXoT5HV
+         Tc4Chc217NW5Y/YpNkc0uUIJI4jJStPHQ1mte0zky3B+VHBuY/c0KNHjGsskBn5vBfb6
+         vdu8m6mEUO01rJS/WF5vStNIjTXkX/D8dvmWY4rUDf+IcTYYzwEym+Mn2WtdbhB6mtNA
+         UnOV8mDRdQDWOGSXosaSMLg6ijc8FMZVZNdszmE7567ocauRSyoACOtDOoSS/bRAV6hF
+         FwI9sxq/UHLd7LQfFmvWA45jEy2OzsEGhqT8/AElACfgriliqTLa/Ju3MkuFY4F8LTdz
+         TI5A==
+X-Gm-Message-State: AOAM533Fbm6P2aKwvxw8OdhhodA6XrjJZUbABlY0T/7jCABHEUKhKIk1
+        lLlLmEh3XbIE+NLZ5toJo3w0+g==
+X-Google-Smtp-Source: ABdhPJzBFCjiPUEhMyOCMWRnIUW5f5YGg2HohyzeoXo1q5KwzNya5wlMfrrS3JbWjHX+xZcOYu6I9Q==
+X-Received: by 2002:a05:622a:1a93:: with SMTP id s19mr7169174qtc.291.1637335184307;
+        Fri, 19 Nov 2021 07:19:44 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id o126sm11039qke.11.2021.11.19.07.19.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 07:19:43 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mo5fz-00CHGM-Aq; Fri, 19 Nov 2021 11:19:43 -0400
+Date:   Fri, 19 Nov 2021 11:19:43 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Chao Peng <chao.p.peng@linux.intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        qemu-devel@nongnu.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J . Bruce Fields" <bfields@fieldses.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
+        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com,
+        david@redhat.com
+Subject: Re: [RFC v2 PATCH 01/13] mm/shmem: Introduce F_SEAL_GUEST
+Message-ID: <20211119151943.GH876299@ziepe.ca>
+References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
+ <20211119134739.20218-2-chao.p.peng@linux.intel.com>
 MIME-Version: 1.0
-Received: from [10.2.52.6] (216.228.112.21) by BL1PR13CA0163.namprd13.prod.outlook.com (2603:10b6:208:2bd::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.10 via Frontend Transport; Fri, 19 Nov 2021 15:15:43 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 33aada4f-22d4-482a-fec5-08d9ab6f760c
-X-MS-TrafficTypeDiagnostic: BL0PR12MB4723:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB4723ECF4D1A60FC5AAF6EF48C29C9@BL0PR12MB4723.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RFOp1oKDQhek/KRP/4IIjnoBf8+5xnNcnq5KGZ5KX6mpe3hrfCP4XcFG/6oegAMGB6rSpGudVSOHi2Qf+1oBC8S0cVhxDjdm5J9+df9rD1MdWcxtPSIZFHSYeEBH3RFZXkDfxLj1VXn5f6EU9pYWgMk4hr80dkWJ7GUGW42THk1aExJFEIMSLGPLFdhedjOMiRl8gwv5CASLsskqs9TnSJFIFIvcV3PSWHFS7DRiU6PjJ2rj2FvcJ6MZSJHlw2SjhyXjvCQJMjJhJfN4CpRB6j/KdzEeGLQ6nb9JXGajscCWIc3eTWJjPj1ZQZ8uDa8JiTk7KVxHtHM/B/ZV5GDqq/PuueVtLWh/ZVxVo3wdj8syQYqFAhFcQ/nX2mG/3EPo33FcjYElSJcs9kAsrLMq34FVoT3AkIZs+JENh6otZ9fy5Dv6VVet5AKxQdjEbJV0dP2aI5Xo7TDXARyIiMiqSsT6c1/Hjv5QMttRqWsscWm5eMCWrNNalWEuAfI4R6QMTxtn8zYw/KHqDiqEF+tF8CTlnAocts4Z396xsvSQsPW8ggo52n+JT1ZkI4pciAy4IsezprXsq2ntcGtuygYxpdt6a4z7O2aLWsyzSM7Jqz4WeU0wEEf5sacO6QaIlQFiqhg1F0YeoD8+em0rqP3sx5+XSxK3vouZqeLhI6604VimudFDeUPEdewD60tTCDso8l/XJJEfjQhIxTy+XSQ4N26OVfeAH9lkSMjFoRkK9rWyXlEAg6QVDo8mP9QZnkkuj32tFseJgjPaWnaYevjuJbYpe20PQmXcqSrairOlxQzL4+VXHpqXbqbCvQw1UjUp
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3823.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(54906003)(316002)(8676002)(33656002)(36756003)(186003)(8936002)(16576012)(6486002)(53546011)(83380400001)(86362001)(4326008)(235185007)(26005)(7416002)(21480400003)(5660300002)(956004)(2616005)(66476007)(66946007)(66556008)(38100700002)(508600001)(2906002)(6916009)(966005)(45980500001)(72826004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KW8jf38VYQsoOOI4y+wJwhLmKhRDXsictcr2qGKwfzX/rA7Zn9Dnpq/hxV9O?=
- =?us-ascii?Q?HmQ6u7QOR6IrhG7nI7cQ9UlBGNsRoiEP56vlVFPac1uY5dSJt/qIi/mGYQR5?=
- =?us-ascii?Q?n3LD/4kXJvhKl9QiQQjD0Leoay4MXYb1YfBZrguoSF4sU1WJAx6OEfXqjBC3?=
- =?us-ascii?Q?0Zk48ty+kNL4B/1w8oDX/Que8VG0D/+E9lh5FCH1Er10B6j53pEXHfIMvJIc?=
- =?us-ascii?Q?MHEmbedbmrwjHr/jYUh3QR6B6kff3D9idCcp64F9/xx5IUhVTLpVl4Uuk7qM?=
- =?us-ascii?Q?FGK4sW7qwUqTKR8XwUyAPeymkU1Kh6jXEUEHxzPXrAP5gce/Tnq9a23gGkf6?=
- =?us-ascii?Q?ryL6V5qIVrfkVWW2Nu0k1dyvKusYku0t7XFu9c9qF2pjy77FA0hOoMmjxpxZ?=
- =?us-ascii?Q?p9B+rxgD83KWynqlDs+f1Qm0MlNWzbCwpJr54NZ4TGgIumexmEroC5SGFB9l?=
- =?us-ascii?Q?DusudiCNARKafNzbjS/UoRcjC2ZEGeuD+CTy0QUf12a60IWbqezmpDbRsGiV?=
- =?us-ascii?Q?E1juBL+uJI10INCsXa2JwZ/r/TbfBbtbqO6p0uem3ejE5f+loyYVZUbMaUAm?=
- =?us-ascii?Q?8J50QBQiBHTenL+kRx2oB7rOIpmFRxxR2H9rT4txfqm/376X7E07A9fUy4i6?=
- =?us-ascii?Q?Jh3GDMrYKV8wiBCn7yeoUf/czx2XBDxdikw5N2C4rJNYOxHn6TCHDfLZT3aT?=
- =?us-ascii?Q?fzNmitiTbkaToQIROXsUfgRccry566seNlHxxetTxwGGF1Ntb8PtK9oKTZN5?=
- =?us-ascii?Q?LPTeA5182fkIb+yBVX26f8yB2JY31tsQret4DlaFIE/2PC3825sMgls2CMKG?=
- =?us-ascii?Q?3ktVAPZ0TK0gT9WUfiLxPLzhfM8ynS5SoG+Z+QB4ZE96YvHMfSjhf4KZPFa2?=
- =?us-ascii?Q?2G6etjBGTn7M0LpnjDt3X6f/RGp5WFxqsyFyz0sRXS8Kv85OJDNWVJipWXTT?=
- =?us-ascii?Q?5HnL063/eqkkfWXZFAyLe9Kip/Y87rhv/ZeOmBvU7L4kiVISwYBK6IcF8bSB?=
- =?us-ascii?Q?xH14qjfV1x6nVNK3h9VXO/wpOkxAT1cmi3X0VSPayPLpTMxInic5AyL1tmxR?=
- =?us-ascii?Q?jhtulbgxTq4/eNDhn5YRHW+ITX48tXY3pziHc0IdbROnkk1ulcX3BATXHpRm?=
- =?us-ascii?Q?aljyxqp28xZuXM2ypl32Wbsa3FNqjKtNpVT99NMJula3kcgDCUBC4HPz6GDr?=
- =?us-ascii?Q?QlVQNd0MryRPDg2Rv53MR96K9WtyMCAQcQec0qzomW8f3VRz9dgEPEUOSqyK?=
- =?us-ascii?Q?8Dcnqvl1TCoZVrN6eCzPt7RIkDXJORNQznajcHrFSjo3N+6i7rVOY4300b24?=
- =?us-ascii?Q?sveCmYo1atHGm47CaG8GvhjSWAZBgxqMUc4vZ88rbOYygRxKVEJkq9jFg1DM?=
- =?us-ascii?Q?Fcr+a9RFh5rsZEQ15eJz+KufcxkoE4r3X2HpHHRFnozEuZ7eZFvapozmJyyi?=
- =?us-ascii?Q?DefkSjVmYiJ6bhxr8dxc6cJKCqrbDc6zv/RWz/cC6Z3IvcmbaXqKqRYEcgNk?=
- =?us-ascii?Q?/xdm8DICMzKljl4YWkMWAxoFw+x1iXQ3X/uiinSoz2JuWGSi9J/wYcwZYYkN?=
- =?us-ascii?Q?tEvTgPBA7s6U66Zscv4=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 33aada4f-22d4-482a-fec5-08d9ab6f760c
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3823.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2021 15:15:46.4246
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oYgRkmpelLMeOjeQ2W03tnpTmE8ZrX6BzqwjuHnZELNx+bkIIrn9tHjWnH2KAw+x
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4723
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211119134739.20218-2-chao.p.peng@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_BA5FD4CA-F731-40C8-83B1-99F88B116305_=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Fri, Nov 19, 2021 at 09:47:27PM +0800, Chao Peng wrote:
+> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+> 
+> The new seal type provides semantics required for KVM guest private
+> memory support. A file descriptor with the seal set is going to be used
+> as source of guest memory in confidential computing environments such as
+> Intel TDX and AMD SEV.
+> 
+> F_SEAL_GUEST can only be set on empty memfd. After the seal is set
+> userspace cannot read, write or mmap the memfd.
+> 
+> Userspace is in charge of guest memory lifecycle: it can allocate the
+> memory with falloc or punch hole to free memory from the guest.
+> 
+> The file descriptor passed down to KVM as guest memory backend. KVM
+> register itself as the owner of the memfd via memfd_register_guest().
+> 
+> KVM provides callback that needed to be called on fallocate and punch
+> hole.
+> 
+> memfd_register_guest() returns callbacks that need be used for
+> requesting a new page from memfd.
+> 
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
+>  include/linux/memfd.h      |  24 ++++++++
+>  include/linux/shmem_fs.h   |   9 +++
+>  include/uapi/linux/fcntl.h |   1 +
+>  mm/memfd.c                 |  33 +++++++++-
+>  mm/shmem.c                 | 123 ++++++++++++++++++++++++++++++++++++-
+>  5 files changed, 186 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/memfd.h b/include/linux/memfd.h
+> index 4f1600413f91..ff920ef28688 100644
+> +++ b/include/linux/memfd.h
+> @@ -4,13 +4,37 @@
+>  
+>  #include <linux/file.h>
+>  
+> +struct guest_ops {
+> +	void (*invalidate_page_range)(struct inode *inode, void *owner,
+> +				      pgoff_t start, pgoff_t end);
+> +	void (*fallocate)(struct inode *inode, void *owner,
+> +			  pgoff_t start, pgoff_t end);
+> +};
+> +
+> +struct guest_mem_ops {
+> +	unsigned long (*get_lock_pfn)(struct inode *inode, pgoff_t offset,
+> +				      bool alloc, int *order);
+> +	void (*put_unlock_pfn)(unsigned long pfn);
+> +
+> +};
 
-On 19 Nov 2021, at 7:33, Vlastimil Babka wrote:
+Ignoring confidential compute for a moment
 
-> On 11/15/21 20:37, Zi Yan wrote:
->> From: Zi Yan <ziy@nvidia.com>
->>
->> Hi David,
->>
->> You suggested to make alloc_contig_range() deal with pageblock_order i=
-nstead of
->> MAX_ORDER - 1 and get rid of MAX_ORDER - 1 dependency in virtio_mem[1]=
-=2E This
->> patchset is my attempt to achieve that. Please take a look and let me =
-know if
->> I am doing it correctly or not.
->>
->> From what my understanding, cma required alignment of
->> max(MAX_ORDER - 1, pageblock_order), because when MIGRATE_CMA was intr=
-oduced,
->> __free_one_page() does not prevent merging two different pageblocks, w=
-hen
->> MAX_ORDER - 1 > pageblock_order. But current __free_one_page() impleme=
-ntation
->> does prevent that.
->
-> But it does prevent that only for isolated pageblock, not CMA, and yout=
+If qmeu can put all the guest memory in a memfd and not map it, then
+I'd also like to see that the IOMMU can use this interface too so we
+can have VFIO working in this configuration.
 
-> patchset doesn't seem to expand that to CMA? Or am I missing something.=
+As designed the above looks useful to import a memfd to a VFIO
+container but could you consider some more generic naming than calling
+this 'guest' ?
 
+Along the same lines, to support fast migration, we'd want to be able
+to send these things to the RDMA subsytem as well so we can do data
+xfer. Very similar to VFIO.
 
-Yeah, you are right. Originally, I thought preventing merging isolated pa=
-geblock
-with other types of pageblocks is sufficient, since MIGRATE_CMA is always=
+Also, shouldn't this be two patches? F_SEAL is not really related to
+these acessors, is it?
 
-converted from MIGRATE_ISOLATE. But that is not true. I will rework the c=
-ode.
-Thanks for pointing this out.
+> +extern inline int memfd_register_guest(struct inode *inode, void *owner,
+> +				       const struct guest_ops *guest_ops,
+> +				       const struct guest_mem_ops **guest_mem_ops);
 
->
->
->> It should be OK to just align cma to pageblock_order.
->> alloc_contig_range() relies on MIGRATE_CMA to get free pages, so it ca=
-n use
->> pageblock_order as alignment too.
->>
->> In terms of virtio_mem, if I understand correctly, it relies on
->> alloc_contig_range() to obtain contiguous free pages and offlines them=
- to reduce
->> guest memory size. As the result of alloc_contig_range() alignment cha=
-nge,
->> virtio_mem should be able to just align PFNs to pageblock_order.
->>
->> Thanks.
->>
->>
->> [1] https://lore.kernel.org/linux-mm/28b57903-fae6-47ac-7e1b-a1dd41421=
-349@redhat.com/
->>
->> Zi Yan (3):
->>   mm: cma: alloc_contig_range: use pageblock_order as the single
->>     alignment.
->>   drivers: virtio_mem: use pageblock size as the minimum virtio_mem
->>     size.
->>   arch: powerpc: adjust fadump alignment to be pageblock aligned.
->>
->>  arch/powerpc/include/asm/fadump-internal.h |  4 +---
->>  drivers/virtio/virtio_mem.c                |  6 ++----
->>  include/linux/mmzone.h                     |  5 +----
->>  kernel/dma/contiguous.c                    |  2 +-
->>  mm/cma.c                                   |  6 ++----
->>  mm/page_alloc.c                            | 12 +++++-------
->>  6 files changed, 12 insertions(+), 23 deletions(-)
->>
+Why does this take an inode and not a file *?
 
---
-Best Regards,
-Yan, Zi
+> +int shmem_register_guest(struct inode *inode, void *owner,
+> +			 const struct guest_ops *guest_ops,
+> +			 const struct guest_mem_ops **guest_mem_ops)
+> +{
+> +	struct shmem_inode_info *info = SHMEM_I(inode);
+> +
+> +	if (!owner)
+> +		return -EINVAL;
+> +
+> +	if (info->guest_owner && info->guest_owner != owner)
+> +		return -EPERM;
 
---=_MailMate_BA5FD4CA-F731-40C8-83B1-99F88B116305_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
+And this looks like it means only a single subsytem can use this API
+at once, not so nice..
 
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAmGXv5wPHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqKS3cQAJbGbGltVBvoNnb/0RXwKwZzE00JvWWtccV7
-Qm1DDgUeldrjtz4UYMx3+vbuvTDYo8B5bOg8NUdU0dVkkYOx92BG6EsmIcljCyY2
-UQfGeQWWrUtNEHFHzVufj9aDlONMB6G+i2j2nRm7W0Go79Txyt9m4B5QXGjwWICm
-mT9KgJTp0GFyAV8gYkPfbPC3Fw7d/V+JpqX4SbpMKZoaNhzWUfZpxy36TVKM4LOY
-6vWmp5mXj6+t2Z3zNoD+ICC/qTBuG614VvZMbYVWHwwAxLzZBjDjfX6vYSOOioaW
-Ar2h8B6SUq4uGVzqf5mTae+9KEtU6xYFX4b4JMSnSDEOilNKH8dlfvIA+o03R9Ze
-E/xcGubjA+ChKTBTCiyuZsCpW2SVbQ62Qsin+xmaSOmg5XsU78GtHfCDxawJRulB
-CDYrL9e2Nji5nOMV15pvR72BTYWpTMAh1COXuxqhb3mIZIXAYGm6Lqqh3SL0tipQ
-G1Zv2hHMbyGqJziUCG6EFk7LsgK7REp9wSI1rMOG1vpjx51HQQAEwdrAvhBhxNHD
-ZN/2zzzNRQ/WD86NCx0HhAL808yQ9eqaRCawPfcmX1FEroaWh6eFZcb0sWVADoLM
-AoSlysCa2q241fRcvOt0pRbVc8+kmM/RlXNYrG3tAHEeOJ26O3Oteo08+753x6M/
-7OQ8H/l5
-=W9bu
------END PGP SIGNATURE-----
-
---=_MailMate_BA5FD4CA-F731-40C8-83B1-99F88B116305_=--
+Jason
