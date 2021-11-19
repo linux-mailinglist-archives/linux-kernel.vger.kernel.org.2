@@ -2,97 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E36456EAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 13:04:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0EFB456EAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 13:05:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234357AbhKSMHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 07:07:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230520AbhKSMHm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 07:07:42 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90851C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 04:04:40 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id i8-20020a7bc948000000b0030db7b70b6bso10296727wml.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 04:04:40 -0800 (PST)
+        id S234687AbhKSMI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 07:08:28 -0500
+Received: from smtp1.axis.com ([195.60.68.17]:15691 "EHLO smtp1.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230520AbhKSMI2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 07:08:28 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VEl+2nnslB5uaeju5+/7vr2ZFc54QG0+pBvSVOyEKew=;
-        b=wDzgQVthg8pLs/fZi+XntPUZ1VfVWCSzNKy5hhFLiC6MpqSw3pBohzKhJAmGUYsKZK
-         MX1pY5gxYnF9QoeYd0YoR8TScsLTElz9JkTcT7HXFtRHAvkIpCoFrTBwgmnQJGHPX8AV
-         fhcI9KEgeSeWFugvGruZeHk6akAKXIMDSIOQjPW5PNQZfNuI7RakkT0FlmgFj0ZBLbuN
-         mjN/911pMSgtYscGK+XJUeUJjUBQEd6W7DUWXemcWVUnXvdAVdNgO6Kucgi0Ti+GHIdv
-         TDQ3Px3kKHW1x1NHEv2aBCYmDKqQzFim2ewNCYsaGPu070/TDxXNcxI0UplpycZ7cQFS
-         17Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VEl+2nnslB5uaeju5+/7vr2ZFc54QG0+pBvSVOyEKew=;
-        b=S22ymSDUuoeVd8grlhu9nfF1MMNEKhuYsxrqtgktgyF3xxH+f9M8JZx6zj3ok12m7/
-         qJEeVB3LVZEPzQg0oMA27A8Qz40S+pWiuEuuAMzNhIyC9havm8XQQmIFfu2CcBM/S5/V
-         9yWlYrmNC8OJ8ElXXOShKVpIXk510eGe7YJJOOpFt173Wibp2fr/mG0gK/OYpQ8rOf03
-         IK3Cs7+liymNGpUxs+aC+DK+IEi2NZ/ncsz/x60vlmjiULwQbX1kfISCfhUwqNKlFBH/
-         6bEZOHLDnHs0bpvoiaRZN2a5rpYVexheGtxiK/ayuUrjQSIy0n8ghkuymQns75aBvbFO
-         WA1A==
-X-Gm-Message-State: AOAM533+IE8VhmUEtRL20VSLSGymrkL3cL6GRUe/Nc8kgE1GCuiYSRLO
-        BVTYZ5zm2uNpbGSxAi6JZBrwKAnjIqw8Y3E1ae1+V/ix25GvO3AZ
-X-Google-Smtp-Source: ABdhPJypwWwXyOzdLATGe0dexpc49ClDU8TYSHiRiLM/qwW9xedwkZVJJQq7TaRuLJIFMJ8EnXYjfkTOwhlOOudOWnM=
-X-Received: by 2002:a1c:4c19:: with SMTP id z25mr6173497wmf.177.1637323479085;
- Fri, 19 Nov 2021 04:04:39 -0800 (PST)
+  d=axis.com; q=dns/txt; s=axis-central1; t=1637323527;
+  x=1668859527;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=57/QJ6in35nvPvU4ig8kvOqeNLXlQjO2HkYYKefPH8A=;
+  b=V5HnyaO7fWb+WPv8Upjj+2s7EMr0DowlAdcyp0uRsC7VXfhKhhXpngGV
+   GvneCUueSqCRRW44bN72sgXYbZIBrt7okQyP4D/aybGpqvn1crFFGNKsD
+   enQqJ5+qMYWXt9zitWVgVbfYUKpq7nwVUuiss/ECgVepHcyd7ZX9z10i9
+   UyN5m35FXL3PqOlgLYIPBg5i5HVLwgFqcA64C77+prYoYtMCM2dNYhcch
+   uZuzCPj2A8o2LZETIg+lcOOUW7M3fEwDyPhOpTrR542lz7C+PH7VmUhKR
+   8QTZuOuAd1l8x5qmFdOMbyoH3muFk7DtX2iUN3bKJHja8VeGDfLUhmrNS
+   A==;
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+CC:     <kernel@axis.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+Subject: [PATCH] af_unix: fix regression in read after shutdown
+Date:   Fri, 19 Nov 2021 13:05:21 +0100
+Message-ID: <20211119120521.18813-1-vincent.whitchurch@axis.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-References: <1637309143-53528-1-git-send-email-yang.lee@linux.alibaba.com>
-In-Reply-To: <1637309143-53528-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Fri, 19 Nov 2021 13:04:28 +0100
-Message-ID: <CAHUa44EPVSQSMr78om6SXG3B+UEQ-J6qUnLJs_ZqswTAbTv2+Q@mail.gmail.com>
-Subject: Re: [PATCH -next] optee: Fix NULL but dereferenced coccicheck error
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     sumit.garg@linaro.org, op-tee@lists.trustedfirmware.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 9:05 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
->
-> Eliminate the following coccicheck warning:
-> ./drivers/tee/optee/smc_abi.c:1508:12-15: ERROR: optee is NULL but
-> dereferenced.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Fixes: 'commit 6749e69c4dad ("optee: add asynchronous notifications")'
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  drivers/tee/optee/smc_abi.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
-> index 92759d7..1f471ff 100644
-> --- a/drivers/tee/optee/smc_abi.c
-> +++ b/drivers/tee/optee/smc_abi.c
-> @@ -1505,8 +1505,6 @@ static int optee_probe(struct platform_device *pdev)
->         kfree(optee);
->  err_free_pool:
->         tee_shm_pool_free(pool);
-> -       if (optee->smc.memremaped_shm)
-> -               memunmap(optee->smc.memremaped_shm);
+On kernels before v5.15, calling read() on a unix socket after
+shutdown(SHUT_RD) or shutdown(SHUT_RDWR) would return the data
+previously written or EOF.  But now, while read() after
+shutdown(SHUT_RD) still behaves the same way, read() after
+shutdown(SHUT_RDWR) always fails with -EINVAL.
 
-Thanks for reporting. This should rather be fixed as:
-        if (memremaped_shm)
-                memunmap(memremaped_shm);
+This behaviour change was apparently inadvertently introduced as part of
+a bug fix for a different regression caused by the commit adding sockmap
+support to af_unix, commit 94531cfcbe79c359 ("af_unix: Add
+unix_stream_proto for sockmap").  Those commits, for unclear reasons,
+started setting the socket state to TCP_CLOSE on shutdown(SHUT_RDWR),
+while this state change had previously only been done in
+unix_release_sock().
 
-Cheers,
-Jens
+Restore the original behaviour.  The sockmap tests in
+tests/selftests/bpf continue to pass after this patch.
 
->         return rc;
->  }
->
-> --
-> 1.8.3.1
->
+Fixes: d0c6416bd7091647f60 ("unix: Fix an issue in unix_shutdown causing the other end read/write failures")
+Link: https://lore.kernel.org/lkml/20211111140000.GA10779@axis.com/
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+---
+ net/unix/af_unix.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+index 78e08e82c08c..b0bfc78e421c 100644
+--- a/net/unix/af_unix.c
++++ b/net/unix/af_unix.c
+@@ -2882,9 +2882,6 @@ static int unix_shutdown(struct socket *sock, int mode)
+ 
+ 	unix_state_lock(sk);
+ 	sk->sk_shutdown |= mode;
+-	if ((sk->sk_type == SOCK_STREAM || sk->sk_type == SOCK_SEQPACKET) &&
+-	    mode == SHUTDOWN_MASK)
+-		sk->sk_state = TCP_CLOSE;
+ 	other = unix_peer(sk);
+ 	if (other)
+ 		sock_hold(other);
+-- 
+2.33.1
+
