@@ -2,171 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571134578FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 23:46:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D8B457901
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 23:47:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234972AbhKSWs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 17:48:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59286 "EHLO
+        id S234697AbhKSWuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 17:50:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232960AbhKSWs6 (ORCPT
+        with ESMTP id S231416AbhKSWuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 17:48:58 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA06C061574;
-        Fri, 19 Nov 2021 14:45:55 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id u60so32218237ybi.9;
-        Fri, 19 Nov 2021 14:45:55 -0800 (PST)
+        Fri, 19 Nov 2021 17:50:02 -0500
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B61C061574;
+        Fri, 19 Nov 2021 14:46:59 -0800 (PST)
+Received: by mail-ua1-x930.google.com with SMTP id j14so14466891uan.10;
+        Fri, 19 Nov 2021 14:46:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Rr7GosNridUgCichnRpqxfdlmu9o3h8VXM4z78MLYXI=;
-        b=n80/74gs/8IzC5NV4oK8MbGUyyyNxHPlXZ/s1Z4WCrJHYx7BPhs29b/jo1GITbq9IN
-         A7XJXA2FnuTtDysbauy/CuA13CEjCeb1PD8+Gc5Xk3jvefKQVX9rYqllUqUB0aPZ67o+
-         EryDYyLdpNayTjUr0NiJe7aXB6oGuZ6xA/ObBHXHhHXzTo2kDvAOJnH2GyOdmNQLz/Fx
-         IaLQTw0fUQ7ciQv08DhfcG6PlfovrQeQEyMz5uzYn3Wt4HacTdCfO1/ge6GoBqFKUC5S
-         RN0XqzNblfVc+1mvRUpUytGmWZ4tb3AuhEhedB/RD+t0VpPs7kExKTI7/ttSvOiUPMaa
-         bBgQ==
+        bh=zFqARuc/+Lw2I8xXuND6mlPXskUS/aYJU6LEBPOEf5o=;
+        b=oEPAJiVHkKnLUb2OIn7pnuCkNWLF2CXFsJpcC586yzL6zLjYrrilICjeZrWleJWLUA
+         MUByli/RmDmWqxlSVqhDR1C6bIQ0kDaDMNLZDqRvCOMUuPzE+51dTc3LxWouNEGcGgc1
+         D3eB6R/C73PHkIIxZrOk1ifLLIZfh5g9wTKHiS1Gx4GFuwrAy7AUNeO12seW0K7OCP6X
+         wBsRQR2wN3yUSuw/0E2+rUjdxgnI0i7jVjmx3OHTGjVDW4mcqOaMDO9EnnoolD3awCvu
+         fl/4nE0dYzj0SFkSkk6Yb1vEf42ZmYf02pxLyBJlXedQLEo+weyRWKRNMJ/oBAiRB/KC
+         uBzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Rr7GosNridUgCichnRpqxfdlmu9o3h8VXM4z78MLYXI=;
-        b=QGcgkjGXo9C5GrT03jtOR0JNqF64BAIim/2Y8Wa6JD9nFKa9koT3bScKti0/wPe35W
-         7+d+iqpxU5CiCvAwHMvUkW9RFx3oC9hug/643sp71OfYVslJ1Q/rmxHmdtdgBZTCK+Po
-         jQpYhl6LG6Lj1vjml75Sfi8a02JKjoAbodVL6kb8Tqg23lwdYx22UkwZfPnNLfdEyA+i
-         aNzz++P93aJ3vvvq+QFTbFPqtMnG7Mzl4rfHnl7nGSFfnnD6znD5BWHIu7X6lm/+YhWs
-         Z2jS/1MNzTsH1uLyiMhRQOYaYzwCKwY1pUIxGezDmqwCxobPhJrC24OMVw8G/piZU4Zy
-         BKnw==
-X-Gm-Message-State: AOAM5333Z5R3ZajLO5CkfXhQAgcx3dqfQI74+L1ldYpvJgLcd19YogOC
-        RESYiA8JpmEFTtOLhMqmHc9iqHN7nnfQEalQgOE=
-X-Google-Smtp-Source: ABdhPJzz12bhH990y5fPJOLeKkBTx0wvXzv5HEg5GxMJitU46sVTSZcwSdanNzal4QgCxIWPPuZz46VxJIC61R+oaBg=
-X-Received: by 2002:a25:cec1:: with SMTP id x184mr41689748ybe.455.1637361954220;
- Fri, 19 Nov 2021 14:45:54 -0800 (PST)
+        bh=zFqARuc/+Lw2I8xXuND6mlPXskUS/aYJU6LEBPOEf5o=;
+        b=uhDG5YmP0zgxl/fyDm1ju1TopqTErB/ZN5csGitTdVzDXvDTxgHlPCPOps9GJIwsDs
+         NFZa/lml2QQf8QTicDhT4IR3P3ty7Ww0hJG6XBGDI+pRKKtosGgFfwRpnpkm91rAHkfu
+         3rTPmpkc3QFp5hhtJWVVNmU+tho14oI6Oq3iZdpddupEU3krz2Jmor+Si5dZtPzcZOaQ
+         i08ceaGxgBphYpwl+7nA4ojGh9Fhthhdc4uVwQOlX2Uh23CS4btlzZPNR8ExIax4GWeB
+         1cJOZrad8lJk7gkdws2COObaVST5U53ZOYwgUbmxpMq4fhwNJf9AgPTWDf+1RXk2GwGQ
+         pmkA==
+X-Gm-Message-State: AOAM531Q8HPqfbsy1RMUwwhbi9lL1W/uX4DI414LJhzWkfOUkWdp6z4l
+        0NNI2QW2Ybvk9L/rtUDsMJBD10VmDmKYDH96oHE=
+X-Google-Smtp-Source: ABdhPJzexc6BskoZ7bxCgeL3na7HhjycEVACnUbSLbHZVhqRta9op3uUnUg4gkVAlSInN0VBX8WCQTbjvDaXvz2/O/8=
+X-Received: by 2002:ab0:44e:: with SMTP id 72mr54616355uav.121.1637362018620;
+ Fri, 19 Nov 2021 14:46:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20211118130507.170154-1-kjain@linux.ibm.com> <CAEf4BzbDgCVLj0r=3iponPp81aVAGokhGti8WLfWKhHuTLdA8w@mail.gmail.com>
- <ce150f51-ef50-de85-fc52-0f2ee3a3000f@linux.ibm.com> <859f8b57-7ae2-3c68-5642-93bec7a59a20@iogearbox.net>
-In-Reply-To: <859f8b57-7ae2-3c68-5642-93bec7a59a20@iogearbox.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 19 Nov 2021 14:45:43 -0800
-Message-ID: <CAEf4BzbP0hAJYr-dahNZqKe9wyYL6hD9FayS-qdQV+Lmyi_VTQ@mail.gmail.com>
-Subject: Re: [PATCH v2] bpf: Remove config check to enable bpf support for
- branch records
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     kajoljain <kjain@linux.ibm.com>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, maddy@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        rnsastry@linux.ibm.com
+References: <20211111220206.121610-1-jim.cromie@gmail.com> <20211111220206.121610-9-jim.cromie@gmail.com>
+ <20211112114953.GA1381@axis.com> <f3914fa9-8b22-d54e-3f77-d998e74094b9@akamai.com>
+ <20211116104631.195cbd0b@eldfell> <f87b7076-47e6-89b1-aaf9-b67aa6713e01@akamai.com>
+ <20211118172401.0b4d722e@eldfell> <41ea83b2-a707-cb6f-521e-070bb12502de@akamai.com>
+In-Reply-To: <41ea83b2-a707-cb6f-521e-070bb12502de@akamai.com>
+From:   jim.cromie@gmail.com
+Date:   Fri, 19 Nov 2021 15:46:31 -0700
+Message-ID: <CAJfuBxyvDtALAHM53RdnWT4ke6Cjrc3OWTAqNKe_n-o_LhtpYg@mail.gmail.com>
+Subject: Re: [PATCH v10 08/10] dyndbg: add print-to-tracefs, selftest with it
+ - RFC
+To:     Jason Baron <jbaron@akamai.com>
+Cc:     Pekka Paalanen <ppaalanen@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>, Sean Paul <sean@poorly.run>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        quic_saipraka@quicinc.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Will Deacon <will@kernel.org>, maz@kernel.org,
+        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Arnd Bergmann <arnd@arndb.de>, linux-arm-msm@vger.kernel.org,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        intel-gvt-dev@lists.freedesktop.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, quic_psodagud@quicinc.com,
+        mathieu.desnoyers@efficios.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 8:08 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Fri, Nov 19, 2021 at 9:21 AM Jason Baron <jbaron@akamai.com> wrote:
 >
-> On 11/19/21 10:35 AM, kajoljain wrote:
-> > On 11/19/21 4:18 AM, Andrii Nakryiko wrote:
-> >> On Thu, Nov 18, 2021 at 5:10 AM Kajol Jain <kjain@linux.ibm.com> wrote:
+>
+>
+> On 11/18/21 10:24 AM, Pekka Paalanen wrote:
+> > On Thu, 18 Nov 2021 09:29:27 -0500
+> > Jason Baron <jbaron@akamai.com> wrote:
+> >
+> >> On 11/16/21 3:46 AM, Pekka Paalanen wrote:
+> >>> On Fri, 12 Nov 2021 10:08:41 -0500
+> >>> Jason Baron <jbaron@akamai.com> wrote:
 > >>>
-> >>> Branch data available to bpf programs can be very useful to get
-> >>> stack traces out of userspace application.
+> >>>> On 11/12/21 6:49 AM, Vincent Whitchurch wrote:
+> >>>>> On Thu, Nov 11, 2021 at 03:02:04PM -0700, Jim Cromie wrote:
+> >>>>>> Sean Paul proposed, in:
+> >>>>>> https://urldefense.com/v3/__https://patchwork.freedesktop.org/series/78133/__;!!GjvTz_vk!HcKnMRByYkIdyF1apqQjlN5aBIomzJR1an3YWXM6KXs0EftVMQdrewRA8Dki4A$
+> >>>>>> drm/trace: Mirror DRM debug logs to tracefs
+> >>>>>>
+> >>>>>> His patchset's objective is to be able to independently steer some of
+> >>>>>> the drm.debug stream to an alternate tracing destination, by splitting
+> >>>>>> drm_debug_enabled() into syslog & trace flavors, and enabling them
+> >>>>>> separately.  2 advantages were identified:
+> >>>>>>
+> >>>>>> 1- syslog is heavyweight, tracefs is much lighter
+> >>>>>> 2- separate selection of enabled categories means less traffic
+> >>>>>>
+> >>>>>> Dynamic-Debug can do 2nd exceedingly well:
+> >>>>>>
+> >>>>>> A- all work is behind jump-label's NOOP, zero off cost.
+> >>>>>> B- exact site selectivity, precisely the useful traffic.
+> >>>>>>    can tailor enabled set interactively, at shell.
+> >>>>>>
+> >>>>>> Since the tracefs interface is effective for drm (the threads suggest
+> >>>>>> so), adding that interface to dynamic-debug has real potential for
+> >>>>>> everyone including drm.
+> >>>>>>
+> >>>>>> if CONFIG_TRACING:
+> >>>>>>
+> >>>>>> Grab Sean's trace_init/cleanup code, use it to provide tracefs
+> >>>>>> available by default to all pr_debugs.  This will likely need some
+> >>>>>> further per-module treatment; perhaps something reflecting hierarchy
+> >>>>>> of module,file,function,line, maybe with a tuned flattening.
+> >>>>>>
+> >>>>>> endif CONFIG_TRACING
+> >>>>>>
+> >>>>>> Add a new +T flag to enable tracing, independent of +p, and add and
+> >>>>>> use 3 macros: dyndbg_site_is_enabled/logging/tracing(), to encapsulate
+> >>>>>> the flag checks.  Existing code treats T like other flags.
+> >>>>>
+> >>>>> I posted a patchset a while ago to do something very similar, but that
+> >>>>> got stalled for some reason and I unfortunately didn't follow it up:
+> >>>>>
+> >>>>>  https://urldefense.com/v3/__https://lore.kernel.org/lkml/20200825153338.17061-1-vincent.whitchurch@axis.com/__;!!GjvTz_vk!HcKnMRByYkIdyF1apqQjlN5aBIomzJR1an3YWXM6KXs0EftVMQdrewRGytKHPg$
+> >>>>>
+> >>>>> A key difference between that patchset and this patch (besides that
+> >>>>> small fact that I used +x instead of +T) was that my patchset allowed
+> >>>>> the dyndbg trace to be emitted to the main buffer and did not force them
+> >>>>> to be in an instance-specific buffer.
+> >>>>
+> >>>> Yes, I agree I'd prefer that we print here to the 'main' buffer - it
+> >>>> seems to keep things simpler and easier to combine the output from
+> >>>> different sources as you mentioned.
 > >>>
-> >>> Commit fff7b64355ea ("bpf: Add bpf_read_branch_records() helper")
-> >>> added bpf support to capture branch records in x86. Enable this feature
-> >>> for other architectures as well by removing check specific to x86.
-> >>> Incase any platform didn't support branch stack, it will return with
-> >>> -EINVAL.
+> >>> Hi,
 > >>>
-> >>> Selftest 'perf_branches' result on power9 machine with branch stacks
-> >>> support.
+> >>> I'm not quite sure I understand this discussion, but I would like to
+> >>> remind you all of what Sean's original work is about:
 > >>>
-> >>> Before this patch changes:
-> >>> [command]# ./test_progs -t perf_branches
-> >>>   #88/1 perf_branches/perf_branches_hw:FAIL
-> >>>   #88/2 perf_branches/perf_branches_no_hw:OK
-> >>>   #88 perf_branches:FAIL
-> >>> Summary: 0/1 PASSED, 0 SKIPPED, 1 FAILED
+> >>> Userspace configures DRM tracing into a flight recorder buffer (I guess
+> >>> this is what you refer to "instance-specific buffer").
 > >>>
-> >>> After this patch changes:
-> >>> [command]# ./test_progs -t perf_branches
-> >>>   #88/1 perf_branches/perf_branches_hw:OK
-> >>>   #88/2 perf_branches/perf_branches_no_hw:OK
-> >>>   #88 perf_branches:OK
-> >>> Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+> >>> Userspace runs happily for months, and then hits a problem: a failure
+> >>> in the DRM sub-system most likely, e.g. an ioctl that should never
+> >>> fail, failed. Userspace handles that failure by dumping the flight
+> >>> recorder buffer into a file and saving or sending a bug report. The
+> >>> flight recorder contents give a log of all relevant DRM in-kernel
+> >>> actions leading to the unexpected failure to help developers debug it.
 > >>>
-> >>> Selftest 'perf_branches' result on power9 machine which doesn't
-> >>> support branch stack
+> >>> I don't mind if one can additionally send the flight recorder stream to
+> >>> the main buffer, but I do want the separate flight recorder buffer to
+> >>> be an option so that a) unrelated things cannot flood the interesting
+> >>> bits out of it, and b) the scope of collected information is relevant.
 > >>>
-> >>> After this patch changes:
-> >>> [command]# ./test_progs -t perf_branches
-> >>>   #88/1 perf_branches/perf_branches_hw:SKIP
-> >>>   #88/2 perf_branches/perf_branches_no_hw:OK
-> >>>   #88 perf_branches:OK
-> >>> Summary: 1/1 PASSED, 1 SKIPPED, 0 FAILED
+> >>> The very reason for this work is problems that are very difficult to
+> >>> reproduce in practice, either because the problem itself is triggered
+> >>> very rarely and randomly, or because the end users of the system have
+> >>> either no knowledge or no access to reconfigure debug logging and then
+> >>> reproduce the problem with good debug logs.
 > >>>
-> >>> Fixes: fff7b64355eac ("bpf: Add bpf_read_branch_records() helper")
-> >>> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> >>> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-> >>> ---
+> >>> Thank you very much for pushing this work forward!
 > >>>
-> >>> Tested this patch changes on power9 machine using selftest
-> >>> 'perf branches' which is added in commit 67306f84ca78 ("selftests/bpf:
-> >>> Add bpf_read_branch_records()")
 > >>>
-> >>> Changelog:
-> >>> v1 -> v2
-> >>> - Inorder to add bpf support to capture branch record in
-> >>>    powerpc, rather then adding config for powerpc, entirely
-> >>>    remove config check from bpf_read_branch_records function
-> >>>    as suggested by Peter Zijlstra
 > >>
-> >> what will be returned for architectures that don't support branch
-> >> records? Will it be zero instead of -ENOENT?
+> >> So I think Vincent (earlier in the thread) was saying that he finds it
+> >> very helpful have dynamic debug output go to the 'main' trace buffer,
+> >> while you seem to be saying you'd prefer it just go to dynamic debug
+> >> specific trace buffer.
 > >
-> > Hi Andrii,
-> >       Incase any architecture doesn't support branch records and if it
-> > tries to do branch sampling with sample type as
-> > PERF_SAMPLE_BRANCH_STACK, perf_event_open itself will fail.
+> > Seems like we have different use cases: traditional debugging, and
+> > in-production flight recorder for problem reporting. I'm not surprised
+> > if they need different treatment.
 > >
-> > And even if, perf_event_open succeeds  we have appropriate checks in
-> > bpf_read_branch_records function, which will return -EINVAL for those
-> > architectures.
+> >> So we certainly can have dynamic output potentially go to both places -
+> >> although I think this would mean two tracepoints? But I really wonder
+> >> if we really need a separate tracing buffer for dynamic debug when
+> >> what goes to the 'main' buffer can be controlled and filtered to avoid
+> >> your concern around a 'flood'?
 > >
-> > Reference from linux/kernel/trace/bpf_trace.c
+> > If the DRM tracing goes into the main buffer, then systems in
+> > production cannot have any other sub-system traced in a similar
+> > fashion. To me it would feel very arrogant to say that to make use of
+> > DRM flight recording, you cannot trace much or anything else.
 > >
-> > Here, br_stack will be empty, for unsupported architectures.
+> > The very purpose of the flight recorder is run in production all the
+> > time, not in a special debugging session.
 > >
-> > BPF_CALL_4(bpf_read_branch_records, struct bpf_perf_event_data_kern *, ctx,
-> >          void *, buf, u32, size, u64, flags)
-> > {
-> > .....
-> >       if (unlikely(flags & ~BPF_F_GET_BRANCH_RECORDS_SIZE))
-> >               return -EINVAL;
+> > There is also the question of access and contents of the trace buffer.
+> > Ultimately, if automatic bug reports are enabled in a system, the
+> > contents of the trace buffer would be sent as-is to some bug tracking
+> > system. If there is a chance to put non-DRM stuff in the trace buffer,
+> > that could be a security problem.
 > >
-> >       if (unlikely(!br_stack))
-> >               return -EINVAL;
->
-> In that case for unsupported archs we should probably bail out with -ENOENT here
-> as helper doc says '**-ENOENT** if architecture does not support branch records'
-> (see bpf_read_branch_records() doc in include/uapi/linux/bpf.h).
-
-Yep, I think so too.
-
->
-> > ....
-> > }
+> > My use case is Weston. When Weston encounters an unexpected problem in
+> > production, something should automatically capture the DRM flight
+> > recorder contents and save it alongside the Weston log. Would be really
+> > nice if Weston itself could do that, but I suspect it is going to need
+> > root privileges so it needs some helper daemon.
+> >
+> > Maybe Sean can reiterate their use case more?
+> >
 > >
 > > Thanks,
-> > Kajol Jain
+> > pq
+> >
+>
+> Ok, so in this current thread the proposal was to create a "dyndbg-tracefs"
+> buffer to put the dynamic debug output (including drm output from dynamic
+> debug) into. And I was saying let's just put in the 'main' trace buffer
+> (predicated on a dynamic debug specific tracepoint), since there seems
+> to be a a use-case for that and it keeps things simpler.
+>
+> But I went back to Sean's original patch, and it creates a drm specific
+> trace buffer "drm" (via trace_array_get_by_name("drm")). Here:
+> https://patchwork.freedesktop.org/patch/445549/?series=78133&rev=5
+>
+> So I think that may be some of the confusion here? The current thread/
+> proposal is not for a drm specific trace buffer...
+>
+
+while thats true, it was a KISS choice, not intrinsic.
+Now that a requirement has emerged, I can think about it.
+
+I thought use of all the pr_debug()s as a tracefs event provider made sense,
+since the callsite descriptor is passed in, and could be passed in to
+the tracefs interface.
+
+Vincent's code has the macro magic to define that event, which IIUC
+is what  makes it controllable by ftrace, and therefore acceptable in
+principle to Steve.
+Would there be any reason to expand his set of 2 events into dev_dbg,
+pr_debug etc varieties ?
+(ie any value to separating dev, !dev ?, maybe so)
+
+Sean's code uses trace_array_printk primarily, which is EXPORTed,
+which is a virtue.
+
+Vincents code does
++/*
++ * This code is heavily based on __ftrace_trace_stack().
++ *
++ * Allow 4 levels of nesting: normal, softirq, irq, NMI.
++ */
+
+to implement
+
++static void dynamic_trace(const char *fmt, va_list args)
+
+Has this __ftrace_trace_stack() code been bundled into or hidden under
+a supported interface ?
+
+would it look anything like trace_array_printk() ?
+
+what problem is that code solving inside dynamic-debug.c ?
+
+
+> Having a subsystem specific trace buffer would allow subsystem specific
+> trace log permissions depending on the sensitivity of the data. But
+> doesn't drm output today go to the system log which is typically world
+> readable today?
+>
+
+> So I could see us supporting subsystem specific trace buffer output
+> via dynamic debug here. We could add new dev_debug() variants that
+> allow say a trace buffer to be supplied. So in that way subsystems
+> could 'opt-out' of having their data put into the global trace buffer.
+> And perhaps some subsystems we would want to allow output to both
+> buffers? The subsystem specific one and the global one?
+>
+
+ * trace_array_printk - Print a message to a specific instance
+ * @tr: The instance trace_array descriptor
+ * @ip: The instruction pointer that this is called from.
+ * @fmt: The format to print (printf format)
+ *
+
+what happens when @tr == NULL ?
+It could allow up-flow of events to the global instance
+
+> Thanks,
+>
+> -Jason
+>
+>
+
+So I wonder, is there any conceptual utility to this ?
+
+echo 1 > instances/foo/filter_up  # enable event upflow (or query-time merging?)
+
+Maybe enabling this causes other files (the ones missing from
+instances/foo) to magically appear
+so all those filtering capacities also appear.
