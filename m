@@ -2,117 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F107F457608
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 18:41:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F1E457610
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 18:46:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237384AbhKSRoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 12:44:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47210 "EHLO mail.kernel.org"
+        id S230405AbhKSRtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 12:49:07 -0500
+Received: from mga01.intel.com ([192.55.52.88]:59299 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237383AbhKSRnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 12:43:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0ACC61279;
-        Fri, 19 Nov 2021 17:40:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637343629;
-        bh=p/VEF9CdIPgG5NC6emvyur/xGdj1rvEly4YrcM8CVkE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KwATDcuj6Zz1+RLz2cZSogCgy+35AmeG6blVJY2Y4P0eKqNxDQqkP/hFc4L0Yp/VR
-         LuSTD3xfhhUF8h25EQOgGKspyN9ARREojs1e9jaYCAMf79ZffqzxDusCFDpP6P63F0
-         qTW/PUVuXuDvitGoI/wo3f5fHrbIIGXZ0c01sk5M=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Kyle D. Pelton" <kyle.d.pelton@intel.com>,
-        Saranya Gopal <saranya.gopal@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.15 20/20] Revert "ACPI: scan: Release PM resources blocked by unused objects"
-Date:   Fri, 19 Nov 2021 18:39:38 +0100
-Message-Id: <20211119171445.308946411@linuxfoundation.org>
-X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211119171444.640508836@linuxfoundation.org>
-References: <20211119171444.640508836@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S229585AbhKSRtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 12:49:06 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10173"; a="258250350"
+X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
+   d="scan'208";a="258250350"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 09:44:15 -0800
+X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
+   d="scan'208";a="605621417"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 09:44:13 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mo7vj-008bil-2h;
+        Fri, 19 Nov 2021 19:44:07 +0200
+Date:   Fri, 19 Nov 2021 19:44:06 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [pinctrl-intel:review-andy 18/19]
+ drivers/pinctrl/pinctrl-zynqmp.c:825:13: warning: variable 'pin' is
+ uninitialized when used here
+Message-ID: <YZfiZmd14pD4JQMY@smile.fi.intel.com>
+References: <202111191618.SSj1gGvK-lkp@intel.com>
+ <YZdhYEVCgqh5MB3J@smile.fi.intel.com>
+ <YZfc4wmvcQW9Kpcz@archlinux-ax161>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZfc4wmvcQW9Kpcz@archlinux-ax161>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Fri, Nov 19, 2021 at 10:20:35AM -0700, Nathan Chancellor wrote:
+> On Fri, Nov 19, 2021 at 10:33:36AM +0200, Andy Shevchenko wrote:
+> > On Fri, Nov 19, 2021 at 04:08:32PM +0800, kernel test robot wrote:
 
-commit 3b2b49e6dfdcf423506a771bf44cee842596351a upstream.
+...
 
-Revert commit c10383e8ddf4 ("ACPI: scan: Release PM resources blocked
-by unused objects"), because it causes boot issues to appear on some
-platforms.
+> > > All warnings (new ones prefixed by >>):
+> > > 
+> > > >> drivers/pinctrl/pinctrl-zynqmp.c:825:13: warning: variable 'pin' is uninitialized when used here [-Wuninitialized]
+> > >            if (IS_ERR(pin->name))
+> > >                       ^~~
+> > >    drivers/pinctrl/pinctrl-zynqmp.c:811:37: note: initialize the variable 'pin' to silence this warning
+> > >            struct pinctrl_pin_desc *pins, *pin;
+> > >                                               ^
+> > >                                                = NULL
+> > >    1 warning generated.
+> > 
+> > Utterly inappropriate suggestion by the compiler (it found an actual error,
+> > though).
+> > 
+> > Can be Clang fixed, really?
+> 
+> I reported this upstream: https://bugs.llvm.org/show_bug.cgi?id=52559
 
-Reported-by: Kyle D. Pelton <kyle.d.pelton@intel.com>
-Reported-by: Saranya Gopal <saranya.gopal@intel.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/acpi/glue.c     |   25 -------------------------
- drivers/acpi/internal.h |    1 -
- drivers/acpi/scan.c     |    6 ------
- 3 files changed, 32 deletions(-)
+Thanks!
 
---- a/drivers/acpi/glue.c
-+++ b/drivers/acpi/glue.c
-@@ -340,28 +340,3 @@ void acpi_device_notify_remove(struct de
- 
- 	acpi_unbind_one(dev);
- }
--
--int acpi_dev_turn_off_if_unused(struct device *dev, void *not_used)
--{
--	struct acpi_device *adev = to_acpi_device(dev);
--
--	/*
--	 * Skip device objects with device IDs, because they may be in use even
--	 * if they are not companions of any physical device objects.
--	 */
--	if (adev->pnp.type.hardware_id)
--		return 0;
--
--	mutex_lock(&adev->physical_node_lock);
--
--	/*
--	 * Device objects without device IDs are not in use if they have no
--	 * corresponding physical device objects.
--	 */
--	if (list_empty(&adev->physical_node_list))
--		acpi_device_set_power(adev, ACPI_STATE_D3_COLD);
--
--	mutex_unlock(&adev->physical_node_lock);
--
--	return 0;
--}
---- a/drivers/acpi/internal.h
-+++ b/drivers/acpi/internal.h
-@@ -117,7 +117,6 @@ bool acpi_device_is_battery(struct acpi_
- bool acpi_device_is_first_physical_node(struct acpi_device *adev,
- 					const struct device *dev);
- int acpi_bus_register_early_device(int type);
--int acpi_dev_turn_off_if_unused(struct device *dev, void *not_used);
- 
- /* --------------------------------------------------------------------------
-                      Device Matching and Notification
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -2559,12 +2559,6 @@ int __init acpi_scan_init(void)
- 		}
- 	}
- 
--	/*
--	 * Make sure that power management resources are not blocked by ACPI
--	 * device objects with no users.
--	 */
--	bus_for_each_dev(&acpi_bus_type, NULL, NULL, acpi_dev_turn_off_if_unused);
--
- 	acpi_turn_off_unused_power_resources();
- 
- 	acpi_scan_initialized = true;
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
