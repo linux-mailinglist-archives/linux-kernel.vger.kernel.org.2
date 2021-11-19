@@ -2,501 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03168457237
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C569B45723C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:58:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234579AbhKSP7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 10:59:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231828AbhKSP7H (ORCPT
+        id S236068AbhKSQBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 11:01:08 -0500
+Received: from mout.kundenserver.de ([212.227.126.135]:43863 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233489AbhKSQBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 10:59:07 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26523C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 07:56:05 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id t5so44869462edd.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 07:56:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=/tKsxSEfsYBwSluuYOLprfcJui1VZ7odSBnyxo6MzeA=;
-        b=cmORIRUfx88TR56Bemm+KdlRbNS5Fm4HGjHKHYa9KE4Tvlz3qaOh9U2IFJD/BhDMpK
-         0AKpO60Iosrbqn1gsPFpkQbJpe7NJU6c1U9n3cAo2VpUBVMIXV4Bv5XoSVbQm0jmtgo6
-         Iqr6H3xnJs4GWEXxTtFNbusM2Iz2v2UaXYYyc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=/tKsxSEfsYBwSluuYOLprfcJui1VZ7odSBnyxo6MzeA=;
-        b=iBIFQKyPcER5ecCEkR3GDyuhKncLF85eG4ZaQOnirAW+66xU7EHfuvCERlQTvMClhu
-         HW98vlxbtrFWalsxWWjwUp4EVlmQdh3y69sTaWe3090f6EEvrHhupFkLSvCGOOHV7Vnt
-         R0VNCuoBO25sobX0DNGqcQ5rDJ0y8tPvurn6vQT/bG2PlfaZn0RawwCX1zUg08+pRm45
-         O/mLUyCkKCw7d5LRlcrNKHxTvW5R0kaR1tvhSWuQnta/z6yn/grhGy86pFllWq8qVQxK
-         hBeMN+RMOWCKJeM1Io1XfA/WJnbqEFsYtBJOJHNSSmm7edWUJ+k1r4Bf+u5D34CipmpC
-         Rg5A==
-X-Gm-Message-State: AOAM533XFqLMWVTYtVLfu8w0dZjYfskdc+6JHMbCZouEnB7kFEg5I0yh
-        ObaUQ+OSoD4EFkmCEpKndgraTQ==
-X-Google-Smtp-Source: ABdhPJwUfsvKoAXImN0ctJFSv9mqYmIe6+r/s/xfHWgFamuUb00KlG/yNCuxGBbOwCLL8IkakZ83jg==
-X-Received: by 2002:a17:906:a215:: with SMTP id r21mr9126381ejy.21.1637337363469;
-        Fri, 19 Nov 2021 07:56:03 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id h10sm83825edr.95.2021.11.19.07.56.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 07:56:02 -0800 (PST)
-Date:   Fri, 19 Nov 2021 16:56:01 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Pekka Paalanen <ppaalanen@gmail.com>
-Cc:     Brian Norris <briannorris@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        David Airlie <airlied@linux.ie>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Doug Anderson <dianders@chromium.org>,
-        linux-rockchip@lists.infradead.org,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        dri-devel@lists.freedesktop.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-input@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] drm/input_helper: Add new input-handling helper
-Message-ID: <YZfJET55LjuW4BP+@phenom.ffwll.local>
-Mail-Followup-To: Pekka Paalanen <ppaalanen@gmail.com>,
-        Brian Norris <briannorris@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        David Airlie <airlied@linux.ie>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org, Doug Anderson <dianders@chromium.org>,
-        linux-rockchip@lists.infradead.org,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        dri-devel@lists.freedesktop.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-input@vger.kernel.org
-References: <20211117224841.3442482-1-briannorris@chromium.org>
- <20211117144807.v2.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid>
- <20211118123928.545dec8a@eldfell>
- <YZcB4ooqpvP3gHdx@google.com>
- <20211119123841.1d628cb6@eldfell>
+        Fri, 19 Nov 2021 11:01:07 -0500
+Received: from mail-wr1-f45.google.com ([209.85.221.45]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1M42zo-1mo6H531ns-0000FQ; Fri, 19 Nov 2021 16:58:03 +0100
+Received: by mail-wr1-f45.google.com with SMTP id r8so18888104wra.7;
+        Fri, 19 Nov 2021 07:58:03 -0800 (PST)
+X-Gm-Message-State: AOAM532mhDjdtvu6c6ToTliwYZng/8gDigytuaK+QoyyX1WgYdrj7nq5
+        tT+R5WMVTX5SxHhnzgAScBM7NiMsAxY9ovH+G8Q=
+X-Google-Smtp-Source: ABdhPJwnsTso3SJsyzelpHMk45ZnrIpUGUkP3Z97jucoO4GjyflpBdZvuKfoRBo685VC8w89e5cIDe6TdYLQkVPBgCM=
+X-Received: by 2002:adf:efc6:: with SMTP id i6mr8808061wrp.428.1637337483020;
+ Fri, 19 Nov 2021 07:58:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211119123841.1d628cb6@eldfell>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+References: <20211119113644.1600-1-alx.manpages@gmail.com> <CAK8P3a0qT9tAxFkLN_vJYRcocDW2TcBq79WcYKZFyAG0udZx5Q@mail.gmail.com>
+ <434296d3-8fe1-f1d2-ee9d-ea25d6c4e43e@gmail.com>
+In-Reply-To: <434296d3-8fe1-f1d2-ee9d-ea25d6c4e43e@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 19 Nov 2021 16:57:46 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2yVXw9gf8-BNvX_rzectNoiy0MqGKvBcXydiUSrc_fCA@mail.gmail.com>
+Message-ID: <CAK8P3a2yVXw9gf8-BNvX_rzectNoiy0MqGKvBcXydiUSrc_fCA@mail.gmail.com>
+Subject: Re: [PATCH 00/17] Add memberof(), split some headers, and slightly
+ simplify code
+To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, LKML <linux-kernel@vger.kernel.org>,
+        Ajit Khaparde <ajit.khaparde@broadcom.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Borislav Petkov <bp@suse.de>,
+        Corey Minyard <cminyard@mvista.com>, Chris Mason <clm@fb.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        David Sterba <dsterba@suse.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "John S . Gruber" <JohnSGruber@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Kees Cook <keescook@chromium.org>,
+        Ketan Mukadam <ketan.mukadam@broadcom.com>,
+        Len Brown <lenb@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:Y/JjwNjDwd/Q0+diMms58NLy9JY4EB9LGPrp/6JP0lk1hDVVgRw
+ JCE0Ex5UBNbAAg67jcURPyD4IubROn6TXvXmVxG94DTEmNqyr7JjIEeE1XkKRr/7kfNyoLh
+ jXXpthUqT1dr0yh9xfD2raQjMjwuCxSpUAEyGgTEagaX2QZ5t4WEDLzWbWdWZXZR/eCOLsA
+ HoSFiyawE2pP8REfWS+jg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Vf+MpytySlc=:u0G9LLNolDhAJ7j2PFAMBU
+ T6p69vmJQ4U9DqYVupBe7fs9YXstBnGm/v/sz+Cp/4L+mU4U0oZGrj2JwClfryQ2UsOiWs1l5
+ 6KKCNEWHxhq1wLNivg8zuwR5nublGr73jhscZY/xC0zSszWx0b7yWvpmGSUOqi7tqGvEpx7BG
+ f9xLxxrL5zjZRHCDcRi7buNM8KJnOYQG79k1a8HGWXnnOs6IiR754JPo75bLdewSqJ5L9SyjA
+ auBikGOp43f+lhYpOXljsu1L9aN67o3qu1FVT6OxRmObSaHh9/4leZlzD6QH0y//c5KkEKrKe
+ bqVVMcOTv6P3ObWrpPjTWE2uXb6oAyRwnIPPKBAbT8y9LDFoaN95TvgmFUH0+kscEgbvVBx1w
+ 9o/ifi7tNiFc750grxdJn0NpQVRUtc9KqPt+wzw1cHTFAV7BnjxJZCcZm9GoQ8FZBYwPaMrF5
+ DWlyu+Z5eMUA0swwjNoAw6rwCvECZe4D0kden2NxFRVqy1/iWq4hYiKTB5sqShQo2SqELr6v6
+ LDlgNVw5eRqizMQp22K5/0P7itSXJUFP82t/qVhsA4EDmM62Owb1OplnBQ4mL3NY+cEO+yT5+
+ n7/BSRn1S6528EXUQS/kxBBwz2OKiRxcHrcxRaRDHQfiFYZhWigPPL963KNVZR7wN29jWQiIv
+ /FDCLjJbGOdIlVl4rD0cGtRftij2qa+/ElWBLHFlggTpfUbTmQrCDmbKGhOgDX0oXhWjst+3D
+ mdsbQJ3+ru9CgTcV7RRoI9Mg1mCo873z4rWhh9P9UMidKkVVK7JkVax6Wa0hyDdNpdO6lbe+o
+ ilR/jBtZSV8xkpFo5eyLLX/8L13BSLtO1KFg1PH+kj4PhcKzMVUYCzoiVpwwks21ym4xUDQTp
+ c19/D3EAg9Zip6vea0fg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 12:38:41PM +0200, Pekka Paalanen wrote:
-> On Thu, 18 Nov 2021 17:46:10 -0800
-> Brian Norris <briannorris@chromium.org> wrote:
-> 
-> > Hi Pekka,
-> > 
-> > Thanks for the thoughts and review. I've tried to respond below:
-> > 
-> > On Thu, Nov 18, 2021 at 12:39:28PM +0200, Pekka Paalanen wrote:
-> > > On Wed, 17 Nov 2021 14:48:40 -0800
-> > > Brian Norris <briannorris@chromium.org> wrote:
-> > >   
-> > > > A variety of applications have found it useful to listen to
-> > > > user-initiated input events to make decisions within a DRM driver, given
-> > > > that input events are often the first sign that we're going to start
-> > > > doing latency-sensitive activities:
-> > > > 
-> > > >  * Panel self-refresh: software-directed self-refresh (e.g., with
-> > > >    Rockchip eDP) is especially latency sensitive. In some cases, it can
-> > > >    take 10s of milliseconds for a panel to exit self-refresh, which can
-> > > >    be noticeable. Rockchip RK3399 Chrome OS systems have always shipped
-> > > >    with an input_handler boost, that preemptively exits self-refresh
-> > > >    whenever there is input activity.
-> > > > 
-> > > >  * GPU drivers: on GPU-accelerated desktop systems, we may need to
-> > > >    render new frames immediately after user activity. Powering up the
-> > > >    GPU can take enough time that it is worthwhile to start this process
-> > > >    as soon as there is input activity. Many Chrome OS systems also ship
-> > > >    with an input_handler boost that powers up the GPU.
-> > > > 
-> > > > This patch provides a small helper library that abstracts some of the
-> > > > input-subsystem details around picking which devices to listen to, and
-> > > > some other boilerplate. This will be used in the next patch to implement
-> > > > the first bullet: preemptive exit for panel self-refresh.
-> > > > 
-> > > > Bits of this are adapted from code the Android and/or Chrome OS kernels
-> > > > have been carrying for a while.
-> > > > 
-> > > > Signed-off-by: Brian Norris <briannorris@chromium.org>
-> > > > ---  
-> > > 
-> > > Thanks Simon for the CC.
-> > > 
-> > > Hi Brian,
-> > > 
-> > > while this feature in general makes sense and sounds good, to start
-> > > warming up display hardware early when something might start to happen,
-> > > this particular proposal has many problems from UAPI perspective (as it
-> > > has none). Comments below.
-> > > 
-> > > Btw. if PSR is that slow to wake up from, how much do you actually gain
-> > > from this input event watching? I would imagine the improvement to not
-> > > be noticeable.  
-> > 
-> > Patch 2 has details. It's not really about precisely how slow PSR is,
-> > but how much foresight we can gain: in patch 2, I note that with my
-> > particular user space and system, I can start PSR-exit 50ms earlier than
-> > I would otherweise. (FWIW, this measurement is exactly the same it was
-> > with the original version written 4 years ago.)
-> > 
-> > For how long PSR-exit takes: the measurements I'm able to do (via
-> > ftrace) show that drm_self_refresh_transition() takes between 35 and 55
-> > ms. That's noticeable at 60 fps. And quite conveniently, the input-boost
-> > manages to hide nearly 100% of that latency.
-> > 
-> > Typical use cases where one notices PSR latency (and where this 35-55ms
-> > matters) involve simply moving a cursor; it's very noticeable when you
-> > have more than a few frames of latency to "get started".
-> 
-> Hi Brian,
-> 
-> that is very interesting, thanks.
-> 
-> I would never have expected to have userspace take *that* long to
-> react. But, that sounds like it could be just your userspace software
-> stack.
+On Fri, Nov 19, 2021 at 4:06 PM Alejandro Colomar (man-pages)
+<alx.manpages@gmail.com> wrote:
+> On 11/19/21 15:47, Arnd Bergmann wrote:
+> > On Fri, Nov 19, 2021 at 12:36 PM Alejandro Colomar
+>
+> Yes, I would like to untangle the dependencies.
+>
+> The main reason I started doing this splitting
+> is because I wouldn't be able to include
+> <linux/stddef.h> in some headers,
+> because it pulled too much stuff that broke unrelated things.
+>
+> So that's why I started from there.
+>
+> I for example would like to get NULL in memberof()
+> without puling anything else,
+> so <linux/NULL.h> makes sense for that.
+>
+> It's clear that every .c wants NULL,
+> but it's not so clear that every .c wants
+> everything that <linux/stddef.h> pulls indirectly.
 
-In the other subthread we're talking about making this more explicit.
-Maybe we need to combine this with a "I expect to take this many
-milliseconds to get the first frame out" value.
+From what I can tell, linux/stddef.h is tiny, I don't think it's really
+worth optimizing this part. I have spent some time last year
+trying to untangle some of the more interesting headers, but ended
+up not completing this as there are some really hard problems
+once you start getting to the interesting bits.
 
-That way compositors which take 50ms (which frankly is shocking slow) can
-set that, and kms can enable sr exit (since sr exit will actually help
-here). But other compositors which expect to get the first frame out in
-maybe 20 can spec that, and then the driver will not sr exit (because too
-high chances we'll just make shit slower), and instead will only boost
-render clocks.
+The approach I tried was roughly:
 
-Thoughts?
--Daniel
+- For each header in the kernel, create a preprocessed version
+  that includes all the indirect includes, from that start a set
+  of lookup tables that record which header is eventually included
+  by which ones, and the size of each preprocessed header in
+  bytes
 
-> 
-> > > I think some numbers about how much this feature helps would be really
-> > > good, even if they are quite specific use cases. You also need to
-> > > identify the userspace components, because I think different display
-> > > servers are very different in their reaction speed.  
-> > 
-> > If my email address isn't obvious, I'm testing Chrome OS. I'm frankly
-> > not that familiar with the user space display stack, but for what I
-> > know, it's rather custom, developed within the Chromium project. Others
-> > on CC here could probably give you more detail, if you want specific
-> > answers, besides docs like this:
-> > 
-> > https://chromium.googlesource.com/chromium/src/+/HEAD/docs/ozone_overview.md
-> > 
-> > > If KMS gets a pageflip or modeset in no time after an input event, then
-> > > what's the gain. OTOH, if the display server is locking on to vblank,
-> > > there might be a delay worth avoiding. But then, is it worth
-> > > short-circuiting the wake-up in kernel vs. adding a new ioctl that
-> > > userspace could hit to start the warming up process?  
-> > 
-> > Rob responded to the first part to some extent (there is definitely gain
-> > to be had).
-> > 
-> > To the last part: I wrote a simple debugfs hook to allow user space to
-> > force a PSR exit, and then a simple user space program to read input
-> > events and smash that debugfs file whenever it sees one. Testing in the
-> > same scenarios, this appears to lose less than 100 microseconds versus
-> > the in-kernel approach, which is negligible for this use case. (I'm not
-> > sure about the other use cases.)
-> > 
-> > So, this is technically doable in user space.
-> 
-> This is crucial information I would like you to include in some commit
-> message. I think it is very interesting for the reviewers. Maybe also
-> copy that in the cover letter.
-> 
-> In my opinion there is a clear and obvious decision due that
-> measurement: Add the new ioctl for userspace to hit, do not try to
-> hardcode or upload the wake-up policy into the kernel.
-> 
-> > I can't speak to the ease of _actually_ integrating this into even our
-> > own Chrome display manager, but I highly doubt it will get integrated
-> > into others. I'd posit this should weigh into the relative worth, but
-> > otherwise can't really give you an answer there.
-> 
-> I think such a thing would be very simple to add to any display server.
-> They already have hooks for things like resetting idle timeout timers on
-> any relevant input event.
-> 
-> > I'd also note, software-directed PSR is so far designed to be completely
-> > opaque to user space. There's no way to disable it; no way to know it's
-> > active; and no way to know anything about the parameters it's computing
-> > (like average entry/exit delay). Would you suggest a whole set of new
-> > IOCTLs for this?
-> 
-> Just one ioctl on the DRM device: "Hey, wake up!". Because that's what
-> your patch does in-kernel, right?
-> 
-> If there are use case specific parameters, then how did you intend to
-> allow adjusting those in your proposal?
-> 
-> > > > diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
-> > > > index 1c41156deb5f..9a6494aa45e6 100644
-> > > > --- a/drivers/gpu/drm/Makefile
-> > > > +++ b/drivers/gpu/drm/Makefile
-> > > > @@ -56,6 +56,8 @@ drm_kms_helper-y := drm_bridge_connector.o drm_crtc_helper.o drm_dp_helper.o \
-> > > >  		drm_atomic_state_helper.o drm_damage_helper.o \
-> > > >  		drm_format_helper.o drm_self_refresh_helper.o drm_rect.o
-> > > >  
-> > > > +drm_kms_helper-$(CONFIG_DRM_INPUT_HELPER) += drm_input_helper.o
-> > > > +
-> > > >  drm_kms_helper-$(CONFIG_DRM_PANEL_BRIDGE) += bridge/panel.o
-> > > >  drm_kms_helper-$(CONFIG_DRM_FBDEV_EMULATION) += drm_fb_helper.o
-> > > >  drm_kms_helper-$(CONFIG_DRM_KMS_CMA_HELPER) += drm_fb_cma_helper.o
-> > > > diff --git a/drivers/gpu/drm/drm_input_helper.c b/drivers/gpu/drm/drm_input_helper.c
-> > > > new file mode 100644
-> > > > index 000000000000..470f90865c7c
-> > > > --- /dev/null
-> > > > +++ b/drivers/gpu/drm/drm_input_helper.c  
-> > 
-> > > > +static int drm_input_connect(struct input_handler *handler,
-> > > > +			     struct input_dev *dev,
-> > > > +			     const struct input_device_id *id)
-> > > > +{
-> > > > +	struct input_handle *handle;
-> > > > +	int error;
-> > > > +
-> > > > +	handle = kzalloc(sizeof(struct input_handle), GFP_KERNEL);
-> > > > +	if (!handle)
-> > > > +		return -ENOMEM;
-> > > > +
-> > > > +	handle->dev = dev;
-> > > > +	handle->handler = handler;
-> > > > +	handle->name = "drm-input-helper";
-> > > > +
-> > > > +	error = input_register_handle(handle);
-> > > > +	if (error)
-> > > > +		goto err2;
-> > > > +
-> > > > +	error = input_open_device(handle);  
-> > > 
-> > > Does this literally open the input device, just like when userspace
-> > > opens the input device?  
-> > 
-> > I believe so. Dmitry mentioned something to this effect on earlier
-> > versions, but I found that the input_handler does not operate at all if
-> > this specific handle wasn't opened. (All handles are independent, and
-> > each over their own |open| count.)
-> > 
-> > This part is unfortunate, I agree. If we really want this in-kernel,
-> > perhaps I could find a way to tweak the input_handler API.
-> 
-> Ok. Sounds like this can have a clear technical solution, and then this
-> issue is solved for good. This might also remove the device type
-> filtering problem.
-> 
-> > > How do you know userspace is using this input device at all? If
-> > > userspace is not using the input device, then DRM should not be opening
-> > > it either, as it must have no effect on anything.
-> > > 
-> > > If you open an input device that userspace does not use, you also cause
-> > > a power consumption regression, because now the input device itself is
-> > > active and possibly flooding the kernel with events (e.g. an
-> > > accelerometer).  
-> > 
-> > Well, I don't think accelerometers show up as input devices, but I
-> > suppose your point could apply to actual input devices.
-> 
-> My understanding is that accelerometers are evdev (input) devices,
-> especially when used as input e.g. for controlling games. I'm not aware
-> of any other interface for it.
-> 
-> Even audio sockets are input devices for detecting whether a plug has
-> been plugged in, but those probably wouldn't flood anything.
-> 
-> 
-> > > > +	if (error)
-> > > > +		goto err1;
-> > > > +
-> > > > +	return 0;
-> > > > +
-> > > > +err1:
-> > > > +	input_unregister_handle(handle);
-> > > > +err2:
-> > > > +	kfree(handle);
-> > > > +	return error;
-> > > > +}
-> > > > +
-> > > > +static void drm_input_disconnect(struct input_handle *handle)
-> > > > +{
-> > > > +	input_close_device(handle);
-> > > > +	input_unregister_handle(handle);
-> > > > +	kfree(handle);
-> > > > +}
-> > > > +
-> > > > +static const struct input_device_id drm_input_ids[] = {
-> > > > +	{
-> > > > +		.flags = INPUT_DEVICE_ID_MATCH_EVBIT |
-> > > > +			 INPUT_DEVICE_ID_MATCH_ABSBIT,
-> > > > +		.evbit = { BIT_MASK(EV_ABS) },
-> > > > +		.absbit = { [BIT_WORD(ABS_MT_POSITION_X)] =
-> > > > +			    BIT_MASK(ABS_MT_POSITION_X) |
-> > > > +			    BIT_MASK(ABS_MT_POSITION_Y) },
-> > > > +	}, /* multi-touch touchscreen */
-> > > > +	{
-> > > > +		.flags = INPUT_DEVICE_ID_MATCH_EVBIT,
-> > > > +		.evbit = { BIT_MASK(EV_ABS) },
-> > > > +		.absbit = { [BIT_WORD(ABS_X)] = BIT_MASK(ABS_X) }
-> > > > +
-> > > > +	}, /* stylus or joystick device */
-> > > > +	{
-> > > > +		.flags = INPUT_DEVICE_ID_MATCH_EVBIT,
-> > > > +		.evbit = { BIT_MASK(EV_KEY) },
-> > > > +		.keybit = { [BIT_WORD(BTN_LEFT)] = BIT_MASK(BTN_LEFT) },
-> > > > +	}, /* pointer (e.g. trackpad, mouse) */
-> > > > +	{
-> > > > +		.flags = INPUT_DEVICE_ID_MATCH_EVBIT,
-> > > > +		.evbit = { BIT_MASK(EV_KEY) },
-> > > > +		.keybit = { [BIT_WORD(KEY_ESC)] = BIT_MASK(KEY_ESC) },
-> > > > +	}, /* keyboard */
-> > > > +	{
-> > > > +		.flags = INPUT_DEVICE_ID_MATCH_EVBIT |
-> > > > +			 INPUT_DEVICE_ID_MATCH_KEYBIT,
-> > > > +		.evbit = { BIT_MASK(EV_KEY) },
-> > > > +		.keybit = {[BIT_WORD(BTN_JOYSTICK)] = BIT_MASK(BTN_JOYSTICK) },
-> > > > +	}, /* joysticks not caught by ABS_X above */
-> > > > +	{
-> > > > +		.flags = INPUT_DEVICE_ID_MATCH_EVBIT |
-> > > > +			 INPUT_DEVICE_ID_MATCH_KEYBIT,
-> > > > +		.evbit = { BIT_MASK(EV_KEY) },
-> > > > +		.keybit = { [BIT_WORD(BTN_GAMEPAD)] = BIT_MASK(BTN_GAMEPAD) },
-> > > > +	}, /* gamepad */  
-> > > 
-> > > I don't think this hardcoded policy belongs in the kernel, nor even
-> > > works.  
-> > 
-> > Define "works"?
-> 
-> Makes the right decision in at least all those cases where current
-> desktop userspace (udev + hwdb + libinput) already makes the correct
-> decision. From what I've seen, it looks like end users come with bug
-> reports every now and then when some hardware manufacturer was lazy or
-> inventive with their HID descriptors.
-> 
-> > It's shipping in various forms on a variety of Android
-> > and Chrome OS systems, where it has a noticeable performance benefit,
-> > and isn't known to have significant power-consumption issues.
-> 
-> Peter Hutterer could probably say more, I confess I am quite
-> pessimistic.
-> 
-> > > I believe classifying input devices is not that simple. Spearheading
-> > > that is libinput which relies on udev tagging the devices with their
-> > > types, and that is done based on a hwdb maintained by I think the
-> > > systemd project. Or maybe libinput has its own db nowadays as well, I'm
-> > > not sure.  
-> > 
-> > I'm not that familiar with libinput, etc., but I expect most of what it
-> > needs to do is irrelevant to these kinds of use cases. We don't care at
-> > all about what character sets or even what type of device is in use, in
-> > most cases. As long as it could reasonably be called user input, it's
-> > good enough.
-> > 
-> > Also, for most use cases here, the penalty for small inaccuracies is
-> > small. Especially for something like panel self-refresh, we'd rather not
-> > have it enabled at all, than have it performing poorly.
-> 
-> This problem will diminish once your patches stop literally opening the
-> input devices and listens only on input devices that are actually
-> opened by userspace. When that happens, I'm not sure you even need this
-> device type filtering at all. The remaining problem is the seat
-> designation.
-> 
-> > > Also, joysticks and gamepads are something display servers generally do
-> > > not open. An application might open some while it's running, but not
-> > > all the time. Joysticks could be very chatty while opened, game
-> > > controllers might have accelerometers, etc.
-> > >   
-> > > > +	{ },
-> > > > +};
-> > > > +
-> > > > +int drm_input_handle_register(struct drm_device *dev,
-> > > > +			      struct drm_input_handler *handler)
-> > > > +{
-> > > > +	int ret;
-> > > > +
-> > > > +	if (!handler->callback)
-> > > > +		return -EINVAL;
-> > > > +
-> > > > +	handler->handler.event = drm_input_event;
-> > > > +	handler->handler.connect = drm_input_connect;
-> > > > +	handler->handler.disconnect = drm_input_disconnect;
-> > > > +	handler->handler.name = kasprintf(GFP_KERNEL, "drm-input-helper-%s",
-> > > > +					  dev_name(dev->dev));
-> > > > +	if (!handler->handler.name)
-> > > > +		return -ENOMEM;
-> > > > +
-> > > > +	handler->handler.id_table = drm_input_ids;
-> > > > +	handler->handler.private = handler;
-> > > > +
-> > > > +	ret = input_register_handler(&handler->handler);  
-> > > 
-> > > Yet another problem here is that this completely ignores the concept of
-> > > physical seats. Of course it does so, because seats are a pure
-> > > userspace concept.
-> > > 
-> > > The kernel VT console already has problems because the kernel has no
-> > > concept of seats, which means that if there is a second seat defined and
-> > > a desktop running on it, while the first seat is in the normal VT text
-> > > mode, then everything typed in the desktop will be delivered to the VT
-> > > shell as well! (This has a possible workaround in userspace [1], by opening
-> > > the evdev input devices in some kind of exclusive mode - which is not
-> > > common practise AFAIK.)  
-> > 
-> > Sure.
-> > 
-> > I'd bet the intersection of systems that use SW-directed PSR and
-> > "multi-seat" is negligibly close to zero, but I can't guarantee that.
-> > Chalk one up for a user space policy.
-> 
-> Your cover letter has also the other bullet point: ramping up GPUs.
-> That applies to a lot more systems than PSR, right?
-> 
-> Maybe that is an acceptable trade-off: be 100 µs faster (your
-> measurement) by ramping up all GPUs in a system instead of only the
-> relevant ones?
-> 
-> Or maybe that will hurt normal gaming computers by ramping up the iGPU
-> when the OS and game only uses the dGPU, which makes iGPU eat away the
-> CPU power budget, causing the CPU to slow down? I suppose that would be
-> handled by ramping up only GPUs that userspace has opened.
-> 
-> > > Btw. if userspace does use EVIOCGRAB, then will your in-kernel handler
-> > > stop getting events?  
-> > 
-> > I believe so.
-> 
-> I suppose you would not want that?
-> 
-> The solution to the VT console problem is for userspace to start using
-> EVIOCGRAB and that could regress the warm-up machinery.
-> 
-> In summary, there are all these open questions and annoying little
-> problems, and none of these issues would exist if userspace would drive
-> the warm-up explicitly.
-> 
-> 
-> Thanks,
-> pq
+- For a given kernel configuration (e.g. defconfig or allmodconfig)
+  that I'm most interested in, look at which files are built, and what
+  the direct includes are in the source files.
 
+- Sort the headers by the product of the number of direct includes
+  and the preprocessed size: the largest ones are those that are
+  worth looking at first.
 
+- use graphviz to visualize the directed graph showing the includes
+  between the top 100 headers in that list. You get something like
+  I had in [1], or the version afterwards at [2].
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+- split out unneeded indirect includes from the headers in the center
+  of that graph, typically by splitting out struct definitions.
+
+- repeat.
+
+The main problem with this approach is that as soon as you start
+actually reducing the unneeded indirect includes, you end up with
+countless .c files that no longer build because they are missing a
+direct include for something that was always included somewhere
+deep underneath, so I needed a second set of scripts to add
+direct includes to every .c file.
+
+On the plus side, I did see something on the order of a 30%
+compile speed improvement with clang, which is insane
+given that this only removed dead definitions.
+
+> But I'll note that linux/fs.h, linux/sched.h, linux/mm.h are
+> interesting headers for further splitting.
+>
+>
+> BTW, I also have a longstanding doubt about
+> how header files are organized in the kernel,
+> and which headers can and cannot be included
+> from which other files.
+>
+> For example I see that files in samples or scripts or tools,
+> that redefine many things such as offsetof() or ARRAY_SIZE(),
+> and I don't know if there's a good reason for that,
+> or if I should simply remove all that stuff and
+> include <linux/offsetof.h> everywhere I see offsetof() being used.
+
+The main issue here is that user space code should not
+include anything outside of include/uapi/ and arch/*/include/uapi/
+
+offsetof() is defined in include/linux/stddef.h, so this is by
+definition not accessible here. It appears that there is also
+an include/uapi/linux/stddef.h that is really strange because
+it includes linux/compiler_types.h, which in turn is outside
+of uapi/. This should probably be fixed.
+
+      Arnd
+
+[1] https://drive.google.com/file/d/14IKifYDadg2W5fMsefxr4373jizo9bLl/view?usp=sharing
+[2] https://drive.google.com/file/d/1pWQcv3_ZXGqZB8ogV-JOfoV-WJN2UNnd/view?usp=sharing
