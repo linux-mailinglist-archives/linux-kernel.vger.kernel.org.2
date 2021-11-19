@@ -2,76 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32E245671B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 01:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5098145671E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 01:57:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbhKSA7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 19:59:41 -0500
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:45731 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbhKSA7k (ORCPT
+        id S233837AbhKSBAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 20:00:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231793AbhKSBAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 19:59:40 -0500
-Received: by mail-oi1-f172.google.com with SMTP id 7so18235374oip.12;
-        Thu, 18 Nov 2021 16:56:39 -0800 (PST)
+        Thu, 18 Nov 2021 20:00:05 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C05C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 16:57:04 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id 7so18237024oip.12
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 16:57:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=KpfGGX30VkOymO2yELzmREoKVTuEGknozCzxtmGgXBo=;
+        b=J53NqHWmM3IMV4+uaSYMHnbPb0SMk7inTF6Geye35RsTg0t49VXMDK9krn4CshCQC1
+         7nQX08EDBX/CCgFjdsIeYo/xz6Xg+dSuC6D53oRxSGSErNKGU0eGsoj7IqxohNCDD4ZA
+         2gCa5FwStjupff+YzsTxWwh/O2RdN9ey7oZ/c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FblWdZzTmtm3bIbXZfzQ6UnCfRPnd8fWW2DruBGboXE=;
-        b=o5j1tqEAXyMGFj0IuLYzY7yazp8zEeamjrBhneH/xBQRZdQoWZB1YNtai69TpAgpFQ
-         O36QoLNWt814tJPtM7rvcbDcc62XxzDXrnVo2bt8O2RpbMhJzBQBN+xuTlE8VK/njJTz
-         kYdKzFS4tMEsfl7dCYBxVIN7DVvP/WS6ce3YC8uOc+K2llh2oQW/W0EqApm7JV/f47p7
-         4fdCrIsVCFSXwhzTglgKQA+z1xKOoyRiZvOpxTYcLiUR8MY5ZvBj4dCl+JvehFqnoSpq
-         lS6kSbWPjkoIrqkg+k5olmzxg+lR3VqnyP2ZgnaTVt65Z7g11/1Qkc2Eb+FxvZ0jUkGh
-         UVVQ==
-X-Gm-Message-State: AOAM531Vsm24847sWjcYFOP8FhwIqebbTvgqxwTnpghI5MXVSwAMOVIx
-        aBXqu/9zy9KWvgm5MBtEwA==
-X-Google-Smtp-Source: ABdhPJy2qMX6FHzZOE4p8oJzzDfxNPdO5Zi0i1YQmh8/YIlFVsIj1A27GQO4kTOohuJFQaktpRa6Kg==
-X-Received: by 2002:a05:6808:1058:: with SMTP id c24mr1278442oih.58.1637283399487;
-        Thu, 18 Nov 2021 16:56:39 -0800 (PST)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id r22sm328480oij.36.2021.11.18.16.56.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 16:56:38 -0800 (PST)
-Received: (nullmailer pid 2130222 invoked by uid 1000);
-        Fri, 19 Nov 2021 00:56:38 -0000
-Date:   Thu, 18 Nov 2021 18:56:38 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     Fabio Estevam <festevam@gmail.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>, linux-i2c@vger.kernel.org,
-        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH v4 01/12] dt-bindings: i2c: imx-lpi2c: Fix i.MX 8QM
- compatible matching
-Message-ID: <YZb2Rqx6OXTPNhgD@robh.at.kernel.org>
-References: <1636566415-22750-1-git-send-email-abel.vesa@nxp.com>
- <1636566415-22750-2-git-send-email-abel.vesa@nxp.com>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=KpfGGX30VkOymO2yELzmREoKVTuEGknozCzxtmGgXBo=;
+        b=cgUA17ugQPJCfYKkmEH0uSZtnvFfDFvdXDDXcIF7ErsW1xdAVlayRGtceYDYC7+onl
+         3j7cvScVLcTOz/B45Cb65rbDgUBE73B0iPulBvuR/wSeT3BFAANaynjv8iHmNyJOZ9GJ
+         lz/80VpkrnPUXpjEtFmiGW0DlYPE3RghYfgdp4+MPU8wIzJYc4Sm70uDnDizrvCg0QDO
+         fmIOOy+lR/ycGrtFbHZY+LWFadWFP2sLjkljgdHvQb6QRo3jcu4doJX5hx8rxUfoF75F
+         9IXKN/ACGCArD/Rtt51EXu790HmtK72/z0rpew4s+PUluFd9MA/mtOx3Vcv/giWF4o4B
+         NInA==
+X-Gm-Message-State: AOAM531IdwCeDd0MQoL3yN7Pwmc7h5ngisyCdoyEYWML8ff9/1nc99Vg
+        K9Qi8IGdLfN8Y3c9LFeeL3vmiom7IiXPi96Mej/BEQ==
+X-Google-Smtp-Source: ABdhPJyWy/zVzZ2R/aGrJOuF4eXPMmZ1VTk0atdR827NmlfTH8hAe0aRuENheOz20oRhwOPpSUsI+sHx52PXmXrfS4E=
+X-Received: by 2002:a54:4506:: with SMTP id l6mr1302928oil.32.1637283423970;
+ Thu, 18 Nov 2021 16:57:03 -0800 (PST)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 19 Nov 2021 01:57:03 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1636566415-22750-2-git-send-email-abel.vesa@nxp.com>
+In-Reply-To: <f1038a3e-57fb-ec01-26a0-452a11dfcf3a@linaro.org>
+References: <20211117020346.4088302-1-swboyd@chromium.org> <76b103ec-7034-e6c1-1ab4-174cf16f9fc8@linaro.org>
+ <CAE-0n53HNSRTdADO1dbQTyLafyajUTatMq5tsLeNDLQ4g95YpA@mail.gmail.com> <f1038a3e-57fb-ec01-26a0-452a11dfcf3a@linaro.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Fri, 19 Nov 2021 01:57:03 +0100
+Message-ID: <CAE-0n51TYW26W8+_A1Ar7eUGLeUoV2eE=8YAkD4N7d5EqoNNRg@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: qcom-hw: Use optional irq API
+To:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Nov 2021 19:46:44 +0200, Abel Vesa wrote:
-> The i.MX 8QM DTS files use two compatibles, so update the binding to fix
-> dtbs_check warnings like:
-> 
->   arch/arm64/boot/dts/freescale/imx8qm-mek.dt.yaml: i2c@5a800000:
->     compatible: ['fsl,imx8qm-lpi2c', 'fsl,imx7ulp-lpi2c'] is too long
-> 
-> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
-> ---
->  Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
+Quoting Thara Gopinath (2021-11-18 06:08:04)
+>
+>
+> On 11/17/21 11:32 PM, Stephen Boyd wrote:
+> > Quoting Thara Gopinath (2021-11-17 18:55:17)
+> >> Hello Stephen,
+> >>
+> >> Thanks for the patch
+> >>
+> >> On 11/16/21 9:03 PM, Stephen Boyd wrote:
+> >>> Use platform_get_irq_optional() to avoid a noisy error message when the
+> >>> irq isn't specified. The irq is definitely optional given that we only
+> >>> care about errors that are -EPROBE_DEFER here.
+> >>>
+> >>> Cc: Thara Gopinath <thara.gopinath@linaro.org>
+> >>> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> >>> ---
+> >>>    drivers/cpufreq/qcom-cpufreq-hw.c | 8 +++++---
+> >>>    1 file changed, 5 insertions(+), 3 deletions(-)
+> >>>
+> >>> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
+> >>> index a2be0df7e174..b442d4983a22 100644
+> >>> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
+> >>> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+> >>> @@ -382,9 +382,11 @@ static int qcom_cpufreq_hw_lmh_init(struct cpufreq_policy *policy, int index)
+> >>>         * Look for LMh interrupt. If no interrupt line is specified /
+> >>>         * if there is an error, allow cpufreq to be enabled as usual.
+> >>>         */
+> >>> -     data->throttle_irq = platform_get_irq(pdev, index);
+> >>> -     if (data->throttle_irq <= 0)
+> >>> -             return data->throttle_irq == -EPROBE_DEFER ? -EPROBE_DEFER : 0;
+> >>> +     data->throttle_irq = platform_get_irq_optional(pdev, index);
+> >>> +     if (data->throttle_irq == -ENXIO)
+> >>> +             return 0;
+> >>> +     if (data->throttle_irq < 0)
+> >>> +             return data->throttle_irq;
+> >>
+> >> Here the idea is to return only -EPROBE_DEFER error. Else return a 0 ,
+> >> so that cpufreq is enabled even if lmh interrupt is inaccessible. The
+> >> above check returns errors other than -EPROBE_DEFER as well. So I would
+> >> say make irq optional and keep the below check
+> >>
+> >> if (data->throttle_irq <= 0)
+> >>          return data->throttle_irq == -EPROBE_DEFER ? -EPROBE_DEFER : 0;
+> >
+> > I'd like to catch other errors, for example, DT has an irq specified
+> > that is outside the range of irqs available. If the DT is correct, then
+> > it will either have a valid irq and this will return a >= 0 value or
+> > nothing will be specified and we'll get back -ENXIO now. Do you have
+> > some scenario where my patch fails to work?
+>
+> Exactly. Like in the scenario you mentioned above, I do not want cpufreq
+> to be disabled. This interrupt is a throttle notification interrupt. The
+> action taken on basis of this is to send thermal pressure signal to
+> scheduler so that scheduler places tasks better. Even if the dt has
+> messed up this interrupt, I think cpufreq should still be enabled. May
+> be we can print a warn and still return 0 to enable cpufreq.
+>
 
-Acked-by: Rob Herring <robh@kernel.org>
+If the DT is messed up then we have problems that we should fix instead
+of silently ignore in this driver. Is there some bad DT out there that
+you're worried about? I don't believe this patch breaks anything but if
+you can point to something that it breaks I'd be glad to investigate.
