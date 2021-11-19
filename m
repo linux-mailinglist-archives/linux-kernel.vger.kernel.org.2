@@ -2,200 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0B3456CD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 10:54:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24047456CE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 10:59:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232406AbhKSJ53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 04:57:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbhKSJ51 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 04:57:27 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBCA9C061574;
-        Fri, 19 Nov 2021 01:54:24 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id t26so40667040lfk.9;
-        Fri, 19 Nov 2021 01:54:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=cCmbb3DeLLP09ki4kuTJnLQtb2WYrPD5nXeA3cU7GHA=;
-        b=CBkTq6ESHlhgDp68NHzmdZpbcEmNLLnQWp1+ZPSbbqH0lNdBvmM9mKgBhKUg2BwNZP
-         lQ8Sle9W/OpUk/RPmfqTfYK0+1s4Ci3uZZvnV4AG7/snRoZS7NZZc/nNkFMXaIoPdP+5
-         29hoODFIbGpE77eRmKctbKZ5WhVgMTMJM9cB+SFEOxSDKqrQG45G1rehYYJNW8TgRRpA
-         MVM3dWAd5/++pqjAs8qdq94k8RojhP2yE/gT4sdlFT67qYlcr8QBXlCEmTjYQE68q0gL
-         AfA7aBmDqMt2/rsY9F2XhUDcmFxczzt1A5Cb8yevWLWXo4nYDsgUs0vXA54KlznNm7WS
-         8utg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=cCmbb3DeLLP09ki4kuTJnLQtb2WYrPD5nXeA3cU7GHA=;
-        b=KX1LvVeGOD1oAosck+QuIZAhsiZWEpps6RJdMWO155Z2XbSpRXmJ40ebkndUnpC9tP
-         Y9+H5dvsmg+yaknh1SKo8fQhhdan8bACsQ8o8xKWtUYAPJ2chRPiEPRMeyt63zGAGa6W
-         5LzgNa6eRZ0cvfScQNv2IAgoFWZj3N07YHj18AV6RBTNHvI9ScfkKLHq5Kd8ZU2KR2Fu
-         YBOKY49SUCBCi91vb4rclEpgWbyprCQ1IIhhuT/KkyciT+fQYWOhtmjg3BQdjFd5YDsG
-         Pn17J3wpwhe6rxAd82Evvc3i74LttKQErel7m4SlFsw+nrK+nW13x4brvMacNjTQ1zGA
-         NB8A==
-X-Gm-Message-State: AOAM533dSbR0iqKhcmRaIEeFJFsi69bBlOOaE91Ba/GvNoMtlwF+rLvy
-        7mELrBTPmfGY+HLNNCFCiyU=
-X-Google-Smtp-Source: ABdhPJyMAsdZM1wTFviXfnVXe1xpTGDJW5bHj20TI7D62Huwj4l4m4Q0rLsX2tTFp2ikjlKXTD9LCQ==
-X-Received: by 2002:a05:6512:1154:: with SMTP id m20mr30708122lfg.600.1637315663309;
-        Fri, 19 Nov 2021 01:54:23 -0800 (PST)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id v24sm240363lji.120.2021.11.19.01.54.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 01:54:23 -0800 (PST)
-Date:   Fri, 19 Nov 2021 11:54:19 +0200
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Brian Norris <briannorris@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Doug Anderson <dianders@chromium.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-input@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] drm/input_helper: Add new input-handling helper
-Message-ID: <20211119115419.505155b5@eldfell>
-In-Reply-To: <CAF6AEGuc9JbOsC4Lrvoqo8VzMHq+7ru7Y6_UwoZaGV2wHQ6E5g@mail.gmail.com>
-References: <20211117224841.3442482-1-briannorris@chromium.org>
-        <20211117144807.v2.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid>
-        <20211118123928.545dec8a@eldfell>
-        <CAF6AEGuc9JbOsC4Lrvoqo8VzMHq+7ru7Y6_UwoZaGV2wHQ6E5g@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233185AbhKSKBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 05:01:49 -0500
+Received: from mga04.intel.com ([192.55.52.120]:17003 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229974AbhKSKBs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 05:01:48 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="233110022"
+X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
+   d="scan'208";a="233110022"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 01:58:47 -0800
+X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
+   d="scan'208";a="568845492"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 01:58:31 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mo0cr-008Uqj-60;
+        Fri, 19 Nov 2021 11:56:09 +0200
+Date:   Fri, 19 Nov 2021 11:56:08 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Calvin Zhang <calvinzhang.cool@gmail.com>
+Cc:     Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Rich Felker <dalias@libc.org>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Vladimir Isaev <isaev@synopsys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Marc Zyngier <maz@kernel.org>,
+        David Brazdil <dbrazdil@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        Jinyang He <hejinyang@loongson.cn>,
+        Mauri Sandberg <sandberg@mailfence.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Andreas Oetken <andreas.oetken@siemens.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Ganesh Goudar <ganeshgr@linux.ibm.com>,
+        Markus Elfring <elfring@users.sourceforge.net>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Alexandre Ghiti <alex@ghiti.fr>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Rob Herring <robh@kernel.org>,
+        Zhang Yunkai <zhang.yunkai@zte.com.cn>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp, linux-mips@vger.kernel.org,
+        openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/2] of: reserved_mem: Remove reserved regions count
+ restriction
+Message-ID: <YZd0uEWNH6Def3+8@smile.fi.intel.com>
+References: <20211119075844.2902592-1-calvinzhang.cool@gmail.com>
+ <20211119075844.2902592-3-calvinzhang.cool@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/GCMqU3cCDFY4+95vMjiPI4b";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211119075844.2902592-3-calvinzhang.cool@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/GCMqU3cCDFY4+95vMjiPI4b
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Nov 19, 2021 at 03:58:19PM +0800, Calvin Zhang wrote:
+> Change to allocate reserved_mems dynamically. Static reserved regions
+> must be reserved before any memblock allocations. The reserved_mems
+> array couldn't be allocated until memblock and linear mapping are ready.
+> 
+> So move the allocation and initialization of records and reserved memory
+> from early_init_fdt_scan_reserved_mem() to of_reserved_mem_init().
 
-On Thu, 18 Nov 2021 15:30:38 -0800
-Rob Clark <robdclark@gmail.com> wrote:
+>  arch/arc/mm/init.c                 |  3 ++
+>  arch/arm/kernel/setup.c            |  2 +
+>  arch/arm64/kernel/setup.c          |  3 ++
+>  arch/csky/kernel/setup.c           |  3 ++
+>  arch/h8300/kernel/setup.c          |  2 +
+>  arch/mips/kernel/setup.c           |  3 ++
+>  arch/nds32/kernel/setup.c          |  3 ++
+>  arch/nios2/kernel/setup.c          |  2 +
+>  arch/openrisc/kernel/setup.c       |  3 ++
+>  arch/powerpc/kernel/setup-common.c |  3 ++
+>  arch/riscv/kernel/setup.c          |  2 +
+>  arch/sh/kernel/setup.c             |  3 ++
+>  arch/xtensa/kernel/setup.c         |  2 +
 
-> On Thu, Nov 18, 2021 at 2:39 AM Pekka Paalanen <ppaalanen@gmail.com> wrot=
-e:
-> >
-> > On Wed, 17 Nov 2021 14:48:40 -0800
-> > Brian Norris <briannorris@chromium.org> wrote:
-> > =20
-> > > A variety of applications have found it useful to listen to
-> > > user-initiated input events to make decisions within a DRM driver, gi=
-ven
-> > > that input events are often the first sign that we're going to start
-> > > doing latency-sensitive activities:
-> > >
-> > >  * Panel self-refresh: software-directed self-refresh (e.g., with
-> > >    Rockchip eDP) is especially latency sensitive. In some cases, it c=
-an
-> > >    take 10s of milliseconds for a panel to exit self-refresh, which c=
-an
-> > >    be noticeable. Rockchip RK3399 Chrome OS systems have always shipp=
-ed
-> > >    with an input_handler boost, that preemptively exits self-refresh
-> > >    whenever there is input activity.
-> > >
-> > >  * GPU drivers: on GPU-accelerated desktop systems, we may need to
-> > >    render new frames immediately after user activity. Powering up the
-> > >    GPU can take enough time that it is worthwhile to start this proce=
-ss
-> > >    as soon as there is input activity. Many Chrome OS systems also sh=
-ip
-> > >    with an input_handler boost that powers up the GPU.
-> > >
-> > > This patch provides a small helper library that abstracts some of the
-> > > input-subsystem details around picking which devices to listen to, and
-> > > some other boilerplate. This will be used in the next patch to implem=
-ent
-> > > the first bullet: preemptive exit for panel self-refresh.
-> > >
-> > > Bits of this are adapted from code the Android and/or Chrome OS kerne=
-ls
-> > > have been carrying for a while.
-> > >
-> > > Signed-off-by: Brian Norris <briannorris@chromium.org>
-> > > --- =20
-> >
-> > Thanks Simon for the CC.
-> >
-> > Hi Brian,
-> >
-> > while this feature in general makes sense and sounds good, to start
-> > warming up display hardware early when something might start to happen,
-> > this particular proposal has many problems from UAPI perspective (as it
-> > has none). Comments below.
-> >
-> > Btw. if PSR is that slow to wake up from, how much do you actually gain
-> > from this input event watching? I would imagine the improvement to not
-> > be noticeable.
-> >
-> > I think some numbers about how much this feature helps would be really
-> > good, even if they are quite specific use cases. You also need to
-> > identify the userspace components, because I think different display
-> > servers are very different in their reaction speed.
-> >
-> > If KMS gets a pageflip or modeset in no time after an input event, then
-> > what's the gain. OTOH, if the display server is locking on to vblank,
-> > there might be a delay worth avoiding. But then, is it worth
-> > short-circuiting the wake-up in kernel vs. adding a new ioctl that
-> > userspace could hit to start the warming up process? =20
->=20
-> In my measurements, it takes userspace a frame or two to respond and
-> get to the point of starting to build cmdstream (before eventually
-> doing atomic/pageflip ioctl).. possibly longer if you don't also have
-> a similar boost mechanism to spool up cpufreq
->=20
-> But the important thing, IMO, is that atomic/pageflip ioctl is the
-> cumulation of a long sequence of events.. input-boost is letting
-> whatever it may be (PSR exit, GPU resume, etc) happen in parallel with
-> that long sequence.
+Isn't x86 missed? Is it on purpose?
+Would be nice to have this in the commit message or fixed accordingly.
 
-Right, exactly. That is why I was musing about a *new* ioctl that
-userspace could hit as soon as any input device fd (or network fd!)
-shows signs of life. Would that be enough, avoiding all the annoying
-questions about which input and DRM devices should participate here
-(and what about non-input devices that still want to trigger the
-warm-up, like network traffic, e.g. remote control?), or does it really
-need to be kernel internal to be fast enough?
-
-As Brian wrote about his quick hack to test that via debugfs, sounds
-like the userspace solution would be totally sufficient.
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-Thanks,
-pq
-
---Sig_/GCMqU3cCDFY4+95vMjiPI4b
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmGXdEsACgkQI1/ltBGq
-qqcdOBAAl9X47lu2lO66cWGjSsacbgjGDy+MldM0YFq5JF8ooCZXNGL176wqkChG
-yz9SMJGDApoJ04/NsIE73coxTYU3xKBYTbAeuFxM5IklcXEqKc/4VXDCcim7Lwlg
-VzUxOxb1XfNfZNyn4uMANyGpk0uO4dnIpd5u1uaWXhKajn9RTZKwQ2SBbbEt4Dcl
-hcDBpGXGU9evx5ZBvUHTNUPcfEsAYWyHKMDGhVZwH5YUYAgwG2P5IHFstX5PUori
-O/6SBot5hj7JfCOpV6wZcASeonCeescV2Nq4muPF6yHGI9mbgppaaYi2ezcx6Os+
-udxpoovlLoYU54foZaqjsJvy1nlLZLHi4pPIfHmAn8+hJ2IvU5yQoB+7QZe6FhQN
-tKhkoqUpUYCSUTMy1v/0mJJ0+zBBChNV3Y5uT/Q8c7TJPPORtAMjU8bP0xgL1SpA
-6CB2CPZy+QyCGeQJpR+lAlMGtgZPPzsx9zgS3SM/sItEl+yNDDvkoJMPfYlKjvqH
-ZI9KUtZ1BIfYzeU3F2B5vztJRIpG4sDS4nRa+WXHLTQi0eit4ZFqaRU+5oU1HQP8
-OmOu+bAlP45l8QiunzbwvCFmq/Kq5PY61ly+iN08+26EXLxeCmVLGi3UGkcIMulI
-WeqfT8f3422boYyBp9ftzCnEakQHcU2Sl4gZnXnonw+7SpNNSYY=
-=g0x0
------END PGP SIGNATURE-----
-
---Sig_/GCMqU3cCDFY4+95vMjiPI4b--
