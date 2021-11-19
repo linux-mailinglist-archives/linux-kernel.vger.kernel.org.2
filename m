@@ -2,76 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7E8456BBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 09:38:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ABC4456BC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 09:40:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232760AbhKSIlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 03:41:10 -0500
-Received: from a.mx.secunet.com ([62.96.220.36]:48748 "EHLO a.mx.secunet.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232265AbhKSIlJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 03:41:09 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id E9095201CF;
-        Fri, 19 Nov 2021 09:38:06 +0100 (CET)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id UoF3zvADTfgR; Fri, 19 Nov 2021 09:38:06 +0100 (CET)
-Received: from mailout2.secunet.com (mailout2.secunet.com [62.96.220.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S232882AbhKSImX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 03:42:23 -0500
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:52771 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229830AbhKSImW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 03:42:22 -0500
+Received: from [192.168.0.2] (ip5f5aeced.dynamic.kabel-deutschland.de [95.90.236.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id 70D442057B;
-        Fri, 19 Nov 2021 09:38:06 +0100 (CET)
-Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
-        by mailout2.secunet.com (Postfix) with ESMTP id 61DFB80004A;
-        Fri, 19 Nov 2021 09:38:06 +0100 (CET)
-Received: from mbx-essen-01.secunet.de (10.53.40.197) by
- cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 19 Nov 2021 09:38:06 +0100
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
- (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Fri, 19 Nov
- 2021 09:38:06 +0100
-Received: by gauss2.secunet.de (Postfix, from userid 1000)
-        id C95563180491; Fri, 19 Nov 2021 09:38:05 +0100 (CET)
-Date:   Fri, 19 Nov 2021 09:38:05 +0100
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     <cgel.zte@gmail.com>
-CC:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH linux-next] xfrm: Remove duplicate assignment
-Message-ID: <20211119083805.GN427717@gauss3.secunet.de>
-References: <20211104062621.2643-1-luo.penghao@zte.com.cn>
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 154ED61E5FE02;
+        Fri, 19 Nov 2021 09:39:19 +0100 (CET)
+Message-ID: <1cc9afa7-397e-64a0-9f1b-b4d3bd85a8f0@molgen.mpg.de>
+Date:   Fri, 19 Nov 2021 09:39:18 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20211104062621.2643-1-luo.penghao@zte.com.cn>
-X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
- mbx-essen-01.secunet.de (10.53.40.197)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH v5 05/10] media: v4l: Add definition for the Aspeed JPEG
+ format
+Content-Language: en-US
+To:     Jammy Huang <jammy_huang@aspeedtech.com>
+Cc:     "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "laurent.pinchart@ideasonboard.com" 
+        <laurent.pinchart@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+References: <20211118074030.685-1-jammy_huang@aspeedtech.com>
+ <20211118074030.685-6-jammy_huang@aspeedtech.com>
+ <YZZIDNCLJXwrqY4W@paasikivi.fi.intel.com>
+ <0bed6093-0af6-4fc4-716f-6cf8b1302320@aspeedtech.com>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <0bed6093-0af6-4fc4-716f-6cf8b1302320@aspeedtech.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 06:26:21AM +0000, cgel.zte@gmail.com wrote:
-> From: luo penghao <luo.penghao@zte.com.cn>
-> 
-> The statement in the switch is repeated with the statement at the
-> beginning of the while loop, so this statement is meaningless.
-> 
-> The clang_analyzer complains as follows:
-> 
-> net/xfrm/xfrm_policy.c:3392:2 warning:
-> 
-> Value stored to 'exthdr' is never read
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: luo penghao <luo.penghao@zte.com.cn>
 
-Applied to ipsec-next, thanks luo!
+Dear Jammy,
+
+
+Am 19.11.21 um 03:02 schrieb Jammy Huang:
+
+> On 2021/11/18 下午 08:33, Sakari Ailus wrote:
+
+>> On Thu, Nov 18, 2021 at 03:40:26PM +0800, Jammy Huang wrote:
+>>> This introduces support for the Aspeed JPEG format, where the new frame
+>>> can refer to previous frame to reduce the amount of compressed data. The
+>>> concept is similar to I/P frame of video compression. I will compare the
+>>> new frame with previous one to decide which macroblock's data is
+>>> changed, and only the changed macroblocks will be compressed.
+>>>
+>>> This Aspeed JPEG format is used by the video engine on Aspeed platforms,
+>>> which is generally adapted for remote KVM.
+>>>
+>>> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+>>> ---
+>>> v5:
+>>>    - no update
+>>> v4:
+>>>    - new
+>>> ---
+>>>   Documentation/media/uapi/v4l/pixfmt-reserved.rst | 12 ++++++++++++
+>>>   drivers/media/v4l2-core/v4l2-ioctl.c             |  1 +
+>>>   include/uapi/linux/videodev2.h                   |  1 +
+>>>   3 files changed, 14 insertions(+)
+>>>
+>>> diff --git a/Documentation/media/uapi/v4l/pixfmt-reserved.rst 
+>>> b/Documentation/media/uapi/v4l/pixfmt-reserved.rst
+>>> index b2cd155e691b..23c05063133d 100644
+>>> --- a/Documentation/media/uapi/v4l/pixfmt-reserved.rst
+>>> +++ b/Documentation/media/uapi/v4l/pixfmt-reserved.rst
+>>> @@ -264,6 +264,18 @@ please make a proposal on the linux-media 
+>>> mailing list.
+>>>       of tiles, resulting in 32-aligned resolutions for the luminance 
+>>> plane
+>>>       and 16-aligned resolutions for the chrominance plane (with 2x2
+>>>       subsampling).
+>>> +    * .. _V4L2-PIX-FMT-AJPG:
+>>> +
+>>> +      - ``V4L2_PIX_FMT_AJPG``
+>>> +      - 'AJPG'
+>>> +      - ASPEED JPEG format used by the aspeed-video driver on Aspeed platforms,
+>>> +        which is generally adapted for remote KVM.
+>>> +        On each frame compression, I will compare the new frame with previous
+>>> +        one to decide which macroblock's data is changed, and only the changed
+>>> +        macroblocks will be compressed.
+>>> +
+>>> +        You could reference to chapter 36, Video Engine, of AST2600's datasheet
+>>> +        for more information.
+>> Is this datasheet publicly available? Do you have a URL?
+> 
+> Sorry, this datasheet is not publicly available.
+> Hans mentioned this as well in the discussion below:
+> 
+> https://lkml.org/lkml/2021/11/10/101
+
+If questions come up during review, please also add the answers to the 
+commit message of the next iteration. ;-) Maybe:
+
+> The implementation is based on datasheet *Name goes here*, revision
+> X, which is not publicly available.
+
+Kind regards,
+
+Paul
