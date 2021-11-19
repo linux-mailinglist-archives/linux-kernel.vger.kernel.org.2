@@ -2,112 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3665B456F9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:29:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 160A5456FA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:31:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235448AbhKSNck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 08:32:40 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:54431 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232869AbhKSNcj (ORCPT
+        id S235292AbhKSNeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 08:34:03 -0500
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:38240 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232869AbhKSNeC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 08:32:39 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 77EB6580D4B;
-        Fri, 19 Nov 2021 08:29:37 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 19 Nov 2021 08:29:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=BTqa9V4sNzf2Hf3EnYLoECME+NW
-        Ze3HdYdsh3e4uy2A=; b=apW7Ds+cCq9t+uB0eMfs+Xkzs6hVs9xjliKyLH/LUaW
-        AdcOOMMzvZhMWKnao+tZ3RQpyGlb8T3Ao1rT8PXTuD59Rh2R3jmxB6R5VRtjtZmV
-        8YGHNMZJULBFtPU1ZdJrM28brsSv2q6uRMWiedkNCi+8zpc5k+hTnozbN7mY2Kb9
-        2hTQUEKGTBbaTu+XblfLflW+AyCyr9V/jNJB8KJ1hFBLVKoJGBp95+rP9LvKkGfm
-        ptun11ZPfZcsM/LcrEhfnPlbdMDQ5HEQI5rYJn0OSJfExTvelKAKk5ERFv0inIzs
-        X1mV4uBPoQ84St1r28FCCyGO1SDFKQwc0BTE89ABpiA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=BTqa9V
-        4sNzf2Hf3EnYLoECME+NWZe3HdYdsh3e4uy2A=; b=FakVhT0/bQnT7/duK5mi1k
-        ZAoA7IftHrai1/Yb5TEbRyDejIkA4ixpCppsrYsrT9Nn6sX9jsjZJxyLpTjNI3Ge
-        ewBtvfV/o8oo5qnUftWIlqu3KEmTX14o7rTE2aPrTwKZB/eHiVSSL0q7EF44hLZh
-        kOO9Dp6WujNZaPm43/NwuAJKr54QBd1mIWiUGNshe+KCI1gNH6igEs5yG01SIYPJ
-        M57yDWia0PV7Z2klyYCxcZQDjgahE7Fl7N37l54zz9bxneQHj3mPasXeuU2IXha1
-        Th8KndqxaUkGRe+Wzvpx+1JikHyAcvlhdNY9mAXunt9VBAEU4ohcnGcZNE+chXvQ
-        ==
-X-ME-Sender: <xms:wKaXYW7T0CKzPstg5ishlh086E85vvol9EWnWnkUmyC6K6ELFoQbrA>
-    <xme:wKaXYf71PAZsubaGgW1pz2kPQNYxyiWwuzt1DLsW0HoasELjQ2BCRRJXIS_iQlBXf
-    hMx1WZ0tC0kKA>
-X-ME-Received: <xmr:wKaXYVdJf25mIec3-aAH6VVnX1cVV40g5V0bziVvSVZYabk768P6IDbBlXRwIsAN1TFuug_7WL0D3uGrh32U1J9B0b-djpBe>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeekgdehvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
-    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
-    gtohhm
-X-ME-Proxy: <xmx:wKaXYTLQLbtXqifvlSvf2HumT-iXF04Y1JAE-7vZK75j8Y57Q-pn7g>
-    <xmx:wKaXYaJV6mECg0p1vdoMUzg0VWgJIExRPv6rv1HOWE07f_BB6J_czw>
-    <xmx:wKaXYUye9Ceh_4fjaOwZv3lmvzSjklare8EZiXGPFTTdkrCDjqueng>
-    <xmx:waaXYfCjUhbdP0E9BIDHNQ46etf8X1AL8C8ce2jtePo0Ztxf9_GIIg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 19 Nov 2021 08:29:36 -0500 (EST)
-Date:   Fri, 19 Nov 2021 14:29:25 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Meng Li <Meng.Li@windriver.com>
-Cc:     stable@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        mcoquelin.stm32@gmail.com, linux@armlinux.org.uk, andrew@lunn.ch,
-        qiangqing.zhang@nxp.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH 0/6] backport patches to improve clocks management for
- stmmac driver
-Message-ID: <YZemteFqu3/5ryNL@kroah.com>
-References: <20211119025359.30815-1-Meng.Li@windriver.com>
+        Fri, 19 Nov 2021 08:34:02 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AJDUvmR075297;
+        Fri, 19 Nov 2021 07:30:57 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1637328657;
+        bh=dtTrqklX5fcVi2i9b5tFMlkenaVEqKzAe0eF769j5t4=;
+        h=From:To:CC:Subject:Date;
+        b=JZk1mA8cX0MgG+yayX2GMbubiggUMu7us+RIo5wxMfVzogGh6U/ADGLEkW+C9o31o
+         JuZ5/pIOsVKGUFEQqulfqezw357txeVfRuvAQ00pbHdItFFAdEvB9BSJtkKpR8yVmM
+         WiJK8JXfv+0KcDMV/2R+zVYeSHX20ZzzbqXu2ltI=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AJDUv5I040224
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 19 Nov 2021 07:30:57 -0600
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 19
+ Nov 2021 07:30:57 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Fri, 19 Nov 2021 07:30:57 -0600
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AJDUrNs123745;
+        Fri, 19 Nov 2021 07:30:54 -0600
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/5] J721S2: Add initial support
+Date:   Fri, 19 Nov 2021 19:00:45 +0530
+Message-ID: <20211119133052.17793-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211119025359.30815-1-Meng.Li@windriver.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 10:53:53AM +0800, Meng Li wrote:
-> From: Meng Li <meng.li@windriver.com>
-> 
-> In stable kernel v5.10, when run below command to remove ethernet driver on
-> stratix10 platform, there will be warning trace as below:
-> 
-> $ cd /sys/class/net/eth0/device/driver/
-> $ echo ff800000.ethernet > unbind
-> 
-> WARNING: CPU: 3 PID: 386 at drivers/clk/clk.c:810 clk_core_unprepare+0x114/0x274
-> Modules linked in: sch_fq_codel
-> CPU: 3 PID: 386 Comm: sh Tainted: G        W         5.10.74-yocto-standard #1
-> Hardware name: SoCFPGA Stratix 10 SoCDK (DT)
-> pstate: 00000005 (nzcv daif -PAN -UAO -TCO BTYPE=--)
-> pc : clk_core_unprepare+0x114/0x274
-> lr : clk_core_unprepare+0x114/0x274
-> sp : ffff800011bdbb10
-> clk_core_unprepare+0x114/0x274
->  clk_unprepare+0x38/0x50
->  stmmac_remove_config_dt+0x40/0x80
->  stmmac_pltfr_remove+0x64/0x80
->  platform_drv_remove+0x38/0x60
->  ... ..
->  el0_sync_handler+0x1a4/0x1b0
->  el0_sync+0x180/0x1c0
-> This issue is introduced by introducing upstream commit 8f269102baf7
-> ("net: stmmac: disable clocks in stmmac_remove_config_dt()")
-> 
-> But in latest mainline kernel, there is no this issue. Because commit
-> 5ec55823438e("net: stmmac: add clocks management for gmac driver") and its
-> folowing fixing commits improved clocks management for stmmac driver.
-> Therefore, backport them to stable kernel v5.10.
-> 
+The J721S2 SoC belongs to the K3 Multicore SoC architecture platform,
+providing advanced system integration in automotive ADAS applications and
+industrial applications requiring AI at the network edge. This SoC extends
+the Jacinto 7 family of SoCs with focus on lowering system costs and power
+while providing interfaces, memory architecture and compute performance for
+single and multi-sensor applications.
 
-All now queued up, thanks.
+Some highlights of this SoC are:
 
-greg k-h
+* Dual Cortex-A72s in a single cluster, three clusters of lockstep capable
+dual Cortex-R5F MCUs, Deep-learning Matrix Multiply Accelerator(MMA), C7x
+floating point Vector DSP.
+* 3D GPU: Automotive grade IMG BXS-4-64
+* Vision Processing Accelerator (VPAC) with image signal processor and
+Depth and Motion Processing Accelerator (DMPAC)
+* Two CSI2.0 4L RX plus one eDP/DP, two DSI Tx, and one DPI interface.
+* Two Ethernet ports with RGMII support.
+* Single 4 lane PCIe-GEN3 controllers, USB3.0 Dual-role device subsystems,
+* Up to 20 MCANs, 5 McASP, eMMC and SD, OSPI/HyperBus memory controller,
+QSPI, I3C and I2C, eCAP/eQEP, eHRPWM, MLB among other peripherals.
+* Hardware accelerator blocks containing AES/DES/SHA/MD5 called SA2UL
+management.
+* Chips and Media Wave521CL H.264/H.265 encode/decode engine
+
+See J721S2 Technical Reference Manual (SPRUJ28 – NOVEMBER 2021)
+for further details: http://www.ti.com/lit/pdf/spruj28
+
+- bootlog:
+  https://pastebin.ubuntu.com/p/crVdPwQZYt/
+
+The following series of patches depend on,
+- http://lists.infradead.org/pipermail/linux-arm-kernel/2021-November/697574.html
+- https://patchwork.kernel.org/project/linux-dmaengine/list/?series=583035
+- https://patchwork.kernel.org/project/linux-phy/list/?series=574093
+
+Aswath Govindraju (5):
+  dt-bindings: arm: ti: Add bindings for J721s2 SoC
+  dt-bindings: pinctrl: k3: Introduce pinmux definitions for J721S2
+  arm64: dts: ti: Add initial support for J721S2 SoC
+  arm64: dts: ti: Add initial support for J721S2 System on Module
+  arch: arm64: ti: Add support J721S2 Common Processor Board
+
+ .../devicetree/bindings/arm/ti/k3.yaml        |   6 +
+ arch/arm64/boot/dts/ti/Makefile               |   2 +
+ .../dts/ti/k3-j721s2-common-proc-board.dts    | 421 ++++++++
+ arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi    | 941 ++++++++++++++++++
+ .../boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi     | 302 ++++++
+ arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi  | 175 ++++
+ arch/arm64/boot/dts/ti/k3-j721s2.dtsi         | 189 ++++
+ include/dt-bindings/pinctrl/k3.h              |   3 +
+ 8 files changed, 2039 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/ti/k3-j721s2-common-proc-board.dts
+ create mode 100644 arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
+ create mode 100644 arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi
+ create mode 100644 arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi
+ create mode 100644 arch/arm64/boot/dts/ti/k3-j721s2.dtsi
+
+-- 
+2.17.1
+
