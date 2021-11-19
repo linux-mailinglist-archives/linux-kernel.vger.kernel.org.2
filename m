@@ -2,75 +2,454 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65FDC456DBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 11:47:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82950456DBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 11:47:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234709AbhKSKuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 05:50:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37110 "EHLO
+        id S234231AbhKSKuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 05:50:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234872AbhKSKuR (ORCPT
+        with ESMTP id S229843AbhKSKuL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 05:50:17 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D0AC061574;
-        Fri, 19 Nov 2021 02:47:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qwi0Zl08JpIubpCNmWPjJv4J2ykHE5o3WhrHPHXKUy0=; b=V/X1L+W8ois+PtP/N3WV1NOo3v
-        QkJtP14/G+fjJgmFc1Ki3tHkMtoH7HxhshspJvSdY5LVwQRVKY4U1/vhK/AU8UtmBp3KNiloruP1/
-        LHfNAJBEKtcxplG6+M4ot2TLxEwcibFKXWpDYhGVfmlAmVSxvyud4ayZ7PiMfpS70yYmybHh9cssF
-        E4XERg9iIbiRBJ1ZJQw+WJVl+l29Wo+aguNX85Ie+zexvgLZj7awPnLIb6+6ZyV3NTvAM+FDl7CjN
-        vpqqejzWXg2O6kg1/ESh3B6MHR6nPOw7reuxU+P5TSWhfS0rRwInoYG084xTnRrJ6SlQVLQAp7Yku
-        b+hnWzUA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mo1Q3-00Gslu-KL; Fri, 19 Nov 2021 10:47:03 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DD8F2300243;
-        Fri, 19 Nov 2021 11:46:58 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C482E30B01606; Fri, 19 Nov 2021 11:46:58 +0100 (CET)
-Date:   Fri, 19 Nov 2021 11:46:58 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Huang Rui <ray.huang@amd.com>
-Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        linux-pm@vger.kernel.org, Deepak Sharma <deepak.sharma@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Steven Noonan <steven@valvesoftware.com>,
-        Nathan Fontenot <nathan.fontenot@amd.com>,
-        Jinzhou Su <Jinzhou.Su@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v4 06/22] cpufreq: amd: introduce a new amd pstate driver
- to support future processors
-Message-ID: <YZeAohkzXVQ7Nd2Z@hirez.programming.kicks-ass.net>
-References: <20211119103102.88124-1-ray.huang@amd.com>
- <20211119103102.88124-7-ray.huang@amd.com>
+        Fri, 19 Nov 2021 05:50:11 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844B6C061574;
+        Fri, 19 Nov 2021 02:47:10 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so10717048pjc.4;
+        Fri, 19 Nov 2021 02:47:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5MQvZ5Usk3QdQOvorjrkkjj9ippXrckVeRLh6eOofA0=;
+        b=FJcrv3QDi9laBR5mc1YwZ7Tc9GAF3IYj969rZVkuPD0XWV43ZR+F2uhXWrzNWEBHUl
+         CNfu5YTjK48jA5DYOh7WdbOv2wfvHVutnO4Yhz0Y7wG4lLNkLtg2TAn2fXUnU6d9Y4dS
+         kHIt3SUqzfciKciR1Rx33i4W4qOfvhEjVkmSagxHOR2GPqYVJ4X30FPdDAqGM3lOFsFS
+         dPXjtalXYFhtwnGHnx77CHpRQGvpKeqVdTVFg5v0g1Y3FwnZZrZBZO3hxgSz0bA231Iq
+         KSjPWIls2knPD32x2GxRAackNGStbzNtQl5GlTcZR5XQtdwHexoXV++IX/c0lgXCZ3Di
+         bDvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5MQvZ5Usk3QdQOvorjrkkjj9ippXrckVeRLh6eOofA0=;
+        b=3/npJQgm79cJ9DbpQKOaF0pQYRngN1ZSiwbfVIEn0SNJdYOC/BhQjwmSNGZbhceH3R
+         4UGmfUBbpsxoc0HMOzh9kXo8TGdxC2jVXzjSthR7M2VnUbNZvvi6AcB5ut91COZNB8wS
+         HXZC+5JKxnAQY1izeDvfF9kp5LctqL73bMwFaUy5vbFUSwCnzrA07HKsEDUslKtTP+Ju
+         Rvt+hT9d4cb6WwWc1tu7dUi1dyJgmqWboIkyO4Il7yX/Xx0hHX79lNN+hLVEBIRr1u66
+         L6kItcvBSCyJ6ovdWoH7q1zG2o0KmBNRLNRfjkRrsCiwN51/RtWTLrPpq5chuNHudL6W
+         HRUw==
+X-Gm-Message-State: AOAM533Pm4MQyyIp1c7rm0UFpjj2yFsYSQEGskWp3A1JvvcyPGdG8l8t
+        5u8P5DSSIemZJbjdePTlPhNLX3pigHgGOCJIeZM=
+X-Google-Smtp-Source: ABdhPJzMmkc+iyayGywBtWS/JpFmZKurFVUE03O3Gg5ATONgYhMSDdcUZIvrKtz71P+Rp/gNUt8D9Aum2C5n0Ec6Xrk=
+X-Received: by 2002:a17:90b:4b83:: with SMTP id lr3mr3533852pjb.98.1637318829805;
+ Fri, 19 Nov 2021 02:47:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211119103102.88124-7-ray.huang@amd.com>
+References: <20211119085627.6348-1-antoniu.miclaus@analog.com>
+In-Reply-To: <20211119085627.6348-1-antoniu.miclaus@analog.com>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Fri, 19 Nov 2021 12:46:58 +0200
+Message-ID: <CA+U=DspLLJcd8Mvkeb7iAEgsxvmpwaEay1Ur-Rq6M=8YKcosRQ@mail.gmail.com>
+Subject: Re: [PATCH v2] iio: expose shared parameter in IIO_ENUM_AVAILABLE
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 06:30:46PM +0800, Huang Rui wrote:
-> +static inline int pstate_enable(bool enable)
-> +{
-> +	return wrmsrl_safe(MSR_AMD_CPPC_ENABLE, enable ? 1 : 0);
+On Fri, Nov 19, 2021 at 11:37 AM Antoniu Miclaus
+<antoniu.miclaus@analog.com> wrote:
+>
+> The shared parameter should be configurable based on its usage, and not
+> constrained to IIO_SHARED_BY_TYPE.
+>
+> This patch aims to improve the flexibility in using the
+> IIO_ENUM_AVAILABLE define and avoid redefining custom iio enums that
+> expose the shared parameter.
+>
+> An example is the ad5766.c driver where IIO_ENUM_AVAILABLE_SHARED was
+> defined in order to achieve `shared` parameter customization.
+>
+> The current state of the IIO_ENUM_AVAILABLE implementation will imply
+> similar redefinitions each time a driver will require access to the
+> `shared` parameter. An example would be admv1013 driver which will
+> require custom device attribute for the frequency translation modes:
+> Quadrature I/Q mode and Intermediate Frequency mode.
+>
 
-Strictly speaking that ?: is superfluous, a _Bool when cast to scalar
-type will have exactly that value.
+This time, I also got a chance to look at this :)
 
-> +}
+Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+
+> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+> ---
+> changes in v2:
+>  - wrap line to 80 chars
+>  - fix wrong macro update
+>  drivers/iio/accel/bma180.c                |  2 +-
+>  drivers/iio/accel/mma9553.c               |  2 +-
+>  drivers/iio/adc/ad7192.c                  |  3 ++-
+>  drivers/iio/adc/hi8435.c                  |  2 +-
+>  drivers/iio/dac/ad5064.c                  |  4 ++--
+>  drivers/iio/dac/ad5380.c                  |  2 +-
+>  drivers/iio/dac/ad5446.c                  |  2 +-
+>  drivers/iio/dac/ad5504.c                  |  2 +-
+>  drivers/iio/dac/ad5624r_spi.c             |  2 +-
+>  drivers/iio/dac/ad5686.c                  |  2 +-
+>  drivers/iio/dac/ad5766.c                  | 13 ++-----------
+>  drivers/iio/dac/ad5791.c                  |  2 +-
+>  drivers/iio/dac/max5821.c                 |  2 +-
+>  drivers/iio/dac/mcp4725.c                 |  8 ++++----
+>  drivers/iio/dac/stm32-dac.c               |  2 +-
+>  drivers/iio/dac/ti-dac082s085.c           |  2 +-
+>  drivers/iio/dac/ti-dac5571.c              |  2 +-
+>  drivers/iio/dac/ti-dac7311.c              |  2 +-
+>  drivers/iio/magnetometer/hmc5843_core.c   |  4 ++--
+>  drivers/iio/trigger/stm32-timer-trigger.c |  4 ++--
+>  include/linux/iio/iio.h                   |  5 +++--
+>  21 files changed, 31 insertions(+), 38 deletions(-)
+>
+> diff --git a/drivers/iio/accel/bma180.c b/drivers/iio/accel/bma180.c
+> index 2edfcb4819b7..09496f358ad9 100644
+> --- a/drivers/iio/accel/bma180.c
+> +++ b/drivers/iio/accel/bma180.c
+> @@ -658,7 +658,7 @@ static const struct iio_chan_spec_ext_info bma023_ext_info[] = {
+>
+>  static const struct iio_chan_spec_ext_info bma180_ext_info[] = {
+>         IIO_ENUM("power_mode", IIO_SHARED_BY_TYPE, &bma180_power_mode_enum),
+> -       IIO_ENUM_AVAILABLE("power_mode", &bma180_power_mode_enum),
+> +       IIO_ENUM_AVAILABLE("power_mode", IIO_SHARED_BY_TYPE, &bma180_power_mode_enum),
+>         IIO_MOUNT_MATRIX(IIO_SHARED_BY_DIR, bma180_accel_get_mount_matrix),
+>         { }
+>  };
+> diff --git a/drivers/iio/accel/mma9553.c b/drivers/iio/accel/mma9553.c
+> index ba3ecb3b57dc..0570ab1cc064 100644
+> --- a/drivers/iio/accel/mma9553.c
+> +++ b/drivers/iio/accel/mma9553.c
+> @@ -917,7 +917,7 @@ static const struct iio_enum mma9553_calibgender_enum = {
+>
+>  static const struct iio_chan_spec_ext_info mma9553_ext_info[] = {
+>         IIO_ENUM("calibgender", IIO_SHARED_BY_TYPE, &mma9553_calibgender_enum),
+> -       IIO_ENUM_AVAILABLE("calibgender", &mma9553_calibgender_enum),
+> +       IIO_ENUM_AVAILABLE("calibgender", IIO_SHARED_BY_TYPE, &mma9553_calibgender_enum),
+>         {},
+>  };
+>
+> diff --git a/drivers/iio/adc/ad7192.c b/drivers/iio/adc/ad7192.c
+> index 2121a812b0c3..cc990205f306 100644
+> --- a/drivers/iio/adc/ad7192.c
+> +++ b/drivers/iio/adc/ad7192.c
+> @@ -257,7 +257,8 @@ static const struct iio_chan_spec_ext_info ad7192_calibsys_ext_info[] = {
+>         },
+>         IIO_ENUM("sys_calibration_mode", IIO_SEPARATE,
+>                  &ad7192_syscalib_mode_enum),
+> -       IIO_ENUM_AVAILABLE("sys_calibration_mode", &ad7192_syscalib_mode_enum),
+> +       IIO_ENUM_AVAILABLE("sys_calibration_mode", IIO_SHARED_BY_TYPE,
+> +                          &ad7192_syscalib_mode_enum),
+>         {}
+>  };
+>
+> diff --git a/drivers/iio/adc/hi8435.c b/drivers/iio/adc/hi8435.c
+> index 8b353e26668e..e665e14c6e54 100644
+> --- a/drivers/iio/adc/hi8435.c
+> +++ b/drivers/iio/adc/hi8435.c
+> @@ -350,7 +350,7 @@ static const struct iio_enum hi8435_sensing_mode = {
+>
+>  static const struct iio_chan_spec_ext_info hi8435_ext_info[] = {
+>         IIO_ENUM("sensing_mode", IIO_SEPARATE, &hi8435_sensing_mode),
+> -       IIO_ENUM_AVAILABLE("sensing_mode", &hi8435_sensing_mode),
+> +       IIO_ENUM_AVAILABLE("sensing_mode", IIO_SHARED_BY_TYPE, &hi8435_sensing_mode),
+>         {},
+>  };
+>
+> diff --git a/drivers/iio/dac/ad5064.c b/drivers/iio/dac/ad5064.c
+> index fd9cac4f6321..27ee2c63c5d4 100644
+> --- a/drivers/iio/dac/ad5064.c
+> +++ b/drivers/iio/dac/ad5064.c
+> @@ -377,7 +377,7 @@ static const struct iio_chan_spec_ext_info ad5064_ext_info[] = {
+>                 .shared = IIO_SEPARATE,
+>         },
+>         IIO_ENUM("powerdown_mode", IIO_SEPARATE, &ad5064_powerdown_mode_enum),
+> -       IIO_ENUM_AVAILABLE("powerdown_mode", &ad5064_powerdown_mode_enum),
+> +       IIO_ENUM_AVAILABLE("powerdown_mode", IIO_SHARED_BY_TYPE, &ad5064_powerdown_mode_enum),
+>         { },
+>  };
+>
+> @@ -389,7 +389,7 @@ static const struct iio_chan_spec_ext_info ltc2617_ext_info[] = {
+>                 .shared = IIO_SEPARATE,
+>         },
+>         IIO_ENUM("powerdown_mode", IIO_SEPARATE, &ltc2617_powerdown_mode_enum),
+> -       IIO_ENUM_AVAILABLE("powerdown_mode", &ltc2617_powerdown_mode_enum),
+> +       IIO_ENUM_AVAILABLE("powerdown_mode", IIO_SHARED_BY_TYPE, &ltc2617_powerdown_mode_enum),
+>         { },
+>  };
+>
+> diff --git a/drivers/iio/dac/ad5380.c b/drivers/iio/dac/ad5380.c
+> index 8ca26bb4b62f..e38860a6a9f3 100644
+> --- a/drivers/iio/dac/ad5380.c
+> +++ b/drivers/iio/dac/ad5380.c
+> @@ -249,7 +249,7 @@ static const struct iio_chan_spec_ext_info ad5380_ext_info[] = {
+>         },
+>         IIO_ENUM("powerdown_mode", IIO_SHARED_BY_TYPE,
+>                  &ad5380_powerdown_mode_enum),
+> -       IIO_ENUM_AVAILABLE("powerdown_mode", &ad5380_powerdown_mode_enum),
+> +       IIO_ENUM_AVAILABLE("powerdown_mode", IIO_SHARED_BY_TYPE, &ad5380_powerdown_mode_enum),
+>         { },
+>  };
+>
+> diff --git a/drivers/iio/dac/ad5446.c b/drivers/iio/dac/ad5446.c
+> index 3cc5513a6cbf..1c9b54c012a7 100644
+> --- a/drivers/iio/dac/ad5446.c
+> +++ b/drivers/iio/dac/ad5446.c
+> @@ -142,7 +142,7 @@ static const struct iio_chan_spec_ext_info ad5446_ext_info_powerdown[] = {
+>                 .shared = IIO_SEPARATE,
+>         },
+>         IIO_ENUM("powerdown_mode", IIO_SEPARATE, &ad5446_powerdown_mode_enum),
+> -       IIO_ENUM_AVAILABLE("powerdown_mode", &ad5446_powerdown_mode_enum),
+> +       IIO_ENUM_AVAILABLE("powerdown_mode", IIO_SHARED_BY_TYPE, &ad5446_powerdown_mode_enum),
+>         { },
+>  };
+>
+> diff --git a/drivers/iio/dac/ad5504.c b/drivers/iio/dac/ad5504.c
+> index 19cdf9890d02..b631261efa97 100644
+> --- a/drivers/iio/dac/ad5504.c
+> +++ b/drivers/iio/dac/ad5504.c
+> @@ -241,7 +241,7 @@ static const struct iio_chan_spec_ext_info ad5504_ext_info[] = {
+>         },
+>         IIO_ENUM("powerdown_mode", IIO_SHARED_BY_TYPE,
+>                  &ad5504_powerdown_mode_enum),
+> -       IIO_ENUM_AVAILABLE("powerdown_mode", &ad5504_powerdown_mode_enum),
+> +       IIO_ENUM_AVAILABLE("powerdown_mode", IIO_SHARED_BY_TYPE, &ad5504_powerdown_mode_enum),
+>         { },
+>  };
+>
+> diff --git a/drivers/iio/dac/ad5624r_spi.c b/drivers/iio/dac/ad5624r_spi.c
+> index 530529feebb5..3c98941b9f99 100644
+> --- a/drivers/iio/dac/ad5624r_spi.c
+> +++ b/drivers/iio/dac/ad5624r_spi.c
+> @@ -159,7 +159,7 @@ static const struct iio_chan_spec_ext_info ad5624r_ext_info[] = {
+>         },
+>         IIO_ENUM("powerdown_mode", IIO_SHARED_BY_TYPE,
+>                  &ad5624r_powerdown_mode_enum),
+> -       IIO_ENUM_AVAILABLE("powerdown_mode", &ad5624r_powerdown_mode_enum),
+> +       IIO_ENUM_AVAILABLE("powerdown_mode", IIO_SHARED_BY_TYPE, &ad5624r_powerdown_mode_enum),
+>         { },
+>  };
+>
+> diff --git a/drivers/iio/dac/ad5686.c b/drivers/iio/dac/ad5686.c
+> index 8f001db775f4..e592a995f404 100644
+> --- a/drivers/iio/dac/ad5686.c
+> +++ b/drivers/iio/dac/ad5686.c
+> @@ -184,7 +184,7 @@ static const struct iio_chan_spec_ext_info ad5686_ext_info[] = {
+>                 .shared = IIO_SEPARATE,
+>         },
+>         IIO_ENUM("powerdown_mode", IIO_SEPARATE, &ad5686_powerdown_mode_enum),
+> -       IIO_ENUM_AVAILABLE("powerdown_mode", &ad5686_powerdown_mode_enum),
+> +       IIO_ENUM_AVAILABLE("powerdown_mode", IIO_SHARED_BY_TYPE, &ad5686_powerdown_mode_enum),
+>         { },
+>  };
+>
+> diff --git a/drivers/iio/dac/ad5766.c b/drivers/iio/dac/ad5766.c
+> index b0d220c3a126..43189af2fb1f 100644
+> --- a/drivers/iio/dac/ad5766.c
+> +++ b/drivers/iio/dac/ad5766.c
+> @@ -426,14 +426,6 @@ static ssize_t ad5766_write_ext(struct iio_dev *indio_dev,
+>         .shared = _shared, \
+>  }
+>
+> -#define IIO_ENUM_AVAILABLE_SHARED(_name, _shared, _e) \
+> -{ \
+> -       .name = (_name "_available"), \
+> -       .shared = _shared, \
+> -       .read = iio_enum_available_read, \
+> -       .private = (uintptr_t)(_e), \
+> -}
+> -
+>  static const struct iio_chan_spec_ext_info ad5766_ext_info[] = {
+>
+>         _AD5766_CHAN_EXT_INFO("dither_enable", AD5766_DITHER_ENABLE,
+> @@ -443,9 +435,8 @@ static const struct iio_chan_spec_ext_info ad5766_ext_info[] = {
+>         _AD5766_CHAN_EXT_INFO("dither_source", AD5766_DITHER_SOURCE,
+>                               IIO_SEPARATE),
+>         IIO_ENUM("dither_scale", IIO_SEPARATE, &ad5766_dither_scale_enum),
+> -       IIO_ENUM_AVAILABLE_SHARED("dither_scale",
+> -                                 IIO_SEPARATE,
+> -                                 &ad5766_dither_scale_enum),
+> +       IIO_ENUM_AVAILABLE("dither_scale", IIO_SEPARATE,
+> +                          &ad5766_dither_scale_enum),
+>         {}
+>  };
+>
+> diff --git a/drivers/iio/dac/ad5791.c b/drivers/iio/dac/ad5791.c
+> index a0923b76e8b6..7b4579d73d18 100644
+> --- a/drivers/iio/dac/ad5791.c
+> +++ b/drivers/iio/dac/ad5791.c
+> @@ -285,7 +285,7 @@ static const struct iio_chan_spec_ext_info ad5791_ext_info[] = {
+>         },
+>         IIO_ENUM("powerdown_mode", IIO_SHARED_BY_TYPE,
+>                  &ad5791_powerdown_mode_enum),
+> -       IIO_ENUM_AVAILABLE("powerdown_mode", &ad5791_powerdown_mode_enum),
+> +       IIO_ENUM_AVAILABLE("powerdown_mode", IIO_SHARED_BY_TYPE, &ad5791_powerdown_mode_enum),
+>         { },
+>  };
+>
+> diff --git a/drivers/iio/dac/max5821.c b/drivers/iio/dac/max5821.c
+> index 7da4710a6408..fce640b7f1c8 100644
+> --- a/drivers/iio/dac/max5821.c
+> +++ b/drivers/iio/dac/max5821.c
+> @@ -137,7 +137,7 @@ static const struct iio_chan_spec_ext_info max5821_ext_info[] = {
+>                 .shared = IIO_SEPARATE,
+>         },
+>         IIO_ENUM("powerdown_mode", IIO_SEPARATE, &max5821_powerdown_mode_enum),
+> -       IIO_ENUM_AVAILABLE("powerdown_mode", &max5821_powerdown_mode_enum),
+> +       IIO_ENUM_AVAILABLE("powerdown_mode", IIO_SHARED_BY_TYPE, &max5821_powerdown_mode_enum),
+>         { },
+>  };
+>
+> diff --git a/drivers/iio/dac/mcp4725.c b/drivers/iio/dac/mcp4725.c
+> index 34b14aafb630..98b2c2f10bf3 100644
+> --- a/drivers/iio/dac/mcp4725.c
+> +++ b/drivers/iio/dac/mcp4725.c
+> @@ -221,8 +221,8 @@ static const struct iio_chan_spec_ext_info mcp4725_ext_info[] = {
+>         },
+>         IIO_ENUM("powerdown_mode", IIO_SEPARATE,
+>                         &mcp472x_powerdown_mode_enum[MCP4725]),
+> -       IIO_ENUM_AVAILABLE("powerdown_mode",
+> -                       &mcp472x_powerdown_mode_enum[MCP4725]),
+> +       IIO_ENUM_AVAILABLE("powerdown_mode", IIO_SHARED_BY_TYPE,
+> +                          &mcp472x_powerdown_mode_enum[MCP4725]),
+>         { },
+>  };
+>
+> @@ -235,8 +235,8 @@ static const struct iio_chan_spec_ext_info mcp4726_ext_info[] = {
+>         },
+>         IIO_ENUM("powerdown_mode", IIO_SEPARATE,
+>                         &mcp472x_powerdown_mode_enum[MCP4726]),
+> -       IIO_ENUM_AVAILABLE("powerdown_mode",
+> -                       &mcp472x_powerdown_mode_enum[MCP4726]),
+> +       IIO_ENUM_AVAILABLE("powerdown_mode", IIO_SHARED_BY_TYPE,
+> +                          &mcp472x_powerdown_mode_enum[MCP4726]),
+>         { },
+>  };
+>
+> diff --git a/drivers/iio/dac/stm32-dac.c b/drivers/iio/dac/stm32-dac.c
+> index dd2e306824e7..cd71cc4553a7 100644
+> --- a/drivers/iio/dac/stm32-dac.c
+> +++ b/drivers/iio/dac/stm32-dac.c
+> @@ -246,7 +246,7 @@ static const struct iio_chan_spec_ext_info stm32_dac_ext_info[] = {
+>                 .shared = IIO_SEPARATE,
+>         },
+>         IIO_ENUM("powerdown_mode", IIO_SEPARATE, &stm32_dac_powerdown_mode_en),
+> -       IIO_ENUM_AVAILABLE("powerdown_mode", &stm32_dac_powerdown_mode_en),
+> +       IIO_ENUM_AVAILABLE("powerdown_mode", IIO_SHARED_BY_TYPE, &stm32_dac_powerdown_mode_en),
+>         {},
+>  };
+>
+> diff --git a/drivers/iio/dac/ti-dac082s085.c b/drivers/iio/dac/ti-dac082s085.c
+> index 5c14bfb16521..6beda2193683 100644
+> --- a/drivers/iio/dac/ti-dac082s085.c
+> +++ b/drivers/iio/dac/ti-dac082s085.c
+> @@ -160,7 +160,7 @@ static const struct iio_chan_spec_ext_info ti_dac_ext_info[] = {
+>                 .shared    = IIO_SHARED_BY_TYPE,
+>         },
+>         IIO_ENUM("powerdown_mode", IIO_SHARED_BY_TYPE, &ti_dac_powerdown_mode),
+> -       IIO_ENUM_AVAILABLE("powerdown_mode", &ti_dac_powerdown_mode),
+> +       IIO_ENUM_AVAILABLE("powerdown_mode", IIO_SHARED_BY_TYPE, &ti_dac_powerdown_mode),
+>         { },
+>  };
+>
+> diff --git a/drivers/iio/dac/ti-dac5571.c b/drivers/iio/dac/ti-dac5571.c
+> index 546a4cf6c5ef..4a3b8d875518 100644
+> --- a/drivers/iio/dac/ti-dac5571.c
+> +++ b/drivers/iio/dac/ti-dac5571.c
+> @@ -212,7 +212,7 @@ static const struct iio_chan_spec_ext_info dac5571_ext_info[] = {
+>                 .shared    = IIO_SEPARATE,
+>         },
+>         IIO_ENUM("powerdown_mode", IIO_SEPARATE, &dac5571_powerdown_mode),
+> -       IIO_ENUM_AVAILABLE("powerdown_mode", &dac5571_powerdown_mode),
+> +       IIO_ENUM_AVAILABLE("powerdown_mode", IIO_SHARED_BY_TYPE, &dac5571_powerdown_mode),
+>         {},
+>  };
+>
+> diff --git a/drivers/iio/dac/ti-dac7311.c b/drivers/iio/dac/ti-dac7311.c
+> index 09218c3029f0..99f275829ec2 100644
+> --- a/drivers/iio/dac/ti-dac7311.c
+> +++ b/drivers/iio/dac/ti-dac7311.c
+> @@ -146,7 +146,7 @@ static const struct iio_chan_spec_ext_info ti_dac_ext_info[] = {
+>                 .shared    = IIO_SHARED_BY_TYPE,
+>         },
+>         IIO_ENUM("powerdown_mode", IIO_SHARED_BY_TYPE, &ti_dac_powerdown_mode),
+> -       IIO_ENUM_AVAILABLE("powerdown_mode", &ti_dac_powerdown_mode),
+> +       IIO_ENUM_AVAILABLE("powerdown_mode", IIO_SHARED_BY_TYPE, &ti_dac_powerdown_mode),
+>         { },
+>  };
+>
+> diff --git a/drivers/iio/magnetometer/hmc5843_core.c b/drivers/iio/magnetometer/hmc5843_core.c
+> index f08726bf5ec3..5a730d9bdbb0 100644
+> --- a/drivers/iio/magnetometer/hmc5843_core.c
+> +++ b/drivers/iio/magnetometer/hmc5843_core.c
+> @@ -246,7 +246,7 @@ static const struct iio_enum hmc5843_meas_conf_enum = {
+>
+>  static const struct iio_chan_spec_ext_info hmc5843_ext_info[] = {
+>         IIO_ENUM("meas_conf", IIO_SHARED_BY_TYPE, &hmc5843_meas_conf_enum),
+> -       IIO_ENUM_AVAILABLE("meas_conf", &hmc5843_meas_conf_enum),
+> +       IIO_ENUM_AVAILABLE("meas_conf", IIO_SHARED_BY_TYPE, &hmc5843_meas_conf_enum),
+>         IIO_MOUNT_MATRIX(IIO_SHARED_BY_DIR, hmc5843_get_mount_matrix),
+>         { }
+>  };
+> @@ -260,7 +260,7 @@ static const struct iio_enum hmc5983_meas_conf_enum = {
+>
+>  static const struct iio_chan_spec_ext_info hmc5983_ext_info[] = {
+>         IIO_ENUM("meas_conf", IIO_SHARED_BY_TYPE, &hmc5983_meas_conf_enum),
+> -       IIO_ENUM_AVAILABLE("meas_conf", &hmc5983_meas_conf_enum),
+> +       IIO_ENUM_AVAILABLE("meas_conf", IIO_SHARED_BY_TYPE, &hmc5983_meas_conf_enum),
+>         IIO_MOUNT_MATRIX(IIO_SHARED_BY_DIR, hmc5843_get_mount_matrix),
+>         { }
+>  };
+> diff --git a/drivers/iio/trigger/stm32-timer-trigger.c b/drivers/iio/trigger/stm32-timer-trigger.c
+> index 33083877cd19..02b87b0f9d70 100644
+> --- a/drivers/iio/trigger/stm32-timer-trigger.c
+> +++ b/drivers/iio/trigger/stm32-timer-trigger.c
+> @@ -696,9 +696,9 @@ static const struct iio_chan_spec_ext_info stm32_trigger_count_info[] = {
+>                 .write = stm32_count_set_preset
+>         },
+>         IIO_ENUM("enable_mode", IIO_SEPARATE, &stm32_enable_mode_enum),
+> -       IIO_ENUM_AVAILABLE("enable_mode", &stm32_enable_mode_enum),
+> +       IIO_ENUM_AVAILABLE("enable_mode", IIO_SHARED_BY_TYPE, &stm32_enable_mode_enum),
+>         IIO_ENUM("trigger_mode", IIO_SEPARATE, &stm32_trigger_mode_enum),
+> -       IIO_ENUM_AVAILABLE("trigger_mode", &stm32_trigger_mode_enum),
+> +       IIO_ENUM_AVAILABLE("trigger_mode", IIO_SHARED_BY_TYPE, &stm32_trigger_mode_enum),
+>         {}
+>  };
+>
+> diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
+> index 324561b7a5e8..07025d6b3de1 100644
+> --- a/include/linux/iio/iio.h
+> +++ b/include/linux/iio/iio.h
+> @@ -103,15 +103,16 @@ ssize_t iio_enum_write(struct iio_dev *indio_dev,
+>  /**
+>   * IIO_ENUM_AVAILABLE() - Initialize enum available extended channel attribute
+>   * @_name:     Attribute name ("_available" will be appended to the name)
+> + * @_shared:   Whether the attribute is shared between all channels
+>   * @_e:                Pointer to an iio_enum struct
+>   *
+>   * Creates a read only attribute which lists all the available enum items in a
+>   * space separated list. This should usually be used together with IIO_ENUM()
+>   */
+> -#define IIO_ENUM_AVAILABLE(_name, _e) \
+> +#define IIO_ENUM_AVAILABLE(_name, _shared, _e) \
+>  { \
+>         .name = (_name "_available"), \
+> -       .shared = IIO_SHARED_BY_TYPE, \
+> +       .shared = _shared, \
+>         .read = iio_enum_available_read, \
+>         .private = (uintptr_t)(_e), \
+>  }
+> --
+> 2.34.0
+>
