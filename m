@@ -2,80 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B40E456B02
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 08:41:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4858D456B04
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 08:41:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233653AbhKSHm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 02:42:59 -0500
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:65516 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231828AbhKSHm6 (ORCPT
+        id S233891AbhKSHnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 02:43:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231828AbhKSHnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 02:42:58 -0500
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AJ5cgfM000925;
-        Thu, 18 Nov 2021 23:39:53 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pfpt0220;
- bh=Jw8Y6vZJBgPE9zMfzf+cIZsOWLDjM8/Zl/0/39xf/a0=;
- b=HX+aU4o30WIwdZT3R3aKhaI8Cuxn5xU5oGYANml5DqVOGCn5ub4fKaaT+tznDMmBB+x5
- MvPxWVMDz3pvlIFFj2+1iXP7barRBRVlAIgnl0yg+Iqu96cwwyOtbhZjFkvm42U6P8w6
- 6ItZGkiqfeurOXnIBrQMCKGkUOdnjcZ+3ywj8hKXxktmOqYR8qBMhD/Fj73F+ieT3YL1
- PiWPic1k60vT0rl2sQD31lciiQ2oUSoWUykjpHpAPIUssRXk7qMhPxMShkGhjfJuRzXU
- Gu9BP9IsTZgFHR+aFKsKyKdtcgV4vH3XDxZjl5egcqdlddgrVNnfiW1fd+f8wxtSp6zU 8w== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3cdvprthnu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 18 Nov 2021 23:39:53 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 18 Nov
- 2021 23:39:52 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Thu, 18 Nov 2021 23:39:52 -0800
-Received: from [10.9.118.29] (EL-LT0043.marvell.com [10.9.118.29])
-        by maili.marvell.com (Postfix) with ESMTP id 29D2C3F706A;
-        Thu, 18 Nov 2021 23:39:51 -0800 (PST)
-Message-ID: <eb7f2b27-4c8d-f935-18c3-3d70caa0c5c8@marvell.com>
-Date:   Fri, 19 Nov 2021 08:39:50 +0100
+        Fri, 19 Nov 2021 02:43:23 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 782F0C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 23:40:22 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mnyVN-0008G7-B4; Fri, 19 Nov 2021 08:40:17 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mnyVM-000QqF-TV; Fri, 19 Nov 2021 08:40:16 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mnyVL-0004bf-R5; Fri, 19 Nov 2021 08:40:15 +0100
+Date:   Fri, 19 Nov 2021 08:40:15 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spidev: Make probe to fail early if a spidev compatible
+ is used
+Message-ID: <20211119074015.kji2hzarevxgfl5l@pengutronix.de>
+References: <20211109225920.1158920-1-javierm@redhat.com>
+ <20211110074247.g7eaq2z27bwdt4m5@pengutronix.de>
+ <YZaZpx7cudaAEGIP@sirena.org.uk>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:94.0) Gecko/20100101
- Thunderbird/94.0
-Subject: Re: [EXT] [PATCH] atlantic: fix double-free in aq_ring_tx_clean
-Content-Language: en-US
-To:     Zekun Shen <bruceshenzk@gmail.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <brendandg@nyu.edu>
-References: <YZbAsgT17yxu4Otk@a-10-27-17-117.dynapool.vpn.nyu.edu>
-From:   Igor Russkikh <irusskikh@marvell.com>
-In-Reply-To: <YZbAsgT17yxu4Otk@a-10-27-17-117.dynapool.vpn.nyu.edu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: U13SChMWGcIWWwJMpn37stDsAxbyJ-vS
-X-Proofpoint-GUID: U13SChMWGcIWWwJMpn37stDsAxbyJ-vS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-19_07,2021-11-17_01,2020-04-07_01
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="i6lcaidjqepiuwke"
+Content-Disposition: inline
+In-Reply-To: <YZaZpx7cudaAEGIP@sirena.org.uk>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-> We found this bug while fuzzing the device driver. Using and freeing
-> the dangling pointer buff->skb would cause use-after-free and
-> double-free.
-> 
-> This bug is triggerable with compromised/malfunctioning devices. We
-> found the bug with QEMU emulation and tested the patch by emulation.
-> We did NOT test on a real device.
-> 
-> Attached is the bug report.
-> 
+--i6lcaidjqepiuwke
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Igor Russkikh <irusskikh@marvell.com>
+On Thu, Nov 18, 2021 at 06:21:27PM +0000, Mark Brown wrote:
+> On Wed, Nov 10, 2021 at 08:42:47AM +0100, Uwe Kleine-K=F6nig wrote:
+>=20
+> > Up to 6840615f85f6 the choices you had to use the spidev driver were
+> > (assuing a dt machine):
+>=20
+> >  a) Use compatible =3D "spidev" and ignore the warning
+> >  b) Use compatible =3D $chipname and add $chipname to the list of
+> >     supported devices for the spidev driver. (e.g. "rohm,dh2228fv")
+> >  c) Use compatible =3D $chipname and force binding the spidev driver us=
+ing
+> >=20
+> >    	echo spidev > /sys/bus/spi/devices/spiX.Y/driver_override
+> > 	echo spiX.Y > /sys/bus/spi/drivers/spidev/bind
+>=20
+> > Commit 6840615f85f6 changed that in situation a) you had to switch to c)
+> > (well, or b) adding "spidev" to the spi id list).
+>=20
+> > With the change introduced by this patch, you make it impossible to bind
+> > the spidev driver to such a device (without kernel source changes) even
+> > using approach c). I wonder if this is too harsh given that changing the
+> > dtb is difficult on some machines.
+>=20
+> Following up from discussion on IRC: it's not clear to me how option c
+> is affected?  The change only causes an error if of_device_is_compatible()
+> is true and driver_override works with spi_device_id not compatibles (I
+> didn't actually test, in the middle of some other stuff right now).
 
-Thank you for submitting this!
+It affects c) only if the device tree has a device with compatible =3D
+"spidev". For such a device the history is:
 
-Igor
+  - Before 956b200a846e ("spi: spidev: Warn loudly if instantiated from
+    DT as "spidev"") in v4.1-rc1:
+    Just bound silently
+
+  - After 956b200a846e up to 6840615f85f6 ("spi: spidev: Add SPI ID
+    table") in v5.15-rc6:
+    The device was automatically bound with a warning
+
+  - After 6840615f85f6:
+    The device doesn't bind automatically, when using driver_override
+    you get a warning.
+
+  - With the proposed patch:
+    The device cannot be bound even using driver_override
+
+Not this affects also devices that use
+
+	compatible =3D "myvender,devicename", "spidev";
+
+=2E
+
+Best regards
+Uwe
+
+
+
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--i6lcaidjqepiuwke
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGXVNsACgkQwfwUeK3K
+7Al4vQf/ZXk+F0vl3KPL2XIcQv4fz7LHzx+yHfaExJZkVMrTqBlCRkJ2vkwvLKb6
+sRR1GSVc45N6ABPmvagTxfrpj0SMO/ZMedaDmLHkVMobNvld/MpoKyj34IH+V+BP
+px6rxgxiev7keWE1bpDiRjl5q2Go8KqsexisqItvpZ34R1UYd1fhIUjCq4Tyh4VP
+Y9RGeKgEMdi45kCzwGyVYPJ0/oAnmHnfrlvqHKd1FuucjUimbbWpoeZMh3EGa9fq
+9uligrgiYiZz00areB65OguPOXe4CdEypCMW0bq0bERipeKo1lXULuwd2TPSXazQ
+co2/mEL5lVlzOWrpaqBWJrmDdluc4g==
+=sVbv
+-----END PGP SIGNATURE-----
+
+--i6lcaidjqepiuwke--
