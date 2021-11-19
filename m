@@ -2,167 +2,358 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A49E45772A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 20:40:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 082C4457741
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 20:44:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236236AbhKSTmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 14:42:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236017AbhKSTmf (ORCPT
+        id S236129AbhKSTrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 14:47:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:25873 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231635AbhKSTr3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 14:42:35 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69119C06173E;
-        Fri, 19 Nov 2021 11:39:26 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id g14so46984214edb.8;
-        Fri, 19 Nov 2021 11:39:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jMOymKcoA7+p43ADFlUIl6/jjGD/+QXRL1PpHntJR0c=;
-        b=kTG74u1j1PtsIPYQ5Cc5YJZt0qQYeglkRX8FerBLsIzmVPe5YhOckBaSy2sui/ov8J
-         xadTJ8XxRM7nnhpoetoSHskeNWm9EzpG4P96bitpckFnkzjPHo4V2qiY0nXr08nPdukT
-         aasjSRp8y4VAlrIwNLFwSSyceBFYkSGS16e8WodM8fD6ZK8BfMQsikgiCRkQzkFFOnVY
-         7PMyD72zxsnbpcoMFN2vxymEkXirZ0pQ4Rr3Vmhib2AD6oeHjti7wJfo15Of9P6ZPpOL
-         JWI2P0JJ4qHT7vNu35WSbmKrF9lfUyeKq36upGOSiqYTsYH+2cFhFdR7zkAe6ymp8JEA
-         vnOQ==
+        Fri, 19 Nov 2021 14:47:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637351066;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=46YYqrkRHLAschjfxpnYjUnB3WM/67rchyHoD+P7T4k=;
+        b=AxFPjd8aVR8nF3hXKVD1YSZp2r4krdeg/a/BuflNKwSG56PgC7txaobkb5OCSgK8sGQ2fz
+        vs0JhA7mH7xC3dlVjn8sPjQA/XQtEig45p5en4zE+pb4dcCuddPx1XFfUQQ8wzxa8mifpz
+        ddSY2/yjbGg8z3jgVbW3jUVa3/xcJeQ=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-401-N5wuwoX5Og-WfZsjh3OQmQ-1; Fri, 19 Nov 2021 14:44:25 -0500
+X-MC-Unique: N5wuwoX5Og-WfZsjh3OQmQ-1
+Received: by mail-qk1-f198.google.com with SMTP id j6-20020a05620a288600b0045e5d85ca17so8676345qkp.16
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 11:44:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jMOymKcoA7+p43ADFlUIl6/jjGD/+QXRL1PpHntJR0c=;
-        b=CmUPO/7PCEXzdMbB0XVeGDBSM8TUqbd4u2ThvT3cw/iSLJeExb2gOjG4S5jh5K0x/B
-         il8nwsieKf42yrYI5yiyuZ0wAtuf8HXBMxlHa/bS6mSFAcbKu0Q3y7tgL7HSaD/JA7+O
-         SQZF3kLVMBhILQlPJzpHRemdNcS4VomGK12myLP+7/6m9XD5Ad6BdxH0P9WUu+E7b3ft
-         XUOhoq5FwEiTyIf0m4qFhUr3HgOeZEfaiY3uJuK1VVjQb14f2IYjCHGEym49X5aPvaeA
-         2C9oioyoRchzQ8L0jF1APk+sc98rTBxuYFWuqcolabSD8kv4OZcELwTbVGs6NmGoDIjH
-         U8BQ==
-X-Gm-Message-State: AOAM531MwuvxqzK6mHK2+VlbS4baMf0P9XmZAz1+oiRFI0XUsxySK9jU
-        GljC0z7w/x7qDnHY8j6gnoE=
-X-Google-Smtp-Source: ABdhPJytFq+B7WD659CbPgZTsdUyKzXm+//8iWdsbnp9oqTiBcH+D6X1wh6Bf/faryrJaAo+kwrzDw==
-X-Received: by 2002:a17:907:7d8d:: with SMTP id oz13mr10772183ejc.361.1637350765028;
-        Fri, 19 Nov 2021 11:39:25 -0800 (PST)
-Received: from localhost.localdomain (catv-176-63-2-222.catv.broadband.hu. [176.63.2.222])
-        by smtp.googlemail.com with ESMTPSA id sb19sm327521ejc.120.2021.11.19.11.39.24
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=46YYqrkRHLAschjfxpnYjUnB3WM/67rchyHoD+P7T4k=;
+        b=XNXPI3xLmTBgL+eHXltbMQYteYti18W6/C+Mzz46G/AicAhZXKQzzRetts92CRV8/8
+         8Jp0ktDNz7M7VKau5zWEF+86ACuTYP560ROVpk/8nUo39U0Crz4LyMs7BRFC8lNXhoDu
+         JXhCrARFi7J9rbG17bYhi4JM+GFS8WnK/e3vcM/T3LsL8PBGf97ZZPRskB0beDxmcysC
+         HstLavTQZqGp8tlPwGBjMrNe+rZWBm2znMbb8GWGbD9D+y3bKVvo/cSZqIvmH0jkrHwq
+         MPZQCrta1+il18NaZm7EdmpEuW5z9vVUada4VOmtmmtu0ze16mdhD6Rg7K++nKrWgRh0
+         h0QQ==
+X-Gm-Message-State: AOAM530HMfjrXfCavZMWAQkOLyn2YWCHqmKy/rzFl9sT00dq8Hse7skh
+        PMkM6xK4DXdAgDzCQLacPASJo1c3ijBAV4TtzR+i+u8FpsWJZ95VaWtlmo+btCO9ogKl330jJsR
+        E5hIqJH6xw5Bb/3rewy57mM3b
+X-Received: by 2002:a05:620a:cd0:: with SMTP id b16mr29177117qkj.401.1637351065064;
+        Fri, 19 Nov 2021 11:44:25 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJysHFtfV18hC6YuuWrifxKZACnDo9Rpegn7SNHmMA0Gt36hkY0oZv4M71OJoUkrmEmH/IJHKg==
+X-Received: by 2002:a05:620a:cd0:: with SMTP id b16mr29177093qkj.401.1637351064705;
+        Fri, 19 Nov 2021 11:44:24 -0800 (PST)
+Received: from bfoster (c-24-61-119-116.hsd1.ma.comcast.net. [24.61.119.116])
+        by smtp.gmail.com with ESMTPSA id az16sm318729qkb.124.2021.11.19.11.44.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 11:39:24 -0800 (PST)
-From:   "Saheed O. Bolarinwa" <refactormyself@gmail.com>
-To:     helgaas@kernel.org
-Cc:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, hch@lst.de
-Subject: [RFC PATCH v5 4/4] PCI/ASPM: Remove struct aspm_latency
-Date:   Fri, 19 Nov 2021 20:37:32 +0100
-Message-Id: <20211119193732.12343-5-refactormyself@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211119193732.12343-1-refactormyself@gmail.com>
-References: <20211119193732.12343-1-refactormyself@gmail.com>
+        Fri, 19 Nov 2021 11:44:24 -0800 (PST)
+Date:   Fri, 19 Nov 2021 14:44:21 -0500
+From:   Brian Foster <bfoster@redhat.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Ian Kent <raven@themaw.net>, Miklos Szeredi <miklos@szeredi.hu>,
+        xfs <linux-xfs@vger.kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] xfs: make sure link path does not go away at access
+Message-ID: <YZf+lRsb0lBWdYgN@bfoster>
+References: <CAJfpegvHDM_Mtc8+ASAcmNLd6RiRM+KutjBOoycun_Oq2=+p=w@mail.gmail.com>
+ <20211114231834.GM449541@dread.disaster.area>
+ <CAJfpegu4BwJD1JKngsrzUs7h82cYDGpxv0R1om=WGhOOb6pZ2Q@mail.gmail.com>
+ <20211115222417.GO449541@dread.disaster.area>
+ <f8425d1270fe011897e7e14eaa6ba8a77c1ed077.camel@themaw.net>
+ <20211116030120.GQ449541@dread.disaster.area>
+ <YZPVSTDIWroHNvFS@bfoster>
+ <20211117002251.GR449541@dread.disaster.area>
+ <YZVQUSCWWgOs+cRB@bfoster>
+ <20211117214852.GU449541@dread.disaster.area>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211117214852.GU449541@dread.disaster.area>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The struct aspm_latency is now used only inside pcie_aspm_check_latency().
+On Thu, Nov 18, 2021 at 08:48:52AM +1100, Dave Chinner wrote:
+> On Wed, Nov 17, 2021 at 01:56:17PM -0500, Brian Foster wrote:
+> > On Wed, Nov 17, 2021 at 11:22:51AM +1100, Dave Chinner wrote:
+> > > On Tue, Nov 16, 2021 at 10:59:05AM -0500, Brian Foster wrote:
+> > > > On Tue, Nov 16, 2021 at 02:01:20PM +1100, Dave Chinner wrote:
+> > > > > On Tue, Nov 16, 2021 at 09:03:31AM +0800, Ian Kent wrote:
+> > > > > > On Tue, 2021-11-16 at 09:24 +1100, Dave Chinner wrote:
+> > > > > > > If it isn't safe for ext4 to do that, then we have a general
+> > > > > > > pathwalk problem, not an XFS issue. But, as you say, it is safe
+> > > > > > > to do this zeroing, so the fix to xfs_ifree() is to zero the
+> > > > > > > link buffer instead of freeing it, just like ext4 does.
+> > > > > > > 
+> > > > > > > As a side issue, we really don't want to move what XFS does in
+> > > > > > > .destroy_inode to .free_inode because that then means we need to
+> > > > > > > add synchronise_rcu() calls everywhere in XFS that might need to
+> > > > > > > wait on inodes being inactivated and/or reclaimed. And because
+> > > > > > > inode reclaim uses lockless rcu lookups, there's substantial
+> > > > > > > danger of adding rcu callback related deadlocks to XFS here.
+> > > > > > > That's just not a direction we should be moving in.
+> > > > > > 
+> > > > > > Another reason I decided to use the ECHILD return instead is that
+> > > > > > I thought synchronise_rcu() might add an unexpected delay.
+> > > > > 
+> > > > > It depends where you put the synchronise_rcu() call. :)
+> > > > > 
+> > > > > > Since synchronise_rcu() will only wait for processes that
+> > > > > > currently have the rcu read lock do you think that could actually
+> > > > > > be a problem in this code path?
+> > > > > 
+> > > > > No, I don't think it will.  The inode recycle case in XFS inode
+> > > > > lookup can trigger in two cases:
+> > > > > 
+> > > > > 1. VFS cache eviction followed by immediate lookup
+> > > > > 2. Inode has been unlinked and evicted, then free and reallocated by
+> > > > > the filesytsem.
+> > > > > 
+> > > > > In case #1, that's a cold cache lookup and hence delays are
+> > > > > acceptible (e.g. a slightly longer delay might result in having to
+> > > > > fetch the inode from disk again). Calling synchronise_rcu() in this
+> > > > > case is not going to be any different from having to fetch the inode
+> > > > > from disk...
+> > > > > 
+> > > > > In case #2, there's a *lot* of CPU work being done to modify
+> > > > > metadata (inode btree updates, etc), and so the operations can block
+> > > > > on journal space, metadata IO, etc. Delays are acceptible, and could
+> > > > > be in the order of hundreds of milliseconds if the transaction
+> > > > > subsystem is bottlenecked. waiting for an RCU grace period when we
+> > > > > reallocate an indoe immediately after freeing it isn't a big deal.
+> > > > > 
+> > > > > IOWs, if synchronize_rcu() turns out to be a problem, we can
+> > > > > optimise that separately - we need to correct the inode reuse
+> > > > > behaviour w.r.t. VFS RCU expectations, then we can optimise the
+> > > > > result if there are perf problems stemming from correct behaviour.
+> > > > > 
+> > > > 
+> > > > FWIW, with a fairly crude test on a high cpu count system, it's not that
+> > > > difficult to reproduce an observable degradation in inode allocation
+> > > > rate with a synchronous grace period in the inode reuse path, caused
+> > > > purely by a lookup heavy workload on a completely separate filesystem.
+> > > >
+> > > > The following is a 5m snapshot of the iget stats from a filesystem doing
+> > > > allocs/frees with an external/heavy lookup workload (which not included
+> > > > in the stats), with and without a sync grace period wait in the reuse
+> > > > path:
+> > > > 
+> > > > baseline:	ig 1337026 1331541 4 5485 0 5541 1337026
+> > > > sync_rcu_test:	ig 2955 2588 0 367 0 383 2955
+> > > 
+> > > The alloc/free part of the workload is a single threaded
+> > > create/unlink in a tight loop, yes?
+> > > 
+> > > This smells like a side effect of agressive reallocation of
+> > > just-freed XFS_IRECLAIMABLE inodes from the finobt that haven't had
+> > > their unlink state written back to disk yet. i.e. this is a corner
+> > > case in #2 above where a small set of inodes is being repeated
+> > > allocated and freed by userspace and hence being agressively reused
+> > > and never needing to wait for IO. i.e. a tempfile workload
+> > > optimisation...
+> > > 
+> > 
+> > Yes, that was the point of the test.. to stress inode reuse against
+> > known rcu activity.
+> > 
+> > > > I think this is kind of the nature of RCU and why I'm not sure it's a
+> > > > great idea to rely on update side synchronization in a codepath that
+> > > > might want to scale/perform in certain workloads.
+> > > 
+> > > The problem here is not update side synchronisation. Root cause is
+> > > aggressive reallocation of recently freed VFS inodes via physical
+> > > inode allocation algorithms. Unfortunately, the RCU grace period
+> > > requirements of the VFS inode life cycle dictate that we can't
+> > > aggressively re-allocate and reuse freed inodes like this. i.e.
+> > > reallocation of a just-freed inode also has to wait for an RCU grace
+> > > period to pass before the in memory inode can be re-instantiated as
+> > > a newly allocated inode.
+> > > 
+> > 
+> > I'm just showing that insertion of an synchronous rcu grace period wait
+> > in the iget codepath is not without side effect, because that was the
+> > proposal.
+> > 
+> > > (Hmmmm - I wonder if of the other filesystems might have similar
+> > > problems with physical inode reallocation inside a RCU grace period?
+> > > i.e. without inode instance re-use, the VFS could potentially see
+> > > multiple in-memory instances of the same physical inode at the same
+> > > time.)
+> > > 
+> > > > I'm not totally sure
+> > > > if this will be a problem for real users running real workloads or not,
+> > > > or if this can be easily mitigated, whether it's all rcu or a cascading
+> > > > effect, etc. This is just a quick test so that all probably requires
+> > > > more test and analysis to discern.
+> > > 
+> > > This looks like a similar problem to what busy extents address - we
+> > > can't reuse a newly freed extent until the transaction containing
+> > > the EFI/EFD hit stable storage (and the discard operation on the
+> > > range is complete). Hence while a newly freed extent is
+> > > marked free in the allocbt, they can't be reused until they are
+> > > released from the busy extent tree.
+> > > 
+> > > I can think of several ways to address this, but let me think on it
+> > > a bit more.  I suspect there's a trick we can use to avoid needing
+> > > synchronise_rcu() completely by using the spare radix tree tag and
+> > > rcu grace period state checks with get_state_synchronize_rcu() and
+> > > poll_state_synchronize_rcu() to clear the radix tree tags via a
+> > > periodic radix tree tag walk (i.e. allocation side polling for "can
+> > > we use this inode" rather than waiting for the grace period to
+> > > expire once an inode has been selected and allocated.)
+> > > 
+> > 
+> > Yeah, and same. It's just a matter of how to break things down. I can
+> > sort of see where you're going with the above, though I'm not totally
+> > convinced that rcu gp polling is an advantage over explicit use of
+> > existing infrastructure/apis.
+> 
+> RCU gp polling is existing infrastructure/apis. It's used in several
+> places to explicitly elide unnecessary calls to
+> synchronise_rcu()....
+> 
+> > It seems more important that we avoid
+> > overly crude things like sync waits in the alloc path vs. optimize away
+> > potentially multiple async grace periods in the free path. Of course,
+> > it's worth thinking about options regardless.
+> > 
+> > That said, is deferred inactivation still a thing? If so, then we've
+> 
+> Already merged.
+> 
+> > already decided to defer/batch inactivations from the point the vfs
+> > calls our ->destroy_inode() based on our own hueristic (which is likely
+> > longer than a grace period already in most cases, making this even less
+> > of an issue).
+> 
+> No, Performance problems with large/long queues dictated a solution
+> in the other direction, into lockless, minimal depth, low delay
+> per-cpu deferred batching. IOWs, batch scheduling has significatly
+> faster scheduling requirements than RCU grace periods provide.
+> 
+> > That includes deferral of the physical free and inobt
+> > updates, which means inode reuse can't occur until the inactivation
+> > workqueue task runs.
+> 
+> Which can happen the moment the inode is queued for inactivation
+> on CONFIG_PREEMPT configs, long before a RCU grace period has
+> expired.
+> 
+> > Only a single grace period is required to cover
+> > (from the rcuwalk perspective) the entire set of inodes queued for
+> > inactivation. That leaves at least a few fairly straightforward options:
+> > 
+> > 1. Use queue_rcu_work() to schedule the inactivation task. We'd probably
+> > have to isolate the list to process first from the queueing context
+> > rather than from workqueue context to ensure we don't process recently
+> > added inodes that haven't sat for a grace period.
+> 
+> No, that takes too long. Long queues simply mean deferred
+> inactivation is working on cold CPU caches and that means we take a
+> 30-50% performance hit on inode eviction overhead for inodes that
+> need inactivation (e.g. unlinked inodes) just by having to load all
+> the inode state into CPU caches again.
+> 
+> Numbers I recorded at the time indicate that inactivation that
+> doesn't block on IO or the log typically takes between 200-500us
+> of CPU time, so the deferred batch sizes are sized to run about
+> 10-15ms worth of deferred processing at a time. Filling a batch
+> takes memory reclaim about 200uS to fill when running
+> dispose_list() to evict inodes.
+> 
+> The problem with using RCU grace periods is that they delay the
+> start of the work for at least 10ms, sometimes hundreds of ms.
+> Using queue_rcu_work() means we will need to go back to unbound
+> depth queues to avoid blocking waiting for grace period expiry to
+> maintain perfomrance. THis means having tens of thousands of inodes
+> queued for inactivation before the workqueue starts running. These
+> are the sorts of numbers that caused all the problems Darrick was
+> having with performance, and that was all cold cache loading
+> overhead which is unavoidable with such large queue depths....
+> 
 
-  - replace struct aspm_latency variables with u32 variables
-  - remove struct aspm_latency
+Hm, Ok. I recall the large queue depth issues on the earlier versions
+but had not caught up with the subsequent changes that limit (percpu)
+batch size, etc. The cond sync rcu approach is easy enough to hack in
+(i.e., sample gp on destroy, cond_sync_rcu() on inactivate) that I ran a
+few experiments on opposing ends of the spectrum wrt to concurrency.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Saheed O. Bolarinwa <refactormyself@gmail.com>
----
- drivers/pci/pcie/aspm.c | 32 +++++++++++++-------------------
- 1 file changed, 13 insertions(+), 19 deletions(-)
+The short of it is that I do see about a 30% hit in the single threaded
+sustained removal case with current batch sizes. If the workload scales
+out to many (64) cpus, the impact dissipates, I suspect because we've
+already distributed the workload across percpu wq tasks and thus drive
+the rcu subsystem with context switches and other quiescent states that
+progress grace periods. The single threaded perf hit mitigates at about
+4x the current throttling threshold.
 
-diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-index a8821fe1ffe7..e29611080a90 100644
---- a/drivers/pci/pcie/aspm.c
-+++ b/drivers/pci/pcie/aspm.c
-@@ -41,11 +41,6 @@
- #define ASPM_STATE_ALL		(ASPM_STATE_L0S | ASPM_STATE_L1 |	\
- 				 ASPM_STATE_L1SS)
- 
--struct aspm_latency {
--	u32 l0s;			/* L0s latency (nsec) */
--	u32 l1;				/* L1 latency (nsec) */
--};
--
- struct pcie_link_state {
- 	struct pci_dev *pdev;		/* Upstream component of the Link */
- 	struct pci_dev *downstream;	/* Downstream component, function 0 */
-@@ -384,9 +379,9 @@ static void encode_l12_threshold(u32 threshold_us, u32 *scale, u32 *value)
- static void pcie_aspm_check_latency(struct pci_dev *endpoint)
- {
- 	u32 reg32, latency, encoding, lnkcap_up, lnkcap_dw;
--	u32 l1_switch_latency = 0;
--	struct aspm_latency latency_up, latency_dw;
--	struct aspm_latency *acceptable;
-+	u32 l1_switch_latency = 0, latency_up_l0s;
-+	u32 latency_up_l1, latency_dw_l0s, latency_dw_l1;
-+	u32 acceptable_l0s, acceptable_l1;
- 	struct pcie_link_state *link;
- 
- 	/* Device not in D0 doesn't need latency check */
-@@ -398,10 +393,10 @@ static void pcie_aspm_check_latency(struct pci_dev *endpoint)
- 	pcie_capability_read_dword(endpoint, PCI_EXP_DEVCAP, &reg32);
- 	/* Calculate endpoint L0s acceptable latency */
- 	encoding = (reg32 & PCI_EXP_DEVCAP_L0S) >> 6;
--	acceptable->l0s = calc_l0s_acceptable(encoding);
-+	acceptable_l0s = calc_l0s_acceptable(encoding);
- 	/* Calculate endpoint L1 acceptable latency */
- 	encoding = (reg32 & PCI_EXP_DEVCAP_L1) >> 9;
--	acceptable->l1 = calc_l1_acceptable(encoding);
-+	acceptable_l1 = calc_l1_acceptable(encoding);
- 
- 	while (link) {
- 		struct pci_dev *dev = pci_function_0(
-@@ -414,19 +409,19 @@ static void pcie_aspm_check_latency(struct pci_dev *endpoint)
- 		pcie_capability_read_dword(dev,
- 					   PCI_EXP_LNKCAP,
- 					   &lnkcap_dw);
--		latency_up.l0s = calc_l0s_latency(lnkcap_up);
--		latency_up.l1 = calc_l1_latency(lnkcap_up);
--		latency_dw.l0s = calc_l0s_latency(lnkcap_dw);
--		latency_dw.l1 = calc_l1_latency(lnkcap_dw);
-+		latency_up_l0s = calc_l0s_latency(lnkcap_up);
-+		latency_up_l1 = calc_l1_latency(lnkcap_up);
-+		latency_dw_l0s = calc_l0s_latency(lnkcap_dw);
-+		latency_dw_l1 = calc_l1_latency(lnkcap_dw);
- 
- 		/* Check upstream direction L0s latency */
- 		if ((link->aspm_capable & ASPM_STATE_L0S_UP) &&
--		    (latency_up.l0s > acceptable->l0s))
-+		    (latency_up_l0s > acceptable_l0s))
- 			link->aspm_capable &= ~ASPM_STATE_L0S_UP;
- 
- 		/* Check downstream direction L0s latency */
- 		if ((link->aspm_capable & ASPM_STATE_L0S_DW) &&
--		    (latency_dw.l0s > acceptable->l0s))
-+		    (latency_dw_l0s > acceptable_l0s))
- 			link->aspm_capable &= ~ASPM_STATE_L0S_DW;
- 		/*
- 		 * Check L1 latency.
-@@ -441,9 +436,9 @@ static void pcie_aspm_check_latency(struct pci_dev *endpoint)
- 		 * L1 exit latencies advertised by a device include L1
- 		 * substate latencies (and hence do not do any check).
- 		 */
--		latency = max_t(u32, latency_up.l1, latency_dw.l1);
-+		latency = max_t(u32, latency_up_l1, latency_dw_l1);
- 		if ((link->aspm_capable & ASPM_STATE_L1) &&
--		    (latency + l1_switch_latency > acceptable->l1))
-+		    (latency + l1_switch_latency > acceptable_l1))
- 			link->aspm_capable &= ~ASPM_STATE_L1;
- 		l1_switch_latency += 1000;
- 
-@@ -670,7 +665,6 @@ static void pcie_aspm_cap_init(struct pcie_link_state *link, int blacklist)
- 
- 	/* Get and check endpoint acceptable latencies */
- 	list_for_each_entry(child, &linkbus->devices, bus_list) {
--
- 		if (pci_pcie_type(child) != PCI_EXP_TYPE_ENDPOINT &&
- 		    pci_pcie_type(child) != PCI_EXP_TYPE_LEG_END)
- 			continue;
--- 
-2.20.1
+> > 2. Drop a synchronize_rcu() in the workqueue task before it starts
+> > processing items.
+> 
+> Same problem. The per-cpu queue currently has a hard throttle at 256
+> inodes and that means nothing will be able to queue inodes for
+> inactivation on that CPU until the current RCU grace period expires.
+> 
+
+Yeah..
+
+> > 3. Incorporate something like the above with an rcu grace period cookie
+> > to selectively process inodes (or batches thereof).
+> 
+> The use of lockless linked lists in the per-cpu queues makes that
+> difficult. Lockless dequeue requires removing the entire list from
+> the shared list head atomically, and it's a single linked list so we
+> can't selectively remove inodes from the list without a full
+> traversal. And selective removal from the list can't be done
+> locklessly.
+> 
+
+Sure, that's why I referred to "batches thereof."
+
+> We could, potentially, use a separate lockless queue for unlinked
+> inodes and defer that to after a grace period, but then rm -rf
+> workloads will go much, much slower.
+> 
+
+I don't quite follow what you mean by a separate lockless queue..?  In
+any event, another experiment I ran in light of the above results that
+might be similar was to put the inode queueing component of
+destroy_inode() behind an rcu callback. This reduces the single threaded
+perf hit from the previous approach by about 50%. So not entirely
+baseline performance, but it's back closer to baseline if I double the
+throttle threshold (and actually faster at 4x). Perhaps my crude
+prototype logic could be optimized further to not rely on percpu
+threshold changes to match the baseline.
+
+My overall takeaway from these couple hacky experiments is that the
+unconditional synchronous rcu wait is indeed probably too heavy weight,
+as you point out. The polling or callback (or perhaps your separate
+queue) approach seems to be in the ballpark of viability, however,
+particularly when we consider the behavior of scaled or mixed workloads
+(since inactive queue processing seems to be size driven vs. latency
+driven).
+
+So I dunno.. if you consider the various severity and complexity
+tradeoffs, this certainly seems worth more consideration to me. I can
+think of other potentially interesting ways to experiment with
+optimizing the above or perhaps tweak queueing to better facilitate
+taking advantage of grace periods, but it's not worth going too far down
+that road if you're wedded to the "busy inodes" approach.
+
+Brian
+
+> Cheers,
+> 
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
+> 
 
