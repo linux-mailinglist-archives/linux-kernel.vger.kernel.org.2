@@ -2,149 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EBC4456C1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 10:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 923DE456C23
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 10:09:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232589AbhKSJKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 04:10:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230526AbhKSJKT (ORCPT
+        id S233413AbhKSJME convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 19 Nov 2021 04:12:04 -0500
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:55357 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230526AbhKSJME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 04:10:19 -0500
-Received: from forward501j.mail.yandex.net (forward501j.mail.yandex.net [IPv6:2a02:6b8:0:801:2::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B91F5C061574;
-        Fri, 19 Nov 2021 01:07:17 -0800 (PST)
-Received: from iva1-9aa5fe580da0.qloud-c.yandex.net (iva1-9aa5fe580da0.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:7683:0:640:9aa5:fe58])
-        by forward501j.mail.yandex.net (Yandex) with ESMTP id C769F6237F2;
-        Fri, 19 Nov 2021 12:07:12 +0300 (MSK)
-Received: from iva3-dd2bb2ff2b5f.qloud-c.yandex.net (iva3-dd2bb2ff2b5f.qloud-c.yandex.net [2a02:6b8:c0c:7611:0:640:dd2b:b2ff])
-        by iva1-9aa5fe580da0.qloud-c.yandex.net (mxback/Yandex) with ESMTP id PrJgnaMmVo-7CDOOQ8H;
-        Fri, 19 Nov 2021 12:07:12 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1637312832;
-        bh=XxEZV2qVotbKLWdn70cg99o5JL/j2ooQ5W7xIhnZArE=;
-        h=In-Reply-To:Subject:To:From:References:Date:Message-ID:Cc;
-        b=lRc09FrUGwzLPA3xUAhAm1W9VxaLH3TZW8xkFxIEmpG2geL+XXc/JLY7+n1sBTSDb
-         paKe6U7mo0UVaF1jbpaIiiqkvwl2EcFUe7vKzZqZvpXLGqW+G/4J5zhgQIXGx5vXMQ
-         MdkNQOuOPevvQQSC29fO6OsQ96zBeB1X0IcHFgKk=
-Authentication-Results: iva1-9aa5fe580da0.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
-Received: by iva3-dd2bb2ff2b5f.qloud-c.yandex.net (smtp/Yandex) with ESMTPS id HvVo4PkPsF-7BxWXMaB;
-        Fri, 19 Nov 2021 12:07:11 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-X-Yandex-Fwd: 2
-Date:   Fri, 19 Nov 2021 12:07:10 +0300
-From:   Nikita Shubin <nikita.shubin@maquefel.me>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     David Abdurachmanov <david.abdurachmanov@sifive.com>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND] rtc: da9063: add as wakeup source
-Message-ID: <20211119120710.13eb1173@redslave.neermore.group>
-In-Reply-To: <YZYd7kNanfxY3tJq@piout.net>
-References: <20211118084008.30327-1-nikita.shubin@maquefel.me>
-        <YZYd7kNanfxY3tJq@piout.net>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 19 Nov 2021 04:12:04 -0500
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id D73F060014;
+        Fri, 19 Nov 2021 09:09:00 +0000 (UTC)
+Date:   Fri, 19 Nov 2021 10:08:59 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Herve Codina <herve.codina@bootlin.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 2/4] mtd: rawnand: Fix nand_choose_best_timings() on
+ unsupported interface
+Message-ID: <20211119100859.00b61e94@xps13>
+In-Reply-To: <20211119073909.1492538-3-herve.codina@bootlin.com>
+References: <20211119073909.1492538-1-herve.codina@bootlin.com>
+        <20211119073909.1492538-3-herve.codina@bootlin.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Alexandre,
+Hi Herve,
 
-Sorry for the rush - I should have to think more before sending this
-patch ...
+herve.codina@bootlin.com wrote on Fri, 19 Nov 2021 08:39:07 +0100:
 
-On Thu, 18 Nov 2021 10:33:34 +0100
-Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
+> When the NV-DDR interface is not supported by the NAND chip,
+> the value of onfi->nvddr_timing_modes is 0. In this case,
+> the best_mode variable value in nand_choose_best_nvddr_timings()
+> is -1. The last for-loop is skipped and the function returns an
+> uninitialized value.
 
-> Hello,
+Actually is not the first time this uninitialized value triggers bells
+but, while I think in the SDR path it is still not needed,in the DDR
+patch you are right that something is missing.
+
+> If this returned value is 0, the nand_choose_best_sdr_timings()
+> is not executed and no 'best timing' are set. This leads the host
+> controller and the NAND chip working at default mode 0 timing
+> even if a better timing can be used.
 > 
-> On 18/11/2021 11:40:08+0300, Nikita Shubin wrote:
-> > in case if threaded irq registered successfully - add da9063
-> > as a wakeup source if "wakeup-source" node present in device tree,
-> > set as wakeup capable otherwise.
-> > 
-> > Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
-> > ---
-> >  drivers/rtc/rtc-da9063.c | 10 +++++++++-
-> >  1 file changed, 9 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/rtc/rtc-da9063.c b/drivers/rtc/rtc-da9063.c
-> > index d4b72a9fa2ba..1aceb5ba6992 100644
-> > --- a/drivers/rtc/rtc-da9063.c
-> > +++ b/drivers/rtc/rtc-da9063.c
-> > @@ -490,7 +490,15 @@ static int da9063_rtc_probe(struct
-> > platform_device *pdev) da9063_alarm_event,
-> >  					IRQF_TRIGGER_LOW |
-> > IRQF_ONESHOT, "ALARM", rtc);
-> > -	if (ret)
-> > +	if (!ret) {
-> > +		if (device_property_present(&pdev->dev,
-> > "wakeup-source")) {
-> > +			device_init_wakeup(&pdev->dev, true);  
+> Fix this uninitialzed returned value.
+
+typo                ^
+
 > 
-> If wakeup-source is present, then this should be done regardless of
-> the registration of the interrupt handler. Note that wakeup-source and
-> interrupt are supposed to be mutually exclusive.
+> nand_choose_best_sdr_timings() is pretty similar to
+> nand_choose_best_nvddr_timings(). Even if onfi->sdr_timing_modes
+> should never be seen as 0, nand_choose_best_sdr_timings() returned
+> value is fixed.
+
+I still don't think it really needed by let's keep so  everyone
+(including robots) is happy :)
+
 > 
-
-We still able to wakeup either ALARM IRQ is present or not.
-
-Actually the only thing is needed in this particular case is the ability
-to set "wakealarm" via sysfs - so we can wakeup from
-POWER-DOWN/DELIVERY/RTC modes, namely shutdown, regardless of CONFIG_PM.
-
-Setting dev->power.can_wakeup to true is enough for that.
-
-On the other hand device_init_wakeup also sets can_wakeup.
-
-May be it's enough to use device_init_wakeup in case if ALARM IRQ is
-present or "wakeup-source" is set ?
-
-I see some construction in drivers/rtc like :
-
-```
-rtc/rtc-pcf2127.c:673:  if (alarm_irq > 0 ||
-device_property_read_bool(dev, "wakeup-source")) {
-rtc/rtc-ab-eoz9.c:552:  if (client->irq > 0 ||
-device_property_read_bool(dev, "wakeup-source")) {
-```
+> Fixes: a9ecc8c814e9 ("mtd: rawnand: Choose the best timings, NV-DDR included")
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> ---
+> Changes v1 to v2:
+> - New patch in v2 series
+> 
+>  drivers/mtd/nand/raw/nand_base.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index 5c6b065837ef..a130320de412 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -926,7 +926,7 @@ int nand_choose_best_sdr_timings(struct nand_chip *chip,
+>  				 struct nand_sdr_timings *spec_timings)
+>  {
+>  	const struct nand_controller_ops *ops = chip->controller->ops;
+> -	int best_mode = 0, mode, ret;
+> +	int best_mode = 0, mode, ret = -EOPNOTSUPP;
+>  
+>  	iface->type = NAND_SDR_IFACE;
+>  
+> @@ -977,7 +977,7 @@ int nand_choose_best_nvddr_timings(struct nand_chip *chip,
+>  				   struct nand_nvddr_timings *spec_timings)
+>  {
+>  	const struct nand_controller_ops *ops = chip->controller->ops;
+> -	int best_mode = 0, mode, ret;
+> +	int best_mode = 0, mode, ret = -EOPNOTSUPP;
+>  
+>  	iface->type = NAND_NVDDR_IFACE;
+>  
 
 
-
-
-> > +			dev_info(&pdev->dev, "registered as wakeup
-> > source.\n");  
-> 
-> This is too verbose please avoid adding new strings
-> 
-> > +		} else {
-> > +			device_set_wakeup_capable(&pdev->dev,
-> > true);  
-> 
-> I think this is misusing the wakeup-source property for configuration
-> that should be left to userspace.
-> 
-> > +			dev_info(&pdev->dev, "marked as wakeup
-> > capable.\n");  
-> 
-> Ditto
-> 
-> > +		}
-> > +	} else  
-> 
-> unbalanced brackets
-> 
-> 
-> >  		dev_err(&pdev->dev, "Failed to request ALARM IRQ
-> > %d: %d\n", irq_alarm, ret);
-> >  
-> > -- 
-> > 2.31.1
-> >   
-> 
-
+Thanks,
+Miquèl
