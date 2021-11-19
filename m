@@ -2,139 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB60F4571EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ADD34571F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235307AbhKSPqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 10:46:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48386 "EHLO
+        id S235933AbhKSPsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 10:48:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235876AbhKSPqq (ORCPT
+        with ESMTP id S229936AbhKSPsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 10:46:46 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 068E9C06173E;
-        Fri, 19 Nov 2021 07:43:45 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id l22so44966024lfg.7;
-        Fri, 19 Nov 2021 07:43:44 -0800 (PST)
+        Fri, 19 Nov 2021 10:48:37 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F2FEC061574;
+        Fri, 19 Nov 2021 07:45:35 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id t26so45033463lfk.9;
+        Fri, 19 Nov 2021 07:45:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=Y/H0f2cc4LOS2yW9MTa6k9uR5O+nimtRUUk2Rd26V3Y=;
-        b=dfRW94zBYn6rwUAlFZhmjlgq2gEMJ2AiSCZNf5YgpowALi7ZSJSwRWJfO1gCbVJzN1
-         VJOJxLCU1dYTEomyCMIQdzkiYCzyoJdyScBywT1rIvkAY/3s3FOS4TPVRggKYLZ1ZYOl
-         ybO8iUMdNIhDVGCePYRQymbLwfe7QNrxcB8P6wtii/A1PHBciqRCRhoKTIZxkjFQ07rx
-         vgo4XkwApvZ+0d3PIk23pTAsIBighqNKnRzkz7tPc+eoXmG/3t7Ipg3o5N2+BIlc4EAb
-         5zOOealMztDdArfidlLh2+pQKQZiu7heO28J10F8l/QEZWypDX3nE7alILLmEQE4nEML
-         0lBA==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=H5DNf1Om0RwN3xbCK02EXPW+4a49S0Mj+o5dz3hW1Ao=;
+        b=jgFeD6KHlr8fc/qBe69bLZyZid40UQIXlYu7QjNSAPKFWeThwOkK4rw8SW6nGU2HC7
+         h41Bl2nc6bcd8VFm2tQQcIKDiXWjJP1Fj6ulg9ECJUCjd36QqSTJHWZtRSsEypg0TYmo
+         9RqE2KiPJzlGYTLvOvFmX/TwtHR5kCbnpJf3pyZ415bwlWXWWWB4CAmQNEanSEdCtwnp
+         w1GaDfnicEFtO/Bo8PBdVm6rHJ33iuUweSY3h43xaQTM66GmoArVXJaK36ipyVX6sInZ
+         nyhls+omGqpGE2oID+XT1IPMzcG+nu8mBdqPCZ2FwgtJO/2Y20LuPZ20fEI10gWdpWai
+         ZYgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=Y/H0f2cc4LOS2yW9MTa6k9uR5O+nimtRUUk2Rd26V3Y=;
-        b=doIVA7sQd5pgBf9aOfOmt+jsqEGBiLkJaXuUI9iV97KbLfDdnmM+xewJe/j9A3vAqT
-         pglURZ8HO2i5Ynsthgf8glSqSgwOdT5k1apkB+PX1JO9JFFvd3PYrn9k2uyyURwWeqps
-         pdRzizp4fJPd9TpDx10X32GRV8uNpNDWJYUwSOEMsI7kfSz2/jUeMy1rhTzc9E3YPdCn
-         +DA0zSJHp74aknxmcNS95BA+bZpLc9KYZASpRN03LzFm3/OF32FvuchoRvnOvL8HH561
-         Ff/+SOAc0B1bPwsQ52VAC7NmQ/08UfrQr37tyIi23NUDYY0WRSxUCuPKY9eYD0uJ/xox
-         cWNg==
-X-Gm-Message-State: AOAM531rkzvEhJgEyt9xvqU83/Ac2+YYym4/WqQfYnMKD61HyjcPvzUL
-        1sjUy5o5p2fAAoqGfW2BRgg=
-X-Google-Smtp-Source: ABdhPJxOcoIXUkL9/AIjxh3ZbKmuLLdSpLFQmpZ6ShxtFomnl+lsg2YoOKC3iPMXJXVm8xTbpgLwOg==
-X-Received: by 2002:a05:6512:118a:: with SMTP id g10mr32523499lfr.17.1637336621879;
-        Fri, 19 Nov 2021 07:43:41 -0800 (PST)
-Received: from [192.168.1.100] ([178.176.79.231])
-        by smtp.gmail.com with ESMTPSA id x10sm17686lfg.102.2021.11.19.07.43.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Nov 2021 07:43:41 -0800 (PST)
-Message-ID: <283712c0-bab7-de13-fc27-6ae2e6f9532f@gmail.com>
-Date:   Fri, 19 Nov 2021 18:43:28 +0300
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=H5DNf1Om0RwN3xbCK02EXPW+4a49S0Mj+o5dz3hW1Ao=;
+        b=RRP51P4pzkkCw2OAZPHDSZuqA59EUAhGMRg85AHaXRr6CtLTBwaDqPQQtAF80undp6
+         SnHZThlCZCLEVOoRAOyjc0pSyp+MYxu1vgRq92Pb6OXRdCqegwfqIM+igY1VxfWreDim
+         F6MiQa+eex08JpDrThIJ7UmJTFHuZYSMuEvEuYkPUet1NlHbGUWaX9wVz6Q5TsB9xmiS
+         c9wLG97yRCZm7FVX/4fhvn6n/6tbXJghWsXPHs4oqKfgBYBK4sO+W9U6LNz8Sg7uNcgb
+         asxzp15gjd9L4lg+/7XyqSnSwwK1Y0P6Pz6AOzgCVmwCeb3C2lSgRi6LBf7rP2ch7X4Y
+         gpEw==
+X-Gm-Message-State: AOAM5315cGPt8AjYiEhAWxUr5E6DpUl3hhF/0JdXFdJHNAafFezj3hHq
+        xQ9U2AbfwTcSW2IgmV642H6nq7ASsKlI5h2mkiI=
+X-Google-Smtp-Source: ABdhPJw3+LsGrV6BE/PJnSU0eWWwjMN//P6rVmixx+B5xJdk+hOh+foW7PN1rErwhpVqxuHtpaiySXy/VuoVMi3TPlc=
+X-Received: by 2002:a05:6512:114a:: with SMTP id m10mr34357387lfg.188.1637336733476;
+ Fri, 19 Nov 2021 07:45:33 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH -next 2/2] sata_fsl: fix warning in remove_proc_entry when
- rmmod sata_fsl
-Content-Language: en-US
-To:     Baokun Li <libaokun1@huawei.com>, damien.lemoal@opensource.wdc.com,
-        axboe@kernel.dk, tj@kernel.org, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     yebin10@huawei.com, yukuai3@huawei.com,
-        Hulk Robot <hulkci@huawei.com>
-References: <20211119041128.2436889-1-libaokun1@huawei.com>
- <20211119041128.2436889-3-libaokun1@huawei.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-In-Reply-To: <20211119041128.2436889-3-libaokun1@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211114170335.66994-1-hdegoede@redhat.com> <20211114170335.66994-19-hdegoede@redhat.com>
+ <f84e2060-f6b7-64f9-78cd-e8ad8776ab2d@gmail.com> <662623cd-c70b-63e6-499e-7c24b5d3e342@redhat.com>
+In-Reply-To: <662623cd-c70b-63e6-499e-7c24b5d3e342@redhat.com>
+Reply-To: cwchoi00@gmail.com
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Date:   Sat, 20 Nov 2021 00:44:56 +0900
+Message-ID: <CAGTfZH1ndMc902R+wJXM+q+4fSJQD+RZVxaWcMvut4+9oSzqnw@mail.gmail.com>
+Subject: Re: [PATCH v2 18/20] extcon: intel-cht-wc: Refactor cht_wc_extcon_get_charger()
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org, Yauhen Kharuzhy <jekhor@gmail.com>,
+        Tsuchiya Yuto <kitakar@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-efi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Hi,
 
-On 19.11.2021 7:11, Baokun Li wrote:
+On Thu, Nov 18, 2021 at 7:31 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Hi,
+>
+> On 11/17/21 08:15, Chanwoo Choi wrote:
+> > Hello,
+> >
+> > I think that you need to squash it with patch21
+> > I'm not sure that this patch is either atomic or not because
+> > you remove the 'return EXTCON_CHG_USB_SDP/EXTCON_CHG_USB_SDP'
+> > without explaining why it is no problem. Just mention that
+> > pass the role to next 'switch' cases. But, before this change,
+> > there were any reason to return the type of charger cable
+> > before switch statement.
+>
+> The setting of usbsrc to "CHT_WC_USBSRC_TYPE_SDP << CHT_WC_USBSRC_TYPE_SH=
+IFT"
+> will make the following switch-case return EXTCON_CHG_USB_SDP
+> just as before, so there is no functional change.
+>
+> > According to your patch description, you don't need
+> > to make the separate patch of it. Please squash it with patch21.
+>
+> Having this refactoring in a separate patch makes it easier
+> to see what is going on in patch 21. So I'm going to keep this
+> as a separate patch for v3 of this series.
 
-> Trying to remove the fsl-sata module in the PPC64 GNU/Linux
-> leads to the following warning:
->   ------------[ cut here ]------------
->   remove_proc_entry: removing non-empty directory 'irq/69',
->     leaking at least 'fsl-sata[ff0221000.sata]'
->   WARNING: CPU: 3 PID: 1048 at fs/proc/generic.c:722
->     .remove_proc_entry+0x20c/0x220
->   IRQMASK: 0
->   NIP [c00000000033826c] .remove_proc_entry+0x20c/0x220
->   LR [c000000000338268] .remove_proc_entry+0x208/0x220
->   Call Trace:
->    .remove_proc_entry+0x208/0x220 (unreliable)
->    .unregister_irq_proc+0x104/0x140
->    .free_desc+0x44/0xb0
->    .irq_free_descs+0x9c/0xf0
->    .irq_dispose_mapping+0x64/0xa0
->    .sata_fsl_remove+0x58/0xa0 [sata_fsl]
->    .platform_drv_remove+0x40/0x90
->    .device_release_driver_internal+0x160/0x2c0
->    .driver_detach+0x64/0xd0
->    .bus_remove_driver+0x70/0xf0
->    .driver_unregister+0x38/0x80
->    .platform_driver_unregister+0x14/0x30
->    .fsl_sata_driver_exit+0x18/0xa20 [sata_fsl]
->   ---[ end trace 0ea876d4076908f5 ]---
-> 
-> The driver creates the mapping by calling irq_of_parse_and_map(),
-> so it also has to dispose the mapping. But the easy way out is to
-> simply use platform_get_irq() instead of irq_of_parse_map().
+If you want to keep this  patch, please remove the following description.
+Instead, just mention to focus on refactor it without behavior changes.
 
-    Not that easy. :-)
+'This is a preparation patch for adding support for registering
+a power_supply class device.'
 
-> In this case the mapping is not managed by the device but by
-> the of core, so the device has not to dispose the mapping.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> ---
->   drivers/ata/sata_fsl.c | 4 +---
->   1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/ata/sata_fsl.c b/drivers/ata/sata_fsl.c
-> index 30759fd1c3a2..011daac4a14e 100644
-> --- a/drivers/ata/sata_fsl.c
-> +++ b/drivers/ata/sata_fsl.c
-> @@ -1493,7 +1493,7 @@ static int sata_fsl_probe(struct platform_device *ofdev)
->   	host_priv->ssr_base = ssr_base;
->   	host_priv->csr_base = csr_base;
->   
-> -	irq = irq_of_parse_and_map(ofdev->dev.of_node, 0);
-> +	irq = platform_get_irq(ofdev, 0);
->   	if (!irq) {
+>
+>
+> > On 21. 11. 15. =EC=98=A4=EC=A0=84 2:03, Hans de Goede wrote:
+> >> Refactor cht_wc_extcon_get_charger() to have all the returns are in
+> >> the "switch (usbsrc)" cases.
+> >>
+> >> This is a preparation patch for adding support for registering
+> >> a power_supply class device.
+> >>
+> >> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> >> ---
+> >>   drivers/extcon/extcon-intel-cht-wc.c | 15 ++++++++-------
+> >>   1 file changed, 8 insertions(+), 7 deletions(-)
+> >>
+> >> diff --git a/drivers/extcon/extcon-intel-cht-wc.c b/drivers/extcon/ext=
+con-intel-cht-wc.c
+> >> index 119b83793123..f2b93a99a625 100644
+> >> --- a/drivers/extcon/extcon-intel-cht-wc.c
+> >> +++ b/drivers/extcon/extcon-intel-cht-wc.c
+> >> @@ -153,14 +153,15 @@ static int cht_wc_extcon_get_charger(struct cht_=
+wc_extcon_data *ext,
+> >>       } while (time_before(jiffies, timeout));
+> >>         if (status !=3D CHT_WC_USBSRC_STS_SUCCESS) {
+> >> -        if (ignore_errors)
+> >> -            return EXTCON_CHG_USB_SDP; /* Save fallback */
+> >> +        if (!ignore_errors) {
+> >> +            if (status =3D=3D CHT_WC_USBSRC_STS_FAIL)
+> >> +                dev_warn(ext->dev, "Could not detect charger type\n")=
+;
+> >> +            else
+> >> +                dev_warn(ext->dev, "Timeout detecting charger type\n"=
+);
+> >> +        }
+> >>   -        if (status =3D=3D CHT_WC_USBSRC_STS_FAIL)
+> >> -            dev_warn(ext->dev, "Could not detect charger type\n");
+> >> -        else
+> >> -            dev_warn(ext->dev, "Timeout detecting charger type\n");
+> >> -        return EXTCON_CHG_USB_SDP; /* Save fallback */
+> >> +        /* Save fallback */
+> >> +        usbsrc =3D CHT_WC_USBSRC_TYPE_SDP << CHT_WC_USBSRC_TYPE_SHIFT=
+;
+> >>       }
+> >>         usbsrc =3D (usbsrc & CHT_WC_USBSRC_TYPE_MASK) >> CHT_WC_USBSRC=
+_TYPE_SHIFT;
+> >>
+> >
+> >
+>
 
-	if (irq < 0) {
 
-    platform_get_irq() returns negative error codes, not 0 on failure.
-
-[...]
-
-MBR, Sergey
+--=20
+Best Regards,
+Chanwoo Choi
