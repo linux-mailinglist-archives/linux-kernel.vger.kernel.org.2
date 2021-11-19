@@ -2,150 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB56456CF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 11:02:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88450456CF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 11:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233854AbhKSKFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 05:05:09 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:9880 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229998AbhKSKFJ (ORCPT
+        id S234013AbhKSKGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 05:06:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231610AbhKSKGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 05:05:09 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AJ8mWk0011397;
-        Fri, 19 Nov 2021 10:02:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=1hKyy2Yrr24uEibF249Tb3c4EDv0PQXesXqoZiSNI6Q=;
- b=UMdqHz3MaCYxQXtp0cGUs45PpKm8C2NihTgeR06CSC5DUZPot5f8gDCHs3AJEfu3/E92
- 4vArEeuorC84DSoX7Udb9Pma9XBmbbRvsW4s1kdmhyxb8SsQ1eAe7+iLiMMyhV6EcknX
- h2exa5uDiCTLwW6BcmNB1MubZMR99wPpJoC5x+LHXv0nGQAHcRK6Dv9z13MhUZ2ZI5eN
- QZkJVnS0didUrfEqA/XflW2bZwvrfErUJ0mlKH0CX4TL6Jj5ovdGRlu1ej9tt5/drwRC
- 6Tub0yneCyJWzrTqjfaiHfhkiNtiVmJ8gqE2e/EROdyfxwbAgOvSphUy+b2/S6EhRI5r lw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ce8r79c87-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Nov 2021 10:02:07 +0000
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AJ9xIVH016683;
-        Fri, 19 Nov 2021 10:02:07 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ce8r79c7h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Nov 2021 10:02:07 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AJ9w1vE017634;
-        Fri, 19 Nov 2021 10:02:04 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04ams.nl.ibm.com with ESMTP id 3ca50by5f8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Nov 2021 10:02:04 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AJA20hc57672124
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Nov 2021 10:02:00 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7614A11C06E;
-        Fri, 19 Nov 2021 10:02:00 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ECE8F11C05E;
-        Fri, 19 Nov 2021 10:01:59 +0000 (GMT)
-Received: from [9.171.28.84] (unknown [9.171.28.84])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 19 Nov 2021 10:01:59 +0000 (GMT)
-Message-ID: <075d5505-33aa-3354-4ac0-4545dd51fc56@linux.vnet.ibm.com>
-Date:   Fri, 19 Nov 2021 11:01:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2] KVM: s390: gaccess: Refactor access address range
- check
-Content-Language: en-US
-To:     Janosch Frank <frankja@linux.ibm.com>,
-        Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211028135556.1793063-1-scgl@linux.ibm.com>
- <20211028135556.1793063-3-scgl@linux.ibm.com>
- <c0f5143c-24cd-e40b-f797-23d67a22c2c6@linux.ibm.com>
-From:   Janis Schoetterl-Glausch <scgl@linux.vnet.ibm.com>
-In-Reply-To: <c0f5143c-24cd-e40b-f797-23d67a22c2c6@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: RTLQWwny_rctfj-L-OfQc9KPtPH8IAME
-X-Proofpoint-ORIG-GUID: FFUhqAh1NZxsRXJEi0sqIofuFlEPmBEB
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Fri, 19 Nov 2021 05:06:01 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAECBC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 02:02:59 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id p18so7714087plf.13
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 02:02:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:to:cc:references
+         :from:in-reply-to:content-transfer-encoding;
+        bh=OXsBApL347OT9MITky6gwOe2SpOPkEu0t/lMDuUut9o=;
+        b=Fto+KToKTKcXYoGIFqbniumi8NWDhK4r05GXOQNCbmfCYBn3qBIrbhgCfFSPQFt0TK
+         7YwNv2FgzPjyKxquxAmM0goTWtO2UDUCnGck7I7tApWfSkOVzV4zETOarfiKguChbvn1
+         SbEnSzb5PQ3h+4jeE2W5R5oyCZJCI1jcxPrNI7eXCec31OCOPclr2FKvSIU/PnTAYSU0
+         HsKZdrcJos8p5Dzu/kpxKvYipOu3ZoCqtazecuMDx2JZ7b+qW6iSwVQ6ZC2bgbafsJHg
+         qI88bqELzcoPWdtJfX5jB1WRRGxEQnzjcxzhYMYjNXcKpL8T55rtLE95WCNvQPRKXyHW
+         +3WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :to:cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=OXsBApL347OT9MITky6gwOe2SpOPkEu0t/lMDuUut9o=;
+        b=Hoo7ib3VsLVE0P5wGKq5engq25u7EJcr34GSKTBytW+FSQRPL0LrzaOtXi5w6x6k3k
+         mBi4j/Zmgmu27AjG4gK5oT/e9dtppiOSoaOS6gGSWK9vgFblPH12RrE2jtg85Enme0oz
+         AIanr2GBDkc7+LAAvQ2rUI0dSqimw6OHRQE4mM6GBYFBtovbz7lwwmDy8J3rWVZmZ2XW
+         KkwkoYuYrJHCALUc6xOEFvfSAIS24DUW7AAEzNXgkhC+6rbnnZc9/bjdFxPmmCP1sdhu
+         CZO01KTy01Pq3ycSqcMniM56wu4LBt72YkCFYXoVD7nFEJai9mAHi8Z+PHrjBRGiJXhm
+         v96w==
+X-Gm-Message-State: AOAM531rtB/vyp4cgGVDIFmMz4D309UUMu6fn8KNZCrMUrqIgvjN3z/L
+        d/NLhQDzax8//m+CeJRKCW0z0w==
+X-Google-Smtp-Source: ABdhPJzi8dCLjKdDLfTsmIlQmM/ZsBMUCzIScvlCizvP7Hugl34kJmtBt6SS+soYCowNpm5bZW9+Tg==
+X-Received: by 2002:a17:903:124e:b0:143:a388:a5de with SMTP id u14-20020a170903124e00b00143a388a5demr75140214plh.73.1637316179324;
+        Fri, 19 Nov 2021 02:02:59 -0800 (PST)
+Received: from [10.254.160.232] ([139.177.225.230])
+        by smtp.gmail.com with ESMTPSA id d2sm2335587pfu.203.2021.11.19.02.02.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Nov 2021 02:02:58 -0800 (PST)
+Message-ID: <759cd319-990f-af23-2f1c-aba55d0768b8@bytedance.com>
+Date:   Fri, 19 Nov 2021 18:02:50 +0800
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-19_08,2021-11-17_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- impostorscore=0 phishscore=0 malwarescore=0 mlxlogscore=999 spamscore=0
- adultscore=0 lowpriorityscore=0 clxscore=1015 mlxscore=0
- priorityscore=1501 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2111190056
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.1
+Subject: Re: [PATCH] x86: Pin task-stack in __get_wchan()
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Holger Hoffst??tte <holger@applied-asynchrony.com>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Justin Forbes <jmforbes@linuxtx.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        stable <stable@vger.kernel.org>
+References: <20211117101657.463560063@linuxfoundation.org>
+ <YZV02RCRVHIa144u@fedora64.linuxtx.org>
+ <55c7b316-e03d-9e91-d74c-fea63c469b3b@applied-asynchrony.com>
+ <CAHk-=wjHbKfck1Ws4Y0pUZ7bxdjU9eh2WK0EFsv65utfeVkT9Q@mail.gmail.com>
+ <20211118080627.GH174703@worktop.programming.kicks-ass.net>
+ <20211118081852.GM174730@worktop.programming.kicks-ass.net>
+ <YZYfYOcqNqOyZ8Yo@hirez.programming.kicks-ass.net>
+ <YZZC3Shc0XA/gHK9@hirez.programming.kicks-ass.net>
+ <20211119020427.2y5esq2czquwmvwc@treble>
+ <YZduix64h64cDa7R@hirez.programming.kicks-ass.net>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <YZduix64h64cDa7R@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/19/21 09:56, Janosch Frank wrote:
-> On 10/28/21 15:55, Janis Schoetterl-Glausch wrote:
->> Do not round down the first address to the page boundary, just translate
->> it normally, which gives the value we care about in the first place.
->> Given this, translating a single address is just the special case of
->> translating a range spanning a single page.
+
+
+On 11/19/21 5:29 PM, Peter Zijlstra wrote:
+> On Thu, Nov 18, 2021 at 06:04:27PM -0800, Josh Poimboeuf wrote:
+>> On Thu, Nov 18, 2021 at 01:11:09PM +0100, Peter Zijlstra wrote:
+> 
+>>> I now have the below, the only thing missing is that there's a
+>>> user_mode() call on a stack based regs. Now on x86_64 we can
+>>> __get_kernel_nofault() regs->cs and call it a day, but on i386 we have
+>>> to also fetch regs->flags.
+>>>
+>>> Is this really the way to go?
 >>
->> Make the output optional, so the function can be used to just check a
->> range.
->>
->> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
+>> Please no.  Can we just add a check in unwind_start() to ensure the
+>> caller did try_get_task_stack()?
 > 
-> Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
+> I tried; but at best it's fundamentally racy and in practise its worse
+> because init_task doesn't seem to believe in refcounts and kthreads are
+> odd for some raisin. Now those are fixable, but given the fundamental
+> races, I don't see how it's ever going to be reliable.
 > 
->> ---
->>   arch/s390/kvm/gaccess.c | 122 +++++++++++++++++++++++-----------------
->>   1 file changed, 69 insertions(+), 53 deletions(-)
->>
->> diff --git a/arch/s390/kvm/gaccess.c b/arch/s390/kvm/gaccess.c
->> index 0d11cea92603..7725dd7566ed 100644
->> --- a/arch/s390/kvm/gaccess.c
->> +++ b/arch/s390/kvm/gaccess.c
->> @@ -794,35 +794,74 @@ static int low_address_protection_enabled(struct kvm_vcpu *vcpu,
->>       return 1;
->>   }
->>   -static int guest_page_range(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar,
->> -                unsigned long *pages, unsigned long nr_pages,
->> -                const union asce asce, enum gacc_mode mode)
->> +/**
->> + * guest_range_to_gpas() - Calculate guest physical addresses of page fragments
->> + * covering a logical range
+> I don't mind the __get_kernel_nofault() usage and think I can do a
+> better implementation that will allow us to get rid of the
+> pagefault_{dis,en}able() sprinkling, but that's for another day. It's
+> just the user_mode(regs) usage that's going to be somewhat ugleh.
 > 
-> I'd add an empty line here.
-
-The guide says not to.
-https://www.kernel.org/doc/html/latest/doc-guide/kernel-doc.html :
-
-> Function parameters
+> Anyway, below is the minimal fix for the situation at hand. I'm not
+> going to be around much today, so if Linus wants to pick that up instead
+> of mass revert things that's obviously fine too.
 > 
-> Each function argument should be described in order,immediately following the short function description. Do not leave a blank line between the function description and the arguments, nor between the arguments.
+> ---
+> Subject: x86: Pin task-stack in __get_wchan()
+> 
+> When commit 5d1ceb3969b6 ("x86: Fix __get_wchan() for !STACKTRACE")
+> moved from stacktrace to native unwind_*() usage, the
+> try_get_task_stack() got lost, leading to use-after-free issues for
+> dying tasks.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>   arch/x86/kernel/process.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+> index e9ee8b526319..04143a653a8a 100644
+> --- a/arch/x86/kernel/process.c
+> +++ b/arch/x86/kernel/process.c
+> @@ -964,6 +964,9 @@ unsigned long __get_wchan(struct task_struct *p)
+>   	struct unwind_state state;
+>   	unsigned long addr = 0;
+>   
+> +	if (!try_get_task_stack(p))
+> +		return 0;
+> +
+>   	for (unwind_start(&state, p, NULL, NULL); !unwind_done(&state);
+>   	     unwind_next_frame(&state)) {
+>   		addr = unwind_get_return_address(&state);
+> @@ -974,6 +977,8 @@ unsigned long __get_wchan(struct task_struct *p)
+>   		break;
+>   	}
+>   
+> +	put_task_stack(p);
+> +
+>   	return addr;
+>   }
+>   
+> 
 
-In this case it's a static function, so not a must,
-but I'll stick to it anyway.
+This implementation is very similar to stack_trace_save_tsk(), maybe we
+can just move stack_trace_save_tsk() out of CONFIG_STACKTRACE and reuse
+it.
 
-> Apart from that this is a very nice cleanup.
->>> + * @vcpu: virtual cpu
->> + * @ga: guest address, start of range
->> + * @ar: access register
->> + * @gpas: output argument, may be NULL
->> + * @len: length of range in bytes
->> + * @asce: address-space-control element to use for translation
->> + * @mode: access mode
-
+-- 
+Thanks,
+Qi
