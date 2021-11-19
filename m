@@ -2,87 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8284570A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 15:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C37F04570AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 15:29:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235884AbhKSObZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 09:31:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33214 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234650AbhKSObY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 09:31:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3785E61A38;
-        Fri, 19 Nov 2021 14:28:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637332101;
-        bh=OFaXsXbqNsodMyHbMXGvTAb/UJPFuJVmSWmOLu5Rhig=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tJxFmnYjI2yLO5Xy8kxdYrtSSgXYSlFcWIWSeOyBnoiGjCfn6n8IfWOMwqE1VXPaI
-         Ye3fPj9Dfd/1M9C0yyquNTzVjt9eE5m+LyjKyf9VL/iIexQpM0TYtc1Hk0I2gPPTJz
-         z8lSQsUJ1OB9TQAQbK6Z7yX+rgxpNtcTWdtAgYq0Fz/elSla+p7O7nfYTuE4WCdZ76
-         Dz1PHrnk30JmiBUSIpXDVA0V7ciGx2/aWSsIIZzdFrM/iRbb40YtFY+A4tHr35oG99
-         Gcc5pXsOACts5raJHpgMyGeEf+PP7MUZa4sUOWNajmQXbdmgSKGgyauUQvxgXQAmI7
-         LQnehED2nWuiw==
-Date:   Fri, 19 Nov 2021 06:28:19 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jiang Wang <jiang.wang@bytedance.com>, <cong.wang@bytedance.com>
-Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        <bpf@vger.kernel.org>, Casey Schaufler <casey@schaufler-ca.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Dumazet <edumazet@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Rao Shoaib <Rao.Shoaib@oracle.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf v1] unix: fix an issue in unix_shutdown causing the
- other end read/write failures
-Message-ID: <20211119062819.54ff4cdd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211119061419.270007d9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20211004232530.2377085-1-jiang.wang@bytedance.com>
-        <20211111140000.GA10779@axis.com>
-        <20211119061419.270007d9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S235905AbhKSOc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 09:32:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235843AbhKSOc2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 09:32:28 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6252AC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 06:29:26 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id r8so18445804wra.7
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 06:29:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vjL1/Xkc83e5IAqi+RjDCyFqKkgWPay3pQnrjkRMpwo=;
+        b=Mr3r3jWk2vEPIoopPJp69gGnBvcK6ttovuh5lUtYF7suXJ5/UPRdwSvckxEDRa5SC1
+         dqhqNAI+yT6D5mg1MYgBD/lF6GssYMcK9xMNuEdE+YuOOmxUtr3GfmkTjnf5b91kO8fX
+         nJbWFsJtYu6p5NMhKNNeDlWAwBWwKuBtj3kP8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vjL1/Xkc83e5IAqi+RjDCyFqKkgWPay3pQnrjkRMpwo=;
+        b=dhqqy6b205+l38kOlq5JLHj3rjN1QEh0Raik0ii1s2JXg8eJly68JeHMKz51C55lax
+         JR6B/exEAa2ifKxkS+bB/EgNdN8hJaZrAE4cr/hT9kg5mDNncVpjk4n1schwWIVIM4rM
+         Dj0TilD7b6qwhV5UT/aznePj6kApZWpSC2EovuNGNw72brDurXchvBmRHY3fli74w3tT
+         qECMU2OFqvo1U+pNcfrqED3whhc86zHK8HWPvrE8FPPnUQm+awLL+GhgTtjDdkGna3xY
+         So3EB2muBC6AAHOFABTTWz6Uo97KXABhOA7V7iFyxEQWMXvJy+1JtSwuaa/YsB6DQISb
+         qs6w==
+X-Gm-Message-State: AOAM5302bDbXEriFHQeW5aKOj3Z7ixpGNj3Dpbkx6K1nNNu/k21Yd9lW
+        0bRevqW6rvons2BNaw2ng7oIeHB+7mlaru7RhOnW2g==
+X-Google-Smtp-Source: ABdhPJy/H5G7vVMJyuPD+BHyXDGW4M+NAvU2Q5A5tjFxZ8CfbkWjSiSqfvMjhUGbUmRZnkyEcLnAWlv407yA084LdnM=
+X-Received: by 2002:adf:f990:: with SMTP id f16mr7874055wrr.128.1637332164949;
+ Fri, 19 Nov 2021 06:29:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <202111190545.G3a209mT-lkp@intel.com> <20211119061103.GC15001@lst.de>
+In-Reply-To: <20211119061103.GC15001@lst.de>
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+Date:   Fri, 19 Nov 2021 09:29:13 -0500
+Message-ID: <CA+-6iNx8VCyr9nO5xKN4tx1GrCAFD4vndGtr+cKT8-sPRU+=4Q@mail.gmail.com>
+Subject: Re: drivers/of/unittest.c:910:1: warning: the frame size of 1424
+ bytes is larger than 1024 bytes
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Nov 2021 06:14:19 -0800 Jakub Kicinski wrote:
-> On Thu, 11 Nov 2021 15:00:02 +0100 Vincent Whitchurch wrote:
-> > On Mon, Oct 04, 2021 at 11:25:28PM +0000, Jiang Wang wrote:  
-> > > Commit 94531cfcbe79 ("af_unix: Add unix_stream_proto for sockmap")
-> > > sets unix domain socket peer state to TCP_CLOSE
-> > > in unix_shutdown. This could happen when the local end is shutdown
-> > > but the other end is not. Then the other end will get read or write
-> > > failures which is not expected.
-> > > 
-> > > Fix the issue by setting the local state to shutdown.
-> > > 
-> > > Fixes: 94531cfcbe79 (af_unix: Add unix_stream_proto for sockmap)
-> > > Suggested-by: Cong Wang <cong.wang@bytedance.com>
-> > > Reported-by: Casey Schaufler <casey@schaufler-ca.com>
-> > > Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>    
-> > 
-> > This patch changed the behaviour of read(2) after a shutdown(2) on the
-> > local end of a UDS.  Before this patch, reading from a UDS after a local
-> > shutdown(SHUT_RDWR) would return the data written or EOF if there is no
-> > data, but now it always returns -EINVAL.
-> > 
-> > For example, the following test program succeeds with "read 16 bytes" on
-> > v5.14 but fails with "read: Invalid argument" on v5.15 and mainline:  
-> 
-> Cong, Jiang, was this regression addressed?
+On Fri, Nov 19, 2021 at 1:11 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> I think we'll need to dynamically allocate the fake struct device here.
+> Jim, can you look into that?
 
-Ah, just saw the patch. What timing.
+Hi Cristoph,
 
-Thanks Vincent!
+I don't remember seeing this warning before --- I will take care  of it.
+
+BTW, IIRC you asked me to clean up the Broadcom MIPs PCIe DMA usage
+code a while ago; we did,  but we observed some regressions when
+testing old devices and put it on the backburner.  I think I will have
+time in the near future to complete this once and for all.
+
+Regards,
+Jim Quinlan
+Broadcom STB
