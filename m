@@ -2,105 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC1B456A1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 07:14:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91638456A18
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 07:14:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhKSGRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 01:17:34 -0500
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:47515 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229760AbhKSGRc (ORCPT
+        id S229521AbhKSGR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 01:17:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229760AbhKSGRZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 01:17:32 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id DF1C658091A;
-        Fri, 19 Nov 2021 01:14:30 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Fri, 19 Nov 2021 01:14:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.in; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=bgWuFoLEb87DsIPJtjpr2qz3Xy
-        aQqedmbsGqM77Zh9M=; b=no1YhPc0az9k3uzn7dlt/fUx6yd8UbiF89VRaAsHtO
-        rCcgXQacUEQIkEWr/JsCl+9JHY2vGEm0Vduk3uJ7uliVdc8yTaAgto8Mf8iVSHD1
-        5vPYQ3BmwIJdMpJaeOzZdL+gS4OoX2v0/1BDqcCS8GIeyW9AXiBDrul4XA5DIcfc
-        LIh4Xu/UqYBbvvNpPwmiYbW+ahaOQB9a9ZKdYrNqy21ilzYnSnwx4BL7aKEIkfw4
-        8uWttpxQSG4GTELs3QoeezCd0Fd0ydggBxW97v/7BB8oduyH8m0V3rLWhyAluAzR
-        HeKxdBrwhHQo34ITze3Fo+kSsRI/dfBDw5eFjLHdc1Cw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=bgWuFoLEb87DsIPJt
-        jpr2qz3XyaQqedmbsGqM77Zh9M=; b=ApM3oOl0fiFY0rU74OxwqKqtJHjPHvRLI
-        rlhAxJisc40CmvDzlgB6SImhCTRenEQB+yMQOi8wqv8zSXOX82ahCB6xig0iH8uS
-        qiwZjxu31sihtRWbgZi+Jjac/W4/f7rbAR8Vp4ChWvHSf5IqXNFCSTQumAlaZ1+X
-        bVVT+9omON9/NjT+n+83WWUJGcsAOz0kkQR3Wtuwcyt7kLsbM5OIBdueS/3aILZ0
-        jWh9uwcqXrjXDS+ecwp/CdmWNWZyVuFov6x0Xb2lJVi6G9OZQ2ZOZlc+ppmTDYTM
-        2tJw9/RJZ2IvNlvkW4Iwi/T5lipokywliLW4p3a4zC89DlQ7izJMg==
-X-ME-Sender: <xms:xkCXYbHW0z4TPlN8cTm_EsJ5cjoHEcDreq2_Hjhh4z22jyTz4zc3Tg>
-    <xme:xkCXYYWLN8SxxKAvs0jaGPHX0xYIAUhwBAPOTKidOIlKfQe-zn4cH6ftbPZMtJW9i
-    C5kz8e9JSmtrIrlLGc>
-X-ME-Received: <xmr:xkCXYdI9_F49szZQ6gmZYcdFnhj_GbdC5kT5L6kktEFDaozIdx-JzJT0TQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeejgdelvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
-    dtnecuhfhrohhmpeffvggvphcuofgrjhhumhguvghruceouggvvghpsehfrghsthhmrghi
-    lhdrihhnqeenucggtffrrghtthgvrhhnpedvvedtkefhteeggfehveehgeehgeeigfekke
-    fgteejleehffffffeggfdtheetleenucffohhmrghinhepnhigphdrtghomhdpphholhho
-    lhhurdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homhepuggvvghpsehfrghsthhmrghilhdrihhn
-X-ME-Proxy: <xmx:xkCXYZFqbG9LIoIBfiZ_9OIzdOhiz8RhxX9g2IC-LBKJXRFnt3BCzA>
-    <xmx:xkCXYRVq1xBwKFTEfj9vKxBqgEfJIZs-WLLKTP60qHAHZzbXEa0oYA>
-    <xmx:xkCXYUOlSTfz_ZEOZ4L3N0mWnEEa8wI3GnHK4-dIlKZZtCgv8XYTpQ>
-    <xmx:xkCXYURQekMirRyjs576zUr2gIMqwycOvrq1aGCoxq8ECNf6Nv-yrA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 19 Nov 2021 01:14:29 -0500 (EST)
-From:   Deep Majumder <deep@fastmail.in>
-To:     wsa@kernel.org
-Cc:     linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Deep Majumder <deep@fastmail.in>
-Subject: [PATCH v2] Docs: Fixes link to I2C specification
-Date:   Fri, 19 Nov 2021 11:44:01 +0530
-Message-Id: <20211119061401.19852-1-deep@fastmail.in>
-X-Mailer: git-send-email 2.30.2
+        Fri, 19 Nov 2021 01:17:25 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4C6C061574;
+        Thu, 18 Nov 2021 22:14:21 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id r8so16142203wra.7;
+        Thu, 18 Nov 2021 22:14:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c6hJoQP/qTYzgOj5iX39aXQFUKoO5JZyoxh9IrlQx1Y=;
+        b=XCLzn0h+OjuKUpRT6kK3BEloHaWkW7+NyKcHHe9P3AQ3av0C/u6r2/mGvok7xRfLaM
+         VUvgRVs2yp8veYSVOpVEB7MTjKQbzVdhNzUBznvJ7lzEc9fYpZxhnJIFXLTrTJedlGmH
+         0iVCCPyhvf/AzGfDQZyKnJvQmBQ9Ho+NHhnA9Nz8d723skiuCHu97w3+SXm//lO3Tlx9
+         yIbFh3Un7TX/TEKdie2c2iwoTtkC2NJfKHBGmDxX86Bkii6J0dV9sI/d2+Ab6lZrPBLF
+         sLd2z/6DsSJns6Vh15Z7zCNvUAG0M3vaNNQ4QlUBFnhli/khBsFnQ3viNzXMZi/SVtFX
+         LDrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c6hJoQP/qTYzgOj5iX39aXQFUKoO5JZyoxh9IrlQx1Y=;
+        b=iE/WOtv6uTe3HUlcBaJu0NPG/5gsZoiVHI/JaVe2uwTMNXkmjSiY3/0ubphpgrbRfb
+         sOhPUyJXwvYyDNMOi1lgt/gL7ybNe4osregAn6FnCIW8uyA3Na81rXo58xXR+ht90ZGw
+         pZ32Fnjz5aB9j3yLi4C0P5bYpaM7xMLQOjRSV6Pxc1kmXq8XoaDfUKTiObakB9R00uPa
+         0AmNkkosP/mo5vfdVYUjDiNWsoGGz6Lju25lnChniglQRtmWEBvmLqWMSiJ5uZyX9WDZ
+         IN7pHVvJMZEv1bDkNKGBCc1ABqYW9l8GDdCN8af9pWccUeHmePm6M2s6Htt6+IqHQZCN
+         FCXw==
+X-Gm-Message-State: AOAM5337scnFY/a3Os9cK2WSvnGg1udIjaMgIx7trs/DmhjWmrPL5vw3
+        +eDqNCZL2DeDwDKIn1SHU3g=
+X-Google-Smtp-Source: ABdhPJwtTivKcqlWFwAAcJC4AqckhTgLDs7q3KCslBhO8mCOGgJ6z0QEf0KPfz2EesWqcr8wgMMT+Q==
+X-Received: by 2002:a05:6000:1544:: with SMTP id 4mr4396926wry.358.1637302460183;
+        Thu, 18 Nov 2021 22:14:20 -0800 (PST)
+Received: from localhost.localdomain ([197.49.250.127])
+        by smtp.gmail.com with ESMTPSA id 10sm2510887wrb.75.2021.11.18.22.14.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 22:14:19 -0800 (PST)
+From:   Sohaib Mohamed <sohaib.amhmd@gmail.com>
+Cc:     sohaib.amhmd@gmail.com, irogers@google.com,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Fabian Hemmer <copy@copy.sh>, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] Unbuffered output when pipe/tee to a file
+Date:   Fri, 19 Nov 2021 08:14:08 +0200
+Message-Id: <20211119061409.78004-1-sohaib.amhmd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The link to the I2C specification is broken and is replaced in this
-patch by one that points to Rev 6 (2014) of the specification.
-Although `https://www.nxp.com" hosts the Rev 7 (2021) of this
-specification, it is behind a login-wall and thus cannot be used.
-Thus, an additional link has been added (which doesn't require a login)
-and the NXP official docs link has been updated. The additional link is
-not the Wayback Machine link since it seems that the PDF has not been
-archived.
+The output of Perf bench gets buffered when I pipe it to a file or to
+tee, in such a way that I can see it only at the end.
 
-Signed-off-by: Deep Majumder <deep@fastmail.in>
+E.g.
+$ perf bench internals synthesize -t
+< output comes out fine after each test run >
+
+$ perf bench internals synthesize -t | tee file.txt
+< output comes out only at the end of all tests >
+
+This patch resolves this issue for 'bench' and 'test' subcommands.
+
+See, also:
+$ perf bench mem all | tee file.txt
+$ perf bench sched all | tee file.txt
+$ perf bench internals all -t | tee file.txt
+$ perf bench internals all | tee file.txt
+
+Suggested-by: Riccardo Mancini <rickyman7@gmail.com>
+Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
 ---
- Documentation/i2c/summary.rst | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+v1 -> v2:
+- Use setvbuf(), instead of sprinkling fflush() calls and missing some places.
 
-diff --git a/Documentation/i2c/summary.rst b/Documentation/i2c/summary.rst
-index 136c4e333be7..3395e2e46d9c 100644
---- a/Documentation/i2c/summary.rst
-+++ b/Documentation/i2c/summary.rst
-@@ -11,9 +11,11 @@ systems.  Some systems use variants that don't meet branding requirements,
- and so are not advertised as being I2C but come under different names,
- e.g. TWI (Two Wire Interface), IIC.
- 
--The official I2C specification is the `"I2C-bus specification and user
--manual" (UM10204) <https://www.nxp.com/docs/en/user-guide/UM10204.pdf>`_
--published by NXP Semiconductors.
-+The official I2C specification (revision 7) is the `"I2C-bus specification and user
-+manual" (UM10204) <https://www.nxp.com/webapp/Download?colCode=UM10204&location=null>`_
-+published by NXP Semiconductors. However, you need to log-in to the site to
-+access the PDF. An older version of the specification (revision 6) is available
-+`here <https://www.pololu.com/file/0J435/UM10204.pdf>`_.
- 
- SMBus (System Management Bus) is based on the I2C protocol, and is mostly
- a subset of I2C protocols and signaling.  Many I2C devices will work on an
--- 
-2.30.2
+v1: https://lore.kernel.org/linux-perf-users/20211112215313.108823-1-sohaib.amhmd@gmail.com/
+---
+ tools/perf/builtin-bench.c      | 5 +++--
+ tools/perf/tests/builtin-test.c | 3 +++
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/tools/perf/builtin-bench.c b/tools/perf/builtin-bench.c
+index d0895162c2ba..d291f3a8af5f 100644
+--- a/tools/perf/builtin-bench.c
++++ b/tools/perf/builtin-bench.c
+@@ -226,7 +226,6 @@ static void run_collection(struct collection *coll)
+ 		if (!bench->fn)
+ 			break;
+ 		printf("# Running %s/%s benchmark...\n", coll->name, bench->name);
+-		fflush(stdout);
+
+ 		argv[1] = bench->name;
+ 		run_bench(coll->name, bench->name, bench->fn, 1, argv);
+@@ -247,6 +246,9 @@ int cmd_bench(int argc, const char **argv)
+ 	struct collection *coll;
+ 	int ret = 0;
+
++	/* Unbuffered output */
++	setvbuf(stdout, NULL, _IONBF, 0);
++
+ 	if (argc < 2) {
+ 		/* No collection specified. */
+ 		print_usage();
+@@ -300,7 +302,6 @@ int cmd_bench(int argc, const char **argv)
+
+ 			if (bench_format == BENCH_FORMAT_DEFAULT)
+ 				printf("# Running '%s/%s' benchmark:\n", coll->name, bench->name);
+-			fflush(stdout);
+ 			ret = run_bench(coll->name, bench->name, bench->fn, argc-1, argv+1);
+ 			goto end;
+ 		}
+diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+index 8cb5a1c3489e..d92ae4efd2e6 100644
+--- a/tools/perf/tests/builtin-test.c
++++ b/tools/perf/tests/builtin-test.c
+@@ -606,6 +606,9 @@ int cmd_test(int argc, const char **argv)
+         if (ret < 0)
+                 return ret;
+
++	/* Unbuffered output */
++	setvbuf(stdout, NULL, _IONBF, 0);
++
+ 	argc = parse_options_subcommand(argc, argv, test_options, test_subcommands, test_usage, 0);
+ 	if (argc >= 1 && !strcmp(argv[0], "list"))
+ 		return perf_test__list(argc - 1, argv + 1);
+--
+2.25.1
 
