@@ -2,281 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 788AE456F87
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:23:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97014456F8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235433AbhKSN0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 08:26:35 -0500
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:52314 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235383AbhKSN0e (ORCPT
+        id S235287AbhKSN3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 08:29:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37839 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229457AbhKSN3J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 08:26:34 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AJDNV84056965;
-        Fri, 19 Nov 2021 07:23:31 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1637328211;
-        bh=wy4dRmqoXFb+TtgwOyvUhGUG91NmjVfZqmMCsGsPJH0=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=iczrI76RJB1ShUHVAZZdSddnkxT6W/GojxCkUQGb2CAnYeuWCmSvD68SaOQKcMjVY
-         CHr69r1AGm2wGPK5kRSiccsE3tcwR88NCSqOhkV+z0EqRI2c6a/w0k8z2mDGaUNPM0
-         BHlJe0lRXuIvDm7/CUlFoMuvPn/H3JsckZJNNMfc=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AJDNV7L075858
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 19 Nov 2021 07:23:31 -0600
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 19
- Nov 2021 07:23:30 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Fri, 19 Nov 2021 07:23:30 -0600
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AJDNHbW098826;
-        Fri, 19 Nov 2021 07:23:28 -0600
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>
-Subject: [PATCH 2/2] drivers: dma: ti: k3-psil: Add support for J721S2
-Date:   Fri, 19 Nov 2021 18:53:14 +0530
-Message-ID: <20211119132315.15901-3-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211119132315.15901-1-a-govindraju@ti.com>
-References: <20211119132315.15901-1-a-govindraju@ti.com>
+        Fri, 19 Nov 2021 08:29:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637328367;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tDrQgx53U8HesTcis3pQIJTyz9AOSXX3EzbKVHyF6d0=;
+        b=KLIP5HiLUPjyWPU3ObQ+i83/2+J1HAVZmNjTv1Pqiz2Zj8XZ8+8wNDCt5oSgKgVEX0YcOM
+        8ISZmk0NMiN5mK2nHN7w2IXn3ttV/Dw/3b5pShotoOyNggMXuDfakdIUX9/W7ou5CsAElP
+        v7Xr0JhGsSKz+2kzhU6VdnwSIxHg6GE=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-340-z_-7XQHRNxaINAzTPKPqsg-1; Fri, 19 Nov 2021 08:26:06 -0500
+X-MC-Unique: z_-7XQHRNxaINAzTPKPqsg-1
+Received: by mail-wr1-f69.google.com with SMTP id p17-20020adff211000000b0017b902a7701so1773540wro.19
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 05:26:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=tDrQgx53U8HesTcis3pQIJTyz9AOSXX3EzbKVHyF6d0=;
+        b=7pyL12WFg9F5zNTue3lKDkU/RqxH2wIH68Xqox/qZ++c5iMyNuF5U0TBq1pv0j5wvs
+         DGYX/2dLFes8UDzftE+HuUMVItSIeAq0tEw3t+sSjpc6B9ejtH4iAxHYJrmxBf4Bd3aL
+         LVKn7xH4eNXjho1D6zO2CMf5qlko6cR6xnuPoSFZ2ypjBVq2cfAE+6kOT3l+3rUOK0T0
+         GDMJGATHY5pYVnlNBebijXH08V92gfcsvmb3udRCbnBNOaxutNWnUqMXXfoa+4XEz2NQ
+         SKGRZb7Sw4itKxmBjEgi+xLE/te1Tj+XTMvUsM595Wj45ZCLYfmi3uPiMls5xUU9HLmf
+         lBJA==
+X-Gm-Message-State: AOAM531iYy7xL8yVgO9hp3eBYG4Xsi/0DHZeV6cDi0yeCskKx5/6uQNU
+        E2HwEtA0tUbB3MxJ4ndOe4KmDHS+56r8LEbJqDzXWAaiNsTCzCSI956+hwMHzbOoAqJPPnMCqjx
+        sd8VI2aAMJXIs77PG6cMyGCcl
+X-Received: by 2002:a05:600c:4303:: with SMTP id p3mr6982015wme.128.1637328365428;
+        Fri, 19 Nov 2021 05:26:05 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJweP7wgXb5BaGXphhgtU6lkM9ldywaVRytkeY4pifGSaoOTuJNb3qZ1CNxeHzPL9hlFgq7JTQ==
+X-Received: by 2002:a05:600c:4303:: with SMTP id p3mr6981971wme.128.1637328365233;
+        Fri, 19 Nov 2021 05:26:05 -0800 (PST)
+Received: from ?IPv6:2a0c:5a80:3c10:3400:3c70:6643:6e71:7eae? ([2a0c:5a80:3c10:3400:3c70:6643:6e71:7eae])
+        by smtp.gmail.com with ESMTPSA id s8sm3034920wro.19.2021.11.19.05.26.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 05:26:04 -0800 (PST)
+Message-ID: <f83be3c5b582d1d25a4d3337e1d2971b48e9a83d.camel@redhat.com>
+Subject: Re: [RFC PATCH 1/2] arm64/tracing: add cntvct based trace clock
+From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
+To:     Marc Zyngier <maz@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     linux-arm-kernel@lists.infradead.org, rostedt@goodmis.org,
+        james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
+        mingo@redhat.com, nilal@redhat.com
+Date:   Fri, 19 Nov 2021 14:26:03 +0100
+In-Reply-To: <87h7c873u0.wl-maz@kernel.org>
+References: <20211119102117.22304-1-nsaenzju@redhat.com>
+         <20211119102117.22304-2-nsaenzju@redhat.com>
+         <20211119112624.GA51423@fuller.cnet> <87h7c873u0.wl-maz@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for J721S2 SOC.
+On Fri, 2021-11-19 at 12:00 +0000, Marc Zyngier wrote:
+> On Fri, 19 Nov 2021 11:26:24 +0000,
+> Marcelo Tosatti <mtosatti@redhat.com> wrote:
+> > 
+> > On Fri, Nov 19, 2021 at 11:21:17AM +0100, Nicolas Saenz Julienne wrote:
+> > > Add a new arm64-specific trace clock using the cntvct register, similar
+> > > to x64-tsc. This gives us:
+> > >  - A clock that is relatively fast (1GHz on armv8.6, 1-50MHz otherwise),
+> > >    monotonic, and resilient to low power modes.
+> > >  - It can be used to correlate events across cpus as well as across
+> > >    hypervisor and guests.
+> > > 
+> > > By using arch_timer_read_counter() we make sure that armv8.6 cpus use
+> > > the less expensive CNTVCTSS_EL0, which cannot be accessed speculatively.
+> > 
+> > Can this register be read by userspace ? (otherwise it won't be possible
+> > to correlate userspace events).
+> 
+> Yes. That's part of the userspace ABI. Although this particular
+> accessor is only available from ARMv8.6 and is advertised via a hwcap
+> to userspace.
+> 
+> For currently existing implementations, userspace will use the
+> CNTVCT_EL0 accessor, which requires extra synchronisation as it can be
+> speculated.
 
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
----
- drivers/dma/ti/Makefile         |   3 +-
- drivers/dma/ti/k3-psil-j721s2.c | 167 ++++++++++++++++++++++++++++++++
- drivers/dma/ti/k3-psil-priv.h   |   1 +
- drivers/dma/ti/k3-psil.c        |   1 +
- 4 files changed, 171 insertions(+), 1 deletion(-)
- create mode 100644 drivers/dma/ti/k3-psil-j721s2.c
+To complete Marc's reply, here's an example of how CNTVCT_EL0 is being used in
+rt-tests' oslat:
 
-diff --git a/drivers/dma/ti/Makefile b/drivers/dma/ti/Makefile
-index bd496efadff7..1d4081a049b7 100644
---- a/drivers/dma/ti/Makefile
-+++ b/drivers/dma/ti/Makefile
-@@ -8,5 +8,6 @@ obj-$(CONFIG_TI_K3_PSIL) += k3-psil.o \
- 			    k3-psil-am654.o \
- 			    k3-psil-j721e.o \
- 			    k3-psil-j7200.o \
--			    k3-psil-am64.o
-+			    k3-psil-am64.o \
-+			    k3-psil-j721s2.o
- obj-$(CONFIG_TI_DMA_CROSSBAR) += dma-crossbar.o
-diff --git a/drivers/dma/ti/k3-psil-j721s2.c b/drivers/dma/ti/k3-psil-j721s2.c
-new file mode 100644
-index 000000000000..4c4172a4d271
---- /dev/null
-+++ b/drivers/dma/ti/k3-psil-j721s2.c
-@@ -0,0 +1,167 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ *  Copyright (C) 2021 Texas Instruments Incorporated - https://www.ti.com
-+ */
-+
-+#include <linux/kernel.h>
-+
-+#include "k3-psil-priv.h"
-+
-+#define PSIL_PDMA_XY_TR(x)				\
-+	{						\
-+		.thread_id = x,				\
-+		.ep_config = {				\
-+			.ep_type = PSIL_EP_PDMA_XY,	\
-+		},					\
-+	}
-+
-+#define PSIL_PDMA_XY_PKT(x)				\
-+	{						\
-+		.thread_id = x,				\
-+		.ep_config = {				\
-+			.ep_type = PSIL_EP_PDMA_XY,	\
-+			.pkt_mode = 1,			\
-+		},					\
-+	}
-+
-+#define PSIL_PDMA_MCASP(x)				\
-+	{						\
-+		.thread_id = x,				\
-+		.ep_config = {				\
-+			.ep_type = PSIL_EP_PDMA_XY,	\
-+			.pdma_acc32 = 1,		\
-+			.pdma_burst = 1,		\
-+		},					\
-+	}
-+
-+#define PSIL_ETHERNET(x)				\
-+	{						\
-+		.thread_id = x,				\
-+		.ep_config = {				\
-+			.ep_type = PSIL_EP_NATIVE,	\
-+			.pkt_mode = 1,			\
-+			.needs_epib = 1,		\
-+			.psd_size = 16,			\
-+		},					\
-+	}
-+
-+#define PSIL_SA2UL(x, tx)				\
-+	{						\
-+		.thread_id = x,				\
-+		.ep_config = {				\
-+			.ep_type = PSIL_EP_NATIVE,	\
-+			.pkt_mode = 1,			\
-+			.needs_epib = 1,		\
-+			.psd_size = 64,			\
-+			.notdpkt = tx,			\
-+		},					\
-+	}
-+
-+/* PSI-L source thread IDs, used for RX (DMA_DEV_TO_MEM) */
-+static struct psil_ep j721s2_src_ep_map[] = {
-+	/* PDMA_MCASP - McASP0-4 */
-+	PSIL_PDMA_MCASP(0x4400),
-+	PSIL_PDMA_MCASP(0x4401),
-+	PSIL_PDMA_MCASP(0x4402),
-+	PSIL_PDMA_MCASP(0x4403),
-+	PSIL_PDMA_MCASP(0x4404),
-+	/* PDMA_SPI_G0 - SPI0-3 */
-+	PSIL_PDMA_XY_PKT(0x4600),
-+	PSIL_PDMA_XY_PKT(0x4601),
-+	PSIL_PDMA_XY_PKT(0x4602),
-+	PSIL_PDMA_XY_PKT(0x4603),
-+	PSIL_PDMA_XY_PKT(0x4604),
-+	PSIL_PDMA_XY_PKT(0x4605),
-+	PSIL_PDMA_XY_PKT(0x4606),
-+	PSIL_PDMA_XY_PKT(0x4607),
-+	PSIL_PDMA_XY_PKT(0x4608),
-+	PSIL_PDMA_XY_PKT(0x4609),
-+	PSIL_PDMA_XY_PKT(0x460a),
-+	PSIL_PDMA_XY_PKT(0x460b),
-+	PSIL_PDMA_XY_PKT(0x460c),
-+	PSIL_PDMA_XY_PKT(0x460d),
-+	PSIL_PDMA_XY_PKT(0x460e),
-+	PSIL_PDMA_XY_PKT(0x460f),
-+	/* PDMA_SPI_G1 - SPI4-7 */
-+	PSIL_PDMA_XY_PKT(0x4610),
-+	PSIL_PDMA_XY_PKT(0x4611),
-+	PSIL_PDMA_XY_PKT(0x4612),
-+	PSIL_PDMA_XY_PKT(0x4613),
-+	PSIL_PDMA_XY_PKT(0x4614),
-+	PSIL_PDMA_XY_PKT(0x4615),
-+	PSIL_PDMA_XY_PKT(0x4616),
-+	PSIL_PDMA_XY_PKT(0x4617),
-+	PSIL_PDMA_XY_PKT(0x4618),
-+	PSIL_PDMA_XY_PKT(0x4619),
-+	PSIL_PDMA_XY_PKT(0x461a),
-+	PSIL_PDMA_XY_PKT(0x461b),
-+	PSIL_PDMA_XY_PKT(0x461c),
-+	PSIL_PDMA_XY_PKT(0x461d),
-+	PSIL_PDMA_XY_PKT(0x461e),
-+	PSIL_PDMA_XY_PKT(0x461f),
-+	/* PDMA_USART_G0 - UART0-1 */
-+	PSIL_PDMA_XY_PKT(0x4700),
-+	PSIL_PDMA_XY_PKT(0x4701),
-+	/* PDMA_USART_G1 - UART2-3 */
-+	PSIL_PDMA_XY_PKT(0x4702),
-+	PSIL_PDMA_XY_PKT(0x4703),
-+	/* PDMA_USART_G2 - UART4-9 */
-+	PSIL_PDMA_XY_PKT(0x4704),
-+	PSIL_PDMA_XY_PKT(0x4705),
-+	PSIL_PDMA_XY_PKT(0x4706),
-+	PSIL_PDMA_XY_PKT(0x4707),
-+	PSIL_PDMA_XY_PKT(0x4708),
-+	PSIL_PDMA_XY_PKT(0x4709),
-+	/* CPSW0 */
-+	PSIL_ETHERNET(0x7000),
-+	/* MCU_PDMA0 (MCU_PDMA_MISC_G0) - SPI0 */
-+	PSIL_PDMA_XY_PKT(0x7100),
-+	PSIL_PDMA_XY_PKT(0x7101),
-+	PSIL_PDMA_XY_PKT(0x7102),
-+	PSIL_PDMA_XY_PKT(0x7103),
-+	/* MCU_PDMA1 (MCU_PDMA_MISC_G1) - SPI1-2 */
-+	PSIL_PDMA_XY_PKT(0x7200),
-+	PSIL_PDMA_XY_PKT(0x7201),
-+	PSIL_PDMA_XY_PKT(0x7202),
-+	PSIL_PDMA_XY_PKT(0x7203),
-+	PSIL_PDMA_XY_PKT(0x7204),
-+	PSIL_PDMA_XY_PKT(0x7205),
-+	PSIL_PDMA_XY_PKT(0x7206),
-+	PSIL_PDMA_XY_PKT(0x7207),
-+	/* MCU_PDMA2 (MCU_PDMA_MISC_G2) - UART0 */
-+	PSIL_PDMA_XY_PKT(0x7300),
-+	/* MCU_PDMA_ADC - ADC0-1 */
-+	PSIL_PDMA_XY_TR(0x7400),
-+	PSIL_PDMA_XY_TR(0x7401),
-+	PSIL_PDMA_XY_TR(0x7402),
-+	PSIL_PDMA_XY_TR(0x7403),
-+	/* SA2UL */
-+	PSIL_SA2UL(0x7500, 0),
-+	PSIL_SA2UL(0x7501, 0),
-+	PSIL_SA2UL(0x7502, 0),
-+	PSIL_SA2UL(0x7503, 0),
-+};
-+
-+/* PSI-L destination thread IDs, used for TX (DMA_MEM_TO_DEV) */
-+static struct psil_ep j721s2_dst_ep_map[] = {
-+	/* CPSW0 */
-+	PSIL_ETHERNET(0xf000),
-+	PSIL_ETHERNET(0xf001),
-+	PSIL_ETHERNET(0xf002),
-+	PSIL_ETHERNET(0xf003),
-+	PSIL_ETHERNET(0xf004),
-+	PSIL_ETHERNET(0xf005),
-+	PSIL_ETHERNET(0xf006),
-+	PSIL_ETHERNET(0xf007),
-+	/* SA2UL */
-+	PSIL_SA2UL(0xf500, 1),
-+	PSIL_SA2UL(0xf501, 1),
-+};
-+
-+struct psil_ep_map j721s2_ep_map = {
-+	.name = "j721s2",
-+	.src = j721s2_src_ep_map,
-+	.src_count = ARRAY_SIZE(j721s2_src_ep_map),
-+	.dst = j721s2_dst_ep_map,
-+	.dst_count = ARRAY_SIZE(j721s2_dst_ep_map),
-+};
-diff --git a/drivers/dma/ti/k3-psil-priv.h b/drivers/dma/ti/k3-psil-priv.h
-index b74e192e3c2d..e51e179cdb56 100644
---- a/drivers/dma/ti/k3-psil-priv.h
-+++ b/drivers/dma/ti/k3-psil-priv.h
-@@ -41,5 +41,6 @@ extern struct psil_ep_map am654_ep_map;
- extern struct psil_ep_map j721e_ep_map;
- extern struct psil_ep_map j7200_ep_map;
- extern struct psil_ep_map am64_ep_map;
-+extern struct psil_ep_map j721s2_ep_map;
- 
- #endif /* K3_PSIL_PRIV_H_ */
-diff --git a/drivers/dma/ti/k3-psil.c b/drivers/dma/ti/k3-psil.c
-index 13ce7367d870..8867b4bd0c51 100644
---- a/drivers/dma/ti/k3-psil.c
-+++ b/drivers/dma/ti/k3-psil.c
-@@ -21,6 +21,7 @@ static const struct soc_device_attribute k3_soc_devices[] = {
- 	{ .family = "J721E", .data = &j721e_ep_map },
- 	{ .family = "J7200", .data = &j7200_ep_map },
- 	{ .family = "AM64X", .data = &am64_ep_map },
-+	{ .family = "J721S2", .data = &j721s2_ep_map },
- 	{ /* sentinel */ }
- };
- 
+https://git.kernel.org/pub/scm/utils/rt-tests/rt-tests.git/tree/src/oslat/oslat.c#n87
+
 -- 
-2.17.1
+Nicolás Sáenz
 
