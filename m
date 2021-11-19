@@ -2,155 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C33456D21
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 11:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2670456D2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 11:23:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234083AbhKSKXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 05:23:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232081AbhKSKXq (ORCPT
+        id S234568AbhKSKYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 05:24:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:45227 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233172AbhKSKYr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 05:23:46 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42037C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 02:20:45 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id u3so41085212lfl.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 02:20:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vyyQJIWDzg6rJQ1Qz1fjtgsCYKQWfuK5Mnjns/24eJU=;
-        b=Lm7RVciQKQDnaI/owA4a/9KQVIlYh357n7C28DXsafFmr2VA8Tf1HiCqE4FAJVC0tg
-         ml9E/iVn8Y32VoTYBSXGfYdxVJgs56erdM/oDHNgKLhm4fxDP50UxCpbCAM2Bbr644ey
-         nBMi4aW6UPxhzbjMz/vnZyLX+pLRHEMpPDYfYAA+3nDw7UMAHV+/4zkIGx62D3GhdnDA
-         9a6Yzd31h0rOESI6v8rVFyuUJVZmn7kZdjaxRkJufqvlQoH3DszAkttpcU9dTa5PTmvH
-         O19pLE3m8WooqpcQaRHk4N4qKceWS48fyaYriyNucAtNWH0iDwQbtFgpc0KOmgMbN2Dc
-         hl2w==
+        Fri, 19 Nov 2021 05:24:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637317305;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=yoOG1diMi0E/SvfVXv5alhyBNgdiAvTA9EtQDMJObdw=;
+        b=JdWCSZ7Ld7lnSMHc1CAUQhb8/01rH9lk6N3tCcJAcp4nFEwSzKyhlr4u/BDDZRv7qfi+3k
+        VgMFrAaHPJpBdQnN5747sW9skpYyUoqO3Fqus5S/RAAbfEzqHSQbZsuBTxkfFjlZPmhooS
+        XRWFFaz95LHap9+dEeSDldkmPoAJGPs=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-287-b2LkCoTENqymanNbkNN-Mw-1; Fri, 19 Nov 2021 05:21:44 -0500
+X-MC-Unique: b2LkCoTENqymanNbkNN-Mw-1
+Received: by mail-wr1-f70.google.com with SMTP id k8-20020a5d5248000000b001763e7c9ce5so1677339wrc.22
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 02:21:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vyyQJIWDzg6rJQ1Qz1fjtgsCYKQWfuK5Mnjns/24eJU=;
-        b=xuaMox4yNlLL2pqXFUjlpYL6zDbt3RHr6YLRUqpGtK82f4zjPQfbm88u5zc0gE6uvR
-         l0eJMI623KCz7VMR+hbLSaxK7q4fmJ9XpdLs7hl0aO0gE5Jtsdb3C11iFwDyWjhg2Cqo
-         uTa26RPSiiBoU2t21ymKvSoicFgvrlWqzMbgJ+eGfkM83BbpP9/7mLyJwdsYEuoGUTu8
-         KdSdeYq9KRJAHeeM5UaBiSRFZBfhjRDEPOw8sZTYxIZ1m8IghfOxYB2qMwXJGb1eo4TD
-         Z8REZSH3cpvWVIwb3KdGWDnrZ2qYuU/tkGbjo8x6tSqp5fAlcZKTahFgLgqRFOJuI3EQ
-         npfg==
-X-Gm-Message-State: AOAM530kegKcetH5KDdjMbSf7xgJ4kCuT55iYkDkkNFHgVsbplrGdWTR
-        ZD5K1KFok38EZWpJSIlddypZvbuE+emlaDzN
-X-Google-Smtp-Source: ABdhPJy5vFZyTMrZZFY+KcNekCc5HhV3heR7yONkgF8G84SRU0b7P5Iw3JIad3lwBY/erTSEXrD/Zw==
-X-Received: by 2002:a05:651c:11cf:: with SMTP id z15mr23237961ljo.30.1637317243587;
-        Fri, 19 Nov 2021 02:20:43 -0800 (PST)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id bp41sm320059lfb.129.2021.11.19.02.20.42
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yoOG1diMi0E/SvfVXv5alhyBNgdiAvTA9EtQDMJObdw=;
+        b=oagOmNjQPT1MvtNifbvzHhNbbcUQibFaBOpLcepGAU4UVllerVSJ7319+EzW3ayiqU
+         HHr6poAw3MkJS4crs055F8Stq/s04wLX5aA7dSURn5YQXEgM7OifxtBRG2k+aIHi0owL
+         y/024HIKQ6YmpTS/IVdlMsx/0DHuf6AQg+OyU5ca0BLRmiiAl211KrnQ7BBobuudN4Z+
+         /DMHhyeM16L/UPnYQhsOEthtkm+ayFcyQcdEHTcZ4ZTtvj6YMuOy1RK5AdQaspeABJ4e
+         nOKfomFWjVYtDERtIDFGPSxhhf8ckK+jNrSGrShOAfCSF6KHYl2osWeLsjHM4kNOZFnf
+         kr0Q==
+X-Gm-Message-State: AOAM533EQEpKAPJLjaz2sM+Pwehuxau7mCZvhNCX4kYXQY1IwWG5whnI
+        a/wjo7La2PHABLPawt755p4/j+BHbChTV4l/ZxOh5m9erh0PgU7vMWu/mT4w1+Gmg4HAhfSC11/
+        QU2BWFwNqiq309vZh32amw6Kf
+X-Received: by 2002:a5d:63ca:: with SMTP id c10mr5840312wrw.124.1637317303321;
+        Fri, 19 Nov 2021 02:21:43 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwihTxczM5jqGJYFo9iUlthuKo/r0hHx/63+SRDngLpAOgUraQ7o+CZyQaRivyiAucHPrBPCQ==
+X-Received: by 2002:a5d:63ca:: with SMTP id c10mr5840286wrw.124.1637317303163;
+        Fri, 19 Nov 2021 02:21:43 -0800 (PST)
+Received: from vian.redhat.com ([2a0c:5a80:3c10:3400:3c70:6643:6e71:7eae])
+        by smtp.gmail.com with ESMTPSA id k27sm14336026wms.41.2021.11.19.02.21.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 02:20:42 -0800 (PST)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 1CAFF103304; Fri, 19 Nov 2021 13:20:48 +0300 (+03)
-Date:   Fri, 19 Nov 2021 13:20:48 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        "VMware, Inc." <pv-drivers@vmware.com>
-Subject: Re: [PATCH] x86/paravirt: Fix build PARAVIRT_XXL=y without XEN_PV
-Message-ID: <20211119102048.hjm46edvhryjgluy@box.shutemov.name>
-References: <20211117181439.4368-1-kirill.shutemov@linux.intel.com>
- <CAJhGHyBRcAg33DxxGGpbnT+O7CGKp6Ktr3PtCZ0j50oTJ4fgrg@mail.gmail.com>
+        Fri, 19 Nov 2021 02:21:42 -0800 (PST)
+From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
+To:     linux-arm-kernel@lists.infradead.org, maz@kernel.org,
+        rostedt@goodmis.org
+Cc:     james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        nsaenzju@redhat.com, linux-kernel@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, mingo@redhat.com,
+        mtosatti@redhat.com, nilal@redhat.com
+Subject: [RFC PATCH 0/2] KVM: arm64: Host/Guest trace syncronization
+Date:   Fri, 19 Nov 2021 11:21:16 +0100
+Message-Id: <20211119102117.22304-1-nsaenzju@redhat.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJhGHyBRcAg33DxxGGpbnT+O7CGKp6Ktr3PtCZ0j50oTJ4fgrg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 03:51:44PM +0800, Lai Jiangshan wrote:
-> On Thu, Nov 18, 2021 at 7:14 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
-> >
-> > TDX is going to use CONFIG_PARAVIRT_XXL, but kernel fails to compile if
-> > XEN_PV is not enabled:
-> >
-> >         ld.lld: error: undefined symbol: xen_iret
-> >
-> > It happens because INTERRUPT_RETURN defined to use xen_iret if
-> > CONFIG_PARAVIRT_XXL enabled regardless of CONFIG_XEN_PV.
-> >
-> > The issue is not visible in the current kernel because CONFIG_XEN_PV is
-> > the only user of CONFIG_PARAVIRT_XXL and there's no way to enable them
-> > separately.
-> >
-> > Rework code to define INTERRUPT_RETURN based on CONFIG_XEN_PV, not
-> > CONFIG_PARAVIRT_XXL.
-> >
-> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > Cc: Juergen Gross <jgross@suse.com>
-> > Cc: Deep Shah <sdeep@vmware.com>
-> > Cc: "VMware, Inc." <pv-drivers@vmware.com>
-> > ---
-> >  arch/x86/include/asm/irqflags.h | 7 +++++--
-> >  arch/x86/include/asm/paravirt.h | 5 -----
-> >  2 files changed, 5 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/arch/x86/include/asm/irqflags.h b/arch/x86/include/asm/irqflags.h
-> > index b794b6da3214..3b8ddcb7be76 100644
-> > --- a/arch/x86/include/asm/irqflags.h
-> > +++ b/arch/x86/include/asm/irqflags.h
-> > @@ -118,8 +118,6 @@ static __always_inline unsigned long arch_local_irq_save(void)
-> >  #define SAVE_FLAGS             pushfq; popq %rax
-> >  #endif
-> >
-> > -#define INTERRUPT_RETURN       jmp native_iret
-> > -
-> >  #endif
-> >
-> >  #endif /* __ASSEMBLY__ */
-> > @@ -147,8 +145,13 @@ static __always_inline void arch_local_irq_restore(unsigned long flags)
-> >  #ifdef CONFIG_X86_64
-> >  #ifdef CONFIG_XEN_PV
-> >  #define SWAPGS ALTERNATIVE "swapgs", "", X86_FEATURE_XENPV
-> > +#define INTERRUPT_RETURN                                               \
-> > +       ANNOTATE_RETPOLINE_SAFE;                                        \
-> > +       ALTERNATIVE_TERNARY("jmp *paravirt_iret(%rip);",                \
-> > +               X86_FEATURE_XENPV, "jmp xen_iret;", "jmp native_iret;")
-> 
-> It is part of what CONFIG_PARAVIRT_XXL was designed for to enable
-> pv-aware INTERRUPT_RETURN.
+This small series introduces the necessary infrastructure to be able to
+syncronize host and guest traces. The approach I'm following is a bit
+biased since I tried to replicate the methods I've been using in the
+past with x86.
 
-That's very vague statement.
+This was tested on an Ampere Mt. Jade based machine.
 
-Could you elaborate on what is wrong with proposed fix?
+---
 
-> I would prefer xen_iret is defined as a weak symbol unconditionally.
-> Like:
-> 
-> diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-> index e38a4cf795d9..c0953f1b4559 100644
-> --- a/arch/x86/entry/entry_64.S
-> +++ b/arch/x86/entry/entry_64.S
-> @@ -635,6 +635,7 @@ SYM_INNER_LABEL_ALIGN(native_iret, SYM_L_GLOBAL)
->         jnz     native_irq_return_ldt
->  #endif
-> 
-> +SYM_INNER_LABEL(xen_iret, SYM_L_WEAK) /* placeholder */
->  SYM_INNER_LABEL(native_irq_return_iret, SYM_L_GLOBAL)
->         /*
->          * This may fault.  Non-paranoid faults on return to userspace are
-> 
-> It will work when !CONFIG_XEN_PV
+Nicolas Saenz Julienne (2):
+  arm64/tracing: add cntvct based trace clock
+  KVM: arm64: export cntvoff in debugfs
 
-It pollutes namespace for no particular reason. I don't see it justified.
+ arch/arm64/include/asm/kvm_host.h    |  1 +
+ arch/arm64/include/asm/trace_clock.h | 12 ++++++++++++
+ arch/arm64/kernel/Makefile           |  2 +-
+ arch/arm64/kernel/trace_clock.c      | 12 ++++++++++++
+ arch/arm64/kvm/Makefile              |  2 +-
+ arch/arm64/kvm/arch_timer.c          |  2 +-
+ arch/arm64/kvm/debugfs.c             | 25 +++++++++++++++++++++++++
+ include/kvm/arm_arch_timer.h         |  3 +++
+ 8 files changed, 56 insertions(+), 3 deletions(-)
+ create mode 100644 arch/arm64/include/asm/trace_clock.h
+ create mode 100644 arch/arm64/kernel/trace_clock.c
+ create mode 100644 arch/arm64/kvm/debugfs.c
 
 -- 
- Kirill A. Shutemov
+2.33.1
+
