@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3744E4568A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 04:33:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04CAD4568A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 04:33:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233553AbhKSDgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 22:36:45 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:34629 "EHLO
+        id S233652AbhKSDgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 22:36:48 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:57221 "EHLO
         wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231964AbhKSDgo (ORCPT
+        by vger.kernel.org with ESMTP id S233605AbhKSDgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 22:36:44 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id BD9EF3201C35;
-        Thu, 18 Nov 2021 22:33:42 -0500 (EST)
+        Thu, 18 Nov 2021 22:36:47 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 6CAC83201D41;
+        Thu, 18 Nov 2021 22:33:45 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Thu, 18 Nov 2021 22:33:43 -0500
+  by compute6.internal (MEProxy); Thu, 18 Nov 2021 22:33:46 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=1fkY8D2gSD0qy
-        VwcUvJM6KMxohk36Zo6VZZDFOnMIhY=; b=egMuqO20wu97udT9oe/HmsuqkCTdl
-        enHZtQi8IUzopWyzrE0N7ma6lGzhuPZQo1rZUMcDV5QuHa5LtUFYJlaJo38ozjAI
-        Nxovilfay5YifFy96K2BQQmsoMAuYynV0UCLlKK1JNV0vzGT8I1cvXhaM0reZisL
-        PgK/DcBwkOYW/oJ7Gfvlb1E9lc7LemAcvkqR8dWxg+Qq3F6MnBVXw0W+fQB4iQ+b
-        +tlkVS62AHoq2njVlWoteBI1Deuz9GNyl6mURHNiXgbVcbLmi9US+yJMZDhpF+ms
-        4GkfOqlgEVg2mBoK69WlGVZS3mDcr+sh3tygWdeZe/oL9T5ivqWCMch1A==
+        :mime-version:content-transfer-encoding; s=fm1; bh=jRMl/BUG3aaEg
+        9QQS3XYBCb4qLuKtM+s/r2Q8m66TrI=; b=BvwXMPunmhEHSvzcwSEyGl3AF8x8o
+        goZ+iT+CIQOk63S1h6ND8JXX92orr9UvTPIUfkmpZ74+JoBFI7XD1nwhqry64K8g
+        HBLeRP9mUQRsdv7s3PNiMhEblojyf+KkntyGyLpfLViwhLK2Vv7F53zbmq3+ufnB
+        fdXHhfxs2gO51ro+xKrPLIjTfaru5MKpnlztehdGYJCq6ywMlCqQNhYIAu7hJ2KN
+        XZzhucTfi8qZpy3lK8t+CbaOJvV2iOxtSNMt5BJaBJtyGezKmoWLPmNA9VhngQv+
+        pHXq+GamGbk6xQtMykbVWP7aVusQDPC4BetaAf5c7Ua4dp5b5H7tSEZBg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=1fkY8D2gSD0qyVwcUvJM6KMxohk36Zo6VZZDFOnMIhY=; b=I9qo3Scl
-        U0Jb3ZemLox7HkmNql+Gz9kpx2B7udShY8H1KRcu7K+CegJ9aS9lFIZo0rMWBcYe
-        JqoA1TTjvfexhv/ymF+nZ6y8Qw7xzmYaowFhrPF5tWmWU+pjte4tnCm7mXZfAftE
-        pnJhA5ETfOjH3e0PET5x+l8IK8VV7krU8OBiglDizfNeFKayxAoCBbfMJmNu5i3j
-        w6yuBtuIcEoTBnTuoQLnbVd5+DFE/WDmU9fhLZXgFBA07zyk06AcG8QtID750uQV
-        Oa6AllJFIdHDvK5rHwFCYL0TQDm8xSAAfZaEXs6NDx3R+3KjhaqeUGLz5Pif1HKK
-        abodgGAUY3IgcQ==
-X-ME-Sender: <xms:FhuXYWz25trWSeitnOvavhZ0URKSwRIFqhK8wdYlUOwFDzY1FasBBw>
-    <xme:FhuXYSQQQtHT2syBULZfNTOIXOyGQGr1u6ficW6UHoIKGD5ejDTZ1HZWgYpG1JKUz
-    QkX6rgEk7KU1s9y3w>
-X-ME-Received: <xmr:FhuXYYWPMYQPNzMBNgc7P7ntqxlxZzApaSwQaXG-iW5w9tt4C-kS5CCFfRrQoH14LHRY3VNf1QpS4fjwmCIeveI-OGAx1hJ3CrHolygoYeY8Rx2IOg_nTYXWpE6brULeSClUUg>
+        fm1; bh=jRMl/BUG3aaEg9QQS3XYBCb4qLuKtM+s/r2Q8m66TrI=; b=PasCpggw
+        jHgoKCUWlNwxNC+J5ALMWzW0ZcYVQf+ju51ZPkFwCRFtPYUn6VxehuxfCBCRJjFw
+        zgKOKa6TDtXOdYoy+uOtppceuWEARF419K7A2f35Ty2gnMZpB3rSfiEX7/+Qs6ZO
+        VWrMSSumdd2Ys2TLdMtxwwN5W15mJUZOzCUycQ7YTMSWKYYY0bsXVV4NG5R1PIHX
+        qrTJQILvst053uM6xwXxy0Fa+B7ZXvT3BUSYLW16l9JJT4RhBKR5bF3i+AzoygQi
+        jEuHHgScYGPQ5BX+5ub9nA5DJmuDR5Lyxn3Vt8pfkaiOIMTwVu2uGMw7PTlVS9vY
+        r25+FOaZMEBQig==
+X-ME-Sender: <xms:GBuXYQrv6wlyIzpQ88FUyLZfaPvumwsq_jhXm9hF2TRXZ5QCrjhr0w>
+    <xme:GBuXYWrfZYPFlaWI7b5yGg2ZDjIEiZyfH5TxqJlCIDfC63KYWA6KMABFitmSKHX3y
+    ACeud4Y0YKPJC_5Gw>
+X-ME-Received: <xmr:GBuXYVO0MVIL4f4WuNp-GVQcRucHrHJjhy5nANy-jFmfzZd6LgKalKSelT2tG3HQpaGCmsTP6-DwiE6FGMKk4LHmp3B9KiZrweIAskvN2zINDIzmZWY8f6I_s62PK7kd6hkstQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeejgdehlecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -49,12 +49,12 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeejgdehlecutefuodetggdote
     grthhtvghrnhepudfhjeefvdfhgfefheetgffhieeigfefhefgvddvveefgeejheejvdfg
     jeehueeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
     epshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
-X-ME-Proxy: <xmx:FhuXYcgFi7nVTEze5QdDeJlJkq_KsFV60SDocnWKdE5C2mFTUVDO0Q>
-    <xmx:FhuXYYDqBugNfw9OyBsbIcnU4cj-diEvqipd6FO41c1IwApMHh2w5Q>
-    <xmx:FhuXYdJ0h7BB7sJ3EuYXmmVtL3ahMQHf4rZzRgZowvZYgpnMXJiehg>
-    <xmx:FhuXYU1jpxN3gwftjjytzBozwTQwmQ-2r6FcGSaNAU_bMoRHhdUuLg>
+X-ME-Proxy: <xmx:GBuXYX7FkyKsMUte8ua3dnnW7olftq7GUH0W8yFsxOz-dqVPzgi6dA>
+    <xmx:GBuXYf4Oxgzy5E8TLXpdkqKQRdBwE0SwIshCFjPSOI7Hn2aZzwAF9w>
+    <xmx:GBuXYXgy2_i9L0YzZlvxgR_IJwK-OezIHD0f-VZD8P6KLErNrXMp8w>
+    <xmx:GRuXYZtXUk9XuqpZw68IRYuaWn9B0Rq7yWLAhnCMDz-669bUsOuduw>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 18 Nov 2021 22:33:41 -0500 (EST)
+ 18 Nov 2021 22:33:44 -0500 (EST)
 From:   Samuel Holland <samuel@sholland.org>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Jernej Skrabec <jernej.skrabec@gmail.com>,
@@ -63,9 +63,9 @@ Cc:     Michael Turquette <mturquette@baylibre.com>,
         linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
         Samuel Holland <samuel@sholland.org>
-Subject: [PATCH v3 1/4] clk: sunxi-ng: Export symbols used by CCU drivers
-Date:   Thu, 18 Nov 2021 21:33:34 -0600
-Message-Id: <20211119033338.25486-2-samuel@sholland.org>
+Subject: [PATCH v3 2/4] clk: sunxi-ng: Allow drivers to be built as modules
+Date:   Thu, 18 Nov 2021 21:33:35 -0600
+Message-Id: <20211119033338.25486-3-samuel@sholland.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211119033338.25486-1-samuel@sholland.org>
 References: <20211119033338.25486-1-samuel@sholland.org>
@@ -75,336 +75,388 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the individual CCU drivers to be built as modules, the ops structs,
-helper functions, and callback registration functions must be exported.
-These symbols are intended for use only by the adjacent CCU drivers, so
-export them into the SUNXI_CCU namespace.
+While it is useful to build all of the CCU drivers at once, only 1-3 of
+them will be loaded at a time, or possibly none of them if the kernel is
+booted on a non-sunxi platform. These CCU drivers are relatively large;
+32-bit drivers have 30-50k of data each, while the 64-bit ones are
+50-75k due to the increased pointer overhead. About half of that data
+comes from relocations. Let's allow the user to build these drivers as
+modules so only the necessary data is loaded.
 
-of_sunxi_ccu_probe is not exported because it is only used by built-in
-OF clock providers.
+As a first step, convert the CCUs that are already platform drivers.
+
+When the drivers are built as modules, normally the file name becomes
+the module name. However, the current file names are inconsistent with
+the <platform>-<peripheral> name used everywhere else: the devicetree
+bindings, the platform driver names, and the Kconfig symbols. Use
+Makfile logic to rename the modules so they follow the usual pattern.
 
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
 
-Changes in v3:
- - Also export helper functions.
+(no changes since v1)
 
-Changes in v2:
- - Export symbols to the SUNXI_CCU namespace.
+ drivers/clk/sunxi-ng/Kconfig             | 16 +++---
+ drivers/clk/sunxi-ng/Makefile            | 64 ++++++++++++++++--------
+ drivers/clk/sunxi-ng/ccu-sun50i-a100-r.c |  4 +-
+ drivers/clk/sunxi-ng/ccu-sun50i-a100.c   |  4 +-
+ drivers/clk/sunxi-ng/ccu-sun50i-a64.c    |  7 ++-
+ drivers/clk/sunxi-ng/ccu-sun50i-h6.c     |  7 ++-
+ drivers/clk/sunxi-ng/ccu-sun8i-a83t.c    |  7 ++-
+ drivers/clk/sunxi-ng/ccu-sun8i-de2.c     |  9 ++--
+ drivers/clk/sunxi-ng/ccu-sun8i-r40.c     |  6 ++-
+ drivers/clk/sunxi-ng/ccu-sun9i-a80-de.c  |  7 ++-
+ drivers/clk/sunxi-ng/ccu-sun9i-a80-usb.c |  7 ++-
+ drivers/clk/sunxi-ng/ccu-sun9i-a80.c     |  7 ++-
+ 12 files changed, 98 insertions(+), 47 deletions(-)
 
- drivers/clk/sunxi-ng/ccu_common.c | 3 +++
- drivers/clk/sunxi-ng/ccu_div.c    | 1 +
- drivers/clk/sunxi-ng/ccu_frac.c   | 6 ++++++
- drivers/clk/sunxi-ng/ccu_gate.c   | 4 ++++
- drivers/clk/sunxi-ng/ccu_mp.c     | 2 ++
- drivers/clk/sunxi-ng/ccu_mult.c   | 1 +
- drivers/clk/sunxi-ng/ccu_mux.c    | 6 ++++++
- drivers/clk/sunxi-ng/ccu_nk.c     | 1 +
- drivers/clk/sunxi-ng/ccu_nkm.c    | 1 +
- drivers/clk/sunxi-ng/ccu_nkmp.c   | 1 +
- drivers/clk/sunxi-ng/ccu_nm.c     | 1 +
- drivers/clk/sunxi-ng/ccu_phase.c  | 1 +
- drivers/clk/sunxi-ng/ccu_reset.c  | 1 +
- drivers/clk/sunxi-ng/ccu_sdm.c    | 6 ++++++
- 14 files changed, 35 insertions(+)
-
-diff --git a/drivers/clk/sunxi-ng/ccu_common.c b/drivers/clk/sunxi-ng/ccu_common.c
-index 31af8b6b5286..6afdedbce6a2 100644
---- a/drivers/clk/sunxi-ng/ccu_common.c
-+++ b/drivers/clk/sunxi-ng/ccu_common.c
-@@ -36,6 +36,7 @@ void ccu_helper_wait_for_lock(struct ccu_common *common, u32 lock)
+diff --git a/drivers/clk/sunxi-ng/Kconfig b/drivers/clk/sunxi-ng/Kconfig
+index e76e1676f0f0..c004ffc10ef7 100644
+--- a/drivers/clk/sunxi-ng/Kconfig
++++ b/drivers/clk/sunxi-ng/Kconfig
+@@ -13,22 +13,22 @@ config SUNIV_F1C100S_CCU
+ 	depends on MACH_SUNIV || COMPILE_TEST
  
- 	WARN_ON(readl_relaxed_poll_timeout(addr, reg, reg & lock, 100, 70000));
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_helper_wait_for_lock, SUNXI_CCU);
+ config SUN50I_A64_CCU
+-	bool "Support for the Allwinner A64 CCU"
++	tristate "Support for the Allwinner A64 CCU"
+ 	default ARM64 && ARCH_SUNXI
+ 	depends on (ARM64 && ARCH_SUNXI) || COMPILE_TEST
  
- /*
-  * This clock notifier is called when the frequency of a PLL clock is
-@@ -83,6 +84,7 @@ int ccu_pll_notifier_register(struct ccu_pll_nb *pll_nb)
- 	return clk_notifier_register(pll_nb->common->hw.clk,
- 				     &pll_nb->clk_nb);
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_pll_notifier_register, SUNXI_CCU);
+ config SUN50I_A100_CCU
+-	bool "Support for the Allwinner A100 CCU"
++	tristate "Support for the Allwinner A100 CCU"
+ 	default ARM64 && ARCH_SUNXI
+ 	depends on (ARM64 && ARCH_SUNXI) || COMPILE_TEST
  
- static int sunxi_ccu_probe(struct sunxi_ccu *ccu, struct device *dev,
- 			   struct device_node *node, void __iomem *reg,
-@@ -194,6 +196,7 @@ int devm_sunxi_ccu_probe(struct device *dev, void __iomem *reg,
+ config SUN50I_A100_R_CCU
+-	bool "Support for the Allwinner A100 PRCM CCU"
++	tristate "Support for the Allwinner A100 PRCM CCU"
+ 	default ARM64 && ARCH_SUNXI
+ 	depends on (ARM64 && ARCH_SUNXI) || COMPILE_TEST
  
- 	return 0;
- }
-+EXPORT_SYMBOL_NS_GPL(devm_sunxi_ccu_probe, SUNXI_CCU);
+ config SUN50I_H6_CCU
+-	bool "Support for the Allwinner H6 CCU"
++	tristate "Support for the Allwinner H6 CCU"
+ 	default ARM64 && ARCH_SUNXI
+ 	depends on (ARM64 && ARCH_SUNXI) || COMPILE_TEST
  
- void of_sunxi_ccu_probe(struct device_node *node, void __iomem *reg,
- 			const struct sunxi_ccu_desc *desc)
-diff --git a/drivers/clk/sunxi-ng/ccu_div.c b/drivers/clk/sunxi-ng/ccu_div.c
-index 4c297089483c..cb10a3ea23f9 100644
---- a/drivers/clk/sunxi-ng/ccu_div.c
-+++ b/drivers/clk/sunxi-ng/ccu_div.c
-@@ -141,3 +141,4 @@ const struct clk_ops ccu_div_ops = {
- 	.recalc_rate	= ccu_div_recalc_rate,
- 	.set_rate	= ccu_div_set_rate,
+@@ -69,7 +69,7 @@ config SUN8I_A33_CCU
+ 	depends on MACH_SUN8I || COMPILE_TEST
+ 
+ config SUN8I_A83T_CCU
+-	bool "Support for the Allwinner A83T CCU"
++	tristate "Support for the Allwinner A83T CCU"
+ 	default MACH_SUN8I
+ 	depends on MACH_SUN8I || COMPILE_TEST
+ 
+@@ -84,16 +84,16 @@ config SUN8I_V3S_CCU
+ 	depends on MACH_SUN8I || COMPILE_TEST
+ 
+ config SUN8I_DE2_CCU
+-	bool "Support for the Allwinner SoCs DE2 CCU"
++	tristate "Support for the Allwinner SoCs DE2 CCU"
+ 	default MACH_SUN8I || (ARM64 && ARCH_SUNXI)
+ 
+ config SUN8I_R40_CCU
+-	bool "Support for the Allwinner R40 CCU"
++	tristate "Support for the Allwinner R40 CCU"
+ 	default MACH_SUN8I
+ 	depends on MACH_SUN8I || COMPILE_TEST
+ 
+ config SUN9I_A80_CCU
+-	bool "Support for the Allwinner A80 CCU"
++	tristate "Support for the Allwinner A80 CCU"
+ 	default MACH_SUN9I
+ 	depends on MACH_SUN9I || COMPILE_TEST
+ 
+diff --git a/drivers/clk/sunxi-ng/Makefile b/drivers/clk/sunxi-ng/Makefile
+index 96c324306d97..1020ed49a588 100644
+--- a/drivers/clk/sunxi-ng/Makefile
++++ b/drivers/clk/sunxi-ng/Makefile
+@@ -21,24 +21,46 @@ obj-y				+= ccu_nm.o
+ obj-y				+= ccu_mp.o
+ 
+ # SoC support
+-obj-$(CONFIG_SUNIV_F1C100S_CCU)	+= ccu-suniv-f1c100s.o
+-obj-$(CONFIG_SUN50I_A64_CCU)	+= ccu-sun50i-a64.o
+-obj-$(CONFIG_SUN50I_A100_CCU)	+= ccu-sun50i-a100.o
+-obj-$(CONFIG_SUN50I_A100_R_CCU)	+= ccu-sun50i-a100-r.o
+-obj-$(CONFIG_SUN50I_H6_CCU)	+= ccu-sun50i-h6.o
+-obj-$(CONFIG_SUN50I_H616_CCU)	+= ccu-sun50i-h616.o
+-obj-$(CONFIG_SUN50I_H6_R_CCU)	+= ccu-sun50i-h6-r.o
+-obj-$(CONFIG_SUN4I_A10_CCU)	+= ccu-sun4i-a10.o
+-obj-$(CONFIG_SUN5I_CCU)		+= ccu-sun5i.o
+-obj-$(CONFIG_SUN6I_A31_CCU)	+= ccu-sun6i-a31.o
+-obj-$(CONFIG_SUN8I_A23_CCU)	+= ccu-sun8i-a23.o
+-obj-$(CONFIG_SUN8I_A33_CCU)	+= ccu-sun8i-a33.o
+-obj-$(CONFIG_SUN8I_A83T_CCU)	+= ccu-sun8i-a83t.o
+-obj-$(CONFIG_SUN8I_H3_CCU)	+= ccu-sun8i-h3.o
+-obj-$(CONFIG_SUN8I_V3S_CCU)	+= ccu-sun8i-v3s.o
+-obj-$(CONFIG_SUN8I_DE2_CCU)	+= ccu-sun8i-de2.o
+-obj-$(CONFIG_SUN8I_R_CCU)	+= ccu-sun8i-r.o
+-obj-$(CONFIG_SUN8I_R40_CCU)	+= ccu-sun8i-r40.o
+-obj-$(CONFIG_SUN9I_A80_CCU)	+= ccu-sun9i-a80.o
+-obj-$(CONFIG_SUN9I_A80_CCU)	+= ccu-sun9i-a80-de.o
+-obj-$(CONFIG_SUN9I_A80_CCU)	+= ccu-sun9i-a80-usb.o
++obj-$(CONFIG_SUNIV_F1C100S_CCU)	+= suniv-f1c100s-ccu.o
++obj-$(CONFIG_SUN50I_A64_CCU)	+= sun50i-a64-ccu.o
++obj-$(CONFIG_SUN50I_A100_CCU)	+= sun50i-a100-ccu.o
++obj-$(CONFIG_SUN50I_A100_R_CCU)	+= sun50i-a100-r-ccu.o
++obj-$(CONFIG_SUN50I_H6_CCU)	+= sun50i-h6-ccu.o
++obj-$(CONFIG_SUN50I_H6_R_CCU)	+= sun50i-h6-r-ccu.o
++obj-$(CONFIG_SUN50I_H616_CCU)	+= sun50i-h616-ccu.o
++obj-$(CONFIG_SUN4I_A10_CCU)	+= sun4i-a10-ccu.o
++obj-$(CONFIG_SUN5I_CCU)		+= sun5i-ccu.o
++obj-$(CONFIG_SUN6I_A31_CCU)	+= sun6i-a31-ccu.o
++obj-$(CONFIG_SUN8I_A23_CCU)	+= sun8i-a23-ccu.o
++obj-$(CONFIG_SUN8I_A33_CCU)	+= sun8i-a33-ccu.o
++obj-$(CONFIG_SUN8I_A83T_CCU)	+= sun8i-a83t-ccu.o
++obj-$(CONFIG_SUN8I_H3_CCU)	+= sun8i-h3-ccu.o
++obj-$(CONFIG_SUN8I_R40_CCU)	+= sun8i-r40-ccu.o
++obj-$(CONFIG_SUN8I_V3S_CCU)	+= sun8i-v3s-ccu.o
++obj-$(CONFIG_SUN8I_DE2_CCU)	+= sun8i-de2-ccu.o
++obj-$(CONFIG_SUN8I_R_CCU)	+= sun8i-r-ccu.o
++obj-$(CONFIG_SUN9I_A80_CCU)	+= sun9i-a80-ccu.o
++obj-$(CONFIG_SUN9I_A80_CCU)	+= sun9i-a80-de-ccu.o
++obj-$(CONFIG_SUN9I_A80_CCU)	+= sun9i-a80-usb-ccu.o
++
++suniv-f1c100s-ccu-y		+= ccu-suniv-f1c100s.o
++sun50i-a64-ccu-y		+= ccu-sun50i-a64.o
++sun50i-a100-ccu-y		+= ccu-sun50i-a100.o
++sun50i-a100-r-ccu-y		+= ccu-sun50i-a100-r.o
++sun50i-h6-ccu-y			+= ccu-sun50i-h6.o
++sun50i-h6-r-ccu-y		+= ccu-sun50i-h6-r.o
++sun50i-h616-ccu-y		+= ccu-sun50i-h616.o
++sun4i-a10-ccu-y			+= ccu-sun4i-a10.o
++sun5i-ccu-y			+= ccu-sun5i.o
++sun6i-a31-ccu-y			+= ccu-sun6i-a31.o
++sun8i-a23-ccu-y			+= ccu-sun8i-a23.o
++sun8i-a33-ccu-y			+= ccu-sun8i-a33.o
++sun8i-a83t-ccu-y		+= ccu-sun8i-a83t.o
++sun8i-h3-ccu-y			+= ccu-sun8i-h3.o
++sun8i-r40-ccu-y			+= ccu-sun8i-r40.o
++sun8i-v3s-ccu-y			+= ccu-sun8i-v3s.o
++sun8i-de2-ccu-y			+= ccu-sun8i-de2.o
++sun8i-r-ccu-y			+= ccu-sun8i-r.o
++sun9i-a80-ccu-y			+= ccu-sun9i-a80.o
++sun9i-a80-de-ccu-y		+= ccu-sun9i-a80-de.o
++sun9i-a80-usb-ccu-y		+= ccu-sun9i-a80-usb.o
+diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-a100-r.c b/drivers/clk/sunxi-ng/ccu-sun50i-a100-r.c
+index 804729e0a208..fddd6c877cec 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun50i-a100-r.c
++++ b/drivers/clk/sunxi-ng/ccu-sun50i-a100-r.c
+@@ -5,7 +5,6 @@
+ 
+ #include <linux/clk-provider.h>
+ #include <linux/module.h>
+-#include <linux/of_address.h>
+ #include <linux/platform_device.h>
+ 
+ #include "ccu_common.h"
+@@ -213,3 +212,6 @@ static struct platform_driver sun50i_a100_r_ccu_driver = {
+ 	},
  };
-+EXPORT_SYMBOL_NS_GPL(ccu_div_ops, SUNXI_CCU);
-diff --git a/drivers/clk/sunxi-ng/ccu_frac.c b/drivers/clk/sunxi-ng/ccu_frac.c
-index 44fcded8b354..b31f3ad946d6 100644
---- a/drivers/clk/sunxi-ng/ccu_frac.c
-+++ b/drivers/clk/sunxi-ng/ccu_frac.c
-@@ -18,6 +18,7 @@ bool ccu_frac_helper_is_enabled(struct ccu_common *common,
+ module_platform_driver(sun50i_a100_r_ccu_driver);
++
++MODULE_IMPORT_NS(SUNXI_CCU);
++MODULE_LICENSE("GPL");
+diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-a100.c b/drivers/clk/sunxi-ng/ccu-sun50i-a100.c
+index 1d475d5a3d91..5f93b5526e13 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun50i-a100.c
++++ b/drivers/clk/sunxi-ng/ccu-sun50i-a100.c
+@@ -6,7 +6,6 @@
+ #include <linux/clk-provider.h>
+ #include <linux/io.h>
+ #include <linux/module.h>
+-#include <linux/of_address.h>
+ #include <linux/platform_device.h>
  
- 	return !(readl(common->base + common->reg) & cf->enable);
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_frac_helper_is_enabled, SUNXI_CCU);
- 
- void ccu_frac_helper_enable(struct ccu_common *common,
- 			    struct ccu_frac_internal *cf)
-@@ -33,6 +34,7 @@ void ccu_frac_helper_enable(struct ccu_common *common,
- 	writel(reg & ~cf->enable, common->base + common->reg);
- 	spin_unlock_irqrestore(common->lock, flags);
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_frac_helper_enable, SUNXI_CCU);
- 
- void ccu_frac_helper_disable(struct ccu_common *common,
- 			     struct ccu_frac_internal *cf)
-@@ -48,6 +50,7 @@ void ccu_frac_helper_disable(struct ccu_common *common,
- 	writel(reg | cf->enable, common->base + common->reg);
- 	spin_unlock_irqrestore(common->lock, flags);
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_frac_helper_disable, SUNXI_CCU);
- 
- bool ccu_frac_helper_has_rate(struct ccu_common *common,
- 			      struct ccu_frac_internal *cf,
-@@ -58,6 +61,7 @@ bool ccu_frac_helper_has_rate(struct ccu_common *common,
- 
- 	return (cf->rates[0] == rate) || (cf->rates[1] == rate);
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_frac_helper_has_rate, SUNXI_CCU);
- 
- unsigned long ccu_frac_helper_read_rate(struct ccu_common *common,
- 					struct ccu_frac_internal *cf)
-@@ -79,6 +83,7 @@ unsigned long ccu_frac_helper_read_rate(struct ccu_common *common,
- 
- 	return (reg & cf->select) ? cf->rates[1] : cf->rates[0];
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_frac_helper_read_rate, SUNXI_CCU);
- 
- int ccu_frac_helper_set_rate(struct ccu_common *common,
- 			     struct ccu_frac_internal *cf,
-@@ -107,3 +112,4 @@ int ccu_frac_helper_set_rate(struct ccu_common *common,
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_frac_helper_set_rate, SUNXI_CCU);
-diff --git a/drivers/clk/sunxi-ng/ccu_gate.c b/drivers/clk/sunxi-ng/ccu_gate.c
-index 3d5ca092b08f..a2115a21807d 100644
---- a/drivers/clk/sunxi-ng/ccu_gate.c
-+++ b/drivers/clk/sunxi-ng/ccu_gate.c
-@@ -24,6 +24,7 @@ void ccu_gate_helper_disable(struct ccu_common *common, u32 gate)
- 
- 	spin_unlock_irqrestore(common->lock, flags);
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_gate_helper_disable, SUNXI_CCU);
- 
- static void ccu_gate_disable(struct clk_hw *hw)
- {
-@@ -49,6 +50,7 @@ int ccu_gate_helper_enable(struct ccu_common *common, u32 gate)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_gate_helper_enable, SUNXI_CCU);
- 
- static int ccu_gate_enable(struct clk_hw *hw)
- {
-@@ -64,6 +66,7 @@ int ccu_gate_helper_is_enabled(struct ccu_common *common, u32 gate)
- 
- 	return readl(common->base + common->reg) & gate;
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_gate_helper_is_enabled, SUNXI_CCU);
- 
- static int ccu_gate_is_enabled(struct clk_hw *hw)
- {
-@@ -124,3 +127,4 @@ const struct clk_ops ccu_gate_ops = {
- 	.set_rate	= ccu_gate_set_rate,
- 	.recalc_rate	= ccu_gate_recalc_rate,
+ #include "ccu_common.h"
+@@ -1275,3 +1274,6 @@ static struct platform_driver sun50i_a100_ccu_driver = {
+ 	},
  };
-+EXPORT_SYMBOL_NS_GPL(ccu_gate_ops, SUNXI_CCU);
-diff --git a/drivers/clk/sunxi-ng/ccu_mp.c b/drivers/clk/sunxi-ng/ccu_mp.c
-index 9d3a76604d94..57cf2d615148 100644
---- a/drivers/clk/sunxi-ng/ccu_mp.c
-+++ b/drivers/clk/sunxi-ng/ccu_mp.c
-@@ -245,6 +245,7 @@ const struct clk_ops ccu_mp_ops = {
- 	.recalc_rate	= ccu_mp_recalc_rate,
- 	.set_rate	= ccu_mp_set_rate,
+ module_platform_driver(sun50i_a100_ccu_driver);
++
++MODULE_IMPORT_NS(SUNXI_CCU);
++MODULE_LICENSE("GPL");
+diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
+index a8c5a92b7d0c..41519185600a 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
++++ b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
+@@ -5,7 +5,7 @@
+ 
+ #include <linux/clk-provider.h>
+ #include <linux/io.h>
+-#include <linux/of_address.h>
++#include <linux/module.h>
+ #include <linux/platform_device.h>
+ 
+ #include "ccu_common.h"
+@@ -980,4 +980,7 @@ static struct platform_driver sun50i_a64_ccu_driver = {
+ 		.of_match_table	= sun50i_a64_ccu_ids,
+ 	},
  };
-+EXPORT_SYMBOL_NS_GPL(ccu_mp_ops, SUNXI_CCU);
+-builtin_platform_driver(sun50i_a64_ccu_driver);
++module_platform_driver(sun50i_a64_ccu_driver);
++
++MODULE_IMPORT_NS(SUNXI_CCU);
++MODULE_LICENSE("GPL");
+diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-h6.c b/drivers/clk/sunxi-ng/ccu-sun50i-h6.c
+index e5672c10d065..1a5e418923f6 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun50i-h6.c
++++ b/drivers/clk/sunxi-ng/ccu-sun50i-h6.c
+@@ -5,7 +5,7 @@
  
- /*
-  * Support for MMC timing mode switching
-@@ -325,3 +326,4 @@ const struct clk_ops ccu_mp_mmc_ops = {
- 	.recalc_rate	= ccu_mp_mmc_recalc_rate,
- 	.set_rate	= ccu_mp_mmc_set_rate,
+ #include <linux/clk-provider.h>
+ #include <linux/io.h>
+-#include <linux/of_address.h>
++#include <linux/module.h>
+ #include <linux/platform_device.h>
+ 
+ #include "ccu_common.h"
+@@ -1254,4 +1254,7 @@ static struct platform_driver sun50i_h6_ccu_driver = {
+ 		.of_match_table	= sun50i_h6_ccu_ids,
+ 	},
  };
-+EXPORT_SYMBOL_NS_GPL(ccu_mp_mmc_ops, SUNXI_CCU);
-diff --git a/drivers/clk/sunxi-ng/ccu_mult.c b/drivers/clk/sunxi-ng/ccu_mult.c
-index 7c8cf2e04e94..7bee217ef111 100644
---- a/drivers/clk/sunxi-ng/ccu_mult.c
-+++ b/drivers/clk/sunxi-ng/ccu_mult.c
-@@ -170,3 +170,4 @@ const struct clk_ops ccu_mult_ops = {
- 	.recalc_rate	= ccu_mult_recalc_rate,
- 	.set_rate	= ccu_mult_set_rate,
+-builtin_platform_driver(sun50i_h6_ccu_driver);
++module_platform_driver(sun50i_h6_ccu_driver);
++
++MODULE_IMPORT_NS(SUNXI_CCU);
++MODULE_LICENSE("GPL");
+diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-a83t.c b/drivers/clk/sunxi-ng/ccu-sun8i-a83t.c
+index 3c310aea8cfa..76cbd9e9e89f 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun8i-a83t.c
++++ b/drivers/clk/sunxi-ng/ccu-sun8i-a83t.c
+@@ -5,7 +5,7 @@
+ 
+ #include <linux/clk-provider.h>
+ #include <linux/io.h>
+-#include <linux/of_address.h>
++#include <linux/module.h>
+ #include <linux/platform_device.h>
+ 
+ #include "ccu_common.h"
+@@ -920,4 +920,7 @@ static struct platform_driver sun8i_a83t_ccu_driver = {
+ 		.of_match_table	= sun8i_a83t_ccu_ids,
+ 	},
  };
-+EXPORT_SYMBOL_NS_GPL(ccu_mult_ops, SUNXI_CCU);
-diff --git a/drivers/clk/sunxi-ng/ccu_mux.c b/drivers/clk/sunxi-ng/ccu_mux.c
-index 7d75da9a1f2e..2306a1cd83e4 100644
---- a/drivers/clk/sunxi-ng/ccu_mux.c
-+++ b/drivers/clk/sunxi-ng/ccu_mux.c
-@@ -64,6 +64,7 @@ unsigned long ccu_mux_helper_apply_prediv(struct ccu_common *common,
- {
- 	return parent_rate / ccu_mux_get_prediv(common, cm, parent_index);
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_mux_helper_apply_prediv, SUNXI_CCU);
+-builtin_platform_driver(sun8i_a83t_ccu_driver);
++module_platform_driver(sun8i_a83t_ccu_driver);
++
++MODULE_IMPORT_NS(SUNXI_CCU);
++MODULE_LICENSE("GPL");
+diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-de2.c b/drivers/clk/sunxi-ng/ccu-sun8i-de2.c
+index 573b5051d305..e7e3ddf4a227 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun8i-de2.c
++++ b/drivers/clk/sunxi-ng/ccu-sun8i-de2.c
+@@ -5,8 +5,8 @@
  
- static unsigned long ccu_mux_helper_unapply_prediv(struct ccu_common *common,
- 					    struct ccu_mux_internal *cm,
-@@ -152,6 +153,7 @@ int ccu_mux_helper_determine_rate(struct ccu_common *common,
- 	req->rate = best_rate;
- 	return 0;
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_mux_helper_determine_rate, SUNXI_CCU);
+ #include <linux/clk.h>
+ #include <linux/clk-provider.h>
+-#include <linux/of_address.h>
+-#include <linux/of_platform.h>
++#include <linux/module.h>
++#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/reset.h>
  
- u8 ccu_mux_helper_get_parent(struct ccu_common *common,
- 			     struct ccu_mux_internal *cm)
-@@ -174,6 +176,7 @@ u8 ccu_mux_helper_get_parent(struct ccu_common *common,
- 
- 	return parent;
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_mux_helper_get_parent, SUNXI_CCU);
- 
- int ccu_mux_helper_set_parent(struct ccu_common *common,
- 			      struct ccu_mux_internal *cm,
-@@ -195,6 +198,7 @@ int ccu_mux_helper_set_parent(struct ccu_common *common,
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_mux_helper_set_parent, SUNXI_CCU);
- 
- static void ccu_mux_disable(struct clk_hw *hw)
- {
-@@ -251,6 +255,7 @@ const struct clk_ops ccu_mux_ops = {
- 	.determine_rate	= __clk_mux_determine_rate,
- 	.recalc_rate	= ccu_mux_recalc_rate,
+@@ -394,4 +394,7 @@ static struct platform_driver sunxi_de2_clk_driver = {
+ 		.of_match_table	= sunxi_de2_clk_ids,
+ 	},
  };
-+EXPORT_SYMBOL_NS_GPL(ccu_mux_ops, SUNXI_CCU);
+-builtin_platform_driver(sunxi_de2_clk_driver);
++module_platform_driver(sunxi_de2_clk_driver);
++
++MODULE_IMPORT_NS(SUNXI_CCU);
++MODULE_LICENSE("GPL");
+diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-r40.c b/drivers/clk/sunxi-ng/ccu-sun8i-r40.c
+index 8bb18d9add05..31eca0d3bc1e 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun8i-r40.c
++++ b/drivers/clk/sunxi-ng/ccu-sun8i-r40.c
+@@ -5,6 +5,7 @@
  
- /*
-  * This clock notifier is called when the frequency of the of the parent
-@@ -285,3 +290,4 @@ int ccu_mux_notifier_register(struct clk *clk, struct ccu_mux_nb *mux_nb)
+ #include <linux/clk-provider.h>
+ #include <linux/io.h>
++#include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
  
- 	return clk_notifier_register(clk, &mux_nb->clk_nb);
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_mux_notifier_register, SUNXI_CCU);
-diff --git a/drivers/clk/sunxi-ng/ccu_nk.c b/drivers/clk/sunxi-ng/ccu_nk.c
-index aee68b00f3b2..c4fb82af97e8 100644
---- a/drivers/clk/sunxi-ng/ccu_nk.c
-+++ b/drivers/clk/sunxi-ng/ccu_nk.c
-@@ -157,3 +157,4 @@ const struct clk_ops ccu_nk_ops = {
- 	.round_rate	= ccu_nk_round_rate,
- 	.set_rate	= ccu_nk_set_rate,
+@@ -1371,4 +1372,7 @@ static struct platform_driver sun8i_r40_ccu_driver = {
+ 		.of_match_table	= sun8i_r40_ccu_ids,
+ 	},
  };
-+EXPORT_SYMBOL_NS_GPL(ccu_nk_ops, SUNXI_CCU);
-diff --git a/drivers/clk/sunxi-ng/ccu_nkm.c b/drivers/clk/sunxi-ng/ccu_nkm.c
-index b9cfee0276ea..67da2c189b53 100644
---- a/drivers/clk/sunxi-ng/ccu_nkm.c
-+++ b/drivers/clk/sunxi-ng/ccu_nkm.c
-@@ -206,3 +206,4 @@ const struct clk_ops ccu_nkm_ops = {
- 	.recalc_rate	= ccu_nkm_recalc_rate,
- 	.set_rate	= ccu_nkm_set_rate,
+-builtin_platform_driver(sun8i_r40_ccu_driver);
++module_platform_driver(sun8i_r40_ccu_driver);
++
++MODULE_IMPORT_NS(SUNXI_CCU);
++MODULE_LICENSE("GPL");
+diff --git a/drivers/clk/sunxi-ng/ccu-sun9i-a80-de.c b/drivers/clk/sunxi-ng/ccu-sun9i-a80-de.c
+index 3cde2610f467..f2fe0e1cc3c0 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun9i-a80-de.c
++++ b/drivers/clk/sunxi-ng/ccu-sun9i-a80-de.c
+@@ -5,7 +5,7 @@
+ 
+ #include <linux/clk.h>
+ #include <linux/clk-provider.h>
+-#include <linux/of_address.h>
++#include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/reset.h>
+ 
+@@ -270,4 +270,7 @@ static struct platform_driver sun9i_a80_de_clk_driver = {
+ 		.of_match_table	= sun9i_a80_de_clk_ids,
+ 	},
  };
-+EXPORT_SYMBOL_NS_GPL(ccu_nkm_ops, SUNXI_CCU);
-diff --git a/drivers/clk/sunxi-ng/ccu_nkmp.c b/drivers/clk/sunxi-ng/ccu_nkmp.c
-index bda87b38c45c..39413cb0985c 100644
---- a/drivers/clk/sunxi-ng/ccu_nkmp.c
-+++ b/drivers/clk/sunxi-ng/ccu_nkmp.c
-@@ -230,3 +230,4 @@ const struct clk_ops ccu_nkmp_ops = {
- 	.round_rate	= ccu_nkmp_round_rate,
- 	.set_rate	= ccu_nkmp_set_rate,
+-builtin_platform_driver(sun9i_a80_de_clk_driver);
++module_platform_driver(sun9i_a80_de_clk_driver);
++
++MODULE_IMPORT_NS(SUNXI_CCU);
++MODULE_LICENSE("GPL");
+diff --git a/drivers/clk/sunxi-ng/ccu-sun9i-a80-usb.c b/drivers/clk/sunxi-ng/ccu-sun9i-a80-usb.c
+index 0740e8978ae8..575ae4ccc65f 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun9i-a80-usb.c
++++ b/drivers/clk/sunxi-ng/ccu-sun9i-a80-usb.c
+@@ -5,7 +5,7 @@
+ 
+ #include <linux/clk.h>
+ #include <linux/clk-provider.h>
+-#include <linux/of_address.h>
++#include <linux/module.h>
+ #include <linux/platform_device.h>
+ 
+ #include "ccu_common.h"
+@@ -138,4 +138,7 @@ static struct platform_driver sun9i_a80_usb_clk_driver = {
+ 		.of_match_table	= sun9i_a80_usb_clk_ids,
+ 	},
  };
-+EXPORT_SYMBOL_NS_GPL(ccu_nkmp_ops, SUNXI_CCU);
-diff --git a/drivers/clk/sunxi-ng/ccu_nm.c b/drivers/clk/sunxi-ng/ccu_nm.c
-index e6bcc0a7170c..9ca9257f4426 100644
---- a/drivers/clk/sunxi-ng/ccu_nm.c
-+++ b/drivers/clk/sunxi-ng/ccu_nm.c
-@@ -238,3 +238,4 @@ const struct clk_ops ccu_nm_ops = {
- 	.round_rate	= ccu_nm_round_rate,
- 	.set_rate	= ccu_nm_set_rate,
+-builtin_platform_driver(sun9i_a80_usb_clk_driver);
++module_platform_driver(sun9i_a80_usb_clk_driver);
++
++MODULE_IMPORT_NS(SUNXI_CCU);
++MODULE_LICENSE("GPL");
+diff --git a/drivers/clk/sunxi-ng/ccu-sun9i-a80.c b/drivers/clk/sunxi-ng/ccu-sun9i-a80.c
+index d416af29e0d3..730fd8e28014 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun9i-a80.c
++++ b/drivers/clk/sunxi-ng/ccu-sun9i-a80.c
+@@ -5,7 +5,7 @@
+ 
+ #include <linux/clk-provider.h>
+ #include <linux/io.h>
+-#include <linux/of_address.h>
++#include <linux/module.h>
+ #include <linux/platform_device.h>
+ 
+ #include "ccu_common.h"
+@@ -1245,4 +1245,7 @@ static struct platform_driver sun9i_a80_ccu_driver = {
+ 		.of_match_table	= sun9i_a80_ccu_ids,
+ 	},
  };
-+EXPORT_SYMBOL_NS_GPL(ccu_nm_ops, SUNXI_CCU);
-diff --git a/drivers/clk/sunxi-ng/ccu_phase.c b/drivers/clk/sunxi-ng/ccu_phase.c
-index 92ab8bd66427..e4cae2afe9db 100644
---- a/drivers/clk/sunxi-ng/ccu_phase.c
-+++ b/drivers/clk/sunxi-ng/ccu_phase.c
-@@ -121,3 +121,4 @@ const struct clk_ops ccu_phase_ops = {
- 	.get_phase	= ccu_phase_get_phase,
- 	.set_phase	= ccu_phase_set_phase,
- };
-+EXPORT_SYMBOL_NS_GPL(ccu_phase_ops, SUNXI_CCU);
-diff --git a/drivers/clk/sunxi-ng/ccu_reset.c b/drivers/clk/sunxi-ng/ccu_reset.c
-index 483100e45df3..6577aa18cb01 100644
---- a/drivers/clk/sunxi-ng/ccu_reset.c
-+++ b/drivers/clk/sunxi-ng/ccu_reset.c
-@@ -75,3 +75,4 @@ const struct reset_control_ops ccu_reset_ops = {
- 	.reset		= ccu_reset_reset,
- 	.status		= ccu_reset_status,
- };
-+EXPORT_SYMBOL_NS_GPL(ccu_reset_ops, SUNXI_CCU);
-diff --git a/drivers/clk/sunxi-ng/ccu_sdm.c b/drivers/clk/sunxi-ng/ccu_sdm.c
-index 79581a1c649a..41937ed0766d 100644
---- a/drivers/clk/sunxi-ng/ccu_sdm.c
-+++ b/drivers/clk/sunxi-ng/ccu_sdm.c
-@@ -20,6 +20,7 @@ bool ccu_sdm_helper_is_enabled(struct ccu_common *common,
- 
- 	return !!(readl(common->base + sdm->tuning_reg) & sdm->tuning_enable);
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_sdm_helper_is_enabled, SUNXI_CCU);
- 
- void ccu_sdm_helper_enable(struct ccu_common *common,
- 			   struct ccu_sdm_internal *sdm,
-@@ -49,6 +50,7 @@ void ccu_sdm_helper_enable(struct ccu_common *common,
- 	writel(reg | sdm->enable, common->base + common->reg);
- 	spin_unlock_irqrestore(common->lock, flags);
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_sdm_helper_enable, SUNXI_CCU);
- 
- void ccu_sdm_helper_disable(struct ccu_common *common,
- 			    struct ccu_sdm_internal *sdm)
-@@ -69,6 +71,7 @@ void ccu_sdm_helper_disable(struct ccu_common *common,
- 	writel(reg & ~sdm->tuning_enable, common->base + sdm->tuning_reg);
- 	spin_unlock_irqrestore(common->lock, flags);
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_sdm_helper_disable, SUNXI_CCU);
- 
- /*
-  * Sigma delta modulation provides a way to do fractional-N frequency
-@@ -102,6 +105,7 @@ bool ccu_sdm_helper_has_rate(struct ccu_common *common,
- 
- 	return false;
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_sdm_helper_has_rate, SUNXI_CCU);
- 
- unsigned long ccu_sdm_helper_read_rate(struct ccu_common *common,
- 				       struct ccu_sdm_internal *sdm,
-@@ -132,6 +136,7 @@ unsigned long ccu_sdm_helper_read_rate(struct ccu_common *common,
- 	/* We can't calculate the effective clock rate, so just fail. */
- 	return 0;
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_sdm_helper_read_rate, SUNXI_CCU);
- 
- int ccu_sdm_helper_get_factors(struct ccu_common *common,
- 			       struct ccu_sdm_internal *sdm,
-@@ -153,3 +158,4 @@ int ccu_sdm_helper_get_factors(struct ccu_common *common,
- 	/* nothing found */
- 	return -EINVAL;
- }
-+EXPORT_SYMBOL_NS_GPL(ccu_sdm_helper_get_factors, SUNXI_CCU);
+-builtin_platform_driver(sun9i_a80_ccu_driver);
++module_platform_driver(sun9i_a80_ccu_driver);
++
++MODULE_IMPORT_NS(SUNXI_CCU);
++MODULE_LICENSE("GPL");
 -- 
 2.32.0
 
