@@ -2,79 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5434568B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 04:37:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4E34568B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 04:37:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233770AbhKSDkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 22:40:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233652AbhKSDkB (ORCPT
+        id S234175AbhKSDkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 22:40:10 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:28155 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232201AbhKSDkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 22:40:01 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA19C06173E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 19:37:00 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id g91-20020a9d12e4000000b0055ae68cfc3dso14689135otg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 19:37:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=+OhYyTKGmAf5Y61RBhMkXMlQv+hOjswu4u5NSWPSjMI=;
-        b=nP7GfvIrZmi0WL2XKuJvvnkwZeUNxsIC8PTcNU6NDlPQJ607ucK0Qy62B5HTKohddu
-         xENqULG4PSkx21qnylM3z4mz8hQzWnZWIs9JULXMUYt4xflnBRDRkCKR1PZe46j4QJmc
-         s1yccVoao/pTW+f94U2IdQso/4T9OlOUPpqYuQHmaEK2sQjqLPwal17EyKdi5qG7pEhq
-         MHEtHDfCzNhzr2s0GjM/NwUYR++3fW0DFJ0eUD/6Ky/abnT2SogPDUpaFQkkM9f/wIjp
-         eegIKTmA5hS6OoRRnPNaBaFb0zM1fBJkeJ30NRXWOLfBdtRhtFeNVdwaHTbVJHlt4JaU
-         dWwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=+OhYyTKGmAf5Y61RBhMkXMlQv+hOjswu4u5NSWPSjMI=;
-        b=Vy6XjVtQAgCgl3+jRq50qqoyxe6utEbxl7W19EpyRjFfB5yOhc083rDwjtnZxM6oTe
-         HBtRnEgLxqtK/+dTKzFlawzEIr2Te5Gjgd5AnmClLmh0cGt/5cR2Y8UTh8MNVGgTer6o
-         eVLGOrW/b9QKvwL8TpXYrmsRZgayPEvYVPJd8qx4UbmY205hEXDRNavY4q04/3aLM1Of
-         KbhV2/AyEdW2AI3BAoAtPUzxCEZj+MUEj0N5TCe+fgqj29gJ+flChh1xCaNEIywM48Ig
-         BLcad/CRDXxLtTwyaM3bGalFxxsE5UrMS7h8pMxSFcodcJL0ItWEpU23gWnje3cDiDEV
-         kQDw==
-X-Gm-Message-State: AOAM533F2fYmhQbqIf/Y6sDAwcDt8uc7YXODGuiL6hvS7frrWj+Ot5bq
-        DGWPVhtV8nBrYdiTCGqKzxKO2NlLdZENYfO8m/k=
-X-Google-Smtp-Source: ABdhPJw7gEWB3RSWC/fBdK7hTbQkrFGZtcBcz12LQ3LOEEA/MiJ7wnHE8V6yxOm4VvjdgOV8J7XHOI5ZWtHCUtj/pY4=
-X-Received: by 2002:a05:6830:1008:: with SMTP id a8mr1904375otp.373.1637293019413;
- Thu, 18 Nov 2021 19:36:59 -0800 (PST)
+        Thu, 18 Nov 2021 22:40:10 -0500
+Received: from dggeme758-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HwMkK6dvwz8vFq;
+        Fri, 19 Nov 2021 11:35:21 +0800 (CST)
+Received: from [10.67.102.221] (10.67.102.221) by
+ dggeme758-chm.china.huawei.com (10.3.19.104) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.20; Fri, 19 Nov 2021 11:37:07 +0800
+Message-ID: <cc8714ba-f840-6856-3385-1bffaf6631e7@huawei.com>
+Date:   Fri, 19 Nov 2021 11:37:07 +0800
 MIME-Version: 1.0
-Sender: dd16978@gmail.com
-Received: by 2002:a4a:d557:0:0:0:0:0 with HTTP; Thu, 18 Nov 2021 19:36:58
- -0800 (PST)
-From:   "Mr. Mustafa Ali." <muafalia@gmail.com>
-Date:   Fri, 19 Nov 2021 04:36:58 +0100
-X-Google-Sender-Auth: qyDyMCA6e8_FWGJgKYBlcGTnPXs
-Message-ID: <CA+qKLfdiT=Q+0ZmuB7+Fb972bRum3t-MVT2Uef8NQpO8QPh5Tw@mail.gmail.com>
-Subject: Greetings Dear Friend.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH] ethernet: hisilicon: hns: hns_dsaf_misc: fix a possible
+ array overflow in hns_dsaf_ge_srst_by_port()
+To:     Teng Qi <starmiku1207184332@gmail.com>, <yisen.zhuang@huawei.com>,
+        <salil.mehta@huawei.com>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <huangguangbin2@huawei.com>, <zhengyongjun3@huawei.com>,
+        <liuyonglong@huawei.com>, <shenyang39@huawei.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <baijiaju1990@gmail.com>, <islituo@gmail.com>,
+        TOTE Robot <oslab@tsinghua.edu.cn>
+References: <20211117034453.28963-1-starmiku1207184332@gmail.com>
+From:   "lipeng (Y)" <lipeng321@huawei.com>
+In-Reply-To: <20211117034453.28963-1-starmiku1207184332@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.221]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeme758-chm.china.huawei.com (10.3.19.104)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Friend,
+Sorry for the late reply.
 
-This message might meet you in utmost surprise. However, It's just my
-urgent need for a foreign partner that made me contact you for this
-transaction. I assured you of honesty and reliability to champion this
-business opportunity. I am a banker by profession in Turkey, and
-currently holding the post of Auditor in Standard Chartered Bank.
+Seeing this functions:
 
-I have the opportunity of transferring the leftover funds ($15 Million
-Dollars) of one of my clients who died along with his entire family in
-a crisis in Myanmar Asia. I am inviting you for a business deal where
-this money can be shared between us if you agree to my business
-proposal.
+static int hns_mac_get_max_port_num(struct dsaf_device *dsaf_dev)
+{
+     if (HNS_DSAF_IS_DEBUG(dsaf_dev))
+         return 1;
+     else
+         return  DSAF_MAX_PORT_NUM;
+}
 
-Further details of the transfer will be forwarded to you immediately
-after I receive your return letter.
+int hns_mac_init(struct dsaf_device *dsaf_dev)
+{
+     bool found = false;
+     int ret;
+     u32 port_id;
+     int max_port_num = hns_mac_get_max_port_num(dsaf_dev);
+     struct hns_mac_cb *mac_cb;
+     struct fwnode_handle *child;
 
-Best Regards,
-Mr. Mustafa Ali.
-mustafa.ali@rahroco.com
+     device_for_each_child_node(dsaf_dev->dev, child) {
+         ret = fwnode_property_read_u32(child, "reg", &port_id);
+         if (ret) {
+             dev_err(dsaf_dev->dev,
+                 "get reg fail, ret=%d!\n", ret);
+             return ret;
+         }
+         if (port_id >= max_port_num) {
+             dev_err(dsaf_dev->dev,
+                 "reg(%u) out of range!\n", port_id);
+             return -EINVAL;
+         }
+
+The port_id had limit to DSAF_MAX_PORT_NUM, so this patch is 
+unnecessary, thanks!
+
+
+On 2021/11/17 11:44, Teng Qi wrote:
+> The if statement:
+>    if (port >= DSAF_GE_NUM)
+>          return;
+> 
+> limits the value of port less than DSAF_GE_NUM (i.e., 8).
+> However, if the value of port is 6 or 7, an array overflow could occur:
+>    port_rst_off = dsaf_dev->mac_cb[port]->port_rst_off;
+> 
+> because the length of dsaf_dev->mac_cb is DSAF_MAX_PORT_NUM (i.e., 6).
+> 
+> To fix this possible array overflow, we first check port and if it is
+> greater than or equal to DSAF_MAX_PORT_NUM, the function returns.
+> 
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Teng Qi <starmiku1207184332@gmail.com>
+> ---
+>   drivers/net/ethernet/hisilicon/hns/hns_dsaf_misc.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_misc.c b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_misc.c
+> index 23d9cbf262c3..740850b64aff 100644
+> --- a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_misc.c
+> +++ b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_misc.c
+> @@ -400,6 +400,10 @@ static void hns_dsaf_ge_srst_by_port(struct dsaf_device *dsaf_dev, u32 port,
+>   		return;
+>   
+>   	if (!HNS_DSAF_IS_DEBUG(dsaf_dev)) {
+> +		/* DSAF_MAX_PORT_NUM is 6, but DSAF_GE_NUM is 8.
+> +		   We need check to prevent array overflow */
+> +		if (port >= DSAF_MAX_PORT_NUM)
+> +			return;
+>   		reg_val_1  = 0x1 << port;
+>   		port_rst_off = dsaf_dev->mac_cb[port]->port_rst_off;
+>   		/* there is difference between V1 and V2 in register.*/
+> 
