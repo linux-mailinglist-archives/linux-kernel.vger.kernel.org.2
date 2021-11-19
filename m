@@ -2,172 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF5D457884
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 23:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1CA845788F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 23:18:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235035AbhKSWLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 17:11:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234676AbhKSWLV (ORCPT
+        id S235234AbhKSWVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 17:21:09 -0500
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:18179 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233130AbhKSWVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 17:11:21 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC4AAC061756;
-        Fri, 19 Nov 2021 14:08:18 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id 206so4702677pgb.4;
-        Fri, 19 Nov 2021 14:08:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=1ejdtBcGu/O1Cxw2YS57FB14hxKmb2vB0wySR/Hf7zE=;
-        b=jdKk9h0KGCz7rzKg7MWOpNLiwNJ+xR77xNz2Lxp2dg9w7GUe0LJGBzukoh9vYX6vZX
-         1D2J6dPOj7CrAIBuw5Iwep3uFzwg8/YkZgqNoW5OOL19QSCkrmdf3qpHqurRgL9OTAe7
-         xgGk5YkPXlhjKZ83iVhlC37YjNkit/aIb2fCMRvx6cmTHZD8Qi2IRh05HRGQzgWKtuf6
-         4VG75KaQ4B9pPt71kJsmMqWMeyaPEEg0eqjLIXc6+JQUHFoQF/LR+qEAKWwv0wsml8L/
-         KMO6G4As02e//7bphr0MS5/ZRo+KJ+IGtSG7RNOJ+1fc8hXDauiIBgRICwZcLWmtPkYU
-         Nsag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=1ejdtBcGu/O1Cxw2YS57FB14hxKmb2vB0wySR/Hf7zE=;
-        b=LT1d/sSbFKv1PRYPK9qiXRmbQeEMG+dR6XoDB1IEHZy+IEtcwvlPMCtWAlkBLhgCSY
-         lyJeyR2yPziDT3JjwdAfa/Stm5MBK+X4FgSMAxNI64JGmymKiQCbqFEY6C6Zi4VbS5iv
-         cEcIFxePgFCOnOQNbE87fBI5vzQHiQbijhCPSAAXJDysMoiXV9D9/c4heXVppR0Eif29
-         rq01Cm9p/Sz4P2d7LDw8M7ICsbeOm3833LVuzrd1b7JNfocv2sO2DL6cMx5kwrhxTKj2
-         vB/guV3AXVUHgK2/HCFKYvztP/OmStPHwEL+4yZjuZAssoxLZAiEL3H3V7MQCC8QPEgx
-         rqAQ==
-X-Gm-Message-State: AOAM533qsCguAhwRwJBMofaZCBVyL3G3XoWwg+Le80tZ41emIKh8YYXx
-        AZSszuQG29oCZIfMKtqeCG/YHjKbp3OPnA==
-X-Google-Smtp-Source: ABdhPJxfHsOlCGlDapHzJKdRp+W1ALfXhzzHf0u5YLalK3nbMWxxpORK+mLoBIIEPwEk6dmSgOWegA==
-X-Received: by 2002:a63:454:: with SMTP id 81mr19078349pge.24.1637359698006;
-        Fri, 19 Nov 2021 14:08:18 -0800 (PST)
-Received: from stbsrv-and-01.and.broadcom.net ([192.19.11.250])
-        by smtp.gmail.com with ESMTPSA id t2sm612940pfd.36.2021.11.19.14.08.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 14:08:17 -0800 (PST)
-From:   Jim Quinlan <jim2101024@gmail.com>
-To:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, jim2101024@gmail.com,
-        james.quinlan@broadcom.com
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v9 7/7] PCI: brcmstb: Do not turn off WOL regulators on suspend
-Date:   Fri, 19 Nov 2021 17:07:54 -0500
-Message-Id: <20211119220756.18628-8-jim2101024@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211119220756.18628-1-jim2101024@gmail.com>
-References: <20211119220756.18628-1-jim2101024@gmail.com>
+        Fri, 19 Nov 2021 17:21:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1637360285; x=1668896285;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=VA1WIeoMomzEztwI0nhYAGQpBX75zQiLOR1PvtwhWTM=;
+  b=I9lc/xPknDumBQ0ydSWnvCwDhgu/xktlhihBFPfccVBZMW5ecL7vCGZU
+   3uokL49LUUo2H3EH/JC9yLpyEj4AfFx/+bXsLlPT3n4GeH9duG9hCXfJm
+   D15y9NAIig87BxZP+v42g6WmMdYvpj5U503hVGpoooRGhTTivTAhwPrjh
+   QXlbnxGj8LAA+dzIe6sQN7dKpTCTRshlVqq7CsDMthP5eG4BzCZWDz4CW
+   fh7P1IHKPvCZm1R2H/py6xYx3QVLrslXNcdIu99CKVKuzGHQPJSkB2pQs
+   vzQZ6zUlQnL/jMPsCtVVXR+5e0/ZLF9rR9MDiwd1Iy3Fpb9vKOl2LQQb3
+   w==;
+X-IronPort-AV: E=Sophos;i="5.87,248,1631548800"; 
+   d="scan'208";a="186144834"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 20 Nov 2021 06:18:05 +0800
+IronPort-SDR: FxIBXSbWSWtqrfGaQR2m4Yz5NKIKEwxX+GfThBMyJ65uKkyvxoCo3Hiu3+6aL9CCB0SRwNRxUF
+ 3PdRXE3bUfX+7pX/RlCFwMnnRcLBsA9LoFvQ6o11G41v7BqT0IkCzjlIOJL59za7UdCBHGht0N
+ BY5ZUN5l7vYnuquCBG6jKGidQwKRTth5CB8uvuVaW/1u24nhLm/TzvJ94xikADCAR7isTSC8YQ
+ 4qo5C7Fie/LA+LiecKYpKh0WQpdG1aRPcuDIGem9O0tslEWOO0JUJrbuRpHgnRN4RAZwfnNm+2
+ DyJrXpvjnA2V0Ub3skqdpq6y
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 13:53:04 -0800
+IronPort-SDR: +YNWXyf8Fmgy3jDNcQnLVPiu+Rj9SPGVnp9BCKztw29eOfakTeF6JhKvP9w8YemkaEb91xo0E9
+ Uti57XZbIUOigqzYaW4V9QCyLYBLgrZemxMC9HmbUC2b+CcQrGuUiMS2+e7sUPDevYbJHGIbqu
+ S/YL4Ww64aOXpInrUXjZREVsq83oBKh2D9+V689ugpS/4HYFFpXEspVVyCQl4A3qmnuA/nd5H7
+ TsoJgPxmr6rxMWGdthgTxA1c1859pVxGuySfTeLEB90tNqUh+jHfwWiEOQLTAkB39cT43dKOpT
+ obg=
+WDCIronportException: Internal
+Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
+  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 14:18:06 -0800
+Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4Hwrdn0pC7z1RtVt
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 14:18:05 -0800 (PST)
+Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)"
+        header.d=opensource.wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+        opensource.wdc.com; h=content-transfer-encoding:content-type
+        :in-reply-to:organization:from:references:to:content-language
+        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
+        1637360284; x=1639952285; bh=VA1WIeoMomzEztwI0nhYAGQpBX75zQiLOR1
+        PvtwhWTM=; b=b28QL1UR7gaBakwsydvg6wLHNy+svz8UPggyAcidWSiEJx7rf2z
+        EXUtR+bh1J51beSzsTwKnE/Ott8Job2gwUFnJ073yrxx6JsMICLmTeaKiC1queTj
+        SZsc1sgnaYjXXaFH7pKT3Mo+AjstgXG3iR3Bo2igj9pEPp1cO+BI8x6tMuwPG/cK
+        eTS6ThkBJvWYxs60KiMkjKLTVNuIe0Vgi+oIffeVx/NuMNq2fME+5esRyqgNVbof
+        +JCnL8dFM+DO2vuBZog0uXqMkInfbu+CvXUtC33J0n4vgIK4E2FMJ43Hc8AGLM/9
+        G2beOPoDVt1dBVyOKtRhVHO44H+XTiAKYUw==
+X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
+Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
+        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id zcFJ1tZf_q-5 for <linux-kernel@vger.kernel.org>;
+        Fri, 19 Nov 2021 14:18:04 -0800 (PST)
+Received: from [10.225.163.105] (unknown [10.225.163.105])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4Hwrdk6z75z1RtVl;
+        Fri, 19 Nov 2021 14:18:02 -0800 (PST)
+Message-ID: <aae68060-2941-36fd-0abb-e10fdc687111@opensource.wdc.com>
+Date:   Sat, 20 Nov 2021 07:18:01 +0900
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH -next 2/2] sata_fsl: fix warning in remove_proc_entry when
+ rmmod sata_fsl
+Content-Language: en-US
+To:     Baokun Li <libaokun1@huawei.com>, axboe@kernel.dk, tj@kernel.org,
+        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     yebin10@huawei.com, yukuai3@huawei.com,
+        Hulk Robot <hulkci@huawei.com>
+References: <20211119041128.2436889-1-libaokun1@huawei.com>
+ <20211119041128.2436889-3-libaokun1@huawei.com>
+From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Organization: Western Digital Research
+In-Reply-To: <20211119041128.2436889-3-libaokun1@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If any downstream device can be awoken do not turn off
-the regulators as the device will need them on.
+On 11/19/21 13:11, Baokun Li wrote:
+> Trying to remove the fsl-sata module in the PPC64 GNU/Linux
+> leads to the following warning:
+>  ------------[ cut here ]------------
+>  remove_proc_entry: removing non-empty directory 'irq/69',
+>    leaking at least 'fsl-sata[ff0221000.sata]'
+>  WARNING: CPU: 3 PID: 1048 at fs/proc/generic.c:722
+>    .remove_proc_entry+0x20c/0x220
+>  IRQMASK: 0
+>  NIP [c00000000033826c] .remove_proc_entry+0x20c/0x220
+>  LR [c000000000338268] .remove_proc_entry+0x208/0x220
+>  Call Trace:
+>   .remove_proc_entry+0x208/0x220 (unreliable)
+>   .unregister_irq_proc+0x104/0x140
+>   .free_desc+0x44/0xb0
+>   .irq_free_descs+0x9c/0xf0
+>   .irq_dispose_mapping+0x64/0xa0
+>   .sata_fsl_remove+0x58/0xa0 [sata_fsl]
+>   .platform_drv_remove+0x40/0x90
+>   .device_release_driver_internal+0x160/0x2c0
+>   .driver_detach+0x64/0xd0
+>   .bus_remove_driver+0x70/0xf0
+>   .driver_unregister+0x38/0x80
+>   .platform_driver_unregister+0x14/0x30
+>   .fsl_sata_driver_exit+0x18/0xa20 [sata_fsl]
+>  ---[ end trace 0ea876d4076908f5 ]---
+> 
+> The driver creates the mapping by calling irq_of_parse_and_map(),
+> so it also has to dispose the mapping. But the easy way out is to
+> simply use platform_get_irq() instead of irq_of_parse_map().
+> 
+> In this case the mapping is not managed by the device but by
+> the of core, so the device has not to dispose the mapping.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+>  drivers/ata/sata_fsl.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/ata/sata_fsl.c b/drivers/ata/sata_fsl.c
+> index 30759fd1c3a2..011daac4a14e 100644
+> --- a/drivers/ata/sata_fsl.c
+> +++ b/drivers/ata/sata_fsl.c
+> @@ -1493,7 +1493,7 @@ static int sata_fsl_probe(struct platform_device *ofdev)
+>  	host_priv->ssr_base = ssr_base;
+>  	host_priv->csr_base = csr_base;
+>  
+> -	irq = irq_of_parse_and_map(ofdev->dev.of_node, 0);
+> +	irq = platform_get_irq(ofdev, 0);
+>  	if (!irq) {
 
-Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
----
- drivers/pci/controller/pcie-brcmstb.c | 53 ++++++++++++++++++++++-----
- 1 file changed, 44 insertions(+), 9 deletions(-)
+Please see the kdoc comment for platform_get_irq() in
+drivers/base/platform.c. The error check must be "if (irq < 0)".
 
-diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index 9b4df253e79a..8e5cbf6850cd 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -298,6 +298,7 @@ struct brcm_pcie {
- 	void			(*bridge_sw_init_set)(struct brcm_pcie *pcie, u32 val);
- 	bool			refusal_mode;
- 	struct subdev_regulators *sr;
-+	bool			ep_wakeup_capable;
- };
- 
- /*
-@@ -1166,9 +1167,21 @@ static void brcm_pcie_turn_off(struct brcm_pcie *pcie)
- 	pcie->bridge_sw_init_set(pcie, 1);
- }
- 
-+static int pci_dev_may_wakeup(struct pci_dev *dev, void *data)
-+{
-+	bool *ret = data;
-+
-+	if (device_may_wakeup(&dev->dev)) {
-+		*ret = true;
-+		dev_info(&dev->dev, "disable cancelled for wake-up device\n");
-+	}
-+	return (int) *ret;
-+}
-+
- static int brcm_pcie_suspend(struct device *dev)
- {
- 	struct brcm_pcie *pcie = dev_get_drvdata(dev);
-+	struct pci_host_bridge *bridge = pci_host_bridge_from_priv(pcie);
- 	int ret;
- 
- 	brcm_pcie_turn_off(pcie);
-@@ -1187,11 +1200,22 @@ static int brcm_pcie_suspend(struct device *dev)
- 	}
- 
- 	if (pcie->sr) {
--		ret = regulator_bulk_disable(pcie->sr->num_supplies, pcie->sr->supplies);
--		if (ret) {
--			dev_err(dev, "Could not turn off regulators\n");
--			reset_control_reset(pcie->rescal);
--			return ret;
-+		/*
-+		 * Now turn off the regulators, but if at least one
-+		 * downstream device is enabled as a wake-up source, do not
-+		 * turn off regulators.
-+		 */
-+		pcie->ep_wakeup_capable = false;
-+		pci_walk_bus(bridge->bus, pci_dev_may_wakeup,
-+			     &pcie->ep_wakeup_capable);
-+		if (!pcie->ep_wakeup_capable) {
-+			ret = regulator_bulk_disable(pcie->sr->num_supplies,
-+						     pcie->sr->supplies);
-+			if (ret) {
-+				dev_err(dev, "Could not turn off regulators\n");
-+				reset_control_reset(pcie->rescal);
-+				return ret;
-+			}
- 		}
- 	}
- 	clk_disable_unprepare(pcie->clk);
-@@ -1212,10 +1236,21 @@ static int brcm_pcie_resume(struct device *dev)
- 		return ret;
- 
- 	if (pcie->sr) {
--		ret = regulator_bulk_enable(pcie->sr->num_supplies, pcie->sr->supplies);
--		if (ret) {
--			dev_err(dev, "Could not turn on regulators\n");
--			goto err_disable_clk;
-+		if (pcie->ep_wakeup_capable) {
-+			/*
-+			 * We are resuming from a suspend.  In the suspend we
-+			 * did not disable the power supplies, so there is
-+			 * no need to enable them (and falsely increase their
-+			 * usage count).
-+			 */
-+			pcie->ep_wakeup_capable = false;
-+		} else {
-+			ret = regulator_bulk_enable(pcie->sr->num_supplies,
-+						    pcie->sr->supplies);
-+			if (ret) {
-+				dev_err(dev, "Could not turn on regulators\n");
-+				goto err_disable_clk;
-+			}
- 		}
- 	}
- 
+Can you send a V2 with that fixed and tested ?
+
+>  		dev_err(&ofdev->dev, "invalid irq from platform\n");
+>  		goto error_exit_with_cleanup;
+> @@ -1570,8 +1570,6 @@ static int sata_fsl_remove(struct platform_device *ofdev)
+>  
+>  	ata_host_detach(host);
+>  
+> -	irq_dispose_mapping(host_priv->irq);
+> -
+>  	return 0;
+>  }
+>  
+> 
+
+
 -- 
-2.17.1
-
+Damien Le Moal
+Western Digital Research
