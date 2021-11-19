@@ -2,145 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46EF7456DA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 11:41:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E01EB456DA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 11:41:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234116AbhKSKi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 05:38:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34292 "EHLO
+        id S234088AbhKSKi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 05:38:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234877AbhKSKiN (ORCPT
+        with ESMTP id S234507AbhKSKiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 05:38:13 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C82C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 02:35:11 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id t5so41110569edd.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 02:35:11 -0800 (PST)
+        Fri, 19 Nov 2021 05:38:11 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB31C061574;
+        Fri, 19 Nov 2021 02:35:10 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id p18so8014609wmq.5;
+        Fri, 19 Nov 2021 02:35:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=da+/SogHXUMysaPRZgIDQxwiiCshPW/hd/yWA0YxHqQ=;
-        b=GlnHRBjOnK9LP3NMSvnd1QTOn+l5BYai+2V8bs6Qcctpizcmz21/SwZE+DgAftdQz4
-         sZ0mh1an60KYWHvgzkBfqZnEHVYFJ4X5QP08O7fZHPtnMcmus6hrBxGydj9+D7eTwb/I
-         i/wnMThnZdCe9HM+smJulD6MMgL90PZLQwK75EkUgaCrZ3eTWVGZesWleUnWgTQ6ZKMY
-         hJI0bGMDeQqp1sQkAkQHB+8zEkvcOgkdDmq9EPtpqe/xy6M0RU9mDyCwuIarT7PE/KPs
-         /taKqA5EREsQNFCOmr49J1E/7vIpjimYWENZqqvzXKZT2IdjaZ2edHJWp9PI+4ClEvlI
-         OpIw==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=4K1D4DrJON9XEGXO4DJYRPRWAPvMfd+3qa5AuLyQzSg=;
+        b=U0/3OwJVjRpy0Bytju6lhiz7QW7kaIET1ObODqDPjajxPRr66/d60fmWnTJFEAZQF0
+         PgQ4VpvECIy3O+931vZV3g5NUnnqCISih3klv5IzHA8y0CAbC1+hlITYvLD8hPdu9W0W
+         zzMWfXQtoaZW1cJ6uN3a5/YQJZ+r6i+Q898xdoOjMpREnqhNz5O788MIdWMRRoLrq3o9
+         nuK2vxq1R0mybeWOdBrOPRc0pcN361q8XlaqzrT04tqmtNbDX5Y165ma8Ab7N/PdNDAk
+         5B2bOHtwJVZYRbajSMHkWEul8MDKemY6xwM62L/ZMJG6/Vcq9J0rKFwSwVkhotQ5avMK
+         3iyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=da+/SogHXUMysaPRZgIDQxwiiCshPW/hd/yWA0YxHqQ=;
-        b=h0F+FjZcT6EAckrDqkFr//Vfej4E97I6ojwKIcpD5TrSsS/iWCxKCkGnkQNpTPLaZK
-         1uqS1bEYgggNxYWcSnZZ4T7o0CG23jPm6Q0wupdnIuZoBUhIWeOjyqA/nRrALHuno5jH
-         fkepeigGgno38hqVcmSFcQNVzX38zFqJncKVtbx82AMNXdyoqUfDDMA0jXfiaOQtQr0U
-         +3Q+aYe3iRAYeoFtoZN/tGgXRHkfhG54yYi+1Rqhf/COwFn5bR9XUdTI1VTVCSkROm7x
-         3oh51TN6Q934LbQLM38+8z9kqKvzr5phXfyy36GwZOESVnc6zz6jnfFe3BGDwOjQbCwH
-         k/UQ==
-X-Gm-Message-State: AOAM531dV4YWkh1aSLqb1aYKxGa8RxRs90mBjaadnL3lTUA5lLR6tA4b
-        DfsCYecAeER2yy6jnyjpAKiMoFhCuerKU3UEki5HIQ==
-X-Google-Smtp-Source: ABdhPJx3NBTcqINXsR8GAPT3k7d1gVnT5ZVIM4MMhSfBogJ3ihQymdnKbE/olQAjosYRl+tzEQxE8YBNvWdLez3iAYg=
-X-Received: by 2002:a05:6402:168a:: with SMTP id a10mr23446917edv.219.1637318110186;
- Fri, 19 Nov 2021 02:35:10 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=4K1D4DrJON9XEGXO4DJYRPRWAPvMfd+3qa5AuLyQzSg=;
+        b=v6oW786XEDY1x9rn4Gnksn9lMtpUSDQFYf/Ubn+C8t/bgA7i3aialUFirBGk0LGgnq
+         xCyFazHNNPdeY9gYnSN2vXQgg0zl/wze78mvhk++A9UX9eZZsj58TtHKaoMHvukEm6V3
+         zJUd7iL9X/vAXzngrka536iAzHZCAfC0Q/YqrpfZTHNprYq0s7hSvjK1/bW31ifiZfdd
+         JDF/FWD8Q9/WCY26kzWa1qjmlDfAdj+Z4ZInxUPXU5Od7wdZLeKU0MHnpUt7xxtxyV8q
+         FBAQOThX1pM3l6k0cZC7JLMgPBYq2Ot/+bqjJxg3GhuoqQY/vennvFPnDxzDTqH27km/
+         euwA==
+X-Gm-Message-State: AOAM532Z845ZVf+RLaczbTfyzEIbuupAdczs8/zFy57cxM+KrhTUuXF4
+        rX2e9I7BTEjALiF4rIFEdVI=
+X-Google-Smtp-Source: ABdhPJzWWYFH9JS52iFHdZJ9xlqlQCpCY1hzofwkw862hENzMEfpGecC4lXM26OsahpOKBHAUeKHLw==
+X-Received: by 2002:a7b:c92e:: with SMTP id h14mr5472780wml.135.1637318108493;
+        Fri, 19 Nov 2021 02:35:08 -0800 (PST)
+Received: from [192.168.2.177] ([207.188.161.251])
+        by smtp.gmail.com with ESMTPSA id l18sm2551048wrt.81.2021.11.19.02.35.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Nov 2021 02:35:08 -0800 (PST)
+Message-ID: <e17a2927-3b81-6db8-6d8f-7147d673e977@gmail.com>
+Date:   Fri, 19 Nov 2021 11:35:07 +0100
 MIME-Version: 1.0
-References: <20211118145142.14519-1-brgl@bgdev.pl> <YZZ1cFWaexGlJL8C@smile.fi.intel.com>
- <CAMRc=MdeEiz+uKhAz5-1MX_KG5fmjshRtDXARPMEx8VwBKfXZQ@mail.gmail.com> <YZaGa66iEFb6bJjK@smile.fi.intel.com>
-In-Reply-To: <YZaGa66iEFb6bJjK@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Fri, 19 Nov 2021 11:34:59 +0100
-Message-ID: <CAMRc=MeZrdgxMUxGQ0rFPkSXMto==WrMGPz0Zo8wfdCxM_0+=Q@mail.gmail.com>
-Subject: Re: [PATCH v9 0/4] gpio-sim: configfs-based GPIO simulator
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Kent Gibson <warthog618@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 1/2] arm64: dts: mediatek: mt8173-elm: Move pwm pinctrl to
+ pwm0 node
+Content-Language: en-US
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+References: <20211102144224.457446-1-angelogioacchino.delregno@collabora.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+In-Reply-To: <20211102144224.457446-1-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 5:59 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Thu, Nov 18, 2021 at 05:37:02PM +0100, Bartosz Golaszewski wrote:
-> > On Thu, Nov 18, 2021 at 4:50 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > >
-> > > On Thu, Nov 18, 2021 at 03:51:38PM +0100, Bartosz Golaszewski wrote:
-> > > > This is another shot at the gpio-sim testing module. As there was n=
-o
-> > > > reasoning with configfs maintainers for many months, this time the =
-whole
-> > > > concept of committable items has been dropped. Instead, each config=
-fs
-> > > > chip item (or rather a group - more on that later) exposes a new
-> > > > attribute called 'live'. Writing 1 to it brings the chip on-line
-> > > > (registers the platform device) and writing 0 tears it down.
-> > > >
-> > > > There are some caveats to that approach - for example: we can't blo=
-ck
-> > > > the user-space from deleting chip items when chips are live but is =
-just
-> > > > handled by silently destroying the chip device in the background.
-> > > >
-> > > > Andy (rightfully) pointed out that parsing of the lists of line nam=
-es is
-> > > > awkward so in this iteration it's been replaced by a system that is=
- more
-> > > > elegant and will allow to easily extend configuration options for
-> > > > specific GPIO lines. This is achieved by turning the chip's configf=
-s
-> > > > item into a configfs group and allowing the user-space to create
-> > > > additional items inside it. The items must be called line<offset> (=
-e.g.
-> > > > line0, line12 etc.) where the offset part indicates to the module t=
-he
-> > > > offset for which given item stores the configuration for. Within ea=
-ch
-> > > > such line item, there are additional attributes that allow specifyi=
-ng
-> > > > configuration for specific lines. Currently we only support the 'na=
-me'
-> > > > attribute but I plan to extend that to support GPIO hogging too.
-> > >
-> > > One question here. Since you know how the driver looks like in both c=
-ases
-> > > (with and without committable items), would it be possible to modify =
-what
-> > > you proposed here to the former one in case ConfigFS gains the featur=
-e?
-> >
-> > This would completely change the user interface unfortunately. We
-> > could extend it but we would need to keep this one too most likely.
-> >
-> > TBH I don't see the committable items merged anytime soon, and this is
-> > GoodEnough=C2=AE.
->
-> Fine with me then!
->
-> Thanks for doing this all, I know it's a bit delayed in terms of getting
-> into upstream.
->
-> Btw, gpio-mockup testing scripts have an issue that the number of lines t=
-o
-> check overflow is hardcoded and since x86_64 switched to 1024 from 512 it
-> reveals the issue. Does gpio-sim solve this in a better way (like telling
-> to user space the ngpios, etc)?
->
 
-Yeah the selftests need fixing now.
 
-No, there's no fix for that in gpio-sim - probe() will just fail.
-Which makes me think - maybe we should synchronously wait when writing
-to 'live' for the probe to return (for instance setup a notifier) so
-that we know if the chip probed correctly. Then we can notify the
-user-space about the error destroy the device too.
+On 02/11/2021 15:42, AngeloGioacchino Del Regno wrote:
+> The PWM pinctrl belongs to the PWM0 node, as it's strictly pwm related.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-Bart
+both patches applied to v5.16-next/dts64
+
+thanks!
+
+> ---
+>   arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
+> index e666ebb28980..f292ca459a9a 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
+> @@ -27,8 +27,6 @@ backlight: backlight {
+>   		power-supply = <&bl_fixed_reg>;
+>   		enable-gpios = <&pio 95 GPIO_ACTIVE_HIGH>;
+>   
+> -		pinctrl-names = "default";
+> -		pinctrl-0 = <&disp_pwm0_pins>;
+>   		status = "okay";
+>   	};
+>   
+> @@ -901,6 +899,8 @@ pins1 {
+>   };
+>   
+>   &pwm0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&disp_pwm0_pins>;
+>   	status = "okay";
+>   };
+>   
+> 
