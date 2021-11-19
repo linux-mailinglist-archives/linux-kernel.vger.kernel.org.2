@@ -2,95 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD54845779D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 21:07:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA49E45779F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 21:08:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235083AbhKSUK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 15:10:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52198 "EHLO
+        id S235161AbhKSULJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 15:11:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231416AbhKSUK4 (ORCPT
+        with ESMTP id S233651AbhKSULH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 15:10:56 -0500
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714AFC061574;
-        Fri, 19 Nov 2021 12:07:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1637352474;
-        bh=GoH8Z3qQb7lyaM011BrYXNUd8I3bbmPLKjf7XPbDzD8=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=SA2dkc0wyLU8/amoW6rKP2KA/LilJroNBMHKZIhz7vEcVQ1+ibSUjIy6LNtddYmor
-         HPEdz0JEh+lkZ4FlXDrwikd7nJFHklxXdbs+kXENV1bYDmtazbJXtkbOfsx3TmTvPp
-         fmhA3jAfEPx10Yxg/HguCaGr25EvRsCAgpHG8lyQ=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 1A8B71280CDD;
-        Fri, 19 Nov 2021 15:07:54 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id kRn0czFAr-2H; Fri, 19 Nov 2021 15:07:54 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1637352473;
-        bh=GoH8Z3qQb7lyaM011BrYXNUd8I3bbmPLKjf7XPbDzD8=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=m8qKepLX/cI3EvDssSoW9hMbE7HNLExAPBLDWIPwOF+/lSPLhN35OIyZUMqNnp4c/
-         XDHoYAZbtJm8pgGIPEj6FYmGbLj6xHxyBRbIwTa7MFgWcScQkuE/1dFSh7uk7cZqQ6
-         ab6/NH96BXF8eECRHrmWw6P7Ioh4VqVy/YmNVLIo=
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4300:c551::c447])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 6931F1280C85;
-        Fri, 19 Nov 2021 15:07:53 -0500 (EST)
-Message-ID: <af4fd590c7b90e5b3eef13f2fcd0bbb500192d2a.camel@HansenPartnership.com>
-Subject: Re: [GIT PULL] SCSI fixes for 5.16-rc1
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Fri, 19 Nov 2021 15:07:52 -0500
-In-Reply-To: <CAHk-=wjiTXOy3EJ4Eb++umuCgiDufJxrNZ9Z17_NhdORKZGbSA@mail.gmail.com>
-References: <0a508ff31bbfa9cd73c24713c54a29ac459e3254.camel@HansenPartnership.com>
-         <CAHk-=wjiTXOy3EJ4Eb++umuCgiDufJxrNZ9Z17_NhdORKZGbSA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Fri, 19 Nov 2021 15:11:07 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EFA2C06173E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 12:08:05 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id r8so19975194wra.7
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 12:08:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kryo-se.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w8lQv0HLZhnRec/rbB5x/dMfBhfYGtylv6Ap7LH5bUk=;
+        b=jA/cTwTaHvC7XQjxDw83w8voZwXKhCHUMsdEL4O3ZCS+PLDlHmR55GaMIuLy4RlAAm
+         6yPCkKQJFjBjxxWFMVWlY5580IoFLFz96F3gOHWdJbG/sDcS5z21Yg543bINRYnySdvc
+         ibmuQzhC8ZSPdvC8JnK+LyA1emxjeAUtPWRhBD3xBan1PvvCs+JdD9xMSlzUsgn4mAmG
+         dS3BlwgUJD7GXy3PYdnUrYbLhelWRY0qaYa3eRZnSaLAPOTzJQ7Y2dJtd1EYxtMx07SI
+         mB6irDWY6z/NBcrsxMRH/cBTujGtKEfbJjjiNnSgmASiQ6GXmZffyTQlL9lqVL1GFw0F
+         45Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w8lQv0HLZhnRec/rbB5x/dMfBhfYGtylv6Ap7LH5bUk=;
+        b=JuM+fwi2KbjOilkl3IKW2LMEEFMEwqpetKvydmbyZmRs4B9UXIyU+S5dxcKfRcXBSA
+         ZhDgEvm9E1h3l3xYo4C2alBmYrSzgNc7T4gZ2cu/hlCGBwkx4fYt5Rzw1obCmGs8Bqrz
+         JlFwd1P/rX6n7DPg3EWWXqDY/ywg5+gB7+GeZ3GIW8mFqWL2UOKvwnR8Taxka3mFpfAO
+         f3tgdWc9G9meac1mHmsd5GQZRXPNYKiFeA54hb9p8sskLP4fuFCAeeyk8hx+AU2hmMWN
+         qXumdfj9k3vdUCCCRUNK7WcXCfi7P3ezygUqMPo/paNxKlLnPLy4L65bbNkeC2naUrxx
+         bDtg==
+X-Gm-Message-State: AOAM531jhBFyEDY/mYkcb1/3XLYgcrc7USOI4QWtAJ9MTep9Jx7O63rX
+        J5vazXGRqDgdszn9aUfr24MEAeQzLCvh3Q==
+X-Google-Smtp-Source: ABdhPJwaPfT0uv82oG0+6+zEoC1EApuq/q/Bhsv5Szck70aWaneH6smLCTobQ2jMRHYWvN8l8DbWPQ==
+X-Received: by 2002:adf:df0d:: with SMTP id y13mr10859091wrl.176.1637352484048;
+        Fri, 19 Nov 2021 12:08:04 -0800 (PST)
+Received: from kerfuffle.. ([2a02:168:9619:0:b7be:fc14:9072:c69a])
+        by smtp.gmail.com with ESMTPSA id g5sm1090015wri.45.2021.11.19.12.08.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 12:08:03 -0800 (PST)
+From:   Erik Ekman <erik@kryo.se>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Erik Ekman <erik@kryo.se>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Documentation/process: fix self reference
+Date:   Fri, 19 Nov 2021 21:07:58 +0100
+Message-Id: <20211119200758.642474-1-erik@kryo.se>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-11-19 at 11:29 -0800, Linus Torvalds wrote:
-> On Fri, Nov 19, 2021 at 10:20 AM James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> > Six fixes, five in drivers (ufs, qla2xxx, iscsi) and one core
-> > change to fix a regression in user space device state setting,
-> > which is used by the iscsi daemons to effect device recovery.
-> 
-> Language nit.
+Instead link to the device tree document with the same name.
 
-hey your "nit" is that I used an English verb correctly?
+Signed-off-by: Erik Ekman <erik@kryo.se>
+---
+ Documentation/process/submitting-patches.rst | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> One of the few correct uses of "to effect" - but perhaps best avoided
-> just because even native speakers get it wrong. And we have a lot of
-> non-native speakers too.
-
-Well, OK, we do the difference between effect and affect in high
-school, but I'm happy to use a more neutral phrasing because I do
-notice when people get it wrong (I just silently correct internally).
-
-> It might have been clearer to just say "to start device recovery" or
-> perhaps just "as part of device recovery". Just to avoid confusion
-> with "affect". Which it obviously _also_ does.
-> 
-> I kept your wording, but this is just a note that maybe commit
-> messages should strive to generally use fairly basic English language
-> and try to avoid things that are known to trip people up.
-
-I can certainly relate to the need to be clear and unambiguous, but
-this is the thin end of the wedge: you'll be telling me I can't use the
-subjunctive mood next just because Americans don't understand what it
-is ...
-
-James
-
+diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
+index da085d63af9b..6b3aaed66fba 100644
+--- a/Documentation/process/submitting-patches.rst
++++ b/Documentation/process/submitting-patches.rst
+@@ -14,7 +14,8 @@ works, see Documentation/process/development-process.rst. Also, read
+ Documentation/process/submit-checklist.rst
+ for a list of items to check before submitting code.  If you are submitting
+ a driver, also read Documentation/process/submitting-drivers.rst; for device
+-tree binding patches, read Documentation/process/submitting-patches.rst.
++tree binding patches, read
++Documentation/devicetree/bindings/submitting-patches.rst.
+ 
+ This documentation assumes that you're using ``git`` to prepare your patches.
+ If you're unfamiliar with ``git``, you would be well-advised to learn how to
+-- 
+2.33.1
 
