@@ -2,96 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD08457970
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 00:17:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BED3457973
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 00:18:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235435AbhKSXUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 18:20:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231166AbhKSXUo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 18:20:44 -0500
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D5EC06173E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 15:17:42 -0800 (PST)
-Received: by mail-il1-x136.google.com with SMTP id l19so11812373ilk.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 15:17:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VxoPoCC9cObbyv624yFsho4myl9q3IV7NWPGVGoX05Q=;
-        b=hF961MXX3VhZdSeNiwmKk7q4iv+7cIm5RGC9xSMSJDb6+kOOVBY36jelF6W1m/Rwrh
-         Daf+8OAGdJ38SKzkI5hmCkRohKIgF/LWY/wmKQ2cvpGn2WPpZhqePL7XRc3Kb4nbPMnw
-         k9LGM9CDnLX+12APTu2mHB/+yyKKPn2LPmkX0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VxoPoCC9cObbyv624yFsho4myl9q3IV7NWPGVGoX05Q=;
-        b=dt2y+fEXXawxedx4iV280XHHiocw5mTc8o5LC0AXxq4K8x89KHYm2nKFrskw7iop1W
-         acl1w6oq8vIK9oNWNV/wEUx166rCOegOiuIVMaMezx3akA5dIBM2MT3sfKNn+VQnr1UE
-         BmsD3JQCJbk26If0Y4tQMJwTN2BAJop3bLw6NwSgKcKmgybUSxclP3jQJT63a9T3RwE9
-         ROI5O+px5h6o+jIixPE/fRkn9XlxfhIL8NkfyHNBxbymdBSIaJVH9FW2D6vAwRVLJ7A9
-         Bha9SaBSCVvaTIm124k7OS/0an9Sc37b/yoO1YjQqiSn31sFKEl4OLC4wZZv4+qwm3rV
-         e/4g==
-X-Gm-Message-State: AOAM531pR3VYfUYtYxxDI4LGVHqqsHk8Ky3AHifOVtjpGFIwqOFC+/ok
-        m8vRTT39y3YlwFSWY843pkc7qg==
-X-Google-Smtp-Source: ABdhPJxu83UIDq15n0gB/UlpT0oEfwILMKyWTG8DekVMC2TQj51UzeFbc2C+LtEA69a+k/C2YKBaJA==
-X-Received: by 2002:a92:d14d:: with SMTP id t13mr7781167ilg.194.1637363861976;
-        Fri, 19 Nov 2021 15:17:41 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id u10sm794231ill.73.2021.11.19.15.17.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Nov 2021 15:17:41 -0800 (PST)
-Subject: Re: [PATCH 5.15 00/20] 5.15.4-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20211119171444.640508836@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <355c0430-13e2-41c3-8dd9-783df7b29264@linuxfoundation.org>
-Date:   Fri, 19 Nov 2021 16:17:40 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S235541AbhKSXVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 18:21:17 -0500
+Received: from mout.gmx.net ([212.227.15.18]:36471 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231166AbhKSXVL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 18:21:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1637363888;
+        bh=92IDGtqdfCGF8d2HARzb6+7JeJlTxKoq82CETOlvhr4=;
+        h=X-UI-Sender-Class:Date:From:Subject:To:Cc;
+        b=lsKGY7DBX7WGpywlvo2KEKGvFqiQF7nYIwtyaFV+AiOuLDMmRoP1tiuwVwTwrvyHp
+         D4MNB/hYE5rx008E4RbxYGrvoZj/zmOcGo3H6t7UrSmlcyTyrMQwzQuzYw4Zcdwz7J
+         AfzAN6hFgQ3UVWCxn5uQaLbrSmELOvqpICZYfZn8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.100.20] ([46.142.35.20]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MfHEP-1m9N0t196B-00gsP1; Sat, 20
+ Nov 2021 00:18:08 +0100
+Message-ID: <bdd54670-2995-9865-a016-2766a9f098a5@gmx.de>
+Date:   Sat, 20 Nov 2021 00:18:07 +0100
 MIME-Version: 1.0
-In-Reply-To: <20211119171444.640508836@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Content-Language: de-DE
+From:   Ronald Warsow <rwarsow@gmx.de>
+Subject: RE: [PATCH 5.15 00/20] 5.15.4-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:RfJPnCLnZn51KWyapFe0pefSmVpL9+2eDGn9JwPB6zOhFhreCav
+ 29nm5SK6doKFbKiVyFIzvgHtlMkDCG116t7A7DcrQlzKWLfzXTi+/POkFbCPCMCNcBqxEo8
+ F+fGVXSQ0KLGkcgzpQhvqTFjnqS/89X5AeIjHlrwCbu+eWR6+N25sMUA3ZOVdr+vpp5CFOd
+ B50PjP8x3PPM97ojfhEUA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ZQCa1wh6ypI=:+3BUTvfaW38CFZp1pM/nr9
+ fQK58gPA/pAhtJRhAB7pL8w2wxC39iwWMn9q7/6bwSizqu0qN4/fV2ZMCF1Tz6+/7rxZ1W7of
+ WuIVC0fh0O4QRg2pm5pG6NbzoJzKyx5fW2yD14SuB4Topa0YB9Zuz0CvE5SzHAXTyNNb3QIZm
+ 6wwOcWdwAxcXShtwLXnnxW980RWGE9wLnjGjaWfY2c1XUzO+ij1hIXLjb7PCK6oq8tLqkg1j7
+ 1STCSnC1g5IyvxzKkmaMVyS8Wp5vPfV+Bs67/ko03nLZHYjgbjYbgXha+dDyWOiruDMa541l4
+ 4Hvm4+oadxCeQ32KVeOEaQrj/zFLMfLxSdEePBDGc15twdHc2RJoCYy1X0ALZJCKP1VsC+Ioe
+ Q3eNX/yARDJZHlgg0CGpp6VK00UUBjd0JJy0HOkIf7TFIg/oEW+NO3GkXHW4DtqfH8Pi6fBkC
+ QXJIMYoAqImAJXddVI9MOZSDu8ks5d8W8DNMug2pC6uRaaRzNXemdQ3rJZkQxivVycDhsHkuA
+ OVolJN0QVR83zMM6zIa/sIJOikvT8A7baCc/CDSKNZShhcbqkxN4IxiV1CVuCs7aqE18I6Kv3
+ 938rIjd8DloRdS88OH46p4bxHKxtj+CA2CcjNjUoKxYSvCsJCHjbuZRij+lMtNPNUH54i30Bo
+ e9Al3LD7btCVbo0i9LNIZgiUWS8YNIn8i0vx/3UenX64Ym4za1Dv3+Q+sFuKgpadossPxVz1q
+ WXGffrikHPrWI0laBzyfENCHsABaNI+7sw064fl7VfUt5m1EBHcJ2mojIDIL3jsnZXSEDTK5N
+ FgoUMfiIYi0JRl/W48XgvxU8afO4QApi7xmHNqQEq/tAIj6PZwsFSYCyO5UlnUbgi/bHmBEgS
+ CyAd4ghexykUzxI6b26o8yiAzXVw88IV4s1hLH8tRICtCINt7i3arOR2RIrCUlFAfig7ql0+J
+ 6QP8KuIBHwZeUFOdzXVKDaFLE3KoM/+dEbSkhrBbq8KxqSiGEjjK1cZZQalLmCb8rUcqMFbcz
+ z5kAMLMJvlgoC+SX5JTM8/3mIZ9LcbqngqWUacss3XT75wdMRfjUlP2mBG1gM45aa0UXgAEZt
+ ciCfVJguqJUA0k=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/19/21 10:39 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.4 release.
-> There are 20 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 21 Nov 2021 17:14:35 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.4-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Hallo
 
-Compiled and booted on my test system. No dmesg regressions.
+5.15.4-rc1 Successfully compiled, booted and suspended on x86_64
+(Fedora 35, Intel i5-11400)
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+thanks and regards
+Ronald Warsow
 
-thanks,
--- Shuah
