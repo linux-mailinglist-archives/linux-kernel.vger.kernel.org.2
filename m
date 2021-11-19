@@ -2,96 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 425524566F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 01:39:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F128C4566FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 01:47:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233716AbhKSAmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 19:42:21 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:39910 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233678AbhKSAmS (ORCPT
+        id S233731AbhKSAt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 19:49:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233677AbhKSAty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 19:42:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1637282358; x=1668818358;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=IVS4zJZCWHQBaTlisa8bNfSi3Y6NeWW4bfoJMvMTDoA=;
-  b=abJitUNNdXbtmcJUuLnRPmSds6hnuFeoFHO5Z2s6vQOj4VGhOgQysIdL
-   aLINQJtM1NsGjBlh85ZBqpMce4mkhn+HWPWxTa7KZTixKW6c/sb5CPVBf
-   YYmov8AtXAdiDhuyFm8DRMMym7W4fePNI0x9eqqUC4Nz+TKDHfwGFJzq6
-   vYGyXmo6GHHP+6M9ir7QagDrBAOT/doNDbzK+rWNc1HAo0UabktzlT35L
-   WAXeQUitXcny3f4XLC9gJa1N2sMImZ7QC8FnADJXrflg/r/+3B2se8wOl
-   AfokOFSOpI3DHmWfzKH80QAFXbHSUIh+A6baJSm3Zic7MPx5TNyR6BjUu
-   g==;
-IronPort-SDR: RLLN5VBYeVoEeGAuMN33eheFkYjohIEV5IWfwE6dcykDjnsEuAHXSPlWDW2Sj0VUEgr7b/MJi3
- XI9D7S71jIABicSjb7K2maKWvyPk9RCOoBoBkB1MnqskhPx0ocPfcyMLbeEjL1S6XsDBIFo3u8
- HoSvITaYmoB8s35VIQPXa3v4CHc6+FO0MHYhaA3EGoccc0WAYfO52KXp75uM7BVseTmOum5gmK
- AHdeq4v/sRxpNKZhik8qMzf/QMz90c/BwB/OgC57vWcgLX/zWK+BnyDjvZfjzPEGUKlkvMXQUy
- pTX6JoZOtIg0gUQkpnAFrSGK
-X-IronPort-AV: E=Sophos;i="5.87,246,1631602800"; 
-   d="scan'208";a="143882522"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Nov 2021 17:39:18 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 18 Nov 2021 17:39:16 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Thu, 18 Nov 2021 17:39:16 -0700
-From:   Kelvin Cao <kelvin.cao@microchip.com>
-To:     Kurt Schwemmer <kurt.schwemmer@microsemi.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Kelvin Cao <kelvin.cao@microchip.com>, <kelvincao@outlook.com>
-Subject: [PATCH 2/2] Declare local array state_names as static
-Date:   Thu, 18 Nov 2021 16:38:03 -0800
-Message-ID: <20211119003803.2333-3-kelvin.cao@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211119003803.2333-1-kelvin.cao@microchip.com>
-References: <20211119003803.2333-1-kelvin.cao@microchip.com>
+        Thu, 18 Nov 2021 19:49:54 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E4EC06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 16:46:53 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id k4so6766898plx.8
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 16:46:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZT1iG7+0+T8P3rfUSOYrrKI2G5W7nv68HnCCWdsEXCw=;
+        b=HobjTeddfRRQcGJk+XkhzsQSfS58o+IU5voWeA3xC5zvznT5suEw9/WjTWzrrTkIlK
+         HISMB2VIJNAz6HIoMUjGQImgyb1ywoBmRMWbkfi/PzgH2962mnDehKbUdlTCwSX/gqWz
+         /84oh2aY9PIRzfgHNPP0/m3wRDtCJOmltGs14=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZT1iG7+0+T8P3rfUSOYrrKI2G5W7nv68HnCCWdsEXCw=;
+        b=B5CBC3aPW5D1P5hyAmG+D/+xnvAcP1G/TNfI2orZHfUtFOhTWd1f50QXV20s2i0voq
+         mNxYXZdyKPfDaVRWMDPs56gerUp3vAD0HpUFmi67bolhzc9Y4Tt6gQUlt41YNL+pH5C/
+         FrJgTPgsry4ja9dA3A2GqsgjGjp0SoAZJW9H1wGQRS0JKpPHKwt2C1G079bF5sbtcosg
+         0oJCASFUaqaUTNbw8NY8+iTvbUfaats78BmPIMrMha1TDtHauxui7lX7pt2G/uP6375g
+         k0UXJN5UIeyoy56hN8QYpPZtmrKqMAGaQx5EmVkZ9p9WUMF0P/gstvE3xwdtJF3QQezq
+         4RCQ==
+X-Gm-Message-State: AOAM533AO3zEC+9JypjB4EVOiIiv9jH2+DGVUxrHgGOPhuSua2ICKvJA
+        taZ5kWLAf3PO3cQ59Wnzcpfajw==
+X-Google-Smtp-Source: ABdhPJyv639lg1pLRyYgeRdj3wF+Hn0NzW8M+lZTk58Npccq7L+pczv//omx8Da7ngXlDyZTotZpow==
+X-Received: by 2002:a17:90b:128e:: with SMTP id fw14mr135653pjb.173.1637282813204;
+        Thu, 18 Nov 2021 16:46:53 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id mg12sm9236477pjb.10.2021.11.18.16.46.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 16:46:52 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Jouni Malinen <j@w1.fi>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Allen Pais <allen.lkml@gmail.com>,
+        Romain Perier <romain.perier@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH v2] intersil: Use struct_group() for memcpy() region
+Date:   Thu, 18 Nov 2021 16:46:46 -0800
+Message-Id: <20211119004646.2347920-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2635; h=from:subject; bh=YsQ+ZCDrVqrDtxvnMcMU6Cxw83EB3GFNn/tVgcCBKYc=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhlvP2ybmT5SP1sgJUGnCcAz8QQT3eUQgvyBjXCASQ cKJDqb+JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYZbz9gAKCRCJcvTf3G3AJiBYEA CwW65xXbKOStSluO7TqWoGVpcEZWUZB/l3IgGB5mD2EiwmapB2/xSO9Y8MLErgpFQjbZ5Il67td3yt 3/ysqTqflgTgYkfcAEOhVCglDluzqNBFuNTx+5f44BKcGtlgktJp8d/DyGtApELGq0sP9rDAPG+dps wGND8d0PHG3kyUzixHIuEM/pWrD5dstrsGxwEpPtg0fuv/Vwas+LeVzmsrNfZRiDQ7W3URhnfstPFC qHpIp8ES7JqETe8lj6tagAjdUfZqbX4Joni/ckCjGWBdq9sKxGK7silkOJXoQxFrDxzqCEAUVy8clU ei+E3A+O+B6PUWE4/X9e4htX7WxzhYEjvs5OMLT+I3PMv94bRRmZYyshHBqZRQLhtMvT3sWlhpuJ46 QZ/ywFVc5Tdz2alOZG4H+yhghMDPPX+71+OYQJX82mHrq++w6l23C6YfzrOPHt9gQlefpja4NPfCkO YKrUJesfbyjnvlt8pT2iiGXC7SUK1Sl9+iOCOsHVID94RDP6F09vwCCK47Evr8zfXNz2sYyLuYBdVF aWhg6VsBNrD22ETGVp2Tn6TrfWlWuByuH6vLQ7z2E2vjjDLZPixgPuXvlyrq5PsbmSUQlIfMq/c9lL yP84cPQ2j0tLWQ2TbxmGeLlr8dQtS/M2YHWjEWpTekpU+spz+pG4Xbzxl/fQ==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a MRPC command is being executed, the function stuser_set_state()
-will be called several times to set the command execution state.
-During each run of stuser_set_state(), the local array state_names is
-allocated and populated. The array contains a constant mapping of the
-state enum values to the text strings, so repeated allocation and
-initialization is just a wait of CPU cycles. Therefore, declare the
-array as static.
+In preparation for FORTIFY_SOURCE performing compile-time and run-time
+field bounds checking for memcpy(), memmove(), and memset(), avoid
+intentionally writing across neighboring fields.
 
-See the link below for the discussion.
+Use struct_group() in struct hfa384x_tx_frame around members
+frame_control, duration_id, addr1, addr2, addr3, and seq_ctrl, so they
+can be referenced together. This will allow memcpy() and sizeof() to
+more easily reason about sizes, improve readability, and avoid future
+warnings about writing beyond the end of frame_control.
 
-  https://lore.kernel.org/r/20211014141859.11444-1-kelvin.cao@microchip.com/
+"pahole" shows no size nor member offset changes to struct
+hfa384x_tx_frame. "objdump -d" shows no object code changes.
 
-Suggested-by: Krzysztof Wilczyński <kw@linux.com>
-Signed-off-by: Kelvin Cao <kelvin.cao@microchip.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/pci/switch/switchtec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v1->v2: rename "frame" to "header"
+---
+ drivers/net/wireless/intersil/hostap/hostap_hw.c   |  5 +++--
+ drivers/net/wireless/intersil/hostap/hostap_wlan.h | 14 ++++++++------
+ 2 files changed, 11 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/pci/switch/switchtec.c b/drivers/pci/switch/switchtec.c
-index 6e2d6c5ea4b5..c36c1238c604 100644
---- a/drivers/pci/switch/switchtec.c
-+++ b/drivers/pci/switch/switchtec.c
-@@ -122,7 +122,7 @@ static void stuser_set_state(struct switchtec_user *stuser,
- {
- 	/* requires the mrpc_mutex to already be held when called */
+diff --git a/drivers/net/wireless/intersil/hostap/hostap_hw.c b/drivers/net/wireless/intersil/hostap/hostap_hw.c
+index e459e7192ae9..b74f4cb5d6d3 100644
+--- a/drivers/net/wireless/intersil/hostap/hostap_hw.c
++++ b/drivers/net/wireless/intersil/hostap/hostap_hw.c
+@@ -1815,8 +1815,9 @@ static int prism2_tx_80211(struct sk_buff *skb, struct net_device *dev)
+ 	memset(&txdesc, 0, sizeof(txdesc));
  
--	const char * const state_names[] = {
-+	static const char * const state_names[] = {
- 		[MRPC_IDLE] = "IDLE",
- 		[MRPC_QUEUED] = "QUEUED",
- 		[MRPC_RUNNING] = "RUNNING",
+ 	/* skb->data starts with txdesc->frame_control */
+-	hdr_len = 24;
+-	skb_copy_from_linear_data(skb, &txdesc.frame_control, hdr_len);
++	hdr_len = sizeof(txdesc.header);
++	BUILD_BUG_ON(hdr_len != 24);
++	skb_copy_from_linear_data(skb, &txdesc.header, hdr_len);
+ 	if (ieee80211_is_data(txdesc.frame_control) &&
+ 	    ieee80211_has_a4(txdesc.frame_control) &&
+ 	    skb->len >= 30) {
+diff --git a/drivers/net/wireless/intersil/hostap/hostap_wlan.h b/drivers/net/wireless/intersil/hostap/hostap_wlan.h
+index dd2603d9b5d3..c25cd21d18bd 100644
+--- a/drivers/net/wireless/intersil/hostap/hostap_wlan.h
++++ b/drivers/net/wireless/intersil/hostap/hostap_wlan.h
+@@ -115,12 +115,14 @@ struct hfa384x_tx_frame {
+ 	__le16 tx_control; /* HFA384X_TX_CTRL_ flags */
+ 
+ 	/* 802.11 */
+-	__le16 frame_control; /* parts not used */
+-	__le16 duration_id;
+-	u8 addr1[ETH_ALEN];
+-	u8 addr2[ETH_ALEN]; /* filled by firmware */
+-	u8 addr3[ETH_ALEN];
+-	__le16 seq_ctrl; /* filled by firmware */
++	struct_group(header,
++		__le16 frame_control; /* parts not used */
++		__le16 duration_id;
++		u8 addr1[ETH_ALEN];
++		u8 addr2[ETH_ALEN]; /* filled by firmware */
++		u8 addr3[ETH_ALEN];
++		__le16 seq_ctrl; /* filled by firmware */
++	);
+ 	u8 addr4[ETH_ALEN];
+ 	__le16 data_len;
+ 
 -- 
-2.25.1
+2.30.2
 
