@@ -2,139 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496C74566CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 01:02:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 867A84566D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 01:06:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231696AbhKSAFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 19:05:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230331AbhKSAFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 19:05:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DFFD61AD0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 00:01:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637280119;
-        bh=AoNZd47gCGaimK9v5NfigphGWhTSDsXfAmbFC4BIlz4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Lmq7eHFQfyyikTZkqVB4YTGA+sw+e7PKhSPSxzUx9AAn0X6/GyE6UcqLyYm4BmD24
-         +xCYcoK+WvTm0LWxHMNIPZ4ALkoGI1YTyzsZCONyYdXjiDe+KS6/H0ELH+UMwSMOam
-         BGN627Tvg879jCfHGN8vVIQNeBjxpb7TqfiZMVqHvPbF2zeq/NUEmTCQUdSizO7CXc
-         1KecLoH2ubW8vlFF3DB+0dPkwjiveEp1kL/Y2zihwpysKNT1dhoXlcDdrytZIDgPz2
-         Gh4Peu3R30ixCYiGCfTB5d+bxidTRRWTsgLXKa6R67N0INmd8oUpRng7z1QzvwLmzU
-         cOgsFYbpdvifg==
-Received: by mail-ed1-f47.google.com with SMTP id b15so34701087edd.7
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 16:01:59 -0800 (PST)
-X-Gm-Message-State: AOAM531nBuJWujOhiS5JLY95FKHVYz03pOTowsfhqceHzkZWQ69i1LW1
-        NHQFmQGe1xSrMcoGrz3u+uRvVXEkn3gyq5I55Q==
-X-Google-Smtp-Source: ABdhPJzJ+m25jkKAHUC8dqOXn/CxWb6mvvVoe7NwAcoZoKeWFquNa7VfncVxf9FsAbU+dFfNaujeGSmcwQHUHnIoiD0=
-X-Received: by 2002:a50:e608:: with SMTP id y8mr16990077edm.39.1637280117833;
- Thu, 18 Nov 2021 16:01:57 -0800 (PST)
-MIME-Version: 1.0
-References: <20211117064158.27451-1-jason-jh.lin@mediatek.com> <20211117064158.27451-3-jason-jh.lin@mediatek.com>
-In-Reply-To: <20211117064158.27451-3-jason-jh.lin@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Fri, 19 Nov 2021 08:01:46 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-Ws7BmYr-87rb=MWYyGwSCCvv0AoPV10J7d+7TU+7OCA@mail.gmail.com>
-Message-ID: <CAAOTY_-Ws7BmYr-87rb=MWYyGwSCCvv0AoPV10J7d+7TU+7OCA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mailbox: add cmdq_mbox_flush to clear all task before suspend
-To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fei Shao <fshao@chromium.org>, tzungbi@google.com,
-        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S232200AbhKSAJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 19:09:25 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:59526 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231176AbhKSAJY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 19:09:24 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AINMsf1009468;
+        Fri, 19 Nov 2021 00:05:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=SFTrCDUlq/eLPPnNvJ0sfZFy+WwHVeIyOeS1AcNhDRE=;
+ b=Q8WUqyAnWcOvZtBn4obJLuspEqgIUDeGCsMIreqBLF5l4aIqKEXOGYzOJ5XjNhevZ6ar
+ mNMFPIn8J/dgnHYLdGXuC6rcj1FUWuvRzfyYKV+iXt4Bems6wRUOOHOalP+DsR2JqTq8
+ DwAohyNkzu4ds+QE3yoa39Vq84lsXIXOdeLCkvhKhnKGbet/1j4Lg8yoMH/qlwBopkfJ
+ LUGSqn4u3WwGMAwGBj7++AJEIJpqy0mmvSokQU+KXiqtwF9Six1hQRM24/pC7uGY0xsm
+ 0MCZqdGhRVpXcFqenR/8tIpcDsrL5LtJTyZsdCatYxJk85Ytqyj1PqpuSeiv/LvbbXJG Ew== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ce0f011mh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Nov 2021 00:05:56 +0000
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AINv07i008032;
+        Fri, 19 Nov 2021 00:05:55 GMT
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ce0f011kd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Nov 2021 00:05:55 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AJ040Mm032308;
+        Fri, 19 Nov 2021 00:05:53 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 3ca50bu7rs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Nov 2021 00:05:53 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AJ05o799568752
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Nov 2021 00:05:50 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5B8A252057;
+        Fri, 19 Nov 2021 00:05:50 +0000 (GMT)
+Received: from sig-9-65-86-194.ibm.com (unknown [9.65.86.194])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 4583152050;
+        Fri, 19 Nov 2021 00:05:47 +0000 (GMT)
+Message-ID: <282e550948d21b7d1ee316ad73b288c302121bb2.camel@linux.ibm.com>
+Subject: Re: [PATCH v7 08/17] integrity: add new keyring handler for mok keys
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
+        linux-integrity@vger.kernel.org, dhowells@redhat.com,
+        dwmw2@infradead.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, jarkko@kernel.org, jmorris@namei.org,
+        serge@hallyn.com
+Cc:     keescook@chromium.org, torvalds@linux-foundation.org,
+        weiyongjun1@huawei.com, nayna@linux.ibm.com, ebiggers@google.com,
+        ardb@kernel.org, nramas@linux.microsoft.com, lszubowi@redhat.com,
+        jason@zx2c4.com, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-efi@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
+        konrad.wilk@oracle.com
+Date:   Thu, 18 Nov 2021 19:05:46 -0500
+In-Reply-To: <20211116001545.2639333-9-eric.snowberg@oracle.com>
+References: <20211116001545.2639333-1-eric.snowberg@oracle.com>
+         <20211116001545.2639333-9-eric.snowberg@oracle.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: szs-S0QTh63CN6gxnqubgoUdLHVXBzt1
+X-Proofpoint-ORIG-GUID: 25_TMygxCv07mUz0fQcphSkqn80GXbD-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-18_12,2021-11-17_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ spamscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 mlxscore=0
+ impostorscore=0 suspectscore=0 clxscore=1015 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111180122
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jason:
+On Mon, 2021-11-15 at 19:15 -0500, Eric Snowberg wrote:
+> Currently both Secure Boot DB and Machine Owner Keys (MOK) go through
+> the same keyring handler (get_handler_for_db). With the addition of the
+> new machine keyring, the end-user may choose to trust MOK keys.
+> 
+> Introduce a new keyring handler specific for MOK keys.  If MOK keys are
+> trusted by the end-user, use the new keyring handler instead.
+> 
+> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
 
-jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B411=E6=9C=88=
-17=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=882:42=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> CMDQ driver will occupy GCE clock to execute the task in GCE thread.
->
-> So call cmdq_mbox_flush to clear all task in GCE thread before
-> CMDQ suspend.
->
-> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
-> ---
->  drivers/mailbox/mtk-cmdq-mailbox.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmd=
-q-mailbox.c
-> index 03f9ed4c5131..28cadfc0091b 100644
-> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
-> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
-> @@ -484,21 +484,18 @@ static int cmdq_suspend(struct device *dev)
->         struct cmdq *cmdq =3D dev_get_drvdata(dev);
->         struct cmdq_thread *thread;
->         int i;
-> -       bool task_running =3D false;
->
->         cmdq->suspended =3D true;
->
->         for (i =3D 0; i < cmdq->thread_nr; i++) {
->                 thread =3D &cmdq->thread[i];
->                 if (!list_empty(&thread->task_busy_list)) {
-> -                       task_running =3D true;
-> -                       break;
-> +                       /* try to clear all task in this thread */
-> +                       cmdq_mbox_flush(thread->chan, 2000);
+Reviewed-by:  Mimi Zohar <zohar@linux.ibm.com>
 
-I would like the normal control flow rather than error handling. So
-the normal control flow is:
-
-1. Client driver suspend: Flush command.
-2. CMDQ driver suspend: There is no command to flush. If there are
-command, show error message and debug the client driver.
-
-The error handling flow:
-
-1. Client driver suspend: Does not flush command.
-2. CMDQ driver suspend: Flush command and callback to client driver.
-Client driver process these callback as error handling.
-
-The client driver may integrate multiple driver. In the suspend flow,
-it may need to stop these driver in a sequence such as.
-
-1. Stop driver 1
-2. Stop driver 2
-3. Stop driver 3 (cmdq)
-4. Stop driver 4
-5. Stop driver 5.
-
-In the normal flow, client driver could control the stop flow. In the
-error handling flow, it does not match the stop flow.
-
-Regards,
-Chun-Kuang.
-
-> +                       dev_warn(dev, "thread[%d] exist running task(s) i=
-n suspend\n", i);
->                 }
->         }
->
-> -       if (task_running)
-> -               dev_warn(dev, "exist running task(s) in suspend\n");
-> -
->         clk_bulk_unprepare(cmdq->gce_num, cmdq->clocks);
->
->         return 0;
-> --
-> 2.18.0
->
