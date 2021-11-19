@@ -2,67 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3FCA456FAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:32:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EAB5456FB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:33:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234568AbhKSNff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 08:35:35 -0500
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:8422 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229457AbhKSNff (ORCPT
+        id S235441AbhKSNgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 08:36:04 -0500
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:53350 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229457AbhKSNgE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 08:35:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637328753; x=1668864753;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=FmJCvY2dnIaeEmmJNY1LbW8p5/hq7Az1d2ZeyeSBMKk=;
-  b=D08IL0vDeBs2eMAJ9JJhUWeruR1qW2L9KAen3gucfpSkQoiE8xM1Zhc6
-   wZ48fXRNhrBC+2vNn43EI79y0aw0+lRVt5L+QcTzwEyI/5v1g6+ATSzgz
-   Lj5hUwos++C0IguATWhkcpFdiKYnXt9KIN9edh1CJM5Mvr4JkfXlz2eFC
-   w=;
-Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 19 Nov 2021 05:32:32 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg01-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 05:32:32 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Fri, 19 Nov 2021 05:32:32 -0800
-Received: from fixkernel.com (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Fri, 19 Nov
- 2021 05:32:30 -0800
-Date:   Fri, 19 Nov 2021 08:32:26 -0500
-From:   Qian Cai <quic_qiancai@quicinc.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-CC:     Alexey Gladkov <legion@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: BUG: KASAN: use-after-free in dec_rlimit_ucounts
-Message-ID: <YZenam0jzQIlyIew@fixkernel.com>
-References: <YZV7Z+yXbsx9p3JN@fixkernel.com>
- <875ysptfgi.fsf@email.froward.int.ebiederm.org>
- <YZa4YbcOyjtD3+pL@fixkernel.com>
- <87k0h5rxle.fsf@email.froward.int.ebiederm.org>
+        Fri, 19 Nov 2021 08:36:04 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AJDX0er059511;
+        Fri, 19 Nov 2021 07:33:00 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1637328780;
+        bh=KcnpzSHMFGvhp5wqxYN2regUPFS8n7rmXXbkFi4mxnI=;
+        h=From:To:CC:Subject:Date;
+        b=ULqTtYP2S3oY9MdMP9hWS2LKVx9BDFG+ZXPLf2B1iqRQOZBUlLiI8VPpiqiIdsru6
+         /0k213inM7fZju16zjmO4wq1IsioosnVSi89WuRlathjC/15gdGzR5q5OHq/3vGrDu
+         TMTaXl7mO9njEQK/tfOfdlgllq1k/O2UUJiXsawc=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AJDX0aG042891
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 19 Nov 2021 07:33:00 -0600
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 19
+ Nov 2021 07:32:59 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Fri, 19 Nov 2021 07:32:59 -0600
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AJDWurq126918;
+        Fri, 19 Nov 2021 07:32:57 -0600
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>, <linux-pci@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] dt-bindings: PCI: ti,j721e: Add device id for J721S2
+Date:   Fri, 19 Nov 2021 19:02:53 +0530
+Message-ID: <20211119133253.18590-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <87k0h5rxle.fsf@email.froward.int.ebiederm.org>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 02:57:17PM -0600, Eric W. Biederman wrote:
-> Does this only happen on a single architecture?  If so I wonder if
-> perhaps some of the architectures atomic primitives are implemented
-> improperly.
+Document the device id of J721S2 SoC.
 
-No, I just don't have another arch to test this on, and I see no reason
-that it won't be reproduced on x86. If arm64 atomic primitives are
-problematic, it will likely blow up elsewhere which is not the case from
-our daily CI regression testing running for many years.
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+---
+ Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
+index cc900202df29..0411bf5a1700 100644
+--- a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
++++ b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
+@@ -71,6 +71,8 @@ properties:
+           - const: 0xb00f
+       - items:
+           - const: 0xb010
++      - items:
++          - const: 0xb013
+ 
+   msi-map: true
+ 
+-- 
+2.17.1
+
