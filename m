@@ -2,113 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E2A45796D
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 00:16:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD08457970
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 00:17:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235135AbhKSXTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 18:19:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37940 "EHLO
+        id S235435AbhKSXUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 18:20:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231166AbhKSXTX (ORCPT
+        with ESMTP id S231166AbhKSXUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 18:19:23 -0500
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0338C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 15:16:20 -0800 (PST)
-Received: by mail-qt1-x835.google.com with SMTP id z9so10938455qtj.9
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 15:16:20 -0800 (PST)
+        Fri, 19 Nov 2021 18:20:44 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D5EC06173E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 15:17:42 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id l19so11812373ilk.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 15:17:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=fbwBJ/7tiZLlAuTyZOPjLj3If2zENx0mjR578iDfOxc=;
-        b=1LQa7aZRgvqMkeKew1B2mxBN5z+USyumxJWCWTLNOi1sJQY2TsOJjxcEJd426ke5wj
-         eaypq55uSRNBK5tpr9fL6ZtZ4QJiP326mmEITMpqmhSgmE1q20oJtey/YiahYF3Z55MJ
-         qEi5Eev3BylFxPt6YqhSWDfAHjox2p9UOISooubR4WdLLu/uSPzaDR50K9oF8D4Ey6kt
-         Rki0oJ4v8zjYG2qivZ/cnohgJHyGuE6NUggpvOpfQYR4yvNtXzBM57R6TH3v/fGbMKGl
-         dnPZFrmSzmFMevlxGCkNdmQ5Or7zR1Skm954alYGy28UF2+6nxgIuh9bXCtAR/lRMQt+
-         c69Q==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VxoPoCC9cObbyv624yFsho4myl9q3IV7NWPGVGoX05Q=;
+        b=hF961MXX3VhZdSeNiwmKk7q4iv+7cIm5RGC9xSMSJDb6+kOOVBY36jelF6W1m/Rwrh
+         Daf+8OAGdJ38SKzkI5hmCkRohKIgF/LWY/wmKQ2cvpGn2WPpZhqePL7XRc3Kb4nbPMnw
+         k9LGM9CDnLX+12APTu2mHB/+yyKKPn2LPmkX0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=fbwBJ/7tiZLlAuTyZOPjLj3If2zENx0mjR578iDfOxc=;
-        b=mJkIQwsKflpOiYyOM2Umy6fbUQ/3Q5nnZv/DbJOGwq1nCMrvhLct8E+3eA2SwhW+Eu
-         ehNEhcZ1ZBhQ+/i2WKJVqtvLF9ZilSxUTv3JFDHwBOPAtmvtFg7it7cg/0uV6fXSvvJZ
-         Y6vVIboeUVE1QjqLvnDf9igaN6Df3o1YWgxlRpuCh+6R0/n7h77kNfLfPB2mbl+61yas
-         nNOu9rbf5zi+p3JX5AIPJ+tyJU2lkB1SdApbhIL9e25tySz3W5XJmOO30JfqNe1AD5AQ
-         aj0Cd8LGiM+5JelAlgC5uZvRXC1q4VC2Ain4PICjHjij0lj6PH9Mk06WrkjC/15X6HNe
-         oUnw==
-X-Gm-Message-State: AOAM533VTv65MFrfXvEvk25k/aa8jN8iiFhAq32EC0OKVpWJPfrt52EW
-        6uCRgpmuDdH8rXYB9q7bZLJepUY+hRAJQA==
-X-Google-Smtp-Source: ABdhPJxhHil83yjfhbXuAPxha0HpNEFVV+oaR1l3ki1U2O/b9xob0LbHwhNjMoyt6mKNRcxfExyA1w==
-X-Received: by 2002:a05:622a:391:: with SMTP id j17mr10615333qtx.228.1637363779886;
-        Fri, 19 Nov 2021 15:16:19 -0800 (PST)
-Received: from xanadu.home (modemcable108.170-21-96.mc.videotron.ca. [96.21.170.108])
-        by smtp.gmail.com with ESMTPSA id k85sm538099qke.134.2021.11.19.15.16.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 15:16:19 -0800 (PST)
-Date:   Fri, 19 Nov 2021 18:16:18 -0500 (EST)
-From:   Nicolas Pitre <npitre@baylibre.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-cc:     alexandre.belloni@bootlin.com, boris.brezillon@collabora.com,
-        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] i3c/master: Fix a potentially infinite loop in
- 'hci_dat_v1_get_index()'
-In-Reply-To: <0cdf3cb10293ead1acd271fdb8a70369c298c082.1637186628.git.christophe.jaillet@wanadoo.fr>
-Message-ID: <6s9184r-99rn-nr27-174s-r2nqn1o294n9@onlyvoer.pbz>
-References: <0cdf3cb10293ead1acd271fdb8a70369c298c082.1637186628.git.christophe.jaillet@wanadoo.fr>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VxoPoCC9cObbyv624yFsho4myl9q3IV7NWPGVGoX05Q=;
+        b=dt2y+fEXXawxedx4iV280XHHiocw5mTc8o5LC0AXxq4K8x89KHYm2nKFrskw7iop1W
+         acl1w6oq8vIK9oNWNV/wEUx166rCOegOiuIVMaMezx3akA5dIBM2MT3sfKNn+VQnr1UE
+         BmsD3JQCJbk26If0Y4tQMJwTN2BAJop3bLw6NwSgKcKmgybUSxclP3jQJT63a9T3RwE9
+         ROI5O+px5h6o+jIixPE/fRkn9XlxfhIL8NkfyHNBxbymdBSIaJVH9FW2D6vAwRVLJ7A9
+         Bha9SaBSCVvaTIm124k7OS/0an9Sc37b/yoO1YjQqiSn31sFKEl4OLC4wZZv4+qwm3rV
+         e/4g==
+X-Gm-Message-State: AOAM531pR3VYfUYtYxxDI4LGVHqqsHk8Ky3AHifOVtjpGFIwqOFC+/ok
+        m8vRTT39y3YlwFSWY843pkc7qg==
+X-Google-Smtp-Source: ABdhPJxu83UIDq15n0gB/UlpT0oEfwILMKyWTG8DekVMC2TQj51UzeFbc2C+LtEA69a+k/C2YKBaJA==
+X-Received: by 2002:a92:d14d:: with SMTP id t13mr7781167ilg.194.1637363861976;
+        Fri, 19 Nov 2021 15:17:41 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id u10sm794231ill.73.2021.11.19.15.17.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Nov 2021 15:17:41 -0800 (PST)
+Subject: Re: [PATCH 5.15 00/20] 5.15.4-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20211119171444.640508836@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <355c0430-13e2-41c3-8dd9-783df7b29264@linuxfoundation.org>
+Date:   Fri, 19 Nov 2021 16:17:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20211119171444.640508836@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Nov 2021, Christophe JAILLET wrote:
+On 11/19/21 10:39 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.4 release.
+> There are 20 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 21 Nov 2021 17:14:35 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.4-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-> The code in 'hci_dat_v1_get_index()' really looks like a hand coded version
-> of 'for_each_set_bit()', except that a +1 is missing when searching for the
-> next set bit.
-> 
-> This really looks odd and it seems that it will loop until 'dat_w0_read()'
-> returns the expected result.
-> 
-> So use 'for_each_set_bit()' instead. It is less verbose and should be more
-> correct.
-> 
-> Fixes: 9ad9a52cce28 ("i3c/master: introduce the mipi-i3c-hci driver")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Compiled and booted on my test system. No dmesg regressions.
 
-Acked-by: Nicolas Pitre <npitre@baylibre.com>
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-> ---
-> Speculative fix. Untested.
-> ---
->  drivers/i3c/master/mipi-i3c-hci/dat_v1.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/i3c/master/mipi-i3c-hci/dat_v1.c b/drivers/i3c/master/mipi-i3c-hci/dat_v1.c
-> index 783e551a2c85..97bb49ff5b53 100644
-> --- a/drivers/i3c/master/mipi-i3c-hci/dat_v1.c
-> +++ b/drivers/i3c/master/mipi-i3c-hci/dat_v1.c
-> @@ -160,9 +160,7 @@ static int hci_dat_v1_get_index(struct i3c_hci *hci, u8 dev_addr)
->  	unsigned int dat_idx;
->  	u32 dat_w0;
->  
-> -	for (dat_idx = find_first_bit(hci->DAT_data, hci->DAT_entries);
-> -	     dat_idx < hci->DAT_entries;
-> -	     dat_idx = find_next_bit(hci->DAT_data, hci->DAT_entries, dat_idx)) {
-> +	for_each_set_bit(dat_idx, hci->DAT_data, hci->DAT_entries) {
->  		dat_w0 = dat_w0_read(dat_idx);
->  		if (FIELD_GET(DAT_0_DYNAMIC_ADDRESS, dat_w0) == dev_addr)
->  			return dat_idx;
-> -- 
-> 2.30.2
-> 
-> 
-> -- 
-> linux-i3c mailing list
-> linux-i3c@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-i3c
-> 
+thanks,
+-- Shuah
