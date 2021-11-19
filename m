@@ -2,163 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F418456C7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 10:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A76456C82
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 10:41:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234360AbhKSJm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 04:42:29 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:63882 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232695AbhKSJm2 (ORCPT
+        id S234439AbhKSJnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 04:43:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232695AbhKSJnn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 04:42:28 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AJ8meiH012400;
-        Fri, 19 Nov 2021 09:39:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=8XPBQzrGf7RAFz/mp4k2ulz1rru9La9OwtwiMhCqD8g=;
- b=mIgM8HMoiCkTx6bkpBtdSQtI709YVuahnqo+er56RadHAmkt9JKcjoQgb8+ks/Nykbjo
- dok7p8rn0dQXWwLxCITsXvKmlm2AG37FM+yfjSSfA+aS0h5+3GvaPYwo4XFqgpIqE7/N
- k9UhTGXiTUbEfDcV0T8uhdwYJqYQn07t8T6i6a+7abywdpXUt1cjW1M4HOPm2tCKXF3W
- XbeYGk8giEj4P4JVCV8ErC2zxuu1qFWy9V1GXUNdr4aa8bTnd6WgmWmJgRXTfSEkTiCn
- JyNnXGtRtR0XW9zRJ9B0yGrDRjzOUeLoXi6i77gL7fBUxQL1vdPgFL3tC8f1A1kb2Xz2 Hg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ce8r78xaw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Nov 2021 09:39:24 +0000
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AJ9dO4k024954;
-        Fri, 19 Nov 2021 09:39:24 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ce8r78x9x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Nov 2021 09:39:23 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AJ9XgUC017780;
-        Fri, 19 Nov 2021 09:39:21 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 3ca50axyjt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Nov 2021 09:39:21 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AJ9dGCZ3474094
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Nov 2021 09:39:16 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D701DA4060;
-        Fri, 19 Nov 2021 09:39:16 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4CDB8A4065;
-        Fri, 19 Nov 2021 09:39:16 +0000 (GMT)
-Received: from [9.171.67.41] (unknown [9.171.67.41])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 19 Nov 2021 09:39:16 +0000 (GMT)
-Message-ID: <d9ec2704-f41c-eafa-1945-ce845d65be8a@de.ibm.com>
-Date:   Fri, 19 Nov 2021 10:39:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] s390/test_unwind: use raw opcode instead of invalid
- instruction
-Content-Language: en-US
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Ilie Halip <ilie.halip@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Mete Durlu <meted@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        linux-s390@vger.kernel.org, llvm@lists.linux.dev,
-        Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
-References: <20211117174822.3632412-1-ilie.halip@gmail.com>
- <CAKwvOd=9tsHHhPBOx2ORZoJP09VsX5dRZn58qj3MzCc2vmVosg@mail.gmail.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-In-Reply-To: <CAKwvOd=9tsHHhPBOx2ORZoJP09VsX5dRZn58qj3MzCc2vmVosg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: tagg4k6TQGl81lGEf23XTenlqCHy7oAW
-X-Proofpoint-ORIG-GUID: mgS0t17czhPX2hRs0q1efXrGjoI8-t1Q
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Fri, 19 Nov 2021 04:43:43 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9CE8C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 01:40:41 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id r11so40147708edd.9
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 01:40:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Q5cyDkDS3Kne9xYeWv/7giIFgtkhNfSXgt2EtvaNOj0=;
+        b=Vs5ZD7TnkcW3xlX6mx9QeIZdhA0YCOo5biB8ZkKiPFMG/Z18b+PbsZuakr+j5XxgTe
+         Re3XGpMmH6FOHUGTS4amLiw72q5wYPjbna7PwdJImEjiqt0VWEK2EdyfSqSOFSWvNxci
+         Tn8D/GTY/YWKULHRwU8mIFavXFkOXrWp2ZgC4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=Q5cyDkDS3Kne9xYeWv/7giIFgtkhNfSXgt2EtvaNOj0=;
+        b=U3sH/LwTCABAM9lEaH01tocSj/7vtPta8bAmS17Bp8Ae3nWqF6jPn+ahlJXcU7eMst
+         0auUGGkAc5lDyg3aVxkrb60ILIOGtB9KdLFbnFEvcy4IJKlWENrWDHw2ymc6s4So7/yq
+         ztYxZlVG0NocXdJpLAc2PMZKkdMStujVTh6TKCUSqB/r3T01QhrYtAsi9L6cXkTB9Jla
+         NHBEMAXeG0ejv8RZ8QLfnT76+lvQn3D1SWlAj7Na0A6L37ezjKplckX7nNSzQqhbbkpj
+         eJ0hmHPSUt2ZCPfFvO9KDmTkJHNd5YO1p1prNYytE6PCIYuVkZbhhpXFBAotdreG4OCS
+         RCNg==
+X-Gm-Message-State: AOAM532XlD+vB6Syr/srra6Ooc3rMQcEAHaTyNsJikG9WgvxBVuhl3+0
+        2os0YTt+ysbuIZN/VrSkVckqXg==
+X-Google-Smtp-Source: ABdhPJxoHnTENBCc0YTXNLVzKYWPtAv+oVOS5SWdW7UDlcaXLFgs+p3vdjCR8b9kIkKgjjudcooDUw==
+X-Received: by 2002:a50:9ec9:: with SMTP id a67mr22376653edf.238.1637314840531;
+        Fri, 19 Nov 2021 01:40:40 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id jg36sm997780ejc.44.2021.11.19.01.40.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 01:40:40 -0800 (PST)
+Date:   Fri, 19 Nov 2021 10:40:38 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Cc:     George Kennedy <george.kennedy@oracle.com>,
+        gregkh@linuxfoundation.org, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, tzimmermann@suse.de, airlied@linux.ie,
+        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm: check drm_format_info hsub and vsub to avoid divide
+ by zero
+Message-ID: <YZdxFvGkBPXrtoQ7@phenom.ffwll.local>
+Mail-Followup-To: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
+        George Kennedy <george.kennedy@oracle.com>,
+        gregkh@linuxfoundation.org, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, tzimmermann@suse.de, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <1635429437-21718-1-git-send-email-george.kennedy@oracle.com>
+ <YXqt46TPL9tUZCL1@intel.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-19_08,2021-11-17_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- impostorscore=0 phishscore=0 malwarescore=0 mlxlogscore=999 spamscore=0
- adultscore=0 lowpriorityscore=0 clxscore=1011 mlxscore=0
- priorityscore=1501 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2111190052
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YXqt46TPL9tUZCL1@intel.com>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Am 19.11.21 um 02:10 schrieb Nick Desaulniers:
-> On Wed, Nov 17, 2021 at 9:48 AM Ilie Halip <ilie.halip@gmail.com> wrote:
->>
->> Building with clang & LLVM_IAS=1 leads to an error:
->>      arch/s390/lib/test_unwind.c:179:4: error: invalid register pair
->>                          "       mvcl    %%r1,%%r1\n"
->>                          ^
->>
->> The test creates an invalid instruction that would trap at runtime, but the
->> LLVM inline assembler tries to validate it at compile time too.
->>
->> Use the raw instruction opcode instead.
->>
->> Link: https://github.com/ClangBuiltLinux/linux/issues/1421
->> Reported-by: Nick Desaulniers <ndesaulniers@google.com>
->> Signed-off-by: Ilie Halip <ilie.halip@gmail.com>
+On Thu, Oct 28, 2021 at 05:04:19PM +0300, Ville Syrjälä wrote:
+> On Thu, Oct 28, 2021 at 08:57:17AM -0500, George Kennedy wrote:
+> > Do a sanity check on struct drm_format_info hsub and vsub values to
+> > avoid divide by zero.
+> > 
+> > Syzkaller reported a divide error in framebuffer_check() when the
+> > DRM_FORMAT_Q410 or DRM_FORMAT_Q401 pixel_format is passed in via
+> > the DRM_IOCTL_MODE_ADDFB2 ioctl. The drm_format_info struct for
+> > the DRM_FORMAT_Q410 pixel_pattern has ".hsub = 0" and ".vsub = 0".
+> > fb_plane_width() uses hsub as a divisor and fb_plane_height() uses
+> > vsub as a divisor. These divisors need to be sanity checked for
+> > zero before use.
+> > 
+> > divide error: 0000 [#1] SMP KASAN NOPTI
+> > CPU: 0 PID: 14995 Comm: syz-executor709 Not tainted 5.15.0-rc6-syzk #1
+> > Hardware name: Red Hat KVM, BIOS 1.13.0-2
+> > RIP: 0010:framebuffer_check drivers/gpu/drm/drm_framebuffer.c:199 [inline]
+> > RIP: 0010:drm_internal_framebuffer_create+0x604/0xf90
+> > drivers/gpu/drm/drm_framebuffer.c:317
+> > 
+> > Call Trace:
+> >  drm_mode_addfb2+0xdc/0x320 drivers/gpu/drm/drm_framebuffer.c:355
+> >  drm_mode_addfb2_ioctl+0x2a/0x40 drivers/gpu/drm/drm_framebuffer.c:391
+> >  drm_ioctl_kernel+0x23a/0x2e0 drivers/gpu/drm/drm_ioctl.c:795
+> >  drm_ioctl+0x589/0xac0 drivers/gpu/drm/drm_ioctl.c:898
+> >  vfs_ioctl fs/ioctl.c:51 [inline]
+> >  __do_sys_ioctl fs/ioctl.c:874 [inline]
+> >  __se_sys_ioctl fs/ioctl.c:860 [inline]
+> >  __x64_sys_ioctl+0x19d/0x220 fs/ioctl.c:860
+> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> >  do_syscall_64+0x3a/0x80 arch/x86/entry/common.c:80
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > 
+> > Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+> > ---
+> >  drivers/gpu/drm/drm_framebuffer.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> > 
+> > diff --git a/drivers/gpu/drm/drm_framebuffer.c b/drivers/gpu/drm/drm_framebuffer.c
+> > index 07f5abc..a146e4b 100644
+> > --- a/drivers/gpu/drm/drm_framebuffer.c
+> > +++ b/drivers/gpu/drm/drm_framebuffer.c
+> > @@ -195,6 +195,16 @@ static int framebuffer_check(struct drm_device *dev,
+> >  	/* now let the driver pick its own format info */
+> >  	info = drm_get_format_info(dev, r);
+> >  
+> > +	if (info->hsub == 0) {
+> > +		DRM_DEBUG_KMS("bad horizontal chroma subsampling factor %u\n", info->hsub);
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	if (info->vsub == 0) {
+> > +		DRM_DEBUG_KMS("bad vertical chroma subsampling factor %u\n", info->vsub);
+> > +		return -EINVAL;
+> > +	}
 > 
-> Ilie, thanks for the patch!
-> 
-> So if I understand
-> https://sourceware.org/binutils/docs/as/s390-Directives.html#s390-Directives
-> https://sourceware.org/binutils/docs/as/s390-Formats.html
-> that `e,` prefix is for 16B opcodes?
+> Looks like duct tape to me. I think we need to either fix those formats
+> to have valid format info, or just revert the whole patch that added such
+> broken things.
 
-e is an instruction format as specified by the architecture.
-See http://publibfp.dhe.ibm.com/epubs/pdf/a227832c.pdf
-without any parameters.
-Normally RR would be the right thing for MVCL, but since
-we try to build an invalid opcode without the assembler
-noticing (ab)using e seem like a safer approach.
+Yeah maybe even a compile-time check of the format table(s) to validate
+them properly and scream ... Or at least a selftest.
+-Daniel
 
 > 
-> LGTM, thanks again.
-> Suggested-by: Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> > +
+> >  	for (i = 0; i < info->num_planes; i++) {
+> >  		unsigned int width = fb_plane_width(r->width, info, i);
+> >  		unsigned int height = fb_plane_height(r->height, info, i);
+> > -- 
+> > 1.8.3.1
+> 
+> -- 
+> Ville Syrjälä
+> Intel
 
-added those and added my RB. applied to the s390 tree. Thanks
-
-
-> 
-> I triple checked that GAS, clang, and GNU objdump are in agreement in
-> terms of encoding here.
-> 
->> ---
->>   arch/s390/lib/test_unwind.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/s390/lib/test_unwind.c b/arch/s390/lib/test_unwind.c
->> index cfc5f5557c06..d342bc884b94 100644
->> --- a/arch/s390/lib/test_unwind.c
->> +++ b/arch/s390/lib/test_unwind.c
->> @@ -176,7 +176,7 @@ static noinline int unwindme_func4(struct unwindme *u)
->>                   * trigger specification exception
->>                   */
->>                  asm volatile(
->> -                       "       mvcl    %%r1,%%r1\n"
->> +                       "       .insn e,0x0e11\n"       /* mvcl %%r1,%%r1" */
->>                          "0:     nopr    %%r7\n"
->>                          EX_TABLE(0b, 0b)
->>                          :);
->> --
->> 2.25.1
->>
-> 
-> 
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
