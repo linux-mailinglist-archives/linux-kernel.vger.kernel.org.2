@@ -2,164 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88450456CF6
+	by mail.lfdr.de (Postfix) with ESMTP id D0A29456CF7
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 11:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234013AbhKSKGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 05:06:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231610AbhKSKGB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 05:06:01 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAECBC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 02:02:59 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id p18so7714087plf.13
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 02:02:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:to:cc:references
-         :from:in-reply-to:content-transfer-encoding;
-        bh=OXsBApL347OT9MITky6gwOe2SpOPkEu0t/lMDuUut9o=;
-        b=Fto+KToKTKcXYoGIFqbniumi8NWDhK4r05GXOQNCbmfCYBn3qBIrbhgCfFSPQFt0TK
-         7YwNv2FgzPjyKxquxAmM0goTWtO2UDUCnGck7I7tApWfSkOVzV4zETOarfiKguChbvn1
-         SbEnSzb5PQ3h+4jeE2W5R5oyCZJCI1jcxPrNI7eXCec31OCOPclr2FKvSIU/PnTAYSU0
-         HsKZdrcJos8p5Dzu/kpxKvYipOu3ZoCqtazecuMDx2JZ7b+qW6iSwVQ6ZC2bgbafsJHg
-         qI88bqELzcoPWdtJfX5jB1WRRGxEQnzjcxzhYMYjNXcKpL8T55rtLE95WCNvQPRKXyHW
-         +3WQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :to:cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=OXsBApL347OT9MITky6gwOe2SpOPkEu0t/lMDuUut9o=;
-        b=Hoo7ib3VsLVE0P5wGKq5engq25u7EJcr34GSKTBytW+FSQRPL0LrzaOtXi5w6x6k3k
-         mBi4j/Zmgmu27AjG4gK5oT/e9dtppiOSoaOS6gGSWK9vgFblPH12RrE2jtg85Enme0oz
-         AIanr2GBDkc7+LAAvQ2rUI0dSqimw6OHRQE4mM6GBYFBtovbz7lwwmDy8J3rWVZmZ2XW
-         KkwkoYuYrJHCALUc6xOEFvfSAIS24DUW7AAEzNXgkhC+6rbnnZc9/bjdFxPmmCP1sdhu
-         CZO01KTy01Pq3ycSqcMniM56wu4LBt72YkCFYXoVD7nFEJai9mAHi8Z+PHrjBRGiJXhm
-         v96w==
-X-Gm-Message-State: AOAM531rtB/vyp4cgGVDIFmMz4D309UUMu6fn8KNZCrMUrqIgvjN3z/L
-        d/NLhQDzax8//m+CeJRKCW0z0w==
-X-Google-Smtp-Source: ABdhPJzi8dCLjKdDLfTsmIlQmM/ZsBMUCzIScvlCizvP7Hugl34kJmtBt6SS+soYCowNpm5bZW9+Tg==
-X-Received: by 2002:a17:903:124e:b0:143:a388:a5de with SMTP id u14-20020a170903124e00b00143a388a5demr75140214plh.73.1637316179324;
-        Fri, 19 Nov 2021 02:02:59 -0800 (PST)
-Received: from [10.254.160.232] ([139.177.225.230])
-        by smtp.gmail.com with ESMTPSA id d2sm2335587pfu.203.2021.11.19.02.02.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Nov 2021 02:02:58 -0800 (PST)
-Message-ID: <759cd319-990f-af23-2f1c-aba55d0768b8@bytedance.com>
-Date:   Fri, 19 Nov 2021 18:02:50 +0800
+        id S234074AbhKSKGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 05:06:07 -0500
+Received: from mga02.intel.com ([134.134.136.20]:51011 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234088AbhKSKGG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 05:06:06 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="221608161"
+X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
+   d="scan'208";a="221608161"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 02:03:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
+   d="scan'208";a="647109761"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by fmsmga001.fm.intel.com with SMTP; 19 Nov 2021 02:03:01 -0800
+Received: by stinkbox (sSMTP sendmail emulation); Fri, 19 Nov 2021 12:03:00 +0200
+Date:   Fri, 19 Nov 2021 12:03:00 +0200
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     George Kennedy <george.kennedy@oracle.com>,
+        gregkh@linuxfoundation.org, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, tzimmermann@suse.de, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm: check drm_format_info hsub and vsub to avoid divide
+ by zero
+Message-ID: <YZd2VI820CUGrMjv@intel.com>
+References: <1635429437-21718-1-git-send-email-george.kennedy@oracle.com>
+ <YXqt46TPL9tUZCL1@intel.com>
+ <YZdxFvGkBPXrtoQ7@phenom.ffwll.local>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.1
-Subject: Re: [PATCH] x86: Pin task-stack in __get_wchan()
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Holger Hoffst??tte <holger@applied-asynchrony.com>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Justin Forbes <jmforbes@linuxtx.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        stable <stable@vger.kernel.org>
-References: <20211117101657.463560063@linuxfoundation.org>
- <YZV02RCRVHIa144u@fedora64.linuxtx.org>
- <55c7b316-e03d-9e91-d74c-fea63c469b3b@applied-asynchrony.com>
- <CAHk-=wjHbKfck1Ws4Y0pUZ7bxdjU9eh2WK0EFsv65utfeVkT9Q@mail.gmail.com>
- <20211118080627.GH174703@worktop.programming.kicks-ass.net>
- <20211118081852.GM174730@worktop.programming.kicks-ass.net>
- <YZYfYOcqNqOyZ8Yo@hirez.programming.kicks-ass.net>
- <YZZC3Shc0XA/gHK9@hirez.programming.kicks-ass.net>
- <20211119020427.2y5esq2czquwmvwc@treble>
- <YZduix64h64cDa7R@hirez.programming.kicks-ass.net>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <YZduix64h64cDa7R@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YZdxFvGkBPXrtoQ7@phenom.ffwll.local>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 19, 2021 at 10:40:38AM +0100, Daniel Vetter wrote:
+> On Thu, Oct 28, 2021 at 05:04:19PM +0300, Ville Syrjälä wrote:
+> > On Thu, Oct 28, 2021 at 08:57:17AM -0500, George Kennedy wrote:
+> > > Do a sanity check on struct drm_format_info hsub and vsub values to
+> > > avoid divide by zero.
+> > > 
+> > > Syzkaller reported a divide error in framebuffer_check() when the
+> > > DRM_FORMAT_Q410 or DRM_FORMAT_Q401 pixel_format is passed in via
+> > > the DRM_IOCTL_MODE_ADDFB2 ioctl. The drm_format_info struct for
+> > > the DRM_FORMAT_Q410 pixel_pattern has ".hsub = 0" and ".vsub = 0".
+> > > fb_plane_width() uses hsub as a divisor and fb_plane_height() uses
+> > > vsub as a divisor. These divisors need to be sanity checked for
+> > > zero before use.
+> > > 
+> > > divide error: 0000 [#1] SMP KASAN NOPTI
+> > > CPU: 0 PID: 14995 Comm: syz-executor709 Not tainted 5.15.0-rc6-syzk #1
+> > > Hardware name: Red Hat KVM, BIOS 1.13.0-2
+> > > RIP: 0010:framebuffer_check drivers/gpu/drm/drm_framebuffer.c:199 [inline]
+> > > RIP: 0010:drm_internal_framebuffer_create+0x604/0xf90
+> > > drivers/gpu/drm/drm_framebuffer.c:317
+> > > 
+> > > Call Trace:
+> > >  drm_mode_addfb2+0xdc/0x320 drivers/gpu/drm/drm_framebuffer.c:355
+> > >  drm_mode_addfb2_ioctl+0x2a/0x40 drivers/gpu/drm/drm_framebuffer.c:391
+> > >  drm_ioctl_kernel+0x23a/0x2e0 drivers/gpu/drm/drm_ioctl.c:795
+> > >  drm_ioctl+0x589/0xac0 drivers/gpu/drm/drm_ioctl.c:898
+> > >  vfs_ioctl fs/ioctl.c:51 [inline]
+> > >  __do_sys_ioctl fs/ioctl.c:874 [inline]
+> > >  __se_sys_ioctl fs/ioctl.c:860 [inline]
+> > >  __x64_sys_ioctl+0x19d/0x220 fs/ioctl.c:860
+> > >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> > >  do_syscall_64+0x3a/0x80 arch/x86/entry/common.c:80
+> > >  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > > 
+> > > Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+> > > ---
+> > >  drivers/gpu/drm/drm_framebuffer.c | 10 ++++++++++
+> > >  1 file changed, 10 insertions(+)
+> > > 
+> > > diff --git a/drivers/gpu/drm/drm_framebuffer.c b/drivers/gpu/drm/drm_framebuffer.c
+> > > index 07f5abc..a146e4b 100644
+> > > --- a/drivers/gpu/drm/drm_framebuffer.c
+> > > +++ b/drivers/gpu/drm/drm_framebuffer.c
+> > > @@ -195,6 +195,16 @@ static int framebuffer_check(struct drm_device *dev,
+> > >  	/* now let the driver pick its own format info */
+> > >  	info = drm_get_format_info(dev, r);
+> > >  
+> > > +	if (info->hsub == 0) {
+> > > +		DRM_DEBUG_KMS("bad horizontal chroma subsampling factor %u\n", info->hsub);
+> > > +		return -EINVAL;
+> > > +	}
+> > > +
+> > > +	if (info->vsub == 0) {
+> > > +		DRM_DEBUG_KMS("bad vertical chroma subsampling factor %u\n", info->vsub);
+> > > +		return -EINVAL;
+> > > +	}
+> > 
+> > Looks like duct tape to me. I think we need to either fix those formats
+> > to have valid format info, or just revert the whole patch that added such
+> > broken things.
+> 
+> Yeah maybe even a compile-time check of the format table(s) to validate
+> them properly and scream ... Or at least a selftest.
 
-
-On 11/19/21 5:29 PM, Peter Zijlstra wrote:
-> On Thu, Nov 18, 2021 at 06:04:27PM -0800, Josh Poimboeuf wrote:
->> On Thu, Nov 18, 2021 at 01:11:09PM +0100, Peter Zijlstra wrote:
-> 
->>> I now have the below, the only thing missing is that there's a
->>> user_mode() call on a stack based regs. Now on x86_64 we can
->>> __get_kernel_nofault() regs->cs and call it a day, but on i386 we have
->>> to also fetch regs->flags.
->>>
->>> Is this really the way to go?
->>
->> Please no.  Can we just add a check in unwind_start() to ensure the
->> caller did try_get_task_stack()?
-> 
-> I tried; but at best it's fundamentally racy and in practise its worse
-> because init_task doesn't seem to believe in refcounts and kthreads are
-> odd for some raisin. Now those are fixable, but given the fundamental
-> races, I don't see how it's ever going to be reliable.
-> 
-> I don't mind the __get_kernel_nofault() usage and think I can do a
-> better implementation that will allow us to get rid of the
-> pagefault_{dis,en}able() sprinkling, but that's for another day. It's
-> just the user_mode(regs) usage that's going to be somewhat ugleh.
-> 
-> Anyway, below is the minimal fix for the situation at hand. I'm not
-> going to be around much today, so if Linus wants to pick that up instead
-> of mass revert things that's obviously fine too.
-> 
-> ---
-> Subject: x86: Pin task-stack in __get_wchan()
-> 
-> When commit 5d1ceb3969b6 ("x86: Fix __get_wchan() for !STACKTRACE")
-> moved from stacktrace to native unwind_*() usage, the
-> try_get_task_stack() got lost, leading to use-after-free issues for
-> dying tasks.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->   arch/x86/kernel/process.c | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
-> diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-> index e9ee8b526319..04143a653a8a 100644
-> --- a/arch/x86/kernel/process.c
-> +++ b/arch/x86/kernel/process.c
-> @@ -964,6 +964,9 @@ unsigned long __get_wchan(struct task_struct *p)
->   	struct unwind_state state;
->   	unsigned long addr = 0;
->   
-> +	if (!try_get_task_stack(p))
-> +		return 0;
-> +
->   	for (unwind_start(&state, p, NULL, NULL); !unwind_done(&state);
->   	     unwind_next_frame(&state)) {
->   		addr = unwind_get_return_address(&state);
-> @@ -974,6 +977,8 @@ unsigned long __get_wchan(struct task_struct *p)
->   		break;
->   	}
->   
-> +	put_task_stack(p);
-> +
->   	return addr;
->   }
->   
-> 
-
-This implementation is very similar to stack_trace_save_tsk(), maybe we
-can just move stack_trace_save_tsk() out of CONFIG_STACKTRACE and reuse
-it.
+I really wish C had (even very limited) compile time evaluation
+so one could actually loop over arrays like at compile time to 
+check each element. As it stands you either have to check each
+array element by hand, or you do some cpp macro horrors to 
+pretend you're iterating the array.
 
 -- 
-Thanks,
-Qi
+Ville Syrjälä
+Intel
