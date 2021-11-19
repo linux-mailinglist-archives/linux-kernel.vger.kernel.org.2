@@ -2,144 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1286E457621
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 19:00:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C83C457622
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 19:01:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235083AbhKSSDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 13:03:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230405AbhKSSDl (ORCPT
+        id S235276AbhKSSET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 13:04:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:55546 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230405AbhKSSES (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 13:03:41 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF500C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 10:00:39 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id p18so9254846wmq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 10:00:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bDpC1i2G5HQW+MPVVvZ8vQcm4TQ3xQ3au6LEt00a410=;
-        b=oIKXUybqVzW5Fg1kyaU3H6IYTZwsIF5yGItWefrg0uCh0qMfPBiG5+Go99K3VZAl3q
-         2JN0tn3LddzBC/D27m2jDFf121tUEpcy88B7k0Uj6vphEz1+UmXTQreNoo1hLMPP9j13
-         cm1WVdxEi4DU4VGZcAbK40UPbXBN1iJjHcy/Y=
+        Fri, 19 Nov 2021 13:04:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637344875;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/a6rOhLDv3JwL69Ue+qRfZwjwTKZg5m885Paq3oOLk4=;
+        b=KrTIgKIWWo3lVMz6dF/mRqMSiYERlFV4+/gQN81Stg3k8EVRqnX1w5tp5ekv2RbJ5WovTB
+        JICj9fC5loiqXKNa5naMTGYvHOAD9U62UAseoNHUrNwwBrAiImki4goeQS86Q0WDP9j02t
+        9Jqu0APwWUw+uaSp8/Zvhfv0frrPN9Q=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-475-KLnRA5F8PQeu-4t0jLVx2w-1; Fri, 19 Nov 2021 13:01:14 -0500
+X-MC-Unique: KLnRA5F8PQeu-4t0jLVx2w-1
+Received: by mail-wm1-f72.google.com with SMTP id r6-20020a1c4406000000b0033119c22fdbso4417490wma.4
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 10:01:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=bDpC1i2G5HQW+MPVVvZ8vQcm4TQ3xQ3au6LEt00a410=;
-        b=fg70BP0AzVDEYy/EYeRN0nL+St59lYzdOXFJ7Zcq5D5nMCbYkbEowfdw5eFivKnQSB
-         JD1mFDXjt31s/FPCUihNyHAkCRaxqMG5PqYSjhfvage0/2Ur5fDZITi9JsvC6wRPzmwC
-         oFUhK0sRnzXdVOcqZwAgQODqewMeT1V2yC+LXhgVHnHuwNYbsp6qQ9o1uYpx83GlzMCp
-         nLAPY3xwZ6sIISeyo4KCH/f7NPxilxzhrQtmZ8XkmZztGeqWaPKeVXCmWds5z688RGyo
-         NMx0ERzf0szES3JrH+oae3GE5+c6GmhIww0/64kUzDJiLOUINBPEE1P9TU8ambazBjA2
-         +kdA==
-X-Gm-Message-State: AOAM531cNDsNSeZhLTzUCJMM0ZkII/RxBmwVMkGYG7DQqSZGzlfofn84
-        f+cfKodtDO3rEa7mMh+0JCfee6YX8Si7ag==
-X-Google-Smtp-Source: ABdhPJxkfKWC2wxvvZue3gXswLjQm9ptC0wOPGo//FV2cGyk4WSbKlZtdHw3YJa34qITmiXhKAGwEg==
-X-Received: by 2002:a1c:287:: with SMTP id 129mr1937458wmc.49.1637344838341;
-        Fri, 19 Nov 2021 10:00:38 -0800 (PST)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:61:302:bec8:f729:2747:99f])
-        by smtp.gmail.com with ESMTPSA id r15sm12127445wmh.13.2021.11.19.10.00.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 10:00:38 -0800 (PST)
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     andrii@kernel.org, kpsingh@kernel.org, jackmanb@google.com,
-        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next] libbpf: Change bpf_program__set_extra_flags to bpf_program__set_flags
-Date:   Fri, 19 Nov 2021 19:00:35 +0100
-Message-Id: <20211119180035.1396139-1-revest@chromium.org>
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+        bh=/a6rOhLDv3JwL69Ue+qRfZwjwTKZg5m885Paq3oOLk4=;
+        b=zgF4GDTsqeFTNhedIjmRdVGw+OvGhvxwC5eoq+cCpUNAIdfWrvhQNn3v1YZD5nl2pg
+         GgNbZPWtFEI+JkRlhUV3LYQV47u+V2kCH6MA7KD3atBsbPyBR/CSqXIQnaygZMq7eqhU
+         HXtXGI+Fd1j0MsAO87vNdGR5YKI2S+7MiIkGdazOiR0U85OxdZ4pimIDLM0XK74P8QmB
+         /eTp+OyE+yjKabgNuIZZjMnBonWr3E8HlDa02lEb7yL8gcszGPpx7BPswh1CGrsT/qvU
+         AGr7BMCgsgYSi+x19uLRu8k27/jK9+/qKO2qGK6rUlCRxsMKeGFxe+nxHs4b1twqwqkV
+         G+7Q==
+X-Gm-Message-State: AOAM532k1NqEA47JX3IVrIQ6qPsnAOTAvzrTHZ1gKcB5ZCeP7sStrXtr
+        +wcMJEaPkwb/ERj9fpsja5NrpYbnq7tvlBsCy9HLMhBozJFlZDXrdUYyqFrZXznIRtdjM94ceWU
+        kgs4keq9EYy+wczmz0HUStI9E
+X-Received: by 2002:adf:f54c:: with SMTP id j12mr10048574wrp.20.1637344873101;
+        Fri, 19 Nov 2021 10:01:13 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwWGJuiXfyI9qCfHWRTyH0ZcihvvNNyBX6Y4qZZ7mds6Ndbk7C5bGC/fg8jnfrzZjCYxEj+8Q==
+X-Received: by 2002:adf:f54c:: with SMTP id j12mr10048513wrp.20.1637344872795;
+        Fri, 19 Nov 2021 10:01:12 -0800 (PST)
+Received: from [192.168.1.102] ([92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id l5sm332325wml.20.2021.11.19.10.01.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Nov 2021 10:01:12 -0800 (PST)
+Message-ID: <e47bd075-fba1-cc34-b016-91043957c97b@redhat.com>
+Date:   Fri, 19 Nov 2021 19:01:10 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] spi: docs: improve the SPI userspace API documentation
+Content-Language: en-US
+To:     Ralph Siemsen <ralph.siemsen@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-spi@vger.kernel.org
+References: <20211118213143.2345041-1-javierm@redhat.com>
+ <20211119160325.GA1591448@maple.netwinder.org>
+From:   Javier Martinez Canillas <javierm@redhat.com>
+In-Reply-To: <20211119160325.GA1591448@maple.netwinder.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bpf_program__set_extra_flags has just been introduced so we can still
-change it without breaking users.
+Hello Ralph,
 
-This new interface is a bit more flexible (for example if someone wants
-to clear a flag).
+On 11/19/21 17:03, Ralph Siemsen wrote:
+> Hi Javier,
+> 
+> On Thu, Nov 18, 2021 at 10:31:43PM +0100, Javier Martinez Canillas 
+> wrote:
+>> This doc is fairly outdated and only uses legacy device instantiation
+>> terminology. Let us update it and also mention the OF and ACPI device
+>> tables, to make easier for users to figure out how should be defined.
+> 
+> Thanks for putting this together! Overall it is a definite improvement.
+> 
+>> +NOTE: it used to be supported to define an SPI device using the "spidev"
+>> +      name.  For example as .modalias = "spidev" or compatible = "spidev".
+>> +      But this is no longer supported by the Linux kernel and instead a
+>> +      real SPI device name as listed in one of the tables should be used.
+> 
+> This note is factually correct, but it might be a little too terse for 
+> folks who are not full-time kernel developers. I'd suggest making it a 
+> bit more prescriptive. As well, the focus can probably be on the case of 
+> device tree, since that is the one that generates the warning (and with 
+> your patch, causes the driver to fail to load).
+> 
+> I've struggled to put it into the right words, so the following is just 
+> an idea. I've intentionally included the exact wording of the warn/err 
+> to improve google-ability. As well, it is interesting to do a google 
 
-Signed-off-by: Florent Revest <revest@chromium.org>
----
- tools/lib/bpf/libbpf.c                        | 4 ++--
- tools/lib/bpf/libbpf.h                        | 2 +-
- tools/lib/bpf/libbpf.map                      | 2 +-
- tools/testing/selftests/bpf/testing_helpers.c | 4 +++-
- 4 files changed, 7 insertions(+), 5 deletions(-)
+Instead of adding the messages here, I think what we should do is to point
+to https://www.kernel.org/doc/Documentation/spi/spidev.rst in the spidev
+driver messages.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index de7e09a6b5ec..fa164cdbf3c9 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -8296,12 +8296,12 @@ __u32 bpf_program__flags(const struct bpf_program *prog)
- 	return prog->prog_flags;
- }
+That way we could save people a search in the interwebs. That would be a
+separate patch for the spidev driver of course.
+
+> search for the message, and see what kinds of advice is offered. A few 
+> that came up for me include:
+> https://community.nxp.com/t5/i-MX-Processors/spidev-spidev-listed-directly-in-DT/m-p/426381/highlight/true#M64609
+> https://yurovsky.github.io/2016/10/07/spidev-linux-devices.html
+> 
+> Anyhow, here is a possible addition to the NOTE in your patch.
+> 
+> spidev listed directly in DT is not supported
+> =============================================
+>
+
+Agree with including this section. But we could do it as a follow-up.
  
--int bpf_program__set_extra_flags(struct bpf_program *prog, __u32 extra_flags)
-+int bpf_program__set_flags(struct bpf_program *prog, __u32 flags)
- {
- 	if (prog->obj->loaded)
- 		return libbpf_err(-EBUSY);
- 
--	prog->prog_flags |= extra_flags;
-+	prog->prog_flags = flags;
- 	return 0;
- }
- 
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 4ec69f224342..b9900d9680d6 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -494,7 +494,7 @@ bpf_program__set_expected_attach_type(struct bpf_program *prog,
- 				      enum bpf_attach_type type);
- 
- LIBBPF_API __u32 bpf_program__flags(const struct bpf_program *prog);
--LIBBPF_API int bpf_program__set_extra_flags(struct bpf_program *prog, __u32 extra_flags);
-+LIBBPF_API int bpf_program__set_flags(struct bpf_program *prog, __u32 flags);
- 
- LIBBPF_API int
- bpf_program__set_attach_target(struct bpf_program *prog, int attach_prog_fd,
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 6a59514a48cf..61ae2e0ab345 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -400,7 +400,7 @@ LIBBPF_0.6.0 {
- 		bpf_program__flags;
- 		bpf_program__insn_cnt;
- 		bpf_program__insns;
--		bpf_program__set_extra_flags;
-+		bpf_program__set_flags;
- 		btf__add_btf;
- 		btf__add_decl_tag;
- 		btf__add_type_tag;
-diff --git a/tools/testing/selftests/bpf/testing_helpers.c b/tools/testing/selftests/bpf/testing_helpers.c
-index 52c2f24e0898..0f1c37ac6f2c 100644
---- a/tools/testing/selftests/bpf/testing_helpers.c
-+++ b/tools/testing/selftests/bpf/testing_helpers.c
-@@ -91,6 +91,7 @@ int bpf_prog_test_load(const char *file, enum bpf_prog_type type,
- 	struct bpf_object_load_attr attr = {};
- 	struct bpf_object *obj;
- 	struct bpf_program *prog;
-+	__u32 flags;
- 	int err;
- 
- 	obj = bpf_object__open(file);
-@@ -106,7 +107,8 @@ int bpf_prog_test_load(const char *file, enum bpf_prog_type type,
- 	if (type != BPF_PROG_TYPE_UNSPEC)
- 		bpf_program__set_type(prog, type);
- 
--	bpf_program__set_extra_flags(prog, BPF_F_TEST_RND_HI32);
-+	flags = bpf_program__flags(prog) | BPF_F_TEST_RND_HI32;
-+	bpf_program__set_flags(prog, flags);
- 
- 	attr.obj = obj;
- 	attr.log_level = extra_prog_load_log_flags;
+Best regards,
 -- 
-2.34.0.rc2.393.gf8c9666880-goog
+Javier Martinez Canillas
+Linux Engineering
+Red Hat
 
