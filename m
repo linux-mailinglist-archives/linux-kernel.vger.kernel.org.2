@@ -2,99 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A92A456F68
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:14:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45498456F6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:15:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235409AbhKSNRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 08:17:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhKSNRv (ORCPT
+        id S234982AbhKSNS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 08:18:28 -0500
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:36740 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229554AbhKSNS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 08:17:51 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D65C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 05:14:49 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id m192so5653663qke.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 05:14:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=HR5QiUUsJAbHQWB9m5yaWF0hUgIrMOiOR5Z9Xwz9lnE=;
-        b=f2eOBTz6OPpcwmli2fs3JisF4biM86jGkiAejvgSXx9aQHdP76TKbunhALJKkVzcVv
-         0cmq9Fx5UU01xiVsjvCvH5rit5pIkrfK9+e+/L3kq1NCCG/8Rgd0TYCMVgSXBf9vgDz7
-         D2T/zelssMgju8bcMIb5O1PB6FVGhrKhlT/xI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=HR5QiUUsJAbHQWB9m5yaWF0hUgIrMOiOR5Z9Xwz9lnE=;
-        b=dhOoS/L550N2vBwi0TRsptCyC+dl3O/VO6w30RhtZEMO2srLhFp/vffyigimvZ6mhT
-         O4uUslzvXIUrD1YZuaSjsVAOTCQjVr3oHBJqMS5k3SSZtMWbLljzHASyG+tvK47pfGPp
-         nrXXM/J0MWIOqeSbQKmNe02z+++GUlJV5PXYKQ1LBODHZPif4EbLLPkYHVj8NNJz6i0a
-         xXBbYE6QwjOByfLfhPfbZYVa6EkFHoLFuYmEWbLR82LWEe9zrfhwqs9dwwiP2WQc8zg0
-         tghVA+oV+OTJGhZhQOsjk1uo8iDFltZRKL7O0U0PkE+vaxzsuX5uQMl4iPHOlLKmGg10
-         WRBQ==
-X-Gm-Message-State: AOAM530mwPWi4rTzkUEvXcRnvQ3DGB8l50unuhDNyepIOaPEOuVUGzfE
-        h7UkLsPgLskuCiHV690sn/K0KA7Gd84DdQ==
-X-Google-Smtp-Source: ABdhPJwadsU8VaU3ROuC9an1iL0IlzAyf4YliYBtHhaAxXHmJCEKFp94Srij+FxPpAzpi/nTn7Ai7w==
-X-Received: by 2002:a37:8607:: with SMTP id i7mr28302102qkd.159.1637327689057;
-        Fri, 19 Nov 2021 05:14:49 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id t15sm1542305qta.45.2021.11.19.05.14.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Nov 2021 05:14:48 -0800 (PST)
-Message-ID: <77cff7ec-0787-5a19-0db6-c7d9e34f7258@ieee.org>
-Date:   Fri, 19 Nov 2021 07:14:47 -0600
+        Fri, 19 Nov 2021 08:18:27 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AJDFIkS071598;
+        Fri, 19 Nov 2021 07:15:18 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1637327718;
+        bh=OQdHDUo660q7Aohvj5WkiapbfIyteSHrslxoP6SHJk4=;
+        h=From:To:CC:Subject:Date;
+        b=TVek3r/LCAS95nU8y/q6ie1i+t4tldpYCO72MgruqMRRs71/jKJEMunfyjFyUlK5I
+         TQahA4JQ4WRVbLxBrceyRen4U1XQtBPt70ZClV4UeQt8J5MhyZePA/r6Jz4Jyhh/pX
+         /TyX2OmYZAyyITu7rg/hAGzVnE6qYrM2Xutb6f7w=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AJDFIEk031305
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 19 Nov 2021 07:15:18 -0600
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 19
+ Nov 2021 07:15:18 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Fri, 19 Nov 2021 07:15:17 -0600
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AJDFFYD095309;
+        Fri, 19 Nov 2021 07:15:16 -0600
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH] soc: ti: k3-socinfo: Add entry for J721S2 SoC family
+Date:   Fri, 19 Nov 2021 18:45:10 +0530
+Message-ID: <20211119131510.14350-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH] net: ipa: Use 'for_each_clear_bit' when possible
-Content-Language: en-US
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        elder@kernel.org, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <07566ce40d155d88b60c643fee2d030989037405.1637264172.git.christophe.jaillet@wanadoo.fr>
-From:   Alex Elder <elder@ieee.org>
-In-Reply-To: <07566ce40d155d88b60c643fee2d030989037405.1637264172.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/21 1:37 PM, Christophe JAILLET wrote:
-> Use 'for_each_clear_bit()' instead of hand writing it. It is much less
-> version.
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+It's JTAG PARTNO is 0xBB75.
 
-I know this just got committed, but thanks, this
-is a good improvement.
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+---
+ drivers/soc/ti/k3-socinfo.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-					-Alex
-
-> ---
->   drivers/net/ipa/ipa_mem.c | 4 +---
->   1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/ipa/ipa_mem.c b/drivers/net/ipa/ipa_mem.c
-> index 4337b0920d3d..1e9eae208e44 100644
-> --- a/drivers/net/ipa/ipa_mem.c
-> +++ b/drivers/net/ipa/ipa_mem.c
-> @@ -266,9 +266,7 @@ static bool ipa_mem_valid(struct ipa *ipa, const struct ipa_mem_data *mem_data)
->   	}
->   
->   	/* Now see if any required regions are not defined */
-> -	for (mem_id = find_first_zero_bit(regions, IPA_MEM_COUNT);
-> -	     mem_id < IPA_MEM_COUNT;
-> -	     mem_id = find_next_zero_bit(regions, IPA_MEM_COUNT, mem_id + 1)) {
-> +	for_each_clear_bit(mem_id, regions, IPA_MEM_COUNT) {
->   		if (ipa_mem_id_required(ipa, mem_id))
->   			dev_err(dev, "required memory region %u missing\n",
->   				mem_id);
-> 
+diff --git a/drivers/soc/ti/k3-socinfo.c b/drivers/soc/ti/k3-socinfo.c
+index fd91129de6e5..83e5a40824f1 100644
+--- a/drivers/soc/ti/k3-socinfo.c
++++ b/drivers/soc/ti/k3-socinfo.c
+@@ -40,7 +40,8 @@ static const struct k3_soc_id {
+ 	{ 0xBB5A, "AM65X" },
+ 	{ 0xBB64, "J721E" },
+ 	{ 0xBB6D, "J7200" },
+-	{ 0xBB38, "AM64X" }
++	{ 0xBB38, "AM64X" },
++	{ 0xBB75, "J721S2"}
+ };
+ 
+ static int
+-- 
+2.17.1
 
