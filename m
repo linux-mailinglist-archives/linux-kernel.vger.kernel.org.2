@@ -2,86 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4D7456DA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 11:41:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46EF7456DA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 11:41:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233852AbhKSKh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 05:37:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60899 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229523AbhKSKh4 (ORCPT
+        id S234116AbhKSKi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 05:38:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234877AbhKSKiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 05:37:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637318094;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CbGLzkjgNaEv+2n1GPe5cuw5S72/BV9iwPVdzuqnx0E=;
-        b=GteTPlUB6Yea4KnsaqPsSydb6UXIgdb3hozuSBdi1Ant08DgjxjMnDnZxkXkTnHfPpZTb5
-        OCaG2+r2ZscB/l+8wIecbSD1zOyouPGGDPF3ErjlzqE7R/+eoS6dKOOSTDFOO3v358Pzgw
-        U4YpIt4bFIVx2+Nx8tUSXdJW+G5bQKY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-264-ZmCHQHdKO4aQUyRwvYZOHQ-1; Fri, 19 Nov 2021 05:34:51 -0500
-X-MC-Unique: ZmCHQHdKO4aQUyRwvYZOHQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E0541871810;
-        Fri, 19 Nov 2021 10:34:48 +0000 (UTC)
-Received: from [10.39.194.192] (unknown [10.39.194.192])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B31846787F;
-        Fri, 19 Nov 2021 10:34:31 +0000 (UTC)
-Message-ID: <82b0cbf0-0afb-29c8-ae8c-3d302f966014@redhat.com>
-Date:   Fri, 19 Nov 2021 11:34:30 +0100
+        Fri, 19 Nov 2021 05:38:13 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C82C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 02:35:11 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id t5so41110569edd.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 02:35:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=da+/SogHXUMysaPRZgIDQxwiiCshPW/hd/yWA0YxHqQ=;
+        b=GlnHRBjOnK9LP3NMSvnd1QTOn+l5BYai+2V8bs6Qcctpizcmz21/SwZE+DgAftdQz4
+         sZ0mh1an60KYWHvgzkBfqZnEHVYFJ4X5QP08O7fZHPtnMcmus6hrBxGydj9+D7eTwb/I
+         i/wnMThnZdCe9HM+smJulD6MMgL90PZLQwK75EkUgaCrZ3eTWVGZesWleUnWgTQ6ZKMY
+         hJI0bGMDeQqp1sQkAkQHB+8zEkvcOgkdDmq9EPtpqe/xy6M0RU9mDyCwuIarT7PE/KPs
+         /taKqA5EREsQNFCOmr49J1E/7vIpjimYWENZqqvzXKZT2IdjaZ2edHJWp9PI+4ClEvlI
+         OpIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=da+/SogHXUMysaPRZgIDQxwiiCshPW/hd/yWA0YxHqQ=;
+        b=h0F+FjZcT6EAckrDqkFr//Vfej4E97I6ojwKIcpD5TrSsS/iWCxKCkGnkQNpTPLaZK
+         1uqS1bEYgggNxYWcSnZZ4T7o0CG23jPm6Q0wupdnIuZoBUhIWeOjyqA/nRrALHuno5jH
+         fkepeigGgno38hqVcmSFcQNVzX38zFqJncKVtbx82AMNXdyoqUfDDMA0jXfiaOQtQr0U
+         +3Q+aYe3iRAYeoFtoZN/tGgXRHkfhG54yYi+1Rqhf/COwFn5bR9XUdTI1VTVCSkROm7x
+         3oh51TN6Q934LbQLM38+8z9kqKvzr5phXfyy36GwZOESVnc6zz6jnfFe3BGDwOjQbCwH
+         k/UQ==
+X-Gm-Message-State: AOAM531dV4YWkh1aSLqb1aYKxGa8RxRs90mBjaadnL3lTUA5lLR6tA4b
+        DfsCYecAeER2yy6jnyjpAKiMoFhCuerKU3UEki5HIQ==
+X-Google-Smtp-Source: ABdhPJx3NBTcqINXsR8GAPT3k7d1gVnT5ZVIM4MMhSfBogJ3ihQymdnKbE/olQAjosYRl+tzEQxE8YBNvWdLez3iAYg=
+X-Received: by 2002:a05:6402:168a:: with SMTP id a10mr23446917edv.219.1637318110186;
+ Fri, 19 Nov 2021 02:35:10 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 15/15] KVM: X86: Always set gpte_is_8_bytes when direct
- map
-Content-Language: en-US
-To:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     kvm@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-doc@vger.kernel.org
-References: <20211118110814.2568-1-jiangshanlai@gmail.com>
- <20211118110814.2568-16-jiangshanlai@gmail.com>
- <16b701db-e277-c4ef-e198-65a2dc6e3fdf@redhat.com>
- <bcfa0e4d-f6ab-037a-9ce1-d0cd612422a5@linux.alibaba.com>
- <65e1f2ca-5d89-d67f-2e0e-542094f89f05@redhat.com>
- <1c3d50f5-8f42-f337-cecc-3115e73703e5@linux.alibaba.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <1c3d50f5-8f42-f337-cecc-3115e73703e5@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20211118145142.14519-1-brgl@bgdev.pl> <YZZ1cFWaexGlJL8C@smile.fi.intel.com>
+ <CAMRc=MdeEiz+uKhAz5-1MX_KG5fmjshRtDXARPMEx8VwBKfXZQ@mail.gmail.com> <YZaGa66iEFb6bJjK@smile.fi.intel.com>
+In-Reply-To: <YZaGa66iEFb6bJjK@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Fri, 19 Nov 2021 11:34:59 +0100
+Message-ID: <CAMRc=MeZrdgxMUxGQ0rFPkSXMto==WrMGPz0Zo8wfdCxM_0+=Q@mail.gmail.com>
+Subject: Re: [PATCH v9 0/4] gpio-sim: configfs-based GPIO simulator
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Kent Gibson <warthog618@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/19/21 11:30, Lai Jiangshan wrote:
->> 
-> 
-> Hello
-> 
-> Since 13, and 14 is queued, could you also queue this one and I will
-> do the rename separately in the next patchset.  I found that the
-> intent of this patch is hidden in the lengthened squashed patch (of
-> this patch and the renaming patch).
+On Thu, Nov 18, 2021 at 5:59 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Thu, Nov 18, 2021 at 05:37:02PM +0100, Bartosz Golaszewski wrote:
+> > On Thu, Nov 18, 2021 at 4:50 PM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > >
+> > > On Thu, Nov 18, 2021 at 03:51:38PM +0100, Bartosz Golaszewski wrote:
+> > > > This is another shot at the gpio-sim testing module. As there was n=
+o
+> > > > reasoning with configfs maintainers for many months, this time the =
+whole
+> > > > concept of committable items has been dropped. Instead, each config=
+fs
+> > > > chip item (or rather a group - more on that later) exposes a new
+> > > > attribute called 'live'. Writing 1 to it brings the chip on-line
+> > > > (registers the platform device) and writing 0 tears it down.
+> > > >
+> > > > There are some caveats to that approach - for example: we can't blo=
+ck
+> > > > the user-space from deleting chip items when chips are live but is =
+just
+> > > > handled by silently destroying the chip device in the background.
+> > > >
+> > > > Andy (rightfully) pointed out that parsing of the lists of line nam=
+es is
+> > > > awkward so in this iteration it's been replaced by a system that is=
+ more
+> > > > elegant and will allow to easily extend configuration options for
+> > > > specific GPIO lines. This is achieved by turning the chip's configf=
+s
+> > > > item into a configfs group and allowing the user-space to create
+> > > > additional items inside it. The items must be called line<offset> (=
+e.g.
+> > > > line0, line12 etc.) where the offset part indicates to the module t=
+he
+> > > > offset for which given item stores the configuration for. Within ea=
+ch
+> > > > such line item, there are additional attributes that allow specifyi=
+ng
+> > > > configuration for specific lines. Currently we only support the 'na=
+me'
+> > > > attribute but I plan to extend that to support GPIO hogging too.
+> > >
+> > > One question here. Since you know how the driver looks like in both c=
+ases
+> > > (with and without committable items), would it be possible to modify =
+what
+> > > you proposed here to the former one in case ConfigFS gains the featur=
+e?
+> >
+> > This would completely change the user interface unfortunately. We
+> > could extend it but we would need to keep this one too most likely.
+> >
+> > TBH I don't see the committable items merged anytime soon, and this is
+> > GoodEnough=C2=AE.
+>
+> Fine with me then!
+>
+> Thanks for doing this all, I know it's a bit delayed in terms of getting
+> into upstream.
+>
+> Btw, gpio-mockup testing scripts have an issue that the number of lines t=
+o
+> check overflow is hardcoded and since x86_64 switched to 1024 from 512 it
+> reveals the issue. Does gpio-sim solve this in a better way (like telling
+> to user space the ngpios, etc)?
+>
 
-Then you can do the renaming first?
+Yeah the selftests need fixing now.
 
-Paolo
+No, there's no fix for that in gpio-sim - probe() will just fail.
+Which makes me think - maybe we should synchronously wait when writing
+to 'live' for the probe to return (for instance setup a notifier) so
+that we know if the chip probed correctly. Then we can notify the
+user-space about the error destroy the device too.
 
+Bart
