@@ -2,160 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B7A45673C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 02:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 723AD456740
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 02:06:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233889AbhKSBJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 20:09:22 -0500
-Received: from mail-dm6nam08on2085.outbound.protection.outlook.com ([40.107.102.85]:50464
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231895AbhKSBJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 20:09:21 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B+r8gKaIqhXG3laGVD1iKp1xU6H7Jg1+7bqc1xr5NVf2aUj87uGH/ImV/d3ko34rtixg8D1Lc9nL9LIy61kDJNvjjWENlACD68wB7d0JyYhDSbPmh7q9P29W9k2RsYCfPKI9t656iL4PoG04d3CUsX33IhCL9jPJpQjrp2cznXWHVKsXKVOo2XyzkV9mLjmnAaf/MQkKcekCA7XBBx1+25+1pZ0HAE+tXNDNuZQLiNfrRh5qYuBYZ2ZrzUpq8XecTUf7QFkgBA4iHYwR5ZbM+wtVcm46HW9fdMCu1mMEo4I/QC4XoNaNMt4NvvDaTb+zxcGv0A/Oeb7Qu0B+FfwMew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=liluh0TUwfrPTpKTJFSswiVCEGgS5wziyqumgXOhQH8=;
- b=ggkWhm28CW0OXOpGDQy1MK68wdtieGEwQLEpMG859bsrlQTVlZ5wRccai6zEvO5MocX4fZdgMzUb2VZm+Z4w/Y28ojvEp/urQSaz8gOCluHM032+9lTQC5MUVPALFRYLCKnF383+HXGpTwVglVUx8q/XirdQ2Jpj2Sw0lt4sV45l3BxRs6fcA6jzGbJXzD+CLu/Qr1yRKxq2L66q6koSrOO0wfN1Iic/d1z6rI1+dc1yCvTB//icZFJsMdOugS9XrrsrAOZ52CmNlWH375gQBBEDiiF9EeLh+kroh0XUlwsoV2C9uJlXIkZJa1k8xml+YAb7cRfCRzfBIX/RpaX6pA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=redhat.com smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=liluh0TUwfrPTpKTJFSswiVCEGgS5wziyqumgXOhQH8=;
- b=jO6nFbfC4kiln9FeneF/RYC32iO1Cqe5Dj+7eoRIO9RFM60Jx+SamrHW9eBs354Qhzz+j9ayKAv95JVnWoI51RLWHBdkuQNbFa5FLkGct/vdR5BNuZiRGwcG1Gt551APnCUOw498Ih2NUHtwYoReYLz6sW3S6/T3cF8udFZgzI4=
-Received: from SN7PR04CA0162.namprd04.prod.outlook.com (2603:10b6:806:125::17)
- by DM6PR02MB5257.namprd02.prod.outlook.com (2603:10b6:5:48::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Fri, 19 Nov
- 2021 01:06:17 +0000
-Received: from SN1NAM02FT0050.eop-nam02.prod.protection.outlook.com
- (2603:10b6:806:125:cafe::8c) by SN7PR04CA0162.outlook.office365.com
- (2603:10b6:806:125::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26 via Frontend
- Transport; Fri, 19 Nov 2021 01:06:17 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT0050.mail.protection.outlook.com (10.97.5.121) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4713.19 via Frontend Transport; Fri, 19 Nov 2021 01:06:17 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 18 Nov 2021 17:06:16 -0800
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Thu, 18 Nov 2021 17:06:16 -0800
-Envelope-to: trix@redhat.com,
- linux-kernel@vger.kernel.org,
- mdf@kernel.org,
- devicetree@vger.kernel.org,
- dwmw2@infradead.org,
- linux-fpga@vger.kernel.org,
- robh@kernel.org
-Received: from [10.17.2.60] (port=54922)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <lizhi.hou@xilinx.com>)
-        id 1mnsM4-0008on-9l; Thu, 18 Nov 2021 17:06:16 -0800
-Subject: Re: [PATCH V1 XRT Alveo Infrastructure 2/9] Documentation:
- devicetree: bindings: add xrt group binding
-To:     Rob Herring <robh@kernel.org>, Lizhi Hou <lizhi.hou@xilinx.com>
-CC:     <linux-fpga@vger.kernel.org>, <yliu@xilinx.com>,
-        <dwmw2@infradead.org>, <devicetree@vger.kernel.org>,
-        <stefanos@xilinx.com>, <sonal.santan@xilinx.com>,
-        <michal.simek@xilinx.com>, <mdf@kernel.org>,
-        <linux-kernel@vger.kernel.org>, Max Zhen <max.zhen@xilinx.com>,
-        <trix@redhat.com>, <maxz@xilinx.com>
-References: <20211118210323.1070283-1-lizhi.hou@xilinx.com>
- <20211118210323.1070283-3-lizhi.hou@xilinx.com>
- <1637273394.274455.1841667.nullmailer@robh.at.kernel.org>
-From:   Lizhi Hou <lizhi.hou@xilinx.com>
-Message-ID: <8f64e8d2-ece4-9a77-3fce-f87598ae4d19@xilinx.com>
-Date:   Thu, 18 Nov 2021 17:06:16 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S233909AbhKSBJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 20:09:50 -0500
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:39557 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231895AbhKSBJt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 20:09:49 -0500
+Received: by mail-oi1-f179.google.com with SMTP id bf8so18387794oib.6;
+        Thu, 18 Nov 2021 17:06:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IReJpsAcnna1nL5hJ7AgHA9o7q+cn0nz8I5uqnNPgAs=;
+        b=fobVpnRexF779czbZ3m+7enHZRW6OBoojcLEh1mRySDrwVcUBVNKBjRtvabIrGalWz
+         VGJqTMn7mFmUviomwKbT9C2Cobxf1UQXQTfyszGKEWK3HR8QTl1FtQzqNLUG/qDoijcO
+         rtCZNDBM2avMVoGYsmo3LhQyqmt+wXEuptrX0wcbmYWGc0shEunCYrAKL2Kskv03wl7j
+         X4oSqXKHmAVOJ8Sy9tqxWOuzHVUNkLJQgnjKsFsQ+4ygtGSVHVdmIchrY92OT8/1R+mW
+         PO4TArzadwWkukA1AbAfZUwOZayQMMjacT40KBkFxgtXfmSVparm7oYsq2hkkt2TG/E5
+         WjVg==
+X-Gm-Message-State: AOAM530/Q0ytI3BYmMiGxrQo0lQsEgtO2MMOIKWMm4/UQFJMimVdgzIw
+        v0rRPJF+tPMlHIxaKG3Dyg==
+X-Google-Smtp-Source: ABdhPJxTIaK7L4OnuMQshjN1ApkV2Cn0Y3/3gI6cjkCvQ6NJzALmQ6lWGhShWzAupZO7XE+J1TJ4aA==
+X-Received: by 2002:a05:6808:4d9:: with SMTP id a25mr1330295oie.52.1637284007609;
+        Thu, 18 Nov 2021 17:06:47 -0800 (PST)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id h3sm288227ooe.13.2021.11.18.17.06.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 17:06:47 -0800 (PST)
+Received: (nullmailer pid 2147662 invoked by uid 1000);
+        Fri, 19 Nov 2021 01:06:45 -0000
+Date:   Thu, 18 Nov 2021 19:06:45 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     quic_vamslank@quicinc.com
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, tglx@linutronix.de,
+        maz@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, manivannan.sadhasivam@linaro.org
+Subject: Re: [PATCH v4 1/6] dt-bindings: clock: Add SDX65 GCC clock bindings
+Message-ID: <YZb4pWAERqcxJuWP@robh.at.kernel.org>
+References: <cover.1637047731.git.quic_vamslank@quicinc.com>
+ <9033beaa2f474a44d2061779a5fa883c6c840e6b.1637047731.git.quic_vamslank@quicinc.com>
 MIME-Version: 1.0
-In-Reply-To: <1637273394.274455.1841667.nullmailer@robh.at.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b8bc1fa3-55a0-4d5d-4bb6-08d9aaf8ca44
-X-MS-TrafficTypeDiagnostic: DM6PR02MB5257:
-X-Microsoft-Antispam-PRVS: <DM6PR02MB525752B7AE7FF6FFC6400D45A19C9@DM6PR02MB5257.namprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dYCoRspEkmU0S4uyUgHgkODGx/IQK6VrvuxxyYSkrRFDuSB1Zsdh+Qo4orPyCnsF0jQBNMdSbCfLYbDz8MgtXCgQ9+/I4xy/jiK8+78leu5Pr9P/wQEjB2IUV4LRY/0U8OeCgfD5fGhs6Wk9IK96BpUkM4SYzKKpT9DYcipfYm8MAjgdt1qsw90BE1ammJgAsqhgMO4+ajsrR5X+dVNCM0S6eOQC17FCmSRewuaqTy5OsZaPpi6yCsDrfem2BbmXSOU4K+L2PkS0R/sDe/0V8CMTnfhoksRB/wx+KQN1KWorIRF/aenabIL35jmBPcJqWYt4bPujGEysEn5eksSk6j+ADJHqpqTpgcgU1334a+yZ+33SxqK6bvIS6+ymCLYdLLWsgZ6pynFOgYZ+1Q5e1b3eDiWAlHu+r24XXIBRwu8eMI3UQKTEhBLhfitLnGx4Ovrxs6cOCAzpHLQHrwH+hj6B/nVftFrhPhw4OkLYSkw95SFcZl32o2882tHWAbv/dSIfDX3u4O3sBayR/fITSM1IAhgd7G+G/HZOAY6dN558acr0nUhUdbkfAOINwCsW1Asw+qAclbF0WguQHgtmkcQO/+i3DzagAngUDrpCjl5/IIJLiTYsdCXWkp8lrUjZqPIHABZybbmsWXM9fPjjgJnTRib/rRy3SHA19qZ/pim4Z8zeJSSlzpsWZBHOpZio3w8LyllDAWaYKkL6r21xv/WPeulIXJtXsQNaKDAeANMF3di3DrvHcsriJXFINh06QxDYXJQsyClm2I+Fu8gzNLLssTquYaOdq0E3waiC7T8smkm4F0fmwvzrwQy2Q3vfS7eMrPWZshZ/QBbRbf6l/A==
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(46966006)(36840700001)(9786002)(110136005)(54906003)(70586007)(8676002)(2616005)(83380400001)(70206006)(316002)(36906005)(966005)(44832011)(36756003)(508600001)(31686004)(5660300002)(31696002)(82310400003)(426003)(356005)(47076005)(36860700001)(4326008)(2906002)(186003)(8936002)(336012)(7636003)(107886003)(26005)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2021 01:06:17.0910
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b8bc1fa3-55a0-4d5d-4bb6-08d9aaf8ca44
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0050.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB5257
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9033beaa2f474a44d2061779a5fa883c6c840e6b.1637047731.git.quic_vamslank@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I was able to reproduce the error after following the instructions. I 
-will include the fix with next version of this patch set.
+On Mon, Nov 15, 2021 at 11:38:07PM -0800, quic_vamslank@quicinc.com wrote:
+> From: Vamsi krishna Lanka <quic_vamslank@quicinc.com>
+> 
+> Add device tree bindings for global clock controller on SDX65 SOCs.
+> 
+> Signed-off-by: Vamsi Krishna Lanka <quic_vamslank@quicinc.com>
+> ---
+>  .../bindings/clock/qcom,gcc-sdx65.yaml        |  78 +++++++++++
+>  include/dt-bindings/clock/qcom,gcc-sdx65.h    | 122 ++++++++++++++++++
+>  2 files changed, 200 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sdx65.yaml
+>  create mode 100644 include/dt-bindings/clock/qcom,gcc-sdx65.h
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/qcom,gcc-sdx65.yaml b/Documentation/devicetree/bindings/clock/qcom,gcc-sdx65.yaml
+> new file mode 100644
+> index 000000000000..b0d4523c53b8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/qcom,gcc-sdx65.yaml
+> @@ -0,0 +1,78 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/qcom,gcc-sdx65.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Global Clock & Reset Controller Binding for SDX65
+> +
+> +maintainers:
+> +  - Vamsi krishna Lanka <quic_vamslank@quicinc.com>
+> +
+> +description: |
+> +  Qualcomm global clock control module which supports the clocks, resets and
+> +  power domains on SDX65
+> +
+> +  See also:
+> +  - dt-bindings/clock/qcom,gcc-sdx65.h
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,gcc-sdx65
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: Board XO source
+> +      - description: Board active XO source
+> +      - description: Sleep clock source
+> +      - description: PCIE Pipe clock source
+> +      - description: USB3 phy wrapper pipe clock source
+> +      - description: PLL test clock source (Optional clock)
 
-Thanks,
+Optional is defined with 'minItems: 5'
 
-Lizhi
-
-On 11/18/21 2:09 PM, Rob Herring wrote
->
-> On Thu, 18 Nov 2021 13:03:16 -0800, Lizhi Hou wrote:
->> Create device tree binding document for xrt group device.
->>
->> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
->> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
->> Signed-off-by: Lizhi Hou <lizhi.hou@xilinx.com>
->> ---
->>   .../bindings/xrt/xlnx,xrt-group.yaml          | 59 +++++++++++++++++++
->>   1 file changed, 59 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/xrt/xlnx,xrt-group.yaml
->>
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
->
-> yamllint warnings/errors:
-> ./Documentation/devicetree/bindings/xrt/xlnx,xrt-group.yaml:22:6: [warning] wrong indentation: expected 4 but found 5 (indentation)
-> ./Documentation/devicetree/bindings/xrt/xlnx,xrt-group.yaml:25:6: [warning] wrong indentation: expected 4 but found 5 (indentation)
->
-> dtschema/dtc warnings/errors:
-> Documentation/devicetree/bindings/xrt/xlnx,xrt-group.example.dt.yaml:0:0: /example-0/xrt-bus/xrt-group@48,0/ep_fpga_configuration_00@0,0,1e88000: failed to match any schema with compatible: ['xilinx.com,reg_abs-axi_hwicap-1.0', 'axi_hwicap']
-> Documentation/devicetree/bindings/xrt/xlnx,xrt-group.example.dt.yaml:0:0: /example-0/xrt-bus/xrt-group@48,0/ep_fpga_configuration_00@0,0,1e88000: failed to match any schema with compatible: ['xilinx.com,reg_abs-axi_hwicap-1.0', 'axi_hwicap']
->
-> doc reference errors (make refcheckdocs):
->
-> See https://patchwork.ozlabs.org/patch/1556809
->
-> This check can fail if there are any dependencies. The base for a patch
-> series is generally the most recent rc1.
->
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
->
-> pip3 install dtschema --upgrade
->
-> Please check and re-submit.
->
+> +
+> +  clock-names:
+> +    items:
+> +      - const: bi_tcxo
+> +      - const: bi_tcxo_ao
+> +      - const: sleep_clk
+> +      - const: pcie_pipe_clk
+> +      - const: usb3_phy_wrapper_gcc_usb30_pipe_clk
+> +      - const: core_bi_pll_test_se # Optional clock
+> +
+> +  '#clock-cells':
+> +    const: 1
+> +
+> +  '#reset-cells':
+> +    const: 1
+> +
+> +  '#power-domain-cells':
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - '#clock-cells'
+> +  - '#reset-cells'
+> +  - '#power-domain-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/qcom,rpmh.h>
+> +    clock-controller@100000 {
+> +      compatible = "qcom,gcc-sdx65";
+> +      reg = <0x100000 0x1f7400>;
+> +      clocks = <&rpmhcc RPMH_CXO_CLK>, <&rpmhcc RPMH_CXO_CLK_A>, <&sleep_clk>,
+> +               <&pcie_pipe_clk>, <&usb3_phy_wrapper_gcc_usb30_pipe_clk>, <&pll_test_clk>;
+> +      clock-names = "bi_tcxo", "bi_tcxo_ao", "sleep_clk",
+> +                    "pcie_pipe_clk", "usb3_phy_wrapper_gcc_usb30_pipe_clk", "core_bi_pll_test_se";
+> +      #clock-cells = <1>;
+> +      #reset-cells = <1>;
+> +      #power-domain-cells = <1>;
+> +    };
+> +...
+> diff --git a/include/dt-bindings/clock/qcom,gcc-sdx65.h b/include/dt-bindings/clock/qcom,gcc-sdx65.h
+> new file mode 100644
+> index 000000000000..75ecc9237d8f
+> --- /dev/null
+> +++ b/include/dt-bindings/clock/qcom,gcc-sdx65.h
+> @@ -0,0 +1,122 @@
+> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
+> +/*
+> + * Copyright (c) 2021, Qualcomm Innovation Center, Inc. All rights reserved.
+> + */
+> +
+> +#ifndef _DT_BINDINGS_CLK_QCOM_GCC_SDX65_H
+> +#define _DT_BINDINGS_CLK_QCOM_GCC_SDX65_H
+> +
+> +/* GCC clocks */
+> +#define GPLL0							0
+> +#define GPLL0_OUT_EVEN						1
+> +#define GCC_AHB_PCIE_LINK_CLK					2
+> +#define GCC_BLSP1_AHB_CLK					3
+> +#define GCC_BLSP1_QUP1_I2C_APPS_CLK				4
+> +#define GCC_BLSP1_QUP1_I2C_APPS_CLK_SRC				5
+> +#define GCC_BLSP1_QUP1_SPI_APPS_CLK				6
+> +#define GCC_BLSP1_QUP1_SPI_APPS_CLK_SRC				7
+> +#define GCC_BLSP1_QUP2_I2C_APPS_CLK				8
+> +#define GCC_BLSP1_QUP2_I2C_APPS_CLK_SRC				9
+> +#define GCC_BLSP1_QUP2_SPI_APPS_CLK				10
+> +#define GCC_BLSP1_QUP2_SPI_APPS_CLK_SRC				11
+> +#define GCC_BLSP1_QUP3_I2C_APPS_CLK				12
+> +#define GCC_BLSP1_QUP3_I2C_APPS_CLK_SRC				13
+> +#define GCC_BLSP1_QUP3_SPI_APPS_CLK				14
+> +#define GCC_BLSP1_QUP3_SPI_APPS_CLK_SRC				15
+> +#define GCC_BLSP1_QUP4_I2C_APPS_CLK				16
+> +#define GCC_BLSP1_QUP4_I2C_APPS_CLK_SRC				17
+> +#define GCC_BLSP1_QUP4_SPI_APPS_CLK				18
+> +#define GCC_BLSP1_QUP4_SPI_APPS_CLK_SRC				19
+> +#define GCC_BLSP1_SLEEP_CLK					20
+> +#define GCC_BLSP1_UART1_APPS_CLK				21
+> +#define GCC_BLSP1_UART1_APPS_CLK_SRC				22
+> +#define GCC_BLSP1_UART2_APPS_CLK				23
+> +#define GCC_BLSP1_UART2_APPS_CLK_SRC				24
+> +#define GCC_BLSP1_UART3_APPS_CLK				25
+> +#define GCC_BLSP1_UART3_APPS_CLK_SRC				26
+> +#define GCC_BLSP1_UART4_APPS_CLK				27
+> +#define GCC_BLSP1_UART4_APPS_CLK_SRC				28
+> +#define GCC_BOOT_ROM_AHB_CLK					29
+> +#define GCC_CPUSS_AHB_CLK					30
+> +#define GCC_CPUSS_AHB_CLK_SRC					31
+> +#define GCC_CPUSS_AHB_POSTDIV_CLK_SRC				32
+> +#define GCC_CPUSS_GNOC_CLK					33
+> +#define GCC_GP1_CLK						34
+> +#define GCC_GP1_CLK_SRC						35
+> +#define GCC_GP2_CLK						36
+> +#define GCC_GP2_CLK_SRC						37
+> +#define GCC_GP3_CLK						38
+> +#define GCC_GP3_CLK_SRC						39
+> +#define GCC_PCIE_0_CLKREF_EN					40
+> +#define GCC_PCIE_AUX_CLK					41
+> +#define GCC_PCIE_AUX_CLK_SRC					42
+> +#define GCC_PCIE_AUX_PHY_CLK_SRC				43
+> +#define GCC_PCIE_CFG_AHB_CLK					44
+> +#define GCC_PCIE_MSTR_AXI_CLK					45
+> +#define GCC_PCIE_PIPE_CLK					46
+> +#define GCC_PCIE_PIPE_CLK_SRC					47
+> +#define GCC_PCIE_RCHNG_PHY_CLK					48
+> +#define GCC_PCIE_RCHNG_PHY_CLK_SRC				49
+> +#define GCC_PCIE_SLEEP_CLK					50
+> +#define GCC_PCIE_SLV_AXI_CLK					51
+> +#define GCC_PCIE_SLV_Q2A_AXI_CLK				52
+> +#define GCC_PDM2_CLK						53
+> +#define GCC_PDM2_CLK_SRC					54
+> +#define GCC_PDM_AHB_CLK						55
+> +#define GCC_PDM_XO4_CLK						56
+> +#define GCC_RX1_USB2_CLKREF_EN					57
+> +#define GCC_SDCC1_AHB_CLK					58
+> +#define GCC_SDCC1_APPS_CLK					59
+> +#define GCC_SDCC1_APPS_CLK_SRC					60
+> +#define GCC_SPMI_FETCHER_AHB_CLK				61
+> +#define GCC_SPMI_FETCHER_CLK					62
+> +#define GCC_SPMI_FETCHER_CLK_SRC				63
+> +#define GCC_SYS_NOC_CPUSS_AHB_CLK				64
+> +#define GCC_USB30_MASTER_CLK					65
+> +#define GCC_USB30_MASTER_CLK_SRC				66
+> +#define GCC_USB30_MOCK_UTMI_CLK					67
+> +#define GCC_USB30_MOCK_UTMI_CLK_SRC				68
+> +#define GCC_USB30_MOCK_UTMI_POSTDIV_CLK_SRC			69
+> +#define GCC_USB30_MSTR_AXI_CLK					70
+> +#define GCC_USB30_SLEEP_CLK					71
+> +#define GCC_USB30_SLV_AHB_CLK					72
+> +#define GCC_USB3_PHY_AUX_CLK					73
+> +#define GCC_USB3_PHY_AUX_CLK_SRC				74
+> +#define GCC_USB3_PHY_PIPE_CLK					75
+> +#define GCC_USB3_PHY_PIPE_CLK_SRC				76
+> +#define GCC_USB3_PRIM_CLKREF_EN					77
+> +#define GCC_USB_PHY_CFG_AHB2PHY_CLK				78
+> +#define GCC_XO_DIV4_CLK						79
+> +#define GCC_XO_PCIE_LINK_CLK					80
+> +
+> +/* GCC resets */
+> +#define GCC_BLSP1_QUP1_BCR					0
+> +#define GCC_BLSP1_QUP2_BCR					1
+> +#define GCC_BLSP1_QUP3_BCR					2
+> +#define GCC_BLSP1_QUP4_BCR					3
+> +#define GCC_BLSP1_UART1_BCR					4
+> +#define GCC_BLSP1_UART2_BCR					5
+> +#define GCC_BLSP1_UART3_BCR					6
+> +#define GCC_BLSP1_UART4_BCR					7
+> +#define GCC_PCIE_BCR						8
+> +#define GCC_PCIE_LINK_DOWN_BCR					9
+> +#define GCC_PCIE_NOCSR_COM_PHY_BCR				10
+> +#define GCC_PCIE_PHY_BCR					11
+> +#define GCC_PCIE_PHY_CFG_AHB_BCR				12
+> +#define GCC_PCIE_PHY_COM_BCR					13
+> +#define GCC_PCIE_PHY_NOCSR_COM_PHY_BCR				14
+> +#define GCC_PDM_BCR						15
+> +#define GCC_QUSB2PHY_BCR					16
+> +#define GCC_SDCC1_BCR						17
+> +#define GCC_SPMI_FETCHER_BCR					18
+> +#define GCC_TCSR_PCIE_BCR					19
+> +#define GCC_USB30_BCR						20
+> +#define GCC_USB3_PHY_BCR					21
+> +#define GCC_USB3PHY_PHY_BCR					22
+> +#define GCC_USB_PHY_CFG_AHB2PHY_BCR				23
+> +
+> +/* GCC power domains */
+> +#define USB30_GDSC                                              0
+> +#define PCIE_GDSC                                               1
+> +
+> +#endif
+> -- 
+> 2.33.1
+> 
+> 
