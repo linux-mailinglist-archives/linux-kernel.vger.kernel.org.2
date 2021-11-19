@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F16E456D9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 11:41:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4D7456DA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 11:41:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234092AbhKSKhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 05:37:01 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.167]:20084 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233041AbhKSKhA (ORCPT
+        id S233852AbhKSKh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 05:37:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60899 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229523AbhKSKh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 05:37:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637318014;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=Message-Id:To:Cc:Subject:Date:From:Cc:Date:From:Subject:Sender;
-    bh=4Wg+NXNW31gedVsJj0x/d7Mf2+YbOBa/c/3hL99tpsM=;
-    b=FR6yZH1dQFQ6VYDmkvb2REWWs9kOQfLZRcaAjciOixU0G/tM2oiewkibZTiRFLNf6h
-    BDT72l4Wg1D22BwPkpdhx9O+gmXyI44Y57KOoWo2vm4jZA8HFDdZFRSPkPzzeC1KkqBw
-    GA3bRBv6EMvWiEqaKBsymEy+CrOGDA1YLc0EOYl+JCgnEF1NMWAwfG7nBZCZ0YJ2r86z
-    z0va2Y2c6rfp5HwAc+KgkjV9eqaP8Srw1pWkE90fsi7ZadiU4pAmZ2T0/I+ij0pvnG9p
-    A6z6mBY5DK48Oq64Ha/vPOkUVo0+9yKMyWE1U7Rkdcd1Y0R9d8DwL+axRf+k8BxVKPjp
-    PWKA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NIGH/jrwDOoERs="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.34.5 DYNA|AUTH)
-    with ESMTPSA id Y02aa4xAJAXYcaW
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Fri, 19 Nov 2021 11:33:34 +0100 (CET)
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-Content-Type: text/plain;
-        charset=us-ascii
+        Fri, 19 Nov 2021 05:37:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637318094;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CbGLzkjgNaEv+2n1GPe5cuw5S72/BV9iwPVdzuqnx0E=;
+        b=GteTPlUB6Yea4KnsaqPsSydb6UXIgdb3hozuSBdi1Ant08DgjxjMnDnZxkXkTnHfPpZTb5
+        OCaG2+r2ZscB/l+8wIecbSD1zOyouPGGDPF3ErjlzqE7R/+eoS6dKOOSTDFOO3v358Pzgw
+        U4YpIt4bFIVx2+Nx8tUSXdJW+G5bQKY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-264-ZmCHQHdKO4aQUyRwvYZOHQ-1; Fri, 19 Nov 2021 05:34:51 -0500
+X-MC-Unique: ZmCHQHdKO4aQUyRwvYZOHQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E0541871810;
+        Fri, 19 Nov 2021 10:34:48 +0000 (UTC)
+Received: from [10.39.194.192] (unknown [10.39.194.192])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B31846787F;
+        Fri, 19 Nov 2021 10:34:31 +0000 (UTC)
+Message-ID: <82b0cbf0-0afb-29c8-ae8c-3d302f966014@redhat.com>
+Date:   Fri, 19 Nov 2021 11:34:30 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 15/15] KVM: X86: Always set gpte_is_8_bytes when direct
+ map
+Content-Language: en-US
+To:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     kvm@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-doc@vger.kernel.org
+References: <20211118110814.2568-1-jiangshanlai@gmail.com>
+ <20211118110814.2568-16-jiangshanlai@gmail.com>
+ <16b701db-e277-c4ef-e198-65a2dc6e3fdf@redhat.com>
+ <bcfa0e4d-f6ab-037a-9ce1-d0cd612422a5@linux.alibaba.com>
+ <65e1f2ca-5d89-d67f-2e0e-542094f89f05@redhat.com>
+ <1c3d50f5-8f42-f337-cecc-3115e73703e5@linux.alibaba.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <1c3d50f5-8f42-f337-cecc-3115e73703e5@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Date:   Fri, 19 Nov 2021 11:33:33 +0100
-Subject: Bug: arch/x86/kvm/x86.c:3241: Error: bad register name `%dil'
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
-        gregkh@linuxfoundation.org
-To:     David Woodhouse <dwmw@amazon.co.uk>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Message-Id: <903C3043-174A-4C67-9823-E433CD5DEA53@goldelico.com>
-X-Mailer: Apple Mail (2.3445.104.21)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paolo and David,
-I have a strange compile error which appeared in v5.15.3:
+On 11/19/21 11:30, Lai Jiangshan wrote:
+>> 
+> 
+> Hello
+> 
+> Since 13, and 14 is queued, could you also queue this one and I will
+> do the rename separately in the next patchset.  I found that the
+> intent of this patch is hidden in the lengthened squashed patch (of
+> this patch and the renaming patch).
 
-  CALL    scripts/checksyscalls.sh - due to target missing
-  CALL    scripts/atomic/check-atomics.sh - due to target missing
-  CHK     include/generated/compile.h - due to compile.h not in $(targets)
-  CC      arch/x86/kvm/x86.o - due to target missing
-arch/x86/kvm/x86.c: Assembler messages:
-arch/x86/kvm/x86.c:3241: Error: bad register name `%dil'
-scripts/Makefile.build:277: recipe for target 'arch/x86/kvm/x86.o' failed
-make[3]: *** [arch/x86/kvm/x86.o] Error 1
-scripts/Makefile.build:540: recipe for target 'arch/x86/kvm' failed
-make[2]: *** [arch/x86/kvm] Error 2
-Makefile:1868: recipe for target 'arch/x86' failed
-make[1]: *** [arch/x86] Error 2
-Makefile:350: recipe for target '__build_one_by_one' failed
-make: *** [__build_one_by_one] Error 2
+Then you can do the renaming first?
 
-My (cross-)compiler is a gcc 6.3.0 for 32 bit x86.
-
-It is neither with v5.15.2 nor v5.16-rc1 nor v5.14.20.
-
-The code line 3241 is:
-
-		asm volatile("1: xchgb %0, %2\n"
-			     "xor %1, %1\n"
-			     "2:\n"
-			     _ASM_EXTABLE_UA(1b, 2b)
-			     : "+r" (st_preempted),
-			       "+&r" (err)
-			     : "m" (st->preempted));
-
-This seems to have been introduced by:
-
-9d12bf19b278 KVM: x86: Fix recording of guest steal time / preempted status
-
-but it is a backport of commit 7e2175ebd695f17860c5bd4ad7616cce12ed4591
-which was also merged to 5.14.20.
-
-So maybe the backport is incomplete or has some hidden dependency?
-But only on the 5.15.y series?
-
-BR and thanks,
-Nikolaus Schaller
-
-
+Paolo
 
