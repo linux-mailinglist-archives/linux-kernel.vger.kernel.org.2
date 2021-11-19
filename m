@@ -2,86 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB8D456912
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 05:17:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C33456922
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 05:23:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234419AbhKSEUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 23:20:07 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:24086 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233983AbhKSEUG (ORCPT
+        id S233115AbhKSE0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 23:26:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231583AbhKSE02 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 23:20:06 -0500
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AJ1jgjW019269;
-        Fri, 19 Nov 2021 04:16:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2021-07-09;
- bh=AkNrTnsK4Nx5aHqL4a0yL4DcZ5lqLWUiyfR978RpBC4=;
- b=XolRhgkr4oVeO74yqlfPeMHNzcHMeIBGVNce7IB6mw0ol8SaVyy2mLNNiRkB9OTpHu0d
- mjLFSSq9TFSyxizYt2t3tTx/tof3L+YAgEKLbB43BilWMVv07nSxhEayjJTVCDpOdRPw
- 9UWqvt4R07p8XALqLyX8VOBBrfLp8Pqvu3B3yr0agHdTg7bWBJqLfRURa+qf9wxmRFSu
- 7M555SDcr0G5QFeAtPTkVlgdXoIQ9QwJB83oC+ondicm3jghvfkMKC04IOiPFd6fB0sX
- gHxXE2Bdu2CsfJg6MqdHHsQ84Bbhlynr7iPeH0htimfpV8mZVVTmZlB7C4t3Lh/7f92R Lg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3cd2w93kbc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Nov 2021 04:16:53 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AJ4FBms020355;
-        Fri, 19 Nov 2021 04:16:52 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 3caq4x7c23-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Nov 2021 04:16:52 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1AJ4GiwU024731;
-        Fri, 19 Nov 2021 04:16:51 GMT
-Received: from ca-mkp.mkp.ca.oracle.com (ca-mkp.ca.oracle.com [10.156.108.201])
-        by userp3020.oracle.com with ESMTP id 3caq4x7bx2-8;
-        Fri, 19 Nov 2021 04:16:51 +0000
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     asutoshd@codeaurora.org, stanley.chu@mediatek.com,
-        Bean Huo <huobean@gmail.com>, tomas.winkler@intel.com,
-        jejb@linux.ibm.com, bvanassche@acm.org, avri.altman@wdc.com,
-        cang@codeaurora.org, daejun7.park@samsung.com, beanhuo@micron.com,
-        alim.akhtar@samsung.com
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] scsi: ufs: ufshpb: Fix sparse warning in ufshpb_set_hpb_read_to_upiu()
-Date:   Thu, 18 Nov 2021 23:16:37 -0500
-Message-Id: <163729506336.21244.4172261199164965765.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211111222452.384089-1-huobean@gmail.com>
-References: <20211111222452.384089-1-huobean@gmail.com>
+        Thu, 18 Nov 2021 23:26:28 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D9F4C061758
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 20:23:27 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id m9so11281096iop.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 20:23:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=eTS1GK69RCI4oJxzikNG+dG1kEXvzkq40C70DiSwh3g=;
+        b=cQL4g+H2gJMJP3xWFQe/KzoyGqIo0AawlIVz6HOmgj7H+oswWn1JndJ03Ybadqh/iG
+         GFezuribER5iOwOrdhcpaLRDpEBug17B9goO8697VSiSH7/hueTiocUUiYuEl0npDX+N
+         7dyH4NYh7rX0U9rKSBeHM3T0tr/VTmzWLqZb6dR+9h3OxCcYEbSP6A9trr03z0AdHvvI
+         ahSumHf41Gk0/WiflEL2tp00pjSmNcuzmCnCLHtvda8y92IYt7+31MLaTkWsbzEryIp/
+         PD6PRbns5nLepTYC8LZKXr6gjYxNXB3IFy8QgwmShmHo9WUyNgKaHeXs5AvuxibzX411
+         sWzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=eTS1GK69RCI4oJxzikNG+dG1kEXvzkq40C70DiSwh3g=;
+        b=Vf+bzYQuNDcntkCbvQtB886nC4g3Hju/J5x+DEBpwg0R7S4a3F8WJvZ6AMKhZ+4J83
+         tQ5UWAiPDmW+fra6/JFhjN+W4f1N5KE2i7y8N8DuhDq8/vFpfJHr42fJmgiaYbsCKFpu
+         PH48MWQLMyO/QoJhduJ/jiN8Vs3cHHCz4opQe+JqMTskpdu6kdG2IIaPbaNgZe/QPkCW
+         fRy3c7srt/eVazFCE+LN6BCb/yxTaJVL6cPfSXuUzOwVumDP6bK0pI0WTGbta2yy7F43
+         7nt/P8zNel2WxT6y2vuDI/eQUBDc7T08iSq0MR5f/B63hCmB5PO896zyU2Xs5mb6s7C+
+         hbrg==
+X-Gm-Message-State: AOAM530rop2LKDbegoJ0scRW3yyHWPPfVGHNnFsFD5gkveflUcUdLoTD
+        gId4MM9SS3SSHAyV+6vFyLZFYP5pffN3tOFDa+I=
+X-Google-Smtp-Source: ABdhPJyoJdpS7Kf9B+KrNKG19mDCqtighLiNuAqL2cgDQj7eZ+/CBh/r4yLZu32slWVXs7TOdIJDzf3XHUtHh6UYg8Y=
+X-Received: by 2002:a05:6602:164a:: with SMTP id y10mr3074210iow.123.1637295806431;
+ Thu, 18 Nov 2021 20:23:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: pdgvvIzyWJs1R2GKjOqHFoYgLqGaqVRZ
-X-Proofpoint-ORIG-GUID: pdgvvIzyWJs1R2GKjOqHFoYgLqGaqVRZ
+Received: by 2002:a05:6602:2f03:0:0:0:0 with HTTP; Thu, 18 Nov 2021 20:23:25
+ -0800 (PST)
+Reply-To: anthonyrrobson@gmail.com
+From:   "Mr. Anthony Robson" <abcudday@gmail.com>
+Date:   Thu, 18 Nov 2021 20:23:25 -0800
+Message-ID: <CADXsGJFbR1Q52ZiBs8f3ijChf5RKGDYxHiXANAhCVcHdcbSS1A@mail.gmail.com>
+Subject: I look forward to hearing from you SOONEST!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Nov 2021 23:24:52 +0100, Bean Huo wrote:
+Hello Friend,
 
-> From: Bean Huo <beanhuo@micron.com>
-> 
-> This patch is to fix the following sparse warnings in ufshpb_set_hpb_read_to_upiu():
-> 
-> sparse warnings: (new ones prefixed by >>)
-> drivers/scsi/ufs/ufshpb.c:335:27: sparse: sparse: cast from restricted __be64
-> drivers/scsi/ufs/ufshpb.c:335:25: sparse: expected restricted __be64 [usertype] ppn_tmp
-> drivers/scsi/ufs/ufshpb.c:335:25: sparse: got unsigned long long [usertype]
-> 
-> [...]
+Below is the email i sent to you.
 
-Applied to 5.16/scsi-fixes, thanks!
+I am so sorry for sending you this unsolicited and unexpected email.
 
-[1/1] scsi: ufs: ufshpb: Fix sparse warning in ufshpb_set_hpb_read_to_upiu()
-      https://git.kernel.org/mkp/scsi/c/73185a13773a
+I actually got your contact from your country website and i decided to
+contact you directly about this business venture.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+I am contacting you in good faith and this business investment
+proposal will be of mutual benefit for us. I have a business proposal
+in huge sum amount of US$800,000 000 00 (Eight Hundred  Million United
+state dollars only} to be transferred to any safe account with your
+assistance.
+
+Contact me back via my email if you are interested in this business
+investment proposal and if you can be trusted for further briefing and
+details.
+I look forward to hearing from you SOONEST!
+
+Kind Regards.
+Mr. Anthony Robson.
