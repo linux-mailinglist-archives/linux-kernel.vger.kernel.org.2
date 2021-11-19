@@ -2,116 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D4345677F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 02:36:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3375B456781
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 02:38:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233192AbhKSBjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 20:39:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbhKSBjJ (ORCPT
+        id S233252AbhKSBlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 20:41:24 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:52251 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229754AbhKSBlY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 20:39:09 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F9CC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 17:36:08 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id 206so2128891pgb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 17:36:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0siYFiisAqHr/97Ze11iN/VK6lSDS+auEVlo++cpff0=;
-        b=TH4FHegUqejaldo7dCYtnUM06tnTPpFwUhy7SPxR6roVN2VmHE0Mt5hQwChU5GqQI3
-         3dFTc1Co7q/ptfcZPG3zn8wVvT418cWTWhlRW1hVXXzGmof+AbRolxPAh59vaLqY34lB
-         +fATqj5MPETz4+K1vUkV4fhKvkvLhMCQ2DebNC6grDUtZwtZRgvM3azZAloc3JBXEKGA
-         GM/7clwS5xojCLV2EKuT5v3Uki/EP1O6lWwmkSmSnL0IEm3NNkKo3QHtQK6Uu6spdGo0
-         u2/LMDw54H9d9XLg/wFmkp+wexKVzVSfLZGeDdNUVF0qit+EpkQ/sxiK7PfHAKswUs54
-         1g9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0siYFiisAqHr/97Ze11iN/VK6lSDS+auEVlo++cpff0=;
-        b=GriXj+yGiVokqGpfIpMwEPtcmUpOG5QjTPD/ijtBuJ5UibTfRDZn0jn3ETPBBErVKZ
-         jO81s9YF344jOB0V5ji3wjMGf8tJ+/6AxNoOU55NkFhA2akPB6JoOxNwlQIIxlbiHsWN
-         zj34pDuTRNf7e77iWACntnApNBKVVbn1m6/LCpokMhq2sgHhBTEaNGpQWvqsuuV5+R46
-         HGvsD1NkNZTX8wuREcriK11x2TA6sPVAuNZWrMnWvUu/9fU/48gz7McOA7HNc7Jq8BcA
-         agnEThL6YSlwJOXV6APnXWbybbwLS5Yp1GR01AcF6Tow1T2qy0BxQGRkl+wahcvAsh3z
-         jABA==
-X-Gm-Message-State: AOAM530Fmp8srEtC5pn5u0GXX9fG0S5qCkKuQPucL43BmKiSXUAJg7qK
-        vvVn61ZjBwcWwgW7U3yw0etGAXWV7g7rVXXb1KPCXw==
-X-Google-Smtp-Source: ABdhPJxDVwRXpuH635vv64jKm/oKcgtRJBhlnW1rW9plKxO9nrbNpeEpuyEQkQjnF15mjqMJY1h27YeqeIojkJAifAg=
-X-Received: by 2002:a63:6302:: with SMTP id x2mr14826874pgb.5.1637285768022;
- Thu, 18 Nov 2021 17:36:08 -0800 (PST)
+        Thu, 18 Nov 2021 20:41:24 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0UxFU.g4_1637285897;
+Received: from 30.47.195.12(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0UxFU.g4_1637285897)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 19 Nov 2021 09:38:19 +0800
+Message-ID: <d74f249a-5dba-e45b-0779-65fad1b63ba6@linux.alibaba.com>
+Date:   Fri, 19 Nov 2021 09:38:17 +0800
 MIME-Version: 1.0
-References: <YZb7PgQ6Bw26cpsh@google.com>
-In-Reply-To: <YZb7PgQ6Bw26cpsh@google.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 18 Nov 2021 17:35:57 -0800
-Message-ID: <CAPcyv4h_S_fgD8EY2qX9zqFPz__1uCByZUoPvosZDUvjRp3Jzg@mail.gmail.com>
-Subject: Re: mm: gdb fails if binary is on a DAX-enabled filesystem
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Jeff Moyer <jmoyer@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH V5 03/50] x86/traps: Remove stack-protector from traps.c
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>
+References: <20211110115736.3776-1-jiangshanlai@gmail.com>
+ <20211110115736.3776-4-jiangshanlai@gmail.com>
+ <20211118195504.GM174703@worktop.programming.kicks-ass.net>
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+In-Reply-To: <20211118195504.GM174703@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 5:18 PM Sergey Senozhatsky
-<senozhatsky@chromium.org> wrote:
->
-> Hello,
->
-> We are running into issues on a DAX enabled system: both
-> __copy_from_user_inatomic() fail.
->
-> [   28.914865] ------------[ cut here ]------------
-> [   28.915800] WARNING: CPU: 0 PID: 106 at mm/memory.c:2822 wp_page_copy+0x136/0x320
-> [   28.916857] CPU: 0 PID: 106 Comm: gdb Not tainted 5.15.0-01277-g6be711548944 #1
-> [   28.917823] Hardware name: ChromiumOS crosvm, BIOS 0
-> [   28.918455] RIP: 0010:wp_page_copy+0x136/0x320
-> [   28.919001] Code: f1 79 00 4c 89 7b 50 48 8b 43 38 31 d2 49 39 07 75 23 48 8b 7d c8 48 8b 75 c0 ba 00 10 00 00 e8 6f 23 78 00 b2 01 85 c0 74 0b <0f> 0b 48 8b 7d c8 e8 8e 1f 78 00 48 8b 7b 58 88 55 c8 e8 2e f2 79
-> [   28.920642] RSP: 0018:ffffc900005dfbd8 EFLAGS: 00010206
-> [   28.921135] RAX: 0000000000001000 RBX: ffffc900005dfc40 RCX: 0000000000001000
-> [   28.921762] RDX: 0000000000001001 RSI: 0000000000448000 RDI: ffff8880007bb000
-> [   28.922410] RBP: ffffc900005dfc28 R08: ffff8880031884c8 R09: 0000000000000000
-> [   28.923058] R10: ffff88800f8234c8 R11: 0000000000000000 R12: ffffea000001eec0
-> [   28.923718] R13: 0000000000000000 R14: ffff88800e18e630 R15: ffff888000884240
-> [   28.924404] FS:  00007e5b49744180(0000) GS:ffff88800f800000(0000) knlGS:0000000000000000
-> [   28.925146] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   28.925688] CR2: 0000000000448000 CR3: 000000000e0d6000 CR4: 0000000000350eb0
-> [   28.926368] Call Trace:
-> [   28.926622]  __handle_mm_fault+0x67e/0xbd7
-> [   28.927018]  handle_mm_fault+0x16b/0x23d
-> [   28.927390]  __get_user_pages+0x2d6/0x4b7
-> [   28.927797]  __get_user_pages_remote+0xbe/0x20c
-> [   28.928224]  __access_remote_vm+0xb3/0x1c8
-> [   28.928655]  ptrace_access_vm+0x97/0xb0
-> [   28.929036]  generic_ptrace_pokedata+0x22/0x31
-> [   28.929452]  arch_ptrace+0x1ce/0x1dd
-> [   28.929801]  __do_sys_ptrace+0xa9/0xda
-> [   28.930161]  do_syscall_64+0x75/0x8b
-> [   28.930511]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [   28.930996] RIP: 0033:0x7e5b4c86fe5a
-> [   28.931332] Code: 70 41 83 f8 03 c7 44 24 10 08 00 00 00 48 89 44 24 18 48 8d 44 24 30 8b 70 08 4c 0f 43 d1 48 89 44 24 20 b8 65 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 3e 48 85 c0 78 06 41 83 f8 02 76 1b 48 8b 4c
-> [   28.933086] RSP: 002b:00007ffdc3369150 EFLAGS: 00000202 ORIG_RAX: 0000000000000065
-> [   28.933767] RAX: ffffffffffffffda RBX: 0000000000448620 RCX: 00007e5b4c86fe5a
-> [   28.934476] RDX: 0000000000448620 RSI: 000000000000006d RDI: 0000000000000005
-> [   28.935206] RBP: 0000000000000001 R08: 0000000000000004 R09: 0000000000448620
-> [   28.935916] R10: 00841f0f2e6666cc R11: 0000000000000202 R12: 0000000000000001
-> [   28.936672] R13: 00841f0f2e6666cc R14: 0000000000000000 R15: 00007e5b49743958
-> [   28.937389] ---[ end trace 2808c0ffd7259839 ]---
-> Program received signal SIGSEGV, Segmentation fault.
->
-> Is there anything we can do about it?
 
-I'll take a look, can you send a bit more info about your
-configuration? Which filesystem, and which driver is providing the dax
-access?
+
+On 2021/11/19 03:55, Peter Zijlstra wrote:
+> On Wed, Nov 10, 2021 at 07:56:49PM +0800, Lai Jiangshan wrote:
+>> From: Lai Jiangshan <laijs@linux.alibaba.com>
+>>
+>> When stack-protector is enabled, the compiler adds some instrument code
+>> at the beginning and the end of some functions. Many functions in traps.c
+>> are non-instrumentable.  Moreover, stack-protector code in the beginning
+>> of the affected function accesses the canary that might be watched by
+>> hardware breakpoints which also violate the non-instrumentable
+>> nature of some functions and might cause infinite recursive #DB because
+>> the canary is accessed before resetting the dr7.
+>>
+>> So it is better to remove stack-protector from traps.c.
+>>
+>> It is also prepared for later patches that move some entry code into
+>> traps.c, some of which can NOT use percpu register until gsbase is
+>> properly switched.  And stack-protector depends on the percpu register
+>> to work.
+>>
+>> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+>> ---
+>>   arch/x86/kernel/Makefile | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
+>> index 2ff3e600f426..8ac45801ba8b 100644
+>> --- a/arch/x86/kernel/Makefile
+>> +++ b/arch/x86/kernel/Makefile
+>> @@ -50,6 +50,7 @@ KCOV_INSTRUMENT		:= n
+>>   
+>>   CFLAGS_head$(BITS).o	+= -fno-stack-protector
+>>   CFLAGS_cc_platform.o	+= -fno-stack-protector
+>> +CFLAGS_traps.o		+= -fno-stack-protector
+> 
+> Well, there's a lot more noinstr than just in traps. 
+
+Although it is stupid to put hardware break point on the stack canary,
+it is fatal only in traps.c when the canary is accessed before
+resetting the dr7 in #DB handler.
+
+And this only happens when the administer of the system is deliberately
+hurting the system, so the fix is not strongly required in this problem.
+
+The best way is to disallow hw_breakpoint to watch the stack canary.
+
+The later patch (patch39) puts __entry_code into traps.c which makes
+no_stack_protector is strongly required, so this patch just simply puts
+the -fno-stack-protector on traps.c.
+
+> There's also real C
+> code in traps. This isn't really a solution.
+
+This patch focuses "hardware break point on the stack canary" only.
+
+It is not a full solution [for other unhappiness when noistr is watching
+by stack protector].
+
+I will switch to disallow hw_breakpoint to watch the stack canary.
+
+> 
+> I think GCC has recently grown __attribute__((no_stack_protector)),
+> which should be added to noinstr (GCC-11 and above).
+> 
+> Additionally we could add code to objtool to detect this problem.
+> 
