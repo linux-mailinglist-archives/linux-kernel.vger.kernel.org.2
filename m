@@ -2,487 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA0C4568CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 04:51:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A8BC4568D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 04:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234358AbhKSDyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 22:54:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234323AbhKSDyR (ORCPT
+        id S233565AbhKSDz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 22:55:58 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:27145 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229734AbhKSDz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 22:54:17 -0500
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FC3C06173E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 19:51:16 -0800 (PST)
-Received: by mail-oo1-xc29.google.com with SMTP id x1-20020a4aea01000000b002c296d82604so3274115ood.9
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 19:51:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1nj1ASBa7FEq7kZAc1bZKU4KaQNBQCHKjgiWn65lhj0=;
-        b=YWAxxAvU5mkLGWGpALQscnzj1Avt3GgAZzmksPC4B1efQ1fQ8u+dWLpXy1kcQ42Mfh
-         Z0d7yRqj+hBNH++zPnEdIj4HNo565bNDobn3GV/Sza5C60ViAhyPABgd38bplh/L+Od6
-         T+vm4wQw7oTZYgs+dMlG2XulLjrPPOsfiYUP9vr0Mv8iY6AgnIFdMDReUpWf+8upon1H
-         K9/7vGH+da6rGvxXcj2abCQrvG+Q4QLh276bBmpENht1LQIfhmQJzP6E7ZB557g7p3sS
-         gRRYOA/Y4Z1ax0IhooXDR5Gf+G1u2BDAynzKuarkNKLTQCT07CXSyAg+GE40z+vieEMw
-         mm4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1nj1ASBa7FEq7kZAc1bZKU4KaQNBQCHKjgiWn65lhj0=;
-        b=nL7OnaZbb0rzC/tPxkTMmElhhDZMAIdDJgBvKZj/OgJ2JCi3+rPB24uKh181OqQt1b
-         /hEzz02rQm70yK/eveE2odU3WCnJ7p4xTwRR5odj5qvRTARRfAl2yyDCLyyojyDf88c3
-         6kV/ksHR6nW5YDoBBHusUcau5+8icMZZtgY6YBhH36v0Dhj/nP7Uw4+5EKiV0I6CixJL
-         XmqzPQkgOAjGk7+oNibyaYHXxTL1XyQRiueBkS4qsQ2iUUtK2mb5wSqGr1D6OomNDz9N
-         /R6MvTsZiEWlwRLt6LWWLb2jnhZu2+G1s8FQUMFhxqHtLS9SrG7J8X646+eorvY+xcY1
-         ZY5w==
-X-Gm-Message-State: AOAM531EmyqX9w7PLZ+XTsfQSI0CC6JupPsjjLgWWH9glaOjKPNYe49l
-        06qhgCRkZC7kbGGcx7UTSCk2Ug==
-X-Google-Smtp-Source: ABdhPJzKWLfNAekvebL6fYNjAZQH5eDSesUM9fZjFGBHoGFTycUNF83k3qAz9ZFpiFrd4PbsNLWbWA==
-X-Received: by 2002:a4a:9d16:: with SMTP id w22mr16360072ooj.66.1637293875192;
-        Thu, 18 Nov 2021 19:51:15 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id z14sm334110otk.36.2021.11.18.19.51.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 19:51:14 -0800 (PST)
-Date:   Thu, 18 Nov 2021 21:51:10 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Katherine Perez <kaperez@linux.microsoft.com>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Felipe Balbi <balbi@kernel.org>
-Subject: Re: [RESEND PATCH 1/2] arm64: dts: add minimal DTS for Microsoft
- Surface Duo2
-Message-ID: <YZcfLkzinKwKhhJK@builder.lan>
-References: <20211116235045.3748572-1-kaperez@linux.microsoft.com>
- <20211116235045.3748572-2-kaperez@linux.microsoft.com>
+        Thu, 18 Nov 2021 22:55:57 -0500
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HwN3n6bMCz1DJZv
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 11:50:29 +0800 (CST)
+Received: from dggpeml500005.china.huawei.com (7.185.36.59) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 19 Nov 2021 11:52:55 +0800
+Received: from [10.174.178.155] (10.174.178.155) by
+ dggpeml500005.china.huawei.com (7.185.36.59) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.15; Fri, 19 Nov 2021 11:52:54 +0800
+To:     <linux-kernel@vger.kernel.org>
+CC:     "Wangkefeng (OS Kernel Lab)" <wangkefeng.wang@huawei.com>
+From:   Yongqiang Liu <liuyongqiang13@huawei.com>
+Subject: [BUG] kmemleak: unable to handle page fault for address:
+ fffffbfff4182000
+Message-ID: <c85edd7f-b26d-b511-6807-cb9b126bf6cc@huawei.com>
+Date:   Fri, 19 Nov 2021 11:52:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211116235045.3748572-2-kaperez@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.155]
+X-ClientProxiedBy: dggeme712-chm.china.huawei.com (10.1.199.108) To
+ dggpeml500005.china.huawei.com (7.185.36.59)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 16 Nov 17:50 CST 2021, Katherine Perez wrote:
+Hi,
 
-> This is a minimal devicetree for Microsoft Surface Duo 2 with SM8350
-> Chipset
-> 
+We found that the kmemleak not worked very well with KASAN enabled on 
+linux master
+when we insmod and rmmod modules frequently:
 
-Thanks Katherine, really nice to see this initial support. Looking
-forward to see it grow. Just two small nits below.
+BUG: unable to handle page fault for address: fffffbfff4182000
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 123fd0067 P4D 123fd0067 PUD 123fcc067 PMD 107a61067 PTE 0
+Oops: 0000 [#1] SMP KASAN
+CPU: 2 PID: 185 Comm: kmemleak Not tainted 5.15.0 #18
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 
+rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+RIP: 0010:crc32_le_base+0x78/0x590
+Code: ec 48 89 44 24 10 48 8d 44 05 fc 48 bd 00 00 00 00 00 fc ff df 48 
+89 04 24 e8 84 94 04 ff 49 8d 7c 24 04 48 89 f8 48 c1 e8 03 <0f> b6 14 
+28 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 d3
+RSP: 0018:ffff888012507dd0 EFLAGS: 00010806
+RAX: 1ffffffff4182000 RBX: 0000000000003600 RCX: 0000000000000000
+RDX: ffff8880124c0040 RSI: ffffffff823e5ddc RDI: ffffffffa0c10000
+RBP: dffffc0000000000 R08: 0000000000000004 R09: ffffed10024a0fbd
+R10: 0000000000000003 R11: ffffed10024a0fbd R12: ffffffffa0c0fffc
+R13: ffffffffa0c0fffc R14: ffff88801dac87fc R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff88810b700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfff4182000 CR3: 000000004a66d005 CR4: 0000000000770ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+? _raw_spin_unlock_irqrestore+0x40/0x60
+kmemleak_scan+0x735/0xca0
+? scan_gray_list+0x430/0x430
+? __mutex_lock_slowpath+0x10/0x10
+? __mutex_unlock_slowpath.isra.18+0x320/0x320
+? __kthread_parkme+0xc7/0x140
+? kmemleak_write.cold.31+0x29/0x29
+kmemleak_scan_thread+0x98/0xb3
+kthread+0x346/0x420
+? set_kthread_struct+0x110/0x110
+ret_from_fork+0x1f/0x30
+Modules linked in: ubi(+) nandsim [last unloaded: nandsim]
+CR2: fffffbfff4182000
+---[ end trace 122ede50ee8d0c8a ]---
 
-> Signed-off-by: Katherine Perez <kaperez@linux.microsoft.com>
-> ---
->  arch/arm64/boot/dts/qcom/Makefile             |   1 +
->  .../qcom/sm8350-microsoft-surface-duo2.dts    | 363 ++++++++++++++++++
->  2 files changed, 364 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/qcom/sm8350-microsoft-surface-duo2.dts
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-> index 6b816eb33309..a8cc6bd3c423 100644
-> --- a/arch/arm64/boot/dts/qcom/Makefile
-> +++ b/arch/arm64/boot/dts/qcom/Makefile
-> @@ -106,4 +106,5 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-mtp.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-sony-xperia-edo-pdx203.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-sony-xperia-edo-pdx206.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-hdk.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-microsoft-surface-duo2.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-mtp.dtb
-> diff --git a/arch/arm64/boot/dts/qcom/sm8350-microsoft-surface-duo2.dts b/arch/arm64/boot/dts/qcom/sm8350-microsoft-surface-duo2.dts
-> new file mode 100644
-> index 000000000000..941eac43614f
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/sm8350-microsoft-surface-duo2.dts
-> @@ -0,0 +1,363 @@
-> +// SPDX-License-Identifier: BSD-3-Clause
-> +/*
-> + * Copyright (C) 2021, Microsoft Corporation
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
-> +#include "sm8350.dtsi"
-> +#include "pm8350.dtsi"
-> +#include "pm8350b.dtsi"
-> +#include "pm8350c.dtsi"
-> +#include "pmk8350.dtsi"
-> +#include "pmr735a.dtsi"
-> +#include "pmr735b.dtsi"
-> +
-> +/ {
-> +	model = "Microsoft Surface Duo 2";
-> +	compatible = "microsoft,surface-duo2", "qcom,sm8350";
-> +
+and we found the address belongs to kasan shadow region. the kmemleak 
+and kasan may not handle concurrency very well. I have tried disable 
+kasan instrumentation of kmemleak but not solved it.
+the problem was also found in linux-5.10. And linux-5.10 got another 
+stack sometimes, I'm not
+sure If the problem is the same:
 
-Can you please add:
+BUG: unable to handle page fault for address: fffffbfff40b7000
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 123fd0067 P4D 123fd0067 PUD 123fcc067 PMD 10aa2c067 PTE 0
+Oops: 0000 [#1] SMP KASAN
+CPU: 0 PID: 179 Comm: kmemleak Tainted: G    B 
+5.10.0-10155-g3681f87982b3-dirty #154
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 
+rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+RIP: 0010:scan_block+0x5d/0x240
+Code: eb 0f 83 98 01 00 00 49 bc 00 00 00 00 00 fc ff df e8 17 ff ff ff 
+85 c0 0f 85 81 01 00 00 e8 0a 4f fa ff 48 89 d8 48 c1 e8 03 <42> 80 3c 
+20 00 0f 85 87 01 00 00 48 8b 2b e8 d0 4e fa ff 48 39 2d
+RSP: 0018:ffff88800faa7db8 EFLAGS: 00010806
+RAX: 1ffffffff40b7000 RBX: ffffffffa05b8000 RCX: ffffffff811f89cb
+RDX: 1ffff110204991a0 RSI: 0000000000000008 RDI: ffff8881024c8d00
+RBP: ffffffffa05b9000 R08: ffffed10204991a1 R09: ffffed10204991a1
+R10: ffff8881024c8d07 R11: fffed10204991a0 R12: dffffc0000000000
+R13: ffffffffa05b8ff9 R14: ffff8880457e1488 R15: 0000000000000046
+FS:  0000000000000000(0000) GS:ffff88810b400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfff40b7000 CR3: 000000006e88a005 CR4: 0000000000770ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+scan_gray_list+0x25a/0x430
+kmemleak_scan+0x672/0xd80
+? kmemleak_seq_show+0x170/0x170
+? __mutex_lock_slowpath+0x10/0x10
+? kmemleak_write.cold.21+0x29/0x29
+kmemleak_scan_thread+0x98/0xb3
+kthread+0x32d/0x3f0
+? __kthread_cancel_work+0x190/0x190
+ret_from_fork+0x1f/0x30
+Modules linked in: ubifs ubi nandsim [last unloaded: nandsim]
+CR2: fffffbfff40b7000
+---[ end trace 48e75df3be17140f ]---
 
-	chassis-type = "handset";
+Kind regards,
 
-> +	aliases {
-> +		serial0 = &uart2;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +
-> +	vph_pwr: vph-pwr-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vph_pwr";
-> +		regulator-min-microvolt = <3700000>;
-> +		regulator-max-microvolt = <3700000>;
-> +
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +	};
-> +};
-> +
-> +&adsp {
-> +	status = "okay";
-> +	firmware-name = "qcom/sm8350/adsp.mbn";
+Yongqiang Liu
 
-I have hopes that we'll be able to push some engineering signed versions
-of these firmware files, for e.g. the SM8350 HDK one day.
-
-When that happens that would conflict with your firmware path and I
-don't expect your devices to accept the "invalid" signature of those
-files.
-
-So I would prefer if you follow Felipe's naming scheme and put these
-(this and the other remoteprocs) in:
-
-  qcom/sm8350/microsoft/*
-
-Thanks,
-Bjorn
-
-> +};
-> +
-> +&apps_rsc {
-> +	pm8350-rpmh-regulators {
-> +		compatible = "qcom,pm8350-rpmh-regulators";
-> +		qcom,pmic-id = "b";
-> +
-> +		vdd-s1-supply = <&vph_pwr>;
-> +		vdd-s2-supply = <&vph_pwr>;
-> +		vdd-s3-supply = <&vph_pwr>;
-> +		vdd-s4-supply = <&vph_pwr>;
-> +		vdd-s5-supply = <&vph_pwr>;
-> +		vdd-s6-supply = <&vph_pwr>;
-> +		vdd-s7-supply = <&vph_pwr>;
-> +		vdd-s8-supply = <&vph_pwr>;
-> +		vdd-s9-supply = <&vph_pwr>;
-> +		vdd-s10-supply = <&vph_pwr>;
-> +		vdd-s11-supply = <&vph_pwr>;
-> +		vdd-s12-supply = <&vph_pwr>;
-> +
-> +		vdd-l1-l4-supply = <&vreg_s11b_0p95>;
-> +		vdd-l2-l7-supply = <&vreg_bob>;
-> +		vdd-l3-l5-supply = <&vreg_bob>;
-> +		vdd-l6-l9-l10-supply = <&vreg_s11b_0p95>;
-> +		vdd-l8-supply = <&vreg_s2c_0p8>;
-> +
-> +		vreg_s10b_1p8: smps10 {
-> +			regulator-name = "vreg_s10b_1p8";
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <1800000>;
-> +		};
-> +
-> +		vreg_s11b_0p95: smps11 {
-> +			regulator-name = "vreg_s11b_0p95";
-> +			regulator-min-microvolt = <752000>;
-> +			regulator-max-microvolt = <1000000>;
-> +		};
-> +
-> +		vreg_s12b_1p25: smps12 {
-> +			regulator-name = "vreg_s12b_1p25";
-> +			regulator-min-microvolt = <1224000>;
-> +			regulator-max-microvolt = <1360000>;
-> +		};
-> +
-> +		vreg_l1b_0p88: ldo1 {
-> +			regulator-name = "vreg_l1b_0p88";
-> +			regulator-min-microvolt = <912000>;
-> +			regulator-max-microvolt = <920000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l2b_3p07: ldo2 {
-> +			regulator-name = "vreg_l2b_3p07";
-> +			regulator-min-microvolt = <3072000>;
-> +			regulator-max-microvolt = <3072000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l3b_0p9: ldo3 {
-> +			regulator-name = "vreg_l3b_0p9";
-> +			regulator-min-microvolt = <904000>;
-> +			regulator-max-microvolt = <904000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l5b_0p88: ldo5 {
-> +			regulator-name = "vreg_l3b_0p9";
-> +			regulator-min-microvolt = <880000>;
-> +			regulator-max-microvolt = <888000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l6b_1p2: ldo6 {
-> +			regulator-name = "vreg_l6b_1p2";
-> +			regulator-min-microvolt = <1200000>;
-> +			regulator-max-microvolt = <1208000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l7b_2p96: ldo7 {
-> +			regulator-name = "vreg_l7b_2p96";
-> +			regulator-min-microvolt = <2400000>;
-> +			regulator-max-microvolt = <3008000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l9b_1p2: ldo9 {
-> +			regulator-name = "vreg_l9b_1p2";
-> +			regulator-min-microvolt = <1200000>;
-> +			regulator-max-microvolt = <1200000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +	};
-> +
-> +	pm8350c-rpmh-regulators {
-> +		compatible = "qcom,pm8350c-rpmh-regulators";
-> +		qcom,pmic-id = "c";
-> +
-> +		vdd-s1-supply = <&vph_pwr>;
-> +		vdd-s2-supply = <&vph_pwr>;
-> +		vdd-s3-supply = <&vph_pwr>;
-> +		vdd-s4-supply = <&vph_pwr>;
-> +		vdd-s5-supply = <&vph_pwr>;
-> +		vdd-s6-supply = <&vph_pwr>;
-> +		vdd-s7-supply = <&vph_pwr>;
-> +		vdd-s8-supply = <&vph_pwr>;
-> +		vdd-s9-supply = <&vph_pwr>;
-> +		vdd-s10-supply = <&vph_pwr>;
-> +
-> +		vdd-l1-l12-supply = <&vreg_s1c_1p86>;
-> +		vdd-l2-l8-supply = <&vreg_s1c_1p86>;
-> +		vdd-l3-l4-l5-l7-l13-supply = <&vreg_bob>;
-> +		vdd-l6-l9-l11-supply = <&vreg_bob>;
-> +		vdd-l10-supply = <&vreg_s12b_1p25>;
-> +
-> +		vdd-bob-supply = <&vph_pwr>;
-> +
-> +		vreg_s1c_1p86: smps1 {
-> +			regulator-name = "vreg_s1c_1p86";
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <1952000>;
-> +		};
-> +
-> +		vreg_s2c_0p8: smps2 {
-> +			regulator-name = "vreg_s2c_0p8";
-> +			regulator-min-microvolt = <640000>;
-> +			regulator-max-microvolt = <1000000>;
-> +		};
-> +
-> +		vreg_s10c_1p05: smps10 {
-> +			regulator-name = "vreg_s10c_1p05";
-> +			regulator-min-microvolt = <1048000>;
-> +			regulator-max-microvolt = <1128000>;
-> +		};
-> +
-> +		vreg_bob: bob {
-> +			regulator-name = "vreg_bob";
-> +			regulator-min-microvolt = <3008000>;
-> +			regulator-max-microvolt = <3960000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_AUTO>;
-> +		};
-> +
-> +		vreg_l1c_1p8: ldo1 {
-> +			regulator-name = "vreg_l1c_1p8";
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <1800000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l2c_1p8: ldo2 {
-> +			regulator-name = "vreg_l2c_1p8";
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <1800000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l3c_3p0: ldo3 {
-> +			regulator-name = "vreg_l3c_3p0";
-> +			regulator-min-microvolt = <3008000>;
-> +			regulator-max-microvolt = <3008000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l4c_uim1: ldo4 {
-> +			regulator-name = "vreg_l4c_uim1";
-> +			regulator-min-microvolt = <1704000>;
-> +			regulator-max-microvolt = <3000000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l5c_uim2: ldo5 {
-> +			regulator-name = "vreg_l5c_uim2";
-> +			regulator-min-microvolt = <1704000>;
-> +			regulator-max-microvolt = <3000000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l6c_1p8: ldo6 {
-> +			regulator-name = "vreg_l6c_1p8";
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <2960000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l7c_3p0: ldo7 {
-> +			regulator-name = "vreg_l7c_3p0";
-> +			regulator-min-microvolt = <3008000>;
-> +			regulator-max-microvolt = <3008000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l8c_1p8: ldo8 {
-> +			regulator-name = "vreg_l8c_1p8";
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <1800000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l9c_2p96: ldo9 {
-> +			regulator-name = "vreg_l9c_2p96";
-> +			regulator-min-microvolt = <2960000>;
-> +			regulator-max-microvolt = <3008000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l10c_1p2: ldo10 {
-> +			regulator-name = "vreg_l10c_1p2";
-> +			regulator-min-microvolt = <1200000>;
-> +			regulator-max-microvolt = <1200000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l11c_2p96: ldo11 {
-> +			regulator-name = "vreg_l11c_2p96";
-> +			regulator-min-microvolt = <2400000>;
-> +			regulator-max-microvolt = <3008000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l12c_1p8: ldo12 {
-> +			regulator-name = "vreg_l12c_1p8";
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <2000000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-> +		vreg_l13c_3p0: ldo13 {
-> +			regulator-name = "vreg_l13c_3p0";
-> +			regulator-min-microvolt = <3000000>;
-> +			regulator-max-microvolt = <3000000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +	};
-> +};
-> +
-> +&cdsp {
-> +	status = "okay";
-> +	firmware-name = "qcom/sm8350/cdsp.mbn";
-> +};
-> +
-> +&ipa {
-> +	status = "okay";
-> +
-> +	memory-region = <&pil_ipa_fw_mem>;
-> +};
-> +
-> +&qupv3_id_0 {
-> +	status = "okay";
-> +};
-> +
-> +&slpi {
-> +	status = "okay";
-> +	firmware-name = "qcom/sm8350/slpi.mbn";
-> +};
-> +
-> +&tlmm {
-> +	gpio-reserved-ranges = <9 8>;
-> +};
-> +
-> +&uart2 {
-> +	status = "okay";
-> +};
-> +
-> +&ufs_mem_hc {
-> +	status = "okay";
-> +
-> +	reset-gpios = <&tlmm 203 GPIO_ACTIVE_LOW>;
-> +
-> +	vcc-supply = <&vreg_l7b_2p96>;
-> +	vcc-max-microamp = <800000>;
-> +	vccq-supply = <&vreg_l9b_1p2>;
-> +	vccq-max-microamp = <900000>;
-> +};
-> +
-> +&ufs_mem_phy {
-> +	status = "okay";
-> +
-> +	vdda-phy-supply = <&vreg_l5b_0p88>;
-> +	vdda-max-microamp = <91600>;
-> +	vdda-pll-supply = <&vreg_l6b_1p2>;
-> +	vdda-pll-max-microamp = <19000>;
-> +};
-> +
-> +&usb_1 {
-> +	dr_mode = "peripheral";
-> +};
-> +
-> +&usb_1_hsphy {
-> +	status = "okay";
-> +
-> +	vdda-pll-supply = <&vreg_l5b_0p88>;
-> +	vdda18-supply = <&vreg_l1c_1p8>;
-> +	vdda33-supply = <&vreg_l2b_3p07>;
-> +};
-> +
-> +&usb_1_qmpphy {
-> +	status = "okay";
-> +
-> +	vdda-phy-supply = <&vreg_l6b_1p2>;
-> +	vdda-pll-supply = <&vreg_l1b_0p88>;
-> +};
-> +
-> +&usb_2 {
-> +	status = "okay";
-> +};
-> +
-> +&usb_2_hsphy {
-> +	status = "okay";
-> +
-> +	vdda-pll-supply = <&vreg_l5b_0p88>;
-> +	vdda18-supply = <&vreg_l1c_1p8>;
-> +	vdda33-supply = <&vreg_l2b_3p07>;
-> +};
-> +
-> +&usb_2_qmpphy {
-> +	status = "okay";
-> +
-> +	vdda-phy-supply = <&vreg_l6b_1p2>;
-> +	vdda-pll-supply = <&vreg_l5b_0p88>;
-> +};
-> -- 
-> 2.31.1
-> 
