@@ -2,166 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36857456EB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 13:11:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03214456EBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 13:17:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234835AbhKSMOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 07:14:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:40843 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230385AbhKSMOr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 07:14:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637323905;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=mYODhovx0E6MMGnAGcc0cLeU5iWwi46oEcCmHIiD4G8=;
-        b=Lb9ffPGMs5eIYrQQWB5h5TVUS9nOeWWsQs7uGhfsITy4LxRgwJZGn2IHwPPCNIIoS39716
-        mBsdaO7r/2TX0N/UmXCs8NrqfOIHLNgyPoFE/CMWbblGJ5tFKy+GxiWH4KSXXBpONCj7vU
-        SSoUm9xac0SVo/MT9/nE+O0sAVWEVW0=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-411-0wnsEERtPwa31viCtXVB9Q-1; Fri, 19 Nov 2021 07:11:44 -0500
-X-MC-Unique: 0wnsEERtPwa31viCtXVB9Q-1
-Received: by mail-wm1-f71.google.com with SMTP id j193-20020a1c23ca000000b003306ae8bfb7so3963181wmj.7
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 04:11:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mYODhovx0E6MMGnAGcc0cLeU5iWwi46oEcCmHIiD4G8=;
-        b=mye5deV9CHQF8pYQ+VyZGNUNTIRTIkIZKi7u6oCEFXKFGRWw+VNYif+A9K8EfPLedL
-         oGLhWukVS94sU50i4BQH8pcjrCVTosD6QoVz5VesvYg83wZqmTifOLWJoboohKiKBt9g
-         jxPQNlvhs/xY86bd/XZWAo92HtDZo+tiFlxVPbZNjsi9tQNmliFO1WLGNY87BSayvtGF
-         1r44/ftPVvrXbAGy29Y30lozMP56o68BMupt0AhyGNfxsy+x9EZQFYZJpX5QV886nwIf
-         vi2AhnBzJPI5q4LM4L/Be/YqAjRBZ2CYaPVpvqw6O1KEaBgE5eOF3H07cCghhPFCkRlc
-         l9UQ==
-X-Gm-Message-State: AOAM531PpB18GQEc6SkD9OiKVWNGmk2SXV5DibJQs792Qcm1qMzKKxfz
-        zwBHGaBQVRyhH7biNsHR6pfTYjDXNY6ZUUVKLDeptEzdOjLfuLdufCr2w5PsMQLch6q02cXL4U3
-        HXLlAxPWIVRrBvjQuljlSUGfuMehVJ/VcUmpeC9fDGN99KyBfrPTz8IZ2GBT0ePnhGHmPE1xRKz
-        s=
-X-Received: by 2002:a05:6000:381:: with SMTP id u1mr6413321wrf.383.1637323902707;
-        Fri, 19 Nov 2021 04:11:42 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzD+wBSVFzzMULh5tQAzgoFomke2v4u4GVEVKNDiXcaClcyRw8/fDTn66rzPB/URvDxm2rOew==
-X-Received: by 2002:a05:6000:381:: with SMTP id u1mr6413275wrf.383.1637323902417;
-        Fri, 19 Nov 2021 04:11:42 -0800 (PST)
-Received: from minerva.home ([92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id e3sm2758261wrp.8.2021.11.19.04.11.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 04:11:42 -0800 (PST)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-spi@vger.kernel.org,
-        Ralph Siemsen <ralph.siemsen@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>,
-        Javier Martinez Canillas <javierm@redhat.com>
-Subject: [PATCH v2] spi: docs: improve the SPI userspace API documentation
-Date:   Fri, 19 Nov 2021 13:11:39 +0100
-Message-Id: <20211119121139.2412761-1-javierm@redhat.com>
-X-Mailer: git-send-email 2.33.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S234805AbhKSMUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 07:20:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233106AbhKSMUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 07:20:07 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8BA7F61A7D;
+        Fri, 19 Nov 2021 12:17:03 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mo2pB-006XWO-CB; Fri, 19 Nov 2021 12:17:01 +0000
+Date:   Fri, 19 Nov 2021 12:17:00 +0000
+Message-ID: <87fsrs732b.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Cc:     linux-arm-kernel@lists.infradead.org, rostedt@goodmis.org,
+        james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
+        mingo@redhat.com, mtosatti@redhat.com, nilal@redhat.com
+Subject: Re: [RFC PATCH 2/2] KVM: arm64: export cntvoff in debugfs
+In-Reply-To: <20211119102117.22304-3-nsaenzju@redhat.com>
+References: <20211119102117.22304-1-nsaenzju@redhat.com>
+        <20211119102117.22304-3-nsaenzju@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: nsaenzju@redhat.com, linux-arm-kernel@lists.infradead.org, rostedt@goodmis.org, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu, mingo@redhat.com, mtosatti@redhat.com, nilal@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This doc is fairly outdated and only uses legacy device instantiation
-terminology. Let us update it and also mention the OF and ACPI device
-tables, to make easier for users to figure out how should be defined.
+On Fri, 19 Nov 2021 10:21:18 +0000,
+Nicolas Saenz Julienne <nsaenzju@redhat.com> wrote:
+> 
+> While using cntvct as the raw clock for tracing, it's possible to
+> synchronize host/guest traces just by knowing the virtual offset applied
+> to the guest's virtual counter.
+> 
+> This is also the case on x86 when TSC is available. The offset is
+> exposed in debugfs as 'tsc-offset' on a per vcpu basis. So let's
+> implement the same for arm64.
 
-Also, mention that devices bind could be done in user-space now using
-the "driver_override" sysfs entry.
+How does this work with NV, where the guest hypervisor is in control
+of the virtual offset? How does userspace knows which vcpu to pick so
+that it gets the right offset?
 
-Suggested-by: Ralph Siemsen <ralph.siemsen@linaro.org>
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
----
+I also wonder why we need this when userspace already has direct
+access to that information without any extra kernel support (read the
+CNTVCT view of the vcpu using the ONEREG API, subtract it from the
+host view of the counter, job done).
 
-Changes in v2:
-- Reword paragraph that explains the user-space spidev bind support
-  using sysfs (Uwe Kleine-König).
-- Also improve the paragraph that explains that the SPI device sysfs
-  node will contain a "dev" attribute (Uwe Kleine-König).
-- Explain that the matching tables can be extended and developers are
-  encouraged to do so (Geert Uytterhoeven).
+> 
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+> ---
+>  arch/arm64/include/asm/kvm_host.h |  1 +
+>  arch/arm64/kvm/Makefile           |  2 +-
+>  arch/arm64/kvm/arch_timer.c       |  2 +-
+>  arch/arm64/kvm/debugfs.c          | 25 +++++++++++++++++++++++++
+>  include/kvm/arm_arch_timer.h      |  3 +++
+>  5 files changed, 31 insertions(+), 2 deletions(-)
+>  create mode 100644 arch/arm64/kvm/debugfs.c
+> 
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 2a5f7f38006f..130534c9079e 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -29,6 +29,7 @@
+>  #include <asm/thread_info.h>
+>  
+>  #define __KVM_HAVE_ARCH_INTC_INITIALIZED
+> +#define __KVM_HAVE_ARCH_VCPU_DEBUGFS
+>  
+>  #define KVM_HALT_POLL_NS_DEFAULT 500000
+>  
+> diff --git a/arch/arm64/kvm/Makefile b/arch/arm64/kvm/Makefile
+> index 989bb5dad2c8..17be7cf770f2 100644
+> --- a/arch/arm64/kvm/Makefile
+> +++ b/arch/arm64/kvm/Makefile
+> @@ -14,7 +14,7 @@ kvm-y := $(KVM)/kvm_main.o $(KVM)/coalesced_mmio.o $(KVM)/eventfd.o \
+>  	 $(KVM)/vfio.o $(KVM)/irqchip.o $(KVM)/binary_stats.o \
+>  	 arm.o mmu.o mmio.o psci.o perf.o hypercalls.o pvtime.o \
+>  	 inject_fault.o va_layout.o handle_exit.o \
+> -	 guest.o debug.o reset.o sys_regs.o \
+> +	 guest.o debug.o debugfs.o reset.o sys_regs.o \
+>  	 vgic-sys-reg-v3.o fpsimd.o pmu.o \
+>  	 arch_timer.o trng.o\
+>  	 vgic/vgic.o vgic/vgic-init.o \
+> diff --git a/arch/arm64/kvm/arch_timer.c b/arch/arm64/kvm/arch_timer.c
+> index 3df67c127489..ee69387f7fb6 100644
+> --- a/arch/arm64/kvm/arch_timer.c
+> +++ b/arch/arm64/kvm/arch_timer.c
+> @@ -82,7 +82,7 @@ u64 timer_get_cval(struct arch_timer_context *ctxt)
+>  	}
+>  }
+>  
+> -static u64 timer_get_offset(struct arch_timer_context *ctxt)
+> +u64 timer_get_offset(struct arch_timer_context *ctxt)
+>  {
+>  	struct kvm_vcpu *vcpu = ctxt->vcpu;
+>  
+> diff --git a/arch/arm64/kvm/debugfs.c b/arch/arm64/kvm/debugfs.c
+> new file mode 100644
+> index 000000000000..f0f5083ea8d4
+> --- /dev/null
+> +++ b/arch/arm64/kvm/debugfs.c
+> @@ -0,0 +1,25 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (C) 2021 Red Hat Inc.
+> + */
+> +
+> +#include <linux/kvm_host.h>
+> +#include <linux/debugfs.h>
+> +
+> +#include <kvm/arm_arch_timer.h>
+> +
+> +static int vcpu_get_cntv_offset(void *data, u64 *val)
+> +{
+> +	struct kvm_vcpu *vcpu = (struct kvm_vcpu *)data;
+> +
+> +	*val = timer_get_offset(vcpu_vtimer(vcpu));
+> +
+> +	return 0;
+> +}
+> +
+> +DEFINE_SIMPLE_ATTRIBUTE(vcpu_cntvoff_fops, vcpu_get_cntv_offset, NULL, "%lld\n");
+> +
+> +void kvm_arch_create_vcpu_debugfs(struct kvm_vcpu *vcpu, struct dentry *debugfs_dentry)
+> +{
+> +	debugfs_create_file("cntvoff", 0444, debugfs_dentry, vcpu, &vcpu_cntvoff_fops);
+> +}
 
- Documentation/spi/spidev.rst | 58 ++++++++++++++++++++++++++----------
- 1 file changed, 43 insertions(+), 15 deletions(-)
+This should be left in arch_timer.c until we actually need it for
+multiple subsystems. When (and if) that happens, we will expose
+per-subsystem debugfs initialisers instead of exposing the guts of the
+timer code.
 
-diff --git a/Documentation/spi/spidev.rst b/Documentation/spi/spidev.rst
-index f05dbc5ccdbc..369c657ba435 100644
---- a/Documentation/spi/spidev.rst
-+++ b/Documentation/spi/spidev.rst
-@@ -29,21 +29,49 @@ of the driver stack) that are not accessible to userspace.
- 
- DEVICE CREATION, DRIVER BINDING
- ===============================
--The simplest way to arrange to use this driver is to just list it in the
--spi_board_info for a device as the driver it should use:  the "modalias"
--entry is "spidev", matching the name of the driver exposing this API.
--Set up the other device characteristics (bits per word, SPI clocking,
--chipselect polarity, etc) as usual, so you won't always need to override
--them later.
--
--(Sysfs also supports userspace driven binding/unbinding of drivers to
--devices.  That mechanism might be supported here in the future.)
--
--When you do that, the sysfs node for the SPI device will include a child
--device node with a "dev" attribute that will be understood by udev or mdev.
--(Larger systems will have "udev".  Smaller ones may configure "mdev" into
--busybox; it's less featureful, but often enough.)  For a SPI device with
--chipselect C on bus B, you should see:
-+
-+The spidev driver contains lists of SPI devices that are supported for
-+the different hardware topology representations.
-+
-+The following are the SPI device tables supported by the spidev driver:
-+
-+    - struct spi_device_id spidev_spi_ids[]: list of devices that can be
-+      bound when these are defined using a struct spi_board_info with a
-+      .modalias field matching one of the entries in the table.
-+
-+    - struct of_device_id spidev_dt_ids[]: list of devices that can be
-+      bound when these are defined using a Device Tree node that has a
-+      compatible string matching one of the entries in the table.
-+
-+    - struct acpi_device_id spidev_acpi_ids[]: list of devices that can
-+      be bound when these are defined using a ACPI device object with a
-+      _HID matching one of the entries in the table.
-+
-+You are encouraged to add an entry for your SPI device name to relevant
-+tables, if these don't already have an entry for the device. To do that,
-+post a patch for spidev to the linux-spi@vger.kernel.org mailing list.
-+
-+It used to be supported to define an SPI device using the "spidev" name.
-+For example, as .modalias = "spidev" or compatible = "spidev".  But this
-+is no longer supported by the Linux kernel and instead a real SPI device
-+name as listed in one of the tables must be used.
-+
-+Not having a real SPI device name will lead to an error being printed and
-+the spidev driver failing to probe.
-+
-+Sysfs also supports userspace driven binding/unbinding of drivers to
-+devices that do not bind automatically using one of the tables above.
-+To make the spidev driver bind to such a device, use the following:
-+
-+    echo spidev > /sys/bus/spi/devices/spiB.C/driver_override
-+    echo spiB.C > /sys/bus/spi/drivers/spidev/bind
-+
-+When the spidev driver is bound to a SPI device, the sysfs node for the
-+device will include a child device node with a "dev" attribute that will
-+be understood by udev or mdev (udev replacement from BusyBox; it's less
-+featureful, but often enough).
-+
-+For a SPI device with chipselect C on bus B, you should see:
- 
-     /dev/spidevB.C ...
- 	character special device, major number 153 with
+Thanks,
+
+	M.
+
 -- 
-2.33.1
-
+Without deviation from the norm, progress is not possible.
