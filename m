@@ -2,120 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7FAC456767
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 02:20:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 130C145676B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 02:20:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233115AbhKSBXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 20:23:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51392 "EHLO
+        id S234007AbhKSBXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 20:23:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234011AbhKSBXR (ORCPT
+        with ESMTP id S233985AbhKSBXT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 20:23:17 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68964C061574;
-        Thu, 18 Nov 2021 17:20:16 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id z5so35475761edd.3;
-        Thu, 18 Nov 2021 17:20:16 -0800 (PST)
+        Thu, 18 Nov 2021 20:23:19 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 276F9C06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 17:20:18 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id bj13so18483722oib.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 17:20:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=E34HgiCaOFVX+GifFvP+LbUSQRcs2toReX/WIG/3s+M=;
-        b=iiOa1TSm6JpJYSFdcKSWVTNMZrWt5RwUgeg/KcSvn032dKjDPZDRorWNPLiHpQszKN
-         dQk9e3pIkI1rzO/rsbXN/B2LlkOroO8aUNcrlCet+IuJH/QBmt6CEJ11fDxC5gnc0hcv
-         kzoHaTrOxrqpVp1xlNynE/njf0TPpNavM3x6sTs9D/rDaQ7bF6IFJpAANQoIfQ67uo/t
-         7FVdim2bPnqfgUz+RsKrVtsqn9mK03kv4Ct8luqjBKOb2/Q8lDgFP/XNtgGV3RsY0TpG
-         UtPvD5ISirMWOC9tedreW2i98uP29fr75VsLNwXh8Puld6JVGpjq+/Lt2ySpntaYC7si
-         xyjg==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=+4u6zI2WbzNkx110yW93wXh++h279Kv8lQjw6fsVrvg=;
+        b=cGZoDisejQaJ8p+P/87PSoJH1JRVUVt00xJ4d56gfBh0WO2C62Dnh4l0iGvqwXKYjn
+         b8BRKi1vQXHXNYLWlfM6Fseenb6r8uKSHsw8dSav4HNu5dNVyNcxN43vt4rQVyirCleK
+         QUcD2tndLp69InrIm4SXyHhZ49q2QhVqGBo88=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=E34HgiCaOFVX+GifFvP+LbUSQRcs2toReX/WIG/3s+M=;
-        b=oeFiBcw8gKoDjghuU0/UEylw56xupq/v8q/JND9VRKVsYLGQCJjtBQ7sbRVcB4Ku48
-         5MBLgOCbuf9quHh198MCOYt8P7mllTWgD4dC3OHNjIacrqT+ZquJpKG/p+wsYSx90lEA
-         5BHYgCGOJT8Hpy1S9SYkY1pslpmMtLZfJ1SFDneac3i7kCkV6ROdG82/PQe0SDweL+z9
-         VYt9ZsgF94UyK8v4VnTOgVmq164JirouXR1rN19cIbE1mcGMfj2fuGbclO0d12GCp4Il
-         w4eRdDLR4OLB4SbLTUlSH9gujT3lVW+/JMoB9l/Im1dbZyJZ6P5g+8/6iJJNW6JRDqCd
-         7dpQ==
-X-Gm-Message-State: AOAM531lFmb6Rz/caVXar6wXeQgU4TkBbXraiF8NhumIQaqqyQ9U9AnX
-        hU3l1MfITXYHTzMzUgU2v+4=
-X-Google-Smtp-Source: ABdhPJx6j/zLyHHBtbOifYXNZ42IWX0f5Gd0VIq+Wx8EmhCJyVYbHnCQcbFw9SHVsi1RYB86pdcT4g==
-X-Received: by 2002:a50:da0a:: with SMTP id z10mr18232038edj.298.1637284814981;
-        Thu, 18 Nov 2021 17:20:14 -0800 (PST)
-Received: from skbuf ([188.25.163.189])
-        by smtp.gmail.com with ESMTPSA id f16sm787101edd.37.2021.11.18.17.20.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 17:20:14 -0800 (PST)
-Date:   Fri, 19 Nov 2021 03:20:13 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [net-next PATCH 10/19] net: dsa: qca8k: add support for port
- fast aging
-Message-ID: <20211119012013.e4a74lretsxz66sb@skbuf>
-References: <20211117210451.26415-1-ansuelsmth@gmail.com>
- <20211117210451.26415-11-ansuelsmth@gmail.com>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=+4u6zI2WbzNkx110yW93wXh++h279Kv8lQjw6fsVrvg=;
+        b=epmorCPshuntM1fmWuKPrP7OI9t/PWBGkI7u+maXKMN+gEDcxYAM0jkszWSLHWkTAr
+         rvXC7AcM1iDsh67M2M+Cu41r9LqRPgVYpdpzi6bTKZ8rfwM0SjXhUFWnQUpgowqwNeWF
+         XVpPf4glLvTjzpkOKuCFRqd19jieAtUI2+tyoU232CCt4uWKlBeA6m+S2S8zyFGv/4od
+         XpFtSvb+VbBW2re0df1iuZHjgqZczrH3dS7MQ7z15P9N5T9qTxOLwZKD5Vlfj58gzTGN
+         gHxGHBWSin9Q4mHtVF6KJbDj1IQ05bIK+3CZ0NOi0UjtfbJeTi6wYecpW82NuZW6NRz4
+         cmvg==
+X-Gm-Message-State: AOAM531Rt43pTE+4wMHbB18JaDjmv3mIivasZM4D2JQ+/TVhGjVqyb5V
+        268rmVbJDojTgdaNU1Q5gtVOkIUk0YMcl0t8BWegYA==
+X-Google-Smtp-Source: ABdhPJw/lFMRDpADbSuVq+e5zkxL2+/msM1iuh9pKofY63E+8BxMAfvDYsKcBUq8mQXD9V67bnHftwapPA2n0wvR65s=
+X-Received: by 2002:a54:4506:: with SMTP id l6mr1436004oil.32.1637284817525;
+ Thu, 18 Nov 2021 17:20:17 -0800 (PST)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 19 Nov 2021 02:20:17 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211117210451.26415-11-ansuelsmth@gmail.com>
+In-Reply-To: <1636493893-7600-1-git-send-email-quic_khsieh@quicinc.com>
+References: <1636493893-7600-1-git-send-email-quic_khsieh@quicinc.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Fri, 19 Nov 2021 02:20:17 +0100
+Message-ID: <CAE-0n505-VcS46WnVARsvuaizePP-3cYEw_rfipfq9Yj7AW=Ow@mail.gmail.com>
+Subject: Re: [PATCH v4] drm/msm/dp: do not initialize phy until plugin
+ interrupt received
+To:     Kuogee Hsieh <quic_khsieh@quicinc.com>, agross@kernel.org,
+        airlied@linux.ie, bjorn.andersson@linaro.org, daniel@ffwll.ch,
+        dmitry.baryshkov@linaro.org, robdclark@gmail.com, sean@poorly.run,
+        vkoul@kernel.org
+Cc:     quic_abhinavk@quicinc.com, aravindh@codeaurora.org,
+        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kuogee Hsieh <khsieh@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 10:04:42PM +0100, Ansuel Smith wrote:
-> The switch doesn't support fast aging but it does support the flush of
-> the ARL table for a specific port. Add this function to simulate
-> fast aging and proprely support stp state set.
-                 ~~~~~~~~                   ~~~
-                 properly                   verb? noun? what are you saying here?
-
-What difference do you see between fast ageing and ARL table flushing
-for a specific port?
-
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+Quoting Kuogee Hsieh (2021-11-09 13:38:13)
+> From: Kuogee Hsieh <khsieh@codeaurora.org>
+>
+> Current DP drivers have regulators, clocks, irq and phy are grouped
+> together within a function and executed not in a symmetric manner.
+> This increase difficulty of code maintenance and limited code scalability.
+> This patch divided the driver life cycle of operation into four states,
+> resume (including booting up), dongle plugin, dongle unplugged and suspend.
+> Regulators, core clocks and irq are grouped together and enabled at resume
+> (or booting up) so that the DP controller is armed and ready to receive HPD
+> plugin interrupts. HPD plugin interrupt is generated when a dongle plugs
+> into DUT (device under test). Once HPD plugin interrupt is received, DP
+> controller will initialize phy so that dpcd read/write will function and
+> following link training can be proceeded successfully. DP phy will be
+> disabled after main link is teared down at end of unplugged HPD interrupt
+> handle triggered by dongle unplugged out of DUT. Finally regulators, code
+> clocks and irq are disabled at corresponding suspension.
+>
+> Changes in V2:
+> -- removed unnecessary dp_ctrl NULL check
+> -- removed unnecessary phy init_count and power_count DRM_DEBUG_DP logs
+> -- remove flip parameter out of dp_ctrl_irq_enable()
+> -- add fixes tag
+>
+> Changes in V3:
+> -- call dp_display_host_phy_init() instead of dp_ctrl_phy_init() at
+>         dp_display_host_init() for eDP
+>
+> Changes in V4:
+> -- rewording commit text to match this commit changes
+>
+> Fixes: e91e3065a806 ("drm/msm/dp: Add DP compliance tests on Snapdragon Chipsets")
+>
+> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
 > ---
->  drivers/net/dsa/qca8k.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-> index cf4f69b36b47..d73886b36e6a 100644
-> --- a/drivers/net/dsa/qca8k.c
-> +++ b/drivers/net/dsa/qca8k.c
-> @@ -1823,6 +1823,16 @@ qca8k_port_bridge_leave(struct dsa_switch *ds, int port, struct net_device *br)
->  			   QCA8K_PORT_LOOKUP_MEMBER, BIT(cpu_port));
->  }
->  
-> +static void
-> +qca8k_port_fast_age(struct dsa_switch *ds, int port)
-> +{
-> +	struct qca8k_priv *priv = ds->priv;
-> +
-> +	mutex_lock(&priv->reg_mutex);
-> +	qca8k_fdb_access(priv, QCA8K_FDB_FLUSH_PORT, port);
-> +	mutex_unlock(&priv->reg_mutex);
-> +}
-> +
->  static int
->  qca8k_port_enable(struct dsa_switch *ds, int port,
->  		  struct phy_device *phy)
-> @@ -2031,6 +2041,7 @@ static const struct dsa_switch_ops qca8k_switch_ops = {
->  	.port_stp_state_set	= qca8k_port_stp_state_set,
->  	.port_bridge_join	= qca8k_port_bridge_join,
->  	.port_bridge_leave	= qca8k_port_bridge_leave,
-> +	.port_fast_age		= qca8k_port_fast_age,
->  	.port_fdb_add		= qca8k_port_fdb_add,
->  	.port_fdb_del		= qca8k_port_fdb_del,
->  	.port_fdb_dump		= qca8k_port_fdb_dump,
-> -- 
-> 2.32.0
-> 
+
+What commit is this patch based on?
