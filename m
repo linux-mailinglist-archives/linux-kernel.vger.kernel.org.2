@@ -2,80 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0250457976
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 00:19:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B34745797B
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 00:20:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235580AbhKSXWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 18:22:10 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:17126 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234989AbhKSXV4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 18:21:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637363934; x=1668899934;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=X8rozlh7XZA6KcsavrAkZ5+YLzbzFayI4fUmiQGnRwA=;
-  b=MR4XLjz18o1wtq2T3tUY49HJ/cLS94WbXDtFgIXle+hnlqFHe3YFlmoR
-   6EdqJX8gAbP4RYltVZ6CEw5N31VJ0wILDNG0B5fUVNUcxwHETVEj5MQ3f
-   iWrOBfH21Z+ollHjAaw5L+o4guo1C7BPxI6ntE4a152wM1O6vadZ57Ut+
-   s=;
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 19 Nov 2021 15:18:54 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 15:18:54 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Fri, 19 Nov 2021 15:18:53 -0800
-Received: from abhinavk-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Fri, 19 Nov 2021 15:18:53 -0800
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        <freedreno@lists.freedesktop.org>, <gregkh@linuxfoundation.org>,
-        <robdclark@gmail.com>, <seanpaul@chromium.org>,
-        <swboyd@chromium.org>, <nganji@codeaurora.org>,
-        <aravindh@codeaurora.org>, <dmitry.baryshkov@linaro.org>,
-        <daniel@ffwll.ch>
-Subject: [PATCH] MAINTAINERS: update designated reviewer entry for MSM DRM driver
-Date:   Fri, 19 Nov 2021 15:18:36 -0800
-Message-ID: <1637363916-18257-1-git-send-email-quic_abhinavk@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+        id S235644AbhKSXXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 18:23:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230351AbhKSXXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 18:23:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 780DF61B04;
+        Fri, 19 Nov 2021 23:20:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637364018;
+        bh=fI3IY92kN4g5zKp0563/0ygFQsUxH+aYssnQOt7mNZM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=WYTOz3LqwChP05T/Za3QBIa04oUWpTxf0P9IaO3gjkMLTk72YPIrv4KRuSJDwrPm1
+         PB4fIHZyJqgdKfX30vLMj3Alh/e/Rjle4ZAIksH3qtTaU5yUEK0h/tSUxPUAq/6eDP
+         S7U9JYyFoSE0myh1aJWX5Ec83hBIhViwZt/pMtzinP+Y1YtuT8Y1p+zg6N2HeYGAd4
+         9tSn9gJnos3e9FGwGZzbLDoIrmV4rz0Q+vGtwuaSyUgLsZeVBkhtrZvmrFrOUe+7VO
+         HGuuDn4FhpnNs+vxDlIHyneO58+yf3r2FSRknPS6CnMwBlmKgkgNZmBFtdmpq/gg7D
+         zvjccNswhXIyg==
+Date:   Fri, 19 Nov 2021 17:20:17 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     linux-pci@vger.kernel.org, linux-mips@vger.kernel.org,
+        tsbogend@alpha.franken.de, john@phrozen.org,
+        lorenzo.pieralisi@arm.com, bhelgaas@google.com, arnd@arndb.de,
+        linux-kernel@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>
+Subject: Re: [PATCH 1/5] PCI: let 'pcibios_root_bridge_prepare()' access to
+ 'bridge->windows'
+Message-ID: <20211119232017.GA1981034@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211115070809.15529-2-sergio.paracuellos@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding myself as a designated reviewer to assist with the
-code reviews for the changes coming into MSM DRM.
+[+cc Thierry]
 
-Acked-by: Rob Clark <robdclark@gmail.com>
-Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+In subject,
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5b33791..503112d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5938,6 +5938,7 @@ M:	Sean Paul <sean@poorly.run>
- L:	linux-arm-msm@vger.kernel.org
- L:	dri-devel@lists.freedesktop.org
- L:	freedreno@lists.freedesktop.org
-+R:	Abhinav Kumar <quic_abhinavk@quicinc.com>
- S:	Maintained
- T:	git https://gitlab.freedesktop.org/drm/msm.git
- F:	Documentation/devicetree/bindings/display/msm/
--- 
-2.7.4
+  PCI: Let pcibios_root_bridge_prepare() access bridge->windows
 
+On Mon, Nov 15, 2021 at 08:08:05AM +0100, Sergio Paracuellos wrote:
+> When function 'pci_register_host_bridge()' is called, 'bridge->windows' are
+> already available. However this windows are being moved temporarily from
+> there. To let 'pcibios_root_bridge_prepare()' to have access to this windows
+> move this windows movement after call this function. This is interesting for
+> MIPS ralink mt7621 platform to be able to properly set I/O coherence units
+> with this information and avoid custom MIPs code in generic PCIe controller
+> drivers.
+>
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> ---
+>  drivers/pci/probe.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> index 087d3658f75c..372a70efccc6 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -898,8 +898,6 @@ static int pci_register_host_bridge(struct pci_host_bridge *bridge)
+>  
+>  	bridge->bus = bus;
+>  
+> -	/* Temporarily move resources off the list */
+> -	list_splice_init(&bridge->windows, &resources);
+
+Arnd added this with 37d6a0a6f470 ("PCI: Add
+pci_register_host_bridge() interface") [1].
+
+I can't remember why this was done, but we did go to some trouble to
+move things around, so there must have been a good reason.
+
+Arnd or Thierry, do you remember?
+
+>  	bus->sysdata = bridge->sysdata;
+>  	bus->ops = bridge->ops;
+>  	bus->number = bus->busn_res.start = bridge->busnr;
+> @@ -925,6 +923,8 @@ static int pci_register_host_bridge(struct pci_host_bridge *bridge)
+>  	if (err)
+>  		goto free;
+>  
+> +	/* Temporarily move resources off the list */
+> +	list_splice_init(&bridge->windows, &resources);
+>  	err = device_add(&bridge->dev);
+>  	if (err) {
+>  		put_device(&bridge->dev);
+> -- 
+> 2.33.0
+> 
+
+[1] https://git.kernel.org/linus/37d6a0a6f470
