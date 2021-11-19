@@ -2,45 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0BB456E9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 13:00:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD1C456E98
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 13:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235131AbhKSMDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 07:03:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53908 "EHLO mail.kernel.org"
+        id S234774AbhKSMDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 07:03:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234587AbhKSMDN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234601AbhKSMDN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 19 Nov 2021 07:03:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8540461AA7;
+Received: by mail.kernel.org (Postfix) with ESMTPS id A2C5761AF0;
         Fri, 19 Nov 2021 12:00:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1637323211;
-        bh=Z7x8s5exMtoDdNvkBU90U5VejQ/Tirwb8NffZY2VRhQ=;
+        bh=FOyf4H5f/7liDt268z0Uq7AvU8bW1nPtefVp8BRgjQM=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=nXS92AC/ZjkWmU07wHofvCD9jqSaVIiIpodybcOJih+HDXhN2Bvy/+wiTl+aHhejj
-         3PjVfZooIlJ+akUNvrVrU2SHp/tWJ8YfCZfZCv1Jsnzlw+5yzmupoZsrDxnXurBxGj
-         6vMYtpRLkwVGs9FA3RvvrSW1PbThZ+eCFQKkNahDtSieBMgP0GQBjFjSXgPDC6yCma
-         pIxSb+1NNr2JKKTvD5lTzlxRLjZOIOhqJG3Szb1Hx3yzmV4uO2BaCvFsuOpLV3xxL3
-         jklxyGOmwWDFYYEYQxICuq2eyGgpXGXtSF0O4CskeBOrfHzTSLUdOzPl1Wd1WGHVfD
-         QRXDXLEovxS2w==
+        b=MNhAWPVDeafEoGLEAM6JeQFgMmxw7q1pKtVscnL2sHEjou/voY4Zb8Fr2cZCII4T/
+         QdR6DUgHJnYk+Pw9ro6V9IeZ2uzIqi2kyxPT9l0W2lGQg1gby2Z3pLcBpNK3YfsgNr
+         kKuKKXziNLtfIJhVlSHykYDSREpVwzoMyDKD4K0V/pP4n4ACooGtVWnimIiEneK8Df
+         ox7u227w2Ds/igbd8tzhFdKuIG09JcHCcFSRymbZnjMYa7gs8KcC53r0IEPq5ES81E
+         3oF8cwVq1v2vJOTZv7c8BgaddnsDZhtHfHjSTtErWxAsLGSZDgRdmEQVIy5pQCDlmP
+         0ujYRFcZmnX2A==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 72A98600E8;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9B48860A0F;
         Fri, 19 Nov 2021 12:00:11 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v2] net: marvell: prestera: fix brige port operation
+Subject: Re: [PATCH net] net: marvell: prestera: fix double free issue on err path
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163732321146.14736.13401179872116438988.git-patchwork-notify@kernel.org>
+Message-Id: <163732321163.14736.8578198200279960716.git-patchwork-notify@kernel.org>
 Date:   Fri, 19 Nov 2021 12:00:11 +0000
-References: <1637264883-24561-1-git-send-email-volodymyr.mytnyk@plvision.eu>
-In-Reply-To: <1637264883-24561-1-git-send-email-volodymyr.mytnyk@plvision.eu>
+References: <1637265100-24752-1-git-send-email-volodymyr.mytnyk@plvision.eu>
+In-Reply-To: <1637265100-24752-1-git-send-email-volodymyr.mytnyk@plvision.eu>
 To:     Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>
 Cc:     netdev@vger.kernel.org, vladimir.oltean@nxp.com,
         ioana.ciornei@nxp.com, mickeyr@marvell.com,
         serhiy.pshyk@plvision.eu, taras.chornyi@plvision.eu,
         vmytnyk@marvell.com, tchornyi@marvell.com, davem@davemloft.net,
-        kuba@kernel.org, linux-kernel@vger.kernel.org
+        kuba@kernel.org, vadym.kochan@plvision.eu,
+        serhiy.boiko@plvision.eu, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -50,25 +51,36 @@ Hello:
 This patch was applied to netdev/net.git (master)
 by David S. Miller <davem@davemloft.net>:
 
-On Thu, 18 Nov 2021 21:48:03 +0200 you wrote:
+On Thu, 18 Nov 2021 21:51:40 +0200 you wrote:
 > From: Volodymyr Mytnyk <vmytnyk@marvell.com>
 > 
-> Return NOTIFY_DONE (dont't care) for switchdev notifications
-> that prestera driver don't know how to handle them.
+> fix error path handling in prestera_bridge_port_join() that
+> cases prestera driver to crash (see below).
 > 
-> With introduction of SWITCHDEV_BRPORT_[UN]OFFLOADED switchdev
-> events, the driver rejects adding swport to bridge operation
-> which is handled by prestera_bridge_port_join() func. The root
-> cause of this is that prestera driver returns error (EOPNOTSUPP)
-> in prestera_switchdev_blk_event() handler for unknown swdev
-> events. This causes switchdev_bridge_port_offload() to fail
-> when adding port to bridge in prestera_bridge_port_join().
+>  Trace:
+>    Internal error: Oops: 96000044 [#1] SMP
+>    Modules linked in: prestera_pci prestera uio_pdrv_genirq
+>    CPU: 1 PID: 881 Comm: ip Not tainted 5.15.0 #1
+>    pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+>    pc : prestera_bridge_destroy+0x2c/0xb0 [prestera]
+>    lr : prestera_bridge_port_join+0x2cc/0x350 [prestera]
+>    sp : ffff800011a1b0f0
+>    ...
+>    x2 : ffff000109ca6c80 x1 : dead000000000100 x0 : dead000000000122
+>     Call trace:
+>    prestera_bridge_destroy+0x2c/0xb0 [prestera]
+>    prestera_bridge_port_join+0x2cc/0x350 [prestera]
+>    prestera_netdev_port_event.constprop.0+0x3c4/0x450 [prestera]
+>    prestera_netdev_event_handler+0xf4/0x110 [prestera]
+>    raw_notifier_call_chain+0x54/0x80
+>    call_netdevice_notifiers_info+0x54/0xa0
+>    __netdev_upper_dev_link+0x19c/0x380
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,v2] net: marvell: prestera: fix brige port operation
-    https://git.kernel.org/netdev/net/c/253e9b4d11e5
+  - [net] net: marvell: prestera: fix double free issue on err path
+    https://git.kernel.org/netdev/net/c/e8d032507cb7
 
 You are awesome, thank you!
 -- 
