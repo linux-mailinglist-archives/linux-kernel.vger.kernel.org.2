@@ -2,57 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F79545712B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 15:50:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56939457131
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 15:52:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234147AbhKSOxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 09:53:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43936 "EHLO mail.kernel.org"
+        id S235112AbhKSOzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 09:55:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230373AbhKSOxr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 09:53:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3805610A0;
-        Fri, 19 Nov 2021 14:50:43 +0000 (UTC)
+        id S230373AbhKSOzx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 09:55:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D557615E2;
+        Fri, 19 Nov 2021 14:52:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637333445;
-        bh=xQE9hxOzQKu53BN/XdielriygeauIcnIvehjrzh+cPc=;
+        s=k20201202; t=1637333571;
+        bh=QQmlfnUygM+hdTF0UxFHAkG8aeyDP2p1IhOC6VqxCRc=;
         h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=MS+7I5Cp00XQcALDipjuJpNfFFlwNnRB7gwn2T3fDZ+yJr1YF/Z4eGMadSPhPo3JW
-         6hf7XcT0gC2kctBj1CK07wgj6QP//aBBAg+JTloi/2x879ER8ZrmwN67nG7brMlN0U
-         B2JIrD8R+wvRYlNqtrpeVe9Zw3sWCUz2aG0hpA2X5Kwrp+EWbV3h37dNK/l/sewCfE
-         pgolL67nv44gd35F3Hdj20tOol0Ecu0GdWVQdP9Zz0oWNN9KG6Qzy+kbobX93z7ghk
-         z9gDjic6pMiU1/kesAjp6u+mj9f2iCEfAlNOm3Xinm7GIplevGkYhQLgPaErKrdfiZ
-         8DK/zMVXCN0cw==
-Date:   Fri, 19 Nov 2021 15:50:41 +0100 (CET)
+        b=WMpItRaNkMKvlLHHqxMrbfYOek9B4uB2fDTK5qN2wMm3gym0VQcDDFHpRUk9OhvNR
+         2HXX+V1fYu812hV3a3aK6VOyUC9dZg+aXJE6n3pfE2jz4ZqMRxv+ZS91KZEX+wBkvJ
+         vK8cDW4jjqrUCQiKZnSmsiv/ziGKECCcb04/J6icddtUq0Tlsw25gOBJaeoXHM1lCj
+         NwZsd39LGA8VJ9wqgoS0+6dA6zz8zb7waZudas+jV8ThfOMLZQghnDJc+709kUu1c+
+         8FZcG8//nY5zX7HHH0f+DYxqD1yLZGnQUZhJHPMzXTOoJT0LBhdXDYwVOoaEPy+fug
+         hl1bp587HSIGw==
+Date:   Fri, 19 Nov 2021 15:52:48 +0100 (CET)
 From:   Jiri Kosina <jikos@kernel.org>
-To:     Matthias Kaehlcke <mka@chromium.org>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jim Broadus <jbroadus@gmail.com>,
-        Johnny Chuang <johnny.chuang.emc@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: Re: [PATCH] HID: i2c-hid: Report wakeup events
-In-Reply-To: <20211102114017.1.I16ef7b761c8467be2106880e9b24ce304ae2b532@changeid>
-Message-ID: <nycvar.YFH.7.76.2111191550330.16505@cbobk.fhfr.pm>
-References: <20211102114017.1.I16ef7b761c8467be2106880e9b24ce304ae2b532@changeid>
+To:     =?ISO-8859-15?Q?Filipe_La=EDns?= <lains@riseup.net>
+cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH] HID: logitech: add myself as a reviewer
+In-Reply-To: <20211111164411.2978353-1-lains@riseup.net>
+Message-ID: <nycvar.YFH.7.76.2111191552210.16505@cbobk.fhfr.pm>
+References: <20211111164411.2978353-1-lains@riseup.net>
 User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Nov 2021, Matthias Kaehlcke wrote:
+On Thu, 11 Nov 2021, Filipe Laíns wrote:
 
-> The i2c-hid driver generally supports wakeup, bit it currently
-> doesn't report wakeup events to the PM subsystem. Change that.
+> Currently, I have to use a separate email address and maintain several
+> filters to monitor changes to Logitech drivers, so that I can have an
+> opportunity to review them. Since I am very interested in keeping up
+> with the changes, as I have a lot of the hardware and maintain the main
+> userspace stacks that depend on these drivers, I would like to mark
+> myself as a reviewer. I would also be open to be marked as a maintainer
+> if Benjamin thinks it makes sense.
 > 
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> Signed-off-by: Filipe Laíns <lains@riseup.net>
 
-Goot catch. Applied, thanks.
+I've applied this one now. Please send a followup with M: entry if you and 
+Benjamin agree on it, no objections from me.
+
+Thanks,
 
 -- 
 Jiri Kosina
