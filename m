@@ -2,81 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9B04577D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 21:41:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E82B4577DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 21:43:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235314AbhKSUo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 15:44:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232401AbhKSUoY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 15:44:24 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DAACC06173E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 12:41:22 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id v1so14156507edx.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 12:41:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kW7sHYnCDXVSXl0ZtMNxqf1s+pKMyQl4AuTpRTmx0XU=;
-        b=bi0plf0WyPpGavgVfV1QtqquuqDxvZiT+Gg/aHjYLY5BLaUOV2UvSKYMgIOXximAXy
-         26bRo51hTSr/jTXQ426IiRPXKxg3kgd2RfwZ487TXStcp8WkrBniONM7vfh0PMRMd34o
-         ILXihqB3Fo0Ow6FApgF/I94GFarfizNVrWLew=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kW7sHYnCDXVSXl0ZtMNxqf1s+pKMyQl4AuTpRTmx0XU=;
-        b=bWWRyr/XsQhs6mjPyYJlMlFLOc9v4s5+oc3L5SNtooOJCym8hYX63cBumbckOo3UsP
-         BvZqAZJm38z9vkE/kwsWcLTV4hpjoe6UVDeKpWpI7ElWvPdwXe8IB7/TGpNkwqEi8I1k
-         HEGXpT1DK+q8fTkF207J0VvWpS+VYW4d5yX7aBukzVxHefer3QWlpUbiqQ3IY+Rb5A/5
-         LFT/jeRKyaEiucFQlXlDN33LlplXg8tyOF8kSDTlgfXMhaDaKTp6yOeYSqRbioCAvzRS
-         tNGW0hNbFozdaktcW1v9w7YlW2k/DQH3rhI7fojaHq7+8JHJkB2gZcXUysKGfjZKJPTS
-         DX7A==
-X-Gm-Message-State: AOAM531GabSfs/uu9gFusZKoaRdf5faCa0I2XbTTAMhZveEt2TMyQeT/
-        iL7cyBV7ZXo97eag4RTlt+yLzpCoVamdFjcS
-X-Google-Smtp-Source: ABdhPJyKSaLlAT0agqgo8vb+xxfVGIvEOA2l56L/BGvzeJIRd6/BcBwEG9Zev3ja6E8IhEaGpB5APQ==
-X-Received: by 2002:a05:6402:84f:: with SMTP id b15mr17663699edz.323.1637354480692;
-        Fri, 19 Nov 2021 12:41:20 -0800 (PST)
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com. [209.85.128.51])
-        by smtp.gmail.com with ESMTPSA id qf8sm371783ejc.8.2021.11.19.12.41.19
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Nov 2021 12:41:20 -0800 (PST)
-Received: by mail-wm1-f51.google.com with SMTP id j140-20020a1c2392000000b003399ae48f58so3522881wmj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 12:41:19 -0800 (PST)
-X-Received: by 2002:a05:600c:1914:: with SMTP id j20mr3304497wmq.26.1637354479681;
- Fri, 19 Nov 2021 12:41:19 -0800 (PST)
+        id S235644AbhKSUq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 15:46:27 -0500
+Received: from mx-out.tlen.pl ([193.222.135.142]:43865 "EHLO mx-out.tlen.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235616AbhKSUqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 15:46:14 -0500
+Received: (wp-smtpd smtp.tlen.pl 28176 invoked from network); 19 Nov 2021 21:43:05 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
+          t=1637354586; bh=UpOdkkmedu+MT1j0qOKM0vMS+Pldrns6CkXNStQ3Jvo=;
+          h=From:To:Cc:Subject;
+          b=uO+H/lPnRuM9MfrYBTetya+am+eRDKc5b8ABvQDykUDfCgL5JAke0D6OJwtT0iJw6
+           LmFtWgiD1soDQhJ+Qpa7cPBtkpktv8oDTBC3WsNbgqa5HHHg6Mv5daWukcDYWU3b9g
+           rkX2jFQM0cgm3b+4vmn2R1IRl1Gfs9d2i7w/wo2E=
+Received: from aaen55.neoplus.adsl.tpnet.pl (HELO localhost.localdomain) (mat.jonczyk@o2.pl@[83.4.117.55])
+          (envelope-sender <mat.jonczyk@o2.pl>)
+          by smtp.tlen.pl (WP-SMTPD) with SMTP
+          for <linux-kernel@vger.kernel.org>; 19 Nov 2021 21:43:05 +0100
+From:   =?UTF-8?q?Mateusz=20Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
+To:     linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org
+Cc:     =?UTF-8?q?Mateusz=20Jo=C5=84czyk?= <mat.jonczyk@o2.pl>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: [PATCH RESEND v3 0/7] rtc-cmos,rtc-mc146818-lib: fixes
+Date:   Fri, 19 Nov 2021 21:42:14 +0100
+Message-Id: <20211119204221.66918-1-mat.jonczyk@o2.pl>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <0a508ff31bbfa9cd73c24713c54a29ac459e3254.camel@HansenPartnership.com>
- <CAHk-=wjiTXOy3EJ4Eb++umuCgiDufJxrNZ9Z17_NhdORKZGbSA@mail.gmail.com> <af4fd590c7b90e5b3eef13f2fcd0bbb500192d2a.camel@HansenPartnership.com>
-In-Reply-To: <af4fd590c7b90e5b3eef13f2fcd0bbb500192d2a.camel@HansenPartnership.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 19 Nov 2021 12:41:03 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whgVp3m-HDiAPDAXAN0nTs+Fx3onnHE1XRg8cxPnmPw9Q@mail.gmail.com>
-Message-ID: <CAHk-=whgVp3m-HDiAPDAXAN0nTs+Fx3onnHE1XRg8cxPnmPw9Q@mail.gmail.com>
-Subject: Re: [GIT PULL] SCSI fixes for 5.16-rc1
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-WP-MailID: ba6981fa0d95eb383f96a6b9969a0623
+X-WP-AV: skaner antywirusowy Poczty o2
+X-WP-SPAM: NO 000000A [sRNk]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 12:07 PM James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
->
-> I can certainly relate to the need to be clear and unambiguous, but
-> this is the thin end of the wedge: you'll be telling me I can't use the
-> subjunctive mood next just because Americans don't understand what it
-> is ...
+Hello,
 
-Please do strive to keep it to monosyllabic words, with the occasional
-grunt for emphasis.
+This patch series fixes some issues in the RTC CMOS handling code:
 
-          Linus
+1. A missing spin_lock_irq() / spin_unlock_irq() pair in cmos_set_alarm().
+2. A failing presence check of the RTC: the clock was misdetected as
+   broken since Linux 5.11 on one of our home systems.
+3. Do not touch the RTC alarm registers when the RTC update is in
+   progress. (On some Intel chipsets, this causes bogus values being
+   read or writes to fail silently.)
+
+This is my first patch series, so please review carefully.
+
+v2: Drop the last patch:
+        Revert "rtc: cmos: Replace spin_lock_irqsave with spin_lock in hard IRQ"
+which was made obsolete by mainlining of 
+commit 13be2efc390a ("rtc: cmos: Disable irq around direct invocation of cmos_interrupt()")
+
+v3: Rework solution to problem 3 (I'd like to thank Greg KH for comment),
+drop x86 refactoring patches (I'll send them later).
+
+Greetings,
+Mateusz
+
+Signed-off-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
+Cc: Alessandro Zummo <a.zummo@towertech.it>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Greg KH <gregkh@linuxfoundation.org>
