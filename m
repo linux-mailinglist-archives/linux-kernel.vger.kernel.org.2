@@ -2,86 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F1D457489
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:56:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6054574DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236052AbhKSQ7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 11:59:32 -0500
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:34308 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbhKSQ7b (ORCPT
+        id S236315AbhKSRBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 12:01:33 -0500
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:43574 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232663AbhKSRBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 11:59:31 -0500
-Received: by mail-ot1-f51.google.com with SMTP id x19-20020a9d7053000000b0055c8b39420bso17730173otj.1;
-        Fri, 19 Nov 2021 08:56:29 -0800 (PST)
+        Fri, 19 Nov 2021 12:01:32 -0500
+Received: by mail-oi1-f174.google.com with SMTP id o4so22898507oia.10;
+        Fri, 19 Nov 2021 08:58:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ic35Gd9Ev0F+kGtTAqhnX2kQH5C3QsmaOmP1oDBUdUw=;
-        b=FudMcYHYgqaW5gf25/nWIrB2nU0ysZPom7yrxnpQk2GODtEIq+1798WwXZWj2r/p8N
-         OTOb875foI/lOxTs0OPKUj2AfhUOVuYpoL7rF6nDiaEq1brNvc8jf6fwG3RzpM+TPR/y
-         qNPSUnNuReUYIQdHqvMldFuqHYkaYsQCWv236zCz47+gf9etBZtVkCY7MQ8As6Z4EQ77
-         S1uqxk33fvtps9Schz/DuLN3iZxYqJSoX1brn1h7UlpPpw935UbhPUtWGF3kdJe1YWGM
-         faV8PFpAwiPI/wOW3JxNd6hADHRbHxH/75i0MDCN3gGGtFE5tghqeTaGofu2I3bG4/py
-         /DAQ==
-X-Gm-Message-State: AOAM5326td3eDAnjPVD0GZdqHvmoYzFYy5Upbcqbs0wG0BeJmzfIJsNw
-        eu20bBpe2u8PoF6Et8FRjvD/55r5NQ==
-X-Google-Smtp-Source: ABdhPJxXZt3wNBGtud4TWZ9Br1XwRbMOIEL4GlGdyRYqj4g562v6BGCF71MxxoiuK1t/lLArtd91Pg==
-X-Received: by 2002:a9d:6d86:: with SMTP id x6mr5601452otp.263.1637340988960;
-        Fri, 19 Nov 2021 08:56:28 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=0/NOpM1se8iPUSGGqq1mJ9QuXVx1LyhbZAK+OdBfRc4=;
+        b=G0jexsU4QUnX3QJKfXz/ztnd24BzhgfGUe3r/3ae+w+kWtx9OpOd3XJeIV0e0DLTCQ
+         H6+jlVN7zebv940d2XsTfoQ2NB7eGQJAWOQRq7Aboj3xQvB3JY6KQjQQ1GMSuPE1GMC2
+         A7Bc9yxjBPUSEyPsWkbnffR4uiMuYT4HgUvI6qxsRQbzn8WIxDI0yXPHBM/ZI2kkhuo3
+         6xUW+VnQ/+ldr9AGxh/s1vjLFEQCd7KJ1sK0rTSP/geMqkPmtv57YYBUpWe8hwMito7N
+         AixRcroouOMbpoQ5XFDHHmpx9b8TJwJ/cXDaEjvKi5wr8s1viAFiiZpgdCalq74AoAaN
+         VziQ==
+X-Gm-Message-State: AOAM530Q2N5lG/LDQTMjI44NFJh/Mlgzs+oAi+izxuTeU0m3Ylv43CVf
+        0zp+6qZrigSrd3LYfuYNDA==
+X-Google-Smtp-Source: ABdhPJxWL5ONrp7p34ohpvA1UkYOCUtg+R+iQzMItICEDQnLrCQYbQ4qprfFuDuwnV7G2+NBN/H8vQ==
+X-Received: by 2002:aca:1b15:: with SMTP id b21mr1086768oib.64.1637341110042;
+        Fri, 19 Nov 2021 08:58:30 -0800 (PST)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id n59sm74990ota.43.2021.11.19.08.56.27
+        by smtp.gmail.com with ESMTPSA id k4sm63803oij.54.2021.11.19.08.58.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 08:56:27 -0800 (PST)
-Received: (nullmailer pid 4060776 invoked by uid 1000);
-        Fri, 19 Nov 2021 16:56:25 -0000
-Date:   Fri, 19 Nov 2021 10:56:25 -0600
+        Fri, 19 Nov 2021 08:58:26 -0800 (PST)
+Received: (nullmailer pid 4078690 invoked by uid 1000);
+        Fri, 19 Nov 2021 16:58:22 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Luca Ceresoli <luca@lucaceresoli.net>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Chiwoong Byun <woong.byun@samsung.com>,
-        linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH v3 4/8] dt-bindings: mfd: add Maxim MAX77714 PMIC
-Message-ID: <YZfXORK9ohvI99Xi@robh.at.kernel.org>
-References: <20211111225852.3128201-1-luca@lucaceresoli.net>
- <20211111225852.3128201-5-luca@lucaceresoli.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211111225852.3128201-5-luca@lucaceresoli.net>
+To:     Manish Narani <manish.narani@xilinx.com>
+Cc:     git@xilinx.com, robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        michal.simek@xilinx.com, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org
+In-Reply-To: <1637329568-31756-1-git-send-email-manish.narani@xilinx.com>
+References: <1637329568-31756-1-git-send-email-manish.narani@xilinx.com>
+Subject: Re: [PATCH] dt-bindings: usb: dwc3-xilinx: Convert USB DWC3 bindings
+Date:   Fri, 19 Nov 2021 10:58:22 -0600
+Message-Id: <1637341102.285159.4078689.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Nov 2021 23:58:48 +0100, Luca Ceresoli wrote:
-> Add bindings for the MAX77714 PMIC with GPIO, RTC and watchdog.
+On Fri, 19 Nov 2021 19:16:08 +0530, Manish Narani wrote:
+> Convert USB DWC3 bindings to DT schema format using json-schema.
 > 
-> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
-> 
+> Signed-off-by: Manish Narani <manish.narani@xilinx.com>
 > ---
-> 
-> Changes in v3:
->  - add 'regulators' node (Krzysztof Kozlowski, Rob Herring)
-> 
-> Changes in v2: none
-> ---
->  .../bindings/mfd/maxim,max77714.yaml          | 68 +++++++++++++++++++
->  MAINTAINERS                                   |  5 ++
->  2 files changed, 73 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/maxim,max77714.yaml
+>  .../devicetree/bindings/usb/dwc3-xilinx.txt        |  56 ----------
+>  .../devicetree/bindings/usb/dwc3-xilinx.yaml       | 119 +++++++++++++++++++++
+>  2 files changed, 119 insertions(+), 56 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/usb/dwc3-xilinx.txt
+>  create mode 100644 Documentation/devicetree/bindings/usb/dwc3-xilinx.yaml
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Running 'make dtbs_check' with the schema in this patch gives the
+following warnings. Consider if they are expected or the schema is
+incorrect. These may not be new warnings.
+
+Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+This will change in the future.
+
+Full log is available here: https://patchwork.ozlabs.org/patch/1557119
+
+
+usb@ff9d0000: 'phy-names', 'phys' do not match any of the regexes: '^usb@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/xilinx/avnet-ultra96-rev1.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm017-dc3.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu102-rev1.0.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu102-rev1.1.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revB.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dt.yaml
+
+usb@ff9d0000: usb@fe200000:interrupt-names: 'oneOf' conditional failed, one must be fixed:
+	arch/arm64/boot/dts/xilinx/avnet-ultra96-rev1.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-smk-k26-revA.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zc1232-revA.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zc1254-revA.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zc1275-revA.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm016-dc2.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm017-dc3.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm018-dc4.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm019-dc5.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu102-rev1.0.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu102-rev1.1.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revB.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dt.yaml
+
+usb@ff9e0000: 'phy-names', 'phys' do not match any of the regexes: '^usb@[0-9a-f]+$', 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/xilinx/avnet-ultra96-rev1.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm017-dc3.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dt.yaml
+
+usb@ff9e0000: usb@fe300000:interrupt-names: 'oneOf' conditional failed, one must be fixed:
+	arch/arm64/boot/dts/xilinx/avnet-ultra96-rev1.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-sm-k26-revA.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-smk-k26-revA.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zc1232-revA.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zc1254-revA.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zc1275-revA.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm015-dc1.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm016-dc2.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm017-dc3.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm018-dc4.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zc1751-xm019-dc5.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu102-rev1.0.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu102-rev1.1.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revA.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu102-revB.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revA.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu104-revC.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu106-revA.dt.yaml
+	arch/arm64/boot/dts/xilinx/zynqmp-zcu111-revA.dt.yaml
+
