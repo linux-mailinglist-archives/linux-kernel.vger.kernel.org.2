@@ -2,402 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C14D7456764
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 02:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7FAC456767
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 02:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233022AbhKSBWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 20:22:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229833AbhKSBWw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 20:22:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA0156138D;
-        Fri, 19 Nov 2021 01:19:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637284791;
-        bh=Gxy95d9uTSFZ6s+xvZfv+fxwvVi6Av4nD/RW09/P+9k=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=SjmXbKz20/RpYbcSNdiPGdQlbm8kQB5pXm1LmjRbuu2PLajv5FKfT75eHVgveifx7
-         NN+h4zZDiDUN8rRFKSqj4dbdEGXH56OvLyYpROXnMP4ASnFOQS1bzLrRJ+1/WGxgmR
-         YagdmEv16M3BeryJEWn2u/YsgJrh7itWyczZlRYM/7Ry5QtfcHg/THbAV31W7F0H3l
-         RyL/GNg+oYevGsVVlD5vDWVxPmQmCLMcaaRS6seIZ2mPusEYtE/QwT3DHkSnSAhucV
-         BgHk6vL3rg+5l5gPxUkDaQXQ7JYbIM7irxMm7rNJaeFAnXK/yXCXLqhKUdBUwsCRu1
-         atXinAriLoZ6Q==
-Date:   Thu, 18 Nov 2021 17:19:48 -0800 (PST)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@ubuntu-linux-20-04-desktop
-To:     Oleksandr <olekstysh@gmail.com>
-cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        id S233115AbhKSBXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 20:23:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234011AbhKSBXR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 20:23:17 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68964C061574;
+        Thu, 18 Nov 2021 17:20:16 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id z5so35475761edd.3;
+        Thu, 18 Nov 2021 17:20:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=E34HgiCaOFVX+GifFvP+LbUSQRcs2toReX/WIG/3s+M=;
+        b=iiOa1TSm6JpJYSFdcKSWVTNMZrWt5RwUgeg/KcSvn032dKjDPZDRorWNPLiHpQszKN
+         dQk9e3pIkI1rzO/rsbXN/B2LlkOroO8aUNcrlCet+IuJH/QBmt6CEJ11fDxC5gnc0hcv
+         kzoHaTrOxrqpVp1xlNynE/njf0TPpNavM3x6sTs9D/rDaQ7bF6IFJpAANQoIfQ67uo/t
+         7FVdim2bPnqfgUz+RsKrVtsqn9mK03kv4Ct8luqjBKOb2/Q8lDgFP/XNtgGV3RsY0TpG
+         UtPvD5ISirMWOC9tedreW2i98uP29fr75VsLNwXh8Puld6JVGpjq+/Lt2ySpntaYC7si
+         xyjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=E34HgiCaOFVX+GifFvP+LbUSQRcs2toReX/WIG/3s+M=;
+        b=oeFiBcw8gKoDjghuU0/UEylw56xupq/v8q/JND9VRKVsYLGQCJjtBQ7sbRVcB4Ku48
+         5MBLgOCbuf9quHh198MCOYt8P7mllTWgD4dC3OHNjIacrqT+ZquJpKG/p+wsYSx90lEA
+         5BHYgCGOJT8Hpy1S9SYkY1pslpmMtLZfJ1SFDneac3i7kCkV6ROdG82/PQe0SDweL+z9
+         VYt9ZsgF94UyK8v4VnTOgVmq164JirouXR1rN19cIbE1mcGMfj2fuGbclO0d12GCp4Il
+         w4eRdDLR4OLB4SbLTUlSH9gujT3lVW+/JMoB9l/Im1dbZyJZ6P5g+8/6iJJNW6JRDqCd
+         7dpQ==
+X-Gm-Message-State: AOAM531lFmb6Rz/caVXar6wXeQgU4TkBbXraiF8NhumIQaqqyQ9U9AnX
+        hU3l1MfITXYHTzMzUgU2v+4=
+X-Google-Smtp-Source: ABdhPJx6j/zLyHHBtbOifYXNZ42IWX0f5Gd0VIq+Wx8EmhCJyVYbHnCQcbFw9SHVsi1RYB86pdcT4g==
+X-Received: by 2002:a50:da0a:: with SMTP id z10mr18232038edj.298.1637284814981;
+        Thu, 18 Nov 2021 17:20:14 -0800 (PST)
+Received: from skbuf ([188.25.163.189])
+        by smtp.gmail.com with ESMTPSA id f16sm787101edd.37.2021.11.18.17.20.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 17:20:14 -0800 (PST)
+Date:   Fri, 19 Nov 2021 03:20:13 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Russell King <linux@armlinux.org.uk>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>, Julien Grall <julien@xen.org>
-Subject: Re: [PATCH V2 4/4] arm/xen: Read extended regions from DT and init
- Xen resource
-In-Reply-To: <237f832d-5175-5653-18ee-058a7d7fa7a6@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2111181701110.1412361@ubuntu-linux-20-04-desktop>
-References: <1635264312-3796-1-git-send-email-olekstysh@gmail.com> <1635264312-3796-5-git-send-email-olekstysh@gmail.com> <alpine.DEB.2.21.2110271803060.20134@sstabellini-ThinkPad-T480s> <237f832d-5175-5653-18ee-058a7d7fa7a6@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [net-next PATCH 10/19] net: dsa: qca8k: add support for port
+ fast aging
+Message-ID: <20211119012013.e4a74lretsxz66sb@skbuf>
+References: <20211117210451.26415-1-ansuelsmth@gmail.com>
+ <20211117210451.26415-11-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-1809159159-1637284073=:1412361"
-Content-ID: <alpine.DEB.2.22.394.2111181708270.1412361@ubuntu-linux-20-04-desktop>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211117210451.26415-11-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Wed, Nov 17, 2021 at 10:04:42PM +0100, Ansuel Smith wrote:
+> The switch doesn't support fast aging but it does support the flush of
+> the ARL table for a specific port. Add this function to simulate
+> fast aging and proprely support stp state set.
+                 ~~~~~~~~                   ~~~
+                 properly                   verb? noun? what are you saying here?
 
---8323329-1809159159-1637284073=:1412361
-Content-Type: text/plain; CHARSET=UTF-8
-Content-Transfer-Encoding: 8BIT
-Content-ID: <alpine.DEB.2.22.394.2111181708271.1412361@ubuntu-linux-20-04-desktop>
+What difference do you see between fast ageing and ARL table flushing
+for a specific port?
 
-On Wed, 10 Nov 2021, Oleksandr wrote:
-> On 28.10.21 04:40, Stefano Stabellini wrote:
 > 
-> Hi Stefano
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>  drivers/net/dsa/qca8k.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 > 
-> I am sorry for the late response.
-> 
-> > On Tue, 26 Oct 2021, Oleksandr Tyshchenko wrote:
-> > > From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-> > > 
-> > > This patch implements arch_xen_unpopulated_init() on Arm where
-> > > the extended regions (if any) are gathered from DT and inserted
-> > > into passed Xen resource to be used as unused address space
-> > > for Xen scratch pages by unpopulated-alloc code.
-> > > 
-> > > The extended region (safe range) is a region of guest physical
-> > > address space which is unused and could be safely used to create
-> > > grant/foreign mappings instead of wasting real RAM pages from
-> > > the domain memory for establishing these mappings.
-> > > 
-> > > The extended regions are chosen by the hypervisor at the domain
-> > > creation time and advertised to it via "reg" property under
-> > > hypervisor node in the guest device-tree. As region 0 is reserved
-> > > for grant table space (always present), the indexes for extended
-> > > regions are 1...N.
-> > > 
-> > > If arch_xen_unpopulated_init() fails for some reason the default
-> > > behaviour will be restored (allocate xenballooned pages).
-> > > 
-> > > This patch also removes XEN_UNPOPULATED_ALLOC dependency on x86.
-> > > 
-> > > Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-> > > ---
-> > > Changes RFC -> V2:
-> > >     - new patch, instead of
-> > >      "[RFC PATCH 2/2] xen/unpopulated-alloc: Query hypervisor to provide
-> > > unallocated space"
-> > > ---
-> > >   arch/arm/xen/enlighten.c | 112
-> > > +++++++++++++++++++++++++++++++++++++++++++++++
-> > >   drivers/xen/Kconfig      |   2 +-
-> > >   2 files changed, 113 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
-> > > index dea46ec..1a1e0d3 100644
-> > > --- a/arch/arm/xen/enlighten.c
-> > > +++ b/arch/arm/xen/enlighten.c
-> > > @@ -62,6 +62,7 @@ static __read_mostly unsigned int xen_events_irq;
-> > >   static phys_addr_t xen_grant_frames;
-> > >     #define GRANT_TABLE_INDEX   0
-> > > +#define EXT_REGION_INDEX    1
-> > >     uint32_t xen_start_flags;
-> > >   EXPORT_SYMBOL(xen_start_flags);
-> > > @@ -303,6 +304,117 @@ static void __init xen_acpi_guest_init(void)
-> > >   #endif
-> > >   }
-> > >   +#ifdef CONFIG_XEN_UNPOPULATED_ALLOC
-> > > +int arch_xen_unpopulated_init(struct resource *res)
-> > > +{
-> > > +	struct device_node *np;
-> > > +	struct resource *regs, *tmp_res;
-> > > +	uint64_t min_gpaddr = -1, max_gpaddr = 0;
-> > > +	unsigned int i, nr_reg = 0;
-> > > +	struct range mhp_range;
-> > > +	int rc;
-> > > +
-> > > +	if (!xen_domain())
-> > > +		return -ENODEV;
-> > > +
-> > > +	np = of_find_compatible_node(NULL, NULL, "xen,xen");
-> > > +	if (WARN_ON(!np))
-> > > +		return -ENODEV;
-> > > +
-> > > +	/* Skip region 0 which is reserved for grant table space */
-> > > +	while (of_get_address(np, nr_reg + EXT_REGION_INDEX, NULL, NULL))
-> > > +		nr_reg++;
-> > > +	if (!nr_reg) {
-> > > +		pr_err("No extended regions are found\n");
-> > > +		return -EINVAL;
-> > > +	}
-> > > +
-> > > +	regs = kcalloc(nr_reg, sizeof(*regs), GFP_KERNEL);
-> > > +	if (!regs)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	/*
-> > > +	 * Create resource from extended regions provided by the hypervisor to
-> > > be
-> > > +	 * used as unused address space for Xen scratch pages.
-> > > +	 */
-> > > +	for (i = 0; i < nr_reg; i++) {
-> > > +		rc = of_address_to_resource(np, i + EXT_REGION_INDEX,
-> > > &regs[i]);
-> > > +		if (rc)
-> > > +			goto err;
-> > > +
-> > > +		if (max_gpaddr < regs[i].end)
-> > > +			max_gpaddr = regs[i].end;
-> > > +		if (min_gpaddr > regs[i].start)
-> > > +			min_gpaddr = regs[i].start;
-> > > +	}
-> > > +
-> > > +	/* Check whether the resource range is within the hotpluggable range
-> > > */
-> > > +	mhp_range = mhp_get_pluggable_range(true);
-> > > +	if (min_gpaddr < mhp_range.start)
-> > > +		min_gpaddr = mhp_range.start;
-> > > +	if (max_gpaddr > mhp_range.end)
-> > > +		max_gpaddr = mhp_range.end;
-> > > +
-> > > +	res->start = min_gpaddr;
-> > > +	res->end = max_gpaddr;
-> > > +
-> > > +	/*
-> > > +	 * Mark holes between extended regions as unavailable. The rest of
-> > > that
-> > > +	 * address space will be available for the allocation.
-> > > +	 */
-> > > +	for (i = 1; i < nr_reg; i++) {
-> > > +		resource_size_t start, end;
-> > > +
-> > > +		start = regs[i - 1].end + 1;
-> > > +		end = regs[i].start - 1;
-> > > +
-> > > +		if (start > (end + 1)) {
-> > Should this be:
-> > 
-> > if (start >= end)
-> > 
-> > ?
-> 
-> Yes, we can do this here (since the checks are equivalent) but ...
->
-> > > +			rc = -EINVAL;
-> > > +			goto err;
-> > > +		}
-> > > +
-> > > +		/* There is no hole between regions */
-> > > +		if (start == (end + 1))
-> > Also here, shouldn't it be:
-> > 
-> > if (start == end)
-> > 
-> > ?
-> 
->    ... not here.
-> 
-> As
-> 
-> "(start == (end + 1))" is equal to "(regs[i - 1].end + 1 == regs[i].start)"
-> 
-> but
-> 
-> "(start == end)" is equal to "(regs[i - 1].end + 1 == regs[i].start - 1)"
- 
-OK. But the check:
-
-  if (start >= end)
-
-Actually covers both cases so that's the only check we need?
-
-
-> > 
-> > I think I am missing again something in termination accounting :-)
-> 
-> If I understand correctly, we need to follow "end = start + size - 1" rule, so
-> the "end" is the last address inside a range, but not the "first" address
-> outside of a range))
-
-yeah
- 
-
-> > > +			continue;
-> > > +
-> > > +		/* Check whether the hole range is within the resource range
-> > > */
-> > > +		if (start < res->start || end > res->end) {
-> > By definition I don't think this check is necessary as either condition
-> > is impossible?
-> 
-> 
-> This is a good question, let me please explain.
-> Not all extended regions provided by the hypervisor can be used here. This is
-> because the addressable physical memory range for which the linear mapping
-> could be created has limits on Arm, and maximum addressable range depends on
-> the VA space size (CONFIG_ARM64_VA_BITS_XXX). So we decided to not filter them
-> in hypervisor as this logic could be quite complex as different OS may have
-> different requirement, etc. This means that we need to make sure that regions
-> are within the hotpluggable range to avoid a failure later on when a region is
-> pre-validated by the memory hotplug path.
-> 
-> The following code limits the resource range based on that:
-> 
-> +    /* Check whether the resource range is within the hotpluggable range */
-> +    mhp_range = mhp_get_pluggable_range(true);
-> +    if (min_gpaddr < mhp_range.start)
-> +        min_gpaddr = mhp_range.start;
-> +    if (max_gpaddr > mhp_range.end)
-> +        max_gpaddr = mhp_range.end;
+> diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+> index cf4f69b36b47..d73886b36e6a 100644
+> --- a/drivers/net/dsa/qca8k.c
+> +++ b/drivers/net/dsa/qca8k.c
+> @@ -1823,6 +1823,16 @@ qca8k_port_bridge_leave(struct dsa_switch *ds, int port, struct net_device *br)
+>  			   QCA8K_PORT_LOOKUP_MEMBER, BIT(cpu_port));
+>  }
+>  
+> +static void
+> +qca8k_port_fast_age(struct dsa_switch *ds, int port)
+> +{
+> +	struct qca8k_priv *priv = ds->priv;
 > +
-> +    res->start = min_gpaddr;
-> +    res->end = max_gpaddr;
-> 
-> In current loop (when calculating and inserting holes) we also need to make
-> sure that resulting hole range is within the resource range (and adjust/skip
-> it if not true) as regs[] used for the calculations contains raw regions as
-> they described in DT so not updated. Otherwise insert_resource() down the
-> function will return an error for the conflicting operations. Yes, I could
-> took a different route and update regs[] in advance to adjust/skip
-> non-suitable regions in front, but I decided to do it on the fly in the loop
-> here, I thought doing it in advance would add some overhead/complexity. What
-> do you think?
-
-I understand now.
-
-
-> So I am afraid this check is necessary here.
-> 
-> For example in my environment the extended regions are:
-> 
-> (XEN) Extended region 0: 0->0x8000000
-> (XEN) Extended region 1: 0xc000000->0x30000000
-> (XEN) Extended region 2: 0x40000000->0x47e00000
-> (XEN) Extended region 3: 0xd0000000->0xe6000000
-> (XEN) Extended region 4: 0xe7800000->0xec000000
-> (XEN) Extended region 5: 0xf1200000->0xfd000000
-> (XEN) Extended region 6: 0x100000000->0x500000000
-> (XEN) Extended region 7: 0x580000000->0x600000000
-> (XEN) Extended region 8: 0x680000000->0x700000000
-> (XEN) Extended region 9: 0x780000000->0x10000000000
-> 
-> *With* the check the holes are:
-> 
-> holes [47e00000 - cfffffff]
-> holes [e6000000 - e77fffff]
-> holes [ec000000 - f11fffff]
-> holes [fd000000 - ffffffff]
-> holes [500000000 - 57fffffff]
-> holes [600000000 - 67fffffff]
-> holes [700000000 - 77fffffff]
-> 
-> And they seem to look correct, you can see that two possible holes between
-> extended regions 0-1 (8000000-bffffff) and 1-2 (30000000-3fffffff) were
-> skipped as they entirely located below res->start
-> which is 0x40000000 in my case (48-bit VA: 0x40000000 - 0x80003fffffff).
-> 
-> *Without* the check these two holes won't be skipped and as the result
-> insert_resource() will fail.
-> 
-> 
-> **********
-> 
-> 
-> I have one idea how we can simplify filter logic, we can drop all checks here
-> (including confusing one) in Arm code and update common code a bit:
-> 
-> diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
-> index 1a1e0d3..ed5b855 100644
-> --- a/arch/arm/xen/enlighten.c
-> +++ b/arch/arm/xen/enlighten.c
-> @@ -311,7 +311,6 @@ int arch_xen_unpopulated_init(struct resource *res)
->         struct resource *regs, *tmp_res;
->         uint64_t min_gpaddr = -1, max_gpaddr = 0;
->         unsigned int i, nr_reg = 0;
-> -       struct range mhp_range;
->         int rc;
-> 
->         if (!xen_domain())
-> @@ -349,13 +348,6 @@ int arch_xen_unpopulated_init(struct resource *res)
->                         min_gpaddr = regs[i].start;
->         }
-> 
-> -       /* Check whether the resource range is within the hotpluggable range
-> */
-> -       mhp_range = mhp_get_pluggable_range(true);
-> -       if (min_gpaddr < mhp_range.start)
-> -               min_gpaddr = mhp_range.start;
-> -       if (max_gpaddr > mhp_range.end)
-> -               max_gpaddr = mhp_range.end;
-> -
->         res->start = min_gpaddr;
->         res->end = max_gpaddr;
-> 
-> @@ -378,17 +370,6 @@ int arch_xen_unpopulated_init(struct resource *res)
->                 if (start == (end + 1))
->                         continue;
-> 
-> -               /* Check whether the hole range is within the resource range
-> */
-> -               if (start < res->start || end > res->end) {
-> -                       if (start < res->start)
-> -                               start = res->start;
-> -                       if (end > res->end)
-> -                               end = res->end;
-> -
-> -                       if (start >= (end + 1))
-> -                               continue;
-> -               }
-> -
->                 tmp_res = kzalloc(sizeof(*tmp_res), GFP_KERNEL);
->                 if (!tmp_res) {
->                         rc = -ENOMEM;
-> diff --git a/drivers/xen/unpopulated-alloc.c b/drivers/xen/unpopulated-alloc.c
-> index 1f1d8d8..a5d3ebb 100644
-> --- a/drivers/xen/unpopulated-alloc.c
-> +++ b/drivers/xen/unpopulated-alloc.c
-> @@ -39,6 +39,7 @@ static int fill_list(unsigned int nr_pages)
->         void *vaddr;
->         unsigned int i, alloc_pages = round_up(nr_pages, PAGES_PER_SECTION);
->         int ret;
-> +       struct range mhp_range;
-> 
->         res = kzalloc(sizeof(*res), GFP_KERNEL);
->         if (!res)
-> @@ -47,8 +48,10 @@ static int fill_list(unsigned int nr_pages)
->         res->name = "Xen scratch";
->         res->flags = IORESOURCE_MEM | IORESOURCE_BUSY;
-> 
-> +       mhp_range = mhp_get_pluggable_range(true);
+> +	mutex_lock(&priv->reg_mutex);
+> +	qca8k_fdb_access(priv, QCA8K_FDB_FLUSH_PORT, port);
+> +	mutex_unlock(&priv->reg_mutex);
+> +}
 > +
->         ret = allocate_resource(target_resource, res,
-> -                               alloc_pages * PAGE_SIZE, 0, -1,
-> +                               alloc_pages * PAGE_SIZE, mhp_range.start,
-> mhp_range.end,
->                                 PAGES_PER_SECTION * PAGE_SIZE, NULL, NULL);
->         if (ret < 0) {
->                 pr_err("Cannot allocate new IOMEM resource\n");
-> (END)
+>  static int
+>  qca8k_port_enable(struct dsa_switch *ds, int port,
+>  		  struct phy_device *phy)
+> @@ -2031,6 +2041,7 @@ static const struct dsa_switch_ops qca8k_switch_ops = {
+>  	.port_stp_state_set	= qca8k_port_stp_state_set,
+>  	.port_bridge_join	= qca8k_port_bridge_join,
+>  	.port_bridge_leave	= qca8k_port_bridge_leave,
+> +	.port_fast_age		= qca8k_port_fast_age,
+>  	.port_fdb_add		= qca8k_port_fdb_add,
+>  	.port_fdb_del		= qca8k_port_fdb_del,
+>  	.port_fdb_dump		= qca8k_port_fdb_dump,
+> -- 
+> 2.32.0
 > 
-> I believe, this will work on x86 as arch_get_mappable_range() is not
-> implemented there,
-> and the default option contains exactly what being used currently (0, -1).
-> 
-> struct range __weak arch_get_mappable_range(void)
-> {
->     struct range mhp_range = {
->         .start = 0UL,
->         .end = -1ULL,
->     };
->     return mhp_range;
-> }
-> 
-> And this is going to be more generic and clear, what do you think?
-
-Yeah this is much better, good thinking!
---8323329-1809159159-1637284073=:1412361--
