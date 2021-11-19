@@ -2,301 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D8B457901
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 23:47:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DEE545791D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 23:51:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234697AbhKSWuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 17:50:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231416AbhKSWuC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 17:50:02 -0500
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B61C061574;
-        Fri, 19 Nov 2021 14:46:59 -0800 (PST)
-Received: by mail-ua1-x930.google.com with SMTP id j14so14466891uan.10;
-        Fri, 19 Nov 2021 14:46:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zFqARuc/+Lw2I8xXuND6mlPXskUS/aYJU6LEBPOEf5o=;
-        b=oEPAJiVHkKnLUb2OIn7pnuCkNWLF2CXFsJpcC586yzL6zLjYrrilICjeZrWleJWLUA
-         MUByli/RmDmWqxlSVqhDR1C6bIQ0kDaDMNLZDqRvCOMUuPzE+51dTc3LxWouNEGcGgc1
-         D3eB6R/C73PHkIIxZrOk1ifLLIZfh5g9wTKHiS1Gx4GFuwrAy7AUNeO12seW0K7OCP6X
-         wBsRQR2wN3yUSuw/0E2+rUjdxgnI0i7jVjmx3OHTGjVDW4mcqOaMDO9EnnoolD3awCvu
-         fl/4nE0dYzj0SFkSkk6Yb1vEf42ZmYf02pxLyBJlXedQLEo+weyRWKRNMJ/oBAiRB/KC
-         uBzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zFqARuc/+Lw2I8xXuND6mlPXskUS/aYJU6LEBPOEf5o=;
-        b=uhDG5YmP0zgxl/fyDm1ju1TopqTErB/ZN5csGitTdVzDXvDTxgHlPCPOps9GJIwsDs
-         NFZa/lml2QQf8QTicDhT4IR3P3ty7Ww0hJG6XBGDI+pRKKtosGgFfwRpnpkm91rAHkfu
-         3rTPmpkc3QFp5hhtJWVVNmU+tho14oI6Oq3iZdpddupEU3krz2Jmor+Si5dZtPzcZOaQ
-         i08ceaGxgBphYpwl+7nA4ojGh9Fhthhdc4uVwQOlX2Uh23CS4btlzZPNR8ExIax4GWeB
-         1cJOZrad8lJk7gkdws2COObaVST5U53ZOYwgUbmxpMq4fhwNJf9AgPTWDf+1RXk2GwGQ
-         pmkA==
-X-Gm-Message-State: AOAM531Q8HPqfbsy1RMUwwhbi9lL1W/uX4DI414LJhzWkfOUkWdp6z4l
-        0NNI2QW2Ybvk9L/rtUDsMJBD10VmDmKYDH96oHE=
-X-Google-Smtp-Source: ABdhPJzexc6BskoZ7bxCgeL3na7HhjycEVACnUbSLbHZVhqRta9op3uUnUg4gkVAlSInN0VBX8WCQTbjvDaXvz2/O/8=
-X-Received: by 2002:ab0:44e:: with SMTP id 72mr54616355uav.121.1637362018620;
- Fri, 19 Nov 2021 14:46:58 -0800 (PST)
+        id S234360AbhKSWyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 17:54:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45268 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231231AbhKSWyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 17:54:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8D3D61AF0;
+        Fri, 19 Nov 2021 22:51:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637362277;
+        bh=7GznTvTop0lokx6cVFXD5gAa4aQh8V7B6/e5YII3q+s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=myHT6n+iTdJAVtBDiVhYqckUNcJ+EDbIYXS0uuIdTsfnvP+szrY5uqph2BBn9e0/2
+         TDtJLUsOVQqscqgGVRCWOfChRwRg1XSGlCL9RoSqOq3ZabIFZridCqfyIGLoZ/Ar+r
+         MwxRA/kwWuS1Sbt8aw0hHSzbdSFuIdrrBJ7dP6TrFNc1gUDv4+Lyf9rQgLoIrUehS6
+         Q4ZRWzOD7Vs3LJGKebNcwS4z0e20Rx8HtKfVhWFkNFTjKDcNM3gtzpGBNgaqHTnk/4
+         Q0BXPYwsrUOYJ2C2FYvPseXSBBd/+KWq+6iPtXVRea6naG/Alrx/615p9T+42Rb3mN
+         O+Of3dC9PM2Og==
+Date:   Fri, 19 Nov 2021 16:51:15 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hch@infradead.org, hch@lst.de
+Subject: Re: [RFC PATCH v5 0/4] PCI/ASPM: Remove struct aspm_latency
+Message-ID: <20211119225115.GA1980058@bhelgaas>
 MIME-Version: 1.0
-References: <20211111220206.121610-1-jim.cromie@gmail.com> <20211111220206.121610-9-jim.cromie@gmail.com>
- <20211112114953.GA1381@axis.com> <f3914fa9-8b22-d54e-3f77-d998e74094b9@akamai.com>
- <20211116104631.195cbd0b@eldfell> <f87b7076-47e6-89b1-aaf9-b67aa6713e01@akamai.com>
- <20211118172401.0b4d722e@eldfell> <41ea83b2-a707-cb6f-521e-070bb12502de@akamai.com>
-In-Reply-To: <41ea83b2-a707-cb6f-521e-070bb12502de@akamai.com>
-From:   jim.cromie@gmail.com
-Date:   Fri, 19 Nov 2021 15:46:31 -0700
-Message-ID: <CAJfuBxyvDtALAHM53RdnWT4ke6Cjrc3OWTAqNKe_n-o_LhtpYg@mail.gmail.com>
-Subject: Re: [PATCH v10 08/10] dyndbg: add print-to-tracefs, selftest with it
- - RFC
-To:     Jason Baron <jbaron@akamai.com>
-Cc:     Pekka Paalanen <ppaalanen@gmail.com>,
-        Sean Paul <seanpaul@chromium.org>, Sean Paul <sean@poorly.run>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        quic_saipraka@quicinc.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Will Deacon <will@kernel.org>, maz@kernel.org,
-        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Arnd Bergmann <arnd@arndb.de>, linux-arm-msm@vger.kernel.org,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        intel-gvt-dev@lists.freedesktop.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, quic_psodagud@quicinc.com,
-        mathieu.desnoyers@efficios.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211119193732.12343-1-refactormyself@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 9:21 AM Jason Baron <jbaron@akamai.com> wrote:
->
->
->
-> On 11/18/21 10:24 AM, Pekka Paalanen wrote:
-> > On Thu, 18 Nov 2021 09:29:27 -0500
-> > Jason Baron <jbaron@akamai.com> wrote:
-> >
-> >> On 11/16/21 3:46 AM, Pekka Paalanen wrote:
-> >>> On Fri, 12 Nov 2021 10:08:41 -0500
-> >>> Jason Baron <jbaron@akamai.com> wrote:
-> >>>
-> >>>> On 11/12/21 6:49 AM, Vincent Whitchurch wrote:
-> >>>>> On Thu, Nov 11, 2021 at 03:02:04PM -0700, Jim Cromie wrote:
-> >>>>>> Sean Paul proposed, in:
-> >>>>>> https://urldefense.com/v3/__https://patchwork.freedesktop.org/series/78133/__;!!GjvTz_vk!HcKnMRByYkIdyF1apqQjlN5aBIomzJR1an3YWXM6KXs0EftVMQdrewRA8Dki4A$
-> >>>>>> drm/trace: Mirror DRM debug logs to tracefs
-> >>>>>>
-> >>>>>> His patchset's objective is to be able to independently steer some of
-> >>>>>> the drm.debug stream to an alternate tracing destination, by splitting
-> >>>>>> drm_debug_enabled() into syslog & trace flavors, and enabling them
-> >>>>>> separately.  2 advantages were identified:
-> >>>>>>
-> >>>>>> 1- syslog is heavyweight, tracefs is much lighter
-> >>>>>> 2- separate selection of enabled categories means less traffic
-> >>>>>>
-> >>>>>> Dynamic-Debug can do 2nd exceedingly well:
-> >>>>>>
-> >>>>>> A- all work is behind jump-label's NOOP, zero off cost.
-> >>>>>> B- exact site selectivity, precisely the useful traffic.
-> >>>>>>    can tailor enabled set interactively, at shell.
-> >>>>>>
-> >>>>>> Since the tracefs interface is effective for drm (the threads suggest
-> >>>>>> so), adding that interface to dynamic-debug has real potential for
-> >>>>>> everyone including drm.
-> >>>>>>
-> >>>>>> if CONFIG_TRACING:
-> >>>>>>
-> >>>>>> Grab Sean's trace_init/cleanup code, use it to provide tracefs
-> >>>>>> available by default to all pr_debugs.  This will likely need some
-> >>>>>> further per-module treatment; perhaps something reflecting hierarchy
-> >>>>>> of module,file,function,line, maybe with a tuned flattening.
-> >>>>>>
-> >>>>>> endif CONFIG_TRACING
-> >>>>>>
-> >>>>>> Add a new +T flag to enable tracing, independent of +p, and add and
-> >>>>>> use 3 macros: dyndbg_site_is_enabled/logging/tracing(), to encapsulate
-> >>>>>> the flag checks.  Existing code treats T like other flags.
-> >>>>>
-> >>>>> I posted a patchset a while ago to do something very similar, but that
-> >>>>> got stalled for some reason and I unfortunately didn't follow it up:
-> >>>>>
-> >>>>>  https://urldefense.com/v3/__https://lore.kernel.org/lkml/20200825153338.17061-1-vincent.whitchurch@axis.com/__;!!GjvTz_vk!HcKnMRByYkIdyF1apqQjlN5aBIomzJR1an3YWXM6KXs0EftVMQdrewRGytKHPg$
-> >>>>>
-> >>>>> A key difference between that patchset and this patch (besides that
-> >>>>> small fact that I used +x instead of +T) was that my patchset allowed
-> >>>>> the dyndbg trace to be emitted to the main buffer and did not force them
-> >>>>> to be in an instance-specific buffer.
-> >>>>
-> >>>> Yes, I agree I'd prefer that we print here to the 'main' buffer - it
-> >>>> seems to keep things simpler and easier to combine the output from
-> >>>> different sources as you mentioned.
-> >>>
-> >>> Hi,
-> >>>
-> >>> I'm not quite sure I understand this discussion, but I would like to
-> >>> remind you all of what Sean's original work is about:
-> >>>
-> >>> Userspace configures DRM tracing into a flight recorder buffer (I guess
-> >>> this is what you refer to "instance-specific buffer").
-> >>>
-> >>> Userspace runs happily for months, and then hits a problem: a failure
-> >>> in the DRM sub-system most likely, e.g. an ioctl that should never
-> >>> fail, failed. Userspace handles that failure by dumping the flight
-> >>> recorder buffer into a file and saving or sending a bug report. The
-> >>> flight recorder contents give a log of all relevant DRM in-kernel
-> >>> actions leading to the unexpected failure to help developers debug it.
-> >>>
-> >>> I don't mind if one can additionally send the flight recorder stream to
-> >>> the main buffer, but I do want the separate flight recorder buffer to
-> >>> be an option so that a) unrelated things cannot flood the interesting
-> >>> bits out of it, and b) the scope of collected information is relevant.
-> >>>
-> >>> The very reason for this work is problems that are very difficult to
-> >>> reproduce in practice, either because the problem itself is triggered
-> >>> very rarely and randomly, or because the end users of the system have
-> >>> either no knowledge or no access to reconfigure debug logging and then
-> >>> reproduce the problem with good debug logs.
-> >>>
-> >>> Thank you very much for pushing this work forward!
-> >>>
-> >>>
-> >>
-> >> So I think Vincent (earlier in the thread) was saying that he finds it
-> >> very helpful have dynamic debug output go to the 'main' trace buffer,
-> >> while you seem to be saying you'd prefer it just go to dynamic debug
-> >> specific trace buffer.
-> >
-> > Seems like we have different use cases: traditional debugging, and
-> > in-production flight recorder for problem reporting. I'm not surprised
-> > if they need different treatment.
-> >
-> >> So we certainly can have dynamic output potentially go to both places -
-> >> although I think this would mean two tracepoints? But I really wonder
-> >> if we really need a separate tracing buffer for dynamic debug when
-> >> what goes to the 'main' buffer can be controlled and filtered to avoid
-> >> your concern around a 'flood'?
-> >
-> > If the DRM tracing goes into the main buffer, then systems in
-> > production cannot have any other sub-system traced in a similar
-> > fashion. To me it would feel very arrogant to say that to make use of
-> > DRM flight recording, you cannot trace much or anything else.
-> >
-> > The very purpose of the flight recorder is run in production all the
-> > time, not in a special debugging session.
-> >
-> > There is also the question of access and contents of the trace buffer.
-> > Ultimately, if automatic bug reports are enabled in a system, the
-> > contents of the trace buffer would be sent as-is to some bug tracking
-> > system. If there is a chance to put non-DRM stuff in the trace buffer,
-> > that could be a security problem.
-> >
-> > My use case is Weston. When Weston encounters an unexpected problem in
-> > production, something should automatically capture the DRM flight
-> > recorder contents and save it alongside the Weston log. Would be really
-> > nice if Weston itself could do that, but I suspect it is going to need
-> > root privileges so it needs some helper daemon.
-> >
-> > Maybe Sean can reiterate their use case more?
-> >
-> >
-> > Thanks,
-> > pq
-> >
->
-> Ok, so in this current thread the proposal was to create a "dyndbg-tracefs"
-> buffer to put the dynamic debug output (including drm output from dynamic
-> debug) into. And I was saying let's just put in the 'main' trace buffer
-> (predicated on a dynamic debug specific tracepoint), since there seems
-> to be a a use-case for that and it keeps things simpler.
->
-> But I went back to Sean's original patch, and it creates a drm specific
-> trace buffer "drm" (via trace_array_get_by_name("drm")). Here:
-> https://patchwork.freedesktop.org/patch/445549/?series=78133&rev=5
->
-> So I think that may be some of the confusion here? The current thread/
-> proposal is not for a drm specific trace buffer...
->
+On Fri, Nov 19, 2021 at 08:37:28PM +0100, Saheed O. Bolarinwa wrote:
+> To validate and set link latency capability, `struct aspm_latency` and
+> related members defined within `struct pcie_link_state` are used.
+> However, since there are not many access to theses values, it is
+> possible to directly access and compute these values.
+> 
+> Doing this will also reduce the dependency on `struct pcie_link_state`.
+> 
+> The series removes `struct aspm_latency` and related members within
+> `struct pcie_link_state`. All latencies are now calculated when needed.
+> 
+> 
+> VERSION CHANGES:
+> - v2:
+> »       - directly access downstream by calling `pci_function_0()`
+> »         instead of using the `struct pcie_link_state`
+> - v3:
+> »       - rebase on Linux 5.15-rc2
+> - v4
+> »       - Create a seprate path to move pci_function_0() upward
+> - v5
+> 	- shorten long lines as noted in the review
+> 
+> MERGE NOTICE:
+> These series are based on
+> »       'commit fa55b7dcdc43 ("Linux 5.16-rc1")'
+> 
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> 
+> Bolarinwa O. Saheed (1):
+>   PCI/ASPM: Move pci_function_0() upward
+> 
+> Saheed O. Bolarinwa (3):
+>   PCI/ASPM: Do not cache link latencies
+>   PCI/ASPM: Remove struct pcie_link_state.acceptable
+>   PCI/ASPM: Remove struct aspm_latency
+> 
+>  drivers/pci/pcie/aspm.c | 95 +++++++++++++++++++----------------------
+>  1 file changed, 44 insertions(+), 51 deletions(-)
 
-while thats true, it was a KISS choice, not intrinsic.
-Now that a requirement has emerged, I can think about it.
+Applied to pci/aspm for v5.17, thanks very much!  We're chipping away
+at the cruft in aspm.c little by little.
 
-I thought use of all the pr_debug()s as a tracefs event provider made sense,
-since the callsite descriptor is passed in, and could be passed in to
-the tracefs interface.
+I made the following changes.  Some whitespace; the rest to take
+advantage of the fact that Device Capabilities is read-only and Amey
+added a cache of it with 691392448065 ("PCI: Cache PCIe Device
+Capabilities register")
 
-Vincent's code has the macro magic to define that event, which IIUC
-is what  makes it controllable by ftrace, and therefore acceptable in
-principle to Steve.
-Would there be any reason to expand his set of 2 events into dev_dbg,
-pr_debug etc varieties ?
-(ie any value to separating dev, !dev ?, maybe so)
+That commit uses FIELD_GET(), which is kind of slick and might be
+useful in aspm.c as well.
 
-Sean's code uses trace_array_printk primarily, which is EXPORTed,
-which is a virtue.
-
-Vincents code does
-+/*
-+ * This code is heavily based on __ftrace_trace_stack().
-+ *
-+ * Allow 4 levels of nesting: normal, softirq, irq, NMI.
-+ */
-
-to implement
-
-+static void dynamic_trace(const char *fmt, va_list args)
-
-Has this __ftrace_trace_stack() code been bundled into or hidden under
-a supported interface ?
-
-would it look anything like trace_array_printk() ?
-
-what problem is that code solving inside dynamic-debug.c ?
-
-
-> Having a subsystem specific trace buffer would allow subsystem specific
-> trace log permissions depending on the sensitivity of the data. But
-> doesn't drm output today go to the system log which is typically world
-> readable today?
->
-
-> So I could see us supporting subsystem specific trace buffer output
-> via dynamic debug here. We could add new dev_debug() variants that
-> allow say a trace buffer to be supplied. So in that way subsystems
-> could 'opt-out' of having their data put into the global trace buffer.
-> And perhaps some subsystems we would want to allow output to both
-> buffers? The subsystem specific one and the global one?
->
-
- * trace_array_printk - Print a message to a specific instance
- * @tr: The instance trace_array descriptor
- * @ip: The instruction pointer that this is called from.
- * @fmt: The format to print (printf format)
- *
-
-what happens when @tr == NULL ?
-It could allow up-flow of events to the global instance
-
-> Thanks,
->
-> -Jason
->
->
-
-So I wonder, is there any conceptual utility to this ?
-
-echo 1 > instances/foo/filter_up  # enable event upflow (or query-time merging?)
-
-Maybe enabling this causes other files (the ones missing from
-instances/foo) to magically appear
-so all those filtering capacities also appear.
+diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+index e29611080a90..c6d2e76e0502 100644
+--- a/drivers/pci/pcie/aspm.c
++++ b/drivers/pci/pcie/aspm.c
+@@ -378,7 +378,7 @@ static void encode_l12_threshold(u32 threshold_us, u32 *scale, u32 *value)
+ 
+ static void pcie_aspm_check_latency(struct pci_dev *endpoint)
+ {
+-	u32 reg32, latency, encoding, lnkcap_up, lnkcap_dw;
++	u32 latency, encoding, lnkcap_up, lnkcap_dw;
+ 	u32 l1_switch_latency = 0, latency_up_l0s;
+ 	u32 latency_up_l1, latency_dw_l0s, latency_dw_l1;
+ 	u32 acceptable_l0s, acceptable_l1;
+@@ -390,24 +390,22 @@ static void pcie_aspm_check_latency(struct pci_dev *endpoint)
+ 		return;
+ 
+ 	link = endpoint->bus->self->link_state;
+-	pcie_capability_read_dword(endpoint, PCI_EXP_DEVCAP, &reg32);
++
+ 	/* Calculate endpoint L0s acceptable latency */
+-	encoding = (reg32 & PCI_EXP_DEVCAP_L0S) >> 6;
++	encoding = (endpoint->devcap & PCI_EXP_DEVCAP_L0S) >> 6;
+ 	acceptable_l0s = calc_l0s_acceptable(encoding);
++
+ 	/* Calculate endpoint L1 acceptable latency */
+-	encoding = (reg32 & PCI_EXP_DEVCAP_L1) >> 9;
++	encoding = (endpoint->devcap & PCI_EXP_DEVCAP_L1) >> 9;
+ 	acceptable_l1 = calc_l1_acceptable(encoding);
+ 
+ 	while (link) {
+-		struct pci_dev *dev = pci_function_0(
+-					link->pdev->subordinate);
++		struct pci_dev *dev = pci_function_0(link->pdev->subordinate);
+ 
+ 		/* Read direction exit latencies */
+-		pcie_capability_read_dword(link->pdev,
+-					   PCI_EXP_LNKCAP,
++		pcie_capability_read_dword(link->pdev, PCI_EXP_LNKCAP,
+ 					   &lnkcap_up);
+-		pcie_capability_read_dword(dev,
+-					   PCI_EXP_LNKCAP,
++		pcie_capability_read_dword(dev, PCI_EXP_LNKCAP,
+ 					   &lnkcap_dw);
+ 		latency_up_l0s = calc_l0s_latency(lnkcap_up);
+ 		latency_up_l1 = calc_l1_latency(lnkcap_up);
