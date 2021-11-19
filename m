@@ -2,58 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9D645774F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 20:46:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E34B45774D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 20:46:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236556AbhKSTtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 14:49:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45506 "EHLO mail.kernel.org"
+        id S236373AbhKSTt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 14:49:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236252AbhKSTtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236232AbhKSTtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 19 Nov 2021 14:49:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 873EB61AF0;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2CD4961A58;
         Fri, 19 Nov 2021 19:46:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1637351177;
-        bh=w/cV0A9d6vhVxYizPKfIH3mkDSr6ob/IVDyHXYbsy1Q=;
+        bh=4ZRhkhKQzjMc0Aq2r6UVZumAqiBxVZvS+ST/nhZP81Q=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=V8RQWVJvtgaxO7JctxEjYho+M4RqbjJ17CEuy8si+6HvPQU//qntsgV2rodl5XTAv
-         QIQX9hlhUD1tqrRbzaBLu9hToMSXA9ymgEmxjNlFY5hzhAvyYMOCodXz9RXJHs1/js
-         e76Vit860XUcdjwjR6l82L/uoVpq9AeJX8hxbe2+Cm5bkTifCg+QpQEqh/5+7Dqdfb
-         +7QFVQXdFumnLBCiXu/vzdnns7GG123NQFGHYcKei3JmDEEUe8bVzER1r+L9xXyrLQ
-         RT9VUc0PhLYHWSfmivTgKailo34nd2lmoORnXq1okeRDXHVm4lc0bGvc3uZFYLhg34
-         EKz1t5D5sTCvQ==
+        b=jkfI7pMiXM+i3scSJZFYVlA7BQLyQ8LJlGVhU2EeddX/fSbLFz+ohfiwCVSMRb+X/
+         rUckzn0gIl7TyS5XYo0K4EO88ENNXDfdlYUPIE6Oc347Wmd86v8dR5PQlykvwanyxD
+         YQqqLXRe+mvNPSQ478wAMWF9l233yPL6IGBXRWArmQYeAO7EFRMlNhSp8pOxBDckKo
+         13bc41FtACOz2Y88xBNB8fG6OsC6OoRAHuqsk0xXD6MT8+/ZWHWjbPUtNEJlyERrbX
+         G+yKXEsvk+ouxmT0fxf7xkInVnCD59U1CGgsqb+6fN0cgMPL2mfWw+dKgIf6Xl9hTH
+         ahTu0vHOyVbNw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 81628600E8;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2528460977;
         Fri, 19 Nov 2021 19:46:17 +0000 (UTC)
-Subject: Re: [GIT PULL] SCSI fixes for 5.16-rc1
+Subject: Re: [GIT PULL] SA_IMMUTABLE fixes for v5.16-rc2
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <0a508ff31bbfa9cd73c24713c54a29ac459e3254.camel@HansenPartnership.com>
-References: <0a508ff31bbfa9cd73c24713c54a29ac459e3254.camel@HansenPartnership.com>
+In-Reply-To: <87r1bcnoea.fsf_-_@email.froward.int.ebiederm.org>
+References: <CAP045AoMY4xf8aC_4QU_-j7obuEPYgTcnQQP3Yxk=2X90jtpjw@mail.gmail.com>
+        <202111171049.3F9C5F1@keescook>
+        <CAP045Apg9AUZN_WwDd6AwxovGjCA++mSfzrWq-mZ7kXYS+GCfA@mail.gmail.com>
+        <CAP045AqjHRL=bcZeQ-O+-Yh4nS93VEW7Mu-eE2GROjhKOa-VxA@mail.gmail.com>
+        <87k0h6334w.fsf@email.froward.int.ebiederm.org>
+        <202111171341.41053845C3@keescook>
+        <CAHk-=wgkOGmkTu18hJQaJ4mk8hGZc16=gzGMgGGOd=uwpXsdyw@mail.gmail.com>
+        <CAP045ApYXxhiAfmn=fQM7_hD58T-yx724ctWFHO4UAWCD+QapQ@mail.gmail.com>
+        <CAHk-=wiCRbSvUi_TnQkokLeM==_+Tow0GsQXnV3UYwhsxirPwg@mail.gmail.com>
+        <CAP045AoqssLTKOqse1t1DG1HgK9h+goG8C3sqgOyOV3Wwq+LDA@mail.gmail.com>
+        <202111171728.D85A4E2571@keescook>
+        <87h7c9qg7p.fsf_-_@email.froward.int.ebiederm.org>
+        <CAP045Ap=1U07er7Y2XO9wmiRtKLoKL4u8zek48ROU668=G9D3A@mail.gmail.com> <87r1bcnoea.fsf_-_@email.froward.int.ebiederm.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <0a508ff31bbfa9cd73c24713c54a29ac459e3254.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: 392006871bb26166bcfafa56faf49431c2cfaaa8
+X-PR-Tracked-Message-Id: <87r1bcnoea.fsf_-_@email.froward.int.ebiederm.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git SA_IMMUTABLE-fixes-for-v5.16-rc2
+X-PR-Tracked-Commit-Id: fcb116bc43c8c37c052530ead79872f8b2615711
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ecd510d2ff86953378c540182f14c8890b1f1225
-Message-Id: <163735117752.2946.13162608094770241495.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 7af959b5d5c8497b423e802e2b0ad847cb29b3d3
+Message-Id: <163735117714.2946.16511312928809475443.pr-tracker-bot@kernel.org>
 Date:   Fri, 19 Nov 2021 19:46:17 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-hardening@vger.kernel.org,
+        Robert O'Callahan <rocallahan@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Oliver Sang <oliver.sang@intel.com>, lkp@lists.01.org,
+        kbuild test robot <lkp@intel.com>,
+        Kyle Huey <me@kylehuey.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 19 Nov 2021 13:20:10 -0500:
+The pull request you sent on Fri, 19 Nov 2021 09:41:49 -0600:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+> git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git SA_IMMUTABLE-fixes-for-v5.16-rc2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ecd510d2ff86953378c540182f14c8890b1f1225
+https://git.kernel.org/torvalds/c/7af959b5d5c8497b423e802e2b0ad847cb29b3d3
 
 Thank you!
 
