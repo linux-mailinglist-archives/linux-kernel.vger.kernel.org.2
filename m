@@ -2,118 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C997457804
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 22:12:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B845E457806
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 22:12:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233800AbhKSVPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 16:15:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231761AbhKSVPa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S234508AbhKSVPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 16:15:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231466AbhKSVPa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 19 Nov 2021 16:15:30 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06DF2C061574;
-        Fri, 19 Nov 2021 13:12:28 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id u18so20282564wrg.5;
-        Fri, 19 Nov 2021 13:12:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=myqMq5JJldoxRnxPAx5ijKAxfMyvPLaQ6eIycx8Zmgk=;
-        b=QWGPohrxW6g9WpbnJaihqSJvHimsOxT6/Ojw1de3vhzbKZq7MEovhjNAfl2bOvz2Xe
-         4UdrCH1laBTgF09K7x8GV9O6P3dFqvp/jAFyflU6mNOBY5KLoKu2rqsXZTp9KWxYXXUa
-         uaDuIcrWIaixnqMPvhSAtqy/Gfpudy9Vi2MqJbgwKN0czkEGJGQCW9gJhjXcu2S62nTA
-         oorr1P7QUNTcy6Hq6XBVnvg7aajv0r2+KyK81EP7JU02bt6T7XPE4tDJVZSYOo+/O6F1
-         Pu5MZqP5MZscXYPa2MksluWSd7s4jNJybNQBaMFvZyp0MMsPmeHL9/OnmIVL5PsBRgqi
-         h4Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=myqMq5JJldoxRnxPAx5ijKAxfMyvPLaQ6eIycx8Zmgk=;
-        b=n5hWpvvukCAU5I3/fSz4rjlZFYwa3EfNEvuGQ14L7+QlaZwiSJ9g59mMlxHCmOeEux
-         u5cUT6YC8WT3FuGLdj6GJV5mQJ9XFY8G+kP3uVmLRUstjXZKnMpt2yGH4drpZfWX9Rh8
-         vLf56dh5wY8L+8VtqZpESMLv4nz2Ef9PRb9n3aaH3qyViXhw734bkcS5T56x02mG3I28
-         WxOySvLMLfJhPTOUd2lwGLPxPcS5JfHWHEweArv2L0Sewzvjp1VcIW5Dy3LPt4V6AmiB
-         tb5mdRx73RWPl3jAGRIgdXFI//30tnX4uuTL/OUlsn6XV6GixqNPh6u03dDPptgAIvO0
-         UXXA==
-X-Gm-Message-State: AOAM530LGqFDibFROvnBIAe90b/QYRdQt/+Byp5P9TYuXAGtF7Y4A757
-        GoXKTYVlWLRsuF2ybADrEXc=
-X-Google-Smtp-Source: ABdhPJzNPjxngLb+dDQlFnMWApFKjPqCiA1IQlAG6qG6d76l84IaJcgU0H1pRsAJIlv9i4fw5ND5yA==
-X-Received: by 2002:adf:ee42:: with SMTP id w2mr11427228wro.7.1637356346511;
-        Fri, 19 Nov 2021 13:12:26 -0800 (PST)
-Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
-        by smtp.gmail.com with ESMTPSA id b11sm13070427wmj.35.2021.11.19.13.12.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 13:12:26 -0800 (PST)
-Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
-From:   Salvatore Bonaccorso <carnil@debian.org>
-To:     Namjae Jeon <linkinjeon@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steve French <sfrench@samba.org>,
-        Hyunchul Lee <hyc.lee@gmail.com>
-Cc:     linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Salvatore Bonaccorso <carnil@debian.org>
-Subject: [PATCH] docs: filesystem: cifs: ksmbd: Fix small layout issues
-Date:   Fri, 19 Nov 2021 22:12:14 +0100
-Message-Id: <20211119211214.2038038-1-carnil@debian.org>
-X-Mailer: git-send-email 2.33.1
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB3A361B1B;
+        Fri, 19 Nov 2021 21:12:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637356346;
+        bh=LT+lqR3AQkrtDrRSXeYsgAM9P7hk53heimIWAO7p44g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Hkli9/J+HHM5FZ1ph8baMZyAT5cf1WKfAag3gVQVJXHFQRbQuXa/8x2iVrYegoqzA
+         nLAzz3/hz4bE5Gsz/5CbcMKhwNKiuKeWYskZJ7dDJdso8/wUQZXSHLEA4FGkSjAxsz
+         DohCOdsN60B4GIQnovw9X5M34qf9gMvFUU/lhhBK3l20EFeGsnUsw+apM3yVyCOzxg
+         f0z9DIGkuFVP0YldG10IP19PNgmVM0Te9OfVA1y1feHmhsGydQwF6S4INFWyZPB20e
+         VMIg6iOTWVuPAXdePwjAX85pfrxFZyJ75Y4fmo3rmASKJwBqk9N+imDeWuHf34wOUJ
+         JpKXWVBhpoIaQ==
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH] f2fs: show more DIO information in tracepoint
+Date:   Fri, 19 Nov 2021 13:12:22 -0800
+Message-Id: <20211119211222.3114368-1-jaegeuk@kernel.org>
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In some senteces there were missing spaces between words.
+This prints more information of DIO in tracepoint.
 
-Fix wording in item to show which prints are enabled and add a space
-beween the cat command and its argument.
-
-Cc: Namjae Jeon <linkinjeon@kernel.org>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: Steve French <sfrench@samba.org>
-CC: Hyunchul Lee <hyc.lee@gmail.com>
-Cc: linux-cifs@vger.kernel.org
-Signed-off-by: Salvatore Bonaccorso <carnil@debian.org>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 ---
- Documentation/filesystems/cifs/ksmbd.rst | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ fs/f2fs/file.c              |  4 ++--
+ include/trace/events/f2fs.h | 15 +++++++++------
+ 2 files changed, 11 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/filesystems/cifs/ksmbd.rst b/Documentation/filesystems/cifs/ksmbd.rst
-index a1326157d53f..b0d354fd8066 100644
---- a/Documentation/filesystems/cifs/ksmbd.rst
-+++ b/Documentation/filesystems/cifs/ksmbd.rst
-@@ -50,11 +50,11 @@ ksmbd.mountd (user space daemon)
- --------------------------------
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 32c0bd545c5c..a0d605db6b96 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -4295,7 +4295,7 @@ static ssize_t f2fs_dio_read_iter(struct kiocb *iocb, struct iov_iter *to)
+ 	if (count == 0)
+ 		return 0; /* skip atime update */
  
- ksmbd.mountd is userspace process to, transfer user account and password that
--are registered using ksmbd.adduser(part of utils for user space). Further it
-+are registered using ksmbd.adduser (part of utils for user space). Further it
- allows sharing information parameters that parsed from smb.conf to ksmbd in
- kernel. For the execution part it has a daemon which is continuously running
- and connected to the kernel interface using netlink socket, it waits for the
--requests(dcerpc and share/user info). It handles RPC calls (at a minimum few
-+requests (dcerpc and share/user info). It handles RPC calls (at a minimum few
- dozen) that are most important for file server from NetShareEnum and
- NetServerGetInfo. Complete DCE/RPC response is prepared from the user space
- and passed over to the associated kernel thread for the client.
-@@ -154,11 +154,11 @@ Each layer
- 1. Enable all component prints
- 	# sudo ksmbd.control -d "all"
+-	trace_f2fs_direct_IO_enter(inode, pos, count, READ);
++	trace_f2fs_direct_IO_enter(inode, iocb, count, READ);
  
--2. Enable one of components(smb, auth, vfs, oplock, ipc, conn, rdma)
-+2. Enable one of components (smb, auth, vfs, oplock, ipc, conn, rdma)
- 	# sudo ksmbd.control -d "smb"
+ 	if (iocb->ki_flags & IOCB_NOWAIT) {
+ 		if (!down_read_trylock(&fi->i_gc_rwsem[READ])) {
+@@ -4494,7 +4494,7 @@ static ssize_t f2fs_dio_write_iter(struct kiocb *iocb, struct iov_iter *from,
+ 	struct iomap_dio *dio;
+ 	ssize_t ret;
  
--3. Show what prints are enable.
--	# cat/sys/class/ksmbd-control/debug
-+3. Show what prints are enabled.
-+	# cat /sys/class/ksmbd-control/debug
- 	  [smb] auth vfs oplock ipc conn [rdma]
+-	trace_f2fs_direct_IO_enter(inode, pos, count, WRITE);
++	trace_f2fs_direct_IO_enter(inode, iocb, count, WRITE);
  
- 4. Disable prints:
+ 	if (iocb->ki_flags & IOCB_NOWAIT) {
+ 		/* f2fs_convert_inline_inode() and block allocation can block */
+diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
+index dcb94d740e12..f701bb23f83c 100644
+--- a/include/trace/events/f2fs.h
++++ b/include/trace/events/f2fs.h
+@@ -936,14 +936,14 @@ TRACE_EVENT(f2fs_fallocate,
+ 
+ TRACE_EVENT(f2fs_direct_IO_enter,
+ 
+-	TP_PROTO(struct inode *inode, loff_t offset, unsigned long len, int rw),
++	TP_PROTO(struct inode *inode, struct kiocb *iocb, long len, int rw),
+ 
+-	TP_ARGS(inode, offset, len, rw),
++	TP_ARGS(inode, iocb, len, rw),
+ 
+ 	TP_STRUCT__entry(
+ 		__field(dev_t,	dev)
+ 		__field(ino_t,	ino)
+-		__field(loff_t,	pos)
++		__field(struct kiocb *,	iocb)
+ 		__field(unsigned long,	len)
+ 		__field(int,	rw)
+ 	),
+@@ -951,15 +951,18 @@ TRACE_EVENT(f2fs_direct_IO_enter,
+ 	TP_fast_assign(
+ 		__entry->dev	= inode->i_sb->s_dev;
+ 		__entry->ino	= inode->i_ino;
+-		__entry->pos	= offset;
++		__entry->iocb	= iocb;
+ 		__entry->len	= len;
+ 		__entry->rw	= rw;
+ 	),
+ 
+-	TP_printk("dev = (%d,%d), ino = %lu pos = %lld len = %lu rw = %d",
++	TP_printk("dev = (%d,%d), ino = %lu pos = %lld len = %lu ki_flags = %x ki_hint = %x ki_ioprio = %x rw = %d",
+ 		show_dev_ino(__entry),
+-		__entry->pos,
++		__entry->iocb->ki_pos,
+ 		__entry->len,
++		__entry->iocb->ki_flags,
++		__entry->iocb->ki_hint,
++		__entry->iocb->ki_ioprio,
+ 		__entry->rw)
+ );
+ 
 -- 
-2.33.1
+2.34.0.rc2.393.gf8c9666880-goog
 
