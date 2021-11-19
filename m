@@ -2,89 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F66456DEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 12:02:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1CE456DF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 12:05:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234926AbhKSLEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 06:04:04 -0500
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:37621 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232004AbhKSLED (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 06:04:03 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 0407C5C00D4;
-        Fri, 19 Nov 2021 06:01:01 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 19 Nov 2021 06:01:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-type:content-transfer-encoding; s=fm1; bh=
-        aqV1j+PWhw1EcvbQXT1J3L/THztodbDSfacb7pAVugM=; b=ftbKAxf07PobC8tc
-        3xnTmS8A5B+lTLU5mM6sNe0Cl17dgo+Hfm8byyKLzo/D3VXtRpWUZlBtlN6+5qfB
-        J4jOlfRjj2JD6mUbSeUyVfg+8hhkDxL7yeoJFZGc0g6Dhp7HGYbf9t6YrERVO/Ad
-        TqRGbafDqh5BmIUuCvnHyVH5gB8UkBgdw43nl2BPk4GI3CW1cKMKCk0mgcfOBdjB
-        JOtD5/AVeBa2oxOPNVt+/SsvQRG84nWJChTt7suSCZOzfrDfXrWoRCVYOFpHg4j8
-        fw9dKu9zDIsGpYQBhro2Cr0Lm29hb+DFFxBYmm0Zx7uhB8Sche/0uNXeWe7YKlWn
-        8JYY+Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=aqV1j+PWhw1EcvbQXT1J3L/THztodbDSfacb7pAVu
-        gM=; b=H+4YAfIklh5jmWWnXafnjUsLSKbg8zIQ6nqM9avIZ5UkAj8TY3VrP5ytF
-        xYsa1YbPh/ZRzZRt0V9Kz9cScuC+duehuhZJO6WLvLjgq4ywoah2FGJGFsILV4mF
-        7QEzjMao7pgC3svRBzSFxZlMKCtXwwzlrIQqJTR8HBNndKlJFK29bRfgJ++21AUY
-        5u00wP5Hk0wAK7PvD8FCfbNszvC8c0H37PLwUjSBXOIfUIQR616EK8xrPnW5mX1R
-        96jhNdiGIiq1Y8qCa930xlOzvkaib6c4uKNvDffud72i6EUQcz++E+fYpeanR1bx
-        KgJzQOM/DjqiV8sA9Gyq3Tu5HrMtg==
-X-ME-Sender: <xms:7IOXYTk49j4kro134d7Of7BnHXnls_ilMt4e_L-OuRNdSPxr9Q_Nrw>
-    <xme:7IOXYW1C249-KZMTjIelZ0JsWVVlmHFBuPXyXNfNcy-8ZQaUhKI-OBsI_1MSWQENN
-    unxs3yhG3atuiMQVQc>
-X-ME-Received: <xmr:7IOXYZqO5ffRpQ5pE25xuLk1GXQXW2nJqykQpCU23Ev9mo4TwVI64sJEKq4UwSFZUhTCa1MsaR0aNf_6kN4PKsGEFcxHASdm1e6jd0_3OVc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeekgddvvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhggtgfgsehtkeertdertdejnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepjeeugfegkeffgfeuvedtvddufffhjeffjeejvddvudduteehhfefhfefgeei
-    keeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:7IOXYbl_txF_lipHZxwMYl3vuVcleg7hb0kA2rlX1MuoZCdXUhRlkQ>
-    <xmx:7IOXYR1csdC__J0iMFBBRpXe10cLUSPi3Xte1rlcON4tGV5KIAcGdg>
-    <xmx:7IOXYavi6MWKPRZlRoEz5smVrZ_vI6cxquVWMDCjK0ISsMleY8uk5g>
-    <xmx:7IOXYelB_ig3WITGQ5wJDq0Mtj9d2bGg3r69G3qXL02K80cDdOPY2w>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 19 Nov 2021 06:00:59 -0500 (EST)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Emma Anholt <emma@anholt.net>
-Cc:     Maxime Ripard <maxime@cerno.tech>, kernel-janitors@vger.kernel.org,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        Maxime Ripard <mripard@kernel.org>,
+        id S234732AbhKSLHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 06:07:55 -0500
+Received: from www.zeus03.de ([194.117.254.33]:55578 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231317AbhKSLHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 06:07:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=k1; bh=Q5hBlseJ4CtxJ5PJ/p/Zakla2XF
+        bhRUuAD43AIi09cI=; b=Wv5+MZNFL9VYJ2vN5skrZDSJq9v8+dq5xZYK+YGhncZ
+        /PkOh+Jj1IxWR/Rrm6r/pY4x5mGXW/cW/AeoSob+yDzl/13jmHgf6NrBUTMiZlDc
+        qldEdwWw71WkUqw32lJEJwkG+GK0a5a2vK3KpFIuaQMToSqOnyxK2JwnNcOizN9M
+        =
+Received: (qmail 3883871 invoked from network); 19 Nov 2021 12:04:51 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 19 Nov 2021 12:04:51 +0100
+X-UD-Smtp-Session: l3s3148p1@1PpHPiLRPsUgAQnoAEKfAbIul1RxZQ+M
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-renesas-soc@vger.kernel.org
+Cc:     Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH] drm/vc4: fix error code in vc4_create_object()
-Date:   Fri, 19 Nov 2021 12:00:56 +0100
-Message-Id: <163731964127.830809.14126199659521737361.b4-ty@cerno.tech>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211118111416.GC1147@kili>
-References: <20211118111416.GC1147@kili>
+Subject: [PATCH] memory: renesas-rpc-if: refactor MOIIO and IOFV macros
+Date:   Fri, 19 Nov 2021 12:04:42 +0100
+Message-Id: <20211119110442.4946-1-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Nov 2021 14:14:16 +0300, Dan Carpenter wrote:
-> The ->gem_create_object() functions are supposed to return NULL if there
-> is an error.  None of the callers expect error pointers so returing one
-> will lead to an Oops.  See drm_gem_vram_create(), for example.
-> 
-> 
+Don't use _HIZ macros but also provide a val. This is more consistent
+with the other macros and, thus, easier to read. Also shorter.
 
-Applied to drm/drm-misc (drm-misc-fixes).
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+---
 
-Thanks!
-Maxime
+More readable but otherwise equal. I checked thatthe object files do
+match.
+
+ drivers/memory/renesas-rpc-if.c | 20 ++++++++------------
+ 1 file changed, 8 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/memory/renesas-rpc-if.c b/drivers/memory/renesas-rpc-if.c
+index 0c8f00323a91..4fa4e621d41c 100644
+--- a/drivers/memory/renesas-rpc-if.c
++++ b/drivers/memory/renesas-rpc-if.c
+@@ -24,14 +24,13 @@
+ #define RPCIF_CMNCR_MOIIO2(val)	(((val) & 0x3) << 20)
+ #define RPCIF_CMNCR_MOIIO1(val)	(((val) & 0x3) << 18)
+ #define RPCIF_CMNCR_MOIIO0(val)	(((val) & 0x3) << 16)
+-#define RPCIF_CMNCR_MOIIO_HIZ	(RPCIF_CMNCR_MOIIO0(3) | \
+-				 RPCIF_CMNCR_MOIIO1(3) | \
+-				 RPCIF_CMNCR_MOIIO2(3) | RPCIF_CMNCR_MOIIO3(3))
++#define RPCIF_CMNCR_MOIIO(val)	(RPCIF_CMNCR_MOIIO0(val) | RPCIF_CMNCR_MOIIO1(val) | \
++				 RPCIF_CMNCR_MOIIO2(val) | RPCIF_CMNCR_MOIIO3(val))
+ #define RPCIF_CMNCR_IO3FV(val)	(((val) & 0x3) << 14) /* documented for RZ/G2L */
+ #define RPCIF_CMNCR_IO2FV(val)	(((val) & 0x3) << 12) /* documented for RZ/G2L */
+ #define RPCIF_CMNCR_IO0FV(val)	(((val) & 0x3) << 8)
+-#define RPCIF_CMNCR_IOFV_HIZ	(RPCIF_CMNCR_IO0FV(3) | RPCIF_CMNCR_IO2FV(3) | \
+-				 RPCIF_CMNCR_IO3FV(3))
++#define RPCIF_CMNCR_IOFV(val)	(RPCIF_CMNCR_IO0FV(val) | RPCIF_CMNCR_IO2FV(val) | \
++				 RPCIF_CMNCR_IO3FV(val))
+ #define RPCIF_CMNCR_BSZ(val)	(((val) & 0x3) << 0)
+ 
+ #define RPCIF_SSLDR		0x0004	/* R/W */
+@@ -304,17 +303,14 @@ int rpcif_hw_init(struct rpcif *rpc, bool hyperflash)
+ 
+ 	if (rpc->type == RPCIF_RCAR_GEN3)
+ 		regmap_update_bits(rpc->regmap, RPCIF_CMNCR,
+-				   RPCIF_CMNCR_MOIIO_HIZ | RPCIF_CMNCR_BSZ(3),
+-				   RPCIF_CMNCR_MOIIO_HIZ |
++				   RPCIF_CMNCR_MOIIO(3) | RPCIF_CMNCR_BSZ(3),
++				   RPCIF_CMNCR_MOIIO(3) |
+ 				   RPCIF_CMNCR_BSZ(hyperflash ? 1 : 0));
+ 	else
+ 		regmap_update_bits(rpc->regmap, RPCIF_CMNCR,
+-				   RPCIF_CMNCR_MOIIO_HIZ | RPCIF_CMNCR_IOFV_HIZ |
++				   RPCIF_CMNCR_MOIIO(3) | RPCIF_CMNCR_IOFV(3) |
+ 				   RPCIF_CMNCR_BSZ(3),
+-				   RPCIF_CMNCR_MOIIO3(1) | RPCIF_CMNCR_MOIIO2(1) |
+-				   RPCIF_CMNCR_MOIIO1(1) | RPCIF_CMNCR_MOIIO0(1) |
+-				   RPCIF_CMNCR_IO3FV(2) | RPCIF_CMNCR_IO2FV(2) |
+-				   RPCIF_CMNCR_IO0FV(2) |
++				   RPCIF_CMNCR_MOIIO(1) | RPCIF_CMNCR_IOFV(2) |
+ 				   RPCIF_CMNCR_BSZ(hyperflash ? 1 : 0));
+ 
+ 	/* Set RCF after BSZ update */
+-- 
+2.30.2
+
