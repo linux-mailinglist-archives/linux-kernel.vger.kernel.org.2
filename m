@@ -2,113 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A221C456C87
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 10:42:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F61E456C8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 10:44:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234511AbhKSJpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 04:45:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232120AbhKSJpI (ORCPT
+        id S234575AbhKSJqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 04:46:08 -0500
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:50295 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232120AbhKSJqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 04:45:08 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E2A4C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 01:42:07 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id g14so40215473edb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 01:42:06 -0800 (PST)
+        Fri, 19 Nov 2021 04:46:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KWWIeI9PGgVaTX610GDWgWc1GQOkVrwtBxY86SIt5pE=;
-        b=gNQidrPtT3sidKpXZnPwkOdueOQukbmVqd9fw2Nyy1wIN1cAE4BpfzTqiqjfygh/Su
-         auBBcsCz6OJ454ZjRKEo/RFIqKQ56ao1mG97dXqLeIZIq0ogHJ4KvA/JhOC+9WRFPisB
-         QKJKsoRbDEWffqUgmlW5tx9xPPP8KkHMejm2Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=KWWIeI9PGgVaTX610GDWgWc1GQOkVrwtBxY86SIt5pE=;
-        b=zFaVTbNsWu+Jy2kLg+mKgskB+FazGfimUv34fPGZ9/XqUEUob0oUQe8rEl3GYyWmzl
-         o3XYl3q0arLhr2ELpiNDzWtJtjBixIzZxU8mB7TAsIZbFXGuU/ZeH0lh9kd2TKZeCU2x
-         YnqdV8e5Nug3KcqIv/wMDzzHe1h+gH3GUemd4+lfRv1jGsQfNTNKxfADRwsekssnJEPr
-         LLPc1AYegFx9wTqNpJHO+Y9Y2eNmrM6fXANvuwH8qPWPzwxaaPMYzWqdMddkkzKqcFT4
-         viBVYVFvUTKVXFKebJVHuBwJmUVG+jDX7CoSMqorNYccnCgTBLU6qD4FIi1MswyF9wKp
-         0h0A==
-X-Gm-Message-State: AOAM533ymqfacr0Xi/OxQ20JsCm908Vl1u3zD2xd+pAc2Akt3CkxNSoa
-        pGfv1JtwvGvnE929xI1VfGSQTF0A2+iAaA==
-X-Google-Smtp-Source: ABdhPJxKs/6TNxzIH34w7vaWQv3abX+yW0fkh7VyKi/GlE9vfqWyx90QiAok//A0Mt2pCmtj/83KKQ==
-X-Received: by 2002:a05:6402:41a:: with SMTP id q26mr23025128edv.387.1637314925641;
-        Fri, 19 Nov 2021 01:42:05 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id m6sm1249310edc.36.2021.11.19.01.42.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 01:42:05 -0800 (PST)
-Date:   Fri, 19 Nov 2021 10:42:03 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     George Kennedy <george.kennedy@oracle.com>
-Cc:     Brian Starkey <brian.starkey@arm.com>,
-        Ville =?iso-8859-1?Q?Syrj=E4l=E4?= 
-        <ville.syrjala@linux.intel.com>, gregkh@linuxfoundation.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        ben.davis@arm.com, Liviu.Dudau@arm.com,
-        Dan Carpenter <dan.carpenter@oracle.com>, nd@arm.com
-Subject: Re: [PATCH] drm: check drm_format_info hsub and vsub to avoid divide
- by zero
-Message-ID: <YZdxawCdP7V2dKq1@phenom.ffwll.local>
-Mail-Followup-To: George Kennedy <george.kennedy@oracle.com>,
-        Brian Starkey <brian.starkey@arm.com>,
-        Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
-        gregkh@linuxfoundation.org, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, tzimmermann@suse.de, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        ben.davis@arm.com, Liviu.Dudau@arm.com,
-        Dan Carpenter <dan.carpenter@oracle.com>, nd@arm.com
-References: <1635429437-21718-1-git-send-email-george.kennedy@oracle.com>
- <YXqt46TPL9tUZCL1@intel.com>
- <26fdb955-10c8-a5d6-07b6-85a4374e7754@oracle.com>
- <20211029141400.vcswmabtk5i3cvv7@000377403353>
- <4cfb985e-72da-173c-4818-c9c4af7d83a6@oracle.com>
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1637314986; x=1668850986;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=077sNQNiT9cC7M+BbedQt0mGxXl85KHz706MQffmVeQ=;
+  b=RdKotskw6ID2Qd22Wn4v3p3WypWU1R/oXieFAhIUKkmhBr89cGQmmttV
+   wDrhfREbfPGJ775iEYKQ7u8SEMDU2Upm4f3V+EEcIXFcObmeNcs2X7Mf3
+   09U/MwnUb+y8d4dhwHgsAw87dzhRcBKUN9mnUpELi0WBIbNBdr/lr28m2
+   U=;
+Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 19 Nov 2021 01:43:05 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg02-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 01:43:04 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Fri, 19 Nov 2021 01:43:04 -0800
+Received: from c-skakit-linux.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Fri, 19 Nov 2021 01:43:00 -0800
+From:   Satya Priya <quic_c_skakit@quicinc.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, <swboyd@chromium.org>,
+        <collinsd@codeaurora.org>, <subbaram@codeaurora.org>,
+        Das Srinagesh <gurus@codeaurora.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        "Lee Jones" <lee.jones@linaro.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Satya Priya <quic_c_skakit@quicinc.com>
+Subject: [PATCH V4 0/6] Add Qualcomm Technologies, Inc. PM8008 regulator driver
+Date:   Fri, 19 Nov 2021 15:12:27 +0530
+Message-ID: <1637314953-4215-1-git-send-email-quic_c_skakit@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4cfb985e-72da-173c-4818-c9c4af7d83a6@oracle.com>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 03:00:15PM -0500, George Kennedy wrote:
-> 
-> 
-> On 10/29/2021 10:14 AM, Brian Starkey wrote:
-> > Hi,
-> > 
-> > On Fri, Oct 29, 2021 at 09:15:28AM -0400, George Kennedy wrote:
-> > > Asking if you have any input on how to deal with hsub and vsub = zero?
-> > That's just a straight mistake on those formats - they should
-> > be 1. My bad for not spotting it in review.
-> > 
-> > On the one hand, having formats in this table is a nice
-> > machine-readable way to describe them. On the other, as drm_fourcc is
-> > being used as the canonical repository for formats, including ones
-> > not used in DRM, we can end up with situations like this.
-> > (R10/R12 being another example of formats not used in DRM:
-> > 20211027233140.12268-1-laurent.pinchart@ideasonboard.com)
-> 
-> Wondering if there is an alternate fix to the one proposed?
+Satya Priya (6):
+  dt-bindings: regulator: Add "regulator-min-dropout-voltage-microvolt"
+  dt-bindings: regulator: Add pm8008 regulator bindings
+  dt-bindings: mfd: pm8008: Add pm8008 regulator node
+  regulator: Add a regulator driver for the PM8008 PMIC
+  arm64: dts: qcom: pm8008: Add base dts file
+  arm64: dts: qcom: sc7280: Add pm8008 regulators support for sc7280-idp
 
-I think if the cost of defining formats correctly for everyone is that drm
-carries a bunch of nice machine-readable entries in its tables that it
-never uses, then we should do that. The very few bytes saved aren't worth
-any headaches (because on any soc system you anyway have tons more formats
-than what your driver is using).
--Daniel
+ .../devicetree/bindings/mfd/qcom,pm8008.yaml       |  24 ++
+ .../bindings/regulator/qcom,pm8008-regulator.yaml  |  68 ++++++
+ .../devicetree/bindings/regulator/regulator.yaml   |   4 +
+ arch/arm64/boot/dts/qcom/pm8008.dtsi               |  57 +++++
+ arch/arm64/boot/dts/qcom/sc7280-idp.dtsi           |  73 ++++++
+ drivers/regulator/Kconfig                          |   9 +
+ drivers/regulator/Makefile                         |   1 +
+ drivers/regulator/qcom-pm8008-regulator.c          | 258 +++++++++++++++++++++
+ 8 files changed, 494 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/regulator/qcom,pm8008-regulator.yaml
+ create mode 100644 arch/arm64/boot/dts/qcom/pm8008.dtsi
+ create mode 100644 drivers/regulator/qcom-pm8008-regulator.c
+
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.7.4
+
