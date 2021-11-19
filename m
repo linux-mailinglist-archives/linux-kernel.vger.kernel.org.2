@@ -2,126 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5098145671E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 01:57:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF852456722
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 01:57:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233837AbhKSBAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 20:00:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46110 "EHLO
+        id S233845AbhKSBAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 20:00:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231793AbhKSBAF (ORCPT
+        with ESMTP id S231166AbhKSBAc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 20:00:05 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C05C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 16:57:04 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id 7so18237024oip.12
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 16:57:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=KpfGGX30VkOymO2yELzmREoKVTuEGknozCzxtmGgXBo=;
-        b=J53NqHWmM3IMV4+uaSYMHnbPb0SMk7inTF6Geye35RsTg0t49VXMDK9krn4CshCQC1
-         7nQX08EDBX/CCgFjdsIeYo/xz6Xg+dSuC6D53oRxSGSErNKGU0eGsoj7IqxohNCDD4ZA
-         2gCa5FwStjupff+YzsTxWwh/O2RdN9ey7oZ/c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=KpfGGX30VkOymO2yELzmREoKVTuEGknozCzxtmGgXBo=;
-        b=cgUA17ugQPJCfYKkmEH0uSZtnvFfDFvdXDDXcIF7ErsW1xdAVlayRGtceYDYC7+onl
-         3j7cvScVLcTOz/B45Cb65rbDgUBE73B0iPulBvuR/wSeT3BFAANaynjv8iHmNyJOZ9GJ
-         lz/80VpkrnPUXpjEtFmiGW0DlYPE3RghYfgdp4+MPU8wIzJYc4Sm70uDnDizrvCg0QDO
-         fmIOOy+lR/ycGrtFbHZY+LWFadWFP2sLjkljgdHvQb6QRo3jcu4doJX5hx8rxUfoF75F
-         9IXKN/ACGCArD/Rtt51EXu790HmtK72/z0rpew4s+PUluFd9MA/mtOx3Vcv/giWF4o4B
-         NInA==
-X-Gm-Message-State: AOAM531IdwCeDd0MQoL3yN7Pwmc7h5ngisyCdoyEYWML8ff9/1nc99Vg
-        K9Qi8IGdLfN8Y3c9LFeeL3vmiom7IiXPi96Mej/BEQ==
-X-Google-Smtp-Source: ABdhPJyWy/zVzZ2R/aGrJOuF4eXPMmZ1VTk0atdR827NmlfTH8hAe0aRuENheOz20oRhwOPpSUsI+sHx52PXmXrfS4E=
-X-Received: by 2002:a54:4506:: with SMTP id l6mr1302928oil.32.1637283423970;
- Thu, 18 Nov 2021 16:57:03 -0800 (PST)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 19 Nov 2021 01:57:03 +0100
+        Thu, 18 Nov 2021 20:00:32 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8900DC061574;
+        Thu, 18 Nov 2021 16:57:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:To:From:
+        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
+        bh=E6L4uQqoXkLTCtJFa075suXodGN+oULmD/QgYDVkkAU=; b=LEfi5VlbZLWRMnF5rXqQAWAVEw
+        yHyDqP5FtWeigXo9j5rG+gEUSGZw9f7GO5PIeUzk37oIhEeXXqV5xKuiDqzVFsI1e73ghy8JhDygA
+        /Pi2aoBksbvLm4OgscnpmVruckR46NWA3F1ppX40MOTwTRyBIFEkpC+wzhNtOJrriqcT7tR8cYR3q
+        HpDXCK/xv7PPTXFsFTm85x0snRmAVEPMPwPEC2iWRtn/PIDcpEBPQjm0209PKjfdb+Lw0+I7DCEsi
+        kYcfVq3k9WxMnmAodzXF8VPPOaSsgl/3oWzrQSMf5Zm+t1b5MPUEVPOVtu4cSUyHWDk9nv2u5jDhu
+        FkqRdcRA==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mnsDZ-0096rR-8x; Fri, 19 Nov 2021 00:57:29 +0000
+Subject: Re: mmotm 2021-11-18-15-47 uploaded (<linux/proc_fs.h>)
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     akpm@linux-foundation.org, broonie@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
+        Hans de Goede <hdegoede@redhat.com>
+References: <20211118234743.-bgoWMQfK%akpm@linux-foundation.org>
+ <db0b9313-fef6-2977-9b1c-4c830edea5c5@infradead.org>
+Message-ID: <8c3e1883-0b48-0227-2b9d-26231b06e059@infradead.org>
+Date:   Thu, 18 Nov 2021 16:57:28 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <f1038a3e-57fb-ec01-26a0-452a11dfcf3a@linaro.org>
-References: <20211117020346.4088302-1-swboyd@chromium.org> <76b103ec-7034-e6c1-1ab4-174cf16f9fc8@linaro.org>
- <CAE-0n53HNSRTdADO1dbQTyLafyajUTatMq5tsLeNDLQ4g95YpA@mail.gmail.com> <f1038a3e-57fb-ec01-26a0-452a11dfcf3a@linaro.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Fri, 19 Nov 2021 01:57:03 +0100
-Message-ID: <CAE-0n51TYW26W8+_A1Ar7eUGLeUoV2eE=8YAkD4N7d5EqoNNRg@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: qcom-hw: Use optional irq API
-To:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <db0b9313-fef6-2977-9b1c-4c830edea5c5@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Thara Gopinath (2021-11-18 06:08:04)
->
->
-> On 11/17/21 11:32 PM, Stephen Boyd wrote:
-> > Quoting Thara Gopinath (2021-11-17 18:55:17)
-> >> Hello Stephen,
-> >>
-> >> Thanks for the patch
-> >>
-> >> On 11/16/21 9:03 PM, Stephen Boyd wrote:
-> >>> Use platform_get_irq_optional() to avoid a noisy error message when the
-> >>> irq isn't specified. The irq is definitely optional given that we only
-> >>> care about errors that are -EPROBE_DEFER here.
-> >>>
-> >>> Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> >>> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> >>> ---
-> >>>    drivers/cpufreq/qcom-cpufreq-hw.c | 8 +++++---
-> >>>    1 file changed, 5 insertions(+), 3 deletions(-)
-> >>>
-> >>> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-> >>> index a2be0df7e174..b442d4983a22 100644
-> >>> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
-> >>> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-> >>> @@ -382,9 +382,11 @@ static int qcom_cpufreq_hw_lmh_init(struct cpufreq_policy *policy, int index)
-> >>>         * Look for LMh interrupt. If no interrupt line is specified /
-> >>>         * if there is an error, allow cpufreq to be enabled as usual.
-> >>>         */
-> >>> -     data->throttle_irq = platform_get_irq(pdev, index);
-> >>> -     if (data->throttle_irq <= 0)
-> >>> -             return data->throttle_irq == -EPROBE_DEFER ? -EPROBE_DEFER : 0;
-> >>> +     data->throttle_irq = platform_get_irq_optional(pdev, index);
-> >>> +     if (data->throttle_irq == -ENXIO)
-> >>> +             return 0;
-> >>> +     if (data->throttle_irq < 0)
-> >>> +             return data->throttle_irq;
-> >>
-> >> Here the idea is to return only -EPROBE_DEFER error. Else return a 0 ,
-> >> so that cpufreq is enabled even if lmh interrupt is inaccessible. The
-> >> above check returns errors other than -EPROBE_DEFER as well. So I would
-> >> say make irq optional and keep the below check
-> >>
-> >> if (data->throttle_irq <= 0)
-> >>          return data->throttle_irq == -EPROBE_DEFER ? -EPROBE_DEFER : 0;
-> >
-> > I'd like to catch other errors, for example, DT has an irq specified
-> > that is outside the range of irqs available. If the DT is correct, then
-> > it will either have a valid irq and this will return a >= 0 value or
-> > nothing will be specified and we'll get back -ENXIO now. Do you have
-> > some scenario where my patch fails to work?
->
-> Exactly. Like in the scenario you mentioned above, I do not want cpufreq
-> to be disabled. This interrupt is a throttle notification interrupt. The
-> action taken on basis of this is to send thermal pressure signal to
-> scheduler so that scheduler places tasks better. Even if the dt has
-> messed up this interrupt, I think cpufreq should still be enabled. May
-> be we can print a warn and still return 0 to enable cpufreq.
->
+On 11/18/21 4:53 PM, Randy Dunlap wrote:
+> On 11/18/21 3:47 PM, akpm@linux-foundation.org wrote:
+>> The mm-of-the-moment snapshot 2021-11-18-15-47 has been uploaded to
+>>
+>>     https://www.ozlabs.org/~akpm/mmotm/
+>>
+>> mmotm-readme.txt says
+>>
+>> README for mm-of-the-moment:
+>>
+>> https://www.ozlabs.org/~akpm/mmotm/
+>>
+>> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+>> more than once a week.
+>>
+>> You will need quilt to apply these patches to the latest Linus release (5.x
+>> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+>> https://ozlabs.org/~akpm/mmotm/series
+>>
+>> The file broken-out.tar.gz contains two datestamp files: .DATE and
+>> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+>> followed by the base kernel version against which this patch series is to
+>> be applied.
+> 
+> Hi,
+> 
+> I get hundreds of warnings from <linux/proc_fs.h>:
+> 
+> from proc-make-the-proc_create-stubs-static-inlines.patch:
+> 
+> ../include/linux/proc_fs.h:186:2: error: parameter name omitted
+> ../include/linux/proc_fs.h:186:32: error: parameter name omitted
+> ../include/linux/proc_fs.h:186:63: error: parameter name omitted
+> 
 
-If the DT is messed up then we have problems that we should fix instead
-of silently ignore in this driver. Is there some bad DT out there that
-you're worried about? I don't believe this patch breaks anything but if
-you can point to something that it breaks I'd be glad to investigate.
+Sorry, I missed the warnings from line 182:
+
+../include/linux/proc_fs.h:182:2: error: parameter name omitted
+../include/linux/proc_fs.h:182:32: error: parameter name omitted
+../include/linux/proc_fs.h:182:63: error: parameter name omitted
+
+
+-- 
+~Randy
