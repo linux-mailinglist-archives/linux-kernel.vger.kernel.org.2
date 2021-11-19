@@ -2,155 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0C3457364
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:47:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B122B457365
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:47:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235401AbhKSQum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 11:50:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51984 "EHLO mail.kernel.org"
+        id S235677AbhKSQuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 11:50:55 -0500
+Received: from mga02.intel.com ([134.134.136.20]:44728 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230296AbhKSQul (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 11:50:41 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EFE7A61B43;
-        Fri, 19 Nov 2021 16:47:37 +0000 (UTC)
-Date:   Fri, 19 Nov 2021 11:47:36 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Yordan@web.codeaurora.org, Karadzhov@web.codeaurora.org,
-        VMware <" <y.karadz"@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        mingo@redhat.com, hagen@jauu.net, rppt@kernel.org,
-        akpm@linux-foundation.org, vvs@virtuozzo.com, shakeelb@google.com,
-        christian.brauner@ubuntu.com, mkoutny@suse.com,
-        "Linux Containers <containers@lists.linux.dev>" 
-        <""@web.codeaurora.org>
-Subject: Re: [RFC PATCH 0/4] namespacefs: Proof-of-Concept
-Message-ID: <20211119114736.5d9dcf6c@gandalf.local.home>
-In-Reply-To: <f6ca1f5bdb3b516688f291d9685a6a59f49f1393.camel@HansenPartnership.com>
-References: <20211118181210.281359-1-y.karadz@gmail.com>
-        <87a6i1xpis.fsf@email.froward.int.ebiederm.org>
-        <20211118142440.31da20b3@gandalf.local.home>
-        <1349346e1d5daca991724603d1495ec311cac058.camel@HansenPartnership.com>
-        <20211119092758.1012073e@gandalf.local.home>
-        <f6ca1f5bdb3b516688f291d9685a6a59f49f1393.camel@HansenPartnership.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S235461AbhKSQuy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 11:50:54 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="221663864"
+X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
+   d="scan'208";a="221663864"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 08:47:52 -0800
+X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
+   d="scan'208";a="594481895"
+Received: from vinaypr1-mobl.amr.corp.intel.com (HELO [10.252.140.143]) ([10.252.140.143])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 08:47:51 -0800
+Subject: Re: [PATCH] xen/pvh: add missing prototype to header
+To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, kernel test robot <lkp@intel.com>
+References: <20211119153913.21678-1-jgross@suse.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <0c654659-b010-791f-78e7-769108934ce2@intel.com>
+Date:   Fri, 19 Nov 2021 08:47:49 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20211119153913.21678-1-jgross@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Fixed strange email header ]
-
-On Fri, 19 Nov 2021 11:30:43 -0500
-James Bottomley <James.Bottomley@HansenPartnership.com> wrote:
-
-> On Fri, 2021-11-19 at 09:27 -0500, Steven Rostedt wrote:
-> > On Fri, 19 Nov 2021 07:45:01 -0500
-> > James Bottomley <James.Bottomley@HansenPartnership.com> wrote:
-> >   
-> > > On Thu, 2021-11-18 at 14:24 -0500, Steven Rostedt wrote:  
-> > > > On Thu, 18 Nov 2021 12:55:07 -0600
-> > > > ebiederm@xmission.com (Eric W. Biederman) wrote:
-> > > >     
-> > > > > It is not correct to use inode numbers as the actual names for
-> > > > > namespaces.
-> > > > > 
-> > > > > I can not see anything else you can possibly uses as names for
-> > > > > namespaces.    
-> > > > 
-> > > > This is why we used inode numbers.
-> > > >     
-> > > > > To allow container migration between machines and similar
-> > > > > things the you wind up needing a namespace for your names of
-> > > > > namespaces.    
-> > > > 
-> > > > Is this why you say inode numbers are incorrect?    
-> > > 
-> > > The problem is you seem to have picked on one orchestration system
-> > > without considering all the uses of namespaces and how this would
-> > > impact them.  So let me explain why inode numbers are incorrect and
-> > > it will possibly illuminate some of the cans of worms you're
-> > > opening.
-> > > 
-> > > We have a container checkpoint/restore system called CRIU that can
-> > > be used to snapshot the state of a pid subtree and restore it.  It
-> > > can be used for the entire system or piece of it.  It is also used
-> > > by some orchestration systems to live migrate containers.  Any
-> > > property of a container system that has meaning must be saved and
-> > > restored by CRIU.
-> > > 
-> > > The inode number is simply a semi random number assigned to the
-> > > namespace.  it shows up in /proc/<pid>/ns but nowhere else and
-> > > isn't used by anything.  When CRIU migrates or restores containers,
-> > > all the namespaces that compose them get different inode values on
-> > > the restore.  If you want to make the inode number equivalent to
-> > > the container name, they'd have to restore to the previous number
-> > > because you've made it a property of the namespace.  The way
-> > > everything is set up now, that's just not possible and never will
-> > > be.  Inode numbers are a 32 bit space and can't be globally
-> > > unique.  If you want a container name, it will have to be something
-> > > like a new UUID and that's the first problem you should tackle.  
-> > 
-> > So everyone seems to be all upset about using inode number. We could
-> > do what Kirill suggested and just create some random UUID and use
-> > that. We could have a file in the directory called inode that has the
-> > inode number (as that's what both docker and podman use to identify
-> > their containers, and it's nice to have something to map back to
-> > them).
-> > 
-> > On checkpoint restore, only the directories that represent the
-> > container that migrated matter, so as Kirill said, make sure they get
-> > the old UUID name, and expose that as the directory.
-> > 
-> > If a container is looking at directories of other containers on the
-> > system, then it gets migrated to another system, it should be treated
-> > as though those directories were deleted under them.
-> > 
-> > I still do not see what the issue is here.  
+On 11/19/21 7:39 AM, Juergen Gross wrote:
+> The prototype of mem_map_via_hcall() is missing in its header, so add
+> it.
 > 
-> The issue is you're introducing a new core property for namespaces they
-> didn't have before.  Everyone has different use cases for containers
-> and we need to make sure the new property works with all of them.
+> Reported-by: kernel test robot <lkp@intel.com>
+> Fixes: a43fb7da53007e67ad ("xen/pvh: Move Xen code for getting mem map via hcall out of common file")
+> Signed-off-by: Juergen Gross <jgross@suse.com>
 
-What new core property is this? We simply want a way to see what namespaces
-are defined in the kernel from a systems point of view. This just defines a
-file system to show that.
+$ git describe a43fb7da53007e67ad
+v4.20-rc6-5-ga43fb7da5300
 
-> 
-> Having a "name" for a namespace has been discussed before which is the
-> landmine you stepped on when you advocated using the inode number as
-> the name, because that's already known to be unworkable.
+Better late than never, I guess.  I wonder what made 0day find this now.
 
-We don't care what name it is, or if it is a name at all. We just want to
-know what is there, and not hidden behind tasks that create namespaces.
-
-> 
-> Can we back up and ask what problem you're trying to solve before we
-> start introducing new objects like namespace name?  The problem
-
-Again, this has nothing to do with naming namespaces.
-
-> statement just seems to be "Being able to see the structure of the
-> namespaces can be very useful in the context of the containerized
-> workloads."  which you later expanded on as "trying to add more
-> visibility into the working of things like kubernetes".  If you just
-> want to see the namespace "tree" you can script that (as root) by
-> matching the process tree and the /proc/<pid>/ns changes without
-> actually needing to construct it in the kernel.  This can also be done
-> without introducing the concept of a namespace name.  However, there is
-> a subtlety of doing this matching in the way I described in that you
-> don't get proper parenting to the user namespace ownership ... but that
-> seems to be something you don't want anyway?
-
-Can a privileged container be able to create a full tree of all current
-namespaces defined in the system, by just installing it, and reading the
-host procfs system?  If so, then that's all we want, and will look at doing
-that. But from our initial approach it's not obvious how to do so.
-
--- Steve
+I also guess the one mem_map_via_hcall() call site just used the __weak
+definition so it didn't cause problems if there wasn't a declaration in
+the header.
