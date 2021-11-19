@@ -2,87 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A4AF45675E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 02:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E30B45675F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 02:17:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232951AbhKSBUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 20:20:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50816 "EHLO
+        id S233915AbhKSBU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 20:20:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbhKSBUs (ORCPT
+        with ESMTP id S232992AbhKSBU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 20:20:48 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D7C0C061574;
-        Thu, 18 Nov 2021 17:17:47 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id z5so35449208edd.3;
-        Thu, 18 Nov 2021 17:17:47 -0800 (PST)
+        Thu, 18 Nov 2021 20:20:56 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC99C06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 17:17:56 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id o14so6844744plg.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 17:17:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=G50DWyTolt2iu8jO8DrdD4xbj/5BqFOAuX3/XpL1Ya4=;
-        b=GzCNEFWgs9GC16O8BqIbXEzlPxqhPzMrCD8miymITKunO2ECE0h6cWNZurUpG2fVGY
-         8z61dq4fmN8eHoPIrvagUTFjam7Pa03dMyNCVeYoOb4dAAMmuKOVxEhzb5veU7FV6et3
-         E934YPaVNKh0vBesl2pZ32CPvpA/nmLujWxdNbbmYwUP3BpH+oXiGO/4qqkL0MiCtxSc
-         rSwE2tVLbdm90Z1/SzQsqDrT5AfzhW06ewoTKgiAyOia901y4booGnBqTTAPZLKk4yZx
-         WK9uw4Vw4bZUK5tna2wHVdQhB0+SFCWJpU1vH3DwXmhsqbsFRTC44oxXFRexprJuPxC7
-         Lg9A==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=6AfrWqxmB5aB4ZGeiNoE2R85nQDZ46at+khLZSw0l0o=;
+        b=HjaHewp7flA94eL4qWe8sqMsCdSxYn6i6HFgmglvYfT9jYsJoam0+ztTBjal0zH46W
+         EJ6mpsjj6vdX/mgBbHe97rYURB/gt3Be2GG/TJ2fOyi9THqS1IN7Tdqb0rLefj5QU72a
+         b43V0eHSaaK9AB+CsJivVzWfF/Kb4KNvFl8FI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=G50DWyTolt2iu8jO8DrdD4xbj/5BqFOAuX3/XpL1Ya4=;
-        b=wWgmSv7KKkNe8iW9QxJUeJwYeJ8aNGv9WnKHgQBAbPhRgzYOqTzns+4Ji5oWpGYD3u
-         QpfucGZ3Om9SDqCnqArpKhGew6/q4AfooGTw7/nv5kLjdXFw2eOiIkyY5tzV4Jq/W2de
-         XvA4uPMOdveR6BG8sLaTX57wBW6LhuXuPNNGSzMM58H5t4ddaCVtvX/hUx4DGjXVSciK
-         8m/fxMz6Mz0+9yJu9O+OSNYriWPY2NRw9WT8Smei3iFobRWJazvOikt3owsoggRCM3QW
-         ALrjjRI2Fs0D+J2RFwsLe1GR6YKcx+F2mKYlsmqfMNLOqARItHungOAd0vhNSxImvhoy
-         IXSw==
-X-Gm-Message-State: AOAM532t/E6F/e6jIdNoEiL68A3h1RwfP18bKvTC2vrpzBU04QSEudNt
-        JzDibgteYTelNRLH40EXeM+Hb/cdsBQ=
-X-Google-Smtp-Source: ABdhPJw6FX8bd5OZD6zfwyNv1216J63NJN4B30Nnw0CkJv7zii5MRmcVzU3Ddea+Gz92KxXOqtPFxQ==
-X-Received: by 2002:a50:be87:: with SMTP id b7mr17923636edk.199.1637284665817;
-        Thu, 18 Nov 2021 17:17:45 -0800 (PST)
-Received: from skbuf ([188.25.163.189])
-        by smtp.gmail.com with ESMTPSA id hq37sm523572ejc.116.2021.11.18.17.17.45
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=6AfrWqxmB5aB4ZGeiNoE2R85nQDZ46at+khLZSw0l0o=;
+        b=6ZaAOzUWJUj3X9xdUps6ZUMr2aAN+jvoKy1y37lTb6iNI1oIFrW4EszKaYl8Hw2/2W
+         vR94Gw63rNlpGX1ON6FLDmA418uMMdnV8bsUmL6ulzYS+3iBocJkFKbWB5mH6zAu0K+F
+         cOrJZPt4rqFEjd2rsLL4zxVl39kGjDtBqQXSSExyhgwt9PalukPkoocRQsnEmYhAPXzS
+         LsNmgY9lAQwPt3BPsuub+hbSBhu9lMnLmULO5LRnur3/8JA6C3SFWWnt9ofS1Ov1FAFL
+         7ftJQzF4l0i4DUh3oz2SaX6Z8YnJ02rxaTReb/fC3d3Sju/gTr63GP1yZcXlpsU51qr3
+         zAtg==
+X-Gm-Message-State: AOAM533UAczbVaoOlXrccPSlRR/eKsowGgvqZTZ+s/G8kA9mfSbufkht
+        SS5bevdm3b3PC8GV9ghXE+K3iQ==
+X-Google-Smtp-Source: ABdhPJxkiDzH5QOCGgb712/rAsh1S8e6Arwh50ncc9fu7gaPXqp44R+ghb3LnM88HSWN0UqiTMXo0g==
+X-Received: by 2002:a17:903:2292:b0:141:e76d:1b16 with SMTP id b18-20020a170903229200b00141e76d1b16mr25268556plh.21.1637284675630;
+        Thu, 18 Nov 2021 17:17:55 -0800 (PST)
+Received: from google.com ([240f:75:7537:3187:f3c1:d25d:4dc6:f786])
+        by smtp.gmail.com with ESMTPSA id mi18sm696430pjb.13.2021.11.18.17.17.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 17:17:45 -0800 (PST)
-Date:   Fri, 19 Nov 2021 03:17:44 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [net-next PATCH 09/19] net: dsa: qca8k: add additional MIB
- counter and make it dynamic
-Message-ID: <20211119011744.b2nht7ekqrh5cfbg@skbuf>
-References: <20211117210451.26415-1-ansuelsmth@gmail.com>
- <20211117210451.26415-10-ansuelsmth@gmail.com>
+        Thu, 18 Nov 2021 17:17:55 -0800 (PST)
+Date:   Fri, 19 Nov 2021 10:17:50 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Jeff Moyer <jmoyer@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: mm: gdb fails if binary is on a DAX-enabled filesystem
+Message-ID: <YZb7PgQ6Bw26cpsh@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211117210451.26415-10-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 10:04:41PM +0100, Ansuel Smith wrote:
-> We are currently missing 2 additional MIB counter present in QCA833x
-                                            ~~~~~~~
+Hello,
 
-I know that 2 is less than 50, but please, it still counts as plural.
+We are running into issues on a DAX enabled system: both
+__copy_from_user_inatomic() fail.
 
-> switch.
-> QC832x switch have 39 MIB counter and QCA833X have 41 MIB counter.
-> Add the additional MIB counter and rework the MIB function to print the
-> correct supported counter from the match_data struct.
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
+[   28.914865] ------------[ cut here ]------------
+[   28.915800] WARNING: CPU: 0 PID: 106 at mm/memory.c:2822 wp_page_copy+0x136/0x320
+[   28.916857] CPU: 0 PID: 106 Comm: gdb Not tainted 5.15.0-01277-g6be711548944 #1
+[   28.917823] Hardware name: ChromiumOS crosvm, BIOS 0 
+[   28.918455] RIP: 0010:wp_page_copy+0x136/0x320
+[   28.919001] Code: f1 79 00 4c 89 7b 50 48 8b 43 38 31 d2 49 39 07 75 23 48 8b 7d c8 48 8b 75 c0 ba 00 10 00 00 e8 6f 23 78 00 b2 01 85 c0 74 0b <0f> 0b 48 8b 7d c8 e8 8e 1f 78 00 48 8b 7b 58 88 55 c8 e8 2e f2 79
+[   28.920642] RSP: 0018:ffffc900005dfbd8 EFLAGS: 00010206
+[   28.921135] RAX: 0000000000001000 RBX: ffffc900005dfc40 RCX: 0000000000001000
+[   28.921762] RDX: 0000000000001001 RSI: 0000000000448000 RDI: ffff8880007bb000
+[   28.922410] RBP: ffffc900005dfc28 R08: ffff8880031884c8 R09: 0000000000000000
+[   28.923058] R10: ffff88800f8234c8 R11: 0000000000000000 R12: ffffea000001eec0
+[   28.923718] R13: 0000000000000000 R14: ffff88800e18e630 R15: ffff888000884240
+[   28.924404] FS:  00007e5b49744180(0000) GS:ffff88800f800000(0000) knlGS:0000000000000000
+[   28.925146] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   28.925688] CR2: 0000000000448000 CR3: 000000000e0d6000 CR4: 0000000000350eb0
+[   28.926368] Call Trace:
+[   28.926622]  __handle_mm_fault+0x67e/0xbd7
+[   28.927018]  handle_mm_fault+0x16b/0x23d
+[   28.927390]  __get_user_pages+0x2d6/0x4b7
+[   28.927797]  __get_user_pages_remote+0xbe/0x20c
+[   28.928224]  __access_remote_vm+0xb3/0x1c8
+[   28.928655]  ptrace_access_vm+0x97/0xb0
+[   28.929036]  generic_ptrace_pokedata+0x22/0x31
+[   28.929452]  arch_ptrace+0x1ce/0x1dd
+[   28.929801]  __do_sys_ptrace+0xa9/0xda
+[   28.930161]  do_syscall_64+0x75/0x8b
+[   28.930511]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[   28.930996] RIP: 0033:0x7e5b4c86fe5a
+[   28.931332] Code: 70 41 83 f8 03 c7 44 24 10 08 00 00 00 48 89 44 24 18 48 8d 44 24 30 8b 70 08 4c 0f 43 d1 48 89 44 24 20 b8 65 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 3e 48 85 c0 78 06 41 83 f8 02 76 1b 48 8b 4c
+[   28.933086] RSP: 002b:00007ffdc3369150 EFLAGS: 00000202 ORIG_RAX: 0000000000000065
+[   28.933767] RAX: ffffffffffffffda RBX: 0000000000448620 RCX: 00007e5b4c86fe5a
+[   28.934476] RDX: 0000000000448620 RSI: 000000000000006d RDI: 0000000000000005
+[   28.935206] RBP: 0000000000000001 R08: 0000000000000004 R09: 0000000000448620
+[   28.935916] R10: 00841f0f2e6666cc R11: 0000000000000202 R12: 0000000000000001
+[   28.936672] R13: 00841f0f2e6666cc R14: 0000000000000000 R15: 00007e5b49743958
+[   28.937389] ---[ end trace 2808c0ffd7259839 ]---
+Program received signal SIGSEGV, Segmentation fault.
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Is there anything we can do about it?
