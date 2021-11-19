@@ -2,118 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF58457061
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 15:12:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 629A9457067
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 15:12:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235393AbhKSOPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 09:15:17 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:9586 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234226AbhKSOPR (ORCPT
+        id S235760AbhKSOPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 09:15:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234551AbhKSOP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 09:15:17 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AJEBvYZ011289;
-        Fri, 19 Nov 2021 14:12:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=pS0Yy1hic0zPF9YAURlsBeb1gS/RdKDvsx64M/QmQHM=;
- b=ZkjcLjpeQo9LIvc4mlIcGTmnFSPcMaTuLNRJR49ZOt9Iymxf+efROzIo+ZgkS+m8Qho5
- XX1opsWRfphNaRC1IAg2+SSGkNhQUV0UCk2npI+r77etPuqmB7z92zGIRJIwQ/zosrZn
- HIefOJuKxOkZtSwdPuio6I1uHEMUQipq16cw4OAEYTtLCVNjrAYZ3N5qRU6smmmIDU7c
- Jb/rBp+G5LNODHn3kykv9XTPTaOLb3qX6l8fux7pTd/MQBr3EfTLmvQ/UBY3fYPu96BB
- OzieMKl0H/OROgU1j5wWJ1zgjd/WztMZvQwj322Kn63ycN9rUCc8mgiOL/VhNC5LJI1T gw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cec681u4n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Nov 2021 14:12:12 +0000
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AJECC7a012365;
-        Fri, 19 Nov 2021 14:12:12 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cec681u3v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Nov 2021 14:12:12 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AJE85I1005731;
-        Fri, 19 Nov 2021 14:12:09 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 3ca50c1dad-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Nov 2021 14:12:09 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AJEC4C233030618
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Nov 2021 14:12:04 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A4B68AE05F;
-        Fri, 19 Nov 2021 14:12:04 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1E3F5AE055;
-        Fri, 19 Nov 2021 14:12:04 +0000 (GMT)
-Received: from [9.171.67.41] (unknown [9.171.67.41])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 19 Nov 2021 14:12:04 +0000 (GMT)
-Message-ID: <fe1662f9-7cab-5f9f-882b-2b8ffa80992c@de.ibm.com>
-Date:   Fri, 19 Nov 2021 15:12:03 +0100
+        Fri, 19 Nov 2021 09:15:29 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2EBDC06173E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 06:12:27 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id m15so8733098pgu.11
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 06:12:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UgAqbpopy6HklYietNPfXdJKLyBN7yZp/5A4MJwHDTY=;
+        b=CEnYbYaY8rBd1Cif8k8YZBWlBHeTr8pPZsol+HzbDQrXPK/E4j+NS/7uSTu9qqqItA
+         2On7bI0TRuDAVBAKwMmp/c0Ou3YdqgsmNbZs6zsK12njRtpkGd4b81MLNLzrCpItUurk
+         i6m5en2CybWucPpNjfnQ+XB3zctBJP4rISr0zsrxNjS45kjGEWbqjU0215wzs15PVyAL
+         6JFuv2WjRSbcTnHA7Id7/qaKlrraA97HiL0D6o/GrpQrtSbTq39o8Iy9G9HQmCDQJv6t
+         E4Gc7NitF2C75qKmYSt54NOfKCYsfgGU7wYML0cKsUTGgdErHh/GkapONPo2lVZCMQZp
+         5hvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UgAqbpopy6HklYietNPfXdJKLyBN7yZp/5A4MJwHDTY=;
+        b=t81aCF1lS4orFVIfhQ2dv2+olnMmD+fI6EeQOpPcP0+zWl0WcfJXNNkyhXKzblvwD/
+         KHcBE9C9pioJMp1JFUKe6SPDxgtC1dQ/lXTcnIOOroo9F2qPQrHlC7d6w7UNtI9JHWYn
+         E7dROKuWZJ/6HbA5gyazVMvOB7Z1yGFRSTssHsifntbHywv1XRnee4YbgxL9MaBwa6SA
+         KAOZDYAwu1by+drlpgEdSrVgJnyeL6xmLrlLD7q0sQaZXHUTDAF/LKCfqpITgvQyuM8n
+         t+DEVmDMWy2iOr7+KoC6iykYJdyEScLPvUmtrPLcbdxckLyI1H8jSQG7atGtoIsaC1wV
+         pa8A==
+X-Gm-Message-State: AOAM5309s2++iK7CU337Jwf73otLByZt9t7CZQ7UP9VbLTpaz4ZG+JKS
+        j0rf/CfV1gE71FIeZIaT7Drep3ykwV9daCwZhL7ybI7/9vZa0Q==
+X-Google-Smtp-Source: ABdhPJz1hwMPGGN4/nlVyGD+fO+dHHNAi/WPWrzoLWlJ/hnc5Yu87VoDBBCzIB/CWsfpcbrD9oqWIftLk7Q6tGO9mSs=
+X-Received: by 2002:a05:6122:1813:: with SMTP id ay19mr119204327vkb.24.1637331135963;
+ Fri, 19 Nov 2021 06:12:15 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] s390/test_unwind: use raw opcode instead of invalid
- instruction
-Content-Language: en-US
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Ilie Halip <ilie.halip@gmail.com>,
-        linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Mete Durlu <meted@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        linux-s390@vger.kernel.org, llvm@lists.linux.dev,
-        Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
-References: <20211117174822.3632412-1-ilie.halip@gmail.com>
- <CAKwvOd=9tsHHhPBOx2ORZoJP09VsX5dRZn58qj3MzCc2vmVosg@mail.gmail.com>
- <d9ec2704-f41c-eafa-1945-ce845d65be8a@de.ibm.com> <YZeCcSjh4yCzzDcH@osiris>
- <658a63b5-2d18-2837-9639-75a14c959f73@de.ibm.com> <YZeF4JjWIcTMtaaT@osiris>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-In-Reply-To: <YZeF4JjWIcTMtaaT@osiris>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 6QS122JTGoagEZjrRNzdAxGxWI0CPm6H
-X-Proofpoint-ORIG-GUID: 0IUlFXRtSpr2nUdYvpzmWMahErC0m3O1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-19_09,2021-11-17_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- clxscore=1015 spamscore=0 suspectscore=0 adultscore=0 priorityscore=1501
- mlxscore=0 phishscore=0 mlxlogscore=928 impostorscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111190078
+References: <CGME20211112010603epcas2p339d1a6ef3df7cdbe61c87c8afa541fd0@epcas2p3.samsung.com>
+ <20211112010137.149174-1-jaewon02.kim@samsung.com> <20211112010137.149174-3-jaewon02.kim@samsung.com>
+ <CAPLW+4==X+irRBKHiDfgJeAb0oDKkzbcWERFs7Y3=PSOg0+qAw@mail.gmail.com>
+ <001401d7da86$f7ebd660$e7c38320$@samsung.com> <da9bd8cc-9415-6db7-024e-8d50b5f666f7@canonical.com>
+ <CAPLW+4kS-pzROC5oyAjW1aJp5cb1e3XK+40HsKwgPdCziSp1ZQ@mail.gmail.com> <773110c9-fc74-6cab-68c0-1c771a3be104@canonical.com>
+In-Reply-To: <773110c9-fc74-6cab-68c0-1c771a3be104@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Fri, 19 Nov 2021 16:12:04 +0200
+Message-ID: <CAPLW+4n+JKOQjbLriu6frB+c4nt6efTrURcbw9ZWZB-+a6Ruiw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] i2c: exynos5: add support for ExynosAutov9 SoC
+To:     Jaewon Kim <jaewon02.kim@samsung.com>
+Cc:     Chanho Park <chanho61.park@samsung.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 19 Nov 2021 at 10:54, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On 18/11/2021 20:59, Sam Protsenko wrote:
+> > On Tue, 16 Nov 2021 at 11:32, Krzysztof Kozlowski
+> > <krzysztof.kozlowski@canonical.com> wrote:
+> >>
+> >> On 16/11/2021 02:12, Chanho Park wrote:
+> >>>> With this patch the Exynos850 HSI2C becomes functional. The only nit-pick
+> >>>> from my side (just a food for thought): do we want to configure USI
+> >>>> related config inside of particular drivers (SPI, I2C, UART)? Or it would
+> >>>> be better design to implement some platform driver for that, so we can
+> >>>> choose USI configuration (SPI/I2C/UART) in device tree? I think this
+> >>>> series is good to be merged as is, but we should probably consider all
+> >>>> upsides and downsides of each option, for the future work.
+> >>>
+> >>> I'm also considering how to support this USI configuration gracefully.
+> >>> Current version of USI is v2 which means there is a v1 version as well. It might be a non-upstream SoC so we don't need to consider it so far.
+> >>> But, there is a possibility that the USI hw version can be bumped for future SoCs.
+> >>>
+> >>> As you probably know, earlier version of the product kernel has a USI SoC driver[1] and it was designed to be configured the USI settings by device tree.
+> >>>
+> >>> Option1) Make a USI driver under soc/samsung/ like [1].
+> >>> Option2) Use more generic driver such as "reset driver"? This might be required to extend the reset core driver.
+> >>> Option3) Each USI driver(uart/i2c/spi) has its own USI configurations respectively and expose some configurations which can be variable as device tree.
+> >>>
+> >>> [1]: https://github.com/ianmacd/d2s/blob/master/drivers/soc/samsung/usi_v2.c
+> >>
+> >> I don't have user manuals, so all my knowledge here is based on
+> >> Exynos9825 vendor source code, therefore it is quite limited. In
+> >> devicetree the USI devices have their own nodes - but does it mean it's
+> >> separate SFR range dedicated to USI? Looks like that, especially that
+> >> address space is just for one register (4 bytes).
+> >>
+> >> In such case having separate dedicated driver makes sense and you would
+> >> only have to care about driver ordering (e.g. via device links or phandles).
+> >>
+> >> Option 2 looks interesting - reusing reset framework to set proper USI
+> >> mode, however this looks more like a hack. As you said Chanho, if there
+> >> is a USI version 3, this reset framework might not be sufficient.
+> >>
+> >> In option 3 each driver (UART/I2C/SPI) would need to receive second IO
+> >> range and toggle some registers, which could be done via shared
+> >> function. If USI v3 is coming, all such drivers could get more complicated.
+> >>
+> >> I think option 1 is the cleanest and extendable in future. It's easy to
+> >> add usi-v3 or whatever without modifying the UART/I2C/SPI drivers. It
+> >> also nicely encapsulates USI-related stuff in separate driver. Probe
+> >> ordering should not be a problem now.
+> >>
+> >> But as I said, I don't have even the big picture here, so I rely on your
+> >> opinions more.
+> >>
+> >
+> > Hi Krzysztof,
+> >
+> > Can you please let me know if you're going to apply this series as is,
+> > or if you want me to submit USIv2 driver first, and then rework this
+> > patch on top of it? I'm working on some HSI2C related patches right
+> > now, and thus it'd nice to know about your decision on this series
+> > beforehand, as some of my patches (like bindings doc patches) might
+> > depend on it. Basically I'd like to base my patches on the proper
+> > baseline, so we don't have to rebase those later.
+>
+> This set won't go via my tree anyway, but I am against it. David pointed
+> out that his USIv1 is a little bit different and embedding in each of
+> I2C/UART/SPI drivers the logic of controlling USIv1 and USIv2 looks too
+> big. The solution with a dedicated driver looks to me more flexible and
+> encapsulated/cleaner.
+>
+> Therefore after the discussions I am against this solution, so a
+> soft-NAK from my side.
+>
 
+Hi Jaewon,
 
-Am 19.11.21 um 12:09 schrieb Heiko Carstens:
-> On Fri, Nov 19, 2021 at 11:57:05AM +0100, Christian Borntraeger wrote:
->>>>>> -                       "       mvcl    %%r1,%%r1\n"
->>>>>> +                       "       .insn e,0x0e11\n"       /* mvcl %%r1,%%r1" */
->>>
->>> Sorry, I disagree with this. As you said above rr would be the correct
->>> format for this instruction. If we go for the e format then we should
->>> also use an instruction with e format.
->>> Which in this case would simply be an illegal opcode, which would be
->>> sufficient for what this code is good for: ".insn e,0x0000".
->>
->> Why not simply use .short then?
-> 
-> .short bypasses all sanity checks while .insn does not, so I think
-> that should be preferred. But I don't care too much.
+I'm going to submit USI driver soon, and also some more HSI2C patches.
+Do you mind if I rework your patches to rely on USI drver (instead of
+modifying System Register in HSI2C driver), and include those in my
+patch series? Of course, I'll preserve your authorship. Just think
+that would be easier and faster this way.
 
-Heiko,
-I am fine with ".insn e,0x0000" and the a changed comment that changes "specification exception" to "operation exception".
-Do you want Ilie to resend or simply fixup?
+Thanks!
+
+>
+> Best regards,
+> Krzysztof
