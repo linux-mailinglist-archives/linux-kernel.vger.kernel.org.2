@@ -2,84 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E416245690F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 05:17:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC8C456905
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 05:17:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234418AbhKSEUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 23:20:04 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:19594 "EHLO
+        id S233893AbhKSET5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 23:19:57 -0500
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:12952 "EHLO
         mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233983AbhKSEUC (ORCPT
+        by vger.kernel.org with ESMTP id S233654AbhKSET4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 23:20:02 -0500
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AJ4C20U020979;
-        Fri, 19 Nov 2021 04:16:48 GMT
+        Thu, 18 Nov 2021 23:19:56 -0500
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AJ2rQj4000706;
+        Fri, 19 Nov 2021 04:16:52 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type : content-transfer-encoding; s=corp-2021-07-09;
- bh=Y69FHpOAx57lLd3f+zNs2LCJmaW7F6iBzQxq4zJsLj4=;
- b=MsDg0vDN151NCtw+7aIdmzfl7kGhUZhHGIpOQJevjGwmLeAHPtpSgIoRSvX9ubQki5fN
- jBpQvg6c3DpMBY66itM7k+ygdXY45uZ+EHJczbjCrCU2wzAIT61EIua9nmkH7wmSoQvz
- gXNJyPPC4labbaRzvUr9vpYFMZhJwZeQA2872kUmATxkh8vTSIYlHO03WTc/ql8Pa1B4
- q1hijT/Ldp3vfMGSq7pYV7t9Z2aF8mTuK15xoPLTfU6Qb7dTSPebqwWVRWnUxEd/oEX8
- qPPaV4fOnQp/jMQ/P6kwGi7sbvC5m3FDQqa/hkAQL64rNvajne6vdSrRto9Ad5HMcVjC tw== 
+ bh=v3RwqUrLN5bpz9hv7DxnsbhHvuFydcUtEIQk1vN9GJ8=;
+ b=PWwWRKqoZ5Q7U1I7rlT5m7RT5W2Gf2Zo1r6Tc7RXdsY/E3mdO/SIaYihw/qGBRTLWJsm
+ myY97QHyDfrWy/732kOdUFNS2DGVd2251Vd1ozQClvp9Jaww3mQ+LG286AO8DXc/tX06
+ CfglKGt94zH2GRmU4BOz4oQmCx0P/uHE/KUg3MSTkqjoS4pvJwEAgnOgTgEQ+FcUYbsY
+ s7zh+kRCdPcb4s99CYDJfLCDwYPc3XD+59DrtWQVBnkdY5IR43p8N7M8mvOPoZz/ix1A
+ UhMCTQbMmwdJAjW+rbqNWMfNKgitcsWWWQmvXbRaDY0KB9qp8dPBakFLT+ZA5njuJ2/k QA== 
 Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3cd4qyucj2-1
+        by mx0b-00069f02.pphosted.com with ESMTP id 3cd205mjpv-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Nov 2021 04:16:48 +0000
+        Fri, 19 Nov 2021 04:16:51 +0000
 Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AJ4FBOf020402;
-        Fri, 19 Nov 2021 04:16:47 GMT
+        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AJ4FAl5020296;
+        Fri, 19 Nov 2021 04:16:50 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 3caq4x7c00-1
+        by userp3020.oracle.com with ESMTP id 3caq4x7c1e-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Nov 2021 04:16:47 +0000
+        Fri, 19 Nov 2021 04:16:50 +0000
 Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1AJ4GiwK024731;
-        Fri, 19 Nov 2021 04:16:46 GMT
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1AJ4GiwS024731;
+        Fri, 19 Nov 2021 04:16:50 GMT
 Received: from ca-mkp.mkp.ca.oracle.com (ca-mkp.ca.oracle.com [10.156.108.201])
-        by userp3020.oracle.com with ESMTP id 3caq4x7bx2-3;
-        Fri, 19 Nov 2021 04:16:46 +0000
+        by userp3020.oracle.com with ESMTP id 3caq4x7bx2-7;
+        Fri, 19 Nov 2021 04:16:50 +0000
 From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     cgel.zte@gmail.com, stanley.chu@mediatek.com
+To:     gregkh@linuxfoundation.org, dgilbert@interlog.com,
+        jejb@linux.ibm.com, George Kennedy <george.kennedy@oracle.com>
 Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Ye Guojin <ye.guojin@zte.com.cn>,
-        linux-mediatek@lists.infradead.org, alim.akhtar@samsung.com,
-        jejb@linux.ibm.com, matthias.bgg@gmail.com,
-        linux-arm-kernel@lists.infradead.org,
-        Zeal Robot <zealci@zte.com.cn>, avri.altman@wdc.com,
         linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: ufs: ufs-mediatek: add put_device() after of_find_device_by_node()
-Date:   Thu, 18 Nov 2021 23:16:32 -0500
-Message-Id: <163729506337.21244.16117956445573879495.b4-ty@oracle.com>
+Subject: Re: [PATCH v4 linux-next] scsi: scsi_debug: fix type in min_t to avoid stack OOB
+Date:   Thu, 18 Nov 2021 23:16:36 -0500
+Message-Id: <163729506337.21244.16949206676665346595.b4-ty@oracle.com>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211110105133.150171-1-ye.guojin@zte.com.cn>
-References: <20211110105133.150171-1-ye.guojin@zte.com.cn>
+In-Reply-To: <1636484247-21254-1-git-send-email-george.kennedy@oracle.com>
+References: <1636484247-21254-1-git-send-email-george.kennedy@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: _y2LW0XTb1knUXYDye0z3F6PA7Vd0Tid
-X-Proofpoint-GUID: _y2LW0XTb1knUXYDye0z3F6PA7Vd0Tid
+X-Proofpoint-ORIG-GUID: t4LzSNzY8_eqn8CNVZozU1Tl8joDLHOY
+X-Proofpoint-GUID: t4LzSNzY8_eqn8CNVZozU1Tl8joDLHOY
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Nov 2021 10:51:33 +0000, cgel.zte@gmail.com wrote:
+On Tue, 9 Nov 2021 13:57:27 -0500, George Kennedy wrote:
 
-> From: Ye Guojin <ye.guojin@zte.com.cn>
+> Change min_t() to use type "u32" instead of type "int" to
+> avoid stack out of bounds. With min_t() type "int" the values get
+> sign extended and the larger value gets used causing stack out of bounds.
 > 
-> This was found by coccicheck:
-> ./drivers/scsi/ufs/ufs-mediatek.c, 211, 1-7, ERROR missing put_device;
-> call of_find_device_by_node on line 1185, but without a corresponding
-> object release within this function.
+> BUG: KASAN: stack-out-of-bounds in memcpy include/linux/fortify-string.h:191 [inline]
+> BUG: KASAN: stack-out-of-bounds in sg_copy_buffer+0x1de/0x240 lib/scatterlist.c:976
+> Read of size 127 at addr ffff888072607128 by task syz-executor.7/18707
 > 
 > [...]
 
 Applied to 5.16/scsi-fixes, thanks!
 
-[1/1] scsi: ufs: ufs-mediatek: add put_device() after of_find_device_by_node()
-      https://git.kernel.org/mkp/scsi/c/cc03facb1c42
+[1/1] scsi: scsi_debug: fix type in min_t to avoid stack OOB
+      https://git.kernel.org/mkp/scsi/c/36e07d7ede88
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
