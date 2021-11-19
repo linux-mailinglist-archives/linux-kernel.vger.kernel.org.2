@@ -2,356 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B1B4569CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 06:42:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D78C4569D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 06:44:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233009AbhKSFpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 00:45:43 -0500
-Received: from mga14.intel.com ([192.55.52.115]:52165 "EHLO mga14.intel.com"
+        id S233106AbhKSFro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 00:47:44 -0500
+Received: from mga09.intel.com ([134.134.136.24]:58118 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232940AbhKSFpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 00:45:42 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="234596881"
+        id S232894AbhKSFrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 00:47:41 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="234192659"
 X-IronPort-AV: E=Sophos;i="5.87,246,1631602800"; 
-   d="gz'50?scan'50,208,50";a="234596881"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 21:42:40 -0800
-X-ExtLoop1: 1
+   d="scan'208";a="234192659"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 21:44:28 -0800
 X-IronPort-AV: E=Sophos;i="5.87,246,1631602800"; 
-   d="gz'50?scan'50,208,50";a="455642230"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 18 Nov 2021 21:42:39 -0800
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mnwfW-000477-Ep; Fri, 19 Nov 2021 05:42:38 +0000
-Date:   Fri, 19 Nov 2021 13:42:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: [mcgrof-next:20211118-sysctl-cleanups-set-04-v2 26/36]
- fs/inode.c:137:60: error: macro "register_sysctl_init" passed 3 arguments,
- but takes just 2
-Message-ID: <202111191309.oBoSZk8o-lkp@intel.com>
+   d="scan'208";a="495730950"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.101])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 21:44:24 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, Feng Tang <feng.tang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michal Hocko" <mhocko@suse.com>, Rik van Riel <riel@surriel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>, Wei Xu <weixugc@google.com>,
+        osalvador <osalvador@suse.de>, Shakeel Butt <shakeelb@google.com>
+Subject: Re: [PATCH -V10 2/6] NUMA balancing: optimize page placement for
+ memory tiering system
+References: <20211116013522.140575-1-ying.huang@intel.com>
+        <20211116013522.140575-3-ying.huang@intel.com>
+        <C9EB54B4-AA86-4473-AE04-95E3CC6F6E94@nvidia.com>
+Date:   Fri, 19 Nov 2021 13:44:22 +0800
+In-Reply-To: <C9EB54B4-AA86-4473-AE04-95E3CC6F6E94@nvidia.com> (Zi Yan's
+        message of "Thu, 18 Nov 2021 10:01:26 -0500")
+Message-ID: <87bl2gsnrd.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="Qxx1br4bt0+wmkIi"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Zi,
 
---Qxx1br4bt0+wmkIi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks for review!
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git 20211118-sysctl-cleanups-set-04-v2
-head:   3110d41a56792588bd2f64621080948b0fceb6ab
-commit: e5b91a6c1f321683c8f1363e70bcc5c9bf6dbd9a [26/36] fs: move inode sysctls to its own file
-config: nds32-allnoconfig (attached as .config)
-compiler: nds32le-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/commit/?id=e5b91a6c1f321683c8f1363e70bcc5c9bf6dbd9a
-        git remote add mcgrof-next https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git
-        git fetch --no-tags mcgrof-next 20211118-sysctl-cleanups-set-04-v2
-        git checkout e5b91a6c1f321683c8f1363e70bcc5c9bf6dbd9a
-        # save the attached .config to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=nds32 SHELL=/bin/bash
+Zi Yan <ziy@nvidia.com> writes:
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+> On 15 Nov 2021, at 20:35, Huang Ying wrote:
+>
+>> With the advent of various new memory types, some machines will have
+>> multiple types of memory, e.g. DRAM and PMEM (persistent memory).  The
+>> memory subsystem of these machines can be called memory tiering
+>> system, because the performance of the different types of memory are
+>> usually different.
+>>
+>> In such system, because of the memory accessing pattern changing etc,
+>> some pages in the slow memory may become hot globally.  So in this
+>> patch, the NUMA balancing mechanism is enhanced to optimize the page
+>> placement among the different memory types according to hot/cold
+>> dynamically.
+>>
+>> In a typical memory tiering system, there are CPUs, fast memory and
+>> slow memory in each physical NUMA node.  The CPUs and the fast memory
+>> will be put in one logical node (called fast memory node), while the
+>> slow memory will be put in another (faked) logical node (called slow
+>> memory node).  That is, the fast memory is regarded as local while the
+>> slow memory is regarded as remote.  So it's possible for the recently
+>> accessed pages in the slow memory node to be promoted to the fast
+>> memory node via the existing NUMA balancing mechanism.
+>>
+>> The original NUMA balancing mechanism will stop to migrate pages if the free
+>> memory of the target node will become below the high watermark.  This
+>> is a reasonable policy if there's only one memory type.  But this
+>> makes the original NUMA balancing mechanism almost not work to optimize page
+>> placement among different memory types.  Details are as follows.
+>>
+>> It's the common cases that the working-set size of the workload is
+>> larger than the size of the fast memory nodes.  Otherwise, it's
+>> unnecessary to use the slow memory at all.  So in the common cases,
+>> there are almost always no enough free pages in the fast memory nodes,
+>> so that the globally hot pages in the slow memory node cannot be
+>> promoted to the fast memory node.  To solve the issue, we have 2
+>> choices as follows,
+>>
+>> a. Ignore the free pages watermark checking when promoting hot pages
+>>    from the slow memory node to the fast memory node.  This will
+>>    create some memory pressure in the fast memory node, thus trigger
+>>    the memory reclaiming.  So that, the cold pages in the fast memory
+>>    node will be demoted to the slow memory node.
+>>
+>> b. Make kswapd of the fast memory node to reclaim pages until the free
+>>    pages are a little more (about 10MB) than the high watermark.  Then,
+>>    if the free pages of the fast memory node reaches high watermark, and
+>>    some hot pages need to be promoted, kswapd of the fast memory node
+>>    will be waken up to demote some cold pages in the fast memory node to
+>>    the slow memory node.  This will free some extra space in the fast
+>>    memory node, so the hot pages in the slow memory node can be
+>>    promoted to the fast memory node.
+>
+> Why 10MB? Is 10MB big enough to avoid creating memory pressure on fast
+> memory? This number seems pretty ad-hoc and may only work well on your
+> test machine.
+>
+> In theory, this extra free memory space should be related to page promotion
+> throughput and kswapd demotion throughput, right? Patch 5 allows user
+> to adjust page promotion throughput, NUMA_BALANCING_PROMOTE_WATERMARK
+> at least can be something like X * numa_balancing_rate_limit_mbps.
+> Also, is there any way of measuring kswapd demotion throughput at boot
+> time? So we can take it into account too. Does this make sense?
 
-All errors (new ones prefixed by >>):
+Yes.  10MB is just a ad-hoc number that happens work well on my test
+machine.  And I am glad to discuss the proper value.
 
-   fs/inode.c: In function 'init_fs_inode_sysctls':
->> fs/inode.c:137:60: error: macro "register_sysctl_init" passed 3 arguments, but takes just 2
-     137 |         register_sysctl_init("fs", inodes_sysctls, "inodes");
-         |                                                            ^
-   In file included from include/linux/key.h:17,
-                    from include/linux/cred.h:13,
-                    from include/linux/sched/signal.h:10,
-                    from include/linux/rcuwait.h:6,
-                    from include/linux/percpu-rwsem.h:7,
-                    from include/linux/fs.h:33,
-                    from fs/inode.c:7:
-   include/linux/sysctl.h:216: note: macro "register_sysctl_init" defined here
-     216 | #define register_sysctl_init(path, table) __register_sysctl_init(path, table, #table)
-         | 
->> fs/inode.c:137:9: error: 'register_sysctl_init' undeclared (first use in this function); did you mean 'register_sysctl_paths'?
-     137 |         register_sysctl_init("fs", inodes_sysctls, "inodes");
-         |         ^~~~~~~~~~~~~~~~~~~~
-         |         register_sysctl_paths
-   fs/inode.c:137:9: note: each undeclared identifier is reported only once for each function it appears in
-   At top level:
-   fs/inode.c:117:25: warning: 'inodes_sysctls' defined but not used [-Wunused-variable]
-     117 | static struct ctl_table inodes_sysctls[] = {
-         |                         ^~~~~~~~~~~~~~
+- The effect of the patchset will keep the size of the free memory in
+  the DRAM node between HIGH_WATERMARK and HIGH_WATERMARK +
+  PROMOTE_WATERMARK in normal cases.  So PROMOTE_WATERMARK should be
+  as small as possible to take full advantage of the valuable DRAM.
 
+- The PROMOTE_WATERMARK should be larger than the max per-CPU counter
+  error.  So that migrate_balanced_pgdat() for promotion and
+  pgdat_balanced() for demotion can cooperate.
 
-vim +/register_sysctl_init +137 fs/inode.c
+- The PROMOTE_WATERMARK should be large enough to batch the demotion.
 
-   > 7	#include <linux/fs.h>
-     8	#include <linux/mm.h>
-     9	#include <linux/backing-dev.h>
-    10	#include <linux/hash.h>
-    11	#include <linux/swap.h>
-    12	#include <linux/security.h>
-    13	#include <linux/cdev.h>
-    14	#include <linux/memblock.h>
-    15	#include <linux/fsnotify.h>
-    16	#include <linux/mount.h>
-    17	#include <linux/posix_acl.h>
-    18	#include <linux/prefetch.h>
-    19	#include <linux/buffer_head.h> /* for inode_has_buffers */
-    20	#include <linux/ratelimit.h>
-    21	#include <linux/list_lru.h>
-    22	#include <linux/iversion.h>
-    23	#include <trace/events/writeback.h>
-    24	#include "internal.h"
-    25	
-    26	/*
-    27	 * Inode locking rules:
-    28	 *
-    29	 * inode->i_lock protects:
-    30	 *   inode->i_state, inode->i_hash, __iget()
-    31	 * Inode LRU list locks protect:
-    32	 *   inode->i_sb->s_inode_lru, inode->i_lru
-    33	 * inode->i_sb->s_inode_list_lock protects:
-    34	 *   inode->i_sb->s_inodes, inode->i_sb_list
-    35	 * bdi->wb.list_lock protects:
-    36	 *   bdi->wb.b_{dirty,io,more_io,dirty_time}, inode->i_io_list
-    37	 * inode_hash_lock protects:
-    38	 *   inode_hashtable, inode->i_hash
-    39	 *
-    40	 * Lock ordering:
-    41	 *
-    42	 * inode->i_sb->s_inode_list_lock
-    43	 *   inode->i_lock
-    44	 *     Inode LRU list locks
-    45	 *
-    46	 * bdi->wb.list_lock
-    47	 *   inode->i_lock
-    48	 *
-    49	 * inode_hash_lock
-    50	 *   inode->i_sb->s_inode_list_lock
-    51	 *   inode->i_lock
-    52	 *
-    53	 * iunique_lock
-    54	 *   inode_hash_lock
-    55	 */
-    56	
-    57	static unsigned int i_hash_mask __read_mostly;
-    58	static unsigned int i_hash_shift __read_mostly;
-    59	static struct hlist_head *inode_hashtable __read_mostly;
-    60	static __cacheline_aligned_in_smp DEFINE_SPINLOCK(inode_hash_lock);
-    61	
-    62	/*
-    63	 * Empty aops. Can be used for the cases where the user does not
-    64	 * define any of the address_space operations.
-    65	 */
-    66	const struct address_space_operations empty_aops = {
-    67	};
-    68	EXPORT_SYMBOL(empty_aops);
-    69	
-    70	/*
-    71	 * Statistics gathering..
-    72	 */
-    73	struct inodes_stat_t inodes_stat;
-    74	
-    75	static DEFINE_PER_CPU(unsigned long, nr_inodes);
-    76	static DEFINE_PER_CPU(unsigned long, nr_unused);
-    77	
-    78	static struct kmem_cache *inode_cachep __read_mostly;
-    79	
-    80	static long get_nr_inodes(void)
-    81	{
-    82		int i;
-    83		long sum = 0;
-    84		for_each_possible_cpu(i)
-    85			sum += per_cpu(nr_inodes, i);
-    86		return sum < 0 ? 0 : sum;
-    87	}
-    88	
-    89	static inline long get_nr_inodes_unused(void)
-    90	{
-    91		int i;
-    92		long sum = 0;
-    93		for_each_possible_cpu(i)
-    94			sum += per_cpu(nr_unused, i);
-    95		return sum < 0 ? 0 : sum;
-    96	}
-    97	
-    98	long get_nr_dirty_inodes(void)
-    99	{
-   100		/* not actually dirty inodes, but a wild approximation */
-   101		long nr_dirty = get_nr_inodes() - get_nr_inodes_unused();
-   102		return nr_dirty > 0 ? nr_dirty : 0;
-   103	}
-   104	
-   105	/*
-   106	 * Handle nr_inode sysctl
-   107	 */
-   108	#ifdef CONFIG_SYSCTL
-   109	static int proc_nr_inodes(struct ctl_table *table, int write, void *buffer,
-   110				  size_t *lenp, loff_t *ppos)
-   111	{
-   112		inodes_stat.nr_inodes = get_nr_inodes();
-   113		inodes_stat.nr_unused = get_nr_inodes_unused();
-   114		return proc_doulongvec_minmax(table, write, buffer, lenp, ppos);
-   115	}
-   116	
-   117	static struct ctl_table inodes_sysctls[] = {
-   118		{
-   119			.procname	= "inode-nr",
-   120			.data		= &inodes_stat,
-   121			.maxlen		= 2*sizeof(long),
-   122			.mode		= 0444,
-   123			.proc_handler	= proc_nr_inodes,
-   124		},
-   125		{
-   126			.procname	= "inode-state",
-   127			.data		= &inodes_stat,
-   128			.maxlen		= 7*sizeof(long),
-   129			.mode		= 0444,
-   130			.proc_handler	= proc_nr_inodes,
-   131		},
-   132		{ }
-   133	};
-   134	
-   135	static int __init init_fs_inode_sysctls(void)
-   136	{
- > 137		register_sysctl_init("fs", inodes_sysctls, "inodes");
-   138		return 0;
-   139	}
-   140	early_initcall(init_fs_inode_sysctls);
-   141	#endif
-   142	
+- If the promotion speed is slower than the demotion speed, the larger
+  the PROMOTE_WATERMARK, the longer the sleep time of kswapd.  If the
+  promotion speed is faster than the demotion speed, kswapd will keep
+  running until promotion is rate limited at least.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+So, if we set PROMOTE_WATERMARK as N * numa_balancing_rate_limit_mbps,
+then kswapd will sleep about N seconds after the number of the free
+pages reaches PROMOTE_WATERMARK.  Is that expected?
 
---Qxx1br4bt0+wmkIi
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+All in all, I don't think some ad-hoc number such as 10MB is good
+enough.  And the solution adopted in this patch should be as simple as
+possible.  This will provide a baseline, so that we can improve it later
+with more sophisticated solution with the numbers.  Do you agree?
 
-H4sICOY2l2EAAy5jb25maWcAnFxbc9u2s3/vp+CkM2famVxsOUnTOeMHiAQlVCRBE6AueeEo
-Eu1oIks+urTN+fRnAZAiSC6U/E9nGtvYxX2x+9vFgr/+8qtHzqf98/K0WS232+/eU7krD8tT
-ufYeN9vyv72AewmXHg2YfAvM0WZ3/vfdbn28G3gf3t5+fHvz5rC69SblYVduPX+/e9w8naH+
-Zr/75ddffJ6EbFT4fjGlmWA8KSSdy/tXuv62fLNVrb15Wq2830a+/7t3e/t28PbmlVWPiQIo
-99/rolHT1v3t7c3g5ubCHJFkdKFdionQbSR50wYU1WyDuz+aFqJAsQ7DoGGFIpzVItxYwx1D
-20TExYhL3rTSIRQ8l2kuUTpLIpbQHinhRZrxkEW0CJOCSJk1LCx7KGY8mzQlcpxRApNJQg7/
-FJIIRYT9+NUb6e3desfydH5pdmiY8QlNCtggEadW0wmTBU2mBclgzixm8v5uAK3Ug+NxqoYk
-qZDe5ujt9ifVcMMwo1nGM5tUrx/3SVQv4KtXTQ2bUJBccqTyMGew/IJEUlWtCgMakjySeshI
-8ZgLmZCY3r/6bbfflb9bXYoZSdHRi4WYstTHZ0akPy4ecppTlO5nXIgipjHPFmq/iD9G+XJB
-Iza0SXqbYE+94/nL8fvxVD432zSiCc2Yr7dcjPnMOhcWxR+ztC0eAY8JS6DsV6/crb39Y6eD
-biuSxbSYwvxhM6J+Jz7s0oROaSJFLVdy81wejtiYx5+LFGrxgPl6AFUxSDRQWBDh66fJKGXM
-RuMio0IPMhNtnmp2vdHoMQ7TsDXAS5NAKKrJos21K9YTSzNK41TCUBNqZLJZKZtmz7oun/Io
-TyTJFugUK66eVPhp/k4uj9+8E8zPW8Lgjqfl6egtV6v9eXfa7J6aZZfMnxRQoSC+z6Evlozs
-gQxFoDSKT0FKgQM/vqlg6Hr8xDj0eDM/90RfImAsiwJo9njgz4LOQVAkcuCFYbari7p+NaR2
-V027bGJ+QefHJmPQkx0huigipWhALsYslPe3fzQ7yxI5Ae0T0i7PnZm1WH0t1+dtefAey+Xp
-fCiPurgaKEK1zV2cRswHpRuCLIIa5/lofP/qzWzz/LLdrDanN49gpE9fD/vz09f7D5YS80fA
-m2ITUVpPpAR22l7vXIJRES6VlLloKQtcJH9M/UnKYXXU6ZQ8ww+2AL5Aa3Y9YpfiDQWobjgH
-PpE0QJkyGhH8+AyjCVSealOQ4ZWHnMuiLxnNRvAU1Av7DOaWZ0p/wY+YJH7rMHfZBPyCSS9o
-FhnZFZ2CHoOpYmr9G2k3a9FTxeGYJKA7LY3DBZtXOtHWQ0pam7+H+aj5g0YhrEFmNTIkAqaS
-tzrKAbJ1/gQxsFpJuc0v2CghkY2h9JjsAm057AIxBkNp4TNmYSfGizwzyqsmB1MGw6yWxJos
-NDIkWcbs5ZsolkUs+iVmskqKJJu29lVtgEYNIS480A0NgrZY1saJTKkWl6JtHit8nJaHx/3h
-eblblR79u9yBziSgFnylNcFg2TbJagTVwT/ZYj2waWwaK7QxaMmIiPIhnBcjGi1sRyQAwwl+
-RCMyxGQd2rJbUWywL9mI1kjM2VoRgtWLmAD1AaLN459gHJMsAEiC75IY52EI4DQl0DnsOQBL
-2cailr1V0BqEDF3pNmS+qNVA3A0QaEQAzmWgtGC+oJ8QBpHH/dLxjAKssVwChbBAARYiT1Oe
-WQQBUHIiM9DnfVoIGoCSLFrA30XrSKUjSYawGBEIARyZQWWptLX05PeXEv7WRelhvyqPx/3B
-CxvjVYsEoImhkv8kYCRpCQtQIiYl9GCI6DKHaY4pW6jrAzxWm8SI6OAURU1uP+AWR9PurtBu
-nLTgSptBu55Fmd5ZaigJAIRq6VKKv3g/aUl+l/xpMnR2yMz8AybUJrnH9R+xzTImaQUhcBdm
-mBCUAPswSmKlLEDOcAs9ntXSV+RJww9IEgAlPjI9qGjgai5t4wUtjHH5vD9891adqMKl2jQW
-AJdkcYcZ8YaorLS9NTVlgKPCmnyLtao3lIehoPL+5t/hjfmvURbokC86I1MbJO5vLxYrtnCt
-1ijakQCEWwRyaBzjGjdaZ9U2KaGNMRuX6/YGk2EgDD7c2GsBJXc3+DExreDN3EMzPVt0GYrR
-JPt/AOSCZVo+lc9gmLz9i1oMS5+QDFxokYsUdIbCL4INo5Yhrmi4zo5RZe3stRX9WB5WXzen
-cqWG+2ZdvkBldISwy0VomUqjd8F3DiMyEn0FrM2/npbmHHNuYS9dfjcYgmiBABXdahmFFkFr
-GA1fHaWC2FALxKWIyOdFIaMh8Ifalls2Q/La4awr8CCPQA0BotFoT6GdTrd0DuMxASMr6hRp
-nxbGMQMTKxBcYOahoF3v1I58Pn3zZXks1943Ixgvh/3jZmvc08asXmPr2t4fbFg9blBHsQKo
-1NozDfNErNDzTTONamWw6JIyvS1XuXInhmLUCdUgHoekI9C71/2Sz9yFWRTHbIhjJEUT4Drx
-lEROBhM+BCPsZwtwTXjS2510eTht1KppVdKGnCSTTOrAWzBVzg6GcGMRcNGwWqg+ZK3i5kh2
-ejQBLt54wq1BxA8A+Y2TGIBMqumgs7X4JoshxYFdzTEMH1Bt0R5FE/XUiyhSUMN5osRBHXk7
-KqrpOsZq6NdoaF1tnF2VbWJVW68Q/bdcnU/LL9tSx+Y9DfxPrdUbsiSMpTrruIgYsvAzljqk
-zHDETPgYBgJvMch1hPiyhq5R2RY8vmIFQJXKFlalcz/KBfhkysWTNAZ/wKIa25xKvTjamr7v
-KCe/K/eWgI/U1iid3QP7tXcoYmTedRQ5jkkKa6MOSJDdv7/58+PFeFMQM/DZNAKbxC2NGVE4
-TAr+4MAoxlHY55Rz/KB/1tqM44FpFVE1E1UmaOKaJwxVjRRsTdu/NBo8T01Mf1eW66N32ntf
-l3+XnvYRwR7CzqvtXtc+Q7A8LT2yUn6DF+93m9P+UOv6ev1I3N2SSnpcdTt4ChEgK1ZM+6HS
-oPx7Ay5xcNj83XWsfZ+0o0INNNisqhoev4hpExYwDvSYRqlD3YByl3Ea4gAYljoJiDKsrpiv
-bj5kWQxGt4oo94YZbg7P/ywPpbfdL9flwTpGM/AZVTDTPkggApcGW9csF24T7bsyp4ZTHa6s
-B++rfeqO6wJ6QFBn2upZuqPrEiunhU5ZHaK0bX9/R0wo/3z01nqL28ZjzGDd8BHaVdpL2QiJ
-LidZXKNtf787HfZbHeK2RJCp2MrjEuQL3OXTfrXf2sDm/1W/mcOI85G65qu2rScBsnw6LEHV
-VoNf68Hb/TsYejtVT9vqOnE4b7HEoEAgrYtZHto6j4dgv5jsXgw2VKX1ZUap3YCJXeCkCR/+
-1SpQGhiEsVXWsrRcwV0Q7ikoZmNf7NHxKc1c8WNAMcpEXMNwvV1JpoCExfnlZX842RKpyovQ
-RyWyVceYy81xhck1nJt4oaaHxyMTwOsiB52hpquOEa6AwI6ihLmKfc0LEYQUtyn+oLseBo/Q
-NOOxd+zP2lCKP+/8+Ud06p2qlWD/uzzC2TieDudnHck8fgU5XXunw3J3VHweOAcg0LBImxf1
-a1vq/+Pa5rRv4SwuvTAdEevM7P/ZKUXmPe8VNvR+O5T/c96Aa+uxgf97a6b+mONCNE1JwvCN
-b22zicT5glUl1nrWGwdE5bC07ssIC3QegGOvfcfVHdaRFfmROBaJcXdFkmxEpdbs/Rvs3cv5
-5JwSS0wCRANbVEEBbjEc1cgVQzJMAs6noJPYEZoyTDGRGZt3mfTI8mN52CqNvKnVcOusVfU5
-GMbOQe+w/MUX1xno9Ed0wFOOhXPjF1N3QhdDThy3W9YUro9fqFviKyw6aIwrwoqB5/4Y3AlK
-ccRdjaTjTTRSHLP3uPiMl4e1PorsHfeU7LTWQKiEArTFEYlpX3lXwo81enEFMXk1fYIeWa5A
-VCzNXB8AaUX4p3ZGD08EjzQGT4S6YYK/bc6awQrGzKyyJhYpLYJyzoIOoK+xacLmf34Ct2jR
-CtZEdET8hS5GVysKYGf0ZazCeL1NEIC/ltsKQfQ2gETFp8GHm16tZL97owlHU13rXsRIVG3k
-JJPg0jluiw2PYCH4g1c5fD+ZO26TDcfQjz/ezefXWEgkKSDmvyQZqVH9BOuP2CrTmoofcpIM
-PyIVORRREaU/akRzgQcf0fmPWOEvOifgcARsxHzYfxz+18ubdlVNbU/aItKrmIDoasfHoaqS
-PIrUMbrWuQ6+dVF9fUAY+PK8PiG4DkpjVpjrcnyOcMKuXDlC72CTcPvnw//dQHQDqqKFa9Sm
-O9AOuZA6F8G4WOgK99WPMRMDHztUqhiNdFnsFvedQ+hS5iiPccK4CzdqFJT2owupTL3Vdr/6
-1ocFQCpuP3z6ZDLMdHYFT0h0CYDpuIOXjhcqEKtMOLj+KvWxgCIdjAZZi1OlIk976LD0Tl9L
-b7le6/AjiKnu9vjWxo390VijZ4kvMzwIM0oZd4WDZ7f4YvAZuNHKKXGkW2m6ulSI8PMwnvXC
-KLUkjmkWO+LCOlUx4JjZEGKIX7wI7HIfNChB2YedGJbxZc7b0+bxvFvp0G9lWBFTEocKyMYU
-tBeoLd9xChuuceQHuNQqnlidIweIBfKYfXw/uC1AjPEmxtIH908wH79VVk1MaJxGuDLTA5Af
-7/78w0kW8YcbXDo0dSF8xw4rsmQFie/uPswLKXxyZRXkQzz/hHteV7fF0lB0lEfOhInMx1Gb
-T1GlFNOAkQKI9Y0ZrugopqJMXaSeidodli9fN6sj1muQxT1+FZux/WsrZNOODR2Wz6X35fz4
-CHo36Dvk4RCdAlrNBKyWq2/bzdPXk/dfHghw3zFqMJkfqFx2IaqYGB6GIP4kUhkjV1jruNf1
-nk3X+91xv9XO8ct2+b2Sh75+NnGIHnZtFcPPKI8B7n66wekZn4n7wQdr43/Q+yUg2N1sS2Hx
-POnj1zELsBVWxah7YLFfgDVoSD72WTu9pZ0tNsTFuhbg2HFOaex2vxI6A/Ae4OjBXA2zIWDL
-NnCqTycoMTBNrXCB9I2k4BBHac1e4MjE0WMyzEPr1qZZ8kXiF+pFgqtJlRk7piTFw7Gdhq3Z
-5XPwSlJXcC53OH7T0EUAhAi6gE17yeJtCBnTJMfp6u1Aj1zF61aH/XH/ePLG31/Kw5up93Qu
-j21v5xLzuc5qIYuMOoEjmEfQh677hZHrtmfEoyBkYowIi04C8CPrFrIuUVcSKbHTQ6F3ACAV
-tz2mqrQgc6Z+jhzRAIszZHMVl40dm1b5TVMf35LxTF3OKozYN0Eay4n9+dCCG/UIookA46X6
-bSVrST9l8vbmxiSr4ueV+RlXTysAFsqP73EDgPZutUFYNOS4D8q4Su9wGbqsfN6fypfDfoVh
-qIzGXKqQKg7+kcqm0Zfn4xPaXhqL+mDgLbZqdvTwjCHQQMDYfquuRfgOvJrNy+/e8aVcbR4v
-dzzNFczzdv8ExWLvt4ZXm2uEbKzsYb9cr/bProoo3QQt5um78FCWx9USLNHD/sAeXI38iFXz
-bt7Gc1cDPZrt3ESbU2mow/Nmu1Z2sF4kZKNU4GQOq67wWCIzHvV83Drg/tOt6+YfzsstrJNz
-IVG6LQbqDVFPBuYqu+dfV5sY9RJm+CnpsVypWEGiMKOOG5O5dOJs/WQLP6EOZZXO+kBT3dWs
-YJRI6Dt7qB5oNeoHfJ+uQ2K902q1Yw0nVXlizhCDcjMdUmHc8PGi9TinMRbVtaxiQKcLvrZP
-EhPb9KkyrGjj1SaqhJDm4AHAO6kMkXbWih8XE3D0FZYa9PutPfUft9kdZEATnxbgxWQ0cfjc
-Fl9wfcaGSZBo6hAD4FIBOAa+V/yg5uJki8H6RfBvyq53ms5JMfiUxCq+gqPIFpdaPufSYa+j
-dMTBd1ykxD4+gYz0YSLZrQ/7zdreVJIEGXcg7ZrdwosEt4pJN/hmgP1MXeutNrsnNLAs8RiC
-ys6LCjlGh4Q0abl76nYQazJ0xL0Ec1h5EbHYdWTV+DL4PaGO93jV2w0cT7cvjKoMB1D5ZtNb
-521KIhaoNwqhzuQTDsQDWnJQOLJZgHZ3hfbeRcsoU69rhIv+l5s0d5NGoXCOdCivdJew6ErV
-cOCuqR6otWX2MnsF4MLWPUxdZpJLC44+1NOvuxW98wQCquH5nDYHKGFX2mmQcMlCh0kzNJ0F
-hDdNrtR+yLnjwlhdKYXCKQWG7Fxala7soFV5Gx2yEe7l6msnSiOQtLsaqRtuwx68yXj8LpgG
-+sggJ4YJ/ufHjzeuUeVB2CPV/eBtG+eai3chke/oXP0LFsrRu8m5dfQ9hbruk3iFmMgr5wJo
-/fNdq5prwzbm/1ie13udD9pMp7Y54KUU7eOhiybdiKJNvLyhtAt1liM4lAwMfK85wFhRkLUd
-0Yo+oVliZ/XrJ5Z2A+4kPvMDWbfa0PYnbnuQwkRMTF6rY+Ujh4glzOcBtkCMF7MHO3Gupfar
-i9zV+bA5fcfiOBPquBwW1M+VUimCmAoNKCXAQtelouG9SgwxraejDfVDPq2HfJ4umgd7rccq
-XTZXIEQCfFU8MaxYP7ex1otVUm8zT2Lls0Uivn+l0kSUR/9a/aOSgl5/Xz4vX6vUoJfN7vVx
-+VhCg5v1a5VK8qRW+PWXl8dXrQc6X5eHdblTuKJZfDs3erPbnDbL7eZ/Ox9N0d/eMG9Bul8R
-0CSVpq8W6TIPh3GomdWrSQdvLdzmWyOfacbVO8ZILWGg36XYnSNk/KIBn17nzRCyOs3Vckdo
-rWOorCHvWYBo8+WwhD4P+/Nps+s+buglQ9cAgUmVewswqJ+aCiKf+CCOoUpnaz/MtlkimtRU
-S1VkgQu0Z+r7GkkeD/FvD2Tkcu9pTRl0ms+kAxlm/u1HF6WQtzcBw18EKDKTeYGlaQJNP3G1
-me8GcF6i0JHYWTFEzKfDxSekqqG8dw1FsZBsRhzZIIYD9stF/ehs2UnAr+oiNtSdOfIhM/+T
-wzVS9/qONWqA7Gc4h9jzilqkbOV3UX1CRQjtdxKmSL/BjEnaLg9i652XfpsAJYpNa0f76gaK
-YTARydTFzZgqR7nzZE21p4P9ild958DcFfyIy09zhEVRVVwZ6UyRQNPVBP3Yok29kNTTiDYp
-oz3ugGXgSF0o9tWEelZnnrxf2wXJYwYi1dK82UOhvneAVAORCQP7oTbIad1zpdF6+qnbJeOd
-edQEaLwgYhwF7M5JzJzE6Boxzt2t+nEaMOSVu6LlF2Lb2q2+mccfuvTlAJbxm07VWD+XxycM
-gFRfVOm+JezSlclxOCnWm3jzbSiGpav71f1jpPLrpzSqjeH9H06Oh5xRef/+8vaNCqEwZ6+F
-95Z0LRICYtOXLpyjd4/eTGoRDznoy4JmmfqGC2pknetbXes+vwAWfKM/0wPuzurbUbOuTPkB
-eYyVQU/FjGTJ/e3N4L29xBlL9RfK1Lcz8EsZ8y0dABywH+gRMTMGvKUfGQIcjlVqinVkOhQ9
-EMAq0cI+RT89q9a7nko+g/LL+elJ4Q0rVbzla5ER0/6GI9n+8ggKBelDQTBkpUHuxAdi/c20
-/6vkSnYahoHor+QIUpU/4BCipEVkUxYquFUl6glakQTx+cySxB4vQdxaO/I6Hr+x/V7tYrps
-ttFsAkYxSWZhoBl2rWVIDLRHwm+bFM0mRa4qId4tfJeJSi/EBznpC4tapo/F3AV67B1pd4+c
-PsumkZSbqYSHz72gZbBTwGg+tSitoKggJvhUozCTwuBvUF5vwy7IANFPN7acw+nzYoBFiLYQ
-NJfuoxqRj8dpXaJkADkT3VnZtQ8aTX67eg7UVnUoOYGWeJTeM2kXWPFzklTG9DFAxttJZV53
-A0Qx9CRuF3xMY//Tw49+PIdheK98Ah1ZUdl4v6yR3teKj0emXXtgz7L7/aNys1ML5f4P9+/M
-JidC8UrRABLCmMV67amZx0xGf0diIq6+syWvwJYP4WKLkKSuO8fJnJhyT5F8Bxt37rmWGWL1
-pF3BjpI6LVCinruvo+rg/mbZg1LKNQvgrTSn42bATxjJSA0Ejx2k/kloorzKHO9LWEnU6a14
-5pHnQuJar2+PpduwzDJ0PNL2A+rR0TqLr9/91+nSi9MPpKn5Y2HwMXH5Mus+VELAsEZRvZzF
-L3E87PcjMtJ1toRNYBpGDTgpCxDpVuDM6b8tSk7WwlUAAA==
+Best Regards,
+Huang, Ying
 
---Qxx1br4bt0+wmkIi--
+>>
+>> The choice "a" will create the memory pressure in the fast memory
+>> node.  If the memory pressure of the workload is high, the memory
+>> pressure may become so high that the memory allocation latency of the
+>> workload is influenced, e.g. the direct reclaiming may be triggered.
+>>
+>> The choice "b" works much better at this aspect.  If the memory
+>> pressure of the workload is high, the hot pages promotion will stop
+>> earlier because its allocation watermark is higher than that of the
+>> normal memory allocation.  So in this patch, choice "b" is
+>> implemented.
+>>
+>> In addition to the original page placement optimization among sockets,
+>> the NUMA balancing mechanism is extended to be used to optimize page
+>> placement according to hot/cold among different memory types.  So the
+>> sysctl user space interface (numa_balancing) is extended in a backward
+>> compatible way as follow, so that the users can enable/disable these
+>> functionality individually.
+>>
+>> The sysctl is converted from a Boolean value to a bits field.  The
+>> definition of the flags is,
+>>
+>> - 0x0: NUMA_BALANCING_DISABLED
+>> - 0x1: NUMA_BALANCING_NORMAL
+>> - 0x2: NUMA_BALANCING_MEMORY_TIERING
+>>
+>> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Michal Hocko <mhocko@suse.com>
+>> Cc: Rik van Riel <riel@surriel.com>
+>> Cc: Mel Gorman <mgorman@suse.de>
+>> Cc: Peter Zijlstra <peterz@infradead.org>
+>> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+>> Cc: Yang Shi <shy828301@gmail.com>
+>> Cc: Zi Yan <ziy@nvidia.com>
+>> Cc: Wei Xu <weixugc@google.com>
+>> Cc: osalvador <osalvador@suse.de>
+>> Cc: Shakeel Butt <shakeelb@google.com>
+>> Cc: linux-kernel@vger.kernel.org
+>> Cc: linux-mm@kvack.org
+
+[snip]
+
+Best Regards,
+Huang, Ying
