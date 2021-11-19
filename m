@@ -2,121 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86EFC457924
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 23:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE30A457931
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 23:56:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233348AbhKSW5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 17:57:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46380 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231231AbhKSW5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 17:57:34 -0500
-Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1318F61AE2;
-        Fri, 19 Nov 2021 22:54:29 +0000 (UTC)
-Date:   Fri, 19 Nov 2021 17:54:28 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     jim.cromie@gmail.com
-Cc:     Jason Baron <jbaron@akamai.com>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Sean Paul <seanpaul@chromium.org>, Sean Paul <sean@poorly.run>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        quic_saipraka@quicinc.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Will Deacon <will@kernel.org>, maz@kernel.org,
-        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Arnd Bergmann <arnd@arndb.de>, linux-arm-msm@vger.kernel.org,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        intel-gvt-dev@lists.freedesktop.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, quic_psodagud@quicinc.com,
-        mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH v10 08/10] dyndbg: add print-to-tracefs, selftest with
- it - RFC
-Message-ID: <20211119175428.2ab95873@rorschach.local.home>
-In-Reply-To: <CAJfuBxyvDtALAHM53RdnWT4ke6Cjrc3OWTAqNKe_n-o_LhtpYg@mail.gmail.com>
-References: <20211111220206.121610-1-jim.cromie@gmail.com>
-        <20211111220206.121610-9-jim.cromie@gmail.com>
-        <20211112114953.GA1381@axis.com>
-        <f3914fa9-8b22-d54e-3f77-d998e74094b9@akamai.com>
-        <20211116104631.195cbd0b@eldfell>
-        <f87b7076-47e6-89b1-aaf9-b67aa6713e01@akamai.com>
-        <20211118172401.0b4d722e@eldfell>
-        <41ea83b2-a707-cb6f-521e-070bb12502de@akamai.com>
-        <CAJfuBxyvDtALAHM53RdnWT4ke6Cjrc3OWTAqNKe_n-o_LhtpYg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S234989AbhKSW7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 17:59:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234188AbhKSW7A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 17:59:00 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C9AC061574;
+        Fri, 19 Nov 2021 14:55:57 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id gt5so8995643pjb.1;
+        Fri, 19 Nov 2021 14:55:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jZmwgkqEaqsNB6eacHx7jGF/Uov9dTZSX+ljfrl1HKM=;
+        b=V/IOvaCPhLruyYv/u2Pwu2NAOOo24zKaeNHGVUHXALOkFK9Pwu8No8GbinVvdCrgTP
+         ug4Vi0nd4UzDVYnYLpI4WJmWOrNw/nkJrXv1T82n5t3XfkPIP2jTpRAXSZjDliM+5Bbc
+         QuOYAJ5EVj+AOyTmdF18djuKSKaC3+NTMOq+2WFMXWZd+Ej4bSlyuobr5YZtKY1Sojcp
+         nE7sjHSQ362M9iksil66vUXNXsosL2nd53i4/KQfJD6MEcWdQYjUlrnt1xFCfl91dRfA
+         /lkRUxljcAmAr9f2sKAuShrXFsKGgglbIrG7lSPdhgx1cgWbEf6huX/7mDzt7FN0ontm
+         TuAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jZmwgkqEaqsNB6eacHx7jGF/Uov9dTZSX+ljfrl1HKM=;
+        b=tM1JHGUIzhcyzOV/gtFdOlYZcsdWW4yK9SqGT6ZbffR9d8EoL3WUHAbKkBRr02KNLK
+         ZT2novdtOwA5xACn27UPMkLmqjdIOAZRL/luzGmY5a4i8rf3/mAfLMHMq2jPZ8zM/XvA
+         B3QdicbwPZaKTVBiktMt7I0iudbk0J5LfuXULdTJDnt324qxFgdsUCjg5aU3TQEb2X8k
+         RCvWnFvXBa/3RGF/OqPr5/OC+lwHqop2e85vRqiHXVAsH/eVtmSQeKpdPWbps8eNuZ/y
+         iqCcfYV9pyQDnqcAudcUQU12GHzzwoylCTxu+XICi14U70LAwpPefEYtnVCOw/HxzqVy
+         W6Mg==
+X-Gm-Message-State: AOAM531DxnNIaQajJbqPIJsaQHkoorAT5hQmsEqgS7CiOxLRRcMCNJVa
+        bqdL6HPmefip6KofvcI2Knw=
+X-Google-Smtp-Source: ABdhPJz95l/urJMhGxpdaJPNfeHFnuLnqGtNyiFrtqE2iDlD9RvfTthWn9SEdWafPaD5FVqbnhABhg==
+X-Received: by 2002:a17:90a:7004:: with SMTP id f4mr4103477pjk.156.1637362557584;
+        Fri, 19 Nov 2021 14:55:57 -0800 (PST)
+Received: from localhost.lan (p4857108-ipngn27301marunouchi.tokyo.ocn.ne.jp. [114.164.215.108])
+        by smtp.gmail.com with ESMTPSA id f21sm658610pfc.191.2021.11.19.14.55.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 14:55:57 -0800 (PST)
+Received: from x2.lan (localhost [127.0.0.1])
+        by localhost.lan (Postfix) with ESMTPSA id 1B297900921;
+        Fri, 19 Nov 2021 22:55:55 +0000 (GMT)
+From:   Vincent Pelletier <plr.vincent@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        David Abdurachmanov <david.abdurachmanov@sifive.com>
+Subject: [PATCH v3 1/6] riscv: dts: sifive unmatched: Name gpio lines
+Date:   Fri, 19 Nov 2021 22:55:37 +0000
+Message-Id: <378c64fb868b595430b0068a9af10fdbeceb8e12.1637362542.git.plr.vincent@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Nov 2021 15:46:31 -0700
-jim.cromie@gmail.com wrote:
+Follow the pin descriptions given in the version 3 of the board schematics.
 
+Signed-off-by: Vincent Pelletier <plr.vincent@gmail.com>
 
-> > So I could see us supporting subsystem specific trace buffer output
-> > via dynamic debug here. We could add new dev_debug() variants that
-> > allow say a trace buffer to be supplied. So in that way subsystems
-> > could 'opt-out' of having their data put into the global trace buffer.
-> > And perhaps some subsystems we would want to allow output to both
-> > buffers? The subsystem specific one and the global one?
-> >  
-> 
->  * trace_array_printk - Print a message to a specific instance
->  * @tr: The instance trace_array descriptor
->  * @ip: The instruction pointer that this is called from.
->  * @fmt: The format to print (printf format)
->  *
-> 
-> what happens when @tr == NULL ?
+---
+Changes since v2:
+- Fix end-of-commit-message separator so change lists do not end up in them.
+Changes since v1:
+- Remove trailing "." on subject line.
+---
+ arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-It does nothing, but perhaps crash the kernel.
+diff --git a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+index 4f66919215f6..305a086e5207 100644
+--- a/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
++++ b/arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+@@ -245,4 +245,8 @@ &pwm1 {
+ 
+ &gpio {
+ 	status = "okay";
++	gpio-line-names = "J29.1", "PMICNTB", "PMICSHDN", "J8.1", "J8.3",
++		"PCIe_PWREN", "THERM", "UBRDG_RSTN", "PCIe_PERSTN",
++		"ULPI_RSTN", "J8.2", "UHUB_RSTN", "GEMGXL_RST", "J8.4",
++		"EN_VDD_SD", "SD_CD";
+ };
+-- 
+2.33.1
 
-> It could allow up-flow of events to the global instance
-
-Absolutely not!
-
-Then it's just a reimplementation of trace_printk(). Which I refuse to
-have.
-
-Nothing should just dump to the main instance. Once we allow that, then
-everyone will be dumping there and you will no longer be able to trace
-anything because it will be filled with noise.
-
-What is allowed is an event that acts like a trace_printk() but is an
-event, which you can turn off (have default off), and even pick which
-instance to go to.
-
-> 
-> > Thanks,
-> >
-> > -Jason
-> >
-> >  
-> 
-> So I wonder, is there any conceptual utility to this ?
-> 
-> echo 1 > instances/foo/filter_up  # enable event upflow (or query-time merging?)
-> 
-> Maybe enabling this causes other files (the ones missing from
-> instances/foo) to magically appear
-> so all those filtering capacities also appear.
-
-
-I've been busy doing other things so I haven't been keeping up with
-this thread (which I need to go back and read). Perhaps it was already
-stated, but I don't know why you want that.
-
-trace-cmd can read several instances (including the top level one) and
-interleave them nicely, if that is what you are looking for. So can
-KernelShark.
-
--- Steve
