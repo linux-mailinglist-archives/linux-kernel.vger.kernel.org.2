@@ -2,132 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD0C45764A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 19:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF46F45764C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 19:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231667AbhKSSXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 13:23:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30039 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234002AbhKSSXN (ORCPT
+        id S232853AbhKSSXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 13:23:15 -0500
+Received: from bedivere.hansenpartnership.com ([96.44.175.130]:46704 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231751AbhKSSXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 13:23:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637346010;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XdcrdYD9xvWbUGPWMX7bjgUSsVwyTNyxmOGq1Ztij9c=;
-        b=FyAomhjH5ldOJMkSaTpEyTMhVD/D1+NFS8wsfcgF3SQzcfXOdSv706gidDcuIDa6lYt0+/
-        TvCbDXxr+ou3F6ShbYRMUHG7b/+G4s2q76lDwwuzMdDBnocJwzm9ZlK8M2dMVD0UH4Js0B
-        2eta2e4bJA5L7a4qH6MoM7w8cFqjBLE=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-551-fIOPC90vMAOganEEzz1rWA-1; Fri, 19 Nov 2021 13:20:09 -0500
-X-MC-Unique: fIOPC90vMAOganEEzz1rWA-1
-Received: by mail-ot1-f70.google.com with SMTP id v13-20020a056830140d00b0055c8421bd62so6349439otp.15
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 10:20:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XdcrdYD9xvWbUGPWMX7bjgUSsVwyTNyxmOGq1Ztij9c=;
-        b=VNTeoduaDwnfJwB2/PDJR0UzhYMKDH7GOZWbDmYGlXWvgVYUNJ1DhMftj2hhbdKPpI
-         pwkBMzUh2iPVY5YFn1F+fJMQMlYrRZO4Jvmmg8pAEExv2ODezUuQAVF+8uGHa9JpZTB+
-         3f1NmH5QIo8FMvV6GTiY1jA76qQMtNCYoR7/MgvLrhdtON3wmshSJtS7c3LinxrIv8LZ
-         HM1jJPhFiQZcMd7s9id/TCzcGHRu6qsl8sX1pS6Rzbv98BeEiTCFuHxENcVC26WGuXt/
-         reMB9osdWm12luDUIZoq6v7oeHXd8GFVUW2CDr2/A8Sg9YBn4kGVDgjIImDlFdakuoOE
-         kwgQ==
-X-Gm-Message-State: AOAM5325nMpeSDX45KTDpYg0RV4yo0ByAWZKZKKIUmq1G89pEFmNQqrB
-        Tu2Hw4Ro3Ys9JTLtuNvLtySVDHJjCBtPNHH1K0cTNrE+WGjb/FztMCqJj389QGB7b4miMIpZO5o
-        lpkOpsl8++WbCZsmDKpcc1IWm
-X-Received: by 2002:a9d:6ac7:: with SMTP id m7mr6494033otq.306.1637346008854;
-        Fri, 19 Nov 2021 10:20:08 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxXWrvXCyVmmPw41zaXwMQvDoNIZwprsge5LSnVZv3n13O9g0G8kwLR62belVexqxGn1q5CKg==
-X-Received: by 2002:a9d:6ac7:: with SMTP id m7mr6494000otq.306.1637346008634;
-        Fri, 19 Nov 2021 10:20:08 -0800 (PST)
-Received: from treble ([2600:1700:6e32:6c00::35])
-        by smtp.gmail.com with ESMTPSA id l27sm118214ota.26.2021.11.19.10.20.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 10:20:08 -0800 (PST)
-Date:   Fri, 19 Nov 2021 10:20:05 -0800
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     jikos@kernel.org, pmladek@suse.com, joe.lawrence@redhat.com,
-        peterz@infradead.org, linux-kernel@vger.kernel.org,
-        live-patching@vger.kernel.org, shuah@kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 2/3] livepatch: Allow user to specify functions to search
- for on a stack
-Message-ID: <20211119182005.t3p5iyxyibzktrbj@treble>
-References: <20211119090327.12811-1-mbenes@suse.cz>
- <20211119090327.12811-3-mbenes@suse.cz>
+        Fri, 19 Nov 2021 13:23:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1637346012;
+        bh=Y88sxabhj9CGU3Tbdikvp0XrX7xemk5smViQuCFxuE8=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=El4Dc4Gais46ZDSUQxmWrUlE9Alk2WtJS2Griz8monbOzTB0WecDo7CUJqMk4jOOq
+         JwmUZz1TfO4Pce5i90z3FoDiRUt1O/9HxhRz5nVzaJro/dLFz1PIpToA+ITu3SlEqV
+         1f6RU2f7V6FUZm6aIj2daYrLXz8/jxRAsgjiwR8I=
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 92FE61280C1F;
+        Fri, 19 Nov 2021 13:20:12 -0500 (EST)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id sDxXRArctZ4u; Fri, 19 Nov 2021 13:20:12 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1637346012;
+        bh=Y88sxabhj9CGU3Tbdikvp0XrX7xemk5smViQuCFxuE8=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=El4Dc4Gais46ZDSUQxmWrUlE9Alk2WtJS2Griz8monbOzTB0WecDo7CUJqMk4jOOq
+         JwmUZz1TfO4Pce5i90z3FoDiRUt1O/9HxhRz5nVzaJro/dLFz1PIpToA+ITu3SlEqV
+         1f6RU2f7V6FUZm6aIj2daYrLXz8/jxRAsgjiwR8I=
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4300:c551::c447])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 0CAA7128010E;
+        Fri, 19 Nov 2021 13:20:11 -0500 (EST)
+Message-ID: <0a508ff31bbfa9cd73c24713c54a29ac459e3254.camel@HansenPartnership.com>
+Subject: [GIT PULL] SCSI fixes for 5.16-rc1
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Fri, 19 Nov 2021 13:20:10 -0500
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211119090327.12811-3-mbenes@suse.cz>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for doing this!  And at peterz-esque speed no less :-)
+Six fixes, five in drivers (ufs, qla2xxx, iscsi) and one core change to
+fix a regression in user space device state setting, which is used by
+the iscsi daemons to effect device recovery.
 
-On Fri, Nov 19, 2021 at 10:03:26AM +0100, Miroslav Benes wrote:
-> livepatch's consistency model requires that no live patched function
-> must be found on any task's stack during a transition process after a
-> live patch is applied. It is achieved by walking through stacks of all
-> blocked tasks.
-> 
-> The user might also want to define more functions to search for without
-> them being patched at all. It may either help with preparing a live
-> patch, which would otherwise require additional touches to achieve the
-> consistency
+The patch is available here:
 
-Do we have any examples of this situation we can add to the commit log?
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
-> or it can be used to overcome deficiencies the stack
-> checking inherently has. For example, GCC may optimize a function so
-> that a part of it is moved to a different section and the function would
-> jump to it. This child function would not be found on a stack in this
-> case, but it may be important to search for it so that, again, the
-> consistency is achieved.
-> 
-> Allow the user to specify such functions on klp_object level.
-> 
-> Signed-off-by: Miroslav Benes <mbenes@suse.cz>
-> ---
->  include/linux/livepatch.h     | 11 +++++++++++
->  kernel/livepatch/core.c       | 16 ++++++++++++++++
->  kernel/livepatch/transition.c | 21 ++++++++++++++++-----
->  3 files changed, 43 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/linux/livepatch.h b/include/linux/livepatch.h
-> index 2614247a9781..89df578af8c3 100644
-> --- a/include/linux/livepatch.h
-> +++ b/include/linux/livepatch.h
-> @@ -106,9 +106,11 @@ struct klp_callbacks {
->   * struct klp_object - kernel object structure for live patching
->   * @name:	module name (or NULL for vmlinux)
->   * @funcs:	function entries for functions to be patched in the object
-> + * @funcs_stack:	function entries for functions to be stack checked
+The short changelog is:
 
-So there are two arrays/lists of 'klp_func', and two implied meanings of
-what a 'klp_func' is and how it's initialized.
+Adrian Hunter (2):
+      scsi: ufs: core: Fix another task management completion race
+      scsi: ufs: core: Fix task management completion timeout race
 
-Might it be simpler and more explicit to just add a new external field
-to 'klp_func' and continue to have a single 'funcs' array?  Similar to
-what we already do with the special-casing of 'nop', except it would be
-an external field, e.g. 'no_patch' or 'stack_only'.
+Bart Van Assche (1):
+      scsi: ufs: core: Improve SCSI abort handling
 
-Then instead of all the extra klp_for_each_func_stack_static()
-incantations, and the special cases in higher-level callers like
-klp_init_object() and klp_init_patch_early(), the lower-level functions
-like klp_init_func() and klp_init_func_early() can check the field to
-determine which initializations need to be made.  Which is kind of nice
-IMO as it pushes that detail down more where it belongs.  And makes the
-different types of 'klp_func' more explicit.
+Ewan D. Milne (1):
+      scsi: qla2xxx: Fix mailbox direction flags in qla2xxx_get_adapter_id()
 
--- 
-Josh
+Mike Christie (2):
+      scsi: core: sysfs: Fix hang when device state is set via sysfs
+      scsi: iscsi: Unblock session then wake up error handler
+
+And the diffstat:
+
+ drivers/scsi/qla2xxx/qla_mbx.c      |  6 ++----
+ drivers/scsi/scsi_sysfs.c           | 30 +++++++++++++++++++-----------
+ drivers/scsi/scsi_transport_iscsi.c |  6 +++---
+ drivers/scsi/ufs/ufshcd.c           |  9 ++-------
+ 4 files changed, 26 insertions(+), 25 deletions(-)
+
+With full diff below.
+
+James
+
+---
+
+diff --git a/drivers/scsi/qla2xxx/qla_mbx.c b/drivers/scsi/qla2xxx/qla_mbx.c
+index 73a353153d33..10d2655ef676 100644
+--- a/drivers/scsi/qla2xxx/qla_mbx.c
++++ b/drivers/scsi/qla2xxx/qla_mbx.c
+@@ -1695,10 +1695,8 @@ qla2x00_get_adapter_id(scsi_qla_host_t *vha, uint16_t *id, uint8_t *al_pa,
+ 		mcp->in_mb |= MBX_13|MBX_12|MBX_11|MBX_10;
+ 	if (IS_FWI2_CAPABLE(vha->hw))
+ 		mcp->in_mb |= MBX_19|MBX_18|MBX_17|MBX_16;
+-	if (IS_QLA27XX(vha->hw) || IS_QLA28XX(vha->hw)) {
+-		mcp->in_mb |= MBX_15;
+-		mcp->out_mb |= MBX_7|MBX_21|MBX_22|MBX_23;
+-	}
++	if (IS_QLA27XX(vha->hw) || IS_QLA28XX(vha->hw))
++		mcp->in_mb |= MBX_15|MBX_21|MBX_22|MBX_23;
+ 
+ 	mcp->tov = MBX_TOV_SECONDS;
+ 	mcp->flags = 0;
+diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
+index 55addd78fde4..7afcec250f9b 100644
+--- a/drivers/scsi/scsi_sysfs.c
++++ b/drivers/scsi/scsi_sysfs.c
+@@ -792,6 +792,7 @@ store_state_field(struct device *dev, struct device_attribute *attr,
+ 	int i, ret;
+ 	struct scsi_device *sdev = to_scsi_device(dev);
+ 	enum scsi_device_state state = 0;
++	bool rescan_dev = false;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(sdev_states); i++) {
+ 		const int len = strlen(sdev_states[i].name);
+@@ -810,20 +811,27 @@ store_state_field(struct device *dev, struct device_attribute *attr,
+ 	}
+ 
+ 	mutex_lock(&sdev->state_mutex);
+-	ret = scsi_device_set_state(sdev, state);
+-	/*
+-	 * If the device state changes to SDEV_RUNNING, we need to
+-	 * run the queue to avoid I/O hang, and rescan the device
+-	 * to revalidate it. Running the queue first is necessary
+-	 * because another thread may be waiting inside
+-	 * blk_mq_freeze_queue_wait() and because that call may be
+-	 * waiting for pending I/O to finish.
+-	 */
+-	if (ret == 0 && state == SDEV_RUNNING) {
++	if (sdev->sdev_state == SDEV_RUNNING && state == SDEV_RUNNING) {
++		ret = count;
++	} else {
++		ret = scsi_device_set_state(sdev, state);
++		if (ret == 0 && state == SDEV_RUNNING)
++			rescan_dev = true;
++	}
++	mutex_unlock(&sdev->state_mutex);
++
++	if (rescan_dev) {
++		/*
++		 * If the device state changes to SDEV_RUNNING, we need to
++		 * run the queue to avoid I/O hang, and rescan the device
++		 * to revalidate it. Running the queue first is necessary
++		 * because another thread may be waiting inside
++		 * blk_mq_freeze_queue_wait() and because that call may be
++		 * waiting for pending I/O to finish.
++		 */
+ 		blk_mq_run_hw_queues(sdev->request_queue, true);
+ 		scsi_rescan_device(dev);
+ 	}
+-	mutex_unlock(&sdev->state_mutex);
+ 
+ 	return ret == 0 ? count : -EINVAL;
+ }
+diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
+index 78343d3f9385..554b6f784223 100644
+--- a/drivers/scsi/scsi_transport_iscsi.c
++++ b/drivers/scsi/scsi_transport_iscsi.c
+@@ -1899,12 +1899,12 @@ static void session_recovery_timedout(struct work_struct *work)
+ 	}
+ 	spin_unlock_irqrestore(&session->lock, flags);
+ 
+-	if (session->transport->session_recovery_timedout)
+-		session->transport->session_recovery_timedout(session);
+-
+ 	ISCSI_DBG_TRANS_SESSION(session, "Unblocking SCSI target\n");
+ 	scsi_target_unblock(&session->dev, SDEV_TRANSPORT_OFFLINE);
+ 	ISCSI_DBG_TRANS_SESSION(session, "Completed unblocking SCSI target\n");
++
++	if (session->transport->session_recovery_timedout)
++		session->transport->session_recovery_timedout(session);
+ }
+ 
+ static void __iscsi_unblock_session(struct work_struct *work)
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index afd38142b1c0..13c09dbd99b9 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -6453,9 +6453,8 @@ static irqreturn_t ufshcd_tmc_handler(struct ufs_hba *hba)
+ 	irqreturn_t ret = IRQ_NONE;
+ 	int tag;
+ 
+-	pending = ufshcd_readl(hba, REG_UTP_TASK_REQ_DOOR_BELL);
+-
+ 	spin_lock_irqsave(hba->host->host_lock, flags);
++	pending = ufshcd_readl(hba, REG_UTP_TASK_REQ_DOOR_BELL);
+ 	issued = hba->outstanding_tasks & ~pending;
+ 	for_each_set_bit(tag, &issued, hba->nutmrs) {
+ 		struct request *req = hba->tmf_rqs[tag];
+@@ -6616,11 +6615,6 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
+ 	err = wait_for_completion_io_timeout(&wait,
+ 			msecs_to_jiffies(TM_CMD_TIMEOUT));
+ 	if (!err) {
+-		/*
+-		 * Make sure that ufshcd_compl_tm() does not trigger a
+-		 * use-after-free.
+-		 */
+-		req->end_io_data = NULL;
+ 		ufshcd_add_tm_upiu_trace(hba, task_tag, UFS_TM_ERR);
+ 		dev_err(hba->dev, "%s: task management cmd 0x%.2x timed-out\n",
+ 				__func__, tm_function);
+@@ -7116,6 +7110,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
+ 		goto release;
+ 	}
+ 
++	lrbp->cmd = NULL;
+ 	err = SUCCESS;
+ 
+ release:
 
