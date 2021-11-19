@@ -2,155 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42059456F16
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 13:49:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F47456F18
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 13:49:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231877AbhKSMwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 07:52:08 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:3518 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229457AbhKSMwH (ORCPT
+        id S234618AbhKSMwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 07:52:31 -0500
+Received: from so254-9.mailgun.net ([198.61.254.9]:40679 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232031AbhKSMwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 07:52:07 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AJCUn57016559;
-        Fri, 19 Nov 2021 06:49:00 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=1KG6WEM5pcit/0cOBrJixvTwEkGLUWH0S9yAWcmK2K8=;
- b=k8d6gBvqOmlYfOzN6HioKcSb3hbK4/x6I43XRAQ/QdRJN4GqTJlGBNrpR/673gBQGCZj
- w/5ZyONTLdC33fdMAdKHFOdvGtIrGLBmSOw6AU9SVuAlRwLFNeOxpt2jWE4rMNhST6YQ
- MJI89U5ed/tRATIOISibkISzvFaippCg/hf/z+bCqPREWt6+aIgZk6W7Dg91AszFlV/T
- l5qGg1272NY/lA3PJ+0sNPAH48Z7f+uHoS/LEDOnIQqlpbdNEsej7/2+DjOII7mjWnqr
- j1am/FRKoebyVYiUsLCAfy5h8VFQpX8IwZHigzCHLwxxYdiLnT4v5+Lslqkuqj+DGLlp AQ== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3cdj9esurs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 19 Nov 2021 06:48:59 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Fri, 19 Nov
- 2021 12:48:58 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via Frontend
- Transport; Fri, 19 Nov 2021 12:48:58 +0000
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.41])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 911CF2A1;
-        Fri, 19 Nov 2021 12:48:57 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <broonie@kernel.org>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH] ASoC: cs42l42: Report initial jack state
-Date:   Fri, 19 Nov 2021 12:48:54 +0000
-Message-ID: <20211119124854.58939-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 19 Nov 2021 07:52:30 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1637326168; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=x3oa3V9Th9DKtkhgwmysF0P6b5VLlfzboOewg6Rfz/8=;
+ b=a/QZ7FgIDGoi+ULzsXIDBiOxIQrWCy7w3wflL+mg9jVmJJXnKL/CO5YsHhbU/G/8Zdn+/mqo
+ 6XfAM+8JXKQUM8Rc5uaACZ2YLFIrxIdroSU4njf6LWPsnx4ZuapL2UP1e2QxOnnoDuUmhn6h
+ wgCkFJSNY1Ag8HhKkpNTfNZ1Y3g=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 61979d58f5c956d49e3dc4b7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 19 Nov 2021 12:49:28
+ GMT
+Sender: jeyr=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 07A90C43616; Fri, 19 Nov 2021 12:49:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: jeyr)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2B678C4338F;
+        Fri, 19 Nov 2021 12:49:27 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 8fAUTdm_apuBc1B3nsIPDGY3x06OleEg
-X-Proofpoint-ORIG-GUID: 8fAUTdm_apuBc1B3nsIPDGY3x06OleEg
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 19 Nov 2021 18:19:27 +0530
+From:   jeyr@codeaurora.org
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org,
+        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
+Subject: Re: [PATCH v3] misc: fastrpc: fix improper packet size calculation
+In-Reply-To: <df24334190f8b7cb517e440bee8f2784@codeaurora.org>
+References: <1632224895-32661-1-git-send-email-jeyr@codeaurora.org>
+ <YUnHbiQDZK/+tTAp@kroah.com>
+ <9c5c13a393b64a4527f7be7ca42734d2@codeaurora.org>
+ <YUnSt9B4hAe3y2k2@kroah.com>
+ <df24334190f8b7cb517e440bee8f2784@codeaurora.org>
+Message-ID: <56123f5e39e4cc7691da5d0d61468a97@codeaurora.org>
+X-Sender: jeyr@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a jack handler is registered in cs42l42_set_jack() the
-initial state should be reported if an attached headphone/headset
-has already been detected.
+On 2021-09-21 18:43, jeyr@codeaurora.org wrote:
+> On 2021-09-21 18:10, Greg KH wrote:
+>> On Tue, Sep 21, 2021 at 06:03:42PM +0530, jeyr@codeaurora.org wrote:
+>>> On 2021-09-21 17:22, Greg KH wrote:
+>>> > On Tue, Sep 21, 2021 at 05:18:15PM +0530, Jeya R wrote:
+>>> > > The buffer list is sorted and this is not being considered while
+>>> > > calculating packet size. This would lead to improper copy length
+>>> > > calculation for non-dmaheap buffers which would eventually cause
+>>> > > sending improper buffers to DSP.
+>>> > >
+>>> > > Fixes: c68cfb718c8f ("misc: fastrpc: Add support for context Invoke
+>>> > > method")
+>>> > > Signed-off-by: Jeya R <jeyr@codeaurora.org>
+>>> > > Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>> >
+>>> > Does this also need to go to the stable kernels?
+>>> Yes, this needs to go to stable kernels also as this fixes a 
+>>> potential issue
+>>> which is easily reproducible.
+>> 
+>> 
+>> 
+>>> 
+>>> >
+>>> > > ---
+>>> > > Changes in v3:
+>>> > > - relocate patch change list
+>>> > >
+>>> > > Changes in v2:
+>>> > > - updated commit message to proper format
+>>> > > - added fixes tag to commit message
+>>> > > - removed unnecessary variable initialization
+>>> > > - removed length check during payload calculation
+>>> > >
+>>> > >  drivers/misc/fastrpc.c | 10 ++++++----
+>>> > >  1 file changed, 6 insertions(+), 4 deletions(-)
+>>> > >
+>>> > > diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+>>> > > index beda610..69d45c4 100644
+>>> > > --- a/drivers/misc/fastrpc.c
+>>> > > +++ b/drivers/misc/fastrpc.c
+>>> > > @@ -719,16 +719,18 @@ static int fastrpc_get_meta_size(struct
+>>> > > fastrpc_invoke_ctx *ctx)
+>>> > >  static u64 fastrpc_get_payload_size(struct fastrpc_invoke_ctx *ctx,
+>>> > > int metalen)
+>>> > >  {
+>>> > >  	u64 size = 0;
+>>> > > -	int i;
+>>> > > +	int oix;
+>>> >
+>>> > What does "oix" stand for?  What was wrong with i?
+>>> It is just a general convention we use. "oix" is used to iterate 
+>>> through
+>>> sorted overlap buffer list and use "i" to get corresponding unsorted 
+>>> list
+>>> index. We follow the same convention at other places also, for 
+>>> example:
+>>> fastrpc_get_args function.
+>> 
+>> That is the only place it is used in all of the whole kernel tree.  It
+>> is not a normal variable for a loop, so who is "we" here?
+> The convention was followed for the same file(fastrpc.c). As part of
+> fastrpc_get_args
+> function, while iterating through sorted buffer list, oix is used as
+> index and to
+> get unsorted index "raix", it is using "i". Just following the same way 
+> here to
+> have better understanding. Please let me know if this is a concern, it
+> can be updated
+> to "i", "j" etc.
+> 
+> -- Thanks
+>> 
+>> thanks,
+>> 
+>> greg k-h
+Hello Greg,
 
-The jack detect sequence takes around 1 second: typically long
-enough for the machine driver to probe and register the jack handler
-in time to receive the first report from the interrupt handler. So
-it is possible on some systems that the correct initial state was seen
-simply because of lucky timing. Modular builds were more likely to
-miss the reporting of the initial state.
+Is this bug-fix patch planned to be released?
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Fixes: 4ca239f33737 ("ASoC: cs42l42: Always enable TS_PLUG and TS_UNPLUG interrupts")
----
- sound/soc/codecs/cs42l42.c | 22 ++++++++++++++++++++++
- sound/soc/codecs/cs42l42.h |  2 ++
- 2 files changed, 24 insertions(+)
-
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 0c4303547fd8..43d98bdb5b5b 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -549,8 +549,25 @@ static int cs42l42_set_jack(struct snd_soc_component *component, struct snd_soc_
- {
- 	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
- 
-+	/* Prevent race with interrupt handler */
-+	mutex_lock(&cs42l42->jack_detect_mutex);
- 	cs42l42->jack = jk;
- 
-+	if (jk) {
-+		switch (cs42l42->hs_type) {
-+		case CS42L42_PLUG_CTIA:
-+		case CS42L42_PLUG_OMTP:
-+			snd_soc_jack_report(jk, SND_JACK_HEADSET, SND_JACK_HEADSET);
-+			break;
-+		case CS42L42_PLUG_HEADPHONE:
-+			snd_soc_jack_report(jk, SND_JACK_HEADPHONE, SND_JACK_HEADPHONE);
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+	mutex_unlock(&cs42l42->jack_detect_mutex);
-+
- 	return 0;
- }
- 
-@@ -1618,6 +1635,8 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- 		CS42L42_M_DETECT_FT_MASK |
- 		CS42L42_M_HSBIAS_HIZ_MASK);
- 
-+	mutex_lock(&cs42l42->jack_detect_mutex);
-+
- 	/* Check auto-detect status */
- 	if ((~masks[5]) & irq_params_table[5].mask) {
- 		if (stickies[5] & CS42L42_HSDET_AUTO_DONE_MASK) {
-@@ -1686,6 +1705,8 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- 		}
- 	}
- 
-+	mutex_unlock(&cs42l42->jack_detect_mutex);
-+
- 	return IRQ_HANDLED;
- }
- 
-@@ -2033,6 +2054,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client,
- 
- 	cs42l42->dev = &i2c_client->dev;
- 	i2c_set_clientdata(i2c_client, cs42l42);
-+	mutex_init(&cs42l42->jack_detect_mutex);
- 
- 	cs42l42->regmap = devm_regmap_init_i2c(i2c_client, &cs42l42_regmap);
- 	if (IS_ERR(cs42l42->regmap)) {
-diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index 75ade987d0db..9fff183dce8e 100644
---- a/sound/soc/codecs/cs42l42.h
-+++ b/sound/soc/codecs/cs42l42.h
-@@ -12,6 +12,7 @@
- #ifndef __CS42L42_H__
- #define __CS42L42_H__
- 
-+#include <linux/mutex.h>
- #include <sound/jack.h>
- 
- #define CS42L42_PAGE_REGISTER	0x00	/* Page Select Register */
-@@ -841,6 +842,7 @@ struct  cs42l42_private {
- 	struct gpio_desc *reset_gpio;
- 	struct completion pdn_done;
- 	struct snd_soc_jack *jack;
-+	struct mutex jack_detect_mutex;
- 	int pll_config;
- 	int bclk;
- 	u32 sclk;
--- 
-2.11.0
-
+-- Thanks
