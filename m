@@ -2,115 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB8FC456F77
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:20:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFA6F456F82
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234595AbhKSNXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 08:23:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhKSNXB (ORCPT
+        id S234850AbhKSN0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 08:26:25 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:41540 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232080AbhKSN0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 08:23:01 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 053EDC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 05:20:00 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id 206so3587214pgb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 05:20:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MIx8aAtrNrpHm8OWpCkJNADibB+h5hdt9mPSxfe3frQ=;
-        b=NBOPOh1UgyA0xwXBnfw/SMnAlqEUiz5NamwbuQAdR86j+M49xfYPj6hPk90eVAqXkg
-         Wm7TljjkNACGgV/VE28cM1mKpEeoY22sfNhxzZEHC6FToVOVJukRr2YSBwm4w/Lw7ymn
-         HyUV4bCPvRTy50/2wdbJ+/zdZaC+G84XFtAg9G7yYrnBUd3Ev+URz3r23urTPghrAjq6
-         Hi3VDMvO7h91SaMAANXvV8NaJW7DoI+BDb64wiODq2re9SnrpmoVpwCkZSFuq4Ad4x1M
-         WGIM85JKRvRevR3APYHonPgDNAPm03EUOSfX36z4MxvBZGUZm1aJ7j1DUZhR/wuVcCH2
-         3sJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MIx8aAtrNrpHm8OWpCkJNADibB+h5hdt9mPSxfe3frQ=;
-        b=MaBHe50+x1SMb/TLq/pfTjehuBVnym81NTU4nLebY0GvxP7HGc7ITKwup4CWXA7kda
-         to8hUJlatNU70xMR8G6+euyXBepSWaNtkOx81aniLi0sMRbILzGfBvZM7qTeVJ0PnnOt
-         XexqGWkhF4wxqDstPFyJY3NmkSxojk1enwBPJWlbvrci3XnYAZBKMFMGFY6e968Di3a/
-         BPlstMJUYA6YJNf9kItbLWqDv21xjkkTBvsVS36Hspzu+DKGMDgCZle7UbFqaC7TBMWj
-         dlULbTDK66T7jhp5pBbi2kjWKL0tM73kdnnkGbgveESkCNQwHRBsAROue2JoXJzKdKu8
-         LvEg==
-X-Gm-Message-State: AOAM533yStZMrgTpX4bTVCk2W1eM5K5rc95Q6i3doLrvReYtU8MpcGWw
-        szxZG1KcEMO6c3dlDHzRaSYv7MsWqT0OVvr044oUyQ==
-X-Google-Smtp-Source: ABdhPJzIJUQL/YO5ivPl8HQZn3UZcAgecn/QrTLCZHfeWyXnPXA+Zl+OFAICaMhmDozxatXYDSFCYS1upGv0jdxNJnY=
-X-Received: by 2002:a63:555e:: with SMTP id f30mr17240737pgm.110.1637327999454;
- Fri, 19 Nov 2021 05:19:59 -0800 (PST)
+        Fri, 19 Nov 2021 08:26:24 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AJDNLqC116338;
+        Fri, 19 Nov 2021 07:23:21 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1637328201;
+        bh=+cYPq112zaLUFWeWrMVnWAkuSqlv9Z6H35GNFCrzKdo=;
+        h=From:To:CC:Subject:Date;
+        b=lJJS3XmA6iRF8n4SKQc6uVvay9MeuzoiW0THjNqmpKOu4GBo3nF6KYiPE6SjJQ9cc
+         DFPa98K8xx2+E2/4NiwxhYIJnWLw3Q65dC9sy9xzms9eZ1GNurbpylkXOQ9fTNbgle
+         qsSgFNW5VmX5f2efa0oNIh+EXCyg92RrkeMnk0u8=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AJDNL9s075749
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 19 Nov 2021 07:23:21 -0600
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 19
+ Nov 2021 07:23:20 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Fri, 19 Nov 2021 07:23:20 -0600
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AJDNHbU098826;
+        Fri, 19 Nov 2021 07:23:18 -0600
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>
+Subject: [PATCH 0/2] J721S2: Add initial support
+Date:   Fri, 19 Nov 2021 18:53:12 +0530
+Message-ID: <20211119132315.15901-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20211102093618.114928-1-angelogioacchino.delregno@collabora.com>
- <20211102093618.114928-2-angelogioacchino.delregno@collabora.com>
- <d2fe91c8-ab29-7706-80f4-fe6619f07327@collabora.com> <286beb55-00db-ba76-0a51-900d59e2ab34@collabora.com>
-In-Reply-To: <286beb55-00db-ba76-0a51-900d59e2ab34@collabora.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Fri, 19 Nov 2021 14:19:48 +0100
-Message-ID: <CAG3jFyvF7JAm8X42+f2u+ycqdsHLfNH2YebxYSjJJSBdAbc1aw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] drm/bridge: parade-ps8640: Move real poweroff
- action to new function
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        a.hajda@samsung.com, narmstrong@baylibre.com,
-        laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@gmail.com, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, kernel@collabora.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Angelo,
+The following series of patches add support for J721S2 SoC.
 
-On Wed, 10 Nov 2021 at 13:46, AngeloGioacchino Del Regno
-<angelogioacchino.delregno@collabora.com> wrote:
->
-> Il 10/11/21 13:44, Dafna Hirschfeld ha scritto:
-> >
-> >
-> > On 02.11.21 11:36, AngeloGioacchino Del Regno wrote:
-> >> In preparation for varying the poweron error handling in function
-> >> ps8640_bridge_poweron(), move function ps8640_bridge_poweroff() up
-> >> and also move the actual logic to power off the chip to a new
-> >> __ps8640_bridge_poweroff() function.
-> >>
-> >> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> >> ---
-> >>   drivers/gpu/drm/bridge/parade-ps8640.c | 37 ++++++++++++++------------
-> >>   1 file changed, 20 insertions(+), 17 deletions(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c
-> >> b/drivers/gpu/drm/bridge/parade-ps8640.c
-> >> index 8c5402947b3c..41f5d511d516 100644
-> >> --- a/drivers/gpu/drm/bridge/parade-ps8640.c
-> >> +++ b/drivers/gpu/drm/bridge/parade-ps8640.c
-> >> @@ -293,6 +293,26 @@ static int ps8640_bridge_vdo_control(struct ps8640 *ps_bridge,
-> >>       return 0;
-> >>   }
-> >> +static void __ps8640_bridge_poweroff(struct ps8640 *ps_bridge)
-> >> +{
-> >> +    gpiod_set_value(ps_bridge->gpio_reset, 1);
-> >> +    gpiod_set_value(ps_bridge->gpio_powerdown, 1);
-> >> +    if (regulator_bulk_disable(ARRAY_SIZE(ps_bridge->supplies),
-> >> +                   ps_bridge->supplies)) {
-> >> +        DRM_ERROR("cannot disable regulators\n");
-> >> +    }
-> >
-> > That '{' is redundant
-> >
-> > Thanks,
-> > Danfa
-> >
->
-> Hi Dafna,
-> the braces were added as a way to increase human readability.
+Currently, the PSIL source and destination thread IDs for only a few of the
+IPs have been added. The remaning ones will be added as and when they are
+tested.
 
-Not to bikeshed this, but the kernel style guide is clear about this.
-No unneeded braces should be used where a single statement will do.
+The following series of patches are dependent on,
+- http://lists.infradead.org/pipermail/linux-arm-kernel/2021-November/697574.html
+
+Aswath Govindraju (2):
+  dmaengine: ti: k3-udma: Add SoC dependent data for J721S2 SoC
+  drivers: dma: ti: k3-psil: Add support for J721S2
+
+ drivers/dma/ti/Makefile         |   3 +-
+ drivers/dma/ti/k3-psil-j721s2.c | 167 ++++++++++++++++++++++++++++++++
+ drivers/dma/ti/k3-psil-priv.h   |   1 +
+ drivers/dma/ti/k3-psil.c        |   1 +
+ drivers/dma/ti/k3-udma.c        |   1 +
+ 5 files changed, 172 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/dma/ti/k3-psil-j721s2.c
+
+-- 
+2.17.1
+
