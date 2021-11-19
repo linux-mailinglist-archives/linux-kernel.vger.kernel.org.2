@@ -2,81 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E93F4578F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 23:44:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6D974578F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 23:45:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234928AbhKSWrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 17:47:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234720AbhKSWrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 17:47:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E767E611F0;
-        Fri, 19 Nov 2021 22:44:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1637361841;
-        bh=/8D+DWwiOLrMlIDqL9IKYgJ9r6bICMktA9e46Vj/SXM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Fw4+VpZGxF2/jqYJa04GV+BNGu9xw9HBBPZSNzLAGos4KZWJpmip59Je0jxAguAHA
-         lGVIxlfSXZE3iZaIE0AJcoLifsIh2Wb4yXmDAhfOW77+nF4jjZXBNx5gGEikmxE3Eb
-         JF+3PlpsYq6suO/cIx4EmS3D0NdLfHwdV51o30Cg=
-Date:   Fri, 19 Nov 2021 14:43:59 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chinwen Chang (=?UTF-8?Q?=E5=BC=B5=E9=8C=A6=E6=96=87?=) 
-        <chinwen.chang@mediatek.com>,
-        Nicholas Tang (=?UTF-8?Q?=E9=84=AD=E7=A7=A6?= =?UTF-8?Q?=E8=BC=9D?=) 
-        <nicholas.tang@mediatek.com>,
-        James Hsu ( =?UTF-8?Q?=E5=BE=90=E6=85=B6=E8=96=B0?=) 
-        <James.Hsu@mediatek.com>,
-        Yee Lee (=?UTF-8?Q?=E6=9D=8E=E5=BB=BA=E8=AA=BC?=) 
-        <Yee.Lee@mediatek.com>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        <kuan-ying.lee@mediatek.com>
-Subject: Re: [PATCH] kmemleak: fix kmemleak false positive report with HW
- tag-based kasan enable
-Message-Id: <20211119144359.b70d2fde7631bd14cd9652e3@linux-foundation.org>
-In-Reply-To: <c5cfd0c41dee93cd923762a6e0d61baea52cec8d.camel@mediatek.com>
-References: <20211118054426.4123-1-Kuan-Ying.Lee@mediatek.com>
-        <754511d9a0368065768cc3ad8037184d62c3fbd1.camel@mediatek.com>
-        <CA+fCnZddknY6XLychkAUkf9eYvEW4z9Oyr8cZb2QfBMDkJ23zg@mail.gmail.com>
-        <c5cfd0c41dee93cd923762a6e0d61baea52cec8d.camel@mediatek.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S234746AbhKSWsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 17:48:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232960AbhKSWsY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 17:48:24 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54647C061574;
+        Fri, 19 Nov 2021 14:45:22 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id z34so49889371lfu.8;
+        Fri, 19 Nov 2021 14:45:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=o7PYM/POMbkFgEGERrs2p7W3SneqKePL4lTZvoe08Z8=;
+        b=Osl++2pU3nmCqKLS9ZQ4VEWQfNqhTJSFdbJyNwVPjbWj65h6e6RfKErYieBsWrgMVs
+         ha2hty2KuGqmhmrkq/u1OQFPyWB70KZcTBipol5o/HAsseldc+c5sqNEJ5hJi4SuxmD6
+         qE4p9+1eLBMZPZBnsPDtg/0p9NJOIRkLNbyc5QfpIOImKMGwZzQDDDOhBfOXhGj4xI+W
+         GwJSXQNAKp5mC5GyOQVue31tyo7Ls2CFQ7EKYYrJTkzVW1yBEjoeBqJBY21oBpiZGT2D
+         salsC51lehz7WrlXRTaSuXU3Bgqr9JN5/2oKuyWfYHT/qlvh5c+VXmtLLyQBN/N3IQJH
+         GDSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=o7PYM/POMbkFgEGERrs2p7W3SneqKePL4lTZvoe08Z8=;
+        b=1A9/+dQGqLJl2qFFVWoEMwHd9arE9fIO/WlK0e2IclUQ9KvCaSbAUqYwc131rbqPgn
+         0z1sp4fLH1wU/0mmBpwwUn9mWf2oV27ed2hP9d3S3KYZwFNkTOCCjx5fBA18NBDSQKws
+         M5N0YXn0J74jixk7lYgww2QpyFf9aOTOyhdGCKUt+6+LeOtKVvuERyajabiSvChco3Mt
+         cfIzg7wW2oHkoz/mRLa7Iu17QZtFdrIjIRI5y0erZ5nuz5IyilgI7sQU/tYYmNor+uI8
+         Wef3v2YFFp+z1cpPWhGng3B/hdi0kofpFK5XAubNZPTTBYrPg1KcFC0WxUpsidJ3GTIv
+         tGew==
+X-Gm-Message-State: AOAM533JFwRqvMFOdD+ozwnSGLEgp9B0i1da/WNeErR0MUbaGoB0hy8D
+        vs2MYYeSoS9gyZUAhqQzLfc6R5UVxAsMfdLDGxaaO50ehss=
+X-Google-Smtp-Source: ABdhPJxj9TeKK9B1GEIJRFMDCiHXuFlBaMXlL0gQpCE42FL9om5buBHV0MhrUIk8bHjLnE0q377W+L99K7P7Odc4WI4=
+X-Received: by 2002:a05:651c:154a:: with SMTP id y10mr28536808ljp.314.1637361920656;
+ Fri, 19 Nov 2021 14:45:20 -0800 (PST)
+MIME-Version: 1.0
+From:   Steve French <smfrench@gmail.com>
+Date:   Fri, 19 Nov 2021 16:45:10 -0600
+Message-ID: <CAH2r5mvH+e=5dxKsmnKVYttaQk=7u+KO0uucQ+z4fxH9RemwhQ@mail.gmail.com>
+Subject: [GIT PULL] cifs/smb3 fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Nov 2021 23:12:55 +0800 Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com> wrote:
+Please pull the following changes since commit
+fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf:
 
-> > > > Call sequence:
-> > > > ptr = kmalloc(size, GFP_KERNEL);
-> > > > page = virt_to_page(ptr);
-> > > > kfree(page_address(page));
-> > > > ptr = kmalloc(size, GFP_KERNEL);
-> > 
-> > How is this call sequence valid? page_address returns the address of
-> > the start of the page, while kmalloced object could have been located
-> > in the middle of it.
-> 
-> Thanks for pointing out. I miss the offset.
-> 
-> It should be listed as below.
-> 
-> ptr = kmalloc(size, GFP_KERNEL);
-> page = virt_to_page(ptr);
-> offset = offset_in_page(ptr);
-> kfree(page_address(page) + offset);
-> ptr = kmalloc(size, GFP_KERNEL);
+  Linux 5.16-rc1 (2021-11-14 13:56:52 -0800)
 
-I updated the changelog to reflect this.
+are available in the Git repository at:
+
+  git://git.samba.org/sfrench/cifs-2.6.git tags/5.16-rc1-smb3-fixes
+
+for you to fetch changes up to 8ae87bbeb5d1bfd4ddf2f73f72be51d02d6be2eb:
+
+  cifs: introduce cifs_ses_mark_for_reconnect() helper (2021-11-16
+10:57:08 -0600)
+
+----------------------------------------------------------------
+3 small cifs/smb3 fixes, 2 to address minor coverity issues and one cleanup
+
+----------------------------------------------------------------
+Paulo Alcantara (1):
+      cifs: introduce cifs_ses_mark_for_reconnect() helper
+
+Steve French (2):
+      cifs: move debug print out of spinlock
+      cifs: protect srv_count with cifs_tcp_ses_lock
+
+ fs/cifs/cifs_swn.c  | 16 ++--------------
+ fs/cifs/cifsproto.h |  1 +
+ fs/cifs/connect.c   | 16 +++-------------
+ fs/cifs/dfs_cache.c |  7 +------
+ fs/cifs/sess.c      | 15 ++++++++++++++-
+ 5 files changed, 21 insertions(+), 34 deletions(-)
+
+
+-- 
+Thanks,
+
+Steve
