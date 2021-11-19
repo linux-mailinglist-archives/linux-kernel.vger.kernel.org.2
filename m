@@ -2,105 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B776456B54
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 09:09:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8474456B58
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 09:10:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234002AbhKSIMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 03:12:36 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:31887 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhKSIMf (ORCPT
+        id S234013AbhKSINQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 03:13:16 -0500
+Received: from mail-ua1-f47.google.com ([209.85.222.47]:41727 "EHLO
+        mail-ua1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230477AbhKSINP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 03:12:35 -0500
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HwThz4tYfzcbJD;
-        Fri, 19 Nov 2021 16:04:35 +0800 (CST)
-Received: from kwepemm600009.china.huawei.com (7.193.23.164) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 19 Nov 2021 16:09:32 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 19 Nov 2021 16:09:31 +0800
-Subject: Re: [PATCH] blk-cgroup: fix missing put device in error path from
- blkg_conf_pref()
-To:     <tj@kernel.org>, <axboe@kernel.dk>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
-References: <20211102020705.2321858-1-yukuai3@huawei.com>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <26541322-e064-d39f-ed39-b463a3cea092@huawei.com>
-Date:   Fri, 19 Nov 2021 16:09:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Fri, 19 Nov 2021 03:13:15 -0500
+Received: by mail-ua1-f47.google.com with SMTP id p37so19570940uae.8;
+        Fri, 19 Nov 2021 00:10:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J1gDAcCkc8fWxiWhAvxS3kef+UAmFirMbL8DQWh2ZXo=;
+        b=6yKuA/7QzeHKpDPkvHZY4e32i2mYRqhHua48sffG2O1nTbysq2/f0pVV4NVUoQk8lC
+         cKxd+0NUnrbtY9cYq3Jb4UZtvFspTgCOMiqNuDuYOy1pfI/On3vu4eVv2GVjBx+WFwJu
+         WmGDzALzoT2/c7yZumMgUb9Uyz0JIegtJ8HWYTiDqv+34/VW3A4Qzxea6xv08h5f7TG0
+         usQmSNEqqDCl7GnP50A3xLWialFVQZkWwlt1+Y4xGhhWUzKAvaI2VHBHCVW/aP6IdYwP
+         t9PwqkmHHRATwDnweaw5wjzoH6oNoRJGa09CuJ0LIfsqUjzGIeMvmroBVnv+sjebnvoJ
+         kzLQ==
+X-Gm-Message-State: AOAM530FjZarJbAfXm9IYOR0YuuYZYehzLIIo6cIXRfUTXkzvboE2AgL
+        ciO1EwbrP14hXdct/Lz4FuhE8yynM9gUMg==
+X-Google-Smtp-Source: ABdhPJxmuz/3FMleHdMIvsp4K6E8/bRmk8Hznl1NhrxlYfgZNa5MGK4RNS9TFDYBpX0lDiTWyDttfg==
+X-Received: by 2002:a67:c38f:: with SMTP id s15mr91083018vsj.50.1637309413917;
+        Fri, 19 Nov 2021 00:10:13 -0800 (PST)
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com. [209.85.222.47])
+        by smtp.gmail.com with ESMTPSA id f7sm1260866vkm.31.2021.11.19.00.10.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Nov 2021 00:10:13 -0800 (PST)
+Received: by mail-ua1-f47.google.com with SMTP id n6so19673146uak.1;
+        Fri, 19 Nov 2021 00:10:13 -0800 (PST)
+X-Received: by 2002:a05:6102:e82:: with SMTP id l2mr91057734vst.37.1637309413223;
+ Fri, 19 Nov 2021 00:10:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211102020705.2321858-1-yukuai3@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600009.china.huawei.com (7.193.23.164)
-X-CFilter-Loop: Reflected
+References: <20211118213143.2345041-1-javierm@redhat.com>
+In-Reply-To: <20211118213143.2345041-1-javierm@redhat.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 19 Nov 2021 09:10:01 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVcsfE6TZbu8SJZP7CNKyjwBZdBiN0nDRQCibaGgpLF0g@mail.gmail.com>
+Message-ID: <CAMuHMdVcsfE6TZbu8SJZP7CNKyjwBZdBiN0nDRQCibaGgpLF0g@mail.gmail.com>
+Subject: Re: [PATCH] spi: docs: improve the SPI userspace API documentation
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Ralph Siemsen <ralph.siemsen@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/11/02 10:07, Yu Kuai wrote:
-Hi, Jens
+Hi Javier,
 
-friendly ping ...
+On Thu, Nov 18, 2021 at 10:32 PM Javier Martinez Canillas
+<javierm@redhat.com> wrote:
+> This doc is fairly outdated and only uses legacy device instantiation
+> terminology. Let us update it and also mention the OF and ACPI device
+> tables, to make easier for users to figure out how should be defined.
+>
+> Also, mention that devices bind could be done in user-space now using
+> the "driver_override" sysfs entry.
+>
+> Suggested-by: Ralph Siemsen <ralph.siemsen@linaro.org>
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 
-Thanks,
-Kuai
-> If blk_queue_enter() failed due to queue is dying, the
-> blkdev_put_no_open() is needed because blkcg_conf_open_bdev() succeeded.
-> 
-> Fixes: 0c9d338c8443 ("blk-cgroup: synchronize blkg creation against policy deactivation")
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->   block/blk-cgroup.c | 9 +++++----
->   1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-> index 88b1fce90520..663aabfeba18 100644
-> --- a/block/blk-cgroup.c
-> +++ b/block/blk-cgroup.c
-> @@ -640,7 +640,7 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
->   	 */
->   	ret = blk_queue_enter(q, 0);
->   	if (ret)
-> -		return ret;
-> +		goto fail;
->   
->   	rcu_read_lock();
->   	spin_lock_irq(&q->queue_lock);
-> @@ -676,13 +676,13 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
->   		new_blkg = blkg_alloc(pos, q, GFP_KERNEL);
->   		if (unlikely(!new_blkg)) {
->   			ret = -ENOMEM;
-> -			goto fail;
-> +			goto fail_exit_queue;
->   		}
->   
->   		if (radix_tree_preload(GFP_KERNEL)) {
->   			blkg_free(new_blkg);
->   			ret = -ENOMEM;
-> -			goto fail;
-> +			goto fail_exit_queue;
->   		}
->   
->   		rcu_read_lock();
-> @@ -722,9 +722,10 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
->   fail_unlock:
->   	spin_unlock_irq(&q->queue_lock);
->   	rcu_read_unlock();
-> +fail_exit_queue:
-> +	blk_queue_exit(q);
->   fail:
->   	blkdev_put_no_open(bdev);
-> -	blk_queue_exit(q);
->   	/*
->   	 * If queue was bypassing, we should retry.  Do so after a
->   	 * short msleep().  It isn't strictly necessary but queue
-> 
+Thanks for your patch!
+
+> --- a/Documentation/spi/spidev.rst
+> +++ b/Documentation/spi/spidev.rst
+> @@ -29,15 +29,39 @@ of the driver stack) that are not accessible to userspace.
+>
+>  DEVICE CREATION, DRIVER BINDING
+>  ===============================
+> -The simplest way to arrange to use this driver is to just list it in the
+> -spi_board_info for a device as the driver it should use:  the "modalias"
+> -entry is "spidev", matching the name of the driver exposing this API.
+> +
+> +The spidev driver contains lists of SPI devices that are supported for
+> +the different hardware topology representations.
+> +
+> +The following are the SPI device tables supported by the spidev driver:
+> +
+> +    - struct spi_device_id spidev_spi_ids[]: list of devices that can be
+> +      bound when these are defined using a struct spi_board_info with a
+> +      .modalias field matching one of the entries in the table.
+> +
+> +    - struct of_device_id spidev_dt_ids[]: list of devices that can be
+> +      bound when these are defined using a Device Tree node that has a
+> +      compatible string matching one of the entries in the table.
+> +
+> +    - struct acpi_device_id spidev_acpi_ids[]: list of devices that can
+> +      be bound when these are defined using a ACPI device object with a
+> +      _HID matching one of the entries in the table.
+> +
+> +NOTE: it used to be supported to define an SPI device using the "spidev"
+> +      name.  For example as .modalias = "spidev" or compatible = "spidev".
+> +      But this is no longer supported by the Linux kernel and instead a
+> +      real SPI device name as listed in one of the tables should be used.
+
+This reads as the tables are fixed.
+Perhaps add
+
+    You are encouraged to add an entry for your SPI device name to
+     one of the tables.
+
+> +
+>  Set up the other device characteristics (bits per word, SPI clocking,
+>  chipselect polarity, etc) as usual, so you won't always need to override
+>  them later.
+>
+> -(Sysfs also supports userspace driven binding/unbinding of drivers to
+> -devices.  That mechanism might be supported here in the future.)
+> +Sysfs also supports userspace driven binding/unbinding of drivers to
+> +devices.  The mechanism works by writing to the device "driver_overrride"
+> +entry.  For example:
+> +
+> +    echo spidev > /sys/bus/spi/devices/spiX.Y/driver_override
+> +    echo spiB.C > /sys/bus/spi/drivers/spidev/bind
+>
+>  When you do that, the sysfs node for the SPI device will include a child
+>  device node with a "dev" attribute that will be understood by udev or mdev.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
