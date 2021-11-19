@@ -2,115 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5FA14570C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 15:36:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B6B4570C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 15:37:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235955AbhKSOjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 09:39:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235943AbhKSOjT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 09:39:19 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F064CC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 06:36:17 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id z26so12980199iod.10
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 06:36:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=n3UlTJrvd9wmoZcXID/TPD0zD7tHGOLcuQUqvmY9UHk=;
-        b=kSPHLFXVWfzWglKACW4IQ1sWePw7oEXzQO7hndWLP7OmApguWnkuYU8/Xwa2yDY2vN
-         wmz57OvC4RYDxzYNroeOA03UauNZtu0lV7xl0UP/fxOESZK6jWV3dOZET1VMTNnNVQ6M
-         YhdOnt+eqp3r8+fm93rXsDAEwJKl5+cqgbJF10+UBaUiGkxxnOZLtMhxIQkGlO9gmoRr
-         ZczfEabzLHmT+EzHPY3YczhJIqWMOLLmntpR3SI+1RluJN5TbYKZF7jaAhu1rpC6FXMA
-         W1XgHWS9Dp9HozuvF9yU+PEcRIYA0Bj+GOPdavzRWpwYI8ML2rmCIUpABDBCbBddZPiw
-         4SHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n3UlTJrvd9wmoZcXID/TPD0zD7tHGOLcuQUqvmY9UHk=;
-        b=NJ6bJvjOn9JOYqkMPQ8hHjcwhggtwySC8eVHgxcLc8t4fyDQUEF5WWwaRfueDhmVWr
-         K6qVucjsl56p8A7OkwCajb06X6UfOesmqmqOw1jjGhKEUuT6aUGVzgFHV6XfkmK25mjT
-         dfGPF258mY6i1geIQHiJbNkgufxJtLHHw7RkgyErpWIv0IqK/et2uKyxO1SOCZ3VLRKG
-         haVBTbdU3O1ERy162bfjltgpNfnE5iqRynNCLCTjjAdCVCPqohiAF8N+EVsWVoUT5fVN
-         o1SSxoe+aQcm8yYheyjFt+dE1B4FdLYGjkb71McrwpeBqP5O7WwRZa1UiLGLESpnxSj0
-         je5A==
-X-Gm-Message-State: AOAM531ZditjmVt/AC53JLU25iYDufn6FMP/OB6Uw++ySFa7kPJ+M+4x
-        o5r6R9/a185XCfu+YCVuJXc952I3f4vN87BAJROP9jpWU1g=
-X-Google-Smtp-Source: ABdhPJxYIb29H5/N4PP6Hk1ou+ayTZqWgvtG3irnnOOFXkfqXb5bbtUNRsJProIfPntAcGTGiAojHNXwON3406kEx3Q=
-X-Received: by 2002:a05:6638:2257:: with SMTP id m23mr28211802jas.17.1637332577526;
- Fri, 19 Nov 2021 06:36:17 -0800 (PST)
+        id S235353AbhKSOkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 09:40:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37150 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231243AbhKSOkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 09:40:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFC4E61549;
+        Fri, 19 Nov 2021 14:36:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637332620;
+        bh=B2DfgeKIwbJGrrYnFoPC26vXVKusWZCa7MPNwKHKe7o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ujLdBeEVnZEDfXadL5hyYzpJZexwoH7+mMjtZ3Ksy5it1t2moo1Xsz7VrhnrQB7YU
+         ojx4ZUiCP68ZQ6jIUCObwjTkZo9+3i1pg9DOzBHwH1PuY8dkQPNSnK3NqyEVnnU904
+         7cA4PM59AvkhybxLNe4nCVc6jlhnkdP1Jt8bTaY4=
+Date:   Fri, 19 Nov 2021 15:36:57 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Chris Clayton <chris2553@googlemail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, rafael.j.wysocki@intel.com
+Subject: Re: Intel bluetooth regression in 5.15.3
+Message-ID: <YZe2iVBCPIdsWmZd@kroah.com>
+References: <371c6dde-ee04-cf2e-1463-113ba8a2ac22@googlemail.com>
 MIME-Version: 1.0
-References: <20211119142219.1519617-1-elver@google.com> <20211119142219.1519617-2-elver@google.com>
-In-Reply-To: <20211119142219.1519617-2-elver@google.com>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Fri, 19 Nov 2021 15:36:06 +0100
-Message-ID: <CA+fCnZdKLrniF4ru8G5=hkm4M6YYm3RJz6wFcNqD2hPC8Trj-g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] kasan: test: add test case for double-kmem_cache_destroy()
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <371c6dde-ee04-cf2e-1463-113ba8a2ac22@googlemail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 3:22 PM Marco Elver <elver@google.com> wrote:
->
-> Add a test case for double-kmem_cache_destroy() detection.
->
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
->  lib/test_kasan.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-> index 40f7274297c1..4da4b214ed06 100644
-> --- a/lib/test_kasan.c
-> +++ b/lib/test_kasan.c
-> @@ -866,6 +866,16 @@ static void kmem_cache_invalid_free(struct kunit *test)
->         kmem_cache_destroy(cache);
->  }
->
-> +static void kmem_cache_double_destroy(struct kunit *test)
-> +{
-> +       struct kmem_cache *cache;
-> +
-> +       cache = kmem_cache_create("test_cache", 200, 0, 0, NULL);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, cache);
-> +       kmem_cache_destroy(cache);
-> +       KUNIT_EXPECT_KASAN_FAIL(test, kmem_cache_destroy(cache));
-> +}
-> +
->  static void kasan_memchr(struct kunit *test)
->  {
->         char *ptr;
-> @@ -1183,6 +1193,7 @@ static struct kunit_case kasan_kunit_test_cases[] = {
->         KUNIT_CASE(ksize_uaf),
->         KUNIT_CASE(kmem_cache_double_free),
->         KUNIT_CASE(kmem_cache_invalid_free),
-> +       KUNIT_CASE(kmem_cache_double_destroy),
->         KUNIT_CASE(kasan_memchr),
->         KUNIT_CASE(kasan_memcmp),
->         KUNIT_CASE(kasan_strings),
-> --
-> 2.34.0.rc2.393.gf8c9666880-goog
->
+On Fri, Nov 19, 2021 at 01:43:32PM +0000, Chris Clayton wrote:
+> Hi,
+> 
+> I built and installed 5.15.3 this morning and found that my bluetooth devices no longer work. 5.15.2 and 5.10.80 are
+> both OK.
+> 
+> I've bisected it and landed on:
+> 
+> cfc1a472a8d89c0d0bbb3600501eeeebc5ec8039 is the first bad commit
+> commit cfc1a472a8d89c0d0bbb3600501eeeebc5ec8039
+> Author: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Date:   Sat Oct 9 16:22:09 2021 +0200
+> 
+>     ACPI: scan: Release PM resources blocked by unused objects
+> 
+>     [ Upstream commit c10383e8ddf4810b9a5c1595404c2724d925a0a6 ]
+> 
+>     On some systems the ACPI namespace contains device objects that are
+>     not used in certain configurations of the system.  If they start off
+>     in the D0 power state configuration, they will stay in it until the
+>     system reboots, because of the lack of any mechanism possibly causing
+>     their configuration to change.  If that happens, they may prevent
+>     some power resources from being turned off or generally they may
+>     prevent the platform from getting into the deepest low-power states
+>     thus causing some energy to be wasted.
+> 
+>     Address this issue by changing the configuration of unused ACPI
+>     device objects to the D3cold power state one after carrying out
+>     the ACPI-based enumeration of devices.
+> 
+>     BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=214091
+>     Link: https://lore.kernel.org/linux-acpi/20211007205126.11769-1-mario.limonciello@amd.com/
+>     Reported-by: Mario Limonciello <mario.limonciello@amd.com>
+>     Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>     Tested-by: Mario Limonciello <mario.limonciello@amd.com>
+>     Signed-off-by: Sasha Levin <sashal@kernel.org>
+> 
+>  drivers/acpi/glue.c     | 25 +++++++++++++++++++++++++
+>  drivers/acpi/internal.h |  1 +
+>  drivers/acpi/scan.c     |  6 ++++++
+>  3 files changed, 32 insertions(+)
+> 
+> 5.15.3 with that commit reverted works fine.
+> 
+> Let me know if you need any additional diagnostics or patches tested but please cc me as I'm not subscribed.
 
-Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
+Is 5.16-rc1 also a problem for you and your devices?
 
-Thanks!
+thanks,
+
+greg k-h
