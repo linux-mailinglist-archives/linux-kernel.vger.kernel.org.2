@@ -2,68 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9371456C4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 10:26:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42EA6456C53
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 10:27:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234276AbhKSJ3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 04:29:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232838AbhKSJ3D (ORCPT
+        id S234559AbhKSJa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 04:30:26 -0500
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:58288
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234371AbhKSJaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 04:29:03 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB94C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 01:26:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=V6V5lGfCPOd68nz+VKS5XbKmgxvfftjeznJyuXXVPps=; b=NMYnunh6Dqrg8Ie5ghxSl/Tequ
-        P2P1j4gmBXB/fhcmrjdIVkkFkgk96WwAmvDcH3GX4pf8z1/46vLV2GyaGEek6DFx0X8faYQFJnqiu
-        VkNrVeWZnigxs7RZ/3pQVM2GeSlF2FiwVU/FLYhJx6hfDU0ZEiGOqM5ZjrrtWM2LFSBZpl4TM4133
-        KApt9Kh/Mw3IW3rbxHChRsfKHclXqv2t+CIp5PETRh+EE9CqLGztwaTTKl9Du8oNqZ6L6Ggd6yk7b
-        ixP0v6ysqWtkO5Kp2vpF72WOFM1zuijYDkPnrHrr0Vi70mH1DQNw7V4JJVtmLvwsc7VLSEmZU6xv4
-        JMj+by/g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mo08p-00GrnM-Ie; Fri, 19 Nov 2021 09:25:10 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Fri, 19 Nov 2021 04:30:24 -0500
+Received: from localhost.localdomain (unknown [10.101.196.174])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2A13E300129;
-        Fri, 19 Nov 2021 10:25:05 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D7104265BA04B; Fri, 19 Nov 2021 10:25:05 +0100 (CET)
-Date:   Fri, 19 Nov 2021 10:25:05 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Peng Wang <rocking@linux.alibaba.com>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Add busy loop polling for idle SMT
-Message-ID: <YZdtceRRxJQRt8cZ@hirez.programming.kicks-ass.net>
-References: <cover.1637062971.git.rocking@linux.alibaba.com>
- <YZTgVzAFvZzXBrzy@hirez.programming.kicks-ass.net>
- <e31e9b58-591b-c538-ccd1-5864e586ad02@linux.alibaba.com>
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 501193F1A4;
+        Fri, 19 Nov 2021 09:27:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1637314041;
+        bh=xJ4iKt/4xnrMC9w7jpo6aWtfOyahyXvd5hutdfLyHJU=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=Lv7L8nBa3lv1E8sit7vmiheEP3wIzKbS+Kbc69g5y8Bp0RC77qIk3/1jDo+hCtAxo
+         I/5kO3hzjEU6Fo11dY1Ynjx62GC4uudXeFfEnA4g4nLfRRA9BThnrT7aH+9fLesSW5
+         9clj6WKXyXqvWXbK13LPSI85QtfKInNiCrkaKU9HCAiWAj47yDus82OIT9wRRS3OAM
+         2Nj2mhVNHJ7E+EhlYVz944G0ADgpRA0ND5aE15sY7Nxp5QiDeYh29vBgMMLjNVOW9Z
+         gh2zYlwiiNJNWCG5ea+0ELWWQlY8dM87UFDwyiKxHHNlZdmHYbFZFgJPm+uFqdT1Ci
+         rN7qLIrAVIjog==
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     mathias.nyman@intel.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org (open list:USB XHCI DRIVER),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] xhci: Remove CONFIG_USB_DEFAULT_PERSIST to prevent xHCI from runtime suspending
+Date:   Fri, 19 Nov 2021 17:26:28 +0800
+Message-Id: <20211119092628.677935-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e31e9b58-591b-c538-ccd1-5864e586ad02@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 11:19:03AM +0800, Peng Wang wrote:
-> 
-> Yes, idle SMT busy loop polling can only provide approximately pipeline
-> interference for normal instructions.
-> 
-> When it comes to AVX works, we notice an idea modifing CPU time
-> accounting[1], do you think the combination can lead to a feasible
-> solution, or any other better ideas?
+When the xHCI is quirked with XHCI_RESET_ON_RESUME, runtime resume
+routine also resets the controller.
 
-I'm not at all interested in solving this business model induced brain
-trauma.
+This is bad for USB drivers without reset_resume callback, because
+there's no subsequent call of usb_dev_complete() ->
+usb_resume_complete() to force rebinding the driver to the device. For
+instance, btusb device stops working after xHCI controller is runtime
+resumed, if the controlled is quirked with XHCI_RESET_ON_RESUME.
+
+So always take XHCI_RESET_ON_RESUME into account to solve the issue.
+
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ drivers/usb/host/xhci.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index 902f410874e8e..af92a9f8ed670 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -3934,7 +3934,6 @@ static void xhci_free_dev(struct usb_hcd *hcd, struct usb_device *udev)
+ 	struct xhci_slot_ctx *slot_ctx;
+ 	int i, ret;
+ 
+-#ifndef CONFIG_USB_DEFAULT_PERSIST
+ 	/*
+ 	 * We called pm_runtime_get_noresume when the device was attached.
+ 	 * Decrement the counter here to allow controller to runtime suspend
+@@ -3942,7 +3941,6 @@ static void xhci_free_dev(struct usb_hcd *hcd, struct usb_device *udev)
+ 	 */
+ 	if (xhci->quirks & XHCI_RESET_ON_RESUME)
+ 		pm_runtime_put_noidle(hcd->self.controller);
+-#endif
+ 
+ 	ret = xhci_check_args(hcd, udev, NULL, 0, true, __func__);
+ 	/* If the host is halted due to driver unload, we still need to free the
+@@ -4094,14 +4092,12 @@ int xhci_alloc_dev(struct usb_hcd *hcd, struct usb_device *udev)
+ 
+ 	xhci_debugfs_create_slot(xhci, slot_id);
+ 
+-#ifndef CONFIG_USB_DEFAULT_PERSIST
+ 	/*
+ 	 * If resetting upon resume, we can't put the controller into runtime
+ 	 * suspend if there is a device attached.
+ 	 */
+ 	if (xhci->quirks & XHCI_RESET_ON_RESUME)
+ 		pm_runtime_get_noresume(hcd->self.controller);
+-#endif
+ 
+ 	/* Is this a LS or FS device under a HS hub? */
+ 	/* Hub or peripherial? */
+-- 
+2.32.0
+
