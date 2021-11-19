@@ -2,245 +2,381 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5F14571FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:45:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6C4457206
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 16:47:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235936AbhKSPs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 10:48:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:40513 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229936AbhKSPsz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 10:48:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637336753;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WlrRZ7ZQ0wO6D5Tupwu96i6pPZ9CWusrE+ynPw5h7ZY=;
-        b=JhPelGPzRaQ25nnbu67y4bzkdpyL2AbT64vwanqJv0HCuXEfwPmwFq/6LB43khCD3WvhMM
-        8Rp37xl0a2YC+rYWV9UjgNHwFoJwDuHlu25AsOirU5nl+B4r046egHJzoEsXSC6byDqxAD
-        2o3eL82bMCjgICjdeOfb9svD6+rMEkU=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-301-Pf0iKZ7UNoa4DeYza6cLJA-1; Fri, 19 Nov 2021 10:45:52 -0500
-X-MC-Unique: Pf0iKZ7UNoa4DeYza6cLJA-1
-Received: by mail-ot1-f71.google.com with SMTP id m23-20020a05683023b700b0055c8a2dcca0so6076750ots.6
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 07:45:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WlrRZ7ZQ0wO6D5Tupwu96i6pPZ9CWusrE+ynPw5h7ZY=;
-        b=dgF4O4OeA2WOx8LhBp9kgQyN+7GMrjQXiA0MxLVWZ6O0d4TEMDae92MYjEpQqNE6Zb
-         iAM+phpYYKKP3jT5kq2CALH6ETN/OrPxvhwAy34pro44yBqDPN/IrYu9oMsyT/3OD2qk
-         mm3maiBLuXCXWhbdy13IdxqbcF2z5yNlEa2k2EeudfJcDmi631Xb2EWvH8Ksl0BxJBIE
-         ts/PyBdEghyxlszUzCt1+TPdy7lD9q90uB+TkCjtQmAM1yhNvRTi65FzLgLDL1L/ayH3
-         dLjbgRjsUKnZEVrEzH4Ae6ZNDN0maOpwxBGCa4vkeqje+s2HJou/G8rqq774npM1xu3c
-         OA/w==
-X-Gm-Message-State: AOAM531ZrAfo1aM9JCDD0gl8RY2os+mYp3H6WLciPqf4ZS9xKA8gzj7u
-        Vaf+DeqBlpodRvTc++AS5KflAjVyY99kM4z/8pgs8LQH+fTf1QrJX0U+f5OPZxZ8XfwQdlW05BW
-        AD7Dw6oGqZ8Ytdzvu/ZPRFN7B
-X-Received: by 2002:a05:6830:2645:: with SMTP id f5mr5584422otu.193.1637336751076;
-        Fri, 19 Nov 2021 07:45:51 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwriOGJbkWFoXBCDzejhT+3F2BYP+sYY+BEeMw9eqAmzTTAYa50zMIc/3oh66GwV24ZFPVtkg==
-X-Received: by 2002:a05:6830:2645:: with SMTP id f5mr5584394otu.193.1637336750749;
-        Fri, 19 Nov 2021 07:45:50 -0800 (PST)
-Received: from redhat.com ([38.15.36.239])
-        by smtp.gmail.com with ESMTPSA id f7sm38880ooo.38.2021.11.19.07.45.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 07:45:50 -0800 (PST)
-Date:   Fri, 19 Nov 2021 08:45:48 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Abhishek Sahu <abhsahu@nvidia.com>
-Cc:     kvm@vger.kernel.org, Cornelia Huck <cohuck@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC 3/3] vfio/pci: use runtime PM for vfio-device into low
- power state
-Message-ID: <20211119084548.2042d763.alex.williamson@redhat.com>
-In-Reply-To: <20211118140913.180bf94f.alex.williamson@redhat.com>
-References: <20211115133640.2231-1-abhsahu@nvidia.com>
-        <20211115133640.2231-4-abhsahu@nvidia.com>
-        <20211117105323.2866b739.alex.williamson@redhat.com>
-        <8a49aa97-5de9-9cc8-d45f-e96456d66603@nvidia.com>
-        <20211118140913.180bf94f.alex.williamson@redhat.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+        id S235980AbhKSPuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 10:50:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49692 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233725AbhKSPue (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 10:50:34 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C57C61246;
+        Fri, 19 Nov 2021 15:47:32 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mo66s-006Zt2-0k; Fri, 19 Nov 2021 15:47:30 +0000
+Date:   Fri, 19 Nov 2021 15:47:29 +0000
+Message-ID: <875yso6tbi.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sunil Muthuswamy <sunilmut@linux.microsoft.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com,
+        bhelgaas@google.com, arnd@arndb.de, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-arch@vger.kernel.org,
+        Sunil Muthuswamy <sunilmut@microsoft.com>
+Subject: Re: [PATCH v6 2/2] arm64: PCI: hv: Add support for Hyper-V vPCI
+In-Reply-To: <1637225490-2213-3-git-send-email-sunilmut@linux.microsoft.com>
+References: <1637225490-2213-1-git-send-email-sunilmut@linux.microsoft.com>
+        <1637225490-2213-3-git-send-email-sunilmut@linux.microsoft.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: sunilmut@linux.microsoft.com, kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com, lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com, bhelgaas@google.com, arnd@arndb.de, x86@kernel.org, linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org, linux-arch@vger.kernel.org, sunilmut@microsoft.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Nov 2021 14:09:13 -0700
-Alex Williamson <alex.williamson@redhat.com> wrote:
+On Thu, 18 Nov 2021 08:51:30 +0000,
+Sunil Muthuswamy <sunilmut@linux.microsoft.com> wrote:
+> 
+> From: Sunil Muthuswamy <sunilmut@microsoft.com>
+> 
+> Add support for Hyper-V vPCI for arm64 by implementing the arch specific
+> interfaces. Introduce an IRQ domain and chip specific to Hyper-v vPCI that
+> is based on SPIs. The IRQ domain parents itself to the arch GIC IRQ domain
+> for basic vector management.
+> 
+> Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> ---
+> In v2, v3, v4, v5 & v6:
+>  Changes are described in the cover letter.
+> 
+>  arch/arm64/include/asm/hyperv-tlfs.h |   9 ++
+>  drivers/pci/Kconfig                  |   2 +-
+>  drivers/pci/controller/Kconfig       |   2 +-
+>  drivers/pci/controller/pci-hyperv.c  | 204 ++++++++++++++++++++++++++-
+>  4 files changed, 214 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/hyperv-tlfs.h b/arch/arm64/include/asm/hyperv-tlfs.h
+> index 4d964a7f02ee..bc6c7ac934a1 100644
+> --- a/arch/arm64/include/asm/hyperv-tlfs.h
+> +++ b/arch/arm64/include/asm/hyperv-tlfs.h
+> @@ -64,6 +64,15 @@
+>  #define HV_REGISTER_STIMER0_CONFIG	0x000B0000
+>  #define HV_REGISTER_STIMER0_COUNT	0x000B0001
+>  
+> +union hv_msi_entry {
+> +	u64 as_uint64[2];
+> +	struct {
+> +		u64 address;
+> +		u32 data;
+> +		u32 reserved;
+> +	} __packed;
+> +};
+> +
+>  #include <asm-generic/hyperv-tlfs.h>
+>  
+>  #endif
+> diff --git a/drivers/pci/Kconfig b/drivers/pci/Kconfig
+> index 43e615aa12ff..d98fafdd0f99 100644
+> --- a/drivers/pci/Kconfig
+> +++ b/drivers/pci/Kconfig
+> @@ -184,7 +184,7 @@ config PCI_LABEL
+>  
+>  config PCI_HYPERV
+>  	tristate "Hyper-V PCI Frontend"
+> -	depends on X86_64 && HYPERV && PCI_MSI && PCI_MSI_IRQ_DOMAIN && SYSFS
+> +	depends on ((X86 && X86_64) || ARM64) && HYPERV && PCI_MSI && PCI_MSI_IRQ_DOMAIN && SYSFS
+>  	select PCI_HYPERV_INTERFACE
+>  	help
+>  	  The PCI device frontend driver allows the kernel to import arbitrary
+> diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
+> index 93b141110537..2536abcc045a 100644
+> --- a/drivers/pci/controller/Kconfig
+> +++ b/drivers/pci/controller/Kconfig
+> @@ -281,7 +281,7 @@ config PCIE_BRCMSTB
+>  
+>  config PCI_HYPERV_INTERFACE
+>  	tristate "Hyper-V PCI Interface"
+> -	depends on X86 && HYPERV && PCI_MSI && PCI_MSI_IRQ_DOMAIN && X86_64
+> +	depends on ((X86 && X86_64) || ARM64) && HYPERV && PCI_MSI && PCI_MSI_IRQ_DOMAIN
+>  	help
+>  	  The Hyper-V PCI Interface is a helper driver allows other drivers to
+>  	  have a common interface with the Hyper-V PCI frontend driver.
+> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+> index ead7d6cb6bf1..d52e23b1d14b 100644
+> --- a/drivers/pci/controller/pci-hyperv.c
+> +++ b/drivers/pci/controller/pci-hyperv.c
+> @@ -47,6 +47,8 @@
+>  #include <linux/msi.h>
+>  #include <linux/hyperv.h>
+>  #include <linux/refcount.h>
+> +#include <linux/irqdomain.h>
+> +#include <linux/acpi.h>
+>  #include <asm/mshyperv.h>
+>  
+>  /*
+> @@ -614,7 +616,202 @@ static int hv_msi_prepare(struct irq_domain *domain, struct device *dev,
+>  {
+>  	return pci_msi_prepare(domain, dev, nvec, info);
+>  }
+> -#endif /* CONFIG_X86 */
+> +#elif defined(CONFIG_ARM64)
+> +/*
+> + * SPI vectors to use for vPCI; arch SPIs range is [32, 1019], but leaving a bit
+> + * of room at the start to allow for SPIs to be specified through ACPI and
+> + * starting with a power of two to satisfy power of 2 multi-MSI requirement.
+> + */
+> +#define HV_PCI_MSI_SPI_START	64
+> +#define HV_PCI_MSI_SPI_NR	(1020 - HV_PCI_MSI_SPI_START)
+> +#define DELIVERY_MODE		0
+> +#define FLOW_HANDLER		NULL
+> +#define FLOW_NAME		NULL
+> +#define hv_msi_prepare		NULL
+> +
+> +struct hv_pci_chip_data {
+> +	DECLARE_BITMAP(spi_map, HV_PCI_MSI_SPI_NR);
+> +	struct mutex	map_lock;
+> +};
+> +
+> +/* Hyper-V vPCI MSI GIC IRQ domain */
+> +static struct irq_domain *hv_msi_gic_irq_domain;
+> +
+> +/* Hyper-V PCI MSI IRQ chip */
+> +static struct irq_chip hv_arm64_msi_irq_chip = {
+> +	.name = "MSI",
+> +	.irq_set_affinity = irq_chip_set_affinity_parent,
+> +	.irq_eoi = irq_chip_eoi_parent,
+> +	.irq_mask = irq_chip_mask_parent,
+> +	.irq_unmask = irq_chip_unmask_parent
+> +};
+> +
+> +static unsigned int hv_msi_get_int_vector(struct irq_data *irqd)
+> +{
+> +	return irqd->parent_data->hwirq;
+> +}
+> +
+> +static void hv_set_msi_entry_from_desc(union hv_msi_entry *msi_entry,
+> +				       struct msi_desc *msi_desc)
+> +{
+> +	msi_entry->address = ((u64)msi_desc->msg.address_hi << 32) |
+> +			      msi_desc->msg.address_lo;
+> +	msi_entry->data = msi_desc->msg.data;
+> +}
+> +
+> +static void hv_pci_vec_irq_domain_free(struct irq_domain *domain,
+> +				       unsigned int virq, unsigned int nr_irqs)
+> +{
+> +	struct hv_pci_chip_data *chip_data = domain->host_data;
+> +	struct irq_data *irqd = irq_domain_get_irq_data(domain, virq);
+> +	int first = irqd->hwirq - HV_PCI_MSI_SPI_START;
+> +
+> +	mutex_lock(&chip_data->map_lock);
+> +	bitmap_release_region(chip_data->spi_map,
+> +			      first,
+> +			      get_count_order(nr_irqs));
+> +	mutex_unlock(&chip_data->map_lock);
+> +	irq_domain_reset_irq_data(irqd);
+> +	irq_domain_free_irqs_parent(domain, virq, nr_irqs);
+> +}
+> +
+> +static int hv_pci_vec_alloc_device_irq(struct irq_domain *domain,
+> +				       unsigned int nr_irqs,
+> +				       irq_hw_number_t *hwirq)
+> +{
+> +	struct hv_pci_chip_data *chip_data = domain->host_data;
+> +	unsigned int index;
+> +
+> +	/* Find and allocate region from the SPI bitmap */
+> +	mutex_lock(&chip_data->map_lock);
+> +	index = bitmap_find_free_region(chip_data->spi_map,
+> +					HV_PCI_MSI_SPI_NR,
+> +					get_count_order(nr_irqs));
+> +	mutex_unlock(&chip_data->map_lock);
+> +	if (index < 0)
+> +		return -ENOSPC;
+> +
+> +	*hwirq = index + HV_PCI_MSI_SPI_START;
+> +
+> +	return 0;
+> +}
+> +
+> +static int hv_pci_vec_irq_gic_domain_alloc(struct irq_domain *domain,
+> +					   unsigned int virq,
+> +					   irq_hw_number_t hwirq)
+> +{
+> +	struct irq_fwspec fwspec;
+> +
+> +	fwspec.fwnode = domain->parent->fwnode;
+> +	fwspec.param_count = 2;
+> +	fwspec.param[0] = hwirq;
+> +	fwspec.param[1] = IRQ_TYPE_EDGE_RISING;
+> +
+> +	return irq_domain_alloc_irqs_parent(domain, virq, 1, &fwspec);
 
-> On Thu, 18 Nov 2021 20:51:41 +0530
-> Abhishek Sahu <abhsahu@nvidia.com> wrote:
-> > On 11/17/2021 11:23 PM, Alex Williamson wrote:
-> >  Thanks Alex for checking this series and providing your inputs.=20
-> >   =20
-> > > If we're transitioning a device to D3cold rather than D3hot as
-> > > requested by userspace, isn't that a user visible change?    =20
-> >=20
-> >   For most of the driver, in linux kernel, the D3hot vs D3cold
-> >   state will be decided at PCI core layer. In the PCI core layer,
-> >   pci_target_state() determines which D3 state to choose. It checks
-> >   for platform_pci_power_manageable() and then it calls
-> >   platform_pci_choose_state() to find the target state.
-> >   In VM, the platform_pci_power_manageable() check will fail if the
-> >   guest is linux OS. So, it uses, D3hot state. =20
->=20
-> Right, but my statement is really more that the device PM registers
-> cannot be used to put the device into D3cold, so the write of the PM
-> register that we're trapping was the user/guest's intention to put the
-> device into D3hot.  We therefore need to be careful about differences
-> in the resulting device state when it comes out of D3cold vs D3hot.
->=20
-> >   But there are few drivers which does not use the PCI framework
-> >   generic power related routines during runtime suspend/system suspend
-> >   and set the PCI power state directly with D3hot. =20
->=20
-> Current vfio-pci being one of those ;)
->=20
-> >   Also, the guest can be non-Linux OS also and, in that case,
-> >   it will be difficult to know the behavior. So, it may impact
-> >   these cases. =20
->=20
-> That's what I'm worried about.
->=20
-> > > For instance, a device may report NoSoftRst- indicating that the devi=
-ce
-> > > does not do a soft reset on D3hot->D0 transition.  If we're instead
-> > > putting the device in D3cold, then a transition back to D0 has very
-> > > much undergone a reset.  On one hand we should at least virtualize the
-> > > NoSoftRst bit to allow the guest to restore the device, but I wonder =
-if
-> > > that's really safe.  Is a better option to prevent entering D3cold if
-> > > the device isn't natively reporting NoSoftRst-?
-> > >    =20
-> >=20
-> >  You mean to say NoSoftRst+ instead of NoSoftRst- as visible in =20
->=20
-> Oops yes.  The concern is if the user/guest is not expecting a soft
-> reset when using D3hot, but we transparently promote D3hot to D3cold
-> which will always implies a device reset.
->=20
-> >  the lspci output. For NoSoftRst- case, we do a soft reset on
-> >  D3hot->D0 transition. But, will this case not be handled internally
-> >  in drivers/pci/pci-driver.c ? For both system suspend and runtime susp=
-end,
-> >  we check for pci_dev->state_saved flag and do pci_save_state()
-> >  irrespective of NoSoftRst bit. For NoSoftRst- case, pci_restore_bars()
-> >  will be called in pci_raw_set_power_state() which will reinitialize de=
-vice
-> >  for D3hot/D3cold-> D0 case. Once the device is initialized in the host,
-> >  then for guest, it should work without re-initializing again in the
-> >  guest side. I am not sure, if my understanding is correct. =20
->=20
-> The soft reset is not limited to the state that the PCI subsystem can
-> save and restore.  Device specific state that the user/guest may
-> legitimately expect to be retained may be reset as well.
->=20
-> [PCIe v5 5.3.1.4]
-> 	Functional context is required to be maintained by Functions in
-> 	the D3 hot state if the No_Soft_Reset field in the PMCSR is Set.
->=20
-> Unfortunately I don't see a specific definition of "functional
-> context", but I interpret that to include device specific state.  For
-> example, if a GPU contains specific frame buffer data and reports
-> NoSoftRst+, wouldn't it be reasonable to expect that framebuffer data
-> to be retained on D3hot->D0 transition?
-> =20
-> > > We're also essentially making a policy decision on behalf of
-> > > userspace that favors power saving over latency.  Is that
-> > > universally the correct trade-off?    =20
-> >=20
-> >  For most drivers, the D3hot vs D3cold should not be favored due
-> >  to latency reasons. In the linux kernel side, I am seeing, the
-> >  PCI framework try to use D3cold state if platform and device
-> >  supports that. But its correct that covertly replacing D3hot with
-> >  D3cold may be concern for some drivers.
-> >  =20
-> > > I can imagine this could be desirable for many use cases,
-> > > but if we're going to covertly replace D3hot with D3cold, it seems
-> > > like there should be an opt-in.  Is co-opting the PM capability for
-> > > this even really acceptable or should there be a device ioctl to
-> > > request D3cold and plumbing through QEMU such that a VM guest can
-> > > make informed choices regarding device power management?
-> > >    =20
-> >=20
-> >  Making IOCTL is also an option but that case, this support needs to
-> >  be added in all hypervisors and user must pass this information
-> >  explicitly for each device. Another option could be to use
-> >  module parameter to explicitly enable D3cold support. If module
-> >  parameter is not set, then we can call pci_d3cold_disable() and
-> >  in that case, runtime PM should not use D3cold state.
-> >=20
-> >  Also, I was checking we can pass this information though some
-> >  virtualized register bit which will be only defined for passing
-> >  the information between guest and host. In the guest side if the
-> >  target state is being decided with pci_target_state(), then
-> >  the D3cold vs D3hot should not matter for the driver running
-> >  in the guest side and in that case, it depends upon platform support.
-> >  We can set this virtualize bit to 1. But, if driver is either
-> >  setting D3hot state explicitly or has called pci_d3cold_disable() or
-> >  similar API available in the guest OS, then set this bit to 0 and
-> >  in that case, the D3cold state can be disabled in the host side.
-> >  But don't know if is possible to use some non PCI defined
-> >  virtualized register bit.  =20
->=20
-> If you're suggesting a device config space register, that's troublesome
-> because we can't guarantee that simply because a range of config space
-> isn't within a capability that it doesn't have some device specific
-> purpose.  However, we could certainly implement virtual registers in
-> the hypervisor that implement the ACPI support that an OS would use on
-> bare metal to implement D3cold.  Those could trigger this ioctl through
-> the vfio device.
->=20
-> >  I am not sure what should be best option to make choice
-> >  regarding d3cold but if we can have some option by which this
-> >  can be done without involvement of user, then it will benefit
-> >  for lot of cases. Currently, the D3cold is supported only in
-> >  very few desktops/servers but in future, we will see on
-> >  most of the platforms.   =20
->=20
-> I tend to see it as an interesting hack to promote D3hot to D3cold, and
-> potentially very useful.  However, we're also introducing potentially
-> unexpected device behavior, so I think it would probably need to be an
-> opt-in.  Possibly if the device reports NoSoftRst- we could use it by
-> default, but even virtualizing the NoSoftRst suggests that there's an
-> expectation that the guest driver has that support available.
-> =20
-> > > Also if the device is not responsive to config space due to the user
-> > > placing it in D3 now, I'd expect there are other ioctl paths that
-> > > need to be blocked, maybe even MMIO paths that might be a gap for
-> > > existing D3hot support.  Thanks, =20
-> >=20
-> >  I was in assumption that most of IOCTL code will be called by the
-> >  hypervisor before guest OS boot and during that time, the device
-> >  will be always in D0. But, if we have paths where IOCTL can be
-> >  called when the device has been suspended by guest OS, then can we
-> >  use runtime_get/put API=E2=80=99s there also ? =20
->=20
-> It's more a matter of preventing user actions that can cause harm
-> rather than expecting certain operations only in specific states.  We
-> could chose to either resume the device for those operations or fail
-> the operation.  We should probably also leverage the memory-disable
-> support to fault mmap access to MMIO when the device is in D3* as well.
+I think you are missing the actual edge configuration here. Since the
+interrupt specifier doesn't come from either DT or ACPI, nobody will
+set the trigger type, and you have to do it yourself here. At the
+moment, you will get whatever is in the GIC configuration.
 
-It also occurred to me last night that a guest triggering D3hot via the
-PM registers must be a synchronous power state change, we can't use
-auto-suspend.  This is necessary for nested assignment where the guest
-might use a D3hot->D0 power state transition with NoSoftRst- devices in
-order to perform a reset of the device.  With auto-suspend, the guest
-would return the device to D0 before the physical device ever timed out
-to enter a D3 state.  Thanks,
+> +}
+> +
+> +static int hv_pci_vec_irq_domain_alloc(struct irq_domain *domain,
+> +				       unsigned int virq, unsigned int nr_irqs,
+> +				       void *args)
+> +{
+> +	irq_hw_number_t hwirq;
+> +	unsigned int i;
+> +	int ret;
+> +
+> +	ret = hv_pci_vec_alloc_device_irq(domain, nr_irqs, &hwirq);
+> +	if (ret)
+> +		return ret;
+> +
+> +	for (i = 0; i < nr_irqs; i++) {
+> +		ret = hv_pci_vec_irq_gic_domain_alloc(domain, virq + i,
+> +						      hwirq + i);
+> +		if (ret)
+> +			goto free_irq;
+> +
+> +		ret = irq_domain_set_hwirq_and_chip(domain, virq + i,
+> +						    hwirq + i,
+> +						    &hv_arm64_msi_irq_chip,
+> +						    domain->host_data);
+> +		if (ret)
+> +			goto free_irq;
+> +
+> +		pr_debug("pID:%d vID:%u\n", (int)(hwirq + i), virq + i);
+> +	}
+> +
+> +	return 0;
+> +
+> +free_irq:
+> +	hv_pci_vec_irq_domain_free(domain, virq, nr_irqs);
+> +
+> +	return ret;
 
-Alex
+How about the interrupts that have already been allocated?
 
+> +}
+> +
+> +/*
+> + * Pick the first online cpu as the irq affinity that can be temporarily used
+> + * for composing MSI from the hypervisor. GIC will eventually set the right
+> + * affinity for the irq and the 'unmask' will retarget the interrupt to that
+> + * cpu.
+> + */
+> +static int hv_pci_vec_irq_domain_activate(struct irq_domain *domain,
+> +					  struct irq_data *irqd, bool reserve)
+> +{
+> +	int cpu = cpumask_first(cpu_online_mask);
+> +
+> +	irq_data_update_effective_affinity(irqd, cpumask_of(cpu));
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct irq_domain_ops hv_pci_domain_ops = {
+> +	.alloc	= hv_pci_vec_irq_domain_alloc,
+> +	.free	= hv_pci_vec_irq_domain_free,
+> +	.activate = hv_pci_vec_irq_domain_activate,
+> +};
+> +
+> +static int hv_pci_irqchip_init(void)
+> +{
+> +	static struct hv_pci_chip_data *chip_data;
+> +	struct fwnode_handle *fn = NULL;
+> +	int ret = -ENOMEM;
+> +
+> +	chip_data = kzalloc(sizeof(*chip_data), GFP_KERNEL);
+> +	if (!chip_data)
+> +		return ret;
+> +
+> +	mutex_init(&chip_data->map_lock);
+> +	fn = irq_domain_alloc_named_fwnode("Hyper-V ARM64 vPCI");
+
+This will appear in debugfs. I'd rather you keep it short, sweet and
+without spaces. "hv_vpci_arm64" seems better to me.
+
+> +	if (!fn)
+> +		goto free_chip;
+> +
+> +	/*
+> +	 * IRQ domain once enabled, should not be removed since there is no
+> +	 * way to ensure that all the corresponding devices are also gone and
+> +	 * no interrupts will be generated.
+> +	 */
+> +	hv_msi_gic_irq_domain = acpi_irq_create_hierarchy(0, HV_PCI_MSI_SPI_NR,
+> +							  fn, &hv_pci_domain_ops,
+> +							  chip_data);
+> +
+> +	if (!hv_msi_gic_irq_domain) {
+> +		pr_err("Failed to create Hyper-V arm64 vPCI MSI IRQ domain\n");
+> +		goto free_chip;
+> +	}
+> +
+> +	return 0;
+> +
+> +free_chip:
+> +	kfree(chip_data);
+> +	if (fn)
+> +		irq_domain_free_fwnode(fn);
+> +
+> +	return ret;
+> +}
+> +
+> +static struct irq_domain *hv_pci_get_root_domain(void)
+> +{
+> +	return hv_msi_gic_irq_domain;
+> +}
+> +#endif /* CONFIG_ARM64 */
+>  
+>  /**
+>   * hv_pci_generic_compl() - Invoked for a completion packet
+> @@ -1227,6 +1424,8 @@ static void hv_msi_free(struct irq_domain *domain, struct msi_domain_info *info,
+>  static void hv_irq_mask(struct irq_data *data)
+>  {
+>  	pci_msi_mask_irq(data);
+> +	if (data->parent_data->chip->irq_mask)
+> +		irq_chip_mask_parent(data);
+>  }
+>  
+>  /**
+> @@ -1343,6 +1542,8 @@ static void hv_irq_unmask(struct irq_data *data)
+>  		dev_err(&hbus->hdev->device,
+>  			"%s() failed: %#llx", __func__, res);
+>  
+> +	if (data->parent_data->chip->irq_unmask)
+> +		irq_chip_unmask_parent(data);
+>  	pci_msi_unmask_irq(data);
+>  }
+>  
+> @@ -1619,6 +1820,7 @@ static struct irq_chip hv_msi_irq_chip = {
+>  	.irq_compose_msi_msg	= hv_compose_msi_msg,
+>  	.irq_set_affinity	= irq_chip_set_affinity_parent,
+>  	.irq_ack		= irq_chip_ack_parent,
+> +	.irq_eoi		= irq_chip_eoi_parent,
+>  	.irq_mask		= hv_irq_mask,
+>  	.irq_unmask		= hv_irq_unmask,
+
+You probably want to avoid unconditionally setting callbacks that may
+have side effects on another architecture (ack on arm64, eoi on x86).
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
