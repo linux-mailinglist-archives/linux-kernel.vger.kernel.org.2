@@ -2,79 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA5D457251
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:03:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E968457255
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:04:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236192AbhKSQG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 11:06:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234918AbhKSQGy (ORCPT
+        id S236201AbhKSQHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 11:07:35 -0500
+Received: from mail-0201.mail-europe.com ([51.77.79.158]:44388 "EHLO
+        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235596AbhKSQHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 11:06:54 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C99DC06173E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:03:52 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id z6so7267135plk.6
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 08:03:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dVl1y7dz5yzJ4ISPiOpYJmuusOkr3uxzfmH+anrgaX0=;
-        b=lNLzz5grJcL0EywAhMja05SHW9eUygNXTKtZgQTXHqcNE3IcqDLr7U1Bc/rHf3k6Nk
-         1mQ3kHTclvYs0jl3aSAbbDLNi6nu0sJX30vXpGyuO4zUJ+QE32QxlqFT6XWNep4MMz3W
-         hX7TiTqGvoo24R7EPvxePcX71JCNKLq9DLI+G+pE7y7GACDF3kPbqfPgGeg6PTMk0Tl3
-         r922k7X3j6boaoG3JHogizBD7db0bKuztYPCXmqGV3N77n8dkB14ZEuRVo6VSQzcsJfe
-         uTbYjndK+PCGFaSP9fsT3WWSO1WEW/jkbuT4OaKIqs0DZCSIQLiOI7G/82vvUiNhqBiq
-         IpCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dVl1y7dz5yzJ4ISPiOpYJmuusOkr3uxzfmH+anrgaX0=;
-        b=Z4T1IjG9+TNmyK7T3L3EMe6sTIPcy+p+kP5D/L38Bqei+uTWHYXYL8pRqS5vb7wZgi
-         BmkqQz4+7d1oGzxCD+Iu7vGTwz1JKUCJDb2F2/4cheSGYdzMGzQP1Nv5hVsexAI4RbeB
-         b10Biv6zdIQp/ZUFDezyo2YnSO7tPUJ38siqldOi0IaWMv3b54WPqadbmI/PjIVljPMf
-         26cwm6/00PMXXDiOdNwYIHhZn9vrEEjkfpP2WdaGMwvRDjL87rHVVxttUulla8S0+Jbu
-         YmDJ6D71ZdeqeOhu9vpIAk0/k3wmDlfyXtUl/qq0OWWMIe35zpwgD6rHL4Z8G8cLPe2x
-         611w==
-X-Gm-Message-State: AOAM530WrIN3mDofcWzj3rLrMHodsOVCgkO8sixZ5Oy5XZyt9GsxOD7m
-        uFeX3t/7xSe8RPR3cpxTQVyEDQ==
-X-Google-Smtp-Source: ABdhPJy0I7OeJBwYUukJb+gm4HMPcsPZFQFz2Io92uNtCvJbhNfZYOtwBBIchHRWXe+X3HstC7hC4A==
-X-Received: by 2002:a17:90b:3a83:: with SMTP id om3mr778565pjb.211.1637337831717;
-        Fri, 19 Nov 2021 08:03:51 -0800 (PST)
-Received: from minbar.home.kylehuey.com (c-71-198-251-229.hsd1.ca.comcast.net. [71.198.251.229])
-        by smtp.gmail.com with ESMTPSA id o4sm11067326pjq.23.2021.11.19.08.03.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 08:03:50 -0800 (PST)
-From:   Kyle Huey <me@kylehuey.com>
-X-Google-Original-From: Kyle Huey <khuey@kylehuey.com>
-To:     "Eric W . Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@ZenIV.linux.org.uk>, linux-api@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Robert O'Callahan <rocallahan@gmail.com>
-Subject: Re: [PATCH 6/6] coredump: Limit coredumps to a single thread group
-Date:   Fri, 19 Nov 2021 08:03:48 -0800
-Message-Id: <20211119160348.22409-1-khuey@kylehuey.com>
-X-Mailer: git-send-email 2.34.0
-In-Reply-To: <87y27mvnke.fsf@disp2133>
-References: <87y27mvnke.fsf@disp2133>
+        Fri, 19 Nov 2021 11:07:34 -0500
+Date:   Fri, 19 Nov 2021 16:04:28 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail; t=1637337869;
+        bh=QojxD/0YrTv2uaylvR47nM7Wd+++N7DJSh0Pn4+2mjY=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=k8XFjbLgPsp72FXpR19qilma7MsWiYt10a+YiC0yIFIAWB2BK7oE2NNBh7Jd9+ao4
+         EulU3u+WZE7ashHIae7cHaufgfPpe6SjbW1AsBeTRAvCNE9AvpNO4C5cFQoOlQZ9G/
+         iRnnQTSfqtJo7Gp9OP90Q8o0w4tLhMnSllvojTJBYmTib1mXZFZhgkrZytBlr0zUiz
+         S1fQIl2QpBMNEHC6BqRzn1ynZuN3WJ+rSViGmiGu9Y/rMkEPNz9zqe4C76bEGYy2gT
+         eDW3ny8mlUUJN8/XrCvl86L3UGUFK56NS4qTwEjbFw7Fn6fpg2Xk20Hxz1Ec3VRobm
+         dqutuLHsdUGbg==
+To:     Daniel Vetter <daniel@ffwll.ch>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     Pekka Paalanen <ppaalanen@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Doug Anderson <dianders@chromium.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-input@vger.kernel.org
+Reply-To: Simon Ser <contact@emersion.fr>
+Subject: Re: [PATCH v2 1/2] drm/input_helper: Add new input-handling helper
+Message-ID: <98236dpcx39iOz8xAYrwGLfiLdwgUlljrbBgHL3wd8A0Wz4KzRk3PR8s_tb5Rxu4eScKI4483kB6Vhv-T64CJYOeQqwXlqo2c-64HvoS5cg=@emersion.fr>
+In-Reply-To: <YZfIgd8s7uGXAD2X@phenom.ffwll.local>
+References: <20211117224841.3442482-1-briannorris@chromium.org> <20211117144807.v2.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid> <20211118123928.545dec8a@eldfell> <CAF6AEGuc9JbOsC4Lrvoqo8VzMHq+7ru7Y6_UwoZaGV2wHQ6E5g@mail.gmail.com> <20211119115419.505155b5@eldfell> <YZfIgd8s7uGXAD2X@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Solve this by making a userspace visible change to only kill a single
-> process/thread group. [...] With LinuxThreads long gone I don't
-> expect anyone to have a notice this behavior change in practice.
+On Friday, November 19th, 2021 at 16:53, Daniel Vetter <daniel@ffwll.ch> wr=
+ote:
 
-FWIW rr's test suite does have an explicit test that we correctly record and 
-replay the old behavior. We don't actually care what that behavior is though,
-so we will update our tests.
+> Random idea ... should we perhaps let userspace connect the boosting? I.e=
+.
+> we do a bunch of standardized boost targets (render clocks, display sr
+> exit), and userspace can then connect it to whichever input device it
+> wants to?
 
-- Kyle
+On IRC we discussed having user-space hand over a FD to the kernel. When th=
+e FD
+becomes readable, the kernel triggers the boost.
+
+This would let user-space use e.g. an input device, an eventfd, or an epoll=
+ FD
+with any combination of these as the boost signal.
