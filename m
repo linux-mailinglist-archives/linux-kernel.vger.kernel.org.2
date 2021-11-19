@@ -2,194 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4744567BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 02:58:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 921D24567B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 02:56:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231842AbhKSCAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 21:00:55 -0500
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:4996 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhKSCAy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 21:00:54 -0500
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1AJ1Vfjj078015;
-        Fri, 19 Nov 2021 09:31:41 +0800 (GMT-8)
-        (envelope-from jammy_huang@aspeedtech.com)
-Received: from [192.168.2.115] (192.168.2.115) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 19 Nov
- 2021 09:55:28 +0800
-Message-ID: <2c0cc308-16d4-69e4-f81f-597ceb9824f5@aspeedtech.com>
-Date:   Fri, 19 Nov 2021 09:55:31 +0800
+        id S234024AbhKSB7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 20:59:01 -0500
+Received: from mga11.intel.com ([192.55.52.93]:62919 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229879AbhKSB7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 20:59:00 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="231818670"
+X-IronPort-AV: E=Sophos;i="5.87,246,1631602800"; 
+   d="scan'208";a="231818670"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 17:55:59 -0800
+X-IronPort-AV: E=Sophos;i="5.87,246,1631602800"; 
+   d="scan'208";a="536947290"
+Received: from rhweight-mobl.amr.corp.intel.com (HELO rhweight-mobl.ra.intel.com) ([10.212.203.1])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 17:55:59 -0800
+From:   Russ Weight <russell.h.weight@intel.com>
+To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com,
+        Russ Weight <russell.h.weight@intel.com>
+Subject: [PATCH v14 0/3] fpga: Use standard class dev_release function
+Date:   Thu, 18 Nov 2021 17:55:50 -0800
+Message-Id: <20211119015553.62704-1-russell.h.weight@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH v5 03/10] media: aspeed: add more debug log messages
-Content-Language: en-US
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-CC:     "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "laurent.pinchart@ideasonboard.com" 
-        <laurent.pinchart@ideasonboard.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20211118074030.685-1-jammy_huang@aspeedtech.com>
- <20211118074030.685-4-jammy_huang@aspeedtech.com>
- <YZY/sfRs+/bH3Was@paasikivi.fi.intel.com>
-From:   Jammy Huang <jammy_huang@aspeedtech.com>
-In-Reply-To: <YZY/sfRs+/bH3Was@paasikivi.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [192.168.2.115]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1AJ1Vfjj078015
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
+The FPGA framework has a convention of using managed resource functions
+to allow parent drivers to manage the data structures allocated by the
+class drivers. They use an empty *_dev_release() function to satisfy the
+class driver.
 
-On 2021/11/18 下午 07:57, Sakari Ailus wrote:
-> Hi Jammy,
->
-> On Thu, Nov 18, 2021 at 03:40:24PM +0800, Jammy Huang wrote:
->> The new messages are listed as below:
->> 1. jpeg header and capture buffer information
->> 2. information for each irq
->> 3. current capture mode, sync or direct-fetch
->> 4. time consumed for each frame
->> 5. input timing changed information
->>
->> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
->> ---
->> v5:
->>    - no update
->> v4:
->>    - modify log level
->> v3:
->>    - update commit message
->> v2:
->>    - new
->> ---
->>   drivers/media/platform/aspeed-video.c | 24 ++++++++++++++++++++++++
->>   1 file changed, 24 insertions(+)
->>
->> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
->> index 6af57467b6d4..e8dd0a7ebfc7 100644
->> --- a/drivers/media/platform/aspeed-video.c
->> +++ b/drivers/media/platform/aspeed-video.c
->> @@ -461,12 +461,17 @@ static void aspeed_video_write(struct aspeed_video *video, u32 reg, u32 val)
->>   
->>   static void update_perf(struct aspeed_video_perf *p)
->>   {
->> +	struct aspeed_video *v = container_of(p, struct aspeed_video,
->> +					      perf);
->> +
->>   	p->duration =
->>   		ktime_to_ms(ktime_sub(ktime_get(),  p->last_sample));
->>   	p->totaltime += p->duration;
->>   
->>   	p->duration_max = max(p->duration, p->duration_max);
->>   	p->duration_min = min(p->duration, p->duration_min);
->> +	v4l2_dbg(2, debug, &v->v4l2_dev, "time consumed: %d ms\n",
->> +		 p->duration);
->>   }
->>   
->>   static int aspeed_video_start_frame(struct aspeed_video *video)
->> @@ -597,6 +602,12 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
->>   	struct aspeed_video *video = arg;
->>   	u32 sts = aspeed_video_read(video, VE_INTERRUPT_STATUS);
->>   
->> +	v4l2_dbg(2, debug, &video->v4l2_dev, "irq sts=%#x %s%s%s%s\n", sts,
->> +		 sts & VE_INTERRUPT_MODE_DETECT_WD ? ", unlock" : "",
->> +		 sts & VE_INTERRUPT_MODE_DETECT ? ", lock" : "",
->> +		 sts & VE_INTERRUPT_CAPTURE_COMPLETE ? ", capture-done" : "",
->> +		 sts & VE_INTERRUPT_COMP_COMPLETE ? ", comp-done" : "");
->> +
->>   	/*
->>   	 * Resolution changed or signal was lost; reset the engine and
->>   	 * re-initialize
->> @@ -910,6 +921,7 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
->>   
->>   	/* Don't use direct mode below 1024 x 768 (irqs don't fire) */
->>   	if (size < DIRECT_FETCH_THRESHOLD) {
->> +		v4l2_dbg(1, debug, &video->v4l2_dev, "Capture: Sync Mode\n");
->>   		aspeed_video_write(video, VE_TGS_0,
->>   				   FIELD_PREP(VE_TGS_FIRST,
->>   					      video->frame_left - 1) |
->> @@ -921,6 +933,7 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
->>   					      video->frame_bottom + 1));
->>   		aspeed_video_update(video, VE_CTRL, 0, VE_CTRL_INT_DE);
->>   	} else {
->> +		v4l2_dbg(1, debug, &video->v4l2_dev, "Capture: Direct Mode\n");
->>   		aspeed_video_update(video, VE_CTRL, 0, VE_CTRL_DIRECT_FETCH);
->>   	}
->>   
->> @@ -937,6 +950,10 @@ static void aspeed_video_set_resolution(struct aspeed_video *video)
->>   		if (!aspeed_video_alloc_buf(video, &video->srcs[1], size))
->>   			goto err_mem;
->>   
->> +		v4l2_dbg(1, debug, &video->v4l2_dev, "src buf0 addr(%#x) size(%d)\n",
->> +			 video->srcs[0].dma, video->srcs[0].size);
->> +		v4l2_dbg(1, debug, &video->v4l2_dev, "src buf1 addr(%#x) size(%d)\n",
->> +			 video->srcs[1].dma, video->srcs[1].size);
->>   		aspeed_video_write(video, VE_SRC0_ADDR, video->srcs[0].dma);
->>   		aspeed_video_write(video, VE_SRC1_ADDR, video->srcs[1].dma);
->>   	}
->> @@ -1201,6 +1218,9 @@ static int aspeed_video_set_dv_timings(struct file *file, void *fh,
->>   
->>   	timings->type = V4L2_DV_BT_656_1120;
->>   
->> +	v4l2_dbg(1, debug, &video->v4l2_dev, "set new timings(%dx%d)\n",
->> +		 timings->bt.width, timings->bt.height);
->> +
->>   	return 0;
->>   }
->>   
->> @@ -1383,6 +1403,7 @@ static void aspeed_video_resolution_work(struct work_struct *work)
->>   			.u.src_change.changes = V4L2_EVENT_SRC_CH_RESOLUTION,
->>   		};
->>   
->> +		v4l2_dbg(1, debug, &video->v4l2_dev, "fire source change event\n");
->>   		v4l2_event_queue(&video->vdev, &ev);
->>   	} else if (test_bit(VIDEO_STREAMING, &video->flags)) {
->>   		/* No resolution change so just restart streaming */
->> @@ -1715,6 +1736,7 @@ static int aspeed_video_init(struct aspeed_video *video)
->>   		dev_err(dev, "Unable to request IRQ %d\n", irq);
->>   		return rc;
->>   	}
->> +	dev_info(video->dev, "irq %d\n", irq);
->>   
->>   	video->eclk = devm_clk_get(dev, "eclk");
->>   	if (IS_ERR(video->eclk)) {
->> @@ -1751,6 +1773,8 @@ static int aspeed_video_init(struct aspeed_video *video)
->>   		rc = -ENOMEM;
->>   		goto err_release_reserved_mem;
->>   	}
->> +	dev_info(video->dev, "alloc mem size(%d) at %#x for jpeg header\n",
->> +		 VE_JPEG_HEADER_SIZE, video->jpeg.dma);
->>   
->>   	aspeed_video_init_jpeg_table(video->jpeg.virt, video->yuv420);
->>   
-> You're using both v4l2_*() and dev_*() functions for printing messages.
-> They come with different prefixes, and it'd be better to stick with either,
-> not both.
-Sure, I agree with you. Why I still have dev_*() here is v4l2_dev isn't 
-ready yet before
-v4l2_device_register(). I think it could better to keep dev_*() in dev's 
-probe().
+This is inconsistent with linux driver model.
+
+These changes remove the managed resource functions and populate the class
+dev_release callback functions. They also merge the create() and register()
+functions into a single register() or register_full() function for each of
+the fpga-mgr, fpga-region, and fpga-bridge class drivers.
+
+The new *register_full() functions accept an info data structure to provide
+flexibility in passing optional parameters. The *register() functions
+support the legacy parameter list for users that don't require the use of
+optional parameters.
+
+For more context, refer to this email thread:
+
+https://marc.info/?l=linux-fpga&m=162127412218557&w=2
+
+I turned on the configs assocated with each of the modified files, but I
+must have been missing some dependencies, because not all of them compiled.
+I did a run-time test specifically with the dfl-fme infrastructure. This
+would have exercised the region, bridge, and fpga-mgr frameworks.
+
+Changelog v13 -> v14:
+  - Fixed typo/bug detected by kernel test robot <lkp@intel.com>: s/mgr/br/
+
+Changelog v12 -> v13:
+  - Add Acked-by tag
+
+Changelog v11 -> v12:
+  - Made the requisite changes to the new versal-fpga driver
+
+Changelog v10 -> v11:
+  - Rebased to latest linux-next
+  - Resolved a single conflict in fpga-mgr.c with associated with  wrapper
+    function: fpga_mgr_state(mgr)
+
+Changelog v9 -> v10:
+  - Fixed commit messages to reference register_full() instead of
+    register_simple().
+  - Removed the fpga_bridge_register_full() function, because there is
+    not need for it yet. Updated the documentation and commit message
+    accordingly.
+  - Updated documentation to reference the fpga_manager_info and
+    fpga_region_info structures.
+
+Changelog v8 -> v9:
+  - Cleaned up documentation for the FPGA Manager, Bridge, and Region
+    register functions
+  - Renamed fpga_*_register() to fpga_*_register_full()
+  - Renamed fpga_*_register_simple() to fpga_*_register()
+  - Renamed devm_fpga_mgr_register() to devm_fpga_mgr_register_full()
+  - Renamed devm_fpga_mgr_register_simple() to devm_fpga_mgr_register()
+
+Changelog v7 -> v8:
+  - Added reviewed-by tags.
+  - Updated Documentation/driver-api/fpga/ files: fpga-mgr.rst,
+    fpga-bridge.rst, and fpga-region.rst.
+
+Changelog v6 -> v7:
+  - Update the commit messages to describe the new parameters for the
+    *register() functions and to mention the *register_simple() functions.
+  - Fix function prototypes in header file to rename dev to parent.
+  - Make use of the PTR_ERR_OR_ZERO() macro when possible.
+  - Some cleanup of comments.
+  - Update function definitions/prototypes to apply const to the new info
+    parameter.
+  - Verify that info->br_ops is non-null in the fpga_bridge_register()
+    function.
+  - Verify a non-null info pointer in the fpga_region_register() function.
+
+Changelog v5 -> v6:
+  - Moved FPGA manager/bridge/region optional parameters out of the ops
+    structure and back into the FPGA class driver structure.
+  - Changed fpga_*_register() function parameters to accept an info data
+    structure to provide flexibility in passing optional parameters.
+  - Added fpga_*_register_simple() functions to support current parameters
+    for users that don't require use of optional parameters.
+
+Changelog v4 -> v5:
+  - Rebased on top of recently accepted patches.
+  - Removed compat_id from the fpga_mgr_register() parameter list
+    and added it to the fpga_manager_ops structure. This also required
+    dynamically allocating the dfl-fme-ops structure in order to add
+    the appropriate compat_id.
+  - Created the fpga_region_ops data structure which is optionally passed
+    to fpga_region_register(). compat_id, the get_bridges() pointer, and
+    the priv pointer are included in the fpga_region_ops structure.
+
+Changelog v3 -> v4:
+  - Added the compat_id parameter to fpga_mgr_register() and
+    devm_fpga_mgr_register() to ensure that the compat_id is set before
+    the device_register() call.
+  - Added the compat_id parameter to fpga_region_register() to ensure
+    that the compat_id is set before the device_register() call.
+  - Modified the dfl_fpga_feature_devs_enumerate() function to restore
+    the fpga_region_register() call to the correct location.
+
+Changelog v2 -> v3:
+  - Cleaned up comment headers for fpga_mgr_register(), fpga_bridge_register(),
+    and fpga_region_register().
+  - Fixed error return on ida_simple_get() failure for fpga_mgr_register(),
+    fpga_bridge_register(), and fpga_region_register().
+  - Fixed error return value for fpga_bridge_register(): ERR_PTR(ret) instead
+    of NULL.
+
+Changelog v1 -> v2:
+  - Restored devm_fpga_mgr_register() functionality to the fpga-mgr
+    class driver, adapted for the combined create/register functionality.
+  - All previous callers of devm_fpga_mgr_register() will continue to call
+    devm_fpga_mgr_register().
+  - replaced unnecessary ternary operators in return statements with
+    standard if conditions.
+
+Russ Weight (3):
+  fpga: mgr: Use standard dev_release for class driver
+  fpga: bridge: Use standard dev_release for class driver
+  fpga: region: Use standard dev_release for class driver
+
+ Documentation/driver-api/fpga/fpga-bridge.rst |   6 +-
+ Documentation/driver-api/fpga/fpga-mgr.rst    |  38 +++-
+ Documentation/driver-api/fpga/fpga-region.rst |  12 +-
+ drivers/fpga/altera-cvp.c                     |  12 +-
+ drivers/fpga/altera-fpga2sdram.c              |  12 +-
+ drivers/fpga/altera-freeze-bridge.c           |  10 +-
+ drivers/fpga/altera-hps2fpga.c                |  12 +-
+ drivers/fpga/altera-pr-ip-core.c              |   7 +-
+ drivers/fpga/altera-ps-spi.c                  |   9 +-
+ drivers/fpga/dfl-fme-br.c                     |  10 +-
+ drivers/fpga/dfl-fme-mgr.c                    |  22 +-
+ drivers/fpga/dfl-fme-region.c                 |  17 +-
+ drivers/fpga/dfl.c                            |  12 +-
+ drivers/fpga/fpga-bridge.c                    | 122 +++-------
+ drivers/fpga/fpga-mgr.c                       | 215 ++++++++----------
+ drivers/fpga/fpga-region.c                    | 119 ++++------
+ drivers/fpga/ice40-spi.c                      |   9 +-
+ drivers/fpga/machxo2-spi.c                    |   9 +-
+ drivers/fpga/of-fpga-region.c                 |  10 +-
+ drivers/fpga/socfpga-a10.c                    |  16 +-
+ drivers/fpga/socfpga.c                        |   9 +-
+ drivers/fpga/stratix10-soc.c                  |  16 +-
+ drivers/fpga/ts73xx-fpga.c                    |   9 +-
+ drivers/fpga/versal-fpga.c                    |   9 +-
+ drivers/fpga/xilinx-pr-decoupler.c            |  17 +-
+ drivers/fpga/xilinx-spi.c                     |  11 +-
+ drivers/fpga/zynq-fpga.c                      |  16 +-
+ drivers/fpga/zynqmp-fpga.c                    |   9 +-
+ include/linux/fpga/fpga-bridge.h              |  30 ++-
+ include/linux/fpga/fpga-mgr.h                 |  62 +++--
+ include/linux/fpga/fpga-region.h              |  36 ++-
+ 31 files changed, 386 insertions(+), 517 deletions(-)
 
 -- 
-Best Regards
-Jammy
+2.25.1
 
