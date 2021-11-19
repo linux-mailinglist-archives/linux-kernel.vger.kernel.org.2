@@ -2,163 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06954576FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 20:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BADC4576FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 20:27:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232926AbhKSTZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 14:25:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42002 "EHLO
+        id S232960AbhKSTag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 14:30:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232402AbhKSTZh (ORCPT
+        with ESMTP id S230127AbhKSTaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 14:25:37 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 791D1C061748
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 11:22:35 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id n8so8864315plf.4
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 11:22:35 -0800 (PST)
+        Fri, 19 Nov 2021 14:30:35 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A76C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 11:27:33 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id nh10-20020a17090b364a00b001a69adad5ebso9641013pjb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 11:27:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GejJnaPkSdrFBUEbq1HDLo/AXrHzrj+OVR/ih9nOsZI=;
-        b=PSHqGmKsG+m7qQBnw3EW0+1KOv87ZgTDhqln7oOivL6UFHMBY7l4TfW2O2fsVfXGcI
-         s7bR4NUYnR2fH5y/GrcRhm7fRAbJS2tMpPr4AyyxrJy7CAQ4n3Ytx9lbX+HuCeZE8Acn
-         9uvPNWdAWVvsaoF+zv5Jcq8iiMx7tgsOVECII=
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=lsppzZdzu+Waonf7w8q0N1vP3OgbHGJj0JhrjEEHC0w=;
+        b=sdsdx0ECSB96vcQ3k2RO6euUeTaYzHNHHySgOi1TWAYLU6aP/1JhKuvNFr7RTpC6wb
+         ZJOhnbwQv7hWRqgvDpkXlLfamAhJgZRNEFrqcS7JYOSsCOKUbiJFsxNpTCLytXXsrH8l
+         vjkAxpXsYiBZ6XgtI6NKAP8v2xXKyXzwrJD8j847Oq4q/LAUB2G8I3JOah1ktjceP/YP
+         skeEwcTQ0ANnl6g8jWvtd0oRXQ8o53eGfB/hAYUkotB719+ftf1/zbRFnqM1nfjxzC9V
+         r93Vmx+P5JJ2uT6DMdMHE15dVCbRsEzDYMgS+fZjbP1F5z3/fvnxr5hzvkg1Bw1myizB
+         rE0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GejJnaPkSdrFBUEbq1HDLo/AXrHzrj+OVR/ih9nOsZI=;
-        b=VdlHmZ+0Nu4qG0oHg1a64evrg2RlsQUWKzIhrhXI/byggtugvzanjQUoU9olGHbQOq
-         m9oUp8jF/mXNFJVqJ6WkRcOOcXqg9X02rPtBo27wC0wmhAFn6f0JOlhN06xBew0sU7sv
-         GpfuHfVL3ycc/FykjFWyXllstJZ2NTvkDUDIgTb1ZZasuMS7KfZyyLvTmoahRXl8t3ig
-         pls1zX7miBY5dS4I43BEAhlSmANHucmTPKRKal/lkMqngOLiXVzAOKaAD/ZT2JGUvEBY
-         hlDE2ihNuLZBB1T1GOhysUrBjioTiULG6zrdw6HNkbWh12y5eI5P8ejrgVF5SOQvNByU
-         wdCg==
-X-Gm-Message-State: AOAM531U9qDuzLisK3wNjlzXbmaicFuio/++3gI8D4vx8qlCSzqO6UCW
-        AZWUIBcyzTfVbHUGcekoKMTVwQ==
-X-Google-Smtp-Source: ABdhPJyKHIxH8p0bpnGSbVWFIXipL9g/p5kYWTvl/90i/NpfNdV1nleVUk34JWHLVyovxNwrMJzVNQ==
-X-Received: by 2002:a17:90a:d995:: with SMTP id d21mr2595804pjv.154.1637349754891;
-        Fri, 19 Nov 2021 11:22:34 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q30sm350921pgl.46.2021.11.19.11.22.34
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=lsppzZdzu+Waonf7w8q0N1vP3OgbHGJj0JhrjEEHC0w=;
+        b=1ThNZVRDJsAHz4YOZq0G/m1f1O5+b104iU5dO1IZ1qEe3pEWrORCV7lYbWd+XjAf2G
+         vWBoDybUSAp7yiH8gCEZr+ydV9kLdltJKtn1KT7tlg/yq6ZEhp6gUjcWjiAIvlqpmWX+
+         PPSEqMlNyN5NuQJz5ykMxE4Bc8PgUqU5gwUi3l7Agnhk71qU0b+HQp0yjXny2Dw+Ghuj
+         gsTy586WCHMBn9ZFZnpeuFLCCs/2neTNiMhj3wSVqknqKVxJZk4ca4P74WgA9HeYZzF/
+         1xcGuBmVC1ztNKYgHetwxsKjCmE61DqpAmx8M/Z5VPI60+e98atKQneXi7/PIwF3O19P
+         l7Kg==
+X-Gm-Message-State: AOAM533HpLK0KiC7yU4heVvpuAcuvIYjYpoQpSVXXZW9ESiv46pMNujG
+        uQppdGRc9X/E4WEBUOP8iKUAlQ==
+X-Google-Smtp-Source: ABdhPJxOo/o7SIb2aVYrZEfxQvdQltW4IlVreuuhSwTq9VHRSiasfHQpkb2LnTZ+qwuAmLwg8QEVFw==
+X-Received: by 2002:a17:902:b28a:b0:142:3e17:38d8 with SMTP id u10-20020a170902b28a00b001423e1738d8mr80719122plr.56.1637350053331;
+        Fri, 19 Nov 2021 11:27:33 -0800 (PST)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id mp12sm11291688pjb.39.2021.11.19.11.27.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 11:22:34 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Ping-Ke Shih <pkshih@realtek.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Colin Ian King <colin.king@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kaixu Xia <kaixuxia@tencent.com>, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH v3] rtlwifi: rtl8192de: Style clean-ups
-Date:   Fri, 19 Nov 2021 11:22:33 -0800
-Message-Id: <20211119192233.1021063-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        Fri, 19 Nov 2021 11:27:32 -0800 (PST)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     Amjad Ouled-Ameur <aouledameur@baylibre.com>
+Cc:     Amjad Ouled-Ameur <aouledameur@baylibre.com>,
+        p.zabel@pengutronix.de, balbi@kernel.org, jbrunet@baylibre.com,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] usb: meson: fix shared reset control use
+In-Reply-To: <20211112162827.128319-1-aouledameur@baylibre.com>
+References: <20211112162827.128319-1-aouledameur@baylibre.com>
+Date:   Fri, 19 Nov 2021 11:27:32 -0800
+Message-ID: <7htug854kb.fsf@baylibre.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3433; h=from:subject; bh=eEEiVQZ8A0ttuPc+NS1yMiJkzEQSZvVCMArXF7UacbE=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhl/l45aCKMNhG3EDjrpaJL8xAaPqrQt/Q38fyqPMr 0+roXumJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYZf5eAAKCRCJcvTf3G3AJoTHEA CXQ5lFUssY2ECMJpO/wfh4002jlaJUm83BkQxBB1fHFsOfHoekMLh+iHH+dASVqHPWevbroCK8EUKP DC5iIonTvUkWKz8KTkMgFSCbptvpzDtjB4rtBswsrDPaIUJS9efI4f5Rgkmk03jRY0RoKq+LFKrN9y xTpX1Dip9B6CrFHZkkNKOf8nuA01t0tpn4yYArxP+alkdDgJQS6Nr4u3TKSEjH62fmqLnvZPgokztf WzvcEHABcQylkSIWw5uZ5+5ayBJo3OE2xW5hOissCM6mXvBh2cghrYTjlan0QNSWrHxo8BTsObm4Jv A6xmrsGwlzodq73Ardg5k91FpGfAOMo3PbxY8gH7JU+Y8DihuMxU1ruj7+6RefBHLEhXTZbCH90kZq C/cN1hNWt1wYtLDGRSxdHtrvLl6vPaFfJtX+HotWq4e1r2OTl9ikOgYcKKM1kh5wwWkwM8JeOdOdPM Xe/JD+rBsXhx0ERcs+yhqsAyWgBlfR3j4j76DzqW380ECf5ENK38FG40dWf7/Q92pgEReF/pz/p81e Ig9BQCb38qvxxufBc7Ke2gBpSXjyhUqatsi05pxRSsXHn5/PrPfooeO6/GKzGwI0dw5qxfoDtMoxw5 5lXGoo1iT3TSAZ9/c0P/HQSO+DpwmNJBh0eB0rTUgifemH2AsulWo5NA5SZQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up some style issues:
-- Use ARRAY_SIZE() even though it's a u8 array.
-- Remove redundant CHANNEL_MAX_NUMBER_2G define.
-Additionally fix some dead code WARNs.
+Amjad Ouled-Ameur <aouledameur@baylibre.com> writes:
 
-Acked-by: Ping-Ke Shih <pkshih@realtek.com>
-Link: https://lore.kernel.org/lkml/57d0d1b6064342309f680f692192556c@realtek.com/
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-v2->v3: rebase, add ack
----
- .../wireless/realtek/rtlwifi/rtl8192de/phy.c    | 17 +++++++----------
- drivers/net/wireless/realtek/rtlwifi/wifi.h     |  1 -
- 2 files changed, 7 insertions(+), 11 deletions(-)
+> This patchset fixes a usb suspend warning seen on the libretech-cc by
+> using reset_control_rearm() call of the reset framework API. 
+> This call allows a reset consummer to release the reset line even when 
+> just triggered so that it may be triggered again by other reset
+> consummers.
+>
+> reset_control_(de)assert() calls are called, in some meson usb drivers, 
+> on a shared reset line when reset_control_reset has been used. This is not
+> allowed by the reset framework.
+>
+> Finally the meson usb drivers are updated to use this new call, which
+> solves the suspend issue addressed by the previous reverted 
+> commit 7a410953d1fb ("usb: dwc3: meson-g12a: fix shared reset control
+> use").
 
-diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-index 9b83c710c9b8..51fe51bb0504 100644
---- a/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192de/phy.c
-@@ -899,7 +899,7 @@ static u8 _rtl92c_phy_get_rightchnlplace(u8 chnl)
- 	u8 place = chnl;
- 
- 	if (chnl > 14) {
--		for (place = 14; place < sizeof(channel5g); place++) {
-+		for (place = 14; place < ARRAY_SIZE(channel5g); place++) {
- 			if (channel5g[place] == chnl) {
- 				place++;
- 				break;
-@@ -1366,7 +1366,7 @@ u8 rtl92d_get_rightchnlplace_for_iqk(u8 chnl)
- 	u8 place;
- 
- 	if (chnl > 14) {
--		for (place = 14; place < sizeof(channel_all); place++) {
-+		for (place = 14; place < ARRAY_SIZE(channel_all); place++) {
- 			if (channel_all[place] == chnl)
- 				return place - 13;
- 		}
-@@ -2428,7 +2428,7 @@ static bool _rtl92d_is_legal_5g_channel(struct ieee80211_hw *hw, u8 channel)
- 
- 	int i;
- 
--	for (i = 0; i < sizeof(channel5g); i++)
-+	for (i = 0; i < ARRAY_SIZE(channel5g); i++)
- 		if (channel == channel5g[i])
- 			return true;
- 	return false;
-@@ -2692,9 +2692,8 @@ void rtl92d_phy_reset_iqk_result(struct ieee80211_hw *hw)
- 	u8 i;
- 
- 	rtl_dbg(rtlpriv, COMP_INIT, DBG_LOUD,
--		"settings regs %d default regs %d\n",
--		(int)(sizeof(rtlphy->iqk_matrix) /
--		      sizeof(struct iqk_matrix_regs)),
-+		"settings regs %zu default regs %d\n",
-+		ARRAY_SIZE(rtlphy->iqk_matrix),
- 		IQK_MATRIX_REG_NUM);
- 	/* 0xe94, 0xe9c, 0xea4, 0xeac, 0xeb4, 0xebc, 0xec4, 0xecc */
- 	for (i = 0; i < IQK_MATRIX_SETTINGS_NUM; i++) {
-@@ -2861,16 +2860,14 @@ u8 rtl92d_phy_sw_chnl(struct ieee80211_hw *hw)
- 	case BAND_ON_5G:
- 		/* Get first channel error when change between
- 		 * 5G and 2.4G band. */
--		if (channel <= 14)
-+		if (WARN_ONCE(channel <= 14, "rtl8192de: 5G but channel<=14\n"))
- 			return 0;
--		WARN_ONCE((channel <= 14), "rtl8192de: 5G but channel<=14\n");
- 		break;
- 	case BAND_ON_2_4G:
- 		/* Get first channel error when change between
- 		 * 5G and 2.4G band. */
--		if (channel > 14)
-+		if (WARN_ONCE(channel > 14, "rtl8192de: 2G but channel>14\n"))
- 			return 0;
--		WARN_ONCE((channel > 14), "rtl8192de: 2G but channel>14\n");
- 		break;
- 	default:
- 		WARN_ONCE(true, "rtl8192de: Invalid WirelessMode(%#x)!!\n",
-diff --git a/drivers/net/wireless/realtek/rtlwifi/wifi.h b/drivers/net/wireless/realtek/rtlwifi/wifi.h
-index aa07856411b1..31f9e9e5c680 100644
---- a/drivers/net/wireless/realtek/rtlwifi/wifi.h
-+++ b/drivers/net/wireless/realtek/rtlwifi/wifi.h
-@@ -108,7 +108,6 @@
- #define	CHANNEL_GROUP_IDX_5GM		6
- #define	CHANNEL_GROUP_IDX_5GH		9
- #define	CHANNEL_GROUP_MAX_5G		9
--#define CHANNEL_MAX_NUMBER_2G		14
- #define AVG_THERMAL_NUM			8
- #define AVG_THERMAL_NUM_88E		4
- #define AVG_THERMAL_NUM_8723BE		4
--- 
-2.30.2
+Tested-by: Kevin Hilman <khilman@baylibre.com>
 
+Tested suspend/resume on Khadas VIM3 and confirmed that the reset
+warnings are gone.
+
+Kevin
