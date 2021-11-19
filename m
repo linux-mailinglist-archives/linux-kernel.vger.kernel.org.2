@@ -2,98 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37882456837
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 03:35:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1DA456835
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 03:35:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234157AbhKSCix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 21:38:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:26820 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233970AbhKSCiw (ORCPT
+        id S232210AbhKSCis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 21:38:48 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:14954 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231217AbhKSCir (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 21:38:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637289351;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fvEXdVSQ33CYfJdfTY3g6zxywCtQTaTt9SO8R6Pches=;
-        b=NThtaWTyzy9ATWseeNmFiaLpbKPl/NDPZJ5EDXxNKa2Wh2MHqAfCTobCBtYGBlVR4XY6ga
-        9Cj+TCI20rcWRz2WpkId+cKibu7H4Yn6XnkOon8sMZ5xokjpHxUpHZ+5tS0XI3LOuz8UMH
-        d6feFm1TcMSqS10pjrSBlRJgQ8KVGic=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-473-2xHzU_kSMDGKuKU8EZrWyg-1; Thu, 18 Nov 2021 21:35:48 -0500
-X-MC-Unique: 2xHzU_kSMDGKuKU8EZrWyg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8B43E18125C6;
-        Fri, 19 Nov 2021 02:35:46 +0000 (UTC)
-Received: from localhost (ovpn-12-90.pek2.redhat.com [10.72.12.90])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E53CC100763D;
-        Fri, 19 Nov 2021 02:35:33 +0000 (UTC)
-Date:   Fri, 19 Nov 2021 10:35:31 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org,
-        kbuild-all@lists.01.org, linux-s390@vger.kernel.org,
-        kexec@lists.infradead.org, prudo@redhat.com
-Subject: Re: [PATCH v2 2/2] s390/kexec: fix kmemleak
-Message-ID: <20211119023531.GB12774@MiWiFi-R3L-srv>
-References: <20211116032557.14075-2-bhe@redhat.com>
- <202111180539.e7kmpOSP-lkp@intel.com>
- <20211118071327.GF21646@MiWiFi-R3L-srv>
- <YZYUi9XMyjtpGmAQ@osiris>
+        Thu, 18 Nov 2021 21:38:47 -0500
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HwLLl0VkpzZd7H;
+        Fri, 19 Nov 2021 10:33:19 +0800 (CST)
+Received: from kwepemm600017.china.huawei.com (7.193.23.234) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 19 Nov 2021 10:35:44 +0800
+Received: from [10.174.179.234] (10.174.179.234) by
+ kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 19 Nov 2021 10:35:42 +0800
+Subject: Re: [PATCH 09/12] riscv: extable: add `type` and `data` fields
+To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        "Song Liu" <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        "Nick Desaulniers" <ndesaulniers@google.com>
+References: <20211118192130.48b8f04c@xhacker>
+ <20211118192605.57e06d6b@xhacker>
+CC:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kbuild@vger.kernel.org>
+From:   tongtiangen <tongtiangen@huawei.com>
+Message-ID: <7c1b31cf-eb0b-02ad-f672-95d69055928a@huawei.com>
+Date:   Fri, 19 Nov 2021 10:35:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZYUi9XMyjtpGmAQ@osiris>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20211118192605.57e06d6b@xhacker>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.234]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600017.china.huawei.com (7.193.23.234)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/21 at 09:53am, Heiko Carstens wrote:
-> On Thu, Nov 18, 2021 at 03:13:27PM +0800, Baoquan He wrote:
-> > On 11/18/21 at 05:46am, kernel test robot wrote:
-> > >    arch/s390/kernel/machine_kexec_file.c: In function 'arch_kimage_file_post_load_cleanup':
-> > > >> arch/s390/kernel/machine_kexec_file.c:332:9: error: implicit declaration of function 'kvfree'; did you mean 'vfree'? [-Werror=implicit-function-declaration]
-> > >      332 |         kvfree(image->arch.ipl_buf);
-> > >          |         ^~~~~~
-> > >          |         vfree
-> > 
-> > OK, kvfree is not wrong, seems vfree is more appropriate since it's
-> > clear the ipl_buf is allocated with zvalloc() in ipl_report_finish().
-> > 
-> > Hi Heiko,
-> > 
-> > Could you help modify the code in your tree or append below patch to
-> > mute the lkp complaint? Sorry for the inconvenience.
-> ...
-> >  arch/s390/kernel/machine_kexec_file.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/s390/kernel/machine_kexec_file.c b/arch/s390/kernel/machine_kexec_file.c
-> > index 7f51837e9bc2..351a7ff69a43 100644
-> > --- a/arch/s390/kernel/machine_kexec_file.c
-> > +++ b/arch/s390/kernel/machine_kexec_file.c
-> > @@ -329,7 +329,7 @@ int arch_kexec_apply_relocations_add(struct purgatory_info *pi,
-> >  
-> >  int arch_kimage_file_post_load_cleanup(struct kimage *image)
-> >  {
-> > -	kvfree(image->arch.ipl_buf);
-> > +	vfree(image->arch.ipl_buf);
-> 
-> The problem reported above indicates that slab.h was not
-> included. With your patch, while it fixes the problem for this
-> particular configuration, this requires vmalloc.h to be included.
 
-Indeed, thanks.
 
-> 
-> I'll merge your patch and add the missing include as well.
-> 
+On 2021/11/18 19:26, Jisheng Zhang wrote:
+> From: Jisheng Zhang <jszhang@kernel.org>
+>
+> This is a riscv port of commit d6e2cc564775("arm64: extable: add `type`
+> and `data` fields").
+>
+> We will add specialized handlers for fixups, the `type` field is for
+> fixup handler type, the `data` field is used to pass specific data to
+> each handler, for example register numbers.
+>
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+>  arch/riscv/include/asm/asm-extable.h | 25 +++++++++++++++++--------
+>  arch/riscv/include/asm/extable.h     | 17 ++++++++++++++---
+>  arch/riscv/kernel/vmlinux.lds.S      |  2 +-
+>  arch/riscv/mm/extable.c              | 25 +++++++++++++++++++++----
+>  arch/riscv/net/bpf_jit_comp64.c      |  5 +++--
+>  scripts/sorttable.c                  |  4 +++-
+>  6 files changed, 59 insertions(+), 19 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/asm-extable.h b/arch/riscv/include/asm/asm-extable.h
+> index b790c02dbdda..1b1f4ffd8d37 100644
+> --- a/arch/riscv/include/asm/asm-extable.h
+> +++ b/arch/riscv/include/asm/asm-extable.h
+> @@ -2,31 +2,40 @@
+>  #ifndef __ASM_ASM_EXTABLE_H
+>  #define __ASM_ASM_EXTABLE_H
+>
+> +#define EX_TYPE_NONE			0
+> +#define EX_TYPE_FIXUP			1
+> +#define EX_TYPE_BPF			2
+> +
+>  #ifdef __ASSEMBLY__
+>
+> -#define __ASM_EXTABLE_RAW(insn, fixup)		\
+> -	.pushsection	__ex_table, "a";	\
+> -	.balign		4;			\
+> -	.long		((insn) - .);		\
+> -	.long		((fixup) - .);		\
+> +#define __ASM_EXTABLE_RAW(insn, fixup, type, data)	\
+> +	.pushsection	__ex_table, "a";		\
+> +	.balign		4;				\
+> +	.long		((insn) - .);			\
+> +	.long		((fixup) - .);			\
+> +	.short		(type);				\
+> +	.short		(data);				\
+>  	.popsection;
+>
+>  	.macro		_asm_extable, insn, fixup
+> -	__ASM_EXTABLE_RAW(\insn, \fixup)
+> +	__ASM_EXTABLE_RAW(\insn, \fixup, EX_TYPE_FIXUP, 0)
+>  	.endm
+>
+>  #else /* __ASSEMBLY__ */
+>
+>  #include <linux/stringify.h>
+>
+> -#define __ASM_EXTABLE_RAW(insn, fixup)			\
+> +#define __ASM_EXTABLE_RAW(insn, fixup, type, data)	\
+>  	".pushsection	__ex_table, \"a\"\n"		\
+>  	".balign	4\n"				\
+>  	".long		((" insn ") - .)\n"		\
+>  	".long		((" fixup ") - .)\n"		\
+> +	".short		(" type ")\n"			\
+> +	".short		(" data ")\n"			\
+>  	".popsection\n"
+>
+> -#define _ASM_EXTABLE(insn, fixup) __ASM_EXTABLE_RAW(#insn, #fixup)
+> +#define _ASM_EXTABLE(insn, fixup)	\
+> +	__ASM_EXTABLE_RAW(#insn, #fixup, __stringify(EX_TYPE_FIXUP), "0")
+>
+>  #endif /* __ASSEMBLY__ */
+>
+> diff --git a/arch/riscv/include/asm/extable.h b/arch/riscv/include/asm/extable.h
+> index e4374dde02b4..512012d193dc 100644
+> --- a/arch/riscv/include/asm/extable.h
+> +++ b/arch/riscv/include/asm/extable.h
+> @@ -17,18 +17,29 @@
+>
+>  struct exception_table_entry {
+>  	int insn, fixup;
+> +	short type, data;
+>  };
+>
+>  #define ARCH_HAS_RELATIVE_EXTABLE
+>
+> +#define swap_ex_entry_fixup(a, b, tmp, delta)		\
+> +do {							\
+> +	(a)->fixup = (b)->fixup + (delta);		\
+> +	(b)->fixup = (tmp).fixup - (delta);		\
+> +	(a)->type = (b)->type;				\
+> +	(b)->type = (tmp).type;				\
+> +	(a)->data = (b)->data;				\
+> +	(b)->data = (tmp).data;				\
+> +} while (0)
+> +
+>  bool fixup_exception(struct pt_regs *regs);
+>
+>  #if defined(CONFIG_BPF_JIT) && defined(CONFIG_ARCH_RV64I)
+> -bool rv_bpf_fixup_exception(const struct exception_table_entry *ex, struct pt_regs *regs);
+> +bool ex_handler_bpf(const struct exception_table_entry *ex, struct pt_regs *regs);
+>  #else
+>  static inline bool
+> -rv_bpf_fixup_exception(const struct exception_table_entry *ex,
+> -		       struct pt_regs *regs)
+> +ex_handler_bpf(const struct exception_table_entry *ex,
+> +	       struct pt_regs *regs)
+>  {
+>  	return false;
+>  }
+> diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
+> index 5104f3a871e3..0e5ae851929e 100644
+> --- a/arch/riscv/kernel/vmlinux.lds.S
+> +++ b/arch/riscv/kernel/vmlinux.lds.S
+> @@ -4,7 +4,7 @@
+>   * Copyright (C) 2017 SiFive
+>   */
+>
+> -#define RO_EXCEPTION_TABLE_ALIGN	16
+> +#define RO_EXCEPTION_TABLE_ALIGN	4
+>
+>  #ifdef CONFIG_XIP_KERNEL
+>  #include "vmlinux-xip.lds.S"
+> diff --git a/arch/riscv/mm/extable.c b/arch/riscv/mm/extable.c
+> index 3c561f1d0115..91e52c4bb33a 100644
+> --- a/arch/riscv/mm/extable.c
+> +++ b/arch/riscv/mm/extable.c
+> @@ -10,6 +10,20 @@
+>  #include <linux/extable.h>
+>  #include <linux/module.h>
+>  #include <linux/uaccess.h>
+> +#include <asm/asm-extable.h>
+> +
+> +static inline unsigned long
+> +get_ex_fixup(const struct exception_table_entry *ex)
+> +{
+> +	return ((unsigned long)&ex->fixup + ex->fixup);
+> +}
+> +
+> +static bool ex_handler_fixup(const struct exception_table_entry *ex,
+> +			     struct pt_regs *regs)
+> +{
+> +	regs->epc = get_ex_fixup(ex);
+> +	return true;
+> +}
+>
+>  bool fixup_exception(struct pt_regs *regs)
+>  {
+> @@ -19,9 +33,12 @@ bool fixup_exception(struct pt_regs *regs)
+>  	if (!ex)
+>  		return false;
+>
+> -	if (regs->epc >= BPF_JIT_REGION_START && regs->epc < BPF_JIT_REGION_END)
+> -		return rv_bpf_fixup_exception(ex, regs);
+> +	switch (ex->type) {
+> +	case EX_TYPE_FIXUP:
+> +		return ex_handler_fixup(ex, regs);
+> +	case EX_TYPE_BPF:
+> +		return ex_handler_bpf(ex, regs);
+> +	}
+>
+> -	regs->epc = (unsigned long)&ex->fixup + ex->fixup;
+> -	return true;
+> +	BUG();
+>  }
+> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+> index 7714081cbb64..69bab7e28f91 100644
+> --- a/arch/riscv/net/bpf_jit_comp64.c
+> +++ b/arch/riscv/net/bpf_jit_comp64.c
+> @@ -459,8 +459,8 @@ static int emit_call(bool fixed, u64 addr, struct rv_jit_context *ctx)
+>  #define BPF_FIXUP_OFFSET_MASK   GENMASK(26, 0)
+>  #define BPF_FIXUP_REG_MASK      GENMASK(31, 27)
+>
+> -bool rv_bpf_fixup_exception(const struct exception_table_entry *ex,
+> -			    struct pt_regs *regs)
+> +bool ex_handler_bpf(const struct exception_table_entry *ex,
+> +		    struct pt_regs *regs)
+>  {
+>  	off_t offset = FIELD_GET(BPF_FIXUP_OFFSET_MASK, ex->fixup);
+>  	int regs_offset = FIELD_GET(BPF_FIXUP_REG_MASK, ex->fixup);
+> @@ -514,6 +514,7 @@ static int add_exception_handler(const struct bpf_insn *insn,
+>
+>  	ex->fixup = FIELD_PREP(BPF_FIXUP_OFFSET_MASK, offset) |
+>  		FIELD_PREP(BPF_FIXUP_REG_MASK, dst_reg);
+> +	ex->type = EX_TYPE_BPF;
 
+looks good to me.
+
+Reviewed-by:Tong Tiangen <tongtiangen@huawei.com>
+
+>
+>  	ctx->nexentries++;
+>  	return 0;
+> diff --git a/scripts/sorttable.c b/scripts/sorttable.c
+> index 0c031e47a419..5b5472b543f5 100644
+> --- a/scripts/sorttable.c
+> +++ b/scripts/sorttable.c
+> @@ -376,9 +376,11 @@ static int do_file(char const *const fname, void *addr)
+>  	case EM_PARISC:
+>  	case EM_PPC:
+>  	case EM_PPC64:
+> -	case EM_RISCV:
+>  		custom_sort = sort_relative_table;
+>  		break;
+> +	case EM_RISCV:
+> +		custom_sort = arm64_sort_relative_table;
+> +		break;
+>  	case EM_ARCOMPACT:
+>  	case EM_ARCV2:
+>  	case EM_ARM:
+>
