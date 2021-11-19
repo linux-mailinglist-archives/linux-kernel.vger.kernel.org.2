@@ -2,132 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86219456BB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 09:33:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD8A4456BB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 09:34:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234450AbhKSIfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 03:35:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:25777 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229633AbhKSIfi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 03:35:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637310756;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tUuoKjixLQkWOo6/knJS/yxc8h9J4lm72RKU4yaFvIo=;
-        b=BnHzNqTNgI98k4D2gX6o7CU2a9QdVPAefJNT3rIJ27r23V1Vjf5DTUT27McJtBz9I5Zqj5
-        3rUuyokjIWYQaN2B2pFX6HnyKr+w9LJP6OREOgWnmTojrawIwNLkI6TRj9AFOIWd1pIAAK
-        T+TyhzxrQjlvzLheopWrKIBrJrATXpA=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-451-NCkPxFDAO4e3fLn2UV9EHQ-1; Fri, 19 Nov 2021 03:32:35 -0500
-X-MC-Unique: NCkPxFDAO4e3fLn2UV9EHQ-1
-Received: by mail-wm1-f69.google.com with SMTP id g11-20020a1c200b000000b003320d092d08so3715371wmg.9
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 00:32:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=tUuoKjixLQkWOo6/knJS/yxc8h9J4lm72RKU4yaFvIo=;
-        b=aW8ryLzv4d5NWbFXhLsU2STCbc+x61eue7FNFlFNFBq8ffWgI81pMxoOSgRp0prch/
-         ccC6Cz9D8kUTE+y0b1cj95LLsdBXhZzEx5tn9NC3micAQlmkDORVk1i0Pdbc9AfRubKH
-         nwcZ7JhsStsLeV7XeVd+BfQ+86BZUJjMqkuBEkTiKzcOAnIKLh8vsuktrRLUlyek+jyt
-         lBjEnbaWkX4eFNBxJFmq+dMjPj/t/AoiaQP92G9l0m86EsBD5GC8uWk2G7eE+3joWJdW
-         rriTWWGFqIdrbi4YpAtOmlG54L7iyLyrsu/zbYFEWxpvVXavEOm7pgvEK+CtJCeb8EeS
-         Auyw==
-X-Gm-Message-State: AOAM533NdfO8vAnfbYxzCeaaYMBoqRfa2a20Qosv7DbdsGFA3ruBZZOk
-        dSnHbMAJtySegAlMd6xhbuPwiWtrAGLju/D4Ofeivb30cAHUpabSMonCny4g8GhZqCqU+zdzMH8
-        AyPtvuTY0kPH+YiK6BWTNDKCc
-X-Received: by 2002:a05:600c:2156:: with SMTP id v22mr4877445wml.159.1637310753860;
-        Fri, 19 Nov 2021 00:32:33 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx+6a7rxjlIR8+FNOMhZH5MUe8GhJzMMes1/fzoti38R1czb1GyITps3evRL1yExeB1HLGWNA==
-X-Received: by 2002:a05:600c:2156:: with SMTP id v22mr4877410wml.159.1637310753625;
-        Fri, 19 Nov 2021 00:32:33 -0800 (PST)
-Received: from [192.168.1.102] ([92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id n184sm10977123wme.2.2021.11.19.00.32.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Nov 2021 00:32:33 -0800 (PST)
-Message-ID: <9b41eb05-a095-39af-8b76-a73fa2532e92@redhat.com>
-Date:   Fri, 19 Nov 2021 09:32:32 +0100
+        id S234457AbhKSIgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 03:36:48 -0500
+Received: from mga05.intel.com ([192.55.52.43]:28474 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229511AbhKSIgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 03:36:46 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="320595571"
+X-IronPort-AV: E=Sophos;i="5.87,246,1631602800"; 
+   d="scan'208";a="320595571"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 00:33:45 -0800
+X-IronPort-AV: E=Sophos;i="5.87,246,1631602800"; 
+   d="scan'208";a="455696549"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 00:33:43 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mnzKy-008TWF-RR;
+        Fri, 19 Nov 2021 10:33:36 +0200
+Date:   Fri, 19 Nov 2021 10:33:36 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     kernel test robot <lkp@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [pinctrl-intel:review-andy 18/19]
+ drivers/pinctrl/pinctrl-zynqmp.c:825:13: warning: variable 'pin' is
+ uninitialized when used here
+Message-ID: <YZdhYEVCgqh5MB3J@smile.fi.intel.com>
+References: <202111191618.SSj1gGvK-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] spidev: Make probe to fail early if a spidev compatible
- is used
-Content-Language: en-US
-To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-spi@vger.kernel.org, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org
-References: <20211109225920.1158920-1-javierm@redhat.com>
- <20211110074247.g7eaq2z27bwdt4m5@pengutronix.de>
- <YZaZpx7cudaAEGIP@sirena.org.uk>
- <20211119074015.kji2hzarevxgfl5l@pengutronix.de>
-From:   Javier Martinez Canillas <javierm@redhat.com>
-In-Reply-To: <20211119074015.kji2hzarevxgfl5l@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202111191618.SSj1gGvK-lkp@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Uwe,
-
-On 11/19/21 08:40, Uwe Kleine-König wrote:
-
-[snip]
-
+On Fri, Nov 19, 2021 at 04:08:32PM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/pinctrl/intel.git review-andy
+> head:   c25441ca551164c56b34885df3d657e2ea4d623f
+> commit: 9122cda6a325f80564f02b7899cc063009f5e1f9 [18/19] pinctrl: zynqmp: Unify pin naming
+> config: arm64-buildonly-randconfig-r004-20211118 (attached as .config)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install arm64 cross compiling tool for clang build
+>         # apt-get install binutils-aarch64-linux-gnu
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/pinctrl/intel.git/commit/?id=9122cda6a325f80564f02b7899cc063009f5e1f9
+>         git remote add pinctrl-intel https://git.kernel.org/pub/scm/linux/kernel/git/pinctrl/intel.git
+>         git fetch --no-tags pinctrl-intel review-andy
+>         git checkout 9122cda6a325f80564f02b7899cc063009f5e1f9
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=arm64 
 > 
-> It affects c) only if the device tree has a device with compatible =
-> "spidev". For such a device the history is:
->
->   - Before 956b200a846e ("spi: spidev: Warn loudly if instantiated from
->     DT as "spidev"") in v4.1-rc1:
->     Just bound silently
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
->   - After 956b200a846e up to 6840615f85f6 ("spi: spidev: Add SPI ID
->     table") in v5.15-rc6:
->     The device was automatically bound with a warning
+> All warnings (new ones prefixed by >>):
 > 
->   - After 6840615f85f6:
->     The device doesn't bind automatically, when using driver_override
->     you get a warning.
-> 
->   - With the proposed patch:
->     The device cannot be bound even using driver_override
->
+> >> drivers/pinctrl/pinctrl-zynqmp.c:825:13: warning: variable 'pin' is uninitialized when used here [-Wuninitialized]
+>            if (IS_ERR(pin->name))
+>                       ^~~
+>    drivers/pinctrl/pinctrl-zynqmp.c:811:37: note: initialize the variable 'pin' to silence this warning
+>            struct pinctrl_pin_desc *pins, *pin;
+>                                               ^
+>                                                = NULL
+>    1 warning generated.
 
-My understanding is that there's an agreement that using "spidev" as the
-specific compatible string is something that should not be supported.
- 
-> Not this affects also devices that use
-> 
-> 	compatible = "myvender,devicename", "spidev";
-> 
+Utterly inappropriate suggestion by the compiler (it found an actual error,
+though).
 
-This is indeed a corner case and I'm less sure what the kernel should do
-about it. I just learned now that of_device_is_compatible() return value
-is not a boolean but instead a "score":
+Can be Clang fixed, really?
 
-https://elixir.bootlin.com/linux/latest/source/drivers/of/base.c#L455
-
-I wonder if we could add another helper that returns the index instead,
-and do: of_device_is_compatible_index(spi->dev.of_node, "spidev") == 0
-
-Another option is to add an of_device_is_compatible_specific() helper.
-
-Or just consider DT nodes with a general "spidev" compatible string to
-also not be valid. I would lean towards this one I think.
-
-Best regards,
 -- 
-Javier Martinez Canillas
-Linux Engineering
-Red Hat
+With Best Regards,
+Andy Shevchenko
+
 
