@@ -2,137 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5998F456E6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 12:44:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8F7456E1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 12:20:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231192AbhKSLlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 06:41:44 -0500
-Received: from rome.phoronix.com ([192.211.48.82]:8288 "EHLO rome.phoronix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229687AbhKSLlm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 06:41:42 -0500
-X-Greylist: delayed 1114 seconds by postgrey-1.27 at vger.kernel.org; Fri, 19 Nov 2021 06:41:42 EST
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=michaellarabel.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ANNJ7mFtSezQSqS/LIqqo8SPM9BHtr+pZD5rKWf0pgQ=; b=P1S6xR92ZeXBcNRJ8w+pFQLmZG
-        x7JkMnP6RW0DmUHrZ7lmUk4+0J4Ub1c8hdGhlek/3mYCJwe7rOjKSk+kVAmMsRdVRmBZvzX3n7PXU
-        NwhkmaiXcAuEvx7ryjgaKFwGAGBRHjI3It0dLZz1qUkSPQjJpKk82FuTuWhroEkVQsobgvrxslTji
-        z+HkjC0T9kkhy90AkceZkQ3x7sFxp+zz1MTiZcbQbCPtCgaIZp2+RqLw/o9DW+N2wS3As6FB4SRX9
-        wWwXJrjIX9qef9dmulnXhCTT65e7rjjb4riScsC8juSXPt38cTPX2aAmWC3M1TJj0SNy+wT//qDI4
-        F/jcEgaw==;
-Received: from c-73-176-63-28.hsd1.in.comcast.net ([73.176.63.28]:49234 helo=[192.168.86.57])
-        by rome.phoronix.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <Michael@MichaelLarabel.com>)
-        id 1mo1w3-00034b-KF; Fri, 19 Nov 2021 06:20:02 -0500
-Message-ID: <a2a18288-fa7c-02fb-6376-730777823637@MichaelLarabel.com>
-Date:   Fri, 19 Nov 2021 05:19:50 -0600
+        id S235032AbhKSLXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 06:23:18 -0500
+Received: from smtprelay0239.hostedemail.com ([216.40.44.239]:44400 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235061AbhKSLXP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 06:23:15 -0500
+Received: from omf03.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 88046886E7;
+        Fri, 19 Nov 2021 11:20:11 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id D17E79000271;
+        Fri, 19 Nov 2021 11:20:06 +0000 (UTC)
+Message-ID: <d2df9558ddbc06ac50b7a9aef46445fdf76e7d6b.camel@perches.com>
+Subject: Re: [PATCH v1 2/3] x86/quirks: Introduce
+ hpet_dev_print_force_hpet_address() helper
+From:   Joe Perches <joe@perches.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Date:   Fri, 19 Nov 2021 03:20:09 -0800
+In-Reply-To: <20211119110017.48510-2-andriy.shevchenko@linux.intel.com>
+References: <20211119110017.48510-1-andriy.shevchenko@linux.intel.com>
+         <20211119110017.48510-2-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH] cpufreq: intel_pstate: ITMT support for overclocked
- system
-Content-Language: en-CA
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        lenb@kernel.org, rafael@kernel.org, viresh.kumar@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        ricardo.neri@intel.com, tim.c.chen@intel.com, peterz@infradead.org,
-        arjan@linux.intel.com
-References: <20211119051801.1432724-1-srinivas.pandruvada@linux.intel.com>
-From:   Michael Larabel <Michael@MichaelLarabel.com>
-In-Reply-To: <20211119051801.1432724-1-srinivas.pandruvada@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - rome.phoronix.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - MichaelLarabel.com
-X-Get-Message-Sender-Via: rome.phoronix.com: authenticated_id: michael@michaellarabel.com
-X-Authenticated-Sender: rome.phoronix.com: michael@michaellarabel.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+X-Rspamd-Queue-Id: D17E79000271
+X-Spam-Status: No, score=0.10
+X-Stat-Signature: 6jk84mbae8ntn175y5s8hws3m8gd345d
+X-Rspamd-Server: rspamout02
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/+W1yEjgVba1zQb7u7nT0SyFnowotqIMM=
+X-HE-Tag: 1637320806-965394
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/21 23:18, Srinivas Pandruvada wrote:
-> On systems with overclocking enabled, CPPC Highest Performance can be
-> hard coded to 0xff. In this case even if we have cores with different
-> highest performance, ITMT can't be enabled as the current implementation
-> depends on CPPC Highest Performance.
->
-> On such systems we can use MSR_HWP_CAPABILITIES maximum performance field
-> when CPPC.Highest Performance is 0xff.
->
-> Due to legacy reasons, we can't solely depend on MSR_HWP_CAPABILITIES as
-> in some older systems CPPC Highest Performance is the only way to identify
-> different performing cores.
->
-> Reported-by: Michael Larabel <Michael@MichaelLarabel.com>
-> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> ---
-> This patch was tested on one Alder Lake system by enabling Overclocking.
-> Once overclocking is enabled, we see
-> $cat /sys/devices/system/cpu/cpu*/acpi_cppc/highest_perf
-> 255 (P-Cores)
-> 255 (P-Cores
-> ...
-> ...
-> 255 (E-Cores)
-> 255 (E-Cores)
-> The real max performance for CPUs on this system was
-> 0x40 for P-cores and 0x26 for E-cores.
-> With this change applied we will see
-> $cat /proc/sys/kernel/sched_itmt_enabled
-> 1
-> The resultant ITMT priorities
-> for P-core 0x40, P-core HT sibling 0x10 and E-core 0x26
+On Fri, 2021-11-19 at 13:00 +0200, Andy Shevchenko wrote:
+> Introduce hpet_dev_print_force_hpet_address() helper to unify printing
+> forced HPET address. No functional change intended.
+
+This probably reduces object code by a few bytes of text.
+
+> diff --git a/arch/x86/kernel/quirks.c b/arch/x86/kernel/quirks.c
+[]
+> @@ -68,6 +68,11 @@ static enum {
+>  	ATI_FORCE_HPET_RESUME,
+>  } force_hpet_resume_type;
+>  
+> +static void hpet_dev_print_force_hpet_address(struct device *dev)
+> +{
+> +	dev_printk(KERN_DEBUG, dev, "Force enabled HPET at 0x%lx\n", force_hpet_address);
+> +}
+
+And this might be better placed up a few lines immediately after
+
+unsigned long force_hpet_address;
+
+and before
+
+enum {
+	...
+} force_hpet_resume_type;
 
 
-With this patch I can confirm that now sched_itmt_enabled = 1 and 
-correct highest_perf with the ASUS ROG STRIX Z690-E GAMING WIFI board on 
-the latest BIOS. Thanks.
-
-Tested-by: Michael Larabel <Michael@MichaelLarabel.com>
-
-Michael
-
-
->
->   drivers/cpufreq/intel_pstate.c | 10 ++++++++++
->   1 file changed, 10 insertions(+)
->
-> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-> index 815df3daae9d..3106e62ffb25 100644
-> --- a/drivers/cpufreq/intel_pstate.c
-> +++ b/drivers/cpufreq/intel_pstate.c
-> @@ -338,6 +338,8 @@ static void intel_pstste_sched_itmt_work_fn(struct work_struct *work)
->   
->   static DECLARE_WORK(sched_itmt_work, intel_pstste_sched_itmt_work_fn);
->   
-> +#define CPPC_MAX_PERF	U8_MAX
-> +
->   static void intel_pstate_set_itmt_prio(int cpu)
->   {
->   	struct cppc_perf_caps cppc_perf;
-> @@ -348,6 +350,14 @@ static void intel_pstate_set_itmt_prio(int cpu)
->   	if (ret)
->   		return;
->   
-> +	/*
-> +	 * On some systems with overclocking enabled, CPPC.highest_perf is hardcoded to 0xff.
-> +	 * In this case we can't use CPPC.highest_perf to enable ITMT.
-> +	 * In this case we can look at MSR_HWP_CAPABILITIES bits [8:0] to decide.
-> +	 */
-> +	if (cppc_perf.highest_perf == CPPC_MAX_PERF)
-> +		cppc_perf.highest_perf = HWP_HIGHEST_PERF(READ_ONCE(all_cpu_data[cpu]->hwp_cap_cached));
-> +
->   	/*
->   	 * The priorities can be set regardless of whether or not
->   	 * sched_set_itmt_support(true) has been called and it is valid to
