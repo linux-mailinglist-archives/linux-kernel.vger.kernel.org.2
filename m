@@ -2,333 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBECC456F41
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:03:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1767456F4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 14:04:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234982AbhKSNGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 08:06:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230373AbhKSNGQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 08:06:16 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0AFCC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 05:03:14 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id y26so43012451lfa.11
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 05:03:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=74UAaAlyeYorhD8LiTFFDJpHlo7FxQjyV94+QBnI/UU=;
-        b=Ej9xPYoOzVMnUvBB65ibgggdM7iToNoZS1avGOysQWLq+JVAMC1ra+2dG/bY5VLIFC
-         3/cNWGFjnUTkuZ97uz+s2tsV7k09iPk15squqqTxXYVOn2bNSenQyRVZhmicMMSYPB0z
-         O9BvfHppI80mRcHULK9NmqUyg4n2aLDGM0r2D3dPp5oUorkUtYAMrs+3GGk20ntU3JfE
-         XeozBrLNDEv9/YRKb6tUBueQ9DCbqZBAzRTQN84Zzat4LshNEvDLdsZofkBAUs07EwQ+
-         gJmMzfk5K5o0MRpz6uf+JFV9GMxhUyKeFJITyorI4q5MVELGppkTz0ZaoIC6Zq6FrHKn
-         2ukw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=74UAaAlyeYorhD8LiTFFDJpHlo7FxQjyV94+QBnI/UU=;
-        b=f54ve3c6gD18rnSbgJdL+o43M9vnPx72iWy9e4RtbYTnkYCvQEkXIRRy720EfLRqGN
-         h4/TDrkRRYr42YSQh9wyvsGL9L14P4tTXEVFQIGLVdLAPLaiJ4oMqj8EP+vfkz9TjA88
-         VDZuGrv+35QLt3YRyO9GjMyxyMV3o6ouiJPvNzDwMOy+R7HpgtxuSHTW5ZChiotKj1nw
-         xYipYhGATqA9N5r36eN14p6wDeOj3XVn9Lp2/DQ8vH3BVD9Jie1WF/3VWf/GL0Kpey2m
-         7/K/MYXW52TSc9BmIROBhIbBzFz0ol7oBO1izBt58J6lt/yY03M9dy/q7AnyPpBv0ZIK
-         7azA==
-X-Gm-Message-State: AOAM533ufTKRLmlIrAf9aTCibpx46C4LSNdvA8/zuwO3GigHzd/ahXHD
-        dfGpv//2XO9+bIkhnuDkKZS0i82BEI4=
-X-Google-Smtp-Source: ABdhPJzC1y09BmFT4vqj3Oye5DhvhOnKckcfdTr3CXRANhsG08svFeRlo/juDHbos+Xfh/ZhRgxCjw==
-X-Received: by 2002:a05:651c:1788:: with SMTP id bn8mr6014524ljb.521.1637326991565;
-        Fri, 19 Nov 2021 05:03:11 -0800 (PST)
-Received: from inno-pc.lan (88-115-161-74.elisa-laajakaista.fi. [88.115.161.74])
-        by smtp.gmail.com with ESMTPSA id e6sm356815lfn.172.2021.11.19.05.03.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 05:03:11 -0800 (PST)
-From:   Zhi Wang <zhi.wang.linux@gmail.com>
-X-Google-Original-From: Zhi Wang <zhi.a.wang@intel.com>
-To:     intel-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     Zhi Wang <zhi.wang.linux@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Vivi Rodrigo <rodrigo.vivi@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Terrence Xu <terrence.xu@intel.com>
-Subject: [PATCH 2/2] i915/gvt: save the MMIO snapshot in the early init of GVT-g
-Date:   Fri, 19 Nov 2021 08:03:07 -0500
-Message-Id: <20211119130307.21098-2-zhi.a.wang@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211119130307.21098-1-zhi.a.wang@intel.com>
-References: <20211119130307.21098-1-zhi.a.wang@intel.com>
+        id S235330AbhKSNH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 08:07:59 -0500
+Received: from foss.arm.com ([217.140.110.172]:51448 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234547AbhKSNH6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 08:07:58 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F26A6D;
+        Fri, 19 Nov 2021 05:04:56 -0800 (PST)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2809D3F70D;
+        Fri, 19 Nov 2021 05:04:55 -0800 (PST)
+Date:   Fri, 19 Nov 2021 13:04:50 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, kernel@axis.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: uaccess: fix put_user() with TTBR0 PAN
+Message-ID: <20211119130419.GA25912@lakrids.cambridge.arm.com>
+References: <20211118163417.21617-1-vincent.whitchurch@axis.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211118163417.21617-1-vincent.whitchurch@axis.com>
+User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhi Wang <zhi.wang.linux@gmail.com>
+Hi Vincent,
 
-To support the early init of GVT-g, which will be put in i915, after the
-GVT-g is moved into a dedicated module, we need to save the MMIO snapshot
-in the early init of GVT-g, when the HW hasn't been touched.
+On Thu, Nov 18, 2021 at 05:34:17PM +0100, Vincent Whitchurch wrote:
+> The value argument to put_user() must be evaluated before the TTBR0
+> switch is done.  Otherwise, if it is a function and the function sleeps,
+> the reserved TTBR0 will be restored when the process is switched in
+> again and the process will end up in an infinite loop of faults.
 
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc: Vivi Rodrigo <rodrigo.vivi@intel.com>
-Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
-Cc: Zhi Wang <zhi.a.wang@intel.com>
-Tested-by: Terrence Xu <terrence.xu@intel.com>
-Signed-off-by: Zhi Wang <zhi.wang.linux@gmail.com>
----
- drivers/gpu/drm/i915/gvt/firmware.c        | 36 +----------
- drivers/gpu/drm/i915/gvt/handlers.c        | 39 ------------
- drivers/gpu/drm/i915/gvt/mmio_info_table.c | 72 +++++++++++++++++++++-
- drivers/gpu/drm/i915/gvt/mmio_info_table.h |  3 +
- 4 files changed, 76 insertions(+), 74 deletions(-)
+> This problem was seen with the put_user() in schedule_tail().  A similar
+> fix was done for RISC-V in commit 285a76bb2cf51b0c74c634 ("riscv:
+> evaluate put_user() arg before enabling user access").
+> 
+> Fixes: f253d827f33cb5a5990 ("arm64: uaccess: refactor __{get,put}_user")
+> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> ---
+>  arch/arm64/include/asm/uaccess.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
+> index 6e2e0b7031ab..96b26fa9d3d0 100644
+> --- a/arch/arm64/include/asm/uaccess.h
+> +++ b/arch/arm64/include/asm/uaccess.h
+> @@ -362,10 +362,11 @@ do {									\
+>  #define __put_user_error(x, ptr, err)					\
+>  do {									\
+>  	__typeof__(*(ptr)) __user *__p = (ptr);				\
+> +	__typeof__(*(__p)) __val = (x);					\
+>  	might_fault();							\
+>  	if (access_ok(__p, sizeof(*__p))) {				\
+>  		__p = uaccess_mask_ptr(__p);				\
+> -		__raw_put_user((x), __p, (err));			\
+> +		__raw_put_user(__val, __p, (err));			\
+>  	} else	{							\
+>  		(err) = -EFAULT;					\
+>  	}								\
+> -- 
+> 2.33.1
+> 
 
-diff --git a/drivers/gpu/drm/i915/gvt/firmware.c b/drivers/gpu/drm/i915/gvt/firmware.c
-index 1a8274a3f4b1..dd5d4dd7a8cf 100644
---- a/drivers/gpu/drm/i915/gvt/firmware.c
-+++ b/drivers/gpu/drm/i915/gvt/firmware.c
-@@ -66,12 +66,6 @@ static struct bin_attribute firmware_attr = {
- 	.mmap = NULL,
- };
+Thanks for this, and apolgoies for introducing this issue in the first
+place. The patch looks correct to me.
+
+There's a similar problem in __get_kernel_nofault() with TCO, and that
+will need similar treatement.
+
+I think it would be better to use temporaries in __raw_put_user(), along
+with a comment there, so that the requirement is documented and dealt
+with in once place. Example diff at the end of this mail; I'm happy for
+you to pick that for v2, or I can send it out as a patch if your prefer.
+
+Thanks,
+Mark.
+
+---->8----
+diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
+index 6e2e0b7031ab..7c0d7a7a9a50 100644
+--- a/arch/arm64/include/asm/uaccess.h
++++ b/arch/arm64/include/asm/uaccess.h
+@@ -351,11 +351,19 @@ do {									\
+ 	}								\
+ } while (0)
  
--static int mmio_snapshot_handler(struct intel_gvt *gvt, u32 offset, void *data)
--{
--	*(u32 *)(data + offset) = intel_uncore_read_notrace(gvt->gt->uncore,
--							    _MMIO(offset));
--	return 0;
--}
- 
- static int expose_firmware_sysfs(struct intel_gvt *gvt)
- {
-@@ -99,17 +93,11 @@ static int expose_firmware_sysfs(struct intel_gvt *gvt)
- 
- 	p = firmware + h->cfg_space_offset;
- 
--	for (i = 0; i < h->cfg_space_size; i += 4)
--		pci_read_config_dword(pdev, i, p + i);
--
--	memcpy(gvt->firmware.cfg_space, p, info->cfg_space_size);
-+	memcpy(p, gvt->firmware.cfg_space, info->cfg_space_size);
- 
- 	p = firmware + h->mmio_offset;
- 
--	/* Take a snapshot of hw mmio registers. */
--	intel_gvt_for_each_tracked_mmio(gvt, mmio_snapshot_handler, p);
--
--	memcpy(gvt->firmware.mmio, p, info->mmio_size);
-+	memcpy(p, gvt->firmware.mmio, info->mmio_size);
- 
- 	crc32_start = offsetof(struct gvt_firmware_header, crc32) + 4;
- 	h->crc32 = crc32_le(0, firmware + crc32_start, size - crc32_start);
-@@ -142,9 +130,6 @@ void intel_gvt_free_firmware(struct intel_gvt *gvt)
- {
- 	if (!gvt->firmware.firmware_loaded)
- 		clean_firmware_sysfs(gvt);
--
--	kfree(gvt->firmware.cfg_space);
--	vfree(gvt->firmware.mmio);
- }
- 
- static int verify_firmware(struct intel_gvt *gvt,
-@@ -217,23 +202,6 @@ int intel_gvt_load_firmware(struct intel_gvt *gvt)
- 	if (!path)
- 		return -ENOMEM;
- 
--	mem = kmalloc(info->cfg_space_size, GFP_KERNEL);
--	if (!mem) {
--		kfree(path);
--		return -ENOMEM;
--	}
--
--	firmware->cfg_space = mem;
--
--	mem = vmalloc(info->mmio_size);
--	if (!mem) {
--		kfree(path);
--		kfree(firmware->cfg_space);
--		return -ENOMEM;
--	}
--
--	firmware->mmio = mem;
--
- 	sprintf(path, "%s/vid_0x%04x_did_0x%04x_rid_0x%02x.golden_hw_state",
- 		 GVT_FIRMWARE_PATH, pdev->vendor, pdev->device,
- 		 pdev->revision);
-diff --git a/drivers/gpu/drm/i915/gvt/handlers.c b/drivers/gpu/drm/i915/gvt/handlers.c
-index 2c064da3db6d..ba7b330a2c71 100644
---- a/drivers/gpu/drm/i915/gvt/handlers.c
-+++ b/drivers/gpu/drm/i915/gvt/handlers.c
-@@ -2406,45 +2406,6 @@ int intel_gvt_setup_mmio_handlers(struct intel_gvt *gvt)
- 	return ret;
- }
- 
--/**
-- * intel_gvt_for_each_tracked_mmio - iterate each tracked mmio
-- * @gvt: a GVT device
-- * @handler: the handler
-- * @data: private data given to handler
-- *
-- * Returns:
-- * Zero on success, negative error code if failed.
-- */
--int intel_gvt_for_each_tracked_mmio(struct intel_gvt *gvt,
--	int (*handler)(struct intel_gvt *gvt, u32 offset, void *data),
--	void *data)
--{
--	struct gvt_mmio_block *block = gvt->mmio.mmio_block;
--	struct intel_gvt_mmio_info *e;
--	int i, j, ret;
--
--	hash_for_each(gvt->mmio.mmio_info_table, i, e, node) {
--		ret = handler(gvt, e->offset, data);
--		if (ret)
--			return ret;
--	}
--
--	for (i = 0; i < gvt->mmio.num_mmio_block; i++, block++) {
--		/* pvinfo data doesn't come from hw mmio */
--		if (i915_mmio_reg_offset(block->offset) == VGT_PVINFO_PAGE)
--			continue;
--
--		for (j = 0; j < block->size; j += 4) {
--			ret = handler(gvt,
--				      i915_mmio_reg_offset(block->offset) + j,
--				      data);
--			if (ret)
--				return ret;
--		}
--	}
--	return 0;
--}
--
- /**
-  * intel_vgpu_default_mmio_read - default MMIO read handler
-  * @vgpu: a vGPU
-diff --git a/drivers/gpu/drm/i915/gvt/mmio_info_table.c b/drivers/gpu/drm/i915/gvt/mmio_info_table.c
-index 723190c25313..76535e3cc9ba 100644
---- a/drivers/gpu/drm/i915/gvt/mmio_info_table.c
-+++ b/drivers/gpu/drm/i915/gvt/mmio_info_table.c
-@@ -1398,6 +1398,54 @@ void intel_gvt_clean_mmio_info(struct intel_gvt *gvt)
- 
- 	vfree(gvt->mmio.mmio_attribute);
- 	gvt->mmio.mmio_attribute = NULL;
-+	kfree(gvt->firmware.cfg_space);
-+	vfree(gvt->firmware.mmio);
-+}
-+
-+static int mmio_snapshot_handler(struct intel_gvt *gvt, u32 offset, void *data)
-+{
-+	*(u32 *)(data + offset) = intel_uncore_read_notrace(gvt->gt->uncore,
-+							    _MMIO(offset));
-+	return 0;
-+}
-+
-+/**
-+ * intel_gvt_for_each_tracked_mmio - iterate each tracked mmio
-+ * @gvt: a GVT device
-+ * @handler: the handler
-+ * @data: private data given to handler
-+ *
-+ * Returns:
-+ * Zero on success, negative error code if failed.
++/*
++ * We must not call into the scheduler between uaccess_ttbr0_enable() and
++ * uaccess_ttbr0_disable(). As `x` and `ptr` could contain blocking functions,
++ * we must evaluate these first.
 + */
-+int intel_gvt_for_each_tracked_mmio(struct intel_gvt *gvt,
-+	int (*handler)(struct intel_gvt *gvt, u32 offset, void *data),
-+	void *data)
-+{
-+	struct gvt_mmio_block *block = gvt->mmio.mmio_block;
-+	struct intel_gvt_mmio_info *e;
-+	int i, j, ret;
-+
-+	hash_for_each(gvt->mmio.mmio_info_table, i, e, node) {
-+		ret = handler(gvt, e->offset, data);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	for (i = 0; i < gvt->mmio.num_mmio_block; i++, block++) {
-+		/* pvinfo data doesn't come from hw mmio */
-+		if (i915_mmio_reg_offset(block->offset) == VGT_PVINFO_PAGE)
-+			continue;
-+
-+		for (j = 0; j < block->size; j += 4) {
-+			ret = handler(gvt,
-+				      i915_mmio_reg_offset(block->offset) + j,
-+				      data);
-+			if (ret)
-+				return ret;
-+		}
-+	}
-+	return 0;
- }
+ #define __raw_put_user(x, ptr, err)					\
+ do {									\
+-	__chk_user_ptr(ptr);						\
++	__typeof__(*(ptr)) __user *__rpu_ptr = (ptr);			\
++	__typeof__(*(ptr)) __rpu_val = (x);				\
++	__chk_user_ptr(__rpu_ptr);					\
++									\
+ 	uaccess_ttbr0_enable();						\
+-	__raw_put_mem("sttr", x, ptr, err);				\
++	__raw_put_mem("sttr", __rpu_val, __rpu_ptr, err);		\
+ 	uaccess_ttbr0_disable();					\
+ } while (0)
  
- /**
-@@ -1414,8 +1462,10 @@ int intel_gvt_setup_mmio_info(struct intel_gvt *gvt)
- {
- 	struct intel_gvt_device_info *info = &gvt->device_info;
- 	struct drm_i915_private *i915 = gvt->gt->i915;
-+	struct pci_dev *pdev = to_pci_dev(i915->drm.dev);
- 	int size = info->mmio_size / 4 * sizeof(*gvt->mmio.mmio_attribute);
--	int ret;
-+	void *mem;
-+	int i, ret;
+@@ -380,14 +388,22 @@ do {									\
  
- 	gvt->mmio.mmio_attribute = vzalloc(size);
- 	if (!gvt->mmio.mmio_attribute)
-@@ -1454,6 +1504,26 @@ int intel_gvt_setup_mmio_info(struct intel_gvt *gvt)
- 	gvt->mmio.mmio_block = mmio_blocks;
- 	gvt->mmio.num_mmio_block = ARRAY_SIZE(mmio_blocks);
+ #define put_user	__put_user
  
-+	mem = kzalloc(info->cfg_space_size, GFP_KERNEL);
-+	if (!mem)
-+		goto err;
-+
-+	gvt->firmware.cfg_space = mem;
-+
-+	for (i = 0; i < info->cfg_space_size; i += 4)
-+		pci_read_config_dword(pdev, i, mem + i);
-+
-+	mem = vzalloc(info->mmio_size);
-+	if (!mem) {
-+		kfree(gvt->firmware.cfg_space);
-+		goto err;
-+	}
-+
-+	gvt->firmware.mmio = mem;
-+
-+	/* Take a snapshot of hw mmio registers. */
-+	intel_gvt_for_each_tracked_mmio(gvt, mmio_snapshot_handler, mem);
-+
- 	return 0;
- err:
- 	intel_gvt_clean_mmio_info(gvt);
-diff --git a/drivers/gpu/drm/i915/gvt/mmio_info_table.h b/drivers/gpu/drm/i915/gvt/mmio_info_table.h
-index 1c78ab1906c4..8379cb41735f 100644
---- a/drivers/gpu/drm/i915/gvt/mmio_info_table.h
-+++ b/drivers/gpu/drm/i915/gvt/mmio_info_table.h
-@@ -27,6 +27,9 @@
- 
- unsigned long intel_gvt_get_device_type(struct intel_gvt *gvt);
- bool intel_gvt_match_device(struct intel_gvt *gvt, unsigned long device);
-+int intel_gvt_for_each_tracked_mmio(struct intel_gvt *gvt,
-+	int (*handler)(struct intel_gvt *gvt, u32 offset, void *data),
-+	void *data);
- struct intel_gvt_mmio_info *intel_gvt_find_mmio_info(struct intel_gvt *gvt,
- 						     unsigned int offset);
- int intel_gvt_setup_mmio_info(struct intel_gvt *gvt);
--- 
-2.25.1
-
++/*
++ * We must not call into the scheduler between __uaccess_enable_tco_async() and
++ * __uaccess_disable_tco_async(). As `dst` and `src` may contain blocking
++ * functions, we must evaluate these first.
++ */
+ #define __put_kernel_nofault(dst, src, type, err_label)			\
+ do {									\
+ 	int __pkn_err = 0;						\
++	__typeof__(dst) __pkn_dst = (dst);				\
++	__typeof__(src) __pkn_src = (src);				\
+ 									\
+ 	__uaccess_enable_tco_async();					\
+-	__raw_put_mem("str", *((type *)(src)),				\
+-		      (__force type *)(dst), __pkn_err);		\
++	__raw_put_mem("str", *((type *)(__pkn_src)),			\
++		      (__force type *)(__pkn_dst), __pkn_err);		\
+ 	__uaccess_disable_tco_async();					\
++									\
+ 	if (unlikely(__pkn_err))					\
+ 		goto err_label;						\
+ } while(0)
