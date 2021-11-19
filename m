@@ -2,114 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977FC457091
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 15:24:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1BB6457097
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 15:25:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235852AbhKSO07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 09:26:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232080AbhKSO06 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 09:26:58 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9396C061574;
-        Fri, 19 Nov 2021 06:23:56 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id 200so8796593pga.1;
-        Fri, 19 Nov 2021 06:23:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language
-         :from:to:cc:references:in-reply-to:content-transfer-encoding;
-        bh=dvjMlZBI3ldb1jXqYwhDV7AWs1lj5LCSS81ZY56RgHg=;
-        b=lD29CjzOk03sgDLP+GNvSpxJtgVkW5rJkK+91U6AQudAzMZxrwkaky9OEq6jf27Gw7
-         +El3go4e6gBFGCWthIzBWcaH6MtynoVd2Asx0s8lF4AHh9KTCrYFWAivyI8ee0X1Vv36
-         V2FQuAVabQQBAbOL0fIquaORLXE6V2pQuWoxP4p8Bdmk66ffMTRypmvZJws3ZQPoiG7R
-         xBnlvWtgNAT1CZU5CVKw8D3+cafHZ/lwicgnA/RP75ZpQaa+0T4cnXOpdWgAZYBmS+Ds
-         D+JWFTqNXrZl80kk+n0WgCyZhptSAvKOJXiZ1wT44+Ikfkw7mB3QMLEop9ypqPjQJy3c
-         M8pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:from:to:cc:references:in-reply-to
-         :content-transfer-encoding;
-        bh=dvjMlZBI3ldb1jXqYwhDV7AWs1lj5LCSS81ZY56RgHg=;
-        b=ymOoSNPXb9r3m4Ip0eXlmv0Q4P1UZsmxUwGL5lKG/9B7dE2h+J3/mZSlEGyKl66/v1
-         0GwcmDvEOK1uQdQxDkgT6oCc7DuGNytaHFfzTNJALqupO2HMuNf/RK5bnZM6PDLLwq7f
-         kK6EGX1448Q21QUEGs5Vfz41APQwtGtzHbKJwzpriOPEAWjQRfFRzDYcKyphbCKaMuvX
-         RymMoxcyEXGdlUWR8iuZYzqd3l8X8ap8TosIWVJBK0sK1N9gyVjqVTEb3uLrI3kJ+9aG
-         iHytVLT8pWOJbrFv80RMGta6mzqTWS4j9ZNkV3DU3LjimptmgCDs90a9+iNzZzzmQIUC
-         cFUA==
-X-Gm-Message-State: AOAM533D70nN4qd2+pQf94pHCLx7NMxOCx+wlfL/XlIBDxI4keQOYY/X
-        y5ekXgyMeYgJxNEInVywDT7KYgjaLReP6g==
-X-Google-Smtp-Source: ABdhPJzKRBXlcGt3waRWzaH9R47/6SD0/IgoWcAgajHv/fxOJufbEPJI6hNEQ9SuwB+/pum/5oX3UA==
-X-Received: by 2002:a63:b54a:: with SMTP id u10mr17506905pgo.69.1637331836308;
-        Fri, 19 Nov 2021 06:23:56 -0800 (PST)
-Received: from ?IPV6:2404:f801:0:5:8000::50b? ([2404:f801:9000:1a:efea::50b])
-        by smtp.gmail.com with ESMTPSA id l12sm3181520pfu.100.2021.11.19.06.23.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Nov 2021 06:23:55 -0800 (PST)
-Message-ID: <f7fcb4d5-fcdd-0d24-60ed-62c27ed8e2d9@gmail.com>
-Date:   Fri, 19 Nov 2021 22:23:45 +0800
+        id S234961AbhKSO2W convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 19 Nov 2021 09:28:22 -0500
+Received: from mga01.intel.com ([192.55.52.88]:41215 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232080AbhKSO2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 09:28:22 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="258213112"
+X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
+   d="scan'208";a="258213112"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 06:25:20 -0800
+X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
+   d="scan'208";a="455450099"
+Received: from sgconnee-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.21.83])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 06:25:17 -0800
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Daniel Vetter <daniel@ffwll.ch>,
+        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     airlied@linux.ie, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org,
+        George Kennedy <george.kennedy@oracle.com>,
+        dri-devel@lists.freedesktop.org, tzimmermann@suse.de
+Subject: Re: [PATCH] drm: check drm_format_info hsub and vsub to avoid
+ divide by zero
+In-Reply-To: <YZd8tpDN9lsq0ZbZ@phenom.ffwll.local>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <1635429437-21718-1-git-send-email-george.kennedy@oracle.com>
+ <YXqt46TPL9tUZCL1@intel.com> <YZdxFvGkBPXrtoQ7@phenom.ffwll.local>
+ <YZd2VI820CUGrMjv@intel.com> <YZd8tpDN9lsq0ZbZ@phenom.ffwll.local>
+Date:   Fri, 19 Nov 2021 16:25:08 +0200
+Message-ID: <87a6i0jk8r.fsf@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH 3/5] hyperv/IOMMU: Enable swiotlb bounce buffer for
- Isolation VM
-Content-Language: en-US
-From:   Tianyu Lan <ltykernel@gmail.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, jgross@suse.com, sstabellini@kernel.org,
-        boris.ostrovsky@oracle.com, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, joro@8bytes.org, will@kernel.org,
-        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, m.szyprowski@samsung.com,
-        robin.murphy@arm.com, xen-devel@lists.xenproject.org,
-        michael.h.kelley@microsoft.com,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, vkuznets@redhat.com, brijesh.singh@amd.com,
-        konrad.wilk@oracle.com, parri.andrea@gmail.com,
-        thomas.lendacky@amd.com, dave.hansen@intel.com
-References: <20211116153923.196763-1-ltykernel@gmail.com>
- <20211116153923.196763-4-ltykernel@gmail.com> <20211117100142.GB10330@lst.de>
- <c93bf3d4-75c1-bc3d-2789-1d65e7c19158@gmail.com>
-In-Reply-To: <c93bf3d4-75c1-bc3d-2789-1d65e7c19158@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/2021 10:00 PM, Tianyu Lan wrote:
-> On 11/17/2021 6:01 PM, Christoph Hellwig wrote:
->> This doesn't really have much to do with normal DMA mapping,
->> so why does this direct through the dma ops?
->>
-> 
-> According to the previous discussion, dma_alloc_noncontigous()
-> and dma_vmap_noncontiguous() may be used to handle the noncontigous
-> memory alloc/map in the netvsc driver. So add alloc/free and vmap/vunmap
-> callbacks here to handle the case. The previous patch v4 & v5 handles
-> the allocation and map in the netvsc driver. If this should not go 
-> though dma ops, We also may make it as vmbus specific function and keep
-> the function in the vmbus driver.
-> 
-> https://lkml.org/lkml/2021/9/28/51
+On Fri, 19 Nov 2021, Daniel Vetter <daniel@ffwll.ch> wrote:
+> On Fri, Nov 19, 2021 at 12:03:00PM +0200, Ville Syrjälä wrote:
+>> On Fri, Nov 19, 2021 at 10:40:38AM +0100, Daniel Vetter wrote:
+>> > On Thu, Oct 28, 2021 at 05:04:19PM +0300, Ville Syrjälä wrote:
+>> > > On Thu, Oct 28, 2021 at 08:57:17AM -0500, George Kennedy wrote:
+>> > > > Do a sanity check on struct drm_format_info hsub and vsub values to
+>> > > > avoid divide by zero.
+>> > > > 
+>> > > > Syzkaller reported a divide error in framebuffer_check() when the
+>> > > > DRM_FORMAT_Q410 or DRM_FORMAT_Q401 pixel_format is passed in via
+>> > > > the DRM_IOCTL_MODE_ADDFB2 ioctl. The drm_format_info struct for
+>> > > > the DRM_FORMAT_Q410 pixel_pattern has ".hsub = 0" and ".vsub = 0".
+>> > > > fb_plane_width() uses hsub as a divisor and fb_plane_height() uses
+>> > > > vsub as a divisor. These divisors need to be sanity checked for
+>> > > > zero before use.
+>> > > > 
+>> > > > divide error: 0000 [#1] SMP KASAN NOPTI
+>> > > > CPU: 0 PID: 14995 Comm: syz-executor709 Not tainted 5.15.0-rc6-syzk #1
+>> > > > Hardware name: Red Hat KVM, BIOS 1.13.0-2
+>> > > > RIP: 0010:framebuffer_check drivers/gpu/drm/drm_framebuffer.c:199 [inline]
+>> > > > RIP: 0010:drm_internal_framebuffer_create+0x604/0xf90
+>> > > > drivers/gpu/drm/drm_framebuffer.c:317
+>> > > > 
+>> > > > Call Trace:
+>> > > >  drm_mode_addfb2+0xdc/0x320 drivers/gpu/drm/drm_framebuffer.c:355
+>> > > >  drm_mode_addfb2_ioctl+0x2a/0x40 drivers/gpu/drm/drm_framebuffer.c:391
+>> > > >  drm_ioctl_kernel+0x23a/0x2e0 drivers/gpu/drm/drm_ioctl.c:795
+>> > > >  drm_ioctl+0x589/0xac0 drivers/gpu/drm/drm_ioctl.c:898
+>> > > >  vfs_ioctl fs/ioctl.c:51 [inline]
+>> > > >  __do_sys_ioctl fs/ioctl.c:874 [inline]
+>> > > >  __se_sys_ioctl fs/ioctl.c:860 [inline]
+>> > > >  __x64_sys_ioctl+0x19d/0x220 fs/ioctl.c:860
+>> > > >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>> > > >  do_syscall_64+0x3a/0x80 arch/x86/entry/common.c:80
+>> > > >  entry_SYSCALL_64_after_hwframe+0x44/0xae
+>> > > > 
+>> > > > Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+>> > > > ---
+>> > > >  drivers/gpu/drm/drm_framebuffer.c | 10 ++++++++++
+>> > > >  1 file changed, 10 insertions(+)
+>> > > > 
+>> > > > diff --git a/drivers/gpu/drm/drm_framebuffer.c b/drivers/gpu/drm/drm_framebuffer.c
+>> > > > index 07f5abc..a146e4b 100644
+>> > > > --- a/drivers/gpu/drm/drm_framebuffer.c
+>> > > > +++ b/drivers/gpu/drm/drm_framebuffer.c
+>> > > > @@ -195,6 +195,16 @@ static int framebuffer_check(struct drm_device *dev,
+>> > > >  	/* now let the driver pick its own format info */
+>> > > >  	info = drm_get_format_info(dev, r);
+>> > > >  
+>> > > > +	if (info->hsub == 0) {
+>> > > > +		DRM_DEBUG_KMS("bad horizontal chroma subsampling factor %u\n", info->hsub);
+>> > > > +		return -EINVAL;
+>> > > > +	}
+>> > > > +
+>> > > > +	if (info->vsub == 0) {
+>> > > > +		DRM_DEBUG_KMS("bad vertical chroma subsampling factor %u\n", info->vsub);
+>> > > > +		return -EINVAL;
+>> > > > +	}
+>> > > 
+>> > > Looks like duct tape to me. I think we need to either fix those formats
+>> > > to have valid format info, or just revert the whole patch that added such
+>> > > broken things.
+>> > 
+>> > Yeah maybe even a compile-time check of the format table(s) to validate
+>> > them properly and scream ... Or at least a selftest.
+>> 
+>> I really wish C had (even very limited) compile time evaluation
+>> so one could actually loop over arrays like at compile time to 
+>> check each element. As it stands you either have to check each
+>> array element by hand, or you do some cpp macro horrors to 
+>> pretend you're iterating the array.
+>
+> Python preprocess or so seems to be the usual answer, and that then just
+> generates the C table after it's all checked.
+>
+> Or a post-processor which fishes the table out from the .o (or just links
+> against it).
+>
+> But yeah doing this in cpp isn't going to work, aside from it'd be really
+> ugly.
+
+Kbuild does have support for hostprogs which are typically used in the
+build. The obvious idea is to use that for code generation, but it would
+also be interesting to see how that could be used for compile-time
+evaluation of sorts. Kind of like compile-time selftests? And, of
+course, how badly that would be frowned upon.
+
+git grep says there are only four hostprogs users in drivers/, so it
+certainly isn't a popularity contest winner. (One of them is
+"mkregtable" in radeon.)
 
 
-Hi Christoph:
-       Sorry to bother you. Could you have a look? Which solution do you
-prefer? If we need to call dma_alloc/map_noncontigous() function in the
-netvsc driver what patch 4 does. The Hyper-V specific implementation
-needs to be hided in some callbacks and call these callback in the
-dma_alloc/map_noncontigous(). I used dma ops here. If the allocation and
-map operation should be Hyper-V specific function, we may put these
-functions in the vmbus driver and other vmbus device drivers also may
-reuse these functions if necessary.
+BR,
+Jani.
 
-Thanks.
+-- 
+Jani Nikula, Intel Open Source Graphics Center
