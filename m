@@ -2,120 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C2FA456817
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 03:29:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1217245681A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 03:30:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234119AbhKSCcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 21:32:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38598 "EHLO
+        id S234135AbhKSCdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 21:33:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232046AbhKSCcL (ORCPT
+        with ESMTP id S231736AbhKSCde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 21:32:11 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C546BC061574;
-        Thu, 18 Nov 2021 18:29:10 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id r11so35969244edd.9;
-        Thu, 18 Nov 2021 18:29:10 -0800 (PST)
+        Thu, 18 Nov 2021 21:33:34 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FCD7C061574;
+        Thu, 18 Nov 2021 18:30:33 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id b4so7265015pgh.10;
+        Thu, 18 Nov 2021 18:30:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:from:to:cc:subject:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aG2Yj59nIaRzrSClFOXtJKgWrhU22xZoqjGdW6CQ8kU=;
-        b=ZidQeL6Fp6gdmIm+mXIaymrLbrbA9uTJau1C+Kvmzx5QEE8wH8H7817zbQVOVhdMgm
-         muClmtk+p5MmtaWWZBZ8JWCCinXDTl4Md12PhVDKNd8DJaKCccSjX2t131dQBv9KAoam
-         Cp63JwR4+HBCk7JsJtNqqHRg8aJ4zMyLS6aCI0aleNLqsXVjdWh5uyguMHmsb5IcYa7Y
-         u/rfQUyBpEENoRk97umQRSBBRqt/hamA1aEfdIim9+1awEKpl/NP+LW34Eq7/YjlV5B4
-         U1kcVlKhw1HGX7BXGDsaNxM84TiCfM+NNqSDR1DoAHSEZYhb08Lh7xZOs9cVdrG0y6lV
-         mV7g==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bfWoU11i9l1hrghcFLr0V/V4RGmiMDJFhLcgjw/m3ds=;
+        b=bIRdy2sa1gDo/Wfq/jeFgkddF0d9qPL/TNUY+KGvLVjQxaenIxADBMxT9xMwOdWaUq
+         w8h+OySr3K66TftwzJrFCOXw2SKf9k+hV6DGAYciq+eXCohSmWOmYZFIRz7rWuBrzyAn
+         E00TqrbA3iwMgYQTP5ZRp450/6gvRxYuvtTCEzNWAEgmtcTbScgiMfjUmCUbbN9Q0dgA
+         yXpd8jhCDyhadnwcno+EcnMU3/clmeRL8dftAjvcEQ8yZUWAiuBpaD1G2fCTCcN2g//R
+         lSy9M/J+TNsjQa364w+hpU2an2iuw3qwgc6At7wXMsR2cTUAQiT44mWmeZzIFhO79NKt
+         0BHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:to:cc:subject:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aG2Yj59nIaRzrSClFOXtJKgWrhU22xZoqjGdW6CQ8kU=;
-        b=YyMiPGkgEYALqFlaqiJHJVZ5E6zDmS6mE3pcfdBp7jbr60S0G7CXy17S35LKVCThO0
-         LWjR/DfYTt92kTgMyOCp8EwZBR4K+uwU2beufXSdmlvqElGw1TiC/g6wyULiQ0G5k+3z
-         DARql6QVcxg/sqc7MIDeXynYNYSVwaYTIeyvVohohv70J9OIzcEqR6eJXIvBDD93cgTV
-         oHBQZWHwKRM/lmYxUQIKeRZrKfeYwGVqRU7AiBh5p3o6B4Rf98jut4gjZ7Jd3Z8r+nPp
-         Ial0GJ4gh4WnG4zveEMxM5RU+qrGBzFUCTlxF1dQilP9GmXEI3O3AyJ2CLFAvfWM7vFJ
-         ZGjQ==
-X-Gm-Message-State: AOAM531AuSDJD6aCNEpsJFLlEuV1Zoi4yufZTaYrqTD5lYvdPcRmQ+F0
-        +tFHvKLvou8GrPIksyWe6MLtz1B/MeM=
-X-Google-Smtp-Source: ABdhPJwQmQMw6GD0Reo7mdpt8C6rGS6emF0zhBHLQCFCuwhVyXYgrnwGE0lXP426txoK5xsLf8FLmg==
-X-Received: by 2002:a17:907:7d88:: with SMTP id oz8mr3022651ejc.173.1637288949314;
-        Thu, 18 Nov 2021 18:29:09 -0800 (PST)
-Received: from Ansuel-xps. (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.gmail.com with ESMTPSA id q7sm781727edr.9.2021.11.18.18.29.08
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bfWoU11i9l1hrghcFLr0V/V4RGmiMDJFhLcgjw/m3ds=;
+        b=cFz4laBxxtKbpM1DJkvTR25PgJcIpJNqMsJHp7f0bVYnTi5t9hRnqzmag+6Z5XNMbi
+         hWI3BrEXWYCxZmEz32y/ixEemL/EWdetn2+bMCIh2MwzB6+EnWIpJM3BX/k0ZrF1ZGNJ
+         z4Hkjiu4G+ubZyxLFCzqzgPP2HZcI6xdUHfzCb8g6ukAS0LCjGbiFgryh3RK1W0vUlu8
+         YWNuV3oCxS0mxkpD/PW78FS1k7wkjmoizAExbA0EDTCy/SIRd77PlVpD/VIYkZIewfmW
+         ZtALpNZKJTJMxsKKTeO6hXNie4cC2x5OsBDqvh0k7LS0HxdPnP/wyIjVdiVL00W7rrPZ
+         BlkA==
+X-Gm-Message-State: AOAM531+FomK/PO1LDL+hVoCnnVm786xqUbbEFtY07z+x7h58xGWGY4g
+        Ra5CMMMkWKCW04AhgoqJpdc=
+X-Google-Smtp-Source: ABdhPJz0wiJH1Nmv3CCtEgPH9qJYpX9Df6pmNmMG16++XhVxMKcMSrgvuZaSSxdLlnlaHNEC+weLlA==
+X-Received: by 2002:a05:6a00:1a8d:b0:49f:de63:d9c0 with SMTP id e13-20020a056a001a8d00b0049fde63d9c0mr59790884pfv.79.1637289032688;
+        Thu, 18 Nov 2021 18:30:32 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id g20sm975734pfj.12.2021.11.18.18.30.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 18:29:09 -0800 (PST)
-Message-ID: <61970bf5.1c69fb81.6852b.3a87@mx.google.com>
-X-Google-Original-Message-ID: <YZcL4FpHFZw7gRJb@Ansuel-xps.>
-Date:   Fri, 19 Nov 2021 03:28:48 +0100
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [net-next PATCH 16/19] net: dsa: qca8k: enable
- mtu_enforcement_ingress
-References: <20211117210451.26415-1-ansuelsmth@gmail.com>
- <20211117210451.26415-17-ansuelsmth@gmail.com>
- <20211119022008.d6nnf4aqnvkaykk3@skbuf>
+        Thu, 18 Nov 2021 18:30:31 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: chi.minghao@zte.com.cn
+To:     shuah@kernel.org
+Cc:     christian.brauner@ubuntu.com, cyphar@cyphar.com,
+        chi.minghao@zte.com.cn, rgb@redhat.com,
+        baolin.wang@linux.alibaba.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cm>
+Subject: [PATCH] openat2: use ARRAY_SIZE instead of ARRAY_LEN
+Date:   Fri, 19 Nov 2021 02:30:25 +0000
+Message-Id: <20211119023025.1945-1-chi.minghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211119022008.d6nnf4aqnvkaykk3@skbuf>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 04:20:08AM +0200, Vladimir Oltean wrote:
-> On Wed, Nov 17, 2021 at 10:04:48PM +0100, Ansuel Smith wrote:
-> > qca8k have a global MTU. Inform DSA of this as the change MTU port
-> > function checks the max MTU across all port and sets the max value
-> > anyway as this switch doesn't support per port MTU.
-> > 
-> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> > ---
-> >  drivers/net/dsa/qca8k.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-> > index c3234988aabf..cae58753bb1f 100644
-> > --- a/drivers/net/dsa/qca8k.c
-> > +++ b/drivers/net/dsa/qca8k.c
-> > @@ -1315,6 +1315,9 @@ qca8k_setup(struct dsa_switch *ds)
-> >  	/* Set max number of LAGs supported */
-> >  	ds->num_lag_ids = QCA8K_NUM_LAGS;
-> >  
-> > +	/* Global MTU. Inform dsa that per port MTU is not supported */
-> > +	ds->mtu_enforcement_ingress = true;
-> > +
-> >  	return 0;
-> >  }
-> >  
-> > -- 
-> > 2.32.0
-> > 
-> 
-> This doesn't do what you think it does. If you want the dev->mtu of all
-> interfaces to get updated at once, you need to do that yourself. Setting
-> ds->mtu_enforcement_ingress will only update the MTU for ports belonging
-> to the same bridge, and for a different reason. Or I'm missing the
-> reason why you're making this change now.
+From: chiminghao <chi.minghao@zte.com.cn>
 
-Got confused by the Documentation. Just to confirm in DSA we don't have
-a way to handle the case where we have one MTU reg that is applied to
-every port, correct?
+ARRAY_SIZE defined in <linux/kernel.h> is safer than self-defined
+macros to get size of an array such as ARRAY_LEN used here.
 
-We already handle this by checking the max MTU set to all port in the
-port_change_mtu but I was searching a cleaner way to handle this as
-currently we use an array to store the MTU of all port and seems a bit
-hacky and a waste of space. 
+Reported-by: Zeal Robot <zealci@zte.com.cm>
+Signed-off-by: chiminghao <chi.minghao@zte.com.cn>
+---
+ tools/testing/selftests/openat2/openat2_test.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
+diff --git a/tools/testing/selftests/openat2/openat2_test.c b/tools/testing/selftests/openat2/openat2_test.c
+index 1bddbe934204..c467f85e854e 100644
+--- a/tools/testing/selftests/openat2/openat2_test.c
++++ b/tools/testing/selftests/openat2/openat2_test.c
+@@ -5,6 +5,7 @@
+  */
+ 
+ #define _GNU_SOURCE
++#include <linux/kernel.h>
+ #include <fcntl.h>
+ #include <sched.h>
+ #include <sys/stat.h>
+@@ -82,14 +83,14 @@ void test_openat2_struct(void)
+ 		  .size = sizeof(struct open_how_ext), .err = -E2BIG },
+ 	};
+ 
+-	BUILD_BUG_ON(ARRAY_LEN(misalignments) != NUM_OPENAT2_STRUCT_VARIATIONS);
+-	BUILD_BUG_ON(ARRAY_LEN(tests) != NUM_OPENAT2_STRUCT_TESTS);
++	BUILD_BUG_ON(ARRAY_SIZE(misalignments) != NUM_OPENAT2_STRUCT_VARIATIONS);
++	BUILD_BUG_ON(ARRAY_SIZE(tests) != NUM_OPENAT2_STRUCT_TESTS);
+ 
+-	for (int i = 0; i < ARRAY_LEN(tests); i++) {
++	for (int i = 0; i < ARRAY_SIZE(tests); i++) {
+ 		struct struct_test *test = &tests[i];
+ 		struct open_how_ext how_ext = test->arg;
+ 
+-		for (int j = 0; j < ARRAY_LEN(misalignments); j++) {
++		for (int j = 0; j < ARRAY_SIZE(misalignments); j++) {
+ 			int fd, misalign = misalignments[j];
+ 			char *fdpath = NULL;
+ 			bool failed;
+@@ -240,9 +241,9 @@ void test_openat2_flags(void)
+ 		  .how.resolve = 0, .err = -EINVAL },
+ 	};
+ 
+-	BUILD_BUG_ON(ARRAY_LEN(tests) != NUM_OPENAT2_FLAG_TESTS);
++	BUILD_BUG_ON(ARRAY_SIZE(tests) != NUM_OPENAT2_FLAG_TESTS);
+ 
+-	for (int i = 0; i < ARRAY_LEN(tests); i++) {
++	for (int i = 0; i < ARRAY_SIZE(tests); i++) {
+ 		int fd, fdflags = -1;
+ 		char *path, *fdpath = NULL;
+ 		bool failed = false;
 -- 
-	Ansuel
+2.25.1
+
