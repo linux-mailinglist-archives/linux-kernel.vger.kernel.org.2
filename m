@@ -2,53 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F03457681
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 19:36:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 686B7457684
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 19:36:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235264AbhKSSjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 13:39:04 -0500
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:38991 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235222AbhKSSiz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 13:38:55 -0500
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id ACA7040006;
-        Fri, 19 Nov 2021 18:35:51 +0000 (UTC)
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Sean Nyekjaer <sean@geanix.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/4] mtd: rawnand: nand_bbt: hide suspend/resume hooks while scanning bbt
-Date:   Fri, 19 Nov 2021 19:35:51 +0100
-Message-Id: <20211119183551.1330314-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211102110204.3334609-2-sean@geanix.com>
-References: 
+        id S235445AbhKSSjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 13:39:09 -0500
+Received: from mga07.intel.com ([134.134.136.100]:2265 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235396AbhKSSjH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 13:39:07 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10173"; a="297887058"
+X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
+   d="scan'208";a="297887058"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 10:36:05 -0800
+X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
+   d="scan'208";a="673310220"
+Received: from chardy-mobl.amr.corp.intel.com ([10.209.29.151])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 10:36:04 -0800
+Date:   Fri, 19 Nov 2021 10:36:04 -0800 (PST)
+From:   Mat Martineau <mathew.j.martineau@linux.intel.com>
+To:     =?ISO-8859-15?Q?Stephan_M=FCller?= <smueller@chronox.de>
+cc:     herbert@gondor.apana.org.au, ebiggers@kernel.org,
+        jarkko@kernel.org, dhowells@redhat.com,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        keyrings@vger.kernel.org, simo@redhat.com
+Subject: Re: [PATCH v4 4/4] security: DH - use KDF implementation from crypto
+ API
+In-Reply-To: <4181314.UPlyArG6xL@positron.chronox.de>
+Message-ID: <c4b0b368-3168-bb65-a7b8-4f6d4e7015c7@linux.intel.com>
+References: <4642773.OV4Wx5bFTl@positron.chronox.de> <4181314.UPlyArG6xL@positron.chronox.de>
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'39a3663f82ee78608eabf8c838e2949e4c6ce993'
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="0-1017921664-1637346964=:1817"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-11-02 at 11:02:01 UTC, Sean Nyekjaer wrote:
-> From: Boris Brezillon <boris.brezillon@collabora.com>
-> 
-> The BBT scan logic use the MTD helpers before the MTD layer had a
-> chance to initialize the device, and that leads to issues when
-> accessing the uninitialized suspend lock. Let's temporarily set the
-> suspend/resume hooks to NULL to skip the lock acquire/release step.
-> 
-> Tested-by: Sean Nyekjaer <sean@geanix.com>
-> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
+--0-1017921664-1637346964=:1817
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 8BIT
 
-Miquel
+On Fri, 19 Nov 2021, Stephan Müller wrote:
+
+> The kernel crypto API provides the SP800-108 counter KDF implementation.
+> Thus, the separate implementation provided as part of the keys subsystem
+> can be replaced with calls to the KDF offered by the kernel crypto API.
+>
+> The keys subsystem uses the counter KDF with a hash primitive. Thus,
+> it only uses the call to crypto_kdf108_ctr_generate.
+>
+> Signed-off-by: Stephan Mueller <smueller@chronox.de>
+> ---
+> security/keys/Kconfig |   2 +-
+> security/keys/dh.c    | 109 +++++++-----------------------------------
+> 2 files changed, 19 insertions(+), 92 deletions(-)
+
+Acked-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+
+
+--
+Mat Martineau
+Intel
+--0-1017921664-1637346964=:1817--
