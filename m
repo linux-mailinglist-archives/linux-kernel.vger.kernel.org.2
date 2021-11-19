@@ -2,327 +2,504 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7463D456DA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 11:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11303456DAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 11:41:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234486AbhKSKln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 05:41:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35156 "EHLO
+        id S234575AbhKSKlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 05:41:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232415AbhKSKlm (ORCPT
+        with ESMTP id S231466AbhKSKlt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 05:41:42 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95963C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 02:38:40 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id u74so20966322oie.8
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 02:38:40 -0800 (PST)
+        Fri, 19 Nov 2021 05:41:49 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A8CCC061574;
+        Fri, 19 Nov 2021 02:38:47 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id f18so41465943lfv.6;
+        Fri, 19 Nov 2021 02:38:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AYXZ3Fwirr8SQxJ7wPvNhsrS3JHRNan1bxHGs12//g8=;
-        b=bAWRE/8mbWhMYuIS52rRQRAOdoj9tRqhc67LQ/JX+yFe2N4I4BDliLFAt/xHB2GwMw
-         +nZT2cXDtnNDMOKx/j3GO1ewCK1xrOs+Uu2l0mfIMs/YFfTic5IX+vmgmYfEQ7de2CFZ
-         CXML4lelEljTUfgQha7z4Zg+4yZHZvLyYCSmerSZHBRec6cNiJZn6yYIXfUEiIRtauAx
-         VsPF8ZaJ3B9bV4rUXRqVlz1vIfkAqjONOQwYtF7Mu9IegWSJlzuwijCeolDkBCTGUX3e
-         jy+bqV2ONjsJy2qOEb3DF+To8U5uxL3A7CHrQvMcf+nxEfKK+fA7LcJl5y1ibFpZLcrp
-         1uDg==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=9hmc5O6SJg3iwvi+7uZbPuhZtJIOP1+dWG6ATBDqDzw=;
+        b=S4NC7NCHCAgMnAedO+AZP2D4X2Y2hB+o36vy9EZnaV1pjA3FC/HSLDCec9LO1a6Xpn
+         4tf4cVUY2wFoXxJ2H5ymd5jWY6L42SFjkWPr9sr4aqjJCpIIJyr+mnNEmriIjFbIXeUI
+         mfw0dRLhXL2J9BTv/8TWAucltmMHAd2hBj3Wm+ZE/r0pswVVfRLTLP31uWfzdu7BvRmd
+         lu37e7afxRV3jXZD5NjLgAxTKAAynsomdQKmHWYaA1CVnb+rJMh9ut8QPjI+FQssfbtA
+         qiGbmcPh2aTSbTraW6dy95ZexjSiuOf9AgEZJeSL3X80tV4pw5AxorXf81nxVe4v42ry
+         KhPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AYXZ3Fwirr8SQxJ7wPvNhsrS3JHRNan1bxHGs12//g8=;
-        b=JdfuLpML5SY2ScfN3Svmxpy5uGK4vai2dbBuru7ejUp2mKkudKjcEw8Uz/yIt/qt+7
-         IBKfToLDHq9R7vjSmsnko5BsxJX4MEQfQeNEe60Kh6ojfYT2o12W6K4ENBdYNpVbNzBd
-         b4KHVS7L4za3PR4Mv6NsTdw7aLHnZ+Ay7bcncJNb/zJSzkyBAcEXn/Nw/n47NlYeJn6f
-         lFMSqGKbwD0TRPl7q7/9FOlwptnvqh6YPedp0+zZ5Bah6C4ZN7YtnmsF7PVQGQhzoVzE
-         zWPkKFaX9q/x7fFQht2XHp65Fr2fKg5Gxad8A6GAfcWFSuosBI6GlRnRlUiK3woNoB51
-         8UeA==
-X-Gm-Message-State: AOAM532L9931A9DbCF0A+CnUOyrNAMWCyJMZi/JHd40v/lhvX66elv4g
-        JdUKeh/EvoKR6FajROucJf86kC1qQ9l2vYCtSgODyA==
-X-Google-Smtp-Source: ABdhPJxiIKIt073I+TT0WYktpDQD/TWPcbvwHi5GxG+Oa27V+XhXNafKRc8DhitUNA+ft4ifOIWX4yix71eHg7yQ3Q0=
-X-Received: by 2002:a54:4390:: with SMTP id u16mr4092034oiv.109.1637318319738;
- Fri, 19 Nov 2021 02:38:39 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=9hmc5O6SJg3iwvi+7uZbPuhZtJIOP1+dWG6ATBDqDzw=;
+        b=kF95bbF9043iDeCdEU2d1TAFKjPd/R1h8Ae4VOxtTKqAzh/O/xMXpU/Z3cDBPhW223
+         djCbF3+NSyHSrpQAYFO9KXGVezl17uPPzr70xIBYGaPF9jOioprNPeqc/cStjMlZh2Z5
+         kQ/ftGGKV4oGklLXUB8Ku7uuPkykmxs6rch1Ak5KYr3I8Cj6hN9cFSosh0VnX+Y5TQ2Z
+         Y9lDcKUw/L39XQcFISfoCMdlJwnFPrGhFsQWxcwnNX1AQlX0vYa2agWpFohniYIvD1cK
+         nBMasPlOBWHUA0nicZXx15UiVa6MFF6PgpZJFurdA6UQRFcKk1BJeyBdkKFQ2n+rfYeD
+         iUxw==
+X-Gm-Message-State: AOAM532xZmapc8h4oqHEbLLNHeabTCgSJrnQedj2PvnuKNc9N+5J/rMH
+        mEPlVUrD5SYN7uTCA+zFQlw=
+X-Google-Smtp-Source: ABdhPJwQFgFr45rZuzDI4rePye1oh2sYHSlLyk81mjGOCpBYk+FqHyDQxF5op+4dXwZdzrRBqYGVUg==
+X-Received: by 2002:a05:6512:3f08:: with SMTP id y8mr2897259lfa.139.1637318325429;
+        Fri, 19 Nov 2021 02:38:45 -0800 (PST)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id p17sm252442ljm.138.2021.11.19.02.38.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 02:38:45 -0800 (PST)
+Date:   Fri, 19 Nov 2021 12:38:41 +0200
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Clark <robdclark@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Doug Anderson <dianders@chromium.org>,
+        linux-rockchip@lists.infradead.org,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        linux-input@vger.kernel.org, Simon Ser <contact@emersion.fr>,
+        Peter Hutterer <peter.hutterer@who-t.net>
+Subject: Re: [PATCH v2 1/2] drm/input_helper: Add new input-handling helper
+Message-ID: <20211119123841.1d628cb6@eldfell>
+In-Reply-To: <YZcB4ooqpvP3gHdx@google.com>
+References: <20211117224841.3442482-1-briannorris@chromium.org>
+        <20211117144807.v2.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid>
+        <20211118123928.545dec8a@eldfell>
+        <YZcB4ooqpvP3gHdx@google.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <1637130234-57238-1-git-send-email-quic_jiangenj@quicinc.com>
- <CACT4Y+YwNawV9H7uFMVSCA5WB-Dkyu9TX+rMM3FR6gNGkKFPqw@mail.gmail.com> <DM8PR02MB8247720860A08914CAA41D42F89C9@DM8PR02MB8247.namprd02.prod.outlook.com>
-In-Reply-To: <DM8PR02MB8247720860A08914CAA41D42F89C9@DM8PR02MB8247.namprd02.prod.outlook.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 19 Nov 2021 11:38:28 +0100
-Message-ID: <CACT4Y+a07DxQdYFY6uc5Y4GhTUbcnETij6gg3y+JRDvtwSmK5g@mail.gmail.com>
-Subject: Re: [PATCH] kcov: add KCOV_PC_RANGE to limit pc range
-To:     "JianGen Jiao (QUIC)" <quic_jiangenj@quicinc.com>
-Cc:     "andreyknvl@gmail.com" <andreyknvl@gmail.com>,
-        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexander Lochmann <info@alexander-lochmann.de>,
-        "Likai Ding (QUIC)" <quic_likaid@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/3QMKmyr3Pp0yfiyMvuAGqaT";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Nov 2021 at 04:17, JianGen Jiao (QUIC)
-<quic_jiangenj@quicinc.com> wrote:
->
-> Hi Dmitry,
-> I'm using the start, end pc from cover filter, which currently is the fas=
-t way compared to the big bitmap passing from syzkaller solution, as I only=
- set the cover filter to dirs/files I care about.
+--Sig_/3QMKmyr3Pp0yfiyMvuAGqaT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-I see.
-But if we are unlucky and our functions of interest are at the very
-low and high addresses, start/end will cover almost all kernel code...
+On Thu, 18 Nov 2021 17:46:10 -0800
+Brian Norris <briannorris@chromium.org> wrote:
 
-> I checked https://groups.google.com/g/kasan-dev/c/oVz3ZSWaK1Q/m/9ASztdzCA=
-AAJ,
-> The bitmap seems not the same as syzkaller one, which one will be used fi=
-nally?
+> Hi Pekka,
+>=20
+> Thanks for the thoughts and review. I've tried to respond below:
+>=20
+> On Thu, Nov 18, 2021 at 12:39:28PM +0200, Pekka Paalanen wrote:
+> > On Wed, 17 Nov 2021 14:48:40 -0800
+> > Brian Norris <briannorris@chromium.org> wrote:
+> >  =20
+> > > A variety of applications have found it useful to listen to
+> > > user-initiated input events to make decisions within a DRM driver, gi=
+ven
+> > > that input events are often the first sign that we're going to start
+> > > doing latency-sensitive activities:
+> > >=20
+> > >  * Panel self-refresh: software-directed self-refresh (e.g., with
+> > >    Rockchip eDP) is especially latency sensitive. In some cases, it c=
+an
+> > >    take 10s of milliseconds for a panel to exit self-refresh, which c=
+an
+> > >    be noticeable. Rockchip RK3399 Chrome OS systems have always shipp=
+ed
+> > >    with an input_handler boost, that preemptively exits self-refresh
+> > >    whenever there is input activity.
+> > >=20
+> > >  * GPU drivers: on GPU-accelerated desktop systems, we may need to
+> > >    render new frames immediately after user activity. Powering up the
+> > >    GPU can take enough time that it is worthwhile to start this proce=
+ss
+> > >    as soon as there is input activity. Many Chrome OS systems also sh=
+ip
+> > >    with an input_handler boost that powers up the GPU.
+> > >=20
+> > > This patch provides a small helper library that abstracts some of the
+> > > input-subsystem details around picking which devices to listen to, and
+> > > some other boilerplate. This will be used in the next patch to implem=
+ent
+> > > the first bullet: preemptive exit for panel self-refresh.
+> > >=20
+> > > Bits of this are adapted from code the Android and/or Chrome OS kerne=
+ls
+> > > have been carrying for a while.
+> > >=20
+> > > Signed-off-by: Brian Norris <briannorris@chromium.org>
+> > > --- =20
+> >=20
+> > Thanks Simon for the CC.
+> >=20
+> > Hi Brian,
+> >=20
+> > while this feature in general makes sense and sounds good, to start
+> > warming up display hardware early when something might start to happen,
+> > this particular proposal has many problems from UAPI perspective (as it
+> > has none). Comments below.
+> >=20
+> > Btw. if PSR is that slow to wake up from, how much do you actually gain
+> > from this input event watching? I would imagine the improvement to not
+> > be noticeable. =20
+>=20
+> Patch 2 has details. It's not really about precisely how slow PSR is,
+> but how much foresight we can gain: in patch 2, I note that with my
+> particular user space and system, I can start PSR-exit 50ms earlier than
+> I would otherweise. (FWIW, this measurement is exactly the same it was
+> with the original version written 4 years ago.)
+>=20
+> For how long PSR-exit takes: the measurements I'm able to do (via
+> ftrace) show that drm_self_refresh_transition() takes between 35 and 55
+> ms. That's noticeable at 60 fps. And quite conveniently, the input-boost
+> manages to hide nearly 100% of that latency.
+>=20
+> Typical use cases where one notices PSR latency (and where this 35-55ms
+> matters) involve simply moving a cursor; it's very noticeable when you
+> have more than a few frames of latency to "get started".
 
-I don't know yet. We need to decide.
-In syzkaller we are more flexible and can change code faster, while
-kernel interfaces are stable and need to be kept forever. So I think
-we need to concentrate more on the good kernel interface and then
-support it in syzkaller.
+Hi Brian,
 
-> ``` Alexander's one
-> + pos =3D (ip - canonicalize_ip((unsigned long)&_stext)) / 4;
-> + idx =3D pos % BITS_PER_LONG;
-> + pos /=3D BITS_PER_LONG;
-> + if (likely(pos < t->kcov_size))
-> + WRITE_ONCE(area[pos], READ_ONCE(area[pos]) | 1L << idx);
-> ```
-> Pc offset is divided by 4 and start is _stext. But for some arch, pc is l=
-ess than _stext.
+that is very interesting, thanks.
 
-You mean that modules can have PC < _stext?
+I would never have expected to have userspace take *that* long to
+react. But, that sounds like it could be just your userspace software
+stack.
 
-> ``` https://github.com/google/syzkaller/blob/master/syz-manager/covfilter=
-.go#L139-L154
->         data :=3D make([]byte, 8+((size>>4)/8+1))
->         order :=3D binary.ByteOrder(binary.BigEndian)
->         if target.LittleEndian {
->                 order =3D binary.LittleEndian
->         }
->         order.PutUint32(data, start)
->         order.PutUint32(data[4:], size)
->
->         bitmap :=3D data[8:]
->         for pc :=3D range pcs {
->                 // The lowest 4-bit is dropped.
->                 pc =3D uint32(backend.NextInstructionPC(target, uint64(pc=
-)))
->                 pc =3D (pc - start) >> 4
->                 bitmap[pc/8] |=3D (1 << (pc % 8))
->         }
->         return data
-> ```
-> Pc offset is divided by 16 and start is cover filter start pc.
->
-> I think divided by 8 is more reasonable? Because there is at least one in=
-struction before each __sanitizer_cov_trace_pc call.
-> 0000000000000160 R_AARCH64_CALL26  __sanitizer_cov_trace_pc
-> 0000000000000168 R_AARCH64_CALL26  __sanitizer_cov_trace_pc
->
-> I think we still need my patch because we still need a way to keep the tr=
-ace_pc call and post-filter in syzkaller doesn't solve trace_pc dropping, r=
-ight?
+> > I think some numbers about how much this feature helps would be really
+> > good, even if they are quite specific use cases. You also need to
+> > identify the userspace components, because I think different display
+> > servers are very different in their reaction speed. =20
+>=20
+> If my email address isn't obvious, I'm testing Chrome OS. I'm frankly
+> not that familiar with the user space display stack, but for what I
+> know, it's rather custom, developed within the Chromium project. Others
+> on CC here could probably give you more detail, if you want specific
+> answers, besides docs like this:
+>=20
+> https://chromium.googlesource.com/chromium/src/+/HEAD/docs/ozone_overview=
+.md
+>=20
+> > If KMS gets a pageflip or modeset in no time after an input event, then
+> > what's the gain. OTOH, if the display server is locking on to vblank,
+> > there might be a delay worth avoiding. But then, is it worth
+> > short-circuiting the wake-up in kernel vs. adding a new ioctl that
+> > userspace could hit to start the warming up process? =20
+>=20
+> Rob responded to the first part to some extent (there is definitely gain
+> to be had).
+>=20
+> To the last part: I wrote a simple debugfs hook to allow user space to
+> force a PSR exit, and then a simple user space program to read input
+> events and smash that debugfs file whenever it sees one. Testing in the
+> same scenarios, this appears to lose less than 100 microseconds versus
+> the in-kernel approach, which is negligible for this use case. (I'm not
+> sure about the other use cases.)
+>=20
+> So, this is technically doable in user space.
 
-Yes, the in-kernel filter solves the problem of trace capacity/overflows.
+This is crucial information I would like you to include in some commit
+message. I think it is very interesting for the reviewers. Maybe also
+copy that in the cover letter.
+
+In my opinion there is a clear and obvious decision due that
+measurement: Add the new ioctl for userspace to hit, do not try to
+hardcode or upload the wake-up policy into the kernel.
+
+> I can't speak to the ease of _actually_ integrating this into even our
+> own Chrome display manager, but I highly doubt it will get integrated
+> into others. I'd posit this should weigh into the relative worth, but
+> otherwise can't really give you an answer there.
+
+I think such a thing would be very simple to add to any display server.
+They already have hooks for things like resetting idle timeout timers on
+any relevant input event.
+
+> I'd also note, software-directed PSR is so far designed to be completely
+> opaque to user space. There's no way to disable it; no way to know it's
+> active; and no way to know anything about the parameters it's computing
+> (like average entry/exit delay). Would you suggest a whole set of new
+> IOCTLs for this?
+
+Just one ioctl on the DRM device: "Hey, wake up!". Because that's what
+your patch does in-kernel, right?
+
+If there are use case specific parameters, then how did you intend to
+allow adjusting those in your proposal?
+
+> > > diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
+> > > index 1c41156deb5f..9a6494aa45e6 100644
+> > > --- a/drivers/gpu/drm/Makefile
+> > > +++ b/drivers/gpu/drm/Makefile
+> > > @@ -56,6 +56,8 @@ drm_kms_helper-y :=3D drm_bridge_connector.o drm_cr=
+tc_helper.o drm_dp_helper.o \
+> > >  		drm_atomic_state_helper.o drm_damage_helper.o \
+> > >  		drm_format_helper.o drm_self_refresh_helper.o drm_rect.o
+> > > =20
+> > > +drm_kms_helper-$(CONFIG_DRM_INPUT_HELPER) +=3D drm_input_helper.o
+> > > +
+> > >  drm_kms_helper-$(CONFIG_DRM_PANEL_BRIDGE) +=3D bridge/panel.o
+> > >  drm_kms_helper-$(CONFIG_DRM_FBDEV_EMULATION) +=3D drm_fb_helper.o
+> > >  drm_kms_helper-$(CONFIG_DRM_KMS_CMA_HELPER) +=3D drm_fb_cma_helper.o
+> > > diff --git a/drivers/gpu/drm/drm_input_helper.c b/drivers/gpu/drm/drm=
+_input_helper.c
+> > > new file mode 100644
+> > > index 000000000000..470f90865c7c
+> > > --- /dev/null
+> > > +++ b/drivers/gpu/drm/drm_input_helper.c =20
+>=20
+> > > +static int drm_input_connect(struct input_handler *handler,
+> > > +			     struct input_dev *dev,
+> > > +			     const struct input_device_id *id)
+> > > +{
+> > > +	struct input_handle *handle;
+> > > +	int error;
+> > > +
+> > > +	handle =3D kzalloc(sizeof(struct input_handle), GFP_KERNEL);
+> > > +	if (!handle)
+> > > +		return -ENOMEM;
+> > > +
+> > > +	handle->dev =3D dev;
+> > > +	handle->handler =3D handler;
+> > > +	handle->name =3D "drm-input-helper";
+> > > +
+> > > +	error =3D input_register_handle(handle);
+> > > +	if (error)
+> > > +		goto err2;
+> > > +
+> > > +	error =3D input_open_device(handle); =20
+> >=20
+> > Does this literally open the input device, just like when userspace
+> > opens the input device? =20
+>=20
+> I believe so. Dmitry mentioned something to this effect on earlier
+> versions, but I found that the input_handler does not operate at all if
+> this specific handle wasn't opened. (All handles are independent, and
+> each over their own |open| count.)
+>=20
+> This part is unfortunate, I agree. If we really want this in-kernel,
+> perhaps I could find a way to tweak the input_handler API.
+
+Ok. Sounds like this can have a clear technical solution, and then this
+issue is solved for good. This might also remove the device type
+filtering problem.
+
+> > How do you know userspace is using this input device at all? If
+> > userspace is not using the input device, then DRM should not be opening
+> > it either, as it must have no effect on anything.
+> >=20
+> > If you open an input device that userspace does not use, you also cause
+> > a power consumption regression, because now the input device itself is
+> > active and possibly flooding the kernel with events (e.g. an
+> > accelerometer). =20
+>=20
+> Well, I don't think accelerometers show up as input devices, but I
+> suppose your point could apply to actual input devices.
+
+My understanding is that accelerometers are evdev (input) devices,
+especially when used as input e.g. for controlling games. I'm not aware
+of any other interface for it.
+
+Even audio sockets are input devices for detecting whether a plug has
+been plugged in, but those probably wouldn't flood anything.
 
 
-> But for sure I can use the bitmap from syzkaller.
->
-> THX
-> Joey
-> -----Original Message-----
-> From: Dmitry Vyukov <dvyukov@google.com>
-> Sent: Thursday, November 18, 2021 10:00 PM
-> To: JianGen Jiao (QUIC) <quic_jiangenj@quicinc.com>
-> Cc: andreyknvl@gmail.com; kasan-dev@googlegroups.com; LKML <linux-kernel@=
-vger.kernel.org>; Alexander Lochmann <info@alexander-lochmann.de>
-> Subject: Re: [PATCH] kcov: add KCOV_PC_RANGE to limit pc range
->
-> WARNING: This email originated from outside of Qualcomm. Please be wary o=
-f any links or attachments, and do not enable macros.
->
-> ,On Wed, 17 Nov 2021 at 07:24, Joey Jiao <quic_jiangenj@quicinc.com> wrot=
-e:
-> >
-> > Sometimes we only interested in the pcs within some range, while there
-> > are cases these pcs are dropped by kernel due to `pos >=3D
-> > t->kcov_size`, and by increasing the map area size doesn't help.
-> >
-> > To avoid disabling KCOV for these not intereseted pcs during build
-> > time, adding this new KCOV_PC_RANGE cmd.
->
-> Hi Joey,
->
-> How do you use this? I am concerned that a single range of PCs is too res=
-trictive. I can only see how this can work for single module (continuous in=
- memory) or a single function. But for anything else (something in the main=
- kernel, or several modules), it won't work as PCs are not continuous.
->
-> Maybe we should use a compressed bitmap of interesting PCs? It allows to =
-support all cases and we already have it in syz-executor, then syz-executor=
- could simply pass the bitmap to the kernel rather than post-filter.
-> It's also overlaps with the KCOV_MODE_UNIQUE mode that +Alexander propose=
-d here:
-> https://groups.google.com/g/kasan-dev/c/oVz3ZSWaK1Q/m/9ASztdzCAAAJ
-> It would be reasonable if kernel uses the same bitmap format for these
-> 2 features.
->
->
->
-> > An example usage is to use together syzkaller's cov filter.
-> >
-> > Change-Id: I954f6efe1bca604f5ce31f8f2b6f689e34a2981d
-> > Signed-off-by: Joey Jiao <quic_jiangenj@quicinc.com>
-> > ---
-> >  Documentation/dev-tools/kcov.rst | 10 ++++++++++
-> >  include/uapi/linux/kcov.h        |  7 +++++++
-> >  kernel/kcov.c                    | 18 ++++++++++++++++++
-> >  3 files changed, 35 insertions(+)
-> >
-> > diff --git a/Documentation/dev-tools/kcov.rst
-> > b/Documentation/dev-tools/kcov.rst
-> > index d83c9ab..fbcd422 100644
-> > --- a/Documentation/dev-tools/kcov.rst
-> > +++ b/Documentation/dev-tools/kcov.rst
-> > @@ -52,9 +52,15 @@ program using kcov:
-> >      #include <fcntl.h>
-> >      #include <linux/types.h>
-> >
-> > +    struct kcov_pc_range {
-> > +      uint32 start;
-> > +      uint32 end;
-> > +    };
-> > +
-> >      #define KCOV_INIT_TRACE                    _IOR('c', 1, unsigned l=
-ong)
-> >      #define KCOV_ENABLE                        _IO('c', 100)
-> >      #define KCOV_DISABLE                       _IO('c', 101)
-> > +    #define KCOV_TRACE_RANGE                   _IOW('c', 103, struct k=
-cov_pc_range)
-> >      #define COVER_SIZE                 (64<<10)
-> >
-> >      #define KCOV_TRACE_PC  0
-> > @@ -64,6 +70,8 @@ program using kcov:
-> >      {
-> >         int fd;
-> >         unsigned long *cover, n, i;
-> > +        /* Change start and/or end to your interested pc range. */
-> > +        struct kcov_pc_range pc_range =3D {.start =3D 0, .end =3D
-> > + (uint32)(~((uint32)0))};
-> >
-> >         /* A single fd descriptor allows coverage collection on a singl=
-e
-> >          * thread.
-> > @@ -79,6 +87,8 @@ program using kcov:
-> >                                      PROT_READ | PROT_WRITE, MAP_SHARED=
-, fd, 0);
-> >         if ((void*)cover =3D=3D MAP_FAILED)
-> >                 perror("mmap"), exit(1);
-> > +        if (ioctl(fd, KCOV_PC_RANGE, pc_range))
-> > +               dprintf(2, "ignore KCOV_PC_RANGE error.\n");
-> >         /* Enable coverage collection on the current thread. */
-> >         if (ioctl(fd, KCOV_ENABLE, KCOV_TRACE_PC))
-> >                 perror("ioctl"), exit(1); diff --git
-> > a/include/uapi/linux/kcov.h b/include/uapi/linux/kcov.h index
-> > 1d0350e..353ff0a 100644
-> > --- a/include/uapi/linux/kcov.h
-> > +++ b/include/uapi/linux/kcov.h
-> > @@ -16,12 +16,19 @@ struct kcov_remote_arg {
-> >         __aligned_u64   handles[0];
-> >  };
-> >
-> > +#define PC_RANGE_MASK ((__u32)(~((u32) 0))) struct kcov_pc_range {
-> > +       __u32           start;          /* start pc & 0xFFFFFFFF */
-> > +       __u32           end;            /* end pc & 0xFFFFFFFF */
-> > +};
-> > +
-> >  #define KCOV_REMOTE_MAX_HANDLES                0x100
-> >
-> >  #define KCOV_INIT_TRACE                        _IOR('c', 1, unsigned l=
-ong)
-> >  #define KCOV_ENABLE                    _IO('c', 100)
-> >  #define KCOV_DISABLE                   _IO('c', 101)
-> >  #define KCOV_REMOTE_ENABLE             _IOW('c', 102, struct kcov_remo=
-te_arg)
-> > +#define KCOV_PC_RANGE                  _IOW('c', 103, struct kcov_pc_r=
-ange)
-> >
-> >  enum {
-> >         /*
-> > diff --git a/kernel/kcov.c b/kernel/kcov.c index 36ca640..59550450
-> > 100644
-> > --- a/kernel/kcov.c
-> > +++ b/kernel/kcov.c
-> > @@ -36,6 +36,7 @@
-> >   *  - initial state after open()
-> >   *  - then there must be a single ioctl(KCOV_INIT_TRACE) call
-> >   *  - then, mmap() call (several calls are allowed but not useful)
-> > + *  - then, optional to set trace pc range
-> >   *  - then, ioctl(KCOV_ENABLE, arg), where arg is
-> >   *     KCOV_TRACE_PC - to trace only the PCs
-> >   *     or
-> > @@ -69,6 +70,8 @@ struct kcov {
-> >          * kcov_remote_stop(), see the comment there.
-> >          */
-> >         int                     sequence;
-> > +       /* u32 Trace PC range from start to end. */
-> > +       struct kcov_pc_range    pc_range;
-> >  };
-> >
-> >  struct kcov_remote_area {
-> > @@ -192,6 +195,7 @@ static notrace unsigned long
-> > canonicalize_ip(unsigned long ip)  void notrace
-> > __sanitizer_cov_trace_pc(void)  {
-> >         struct task_struct *t;
-> > +       struct kcov_pc_range pc_range;
-> >         unsigned long *area;
-> >         unsigned long ip =3D canonicalize_ip(_RET_IP_);
-> >         unsigned long pos;
-> > @@ -199,6 +203,11 @@ void notrace __sanitizer_cov_trace_pc(void)
-> >         t =3D current;
-> >         if (!check_kcov_mode(KCOV_MODE_TRACE_PC, t))
-> >                 return;
-> > +       pc_range =3D t->kcov->pc_range;
-> > +       if (pc_range.start < pc_range.end &&
-> > +               ((ip & PC_RANGE_MASK) < pc_range.start ||
-> > +               (ip & PC_RANGE_MASK) > pc_range.end))
-> > +               return;
-> >
-> >         area =3D t->kcov_area;
-> >         /* The first 64-bit word is the number of subsequent PCs. */
-> > @@ -568,6 +577,7 @@ static int kcov_ioctl_locked(struct kcov *kcov, uns=
-igned int cmd,
-> >         int mode, i;
-> >         struct kcov_remote_arg *remote_arg;
-> >         struct kcov_remote *remote;
-> > +       struct kcov_pc_range *pc_range;
-> >         unsigned long flags;
-> >
-> >         switch (cmd) {
-> > @@ -589,6 +599,14 @@ static int kcov_ioctl_locked(struct kcov *kcov, un=
-signed int cmd,
-> >                 kcov->size =3D size;
-> >                 kcov->mode =3D KCOV_MODE_INIT;
-> >                 return 0;
-> > +       case KCOV_PC_RANGE:
-> > +               /* Limit trace pc range. */
-> > +               pc_range =3D (struct kcov_pc_range *)arg;
-> > +               if (copy_from_user(&kcov->pc_range, pc_range, sizeof(kc=
-ov->pc_range)))
-> > +                       return -EINVAL;
-> > +               if (kcov->pc_range.start >=3D kcov->pc_range.end)
-> > +                       return -EINVAL;
-> > +               return 0;
-> >         case KCOV_ENABLE:
-> >                 /*
-> >                  * Enable coverage for the current task.
-> > --
-> > 2.7.4
-> >
+> > > +	if (error)
+> > > +		goto err1;
+> > > +
+> > > +	return 0;
+> > > +
+> > > +err1:
+> > > +	input_unregister_handle(handle);
+> > > +err2:
+> > > +	kfree(handle);
+> > > +	return error;
+> > > +}
+> > > +
+> > > +static void drm_input_disconnect(struct input_handle *handle)
+> > > +{
+> > > +	input_close_device(handle);
+> > > +	input_unregister_handle(handle);
+> > > +	kfree(handle);
+> > > +}
+> > > +
+> > > +static const struct input_device_id drm_input_ids[] =3D {
+> > > +	{
+> > > +		.flags =3D INPUT_DEVICE_ID_MATCH_EVBIT |
+> > > +			 INPUT_DEVICE_ID_MATCH_ABSBIT,
+> > > +		.evbit =3D { BIT_MASK(EV_ABS) },
+> > > +		.absbit =3D { [BIT_WORD(ABS_MT_POSITION_X)] =3D
+> > > +			    BIT_MASK(ABS_MT_POSITION_X) |
+> > > +			    BIT_MASK(ABS_MT_POSITION_Y) },
+> > > +	}, /* multi-touch touchscreen */
+> > > +	{
+> > > +		.flags =3D INPUT_DEVICE_ID_MATCH_EVBIT,
+> > > +		.evbit =3D { BIT_MASK(EV_ABS) },
+> > > +		.absbit =3D { [BIT_WORD(ABS_X)] =3D BIT_MASK(ABS_X) }
+> > > +
+> > > +	}, /* stylus or joystick device */
+> > > +	{
+> > > +		.flags =3D INPUT_DEVICE_ID_MATCH_EVBIT,
+> > > +		.evbit =3D { BIT_MASK(EV_KEY) },
+> > > +		.keybit =3D { [BIT_WORD(BTN_LEFT)] =3D BIT_MASK(BTN_LEFT) },
+> > > +	}, /* pointer (e.g. trackpad, mouse) */
+> > > +	{
+> > > +		.flags =3D INPUT_DEVICE_ID_MATCH_EVBIT,
+> > > +		.evbit =3D { BIT_MASK(EV_KEY) },
+> > > +		.keybit =3D { [BIT_WORD(KEY_ESC)] =3D BIT_MASK(KEY_ESC) },
+> > > +	}, /* keyboard */
+> > > +	{
+> > > +		.flags =3D INPUT_DEVICE_ID_MATCH_EVBIT |
+> > > +			 INPUT_DEVICE_ID_MATCH_KEYBIT,
+> > > +		.evbit =3D { BIT_MASK(EV_KEY) },
+> > > +		.keybit =3D {[BIT_WORD(BTN_JOYSTICK)] =3D BIT_MASK(BTN_JOYSTICK) },
+> > > +	}, /* joysticks not caught by ABS_X above */
+> > > +	{
+> > > +		.flags =3D INPUT_DEVICE_ID_MATCH_EVBIT |
+> > > +			 INPUT_DEVICE_ID_MATCH_KEYBIT,
+> > > +		.evbit =3D { BIT_MASK(EV_KEY) },
+> > > +		.keybit =3D { [BIT_WORD(BTN_GAMEPAD)] =3D BIT_MASK(BTN_GAMEPAD) },
+> > > +	}, /* gamepad */ =20
+> >=20
+> > I don't think this hardcoded policy belongs in the kernel, nor even
+> > works. =20
+>=20
+> Define "works"?
+
+Makes the right decision in at least all those cases where current
+desktop userspace (udev + hwdb + libinput) already makes the correct
+decision. From what I've seen, it looks like end users come with bug
+reports every now and then when some hardware manufacturer was lazy or
+inventive with their HID descriptors.
+
+> It's shipping in various forms on a variety of Android
+> and Chrome OS systems, where it has a noticeable performance benefit,
+> and isn't known to have significant power-consumption issues.
+
+Peter Hutterer could probably say more, I confess I am quite
+pessimistic.
+
+> > I believe classifying input devices is not that simple. Spearheading
+> > that is libinput which relies on udev tagging the devices with their
+> > types, and that is done based on a hwdb maintained by I think the
+> > systemd project. Or maybe libinput has its own db nowadays as well, I'm
+> > not sure. =20
+>=20
+> I'm not that familiar with libinput, etc., but I expect most of what it
+> needs to do is irrelevant to these kinds of use cases. We don't care at
+> all about what character sets or even what type of device is in use, in
+> most cases. As long as it could reasonably be called user input, it's
+> good enough.
+>=20
+> Also, for most use cases here, the penalty for small inaccuracies is
+> small. Especially for something like panel self-refresh, we'd rather not
+> have it enabled at all, than have it performing poorly.
+
+This problem will diminish once your patches stop literally opening the
+input devices and listens only on input devices that are actually
+opened by userspace. When that happens, I'm not sure you even need this
+device type filtering at all. The remaining problem is the seat
+designation.
+
+> > Also, joysticks and gamepads are something display servers generally do
+> > not open. An application might open some while it's running, but not
+> > all the time. Joysticks could be very chatty while opened, game
+> > controllers might have accelerometers, etc.
+> >  =20
+> > > +	{ },
+> > > +};
+> > > +
+> > > +int drm_input_handle_register(struct drm_device *dev,
+> > > +			      struct drm_input_handler *handler)
+> > > +{
+> > > +	int ret;
+> > > +
+> > > +	if (!handler->callback)
+> > > +		return -EINVAL;
+> > > +
+> > > +	handler->handler.event =3D drm_input_event;
+> > > +	handler->handler.connect =3D drm_input_connect;
+> > > +	handler->handler.disconnect =3D drm_input_disconnect;
+> > > +	handler->handler.name =3D kasprintf(GFP_KERNEL, "drm-input-helper-%=
+s",
+> > > +					  dev_name(dev->dev));
+> > > +	if (!handler->handler.name)
+> > > +		return -ENOMEM;
+> > > +
+> > > +	handler->handler.id_table =3D drm_input_ids;
+> > > +	handler->handler.private =3D handler;
+> > > +
+> > > +	ret =3D input_register_handler(&handler->handler); =20
+> >=20
+> > Yet another problem here is that this completely ignores the concept of
+> > physical seats. Of course it does so, because seats are a pure
+> > userspace concept.
+> >=20
+> > The kernel VT console already has problems because the kernel has no
+> > concept of seats, which means that if there is a second seat defined and
+> > a desktop running on it, while the first seat is in the normal VT text
+> > mode, then everything typed in the desktop will be delivered to the VT
+> > shell as well! (This has a possible workaround in userspace [1], by ope=
+ning
+> > the evdev input devices in some kind of exclusive mode - which is not
+> > common practise AFAIK.) =20
+>=20
+> Sure.
+>=20
+> I'd bet the intersection of systems that use SW-directed PSR and
+> "multi-seat" is negligibly close to zero, but I can't guarantee that.
+> Chalk one up for a user space policy.
+
+Your cover letter has also the other bullet point: ramping up GPUs.
+That applies to a lot more systems than PSR, right?
+
+Maybe that is an acceptable trade-off: be 100 =C2=B5s faster (your
+measurement) by ramping up all GPUs in a system instead of only the
+relevant ones?
+
+Or maybe that will hurt normal gaming computers by ramping up the iGPU
+when the OS and game only uses the dGPU, which makes iGPU eat away the
+CPU power budget, causing the CPU to slow down? I suppose that would be
+handled by ramping up only GPUs that userspace has opened.
+
+> > Btw. if userspace does use EVIOCGRAB, then will your in-kernel handler
+> > stop getting events? =20
+>=20
+> I believe so.
+
+I suppose you would not want that?
+
+The solution to the VT console problem is for userspace to start using
+EVIOCGRAB and that could regress the warm-up machinery.
+
+In summary, there are all these open questions and annoying little
+problems, and none of these issues would exist if userspace would drive
+the warm-up explicitly.
+
+
+Thanks,
+pq
+
+--Sig_/3QMKmyr3Pp0yfiyMvuAGqaT
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmGXfrEACgkQI1/ltBGq
+qqfMzQ//WyM/SEdezbmfsL8TkJ9/o/mBXXUaLHNYbUlrpEGrQuDTRZtujOTHscsx
+ICtt9zRU8+Js1EMM2wnOh7JwvqiSE/7yr4v+0SPVVhltnsyirea/WGOdBhKJuqMm
+FPFAK4WZXma+v4TsiP+4L1Nd1WM9De0MV3jo+gE1GvVKNyRE0xVssbEwIY9BA48k
+/8Xd9W3g8LyrNPyCPe6eCsoO8CNlLhx+6h/ZRIbnH5nHM8bdz5AaK3WgEn1h+pQU
+D1riLuarNM9e/KiWZE9HqjP7AooqrdDV8ROwVfXh2JFlQlCbn4R3hSoPL8QpaLjf
+oI+osSBpOgy5sPAv0G2Q+fXnvn6C4Ct8H8tTWv9ph/BhJ1FpCzaAFVAP5CCQqk+9
+rABPYxKBea5rLvH/FlzwGnLQjUPvsswGOMCMnmbPmqECwmgIIfYNoB2SgO4WcIMA
+YIMPq26yXvANSv3Ul5f8ZjD+H8Wz8KuqVVL4Aox8aAZeP1ao+ffLxUHzR5Jp3Z9S
+vAcDubJ8UYe5nEcg0xAAA+QIygUNrLAGvIYuBfZR8aNy5pqJ68LHJnZ1/lDfafZh
+LuS8j13oY8akLPPZhKVs7D63g6ZvHew/0pbSFPb5fSfgXStG2ZboVer/vZzFXa4w
+g3p4XY7z3k0K1uvuEtZWUfIjeKO0RekKaeWciVWKpwuVj3VRxS8=
+=GsiR
+-----END PGP SIGNATURE-----
+
+--Sig_/3QMKmyr3Pp0yfiyMvuAGqaT--
