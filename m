@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5590445774C
+	by mail.lfdr.de (Postfix) with ESMTP id E6BF745774E
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 20:46:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236404AbhKSTtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 14:49:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45452 "EHLO mail.kernel.org"
+        id S236403AbhKSTt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 14:49:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236149AbhKSTtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236237AbhKSTtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 19 Nov 2021 14:49:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id EB31061AF0;
-        Fri, 19 Nov 2021 19:46:16 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5BA4361AFF;
+        Fri, 19 Nov 2021 19:46:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1637351177;
-        bh=Fatu20UiZI42qmAY4VHyZ1WqXnoMvkmyBB3M6LR47Kk=;
+        bh=xKK2nuJcRVOla1OpkutQBa+M2Bd9nOnYHf/rjf43+Vc=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ByM8/ZE1GpjCrb/8W7+TVjvLKdk4r5g7mY2mTInhj7IUbWTuCIoIN+DOrmNI0LlFl
-         ME6E2dYacNewvvRnSTRJ1eHdvDLfP/F6Fy/lZelH3AXedz2EWyFseOyQXlsVJSwE4E
-         te00DMliVX+22QeaD4/Cb0iB22qKil8lA0daEvVFIqXTmGuWuIND0HYfOf7Hm0Uo08
-         rmMv+NQOSTDtPJTun7cA8B1kkLa/zxAeFSynq4W2x1oAGyAPr4eU8ZsTVgY9lozOcy
-         LQsdHvtJzp+YOQIfR0Z018uZ6nMDxp65W4AXuTJ93kn9Cl9kfeLxYHMREu9JGITq8o
-         ZrPUlSvKwJ7cg==
+        b=byh7HHdeHwKD+QbD8Bt68osYZk93CjVri/b7m4oAOTnUrbdjxbsESdS4nsqSqxEl+
+         yDBToBhRow6+UBkGYK7QRgUcHnKZc4aD67Ne5XPG9srJkqs7QnVmtcxwL7ibPp1zyb
+         44zaWutEQAH0bEf5s2VIh9U6bxwEQ6GUQXrliFnEIFN+0N1puV9872u3eFCobTxJWa
+         pQY06aOgJfT7093/RS+ChSuY/oCnnLbc77esbbShhktSCP5mIToQ4JmEZngjQfd4zg
+         kMn58ukW6eYZ2olZcy6lcm5jNik69qYW9Nu43ZLvOXJg4rl7PmJuoXueTRrj8gehq6
+         2q5QK6/iCd5tA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E50E060977;
-        Fri, 19 Nov 2021 19:46:16 +0000 (UTC)
-Subject: Re: [git pull] drm fixes for 5.16-rc2
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 55CD460977;
+        Fri, 19 Nov 2021 19:46:17 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAPM=9twL3jV37TWqwTUDfCdqMEeQDO6Zrgx+rkWNir8Q8eOqWw@mail.gmail.com>
-References: <CAPM=9twL3jV37TWqwTUDfCdqMEeQDO6Zrgx+rkWNir8Q8eOqWw@mail.gmail.com>
+In-Reply-To: <20211119171926.GA2987583@nvidia.com>
+References: <20211119171926.GA2987583@nvidia.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAPM=9twL3jV37TWqwTUDfCdqMEeQDO6Zrgx+rkWNir8Q8eOqWw@mail.gmail.com>
-X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-11-19
-X-PR-Tracked-Commit-Id: 7d51040a695b53d4060349c7a895ef4a763887ef
+X-PR-Tracked-Message-Id: <20211119171926.GA2987583@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: df4e6faaafe2e4ff4dcdf6d5f5b1e2cb1fec63f7
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ad44518affc66611644654cec9c165eb4e848030
-Message-Id: <163735117693.2946.13384275708664260252.pr-tracker-bot@kernel.org>
-Date:   Fri, 19 Nov 2021 19:46:16 +0000
-To:     Dave Airlie <airlied@gmail.com>
+X-PR-Merge-Commit-Id: a8b5f8f26da878abc6c357f485d446391b43ed36
+Message-Id: <163735117734.2946.10172787974567150351.pr-tracker-bot@kernel.org>
+Date:   Fri, 19 Nov 2021 19:46:17 +0000
+To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 19 Nov 2021 15:32:38 +1000:
+The pull request you sent on Fri, 19 Nov 2021 13:19:26 -0400:
 
-> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-11-19
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ad44518affc66611644654cec9c165eb4e848030
+https://git.kernel.org/torvalds/c/a8b5f8f26da878abc6c357f485d446391b43ed36
 
 Thank you!
 
