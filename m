@@ -2,107 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A63D457762
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 20:56:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F89457754
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 20:47:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232456AbhKST7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 14:59:47 -0500
-Received: from mailscanner01.zoner.fi ([84.34.166.10]:57778 "EHLO
-        mailscanner01.zoner.fi" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbhKST7q (ORCPT
+        id S234843AbhKSTu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 14:50:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234135AbhKSTuy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 14:59:46 -0500
-X-Greylist: delayed 585 seconds by postgrey-1.27 at vger.kernel.org; Fri, 19 Nov 2021 14:59:46 EST
-Received: from www25.zoner.fi (www25.zoner.fi [84.34.147.45])
-        by mailscanner01.zoner.fi (Postfix) with ESMTPS id 0C6B3414F8;
-        Fri, 19 Nov 2021 21:46:57 +0200 (EET)
-Received: from mail.zoner.fi ([84.34.147.244])
-        by www25.zoner.fi with esmtp (Exim 4.94.2)
-        (envelope-from <lasse.collin@tukaani.org>)
-        id 1mo9qa-0001Yw-UW; Fri, 19 Nov 2021 21:46:56 +0200
-Date:   Fri, 19 Nov 2021 21:46:47 +0200
-From:   Lasse Collin <lasse.collin@tukaani.org>
-To:     Jubin Zhong <zhongjubin@huawei.com>
-Cc:     <akpm@linux-foundation.org>, <wangfangpeng1@huawei.com>,
-        <liaohua4@huawei.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] kbuild: Enable armthumb BCJ filter for Thumb-2 kernel
-Message-ID: <20211119214647.12932e5c@kaneli>
-In-Reply-To: <1637323647-19988-1-git-send-email-zhongjubin@huawei.com>
-References: <1637323647-19988-1-git-send-email-zhongjubin@huawei.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        Fri, 19 Nov 2021 14:50:54 -0500
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361A6C06173E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 11:47:48 -0800 (PST)
+Received: by mail-qv1-xf30.google.com with SMTP id j9so7830864qvm.10
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 11:47:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=b8HwEu/l2NAGuMcWKH5jQM9AiiPfyTyPdU6LnAiTwjE=;
+        b=eXYLScpgWGOSOqBVSQtdTVD++xT2fUA+29WU5uRjLvVVyE3JEysFYMD3c5m3MUuwhi
+         2/dEOlgu6r/9aoIpMC/3VJ29OZt+Y5gY+DeEvBjU4JCXVvlQTRyE4kipd4bnNE4VfygO
+         gi2wVXk5KMG1My3gjGCyppqDyPaW46HK5/4P7hKcEdPibptKWHECr7E7AOpM6qgeV0Gk
+         5XFBGCzNpMsoTIPVISn+JIpRXTxD1C4vDaEFVrlgHo58JmtwUKTR1DrLx7zfgn5Z1MG8
+         NtfI2Hh1jxXAWFSVfmkK0Vl+a+bgSvADPQFiF6otkPWuXnCgFRePBcvR1qLvCTFwllWk
+         rJ2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=b8HwEu/l2NAGuMcWKH5jQM9AiiPfyTyPdU6LnAiTwjE=;
+        b=zi4MiTzOOBLRgokY3YrTIA2KBjQww92OhWqrs/ZMhHYJHN/WNN7+hcNow1rRq9DqvQ
+         DGB9D4Kc00cRwSzVGrd0/Dc99YsbbN0kToPTINBZqHq4C0sAZoBPP3QnSJ1MHVuBdYiY
+         nxmvJ/fOcw4aQW/v544vfwd9sDozTAjxoaRLkU7elDcTXBqWRPN+9G54K7PmXdpd5jQ3
+         dfffA7gPPj5rUMd50mjZyqoUF+ILhPIRDE5ugr4zQQuuqEvTCXE3DABO409pKPnbhGwR
+         CLNUglAsWl0sYpAxtesMgtUITZtWluoSUoWEgGtqT2haBLKD7nxqcgBbJirSeiXCL4nI
+         HZYQ==
+X-Gm-Message-State: AOAM532xb0LGidTW0d/+rsFh0q6UM6GGXLonwrWaYJ8Ts3DlDbMomTLX
+        Oa1d7IgXHIknA0EGzicm3WQyiw==
+X-Google-Smtp-Source: ABdhPJwYijRrK8qgpzAhCkRXoqK9YWbXTodbosR5h3I14ZDdTjYbPRJ8dYw0rADALVOrpBmC6Q7oWg==
+X-Received: by 2002:a05:6214:4107:: with SMTP id kc7mr76325935qvb.57.1637351267376;
+        Fri, 19 Nov 2021 11:47:47 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id d13sm339977qkn.100.2021.11.19.11.47.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 11:47:46 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mo9rO-00Cdid-BP; Fri, 19 Nov 2021 15:47:46 -0400
+Date:   Fri, 19 Nov 2021 15:47:46 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, qemu-devel@nongnu.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J . Bruce Fields" <bfields@fieldses.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
+        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com
+Subject: Re: [RFC v2 PATCH 01/13] mm/shmem: Introduce F_SEAL_GUEST
+Message-ID: <20211119194746.GM876299@ziepe.ca>
+References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
+ <20211119134739.20218-2-chao.p.peng@linux.intel.com>
+ <20211119151943.GH876299@ziepe.ca>
+ <df11d753-6242-8f7c-cb04-c095f68b41fa@redhat.com>
+ <YZf4aAlbyeWw8wUk@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZf4aAlbyeWw8wUk@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-19 Jubin Zhong wrote:
-> xz_wrap.sh use $SRCARCH to detect the BCJ filter. However, assigning
-> arm BCJ filter to Thumb-2 kernel is not optimal. In my case, about 5%
-> decrease of image size is observed with armthumb BCJ filter:
+On Fri, Nov 19, 2021 at 07:18:00PM +0000, Sean Christopherson wrote:
+> On Fri, Nov 19, 2021, David Hildenbrand wrote:
+> > On 19.11.21 16:19, Jason Gunthorpe wrote:
+> > > As designed the above looks useful to import a memfd to a VFIO
+> > > container but could you consider some more generic naming than calling
+> > > this 'guest' ?
+> > 
+> > +1 the guest terminology is somewhat sob-optimal.
 > 
-> Test results:
->   hardware:      QEMU emulator version 3.1.0
->   config:        vexpress_defconfig with THUMB2_KERNEL & KERNEL_XZ on
->   arm BCJ:       4029808
->   armthumb BCJ:  3827280
-> 
-> Choose armthumb BCJ filter for Thumb-2 kernel to make smaller images.
+> For the F_SEAL part, maybe F_SEAL_UNMAPPABLE?
 
-I didn't test the patch but it looks reasonable to me. Below are a small
-optimization idea and two very minor style suggestions.
+Perhaps INACCESSIBLE?
 
-> --- a/lib/decompress_unxz.c
-> +++ b/lib/decompress_unxz.c
-> @@ -131,6 +131,9 @@
->  #ifdef CONFIG_ARM
->  #	define XZ_DEC_ARM
->  #endif
-> +#ifdef CONFIG_THUMB2_KERNEL
-> +#	define XZ_DEC_ARMTHUMB
-> +#endif
->  #ifdef CONFIG_IA64
->  #	define XZ_DEC_IA64
->  #endif
+> No ideas for the kernel API, but that's also less concerning since
+> it's not set in stone.  I'm also not sure that dedicated APIs for
+> each high-ish level use case would be a bad thing, as the semantics
+> are unlikely to be different to some extent.  E.g. for the KVM use
+> case, there can be at most one guest associated with the fd, but
+> there can be any number of VFIO devices attached to the fd.
 
-If a Thumb-2 kernel will always use the ARM-Thumb BCJ filter, one can
-save a few bytes from the pre-boot code by omitting the ARM BCJ filter:
+Even the kvm thing is not a hard restriction when you take away
+confidential compute.
 
---- a/lib/decompress_unxz.c
-+++ b/lib/decompress_unxz.c
-@@ -129,7 +129,11 @@
- #	define XZ_DEC_POWERPC
- #endif
- #ifdef CONFIG_ARM
--#	define XZ_DEC_ARM
-+#	ifdef CONFIG_THUMB2_KERNEL
-+#		define XZ_DEC_ARMTHUMB
-+#	else
-+#		define XZ_DEC_ARM
-+#	endif
- #endif
- #ifdef CONFIG_IA64
- #	define XZ_DEC_IA64
+Why can't we have multiple KVMs linked to the same FD if the memory
+isn't encrypted? Sure it isn't actually useful but it should work
+fine.
 
-> --- a/scripts/xz_wrap.sh
-> +++ b/scripts/xz_wrap.sh
-> @@ -8,6 +8,7 @@
->  # This file has been put into the public domain.
->  # You can do whatever you want with this file.
->  #
-> +. include/config/auto.conf
+Supporting only one thing is just a way to avoid having a linked list
+of clients to broadcast invalidations too - for instance by using a
+standard notifier block...
 
-I suggest adding an empty line before this new line so that it is
-clearly separated from the header comment.
+Also, how does dirty tracking work on this memory?
 
-> +if [ -n "${CONFIG_THUMB2_KERNEL}" ];then
-
-I suggest adding a space after the semi-colon: ]; then
-
-With or without the above modifications:
-
-Acked-by: Lasse Collin <lasse.collin@tukaani.org>
-
--- 
-Lasse Collin
+Jason
