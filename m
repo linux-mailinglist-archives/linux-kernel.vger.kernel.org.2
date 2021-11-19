@@ -2,104 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54D41456977
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 06:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BA545697A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 06:19:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbhKSFVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 00:21:09 -0500
-Received: from mga18.intel.com ([134.134.136.126]:43846 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229675AbhKSFVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 00:21:08 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="221237583"
-X-IronPort-AV: E=Sophos;i="5.87,246,1631602800"; 
-   d="scan'208";a="221237583"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 21:18:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,246,1631602800"; 
-   d="scan'208";a="536999203"
-Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
-  by orsmga001.jf.intel.com with ESMTP; 18 Nov 2021 21:18:07 -0800
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     lenb@kernel.org, rafael@kernel.org, viresh.kumar@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        ricardo.neri@intel.com, tim.c.chen@intel.com, peterz@infradead.org,
-        Michael@MichaelLarabel.com, arjan@linux.intel.com,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH] cpufreq: intel_pstate: ITMT support for overclocked system
-Date:   Thu, 18 Nov 2021 21:18:01 -0800
-Message-Id: <20211119051801.1432724-1-srinivas.pandruvada@linux.intel.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231281AbhKSFWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 00:22:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229675AbhKSFW3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 00:22:29 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C885DC061574;
+        Thu, 18 Nov 2021 21:19:27 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id iq11so7033230pjb.3;
+        Thu, 18 Nov 2021 21:19:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=KISB2UCF9N58Kzcwx4fmrlziVOKyZyEUixevjaxGGE0=;
+        b=JKUz/CuszSp9DlKTjWM5AUNoEZuIIS1ZjZtoR/10gKpq8/g6Zsjp8KAoH2axkEAcON
+         iutq6EQJp2PlFSUFiyg52DdfkP88sb9o0OOGMDksLp3Uy9/2YmW+KvTi9bRtto9yvjsH
+         BcyznVbJfSsQPbiZxpoOHB0IQk7MKQ9zfkNsL9/vGIev3/MXbBYNHWqyWRLzv3wCzpwU
+         022VrfLwlbCpBF9QJKyNSvOgOGnp1CzJ/eZWDSNDyH8GS/tUjUOeiWXjkRcJzo2SPfuQ
+         1xzrmjmCxUBmrEfBI6UddydAVgd7k7SOeovB2NF2njmPbQUFW3ydHlpdMl9p0/+qa4WY
+         xEXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=KISB2UCF9N58Kzcwx4fmrlziVOKyZyEUixevjaxGGE0=;
+        b=L2Nzjm7fr+w/mg8Db2YfE44i5ZEPQcuxNkLpUUpjXRQ+aSSJb+x1S6LxitL0hpt8Ii
+         MJBPGl3n65EdIGhxIk5BUM62KxYlOpFL+/NoXR3uRACwmGmvBuBFs65h5lYChsqoJO6S
+         aZP+OPZKvOUnxoOy12CYOjCqiPZKg9T3p75i+7oYITtaRZ3YGNczs5C3fZ5kpcR72vMh
+         K1ODqYJ0bB2FnEat7gUuBUA7lPZThuojVbAK0JUtUAjD0pZTR7bXw4pbsh2IwDZjlesp
+         285K1ffzfX4PjwKQT4nQcB0OdVleH9CFXWCJzkX+ILx/Wv4cUF4qahuKD+9w+YB22j4u
+         LS3g==
+X-Gm-Message-State: AOAM531lu9x+D/Cgse18Ys/G8dJQfzmmlRTmss61iyZ5pmOqDTcOXCvk
+        wlTJD/Yi+YeoQp3orlMG+IY=
+X-Google-Smtp-Source: ABdhPJySDJY5YyW+4BpjmBL1dlXWoGgjG3ZTcFf6EcfL0HjjWRi9TZ9XXBwD6h9e4s4asmXnebHC7Q==
+X-Received: by 2002:a17:90a:2843:: with SMTP id p3mr1367783pjf.176.1637299167425;
+        Thu, 18 Nov 2021 21:19:27 -0800 (PST)
+Received: from scdiu3.sunplus.com ([113.196.136.192])
+        by smtp.googlemail.com with ESMTPSA id c2sm1332935pfv.112.2021.11.18.21.19.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 18 Nov 2021 21:19:26 -0800 (PST)
+From:   Hammer Hsieh <hammerh0314@gmail.com>
+X-Google-Original-From: Hammer Hsieh <hammer.hsieh@sunplus.com>
+To:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jirislaby@kernel.org,
+        p.zabel@pengutronix.de
+Cc:     tony.huang@sunplus.com, wells.lu@sunplus.com,
+        Hammer Hsieh <hammer.hsieh@sunplus.com>
+Subject: [PATCH v3 0/2] Add UART driver for Suplus SP7021 SoC
+Date:   Fri, 19 Nov 2021 13:19:21 +0800
+Message-Id: <1637299163-6460-1-git-send-email-hammer.hsieh@sunplus.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1635752903-14968-1-git-send-email-hammer.hsieh@sunplus.com>
+References: <1635752903-14968-1-git-send-email-hammer.hsieh@sunplus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On systems with overclocking enabled, CPPC Highest Performance can be
-hard coded to 0xff. In this case even if we have cores with different
-highest performance, ITMT can't be enabled as the current implementation
-depends on CPPC Highest Performance.
+This is a patch series for UART driver for Suplus SP7021 SoC.
 
-On such systems we can use MSR_HWP_CAPABILITIES maximum performance field
-when CPPC.Highest Performance is 0xff.
+Sunplus SP7021 is an ARM Cortex A7 (4 cores) based SoC. It integrates
+many peripherals (ex: UART. I2C, SPI, SDIO, eMMC, USB, SD card and
+etc.) into a single chip. It is designed for industrial control.
 
-Due to legacy reasons, we can't solely depend on MSR_HWP_CAPABILITIES as
-in some older systems CPPC Highest Performance is the only way to identify
-different performing cores.
+Refer to:
+https://sunplus-tibbo.atlassian.net/wiki/spaces/doc/overview
+https://tibbo.com/store/plus1.html
 
-Reported-by: Michael Larabel <Michael@MichaelLarabel.com>
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
----
-This patch was tested on one Alder Lake system by enabling Overclocking.
-Once overclocking is enabled, we see
-$cat /sys/devices/system/cpu/cpu*/acpi_cppc/highest_perf 
-255 (P-Cores)
-255 (P-Cores
-...
-...
-255 (E-Cores)
-255 (E-Cores)
-The real max performance for CPUs on this system was
-0x40 for P-cores and 0x26 for E-cores.
-With this change applied we will see
-$cat /proc/sys/kernel/sched_itmt_enabled 
-1
-The resultant ITMT priorities
-for P-core 0x40, P-core HT sibling 0x10 and E-core 0x26
+Hammer Hsieh (2):
+  dt-bindings:serial:Add bindings doc for Sunplus SoC UART Driver
+  serial:sunplus-uart:Add Sunplus SoC UART Driver
 
- drivers/cpufreq/intel_pstate.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ .../bindings/serial/sunplus,sp7021-uart.yaml       |  58 ++
+ MAINTAINERS                                        |   7 +
+ drivers/tty/serial/Kconfig                         |  23 +
+ drivers/tty/serial/Makefile                        |   1 +
+ drivers/tty/serial/sunplus-uart.c                  | 903 +++++++++++++++++++++
+ include/soc/sunplus/sp_uart.h                      |  93 +++
+ 6 files changed, 1085 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/serial/sunplus,sp7021-uart.yaml
+ create mode 100644 drivers/tty/serial/sunplus-uart.c
+ create mode 100644 include/soc/sunplus/sp_uart.h
 
-diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-index 815df3daae9d..3106e62ffb25 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -338,6 +338,8 @@ static void intel_pstste_sched_itmt_work_fn(struct work_struct *work)
- 
- static DECLARE_WORK(sched_itmt_work, intel_pstste_sched_itmt_work_fn);
- 
-+#define CPPC_MAX_PERF	U8_MAX
-+
- static void intel_pstate_set_itmt_prio(int cpu)
- {
- 	struct cppc_perf_caps cppc_perf;
-@@ -348,6 +350,14 @@ static void intel_pstate_set_itmt_prio(int cpu)
- 	if (ret)
- 		return;
- 
-+	/*
-+	 * On some systems with overclocking enabled, CPPC.highest_perf is hardcoded to 0xff.
-+	 * In this case we can't use CPPC.highest_perf to enable ITMT.
-+	 * In this case we can look at MSR_HWP_CAPABILITIES bits [8:0] to decide.
-+	 */
-+	if (cppc_perf.highest_perf == CPPC_MAX_PERF)
-+		cppc_perf.highest_perf = HWP_HIGHEST_PERF(READ_ONCE(all_cpu_data[cpu]->hwp_cap_cached));
-+
- 	/*
- 	 * The priorities can be set regardless of whether or not
- 	 * sched_set_itmt_support(true) has been called and it is valid to
 -- 
-2.31.1
+2.7.4
 
