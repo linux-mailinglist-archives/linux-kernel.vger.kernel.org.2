@@ -2,174 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C501456CA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 10:44:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B4EA456C93
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 10:44:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232975AbhKSJqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 04:46:35 -0500
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:50364 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234671AbhKSJqe (ORCPT
+        id S234595AbhKSJqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 04:46:13 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:55758 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234579AbhKSJqM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 04:46:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637315012; x=1668851012;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=gjNQXd45TcMbMNCM6PFG/zGDQLeKq6DMiiQVQ+Ek21c=;
-  b=vXsgZo3eJ9pB1FyxzJ9l19k11iYvqu1OSLl+1GDxdrURNTd9nIOXtC3A
-   SuHEfJA+Wj/aHtl+7Uz//4wXkK95OPpx46iDmzNO3F7F374irA3IM838o
-   8qsMjP0wBPFOqFyGTTjw/pX/8l1q+9YZW75NJZVqd1jE3yKJj5tfHp07+
-   o=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 19 Nov 2021 01:43:32 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 01:43:32 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Fri, 19 Nov 2021 01:43:31 -0800
-Received: from c-skakit-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Fri, 19 Nov 2021 01:43:27 -0800
-From:   Satya Priya <quic_c_skakit@quicinc.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, <swboyd@chromium.org>,
-        <collinsd@codeaurora.org>, <subbaram@codeaurora.org>,
-        Das Srinagesh <gurus@codeaurora.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        "Lee Jones" <lee.jones@linaro.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Satya Priya <quic_c_skakit@quicinc.com>
-Subject: [PATCH V4 6/6] arm64: dts: qcom: sc7280: Add pm8008 regulators support for sc7280-idp
-Date:   Fri, 19 Nov 2021 15:12:33 +0530
-Message-ID: <1637314953-4215-7-git-send-email-quic_c_skakit@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1637314953-4215-1-git-send-email-quic_c_skakit@quicinc.com>
-References: <1637314953-4215-1-git-send-email-quic_c_skakit@quicinc.com>
+        Fri, 19 Nov 2021 04:46:12 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D512A212CC;
+        Fri, 19 Nov 2021 09:43:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637314989; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VX3PGrE+25kT7jUiLyGbGWn7NLwxIdCLfX6UOewXBmE=;
+        b=E2In/Fm7l/NySQZPBXGCz+1MVCMUBys0KjhqF42c3F/eagxa54Evufx67NQuEjNJ8rpvlW
+        jIaDJ9NOb+CzINbWZcODY11QpM+Sks7nxkDw86XK2ZA/McC6WHuqZlg1qx2GWiazdOLN4a
+        lC8ud/jObIQ4aoD7vO903PSs8nnYzHk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637314989;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VX3PGrE+25kT7jUiLyGbGWn7NLwxIdCLfX6UOewXBmE=;
+        b=uKGznVZ3f3rOSyuiO2MEoW3cDiSChGoZU5on37c4gMRmp9H3zmFFLLCoMAl7Of/p4yHVSv
+        FRDMeOLz4nvkreCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AA5C913A5E;
+        Fri, 19 Nov 2021 09:43:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id YG86KK1xl2HNeQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 19 Nov 2021 09:43:09 +0000
+Message-ID: <48b1acd4-21fe-2d6c-ba68-a95cef86d176@suse.cz>
+Date:   Fri, 19 Nov 2021 10:43:09 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Content-Language: en-US
+To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Faiyaz Mohammed <faiyazm@codeaurora.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20211117193932.4049412-1-gerald.schaefer@linux.ibm.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [RFC PATCH 0/1] mm/slub: endless "No data" printing for
+ alloc/free_traces attribute
+In-Reply-To: <20211117193932.4049412-1-gerald.schaefer@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pm8008 regulators support for sc7280 idp.
+On 11/17/21 20:39, Gerald Schaefer wrote:
+> Steffen reported endless printing of "No data" when reading from
+> alloc/free_traces attribute in /sys/kernel/debug/slab/, at least on
+> s390, but I don't see how this could be arch-specific.
+> 
+> I must admit that I am completely confused by the seq_file interface
 
-Signed-off-by: Satya Priya <quic_c_skakit@quicinc.com>
----
-Changes in V2:
- - As per Stephen's comments, replaced '_' with '-' for node names.
+Me too, everytime I have to deal with it I relearn it.
 
-Changes in V3:
- - Changed the regulator node names as l1, l2 etc
- - Changed "pm8008-regulators" to "regulators"
- - Changed "qcom,min-dropout-voltage" to "regulator-min-dropout-voltage-microvolt"
+> in general, but even more so from this specific implementation.
 
-Changes in V4:
- - Moved all common stuff to pm8008.dtsi and added board specific configurations here.
+Right.
 
- arch/arm64/boot/dts/qcom/sc7280-idp.dtsi | 73 ++++++++++++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
+> First I suspected a bug in slab_debugfs_next(), because of its very
+> weird usage of the *v parameter, which seems totally useless, but not
+> responsible for this bug. Still, out of curiosity, does anybody have a
+> clue why it is done this way, and not e.g. like this?
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index f7368bfffb7a..0b1832b16f5b 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -6105,10 +6105,9 @@ static void *slab_debugfs_next(struct seq_file *seq, void *v, loff_t *ppos)
+>  {
+>         struct loc_track *t = seq->private;
+> 
+> -       v = ppos;
+>         ++*ppos;
+>         if (*ppos <= t->count)
+> -               return v;
+> +               return ppos;
+> 
+>         return NULL;
+>  }
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-index d623d71..f86368d 100644
---- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-@@ -309,6 +309,69 @@
- 	};
- };
- 
-+&i2c1 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	status = "okay";
-+
-+	#include "pm8008.dtsi"
-+};
-+
-+&pm8008_chip {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pm8008_active>;
-+};
-+
-+&pm8008_regulators {
-+	vdd_l1_l2-supply = <&vreg_s8b_1p2>;
-+	vdd_l3_l4-supply = <&vreg_s1b_1p8>;
-+	vdd_l5-supply = <&vreg_bob>;
-+	vdd_l6-supply = <&vreg_bob>;
-+	vdd_l7-supply = <&vreg_bob>;
-+};
-+
-+&pm8008_l1 {
-+	regulator-min-microvolt = <950000>;
-+	regulator-max-microvolt = <1300000>;
-+	regulator-min-dropout-voltage-microvolt = <96000>;
-+};
-+
-+&pm8008_l2 {
-+	regulator-min-microvolt = <950000>;
-+	regulator-max-microvolt = <1250000>;
-+	regulator-min-dropout-voltage-microvolt = <24000>;
-+};
-+
-+&pm8008_l3 {
-+	regulator-min-microvolt = <1650000>;
-+	regulator-max-microvolt = <3000000>;
-+	regulator-min-dropout-voltage-microvolt = <224000>;
-+};
-+
-+&pm8008_l4 {
-+	regulator-min-microvolt = <1504000>;
-+	regulator-max-microvolt = <1600000>;
-+	regulator-min-dropout-voltage-microvolt = <0>;
-+};
-+
-+&pm8008_l5 {
-+	regulator-min-microvolt = <2600000>;
-+	regulator-max-microvolt = <3000000>;
-+	regulator-min-dropout-voltage-microvolt = <104000>;
-+};
-+
-+&pm8008_l6 {
-+	regulator-min-microvolt = <2600000>;
-+	regulator-max-microvolt = <3000000>;
-+	regulator-min-dropout-voltage-microvolt = <112000>;
-+};
-+
-+&pm8008_l7 {
-+	regulator-min-microvolt = <3000000>;
-+	regulator-max-microvolt = <3544000>;
-+	regulator-min-dropout-voltage-microvolt = <96000>;
-+};
-+
- &qfprom {
- 	vcc-supply = <&vreg_l1c_1p8>;
- };
-@@ -437,6 +500,16 @@
- 	};
- };
- 
-+&pm8350c_gpios {
-+	pm8008_active: pm8008_active {
-+		pins = "gpio4";
-+		function = "normal";
-+		bias-disable;
-+		output-high;
-+		power-source = <0>;
-+	};
-+};
-+
- &qspi_cs0 {
- 	bias-disable;
- };
--- 
-2.7.4
+Yeah that should work and make it a bit less confusing.
+
+> 
+> Anyway, NULL is returned for the "*ppos > t->count" case, as described
+> in Documentation/filesystems/seq_file.rst, for "if the sequence is
+> complete", so that should be ok, but still very confusing. Unfortunately,
+> the documentation does not seem to explain that *v parameter at all, or
+> I missed it, but in this case here it seems to be simply ignored and
+> misused w/o any need.
+> 
+> The documentation does mention that "in most cases the start() function
+> should check for a "past end of file" condition and return NULL if need
+> be". So I just added a similar check to slab_debugfs_start() and return
+> NULL for "*ppos > t->count", which apparently fixed the bug. "No data"
+> is now only printed once, like it was before commit 64dd68497be7
+> ("mm: slub: move sysfs slab alloc/free interfaces to debugfs").
+> 
+> However, since I obviously do not really understand the seq_file
+> documentation, and also not the alloc/free_traces stuff in general,
+> that fix might be wrong or incomplete. Comments are welcome.
+> 
+> Gerald Schaefer (1):
+>   mm/slub: fix endless "No data" printing for alloc/free_traces
+>     attribute
+> 
+>  mm/slub.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
 
