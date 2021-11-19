@@ -2,124 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4198456DB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 11:41:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DC1456DB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 11:47:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234813AbhKSKom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 05:44:42 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:59886 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhKSKol (ORCPT
+        id S234832AbhKSKpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 05:45:36 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:33905 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229521AbhKSKpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 05:44:41 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9470B212CB;
-        Fri, 19 Nov 2021 10:41:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637318498; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FEdjSkcmqgaAJi5NZaLQUL1ZPtQeDbsPBnmJqoG7GyY=;
-        b=hnNBpFWw3qJyIJ7hHxIHxLiQDIj0zFoerwi5hKzkRQVU9YTH9VdoLiJiAwz8Yk88ywGLi6
-        Lw70SQrqwr77sfoISW6jtmQDPLLQ2Zdapj0VN1UhaQJ01ocoMjc8ekWxtw/oBGaGl4WOSa
-        yP1FevKDIKxxWoSFBOUKO7uN8Flp0ZM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637318498;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FEdjSkcmqgaAJi5NZaLQUL1ZPtQeDbsPBnmJqoG7GyY=;
-        b=c7eokoxvgRpeHLPNoSsti1DkLyN/RLz/qm+Uo9WUiX9ui4DSbHkg8V768vczNg/VIUeskN
-        +a3u1BK6qO6i81Dg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 74DA213A8A;
-        Fri, 19 Nov 2021 10:41:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id KkzqG2J/l2GtFQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Fri, 19 Nov 2021 10:41:38 +0000
-Message-ID: <9a4367c0-8141-f03c-e5a1-13483794d3e8@suse.cz>
-Date:   Fri, 19 Nov 2021 11:41:38 +0100
+        Fri, 19 Nov 2021 05:45:35 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R281e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UxHU4z0_1637318547;
+Received: from 30.22.113.170(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0UxHU4z0_1637318547)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 19 Nov 2021 18:42:29 +0800
+Message-ID: <95ceaa12-81a0-09bf-dde3-b89179eee4cc@linux.alibaba.com>
+Date:   Fri, 19 Nov 2021 18:42:27 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH 15/15] KVM: X86: Always set gpte_is_8_bytes when direct
+ map
 Content-Language: en-US
-To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Faiyaz Mohammed <faiyazm@codeaurora.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20211117193932.4049412-1-gerald.schaefer@linux.ibm.com>
- <20211117193932.4049412-2-gerald.schaefer@linux.ibm.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [RFC PATCH 1/1] mm/slub: fix endless "No data" printing for
- alloc/free_traces attribute
-In-Reply-To: <20211117193932.4049412-2-gerald.schaefer@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     kvm@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-doc@vger.kernel.org
+References: <20211118110814.2568-1-jiangshanlai@gmail.com>
+ <20211118110814.2568-16-jiangshanlai@gmail.com>
+ <16b701db-e277-c4ef-e198-65a2dc6e3fdf@redhat.com>
+ <bcfa0e4d-f6ab-037a-9ce1-d0cd612422a5@linux.alibaba.com>
+ <65e1f2ca-5d89-d67f-2e0e-542094f89f05@redhat.com>
+ <1c3d50f5-8f42-f337-cecc-3115e73703e5@linux.alibaba.com>
+ <82b0cbf0-0afb-29c8-ae8c-3d302f966014@redhat.com>
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+In-Reply-To: <82b0cbf0-0afb-29c8-ae8c-3d302f966014@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/21 20:39, Gerald Schaefer wrote:
-> Reading from alloc/free_traces attribute in /sys/kernel/debug/slab/ results
-> in an endless sequence of "No data". This is because slab_debugfs_start()
-> does not check for a "past end of file" condition and return NULL.
 
-I still have no idea how that endless sequence happens.
-To get it, we would have to call slab_debugfs_show() repeatedly with such v
-that *v == 0. Which should only happen with slab_debugfs_start() with *ppos
-== 0. Which your patch won't change because you add a '*ppos > t->count'
-condition, so *ppos has to be at least 1 to trigger this.
 
-But yeah, AFAIK we should detect this in slab_debugfs_start() anyway.
-But I think the condition should be something like below, because we are
-past end of file already with *ppos == t->count. But if both are 0, we want
-to proceed for the "No data" output.
-
-// to show the No data
-if (!*ppos && !t->count)
-	return ppos;
-
-if (*ppos >= t->count)
-	return ppos;
-
-return ppos;
-
-> Fix it by adding such a check and return NULL.
+On 2021/11/19 18:34, Paolo Bonzini wrote:
+> On 11/19/21 11:30, Lai Jiangshan wrote:
+>>>
+>>
+>> Hello
+>>
+>> Since 13, and 14 is queued, could you also queue this one and I will
+>> do the rename separately in the next patchset.  I found that the
+>> intent of this patch is hidden in the lengthened squashed patch (of
+>> this patch and the renaming patch).
 > 
-> Fixes: 64dd68497be7 ("mm: slub: move sysfs slab alloc/free interfaces to debugfs")
-> Cc: <stable@vger.kernel.org> # v5.14+
-> Reported-by: Steffen Maier <maier@linux.ibm.com>
-> Signed-off-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-> ---
->  mm/slub.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index f7368bfffb7a..336609671bc2 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -6115,6 +6115,11 @@ static void *slab_debugfs_next(struct seq_file *seq, void *v, loff_t *ppos)
->  
->  static void *slab_debugfs_start(struct seq_file *seq, loff_t *ppos)
->  {
-> +	struct loc_track *t = seq->private;
-> +
-> +	if (*ppos > t->count)
-> +		return NULL;
-> +
->  	return ppos;
->  }
->  
+> Then you can do the renaming first?
 > 
 
+Then I would prefer to make the code match the name for the first time
+when the name is introduced, which means it would be a squashed patch.
+
+I will not fuss about it and will send the squashed patch.
