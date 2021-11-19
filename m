@@ -2,106 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57DCB457812
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 22:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBACD457815
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 22:22:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235077AbhKSVXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 16:23:03 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:42637 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234717AbhKSVXA (ORCPT
+        id S235262AbhKSVZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 16:25:45 -0500
+Received: from relay10.mail.gandi.net ([217.70.178.230]:39937 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235077AbhKSVZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 16:23:00 -0500
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 7110F22205;
-        Fri, 19 Nov 2021 22:19:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1637356796;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cUkcSEJdODljw5mRoN1I+VbKsGyg8RbPSdW+5boz/Lk=;
-        b=jXFH2YgXvQk0ZSq///qkQNrbyr1zUk2dvbckiq0uJOhENiUap00OA4TTkgpP3hXOwFLXna
-        Wuxez7EJLb7al1CFnqF6rujeEakipr/t8Kc9JDEiiXt4qVojm/eacacxNL+K1a92YMVnZM
-        rJvmmJXfrHVKW0He8+d/RuDHoVWLVIk=
+        Fri, 19 Nov 2021 16:25:44 -0500
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 24DDB240004;
+        Fri, 19 Nov 2021 21:22:40 +0000 (UTC)
+Date:   Fri, 19 Nov 2021 22:20:30 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Mateusz =?utf-8?Q?Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
+Cc:     linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH RESEND v3 0/7] rtc-cmos,rtc-mc146818-lib: fixes
+Message-ID: <YZgVHi5+i4qQIdvG@piout.net>
+References: <20211119204221.66918-1-mat.jonczyk@o2.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 19 Nov 2021 22:19:56 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Alexander A Sverdlin <alexander.sverdlin@nokia.com>
-Cc:     linux-mtd@lists.infradead.org,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: spi-nor: mt25qu: Ignore 6th ID byte
-In-Reply-To: <20211119080402.20262-1-alexander.sverdlin@nokia.com>
-References: <20211119080402.20262-1-alexander.sverdlin@nokia.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <9a158e2ef6635212c1e353590e3b773b@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211119204221.66918-1-mat.jonczyk@o2.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello Mateusz,
 
-Am 2021-11-19 09:04, schrieb Alexander A Sverdlin:
-> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+I'm planning to review and take them soon (early next week), I found it
+was a bit late for the previous version. I'd like that to sit in
+linux-next for a while a rtc-cmos is kind of sensitive ;)
+
+On 19/11/2021 21:42:14+0100, Mateusz Jończyk wrote:
+> Hello,
 > 
-> Ignore 6th ID byte, secure version of mt25qu256a has 0x73 as 6th byte.
-
-What is the secure version? What is the difference? Do you have some
-links to datasheets for both?
-
-Also please provide the SFDP data for this flash, see [1].
-
--michael
-
-[1] 
-https://lore.kernel.org/linux-mtd/7038f037de3e224016d269324517400d@walle.cc/
-
+> This patch series fixes some issues in the RTC CMOS handling code:
 > 
-> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-> ---
->  drivers/mtd/spi-nor/micron-st.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+> 1. A missing spin_lock_irq() / spin_unlock_irq() pair in cmos_set_alarm().
+> 2. A failing presence check of the RTC: the clock was misdetected as
+>    broken since Linux 5.11 on one of our home systems.
+> 3. Do not touch the RTC alarm registers when the RTC update is in
+>    progress. (On some Intel chipsets, this causes bogus values being
+>    read or writes to fail silently.)
 > 
-> diff --git a/drivers/mtd/spi-nor/micron-st.c 
-> b/drivers/mtd/spi-nor/micron-st.c
-> index f3d19b7..509a732 100644
-> --- a/drivers/mtd/spi-nor/micron-st.c
-> +++ b/drivers/mtd/spi-nor/micron-st.c
-> @@ -155,9 +155,9 @@ static const struct flash_info st_parts[] = {
->  	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K |
->  			      USE_FSR | SPI_NOR_DUAL_READ |
->  			      SPI_NOR_QUAD_READ) },
-> -	{ "mt25qu256a",  INFO6(0x20bb19, 0x104400, 64 * 1024,  512,
-> -			       SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
-> -			       SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-> +	{ "mt25qu256a",  INFO(0x20bb19, 0x1044, 64 * 1024,  512,
-> +			      SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
-> +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
->  	{ "n25q256ax1",  INFO(0x20bb19, 0, 64 * 1024,  512,
->  			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
->  	{ "mt25ql512a",  INFO6(0x20ba20, 0x104400, 64 * 1024, 1024,
-> @@ -167,9 +167,9 @@ static const struct flash_info st_parts[] = {
->  			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
->  			      SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
->  			      SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6) },
-> -	{ "mt25qu512a",  INFO6(0x20bb20, 0x104400, 64 * 1024, 1024,
-> -			       SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
-> -			       SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-> +	{ "mt25qu512a",  INFO(0x20bb20, 0x1044, 64 * 1024, 1024,
-> +			      SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
-> +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
->  	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024,
->  			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
->  			      SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
+> This is my first patch series, so please review carefully.
+> 
+> v2: Drop the last patch:
+>         Revert "rtc: cmos: Replace spin_lock_irqsave with spin_lock in hard IRQ"
+> which was made obsolete by mainlining of 
+> commit 13be2efc390a ("rtc: cmos: Disable irq around direct invocation of cmos_interrupt()")
+> 
+> v3: Rework solution to problem 3 (I'd like to thank Greg KH for comment),
+> drop x86 refactoring patches (I'll send them later).
+> 
+> Greetings,
+> Mateusz
+> 
+> Signed-off-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
+> Cc: Alessandro Zummo <a.zummo@towertech.it>
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Cc: Greg KH <gregkh@linuxfoundation.org>
+
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
