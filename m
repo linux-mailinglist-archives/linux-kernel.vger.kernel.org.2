@@ -2,249 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD764568AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 04:33:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E55E4568B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 04:36:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233683AbhKSDg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 22:36:56 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:40819 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233621AbhKSDgw (ORCPT
+        id S233674AbhKSDjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 22:39:45 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:14955 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229457AbhKSDjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 22:36:52 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id DECA43201D3E;
-        Thu, 18 Nov 2021 22:33:50 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Thu, 18 Nov 2021 22:33:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=kPVtNGu2Cd9Z0
-        5FhgNpKtOsuhsNoeBckHB2OqZ87G2Q=; b=EwJHMcKV0GxfUBCpvOzRmAPYbRLVr
-        fMS7Lgi634lvEApH38OgvbKYEHOGQcf1y9ZXN7FhDWX1JSozEldAAGPVWPiSDB/Z
-        0ZnXszgxwJKwaFbhfOuFauegmCZF1+fzek1ka//EhZglXL3CRCoPBO/CivrVwBU3
-        jeRSOKkfwdpMXYOisfGzif6MOQRNvyPVjIIKL5xk8BTHMc01srgMvrzmtTd5S+rQ
-        mGNNcJ6VjXj9uofF+qyNJj+2woEv+RyoRhK2K/lABxafxI5MV/FJl4yNXpYduS8v
-        rWnPN6CZo7K1jvrTG+DnsKzGyvPLlmhhGnYARF9wWvgM4iMSdmXAdmzgg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=kPVtNGu2Cd9Z05FhgNpKtOsuhsNoeBckHB2OqZ87G2Q=; b=PCBuyvKG
-        8HmsNKT6Sc54+xF6AAr3pSaBV1TU6kjnJQB4yO5Jjdw8G7/+2yToqvHA94+6GCNs
-        2CchqbxBGIKo/BxwRlCFWjXUiIIxp9OAlc8+aCDcc1yv7Qg3cazMNH9kXrsPsy66
-        lZgLnPVblNfCsXh5QTd0PvzGDyIWWrW+XpcprGryuOrAaipPkclQpCxy6itk7b6M
-        PtTx/sXAHx6D0rSjKYfrE/EtjgKAP5khyYNtqYB3BxDdpfSwtBiaBARi2e9AKNlA
-        o0wMS0NDkwqFfAUn3N8OmLfCI1ntdwWmy1/sBY3BJH+cEbqtqxuvzq/p47v3mb4B
-        1JF2sHw8rOO6Xw==
-X-ME-Sender: <xms:HhuXYdRWJ4SkvgW1QVPfHpW6Yp88VHelncfHm3QRbaF4lNDpwCoGfQ>
-    <xme:HhuXYWyMKMjKIk7VGpexAO6QGKGRmZAEB4SrH63KRBaKNfqekyPQ5iavEMca2X2mV
-    hJxu1tnzIatQOOyyw>
-X-ME-Received: <xmr:HhuXYS0qXbrH9GeWjgteAzn0gphG6sCBmExuMsWPkh6DNTm-c7fVJnO1QV2V7pp-u0NcF0WCS__jcZYc93d8VYCqzM9YaBp4h3H9ofq6qc9zKmQrsJjyaJvF1fgsB0GjB6bAWQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeejgdeitdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghl
-    ucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrf
-    grthhtvghrnhepudfhjeefvdfhgfefheetgffhieeigfefhefgvddvveefgeejheejvdfg
-    jeehueeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
-X-ME-Proxy: <xmx:HhuXYVDP7jmhoOBsX_tTShvfQ758ce7fSKOHx7CUveloKeuPqSf0yA>
-    <xmx:HhuXYWjp8_K4xR-nLGvd1x-C22_ZYKGQGWRNFVzB3D5WpWhYcogxHg>
-    <xmx:HhuXYZptVHKUZLlVLk0rLBSLVdzvzGlMlZnV7Q3LIeRAPV1h0vpXaQ>
-    <xmx:HhuXYfX3DkAojiBw-9v8DZ2cT9i7lOXdKjqwffgaLaMh8tFKOWJtHA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 18 Nov 2021 22:33:49 -0500 (EST)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-sunxi@lists.linux.dev
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
-        Samuel Holland <samuel@sholland.org>
-Subject: [PATCH v3 4/4] clk: sunxi-ng: Allow the CCU core to be built as a module
-Date:   Thu, 18 Nov 2021 21:33:37 -0600
-Message-Id: <20211119033338.25486-5-samuel@sholland.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211119033338.25486-1-samuel@sholland.org>
-References: <20211119033338.25486-1-samuel@sholland.org>
+        Thu, 18 Nov 2021 22:39:44 -0500
+Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HwMj31H9szZd8V;
+        Fri, 19 Nov 2021 11:34:15 +0800 (CST)
+Received: from [10.67.102.221] (10.67.102.221) by
+ dggeme756-chm.china.huawei.com (10.3.19.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.20; Fri, 19 Nov 2021 11:36:40 +0800
+Message-ID: <788619cc-93f9-0eaf-202c-50d49487ee0c@huawei.com>
+Date:   Fri, 19 Nov 2021 11:36:40 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH] net: hns: Prefer struct_size over open coded arithmetic
+To:     Yonglong Liu <liuyonglong@huawei.com>,
+        Len Baker <len.baker@gmx.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Huazhong Tan <tanhuazhong@huawei.com>,
+        <netdev@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20211011090100.5727-1-len.baker@gmx.com>
+ <a04c3709-20e6-f816-d535-5db6ef898616@huawei.com>
+From:   "lipeng (Y)" <lipeng321@huawei.com>
+In-Reply-To: <a04c3709-20e6-f816-d535-5db6ef898616@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.102.221]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggeme756-chm.china.huawei.com (10.3.19.102)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like the individual CCU drivers, it can be beneficial for memory
-consumption of cross-platform configurations to only load the CCU core
-on the relevant platform. For example, a generic arm64 kernel sees the
-following improvement when building the CCU core and drivers as modules:
 
-  before:
-    text      data     bss     dec       hex      filename
-    13882360  5251670  360800  19494830  12977ae  vmlinux
 
-  after:
-    text      data     bss     dec       hex      filename
-    13734787  5086442  360800  19182029  124b1cd  vmlinux
+  On 2021/10/11 17:01, Len Baker wrote:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
+>
+> So, take the opportunity to refactor the hnae_handle structure to switch
+> the last member to flexible array, changing the code accordingly. Also,
+> fix the comment in the hnae_vf_cb structure to inform that the ae_handle
+> member must be the last member.
+>
+> Then, use the struct_size() helper to do the arithmetic instead of the
+> argument "size + count * size" in the kzalloc() function.
+>
+> This code was detected with the help of Coccinelle and audited and fixed
+> manually.
+>
+> [1] 
+> https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments 
+>
+>
+> Signed-off-by: Len Baker <len.baker@gmx.com>
+> ---
+>   drivers/net/ethernet/hisilicon/hns/hnae.h          | 2 +-
+>   drivers/net/ethernet/hisilicon/hns/hns_ae_adapt.c  | 5 ++---
+>   drivers/net/ethernet/hisilicon/hns/hns_dsaf_main.h | 2 +-
+>   3 files changed, 4 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/hisilicon/hns/hnae.h 
+> b/drivers/net/ethernet/hisilicon/hns/hnae.h
+> index 2b7db1c22321..d46e8f999019 100644
+> --- a/drivers/net/ethernet/hisilicon/hns/hnae.h
+> +++ b/drivers/net/ethernet/hisilicon/hns/hnae.h
+> @@ -558,7 +558,7 @@ struct hnae_handle {
+>       enum hnae_media_type media_type;
+>       struct list_head node;    /* list to hnae_ae_dev->handle_list */
+>       struct hnae_buf_ops *bops; /* operation for the buffer */
+> -    struct hnae_queue **qs;  /* array base of all queues */
+> +    struct hnae_queue *qs[];  /* flexible array of all queues */
+>   };
+>
+>   #define ring_to_dev(ring) ((ring)->q->dev->dev)
+> diff --git a/drivers/net/ethernet/hisilicon/hns/hns_ae_adapt.c 
+> b/drivers/net/ethernet/hisilicon/hns/hns_ae_adapt.c
+> index 75e4ec569da8..e81116ad9bdf 100644
+> --- a/drivers/net/ethernet/hisilicon/hns/hns_ae_adapt.c
+> +++ b/drivers/net/ethernet/hisilicon/hns/hns_ae_adapt.c
+> @@ -81,8 +81,8 @@ static struct hnae_handle *hns_ae_get_handle(struct 
+> hnae_ae_dev *dev,
+>       vfnum_per_port = hns_ae_get_vf_num_per_port(dsaf_dev, port_id);
+>       qnum_per_vf = hns_ae_get_q_num_per_vf(dsaf_dev, port_id);
+>
+> -    vf_cb = kzalloc(sizeof(*vf_cb) +
+> -            qnum_per_vf * sizeof(struct hnae_queue *), GFP_KERNEL);
+> +    vf_cb = kzalloc(struct_size(vf_cb, ae_handle.qs, qnum_per_vf),
+> +            GFP_KERNEL);
+>       if (unlikely(!vf_cb)) {
+>           dev_err(dsaf_dev->dev, "malloc vf_cb fail!\n");
+>           ae_handle = ERR_PTR(-ENOMEM);
+> @@ -108,7 +108,6 @@ static struct hnae_handle 
+> *hns_ae_get_handle(struct hnae_ae_dev *dev,
+>           goto vf_id_err;
+>       }
+>
+> -    ae_handle->qs = (struct hnae_queue **)(&ae_handle->qs + 1);
+> 
 
-So the result is a 390KB total reduction in kernel image size.
 
-The one early clock provider (sun5i) requires the core to be built in.
+  This line can not delete. ae_handle->qs is for PF.
 
-Now that loading the MMC driver will trigger loading the CCU core, the
-MMC timing mode functions do not need a compile-time fallback.
 
-Signed-off-by: Samuel Holland <samuel@sholland.org>
----
 
-(no changes since v1)
+> 
+>       for (i = 0; i < qnum_per_vf; i++) {
+> 
 
- drivers/clk/Makefile              |  2 +-
- drivers/clk/sunxi-ng/Kconfig      |  3 ++-
- drivers/clk/sunxi-ng/Makefile     | 33 +++++++++++++++++--------------
- drivers/clk/sunxi-ng/ccu_common.c |  3 +++
- drivers/mmc/host/Kconfig          |  1 +
- include/linux/clk/sunxi-ng.h      | 15 --------------
- 6 files changed, 25 insertions(+), 32 deletions(-)
 
-diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
-index e42312121e51..6afe36bd2c0a 100644
---- a/drivers/clk/Makefile
-+++ b/drivers/clk/Makefile
-@@ -110,7 +110,7 @@ obj-$(CONFIG_PLAT_SPEAR)		+= spear/
- obj-y					+= sprd/
- obj-$(CONFIG_ARCH_STI)			+= st/
- obj-$(CONFIG_ARCH_SUNXI)		+= sunxi/
--obj-$(CONFIG_SUNXI_CCU)			+= sunxi-ng/
-+obj-y					+= sunxi-ng/
- obj-$(CONFIG_ARCH_TEGRA)		+= tegra/
- obj-y					+= ti/
- obj-$(CONFIG_CLK_UNIPHIER)		+= uniphier/
-diff --git a/drivers/clk/sunxi-ng/Kconfig b/drivers/clk/sunxi-ng/Kconfig
-index de88b6e0ec69..727ff755eca4 100644
---- a/drivers/clk/sunxi-ng/Kconfig
-+++ b/drivers/clk/sunxi-ng/Kconfig
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config SUNXI_CCU
--	bool "Clock support for Allwinner SoCs"
-+	tristate "Clock support for Allwinner SoCs"
- 	depends on ARCH_SUNXI || COMPILE_TEST
- 	select RESET_CONTROLLER
- 	default ARCH_SUNXI
-@@ -52,6 +52,7 @@ config SUN5I_CCU
- 	bool "Support for the Allwinner sun5i family CCM"
- 	default MACH_SUN5I
- 	depends on MACH_SUN5I || COMPILE_TEST
-+	depends on SUNXI_CCU=y
- 
- config SUN6I_A31_CCU
- 	tristate "Support for the Allwinner A31/A31s CCU"
-diff --git a/drivers/clk/sunxi-ng/Makefile b/drivers/clk/sunxi-ng/Makefile
-index 1020ed49a588..659d55150c32 100644
---- a/drivers/clk/sunxi-ng/Makefile
-+++ b/drivers/clk/sunxi-ng/Makefile
-@@ -1,24 +1,27 @@
- # SPDX-License-Identifier: GPL-2.0
-+
-+obj-$(CONFIG_SUNXI_CCU)		+= sunxi-ccu.o
-+
- # Common objects
--obj-y				+= ccu_common.o
--obj-y				+= ccu_mmc_timing.o
--obj-y				+= ccu_reset.o
-+sunxi-ccu-y			+= ccu_common.o
-+sunxi-ccu-y			+= ccu_mmc_timing.o
-+sunxi-ccu-y			+= ccu_reset.o
- 
- # Base clock types
--obj-y				+= ccu_div.o
--obj-y				+= ccu_frac.o
--obj-y				+= ccu_gate.o
--obj-y				+= ccu_mux.o
--obj-y				+= ccu_mult.o
--obj-y				+= ccu_phase.o
--obj-y				+= ccu_sdm.o
-+sunxi-ccu-y			+= ccu_div.o
-+sunxi-ccu-y			+= ccu_frac.o
-+sunxi-ccu-y			+= ccu_gate.o
-+sunxi-ccu-y			+= ccu_mux.o
-+sunxi-ccu-y			+= ccu_mult.o
-+sunxi-ccu-y			+= ccu_phase.o
-+sunxi-ccu-y			+= ccu_sdm.o
- 
- # Multi-factor clocks
--obj-y				+= ccu_nk.o
--obj-y				+= ccu_nkm.o
--obj-y				+= ccu_nkmp.o
--obj-y				+= ccu_nm.o
--obj-y				+= ccu_mp.o
-+sunxi-ccu-y			+= ccu_nk.o
-+sunxi-ccu-y			+= ccu_nkm.o
-+sunxi-ccu-y			+= ccu_nkmp.o
-+sunxi-ccu-y			+= ccu_nm.o
-+sunxi-ccu-y			+= ccu_mp.o
- 
- # SoC support
- obj-$(CONFIG_SUNIV_F1C100S_CCU)	+= suniv-f1c100s-ccu.o
-diff --git a/drivers/clk/sunxi-ng/ccu_common.c b/drivers/clk/sunxi-ng/ccu_common.c
-index 6afdedbce6a2..8d28a7a079d0 100644
---- a/drivers/clk/sunxi-ng/ccu_common.c
-+++ b/drivers/clk/sunxi-ng/ccu_common.c
-@@ -9,6 +9,7 @@
- #include <linux/clk-provider.h>
- #include <linux/device.h>
- #include <linux/iopoll.h>
-+#include <linux/module.h>
- #include <linux/slab.h>
- 
- #include "ccu_common.h"
-@@ -214,3 +215,5 @@ void of_sunxi_ccu_probe(struct device_node *node, void __iomem *reg,
- 		kfree(ccu);
- 	}
- }
-+
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-index 5af8494c31b5..52b0b27a6839 100644
---- a/drivers/mmc/host/Kconfig
-+++ b/drivers/mmc/host/Kconfig
-@@ -966,6 +966,7 @@ config MMC_REALTEK_USB
- config MMC_SUNXI
- 	tristate "Allwinner sunxi SD/MMC Host Controller support"
- 	depends on ARCH_SUNXI || COMPILE_TEST
-+	depends on SUNXI_CCU
- 	help
- 	  This selects support for the SD/MMC Host Controller on
- 	  Allwinner sunxi SoCs.
-diff --git a/include/linux/clk/sunxi-ng.h b/include/linux/clk/sunxi-ng.h
-index 3cd14acde0a1..cf32123b39f5 100644
---- a/include/linux/clk/sunxi-ng.h
-+++ b/include/linux/clk/sunxi-ng.h
-@@ -6,22 +6,7 @@
- #ifndef _LINUX_CLK_SUNXI_NG_H_
- #define _LINUX_CLK_SUNXI_NG_H_
- 
--#include <linux/errno.h>
--
--#ifdef CONFIG_SUNXI_CCU
- int sunxi_ccu_set_mmc_timing_mode(struct clk *clk, bool new_mode);
- int sunxi_ccu_get_mmc_timing_mode(struct clk *clk);
--#else
--static inline int sunxi_ccu_set_mmc_timing_mode(struct clk *clk,
--						bool new_mode)
--{
--	return -ENOTSUPP;
--}
--
--static inline int sunxi_ccu_get_mmc_timing_mode(struct clk *clk)
--{
--	return -ENOTSUPP;
--}
--#endif
- 
- #endif
--- 
-2.32.0
 
+  This loop actually start from &ae_handle->qs + 1, which is the queue
+  offset for VF.
+
+
+> 
+>           ae_handle->qs[i] = &ring_pair_cb->q;
+>           ae_handle->qs[i]->rx_ring.q = ae_handle->qs[i];
+> diff --git a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_main.h 
+> b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_main.h
+> index cba04bfa0b3f..5526a10caac5 100644
+> --- a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_main.h
+> +++ b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_main.h
+> @@ -210,7 +210,7 @@ struct hnae_vf_cb {
+>       u8 port_index;
+>       struct hns_mac_cb *mac_cb;
+>       struct dsaf_device *dsaf_dev;
+> -    struct hnae_handle  ae_handle; /* must be the last number */
+> +    struct hnae_handle  ae_handle; /* must be the last member */
+>   };
+>
+>   struct dsaf_int_xge_src {
+> -- 
+> 2.25.1
+>
+>
+> .
+>
+> 
+> .
