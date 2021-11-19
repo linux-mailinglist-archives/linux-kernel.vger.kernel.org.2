@@ -2,693 +2,356 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D681C4569CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 06:40:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B1B4569CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 06:42:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232894AbhKSFnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 00:43:52 -0500
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:39745 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229457AbhKSFnv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 00:43:51 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.west.internal (Postfix) with ESMTP id 764B12B0114A;
-        Fri, 19 Nov 2021 00:40:49 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Fri, 19 Nov 2021 00:40:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-type:content-transfer-encoding; s=fm1; bh=
-        TpRhN1k597TreggN4ZMHc7KjRI56T3DTTx2Ff6AiAB0=; b=MIOOBodsu7T2tt7L
-        29ugfwDu/l7BjZaZ4tB5JMojoQjJSSzbqId3GAvpNWjMQ4Rnx2h8wJB2LUKOw7JQ
-        0xWxrCD9gygH/zQm7d0e1MvjvO1+WT0kz97YWEgYg6m9bPk0F+0aOKEQYU1rCwmv
-        NL4AWAzAWQlPfqGQbDTOmvQEs8dx77gCyDr9/X+43+3wqKM0SiV6/OQBPs4CTdDx
-        wRDtFNpeTTnrsJ1UttFFZ7cOIxAWFuLrumo3cROtMeXPvk37ESwu9SPHSg744Lc4
-        esMK5Ri+Ww9PO5pkKLpS3HlJwgEQumdW8boJgm7uCDSDu5LEWICK5b+IJY7qxQZN
-        w8wn5g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=TpRhN1k597TreggN4ZMHc7KjRI56T3DTTx2Ff6AiA
-        B0=; b=g70b/GV6QQeJuM3fQKlVNkobyVfikpL+rtbgJEqlP2dPgNELEIjqMSO3E
-        4n0kwEdHazq8xslpYX2ef6gcnO2KRrJBuL8lJrfPlBmWBRUfoLwpr6yAscR8HLhI
-        Vvojt9Uf6a0FCqN7sTw1vs6C4KCxjAOqwADEnow5W9lhVprm3snaKMy3cPUWUuO4
-        DgFt6VfQyqmFj49CmSuuWAK+g6aD+zlafEvGMqr/bB0LYYH8dLrUUwpE5f28R16W
-        Iqh+sIv68p24SxheFwDAGfnkKcmlw1RReuRuXWbLVR9D2U8MPJzeVfSv+SfT10B8
-        lJgviXzvs7Q2+GFyxLiZbYRvTMvZA==
-X-ME-Sender: <xms:4TiXYagfdxS0IIYiyV2VFUEiC5lUGxLqpl7srh5bGXXlvznD6LWwLw>
-    <xme:4TiXYbCG_-M_a-ZYP_lU8zgFTp7nGlk9C-UO1ZTts0T67LM6gA409II8l8xLQZ-lu
-    sZCxNtH5J1GPEgMkw>
-X-ME-Received: <xmr:4TiXYSHRbmjBafLQxbQIvN4PQvkrJ4BJQqm736Eo4i3EKRk7oltBsVc8UwjLD2B35VDd2S2Ylm-V_ZdFGCbL_3j1Ge8TacpM3phKUkkkr1Adube_rOr_OMN-aPv-jpfTvisJRQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeejgdekgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhggtgfgsehtkeertdertdejnecuhfhrohhmpefurghmuhgv
-    lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
-    frrghtthgvrhhnpeefvdffteegudeitdffgfelledvhfehkeekudffteduvdegfeefudef
-    hfegheeujeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
-X-ME-Proxy: <xmx:4TiXYTQdYrSGs3Sooltq-jz1nAHoPPRm2E8L4EMFavfSDt5qpcqTYw>
-    <xmx:4TiXYXzrNjQiGO_Zn4EPSliRcX_LyRssy7iiKuMWg-kNFpdZliz7qg>
-    <xmx:4TiXYR5IKrLobu2ZAezXfDNVJLPhdfnslYGKpxKwhhN8qzjHI2H9VQ>
-    <xmx:4TiXYffyyGmpW2anM6APXvYYwPh-dj_gTHPq1QBlxyd7-Q0uXx5BKNTlkCo>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 19 Nov 2021 00:40:48 -0500 (EST)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>
-Subject: [PATCH v3 2/2] leds: sun50i-r329: New driver for the R329/D1 LED controller
-Date:   Thu, 18 Nov 2021 23:40:43 -0600
-Message-Id: <20211119054044.16286-2-samuel@sholland.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211119054044.16286-1-samuel@sholland.org>
-References: <20211119054044.16286-1-samuel@sholland.org>
+        id S233009AbhKSFpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 00:45:43 -0500
+Received: from mga14.intel.com ([192.55.52.115]:52165 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232940AbhKSFpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 00:45:42 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="234596881"
+X-IronPort-AV: E=Sophos;i="5.87,246,1631602800"; 
+   d="gz'50?scan'50,208,50";a="234596881"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 21:42:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,246,1631602800"; 
+   d="gz'50?scan'50,208,50";a="455642230"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 18 Nov 2021 21:42:39 -0800
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mnwfW-000477-Ep; Fri, 19 Nov 2021 05:42:38 +0000
+Date:   Fri, 19 Nov 2021 13:42:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: [mcgrof-next:20211118-sysctl-cleanups-set-04-v2 26/36]
+ fs/inode.c:137:60: error: macro "register_sysctl_init" passed 3 arguments,
+ but takes just 2
+Message-ID: <202111191309.oBoSZk8o-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="Qxx1br4bt0+wmkIi"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some Allwinner sunxi SoCs, starting with the R329, contain an LED
-controller designed to drive RGB LED pixels. Add a driver for it using
-the multicolor LED framework, and with LEDs defined in the device tree.
 
-Signed-off-by: Samuel Holland <samuel@sholland.org>
+--Qxx1br4bt0+wmkIi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git 20211118-sysctl-cleanups-set-04-v2
+head:   3110d41a56792588bd2f64621080948b0fceb6ab
+commit: e5b91a6c1f321683c8f1363e70bcc5c9bf6dbd9a [26/36] fs: move inode sysctls to its own file
+config: nds32-allnoconfig (attached as .config)
+compiler: nds32le-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/commit/?id=e5b91a6c1f321683c8f1363e70bcc5c9bf6dbd9a
+        git remote add mcgrof-next https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git
+        git fetch --no-tags mcgrof-next 20211118-sysctl-cleanups-set-04-v2
+        git checkout e5b91a6c1f321683c8f1363e70bcc5c9bf6dbd9a
+        # save the attached .config to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=nds32 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   fs/inode.c: In function 'init_fs_inode_sysctls':
+>> fs/inode.c:137:60: error: macro "register_sysctl_init" passed 3 arguments, but takes just 2
+     137 |         register_sysctl_init("fs", inodes_sysctls, "inodes");
+         |                                                            ^
+   In file included from include/linux/key.h:17,
+                    from include/linux/cred.h:13,
+                    from include/linux/sched/signal.h:10,
+                    from include/linux/rcuwait.h:6,
+                    from include/linux/percpu-rwsem.h:7,
+                    from include/linux/fs.h:33,
+                    from fs/inode.c:7:
+   include/linux/sysctl.h:216: note: macro "register_sysctl_init" defined here
+     216 | #define register_sysctl_init(path, table) __register_sysctl_init(path, table, #table)
+         | 
+>> fs/inode.c:137:9: error: 'register_sysctl_init' undeclared (first use in this function); did you mean 'register_sysctl_paths'?
+     137 |         register_sysctl_init("fs", inodes_sysctls, "inodes");
+         |         ^~~~~~~~~~~~~~~~~~~~
+         |         register_sysctl_paths
+   fs/inode.c:137:9: note: each undeclared identifier is reported only once for each function it appears in
+   At top level:
+   fs/inode.c:117:25: warning: 'inodes_sysctls' defined but not used [-Wunused-variable]
+     117 | static struct ctl_table inodes_sysctls[] = {
+         |                         ^~~~~~~~~~~~~~
+
+
+vim +/register_sysctl_init +137 fs/inode.c
+
+   > 7	#include <linux/fs.h>
+     8	#include <linux/mm.h>
+     9	#include <linux/backing-dev.h>
+    10	#include <linux/hash.h>
+    11	#include <linux/swap.h>
+    12	#include <linux/security.h>
+    13	#include <linux/cdev.h>
+    14	#include <linux/memblock.h>
+    15	#include <linux/fsnotify.h>
+    16	#include <linux/mount.h>
+    17	#include <linux/posix_acl.h>
+    18	#include <linux/prefetch.h>
+    19	#include <linux/buffer_head.h> /* for inode_has_buffers */
+    20	#include <linux/ratelimit.h>
+    21	#include <linux/list_lru.h>
+    22	#include <linux/iversion.h>
+    23	#include <trace/events/writeback.h>
+    24	#include "internal.h"
+    25	
+    26	/*
+    27	 * Inode locking rules:
+    28	 *
+    29	 * inode->i_lock protects:
+    30	 *   inode->i_state, inode->i_hash, __iget()
+    31	 * Inode LRU list locks protect:
+    32	 *   inode->i_sb->s_inode_lru, inode->i_lru
+    33	 * inode->i_sb->s_inode_list_lock protects:
+    34	 *   inode->i_sb->s_inodes, inode->i_sb_list
+    35	 * bdi->wb.list_lock protects:
+    36	 *   bdi->wb.b_{dirty,io,more_io,dirty_time}, inode->i_io_list
+    37	 * inode_hash_lock protects:
+    38	 *   inode_hashtable, inode->i_hash
+    39	 *
+    40	 * Lock ordering:
+    41	 *
+    42	 * inode->i_sb->s_inode_list_lock
+    43	 *   inode->i_lock
+    44	 *     Inode LRU list locks
+    45	 *
+    46	 * bdi->wb.list_lock
+    47	 *   inode->i_lock
+    48	 *
+    49	 * inode_hash_lock
+    50	 *   inode->i_sb->s_inode_list_lock
+    51	 *   inode->i_lock
+    52	 *
+    53	 * iunique_lock
+    54	 *   inode_hash_lock
+    55	 */
+    56	
+    57	static unsigned int i_hash_mask __read_mostly;
+    58	static unsigned int i_hash_shift __read_mostly;
+    59	static struct hlist_head *inode_hashtable __read_mostly;
+    60	static __cacheline_aligned_in_smp DEFINE_SPINLOCK(inode_hash_lock);
+    61	
+    62	/*
+    63	 * Empty aops. Can be used for the cases where the user does not
+    64	 * define any of the address_space operations.
+    65	 */
+    66	const struct address_space_operations empty_aops = {
+    67	};
+    68	EXPORT_SYMBOL(empty_aops);
+    69	
+    70	/*
+    71	 * Statistics gathering..
+    72	 */
+    73	struct inodes_stat_t inodes_stat;
+    74	
+    75	static DEFINE_PER_CPU(unsigned long, nr_inodes);
+    76	static DEFINE_PER_CPU(unsigned long, nr_unused);
+    77	
+    78	static struct kmem_cache *inode_cachep __read_mostly;
+    79	
+    80	static long get_nr_inodes(void)
+    81	{
+    82		int i;
+    83		long sum = 0;
+    84		for_each_possible_cpu(i)
+    85			sum += per_cpu(nr_inodes, i);
+    86		return sum < 0 ? 0 : sum;
+    87	}
+    88	
+    89	static inline long get_nr_inodes_unused(void)
+    90	{
+    91		int i;
+    92		long sum = 0;
+    93		for_each_possible_cpu(i)
+    94			sum += per_cpu(nr_unused, i);
+    95		return sum < 0 ? 0 : sum;
+    96	}
+    97	
+    98	long get_nr_dirty_inodes(void)
+    99	{
+   100		/* not actually dirty inodes, but a wild approximation */
+   101		long nr_dirty = get_nr_inodes() - get_nr_inodes_unused();
+   102		return nr_dirty > 0 ? nr_dirty : 0;
+   103	}
+   104	
+   105	/*
+   106	 * Handle nr_inode sysctl
+   107	 */
+   108	#ifdef CONFIG_SYSCTL
+   109	static int proc_nr_inodes(struct ctl_table *table, int write, void *buffer,
+   110				  size_t *lenp, loff_t *ppos)
+   111	{
+   112		inodes_stat.nr_inodes = get_nr_inodes();
+   113		inodes_stat.nr_unused = get_nr_inodes_unused();
+   114		return proc_doulongvec_minmax(table, write, buffer, lenp, ppos);
+   115	}
+   116	
+   117	static struct ctl_table inodes_sysctls[] = {
+   118		{
+   119			.procname	= "inode-nr",
+   120			.data		= &inodes_stat,
+   121			.maxlen		= 2*sizeof(long),
+   122			.mode		= 0444,
+   123			.proc_handler	= proc_nr_inodes,
+   124		},
+   125		{
+   126			.procname	= "inode-state",
+   127			.data		= &inodes_stat,
+   128			.maxlen		= 7*sizeof(long),
+   129			.mode		= 0444,
+   130			.proc_handler	= proc_nr_inodes,
+   131		},
+   132		{ }
+   133	};
+   134	
+   135	static int __init init_fs_inode_sysctls(void)
+   136	{
+ > 137		register_sysctl_init("fs", inodes_sysctls, "inodes");
+   138		return 0;
+   139	}
+   140	early_initcall(init_fs_inode_sysctls);
+   141	#endif
+   142	
+
 ---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-Changes in v3:
- - Added vendor prefix to timing/format properties
- - Renamed "format" property to "pixel-format" for clarity
- - Dropped "vled-supply" as it is unrelated to the controller hardware
- - Changed "writesl" to "iowrite32_rep" so the driver builds on hppa
+--Qxx1br4bt0+wmkIi
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
-Changes in v2:
- - Renamed from sunxi-ledc to sun50i-r329-ledc
- - Added missing "static" to functions/globals as reported by 0day bot
+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
 
- drivers/leds/Kconfig            |   8 +
- drivers/leds/Makefile           |   1 +
- drivers/leds/leds-sun50i-r329.c | 553 ++++++++++++++++++++++++++++++++
- 3 files changed, 562 insertions(+)
- create mode 100644 drivers/leds/leds-sun50i-r329.c
-
-diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-index ed800f5da7d8..d5c1396788fe 100644
---- a/drivers/leds/Kconfig
-+++ b/drivers/leds/Kconfig
-@@ -297,6 +297,14 @@ config LEDS_SUNFIRE
- 	  This option enables support for the Left, Middle, and Right
- 	  LEDs on the I/O and CPU boards of SunFire UltraSPARC servers.
- 
-+config LEDS_SUN50I_R329
-+	tristate "LED support for Allwinner R329 LED controller"
-+	depends on LEDS_CLASS
-+	depends on ARCH_SUNXI || COMPILE_TEST
-+	help
-+	  This option enables support for the RGB LED controller
-+	  provided in some Allwinner sunxi SoCs, like the R329.
-+
- config LEDS_IPAQ_MICRO
- 	tristate "LED Support for the Compaq iPAQ h3xxx"
- 	depends on LEDS_CLASS
-diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
-index c636ec069612..506b2617099d 100644
---- a/drivers/leds/Makefile
-+++ b/drivers/leds/Makefile
-@@ -77,6 +77,7 @@ obj-$(CONFIG_LEDS_PWM)			+= leds-pwm.o
- obj-$(CONFIG_LEDS_REGULATOR)		+= leds-regulator.o
- obj-$(CONFIG_LEDS_S3C24XX)		+= leds-s3c24xx.o
- obj-$(CONFIG_LEDS_SC27XX_BLTC)		+= leds-sc27xx-bltc.o
-+obj-$(CONFIG_LEDS_SUN50I_R329)		+= leds-sun50i-r329.o
- obj-$(CONFIG_LEDS_SUNFIRE)		+= leds-sunfire.o
- obj-$(CONFIG_LEDS_SYSCON)		+= leds-syscon.o
- obj-$(CONFIG_LEDS_TCA6507)		+= leds-tca6507.o
-diff --git a/drivers/leds/leds-sun50i-r329.c b/drivers/leds/leds-sun50i-r329.c
-new file mode 100644
-index 000000000000..ada6625e2bbc
---- /dev/null
-+++ b/drivers/leds/leds-sun50i-r329.c
-@@ -0,0 +1,553 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// Copyright (c) 2021 Samuel Holland <samuel@sholland.org>
-+//
-+// Partly based on drivers/leds/leds-turris-omnia.c, which is:
-+//     Copyright (c) 2020 by Marek Behún <kabel@kernel.org>
-+//
-+
-+#include <linux/clk.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/dmaengine.h>
-+#include <linux/interrupt.h>
-+#include <linux/io.h>
-+#include <linux/led-class-multicolor.h>
-+#include <linux/leds.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm.h>
-+#include <linux/reset.h>
-+#include <linux/spinlock.h>
-+
-+#define LEDC_CTRL_REG			0x0000
-+#define LEDC_CTRL_REG_DATA_LENGTH		(0x1fff << 16)
-+#define LEDC_CTRL_REG_RGB_MODE			(0x7 << 6)
-+#define LEDC_CTRL_REG_LEDC_EN			BIT(0)
-+#define LEDC_T01_TIMING_CTRL_REG	0x0004
-+#define LEDC_T01_TIMING_CTRL_REG_T1H		(0x3f << 21)
-+#define LEDC_T01_TIMING_CTRL_REG_T1L		(0x1f << 16)
-+#define LEDC_T01_TIMING_CTRL_REG_T0H		(0x1f << 6)
-+#define LEDC_T01_TIMING_CTRL_REG_T0L		(0x3f << 0)
-+#define LEDC_RESET_TIMING_CTRL_REG	0x000c
-+#define LEDC_RESET_TIMING_CTRL_REG_LED_NUM	(0x3ff << 0)
-+#define LEDC_DATA_REG			0x0014
-+#define LEDC_DMA_CTRL_REG		0x0018
-+#define LEDC_DMA_CTRL_REG_FIFO_TRIG_LEVEL	(0x1f << 0)
-+#define LEDC_INT_CTRL_REG		0x001c
-+#define LEDC_INT_CTRL_REG_GLOBAL_INT_EN		BIT(5)
-+#define LEDC_INT_CTRL_REG_FIFO_CPUREQ_INT_EN	BIT(1)
-+#define LEDC_INT_CTRL_REG_TRANS_FINISH_INT_EN	BIT(0)
-+#define LEDC_INT_STS_REG		0x0020
-+#define LEDC_INT_STS_REG_FIFO_CPUREQ_INT	BIT(1)
-+#define LEDC_INT_STS_REG_TRANS_FINISH_INT	BIT(0)
-+
-+#define LEDC_FIFO_DEPTH			32
-+#define LEDC_MAX_LEDS			1024
-+
-+#define LEDS_TO_BYTES(n)		((n) * sizeof(u32))
-+
-+struct sun50i_r329_ledc_led {
-+	struct led_classdev_mc mc_cdev;
-+	struct mc_subled subled_info[3];
-+};
-+#define to_ledc_led(mc) container_of(mc, struct sun50i_r329_ledc_led, mc_cdev)
-+
-+struct sun50i_r329_ledc_timing {
-+	u32 t0h_ns;
-+	u32 t0l_ns;
-+	u32 t1h_ns;
-+	u32 t1l_ns;
-+	u32 treset_ns;
-+};
-+
-+struct sun50i_r329_ledc {
-+	struct device *dev;
-+	void __iomem *base;
-+	struct clk *bus_clk;
-+	struct clk *mod_clk;
-+	struct reset_control *reset;
-+
-+	u32 *buffer;
-+	struct dma_chan *dma_chan;
-+	dma_addr_t dma_handle;
-+	int pio_length;
-+	int pio_offset;
-+
-+	spinlock_t lock;
-+	int next_length;
-+	bool xfer_active;
-+
-+	u32 format;
-+	struct sun50i_r329_ledc_timing timing;
-+
-+	int num_leds;
-+	struct sun50i_r329_ledc_led leds[];
-+};
-+
-+static int sun50i_r329_ledc_dma_xfer(struct sun50i_r329_ledc *priv, int length)
-+{
-+	struct dma_async_tx_descriptor *desc;
-+	dma_cookie_t cookie;
-+
-+	desc = dmaengine_prep_slave_single(priv->dma_chan, priv->dma_handle,
-+					   LEDS_TO_BYTES(length),
-+					   DMA_MEM_TO_DEV, 0);
-+	if (!desc)
-+		return -ENOMEM;
-+
-+	cookie = dmaengine_submit(desc);
-+	if (dma_submit_error(cookie))
-+		return -EIO;
-+
-+	dma_async_issue_pending(priv->dma_chan);
-+
-+	return 0;
-+}
-+
-+static void sun50i_r329_ledc_pio_xfer(struct sun50i_r329_ledc *priv, int length)
-+{
-+	u32 burst, offset, val;
-+
-+	if (length) {
-+		/* New transfer (FIFO is empty). */
-+		offset = 0;
-+		burst  = min(length, LEDC_FIFO_DEPTH);
-+	} else {
-+		/* Existing transfer (FIFO is half-full). */
-+		length = priv->pio_length;
-+		offset = priv->pio_offset;
-+		burst  = min(length, LEDC_FIFO_DEPTH / 2);
-+	}
-+
-+	iowrite32_rep(priv->base + LEDC_DATA_REG, priv->buffer + offset, burst);
-+
-+	if (burst < length) {
-+		priv->pio_length = length - burst;
-+		priv->pio_offset = offset + burst;
-+
-+		if (!offset) {
-+			val = readl(priv->base + LEDC_INT_CTRL_REG);
-+			val |= LEDC_INT_CTRL_REG_FIFO_CPUREQ_INT_EN;
-+			writel(val, priv->base + LEDC_INT_CTRL_REG);
-+		}
-+	} else {
-+		/* Disable the request IRQ once all data is written. */
-+		val = readl(priv->base + LEDC_INT_CTRL_REG);
-+		val &= ~LEDC_INT_CTRL_REG_FIFO_CPUREQ_INT_EN;
-+		writel(val, priv->base + LEDC_INT_CTRL_REG);
-+	}
-+}
-+
-+static void sun50i_r329_ledc_start_xfer(struct sun50i_r329_ledc *priv,
-+					int length)
-+{
-+	u32 val;
-+
-+	dev_dbg(priv->dev, "Updating %d LEDs\n", length);
-+
-+	val = readl(priv->base + LEDC_CTRL_REG);
-+	val &= ~LEDC_CTRL_REG_DATA_LENGTH;
-+	val |= length << 16 | LEDC_CTRL_REG_LEDC_EN;
-+	writel(val, priv->base + LEDC_CTRL_REG);
-+
-+	if (length > LEDC_FIFO_DEPTH) {
-+		int ret = sun50i_r329_ledc_dma_xfer(priv, length);
-+
-+		if (!ret)
-+			return;
-+
-+		dev_warn(priv->dev, "Failed to set up DMA: %d\n", ret);
-+	}
-+
-+	sun50i_r329_ledc_pio_xfer(priv, length);
-+}
-+
-+static irqreturn_t sun50i_r329_ledc_irq(int irq, void *dev_id)
-+{
-+	struct sun50i_r329_ledc *priv = dev_id;
-+	u32 val;
-+
-+	val = readl(priv->base + LEDC_INT_STS_REG);
-+
-+	if (val & LEDC_INT_STS_REG_TRANS_FINISH_INT) {
-+		int next_length;
-+
-+		/* Start the next transfer if needed. */
-+		spin_lock(&priv->lock);
-+		next_length = priv->next_length;
-+		if (next_length)
-+			priv->next_length = 0;
-+		else
-+			priv->xfer_active = false;
-+		spin_unlock(&priv->lock);
-+
-+		if (next_length)
-+			sun50i_r329_ledc_start_xfer(priv, next_length);
-+	} else if (val & LEDC_INT_STS_REG_FIFO_CPUREQ_INT) {
-+		/* Continue the current transfer. */
-+		sun50i_r329_ledc_pio_xfer(priv, 0);
-+	}
-+
-+	writel(val, priv->base + LEDC_INT_STS_REG);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static void sun50i_r329_ledc_brightness_set(struct led_classdev *cdev,
-+					    enum led_brightness brightness)
-+{
-+	struct sun50i_r329_ledc *priv = dev_get_drvdata(cdev->dev->parent);
-+	struct led_classdev_mc *mc_cdev = lcdev_to_mccdev(cdev);
-+	struct sun50i_r329_ledc_led *led = to_ledc_led(mc_cdev);
-+	int addr = led - priv->leds;
-+	unsigned long flags;
-+	bool xfer_active;
-+	int next_length;
-+
-+	led_mc_calc_color_components(mc_cdev, brightness);
-+
-+	priv->buffer[addr] = led->subled_info[0].brightness << 16 |
-+			     led->subled_info[1].brightness <<  8 |
-+			     led->subled_info[2].brightness;
-+
-+	dev_dbg(priv->dev, "LED %d -> #%06x\n", addr, priv->buffer[addr]);
-+
-+	spin_lock_irqsave(&priv->lock, flags);
-+	next_length = max(priv->next_length, addr + 1);
-+	xfer_active = priv->xfer_active;
-+	if (xfer_active)
-+		priv->next_length = next_length;
-+	else
-+		priv->xfer_active = true;
-+	spin_unlock_irqrestore(&priv->lock, flags);
-+
-+	if (!xfer_active)
-+		sun50i_r329_ledc_start_xfer(priv, next_length);
-+}
-+
-+static const char *const sun50i_r329_ledc_formats[] = {
-+	"rgb",
-+	"rbg",
-+	"grb",
-+	"gbr",
-+	"brg",
-+	"bgr",
-+};
-+
-+static int sun50i_r329_ledc_parse_format(const struct device_node *np,
-+					 struct sun50i_r329_ledc *priv)
-+{
-+	const char *format = "grb";
-+	u32 i;
-+
-+	of_property_read_string(np, "allwinner,pixel-format", &format);
-+
-+	for (i = 0; i < ARRAY_SIZE(sun50i_r329_ledc_formats); ++i) {
-+		if (!strcmp(format, sun50i_r329_ledc_formats[i])) {
-+			priv->format = i;
-+			return 0;
-+		}
-+	}
-+
-+	dev_err(priv->dev, "Bad pixel format '%s'\n", format);
-+
-+	return -EINVAL;
-+}
-+
-+static void sun50i_r329_ledc_set_format(struct sun50i_r329_ledc *priv)
-+{
-+	u32 val;
-+
-+	val = readl(priv->base + LEDC_CTRL_REG);
-+	val &= ~LEDC_CTRL_REG_RGB_MODE;
-+	val |= priv->format << 6;
-+	writel(val, priv->base + LEDC_CTRL_REG);
-+}
-+
-+static const struct sun50i_r329_ledc_timing sun50i_r329_ledc_default_timing = {
-+	.t0h_ns = 336,
-+	.t0l_ns = 840,
-+	.t1h_ns = 882,
-+	.t1l_ns = 294,
-+	.treset_ns = 300000,
-+};
-+
-+static int sun50i_r329_ledc_parse_timing(const struct device_node *np,
-+					 struct sun50i_r329_ledc *priv)
-+{
-+	struct sun50i_r329_ledc_timing *timing = &priv->timing;
-+
-+	*timing = sun50i_r329_ledc_default_timing;
-+
-+	of_property_read_u32(np, "allwinner,t0h-ns", &timing->t0h_ns);
-+	of_property_read_u32(np, "allwinner,t0l-ns", &timing->t0l_ns);
-+	of_property_read_u32(np, "allwinner,t1h-ns", &timing->t1h_ns);
-+	of_property_read_u32(np, "allwinner,t1l-ns", &timing->t1l_ns);
-+	of_property_read_u32(np, "allwinner,treset-ns", &timing->treset_ns);
-+
-+	return 0;
-+}
-+
-+static void sun50i_r329_ledc_set_timing(struct sun50i_r329_ledc *priv)
-+{
-+	const struct sun50i_r329_ledc_timing *timing = &priv->timing;
-+	unsigned long mod_freq = clk_get_rate(priv->mod_clk);
-+	u32 cycle_ns = NSEC_PER_SEC / mod_freq;
-+	u32 val;
-+
-+	val = (timing->t1h_ns / cycle_ns) << 21 |
-+	      (timing->t1l_ns / cycle_ns) << 16 |
-+	      (timing->t0h_ns / cycle_ns) <<  6 |
-+	      (timing->t0l_ns / cycle_ns);
-+	writel(val, priv->base + LEDC_T01_TIMING_CTRL_REG);
-+
-+	val = (timing->treset_ns / cycle_ns) << 16 |
-+	      (priv->num_leds - 1);
-+	writel(val, priv->base + LEDC_RESET_TIMING_CTRL_REG);
-+}
-+
-+static int sun50i_r329_ledc_resume(struct device *dev)
-+{
-+	struct sun50i_r329_ledc *priv = dev_get_drvdata(dev);
-+	u32 val;
-+	int ret;
-+
-+	ret = reset_control_deassert(priv->reset);
-+	if (ret)
-+		return ret;
-+
-+	ret = clk_prepare_enable(priv->bus_clk);
-+	if (ret)
-+		goto err_assert_reset;
-+
-+	ret = clk_prepare_enable(priv->mod_clk);
-+	if (ret)
-+		goto err_disable_bus_clk;
-+
-+	sun50i_r329_ledc_set_format(priv);
-+	sun50i_r329_ledc_set_timing(priv);
-+
-+	/* The trigger level must be at least the burst length. */
-+	val = readl(priv->base + LEDC_DMA_CTRL_REG);
-+	val &= ~LEDC_DMA_CTRL_REG_FIFO_TRIG_LEVEL;
-+	val |= LEDC_FIFO_DEPTH / 2;
-+	writel(val, priv->base + LEDC_DMA_CTRL_REG);
-+
-+	val = LEDC_INT_CTRL_REG_GLOBAL_INT_EN |
-+	      LEDC_INT_CTRL_REG_TRANS_FINISH_INT_EN;
-+	writel(val, priv->base + LEDC_INT_CTRL_REG);
-+
-+	return 0;
-+
-+err_disable_bus_clk:
-+	clk_disable_unprepare(priv->bus_clk);
-+err_assert_reset:
-+	reset_control_assert(priv->reset);
-+
-+	return ret;
-+}
-+
-+static int sun50i_r329_ledc_suspend(struct device *dev)
-+{
-+	struct sun50i_r329_ledc *priv = dev_get_drvdata(dev);
-+
-+	clk_disable_unprepare(priv->mod_clk);
-+	clk_disable_unprepare(priv->bus_clk);
-+	reset_control_assert(priv->reset);
-+
-+	return 0;
-+}
-+
-+static void sun50i_r329_ledc_dma_cleanup(void *data)
-+{
-+	struct sun50i_r329_ledc *priv = data;
-+	struct device *dma_dev = dmaengine_get_dma_device(priv->dma_chan);
-+
-+	if (priv->buffer)
-+		dma_free_wc(dma_dev, LEDS_TO_BYTES(priv->num_leds),
-+			    priv->buffer, priv->dma_handle);
-+	dma_release_channel(priv->dma_chan);
-+}
-+
-+static int sun50i_r329_ledc_probe(struct platform_device *pdev)
-+{
-+	const struct device_node *np = pdev->dev.of_node;
-+	struct dma_slave_config dma_cfg = {};
-+	struct led_init_data init_data = {};
-+	struct device *dev = &pdev->dev;
-+	struct device_node *child;
-+	struct sun50i_r329_ledc *priv;
-+	struct resource *mem;
-+	int count, irq, ret;
-+
-+	count = of_get_available_child_count(np);
-+	if (!count)
-+		return -ENODEV;
-+	if (count > LEDC_MAX_LEDS) {
-+		dev_err(dev, "Too many LEDs! (max is %d)\n", LEDC_MAX_LEDS);
-+		return -EINVAL;
-+	}
-+
-+	priv = devm_kzalloc(dev, struct_size(priv, leds, count), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->dev = dev;
-+	priv->num_leds = count;
-+	spin_lock_init(&priv->lock);
-+	dev_set_drvdata(dev, priv);
-+
-+	ret = sun50i_r329_ledc_parse_format(np, priv);
-+	if (ret)
-+		return ret;
-+
-+	ret = sun50i_r329_ledc_parse_timing(np, priv);
-+	if (ret)
-+		return ret;
-+
-+	priv->base = devm_platform_get_and_ioremap_resource(pdev, 0, &mem);
-+	if (IS_ERR(priv->base))
-+		return PTR_ERR(priv->base);
-+
-+	priv->bus_clk = devm_clk_get(dev, "bus");
-+	if (IS_ERR(priv->bus_clk))
-+		return PTR_ERR(priv->bus_clk);
-+
-+	priv->mod_clk = devm_clk_get(dev, "mod");
-+	if (IS_ERR(priv->mod_clk))
-+		return PTR_ERR(priv->mod_clk);
-+
-+	priv->reset = devm_reset_control_get_exclusive(dev, NULL);
-+	if (IS_ERR(priv->reset))
-+		return PTR_ERR(priv->reset);
-+
-+	priv->dma_chan = dma_request_chan(dev, "tx");
-+	if (IS_ERR(priv->dma_chan))
-+		return PTR_ERR(priv->dma_chan);
-+
-+	ret = devm_add_action_or_reset(dev, sun50i_r329_ledc_dma_cleanup, priv);
-+	if (ret)
-+		return ret;
-+
-+	dma_cfg.dst_addr	= mem->start + LEDC_DATA_REG;
-+	dma_cfg.dst_addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES;
-+	dma_cfg.dst_maxburst	= LEDC_FIFO_DEPTH / 2;
-+	ret = dmaengine_slave_config(priv->dma_chan, &dma_cfg);
-+	if (ret)
-+		return ret;
-+
-+	priv->buffer = dma_alloc_wc(dmaengine_get_dma_device(priv->dma_chan),
-+				    LEDS_TO_BYTES(priv->num_leds),
-+				    &priv->dma_handle, GFP_KERNEL);
-+	if (!priv->buffer)
-+		return -ENOMEM;
-+
-+	irq = platform_get_irq(pdev, 0);
-+	if (irq < 0)
-+		return irq;
-+
-+	ret = devm_request_irq(dev, irq, sun50i_r329_ledc_irq,
-+			       0, dev_name(dev), priv);
-+	if (ret)
-+		return ret;
-+
-+	ret = sun50i_r329_ledc_resume(dev);
-+	if (ret)
-+		return ret;
-+
-+	for_each_available_child_of_node(np, child) {
-+		struct sun50i_r329_ledc_led *led;
-+		struct led_classdev *cdev;
-+		u32 addr, color;
-+
-+		ret = of_property_read_u32(child, "reg", &addr);
-+		if (ret || addr >= count) {
-+			dev_err(dev, "LED 'reg' values must be from 0 to %d\n",
-+				priv->num_leds - 1);
-+			ret = -EINVAL;
-+			goto err_put_child;
-+		}
-+
-+		ret = of_property_read_u32(child, "color", &color);
-+		if (ret || color != LED_COLOR_ID_RGB) {
-+			dev_err(dev, "LED 'color' must be LED_COLOR_ID_RGB\n");
-+			ret = -EINVAL;
-+			goto err_put_child;
-+		}
-+
-+		led = &priv->leds[addr];
-+
-+		led->subled_info[0].color_index = LED_COLOR_ID_RED;
-+		led->subled_info[0].channel = 0;
-+		led->subled_info[1].color_index = LED_COLOR_ID_GREEN;
-+		led->subled_info[1].channel = 1;
-+		led->subled_info[2].color_index = LED_COLOR_ID_BLUE;
-+		led->subled_info[2].channel = 2;
-+
-+		led->mc_cdev.num_colors = ARRAY_SIZE(led->subled_info);
-+		led->mc_cdev.subled_info = led->subled_info;
-+
-+		cdev = &led->mc_cdev.led_cdev;
-+		cdev->max_brightness = U8_MAX;
-+		cdev->brightness_set = sun50i_r329_ledc_brightness_set;
-+
-+		init_data.fwnode = of_fwnode_handle(child);
-+
-+		ret = devm_led_classdev_multicolor_register_ext(dev,
-+								&led->mc_cdev,
-+								&init_data);
-+		if (ret) {
-+			dev_err(dev, "Failed to register LED %u: %d\n",
-+				addr, ret);
-+			goto err_put_child;
-+		}
-+	}
-+
-+	dev_info(dev, "Registered %d LEDs\n", priv->num_leds);
-+
-+	return 0;
-+
-+err_put_child:
-+	of_node_put(child);
-+	sun50i_r329_ledc_suspend(&pdev->dev);
-+
-+	return ret;
-+}
-+
-+static int sun50i_r329_ledc_remove(struct platform_device *pdev)
-+{
-+	sun50i_r329_ledc_suspend(&pdev->dev);
-+
-+	return 0;
-+}
-+
-+static void sun50i_r329_ledc_shutdown(struct platform_device *pdev)
-+{
-+	sun50i_r329_ledc_suspend(&pdev->dev);
-+}
-+
-+static const struct of_device_id sun50i_r329_ledc_of_match[] = {
-+	{ .compatible = "allwinner,sun50i-r329-ledc" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, sun50i_r329_ledc_of_match);
-+
-+static SIMPLE_DEV_PM_OPS(sun50i_r329_ledc_pm,
-+			 sun50i_r329_ledc_suspend, sun50i_r329_ledc_resume);
-+
-+static struct platform_driver sun50i_r329_ledc_driver = {
-+	.probe		= sun50i_r329_ledc_probe,
-+	.remove		= sun50i_r329_ledc_remove,
-+	.shutdown	= sun50i_r329_ledc_shutdown,
-+	.driver		= {
-+		.name		= "sun50i-r329-ledc",
-+		.of_match_table	= sun50i_r329_ledc_of_match,
-+		.pm		= pm_ptr(&sun50i_r329_ledc_pm),
-+	},
-+};
-+module_platform_driver(sun50i_r329_ledc_driver);
-+
-+MODULE_AUTHOR("Samuel Holland <samuel@sholland.org>");
-+MODULE_DESCRIPTION("Allwinner R329 LED controller driver");
-+MODULE_LICENSE("GPL");
--- 
-2.32.0
-
+--Qxx1br4bt0+wmkIi--
