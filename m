@@ -2,201 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0344566EF
+	by mail.lfdr.de (Postfix) with ESMTP id C2D8C4566F0
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 01:34:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233643AbhKSAgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 19:36:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231190AbhKSAgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 19:36:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA54661A81;
-        Fri, 19 Nov 2021 00:33:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637281981;
-        bh=1fElwPn9R/HfyDXXTOVjYSsM9qGxrjhRRiHKHxPiRHg=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=H79BP+nXY7Vd+LpvrYVXo2XSIYYUFqgHn5NKOnbOmdQc4FgnfDz6y1VvQ0edmM73P
-         D+YQjTs+47xsBttsQcbVFazUX4ibDtazzmRgDw0FRqQIyHHeGp7hIJOhw72IRekPnK
-         e3aSgGDDxfNFCA80WNvvhtCsiYs+iMuvVDWNlxUJwULxS/I6n4rNOYw914aTkFupg5
-         bSaUEF4B21m/Z8Pa+j64dmyb1GtBVvKjVDLYXBMAmPfojsE0sUh30kJu4Tf0AsRJNh
-         /QP7T0rcExFyO2ylxs1yYwaARaM2dG25a2L0ifUDY9t/52S8+Rw48x8CLGdGTdtTvG
-         vN7qAlEYS3qrw==
-Date:   Thu, 18 Nov 2021 16:32:58 -0800 (PST)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@ubuntu-linux-20-04-desktop
-To:     Oleksandr <olekstysh@gmail.com>
-cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Julien Grall <julien@xen.org>
-Subject: Re: [PATCH V2 2/4] arm/xen: Switch to use gnttab_setup_auto_xlat_frames()
- for DT
-In-Reply-To: <60cc5b07-5935-aa26-8690-353c779bbab5@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2111181631020.1412361@ubuntu-linux-20-04-desktop>
-References: <1635264312-3796-1-git-send-email-olekstysh@gmail.com> <1635264312-3796-3-git-send-email-olekstysh@gmail.com> <alpine.DEB.2.21.2110271754400.20134@sstabellini-ThinkPad-T480s> <60cc5b07-5935-aa26-8690-353c779bbab5@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S233659AbhKSAga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 19:36:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231190AbhKSAg3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 19:36:29 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 325C6C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 16:33:29 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id np6-20020a17090b4c4600b001a90b011e06so7318028pjb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 16:33:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UkcM1rTecmJ25KsUoXFTZKIn9eyzcYLgTJdNQlzShK8=;
+        b=nNONCxvj70orXmFEPPlUSDO3mt6Wtl927JrNDbPxGbq3nLI7dP4aUomf4ikpaAWno1
+         E5tZ/1qd+TfTbpG3LKaqN3/Q005utHPSi5xYtFL481zC+BGznNHJIpSCAxcReahqhnBX
+         tFfQGDSsOCTvTJzQl80RCaDg+QR/KouVZUOeNuIg3nccU7JjgzDrTQl0U/n93pd4wC6E
+         XxzpObxnLdf9bS/XDIelOHQBYzAx3azq/h3nJh7vThyhUxl3MelJlTwXx+EMRGwpO58E
+         rGWhe2M3G001XQnWRJJksjXDSpugEK1Sh26xTl+BRMz9DQbU6lo6LNZyYUXrfqgk+4MQ
+         y+Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UkcM1rTecmJ25KsUoXFTZKIn9eyzcYLgTJdNQlzShK8=;
+        b=DrteGaXE2RPVEHavkQknblEMve8oP264k83uRzswjolFEF5Z7N86W8HNCdmWraJiJW
+         KXeThoZsyAZV9Dms8ZgwHzTvC/3AAiwKBjQDalM8W+oqqyjpOkUgj3Nm1OlVjGUVC4or
+         vHiirXaMbIf1XRkLGk8aAFAw+7kcUxh5xH14c9vxOMPCqMJL3aFfcQrpxP5zXA6XZt7a
+         5OoZnmmPc2Wt18d7kU0qLphpiBVaPij6WQuRZb2Szh66AFSA5cLWbD96SMemJ+c+FBXl
+         5UpZ5At3JEhgEK5fyLBXEKix/XB/GaTbULr7ICqSgr6tk2KcZOyUlTmXiP+RN8cUDvIy
+         RIRA==
+X-Gm-Message-State: AOAM530lHuqxCu6GkP55vkmTwdJ8awporqwADDF1omPbiwKhlBuYnxAw
+        KQcsAGIcTkANdw4uTnUlkYC+BrPZxEaBI7XdzLf0Nw==
+X-Google-Smtp-Source: ABdhPJx7HLZK7jaTa73RkUrjpdUhNrR+ZBGuDJ1erNCEFL+MslOqX3V7V8oW+JO6oH3Lu4UeiweKvA==
+X-Received: by 2002:a17:90b:4a01:: with SMTP id kk1mr15807790pjb.7.1637282008706;
+        Thu, 18 Nov 2021 16:33:28 -0800 (PST)
+Received: from leoy-ThinkPad-X240s ([66.23.193.242])
+        by smtp.gmail.com with ESMTPSA id k8sm574903pgj.94.2021.11.18.16.33.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 16:33:28 -0800 (PST)
+Date:   Fri, 19 Nov 2021 08:33:17 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] perf cs-etm: Pass -1 as pid value for
+ machine__set_current_tid()
+Message-ID: <20211119003317.GD69886@leoy-ThinkPad-X240s>
+References: <20211113143540.53957-1-leo.yan@linaro.org>
+ <20211118171412.GB2530497@p14s>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211118171412.GB2530497@p14s>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 11 Nov 2021, Oleksandr wrote:
-> On 28.10.21 04:28, Stefano Stabellini wrote:
-> 
-> Hi Stefano
-> 
-> I am sorry for the late response.
-> 
-> > On Tue, 26 Oct 2021, Oleksandr Tyshchenko wrote:
-> > > From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-> > > 
-> > > Read the start address of the grant table space from DT
-> > > (region 0).
-> > > 
-> > > This patch mostly restores behaviour before commit 3cf4095d7446
-> > > ("arm/xen: Use xen_xlate_map_ballooned_pages to setup grant table")
-> > > but trying not to break the ACPI support added after that commit.
-> > > So the patch touches DT part only and leaves the ACPI part with
-> > > xen_xlate_map_ballooned_pages().
-> > > 
-> > > This is a preparation for using Xen extended region feature
-> > > where unused regions of guest physical address space (provided
-> > > by the hypervisor) will be used to create grant/foreign/whatever
-> > > mappings instead of wasting real RAM pages from the domain memory
-> > > for establishing these mappings.
-> > > 
-> > > The immediate benefit of this change:
-> > > - Avoid superpage shattering in Xen P2M when establishing
-> > >    stage-2 mapping (GFN <-> MFN) for the grant table space
-> > > - Avoid wasting real RAM pages (reducing the amount of memory
-> > >    usuable) for mapping grant table space
-> > > - The grant table space is always mapped at the exact
-> > >    same place (region 0 is reserved for the grant table)
-> > > 
-> > > Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-> > > ---
-> > > Changes RFC -> V2:
-> > >     - new patch
-> > > ---
-> > >   arch/arm/xen/enlighten.c | 32 +++++++++++++++++++++++++-------
-> > >   1 file changed, 25 insertions(+), 7 deletions(-)
-> > > 
-> > > diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
-> > > index 7f1c106b..dea46ec 100644
-> > > --- a/arch/arm/xen/enlighten.c
-> > > +++ b/arch/arm/xen/enlighten.c
-> > > @@ -59,6 +59,9 @@ unsigned long xen_released_pages;
-> > >   struct xen_memory_region xen_extra_mem[XEN_EXTRA_MEM_MAX_REGIONS]
-> > > __initdata;
-> > >     static __read_mostly unsigned int xen_events_irq;
-> > > +static phys_addr_t xen_grant_frames;
-> > __read_mostly
-> 
-> ok
-> 
-> 
-> > 
-> > 
-> > > +#define GRANT_TABLE_INDEX   0
-> > >     uint32_t xen_start_flags;
-> > >   EXPORT_SYMBOL(xen_start_flags);
-> > > @@ -303,6 +306,7 @@ static void __init xen_acpi_guest_init(void)
-> > >   static void __init xen_dt_guest_init(void)
-> > >   {
-> > >   	struct device_node *xen_node;
-> > > +	struct resource res;
-> > >     	xen_node = of_find_compatible_node(NULL, NULL, "xen,xen");
-> > >   	if (!xen_node) {
-> > > @@ -310,6 +314,12 @@ static void __init xen_dt_guest_init(void)
-> > >   		return;
-> > >   	}
-> > >   +	if (of_address_to_resource(xen_node, GRANT_TABLE_INDEX, &res)) {
-> > > +		pr_err("Xen grant table region is not found\n");
-> > > +		return;
-> > > +	}
-> > > +	xen_grant_frames = res.start;
-> > > +
-> > >   	xen_events_irq = irq_of_parse_and_map(xen_node, 0);
-> > >   }
-> > >   @@ -317,16 +327,20 @@ static int __init xen_guest_init(void)
-> > >   {
-> > >   	struct xen_add_to_physmap xatp;
-> > >   	struct shared_info *shared_info_page = NULL;
-> > > -	int cpu;
-> > > +	int rc, cpu;
-> > >     	if (!xen_domain())
-> > >   		return 0;
-> > >     	if (!acpi_disabled)
-> > >   		xen_acpi_guest_init();
-> > > -	else
-> > > +	else {
-> > >   		xen_dt_guest_init();
-> > >   +		if (!xen_grant_frames)
-> > > +			return -ENODEV;
-> > maybe we can avoid this, see below
-> > 
-> > 
-> > > +	}
-> > > +
-> > >   	if (!xen_events_irq) {
-> > >   		pr_err("Xen event channel interrupt not found\n");
-> > >   		return -ENODEV;
-> > > @@ -370,12 +384,16 @@ static int __init xen_guest_init(void)
-> > >   	for_each_possible_cpu(cpu)
-> > >   		per_cpu(xen_vcpu_id, cpu) = cpu;
-> > >   -	xen_auto_xlat_grant_frames.count = gnttab_max_grant_frames();
-> > > -	if (xen_xlate_map_ballooned_pages(&xen_auto_xlat_grant_frames.pfn,
-> > > -					  &xen_auto_xlat_grant_frames.vaddr,
-> > > -					  xen_auto_xlat_grant_frames.count)) {
-> > > +	if (!acpi_disabled) {
-> > To make the code more resilient couldn't we do:
-> > 
-> > if (!acpi_disabled || !xen_grant_frames) {
-> I think, we can.
-> 
-> On the one hand, indeed the code more resilient and less change.
-> From the other hand if grant table region is not found then something weird
-> happened as region 0 is always present in reg property if hypervisor node is
-> exposed to the guest.
-> The behavior before commit 3cf4095d7446 ("arm/xen: Use
-> xen_xlate_map_ballooned_pages to setup grant table") was exactly the same in
-> the context of the failure if region wasn't found.
-> 
-> ...
-> 
-> Well, if we want to make code more resilient, I will update. But, looks like
-> we also need to switch actions in xen_dt_guest_init() in order to process
-> xen_events_irq before xen_grant_frames, otherwise we may return after failing
-> with region and end up not initializing xen_events_irq so xen_guest_init()
-> will fail earlier than reaches that check.
-> What do you think?
- 
-Yes, you are right. I was re-reading the patch to refresh my memory and
-I noticed immediately that xen_dt_guest_init also need to be changed so
-that xen_events_irq is set before xen_grant_frames.
- 
-I think it is a minor change that doesn't add complexity but make the
-code more robust so I think it is a good idea
+Hi Mathieu,
 
- 
-> > > +		xen_auto_xlat_grant_frames.count = gnttab_max_grant_frames();
-> > > +		rc =
-> > > xen_xlate_map_ballooned_pages(&xen_auto_xlat_grant_frames.pfn,
-> > > +
-> > > &xen_auto_xlat_grant_frames.vaddr,
-> > > +
-> > > xen_auto_xlat_grant_frames.count);
-> > > +	} else
-> > > +		rc = gnttab_setup_auto_xlat_frames(xen_grant_frames);
-> > > +	if (rc) {
-> > >   		free_percpu(xen_vcpu_info);
-> > > -		return -ENOMEM;
-> > > +		return rc;
-> > >   	}
-> > >   	gnttab_init();
+On Thu, Nov 18, 2021 at 10:14:12AM -0700, Mathieu Poirier wrote:
+> Good morning Leo,
+> 
+> On Sat, Nov 13, 2021 at 10:35:40PM +0800, Leo Yan wrote:
+> > Currently, cs-etm passes the tid value for both tid and pid parameters
+> > when calling machine__set_current_tid(), this can lead to confusion for
+> > thread handling.  E.g. we arbitrarily pass the same value for pid and
+> > tid, perf tool will be misled to consider it is a main thread (see
+> > thread__main_thread()).
+> > 
+> > On the other hand, Perf tool only can retrieve tid from Arm CoreSight
+> > context packet, and we have no chance to know pid (it maps to kernel's
+> > task_struct::tgid) from hardware tracing data.  For this reason, this
+> > patch passes -1 as pid for function machine__set_current_tid().
+> > 
+> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> > ---
+> >  tools/perf/util/cs-etm.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+> > index f323adb1af85..eed1a5930072 100644
+> > --- a/tools/perf/util/cs-etm.c
+> > +++ b/tools/perf/util/cs-etm.c
+> > @@ -1118,7 +1118,7 @@ int cs_etm__etmq_set_tid(struct cs_etm_queue *etmq,
+> >  	if (cs_etm__get_cpu(trace_chan_id, &cpu) < 0)
+> >  		return err;
+> >  
+> > -	err = machine__set_current_tid(etm->machine, cpu, tid, tid);
+> > +	err = machine__set_current_tid(etm->machine, cpu, -1, tid);
+> 
+> I remember wondering about what to do with the pid parameter when I wrote this
+> patch... 
+> 
+> Do you have a before-and-after snapshot you can add to the changelog?
 
+I tried to capture log but I didn't observe the difference introduced
+by this patch, this might because I didn't per-process mode for
+multi-threading case.  I will try more case for this.
+
+> I also think it will require a "Fixes" tag.  In your next revision please CC James
+> since you guys are working in that area nowadays.
+
+Will do.  And will Cc James and German in next spin.
+
+Thanks for review and suggestion.
+
+Leo
