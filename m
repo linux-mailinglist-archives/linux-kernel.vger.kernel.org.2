@@ -2,62 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A4F457368
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:49:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9475645736B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:49:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234826AbhKSQwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 11:52:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54346 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232454AbhKSQwP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 11:52:15 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 226406112E;
-        Fri, 19 Nov 2021 16:49:12 +0000 (UTC)
-Date:   Fri, 19 Nov 2021 11:49:10 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Yordan@web.codeaurora.org, Karadzhov@web.codeaurora.org,
-        VMware <" <y.karadz"@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        mingo@redhat.com, hagen@jauu.net, rppt@kernel.org,
-        akpm@linux-foundation.org, vvs@virtuozzo.com, shakeelb@google.com,
-        christian.brauner@ubuntu.com, mkoutny@suse.com,
-        "Linux Containers <containers@lists.linux.dev>" 
-        <""@web.codeaurora.org>
-Subject: Re: [RFC PATCH 0/4] namespacefs: Proof-of-Concept
-Message-ID: <20211119114910.177c80d6@gandalf.local.home>
-In-Reply-To: <20211119114736.5d9dcf6c@gandalf.local.home>
-References: <20211118181210.281359-1-y.karadz@gmail.com>
-        <87a6i1xpis.fsf@email.froward.int.ebiederm.org>
-        <20211118142440.31da20b3@gandalf.local.home>
-        <1349346e1d5daca991724603d1495ec311cac058.camel@HansenPartnership.com>
-        <20211119092758.1012073e@gandalf.local.home>
-        <f6ca1f5bdb3b516688f291d9685a6a59f49f1393.camel@HansenPartnership.com>
-        <20211119114736.5d9dcf6c@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S234893AbhKSQwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 11:52:45 -0500
+Received: from ale.deltatee.com ([204.191.154.188]:34892 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231490AbhKSQwo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 11:52:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=j8F+VN+Ak51Mv+10Ri36XJi9T0mvaMt3o2cpiS6nRq8=; b=A0P4McfBDINZAcnoeLBxzc4BE+
+        Re2Ot7Uikg7t/3O+mCMh2vgTEg8iYROfMCjLJuu5cwlK2+XMGk7UTDDLNRj9nTkGaMndH0D4Bg8PT
+        B/pj18YJxttcqVgvtTKiEAmNPd5OO+lk31vKnDpGhCVr9E4ijnz/TYbXOJJiMp/Wq6ZzTXpdsWsQP
+        zbV6lg/I6tn3kuucSNdg3AB/GF7FAe8l62/1Jicnb2rAcbdAygxTwRV7kfL/pzhey1wxLUJMIwSVr
+        iQMNjjPDWNLn6JLcUTVUl8jCdEwqrmBEIKhLbCHcQBPYVI86NuoObD9JPm6lxS7bl7avwmERRCY1p
+        AndXa5Vg==;
+Received: from s0106a84e3fe8c3f3.cg.shawcable.net ([24.64.144.200] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <logang@deltatee.com>)
+        id 1mo752-002CkS-KD; Fri, 19 Nov 2021 09:49:41 -0700
+To:     Kelvin Cao <kelvin.cao@microchip.com>,
+        Kurt Schwemmer <kurt.schwemmer@microsemi.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kelvincao@outlook.com
+References: <20211119003803.2333-1-kelvin.cao@microchip.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <cf1bc79c-718c-ce23-fae8-178d0f545901@deltatee.com>
+Date:   Fri, 19 Nov 2021 09:49:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20211119003803.2333-1-kelvin.cao@microchip.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
 Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 24.64.144.200
+X-SA-Exim-Rcpt-To: kelvincao@outlook.com, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, kw@linux.com, bhelgaas@google.com, kurt.schwemmer@microsemi.com, kelvin.cao@microchip.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.6 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 0/2] Add Switchtec Gen4 automotive device IDs and a tweak
+X-SA-Exim-Version: 4.2.1 (built Sat, 13 Feb 2021 17:57:42 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Nov 2021 11:47:36 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> > Can we back up and ask what problem you're trying to solve before we
-> > start introducing new objects like namespace name?
 
-TL;DR; verison:
+On 2021-11-18 5:38 p.m., Kelvin Cao wrote:
+> Hi,
+> 
+> This patchset introduces device IDs for the Switchtec Gen4 automotive
+> variants and a minor tweak for the MRPC execution.
+> 
+> The first patch adds the device IDs. Patch 2 makes the tweak to improve
+> the MRPC execution efficiency [1].
+> 
+> This patchset is based on v5.16-rc1.
+> 
+> [1] https://lore.kernel.org/r/20211014141859.11444-1-kelvin.cao@microchip.com/
+> 
+> Thanks,
+> Kelvin
+> 
+> Kelvin Cao (2):
+>   Add device IDs for the Gen4 automotive variants
+>   Declare local array state_names as static
+> 
+>  drivers/pci/quirks.c           |  9 +++++++++
+>  drivers/pci/switch/switchtec.c | 11 ++++++++++-
+>  2 files changed, 19 insertions(+), 1 deletion(-)
 
-We want to be able to install a container on a machine that will let us
-view all namespaces currently defined on that machine and which tasks are
-associated with them.
+Looks fine to me.
 
-That's basically it.
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
 
--- Steve
+Logan
