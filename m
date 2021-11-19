@@ -2,80 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87C33456922
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 05:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7CBA456925
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 05:26:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233115AbhKSE0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 23:26:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35750 "EHLO
+        id S232301AbhKSE3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 23:29:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231583AbhKSE02 (ORCPT
+        with ESMTP id S229754AbhKSE3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 23:26:28 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D9F4C061758
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 20:23:27 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id m9so11281096iop.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 20:23:27 -0800 (PST)
+        Thu, 18 Nov 2021 23:29:50 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F3FC061574;
+        Thu, 18 Nov 2021 20:26:49 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id c4so15743911wrd.9;
+        Thu, 18 Nov 2021 20:26:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=eTS1GK69RCI4oJxzikNG+dG1kEXvzkq40C70DiSwh3g=;
-        b=cQL4g+H2gJMJP3xWFQe/KzoyGqIo0AawlIVz6HOmgj7H+oswWn1JndJ03Ybadqh/iG
-         GFezuribER5iOwOrdhcpaLRDpEBug17B9goO8697VSiSH7/hueTiocUUiYuEl0npDX+N
-         7dyH4NYh7rX0U9rKSBeHM3T0tr/VTmzWLqZb6dR+9h3OxCcYEbSP6A9trr03z0AdHvvI
-         ahSumHf41Gk0/WiflEL2tp00pjSmNcuzmCnCLHtvda8y92IYt7+31MLaTkWsbzEryIp/
-         PD6PRbns5nLepTYC8LZKXr6gjYxNXB3IFy8QgwmShmHo9WUyNgKaHeXs5AvuxibzX411
-         sWzA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zvKedbEblsFvFz/lugA32GWFMXFY2GUZc/320XQiSXU=;
+        b=mdId0OhSJMOY7iRTyp9+N/wXqaLYh4mFbXs38jXv13mLH1pb8/Hgb9PPFPupAWdM26
+         4+dAG9VMcRMl5g/8xXjkWhmlTlZeO29xCQ3CuQ/kqXJsN9kJ5/8Bg2KIwe+yfc1Qz74s
+         39SR12KLyxwkNZehgbHqm71Bkbx3csF2vyYIC7HwA9X2Wu+dTN48uoq41brcbxb5w/cm
+         eO9AFZIVmYvq8R+BboltlJk4wF1q2gyprH9AsXAObzhELamJ6Rty+McFBq9IQnouE5Zt
+         pUmSH7Qw7XwjSK4ozk850DAIyDwXgqleogqaqLw8z3D34nCAUkW30UPvHDOpqxnmPr/T
+         HPwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=eTS1GK69RCI4oJxzikNG+dG1kEXvzkq40C70DiSwh3g=;
-        b=Vf+bzYQuNDcntkCbvQtB886nC4g3Hju/J5x+DEBpwg0R7S4a3F8WJvZ6AMKhZ+4J83
-         tQ5UWAiPDmW+fra6/JFhjN+W4f1N5KE2i7y8N8DuhDq8/vFpfJHr42fJmgiaYbsCKFpu
-         PH48MWQLMyO/QoJhduJ/jiN8Vs3cHHCz4opQe+JqMTskpdu6kdG2IIaPbaNgZe/QPkCW
-         fRy3c7srt/eVazFCE+LN6BCb/yxTaJVL6cPfSXuUzOwVumDP6bK0pI0WTGbta2yy7F43
-         7nt/P8zNel2WxT6y2vuDI/eQUBDc7T08iSq0MR5f/B63hCmB5PO896zyU2Xs5mb6s7C+
-         hbrg==
-X-Gm-Message-State: AOAM530rop2LKDbegoJ0scRW3yyHWPPfVGHNnFsFD5gkveflUcUdLoTD
-        gId4MM9SS3SSHAyV+6vFyLZFYP5pffN3tOFDa+I=
-X-Google-Smtp-Source: ABdhPJyoJdpS7Kf9B+KrNKG19mDCqtighLiNuAqL2cgDQj7eZ+/CBh/r4yLZu32slWVXs7TOdIJDzf3XHUtHh6UYg8Y=
-X-Received: by 2002:a05:6602:164a:: with SMTP id y10mr3074210iow.123.1637295806431;
- Thu, 18 Nov 2021 20:23:26 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zvKedbEblsFvFz/lugA32GWFMXFY2GUZc/320XQiSXU=;
+        b=OaovIay2pwJeCs3h2ajG2bYiMa9ENpuWxZhbSjo84VVDYF9lU5//JIX8edY1U5Ii6O
+         K6AmeM5Zx0L2lUxbN+g3ur48SzaGC8rjK+LcCPKJKx+s0y5gddjBenRCc/zGUZz1jxy5
+         4MBBnLKG1giTPRg4iJXzY7sIalP0dDEJzjhFnFzD49CWeNdrviOKMicGp1f2MqPR1QR7
+         qLeM1/VaxfHV2d1vRP70xSqzyyS/uprpdMrQxHHHoOaXzbZMd4DtUPM6ItDvzimVn3qT
+         H5gwLuLi+Aoe3tKoZ76e4KgebyNLpho5RpyEfQmdRQ5/+cX5hzEZ05K9lej2MkQ//b/u
+         OGwA==
+X-Gm-Message-State: AOAM532kjjyfekNoMEQ2ufUPgleYxpa7k/RXn2/znADZlvEMnKh0wVig
+        fWaEy+Fqw6pOV6LGkiq98uI=
+X-Google-Smtp-Source: ABdhPJyvp7OD7XRv2+qqheWDVg1EJff7aJHgDRJz+WJfF1gOPETvqTCtt7EQxsDH5PTugiOxlTuFkw==
+X-Received: by 2002:a05:6000:23a:: with SMTP id l26mr3624844wrz.215.1637296008031;
+        Thu, 18 Nov 2021 20:26:48 -0800 (PST)
+Received: from localhost.localdomain ([197.49.250.127])
+        by smtp.gmail.com with ESMTPSA id az4sm11030557wmb.20.2021.11.18.20.26.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 20:26:47 -0800 (PST)
+From:   Sohaib Mohamed <sohaib.amhmd@gmail.com>
+Cc:     sohaib.amhmd@gmail.com, irogers@google.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] perf machine: Free machine__findnew_dso
+Date:   Fri, 19 Nov 2021 06:26:04 +0200
+Message-Id: <20211119042607.48924-1-sohaib.amhmd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:a05:6602:2f03:0:0:0:0 with HTTP; Thu, 18 Nov 2021 20:23:25
- -0800 (PST)
-Reply-To: anthonyrrobson@gmail.com
-From:   "Mr. Anthony Robson" <abcudday@gmail.com>
-Date:   Thu, 18 Nov 2021 20:23:25 -0800
-Message-ID: <CADXsGJFbR1Q52ZiBs8f3ijChf5RKGDYxHiXANAhCVcHdcbSS1A@mail.gmail.com>
-Subject: I look forward to hearing from you SOONEST!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Friend,
+ASan reports memory leaks while running:
 
-Below is the email i sent to you.
+$ rm perf.data*
+$ perf report
 
-I am so sorry for sending you this unsolicited and unexpected email.
+This patch adds the missing dso__put.
 
-I actually got your contact from your country website and i decided to
-contact you directly about this business venture.
+Fixes: 8c7f1bb37b29 ("perf machine: Move kernel mmap name into struct
+machine")
 
-I am contacting you in good faith and this business investment
-proposal will be of mutual benefit for us. I have a business proposal
-in huge sum amount of US$800,000 000 00 (Eight Hundred  Million United
-state dollars only} to be transferred to any safe account with your
-assistance.
+Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
+---
+ tools/perf/util/machine.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Contact me back via my email if you are interested in this business
-investment proposal and if you can be trusted for further briefing and
-details.
-I look forward to hearing from you SOONEST!
+diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+index fb8496df8432..826be7a12da1 100644
+--- a/tools/perf/util/machine.c
++++ b/tools/perf/util/machine.c
+@@ -1742,6 +1742,8 @@ static int machine__process_kernel_mmap_event(struct machine *machine,
+ 			 */
+ 			dso__load(kernel, machine__kernel_map(machine));
+ 		}
++
++		dso__put(kernel);
+ 	} else if (perf_event__is_extra_kernel_mmap(machine, xm)) {
+ 		return machine__process_extra_kernel_map(machine, xm);
+ 	}
+-- 
+2.25.1
 
-Kind Regards.
-Mr. Anthony Robson.
