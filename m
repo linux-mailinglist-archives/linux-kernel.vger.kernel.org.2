@@ -2,115 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 433B9457894
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 23:19:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E41445789C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 23:21:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235404AbhKSWWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 17:22:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53250 "EHLO
+        id S235634AbhKSWYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 17:24:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235124AbhKSWWt (ORCPT
+        with ESMTP id S235458AbhKSWYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 17:22:49 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD85C061574;
-        Fri, 19 Nov 2021 14:19:46 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id u3so49506980lfl.2;
-        Fri, 19 Nov 2021 14:19:46 -0800 (PST)
+        Fri, 19 Nov 2021 17:24:46 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2891C06173E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 14:21:43 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id y8so9197456plg.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 14:21:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3Nzbg2EG61wjglaAUxjv2HbmVE4Xv+5yBzHM0E8IZsg=;
-        b=SXIbbN0574L4wXm6E218LgP9PFCcdFNYniGzSbU9VNCAmx4rys3EGBHB0pZtHXsQ0v
-         5DOopnAEeUruILLsRF8g4bP20PDOTcU0wmU2o0up/eJKzKA6q9hdklZxr3KyLgUaVEg6
-         6NSTCmJbJVh0y+ODheunQOEBX0frGj3FLSGAzBDKJEhO3vX6sRomDc5UQQNySOi72gDN
-         IASArMTWwqSSABu89oH+I5KnBR9FP8iJED9maZFRqpkjjAlK4XxhGKHSe3iLDPnnnq4Y
-         n5JnG9/mFVvF3hLwZPZ1ZiLmpDiUAB6/DXuNO1OgWAuZUbkYFzJI29kVF7DOD9YHUn3M
-         ctng==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BWddyG3YL6k7bG+TnBK28e//6M0bIbW4TSIkWYmJ/v8=;
+        b=EuwLBJL7d8Z1+TfWgCR5KtCvEV67f5PIxvqG3aTGsd/eshhsU8erJhoGf0qFXRBYNK
+         ojHHmODuu2mFpfgcCH9Mh7DUEoaZ86X30XwStlGJZNYWsNn9NL94sEru/vUg5Nbj4Ygk
+         rg0O9yS0UoSLKIy+BYbkKCS7p6NG7AJKpFjEP2DFQyX8BBbyhzRWp+wRYVub/WiG1a4H
+         EGDfKcdqN4CON4UFuLc4/wDhL1EAWBW4K279192TaFlRQ297QMSEKJ5/s8gtUr82qbLh
+         G3wDAbAF+/UYwO1h3h+UwsxOj6qLscYU/yF0iX9FS4zA7l58NfcA9DyBK+/NK/quciN+
+         kONA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3Nzbg2EG61wjglaAUxjv2HbmVE4Xv+5yBzHM0E8IZsg=;
-        b=V/8FU6LqLkcn0Xigzkze/4prkZpIxCxjGNdvZOVg71hhxsUNUjYUGS3jyTC6c6SonX
-         5DevVwmenRpXHrx3rwG9L1iwi61FTGxv9/hXRWttrlbNX/Gng7PBTIEf37nBJ6n3deIA
-         tvLSkuIUYJPE61BAa47wb1pF5AOMgNjStlEj760bMLQ6GEV2wQ2EBVhSGJciDiD/Dmv4
-         HMr0kJmIxUwCZYerY0btJcIfy6wX4SMWX4VTO+nfGlpxx/N/rCQg3F9YgYQSMFcABjv1
-         qBrO37ctSSMwW6qws+HE43QWMPS9PpS8Wl80f87yF594Ss2D7+oKkd7DgUQqVDYdF7IA
-         XCEQ==
-X-Gm-Message-State: AOAM533ioegNT6EQlBib3NE7AAasTOPDQhDRcsMl9I0Y8988BNVPOmQw
-        rXVQjWM+Z1d15fJRfFivrCc=
-X-Google-Smtp-Source: ABdhPJwCGLjF1Tj7LtmDCAeHN04dyGLyvsGY7Z/Z0MX7Wq0wDJuM12LsICJS45mawjRFANUPQavgAA==
-X-Received: by 2002:a19:c3d6:: with SMTP id t205mr36620216lff.441.1637360384991;
-        Fri, 19 Nov 2021 14:19:44 -0800 (PST)
-Received: from localhost.localdomain (dsl-trebng21-58c18a-64.dhcp.inet.fi. [88.193.138.64])
-        by smtp.gmail.com with ESMTPSA id 76sm78150ljj.69.2021.11.19.14.19.44
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BWddyG3YL6k7bG+TnBK28e//6M0bIbW4TSIkWYmJ/v8=;
+        b=4IJT5ww3w1UDtuFu5srMeAwLK/bRYbnUUTUWJyxc7YoKLi1Tesv/PZ9wULITPqA0Ky
+         FB5D2b1fGIVLlmZunYdccw4Z59fMVRiwckrv1w+E2drmMfW1JktUljA1iHMS40pd143D
+         ed46zsn9yLWYccjHLVVKUGWiGHmoTwKK1x2lO605pHtu+jhSz5Tgq+scJUmc4vfLus5a
+         C3rSkSncPPgGLEoP9/qmXAnKjxshdKzcYSay5aPx7eoZuk/lJtY1P4/AAZhyeavc58Yz
+         an5kLXx7XF5Lah01fA4iiXdvpMkrgY5avjR2G9BvqM3Y+QSknv21HFaZEBUfc2XqPfJ2
+         jNRA==
+X-Gm-Message-State: AOAM5326aeqpHS6sioWT/OTAKC0RuV7rheT1J3Exgg4iVgpWMtohEGsp
+        h/raqwb901kWDYodbsQWGSLqCgJ8Sdw6yA==
+X-Google-Smtp-Source: ABdhPJw5pCQ1lvi4R7CtbDaQGcOJnt0PSBvoK0mJGOtw9m+Psi5Ckwf4h+0YLOW3oeLbqYaNToVYnQ==
+X-Received: by 2002:a17:90b:1c81:: with SMTP id oo1mr3963147pjb.171.1637360503250;
+        Fri, 19 Nov 2021 14:21:43 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id w17sm601647pfu.58.2021.11.19.14.21.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 14:19:44 -0800 (PST)
-From:   Juuso Alasuutari <juuso.alasuutari@gmail.com>
-To:     nafonten@amd.com
-Cc:     Jinzhou.Su@amd.com, Xiaojian.Du@amd.com, alexander.deucher@amd.com,
-        bp@suse.de, deepak.sharma@amd.com, ggherdovich@suse.cz,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        mario.limonciello@amd.com, mingo@kernel.org,
-        nathan.fontenot@amd.com, peterz@infradead.org,
-        rafael.j.wysocki@intel.com, ray.huang@amd.com,
-        skhan@linuxfoundation.org, steven@valvesoftware.com,
-        viresh.kumar@linaro.org, x86@kernel.org
-Subject: Re: [PATCH v4 16/22] cpupower: add the function to get the sysfs value from specific table
-Date:   Sat, 20 Nov 2021 00:19:43 +0200
-Message-Id: <20211119221943.92479-1-juuso.alasuutari@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <152fb29e-c558-ec2f-7ec6-65d7f62274b7@amd.com>
-References: <152fb29e-c558-ec2f-7ec6-65d7f62274b7@amd.com>
+        Fri, 19 Nov 2021 14:21:42 -0800 (PST)
+Date:   Fri, 19 Nov 2021 22:21:39 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, qemu-devel@nongnu.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J . Bruce Fields" <bfields@fieldses.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
+        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com
+Subject: Re: [RFC v2 PATCH 01/13] mm/shmem: Introduce F_SEAL_GUEST
+Message-ID: <YZgjc5x6FeBxOqbD@google.com>
+References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
+ <20211119134739.20218-2-chao.p.peng@linux.intel.com>
+ <20211119151943.GH876299@ziepe.ca>
+ <df11d753-6242-8f7c-cb04-c095f68b41fa@redhat.com>
+ <YZf4aAlbyeWw8wUk@google.com>
+ <20211119194746.GM876299@ziepe.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211119194746.GM876299@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Nov 2021 14:38:58 -0600, Nathan Fontenot wrote:
-> On 11/19/21 4:30 AM, Huang Rui wrote:
-> > Expose the helper into cpufreq header, then cpufreq driver can use this
-> > function to get the sysfs value if it has any specific sysfs interfaces.
-> > 
-> > Signed-off-by: Huang Rui <ray.huang@amd.com>
-> > ---
-> >  tools/power/cpupower/lib/cpufreq.c | 21 +++++++++++++++------
-> >  tools/power/cpupower/lib/cpufreq.h | 12 ++++++++++++
-> >  2 files changed, 27 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/tools/power/cpupower/lib/cpufreq.c b/tools/power/cpupower/lib/cpufreq.c
-> > index c3b56db8b921..02719cc400a1 100644
-> > --- a/tools/power/cpupower/lib/cpufreq.c
-> > +++ b/tools/power/cpupower/lib/cpufreq.c
-> > @@ -83,20 +83,21 @@ static const char *cpufreq_value_files[MAX_CPUFREQ_VALUE_READ_FILES] = {
-> >  	[STATS_NUM_TRANSITIONS] = "stats/total_trans"
-> >  };
-> >  
-> > -
-> > -static unsigned long sysfs_cpufreq_get_one_value(unsigned int cpu,
-> > -						 enum cpufreq_value which)
-> > +unsigned long cpufreq_get_sysfs_value_from_table(unsigned int cpu,
-> > +						 const char **table,
-> > +						 unsigned index,
-> > +						 unsigned size)
-> >  {
-> >  	unsigned long value;
-> >  	unsigned int len;
-> >  	char linebuf[MAX_LINE_LEN];
-> >  	char *endp;
-> >  
-> > -	if (which >= MAX_CPUFREQ_VALUE_READ_FILES)
-> > +	if (!table && !table[index] && index >= size)
+On Fri, Nov 19, 2021, Jason Gunthorpe wrote:
+> On Fri, Nov 19, 2021 at 07:18:00PM +0000, Sean Christopherson wrote:
+> > No ideas for the kernel API, but that's also less concerning since
+> > it's not set in stone.  I'm also not sure that dedicated APIs for
+> > each high-ish level use case would be a bad thing, as the semantics
+> > are unlikely to be different to some extent.  E.g. for the KVM use
+> > case, there can be at most one guest associated with the fd, but
+> > there can be any number of VFIO devices attached to the fd.
 > 
-> Should you validate the index before accessing table[index]
+> Even the kvm thing is not a hard restriction when you take away
+> confidential compute.
 > 
->         if (!table && index >= size && !table[index])
+> Why can't we have multiple KVMs linked to the same FD if the memory
+> isn't encrypted? Sure it isn't actually useful but it should work
+> fine.
 
-The operator is wrong as well. I believe this is what was originally intended:
+Hmm, true, but I want the KVM semantics to be 1:1 even if memory isn't encrypted.
+Encrypting memory with a key that isn't available to the host is necessary to
+(mostly) remove the host kernel from the guest's TCB, but it's not necessary to
+remove host userspace from the TCB.  KVM absolutely can and should be able to do
+that without relying on additional hardware/firmware.  Ignoring attestation and
+whether or not the guest fully trusts the host kernel, there's value in preventing
+a buggy or compromised userspace from attacking/corrupting the guest by remapping
+guest memory or by mapping the same memory into multiple guests.
 
-	if (!table || index >= size || !table[index])
+> Supporting only one thing is just a way to avoid having a linked list
+> of clients to broadcast invalidations too - for instance by using a
+> standard notifier block...
 
-- Juuso
+It's not just avoiding the linked list, there's a trust element as well.  E.g. in
+the scenario where a device can access a confidential VM's encrypted private memory,
+the guest is still the "owner" of the memory and needs to explicitly grant access to
+a third party, e.g. the device or perhaps another VM.
+
+That said, I'm certainly not dead set on having "guest" in the name, nor am I
+opposed to implementing multi-consumer support from the get-go so we don't end
+up with a mess later on.
+
+> Also, how does dirty tracking work on this memory?
+
+For KVM usage, KVM would provide the dirty bit info.  No idea how VFIO or other
+use cases would work.
