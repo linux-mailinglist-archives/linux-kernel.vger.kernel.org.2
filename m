@@ -2,79 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2BF345747D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:54:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45ECF457484
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 17:55:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236170AbhKSQ6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 11:58:00 -0500
-Received: from mail-oo1-f50.google.com ([209.85.161.50]:46721 "EHLO
-        mail-oo1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235957AbhKSQ57 (ORCPT
+        id S236614AbhKSQ6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 11:58:49 -0500
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:44788 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236404AbhKSQ6s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 11:57:59 -0500
-Received: by mail-oo1-f50.google.com with SMTP id p2-20020a4adfc2000000b002c2676904fdso3917070ood.13;
-        Fri, 19 Nov 2021 08:54:57 -0800 (PST)
+        Fri, 19 Nov 2021 11:58:48 -0500
+Received: by mail-oi1-f182.google.com with SMTP id be32so22849545oib.11;
+        Fri, 19 Nov 2021 08:55:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=zUhpnNDxh/kL1/qn3nX2Hug0FaP34iEbtzLmhVZQOnw=;
-        b=t+HJNM55nwcBaJoLqf5RHakkgctF7hcvDspeTePgkLrzMpvkV77DOX7ZxSkvTYsXAD
-         /imjwDvfx8tAAq5qDxBMeBI/AdvbUsgkmVeMOYl99bsuKfb2zGoX7pHMazLEOgLSRwwk
-         2PejLq8uGLfS3B+oHZD6S/IOTwUuqVU/OJdsFtxLfYr9b8Xb5IR9J4bSgDIeHxjtfq4l
-         bGzB5W595aGgK5+qFB+dxupauzjXRl0XJiF33mFyzwddxc1DBkHpX8qMmNs7V8JMDGpm
-         O95Q9Z6/9pPZxHe3CgHRzZpfg1BK2ZkCDWo3ndg3BzxJdOFSZ5gzqII22woOKf9qTO2A
-         z8xg==
-X-Gm-Message-State: AOAM532AxEwrRKbUbOUmqFb5Vaa+9X9TOnev7hzup3/vbHLV/LModj7P
-        LljIe0/FF7N42uJjZLEGBnR0re1nxA==
-X-Google-Smtp-Source: ABdhPJwO1Dyb6njB8jf/zuAdX+BmFyDedIe+i8GY8qKCIj9UmJGgb/b2wuRghEMuK+7DqxeU/7KxkQ==
-X-Received: by 2002:a4a:9204:: with SMTP id f4mr19127682ooh.87.1637340896737;
-        Fri, 19 Nov 2021 08:54:56 -0800 (PST)
+        bh=yZH3IuJ/71uU9AY771WfZvqzCQriz/vWX4edhDHRAjg=;
+        b=Ft/WeeehGhDj4q33ZLFO5c38herF2NCQglPBe+/UuOOHwn4aoR2BBEo2wgWCa5vin3
+         bUlIjV5TKrMtEVE5civ0lV6XyZ3GZsErg30jJaZs0LrtJiTZOHJ5RDUHqrhPEgyOjINT
+         Fan59hdmeOI0Qb6g9pM9NVmz7O3xA53gvetOMeGMvljYqkXGfQqtA/Jylq0XPnZPXlm+
+         cYN7jBo1snz5jkvDy+3q041byWV2NN8Vc+D8kII4ZwzXyLqZP94JwNJLwCI6kPVOrfsw
+         Sqh236vjKxM6Epipy7drGp1KmNpKdHlaihBA/MT0eYouVd/uDdYuaTuFc1JAt+15ZAY6
+         YGrQ==
+X-Gm-Message-State: AOAM530StIVziRxPqPWZxyke+TM+GPPLX+Mns1IwoDlFJ3AJPzJp1R0H
+        mWcQcszYLRnCqSwaGQrtElOTWJJEAQ==
+X-Google-Smtp-Source: ABdhPJyspmmSPD1psc7BzaZhZbB1K9IHwiyzjHoQfu/YcsS/e/L0vfd/GVFP4RJIc6R+KZjyUfw6Lw==
+X-Received: by 2002:aca:120f:: with SMTP id 15mr1063129ois.132.1637340946266;
+        Fri, 19 Nov 2021 08:55:46 -0800 (PST)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id j20sm68034ota.76.2021.11.19.08.54.55
+        by smtp.gmail.com with ESMTPSA id f32sm70187otf.35.2021.11.19.08.55.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 08:54:55 -0800 (PST)
-Received: (nullmailer pid 4029482 invoked by uid 1000);
-        Fri, 19 Nov 2021 16:54:54 -0000
-Date:   Fri, 19 Nov 2021 10:54:54 -0600
+        Fri, 19 Nov 2021 08:55:45 -0800 (PST)
+Received: (nullmailer pid 4048629 invoked by uid 1000);
+        Fri, 19 Nov 2021 16:55:44 -0000
+Date:   Fri, 19 Nov 2021 10:55:44 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, devicetree@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-renesas-soc@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Subject: Re: [PATCH v3 2/3] dt-bindings: serial: renesas,sci: Document RZ/G2L
- SoC
-Message-ID: <YZfW3hIbwzz6UTVx@robh.at.kernel.org>
-References: <20211110232920.19198-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20211110232920.19198-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     nandhini.srikandan@intel.com
+Cc:     linux-spi@vger.kernel.org, furong.zhou@intel.com,
+        broonie@kernel.org, robh+dt@kernel.org, mahesh.r.vaidya@intel.com,
+        mallikarjunappa.sangannavar@intel.com, fancer.lancer@gmail.com,
+        linux-kernel@vger.kernel.org, kris.pan@intel.com,
+        devicetree@vger.kernel.org, mgross@linux.intel.com,
+        rashmi.a@intel.com, kenchappa.demakkanavar@intel.com
+Subject: Re: [PATCH v3 4/5] dt-bindings: spi: Add bindings for Intel Thunder
+ Bay SoC
+Message-ID: <YZfXEBLqrYY+0269@robh.at.kernel.org>
+References: <20211111065201.10249-1-nandhini.srikandan@intel.com>
+ <20211111065201.10249-5-nandhini.srikandan@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211110232920.19198-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20211111065201.10249-5-nandhini.srikandan@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Nov 2021 23:29:19 +0000, Lad Prabhakar wrote:
-> Add SCI binding documentation for Renesas RZ/G2L SoC.
+On Thu, 11 Nov 2021 14:52:00 +0800, nandhini.srikandan@intel.com wrote:
+> From: Nandhini Srikandan <nandhini.srikandan@intel.com>
 > 
-> Also update the example node with RZ/G2L SCI0 node.
+> Add documentation for SPI controller in Intel Thunder Bay SoC.
 > 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Signed-off-by: Nandhini Srikandan <nandhini.srikandan@intel.com>
 > ---
-> v2->v3
-> * Added const "renesas,sci" entry under items for h8300
-> ---
->  .../bindings/serial/renesas,sci.yaml          | 46 ++++++++++++++++---
->  1 file changed, 40 insertions(+), 6 deletions(-)
+>  Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
 Acked-by: Rob Herring <robh@kernel.org>
