@@ -2,107 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 468DA4566CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 01:00:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 496C74566CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 01:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbhKSADD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Nov 2021 19:03:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230315AbhKSADD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Nov 2021 19:03:03 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E1BC061574;
-        Thu, 18 Nov 2021 16:00:02 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id y13so34470341edd.13;
-        Thu, 18 Nov 2021 16:00:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=M1g96wvk2fScmlQSqAqL2X6S00BnYHNLyt+afv0QIyo=;
-        b=f4hMsNyqdGbMXPCmS7JBsFq5cINp+XBRNmd+Ngv+5KFE8Cts4wsg8Cph4EUvQHOxjm
-         WpLQx/zxTxK58pk7EDJtnn6cY0jBbMeS8wCyKd9AwOfaijBLuO211kp1Zg0izgyO7IfG
-         tMs7cUFxYE6Awm8qjPO6VoJ0EOFZGymjcDVlTttVw+hbKDwPwdYjFRaqhpKVaWVNT0Rs
-         NktUwqVisrFf6fCgDgklOfwWga2KLZQ2OLwmf1YBTxveujJTGrIv4rJZx24KG8v8XUUz
-         yIUFuK1nRr/t972kNf8R9AFKw1NmdITTR2Vn4T57sOQlKzxXDE67bzAAQm0aFp0xEH3V
-         4vAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=M1g96wvk2fScmlQSqAqL2X6S00BnYHNLyt+afv0QIyo=;
-        b=1w+M8I0DFCw0uWxiJ5vGbgsmgKcc2ZNltkENTcP3vA4Vx0Ke01S62sJcXboEOqWl3t
-         sE3cMkpDa1eH6fGQDfV0F6QXt0PgF4r1Ppdiw7UFjq2QqaXwRQHn5XDNcYsSIYw8hrn0
-         JZo1s2yYUhZfaP0K/GhI8FbaSaQ9xQcMOgmLsoswa/KRuIiOVnc4LKZwKupdxY0YBhcF
-         gw2IzuLvA/dyHpUDv+bBa914ufMDvHpQOVlEOA5RmvN8xg6lPHP5fO3Ge1P+0zmFQlJo
-         GHrtn5ZZ/CI2oKdSJVJ3gPx1P/YYqeuvNxQviGXu/22A6FiWGD1TaeZXHufB11p3tQCw
-         j4eQ==
-X-Gm-Message-State: AOAM531n/VKnAwqkUeD/gLomRR6arsQ8pN9PAOAgeRrA9D1X3NftYLYm
-        FJjaSYxZZlfuZAj5ON5UEFuIT8Zpb7w=
-X-Google-Smtp-Source: ABdhPJwXQm9GW8Bslhks3s+dd8TXkWn3/JGGMaJAGtolwirXi/bEsG0qoA3BRG3j5KCeRdfIrD2AbA==
-X-Received: by 2002:a05:6402:2551:: with SMTP id l17mr14848060edb.142.1637280000795;
-        Thu, 18 Nov 2021 16:00:00 -0800 (PST)
-Received: from skbuf ([188.25.163.189])
-        by smtp.gmail.com with ESMTPSA id s12sm643476edc.48.2021.11.18.15.59.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 16:00:00 -0800 (PST)
-Date:   Fri, 19 Nov 2021 01:59:58 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [net-next PATCH 02/19] net: dsa: qca8k: remove redundant check
- in parse_port_config
-Message-ID: <20211118235958.ojpquokxwrh3zvji@skbuf>
-References: <20211117210451.26415-1-ansuelsmth@gmail.com>
- <20211117210451.26415-3-ansuelsmth@gmail.com>
+        id S231696AbhKSAFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Nov 2021 19:05:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230331AbhKSAFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Nov 2021 19:05:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DFFD61AD0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 00:01:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637280119;
+        bh=AoNZd47gCGaimK9v5NfigphGWhTSDsXfAmbFC4BIlz4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Lmq7eHFQfyyikTZkqVB4YTGA+sw+e7PKhSPSxzUx9AAn0X6/GyE6UcqLyYm4BmD24
+         +xCYcoK+WvTm0LWxHMNIPZ4ALkoGI1YTyzsZCONyYdXjiDe+KS6/H0ELH+UMwSMOam
+         BGN627Tvg879jCfHGN8vVIQNeBjxpb7TqfiZMVqHvPbF2zeq/NUEmTCQUdSizO7CXc
+         1KecLoH2ubW8vlFF3DB+0dPkwjiveEp1kL/Y2zihwpysKNT1dhoXlcDdrytZIDgPz2
+         Gh4Peu3R30ixCYiGCfTB5d+bxidTRRWTsgLXKa6R67N0INmd8oUpRng7z1QzvwLmzU
+         cOgsFYbpdvifg==
+Received: by mail-ed1-f47.google.com with SMTP id b15so34701087edd.7
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 16:01:59 -0800 (PST)
+X-Gm-Message-State: AOAM531nBuJWujOhiS5JLY95FKHVYz03pOTowsfhqceHzkZWQ69i1LW1
+        NHQFmQGe1xSrMcoGrz3u+uRvVXEkn3gyq5I55Q==
+X-Google-Smtp-Source: ABdhPJzJ+m25jkKAHUC8dqOXn/CxWb6mvvVoe7NwAcoZoKeWFquNa7VfncVxf9FsAbU+dFfNaujeGSmcwQHUHnIoiD0=
+X-Received: by 2002:a50:e608:: with SMTP id y8mr16990077edm.39.1637280117833;
+ Thu, 18 Nov 2021 16:01:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211117210451.26415-3-ansuelsmth@gmail.com>
+References: <20211117064158.27451-1-jason-jh.lin@mediatek.com> <20211117064158.27451-3-jason-jh.lin@mediatek.com>
+In-Reply-To: <20211117064158.27451-3-jason-jh.lin@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Fri, 19 Nov 2021 08:01:46 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-Ws7BmYr-87rb=MWYyGwSCCvv0AoPV10J7d+7TU+7OCA@mail.gmail.com>
+Message-ID: <CAAOTY_-Ws7BmYr-87rb=MWYyGwSCCvv0AoPV10J7d+7TU+7OCA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mailbox: add cmdq_mbox_flush to clear all task before suspend
+To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fei Shao <fshao@chromium.org>, tzungbi@google.com,
+        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 10:04:34PM +0100, Ansuel Smith wrote:
-> The very next check for port 0 and 6 already make sure we don't go out
-                                               ~~~~
-                                               makes
-> of bounds with the ports_config delay table.
-> Remove the redundant check.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+Hi, Jason:
+
+jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B411=E6=9C=88=
+17=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=882:42=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> CMDQ driver will occupy GCE clock to execute the task in GCE thread.
+>
+> So call cmdq_mbox_flush to clear all task in GCE thread before
+> CMDQ suspend.
+>
+> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
 > ---
+>  drivers/mailbox/mtk-cmdq-mailbox.c | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmd=
+q-mailbox.c
+> index 03f9ed4c5131..28cadfc0091b 100644
+> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
+> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
+> @@ -484,21 +484,18 @@ static int cmdq_suspend(struct device *dev)
+>         struct cmdq *cmdq =3D dev_get_drvdata(dev);
+>         struct cmdq_thread *thread;
+>         int i;
+> -       bool task_running =3D false;
+>
+>         cmdq->suspended =3D true;
+>
+>         for (i =3D 0; i < cmdq->thread_nr; i++) {
+>                 thread =3D &cmdq->thread[i];
+>                 if (!list_empty(&thread->task_busy_list)) {
+> -                       task_running =3D true;
+> -                       break;
+> +                       /* try to clear all task in this thread */
+> +                       cmdq_mbox_flush(thread->chan, 2000);
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+I would like the normal control flow rather than error handling. So
+the normal control flow is:
 
->  drivers/net/dsa/qca8k.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-> index a429c9750add..bfffc1fb7016 100644
-> --- a/drivers/net/dsa/qca8k.c
-> +++ b/drivers/net/dsa/qca8k.c
-> @@ -983,7 +983,7 @@ qca8k_parse_port_config(struct qca8k_priv *priv)
->  	u32 delay;
->  
->  	/* We have 2 CPU port. Check them */
-> -	for (port = 0; port < QCA8K_NUM_PORTS && cpu_port_index < QCA8K_NUM_CPU_PORTS; port++) {
-> +	for (port = 0; port < QCA8K_NUM_PORTS; port++) {
->  		/* Skip every other port */
->  		if (port != 0 && port != 6)
->  			continue;
-> -- 
-> 2.32.0
-> 
+1. Client driver suspend: Flush command.
+2. CMDQ driver suspend: There is no command to flush. If there are
+command, show error message and debug the client driver.
+
+The error handling flow:
+
+1. Client driver suspend: Does not flush command.
+2. CMDQ driver suspend: Flush command and callback to client driver.
+Client driver process these callback as error handling.
+
+The client driver may integrate multiple driver. In the suspend flow,
+it may need to stop these driver in a sequence such as.
+
+1. Stop driver 1
+2. Stop driver 2
+3. Stop driver 3 (cmdq)
+4. Stop driver 4
+5. Stop driver 5.
+
+In the normal flow, client driver could control the stop flow. In the
+error handling flow, it does not match the stop flow.
+
+Regards,
+Chun-Kuang.
+
+> +                       dev_warn(dev, "thread[%d] exist running task(s) i=
+n suspend\n", i);
+>                 }
+>         }
+>
+> -       if (task_running)
+> -               dev_warn(dev, "exist running task(s) in suspend\n");
+> -
+>         clk_bulk_unprepare(cmdq->gce_num, cmdq->clocks);
+>
+>         return 0;
+> --
+> 2.18.0
+>
