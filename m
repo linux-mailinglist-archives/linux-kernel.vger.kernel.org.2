@@ -2,107 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 390CA456F06
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 13:46:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6341456F15
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 13:47:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235350AbhKSMtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 07:49:04 -0500
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:44475 "EHLO
-        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235328AbhKSMtC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 07:49:02 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.west.internal (Postfix) with ESMTP id CCFDD2B017C0;
-        Fri, 19 Nov 2021 07:45:59 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Fri, 19 Nov 2021 07:46:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=TqzbqJgsp3679OQmdBXFlQSiQsI
-        NdU6mFESgQ8pHy3U=; b=P8yWYMJ4ldNfTJ1Uuo/qe4HtjRk30T/ijkHDqSk9qF0
-        S4l2QPD1WZzmBkRy953FXIfsuigdU5pCXxBz++mCwAt9AdGLwvfmDt+TSDJ6FWCA
-        Xg0HjeVwidxiXtJWf39w8XziCUJlTAqux33qyEakDhmnB/eUWo/3ZI5DhMSbszWg
-        OggJuPGN2zsSBABArK64S9g3DLsMkiO4/QvI4bAQyBwt6oqpmkN4Sk8JR0Mqfa/8
-        4Bq/BHLFUH37GNNoFPO0+bDj38IL5vQnUSiTOaxTpJ5dIL2+R5JYN+zYcV3/hsM8
-        HFnDM2XHL8dhTsPeUhj47/YPs6d3T/+bsQzSZnP92Aw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=TqzbqJ
-        gsp3679OQmdBXFlQSiQsINdU6mFESgQ8pHy3U=; b=LAZoalZlbqjrxnrZPiyVD+
-        AEr79KUmS1vQJq8Jfwx0nnP8G2wChf8PTMIZSTfZiVl1xCj3WbkCflWAsv12Fk31
-        /uXfcmICNDWlPlHGkUC0xZQbPiqADiM/Pl2v/4BnpRniVhGHzfzhoVeSuWFS4+rh
-        Qxjo5KT5HYte09m3n6vBmTAvnHzX4EPYetFb5QsrmNHKsXSftgorecoVMJQVjjYY
-        Gl11W3wUWj8/VYN5i3MAH+XfLv0tEPlkXDAVbK/Viq1s79dK+UiQQQemRNBnk1DE
-        ueeqDS6nxLZVSvMqJhmnMoUnl0U9l0LNKDNrkkYQJhrw4wRgbYqgsyk/1lmfzOJQ
-        ==
-X-ME-Sender: <xms:hpyXYeg0V9SL-cv7DKbqw_xfZD4TmbhN56HVHyWU2OXEgzrgR-YYXw>
-    <xme:hpyXYfASgACjIBuvl-OAl0yhayEjgjJtYiDkX5eD_SJtaSa2m9AaYfeZlK04sHomo
-    OTgY3EccsiFtw>
-X-ME-Received: <xmr:hpyXYWEILNQLDQXs_tQQfMNdtCAureGe4KzBPKxRP8X9Dl1sPa4LwU9ZZ3DumyHqZgVCYpS9IL_0wcw-j8Vfu971eOmGzL9W>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrfeekgdegvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
-    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
-    gtohhm
-X-ME-Proxy: <xmx:hpyXYXQjlgK3s6HWctahE0FxOKgc-4AdOdul6OJso96Pn2m4EdUbvg>
-    <xmx:hpyXYbwU-4C43CJN-pN9qzpf0HU8uRUfQfC11W9PI6Hk_OwfZrT05g>
-    <xmx:hpyXYV5YvyW7me1XhxAWDEW_ECJzSWj1UBMpNVp760HTGe-sm2G5rg>
-    <xmx:h5yXYQKIZWp-fAU1-jisda9eASqo99w6aF9niPuopxGIAR-OC1dFJ_w-GJk>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 19 Nov 2021 07:45:58 -0500 (EST)
-Date:   Fri, 19 Nov 2021 13:45:23 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Tadeusz Struk <tadeusz.struk@linaro.org>
-Cc:     stable@vger.kernel.org,
-        syzbot+662448179365dddc1880@syzkaller.appspotmail.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xieyongji@bytedance.com, Christoph Hellwig <hch@lst.de>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: general protection fault in bdev_read_page
-Message-ID: <YZecY2gAFjoNtxZO@kroah.com>
-References: <7e6c4c23-f071-f33b-7bd4-da11980d34c6@linaro.org>
+        id S234348AbhKSMua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 07:50:30 -0500
+Received: from mga09.intel.com ([134.134.136.24]:14412 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229457AbhKSMu3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 07:50:29 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="234238009"
+X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
+   d="scan'208";a="234238009"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 04:47:27 -0800
+X-IronPort-AV: E=Sophos;i="5.87,247,1631602800"; 
+   d="scan'208";a="507883791"
+Received: from sgconnee-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.21.83])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 04:47:15 -0800
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Alejandro Colomar <alx.manpages@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
+        Ajit Khaparde <ajit.khaparde@broadcom.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Borislav Petkov <bp@suse.de>,
+        Corey Minyard <cminyard@mvista.com>, Chris Mason <clm@fb.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        David Sterba <dsterba@suse.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "John S . Gruber" <JohnSGruber@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Kees Cook <keescook@chromium.org>,
+        Ketan Mukadam <ketan.mukadam@broadcom.com>,
+        Len Brown <lenb@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
+        intel-gfx@lists.freedesktop.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-btrfs@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH 00/17] Add memberof(), split some headers, and slightly
+ simplify code
+In-Reply-To: <20211119113644.1600-1-alx.manpages@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20211119113644.1600-1-alx.manpages@gmail.com>
+Date:   Fri, 19 Nov 2021 14:47:08 +0200
+Message-ID: <87mtm0jos3.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7e6c4c23-f071-f33b-7bd4-da11980d34c6@linaro.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 03:08:06PM -0800, Tadeusz Struk wrote:
-> Hi,
-> This has triggered in 5.10.77 yesterday [1], and I was able to
-> reproduce it on 5.10.80 using the C repro from android-54 [2].
-> What happens is that the function do_mpage_readpage() calls
-> bdev_read_page() [3] passing in bdev == NULL, and bdev_read_page()
-> crashes here [4]. This happens in 5.15 down to 5.10, but it is fixed
-> in 5.16-rc1. I bisected it to the first good commit, which is:
-> 
-> af3c570fb0df ("loop: Use blk_validate_block_size() to validate block size")
-> 
-> The root cause seems to be loss of precision in loop_configure(),
-> when it calls loop_validate_block_size() in [5]. The config->block_size
-> is an uint32 and the bsize param passed to loop_validate_block_size() is
-> unsigned short. The reproducer sets up a loop device with the block size
-> equal to 0x20000400, which is bigger than USHRT_MAX.
-> The loop_validate_block_size() returns 0, but uses the invalid size
-> to setup the device. The new helper changes the bsize param type to uint,
-> and the issue goes away.
-> 
-> To fix this for the older kernels can we please have the two commits:
-> 
-> 570b1cac4776 ("block: Add a helper to validate the block size")
-> af3c570fb0df ("loop: Use blk_validate_block_size() to validate block size")
-> 
-> applied to 5.15, 5.14, and 5.10.
-> The first one needs to be back ported, but the second applies cleanly.
-> I will follow up back ports for each version in few minutes.
+On Fri, 19 Nov 2021, Alejandro Colomar <alx.manpages@gmail.com> wrote:
+> Hi all,
+>
+> I simplified some xxxof() macros,
+> by adding a new macro memberof(),
+> which implements a common operation in many of them.
+>
+> I also splitted many of those macros into tiny headers,
+> since I noticed that touching those headers implied
+> recompiling almost the whole kernel.
+>
+> Hopefully after this patch there will be less
+> things to recompile after touching one of those.
+>
+> Having simpler headers means that now one can
+> include one of those without pulling too much stuff
+> that might break other stuff.
+>
+> I removed some unnecessary casts too.
+>
+> Every few commits in this series
+> and of course after the last commit
+> I rebuilt the kernel and run for a while with it without any problems.
+>
+> Please note that I have written very few kernel code
+> and for example some files wouldn't let me include some of these files,
+> so I didn't change those.
+>
+> What I mean is that,
+> even though this is super obvious and shouldn't break stuff,
+> and I'm not new to C,
+> I'm quite new to the kernel,
+> and ask that reviewers take deep look, please.
+>
+>
+> In the first and second commits
+> I changed a lot of stuff in many parts,
+> and that's why I CCd so many people (also in this cover letter).
+> However, to avoid spamming,
+> and since it would be a nightmare to
+> find all the relevant people affected in so many different areas,
+> I only CCd in 01, 02 and in the cover letter.
+> If anyone is interested in reading the full patch set,
+> I sent it to the LKML.
 
-All now queued up, thanks.
+I think with the patch split you have this would be a nightmare to get
+merged. Please consider refactoring the headers first, and once those
+are reviewed and merged, you can proceed with using them elsewhere. For
+example, we'd want the drm/i915 changes in patches separate from changes
+to other drivers or the core headers.
 
-greg k-h
+BR,
+Jani.
+
+
+
+>
+>
+> Thanks,
+> Alex
+>
+>
+> Alejandro Colomar (17):
+>   linux/container_of.h: Add memberof(T, m)
+>   Use memberof(T, m) instead of explicit NULL dereference
+>   Replace some uses of memberof() by its wrappers
+>   linux/memberof.h: Move memberof() to separate header
+>   linux/typeof_member.h: Move typeof_member() to a separate header
+>   Simplify sizeof(typeof_member()) to sizeof_field()
+>   linux/NULL.h: Move NULL to a separate header
+>   linux/offsetof.h: Move offsetof(T, m) to a separate header
+>   linux/offsetof.h: Implement offsetof() in terms of memberof()
+>   linux/container_of.h: Implement container_of_safe() in terms of
+>     container_of()
+>   linux/container_of.h: Cosmetic
+>   linux/container_of.h: Remove unnecessary cast to (void *)
+>   linux/sizeof_field.h: Move sizeof_field(T, m) to a separate header
+>   include/linux/: Include a smaller header if just for NULL
+>   linux/offsetofend.h: Move offsetofend(T, m) to a separate header
+>   linux/array_size.h: Move ARRAY_SIZE(arr) to a separate header
+>   include/: Include <linux/array_size.h> for ARRAY_SIZE()
+>
+>  arch/x86/include/asm/bootparam_utils.h        |  3 +-
+>  arch/x86/kernel/signal_compat.c               |  5 ++--
+>  drivers/gpu/drm/i915/i915_sw_fence.c          |  1 +
+>  drivers/gpu/drm/i915/i915_utils.h             |  5 ++--
+>  drivers/gpu/drm/i915/intel_runtime_pm.h       |  3 +-
+>  drivers/net/ethernet/emulex/benet/be.h        | 10 +++----
+>  drivers/net/ethernet/i825xx/ether1.c          |  7 +++--
+>  drivers/platform/x86/wmi.c                    |  3 +-
+>  drivers/scsi/be2iscsi/be.h                    | 12 ++++----
+>  drivers/scsi/be2iscsi/be_cmds.h               |  5 +++-
+>  fs/btrfs/ctree.h                              |  5 ++--
+>  fs/proc/inode.c                               |  1 +
+>  include/acpi/actypes.h                        |  4 ++-
+>  include/crypto/internal/blake2b.h             |  1 +
+>  include/crypto/internal/blake2s.h             |  1 +
+>  include/crypto/internal/chacha.h              |  1 +
+>  include/drm/drm_mipi_dbi.h                    |  1 +
+>  include/drm/drm_mode_object.h                 |  1 +
+>  include/kunit/test.h                          |  1 +
+>  include/linux/NULL.h                          | 10 +++++++
+>  include/linux/arm_ffa.h                       |  1 +
+>  include/linux/array_size.h                    | 15 ++++++++++
+>  include/linux/blk_types.h                     |  1 +
+>  include/linux/can/core.h                      |  1 +
+>  include/linux/clk-provider.h                  |  1 +
+>  include/linux/container_of.h                  | 28 ++++++++++-------
+>  include/linux/counter.h                       |  1 +
+>  include/linux/crash_core.h                    |  1 +
+>  include/linux/efi.h                           |  1 +
+>  include/linux/extable.h                       |  2 +-
+>  include/linux/f2fs_fs.h                       |  1 +
+>  include/linux/filter.h                        |  3 ++
+>  include/linux/fs.h                            |  1 +
+>  include/linux/genl_magic_func.h               |  1 +
+>  include/linux/hashtable.h                     |  1 +
+>  include/linux/ieee80211.h                     |  1 +
+>  include/linux/kbuild.h                        |  3 ++
+>  include/linux/kernel.h                        |  7 +----
+>  include/linux/kfifo.h                         |  1 +
+>  include/linux/kvm_host.h                      |  3 ++
+>  include/linux/libata.h                        |  1 +
+>  include/linux/llist.h                         |  1 +
+>  include/linux/memberof.h                      | 11 +++++++
+>  include/linux/mlx5/device.h                   |  1 +
+>  include/linux/mlx5/driver.h                   |  1 +
+>  include/linux/mm_types.h                      |  1 +
+>  include/linux/moduleparam.h                   |  3 ++
+>  include/linux/mtd/rawnand.h                   |  1 +
+>  include/linux/netdevice.h                     |  1 +
+>  include/linux/netfilter.h                     |  1 +
+>  include/linux/nvme-fc.h                       |  2 ++
+>  include/linux/offsetof.h                      | 17 +++++++++++
+>  include/linux/offsetofend.h                   | 19 ++++++++++++
+>  include/linux/pagemap.h                       |  1 +
+>  include/linux/phy.h                           |  1 +
+>  include/linux/phy_led_triggers.h              |  1 +
+>  include/linux/pinctrl/machine.h               |  1 +
+>  include/linux/property.h                      |  1 +
+>  include/linux/rcupdate.h                      |  1 +
+>  include/linux/rcupdate_wait.h                 |  1 +
+>  include/linux/regmap.h                        |  1 +
+>  include/linux/sched/task.h                    |  1 +
+>  include/linux/sizeof_field.h                  | 14 +++++++++
+>  include/linux/skb_array.h                     |  1 +
+>  include/linux/skbuff.h                        |  1 +
+>  include/linux/skmsg.h                         |  3 ++
+>  include/linux/slab.h                          |  2 ++
+>  include/linux/spinlock_types.h                |  1 +
+>  include/linux/stddef.h                        | 30 +++----------------
+>  include/linux/string.h                        |  5 +++-
+>  include/linux/surface_aggregator/controller.h |  1 +
+>  include/linux/surface_aggregator/serial_hub.h |  1 +
+>  include/linux/swap.h                          |  1 +
+>  include/linux/ti-emif-sram.h                  |  1 +
+>  include/linux/typeof_member.h                 | 11 +++++++
+>  include/linux/ucs2_string.h                   |  2 +-
+>  include/linux/vdpa.h                          |  1 +
+>  include/linux/virtio_config.h                 | 17 ++++++-----
+>  include/linux/wireless.h                      |  2 ++
+>  include/net/bond_3ad.h                        |  1 +
+>  include/net/dsa.h                             |  1 +
+>  include/net/ip_vs.h                           |  1 +
+>  include/net/netfilter/nf_conntrack_tuple.h    |  1 +
+>  include/net/netfilter/nf_tables.h             |  1 +
+>  include/net/netlink.h                         |  1 +
+>  include/rdma/uverbs_ioctl.h                   |  1 +
+>  include/rdma/uverbs_named_ioctl.h             |  1 +
+>  include/scsi/scsi_host.h                      |  1 +
+>  include/sound/soc-dapm.h                      |  1 +
+>  include/sound/soc.h                           |  1 +
+>  include/trace/events/wbt.h                    |  1 +
+>  include/uapi/linux/netfilter/xt_sctp.h        |  1 +
+>  include/xen/hvm.h                             |  1 +
+>  kernel/kallsyms.c                             |  3 +-
+>  94 files changed, 255 insertions(+), 79 deletions(-)
+>  create mode 100644 include/linux/NULL.h
+>  create mode 100644 include/linux/array_size.h
+>  create mode 100644 include/linux/memberof.h
+>  create mode 100644 include/linux/offsetof.h
+>  create mode 100644 include/linux/offsetofend.h
+>  create mode 100644 include/linux/sizeof_field.h
+>  create mode 100644 include/linux/typeof_member.h
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
