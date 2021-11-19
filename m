@@ -2,117 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD58B456C1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 10:07:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EBC4456C1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 10:07:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232031AbhKSJJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 04:09:54 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:14956 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbhKSJJx (ORCPT
+        id S232589AbhKSJKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 04:10:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230526AbhKSJKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 04:09:53 -0500
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HwW2004LlzZdB3;
-        Fri, 19 Nov 2021 17:04:24 +0800 (CST)
-Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 19 Nov 2021 17:06:34 +0800
-Received: from [10.67.102.185] (10.67.102.185) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 19 Nov 2021 17:06:34 +0800
-Subject: Re: [PATCH v11 2/2] drivers/perf: hisi: Add driver for HiSilicon PCIe
- PMU
-To:     =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>
-CC:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        "Bjorn Helgaas" <bhelgaas@google.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, <zhangshaokun@hisilicon.com>
-References: <20211029093632.4350-1-liuqi115@huawei.com>
- <20211029093632.4350-3-liuqi115@huawei.com>
- <CAC52Y8Zc5oRRBDiZq+zQNGw2CbURN2SRsfW9ek_gw96qDHB1zw@mail.gmail.com>
- <acb5a232-dd09-9292-5b24-25e8e29e98e7@huawei.com>
- <YZdYcOYxta3FQFR8@rocinante>
-From:   "liuqi (BA)" <liuqi115@huawei.com>
-Message-ID: <65023305-f05b-cfc3-16bf-a27e2b6da87f@huawei.com>
-Date:   Fri, 19 Nov 2021 17:06:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Fri, 19 Nov 2021 04:10:19 -0500
+Received: from forward501j.mail.yandex.net (forward501j.mail.yandex.net [IPv6:2a02:6b8:0:801:2::111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B91F5C061574;
+        Fri, 19 Nov 2021 01:07:17 -0800 (PST)
+Received: from iva1-9aa5fe580da0.qloud-c.yandex.net (iva1-9aa5fe580da0.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:7683:0:640:9aa5:fe58])
+        by forward501j.mail.yandex.net (Yandex) with ESMTP id C769F6237F2;
+        Fri, 19 Nov 2021 12:07:12 +0300 (MSK)
+Received: from iva3-dd2bb2ff2b5f.qloud-c.yandex.net (iva3-dd2bb2ff2b5f.qloud-c.yandex.net [2a02:6b8:c0c:7611:0:640:dd2b:b2ff])
+        by iva1-9aa5fe580da0.qloud-c.yandex.net (mxback/Yandex) with ESMTP id PrJgnaMmVo-7CDOOQ8H;
+        Fri, 19 Nov 2021 12:07:12 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1637312832;
+        bh=XxEZV2qVotbKLWdn70cg99o5JL/j2ooQ5W7xIhnZArE=;
+        h=In-Reply-To:Subject:To:From:References:Date:Message-ID:Cc;
+        b=lRc09FrUGwzLPA3xUAhAm1W9VxaLH3TZW8xkFxIEmpG2geL+XXc/JLY7+n1sBTSDb
+         paKe6U7mo0UVaF1jbpaIiiqkvwl2EcFUe7vKzZqZvpXLGqW+G/4J5zhgQIXGx5vXMQ
+         MdkNQOuOPevvQQSC29fO6OsQ96zBeB1X0IcHFgKk=
+Authentication-Results: iva1-9aa5fe580da0.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
+Received: by iva3-dd2bb2ff2b5f.qloud-c.yandex.net (smtp/Yandex) with ESMTPS id HvVo4PkPsF-7BxWXMaB;
+        Fri, 19 Nov 2021 12:07:11 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+X-Yandex-Fwd: 2
+Date:   Fri, 19 Nov 2021 12:07:10 +0300
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     David Abdurachmanov <david.abdurachmanov@sifive.com>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND] rtc: da9063: add as wakeup source
+Message-ID: <20211119120710.13eb1173@redslave.neermore.group>
+In-Reply-To: <YZYd7kNanfxY3tJq@piout.net>
+References: <20211118084008.30327-1-nikita.shubin@maquefel.me>
+        <YZYd7kNanfxY3tJq@piout.net>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <YZdYcOYxta3FQFR8@rocinante>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.102.185]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Alexandre,
 
+Sorry for the rush - I should have to think more before sending this
+patch ...
 
-On 2021/11/19 15:55, Krzysztof Wilczyński wrote:
-> Hi Qi,
-> 
-> Thank you for looking into things I've mentioned!
-> 
-> [...]
->>> Would the above "bdf" be the PCI addressing schema?  If so, then we could
->>> capitalise the acronym to keep it consistent with how it's often referred
->>> to in the PCI world.
->>>
-> [...]
->> got it, will change it to Bdf to keep the consistent, thanks.
-> 
-> Just to make sure - the "Bus, Device, Function" in the world of PCI usually
-> uses the acronym of "BDF", all uppercase letters.
-> 
+On Thu, 18 Nov 2021 10:33:34 +0100
+Alexandre Belloni <alexandre.belloni@bootlin.com> wrote:
 
-got it, thanks.
->>> [...]
->>>> +static int __init hisi_pcie_module_init(void)
->>>> +{
->>>> +     int ret;
->>>> +
->>>> +     ret = cpuhp_setup_state_multi(CPUHP_AP_PERF_ARM_HISI_PCIE_PMU_ONLINE,
->>>> +                                   "AP_PERF_ARM_HISI_PCIE_PMU_ONLINE",
->>>> +                                   hisi_pcie_pmu_online_cpu,
->>>> +                                   hisi_pcie_pmu_offline_cpu);
->>>> +     if (ret) {
->>>> +             pr_err("Failed to setup PCIe PMU hotplug, ret = %d.\n", ret);
->>>> +             return ret;
->>>> +     }
->>>
->>> The above error message could be made to be a little more aligned in terms
->>> of format with the other messages, thus it would be as follows:
->>>
->>>     pr_err("Failed to setup PCIe PMU hotplug: %d.\n", ret);
->>>
->>> Interestingly, there would be then no need to add the final dot (period) at
->>> the end here, and that would be true everywhere else.
->>>
->>
->> thanks for your reminder , I'll fix that printout message to keep align.
+> Hello,
 > 
-> Thank you!
+> On 18/11/2021 11:40:08+0300, Nikita Shubin wrote:
+> > in case if threaded irq registered successfully - add da9063
+> > as a wakeup source if "wakeup-source" node present in device tree,
+> > set as wakeup capable otherwise.
+> > 
+> > Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+> > ---
+> >  drivers/rtc/rtc-da9063.c | 10 +++++++++-
+> >  1 file changed, 9 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/rtc/rtc-da9063.c b/drivers/rtc/rtc-da9063.c
+> > index d4b72a9fa2ba..1aceb5ba6992 100644
+> > --- a/drivers/rtc/rtc-da9063.c
+> > +++ b/drivers/rtc/rtc-da9063.c
+> > @@ -490,7 +490,15 @@ static int da9063_rtc_probe(struct
+> > platform_device *pdev) da9063_alarm_event,
+> >  					IRQF_TRIGGER_LOW |
+> > IRQF_ONESHOT, "ALARM", rtc);
+> > -	if (ret)
+> > +	if (!ret) {
+> > +		if (device_property_present(&pdev->dev,
+> > "wakeup-source")) {
+> > +			device_init_wakeup(&pdev->dev, true);  
 > 
-> Don't forget to drop the trailing dot after the error code (it makes it
-> easier to read or even parse in a script, etc.).
+> If wakeup-source is present, then this should be done regardless of
+> the registration of the interrupt handler. Note that wakeup-source and
+> interrupt are supposed to be mutually exclusive.
 > 
 
-will drop all the final dot in next version, thanks : )
+We still able to wakeup either ALARM IRQ is present or not.
 
-Thanks,
-Qi
+Actually the only thing is needed in this particular case is the ability
+to set "wakealarm" via sysfs - so we can wakeup from
+POWER-DOWN/DELIVERY/RTC modes, namely shutdown, regardless of CONFIG_PM.
 
-> Again, thank you so much for working on this driver!  An amazing work!
+Setting dev->power.can_wakeup to true is enough for that.
+
+On the other hand device_init_wakeup also sets can_wakeup.
+
+May be it's enough to use device_init_wakeup in case if ALARM IRQ is
+present or "wakeup-source" is set ?
+
+I see some construction in drivers/rtc like :
+
+```
+rtc/rtc-pcf2127.c:673:  if (alarm_irq > 0 ||
+device_property_read_bool(dev, "wakeup-source")) {
+rtc/rtc-ab-eoz9.c:552:  if (client->irq > 0 ||
+device_property_read_bool(dev, "wakeup-source")) {
+```
+
+
+
+
+> > +			dev_info(&pdev->dev, "registered as wakeup
+> > source.\n");  
 > 
-> 	Krzysztof
-> .
+> This is too verbose please avoid adding new strings
 > 
+> > +		} else {
+> > +			device_set_wakeup_capable(&pdev->dev,
+> > true);  
+> 
+> I think this is misusing the wakeup-source property for configuration
+> that should be left to userspace.
+> 
+> > +			dev_info(&pdev->dev, "marked as wakeup
+> > capable.\n");  
+> 
+> Ditto
+> 
+> > +		}
+> > +	} else  
+> 
+> unbalanced brackets
+> 
+> 
+> >  		dev_err(&pdev->dev, "Failed to request ALARM IRQ
+> > %d: %d\n", irq_alarm, ret);
+> >  
+> > -- 
+> > 2.31.1
+> >   
+> 
+
