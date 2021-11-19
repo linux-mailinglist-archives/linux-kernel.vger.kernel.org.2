@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27AC0456ABB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 08:11:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7DFA456ABD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Nov 2021 08:11:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233643AbhKSHOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 02:14:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44440 "EHLO
+        id S233678AbhKSHOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 02:14:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233590AbhKSHOB (ORCPT
+        with ESMTP id S233590AbhKSHOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 02:14:01 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02AABC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 23:11:00 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id 206so2835132pgb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 23:10:59 -0800 (PST)
+        Fri, 19 Nov 2021 02:14:03 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC10C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 23:11:01 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id gt5so7257435pjb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Nov 2021 23:11:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
         h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
          :content-transfer-encoding;
-        bh=yc23194KjB+LQokKRPaiWSmxOLe3qSzA7p0t2/5nyw8=;
-        b=28w1Ed8HMNqLh14pOZq36vMrE4impBd2S5s88c1708Rt3qNLFxA9LH+1dT3fZx2Ejv
-         QHbynFpxbZ6S3biCryrgvk8QAodoWlh/X/htAO79oUbjsIw4OP/REP2p7eDOs2CN+r+X
-         URgUc4W9nSlMmZl4lJmXBdJaxKyjl2a2CRbMayUYurvieU0ZqG4S3MZ9sqet8kUQBC7I
-         QTMUHEI0RC91MFYUNhOp2aPOYFA7a3W7Akhp4B5f5Iu/Z+xoJvi1y1g4Y45api8IohDX
-         9DHmJLUDmnacRGuAT3VtEokGN95d0ddzK3dq0k/xVwUV+pS1nxNGXsnYvQmtx8w/vS95
-         e/Hg==
+        bh=p1eOarTU7vFn4QPFb7iBA1/Wh2WEiqkaaZtB0EXNIbg=;
+        b=n0557Xpy2MZDEwOCBv48cUPpw/kWOtrMnxUBlIoJFQ8vAvvkFzUUadY805EUsLA/Gu
+         Dl2lz3irhjVgZhaiTM12sAR/I84EFzzV3hJYWKZ65YuRk4zVt01fTdgTahAPBT4x53RO
+         Ql+GWy/Guc2s5eFVNl37oIxV6lWiikDmcVNj8hqWiqRTX7CraAalS+xINAE/N2Lqjwn9
+         VejiIdeCb4X3vVwWJ7RW1jyoUjYHKKW/YN+WF/n+/7AbqD7xyFexwuS+OfskzCDTHoYG
+         7kUxs8obqM5s50Y4g8Hjuy1cHdA8GnGcDNe0D+KKZQwFoDRp5c1FQa+sDmqwJknlovIO
+         S8XQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
          :mime-version:content-transfer-encoding;
-        bh=yc23194KjB+LQokKRPaiWSmxOLe3qSzA7p0t2/5nyw8=;
-        b=fzWQ0PcZ9EKySF6uuDVZMksj34s5XgipfC5qiyS0Oe9vC4Xtfy2u/6zasHr7yWM1qp
-         an14Y2Pb88SKI1LwTNmyVwFv8k7EyNORzjz2kaxW/ciLr3Iys/RWU1MDRPW/T+27/Hpa
-         cXbhlRho82c/I7mpu9Yzgu33IElX1YPjDKZDW7eln5NCpRwWbQgzcnPRt0FPE+WyRfid
-         7pQv6qCXeRLen82qR+ibCkiShtmsPossEf96i4hpmkkE07SQhNmgwxX7OerK2YS4hSBM
-         4O7bup2shNcuQySdz3y+Qukfxp0H7mWiYOfIgmCBSjDj1JW7ogV0RfbDWXCkCY3RYYM3
-         sK/w==
-X-Gm-Message-State: AOAM531aEsGwOJ+cHRMpQAdUagcdvN596FtWUsotHlQLp0AYrfN8a8z5
-        9FfKNcJRTe1DFBvTaj+tOyoObA==
-X-Google-Smtp-Source: ABdhPJy6ryy8jv007aCo8Sr8vrylP8cE+uuZGWUeT1h8S8piRNU3wWOC6MG3OlpeFbCIhzBm10gDxw==
-X-Received: by 2002:a63:7d04:: with SMTP id y4mr15781419pgc.131.1637305859339;
-        Thu, 18 Nov 2021 23:10:59 -0800 (PST)
+        bh=p1eOarTU7vFn4QPFb7iBA1/Wh2WEiqkaaZtB0EXNIbg=;
+        b=GgfxUAAbx7fS3huuD5aIox4FYm/5Js5dtNoc6PkuBJjCiRkshn+iuKFOGCKeeTi2oD
+         TE0ftN23g5V1q3DN6rYme6A0Thm30x/HAXLFxz92SpUvHWQYyrcVhwfR2neUDzpkhmzL
+         KKt9RPyy8LrrVBWPlLR15vCeOQ6MCMRaCEEoc5vP0e/knbmdgU4wg32obUYsDHuX8dob
+         jzmrULacdN6hxGBUEKSGf0TPAj16wkPzY0MnPE+h8NLD7nYBGbBCafZi8Wsy7GNoFmTg
+         mJFnN8ckNllPguvdg9N9HInffCXxlgnFVTQ2nEz8CjnG2Qogx7Ka1oVEci1Jy4OdQLCz
+         Fl5w==
+X-Gm-Message-State: AOAM533LrzKnVpg6M14PR2T76dLv2SKfHga3w+xKfTP05o9TZDrz5eo6
+        FZVXto9vEkDegQ4WKxvDow/OpA==
+X-Google-Smtp-Source: ABdhPJwzp5ErLpKo7gRGQ3ynTLhW//0js/26Li6JKEiANpMVB02o+STzwmjrCFk975ykqRnfXr7N8A==
+X-Received: by 2002:a17:903:4043:b0:142:4f21:6976 with SMTP id n3-20020a170903404300b001424f216976mr74448503pla.62.1637305861199;
+        Thu, 18 Nov 2021 23:11:01 -0800 (PST)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id d2sm1725774pfu.203.2021.11.18.23.10.58
+        by smtp.gmail.com with ESMTPSA id u32sm1754055pfg.220.2021.11.18.23.11.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 23:10:58 -0800 (PST)
-Date:   Thu, 18 Nov 2021 23:10:58 -0800 (PST)
-X-Google-Original-Date: Thu, 18 Nov 2021 22:17:19 PST (-0800)
-Subject:     Re: [PATCH v2] RISC-V: Enable KVM in RV64 and RV32 defconfigs as a module
-In-Reply-To: <CAOnJCULQJj0ZyyF+Q1cogXsC9GDQKLTms8vHvNNpj4aHntmx6w@mail.gmail.com>
-CC:     anup.patel@wdc.com, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, pbonzini@redhat.com, anup@brainfault.org,
-        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+        Thu, 18 Nov 2021 23:11:00 -0800 (PST)
+Date:   Thu, 18 Nov 2021 23:11:00 -0800 (PST)
+X-Google-Original-Date: Thu, 18 Nov 2021 23:10:54 PST (-0800)
+Subject:     Re: [PATCH] riscv: fix building external modules
+In-Reply-To: <mvma6imr1ww.fsf@suse.de>
+CC:     linux-riscv@lists.infradead.org, abdulras@google.com,
+        linux-kernel@vger.kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, morbo@google.com,
+        clang-built-linux@googlegroups.com
 From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     atishp@atishpatra.org
-Message-ID: <mhng-d3ecff31-cbc9-414f-b235-faaac49224f9@palmer-ri-x1c9>
+To:     schwab@suse.de
+Message-ID: <mhng-797195d8-b49e-418b-af9a-013d36194662@palmer-ri-x1c9>
 Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
@@ -66,61 +66,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Nov 2021 23:53:59 PST (-0800), atishp@atishpatra.org wrote:
-> On Wed, Nov 17, 2021 at 12:47 AM Anup Patel <anup.patel@wdc.com> wrote:
->>
->> Let's enable KVM RISC-V in RV64 and RV32 defconfigs as module
->> so that it always built along with the default kernel image.
->>
->> Signed-off-by: Anup Patel <anup.patel@wdc.com>
->> ---
->> Changes since v1:
->>  - Rebased on Linux-5.16-rc1
->>  - Removed unwanted stuff from defconfig PATCH1
->>  - Dropped PATCH2 and PATCH3 since these are already merged via KVM tree
->> ---
->>  arch/riscv/configs/defconfig      | 2 ++
->>  arch/riscv/configs/rv32_defconfig | 2 ++
->>  2 files changed, 4 insertions(+)
->>
->> diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
->> index c252fd5706d2..ef473e2f503b 100644
->> --- a/arch/riscv/configs/defconfig
->> +++ b/arch/riscv/configs/defconfig
->> @@ -19,6 +19,8 @@ CONFIG_SOC_VIRT=y
->>  CONFIG_SOC_MICROCHIP_POLARFIRE=y
->>  CONFIG_SMP=y
->>  CONFIG_HOTPLUG_CPU=y
->> +CONFIG_VIRTUALIZATION=y
->> +CONFIG_KVM=m
->>  CONFIG_JUMP_LABEL=y
->>  CONFIG_MODULES=y
->>  CONFIG_MODULE_UNLOAD=y
->> diff --git a/arch/riscv/configs/rv32_defconfig b/arch/riscv/configs/rv32_defconfig
->> index 434ef5b64599..6e9f12ff968a 100644
->> --- a/arch/riscv/configs/rv32_defconfig
->> +++ b/arch/riscv/configs/rv32_defconfig
->> @@ -19,6 +19,8 @@ CONFIG_SOC_VIRT=y
->>  CONFIG_ARCH_RV32I=y
->>  CONFIG_SMP=y
->>  CONFIG_HOTPLUG_CPU=y
->> +CONFIG_VIRTUALIZATION=y
->> +CONFIG_KVM=m
->>  CONFIG_JUMP_LABEL=y
->>  CONFIG_MODULES=y
->>  CONFIG_MODULE_UNLOAD=y
->> --
->> 2.25.1
->>
+On Tue, 02 Nov 2021 08:51:43 PDT (-0700), schwab@suse.de wrote:
+> When building external modules, vdso_prepare should not be run.  If the
+> kernel sources are read-only, it will fail.
 >
-> Reviewed-by: Atish Patra <atishp@rivosinc.com>
+> Fixes: fde9c59aebaf ("riscv: explicitly use symbol offsets for VDSO")
+> Signed-off-by: Andreas Schwab <schwab@suse.de>
+> ---
+>  arch/riscv/Makefile | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+> index 0eb4568fbd29..41f3a75fe2ec 100644
+> --- a/arch/riscv/Makefile
+> +++ b/arch/riscv/Makefile
+> @@ -108,11 +108,13 @@ PHONY += vdso_install
+>  vdso_install:
+>  	$(Q)$(MAKE) $(build)=arch/riscv/kernel/vdso $@
+>
+> +ifeq ($(KBUILD_EXTMOD),)
+>  ifeq ($(CONFIG_MMU),y)
+>  prepare: vdso_prepare
+>  vdso_prepare: prepare0
+>  	$(Q)$(MAKE) $(build)=arch/riscv/kernel/vdso include/generated/vdso-offsets.h
+>  endif
+> +endif
+>
+>  ifneq ($(CONFIG_XIP_KERNEL),y)
+>  ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_SOC_CANAAN),yy)
 
-I was actually just about to send a defconfig cleanup patch set.  My 
-tests are all still a bit broken, so I'm going to hold off on sending 
-the defconfig cleanups until I can get them back together.  This is so 
-simple that anything it could break would already be broken, so I'm just 
-going to take it now.
-
-This is on fixes.
-
-Thanks!
+Thanks, this is on fixes.
