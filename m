@@ -2,85 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D6E457CB9
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 10:48:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A3B5457CC4
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 10:51:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237219AbhKTJue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 04:50:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34314 "EHLO
+        id S237239AbhKTJyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 04:54:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237208AbhKTJud (ORCPT
+        with ESMTP id S237208AbhKTJyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 04:50:33 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CAB3C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 01:47:30 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id t5so53594471edd.0
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 01:47:30 -0800 (PST)
+        Sat, 20 Nov 2021 04:54:46 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AADEC061574;
+        Sat, 20 Nov 2021 01:51:42 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id b1so54781826lfs.13;
+        Sat, 20 Nov 2021 01:51:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:organization:in-reply-to
          :content-transfer-encoding;
-        bh=FJS4/5T71szSxuyB4zC+w3VW/dKU2m10Yv1EUUU33j4=;
-        b=Sj/uV/PbH3UXsSjrZ5THeUfhq3AHObC8lbyrHiD+LqIgMhHYTpbLB9Nm1tx0or9udd
-         4KcOrvWFgFTxoZF/YpGDRkDrSmfiHUHPsotpvwI5p2WDm3GThR+M3sTiwc0rX+aOecRV
-         bxAODfLCErTDxMXisvUCP5aGFswezv1p0iHZOyIpfkf/hjWCfUOAlOqt5nkE7kf8mjhu
-         u32jHnd1C8JnmxoEUGvLX5DghRbTgfAYFJn+T1utUXmRUg7IhMLRoIjKKhGMXEBXi+Rf
-         /7T0VDr2ScJFV0NA8vROf3+/k5M6UB/vmUbAnPUGbdibClMaiKS3e0/0NGLHziOyFaWQ
-         jnIA==
+        bh=KurvDeK1OCCTbWY8LAh9vhNWC4pm8h+CrIfTiM1/sFQ=;
+        b=UlJc3W8bLVIjECrs0I8CRg1Jcr/3OOXlyFaJGE+jBdeQacZ/SSFYvOYQlcdW0xn6a2
+         hxRXOfINNjskmWKxAE42dO0uxG9LEuDiTQZm7ZDYNj/FJ+qr0VOUUhfa7x5AICRG9NWH
+         zLEPGD/KikArkqBlSv24L3g59WVdkPtz28guLgilN7Ins8pvhhQqnkZtuovPPEvBjNKM
+         DybA/UioMNshpxsgyeBaW+2Z+KRJC5QDHBERSGrNqexN02FsLTCZAZK/omlXdhcEU+CI
+         RqM6UylXhP4Ms831WeK5dDqsm6bHtCUnY82z3ZMGkVQu8RC/ZS8VWZmnER1la+/OaveW
+         THog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=FJS4/5T71szSxuyB4zC+w3VW/dKU2m10Yv1EUUU33j4=;
-        b=vC92XtB8UqBR72T6EIKFp/zww3l569cj69aSaVSsBqY7Slu/P1QMAgtOvl7fWwb7OB
-         6Ryci8+KWo1mIE+51Rxdhke3e+0Dej8SmcHR3/YGzbmZBegzv7YqNC4DbOJCAfKa0XHJ
-         xf/cll74kjp40BVZmwu9oZfOGJYG4ZiXI6pG9+Q0bkjwJLEytLgwTlsdynKMYIKk+gLk
-         QHiweTjE3PE7uztzccgYTB4JAa3j3IC/NqsX1iFYEkHW02gCapfBy7Q1Pg61NByh5ku2
-         pYNt15HVJbWa+ttYSJGtyWhCaNlTyU/btY5FmdQl5ffvUD7XTN0QtFpMbCseFVxzuaG2
-         k/aw==
-X-Gm-Message-State: AOAM530Sk7B4J/qPjXX8wBEyGvkUxLmJ0Kmes4IyR8tZyU/yn1AOyqkp
-        TDXaNtJ3FD7H8U+xxaT1H4eMhWOa4jZrQaQ26SA=
-X-Google-Smtp-Source: ABdhPJyF2FBXRFkyCRIJlRcGugyqKWJWygpNqrlYm44NCkYsMNXgLM+Uj0Y21olO9eXYHUUnanm1jV73fdFXmnxWlE4=
-X-Received: by 2002:a17:906:a1da:: with SMTP id bx26mr17818561ejb.558.1637401649249;
- Sat, 20 Nov 2021 01:47:29 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=KurvDeK1OCCTbWY8LAh9vhNWC4pm8h+CrIfTiM1/sFQ=;
+        b=GZWhBa+eJ4D7943DowMjaIDd4i2XdnxNeA29pGb4G/fvczFJHQki8LGxDNxWAy60ig
+         3lUHy9HhGkviu9y1mCqfQjsZ8P2Ne61u0+nr+A/qI4j2HW8c/ieMXTUiPLBqWjSuDnqY
+         fB0K2ADKTaNhfgnC4Z9vZzRdrnWetMs5POxVVLIzYSdQT8BavhCeFZFRSPZmLTKp4kio
+         P8/ytrrXvTKDLW/raE5RoAG9QBDxJEIFVUpj2sHthK+p3JzTbXAbr7RQU7SCf4S92nmD
+         7O4a5o/JzxvmgOOJF5ar6vkMXI+3f30UIoYid7ZnzO/EpTswPOCAycOnDS6aXBO+PA9j
+         m2ag==
+X-Gm-Message-State: AOAM530Vfyxh8xzlp6M71yJrvwffxQtsM7AWCv0gQNbvxnGkxRdXBHle
+        ogD/XJF4e6UGaC7ogK57Axw=
+X-Google-Smtp-Source: ABdhPJx/6t6eNVFJY+Z1BLiHLUtI7q+X4uBmxvgGkomS92Z+IWNnzF60Jv5zfJkSuaU5fjmqW7OEkA==
+X-Received: by 2002:a05:6512:398b:: with SMTP id j11mr38760989lfu.170.1637401900940;
+        Sat, 20 Nov 2021 01:51:40 -0800 (PST)
+Received: from [192.168.1.100] ([178.176.76.156])
+        by smtp.gmail.com with ESMTPSA id s17sm312122lfe.10.2021.11.20.01.51.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Nov 2021 01:51:40 -0800 (PST)
+Message-ID: <361abc20-e01e-3c3a-3217-2e7ed6cb3f76@gmail.com>
+Date:   Sat, 20 Nov 2021 12:51:24 +0300
 MIME-Version: 1.0
-Received: by 2002:ab4:a1c1:0:0:0:0:0 with HTTP; Sat, 20 Nov 2021 01:47:28
- -0800 (PST)
-Reply-To: mussaomra2017@gmail.com
-From:   omra musa <omramusa999@gmail.com>
-Date:   Sat, 20 Nov 2021 09:47:28 +0000
-Message-ID: <CAJUONWvuOQyG55TkQjHDX6CWPVS=qK7wdh0E3_2tF23iaG9e2Q@mail.gmail.com>
-Subject: I NEED YOUR URGENT RESPOND.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH -next 2/2] sata_fsl: fix warning in remove_proc_entry when
+ rmmod sata_fsl
+Content-Language: en-US
+To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Baokun Li <libaokun1@huawei.com>, axboe@kernel.dk,
+        tj@kernel.org, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     yebin10@huawei.com, yukuai3@huawei.com,
+        Hulk Robot <hulkci@huawei.com>
+References: <20211119041128.2436889-1-libaokun1@huawei.com>
+ <20211119041128.2436889-3-libaokun1@huawei.com>
+ <283712c0-bab7-de13-fc27-6ae2e6f9532f@gmail.com>
+ <fcf2d384-ee03-298c-c1ac-5a39c0d85784@opensource.wdc.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+In-Reply-To: <fcf2d384-ee03-298c-c1ac-5a39c0d85784@opensource.wdc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good Day,
+On 20.11.2021 9:08, Damien Le Moal wrote:
+> On 11/20/21 00:43, Sergei Shtylyov wrote:
+>>> diff --git a/drivers/ata/sata_fsl.c b/drivers/ata/sata_fsl.c
+>>> index 30759fd1c3a2..011daac4a14e 100644
+>>> --- a/drivers/ata/sata_fsl.c
+>>> +++ b/drivers/ata/sata_fsl.c
+>>> @@ -1493,7 +1493,7 @@ static int sata_fsl_probe(struct platform_device *ofdev)
+>>>    	host_priv->ssr_base = ssr_base;
+>>>    	host_priv->csr_base = csr_base;
+>>>    
+>>> -	irq = irq_of_parse_and_map(ofdev->dev.of_node, 0);
+>>> +	irq = platform_get_irq(ofdev, 0);
+>>>    	if (!irq) {
+>>
+>> 	if (irq < 0) {
+>>
+>>      platform_get_irq() returns negative error codes, not 0 on failure.
+> 
+> Sergei,
+> 
+> By the way, the kdoc comment for platform_get_irq() says:
+> 
+> "Return: non-zero IRQ number on success, negative error number on failure."
+> 
+> But irq	0 is valid, isn't it ? So shouldn't this be changed to something
+> like:
+> 
+> "Return: IRQ number on success, negative error number on failure."
 
+    No, it's not valid (the current code WARN()s about it) and won't be 
+returned anymore after my patch [1] gets applied.
 
-I know this email might come to you as a surprise as first coming from
-one you haven=E2=80=99t met with before.
+[1] https://marc.info/?l=linux-kernel&m=163623041902285
 
-I am Mr. Omra Musa, the bank manager with ADB bank of Burkina Faso,and
-a personal banker of Dr.Mohamed Farouk Ibrahim, an Egyptian who
-happened to be a medical contractor attached to the overthrown Afghan
-government by the Taliban government.
-
-Dr.Mohamed Farouk Ibrahim deposits some sum of ($15) million USD with
-our bank but he was died by car accidents with his family while trying
-to leave from Kandahar.
-
-The said sum can be used for an investment if you are interested.
-Details relating to the funds are in my position and will present you
-as the Next-of-Kin because there was none, and I shall furnish you
-with more detail once i hear your response.
-
-Regards,
-Mr. Omra Musa
-
-
-you can reply to my private email address at mussaomra2017@gmail.com
+MBR, Sergei
