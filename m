@@ -2,180 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FBA3457DBB
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 12:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F48B457DC1
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 13:01:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237521AbhKTMCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 07:02:46 -0500
-Received: from mail-eopbgr40052.outbound.protection.outlook.com ([40.107.4.52]:6827
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237413AbhKTMCl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 07:02:41 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LFjtFAA4L7RrSdWzZzoP9gGHuD4VIT5Oo9z6iAcmVf08dhE3ATKI05U8bfFJfJ7IGuqfxRelsb6wSvWCJZL//lmYL6pis8OrKipQt2qBqs5TGKehSCmVTA9MWAg5y0mPB/GAsKaSyFSmvQjo97usZL1GXAemRQ9Xu6XSnOPUkLOXaWwPwOwcJ2Rn5h176TsTtQNQdDMKcJrTni5zNtKGRcsn++VA30Gd8oOQQiIImjlnGL8cQT45B3vMZ8NWEbzehgyRWEQ9tZSaiki/gqGDHMUAPDbemVQV9Tl7ugkS4oULCV8P5/GqSnwjihocJyrzwg6NaOT5DoLybzY5QpY3bQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pGeeSS9IfStgyT2mlRf5SVcTYFGV4fIqZ0bGjvSWyp0=;
- b=I8lOPeUV2eDs1Prmm1FCDrxltwJIHQ6eIXSzgHpSag9F5C+XsEkDuGdt0YOOWKi29nv+QJpe4q1aq6Rv43eAa9/urbwmsIwV5r853+XTH/H5Cfsl69w++9PTDp9viVuJ9d0vaBetzInonL5xZpBDv8Kc8s1GbpGEE1wkk2VCPNAUEJUAhKJCWEA9vnk2r11iq1AdVHj2IUZ8sjtT2zgdl36YC2x7mRQw53oEpY0/zwmquZ6Sr3uuMWTPYAAaBStH58Yk6VroUTUyIsomivVpXp2mQksAoTJr2RVgTfX4IqWYPd9buYpjPjSc0GZTkQWDecME0wFZHrKYjV4B38fdKQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pGeeSS9IfStgyT2mlRf5SVcTYFGV4fIqZ0bGjvSWyp0=;
- b=OXn9QegjS5svv7R1gK1dQDSn3swtW2aln2i42kgFU6MgxhyFrdlUjTrkqfyvW8zx3ufMyGDuFGQeN0RcHGS+MCal/L/cvCPtpfME+wXEy8wUQ66A6MKzllXcoxdPMA3byJ5eLPFIrkiL1Xm5rCpMqaxIZwACWiQTiZEOLlqmQxk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by DU2PR04MB9082.eurprd04.prod.outlook.com (2603:10a6:10:2f1::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21; Sat, 20 Nov
- 2021 11:59:36 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::82e:6ad2:dd1d:df43]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::82e:6ad2:dd1d:df43%9]) with mapi id 15.20.4669.016; Sat, 20 Nov 2021
- 11:59:36 +0000
-From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-To:     robh+dt@kernel.org, aisheng.dong@nxp.com, qiangqing.zhang@nxp.com,
-        davem@davemloft.net, kuba@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH 4/4] arm64: dts: imx8ulp-evk: enable fec
-Date:   Sat, 20 Nov 2021 19:58:25 +0800
-Message-Id: <20211120115825.851798-5-peng.fan@oss.nxp.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211120115825.851798-1-peng.fan@oss.nxp.com>
-References: <20211120115825.851798-1-peng.fan@oss.nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI2PR04CA0012.apcprd04.prod.outlook.com
- (2603:1096:4:197::14) To DU0PR04MB9417.eurprd04.prod.outlook.com
- (2603:10a6:10:358::11)
+        id S237389AbhKTMEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 07:04:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230381AbhKTMEu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 07:04:50 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A14E0C061574;
+        Sat, 20 Nov 2021 04:01:46 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id y26so56109897lfa.11;
+        Sat, 20 Nov 2021 04:01:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=wbJD9nZe6qNHGvBaJI58XqT00jTe1paMdYt56fGsTdQ=;
+        b=Opf18F8tY87CNqNWoL54Enz4yj9+AiUaIspVfDSRk1iqdnse6PminboQ5g9ztcyMyx
+         501X0MM6QToIONl4dh+ndDYnwa34KVAgpc4fCjTymn2r6sF4HH0T7wKSdd/7/8OaM/Rf
+         N7mYYSB+Zj5/5tcfsLyMdT8JgWzlIk/kJtW3V24RjOEZheI0B5XJiUwBCfrfaaNCwmEZ
+         R99dcc9aVst980QALtj9Wm+aAYAeZXB6fCh4vZwn4QyIbBiTUjzcOaFKK1Jby3B+h4ws
+         z9syhr3kRreF5y01aRK7cUiNaL9EfrDbcvD87Paps2PYAnKNYUnX7R1KmRWjtoaOdka1
+         tVGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=wbJD9nZe6qNHGvBaJI58XqT00jTe1paMdYt56fGsTdQ=;
+        b=Zh+is57B52d9VeLFQEIMx5w2Am5erL48tIk3KFGsMfv3l6Sy9hlkeiPJ5RWQGFwYMG
+         PktRp+iWfsn57prD2/AvqbqmoVr7ctmB++eJmw7HN05FDeL55zRyXhh7wwAUK8WBDTou
+         6tM0GoVQFWnv+o6XTPYWdnya+IKH0L3ObUhuoLkukdpEQV7J2oXBqWDuQubdFVtC96XF
+         TBtG1nM+jdXXqP0M+yUAueeZn1TOb0nUtS4lIf/PzrMKeEqYXHNm1cMSMkB83NU+7map
+         jdwGzgMRADHOyvjJmMG9ZwtQSyAia8OmY3JuyAp5rZOB6O0oCtfgQtAuZPBhv8Ctu0sF
+         3Ssw==
+X-Gm-Message-State: AOAM533KHDCI3aBuZE8VxzqUCX8eyv4nKD8oTzdpxnc474+D2lFkS0oT
+        9U8uXM1qrb2Uk7vx0rb7S/0=
+X-Google-Smtp-Source: ABdhPJxlJw2/XZ1Wo2YKnWyVGQl0ojyTplQRPVAsQkD+7meVgixOF6S6wy+BMivE9YlEReWILulwsw==
+X-Received: by 2002:a2e:bc21:: with SMTP id b33mr35734548ljf.497.1637409704996;
+        Sat, 20 Nov 2021 04:01:44 -0800 (PST)
+Received: from [192.168.1.100] ([178.176.76.156])
+        by smtp.gmail.com with ESMTPSA id f9sm310089lfv.44.2021.11.20.04.01.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Nov 2021 04:01:44 -0800 (PST)
+Message-ID: <4216b1e4-5649-071a-84fc-2440aba9d5a0@gmail.com>
+Date:   Sat, 20 Nov 2021 15:01:43 +0300
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SI2PR04CA0012.apcprd04.prod.outlook.com (2603:1096:4:197::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend Transport; Sat, 20 Nov 2021 11:59:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f0be0be9-7e32-4140-920e-08d9ac1d38db
-X-MS-TrafficTypeDiagnostic: DU2PR04MB9082:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-Microsoft-Antispam-PRVS: <DU2PR04MB9082179B9A98BF783D8CBCDBC99D9@DU2PR04MB9082.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1079;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jjtO4xl3NpAiEwY+nWi0LFZ3SgvYfEJNhRrZZYUxsaXKf89+l0hiTOLmIUNXBZmBBzNerM7Tsjni4PtR6i47ttzbOdZViaTxXcrEJ21Uus4VQZVB1JiRxUDs86/MeYbX4v/BCHCO/1VnGLbic4vgH0G6UYS6SQlkZKLE+NEL/OM9SQ2eaYrxbWV8fBoSwzS+mRO7MG7fzx3CnZGTnmdPcroPlglsOCfT0zOqgd0ao9jG0ohbG3vw7FuaGUw5bQcP42RPRpyEqp9SahwsK4uCMbv25fMd7uBE2/9lWogWg4XhPyjSWjvpaL99/oTlRkuZtVh/s1iitmpJR/VbIESJR27QUn3SH2/IqZiTNgr4p+qq15IcM0DP+0KzaOB2BEUTJcSYMlOPSlqeXvgG/TCAJ/d6w+/3VJXs8hA3DDBRgiGfCJW9XCj0hsbbAbgp9DMHmis49W4XMk2uboqqxoAv+koap0JKOCvHcxeWlp2fjq8Ws9hoj0HOlPiNa2zsGDAcKaM6Yud96QkQP8EEq/tV9XughfvSNO5WznRDZQcbrBSQOn/Elep0jMqPTCb7MqjhAtK0RkYqniDO5uVSlZz41zgQdIpto+nxiPlgU+dfO0KUIH+JfXx27ATsi98GC5Re7Wyb13L48I6qFqzixZOdmccWuhaCApWIqWCAAkM/wjv1lLDdmBEcg2oaoaAoj2eQcfluVFDyKDs1PavEklaoy/uq6t7SaXK8qbixV2NLRfI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(6486002)(4326008)(5660300002)(7416002)(66556008)(8936002)(52116002)(2906002)(86362001)(66946007)(1076003)(316002)(956004)(186003)(6666004)(6506007)(2616005)(26005)(38350700002)(6512007)(8676002)(508600001)(38100700002)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0tI+YnMjQiIDEp9IJSJsz2Nabu+Ydh09G36Li4F1PHLT/oBK0Dg0PMaXkoea?=
- =?us-ascii?Q?pPXO6IRRwlYoe70k00iphNwyDBcJ39+orlJ7BlS7hYggOFXTBTXl4OQHBrce?=
- =?us-ascii?Q?ctVIXoyTFV4ab3oW2GKwe9Dcz9irMVKgpSnPZt/v1sH7+lisPErbBPppH164?=
- =?us-ascii?Q?1UU1HWIOA8j6zP99L40K5oZWRAlayGVPAWcygGbaHvRtATPTpOS1NU0PLnMf?=
- =?us-ascii?Q?eUQP7dEayD8Vtc+EHusuCySNr+jUluC1rXPNMJ4btHIGhQFtUPJuzRYu2pNi?=
- =?us-ascii?Q?/YLw/kzJrIclAMwHE0QqiJ21lnYkkDw2EkfqmXPIKWLiSTvUT5jISOQlKxJt?=
- =?us-ascii?Q?0RDZ6wO3SgYuILEcj+GjUbmgqBCJ80lkf0ozIyQ3APPwqTiie0GgB+wCbk4t?=
- =?us-ascii?Q?+bTWI4G3IeODEVDc4QKV7rEo8dTk/Qq7Sw0xl8485iLxxM84st6elExMlHyL?=
- =?us-ascii?Q?y80MONpHqnGVNGRNciEjwsxgL+PHuNGfoUjMU+1XkgfCIqCpEKzk3bqBglVF?=
- =?us-ascii?Q?JOORZHyc0uECQSTVL8juCpdmxYdqbxlzPm/NET2YRehMYt3ad7zC3vUNOhZR?=
- =?us-ascii?Q?AFBs4FK0IJ7CseECCLRqTvJlnGL8XWgRs8aqfcM3Nl9p4c6GdzflFx3r/fLj?=
- =?us-ascii?Q?962jHJZ4pxT9ethSrsstWBayLg7av6Qc6c09cKXlvV+UNxvZRvVLWIRnJkst?=
- =?us-ascii?Q?LV8fTFJkQIySXRtg2ACidaTKEJMO0WaONoij9J4Q747twQe8DIE7dBRkVOXd?=
- =?us-ascii?Q?ldy/DSY3ejHrLAKiSlpGxYL9ndAtECz0Sn401v4uMbo175q23Zo1JjEWwWyC?=
- =?us-ascii?Q?0crcYP9hSOSdXLmQb5m8Bc1UDUlTxWsx06CgNe/WLH2jPLBWmz609GwF9www?=
- =?us-ascii?Q?BhtZdfOCt14/jwJ786lpw9ZFzCgz5M9ToSaSsWHPCp3lbXDlc8qyp4uyJcm2?=
- =?us-ascii?Q?kL7EnDuGY8JtILX7+Xc8PRUz/Pj4R5G/SdADE5tt4B11DWENntvgdjNKl89B?=
- =?us-ascii?Q?ZminemODKP59TTxEz+Vr4pzG4TVAF1hr3Q2r4SKExEpVYN+ILMnAGee0jzfb?=
- =?us-ascii?Q?O4D+wt3mlRRYxZTBQimK+4xKh/qLwgvITfYYF4S6s+xyesvmRr1J+7jxLxc1?=
- =?us-ascii?Q?6k5Dy86Gby8okTcNCBNRhhpj7NuRjiJb3ySSE43G/zeoxL00Tn6n3Oxj6KcW?=
- =?us-ascii?Q?EyX9SrW3QEDqsiXkm98C0WNYmyNdZQQz9/Lo0ShepmfCPpfQ+u6wTqpOOnRD?=
- =?us-ascii?Q?mdgSR0SAMIwi0cbW2mcAT4K7fKvLMeAc4762Xb9VQidyR6zpQ98eipOSOOTc?=
- =?us-ascii?Q?ZCmiuTOXD0sIrR0/ohg8RP6X8dv6GPMKm0bFeLW3v5zfsJFK7pmk3jM7QV9B?=
- =?us-ascii?Q?nR2oG2NDdvFxibfbAQ9Ah7+5pDfLpV0vlMzyPrr7Ntt+uKSh+Hn7zQGxpE+e?=
- =?us-ascii?Q?eZw9kF6wO+UdhRIzjzWmnMUfIZgV5WsIsSkykYOwaHWsSxttG9/YeAfyw58m?=
- =?us-ascii?Q?G67vS9G3JDPOTgVHdBmWQgzKRlgFBbJ30FD9FAXnc1QVyrHqW8YNov7I/2Zv?=
- =?us-ascii?Q?apnpwts4phMORax22PwU0BAmOkefjsfNtaJ7IbNwbOYFllZ991BUqGyulvi0?=
- =?us-ascii?Q?6GhVfpDDFHqNu2tLo3Xtpuc=3D?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f0be0be9-7e32-4140-920e-08d9ac1d38db
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2021 11:59:35.9251
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rhW6Y35qGOHKrHxNAl6pPQptO1zvfy8frcwROVuNjZx3QgjmWwuHoPLOe0IHia56sonxEfNjLTlfrFKGl20xvA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB9082
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH -next V2 1/2] sata_fsl: fix UAF in sata_fsl_port_stop when
+ rmmod sata_fsl
+Content-Language: en-US
+To:     Baokun Li <libaokun1@huawei.com>, damien.lemoal@opensource.wdc.com,
+        axboe@kernel.dk, tj@kernel.org, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     yebin10@huawei.com, yukuai3@huawei.com,
+        Hulk Robot <hulkci@huawei.com>
+References: <20211120033420.3762681-1-libaokun1@huawei.com>
+ <20211120033420.3762681-2-libaokun1@huawei.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+In-Reply-To: <20211120033420.3762681-2-libaokun1@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+Hello!
 
-Enable fec, add pinctrl for fec
+On 20.11.2021 6:34, Baokun Li wrote:
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
- arch/arm64/boot/dts/freescale/imx8ulp-evk.dts | 34 +++++++++++++++++++
- 1 file changed, 34 insertions(+)
+> When the `rmmod sata_fsl.ko` command is executed in the PPC64 GNU/Linux,
+> a bug is reported:
+>   ==================================================================
+>   BUG: Unable to handle kernel data access on read at 0x80000800805b502c
+>   Oops: Kernel access of bad area, sig: 11 [#1]
+>   NIP [c0000000000388a4] .ioread32+0x4/0x20
+>   LR [80000000000c6034] .sata_fsl_port_stop+0x44/0xe0 [sata_fsl]
+>   Call Trace:
+>    .free_irq+0x1c/0x4e0 (unreliable)
+>    .ata_host_stop+0x74/0xd0 [libata]
+>    .release_nodes+0x330/0x3f0
+>    .device_release_driver_internal+0x178/0x2c0
+>    .driver_detach+0x64/0xd0
+>    .bus_remove_driver+0x70/0xf0
+>    .driver_unregister+0x38/0x80
+>    .platform_driver_unregister+0x14/0x30
+>    .fsl_sata_driver_exit+0x18/0xa20 [sata_fsl]
+>    .__se_sys_delete_module+0x1ec/0x2d0
+>    .system_call_exception+0xfc/0x1f0
+>    system_call_common+0xf8/0x200
+>   ==================================================================
+> 
+> The triggering of the BUG is shown in the following stack:
+> 
+> driver_detach
+>    device_release_driver_internal
+>      __device_release_driver
+>        drv->remove(dev) --> platform_drv_remove/platform_remove
+>          drv->remove(dev) --> sata_fsl_remove
+>            iounmap(host_priv->hcr_base);			<---- unmap
+>            kfree(host_priv);                             <---- free
+>        devres_release_all
+>          release_nodes
+>            dr->node.release(dev, dr->data) --> ata_host_stop
+>              ap->ops->port_stop(ap) --> sata_fsl_port_stop
+>                  ioread32(hcr_base + HCONTROL)           <---- UAF
+>              host->ops->host_stop(host)
+> 
+> The iounmap(host_priv->hcr_base) and kfree(host_priv) commands should
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts b/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
-index 33e84c4e9ed8..7103fed3a6cc 100644
---- a/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
-@@ -21,6 +21,24 @@ memory@80000000 {
- 	};
- };
- 
-+&fec {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_enet>;
-+	phy-mode = "rmii";
-+	phy-handle = <&ethphy>;
-+	status = "okay";
-+
-+	mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		ethphy: ethernet-phy {
-+			reg = <1>;
-+			micrel,led-mode = <1>;
-+		};
-+	};
-+};
-+
- &lpuart5 {
- 	/* console */
- 	pinctrl-names = "default", "sleep";
-@@ -39,6 +57,22 @@ &usdhc0 {
- };
- 
- &iomuxc1 {
-+	pinctrl_enet: enetgrp {
-+		fsl,pins = <
-+			MX8ULP_PAD_PTE15__ENET0_MDC     0x43
-+			MX8ULP_PAD_PTE14__ENET0_MDIO    0x43
-+			MX8ULP_PAD_PTE17__ENET0_RXER    0x43
-+			MX8ULP_PAD_PTE18__ENET0_CRS_DV  0x43
-+			MX8ULP_PAD_PTF1__ENET0_RXD0     0x43
-+			MX8ULP_PAD_PTE20__ENET0_RXD1    0x43
-+			MX8ULP_PAD_PTE16__ENET0_TXEN    0x43
-+			MX8ULP_PAD_PTE23__ENET0_TXD0    0x43
-+			MX8ULP_PAD_PTE22__ENET0_TXD1    0x43
-+			MX8ULP_PAD_PTE19__ENET0_REFCLK  0x43
-+			MX8ULP_PAD_PTF10__ENET0_1588_CLKIN 0x43
-+		>;
-+	};
-+
- 	pinctrl_lpuart5: lpuart5grp {
- 		fsl,pins = <
- 			MX8ULP_PAD_PTF14__LPUART5_TX	0x3
--- 
-2.25.1
+    s/commands/functions/?
 
+> not be executed in drv->remove. These commands should be executed in
+> host_stop after port_stop. Therefore, we move these commands to the
+> new function sata_fsl_host_stop and bind the new function to host_stop
+> by referring to achi.
+
+    You mean AHCI? I don't see where you reference ahci (or achi)...
+
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+
+    Doesn't this need to go into the stable trees?
+
+> ---
+>   drivers/ata/sata_fsl.c | 17 ++++++++++++++---
+>   1 file changed, 14 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/ata/sata_fsl.c b/drivers/ata/sata_fsl.c
+> index e5838b23c9e0..30759fd1c3a2 100644
+> --- a/drivers/ata/sata_fsl.c
+> +++ b/drivers/ata/sata_fsl.c
+> @@ -1430,12 +1430,25 @@ static struct ata_port_operations sata_fsl_ops = {
+>   	.pmp_detach = sata_fsl_pmp_detach,
+>   };
+>   
+> +static void sata_fsl_host_stop(struct ata_host *host)
+> +{
+> +	struct sata_fsl_host_priv *host_priv = host->private_data;
+> +
+> +	iounmap(host_priv->hcr_base);
+> +	kfree(host_priv);
+> +}
+> +
+> +static struct ata_port_operations sata_fsl_platform_ops = {
+> +	.inherits       = &sata_fsl_ops,
+> +	.host_stop      = sata_fsl_host_stop,
+
+    Why not just add it to the initializer for sata_fsl_ops?
+
+[...]
+
+MBR, Sergei
