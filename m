@@ -2,122 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C6B4580BE
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 22:56:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC814580C1
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 22:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232960AbhKTV7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 16:59:45 -0500
-Received: from mail-4018.proton.ch ([185.70.40.18]:43989 "EHLO
-        mail-4018.proton.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhKTV7o (ORCPT
+        id S234399AbhKTWAu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 20 Nov 2021 17:00:50 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:30676 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229554AbhKTWAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 16:59:44 -0500
-Date:   Sat, 20 Nov 2021 21:56:33 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
-        s=protonmail; t=1637445398;
-        bh=NE69VuQ2AFtUVf1PAPgUv1e/DDEsYZGhxd6gfXS2xA0=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=qNRF84xg4A7HQgG5h6IBlJGpAzCaiQi71+vcHdOOKcqWuT5nlYaaBN6/jhwYx4vzL
-         lB4iIHEaNoJZDwuGFX/dqqJJy7HbWsdVwtNr9eWI0A8fG4+S+ygAhrvZlVKCCBOWof
-         FviOseVygl4aWXT01vQw1PpDLjVWsMRDV3PgKW2g=
-To:     Dang Huynh <danct12@riseup.net>
-From:   Caleb Connolly <caleb@connolly.tech>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alexey Min <alexey.min@gmail.com>,
-        Martin Botka <martin.botka@somainline.org>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>
-Reply-To: Caleb Connolly <caleb@connolly.tech>
-Subject: Re: [PATCH v4 8/8] arm64: dts: qcom: sdm660-xiaomi-lavender: Add USB
-Message-ID: <7431c057-7e56-e38b-eb3a-66971c5c5dbb@connolly.tech>
-In-Reply-To: <20211120214227.779742-9-danct12@riseup.net>
-References: <20211120214227.779742-1-danct12@riseup.net> <20211120214227.779742-9-danct12@riseup.net>
+        Sat, 20 Nov 2021 17:00:49 -0500
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-281-Al8z84NMNTav-OCe2iuMew-1; Sat, 20 Nov 2021 21:57:43 +0000
+X-MC-Unique: Al8z84NMNTav-OCe2iuMew-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.26; Sat, 20 Nov 2021 21:57:42 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.026; Sat, 20 Nov 2021 21:57:42 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Bernard Zhao' <bernard@vivo.com>, Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] net/bridge: replace simple_strtoul to kstrtol
+Thread-Topic: [PATCH] net/bridge: replace simple_strtoul to kstrtol
+Thread-Index: AQHX3Ool6Pave9KWG0WLE/Hz4Kqz0KwM94oQ
+Date:   Sat, 20 Nov 2021 21:57:42 +0000
+Message-ID: <a98476cd4414476980a227c0f053bea7@AcuMS.aculab.com>
+References: <20211119020642.108397-1-bernard@vivo.com>
+In-Reply-To: <20211119020642.108397-1-bernard@vivo.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Bernard Zhao
+> Sent: 19 November 2021 02:07
+> 
+> simple_strtoull is obsolete, use kstrtol instead.
 
+I think the death announcement of simple_strtoull() has already
+been deemed premature.
+kstrtol() isn't a replacment in many cases.
 
-On 20/11/2021 21:42, Dang Huynh wrote:
-> From: Alexey Min <alexey.min@gmail.com>
->
-> Enable and configure DWC3 and QUSB2 PHY to enable USB
-> functionality on the Redmi Note 7.
->
-> Signed-off-by: Alexey Min <alexey.min@gmail.com>
-> Co-developed-by: Dang Huynh <danct12@riseup.net>
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> Signed-off-by: Dang Huynh <danct12@riseup.net>
+> Signed-off-by: Bernard Zhao <bernard@vivo.com>
 > ---
->   .../boot/dts/qcom/sdm660-xiaomi-lavender.dts  | 25 +++++++++++++++++++
->   1 file changed, 25 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts b/arch/a=
-rm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
-> index 45e58714af71..6cdd9f7c864b 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
-> +++ b/arch/arm64/boot/dts/qcom/sdm660-xiaomi-lavender.dts
-> @@ -79,6 +79,15 @@ framebuffer_mem: memory@9d400000 {
->   =09=09=09no-map;
->   =09=09};
->   =09};
-> +
-> +=09/*
-> +=09 * Until we hook up type-c detection, we
-> +=09 * have to stick with this. But it works.
-> +=09 */
-> +=09extcon_usb: extcon-usb {
-> +=09=09compatible =3D "linux,extcon-usb-gpio";
-> +=09=09id-gpio =3D <&tlmm 58 GPIO_ACTIVE_HIGH>;
-> +=09};
->   };
->
->   &blsp1_uart2 {
-> @@ -95,6 +104,13 @@ &pon_resin {
->   =09linux,code =3D <KEY_VOLUMEDOWN>;
->   };
->
-> +&qusb2phy {
-> +=09status =3D "okay";
-> +
-> +=09vdd-supply =3D <&vreg_l1b_0p925>;
-> +=09vdda-phy-dpdm-supply =3D <&vreg_l7b_3p125>;
-> +};
-> +
->   &rpm_requests {
->   =09pm660l-regulators {
->   =09=09compatible =3D "qcom,rpm-pm660l-regulators";
-> @@ -370,3 +386,12 @@ &sdhc_2 {
->   &tlmm {
->   =09gpio-reserved-ranges =3D <8 4>;
->   };
-> +
-> +&usb3 {
-> +=09status =3D "okay";
-> +};
-> +
-> +&usb3_dwc3 {
-> +=09dr_mode =3D "peripheral";
-> +=09extcon =3D <&extcon_usb>;
-> +};
-> --
-> 2.33.1
->
+>  net/bridge/br_sysfs_br.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/net/bridge/br_sysfs_br.c b/net/bridge/br_sysfs_br.c
+> index d9a89ddd0331..11c490694296 100644
+> --- a/net/bridge/br_sysfs_br.c
+> +++ b/net/bridge/br_sysfs_br.c
+> @@ -36,15 +36,14 @@ static ssize_t store_bridge_parm(struct device *d,
+>  	struct net_bridge *br = to_bridge(d);
+>  	struct netlink_ext_ack extack = {0};
+>  	unsigned long val;
+> -	char *endp;
+>  	int err;
+> 
+>  	if (!ns_capable(dev_net(br->dev)->user_ns, CAP_NET_ADMIN))
+>  		return -EPERM;
+> 
+> -	val = simple_strtoul(buf, &endp, 0);
+> -	if (endp == buf)
+> -		return -EINVAL;
+> +	err = kstrtoul(buf, 10, &val);
+> +	if (err != 0)
+> +		return err;
 
-Reviewed-by: Caleb Connolly <caleb@connolly>
+That changes the valid input strings.
+So is a UAPI change.
+Now it might be that no one passes in strings that now fail,
+but you can't tell.
 
---
-Kind Regards,
-Caleb
+Rightfully or not it used to ignore any trailing characters.
+So "10flobbs" would be treated as "10".
+
+Did you also check what happens to 0x1234 and 012 ?
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
