@@ -2,127 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D47DD457BF7
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 07:08:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE367457BF9
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 07:11:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235727AbhKTGLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 01:11:39 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:14061 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbhKTGL1 (ORCPT
+        id S235824AbhKTGOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 01:14:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233497AbhKTGOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 01:11:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1637388506; x=1668924506;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=HEd3/uHrcFEOQzwerh2/2EB6Y+yQu9KO9X0qYOqqaew=;
-  b=YWbQd3O17hxxWoa0MNB7Y4Rjx7P3KzVzyYjE3X8wlq4/M4uLFC71MMzz
-   PLGg2qGAXhc9yhiiGtHIs97A8qlOBVhG8+dMIjmjYNEc8q3j1V2ERhLdJ
-   RaiDPPwzGPQuCIk0BRqNUPcl5phaNOrBNI8+pCIW0Bz+2HpIWigOoNLlm
-   L3TiwwLzzZDCtUCY4Qk7dheAw4qtfQJd8E8au0j9lCFnnMU2atDF7lcZ6
-   u7PoV8ocbXtx0vhchZw+HjlGdtHhLhDbKmJmkgNpZnTneN0aTfSPMrPBi
-   91RN29FuM6SYbQ6nVXarPmtKClECTRszMWvP7za7HAWBcSnKVcSwxOvjc
-   g==;
-X-IronPort-AV: E=Sophos;i="5.87,250,1631548800"; 
-   d="scan'208";a="187173866"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 20 Nov 2021 14:08:12 +0800
-IronPort-SDR: GLCK1V22oYfpCKuYgZS1jhPVLwSWCaZZin3qceJZZWAIjryq86ZgElP0j9XfjXli4og6BTNUbT
- +LSs+H5icDrbW0afcD2esP9KhizBQvmzbKeQRjEpuJ7A7rpPMCxJ1yULGqmvCRNEJXrdvQbZeZ
- 16tZma9je4y3qhRGNqpDrvl89znTXecJ0/RpTtcvm05RxmcKrdOVdeTys9IuP76LiEXzG0R96f
- 7XNxgVyyEnTHF23lIjQz1KWGg2HEjdZmTQ66aI0B87jsizklDEY2YKm5xy48La33/mYjvN1zbv
- QCUOUdx2azntLanrDRJu7xuY
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 21:41:36 -0800
-IronPort-SDR: GbhjiPhD1fEhmyl9sVitHBmE7lQ5OO7AwTiYFgehbFuLIPpjiq8oPz9ByLzxh8l1TW4fWDoIwN
- EguN00fjAQBcrlSzy1wnhKWt8YFHi2DiDe6EYC3o185U0ZmE3KfiOnnBYtOAE5rZMIZYMiFIvL
- uU3U+RUTi7dmJx/C4v19FP59BDzyhencKcVwnACbOSzlyKPuIBgqnZcWwc3uhnjOozkkp0ICpT
- LxAeaEDSqGsFu3bBj7hOF4GP0/H5rkXu8SwFAdnYXNVAX8NMHYTHh3jJ8CoifzKrvn3y0gQImR
- STw=
-WDCIronportException: Internal
-Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 22:08:12 -0800
-Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4Hx34B6kWRz1RtW0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 22:08:10 -0800 (PST)
-Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)"
-        header.d=opensource.wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-        opensource.wdc.com; h=content-transfer-encoding:content-type
-        :in-reply-to:organization:from:references:to:content-language
-        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
-        1637388489; x=1639980490; bh=HEd3/uHrcFEOQzwerh2/2EB6Y+yQu9KO9X0
-        qYOqqaew=; b=C4fCGAjKgSv+98wZhegtNQYFGIpXvA8qJvetsEKZbX9XhHlxtrG
-        G/Y91GId3w/CJ3a9x5anyDLmpGzSk+hgDGfytpRhqhpMuWQHJ042Y/zKYJkfKeXF
-        KqOxqE44ehwtH4k3gIufJU2BrFgTxSBsSjlbfv1L3guE6gsgmJ3n/4Qjd1Ca3oRC
-        RtXmLFhSNARDQvzSZBwjwkqbOmc5dvjY+vn6fyZtCvHOf5TztAtrgbNFjvhxsvGl
-        /SYmiZ/VvCCn3UvmCr5o1d/48jdsq7vHlRfNPuOUomgBQbHdS4OW25HKU8pghmE9
-        Mq9zlh/jKhFMY9yLc34uDyVTxXfzqivr2Vg==
-X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
-Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
-        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id cAHcSz3bE6-c for <linux-kernel@vger.kernel.org>;
-        Fri, 19 Nov 2021 22:08:09 -0800 (PST)
-Received: from [10.225.163.105] (unknown [10.225.163.105])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4Hx3476X3kz1RtVl;
-        Fri, 19 Nov 2021 22:08:07 -0800 (PST)
-Message-ID: <fcf2d384-ee03-298c-c1ac-5a39c0d85784@opensource.wdc.com>
-Date:   Sat, 20 Nov 2021 15:08:06 +0900
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH -next 2/2] sata_fsl: fix warning in remove_proc_entry when
- rmmod sata_fsl
-Content-Language: en-US
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Baokun Li <libaokun1@huawei.com>, axboe@kernel.dk,
-        tj@kernel.org, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     yebin10@huawei.com, yukuai3@huawei.com,
-        Hulk Robot <hulkci@huawei.com>
-References: <20211119041128.2436889-1-libaokun1@huawei.com>
- <20211119041128.2436889-3-libaokun1@huawei.com>
- <283712c0-bab7-de13-fc27-6ae2e6f9532f@gmail.com>
-From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Organization: Western Digital Research
-In-Reply-To: <283712c0-bab7-de13-fc27-6ae2e6f9532f@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Sat, 20 Nov 2021 01:14:16 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A850DC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 22:11:12 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id iq11so9499955pjb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 22:11:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=nY9MaSoEn1LB+2x/gMzNbsFxhn8Zrur3BCpU+fYZm1c=;
+        b=ixdgaZOgcTRDEkxgjsOwWEOzBvaaKOBbzI4XVwbcOuniYIdeq6J8OcQb70J5eOTrjE
+         5Ep9t0ynol9yCeuh1rZ5kUCSiVhoS1/SJ69XFHwQPQccZZO3cUlGtNHXE/fB5DLqSwpM
+         H4eyrtcAOZ48rWpyiI1UbBGg2Pa5QDdOj5wYYvVjuGPSMIXxEPMwoZVZBnwV6P/TiXM5
+         4a9nEx+sI4FRtB7yP3+56tcIJfRGd8JxsaRrYu0Avk1lj8C1nwvdzomzPJIJotagJppa
+         H7aEqqX/YAUDRX4CX++axDXTrdrndJqL/mIfE+a5wnsBLFWvgC8g/1PsAMNkO08CFaC+
+         aWcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=nY9MaSoEn1LB+2x/gMzNbsFxhn8Zrur3BCpU+fYZm1c=;
+        b=EwTeu4SaqHW4fwa39Vfi0Ud1Vtdnq+e/RLgeV7L5iqirCQdnkiGv2wZ/EjVdHXxHlF
+         p2MrQAaMmgfVabSd9PQI5LAOO+Hwap/oB1aZNFgrcTJdmJtSpDd+tS6cdUtxAntefS85
+         HitNBXmht667ycCf8HNAw7XzNHQ4oqefb0sYW+g82YpDVC/OMMFnfRo9xeJCgsQQjP9L
+         ArXBVgMQmEA01PxPDXOWgP9JiOdPea95Q75k811veKaf2OIpUZqN9+klrocPZpeHRACK
+         beSMesM/hlpsLnA/j1QDKf5nH6eqi7Zx7Cfmm0Rsz6jrGW9SvJCNAuTaYbwbYeh4Yi/7
+         ++0g==
+X-Gm-Message-State: AOAM5311JhGsaqPY5eYUabF05tzfvuskt5aw4HWjOYhlK6kom+gOC9J8
+        /tPMisoPb3gpvAzQ8rOMugA=
+X-Google-Smtp-Source: ABdhPJy9o+XaqK5kmmU5XKE7b3/Z/IrlvjGedjet3VARHUljVQtztiyAwMqlWFs5hulGRnw9UEG2oQ==
+X-Received: by 2002:a17:902:a40f:b0:143:d470:d66d with SMTP id p15-20020a170902a40f00b00143d470d66dmr41395035plq.52.1637388672021;
+        Fri, 19 Nov 2021 22:11:12 -0800 (PST)
+Received: from smtpclient.apple ([66.170.99.2])
+        by smtp.gmail.com with ESMTPSA id t1sm1142873pgj.89.2021.11.19.22.11.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 19 Nov 2021 22:11:11 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [syzbot] KCSAN: data-race in flush_tlb_batched_pending /
+ try_to_unmap_one
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <YZZn4CPEK7pP4ohN@elver.google.com>
+Date:   Fri, 19 Nov 2021 22:11:10 -0800
+Cc:     syzbot <syzbot+aa5bebed695edaccf0df@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, syzkaller-bugs@googlegroups.com,
+        Mel Gorman <mgorman@suse.de>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <D32C44CD-2010-48C1-A213-9059A9D62C56@gmail.com>
+References: <00000000000020805d05d110dc77@google.com>
+ <YZZn4CPEK7pP4ohN@elver.google.com>
+To:     Marco Elver <elver@google.com>,
+        "Huang, Ying" <ying.huang@intel.com>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/20/21 00:43, Sergei Shtylyov wrote:
->> diff --git a/drivers/ata/sata_fsl.c b/drivers/ata/sata_fsl.c
->> index 30759fd1c3a2..011daac4a14e 100644
->> --- a/drivers/ata/sata_fsl.c
->> +++ b/drivers/ata/sata_fsl.c
->> @@ -1493,7 +1493,7 @@ static int sata_fsl_probe(struct platform_device *ofdev)
->>   	host_priv->ssr_base = ssr_base;
->>   	host_priv->csr_base = csr_base;
->>   
->> -	irq = irq_of_parse_and_map(ofdev->dev.of_node, 0);
->> +	irq = platform_get_irq(ofdev, 0);
->>   	if (!irq) {
-> 
-> 	if (irq < 0) {
-> 
->     platform_get_irq() returns negative error codes, not 0 on failure.
 
-Sergei,
+> On Nov 18, 2021, at 6:49 AM, Marco Elver <elver@google.com> wrote:
+>=20
+> On Thu, Nov 18, 2021 at 06:20AM -0800, syzbot wrote:
+>> Hello,
+>>=20
+>> syzbot found the following issue on:
+>>=20
+>> HEAD commit:    42eb8fdac2fc Merge tag 'gfs2-v5.16-rc2-fixes' of =
+git://git..
+>> git tree:       upstream
+>> console output: =
+https://syzkaller.appspot.com/x/log.txt?x=3D13160026b00000
+>> kernel config:  =
+https://syzkaller.appspot.com/x/.config?x=3Da70237460d215073
+>> dashboard link: =
+https://syzkaller.appspot.com/bug?extid=3Daa5bebed695edaccf0df
+>> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils =
+for Debian) 2.35.2
+>>=20
+>> Unfortunately, I don't have any reproducer for this issue yet.
+>>=20
+>> IMPORTANT: if you fix the issue, please add the following tag to the =
+commit:
+>> Reported-by: syzbot+aa5bebed695edaccf0df@syzkaller.appspotmail.com
+>>=20
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> BUG: KCSAN: data-race in flush_tlb_batched_pending / try_to_unmap_one
+>>=20
+>> write to 0xffff8881072cfbbc of 1 bytes by task 17406 on cpu 1:
+>> flush_tlb_batched_pending+0x5f/0x80 mm/rmap.c:691
+>> madvise_free_pte_range+0xee/0x7d0 mm/madvise.c:594
+>> walk_pmd_range mm/pagewalk.c:128 [inline]
+>> walk_pud_range mm/pagewalk.c:205 [inline]
+>> walk_p4d_range mm/pagewalk.c:240 [inline]
+>> walk_pgd_range mm/pagewalk.c:277 [inline]
+>> __walk_page_range+0x981/0x1160 mm/pagewalk.c:379
+>> walk_page_range+0x131/0x300 mm/pagewalk.c:475
+>> madvise_free_single_vma mm/madvise.c:734 [inline]
+>> madvise_dontneed_free mm/madvise.c:822 [inline]
+>> madvise_vma mm/madvise.c:996 [inline]
+>> do_madvise+0xe4a/0x1140 mm/madvise.c:1202
+>> __do_sys_madvise mm/madvise.c:1228 [inline]
+>> __se_sys_madvise mm/madvise.c:1226 [inline]
+>> __x64_sys_madvise+0x5d/0x70 mm/madvise.c:1226
+>> do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>> do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+>> entry_SYSCALL_64_after_hwframe+0x44/0xae
+>>=20
+>> write to 0xffff8881072cfbbc of 1 bytes by task 71 on cpu 0:
+>> set_tlb_ubc_flush_pending mm/rmap.c:636 [inline]
+>> try_to_unmap_one+0x60e/0x1220 mm/rmap.c:1515
+>> rmap_walk_anon+0x2fb/0x470 mm/rmap.c:2301
+>> try_to_unmap+0xec/0x110
+>> shrink_page_list+0xe91/0x2620 mm/vmscan.c:1719
+>> shrink_inactive_list+0x3fb/0x730 mm/vmscan.c:2394
+>> shrink_list mm/vmscan.c:2621 [inline]
+>> shrink_lruvec+0x3c9/0x710 mm/vmscan.c:2940
+>> shrink_node_memcgs+0x23e/0x410 mm/vmscan.c:3129
+>> shrink_node+0x8f6/0x1190 mm/vmscan.c:3252
+>> kswapd_shrink_node mm/vmscan.c:4022 [inline]
+>> balance_pgdat+0x702/0xd30 mm/vmscan.c:4213
+>> kswapd+0x200/0x340 mm/vmscan.c:4473
+>> kthread+0x2c7/0x2e0 kernel/kthread.c:327
+>> ret_from_fork+0x1f/0x30
+>>=20
+>> value changed: 0x01 -> 0x00
+>>=20
+>> Reported by Kernel Concurrency Sanitizer on:
+>> CPU: 0 PID: 71 Comm: kswapd0 Not tainted 5.16.0-rc1-syzkaller #0
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, =
+BIOS Google 01/01/2011
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>=20
+> Reading 3ea277194daae, I can't quite determine if this is safe and
+> expected.
+>=20
+> Per this observed write/write race, depending on interleaving
+> tlb_flush_batched can randomly be true or false after
+> set_tlb_ubc_flush_pending().
+>=20
+> Is this safe?
+>=20
 
-By the way, the kdoc comment for platform_get_irq() says:
+I do not think it is safe and I am not the only one.
 
-"Return: non-zero IRQ number on success, negative error number on failure."
+=
+https://lore.kernel.org/linux-mm/20210131001132.3368247-21-namit@vmware.co=
+m/
 
-But irq	0 is valid, isn't it ? So shouldn't this be changed to something
-like:
+Perhaps Huang has the cycles to fix it.
 
-"Return: IRQ number on success, negative error number on failure."
-
--- 
-Damien Le Moal
-Western Digital Research
+Regards,
+Nadav=
