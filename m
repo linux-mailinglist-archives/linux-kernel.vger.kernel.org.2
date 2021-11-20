@@ -2,150 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA48457A8B
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 02:58:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D1B457A90
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 03:17:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236314AbhKTCBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 21:01:01 -0500
-Received: from mga05.intel.com ([192.55.52.43]:42362 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236252AbhKTCA7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 21:00:59 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10173"; a="320741100"
-X-IronPort-AV: E=Sophos;i="5.87,249,1631602800"; 
-   d="scan'208";a="320741100"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 17:57:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,249,1631602800"; 
-   d="scan'208";a="551344448"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga008.fm.intel.com with ESMTP; 19 Nov 2021 17:57:56 -0800
-Received: from debox1-server.jf.intel.com (debox1-server.jf.intel.com [10.54.39.121])
-        by linux.intel.com (Postfix) with ESMTP id 9E78E580A8B;
-        Fri, 19 Nov 2021 17:57:56 -0800 (PST)
-From:   "David E. Box" <david.e.box@linux.intel.com>
-To:     nirmal.patel@linux.intel.com, jonathan.derrick@linux.dev,
-        lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com,
-        bhelgaas@google.com, david.e.box@linux.intel.com,
-        michael.a.bottini@linux.intel.com, rafael@kernel.org
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] PCI: vmd: Override ASPM on TGL/ADL VMD devices
-Date:   Fri, 19 Nov 2021 17:57:56 -0800
-Message-Id: <20211120015756.1396263-2-david.e.box@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211120015756.1396263-1-david.e.box@linux.intel.com>
-References: <20211120015756.1396263-1-david.e.box@linux.intel.com>
+        id S236200AbhKTCTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 21:19:45 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:31889 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233709AbhKTCTd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 21:19:33 -0500
+Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hwxq81kR3zcbMK;
+        Sat, 20 Nov 2021 10:11:32 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Sat, 20 Nov 2021 10:16:29 +0800
+Subject: Re: [PATCH -next 2/2] sata_fsl: fix warning in remove_proc_entry when
+ rmmod sata_fsl
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        <damien.lemoal@opensource.wdc.com>, <axboe@kernel.dk>,
+        <tj@kernel.org>, <linux-ide@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <yebin10@huawei.com>, <yukuai3@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>
+References: <20211119041128.2436889-1-libaokun1@huawei.com>
+ <20211119041128.2436889-3-libaokun1@huawei.com>
+ <283712c0-bab7-de13-fc27-6ae2e6f9532f@gmail.com>
+From:   "libaokun (A)" <libaokun1@huawei.com>
+Message-ID: <110d4b51-9cc3-22fd-885e-0bbeb1707bda@huawei.com>
+Date:   Sat, 20 Nov 2021 10:16:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
+In-Reply-To: <283712c0-bab7-de13-fc27-6ae2e6f9532f@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Bottini <michael.a.bottini@linux.intel.com>
+在 2021/11/19 23:43, Sergei Shtylyov 写道:
+> Hello!
+>
+> On 19.11.2021 7:11, Baokun Li wrote:
+>
+>> Trying to remove the fsl-sata module in the PPC64 GNU/Linux
+>> leads to the following warning:
+>>   ------------[ cut here ]------------
+>>   remove_proc_entry: removing non-empty directory 'irq/69',
+>>     leaking at least 'fsl-sata[ff0221000.sata]'
+>>   WARNING: CPU: 3 PID: 1048 at fs/proc/generic.c:722
+>>     .remove_proc_entry+0x20c/0x220
+>>   IRQMASK: 0
+>>   NIP [c00000000033826c] .remove_proc_entry+0x20c/0x220
+>>   LR [c000000000338268] .remove_proc_entry+0x208/0x220
+>>   Call Trace:
+>>    .remove_proc_entry+0x208/0x220 (unreliable)
+>>    .unregister_irq_proc+0x104/0x140
+>>    .free_desc+0x44/0xb0
+>>    .irq_free_descs+0x9c/0xf0
+>>    .irq_dispose_mapping+0x64/0xa0
+>>    .sata_fsl_remove+0x58/0xa0 [sata_fsl]
+>>    .platform_drv_remove+0x40/0x90
+>>    .device_release_driver_internal+0x160/0x2c0
+>>    .driver_detach+0x64/0xd0
+>>    .bus_remove_driver+0x70/0xf0
+>>    .driver_unregister+0x38/0x80
+>>    .platform_driver_unregister+0x14/0x30
+>>    .fsl_sata_driver_exit+0x18/0xa20 [sata_fsl]
+>>   ---[ end trace 0ea876d4076908f5 ]---
+>>
+>> The driver creates the mapping by calling irq_of_parse_and_map(),
+>> so it also has to dispose the mapping. But the easy way out is to
+>> simply use platform_get_irq() instead of irq_of_parse_map().
+>
+>   Not that easy. :-)
+>
+>> In this case the mapping is not managed by the device but by
+>> the of core, so the device has not to dispose the mapping.
+>>
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>> ---
+>>   drivers/ata/sata_fsl.c | 4 +---
+>>   1 file changed, 1 insertion(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/ata/sata_fsl.c b/drivers/ata/sata_fsl.c
+>> index 30759fd1c3a2..011daac4a14e 100644
+>> --- a/drivers/ata/sata_fsl.c
+>> +++ b/drivers/ata/sata_fsl.c
+>> @@ -1493,7 +1493,7 @@ static int sata_fsl_probe(struct 
+>> platform_device *ofdev)
+>>       host_priv->ssr_base = ssr_base;
+>>       host_priv->csr_base = csr_base;
+>>   -    irq = irq_of_parse_and_map(ofdev->dev.of_node, 0);
+>> +    irq = platform_get_irq(ofdev, 0);
+>>       if (!irq) {
+>
+>     if (irq < 0) {
+>
+>   platform_get_irq() returns negative error codes, not 0 on failure.
+>
+> [...]
+>
+> MBR, Sergey
+> .
 
-On Tiger Lake and Alder Lake platforms, VMD controllers do not have ASPM
-enabled nor LTR values set by BIOS. This leads high power consumption on
-these platforms when VMD is enabled as reported in bugzilla [1].  Enable
-these features in the VMD driver using pcie_aspm_policy_override() to set
-the ASPM policy for the root ports.
+I didn't notice the change in this return value, and the test didn't 
+cover the error branch.
 
-To do this, add an additional flag in VMD features to specify devices that
-must have their respective policies overridden.
+Thank you very much for your correction.
 
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=213717
+I'm about to send a patch v2 with the changes suggested by you.
 
-Signed-off-by: Michael Bottini <michael.a.bottini@linux.intel.com>
-Signed-off-by: David E. Box <david.e.box@linux.intel.com>
----
- drivers/pci/controller/vmd.c | 40 +++++++++++++++++++++++++++++++++---
- 1 file changed, 37 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
-index a45e8e59d3d4..0d0b8888cd90 100644
---- a/drivers/pci/controller/vmd.c
-+++ b/drivers/pci/controller/vmd.c
-@@ -20,6 +20,8 @@
- 
- #include <asm/irqdomain.h>
- 
-+#include "../pci.h"
-+
- #define VMD_CFGBAR	0
- #define VMD_MEMBAR1	2
- #define VMD_MEMBAR2	4
-@@ -67,6 +69,12 @@ enum vmd_features {
- 	 * interrupt handling.
- 	 */
- 	VMD_FEAT_CAN_BYPASS_MSI_REMAP		= (1 << 4),
-+
-+	/*
-+	 * Device must have ASPM policy overridden, as its default policy is
-+	 * incorrect.
-+	 */
-+	VMD_FEAT_QUIRK_OVERRIDE_ASPM		= (1 << 5),
- };
- 
- static DEFINE_IDA(vmd_instance_ida);
-@@ -661,6 +669,27 @@ static int vmd_alloc_irqs(struct vmd_dev *vmd)
- 	return 0;
- }
- 
-+/*
-+ * Override the BIOS ASPM policy and set the LTR value for PCI storage
-+ * devices on the VMD bride.
-+ */
-+int vmd_enable_aspm(struct pci_dev *pdev, void *userdata)
-+{
-+	int features = *(int *)userdata;
-+
-+	if (features & VMD_FEAT_QUIRK_OVERRIDE_ASPM &&
-+	    pdev->class == PCI_CLASS_STORAGE_EXPRESS) {
-+		int pos = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_LTR);
-+
-+		if (pos) {
-+			pci_write_config_word(pdev, pos + PCI_LTR_MAX_SNOOP_LAT, 0x1003);
-+			pci_write_config_word(pdev, pos + PCI_LTR_MAX_NOSNOOP_LAT, 0x1003);
-+			pcie_aspm_policy_override(pdev);
-+		}
-+	}
-+	return 0;
-+}
-+
- static int vmd_enable_domain(struct vmd_dev *vmd, unsigned long features)
- {
- 	struct pci_sysdata *sd = &vmd->sysdata;
-@@ -807,6 +836,8 @@ static int vmd_enable_domain(struct vmd_dev *vmd, unsigned long features)
- 	pci_scan_child_bus(vmd->bus);
- 	pci_assign_unassigned_bus_resources(vmd->bus);
- 
-+	pci_walk_bus(vmd->bus, vmd_enable_aspm, &features);
-+
- 	/*
- 	 * VMD root buses are virtual and don't return true on pci_is_pcie()
- 	 * and will fail pcie_bus_configure_settings() early. It can instead be
-@@ -948,15 +979,18 @@ static const struct pci_device_id vmd_ids[] = {
- 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x467f),
- 		.driver_data = VMD_FEAT_HAS_MEMBAR_SHADOW_VSCAP |
- 				VMD_FEAT_HAS_BUS_RESTRICTIONS |
--				VMD_FEAT_OFFSET_FIRST_VECTOR,},
-+				VMD_FEAT_OFFSET_FIRST_VECTOR |
-+				VMD_FEAT_QUIRK_OVERRIDE_ASPM,},
- 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x4c3d),
- 		.driver_data = VMD_FEAT_HAS_MEMBAR_SHADOW_VSCAP |
- 				VMD_FEAT_HAS_BUS_RESTRICTIONS |
--				VMD_FEAT_OFFSET_FIRST_VECTOR,},
-+				VMD_FEAT_OFFSET_FIRST_VECTOR |
-+				VMD_FEAT_QUIRK_OVERRIDE_ASPM,},
- 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_VMD_9A0B),
- 		.driver_data = VMD_FEAT_HAS_MEMBAR_SHADOW_VSCAP |
- 				VMD_FEAT_HAS_BUS_RESTRICTIONS |
--				VMD_FEAT_OFFSET_FIRST_VECTOR,},
-+				VMD_FEAT_OFFSET_FIRST_VECTOR |
-+				VMD_FEAT_QUIRK_OVERRIDE_ASPM,},
- 	{0,}
- };
- MODULE_DEVICE_TABLE(pci, vmd_ids);
 -- 
-2.25.1
+With Best Regards,
+Baokun Li
+.
 
