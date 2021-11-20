@@ -2,315 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 525EA457EF3
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 16:27:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A35457F00
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 16:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231861AbhKTPa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 10:30:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51938 "EHLO
+        id S233464AbhKTPjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 10:39:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhKTPaY (ORCPT
+        with ESMTP id S229710AbhKTPjb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 10:30:24 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80314C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 07:27:21 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id a23-20020a9d4717000000b0056c15d6d0caso21492381otf.12
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 07:27:21 -0800 (PST)
+        Sat, 20 Nov 2021 10:39:31 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9392C061574;
+        Sat, 20 Nov 2021 07:36:27 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id w1so55866911edc.6;
+        Sat, 20 Nov 2021 07:36:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=upm4Wumw3TuBFn621J2n4MFc2tW7m52KB2YgwqHKakI=;
-        b=ojiMCAY93qndskXz+jqEm7LZUV+sW66SDuBt5yC+bKgEtLTrIayoXaQvcj9963jqsD
-         NbcddTjHzBJBGbDpKrHKk/W5QCLHk+Jw+bjU0kJlk3wkBcHdDQPckMBXe35ifEzbSvzl
-         au7nQSpLp1tdx5VpjtxiW5nVXWWMLHmnezqw7Pbf+dKoJ8+CGKPtQmb7g3UiYmWWzbfB
-         bz6UfewXkVhAuwzDmZb5zuAro5G4o6fwAEhJ5deNGVAR2YKU0eCBiZpXyqihtMRtEHvo
-         xjDU5nW1/1rSJ+dgoItg0S0NpMUVe+QxvO4ckk/bJU2QeFblXrD1+AD5zXmtanFc2Y68
-         O7ng==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lFBgdagvfj9hhxv3IEdDgaDBd52bTGyq0WBPlUMIXIA=;
+        b=EuFwYQiqpqkm9mUUFv3u+9eUrbqyoTO+gtiK5tuX+U3rA55RCyUxDKrCn1OrMEdNid
+         K9lYt6jhzqExdcRUMRMR2pL3/YdTz2eA5SrnBgq+QGPf8IMAnB1S3vE03t0yWP4oL77R
+         mGLLrPRnO4bpQShcMq/Ew8avvbdbHCbJ263lHt0ev865YxhHiDTLKTc9U9wdczePtR84
+         t6d1CdFKOlK0YfXUJ11otswsXe6sFkd6Ja6G4tR86oXT50O94ZhV81D5H9WpRc/OHP6i
+         f6NNZcYG5QhCH+vFcetJnMilNcjIpss2CNJndtTJbI2GUr9zLHR3sncvx/JpH6QkgeXj
+         cLgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=upm4Wumw3TuBFn621J2n4MFc2tW7m52KB2YgwqHKakI=;
-        b=xRwE0R3p0qBgYqC1slWmrUTk5LtorYeKhCMgLTEVxQnoJNba+fo5YWul7/AFCD/RJ3
-         7Oz7y0pc5N9GH19Ha/NK7iEQn+pAntXHjoaz5Gfnl9dAdyWh98ooYBB/0l91sLarby15
-         Ts7CrowZdR+q1PkWMgOeL3pXHMkGRkeTXvy35i47C4aG0ijWwkugTi0gh5IDXX9nxoB1
-         0Mw8Ilu79sBeXMmTVfXU92ItvdiXFJNoip/S/JRRdmrywjuBlIyn7nqzk6y1jew9m0xQ
-         48k8J8HTOEKdk1Ub5ignyjdc6j0LWncTEqrwZQSARCmeNj4z3vmbqpChHj7F6LypzZMX
-         TkJQ==
-X-Gm-Message-State: AOAM530uYfPPBhdcAxIW1rmj/BFCMBcYgUEjW+Ani8puYVAUFAOasxWR
-        DFWYMtIWXkqafgEsW7FunB3Pig==
-X-Google-Smtp-Source: ABdhPJxFz8gnGvJUt+Pu/A36Zf1u9fEfu4oSUjoRPZeFR7IT1HmcDS4brraS5JG2g1w8VwAJFy0WVw==
-X-Received: by 2002:a05:6830:1092:: with SMTP id y18mr11761903oto.119.1637422040763;
-        Sat, 20 Nov 2021 07:27:20 -0800 (PST)
-Received: from [192.168.17.16] ([189.219.75.83])
-        by smtp.gmail.com with ESMTPSA id 3sm709933oif.12.2021.11.20.07.27.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Nov 2021 07:27:20 -0800 (PST)
-Subject: Re: [PATCH 5.10 00/21] 5.10.81-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-References: <20211119171443.892729043@linuxfoundation.org>
-From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-Message-ID: <106740f9-4efc-f1ac-fd42-bf8afc994333@linaro.org>
-Date:   Sat, 20 Nov 2021 09:27:19 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lFBgdagvfj9hhxv3IEdDgaDBd52bTGyq0WBPlUMIXIA=;
+        b=pl4aoPagdtithe5yIzrFpfeV+p9mVPL4Gws8I0jAuDEE5vDLunsybpadVrLLpzxQMj
+         UUjBo4QRM9MNmtJkagEJsrKPbKlz3UgV5FOd1DG6EvnmKUdzvU3IFlQccWYzihx2MJDa
+         eYwIUGArE4JmYbGtgLzR4tEcmRrPpC5p8Bx/QKH4oEtroXe+kv+ENsud/lJ0LeIPUepj
+         7WA5KWGfWbjWjg+z1iAZXdZanONP8CU0d+Cl71y9ZUZ+zt4Ub3uMvVIfAhzc+dh/EwG3
+         Qd0mQL+hiJwOzWI7UsfKfunzlrTwuoZS75jIPadHw5TftT3ToQch35zOLNHbJJDTe9XS
+         0qBA==
+X-Gm-Message-State: AOAM530lXPpXZTdCPXHILuQnfbSk0bayiGBvKdPmkN+PdSKK1r5hVwEI
+        iTzHpPytUpmVpMYuBLQZE0VErJfO4PDsI6Jpys8=
+X-Google-Smtp-Source: ABdhPJwf1oM/7o8Qza8mLwNjoE4V0eaLDBF+tVzyW98wajqYlqH36VC/WpDIrPHJprCtda3CK101ib4ne75HgIGnieg=
+X-Received: by 2002:a17:907:94c2:: with SMTP id dn2mr7972165ejc.325.1637422585888;
+ Sat, 20 Nov 2021 07:36:25 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211119171443.892729043@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211106183802.893285-1-aford173@gmail.com> <718f7f6d6cd564d031c1963f1590c62d549ae725.camel@ndufresne.ca>
+ <CAHCN7xKM9RUE7z-+ug1on+D=nDoEm589R4m03ofys92Aq75ZVQ@mail.gmail.com>
+ <8db00a4b6faa99c940d9bc86e17161eb0db5efe3.camel@ndufresne.ca>
+ <CAJ+vNU28UJffFv9jQ2KryJMudqYxvCaoVOVcU5dPqRA209iN6A@mail.gmail.com>
+ <d91532c2c0772f9aa708ead36b2a97203727a7ea.camel@ndufresne.ca>
+ <CAJ+vNU3H-V+bPoZ3qKead45h=W7AhQK6Lhjrx5ssdF4c_qfe=A@mail.gmail.com>
+ <CAHCN7x+0LwwU_rEST+TZxGquswGKL19gnTy9WLofsXtGAtWqdw@mail.gmail.com>
+ <7f94eaacfddb8c5434c17f1e069ea87a17657ce9.camel@ndufresne.ca> <CAHCN7xKRzxMBmPbDobWTuvNNSpTXk5XENvfBnfkhRY3eZKhn6w@mail.gmail.com>
+In-Reply-To: <CAHCN7xKRzxMBmPbDobWTuvNNSpTXk5XENvfBnfkhRY3eZKhn6w@mail.gmail.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Sat, 20 Nov 2021 09:36:14 -0600
+Message-ID: <CAHCN7xJFLNi_g+HX8PCy1Rkgf0jnWpO5QGYVz8nH19xrJkwHrA@mail.gmail.com>
+Subject: Re: [RFC 0/5] arm64: imx8mm: Enable Hantro VPUs
+To:     Nicolas Dufresne <nicolas@ndufresne.ca>
+Cc:     Tim Harvey <tharvey@gateworks.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        Schrempf Frieder <frieder.schrempf@kontron.de>,
+        Marek Vasut <marek.vasut@gmail.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        cstevens@beaconembedded.com,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Alice Guo <alice.guo@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        "open list:HANTRO VPU CODEC DRIVER" 
+        <linux-rockchip@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Fri, Nov 19, 2021 at 5:37 PM Adam Ford <aford173@gmail.com> wrote:
+>
+> On Fri, Nov 19, 2021 at 10:29 AM Nicolas Dufresne <nicolas@ndufresne.ca> wrote:
+> >
+> > Hi Adam, Tim,
+> >
+> > [...]
+> > > > > > Nicolas and Adam,
+> > > > > >
+> > > > > > For the H1 patches in this series: I've been able to test the IMX8MM
+> > > > > > H1 JPEG encode using GStreamer 1.18.5:
+> > > > > > $ gst-inspect-1.0 | grep -e "v4l2.*enc"
+> > > > > > video4linux2:  v4l2jpegenc: V4L2 JPEG Encoder
+> > > > > > $ gst-launch-1.0 videotestsrc ! jpegenc ! rtpjpegpay ! udpsink
+> > > > >                                   ^ v4l2jpegenc
+> > > > >
+> > > > > This is just a transcript error ?
+> > > >
+> > > > Nicolas,
+> > > >
+> > > > No! Thanks for catching my mistake. I was testing with software encode... ooops!
+> > > >
+> > > > 'gst-launch-1.0 videotestsrc ! v4l2jpegenc ! fakesink' actually hangs
+> > > > the board so likely a power-domain issue there?
+> > >
+> > > The v4l2-compliance tests fail on the h1 decoder with a hang, but I
+> > > think we're writing to registers which are not documented in the Mini
+> > > TRM.  The Mini TRM doesn't explicitly show the JPEG encoding as a
+> > > feature, but some of the registers state JPEG, but because some of the
+> > > registers written for the H1 are not documented in the TRM.  If those
+> > > registers are restricted or not in this SoC, I am concerned that it
+> > > might be related.  I'll try to run some more tests this weekend to
+> > > check on the status of the power-domain stuff.
+> >
+> > To verify if the HW support JPEG encoding you can read SWREG63 bit 25. This is
+> > in the TRM, just not labelled properly. To mimic the decoding side, would be "HW
+> > synthesis config register X" with the bit labelled SW_ENC_JPEG_PROF (but
+> > PROF/profile is on or off). If your board hang while reading this, you likely
+> > didn't get the power bit right.
+> >
+> > IMX8 has an undocumented control block thing that we have been fighting with in
+> > imx8q,  perhaps that's your issue. Few driver was proposed, we are still pending
+> > on NXP solution to be submitted (they asked us to wait, still waiting =)).
+>
+> Nicolas,
+>
+> Thanks for the suggestion to read offset FC.  There was an attempt
+> made by Lucas Stach to develop a VPU blk-ctrl driver to coordinate the
+> power-domains with the GPC driver. Unfortunately, it does appear to
+> hang, so it might not be operating correctly.
+>
+> Lucas,
+>
+> Do you have any idea of stuff I can try to see if the power domain is
+> coming online correctly?
+>
+> [   10.434727] imx-pgc imx-pgc-domain.6: request the vpumix domain to power up
+> [   10.463647] imx-pgc imx-pgc-domain.6: request the vpumix ADB400 to power up
+> [   10.517155] imx-pgc imx-pgc-domain.6: genpd vpumix success
+> [   10.728927] vpu: set fuse bits to enable
+> [   10.825500] imx8m-blk-ctrl 38330000.blk-ctrl: power vpublk-g1 GPC domain
+> [   10.878986] imx-pgc imx-pgc-domain.7: request the vpu-g1 domain to power up
+> [   10.932429] imx-pgc imx-pgc-domain.7: genpd vpu-g1 success
+> [   10.971988] imx8m-blk-ctrl 38330000.blk-ctrl: genpd vpublk-g1 success
+> [   11.004726] hantro-vpu 38300000.video-codec: registered
+> nxp,imx8mm-vpu-dec as /dev/video0
+> [   11.040760] imx8m-blk-ctrl 38330000.blk-ctrl: power vpublk-g2 GPC domain
+> [   11.066181] imx-pgc imx-pgc-domain.8: request the vpu-g2 domain to power up
+> [   11.087887] imx-pgc imx-pgc-domain.8: genpd vpu-g2 success
+> [   11.113808] imx8m-blk-ctrl 38330000.blk-ctrl: genpd vpublk-g2 success
+> [   11.139634] hantro-vpu 38310000.video-codec: registered
+> nxp,imx8mm-vpu-g2-dec as /dev/video1
+> [   11.156463] imx8m-blk-ctrl 38330000.blk-ctrl: power vpublk-h1 GPC domain
+> [   11.170817] imx-pgc imx-pgc-domain.9: request the vpu-h1 domain to power up
+> [   11.232990] imx-pgc imx-pgc-domain.9: genpd vpu-h1 success
+> [   11.252546] imx8m-blk-ctrl 38330000.blk-ctrl: genpd vpublk-h1 success
+> [   11.266152] hantro-vpu 38320000.video-codec: Checking vpu->enc_base + 0xfc
+>
+> <hang>
+>
+> adam
+>
 
-On 11/19/21 11:37 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.81 release.
-> There are 21 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 21 Nov 2021 17:14:35 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.81-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
-> -------------
-> Pseudo-Shortlog of commits:
-> 
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->      Linux 5.10.81-rc1
-[...]> Peter Zijlstra <peterz@infradead.org>
->      x86/iopl: Fake iopl(3) CLI/STI usage
-[...]
+Nicolas, Tim, and Lucas,
 
-Results from Linaro's test farm.
-Regressions found on x86_64 and i386, on iopl. Here's an excerpt of the selftest:
+I think I have the hanging resolved in the power domains, and I'll be
+pushing the fix to the GPCv2.
 
-   [    0.000000] Linux version 5.10.81-rc1 (oe-user@oe-host) (x86_64-linaro-linux-gcc (GCC) 7.3.0, GNU ld (GNU Binutils) 2.30.0.20180208) #1 SMP Fri Nov 19 19:48:55 UTC 2021
-[...]
-   [  170.351838] traps: iopl_64[2769] attempts to use CLI/STI, pretending it's a NOP, ip:400dde in iopl_64[400000+2000]
-[...]
-   # selftests: x86: iopl_64
-   # [FAIL]	CLI worked
-   # [FAIL]	STI worked
-   # [OK]	outb to 0x80 worked
-   # [OK]	outb to 0x80 worked
-   # [OK]	outb to 0xed failed
-   # 	child: set IOPL to 3
-   # [RUN]	child: write to 0x80
-   # [FAIL]	CLI worked
-   # [FAIL]	STI worked
-   # [OK]	outb to 0x80 worked
-   # [OK]	outb to 0x80 worked
-   # [OK]	outb to 0xed failed
-   # [OK]	Child succeeded
-   # [RUN]	parent: write to 0x80 (should fail)
-   # [OK]	outb to 0x80 failed
-   # [OK]	CLI faulted
-   # [OK]	STI faulted
-   # 	iopl(3)
-   # 	Drop privileges
-   # [RUN]	iopl(3) unprivileged but with IOPL==3
-   # [RUN]	iopl(0) unprivileged
-   # [RUN]	iopl(3) unprivileged
-   # [OK]	Failed as expected
-   not ok 7 selftests: x86: iopl_64 # exit=1
+For the H1 Encoder, I added some debugging code to read the offset
+0xfc and print some data based on the findings of that VPU-h1 offset.
+I basically check the various bits per the TRM to see if they are set
+and print some splat to indicate whether or not the function is
+supported.
 
-The baseline kernel (v5.10.80) exhibited this output:
-   # selftests: x86: iopl_64
-   # [OK]	CLI faulted
-   # [OK]	STI faulted
-   # [OK]	outb to 0x80 worked
-   # [OK]	outb to 0x80 worked
-   # [OK]	outb to 0xed failed
-   # 	child: set IOPL to 3
-   # [RUN]	child: write to 0x80
-   # [OK]	CLI faulted
-   # [OK]	STI faulted
-   # [OK]	outb to 0x80 worked
-   # [OK]	outb to 0x80 worked
-   # [OK]	outb to 0xed failed
-   # [OK]	Child succeeded
-   # [RUN]	parent: write to 0x80 (should fail)
-   # [OK]	outb to 0x80 failed
-   # [OK]	CLI faulted
-   # [OK]	STI faulted
-   # 	iopl(3)
-   # 	Drop privileges
-   # [RUN]	iopl(3) unprivileged but with IOPL==3
-   # [RUN]	iopl(0) unprivileged
-   # [RUN]	iopl(3) unprivileged
-   # [OK]	Failed as expected
-   ok 7 selftests: x86: iopl_64
+[    8.861865] hantro-vpu 38320000.video-codec: Checking vpu->enc_base + 0xfc
+[    8.870594] hantro-vpu 38320000.video-codec: Stabilization supported by HW
+[    8.889341] hantro-vpu 38320000.video-codec: VP8 encoding supported by HW
+[    8.899386] hantro-vpu 38320000.video-codec: H.264 encoding supported by HW
+[    8.918171] hantro-vpu 38320000.video-codec: RGB to YUV conversion
+supported by HW
+[    8.934067] hantro-vpu 38320000.video-codec: registered
+nxp,imx8mm-vpu-h1-enc as /dev/video2
 
+Unfortunately, JPEG is not listed as supported.  :-(
 
-## Build
-* kernel: 5.10.81-rc1
-* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
-* git branch: linux-5.10.y
-* git commit: ed689bd1df46a07911fffa509cd06c5ec7beb9c1
-* git describe: v5.10.80-22-ged689bd1df46
-* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10.80-22-ged689bd1df46
+However, the hanging stops occurring, so I'll be posting a patch to
+update the GPCv2 code.  I can reduce sone device tree duplication, and
+the G2 throws some splat, but that will be a separate discussion.
 
-## Regressions (compared to v5.10.80)
-* i386, kselftest-x86
-   - x86.iopl_32
+I can also run v4l2-compliance on the H1 node, and it responds without hanging.
 
-* qemu_x86_64, kselftest-x86
-   - x86.iopl_64
+root@beacon-imx8mm-kit:~# v4l2-compliance -d2
+v4l2-compliance SHA: not available
+, 64 bits, 64-bit time_t
 
-* x86, kselftest-x86
-   - x86.iopl_64
+Compliance test for hantro-vpu device /dev/video2:
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Driver Info:
+Driver name      : hantro-vpu
+Card type        : nxp,imx8mm-vpu-h1-enc
+Bus info         : platform: hantro-vpu
+Driver version   : 5.16.0
+Capabilities     : 0x84204000
+Video Memory-to-Memory Multiplanar
+Streaming
+Extended Pix Format
+Device Capabilities
+Device Caps      : 0x04204000
+Video Memory-to-Memory Multiplanar
 
+< snip>
 
-## No fixes (compared to v5.10.80)
+Total for hantro-vpu device /dev/video2: 46, Succeeded: 46, Failed: 0,
+Warnings: 0
 
-## Test result summary
-total: 91125, pass: 77560, fail: 574, skip: 12243, xfail: 748
+I'll do an RFCv2 on the Hantro G1 and G2 with the H1 removed based on
+the updated GPCv2 code I'll be pushing shortly, but at least the
+system doesn't hang, so I'm fairly confident the power domains are
+working better now even if we cannot support the JPEG.
 
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 259 total, 259 passed, 0 failed
-* arm64: 37 total, 37 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 36 total, 36 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 34 total, 34 passed, 0 failed
-* parisc: 12 total, 12 passed, 0 failed
-* powerpc: 54 total, 46 passed, 8 failed
-* riscv: 24 total, 24 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 24 total, 24 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 37 total, 37 passed, 0 failed
+adam
 
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
-
-Greetings!
-
-Daniel Díaz
-daniel.diaz@linaro.org
-
--- 
-Linaro LKFT
-https://lkft.linaro.org
+> >
+> > > >
+> > > > >
+> > > > > > host=192.168.1.146 port=5000
+> > > > > > viewed on client@192.168.1.146 via:
+> > > > > > $ gst-launch-1.0 udpsrc port=5000 ! application/x-rtp,payload=96 !
+> > > > > > rtpjpegdepay ! jpegdec ! autovideosink
+> > > > > >
+> > > > > > For the G1/G2 patches in the series I don't see any Gstreamer
+> > > > > > 'v4l2.*dec' elements. Perhaps I need a newer version of Gstreamer.
+> > > > >
+> > > > > Most likely yes, I suggest building gstreamer/ branch "main", GStreamer has now
+> > > > > a single repository. We are very close to 1.20, which will include stable API
+> > > > > support of H264, MPEG2 and VP8 decoding.
+> > > > >
+> > > >
+> > > > Ok, let me see if I can navigate through the build process and I'll
+> > > > get back to you.
+> > > >
+> > > > Thanks,
+> > > >
+> > > > Tim
+> > > >
+> > > > > >
+> > > > > > I have CSI capture and DSI display currently working on
+> > > > > > imx8mm-venice-gw73xx-0x that I can play with. The CSI sensor only
+> > > > > > supports RAW8/RAW10 (and gstreamer currently only supports RAW8) and I
+> > > > > > can't efficiently convert to something the JPEG encoder likes without
+> > > > > > bayer2rgbneon (a libneon version).
+> > > > > >
+> > > > > > I see from the IMX8MMRM that the 2D GPU supports scaling etc with a
+> > > > > > wide range of data formats but I'm not sure how to tap into this as
+> > > > > > that hardware is managed by the vivante driver. On the IMX6QDL there
+> > > > > > is a separate IPU block that Philipp Zabel wrote a nice mem2mem
+> > > > > > csc/scaler driver for but I don't see any equivalent currently for
+> > > > > > IMX8MM.
+> > > > > >
+> > > > > > Best regards,
+> > > > > >
+> > > > > > Tim
+> > > > >
+> >
