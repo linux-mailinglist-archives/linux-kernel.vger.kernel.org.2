@@ -2,103 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904FA457A1E
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 01:22:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12667457A20
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 01:26:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235368AbhKTAZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 19:25:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233025AbhKTAZY (ORCPT
+        id S234875AbhKTA3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 19:29:50 -0500
+Received: from mail-lf1-f45.google.com ([209.85.167.45]:33783 "EHLO
+        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231761AbhKTA3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 19:25:24 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF6FC06173E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 16:22:22 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id w22so14985818ioa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 16:22:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=45aoiIXLNHX/rElliOua9/jn7RznBxUCcrDpMi0LV+8=;
-        b=JCbnJJdfHDf/Ck6Y9dH93bwkVp/YCaWqIXQ/G832da1Y4FRlbORIL/8Ro3C6PDwTnh
-         mTLCjDWV03dDzQH1K1sp9GXpu/xlrxYWAOqPi0AyJxfOv2u17vq4GhCBbbrD69neKC6/
-         nLDiTmjnO4xe8VRpEoF8jVBAKOYnes9qv+Ipc=
+        Fri, 19 Nov 2021 19:29:48 -0500
+Received: by mail-lf1-f45.google.com with SMTP id bu18so50909992lfb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 16:26:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=45aoiIXLNHX/rElliOua9/jn7RznBxUCcrDpMi0LV+8=;
-        b=Ek4BuSp8RIMB0gOqR+vSzXKt9xc8qsHId/CUdeQnBs7R7sve9HunXUEju/FoXnMBMx
-         Abrn/GsO8ELo+7FKdx5EWs/yYBOEKQ0ioxuWZq1kTmudyJwqoO9e4GtsQSkGH+/nVmDg
-         aID568/tLqMAPVXB6eQeuG1xEI3iV2SEpEwrwvL5pIzmmtS+TPWvwomDLGLlTXiStEg2
-         aJE3627Gt/w0PkjRDv0IgepwAHeAUHzO2ViTBiuGHYzTtgB4DV80kNljo5nL6NQiFTyO
-         fzO3cG1wq9eQpLIBAVkHdSuXBaPN5y/fV6wz1Bx7MNUTOAnOA9uU7CqWHUhelOW1xTLK
-         OD6A==
-X-Gm-Message-State: AOAM531u65SBhB7e9w4d8hAEmKfj5OKVdthoTHMcWG9QkPBkViNl3/Ix
-        VyCajMW+GrMM7APacxOxdcCCoQ==
-X-Google-Smtp-Source: ABdhPJxaN5oCOmmGf4TnBvJnw+z3+nee3C+NVAWqPPJAD1cXa/QZx7wbZU4dlQ/jTRbiJcdPEhfJ7A==
-X-Received: by 2002:a05:6638:238b:: with SMTP id q11mr31249300jat.43.1637367741713;
-        Fri, 19 Nov 2021 16:22:21 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id k11sm1093497ilv.66.2021.11.19.16.22.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Nov 2021 16:22:21 -0800 (PST)
-Subject: Re: [PATCH 1/2] selftests: cgroup: build error multiple outpt files
-To:     Anders Roxell <anders.roxell@linaro.org>, shuah@kernel.org,
-        christian@brauner.io
-Cc:     nathan@kernel.org, ndesaulniers@google.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Arnd Bergmann <arnd@arndb.de>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20211105162530.3307666-1-anders.roxell@linaro.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <61b21c4b-fc26-5e41-3aed-22a7e56b04ba@linuxfoundation.org>
-Date:   Fri, 19 Nov 2021 17:22:20 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ymsb56msPBLvOzlurRwBAn72XXkVy6dp2kfrB9BYIN8=;
+        b=AKiXYO767KLAbbPI/6mvD3djIJyZr3hs7Pt5phF+V9g4n7KIgOthYT37dL1I+foF57
+         OCG/RsE4a6lFHpB6J8f2YA3kFc0/dD0PuCxRPM0IpJYd4jzxZwuT3Ltw9bzo62FI0w5N
+         qI6n01v9fQ6rBT/C9rkxzjPxdAlcJC+nNlM2Dko0+pVTzCkXKRjn7d/FnTFtskoyRJPE
+         0Jo6XE4sikNqtRj8vaa8Yy1cTh9dOK9yXtXGKq6alpicd5cSrKWEosBwp5LXfduy9s3Y
+         J+LUWYOvRD9dsP1zHtzfG2LwqDH1LS9PfSRdtl7kJGtIuh51GsnRE9m/gk7G0Eah6JJB
+         izJA==
+X-Gm-Message-State: AOAM533gdbvk+axNDdm9OgjIYr9y3AhimE+Z9RmQm9LdybSHGow0uVCM
+        xWW4N7Oy42uon5SXUmUQl2dL+Xf+pEj5Cl3M9go=
+X-Google-Smtp-Source: ABdhPJx9MIgePzH9pbh7YvcHZbtPzifNFw72OUEis+C2EfJlmWlFQCZu+jCU+RBOQ5psngmSQhdaLWbbt/bWPVOZu+8=
+X-Received: by 2002:a05:6512:1515:: with SMTP id bq21mr36241395lfb.71.1637368004720;
+ Fri, 19 Nov 2021 16:26:44 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211105162530.3307666-1-anders.roxell@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <YZeYX305gA0ut9N8@kernel.org> <YZev7KClb/ud43Lc@krava>
+In-Reply-To: <YZev7KClb/ud43Lc@krava>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 19 Nov 2021 16:26:33 -0800
+Message-ID: <CAM9d7chqmavCZyJDz0OHe0uGEwp7PuxhHMBZ0cx+U71VpU+1=w@mail.gmail.com>
+Subject: Re: 'perf stat --bpf-counters test' failures
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Sohaib Mohamed <sohaib.amhmd@gmail.com>,
+        Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/21 10:25 AM, Anders Roxell wrote:
-> When building selftests/cgroup: with clang the following error are seen:
-> 
-> clang -Wall -pthread    test_memcontrol.c cgroup_util.c ../clone3/clone3_selftests.h  -o /home/anders/.cache/tuxmake/builds/current/kselftest/cgroup/test_memcontrol
-> clang: error: cannot specify -o when generating multiple output files
-> make[3]: *** [../lib.mk:146: /home/anders/.cache/tuxmake/builds/current/kselftest/cgroup/test_memcontrol] Error 1
-> 
-> Rework to add the header files to LOCAL_HDRS before including ../lib.mk,
-> since the dependency is evaluated in '$(OUTPUT)/%:%.c $(LOCAL_HDRS)' in
-> file lib.mk.
-> 
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
-> ---
->   tools/testing/selftests/cgroup/Makefile | 12 +++++++-----
->   tools/testing/selftests/lib.mk          |  2 +-
->   2 files changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/selftests/cgroup/Makefile
-> index 59e222460581..745fe25fa0b9 100644
-> --- a/tools/testing/selftests/cgroup/Makefile
-> +++ b/tools/testing/selftests/cgroup/Makefile
-> @@ -11,10 +11,12 @@ TEST_GEN_PROGS += test_core
->   TEST_GEN_PROGS += test_freezer
->   TEST_GEN_PROGS += test_kill
->   
-> +LOCAL_HDRS += $(selfdir)/clone3/clone3_selftests.h $(selfdir)/pidfd/pidfd.h
-> +
+Hello,
 
-This looks odd to me. Why are we introducing dependencies between tests?
-clone3 includes in cgroup? Looks odd to me.
+On Fri, Nov 19, 2021 at 6:08 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Fri, Nov 19, 2021 at 09:28:15AM -0300, Arnaldo Carvalho de Melo wrote:
+> >
+> > After I updated to fedora 35 I started seeing the errors below,
+> > it may well not be related to that, maybe something on libbpf, haven't
+> > investigated, have you seen this?
+>
+> yep, it seems the perf bench is broken so the counts won't correlated
+> if I revert this one:
+>   92723ea0f11d perf bench: Fix two memory leaks detected with ASan
+>
+> it works for me again.. it seems to break -t option
 
-thanks,
--- Shuah
+Right, it should free the ctx after the thread finishes the work.
+
+Thanks,
+Namhyung
+
+
+>
+> Sohaib, could you please check on that?
+>
+>         [root@dell-r440-01 perf]# ./perf bench sched messaging -g 1 -l 100 -t
+>         # Running 'sched/messaging' benchmark:
+>         RRRperf: CLIENT: ready write: Bad file descriptor
+>         Rperf: SENDER: write: Bad file descriptor
