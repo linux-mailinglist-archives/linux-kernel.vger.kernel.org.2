@@ -2,74 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F38457BFD
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 07:15:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B09457C04
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 07:27:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236376AbhKTGS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 01:18:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57214 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236265AbhKTGSq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 01:18:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 631D360E9C;
-        Sat, 20 Nov 2021 06:15:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637388943;
-        bh=BlDTN/fYlJgH1aIXEB5pPtTmQOvs8AurQM7U/adzSb8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DSjWLGjOpcuTRyI/E/SMlkyA9a5G5FqpidFQ++GLEn/RyeaFa29Ri561m4pIRkvMb
-         4sGMD5jJ5wgkjxtip31RBavsB217c/RQpxGrVi+GtPrOLYlUu/LgDcceTegKIqCQ8Z
-         joB9vwIEGDlJJRLEIXMkZNgvuFNogmJ5/IXXiyb1Jil2qiJwB+zGn8Xj+I/GEqOAQi
-         kFPfK495BX4HJN/JHKWO4WUXqY5rFxRo3x0Ba4jl6UPAQidGZnMXoBRIloawfBn+Dh
-         U2hr3V5tnAY+tQPyeVYS7QPHT3yH/d18UQVLJpKRzRSiuqpRNrgyyGcjgsI9wMzqv6
-         G4LCj2MENaIxg==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     linux-phy@lists.infradead.org, Vinod Koul <vkoul@kernel.org>,
-        Roger Quadros <rogerq@ti.com>, Liam Beguin <lvb@xiphos.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] phy: ti: omap-usb2: Fix the kernel-doc style
-Date:   Sat, 20 Nov 2021 11:45:31 +0530
-Message-Id: <20211120061531.410771-2-vkoul@kernel.org>
+        id S236392AbhKTGa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 01:30:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236325AbhKTGaZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 01:30:25 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799C8C061574;
+        Fri, 19 Nov 2021 22:27:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=PbHcHIDGnaO98GdsC8MJFh1P9E0OzFrxVx/JQdU71tA=; b=2zo/LHdD88ho3wj6CMV0SQwLpW
+        YQ1cLae5g9M0jKDve67uVKRMHH5Qn7qE3wLO1OCmZ3qNIRgtwZFl3+kAgJh/36Lv+TYZzQ1cdpN/J
+        MOkT4zHzFUEwi4a03/Rud5CPw8LgVxB5obB5RY8XC7qB2QebJAg66xovpyEgEP2e1xzrwcLnbFX58
+        j1GR+Al2fwKyrNsCCScayvySxS/xveLXkpj5oa2ij2prljre190rrwQaRbViV71jN6jP04zXEnLZT
+        znJzL7SCj/PpWBDefyw0jo5jcCy+2BKX2+XQ/VRepDEJWlRHm8AXOpHCEbOLgtQlxDA5YsAf4ppor
+        Aba+0jLg==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1moJqK-00C73R-4F; Sat, 20 Nov 2021 06:27:20 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>, linux-clk@vger.kernel.org
+Subject: [PATCH] clk: Gemini: fix struct name in kernel-doc
+Date:   Fri, 19 Nov 2021 22:27:19 -0800
+Message-Id: <20211120062719.21395-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211120061531.410771-1-vkoul@kernel.org>
-References: <20211120061531.410771-1-vkoul@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The documentation uses incorrect style, so fix that.
+Fix a typo in the struct name in the kernel-doc notation so that
+kernel-doc won't complain about it.
 
-drivers/phy/ti/phy-omap-usb2.c:102: warning: Function parameter or member 'comparator' not described in 'omap_usb2_set_comparator'
+Fixes this warning:
 
-While at it, use a single line for function description
+drivers/clk/clk-gemini.c:64: warning: expecting prototype for struct gemini_data_data. Prototype was for struct gemini_gate_data instead
 
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Fixes: 846423f96721 ("clk: Add Gemini SoC clock controller")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: linux-clk@vger.kernel.org
 ---
-Changes in v2: use () for function names
+ drivers/clk/clk-gemini.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/phy/ti/phy-omap-usb2.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/phy/ti/phy-omap-usb2.c b/drivers/phy/ti/phy-omap-usb2.c
-index ebceb1520ce8..3a505fe5715a 100644
---- a/drivers/phy/ti/phy-omap-usb2.c
-+++ b/drivers/phy/ti/phy-omap-usb2.c
-@@ -89,9 +89,9 @@ static inline void omap_usb_writel(void __iomem *addr, unsigned int offset,
- }
+--- linux-next-20211118.orig/drivers/clk/clk-gemini.c
++++ linux-next-20211118/drivers/clk/clk-gemini.c
+@@ -50,7 +50,7 @@ static DEFINE_SPINLOCK(gemini_clk_lock);
+ #define PCI_DLL_TAP_SEL_MASK		0x1f
  
  /**
-- * omap_usb2_set_comparator - links the comparator present in the system with
-- *	this phy
-- * @comparator - the companion phy(comparator) for this phy
-+ * omap_usb2_set_comparator() - links the comparator present in the system with this phy
-+ *
-+ * @comparator:  the companion phy(comparator) for this phy
-  *
-  * The phy companion driver should call this API passing the phy_companion
-  * filled with set_vbus and start_srp to be used by usb phy.
--- 
-2.31.1
-
+- * struct gemini_data_data - Gemini gated clocks
++ * struct gemini_gate_data - Gemini gated clocks
+  * @bit_idx: the bit used to gate this clock in the clock register
+  * @name: the clock name
+  * @parent_name: the name of the parent clock
