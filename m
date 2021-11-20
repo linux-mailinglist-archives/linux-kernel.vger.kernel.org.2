@@ -2,140 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F492457F51
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 17:01:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1BCE457F52
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 17:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237718AbhKTQEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 11:04:09 -0500
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:42022 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231523AbhKTQEI (ORCPT
+        id S237730AbhKTQEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 11:04:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231523AbhKTQEl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 11:04:08 -0500
-Received: from [77.244.183.192] (port=64374 helo=melee.fritz.box)
-        by hostingweb31.netsons.net with esmtpa (Exim 4.94.2)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1moSnX-000Dxh-G2; Sat, 20 Nov 2021 17:01:03 +0100
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Luca Ceresoli <luca@lucaceresoli.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        Chiwoong Byun <woong.byun@samsung.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH v4 9/9] rtc: max77686: add MAX77714 support
-Date:   Sat, 20 Nov 2021 16:57:07 +0100
-Message-Id: <20211120155707.4019487-10-luca@lucaceresoli.net>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211120155707.4019487-1-luca@lucaceresoli.net>
-References: <20211120155707.4019487-1-luca@lucaceresoli.net>
+        Sat, 20 Nov 2021 11:04:41 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170A8C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 08:01:38 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id l190so732989pge.7
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 08:01:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=Ky8vda2f/TaIwcftvJ93YOE0VOIb/9YtM8HnHTjeqPA=;
+        b=mWTDAtl8mtYZ9uMQ+uPrBAovWt4xPcHXS6VYfK+rYZs2Lbudn6r3nG/lRcY4c5IAlg
+         KzgWoSADHcdrdpE7zzDIImlY9TkTCEnHmj9zyHPHy5eQqG40YuuG8qj7NQdbCkmkqjZg
+         ExQSB1pdvWF07/AW4fUHQ5H9kNFcrDYx7X9G2DIJTVWk+93LvjpU7lAWoYJApiANUdWm
+         FyhqgV3MZ7z1gMK7+KbSTXmPV4StoK9ch901aH349mofyCURiRp4wTXm9MEZbOYwvhmc
+         dytyHTB2fI1GUS+ZEKr5H+M9z4NuVJUdBllKpgdnVVRvdtZkZfELJZowkhZAgAa28OAu
+         RoXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=Ky8vda2f/TaIwcftvJ93YOE0VOIb/9YtM8HnHTjeqPA=;
+        b=uqz/cEUTU29o1zj3rbGOKOGo7FaBpum/ucOn1rpnT1Y7CRJpvohYZSThBHvnuD0xjG
+         2dnKaGU9VDaxdY781LiMK2YkUd2/wh9oDbe37SRzI6MH7hW6omtrSQBraI3M5yXMYF58
+         DtDB2LsYBDYr/CqyaoXQAztgiROofmN8LmoxZ2Aicyp/L6khteunoDiGc3rUbh+GhzBY
+         HyCJ0X+iMpbcEP1PKBOvW4i2irxRCEIXlGGwv10Fp/Ak/wcRA4tzQe7dEcuReELQRgK1
+         PPP+MWrLoIyB9lWi3E2uLoy4VjKudo0+eR0P011R9wPW3RnTfvJsgpvvSAnjQBKdihiu
+         UtXw==
+X-Gm-Message-State: AOAM531EPhCXX74yCsRGIIIBN1VfsM768pnnf1Wu/vAkXCYpV+1aeHXG
+        5yGjzcbG70rvAwTtUL02rzsloDyRIARVLQ==
+X-Google-Smtp-Source: ABdhPJy9OatEEdW3TF/tPuDyJN4Uj59SAgteyn4pw7iqWByZXoqHLEdPo1jBElkxa33k1b7W/P8vmg==
+X-Received: by 2002:a05:6a00:234a:b0:49f:c0f7:f474 with SMTP id j10-20020a056a00234a00b0049fc0f7f474mr31424693pfj.64.1637424097498;
+        Sat, 20 Nov 2021 08:01:37 -0800 (PST)
+Received: from debian (ZU155130.ppp.dion.ne.jp. [59.133.155.130])
+        by smtp.gmail.com with ESMTPSA id g11sm2386730pgn.41.2021.11.20.08.01.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Nov 2021 08:01:37 -0800 (PST)
+Date:   Sat, 20 Nov 2021 11:01:34 -0500
+From:   Satoshi Ikeke <satoshi.ikeke@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: rtl8723bs: replace printk(KERN_CRIT...) by
+ netdev_crit()
+Message-ID: <YZkb3t83RFxVMWH4@debian>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RTC included in the MAX77714 PMIC is very similar to the one in the
-MAX77686. Reuse the rtc-max77686.c driver with the minimum required changes
-for the MAX77714 RTC.
+Replace printk(KERN_CRIT...) by netdev_crit() for more uniform error reporting. Issue found by checkpatch.
 
-Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-
+Signed-off-by: Satoshi Ikeke <satoshi.ikeke@gmail.com>
 ---
+ drivers/staging/rtl8723bs/os_dep/sdio_intf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changes in v4: none
-
-Changes in v3: none
-
-Changes in v2: none
----
- drivers/rtc/Kconfig        |  2 +-
- drivers/rtc/rtc-max77686.c | 24 ++++++++++++++++++++++++
- 2 files changed, 25 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index 058e56a10ab8..4242cca5e560 100644
---- a/drivers/rtc/Kconfig
-+++ b/drivers/rtc/Kconfig
-@@ -375,7 +375,7 @@ config RTC_DRV_MAX8997
- 
- config RTC_DRV_MAX77686
- 	tristate "Maxim MAX77686"
--	depends on MFD_MAX77686 || MFD_MAX77620 || COMPILE_TEST
-+	depends on MFD_MAX77686 || MFD_MAX77620 || MFD_MAX77714 || COMPILE_TEST
- 	help
- 	  If you say yes here you will get support for the
- 	  RTC of Maxim MAX77686/MAX77620/MAX77802 PMIC.
-diff --git a/drivers/rtc/rtc-max77686.c b/drivers/rtc/rtc-max77686.c
-index 5c64d08c0732..b0250d91fb00 100644
---- a/drivers/rtc/rtc-max77686.c
-+++ b/drivers/rtc/rtc-max77686.c
-@@ -19,6 +19,7 @@
- 
- #define MAX77686_I2C_ADDR_RTC		(0x0C >> 1)
- #define MAX77620_I2C_ADDR_RTC		0x68
-+#define MAX77714_I2C_ADDR_RTC		0x48
- #define MAX77686_INVALID_I2C_ADDR	(-1)
- 
- /* Define non existing register */
-@@ -200,6 +201,28 @@ static const struct max77686_rtc_driver_data max77686_drv_data = {
- 	.regmap_config = &max77686_rtc_regmap_config,
- };
- 
-+static const struct regmap_irq_chip max77714_rtc_irq_chip = {
-+	.name		= "max77714-rtc",
-+	.status_base	= MAX77686_RTC_INT,
-+	.mask_base	= MAX77686_RTC_INTM,
-+	.num_regs	= 1,
-+	.irqs		= max77686_rtc_irqs,
-+	.num_irqs	= ARRAY_SIZE(max77686_rtc_irqs) - 1, /* no WTSR on 77714 */
-+};
-+
-+static const struct max77686_rtc_driver_data max77714_drv_data = {
-+	.delay = 16000,
-+	.mask  = 0x7f,
-+	.map   = max77686_map,
-+	.alarm_enable_reg = false,
-+	.rtc_irq_from_platform = false,
-+	/* On MAX77714 RTCA1 is BIT 1 of RTCINT (0x00). Not supported by this driver. */
-+	.alarm_pending_status_reg = MAX77686_INVALID_REG,
-+	.rtc_i2c_addr = MAX77714_I2C_ADDR_RTC,
-+	.rtc_irq_chip = &max77714_rtc_irq_chip,
-+	.regmap_config = &max77686_rtc_regmap_config,
-+};
-+
- static const struct regmap_config max77620_rtc_regmap_config = {
- 	.reg_bits = 8,
- 	.val_bits = 8,
-@@ -843,6 +866,7 @@ static const struct platform_device_id rtc_id[] = {
- 	{ "max77686-rtc", .driver_data = (kernel_ulong_t)&max77686_drv_data, },
- 	{ "max77802-rtc", .driver_data = (kernel_ulong_t)&max77802_drv_data, },
- 	{ "max77620-rtc", .driver_data = (kernel_ulong_t)&max77620_drv_data, },
-+	{ "max77714-rtc", .driver_data = (kernel_ulong_t)&max77714_drv_data, },
- 	{},
- };
- MODULE_DEVICE_TABLE(platform, rtc_id);
+diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
+index 490431484524..8c90cb3a68ed 100644
+--- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
++++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
+@@ -73,7 +73,7 @@ static int sdio_alloc_irq(struct dvobj_priv *dvobj)
+ 	err = sdio_claim_irq(func, &sd_sync_int_hdl);
+ 	if (err) {
+ 		dvobj->drv_dbg.dbg_sdio_alloc_irq_error_cnt++;
+-		printk(KERN_CRIT "%s: sdio_claim_irq FAIL(%d)!\n", __func__, err);
++		netdev_crit(dvobj->if1->pnetdev, "%s: sdio_claim_irq FAIL(%d)!\n", __func__, err);
+ 	} else {
+ 		dvobj->drv_dbg.dbg_sdio_alloc_irq_cnt++;
+ 		dvobj->irq_alloc = 1;
 -- 
-2.25.1
+2.30.2
 
