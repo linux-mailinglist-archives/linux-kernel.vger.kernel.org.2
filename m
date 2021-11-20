@@ -2,114 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B87457BE1
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 06:27:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F13DA457BE3
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 06:31:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231579AbhKTFau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 00:30:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34902 "EHLO
+        id S232454AbhKTFeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 00:34:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbhKTFat (ORCPT
+        with ESMTP id S231600AbhKTFet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 00:30:49 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 202D5C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 21:27:47 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id j7so4980783ilk.13
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 21:27:47 -0800 (PST)
+        Sat, 20 Nov 2021 00:34:49 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66202C06173E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 21:31:46 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id w22so15552360ioa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 21:31:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=SAiOoSz2aR+nU4nAvKB3E4IjIBIAvYPcM3p77o3YLH0=;
-        b=oy0azkKwn4dwoV3Er9arlhJg9eUMCuNmoZRgSiSzCRP7kxbiWKrxPVDpRhQzQ962oc
-         kgM1lDDdza4+bSYnmj4afPPKJdgGSAQ4h8AwRzQ13eTNYyHJ/zlcWKxJNtiX8KpS4Nm+
-         IkWtFWulBUR14O60JjlU00wLAs3PZwZ9Z/JHPr6/HIBf2AWqgs1rDEc1vMMkl758qjTs
-         rIgsapGRmn0e+yjMnezZMYa7i4G33yYaIpfjTgvRDZYgaXx+AR9S+xeHUmW9NARqI6Kd
-         WAutsxJT/ikfNfJI5sEJI8e4l3BVBgGpBBVK8ORWN9OqGoselXVKqLVQIGiBLZvT4xTj
-         lH0Q==
+        bh=vnmw4S1Oo24l/mBbjqvIPUjrCN4SWt+nkM7iPySscsw=;
+        b=Is6GD84hBb9QY3j8VzxArUzIWg27YUxT7W2u8JsLG3BXkUJFEhtGH+/3LaqHJ5lj/u
+         JzOdhu6c+qD1Xp46nfqUBMqM5YcXolH3Cm0gWBAhTvrL0U9Sok39SsnwM/M2fwM+giyC
+         b2mttp9GnYCE5IXirYkv7ApZasb6lnRTh/4SvBkwmuuRhjox12DYv/wiXsJzFyxaUtGk
+         uFkheaWF/Y6auNhbt4lN5qsa4bH56/C5qdfXXV9rqxo89VHFtgoxWLBWBqz2HwwYGX43
+         ZM+LFt1omvXDOHm9TfIFtQhEIiZpdGzRiDJ/sbcSz0UqKLsNZpP+biDAuPXg8bW6HMzh
+         5O2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=SAiOoSz2aR+nU4nAvKB3E4IjIBIAvYPcM3p77o3YLH0=;
-        b=yZTR9rMV2B4I4WpsK32UQBgQK+si3+58qnASa9JdJe/u4dlOFsjYRELnhkgUOLCZ8O
-         7rFNGb0tD8eW+93ogQ39NnreU4pFOLuutm62dNuBLOJpQ8X0a7Z202bTx+FYvl5Z1cGe
-         nQF/65YgaV9Ql6KkKIjMQvDCah33cVvfYOdtFGFJRAdXa+AC0Y8gi980A2GsrLkUGJAn
-         XA9HCiLtDaS1/jH/xofCQfEGChzfsdAHPlOALA0XNEz7xE7ZZiDL+EsyhfUkDV1/WvPO
-         s2u1WaTIeRihYAh1XmvK/cp1ZLAHdQ4qtJI1hzaYDhKVUmxANZPRsSQKWzX2nxtuTVi2
-         XZnQ==
-X-Gm-Message-State: AOAM530nB0S4R11ujf4R9qIyqSz3DNxcVcRgw7uEXjbkey1zBJVvkzC+
-        ZgroNcVm4JlRaYc1lXmnXZpC2+l1xQajzV//Xfs6lg==
-X-Google-Smtp-Source: ABdhPJzPJjBBL+Y+HgRcyAByQC7OhenxnmUpLB684dVA4hTC4HT+3IC2ky5zTXr9Y6GPGe1O1ZR9kvKqeUv9fPh/R38=
-X-Received: by 2002:a92:6b0b:: with SMTP id g11mr8778285ilc.146.1637386066340;
- Fri, 19 Nov 2021 21:27:46 -0800 (PST)
+        bh=vnmw4S1Oo24l/mBbjqvIPUjrCN4SWt+nkM7iPySscsw=;
+        b=mvo1MMVvQVzC7Eb/EdCJL65HDSNDLz41pOZGKs+te8WRunyiB4QTBgd2+V5fD59Eq6
+         JU2WhmLDu94AhVrn8+AwjVxNXbgzDk6yV/apzpk5r5LRHP7kyEtNkFWEVSaQ+lqJpIWt
+         4EVBZjsEZuVZ9IjgfzQRUtVQXSCymigIlabTNYz3B/ihyg5PtwJnXUeRCuK+Utfz75k2
+         SkKvddkLOYINdFefdD25qW9uixTJ/lhd7BywcJafvyX4bHJsWreZ4P/biQI6iwq+4hMD
+         609phGN0o0vsMbw02gS3/xwIzQN83/0UksWv0xKFGCm8EY4r9WWfH/Su0ydAtWfAYGCU
+         xXMQ==
+X-Gm-Message-State: AOAM530E/PnJfSN11xaNuwleCfdG2SL0RfK8xwPtBhr5JSLXf35ReTDQ
+        aUAItlqhhs1DBckihZmUWUlGDgEZdGWbnVwPPpfKzw==
+X-Google-Smtp-Source: ABdhPJxBhvbOju0exRZ4gxIwv3a9pAvTn8srl8n5iLbXQAIxlrh8tvJvvtpWyzDjocNGmv1/aE1w6IUOj7TJiV6KpFE=
+X-Received: by 2002:a05:6638:4183:: with SMTP id az3mr33251237jab.56.1637386305661;
+ Fri, 19 Nov 2021 21:31:45 -0800 (PST)
 MIME-Version: 1.0
-References: <20211120045011.3074840-1-almasrymina@google.com> <YZiBH6GxlkFFuyqa@casper.infradead.org>
-In-Reply-To: <YZiBH6GxlkFFuyqa@casper.infradead.org>
+References: <20211120045011.3074840-1-almasrymina@google.com>
+ <20211120045011.3074840-3-almasrymina@google.com> <YZiCgrTzcl/QQC+N@casper.infradead.org>
+In-Reply-To: <YZiCgrTzcl/QQC+N@casper.infradead.org>
 From:   Mina Almasry <almasrymina@google.com>
-Date:   Fri, 19 Nov 2021 21:27:34 -0800
-Message-ID: <CAHS8izM-DpKs1=-F04-8Qp55VFYC57zERpKkFBk4_QNsOmnOoQ@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] Deterministic charging of shared memory
+Date:   Fri, 19 Nov 2021 21:31:34 -0800
+Message-ID: <CAHS8izNJ7-7EKsfFancHw3iNJzBWdHT_GwcJUaMU1_2LQMwX9g@mail.gmail.com>
+Subject: Re: [PATCH v4 2/4] mm/oom: handle remote ooms
 To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
         Hugh Dickins <hughd@google.com>, Shuah Khan <shuah@kernel.org>,
         Shakeel Butt <shakeelb@google.com>,
         Greg Thelen <gthelen@google.com>,
         Dave Chinner <david@fromorbit.com>,
         Roman Gushchin <guro@fb.com>, "Theodore Ts'o" <tytso@mit.edu>,
         linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
+        linux-mm@kvack.org, cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 9:01 PM Matthew Wilcox <willy@infradead.org> wrote:
+On Fri, Nov 19, 2021 at 9:07 PM Matthew Wilcox <willy@infradead.org> wrote:
 >
-> On Fri, Nov 19, 2021 at 08:50:06PM -0800, Mina Almasry wrote:
-> > 1. One complication to address is the behavior when the target memcg
-> > hits its memory.max limit because of remote charging. In this case the
-> > oom-killer will be invoked, but the oom-killer may not find anything
-> > to kill in the target memcg being charged. Thera are a number of considerations
-> > in this case:
-> >
-> > 1. It's not great to kill the allocating process since the allocating process
-> >    is not running in the memcg under oom, and killing it will not free memory
-> >    in the memcg under oom.
-> > 2. Pagefaults may hit the memcg limit, and we need to handle the pagefault
-> >    somehow. If not, the process will forever loop the pagefault in the upstream
-> >    kernel.
-> >
-> > In this case, I propose simply failing the remote charge and returning an ENOSPC
-> > to the caller. This will cause will cause the process executing the remote
-> > charge to get an ENOSPC in non-pagefault paths, and get a SIGBUS on the pagefault
-> > path.  This will be documented behavior of remote charging, and this feature is
-> > opt-in. Users can:
-> > - Not opt-into the feature if they want.
-> > - Opt-into the feature and accept the risk of received ENOSPC or SIGBUS and
-> >   abort if they desire.
-> > - Gracefully handle any resulting ENOSPC or SIGBUS errors and continue their
-> >   operation without executing the remote charge if possible.
+> On Fri, Nov 19, 2021 at 08:50:08PM -0800, Mina Almasry wrote:
+> > On remote ooms (OOMs due to remote charging), the oom-killer will attempt
+> > to find a task to kill in the memcg under oom. The oom-killer may be
+> > unable to find a process to kill if there are no killable processes in
+> > the remote memcg. In this case, the oom-killer (out_of_memory()) will return
+> > false, and depending on the gfp, that will generally get bubbled up to
+> > mem_cgroup_charge_mapping() as an ENOMEM.
 >
-> Why is ENOSPC the right error instead of ENOMEM?
+> Why doesn't it try to run the shrinkers to get back some page cache /
+> slab cache memory from this memcg?  I understand it might not be able
+> to (eg if the memory is mlocked), but surely that's rare.
+>
 
-Returning ENOMEM from mem_cgroup_charge_mapping() will cause the
-application to get ENOMEM from non-pagefault paths (which is perfectly
-fine), and get stuck in a loop trying to resolve the pagefault in the
-pagefault path (less fine). The logic is here:
-https://elixir.bootlin.com/linux/latest/source/arch/x86/mm/fault.c#L1432
+Please correct me if I'm wrong, but AFAICT I haven't disabled any
+shrinkers from running or disabled any reclaim mechanism on remote
+charges. What I see in the code is that when the remote memcg runs out
+of memory is that try_to_free_mem_cgroup_pages() gets called as normal
+and we do the MAX_RECLAIM_RETRIES as normal.
 
-ENOMEM gets bubbled up here as VM_FAULT_OOM and on remote charges the
-behavior I see is that the kernel loops the pagefault forever until
-memory is freed in the remote memcg, and it may never will.
-
-ENOSPC gets bubbled up here as a VM_FAULT_SIGBUS and and sends a
-SIGBUS to the allocating process. The conjecture here is that it's
-preferred to send a SIGBUS to the allocating process rather than have
-it be stuck in a loop trying to resolve a pagefault.
+It's only in the (rare as you point out) case where the kernel is
+completely unable to find memory in the remote memcg that we need to
+do the special handling that's described in this patch. Although this
+situation is probably quite rare in real-world scenarios, it's easily
+reproducible (and the attached test in the series does so), so my
+feeling is that it needs some sane handling, which I'm attempting to
+do in this patch.
