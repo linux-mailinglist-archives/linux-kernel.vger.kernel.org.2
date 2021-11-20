@@ -2,92 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D863A457A7E
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 02:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE5A457A7F
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 02:50:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235994AbhKTBxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 20:53:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233135AbhKTBxS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 20:53:18 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 638E4C06173E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 17:50:11 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id 4-20020a170902c20400b0014381f710d5so5514371pll.11
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 17:50:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=/oTaTNiB/LMk2r2BJ6BITqZh/xo7HcDPFHBzIC0aTcA=;
-        b=Y17iUQxETsjV0XAmZHTD+ZjD5tMQk/NOpkpraqf9BW2+v5JR2eBy3f1p4yCP1mV3uC
-         PUm9MEBvTS93oMslh7RgrsjIn7MwY6k54gJbA1d9WbMvca4OO99KHtuRdpvxgnR+uFI8
-         LbTg7u6ztPgJXa9z5xh0G849CN6AM529jrtRS41dtzaJTlu8O0VHwLxmLIcdHfTH1nzT
-         oEv7OW24KEsMMt+gNB/z1zgrC8XGFXUhCRr2vRbVD3sdbBDeSfePKELcnp6wMPAU86Cf
-         f8n5fBHLETiqOcQskna/SG3gZC+RBCd39PIXox+DkR1QIc46GJKsFIYBprHQib5cj5Zr
-         bLXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=/oTaTNiB/LMk2r2BJ6BITqZh/xo7HcDPFHBzIC0aTcA=;
-        b=TXSUVTGkcOmgU8txwAinzcLR2nWKYT+N3QM6cLrje1Lz/3Z5cos2qHQEtKNEYxrtUw
-         jujCNvDLW4jIa87ClKzI5VbdRz/tI0p970toZhPQhuz2VWiRJqmFr8RQNBbQ9+TrjJRp
-         E/XaKDPh1P/lK7wpGpkdUzcbuZFEIxvSiSQxO0xHkPeQm5fj0PHVDjmvxuODcVA6wVCp
-         x0azPSnuk4PnWDtMARxnJxLXqh6gdZmi9SDhB5d5Xbo3KOBeV8t+s9wtoKVmoovyZLO4
-         ghmMgqL3oWV/7olvJA93yGgtNoO4pnHeLpX3DADcxi/1stUFfLHW6IGTPwhzfMWWZg8e
-         AAtA==
-X-Gm-Message-State: AOAM532s+l/zCiBjBn2A3rFE6izKzQ8cZUEnQOrsswVSXVITKVH7xt7h
-        M/XvHNcVVPoHAVRuOtEBkh6A/0VdUII=
-X-Google-Smtp-Source: ABdhPJw57b08V0yHzRvjztHGvC6NDI5qlJErpxBPqWosR83M55tCfe2R+c09/5jVgLkTn+wpYzGFXH7ZbEQ=
-X-Received: from seanjc.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3e5])
- (user=seanjc job=sendgmr) by 2002:a17:90b:3a89:: with SMTP id
- om9mr5591281pjb.29.1637373010794; Fri, 19 Nov 2021 17:50:10 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Sat, 20 Nov 2021 01:50:08 +0000
-Message-Id: <20211120015008.3780032-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH] KVM: x86/mmu: Use yield-safe TDP MMU root iter in MMU
- notifier unmapping
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S236209AbhKTBxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 20:53:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236047AbhKTBxb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 20:53:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79BB461A0C;
+        Sat, 20 Nov 2021 01:50:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637373023;
+        bh=NZYXCV1BI/2RMkIqg8C/D/wVdEb/oaBH9ZNmJzBtqg4=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=b9FRBUpIY1y9t1s+OOBwN+XMB4X3wtnkEP/NATXcl39WBk3mW1wPeYC22H5Yp3ojP
+         0LVezwSMlFnDljNCQl+WvxxgcB2aVUHlO7eOZtvbZKb2Xsp/oj+OKlxLQQfsR6TvN2
+         +ArfDE8Wn+35hQmjBRmkZAH6qiq4ST566a65JRlo/vMTn84wHL6PismdlQIYI6lBID
+         7g+X7EWU0o23O1r9R/sKxtYOe0UQZyyPZGNwPHKz1KCvOW6olEshthG9ecI+qMpH+S
+         3NHM1zukaa9Jnxhk/mQock4YWtIGrfX3qb3UAn/J1kvWRXZs+UJ7LJthVnmz/KNvzK
+         UjkyJgnxhSf8w==
+Message-ID: <e25053e9-f97e-6a2f-3bac-acfcd689fdcb@kernel.org>
+Date:   Sat, 20 Nov 2021 09:50:20 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [f2fs-dev] [PATCH Vx 1/1] f2fs: Avoid deadlock between writeback
+ and checkpoint
+Content-Language: en-US
+From:   Chao Yu <chao@kernel.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, niuzhiguo84@gmail.com
+Cc:     Jing.Xia@unisoc.com, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+References: <1636438608-27597-1-git-send-email-niuzhiguo84@gmail.com>
+ <YZU0TFBH6k2Q6fJZ@google.com>
+ <e28d4963-d816-b568-dec8-60a79a9fe88d@kernel.org>
+In-Reply-To: <e28d4963-d816-b568-dec8-60a79a9fe88d@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the yield-safe variant of the TDP MMU iterator when handling an
-unmapping event from the MMU notifier, as most occurences of the event
-allow yielding.
+On 2021/11/18 14:46, Chao Yu wrote:
+> On 2021/11/18 0:56, Jaegeuk Kim wrote:
+>> On 11/09, niuzhiguo84@gmail.com wrote:
+>>> From: Zhiguo Niu <zhiguo.niu@unisoc.com>
+>>>
+>>> There could be a scenario as following:
+>>> The inodeA and inodeB are in b_io queue of writeback
+>>> inodeA : f2fs's node inode
+>>> inodeB : a dir inode with only one dirty pages, and the node page
+>>> of inodeB cached into inodeA
+>>>
+>>> writeback:
+>>>
+>>> wb_workfn
+>>> wb_writeback
+>>> blk_start_plug
+>>>           loop {
+>>>           queue_io
+>>>           progress=__writeback_inodes_wb
+>>>                   __writeback_single_inode
+>>>                           do_writepages
+>>>                                   f2fs_write_data_pages
+>>>                                   wbc->pages_skipped +=get_dirty_pages
+>>>                           inode->i_state &= ~dirty
+>>>                   wrote++
+>>>                   requeue_inode
+>>>           }
+>>> blk_finish_plug
+>>>
+>>> checkpoint:
+>>>
+>>> f2fs_write_checkpoint
+>>> f2fs_sync_dirty_inodes
+>>> filemap_fdatawrite
+>>> do_writepages
+>>> f2fs_write_data_pages
+>>>           f2fs_write_single_data_page
+>>>                   f2fs_do_write_data_page
+>>>                           set_page_writeback
+>>>                           f2fs_outplace_write_data
+>>>                                   f2fs_update_data_blkaddr
+>>>                                           f2fs_wait_on_page_writeback
+>>>                   inode_dec_dirty_pages
+>>>
+>>> 1. Writeback thread flush inodeA, and push it's bio request in task's plug;
+>>> 2. Checkpoint thread writes inodeB's dirty page, and then wait its node
+>>>       page writeback cached into inodeA which is in writeback task's plug
+>>> 3. Writeback thread flush inodeB and skip writing the dirty page as
+>>>       wb_sync_req[DATA] > 0.
+>>> 4. As none of the inodeB's page is marked as PAGECACHE_TAG_DIRTY, writeback
+>>>       thread clear inodeB's dirty state.
+>>> 5. Then inodeB is moved from b_io to b_dirty because of pages_skipped > 0
+>>>       as checkpoint thread is stuck before dec dirty_pages.
+>>>
+>>> This patch collect correct pages_skipped according to the tag state in
+>>> page tree of inode
+>>>
+>>> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+>>> Signed-off-by: Jing Xia <jing.xia@unisoc.com>
+>>> ---
+>>>    fs/f2fs/data.c | 4 +++-
+>>>    1 file changed, 3 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+>>> index f4fd6c246c9a..e98628e3868c 100644
+>>> --- a/fs/f2fs/data.c
+>>> +++ b/fs/f2fs/data.c
+>>> @@ -3237,7 +3237,9 @@ static int __f2fs_write_data_pages(struct address_space *mapping,
+>>>    	return ret;
+>>>    
+>>>    skip_write:
+>>> -	wbc->pages_skipped += get_dirty_pages(inode);
+>>> +	wbc->pages_skipped +=
+>>> +		mapping_tagged(inode->i_mapping, PAGECACHE_TAG_DIRTY) ?
+>>
+>> Is there any race condition to get 0, if there's any dirty page? IOWs, it
+> 
+> Quoted from Jing Xia's explanation:
+> 
+> [T:writeback]				[T:checkpoint]
 
-Fixes: e1eed5847b09 ("KVM: x86/mmu: Allow yielding during MMU notifier unmap/zap, if possible")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/mmu/tdp_mmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+My bad, [1] should be here:
 
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 377a96718a2e..a29ebff1cfa0 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -1031,7 +1031,7 @@ bool kvm_tdp_mmu_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range,
- {
- 	struct kvm_mmu_page *root;
- 
--	for_each_tdp_mmu_root(kvm, root, range->slot->as_id)
-+	for_each_tdp_mmu_root_yield_safe(kvm, root, range->slot->as_id, false)
- 		flush |= zap_gfn_range(kvm, root, range->start, range->end,
- 				       range->may_block, flush, false);
- 
--- 
-2.34.0.rc2.393.gf8c9666880-goog
+bio contains NodeA was plugged in writeback threads
 
+Thanks,
+
+> 					- do_writepages  -- sync write inodeB, inc wb_sync_req[DATA]
+> 					 - f2fs_write_data_pages
+> 					  - f2fs_write_single_data_page -- write last dirty page
+> 					   - f2fs_do_write_data_page
+> 					    - set_page_writeback  -- clear page dirty flag and
+> 					    PAGECACHE_TAG_DIRTY tag in radix tree
+> 					    - f2fs_outplace_write_data
+> 					     - f2fs_update_data_blkaddr
+> 					      - f2fs_wait_on_page_writeback -- wait NodeA to writeback here
+> 					   - inode_dec_dirty_pages
+
+> bio contains NodeA was plugged in writeback threads
+
+[1]
+
+Thanks,
+
+> - writeback_sb_inodes
+>    - writeback_single_inode
+>     - do_writepages
+>      - f2fs_write_data_pages -- skip writepages due to wb_sync_req[DATA]
+>       - wbc->pages_skipped += get_dirty_pages() -- PAGECACHE_TAG_DIRTY is not set but get_dirty_pages() returns one
+>    - requeue_inode -- requeue inode to wb->b_dirty queue due to non-zero.pages_skipped
+> 
+>> seems the current condition is just requeuing the inode as dirty, but next
+>> flushing time will remove it from dirty list. Is this giving too much overheads?
+> 
+> I prefer to let writeback thread call blk_flush_plug() after skipping
+> writepages() due to wb_sync_req[DATA/NODE] check condition, thoughts?
+> 
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index 9f754aaef558..b6e1ed73f8f5 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -3087,6 +3087,8 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
+>    			/* give a priority to WB_SYNC threads */
+>    			if (atomic_read(&sbi->wb_sync_req[DATA]) &&
+>    					wbc->sync_mode == WB_SYNC_NONE) {
+> +				if (current->plug)
+> +					blk_flush_plug(current->plug, false);
+>    				done = 1;
+>    				break;
+>    			}
+> diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+> index 556fcd8457f3..dd9a817d8dab 100644
+> --- a/fs/f2fs/node.c
+> +++ b/fs/f2fs/node.c
+> @@ -1946,6 +1946,8 @@ int f2fs_sync_node_pages(struct f2fs_sb_info *sbi,
+>    			if (atomic_read(&sbi->wb_sync_req[NODE]) &&
+>    					wbc->sync_mode == WB_SYNC_NONE) {
+>    				done = 1;
+> +				if (current->plug)
+> +					blk_flush_plug(current->plug, false);
+>    				break;
+>    			}
+> 
+> 
+> 
+> Thanks,
+> 
+>>
+>>> +		get_dirty_pages(inode) : 0;
+>>>    	trace_f2fs_writepages(mapping->host, wbc, DATA);
+>>>    	return 0;
+>>>    }
+>>> -- 
+>>> 2.28.0
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> 
