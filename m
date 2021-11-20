@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD6E457FDA
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 18:28:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2628457FE0
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 18:38:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237896AbhKTRbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 12:31:03 -0500
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:58361 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237885AbhKTRbC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 12:31:02 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UxSuoAS_1637429275;
-Received: from localhost.localdomain(mailfrom:xhao@linux.alibaba.com fp:SMTPD_---0UxSuoAS_1637429275)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 21 Nov 2021 01:27:57 +0800
-From:   Xin Hao <xhao@linux.alibaba.com>
-To:     sj@kernel.org
-Cc:     xhao@linux.alibaba.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V1 2/2] mm/damon: move damon_rand definition into damon.h
-Date:   Sun, 21 Nov 2021 01:27:54 +0800
-Message-Id: <6a4a7e53c2ab99028d431e7dc5e3d7635adb8522.1637429074.git.xhao@linux.alibaba.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <fbf27c39e8f23d12d5474b9b659d3d45f8dd38ca.1637429074.git.xhao@linux.alibaba.com>
-References: <fbf27c39e8f23d12d5474b9b659d3d45f8dd38ca.1637429074.git.xhao@linux.alibaba.com>
+        id S237793AbhKTRlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 12:41:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230190AbhKTRlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 12:41:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E54AF60E9C;
+        Sat, 20 Nov 2021 17:38:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637429898;
+        bh=DJSZbPQnZbwd2WMtdienM58036xGViO7g+aTcGftKeI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ij/1yDQcdlKUSKM1H8ayOJ/NvPGBUdIxKJeNyVarsxGdAYhx+3v76Px/H1/3g/EEW
+         4mXlQ6AvqfrehgbZJKRAZVC1nYdC360Od70A0ZLoLdKxarrT4gIqxc8k1D/jszy+oc
+         ZEsZweJ5FO37763k8ef+KNiNPf2TfcpCliBve4nQQD9r3AVzOfyuLHgw8U/Kin5bkp
+         7cHNRsr3JkStorMI9pMKMI2p3KRbUM6m5rHcQ9su9ac7XqjJ358BiWW02CRGzeZFDo
+         0MxhKxxdu6LetUNVFLNg64Ewgigi3Lh77Co/Kwq2JamPvNHu/tjZ5VR1d3OTmBI9ST
+         F0R+Fl3Pzb/Sg==
+Subject: Re: [PATCH v2 1/1] clk: samsung: exynos850: Register clocks early
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>
+References: <CGME20211025161302eucas1p2f50ef29a0bba69c13deaf1ad31a8439c@eucas1p2.samsung.com>
+ <20211025161254.5575-1-semen.protsenko@linaro.org>
+ <fcc939e6-50b4-1847-c738-db940d0c5bd4@samsung.com>
+ <CAPLW+4nnyPAMRcAzDjJ-uygm8bjncNp_rTLKdY5cywcpf5vg=w@mail.gmail.com>
+From:   Sylwester Nawrocki <snawrocki@kernel.org>
+Message-ID: <b5ac9e36-235c-906c-9f95-80dabd971be5@kernel.org>
+Date:   Sat, 20 Nov 2021 18:38:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPLW+4nnyPAMRcAzDjJ-uygm8bjncNp_rTLKdY5cywcpf5vg=w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-damon_rand() is called in three files:damon/core.c, damon/
-paddr.c, damon/vaddr.c, i think there is no need to redefine
-this twice, So move it to damon.h will be a good choice.
+On 20.11.2021 17:47, Sam Protsenko wrote:
+>>> @@ -920,8 +929,12 @@ static int __init exynos850_cmu_probe(struct platform_device *pdev)
+>>>        struct device_node *np = dev->of_node;
+>>>
+>>>        info = of_device_get_match_data(dev);
+>>> -     exynos850_init_clocks(np, info->clk_regs, info->nr_clk_regs);
+>>> -     samsung_cmu_register_one(np, info);
+>>> +
+>>> +     /* Early clocks are already registered using CLK_OF_DECLARE_DRIVER() */
+>>> +     if (info != &peri_cmu_info) {
+>>> +             exynos850_init_clocks(np, info->clk_regs, info->nr_clk_regs);
+>>> +             samsung_cmu_register_one(np, info);
+>>> +     }
+>> Don't you also need to register early CMU_TOP, which provides clocks
+>> for CMU_PERI? I'm afraid it might not work properly when you register
+>> CMU_PERI clocks early and only later in probe() you enable parent clock
+>> required for the already registered clocks to be usable.
 
-Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
----
- include/linux/damon.h   | 4 ++++
- mm/damon/core.c         | 4 ----
- mm/damon/prmtv-common.h | 4 ----
- 3 files changed, 4 insertions(+), 8 deletions(-)
+> Good point, I'll do that in v2. Not sure how I missed that dependency
+> point, but thank you for noticing that. Guess it only works for me
+> because clocks are already enabled in bootloader, and I'm using
+> "clk_ignore_unused" param for now.
+> 
+>> How about registering also CMU_TOP early and enabling parent clock
+>> also in OF_CLK_DECLARE init callback, i.e. using either OF_CLK_DECLARE
+>> or platform driver for a CMU?
+>>
+> If you mean doing clk_prepare_enable() for "dout_peri_bus" clock in
+> exynos850_cmu_peri_init(), I don't think it's possible. clk_get()
+> needs "struct device *dev", and we only have that in platform driver
+> probe. Trying to pass dev=NULL won't work, so that's why I'm enabling
+> parent clocks in platform driver probe.
 
-diff --git a/include/linux/damon.h b/include/linux/damon.h
-index 8a73e825e0d5..8706b17a9acf 100644
---- a/include/linux/damon.h
-+++ b/include/linux/damon.h
-@@ -11,12 +11,16 @@
- #include <linux/mutex.h>
- #include <linux/time64.h>
- #include <linux/types.h>
-+#include <linux/random.h>
- 
- /* Minimal region size.  Every damon_region is aligned by this. */
- #define DAMON_MIN_REGION	PAGE_SIZE
- /* Max priority score for DAMON-based operation schemes */
- #define DAMOS_MAX_SCORE		(99)
- 
-+/* Get a random number in [l, r) */
-+#define damon_rand(l, r) (l + prandom_u32_max(r - l))
-+
- /**
-  * struct damon_addr_range - Represents an address region of [@start, @end).
-  * @start:	Start address of the region (inclusive).
-diff --git a/mm/damon/core.c b/mm/damon/core.c
-index 4d2c3a0c7c8a..bdec32ef78c0 100644
---- a/mm/damon/core.c
-+++ b/mm/damon/core.c
-@@ -11,7 +11,6 @@
- #include <linux/delay.h>
- #include <linux/kthread.h>
- #include <linux/mm.h>
--#include <linux/random.h>
- #include <linux/slab.h>
- #include <linux/string.h>
- 
-@@ -23,9 +22,6 @@
- #define DAMON_MIN_REGION 1
- #endif
- 
--/* Get a random number in [l, r) */
--#define damon_rand(l, r) (l + prandom_u32_max(r - l))
--
- static DEFINE_MUTEX(damon_lock);
- static int nr_running_ctxs;
- 
-diff --git a/mm/damon/prmtv-common.h b/mm/damon/prmtv-common.h
-index 61f27037603e..e790cb5f8fe0 100644
---- a/mm/damon/prmtv-common.h
-+++ b/mm/damon/prmtv-common.h
-@@ -6,10 +6,6 @@
-  */
- 
- #include <linux/damon.h>
--#include <linux/random.h>
--
--/* Get a random number in [l, r) */
--#define damon_rand(l, r) (l + prandom_u32_max(r - l))
- 
- struct page *damon_get_page(unsigned long pfn);
- 
--- 
-2.31.0
+Sorry, I didn't notice it earlier, actually CMU_TOP is already being
+initialized with OF_CLK_DECLARE.
+
+You could use of_clk_get() to get the clock, the consumer clock indexes
+are fixed and defined in the DT binding. There is also
+of_clk_get_by_name() which works similarly to clk_get().
+
 
