@@ -2,343 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6CA457B61
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 05:51:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF86457B6D
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 05:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236933AbhKTEyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 23:54:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54984 "EHLO
+        id S237060AbhKTEzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 23:55:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236931AbhKTExn (ORCPT
+        with ESMTP id S236868AbhKTEyc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 23:53:43 -0500
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE3EC06175A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:50:29 -0800 (PST)
-Received: by mail-pg1-x549.google.com with SMTP id r15-20020a63ec4f000000b002e582189837so5026696pgj.20
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:50:29 -0800 (PST)
+        Fri, 19 Nov 2021 23:54:32 -0500
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9CA1C061748
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:50:55 -0800 (PST)
+Received: by mail-pl1-x64a.google.com with SMTP id i3-20020a170902c94300b0014287dc7dcbso5696484pla.16
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:50:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=uvNIfQ2xPxMosCuaZIYF62oO8SwPg1ICTimCdNTm9Vg=;
-        b=kkr7HoN4DfwCs24jlS1zFyDomRuE632ceq1FIOuLPKkP5rbmQpiVF2QlY4VWdBv3f1
-         gmqzsT2J6RO1wFTt8ELRkyFxE7vOyk00zgiJmcI++BCKPDYfxgEBhj05WQ7P+HSAClIG
-         uf73/EDXzDcXIsjYc7JgHddA0schC1QFC2zw8I9Et5IeYM5W24UkLIAMwTAZzYEdWFht
-         2+fTz1sSwLrbVTLMUTAkfO39C3FXugos8dhvkeoTBA7tZIIqyRvWvhn/IjKZR6i5U+/j
-         KHdrJPbo07RKeWEdjCMuyNp0MrsGP8F03eJKk+Km8ZFWfPBXNC9PKlY4qEgXEmdbL8PO
-         gdcQ==
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=4IhrBchGEy/kZk/jdMT8RTgApJngWrlTssCYuVoSOPk=;
+        b=HOTIk1mHuXrt1xdMa/OyjKJbTCn6KhyEoHZFHd/d2t6jKpDrOgtYIecsVCBTltwsk2
+         o6IV2cTDbdYO9jmka/xsOg+g4i49JSlwfx2voR8UU4WUrhpH/HuJ9gAZE5+/C4ebpD3u
+         lkfUoPBs8BosmnY5eYnIZvRMAbnK5O8thS63mVBNDdazFSzw0VpGyE/4Xyq0coR8tTcc
+         su6O8oRk83xs0fPmB9oKY2dMIbzSReGkf2/Q/CVVUwtgtwVww1VqFgPFgX5eRaoaQnDk
+         Y3X8KLUgthcPwCjn3I5dA8uE/4eWZwp1AziNFmAqkSlE6QRUe4YHn3GbTBRH6pto/zDc
+         YVEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=uvNIfQ2xPxMosCuaZIYF62oO8SwPg1ICTimCdNTm9Vg=;
-        b=eo+RPrWOY2XUpm39BKsoeWCx5fxkrNAZ6KGFAJA4zThLqizVhsosigdIMq5S6cPGte
-         vdrsmJJZ2YCE4Y8iZEJjRarpCKugteO+mcE/TtLz/sTrcFZXSFepcHdIVke508Mpel1K
-         2GsOA97wBoYQ6Cfujeh0j1Gi8SmxsVdyVw+19iEfruwkVZPdk1KfR7o4kZyqjeBM3dOO
-         tB5xWx1iCcro3JIwfdIYIUZJdtWr6Tynjp6iIoJ9nviebjel+F9E9ik1BhQKph05RCF1
-         jXCGoLL5g2GVcEYae0jreUFvWsQTugI4T5tZRN9g4+d6nUYY6ui2cTNz8Gpbu+Ffizne
-         VkFA==
-X-Gm-Message-State: AOAM533o7zsgivkwJnh3NietJWQPCk9w7huNk0f+I7EMAYln56pK7RIR
-        u5ua1uEi7cLMSfO1l1c1u2LA/M+wCfvpkSVIBg==
-X-Google-Smtp-Source: ABdhPJxznMEO7QjA++HmqkjBv2dw1jatuQ8Xo0MBwxe+EG5+/zYigHZk1KISXWqJLlEm4pkIXaY6ZL25E8kDU4UWTA==
-X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2cd:202:fa91:560a:d7b4:93])
- (user=almasrymina job=sendgmr) by 2002:a17:90a:c78f:: with SMTP id
- gn15mr6699081pjb.54.1637383828674; Fri, 19 Nov 2021 20:50:28 -0800 (PST)
-Date:   Fri, 19 Nov 2021 20:50:10 -0800
-In-Reply-To: <20211120045011.3074840-1-almasrymina@google.com>
-Message-Id: <20211120045011.3074840-5-almasrymina@google.com>
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=4IhrBchGEy/kZk/jdMT8RTgApJngWrlTssCYuVoSOPk=;
+        b=bv/gflFKwMdTuUnhxRIYpgPp+wgIgOO6aMs24dR81tZvXpgLzsteaDm2uWMhBfMxMy
+         2wg7QQh4psLeqdcE8S8yRJOmA69Z0nVt088RPcTJVN/L1GLDD7hs4Zxmj2aVZcmHGC8e
+         T/oMDyACrBG/zU7DaBndaRWAfZhNZ7RlarH4NFhCmUEAxxbi/MJIKTA7MSinVipj+gJA
+         DnThzGY//ZWgkOSPDaKVjsRZeEnSIPIr2LdbSAZofO+iYSLboiU3Spcx2j66b5h8u3WO
+         3upBHQSHWMgg0A+5b7iWhny4Rr59YGuHWEfa3I3FlvdMJdbRNjxufbSPD9VbpsRGy6F6
+         R8pQ==
+X-Gm-Message-State: AOAM533OIFq6ctqKPtGBYJ/ThRDSNLOilV6092kDTIaIkXFLTpw/wSKM
+        Lg+6eyMFfzuoTDDTCaNjkkg5nziDzxc=
+X-Google-Smtp-Source: ABdhPJzdECgrL9HRZqvqAW+QyFzCtsdEv4HMdhY076bm7gsZJQ8OlhiNCO29qojVVEh/s5+F/PV2lcKDP5A=
+X-Received: from seanjc.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3e5])
+ (user=seanjc job=sendgmr) by 2002:a17:90a:284f:: with SMTP id
+ p15mr729650pjf.1.1637383854852; Fri, 19 Nov 2021 20:50:54 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Sat, 20 Nov 2021 04:50:18 +0000
+Message-Id: <20211120045046.3940942-1-seanjc@google.com>
 Mime-Version: 1.0
-References: <20211120045011.3074840-1-almasrymina@google.com>
 X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH v4 4/4] mm, shmem, selftests: add tmpfs memcg= mount option tests
-From:   Mina Almasry <almasrymina@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Mina Almasry <almasrymina@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Roman Gushchin <guro@fb.com>, "Theodore Ts'o" <tytso@mit.edu>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH 00/28] KVM: x86/mmu: Overhaul TDP MMU zapping and flushing
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Hou Wenlong <houwenlong93@linux.alibaba.com>,
+        Ben Gardon <bgardon@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- Test mounting and remounting with memcg= succeeds.
-- Test that simple writes in this file system are charged to the correct
-  memecg.
-- Test that on non-pagefault paths the calling process gets an ENOSPC.
-- Test that in pagefault paths the calling process gets a SIGBUS.
+Overhaul TDP MMU's handling of zapping and TLB flushing to reduce the
+number of TLB flushes, and to clean up the zapping code.  The final patch
+realizes the biggest change, which is to use RCU to defer any TLB flush
+due to zapping a SP to the caller.  The largest cleanup is to separate the
+flows for zapping roots (zap _everything_), zapping leaf SPTEs (zap guest
+mappings for whatever reason), and zapping a specific SP (NX recovery).
+They're currently smushed into a single zap_gfn_range(), which was a good
+idea at the time, but became a mess when trying to handle the different
+rules, e.g. TLB flushes aren't needed when zapping a root because KVM can
+safely zap a root if and only if it's unreachable.
 
-Signed-off-by: Mina Almasry <almasrymina@google.com>
+For booting an 8 vCPU, remote_tlb_flush (requests) goes from roughly
+180 (600) to 130 (215).
 
----
+Please don't apply patches 02 and 03, they've been posted elsehwere and by
+other people.  I included them here because some of the patches have
+pseudo-dependencies on their changes.  Patch 01 is also posted separately.
+I had a brain fart and sent it out realizing that doing so would lead to
+oddities.
 
-Changes in v4:
+Hou Wenlong (1):
+  KVM: x86/mmu: Skip tlb flush if it has been done in zap_gfn_range()
 
-- Convert tests to expect ENOSPC/SIGBUS rather than ENOMEM oom behavior.
-- Added remount test.
+Sean Christopherson (27):
+  KVM: x86/mmu: Use yield-safe TDP MMU root iter in MMU notifier
+    unmapping
+  KVM: x86/mmu: Remove spurious TLB flushes in TDP MMU zap collapsible
+    path
+  KVM: x86/mmu: Retry page fault if root is invalidated by memslot
+    update
+  KVM: x86/mmu: Check for present SPTE when clearing dirty bit in TDP
+    MMU
+  KVM: x86/mmu: Formalize TDP MMU's (unintended?) deferred TLB flush
+    logic
+  KVM: x86/mmu: Document that zapping invalidated roots doesn't need to
+    flush
+  KVM: x86/mmu: Drop unused @kvm param from kvm_tdp_mmu_get_root()
+  KVM: x86/mmu: Require mmu_lock be held for write in unyielding root
+    iter
+  KVM: x86/mmu: Allow yielding when zapping GFNs for defunct TDP MMU
+    root
+  KVM: x86/mmu: Check for !leaf=>leaf, not PFN change, in TDP MMU SP
+    removal
+  KVM: x86/mmu: Batch TLB flushes from TDP MMU for MMU notifier
+    change_spte
+  KVM: x86/mmu: Drop RCU after processing each root in MMU notifier
+    hooks
+  KVM: x86/mmu: Add helpers to read/write TDP MMU SPTEs and document RCU
+  KVM: x86/mmu: Take TDP MMU roots off list when invalidating all roots
+  KVM: x86/mmu: WARN if old _or_ new SPTE is REMOVED in non-atomic path
+  KVM: x86/mmu: Terminate yield-friendly walk if invalid root observed
+  KVM: x86/mmu: Refactor low-level TDP MMU set SPTE helper to take raw
+    vals
+  KVM: x86/mmu: Zap only the target TDP MMU shadow page in NX recovery
+  KVM: x86/mmu: Use common TDP MMU zap helper for MMU notifier unmap
+    hook
+  KVM: x86/mmu: Add TDP MMU helper to zap a root
+  KVM: x86/mmu: Skip remote TLB flush when zapping all of TDP MMU
+  KVM: x86/mmu: Use "zap root" path for "slow" zap of all TDP MMU SPTEs
+  KVM: x86/mmu: Add dedicated helper to zap TDP MMU root shadow page
+  KVM: x86/mmu: Require mmu_lock be held for write to zap TDP MMU range
+  KVM: x86/mmu: Zap only TDP MMU leafs in kvm_zap_gfn_range()
+  KVM: x86/mmu: Do remote TLB flush before dropping RCU in TDP MMU
+    resched
+  KVM: x86/mmu: Defer TLB flush to caller when freeing TDP MMU shadow
+    pages
 
----
- tools/testing/selftests/vm/.gitignore     |   1 +
- tools/testing/selftests/vm/mmap_write.c   | 103 +++++++++++++++++++
- tools/testing/selftests/vm/tmpfs-memcg.sh | 116 ++++++++++++++++++++++
- 3 files changed, 220 insertions(+)
- create mode 100644 tools/testing/selftests/vm/mmap_write.c
- create mode 100755 tools/testing/selftests/vm/tmpfs-memcg.sh
+ arch/x86/kvm/mmu/mmu.c          |  74 +++--
+ arch/x86/kvm/mmu/mmu_internal.h |   7 +-
+ arch/x86/kvm/mmu/paging_tmpl.h  |   3 +-
+ arch/x86/kvm/mmu/tdp_iter.c     |   6 +-
+ arch/x86/kvm/mmu/tdp_iter.h     |  15 +-
+ arch/x86/kvm/mmu/tdp_mmu.c      | 526 +++++++++++++++++++-------------
+ arch/x86/kvm/mmu/tdp_mmu.h      |  48 +--
+ 7 files changed, 406 insertions(+), 273 deletions(-)
 
-diff --git a/tools/testing/selftests/vm/.gitignore b/tools/testing/selftests/vm/.gitignore
-index 2e7e86e852828..cb229974c5f15 100644
---- a/tools/testing/selftests/vm/.gitignore
-+++ b/tools/testing/selftests/vm/.gitignore
-@@ -19,6 +19,7 @@ madv_populate
- userfaultfd
- mlock-intersect-test
- mlock-random-test
-+mmap_write
- virtual_address_range
- gup_test
- va_128TBswitch
-diff --git a/tools/testing/selftests/vm/mmap_write.c b/tools/testing/selftests/vm/mmap_write.c
-new file mode 100644
-index 0000000000000..88a8468f2128c
---- /dev/null
-+++ b/tools/testing/selftests/vm/mmap_write.c
-@@ -0,0 +1,103 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * This program faults memory in tmpfs
-+ */
-+
-+#include <err.h>
-+#include <errno.h>
-+#include <signal.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <sys/types.h>
-+#include <sys/shm.h>
-+#include <sys/stat.h>
-+#include <sys/mman.h>
-+
-+/* Global definitions. */
-+
-+/* Global variables. */
-+static const char *self;
-+static char *shmaddr;
-+static int shmid;
-+
-+/*
-+ * Show usage and exit.
-+ */
-+static void exit_usage(void)
-+{
-+	printf("Usage: %s -p <path to tmpfs file> -s <size to map>\n", self);
-+	exit(EXIT_FAILURE);
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	int fd = 0;
-+	int key = 0;
-+	int *ptr = NULL;
-+	int c = 0;
-+	int size = 0;
-+	char path[256] = "";
-+	int want_sleep = 0, private = 0;
-+	int populate = 0;
-+	int write = 0;
-+	int reserve = 1;
-+
-+	/* Parse command-line arguments. */
-+	setvbuf(stdout, NULL, _IONBF, 0);
-+	self = argv[0];
-+
-+	while ((c = getopt(argc, argv, ":s:p:")) != -1) {
-+		switch (c) {
-+		case 's':
-+			size = atoi(optarg);
-+			break;
-+		case 'p':
-+			strncpy(path, optarg, sizeof(path));
-+			break;
-+		default:
-+			errno = EINVAL;
-+			perror("Invalid arg");
-+			exit_usage();
-+		}
-+	}
-+
-+	printf("%s\n", path);
-+	if (strncmp(path, "", sizeof(path)) != 0) {
-+		printf("Writing to this path: %s\n", path);
-+	} else {
-+		errno = EINVAL;
-+		perror("path not found");
-+		exit_usage();
-+	}
-+
-+	if (size != 0) {
-+		printf("Writing this size: %d\n", size);
-+	} else {
-+		errno = EINVAL;
-+		perror("size not found");
-+		exit_usage();
-+	}
-+
-+	fd = open(path, O_CREAT | O_RDWR, 0777);
-+	if (fd == -1)
-+		err(1, "Failed to open file.");
-+
-+	if (ftruncate(fd, size))
-+		err(1, "failed to ftruncate %s", path);
-+
-+	ptr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-+	if (ptr == MAP_FAILED) {
-+		close(fd);
-+		err(1, "Error mapping the file");
-+	}
-+
-+	printf("Writing to memory.\n");
-+	memset(ptr, 1, size);
-+	printf("Done writing to memory.\n");
-+	close(fd);
-+
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/vm/tmpfs-memcg.sh b/tools/testing/selftests/vm/tmpfs-memcg.sh
-new file mode 100755
-index 0000000000000..50876992107fd
---- /dev/null
-+++ b/tools/testing/selftests/vm/tmpfs-memcg.sh
-@@ -0,0 +1,116 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+
-+CGROUP_PATH=/dev/cgroup/memory/tmpfs-memcg-test
-+REMOUNT_CGROUP_PATH=/dev/cgroup/memory/remount-memcg-test
-+
-+function cleanup() {
-+  rm -rf /mnt/tmpfs/*
-+  umount /mnt/tmpfs
-+  rm -rf /mnt/tmpfs
-+
-+  rmdir $CGROUP_PATH
-+  rmdir $REMOUNT_CGROUP_PATH
-+
-+  echo CLEANUP DONE
-+}
-+
-+function setup() {
-+  mkdir -p $CGROUP_PATH
-+  mkdir -p $REMOUNT_CGROUP_PATH
-+  echo $((10 * 1024 * 1024)) > $CGROUP_PATH/memory.limit_in_bytes
-+  echo 0 > $CGROUP_PATH/cpuset.cpus
-+  echo 0 > $CGROUP_PATH/cpuset.mems
-+
-+  mkdir -p /mnt/tmpfs
-+
-+  echo SETUP DONE
-+}
-+
-+function expect_equal() {
-+  local expected="$1"
-+  local actual="$2"
-+  local error="$3"
-+
-+  if [[ "$actual" != "$expected" ]]; then
-+    echo "expected ($expected) != actual ($actual): $3" >&2
-+    cleanup
-+    exit 1
-+  fi
-+}
-+
-+function expect_ge() {
-+  local expected="$1"
-+  local actual="$2"
-+  local error="$3"
-+
-+  if [[ "$actual" -lt "$expected" ]]; then
-+    echo "expected ($expected) < actual ($actual): $3" >&2
-+    cleanup
-+    exit 1
-+  fi
-+}
-+
-+cleanup
-+setup
-+
-+mount -t tmpfs -o memcg=$REMOUNT_CGROUP_PATH tmpfs /mnt/tmpfs
-+check=$(cat /proc/mounts | grep -i remount-memcg-test)
-+if [ -z "$check" ]; then
-+  echo "tmpfs memcg= was not mounted correctly:"
-+  echo $check
-+  echo "FAILED"
-+  cleanup
-+  exit 1
-+fi
-+
-+mount -t tmpfs -o remount,memcg=$CGROUP_PATH tmpfs /mnt/tmpfs
-+check=$(cat /proc/mounts | grep -i tmpfs-memcg-test)
-+if [ -z "$check" ]; then
-+  echo "tmpfs memcg= was not remounted correctly:"
-+  echo $check
-+  echo "FAILED"
-+  cleanup
-+  exit 1
-+fi
-+
-+TARGET_MEMCG_USAGE=$(cat $CGROUP_PATH/memory.usage_in_bytes)
-+expect_equal 0 "$TARGET_MEMCG_USAGE" "Before echo, memcg usage should be 0"
-+
-+# Echo to allocate a page in the tmpfs
-+echo
-+echo
-+echo hello > /mnt/tmpfs/test
-+TARGET_MEMCG_USAGE=$(cat $CGROUP_PATH/memory.usage_in_bytes)
-+expect_ge 4096 "$TARGET_MEMCG_USAGE" "After echo, memcg usage should be greater than 4096"
-+echo "Echo test succeeded"
-+
-+echo
-+echo
-+tools/testing/selftests/vm/mmap_write -p /mnt/tmpfs/test -s $((1 * 1024 * 1024))
-+TARGET_MEMCG_USAGE=$(cat $CGROUP_PATH/memory.usage_in_bytes)
-+expect_ge $((1 * 1024 * 1024)) "$TARGET_MEMCG_USAGE" "After mmap_write, memcg usage should greater than 1MB"
-+echo "WRITE TEST SUCCEEDED"
-+
-+# SIGBUS the remote container on pagefault.
-+echo
-+echo
-+echo "SIGBUS the process doing the remote charge on hitting the limit of the remote cgroup."
-+echo "This will take a long time because the kernel goes through reclaim retries,"
-+echo "but should eventually the write process should receive a SIGBUS"
-+set +e
-+tools/testing/selftests/vm/mmap_write -p /mnt/tmpfs/test -s $((11 * 1024 * 1024)) &
-+wait $!
-+expect_equal "$?" "135" "mmap_write should have exited with SIGBUS"
-+set -e
-+
-+# ENOSPC the remote container on non pagefault.
-+echo
-+echo
-+echo "OOMing the remote container using cat (non-pagefault)"
-+echo "This will take a long time because the kernel goes through reclaim retries,"
-+echo "but should eventually the cat command should receive an ENOSPC"
-+cat /dev/random > /mnt/tmpfs/random || true
-+
-+cleanup
-+echo TEST PASSED
---
+-- 
 2.34.0.rc2.393.gf8c9666880-goog
+
