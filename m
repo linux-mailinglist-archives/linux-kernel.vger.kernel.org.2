@@ -2,152 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60E97457A9C
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 03:27:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37AB6457A9E
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 03:36:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236457AbhKTC36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 21:29:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233605AbhKTC35 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 21:29:57 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F5FC06173E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 18:26:54 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id w6-20020a9d77c6000000b0055e804fa524so19506958otl.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 18:26:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=QqkiBDchulxEr8/gijnezz7/M5Yq+LHuUwhG/lseFJQ=;
-        b=lUGc3lDY52CY5lVGaaEuD0/qO0zQnBREahFM2yNr9GWfX8EMKHCoFJKXFhsjCFHym1
-         /LsPRUltLDR5pu88fMtp3vjUDB2UkRn/MIJ4DH3cIP0ixRhjQ8DUbX8s9qjB5XhnIAOf
-         8Moi046sqgbvIsSBclKAO4mCjaTIehc/FJBE83I3dqMUXvThuigUZRyVUiKf4zBIWoHZ
-         V1TAz8xUsEYX5+70zcxSeVBqTFMU4z4N0nYFiIujd3QOIZRyfdE/vttb3s21tq5KCxFT
-         cE0h/vBrJFeKb1OkOJpu39L2gnoi1dcd1d6RS/sBm0BkMWpvLRR5Pwax/N4SkT/07Z74
-         gAdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=QqkiBDchulxEr8/gijnezz7/M5Yq+LHuUwhG/lseFJQ=;
-        b=y9uTdYd4Ye2zV/BLTlZqrKLKAkrWpwVggxFUD1PpisgMWBpOuVuDFd/uO0NhiZMxwY
-         nk3XRfq1Ld7JZh5TYCr9gDD1MHjuxyb0zagGWkvwshuclWKt8PPWCwOhALmIGxQbVwV+
-         sJdXnd5teQx8xJ4I8Ercri8XxhF5og6C6q1oM1tg6JUIm/jNQYlZPX5yLLmcGjIR6PdO
-         P4K6VO6fIXSs3/tp8UTanJSK4SZehiIKHHODt6ze8yhS1cDoxTddAuc1edviux0UIMz0
-         USoY+ry9J9EfwRbGLCggBM4i8PIrfBpEVAE4zCWI6mR3BFxOXo+LcIwnjQzzkRnJcG3P
-         +wZg==
-X-Gm-Message-State: AOAM53295LuR3Sz9dqFghsC3CV+1HVxIv4teTsqWDWqr609eDtuVecF1
-        ikAtY4OVjXB809jX3NeTqwB1FRIqny/+j9E+15Lvag==
-X-Google-Smtp-Source: ABdhPJzxYcHuhlhByxb5XGZ4hEAuIXwQAjtcS9BUPXYROpeDHmdTgVcyJCKHXEwhJDQozrz1MdwkrBP4mgLLt5L1Seg=
-X-Received: by 2002:a9d:a42:: with SMTP id 60mr8949062otg.179.1637375214069;
- Fri, 19 Nov 2021 18:26:54 -0800 (PST)
+        id S236457AbhKTCjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 21:39:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53528 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236047AbhKTCjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 21:39:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6A6161A38;
+        Sat, 20 Nov 2021 02:36:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637375798;
+        bh=UCystQLtnuRhjyd7uhfmMLfoucOCOaU357iQhWa2I8E=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=TSa3eCbprLXEYi8p4EQqGSg7oZAjoEUHJ0rFRVUJ9VBl6gAMbE5uEbunw133Hvn2X
+         YyY8zamDrjZjsDMVHXU0g6mq3un7wtUaWyJ5otO3ITuNDZHMKQ+kKtVzFf3Pk+fJHA
+         j2egM0PD4FidzdI61K/qIho7UyBuVf4q1XG9qozPzv4Bb3H+EDEbGuKsQzqPOUXRWd
+         La1mxvI0FwOH2R2Mg/OHnP/Rzaz9Ex8sEok27kgMte2pNBO2Qzw1Wnkc7rK6cN5nUT
+         mGGKCihIOLesTWCK8TcMw2xJ5gtxvjgSJ360MEBtnTVvHJdZcitbkMRB+E3mE6nJQe
+         AZ5JA/gMIpk4Q==
+Date:   Fri, 19 Nov 2021 18:36:35 -0800 (PST)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@ubuntu-linux-20-04-desktop
+To:     Oleksandr <olekstysh@gmail.com>
+cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>, Julien Grall <julien@xen.org>
+Subject: Re: [PATCH V2 4/4] arm/xen: Read extended regions from DT and init
+ Xen resource
+In-Reply-To: <ee5a226b-0e12-8823-0961-bf2fe0bd494e@gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2111191820130.1412361@ubuntu-linux-20-04-desktop>
+References: <1635264312-3796-1-git-send-email-olekstysh@gmail.com> <1635264312-3796-5-git-send-email-olekstysh@gmail.com> <alpine.DEB.2.21.2110271803060.20134@sstabellini-ThinkPad-T480s> <237f832d-5175-5653-18ee-058a7d7fa7a6@gmail.com>
+ <alpine.DEB.2.22.394.2111181701110.1412361@ubuntu-linux-20-04-desktop> <ee5a226b-0e12-8823-0961-bf2fe0bd494e@gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 20 Nov 2021 03:26:42 +0100
-Message-ID: <CACRpkdb0H0NH4t5iRW6_ba=Mym1vH=yG+decH6O5uo9k2opcXw@mail.gmail.com>
-Subject: [GIT PULL] pin control fixes for v5.16
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed; BOUNDARY="8323329-126447730-1637374814=:1412361"
+Content-ID: <alpine.DEB.2.22.394.2111191821110.1412361@ubuntu-linux-20-04-desktop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-here are some post-mergewindow fixes for the pin control subsystem.
+--8323329-126447730-1637374814=:1412361
+Content-Type: text/plain; CHARSET=UTF-8
+Content-Transfer-Encoding: 8BIT
+Content-ID: <alpine.DEB.2.22.394.2111191821111.1412361@ubuntu-linux-20-04-desktop>
 
-There is an ACPI stubs fix which is ACKed by the ACPI maintainer
-for merging through my tree.
+On Fri, 19 Nov 2021, Oleksandr wrote:
+> On 19.11.21 03:19, Stefano Stabellini wrote:
+> > On Wed, 10 Nov 2021, Oleksandr wrote:
+> > > On 28.10.21 04:40, Stefano Stabellini wrote:
+> > > 
+> > > Hi Stefano
+> > > 
+> > > I am sorry for the late response.
+> > > 
+> > > > On Tue, 26 Oct 2021, Oleksandr Tyshchenko wrote:
+> > > > > From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+> > > > > 
+> > > > > This patch implements arch_xen_unpopulated_init() on Arm where
+> > > > > the extended regions (if any) are gathered from DT and inserted
+> > > > > into passed Xen resource to be used as unused address space
+> > > > > for Xen scratch pages by unpopulated-alloc code.
+> > > > > 
+> > > > > The extended region (safe range) is a region of guest physical
+> > > > > address space which is unused and could be safely used to create
+> > > > > grant/foreign mappings instead of wasting real RAM pages from
+> > > > > the domain memory for establishing these mappings.
+> > > > > 
+> > > > > The extended regions are chosen by the hypervisor at the domain
+> > > > > creation time and advertised to it via "reg" property under
+> > > > > hypervisor node in the guest device-tree. As region 0 is reserved
+> > > > > for grant table space (always present), the indexes for extended
+> > > > > regions are 1...N.
+> > > > > 
+> > > > > If arch_xen_unpopulated_init() fails for some reason the default
+> > > > > behaviour will be restored (allocate xenballooned pages).
+> > > > > 
+> > > > > This patch also removes XEN_UNPOPULATED_ALLOC dependency on x86.
+> > > > > 
+> > > > > Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+> > > > > ---
+> > > > > Changes RFC -> V2:
+> > > > >      - new patch, instead of
+> > > > >       "[RFC PATCH 2/2] xen/unpopulated-alloc: Query hypervisor to
+> > > > > provide
+> > > > > unallocated space"
+> > > > > ---
+> > > > >    arch/arm/xen/enlighten.c | 112
+> > > > > +++++++++++++++++++++++++++++++++++++++++++++++
+> > > > >    drivers/xen/Kconfig      |   2 +-
+> > > > >    2 files changed, 113 insertions(+), 1 deletion(-)
+> > > > > 
+> > > > > diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
+> > > > > index dea46ec..1a1e0d3 100644
+> > > > > --- a/arch/arm/xen/enlighten.c
+> > > > > +++ b/arch/arm/xen/enlighten.c
+> > > > > @@ -62,6 +62,7 @@ static __read_mostly unsigned int xen_events_irq;
+> > > > >    static phys_addr_t xen_grant_frames;
+> > > > >      #define GRANT_TABLE_INDEX   0
+> > > > > +#define EXT_REGION_INDEX    1
+> > > > >      uint32_t xen_start_flags;
+> > > > >    EXPORT_SYMBOL(xen_start_flags);
+> > > > > @@ -303,6 +304,117 @@ static void __init xen_acpi_guest_init(void)
+> > > > >    #endif
+> > > > >    }
+> > > > >    +#ifdef CONFIG_XEN_UNPOPULATED_ALLOC
+> > > > > +int arch_xen_unpopulated_init(struct resource *res)
+> > > > > +{
+> > > > > +	struct device_node *np;
+> > > > > +	struct resource *regs, *tmp_res;
+> > > > > +	uint64_t min_gpaddr = -1, max_gpaddr = 0;
+> > > > > +	unsigned int i, nr_reg = 0;
+> > > > > +	struct range mhp_range;
+> > > > > +	int rc;
+> > > > > +
+> > > > > +	if (!xen_domain())
+> > > > > +		return -ENODEV;
+> > > > > +
+> > > > > +	np = of_find_compatible_node(NULL, NULL, "xen,xen");
+> > > > > +	if (WARN_ON(!np))
+> > > > > +		return -ENODEV;
+> > > > > +
+> > > > > +	/* Skip region 0 which is reserved for grant table space */
+> > > > > +	while (of_get_address(np, nr_reg + EXT_REGION_INDEX, NULL,
+> > > > > NULL))
+> > > > > +		nr_reg++;
+> > > > > +	if (!nr_reg) {
+> > > > > +		pr_err("No extended regions are found\n");
+> > > > > +		return -EINVAL;
+> > > > > +	}
+> > > > > +
+> > > > > +	regs = kcalloc(nr_reg, sizeof(*regs), GFP_KERNEL);
+> > > > > +	if (!regs)
+> > > > > +		return -ENOMEM;
+> > > > > +
+> > > > > +	/*
+> > > > > +	 * Create resource from extended regions provided by the
+> > > > > hypervisor to
+> > > > > be
+> > > > > +	 * used as unused address space for Xen scratch pages.
+> > > > > +	 */
+> > > > > +	for (i = 0; i < nr_reg; i++) {
+> > > > > +		rc = of_address_to_resource(np, i + EXT_REGION_INDEX,
+> > > > > &regs[i]);
+> > > > > +		if (rc)
+> > > > > +			goto err;
+> > > > > +
+> > > > > +		if (max_gpaddr < regs[i].end)
+> > > > > +			max_gpaddr = regs[i].end;
+> > > > > +		if (min_gpaddr > regs[i].start)
+> > > > > +			min_gpaddr = regs[i].start;
+> > > > > +	}
+> > > > > +
+> > > > > +	/* Check whether the resource range is within the hotpluggable
+> > > > > range
+> > > > > */
+> > > > > +	mhp_range = mhp_get_pluggable_range(true);
+> > > > > +	if (min_gpaddr < mhp_range.start)
+> > > > > +		min_gpaddr = mhp_range.start;
+> > > > > +	if (max_gpaddr > mhp_range.end)
+> > > > > +		max_gpaddr = mhp_range.end;
+> > > > > +
+> > > > > +	res->start = min_gpaddr;
+> > > > > +	res->end = max_gpaddr;
+> > > > > +
+> > > > > +	/*
+> > > > > +	 * Mark holes between extended regions as unavailable. The
+> > > > > rest of
+> > > > > that
+> > > > > +	 * address space will be available for the allocation.
+> > > > > +	 */
+> > > > > +	for (i = 1; i < nr_reg; i++) {
+> > > > > +		resource_size_t start, end;
+> > > > > +
+> > > > > +		start = regs[i - 1].end + 1;
+> > > > > +		end = regs[i].start - 1;
+> > > > > +
+> > > > > +		if (start > (end + 1)) {
+> > > > Should this be:
+> > > > 
+> > > > if (start >= end)
+> > > > 
+> > > > ?
+> > > Yes, we can do this here (since the checks are equivalent) but ...
+> > > 
+> > > > > +			rc = -EINVAL;
+> > > > > +			goto err;
+> > > > > +		}
+> > > > > +
+> > > > > +		/* There is no hole between regions */
+> > > > > +		if (start == (end + 1))
+> > > > Also here, shouldn't it be:
+> > > > 
+> > > > if (start == end)
+> > > > 
+> > > > ?
+> > >     ... not here.
+> > > 
+> > > As
+> > > 
+> > > "(start == (end + 1))" is equal to "(regs[i - 1].end + 1 ==
+> > > regs[i].start)"
+> > > 
+> > > but
+> > > 
+> > > "(start == end)" is equal to "(regs[i - 1].end + 1 == regs[i].start - 1)"
+> >   OK. But the check:
+> > 
+> >    if (start >= end)
+> > 
+> > Actually covers both cases so that's the only check we need?
+> 
+> Sorry, I don't entirely understand the question.
+> Is the question to use only a single check in that loop?
+> 
+> Paste the updated code which I have locally for the convenience.
+> 
+>  [snip]
+> 
+>     /*
+>      * Mark holes between extended regions as unavailable. The rest of that
+>      * address space will be available for the allocation.
+>      */
+>     for (i = 1; i < nr_reg; i++) {
+>         resource_size_t start, end;
+> 
+>         start = regs[i - 1].end + 1;
+>         end = regs[i].start - 1;
+> 
+>         if (start > (end + 1)) {
+>             rc = -EINVAL;
+>             goto err;
+>         }
+> 
+>         /* There is no hole between regions */
+>         if (start == (end + 1))
+>             continue;
+> 
+>         tmp_res = kzalloc(sizeof(*tmp_res), GFP_KERNEL);
+>         if (!tmp_res) {
+>             rc = -ENOMEM;
+>             goto err;
+>         }
+> 
+>         tmp_res->name = "Unavailable space";
+>         tmp_res->start = start;
+>         tmp_res->end = end;
+> 
+>         rc = insert_resource(&xen_resource, tmp_res);
+>         if (rc) {
+>             pr_err("Cannot insert resource %pR (%d)\n", tmp_res, rc);
+>             kfree(tmp_res);
+>             goto err;
+>         }
+>     }
+> 
+> [snip]
+> 
+> 
+> 1. The first check is to detect an overlap (which is a wrong configuration,
+> correct?) and bail out if true (for example, regX: 0x81000000...0x82FFFFFF and
+> regY: 0x82000000...0x83FFFFFF).
+> 2. The second check is just to skip current iteration as there is no
+> space/hole between regions (for example, regX: 0x81000000...0x82FFFFFF and
+> regY: 0x83000000...0x83FFFFFF).
+> Therefore I think they should be distinguished.
+> 
+> Yes, both check could be transformed to a single one, but this way the
+> overlaps will be ignored:
+> if (start >= (end + 1))
+>     continue;
+> 
+> Or I really missed something?
 
-One item stand out and that is that I delete the <linux/sdb.h> header
-that is used by nothing. I deleted this subsystem (through the GPIO
-tree) a while back so I feel responsible for tidying up the floor.
+You are right it is better to distinguish the two cases. I suggest the
+code below because I think it is a clearer, even if it might be slightly
+less efficient. I don't feel too strongly about it though.
 
-Other than that it is the usual mistakes, a bit noisy around build issue
-and Kconfig then driver fixes.
+		resource_size_t start, end;
 
-Please pull it in!
+		/* There is no hole between regions */
+		if ( regs[i - 1].end + 1 == regs[i].start )
+			continue;
 
-Yours,
-Linus Walleij
+		if ( regs[i - 1].end + 1 > regs[i].start) {
+			rc = -EINVAL;
+			goto err;
+		}
 
-The following changes since commit fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf:
-
-  Linux 5.16-rc1 (2021-11-14 13:56:52 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
-tags/pinctrl-v5.16-2
-
-for you to fetch changes up to 62209e805b5c68577602a5803a71d8e2e11ee0d3:
-
-  pinctrl: qcom: sm8350: Correct UFS and SDC offsets (2021-11-16 02:19:15 +0100)
-
-----------------------------------------------------------------
-Pin control fixes for the v5.16 kernel series:
-
-- Fix some stubs causing compile issues for ACPI.
-
-- Fix some wakeups on AMD IRQs shared between GPIO and SCI.
-
-- Fix a build warning in the Tegra driver.
-
-- Fix a Kconfig issue in the Qualcomm driver.
-
-- Add a missing include the RALink driver.
-
-- Return a valid type for the Apple pinctrl IRQs.
-
-- Implement some Qualcomm SDM845 dual-edge errata.
-
-- Remove the unused <linux/sdb.h> header. (The subsystem was
-  once deleted by the pinctrl maintainer...)
-
-- Fix a duplicate initialized in the Tegra driver.
-
-- Fix register offsets for UFS and SDC in the Qualcomm SM8350
-  driver.
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      pinctrl: tegra194: remove duplicate initializer again
-
-Bjorn Andersson (2):
-      pinctrl: qcom: sdm845: Enable dual edge errata
-      pinctrl: qcom: sm8350: Correct UFS and SDC offsets
-
-Jonathan Corbet (1):
-      Remove unused header <linux/sdb.h>
-
-Julian Braha (1):
-      pinctrl: qcom: fix unmet dependencies on GPIOLIB for GPIOLIB_IRQCHIP
-
-Mario Limonciello (2):
-      ACPI: Add stubs for wakeup handler functions
-      pinctrl: amd: Fix wakeups when IRQ is shared with SCI
-
-Prathamesh Shete (1):
-      pinctrl: tegra: Return const pointer from tegra_pinctrl_get_group()
-
-Sergio Paracuellos (1):
-      pinctrl: ralink: include 'ralink_regs.h' in 'pinctrl-mt7620.c'
-
-Sven Peter (1):
-      pinctrl: apple: Always return valid type in apple_gpio_irq_type
-
- drivers/pinctrl/pinctrl-amd.c            |  29 +++++-
- drivers/pinctrl/pinctrl-apple-gpio.c     |  12 +--
- drivers/pinctrl/qcom/Kconfig             |   2 +
- drivers/pinctrl/qcom/pinctrl-sdm845.c    |   1 +
- drivers/pinctrl/qcom/pinctrl-sm8350.c    |   8 +-
- drivers/pinctrl/ralink/pinctrl-mt7620.c  |   1 +
- drivers/pinctrl/tegra/pinctrl-tegra.c    |   4 +-
- drivers/pinctrl/tegra/pinctrl-tegra194.c |   1 -
- include/linux/acpi.h                     |   9 ++
- include/linux/sdb.h                      | 160 -------------------------------
- 10 files changed, 51 insertions(+), 176 deletions(-)
- delete mode 100644 include/linux/sdb.h
+		start = regs[i - 1].end + 1;
+		end = regs[i].start - 1;
+--8323329-126447730-1637374814=:1412361--
