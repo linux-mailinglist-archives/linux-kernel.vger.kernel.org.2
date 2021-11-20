@@ -2,86 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E44457C93
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 09:34:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A59A457C96
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 09:34:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237107AbhKTIhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 03:37:01 -0500
-Received: from mga12.intel.com ([192.55.52.136]:17859 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237033AbhKTIg6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 03:36:58 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10173"; a="214573324"
-X-IronPort-AV: E=Sophos;i="5.87,250,1631602800"; 
-   d="scan'208";a="214573324"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2021 00:33:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,250,1631602800"; 
-   d="scan'208";a="673481767"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 20 Nov 2021 00:33:53 -0800
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1moLon-0005ZP-3L; Sat, 20 Nov 2021 08:33:53 +0000
-Date:   Sat, 20 Nov 2021 16:33:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: [PATCH] swiotlb: fix alloc_cast.cocci warnings
-Message-ID: <20211120083330.GA35664@bc04062c4578>
-References: <202111201604.OPINOlHY-lkp@intel.com>
+        id S237140AbhKTIhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 03:37:43 -0500
+Received: from mail-0301.mail-europe.com ([188.165.51.139]:46396 "EHLO
+        mail-0301.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236856AbhKTIhl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 03:37:41 -0500
+Date:   Sat, 20 Nov 2021 08:34:26 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1637397275;
+        bh=10as2SSAHWUwNyBVa743Y/q5LEHoDZAyLY8FqhWA2S4=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=WyUODtNcN43Aqs3mhTxjnuR31EDlPY6gSjuGpJNiN62xckT62dMBXL8G0iZ2A6YL1
+         6f5Rz3WQvLS5mnSBMc44PkBjVlkxjRsK5Baor14trrGn6XGQYyVvrSEuTHftaLjO+9
+         TpQKrGuZ7+3VQo6iDIpXWAIYepjW74FEtJyMEXhs=
+To:     andriy.shevchenko@linux.intel.com, lee.jones@linaro.org,
+        linux-kernel@vger.kernel.org
+From:   Orlando Chamberlain <redecorating@protonmail.com>
+Cc:     Orlando Chamberlain <redecorating@protonmail.com>
+Reply-To: Orlando Chamberlain <redecorating@protonmail.com>
+Subject: [PATCH] mfd: intel-lpss-pci: fix clock speed for 38a8 UART
+Message-ID: <20211120083312.41230-1-redecorating@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202111201604.OPINOlHY-lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+This device is found in the MacBookPro16,2, and as the MacBookPro16,1 is
+from the same generation of MacBooks and has a UART with bxt_uart_info,
+it was incorrectly assumed that the MacBookPro16,2's UART would have the
+same info.
 
-kernel/dma/swiotlb.c:389:15-33: WARNING: casting value returned by memory allocation function to (struct io_tlb_area *) is useless.
+This led to the wrong clock speed being used, and the Bluetooth
+controller exposed by the UART receiving and sending random data, which
+was incorrectly assumed to be an issue with the Bluetooth stuff, not an
+error with the UART side of things.
 
- Remove casting the values returned by memory allocation functions
- like kmalloc, kzalloc, kmem_cache_alloc, kmem_cache_zalloc etc.
+Changing the info to spt_uart_info changes the clock speed and makes it
+send and receive data correctly.
 
-Semantic patch information:
- This makes an effort to find cases of casting of values returned by
- kmalloc, kzalloc, kcalloc, kmem_cache_alloc, kmem_cache_zalloc,
- kmem_cache_alloc_node, kmalloc_node and kzalloc_node and removes
- the casting as it is not required. The result in the patch case may
- need some reformatting.
+Fixes: ddb1ada416fd ("mfd: intel-lpss: Add support for MacBookPro16,2 ICL-N=
+ UART")
 
-Generated by: scripts/coccinelle/api/alloc/alloc_cast.cocci
-
-Fixes: 4529b5784c14 ("swiotlb: Split up single swiotlb lock")
-CC: Andi Kleen <ak@linux.intel.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Orlando Chamberlain <redecorating@protonmail.com>
 ---
-
-tree:   https://github.com/intel/tdx.git guest
-head:   41fe88a1b3c28543f49fa6ed9e0e9b6650ed7614
-commit: 4529b5784c141782c72ec9bd9a92df2b68cb7d45 [129/144] swiotlb: Split up single swiotlb lock
-:::::: branch date: 9 days ago
-:::::: commit date: 9 days ago
-
- swiotlb.c |    2 +-
+ drivers/mfd/intel-lpss-pci.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -386,7 +386,7 @@ swiotlb_late_init_with_tbl(char *tlb, un
- 		return -ENOMEM;
- 	}
- 
--	mem->areas = (struct io_tlb_area *)kcalloc(num_areas,
-+	mem->areas = kcalloc(num_areas,
- 						   sizeof(struct io_tlb_area),
- 						   GFP_KERNEL);
- 	if (!mem->areas) {
+diff --git a/drivers/mfd/intel-lpss-pci.c b/drivers/mfd/intel-lpss-pci.c
+index a872b4485eac..f70464ce8e3d 100644
+--- a/drivers/mfd/intel-lpss-pci.c
++++ b/drivers/mfd/intel-lpss-pci.c
+@@ -254,7 +254,7 @@ static const struct pci_device_id intel_lpss_pci_ids[] =
+=3D {
+ =09{ PCI_VDEVICE(INTEL, 0x34eb), (kernel_ulong_t)&bxt_i2c_info },
+ =09{ PCI_VDEVICE(INTEL, 0x34fb), (kernel_ulong_t)&spt_info },
+ =09/* ICL-N */
+-=09{ PCI_VDEVICE(INTEL, 0x38a8), (kernel_ulong_t)&bxt_uart_info },
++=09{ PCI_VDEVICE(INTEL, 0x38a8), (kernel_ulong_t)&spt_uart_info },
+ =09/* TGL-H */
+ =09{ PCI_VDEVICE(INTEL, 0x43a7), (kernel_ulong_t)&bxt_uart_info },
+ =09{ PCI_VDEVICE(INTEL, 0x43a8), (kernel_ulong_t)&bxt_uart_info },
+--=20
+2.34.0
+
+
