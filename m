@@ -2,146 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A4F457D39
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 12:20:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2CF3457D3D
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 12:20:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237129AbhKTLP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 06:15:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236997AbhKTLPZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 06:15:25 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989BFC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 03:12:22 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id g36-20020a25ae64000000b005c1f46f7ee6so19836284ybe.8
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 03:12:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=y0KeUaf6yAD9mUdfrovGwP2ZmXhum3aoW0pYBqDmMns=;
-        b=GtHRmlYpGjadB2YppYLoUO91303KsrP06J5UwfaEqnz96UEdfijeBAEcgadkezpigK
-         VcDi623/84zGWiPX4cGw6oCI60UMWHlOhYIlrJn/8JWRX0l1I/F/30PEhLj9s93cS+Ok
-         UZdlnMUuJvEjlr+6fnn0x/O9oQl0B29gD7UaieAJeoFgsa8mLdHz8/AhpUicZbzzwZXr
-         GFbjiE/JjzkcmfGyM3M+3wKjw5hHua/9l4sTrbVnOiea+NcWhGPZGEIR2+R9e4exCV2Y
-         tQ+DjGhIBpqujNgTYwkapRvtP1BHejnWWB2uINaobfRLFQgZkHbwHm2Rq5iG+PsNRNYU
-         t7qQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=y0KeUaf6yAD9mUdfrovGwP2ZmXhum3aoW0pYBqDmMns=;
-        b=M5fP+feiBU9f+qgctmQL0uExNjdUnWkZ1FjkpR41aXOJKsvEAMK95hxhsLfqg/AGbF
-         E2dwv/XR4K1hIeQtw3RZD/BF1TerFCf2OwAxX802TuIi31lZ6MOvWHUpPBpxRCa/a7nR
-         wllny9dqLmPMVmUTwLYB8nwGqD8nR3Y/tl12fNR3vaXhaX4QDBv+loGuf9WVHCiTN5N5
-         fiBYVH1io8vEP7E5O10Rk1ySvj0cBvmE2Os/yep8wHpCB64dajQmSrxyuIsjy6Zf2zMv
-         myYGtTDQDP6Ii2NmgSTYNn/NGYcUPJ8FyZUvQO5jJ/dH6poOiAcaZP2mVUT/dx0VgY4D
-         3W9w==
-X-Gm-Message-State: AOAM531CYhe2qErQsok03Ndy3nVEUws8KWmscjP9L+ldSrLClDWnOebk
-        jVv8oILtP0IHxGvruJYd15fZEOaUjw==
-X-Google-Smtp-Source: ABdhPJwfrC2hI7KTCTOxBuv0DAf8V5+yxchtiimvYb0Ed7bAykGaLPi8ehRFbLE8Oy5YeoCVkthfS0Or8g==
-X-Received: from zoebm1.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:e29])
- (user=zoebm job=sendgmr) by 2002:a05:6902:1208:: with SMTP id
- s8mr49731208ybu.375.1637406741776; Sat, 20 Nov 2021 03:12:21 -0800 (PST)
-Date:   Sat, 20 Nov 2021 11:11:51 +0000
-In-Reply-To: <YZixPDg8kKHZrGJB@kroah.com>
-Message-Id: <20211120111151.1086970-1-zoebm@google.com>
-Mime-Version: 1.0
-References: <YZixPDg8kKHZrGJB@kroah.com>
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH 2/2] Staging: rtl8712: rtl871x_security: fixed a camel case
- variable name coding style issue
-From:   Zoeb Mithaiwala <zoebm@google.com>
-To:     greg@kroah.com
-Cc:     trivial@kernel.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev, Zoeb Mithaiwala <zoebm@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S237342AbhKTLXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 06:23:53 -0500
+Received: from mga07.intel.com ([134.134.136.100]:55992 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231161AbhKTLXx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 06:23:53 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10173"; a="297974069"
+X-IronPort-AV: E=Sophos;i="5.87,250,1631602800"; 
+   d="scan'208";a="297974069"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2021 03:20:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,250,1631602800"; 
+   d="scan'208";a="496214393"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.118]) ([10.239.159.118])
+  by orsmga007.jf.intel.com with ESMTP; 20 Nov 2021 03:20:44 -0800
+Cc:     baolu.lu@linux.intel.com, "Tian, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Diana Craciun <diana.craciun@oss.nxp.com>
+Subject: Re: [PATCH 01/11] iommu: Add device dma ownership set/release
+ interfaces
+To:     =?UTF-8?B?SsO2cmcgUsO2ZGVs?= <joro@8bytes.org>
+References: <20211115020552.2378167-1-baolu.lu@linux.intel.com>
+ <20211115020552.2378167-2-baolu.lu@linux.intel.com>
+ <YZJdJH4AS+vm0j06@infradead.org>
+ <cc7ce6f4-b1ec-49ef-e245-ab6c330154c2@linux.intel.com>
+ <20211116134603.GA2105516@nvidia.com>
+ <BN9PR11MB5433639E43C37C5D2462BD718C9B9@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20211118133325.GO2105516@nvidia.com>
+ <BN9PR11MB5433E5B63E575E2232DFBBE48C9C9@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <75100dfd-9cfe-9f3d-531d-b4d30de03e76@linux.intel.com>
+ <20211119150612.jhsvsbzisvux2lga@8bytes.org>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <48cf6b2b-28ee-178d-6471-460e781e7b20@linux.intel.com>
+Date:   Sat, 20 Nov 2021 19:16:13 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20211119150612.jhsvsbzisvux2lga@8bytes.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changed additional 'n' from variable name. Corrected comment indentation.
+Hi Joerg,
 
-Signed-off-by: Zoeb Mithaiwala <zoebm@google.com>
----
- drivers/staging/rtl8712/rtl871x_security.c | 12 ++++++------
- drivers/staging/rtl8712/rtl871x_security.h |  6 +++---
- 2 files changed, 9 insertions(+), 9 deletions(-)
+On 11/19/21 11:06 PM, Jörg Rödel wrote:
+> On Fri, Nov 19, 2021 at 07:14:10PM +0800, Lu Baolu wrote:
+>> The singleton group requirement for iommu_attach/detach_device() was
+>> added by below commit:
+>>
+>> commit 426a273834eae65abcfc7132a21a85b3151e0bce
+>> Author: Joerg Roedel <jroedel@suse.de>
+>> Date:   Thu May 28 18:41:30 2015 +0200
+>>
+>>      iommu: Limit iommu_attach/detach_device to devices with their own group
+>>
+>>      This patch changes the behavior of the iommu_attach_device
+>>      and iommu_detach_device functions. With this change these
+>>      functions only work on devices that have their own group.
+>>      For all other devices the iommu_group_attach/detach
+>>      functions must be used.
+>>
+>>      Signed-off-by: Joerg Roedel <jroedel@suse.de>
+>>
+>> Joerg,can you please shed some light on the background of this
+>> requirement? Does above idea of transition from singleton group
+>> to group with single driver bound make sense to you?
+> 
+> This change came to be because the iommu_attach/detach_device()
+> interface doesn't fit well into a world with iommu-groups. Devices
+> within a group are by definition not isolated between each other, so
+> they must all be in the same address space (== iommu_domain). So it
+> doesn't make sense to allow attaching a single device within a group to
+> a different iommu_domain.
 
-diff --git a/drivers/staging/rtl8712/rtl871x_security.c b/drivers/staging/rtl8712/rtl871x_security.c
-index 4b341074b1b2..529527e201e3 100644
---- a/drivers/staging/rtl8712/rtl871x_security.c
-+++ b/drivers/staging/rtl8712/rtl871x_security.c
-@@ -269,7 +269,7 @@ static void secmicclear(struct mic_data *pmicdata)
- /* Reset the state to the empty message. */
- 	pmicdata->L = pmicdata->K0;
- 	pmicdata->R = pmicdata->K1;
--	pmicdata->nbytes_in_m = 0;
-+	pmicdata->bytes_in_m = 0;
- 	pmicdata->M = 0;
- }
- 
-@@ -285,10 +285,10 @@ void r8712_secmicsetkey(struct mic_data *pmicdata, u8 *key)
- static void secmicappendbyte(struct mic_data *pmicdata, u8 b)
- {
- 	/* Append the byte to our word-sized buffer */
--	pmicdata->M |= ((u32)b) << (8 * pmicdata->n_bytes_in_m);
--	pmicdata->nbytes_in_m++;
-+	pmicdata->M |= ((u32)b) << (8 * pmicdata->bytes_in_m);
-+	pmicdata->bytes_in_m++;
- 	/* Process the word if it is full. */
--	if (pmicdata->nbytes_in_m >= 4) {
-+	if (pmicdata->bytes_in_m >= 4) {
- 		pmicdata->L ^= pmicdata->M;
- 		pmicdata->R ^= ROL32(pmicdata->L, 17);
- 		pmicdata->L += pmicdata->R;
-@@ -301,7 +301,7 @@ static void secmicappendbyte(struct mic_data *pmicdata, u8 b)
- 		pmicdata->L += pmicdata->R;
- 		/* Clear the buffer */
- 		pmicdata->M = 0;
--		pmicdata->nbytes_in_m = 0;
-+		pmicdata->bytes_in_m = 0;
- 	}
- }
- 
-@@ -323,7 +323,7 @@ void r8712_secgetmic(struct mic_data *pmicdata, u8 *dst)
- 	secmicappendbyte(pmicdata, 0);
- 	secmicappendbyte(pmicdata, 0);
- 	/* and then zeroes until the length is a multiple of 4 */
--	while (pmicdata->nbytes_in_m != 0)
-+	while (pmicdata->bytes_in_m != 0)
- 		secmicappendbyte(pmicdata, 0);
- 	/* The appendByte function has already computed the result. */
- 	secmicputuint32(dst, pmicdata->L);
-diff --git a/drivers/staging/rtl8712/rtl871x_security.h b/drivers/staging/rtl8712/rtl871x_security.h
-index 006ce05c798f..1de662940417 100644
---- a/drivers/staging/rtl8712/rtl871x_security.h
-+++ b/drivers/staging/rtl8712/rtl871x_security.h
-@@ -192,7 +192,7 @@ struct mic_data {
- 	u32  K0, K1;         /* Key */
- 	u32  L, R;           /* Current state */
- 	u32  M;              /* Message accumulator (single word) */
--	u32  nbytes_in_m;      /* # bytes in M */
-+	u32  bytes_in_m;     /* # bytes in M */
- };
- 
- void seccalctkipmic(
-@@ -200,11 +200,11 @@ void seccalctkipmic(
- 	u8  *header,
- 	u8  *data,
- 	u32  data_len,
--	u8  *miccode,
-+	u8  *Miccode,
- 	u8   priority);
- 
- void r8712_secmicsetkey(struct mic_data *pmicdata, u8 *key);
--void r8712_secmicappend(struct mic_data *pmicdata, u8 *src, u32 nbytes);
-+void r8712_secmicappend(struct mic_data *pmicdata, u8 *src, u32 nBytes);
- void r8712_secgetmic(struct mic_data *pmicdata, u8 *dst);
- u32 r8712_aes_encrypt(struct _adapter *padapter, u8 *pxmitframe);
- u32 r8712_tkip_encrypt(struct _adapter *padapter, u8 *pxmitframe);
--- 
-2.20.1
+Thanks for the explanation. It's very helpful. There seems to be a lot
+of discussions around this, but I didn't see any meaningful reasons to
+break the assumption of "all devices in a group being in a same address
+space".
 
+Best regards,
+baolu
+
+> 
+> I know that in theory it is safe to allow devices within a group to be
+> in different domains because there iommu-groups catch multiple
+> non-isolation cases:
+> 
+> 	1) Devices behind a non-ACS capable bridge or multiple functions
+> 	   of a PCI device. Here it is safe to put the devices into
+> 	   different iommu-domains as long as all affected devices are
+> 	   controlled by the same owner.
+> 
+> 	2) Devices which share a single request-id and can't be
+> 	   differentiated by the IOMMU hardware. These always need to be
+> 	   in the same iommu_domain.
+> 
+> To lift the single-domain-per-group requirement the iommu core code
+> needs to learn the difference between the two cases above.
+> 
+> Regards,
+> 
+> 	Joerg
+> 
