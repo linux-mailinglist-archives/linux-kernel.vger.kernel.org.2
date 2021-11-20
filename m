@@ -2,145 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D0C457DD1
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 13:20:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D39457DD2
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 13:23:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237338AbhKTMXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 07:23:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39498 "EHLO
+        id S237329AbhKTM0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 07:26:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230381AbhKTMXf (ORCPT
+        with ESMTP id S230381AbhKTM0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 07:23:35 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810FBC061574;
-        Sat, 20 Nov 2021 04:20:32 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id v23so16375288iom.12;
-        Sat, 20 Nov 2021 04:20:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7v/1LM3YhmWD/58/4APk/JcjWa5gVRYO7ANhdBBhJfg=;
-        b=PDCnAlWpIt9M30Q0uyMNd88iWm9OhFqoMU9EWjaj7ZzaTmwevgAcXlG1iO967cTHdY
-         spbBR8jSg2fNhAsKfCc4M3SS/pco1JGp6u6b856JU5vZyZVqrMFv+YGTKwKydWfFvGK2
-         fBlgp2oXEwkrJ1ooXutrugu32VQ4haykxwfuf8W+P+7gp+W995iXV3sYvNCLFv4Blel6
-         xrjXnwEU/UDApVQTxOANPApSA4mbc5h9ItqEeFpg6KO8ib6CJd7KEzqYTHPMXysdCFsG
-         c2xQl8Z0bcKnW4xYkJw+e283JnT6qWBNnDWPWmGF/xAfFIIsHqUrvHz0fDWKS5XBXy0C
-         aiSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7v/1LM3YhmWD/58/4APk/JcjWa5gVRYO7ANhdBBhJfg=;
-        b=D/oNyAVVVIyY1+7ZnH2IAfm8XgAZS1AJR8vOBYXrbX5XOBCqGJpEjiUlN0ZSjqmDr6
-         4qtOn3D6RN0XBLD5LR3tmGdbBinsothuLkLjkz5qsxFTGeRSHUckcWD8VF2P/H3dTXlP
-         lrbl75E1KN8L++0fbZfyD2OjTSnhXsN6KF1ZzVPVaC20scP8WgCB/3bRfe0LkAjy6gk8
-         +MEHWlNRwX5A+r/9Zgq71D52rO0knM7Wyj0mxTLqWosGoZpcRSTDlu3SInO08bpHwejC
-         a0aFShHohfsrBz+4lJammnKnLbn3DWi7dsjBWcsqxtKfYoVmOP3YHgrR605DpkuSH8/+
-         A6sQ==
-X-Gm-Message-State: AOAM530s907PFg6EVaAwkqKPwy/Ayaw8XxMYjOb+qXxxvoz1ta/+OYKs
-        dJI2JUfJ75GsZ82vtuHTu92DQ3AiNxGtKQ==
-X-Google-Smtp-Source: ABdhPJydtOs5bKEne0N8GnBoZk4fVBejd/LHjHgM8gk9qXKfda1TOLYm7na4JnA3vOpq5okd3wUxig==
-X-Received: by 2002:a02:ba8b:: with SMTP id g11mr34245775jao.128.1637410830037;
-        Sat, 20 Nov 2021 04:20:30 -0800 (PST)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:48a3:a74f:1d99:b7f])
-        by smtp.gmail.com with ESMTPSA id n12sm1984259ilk.80.2021.11.20.04.20.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Nov 2021 04:20:29 -0800 (PST)
-From:   Adam Ford <aford173@gmail.com>
-To:     devicetree@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, linux-kernel@vger.kernel.org,
-        aford@beaconembedded.com, Adam Ford <aford173@gmail.com>
-Subject: [RESEND PATCH V5] dt-bindings: soc: imx: Add binding doc for spba bus
-Date:   Sat, 20 Nov 2021 06:20:22 -0600
-Message-Id: <20211120122022.1052768-1-aford173@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Sat, 20 Nov 2021 07:26:39 -0500
+Received: from danwin1210.me (danwin1210.me [IPv6:2a01:4f8:c010:d56::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8DBC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 04:23:35 -0800 (PST)
+Received: from danwin1210.me (unknown [10.9.0.4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X448 server-signature ECDSA (P-384)
+         client-signature ED448)
+        (Client CN "danwin1210.me", Issuer "danwin1210.me" (verified OK))
+        by mail.danwin1210.me (Postfix) with ESMTPS id C04D21F4B7;
+        Sat, 20 Nov 2021 12:23:33 +0000 (UTC)
+Received: from prine.. (unknown [10.9.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+        (No client certificate requested)
+        by danwin1210.me (Postfix) with ESMTPSA id CF0493C73F;
+        Sat, 20 Nov 2021 12:23:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=danwin1210.me;
+        s=mail; t=1637411012;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=1D6TK4pBt+NhUD9V+WvMMJAWVBcNVUjT9h+cnTkVwa4=;
+        b=lGqKcqM1w4bzz8fvqwwRkdQlQWLcNE7VjVfY5lBAiE3H0Xng3QMa5IpOz8Gc51LojS1L/B
+        gN+b78QHgc4gFNhiFA8yHPIKzGCXjJvS2zAtB0qJdiHLa9saQ38qLkDa1F0TtDgHjItf7t
+        G5jiHsnSVLPB7M8TjMAjJdO5KAgUtK7yCqV1Uu4oENhSkd0iNlzR/shwYQqvmFHTAi6Z6/
+        ooM2ljJpP3i8CaGaeBVI6hiNNdc9IZpVR17tzjIeE5kKCIT5o4XIv0bkb31EDzzuWu+hTS
+        piukyCFnyIxY9dCrWpLspKQ8vtdPvjT4GOu5PFm2CSP6OxxT9JGpuGbs2Rs50rUhUk79C9
+        m/5nKxVvnRHWVTv9c3Fyiugzams10SukBr2VmYNG4qMPan4Fy9nnmOyXUFUcJf6t06Kez0
+        1dzHJotCm6v8GUDd6SO1vUEGJGoVdm7zDJBMyECyyN+W0UDaLDsU2HwE+Yk0uN8HvAp3R6
+        kU3QALwN02tgnaOMbSJLuVHfJWI7UIdOuESaBOOA+EGlAo7zFLlLCTzjXEB/vNeI/ewisR
+        Fp3LRNE3Do2IjVcjp4ozCm7V6ThmanxlM86uX5eJ56Y7fZhyaEny7p7RTNNrg44UXWJJKa
+        BWkgufRYOOZsgzTPUF+O+V8qmc4WXpM400PO7wNzdnlcEm8iuvuZg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=danwin1210.me;
+        s=ed25519; t=1637411013;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=1D6TK4pBt+NhUD9V+WvMMJAWVBcNVUjT9h+cnTkVwa4=;
+        b=KfAvgOaW3xIq59Ehg6Er/7s4YExuLtnJW/GBF57Bcrdn1nO0kJNqeoTUXk81yuTrWxj4PJ
+        siZqwcX5VgRbPHAw==
+From:   Kyle Copperfield <kmcopper@danwin1210.me>
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Kyle Copperfield <kmcopper@danwin1210.me>,
+        Dragan Simic <dragan.simic@gmail.com>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: rockchip/rga: do proper error checking in probe
+Date:   Sat, 20 Nov 2021 12:23:02 +0000
+Message-Id: <20211120122321.20253-1-kmcopper@danwin1210.me>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add binding doc for fsl,spba-bus.
+The latest fix for probe error handling contained a typo that causes
+probing to fail with the following message:
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
+  rockchip-rga: probe of ff680000.rga failed with error -12
 
-diff --git a/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml b/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml
-new file mode 100644
-index 000000000000..e9f77ecae3d3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml
-@@ -0,0 +1,68 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/bus/fsl,spba-bus.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Shared Peripherals Bus Interface
-+
-+maintainers:
-+  - Shawn Guo <shawnguo@kernel.org>
-+
-+description: |
-+  A simple bus enabling access to shared peripherals.
-+
-+  The "spba-bus" follows the "simple-bus" set of properties, as
-+  specified in the Devicetree Specification.  It is an extension of
-+  "simple-bus" because the SDMA controller uses this compatible flag to
-+  determine which peripherals are available to it and the range over which
-+  the SDMA can access.  There are no special clocks for the bus, because
-+  the SDMA controller itself has its interrupt, and clock assignments.
-+
-+select:
-+  properties:
-+    compatible:
-+      contains:
-+        const: fsl,spba-bus
-+  required:
-+    - compatible
-+
-+properties:
-+  $nodename:
-+    pattern: "^bus(@[0-9a-f]+)?$"
-+
-+  compatible:
-+    items:
-+      - const: fsl,spba-bus
-+      - const: simple-bus
-+
-+  '#address-cells':
-+    enum: [ 1, 2 ]
-+
-+  '#size-cells':
-+    enum: [ 1, 2 ]
-+
-+  reg:
-+    maxItems: 1
-+
-+  ranges: true
-+
-+required:
-+  - compatible
-+  - '#address-cells'
-+  - '#size-cells'
-+  - reg
-+  - ranges
-+
-+additionalProperties:
-+  type: object
-+
-+examples:
-+  - |
-+    bus@30000000 {
-+        compatible = "fsl,spba-bus", "simple-bus";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+        reg = <0x30000000 0x100000>;
-+        ranges;
-+    };
+This patch fixes the typo.
+
+Fixes: e58430e1d4fd (media: rockchip/rga: fix error handling in probe)
+Reviewed-by: Dragan Simic <dragan.simic@gmail.com>
+Signed-off-by: Kyle Copperfield <kmcopper@danwin1210.me>
+---
+ drivers/media/platform/rockchip/rga/rga.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/platform/rockchip/rga/rga.c b/drivers/media/platform/rockchip/rga/rga.c
+index 6759091b15e0..d99ea8973b67 100644
+--- a/drivers/media/platform/rockchip/rga/rga.c
++++ b/drivers/media/platform/rockchip/rga/rga.c
+@@ -895,7 +895,7 @@ static int rga_probe(struct platform_device *pdev)
+ 	}
+ 	rga->dst_mmu_pages =
+ 		(unsigned int *)__get_free_pages(GFP_KERNEL | __GFP_ZERO, 3);
+-	if (rga->dst_mmu_pages) {
++	if (!rga->dst_mmu_pages) {
+ 		ret = -ENOMEM;
+ 		goto free_src_pages;
+ 	}
 -- 
-2.32.0
+2.34.0
 
