@@ -2,85 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AAF8457A0D
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 01:16:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D7A457A12
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 01:16:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236598AbhKTATj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 19:19:39 -0500
-Received: from inva021.nxp.com ([92.121.34.21]:60032 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236447AbhKTATa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 19:19:30 -0500
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4081E201807;
-        Sat, 20 Nov 2021 01:16:27 +0100 (CET)
-Received: from smtp.na-rdc02.nxp.com (usphx01srsp001v.us-phx01.nxp.com [134.27.49.11])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 04CD1200A97;
-        Sat, 20 Nov 2021 01:16:27 +0100 (CET)
-Received: from right.am.freescale.net (right.am.freescale.net [10.81.116.142])
-        by usphx01srsp001v.us-phx01.nxp.com (Postfix) with ESMTP id 2C73840A85;
-        Fri, 19 Nov 2021 17:16:26 -0700 (MST)
-From:   Li Yang <leoyang.li@nxp.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-Cc:     Li Yang <leoyang.li@nxp.com>
-Subject: [PATCH 4/4] dt-bindings: pci: layerscape-pci: define aer/pme interrupts
-Date:   Fri, 19 Nov 2021 18:16:21 -0600
-Message-Id: <20211120001621.21246-5-leoyang.li@nxp.com>
-X-Mailer: git-send-email 2.25.1.377.g2d2118b
-In-Reply-To: <20211120001621.21246-1-leoyang.li@nxp.com>
-References: <20211120001621.21246-1-leoyang.li@nxp.com>
+        id S236673AbhKTAT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 19:19:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236690AbhKTATw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 19:19:52 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C799FC061759
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 16:16:49 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id l8so11876912ilv.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 16:16:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QdcpYj8Ya7TgsiSo0zXQg+j2JxFNjYPDgCsajefoarg=;
+        b=UYYN+tHet+ZKfdibSzAAAHNON8NxQt9HKNYbmdgsAoPXoyl+So8H+PwMoTuIUKes2Z
+         yEh8KY4CWaEjM9Q8ke4Z4Qay/b5/oyuXrDpnvOfsni2F9vs/q0wgAiBqiWR+But/55vg
+         C5sGMM9Ru7Lioy1g/XnJB5xf6VziACFbrJv60=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QdcpYj8Ya7TgsiSo0zXQg+j2JxFNjYPDgCsajefoarg=;
+        b=HqA80Yq2mUZX/kzf5SgYj9qeI71kH50rJ/aJCusqvEKD28ptvgV37mvvnT5SEtLNQk
+         zv0DHWC7jnLACPO9kbxe2gvjmp+G0Q4iBAmONmx7FpKaAZz/mq/imWlQAzLa+sT/LYwo
+         gplQskFG4t/xG9/lEvzImTeDnFlabcUvwYkQuEkcZuJrEK1bFDOwjyXfyJCwYWSyNRXF
+         M1uw8UFLmTlrtTsdj0gp33JjY2Q36SJj3O4KthHm885PQLXo/MPiN3H3u5KFvsHxsRM1
+         fLKzd+nD3kWdiRA9MHNbHHDKPpPMo/3yjrI9yem9feNAluu/9ta2L2nm+r8G4jMHG+Zy
+         zjFQ==
+X-Gm-Message-State: AOAM530IvWU2lmEOjxoaZhSZpdBIQPIX983pDFG7UElYw9G77h+Cc0iX
+        IRCSGn4seJ1zv+pw/kPAqcbWWA==
+X-Google-Smtp-Source: ABdhPJzIEM05T6Zpl3No9G9ZEmtv+51gqOm+8FZxnaSZjPVxnRAg5iyA7UylaFGvWOyS4KtnhCA+8w==
+X-Received: by 2002:a05:6e02:156a:: with SMTP id k10mr7449888ilu.200.1637367408959;
+        Fri, 19 Nov 2021 16:16:48 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id q13sm955457ilo.25.2021.11.19.16.16.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Nov 2021 16:16:48 -0800 (PST)
+Subject: Re: [PATCH] selftests: vDSO: parse: warning: fix assignment as a
+ condition
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Anders Roxell <anders.roxell@linaro.org>
+Cc:     shuah@kernel.org, nathan@kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Shuah Khan <skhan@linuxfoundation.org>
+References: <20211105162756.3314148-1-anders.roxell@linaro.org>
+ <CAKwvOd=dtb98Ue1xYz0gQmRGeQWdH6sBEkpXioevPQ94envK8A@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <f4ba0730-d997-396e-29a6-157e05a04166@linuxfoundation.org>
+Date:   Fri, 19 Nov 2021 17:16:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+In-Reply-To: <CAKwvOd=dtb98Ue1xYz0gQmRGeQWdH6sBEkpXioevPQ94envK8A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some platforms using this controller have separated interrupt lines for
-aer or pme events instead of having a single interrupt line for
-miscellaneous events.  Define interrupts in the binding for these
-interrupt lines.
+On 11/5/21 2:17 PM, Nick Desaulniers wrote:
+> On Fri, Nov 5, 2021 at 9:28 AM Anders Roxell <anders.roxell@linaro.org> wrote:
+>>
+>> When building selftests/vDSO with clang the following warning shows up:
+>>
+>> clang -std=gnu99 -Wno-pointer-sign    vdso_test_gettimeofday.c parse_vdso.c  -o /home/anders/.cache/tuxmake/builds/current/kselftest/vDSO/vdso_test_gettimeofday
+>> parse_vdso.c:65:9: warning: using the result of an assignment as a condition without parentheses [-Wparentheses]
+>>                  if (g = h & 0xf0000000)
+>>                      ~~^~~~~~~~~~~~~~~~
+>>
+>> Rework to a parentheses before doing the check.
+>>
+>> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> 
+> Thanks for the patch!
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> 
 
-Signed-off-by: Li Yang <leoyang.li@nxp.com>
----
- .../devicetree/bindings/pci/layerscape-pci.txt     | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+My commit script failed due to checkpatch warns. Run checkpatchp.l --strict
+to find the problems and send me the fixed version.
 
-diff --git a/Documentation/devicetree/bindings/pci/layerscape-pci.txt b/Documentation/devicetree/bindings/pci/layerscape-pci.txt
-index 8fd6039a826b..bcf11bfc4bab 100644
---- a/Documentation/devicetree/bindings/pci/layerscape-pci.txt
-+++ b/Documentation/devicetree/bindings/pci/layerscape-pci.txt
-@@ -31,8 +31,13 @@ Required properties:
- - reg: base addresses and lengths of the PCIe controller register blocks.
- - interrupts: A list of interrupt outputs of the controller. Must contain an
-   entry for each entry in the interrupt-names property.
--- interrupt-names: Must include the following entries:
--  "intr": The interrupt that is asserted for controller interrupts
-+- interrupt-names: It could include the following entries:
-+  "aer": For interrupt line reporting aer events when non MSI/MSI-X/INTx mode
-+		is used
-+  "pme": For interrupt line reporting pme events when non MSI/MSI-X/INTx mode
-+		is used
-+  "intr": For interrupt line reporting miscellaneous controller events
-+  ......
- - fsl,pcie-scfg: Must include two entries.
-   The first entry must be a link to the SCFG device node
-   The second entry is the physical PCIe controller index starting from '0'.
-@@ -52,8 +57,9 @@ Example:
- 		reg = <0x00 0x03400000 0x0 0x00010000   /* controller registers */
- 		       0x40 0x00000000 0x0 0x00002000>; /* configuration space */
- 		reg-names = "regs", "config";
--		interrupts = <GIC_SPI 177 IRQ_TYPE_LEVEL_HIGH>; /* controller interrupt */
--		interrupt-names = "intr";
-+		interrupts = <GIC_SPI 176 IRQ_TYPE_LEVEL_HIGH>, /* aer interrupt */
-+			<GIC_SPI 177 IRQ_TYPE_LEVEL_HIGH>; /* pme interrupt */
-+		interrupt-names = "aer", "pme";
- 		fsl,pcie-scfg = <&scfg 0>;
- 		#address-cells = <3>;
- 		#size-cells = <2>;
--- 
-2.25.1
-
+thanks,
+-- Shuah
