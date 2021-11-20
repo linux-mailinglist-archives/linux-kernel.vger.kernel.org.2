@@ -2,80 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B1C945802F
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 20:48:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C3DC458030
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 20:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232013AbhKTTvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 14:51:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52074 "EHLO
+        id S231523AbhKTTwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 14:52:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbhKTTvJ (ORCPT
+        with ESMTP id S229554AbhKTTwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 14:51:09 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7669DC061748
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 11:48:05 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id l190so1028801pge.7
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 11:48:05 -0800 (PST)
+        Sat, 20 Nov 2021 14:52:13 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA32C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 11:49:10 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id e144so17619333iof.3
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 11:49:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=+OhYyTKGmAf5Y61RBhMkXMlQv+hOjswu4u5NSWPSjMI=;
-        b=Zf3qHTIuX08W3MEypEDsxAbttqkjekaco/oM0WCXsjZ4tz+elH7yFmpk6kbdO/9OmR
-         yD8p//UHZQSFgLOwFaxG/zd66e8dRcC3CrbEA1YYRXuHHyxZMi+V2odBSedJy551F3SA
-         MWkX4TlxPHLlSx2bu4ppu2oSJ5u94erHZKg4+oO0915XwCDiDMlFLM8/1HormW6/dYQy
-         zhGB+9Ylog9YWrszvyjG6yVL1jDgSrhHlSXtvfahpGjAfMY3NSvgarkiW3GyN3kvjpyN
-         VLFu8WUpsEnRCu/GOYwwkiTENFPT7Ww0fNNmgVjuOKJpBSTHT/ZIk98aCoQOYStNtTtA
-         q2jg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hr4it2Nu4JOURKxzXa2x66i2A/MiAQxWQ0LABh8nC9s=;
+        b=LgTTv3lPW8Wx3HL2Tz4NpYsq5aSAdjeMRmMKb2XLhhk65VUIVH4BlC8LwL4VaNvkEi
+         RDhnNuzVnjhyE9TGrxzi9XnfITPglhvylhyx+YFlCO5KA9KoLg+qW7o9iVZdfm6IOCVQ
+         YsLQTcVU8G5R0QXn555PHvKhFJybQSIF671pMaPSXmwiApjV23yyrD3wvvSy2JEssewA
+         ccdTJivH/hJqC5JR3ghJ8SDcaUB+2dTF5WG7aOQVrfCHPl0ozvMtvJVZvGdobn7H7uHJ
+         h7e/IoZjA5xSGx7nyYSrGnr7B2SYbzrFdxmd+6Pw1k+eWuyenmblCzxHNEsR3buDLUcF
+         ZO2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=+OhYyTKGmAf5Y61RBhMkXMlQv+hOjswu4u5NSWPSjMI=;
-        b=hoNBCRdloY/0uxSZpNcJYNVkbLYpylaCFWJUyu/T0W1jMIOKtu1hkcbReCbd659K84
-         4n+z9AalJJy9D9tnbNbk4HUEKUeanIhCpxpPbmi9Du3vRj3NScmfawXj3legkXnYqv/I
-         xyUnlc/WMPC9EUzMpaiO/P+6uR3gn2gpkV32a41dFAk+TnwoQhDav/EL5uUfH1agCVrl
-         4RU5/1jbbjCRo/CTXFvIJnFzaA9NsMObtAeFRTbEvn4wkPvsIoLQlDif5n/juT3IkKAP
-         WQZui95GFWEYsi5+mJOJ/D+6T/efNnEvbtw2geqRrDIjyIGxLZhTEfOOCDFWfbTkPgtu
-         gaKg==
-X-Gm-Message-State: AOAM533knDXJ5VDFWieds9LsMk5eja9usybvK2KRz45WMfsK4jok246T
-        qoYThNMTIN+FRQZjkBCIGBdO8Bdp8F6ebqZlGis=
-X-Google-Smtp-Source: ABdhPJyqM8o2L8sFcd8BiwQ6wVhUc8mYgssCxq+w7+G5ccobrfaKsFrhcnwBeqYkllfZS36Vq6bbaNDjdLZ1lWsBiVA=
-X-Received: by 2002:a05:6a00:2290:b0:49f:c63a:2a5f with SMTP id
- f16-20020a056a00229000b0049fc63a2a5fmr73410025pfe.69.1637437684841; Sat, 20
- Nov 2021 11:48:04 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hr4it2Nu4JOURKxzXa2x66i2A/MiAQxWQ0LABh8nC9s=;
+        b=F5U5DaRUqOZ2l0LzBDigGjWRLYQbFQejph2GQ/E6Iyj9pHG0RA1zzr1WNeaR63owwD
+         9xLwWO7OBPRVIA6erfAZL7kJUmjqE6Ffim1ZJiqpsFGRtZ6PFvzI7wP6iY3lXoFZ35sr
+         9z9SXWEEsQKhrghuru9ZdQANk5PTAFCD0O8sdFHM1ggY8bGAsK5k+8Q/wJIN+XK+PsWb
+         HGoTH1UL/TneI9cS6ZkJ7cbBLwzQtqebx3WqC81N39AMg/H4Ee2OuRtkzcVxO73OA8ir
+         O+/ULoRPCoZrRGGGFgJPtRzNejCbRs3IeBJIbM5ZjqB1aimcQoG/dZLLEpJp2LasxeGH
+         Jlhw==
+X-Gm-Message-State: AOAM531Zc/1w2qS8tx3jD+xfecLYiXdpGQqDQ4yYayrXONScziondTE9
+        HWhggBVRb8T1lu0hD8Inbsw=
+X-Google-Smtp-Source: ABdhPJw48jx7b9hQD9iYukk5NV4yS382dP5h4GcVdBRMUFcLeSv+9EqhCIfaMjnRdQKNFIzPo1+yfw==
+X-Received: by 2002:a05:6638:2512:: with SMTP id v18mr35514340jat.22.1637437749356;
+        Sat, 20 Nov 2021 11:49:09 -0800 (PST)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:de9c:9e61:8791:1fd7])
+        by smtp.gmail.com with ESMTPSA id t6sm2135976ils.44.2021.11.20.11.49.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Nov 2021 11:49:08 -0800 (PST)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     tharvey@gateworks.com, aford@beaconembedded.com,
+        Adam Ford <aford173@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] soc: imx: gpcv2: Enable vpumix/dispmix to wait for handshake
+Date:   Sat, 20 Nov 2021 13:49:00 -0600
+Message-Id: <20211120194900.1309914-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Sender: ds7410159@gmail.com
-Received: by 2002:a05:7300:4153:b0:42:142f:a6c9 with HTTP; Sat, 20 Nov 2021
- 11:48:04 -0800 (PST)
-From:   "Mr. Mustafa Ali." <mustafaliali85@gmail.com>
-Date:   Sat, 20 Nov 2021 20:48:04 +0100
-X-Google-Sender-Auth: T88QPMd1TEO5kcWIe7-kMh920Bw
-Message-ID: <CABb8Riw9GTQTB+-9ZxgG+Las_g6CxMZYe0V7-jtoKOKvwOGRBA@mail.gmail.com>
-Subject: Greetings Dear Friend.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Friend,
+There is a comment in the code that states the driver needs to
+wait for the handshake, but it's only available when the bus
+has been enabled from the blk-ctrl.  Since both the
+vpumix and dispmix are called from the blk-ctl, it seems
+reasonable to assume the bus is enabled. Add a bool to determine
+which power-domains are able to properly wait for this
+handshake and set the corresping boolean for the two domains
+activated by the blk-ctrl.
 
-This message might meet you in utmost surprise. However, It's just my
-urgent need for a foreign partner that made me contact you for this
-transaction. I assured you of honesty and reliability to champion this
-business opportunity. I am a banker by profession in Turkey, and
-currently holding the post of Auditor in Standard Chartered Bank.
+Signed-off-by: Adam Ford <aford173@gmail.com>
 
-I have the opportunity of transferring the leftover funds ($15 Million
-Dollars) of one of my clients who died along with his entire family in
-a crisis in Myanmar Asia. I am inviting you for a business deal where
-this money can be shared between us if you agree to my business
-proposal.
+diff --git a/drivers/soc/imx/gpcv2.c b/drivers/soc/imx/gpcv2.c
+index 7b6dfa33dcb9..a957f7fff968 100644
+--- a/drivers/soc/imx/gpcv2.c
++++ b/drivers/soc/imx/gpcv2.c
+@@ -204,6 +204,7 @@ struct imx_pgc_domain {
+ 	const int voltage;
+ 	const bool keep_clocks;
+ 	struct device *dev;
++	bool blkctrl_bus_enabled;
+ };
+ 
+ struct imx_pgc_domain_data {
+@@ -282,17 +283,14 @@ static int imx_pgc_power_up(struct generic_pm_domain *genpd)
+ 				   domain->bits.hskreq, domain->bits.hskreq);
+ 
+ 		/*
+-		 * ret = regmap_read_poll_timeout(domain->regmap, GPC_PU_PWRHSK, reg_val,
+-		 *				  (reg_val & domain->bits.hskack), 0,
+-		 *				  USEC_PER_MSEC);
+-		 * Technically we need the commented code to wait handshake. But that needs
+-		 * the BLK-CTL module BUS clk-en bit being set.
+-		 *
+-		 * There is a separate BLK-CTL module and we will have such a driver for it,
+-		 * that driver will set the BUS clk-en bit and handshake will be triggered
+-		 * automatically there. Just add a delay and suppose the handshake finish
+-		 * after that.
++		 * blkctrl_bus_enabled implies that the GPC is being invoked from a blk-ctrl
++		 * and not from a peripheral or other GPC power domain.  The blk-ctrl is required
++		 * to support the handshake.
+ 		 */
++		if (domain->blkctrl_bus_enabled)
++			ret = regmap_read_poll_timeout(domain->regmap, GPC_PU_PWRHSK, reg_val,
++							(reg_val & domain->bits.hskack), 0,
++							USEC_PER_MSEC);
+ 	}
+ 
+ 	/* Disable reset clocks for all devices in the domain */
+@@ -701,6 +699,7 @@ static const struct imx_pgc_domain imx8mm_pgc_domains[] = {
+ 		},
+ 		.pgc   = BIT(IMX8MM_PGC_VPUMIX),
+ 		.keep_clocks = true,
++		.blkctrl_bus_enabled = true,
+ 	},
+ 
+ 	[IMX8MM_POWER_DOMAIN_VPUG1] = {
+@@ -749,6 +748,7 @@ static const struct imx_pgc_domain imx8mm_pgc_domains[] = {
+ 		},
+ 		.pgc   = BIT(IMX8MM_PGC_DISPMIX),
+ 		.keep_clocks = true,
++		.blkctrl_bus_enabled = true,
+ 	},
+ 
+ 	[IMX8MM_POWER_DOMAIN_MIPI] = {
+-- 
+2.32.0
 
-Further details of the transfer will be forwarded to you immediately
-after I receive your return letter.
-
-Best Regards,
-Mr. Mustafa Ali.
-mustafa.ali@rahroco.com
