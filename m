@@ -2,255 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 930F6458046
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 21:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D3D45804B
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 21:18:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbhKTUPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 15:15:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhKTUPs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 15:15:48 -0500
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5FDEC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 12:12:44 -0800 (PST)
-Received: by mail-pg1-x549.google.com with SMTP id h2-20020a632102000000b003210bade52bso28719pgh.9
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 12:12:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=d3b1nVGIZXYy+vW6njXoGGYnh5z92DR8Qs9Js11uG4c=;
-        b=lvhrt5+94ZafWIvjVlEi/Q5YKK67SJRcvFeNjR7v32bEi2xfuCp/ApfnjFf1uugdoG
-         reT6YJV7x1EJC3fMZvSv35nkuGV+AdDTU6W2jI06xZxN/p9faVtpkBV0Ln4fWQhf61M8
-         y7301nFUgskQCdOdkJB6oDN5CDJMGYnq0mVaIEGgZY310jS4UsxO/Ee9Mi2Kk5BWOM+3
-         9Ei7eu7p+S9sDTrGjmH3a8ATNuKEYv/vBg15ZBBD1JeeFqn+20DYaHpLmVQwli61KCQm
-         pMYKlg/B+zII9wWtQlRmVjrT4t05qY/isZqYItKEHcyE1tGK4msStvvd3Um6YPmPAkqF
-         7Mzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=d3b1nVGIZXYy+vW6njXoGGYnh5z92DR8Qs9Js11uG4c=;
-        b=FL+aY9Kmdtv+n/EBALffiJjTbQlObQbeuLvyCb0fkhnNeazGem2m30xQto9cP9Gie8
-         myery2uC/bTgKwE0x+bbfFFrW5LZPLnAgPje70Qg3yGVQ69tPhUTahnEQcTVFLulDDM3
-         fHSBrzjVhG3eJxB7nw2/4vxGx+oDDokX6rmlCqGGgt7eXtIFBMcDyE18GhgbbM5oVCOQ
-         g5+sgqd/E64YV5lsrcM7h8Nt5M58ntFS4be3o/86WsCFYJpeha3TtW5TNn39V8pqWKnK
-         T6hscIiPbJKMZpCssyyl524DSRKbI92N7qgv/N5Gvb5f5Lz4UVjWmNbJ1Wf58tX+2dXX
-         eKvA==
-X-Gm-Message-State: AOAM5328NmskGRvVPzH76GURL89l6P4gsTAtzKjV0TIdYcBCpbbNXcHg
-        2kQr2pQvEaYuhXd18fZ85MS+XFCiBwE2WA==
-X-Google-Smtp-Source: ABdhPJwRfEMFST7mpnPWnXBHH9Ii/xmCV+dzZPgQdMU3SaEey10fj7pjHjocqIjJ5uS20Qn7/ff569qaZR4SXA==
-X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:b46b:4675:ed89:d807])
- (user=shakeelb job=sendgmr) by 2002:a17:90b:4c51:: with SMTP id
- np17mr13489635pjb.213.1637439164383; Sat, 20 Nov 2021 12:12:44 -0800 (PST)
-Date:   Sat, 20 Nov 2021 12:12:30 -0800
-Message-Id: <20211120201230.920082-1-shakeelb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH] mm: split thp synchronously on MADV_DONTNEED
-From:   Shakeel Butt <shakeelb@google.com>
-To:     David Hildenbrand <david@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S231523AbhKTUVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 15:21:32 -0500
+Received: from mail-eopbgr50054.outbound.protection.outlook.com ([40.107.5.54]:29820
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229488AbhKTUVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 15:21:32 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ijuO7Ag62TpB8x4tI9xIW/7OBg6F2fdDMhLGlpAAsG5WZ7uqZCCsSvI2pEy+RRaMeeg7Q2v690oVM5clZfmrSgIlVGfSne6pTm2gZhwLOK3YcbWMboyNQ/T7yt5B7faHpfLQLSZpnH7Y0nXk1Ap9cYjeh8ia75e81FqRym3t4zp8Hb13eFQ7DuCjUyllwB/+6X+CiAFWKl7nqBx6rQlvvi4k5yqMJ+fWirXBRsmXu1O1ZbJVCkbOiWFx+XLgyFwNO6ddGV6nkUOtuNpYkXfhge2xKmhYjHbr8A+8QZVkvcJCWPW2vSm2cpAkfUoaQgvR0s7oU+AF5qNwMMDDtHY2MQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=75dNMHAo82fcT8nTndTJBTHq99Sw2IlQaVLiH9aJ5tQ=;
+ b=oAw91d3u1bfiHvVR3R1xB5/dIEB6lE2hLM/RjVc+Xr7PjeR8bKW0YN5Zrry26g7wrttTuna/9m60Lnj9rTNYk53l5hD9UtL9oGEp5vljh/y5aewzJPFwMIZbPly8OhmLTynBX36LPYWIIm4Vam8YnnKwop7U7RAFRCw04+GyT6X7wkddonPnKK4qKxU5sHoeDMtRXYlaugEzJaKuICQq00NreV0kxj1ZhYYSNGqNZseerHcbjb9UooLxNroa6UbMh0nK9aArUeuwrLpt9bfHR2I0S4H8nF22HxmBwYNEROGAtB0i6jcNSPxlzifUo0dIN9/NrUUZ8bCwIWVtRTRH1Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=75dNMHAo82fcT8nTndTJBTHq99Sw2IlQaVLiH9aJ5tQ=;
+ b=pwyoTPnwkNwk7ACaFHhH75ypGsjDsSVKJTMkGM+hASfjF+ti6ET37OMFO8f6VQIVhf8SlULp4pZsX2EyFS4cBZt7gN8aQsdPeX2hmncZHXQZqE4LAoV+0qpBPlXFEM4mKdiBHeArCqkZZ9Pgnizs68KACrcmnOTBHEO9o/TQ7k4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB4688.eurprd04.prod.outlook.com (2603:10a6:803:6a::30)
+ by VI1PR04MB4685.eurprd04.prod.outlook.com (2603:10a6:803:70::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Sat, 20 Nov
+ 2021 20:18:25 +0000
+Received: from VI1PR04MB4688.eurprd04.prod.outlook.com
+ ([fe80::d0eb:49aa:2a9:9fc4]) by VI1PR04MB4688.eurprd04.prod.outlook.com
+ ([fe80::d0eb:49aa:2a9:9fc4%4]) with mapi id 15.20.4713.024; Sat, 20 Nov 2021
+ 20:18:25 +0000
+Date:   Sat, 20 Nov 2021 22:18:23 +0200
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     sboyd@kernel.org, mturquette@baylibre.com, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH V2] clk: imx: imx8ulp: set suppress_bind_attrs to true
+Message-ID: <YZlYD4MFFrLgZeoh@ryzen>
+References: <20211022131513.17381-1-peng.fan@oss.nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211022131513.17381-1-peng.fan@oss.nxp.com>
+X-ClientProxiedBy: VI1PR09CA0175.eurprd09.prod.outlook.com
+ (2603:10a6:800:120::29) To VI1PR04MB4688.eurprd04.prod.outlook.com
+ (2603:10a6:803:6a::30)
+MIME-Version: 1.0
+Received: from ryzen (5.12.226.136) by VI1PR09CA0175.eurprd09.prod.outlook.com (2603:10a6:800:120::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22 via Frontend Transport; Sat, 20 Nov 2021 20:18:24 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9bcbbd3f-87b0-44ed-1b6f-08d9ac62e83d
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4685:
+X-Microsoft-Antispam-PRVS: <VI1PR04MB4685C58A87EEB2C6E8D962E0F69D9@VI1PR04MB4685.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4PAYVhSRya6bEOlHgKmmiRvff/Ax7JPDMm+XZYlcp9ZrsFC+ybENL+Hf3bBHchRRSj0Z7EhsoonPEqCf6CNURa6Z/Zt4HkJ3ha+IAIrxPMqDVhFnu8RuWKz38Bzg/56225W4L4qWoKe2ib2KaVwj9r5RXMukookRt1+TFoRNkXCr78FOnKlQpH+jw/uGfSkfEzXrJCO1NxAnvZqRpbTiSyPWD2qgIK+T/p85nnHV/80tKsMZHD3Z620PLZj3bTScHTyPHIaJguUgKz2tmxgeoGc4ya1KO0/MDKeNz0PtaGz97MNRmLSPUtphUHvZXyMmH1ThLO5MJN/E+8WpnSN1g9RNI9/ml/A9fa0+fz75F/8wKCUtOMsEZTRzHL86OOZXzRh9lKej8LGAZM4mfGvWX6m1R17RdaXoA3+mMqbVrPT5noDndGk0tjO5LRWa4EEvTqephchXwUpTkSnx+iJPCEGPLewpJb0PMqjjZn/qY9UNoNpy/xDEQOPTaHRvCoveI0N5+5AP/yZZf2SjYboqwXJ6a5J3WKZd0wLHSy7FkcrPeX/vN9pJ1aJ1Npo0+JdKiiRoZaA+qc4O7I3cCUPbLW1YQzBDPteQxK1ReOnH2vLFvSyl+uvzteuabcdqirOxW/iIeDZsxL1BJHnd/2SJ68VWpgESRt0QKrswbiMZmlWijIN4lkchfAe+RxXox+uB+x2rvGLUVwxV09kc8m3llpyVyTdXlKMuPmhfgiSQDHk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4688.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(53546011)(8936002)(86362001)(2906002)(83380400001)(44832011)(6496006)(38350700002)(9686003)(316002)(956004)(6862004)(4326008)(33716001)(52116002)(508600001)(26005)(5660300002)(186003)(55016002)(9576002)(66476007)(66946007)(38100700002)(8676002)(66556008)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Yt9If4UD5V3/Tamg4miHI7xNEV61VOFyKeT4jvG4sPTW8EkbvHekWVG+wH/T?=
+ =?us-ascii?Q?rP6uXiK96933urmiNWIxYsUL1esuiM+AgKBDWtwYNvDgHqAhQi9KQNnAZ4DW?=
+ =?us-ascii?Q?A6xnSAKpMOMhQAkTcvXoOPfw2gNfHTPM9CTidN2Ciu/znbl0MDmg1r0D6bv3?=
+ =?us-ascii?Q?xUa0/CRZGTeGTqnmfQZWS/2owFSPq603wySPcyeINeeceS2vADfE/Zfh6KnG?=
+ =?us-ascii?Q?AOa8EwM6LhYKL8eV6AKEu0IyGRqimicBwcExvJUE5JP4plvj2QMf7iZ+LDWC?=
+ =?us-ascii?Q?D86yFE8/fYKrHhBhWHnRCaqwseGuaV8Lw9gkm5Em8TOiprtGmKmFlaYTFqAz?=
+ =?us-ascii?Q?LOFnRLf0t5ZKqNyiy0QULyRNCLMX9uaPAi0gSZ1VI5i8+x+JfjKe1KZ7UpiZ?=
+ =?us-ascii?Q?Pp5KnMqz/QCbzn4TAgAz3CIOTFqSNi7+8TixRDQjEqaU0mP9htg10SRYkwX9?=
+ =?us-ascii?Q?TruWY1raTmQy9l8+VmqLXQqAcU+062KnLetuqs4UZUb5cDlbn0W4SoUBfjhH?=
+ =?us-ascii?Q?fWZLAjbrqQHecIT2cZtszcpw1s4fUZPyECDIXHxni8z8/jwIg8bnNe670ZnY?=
+ =?us-ascii?Q?k2n4MRk0t5s0h2UR548sGvxIcIuKy/17NumPUaF0Mu1dFbih9EVtwkDMeZLc?=
+ =?us-ascii?Q?tucoTFLbzTsrgeYW8vamZnOCA6EDZTjEX/f4IEwF+f5ORkjs+h3csClER5Ys?=
+ =?us-ascii?Q?j0KQHzkJvIRP1UwDFYg3P+g0Q8h77zoBII/PklqxksfViebtfjCcBVwCy15P?=
+ =?us-ascii?Q?Wp5IYFmvfU+J5JM5ch1mFWpobSk8MGmmeJPJ/nxSxxOgP6gVrnxe/e6rwNtY?=
+ =?us-ascii?Q?VpXMxvsYTAdB29ytw4/in73UMYB04/bSdnMnssNf7+P8bZOEMMVh7t0zNv1y?=
+ =?us-ascii?Q?uQw822pPsfye+gYn0V5XCnH7Kbw32Hy5Y1RCUrYUGf6lj+6VP0O4Z+JtqHgQ?=
+ =?us-ascii?Q?DW21tY7lc3rBP2xt5YIlVyqyjFAfEj/ywA4gYco6lmha/LJX1MXdVcgqr8B+?=
+ =?us-ascii?Q?j3xEzcWpi9FlInCBPDNK7Ktk4+s/J9wJnFrlrqw730T+cqRmMwNM1H2AHkrz?=
+ =?us-ascii?Q?fxp1W9guRuCe70WV6xpKup1JJOogxUkgKyaL3q4G/4Nn9HPkZXMx9egw2P8t?=
+ =?us-ascii?Q?2490xNvQn6r+eqe3zDdceCp4BNbmk2lb2GIQzwBrxKWk7jZDXbUja0e/2VxY?=
+ =?us-ascii?Q?9DYvWDvRKuQmUbqdhvotA3I8Pa6eS40t9qYIWpNt7ku869MKwVQJEvN5joBi?=
+ =?us-ascii?Q?d4Ol8Iax0dO+2LKp5s4U8ZPJ+u4GGdTUsLYa/Nxd8a6GJNrdjFUkUA+7mVEZ?=
+ =?us-ascii?Q?2okE+mvWT6Ooedomtooj/jbKlOMlhf4mpUzMwJM7hIywAEv9K9g7eDIuiMun?=
+ =?us-ascii?Q?tArB9WBDinysjzw0FPMdSJRwbw87wfXuRJs8wi0jwtIsToJOsveekDjv+d0J?=
+ =?us-ascii?Q?ZCzxHUBq1sfYCGvwmDKUKj3DkK9WsL/zXHfxebGir8j2kJKnJlCqgk0Bk/SK?=
+ =?us-ascii?Q?n23s+kCOLBb2XbJ2ieAk5sC4nUFS26jmWkvZoVPNNBYYKIZBXGjBgL6TW2At?=
+ =?us-ascii?Q?L669IHHIsGcrD3D+9xxvTLO8blWB3AOcH6o4K2yFrod4my4DEJYLjXi/S0BK?=
+ =?us-ascii?Q?OsSXrEbJKY6NvUUrwsN9GNo=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9bcbbd3f-87b0-44ed-1b6f-08d9ac62e83d
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4688.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2021 20:18:25.4196
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4Tahs09YEkx7qXG7Mbmyn3Bxvxm+Xw4FJRE1IBxdfqwD7VEnr7RF5UQFTfhLSA/l+NactkWzMHooIMdpejb+Gg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4685
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many applications do sophisticated management of their heap memory for
-better performance but with low cost. We have a bunch of such
-applications running on our production and examples include caching and
-data storage services. These applications keep their hot data on the
-THPs for better performance and release the cold data through
-MADV_DONTNEED to keep the memory cost low.
+On 21-10-22 21:15:13, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> The clock driver is registered as platform devices and
+> it is possible to reloading the driver at runtime.
+> 
+> But actually the clocks should never be removed to make system work,
+> attempting to bind again would result in a crash, because almost all
+> devices depends on clock to function well.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
 
-The kernel defers the split and release of THPs until there is memory
-pressure. This causes complicates the memory management of these
-sophisticated applications which then needs to look into low level
-kernel handling of THPs to better gauge their headroom for expansion. In
-addition these applications are very latency sensitive and would prefer
-to not face memory reclaim due to non-deterministic nature of reclaim.
+Reviewed-by: Abel Vesa <abel.vesa@nxp.com>
 
-This patch let such applications not worry about the low level handling
-of THPs in the kernel and splits the THPs synchronously on
-MADV_DONTNEED.
+I'll apply it to clk/imx on Monday.
 
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
----
- include/linux/mmzone.h   |  5 ++++
- include/linux/sched.h    |  4 ++++
- include/linux/sched/mm.h | 11 +++++++++
- kernel/fork.c            |  3 +++
- mm/huge_memory.c         | 50 ++++++++++++++++++++++++++++++++++++++++
- mm/madvise.c             |  8 +++++++
- 6 files changed, 81 insertions(+)
-
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 58e744b78c2c..7fa0035128b9 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -795,6 +795,11 @@ struct deferred_split {
- 	struct list_head split_queue;
- 	unsigned long split_queue_len;
- };
-+void split_local_deferred_list(struct list_head *defer_list);
-+#else
-+static inline void split_local_deferred_list(struct list_head *defer_list)
-+{
-+}
- #endif
- 
- /*
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 9d27fd0ce5df..a984bb6509d9 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1412,6 +1412,10 @@ struct task_struct {
- 	struct mem_cgroup		*active_memcg;
- #endif
- 
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	struct list_head		*deferred_split_list;
-+#endif
-+
- #ifdef CONFIG_BLK_CGROUP
- 	struct request_queue		*throttle_queue;
- #endif
-diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-index fdf742e15e27..9b438c7e811e 100644
---- a/include/linux/sched/mm.h
-+++ b/include/linux/sched/mm.h
-@@ -374,6 +374,17 @@ set_active_memcg(struct mem_cgroup *memcg)
- }
- #endif
- 
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+static inline void set_local_deferred_list(struct list_head *list)
-+{
-+	current->deferred_split_list = list;
-+}
-+#else
-+static inline void set_local_deferred_list(struct list_head *list)
-+{
-+}
-+#endif
-+
- #ifdef CONFIG_MEMBARRIER
- enum {
- 	MEMBARRIER_STATE_PRIVATE_EXPEDITED_READY		= (1U << 0),
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 01af6129aa38..8197b8ed4b7a 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -1019,6 +1019,9 @@ static struct task_struct *dup_task_struct(struct task_struct *orig, int node)
- 
- #ifdef CONFIG_MEMCG
- 	tsk->active_memcg = NULL;
-+#endif
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	tsk->deferred_split_list = NULL;
- #endif
- 	return tsk;
- 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index e5483347291c..2f73eeecb857 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2754,6 +2754,7 @@ void free_transhuge_page(struct page *page)
- void deferred_split_huge_page(struct page *page)
- {
- 	struct deferred_split *ds_queue = get_deferred_split_queue(page);
-+	struct list_head *list = current->deferred_split_list;
- #ifdef CONFIG_MEMCG
- 	struct mem_cgroup *memcg = page_memcg(compound_head(page));
- #endif
-@@ -2774,7 +2775,14 @@ void deferred_split_huge_page(struct page *page)
- 	if (PageSwapCache(page))
- 		return;
- 
-+	if (list && list_empty(page_deferred_list(page))) {
-+		/* corresponding put in split_local_deferred_list. */
-+		get_page(page);
-+		list_add(page_deferred_list(page), list);
-+	}
-+
- 	spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
-+
- 	if (list_empty(page_deferred_list(page))) {
- 		count_vm_event(THP_DEFERRED_SPLIT_PAGE);
- 		list_add_tail(page_deferred_list(page), &ds_queue->split_queue);
-@@ -2801,6 +2809,48 @@ static unsigned long deferred_split_count(struct shrinker *shrink,
- 	return READ_ONCE(ds_queue->split_queue_len);
- }
- 
-+void split_local_deferred_list(struct list_head *defer_list)
-+{
-+	struct list_head *pos, *next;
-+	struct page *page;
-+
-+	/* First iteration for split. */
-+	list_for_each_safe(pos, next, defer_list) {
-+		page = list_entry((void *)pos, struct page, deferred_list);
-+		page = compound_head(page);
-+
-+		if (!trylock_page(page))
-+			continue;
-+
-+		if (split_huge_page(page)) {
-+			unlock_page(page);
-+			continue;
-+		}
-+		/* split_huge_page() removes page from list on success */
-+		unlock_page(page);
-+
-+		/* corresponding get in deferred_split_huge_page. */
-+		put_page(page);
-+	}
-+
-+	/* Second iteration to putback failed pages. */
-+	list_for_each_safe(pos, next, defer_list) {
-+		struct deferred_split *ds_queue;
-+		unsigned long flags;
-+
-+		page = list_entry((void *)pos, struct page, deferred_list);
-+		page = compound_head(page);
-+		ds_queue = get_deferred_split_queue(page);
-+
-+		spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
-+		list_move(page_deferred_list(page), &ds_queue->split_queue);
-+		spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
-+
-+		/* corresponding get in deferred_split_huge_page. */
-+		put_page(page);
-+	}
-+}
-+
- static unsigned long deferred_split_scan(struct shrinker *shrink,
- 		struct shrink_control *sc)
- {
-diff --git a/mm/madvise.c b/mm/madvise.c
-index 8c927202bbe6..15614115e359 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -762,7 +762,15 @@ static int madvise_free_single_vma(struct vm_area_struct *vma,
- static long madvise_dontneed_single_vma(struct vm_area_struct *vma,
- 					unsigned long start, unsigned long end)
- {
-+	LIST_HEAD(list);
-+
-+	set_local_deferred_list(&list);
-+
- 	zap_page_range(vma, start, end - start);
-+
-+	set_local_deferred_list(NULL);
-+	split_local_deferred_list(&list);
-+
- 	return 0;
- }
- 
--- 
-2.34.0.rc2.393.gf8c9666880-goog
-
+> ---
+> 
+> V2:
+>  Update commit log to explain more
+> 
+>  drivers/clk/imx/clk-imx8ulp.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/clk/imx/clk-imx8ulp.c b/drivers/clk/imx/clk-imx8ulp.c
+> index 6699437e17b8..8eb1af2d6429 100644
+> --- a/drivers/clk/imx/clk-imx8ulp.c
+> +++ b/drivers/clk/imx/clk-imx8ulp.c
+> @@ -559,6 +559,7 @@ static struct platform_driver imx8ulp_clk_driver = {
+>  	.probe	= imx8ulp_clk_probe,
+>  	.driver = {
+>  		.name		= KBUILD_MODNAME,
+> +		.suppress_bind_attrs = true,
+>  		.of_match_table	= imx8ulp_clk_dt_ids,
+>  	},
+>  };
+> -- 
+> 2.30.0
+>
