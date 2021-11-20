@@ -2,91 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22BBC457C14
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 08:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE32457C17
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 08:28:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236841AbhKTH1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 02:27:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236790AbhKTH0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 02:26:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B36A60E93;
-        Sat, 20 Nov 2021 07:23:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637393020;
-        bh=yjzvhNcky041CJZ1uMGGqIn7woM9nhsIlPxWsJ0q0lU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=X6G9mpaBxLI82jpYTQnHU8reA3NvMkFXnOjLYR2QzhXgjjMSRXdBVnExaKyNiZ0Ew
-         GuCP/CEISRCzKKDNr5MgRWbfwpOUEEliAb0NIsU01RvxXaqIuYq8RkpiCEGRxIFKVL
-         0EaN/ra2WMVtVVM6RLOsGkc6TEbjqvTXMWy8FVHuHHeIJhuYcCdeZqSU1ysl+Zp5xN
-         EULeES6C5RRMaeihY6wGozUJWD3OjDceAZkrase5ljOe2rPD83H7+IX6PvZWQ2zVLw
-         dOnSmcVOKzwr0EWWxjjZM6O+x0jNHSvYFMoHxH9t+y962BknJAUE6+ORYx+1AhcSef
-         RDBoB94Zhu4bA==
-Received: by mail-yb1-f174.google.com with SMTP id j77so13907893ybg.6;
-        Fri, 19 Nov 2021 23:23:40 -0800 (PST)
-X-Gm-Message-State: AOAM531YSt5Ml28plT7FFxXMFWJ/kzdqguGSFHOfF6C8V6ywYKJUFq0b
-        BUinIx1a8KYBjZCjsQcRwJLOrVGgAQWLA4sa81Q=
-X-Google-Smtp-Source: ABdhPJxZehMkA4qKbP5ybYfYk3uvwIeMbRvBcKpGd8XnJPkd2cMJZcFHLQfbtjXhnxj/qD5Xz8JJGSIYwGECLEEZC1E=
-X-Received: by 2002:a25:660d:: with SMTP id a13mr44779897ybc.460.1637393019876;
- Fri, 19 Nov 2021 23:23:39 -0800 (PST)
+        id S236887AbhKTHbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 02:31:37 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:56738 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232750AbhKTHbf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 02:31:35 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 74E271C0B76; Sat, 20 Nov 2021 08:28:26 +0100 (CET)
+Date:   Sat, 20 Nov 2021 08:28:25 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 00/21] 5.10.81-rc1 review
+Message-ID: <20211120072825.GA13624@duo.ucw.cz>
+References: <20211119171443.892729043@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20211115031817.4193-1-bernard@vivo.com> <PSAPR06MB40216A2C236343B2300EFC48DF9A9@PSAPR06MB4021.apcprd06.prod.outlook.com>
-In-Reply-To: <PSAPR06MB40216A2C236343B2300EFC48DF9A9@PSAPR06MB4021.apcprd06.prod.outlook.com>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 19 Nov 2021 21:23:28 -1000
-X-Gmail-Original-Message-ID: <CAPhsuW7SCEXrU3AL8isD-3NwH+ChgwbUAR6y+6xDVRbZTFnEJg@mail.gmail.com>
-Message-ID: <CAPhsuW7SCEXrU3AL8isD-3NwH+ChgwbUAR6y+6xDVRbZTFnEJg@mail.gmail.com>
-Subject: Re: [PATCH] drivers/md: fix potential memleak
-To:     =?UTF-8?B?6LW15Yab5aWO?= <bernard@vivo.com>
-Cc:     linux-raid <linux-raid@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="J/dobhs11T7y2rNN"
+Content-Disposition: inline
+In-Reply-To: <20211119171443.892729043@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 9:57 PM =E8=B5=B5=E5=86=9B=E5=A5=8E <bernard@vivo.c=
-om> wrote:
->
->
->
-> -----=E9=82=AE=E4=BB=B6=E5=8E=9F=E4=BB=B6-----
-> =E5=8F=91=E4=BB=B6=E4=BA=BA: bernard@vivo.com <bernard@vivo.com> =E4=BB=
-=A3=E8=A1=A8 Song Liu
-> =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2021=E5=B9=B411=E6=9C=8817=E6=97=A5=
- 15:06
-> =E6=94=B6=E4=BB=B6=E4=BA=BA: =E8=B5=B5=E5=86=9B=E5=A5=8E <bernard@vivo.co=
-m>
-> =E6=8A=84=E9=80=81: linux-raid <linux-raid@vger.kernel.org>; open list <l=
-inux-kernel@vger.kernel.org>
-> =E4=B8=BB=E9=A2=98: Re: [PATCH] drivers/md: fix potential memleak
->
-> On Sun, Nov 14, 2021 at 7:18 PM Bernard Zhao <bernard@vivo.com> wrote:
-> >
-> > In function get_bitmap_from_slot, when md_bitmap_create failed,
-> > md_bitmap_destroy must be called to do clean up.
->
-> >Could you please explain which variable(s) need clean up?
->
-> Hi Song:
-> The follow is the function md_bitmap_create`s annotation :
-> /*
->  * initialize the bitmap structure
->  * if this returns an error, bitmap_destroy must be called to do clean up
->  * once mddev->bitmap is set
->  */
-> struct bitmap *md_bitmap_create(struct mddev *mddev, int slot)
->
-> It is mentioned that bitmap_destroy needs to be called to do clean up.
-> Other functions which called md_bitmap_create in the same file also calle=
-d md_bitmap_create to clean up(in the error branch), but this one didn`t.
-> I am not sure if there is some gap?
 
-I don't think we need to call md_bitmap_destroy in some of these cases.
-Please read the code carefully can decide where these are needed based
-on the logic of the code.
+--J/dobhs11T7y2rNN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Song
+Hi!
+
+> This is the start of the stable review cycle for the 5.10.81 release.
+> There are 21 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+
+CIP testing did not find any problems here:
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+5.10.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--J/dobhs11T7y2rNN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYZijmQAKCRAw5/Bqldv6
+8njdAJ9NlLmH4Wr2vD4GCtuXEV6DR3jqJwCcDYzNPuDN4/eziDWruBePBljTPj0=
+=HXEN
+-----END PGP SIGNATURE-----
+
+--J/dobhs11T7y2rNN--
