@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5644457B98
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 05:54:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39AC5457B93
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 05:54:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237556AbhKTE4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 23:56:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54986 "EHLO
+        id S237767AbhKTE4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 23:56:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236570AbhKTEyn (ORCPT
+        with ESMTP id S236613AbhKTEyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 19 Nov 2021 23:54:43 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E829C06179B
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:51:10 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id p3-20020a170903248300b00143c00a5411so5704019plw.12
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:51:10 -0800 (PST)
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE623C06179E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:51:11 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id y18-20020a634952000000b002ecc060ccc8so5039321pgk.17
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:51:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=3YA6l+nCWDobMPdwMK0h4ZN/J+oTuGq2DHmloikAhG4=;
-        b=OT2ThxPI0Z+DmHbtqeAbhdVF5XfOWjPZhjJ7VgLpSyx54RZ6RaCRqT33imBho+6uVA
-         2vhJdEuWK5SWg+ykQyXb4kr6gcymWsPO2qzs6OknhfsHMzyBBHC9lawd/Sj8WVBK1on3
-         ZhR+NQlJj3doYgYIlZQAOsPWH56o5h/XirCxBG+i4kqTNh+3lcw1gLh+AhELnh97ZthC
-         f1QKcS6t+D7BRbtUhAy8A/P0tJ0TkV+XmMj1oYUxd7wETacnSxOIU3TeCey/RDXCuXcc
-         z1AvQwDfamppoyX+Az7bTOrMBOb6M1X8jWz9OskFyZlI0gCkDRZD2tnGOgvt8nKDZyvW
-         2gew==
+        bh=IyXttzViF+EKA3KhGB9+yBuyqNGYCcO0tszuN7QfJJs=;
+        b=CBVGUeybvOBWqP5tSJP4MGoV7wNbSUtar/Uw9BTnPFPfADwoZ9PvbDiqHhWuQmM5wp
+         niwo3Yw3th0a8ophhAlDog+xj1xwK3e+LkgjgMtmx5n4ksDKqPriX88F/UEjx2MDAT2r
+         CZyxs00DrtgvmBXeC0eJRZlHtcGtoxtm9bGgZT67AGI4AsMKuIAlOMec6IxOVrhOO2fV
+         KQm3UzOZcOLXVHa/APpcw/9bNIfB6uPrnLDVIALmh7EN+PctusPj2LidMJPhQFV/0PyW
+         BeFbP7gFoM+nzMheTscm/et4w0hIcLISJX3O+OazeFh2Ord5QWOIb0M667wzCzXRFUCB
+         tuXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=3YA6l+nCWDobMPdwMK0h4ZN/J+oTuGq2DHmloikAhG4=;
-        b=Z4HQ5K1OICOqPpKeVhjiD1Jam2W29BpdWpjcLTAOLUnAt7VfTNfSB9IGbmYQuzZaT/
-         X+aMk9Q/STcSsImW5D59dWEeuukw7zhlIwMfj0C9lPGzEohjO3APEDZlaCUvKR1uvPOT
-         btu0Wl8tY5qdEaTOi2BXj+aLd5NUvc5kHeCgYs7D9hpBbcnDlsScEr+wUVQLlsG+0btL
-         bUVOh4xut4VqcJ0fsVjcTPiLFn2KyDa0gt5rsKrJIQNjdZvXcADihIWHpodtkOncN8mN
-         rrLLfUT3lefckywDvTTMRrcc4FPfiQ9YDPk0bYv8guuWjQv8H0gjsdXCsX/U25YlY8Fm
-         7ANA==
-X-Gm-Message-State: AOAM533XrbogBieRLU4HZNaxPq+UKtQevjCu2AZ4jTlSMA1KVHY2RyAR
-        VCyn0vqeqhK63goMxdzHPu7Ia45mNMs=
-X-Google-Smtp-Source: ABdhPJybdVjiF4plk9xbZSXhzzMciJanivTRt10ixVPETWLvjRFOCdlOnjHRBMgAFvzEJd10JBUy4xUan/0=
+        bh=IyXttzViF+EKA3KhGB9+yBuyqNGYCcO0tszuN7QfJJs=;
+        b=xTRDq00Frmj5vi7wnuAN7Sm0Z8qefB/lesq9Fkw7cZdgC9iX/Gcl10Z0WNjyS5jxRr
+         sAeZThY1FLwXHHlVc6zsUUI+s0NlW2jq4m33pcXg9hAfwqvNSupzgWbLkNg+J/4V1009
+         nsPreZVUdC/2Z2HwmofNq7+g7qZs5Md+Z+oFsCGJyO6ixr59gDiPlzHjR1qTaZTBnmQO
+         xmMTyGRkNagdcjOO6klUVOSICOQ04zZt2+KODpEDpFDgaKvZ7ReqwntvN4cqPaoayHDD
+         HWnir6rtlELBfhj66zfPXmD1ekCBScUI3uQeEaAZplnW/3PfP61dQWid0CHoxWmFzORG
+         npcA==
+X-Gm-Message-State: AOAM530STX6Uev4c0My40XRi5AydjnQwEy704TbBHnf6SyE7YW9XIUlR
+        uqnKyypKZKRLKw+hRRPhDig24z7eUmw=
+X-Google-Smtp-Source: ABdhPJy+BPD4vcAmVvlzIaEsidnbgRoZXFJ+/dD6AJnyOF1/UbeaoLmV+bA/ThCDGW81MyCX6ZunZwqEs0k=
 X-Received: from seanjc.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3e5])
- (user=seanjc job=sendgmr) by 2002:a17:90a:1bc5:: with SMTP id
- r5mr6738027pjr.90.1637383869917; Fri, 19 Nov 2021 20:51:09 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a17:90b:3e85:: with SMTP id
+ rj5mr6793643pjb.172.1637383871528; Fri, 19 Nov 2021 20:51:11 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Sat, 20 Nov 2021 04:50:28 +0000
+Date:   Sat, 20 Nov 2021 04:50:29 +0000
 In-Reply-To: <20211120045046.3940942-1-seanjc@google.com>
-Message-Id: <20211120045046.3940942-11-seanjc@google.com>
+Message-Id: <20211120045046.3940942-12-seanjc@google.com>
 Mime-Version: 1.0
 References: <20211120045046.3940942-1-seanjc@google.com>
 X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH 10/28] KVM: x86/mmu: Allow yielding when zapping GFNs for
- defunct TDP MMU root
+Subject: [PATCH 11/28] KVM: x86/mmu: Check for !leaf=>leaf, not PFN change, in
+ TDP MMU SP removal
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -69,53 +69,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow yielding when zapping SPTEs for a defunct TDP MMU root.  Yielding
-is safe from a TDP perspective, as the root is unreachable.  The only
-potential danger is putting a root from a non-preemptible context, and
-KVM currently does not do so.
+Look for a !leaf=>leaf conversion instead of a PFN change when checking
+if a SPTE change removed a TDP MMU shadow page.  Convert the PFN check
+into a WARN, as KVM should never change the PFN of a shadow page (except
+when its being zapped or replaced).
 
-Yield-unfriendly iteration uses for_each_tdp_mmu_root(), which doesn't
-take a reference to each root (it requires mmu_lock be held for the
-entire duration of the walk).
-
-tdp_mmu_next_root() is used only by the yield-friendly iterator.
-
-kvm_tdp_mmu_zap_invalidated_roots() is explicitly yield friendly.
-
-kvm_mmu_free_roots() => mmu_free_root_page() is a much bigger fan-out,
-but is still yield-friendly in all call sites, as all callers can be
-traced back to some combination of vcpu_run(), kvm_destroy_vm(), and/or
-kvm_create_vm().
+From a purely theoretical perspective, it's not illegal to replace a SP
+with a hugepage pointing at the same PFN.  In practice, it's impossible
+as that would require mapping guest memory overtop a kernel-allocated SP.
+Either way, the check is odd.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/tdp_mmu.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ arch/x86/kvm/mmu/tdp_mmu.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 3086c6dc74fb..138c7dc41d2c 100644
+index 138c7dc41d2c..8e446ef03022 100644
 --- a/arch/x86/kvm/mmu/tdp_mmu.c
 +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -79,6 +79,11 @@ static void tdp_mmu_free_sp_rcu_callback(struct rcu_head *head)
- 	tdp_mmu_free_sp(sp);
- }
+@@ -489,9 +489,12 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
  
-+/*
-+ * Note, putting a root might sleep, i.e. the caller must have IRQs enabled and
-+ * must not explicitly disable preemption (it will be disabled by virtue of
-+ * holding mmu_lock, hence the lack of a might_sleep()).
-+ */
- void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root,
- 			  bool shared)
- {
-@@ -101,7 +106,7 @@ void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root,
- 	 * intermediate paging structures, that may be zapped, as such entries
- 	 * are associated with the ASID on both VMX and SVM.
+ 	/*
+ 	 * Recursively handle child PTs if the change removed a subtree from
+-	 * the paging structure.
++	 * the paging structure.  Note the WARN on the PFN changing without the
++	 * SPTE being converted to a hugepage (leaf) or being zapped.  Shadow
++	 * pages are kernel allocations and should never be migrated.
  	 */
--	(void)zap_gfn_range(kvm, root, 0, -1ull, false, false, shared);
-+	(void)zap_gfn_range(kvm, root, 0, -1ull, true, false, shared);
- 
- 	call_rcu(&root->rcu_head, tdp_mmu_free_sp_rcu_callback);
+-	if (was_present && !was_leaf && (pfn_changed || !is_present))
++	if (was_present && !was_leaf &&
++	    (is_leaf || !is_present || WARN_ON_ONCE(pfn_changed)))
+ 		handle_removed_tdp_mmu_page(kvm,
+ 				spte_to_child_pt(old_spte, level), shared);
  }
 -- 
 2.34.0.rc2.393.gf8c9666880-goog
