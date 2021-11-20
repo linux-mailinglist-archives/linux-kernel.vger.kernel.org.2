@@ -2,178 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81FEF457FB2
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 17:56:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5010E457FBB
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 18:03:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237810AbhKTQ7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 11:59:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38474 "EHLO mail.kernel.org"
+        id S237822AbhKTRGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 12:06:45 -0500
+Received: from mout.gmx.net ([212.227.17.20]:37947 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230248AbhKTQ7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 11:59:14 -0500
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85FCC60ED5;
-        Sat, 20 Nov 2021 16:56:08 +0000 (UTC)
-Date:   Sat, 20 Nov 2021 17:01:01 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Iain Hunter <drhunter95@gmail.com>
-Cc:     iain@hunterembedded.co.uk, Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] Add binding for IIO ADS1018
-Message-ID: <20211120170101.68d3fd08@jic23-huawei>
-In-Reply-To: <20211117094109.402397-1-drhunter95@gmail.com>
-References: <20211117094109.402397-1-drhunter95@gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S229949AbhKTRGo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 12:06:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1637427803;
+        bh=FvLtXViYCFF6joVrwb7GrrUgr6TUM2iKs9tppUNqS2w=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=MyaWGYbMtoBsDc2+uZoA+tedmnZNaWM9RdggJDThmPjiLHMQMFYmywgRhWEqL66yn
+         JN+31S4ZWAE+YlXH9uLs+GJ6gpBgdfCQJdMTimJmo0tjXX5bfyDi9NXUlaMPapweJ8
+         FfgFOZaMnD7FM8dSIDUUqqA7p1YdcoQ0Tacygd08=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from esprimo-mx.fritz.box ([91.137.126.34]) by mail.gmx.net
+ (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1MAfUe-1mv2Hr0x56-00B5OW; Sat, 20 Nov 2021 18:03:23 +0100
+From:   Armin Wolf <W_Armin@gmx.de>
+To:     pali@kernel.org
+Cc:     jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] hwmon: (dell-smm) Improve ioctl handler
+Date:   Sat, 20 Nov 2021 18:03:17 +0100
+Message-Id: <20211120170319.72369-1-W_Armin@gmx.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:IfRzUzngu5f9VFP63qNfHakXbRp88z4u5jsHdSes7eht9586vNn
+ DyIpinEwOriEBw6sUKL5HUGiKJEw4ae2oJkKi8fnAnDD5hQv1l3/6eAIbstAutxw+8V0SIV
+ 2O2+LSjLwrYAT7VpUixIm2w8GnI2drGjybXLAOUEZe77eTDL9htpulyvi8TL1QfRgdV7cLz
+ 2FUMrZOW7dy7j8h4E9hJA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:tDOeJEY/3yY=:igTVYyUAF/TEOXRf3L1Lt/
+ 423CGHA0MPWjwcD4Cw16C0y/6rBUc6j5lY8jFn4dWXsOxyREnLlf9+5lasHyhsKf1c6oHk3bD
+ v06PFFMTDwTSfJSS4ZHzXibRi2J5sVgaT7f3/V1G3TnWu3VkAlIfy19UtN4wqt9lhXYWdxT94
+ Qi6UK2DYs1P3o7nkuboOwPHUeXpiNHfAK/lAOsL4tEiNtWxxoTpfomgnTNrPmr+t+RBlQxyUP
+ T0S5a8PCCx+6mCk7vt8s91170DSewsQqPgQu2vc3yguEE7SxlMshbuX2GymXqlVPyeyuKh3LG
+ 0Wo6qg4A9gyuqy+1uuUjMK5nA75RfSyjfnK5deALbikox8QEjJZj4JET3PCPmwOHe9XipRKbQ
+ BtBVyOHQ8GzvoAKyvjWz/b5g2oT4icSdzsL0wvc2uT3mYtH3aYTIIg7QDDGYHdXY3qutHHVsl
+ n/qa+ggzs+en5db0Zs5/CetOMSMPmMSJBeU0FFJKkMVY/X6RaT5O+2NmADSSsWaxRNtchEEeQ
+ 8nok3zJC9Q47rUTUH1uGA59WGTkthcI28s1GnDqqQlMqcta2zNdzLxjIuS3EHGQucrkQba/Cu
+ 2D8BTTb5RxTWHwtQ3B1jSFl7hCyYyTEncVPCOJMGAOiZFNJcHaewHiu8y9mGJinWm4c1Sp2m4
+ fdNAhR6xGbKhmJXXLaDS7gsjW8kvdqj1SF3HkZ6LTotl8MGP914yJCUUviV+hcPaP8V9LpPvn
+ j+6eUpJzMAVPZQ8JLILlrB77fDweZEO0y2izsShtzSA5ublvZUKpjNqyXmvTFZrjdjim57EoG
+ 7pDuySUAT0lXW4yqAPINXWnCqY7cals/MZ4aLklGobjY4b5pySVU/HyVtWRONDXnzOJVu5p+o
+ JVVElzh3URNfRXJCpcdYwk/okMmlEz1TbGoATcXGjxhofNJwHICMW2hV4dGaOameOmyrrQtk1
+ ItoTmqnGL41Rgr2lqPRkNsobDpu6V4HzDv+Dt/13/OuOlP9jGa0p4C8gYvyhMzhQzEzM+zrYA
+ vLMf8mLTXwypeZ4rI/VuJECjdYXKFr7umNLuYc2aEzgsl67X0ios5NPOVNbVlJDcctgF1a5gO
+ E9M8bUNxWVusa0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Nov 2021 09:40:48 +0000
-Iain Hunter <drhunter95@gmail.com> wrote:
+This patch series improves the ioctl handler in dell_smm_hwmon.
+The first patch is simplifying the ioctl handler by removing
+an unnecessary switch case, while the second patch is unifying
+both i8k_ioctl() and i8k_ioctl_unlocked(), resulting in better
+performance since i8k_mutex is only acquired when needed
+(during fan status change) instead of being acquired for
+every ioctl call.
 
-> v3 has me as suggested maintainer per Daniel's feedback and corrected id
-> 
-> Signed-off-by: Iain Hunter <drhunter95@gmail.com>
-Hi Iain,
+Tested on a Dell Inspiron 3505.
 
-Please resend whole series and not just a single patch.
-This had me confused when I saw a binding without a driver.
+Armin Wolf (2):
+  hwmon: (dell-smm) Simplify ioctl handler
+  hwmon: (dell-smm) Unify i8k_ioctl() and i8k_ioctl_unlocked()
 
-Also, I'm guessing you missed my email that asked you to do quite
-a bit of this differently...
+ drivers/hwmon/dell-smm-hwmon.c | 57 +++++++++++-----------------------
+ 1 file changed, 18 insertions(+), 39 deletions(-)
 
-https://lore.kernel.org/all/20211113180916.66b6864b@jic23-huawei/
-
-Please address those comments in v4.
-
-Thanks
-
-Jonathan
-
-> ---
->  .../bindings/iio/adc/ti,ads1018.yaml          | 109 ++++++++++++++++++
->  1 file changed, 109 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,ads1018.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/adc/ti,ads1018.yaml b/Documentation/devicetree/bindings/iio/adc/ti,ads1018.yaml
-> new file mode 100644
-> index 000000000000..14345bfb71dc
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/adc/ti,ads1018.yaml
-> @@ -0,0 +1,109 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/adc/ti,ads1018.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: TI ADS1018 4 channel I2C analog to digital converter
-> +
-> +maintainers:
-> +  - Iain Hunter <iain@hunterembedded.co.uk>
-> +
-> +description: |
-> +  Datasheet at: https://www.ti.com/lit/gpn/ads1018
-> +  Supports both single ended and differential channels.
-> +
-> +properties:
-> +  compatible:
-> +    const: ti,ads1018
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 0
-> +
-> +  "#io-channel-cells":
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +
-> +additionalProperties: false
-> +
-> +patternProperties:
-> +  "^channel@[0-7]+$":
-> +    type: object
-> +    description:
-> +      Child nodes needed for each channel that the platform uses.
-> +
-> +    properties:
-> +      reg:
-> +        description: |
-> +          0: Voltage over AIN0 and AIN1.
-> +          1: Voltage over AIN0 and AIN3.
-> +          2: Voltage over AIN1 and AIN3.
-> +          3: Voltage over AIN2 and AIN3.
-> +          4: Voltage over AIN0 and GND.
-> +          5: Voltage over AIN1 and GND.
-> +          6: Voltage over AIN2 and GND.
-> +          7: Voltage over AIN3 and GND.
-> +        items:
-> +          - minimum: 0
-> +            maximum: 7
-> +
-> +      ti,gain:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        minimum: 0
-> +        maximum: 5
-> +        description: |
-> +          pga is the programmable gain amplifier (values are full scale)
-> +          0: +/- 6.144 V
-> +          1: +/- 4.096 V
-> +          2: +/- 2.048 V (default)
-> +          3: +/- 1.024 V
-> +          4: +/- 0.512 V
-> +          5: +/- 0.256 V
-> +
-> +      ti,datarate:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        minimum: 0
-> +        maximum: 6
-> +        description: |
-> +          Data acquisition rate in samples per second
-> +          0: 128
-> +          1: 250
-> +          2: 490
-> +          3: 920
-> +          4: 1600 (default)
-> +          5: 2400
-> +          6: 3300
-> +
-> +    required:
-> +      - reg
-> +
-> +examples:
-> +  - |
-> +    spi {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        adc@1 {
-> +            compatible = "ti,ads1018";
-> +            reg = <0x1>;
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +            channel@4 {
-> +              reg = <4>;
-> +              ti,gain = <3>;
-> +              ti,datarate = <5>;
-> +            };
-> +        };
-> +    };
-> +...
+=2D-
+2.30.2
 
