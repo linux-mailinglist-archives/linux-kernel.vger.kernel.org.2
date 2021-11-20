@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D1B457A90
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 03:17:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E048F457A93
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 03:18:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236200AbhKTCTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 21:19:45 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:31889 "EHLO
+        id S236334AbhKTCVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 21:21:48 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:14960 "EHLO
         szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233709AbhKTCTd (ORCPT
+        with ESMTP id S232076AbhKTCVq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 21:19:33 -0500
+        Fri, 19 Nov 2021 21:21:46 -0500
 Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hwxq81kR3zcbMK;
-        Sat, 20 Nov 2021 10:11:32 +0800 (CST)
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hwxwb4GRnzZd00;
+        Sat, 20 Nov 2021 10:16:15 +0800 (CST)
 Received: from [10.174.177.174] (10.174.177.174) by
  dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sat, 20 Nov 2021 10:16:29 +0800
+ 15.1.2308.15; Sat, 20 Nov 2021 10:18:41 +0800
 Subject: Re: [PATCH -next 2/2] sata_fsl: fix warning in remove_proc_entry when
  rmmod sata_fsl
 To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
@@ -31,8 +31,8 @@ References: <20211119041128.2436889-1-libaokun1@huawei.com>
  <20211119041128.2436889-3-libaokun1@huawei.com>
  <283712c0-bab7-de13-fc27-6ae2e6f9532f@gmail.com>
 From:   "libaokun (A)" <libaokun1@huawei.com>
-Message-ID: <110d4b51-9cc3-22fd-885e-0bbeb1707bda@huawei.com>
-Date:   Sat, 20 Nov 2021 10:16:21 +0800
+Message-ID: <a8223ffb-2636-5c9d-76a6-868e5b4ebb9b@huawei.com>
+Date:   Sat, 20 Nov 2021 10:18:41 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.9.0
 MIME-Version: 1.0
@@ -40,7 +40,7 @@ In-Reply-To: <283712c0-bab7-de13-fc27-6ae2e6f9532f@gmail.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  dggpeml500020.china.huawei.com (7.185.36.88)
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -117,7 +117,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 I didn't notice the change in this return value, and the test didn't 
 cover the error branch.
 
-Thank you very much for your correction.
+Thank you very much for your advice.
 
 I'm about to send a patch v2 with the changes suggested by you.
 
