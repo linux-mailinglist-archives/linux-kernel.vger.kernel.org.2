@@ -2,207 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE5A457A7F
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 02:50:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29717457A84
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 02:55:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236209AbhKTBxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 20:53:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41852 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236047AbhKTBxb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 20:53:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79BB461A0C;
-        Sat, 20 Nov 2021 01:50:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637373023;
-        bh=NZYXCV1BI/2RMkIqg8C/D/wVdEb/oaBH9ZNmJzBtqg4=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=b9FRBUpIY1y9t1s+OOBwN+XMB4X3wtnkEP/NATXcl39WBk3mW1wPeYC22H5Yp3ojP
-         0LVezwSMlFnDljNCQl+WvxxgcB2aVUHlO7eOZtvbZKb2Xsp/oj+OKlxLQQfsR6TvN2
-         +ArfDE8Wn+35hQmjBRmkZAH6qiq4ST566a65JRlo/vMTn84wHL6PismdlQIYI6lBID
-         7g+X7EWU0o23O1r9R/sKxtYOe0UQZyyPZGNwPHKz1KCvOW6olEshthG9ecI+qMpH+S
-         3NHM1zukaa9Jnxhk/mQock4YWtIGrfX3qb3UAn/J1kvWRXZs+UJ7LJthVnmz/KNvzK
-         UjkyJgnxhSf8w==
-Message-ID: <e25053e9-f97e-6a2f-3bac-acfcd689fdcb@kernel.org>
-Date:   Sat, 20 Nov 2021 09:50:20 +0800
+        id S236200AbhKTB6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 20:58:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235856AbhKTB6f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 20:58:35 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F925C061574;
+        Fri, 19 Nov 2021 17:55:33 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id 200so10090969pga.1;
+        Fri, 19 Nov 2021 17:55:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=17p5myYhxd1DhZxcAj8FE6tGw2XX7477rU/2jCULHIY=;
+        b=ZaSY/6WDh36yTnPO3funThb8FwveZMT1wex7pJVnn+fZUBC1p9v0eYH/dLMcaB9HXN
+         MF3+NE6ZVSK5hvPAoxzMspYsPJ2/t7RaoPXTPsvrWt1VPXyg5Ydz2GjI4oBEy7/Yqy7v
+         HYQy9OCN4y2ylWkNEWFbXnJk5rad8Lbi2qLJVDzMlyowodFGSanwfsdvKMwc58d8p8ti
+         lBcnLahb0sluOe9H0N/Y2EvQCJY/znuguPHpkNygQujYswQ8EwCxe3PZfzmen+S0jRQj
+         p1KmZszVCG8Z+8Pi76caVM4IZW79xuweOrGg1QQ+HMA4uk2m9TY4cdOQr/zSFw1EvS6+
+         09zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=17p5myYhxd1DhZxcAj8FE6tGw2XX7477rU/2jCULHIY=;
+        b=Q1ZWfaON2++xBlmmHgYfcgQ6ZvKN5lGtjc0IFfxCMCFTVmbML9nt6nWHkAV+6NpRcS
+         p4iHYbh4xhTaiyT9k1t2MqTq3IF/WUve0NX7XQTTksjNQJCpAuVZssRhKfOVICjI4Efo
+         q9l3EnbyDgMxi1Sz+i0VOJnUJWO37ouMppKYTt8F8hPVvCwQKm9C7B7Z+qiqR4zVipn2
+         LmLQVxGrDAjO7zSAhYcEx5TssAmZoA57azNZOVP436R66x9y3N0PTVJYaObyAz+TyTln
+         InEYZarup/+AS7KTWTz16Khfp+h/mWaBKR7zx2KMk3ysXtpbiIW+D+j2p0056znPLoGH
+         7vmg==
+X-Gm-Message-State: AOAM532iOjovnnxBI4MuRqEpYYWjoM8oSb361hAMobkkzvlLFMswFA91
+        5T+6qyaYbqnpxuJ5W1Oq5XA=
+X-Google-Smtp-Source: ABdhPJxqfGSAOl+n1hw3lcxU/J2v5Bgk2T0qOLxz/60dcuVIoDGE4CcngM8bedIUT1nnDOyJlWJAjw==
+X-Received: by 2002:a62:2503:0:b0:4a2:b772:25ac with SMTP id l3-20020a622503000000b004a2b77225acmr43341008pfl.53.1637373332481;
+        Fri, 19 Nov 2021 17:55:32 -0800 (PST)
+Received: from localhost (176.222.229.35.bc.googleusercontent.com. [35.229.222.176])
+        by smtp.gmail.com with ESMTPSA id x64sm845844pfd.151.2021.11.19.17.55.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 17:55:31 -0800 (PST)
+Date:   Sat, 20 Nov 2021 09:55:29 +0800
+From:   Yao Yuan <yaoyuan0329os@gmail.com>
+To:     Chao Peng <chao.p.peng@linux.intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        qemu-devel@nongnu.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J . Bruce Fields" <bfields@fieldses.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
+        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com,
+        david@redhat.com
+Subject: Re: [RFC v2 PATCH 07/13] KVM: Handle page fault for fd based memslot
+Message-ID: <20211120015529.w23fg2df3fqs4ov5@sapienza>
+References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
+ <20211119134739.20218-8-chao.p.peng@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [f2fs-dev] [PATCH Vx 1/1] f2fs: Avoid deadlock between writeback
- and checkpoint
-Content-Language: en-US
-From:   Chao Yu <chao@kernel.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, niuzhiguo84@gmail.com
-Cc:     Jing.Xia@unisoc.com, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <1636438608-27597-1-git-send-email-niuzhiguo84@gmail.com>
- <YZU0TFBH6k2Q6fJZ@google.com>
- <e28d4963-d816-b568-dec8-60a79a9fe88d@kernel.org>
-In-Reply-To: <e28d4963-d816-b568-dec8-60a79a9fe88d@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211119134739.20218-8-chao.p.peng@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/11/18 14:46, Chao Yu wrote:
-> On 2021/11/18 0:56, Jaegeuk Kim wrote:
->> On 11/09, niuzhiguo84@gmail.com wrote:
->>> From: Zhiguo Niu <zhiguo.niu@unisoc.com>
->>>
->>> There could be a scenario as following:
->>> The inodeA and inodeB are in b_io queue of writeback
->>> inodeA : f2fs's node inode
->>> inodeB : a dir inode with only one dirty pages, and the node page
->>> of inodeB cached into inodeA
->>>
->>> writeback:
->>>
->>> wb_workfn
->>> wb_writeback
->>> blk_start_plug
->>>           loop {
->>>           queue_io
->>>           progress=__writeback_inodes_wb
->>>                   __writeback_single_inode
->>>                           do_writepages
->>>                                   f2fs_write_data_pages
->>>                                   wbc->pages_skipped +=get_dirty_pages
->>>                           inode->i_state &= ~dirty
->>>                   wrote++
->>>                   requeue_inode
->>>           }
->>> blk_finish_plug
->>>
->>> checkpoint:
->>>
->>> f2fs_write_checkpoint
->>> f2fs_sync_dirty_inodes
->>> filemap_fdatawrite
->>> do_writepages
->>> f2fs_write_data_pages
->>>           f2fs_write_single_data_page
->>>                   f2fs_do_write_data_page
->>>                           set_page_writeback
->>>                           f2fs_outplace_write_data
->>>                                   f2fs_update_data_blkaddr
->>>                                           f2fs_wait_on_page_writeback
->>>                   inode_dec_dirty_pages
->>>
->>> 1. Writeback thread flush inodeA, and push it's bio request in task's plug;
->>> 2. Checkpoint thread writes inodeB's dirty page, and then wait its node
->>>       page writeback cached into inodeA which is in writeback task's plug
->>> 3. Writeback thread flush inodeB and skip writing the dirty page as
->>>       wb_sync_req[DATA] > 0.
->>> 4. As none of the inodeB's page is marked as PAGECACHE_TAG_DIRTY, writeback
->>>       thread clear inodeB's dirty state.
->>> 5. Then inodeB is moved from b_io to b_dirty because of pages_skipped > 0
->>>       as checkpoint thread is stuck before dec dirty_pages.
->>>
->>> This patch collect correct pages_skipped according to the tag state in
->>> page tree of inode
->>>
->>> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
->>> Signed-off-by: Jing Xia <jing.xia@unisoc.com>
->>> ---
->>>    fs/f2fs/data.c | 4 +++-
->>>    1 file changed, 3 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
->>> index f4fd6c246c9a..e98628e3868c 100644
->>> --- a/fs/f2fs/data.c
->>> +++ b/fs/f2fs/data.c
->>> @@ -3237,7 +3237,9 @@ static int __f2fs_write_data_pages(struct address_space *mapping,
->>>    	return ret;
->>>    
->>>    skip_write:
->>> -	wbc->pages_skipped += get_dirty_pages(inode);
->>> +	wbc->pages_skipped +=
->>> +		mapping_tagged(inode->i_mapping, PAGECACHE_TAG_DIRTY) ?
->>
->> Is there any race condition to get 0, if there's any dirty page? IOWs, it
-> 
-> Quoted from Jing Xia's explanation:
-> 
-> [T:writeback]				[T:checkpoint]
+On Fri, Nov 19, 2021 at 09:47:33PM +0800, Chao Peng wrote:
+> Current code assume the private memory is persistent and KVM can check
+> with backing store to see if private memory exists at the same address
+> by calling get_pfn(alloc=false).
+>
+> Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
+> Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
+> ---
+>  arch/x86/kvm/mmu/mmu.c | 75 ++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 73 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 40377901598b..cd5d1f923694 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -3277,6 +3277,9 @@ int kvm_mmu_max_mapping_level(struct kvm *kvm,
+>  	if (max_level == PG_LEVEL_4K)
+>  		return PG_LEVEL_4K;
+>
+> +	if (memslot_is_memfd(slot))
+> +		return max_level;
+> +
+>  	host_level = host_pfn_mapping_level(kvm, gfn, pfn, slot);
+>  	return min(host_level, max_level);
+>  }
+> @@ -4555,6 +4558,65 @@ static bool kvm_arch_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+>  				  kvm_vcpu_gfn_to_hva(vcpu, gfn), &arch);
+>  }
+>
+> +static bool kvm_faultin_pfn_memfd(struct kvm_vcpu *vcpu,
+> +				  struct kvm_page_fault *fault, int *r)
+> +{	int order;
+> +	kvm_pfn_t pfn;
+> +	struct kvm_memory_slot *slot = fault->slot;
+> +	bool priv_gfn = kvm_vcpu_is_private_gfn(vcpu, fault->addr >> PAGE_SHIFT);
+> +	bool priv_slot_exists = memslot_has_private(slot);
+> +	bool priv_gfn_exists = false;
+> +	int mem_convert_type;
+> +
+> +	if (priv_gfn && !priv_slot_exists) {
+> +		*r = RET_PF_INVALID;
+> +		return true;
+> +	}
+> +
+> +	if (priv_slot_exists) {
+> +		pfn = slot->memfd_ops->get_pfn(slot, slot->priv_file,
+> +					       fault->gfn, false, &order);
+> +		if (pfn >= 0)
+> +			priv_gfn_exists = true;
 
-My bad, [1] should be here:
+Need "fault->pfn = pfn" here if actual pfn is returned in
+get_pfn(alloc=false) case for private page case.
 
-bio contains NodeA was plugged in writeback threads
+> +	}
+> +
+> +	if (priv_gfn && !priv_gfn_exists) {
+> +		mem_convert_type = KVM_EXIT_MEM_MAP_PRIVATE;
+> +		goto out_convert;
+> +	}
+> +
+> +	if (!priv_gfn && priv_gfn_exists) {
+> +		slot->memfd_ops->put_pfn(pfn);
+> +		mem_convert_type = KVM_EXIT_MEM_MAP_SHARED;
+> +		goto out_convert;
+> +	}
+> +
+> +	if (!priv_gfn) {
+> +		pfn = slot->memfd_ops->get_pfn(slot, slot->file,
+> +					       fault->gfn, true, &order);
 
-Thanks,
+Need "fault->pfn = pfn" here, because he pfn for
+share page is getted here only.
 
-> 					- do_writepages  -- sync write inodeB, inc wb_sync_req[DATA]
-> 					 - f2fs_write_data_pages
-> 					  - f2fs_write_single_data_page -- write last dirty page
-> 					   - f2fs_do_write_data_page
-> 					    - set_page_writeback  -- clear page dirty flag and
-> 					    PAGECACHE_TAG_DIRTY tag in radix tree
-> 					    - f2fs_outplace_write_data
-> 					     - f2fs_update_data_blkaddr
-> 					      - f2fs_wait_on_page_writeback -- wait NodeA to writeback here
-> 					   - inode_dec_dirty_pages
-
-> bio contains NodeA was plugged in writeback threads
-
-[1]
-
-Thanks,
-
-> - writeback_sb_inodes
->    - writeback_single_inode
->     - do_writepages
->      - f2fs_write_data_pages -- skip writepages due to wb_sync_req[DATA]
->       - wbc->pages_skipped += get_dirty_pages() -- PAGECACHE_TAG_DIRTY is not set but get_dirty_pages() returns one
->    - requeue_inode -- requeue inode to wb->b_dirty queue due to non-zero.pages_skipped
-> 
->> seems the current condition is just requeuing the inode as dirty, but next
->> flushing time will remove it from dirty list. Is this giving too much overheads?
-> 
-> I prefer to let writeback thread call blk_flush_plug() after skipping
-> writepages() due to wb_sync_req[DATA/NODE] check condition, thoughts?
-> 
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index 9f754aaef558..b6e1ed73f8f5 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -3087,6 +3087,8 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
->    			/* give a priority to WB_SYNC threads */
->    			if (atomic_read(&sbi->wb_sync_req[DATA]) &&
->    					wbc->sync_mode == WB_SYNC_NONE) {
-> +				if (current->plug)
-> +					blk_flush_plug(current->plug, false);
->    				done = 1;
->    				break;
->    			}
-> diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-> index 556fcd8457f3..dd9a817d8dab 100644
-> --- a/fs/f2fs/node.c
-> +++ b/fs/f2fs/node.c
-> @@ -1946,6 +1946,8 @@ int f2fs_sync_node_pages(struct f2fs_sb_info *sbi,
->    			if (atomic_read(&sbi->wb_sync_req[NODE]) &&
->    					wbc->sync_mode == WB_SYNC_NONE) {
->    				done = 1;
-> +				if (current->plug)
-> +					blk_flush_plug(current->plug, false);
->    				break;
->    			}
-> 
-> 
-> 
-> Thanks,
-> 
->>
->>> +		get_dirty_pages(inode) : 0;
->>>    	trace_f2fs_writepages(mapping->host, wbc, DATA);
->>>    	return 0;
->>>    }
->>> -- 
->>> 2.28.0
-> 
-> 
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> 
+> +		if (fault->pfn < 0) {
+> +			*r = RET_PF_INVALID;
+> +			return true;
+> +		}
+> +	}
+> +
+> +	if (slot->flags & KVM_MEM_READONLY)
+> +		fault->map_writable = false;
+> +	if (order == 0)
+> +		fault->max_level = PG_LEVEL_4K;
+> +
+> +	return false;
+> +
+> +out_convert:
+> +	vcpu->run->exit_reason = KVM_EXIT_MEMORY_ERROR;
+> +	vcpu->run->mem.type = mem_convert_type;
+> +	vcpu->run->mem.u.map.gpa = fault->gfn << PAGE_SHIFT;
+> +	vcpu->run->mem.u.map.size = PAGE_SIZE;
+> +	fault->pfn = -1;
+> +	*r = -1;
+> +	return true;
+> +}
+> +
+>  static bool kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault, int *r)
+>  {
+>  	struct kvm_memory_slot *slot = fault->slot;
+> @@ -4596,6 +4658,9 @@ static bool kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
+>  		}
+>  	}
+>
+> +	if (memslot_is_memfd(slot))
+> +		return kvm_faultin_pfn_memfd(vcpu, fault, r);
+> +
+>  	async = false;
+>  	fault->pfn = __gfn_to_pfn_memslot(slot, fault->gfn, false, &async,
+>  					  fault->write, &fault->map_writable,
+> @@ -4660,7 +4725,8 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
+>  	else
+>  		write_lock(&vcpu->kvm->mmu_lock);
+>
+> -	if (fault->slot && mmu_notifier_retry_hva(vcpu->kvm, mmu_seq, fault->hva))
+> +	if (fault->slot && !memslot_is_memfd(fault->slot) &&
+> +			mmu_notifier_retry_hva(vcpu->kvm, mmu_seq, fault->hva))
+>  		goto out_unlock;
+>  	r = make_mmu_pages_available(vcpu);
+>  	if (r)
+> @@ -4676,7 +4742,12 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
+>  		read_unlock(&vcpu->kvm->mmu_lock);
+>  	else
+>  		write_unlock(&vcpu->kvm->mmu_lock);
+> -	kvm_release_pfn_clean(fault->pfn);
+> +
+> +	if (memslot_is_memfd(fault->slot))
+> +		fault->slot->memfd_ops->put_pfn(fault->pfn);
+> +	else
+> +		kvm_release_pfn_clean(fault->pfn);
+> +
+>  	return r;
+>  }
+>
+> --
+> 2.17.1
+>
