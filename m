@@ -2,94 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88CB2457C50
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 08:49:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93349457C5A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 08:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232401AbhKTHv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 02:51:58 -0500
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:12792 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230196AbhKTHvy (ORCPT
+        id S230483AbhKTH5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 02:57:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbhKTH5C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 02:51:54 -0500
+        Sat, 20 Nov 2021 02:57:02 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BAC4C061748
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 23:53:57 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id bu18so54488282lfb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 23:53:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637394532; x=1668930532;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=1ibJOyP4jJT4y0c81VAvgOeXbtAdjj1j0sCkGyFJanI=;
-  b=dypP9bg9uv37/120k8EqUyQJzH6GUORqcL/xsqBBKrtaFftpYmPwVCdf
-   tcB7VXY6o3fiO18rtiB3RvhSR77xCNHCXcT/vZO4xKUuCYkr/cz6WZAAM
-   XVFnU4o2MEQm04EPQL+8gsfyO7aFE89QHcYrMydID+3J3/xIppHdVPcZs
-   s=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 19 Nov 2021 23:48:51 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 23:48:51 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Fri, 19 Nov 2021 23:48:51 -0800
-Received: from [10.38.245.239] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Fri, 19 Nov
- 2021 23:48:48 -0800
-Message-ID: <f587191c-dd08-1b00-3f1a-a123b6747ac8@quicinc.com>
-Date:   Fri, 19 Nov 2021 23:48:46 -0800
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZwaFrItd0GqJ8n5YLBu2RWS98JzEweGxq8C32OjIx+k=;
+        b=lD9/QU0GRm+RNNP8QcUlmNyYRKGkI1r73n2q+6beNMwspKDXBurqPeeyoBpteUnebW
+         u4MoNlnn2blmhzoMsZyklRTODkARr92mhox55I1fReVD1QRBbfeaTN+rvnDZ/DZOQnsu
+         VdkkW8ZB6ZkFcFwQiwB1fgJ0t7ySykCQqqgj9FekHsJ+Md2smWEL2dlqfZxyDfgZjMjz
+         RXZTCblf/ETYedXvV39ZEcW9ySGUuUjTH+b8/cLC6ceFfx1kMaERA+ydo55ED9hD4j0W
+         5EMx561TGUalhlBre7dZyI/hau8D4wHurPvE9SipfurJEP0rGpL/2GOFKuHteC3SQAVY
+         V0SQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZwaFrItd0GqJ8n5YLBu2RWS98JzEweGxq8C32OjIx+k=;
+        b=zG5/4fSJU7BQJXNhwZECd3DwVuMlDM+Lp3OHudzCDPtBHaH5to8UT4YZ231nEeyHGC
+         WVt99GefSQpUAoPYPdpemcLGwvCmYLgMFcoICGtCMicuoC0C6LOxNdoYfzRZDI+R2E6W
+         cTGjJqJ91Nv5myQvNL7kG8P5WTCTrpouLA7+QuPEFoXC6ll7svQkh6kNW0fXpD6u2r0p
+         HoWyyEcM7dCulWn7Ip6hLzCUTA2iAPU1E2Dg8RaNpZCp+jMurRVygU9foxAl/kwp99Aw
+         A6bwzOq3hrvHWEe18K21kp4uy0913XovQ4an+oHdNONZB/lkBgc0U6L7JpfgMne2H8wS
+         edWQ==
+X-Gm-Message-State: AOAM531mWW2c1EPOmQD9TNvXXI07A6RsSY7zjl7ae/D+XbXoJ6iqjbMF
+        MpELoQGKvCw3/2XqTUucqad8NSTesomNmkb/VAf7WQ==
+X-Google-Smtp-Source: ABdhPJwG8Y4LMabzkjP+uuwBNoerM5nlNrQdh6yQLOQ7+iGBwWpYMz7tUNyef4sT0fe3je9Llv/MLkzghbAt/MueFgk=
+X-Received: by 2002:a2e:bc1b:: with SMTP id b27mr33705963ljf.91.1637394835107;
+ Fri, 19 Nov 2021 23:53:55 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] MAINTAINERS: update designated reviewer entry for MSM DRM
- driver
-Content-Language: en-US
-To:     Joe Perches <joe@perches.com>, <linux-kernel@vger.kernel.org>
-CC:     <freedreno@lists.freedesktop.org>, <gregkh@linuxfoundation.org>,
-        <robdclark@gmail.com>, <seanpaul@chromium.org>,
-        <swboyd@chromium.org>, <nganji@codeaurora.org>,
-        <aravindh@codeaurora.org>, <dmitry.baryshkov@linaro.org>,
-        <daniel@ffwll.ch>
-References: <1637363916-18257-1-git-send-email-quic_abhinavk@quicinc.com>
- <a14da924805afdc39d7df800d3d4b7dc81c3dbf1.camel@perches.com>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <a14da924805afdc39d7df800d3d4b7dc81c3dbf1.camel@perches.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+References: <20211120045011.3074840-1-almasrymina@google.com> <20211120045011.3074840-2-almasrymina@google.com>
+In-Reply-To: <20211120045011.3074840-2-almasrymina@google.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 19 Nov 2021 23:53:43 -0800
+Message-ID: <CALvZod7dFi=yL3nPLJ4XkFR+2qXaOVd9RSX_fpmacUiQdSvo4Q@mail.gmail.com>
+Subject: Re: [PATCH v4 1/4] mm: support deterministic memory charging of filesystems
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>,
+        Greg Thelen <gthelen@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Roman Gushchin <guro@fb.com>, "Theodore Ts'o" <tytso@mit.edu>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joe
+On Fri, Nov 19, 2021 at 8:50 PM Mina Almasry <almasrymina@google.com> wrote:
+>
+> Users can specify a memcg= mount option option at mount time and all
 
-Thanks for the feedback.
+*option
 
-On 11/19/2021 7:34 PM, Joe Perches wrote:
-> On Fri, 2021-11-19 at 15:18 -0800, Abhinav Kumar wrote:
->> Adding myself as a designated reviewer to assist with the
->> code reviews for the changes coming into MSM DRM.
->>
->> Acked-by: Rob Clark <robdclark@gmail.com>
->> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> []
->> diff --git a/MAINTAINERS b/MAINTAINERS
-> []
->> @@ -5938,6 +5938,7 @@ M:	Sean Paul <sean@poorly.run>
->>   L:	linux-arm-msm@vger.kernel.org
->>   L:	dri-devel@lists.freedesktop.org
->>   L:	freedreno@lists.freedesktop.org
->> +R:	Abhinav Kumar <quic_abhinavk@quicinc.com>
->>   S:	Maintained
->>   T:	git https://gitlab.freedesktop.org/drm/msm.git
->>   F:	Documentation/devicetree/bindings/display/msm/
-> 
-> R: goes after M: not L:
-> 
-I have fixed this and pushed it again.
-> 
+> data page charges will be charged to the memcg supplied.  This is useful
+> to deterministicly charge the memory of the file system or memory shared
 
-Thanks
+*deterministically
 
-Abhinav
+> via tmpfs for example.
+>
+> Implementation notes:
+> - Add memcg= option parsing to fs common code.
+> - We attach the memcg to charge for this filesystem data pages to the
+>   struct super_block. The memcg can be changed via a remount operation,
+>   and all future memcg charges in this filesystem will be charged to
+>   the new memcg.
+> - We create a new interface mem_cgroup_charge_mapping(), which will
+>   check if the super_block in the mapping has a memcg to charge. It
+>   charges that, and falls back to the mm passed if there is no
+>   super_block memcg.
+> - On filesystem data memory allocation paths, we call the new interface
+>   mem_cgroup_charge_mapping().
+>
+> Caveats:
+> - Processes are only allowed to direct filesystem charges to a cgroup that
+
+I don't think 'Processes' is the right terminology here. The
+admin/user doing the mount operation with memcg option should have
+access to move processes into the target memcg.
+
+>   they themselves can enter and allocate memory in. This so that we do not
+>   introduce an attack vector where processes can DoS any cgroup in the
+>   system that they are not normally allowed to enter and allocate memory in.
+> - In mem_cgroup_charge_mapping() we pay the cost of checking whether the
+>   super_block has a memcg to charge, regardless of whether the mount
+>   point was mounted with memcg=. This can be alleviated by putting the
+>   memcg to charge in the struct address_space, but, this increases the
+>   size of that struct and makes it difficult to support remounting the
+>   memcg= option, although remounting is of dubious value.
+
+We can start simple with no remount option or maybe follow the memcg
+v2 semantics of process migrating from one memcg to another. The older
+memory of the process will remain charged to the older memcg and after
+migration, the new memory will be charged to the newer memcg.
+
+Similarly the older inode/mappings will still be linked to the older
+memcg and after remount the newer mappings will be linked with newer
+memcg. You would need to find out if each mapping should hold a memcg
+reference.
+
+[...]
+>
+> +static int parse_param_memcg(struct fs_context *fc, struct fs_parameter *param)
+> +{
+> +       struct mem_cgroup *memcg;
+> +
+> +       if (strcmp(param->key, "memcg") != 0)
+> +               return -ENOPARAM;
+> +
+> +       if (param->type != fs_value_is_string)
+> +               return invalf(fc, "Non-string source");
+> +
+> +       if (fc->memcg)
+> +               return invalf(fc, "Multiple memcgs specified");
+> +
+> +       memcg = mem_cgroup_get_from_path(param->string);
+
+You need to drop this reference in put_fs_context() and give the
+super_block its own memcg reference.
+
+> +       if (IS_ERR(memcg))
+> +               return invalf(fc, "Bad value for memcg");
+> +
+> +       fc->memcg = memcg;
+> +       param->string = NULL;
+> +       return 0;
+> +}
+> +
+>  /**
+>   * vfs_parse_fs_param - Add a single parameter to a superblock config
+>   * @fc: The filesystem context to modify
+> @@ -148,6 +171,10 @@ int vfs_parse_fs_param(struct fs_context *fc, struct fs_parameter *param)
+>                         return ret;
+>         }
+>
+> +       ret = parse_param_memcg(fc, param);
+
+You might need to call this before fs specific handling (i.e.
+fc->ops->parse_param).
+
+> +       if (ret != -ENOPARAM)
+> +               return ret;
+> +
+>         /* If the filesystem doesn't take any arguments, give it the
+>          * default handling of source.
+>          */
+
+[...]
+
+> +
+> +void mem_cgroup_put_name_in_seq(struct seq_file *m, struct super_block *sb)
+> +{
+> +       struct mem_cgroup *memcg;
+> +       int ret = 0;
+> +       char *buf = __getname();
+> +       int len = PATH_MAX;
+> +
+> +       if (!buf)
+> +               return;
+> +
+> +       buf[0] = '\0';
+> +
+> +       rcu_read_lock();
+> +       memcg = rcu_dereference(sb->s_memcg_to_charge);
+> +       if (memcg && !css_tryget_online(&memcg->css))
+
+No need to get an explicit reference. You can call cgroup_path within rcu.
+
+> +               memcg = NULL;
+> +       rcu_read_unlock();
+> +
+> +       if (!memcg)
+> +               return;
+> +
+> +       ret = cgroup_path(memcg->css.cgroup, buf + len / 2, len / 2);
+> +       if (ret >= len / 2)
+> +               strcpy(buf, "?");
+> +       else {
+> +               char *p = mangle_path(buf, buf + len / 2, " \t\n\\");
+> +
+> +               if (p)
+> +                       *p = '\0';
+> +               else
+> +                       strcpy(buf, "?");
+> +       }
+> +
+> +       css_put(&memcg->css);
+> +       if (buf[0] != '\0')
+> +               seq_printf(m, ",memcg=%s", buf);
+> +
+> +       __putname(buf);
+> +}
+> +
+> +/*
+> + * Set or clear (if @memcg is NULL) charge association from file system to
+> + * memcg.  If @memcg != NULL, then a css reference must be held by the caller to
+> + * ensure that the cgroup is not deleted during this operation, this reference
+> + * is dropped after this operation.
+
+The given reference is not really dropped after this operation but
+rather the reference is being stolen here.
+
+> + */
+> +void mem_cgroup_set_charge_target(struct super_block *sb,
+> +                                 struct mem_cgroup *memcg)
+> +{
+> +       memcg = xchg(&sb->s_memcg_to_charge, memcg);
+
+Don't borrow the reference, get a new one for sb.
+
+> +       if (memcg)
+> +               css_put(&memcg->css);
+> +}
+> +
+> +/*
+> + * Returns the memcg to charge for inode pages.  If non-NULL is returned, caller
+> + * must drop reference with css_put().  NULL indicates that the inode does not
+> + * have a memcg to charge,
+
+* or the attached memcg is offline.
+
+> so the default process based policy should be used.
+> + */
+> +static struct mem_cgroup *
+> +mem_cgroup_mapping_get_charge_target(struct address_space *mapping)
+> +{
+> +       struct mem_cgroup *memcg;
+> +
+> +       if (!mapping)
+> +               return NULL;
+> +
+> +       rcu_read_lock();
+> +       memcg = rcu_dereference(mapping->host->i_sb->s_memcg_to_charge);
+> +       if (memcg && !css_tryget_online(&memcg->css))
+> +               memcg = NULL;
+> +       rcu_read_unlock();
+> +
+> +       return memcg;
+> +}
+> +
