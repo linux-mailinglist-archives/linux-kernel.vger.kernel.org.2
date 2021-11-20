@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFC9457B02
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 05:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B96B457B03
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 05:03:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236566AbhKTEEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 23:04:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44156 "EHLO
+        id S236655AbhKTEGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 23:06:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235757AbhKTEEl (ORCPT
+        with ESMTP id S236743AbhKTEFp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 23:04:41 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04758C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:01:38 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id i8-20020a7bc948000000b0030db7b70b6bso11975101wml.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:01:37 -0800 (PST)
+        Fri, 19 Nov 2021 23:05:45 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F6E7C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:02:20 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id d24so21532780wra.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:02:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=brainfault-org.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=91hgkvMagzzdtA7j3uCrPomJgAj+GmZeXcVvVsWMKYI=;
-        b=UrYGIdflxT+VIeXGHHEvV5dcH2b7ykOSLSK3Od9XTzDRYvIC+MT3C9WodHbjuKREye
-         aQfMrgdowWnK8PIBaDFQ+PtUpTJzk5s1+TCJA3vJzPSbUd1JsUWPUwqgsc8cPeXZXd6N
-         OfUnl0IVqMKN9D4adh34HLnxwH2lVUy/7uvg7d2CN/u4RoVEI/e9l6IYRqtmKLiKR9HL
-         QVP2QJwNi8/7rK+7mtnW5JwvrtL8eA7tAMHzG77kZT+POhSDHfqZYYlbSUvJjw3zEybb
-         3zxjpyovNJvMHC5sDeGc5rccNQ2IqKKjUF+GvmoCnWlT8Nr6WLvp/rXLUFpjO+a+kgTK
-         mcNA==
+        bh=kXDYFUbtK5blbIHxgSBnYcG4kvaxmY3jttH/eZ1V35Q=;
+        b=pl686RiDOYZZ+UFgC0xAnclHtqmLOetZLriBRBz82fthdUGAiDkPE9tnMsI8+qcnwU
+         SQvAg8cc/OvaJ8YBoBHqSO7CN583qlSxR9Y/nW86TH/dTWS6ZDBwOqa3/VS7wwINqNlh
+         eEY9Ffsts3NqjjvK4u13TES4mgN99dm1Vn8oMqz1hAhzvtRIMOuzbWVvklyKtKYYoeUh
+         /sPG33PHKIij1zZixQFkMmoasd0y/fwXqVTrkQ6rwkfRENGkSGpt3TMbnpa7puX98UXp
+         9+CGhogcdQxWl5gVDSez/7Y1m4rG/aFb8yXfc2/MawvbglkNcna2bkjUyYiBGY1O6x1h
+         hggA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=91hgkvMagzzdtA7j3uCrPomJgAj+GmZeXcVvVsWMKYI=;
-        b=ixaxQVLbCgCRL52mdeFUl45To70SWt7FBPodtXYAgBODqyX7w827T61C5MrLJua+qa
-         mpa6z54f0WrTWj/L8/onvK2r4r0VH+iXNQOvhCC48nO4lMZkEbzPbEd8+RMzyaucMBVi
-         mlOEqq+F3a8qPQ9l/PiPB0xgedRE+ZIniWdfqHxewb9RRrHGBwhYjIptaxAFH9GMwhWG
-         75Rb/bWY46Y8P6vKswjE67jCsrfRybsXbGhcvnHJE6ZuzObvI6FG6A0eKrDfFSBjS3uM
-         XqqO2Bbo1Nn6Zy+vat3LunutGt3RFvzYrH7X1tA5XwdGCKLwbWYAKeTS/mKVCJlUzXl6
-         4xYg==
-X-Gm-Message-State: AOAM531LzZEJ7CdtHXQILUo9wZSoMMVrUuOTOsOAjt/cVoeJ5BAKIW8w
-        azhI/TMYDVPMFY0dojYStm3ns3eJBfKKJywD3Oo+Dg==
-X-Google-Smtp-Source: ABdhPJxlzboCwwqWNYtVsqf6BEyLRFhN4pocPFJOJwuVXg+j1922/JCIElPydy7svQZ7ez2yT2fkr0ZTEqWdzKdtFCE=
-X-Received: by 2002:a1c:7201:: with SMTP id n1mr6415226wmc.176.1637380896488;
- Fri, 19 Nov 2021 20:01:36 -0800 (PST)
+        bh=kXDYFUbtK5blbIHxgSBnYcG4kvaxmY3jttH/eZ1V35Q=;
+        b=wY8APSIHTkn09dNEz72pUZnlxY66/7dEo5+qXSk20AZZgkBuLkyiWLn1rX4mcbXgvV
+         wksXyqXK1pm4eRejpYGHHvJtsjqlSaRvFI34GMuDoHyJ2VVV44kZ9Wtuj3+24OYzBNpv
+         KpqNVNCMEQk7Hn/zcevGJ2+0xkh2G+TL9OZ4SATPlKn/s+Mczk9QgQQ5LuHTkPHc/tcw
+         DzWBa1rAQYyYzKWvrpJGGcTdqh6y17pat43Kk92InrSGb/iFR6nlxQen5SOF0ZX30bBW
+         mBakmzqz0aCNDguPIO1kOPo7Z6I2Rl0z6TKzJ+shlakCwcnwNQXkewvu9kioIW32Cm6K
+         QWYg==
+X-Gm-Message-State: AOAM532EmKIJqZilABL+Nwfuvc9w7HChdpwJg2/segh8+Mp290kTwn3C
+        fhyE/LDcHkKEcrZX89rdG1n4foIDT1vOwptR2+7r5w==
+X-Google-Smtp-Source: ABdhPJy4Bdo/2RoEuOQcWEe6rClCXaTStSZ9m9VeTdDUQ4H3Nvfcy7pqKZWoFaS5TuTHzrMkQ9+Ec5lRp6ph5BpMTS4=
+X-Received: by 2002:a5d:4846:: with SMTP id n6mr13651427wrs.249.1637380939141;
+ Fri, 19 Nov 2021 20:02:19 -0800 (PST)
 MIME-Version: 1.0
-References: <20211119164413.29052-1-palmer@rivosinc.com> <20211119164413.29052-8-palmer@rivosinc.com>
-In-Reply-To: <20211119164413.29052-8-palmer@rivosinc.com>
+References: <20211119164413.29052-1-palmer@rivosinc.com> <20211119164413.29052-9-palmer@rivosinc.com>
+In-Reply-To: <20211119164413.29052-9-palmer@rivosinc.com>
 From:   Anup Patel <anup@brainfault.org>
-Date:   Sat, 20 Nov 2021 09:31:24 +0530
-Message-ID: <CAAhSdy2QR+BEWqWOsg56SYODcuq68qknh7wZ1qLAFrK8zvRmRA@mail.gmail.com>
-Subject: Re: [PATCH 07/12] RISC-V: defconfigs: Sort CONFIG_MMC
+Date:   Sat, 20 Nov 2021 09:32:07 +0530
+Message-ID: <CAAhSdy3vdiOoVJ=M7JYQ-oFZukxdp9rc0_4F7B1cSXxrXYofTg@mail.gmail.com>
+Subject: Re: [PATCH 08/12] RISC-V: defconfigs: Sort CONFIG_SURFACE_PLATFORMS
 To:     Palmer Dabbelt <palmer@rivosinc.com>
 Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
         Paul Walmsley <paul.walmsley@sifive.com>,
@@ -72,9 +72,8 @@ On Fri, Nov 19, 2021 at 10:15 PM Palmer Dabbelt <palmer@rivosinc.com> wrote:
 >
 > From: Palmer Dabbelt <palmer@rivosinc.com>
 >
-> This should have no functional change, it just sorts CONFIG_MMC the same
-> way savedefconfig does.  This only touches the rv64 defconfig because
-> rv32_defconfig was already sorted correctly.
+> This should have no functional change, it just sorts
+> CONFIG_SURFACE_PLATFORMS the same way savedefconfig does.
 >
 > Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
 
@@ -86,25 +85,34 @@ Regards,
 Anup
 
 > ---
->  arch/riscv/configs/defconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/riscv/configs/nommu_k210_defconfig        | 1 -
+>  arch/riscv/configs/nommu_k210_sdcard_defconfig | 1 -
+>  2 files changed, 2 deletions(-)
 >
-> diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-> index fa9017c60b3d..ec9540392df7 100644
-> --- a/arch/riscv/configs/defconfig
-> +++ b/arch/riscv/configs/defconfig
-> @@ -90,10 +90,10 @@ CONFIG_USB_OHCI_HCD=y
->  CONFIG_USB_OHCI_HCD_PLATFORM=y
->  CONFIG_USB_STORAGE=y
->  CONFIG_USB_UAS=y
-> +CONFIG_MMC=y
->  CONFIG_MMC_SDHCI=y
->  CONFIG_MMC_SDHCI_PLTFM=y
->  CONFIG_MMC_SDHCI_CADENCE=y
-> -CONFIG_MMC=y
->  CONFIG_MMC_SPI=y
->  CONFIG_RTC_CLASS=y
->  CONFIG_VIRTIO_PCI=y
+> diff --git a/arch/riscv/configs/nommu_k210_defconfig b/arch/riscv/configs/nommu_k210_defconfig
+> index b16a2a12c82a..89ab76349ea8 100644
+> --- a/arch/riscv/configs/nommu_k210_defconfig
+> +++ b/arch/riscv/configs/nommu_k210_defconfig
+> @@ -75,7 +75,6 @@ CONFIG_LEDS_GPIO=y
+>  CONFIG_LEDS_USER=y
+>  # CONFIG_VIRTIO_MENU is not set
+>  # CONFIG_VHOST_MENU is not set
+> -# CONFIG_SURFACE_PLATFORMS is not set
+>  # CONFIG_FILE_LOCKING is not set
+>  # CONFIG_DNOTIFY is not set
+>  # CONFIG_INOTIFY_USER is not set
+> diff --git a/arch/riscv/configs/nommu_k210_sdcard_defconfig b/arch/riscv/configs/nommu_k210_sdcard_defconfig
+> index 61f887f65419..690460f79925 100644
+> --- a/arch/riscv/configs/nommu_k210_sdcard_defconfig
+> +++ b/arch/riscv/configs/nommu_k210_sdcard_defconfig
+> @@ -72,7 +72,6 @@ CONFIG_LEDS_GPIO=y
+>  CONFIG_LEDS_USER=y
+>  # CONFIG_VIRTIO_MENU is not set
+>  # CONFIG_VHOST_MENU is not set
+> -# CONFIG_SURFACE_PLATFORMS is not set
+>  CONFIG_EXT2_FS=y
+>  # CONFIG_FILE_LOCKING is not set
+>  # CONFIG_DNOTIFY is not set
 > --
 > 2.32.0
 >
