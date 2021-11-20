@@ -2,67 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB4245806B
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 22:08:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 903F845806D
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 22:13:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235454AbhKTVLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 16:11:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41084 "EHLO
+        id S235655AbhKTVQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 16:16:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234879AbhKTVLT (ORCPT
+        with ESMTP id S234879AbhKTVQF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 16:11:19 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE41AC061574;
-        Sat, 20 Nov 2021 13:08:15 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id h16-20020a9d7990000000b0055c7ae44dd2so22404886otm.10;
-        Sat, 20 Nov 2021 13:08:15 -0800 (PST)
+        Sat, 20 Nov 2021 16:16:05 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26CDEC061574;
+        Sat, 20 Nov 2021 13:13:01 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id be32so29023011oib.11;
+        Sat, 20 Nov 2021 13:13:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EGzBIS8YcmZkggi1HZxJDBiWMaVvrZf9iB+lDd3ba20=;
-        b=iNV3Foyh1pATT8jRoBtXQDaL9Id6zaD6t5esFATAn2qW4zzayYBF0wUQkbe0ySVLxd
-         YpoiJaj9z5sLfbpYCFTTWJIfh7Nd72M0DbiVQ3Dm6ZlFpKeY7wR8ZxmxvkLEZpoRB7vL
-         MLRHOA2Abt1JA43FVs/cLjrl5Slt2PqGzIJ3nXTKiIxirdMMkHmVBQ+C1vMKzBsNEMC0
-         Xn3TSABY7CgQRGIcjxAF7lRLCOSYQQBJUJZ1+HUa+MO56XQFrwsmJ/0L2yA3FmK5pHSm
-         IrR0Vkd7oqA/2/klAL9k1CFw7fK3KvBEDRNQOb2U/l9PKneA/iXFXkV+b5k42IChYTrx
-         7/rg==
+        bh=WlJsgNuACVw3Jnj0FSXleu2cN6friNna4S6waxQmQE4=;
+        b=Reoh7cM2vAO61iZKiRhZUHsEiueLdKvRCJb5J/ZqTQVO9wTKMDjYBqtlZ1rtLfsoPQ
+         wtAEkrIFL0KMhQgp8vtKWWIZT+daFrk8AEUyPi/7m5AaRbArjylrA5mHSmZXVYPR+VIO
+         IKKY+wxZ9sDdd2g7cXb30B6JnVCqjvU+2Kgk60JhT66ERtQqcJ9RNULlup39aBGjmICo
+         0yNwYDjo4iDuxjkoM4CnCY7wJH/go6sqpoZvgHYZ0lJ0IR6YSOAQAoxdON4tpnIR/UTQ
+         R6FMAPQa20Cxpe1W1vnPkfjK5utYqnDCSW2/J4FCvkHWcru9gWPMqdqdrXvsFxZ1JawQ
+         /Jvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
          :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=EGzBIS8YcmZkggi1HZxJDBiWMaVvrZf9iB+lDd3ba20=;
-        b=XfcE5qycOWXtDoyKqWbi3T4/YZiiH43UwKvvD7iHfQRwSaL9XPV0SWHi3lHTpzgqNz
-         3+JHJP6b9wTcFdsbfqd8UdkWU1lwPg5cHHwgMrFHPWKR3btSoTDRhdVbBdafO7KWTdNz
-         csDFhajjPo/oVix94Jy1U6y7R3ZAD7f4CSogZn/T+TVjtXs2woGe4KOS9qK2+Lge54Gp
-         DJJxPaahh1uD50ARqp7xy/eC8eANAjhdjsmBjZ997sabsv077sboO0+BqBRQOGVz7ZvT
-         7ETM+65uGpmLYoJ+OKnw4wayQLyRCTXyernbvjvpiO7qmvlrUaLJqZAiaRgWvIs3p+nU
-         Ny5A==
-X-Gm-Message-State: AOAM5300IzBdQ8snk8OVcKo+H8wKd1+HZvxRrYxhXtOIpo8MrVddfbTd
-        HytVF2HGUpGQKvHYk9tbh+alYMJv/mw=
-X-Google-Smtp-Source: ABdhPJwVaCQTmLtgCGgxYl7gzPMaUuWBz4EDxS7uVyJTRDfU5518V2cbqpUWxJ2fypO+XA7oNkBgqA==
-X-Received: by 2002:a05:6830:1107:: with SMTP id w7mr13863789otq.20.1637442494846;
-        Sat, 20 Nov 2021 13:08:14 -0800 (PST)
+        bh=WlJsgNuACVw3Jnj0FSXleu2cN6friNna4S6waxQmQE4=;
+        b=a9DCj06SDdsFNt3HHyRPwOQt+QeLnX3fFRvJhahook2yhrpQQ1pjZbFmZGC3hoyG6c
+         EKS95oJWALUHNgRs8qjJe74ocSYjuXbM47y4YT7JZ7HwZzaHmqGIqj2iDuRjbFYAA4ED
+         ykIqlrwkdsQ8qBQZnaReXZlJX03Ob1JSf65MFX8Ahoov0PsiFYsfA6kaycZL+LmIoo9+
+         4KjcYIh6xVNO3Lwt4Mfa3wntRnyDSEGfkC7rNz/ps+DqavvakpEYKdLNRzEmnbHaZ4e2
+         uSNnazMeCy8NPnEB7vD0TSc1b54E9CxPTggGceiTK5y7PQ4vgM07PxPY9XY192ZJcqId
+         Xvzg==
+X-Gm-Message-State: AOAM533aUw69Zpp8nZFDF3qBpVl1j/VnypMxPlr+ae56clXRXx3RJKB2
+        RByoF2XAnOFdYdh2dlw83bsJ6Yon1S4=
+X-Google-Smtp-Source: ABdhPJzgPDdILFRucbKSZljypyrWmucjazf4X9+6ccvYASQf8MX634F5OeBtO0IZvd3OuC9Ou3HpvA==
+X-Received: by 2002:a05:6808:2014:: with SMTP id q20mr9576917oiw.117.1637442780173;
+        Sat, 20 Nov 2021 13:13:00 -0800 (PST)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h6sm748264otb.60.2021.11.20.13.08.13
+        by smtp.gmail.com with ESMTPSA id k12sm758816ots.77.2021.11.20.13.12.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Nov 2021 13:08:14 -0800 (PST)
+        Sat, 20 Nov 2021 13:12:59 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v2 1/2] hwmon: (sht4x) Fix EREMOTEIO errors
+Subject: Re: [PATCH v2 2/2] hwmon: (sht4x) Add device tree match table and
+ document it
 To:     David Mosberger-Tang <davidm@egauge.net>,
         Navin Sankar Velliangiri <navin@linumiz.com>
 Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20211120204053.2299501-1-davidm@egauge.net>
+ <20211120204053.2299501-2-davidm@egauge.net>
 From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <f25f8dce-2b65-e98a-349d-220f79473ee2@roeck-us.net>
-Date:   Sat, 20 Nov 2021 13:08:12 -0800
+Message-ID: <4ebe1f6a-575f-2d34-7839-9055545e5e6b@roeck-us.net>
+Date:   Sat, 20 Nov 2021 13:12:58 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20211120204053.2299501-1-davidm@egauge.net>
+In-Reply-To: <20211120204053.2299501-2-davidm@egauge.net>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -71,48 +73,103 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 11/20/21 12:40 PM, David Mosberger-Tang wrote:
-> Per datasheet, SHT4x may need up to 8.2ms for a "high repeatability"
-> measurement to complete.  Attempting to read the result too early
-> triggers a NAK which then causes an EREMOTEIO error.
-> 
-> This behavior has been confirmed with a logic analyzer while running
-> the I2C bus at only 40kHz.  The low frequency precludes any
-> signal-integrity issues, which was also confirmed by the absence of
-> any CRC8 errors.  In this configuration, a NAK occurred on any read
-> that followed the measurement command within less than 8.2ms.
+> This patch enables automatic loading of the sht4x module via a device
+> tree table entry.
 > 
 > Signed-off-by: David Mosberger-Tang <davidm@egauge.net>
+> ---
+>   .../bindings/hwmon/sensirion,sht4x.yaml       | 50 +++++++++++++++++++
+>   drivers/hwmon/sht4x.c                         |  7 +++
 
-You sent v2 after 5 minutes, and there is no change log.
-Please never do that, and always provide a change log.
+This needs to be two separate patches, one the devicetree change and the other
+the source code change. DT maintainers need to be copied on the devicetree
+patch.
 
+Also, please consider adding the device to trivial-devices.yaml instead since
+there are no special bindings.
+
+Thanks,
 Guenter
 
-> ---
->   drivers/hwmon/sht4x.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+>   2 files changed, 57 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/hwmon/sensirion,sht4x.yaml
 > 
+> diff --git a/Documentation/devicetree/bindings/hwmon/sensirion,sht4x.yaml b/Documentation/devicetree/bindings/hwmon/sensirion,sht4x.yaml
+> new file mode 100644
+> index 000000000000..588c2e37b035
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/sensirion,sht4x.yaml
+> @@ -0,0 +1,50 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/hwmon/sensirion,sht4x.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Sensirion SHT4x Humidity and Temperature Sensor IC
+> +
+> +maintainers:
+> +  - Navin Sankar Velliangiri navin@linumiz.com
+> +
+> +description: |
+> +  The SHT4x is a high-accuracy digital humidity and temperature sensor
+> +  designed especially for battery-driven high-volume consumer
+> +  electronics applications.  For further information refere to
+> +  Documentation/hwmon/sht4x.rst
+> +
+> +  This binding document describes the binding for the hardware monitor
+> +  portion of the driver.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - sensirion,sht4x
+> +
+> +  reg:
+> +    const: 0x44
+> +    description:
+> +      The I2c base address of the SHT4x.  0x44 for all chip versions
+> +      except for SHT41-BD1B, where it is 0x45.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      clock-frequency = <400000>;
+> +
+> +      sht4x@44 {
+> +        compatible = "sensirion,sht4x";
+> +        reg = <0x44>;
+> +      };
+> +    };
+> +...
 > diff --git a/drivers/hwmon/sht4x.c b/drivers/hwmon/sht4x.c
-> index 09c2a0b06444..3415d7a0e0fc 100644
+> index 3415d7a0e0fc..6e53d81e32d4 100644
 > --- a/drivers/hwmon/sht4x.c
 > +++ b/drivers/hwmon/sht4x.c
-> @@ -23,7 +23,7 @@
->   /*
->    * I2C command delays (in microseconds)
->    */
-> -#define SHT4X_MEAS_DELAY	1000
-> +#define SHT4X_MEAS_DELAY_HPM	8200	/* see t_MEAS,h in datasheet */
->   #define SHT4X_DELAY_EXTRA	10000
+> @@ -281,9 +281,16 @@ static const struct i2c_device_id sht4x_id[] = {
+>   };
+>   MODULE_DEVICE_TABLE(i2c, sht4x_id);
 >   
->   /*
-> @@ -90,7 +90,7 @@ static int sht4x_read_values(struct sht4x_data *data)
->   	if (ret < 0)
->   		goto unlock;
->   
-> -	usleep_range(SHT4X_MEAS_DELAY, SHT4X_MEAS_DELAY + SHT4X_DELAY_EXTRA);
-> +	usleep_range(SHT4X_MEAS_DELAY_HPM, SHT4X_MEAS_DELAY_HPM + SHT4X_DELAY_EXTRA);
->   
->   	ret = i2c_master_recv(client, raw_data, SHT4X_RESPONSE_LENGTH);
->   	if (ret != SHT4X_RESPONSE_LENGTH) {
+> +static const struct of_device_id sht4x_of_match[] = {
+> +	{ .compatible = "sensirion,sht4x" },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, sht4x_of_match);
+> +
+>   static struct i2c_driver sht4x_driver = {
+>   	.driver = {
+>   		.name = "sht4x",
+> +		.of_match_table = sht4x_of_match
+>   	},
+>   	.probe		= sht4x_probe,
+>   	.id_table	= sht4x_id,
 > 
 
