@@ -2,99 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E44C457EE4
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 16:21:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9616457EE6
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 16:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237640AbhKTPYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 10:24:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50590 "EHLO
+        id S237644AbhKTPZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 10:25:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230038AbhKTPYQ (ORCPT
+        with ESMTP id S230038AbhKTPZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 10:24:16 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17403C061574;
-        Sat, 20 Nov 2021 07:21:13 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id d5so23685809wrc.1;
-        Sat, 20 Nov 2021 07:21:13 -0800 (PST)
+        Sat, 20 Nov 2021 10:25:46 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6F6C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 07:22:42 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id r9-20020a7bc089000000b00332f4abf43fso9398201wmh.0
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 07:22:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CyM3+eJ6aCtIacq87VUybJ0cUWuQiHmdVvSz9Qi8v8s=;
-        b=CNQAcXJ4z8SdArb9OgLusWsevmQHhW+tuboXBc6JnNgu86F027TOwmxWz6183a9F5v
-         Lbg8p4yRRnwPTgTcQ1dZZqC9CoTuPdPOZf5gVkHbTYyoDHT+gs42lVg0XPsb6QoqgzkF
-         vwTEILg/ALALrvd2GSfdATnqFJQ+d9vIXSi9e2MxRIwjD4zbBkU4yS266sjjmBZH2ZvN
-         CpodapjdlkXXZTog9TUJMWm9aJHX1NTuMf1wNyLXONPaD9YQEWsX763pFdGyz0jVFMW/
-         zwlqhf7ba3qwNTbpEni/G94wx/NcW/Kh/MKEFPyxC7eupl04BxlFtIdnrVqf0ba27yoR
-         bZrg==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=9h+PyJVI+J/jk7CrfScjFwP4ghuFS8I41cpzNkNVExo=;
+        b=Cq8FDxnYcS05vCM3l13gztARsKs7aMg/b1mLOZFttmI8NmRM1pXVL6My7zn/EnMpQ8
+         wc74HALnkKl1Rhfq5QdpQCziUJI4FJrHJuL7nPZBH19AVAADNZG12mrSledEkZSRPcae
+         IaUDavJcn3bu0sPulhQUn1YBXi8xqsfPcoOHOr0Hr58ZCPJ2qH4c08z6m8ldhYSYxXLs
+         sweFRIDk0ePuKHWfOqozPdCgLr8dap4wlvG+iDyfqJGTQdhwPwGyV/txnN/TlQ6u9873
+         unPxGmeZt3AP8VNkZ1WpbO+NR4NhjhFkU8JzwFuulaSnBPvRv6wIrg2bIqhlYBWbUoqi
+         lGjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CyM3+eJ6aCtIacq87VUybJ0cUWuQiHmdVvSz9Qi8v8s=;
-        b=JDxeXWekmrnmTPmMnHna39cXOLMZ6mMunOZTjo/5ldnHPI+H6dQB34gYIoIU6myv9V
-         JPcs1av0gGB8u+IUbYQ0ph5pxyPvSFOlM5P02IyK/sGp6IjUxqxu+QKdJDCmLmZlDZSg
-         egoA7aRBQ1tvFVvZJsGCJiYLcjk9VC1KAOKE8fezhQXMNsE+fkICRt/BprFfi+2hRXmM
-         yZQ+cmh5knwJBgOKBD+8H1gMiIWCuSbMDlPixpYxQfU4ulLRdsrqHMyWefRtBPbMW2Z1
-         5iKyhnQTYxACCy/axl521sH4dwWru+hHVLKqIH87iAPNkw/QONyqdVzKQmJ/cSSC68SH
-         WMwg==
-X-Gm-Message-State: AOAM530ojb8Y75jHPyyCgMZJSpsyoOgJh9Y8bSiIYv5Dq3JhrgvpzW5t
-        z8LI0d76uB1HWp15qf5uV78=
-X-Google-Smtp-Source: ABdhPJys0Fs9mVGxnNnEGUHfR0eQm6JUHSXf3yvQ45uNMJHUZ/bPMj7ze7/j5yj7jTnetGgWC5povw==
-X-Received: by 2002:a05:6000:52:: with SMTP id k18mr18199747wrx.192.1637421671581;
-        Sat, 20 Nov 2021 07:21:11 -0800 (PST)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id f81sm17254100wmf.22.2021.11.20.07.21.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Nov 2021 07:21:11 -0800 (PST)
-Date:   Sat, 20 Nov 2021 15:21:09 +0000
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 00/21] 5.10.81-rc1 review
-Message-ID: <YZkSZbBIv7LHQ1DW@debian>
-References: <20211119171443.892729043@linuxfoundation.org>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=9h+PyJVI+J/jk7CrfScjFwP4ghuFS8I41cpzNkNVExo=;
+        b=2zjQjCF7e9p+iBw/k6DNmEeK2mE4NCU1TGfpe/GueqgptU/1xoYSkZlntK6rBun4OQ
+         a9ytv4aWGvxJLpuquRwiWWtIQYRR8WCzXHoTLoNzaDrCrE/HDfBPDNF4r7JEjGRT/Geq
+         XpErFoatmbKSxXUs9TC3OyvL3eyjVZDdEyt3nqQ077wlf8/eUzQb5d+W7ix2IbelPXCV
+         Fb6Cq/u3/pEPejtde71P6amIoxarRz2dYCyCT2INPxCV3vKnUk7KWU/qECrW2Si9dPF0
+         4vwTWtPqRawOV4rHJGe6+lfFcJqW1m7psV1QcpzAueIO/CTzZ4UvNjp7lItaa6kGKb3R
+         te/A==
+X-Gm-Message-State: AOAM530O4Cdse4kQTRBWA8hG8W+ZMAOd46DOu5foDVrpzWJ20SizC7Ta
+        Sg7mHuhlDiS7QiuwpvaGOgZRAFffOzp+sg==
+X-Google-Smtp-Source: ABdhPJx3h0kft0+qGWkzsSDM50AiSPsmATzRdJB+5KoqHJAPLmHGCItofRzH1QfDCLUgyvOOQS98Ng==
+X-Received: by 2002:a7b:cc96:: with SMTP id p22mr10878629wma.69.1637421761321;
+        Sat, 20 Nov 2021 07:22:41 -0800 (PST)
+Received: from [192.168.0.160] ([170.253.36.171])
+        by smtp.gmail.com with ESMTPSA id c4sm3069597wrr.37.2021.11.20.07.22.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Nov 2021 07:22:41 -0800 (PST)
+Message-ID: <43a9a694-c58d-e4e1-04e4-585ad9a8fc97@gmail.com>
+Date:   Sat, 20 Nov 2021 16:22:39 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211119171443.892729043@linuxfoundation.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH v2 12/20] linux/must_be.h: Add must_be() to improve
+ readability of BUILD_BUG_ON_ZERO()
+Content-Language: en-US
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Joe Perches <joe@perches.com>
+References: <20211119113644.1600-1-alx.manpages@gmail.com>
+ <20211120130104.185699-1-alx.manpages@gmail.com>
+ <20211120130104.185699-13-alx.manpages@gmail.com>
+ <YZkOolX1SBsqXAsP@localhost.localdomain>
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+In-Reply-To: <YZkOolX1SBsqXAsP@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Hi Alexey,
 
-On Fri, Nov 19, 2021 at 06:37:35PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.81 release.
-> There are 21 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 11/20/21 16:05, Alexey Dobriyan wrote:
+> On Sat, Nov 20, 2021 at 02:00:55PM +0100, Alejandro Colomar wrote:
+>> Historically, BUILD_BUG_ON_ZERO() has been hard to read.
+>> __must_be_array() is based on BUILD_BUG_ON_ZERO(),
+>> and unlike BUILD_BUG_ON_*(),
+>> it has a pretty readable name.
 > 
-> Responses should be made by Sun, 21 Nov 2021 17:14:35 +0000.
-> Anything received after that time might be too late.
+> The best name is assert() which userspace uses and is standartised.
 
-Build test:
-mips (gcc version 11.2.1 20211112): 63 configs -> no new failure
-arm (gcc version 11.2.1 20211112): 105 configs -> no new failure
-arm64 (gcc version 11.2.1 20211112): 3 configs -> no failure
-x86_64 (gcc version 11.2.1 20211112): 4 configs -> no failure
+Yes, assert() is almost the same thing.
+In this case, it would be better named static_assert(),
+since it's a compile-time assert().
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
-arm64: Booted on rpi4b (4GB model). No regression. [2]
+However,
+there's still one slight difference
+between static_assert() and must_be():
 
-[1]. https://openqa.qa.codethink.co.uk/tests/410
-[2]. https://openqa.qa.codethink.co.uk/tests/409
+static_assert() is limited;
+it cannot be used in some places,
+such as in the implementation of ARRAY_SIZE().
+The following doesn't compile:
+
+ #define __arraycount(a)  (sizeof((arr)) / sizeof((arr)[0])
+ #define ARRAY_SIZE(a)    (__arraycount(a) + static_assert(is_array(a)))
+
+And if you change it to be:
+
+ #define ARRAY_SIZE(a)    (		\
+ {					\
+	static_assert(is_array(a));	\
+	__arraycount(a);		\
+ }					\
+ )
+
+then the macro can't be used at file scope
+(since ({}) can't be used at file scope).
+
+The good thing about __must_be() is that it evaluates to 0,
+which allows you to use it
+everywhere a 0 can be used.
+
+My own implementation of __must_be() is
+more standards compliant,
+and is:
+
+#define must_be(e)  (                      \
+        0 * (int)sizeof(                   \
+                struct {                   \
+                        static_assert(e);  \
+                        char ISO_C_forbids_a_struct_with_no_members__; \
+                }                          \
+        )                                  \
+)
+
+I would like this to superseed
+the kernel's BUILD_BUG_ON_ZERO(),
+but it makes use of C2X static_assert().
+I don't know how much that can be a problem.
+
+But please consider this proposal.
+
+Thanks,
+Alex
 
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
---
-Regards
-Sudip
-
+-- 
+Alejandro Colomar
+Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
+http://www.alejandro-colomar.es/
