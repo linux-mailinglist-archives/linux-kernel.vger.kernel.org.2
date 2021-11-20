@@ -2,115 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A56457AC0
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 04:22:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D72457AD8
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 04:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235475AbhKTDZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 22:25:16 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:14961 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235435AbhKTDZL (ORCPT
+        id S235583AbhKTDhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 22:37:32 -0500
+Received: from smtprelay0018.hostedemail.com ([216.40.44.18]:48794 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235314AbhKTDh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 22:25:11 -0500
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HwzKl3fS1zZcsV;
-        Sat, 20 Nov 2021 11:19:39 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Sat, 20 Nov
- 2021 11:22:05 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <damien.lemoal@opensource.wdc.com>, <axboe@kernel.dk>,
-        <tj@kernel.org>, <linux-ide@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <sergei.shtylyov@gmail.com>, <yebin10@huawei.com>,
-        <libaokun1@huawei.com>, <yukuai3@huawei.com>,
-        Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next V2 2/2] sata_fsl: fix warning in remove_proc_entry when rmmod sata_fsl
-Date:   Sat, 20 Nov 2021 11:34:20 +0800
-Message-ID: <20211120033420.3762681-3-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211120033420.3762681-1-libaokun1@huawei.com>
-References: <20211120033420.3762681-1-libaokun1@huawei.com>
+        Fri, 19 Nov 2021 22:37:29 -0500
+Received: from omf20.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 25F08181A8B08;
+        Sat, 20 Nov 2021 03:34:26 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf20.hostedemail.com (Postfix) with ESMTPA id 6FF0F801921E;
+        Sat, 20 Nov 2021 03:34:24 +0000 (UTC)
+Message-ID: <a14da924805afdc39d7df800d3d4b7dc81c3dbf1.camel@perches.com>
+Subject: Re: [PATCH] MAINTAINERS: update designated reviewer entry for MSM
+ DRM driver
+From:   Joe Perches <joe@perches.com>
+To:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        linux-kernel@vger.kernel.org
+Cc:     freedreno@lists.freedesktop.org, gregkh@linuxfoundation.org,
+        robdclark@gmail.com, seanpaul@chromium.org, swboyd@chromium.org,
+        nganji@codeaurora.org, aravindh@codeaurora.org,
+        dmitry.baryshkov@linaro.org, daniel@ffwll.ch
+Date:   Fri, 19 Nov 2021 19:34:23 -0800
+In-Reply-To: <1637363916-18257-1-git-send-email-quic_abhinavk@quicinc.com>
+References: <1637363916-18257-1-git-send-email-quic_abhinavk@quicinc.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 6FF0F801921E
+X-Spam-Status: No, score=-1.89
+X-Stat-Signature: ty5f3kaua5ywwhsnr7axqu4sdhpfxtw9
+X-Rspamd-Server: rspamout01
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19ONcUnkDqSylS7FefYZckB+A9ZdWXuflY=
+X-HE-Tag: 1637379264-765151
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Trying to remove the fsl-sata module in the PPC64 GNU/Linux
-leads to the following warning:
- ------------[ cut here ]------------
- remove_proc_entry: removing non-empty directory 'irq/69',
-   leaking at least 'fsl-sata[ff0221000.sata]'
- WARNING: CPU: 3 PID: 1048 at fs/proc/generic.c:722
-   .remove_proc_entry+0x20c/0x220
- IRQMASK: 0
- NIP [c00000000033826c] .remove_proc_entry+0x20c/0x220
- LR [c000000000338268] .remove_proc_entry+0x208/0x220
- Call Trace:
-  .remove_proc_entry+0x208/0x220 (unreliable)
-  .unregister_irq_proc+0x104/0x140
-  .free_desc+0x44/0xb0
-  .irq_free_descs+0x9c/0xf0
-  .irq_dispose_mapping+0x64/0xa0
-  .sata_fsl_remove+0x58/0xa0 [sata_fsl]
-  .platform_drv_remove+0x40/0x90
-  .device_release_driver_internal+0x160/0x2c0
-  .driver_detach+0x64/0xd0
-  .bus_remove_driver+0x70/0xf0
-  .driver_unregister+0x38/0x80
-  .platform_driver_unregister+0x14/0x30
-  .fsl_sata_driver_exit+0x18/0xa20 [sata_fsl]
- ---[ end trace 0ea876d4076908f5 ]---
+On Fri, 2021-11-19 at 15:18 -0800, Abhinav Kumar wrote:
+> Adding myself as a designated reviewer to assist with the
+> code reviews for the changes coming into MSM DRM.
+> 
+> Acked-by: Rob Clark <robdclark@gmail.com>
+> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+[]
+> diff --git a/MAINTAINERS b/MAINTAINERS
+[]
+> @@ -5938,6 +5938,7 @@ M:	Sean Paul <sean@poorly.run>
+>  L:	linux-arm-msm@vger.kernel.org
+>  L:	dri-devel@lists.freedesktop.org
+>  L:	freedreno@lists.freedesktop.org
+> +R:	Abhinav Kumar <quic_abhinavk@quicinc.com>
+>  S:	Maintained
+>  T:	git https://gitlab.freedesktop.org/drm/msm.git
+>  F:	Documentation/devicetree/bindings/display/msm/
 
-The driver creates the mapping by calling irq_of_parse_and_map(),
-so it also has to dispose the mapping. But the easy way out is to
-simply use platform_get_irq() instead of irq_of_parse_map(). Also
-we should adapt return value checking and propagate error values.
+R: goes after M: not L:
 
-In this case the mapping is not managed by the device but by
-the of core, so the device has not to dispose the mapping.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
-V1->V2:
-	Adapt return value checking and propagate error values
-
- drivers/ata/sata_fsl.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/ata/sata_fsl.c b/drivers/ata/sata_fsl.c
-index 30759fd1c3a2..f850dfab72a6 100644
---- a/drivers/ata/sata_fsl.c
-+++ b/drivers/ata/sata_fsl.c
-@@ -1493,8 +1493,9 @@ static int sata_fsl_probe(struct platform_device *ofdev)
- 	host_priv->ssr_base = ssr_base;
- 	host_priv->csr_base = csr_base;
- 
--	irq = irq_of_parse_and_map(ofdev->dev.of_node, 0);
--	if (!irq) {
-+	irq = platform_get_irq(ofdev, 0);
-+	if (irq < 0) {
-+		retval = irq;
- 		dev_err(&ofdev->dev, "invalid irq from platform\n");
- 		goto error_exit_with_cleanup;
- 	}
-@@ -1570,8 +1571,6 @@ static int sata_fsl_remove(struct platform_device *ofdev)
- 
- 	ata_host_detach(host);
- 
--	irq_dispose_mapping(host_priv->irq);
--
- 	return 0;
- }
- 
--- 
-2.31.1
 
