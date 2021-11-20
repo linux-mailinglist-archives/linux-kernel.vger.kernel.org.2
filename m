@@ -2,183 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1005E457B51
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 05:50:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F6D457B55
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 05:50:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235440AbhKTExE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 23:53:04 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:26341 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231994AbhKTEwz (ORCPT
+        id S236265AbhKTExW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 23:53:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235609AbhKTExQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 23:52:55 -0500
-Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hx1D52clkzbhvt;
-        Sat, 20 Nov 2021 12:44:53 +0800 (CST)
-Received: from dggpeml100012.china.huawei.com (7.185.36.121) by
- dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sat, 20 Nov 2021 12:49:50 +0800
-Received: from huawei.com (10.69.192.56) by dggpeml100012.china.huawei.com
- (7.185.36.121) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Sat, 20 Nov
- 2021 12:49:50 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
-Subject: [PATCH 4/4] crypto: hisilicon/qm - simplified the calculation of qos shaper parameters
-Date:   Sat, 20 Nov 2021 12:47:39 +0800
-Message-ID: <20211120044739.5667-5-yekai13@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211120044739.5667-1-yekai13@huawei.com>
-References: <20211120044739.5667-1-yekai13@huawei.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml100012.china.huawei.com (7.185.36.121)
-X-CFilter-Loop: Reflected
+        Fri, 19 Nov 2021 23:53:16 -0500
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4845CC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:50:14 -0800 (PST)
+Received: by mail-pg1-x54a.google.com with SMTP id w5-20020a634745000000b0030a5bee70e8so3573379pgk.15
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:50:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:cc
+         :content-transfer-encoding;
+        bh=GBPQGTJqAilqh8R2ionmFa146IW13gdDGdP75NfAh5o=;
+        b=AI76jn8x9yBui/uf8c/CHqDoXt1YKDeQ3ejTzNhwVx3AYVrNJuNAhhKytb8tZenR1n
+         kUouCLsIlq7x5otTGqJnCHWF+Bw9Wnlc9CKS1HE7EUVcypMvli7CFtv1SEGENs8iWbx1
+         GYgkP8NgeT/ki8yAgKEqpdvlyUHUpAWFNsr51QSQc0EV+rtO/p+tb6SVFEMBpqwM9RqS
+         hPOvveOj4yYZa6bKsotdfFz5nej3riOk6ORe20UjZEPf+7WRmHCmH0i4pmdnMUc1YcW0
+         MHwiT5YAKb8IK5q8XZBxW7Rc5omvgZ9ArCrtvNm4eyxZ5lydv+aw/A+beKp73P5RVTo0
+         VvNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:cc
+         :content-transfer-encoding;
+        bh=GBPQGTJqAilqh8R2ionmFa146IW13gdDGdP75NfAh5o=;
+        b=SH9DMivFkpC/OuzZ7ZAzCqy5KWer4T6oemQEhAWl6NJsMJajGxgLmtbyfiV/blggrc
+         sxF7g8z03U77+EONDLGmDsvGuJz2ZzPEd9rnsOjDtpWsTVYGmpAezTfWBk8cG7OfFzEO
+         GFXfurxBIPHgr8I5MAX2mhaBpWXd5hfbp3ycWNPsC+YpvY8V7EamjNHmPW4d5ozMMx7Q
+         3QGcGkj6SFY1H3RdndyL8v3XcQnQ1Y9SIcSsZpANRn+VyA1hcAX/2XufSzopZfZga2ec
+         J7NIuskeLL3W5mefWeq5PdYVaFpzPvBN0ByxTOJnfdo5kEH4PtxbDrgM2xSRtRG6LuaE
+         gkAQ==
+X-Gm-Message-State: AOAM530z5j4If38XmSJ4VU2QKlJrqW7MsekL5aJkDxDHqL8Dj+gR9jld
+        FaIGhRSQ+UF5n9h8ajwr4eJ9y0olcFptReWYQw==
+X-Google-Smtp-Source: ABdhPJwrO0XgJB6QQxq1EPt6/q2hs1MEyfssdTw0iP25RRfThEqdaTu1q3184prBGMof/2GyU5urMyNqZ+9MO3zZVw==
+X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2cd:202:fa91:560a:d7b4:93])
+ (user=almasrymina job=sendgmr) by 2002:a17:90b:1c86:: with SMTP id
+ oo6mr6684834pjb.165.1637383813809; Fri, 19 Nov 2021 20:50:13 -0800 (PST)
+Date:   Fri, 19 Nov 2021 20:50:06 -0800
+Message-Id: <20211120045011.3074840-1-almasrymina@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+Subject: [PATCH v4 0/4] Deterministic charging of shared memory
+From:   Mina Almasry <almasrymina@google.com>
+Cc:     Mina Almasry <almasrymina@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>, Shuah Khan <shuah@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Roman Gushchin <guro@fb.com>, "Theodore Ts'o" <tytso@mit.edu>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some optimize for the calculation of qos shaper parameters.
-and modify the comments.
+Problem:
+Currently shared memory is charged to the memcg of the allocating
+process. This makes memory usage of processes accessing shared memory
+a bit unpredictable since whichever process accesses the memory first
+will get charged. We have a number of use cases where our userspace
+would like deterministic charging of shared memory:
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
----
- drivers/crypto/hisilicon/qm.c | 84 +++++++++++++++++++++++------------
- 1 file changed, 55 insertions(+), 29 deletions(-)
+1. System services allocating memory for client jobs:
+We have services (namely a network access service[1]) that provide
+functionality for clients running on the machine and allocate memory
+to carry out these services. The memory usage of these services
+depends on the number of jobs running on the machine and the nature of
+the requests made to the service, which makes the memory usage of
+these services hard to predict and thus hard to limit via memory.max.
+These system services would like a way to allocate memory and instruct
+the kernel to charge this memory to the client=E2=80=99s memcg.
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 88e638491e8f..81a94e05948e 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -501,10 +501,30 @@ static const char * const qp_s[] = {
- 	"none", "init", "start", "stop", "close",
- };
- 
--static const u32 typical_qos_val[QM_QOS_TYPICAL_NUM] = {100, 250, 500, 1000,
--						10000, 25000, 50000, 100000};
--static const u32 typical_qos_cbs_s[QM_QOS_TYPICAL_NUM] = {9, 10, 11, 12, 16,
--							 17, 18, 19};
-+struct qm_typical_qos_table {
-+	u32 start;
-+	u32 end;
-+	u32 val;
-+};
-+
-+/* the qos step is 100 */
-+static struct qm_typical_qos_table shaper_cir_s[] = {
-+	{100, 100, 4},
-+	{200, 200, 3},
-+	{300, 500, 2},
-+	{600, 1000, 1},
-+	{1100, 100000, 0},
-+};
-+
-+static struct qm_typical_qos_table shaper_cbs_s[] = {
-+	{100, 200, 9},
-+	{300, 500, 11},
-+	{600, 1000, 12},
-+	{1100, 10000, 16},
-+	{10100, 25000, 17},
-+	{25100, 50000, 18},
-+	{50100, 100000, 19}
-+};
- 
- static bool qm_avail_state(struct hisi_qm *qm, enum qm_state new)
- {
-@@ -988,12 +1008,14 @@ static void qm_init_prefetch(struct hisi_qm *qm)
- }
- 
- /*
-+ * acc_shaper_para_calc() Get the IR value by the qos formula, the return value
-+ * is the expected qos calculated.
-  * the formula:
-  * IR = X Mbps if ir = 1 means IR = 100 Mbps, if ir = 10000 means = 10Gbps
-  *
-- *		        IR_b * (2 ^ IR_u) * 8
-- * IR(Mbps) * 10 ^ -3 = -------------------------
-- *		        Tick * (2 ^ IR_s)
-+ *		IR_b * (2 ^ IR_u) * 8000
-+ * IR(Mbps) = -------------------------
-+ *		  Tick * (2 ^ IR_s)
-  */
- static u32 acc_shaper_para_calc(u64 cir_b, u64 cir_u, u64 cir_s)
- {
-@@ -1003,17 +1025,28 @@ static u32 acc_shaper_para_calc(u64 cir_b, u64 cir_u, u64 cir_s)
- 
- static u32 acc_shaper_calc_cbs_s(u32 ir)
- {
-+	int table_size = ARRAY_SIZE(shaper_cbs_s);
- 	int i;
- 
--	if (ir < typical_qos_val[0])
--		return QM_SHAPER_MIN_CBS_S;
-+	for (i = 0; i < table_size; i++) {
-+		if (ir >= shaper_cbs_s[i].start && ir <= shaper_cbs_s[i].end)
-+			return shaper_cbs_s[i].val;
-+	}
- 
--	for (i = 1; i < QM_QOS_TYPICAL_NUM; i++) {
--		if (ir >= typical_qos_val[i - 1] && ir < typical_qos_val[i])
--			return typical_qos_cbs_s[i - 1];
-+	return QM_SHAPER_MIN_CBS_S;
-+}
-+
-+static u32 acc_shaper_calc_cir_s(u32 ir)
-+{
-+	int table_size = ARRAY_SIZE(shaper_cir_s);
-+	int i;
-+
-+	for (i = 0; i < table_size; i++) {
-+		if (ir >= shaper_cir_s[i].start && ir <= shaper_cir_s[i].end)
-+			return shaper_cir_s[i].val;
- 	}
- 
--	return typical_qos_cbs_s[QM_QOS_TYPICAL_NUM - 1];
-+	return 0;
- }
- 
- static int qm_get_shaper_para(u32 ir, struct qm_shaper_factor *factor)
-@@ -1022,25 +1055,18 @@ static int qm_get_shaper_para(u32 ir, struct qm_shaper_factor *factor)
- 	u32 error_rate;
- 
- 	factor->cbs_s = acc_shaper_calc_cbs_s(ir);
-+	cir_s = acc_shaper_calc_cir_s(ir);
- 
- 	for (cir_b = QM_QOS_MIN_CIR_B; cir_b <= QM_QOS_MAX_CIR_B; cir_b++) {
- 		for (cir_u = 0; cir_u <= QM_QOS_MAX_CIR_U; cir_u++) {
--			for (cir_s = 0; cir_s <= QM_QOS_MAX_CIR_S; cir_s++) {
--				/** the formula is changed to:
--				 *	   IR_b * (2 ^ IR_u) * DIVISOR_CLK
--				 * IR(Mbps) = -------------------------
--				 *	       768 * (2 ^ IR_s)
--				 */
--				ir_calc = acc_shaper_para_calc(cir_b, cir_u,
--							       cir_s);
--				error_rate = QM_QOS_EXPAND_RATE * (u32)abs(ir_calc - ir) / ir;
--				if (error_rate <= QM_QOS_MIN_ERROR_RATE) {
--					factor->cir_b = cir_b;
--					factor->cir_u = cir_u;
--					factor->cir_s = cir_s;
--
--					return 0;
--				}
-+			ir_calc = acc_shaper_para_calc(cir_b, cir_u, cir_s);
-+
-+			error_rate = QM_QOS_EXPAND_RATE * (u32)abs(ir_calc - ir) / ir;
-+			if (error_rate <= QM_QOS_MIN_ERROR_RATE) {
-+				factor->cir_b = cir_b;
-+				factor->cir_u = cir_u;
-+				factor->cir_s = cir_s;
-+				return 0;
- 			}
- 		}
- 	}
--- 
-2.33.0
+2. Shared filesystem between subtasks of a large job
+Our infrastructure has large meta jobs such as kubernetes which spawn
+multiple subtasks which share a tmpfs mount. These jobs and its
+subtasks use that tmpfs mount for various purposes such as data
+sharing or persistent data between the subtask restarts. In kubernetes
+terminology, the meta job is similar to pods and subtasks are
+containers under pods. We want the shared memory to be
+deterministically charged to the kubernetes's pod and independent to
+the lifetime of containers under the pod.
 
+3. Shared libraries and language runtimes shared between independent jobs.
+We=E2=80=99d like to optimize memory usage on the machine by sharing librar=
+ies
+and language runtimes of many of the processes running on our machines
+in separate memcgs. This produces a side effect that one job may be
+unlucky to be the first to access many of the libraries and may get
+oom killed as all the cached files get charged to it.
+
+Design:
+My rough proposal to solve this problem is to simply add a
+=E2=80=98memcg=3D/path/to/memcg=E2=80=99 mount option for filesystems:
+directing all the memory of the file system to be =E2=80=98remote charged=
+=E2=80=99 to
+cgroup provided by that memcg=3D option.
+
+Caveats:
+
+1. One complication to address is the behavior when the target memcg
+hits its memory.max limit because of remote charging. In this case the
+oom-killer will be invoked, but the oom-killer may not find anything
+to kill in the target memcg being charged. Thera are a number of considerat=
+ions
+in this case:
+
+1. It's not great to kill the allocating process since the allocating proce=
+ss
+   is not running in the memcg under oom, and killing it will not free memo=
+ry
+   in the memcg under oom.
+2. Pagefaults may hit the memcg limit, and we need to handle the pagefault
+   somehow. If not, the process will forever loop the pagefault in the upst=
+ream
+   kernel.
+
+In this case, I propose simply failing the remote charge and returning an E=
+NOSPC
+to the caller. This will cause will cause the process executing the remote
+charge to get an ENOSPC in non-pagefault paths, and get a SIGBUS on the pag=
+efault
+path.  This will be documented behavior of remote charging, and this featur=
+e is
+opt-in. Users can:
+- Not opt-into the feature if they want.
+- Opt-into the feature and accept the risk of received ENOSPC or SIGBUS and
+  abort if they desire.
+- Gracefully handle any resulting ENOSPC or SIGBUS errors and continue thei=
+r
+  operation without executing the remote charge if possible.
+
+2. Only processes allowed the enter cgroup at mount time can mount a
+tmpfs with memcg=3D<cgroup>. This is to prevent intential DoS of random cgr=
+oups
+on the machine. However, once a filesysetem is mounted with memcg=3D<cgroup=
+>, any
+process with write access to this mount point will be able to charge memory=
+ to
+<cgroup>. This is largely a non-issue because in configurations where there=
+ is
+untrusted code running on the machine, mount point access needs to be
+restricted to the intended users only regardless of whether the mount point
+memory is deterministly charged or not.
+
+[1] https://research.google/pubs/pub48630
+
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Greg Thelen <gthelen@google.com>
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-mm@kvack.org
+
+Mina Almasry (4):
+  mm: support deterministic memory charging of filesystems
+  mm/oom: handle remote ooms
+  mm, shmem: add filesystem memcg=3D option documentation
+  mm, shmem, selftests: add tmpfs memcg=3D mount option tests
+
+ Documentation/filesystems/tmpfs.rst       |  28 ++++
+ fs/fs_context.c                           |  27 ++++
+ fs/proc_namespace.c                       |   4 +
+ fs/super.c                                |   9 ++
+ include/linux/fs.h                        |   5 +
+ include/linux/fs_context.h                |   2 +
+ include/linux/memcontrol.h                |  38 +++++
+ mm/filemap.c                              |   2 +-
+ mm/khugepaged.c                           |   3 +-
+ mm/memcontrol.c                           | 171 ++++++++++++++++++++++
+ mm/oom_kill.c                             |   9 ++
+ mm/shmem.c                                |   3 +-
+ tools/testing/selftests/vm/.gitignore     |   1 +
+ tools/testing/selftests/vm/mmap_write.c   | 103 +++++++++++++
+ tools/testing/selftests/vm/tmpfs-memcg.sh | 116 +++++++++++++++
+ 15 files changed, 518 insertions(+), 3 deletions(-)
+ create mode 100644 tools/testing/selftests/vm/mmap_write.c
+ create mode 100755 tools/testing/selftests/vm/tmpfs-memcg.sh
+
+--
+2.34.0.rc2.393.gf8c9666880-goog
