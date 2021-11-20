@@ -2,75 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E84457F02
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 16:39:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C91457F07
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 16:42:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234510AbhKTPmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 10:42:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhKTPmB (ORCPT
+        id S236454AbhKTPpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 10:45:15 -0500
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:44548 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229710AbhKTPpO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 10:42:01 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6E24C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 07:38:57 -0800 (PST)
-Date:   Sat, 20 Nov 2021 16:38:51 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637422733;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tN5ewJXCTjSGUReagubKGCJLhvuBKJYqaDvPT1VNFOI=;
-        b=4SyIPFeK829pDm7i2PCi2ZoP/lvst4CRlxeHjRue6Ic7r6bRscv8SfWQ6NK22+5GLZpfFM
-        Ux1FmmFNMLAaJFBeq6Ebgh9eoSd9o7STBEkqyHg1FClknQNTX4O9CZFrH8VV4WqhIBkrMJ
-        /l0R45/A0ezjfSwCsQ1XHP/pdGt8/yhuFJJDC93O1slBJZHPfZfXkvZeExa/7y+zkXhr6g
-        y7CPTr69vjiuczGY8JnRTJSW8Bwm7tILWv3AoKl7e+iKBm32yVhAZ8R0dZEN0xKVpBi2di
-        GaERnEIfZUqCNZuYKSsjLTHcsMyTbV51sRIIU8YpiUde2L6sPcPt0K8yezQp3Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637422733;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tN5ewJXCTjSGUReagubKGCJLhvuBKJYqaDvPT1VNFOI=;
-        b=4O9QxPt532dRQWlj8Mvx7yKTc4XvdDajTAE31D2w0W4fIFVIR5bBvO7l93R/PVPFsbZF9J
-        kEuzXcdsy1aa66BA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v2 7/9] locking/rwlocks: introduce write_lock_nested
-Message-ID: <20211120153851.bhxg6xclqagovqiy@linutronix.de>
-References: <20211115185909.3949505-1-minchan@kernel.org>
- <20211115185909.3949505-8-minchan@kernel.org>
- <20211119103516.24uhxrkdcy4vq25k@linutronix.de>
- <YZfrMTAXV56HFWJY@google.com>
+        Sat, 20 Nov 2021 10:45:14 -0500
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 1AKFfvLL005387;
+        Sun, 21 Nov 2021 00:41:57 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 1AKFfvLL005387
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1637422917;
+        bh=lgx7/B5LBDShU1ck6mKJVdFhxM5TLJnhbJF13VJy6SE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=0/i4U0iK8PbxKP9vSiHGZ7iW1WXV2hy945MD6Qzw2hCSiJsL/PUH69EWt/1DiAJJJ
+         vd5cRbNMMtt/xvYNabrUQGoEVH+UiWd2ECwgdbfGplunkDCpTMS9Xky6uw8/8+YZNc
+         zYk4GdB8rcB8PMMkXD5qaYq0xbNwnfcOOmzz6OTCn1XD5T0Yn1XPT1InTPkdkRIIxi
+         N9TXEXpsnvuy754hN43IuLKbm8shPKhePfVlHIiO5XlMQ/+aTPUCLpHse76v91YBW2
+         yOvBh6gxtPbGmbO+PPDW3MEsenFr/UhxntTYZ2iYqctPwgVZyLnV6sdGIitMQbFYVf
+         7VTaC3zRrljrQ==
+X-Nifty-SrcIP: [209.85.216.41]
+Received: by mail-pj1-f41.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so11326724pjb.4;
+        Sat, 20 Nov 2021 07:41:57 -0800 (PST)
+X-Gm-Message-State: AOAM532qqbR/LXj7brQvJ6BkY6SYQUdTnfp/cCgHcOzimobV8o+sxrcY
+        1aUh/IHZxSQii6j+AvqPEzt0Rgo5CshstN4OWT0=
+X-Google-Smtp-Source: ABdhPJwVUYeujMmnX3vjPno4Xgi8Jxp6tUOfjMgRLAWLiXFH1MTXk0VbQwM+FILOl+co3sAy7uFq3LI2d6oixqJRrpU=
+X-Received: by 2002:a17:902:bc85:b0:143:954e:8548 with SMTP id
+ bb5-20020a170902bc8500b00143954e8548mr85962221plb.82.1637422916723; Sat, 20
+ Nov 2021 07:41:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YZfrMTAXV56HFWJY@google.com>
+References: <37c3a9d3d6fceba0f55d05e7558370e3f60b8bf0.1634492509.git.josh@joshtriplett.org>
+ <20211117104553.765556-1-bjorn@kernel.org>
+In-Reply-To: <20211117104553.765556-1-bjorn@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 21 Nov 2021 00:41:20 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATpRBm9jgDd2-2rOtAzHXprEQyUh0PoyicszEWJ97qM4w@mail.gmail.com>
+Message-ID: <CAK7LNATpRBm9jgDd2-2rOtAzHXprEQyUh0PoyicszEWJ97qM4w@mail.gmail.com>
+Subject: Re: [PATCH] kconfig: Add `make mod2noconfig` to disable module options
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-19 10:21:37 [-0800], Minchan Kim wrote:
-> > #define rt_write_lock_nested(lock, subclass)     rt_write_lock(((void)(subclass), (lock)))
-> 
-> Guess you meant #define write_lock_nested.
+On Wed, Nov 17, 2021 at 7:46 PM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> wr=
+ote:
+>
+> Josh Triplett wrote:
+> > When converting a modular kernel to a monolithic kernel, once the kerne=
+l
+> > works without loading any modules, this helps to quickly disable all th=
+e
+> > modules before turning off module support entirely.
+> >
+> > Refactor conf_rewrite_mod_or_yes to a more general
+> > conf_rewrite_tristates that accepts an old and new state.
+> >
+> > Signed-off-by: Josh Triplett <josh@joshtriplett.org>
+>
+> Hmm, I don't think this was picked up yet?
+>
+> FWIW,
+>
+> Tested-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
 
-indeed, yes.
 
-> I should have Cced you. Thanks for the catch.
-> If it's fine, Andrew, could you fold it?
+Applied to linux-kbuild.
+Thanks.
 
-You are welcome. I tested the series in my RT queue and it works.
-
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-
-> Thank you.
-
-Sebastian
+--=20
+Best Regards
+Masahiro Yamada
