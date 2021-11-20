@@ -2,86 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E36457C5C
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 08:54:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6D6457C64
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 08:58:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236254AbhKTH5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 02:57:25 -0500
-Received: from gecko.sbs.de ([194.138.37.40]:41522 "EHLO gecko.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235020AbhKTH5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 02:57:23 -0500
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 1AK7rrpX005425
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 20 Nov 2021 08:53:53 +0100
-Received: from [167.87.1.34] ([167.87.1.34])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 1AK7rqx9018678;
-        Sat, 20 Nov 2021 08:53:52 +0100
-Subject: Re: [PATCH] soc: ti: pruss: fix referenced node in error message
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-To:     Suman Anna <s-anna@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        Kishon Vijay Abraham <kishon@ti.com>
-References: <d6e24953-ea89-fd1c-6e16-7a0142118054@siemens.com>
- <d2e95cc3-2575-7c54-186e-aa421495862e@ti.com>
- <1cbf299b-cc4f-cab6-62ef-db7c19aa0876@siemens.com>
-Message-ID: <469b98e1-7500-0912-54c3-945c193f086a@siemens.com>
-Date:   Sat, 20 Nov 2021 08:53:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234391AbhKTIBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 03:01:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbhKTIBi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 03:01:38 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07CDBC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 23:58:35 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id b40so54385469lfv.10
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 23:58:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QDPBsHcfNzrPZpXm7j+tJ6FtAT1aH1QKACsXUwu2lsU=;
+        b=PDIEkVRE4lRmmix6/kxfmiSW4LoI0BO2oI5eeIooXPPBVyf65uczSyS7/ryrSS30TB
+         yxTiLtqZPEhw/QJsG03QilaLw0yxveHy4FdQKSADKfOQeZ+PzgAjKkAAMZ9fTG2X7PHy
+         q3PcsDO1p59bhbLyWub0/L3p8OfhhttrwOAZUm4+ltQQgUTSY9rOrbMNacNSIAxYb07s
+         Pt9fk8i0hGIcYGImn6ufTyobVPEffh3xY4MdR7gl7Eu8nyqzLZKq+TnidX1MqXLynmwH
+         iiRf2LJpIO+G67HLqgqO+zKYKIscIpBouV5K55umtQPZenddR0fPFdAUpe1yoLJuk4WU
+         nAVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QDPBsHcfNzrPZpXm7j+tJ6FtAT1aH1QKACsXUwu2lsU=;
+        b=rn1D/VXIz7+qkyCOQc7/10vNIf2GyAyzUQ4i3oMkF8YBo8WhTsihGvOXDnxvbCCQ+f
+         izmKTUJJ88SDo6znmcrBb22368H7xYm9zdhaI51jQLp4eM1dR8VJu2wMhQvR2WNc/Hhb
+         QejKsyIhDZw3zN6r9gONw1KLa3JErLzMQpL9xnCOZAiaIS7zmokFfbYibXb5hCxfND1v
+         gDF7e7Y4RIKbGJ4qXg4MsrED29DRuBsKkeSIKyf2hyj6GhfG7118y254JkIxZd4FJgy1
+         XuCGcPVQAuh+wLeNvAudHF6ttrKf3J2KcCXeK5/U/ElBVNgaA1pNrKaxCyTI3/b03u6P
+         FkMg==
+X-Gm-Message-State: AOAM533uHQXbIs0oP5/LUjcOYKqo7z8vct5JZp1jRp02fYLH7uPfa5hK
+        4/T9LlFTfM8X8Z0gWS+NllzsPRZ8XeV4s9M/epnDtw==
+X-Google-Smtp-Source: ABdhPJw+OYVb4seahyrAiDFYKQkciHblBbjBsl9XGIXlNspD805fH4RQ2gSTe1cRC2JQc8l1JxWEgxNl8G9bQKbPpYo=
+X-Received: by 2002:a2e:a314:: with SMTP id l20mr34005249lje.86.1637395113126;
+ Fri, 19 Nov 2021 23:58:33 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1cbf299b-cc4f-cab6-62ef-db7c19aa0876@siemens.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211120045011.3074840-1-almasrymina@google.com> <20211120045011.3074840-3-almasrymina@google.com>
+In-Reply-To: <20211120045011.3074840-3-almasrymina@google.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 19 Nov 2021 23:58:21 -0800
+Message-ID: <CALvZod680y1o3WKFKEXmXf3Cd4j-POpc-zrAQ1+ykLoWK9-21A@mail.gmail.com>
+Subject: Re: [PATCH v4 2/4] mm/oom: handle remote ooms
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Hugh Dickins <hughd@google.com>, Shuah Khan <shuah@kernel.org>,
+        Greg Thelen <gthelen@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Roman Gushchin <guro@fb.com>, "Theodore Ts'o" <tytso@mit.edu>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.09.21 17:03, Jan Kiszka wrote:
-> On 23.06.21 17:51, Suman Anna wrote:
->> On 6/21/21 1:08 PM, Jan Kiszka wrote:
->>> From: Jan Kiszka <jan.kiszka@siemens.com>
->>>
->>> So far, "(null)" is reported for the node that is missing clocks.
->>>
->>> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
->>
->> Acked-by: Suman Anna <s-anna@ti.com>
->>
->>> ---
->>>  drivers/soc/ti/pruss.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/soc/ti/pruss.c b/drivers/soc/ti/pruss.c
->>> index f22ac1edbdd0..afc8aae68035 100644
->>> --- a/drivers/soc/ti/pruss.c
->>> +++ b/drivers/soc/ti/pruss.c
->>> @@ -129,7 +129,7 @@ static int pruss_clk_init(struct pruss *pruss, struct device_node *cfg_node)
->>>  
->>>  	clks_np = of_get_child_by_name(cfg_node, "clocks");
->>>  	if (!clks_np) {
->>> -		dev_err(dev, "%pOF is missing its 'clocks' node\n", clks_np);
->>> +		dev_err(dev, "%pOF is missing its 'clocks' node\n", cfg_node);
->>>  		return -ENODEV;
->>>  	}
->>>  
->>>
->>
-> 
-> This was not merged yet. Is it queued somewhere?
-> 
-> Jan
-> 
+On Fri, Nov 19, 2021 at 8:50 PM Mina Almasry <almasrymina@google.com> wrote:
+>
+[...]
+> +/*
+> + * Returns true if current's mm is a descendant of the memcg_under_oom (or
+> + * equal to it). False otherwise. This is used by the oom-killer to detect
+> + * ooms due to remote charging.
+> + */
+> +bool is_remote_oom(struct mem_cgroup *memcg_under_oom)
+> +{
+> +       struct mem_cgroup *current_memcg;
+> +       bool is_remote_oom;
+> +
+> +       if (!memcg_under_oom)
+> +               return false;
+> +
+> +       rcu_read_lock();
+> +       current_memcg = mem_cgroup_from_task(current);
+> +       if (current_memcg && !css_tryget_online(&current_memcg->css))
 
-Second reminder - still not seeing this in upstream.
+No need to grab a reference. You can call mem_cgroup_is_descendant() within rcu.
 
-Jan
-
--- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
+> +               current_memcg = NULL;
+> +       rcu_read_unlock();
+> +
+> +       if (!current_memcg)
+> +               return false;
+> +
+> +       is_remote_oom =
+> +               !mem_cgroup_is_descendant(current_memcg, memcg_under_oom);
+> +       css_put(&current_memcg->css);
+> +
+> +       return is_remote_oom;
+> +}
+> +
