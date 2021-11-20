@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39AC5457B93
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 05:54:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E3E457B92
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 05:54:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237767AbhKTE4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 23:56:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55176 "EHLO
+        id S237492AbhKTE4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 23:56:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236613AbhKTEyn (ORCPT
+        with ESMTP id S236695AbhKTEyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 19 Nov 2021 23:54:43 -0500
 Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE623C06179E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:51:11 -0800 (PST)
-Received: by mail-pg1-x549.google.com with SMTP id y18-20020a634952000000b002ecc060ccc8so5039321pgk.17
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:51:11 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD2FBC0617A1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:51:13 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id j18-20020a63fc12000000b002dd2237eb1cso5056295pgi.5
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:51:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=IyXttzViF+EKA3KhGB9+yBuyqNGYCcO0tszuN7QfJJs=;
-        b=CBVGUeybvOBWqP5tSJP4MGoV7wNbSUtar/Uw9BTnPFPfADwoZ9PvbDiqHhWuQmM5wp
-         niwo3Yw3th0a8ophhAlDog+xj1xwK3e+LkgjgMtmx5n4ksDKqPriX88F/UEjx2MDAT2r
-         CZyxs00DrtgvmBXeC0eJRZlHtcGtoxtm9bGgZT67AGI4AsMKuIAlOMec6IxOVrhOO2fV
-         KQm3UzOZcOLXVHa/APpcw/9bNIfB6uPrnLDVIALmh7EN+PctusPj2LidMJPhQFV/0PyW
-         BeFbP7gFoM+nzMheTscm/et4w0hIcLISJX3O+OazeFh2Ord5QWOIb0M667wzCzXRFUCB
-         tuXA==
+        bh=9UpU4BE6VFo1yV37uGFOyLOiPpm09nWvBtlMWiwFN2c=;
+        b=Uu4CsIhMP3+cMa1fhkvrE8BfxHMibIcsUwThV/W74PSvsBKNkgzf3eDebBCnJhnavS
+         ARX1Md/3uCA5OsEEZYJXFSHVPvSqgeMkkFJDN2lnWsp2ftADf3+ZVMXuEozWh00mzMK0
+         lYaIw8Xc6C8Px2tICCiphBwTYNLTV73WjQk+1aQAe0h4N/EVdlndBrBd8j2brHWpIFRe
+         qxyrD+fuTMybPbVOp33wQExUmFNQcdzjbc7c3eKqWzn2CpcYAgZDfcbGZrgyJft4fFrt
+         qS6IDfmiT0Z+ZLf168qo4vtcdI9zlC9TvmO9aUQrvQqzu6YnTMkWDc75Wd80nlfow3+o
+         q2Qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=IyXttzViF+EKA3KhGB9+yBuyqNGYCcO0tszuN7QfJJs=;
-        b=xTRDq00Frmj5vi7wnuAN7Sm0Z8qefB/lesq9Fkw7cZdgC9iX/Gcl10Z0WNjyS5jxRr
-         sAeZThY1FLwXHHlVc6zsUUI+s0NlW2jq4m33pcXg9hAfwqvNSupzgWbLkNg+J/4V1009
-         nsPreZVUdC/2Z2HwmofNq7+g7qZs5Md+Z+oFsCGJyO6ixr59gDiPlzHjR1qTaZTBnmQO
-         xmMTyGRkNagdcjOO6klUVOSICOQ04zZt2+KODpEDpFDgaKvZ7ReqwntvN4cqPaoayHDD
-         HWnir6rtlELBfhj66zfPXmD1ekCBScUI3uQeEaAZplnW/3PfP61dQWid0CHoxWmFzORG
-         npcA==
-X-Gm-Message-State: AOAM530STX6Uev4c0My40XRi5AydjnQwEy704TbBHnf6SyE7YW9XIUlR
-        uqnKyypKZKRLKw+hRRPhDig24z7eUmw=
-X-Google-Smtp-Source: ABdhPJy+BPD4vcAmVvlzIaEsidnbgRoZXFJ+/dD6AJnyOF1/UbeaoLmV+bA/ThCDGW81MyCX6ZunZwqEs0k=
+        bh=9UpU4BE6VFo1yV37uGFOyLOiPpm09nWvBtlMWiwFN2c=;
+        b=wzIF6jnPx/kjyoAtPzpEi4gGQWm5wAzC9VYjYU4yFxs8nOYniEq6B504B68y+JQV4P
+         pvfvYxh3myfj3dblhnmxvgOtlc5lU+/M5q0VX14FKI1O/u4k+m/FhX7aScQGqPIhOu/w
+         zVYZhw1jSKxwCWFsoOSi1aL9yJADgzufsZEULTIvt4p+r1v2MzIoFClmbl695Jq5tCgO
+         G47kfpuJhXlhtrnIzyd9gnWUavd/pxmtmCwlJ2cj30N6vQlJUgO4IQu1bx2EowOgEoFv
+         O9Xj+n0sA/gQurLTM/EJDtIYEklwiX5w4pnpaS5z44RRHFi6hHzGiKvLApSuYNWJ8Glb
+         rCNA==
+X-Gm-Message-State: AOAM5305VyU2Qu+2rAaetpCQZzhM3fs/5GVKlUF7EIoLsdG7S1hZgzr9
+        JB+nqzQLhkVpU1Y237+YaqTW5bSpoKA=
+X-Google-Smtp-Source: ABdhPJznjPegzC1rG8W9ZRF82xewliW8LitZrqmb/apQMZE5Itj2eER1+glAZ5x+5+M7a2aPuhx3Qq0KrWQ=
 X-Received: from seanjc.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3e5])
- (user=seanjc job=sendgmr) by 2002:a17:90b:3e85:: with SMTP id
- rj5mr6793643pjb.172.1637383871528; Fri, 19 Nov 2021 20:51:11 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:1816:b0:49f:cd0d:b51b with SMTP id
+ y22-20020a056a00181600b0049fcd0db51bmr68908861pfa.6.1637383873184; Fri, 19
+ Nov 2021 20:51:13 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Sat, 20 Nov 2021 04:50:29 +0000
+Date:   Sat, 20 Nov 2021 04:50:30 +0000
 In-Reply-To: <20211120045046.3940942-1-seanjc@google.com>
-Message-Id: <20211120045046.3940942-12-seanjc@google.com>
+Message-Id: <20211120045046.3940942-13-seanjc@google.com>
 Mime-Version: 1.0
 References: <20211120045046.3940942-1-seanjc@google.com>
 X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH 11/28] KVM: x86/mmu: Check for !leaf=>leaf, not PFN change, in
- TDP MMU SP removal
+Subject: [PATCH 12/28] KVM: x86/mmu: Batch TLB flushes from TDP MMU for MMU
+ notifier change_spte
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -69,40 +70,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Look for a !leaf=>leaf conversion instead of a PFN change when checking
-if a SPTE change removed a TDP MMU shadow page.  Convert the PFN check
-into a WARN, as KVM should never change the PFN of a shadow page (except
-when its being zapped or replaced).
-
-From a purely theoretical perspective, it's not illegal to replace a SP
-with a hugepage pointing at the same PFN.  In practice, it's impossible
-as that would require mapping guest memory overtop a kernel-allocated SP.
-Either way, the check is odd.
+Batch TLB flushes (with other MMUs) when handling ->change_spte()
+notifications in the TDP MMU.  The MMU notifier path in question doesn't
+allow yielding and correcty flushes before dropping mmu_lock.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/tdp_mmu.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ arch/x86/kvm/mmu/tdp_mmu.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 138c7dc41d2c..8e446ef03022 100644
+index 8e446ef03022..06b500fab248 100644
 --- a/arch/x86/kvm/mmu/tdp_mmu.c
 +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -489,9 +489,12 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
- 
- 	/*
- 	 * Recursively handle child PTs if the change removed a subtree from
--	 * the paging structure.
-+	 * the paging structure.  Note the WARN on the PFN changing without the
-+	 * SPTE being converted to a hugepage (leaf) or being zapped.  Shadow
-+	 * pages are kernel allocations and should never be migrated.
- 	 */
--	if (was_present && !was_leaf && (pfn_changed || !is_present))
-+	if (was_present && !was_leaf &&
-+	    (is_leaf || !is_present || WARN_ON_ONCE(pfn_changed)))
- 		handle_removed_tdp_mmu_page(kvm,
- 				spte_to_child_pt(old_spte, level), shared);
+@@ -1182,13 +1182,12 @@ static bool set_spte_gfn(struct kvm *kvm, struct tdp_iter *iter,
+  */
+ bool kvm_tdp_mmu_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+ {
+-	bool flush = kvm_tdp_mmu_handle_gfn(kvm, range, set_spte_gfn);
+-
+-	/* FIXME: return 'flush' instead of flushing here. */
+-	if (flush)
+-		kvm_flush_remote_tlbs_with_address(kvm, range->start, 1);
+-
+-	return false;
++	/*
++	 * No need to handle the remote TLB flush under RCU protection, the
++	 * target SPTE _must_ be a leaf SPTE, i.e. cannot result in freeing a
++	 * shadow page.  See the WARN on pfn_changed in __handle_changed_spte().
++	 */
++	return kvm_tdp_mmu_handle_gfn(kvm, range, set_spte_gfn);
  }
+ 
+ /*
 -- 
 2.34.0.rc2.393.gf8c9666880-goog
 
