@@ -2,303 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37AB6457A9E
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 03:36:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD1BB457AA5
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 03:47:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236457AbhKTCjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 21:39:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53528 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236047AbhKTCjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 21:39:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6A6161A38;
-        Sat, 20 Nov 2021 02:36:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637375798;
-        bh=UCystQLtnuRhjyd7uhfmMLfoucOCOaU357iQhWa2I8E=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=TSa3eCbprLXEYi8p4EQqGSg7oZAjoEUHJ0rFRVUJ9VBl6gAMbE5uEbunw133Hvn2X
-         YyY8zamDrjZjsDMVHXU0g6mq3un7wtUaWyJ5otO3ITuNDZHMKQ+kKtVzFf3Pk+fJHA
-         j2egM0PD4FidzdI61K/qIho7UyBuVf4q1XG9qozPzv4Bb3H+EDEbGuKsQzqPOUXRWd
-         La1mxvI0FwOH2R2Mg/OHnP/Rzaz9Ex8sEok27kgMte2pNBO2Qzw1Wnkc7rK6cN5nUT
-         mGGKCihIOLesTWCK8TcMw2xJ5gtxvjgSJ360MEBtnTVvHJdZcitbkMRB+E3mE6nJQe
-         AZ5JA/gMIpk4Q==
-Date:   Fri, 19 Nov 2021 18:36:35 -0800 (PST)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@ubuntu-linux-20-04-desktop
-To:     Oleksandr <olekstysh@gmail.com>
-cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>, Julien Grall <julien@xen.org>
-Subject: Re: [PATCH V2 4/4] arm/xen: Read extended regions from DT and init
- Xen resource
-In-Reply-To: <ee5a226b-0e12-8823-0961-bf2fe0bd494e@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2111191820130.1412361@ubuntu-linux-20-04-desktop>
-References: <1635264312-3796-1-git-send-email-olekstysh@gmail.com> <1635264312-3796-5-git-send-email-olekstysh@gmail.com> <alpine.DEB.2.21.2110271803060.20134@sstabellini-ThinkPad-T480s> <237f832d-5175-5653-18ee-058a7d7fa7a6@gmail.com>
- <alpine.DEB.2.22.394.2111181701110.1412361@ubuntu-linux-20-04-desktop> <ee5a226b-0e12-8823-0961-bf2fe0bd494e@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S236642AbhKTCu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 21:50:26 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:55053 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236587AbhKTCuZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 21:50:25 -0500
+Received: by mail-io1-f71.google.com with SMTP id s8-20020a056602168800b005e96bba1363so6901988iow.21
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 18:47:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=rwsDZ4jfpJLh86xpw4OX5pfJCwzCUpI3R6PfQFpOvGw=;
+        b=WcIbsgePDl14551VrfNu7xPCJUxO0Wb0xf3fb/Q+4pX15Qir3ij6XLAQOP2gsXP/rF
+         K/uRX0nQGGKMd0vYE5DkidQd/uK4UtrEpuYjZr1C9sgZLi6rw4JkWWJZCWYObjzRVIJn
+         Xp4lTlpyiqM0SrO2IReycteWGBVq2PEoEx1h9Gv++0xBx9Ng7dP65jbvqxqzgv1APoF1
+         L7Mn0wp2YUTdGwlbpAWirT8Em5Pqbz5R/A1684V+tIPYFr/8QUUBmebJlbcEQbQ2onjY
+         dB4Bgpd2tFyZr+HW1ybqUERQjavAfUCQ9TO+5lSdoJkc+DuZAnEOWRffd3fQ17yciKtg
+         Ezdw==
+X-Gm-Message-State: AOAM533ybzEIpv5D47vIXPzKPZcftgfi0XMCFOFJV68hwCpfK3hws2mM
+        1tSKZYDJZtUW4XJP4PuDWvraZ4d4q4CqLw/GXFaqdmTm7IqL
+X-Google-Smtp-Source: ABdhPJyUoD8FMfdj7ChSiW0dQXqpo3ImIjwd4ICb0lC3aI+gMrXyRrc0BTpUKgbszh2LfNUzzdy7jp+ZhZUxNqoJWL0JkBxLguQW
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-126447730-1637374814=:1412361"
-Content-ID: <alpine.DEB.2.22.394.2111191821110.1412361@ubuntu-linux-20-04-desktop>
+X-Received: by 2002:a92:9507:: with SMTP id y7mr7929306ilh.119.1637376442767;
+ Fri, 19 Nov 2021 18:47:22 -0800 (PST)
+Date:   Fri, 19 Nov 2021 18:47:22 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003c221105d12f69e3@google.com>
+Subject: [syzbot] possible deadlock in smc_switch_to_fallback
+From:   syzbot <syzbot+e979d3597f48262cb4ee@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kgraul@linux.ibm.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hello,
 
---8323329-126447730-1637374814=:1412361
-Content-Type: text/plain; CHARSET=UTF-8
-Content-Transfer-Encoding: 8BIT
-Content-ID: <alpine.DEB.2.22.394.2111191821111.1412361@ubuntu-linux-20-04-desktop>
+syzbot found the following issue on:
 
-On Fri, 19 Nov 2021, Oleksandr wrote:
-> On 19.11.21 03:19, Stefano Stabellini wrote:
-> > On Wed, 10 Nov 2021, Oleksandr wrote:
-> > > On 28.10.21 04:40, Stefano Stabellini wrote:
-> > > 
-> > > Hi Stefano
-> > > 
-> > > I am sorry for the late response.
-> > > 
-> > > > On Tue, 26 Oct 2021, Oleksandr Tyshchenko wrote:
-> > > > > From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-> > > > > 
-> > > > > This patch implements arch_xen_unpopulated_init() on Arm where
-> > > > > the extended regions (if any) are gathered from DT and inserted
-> > > > > into passed Xen resource to be used as unused address space
-> > > > > for Xen scratch pages by unpopulated-alloc code.
-> > > > > 
-> > > > > The extended region (safe range) is a region of guest physical
-> > > > > address space which is unused and could be safely used to create
-> > > > > grant/foreign mappings instead of wasting real RAM pages from
-> > > > > the domain memory for establishing these mappings.
-> > > > > 
-> > > > > The extended regions are chosen by the hypervisor at the domain
-> > > > > creation time and advertised to it via "reg" property under
-> > > > > hypervisor node in the guest device-tree. As region 0 is reserved
-> > > > > for grant table space (always present), the indexes for extended
-> > > > > regions are 1...N.
-> > > > > 
-> > > > > If arch_xen_unpopulated_init() fails for some reason the default
-> > > > > behaviour will be restored (allocate xenballooned pages).
-> > > > > 
-> > > > > This patch also removes XEN_UNPOPULATED_ALLOC dependency on x86.
-> > > > > 
-> > > > > Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-> > > > > ---
-> > > > > Changes RFC -> V2:
-> > > > >      - new patch, instead of
-> > > > >       "[RFC PATCH 2/2] xen/unpopulated-alloc: Query hypervisor to
-> > > > > provide
-> > > > > unallocated space"
-> > > > > ---
-> > > > >    arch/arm/xen/enlighten.c | 112
-> > > > > +++++++++++++++++++++++++++++++++++++++++++++++
-> > > > >    drivers/xen/Kconfig      |   2 +-
-> > > > >    2 files changed, 113 insertions(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
-> > > > > index dea46ec..1a1e0d3 100644
-> > > > > --- a/arch/arm/xen/enlighten.c
-> > > > > +++ b/arch/arm/xen/enlighten.c
-> > > > > @@ -62,6 +62,7 @@ static __read_mostly unsigned int xen_events_irq;
-> > > > >    static phys_addr_t xen_grant_frames;
-> > > > >      #define GRANT_TABLE_INDEX   0
-> > > > > +#define EXT_REGION_INDEX    1
-> > > > >      uint32_t xen_start_flags;
-> > > > >    EXPORT_SYMBOL(xen_start_flags);
-> > > > > @@ -303,6 +304,117 @@ static void __init xen_acpi_guest_init(void)
-> > > > >    #endif
-> > > > >    }
-> > > > >    +#ifdef CONFIG_XEN_UNPOPULATED_ALLOC
-> > > > > +int arch_xen_unpopulated_init(struct resource *res)
-> > > > > +{
-> > > > > +	struct device_node *np;
-> > > > > +	struct resource *regs, *tmp_res;
-> > > > > +	uint64_t min_gpaddr = -1, max_gpaddr = 0;
-> > > > > +	unsigned int i, nr_reg = 0;
-> > > > > +	struct range mhp_range;
-> > > > > +	int rc;
-> > > > > +
-> > > > > +	if (!xen_domain())
-> > > > > +		return -ENODEV;
-> > > > > +
-> > > > > +	np = of_find_compatible_node(NULL, NULL, "xen,xen");
-> > > > > +	if (WARN_ON(!np))
-> > > > > +		return -ENODEV;
-> > > > > +
-> > > > > +	/* Skip region 0 which is reserved for grant table space */
-> > > > > +	while (of_get_address(np, nr_reg + EXT_REGION_INDEX, NULL,
-> > > > > NULL))
-> > > > > +		nr_reg++;
-> > > > > +	if (!nr_reg) {
-> > > > > +		pr_err("No extended regions are found\n");
-> > > > > +		return -EINVAL;
-> > > > > +	}
-> > > > > +
-> > > > > +	regs = kcalloc(nr_reg, sizeof(*regs), GFP_KERNEL);
-> > > > > +	if (!regs)
-> > > > > +		return -ENOMEM;
-> > > > > +
-> > > > > +	/*
-> > > > > +	 * Create resource from extended regions provided by the
-> > > > > hypervisor to
-> > > > > be
-> > > > > +	 * used as unused address space for Xen scratch pages.
-> > > > > +	 */
-> > > > > +	for (i = 0; i < nr_reg; i++) {
-> > > > > +		rc = of_address_to_resource(np, i + EXT_REGION_INDEX,
-> > > > > &regs[i]);
-> > > > > +		if (rc)
-> > > > > +			goto err;
-> > > > > +
-> > > > > +		if (max_gpaddr < regs[i].end)
-> > > > > +			max_gpaddr = regs[i].end;
-> > > > > +		if (min_gpaddr > regs[i].start)
-> > > > > +			min_gpaddr = regs[i].start;
-> > > > > +	}
-> > > > > +
-> > > > > +	/* Check whether the resource range is within the hotpluggable
-> > > > > range
-> > > > > */
-> > > > > +	mhp_range = mhp_get_pluggable_range(true);
-> > > > > +	if (min_gpaddr < mhp_range.start)
-> > > > > +		min_gpaddr = mhp_range.start;
-> > > > > +	if (max_gpaddr > mhp_range.end)
-> > > > > +		max_gpaddr = mhp_range.end;
-> > > > > +
-> > > > > +	res->start = min_gpaddr;
-> > > > > +	res->end = max_gpaddr;
-> > > > > +
-> > > > > +	/*
-> > > > > +	 * Mark holes between extended regions as unavailable. The
-> > > > > rest of
-> > > > > that
-> > > > > +	 * address space will be available for the allocation.
-> > > > > +	 */
-> > > > > +	for (i = 1; i < nr_reg; i++) {
-> > > > > +		resource_size_t start, end;
-> > > > > +
-> > > > > +		start = regs[i - 1].end + 1;
-> > > > > +		end = regs[i].start - 1;
-> > > > > +
-> > > > > +		if (start > (end + 1)) {
-> > > > Should this be:
-> > > > 
-> > > > if (start >= end)
-> > > > 
-> > > > ?
-> > > Yes, we can do this here (since the checks are equivalent) but ...
-> > > 
-> > > > > +			rc = -EINVAL;
-> > > > > +			goto err;
-> > > > > +		}
-> > > > > +
-> > > > > +		/* There is no hole between regions */
-> > > > > +		if (start == (end + 1))
-> > > > Also here, shouldn't it be:
-> > > > 
-> > > > if (start == end)
-> > > > 
-> > > > ?
-> > >     ... not here.
-> > > 
-> > > As
-> > > 
-> > > "(start == (end + 1))" is equal to "(regs[i - 1].end + 1 ==
-> > > regs[i].start)"
-> > > 
-> > > but
-> > > 
-> > > "(start == end)" is equal to "(regs[i - 1].end + 1 == regs[i].start - 1)"
-> >   OK. But the check:
-> > 
-> >    if (start >= end)
-> > 
-> > Actually covers both cases so that's the only check we need?
-> 
-> Sorry, I don't entirely understand the question.
-> Is the question to use only a single check in that loop?
-> 
-> Paste the updated code which I have locally for the convenience.
-> 
->  [snip]
-> 
->     /*
->      * Mark holes between extended regions as unavailable. The rest of that
->      * address space will be available for the allocation.
->      */
->     for (i = 1; i < nr_reg; i++) {
->         resource_size_t start, end;
-> 
->         start = regs[i - 1].end + 1;
->         end = regs[i].start - 1;
-> 
->         if (start > (end + 1)) {
->             rc = -EINVAL;
->             goto err;
->         }
-> 
->         /* There is no hole between regions */
->         if (start == (end + 1))
->             continue;
-> 
->         tmp_res = kzalloc(sizeof(*tmp_res), GFP_KERNEL);
->         if (!tmp_res) {
->             rc = -ENOMEM;
->             goto err;
->         }
-> 
->         tmp_res->name = "Unavailable space";
->         tmp_res->start = start;
->         tmp_res->end = end;
-> 
->         rc = insert_resource(&xen_resource, tmp_res);
->         if (rc) {
->             pr_err("Cannot insert resource %pR (%d)\n", tmp_res, rc);
->             kfree(tmp_res);
->             goto err;
->         }
->     }
-> 
-> [snip]
-> 
-> 
-> 1. The first check is to detect an overlap (which is a wrong configuration,
-> correct?) and bail out if true (for example, regX: 0x81000000...0x82FFFFFF and
-> regY: 0x82000000...0x83FFFFFF).
-> 2. The second check is just to skip current iteration as there is no
-> space/hole between regions (for example, regX: 0x81000000...0x82FFFFFF and
-> regY: 0x83000000...0x83FFFFFF).
-> Therefore I think they should be distinguished.
-> 
-> Yes, both check could be transformed to a single one, but this way the
-> overlaps will be ignored:
-> if (start >= (end + 1))
->     continue;
-> 
-> Or I really missed something?
+HEAD commit:    9539ba4308ad Merge tag 'riscv-for-linus-5.16-rc2' of git:/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17f79d01b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6d3b8fd1977c1e73
+dashboard link: https://syzkaller.appspot.com/bug?extid=e979d3597f48262cb4ee
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-You are right it is better to distinguish the two cases. I suggest the
-code below because I think it is a clearer, even if it might be slightly
-less efficient. I don't feel too strongly about it though.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-		resource_size_t start, end;
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e979d3597f48262cb4ee@syzkaller.appspotmail.com
 
-		/* There is no hole between regions */
-		if ( regs[i - 1].end + 1 == regs[i].start )
-			continue;
+============================================
+WARNING: possible recursive locking detected
+5.16.0-rc1-syzkaller #0 Not tainted
+--------------------------------------------
+syz-executor.3/1337 is trying to acquire lock:
+ffff88809466ce58 (&ei->socket.wq.wait){..-.}-{2:2}, at: spin_lock include/linux/spinlock.h:349 [inline]
+ffff88809466ce58 (&ei->socket.wq.wait){..-.}-{2:2}, at: smc_switch_to_fallback+0x3d5/0x8c0 net/smc/af_smc.c:588
 
-		if ( regs[i - 1].end + 1 > regs[i].start) {
-			rc = -EINVAL;
-			goto err;
-		}
+but task is already holding lock:
+ffff88809466c258 (&ei->socket.wq.wait){..-.}-{2:2}, at: smc_switch_to_fallback+0x3ca/0x8c0 net/smc/af_smc.c:587
 
-		start = regs[i - 1].end + 1;
-		end = regs[i].start - 1;
---8323329-126447730-1637374814=:1412361--
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&ei->socket.wq.wait);
+  lock(&ei->socket.wq.wait);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+2 locks held by syz-executor.3/1337:
+ #0: 
+ffff888082ba8120 (sk_lock-AF_SMC){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1645 [inline]
+ffff888082ba8120 (sk_lock-AF_SMC){+.+.}-{0:0}, at: smc_setsockopt+0x2b7/0xa40 net/smc/af_smc.c:2449
+ #1: ffff88809466c258 (&ei->socket.wq.wait){..-.}-{2:2}, at: smc_switch_to_fallback+0x3ca/0x8c0 net/smc/af_smc.c:587
+
+stack backtrace:
+CPU: 1 PID: 1337 Comm: syz-executor.3 Not tainted 5.16.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_deadlock_bug kernel/locking/lockdep.c:2956 [inline]
+ check_deadlock kernel/locking/lockdep.c:2999 [inline]
+ validate_chain kernel/locking/lockdep.c:3788 [inline]
+ __lock_acquire.cold+0x149/0x3ab kernel/locking/lockdep.c:5027
+ lock_acquire kernel/locking/lockdep.c:5637 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5602
+ __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:154
+ spin_lock include/linux/spinlock.h:349 [inline]
+ smc_switch_to_fallback+0x3d5/0x8c0 net/smc/af_smc.c:588
+ smc_setsockopt+0x8ee/0xa40 net/smc/af_smc.c:2459
+ __sys_setsockopt+0x2db/0x610 net/socket.c:2176
+ __do_sys_setsockopt net/socket.c:2187 [inline]
+ __se_sys_setsockopt net/socket.c:2184 [inline]
+ __x64_sys_setsockopt+0xba/0x150 net/socket.c:2184
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fa2a8fceae9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fa2a6544188 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 00007fa2a90e1f60 RCX: 00007fa2a8fceae9
+RDX: 0000000000000021 RSI: 0000000000000006 RDI: 0000000000000005
+RBP: 00007fa2a9028f6d R08: 0000000000000010 R09: 0000000000000000
+R10: 0000000020000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffc2297067f R14: 00007fa2a6544300 R15: 0000000000022000
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
