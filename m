@@ -2,22 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 969F5457AB1
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 04:07:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F198457AB2
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 04:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236771AbhKTDKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 22:10:43 -0500
-Received: from marcansoft.com ([212.63.210.85]:48916 "EHLO mail.marcansoft.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236710AbhKTDKd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 22:10:33 -0500
+        id S236795AbhKTDKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 22:10:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236709AbhKTDKi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 22:10:38 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ABB6C061574;
+        Fri, 19 Nov 2021 19:07:34 -0800 (PST)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: hector@marcansoft.com)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 8216D424E8;
-        Sat, 20 Nov 2021 03:07:26 +0000 (UTC)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 5841A424EC;
+        Sat, 20 Nov 2021 03:07:29 +0000 (UTC)
 From:   Hector Martin <marcan@marcan.st>
 To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -26,9 +30,9 @@ Cc:     Hector Martin <marcan@marcan.st>,
         =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
         Alyssa Rosenzweig <alyssa@rosenzweig.io>,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND 1/2] usb: typec: tipd: Fix typo in cd321x_switch_power_state
-Date:   Sat, 20 Nov 2021 12:07:16 +0900
-Message-Id: <20211120030717.84287-2-marcan@marcan.st>
+Subject: [PATCH RESEND 2/2] usb: typec: tipd: Fix initialization sequence for cd321x
+Date:   Sat, 20 Nov 2021 12:07:17 +0900
+Message-Id: <20211120030717.84287-3-marcan@marcan.st>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211120030717.84287-1-marcan@marcan.st>
 References: <20211120030717.84287-1-marcan@marcan.st>
@@ -38,29 +42,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SPSS should've been SSPS.
+The power state switch needs to happen first, as that
+kickstarts the firmware into normal mode.
 
 Fixes: c9c14be664cf ("usb: typec: tipd: Switch CD321X power state to S0")
 Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 Reviewed-by: Sven Peter <sven@svenpeter.dev>
 Signed-off-by: Hector Martin <marcan@marcan.st>
 ---
- drivers/usb/typec/tipd/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/typec/tipd/core.c | 33 ++++++++++++++++-----------------
+ 1 file changed, 16 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-index fb8ef12bbe9c..4da5a0b2aed2 100644
+index 4da5a0b2aed2..6d27a5b5e3ca 100644
 --- a/drivers/usb/typec/tipd/core.c
 +++ b/drivers/usb/typec/tipd/core.c
-@@ -653,7 +653,7 @@ static int cd321x_switch_power_state(struct tps6598x *tps, u8 target_state)
- 	if (state == target_state)
- 		return 0;
+@@ -707,6 +707,7 @@ static int tps6598x_probe(struct i2c_client *client)
+ 	u32 conf;
+ 	u32 vid;
+ 	int ret;
++	u64 mask1;
  
--	ret = tps6598x_exec_cmd(tps, "SPSS", sizeof(u8), &target_state, 0, NULL);
-+	ret = tps6598x_exec_cmd(tps, "SSPS", sizeof(u8), &target_state, 0, NULL);
- 	if (ret)
+ 	tps = devm_kzalloc(&client->dev, sizeof(*tps), GFP_KERNEL);
+ 	if (!tps)
+@@ -730,11 +731,6 @@ static int tps6598x_probe(struct i2c_client *client)
+ 	if (i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
+ 		tps->i2c_protocol = true;
+ 
+-	/* Make sure the controller has application firmware running */
+-	ret = tps6598x_check_mode(tps);
+-	if (ret)
+-		return ret;
+-
+ 	if (np && of_device_is_compatible(np, "apple,cd321x")) {
+ 		/* Switch CD321X chips to the correct system power state */
+ 		ret = cd321x_switch_power_state(tps, TPS_SYSTEM_POWER_STATE_S0);
+@@ -742,24 +738,27 @@ static int tps6598x_probe(struct i2c_client *client)
+ 			return ret;
+ 
+ 		/* CD321X chips have all interrupts masked initially */
+-		ret = tps6598x_write64(tps, TPS_REG_INT_MASK1,
+-					APPLE_CD_REG_INT_POWER_STATUS_UPDATE |
+-					APPLE_CD_REG_INT_DATA_STATUS_UPDATE |
+-					APPLE_CD_REG_INT_PLUG_EVENT);
+-		if (ret)
+-			return ret;
++		mask1 = APPLE_CD_REG_INT_POWER_STATUS_UPDATE |
++			APPLE_CD_REG_INT_DATA_STATUS_UPDATE |
++			APPLE_CD_REG_INT_PLUG_EVENT;
+ 
+ 		irq_handler = cd321x_interrupt;
+ 	} else {
+ 		/* Enable power status, data status and plug event interrupts */
+-		ret = tps6598x_write64(tps, TPS_REG_INT_MASK1,
+-				       TPS_REG_INT_POWER_STATUS_UPDATE |
+-				       TPS_REG_INT_DATA_STATUS_UPDATE |
+-				       TPS_REG_INT_PLUG_EVENT);
+-		if (ret)
+-			return ret;
++		mask1 = TPS_REG_INT_POWER_STATUS_UPDATE |
++			TPS_REG_INT_DATA_STATUS_UPDATE |
++			TPS_REG_INT_PLUG_EVENT;
+ 	}
+ 
++	/* Make sure the controller has application firmware running */
++	ret = tps6598x_check_mode(tps);
++	if (ret)
++		return ret;
++
++	ret = tps6598x_write64(tps, TPS_REG_INT_MASK1, mask1);
++	if (ret)
++		return ret;
++
+ 	ret = tps6598x_read32(tps, TPS_REG_STATUS, &status);
+ 	if (ret < 0)
  		return ret;
- 
 -- 
 2.33.0
 
