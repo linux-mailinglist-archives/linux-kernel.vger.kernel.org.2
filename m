@@ -2,113 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A7B457FA9
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 17:54:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 462DF457F9C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 17:49:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237797AbhKTQ4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 11:56:54 -0500
-Received: from sonic313-19.consmr.mail.gq1.yahoo.com ([98.137.65.82]:42661
-        "EHLO sonic313-19.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237787AbhKTQ4w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 11:56:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1637427229; bh=TfoAxPbVKq3zi4ZOFlupwW3LmX5ZEGSByQNRZE7lVEM=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=am3+4RQLcmR5Gf4mg/PhWbDNq2yIzWVbmom3oVsOsBJAVakIBwAXOqUskPiW+4rBE20ADCJlAorvH3D3oo1M1VdF0GlW7RnANrxrDw+uIaUPnp4v+5Y09Hpd82gaF50yM+UeR1TSdJlI4UxD9rBeBPeCwC7WVmUk540RfD7TdbiwnN2zlVg7i3Py8BlwQfNc1aS7EQaneJKIpa/dek6XWncsqVqdLUPVNdV0J2bbqbCXeRo+NbvTxB8ovf9AM0G2fiN68QIU/9W98V48IeX+wnrkEaA99jekasnoOYxSxPsystVbpBalo6l7K68qbRkEBCUtbz2LgYvd3iBr4eXosQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1637427229; bh=EaWA+RVHuaO6L/Bpvd9UKJ5L9Qd2Bx3pYfWduCZYvHV=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=seLD4luJ/rxpL+KaCgJ8oGkqM5d6eTCozB5rVtZP2rsX5FBu8UAfzlAzrX6OHSkfUd80iqGqp/G+h8ejk5Jfk+fT6scGsRm0DPDKDDkCo1pfHTKTfzrb9IT4Lapyb1aR0Jt7JbY9sTIZcCUOdVaupfqhP3coytp97BNnCss8/+kTd1e1UXXhugVUwMg4TGPItf/ednldUW3qdjG//SfeGo+uTztCieNNyTUbKJGbUFe1XTTTSh3r3KP5bPB8HJu48db0mULOeJwArVddSgKee+KMXZV+kbUGua6R8hNcOdBnM1XQgEBTWJOKLhQfeAOEp/TxgVVbC2A87QyjRUhPZQ==
-X-YMail-OSG: xcBk8OMVM1lyMMO5EMSCdqQ60Z6ef8qcgDiZ_RJu9DaGh2XJgiif51owCGnhnX3
- cpd2w7gMzfDojQRr3igB0sFO61jc98SfyNJ9Z5xjsvJ_F.JnzIv5HJH3enl8xALXiilc0RpWKOmF
- Kve.HcIHjYfKeraH6QJkPed40mw7vAG..qpkL2WMz4CnkOi4sn8Kv0xXkGZSEE5nuc_JcBEwaAjS
- F_uGaIHjHqnUSL16qZmn1E_K.VAohp4t99Wdd75Q_RVLtkEoPfHu85eyi7_DFDBrhLGhWD5vAgOJ
- ITtDS.6.MpZ6_ltmtwbRFoImDEkpJUuT75bAv2w2HjcF_k8RtzH0JqJEr0uPpJA3NyK4SfYAuLir
- d8Yo0CwQVXE17udgaCXA17s3E0apAhQH7ieMCDzV0IJub8eIBBxNsfMVLFykGgTGrmJ7Ti0IR7Si
- gHY3DZCMVkA6H2bUpb1i7qSAxOMzh_yUFStxTaM6MjyIW8zGc904pHonQeCUTxobiokKUSCtu7XO
- a9Si.stogVqQ2ML0PZxxi_1psneeTn3pjA5W2ilWf3VPVixj3II5qIB1ns7ivpb9_7T25L.MWb2u
- rtxJhEjS3YCJyiVW3jzbMPLu4vNrcp6nEB2rYOFztk9LW.qpR9Vj.sMRyEVWotSCiML4KOSKlVYz
- Rr7KHPZD8FUtpnXH_0rHADofGAZQEe9ThcE2S0UKz9hBB.SPk_Bmwju7dGYijvELIWS9Cdyh6c3y
- ac_vsOoRb7Zq8hvDcf_l_HPbjF7oidEcclRZq8qkn_FdXTQMo8LkjP3fbSLubKAgiP2axbgl52TS
- gIO2DD12rzbz4Xl9rnyrmzjktZcAZ0u6ocyH5ffMxVGv04ufWjN1AK7ig_KMe5fy0ZLol4Eia6CP
- 7MxXh8zQfQeJgzUYr250qpRIMKuW5ipGOPV0sWla7tKTkLG_Sjp64xdvK_nUftfxyEY4L7xw3xff
- WQq__B94gA6az4.0jF2W6YmKboCChk_qRhosCg4HoK66NzQEx3dDxmlwj5O6HNtjOMPQ8IY9Q.FX
- oS17zTi1iRFpZ7bOjV4Lz4eedaBWMw7.qqE2EBbb33.UeHeTJWRlm9XWOIYlG_BrfOve0wFDTJIk
- ixswKoc6khaBnN6XlYDJzsK97ueBoApOcIbIYnLgOX88fU8nlh3YBT8NWqjFvY4MsatE6HtB8pk1
- YbK3jy0WENg2mGG4FYLvqsULwt3iFLpal4mfayc2caR56Xkp7wBCMPdsPGRljdn53YeD8MKVQvJc
- 9WX0CppFs1.AiO7ZNp_tdWxHC9nF.8g5yfCXV9tl9iBF9V8UA9AEKv68h__iMMbMhp_PmigCcsRP
- 8Juw2PIt0e.mZV0foGtGvA6MUhSzZ9NlxcvmN42fzCEjeoKBlv56EZkUtUbvOOnLV93f3DK0Yp8G
- .dEgOf5EmjCQkgH76uv4InXL_sExWYK3fQzHDFYED93J0VClMnx6eB.v7rdCpzRBw5KxCpU5ezz4
- t9cgkQRxhQylmKHYDW9YQe07QpbHMijeBkkThdCqeKIypzvuSCmxL5spNtoF2S.3GYprJWBHuMMN
- t.XG9SSiY7ahQQn0GkPvJcbuZgY6DeBL4QM4UEyKkrKYQCciXmIe3vRPvG6uHcXzPtUzf0YjwsnI
- ecnaQffkI9yPi5T.JLH8kmBK9YCdnwunns0zdzTCP6r4T_FmL0JN2x80J3jLFGt0xeU_3Djs8Uid
- mq.sJE2CiNiCWyHQKhSdH2lV6XeSQdqA19kegdph0UrGxpjput2CXC0qdZUuCYISBfkIwH8o5BeZ
- K2XE8X3eQkJLdR1N4N3_JuanS4JHV93VtqtyjPSl227hEmWCDM4GskA1o5qT_3LemOmFUtwZuamv
- luXOXpWao6Kc8b84ORNioP5oqno9Md8JtbuBz3v2V5TiyCnUemPa1Z4DafYwpHP3NHh_x1aMmMNw
- a4UOgWWLMMA9DIabfj62puPzmFDkoftZcIuDy7_CoOwt.nulVHvrruxVEcYp4lGJzuMw4..Z3_1K
- wEJm5C0SUgd4ZkHi0hPVlivU8mycBdwqp47MNszQ2vBzT_b.rtdH9hPc1GMOm4h5OO03ZDI7RDub
- JkSSnRdkZilDPCrOU_dvspumP4zmwr1aLw8X0DeQzLspvo9ra9KjdYJ.j2ccw561geDNLrGVozeg
- WCTMbchqeLGw0T8wIFTSAMbuy3i_LGy_jrVilfk4bksYhD2EUjjEO5qRXKU.QCOcKcJnmwuBfN9.
- 6d7XgENCp30XpqaNnMoNqHkdeoUlEgzD8azaEYM6Bw8QtFu54ihCht2FbQjhihswLmM5fJjfCdW1
- 7XN.p8RI-
-X-Sonic-MF: <alex_y_xu@yahoo.ca>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.gq1.yahoo.com with HTTP; Sat, 20 Nov 2021 16:53:49 +0000
-Received: by kubenode520.mail-prod1.omega.bf1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 1fe9458f13b759c836a26a4b522c3af1;
-          Sat, 20 Nov 2021 16:53:43 +0000 (UTC)
-From:   "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
-To:     Michael Forney <forney@google.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nick Terrell <terrelln@fb.com>, Ingo Molnar <mingo@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
-Cc:     "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
-Subject: [PATCH 2/2] kbuild: pass --stream-size --no-content-size to zstd
-Date:   Sat, 20 Nov 2021 11:53:49 -0500
-Message-Id: <20211120165349.99908-2-alex_y_xu@yahoo.ca>
-X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211120165349.99908-1-alex_y_xu@yahoo.ca>
-References: <20211120165349.99908-1-alex_y_xu@yahoo.ca>
+        id S237738AbhKTQwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 11:52:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230507AbhKTQwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 11:52:19 -0500
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C48CF600D4;
+        Sat, 20 Nov 2021 16:49:12 +0000 (UTC)
+Date:   Sat, 20 Nov 2021 16:54:05 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
+Cc:     <linux-kernel@vger.kernel.org>, <lars@metafoo.de>,
+        <linux-iio@vger.kernel.org>, <git@xilinx.com>,
+        <michal.simek@xilinx.com>, <gregkh@linuxfoundation.org>,
+        <rafael@kernel.org>, <linux-acpi@vger.kernel.org>,
+        <andriy.shevchenko@linux.intel.com>,
+        <heikki.krogerus@linux.intel.com>,
+        Manish Narani <manish.narani@xilinx.com>
+Subject: Re: [PATCH v10 3/5] iio: adc: Add Xilinx AMS driver
+Message-ID: <20211120165345.53de0d51@jic23-huawei>
+In-Reply-To: <20211117161028.11775-4-anand.ashok.dumbre@xilinx.com>
+References: <20211117161028.11775-1-anand.ashok.dumbre@xilinx.com>
+        <20211117161028.11775-4-anand.ashok.dumbre@xilinx.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Otherwise, it allocates 2 GB of memory at once. Even though the majority
-of this memory is never touched, the default heuristic overcommit
-refuses this request if less than 2 GB of RAM+swap is currently
-available. This results in "zstd: error 11 : Allocation error : not
-enough memory" and the kernel failing to build.
+On Wed, 17 Nov 2021 16:10:26 +0000
+Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com> wrote:
 
-When the size is specified, zstd will reduce the memory request
-appropriately. For typical kernel sizes of ~32 MB, the largest mmap
-request will be reduced to 512 MB, which will succeed on all but the
-smallest devices.
+> The AMS includes an ADC as well as on-chip sensors that can be used to
+> sample external voltages and monitor on-die operating conditions, such
+> as temperature and supply voltage levels. The AMS has two SYSMON blocks.
+> PL-SYSMON block is capable of monitoring off chip voltage and
+> temperature.
+> 
+> PL-SYSMON block has DRP, JTAG and I2C interface to enable monitoring
+> from an external master. Out of these interfaces currently only DRP is
+> supported. Other block PS-SYSMON is memory mapped to PS.
+> 
+> The AMS can use internal channels to monitor voltage and temperature as
+> well as one primary and up to 16 auxiliary channels for measuring
+> external voltages.
+> 
+> The voltage and temperature monitoring channels also have event capability
+> which allows to generate an interrupt when their value falls below or
+> raises above a set threshold.
+> 
+> Co-developed-by: Manish Narani <manish.narani@xilinx.com>
+> Signed-off-by: Manish Narani <manish.narani@xilinx.com>
+> Signed-off-by: Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
 
-For inputs around this size, --stream-size --no-content-size may
-slightly decrease the compressed size, or slightly increase it:
-https://github.com/facebook/zstd/issues/2848.
+A few minor additions from me to what Andy has noted.
 
-Signed-off-by: Alex Xu (Hello71) <alex_y_xu@yahoo.ca>
----
- scripts/Makefile.lib | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thanks,
 
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index ca901814986a..13d756fbcdc7 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -468,10 +468,10 @@ quiet_cmd_xzmisc = XZMISC  $@
- # be used because it would require zstd to allocate a 128 MB buffer.
- 
- quiet_cmd_zstd = ZSTD    $@
--      cmd_zstd = { cat $(real-prereqs) | $(ZSTD) -19; $(size_append); } > $@
-+      cmd_zstd = { cat $(real-prereqs) | $(ZSTD) --stream-size=$(total_size) --no-content-size -19; $(size_append); } > $@
- 
- quiet_cmd_zstd22 = ZSTD22  $@
--      cmd_zstd22 = { cat $(real-prereqs) | $(ZSTD) -22 --ultra; $(size_append); } > $@
-+      cmd_zstd22 = { cat $(real-prereqs) | $(ZSTD) --stream-size=$(total_size) --no-content-size -22 --ultra; $(size_append); } > $@
- 
- # ASM offsets
- # ---------------------------------------------------------------------------
--- 
-2.34.0
+Jonathan
+
+> diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
+> index d3f53549720c..4a8f1833993b 100644
+> --- a/drivers/iio/adc/Makefile
+> +++ b/drivers/iio/adc/Makefile
+> @@ -115,4 +115,5 @@ obj-$(CONFIG_VF610_ADC) += vf610_adc.o
+>  obj-$(CONFIG_VIPERBOARD_ADC) += viperboard_adc.o
+>  xilinx-xadc-y := xilinx-xadc-core.o xilinx-xadc-events.o
+>  obj-$(CONFIG_XILINX_XADC) += xilinx-xadc.o
+> +obj-$(CONFIG_XILINX_AMS) += xilinx-ams.o
+>  obj-$(CONFIG_SD_ADC_MODULATOR) += sd_adc_modulator.o
+> diff --git a/drivers/iio/adc/xilinx-ams.c b/drivers/iio/adc/xilinx-ams.c
+> new file mode 100644
+> index 000000000000..bb3876b51e3e
+> --- /dev/null
+> +++ b/drivers/iio/adc/xilinx-ams.c
+> @@ -0,0 +1,1447 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Xilinx AMS driver
+> + *
+> + *  Copyright (C) 2021 Xilinx, Inc.
+> + *
+> + *  Manish Narani <mnarani@xilinx.com>
+> + *  Rajnikant Bhojani <rajnikant.bhojani@xilinx.com>
+> + */
+> +
+> +#include <linux/bits.h>
+> +#include <linux/clk.h>
+> +#include <linux/delay.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/io.h>
+> +#include <linux/iopoll.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/overflow.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/property.h>
+> +#include <linux/slab.h>
+> +
+> +#include <linux/iio/events.h>
+> +#include <linux/iio/iio.h>
+> +#include <linux/iio/sysfs.h>
+Used?
+> +
+
+...
+
+> +/**
+> + * struct ams - Driver data for xilinx-ams
+> + * @base: physical base address of device
+> + * @ps_base: physical base address of PS device
+> + * @pl_base: physical base address of PL device
+> + * @clk: clocks associated with the device
+> + * @dev: pointer to device struct
+> + * @lock: to handle multiple user interaction
+> + * @intr_lock: to protect interrupt mask values
+> + * @alarm_mask: alarm configuration
+> + * @masked_alarm: currently masked due to alarm
+> + * @intr_mask: interrupt configuration
+> + * @ams_unmask_work: re-enables event once the event condition disappears
+> + *
+> + * This structure contains necessary state for Sysmon driver to operate
+> + */
+> +struct ams {
+> +	void __iomem *base;
+> +	void __iomem *ps_base;
+> +	void __iomem *pl_base;
+> +	struct clk *clk;
+> +	struct device *dev;
+> +	struct mutex lock;
+> +	spinlock_t intr_lock;
+> +	unsigned int alarm_mask;
+> +	unsigned int masked_alarm;
+
+Hmm. maybe a rename to make these two less confusing?
+Perhaps
+current_masked_alarm?
+
+> +	u64 intr_mask;
+> +	struct delayed_work ams_unmask_work;
+> +};
+> +
+
+
+...
+
+
+> +
+> +static void ams_handle_event(struct iio_dev *indio_dev, u32 event)
+> +{
+> +	const struct iio_chan_spec *chan;
+> +
+> +	chan = ams_event_to_channel(indio_dev, event);
+> +
+> +	if (chan->type == IIO_TEMP) {
+> +		/*
+> +		 * The temperature channel only supports over-temperature
+> +		 * events.
+> +		 */
+> +		iio_push_event(indio_dev,
+> +			       IIO_UNMOD_EVENT_CODE(chan->type, chan->channel,
+> +						    IIO_EV_TYPE_THRESH,
+> +						    IIO_EV_DIR_RISING),
+> +			iio_get_time_ns(indio_dev));
+> +	} else {
+> +		/*
+> +		 * For other channels we don't know whether it is a upper or
+> +		 * lower threshold event. Userspace will have to check the
+> +		 * channel value if it wants to know.
+> +		 */
+> +		iio_push_event(indio_dev,
+> +			       IIO_UNMOD_EVENT_CODE(chan->type, chan->channel,
+> +						    IIO_EV_TYPE_THRESH,
+> +						    IIO_EV_DIR_EITHER),
+> +			iio_get_time_ns(indio_dev));
+
+I think alignment is wrong here. iio_get_time_ns() should align with opening bracket as well.
+
+> +	}
+> +}
+> +
+
+...
+
+> +
+> +static int ams_parse_firmware(struct iio_dev *indio_dev,
+> +			      struct platform_device *pdev)
+> +{
+> +	struct ams *ams = iio_priv(indio_dev);
+> +	struct iio_chan_spec *ams_channels, *dev_channels;
+> +	struct fwnode_handle *child = NULL, *fwnode = dev_fwnode(&pdev->dev);
+
+Where you have values being set, I'd prefer separate line per variable.
+Tends to be a little more readable and we need all the help we can get :)
+
+> +	size_t dev_chan_size, ams_chan_size, num_chan;
+> +	int ret, ch_cnt = 0, i, rising_off, falling_off;
+> +	unsigned int num_channels = 0;
+> +
+
+One blank line is almost always enough. Definitely is here.
+
+> +
+> +	num_chan = ARRAY_SIZE(ams_ps_channels) + ARRAY_SIZE(ams_pl_channels) +
+> +		ARRAY_SIZE(ams_ctrl_channels);
+> +
+> +	ams_chan_size = array_size(num_chan, sizeof(struct iio_chan_spec));
+> +	if (ams_chan_size == SIZE_MAX)
+> +		return -EINVAL;
+> +
+> +	/* Initialize buffer for channel specification */
+> +	ams_channels = kcalloc(num_chan, sizeof(struct iio_chan_spec), GFP_KERNEL);
+> +	if (!ams_channels)
+> +		return -ENOMEM;
+> +
+> +	if (fwnode_device_is_available(fwnode)) {
+> +		ret = ams_init_module(indio_dev, fwnode, ams_channels);
+> +		if (ret < 0)
+> +			goto free_mem;
+> +
+> +		num_channels += ret;
+> +	}
+> +
+> +	fwnode_for_each_child_node(fwnode, child) {
+> +		if (fwnode_device_is_available(child)) {
+> +			ret = ams_init_module(indio_dev, child,
+> +					      ams_channels + num_channels);
+> +			if (ret < 0) {
+> +				fwnode_handle_put(child);
+> +				goto free_mem;
+> +			}
+> +
+> +			num_channels += ret;
+> +		}
+> +	}
+> +
+> +	for (i = 0; i < num_channels; i++) {
+> +		ams_channels[i].channel = ch_cnt++;
+> +
+> +		if (ams_channels[i].scan_index < AMS_CTRL_SEQ_BASE) {
+> +			/* set threshold to max and min for each channel */
+> +			falling_off =
+> +				ams_get_alarm_offset(ams_channels[i].scan_index,
+> +						     IIO_EV_DIR_FALLING);
+> +			rising_off =
+> +				ams_get_alarm_offset(ams_channels[i].scan_index,
+> +						     IIO_EV_DIR_RISING);
+> +			if (ams_channels[i].scan_index >= AMS_PS_SEQ_MAX) {
+> +				writel(AMS_ALARM_THR_MIN,
+> +				       ams->pl_base + falling_off);
+> +				writel(AMS_ALARM_THR_MAX,
+> +				       ams->pl_base + rising_off);
+> +			} else {
+> +				writel(AMS_ALARM_THR_MIN,
+> +				       ams->ps_base + falling_off);
+> +				writel(AMS_ALARM_THR_MAX,
+> +				       ams->ps_base + rising_off);
+> +			}
+> +		}
+> +	}
+> +
+> +	dev_chan_size = array_size((size_t)num_channels, sizeof(struct iio_chan_spec));
+> +	if (dev_chan_size == SIZE_MAX)
+
+Why not goto free_mem for this error case?
+Obviously should never happen, but should handle the error anyway.
+
+> +		return -EINVAL;
+> +
+> +	dev_channels = devm_kcalloc(&pdev->dev, (size_t)num_channels,
+> +				    sizeof(struct iio_chan_spec), GFP_KERNEL);
+> +	if (!dev_channels) {
+> +		ret = -ENOMEM;
+> +		goto free_mem;
+> +	}
+> +
+> +	memcpy(dev_channels, ams_channels,
+> +	       sizeof(*ams_channels) * num_channels);
+> +	indio_dev->channels = dev_channels;
+> +	indio_dev->num_channels = num_channels;
+> +
+> +	ret = 0;
+> +
+> +free_mem:
+> +	kfree(ams_channels);
+> +
+> +	return ret;
+> +}
+
 
