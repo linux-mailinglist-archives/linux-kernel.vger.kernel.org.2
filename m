@@ -2,59 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91B0345801A
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 20:20:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F4A45801C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 20:20:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231204AbhKTTXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 14:23:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50274 "EHLO mail.kernel.org"
+        id S231818AbhKTTXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 14:23:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229823AbhKTTXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 14:23:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2591C60D42;
-        Sat, 20 Nov 2021 19:20:17 +0000 (UTC)
+        id S231325AbhKTTXW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 14:23:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 35D3960E78;
+        Sat, 20 Nov 2021 19:20:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637436017;
-        bh=cpLLDSqsizXcdLW6qg4VngWyCD70N3qZNdPRoy4jITI=;
+        s=k20201202; t=1637436019;
+        bh=ftEJNZ2QfKM3eLMFRijzFwpxU4lf8BYGKrwmGeb2Ukk=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=VLuQAPICkhZGJYXYVOn5EIZbljNWvLswwmoN2ZCwBRnV/1u5ii90kIe08MV69n+sC
-         BfKvyyrrZDmHQy/rY98wrZyKqIBQaLJxVQK//431sMu+Yvw4sS3VcGLqAdRPEd6qra
-         8NgHMWBnl6JUtJXqZkA9dvYkmePNLN6w+Yo41AX2sSnJis/kOIrrhlQslOTgvUdNMB
-         t2PsCvZD4LXZ6ufNM3YNYW6pEAm/Dtq8+AbkYIrBo1MxxnbPSVNsrYZr/Auon+krY8
-         eYvBjDJ6/spQvgP071tS6QjYcZopVXC8RBzFIQxPNM+VvcwSD8Zk67SApfH0EHdAO4
-         4XyC+jLesmVAw==
+        b=HxpGB6kvnkaOYD67uuSuNWWhDJZQRMV0IokfAeDIeFfdY1SXyksZX1oehB4BXjk3D
+         9NX03DBOQLEZ13BNwcYr5juG15YPeEaINm2g1N+H4qdLgze5XuKAj0SXJ//B+59n+y
+         XKCp6K5Vf3rFJcTJvq4kdn5jYg2k0MGJCoIPPZM34MFFL6QRxr1aWodEiE4jYSCdOP
+         gyrJQOVjpO/nAXRs/SdGuhufTwY3cNQ8xs/XLVlzGEBosuuTqhbS1H3/tgMDjvAoqO
+         FOgE7FJjYXCcc28PLxxnrNXQDR/dYeAluKanpx0ivZ378iH4D0vsDZ4Bq4vmSGOlUB
+         nSGaae5uCWYLg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1ECCA604EB;
-        Sat, 20 Nov 2021 19:20:17 +0000 (UTC)
-Subject: Re: [GIT PULL] s390 updates for 5.16-rc2
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 30A42609B4;
+        Sat, 20 Nov 2021 19:20:19 +0000 (UTC)
+Subject: Re: [GIT PULL] cifs/smb3 fixes
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YZkKklfvwaRkxwqz@osiris>
-References: <YZkKklfvwaRkxwqz@osiris>
-X-PR-Tracked-List-Id: <linux-s390.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YZkKklfvwaRkxwqz@osiris>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.16-3
-X-PR-Tracked-Commit-Id: 890e3dc8bb6ee630870560c34054692f7a45da42
+In-Reply-To: <CAH2r5mvH+e=5dxKsmnKVYttaQk=7u+KO0uucQ+z4fxH9RemwhQ@mail.gmail.com>
+References: <CAH2r5mvH+e=5dxKsmnKVYttaQk=7u+KO0uucQ+z4fxH9RemwhQ@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-cifs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAH2r5mvH+e=5dxKsmnKVYttaQk=7u+KO0uucQ+z4fxH9RemwhQ@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.samba.org/sfrench/cifs-2.6.git tags/5.16-rc1-smb3-fixes
+X-PR-Tracked-Commit-Id: 8ae87bbeb5d1bfd4ddf2f73f72be51d02d6be2eb
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6b38e2fb70b6682fd8f8cd24c03597e27fec3df3
-Message-Id: <163743601711.28722.10582088359602652887.pr-tracker-bot@kernel.org>
-Date:   Sat, 20 Nov 2021 19:20:17 +0000
-To:     Heiko Carstens <hca@linux.ibm.com>
+X-PR-Merge-Commit-Id: b38bfc747cb48a3f73a196a11400f5094b887a56
+Message-Id: <163743601919.29153.18328651547749272907.pr-tracker-bot@kernel.org>
+Date:   Sat, 20 Nov 2021 19:20:19 +0000
+To:     Steve French <smfrench@gmail.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+        CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 20 Nov 2021 15:47:46 +0100:
+The pull request you sent on Fri, 19 Nov 2021 16:45:10 -0600:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.16-3
+> git://git.samba.org/sfrench/cifs-2.6.git tags/5.16-rc1-smb3-fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6b38e2fb70b6682fd8f8cd24c03597e27fec3df3
+https://git.kernel.org/torvalds/c/b38bfc747cb48a3f73a196a11400f5094b887a56
 
 Thank you!
 
