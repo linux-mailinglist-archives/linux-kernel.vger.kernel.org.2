@@ -2,189 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C42EC458053
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 21:29:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE2345805A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 21:40:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231941AbhKTUcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 15:32:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231818AbhKTUcn (ORCPT
+        id S232362AbhKTUnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 15:43:12 -0500
+Received: from o1.ptr2625.egauge.net ([167.89.112.53]:44994 "EHLO
+        o1.ptr2625.egauge.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232118AbhKTUnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 15:32:43 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D2FBC061574;
-        Sat, 20 Nov 2021 12:29:40 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id bf8so28987614oib.6;
-        Sat, 20 Nov 2021 12:29:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZDrGzH3m3kCQZZzzRryqaMclRzMqAO2y432BfChnYk8=;
-        b=XyP6cSJbipHbGuKp/9x5pZQk32XgCfy+4W/wmwSUCJkRP7agFSQE1OAvjhqWz6UJfP
-         RU5iU+egBBFyvIWr3DNg7s+AhY9Tfom1RNaqlaF+uRw4Cb5pLT6IJ4BF/ywBzlzvQpgJ
-         d7OqnK1hYuTqRQ0wPkSEKMZm0yOuu1TAH46/eLnbD6+ci4e0saaF4UK0XbQH1RgnpDGR
-         tmhHV5cjV7416DwD9ig0cyxRcdrIIYyE2suuU+B3E52HVk3UttUX/wLFT3Q5NuKKHCtr
-         n95v0fOHZ3aNokTwkT3zzeP8M8ZuhI1ENZqeQUiJw9CANKnacCbYrjtV1Snm+zXAXTsg
-         DaGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZDrGzH3m3kCQZZzzRryqaMclRzMqAO2y432BfChnYk8=;
-        b=vSONcMF0deynHOnrAaJDBT6ZNCUqNxsLJK55vxj+xg05aP4QgA1arGMk7CXPEuNHPu
-         0x2lyg20hOpPuYzzPl3Xt0kSpddXcA/oMMOKiBO79oNNX7vfy40P/61cwekYiw56ghAL
-         118/GmoEMQhlJwNuid9B2XT8m8HM57am3JrIdWmCe2fTeSyeUuPoYOheEE9r2g6ruuGe
-         aKWi8QV+McZB3Lt7hCFDjKNMg1J3FvAyQ3LDrKcN2J65ZIyUafvvie6+akVBnjrCnSde
-         MjFoL4DcGz+ur/hFoQnw8DFcMXS65bJz8CnMGUJaOTDiwn7q2E2i/jn3+krL3IbCUFji
-         KkRQ==
-X-Gm-Message-State: AOAM530b3JcAyTzqrRjsIHQ0ZhbJbBkogjm7Ve1ltm0zVCW/54DbjbIA
-        UtLIX6VPiVDfzn0OiFBotI13p/IEses=
-X-Google-Smtp-Source: ABdhPJzgOgmIHpe7R8pxORMXs9Bwywa7+I7SkwCz2r3AfM72EgE0i9+/53WAxgekQJMMU6Z5+U8WqQ==
-X-Received: by 2002:aca:502:: with SMTP id 2mr9339130oif.121.1637440179407;
-        Sat, 20 Nov 2021 12:29:39 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s17sm681036ooj.42.2021.11.20.12.29.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Nov 2021 12:29:38 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v3 12/12] watchdog: s3c2410: Add Exynos850 support
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-References: <20211107202943.8859-1-semen.protsenko@linaro.org>
- <20211107202943.8859-13-semen.protsenko@linaro.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <2c0e5b23-92c5-70c9-3460-e9748f8a869e@roeck-us.net>
-Date:   Sat, 20 Nov 2021 12:29:36 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Sat, 20 Nov 2021 15:43:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=egauge.net;
+        h=from:subject:mime-version:to:cc:content-transfer-encoding:
+        content-type;
+        s=sgd; bh=TX0xMK7GUHeUHHgqvA7VUH7LvFvvcMijgypAUYumTPY=;
+        b=Z1+Ak2Grk8XVn8l4I9FytkzWVpeC13ybYSTrD/hou3qiKv0b0afkGGnsl0Tesv8GNEk1
+        X4BSPVSsYGcDnRxRFKawgfG3OMyVETNzhcZGEHW1IRqEAvyNGEu5jsWIl8fGFoSLIYJgq0
+        kRe80npfFaTD+m4gxAPbV16Kq1jcJvX9Is0ztWzQlWmydYacBCivNmEf3UI6mxNsk+THds
+        ufm2aKN1/wdmto9yXlcI/a8FRTKM4IdFjmAQ+yW3p07/Ar0O7JAqErkJQpUiNhDErgtfLl
+        Veq2qKc/q2kz+v9wRb1/XICmbORSON/4wv5orSCBXNA831C6h7POWGXZBhH55crg==
+Received: by filterdrecv-75ff7b5ffb-6sw96 with SMTP id filterdrecv-75ff7b5ffb-6sw96-1-61995BF8-2
+        2021-11-20 20:35:04.086457464 +0000 UTC m=+6905716.158116308
+Received: from pearl.egauge.net (unknown)
+        by geopod-ismtpd-4-0 (SG)
+        with ESMTP
+        id jUsrcopHRv6xe-VWSe-96w
+        Sat, 20 Nov 2021 20:35:03.946 +0000 (UTC)
+Received: by pearl.egauge.net (Postfix, from userid 1000)
+        id 70380700297; Sat, 20 Nov 2021 13:35:02 -0700 (MST)
+From:   David Mosberger-Tang <davidm@egauge.net>
+Subject: [PATCH 1/2] hwmon: (sht4x) Fix EREMOTEIO errors
+Date:   Sat, 20 Nov 2021 20:35:04 +0000 (UTC)
+Message-Id: <20211120203443.2299276-1-davidm@egauge.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20211107202943.8859-13-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+X-SG-EID: =?us-ascii?Q?+kMxBqj35EdRUKoy8diX1j4AXmPtd302oan+iXZuF8m2Nw4HRW2irNspffT=2Fkh?=
+ =?us-ascii?Q?ET6RJF6+Prbl0h=2FEtF1rRLvMrwroEOU1NSLm17o?=
+ =?us-ascii?Q?cS6DEpPaWkl6Rqrm52602M3yBbGq0vVwQkE7zh4?=
+ =?us-ascii?Q?ubqgrL2OXJIaOvTpEDfPn7frrgoQscFFPdBO5PO?=
+ =?us-ascii?Q?4WAMemFbtzNhvKjR6M8SZU8Pcrk9XDkhdEAE9HD?=
+ =?us-ascii?Q?+eUpuN1E1gOAkgLCJacA5M5iyCwplQs5J7+ZTXF?=
+ =?us-ascii?Q?pBpikyug2cieTvb+1gVpg=3D=3D?=
+To:     Navin Sankar Velliangiri <navin@linumiz.com>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Mosberger-Tang <davidm@egauge.net>
+X-Entity-ID: Xg4JGAcGrJFIz2kDG9eoaQ==
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/21 12:29 PM, Sam Protsenko wrote:
-> Exynos850 is a bit different from SoCs already supported in WDT driver:
->    - AUTOMATIC_WDT_RESET_DISABLE register is removed, so its value is
->      always 0; .disable_auto_reset callback is not set for that reason
->    - MASK_WDT_RESET_REQUEST register is replaced with
->      CLUSTERx_NONCPU_IN_EN register; instead of masking (disabling) WDT
->      reset interrupt it's now enabled with the same value; .mask_reset
->      callback is reused for that functionality though
->    - To make WDT functional, WDT counter needs to be enabled in
->      CLUSTERx_NONCPU_OUT register; it's done using .enable_counter
->      callback
-> 
-> Also Exynos850 has two CPU clusters, each has its own dedicated WDT
-> instance. Different PMU registers and bits are used for each cluster. So
-> driver data is now modified in probe, adding needed info depending on
-> cluster index passed from device tree.
-> 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
-> Changes in v3:
->    - Renamed "samsung,index" property to more descriptive
->      "samsung,cluster-index"
->    - Used pre-defined and completely set driver data for cluster0 and
->      cluster1
-> 
-> Changes in v2:
->    - Used single compatible for Exynos850, populating missing driver data
->      in probe
->    - Added "index" property to specify CPU cluster index
-> 
->   drivers/watchdog/s3c2410_wdt.c | 62 +++++++++++++++++++++++++++++++++-
->   1 file changed, 61 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
-> index 96aa5d9c6ed4..1456201f27de 100644
-> --- a/drivers/watchdog/s3c2410_wdt.c
-> +++ b/drivers/watchdog/s3c2410_wdt.c
-> @@ -56,6 +56,13 @@
->   #define EXYNOS5_RST_STAT_REG_OFFSET		0x0404
->   #define EXYNOS5_WDT_DISABLE_REG_OFFSET		0x0408
->   #define EXYNOS5_WDT_MASK_RESET_REG_OFFSET	0x040c
-> +#define EXYNOS850_CLUSTER0_NONCPU_OUT		0x1220
-> +#define EXYNOS850_CLUSTER0_NONCPU_INT_EN	0x1244
-> +#define EXYNOS850_CLUSTER1_NONCPU_OUT		0x1620
-> +#define EXYNOS850_CLUSTER1_NONCPU_INT_EN	0x1644
-> +
-> +#define EXYNOS850_CLUSTER0_WDTRESET_BIT		24
-> +#define EXYNOS850_CLUSTER1_WDTRESET_BIT		23
->   
->   /**
->    * Quirk flags for different Samsung watchdog IP-cores.
-> @@ -205,6 +212,30 @@ static const struct s3c2410_wdt_variant drv_data_exynos7 = {
->   		  QUIRK_HAS_PMU_RST_STAT | QUIRK_HAS_PMU_AUTO_DISABLE,
->   };
->   
-> +static const struct s3c2410_wdt_variant drv_data_exynos850_cl0 = {
-> +	.mask_reset_reg = EXYNOS850_CLUSTER0_NONCPU_INT_EN,
-> +	.mask_bit = 2,
-> +	.mask_reset_inv = true,
-> +	.rst_stat_reg = EXYNOS5_RST_STAT_REG_OFFSET,
-> +	.rst_stat_bit = EXYNOS850_CLUSTER0_WDTRESET_BIT,
-> +	.cnt_en_reg = EXYNOS850_CLUSTER0_NONCPU_OUT,
-> +	.cnt_en_bit = 7,
-> +	.quirks = QUIRK_HAS_WTCLRINT_REG | QUIRK_HAS_PMU_MASK_RESET | \
-> +		  QUIRK_HAS_PMU_RST_STAT | QUIRK_HAS_PMU_CNT_EN,
-> +};
-> +
-> +static const struct s3c2410_wdt_variant drv_data_exynos850_cl1 = {
-> +	.mask_reset_reg = EXYNOS850_CLUSTER1_NONCPU_INT_EN,
-> +	.mask_bit = 2,
-> +	.mask_reset_inv = true,
-> +	.rst_stat_reg = EXYNOS5_RST_STAT_REG_OFFSET,
-> +	.rst_stat_bit = EXYNOS850_CLUSTER1_WDTRESET_BIT,
-> +	.cnt_en_reg = EXYNOS850_CLUSTER1_NONCPU_OUT,
-> +	.cnt_en_bit = 7,
-> +	.quirks = QUIRK_HAS_WTCLRINT_REG | QUIRK_HAS_PMU_MASK_RESET | \
-> +		  QUIRK_HAS_PMU_RST_STAT | QUIRK_HAS_PMU_CNT_EN,
-> +};
-> +
->   static const struct of_device_id s3c2410_wdt_match[] = {
->   	{ .compatible = "samsung,s3c2410-wdt",
->   	  .data = &drv_data_s3c2410 },
-> @@ -216,6 +247,8 @@ static const struct of_device_id s3c2410_wdt_match[] = {
->   	  .data = &drv_data_exynos5420 },
->   	{ .compatible = "samsung,exynos7-wdt",
->   	  .data = &drv_data_exynos7 },
-> +	{ .compatible = "samsung,exynos850-wdt",
-> +	  .data = &drv_data_exynos850_cl0 },
->   	{},
->   };
->   MODULE_DEVICE_TABLE(of, s3c2410_wdt_match);
-> @@ -587,14 +620,38 @@ static inline const struct s3c2410_wdt_variant *
->   s3c2410_get_wdt_drv_data(struct platform_device *pdev)
->   {
->   	const struct s3c2410_wdt_variant *variant;
-> +	struct device *dev = &pdev->dev;
->   
-> -	variant = of_device_get_match_data(&pdev->dev);
-> +	variant = of_device_get_match_data(dev);
->   	if (!variant) {
->   		/* Device matched by platform_device_id */
->   		variant = (struct s3c2410_wdt_variant *)
->   			   platform_get_device_id(pdev)->driver_data;
->   	}
->   
-> +	/* Choose Exynos850 driver data w.r.t. cluster index */
-> +	if (variant == &drv_data_exynos850_cl0) {
+Per datasheet, SHT4x may need up to 8.2ms for a "high repeatability"
+measurement to complete.  Attempting to read the result too early
+triggers a NAK which then causes an EREMOTEIO error.
 
-0-day has a point here. drv_data_exynos850_cl0 is declared inside a CONFIG_OF
-conditional, causing compile failure if CONFIG_OF is not enabled.
+This behavior has been confirmed with a logic analyzer while running
+the I2C bus at only 40kHz.  The low frequency precludes any
+signal-integrity issues, which was also confirmed by the absence of
+any CRC8 errors.  In this configuration, a NAK occurred on any read
+that followed the measurement command within less than 8.2ms.
 
-Please fix and resubmit.
+Signed-off-by: David Mosberger-Tang <davidm@egauge.net>
+---
+ drivers/hwmon/sht4x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Guenter
+diff --git a/drivers/hwmon/sht4x.c b/drivers/hwmon/sht4x.c
+index 09c2a0b06444..3415d7a0e0fc 100644
+--- a/drivers/hwmon/sht4x.c
++++ b/drivers/hwmon/sht4x.c
+@@ -23,7 +23,7 @@
+ /*
+  * I2C command delays (in microseconds)
+  */
+-#define SHT4X_MEAS_DELAY	1000
++#define SHT4X_MEAS_DELAY_HPM	8200	/* see t_MEAS,h in datasheet */
+ #define SHT4X_DELAY_EXTRA	10000
+ 
+ /*
+@@ -90,7 +90,7 @@ static int sht4x_read_values(struct sht4x_data *data)
+ 	if (ret < 0)
+ 		goto unlock;
+ 
+-	usleep_range(SHT4X_MEAS_DELAY, SHT4X_MEAS_DELAY + SHT4X_DELAY_EXTRA);
++	usleep_range(SHT4X_MEAS_DELAY_HPM, SHT4X_MEAS_DELAY_HPM + SHT4X_DELAY_EXTRA);
+ 
+ 	ret = i2c_master_recv(client, raw_data, SHT4X_RESPONSE_LENGTH);
+ 	if (ret != SHT4X_RESPONSE_LENGTH) {
+-- 
+2.25.1
+
