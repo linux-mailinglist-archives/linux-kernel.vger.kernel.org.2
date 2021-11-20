@@ -2,208 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E809C457B7F
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 05:54:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D408E457B9E
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 06:01:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237276AbhKTEzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 23:55:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55186 "EHLO
+        id S229616AbhKTFEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 00:04:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236913AbhKTEyz (ORCPT
+        with ESMTP id S229491AbhKTFEl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 23:54:55 -0500
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11455C061377
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:51:38 -0800 (PST)
-Received: by mail-pj1-x104a.google.com with SMTP id lt10-20020a17090b354a00b001a649326aedso7786780pjb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:51:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=S4JOCCsPUUv01il4bq7xVAk0JN1RDL3MFZIqYpXV/gc=;
-        b=DvRqYo7YCSiwaPFC6e7L2pdRy6GddVpWyKFFGrSi166hINT7MKSjE9JdqFy8KDly0b
-         h9420y7z/UogTj+WC3NKQ+vfupHPCbM2pwbq/S/ZrUbOU97Ns0zoyS11ZMTJPxE2exrX
-         8CtofV/kE8ZP6D7+zLvAYitPV7aG+Wo0FM9pDI9AE6BIQtbex//+iuo7W/MwLIhfYvas
-         gixr1kylm0aC9f3ok/quYHEfAWYYCiGW1EUGRav/li8n10OeYMqkEisNWW+MSV6hxDOL
-         zP+pvpzPaHiIs26sbyqnV67xMf8hXwcJgfNWCP6itMfyJKTWJkA9kRuSlmLpgqrJxLix
-         OWKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=S4JOCCsPUUv01il4bq7xVAk0JN1RDL3MFZIqYpXV/gc=;
-        b=kS3LpHy4RX2VRdJeQSr0iRPMffBBNN7p/Ezi3iN2eA/r0YH8iLn1mQQHWUwUq9IAVc
-         roI9LDGvwNw5loiBNsjtiNtQAQ7V1j2fJLANa0mcAEdfBOY1vhgI6fqeN6vssQHBysch
-         S64tZU0hRBjXTvSvw7AWOXBuN+h0czmJ2glJnLMFJqsPeqQB/wXTxogG4t/c/O0xYGH2
-         62I5/UDapcOTrFieIkhKVhx9L80TytW8TmN6CL9ak6ifHo7Y9KgI0yCUupfzd1GYPqiD
-         u4ypocLK/ny9lufPzATewyTRZVPD0fdqIRorSEx8oHzmdGy0mmHPUX36bXNanSVjFrQc
-         I6uA==
-X-Gm-Message-State: AOAM532hn58FFeRg6eROfDlx1+0QXy38qDsYRciTFPUq2chZ2WLkMB+/
-        65WYDnjmheXG4Ao5czdGeEUXRtL8Jto=
-X-Google-Smtp-Source: ABdhPJxqI2uJM9vS1nKHoAeqHJHluigvIKY6YVsqnGXp8lpNlWbedyzzsHXsRuobZfC6Mg8EM5xEjAWTvOM=
-X-Received: from seanjc.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3e5])
- (user=seanjc job=sendgmr) by 2002:a63:8b4a:: with SMTP id j71mr1004814pge.231.1637383897612;
- Fri, 19 Nov 2021 20:51:37 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Sat, 20 Nov 2021 04:50:46 +0000
-In-Reply-To: <20211120045046.3940942-1-seanjc@google.com>
-Message-Id: <20211120045046.3940942-29-seanjc@google.com>
-Mime-Version: 1.0
-References: <20211120045046.3940942-1-seanjc@google.com>
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH 28/28] KVM: x86/mmu: Defer TLB flush to caller when freeing
- TDP MMU shadow pages
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Hou Wenlong <houwenlong93@linux.alibaba.com>,
-        Ben Gardon <bgardon@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Sat, 20 Nov 2021 00:04:41 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 990C2C06173E;
+        Fri, 19 Nov 2021 21:01:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fON0lxkCCP3L75Wlm+2KB5r1mpxAWywMnz/1PRTo2iM=; b=cyiAIP+nN8cwtnO8uxOeds523R
+        f8WPqgcHmubx387ec5SOjSZENwDl3h5TXBUCRayzgpMEG+nLpiiOmP62Dk52G5DK+JGBpV6Wsl6CG
+        wkWyUd6CFeBWXymjRkzj1MUPEQVWCjc8i7fwmQ8M+ttsYdI77dcpDemYghZ8Vpf/OhJ9yy0f83Hj6
+        0Enz1uButE8EqMn+02rZJTRB1waVikL+pC4uikfLYvC8Pi/IM7xxHCNeLGWB1qs24suLITEZnkhLb
+        3MCeG7nRIlV9ODi20SiIpQAWoiYfU15MSdzTM71S0BLS4nQR+BrS6oD0XZWitLFrhdTHLYpalprYU
+        z6lzyMhw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1moIV5-00AEt9-Cv; Sat, 20 Nov 2021 05:01:19 +0000
+Date:   Sat, 20 Nov 2021 05:01:19 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>, Shuah Khan <shuah@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Roman Gushchin <guro@fb.com>, Theodore Ts'o <tytso@mit.edu>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v4 0/4] Deterministic charging of shared memory
+Message-ID: <YZiBH6GxlkFFuyqa@casper.infradead.org>
+References: <20211120045011.3074840-1-almasrymina@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211120045011.3074840-1-almasrymina@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Defer TLB flushes to the caller when freeing TDP MMU shadow pages instead
-of immediately flushing.  Because the shadow pages are freed in an RCU
-callback, so long as at least one CPU holds RCU, all CPUs are protected.
-For vCPUs running in the guest, i.e. consuming TLB entries, KVM only
-needs to ensure the caller services the pending TLB flush before dropping
-its RCU protections.  I.e. use the caller's RCU as a proxy for all vCPUs
-running in the guest.
+On Fri, Nov 19, 2021 at 08:50:06PM -0800, Mina Almasry wrote:
+> 1. One complication to address is the behavior when the target memcg
+> hits its memory.max limit because of remote charging. In this case the
+> oom-killer will be invoked, but the oom-killer may not find anything
+> to kill in the target memcg being charged. Thera are a number of considerations
+> in this case:
+> 
+> 1. It's not great to kill the allocating process since the allocating process
+>    is not running in the memcg under oom, and killing it will not free memory
+>    in the memcg under oom.
+> 2. Pagefaults may hit the memcg limit, and we need to handle the pagefault
+>    somehow. If not, the process will forever loop the pagefault in the upstream
+>    kernel.
+> 
+> In this case, I propose simply failing the remote charge and returning an ENOSPC
+> to the caller. This will cause will cause the process executing the remote
+> charge to get an ENOSPC in non-pagefault paths, and get a SIGBUS on the pagefault
+> path.  This will be documented behavior of remote charging, and this feature is
+> opt-in. Users can:
+> - Not opt-into the feature if they want.
+> - Opt-into the feature and accept the risk of received ENOSPC or SIGBUS and
+>   abort if they desire.
+> - Gracefully handle any resulting ENOSPC or SIGBUS errors and continue their
+>   operation without executing the remote charge if possible.
 
-Deferring the flushes allows batching flushes, e.g. when installing a
-1gb hugepage and zapping a pile of SPs, and when zapping an entire root,
-allows skipping the flush entirely (becaues flushes are not needed in
-that case).
-
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/mmu/mmu.c      | 12 ++++++++++++
- arch/x86/kvm/mmu/tdp_iter.h |  7 +++----
- arch/x86/kvm/mmu/tdp_mmu.c  | 23 +++++++++++------------
- 3 files changed, 26 insertions(+), 16 deletions(-)
-
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index ef689b8bab12..7aab9737dffa 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -6237,6 +6237,12 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
- 	rcu_idx = srcu_read_lock(&kvm->srcu);
- 	write_lock(&kvm->mmu_lock);
- 
-+	/*
-+	 * Zapping TDP MMU shadow pages, including the remote TLB flush, must
-+	 * be done under RCU protection, the pages are freed via RCU callback.
-+	 */
-+	rcu_read_lock();
-+
- 	ratio = READ_ONCE(nx_huge_pages_recovery_ratio);
- 	to_zap = ratio ? DIV_ROUND_UP(nx_lpage_splits, ratio) : 0;
- 	for ( ; to_zap; --to_zap) {
-@@ -6261,12 +6267,18 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
- 
- 		if (need_resched() || rwlock_needbreak(&kvm->mmu_lock)) {
- 			kvm_mmu_remote_flush_or_zap(kvm, &invalid_list, flush);
-+			rcu_read_unlock();
-+
- 			cond_resched_rwlock_write(&kvm->mmu_lock);
- 			flush = false;
-+
-+			rcu_read_lock();
- 		}
- 	}
- 	kvm_mmu_remote_flush_or_zap(kvm, &invalid_list, flush);
- 
-+	rcu_read_unlock();
-+
- 	write_unlock(&kvm->mmu_lock);
- 	srcu_read_unlock(&kvm->srcu, rcu_idx);
- }
-diff --git a/arch/x86/kvm/mmu/tdp_iter.h b/arch/x86/kvm/mmu/tdp_iter.h
-index 0693f1fdb81e..0299703fc844 100644
---- a/arch/x86/kvm/mmu/tdp_iter.h
-+++ b/arch/x86/kvm/mmu/tdp_iter.h
-@@ -9,10 +9,9 @@
- 
- /*
-  * TDP MMU SPTEs are RCU protected to allow paging structures (non-leaf SPTEs)
-- * to be zapped while holding mmu_lock for read.  Holding RCU isn't required for
-- * correctness if mmu_lock is held for write, but plumbing "struct kvm" down to
-- * the lower* depths of the TDP MMU just to make lockdep happy is a nightmare,
-- * so all* accesses to SPTEs are must be done under RCU protection.
-+ * to be zapped while holding mmu_lock for read, and to allow TLB flushes to be
-+ * batched without having to collect the list of zapped SPs.  Flows that can
-+ * remove SPs must service pending TLB flushes prior to dropping RCU protection.
-  */
- static inline u64 kvm_tdp_mmu_read_spte(tdp_ptep_t sptep)
- {
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 55c16680b927..62cb357b1dff 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -433,9 +433,6 @@ static void handle_removed_tdp_mmu_page(struct kvm *kvm, tdp_ptep_t pt,
- 				    shared);
- 	}
- 
--	kvm_flush_remote_tlbs_with_address(kvm, base_gfn,
--					   KVM_PAGES_PER_HPAGE(level + 1));
--
- 	call_rcu(&sp->rcu_head, tdp_mmu_free_sp_rcu_callback);
- }
- 
-@@ -815,21 +812,14 @@ static void tdp_mmu_zap_root(struct kvm *kvm, struct kvm_mmu_page *root,
- 
- bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
- {
--	u64 old_spte;
-+	u64 old_spte = kvm_tdp_mmu_read_spte(sp->ptep);
- 
--	rcu_read_lock();
--
--	old_spte = kvm_tdp_mmu_read_spte(sp->ptep);
--	if (WARN_ON_ONCE(!is_shadow_present_pte(old_spte))) {
--		rcu_read_unlock();
-+	if (WARN_ON_ONCE(!is_shadow_present_pte(old_spte)))
- 		return false;
--	}
- 
- 	__tdp_mmu_set_spte(kvm, kvm_mmu_page_as_id(sp), sp->ptep, old_spte, 0,
- 			   sp->gfn, sp->role.level + 1, true, true);
- 
--	rcu_read_unlock();
--
- 	return true;
- }
- 
-@@ -871,6 +861,11 @@ static bool tdp_mmu_zap_leafs(struct kvm *kvm, struct kvm_mmu_page *root,
- 	}
- 
- 	rcu_read_unlock();
-+
-+	/*
-+	 * Because this flows zaps _only_ leaf SPTEs, the caller doesn't need
-+	 * to provide RCU protection as no 'struct kvm_mmu_page' will be freed.
-+	 */
- 	return flush;
- }
- 
-@@ -1011,6 +1006,10 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu,
- 		ret = RET_PF_SPURIOUS;
- 	else if (!tdp_mmu_set_spte_atomic(vcpu->kvm, iter, new_spte))
- 		return RET_PF_RETRY;
-+	else if (is_shadow_present_pte(iter->old_spte) &&
-+		 !is_last_spte(iter->old_spte, iter->level))
-+		kvm_flush_remote_tlbs_with_address(vcpu->kvm, sp->gfn,
-+						   KVM_PAGES_PER_HPAGE(iter->level + 1));
- 
- 	/*
- 	 * If the page fault was caused by a write but the page is write
--- 
-2.34.0.rc2.393.gf8c9666880-goog
-
+Why is ENOSPC the right error instead of ENOMEM?
