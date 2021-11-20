@@ -2,227 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D032B457D34
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 11:55:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A4F457D39
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 12:20:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236932AbhKTK6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 05:58:50 -0500
-Received: from mout.kundenserver.de ([212.227.126.134]:45523 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230196AbhKTK6t (ORCPT
+        id S237129AbhKTLP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 06:15:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236997AbhKTLPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 05:58:49 -0500
-Received: from [192.168.1.107] ([37.4.249.122]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1N4hj5-1mhL7p0GVb-011lVV; Sat, 20 Nov 2021 11:55:34 +0100
-Subject: Re: [PATCH 0/5] Raspberry Pi Sense HAT driver
-To:     Charles Mirabile <cmirabil@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Serge Schneider <serge@raspberrypi.org>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        linux-rpi-kernel@lists.infradead.org, fedora-rpi@googlegroups.com,
-        Mwesigwa Guma <mguma@redhat.com>,
-        Joel Savitz <jsavitz@redhat.com>
-References: <20211029215516.801593-1-cmirabil@redhat.com>
-From:   Stefan Wahren <stefan.wahren@i2se.com>
-Autocrypt: addr=stefan.wahren@i2se.com; keydata=
- LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tClZlcnNpb246IEdudVBHIHYy
- CgptUUlOQkZ0NmdCTUJFQUN1Yi9wQmV2SHhidkplZnlaRzMySklObW4yYnNFUFgyNVY2ZmVq
- bXlZd21DR0tqRnRMCi9Eb1VNRVZIRHhDSjQ3Qk1YbzM0NGZIVjFDM0FudWRnTjFCZWhMb0J0
- TEh4bW5lQ3pnSDNLY1B0V1c3cHRqNEcKdEp2OUNRRFp5MjdTS29FUHh5YUk4Q0YweWdSeEpj
- NzJNOUk5d21zUFo1YlVIc0x1WVdNcVE3SmNSbVBzNkQ4ZwpCa2srOC95bmdFeU5FeHd4SnBS
- MXlsajVianhXREh5WVF2dUo1THpaS3VPOUxCM2xYVnNjNGJxWEVqYzZWRnVaCkZDQ2svc3lp
- by9ZaHNlOE4rUXN4N01RYWd6NHdLVWtRUWJmWGcxVnFrVG5BaXZYczQyVm5Ja211NWd6SXcv
- MHQKUkp2NTBGUmhIaHhweUtBSThCOG5oTjhRdng3TVZrUGM1dkRmZDN1R1lXNDdKUGhWUUJj
- VXdKd05rLzQ5RjllQQp2ZzJtdE1QRm5GT1JrV1VSdlArRzZGSmZtNitDdk92N1lmUDF1ZXdB
- aTRsbitKTzFnK2dqVklXbC9XSnB5MG5UCmlwZGZlSDlkSGtnU2lmUXVuWWN1Y2lzTXlvUmJG
- OTU1dENna0VZOUVNRWRZMXQ4aUdEaUNnWDZzNTBMSGJpM2sKNDUzdWFjcHhmUVhTYUF3UGtz
- bDhNa0NPc3YyZUVyNElOQ0hZUUR5WmljbEJ1dUNnOEVOYlI2QUdWdFpTUGNRYgplbnpTektS
- Wm9POUNhcUlEK2ZhdkxpQi9kaHptSEErOWJnSWhtWGZ2WFJMRFp6ZThwbzFkeXQzRTFzaFhp
- ZGRaClBBOE51SlZ6RUl0MmxtSTZWOHBaRHBuMjIxcmZLaml2UlFpYW9zNTRUZ1pqak1ZSTdu
- bko3ZTZ4endBUkFRQUIKdENCVGRHVm1ZVzRnVjJGb2NtVnVJRHgzWVdoeVpXNXpkRUJuYlhn
- dWJtVjBQb2tDTndRVEFRZ0FJUVVDWElkYwo0Z0liQXdVTENRZ0hBZ1lWQ0FrS0N3SUVGZ0lE
- QVFJZUFRSVhnQUFLQ1JDVWdld1BFWkR5MjFPVEQvOUdpWkxkCnRSWWNteVJKZ2x0aVFRekFp
- UWRjSUQ3OGxHb1dwL3grci92Y1U2YjZqdVl1ZVR3Z1Iwclc3djdsMklSQnlEN24KSEp4YSt0
- SVNvUVpCZ2hvbE1JZmI5TXRoR09KTENZNzdrL1FoQWhuMzJOR1prZWp3OXR6a3MvNDBtclpT
- VVQ4NApaeWJzUVhyTE0vSFI2VElJL0RlUEIwbktEM0ppcHBzMlVIUUQ5cUQySWpFd1NRUGxI
- akNPckVaaDQ1UFo3bTkrClo5M0x6aVRlc1dabFlRdUxpSndzNHJLcHRIVzFkL3dSZWxzaG1t
- NlFxY0wybDRDL2U0MGVEQjlncTRkU1poOVgKUEVZbGxpeU5RaDdhMkxTZHVtRTFyK2NTd0lq
- RS91ZHRSdmRPOWFLb0psT2JVSzVkTmpTUEg3d0tUYndkWGRZRApHUHdEaFhkNThOQXdyK1BY
- QmxQajB0STFMQ3ErTEJ4ZUt6aFdYK0dWcTlEb2pWanlVREV4Rk5Ga1h1b0M3ZzhtClY5VDB0
- ZUJpdVpSbm91WEt3VjJGcHRaT0hIN0JVRVd0a0t0aGgxZXRmT1dwaWdCemtVN2JQc2ZJWVQr
- cnk5dGIKMW9KK3Y0MVBOYXFaRW1QVXBKeHZmek5UN3Ayd01lRDdaajlmMHJ1YlJQdExBSjJR
- R2pyRkhzdVh3QU9xcHl6ZQoxOEVidHNZazBOMHp1SEVoY2orUEJJQmZoMFlJWWQ1MW9mNkdJ
- aU95UjlxMFhYdHBsVUo3VDIvSDF1UXFrWGxwCitnVzRWa2lmc2NJckl1eWZueFpXMTJlSXZq
- NnlicVdMN2FZS0dZbVQ2aUxDUGJIWXlZY2F5bDRFa0ZjckNGN0UKZTBXVC9zY1ZNaE8vNVgv
- SGFOQTVIQngvcjUycGdMY3Y0aTlNeExRbVUzUmxabUZ1SUZkaGFISmxiaUE4YzNSbApabUZ1
- TG5kaGFISmxia0JwTW5ObExtTnZiVDZKQWpnRUV3RUNBQ0lGQWx0NmdCTUNHd01HQ3drSUJ3
- TUNCaFVJCkFna0tDd1FXQWdNQkFoNEJBaGVBQUFvSkVKU0I3QThSa1BMYmpic1AvamdqYVNz
- NUh0bGtBSXZXUytGcm15N2MKaG5jT0F4TFRWL0Q2UkV3SU95R0poRkt3d29pck55UTJnOXZV
- YTNZQ1lDZjFmSjh3RWhhS09COWQwTHBNUm5MNApkRVQ4ZDgyMzhFL3BLK0hxTktpSXNKaHM2
- SnNLOFpnalZRR3JtbWZua0dyWisxdjBIQnV4ZGljZ0duUC9XdHVBClVsOGw2Mi9BTGJheXlq
- KzYxQ2xyc0V0UklhcU82N0xJWXdQaVBEUkkrWGlNek5pR3pIRi8xUTZHUjAyUkg2YTMKRjg5
- ejhhUHhjSGkxWnZDdDJ5a3o2VUVjaHpQMHI1Z3FGSisvTC9VcHU4ME1YaVk0djVlSWFCNTJn
- VlBnaXlNQQpsTDJkRHMxbUladm5yUkxSWTJ0YjNtQVlOa1Y1QjVJRFQzcGtXeTZrS281T0Nn
- SytZZFlPUjhGTloyb04ydDhPCnJLK1ZudGFLN01NU0tIbG1ZL3NPd3RSbEVoMU9CbXJjQ3dH
- d21wLzA1R2tSNDZmL0lzaFJWZUZPUmF3K0dBcXQKUDIrQ0ZhMkNOQS9JSG5aTm95aWtsRHpQ
- UUhVVUdzck5wcERyaFg5Sm1oQm1nMXYyeXdIMU5YdTFpRGZQMUJBdwpLZ29rdDVmNVVhUkY5
- c0FBNTN2V0V2YlVVTjllZXNGR0x6UFdkSkdRNWhwZC9WSDVJUXk5U0JyaC93SWNla3E1Cm4w
- a042cGJUSHhHRTUyU2kvTVZJa05UdURaM2FwbjJqbERaNHBPdHBCWEkydlAzYlBPK05pcUJa
- anNVM3R4TGkKV2R2MkZqeXp6NlhMUndlV1JZVkw1SGE2TER0eG9yMnZ1NlVQMDdwOXh6MXhS
- WmFPRFczb1lsSEZ6WXBhNFc1ZwpMSGIybEVrSXVVZlNjaWNHYmpqQXRDbFRkR1ZtWVc0Z1Yy
- Rm9jbVZ1SUR4emRHVm1ZVzR1ZDJGb2NtVnVRR2x1CkxYUmxZMmd1WTI5dFBva0NOd1FUQVFn
- QUlRVUNYSWRlaHdJYkF3VUxDUWdIQWdZVkNBa0tDd0lFRmdJREFRSWUKQVFJWGdBQUtDUkNV
- Z2V3UEVaRHkyeUhURC85VUY3UWxEa0d4elE3QWFDSTZOOTVpUWY4LzFvU1VhRE51Mlk2SQpL
- K0R6UXBiMVRiVE9yM1ZKd3dZOGEzT1d6NU5MU09MTVdlVnh0K29zTW1sUUlHdWJEM09EWko4
- aXpQbEcvSnJOCnQ1elNkbU41SUE1ZjNlc1dXUVZLdmdoWkFnVERxZHB2K1pIVzJFbXhuQUox
- dUxGWFhlUWQzVVpjQzVyMy9nL3YKU2FNbzl4ZWszSjVtTnVEbTcxbEVXc0FzL0JBY0ZjK3lu
- TGh4d0JXQld3c3Z3UjhiSHRKNURPTVd2YUt1RHNrcApJR0ZVZS9LYjJCK2pyYXZRM1RuNnMv
- SHFKTTBjZXhTSHo1cGUrMHNHdlArdDlKNzIzNEJGUXdlRkV4cmlleThVCkl4T3I0WEFiYWFi
- U3J5WW5VL3pWSDlVMWkyQUlRWk1XSkFldkN2VmdRL1UrTmVSaFh1ZGU5WVVtRE1EbzJzQjIK
- VkFGRUFxaUYyUVVIUEEybThhN0VPM3lmTDRyTWswaUh6TElLdmg2L3JIOFFDWThpM1h4VE5M
- OWlDTHpCV3UvTgpPbkNBYlMremx2TFphaVNNaDVFZnV4VHR2NFBsVmRFamY2MlArWkhJRDE2
- Z1VEd0VtYXpMQU1yeDY2NmpINWt1ClVDVFZ5bWJMMFR2Qis2TDZBUmw4QU55TTRBRG1rV2tw
- eU0yMmtDdUlTWUFFZlFSM3VXWFo5WWd4YVBNcWJWK3cKQnJoSmc0SGFONkM2eFRxR3YzcjRC
- MmFxYjc3L0NWb1JKMVo5Y3BIQ3dpT3pJYUFtdnl6UFU2TXhDRFhaOEZnWQpsVDR2MjNHNWlt
- SlAyemdYNXMrRjZBQ1VKOVVRUEQwdVRmK0o5RGEycitza2gvc1dPbloreWNvSE5CUXZvY1pF
- Ck5BSFFmN2tDRFFSYmVvQVRBUkFBMkhkMGZzRFZLNzJSTFNESGJ5ME9oZ0RjRGxWQk0yTSto
- WVlwTzNmWDFyKysKc2hpcVBLQ0hWQXNRNWJ4ZTdIbUppbUhhNEtLWXMya3YvbWx0L0NhdUNK
- Ly9wbWN5Y0JNN0d2d25Lem11WHp1QQpHbVZUWkM2V1I1TGtha0ZydEhPelZtc0VHcE52NVJj
- OWw2SFlGcExrYlNrVmk1U1BRWkp5K0VNZ01DRmdqclpmClZGNnlvdHdFMWFmN0hOdE1oTlBh
- TEROMW9VS0Y1aitSeVJnNWl3SnVDRGtuSGp3QlFWNHBndzIvNXZTOEE3WlEKdjJNYlcvVExF
- eXBLWGlmNzhJaGdBelh0RTJYck0xbi9vNlpINzFvUkZGS096NDJsRmR6ZHJTWDBZc3FYZ0hD
- WAo1Z0l0TGZxemoxcHNNYTlvMWVpTlRFbTFkVlFyVHFueXMwbDE4b2FsUk5zd1lsUW1uWUJ3
- cHdDa2FUSExNSHdLCmZHQmJvNWRMUEVzaHRWb3dJNm5zZ3FMVHlRSG1xSFlxVVpZSXBpZ21t
- QzNTd0JXWTFWNmZmVUVta3FwQUFDRW4KTDQvZ1Vnbjd5US81ZDBzZXFuQXEycFNCSE1VVW9D
- Y1R6RVFVV1ZraUR2M1JrN2hURm1oVHNNcTc4eHYyWFJzWApNUjZ5UWhTVFBGWkNZRFVFeEVs
- RXNTbzlGV0hXcjZ6SHlZY2M4cURMRnZHOUZQaG1RdVQyczlCbHg2Z0kzMjNHCm5FcTFsd1dQ
- SlZ6UDRqUWtKS0lBWHdGcHYrVzhDV0xxekRXT3ZkbHJEYVRhVk1zY0ZUZUg1VzZVcHJsNjVq
- cUYKUUdNcGNSR0NzOEdDVVcxM0gwSXlPdFF0d1dYQTRueStTTDgxcHZpQW1hU1hVOGxhS2FS
- dTkxVk9WYUY5ZjRzQQpFUUVBQVlrQ0h3UVlBUUlBQ1FVQ1czcUFFd0liREFBS0NSQ1VnZXdQ
- RVpEeTIrb1hELzljSEhSa0JaT2ZrbVNxCjE0U3Z4MDYyUHRVMEtWNDcwVFNucC9qV29ZSm5L
- SXczRzBtWElSZ3J0SDJkUHdwSWdWanNZeVJTVk1LbVNwdDUKWnJEZjlOdFRiTldnazhWb0xl
- WnpZRW8rSjNvUHFGclRNczNhWVl2N2U0K0pLNjk1WW5tUSttT0Q5bmlhOTE1dApyNUFaajk1
- VWZTVGx5VW15aWMxZDhvdnNmMWZQN1hDVVZSRmNSamZOZkRGMW9ML3BEZ01QNUdaMk93YVRl
- am15CkN1SGpNOElSMUNpYXZCcFlEbUJuVFlrN1B0aHk2YXRXdllsMGZ5L0NxYWpUS3N4Nytw
- OXh6aXU4WmZWWCtpS0IKQ2MrSGUrRURFZEdJRGh2TlovSVFIZk9CMlBVWFdHUytzOUZOVHhy
- L0E2bkxHWG5BOVk2dzkzaVBkWUl3eFM3SwpYTG9LSmVlMTBEamx6c1lzUmZsRk9XMFpPaVNp
- aElDWGlRVjF1cU02dHpGRzlndFJjaXVzNVVBdGhXYU8xT3dVClNDUW1mQ09tNGZ2TUlKSUE5
- cnh0b1M2T3FSUWNpRjNjcm1vMHJKQ3ROMmF3WmZnaThYRWlmN2Q2aGp2MEVLTTkKWFpvaUFa
- WVpEKy9pTG01VGFLV042b0dJdGkwVmpKdjhaWk9aT2ZDYjZ2cUZJa0pXK2FPdTRvclRMRk16
- MjhhbwpVM1F5V3BOQzhGRm1kWXNWdWE4czZnTjFOSWE2eTNxYS9aQjhiQS9pa3k1OUFFejRp
- RElScmdVek1FZzhBazdUCmZtMUtpWWVpVHRCRENvMjVCdlhqYnFzeXhrUUQxbmtSbTZGQVZ6
- RXVPUEllOEp1cVcyeEQ5aXhHWXZqVTVoa1IKZ0pwM2dQNWIrY25HM0xQcXF1UTJFNmdvS1VN
- TEFia0NEUVJiZmw5REFSQUFzRExjYStMbFAydm5mdEVHaHBjQQpCR1ZOUUVGbkdQckNhdVU2
- SGhOODA1V3RQVHRtc1JPdUp6cWdVVDBtcHFXSWZacTZzTXd5dkhLOVRzL0tIM0paClVWYlJD
- M3oyaDNLZmhIL0RhZjk1cGQ2bVBjL2g5dkYvT3kzK2VUV2hnR25QNmNBNWtsUitmTzFXaEc4
- VnJpWHYKck5lUkcyMHN6emplSG9jblNJY1Q1WHVaUjB1REhPaUd4T2l6MXNNUkZUR3h6R095
- MTlSOXJ2dTYzdGlJM2Q3dgpnYzc1T0NBZGtlQi9TZUNFbGFSdzBUZjdMWmJQampzRjI2M0JZ
- bk1mNGtrTkVLdnFXY1UyaWNNcCtxZXpqeW5CCnB2ZXVlMHJDVFFCWUFRbG9GQ1ZUR0hyV1dB
- NkQ0VzVPMkFmSWRJYzF1MUpDWnAyZjVMV1ZvVUZUVklyUW5RUVUKU0hDaWZyOU1aeExUdFBK
- ZFU1Mm9TUHczZGs0aExQOGlKSUx1dnYvYXZhakNzUVlIRXR3WXNiZUZaeGl1TGdscApBN1lj
- Sk5ObXBnQ3BNRDR3VWh2bEN0QUtOQlFXeXIyOTc2OThFUVRuNDZlQmVVNkttMkNpaFhrZ3dD
- eWY4ZXlLCkxFM3NYZXdhcTVrZ1pXdk5xNml1NXFZSVJCOXl3K2NYYzYwZE9aRE9scTkzWDVT
- QVJZemFvZXBrSHo0cmtMa1AKUG8rdENIeUhRUHNHblBYYzlXVDgwREM5Tm5KR2R2VWx5NXJk
- TUk0eHBaeWdlb2tqd293VlFsUFV1Y1M2TXluNwpmOHc4Y2dmQjdDMklBSWNEeDJwUC9IendY
- dmtDT1FOQTdtVjFsTTA4bitnVmtUcnpweGlwNURicTRDSW9ZeDJNCkpaVDhiR1JINlhqY1VE
- S2EwOVFoeVpzQUVRRUFBWWtFUkFRWUFRZ0FEd1VDVzM1ZlF3SWJBZ1VKQThKbkFBSXAKQ1JD
- VWdld1BFWkR5MjhGZElBUVpBUWdBQmdVQ1czNWZRd0FLQ1JCVnhETFBjVk1NamNkc0QvMFJo
- QXN1UVlPeQpyMTNCbDNOaFhrWUFaR3AyWkZER3VrZTdPU2tWOG9qT09UZFR5ei9jT1JHQ2J5
- ZEQrRGd2cUZ5VmRuT1hLZ08wCmxKbUd3ckdlTGRnZ0F2aDBpaHJwNU8wWVVKOWJCU1htR01t
- UVRZSC9BbUxUR2FkYnVqQ1dqNWZGVWtDeXd4aW0KSHV5MFBiMjRwelR2UzUwR1k1WStxSDBG
- SE5haWdka2tpV04zcnVnN0haRXUvQ3lsUFpqT1h6K0QxUVBNckV4dwo3ZC9NS2FiVis5YU5i
- UVlabGRJajk4UXd2VUYxS1N6YThqbFVJdnBoUnEyN0FUOGZER1lHUGZERU1nMmNCT2FlCkty
- N29uUXM0YjdhV082aWZEbHhRVHB6c3pvK0FuODA3Tk1TdFZFRmYrczNBaFZEM2U3bmY4SkJh
- dmJWckFlMGsKb20yNm96elBubnh6K2xxVlZ0dzZVazRYTUl6dGl4L0h3SFl3dUNuY1VYWndL
- MEkzeUFKd2pZd29vck9DaEozUwpFVWJKUVB0R3NneFJERXhWQkZlNk5MUC82MnhQOU82dGFj
- d09kYjBNbVAxYjM5cFJBVEM3YmdkMWxkVUxpNzVaCmxKckowL1NpVkVyb3FOWXk3OXRmbWdB
- WjJVeFptczlTckV5Nm85UVNmc24xYVh2K01QTDlKYUNHbWtQNnpiTFEKTm5kajBKY2FRbmtD
- MHZneWRPMUJtNk11OTZQOXVmbEtaY0FTNndtTE01SWRIT3lqTDg4d0h3anVjakFPQnRjdwpw
- MG9HVG5WT25Sc05ZU084VzhZWi9LZGJ1Nzg1ZGF6TXFKMmlOakFEdUJiZG02TjRqNUVkTW5r
- TG4wQklmUEpwCmRnbTR2bDJVcExqd1JHci9NM3dtbTVwdnMrNnVCN2hrL0ZKaUQvNGxsRU5Q
- NGVNMWg3U200aitWcTZOMSt6VEIKSVhKQWViSXFhc0RwNXlaUzdYcnk0STM2bjg1WEVZZkcw
- MWx0QXlob05WMkRPOFNJUlFwdWkydHErOVJQM1JLMQpKREJ4eEVKWTJFTzVKWjhNeGFQSFEw
- RFQwNWxSRmpLMkFsaGRFSXRqTGpwSjNmVW05c3FMeE1XeHpQNlV6M2lpCjJ1YTR1bnJ0Nk9D
- VHFRd2lqRi8zYlRXaXd2VkFBSG5NRlVpb1hzaEhhb2hWRGNWZm5lSU1mVjBiUUNYWWkzTnAK
- WTB2MFp3Y2lGSCtnU0M3cUQ2WE51aHBWR1NMNElpbGlGeS9TemNhSkV6QUhlTERTaFpQMkNX
- ZG5DNHZnbDM3dApocHg4aDU1WWhKbjZIU3VVelBnaGFLdFZCMmsrajdaZXlaK1NGeHA3SXVi
- SEN3TEhsUWhUNzVSd1EzaUF4S242CjBxajUxY1lUbnF4ZFpYVzZmSDNQa3VNellVNUdwcVIv
- MU9sNWMvd2ZJNmc2QW04eUtXLzBFVUx0K0tuNExGc1MKbTdZM201SDV2MTJVNkpCWXZWK3Ix
- M2paaW9zNEVFREU5M0Q1c05IMk1JeVJ6Q0RxMXpkZHQ0WHV5S0ZqUEtXMQo5aWJaRGZGVjdL
- dUNzdnVMMjNzQmMxc0NNb3ArRTFtVC9ReE9JQTZvRFQxTVFzdHdPVnVReURDdi9PdktTZ2Z6
- CjhGWEdMNkFQY2xqQ3FqOEFKaHhReXN4ZG9pUVA4bS92dStialdHR3Z4dzVzMWxncGlSRFRS
- VVBnY0pKTmFHWTIKVklEclpRaTROU2lOUTBOSWkrZGp1NGZOTW1DcFFxZzh0YkMzY0FhNnl3
- bTZvUUIxU0JobURYMmUxMWdSbGx1SQpPblRHUEUwSFRvM2w3MmxoYmc9PQo9cVpNVgotLS0t
- LUVORCBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCg==
-Message-ID: <389fa517-115a-27bc-df11-8cf9387b07e4@i2se.com>
-Date:   Sat, 20 Nov 2021 11:55:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20211029215516.801593-1-cmirabil@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Provags-ID: V03:K1:ELhJXvwYWDalL4O0bD8skgs/MAJHvMoCYw+hIaaQ2AQ/X0wUPUN
- LUsUdMmB1ItEsH5/LZW+/TNKJqG7ib9MLtTLo2BXzh1dya8uHFS0KiOXQdIE+Xt5y4pma4V
- 9dP/iymcNaWF5S3PiY13ebHrutLOp/4i4g2GqDZsTpUaxGxMvAQlvdPnbeBgxlatDPgTghU
- asoAutitN7odXyOV/ZG+Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:NFu3Qg2uAIw=:McOpZ81O2qTYk2qAmY2Gdk
- mbJRe2jznQBeaZZnJJJrRtNmkkSkFGezA2c5wLnOnq8RzJUpCnAf7vfZEw6x/zDiKrqH4D44m
- E3twxNPXAXQiewHxQpvkBP6NsiGeEamcCCYTir/i/8f5cnAfGrUr1IS7fpLKGo/TR8ipNHXrA
- GgJQ4hrp1IgdYULRpbUpFBtxtHdHwVpbCVaV1sUbEgbo1neVdqvByB6Vb7BqWa/tUn2l69Wqr
- VPyK9p6WuJhBAU7AvbR5/8pqlmhSZOE4/qPp/fOhxnTGKKtMrwAB8DRZhz1xEg3TSm/qaEZHC
- aCddZjYPwvb02cP0MXmz0PJpRid9NrFp+29+q3Oiu+HgAl3TdL8rDSaRSMQFsHRq9/oEpbpsi
- i0ErCf0dq1XjECkOJH303A4TYjmyrbzL+iLtFv/rT7ctvoTMiz91oRee4qRAQswkoiaXCuTBK
- +g0K3+zRDGTXFNt0LySaVlni7yRbM25iv0sRNRaijy4oCUyl5rw0K9L+oMDokWgaAZezx4bM/
- HCD2kIxRn02DVLmFyFa7+t0zrwIThWjKEZ+AzUeUMDSy/IuuAyNi1iyCNxF/TakGy038mueMH
- TlkEf+oAN9R3+FX/A+tU3yYmsjTpGe4QY3OBTXCjn3qPYDje2PFBkB46dPEAIQ4yNCa/JTtqo
- /8BytTdqL80rI8wKo+lGqScpigWC+mIwv87OGqWvOeIW8EAVS/8lpg5hwz/QpB5w0mbSiezvd
- BctIzR+r4ydnq+Ym
+        Sat, 20 Nov 2021 06:15:25 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989BFC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 03:12:22 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id g36-20020a25ae64000000b005c1f46f7ee6so19836284ybe.8
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 03:12:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=y0KeUaf6yAD9mUdfrovGwP2ZmXhum3aoW0pYBqDmMns=;
+        b=GtHRmlYpGjadB2YppYLoUO91303KsrP06J5UwfaEqnz96UEdfijeBAEcgadkezpigK
+         VcDi623/84zGWiPX4cGw6oCI60UMWHlOhYIlrJn/8JWRX0l1I/F/30PEhLj9s93cS+Ok
+         UZdlnMUuJvEjlr+6fnn0x/O9oQl0B29gD7UaieAJeoFgsa8mLdHz8/AhpUicZbzzwZXr
+         GFbjiE/JjzkcmfGyM3M+3wKjw5hHua/9l4sTrbVnOiea+NcWhGPZGEIR2+R9e4exCV2Y
+         tQ+DjGhIBpqujNgTYwkapRvtP1BHejnWWB2uINaobfRLFQgZkHbwHm2Rq5iG+PsNRNYU
+         t7qQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=y0KeUaf6yAD9mUdfrovGwP2ZmXhum3aoW0pYBqDmMns=;
+        b=M5fP+feiBU9f+qgctmQL0uExNjdUnWkZ1FjkpR41aXOJKsvEAMK95hxhsLfqg/AGbF
+         E2dwv/XR4K1hIeQtw3RZD/BF1TerFCf2OwAxX802TuIi31lZ6MOvWHUpPBpxRCa/a7nR
+         wllny9dqLmPMVmUTwLYB8nwGqD8nR3Y/tl12fNR3vaXhaX4QDBv+loGuf9WVHCiTN5N5
+         fiBYVH1io8vEP7E5O10Rk1ySvj0cBvmE2Os/yep8wHpCB64dajQmSrxyuIsjy6Zf2zMv
+         myYGtTDQDP6Ii2NmgSTYNn/NGYcUPJ8FyZUvQO5jJ/dH6poOiAcaZP2mVUT/dx0VgY4D
+         3W9w==
+X-Gm-Message-State: AOAM531CYhe2qErQsok03Ndy3nVEUws8KWmscjP9L+ldSrLClDWnOebk
+        jVv8oILtP0IHxGvruJYd15fZEOaUjw==
+X-Google-Smtp-Source: ABdhPJwfrC2hI7KTCTOxBuv0DAf8V5+yxchtiimvYb0Ed7bAykGaLPi8ehRFbLE8Oy5YeoCVkthfS0Or8g==
+X-Received: from zoebm1.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:e29])
+ (user=zoebm job=sendgmr) by 2002:a05:6902:1208:: with SMTP id
+ s8mr49731208ybu.375.1637406741776; Sat, 20 Nov 2021 03:12:21 -0800 (PST)
+Date:   Sat, 20 Nov 2021 11:11:51 +0000
+In-Reply-To: <YZixPDg8kKHZrGJB@kroah.com>
+Message-Id: <20211120111151.1086970-1-zoebm@google.com>
+Mime-Version: 1.0
+References: <YZixPDg8kKHZrGJB@kroah.com>
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+Subject: [PATCH 2/2] Staging: rtl8712: rtl871x_security: fixed a camel case
+ variable name coding style issue
+From:   Zoeb Mithaiwala <zoebm@google.com>
+To:     greg@kroah.com
+Cc:     trivial@kernel.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev, Zoeb Mithaiwala <zoebm@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Changed additional 'n' from variable name. Corrected comment indentation.
 
-Am 29.10.21 um 23:55 schrieb Charles Mirabile:
-> This patch series adds a set of drivers for operating the Sense HAT
-> peripheral device. This board is an add on for the Raspberry Pi that is
-> designed to connect using the GPIO connector via I2C.
->
-> It features:
-> 	- a joystick
-> 	- an 8x8 RGB LED matrix display
-> 	- a whole bunch of environmental sensors with their own drivers
-> 	  (those are already in upstream Linux)
->
-> This is a refactor of the work of Serge Schneider, the author of a
-> version of this driver that is currently in the Raspberry Pi downstream
-> kernel. We modified his code to make it suitable for upstream Linux.
->
-> A couple of tests are available for the driver in this repo:
-> https://github.com/underground-software/sensehat/tree/master/tests
-> 	- color_test displays various solid colors on the LED panel
-> 	- framebuffer_test diplays a single lit cell that is
-> 	  controllable via the arrow keys or the joystick
->
-> For more information about the Sense HAT, visit:
-> https://www.raspberrypi.org/products/sense-hat/
->
-> Changes since v2:
-> 	- We included a device tree binding in yaml form
-> 	- Switched to regmap for all i2c communications
-> 	- Fixed a few places where we had the old rpisense
-> 	  name that we missed when renaming for v2
+Signed-off-by: Zoeb Mithaiwala <zoebm@google.com>
+---
+ drivers/staging/rtl8712/rtl871x_security.c | 12 ++++++------
+ drivers/staging/rtl8712/rtl871x_security.h |  6 +++---
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
-since this is V2 of the patch series, please mark this properly in all
-subjects:
-
-[PATCH V2 0/5] ...
-
-Otherwise this is a nightmare for reviewers and maintainers.
-
-Best regards
+diff --git a/drivers/staging/rtl8712/rtl871x_security.c b/drivers/staging/rtl8712/rtl871x_security.c
+index 4b341074b1b2..529527e201e3 100644
+--- a/drivers/staging/rtl8712/rtl871x_security.c
++++ b/drivers/staging/rtl8712/rtl871x_security.c
+@@ -269,7 +269,7 @@ static void secmicclear(struct mic_data *pmicdata)
+ /* Reset the state to the empty message. */
+ 	pmicdata->L = pmicdata->K0;
+ 	pmicdata->R = pmicdata->K1;
+-	pmicdata->nbytes_in_m = 0;
++	pmicdata->bytes_in_m = 0;
+ 	pmicdata->M = 0;
+ }
+ 
+@@ -285,10 +285,10 @@ void r8712_secmicsetkey(struct mic_data *pmicdata, u8 *key)
+ static void secmicappendbyte(struct mic_data *pmicdata, u8 b)
+ {
+ 	/* Append the byte to our word-sized buffer */
+-	pmicdata->M |= ((u32)b) << (8 * pmicdata->n_bytes_in_m);
+-	pmicdata->nbytes_in_m++;
++	pmicdata->M |= ((u32)b) << (8 * pmicdata->bytes_in_m);
++	pmicdata->bytes_in_m++;
+ 	/* Process the word if it is full. */
+-	if (pmicdata->nbytes_in_m >= 4) {
++	if (pmicdata->bytes_in_m >= 4) {
+ 		pmicdata->L ^= pmicdata->M;
+ 		pmicdata->R ^= ROL32(pmicdata->L, 17);
+ 		pmicdata->L += pmicdata->R;
+@@ -301,7 +301,7 @@ static void secmicappendbyte(struct mic_data *pmicdata, u8 b)
+ 		pmicdata->L += pmicdata->R;
+ 		/* Clear the buffer */
+ 		pmicdata->M = 0;
+-		pmicdata->nbytes_in_m = 0;
++		pmicdata->bytes_in_m = 0;
+ 	}
+ }
+ 
+@@ -323,7 +323,7 @@ void r8712_secgetmic(struct mic_data *pmicdata, u8 *dst)
+ 	secmicappendbyte(pmicdata, 0);
+ 	secmicappendbyte(pmicdata, 0);
+ 	/* and then zeroes until the length is a multiple of 4 */
+-	while (pmicdata->nbytes_in_m != 0)
++	while (pmicdata->bytes_in_m != 0)
+ 		secmicappendbyte(pmicdata, 0);
+ 	/* The appendByte function has already computed the result. */
+ 	secmicputuint32(dst, pmicdata->L);
+diff --git a/drivers/staging/rtl8712/rtl871x_security.h b/drivers/staging/rtl8712/rtl871x_security.h
+index 006ce05c798f..1de662940417 100644
+--- a/drivers/staging/rtl8712/rtl871x_security.h
++++ b/drivers/staging/rtl8712/rtl871x_security.h
+@@ -192,7 +192,7 @@ struct mic_data {
+ 	u32  K0, K1;         /* Key */
+ 	u32  L, R;           /* Current state */
+ 	u32  M;              /* Message accumulator (single word) */
+-	u32  nbytes_in_m;      /* # bytes in M */
++	u32  bytes_in_m;     /* # bytes in M */
+ };
+ 
+ void seccalctkipmic(
+@@ -200,11 +200,11 @@ void seccalctkipmic(
+ 	u8  *header,
+ 	u8  *data,
+ 	u32  data_len,
+-	u8  *miccode,
++	u8  *Miccode,
+ 	u8   priority);
+ 
+ void r8712_secmicsetkey(struct mic_data *pmicdata, u8 *key);
+-void r8712_secmicappend(struct mic_data *pmicdata, u8 *src, u32 nbytes);
++void r8712_secmicappend(struct mic_data *pmicdata, u8 *src, u32 nBytes);
+ void r8712_secgetmic(struct mic_data *pmicdata, u8 *dst);
+ u32 r8712_aes_encrypt(struct _adapter *padapter, u8 *pxmitframe);
+ u32 r8712_tkip_encrypt(struct _adapter *padapter, u8 *pxmitframe);
+-- 
+2.20.1
 
