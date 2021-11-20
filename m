@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D732457B72
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 05:53:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED24457B6F
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 05:53:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237324AbhKTEzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 23:55:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54994 "EHLO
+        id S237228AbhKTEzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 23:55:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236939AbhKTEyi (ORCPT
+        with ESMTP id S237004AbhKTEyi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 19 Nov 2021 23:54:38 -0500
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B7FEC0613F7
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:51:01 -0800 (PST)
-Received: by mail-pj1-x104a.google.com with SMTP id mn13-20020a17090b188d00b001a64f277c1eso7798447pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:51:01 -0800 (PST)
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185A6C0613F9
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:51:03 -0800 (PST)
+Received: by mail-pg1-x54a.google.com with SMTP id r15-20020a63ec4f000000b002e582189837so5027297pgj.20
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 20:51:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=WeqhnXqLRprnd57wZJzwg+Xm5qcUdWW75YwTMtbvUiU=;
-        b=PZj/Mul87sRboOfPzTwBNyENaNNerV6nZx0pxkmHeCwsRBSy4JHncEVpQmwypRwqNi
-         DmlOC2AQd597ZnsCbsifzDwpqrwqy76yhUicKpzez5ontFk5W49xmNYkX2jla/Mu6WuI
-         TFZjaWFKEYw0lHhg1tVX22zGhej9kqa8AbiwRGMduDdzEDl7AQqmkjqkIOlbojwDyLJl
-         IA+CYnaVDz6sZtQtX+Ce6iD7g32gKbn3BoFTeh+3yAf+an3rLP2lEfDy8EeQsNl41agp
-         Y4vRa4IfZm1d+sebZ0A/3vP9c6jAyhVtGzTrAgNd5+8qUFd2SvtuFHIOvtN+oE9UlxRl
-         2wuQ==
+        bh=kRbBWHboZP166wiM9/QeB9lQ+gE9kRnPxnSqNsfgwok=;
+        b=PaFW80wYiFDjQHdAjCLfmrfN14ZfxWumhDxGPUy1CIq4CB+K+vmmCN0v9pwe9CmRkk
+         Mr8x1gI36HiXTdKDOZO9gpQq8sTuF5HaIVdwq87aF821wthnTJwvKCzVMZFzGcmKCLvw
+         LqgytiuJ/wnzY2SJvQZ2QIKvBpHyvbJUGKRnCg5U1L+KZ/FwsjBPdgut5KwWGEy2aioG
+         5Fz72Vqmm/fqc/ns+MGH+BWwJTC1oDlCn88kgnN5gVaSodOxA4LBleVeji22e1FgXtjs
+         i119cpqtAXxBKZ8B3BSyAkFo6N3w573O0EUOtB6mTTzW0ODt2cA0Yk4wK/xSEINKHW/m
+         rPTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=WeqhnXqLRprnd57wZJzwg+Xm5qcUdWW75YwTMtbvUiU=;
-        b=c0ZY/qjN3DZ9sIaY7KLSZPA9pK/53Y9Ncj99bIvOTlYnj8nf1tnaTCKjn/lDNnSZcj
-         W7bpVTkAqd6/KaPVzoc8OxABvPEZqXk1F4T7JFX5xsfUSdOSu0vau4p0TiYBlqcCDjTw
-         GI8VZ9oNQ6dc929nz/MHmClLdg8hoS1BjjvqCXwBjYuvhutu+s1qaJGeYNQHQrS6UG5M
-         q+ONwHT8sEZckyqcHx7P32T2rGI2mc27twckqindUPOckXKaxHJfNV1bgpuV9sBokech
-         sX5M79pRNV/U4IEt42JmReFwWnfn0DcjsOzN3kzwqKtWH1rizdgPsY1UiK/8PWeaCHHe
-         OsIQ==
-X-Gm-Message-State: AOAM5300MuibRYXhcAYTfQ+YjzjZghJJozpVtShyUyvI2SjwR1mZzFtm
-        QC3o1NMEOAZBVB1uq5sHEjiMxN+f+y8=
-X-Google-Smtp-Source: ABdhPJzj2s/HTixbl93w6AaGUy+KqMlJzDnwDFoD8ys7BSIlrDvYwYpy01Om2m9cXYwvFfJcebuHD0oTKDc=
+        bh=kRbBWHboZP166wiM9/QeB9lQ+gE9kRnPxnSqNsfgwok=;
+        b=zmZMmYNMHuSXBJSe16mM0iPbz2Mr4YOGUQWgpy5twsdtkVCByBVCGJXHrYhOcmjFwY
+         arDpVAh5IYSFeImETqQ/DRc5t2bAFuaVx7JUZUVOHnhD0QLaos7Gzy7RBvFgwHop1I6I
+         72k2joqAycbAKOc4BRf+Um1X0sRs1wlD+v/7lMquNqvuHSodF11Vj0YxZF+hsZs8tiDf
+         8+VM6MmmOXeXfjAKA2404hBduNeImQaBOda0EztnBJhRU3IytjVvWoGD96Qv/cXKVlEQ
+         keOtaCZhpaqVrlJ/HVgVGqaFv1jRcXcy4XZXVKBg7ECgWzzjhZT+vQtp+u5d1m1I7L8y
+         F5+g==
+X-Gm-Message-State: AOAM530KLV0EAwVDoWhLYzeNF8a2E5siy9cDqxAdV3vUQay4OfGYCysf
+        DzBWchY767nx+L2skuELPSazjHRUiTk=
+X-Google-Smtp-Source: ABdhPJx71YmvgsfQ/dG6SeLwEb0pLrv37b/SWXKbwOSeZ8ogkSRm2uXGsXL7Ih5xQRkauHVuOjsgO9U0Y2E=
 X-Received: from seanjc.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3e5])
- (user=seanjc job=sendgmr) by 2002:a17:902:c78a:b0:142:1b7a:930 with SMTP id
- w10-20020a170902c78a00b001421b7a0930mr84382356pla.8.1637383860785; Fri, 19
- Nov 2021 20:51:00 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a17:90a:390c:: with SMTP id
+ y12mr737512pjb.0.1637383862178; Fri, 19 Nov 2021 20:51:02 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Sat, 20 Nov 2021 04:50:22 +0000
+Date:   Sat, 20 Nov 2021 04:50:23 +0000
 In-Reply-To: <20211120045046.3940942-1-seanjc@google.com>
-Message-Id: <20211120045046.3940942-5-seanjc@google.com>
+Message-Id: <20211120045046.3940942-6-seanjc@google.com>
 Mime-Version: 1.0
 References: <20211120045046.3940942-1-seanjc@google.com>
 X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH 04/28] KVM: x86/mmu: Retry page fault if root is invalidated
- by memslot update
+Subject: [PATCH 05/28] KVM: x86/mmu: Check for present SPTE when clearing
+ dirty bit in TDP MMU
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -70,100 +69,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bail from the page fault handler if the root shadow page was obsoleted by
-a memslot update.  Do the check _after_ acuiring mmu_lock, as the TDP MMU
-doesn't rely on the memslot/MMU generation, and instead relies on the
-root being explicit marked invalid by kvm_mmu_zap_all_fast(), which takes
-mmu_lock for write.
+Explicitly check for preset SPTEs when clearing dirty bits in the TDP
+MMU.  This isn't strictly required for correctness, as setting the dirty
+bit in a defunct SPTE will not change the SPTE from !PRESENT to PRESENT.
+However, the guarded MMU_WARN_ON() in spte_ad_need_write_protect() would
+complain if anyone actually turned on KVM's MMU debugging.
 
-For the TDP MMU, inserting a SPTE into an obsolete root can leak a SP if
-kvm_tdp_mmu_zap_invalidated_roots() has already zapped the SP, i.e. has
-moved past the gfn associated with the SP.
-
-For other MMUs, the resulting behavior is far more convoluted, though
-unlikely to be truly problematic.  Installing SPs/SPTEs into the obsolete
-root isn't directly problematic, as the obsolete root will be unloaded
-and dropped before the vCPU re-enters the guest.  But because the legacy
-MMU tracks shadow pages by their role, any SP created by the fault can
-can be reused in the new post-reload root.  Again, that _shouldn't_ be
-problematic as any leaf child SPTEs will be created for the current/valid
-memslot generation, and kvm_mmu_get_page() will not reuse child SPs from
-the old generation as they will be flagged as obsolete.  But, given that
-continuing with the fault is pointess (the root will be unloaded), apply
-the check to all MMUs.
-
-Fixes: b7cccd397f31 ("KVM: x86/mmu: Fast invalidation for TDP MMU")
-Cc: stable@vger.kernel.org
+Fixes: a6a0b05da9f3 ("kvm: x86/mmu: Support dirty logging for the TDP MMU")
 Cc: Ben Gardon <bgardon@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c         | 23 +++++++++++++++++++++--
- arch/x86/kvm/mmu/paging_tmpl.h |  3 ++-
- 2 files changed, 23 insertions(+), 3 deletions(-)
+ arch/x86/kvm/mmu/tdp_mmu.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index d2ad12a4d66e..31ce913efe37 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -1936,7 +1936,11 @@ static void mmu_audit_disable(void) { }
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 1db8496259ad..c575df121b19 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -1246,6 +1246,9 @@ static bool clear_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+ 		if (tdp_mmu_iter_cond_resched(kvm, &iter, false, true))
+ 			continue;
  
- static bool is_obsolete_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
- {
--	return sp->role.invalid ||
-+	if (sp->role.invalid)
-+		return true;
++		if (!is_shadow_present_pte(iter.old_spte))
++			continue;
 +
-+	/* TDP MMU pages due not use the MMU generation. */
-+	return !sp->tdp_mmu_page &&
- 	       unlikely(sp->mmu_valid_gen != kvm->arch.mmu_valid_gen);
- }
- 
-@@ -3976,6 +3980,20 @@ static bool kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
- 	return true;
- }
- 
-+/*
-+ * Returns true if the page fault is stale and needs to be retried, i.e. if the
-+ * root was invalidated by a memslot update or a relevant mmu_notifier fired.
-+ */
-+static bool is_page_fault_stale(struct kvm_vcpu *vcpu,
-+				struct kvm_page_fault *fault, int mmu_seq)
-+{
-+	if (is_obsolete_sp(vcpu->kvm, to_shadow_page(vcpu->arch.mmu->root_hpa)))
-+		return true;
-+
-+	return fault->slot &&
-+	       mmu_notifier_retry_hva(vcpu->kvm, mmu_seq, fault->hva);
-+}
-+
- static int direct_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
- {
- 	bool is_tdp_mmu_fault = is_tdp_mmu(vcpu->arch.mmu);
-@@ -4013,8 +4031,9 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
- 	else
- 		write_lock(&vcpu->kvm->mmu_lock);
- 
--	if (fault->slot && mmu_notifier_retry_hva(vcpu->kvm, mmu_seq, fault->hva))
-+	if (is_page_fault_stale(vcpu, fault, mmu_seq))
- 		goto out_unlock;
-+
- 	r = make_mmu_pages_available(vcpu);
- 	if (r)
- 		goto out_unlock;
-diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-index f87d36898c44..708a5d297fe1 100644
---- a/arch/x86/kvm/mmu/paging_tmpl.h
-+++ b/arch/x86/kvm/mmu/paging_tmpl.h
-@@ -911,7 +911,8 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
- 
- 	r = RET_PF_RETRY;
- 	write_lock(&vcpu->kvm->mmu_lock);
--	if (fault->slot && mmu_notifier_retry_hva(vcpu->kvm, mmu_seq, fault->hva))
-+
-+	if (is_page_fault_stale(vcpu, fault, mmu_seq))
- 		goto out_unlock;
- 
- 	kvm_mmu_audit(vcpu, AUDIT_PRE_PAGE_FAULT);
+ 		if (spte_ad_need_write_protect(iter.old_spte)) {
+ 			if (is_writable_pte(iter.old_spte))
+ 				new_spte = iter.old_spte & ~PT_WRITABLE_MASK;
 -- 
 2.34.0.rc2.393.gf8c9666880-goog
 
