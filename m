@@ -2,136 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3DC458030
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 20:49:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B77458035
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 20:56:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbhKTTwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 14:52:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52314 "EHLO
+        id S230085AbhKTT7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 14:59:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhKTTwN (ORCPT
+        with ESMTP id S229488AbhKTT7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 14:52:13 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA32C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 11:49:10 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id e144so17619333iof.3
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 11:49:10 -0800 (PST)
+        Sat, 20 Nov 2021 14:59:01 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F12C061574;
+        Sat, 20 Nov 2021 11:55:57 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id l190so1037525pge.7;
+        Sat, 20 Nov 2021 11:55:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=hr4it2Nu4JOURKxzXa2x66i2A/MiAQxWQ0LABh8nC9s=;
-        b=LgTTv3lPW8Wx3HL2Tz4NpYsq5aSAdjeMRmMKb2XLhhk65VUIVH4BlC8LwL4VaNvkEi
-         RDhnNuzVnjhyE9TGrxzi9XnfITPglhvylhyx+YFlCO5KA9KoLg+qW7o9iVZdfm6IOCVQ
-         YsLQTcVU8G5R0QXn555PHvKhFJybQSIF671pMaPSXmwiApjV23yyrD3wvvSy2JEssewA
-         ccdTJivH/hJqC5JR3ghJ8SDcaUB+2dTF5WG7aOQVrfCHPl0ozvMtvJVZvGdobn7H7uHJ
-         h7e/IoZjA5xSGx7nyYSrGnr7B2SYbzrFdxmd+6Pw1k+eWuyenmblCzxHNEsR3buDLUcF
-         ZO2Q==
+        bh=3B9R8wmPt5FiY3+8DpmPyX4kLYpyKeoK4xVcuXGAELc=;
+        b=nD/OFAmEjlXdlhnR0EIWcKCOjCOpynXRiCQ3L5b/NryZEFW7aGN27xk4nHOKfeuhse
+         mZk0p5lIsEsob6VGHCAJPr/eoALBiLSDq62hlJNNKrCR2r9DpFVI1lIyMV9cLbXbV/CJ
+         bHvSMVxvejnHY8y0jHPVRD1oZ1D9xSZ9GAP48Qwlp5Gpx2J33IrOqBl+5T/PYD2q7pAV
+         Actp2SiKFF0pcq0+0JBkiGaV7FpnCxZP2GEsh2g0T5tfZGDwYYzB57jwDbQg2EX4rsR3
+         Gaegv6w8zrw6oW7sQ81izSqO6kJRrldI4NjDCBOw3wDSYFMqMlVJZuY/+saKP7YRllL0
+         x1VQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=hr4it2Nu4JOURKxzXa2x66i2A/MiAQxWQ0LABh8nC9s=;
-        b=F5U5DaRUqOZ2l0LzBDigGjWRLYQbFQejph2GQ/E6Iyj9pHG0RA1zzr1WNeaR63owwD
-         9xLwWO7OBPRVIA6erfAZL7kJUmjqE6Ffim1ZJiqpsFGRtZ6PFvzI7wP6iY3lXoFZ35sr
-         9z9SXWEEsQKhrghuru9ZdQANk5PTAFCD0O8sdFHM1ggY8bGAsK5k+8Q/wJIN+XK+PsWb
-         HGoTH1UL/TneI9cS6ZkJ7cbBLwzQtqebx3WqC81N39AMg/H4Ee2OuRtkzcVxO73OA8ir
-         O+/ULoRPCoZrRGGGFgJPtRzNejCbRs3IeBJIbM5ZjqB1aimcQoG/dZLLEpJp2LasxeGH
-         Jlhw==
-X-Gm-Message-State: AOAM531Zc/1w2qS8tx3jD+xfecLYiXdpGQqDQ4yYayrXONScziondTE9
-        HWhggBVRb8T1lu0hD8Inbsw=
-X-Google-Smtp-Source: ABdhPJw48jx7b9hQD9iYukk5NV4yS382dP5h4GcVdBRMUFcLeSv+9EqhCIfaMjnRdQKNFIzPo1+yfw==
-X-Received: by 2002:a05:6638:2512:: with SMTP id v18mr35514340jat.22.1637437749356;
-        Sat, 20 Nov 2021 11:49:09 -0800 (PST)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:de9c:9e61:8791:1fd7])
-        by smtp.gmail.com with ESMTPSA id t6sm2135976ils.44.2021.11.20.11.49.08
+        bh=3B9R8wmPt5FiY3+8DpmPyX4kLYpyKeoK4xVcuXGAELc=;
+        b=WpB2QlmWxSw3/oIgHy+GQh+RUQQgL+00cVXZ1aGOGTuKyDxo9jMruS5AGBnUh7dIyY
+         Nc8k9SToSSmIsD4CzKdtATJGUhysXy8GKmR6JU2G6KHlzUWM26Xi4YUAyvatZiGUveTR
+         a6W9OZ6YpqcHkmvsVuAHGigm/mW7HAz0iLL/V8Bt+vFNrqSSfJWlzT0aB/k85s0yPWw5
+         JEf2fnIsJ079a8BlJyoOSG69Y7q+qyKMQKtXlh6bfK1ROG7eDoFSh5CH1nCMIZOJyZdl
+         P7gffqDr2a6578HT/GKcrQ7OetLzITicN+ZWXIGJpH+o6/cpc6jMpEO56tzXhNAcDpvR
+         WUlg==
+X-Gm-Message-State: AOAM531EpJm9bLr2X7b8m7dmFZdvcyitG8762FMQK/GsFmuKD+5dLFXd
+        j2Bhbpc1h3TFnLcv6x4m/6c=
+X-Google-Smtp-Source: ABdhPJxrc0BlTm1p/mAREngPYj1AozJJkBDsUTlgiy4iQ8gEIX+Ko3GmA3AOSxR7OjuFJGd4WFiAVg==
+X-Received: by 2002:a63:85c6:: with SMTP id u189mr23809628pgd.344.1637438157101;
+        Sat, 20 Nov 2021 11:55:57 -0800 (PST)
+Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
+        by smtp.gmail.com with ESMTPSA id y130sm3397659pfg.202.2021.11.20.11.55.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Nov 2021 11:49:08 -0800 (PST)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     tharvey@gateworks.com, aford@beaconembedded.com,
-        Adam Ford <aford173@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] soc: imx: gpcv2: Enable vpumix/dispmix to wait for handshake
-Date:   Sat, 20 Nov 2021 13:49:00 -0600
-Message-Id: <20211120194900.1309914-1-aford173@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Sat, 20 Nov 2021 11:55:56 -0800 (PST)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Doug Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 1/3] drm/msm/gpu: Fix idle_work time
+Date:   Sat, 20 Nov 2021 12:01:01 -0800
+Message-Id: <20211120200103.1051459-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a comment in the code that states the driver needs to
-wait for the handshake, but it's only available when the bus
-has been enabled from the blk-ctrl.  Since both the
-vpumix and dispmix are called from the blk-ctl, it seems
-reasonable to assume the bus is enabled. Add a bool to determine
-which power-domains are able to properly wait for this
-handshake and set the corresping boolean for the two domains
-activated by the blk-ctrl.
+From: Rob Clark <robdclark@chromium.org>
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
+This was supposed to be a relative timer, not absolute.
 
-diff --git a/drivers/soc/imx/gpcv2.c b/drivers/soc/imx/gpcv2.c
-index 7b6dfa33dcb9..a957f7fff968 100644
---- a/drivers/soc/imx/gpcv2.c
-+++ b/drivers/soc/imx/gpcv2.c
-@@ -204,6 +204,7 @@ struct imx_pgc_domain {
- 	const int voltage;
- 	const bool keep_clocks;
- 	struct device *dev;
-+	bool blkctrl_bus_enabled;
- };
+Fixes: 658f4c829688 ("drm/msm/devfreq: Add 1ms delay before clamping freq")
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+---
+ drivers/gpu/drm/msm/msm_gpu_devfreq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/msm/msm_gpu_devfreq.c b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+index 43468919df61..7285041c737e 100644
+--- a/drivers/gpu/drm/msm/msm_gpu_devfreq.c
++++ b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+@@ -228,5 +228,5 @@ void msm_devfreq_idle(struct msm_gpu *gpu)
+ 	struct msm_gpu_devfreq *df = &gpu->devfreq;
  
- struct imx_pgc_domain_data {
-@@ -282,17 +283,14 @@ static int imx_pgc_power_up(struct generic_pm_domain *genpd)
- 				   domain->bits.hskreq, domain->bits.hskreq);
- 
- 		/*
--		 * ret = regmap_read_poll_timeout(domain->regmap, GPC_PU_PWRHSK, reg_val,
--		 *				  (reg_val & domain->bits.hskack), 0,
--		 *				  USEC_PER_MSEC);
--		 * Technically we need the commented code to wait handshake. But that needs
--		 * the BLK-CTL module BUS clk-en bit being set.
--		 *
--		 * There is a separate BLK-CTL module and we will have such a driver for it,
--		 * that driver will set the BUS clk-en bit and handshake will be triggered
--		 * automatically there. Just add a delay and suppose the handshake finish
--		 * after that.
-+		 * blkctrl_bus_enabled implies that the GPC is being invoked from a blk-ctrl
-+		 * and not from a peripheral or other GPC power domain.  The blk-ctrl is required
-+		 * to support the handshake.
- 		 */
-+		if (domain->blkctrl_bus_enabled)
-+			ret = regmap_read_poll_timeout(domain->regmap, GPC_PU_PWRHSK, reg_val,
-+							(reg_val & domain->bits.hskack), 0,
-+							USEC_PER_MSEC);
- 	}
- 
- 	/* Disable reset clocks for all devices in the domain */
-@@ -701,6 +699,7 @@ static const struct imx_pgc_domain imx8mm_pgc_domains[] = {
- 		},
- 		.pgc   = BIT(IMX8MM_PGC_VPUMIX),
- 		.keep_clocks = true,
-+		.blkctrl_bus_enabled = true,
- 	},
- 
- 	[IMX8MM_POWER_DOMAIN_VPUG1] = {
-@@ -749,6 +748,7 @@ static const struct imx_pgc_domain imx8mm_pgc_domains[] = {
- 		},
- 		.pgc   = BIT(IMX8MM_PGC_DISPMIX),
- 		.keep_clocks = true,
-+		.blkctrl_bus_enabled = true,
- 	},
- 
- 	[IMX8MM_POWER_DOMAIN_MIPI] = {
+ 	msm_hrtimer_queue_work(&df->idle_work, ms_to_ktime(1),
+-			       HRTIMER_MODE_ABS);
++			       HRTIMER_MODE_REL);
+ }
 -- 
-2.32.0
+2.33.1
 
