@@ -2,222 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15CBB457DCD
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 13:17:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A75C6457DC8
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 13:17:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237355AbhKTMU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 07:20:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237270AbhKTMUV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S237290AbhKTMUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sat, 20 Nov 2021 07:20:21 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7766DC061756
+Received: from mail-io1-f70.google.com ([209.85.166.70]:54200 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237129AbhKTMUU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 07:20:20 -0500
+Received: by mail-io1-f70.google.com with SMTP id a12-20020a056602148c00b005e7052734adso7459577iow.20
         for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 04:17:17 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id 137so7345218wma.1
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 04:17:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=YaZx2Y1Vt1Ut2aTw36wNCypRpJkUbfgmQVTDZ0VmVgg=;
-        b=G0DspSlupKx4AUg5ZT7ltXNlBHPMlfmebwsWLEI0fjNTzN8FF+OAjnHjjkowTA3YTz
-         Y5DGUFU1RqZBdH04tC0xC/avnxq/1+skZ0VCOq1mgUIzCnpJtEHJO9HK7/LIwnRXoRp+
-         rQz4achBubaElapoI9/Vm6An/nbj7zuytcNNa5DhyFwX7BkkRnuS8Iy3LlaG3ID6GztZ
-         YpZ8RDsV1eLdYDx5VL7v/6AvQ5yHQGI/Q2ZK570uO4q6u0byapqvyd9zlkeZnOLpkU1l
-         Bk8c8Y3m+sCLMdxBlSNTFQ2wLo1WPxZZmXJqgWQbyyzXvjmZnY54fmRSKov6jhnyPm7k
-         mNEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=YaZx2Y1Vt1Ut2aTw36wNCypRpJkUbfgmQVTDZ0VmVgg=;
-        b=VdfUtarSpy4AazdJeeQ8Ppow5qvkRVlzU8Hu9fJ9r4ouWFEBKkc0qFZXv35tA+hFj3
-         LJwoMYGhV1xy/pR7wkGtP75BXAnxJugMLNv5trf6AIN0ZH43ChVzp0NMctBN/KsXLXSi
-         Kx5OLAzraoBBuRoZ6vbIARvPACLCi40fvywRRHR4x5krKyIHpt3POhKC8vB5Igovz/T3
-         fwUkWASl/Z7fcm7EKlvbtX6jVdTqdGOvyacVqAhjsb3Jjjj4+PwGTVwsrtdKmMUdwabn
-         Lc1dvMY7KtHlJ1+1VE3N9S+G1bkAcHuTLxGWOw8TAhpt/g2UPzHoqCnl86mq7ef/TbUV
-         Eq/A==
-X-Gm-Message-State: AOAM530sQDIgcoSe4t1bGAWRXMHJZw1QKBmw0wXmtE9Ywr5f1ZVleFKb
-        ctPJHjqM39DuyMyENlk9ZkTfgw==
-X-Google-Smtp-Source: ABdhPJwhl1qUNp/ARRgHBsOEZYB2zBIGB9ymLIhCgmSIMnKiuQtGzmOMF1KU2l9Kmdis+/qTqfvOjQ==
-X-Received: by 2002:a05:600c:3486:: with SMTP id a6mr9590995wmq.32.1637410635476;
-        Sat, 20 Nov 2021 04:17:15 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:847c:11cc:32b2:b152])
-        by smtp.gmail.com with ESMTPSA id az15sm2620938wmb.0.2021.11.20.04.17.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Nov 2021 04:17:14 -0800 (PST)
-Date:   Sat, 20 Nov 2021 13:17:08 +0100
-From:   Marco Elver <elver@google.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul McKenney <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Maciej Rozycki <macro@orcam.me.uk>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Laura Abbott <labbott@kernel.org>,
-        David S Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Scull <ascull@google.com>,
-        Marc Zyngier <maz@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Wang Qing <wangqing@vivo.com>, Mel Gorman <mgorman@suse.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
-        Mathieu Chouquet-Stringer <me@mathieu.digital>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stephen Kitt <steve@sk2.org>, Stephen Boyd <sboyd@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-hardening@vger.kernel.org,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>, notify@kernel.org,
-        main@lists.elisa.tech, safety-architecture@lists.elisa.tech,
-        devel@lists.elisa.tech, Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH v2 0/2] Introduce the pkill_on_warn parameter
-Message-ID: <YZjnREFGhEO9pX6O@elver.google.com>
-References: <20211027233215.306111-1-alex.popov@linux.com>
- <ac989387-3359-f8da-23f9-f5f6deca4db8@linux.com>
- <CAHk-=wgRmjkP3+32XPULMLTkv24AkA=nNLa7xxvSg-F0G1sJ9g@mail.gmail.com>
- <77b79f0c-48f2-16dd-1d00-22f3a1b1f5a6@linux.com>
- <CAKXUXMx5Oi-dNVKB+8E-pdrz+ooELMZf=oT_oGXKFrNWejz=fg@mail.gmail.com>
- <20211115110649.4f9cb390@gandalf.local.home>
- <202111151116.933184F716@keescook>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Xyq0QSySE68UkDTiuAsAsDYEDsVRUJX9riQ2BCR/zGw=;
+        b=5lxN9ppRW/G+ea0QnwCCqMbloHq5W9QYwDEd0QiZSrRp3JYCvnfeg/NaoXjJTmoaq3
+         XlfdD46t0Q7z6IoeijEu95Q3a8951PMcKCI081oJcDJ0A0tV1YI/9SbxcRTLnDqwPGTd
+         KHySmIcqae4TXVgfbIYx5sx3HxgQhQoqZ8aGYsmeLQNT+zsLRcAsVoQKX5YfU9EQi8mO
+         6OH4Re+KOkmkO+CV8YjC++LI0o6q+5m/E8FQ/K1as8/7DGHwH8oppNO0d7+3znsZxaK2
+         3qGwriGzg5Ke98AKPg9A0eqUrpTnl1bg6RIhcs4tZ5tRy3mdpb5Zo11CjYDrtp0Xhih1
+         iuDw==
+X-Gm-Message-State: AOAM533xyhAz4Y4TKV2o80zl9A267AS4qYbjwnKXt1EoQ98YrmvaMUaH
+        Q0gnTRDWNMf5o2BOg3EdlSSSJwJf9tHxi/7xa7Y2DwUWPL8A
+X-Google-Smtp-Source: ABdhPJzubzlF6y5hnHTddFIV7WJKraWN6owNSW0KHHe9xN2dkwpkBWsLzgLMa0S3pfC/vdxvR0GCXuMcRWI5pHagan8UKg5BRd35
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202111151116.933184F716@keescook>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+X-Received: by 2002:a05:6602:134d:: with SMTP id i13mr11145325iov.164.1637410636761;
+ Sat, 20 Nov 2021 04:17:16 -0800 (PST)
+Date:   Sat, 20 Nov 2021 04:17:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005b12b805d1375f4a@google.com>
+Subject: [syzbot] KMSAN: uninit-value in ieee80211_sta_tx_notify (2)
+From:   syzbot <syzbot+614e82b88a1a4973e534@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, glider@google.com, johannes@sipsolutions.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 02:06PM -0800, Kees Cook wrote:
-[...]
-> However, that's a lot to implement when Marco's tracing suggestion might
-> be sufficient and policy could be entirely implemented in userspace. It
-> could be as simple as this (totally untested):
-[...]
-> 
-> Marco, is this the full version of monitoring this from the userspace
-> side?
+Hello,
 
-Sorry I completely missed this email (I somehow wasn't Cc'd... I just
-saw it by chance re-reading this thread).
+syzbot found the following issue on:
 
-I've sent a patch to add WARN:
+HEAD commit:    412af9cd936d ioremap.c: move an #include around
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=14d990eeb00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2d142cdf4204061
+dashboard link: https://syzkaller.appspot.com/bug?extid=614e82b88a1a4973e534
+compiler:       clang version 14.0.0 (git@github.com:llvm/llvm-project.git 0996585c8e3b3d409494eb5f1cad714b9e1f7fb5), GNU ld (GNU Binutils for Debian) 2.35.2
 
-	https://lkml.kernel.org/r/20211115085630.1756817-1-elver@google.com
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Not sure how useful BUG is, but I have no objection to it also being
-traced if you think it's useful.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+614e82b88a1a4973e534@syzkaller.appspotmail.com
 
-(I added it to kernel/panic.c, because lib/bug.c requires
-CONFIG_GENERIC_BUG.)
+=====================================================
+BUG: KMSAN: uninit-value in ieee80211_ac_from_tid net/mac80211/ieee80211_i.h:2216 [inline]
+BUG: KMSAN: uninit-value in ieee80211_sta_tx_wmm_ac_notify net/mac80211/mlme.c:2450 [inline]
+BUG: KMSAN: uninit-value in ieee80211_sta_tx_notify+0x3b8/0x950 net/mac80211/mlme.c:2482
+ ieee80211_ac_from_tid net/mac80211/ieee80211_i.h:2216 [inline]
+ ieee80211_sta_tx_wmm_ac_notify net/mac80211/mlme.c:2450 [inline]
+ ieee80211_sta_tx_notify+0x3b8/0x950 net/mac80211/mlme.c:2482
+ ieee80211_tx_status_ext+0x11f0/0x54d0 net/mac80211/status.c:1147
+ ieee80211_tx_status+0x221/0x270 net/mac80211/status.c:1090
+ ieee80211_tasklet_handler+0x30d/0x380 net/mac80211/main.c:239
+ tasklet_action_common+0x5dd/0x810 kernel/softirq.c:783
+ tasklet_action+0x30/0x40 kernel/softirq.c:804
+ __do_softirq+0x1c9/0x6ec kernel/softirq.c:558
+ do_softirq+0x120/0x1c0 kernel/softirq.c:459
+ __local_bh_enable_ip+0xab/0xb0 kernel/softirq.c:383
+ local_bh_enable+0x36/0x40 include/linux/bottom_half.h:32
+ __ieee80211_tx_skb_tid_band+0x297/0x3a0 net/mac80211/tx.c:5672
+ ieee80211_tx_skb_tid net/mac80211/ieee80211_i.h:2185 [inline]
+ ieee80211_tx_skb net/mac80211/ieee80211_i.h:2194 [inline]
+ ieee80211_send_nullfunc+0x535/0x630 net/mac80211/mlme.c:1095
+ ieee80211_mgd_probe_ap_send+0x6e7/0xa30 net/mac80211/mlme.c:2544
+ ieee80211_mgd_probe_ap+0x4ee/0x6c0 net/mac80211/mlme.c:2620
+ ieee80211_beacon_connection_loss_work+0x1a3/0x420 net/mac80211/mlme.c:2753
+ process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
+ worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
+ kthread+0x66b/0x780 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30
 
-> 	perf record -e error_report:error_report_end
+Uninit was created at:
+ slab_post_alloc_hook mm/slab.h:524 [inline]
+ slab_alloc_node mm/slub.c:3227 [inline]
+ __kmalloc_node_track_caller+0xa3b/0x13c0 mm/slub.c:4962
+ kmalloc_reserve net/core/skbuff.c:356 [inline]
+ __alloc_skb+0x4db/0xe40 net/core/skbuff.c:427
+ __netdev_alloc_skb+0x48f/0x840 net/core/skbuff.c:494
+ netdev_alloc_skb include/linux/skbuff.h:2877 [inline]
+ dev_alloc_skb include/linux/skbuff.h:2890 [inline]
+ ieee80211_nullfunc_get+0x2c1/0x870 net/mac80211/tx.c:5386
+ ieee80211_send_nullfunc+0x132/0x630 net/mac80211/mlme.c:1077
+ ieee80211_mgd_probe_ap_send+0x6e7/0xa30 net/mac80211/mlme.c:2544
+ ieee80211_mgd_probe_ap+0x4ee/0x6c0 net/mac80211/mlme.c:2620
+ ieee80211_beacon_connection_loss_work+0x1a3/0x420 net/mac80211/mlme.c:2753
+ process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
+ worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
+ kthread+0x66b/0x780 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in ieee80211_ac_from_tid net/mac80211/ieee80211_i.h:2216 [inline]
+BUG: KMSAN: uninit-value in ieee80211_sta_tx_wmm_ac_notify net/mac80211/mlme.c:2450 [inline]
+BUG: KMSAN: uninit-value in ieee80211_sta_tx_notify+0x3b8/0x950 net/mac80211/mlme.c:2482
+ ieee80211_ac_from_tid net/mac80211/ieee80211_i.h:2216 [inline]
+ ieee80211_sta_tx_wmm_ac_notify net/mac80211/mlme.c:2450 [inline]
+ ieee80211_sta_tx_notify+0x3b8/0x950 net/mac80211/mlme.c:2482
+ ieee80211_tx_status_ext+0x11f0/0x54d0 net/mac80211/status.c:1147
+ ieee80211_tx_status+0x221/0x270 net/mac80211/status.c:1090
+ ieee80211_tasklet_handler+0x30d/0x380 net/mac80211/main.c:239
+ tasklet_action_common+0x5dd/0x810 kernel/softirq.c:783
+ tasklet_action+0x30/0x40 kernel/softirq.c:804
+ __do_softirq+0x1c9/0x6ec kernel/softirq.c:558
+ do_softirq+0x120/0x1c0 kernel/softirq.c:459
+ __local_bh_enable_ip+0xab/0xb0 kernel/softirq.c:383
+ local_bh_enable+0x36/0x40 include/linux/bottom_half.h:32
+ __ieee80211_tx_skb_tid_band+0x297/0x3a0 net/mac80211/tx.c:5672
+ ieee80211_tx_skb_tid net/mac80211/ieee80211_i.h:2185 [inline]
+ ieee80211_tx_skb net/mac80211/ieee80211_i.h:2194 [inline]
+ ieee80211_send_nullfunc+0x535/0x630 net/mac80211/mlme.c:1095
+ ieee80211_mgd_probe_ap_send+0x6e7/0xa30 net/mac80211/mlme.c:2544
+ ieee80211_mgd_probe_ap+0x4ee/0x6c0 net/mac80211/mlme.c:2620
+ ieee80211_beacon_connection_loss_work+0x1a3/0x420 net/mac80211/mlme.c:2753
+ process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
+ worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
+ kthread+0x66b/0x780 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30
 
-I think userspace would want something other than perf tool to handle it
-of course.  There are several options:
+Uninit was created at:
+ slab_post_alloc_hook mm/slab.h:524 [inline]
+ slab_alloc_node mm/slub.c:3227 [inline]
+ __kmalloc_node_track_caller+0xa3b/0x13c0 mm/slub.c:4962
+ kmalloc_reserve net/core/skbuff.c:356 [inline]
+ __alloc_skb+0x4db/0xe40 net/core/skbuff.c:427
+ __netdev_alloc_skb+0x48f/0x840 net/core/skbuff.c:494
+ netdev_alloc_skb include/linux/skbuff.h:2877 [inline]
+ dev_alloc_skb include/linux/skbuff.h:2890 [inline]
+ ieee80211_nullfunc_get+0x2c1/0x870 net/mac80211/tx.c:5386
+ ieee80211_send_nullfunc+0x132/0x630 net/mac80211/mlme.c:1077
+ ieee80211_mgd_probe_ap_send+0x6e7/0xa30 net/mac80211/mlme.c:2544
+ ieee80211_mgd_probe_ap+0x4ee/0x6c0 net/mac80211/mlme.c:2620
+ ieee80211_beacon_connection_loss_work+0x1a3/0x420 net/mac80211/mlme.c:2753
+ process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
+ worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
+ kthread+0x66b/0x780 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in ieee80211_ac_from_tid net/mac80211/ieee80211_i.h:2216 [inline]
+BUG: KMSAN: uninit-value in ieee80211_sta_tx_wmm_ac_notify net/mac80211/mlme.c:2450 [inline]
+BUG: KMSAN: uninit-value in ieee80211_sta_tx_notify+0x3b8/0x950 net/mac80211/mlme.c:2482
+ ieee80211_ac_from_tid net/mac80211/ieee80211_i.h:2216 [inline]
+ ieee80211_sta_tx_wmm_ac_notify net/mac80211/mlme.c:2450 [inline]
+ ieee80211_sta_tx_notify+0x3b8/0x950 net/mac80211/mlme.c:2482
+ ieee80211_tx_status_ext+0x11f0/0x54d0 net/mac80211/status.c:1147
+ ieee80211_tx_status+0x221/0x270 net/mac80211/status.c:1090
+ ieee80211_tasklet_handler+0x30d/0x380 net/mac80211/main.c:239
+ tasklet_action_common+0x5dd/0x810 kernel/softirq.c:783
+ tasklet_action+0x30/0x40 kernel/softirq.c:804
+ __do_softirq+0x1c9/0x6ec kernel/softirq.c:558
+ do_softirq+0x120/0x1c0 kernel/softirq.c:459
+ __local_bh_enable_ip+0xab/0xb0 kernel/softirq.c:383
+ local_bh_enable+0x36/0x40 include/linux/bottom_half.h:32
+ __ieee80211_tx_skb_tid_band+0x297/0x3a0 net/mac80211/tx.c:5672
+ ieee80211_tx_skb_tid net/mac80211/ieee80211_i.h:2185 [inline]
+ ieee80211_tx_skb net/mac80211/ieee80211_i.h:2194 [inline]
+ ieee80211_send_nullfunc+0x535/0x630 net/mac80211/mlme.c:1095
+ ieee80211_mgd_probe_ap_send+0x6e7/0xa30 net/mac80211/mlme.c:2544
+ ieee80211_mgd_probe_ap+0x4ee/0x6c0 net/mac80211/mlme.c:2620
+ ieee80211_beacon_connection_loss_work+0x1a3/0x420 net/mac80211/mlme.c:2753
+ process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
+ worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
+ kthread+0x66b/0x780 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30
 
-	1. Open trace pipe to be notified (/sys/kernel/tracing/trace_pipe).
-	   This already includes the pid.
+Uninit was created at:
+ slab_post_alloc_hook mm/slab.h:524 [inline]
+ slab_alloc_node mm/slub.c:3227 [inline]
+ __kmalloc_node_track_caller+0xa3b/0x13c0 mm/slub.c:4962
+ kmalloc_reserve net/core/skbuff.c:356 [inline]
+ __alloc_skb+0x4db/0xe40 net/core/skbuff.c:427
+ __netdev_alloc_skb+0x48f/0x840 net/core/skbuff.c:494
+ netdev_alloc_skb include/linux/skbuff.h:2877 [inline]
+ dev_alloc_skb include/linux/skbuff.h:2890 [inline]
+ ieee80211_nullfunc_get+0x2c1/0x870 net/mac80211/tx.c:5386
+ ieee80211_send_nullfunc+0x132/0x630 net/mac80211/mlme.c:1077
+ ieee80211_mgd_probe_ap_send+0x6e7/0xa30 net/mac80211/mlme.c:2544
+ ieee80211_mgd_probe_ap+0x4ee/0x6c0 net/mac80211/mlme.c:2620
+ ieee80211_beacon_connection_loss_work+0x1a3/0x420 net/mac80211/mlme.c:2753
+ process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
+ worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
+ kthread+0x66b/0x780 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30
+=====================================================
 
-	2. As you suggest, use perf events globally (but the handling
-	   would be done by some system process).
 
-	3. As of 5.13 there's actually a new perf feature to
-	   synchronously SIGTRAP the exact task where an event occurred
-	   (see perf_event_attr::sigtrap). This would very closely mimic
-	   pkill_on_warn (because the SIGTRAP is synchronous), but lets the
-	   process being SIGTRAP'd decide what to do. Not sure how to
-	   deploy this though, because a) only root user can create this
-	   perf event (because exclude_kernel=0), and b) sigtrap perf
-	   events deliberately won't propagate beyond an exec
-	   (must remove_on_exec=1 if sigtrap=1) because who knows if
-	   the exec'd process has the right SIGTRAP handler.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-I think #3 is hard to deploy right, but below is an example program I
-played with.
-
-Thanks,
--- Marco
-
------- >8 ------
-
-#define _GNU_SOURCE
-#include <assert.h>
-#include <stdio.h>
-#include <linux/perf_event.h>
-#include <signal.h>
-#include <fcntl.h>
-#include <sys/ioctl.h>
-#include <sys/syscall.h>
-#include <unistd.h>
-
-static void sigtrap_handler(int signum, siginfo_t *info, void *ucontext)
-{
-	// FIXME: check event is error_report_end
-	printf("Kernel error in this task!\n");
-}
-static void generate_warning(void)
-{
-	... do something to generate a warning ...
-}
-int main()
-{
-	struct perf_event_attr attr = {
-		.type		= PERF_TYPE_TRACEPOINT,
-		.size		= sizeof(attr),
-		.config		= 189, // FIXME: error_report_end
-		.sample_period	= 1,
-		.inherit	= 1, /* Children inherit events ... */
-		.remove_on_exec = 1, /* Required by sigtrap. */
-		.sigtrap	= 1, /* Request synchronous SIGTRAP on event. */
-		.sig_data	= 189, /* FIXME: use to identify error_report_end */
-	};
-	struct sigaction action = {};
-	struct sigaction oldact;
-	int fd;
-	action.sa_flags = SA_SIGINFO | SA_NODEFER;
-	action.sa_sigaction = sigtrap_handler;
-	sigemptyset(&action.sa_mask);
-	assert(sigaction(SIGTRAP, &action, &oldact) == 0);
-	fd = syscall(__NR_perf_event_open, &attr, 0, -1, -1, PERF_FLAG_FD_CLOEXEC);
-	assert(fd != -1);
-	sleep(5); /* Try to generate a warning from elsewhere, nothing will be printed. */
-	generate_warning(); /* Warning from this process. */
-	sigaction(SIGTRAP, &oldact, NULL);
-	close(fd);
-	return 0;
-}
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
