@@ -2,83 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F836457F6C
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 17:14:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 013E1457F64
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 17:10:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234428AbhKTQRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 11:17:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbhKTQRm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 11:17:42 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F85C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 08:14:39 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id y12so56127211eda.12
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 08:14:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=37Eo2TgA1H3M++3lTmrTgd72aKPxnWff95OCkzud/z4=;
-        b=GpWY+Fz+5+fq3xCM01UVUeBJ1iaxSAYI74UINjzU+p/RBTVDMSMnyjkM65tpRtH7o/
-         oh8Ll4AMPDBUORyy7JFghVzuQrjurC2/ysu7IbvTRFFoRyRNAulUzZcmDe3dWBT9aK9b
-         Gn9Vk6mtsJva8P92Qi+Lw3RySJN4ok38fmAFB5sKoAqXudBBt+ljwpNSAGDNOsPg7Vgq
-         xeUuq15suECiUs85/El4WtsVhU8ncTlJ2pNpNcs0nOBLmr0917fuGDK50WUa25Kdj0O4
-         1TAwkzzHs3s85vqZ/FUPFFnojf2TAND/Lc/S65Q+W/l4jveGUoHeNB64Pyhz2moZIKbg
-         hwsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=37Eo2TgA1H3M++3lTmrTgd72aKPxnWff95OCkzud/z4=;
-        b=ZaKYUnVH6WGOdF65BYxmOnbs9mTMVWl57qQXL6hUuVo/i0zYt1Z3G8GkFU14NJ26RC
-         VsbtAxSD7BJSJsy1OxMaheE2tmMokEA2crjH34nLfdDyJc19HvnIsbd6FYk15LPKqyeV
-         kQxzQCQcVNm0jsnDyeNUDtTEKlWmIhVGO/jVFeWgI7OWm3I68qSwQR9g631H9J7tTl1v
-         4enCfR2I1cDxZNZ+cCVR16d0G6x++v7/2IUCa9tntgfAN/xXt4btU6qJ33B09AmdR5VA
-         k6YffCJqawQ+rXdlCG3wq8Quq1z9c0Y2ygg0UPF1UfMJsCi6DJFJ+S9/6Nz6CAYx59xX
-         JEUQ==
-X-Gm-Message-State: AOAM532gQQ00QBccZjpY6C5L5FdRgY6s2KtNlk6x74awZIpHjlCCwjo/
-        XhQQl/x4wbn2fjcRFJFIZQ/K49FDK7VZ4Xpx8OkqEONcTUaQ4A==
-X-Google-Smtp-Source: ABdhPJwzMxHu59dB/IMkhCA0090hxPU3Gslu6sII5X4hw/AGOtZUaRqk0MPVvTlYZu/IOmVNBkX12+kjxBrnpXZ3wOY=
-X-Received: by 2002:a05:6402:51c7:: with SMTP id r7mr12720599edd.359.1637424877788;
- Sat, 20 Nov 2021 08:14:37 -0800 (PST)
+        id S231234AbhKTQNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 11:13:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229613AbhKTQNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 11:13:16 -0500
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6BCD160EBC;
+        Sat, 20 Nov 2021 16:10:11 +0000 (UTC)
+Date:   Sat, 20 Nov 2021 16:15:04 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Cristian Pop <cristian.pop@analog.com>
+Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>
+Subject: Re: [PATCH v1 1/2] dt:bindings:iio:frequency: Add ADMV4420 doc
+Message-ID: <20211120161504.6923f718@jic23-huawei>
+In-Reply-To: <20211119114011.75406-1-cristian.pop@analog.com>
+References: <20211119114011.75406-1-cristian.pop@analog.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20211119113644.1600-1-alx.manpages@gmail.com> <20211120130104.185699-1-alx.manpages@gmail.com>
- <20211120130104.185699-2-alx.manpages@gmail.com>
-In-Reply-To: <20211120130104.185699-2-alx.manpages@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 20 Nov 2021 18:14:01 +0200
-Message-ID: <CAHp75Vd8SKA+mu-5AXWJufsitpeNGnBms4nOzDjOD2g04cjpeg@mail.gmail.com>
-Subject: Re: [PATCH v2 01/20] linux/stddef.h, linux/offsetof.h: Split
- offsetof() into a separate header
-To:     Alejandro Colomar <alx.manpages@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Joe Perches <joe@perches.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 20, 2021 at 3:02 PM Alejandro Colomar
-<alx.manpages@gmail.com> wrote:
->
-> Include <linux/offsetof.h> from <linux/stddef.h> for compatibility.
->
-> From <linux/offsetof.h>:
->         Include the same exact deps that <linux/stddef.h> had.
->         Changing that in any way broke my compilation.
+On Fri, 19 Nov 2021 13:40:10 +0200
+Cristian Pop <cristian.pop@analog.com> wrote:
 
-The commit message does not explain why you are doing this, what's the
-problem it fixes.
+> Add device tree bindings for the ADMV4420 K band downconverter.
+> 
+> Signed-off-by: Cristian Pop <cristian.pop@analog.com>
+> ---
+>  .../bindings/iio/frequency/adi,admv4420.yaml  | 100 ++++++++++++++++++
+>  1 file changed, 100 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,admv4420.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/frequency/adi,admv4420.yaml b/Documentation/devicetree/bindings/iio/frequency/adi,admv4420.yaml
+> new file mode 100644
+> index 000000000000..69f1b4a41c5c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/frequency/adi,admv4420.yaml
+> @@ -0,0 +1,100 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/frequency/adi,admv4420.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: ADMV4420 K Band Downconverter
+> +
+> +maintainers:
+> +- Cristian Pop <cristian.pop@analog.com>
 
--- 
-With Best Regards,
-Andy Shevchenko
+Rob's scripted checks picked this up so I'll assume you'll add the 2 spaces.
+
+> +
+> +description: |
+> +    The ADMV4420 is a highly integrated, double balanced, active
+> +    mixer with an integrated fractional-N synthesizer, ideally suited
+> +    for next generation K band satellite communications
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - adi,admv4420
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  spi-max-frequency:
+> +    maximum: 1000000
+> +
+> +  adi,ref_single_ended:
+
+- rather than _ through out.
+
+I 'think' this picking between a crystal and a clock.  We have other parts
+doing this and IIRC one approach to handling this was to have an optional clock
+source. If it isn't provided we know this is a crystal and can pick on that basis.
+example is adc/microchip/mcp3911.yaml
+
+
+
+> +    description: Reference clock type.
+> +    type: boolean
+> +
+> +  adi,ref_freq_hz:
+> +    description: Reference clock frequency.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+
+with -hz this will be covered by standard units suffixes so 
+you won't need the $ref.
+
+I'm curious on this. Datasheet seems to say the only valid frequency for
+this is 50MHz either from a crystal or a reference clock.
+
+
+> +
+> +  adi,ref_doubler_en:
+> +    description: Reference multiplied by 2.
+> +    type: boolean
+> +
+> +  adi,ref_divide_by_2_en:
+> +    description: Reference divided by 2.
+> +    type: boolean
+> +
+> +  adi,ref_divider:
+> +    description: Reference divider value.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+
+This lot correspond to clock signal doubling/ halving and
+count based division.  Can we lift something standard from the
+clk dt-bindings to describe this?
+
+> +
+> +  adi,N_counter_int_val:
+> +    description: N counted int val.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +  adi,N_counter_frac_val:
+> +    description: N counted frac val.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +  adi,N_counter_mod_val:
+> +    description: N counted mod val.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+
+Sigh, my 20 year old memories of demodulation aren't coming back enough to
+remember enough to describe these clearly - but we definitely need more information
+here and I'm not sure these are things that should be in dt at all..
+
+Are they characteristics of the wiring, or more closely related to what the input
+is we are down converting?  All this stuff is about generating a very precise tuned
+frequency given the PLL filter that we have no visibility of (and lets not try 
+to describe that in the binding as that would be a nightmark).
+
+So honestly I have no idea how to describe this.  Maybe more info would help?
+
+> +
+> +  adi,mux_sel:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [0, 1, 4, 5, 8]
+> +    description: |
+> +      Multiplexer output allows access to various internal signals:
+> +      0: Output Logic Low
+> +      1: Digital Lock Detect
+> +      4: RDiv-by-2 to Mux Out, Frequency = REFIN/(2 x R)
+> +      5: NDiv-by-2 to Mux Out, Frequency = VCO/(2 x N)
+> +      8: Output Logic High.
+
+Hmm. So low and high are just using this as a gpio.  We 'could' support that
+but I'd be highly surprised if that is ever used except for circuit debug so
+I'd just drop those.
+
+The digital lock is probably something that could be optionally wired to a gpio
+to allow detection of lock.
+
+The two frequency signals are probably for debug, but those might make sense
+to describe in this fashion in DT.  I'd be tempted to not bother though as I'm not
+sure what use they would be except during circuit debug.
+
+So I'd just support the lock detect as an optional gpio connected signal.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    spi {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      admv4420@0 {
+> +        compatible = "adi,admv4420";
+> +        reg = <0>;
+> +        spi-max-frequency = <1000000>;
+> +
+> +        /* reference block config */
+> +        adi,ref_freq_hz = <50000000>;
+> +        adi,ref_single_ended = <0>;
+
+Rob's scripts point out this isn't a boolean value.
+
+> +        adi,ref_divider = <1>;
+> +
+> +        /* N counter config*/
+> +        adi,N_counter_int_val = <0xA7>;
+> +        adi,N_counter_frac_val = <0x02>;
+> +        adi,N_counter_mod_val = <0x04>;
+> +
+> +        adi,mux_sel = <1>;
+> +      };
+> +    };
+> +...
+
