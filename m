@@ -2,101 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D39457DD2
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 13:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F512457DD7
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 13:26:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237329AbhKTM0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 07:26:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230381AbhKTM0j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 07:26:39 -0500
-Received: from danwin1210.me (danwin1210.me [IPv6:2a01:4f8:c010:d56::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8DBC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 04:23:35 -0800 (PST)
-Received: from danwin1210.me (unknown [10.9.0.4])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X448 server-signature ECDSA (P-384)
-         client-signature ED448)
-        (Client CN "danwin1210.me", Issuer "danwin1210.me" (verified OK))
-        by mail.danwin1210.me (Postfix) with ESMTPS id C04D21F4B7;
-        Sat, 20 Nov 2021 12:23:33 +0000 (UTC)
-Received: from prine.. (unknown [10.9.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
-        (No client certificate requested)
-        by danwin1210.me (Postfix) with ESMTPSA id CF0493C73F;
-        Sat, 20 Nov 2021 12:23:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=danwin1210.me;
-        s=mail; t=1637411012;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=1D6TK4pBt+NhUD9V+WvMMJAWVBcNVUjT9h+cnTkVwa4=;
-        b=lGqKcqM1w4bzz8fvqwwRkdQlQWLcNE7VjVfY5lBAiE3H0Xng3QMa5IpOz8Gc51LojS1L/B
-        gN+b78QHgc4gFNhiFA8yHPIKzGCXjJvS2zAtB0qJdiHLa9saQ38qLkDa1F0TtDgHjItf7t
-        G5jiHsnSVLPB7M8TjMAjJdO5KAgUtK7yCqV1Uu4oENhSkd0iNlzR/shwYQqvmFHTAi6Z6/
-        ooM2ljJpP3i8CaGaeBVI6hiNNdc9IZpVR17tzjIeE5kKCIT5o4XIv0bkb31EDzzuWu+hTS
-        piukyCFnyIxY9dCrWpLspKQ8vtdPvjT4GOu5PFm2CSP6OxxT9JGpuGbs2Rs50rUhUk79C9
-        m/5nKxVvnRHWVTv9c3Fyiugzams10SukBr2VmYNG4qMPan4Fy9nnmOyXUFUcJf6t06Kez0
-        1dzHJotCm6v8GUDd6SO1vUEGJGoVdm7zDJBMyECyyN+W0UDaLDsU2HwE+Yk0uN8HvAp3R6
-        kU3QALwN02tgnaOMbSJLuVHfJWI7UIdOuESaBOOA+EGlAo7zFLlLCTzjXEB/vNeI/ewisR
-        Fp3LRNE3Do2IjVcjp4ozCm7V6ThmanxlM86uX5eJ56Y7fZhyaEny7p7RTNNrg44UXWJJKa
-        BWkgufRYOOZsgzTPUF+O+V8qmc4WXpM400PO7wNzdnlcEm8iuvuZg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=danwin1210.me;
-        s=ed25519; t=1637411013;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=1D6TK4pBt+NhUD9V+WvMMJAWVBcNVUjT9h+cnTkVwa4=;
-        b=KfAvgOaW3xIq59Ehg6Er/7s4YExuLtnJW/GBF57Bcrdn1nO0kJNqeoTUXk81yuTrWxj4PJ
-        siZqwcX5VgRbPHAw==
-From:   Kyle Copperfield <kmcopper@danwin1210.me>
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Kyle Copperfield <kmcopper@danwin1210.me>,
-        Dragan Simic <dragan.simic@gmail.com>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: rockchip/rga: do proper error checking in probe
-Date:   Sat, 20 Nov 2021 12:23:02 +0000
-Message-Id: <20211120122321.20253-1-kmcopper@danwin1210.me>
+        id S237400AbhKTM3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 07:29:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36002 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230381AbhKTM3F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 07:29:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74BD8608FB;
+        Sat, 20 Nov 2021 12:25:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637411162;
+        bh=+Cg/ChDv6w5RRzS8L9XSBzK3sY88urlsvhE0zaxTxuU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=nHsmtUhjGeKMj9pXOjZ1asOeLgF1aXppH3EQHq4rk0GN3MBceYJQ+9ygU9zNQjZMP
+         2ueYS2TYcp93LQGg4O5FdpjTrqBS5+2BnhSpD19sfC7I6x62lzfwlp0jDDVxXKBh/O
+         vQDfO0RLbFqZU1tcZKdH6X3Ywf5rBHM1MQER4rTVQhyz7/TxiXw9gvW1VVAo0ftNq6
+         QkJFTJ0ak5sQOMlvlb5QzTpTFB20+UwgwlrhdhHc459GqFFSQSOqixb8ReDVWzWcJi
+         CGQioupS5AJUAB7JGGPhAjpvFre8WQ69dgqSv3lJqydYQXpNmt7dFM3JAoe6K5BuDI
+         Y6M7Yx0dkjcAw==
+Subject: Re: [PATCH v2 2/2] clk: samsung: exynos850: Implement CMU_APM domain
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+References: <20211022224556.18742-1-semen.protsenko@linaro.org>
+ <20211022224556.18742-2-semen.protsenko@linaro.org>
+From:   Sylwester Nawrocki <snawrocki@kernel.org>
+Message-ID: <81df1c60-36b7-7b42-3bc8-2c3c7cc02c33@kernel.org>
+Date:   Sat, 20 Nov 2021 13:25:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211022224556.18742-2-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The latest fix for probe error handling contained a typo that causes
-probing to fail with the following message:
+On 23.10.2021 00:45, Sam Protsenko wrote:
+> CMU_APM clock domain provides clocks for APM IP-core (Active Power
+> Management). According to Exynos850 TRM, CMU_APM generates I3C, Mailbox,
+> Speedy, Timer, WDT, RTC and PMU clocks for BLK_ALIVE.
+> 
+> This patch adds next clocks:
+>    - bus clocks in CMU_TOP needed for CMU_APM
+>    - all internal CMU_APM clocks
+>    - leaf clocks for I3C, Speedy and RTC IP-cores
+>    - bus clocks for CMU_CMGP and CMU_CHUB
+> 
+> CMU_APM doesn't belong to Power Domains, but platform driver is used for
+> its registration to keep its bus clock always running. Otherwise rtc-s3c
+> driver disables that clock and system freezes.
+> 
+> Signed-off-by: Sam Protsenko<semen.protsenko@linaro.org>
+> Reviewed-by: Krzysztof Kozlowski<krzysztof.kozlowski@canonical.com>
+> ---
+> Changes in v2:
+>    - Reworked clock IDs to be contiguous (don't break ABI)
+>    - Added R-b tag by Krzysztof Kozlowski
+> 
+>   drivers/clk/samsung/clk-exynos850.c   | 142 +++++++++++++++++++++++++-
 
-  rockchip-rga: probe of ff680000.rga failed with error -12
+>   include/dt-bindings/clock/exynos850.h |  29 +++++-
 
-This patch fixes the typo.
+Looks good, could you just resend with the DT binding header changes moved
+to the first patch?
 
-Fixes: e58430e1d4fd (media: rockchip/rga: fix error handling in probe)
-Reviewed-by: Dragan Simic <dragan.simic@gmail.com>
-Signed-off-by: Kyle Copperfield <kmcopper@danwin1210.me>
----
- drivers/media/platform/rockchip/rga/rga.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/media/platform/rockchip/rga/rga.c b/drivers/media/platform/rockchip/rga/rga.c
-index 6759091b15e0..d99ea8973b67 100644
---- a/drivers/media/platform/rockchip/rga/rga.c
-+++ b/drivers/media/platform/rockchip/rga/rga.c
-@@ -895,7 +895,7 @@ static int rga_probe(struct platform_device *pdev)
- 	}
- 	rga->dst_mmu_pages =
- 		(unsigned int *)__get_free_pages(GFP_KERNEL | __GFP_ZERO, 3);
--	if (rga->dst_mmu_pages) {
-+	if (!rga->dst_mmu_pages) {
- 		ret = -ENOMEM;
- 		goto free_src_pages;
- 	}
--- 
-2.34.0
-
+Regards,
+Sylwester
