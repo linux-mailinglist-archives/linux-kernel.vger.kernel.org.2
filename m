@@ -2,127 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF5A457A97
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 03:23:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AEF5457A9A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 03:24:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236420AbhKTCZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 21:25:32 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:15842 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232076AbhKTCZ3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 21:25:29 -0500
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hwy3F5k9Tz90m3;
-        Sat, 20 Nov 2021 10:22:01 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sat, 20 Nov 2021 10:22:24 +0800
-Subject: Re: [PATCH -next 2/2] sata_fsl: fix warning in remove_proc_entry when
- rmmod sata_fsl
-To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        <axboe@kernel.dk>, <tj@kernel.org>, <linux-ide@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <yebin10@huawei.com>, <yukuai3@huawei.com>,
-        Hulk Robot <hulkci@huawei.com>
-References: <20211119041128.2436889-1-libaokun1@huawei.com>
- <20211119041128.2436889-3-libaokun1@huawei.com>
- <aae68060-2941-36fd-0abb-e10fdc687111@opensource.wdc.com>
-From:   "libaokun (A)" <libaokun1@huawei.com>
-Message-ID: <9fa29aa2-0124-c61b-8334-084627c2f004@huawei.com>
-Date:   Sat, 20 Nov 2021 10:22:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S236457AbhKTC0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 21:26:44 -0500
+Received: from mga14.intel.com ([192.55.52.115]:19732 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234792AbhKTC0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 21:26:40 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10173"; a="234761472"
+X-IronPort-AV: E=Sophos;i="5.87,249,1631602800"; 
+   d="scan'208";a="234761472"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 18:23:28 -0800
+X-IronPort-AV: E=Sophos;i="5.87,249,1631602800"; 
+   d="scan'208";a="508141382"
+Received: from rli9-dbox.sh.intel.com (HELO rli9-dbox) ([10.239.159.142])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 18:23:24 -0800
+Date:   Sat, 20 Nov 2021 10:24:19 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] xen/pvh: add missing prototype to header
+Message-ID: <YZhcU3e0imdoKV7w@rli9-dbox>
+References: <20211119153913.21678-1-jgross@suse.com>
+ <0c654659-b010-791f-78e7-769108934ce2@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <aae68060-2941-36fd-0abb-e10fdc687111@opensource.wdc.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0c654659-b010-791f-78e7-769108934ce2@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2021/11/20 6:18, Damien Le Moal 写道:
-> On 11/19/21 13:11, Baokun Li wrote:
->> Trying to remove the fsl-sata module in the PPC64 GNU/Linux
->> leads to the following warning:
->>   ------------[ cut here ]------------
->>   remove_proc_entry: removing non-empty directory 'irq/69',
->>     leaking at least 'fsl-sata[ff0221000.sata]'
->>   WARNING: CPU: 3 PID: 1048 at fs/proc/generic.c:722
->>     .remove_proc_entry+0x20c/0x220
->>   IRQMASK: 0
->>   NIP [c00000000033826c] .remove_proc_entry+0x20c/0x220
->>   LR [c000000000338268] .remove_proc_entry+0x208/0x220
->>   Call Trace:
->>    .remove_proc_entry+0x208/0x220 (unreliable)
->>    .unregister_irq_proc+0x104/0x140
->>    .free_desc+0x44/0xb0
->>    .irq_free_descs+0x9c/0xf0
->>    .irq_dispose_mapping+0x64/0xa0
->>    .sata_fsl_remove+0x58/0xa0 [sata_fsl]
->>    .platform_drv_remove+0x40/0x90
->>    .device_release_driver_internal+0x160/0x2c0
->>    .driver_detach+0x64/0xd0
->>    .bus_remove_driver+0x70/0xf0
->>    .driver_unregister+0x38/0x80
->>    .platform_driver_unregister+0x14/0x30
->>    .fsl_sata_driver_exit+0x18/0xa20 [sata_fsl]
->>   ---[ end trace 0ea876d4076908f5 ]---
->>
->> The driver creates the mapping by calling irq_of_parse_and_map(),
->> so it also has to dispose the mapping. But the easy way out is to
->> simply use platform_get_irq() instead of irq_of_parse_map().
->>
->> In this case the mapping is not managed by the device but by
->> the of core, so the device has not to dispose the mapping.
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->> ---
->>   drivers/ata/sata_fsl.c | 4 +---
->>   1 file changed, 1 insertion(+), 3 deletions(-)
->>
->> diff --git a/drivers/ata/sata_fsl.c b/drivers/ata/sata_fsl.c
->> index 30759fd1c3a2..011daac4a14e 100644
->> --- a/drivers/ata/sata_fsl.c
->> +++ b/drivers/ata/sata_fsl.c
->> @@ -1493,7 +1493,7 @@ static int sata_fsl_probe(struct platform_device *ofdev)
->>   	host_priv->ssr_base = ssr_base;
->>   	host_priv->csr_base = csr_base;
->>   
->> -	irq = irq_of_parse_and_map(ofdev->dev.of_node, 0);
->> +	irq = platform_get_irq(ofdev, 0);
->>   	if (!irq) {
-> Please see the kdoc comment for platform_get_irq() in
-> drivers/base/platform.c. The error check must be "if (irq < 0)".
->
-> Can you send a V2 with that fixed and tested ?
->
->>   		dev_err(&ofdev->dev, "invalid irq from platform\n");
->>   		goto error_exit_with_cleanup;
->> @@ -1570,8 +1570,6 @@ static int sata_fsl_remove(struct platform_device *ofdev)
->>   
->>   	ata_host_detach(host);
->>   
->> -	irq_dispose_mapping(host_priv->irq);
->> -
->>   	return 0;
->>   }
->>   
->>
->
-I didn't notice the change in this return value, and the test didn't 
-cover the error branch.
+On Fri, Nov 19, 2021 at 08:47:49AM -0800, Dave Hansen wrote:
+> On 11/19/21 7:39 AM, Juergen Gross wrote:
+> > The prototype of mem_map_via_hcall() is missing in its header, so add
+> > it.
+> > 
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Fixes: a43fb7da53007e67ad ("xen/pvh: Move Xen code for getting mem map via hcall out of common file")
+> > Signed-off-by: Juergen Gross <jgross@suse.com>
+> 
+> $ git describe a43fb7da53007e67ad
+> v4.20-rc6-5-ga43fb7da5300
+> 
+> Better late than never, I guess.  I wonder what made 0day find this now.
+hi Dave, we recently find some unexpected failures for certain bisections,
+with the fix, such failures are rerun to see whether we can successfully detect 
+bad commits, which i think this resulted in extra but late finding on old
+commit on mainline. We will keep scan our bisection process to further improve
+it to reduce this kind late reporting.
 
-Thank you very much for your advice.
-
-I'm about to send a patch v2 with the changes suggested by you.
-
--- With Best Regards, Baokun Li .
-
-
+> 
+> I also guess the one mem_map_via_hcall() call site just used the __weak
+> definition so it didn't cause problems if there wasn't a declaration in
+> the header.
