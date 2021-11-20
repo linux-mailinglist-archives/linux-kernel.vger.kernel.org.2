@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6869457E9C
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 14:01:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7AAB457E9F
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 14:01:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237641AbhKTNEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 08:04:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48760 "EHLO
+        id S237289AbhKTNEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 08:04:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237507AbhKTNEf (ORCPT
+        with ESMTP id S237561AbhKTNEg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 08:04:35 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E62BEC061748
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 05:01:31 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id d27so23200855wrb.6
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 05:01:31 -0800 (PST)
+        Sat, 20 Nov 2021 08:04:36 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9737C061756
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 05:01:32 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id ay10-20020a05600c1e0a00b0033aa12cdd33so433968wmb.1
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 05:01:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
         bh=rrCIXvkrCgUlDLh5t+bxMCjdZGEEPhtV3+LhI9xMxMQ=;
-        b=PuWHJait3+uZe9Nio1huMr87qqq4ZE9CCecCGRe47T+rIHMUeXRYCMYhng609x6h+W
-         WuEPDfYVhJIHvhzTzSxMqGjxLFaRyiXpJ2DbRQJPENE1bao8z/NHeT5rC3AJOEhGWdQC
-         Myxeug0CFES9jL3vJoF7G5sVdQvPvN1st2UO2ZHMkUBI9MGMed2bXYEw2KHAEylqaWLv
-         3G963jK0dATIiAX1exQ3rGMGq5449MLJIPN5cw8Lx+dNj/Kc9UoZ9likii8wCkOUr29g
-         v4f5x/mimlWmDdeCgVa8fjzGRjrzSIav27H0KZvOGEBELxCMw2nDOGNP+MYFigKvnQ9/
-         VdgQ==
+        b=IDepEsj11C+glc6KazX6LuQ1julm5i6GFLDKnEaMNa0irEGMlKiBD3a5VA8NC28W+q
+         oFjhY3aKpe/7DjxeHll0C7XIj4BLOqJU8grfJBIi+jGWDE4fDG316A1LhVfQ+OGhdhdH
+         G2nzvBGGr0Q3hn0QIVQKeBt0y6PJm1PlXnbHA7mBFRpq6yjRDpSCY7UxCbmX+JFJCAfV
+         /awXz7NMbfsdZccv7eEkTXKbSxhMi6RaqUp7ZNVGmS9LAMqThwGzid4wkJznT6Z7EoHV
+         aVoDpS9JO0ETS3qyA5p8jolhuCGPK/L+baS78wJwYHGybx3UKJRS+IqSUuA9F7G5FxnL
+         sK1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
         bh=rrCIXvkrCgUlDLh5t+bxMCjdZGEEPhtV3+LhI9xMxMQ=;
-        b=EZyEfvYHPwd7Qm1vKy5MsVjqfjnG66pYeWczTu4nGYD8nXy9Kio4W3CPhPIW9a7QV+
-         7O2lHRwYIfmoqzoIvBccR9v1JDZCnHHXGPD20yX9xxwHxPQQ4zLTugLFyC4GwpwRhs2n
-         nkTDPxq5NVzkRq8nXplgdWegrsEbg/9+o7RCKBzOUaQsZ9y9EZepCMrB9KjmwQXGEhso
-         KBiZ23nTwsI/PacKVbgxFSflW1r+y0F5ytM00Wmj58ZffgGk7qyIv0CDu6JYt6FTE1w6
-         DDCsGGj4ZDog2JiNhwbAkfNSVqm3Y70gHPIXcL/+z0SBTwDyqYYtIKFFrkyTI2wTMPnl
-         LIUQ==
-X-Gm-Message-State: AOAM531P9r1fIoBcHaij7XQmBZNjDpvniXYOPDK83Xx18dMG3YVo/dIJ
-        KfieO+VhnNoZQ7BLCswDitPKsyWJlzLpPw==
-X-Google-Smtp-Source: ABdhPJxxjq74+SBrpK3rCEasEwzQOSL+V90kqB0EuVSwi0z6Eoq/tObuQDfQIrL/gKgOSDSdWc0YRA==
-X-Received: by 2002:a5d:604b:: with SMTP id j11mr18167955wrt.22.1637413290610;
-        Sat, 20 Nov 2021 05:01:30 -0800 (PST)
+        b=14YPmE58V6EO0WlcW2WpdycIsIPXwiTpDTSwKvkc4ib9ogWcBRHsJjEjEGpb4gCk4C
+         iyrcQe5lUksNJZdZWov+Nw9F2ue2x7xq4IqersUQVpJjjlhlGp9HcXwfs7QGmBP9Kk8b
+         lU1yvn63AuRYxWy9VJQY1Ic509PzwOsCk/uD4r5/Pm1DtiTd53QMTlpPSveAVbL8yOxZ
+         CZg1/Gwd8aPBm856cidvR+YA+q9CtQyknY4JNOS6jrTG/Voy91ELy/a7ysIMO6sF+fV/
+         DTiq2XSM77oXXDXehqZ1X2GgIAuY/h6KdGGTiErmUz/0RYB/1RqqR/MyUyK5oAN5C26R
+         J12A==
+X-Gm-Message-State: AOAM533Y492OjbT9j4azqR0I9axV0KT7o6hAGb3uyEFrYtwlhB3baAy3
+        g1cSAUHIufVw13imZvNkOJQgbufcyIaSbg==
+X-Google-Smtp-Source: ABdhPJzF4J0P9X0W71vahgI5Xw07LIZyVTtrSCBxtEcOZEegtR2ewXnVOb4mbkqaz5ZdtY9vHtokGw==
+X-Received: by 2002:a05:600c:253:: with SMTP id 19mr9736538wmj.179.1637413291450;
+        Sat, 20 Nov 2021 05:01:31 -0800 (PST)
 Received: from ady1.alejandro-colomar.es ([170.253.36.171])
-        by smtp.googlemail.com with ESMTPSA id m17sm2636736wrz.22.2021.11.20.05.01.29
+        by smtp.googlemail.com with ESMTPSA id m17sm2636736wrz.22.2021.11.20.05.01.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Nov 2021 05:01:30 -0800 (PST)
+        Sat, 20 Nov 2021 05:01:31 -0800 (PST)
 From:   Alejandro Colomar <alx.manpages@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
@@ -58,9 +58,9 @@ Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Kees Cook <keescook@chromium.org>,
         Joe Perches <joe@perches.com>
-Subject: [PATCH v2 13/20] Move BUILD_BUG_ON_ZERO to <linux/must_be.h>
-Date:   Sat, 20 Nov 2021 14:00:56 +0100
-Message-Id: <20211120130104.185699-14-alx.manpages@gmail.com>
+Subject: [PATCH v2 13/20] linux/build_bug.h, linux/must_be.h: Move BUILD_BUG_ON_ZERO to <linux/must_be.h>
+Date:   Sat, 20 Nov 2021 14:00:57 +0100
+Message-Id: <20211120130104.185699-15-alx.manpages@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211120130104.185699-1-alx.manpages@gmail.com>
 References: <20211119113644.1600-1-alx.manpages@gmail.com>
