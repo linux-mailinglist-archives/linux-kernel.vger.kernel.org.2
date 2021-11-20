@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F92D457E96
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 14:01:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4058457E95
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 14:01:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237554AbhKTNEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 08:04:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48708 "EHLO
+        id S237516AbhKTNEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 08:04:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237502AbhKTNE1 (ORCPT
+        with ESMTP id S237507AbhKTNE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 08:04:27 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD61C06173E
+        Sat, 20 Nov 2021 08:04:28 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD7EC061748
         for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 05:01:24 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id u1so23137432wru.13
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 05:01:23 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id i8-20020a7bc948000000b0030db7b70b6bso12647804wml.1
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 05:01:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wY+RvBZhM8z7hwU8AbHkFFRcpZxj2XoW6AuKi4QRJlk=;
-        b=csKUwF/OlhkHvvk6t23hXWIWspnNjMv7oOAk1k1xxfT2BzymyN/vvdRF7ETmP9ebco
-         ag/919p7j03I9k2V69hfKi8h0Jp36iIyDZcMYTPbwJIyssHgnxI0i3lRduDBgyBSKiE6
-         wVo+P2qR4F6/bRra9Wc9xcewgQC8+xag4U+5dhcZ5iOpbSzgJHnDfpBZCck5ldR0OmG+
-         mc1dN5vaX0BmVrUZlR+k1eIvgzX/O66zTtW10dL7gbx05jyT3R44B/HKu0AtGKBLKJdE
-         MIKCnPpzuxOqxkdBwvoMCWBPidCZjqYNRFtxCOZHNxUTa57XzH6u6wFibsTV5e76Hnzh
-         jEKg==
+        bh=zuy1i7ibN5PESbXyU0CRPA5iHJQ6TChkcgihWx0a5mE=;
+        b=Tf923O/G83UPwDUP6+HY+1xiblir1iYHYbXqT3oE9MFc/SIkgEdsu0rhxaUHqKTpu4
+         lHF+17b0p2rf9WSMMZi50qrtsw/JdZOKMztpULn2xOR08uGnsEebp2ehNRfYjuFtPYMX
+         BZqtmP/KOkiP+0XkJuw3wvBz7dhqSRWJikDHdzqbSugZQwqTsqA9JZHwwx5lteWRqo07
+         t7lcJU3ERQpWabJTIxYi+7QgQHygu7mesKnZ7NCa4P8A8po4Y46B2vXjZ52W7KXQyBKg
+         2XliAoUsfYYX5QIvtaJjB+R6tEm4tf4+atJjjJOhm51Ja0ajkzlm6oUzOuwd7H45+N04
+         OHTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wY+RvBZhM8z7hwU8AbHkFFRcpZxj2XoW6AuKi4QRJlk=;
-        b=5Lp0tRKSdSs8rnZF6NMAIF65rrUZC+1mWvuq535Dk6Xc7kqr7/z3Exzb5WrgMCK882
-         aR39lG/EE39OrlKYSlvL3TgSkj9FLnnm5EZ8Cs1arywqZVOM4nOEANhlZ3ccGic7Cj1k
-         LGZT5UpFhbwCE+RvVcV/FHZARCedOP7QLHphoIQaDMbxGh/6+n0qO9K4octF0xz9f8Jb
-         No5np9hrWzraxqG6pVy8EjDy/tPk8bDXSk1Q6+ObqQNVSOK/Fh4ADgj3lfsYEwiqaAOa
-         z5gdCOumIOqkS6l4wJAL7ivHxbH74Xwr/XbC0bd53rzP30NAKfz7yPU2koz/N4QnMxuH
-         0EyA==
-X-Gm-Message-State: AOAM5304fIcBzDSRjASaSBvlE44HDjxUD5LFFsM1Ce4HJEHTTR/qlOVr
-        qz5s9Dxo3hXiwmBF0YXgzL/QyXbtpUR2Xg==
-X-Google-Smtp-Source: ABdhPJwA4L28inL0iXhjd+6nKKR4j5PxHSSt829lLIKJTqzAAUyhZCbWZBmfukUonPWKzLpiFtm/Lw==
-X-Received: by 2002:a5d:4b41:: with SMTP id w1mr17080632wrs.437.1637413282678;
-        Sat, 20 Nov 2021 05:01:22 -0800 (PST)
+        bh=zuy1i7ibN5PESbXyU0CRPA5iHJQ6TChkcgihWx0a5mE=;
+        b=6u24qdiom3X5YoMs0E9PdYOn+x4WN3wMu+jduit2Znn8vtx/07tlp2hxuRvPVd4l9u
+         FbXSUVcDxVQUs6uv5pH/LB5lzv+TU3Te4fZ2C+HDjqT8ufBznY/pEnwmstCpAMExEF8G
+         TZQ57vxwWxQ5gRhOI3VKU7+k5sfn0oGhFgy9w89inUYH95Rb+dH9oUbj0t5KKHP6Xy4D
+         /Z8pcNiO8adCJBsvb3q/uBpaHXPpQyL/oM9vtWkPVZ0CFD0N19+fhilbwjv55yrATUom
+         PxKdCRyNDeNvFON62MiLVcViVa/DYGJqDdOy4qHkxArBjQTQPr7zT3/+ayA/QOZlPOtg
+         GQZA==
+X-Gm-Message-State: AOAM530dfnsB2JtRVLHmI8eal1wHGSnVq4DCem3Y2C1eOVd/0nWd2Rty
+        cCbBf0keBUnoM4jteFlRPcoctR2ISFHSLw==
+X-Google-Smtp-Source: ABdhPJwU0QpCAmSajETQrhC2TVnVkx3+lsD/6xCjPR++6hiN8mriYXvjZaKquyDwwUsbzSpiviZ6iA==
+X-Received: by 2002:a05:600c:4f4b:: with SMTP id m11mr9683896wmq.151.1637413283604;
+        Sat, 20 Nov 2021 05:01:23 -0800 (PST)
 Received: from ady1.alejandro-colomar.es ([170.253.36.171])
-        by smtp.googlemail.com with ESMTPSA id m17sm2636736wrz.22.2021.11.20.05.01.21
+        by smtp.googlemail.com with ESMTPSA id m17sm2636736wrz.22.2021.11.20.05.01.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Nov 2021 05:01:22 -0800 (PST)
+        Sat, 20 Nov 2021 05:01:23 -0800 (PST)
 From:   Alejandro Colomar <alx.manpages@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
@@ -58,9 +58,9 @@ Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Kees Cook <keescook@chromium.org>,
         Joe Perches <joe@perches.com>
-Subject: [PATCH v2 05/20] linux/container_of.h, linux/typeof_member.h: Split typeof_member() into a separate header
-Date:   Sat, 20 Nov 2021 14:00:48 +0100
-Message-Id: <20211120130104.185699-6-alx.manpages@gmail.com>
+Subject: [PATCH v2 06/20] linux/kernel.h, linux/array_size.h: Split ARRAY_SIZE() into a separate header
+Date:   Sat, 20 Nov 2021 14:00:49 +0100
+Message-Id: <20211120130104.185699-7-alx.manpages@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211120130104.185699-1-alx.manpages@gmail.com>
 References: <20211119113644.1600-1-alx.manpages@gmail.com>
@@ -71,47 +71,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include <linux/typeof_member.h> from <linux/container_of.h> for compatibility.
+Include <linux/array_size.h> from <linux/kernel.h> for compatibility.
+
+Include <linux/compiler.h> for __must_be_array().
 
 Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
 ---
- include/linux/container_of.h  | 3 ++-
- include/linux/typeof_member.h | 9 +++++++++
- 2 files changed, 11 insertions(+), 1 deletion(-)
- create mode 100644 include/linux/typeof_member.h
+ include/linux/array_size.h | 15 +++++++++++++++
+ include/linux/kernel.h     |  9 +++------
+ 2 files changed, 18 insertions(+), 6 deletions(-)
+ create mode 100644 include/linux/array_size.h
 
-diff --git a/include/linux/container_of.h b/include/linux/container_of.h
-index 2f4944b791b8..220990db7b61 100644
---- a/include/linux/container_of.h
-+++ b/include/linux/container_of.h
-@@ -2,10 +2,11 @@
- #ifndef _LINUX_CONTAINER_OF_H
- #define _LINUX_CONTAINER_OF_H
+diff --git a/include/linux/array_size.h b/include/linux/array_size.h
+new file mode 100644
+index 000000000000..cba90f2248ef
+--- /dev/null
++++ b/include/linux/array_size.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_ARRAY_SIZE_H
++#define _LINUX_ARRAY_SIZE_H
++
++#include <linux/compiler.h>
++
++
++/**
++ * ARRAY_SIZE - get the number of elements in array @a
++ * @a: array to be sized
++ */
++#define ARRAY_SIZE(a)  (sizeof((a)) / sizeof((a)[0]) + __must_be_array(a))
++
++
++#endif  /* _LINUX_ARRAY_SIZE_H */
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index 77755ac3e189..db6021ce3e0e 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -2,6 +2,8 @@
+ #ifndef _LINUX_KERNEL_H
+ #define _LINUX_KERNEL_H
  
 +
- #include <linux/build_bug.h>
- #include <linux/err.h>
-+#include <linux/typeof_member.h>
++#include <linux/array_size.h>
+ #include <linux/stdarg.h>
+ #include <linux/align.h>
+ #include <linux/limits.h>
+@@ -25,6 +27,7 @@
  
--#define typeof_member(T, m)	typeof(((T*)0)->m)
+ #include <uapi/linux/kernel.h>
+ 
++
+ #define STACK_MAGIC	0xdeadbeef
  
  /**
-  * container_of - cast a member of a structure out to the containing structure
-diff --git a/include/linux/typeof_member.h b/include/linux/typeof_member.h
-new file mode 100644
-index 000000000000..1f3bfb3c17d2
---- /dev/null
-+++ b/include/linux/typeof_member.h
-@@ -0,0 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_TYPEOF_MEMBER_H
-+#define _LINUX_TYPEOF_MEMBER_H
-+
-+
-+#define typeof_member(T, m)  typeof(((T *)0)->m)
-+
-+
-+#endif	/* _LINUX_TYPEOF_MEMBER_H */
+@@ -39,12 +42,6 @@
+ #define READ			0
+ #define WRITE			1
+ 
+-/**
+- * ARRAY_SIZE - get the number of elements in array @arr
+- * @arr: array to be sized
+- */
+-#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
+-
+ #define PTR_IF(cond, ptr)	((cond) ? (ptr) : NULL)
+ 
+ #define u64_to_user_ptr(x) (		\
 -- 
 2.33.1
 
