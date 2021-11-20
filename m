@@ -2,133 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD1BB457AA5
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 03:47:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40041457AAA
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 04:01:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236642AbhKTCu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 21:50:26 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:55053 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236587AbhKTCuZ (ORCPT
+        id S236673AbhKTDEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 22:04:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236587AbhKTDEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 21:50:25 -0500
-Received: by mail-io1-f71.google.com with SMTP id s8-20020a056602168800b005e96bba1363so6901988iow.21
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 18:47:23 -0800 (PST)
+        Fri, 19 Nov 2021 22:04:01 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5906C06173E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 19:00:58 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id z19-20020a630a53000000b002dc2f4542faso4904523pgk.13
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 19:00:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=R1DnboryHFg+rFRaLaj3Lm7I2twjI4y664AaJ2cbzRk=;
+        b=I1fE+KzUrGfqPgVYXFfk5IslyBzfgN56sJs31K56LIhdGPikNAGbpIvdLSYYm6fpQB
+         VrzgBEMCIGY+IIo6d7CpbZup5aQw7tJMnrQAUKJD9729WWo8lhoAjT0sRVjUnO3FDj20
+         703eeSO4uL6raWREHDAiO3G+3mumHFQSAM9CEErAMdB+bQkzby0l4CG528aonVFwUwe3
+         gaagdMnSZq551G4WI3nd0fxG94cDI0sCGzeyRPc6WL2TDcg2R82iE82og3USJmvsMzYQ
+         vPyWn6GNcdp77gtlhsLCWqD25SZz9oV0a1vAnvBjwB/VL5HhItwb2Dc49g5fl89lwHQv
+         kVIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=rwsDZ4jfpJLh86xpw4OX5pfJCwzCUpI3R6PfQFpOvGw=;
-        b=WcIbsgePDl14551VrfNu7xPCJUxO0Wb0xf3fb/Q+4pX15Qir3ij6XLAQOP2gsXP/rF
-         K/uRX0nQGGKMd0vYE5DkidQd/uK4UtrEpuYjZr1C9sgZLi6rw4JkWWJZCWYObjzRVIJn
-         Xp4lTlpyiqM0SrO2IReycteWGBVq2PEoEx1h9Gv++0xBx9Ng7dP65jbvqxqzgv1APoF1
-         L7Mn0wp2YUTdGwlbpAWirT8Em5Pqbz5R/A1684V+tIPYFr/8QUUBmebJlbcEQbQ2onjY
-         dB4Bgpd2tFyZr+HW1ybqUERQjavAfUCQ9TO+5lSdoJkc+DuZAnEOWRffd3fQ17yciKtg
-         Ezdw==
-X-Gm-Message-State: AOAM533ybzEIpv5D47vIXPzKPZcftgfi0XMCFOFJV68hwCpfK3hws2mM
-        1tSKZYDJZtUW4XJP4PuDWvraZ4d4q4CqLw/GXFaqdmTm7IqL
-X-Google-Smtp-Source: ABdhPJyUoD8FMfdj7ChSiW0dQXqpo3ImIjwd4ICb0lC3aI+gMrXyRrc0BTpUKgbszh2LfNUzzdy7jp+ZhZUxNqoJWL0JkBxLguQW
-MIME-Version: 1.0
-X-Received: by 2002:a92:9507:: with SMTP id y7mr7929306ilh.119.1637376442767;
- Fri, 19 Nov 2021 18:47:22 -0800 (PST)
-Date:   Fri, 19 Nov 2021 18:47:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003c221105d12f69e3@google.com>
-Subject: [syzbot] possible deadlock in smc_switch_to_fallback
-From:   syzbot <syzbot+e979d3597f48262cb4ee@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, kgraul@linux.ibm.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=R1DnboryHFg+rFRaLaj3Lm7I2twjI4y664AaJ2cbzRk=;
+        b=2YKBQhjjLkjPpi3TkIfJxAdJLnfyCd0/L9vqMlti0ALaGlFoVuuqdtD7ARV/u+OJk4
+         s65VUC1zgrV6ZGbA0GxSmYm3wtvYT5sktkjFn7VBPJsUu+wx+R0k0SByVZ0aJ+V0AUS7
+         1FH6vJVA9u8YKmS8GDoVKG55wacEHmsj6/Ft4kWrrHvvnj6lIhvtFxTO042J+WM+27vg
+         CPifH8kJNeV2fsj4ZkcQF9o/u4e3COBSRzN79AasX3EF+WxShiuT10qGZZtjLc3VEX2O
+         xl7js1GV/d3TEP+Kvgojvsg+5XdGzRMF1uDG71sOSQGypq3a5JDEuYVCUyNHKePO1AqL
+         pStA==
+X-Gm-Message-State: AOAM531Obr67GS0MW6sGasUzSRQqMFkklqHtbO9DQaeUdsu62alhrO1X
+        n04A7NJTVV1MpqbLWRFeiDXWM4LK2ep/
+X-Google-Smtp-Source: ABdhPJwrRsIIi5U4I132j7Yjx/VCG6jELgFqX4PIF8N0/tgI8CNF3fn3nFm9caiOpQqd7m68CRmcNLI4u1N3
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:9122:1607:8323:8ea2])
+ (user=irogers job=sendgmr) by 2002:a63:5c20:: with SMTP id
+ q32mr20568505pgb.173.1637377258239; Fri, 19 Nov 2021 19:00:58 -0800 (PST)
+Date:   Fri, 19 Nov 2021 19:00:53 -0800
+Message-Id: <20211120030053.2649499-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+Subject: [PATCH] perf metric: Reduce multiplexing with duration_time
+From:   Ian Rogers <irogers@google.com>
+To:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     eranian@google.com, Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+It is common to use the same counters with and without
+duration_time. The ID sharing code treats duration_time as if it
+were a hardware event placed in the same group. This causes
+unnecessary multiplexing such as in the following example where
+l3_cache_access isn't shared:
 
-syzbot found the following issue on:
+$ perf stat -M l3 -a sleep 1
 
-HEAD commit:    9539ba4308ad Merge tag 'riscv-for-linus-5.16-rc2' of git:/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17f79d01b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6d3b8fd1977c1e73
-dashboard link: https://syzkaller.appspot.com/bug?extid=e979d3597f48262cb4ee
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+ Performance counter stats for 'system wide':
 
-Unfortunately, I don't have any reproducer for this issue yet.
+         3,117,007      l3_cache_miss             #    199.5 MB/s  l3_rd_bw
+                                                  #     43.6 %  l3_hits
+                                                  #     56.4 %  l3_miss               (50.00%)
+         5,526,447      l3_cache_access                                               (50.00%)
+         5,392,435      l3_cache_access           # 5389191.2 access/s  l3_access_rate  (50.00%)
+     1,000,601,901 ns   duration_time
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e979d3597f48262cb4ee@syzkaller.appspotmail.com
+       1.000601901 seconds time elapsed
 
-============================================
-WARNING: possible recursive locking detected
-5.16.0-rc1-syzkaller #0 Not tainted
---------------------------------------------
-syz-executor.3/1337 is trying to acquire lock:
-ffff88809466ce58 (&ei->socket.wq.wait){..-.}-{2:2}, at: spin_lock include/linux/spinlock.h:349 [inline]
-ffff88809466ce58 (&ei->socket.wq.wait){..-.}-{2:2}, at: smc_switch_to_fallback+0x3d5/0x8c0 net/smc/af_smc.c:588
+Fix this by placing duration_time in all groups unless metric
+sharing has been disabled on the command line:
 
-but task is already holding lock:
-ffff88809466c258 (&ei->socket.wq.wait){..-.}-{2:2}, at: smc_switch_to_fallback+0x3ca/0x8c0 net/smc/af_smc.c:587
+$ perf stat -M l3 -a sleep 1
 
-other info that might help us debug this:
- Possible unsafe locking scenario:
+ Performance counter stats for 'system wide':
 
-       CPU0
-       ----
-  lock(&ei->socket.wq.wait);
-  lock(&ei->socket.wq.wait);
+         3,597,972      l3_cache_miss             #    230.3 MB/s  l3_rd_bw
+                                                  #     48.0 %  l3_hits
+                                                  #     52.0 %  l3_miss
+         6,914,459      l3_cache_access           # 6909935.9 access/s  l3_access_rate
+     1,000,654,579 ns   duration_time
 
- *** DEADLOCK ***
+       1.000654579 seconds time elapsed
 
- May be due to missing lock nesting notation
+$ perf stat --metric-no-merge -M l3 -a sleep 1
 
-2 locks held by syz-executor.3/1337:
- #0: 
-ffff888082ba8120 (sk_lock-AF_SMC){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1645 [inline]
-ffff888082ba8120 (sk_lock-AF_SMC){+.+.}-{0:0}, at: smc_setsockopt+0x2b7/0xa40 net/smc/af_smc.c:2449
- #1: ffff88809466c258 (&ei->socket.wq.wait){..-.}-{2:2}, at: smc_switch_to_fallback+0x3ca/0x8c0 net/smc/af_smc.c:587
+ Performance counter stats for 'system wide':
 
-stack backtrace:
-CPU: 1 PID: 1337 Comm: syz-executor.3 Not tainted 5.16.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_deadlock_bug kernel/locking/lockdep.c:2956 [inline]
- check_deadlock kernel/locking/lockdep.c:2999 [inline]
- validate_chain kernel/locking/lockdep.c:3788 [inline]
- __lock_acquire.cold+0x149/0x3ab kernel/locking/lockdep.c:5027
- lock_acquire kernel/locking/lockdep.c:5637 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5602
- __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
- _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:154
- spin_lock include/linux/spinlock.h:349 [inline]
- smc_switch_to_fallback+0x3d5/0x8c0 net/smc/af_smc.c:588
- smc_setsockopt+0x8ee/0xa40 net/smc/af_smc.c:2459
- __sys_setsockopt+0x2db/0x610 net/socket.c:2176
- __do_sys_setsockopt net/socket.c:2187 [inline]
- __se_sys_setsockopt net/socket.c:2184 [inline]
- __x64_sys_setsockopt+0xba/0x150 net/socket.c:2184
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fa2a8fceae9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fa2a6544188 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
-RAX: ffffffffffffffda RBX: 00007fa2a90e1f60 RCX: 00007fa2a8fceae9
-RDX: 0000000000000021 RSI: 0000000000000006 RDI: 0000000000000005
-RBP: 00007fa2a9028f6d R08: 0000000000000010 R09: 0000000000000000
-R10: 0000000020000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffc2297067f R14: 00007fa2a6544300 R15: 0000000000022000
- </TASK>
+         3,501,834      l3_cache_miss             #     53.5 %  l3_miss               (24.99%)
+         6,548,173      l3_cache_access                                               (24.99%)
+         3,417,622      l3_cache_miss             #     45.7 %  l3_hits               (25.04%)
+         6,294,062      l3_cache_access                                               (25.04%)
+         5,923,238      l3_cache_access           # 5919688.1 access/s  l3_access_rate  (24.99%)
+     1,000,599,683 ns   duration_time
+         3,607,486      l3_cache_miss             #    230.9 MB/s  l3_rd_bw           (49.97%)
 
+       1.000599683 seconds time elapsed
 
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ tools/perf/util/metricgroup.c | 26 ++++++++++++++++++--------
+ 1 file changed, 18 insertions(+), 8 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index fffe02aae3ed..145c59ba2ddc 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -1299,14 +1299,16 @@ static int build_combined_expr_ctx(const struct list_head *metric_list,
+ /**
+  * parse_ids - Build the event string for the ids and parse them creating an
+  *             evlist. The encoded metric_ids are decoded.
++ * @metric_no_merge: is metric sharing explicitly disabled.
+  * @fake_pmu: used when testing metrics not supported by the current CPU.
+  * @ids: the event identifiers parsed from a metric.
+  * @modifier: any modifiers added to the events.
+  * @has_constraint: false if events should be placed in a weak group.
+  * @out_evlist: the created list of events.
+  */
+-static int parse_ids(struct perf_pmu *fake_pmu, struct expr_parse_ctx *ids,
+-		     const char *modifier, bool has_constraint, struct evlist **out_evlist)
++static int parse_ids(bool metric_no_merge, struct perf_pmu *fake_pmu,
++		     struct expr_parse_ctx *ids, const char *modifier,
++		     bool has_constraint, struct evlist **out_evlist)
+ {
+ 	struct parse_events_error parse_error;
+ 	struct evlist *parsed_evlist;
+@@ -1314,12 +1316,19 @@ static int parse_ids(struct perf_pmu *fake_pmu, struct expr_parse_ctx *ids,
+ 	int ret;
+ 
+ 	*out_evlist = NULL;
+-	if (hashmap__size(ids->ids) == 0) {
++	if (!metric_no_merge || hashmap__size(ids->ids) == 0) {
+ 		char *tmp;
+ 		/*
+-		 * No ids/events in the expression parsing context. Events may
+-		 * have been removed because of constant evaluation, e.g.:
+-		 *  event1 if #smt_on else 0
++		 * We may fail to share events between metrics because
++		 * duration_time isn't present in one metric. For example, a
++		 * ratio of cache misses doesn't need duration_time but the same
++		 * events may be used for a misses per second. Events without
++		 * sharing implies multiplexing, that is best avoided, so place
++		 * duration_time in every group.
++		 *
++		 * Also, there may be no ids/events in the expression parsing
++		 * context because of constant evaluation, e.g.:
++		 *    event1 if #smt_on else 0
+ 		 * Add a duration_time event to avoid a parse error on an empty
+ 		 * string.
+ 		 */
+@@ -1387,7 +1396,8 @@ static int parse_groups(struct evlist *perf_evlist, const char *str,
+ 		ret = build_combined_expr_ctx(&metric_list, &combined);
+ 
+ 		if (!ret && combined && hashmap__size(combined->ids)) {
+-			ret = parse_ids(fake_pmu, combined, /*modifier=*/NULL,
++			ret = parse_ids(metric_no_merge, fake_pmu, combined,
++					/*modifier=*/NULL,
+ 					/*has_constraint=*/true,
+ 					&combined_evlist);
+ 		}
+@@ -1435,7 +1445,7 @@ static int parse_groups(struct evlist *perf_evlist, const char *str,
+ 			}
+ 		}
+ 		if (!metric_evlist) {
+-			ret = parse_ids(fake_pmu, m->pctx, m->modifier,
++			ret = parse_ids(metric_no_merge, fake_pmu, m->pctx, m->modifier,
+ 					m->has_constraint, &m->evlist);
+ 			if (ret)
+ 				goto out;
+-- 
+2.34.0.rc2.393.gf8c9666880-goog
+
