@@ -2,212 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A75C6457DC8
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 13:17:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D0C457DD1
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 13:20:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237290AbhKTMUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 07:20:21 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:54200 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237129AbhKTMUU (ORCPT
+        id S237338AbhKTMXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 07:23:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230381AbhKTMXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 07:20:20 -0500
-Received: by mail-io1-f70.google.com with SMTP id a12-20020a056602148c00b005e7052734adso7459577iow.20
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 04:17:17 -0800 (PST)
+        Sat, 20 Nov 2021 07:23:35 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810FBC061574;
+        Sat, 20 Nov 2021 04:20:32 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id v23so16375288iom.12;
+        Sat, 20 Nov 2021 04:20:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7v/1LM3YhmWD/58/4APk/JcjWa5gVRYO7ANhdBBhJfg=;
+        b=PDCnAlWpIt9M30Q0uyMNd88iWm9OhFqoMU9EWjaj7ZzaTmwevgAcXlG1iO967cTHdY
+         spbBR8jSg2fNhAsKfCc4M3SS/pco1JGp6u6b856JU5vZyZVqrMFv+YGTKwKydWfFvGK2
+         fBlgp2oXEwkrJ1ooXutrugu32VQ4haykxwfuf8W+P+7gp+W995iXV3sYvNCLFv4Blel6
+         xrjXnwEU/UDApVQTxOANPApSA4mbc5h9ItqEeFpg6KO8ib6CJd7KEzqYTHPMXysdCFsG
+         c2xQl8Z0bcKnW4xYkJw+e283JnT6qWBNnDWPWmGF/xAfFIIsHqUrvHz0fDWKS5XBXy0C
+         aiSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Xyq0QSySE68UkDTiuAsAsDYEDsVRUJX9riQ2BCR/zGw=;
-        b=5lxN9ppRW/G+ea0QnwCCqMbloHq5W9QYwDEd0QiZSrRp3JYCvnfeg/NaoXjJTmoaq3
-         XlfdD46t0Q7z6IoeijEu95Q3a8951PMcKCI081oJcDJ0A0tV1YI/9SbxcRTLnDqwPGTd
-         KHySmIcqae4TXVgfbIYx5sx3HxgQhQoqZ8aGYsmeLQNT+zsLRcAsVoQKX5YfU9EQi8mO
-         6OH4Re+KOkmkO+CV8YjC++LI0o6q+5m/E8FQ/K1as8/7DGHwH8oppNO0d7+3znsZxaK2
-         3qGwriGzg5Ke98AKPg9A0eqUrpTnl1bg6RIhcs4tZ5tRy3mdpb5Zo11CjYDrtp0Xhih1
-         iuDw==
-X-Gm-Message-State: AOAM533xyhAz4Y4TKV2o80zl9A267AS4qYbjwnKXt1EoQ98YrmvaMUaH
-        Q0gnTRDWNMf5o2BOg3EdlSSSJwJf9tHxi/7xa7Y2DwUWPL8A
-X-Google-Smtp-Source: ABdhPJzubzlF6y5hnHTddFIV7WJKraWN6owNSW0KHHe9xN2dkwpkBWsLzgLMa0S3pfC/vdxvR0GCXuMcRWI5pHagan8UKg5BRd35
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7v/1LM3YhmWD/58/4APk/JcjWa5gVRYO7ANhdBBhJfg=;
+        b=D/oNyAVVVIyY1+7ZnH2IAfm8XgAZS1AJR8vOBYXrbX5XOBCqGJpEjiUlN0ZSjqmDr6
+         4qtOn3D6RN0XBLD5LR3tmGdbBinsothuLkLjkz5qsxFTGeRSHUckcWD8VF2P/H3dTXlP
+         lrbl75E1KN8L++0fbZfyD2OjTSnhXsN6KF1ZzVPVaC20scP8WgCB/3bRfe0LkAjy6gk8
+         +MEHWlNRwX5A+r/9Zgq71D52rO0knM7Wyj0mxTLqWosGoZpcRSTDlu3SInO08bpHwejC
+         a0aFShHohfsrBz+4lJammnKnLbn3DWi7dsjBWcsqxtKfYoVmOP3YHgrR605DpkuSH8/+
+         A6sQ==
+X-Gm-Message-State: AOAM530s907PFg6EVaAwkqKPwy/Ayaw8XxMYjOb+qXxxvoz1ta/+OYKs
+        dJI2JUfJ75GsZ82vtuHTu92DQ3AiNxGtKQ==
+X-Google-Smtp-Source: ABdhPJydtOs5bKEne0N8GnBoZk4fVBejd/LHjHgM8gk9qXKfda1TOLYm7na4JnA3vOpq5okd3wUxig==
+X-Received: by 2002:a02:ba8b:: with SMTP id g11mr34245775jao.128.1637410830037;
+        Sat, 20 Nov 2021 04:20:30 -0800 (PST)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:48a3:a74f:1d99:b7f])
+        by smtp.gmail.com with ESMTPSA id n12sm1984259ilk.80.2021.11.20.04.20.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Nov 2021 04:20:29 -0800 (PST)
+From:   Adam Ford <aford173@gmail.com>
+To:     devicetree@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, linux-kernel@vger.kernel.org,
+        aford@beaconembedded.com, Adam Ford <aford173@gmail.com>
+Subject: [RESEND PATCH V5] dt-bindings: soc: imx: Add binding doc for spba bus
+Date:   Sat, 20 Nov 2021 06:20:22 -0600
+Message-Id: <20211120122022.1052768-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:134d:: with SMTP id i13mr11145325iov.164.1637410636761;
- Sat, 20 Nov 2021 04:17:16 -0800 (PST)
-Date:   Sat, 20 Nov 2021 04:17:16 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005b12b805d1375f4a@google.com>
-Subject: [syzbot] KMSAN: uninit-value in ieee80211_sta_tx_notify (2)
-From:   syzbot <syzbot+614e82b88a1a4973e534@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, glider@google.com, johannes@sipsolutions.net,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Add binding doc for fsl,spba-bus.
 
-syzbot found the following issue on:
+Signed-off-by: Adam Ford <aford173@gmail.com>
 
-HEAD commit:    412af9cd936d ioremap.c: move an #include around
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=14d990eeb00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2d142cdf4204061
-dashboard link: https://syzkaller.appspot.com/bug?extid=614e82b88a1a4973e534
-compiler:       clang version 14.0.0 (git@github.com:llvm/llvm-project.git 0996585c8e3b3d409494eb5f1cad714b9e1f7fb5), GNU ld (GNU Binutils for Debian) 2.35.2
+diff --git a/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml b/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml
+new file mode 100644
+index 000000000000..e9f77ecae3d3
+--- /dev/null
++++ b/Documentation/devicetree/bindings/bus/fsl,spba-bus.yaml
+@@ -0,0 +1,68 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/bus/fsl,spba-bus.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Shared Peripherals Bus Interface
++
++maintainers:
++  - Shawn Guo <shawnguo@kernel.org>
++
++description: |
++  A simple bus enabling access to shared peripherals.
++
++  The "spba-bus" follows the "simple-bus" set of properties, as
++  specified in the Devicetree Specification.  It is an extension of
++  "simple-bus" because the SDMA controller uses this compatible flag to
++  determine which peripherals are available to it and the range over which
++  the SDMA can access.  There are no special clocks for the bus, because
++  the SDMA controller itself has its interrupt, and clock assignments.
++
++select:
++  properties:
++    compatible:
++      contains:
++        const: fsl,spba-bus
++  required:
++    - compatible
++
++properties:
++  $nodename:
++    pattern: "^bus(@[0-9a-f]+)?$"
++
++  compatible:
++    items:
++      - const: fsl,spba-bus
++      - const: simple-bus
++
++  '#address-cells':
++    enum: [ 1, 2 ]
++
++  '#size-cells':
++    enum: [ 1, 2 ]
++
++  reg:
++    maxItems: 1
++
++  ranges: true
++
++required:
++  - compatible
++  - '#address-cells'
++  - '#size-cells'
++  - reg
++  - ranges
++
++additionalProperties:
++  type: object
++
++examples:
++  - |
++    bus@30000000 {
++        compatible = "fsl,spba-bus", "simple-bus";
++        #address-cells = <1>;
++        #size-cells = <1>;
++        reg = <0x30000000 0x100000>;
++        ranges;
++    };
+-- 
+2.32.0
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+614e82b88a1a4973e534@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in ieee80211_ac_from_tid net/mac80211/ieee80211_i.h:2216 [inline]
-BUG: KMSAN: uninit-value in ieee80211_sta_tx_wmm_ac_notify net/mac80211/mlme.c:2450 [inline]
-BUG: KMSAN: uninit-value in ieee80211_sta_tx_notify+0x3b8/0x950 net/mac80211/mlme.c:2482
- ieee80211_ac_from_tid net/mac80211/ieee80211_i.h:2216 [inline]
- ieee80211_sta_tx_wmm_ac_notify net/mac80211/mlme.c:2450 [inline]
- ieee80211_sta_tx_notify+0x3b8/0x950 net/mac80211/mlme.c:2482
- ieee80211_tx_status_ext+0x11f0/0x54d0 net/mac80211/status.c:1147
- ieee80211_tx_status+0x221/0x270 net/mac80211/status.c:1090
- ieee80211_tasklet_handler+0x30d/0x380 net/mac80211/main.c:239
- tasklet_action_common+0x5dd/0x810 kernel/softirq.c:783
- tasklet_action+0x30/0x40 kernel/softirq.c:804
- __do_softirq+0x1c9/0x6ec kernel/softirq.c:558
- do_softirq+0x120/0x1c0 kernel/softirq.c:459
- __local_bh_enable_ip+0xab/0xb0 kernel/softirq.c:383
- local_bh_enable+0x36/0x40 include/linux/bottom_half.h:32
- __ieee80211_tx_skb_tid_band+0x297/0x3a0 net/mac80211/tx.c:5672
- ieee80211_tx_skb_tid net/mac80211/ieee80211_i.h:2185 [inline]
- ieee80211_tx_skb net/mac80211/ieee80211_i.h:2194 [inline]
- ieee80211_send_nullfunc+0x535/0x630 net/mac80211/mlme.c:1095
- ieee80211_mgd_probe_ap_send+0x6e7/0xa30 net/mac80211/mlme.c:2544
- ieee80211_mgd_probe_ap+0x4ee/0x6c0 net/mac80211/mlme.c:2620
- ieee80211_beacon_connection_loss_work+0x1a3/0x420 net/mac80211/mlme.c:2753
- process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
- worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
- kthread+0x66b/0x780 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30
-
-Uninit was created at:
- slab_post_alloc_hook mm/slab.h:524 [inline]
- slab_alloc_node mm/slub.c:3227 [inline]
- __kmalloc_node_track_caller+0xa3b/0x13c0 mm/slub.c:4962
- kmalloc_reserve net/core/skbuff.c:356 [inline]
- __alloc_skb+0x4db/0xe40 net/core/skbuff.c:427
- __netdev_alloc_skb+0x48f/0x840 net/core/skbuff.c:494
- netdev_alloc_skb include/linux/skbuff.h:2877 [inline]
- dev_alloc_skb include/linux/skbuff.h:2890 [inline]
- ieee80211_nullfunc_get+0x2c1/0x870 net/mac80211/tx.c:5386
- ieee80211_send_nullfunc+0x132/0x630 net/mac80211/mlme.c:1077
- ieee80211_mgd_probe_ap_send+0x6e7/0xa30 net/mac80211/mlme.c:2544
- ieee80211_mgd_probe_ap+0x4ee/0x6c0 net/mac80211/mlme.c:2620
- ieee80211_beacon_connection_loss_work+0x1a3/0x420 net/mac80211/mlme.c:2753
- process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
- worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
- kthread+0x66b/0x780 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30
-=====================================================
-=====================================================
-BUG: KMSAN: uninit-value in ieee80211_ac_from_tid net/mac80211/ieee80211_i.h:2216 [inline]
-BUG: KMSAN: uninit-value in ieee80211_sta_tx_wmm_ac_notify net/mac80211/mlme.c:2450 [inline]
-BUG: KMSAN: uninit-value in ieee80211_sta_tx_notify+0x3b8/0x950 net/mac80211/mlme.c:2482
- ieee80211_ac_from_tid net/mac80211/ieee80211_i.h:2216 [inline]
- ieee80211_sta_tx_wmm_ac_notify net/mac80211/mlme.c:2450 [inline]
- ieee80211_sta_tx_notify+0x3b8/0x950 net/mac80211/mlme.c:2482
- ieee80211_tx_status_ext+0x11f0/0x54d0 net/mac80211/status.c:1147
- ieee80211_tx_status+0x221/0x270 net/mac80211/status.c:1090
- ieee80211_tasklet_handler+0x30d/0x380 net/mac80211/main.c:239
- tasklet_action_common+0x5dd/0x810 kernel/softirq.c:783
- tasklet_action+0x30/0x40 kernel/softirq.c:804
- __do_softirq+0x1c9/0x6ec kernel/softirq.c:558
- do_softirq+0x120/0x1c0 kernel/softirq.c:459
- __local_bh_enable_ip+0xab/0xb0 kernel/softirq.c:383
- local_bh_enable+0x36/0x40 include/linux/bottom_half.h:32
- __ieee80211_tx_skb_tid_band+0x297/0x3a0 net/mac80211/tx.c:5672
- ieee80211_tx_skb_tid net/mac80211/ieee80211_i.h:2185 [inline]
- ieee80211_tx_skb net/mac80211/ieee80211_i.h:2194 [inline]
- ieee80211_send_nullfunc+0x535/0x630 net/mac80211/mlme.c:1095
- ieee80211_mgd_probe_ap_send+0x6e7/0xa30 net/mac80211/mlme.c:2544
- ieee80211_mgd_probe_ap+0x4ee/0x6c0 net/mac80211/mlme.c:2620
- ieee80211_beacon_connection_loss_work+0x1a3/0x420 net/mac80211/mlme.c:2753
- process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
- worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
- kthread+0x66b/0x780 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30
-
-Uninit was created at:
- slab_post_alloc_hook mm/slab.h:524 [inline]
- slab_alloc_node mm/slub.c:3227 [inline]
- __kmalloc_node_track_caller+0xa3b/0x13c0 mm/slub.c:4962
- kmalloc_reserve net/core/skbuff.c:356 [inline]
- __alloc_skb+0x4db/0xe40 net/core/skbuff.c:427
- __netdev_alloc_skb+0x48f/0x840 net/core/skbuff.c:494
- netdev_alloc_skb include/linux/skbuff.h:2877 [inline]
- dev_alloc_skb include/linux/skbuff.h:2890 [inline]
- ieee80211_nullfunc_get+0x2c1/0x870 net/mac80211/tx.c:5386
- ieee80211_send_nullfunc+0x132/0x630 net/mac80211/mlme.c:1077
- ieee80211_mgd_probe_ap_send+0x6e7/0xa30 net/mac80211/mlme.c:2544
- ieee80211_mgd_probe_ap+0x4ee/0x6c0 net/mac80211/mlme.c:2620
- ieee80211_beacon_connection_loss_work+0x1a3/0x420 net/mac80211/mlme.c:2753
- process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
- worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
- kthread+0x66b/0x780 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30
-=====================================================
-=====================================================
-BUG: KMSAN: uninit-value in ieee80211_ac_from_tid net/mac80211/ieee80211_i.h:2216 [inline]
-BUG: KMSAN: uninit-value in ieee80211_sta_tx_wmm_ac_notify net/mac80211/mlme.c:2450 [inline]
-BUG: KMSAN: uninit-value in ieee80211_sta_tx_notify+0x3b8/0x950 net/mac80211/mlme.c:2482
- ieee80211_ac_from_tid net/mac80211/ieee80211_i.h:2216 [inline]
- ieee80211_sta_tx_wmm_ac_notify net/mac80211/mlme.c:2450 [inline]
- ieee80211_sta_tx_notify+0x3b8/0x950 net/mac80211/mlme.c:2482
- ieee80211_tx_status_ext+0x11f0/0x54d0 net/mac80211/status.c:1147
- ieee80211_tx_status+0x221/0x270 net/mac80211/status.c:1090
- ieee80211_tasklet_handler+0x30d/0x380 net/mac80211/main.c:239
- tasklet_action_common+0x5dd/0x810 kernel/softirq.c:783
- tasklet_action+0x30/0x40 kernel/softirq.c:804
- __do_softirq+0x1c9/0x6ec kernel/softirq.c:558
- do_softirq+0x120/0x1c0 kernel/softirq.c:459
- __local_bh_enable_ip+0xab/0xb0 kernel/softirq.c:383
- local_bh_enable+0x36/0x40 include/linux/bottom_half.h:32
- __ieee80211_tx_skb_tid_band+0x297/0x3a0 net/mac80211/tx.c:5672
- ieee80211_tx_skb_tid net/mac80211/ieee80211_i.h:2185 [inline]
- ieee80211_tx_skb net/mac80211/ieee80211_i.h:2194 [inline]
- ieee80211_send_nullfunc+0x535/0x630 net/mac80211/mlme.c:1095
- ieee80211_mgd_probe_ap_send+0x6e7/0xa30 net/mac80211/mlme.c:2544
- ieee80211_mgd_probe_ap+0x4ee/0x6c0 net/mac80211/mlme.c:2620
- ieee80211_beacon_connection_loss_work+0x1a3/0x420 net/mac80211/mlme.c:2753
- process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
- worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
- kthread+0x66b/0x780 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30
-
-Uninit was created at:
- slab_post_alloc_hook mm/slab.h:524 [inline]
- slab_alloc_node mm/slub.c:3227 [inline]
- __kmalloc_node_track_caller+0xa3b/0x13c0 mm/slub.c:4962
- kmalloc_reserve net/core/skbuff.c:356 [inline]
- __alloc_skb+0x4db/0xe40 net/core/skbuff.c:427
- __netdev_alloc_skb+0x48f/0x840 net/core/skbuff.c:494
- netdev_alloc_skb include/linux/skbuff.h:2877 [inline]
- dev_alloc_skb include/linux/skbuff.h:2890 [inline]
- ieee80211_nullfunc_get+0x2c1/0x870 net/mac80211/tx.c:5386
- ieee80211_send_nullfunc+0x132/0x630 net/mac80211/mlme.c:1077
- ieee80211_mgd_probe_ap_send+0x6e7/0xa30 net/mac80211/mlme.c:2544
- ieee80211_mgd_probe_ap+0x4ee/0x6c0 net/mac80211/mlme.c:2620
- ieee80211_beacon_connection_loss_work+0x1a3/0x420 net/mac80211/mlme.c:2753
- process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
- worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
- kthread+0x66b/0x780 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
