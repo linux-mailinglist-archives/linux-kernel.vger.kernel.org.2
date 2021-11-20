@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E671457B2F
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 05:30:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB8A5457B2C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 05:30:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237002AbhKTEd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 23:33:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43240 "EHLO mail.kernel.org"
+        id S237027AbhKTEdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 23:33:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236836AbhKTEdM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236782AbhKTEdM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 19 Nov 2021 23:33:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id C6DD4604D1;
+Received: by mail.kernel.org (Postfix) with ESMTPS id AF11C601FA;
         Sat, 20 Nov 2021 04:30:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1637382609;
-        bh=I0erAr73wCqEQ53OcoZ+z/K5jnlK55rswmPWxC07YU8=;
+        bh=GIAi+gb+A/l266T6P+tpWrsu2yOHEM+hZlkVWTP/GU4=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=IdxZptB3Afn0oNHWAFPJEPPPiqFdnC7SbOktVgQ/QBskTou/EwQX/IVrZ4zqT91VG
-         8a65wjIKB2VVrkLq4D+4ApNMOJbW9AW0ydIFmamCz6NxlqYB9aveVesnX91fuFPxxJ
-         z8i10QgsAYqr9/Ncpv4FGh2/fm5mFglxKb/jZ5xF83lM4cMHeuEbHsxEQ6b3OczHsW
-         JgLuy51qX74auiBWjAA/et/9uj/FWkOygyJ6gA9787XRpmRRKoNDSaNYmrz6jir/Ao
-         IGn7L+a6eTgqj6Cbq9DwftTDmvIAo+IK+7q5Y0Ag/jFEfkurvI+Yqw3bLkFtJpVEIP
-         oLnp+ZpHdKTGg==
+        b=BLScqyDF4x/bHHgVW1EvwLllvQBSyDF+UuW3h9Vy/LEh4VxBpI9vC08h8E9zI/s+o
+         ahLt/PWA45/WKwZSk6PAx9wGLd1ELZDDQ2USOuTEi+qVwjNHXSmb3gr6ZD5Kd5v4fj
+         /kZsNavQDcLETrSkafYvCvSabKP+yyf/s9AFSwbikrL+0n+Pl8P/J/lzn/ok4LVCPX
+         xmXltI0BuYjuMmvzf9znodarSOFS9AuRTr4Q7xMtWindp+3jGYdE/Vwcgm3jq5kqqK
+         G614UiNBawmXANJdnspdoZsYHqclVkizCyNyteK+SUBTxHvyDBZiFTj2iREPDbbOXp
+         GFVezqeIurzwg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id ACDF16096E;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A252D609D9;
         Sat, 20 Nov 2021 04:30:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2] net: phy: add support for TI DP83561-SP phy
+Subject: Re: [PATCH -next v2] ethernet: renesas: Use div64_ul instead of do_div
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163738260970.5569.5157883489066456892.git-patchwork-notify@kernel.org>
+Message-Id: <163738260965.5569.10666285186155196148.git-patchwork-notify@kernel.org>
 Date:   Sat, 20 Nov 2021 04:30:09 +0000
-References: <20211118102532.9835-1-hnagalla@ti.com>
-In-Reply-To: <20211118102532.9835-1-hnagalla@ti.com>
-To:     Hari Nagalla <hnagalla@ti.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, geet.modi@ti.com,
-        vikram.sharma@ti.com, kishon@ti.com, grygorii.strashko@ti.com
+References: <1637228883-100100-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <1637228883-100100-1-git-send-email-yang.lee@linux.alibaba.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, s.shtylyov@omp.ru,
+        geert@linux-m68k.org, netdev@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -48,22 +48,21 @@ Hello:
 This patch was applied to netdev/net-next.git (master)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Thu, 18 Nov 2021 04:25:32 -0600 you wrote:
-> From: Hari Nagalla <hnagalla@ti.com>
+On Thu, 18 Nov 2021 17:48:03 +0800 you wrote:
+> do_div() does a 64-by-32 division. Here the divisor is an
+> unsigned long which on some platforms is 64 bit wide. So use
+> div64_ul instead of do_div to avoid a possible truncation.
 > 
-> Add support for the TI DP83561-SP Gigabit ethernet phy device.
-> 
-> The dp83561-sp is a radiation hardened space grade gigabit ethernet
-> PHY. It has been tested for single event latch upto 121 MeV, the
-> critical reliability parameter for space designs. It interfaces directly to
-> twisted pair media through an external transformer. And the device also
-> interfaces directly to the MAC layer through Reduced GMII (RGMII) and MII.
+> Eliminate the following coccicheck warning:
+> ./drivers/net/ethernet/renesas/ravb_main.c:2492:1-7: WARNING:
+> do_div() does a 64-by-32 division, please consider using div64_ul
+> instead.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,v2] net: phy: add support for TI DP83561-SP phy
-    https://git.kernel.org/netdev/net-next/c/1388d4ad9d82
+  - [-next,v2] ethernet: renesas: Use div64_ul instead of do_div
+    https://git.kernel.org/netdev/net-next/c/d9f31aeaa1e5
 
 You are awesome, thank you!
 -- 
