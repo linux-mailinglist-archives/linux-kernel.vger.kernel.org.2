@@ -2,149 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D3D45804B
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 21:18:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C42EC458053
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 21:29:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbhKTUVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 15:21:32 -0500
-Received: from mail-eopbgr50054.outbound.protection.outlook.com ([40.107.5.54]:29820
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229488AbhKTUVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 15:21:32 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ijuO7Ag62TpB8x4tI9xIW/7OBg6F2fdDMhLGlpAAsG5WZ7uqZCCsSvI2pEy+RRaMeeg7Q2v690oVM5clZfmrSgIlVGfSne6pTm2gZhwLOK3YcbWMboyNQ/T7yt5B7faHpfLQLSZpnH7Y0nXk1Ap9cYjeh8ia75e81FqRym3t4zp8Hb13eFQ7DuCjUyllwB/+6X+CiAFWKl7nqBx6rQlvvi4k5yqMJ+fWirXBRsmXu1O1ZbJVCkbOiWFx+XLgyFwNO6ddGV6nkUOtuNpYkXfhge2xKmhYjHbr8A+8QZVkvcJCWPW2vSm2cpAkfUoaQgvR0s7oU+AF5qNwMMDDtHY2MQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=75dNMHAo82fcT8nTndTJBTHq99Sw2IlQaVLiH9aJ5tQ=;
- b=oAw91d3u1bfiHvVR3R1xB5/dIEB6lE2hLM/RjVc+Xr7PjeR8bKW0YN5Zrry26g7wrttTuna/9m60Lnj9rTNYk53l5hD9UtL9oGEp5vljh/y5aewzJPFwMIZbPly8OhmLTynBX36LPYWIIm4Vam8YnnKwop7U7RAFRCw04+GyT6X7wkddonPnKK4qKxU5sHoeDMtRXYlaugEzJaKuICQq00NreV0kxj1ZhYYSNGqNZseerHcbjb9UooLxNroa6UbMh0nK9aArUeuwrLpt9bfHR2I0S4H8nF22HxmBwYNEROGAtB0i6jcNSPxlzifUo0dIN9/NrUUZ8bCwIWVtRTRH1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=75dNMHAo82fcT8nTndTJBTHq99Sw2IlQaVLiH9aJ5tQ=;
- b=pwyoTPnwkNwk7ACaFHhH75ypGsjDsSVKJTMkGM+hASfjF+ti6ET37OMFO8f6VQIVhf8SlULp4pZsX2EyFS4cBZt7gN8aQsdPeX2hmncZHXQZqE4LAoV+0qpBPlXFEM4mKdiBHeArCqkZZ9Pgnizs68KACrcmnOTBHEO9o/TQ7k4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB4688.eurprd04.prod.outlook.com (2603:10a6:803:6a::30)
- by VI1PR04MB4685.eurprd04.prod.outlook.com (2603:10a6:803:70::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Sat, 20 Nov
- 2021 20:18:25 +0000
-Received: from VI1PR04MB4688.eurprd04.prod.outlook.com
- ([fe80::d0eb:49aa:2a9:9fc4]) by VI1PR04MB4688.eurprd04.prod.outlook.com
- ([fe80::d0eb:49aa:2a9:9fc4%4]) with mapi id 15.20.4713.024; Sat, 20 Nov 2021
- 20:18:25 +0000
-Date:   Sat, 20 Nov 2021 22:18:23 +0200
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     sboyd@kernel.org, mturquette@baylibre.com, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH V2] clk: imx: imx8ulp: set suppress_bind_attrs to true
-Message-ID: <YZlYD4MFFrLgZeoh@ryzen>
-References: <20211022131513.17381-1-peng.fan@oss.nxp.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211022131513.17381-1-peng.fan@oss.nxp.com>
-X-ClientProxiedBy: VI1PR09CA0175.eurprd09.prod.outlook.com
- (2603:10a6:800:120::29) To VI1PR04MB4688.eurprd04.prod.outlook.com
- (2603:10a6:803:6a::30)
+        id S231941AbhKTUcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 15:32:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231818AbhKTUcn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 15:32:43 -0500
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D2FBC061574;
+        Sat, 20 Nov 2021 12:29:40 -0800 (PST)
+Received: by mail-oi1-x22c.google.com with SMTP id bf8so28987614oib.6;
+        Sat, 20 Nov 2021 12:29:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZDrGzH3m3kCQZZzzRryqaMclRzMqAO2y432BfChnYk8=;
+        b=XyP6cSJbipHbGuKp/9x5pZQk32XgCfy+4W/wmwSUCJkRP7agFSQE1OAvjhqWz6UJfP
+         RU5iU+egBBFyvIWr3DNg7s+AhY9Tfom1RNaqlaF+uRw4Cb5pLT6IJ4BF/ywBzlzvQpgJ
+         d7OqnK1hYuTqRQ0wPkSEKMZm0yOuu1TAH46/eLnbD6+ci4e0saaF4UK0XbQH1RgnpDGR
+         tmhHV5cjV7416DwD9ig0cyxRcdrIIYyE2suuU+B3E52HVk3UttUX/wLFT3Q5NuKKHCtr
+         n95v0fOHZ3aNokTwkT3zzeP8M8ZuhI1ENZqeQUiJw9CANKnacCbYrjtV1Snm+zXAXTsg
+         DaGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZDrGzH3m3kCQZZzzRryqaMclRzMqAO2y432BfChnYk8=;
+        b=vSONcMF0deynHOnrAaJDBT6ZNCUqNxsLJK55vxj+xg05aP4QgA1arGMk7CXPEuNHPu
+         0x2lyg20hOpPuYzzPl3Xt0kSpddXcA/oMMOKiBO79oNNX7vfy40P/61cwekYiw56ghAL
+         118/GmoEMQhlJwNuid9B2XT8m8HM57am3JrIdWmCe2fTeSyeUuPoYOheEE9r2g6ruuGe
+         aKWi8QV+McZB3Lt7hCFDjKNMg1J3FvAyQ3LDrKcN2J65ZIyUafvvie6+akVBnjrCnSde
+         MjFoL4DcGz+ur/hFoQnw8DFcMXS65bJz8CnMGUJaOTDiwn7q2E2i/jn3+krL3IbCUFji
+         KkRQ==
+X-Gm-Message-State: AOAM530b3JcAyTzqrRjsIHQ0ZhbJbBkogjm7Ve1ltm0zVCW/54DbjbIA
+        UtLIX6VPiVDfzn0OiFBotI13p/IEses=
+X-Google-Smtp-Source: ABdhPJzgOgmIHpe7R8pxORMXs9Bwywa7+I7SkwCz2r3AfM72EgE0i9+/53WAxgekQJMMU6Z5+U8WqQ==
+X-Received: by 2002:aca:502:: with SMTP id 2mr9339130oif.121.1637440179407;
+        Sat, 20 Nov 2021 12:29:39 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id s17sm681036ooj.42.2021.11.20.12.29.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Nov 2021 12:29:38 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v3 12/12] watchdog: s3c2410: Add Exynos850 support
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+References: <20211107202943.8859-1-semen.protsenko@linaro.org>
+ <20211107202943.8859-13-semen.protsenko@linaro.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <2c0e5b23-92c5-70c9-3460-e9748f8a869e@roeck-us.net>
+Date:   Sat, 20 Nov 2021 12:29:36 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: from ryzen (5.12.226.136) by VI1PR09CA0175.eurprd09.prod.outlook.com (2603:10a6:800:120::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22 via Frontend Transport; Sat, 20 Nov 2021 20:18:24 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9bcbbd3f-87b0-44ed-1b6f-08d9ac62e83d
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4685:
-X-Microsoft-Antispam-PRVS: <VI1PR04MB4685C58A87EEB2C6E8D962E0F69D9@VI1PR04MB4685.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4PAYVhSRya6bEOlHgKmmiRvff/Ax7JPDMm+XZYlcp9ZrsFC+ybENL+Hf3bBHchRRSj0Z7EhsoonPEqCf6CNURa6Z/Zt4HkJ3ha+IAIrxPMqDVhFnu8RuWKz38Bzg/56225W4L4qWoKe2ib2KaVwj9r5RXMukookRt1+TFoRNkXCr78FOnKlQpH+jw/uGfSkfEzXrJCO1NxAnvZqRpbTiSyPWD2qgIK+T/p85nnHV/80tKsMZHD3Z620PLZj3bTScHTyPHIaJguUgKz2tmxgeoGc4ya1KO0/MDKeNz0PtaGz97MNRmLSPUtphUHvZXyMmH1ThLO5MJN/E+8WpnSN1g9RNI9/ml/A9fa0+fz75F/8wKCUtOMsEZTRzHL86OOZXzRh9lKej8LGAZM4mfGvWX6m1R17RdaXoA3+mMqbVrPT5noDndGk0tjO5LRWa4EEvTqephchXwUpTkSnx+iJPCEGPLewpJb0PMqjjZn/qY9UNoNpy/xDEQOPTaHRvCoveI0N5+5AP/yZZf2SjYboqwXJ6a5J3WKZd0wLHSy7FkcrPeX/vN9pJ1aJ1Npo0+JdKiiRoZaA+qc4O7I3cCUPbLW1YQzBDPteQxK1ReOnH2vLFvSyl+uvzteuabcdqirOxW/iIeDZsxL1BJHnd/2SJ68VWpgESRt0QKrswbiMZmlWijIN4lkchfAe+RxXox+uB+x2rvGLUVwxV09kc8m3llpyVyTdXlKMuPmhfgiSQDHk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4688.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(53546011)(8936002)(86362001)(2906002)(83380400001)(44832011)(6496006)(38350700002)(9686003)(316002)(956004)(6862004)(4326008)(33716001)(52116002)(508600001)(26005)(5660300002)(186003)(55016002)(9576002)(66476007)(66946007)(38100700002)(8676002)(66556008)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Yt9If4UD5V3/Tamg4miHI7xNEV61VOFyKeT4jvG4sPTW8EkbvHekWVG+wH/T?=
- =?us-ascii?Q?rP6uXiK96933urmiNWIxYsUL1esuiM+AgKBDWtwYNvDgHqAhQi9KQNnAZ4DW?=
- =?us-ascii?Q?A6xnSAKpMOMhQAkTcvXoOPfw2gNfHTPM9CTidN2Ciu/znbl0MDmg1r0D6bv3?=
- =?us-ascii?Q?xUa0/CRZGTeGTqnmfQZWS/2owFSPq603wySPcyeINeeceS2vADfE/Zfh6KnG?=
- =?us-ascii?Q?AOa8EwM6LhYKL8eV6AKEu0IyGRqimicBwcExvJUE5JP4plvj2QMf7iZ+LDWC?=
- =?us-ascii?Q?D86yFE8/fYKrHhBhWHnRCaqwseGuaV8Lw9gkm5Em8TOiprtGmKmFlaYTFqAz?=
- =?us-ascii?Q?LOFnRLf0t5ZKqNyiy0QULyRNCLMX9uaPAi0gSZ1VI5i8+x+JfjKe1KZ7UpiZ?=
- =?us-ascii?Q?Pp5KnMqz/QCbzn4TAgAz3CIOTFqSNi7+8TixRDQjEqaU0mP9htg10SRYkwX9?=
- =?us-ascii?Q?TruWY1raTmQy9l8+VmqLXQqAcU+062KnLetuqs4UZUb5cDlbn0W4SoUBfjhH?=
- =?us-ascii?Q?fWZLAjbrqQHecIT2cZtszcpw1s4fUZPyECDIXHxni8z8/jwIg8bnNe670ZnY?=
- =?us-ascii?Q?k2n4MRk0t5s0h2UR548sGvxIcIuKy/17NumPUaF0Mu1dFbih9EVtwkDMeZLc?=
- =?us-ascii?Q?tucoTFLbzTsrgeYW8vamZnOCA6EDZTjEX/f4IEwF+f5ORkjs+h3csClER5Ys?=
- =?us-ascii?Q?j0KQHzkJvIRP1UwDFYg3P+g0Q8h77zoBII/PklqxksfViebtfjCcBVwCy15P?=
- =?us-ascii?Q?Wp5IYFmvfU+J5JM5ch1mFWpobSk8MGmmeJPJ/nxSxxOgP6gVrnxe/e6rwNtY?=
- =?us-ascii?Q?VpXMxvsYTAdB29ytw4/in73UMYB04/bSdnMnssNf7+P8bZOEMMVh7t0zNv1y?=
- =?us-ascii?Q?uQw822pPsfye+gYn0V5XCnH7Kbw32Hy5Y1RCUrYUGf6lj+6VP0O4Z+JtqHgQ?=
- =?us-ascii?Q?DW21tY7lc3rBP2xt5YIlVyqyjFAfEj/ywA4gYco6lmha/LJX1MXdVcgqr8B+?=
- =?us-ascii?Q?j3xEzcWpi9FlInCBPDNK7Ktk4+s/J9wJnFrlrqw730T+cqRmMwNM1H2AHkrz?=
- =?us-ascii?Q?fxp1W9guRuCe70WV6xpKup1JJOogxUkgKyaL3q4G/4Nn9HPkZXMx9egw2P8t?=
- =?us-ascii?Q?2490xNvQn6r+eqe3zDdceCp4BNbmk2lb2GIQzwBrxKWk7jZDXbUja0e/2VxY?=
- =?us-ascii?Q?9DYvWDvRKuQmUbqdhvotA3I8Pa6eS40t9qYIWpNt7ku869MKwVQJEvN5joBi?=
- =?us-ascii?Q?d4Ol8Iax0dO+2LKp5s4U8ZPJ+u4GGdTUsLYa/Nxd8a6GJNrdjFUkUA+7mVEZ?=
- =?us-ascii?Q?2okE+mvWT6Ooedomtooj/jbKlOMlhf4mpUzMwJM7hIywAEv9K9g7eDIuiMun?=
- =?us-ascii?Q?tArB9WBDinysjzw0FPMdSJRwbw87wfXuRJs8wi0jwtIsToJOsveekDjv+d0J?=
- =?us-ascii?Q?ZCzxHUBq1sfYCGvwmDKUKj3DkK9WsL/zXHfxebGir8j2kJKnJlCqgk0Bk/SK?=
- =?us-ascii?Q?n23s+kCOLBb2XbJ2ieAk5sC4nUFS26jmWkvZoVPNNBYYKIZBXGjBgL6TW2At?=
- =?us-ascii?Q?L669IHHIsGcrD3D+9xxvTLO8blWB3AOcH6o4K2yFrod4my4DEJYLjXi/S0BK?=
- =?us-ascii?Q?OsSXrEbJKY6NvUUrwsN9GNo=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9bcbbd3f-87b0-44ed-1b6f-08d9ac62e83d
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4688.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2021 20:18:25.4196
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4Tahs09YEkx7qXG7Mbmyn3Bxvxm+Xw4FJRE1IBxdfqwD7VEnr7RF5UQFTfhLSA/l+NactkWzMHooIMdpejb+Gg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4685
+In-Reply-To: <20211107202943.8859-13-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-10-22 21:15:13, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On 11/7/21 12:29 PM, Sam Protsenko wrote:
+> Exynos850 is a bit different from SoCs already supported in WDT driver:
+>    - AUTOMATIC_WDT_RESET_DISABLE register is removed, so its value is
+>      always 0; .disable_auto_reset callback is not set for that reason
+>    - MASK_WDT_RESET_REQUEST register is replaced with
+>      CLUSTERx_NONCPU_IN_EN register; instead of masking (disabling) WDT
+>      reset interrupt it's now enabled with the same value; .mask_reset
+>      callback is reused for that functionality though
+>    - To make WDT functional, WDT counter needs to be enabled in
+>      CLUSTERx_NONCPU_OUT register; it's done using .enable_counter
+>      callback
 > 
-> The clock driver is registered as platform devices and
-> it is possible to reloading the driver at runtime.
+> Also Exynos850 has two CPU clusters, each has its own dedicated WDT
+> instance. Different PMU registers and bits are used for each cluster. So
+> driver data is now modified in probe, adding needed info depending on
+> cluster index passed from device tree.
 > 
-> But actually the clocks should never be removed to make system work,
-> attempting to bind again would result in a crash, because almost all
-> devices depends on clock to function well.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-
-Reviewed-by: Abel Vesa <abel.vesa@nxp.com>
-
-I'll apply it to clk/imx on Monday.
-
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
 > ---
+> Changes in v3:
+>    - Renamed "samsung,index" property to more descriptive
+>      "samsung,cluster-index"
+>    - Used pre-defined and completely set driver data for cluster0 and
+>      cluster1
 > 
-> V2:
->  Update commit log to explain more
+> Changes in v2:
+>    - Used single compatible for Exynos850, populating missing driver data
+>      in probe
+>    - Added "index" property to specify CPU cluster index
 > 
->  drivers/clk/imx/clk-imx8ulp.c | 1 +
->  1 file changed, 1 insertion(+)
+>   drivers/watchdog/s3c2410_wdt.c | 62 +++++++++++++++++++++++++++++++++-
+>   1 file changed, 61 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/clk/imx/clk-imx8ulp.c b/drivers/clk/imx/clk-imx8ulp.c
-> index 6699437e17b8..8eb1af2d6429 100644
-> --- a/drivers/clk/imx/clk-imx8ulp.c
-> +++ b/drivers/clk/imx/clk-imx8ulp.c
-> @@ -559,6 +559,7 @@ static struct platform_driver imx8ulp_clk_driver = {
->  	.probe	= imx8ulp_clk_probe,
->  	.driver = {
->  		.name		= KBUILD_MODNAME,
-> +		.suppress_bind_attrs = true,
->  		.of_match_table	= imx8ulp_clk_dt_ids,
->  	},
->  };
-> -- 
-> 2.30.0
->
+> diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
+> index 96aa5d9c6ed4..1456201f27de 100644
+> --- a/drivers/watchdog/s3c2410_wdt.c
+> +++ b/drivers/watchdog/s3c2410_wdt.c
+> @@ -56,6 +56,13 @@
+>   #define EXYNOS5_RST_STAT_REG_OFFSET		0x0404
+>   #define EXYNOS5_WDT_DISABLE_REG_OFFSET		0x0408
+>   #define EXYNOS5_WDT_MASK_RESET_REG_OFFSET	0x040c
+> +#define EXYNOS850_CLUSTER0_NONCPU_OUT		0x1220
+> +#define EXYNOS850_CLUSTER0_NONCPU_INT_EN	0x1244
+> +#define EXYNOS850_CLUSTER1_NONCPU_OUT		0x1620
+> +#define EXYNOS850_CLUSTER1_NONCPU_INT_EN	0x1644
+> +
+> +#define EXYNOS850_CLUSTER0_WDTRESET_BIT		24
+> +#define EXYNOS850_CLUSTER1_WDTRESET_BIT		23
+>   
+>   /**
+>    * Quirk flags for different Samsung watchdog IP-cores.
+> @@ -205,6 +212,30 @@ static const struct s3c2410_wdt_variant drv_data_exynos7 = {
+>   		  QUIRK_HAS_PMU_RST_STAT | QUIRK_HAS_PMU_AUTO_DISABLE,
+>   };
+>   
+> +static const struct s3c2410_wdt_variant drv_data_exynos850_cl0 = {
+> +	.mask_reset_reg = EXYNOS850_CLUSTER0_NONCPU_INT_EN,
+> +	.mask_bit = 2,
+> +	.mask_reset_inv = true,
+> +	.rst_stat_reg = EXYNOS5_RST_STAT_REG_OFFSET,
+> +	.rst_stat_bit = EXYNOS850_CLUSTER0_WDTRESET_BIT,
+> +	.cnt_en_reg = EXYNOS850_CLUSTER0_NONCPU_OUT,
+> +	.cnt_en_bit = 7,
+> +	.quirks = QUIRK_HAS_WTCLRINT_REG | QUIRK_HAS_PMU_MASK_RESET | \
+> +		  QUIRK_HAS_PMU_RST_STAT | QUIRK_HAS_PMU_CNT_EN,
+> +};
+> +
+> +static const struct s3c2410_wdt_variant drv_data_exynos850_cl1 = {
+> +	.mask_reset_reg = EXYNOS850_CLUSTER1_NONCPU_INT_EN,
+> +	.mask_bit = 2,
+> +	.mask_reset_inv = true,
+> +	.rst_stat_reg = EXYNOS5_RST_STAT_REG_OFFSET,
+> +	.rst_stat_bit = EXYNOS850_CLUSTER1_WDTRESET_BIT,
+> +	.cnt_en_reg = EXYNOS850_CLUSTER1_NONCPU_OUT,
+> +	.cnt_en_bit = 7,
+> +	.quirks = QUIRK_HAS_WTCLRINT_REG | QUIRK_HAS_PMU_MASK_RESET | \
+> +		  QUIRK_HAS_PMU_RST_STAT | QUIRK_HAS_PMU_CNT_EN,
+> +};
+> +
+>   static const struct of_device_id s3c2410_wdt_match[] = {
+>   	{ .compatible = "samsung,s3c2410-wdt",
+>   	  .data = &drv_data_s3c2410 },
+> @@ -216,6 +247,8 @@ static const struct of_device_id s3c2410_wdt_match[] = {
+>   	  .data = &drv_data_exynos5420 },
+>   	{ .compatible = "samsung,exynos7-wdt",
+>   	  .data = &drv_data_exynos7 },
+> +	{ .compatible = "samsung,exynos850-wdt",
+> +	  .data = &drv_data_exynos850_cl0 },
+>   	{},
+>   };
+>   MODULE_DEVICE_TABLE(of, s3c2410_wdt_match);
+> @@ -587,14 +620,38 @@ static inline const struct s3c2410_wdt_variant *
+>   s3c2410_get_wdt_drv_data(struct platform_device *pdev)
+>   {
+>   	const struct s3c2410_wdt_variant *variant;
+> +	struct device *dev = &pdev->dev;
+>   
+> -	variant = of_device_get_match_data(&pdev->dev);
+> +	variant = of_device_get_match_data(dev);
+>   	if (!variant) {
+>   		/* Device matched by platform_device_id */
+>   		variant = (struct s3c2410_wdt_variant *)
+>   			   platform_get_device_id(pdev)->driver_data;
+>   	}
+>   
+> +	/* Choose Exynos850 driver data w.r.t. cluster index */
+> +	if (variant == &drv_data_exynos850_cl0) {
+
+0-day has a point here. drv_data_exynos850_cl0 is declared inside a CONFIG_OF
+conditional, causing compile failure if CONFIG_OF is not enabled.
+
+Please fix and resubmit.
+
+Guenter
