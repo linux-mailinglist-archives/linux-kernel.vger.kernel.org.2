@@ -2,80 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C116B457ECF
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 16:05:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE205457ED8
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 16:09:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237601AbhKTPIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 10:08:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237578AbhKTPIN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 10:08:13 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9D6C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 07:05:10 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id r11so55584241edd.9
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 07:05:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iVLtIj0z+sM3WgovleoFBIP0c50JJg8mtp+yr52u/PU=;
-        b=M1TCdw9CGQNYrKQjkChApKrGYi/91T/YSF5PHEdfN/Vdj+bKSkX5nmewDBk4N8mXSD
-         jqaFgteNlLnv1CrrqczskWR90nqE8ckaPwormQE5hva9RmH8TTnZqek+Mqr++2daCiVZ
-         4mjzk+Nnz+YIyYsGvJ8CGcUl08mTMG9bVvnzXITJv+UbC9rEo6dHZDSLEI/7Kq6piQQ7
-         25TMh8S6xZSpe/X3nzrmywsaWF6pfGVPFuuqUXuZ+oG1xZ1RJCB2gW8ISO1i0DsJEpOg
-         lJQ0rv3rOedvYyCCo9NMXXPrS80nwBnMrSzidqQ4tsGwNPBYNZDHN2GypHwvJ5VcVaXM
-         b6JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iVLtIj0z+sM3WgovleoFBIP0c50JJg8mtp+yr52u/PU=;
-        b=NU0mSKP5aJECYaAV5ECAE4S5v16J3gUmL5T2HyT1nuWdMSWgCDXuqJ22huXJ0nFDfw
-         hA8NmC9U3U2ra/zZZkHqsAL9QLsBr+r4y0ftrwSWJWyNpUCREGokapdosCE9r7nzSEjD
-         1xI9SvlBGFi08PnS4srU2pp4zi6KIYI6w0fmNK08/ZlC9pudT41bXOLyjcognG8afSxY
-         NUMPObESppj+cThDSWlSx2uGli31/8HO9CEI391F5DDh+/fwoavqHtPCs472AlS8ro6M
-         iB+2uW1kW0ti6bq6alYjetnW3D/E7atY1EPtEjU/N5gNvJn1SlxCqQ7BMwWdVL3fFOuQ
-         JPkg==
-X-Gm-Message-State: AOAM533mVn7SwU+dZHizIyf8ZcdDJUSy7vcwwmjc4B4CtfUfAaHiBpAs
-        bnn4TRfM0eSjGkB4n9BR8H2iKd3vnA==
-X-Google-Smtp-Source: ABdhPJwZ9FVU3g+JyvdyBDMguZscD/iwPNr99yO2waMi62X8t6um/NgqZX+ZjAtwwFnOK57dlKnsgw==
-X-Received: by 2002:a17:906:4fcd:: with SMTP id i13mr20383961ejw.472.1637420708775;
-        Sat, 20 Nov 2021 07:05:08 -0800 (PST)
-Received: from localhost.localdomain ([46.53.251.178])
-        by smtp.gmail.com with ESMTPSA id hd15sm1300179ejc.69.2021.11.20.07.05.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Nov 2021 07:05:08 -0800 (PST)
-Date:   Sat, 20 Nov 2021 18:05:06 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Alejandro Colomar <alx.manpages@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Joe Perches <joe@perches.com>
-Subject: Re: [PATCH v2 12/20] linux/must_be.h: Add must_be() to improve
- readability of BUILD_BUG_ON_ZERO()
-Message-ID: <YZkOolX1SBsqXAsP@localhost.localdomain>
-References: <20211119113644.1600-1-alx.manpages@gmail.com>
- <20211120130104.185699-1-alx.manpages@gmail.com>
- <20211120130104.185699-13-alx.manpages@gmail.com>
+        id S237626AbhKTPMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 10:12:25 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:43648 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229794AbhKTPMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 10:12:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=I7zCtQxD9zY1wsKBA0OZDazSLBiFkiHXbA3F2PRRZ4o=; b=2RbfFTChsZNnMXCQtQRyYrgkew
+        tqXKuN0W7sjEDKya+MCzoats25BCUjOQRlRNWlwUdjMC2Bx/vauoTJWYCXSVnj2izCOZkO1AfW3MP
+        ZKeEhKd4g84enA8fdaDhaiQIPQ8XKa3NERgCXiLhUg1g1AFy4rj/1IyQleEH6F8ZJRew=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1moRzS-00E9Vw-H5; Sat, 20 Nov 2021 16:09:18 +0100
+Date:   Sat, 20 Nov 2021 16:09:18 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Colin Foster <colin.foster@in-advantage.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>
+Subject: Re: [PATCH v1 net-next 1/3] net: mdio: mscc-miim: convert to a
+ regmap implementation
+Message-ID: <YZkPnida0Kd0sG8x@lunn.ch>
+References: <20211119213918.2707530-1-colin.foster@in-advantage.com>
+ <20211119213918.2707530-2-colin.foster@in-advantage.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211120130104.185699-13-alx.manpages@gmail.com>
+In-Reply-To: <20211119213918.2707530-2-colin.foster@in-advantage.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 20, 2021 at 02:00:55PM +0100, Alejandro Colomar wrote:
-> Historically, BUILD_BUG_ON_ZERO() has been hard to read.
-> __must_be_array() is based on BUILD_BUG_ON_ZERO(),
-> and unlike BUILD_BUG_ON_*(),
-> it has a pretty readable name.
+> @@ -73,22 +84,30 @@ static int mscc_miim_wait_pending(struct mii_bus *bus)
+>  static int mscc_miim_read(struct mii_bus *bus, int mii_id, int regnum)
+>  {
+>  	struct mscc_miim_dev *miim = bus->priv;
+> +	int ret, err;
+>  	u32 val;
+> -	int ret;
+>  
+>  	ret = mscc_miim_wait_pending(bus);
+>  	if (ret)
+>  		goto out;
+>  
+> -	writel(MSCC_MIIM_CMD_VLD | (mii_id << MSCC_MIIM_CMD_PHYAD_SHIFT) |
+> -	       (regnum << MSCC_MIIM_CMD_REGAD_SHIFT) | MSCC_MIIM_CMD_OPR_READ,
+> -	       miim->regs + MSCC_MIIM_REG_CMD);
+> +	err = regmap_write(miim->regs, MSCC_MIIM_REG_CMD, MSCC_MIIM_CMD_VLD |
+> +			   (mii_id << MSCC_MIIM_CMD_PHYAD_SHIFT) |
+> +			   (regnum << MSCC_MIIM_CMD_REGAD_SHIFT) |
+> +			   MSCC_MIIM_CMD_OPR_READ);
+> +
+> +	if (err < 0)
+> +		WARN_ONCE(1, "mscc miim write cmd reg error %d\n", err);
 
-The best name is assert() which userspace uses and is standartised.
+You should probably return ret here. If the setup fails, i doubt you
+will get anything useful from the hardware.
+
+>  
+>  	ret = mscc_miim_wait_ready(bus);
+>  	if (ret)
+>  		goto out;
+>  
+> -	val = readl(miim->regs + MSCC_MIIM_REG_DATA);
+> +	err = regmap_read(miim->regs, MSCC_MIIM_REG_DATA, &val);
+> +
+> +	if (err < 0)
+> +		WARN_ONCE(1, "mscc miim read data reg error %d\n", err);
+
+Same here.
+
+> +
+>  	if (val & MSCC_MIIM_DATA_ERROR) {
+>  		ret = -EIO;
+>  		goto out;
+> @@ -103,18 +122,20 @@ static int mscc_miim_write(struct mii_bus *bus, int mii_id,
+>  			   int regnum, u16 value)
+>  {
+>  	struct mscc_miim_dev *miim = bus->priv;
+> -	int ret;
+> +	int err, ret;
+>  
+>  	ret = mscc_miim_wait_pending(bus);
+>  	if (ret < 0)
+>  		goto out;
+>  
+> -	writel(MSCC_MIIM_CMD_VLD | (mii_id << MSCC_MIIM_CMD_PHYAD_SHIFT) |
+> -	       (regnum << MSCC_MIIM_CMD_REGAD_SHIFT) |
+> -	       (value << MSCC_MIIM_CMD_WRDATA_SHIFT) |
+> -	       MSCC_MIIM_CMD_OPR_WRITE,
+> -	       miim->regs + MSCC_MIIM_REG_CMD);
+> +	err = regmap_write(miim->regs, MSCC_MIIM_REG_CMD, MSCC_MIIM_CMD_VLD |
+> +			   (mii_id << MSCC_MIIM_CMD_PHYAD_SHIFT) |
+> +			   (regnum << MSCC_MIIM_CMD_REGAD_SHIFT) |
+> +			   (value << MSCC_MIIM_CMD_WRDATA_SHIFT) |
+> +			   MSCC_MIIM_CMD_OPR_WRITE);
+>  
+> +	if (err < 0)
+> +		WARN_ONCE(1, "mscc miim write error %d\n", err);
+
+And here, etc.
+
+    Andrew
