@@ -2,129 +2,470 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01FB6457A68
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 02:23:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 344BE457A6C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 02:23:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235772AbhKTB0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 20:26:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37872 "EHLO
+        id S235893AbhKTB0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 20:26:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235311AbhKTB0Y (ORCPT
+        with ESMTP id S235932AbhKTB0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 20:26:24 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D869FC061748
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 17:23:20 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id j6-20020a17090a588600b001a78a5ce46aso12253510pji.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 17:23:20 -0800 (PST)
+        Fri, 19 Nov 2021 20:26:46 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E713C061748
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 17:23:43 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id b40so51200569lfv.10
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 17:23:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/Xij941QtBI1Uy4eu8Bu4KYhGHxK/4BecrqjrKxNLxc=;
-        b=GpoQ21DjhXv2BUYJlGx0hMtF15Q8bpsRbq0wJvD6yrNvx1DYqqtNexsuLz1NRYVJ7e
-         NHFLzQYzZOyh+GJfAJnENBvIm+qSEHAVkgDfaCl/Zr3pl/+QESPUvhi1a2uPxB+ICwuy
-         d5j4VltRnAABaR74WGpaFwAADwy0tlcySm0JDW/fekN3+r5XTQVTXr1Oeo7Jdu+sGAFN
-         rv5qPR8lCfq27Bt1ONuGfxXO5QpeOfd39C4seaS4JUP7gy5aJprSPYN7u6PlhL8Ju2dl
-         odxJsmR6NbgGQCOlLIJktpJf2jC+gWvVcaW+8w8uNLE8ah6nxpfEwfFkX5r9M/k9m+ys
-         91CA==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ej+8nmuPOD988cKZ32CGzLrLL/NKjtZ1mTSlnuo76GA=;
+        b=BQM8k2Ay+WOz3IPRCzzS2eVUh+Ee3J87uOh92Drf8M3w3ThTdlmVE8Gdyq/ahASGuC
+         P5op5+yA0nS2BW8XmebEqn5n1EDNGOHvZp+eP8APcFevhH6fRIJpJz0ea21/s/MdGwgu
+         zC84YQgLMhQIzLcR+Q/Lo631AtFBbieQ27s8CuKAyJQJ7pvoY6fTw5sTZGmQbtkXV6Kl
+         5IW1AfvKKbmhWmD0pwd8GrnyR+Gqk9LAJcjEI/s6XP6wy7ADAhnYEWBdOFlT17CSy+0/
+         Q15trXPuNloku3XYV4OgqH+g+zxIWjcFD7pSM50fXfwzk+N1DfFqJpB5spfs6abw2Q7T
+         poGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/Xij941QtBI1Uy4eu8Bu4KYhGHxK/4BecrqjrKxNLxc=;
-        b=GQB/UaHirjTiGsOGbwQ9HImHwqGf06eyBx16BB4vEfPo/VjBEf0EYvSmXYWOx03/XF
-         BF/JaMfRgYR+RNf2FZrDHEkcBbkhkEasB0yugFXSTbmqgFFVOSnDHWzcQRLqP+uq8o4A
-         3FOoi1ciUK0c8wjydfp5PYqqfnSYqpwruM8PqcBOIJc3GFiLbjh+O2LVU3togCqGJCU8
-         wlSWgXWatt755yIMra7SFEUG+zbk4ClcnZfYdeQCai1TE8X2ZGQL9Zf7QDucwNx0JluV
-         5mWubk5+gMekKAR6r6uFNp4gKxQalxyN3bVOccKw52JQQhrZ6iAbBBmmKvCvURF8qwb8
-         GkhQ==
-X-Gm-Message-State: AOAM53013gw6PMDaxOq1pTgfMz2cA2uCoc+DQhgFo0Y6OverX+ESHNcp
-        vwr94jtVguvwwo8m+pfUKI92HmW9snPzdg==
-X-Google-Smtp-Source: ABdhPJzlUE1Um8kito32w8cWRvgp+EMtWNpSCF44SWtHzwom4+CZVI8C0AgTahILZETsub8pzqpAog==
-X-Received: by 2002:a17:90b:3ec4:: with SMTP id rm4mr5349860pjb.88.1637371400077;
-        Fri, 19 Nov 2021 17:23:20 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id k12sm635804pgi.23.2021.11.19.17.23.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Nov 2021 17:23:19 -0800 (PST)
-Date:   Sat, 20 Nov 2021 01:23:16 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, qemu-devel@nongnu.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        "J . Bruce Fields" <bfields@fieldses.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
-        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com
-Subject: Re: [RFC v2 PATCH 01/13] mm/shmem: Introduce F_SEAL_GUEST
-Message-ID: <YZhOBD6vlkBEyq8t@google.com>
-References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
- <20211119134739.20218-2-chao.p.peng@linux.intel.com>
- <20211119151943.GH876299@ziepe.ca>
- <df11d753-6242-8f7c-cb04-c095f68b41fa@redhat.com>
- <YZf4aAlbyeWw8wUk@google.com>
- <20211119194746.GM876299@ziepe.ca>
- <YZgjc5x6FeBxOqbD@google.com>
- <20211119233312.GO876299@ziepe.ca>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ej+8nmuPOD988cKZ32CGzLrLL/NKjtZ1mTSlnuo76GA=;
+        b=N3kxvCCO9IAvax6oWK6rUy5dZqedoz9rsz4yDqQ5Fg6RII7cHZG4SaOnx8zTt2uWb0
+         5T4W5uMUNAWFLuq+aoQeu9i1spguRANq7qh7zduhP5grD20V1FVkwFh4DMH3L5VeLDME
+         /3dAEjDQxbuKEymuMJrPr1b2cah7EvPq9e9QtSbDr9Fie3JYQoJ/nrQ8mldJI0GXiG/e
+         KGTh4lNY+Zlly7HLFZZAAT5istdBGA2TySl9M/9z8zOl252zgPwfvY0YOxwAJkL8rV5R
+         +htPejkqiO5w4ioI/d13q8YinwonsgRD3m1d4FrY/wXxwdccpkITcJuKsDdThnO9t7+x
+         Wkvg==
+X-Gm-Message-State: AOAM533bb8F2TF80Ad58wsSjjohKzg0LbF6E7CUsXdv/LA4n5csUt822
+        Gj04v+Sho+DWBsORMXmJRsB28ZyUBRA7dA==
+X-Google-Smtp-Source: ABdhPJxaZrVO/32FBxXA7wU53ToORkce4OHpVThx0oAdZSrsxhoHj/fDdNslSo6tkSb7Xm0QlOhtfg==
+X-Received: by 2002:a19:6a08:: with SMTP id u8mr38156254lfu.9.1637371421260;
+        Fri, 19 Nov 2021 17:23:41 -0800 (PST)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id w24sm152863lfc.99.2021.11.19.17.23.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Nov 2021 17:23:40 -0800 (PST)
+Subject: Re: [PATCH] arm64: dts: qcom: sm8250: Add CPU opp tables
+To:     Thara Gopinath <thara.gopinath@linaro.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211110215330.74257-1-thara.gopinath@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <9bb87351-9a1f-6171-5788-92c41075869b@linaro.org>
+Date:   Sat, 20 Nov 2021 04:23:39 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211119233312.GO876299@ziepe.ca>
+In-Reply-To: <20211110215330.74257-1-thara.gopinath@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021, Jason Gunthorpe wrote:
-> On Fri, Nov 19, 2021 at 10:21:39PM +0000, Sean Christopherson wrote:
-> > On Fri, Nov 19, 2021, Jason Gunthorpe wrote:
-> > > On Fri, Nov 19, 2021 at 07:18:00PM +0000, Sean Christopherson wrote:
-> > > > No ideas for the kernel API, but that's also less concerning since
-> > > > it's not set in stone.  I'm also not sure that dedicated APIs for
-> > > > each high-ish level use case would be a bad thing, as the semantics
-> > > > are unlikely to be different to some extent.  E.g. for the KVM use
-> > > > case, there can be at most one guest associated with the fd, but
-> > > > there can be any number of VFIO devices attached to the fd.
-> > > 
-> > > Even the kvm thing is not a hard restriction when you take away
-> > > confidential compute.
-> > > 
-> > > Why can't we have multiple KVMs linked to the same FD if the memory
-> > > isn't encrypted? Sure it isn't actually useful but it should work
-> > > fine.
-> > 
-> > Hmm, true, but I want the KVM semantics to be 1:1 even if memory
-> > isn't encrypted.
+On 11/11/2021 00:53, Thara Gopinath wrote:
+> Add OPP tables to scale DDR and L3 with CPUs for SM8250 SoCs.
 > 
-> That is policy and it doesn't belong hardwired into the kernel.
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
 
-Agreed.  I had a blurb typed up about that policy just being an "exclusive" flag
-in the kernel API that KVM would set when creating a confidential VM, but deleted
-it and forgot to restore it when I went down the tangent of removing userspace
-from the TCB without an assist from hardware/firmware.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-> Your explanation makes me think that the F_SEAL_XX isn't defined
-> properly. It should be a userspace trap door to prevent any new
-> external accesses, including establishing new kvms, iommu's, rdmas,
-> mmaps, read/write, etc.
 
-Hmm, the way I was thinking of it is that it the F_SEAL_XX itself would prevent
-mapping/accessing it from userspace, and that any policy beyond that would be
-done via kernel APIs and thus handled by whatever in-kernel agent can access the
-memory.  E.g. in the confidential VM case, without support for trusted devices,
-KVM would require that it be the sole owner of the file.
+> ---
+>   arch/arm64/boot/dts/qcom/sm8250.dtsi | 314 +++++++++++++++++++++++++++
+>   1 file changed, 314 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> index d12e4cbfc852..7c35415a05be 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> @@ -100,6 +100,9 @@ CPU0: cpu@0 {
+>   			dynamic-power-coefficient = <205>;
+>   			next-level-cache = <&L2_0>;
+>   			qcom,freq-domain = <&cpufreq_hw 0>;
+> +			operating-points-v2 = <&cpu0_opp_table>;
+> +			interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt SLAVE_EBI_CH0>,
+> +					<&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
+>   			#cooling-cells = <2>;
+>   			L2_0: l2-cache {
+>   				compatible = "cache";
+> @@ -119,6 +122,9 @@ CPU1: cpu@100 {
+>   			dynamic-power-coefficient = <205>;
+>   			next-level-cache = <&L2_100>;
+>   			qcom,freq-domain = <&cpufreq_hw 0>;
+> +			operating-points-v2 = <&cpu0_opp_table>;
+> +			interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt SLAVE_EBI_CH0>,
+> +					<&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
+>   			#cooling-cells = <2>;
+>   			L2_100: l2-cache {
+>   				compatible = "cache";
+> @@ -135,6 +141,9 @@ CPU2: cpu@200 {
+>   			dynamic-power-coefficient = <205>;
+>   			next-level-cache = <&L2_200>;
+>   			qcom,freq-domain = <&cpufreq_hw 0>;
+> +			operating-points-v2 = <&cpu0_opp_table>;
+> +			interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt SLAVE_EBI_CH0>,
+> +					<&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
+>   			#cooling-cells = <2>;
+>   			L2_200: l2-cache {
+>   				compatible = "cache";
+> @@ -151,6 +160,9 @@ CPU3: cpu@300 {
+>   			dynamic-power-coefficient = <205>;
+>   			next-level-cache = <&L2_300>;
+>   			qcom,freq-domain = <&cpufreq_hw 0>;
+> +			operating-points-v2 = <&cpu0_opp_table>;
+> +			interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt SLAVE_EBI_CH0>,
+> +					<&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
+>   			#cooling-cells = <2>;
+>   			L2_300: l2-cache {
+>   				compatible = "cache";
+> @@ -167,6 +179,9 @@ CPU4: cpu@400 {
+>   			dynamic-power-coefficient = <379>;
+>   			next-level-cache = <&L2_400>;
+>   			qcom,freq-domain = <&cpufreq_hw 1>;
+> +			operating-points-v2 = <&cpu4_opp_table>;
+> +			interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt SLAVE_EBI_CH0>,
+> +					<&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
+>   			#cooling-cells = <2>;
+>   			L2_400: l2-cache {
+>   				compatible = "cache";
+> @@ -183,6 +198,9 @@ CPU5: cpu@500 {
+>   			dynamic-power-coefficient = <379>;
+>   			next-level-cache = <&L2_500>;
+>   			qcom,freq-domain = <&cpufreq_hw 1>;
+> +			operating-points-v2 = <&cpu4_opp_table>;
+> +			interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt SLAVE_EBI_CH0>,
+> +					<&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
+>   			#cooling-cells = <2>;
+>   			L2_500: l2-cache {
+>   				compatible = "cache";
+> @@ -200,6 +218,9 @@ CPU6: cpu@600 {
+>   			dynamic-power-coefficient = <379>;
+>   			next-level-cache = <&L2_600>;
+>   			qcom,freq-domain = <&cpufreq_hw 1>;
+> +			operating-points-v2 = <&cpu4_opp_table>;
+> +			interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt SLAVE_EBI_CH0>,
+> +					<&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
+>   			#cooling-cells = <2>;
+>   			L2_600: l2-cache {
+>   				compatible = "cache";
+> @@ -216,6 +237,9 @@ CPU7: cpu@700 {
+>   			dynamic-power-coefficient = <444>;
+>   			next-level-cache = <&L2_700>;
+>   			qcom,freq-domain = <&cpufreq_hw 2>;
+> +			operating-points-v2 = <&cpu7_opp_table>;
+> +			interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt SLAVE_EBI_CH0>,
+> +					<&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
+>   			#cooling-cells = <2>;
+>   			L2_700: l2-cache {
+>   				compatible = "cache";
+> @@ -260,6 +284,296 @@ core7 {
+>   		};
+>   	};
+>   
+> +	cpu0_opp_table: cpu0_opp_table {
+> +		compatible = "operating-points-v2";
+> +		opp-shared;
+> +
+> +		cpu0_opp1: opp-300000000 {
+> +			opp-hz = /bits/ 64 <300000000>;
+> +			opp-peak-kBps = <800000 9600000>;
+> +		};
+> +
+> +		cpu0_opp2: opp-403200000 {
+> +			opp-hz = /bits/ 64 <403200000>;
+> +			opp-peak-kBps = <800000 9600000>;
+> +		};
+> +
+> +		cpu0_opp3: opp-518400000 {
+> +			opp-hz = /bits/ 64 <518400000>;
+> +			opp-peak-kBps = <800000 16588800>;
+> +		};
+> +
+> +		cpu0_opp4: opp-614400000 {
+> +			opp-hz = /bits/ 64 <614400000>;
+> +			opp-peak-kBps = <800000 16588800>;
+> +		};
+> +
+> +		cpu0_opp5: opp-691200000 {
+> +			opp-hz = /bits/ 64 <691200000>;
+> +			opp-peak-kBps = <800000 19660800>;
+> +		};
+> +
+> +		cpu0_opp6: opp-787200000 {
+> +			opp-hz = /bits/ 64 <787200000>;
+> +			opp-peak-kBps = <1804000 19660800>;
+> +		};
+> +
+> +		cpu0_opp7: opp-883200000 {
+> +			opp-hz = /bits/ 64 <883200000>;
+> +			opp-peak-kBps = <1804000 23347200>;
+> +		};
+> +
+> +		cpu0_opp8: opp-979200000 {
+> +			opp-hz = /bits/ 64 <979200000>;
+> +			opp-peak-kBps = <1804000 26419200>;
+> +		};
+> +
+> +		cpu0_opp9: opp-1075200000 {
+> +			opp-hz = /bits/ 64 <1075200000>;
+> +			opp-peak-kBps = <1804000 29491200>;
+> +		};
+> +
+> +		cpu0_opp10: opp-1171200000 {
+> +			opp-hz = /bits/ 64 <1171200000>;
+> +			opp-peak-kBps = <1804000 32563200>;
+> +		};
+> +
+> +		cpu0_opp11: opp-1248000000 {
+> +			opp-hz = /bits/ 64 <1248000000>;
+> +			opp-peak-kBps = <1804000 36249600>;
+> +		};
+> +
+> +		cpu0_opp12: opp-1344000000 {
+> +			opp-hz = /bits/ 64 <1344000000>;
+> +			opp-peak-kBps = <2188000 36249600>;
+> +		};
+> +
+> +		cpu0_opp13: opp-1420800000 {
+> +			opp-hz = /bits/ 64 <1420800000>;
+> +			opp-peak-kBps = <2188000 39321600>;
+> +		};
+> +
+> +		cpu0_opp14: opp-1516800000 {
+> +			opp-hz = /bits/ 64 <1516800000>;
+> +			opp-peak-kBps = <3072000 42393600>;
+> +		};
+> +
+> +		cpu0_opp15: opp-1612800000 {
+> +			opp-hz = /bits/ 64 <1612800000>;
+> +			opp-peak-kBps = <3072000 42393600>;
+> +		};
+> +
+> +		cpu0_opp16: opp-1708800000 {
+> +			opp-hz = /bits/ 64 <1708800000>;
+> +			opp-peak-kBps = <4068000 42393600>;
+> +		};
+> +
+> +		cpu0_opp17: opp-1804800000 {
+> +			opp-hz = /bits/ 64 <1804800000>;
+> +			opp-peak-kBps = <4068000 42393600>;
+> +		};
+> +	};
+> +
+> +	cpu4_opp_table: cpu4_opp_table {
+> +		compatible = "operating-points-v2";
+> +		opp-shared;
+> +
+> +		cpu4_opp1: opp-710400000 {
+> +			opp-hz = /bits/ 64 <710400000>;
+> +			opp-peak-kBps = <1804000 19660800>;
+> +		};
+> +
+> +		cpu4_opp2: opp-825600000 {
+> +			opp-hz = /bits/ 64 <825600000>;
+> +			opp-peak-kBps = <2188000 23347200>;
+> +		};
+> +
+> +		cpu4_opp3: opp-940800000 {
+> +			opp-hz = /bits/ 64 <940800000>;
+> +			opp-peak-kBps = <2188000 26419200>;
+> +		};
+> +
+> +		cpu4_opp4: opp-1056000000 {
+> +			opp-hz = /bits/ 64 <1056000000>;
+> +			opp-peak-kBps = <3072000 26419200>;
+> +		};
+> +
+> +		cpu4_opp5: opp-1171200000 {
+> +			opp-hz = /bits/ 64 <1171200000>;
+> +			opp-peak-kBps = <3072000 29491200>;
+> +		};
+> +
+> +		cpu4_opp6: opp-1286400000 {
+> +			opp-hz = /bits/ 64 <1286400000>;
+> +			opp-peak-kBps = <4068000 29491200>;
+> +		};
+> +
+> +		cpu4_opp7: opp-1382400000 {
+> +			opp-hz = /bits/ 64 <1382400000>;
+> +			opp-peak-kBps = <4068000 32563200>;
+> +		};
+> +
+> +		cpu4_opp8: opp-1478400000 {
+> +			opp-hz = /bits/ 64 <1478400000>;
+> +			opp-peak-kBps = <4068000 32563200>;
+> +		};
+> +
+> +		cpu4_opp9: opp-1574400000 {
+> +			opp-hz = /bits/ 64 <1574400000>;
+> +			opp-peak-kBps = <5412000 39321600>;
+> +		};
+> +
+> +		cpu4_opp10: opp-1670400000 {
+> +			opp-hz = /bits/ 64 <1670400000>;
+> +			opp-peak-kBps = <5412000 42393600>;
+> +		};
+> +
+> +		cpu4_opp11: opp-1766400000 {
+> +			opp-hz = /bits/ 64 <1766400000>;
+> +			opp-peak-kBps = <5412000 45465600>;
+> +		};
+> +
+> +		cpu4_opp12: opp-1862400000 {
+> +			opp-hz = /bits/ 64 <1862400000>;
+> +			opp-peak-kBps = <6220000 45465600>;
+> +		};
+> +
+> +		cpu4_opp13: opp-1958400000 {
+> +			opp-hz = /bits/ 64 <1958400000>;
+> +			opp-peak-kBps = <6220000 48537600>;
+> +		};
+> +
+> +		cpu4_opp14: opp-2054400000 {
+> +			opp-hz = /bits/ 64 <2054400000>;
+> +			opp-peak-kBps = <7216000 48537600>;
+> +		};
+> +
+> +		cpu4_opp15: opp-2150400000 {
+> +			opp-hz = /bits/ 64 <2150400000>;
+> +			opp-peak-kBps = <7216000 51609600>;
+> +		};
+> +
+> +		cpu4_opp16: opp-2246400000 {
+> +			opp-hz = /bits/ 64 <2246400000>;
+> +			opp-peak-kBps = <7216000 51609600>;
+> +		};
+> +
+> +		cpu4_opp17: opp-2342400000 {
+> +			opp-hz = /bits/ 64 <2342400000>;
+> +			opp-peak-kBps = <8368000 51609600>;
+> +		};
+> +
+> +		cpu4_opp18: opp-2419200000 {
+> +			opp-hz = /bits/ 64 <2419200000>;
+> +			opp-peak-kBps = <8368000 51609600>;
+> +		};
+> +	};
+> +
+> +	cpu7_opp_table: cpu7_opp_table {
+> +		compatible = "operating-points-v2";
+> +		opp-shared;
+> +
+> +		cpu7_opp1: opp-844800000 {
+> +			opp-hz = /bits/ 64 <844800000>;
+> +			opp-peak-kBps = <2188000 19660800>;
+> +		};
+> +
+> +		cpu7_opp2: opp-960000000 {
+> +			opp-hz = /bits/ 64 <960000000>;
+> +			opp-peak-kBps = <2188000 26419200>;
+> +		};
+> +
+> +		cpu7_opp3: opp-1075200000 {
+> +			opp-hz = /bits/ 64 <1075200000>;
+> +			opp-peak-kBps = <3072000 26419200>;
+> +		};
+> +
+> +		cpu7_opp4: opp-1190400000 {
+> +			opp-hz = /bits/ 64 <1190400000>;
+> +			opp-peak-kBps = <3072000 29491200>;
+> +		};
+> +
+> +		cpu7_opp5: opp-1305600000 {
+> +			opp-hz = /bits/ 64 <1305600000>;
+> +			opp-peak-kBps = <4068000 32563200>;
+> +		};
+> +
+> +		cpu7_opp6: opp-1401600000 {
+> +			opp-hz = /bits/ 64 <1401600000>;
+> +			opp-peak-kBps = <4068000 32563200>;
+> +		};
+> +
+> +		cpu7_opp7: opp-1516800000 {
+> +			opp-hz = /bits/ 64 <1516800000>;
+> +			opp-peak-kBps = <4068000 36249600>;
+> +		};
+> +
+> +		cpu7_opp8: opp-1632000000 {
+> +			opp-hz = /bits/ 64 <1632000000>;
+> +			opp-peak-kBps = <5412000 39321600>;
+> +		};
+> +
+> +		cpu7_opp9: opp-1747200000 {
+> +			opp-hz = /bits/ 64 <1708800000>;
+> +			opp-peak-kBps = <5412000 42393600>;
+> +		};
+> +
+> +		cpu7_opp10: opp-1862400000 {
+> +			opp-hz = /bits/ 64 <1862400000>;
+> +			opp-peak-kBps = <6220000 45465600>;
+> +		};
+> +
+> +		cpu7_opp11: opp-1977600000 {
+> +			opp-hz = /bits/ 64 <1977600000>;
+> +			opp-peak-kBps = <6220000 48537600>;
+> +		};
+> +
+> +		cpu7_opp12: opp-2073600000 {
+> +			opp-hz = /bits/ 64 <2073600000>;
+> +			opp-peak-kBps = <7216000 48537600>;
+> +		};
+> +
+> +		cpu7_opp13: opp-2169600000 {
+> +			opp-hz = /bits/ 64 <2169600000>;
+> +			opp-peak-kBps = <7216000 51609600>;
+> +		};
+> +
+> +		cpu7_opp14: opp-2265600000 {
+> +			opp-hz = /bits/ 64 <2265600000>;
+> +			opp-peak-kBps = <7216000 51609600>;
+> +		};
+> +
+> +		cpu7_opp15: opp-2361600000 {
+> +			opp-hz = /bits/ 64 <2361600000>;
+> +			opp-peak-kBps = <8368000 51609600>;
+> +		};
+> +
+> +		cpu7_opp16: opp-2457600000 {
+> +			opp-hz = /bits/ 64 <2457600000>;
+> +			opp-peak-kBps = <8368000 51609600>;
+> +		};
+> +
+> +		cpu7_opp17: opp-2553600000 {
+> +			opp-hz = /bits/ 64 <2553600000>;
+> +			opp-peak-kBps = <8368000 51609600>;
+> +		};
+> +
+> +		cpu7_opp18: opp-2649600000 {
+> +			opp-hz = /bits/ 64 <2649600000>;
+> +			opp-peak-kBps = <8368000 51609600>;
+> +		};
+> +
+> +		cpu7_opp19: opp-2745600000 {
+> +			opp-hz = /bits/ 64 <2745600000>;
+> +			opp-peak-kBps = <8368000 51609600>;
+> +		};
+> +
+> +		cpu7_opp20: opp-2841600000 {
+> +			opp-hz = /bits/ 64 <2841600000>;
+> +			opp-peak-kBps = <8368000 51609600>;
+> +		};
+> +	};
+> +
+>   	firmware {
+>   		scm: scm {
+>   			compatible = "qcom,scm";
+> 
+
+
+-- 
+With best wishes
+Dmitry
