@@ -2,86 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6EB845813D
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 00:56:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83EBE458143
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 00:57:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237858AbhKTX7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 18:59:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49212 "EHLO
+        id S231617AbhKUAAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 19:00:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237915AbhKTX7G (ORCPT
+        with ESMTP id S234714AbhKUAAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 18:59:06 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64A09C061748
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 15:56:02 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id h19-20020a9d3e53000000b0056547b797b2so22771900otg.4
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 15:56:02 -0800 (PST)
+        Sat, 20 Nov 2021 19:00:45 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA91C0613E1;
+        Sat, 20 Nov 2021 15:57:21 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id e3so59339026edu.4;
+        Sat, 20 Nov 2021 15:57:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=yHRqBu3iNfib8VJ+q/4D44COg4vM90Zt6pdL+4iHmTs=;
-        b=Lynz+OPEqMhPkbpidiVrZmhMmZZabB6seSsCr6tSFxh4DxpjMHAkJRAQwV/BidSJzH
-         y1Mc3XN93j+/usemWQXo7Y7ZNBJCNkgJcPYY7ZwRD4X7ypA/yKFyrTWCpZ7v25SMYXVA
-         tJFBk18C3ePNVynRPjzcPtqJqrcCMrjT5eMslEe83Lq+BvlKbKcAbh42cnYIxT7ClzCi
-         20929prcKQhHetKESNnjlCf6y3fgumIgOGhUPqXn6Kzc8B3kKmz0DO6JTvvfCdvWcHDm
-         6R3KEGwof+yDZmNUhTzJG7PCMOapjyH1misotAvX0NvIGFyZyUUSfJ1TcCNATmOMX7um
-         zgYw==
+        d=googlemail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F5sv4rcMTrhYHornG640LvlmFUzYpzF/uMv5wuwnFA4=;
+        b=KqF35IvUaoojoKBQHxLa+EhPGzpcMTC8+x718D5FuVl6VeWd604ugCjjre5otbt5PV
+         bG3m2Jtu/s3Umpi4aFznHxGqyAwh8R+XOy7wAUHfYJoeVcOHOiptPq8aPiYsSsaDkXLw
+         ovvBD+N6g0La0ZsoTNIJY3sVChWs/hUnYDsz99dHyJuqWsHQIfQCjCRdmCAxjn/U/Oel
+         GvbJlryGkJInHx9D9G0UmlQt7ojwP1LjP0AdtQP1nl2nmZrtuUwnhNHRu/N3nVIUDa7P
+         +gp/S9fTBEp9J1D1Ti3vGiA+HLIg3MTLnvcvAlLyocudM67N8QI5G1SIzXeNc/fZ8OZc
+         Ka4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yHRqBu3iNfib8VJ+q/4D44COg4vM90Zt6pdL+4iHmTs=;
-        b=BWJNWP5JKSm6WepSV28wgcZcYIFKglQaKMQ7KIo/FCw6nARy3LZOwVbRiTeUUOSVL8
-         D3AU3/kG3fM9UQQjBhlx7P+laNqu7rEOCPP5KfdUiipm3DoM/viwajZWDJW2wPkNPnhr
-         o3VDNWHA3j6cW/7dGgr2HuttrLnFbgUXYq3CiYTgTuhMaJnS0pvyeJ1DoScGMszuaYg/
-         Qh04By+M24DpTDy/RsAyvfqZsuVf/3ySiu3UxXJS3AWp/sg2NxE4TowwB2pVZdUSHnny
-         lNz37Zmxort8gVEQ6a8LbvS/DCQmPgJu7stKtOC2qpHqV9nPPBfffINPtAxGZtH31Ewo
-         5cwA==
-X-Gm-Message-State: AOAM5321gynfDqxWNawqaIU8D2zxFjlG+L2Hp1xaywPjy9FYD9kT+rRJ
-        T2Er6PDGK3Faj/BEnWPqXseEUA==
-X-Google-Smtp-Source: ABdhPJxN/zrJhAUPU3zpVuxYAxflXifJs6n2O/RbEfw6Rlch7lvT4A+hWRf7cOovQT6TdM7oPTW1ng==
-X-Received: by 2002:a05:6830:2b25:: with SMTP id l37mr14368131otv.298.1637452561808;
-        Sat, 20 Nov 2021 15:56:01 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id o26sm828474otj.14.2021.11.20.15.56.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Nov 2021 15:56:01 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     yangcong <yangcong5@huaqin.corp-partner.google.com>,
-        robh+dt@kernel.org, dianders@chromium.org, agross@kernel.org,
-        philipchen@chromium.org, swboyd@chromium.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: (subset) [PATCH] arm64: dts: sc7180: Fix ps8640 power sequence for Homestar rev4
-Date:   Sat, 20 Nov 2021 17:55:38 -0600
-Message-Id: <163745250542.1078332.13345331446027178006.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211115030155.9395-1-yangcong5@huaqin.corp-partner.google.com>
-References: <20211115030155.9395-1-yangcong5@huaqin.corp-partner.google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F5sv4rcMTrhYHornG640LvlmFUzYpzF/uMv5wuwnFA4=;
+        b=Yt7rSTVpgcNcZfSJlIIpt03j62SBmJsAhyKNXGK0ujPCp57PMdJRyKnmpGNfQ5H1rq
+         gEeNBOxtWFsQpkqcl0EawtEdQvFx7CybhuaeIkS6p6hfq2QNyORE3ZAfhphmhcOiEihS
+         PaPblv7Ro51eKNs2M3lFTyy3YCi0tGuxzhFC3Y7hdfyu25mJB1NFwcyUk8GzxRrfVUL9
+         YXDJ86LAxns6nlXa9rdia07R0P7e2NjRZzhAkGLsehur5OZ4Z0ZDjm3HfnqMXjAzWhRN
+         poaDos6l/QOe6OyTu9K/d7XuubHp81YAD2vrX8ewrAaerLUz7HpBYPLC8nChYvX0T/dm
+         Q/Xg==
+X-Gm-Message-State: AOAM532zGBdKTsNv3CIwEwgrnyxkR9Ee3PpcUxInfAJX9ZOuVu6C2kpl
+        aGEKwe8f00CU7PPDKuCbNxk03nbOC6kUuqbt8KfQMfffki0=
+X-Google-Smtp-Source: ABdhPJzn8mqm8xib8HnioRMdm0uhJxnJSh9wqmShlbVnLNSL1nB8uBXlhDbcbNqXHaabpnMoro2qzWyD++Zopf4gFpQ=
+X-Received: by 2002:a50:f68c:: with SMTP id d12mr35001969edn.307.1637452640350;
+ Sat, 20 Nov 2021 15:57:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20211112162827.128319-1-aouledameur@baylibre.com> <20211112162827.128319-4-aouledameur@baylibre.com>
+In-Reply-To: <20211112162827.128319-4-aouledameur@baylibre.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Sun, 21 Nov 2021 00:57:09 +0100
+Message-ID: <CAFBinCCvOnrvC64sA++5DegZq1g9MmwvnCiYh-WB4dSkoBsCBA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] phy: amlogic: meson8b-usb2: fix shared reset
+ control use
+To:     Amjad Ouled-Ameur <aouledameur@baylibre.com>
+Cc:     khilman@baylibre.com, p.zabel@pengutronix.de, balbi@kernel.org,
+        jbrunet@baylibre.com, linux-amlogic@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Nov 2021 11:01:55 +0800, yangcong wrote:
-> When powering up the ps8640, we need to deassert PD right
-> after we turn on the vdd33 regulator. Unfortunately, the vdd33
-> regulator takes some time (~4ms) to turn on. Add in the delay
-> for the vdd33 regulator so that when the driver deasserts PD
-> that the regulator has had time to ramp.
-> 
-> 
-> [...]
+Hi Amjad,
 
-Applied, thanks!
+Thanks for working on this!
 
-[1/1] arm64: dts: sc7180: Fix ps8640 power sequence for Homestar rev4
-      commit: 96e1e3a15273a99d89b1389e4487e734c7d37d8e
+On Fri, Nov 12, 2021 at 5:33 PM Amjad Ouled-Ameur
+<aouledameur@baylibre.com> wrote:
+[...]
+> +               reset_control_rearm(priv->reset);
+Using priv->reset in this driver currently requires an IS_ERR check beforehand.
+When I wrote the driver originally I used the following code in
+phy_meson8b_usb2_probe:
+  priv->reset = ...
+  if (PTR_ERR(priv->reset) == -EPROBE_DEFER)
+    return PTR_ERR(priv->reset);
+
+That means: priv->reset can (in theory) be an error pointer at runtime.
+Since your patch is valid: can you please add another one (before this
+one) in the series and change the priv->reset error checking to use
+something like:
+  if (IS_ERR(priv->reset))
+    return dev_err_probe(&pdev->dev, PTR_ERR(priv->reset), "Failed to
+get the reset line");
+
+With such a patch you can consider this one as:
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+
 
 Best regards,
--- 
-Bjorn Andersson <bjorn.andersson@linaro.org>
+Martin
