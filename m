@@ -2,597 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C73F457A2F
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 01:33:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E94B3457A3C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 01:40:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236503AbhKTAgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 19:36:43 -0500
-Received: from mga04.intel.com ([192.55.52.120]:38390 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231761AbhKTAgg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 19:36:36 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10173"; a="233237188"
-X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
-   d="gz'50?scan'50,208,50";a="233237188"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 16:33:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
-   d="gz'50?scan'50,208,50";a="569081039"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 19 Nov 2021 16:33:31 -0800
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1moEJv-00058A-5L; Sat, 20 Nov 2021 00:33:31 +0000
-Date:   Sat, 20 Nov 2021 08:32:48 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: [jgunthorpe:iommufd 3/8] ioas_pt.c:undefined reference to
- `interval_tree_iter_first'
-Message-ID: <202111200845.MHS0enJd-lkp@intel.com>
+        id S229875AbhKTAnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 19:43:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229565AbhKTAnk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 19:43:40 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCA9CC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 16:40:37 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id i5so20979461wrb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 16:40:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=66SeLWN0HW63tTbh5ruaInwwncVGs4U3S5vNuigrbxw=;
+        b=M2cw7CjFvLHJ/tMSk/qK0DlfpRAAGfZ9BNcBOJxDsWzkizmwL8hkCmSzWZ1wnOvjR7
+         IwTT9SvUBW1sXX7e/PBdYL6Zq4xTbnXD9LgxSRtDL6wvfsHC0LQy9NeSIFtq8v3ePhKc
+         vMEKFY4dQLKbbGZthNJWkRaky6GfejIBIpPQEYX23GttlB+vU6jVVpR0qv7mZj2kU4VB
+         VbAYnZx4oylJ3FP+GRP3cEH8groVUYBQlmlRPWK6nzSYokTcMYJlzw9C529HXv8rfdlD
+         XVCSH6sL4WmAyK0GK2L2CT2EQJl9WDxn+zeivZamy4QyF53oGOmNbLfTyHDz3Q+6sPWM
+         g5Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=66SeLWN0HW63tTbh5ruaInwwncVGs4U3S5vNuigrbxw=;
+        b=2mMGP+3BMzfCwwi5Laf29fKAbxmSrFmHfvfLb1CfMQeG85pK3fpLUyLV/F0OohVXqt
+         O6nbQXtYhKu5NXS5yTlC3vNbX2yV4oR3v+XsQbgSE4Y2eIzb7QY6MwuRHF1kkybWOdgq
+         z21D2yGieuPqm+a1fjPwnMhy7QeYUIGtoRr42mVqUuXrbGp4cGU0KtYBAe+5yUl+HKYo
+         1HG34cFbPzqj8xY8JVuOC/32cq8No0Vx+nbjBn5OGsv9gKElX8Oxg03QUznXn/rYMxCt
+         FtYPFxCkSuN19DQnCVgY1hWbl6g3Uk8MP7XI2hME/j5mtuMTo0mHS7ZuLgwAMzOoiJKi
+         etjQ==
+X-Gm-Message-State: AOAM532iPwPs9YJ5pjNdXOqktM/zDoYS9d/DnF57zQhAjdehku2oaGja
+        6DOqsxOkmk5H/7zcppOKViTlyKYBYkj0pnv6+oQKbg==
+X-Google-Smtp-Source: ABdhPJxEVg1irDcRwETWMAiEvS8jSIiy+DG8biozjnS+w6FK1iG1R0WZzd0f4fvDIMWjH/scYCIJ2QI0WNJyyOec+/4=
+X-Received: by 2002:a5d:6501:: with SMTP id x1mr12773327wru.390.1637368836139;
+ Fri, 19 Nov 2021 16:40:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="mYCpIKhGyMATD0i+"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211119232316.2246034-1-dlatypov@google.com>
+In-Reply-To: <20211119232316.2246034-1-dlatypov@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Sat, 20 Nov 2021 08:40:24 +0800
+Message-ID: <CABVgOSnNfp9kqVSyM-GdUuHu2CSysZS9yNMxb1C-jJNpwHeLuw@mail.gmail.com>
+Subject: Re: [PATCH v2] kunit: tool: reconfigure when the used kunitconfig changes
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     brendanhiggins@google.com, linux-kernel@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        skhan@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Nov 20, 2021 at 7:23 AM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> Problem: currently, if you remove something from your kunitconfig,
+> kunit.py will not regenerate the .config file.
+> The same thing happens if you did --kunitconfig_add=CONFIG_KASAN=y [1]
+> and then ran again without it. Your new run will still have KASAN.
+>
+> The reason is that kunit.py won't regenerate the .config file if it's a
+> superset of the kunitconfig. This speeds it up a bit for iterating.
+>
+> This patch adds an additional check that forces kunit.py to regenerate
+> the .config file if the current kunitconfig doesn't match the previous
+> one.
+>
+> What this means:
+> * deleting entries from .kunitconfig works as one would expect
+> * dropping  a --kunitconfig_add also triggers a rebuild
+> * you can still edit .config directly to turn on new options
+>
+> We implement this by creating a `last_used_kunitconfig` file in the
+> build directory (so .kunit, by default) after we generate the .config.
+> When comparing the kconfigs, we compare python sets, so duplicates and
+> permutations don't trip us up.
+>
+> The majority of this patch is adding unit tests for the existing logic
+> and for the new case where `last_used_kunitconfig` differs.
+>
+> [1] https://lore.kernel.org/linux-kselftest/20211106013058.2621799-2-dlatypov@google.com/
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> ---
 
---mYCpIKhGyMATD0i+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks! No problems with this version, looks good to go!
 
-tree:   https://github.com/jgunthorpe/linux iommufd
-head:   4d06b5807e799e0293171d872d8c1a40f3b466c5
-commit: 7188450644ef414f96455c9f15043990762078a6 [3/8] iommufd: IOCTLs for the io_pagetable
-config: openrisc-randconfig-r031-20211117 (attached as .config)
-compiler: or1k-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/jgunthorpe/linux/commit/7188450644ef414f96455c9f15043990762078a6
-        git remote add jgunthorpe https://github.com/jgunthorpe/linux
-        git fetch --no-tags jgunthorpe iommufd
-        git checkout 7188450644ef414f96455c9f15043990762078a6
-        # save the attached .config to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=openrisc SHELL=/bin/bash
+Reviewed-by: David Gow <davidgow@google.com>
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Cheers,
+-- David
 
-All errors (new ones prefixed by >>):
-
-   or1k-linux-ld: drivers/iommu/iommufd/io_pagetable.o: in function `interval_tree_span_iter_next_gap':
-   io_pagetable.c:(.text+0x91c): undefined reference to `interval_tree_iter_next'
-   io_pagetable.c:(.text+0x91c): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `interval_tree_iter_next'
-   or1k-linux-ld: drivers/iommu/iommufd/io_pagetable.o: in function `interval_tree_span_iter_first':
-   io_pagetable.c:(.text+0x9f4): undefined reference to `interval_tree_iter_first'
-   io_pagetable.c:(.text+0x9f4): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `interval_tree_iter_first'
-   or1k-linux-ld: drivers/iommu/iommufd/io_pagetable.o: in function `iopt_unpopulate_domain':
-   io_pagetable.c:(.text+0x19b4): undefined reference to `interval_tree_iter_first'
-   io_pagetable.c:(.text+0x19b4): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `interval_tree_iter_first'
-   or1k-linux-ld: io_pagetable.c:(.text+0x1a20): undefined reference to `interval_tree_iter_next'
-   io_pagetable.c:(.text+0x1a20): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `interval_tree_iter_next'
-   or1k-linux-ld: io_pagetable.c:(.text+0x1a6c): undefined reference to `interval_tree_iter_next'
-   io_pagetable.c:(.text+0x1a6c): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `interval_tree_iter_next'
-   or1k-linux-ld: drivers/iommu/iommufd/io_pagetable.o: in function `iopt_map_user_pages':
-   io_pagetable.c:(.text+0x2608): undefined reference to `interval_tree_iter_first'
-   io_pagetable.c:(.text+0x2608): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `interval_tree_iter_first'
-   or1k-linux-ld: io_pagetable.c:(.text+0x264c): undefined reference to `interval_tree_iter_first'
-   io_pagetable.c:(.text+0x264c): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `interval_tree_iter_first'
-   or1k-linux-ld: io_pagetable.c:(.text+0x2724): undefined reference to `interval_tree_insert'
-   io_pagetable.c:(.text+0x2724): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `interval_tree_insert'
-   or1k-linux-ld: drivers/iommu/iommufd/io_pagetable.o: in function `iopt_get_pages':
-   io_pagetable.c:(.text+0x27bc): undefined reference to `interval_tree_iter_first'
-   io_pagetable.c:(.text+0x27bc): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `interval_tree_iter_first'
-   or1k-linux-ld: drivers/iommu/iommufd/io_pagetable.o: in function `iopt_copy_iova':
-   io_pagetable.c:(.text+0x2a24): undefined reference to `interval_tree_insert'
-   io_pagetable.c:(.text+0x2a24): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `interval_tree_insert'
-   or1k-linux-ld: drivers/iommu/iommufd/io_pagetable.o: in function `iopt_unmap_iova':
-   io_pagetable.c:(.text+0x2bc8): undefined reference to `interval_tree_iter_first'
-   io_pagetable.c:(.text+0x2bc8): additional relocation overflows omitted from the output
-   or1k-linux-ld: io_pagetable.c:(.text+0x2c48): undefined reference to `interval_tree_remove'
-   or1k-linux-ld: drivers/iommu/iommufd/io_pagetable.o: in function `iopt_unmap_all':
-   io_pagetable.c:(.text+0x2d78): undefined reference to `interval_tree_iter_first'
-   or1k-linux-ld: io_pagetable.c:(.text+0x2dec): undefined reference to `interval_tree_remove'
-   or1k-linux-ld: drivers/iommu/iommufd/io_pagetable.o: in function `iopt_unaccess_pages':
-   io_pagetable.c:(.text+0x3030): undefined reference to `interval_tree_iter_first'
-   or1k-linux-ld: io_pagetable.c:(.text+0x3128): undefined reference to `interval_tree_iter_first'
-   or1k-linux-ld: io_pagetable.c:(.text+0x3168): undefined reference to `interval_tree_iter_next'
-   or1k-linux-ld: io_pagetable.c:(.text+0x322c): undefined reference to `interval_tree_iter_next'
-   or1k-linux-ld: drivers/iommu/iommufd/io_pagetable.o: in function `iopt_access_pages':
-   io_pagetable.c:(.text+0x34f0): undefined reference to `interval_tree_iter_first'
-   or1k-linux-ld: io_pagetable.c:(.text+0x35b8): undefined reference to `interval_tree_iter_first'
-   or1k-linux-ld: io_pagetable.c:(.text+0x35f8): undefined reference to `interval_tree_iter_next'
-   or1k-linux-ld: io_pagetable.c:(.text+0x385c): undefined reference to `interval_tree_iter_next'
-   or1k-linux-ld: io_pagetable.c:(.text+0x38f8): undefined reference to `interval_tree_insert'
-   or1k-linux-ld: drivers/iommu/iommufd/io_pagetable.o: in function `iopt_destroy_table':
-   io_pagetable.c:(.text+0x3aac): undefined reference to `interval_tree_remove'
-   or1k-linux-ld: io_pagetable.c:(.text+0x3ac4): undefined reference to `interval_tree_iter_first'
-   or1k-linux-ld: drivers/iommu/iommufd/io_pagetable.o: in function `iopt_init_table':
-   io_pagetable.c:(.text+0x3c68): undefined reference to `interval_tree_insert'
-   or1k-linux-ld: drivers/iommu/iommufd/io_pagetable.o: in function `iopt_table_add_domain':
-   io_pagetable.c:(.text+0x3db4): undefined reference to `interval_tree_iter_first'
-   or1k-linux-ld: io_pagetable.c:(.text+0x3e14): undefined reference to `interval_tree_iter_next'
-   or1k-linux-ld: io_pagetable.c:(.text+0x3ee8): undefined reference to `interval_tree_iter_first'
-   or1k-linux-ld: io_pagetable.c:(.text+0x3fac): undefined reference to `interval_tree_iter_first'
-   or1k-linux-ld: io_pagetable.c:(.text+0x4000): undefined reference to `interval_tree_iter_first'
-   or1k-linux-ld: io_pagetable.c:(.text+0x4030): undefined reference to `interval_tree_iter_next'
-   or1k-linux-ld: drivers/iommu/iommufd/io_pagetable.o: in function `iopt_table_enforce_group_iova':
-   io_pagetable.c:(.text+0x4610): undefined reference to `interval_tree_iter_first'
-   or1k-linux-ld: drivers/iommu/iommufd/ioas_pt.o: in function `iommufd_ioas_pagetable_iova_ranges':
->> ioas_pt.c:(.text+0x408): undefined reference to `interval_tree_iter_first'
->> or1k-linux-ld: ioas_pt.c:(.text+0x538): undefined reference to `interval_tree_iter_next'
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
---mYCpIKhGyMATD0i+
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
-
-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
-
---mYCpIKhGyMATD0i+--
+> Note: this patch is based on
+> https://lore.kernel.org/linux-kselftest/20211106013058.2621799-1-dlatypov@google.com/
+> This patch will work without it, but there'll be a false merge conflict.
+>
+> v1 -> v2:
+> * always regenerate if last_used_kunitconfig doesn't exist
+> * don't call os.remove() if last_used_kunitconfig doesn't exist
+> * add in get_old_kunitconfig_path() to match get_kunitconfig_path()
+> * s/_kconfig_changed/_kunitconfig_changed
+> ---
+>  Documentation/dev-tools/kunit/start.rst |  8 ++---
+>  tools/testing/kunit/kunit_kernel.py     | 40 ++++++++++++++++------
+>  tools/testing/kunit/kunit_tool_test.py  | 45 +++++++++++++++++++++++++
+>  3 files changed, 78 insertions(+), 15 deletions(-)
+>
+> diff --git a/Documentation/dev-tools/kunit/start.rst b/Documentation/dev-tools/kunit/start.rst
+> index 1e00f9226f74..0a5e65540974 100644
+> --- a/Documentation/dev-tools/kunit/start.rst
+> +++ b/Documentation/dev-tools/kunit/start.rst
+> @@ -50,10 +50,10 @@ It'll warn you if you haven't included the dependencies of the options you're
+>  using.
+>
+>  .. note::
+> -   Note that removing something from the ``.kunitconfig`` will not trigger a
+> -   rebuild of the ``.config`` file: the configuration is only updated if the
+> -   ``.kunitconfig`` is not a subset of ``.config``. This means that you can use
+> -   other tools (such as make menuconfig) to adjust other config options.
+> +   If you change the ``.kunitconfig``, kunit.py will trigger a rebuild of the
+> +   ``.config`` file. But you can edit the ``.config`` file directly or with
+> +   tools like ``make menuconfig O=.kunit``. As long as its a superset of
+> +   ``.kunitconfig``, kunit.py won't overwrite your changes.
+>
+>
+>  Running the tests (KUnit Wrapper)
+> diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+> index 350883672be0..12085e04a80c 100644
+> --- a/tools/testing/kunit/kunit_kernel.py
+> +++ b/tools/testing/kunit/kunit_kernel.py
+> @@ -21,6 +21,7 @@ import qemu_config
+>
+>  KCONFIG_PATH = '.config'
+>  KUNITCONFIG_PATH = '.kunitconfig'
+> +OLD_KUNITCONFIG_PATH = 'last_used_kunitconfig'
+>  DEFAULT_KUNITCONFIG_PATH = 'tools/testing/kunit/configs/default.config'
+>  BROKEN_ALLCONFIG_PATH = 'tools/testing/kunit/configs/broken_on_uml.config'
+>  OUTFILE_PATH = 'test.log'
+> @@ -179,6 +180,9 @@ def get_kconfig_path(build_dir) -> str:
+>  def get_kunitconfig_path(build_dir) -> str:
+>         return get_file_path(build_dir, KUNITCONFIG_PATH)
+>
+> +def get_old_kunitconfig_path(build_dir) -> str:
+> +       return get_file_path(build_dir, OLD_KUNITCONFIG_PATH)
+> +
+>  def get_outfile_path(build_dir) -> str:
+>         return get_file_path(build_dir, OUTFILE_PATH)
+>
+> @@ -289,24 +293,38 @@ class LinuxSourceTree(object):
+>                 except ConfigError as e:
+>                         logging.error(e)
+>                         return False
+> -               return self.validate_config(build_dir)
+> +               if not self.validate_config(build_dir):
+> +                       return False
+> +
+> +               old_path = get_old_kunitconfig_path(build_dir)
+> +               if os.path.exists(old_path):
+> +                       os.remove(old_path)  # write_to_file appends to the file
+> +               self._kconfig.write_to_file(old_path)
+> +               return True
+> +
+> +       def _kunitconfig_changed(self, build_dir: str) -> bool:
+> +               old_path = get_old_kunitconfig_path(build_dir)
+> +               if not os.path.exists(old_path):
+> +                       return True
+> +
+> +               old_kconfig = kunit_config.parse_file(old_path)
+> +               return old_kconfig.entries() != self._kconfig.entries()
+>
+>         def build_reconfig(self, build_dir, make_options) -> bool:
+>                 """Creates a new .config if it is not a subset of the .kunitconfig."""
+>                 kconfig_path = get_kconfig_path(build_dir)
+> -               if os.path.exists(kconfig_path):
+> -                       existing_kconfig = kunit_config.parse_file(kconfig_path)
+> -                       self._ops.make_arch_qemuconfig(self._kconfig)
+> -                       if not self._kconfig.is_subset_of(existing_kconfig):
+> -                               print('Regenerating .config ...')
+> -                               os.remove(kconfig_path)
+> -                               return self.build_config(build_dir, make_options)
+> -                       else:
+> -                               return True
+> -               else:
+> +               if not os.path.exists(kconfig_path):
+>                         print('Generating .config ...')
+>                         return self.build_config(build_dir, make_options)
+>
+> +               existing_kconfig = kunit_config.parse_file(kconfig_path)
+> +               self._ops.make_arch_qemuconfig(self._kconfig)
+> +               if self._kconfig.is_subset_of(existing_kconfig) and not self._kunitconfig_changed(build_dir):
+> +                       return True
+> +               print('Regenerating .config ...')
+> +               os.remove(kconfig_path)
+> +               return self.build_config(build_dir, make_options)
+> +
+>         def build_kernel(self, alltests, jobs, build_dir, make_options) -> bool:
+>                 try:
+>                         if alltests:
+> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+> index 7e42a7c27987..572f133511aa 100755
+> --- a/tools/testing/kunit/kunit_tool_test.py
+> +++ b/tools/testing/kunit/kunit_tool_test.py
+> @@ -358,6 +358,51 @@ class LinuxSourceTreeTest(unittest.TestCase):
+>                         with open(kunit_kernel.get_outfile_path(build_dir), 'rt') as outfile:
+>                                 self.assertEqual(outfile.read(), 'hi\nbye\n', msg='Missing some output')
+>
+> +       def test_build_reconfig_no_config(self):
+> +               with tempfile.TemporaryDirectory('') as build_dir:
+> +                       with open(kunit_kernel.get_kunitconfig_path(build_dir), 'w') as f:
+> +                               f.write('CONFIG_KUNIT=y')
+> +
+> +                       tree = kunit_kernel.LinuxSourceTree(build_dir)
+> +                       mock_build_config = mock.patch.object(tree, 'build_config').start()
+> +
+> +                       # Should generate the .config
+> +                       self.assertTrue(tree.build_reconfig(build_dir, make_options=[]))
+> +                       mock_build_config.assert_called_once_with(build_dir, [])
+> +
+> +       def test_build_reconfig_existing_config(self):
+> +               with tempfile.TemporaryDirectory('') as build_dir:
+> +                       # Existing .config is a superset, should not touch it
+> +                       with open(kunit_kernel.get_kunitconfig_path(build_dir), 'w') as f:
+> +                               f.write('CONFIG_KUNIT=y')
+> +                       with open(kunit_kernel.get_old_kunitconfig_path(build_dir), 'w') as f:
+> +                               f.write('CONFIG_KUNIT=y')
+> +                       with open(kunit_kernel.get_kconfig_path(build_dir), 'w') as f:
+> +                               f.write('CONFIG_KUNIT=y\nCONFIG_KUNIT_TEST=y')
+> +
+> +                       tree = kunit_kernel.LinuxSourceTree(build_dir)
+> +                       mock_build_config = mock.patch.object(tree, 'build_config').start()
+> +
+> +                       self.assertTrue(tree.build_reconfig(build_dir, make_options=[]))
+> +                       self.assertEqual(mock_build_config.call_count, 0)
+> +
+> +       def test_build_reconfig_remove_option(self):
+> +               with tempfile.TemporaryDirectory('') as build_dir:
+> +                       # We removed CONFIG_KUNIT_TEST=y from our .kunitconfig...
+> +                       with open(kunit_kernel.get_kunitconfig_path(build_dir), 'w') as f:
+> +                               f.write('CONFIG_KUNIT=y')
+> +                       with open(kunit_kernel.get_old_kunitconfig_path(build_dir), 'w') as f:
+> +                               f.write('CONFIG_KUNIT=y\nCONFIG_KUNIT_TEST=y')
+> +                       with open(kunit_kernel.get_kconfig_path(build_dir), 'w') as f:
+> +                               f.write('CONFIG_KUNIT=y\nCONFIG_KUNIT_TEST=y')
+> +
+> +                       tree = kunit_kernel.LinuxSourceTree(build_dir)
+> +                       mock_build_config = mock.patch.object(tree, 'build_config').start()
+> +
+> +                       # ... so we should trigger a call to build_config()
+> +                       self.assertTrue(tree.build_reconfig(build_dir, make_options=[]))
+> +                       mock_build_config.assert_called_once_with(build_dir, [])
+> +
+>         # TODO: add more test cases.
+>
+>
+> --
+> 2.34.0.rc2.393.gf8c9666880-goog
+>
