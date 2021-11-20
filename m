@@ -2,265 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E94B3457A3C
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 01:40:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D301B457A3E
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 01:42:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229875AbhKTAnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 19:43:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56778 "EHLO
+        id S235663AbhKTApe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 19:45:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbhKTAnk (ORCPT
+        with ESMTP id S235192AbhKTApd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 19:43:40 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCA9CC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 16:40:37 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id i5so20979461wrb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 16:40:37 -0800 (PST)
+        Fri, 19 Nov 2021 19:45:33 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F207C061574;
+        Fri, 19 Nov 2021 16:42:30 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id 28so9957378pgq.8;
+        Fri, 19 Nov 2021 16:42:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=66SeLWN0HW63tTbh5ruaInwwncVGs4U3S5vNuigrbxw=;
-        b=M2cw7CjFvLHJ/tMSk/qK0DlfpRAAGfZ9BNcBOJxDsWzkizmwL8hkCmSzWZ1wnOvjR7
-         IwTT9SvUBW1sXX7e/PBdYL6Zq4xTbnXD9LgxSRtDL6wvfsHC0LQy9NeSIFtq8v3ePhKc
-         vMEKFY4dQLKbbGZthNJWkRaky6GfejIBIpPQEYX23GttlB+vU6jVVpR0qv7mZj2kU4VB
-         VbAYnZx4oylJ3FP+GRP3cEH8groVUYBQlmlRPWK6nzSYokTcMYJlzw9C529HXv8rfdlD
-         XVCSH6sL4WmAyK0GK2L2CT2EQJl9WDxn+zeivZamy4QyF53oGOmNbLfTyHDz3Q+6sPWM
-         g5Bw==
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=irIwRt0uQVberAOzG4zQ4T92lCT1W8NvllFkKqhTIJQ=;
+        b=KMCWUeJ06/7oIUz63K1fe9YikKKHUVieN8mL/FOYTDTUZ+Zt8FjVr/fpkOAr1UoTRU
+         UMFLwRPY2o+yhhnvEpYWyXqPfqzUZp7V+SBJcAVdkqN1leJFVOHcrrxajV5d0q5JIN3X
+         4s/4tkhJgft/fjgGgiCYM+JDszyfszBQ3zR+q+VGUyyhUohPWHessoCms+bA90JH5/aV
+         eA/4jQojzpypo19mlbh1hPOlmBGq2bCUbfJ0rf+hKTfBofa15g1KAJkY0JftNQGMm6nI
+         1KykALsPF8wUqcMrwS/khbTnqDI0O85D3lkH9/XTJXimEQqSYtU1jeHRsScUj2YfVglS
+         kuHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=66SeLWN0HW63tTbh5ruaInwwncVGs4U3S5vNuigrbxw=;
-        b=2mMGP+3BMzfCwwi5Laf29fKAbxmSrFmHfvfLb1CfMQeG85pK3fpLUyLV/F0OohVXqt
-         O6nbQXtYhKu5NXS5yTlC3vNbX2yV4oR3v+XsQbgSE4Y2eIzb7QY6MwuRHF1kkybWOdgq
-         z21D2yGieuPqm+a1fjPwnMhy7QeYUIGtoRr42mVqUuXrbGp4cGU0KtYBAe+5yUl+HKYo
-         1HG34cFbPzqj8xY8JVuOC/32cq8No0Vx+nbjBn5OGsv9gKElX8Oxg03QUznXn/rYMxCt
-         FtYPFxCkSuN19DQnCVgY1hWbl6g3Uk8MP7XI2hME/j5mtuMTo0mHS7ZuLgwAMzOoiJKi
-         etjQ==
-X-Gm-Message-State: AOAM532iPwPs9YJ5pjNdXOqktM/zDoYS9d/DnF57zQhAjdehku2oaGja
-        6DOqsxOkmk5H/7zcppOKViTlyKYBYkj0pnv6+oQKbg==
-X-Google-Smtp-Source: ABdhPJxEVg1irDcRwETWMAiEvS8jSIiy+DG8biozjnS+w6FK1iG1R0WZzd0f4fvDIMWjH/scYCIJ2QI0WNJyyOec+/4=
-X-Received: by 2002:a5d:6501:: with SMTP id x1mr12773327wru.390.1637368836139;
- Fri, 19 Nov 2021 16:40:36 -0800 (PST)
-MIME-Version: 1.0
-References: <20211119232316.2246034-1-dlatypov@google.com>
-In-Reply-To: <20211119232316.2246034-1-dlatypov@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Sat, 20 Nov 2021 08:40:24 +0800
-Message-ID: <CABVgOSnNfp9kqVSyM-GdUuHu2CSysZS9yNMxb1C-jJNpwHeLuw@mail.gmail.com>
-Subject: Re: [PATCH v2] kunit: tool: reconfigure when the used kunitconfig changes
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     brendanhiggins@google.com, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=irIwRt0uQVberAOzG4zQ4T92lCT1W8NvllFkKqhTIJQ=;
+        b=vigLpkoy5yFpJXGTQpBn3j/R4rpIy4abnpu7nNbpVMVR9TOfWz8r7j1gBtTsqkmvsJ
+         9Pz89guaYvm0gUGABWMmorAmTtuFaCs3Nq+5qMYwp5JIgepXHbD+RhOQ/I29GtAKwA8G
+         T6V/ICC5vChDdpu1kRSlAGwWKKfTL0C3OVoVG3mXhTVbjRxbDegG6hWvXKM2BuDEsxtE
+         S3NjP3jT0bP29D0jkhB03wnIO2wDS0ijeI6dI2ndQ8fLQ70Qx2WEgYvco31rGJAiu944
+         kaTE04UlE8sS2Lj1JGMPr1eZW399bqOXMj025TqqxRcP/+DC9IBKFvblobuk/CtKCfdF
+         QjNA==
+X-Gm-Message-State: AOAM5321kpG3Ln6t44VyUBCN+OdTjb09j9M2Qvq8GQfPkNrId05FDf8x
+        QA4ulgJqPjFTv9vP2101brw=
+X-Google-Smtp-Source: ABdhPJxZVch1sP01OjM9CLatGFjDLx0Dydvw3Yd5BD9eoHy8ihOX/8jnjD4i3XNOY/+LckFx4AQlMQ==
+X-Received: by 2002:a05:6a00:2313:b0:49f:d9ec:7492 with SMTP id h19-20020a056a00231300b0049fd9ec7492mr69466617pfh.25.1637368949833;
+        Fri, 19 Nov 2021 16:42:29 -0800 (PST)
+Received: from ?IPv6:2601:600:9a7f:e1e0::26b0? ([2601:600:9a7f:e1e0::26b0])
+        by smtp.gmail.com with ESMTPSA id c20sm740480pfl.201.2021.11.19.16.42.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 16:42:29 -0800 (PST)
+Message-ID: <ec14aa50bbf1ebcf4e7edd54a3f5ad7409951cbb.camel@gmail.com>
+Subject: Re: [PATCH] drm/hyperv: Fix device removal on Gen1 VMs
+From:   Deepak Rawat <drawat.floss@gmail.com>
+To:     Mohammed Gamal <mgamal@redhat.com>, linux-hyperv@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, decui@microsoft.com
+Cc:     linux-kernel@vger.kernel.org, daniel@ffwll.ch, airlied@linux.ie
+Date:   Fri, 19 Nov 2021 16:42:28 -0800
+In-Reply-To: <20211119112900.300537-1-mgamal@redhat.com>
+References: <20211119112900.300537-1-mgamal@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 20, 2021 at 7:23 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> Problem: currently, if you remove something from your kunitconfig,
-> kunit.py will not regenerate the .config file.
-> The same thing happens if you did --kunitconfig_add=CONFIG_KASAN=y [1]
-> and then ran again without it. Your new run will still have KASAN.
->
-> The reason is that kunit.py won't regenerate the .config file if it's a
-> superset of the kunitconfig. This speeds it up a bit for iterating.
->
-> This patch adds an additional check that forces kunit.py to regenerate
-> the .config file if the current kunitconfig doesn't match the previous
-> one.
->
-> What this means:
-> * deleting entries from .kunitconfig works as one would expect
-> * dropping  a --kunitconfig_add also triggers a rebuild
-> * you can still edit .config directly to turn on new options
->
-> We implement this by creating a `last_used_kunitconfig` file in the
-> build directory (so .kunit, by default) after we generate the .config.
-> When comparing the kconfigs, we compare python sets, so duplicates and
-> permutations don't trip us up.
->
-> The majority of this patch is adding unit tests for the existing logic
-> and for the new case where `last_used_kunitconfig` differs.
->
-> [1] https://lore.kernel.org/linux-kselftest/20211106013058.2621799-2-dlatypov@google.com/
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+Thanks for the patch.
+
+Reviewed-by: Deepak Rawat <drawat.floss@gmail.com>
+
+I will push this to drm-fixes, let me know otherwise.
+
+Deepak
+
+On Fri, 2021-11-19 at 12:29 +0100, Mohammed Gamal wrote:
+> The Hyper-V DRM driver tries to free MMIO region on removing
+> the device regardless of VM type, while Gen1 VMs don't use MMIO
+> and hence causing the kernel to crash on a NULL pointer dereference.
+> 
+> Fix this by making deallocating MMIO only on Gen2 machines and
+> implement
+> removal for Gen1
+> 
+> Fixes: 76c56a5affeb ("drm/hyperv: Add DRM driver for hyperv synthetic
+> video device")
+> 
+> Signed-off-by: Mohammed Gamal <mgamal@redhat.com>
 > ---
+>  drivers/gpu/drm/hyperv/hyperv_drm_drv.c | 19 ++++++++++++++++++-
+>  1 file changed, 18 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/hyperv/hyperv_drm_drv.c
+> b/drivers/gpu/drm/hyperv/hyperv_drm_drv.c
+> index cd818a629183..9f923beb7d8d 100644
+> --- a/drivers/gpu/drm/hyperv/hyperv_drm_drv.c
+> +++ b/drivers/gpu/drm/hyperv/hyperv_drm_drv.c
+> @@ -225,12 +225,29 @@ static int hyperv_vmbus_remove(struct hv_device
+> *hdev)
+>  {
+>         struct drm_device *dev = hv_get_drvdata(hdev);
+>         struct hyperv_drm_device *hv = to_hv(dev);
+> +       struct pci_dev *pdev;
+>  
+>         drm_dev_unplug(dev);
+>         drm_atomic_helper_shutdown(dev);
+>         vmbus_close(hdev->channel);
+>         hv_set_drvdata(hdev, NULL);
+> -       vmbus_free_mmio(hv->mem->start, hv->fb_size);
+> +
+> +       /*
+> +        * Free allocated MMIO memory only on Gen2 VMs.
+> +        * On Gen1 VMs, release the PCI device
+> +        */
+> +       if (efi_enabled(EFI_BOOT)) {
+> +               vmbus_free_mmio(hv->mem->start, hv->fb_size);
+> +       } else {
+> +               pdev = pci_get_device(PCI_VENDOR_ID_MICROSOFT,
+> +                               PCI_DEVICE_ID_HYPERV_VIDEO, NULL);
+> +               if (!pdev) {
+> +                       drm_err(dev, "Unable to find PCI Hyper-V
+> video\n");
+> +                       return -ENODEV;
+> +               }
+> +               pci_release_region(pdev, 0);
+> +               pci_dev_put(pdev);
+> +       }
+>  
+>         return 0;
+>  }
 
-Thanks! No problems with this version, looks good to go!
-
-Reviewed-by: David Gow <davidgow@google.com>
-
-Cheers,
--- David
-
-> Note: this patch is based on
-> https://lore.kernel.org/linux-kselftest/20211106013058.2621799-1-dlatypov@google.com/
-> This patch will work without it, but there'll be a false merge conflict.
->
-> v1 -> v2:
-> * always regenerate if last_used_kunitconfig doesn't exist
-> * don't call os.remove() if last_used_kunitconfig doesn't exist
-> * add in get_old_kunitconfig_path() to match get_kunitconfig_path()
-> * s/_kconfig_changed/_kunitconfig_changed
-> ---
->  Documentation/dev-tools/kunit/start.rst |  8 ++---
->  tools/testing/kunit/kunit_kernel.py     | 40 ++++++++++++++++------
->  tools/testing/kunit/kunit_tool_test.py  | 45 +++++++++++++++++++++++++
->  3 files changed, 78 insertions(+), 15 deletions(-)
->
-> diff --git a/Documentation/dev-tools/kunit/start.rst b/Documentation/dev-tools/kunit/start.rst
-> index 1e00f9226f74..0a5e65540974 100644
-> --- a/Documentation/dev-tools/kunit/start.rst
-> +++ b/Documentation/dev-tools/kunit/start.rst
-> @@ -50,10 +50,10 @@ It'll warn you if you haven't included the dependencies of the options you're
->  using.
->
->  .. note::
-> -   Note that removing something from the ``.kunitconfig`` will not trigger a
-> -   rebuild of the ``.config`` file: the configuration is only updated if the
-> -   ``.kunitconfig`` is not a subset of ``.config``. This means that you can use
-> -   other tools (such as make menuconfig) to adjust other config options.
-> +   If you change the ``.kunitconfig``, kunit.py will trigger a rebuild of the
-> +   ``.config`` file. But you can edit the ``.config`` file directly or with
-> +   tools like ``make menuconfig O=.kunit``. As long as its a superset of
-> +   ``.kunitconfig``, kunit.py won't overwrite your changes.
->
->
->  Running the tests (KUnit Wrapper)
-> diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-> index 350883672be0..12085e04a80c 100644
-> --- a/tools/testing/kunit/kunit_kernel.py
-> +++ b/tools/testing/kunit/kunit_kernel.py
-> @@ -21,6 +21,7 @@ import qemu_config
->
->  KCONFIG_PATH = '.config'
->  KUNITCONFIG_PATH = '.kunitconfig'
-> +OLD_KUNITCONFIG_PATH = 'last_used_kunitconfig'
->  DEFAULT_KUNITCONFIG_PATH = 'tools/testing/kunit/configs/default.config'
->  BROKEN_ALLCONFIG_PATH = 'tools/testing/kunit/configs/broken_on_uml.config'
->  OUTFILE_PATH = 'test.log'
-> @@ -179,6 +180,9 @@ def get_kconfig_path(build_dir) -> str:
->  def get_kunitconfig_path(build_dir) -> str:
->         return get_file_path(build_dir, KUNITCONFIG_PATH)
->
-> +def get_old_kunitconfig_path(build_dir) -> str:
-> +       return get_file_path(build_dir, OLD_KUNITCONFIG_PATH)
-> +
->  def get_outfile_path(build_dir) -> str:
->         return get_file_path(build_dir, OUTFILE_PATH)
->
-> @@ -289,24 +293,38 @@ class LinuxSourceTree(object):
->                 except ConfigError as e:
->                         logging.error(e)
->                         return False
-> -               return self.validate_config(build_dir)
-> +               if not self.validate_config(build_dir):
-> +                       return False
-> +
-> +               old_path = get_old_kunitconfig_path(build_dir)
-> +               if os.path.exists(old_path):
-> +                       os.remove(old_path)  # write_to_file appends to the file
-> +               self._kconfig.write_to_file(old_path)
-> +               return True
-> +
-> +       def _kunitconfig_changed(self, build_dir: str) -> bool:
-> +               old_path = get_old_kunitconfig_path(build_dir)
-> +               if not os.path.exists(old_path):
-> +                       return True
-> +
-> +               old_kconfig = kunit_config.parse_file(old_path)
-> +               return old_kconfig.entries() != self._kconfig.entries()
->
->         def build_reconfig(self, build_dir, make_options) -> bool:
->                 """Creates a new .config if it is not a subset of the .kunitconfig."""
->                 kconfig_path = get_kconfig_path(build_dir)
-> -               if os.path.exists(kconfig_path):
-> -                       existing_kconfig = kunit_config.parse_file(kconfig_path)
-> -                       self._ops.make_arch_qemuconfig(self._kconfig)
-> -                       if not self._kconfig.is_subset_of(existing_kconfig):
-> -                               print('Regenerating .config ...')
-> -                               os.remove(kconfig_path)
-> -                               return self.build_config(build_dir, make_options)
-> -                       else:
-> -                               return True
-> -               else:
-> +               if not os.path.exists(kconfig_path):
->                         print('Generating .config ...')
->                         return self.build_config(build_dir, make_options)
->
-> +               existing_kconfig = kunit_config.parse_file(kconfig_path)
-> +               self._ops.make_arch_qemuconfig(self._kconfig)
-> +               if self._kconfig.is_subset_of(existing_kconfig) and not self._kunitconfig_changed(build_dir):
-> +                       return True
-> +               print('Regenerating .config ...')
-> +               os.remove(kconfig_path)
-> +               return self.build_config(build_dir, make_options)
-> +
->         def build_kernel(self, alltests, jobs, build_dir, make_options) -> bool:
->                 try:
->                         if alltests:
-> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-> index 7e42a7c27987..572f133511aa 100755
-> --- a/tools/testing/kunit/kunit_tool_test.py
-> +++ b/tools/testing/kunit/kunit_tool_test.py
-> @@ -358,6 +358,51 @@ class LinuxSourceTreeTest(unittest.TestCase):
->                         with open(kunit_kernel.get_outfile_path(build_dir), 'rt') as outfile:
->                                 self.assertEqual(outfile.read(), 'hi\nbye\n', msg='Missing some output')
->
-> +       def test_build_reconfig_no_config(self):
-> +               with tempfile.TemporaryDirectory('') as build_dir:
-> +                       with open(kunit_kernel.get_kunitconfig_path(build_dir), 'w') as f:
-> +                               f.write('CONFIG_KUNIT=y')
-> +
-> +                       tree = kunit_kernel.LinuxSourceTree(build_dir)
-> +                       mock_build_config = mock.patch.object(tree, 'build_config').start()
-> +
-> +                       # Should generate the .config
-> +                       self.assertTrue(tree.build_reconfig(build_dir, make_options=[]))
-> +                       mock_build_config.assert_called_once_with(build_dir, [])
-> +
-> +       def test_build_reconfig_existing_config(self):
-> +               with tempfile.TemporaryDirectory('') as build_dir:
-> +                       # Existing .config is a superset, should not touch it
-> +                       with open(kunit_kernel.get_kunitconfig_path(build_dir), 'w') as f:
-> +                               f.write('CONFIG_KUNIT=y')
-> +                       with open(kunit_kernel.get_old_kunitconfig_path(build_dir), 'w') as f:
-> +                               f.write('CONFIG_KUNIT=y')
-> +                       with open(kunit_kernel.get_kconfig_path(build_dir), 'w') as f:
-> +                               f.write('CONFIG_KUNIT=y\nCONFIG_KUNIT_TEST=y')
-> +
-> +                       tree = kunit_kernel.LinuxSourceTree(build_dir)
-> +                       mock_build_config = mock.patch.object(tree, 'build_config').start()
-> +
-> +                       self.assertTrue(tree.build_reconfig(build_dir, make_options=[]))
-> +                       self.assertEqual(mock_build_config.call_count, 0)
-> +
-> +       def test_build_reconfig_remove_option(self):
-> +               with tempfile.TemporaryDirectory('') as build_dir:
-> +                       # We removed CONFIG_KUNIT_TEST=y from our .kunitconfig...
-> +                       with open(kunit_kernel.get_kunitconfig_path(build_dir), 'w') as f:
-> +                               f.write('CONFIG_KUNIT=y')
-> +                       with open(kunit_kernel.get_old_kunitconfig_path(build_dir), 'w') as f:
-> +                               f.write('CONFIG_KUNIT=y\nCONFIG_KUNIT_TEST=y')
-> +                       with open(kunit_kernel.get_kconfig_path(build_dir), 'w') as f:
-> +                               f.write('CONFIG_KUNIT=y\nCONFIG_KUNIT_TEST=y')
-> +
-> +                       tree = kunit_kernel.LinuxSourceTree(build_dir)
-> +                       mock_build_config = mock.patch.object(tree, 'build_config').start()
-> +
-> +                       # ... so we should trigger a call to build_config()
-> +                       self.assertTrue(tree.build_reconfig(build_dir, make_options=[]))
-> +                       mock_build_config.assert_called_once_with(build_dir, [])
-> +
->         # TODO: add more test cases.
->
->
-> --
-> 2.34.0.rc2.393.gf8c9666880-goog
->
