@@ -2,127 +2,415 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E048F457A93
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 03:18:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0935457A95
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 03:21:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236334AbhKTCVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 21:21:48 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:14960 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232076AbhKTCVq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 21:21:46 -0500
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hwxwb4GRnzZd00;
-        Sat, 20 Nov 2021 10:16:15 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Sat, 20 Nov 2021 10:18:41 +0800
-Subject: Re: [PATCH -next 2/2] sata_fsl: fix warning in remove_proc_entry when
- rmmod sata_fsl
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        <damien.lemoal@opensource.wdc.com>, <axboe@kernel.dk>,
-        <tj@kernel.org>, <linux-ide@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <yebin10@huawei.com>, <yukuai3@huawei.com>,
-        Hulk Robot <hulkci@huawei.com>
-References: <20211119041128.2436889-1-libaokun1@huawei.com>
- <20211119041128.2436889-3-libaokun1@huawei.com>
- <283712c0-bab7-de13-fc27-6ae2e6f9532f@gmail.com>
-From:   "libaokun (A)" <libaokun1@huawei.com>
-Message-ID: <a8223ffb-2636-5c9d-76a6-868e5b4ebb9b@huawei.com>
-Date:   Sat, 20 Nov 2021 10:18:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S236370AbhKTCW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 21:22:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48096 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232076AbhKTCWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 21:22:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB3C261AEC;
+        Sat, 20 Nov 2021 02:19:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637374763;
+        bh=QJKN2D/08mxQzRd2c8JjOrwLljR8hoAVbzVGp60XGl0=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=OVU7Lk3v5En6xqqLRhOoW2SyX0v+NYxSc9WTmdPcPCglcDZWvbKma+UMViAqJ9mgu
+         kztBvoL/y5ITn3IxjIiviFEM3yLfxLoI6vHz5IOzT0amL/6TGAUOJ6AbuMLGifwegc
+         VmyoBgAwLWG9wGq4IHMNGbFQ1uZMAyix2p4UObnsyIo2vkObPzrZZF61xtPYfT10nz
+         1mKyIshX1W/+b41e+44V3P/ASK9Z6BwPMMfu1Wa2P2dsrlgcGzMBk1zB8YarAhjCi+
+         /1lltwOns+fzMmbkJpL8ZhbFlXG/ouu3dXBeLgou/xxM3xJ+5f+XsVWvT/JiClbE2+
+         irTEUi8OLS0ew==
+Date:   Fri, 19 Nov 2021 18:19:21 -0800 (PST)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@ubuntu-linux-20-04-desktop
+To:     Oleksandr <olekstysh@gmail.com>, jgross@suse.com
+cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Julien Grall <julien@xen.org>
+Subject: Re: [PATCH V2 3/4] xen/unpopulated-alloc: Add mechanism to use Xen
+ resource
+In-Reply-To: <f1f1025b-911d-3d27-f408-9c042bc4fca4@gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2111191809100.1412361@ubuntu-linux-20-04-desktop>
+References: <1635264312-3796-1-git-send-email-olekstysh@gmail.com> <1635264312-3796-4-git-send-email-olekstysh@gmail.com> <alpine.DEB.2.21.2110280920110.20134@sstabellini-ThinkPad-T480s> <1d122e60-df9c-2ac6-8148-f6a836b9e51d@gmail.com>
+ <alpine.DEB.2.22.394.2111181642340.1412361@ubuntu-linux-20-04-desktop> <f1f1025b-911d-3d27-f408-9c042bc4fca4@gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-In-Reply-To: <283712c0-bab7-de13-fc27-6ae2e6f9532f@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2021/11/19 23:43, Sergei Shtylyov 写道:
-> Hello!
->
-> On 19.11.2021 7:11, Baokun Li wrote:
->
->> Trying to remove the fsl-sata module in the PPC64 GNU/Linux
->> leads to the following warning:
->>   ------------[ cut here ]------------
->>   remove_proc_entry: removing non-empty directory 'irq/69',
->>     leaking at least 'fsl-sata[ff0221000.sata]'
->>   WARNING: CPU: 3 PID: 1048 at fs/proc/generic.c:722
->>     .remove_proc_entry+0x20c/0x220
->>   IRQMASK: 0
->>   NIP [c00000000033826c] .remove_proc_entry+0x20c/0x220
->>   LR [c000000000338268] .remove_proc_entry+0x208/0x220
->>   Call Trace:
->>    .remove_proc_entry+0x208/0x220 (unreliable)
->>    .unregister_irq_proc+0x104/0x140
->>    .free_desc+0x44/0xb0
->>    .irq_free_descs+0x9c/0xf0
->>    .irq_dispose_mapping+0x64/0xa0
->>    .sata_fsl_remove+0x58/0xa0 [sata_fsl]
->>    .platform_drv_remove+0x40/0x90
->>    .device_release_driver_internal+0x160/0x2c0
->>    .driver_detach+0x64/0xd0
->>    .bus_remove_driver+0x70/0xf0
->>    .driver_unregister+0x38/0x80
->>    .platform_driver_unregister+0x14/0x30
->>    .fsl_sata_driver_exit+0x18/0xa20 [sata_fsl]
->>   ---[ end trace 0ea876d4076908f5 ]---
->>
->> The driver creates the mapping by calling irq_of_parse_and_map(),
->> so it also has to dispose the mapping. But the easy way out is to
->> simply use platform_get_irq() instead of irq_of_parse_map().
->
->   Not that easy. :-)
->
->> In this case the mapping is not managed by the device but by
->> the of core, so the device has not to dispose the mapping.
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->> ---
->>   drivers/ata/sata_fsl.c | 4 +---
->>   1 file changed, 1 insertion(+), 3 deletions(-)
->>
->> diff --git a/drivers/ata/sata_fsl.c b/drivers/ata/sata_fsl.c
->> index 30759fd1c3a2..011daac4a14e 100644
->> --- a/drivers/ata/sata_fsl.c
->> +++ b/drivers/ata/sata_fsl.c
->> @@ -1493,7 +1493,7 @@ static int sata_fsl_probe(struct 
->> platform_device *ofdev)
->>       host_priv->ssr_base = ssr_base;
->>       host_priv->csr_base = csr_base;
->>   -    irq = irq_of_parse_and_map(ofdev->dev.of_node, 0);
->> +    irq = platform_get_irq(ofdev, 0);
->>       if (!irq) {
->
->     if (irq < 0) {
->
->   platform_get_irq() returns negative error codes, not 0 on failure.
->
-> [...]
->
-> MBR, Sergey
-> .
+Juergen please see the bottom of the email
 
-I didn't notice the change in this return value, and the test didn't 
-cover the error branch.
+On Fri, 19 Nov 2021, Oleksandr wrote:
+> On 19.11.21 02:59, Stefano Stabellini wrote:
+> > On Tue, 9 Nov 2021, Oleksandr wrote:
+> > > On 28.10.21 19:37, Stefano Stabellini wrote:
+> > > 
+> > > Hi Stefano
+> > > 
+> > > I am sorry for the late response.
+> > > 
+> > > > On Tue, 26 Oct 2021, Oleksandr Tyshchenko wrote:
+> > > > > From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+> > > > > 
+> > > > > The main reason of this change is that unpopulated-alloc
+> > > > > code cannot be used in its current form on Arm, but there
+> > > > > is a desire to reuse it to avoid wasting real RAM pages
+> > > > > for the grant/foreign mappings.
+> > > > > 
+> > > > > The problem is that system "iomem_resource" is used for
+> > > > > the address space allocation, but the really unallocated
+> > > > > space can't be figured out precisely by the domain on Arm
+> > > > > without hypervisor involvement. For example, not all device
+> > > > > I/O regions are known by the time domain starts creating
+> > > > > grant/foreign mappings. And following the advise from
+> > > > > "iomem_resource" we might end up reusing these regions by
+> > > > > a mistake. So, the hypervisor which maintains the P2M for
+> > > > > the domain is in the best position to provide unused regions
+> > > > > of guest physical address space which could be safely used
+> > > > > to create grant/foreign mappings.
+> > > > > 
+> > > > > Introduce new helper arch_xen_unpopulated_init() which purpose
+> > > > > is to create specific Xen resource based on the memory regions
+> > > > > provided by the hypervisor to be used as unused space for Xen
+> > > > > scratch pages.
+> > > > > 
+> > > > > If arch doesn't implement arch_xen_unpopulated_init() to
+> > > > > initialize Xen resource the default "iomem_resource" will be used.
+> > > > > So the behavior on x86 won't be changed.
+> > > > > 
+> > > > > Also fall back to allocate xenballooned pages (steal real RAM
+> > > > > pages) if we do not have any suitable resource to work with and
+> > > > > as the result we won't be able to provide unpopulated pages.
+> > > > > 
+> > > > > Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+> > > > > ---
+> > > > > Changes RFC -> V2:
+> > > > >      - new patch, instead of
+> > > > >       "[RFC PATCH 2/2] xen/unpopulated-alloc: Query hypervisor to
+> > > > > provide
+> > > > > unallocated space"
+> > > > > ---
+> > > > >    drivers/xen/unpopulated-alloc.c | 89
+> > > > > +++++++++++++++++++++++++++++++++++++++--
+> > > > >    include/xen/xen.h               |  2 +
+> > > > >    2 files changed, 88 insertions(+), 3 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/xen/unpopulated-alloc.c
+> > > > > b/drivers/xen/unpopulated-alloc.c
+> > > > > index a03dc5b..1f1d8d8 100644
+> > > > > --- a/drivers/xen/unpopulated-alloc.c
+> > > > > +++ b/drivers/xen/unpopulated-alloc.c
+> > > > > @@ -8,6 +8,7 @@
+> > > > >      #include <asm/page.h>
+> > > > >    +#include <xen/balloon.h>
+> > > > >    #include <xen/page.h>
+> > > > >    #include <xen/xen.h>
+> > > > >    @@ -15,13 +16,29 @@ static DEFINE_MUTEX(list_lock);
+> > > > >    static struct page *page_list;
+> > > > >    static unsigned int list_count;
+> > > > >    +static struct resource *target_resource;
+> > > > > +static struct resource xen_resource = {
+> > > > > +	.name = "Xen unused space",
+> > > > > +};
+> > > > > +
+> > > > > +/*
+> > > > > + * If arch is not happy with system "iomem_resource" being used for
+> > > > > + * the region allocation it can provide it's own view by initializing
+> > > > > + * "xen_resource" with unused regions of guest physical address space
+> > > > > + * provided by the hypervisor.
+> > > > > + */
+> > > > > +int __weak arch_xen_unpopulated_init(struct resource *res)
+> > > > > +{
+> > > > > +	return -ENOSYS;
+> > > > > +}
+> > > > > +
+> > > > >    static int fill_list(unsigned int nr_pages)
+> > > > >    {
+> > > > >    	struct dev_pagemap *pgmap;
+> > > > > -	struct resource *res;
+> > > > > +	struct resource *res, *tmp_res = NULL;
+> > > > >    	void *vaddr;
+> > > > >    	unsigned int i, alloc_pages = round_up(nr_pages,
+> > > > > PAGES_PER_SECTION);
+> > > > > -	int ret = -ENOMEM;
+> > > > > +	int ret;
+> > > > >      	res = kzalloc(sizeof(*res), GFP_KERNEL);
+> > > > >    	if (!res)
+> > > > > @@ -30,7 +47,7 @@ static int fill_list(unsigned int nr_pages)
+> > > > >    	res->name = "Xen scratch";
+> > > > >    	res->flags = IORESOURCE_MEM | IORESOURCE_BUSY;
+> > > > >    -	ret = allocate_resource(&iomem_resource, res,
+> > > > > +	ret = allocate_resource(target_resource, res,
+> > > > >    				alloc_pages * PAGE_SIZE, 0, -1,
+> > > > >    				PAGES_PER_SECTION * PAGE_SIZE, NULL,
+> > > > > NULL);
+> > > > >    	if (ret < 0) {
+> > > > > @@ -38,6 +55,31 @@ static int fill_list(unsigned int nr_pages)
+> > > > >    		goto err_resource;
+> > > > >    	}
+> > > > >    +	/*
+> > > > > +	 * Reserve the region previously allocated from Xen resource
+> > > > > to avoid
+> > > > > +	 * re-using it by someone else.
+> > > > > +	 */
+> > > > > +	if (target_resource != &iomem_resource) {
+> > > > > +		tmp_res = kzalloc(sizeof(*tmp_res), GFP_KERNEL);
+> > > > > +		if (!res) {
+> > > > > +			ret = -ENOMEM;
+> > > > > +			goto err_insert;
+> > > > > +		}
+> > > > > +
+> > > > > +		tmp_res->name = res->name;
+> > > > > +		tmp_res->start = res->start;
+> > > > > +		tmp_res->end = res->end;
+> > > > > +		tmp_res->flags = res->flags;
+> > > > > +
+> > > > > +		ret = insert_resource(&iomem_resource, tmp_res);
+> > > > > +		if (ret < 0) {
+> > > > > +			pr_err("Cannot insert IOMEM resource [%llx -
+> > > > > %llx]\n",
+> > > > > +			       tmp_res->start, tmp_res->end);
+> > > > > +			kfree(tmp_res);
+> > > > > +			goto err_insert;
+> > > > > +		}
+> > > > > +	}
+> > > > I am a bit confused.. why do we need to do this? Who could be
+> > > > erroneously re-using the region? Are you saying that the next time
+> > > > allocate_resource is called it could find the same region again? It
+> > > > doesn't seem possible?
+> > > 
+> > > No, as I understand the allocate_resource() being called for the same root
+> > > resource won't provide the same region... We only need to do this (insert
+> > > the
+> > > region into "iomem_resource") if we allocated it from our *internal*
+> > > "xen_resource", as *global* "iomem_resource" (which is used everywhere) is
+> > > not
+> > > aware of that region has been already allocated. So inserting a region
+> > > here we
+> > > reserving it, otherwise it could be reused elsewhere.
+> > But elsewhere where?
+> 
+> I think, theoretically everywhere where allocate_resource(&iomem_resource,
+> ...) is called.
+> 
+> 
+> > Let's say that allocate_resource allocates a range from xen_resource.
+> >  From reading the code, it doesn't look like iomem_resource would have
+> > that range because the extended regions described under /hypervisor are
+> > not added automatically to iomem_resource.
+> > 
+> > So what if we don't call insert_resource? Nothing could allocate the
+> > same range because iomem_resource doesn't have it at all and
+> > xen_resource is not used anywhere if not here.
+> > 
+> > What am I missing?
+> 
+> 
+> Below my understanding which, of course, might be wrong.
+> 
+> If we don't claim resource by calling insert_resource (or even
+> request_resource) here then the same range could be allocated everywhere where
+> allocate_resource(&iomem_resource, ...) is called.
+> I don't see what prevents the same range from being allocated. Why actually
+> allocate_resource(&iomem_resource, ...) can't provide the same range if it is
+> free (not-reserved-yet) from it's PoV? The comment above allocate_resource()
+> says "allocate empty slot in the resource tree given range & alignment". So
+> this "empty slot" could be exactly the same range.
+> 
+> I experimented with that a bit trying to call
+> allocate_resource(&iomem_resource, ...) several times in another place to see
+> what ranges it returns in both cases (w/ and w/o calling insert_resource
+> here). So an experiment confirmed (of course, if I made it correctly) that the
+> same range could be allocated if we didn't call insert_resource() here. And as
+> I understand there is nothing strange here, as iomem_resource covers all
+> address space initially (0, -1) and everything *not* inserted/requested (in
+> other words, reserved) yet is considered as free and could be provided if fits
+> constraints. Or I really missed something?
 
-Thank you very much for your advice.
+Thanks for the explanation! It was me that didn't know that
+iomem_resource covers all the address space initially. I thought it was
+populated only with actual iomem ranges. Now it makes sense, thanks!
 
-I'm about to send a patch v2 with the changes suggested by you.
 
--- 
-With Best Regards,
-Baokun Li
-.
+> It feels to me that it would be better to call request_resource() instead of
+> insert_resource(). It seems, that if no conflict happens both functions will
+> behave in same way, but in case of conflict if the conflicting resource
+> entirely fit the new resource the former will return an error. I think, this
+> way we will be able to detect that a range we are trying to reserve is already
+> present and bail out early.
+> 
+> 
+> > 
+> > Or maybe it is the other way around: core Linux code assumes everything
+> > is described in iomem_resource so something under kernel/ or mm/ would
+> > crash if we start using a page pointing to an address missing from
+> > iomem_resource?
+> >     
+> > > > >    	pgmap = kzalloc(sizeof(*pgmap), GFP_KERNEL);
+> > > > >    	if (!pgmap) {
+> > > > >    		ret = -ENOMEM;
+> > > > > @@ -95,12 +137,40 @@ static int fill_list(unsigned int nr_pages)
+> > > > >    err_memremap:
+> > > > >    	kfree(pgmap);
+> > > > >    err_pgmap:
+> > > > > +	if (tmp_res) {
+> > > > > +		release_resource(tmp_res);
+> > > > > +		kfree(tmp_res);
+> > > > > +	}
+> > > > > +err_insert:
+> > > > >    	release_resource(res);
+> > > > >    err_resource:
+> > > > >    	kfree(res);
+> > > > >    	return ret;
+> > > > >    }
+> > > > >    +static void unpopulated_init(void)
+> > > > > +{
+> > > > > +	static bool inited = false;
+> > > > initialized = false
+> > > ok.
+> > > 
+> > > 
+> > > > 
+> > > > > +	int ret;
+> > > > > +
+> > > > > +	if (inited)
+> > > > > +		return;
+> > > > > +
+> > > > > +	/*
+> > > > > +	 * Try to initialize Xen resource the first and fall back to
+> > > > > default
+> > > > > +	 * resource if arch doesn't offer one.
+> > > > > +	 */
+> > > > > +	ret = arch_xen_unpopulated_init(&xen_resource);
+> > > > > +	if (!ret)
+> > > > > +		target_resource = &xen_resource;
+> > > > > +	else if (ret == -ENOSYS)
+> > > > > +		target_resource = &iomem_resource;
+> > > > > +	else
+> > > > > +		pr_err("Cannot initialize Xen resource\n");
+> > > > > +
+> > > > > +	inited = true;
+> > > > > +}
+> > > > Would it make sense to call unpopulated_init from an init function,
+> > > > rather than every time xen_alloc_unpopulated_pages is called?
+> > > Good point, thank you. Will do. To be honest, I also don't like the
+> > > current
+> > > approach much.
+> > > 
+> > > 
+> > > > 
+> > > > >    /**
+> > > > >     * xen_alloc_unpopulated_pages - alloc unpopulated pages
+> > > > >     * @nr_pages: Number of pages
+> > > > > @@ -112,6 +182,16 @@ int xen_alloc_unpopulated_pages(unsigned int
+> > > > > nr_pages, struct page **pages)
+> > > > >    	unsigned int i;
+> > > > >    	int ret = 0;
+> > > > >    +	unpopulated_init();
+> > > > > +
+> > > > > +	/*
+> > > > > +	 * Fall back to default behavior if we do not have any
+> > > > > suitable
+> > > > > resource
+> > > > > +	 * to allocate required region from and as the result we won't
+> > > > > be able
+> > > > > to
+> > > > > +	 * construct pages.
+> > > > > +	 */
+> > > > > +	if (!target_resource)
+> > > > > +		return alloc_xenballooned_pages(nr_pages, pages);
+> > > > The commit message says that the behavior on x86 doesn't change but this
+> > > > seems to be a change that could impact x86?
+> > > I don't think, however I didn't tested on x86 and might be wrong, but
+> > > according to the current patch, on x86 the "target_resource" is always
+> > > valid
+> > > and points to the "iomem_resource" as arch_xen_unpopulated_init() is not
+> > > implemented. So there won't be any fallback to use
+> > > alloc_(free)_xenballooned_pages() here and fill_list() will behave as
+> > > usual.
+> >   If target_resource is always valid, then we don't need this special
+> > check. In fact, the condition should never be true.
+> 
+> 
+> The target_resource is always valid and points to the "iomem_resource" on x86
+> (this is equivalent to the behavior before this patch).
+> On Arm target_resource might be NULL if arch_xen_unpopulated_init() failed,
+> for example, if no extended regions reported by the hypervisor.
+> We cannot use "iomem_resource" on Arm, only a resource constructed from
+> extended regions. This is why I added that check (and fallback to xenballooned
+> pages).
+> What I was thinking is that in case of using old Xen (although we would need
+> to balloon out RAM pages) we still would be able to keep working, so no need
+> to disable CONFIG_XEN_UNPOPULATED_ALLOC on such setups.
+>  
+>    
+> > > You raised a really good question, on Arm we need a fallback to balloon
+> > > out
+> > > RAM pages again if hypervisor doesn't provide extended regions (we run on
+> > > old
+> > > version, no unused regions with reasonable size, etc), so I decided to put
+> > > a
+> > > fallback code here, an indicator of the failure is invalid
+> > > "target_resource".
+> > I think it is unnecessary as we already assume today that
+> > &iomem_resource is always available.
+> > > I noticed the patch which is about to be upstreamed that removes
+> > > alloc_(free)xenballooned_pages API [1]. Right now I have no idea how/where
+> > > this fallback could be implemented as this is under build option control
+> > > (CONFIG_XEN_UNPOPULATED_ALLOC). So the API with the same name is either
+> > > used
+> > > for unpopulated pages (if set) or ballooned pages (if not set). I would
+> > > appreciate suggestions regarding that. I am wondering would it be possible
+> > > and
+> > > correctly to have both mechanisms (unpopulated and ballooned) enabled by
+> > > default and some init code to decide which one to use at runtime or some
+> > > sort?
+> > I would keep it simple and remove the fallback from this patch. So:
+> > 
+> > - if not CONFIG_XEN_UNPOPULATED_ALLOC, then balloon
+> > - if CONFIG_XEN_UNPOPULATED_ALLOC, then
+> >      - xen_resource if present
+> >      - otherwise iomem_resource
+> 
+> Unfortunately, we cannot use iomem_resource on Arm safely, either xen_resource
+> or fail (if no fallback exists).
+> 
+> 
+> > 
+> > The xen_resource/iomem_resource config can be done at init time using
+> > target_resource. At runtime, target_resource is always != NULL so we
+> > just go ahead and use it.
+> 
+> 
+> Thank you for the suggestion. OK, let's keep it simple and drop fallback
+> attempts for now. With one remark:
+> We will make CONFIG_XEN_UNPOPULATED_ALLOC disabled by default on Arm in next
+> patch. So by default everything will behave as usual on Arm (balloon out RAM
+> pages),
+> if user knows for sure that Xen reports extended regions, he/she can enable
+> the config. This way we won't break anything. What do you think?
 
+Actually after reading your replies and explanation I changed opinion: I
+think we do need the fallback because Linux cannot really assume that
+it is running on "new Xen" so it definitely needs to keep working if
+CONFIG_XEN_UNPOPULATED_ALLOC is enabled and the extended regions are not
+advertised.
+
+I think we'll have to roll back some of the changes introduced by
+121f2faca2c0a. That's because even if CONFIG_XEN_UNPOPULATED_ALLOC is
+enabled we cannot know if we can use unpopulated-alloc or whether we
+have to use alloc_xenballooned_pages until we parse the /hypervisor node
+in device tree at runtime.
+
+In short, we cannot switch between unpopulated-alloc and
+alloc_xenballooned_pages at build time, we have to do it at runtime
+(boot time).
+
+Juergen, what do you think?
