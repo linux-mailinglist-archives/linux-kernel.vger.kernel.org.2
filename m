@@ -2,57 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1163B458018
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 20:20:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91B0345801A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 20:20:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhKTTXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 14:23:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50174 "EHLO mail.kernel.org"
+        id S231204AbhKTTXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 14:23:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229823AbhKTTXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 14:23:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id D563D60D42;
-        Sat, 20 Nov 2021 19:20:11 +0000 (UTC)
+        id S229823AbhKTTXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 14:23:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2591C60D42;
+        Sat, 20 Nov 2021 19:20:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637436011;
-        bh=rigkjFKZ2iPVtV4j7r6jq8VtAmhvkL9eYggcnkprcKQ=;
+        s=k20201202; t=1637436017;
+        bh=cpLLDSqsizXcdLW6qg4VngWyCD70N3qZNdPRoy4jITI=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Kv3iXwrbg3fBRFYxmidFQAvszD3VWrx3bfP57k+0ZilWiyLLWwQRyFL4R/X8P8niN
-         aeZxohXlajDycZSOrua9ZES6doRdWY74Y18QjFqNQ0mE5H0JAuBQl/QA1+c9qs8rFr
-         4NrJjqodCiFw9LoAfakrzjCpeKSZohHE41YOQ+gcz7BdUm1joqSVuM/6qekThPXDrT
-         gpRSO8jc+02ISt9LG9Wy4d16uDLfQZ2Jr60bClogULN4WdL7qZON+dNIeSNQn9XYH8
-         n+dyDvTg3oWsYpsF/3GtfOiBuThemVmfOf3Y9GrIh+hzY+/vPrzVbOJ3slUF3cX9ib
-         k9sDKzug3MZ2Q==
+        b=VLuQAPICkhZGJYXYVOn5EIZbljNWvLswwmoN2ZCwBRnV/1u5ii90kIe08MV69n+sC
+         BfKvyyrrZDmHQy/rY98wrZyKqIBQaLJxVQK//431sMu+Yvw4sS3VcGLqAdRPEd6qra
+         8NgHMWBnl6JUtJXqZkA9dvYkmePNLN6w+Yo41AX2sSnJis/kOIrrhlQslOTgvUdNMB
+         t2PsCvZD4LXZ6ufNM3YNYW6pEAm/Dtq8+AbkYIrBo1MxxnbPSVNsrYZr/Auon+krY8
+         eYvBjDJ6/spQvgP071tS6QjYcZopVXC8RBzFIQxPNM+VvcwSD8Zk67SApfH0EHdAO4
+         4XyC+jLesmVAw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C16EE609B4;
-        Sat, 20 Nov 2021 19:20:11 +0000 (UTC)
-Subject: Re: [GIT PULL] pin control fixes for v5.16
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1ECCA604EB;
+        Sat, 20 Nov 2021 19:20:17 +0000 (UTC)
+Subject: Re: [GIT PULL] s390 updates for 5.16-rc2
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CACRpkdb0H0NH4t5iRW6_ba=Mym1vH=yG+decH6O5uo9k2opcXw@mail.gmail.com>
-References: <CACRpkdb0H0NH4t5iRW6_ba=Mym1vH=yG+decH6O5uo9k2opcXw@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-gpio.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CACRpkdb0H0NH4t5iRW6_ba=Mym1vH=yG+decH6O5uo9k2opcXw@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.16-2
-X-PR-Tracked-Commit-Id: 62209e805b5c68577602a5803a71d8e2e11ee0d3
+In-Reply-To: <YZkKklfvwaRkxwqz@osiris>
+References: <YZkKklfvwaRkxwqz@osiris>
+X-PR-Tracked-List-Id: <linux-s390.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YZkKklfvwaRkxwqz@osiris>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.16-3
+X-PR-Tracked-Commit-Id: 890e3dc8bb6ee630870560c34054692f7a45da42
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b100274c70546decba3ec12cd614e1ab895515a5
-Message-Id: <163743601172.29153.12715935085157307199.pr-tracker-bot@kernel.org>
-Date:   Sat, 20 Nov 2021 19:20:11 +0000
-To:     Linus Walleij <linus.walleij@linaro.org>
+X-PR-Merge-Commit-Id: 6b38e2fb70b6682fd8f8cd24c03597e27fec3df3
+Message-Id: <163743601711.28722.10582088359602652887.pr-tracker-bot@kernel.org>
+Date:   Sat, 20 Nov 2021 19:20:17 +0000
+To:     Heiko Carstens <hca@linux.ibm.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 20 Nov 2021 03:26:42 +0100:
+The pull request you sent on Sat, 20 Nov 2021 15:47:46 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.16-2
+> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.16-3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b100274c70546decba3ec12cd614e1ab895515a5
+https://git.kernel.org/torvalds/c/6b38e2fb70b6682fd8f8cd24c03597e27fec3df3
 
 Thank you!
 
