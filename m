@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C64458134
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 00:56:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A1245813F
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 00:56:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238029AbhKTX7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 18:59:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49160 "EHLO
+        id S237874AbhKTX7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 18:59:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237842AbhKTX7C (ORCPT
+        with ESMTP id S237886AbhKTX7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 18:59:02 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D006C061748
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 15:55:58 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id h16-20020a9d7990000000b0055c7ae44dd2so22759015otm.10
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 15:55:58 -0800 (PST)
+        Sat, 20 Nov 2021 18:59:03 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1896C06174A
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 15:55:59 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id h19-20020a9d3e53000000b0056547b797b2so22771814otg.4
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 15:55:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0dOZcbvvxoV5kK+4KDYjWpfED8ish1Yaz0C1X7kuA90=;
-        b=uK3fFmy85udSaFtezHy0jsVeokGkGwZ3GalHznxImHgPLGj0nmRcrIw7Pgi6USCz7m
-         3NsSYtxGLuryzz4nhbX+AmFAXJzYg0LtW1tBH2JKld17K9lhrGdhAJedDingJlyX9I39
-         bwFQVkXoQh0bHGed4bkBhTHcU0/vXuEGAaeppzqaZ/9AHsJ5Tx4PHU4K/Orhioc6GHny
-         eNPaWbd45pt+a5qndz6uJdcHT3RPwWKfTf8ospUlwoR7LBmwA5mR6NsPo9JYzZA2Fdwu
-         jpvKGV3z10923KH/dH8Sn6WC4uSi7gPkTcaN30YGadI5LYxTszP6i3Ico1Zss/iYQbIJ
-         4ctA==
+        bh=yPicKk0d26D9VjEuI3cFOviTVJwZiIF12RGQRcjWAGc=;
+        b=O2IXaewBhlu5UiccjeNbdPoCs83XcbspZBPbu3KaznspzLgjKsMNObNpc7kvT9kwje
+         nBMJMRrpKqu76CL4nuq7aouDoOrJI/OBzJUYEDQ9luwXOiiStQQt7tx8T5zsidUiAh9C
+         o/aFo0wPNAlOQ4WeS+IGKcLWSyhQIB2RoBnu0UoM+l4QC6hcjYnQjfptpMCFV+rK/JHy
+         BFSZrOE+FZ+/z9rWq8JKJNKhjzBBs1j3G1UkYgzDjflHXgbA/1Pwxg/PfpSyk+3SWmrp
+         pui8IYAF2sV0bFN4NNP99LnTEaF68Dxxb4hS8gNSR5nqK2Fic3tT8evVi6elAKxuri/a
+         BefA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0dOZcbvvxoV5kK+4KDYjWpfED8ish1Yaz0C1X7kuA90=;
-        b=uR2/o7t63dKMLl+9RAwhH92ztpxrj9O00N6YhPdPq2qtlkGrlsygcbKQLOq1WgY1I1
-         o7GPVO9shuF/sLaHnC3rYC+h1JRRh8gg3jM1CbW6453tQsR26OhwwvDom+hRayWliAXk
-         2+MVIz5AaHiHfChgiwwYvOo1vZO8v/EdXLSWrs11Jxu1Bj4qwCBAz9/G7/VpnKNiqUyH
-         7t55Wu7fErFuLRGe9pR/W49Xf00ftMq7UspSHVATLkbH7CAhdEQfvv5lZe72L6c0L1fC
-         EXlg/+YgHEYJFacbTUVtfXj+tIMAYh+jvgGqvq9ugkQwjTXcz4xWAj9I/DyNmBM7kEDv
-         v4Wg==
-X-Gm-Message-State: AOAM531pStEPocfu7XxeK3O3HuIzE6lDp8kI98lDicY/qrqwKA8g6y/N
-        Bez4sbKTB1S5028BdhVCpZXUUg==
-X-Google-Smtp-Source: ABdhPJxYfJijDDMeOgStUfT71Qf1HtDr0gkAOahPqdBMH5xDiHh3sMLuehkKYkoe5VvTCH9qof0Ncw==
-X-Received: by 2002:a9d:6a56:: with SMTP id h22mr14443064otn.135.1637452557725;
-        Sat, 20 Nov 2021 15:55:57 -0800 (PST)
+        bh=yPicKk0d26D9VjEuI3cFOviTVJwZiIF12RGQRcjWAGc=;
+        b=HStkJdDkuVdLXx+3SCcilyhQAmvJouIM6sm71VL35xVZO41uaws2Pn/wnJKnWjYjTB
+         UgkdLjCvKqD9tZ/5UR7/ArODUyWdJeI/AaZGnobQNzEBwBoKhhTLoDvtF4vvWqME7ojf
+         UkVzsMG3QEJs6JBeW9S/lfWoyBaPzzia412ZPq2W476SFot1GmMa8iug/l/6eAH1Nns0
+         +Ccq0lvMuiJs73VYyPJbpqBoFhADcLD6gjkcTSfVDUzk7kyE5FqS7BrJ5pzANQW8kS1Q
+         xpVleLMNcP9qAefVLqx12KIbGe23UEVynvocLB1iE3bBBW6pIS069SFLOpZ/GTvJENbl
+         /J3g==
+X-Gm-Message-State: AOAM532GufMm5aUEuhl/sg1viJ8xLtt+JEKcUWkAKb7WbKe5MFBXEi2d
+        fCte17riSfNCyDjTZw1cCX1T9A==
+X-Google-Smtp-Source: ABdhPJypA9s0Pq0mrRn35r28pb9hIIGFj8h+OVONqaqHHFBcvs5+KKnp2K6707/3j+wzQreoPiNo8g==
+X-Received: by 2002:a9d:2486:: with SMTP id z6mr14877086ota.210.1637452559309;
+        Sat, 20 Nov 2021 15:55:59 -0800 (PST)
 Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id o26sm828474otj.14.2021.11.20.15.55.56
+        by smtp.gmail.com with ESMTPSA id o26sm828474otj.14.2021.11.20.15.55.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Nov 2021 15:55:57 -0800 (PST)
+        Sat, 20 Nov 2021 15:55:58 -0800 (PST)
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     linux-arm-msm@vger.kernel.org, Steev Klimaszewski <steev@kali.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Andy Gross <agross@kernel.org>
-Subject: Re: (subset) [PATCH] arm64: dts: qcom: c630: disable crypto due to serror
-Date:   Sat, 20 Nov 2021 17:55:33 -0600
-Message-Id: <163745250542.1078332.123070491536318039.b4-ty@linaro.org>
+To:     Jason Wang <wangborong@cdjrlc.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        agross@kernel.org
+Subject: Re: (subset) [PATCH] soc: qcom: qmi: Fix a typo in a comment
+Date:   Sat, 20 Nov 2021 17:55:35 -0600
+Message-Id: <163745250541.1078332.6247097724847181032.b4-ty@linaro.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211105035235.2392-1-steev@kali.org>
-References: <20211105035235.2392-1-steev@kali.org>
+In-Reply-To: <20211113055358.206533-1-wangborong@cdjrlc.com>
+References: <20211113055358.206533-1-wangborong@cdjrlc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -65,17 +65,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 4 Nov 2021 22:52:32 -0500, Steev Klimaszewski wrote:
-> Disable the crypto due to it causing an serror when cryptomanager tests
-> are enabled.  Add a fixme comment so that someone way smarter than I can
-> come along and fix it.
+On Sat, 13 Nov 2021 13:53:58 +0800, Jason Wang wrote:
+> The double word `client' in a comment is repeated, thus one of
+> them should be removed.
 > 
 > 
 
 Applied, thanks!
 
-[1/1] arm64: dts: qcom: c630: disable crypto due to serror
-      commit: 36be92f490a7f403c7b1ea7662c92e100e8c3096
+[1/1] soc: qcom: qmi: Fix a typo in a comment
+      commit: bd9ccaec6ac998196baa11380ad4651a7df62ef0
 
 Best regards,
 -- 
