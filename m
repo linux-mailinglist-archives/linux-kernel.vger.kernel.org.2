@@ -2,113 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3B5457CC4
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 10:51:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 552AC457CCB
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 11:14:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237239AbhKTJyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 04:54:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237208AbhKTJyq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 04:54:46 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AADEC061574;
-        Sat, 20 Nov 2021 01:51:42 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id b1so54781826lfs.13;
-        Sat, 20 Nov 2021 01:51:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=KurvDeK1OCCTbWY8LAh9vhNWC4pm8h+CrIfTiM1/sFQ=;
-        b=UlJc3W8bLVIjECrs0I8CRg1Jcr/3OOXlyFaJGE+jBdeQacZ/SSFYvOYQlcdW0xn6a2
-         hxRXOfINNjskmWKxAE42dO0uxG9LEuDiTQZm7ZDYNj/FJ+qr0VOUUhfa7x5AICRG9NWH
-         zLEPGD/KikArkqBlSv24L3g59WVdkPtz28guLgilN7Ins8pvhhQqnkZtuovPPEvBjNKM
-         DybA/UioMNshpxsgyeBaW+2Z+KRJC5QDHBERSGrNqexN02FsLTCZAZK/omlXdhcEU+CI
-         RqM6UylXhP4Ms831WeK5dDqsm6bHtCUnY82z3ZMGkVQu8RC/ZS8VWZmnER1la+/OaveW
-         THog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=KurvDeK1OCCTbWY8LAh9vhNWC4pm8h+CrIfTiM1/sFQ=;
-        b=GZWhBa+eJ4D7943DowMjaIDd4i2XdnxNeA29pGb4G/fvczFJHQki8LGxDNxWAy60ig
-         3lUHy9HhGkviu9y1mCqfQjsZ8P2Ne61u0+nr+A/qI4j2HW8c/ieMXTUiPLBqWjSuDnqY
-         fB0K2ADKTaNhfgnC4Z9vZzRdrnWetMs5POxVVLIzYSdQT8BavhCeFZFRSPZmLTKp4kio
-         P8/ytrrXvTKDLW/raE5RoAG9QBDxJEIFVUpj2sHthK+p3JzTbXAbr7RQU7SCf4S92nmD
-         7O4a5o/JzxvmgOOJF5ar6vkMXI+3f30UIoYid7ZnzO/EpTswPOCAycOnDS6aXBO+PA9j
-         m2ag==
-X-Gm-Message-State: AOAM530Vfyxh8xzlp6M71yJrvwffxQtsM7AWCv0gQNbvxnGkxRdXBHle
-        ogD/XJF4e6UGaC7ogK57Axw=
-X-Google-Smtp-Source: ABdhPJx/6t6eNVFJY+Z1BLiHLUtI7q+X4uBmxvgGkomS92Z+IWNnzF60Jv5zfJkSuaU5fjmqW7OEkA==
-X-Received: by 2002:a05:6512:398b:: with SMTP id j11mr38760989lfu.170.1637401900940;
-        Sat, 20 Nov 2021 01:51:40 -0800 (PST)
-Received: from [192.168.1.100] ([178.176.76.156])
-        by smtp.gmail.com with ESMTPSA id s17sm312122lfe.10.2021.11.20.01.51.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Nov 2021 01:51:40 -0800 (PST)
-Message-ID: <361abc20-e01e-3c3a-3217-2e7ed6cb3f76@gmail.com>
-Date:   Sat, 20 Nov 2021 12:51:24 +0300
+        id S237257AbhKTKRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 05:17:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55764 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231133AbhKTKRG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 05:17:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C0306008E;
+        Sat, 20 Nov 2021 10:14:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637403242;
+        bh=p8lvv0uMUg2IIWA7VgSF5vRjXpzRznQaMfH/9LDbzn4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WHnDXOiB4aqq5Yhc6RZ4CA+75emu6gHisSS3WmbqOHmaqcpiRNY03RXvpO3fNqurT
+         SFP7kEkRxfPZqr/nV0CV0e8cSD6f2n+Bxd5jvUxEs8i8021M0teijhSI1C/PrzBXDH
+         Ng4LdKYFlD8c8cTDSYr3qVwltZzMbCqwBAe++XfvEl5zImwQTA4fIbfn16lLv5axdQ
+         sqJoTHBfrg1zrrq/lDJPB2xL6ecCFR4UoU+CJaqo+LN5/MtMkOgY8ck7V/5wQry3j3
+         6bGCCicItMohwBH2je7nElTwKy3sTqcJ+04QojStBfjETAU2xifTcJOpqrWL7ieQWN
+         WnR4L4yx0KUEw==
+Date:   Sat, 20 Nov 2021 18:13:57 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>
+Subject: Re: [PATCH V5] dt-bindings: soc: imx: Add binding doc for spba bus
+Message-ID: <20211120101354.GA31998@dragon>
+References: <20201118230414.121316-1-aford173@gmail.com>
+ <20201130220249.GA3109751@robh.at.kernel.org>
+ <CAHCN7x+om4W5jqnuAW4-nMkZLc5nrYu7NUsbM36r0wyFSYa4-g@mail.gmail.com>
+ <CAHCN7xKEkpq07AfMbpPfEcz0x=XvVjST==8gYRyrbW+Cjs3ONg@mail.gmail.com>
+ <CAHCN7xJK-iMMNMOtJCn9a2T2Jox=3LK3ANPGgZAC645wJw=3JQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH -next 2/2] sata_fsl: fix warning in remove_proc_entry when
- rmmod sata_fsl
-Content-Language: en-US
-To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Baokun Li <libaokun1@huawei.com>, axboe@kernel.dk,
-        tj@kernel.org, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     yebin10@huawei.com, yukuai3@huawei.com,
-        Hulk Robot <hulkci@huawei.com>
-References: <20211119041128.2436889-1-libaokun1@huawei.com>
- <20211119041128.2436889-3-libaokun1@huawei.com>
- <283712c0-bab7-de13-fc27-6ae2e6f9532f@gmail.com>
- <fcf2d384-ee03-298c-c1ac-5a39c0d85784@opensource.wdc.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-In-Reply-To: <fcf2d384-ee03-298c-c1ac-5a39c0d85784@opensource.wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHCN7xJK-iMMNMOtJCn9a2T2Jox=3LK3ANPGgZAC645wJw=3JQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.11.2021 9:08, Damien Le Moal wrote:
-> On 11/20/21 00:43, Sergei Shtylyov wrote:
->>> diff --git a/drivers/ata/sata_fsl.c b/drivers/ata/sata_fsl.c
->>> index 30759fd1c3a2..011daac4a14e 100644
->>> --- a/drivers/ata/sata_fsl.c
->>> +++ b/drivers/ata/sata_fsl.c
->>> @@ -1493,7 +1493,7 @@ static int sata_fsl_probe(struct platform_device *ofdev)
->>>    	host_priv->ssr_base = ssr_base;
->>>    	host_priv->csr_base = csr_base;
->>>    
->>> -	irq = irq_of_parse_and_map(ofdev->dev.of_node, 0);
->>> +	irq = platform_get_irq(ofdev, 0);
->>>    	if (!irq) {
->>
->> 	if (irq < 0) {
->>
->>      platform_get_irq() returns negative error codes, not 0 on failure.
+On Wed, Nov 03, 2021 at 09:36:59AM -0500, Adam Ford wrote:
+> On Sat, Oct 16, 2021 at 3:11 PM Adam Ford <aford173@gmail.com> wrote:
+> >
+> > On Thu, Apr 1, 2021 at 4:19 PM Adam Ford <aford173@gmail.com> wrote:
+> > >
+> > > On Mon, Nov 30, 2020 at 4:02 PM Rob Herring <robh@kernel.org> wrote:
+> > > >
+> > > > On Wed, 18 Nov 2020 17:04:14 -0600, Adam Ford wrote:
+> > > > > Add binding doc for fsl,spba-bus.
+> > > > >
+> > > > > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > > > > ---
+> > > > > make dt_binding_check -j8 |grep spba
+> > > > >   DTEX    Documentation/devicetree/bindings/bus/fsl,spba-bus.example.dts
+> > > > >   DTC     Documentation/devicetree/bindings/bus/fsl,spba-bus.example.dt.yaml
+> > > > >   CHECK   Documentation/devicetree/bindings/bus/fsl,spba-bus.example.dt.yaml
+> > > > >
+> > > > > V5:  Rebase on 5.10-rc2 to be able to check yaml
+> > > > >      Add Reg entry
+> > > > >
+> > > > > V4:  Remove an accidental makefile change
+> > > > >      Move type:object under additional properties
+> > > > >
+> > > > > V3:  Rebase sample from aips-bus example
+> > > > >      Split off from series adding i.MX8M Nano functions to reduce noise
+> > > > >
+> > > > > V2:  Attempted to update yaml from feedback
+> > > > >
+> > > >
+> > > > Applied, thanks!
+> > >
+> > > Rob,
+> > >
+> > > I am not seeing this anywhere.  Can you tell me where this was
+> > > applied?  It's not appearing in Linux-next
+> >
+> > Rob,
+> >
+> > Patchwork shows this has been accepted [1], however I don't see that
+> > it's still applied.
+> >
+> >
+> > [1] https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20201118230414.121316-1-aford173@gmail.com/
+> >
+> > Can you apply it?  It looks like building the device tree is throwing
+> > messages because this is missing.
+> >
 > 
-> Sergei,
+> Shawn,
 > 
-> By the way, the kdoc comment for platform_get_irq() says:
-> 
-> "Return: non-zero IRQ number on success, negative error number on failure."
-> 
-> But irq	0 is valid, isn't it ? So shouldn't this be changed to something
-> like:
-> 
-> "Return: IRQ number on success, negative error number on failure."
+> Since you're the maintainer for the IMX stuff, can I update the
+> MAINTAINERS file to add this yaml file under the IMX section?  When
+> building device trees, it throws a bunch of splat because this patch
+> was never applied, and checkpatch is showing it wants a maintainer.
 
-    No, it's not valid (the current code WARN()s about it) and won't be 
-returned anymore after my patch [1] gets applied.
+checkpatch warning on maintainer shouldn't be a problem.  We don't
+really want to bloat IMX entry in MAINTAINERS.
 
-[1] https://marc.info/?l=linux-kernel&m=163623041902285
-
-MBR, Sergei
+Shawn
