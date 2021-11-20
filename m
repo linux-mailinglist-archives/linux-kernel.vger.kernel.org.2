@@ -2,161 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D49CB457A87
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 02:57:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B1D3457A8A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Nov 2021 02:57:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236232AbhKTCAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Nov 2021 21:00:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233856AbhKTCAM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Nov 2021 21:00:12 -0500
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B104FC06173E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 17:57:09 -0800 (PST)
-Received: by mail-pf1-x44a.google.com with SMTP id x9-20020a056a00188900b0049fd22b9a27so6607200pfh.18
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Nov 2021 17:57:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=KrbbWwTYAYpbfb8RZZsX15NqaAxDG8BItIa+niGTlEk=;
-        b=lYEZZ3hpyEBNFBTV+81BSUwcFX40weMuhwWa/i70LhjiSbVrDoiyJQHWJO4hP+XzPm
-         5UOQlwbsOn7X6jc4qWN/T//Q5P6eI0tRQQeb7UPzjVn7I5ZuMuPXgb3MO8BUUjHIfRua
-         bX8cWv+Z+THojJiihUCuUDnAqFD3OlJOgMHw9/x25RERuelld/mZYgQ52sQxaSVVyIfC
-         1bhm9ZXawqYBoSXAGUYIiEqMUeV+T8wOXvbbwAqsLxeX5PSIa1pW+71tx73rVsS8rEuR
-         ASNZL2Px+ELqKlczjR0v107ZOSjf/BXriB+9rJ6wfacI8xrJwspk+1GsqvZXmHewFvlG
-         YkLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=KrbbWwTYAYpbfb8RZZsX15NqaAxDG8BItIa+niGTlEk=;
-        b=KRajfaEF+TiT9r3K+g53iEprUqRYiY+5Bp7HitHfN5VnDKamHU2kPMsjrtLIfyJQR8
-         DXvPZfeqexlXID2cX7MAxalBHkOu5D6bEBDJYUVHgmiKZEEnW8s70RRdGQ8KhSVaXd09
-         XwaoIHe2q7FoPUXD6OPRBnVIyBsmeOKwjexW1VGHazy4V5MjnrkmvKnbFz35ALOXei/V
-         RwNjZ7J8mWDtZCcakAvd9HUFRGbGjYiDOgKKh+NysmqGDH3zen/2vEoi/CZ1jocmm01k
-         wc6WqsoaRQNeQXNfvwQsFyONhBLKv1qhBWwYL3mCZh+IHlhdXe432YhmcT2qiLZN59n0
-         iPSw==
-X-Gm-Message-State: AOAM5300bJRwuFjyk7EqPlg/9SEuZRHuO/cJrnzHV0jVxvXZlLIqtUzx
-        36BoPl0heK1rP6+JX8/s6u+P/0G8Ssk=
-X-Google-Smtp-Source: ABdhPJyIJ5Q2QfuuEejoxgJn4d6h17tsial0wLdeo15vwuLRl9OOZzUoxXtFqmzpF0H8R9owtG4Kh6eckdk=
-X-Received: from seanjc.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3e5])
- (user=seanjc job=sendgmr) by 2002:a17:90a:390c:: with SMTP id
- y12mr664126pjb.0.1637373428916; Fri, 19 Nov 2021 17:57:08 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Sat, 20 Nov 2021 01:57:06 +0000
-Message-Id: <20211120015706.3830341-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH] KVM: x86/mmu: Handle "default" period when selectively waking kthread
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Junaid Shahid <junaids@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S236283AbhKTCBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Nov 2021 21:01:00 -0500
+Received: from mga01.intel.com ([192.55.52.88]:12659 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233856AbhKTCA7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Nov 2021 21:00:59 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10173"; a="258318606"
+X-IronPort-AV: E=Sophos;i="5.87,249,1631602800"; 
+   d="scan'208";a="258318606"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 17:57:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,249,1631602800"; 
+   d="scan'208";a="673415486"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga005.jf.intel.com with ESMTP; 19 Nov 2021 17:57:56 -0800
+Received: from debox1-server.jf.intel.com (debox1-server.jf.intel.com [10.54.39.121])
+        by linux.intel.com (Postfix) with ESMTP id 9BD75580945;
+        Fri, 19 Nov 2021 17:57:56 -0800 (PST)
+From:   "David E. Box" <david.e.box@linux.intel.com>
+To:     nirmal.patel@linux.intel.com, jonathan.derrick@linux.dev,
+        lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com,
+        bhelgaas@google.com, david.e.box@linux.intel.com,
+        michael.a.bottini@linux.intel.com, rafael@kernel.org
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] PCI/ASPM: Add ASPM BIOS override function
+Date:   Fri, 19 Nov 2021 17:57:55 -0800
+Message-Id: <20211120015756.1396263-1-david.e.box@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Account for the '0' being a default, "let KVM choose" period, when
-determining whether or not the recovery worker needs to be awakened in
-response to userspace reducing the period.  Failure to do so results in
-the worker not being awakened properly, e.g. when changing the period
-from '0' to any small-ish value.
+From: Michael Bottini <michael.a.bottini@linux.intel.com>
 
-Fixes: 4dfe4f40d845 ("kvm: x86: mmu: Make NX huge page recovery period configurable")
-Cc: stable@vger.kernel.org
-Cc: Junaid Shahid <junaids@google.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Devices that appear under the Intel VMD host bridge are not visible to BIOS
+and therefore not programmed by BIOS with ASPM settings. For these devices,
+it is necessary for the driver to configure ASPM. Since ASPM settings are
+adjustable at runtime by module parameter, use the same mechanism to allow
+drivers to override the default (in this case never configured) BIOS policy
+to ASPM_STATE_ALL. Then, reconfigure ASPM on the link.
+
+Signed-off-by: Michael Bottini <michael.a.bottini@linux.intel.com>
+Signed-off-by: David E. Box <david.e.box@linux.intel.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 48 +++++++++++++++++++++++++++++-------------
- 1 file changed, 33 insertions(+), 15 deletions(-)
+ drivers/pci/pci.h       |  2 ++
+ drivers/pci/pcie/aspm.c | 18 ++++++++++++++++++
+ 2 files changed, 20 insertions(+)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 8f0035517450..db7e1ad4d046 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -6165,23 +6165,46 @@ void kvm_mmu_module_exit(void)
- 	mmu_audit_disable();
- }
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index 3d60cabde1a1..172ec914e988 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -562,11 +562,13 @@ void pcie_aspm_init_link_state(struct pci_dev *pdev);
+ void pcie_aspm_exit_link_state(struct pci_dev *pdev);
+ void pcie_aspm_pm_state_change(struct pci_dev *pdev);
+ void pcie_aspm_powersave_config_link(struct pci_dev *pdev);
++void pcie_aspm_policy_override(struct pci_dev *dev);
+ #else
+ static inline void pcie_aspm_init_link_state(struct pci_dev *pdev) { }
+ static inline void pcie_aspm_exit_link_state(struct pci_dev *pdev) { }
+ static inline void pcie_aspm_pm_state_change(struct pci_dev *pdev) { }
+ static inline void pcie_aspm_powersave_config_link(struct pci_dev *pdev) { }
++static inline void pcie_aspm_policy_override(struct pci_dev *dev) {}
+ #endif
  
-+/*
-+ * Calculate the effective recovery period, accounting for '0' meaning "let KVM
-+ * select a period of ~1 hour per page".  Returns true if recovery is enabled.
-+ */
-+static bool calc_nx_huge_pages_recovery_period(uint *period)
+ #ifdef CONFIG_PCIE_ECRC
+diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+index 52c74682601a..ccb98586bf0d 100644
+--- a/drivers/pci/pcie/aspm.c
++++ b/drivers/pci/pcie/aspm.c
+@@ -1140,6 +1140,24 @@ int pci_disable_link_state(struct pci_dev *pdev, int state)
+ }
+ EXPORT_SYMBOL(pci_disable_link_state);
+ 
++void pcie_aspm_policy_override(struct pci_dev *pdev)
 +{
-+	/*
-+	 * Use READ_ONCE to get the params, this may be called outside of the
-+	 * param setters, e.g. by the kthread to compute its next timeout.
-+	 */
-+	bool enabled = READ_ONCE(nx_huge_pages);
-+	uint ratio = READ_ONCE(nx_huge_pages_recovery_ratio);
++	struct pcie_link_state *link = pcie_aspm_get_link(pdev);
 +
-+	if (!enabled || !ratio)
-+		return false;
++	down_read(&pci_bus_sem);
++	mutex_lock(&aspm_lock);
 +
-+	*period = READ_ONCE(nx_huge_pages_recovery_period_ms);
-+	if (!*period) {
-+		/* Make sure the period is not less than one second.  */
-+		ratio = min(ratio, 3600u);
-+		*period = 60 * 60 * 1000 / ratio;
++	if (link) {
++		link->aspm_default = ASPM_STATE_ALL;
++		pcie_config_aspm_link(link, policy_to_aspm_state(link));
++		pcie_set_clkpm(link, policy_to_clkpm_state(link));
 +	}
-+	return true;
-+}
 +
- static int set_nx_huge_pages_recovery_param(const char *val, const struct kernel_param *kp)
++	mutex_unlock(&aspm_lock);
++	up_read(&pci_bus_sem);
++}
++EXPORT_SYMBOL(pcie_aspm_policy_override);
++
+ static int pcie_aspm_set_policy(const char *val,
+ 				const struct kernel_param *kp)
  {
- 	bool was_recovery_enabled, is_recovery_enabled;
- 	uint old_period, new_period;
- 	int err;
- 
--	was_recovery_enabled = nx_huge_pages_recovery_ratio;
--	old_period = nx_huge_pages_recovery_period_ms;
-+	was_recovery_enabled = calc_nx_huge_pages_recovery_period(&old_period);
- 
- 	err = param_set_uint(val, kp);
- 	if (err)
- 		return err;
- 
--	is_recovery_enabled = nx_huge_pages_recovery_ratio;
--	new_period = nx_huge_pages_recovery_period_ms;
-+	is_recovery_enabled = calc_nx_huge_pages_recovery_period(&new_period);
- 
--	if (READ_ONCE(nx_huge_pages) && is_recovery_enabled &&
-+	if (is_recovery_enabled &&
- 	    (!was_recovery_enabled || old_period > new_period)) {
- 		struct kvm *kvm;
- 
-@@ -6245,18 +6268,13 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
- 
- static long get_nx_lpage_recovery_timeout(u64 start_time)
- {
--	uint ratio = READ_ONCE(nx_huge_pages_recovery_ratio);
--	uint period = READ_ONCE(nx_huge_pages_recovery_period_ms);
-+	bool enabled;
-+	uint period;
- 
--	if (!period && ratio) {
--		/* Make sure the period is not less than one second.  */
--		ratio = min(ratio, 3600u);
--		period = 60 * 60 * 1000 / ratio;
--	}
-+	enabled = calc_nx_huge_pages_recovery_period(&period);
- 
--	return READ_ONCE(nx_huge_pages) && ratio
--		? start_time + msecs_to_jiffies(period) - get_jiffies_64()
--		: MAX_SCHEDULE_TIMEOUT;
-+	return enabled ? start_time + msecs_to_jiffies(period) - get_jiffies_64()
-+		       : MAX_SCHEDULE_TIMEOUT;
- }
- 
- static int kvm_nx_lpage_recovery_worker(struct kvm *kvm, uintptr_t data)
 -- 
-2.34.0.rc2.393.gf8c9666880-goog
+2.25.1
 
