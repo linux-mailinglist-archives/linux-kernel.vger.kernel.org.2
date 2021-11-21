@@ -2,115 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B601745856A
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 18:24:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C191045856C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 18:25:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238487AbhKUR1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 12:27:19 -0500
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:49726
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238442AbhKUR1T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 12:27:19 -0500
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 9AEC43F0EA
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 17:24:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1637515452;
-        bh=C44TFo8JxPdM2eUinnKvaXNLXVNdYVKAzbpzrRKKHKk=;
-        h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-         In-Reply-To:Content-Type;
-        b=HJBXJGOYH42swqS8g/mg3NpapHt+iltD2TouSRbfbMDPUC++JZT6VEkGLdr7NDUkl
-         VDRZM1oA19uQoyx/Mu0GOWfGSdJaLvpwVmEJzdp6yodNQXWH9LO7b3fqHEaAjknfSj
-         r4MlUXzIO85jlyjaZ/45ujGbdYWanNS9VHzBqdhn2eHsYxMGeLmOg7Adsih8Z4WKIE
-         KYQGVXuyYFzvher9qkSDX6lpBrZBnr3EA1cUQSVSJtQzstFTc1Dr0q0oIMnciv9X/6
-         /Vy1R3fa0Bmen5T8xX0xhjSzfcnYn+pAIm5QJ60ZKGrlGlhbEFW6DQpqrZFp3ybp0F
-         n3D9GPSwMu2wg==
-Received: by mail-lf1-f72.google.com with SMTP id x17-20020a0565123f9100b003ff593b7c65so10361082lfa.12
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 09:24:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=C44TFo8JxPdM2eUinnKvaXNLXVNdYVKAzbpzrRKKHKk=;
-        b=WGuyuWa7wuQQkfXJe7VcN9rAL0KgzUIQxWMN0yR909912Z3Z/AiOkNVLprZ02Rw/+y
-         9CncwCLvx1bRi0+hG3u/5mdZ1LExRr3XG5ZpyjrD34XTQQZGlu8xvuFTB8ToNecjFk5J
-         5RugmigXWC7tWgs0nsB5AhOgreB0Do2eDk8RaE6tMgvR8S5APfB6b/fKps2LeZlEd7c1
-         iFrtgZNXqczactflo/XzJ6lmObaCTYflPCyQnJ8S/8jvFoPNoRL8DgdkrT0Uw2vgp2YQ
-         8IT5pCddQ6erOuUf4MEalwhkSuQuKrQQQ3/FraeDkobo6FWLKMl9xGVzg+K9O1PCOeqd
-         a/EA==
-X-Gm-Message-State: AOAM531e6NnQhltMmM066Cpk0xsY46rXy5ycCqihebjaFR6ga3ZHKuwH
-        RVDQ96uuzYeOUybf7k1zDI4Pqz/ccWqNbWs9rcChZbhkOjDv9S7tTaN3ahd2gPghM/9wuswfpYK
-        aG7Bi68KW9JPrbk0aezo+W/f3CSCA1oYzVUIzFgcc2A==
-X-Received: by 2002:a05:6512:150c:: with SMTP id bq12mr47862932lfb.628.1637515451552;
-        Sun, 21 Nov 2021 09:24:11 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxA3eYwToqKzDYJiKtG9lz9teUUb/nMfDtS5bw4e8HgOIZIKfqUi4kB+gaSTJrYMCLvpv+HRg==
-X-Received: by 2002:a05:6512:150c:: with SMTP id bq12mr47862915lfb.628.1637515451408;
-        Sun, 21 Nov 2021 09:24:11 -0800 (PST)
-Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id o22sm699541lfu.274.2021.11.21.09.24.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Nov 2021 09:24:10 -0800 (PST)
-Message-ID: <d1bbf5a0-7120-4991-0bb6-7094e238c2a3@canonical.com>
-Date:   Sun, 21 Nov 2021 18:24:09 +0100
+        id S238512AbhKUR2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 12:28:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238338AbhKUR2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 12:28:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29EEC60230;
+        Sun, 21 Nov 2021 17:25:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637515503;
+        bh=aiJq05jytq7//TsGyG6sMDwMz+aZHqTBKT1ARxUR17k=;
+        h=Date:From:To:Cc:Subject:From;
+        b=f8epykOM4dDb/QXcWqNNwT0zBZ6ONCkdWq2YHJkdSS4OOJbMBuwkSLa2AIss3K3vV
+         /Kpv3/NsCm4SFmzDIptCB2GWr9/DF/yA37CxjRer2Q7LCuVAKbeQ9DkCh/iChanF1F
+         upLLCljJrPbVh582PkB6eHuBYjC+E5FvrVk4ZlYg4z+dadUBA4pdgEHIAlpNHC0cES
+         CGb1GSMeAuQ3ErLZTUNLcL8NHIijSK74Gj+ERqdNkS/nFqe0wrajX/bJ2oJjQfOdEJ
+         NCEZ3Vz4BPutnqXe7lF3ftl8+RJ5ZKbjnCo3YDFG3C6PIocFjDd1ryu4b0gTsQIv8p
+         lAkARzibKDYYQ==
+Date:   Mon, 22 Nov 2021 01:24:56 +0800
+From:   Gao Xiang <xiang@kernel.org>
+To:     linux-erofs@lists.ozlabs.org
+Cc:     linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: [ANNOUNCE] erofs-utils: release 1.4
+Message-ID: <20211121172455.GA8626@hsiangkao-HP-ZHAN-66-Pro-G1>
+Mail-Followup-To: linux-erofs@lists.ozlabs.org,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v3 4/6] riscv: dts: sifive unmatched: Expose the FU740
- core supply regulator
-Content-Language: en-US
-To:     Vincent Pelletier <plr.vincent@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        David Abdurachmanov <david.abdurachmanov@sifive.com>
-References: <378c64fb868b595430b0068a9af10fdbeceb8e12.1637362542.git.plr.vincent@gmail.com>
- <5ab111e71e88d545d7f03233f10b6d84ef3d6c21.1637362542.git.plr.vincent@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <5ab111e71e88d545d7f03233f10b6d84ef3d6c21.1637362542.git.plr.vincent@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/11/2021 23:55, Vincent Pelletier wrote:
-> Provides monitoring of core voltage and current:
-> tps544b20-i2c-0-1e
-> Adapter: i2c-ocores
-> vout1:       906.00 mV
-> temp1:        -40.0°C  (high = +125.0°C, crit = +150.0°C)
-> iout1:         5.06 A  (max = +20.00 A, crit max = +26.00 A)
-> 
-> Signed-off-by: Vincent Pelletier <plr.vincent@gmail.com>
-> 
-> ---
-> Note: checkpatch.pl complains about undocumented devicetree binding,
-> which is fixed by:
->   https://lore.kernel.org/linux-devicetree/20211116110207.68494-1-krzysztof.kozlowski@canonical.com/T/#u
-> 
-> Changes since v2:
-> - Fix end-of-commit-message separator so change lists do not end up in them.
-> Changes since v1:
-> - Added missing "ti," prefix in compatible string.
-> - Remove trailing "." on subject line.
-> - Rename tree node.
-> ---
->  arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
+Hi folks,
 
+A new version erofs-utils 1.4 is available at:
+git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs-utils.git tags/v1.4
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+It mainly includes the following changes:
+   - (experimental) introduce preliminary dump.erofs (Wang Qi, Guo Xuenan);
+   - (experimental) introduce preliminary fsck.erofs (Daeho Jeong);
+   - introduce MicroLZMA compression support (thanks to Lasse Collin);
+   - support chunk-based uncompressed files for deduplication;
+   - support multiple devices for multi-blob CAS container images;
+   - (mkfs.erofs, AOSP) add block list support (Yue Hu, David Anderson);
+   - (mkfs.erofs) support per-inode compress pcluster hints (Huang Jianan);
+   - (mkfs.erofs) add "noinline_data" extended option for DAX;
+   - (mkfs.erofs) introduce --quiet option (suggested by nl6720);
+   - complete MacOS build & functionality;
+   - various bugfixes and cleanups;
 
+Many noticeable updates here. First, new preliminary fsck.erofs and
+dump.erofs are now added to analyse and check EROFS images by Daeho
+Jeong, Wang Qi and Guo Xuenan. More improvements about those features
+will be shown in the future versions.
 
-Best regards,
-Krzysztof
+Thanks to Lasse Collin, LZMA (specifically MicroLZMA) compression
+support is also finalized in this version. (btw, tail-packing inline
+for compressed data is now ongoing by Yue Hu [1] which will be
+addressed in the next version.)
+
+Also, in order to support chunk deduplication and some container use
+cases, chunk-based files and multiple devices are supported in this
+version. As usual, add a word here, our team will announce the new
+opensource Nydus container image service [2] implemented in the Rust
+language at Open Source Summit 2021 China which aims to use a minimal
+metadata (EROFS-compatible RAFS v6) + a few content-addressed
+chunk-based de-duplicated blobs for effective distribution as well as
+storage (such as minimizing underlay fs metadata overhead). It's still
+under some internal release processes so please stay tuned..
+
+In addition, users can now write their own per-file pcluster hints
+to adjust compression unit size for each file, which was contributed
+by Huang Jianan. There are also some AOSP-specific features to make
+Android scenarios work better as always.
+
+In the end, we are actively working on more useful scenarios [3] and
+quite happy to hear, implement and enhance any useful feature requests
+from communities. Feel free to feedback any comments, questions, bugs,
+suggestions, etc. to us for better improvements and welcome to join us
+as well :-)
+
+Thanks,
+Gao Xiang
+
+[1] https://lore.kernel.org/r/b1b3b72371dd4a6b46137dce2fab04899e111df9.1637140430.git.huyue2@yulong.com 
+[2] https://github.com/dragonflyoss/image-service
+[3] https://lore.kernel.org/r/20211009061150.GA7479@hsiangkao-HP-ZHAN-66-Pro-G1
