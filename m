@@ -2,140 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0377458299
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 09:55:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 927994582A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 10:01:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237211AbhKUI6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 03:58:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60220 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229972AbhKUI6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 03:58:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 689BA60231;
-        Sun, 21 Nov 2021 08:55:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637484907;
-        bh=BSrNBk1+xTVdjY/KH9HeiQ19aqGKk4qtpYXlS/s+Bi0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tatESt2cVzf7HD/KkoxWzf6u8sn0XI27B+PpnyEvnlG5TRXVuC3dZOd3am3b8I+C0
-         5G3PaGYVPSDNLTfsws9MbU7DSfDXQec8L3S1EMA9SYP602lbQgq6TdNKLPv8gTEa5W
-         h4DCKpMJQ69txcLZBiZHHTb+zpZ7YZa6TMBeXJeGSrQo2O1ejc+DSL0yiwmEZ0s+V+
-         WCx5dJPVXpxqkVOL46x0LUbKwTPT8WRQ0p3QZIEzDFCrXuB3380URRWhZ3jicWE4qv
-         oOo20/GIDVTxQJ1xkqHyCxvtvXYImCo1uJ/UQjPqhwKjtnE9Iw3RWmw+ZHfm4kZCJx
-         gaXkZ8rHGV2lw==
-Date:   Sun, 21 Nov 2021 16:55:00 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     David Heidelberg <david@ixit.cz>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        ~okias/devicetree@lists.sr.ht, phone-devel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH v2 2/3] arm64: dts: make dts use gpio-fan matrix instead
- of array
-Message-ID: <20211121085457.GN31998@dragon>
-References: <20211029114948.41841-1-david@ixit.cz>
- <20211029114948.41841-2-david@ixit.cz>
+        id S237927AbhKUJEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 04:04:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237869AbhKUJEf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 04:04:35 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D661C061574;
+        Sun, 21 Nov 2021 01:01:30 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id k4so11498798plx.8;
+        Sun, 21 Nov 2021 01:01:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uQeJj6IFfvjTH7tZDTd0bi24dF8RigJdyTH2xVfGgTs=;
+        b=Tgb5Ic+uwSSoM4JZA36HMAnlatkdP+klPPLN5bBR4mKKK7eTLYbvh8o7E0EcmDPq2Q
+         qLbdPM+Vl8mxGeh64K6wzQ+bz31be5sOsZRi7/BFqa+3UZR2mkUMH1od5ApykCQ4oge7
+         PWRsbIqGPWCVfPaQ/9SinTdE1/ZkUXrgz0XtKq4W6GhO2Tqz3W9WDL2YZ864OPwKasYW
+         XOd5tML9uld3R9EbWMfJk2iapJud7W6QS3RAsn8xBt2Px10d2Ru8NLyAcujfPW2JGJIW
+         WoJyuNX3QATWQwrzDElQcMEP/yNoxhjpnku/gWQVFiahs4VyOBv8MikwZLaNOsRVBr4h
+         1RLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uQeJj6IFfvjTH7tZDTd0bi24dF8RigJdyTH2xVfGgTs=;
+        b=pK+bFYG2jsNqeWxsZNKJ12E7bSEmyi8HtCQXEw6aSfHkKkTx+cJKzi0DA3Ps7hbEIV
+         xROvm5QSWNx1dcS5Cm5uXUwRl334xpG3soPPtbVanCuKdBj5Dbkvfw5Q6dCFOkmnum3N
+         WXFXJPBINjXXAAj/RhlP7Xl1TetZp1dNK6j4DXvMvKzjF9aqhb9BzudRic+0+nUmg0dj
+         KvozEy/abQl/EQrdTBMZumyLl6hl1hVtif1ABvoZmhtUAK9ISNECDPl+53ETMv356sBj
+         2RiZiSV7f44/oEdC15kA+Sr2cSW2lbvTaPLDfTVu3ITEA1AWy2IVGfiFAYePWd+JytWo
+         3kNA==
+X-Gm-Message-State: AOAM5308S3e3/NwoO0A9ItV+PMwrd2N0jbphKlYA4ZBYuCxdeLlHpfn6
+        N6PfcZ811lBD53r+m6c6p4k=
+X-Google-Smtp-Source: ABdhPJzLtHKp3ARITLkl6IEvP9ASH3fdvPyqX2o54+OrpL9oFv6P8ZWeoiFpXMGZlDp44TWDeD62sQ==
+X-Received: by 2002:a17:903:1d2:b0:142:24f1:1213 with SMTP id e18-20020a17090301d200b0014224f11213mr96857331plh.81.1637485290032;
+        Sun, 21 Nov 2021 01:01:30 -0800 (PST)
+Received: from localhost ([103.99.179.247])
+        by smtp.gmail.com with ESMTPSA id lp12sm4320990pjb.24.2021.11.21.01.01.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Nov 2021 01:01:29 -0800 (PST)
+Date:   Sun, 21 Nov 2021 17:01:20 +0800
+From:   Calvin Zhang <calvinzhang.cool@gmail.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Rich Felker <dalias@libc.org>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Vladimir Isaev <isaev@synopsys.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        "Kirill A. Shutemov" <kirill.shtuemov@linux.intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Marc Zyngier <maz@kernel.org>,
+        David Brazdil <dbrazdil@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        Jinyang He <hejinyang@loongson.cn>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Andreas Oetken <andreas.oetken@siemens.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Zhang Yunkai <zhang.yunkai@zte.com.cn>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Markus Elfring <elfring@users.sourceforge.net>,
+        Ganesh Goudar <ganeshgr@linux.ibm.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Alexandre Ghiti <alex@ghiti.fr>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauri Sandberg <sandberg@mailfence.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp, linux-mips@vger.kernel.org,
+        openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 0/2] of: remove reserved regions count restriction
+Message-ID: <YZoK4IiBOTPduEyN@debian>
+References: <20211119075844.2902592-1-calvinzhang.cool@gmail.com>
+ <YZnqo3oA7srQik4N@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211029114948.41841-2-david@ixit.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <YZnqo3oA7srQik4N@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 01:49:45PM +0200, David Heidelberg wrote:
-> No functional changes.
-> 
-> Adjust to comply with dt-schema requirements
-> and make possible to validate values.
-> 
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
->  arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 9 +++++----
->  arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts     | 2 +-
+On Sun, Nov 21, 2021 at 08:43:47AM +0200, Mike Rapoport wrote:
+>On Fri, Nov 19, 2021 at 03:58:17PM +0800, Calvin Zhang wrote:
+>> The count of reserved regions in /reserved-memory was limited because
+>> the struct reserved_mem array was defined statically. This series sorts
+>> out reserved memory code and allocates that array from early allocator.
+>> 
+>> Note: reserved region with fixed location must be reserved before any
+>> memory allocation. While struct reserved_mem array should be allocated
+>> after allocator is activated. We make early_init_fdt_scan_reserved_mem()
+>> do reservation only and add another call to initialize reserved memory.
+>> So arch code have to change for it.
+>
+>I think much simpler would be to use the same constant for sizing
+>memblock.reserved and reserved_mem arrays.
+>
+>If there is too much reserved regions in the device tree, reserving them in
+>memblock will fail anyway because memblock also starts with static array
+>for memblock.reserved, so doing one pass with memblock_reserve() and
+>another to set up reserved_mem wouldn't help anyway.
 
-You may want to split it per platform, so that corresponding platform
-maintainer can pick them up.
+Yes. This happens only if there are two many fixed reserved regions.
+memblock.reserved can be resized after paging.
 
-Shawn
+I also find another problem. Initializing dynamic reservation after
+paging would fail to mark it no-map because no-map flag works when doing
+direct mapping. This seems to be a circular dependency.
 
->  arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi     | 2 +-
->  arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts    | 5 +++--
->  4 files changed, 10 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-> index 86bdc0baf032..fbbcacf24f2e 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-> +++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-> @@ -52,10 +52,11 @@ gpio_fan: gpio-fan {
->  		gpios = <&gpio GPIODV_14 GPIO_ACTIVE_HIGH
->  			 &gpio GPIODV_15 GPIO_ACTIVE_HIGH>;
->  		/* Dummy RPM values since fan is optional */
-> -		gpio-fan,speed-map = <0 0
-> -				      1 1
-> -				      2 2
-> -				      3 3>;
-> +		gpio-fan,speed-map =
-> +				<0 0>,
-> +				<1 1>,
-> +				<2 2>,
-> +				<3 3>;
->  		#cooling-cells = <2>;
->  	};
->  
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts b/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts
-> index a3b9d615a3b4..e34045d10a12 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts
-> @@ -39,7 +39,7 @@ reg_usdhc2_vmmc: regulator-usdhc2-vmmc {
->  
->  	fan: gpio-fan {
->  		compatible = "gpio-fan";
-> -		gpio-fan,speed-map = <0 0 8600 1>;
-> +		gpio-fan,speed-map = <0 0>, <8600 1>;
->  		gpios = <&gpio3 5 GPIO_ACTIVE_HIGH>;
->  		#cooling-cells = <2>;
->  		pinctrl-names = "default";
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
-> index 46b0f97a0b1c..4af535866d1f 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
-> @@ -44,7 +44,7 @@ dc_12v: dc-12v {
->  	fan0: gpio-fan {
->  		#cooling-cells = <2>;
->  		compatible = "gpio-fan";
-> -		gpio-fan,speed-map = <0 0 3000 1>;
-> +		gpio-fan,speed-map = <0 0>, <3000 1>;
->  		gpios = <&gpio1 RK_PC2 GPIO_ACTIVE_HIGH>;
->  		status = "okay";
->  	};
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-> index 4d4b2a301b1a..8af3763daaba 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-> +++ b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-> @@ -30,8 +30,9 @@ gmac1_clkin: external-gmac1-clock {
->  	fan: gpio_fan {
->  		compatible = "gpio-fan";
->  		gpios = <&gpio0 RK_PD5 GPIO_ACTIVE_HIGH>;
-> -		gpio-fan,speed-map = <0    0
-> -				      4500 1>;
-> +		gpio-fan,speed-map =
-> +				<   0 0>,
-> +				<4500 1>;
->  		#cooling-cells = <2>;
->  	};
->  
-> -- 
-> 2.33.0
-> 
+Thank You,
+Calvin
