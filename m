@@ -2,469 +2,395 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF86C458575
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 18:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34903458579
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 18:32:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238518AbhKURdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 12:33:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238444AbhKURdN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 12:33:13 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 971CEC061574;
-        Sun, 21 Nov 2021 09:30:08 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id n15so14489497qta.0;
-        Sun, 21 Nov 2021 09:30:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ia8p8wbWqDBltqeZQzzSvYFrlNq98f2IDOwCAG1SWso=;
-        b=Q4BDrWOQjkeIdJYurGqVU5Lxter2VIYtO6o7QRvBRo8qXsNf87XE9qa20brCtO5z3o
-         LftHPlIF4pTBE467hAIurR0TRCR4sian1hd+fV+0viUyGATAF0Fqi26VXggbuRzlg5pm
-         NknnZXecnyf284i7lMEXO624/Sknuo3gabv9uhS82nrT90G7Y/FpezJP7jXlTCNUEcY4
-         hpjvOrB5sefw8sVBKYVuCwdOmQjzpabPzVMoPUOMWtb/NnXuu0eKxsrpKIHMsBI1ZLO6
-         EMl4F51eBtYetroOaFao4efkNHDPEQU0V9DCmabDM/HGeUUZ9vzC0OATTVZ4KGPXf8+L
-         myjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ia8p8wbWqDBltqeZQzzSvYFrlNq98f2IDOwCAG1SWso=;
-        b=49MhFTsF+5H0QXxH29GpPcDVx9nkcanP5Z31WZV6pYCSfwr7Azbt4irimE8qDIevOc
-         osvUpO8pWZ/qnCl2+/6CTgdkvFLoaTN0L2NIYgg2QzTHy5fgUiDANahoRCb+cS7GioKB
-         4smPmES1Uk6eG/R+svt1iO3hEAcZtsCH+zEOGIHbXGIItM6T/CVLhnFBlTK5sYo5lta1
-         PgGAvpyl85K+LemlZAWzdxSczPoeawrwdqkJTZo4cIvviNwr3O5EqcLDZpV2Ns1kDfoB
-         MkM/UCcA04m8bUlSNJXtV8VfGZu65C9UKk/+dtrdin6GTHILvJbTlOjKmrcFduOogrn+
-         Eegw==
-X-Gm-Message-State: AOAM533Teb+Ib0dKvGG8wfgo9sICWM5eR95eXi8LW9FoiO3HD9MmEIRz
-        KHNlU/oPgCwwYPZUOkVgTqs=
-X-Google-Smtp-Source: ABdhPJzSqFrqhZEde6qXijcw6vDjRqx4v6mTEJ/53+B4gxg5mSfdN5OXQ6QhntqFBYjZtaAeBYYk2g==
-X-Received: by 2002:ac8:4e96:: with SMTP id 22mr25189902qtp.76.1637515807441;
-        Sun, 21 Nov 2021 09:30:07 -0800 (PST)
-Received: from shaak (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id p10sm3233131qtw.97.2021.11.21.09.30.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Nov 2021 09:30:06 -0800 (PST)
-Date:   Sun, 21 Nov 2021 12:30:04 -0500
-From:   Liam Beguin <liambeguin@gmail.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     peda@axentia.se, lars@metafoo.de, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org
-Subject: Re: [PATCH v9 00/14] iio: afe: add temperature rescaling support
-Message-ID: <YZqCHE4K+oqR7vNj@shaak>
-References: <20211115034334.1713050-1-liambeguin@gmail.com>
- <20211121112556.2b5b161c@jic23-huawei>
+        id S238538AbhKURf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 12:35:29 -0500
+Received: from mail-db8eur05on2080.outbound.protection.outlook.com ([40.107.20.80]:8512
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238384AbhKURf2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 12:35:28 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dhuyyjZDmLWs7dblzaR4iSiM2quMpSKoL3BjZ7Demgnuk6NJ1JKZSS96s+1+6HNgerIcdEA05E1jOuQmGlB7YjuF2aXu4AViEBDG2gdlGL6MnN5ooREB/cdy9oSNxhJd2GoIANC3YwUGbL6ZqGHBuW++zf01+nzs/ZoqSLExs7hRLoIJeYsEQNHn1I0erJtFxCWQOa02+jKveZqpn52aHbfITCPhdYpwp6lg8p9I8N9/kkCS8O8gq/M1WSAGB91ATmexBBH2X10yuUOqGqeNETlWVSAi0vexHcMx5ZFxNa47Goo+60Z/17QMcIYmYTaj7dqcbDoJ3Kpg8QXHQH1Hzw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vwD0TfYAx64ClL2wn/xkr0myzxjgKB4vaxmtauJfq0E=;
+ b=miReAJppZiTX5eD3nwQvj5DG50yAPV0CKs2kCNj695lqPi8hpvGIV39E4mTJnfLfxIV8U0ZjY5MW8Re113g71TxiChkOo8PxuiQygoulOHhXUmvUyhQTWWnMUQZefCbuSCawnKVgBpfBYSAOhFLglAkq6mdvUES1Je6/asrNdYG1oOuDWVLnofKdZf8ZNDZ4UjAfPvmWIUPKtRK3DNcR7cLJiKcMOB2wH9MxMvHOrJ60kD6PMw88RF0mUsOPG+3qZOJ7METCEjKDpPKUhq6DLdd/3vpXrZ6eeN2XaFxQipmQ16ils2cGpMBRz7tiMooqeVyOTpdHEsQ4HV9ArmBWyw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vwD0TfYAx64ClL2wn/xkr0myzxjgKB4vaxmtauJfq0E=;
+ b=PGXUX1HTeuw6Ev5/yeCbpgOTox3jAJr30N5ucrD/w7oPmTiVLeREVdJdAves52usYZBmCz+t3Rnao3ouUeWD5lUHVrHkR/o11mNgwg5ga9eMrMWbmOKI3+FkoyqIRV7oVw/ik1jGTSYzmSSWz9HztHNBQVZcwnCmQbITE5jdCvM=
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VI1PR04MB4221.eurprd04.prod.outlook.com (2603:10a6:803:3e::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Sun, 21 Nov
+ 2021 17:32:20 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::e4ed:b009:ae4:83c5]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::e4ed:b009:ae4:83c5%7]) with mapi id 15.20.4713.024; Sun, 21 Nov 2021
+ 17:32:20 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Colin Foster <colin.foster@in-advantage.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>
+Subject: Re: [PATCH v1 net-next 1/3] net: mdio: mscc-miim: convert to a regmap
+ implementation
+Thread-Topic: [PATCH v1 net-next 1/3] net: mdio: mscc-miim: convert to a
+ regmap implementation
+Thread-Index: AQHX3Y3zJU4Db2KQ/UW5dFvidIRhsawOQFuA
+Date:   Sun, 21 Nov 2021 17:32:19 +0000
+Message-ID: <20211121173219.bewdatfn5uwfeicf@skbuf>
+References: <20211119213918.2707530-1-colin.foster@in-advantage.com>
+ <20211119213918.2707530-2-colin.foster@in-advantage.com>
+In-Reply-To: <20211119213918.2707530-2-colin.foster@in-advantage.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 18acd173-c1f6-4db2-6730-08d9ad14def8
+x-ms-traffictypediagnostic: VI1PR04MB4221:
+x-microsoft-antispam-prvs: <VI1PR04MB4221670B06EA05D4A923484DE09E9@VI1PR04MB4221.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:901;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 5b0tUwNjqfHBkMoKOAfsZAqd/+/8O8/DvN2huVfurLlEPAKyc6ojixa2Y0qQoZ1dOaGmlfSg0lBQ9AeMfx8D8RpqE6FujkKzx8zU4N4n/nsT1lQyBOQhpHbAJpzxuKyRqW4AhhnEwNzAUILrcOa+plD3rwf7GV4CZSwOiffjySY+idfeelenTh3pW3I8zxqbzMluw9TDQS84WTnqQdowk+o0vyPt5a7JlxOHJZrlgXMljtEDumKOb039NcXcag1rkvoTEd4+9CDLNiEJdIuYuyxT6n7+vrhKqLsX/4As4spfojmXxH4U33x8s7WA0kfunDC7SBg+0w8XpaR4Xn3gwFGvAWmGtyYj7beye5u5gIv3FvZnz2oV0SoqdOyrEcFGEMISnmlw+BCgpbVD5ywDa6vn6KLYzJVJNuICkZzle2P3ns0FQjenB3YzaOLQLpxTtkINRb35VwigWUv70TIVbVeM636YOnGv+PiXfkYi6u1B2CYAs9K6Sxmvz/I/7KjTK0qK/TaJP8COxA8vZjkdNYlkqHtNbI5dnhnkVct60EgGGK/K2g2ClblvKC4JZ1Py9Sw1jabmRgg2u92wT36RqPQZAeD0PcRqZaKPcbVgHWEcRzN7OZ0kspZ+U/ga58H/1Tj2UGHppJisrn/1zpqWMHv2vohiLg8dL7cQm9qw5yal4KDnN5hxrIvgZmDuzIH93/JPSNdr/xQKsw2Xlebt5A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(33716001)(6916009)(316002)(4326008)(6506007)(186003)(122000001)(9686003)(2906002)(38100700002)(6512007)(83380400001)(71200400001)(508600001)(7416002)(6486002)(66446008)(44832011)(66476007)(66556008)(38070700005)(86362001)(5660300002)(91956017)(76116006)(54906003)(8936002)(66946007)(26005)(1076003)(64756008)(8676002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?nPDmfrXpy+ivT10uCx45oN8WcISW7GavLTwEMy8ltdTDLJmuiFoIwZW9O3HD?=
+ =?us-ascii?Q?qVfdwBm/QgtdvCzM3aVkO3/7N+kXHyiafzPXUV7+bJSGyLjk376qJuidRfkC?=
+ =?us-ascii?Q?bF0q6wfc5JhCbVkeAFcCS+awIWN9+aCeZK5Yy/R2DTBb+/iEkQ7qO6UHTIvN?=
+ =?us-ascii?Q?zxoGISZUgXYbE+yUswsNXw9F455/Qw/qlt2egYgb1sSU1uTNmx1r4v8xS4vh?=
+ =?us-ascii?Q?2bd3KwMvaCs19t+p1WS8jtr7gE4SRTVIuAkfwIbufmiIBQz4X9PZJlM+7K1c?=
+ =?us-ascii?Q?+5nI9oBYUoSbJXnUSHtoh7kiy1tYMr03uUznbXBygKlaQG0Z5ANtaVberTP4?=
+ =?us-ascii?Q?4YcCXSY6xz8PUqj15+EsxWwMtAsxnbNBcoqs7OtyQvzhdtQNY9ekhZMHR5cT?=
+ =?us-ascii?Q?sooZNmidq9fxwAzez03rStM3RQtaarn6upvRyb7/r6aH+s3EHWWlGShH2bBR?=
+ =?us-ascii?Q?OLkao8CJQN6CvgrR9zIpi4f4qqlQHAnLKTI6rKrZVBNicYXboY8rlJQwV0kJ?=
+ =?us-ascii?Q?1g3WVo/ZQQuOjCZPWy8Nwobdeadn2fC7yCfjg9R6LtBcV+/58M/k/0XyBE5D?=
+ =?us-ascii?Q?Za4WdA4GrMODXZFogXFSh/W2z0l29ZtOv8NTQP+Lf9I2kvI4aggjJeheVPcH?=
+ =?us-ascii?Q?oCZnOu/6CrCCn5uDUd2YAKFQYhgH8urIy8FWo39MBviczY+5Dr0ZTWn8rY0j?=
+ =?us-ascii?Q?8r+ohQxmUzkcEJjeWsGJsc3muW1Mw1+MX80D23dPEpcDr8xn2oE2u1g/zDl2?=
+ =?us-ascii?Q?HgkOfKEjk1vsDJvRBPKtL8KjZZ1Sw2z72zP75MMR3KdqYxmUhXlBiwiJ8E1W?=
+ =?us-ascii?Q?XuZ4bcaAh/PjD6QYclqzyfSyLGKy+arU6DCsuDF9+JoZtbdsrypd+tmF6u/n?=
+ =?us-ascii?Q?AkxNcwS7eTusXO2tt9lJ/WDePuzssGdBr8o7hGgtX/drCVpaFf2o5eYZvim7?=
+ =?us-ascii?Q?UGZPpPD9hSe6/CK/0VfpRTiUmzGlhQo1lKgcdnEP08NO6Wg+Yf8eNAY/XScz?=
+ =?us-ascii?Q?JplszrrGaxNw9WSMcsqQpMNMlSnJ0JAcY6AoyNGZoAVF7CCBYYVcRDrb7gMo?=
+ =?us-ascii?Q?YHommjmaT+dguQ4HLON+q3SfJqMTtyi+kiWqNZBiQwmK57JjKNZHiF5VK9SQ?=
+ =?us-ascii?Q?korb8ClBbp755lY5WXCaUCU7T1GHaR69mrzj2epthBVZR1TfliJ3y/jUqbXm?=
+ =?us-ascii?Q?Lj6QUy6p2XoP1qkD9JcxWtr8D88a7YdrccPJAZaADCF6bwZAvLeLwUQmMj6N?=
+ =?us-ascii?Q?xvJU3hj35xW8tnAF5yWdroBNLBhYnpqVcZzmrNoLz5EMO5u4KZrI21k8R8Un?=
+ =?us-ascii?Q?4VnoNiLw0ffBPFc7q3lp0vCUTXiANQMYX1uqAfZgt2AdCGTEVLzqNisRYDsC?=
+ =?us-ascii?Q?rF1BXKLdeJpChQfRMP2TS3UzayxIYcl9ZoFq5EneWT5i88MSfMizu13Os2EO?=
+ =?us-ascii?Q?w/5sMIApK4pDJllGBfnTuzE2gEhApS55gI/QGz3skZS/zxfliz8aEp8fF7Hy?=
+ =?us-ascii?Q?tuDln5Lrt/qOYZJkYlJi48uPbf3EwouLnSzYI+Lh1PqTwf02Dww0fRy6q6I1?=
+ =?us-ascii?Q?QC5xm3Y4ihPIZOCnoAKBDQA1UL0CFS1ZmViXi9qH0c5bbnfpVUz1gBMssy7o?=
+ =?us-ascii?Q?YjdUR31Bp2x6d03EiaRmyow=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <5CC69866DFA68E45ACC8776451B255FA@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211121112556.2b5b161c@jic23-huawei>
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 18acd173-c1f6-4db2-6730-08d9ad14def8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Nov 2021 17:32:20.0049
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: fUfSBuglaBF1t00cSJfBxc68QmfTn/Jwa4rIyFgSEhhYeRDLP4qY1PK0BcHDTNN3xN6BLazP7tIdAsv4OAAfWQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4221
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 21, 2021 at 11:25:56AM +0000, Jonathan Cameron wrote:
-> On Sun, 14 Nov 2021 22:43:20 -0500
-> Liam Beguin <liambeguin@gmail.com> wrote:
-> 
-> > Hi Jonathan, Peter,
-> > 
-> > Apologies for not getting back to you sooner. I got caught up on other
-> > work and wasn't able to dedicate time to this earlier. Hopefully, this
-> > time around, I'll be able to get this to the finish line :-)
-> > 
-> > I left out IIO_VAL_INT overflows for now, so that I can focus on getting
-> > the rest of these changes pulled in, but I don't mind adding a patch for
-> > that later on.
-> > 
-> > This series focuses on adding temperature rescaling support to the IIO
-> > Analog Front End (AFE) driver.
-> > 
-> > The first few patches address minor bugs in IIO inkernel functions, and
-> > prepare the AFE driver for the additional features.
-> > 
-> > The main changes to the AFE driver include an initial Kunit test suite,
-> > support for IIO_VAL_INT_PLUS_{NANO,MICRO} scales, and support for RTDs
-> > and temperature transducer sensors.
-> > 
-> > Thanks for your time,
-> > Liam
-> 
-> Hi Liam,
+On Fri, Nov 19, 2021 at 01:39:16PM -0800, Colin Foster wrote:
+> Utilize regmap instead of __iomem to perform indirect mdio access. This
+> will allow for custom regmaps to be used by way of the mscc_miim_setup
+> function.
+>=20
+> Signed-off-by: Colin Foster <colin.foster@in-advantage.com>
+> ---
+>  drivers/net/mdio/mdio-mscc-miim.c | 150 +++++++++++++++++++++---------
+>  1 file changed, 105 insertions(+), 45 deletions(-)
+>=20
+> diff --git a/drivers/net/mdio/mdio-mscc-miim.c b/drivers/net/mdio/mdio-ms=
+cc-miim.c
+> index 17f98f609ec8..f55ad20c28d5 100644
+> --- a/drivers/net/mdio/mdio-mscc-miim.c
+> +++ b/drivers/net/mdio/mdio-mscc-miim.c
+> @@ -14,6 +14,7 @@
+>  #include <linux/of_mdio.h>
+>  #include <linux/phy.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> =20
+>  #define MSCC_MIIM_REG_STATUS		0x0
+>  #define		MSCC_MIIM_STATUS_STAT_PENDING	BIT(2)
+> @@ -35,37 +36,47 @@
+>  #define MSCC_PHY_REG_PHY_STATUS	0x4
+> =20
+>  struct mscc_miim_dev {
+> -	void __iomem *regs;
+> -	void __iomem *phy_regs;
+> +	struct regmap *regs;
+> +	struct regmap *phy_regs;
+>  };
+> =20
+>  /* When high resolution timers aren't built-in: we can't use usleep_rang=
+e() as
+>   * we would sleep way too long. Use udelay() instead.
+>   */
+> -#define mscc_readl_poll_timeout(addr, val, cond, delay_us, timeout_us)	\
+> -({									\
+> -	if (!IS_ENABLED(CONFIG_HIGH_RES_TIMERS))			\
+> -		readl_poll_timeout_atomic(addr, val, cond, delay_us,	\
+> -					  timeout_us);			\
+> -	readl_poll_timeout(addr, val, cond, delay_us, timeout_us);	\
+> +#define mscc_readx_poll_timeout(op, addr, val, cond, delay_us, timeout_u=
+s)\
+> +({									  \
+> +	if (!IS_ENABLED(CONFIG_HIGH_RES_TIMERS))			  \
+> +		readx_poll_timeout_atomic(op, addr, val, cond, delay_us,  \
+> +					  timeout_us);			  \
+> +	readx_poll_timeout(op, addr, val, cond, delay_us, timeout_us);	  \
+>  })
+> =20
+> -static int mscc_miim_wait_ready(struct mii_bus *bus)
+> +static int mscc_miim_status(struct mii_bus *bus)
+>  {
+>  	struct mscc_miim_dev *miim =3D bus->priv;
+> +	int val, err;
+> +
+> +	err =3D regmap_read(miim->regs, MSCC_MIIM_REG_STATUS, &val);
+> +	if (err < 0)
+> +		WARN_ONCE(1, "mscc miim status read error %d\n", err);
+> +
+> +	return val;
+> +}
+> +
+> +static int mscc_miim_wait_ready(struct mii_bus *bus)
+> +{
+>  	u32 val;
+> =20
+> -	return mscc_readl_poll_timeout(miim->regs + MSCC_MIIM_REG_STATUS, val,
+> +	return mscc_readx_poll_timeout(mscc_miim_status, bus, val,
+>  				       !(val & MSCC_MIIM_STATUS_STAT_BUSY), 50,
+>  				       10000);
+>  }
+> =20
+>  static int mscc_miim_wait_pending(struct mii_bus *bus)
+>  {
+> -	struct mscc_miim_dev *miim =3D bus->priv;
+>  	u32 val;
+> =20
+> -	return mscc_readl_poll_timeout(miim->regs + MSCC_MIIM_REG_STATUS, val,
+> +	return mscc_readx_poll_timeout(mscc_miim_status, bus, val,
+>  				       !(val & MSCC_MIIM_STATUS_STAT_PENDING),
+>  				       50, 10000);
+>  }
+> @@ -73,22 +84,30 @@ static int mscc_miim_wait_pending(struct mii_bus *bus=
+)
+>  static int mscc_miim_read(struct mii_bus *bus, int mii_id, int regnum)
+>  {
+>  	struct mscc_miim_dev *miim =3D bus->priv;
+> +	int ret, err;
+>  	u32 val;
+> -	int ret;
+> =20
+>  	ret =3D mscc_miim_wait_pending(bus);
+>  	if (ret)
+>  		goto out;
+> =20
+> -	writel(MSCC_MIIM_CMD_VLD | (mii_id << MSCC_MIIM_CMD_PHYAD_SHIFT) |
+> -	       (regnum << MSCC_MIIM_CMD_REGAD_SHIFT) | MSCC_MIIM_CMD_OPR_READ,
+> -	       miim->regs + MSCC_MIIM_REG_CMD);
+> +	err =3D regmap_write(miim->regs, MSCC_MIIM_REG_CMD, MSCC_MIIM_CMD_VLD |
+> +			   (mii_id << MSCC_MIIM_CMD_PHYAD_SHIFT) |
+> +			   (regnum << MSCC_MIIM_CMD_REGAD_SHIFT) |
+> +			   MSCC_MIIM_CMD_OPR_READ);
+> +
+> +	if (err < 0)
+> +		WARN_ONCE(1, "mscc miim write cmd reg error %d\n", err);
+> =20
+>  	ret =3D mscc_miim_wait_ready(bus);
+>  	if (ret)
+>  		goto out;
+> =20
+> -	val =3D readl(miim->regs + MSCC_MIIM_REG_DATA);
+> +	err =3D regmap_read(miim->regs, MSCC_MIIM_REG_DATA, &val);
+> +
+> +	if (err < 0)
+> +		WARN_ONCE(1, "mscc miim read data reg error %d\n", err);
+> +
+>  	if (val & MSCC_MIIM_DATA_ERROR) {
+>  		ret =3D -EIO;
+>  		goto out;
+> @@ -103,18 +122,20 @@ static int mscc_miim_write(struct mii_bus *bus, int=
+ mii_id,
+>  			   int regnum, u16 value)
+>  {
+>  	struct mscc_miim_dev *miim =3D bus->priv;
+> -	int ret;
+> +	int err, ret;
+> =20
+>  	ret =3D mscc_miim_wait_pending(bus);
+>  	if (ret < 0)
+>  		goto out;
+> =20
+> -	writel(MSCC_MIIM_CMD_VLD | (mii_id << MSCC_MIIM_CMD_PHYAD_SHIFT) |
+> -	       (regnum << MSCC_MIIM_CMD_REGAD_SHIFT) |
+> -	       (value << MSCC_MIIM_CMD_WRDATA_SHIFT) |
+> -	       MSCC_MIIM_CMD_OPR_WRITE,
+> -	       miim->regs + MSCC_MIIM_REG_CMD);
+> +	err =3D regmap_write(miim->regs, MSCC_MIIM_REG_CMD, MSCC_MIIM_CMD_VLD |
+> +			   (mii_id << MSCC_MIIM_CMD_PHYAD_SHIFT) |
+> +			   (regnum << MSCC_MIIM_CMD_REGAD_SHIFT) |
+> +			   (value << MSCC_MIIM_CMD_WRDATA_SHIFT) |
+> +			   MSCC_MIIM_CMD_OPR_WRITE);
+> =20
+> +	if (err < 0)
+> +		WARN_ONCE(1, "mscc miim write error %d\n", err);
+>  out:
+>  	return ret;
+>  }
+> @@ -122,24 +143,35 @@ static int mscc_miim_write(struct mii_bus *bus, int=
+ mii_id,
+>  static int mscc_miim_reset(struct mii_bus *bus)
+>  {
+>  	struct mscc_miim_dev *miim =3D bus->priv;
+> +	int err;
+> =20
+>  	if (miim->phy_regs) {
+> -		writel(0, miim->phy_regs + MSCC_PHY_REG_PHY_CFG);
+> -		writel(0x1ff, miim->phy_regs + MSCC_PHY_REG_PHY_CFG);
+> +		err =3D regmap_write(miim->phy_regs, MSCC_PHY_REG_PHY_CFG, 0);
+> +		if (err < 0)
+> +			WARN_ONCE(1, "mscc reset set error %d\n", err);
+> +
+> +		err =3D regmap_write(miim->phy_regs, MSCC_PHY_REG_PHY_CFG, 0x1ff);
+> +		if (err < 0)
+> +			WARN_ONCE(1, "mscc reset clear error %d\n", err);
+> +
+>  		mdelay(500);
+>  	}
+> =20
+>  	return 0;
+>  }
+> =20
+> -static int mscc_miim_probe(struct platform_device *pdev)
+> +static const struct regmap_config mscc_miim_regmap_config =3D {
+> +	.reg_bits	=3D 32,
+> +	.val_bits	=3D 32,
+> +	.reg_stride	=3D 4,
+> +};
+> +
+> +static int mscc_miim_setup(struct device *dev, struct mii_bus *bus,
+> +			   struct regmap *mii_regmap, struct regmap *phy_regmap)
+>  {
+> -	struct mscc_miim_dev *dev;
+> -	struct resource *res;
+> -	struct mii_bus *bus;
+> -	int ret;
+> +	struct mscc_miim_dev *miim;
+> =20
+> -	bus =3D devm_mdiobus_alloc_size(&pdev->dev, sizeof(*dev));
+> +	bus =3D devm_mdiobus_alloc_size(dev, sizeof(*miim));
+>  	if (!bus)
+>  		return -ENOMEM;
+> =20
+> @@ -147,26 +179,54 @@ static int mscc_miim_probe(struct platform_device *=
+pdev)
+>  	bus->read =3D mscc_miim_read;
+>  	bus->write =3D mscc_miim_write;
+>  	bus->reset =3D mscc_miim_reset;
+> -	snprintf(bus->id, MII_BUS_ID_SIZE, "%s-mii", dev_name(&pdev->dev));
+> -	bus->parent =3D &pdev->dev;
+> +	snprintf(bus->id, MII_BUS_ID_SIZE, "%s-mii", dev_name(dev));
+> +	bus->parent =3D dev;
+> +
+> +	miim =3D bus->priv;
+> +
+> +	miim->regs =3D mii_regmap;
+> +	miim->phy_regs =3D phy_regmap;
+> +
+> +	return 0;
+> +}
+> =20
+> -	dev =3D bus->priv;
+> -	dev->regs =3D devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
+> -	if (IS_ERR(dev->regs)) {
+> +static int mscc_miim_probe(struct platform_device *pdev)
+> +{
+> +	struct regmap *mii_regmap, *phy_regmap;
+> +	void __iomem *regs, *phy_regs;
+> +	struct mscc_miim_dev *dev;
+> +	struct mii_bus *bus;
+> +	int ret;
+> +
+> +	regs =3D devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
+> +	if (IS_ERR(regs)) {
+>  		dev_err(&pdev->dev, "Unable to map MIIM registers\n");
+> -		return PTR_ERR(dev->regs);
+> +		return PTR_ERR(regs);
+>  	}
+> =20
+> -	/* This resource is optional */
+> -	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 1);
+> -	if (res) {
+> -		dev->phy_regs =3D devm_ioremap_resource(&pdev->dev, res);
+> -		if (IS_ERR(dev->phy_regs)) {
+> -			dev_err(&pdev->dev, "Unable to map internal phy registers\n");
+> -			return PTR_ERR(dev->phy_regs);
+> -		}
+> +	mii_regmap =3D devm_regmap_init_mmio(&pdev->dev, regs,
+> +					   &mscc_miim_regmap_config);
+> +
+> +	if (IS_ERR(mii_regmap)) {
+> +		dev_err(&pdev->dev, "Unable to create MIIM regmap\n");
+> +		return PTR_ERR(mii_regmap);
+>  	}
+> =20
+> +	phy_regs =3D devm_platform_ioremap_resource(pdev, 1);
+> +	if (IS_ERR(dev->phy_regs)) {
+> +		dev_err(&pdev->dev, "Unable to map internal phy registers\n");
+> +		return PTR_ERR(dev->phy_regs);
+> +	}
+> +
+> +	phy_regmap =3D devm_regmap_init_mmio(&pdev->dev, phy_regs,
+> +					   &mscc_miim_regmap_config);
+> +	if (IS_ERR(phy_regmap)) {
+> +		dev_err(&pdev->dev, "Unable to create phy register regmap\n");
+> +		return PTR_ERR(dev->phy_regs);
+> +	}
+> +
+> +	mscc_miim_setup(&pdev->dev, bus, mii_regmap, phy_regmap);
 
-Hi Jonathan,
+You're ignoring potential errors here.
 
-> I'm fine with these.  The comment about using the MICRO etc defines can
-> be handled as as trivial follow up patch. Hopefully someone else can
-> figure out the 0-day build issue as I didn't managed to.
-
-I'll prepare the MICRO, NANO changes if we have a v10, otherwise I'll
-send them as a follow up patch as you suggest.
-
-I'll also try to find more time to dig more into that 0-day build issue.
-
-> However, I've long ago lost track of the various precision discussions
-> you and Peter were having so would like Peter's input before taking these.
-
-That's my fault, apologies for letting this sit for so long.
-
-> Thanks again for your persistence with this,
-
-No worries, thanks for your patience :)
-
-Cheers,
-Liam
-
-> 
-> Jonathan
-> 
-> > 
-> > Changes since v8:
-> > - reword comment
-> > - fix erroneous 64-bit division
-> > - optimize and use 32-bit divisions when values are know to not overflow
-> > - keep IIO_VAL_FRACTIONAL scale when possible, if not default to fixed
-> >   point
-> > - add test cases
-> > - use nano precision in test cases
-> > - simplify offset calculation in rtd_props()
-> > 
-> > Changes since v7:
-> > - drop gcd() logic in rescale_process_scale()
-> > - use div_s64() instead of do_div() for signed 64-bit divisions
-> > - combine IIO_VAL_FRACTIONAL and IIO_VAL_FRACTIONAL_LOG2 scale cases
-> > - switch to INT_PLUS_NANO when accuracy is lost with FRACTIONAL scales
-> > - rework test logic to allow for small relative error
-> > - rename test variables to align error output messages
-> > 
-> > Changes since v6:
-> > - rework IIO_VAL_INT_PLUS_{NANO,MICRO} based on Peter's suggestion
-> > - combine IIO_VAL_INT_PLUS_{NANO,MICRO} cases
-> > - add test cases for negative IIO_VAL_INT_PLUS_{NANO,MICRO} corner cases
-> > - force use of positive integers with gcd()
-> > - reduce risk of integer overflow in IIO_VAL_FRACTIONAL_LOG2
-> > - fix duplicate symbol build error
-> > - apply Reviewed-by
-> > 
-> > Changes since v5:
-> > - add include/linux/iio/afe/rescale.h
-> > - expose functions use to process scale and offset
-> > - add basic iio-rescale kunit test cases
-> > - fix integer overflow case
-> > - improve precision for IIO_VAL_FRACTIONAL_LOG2
-> > 
-> > Changes since v4:
-> > - only use gcd() when necessary in overflow mitigation
-> > - fix INT_PLUS_{MICRO,NANO} support
-> > - apply Reviewed-by
-> > - fix temperature-transducer bindings
-> > 
-> > Changes since v3:
-> > - drop unnecessary fallthrough statements
-> > - drop redundant local variables in some calculations
-> > - fix s64 divisions on 32bit platforms by using do_div
-> > - add comment describing iio-rescaler offset calculation
-> > - drop unnecessary MAINTAINERS entry
-> > 
-> > Changes since v2:
-> > - don't break implicit offset truncations
-> > - make a best effort to get a valid value for fractional types
-> > - drop return value change in iio_convert_raw_to_processed_unlocked()
-> > - don't rely on processed value for offset calculation
-> > - add INT_PLUS_{MICRO,NANO} support in iio-rescale
-> > - revert generic implementation in favor of temperature-sense-rtd and
-> >   temperature-transducer
-> > - add separate section to MAINTAINERS file
-> > 
-> > Changes since v1:
-> > - rebase on latest iio `testing` branch
-> > - also apply consumer scale on integer channel scale types
-> > - don't break implicit truncation in processed channel offset
-> >   calculation
-> > - drop temperature AFE flavors in favor of a simpler generic
-> >   implementation
-> > 
-> > Liam Beguin (14):
-> >   iio: inkern: apply consumer scale on IIO_VAL_INT cases
-> >   iio: inkern: apply consumer scale when no channel scale is available
-> >   iio: inkern: make a best effort on offset calculation
-> >   iio: afe: rescale: expose scale processing function
-> >   iio: afe: rescale: add INT_PLUS_{MICRO,NANO} support
-> >   iio: afe: rescale: add offset support
-> >   iio: afe: rescale: use s64 for temporary scale calculations
-> >   iio: afe: rescale: reduce risk of integer overflow
-> >   iio: afe: rescale: fix accuracy for small fractional scales
-> >   iio: test: add basic tests for the iio-rescale driver
-> >   iio: afe: rescale: add RTD temperature sensor support
-> >   iio: afe: rescale: add temperature transducers
-> >   dt-bindings: iio: afe: add bindings for temperature-sense-rtd
-> >   dt-bindings: iio: afe: add bindings for temperature transducers
-> > 
-> >  .../iio/afe/temperature-sense-rtd.yaml        | 101 +++
-> >  .../iio/afe/temperature-transducer.yaml       | 114 +++
-> >  drivers/iio/afe/iio-rescale.c                 | 271 ++++++-
-> >  drivers/iio/inkern.c                          |  40 +-
-> >  drivers/iio/test/Kconfig                      |  10 +
-> >  drivers/iio/test/Makefile                     |   1 +
-> >  drivers/iio/test/iio-test-rescale.c           | 705 ++++++++++++++++++
-> >  include/linux/iio/afe/rescale.h               |  34 +
-> >  8 files changed, 1232 insertions(+), 44 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/iio/afe/temperature-sense-rtd.yaml
-> >  create mode 100644 Documentation/devicetree/bindings/iio/afe/temperature-transducer.yaml
-> >  create mode 100644 drivers/iio/test/iio-test-rescale.c
-> >  create mode 100644 include/linux/iio/afe/rescale.h
-> > 
-> > Range-diff against v8:
-> >  1:  42a7a1047edc =  1:  ae3cc93baee6 iio: inkern: apply consumer scale on IIO_VAL_INT cases
-> >  2:  a1cd89fdad11 =  2:  06f66e7f7403 iio: inkern: apply consumer scale when no channel scale is available
-> >  3:  ed0721fb6bd1 =  3:  2dbf6b3bbaeb iio: inkern: make a best effort on offset calculation
-> >  4:  f8fb78bb1112 =  4:  b083cf307268 iio: afe: rescale: expose scale processing function
-> >  5:  504b7a3f830b !  5:  a0bde29ecc8c iio: afe: rescale: add INT_PLUS_{MICRO,NANO} support
-> >     @@ drivers/iio/afe/iio-rescale.c: int rescale_process_scale(struct rescale *rescale
-> >      +		else
-> >      +			mult = 1000000LL;
-> >      +		/*
-> >     -+		 * For IIO_VAL_INT_PLUS_{MICRO,NANO} scale types if *val OR
-> >     -+		 * *val2 is negative the schan scale is negative
-> >     ++		 * For IIO_VAL_INT_PLUS_{MICRO,NANO} scale types if either *val
-> >     ++		 * OR *val2 is negative the schan scale is negative, i.e.
-> >     ++		 * *val = 1 and *val2 = -0.5 yields -1.5 not -0.5.
-> >      +		 */
-> >      +		neg = *val < 0 || *val2 < 0;
-> >      +
-> >  6:  c254e9ae813e =  6:  c3d0e6248033 iio: afe: rescale: add offset support
-> >  7:  ee8814d6abe4 =  7:  2a81fa735103 iio: afe: rescale: use s64 for temporary scale calculations
-> >  8:  62cdcfbc9836 =  8:  8315548d0fce iio: afe: rescale: reduce risk of integer overflow
-> >  9:  88309a5136ee !  9:  223ed0569cd2 iio: afe: rescale: fix accuracy for small fractional scales
-> >     @@ drivers/iio/afe/iio-rescale.c: int rescale_process_scale(struct rescale *rescale
-> >      +
-> >      +		tmp = div_s64_rem(tmp, 1000000000LL, &rem);
-> >       		*val = tmp;
-> >     +-		return scale_type;
-> >     ++
-> >     ++		if (!rem)
-> >     ++			return scale_type;
-> >      +
-> >     -+		/*
-> >     -+		 * For small values, the approximation can be costly,
-> >     -+		 * change scale type to maintain accuracy.
-> >     -+		 *
-> >     -+		 * 100 vs. 10000000 NANO caps the error to about 100 ppm.
-> >     -+		 */
-> >      +		if (scale_type == IIO_VAL_FRACTIONAL)
-> >      +			tmp = *val2;
-> >      +		else
-> >      +			tmp = 1 << *val2;
-> >      +
-> >     -+		 if (abs(rem) > 10000000 && abs(*val / tmp) < 100) {
-> >     -+			 *val = div_s64_rem(*val, tmp, &rem2);
-> >     -+
-> >     -+			 *val2 = div_s64(rem, tmp);
-> >     -+			 if (rem2)
-> >     -+				 *val2 += div_s64(rem2 * 1000000000LL, tmp);
-> >     ++		rem2 = *val % (int)tmp;
-> >     ++		*val = *val / (int)tmp;
-> >      +
-> >     -+			 return IIO_VAL_INT_PLUS_NANO;
-> >     -+		 }
-> >     ++		*val2 = rem / (int)tmp;
-> >     ++		if (rem2)
-> >     ++			*val2 += div_s64((s64)rem2 * 1000000000LL, tmp);
-> >      +
-> >     - 		return scale_type;
-> >     ++		return IIO_VAL_INT_PLUS_NANO;
-> >       	case IIO_VAL_INT_PLUS_NANO:
-> >       	case IIO_VAL_INT_PLUS_MICRO:
-> >     + 		if (scale_type == IIO_VAL_INT_PLUS_NANO)
-> > 10:  fb505a9f42f1 ! 10:  90044efdf8be iio: test: add basic tests for the iio-rescale driver
-> >     @@ drivers/iio/test/Makefile
-> >       # Keep in alphabetical order
-> >      +obj-$(CONFIG_IIO_RESCALE_KUNIT_TEST) += iio-test-rescale.o ../afe/iio-rescale.o
-> >       obj-$(CONFIG_IIO_TEST_FORMAT) += iio-test-format.o
-> >     + CFLAGS_iio-test-format.o += $(DISABLE_STRUCTLEAK_PLUGIN)
-> >      
-> >       ## drivers/iio/test/iio-test-rescale.c (new) ##
-> >      @@
-> >     @@ drivers/iio/test/iio-test-rescale.c (new)
-> >      +	 * Use cases with small scales involving divisions
-> >      +	 */
-> >      +	{
-> >     ++		.name = "small IIO_VAL_FRACTIONAL, 261/509 scaled by 90/1373754273",
-> >     ++		.numerator = 261,
-> >     ++		.denominator = 509,
-> >     ++		.schan_scale_type = IIO_VAL_FRACTIONAL,
-> >     ++		.schan_val = 90,
-> >     ++		.schan_val2 = 1373754273,
-> >     ++		.expected = "0.000000033594",
-> >     ++	},
-> >     ++	{
-> >     ++		.name = "small IIO_VAL_FRACTIONAL, 90/1373754273 scaled by 261/509",
-> >     ++		.numerator = 90,
-> >     ++		.denominator = 1373754273,
-> >     ++		.schan_scale_type = IIO_VAL_FRACTIONAL,
-> >     ++		.schan_val = 261,
-> >     ++		.schan_val2 = 509,
-> >     ++		.expected = "0.000000033594",
-> >     ++	},
-> >     ++	{
-> >     ++		.name = "small IIO_VAL_FRACTIONAL, 760/1373754273 scaled by 427/2727",
-> >     ++		.numerator = 760,
-> >     ++		.denominator = 1373754273,
-> >     ++		.schan_scale_type = IIO_VAL_FRACTIONAL,
-> >     ++		.schan_val = 427,
-> >     ++		.schan_val2 = 2727,
-> >     ++		.expected = "0.000000086626",
-> >     ++	},
-> >     ++	{
-> >     ++		.name = "small IIO_VAL_FRACTIONAL, 761/1373754273 scaled by 427/2727",
-> >     ++		.numerator = 761,
-> >     ++		.denominator = 1373754273,
-> >     ++		.schan_scale_type = IIO_VAL_FRACTIONAL,
-> >     ++		.schan_val = 427,
-> >     ++		.schan_val2 = 2727,
-> >     ++		.expected = "0.000000086740",
-> >     ++	},
-> >     ++	{
-> >     ++		.name = "small IIO_VAL_FRACTIONAL, 5/32768 scaled by 3/10000",
-> >     ++		.numerator = 5,
-> >     ++		.denominator = 32768,
-> >     ++		.schan_scale_type = IIO_VAL_FRACTIONAL,
-> >     ++		.schan_val = 3,
-> >     ++		.schan_val2 = 10000,
-> >     ++		.expected = "0.0000000457763671875",
-> >     ++	},
-> >     ++	{
-> >      +		.name = "small IIO_VAL_FRACTIONAL, 0 < scale < 1",
-> >      +		.numerator = 6,
-> >      +		.denominator = 6,
-> >     @@ drivers/iio/test/iio-test-rescale.c (new)
-> >      +		.expected = "-1.3333333333333333",
-> >      +	},
-> >      +	{
-> >     ++		.name = "small IIO_VAL_FRACTIONAL_LOG2, 760/32768 scaled by 15/22",
-> >     ++		.numerator = 760,
-> >     ++		.denominator = 32768,
-> >     ++		.schan_scale_type = IIO_VAL_FRACTIONAL_LOG2,
-> >     ++		.schan_val = 15,
-> >     ++		.schan_val2 = 22,
-> >     ++		.expected = "0.000000082946",
-> >     ++	},
-> >     ++	{
-> >     ++		.name = "small IIO_VAL_FRACTIONAL_LOG2, 761/32768 scaled by 15/22",
-> >     ++		.numerator = 761,
-> >     ++		.denominator = 32768,
-> >     ++		.schan_scale_type = IIO_VAL_FRACTIONAL_LOG2,
-> >     ++		.schan_val = 15,
-> >     ++		.schan_val2 = 22,
-> >     ++		.expected = "0.000000083055",
-> >     ++	},
-> >     ++	{
-> >      +		.name = "small IIO_VAL_FRACTIONAL_LOG2, 0 < scale < 1",
-> >      +		.numerator = 16,
-> >      +		.denominator = 3,
-> >     @@ drivers/iio/test/iio-test-rescale.c (new)
-> >      +KUNIT_ARRAY_PARAM(iio_rescale_offset, offset_cases, case_to_desc);
-> >      +
-> >      +/**
-> >     -+ * iio_str_to_micro() - Parse a fixed-point string to get an
-> >     -+ *                      IIO_VAL_INT_PLUS_MICRO value
-> >     ++ * iio_str_to_nano() - Parse a fixed-point string to get an
-> >     ++ *                      IIO_VAL_INT_PLUS_NANO value
-> >      + * @str: The string to parse
-> >     -+ * @micro: The number as an integer
-> >     ++ * @nano: The number as an integer
-> >      + *
-> >      + * Returns 0 on success, or a negative error code if the string cound not be
-> >      + * parsed.
-> >      + */
-> >     -+static int iio_str_to_micro(const char *str, s64 *micro)
-> >     ++static int iio_str_to_nano(const char *str, s64 *nano)
-> >      +{
-> >     -+	int fract_mult = 100000LL;
-> >     ++	int fract_mult = 100000000LL;
-> >      +	int tmp, tmp2;
-> >      +	int ret = 0;
-> >      +
-> >     @@ drivers/iio/test/iio-test-rescale.c (new)
-> >      +	if (tmp < 0)
-> >      +		tmp2 *= -1;
-> >      +
-> >     -+	*micro = (s64)tmp * 10 * fract_mult + tmp2;
-> >     ++	*nano = (s64)tmp * 10 * fract_mult + tmp2;
-> >      +
-> >      +	return ret;
-> >      +}
-> >      +
-> >      +/**
-> >     -+ * iio_test_relative_error_ppm() - Compute relative error (in ppm) between two
-> >     -+ *                                 fixed-point strings
-> >     ++ * iio_test_relative_error_ppm() - Compute relative error (in parts-per-million)
-> >     ++ *                                 between two fixed-point strings
-> >      + * @real_str: The real value as a string
-> >      + * @exp_str: The expected value as a string
-> >      + *
-> >      + * Returns a negative error code if the strings cound not be parsed, or the
-> >     -+ * relative error in ppm.
-> >     ++ * relative error in parts-per-million.
-> >      + */
-> >      +static int iio_test_relative_error_ppm(const char *real_str, const char *exp_str)
-> >      +{
-> >      +	s64 real, exp, err;
-> >      +	int ret;
-> >      +
-> >     -+	ret = iio_str_to_micro(real_str, &real);
-> >     ++	ret = iio_str_to_nano(real_str, &real);
-> >      +	if (ret < 0)
-> >      +		return ret;
-> >      +
-> >     -+	ret = iio_str_to_micro(exp_str, &exp);
-> >     ++	ret = iio_str_to_nano(exp_str, &exp);
-> >      +	if (ret < 0)
-> >      +		return ret;
-> >      +
-> >     ++	if (!exp) {
-> >     ++		pr_err("Expected value is null, relative error is undefined\n");
-> >     ++		return -EINVAL;
-> >     ++	}
-> >     ++
-> >      +	err = 1000000 * abs(exp - real);
-> >      +	err = div64_u64(err, abs(exp));
-> >      +	return (int)err;
-> >     @@ drivers/iio/test/iio-test-rescale.c (new)
-> >      +	rel_ppm = iio_test_relative_error_ppm(buff, t->expected);
-> >      +	KUNIT_EXPECT_GE_MSG(test, rel_ppm, 0, "failed to compute ppm\n");
-> >      +
-> >     -+	KUNIT_EXPECT_LT_MSG(test, rel_ppm, 500,
-> >     ++	KUNIT_EXPECT_EQ_MSG(test, rel_ppm, 0,
-> >      +			    "\t    real=%s"
-> >      +			    "\texpected=%s\n",
-> >      +			    buff, t->expected);
-> > 11:  050487186e14 = 11:  c4ed463e5fb0 iio: afe: rescale: add RTD temperature sensor support
-> > 12:  f36a44a5d898 ! 12:  ff2f0dc248a7 iio: afe: rescale: add temperature transducers
-> >     @@ drivers/iio/afe/iio-rescale.c: static int rescale_temp_sense_rtd_props(struct de
-> >      +	s32 offset = 0;
-> >      +	s32 sense = 1;
-> >      +	s32 alpha;
-> >     -+	s64 tmp;
-> >      +	int ret;
-> >      +
-> >      +	device_property_read_u32(dev, "sense-offset-millicelsius", &offset);
-> >     @@ drivers/iio/afe/iio-rescale.c: static int rescale_temp_sense_rtd_props(struct de
-> >      +	rescale->numerator = 1000000;
-> >      +	rescale->denominator = alpha * sense;
-> >      +
-> >     -+	tmp = (s64)offset * (s64)alpha * (s64)sense;
-> >     -+	rescale->offset = div_s64(tmp, (s32)1000000);
-> >     ++	rescale->offset = div_s64((s64)offset * rescale->denominator,
-> >     ++				  rescale->numerator);
-> >      +
-> >      +	return 0;
-> >      +}
-> > 13:  63be647fd110 = 13:  84bc1f7d1ab5 dt-bindings: iio: afe: add bindings for temperature-sense-rtd
-> > 14:  c2f5c19dece3 = 14:  1b76cfb37e23 dt-bindings: iio: afe: add bindings for temperature transducers
-> > 
-> > base-commit: 2b6bff0b122785f09cfbdc34b1aa9edceea6e4c1
-> 
+> +
+>  	ret =3D of_mdiobus_register(bus, pdev->dev.of_node);
+>  	if (ret < 0) {
+>  		dev_err(&pdev->dev, "Cannot register MDIO bus (%d)\n", ret);
+> --=20
+> 2.25.1
+>=
