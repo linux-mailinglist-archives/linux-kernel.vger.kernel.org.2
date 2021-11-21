@@ -2,125 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CE0458594
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 18:47:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6402545859E
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 18:50:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238638AbhKURuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 12:50:06 -0500
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:44601 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238480AbhKURuF (ORCPT
+        id S238433AbhKURxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 12:53:09 -0500
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:42348 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238119AbhKURxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 12:50:05 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 678832B00900;
-        Sun, 21 Nov 2021 12:46:59 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Sun, 21 Nov 2021 12:46:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.in; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=NF8A30VDPgxo4gV5iWZLIEuYq0B
-        stUMwp7oBomp9GCE=; b=gn3TJpPQJUCsdPBSN6sYQBTxFGHJNyQ2BUAQv1P8wKf
-        LBihnD7oUU/d+hCGNLify1s28gYiTFgbRZSVNQ6pYUMNVl3uMuqUx1gwoIyZ8Aoh
-        zEinPwO22dIrrL/ssqh2c/49dZTHJGIYQgOfnL/jj8gN7HXMvd9XcCfqMBf5lT2g
-        P1TXi6Va37RFgO9/XznLfz3ZtNrZ0K8o5YLDm4m63tO0W8AVCiZ42HWvuGC5TfbA
-        iedUN9FYB1Olrd9Vfo0QrwdW8FfeXfHJOkQTgpTmuiWpwSi92Nw9LMT/IxDQBxYV
-        j1JDCHPcmBECknxNsVFv2oPcB3IYIlqqqjwDyPj9d1Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=NF8A30
-        VDPgxo4gV5iWZLIEuYq0BstUMwp7oBomp9GCE=; b=PbWT94mpUa7Lur523jDCcD
-        C9SjT6Po8wZrq2PoQUhFbN0NJKMqo8VT2TUEqR+Xf9vBbJevJhTNi8ZWfuU+BVp2
-        9SFKzkIoEVDb7S4KJj1YRPxC3Mwvfxkf1muCqH8ZmhzoxzZ1KFGxm1s8AxhSF6f/
-        rdQfRSq5W8i/jK22OeQfXU/Q4zVXFrhpIQI+cbsqfBP/mrxP6E1egwycx0KVitms
-        bnwWF1hC02mFsh8+CmMTWbw/UKh19aMgriDP+2voxWmOHFeDn9NISd8ZVHDmvUwd
-        /et5mFcSkTBH7NQrxTr2lxeVkTxzwfXzjoEHxi4VvxDrio2MmP7IqYV0wdyM2sgw
-        ==
-X-ME-Sender: <xms:EoaaYWxHGOQexl99TZa1ju4W7_ywlG6vNCbnWBRYEu5SSahwgJQ3gg>
-    <xme:EoaaYSSNB7a8TgrAY0IriYXsjAclSTh5GASlrWwhS6ozV4HWI1bKtUl2pt43l8qrO
-    L3lhPyqG9XIgu9kSAk>
-X-ME-Received: <xmr:EoaaYYXIlZatBSNB23wx2XXmcNwowxhAQbhF6wnCSRZqR02VXLctki9E>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrgedvgddutdejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeffvggvphcu
-    ofgrjhhumhguvghruceouggvvghpsehfrghsthhmrghilhdrihhnqeenucggtffrrghtth
-    gvrhhnpeejieeijeekudeffeeivdeujeetffeuhfefudejudeiteevhfelueekvedugeeu
-    feenucffohhmrghinhepnhigphdrtghomhdpphholhholhhurdgtohhmnecuvehluhhsth
-    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepuggvvghpsehfrghsthhm
-    rghilhdrihhn
-X-ME-Proxy: <xmx:EoaaYchKbSXnqu_kzuuVV12uHdqPKWZ8gxr76_wy0o-CAtU-ZlW8vQ>
-    <xmx:EoaaYYBLXL25f3Rrn5vAvDF18Niq_Qpxgv3hMNCs9tF7x30Gqpdvyg>
-    <xmx:EoaaYdLBB6e8dLVC8EYDonolxejL-vdm2A5Qd55ZdKnDn-i6czT4vQ>
-    <xmx:EoaaYbPPY7DbWNV0R_T5AMA7rZMPWe52ST9op4Fi_A5IL3bKX9vItyOXTjQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 21 Nov 2021 12:46:57 -0500 (EST)
-Date:   Sun, 21 Nov 2021 23:16:54 +0530
-From:   Deep Majumder <deep@fastmail.in>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     wsa@kernel.org, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] Docs: Fixes link to I2C specification
-Message-ID: <20211121174654.hu26uxcd3lsdpypq@CodeMachine>
-Mail-Followup-To: Randy Dunlap <rdunlap@infradead.org>, wsa@kernel.org,
-        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        Sun, 21 Nov 2021 12:53:08 -0500
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1ALF22Vt016503;
+        Sun, 21 Nov 2021 17:49:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=ZgMkUmaZ3PqHwuBbGmnLaarBZ9YNdqmIlgKkA8Txa+Q=;
+ b=epboAh2w/NvL9PeGkAG/l1KwCGx8Sa/JbTEEAVgiFu9GJiT+19I8hiulDzFic75j7gEa
+ m3GQOvsmpefz1lG/dXvwoWlcYxgqXBlt2SJiyr7tYIuz7aeDVGomqY2hHolafhmGyE8c
+ WrUuTmQ5hvJ0dVoqJXNhc6nObgYdfo+3PhLO18gwBtbUjWKdVhKXo0URzh+tReGxDZV9
+ k99Ujkqac1AwLktLHRn5o/ozLh3llRvU7U2pojWJKVLirqkilxxG8AHCXlzuVN/ju6fL
+ gqFC5TDMXLeK5FQhbXgDpdbV83AVK0QwDW6KQcUj6OcxmLxREPMJeoPYmh9xA+86pRYz Tg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3ceqeccjnp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 21 Nov 2021 17:49:45 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1ALHkerr100938;
+        Sun, 21 Nov 2021 17:49:45 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2106.outbound.protection.outlook.com [104.47.58.106])
+        by aserp3030.oracle.com with ESMTP id 3ceq2bnn2j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 21 Nov 2021 17:49:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FnGWU87fskmp+TEE7ZxNIK3KiJrYYrBYPMjwNawkwsjsRKLSc9Gdke86jStjDRFook67CtIJKCUdHdVkYQ7thBSLmHljvpnBbYfkwgpfZJHuI0uLFEJJWsS7nXF/nuWFdn9A5UOT0RJoLx317ZrOyOmGutpQw6j6DS760Ftk0l9brCMLm0I2pG/PjLbAYEOIhivHKjjXSuVCJ7sHp/xni91A505QiGrPHMvQVjIvJET+WJS5ov+kyToO+4PmF+JeV7qyWe7N6UD8mJKPBrS8EqgDItXrrPigalN8sh/nWvxT/Kwxbd5HdX/+GkOwPXnrhTYulFuLKwU4P1S0L0gNhg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZgMkUmaZ3PqHwuBbGmnLaarBZ9YNdqmIlgKkA8Txa+Q=;
+ b=g+rR0PUfbFQFpRJkYUy2uMb+pgEQgB7HxG9FbYUvo541K97NWnQv7gm/JVgEE//MCXNjJJqO92ma2MxGwVkNOuXi328ompjjJO+G8MKqwXo2Px80YtQW4sMVpAC5vNEKWUtwhsp0+W1tg663bNHIIpaP6MFvuSEM2spoiFPHKaTXAD3S0M4kFjD9MxEmkjR92aHNttEaTPx5YNdUJWMQsA3j7H7dz4miJ++8ETPMlFbA0Q3nFY5EXaPX/zm9Gi1FIsoadG8q5VvEF14V+tvAXmg7dgBdFCK6DIUUaQaHfH40+N5W2Srb7mWbS0LfYRdH2HsfVdVVH10U2wolWDidKQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZgMkUmaZ3PqHwuBbGmnLaarBZ9YNdqmIlgKkA8Txa+Q=;
+ b=P38g63ep4/ocSd+C/m8ku7mMaB7W3nA4l68FXgJp+85v5vCzgzZ0NKxqMyPF+u38jts56Npl/YadwKg8Nv06eNpXT7gzh6LcpfdJVRC+obDYZteqFR0osZP6JQ2zTqXQI0P3gf8xIeB5HFfJhY366vDRd3bglUJYw5M6Ip/3DEs=
+Received: from DM5PR10MB1466.namprd10.prod.outlook.com (2603:10b6:3:b::7) by
+ DS7PR10MB5055.namprd10.prod.outlook.com (2603:10b6:5:3a9::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4713.19; Sun, 21 Nov 2021 17:49:43 +0000
+Received: from DM5PR10MB1466.namprd10.prod.outlook.com
+ ([fe80::601a:d0f6:b9db:f041]) by DM5PR10MB1466.namprd10.prod.outlook.com
+ ([fe80::601a:d0f6:b9db:f041%11]) with mapi id 15.20.4713.024; Sun, 21 Nov
+ 2021 17:49:43 +0000
+From:   Mike Christie <michael.christie@oracle.com>
+To:     geert@linux-m68k.org, vverma@digitalocean.com, hdanton@sina.com,
+        hch@infradead.org, stefanha@redhat.com, jasowang@redhat.com,
+        mst@redhat.com, sgarzare@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        christian.brauner@ubuntu.com, axboe@kernel.dk,
         linux-kernel@vger.kernel.org
-References: <20211119061401.19852-1-deep@fastmail.in>
- <4c16a9f5-3728-5377-1286-001b1b362bb1@infradead.org>
+Subject: [PATCH V5 00/10] Use copy_process/create_io_thread in vhost layer
+Date:   Sun, 21 Nov 2021 11:49:20 -0600
+Message-Id: <20211121174930.6690-1-michael.christie@oracle.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: CH0PR03CA0217.namprd03.prod.outlook.com
+ (2603:10b6:610:e7::12) To DM5PR10MB1466.namprd10.prod.outlook.com
+ (2603:10b6:3:b::7)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4c16a9f5-3728-5377-1286-001b1b362bb1@infradead.org>
+Received: from localhost.localdomain (73.88.28.6) by CH0PR03CA0217.namprd03.prod.outlook.com (2603:10b6:610:e7::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend Transport; Sun, 21 Nov 2021 17:49:42 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8b66d79a-ba80-47a1-fecf-08d9ad174ca2
+X-MS-TrafficTypeDiagnostic: DS7PR10MB5055:
+X-Microsoft-Antispam-PRVS: <DS7PR10MB50557C287BB60671489E615EF19E9@DS7PR10MB5055.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Ako+nKYgI2yBzlk2dcY32r4/dXMgzrNFK0ycG+nL5Pac0Iy1I9H8ksPf4+kwou2rUy2q/CFa7ZmiNH7zVPafqaQ3TmHl8wIR8EgGAvkOxSg5ZVUQJ+9qAKYhv4GAUYj2EoLPU7gViOFDgpdfXqSC3cgsPWr0aPcW93rXSVH0oxd437g5xZYBYnzPUxFZBildD3S/OaNEgD0kkn17WJszy1jhpryvo69wzPd5eJ8WQ+5zubpoCZM13qvRThXBIvaYaYCFSpSIba2Lao/HJKd5cPwxK95SIty7sM3PdSp66kd+ekLu34Y/LjVCgUbxUiKQs/RbUxsbtEDecwCOdzLxuwmg4OQ43ZbynGAkxfj0/23Ka9yY+ywjQ1hPPY2IS6voZY7rBwg8fcRIKhSL127lpnGq+Pxf+H9rm+qKPGRPFGH5QnYNAj9tlEAez1r1LKhqXE+O9vLnFMgarxQFzCIly0+sJ72F2Lu50WM7GMmOF1/tYIoHYWoed1mDNWuJwBNBdC/Ytk1l53QrKxF6k3ehbYWfe3ByESgCUwRsHyjTG47j4TB0OvjP8aiaMZNl7TVHccigWixsHRu5kDmwYHOjk+ecCdItNztDOw2z3FXiOoxVfZtRH0+6BdMEj1ZyrsR4dnaCeYfqb5hOWWQXXEjAylWyEwNVPJusRrJJ+bpIZHWhILRG6hdlMU075ISpF8cRezgCv2Fj7E6xrsZ2FRLHMPTrvuC7ASvtnZjUTwGMeYl1XXWn0b/zvBEEPHCayv8pPHefQJnqTVCVcxJtICWWvMuMnQ0EzXtkgAZN7miVPW/3iXkEs4XzhY9KSiuoJ7bT
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR10MB1466.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(8676002)(66476007)(52116002)(38350700002)(5660300002)(8936002)(1076003)(2616005)(6512007)(966005)(6666004)(6506007)(7416002)(66556008)(2906002)(316002)(86362001)(921005)(508600001)(38100700002)(6486002)(83380400001)(26005)(36756003)(66946007)(186003)(956004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OST2/KO4G4TgcGRo8473jKG808UinhS1OHheO3LJfbZWx45htTJUIqvpK60+?=
+ =?us-ascii?Q?vYVovnKKj9hYCIDhE+Dy6JdhomjLZ5htt/a27YtLyitYXHABHxTOZ0KJn/kv?=
+ =?us-ascii?Q?VR+0Xk8HqQFnivax9UE20HaQK11OIpPdLkgjosKHiW6QMJnDM7+khiCjgIRi?=
+ =?us-ascii?Q?P5tRAdeytvbGPrNyvHVnEVBIPvroQAEJpaApBaNpjlaqYy1s8NvSGfs3T4fe?=
+ =?us-ascii?Q?sXyTmqbPSAUrdOT+m7i3EkYYumiAa0ZOY0MSSdDXY6Xr1h89hJ/dYjno/oqO?=
+ =?us-ascii?Q?BzXV6Rl4AM3JOTD6bXBdMwntIPnCchGcTY8ueXTS7R5XdwtIdX7Zs8A+5len?=
+ =?us-ascii?Q?xsnGwAaJKka/2i8y3rHHZZKn8BjMWpDAABUO/ay7wcPRfiheyt3+S1mMOqzS?=
+ =?us-ascii?Q?Nqsi13KkjrY89IBl+T6haBlCe3ZPDNftGedYulsqEo2VdrD3YLH2c2PZWj4D?=
+ =?us-ascii?Q?PpHG6cXppJshUQIxHet6Zjtz0gMItaL+ZnacdqwChI6HyuhtCqm+V76jigcU?=
+ =?us-ascii?Q?W+F++yfK/wMOH2KhnWlZjr1eD/T0tSkrWiFo/cAL80C1m+q8AJ++gsHTf9T9?=
+ =?us-ascii?Q?8UqfunzxwXhoeWstsvxe7+cdMC+jMKe2yERPlXd/UEDwp3o56lh4Dw77vvg3?=
+ =?us-ascii?Q?s+HpPF058RREYLwqu3W7yfx57GztssQ+QGwi7FK4IsyFk5I2pgqokaaKVHIj?=
+ =?us-ascii?Q?hkcONFQJA4p2gFo5lAmasxEgKcEhAujSxh+Xc7t//PfI3Ied11s+OQGm8zlP?=
+ =?us-ascii?Q?m0HtjqhTQOdA4Rcsr/BkvdaXd4fKPD8YhWxYrrxCnJUr4tWFPwsHy8KRr+tt?=
+ =?us-ascii?Q?fnSq/kZekoipXbnX048v4rBS036mSoq86sawnzeDQgNpJwF1dvDWDGc8YsIb?=
+ =?us-ascii?Q?YyGucseMKiryBtbjvFjB8rIrMr/oP/SOsXcsBcArPxm9n6JafNFvbdvY60Xs?=
+ =?us-ascii?Q?c9JbxQzaI+m+f+k/TPTuzXUFR7Cx5wAoQKjV0sSlH0P0kjCeOKyP5sF3GAmQ?=
+ =?us-ascii?Q?beRR6L8iIB6gBo9XrLvEft4MKU9P7QPsgPL8sqlXNvVuAb5XNbQZpyCDjrjz?=
+ =?us-ascii?Q?FBAjpewadT3XcbDRgO7GT/6Wdosgm87EzvkidXy4ZKU71DS07QjJBirajKIy?=
+ =?us-ascii?Q?yZTC4+vyjS4yUF1m6rcv2MpnO8qLTr0dEYzIeI0eAmg48ewKFsg/VzDyAEWx?=
+ =?us-ascii?Q?6JbpD+hMSyV6g8cgYcli2Xrr4fM9BncfjWvKj6a9oSN3H7tL/Mb4b5X9cILM?=
+ =?us-ascii?Q?76aAWdxyzyVP+gT6PFeyCN+Un3vM/m8nkH4OqDe9hKQnxAdMuqOxen4dMtQs?=
+ =?us-ascii?Q?K5Yjde9NBEq9+PSfgyV91/ipOEYyJweEIxGyqvRK1gLc6wX8H3k4jsZr4Bsf?=
+ =?us-ascii?Q?mzpujF0qJkW5ay+s+CDsTJlX/z8Oex6zG5ihhw7kdX6kDkSIf5QOYTEfOOOs?=
+ =?us-ascii?Q?kUtQ9mVkOl+LgD3+WYeqAPAS5HuBN5zEFlHHaFVB2Kuugj/NB81gLtBQgVup?=
+ =?us-ascii?Q?A3wm9zkMSYeb1avwCa4cmlX8Z6Zkh2hMzWE9Bq19SfSshc/ihHfKbGqk4sOx?=
+ =?us-ascii?Q?SK9xl5aRjxUgQ8SXmopoWF8YWT7/CnkgR4WjD2ZKApbDjk66DAW7Y/FD8kNX?=
+ =?us-ascii?Q?5xeoBuVclccesnPyWngcz0qNb/uoqrjqzA6hXnxxPsEfNuqxzC8qbu06h7BK?=
+ =?us-ascii?Q?oP136A=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8b66d79a-ba80-47a1-fecf-08d9ad174ca2
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR10MB1466.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2021 17:49:43.2928
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jkgG2yu7rR9C/8eN1135/K0N0KhWJo0WFUD7RxEMG3bJaM/sliz47mT/DL2Hz8A21S5qVeUvGbv8FU/I5CKCKhz+27gTQ5eOzkhgHoSNt1I=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB5055
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10175 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0 spamscore=0
+ bulkscore=0 suspectscore=0 mlxscore=0 mlxlogscore=492 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111210110
+X-Proofpoint-ORIG-GUID: yV1ynCrrJg5oHvbU5Ev7N1n-em43Ucdw
+X-Proofpoint-GUID: yV1ynCrrJg5oHvbU5Ev7N1n-em43Ucdw
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Randy Dunlap wrote:
-> On 11/18/21 10:14 PM, Deep Majumder wrote:
-> > The link to the I2C specification is broken and is replaced in this
-> > patch by one that points to Rev 6 (2014) of the specification.
-> > Although `https://www.nxp.com" hosts the Rev 7 (2021) of this
-> > specification, it is behind a login-wall and thus cannot be used.
-> 
-> I don't quite get the "cannot be used" part.
-> I created a free login and downloaded this spec,
-> so yes, it's a hassle, but why can it not be used?
+The following patches made over Linus's tree, allow the vhost layer to do
+a copy_process on the thread that does the VHOST_SET_OWNER ioctl like how
+io_uring does a copy_process against its userspace app. This allows the
+vhost layer's worker threads to inherit cgroups, namespaces, address
+space, etc and this worker thread will also be accounted for against that
+owner/parent process's RLIMIT_NPROC limit.
 
-Perhaps a more appropriate wording would be "cannot be used as the only
-source of the spec"? Because as I understand, many users may be
-unwilling to sign up to a website just to download a spec sheet (if for
-no other reason, for the fear of spam).
+If you are not familiar with qemu and vhost here is more detailed
+problem description:
 
-> > Thus, an additional link has been added (which doesn't require a login)
-> > and the NXP official docs link has been updated. The additional link is
-> > not the Wayback Machine link since it seems that the PDF has not been
-> > archived.
-> > 
-> > Signed-off-by: Deep Majumder <deep@fastmail.in>
-> > ---
-> >   Documentation/i2c/summary.rst | 8 +++++---
-> >   1 file changed, 5 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/Documentation/i2c/summary.rst b/Documentation/i2c/summary.rst
-> > index 136c4e333be7..3395e2e46d9c 100644
-> > --- a/Documentation/i2c/summary.rst
-> > +++ b/Documentation/i2c/summary.rst
-> > @@ -11,9 +11,11 @@ systems.  Some systems use variants that don't meet branding requirements,
-> >   and so are not advertised as being I2C but come under different names,
-> >   e.g. TWI (Two Wire Interface), IIC.
-> > -The official I2C specification is the `"I2C-bus specification and user
-> > -manual" (UM10204) <https://www.nxp.com/docs/en/user-guide/UM10204.pdf>`_
-> > -published by NXP Semiconductors.
-> > +The official I2C specification (revision 7) is the `"I2C-bus specification and user
-> > +manual" (UM10204) <https://www.nxp.com/webapp/Download?colCode=UM10204&location=null>`_
-> > +published by NXP Semiconductors. However, you need to log-in to the site to
-> > +access the PDF. An older version of the specification (revision 6) is available
-> > +`here <https://www.pololu.com/file/0J435/UM10204.pdf>`_.
-> >   SMBus (System Management Bus) is based on the I2C protocol, and is mostly
-> >   a subset of I2C protocols and signaling.  Many I2C devices will work on an
-> > 
-> 
-> 
-> -- 
-> ~Randy
+Qemu will create vhost devices in the kernel which perform network, SCSI,
+etc IO and management operations from worker threads created by the
+kthread API. Because the kthread API does a copy_process on the kthreadd
+thread, the vhost layer has to use kthread_use_mm to access the Qemu
+thread's memory and cgroup_attach_task_all to add itself to the Qemu
+thread's cgroups.
+
+The problem with this approach is that we then have to add new functions/
+args/functionality for every thing we want to inherit. I started doing
+that here:
+
+https://lkml.org/lkml/2021/6/23/1233
+
+for the RLIMIT_NPROC check, but it seems it might be easier to just
+inherit everything from the beginning, becuase I'd need to do something
+like that patch several times.
+
+V5:
+- Handle kbuild errors by building patchset against current kernel that
+  has all deps merged. Also add patch to remove create_io_thread code as
+  it's not used anymore.
+- Rebase patchset against current kernel and handle a new vm PF_IO_WORKER
+  case added in 5.16-rc1.
+- Add PF_USER_WORKER flag so we can check it later after the initial
+  thread creation for the wake up, vm and singal cses.
+- Added patch to auto reap the worker thread.
+V4:
+- Drop NO_SIG patch and replaced with Christian's SIG_IGN patch.
+- Merged Christian's kernel_worker_flags_valid helpers into patch 5 that
+  added the new kernel worker functions.
+- Fixed extra "i" issue.
+- Added PF_USER_WORKER flag and added check that kernel_worker_start users
+  had that flag set. Also dropped patches that passed worker flags to
+  copy_thread and replaced with PF_USER_WORKER check.
+V3:
+- Add parentheses in p->flag and work_flags check in copy_thread.
+- Fix check in arm/arm64 which was doing the reverse of other archs
+  where it did likely(!flags) instead of unlikely(flags).
+V2:
+- Rename kernel_copy_process to kernel_worker.
+- Instead of exporting functions, make kernel_worker() a proper
+  function/API that does common work for the caller.
+- Instead of adding new fields to kernel_clone_args for each option
+  make it flag based similar to CLONE_*.
+- Drop unused completion struct in vhost.
+- Fix compile warnings by merging vhost cgroup cleanup patch and
+  vhost conversion patch.
+
+
+
