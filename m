@@ -2,541 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BA6F458175
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 03:06:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E327145817A
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 03:21:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237738AbhKUCJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 21:09:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35000 "EHLO mail.kernel.org"
+        id S236550AbhKUCYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 21:24:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237562AbhKUCJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 21:09:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A4ED604DA;
-        Sun, 21 Nov 2021 02:06:33 +0000 (UTC)
+        id S231827AbhKUCYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 21:24:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69B466008E;
+        Sun, 21 Nov 2021 02:21:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637460396;
-        bh=8vLWuYI1d6pWOjLyq9bjJ9l4ci9MzvqkifYIuYPvZcY=;
+        s=k20201202; t=1637461266;
+        bh=UCzrbM2fD+0HR8OTJ7bvKM6jrnWGIk1QV2RUx+6+AcA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iD1jmvVyTo7GlIvI9Bmujmg3pZ/y7cmIS2C3Jhhu3opnO3h8KRlS3k5rsqTxp3L34
-         B4H8ve4yTrRdDF0rPNHvOT5xQq39HVPTqpItOeyfmzAMCpP80+MWx4LvR9LymE49wM
-         /Dr9zUeQdgyQif3QOxL1aDXJ5GmFdAsDgdJ45vEJkgbkpbKdVpineHhyDxkZlpJ6pf
-         fon+tjp2Z6F0qTYq4rJ/EsHZXXjlFiNeC726VaZclqfKuf/m2EeQ5k2UHJttyKASZf
-         fNdrovlWH3hd3qSBbEX8zay+1gGT5IpEepsiJ2B0TKMTAGUmLKTvbKdf64xW3et2Gi
-         55VUFAVdKiAbQ==
-Date:   Sun, 21 Nov 2021 10:06:30 +0800
+        b=FfnIEeglJ9iE1+Wx5hFdSxZpOkvthyDqWEDkBw4C1Vd6ZtaZf+8fR4cr43d08z7dA
+         qcRRdvOY8CW8F17K4HbW6cJjr16Txh7jeyBnYADlO1yuTRhW0R/weewwrnJ68hFKG7
+         jPeEveZVC6QAPjyRgxVmvfgUyx1q35NqXxgHciXYmvpu9L06qqEQ+XoDO8oJihks9W
+         +8rtWRYyyz7ni5kVSl8g1CbBxxaN8lGlCMnJaZ+z3kikfg30k036wL3o35OFuP6WK0
+         /65KBwUqpvJcx5cC5FCxVyLAhw3OHPbBdaFRj+Gn+30cLlYG2Ln2ElZ3A8vAAvechV
+         IWP+EDosvx0XA==
+Date:   Sun, 21 Nov 2021 10:20:57 +0800
 From:   Shawn Guo <shawnguo@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
+To:     Arnaud Ferraris <arnaud.ferraris@collabora.com>
+Cc:     linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Martin Kepplinger <martink@posteo.de>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>
-Subject: Re: [PATCH v1 3/3] ARM: dts: add JOZ Access Point
-Message-ID: <20211121020629.GC31998@dragon>
-References: <20211014083313.26671-1-o.rempel@pengutronix.de>
- <20211014083313.26671-3-o.rempel@pengutronix.de>
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Lucas Stach <dev@lynxeye.de>, Angus Ainslie <angus@akkea.ca>,
+        Guido Gunther <agx@sigxcpu.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Eddie Cai <eddie.cai.linux@gmail.com>,
+        Shunqian Zheng <zhengsq@rock-chips.com>,
+        Brian Norris <briannorris@chromium.org>,
+        Dan Johansen <strit@manjaro.org>,
+        Simon South <simon@simonsouth.net>,
+        Matthias Brugger <mbrugger@suse.com>
+Subject: Re: [PATCH 2/4] arm64: dts: freescale: add 'chassis-type' property
+Message-ID: <20211121022056.GD31998@dragon>
+References: <20211016102025.23346-1-arnaud.ferraris@collabora.com>
+ <20211016102025.23346-3-arnaud.ferraris@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211014083313.26671-3-o.rempel@pengutronix.de>
+In-Reply-To: <20211016102025.23346-3-arnaud.ferraris@collabora.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 10:33:13AM +0200, Oleksij Rempel wrote:
-> JOZ Access Point is imx6ull based device designed for agricultural
-> cleaning machines.
+On Sat, Oct 16, 2021 at 12:20:23PM +0200, Arnaud Ferraris wrote:
+> A new 'chassis-type' root node property has recently been approved for
+> the device-tree specification, in order to provide a simple way for
+> userspace to detect the device form factor and adjust their behavior
+> accordingly.
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  arch/arm/boot/dts/Makefile           |   1 +
->  arch/arm/boot/dts/imx6ull-jozacp.dts | 457 +++++++++++++++++++++++++++
->  2 files changed, 458 insertions(+)
->  create mode 100644 arch/arm/boot/dts/imx6ull-jozacp.dts
+> This patch fills in this property for end-user devices (such as laptops,
+> smartphones and tablets) based on NXP ARM64 processors.
 > 
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index 936aa3e65ce7..1f73806b99c2 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -676,6 +676,7 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
->  	imx6ull-colibri-emmc-eval-v3.dtb \
->  	imx6ull-colibri-eval-v3.dtb \
->  	imx6ull-colibri-wifi-eval-v3.dtb \
-> +	imx6ull-jozacp.dtb \
->  	imx6ull-myir-mys-6ulx-eval.dtb \
->  	imx6ull-opos6uldev.dtb \
->  	imx6ull-phytec-segin-ff-rdk-nand.dtb \
-> diff --git a/arch/arm/boot/dts/imx6ull-jozacp.dts b/arch/arm/boot/dts/imx6ull-jozacp.dts
-> new file mode 100644
-> index 000000000000..1d779440b609
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/imx6ull-jozacp.dts
-> @@ -0,0 +1,457 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-> +/*
-> + * Copyright (c) 2020 Protonic Holland
-> + * Copyright (c) 2020 Oleksij Rempel <kernel@pengutronix.de>, Pengutronix
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/leds/common.h>
-> +#include "imx6ull.dtsi"
-> +
-> +/ {
-> +	model = "JOZ Access Point";
-> +	compatible = "joz,jozacp", "fsl,imx6ull";
-> +
-> +	chosen {
-> +		stdout-path = &uart1;
-> +	};
-> +
-> +	/* On board name LED_RGB1 */
-> +	led-controller-1 {
-> +		compatible = "pwm-leds";
-> +
-> +		led-0 {
-> +			color = <LED_COLOR_ID_RED>;
-> +			function = LED_FUNCTION_INDICATOR;
-> +			function-enumerator = <0>;
-> +			pwms = <&pwm1 0 10000000 0>;
-> +			max-brightness = <255>;
-> +		};
-> +
-> +		led-1 {
-> +			color = <LED_COLOR_ID_GREEN>;
-> +			function = LED_FUNCTION_INDICATOR;
-> +			function-enumerator = <1>;
-> +			pwms = <&pwm3 0 10000000 0>;
-> +			max-brightness = <255>;
-> +		};
-> +
-> +		led-2 {
-> +			color = <LED_COLOR_ID_BLUE>;
-> +			function = LED_FUNCTION_INDICATOR;
-> +			function-enumerator = <2>;
-> +			pwms = <&pwm5 0 10000000 0>;
-> +			max-brightness = <255>;
-> +			linux,default-trigger = "heartbeat";
-> +		};
-> +	};
-> +
-> +	/* On board name LED_RGB2 */
-> +	led-controller-2 {
-> +		compatible = "pwm-leds";
-> +
-> +		led-3 {
-> +			color = <LED_COLOR_ID_RED>;
-> +			function = LED_FUNCTION_INDICATOR;
-> +			function-enumerator = <3>;
-> +			pwms = <&pwm2 0 10000000 0>;
-> +			max-brightness = <255>;
-> +		};
-> +
-> +		led-4 {
-> +			color = <LED_COLOR_ID_GREEN>;
-> +			function = LED_FUNCTION_INDICATOR;
-> +			function-enumerator = <4>;
-> +			pwms = <&pwm4 0 10000000 0>;
-> +			max-brightness = <255>;
-> +		};
-> +
-> +		led-5 {
-> +			color = <LED_COLOR_ID_BLUE>;
-> +			function = LED_FUNCTION_INDICATOR;
-> +			function-enumerator = <5>;
-> +			pwms = <&pwm6 0 10000000 0>;
-> +			max-brightness = <255>;
-> +		};
-> +	};
-> +
-> +	reg_3v3: regulator-3v3 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "3v3";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		vin-supply = <&reg_5v0>;
-> +	};
-> +
-> +	reg_5v0: regulator-5v0 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "5v0";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +	};
-> +
-> +	reg_vbus: regulator-vbus {
-> +		compatible = "regulator-fixed";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_vbus>;
-> +		regulator-name = "vbus";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		vin-supply = <&reg_5v0>;
-> +		gpio = <&gpio1 2 GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-> +	};
-> +
-> +	usdhc2_wifi_pwrseq: usdhc2-wifi-pwrseq {
-> +		compatible = "mmc-pwrseq-simple";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_wifi_npd>;
-> +		reset-gpios = <&gpio4 25 GPIO_ACTIVE_LOW>;
-> +	};
-> +};
-> +
-> +&can1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_can1>;
-> +	status = "okay";
-> +};
-> +
-> +&cpu0 {
-> +	clock-frequency = <792000000>;
-> +};
-> +
-> +&fec1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_enet1>;
-> +	phy-mode = "rmii";
-> +	phy-handle = <&ethphy0>;
-> +	status = "okay";
-> +
-> +	mdio {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		ethphy0: ethernet-phy@0 {
-> +			reg = <0>;
-> +			clocks = <&clks IMX6UL_CLK_ENET_REF>;
-> +			clock-names = "rmii-ref";
-> +			interrupts-extended = <&gpio1 29 IRQ_TYPE_LEVEL_LOW>;
-> +			reset-gpios = <&gpio1 28 GPIO_ACTIVE_LOW>;
-> +			reset-assert-us = <10000>;
-> +			reset-deassert-us = <300>;
-> +		};
-> +	};
-> +};
-> +
-> +&i2c1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_i2c1>;
-> +	clock-frequency = <100000>;
-> +	status = "okay";
-> +};
-> +
-> +&i2c2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_i2c2>;
-> +	clock-frequency = <100000>;
-> +	status = "okay";
-> +
-> +	rtc@51 {
-> +		compatible = "nxp,pcf8563";
-> +		reg = <0x51>;
-> +	};
-> +};
-> +
-> +&pwm1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_pwm1>;
-> +	status = "okay";
-> +};
-> +
-> +&pwm2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_pwm2>;
-> +	status = "okay";
-> +};
-> +
-> +&pwm3 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_pwm3>;
-> +	status = "okay";
-> +};
-> +
-> +&pwm4 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_pwm4>;
-> +	status = "okay";
-> +};
-> +
-> +&pwm5 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_pwm5>;
-> +	status = "okay";
-> +};
-> +
-> +&pwm6 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_pwm6>;
-> +	status = "okay";
-> +};
-> +
-> +&snvs_rtc {
-> +	status = "disabled";
-> +};
-> +
-> +&uart1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart1>;
-> +	status = "okay";
-> +};
-> +
-> +&uart4 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart4>;
-> +	dtr-gpios = <&gpio3 4 GPIO_ACTIVE_LOW>;
-> +	uart-has-rtscts;
-> +	status = "okay";
-> +};
-> +
-> +&usbotg1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_usbotg1>;
-> +	vbus-supply = <&reg_vbus>;
-> +	dr_mode = "host";
-> +	over-current-active-low;
-> +	status = "okay";
-> +};
-> +
-> +&usdhc1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_usdhc1>;
-> +	vmmc-supply = <&reg_3v3>;
-> +	bus-width = <8>;
-> +	no-1-8-v;
-> +	non-removable;
-> +	cap-mmc-hw-reset;
-> +	no-sd;
-> +	no-sdio;
-> +	status = "okay";
-> +};
-> +
-> +&usdhc2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_usdhc2>;
-> +	mmc-pwrseq = <&usdhc2_wifi_pwrseq>;
-> +	bus-width = <4>;
-> +	no-1-8-v;
-> +	no-mmc;
-> +	no-sd;
-> +	non-removable;
-> +	pm-ignore-notify;
+> Signed-off-by: Arnaud Ferraris <arnaud.ferraris@collabora.com>
 
-Not sure what this property is.
-
-Shawn
-
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	status = "okay";
-> +
-> +	wifi@1 {
-> +		compatible = "brcm,bcm4329-fmac";
-> +		reg = <1>;
-> +	};
-> +};
-> +
-> +&iomuxc {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_hog>;
-> +
-> +	pinctrl_can1: can1grp {
-> +		fsl,pins = <
-> +			MX6UL_PAD_UART3_CTS_B__FLEXCAN1_TX	0x1b0b0
-> +			MX6UL_PAD_UART3_RTS_B__FLEXCAN1_RX	0x1b0b0
-> +		>;
-> +	};
-> +
-> +	pinctrl_enet1: enet1grp {
-> +		fsl,pins = <
-> +			MX6UL_PAD_GPIO1_IO07__ENET1_MDC	 0x1b0b0
-> +			MX6UL_PAD_GPIO1_IO06__ENET1_MDIO	0x1b0b0
-> +			MX6UL_PAD_ENET1_RX_EN__ENET1_RX_EN	0x1b0b0
-> +			MX6UL_PAD_ENET1_RX_ER__ENET1_RX_ER	0x1b0b0
-> +			MX6UL_PAD_ENET1_RX_DATA0__ENET1_RDATA00	0x1b0b0
-> +			MX6UL_PAD_ENET1_RX_DATA1__ENET1_RDATA01	0x1b0b0
-> +			MX6UL_PAD_ENET1_TX_EN__ENET1_TX_EN	0x1b0b0
-> +			MX6UL_PAD_ENET1_TX_DATA0__ENET1_TDATA00	0x1b0b0
-> +			MX6UL_PAD_ENET1_TX_DATA1__ENET1_TDATA01	0x1b0b0
-> +			MX6UL_PAD_ENET1_TX_CLK__ENET1_REF_CLK1	0x4001b031
-> +
-> +			MX6UL_PAD_UART4_TX_DATA__GPIO1_IO28	0x038b0
-> +			MX6UL_PAD_UART4_RX_DATA__GPIO1_IO29	0x170b0
-> +		>;
-> +	};
-> +
-> +	pinctrl_hog: hoggrp {
-> +		fsl,pins = <
-> +			/* HW Revision */
-> +			MX6UL_PAD_ENET2_RX_DATA0__GPIO2_IO08	0x1b0b0
-> +			MX6UL_PAD_ENET2_RX_DATA1__GPIO2_IO09	0x1b0b0
-> +			MX6UL_PAD_ENET2_RX_EN__GPIO2_IO10	0x1b0b0
-> +
-> +			/* HW ID */
-> +			MX6UL_PAD_ENET2_TX_DATA0__GPIO2_IO11	0x1b0b0
-> +			MX6UL_PAD_ENET2_TX_DATA1__GPIO2_IO12	0x1b0b0
-> +			MX6UL_PAD_ENET2_TX_EN__GPIO2_IO13	0x1b0b0
-> +			MX6UL_PAD_ENET2_TX_CLK__GPIO2_IO14	0x1b0b0
-> +			MX6UL_PAD_ENET2_RX_ER__GPIO2_IO15	0x1b0b0
-> +
-> +			/* Digital inputs */
-> +			MX6UL_PAD_GPIO1_IO03__GPIO1_IO03	0x11000
-> +			MX6UL_PAD_GPIO1_IO04__GPIO1_IO04	0x11000
-> +			MX6UL_PAD_GPIO1_IO05__GPIO1_IO05	0x11000
-> +			MX6UL_PAD_GPIO1_IO08__GPIO1_IO08	0x11000
-> +			MX6UL_PAD_GPIO1_IO09__GPIO1_IO09	0x11000
-> +
-> +			/* Isolated outputs */
-> +			MX6UL_PAD_UART2_TX_DATA__GPIO1_IO20	0x01020
-> +			MX6UL_PAD_UART2_RX_DATA__GPIO1_IO21	0x01020
-> +			MX6UL_PAD_UART2_RTS_B__GPIO1_IO23	0x01020
-> +			MX6UL_PAD_UART3_TX_DATA__GPIO1_IO24	0x01020
-> +			MX6UL_PAD_UART3_RX_DATA__GPIO1_IO25	0x01020
-> +		>;
-> +	};
-> +
-> +	pinctrl_i2c1: i2c1grp {
-> +		fsl,pins = <
-> +			MX6UL_PAD_CSI_MCLK__I2C1_SDA		0x4001f8b1
-> +			MX6UL_PAD_CSI_PIXCLK__I2C1_SCL		0x4001f8b1
-> +		>;
-> +	};
-> +
-> +	pinctrl_i2c2: i2c2grp {
-> +		fsl,pins = <
-> +			MX6UL_PAD_UART5_RX_DATA__I2C2_SDA	0x4001f8b1
-> +			MX6UL_PAD_UART5_TX_DATA__I2C2_SCL	0x4001f8b1
-> +		>;
-> +	};
-> +
-> +	pinctrl_pwm1: pwm1grp {
-> +		fsl,pins = <
-> +			MX6UL_PAD_LCD_DATA00__PWM1_OUT		0x01010
-> +		>;
-> +	};
-> +
-> +	pinctrl_pwm2: pwm2grp {
-> +		fsl,pins = <
-> +			MX6UL_PAD_LCD_DATA01__PWM2_OUT		0x01010
-> +		>;
-> +	};
-> +
-> +	pinctrl_pwm3: pwm3grp {
-> +		fsl,pins = <
-> +			MX6UL_PAD_LCD_DATA02__PWM3_OUT		0x01010
-> +		>;
-> +	};
-> +
-> +	pinctrl_pwm4: pwm4grp {
-> +		fsl,pins = <
-> +			MX6UL_PAD_LCD_DATA03__PWM4_OUT		0x01010
-> +		>;
-> +	};
-> +
-> +	pinctrl_pwm5: pwm5grp {
-> +		fsl,pins = <
-> +			MX6UL_PAD_LCD_DATA18__PWM5_OUT		0x01010
-> +		>;
-> +	};
-> +
-> +	pinctrl_pwm6: pwm6grp {
-> +		fsl,pins = <
-> +			MX6UL_PAD_LCD_DATA19__PWM6_OUT		0x01010
-> +		>;
-> +	};
-> +
-> +	pinctrl_uart1: uart1grp {
-> +		fsl,pins = <
-> +			MX6UL_PAD_UART1_TX_DATA__UART1_DCE_TX	0x1b0b1
-> +			MX6UL_PAD_UART1_RX_DATA__UART1_DCE_RX	0x1b0b1
-> +		>;
-> +	};
-> +
-> +	pinctrl_uart4: uart4grp {
-> +		fsl,pins = <
-> +			MX6UL_PAD_LCD_CLK__UART4_DCE_TX		0x1b0b0
-> +			MX6UL_PAD_LCD_ENABLE__UART4_DCE_RX	0x1b0b0
-> +			MX6UL_PAD_LCD_HSYNC__UART4_DCE_CTS	0x1b0b0
-> +			MX6UL_PAD_LCD_VSYNC__UART4_DCE_RTS	0x1b0b0
-> +			MX6UL_PAD_LCD_RESET__GPIO3_IO04		0x1b0b0
-> +		>;
-> +	};
-> +
-> +	pinctrl_usbotg1: usbotg1grp {
-> +		fsl,pins = <
-> +			MX6UL_PAD_GPIO1_IO01__USB_OTG1_OC	0x1b0b0
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc1: usdhc1grp {
-> +		fsl,pins = <
-> +			MX6UL_PAD_NAND_WP_B__USDHC1_RESET_B	0x17099
-> +			MX6UL_PAD_SD1_CMD__USDHC1_CMD		0x1f099
-> +			MX6UL_PAD_SD1_CLK__USDHC1_CLK		0x10099
-> +			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0	0x17099
-> +			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1	0x17099
-> +			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2	0x17099
-> +			MX6UL_PAD_SD1_DATA3__USDHC1_DATA3	0x17099
-> +			MX6UL_PAD_NAND_READY_B__USDHC1_DATA4	0x17099
-> +			MX6UL_PAD_NAND_CE0_B__USDHC1_DATA5	0x17099
-> +			MX6UL_PAD_NAND_CE1_B__USDHC1_DATA6	0x17099
-> +			MX6UL_PAD_NAND_CLE__USDHC1_DATA7	0x17099
-> +		>;
-> +	};
-> +
-> +	pinctrl_usdhc2: usdhc2grp {
-> +		fsl,pins = <
-> +			MX6UL_PAD_CSI_VSYNC__USDHC2_CLK		0x100b9
-> +			MX6UL_PAD_CSI_HSYNC__USDHC2_CMD		0x170b9
-> +			MX6UL_PAD_CSI_DATA00__USDHC2_DATA0	0x170b9
-> +			MX6UL_PAD_CSI_DATA01__USDHC2_DATA1	0x170b9
-> +			MX6UL_PAD_CSI_DATA02__USDHC2_DATA2	0x170b9
-> +			MX6UL_PAD_CSI_DATA03__USDHC2_DATA3	0x170b9
-> +		>;
-> +	};
-> +
-> +	pinctrl_vbus: vbus0grp {
-> +		fsl,pins = <
-> +			MX6UL_PAD_GPIO1_IO02__GPIO1_IO02	0x030b0
-> +		>;
-> +	};
-> +
-> +	pinctrl_wifi_npd: wifigrp {
-> +		fsl,pins = <
-> +			/* WL_REG_ON */
-> +			MX6UL_PAD_CSI_DATA04__GPIO4_IO25	0x03020
-> +		>;
-> +	};
-> +};
-> +
-> +&iomuxc_snvs {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_snvs_hog>;
-> +
-> +	pinctrl_snvs_hog: snvs-hog-grp {
-> +		fsl,pins = <
-> +			/* Digital outputs */
-> +			MX6ULL_PAD_SNVS_TAMPER2__GPIO5_IO02	0x00020
-> +			MX6ULL_PAD_SNVS_TAMPER3__GPIO5_IO03	0x00020
-> +			MX6ULL_PAD_SNVS_TAMPER4__GPIO5_IO04	0x00020
-> +			MX6ULL_PAD_SNVS_TAMPER5__GPIO5_IO05	0x00020
-> +			MX6ULL_PAD_SNVS_TAMPER6__GPIO5_IO06	0x00020
-> +
-> +			/* Digital outputs fault feedback */
-> +			MX6ULL_PAD_SNVS_TAMPER0__GPIO5_IO00	0x17000
-> +			MX6ULL_PAD_SNVS_TAMPER1__GPIO5_IO01	0x17000
-> +			MX6ULL_PAD_SNVS_TAMPER7__GPIO5_IO07	0x17000
-> +			MX6ULL_PAD_SNVS_TAMPER8__GPIO5_IO08	0x17000
-> +			MX6ULL_PAD_SNVS_TAMPER9__GPIO5_IO09	0x17000
-> +		>;
-> +	};
-> +};
-> -- 
-> 2.30.2
-> 
+Applied, thanks.
