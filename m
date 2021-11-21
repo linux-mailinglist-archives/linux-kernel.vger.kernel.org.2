@@ -2,80 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C07A45818E
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 03:54:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40672458193
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 04:26:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237681AbhKUC50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 21:57:26 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:55761 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S237631AbhKUC50 (ORCPT
+        id S237803AbhKUD30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 22:29:26 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:54030 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237787AbhKUD3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 21:57:26 -0500
-Received: (qmail 68548 invoked by uid 1000); 20 Nov 2021 21:54:20 -0500
-Date:   Sat, 20 Nov 2021 21:54:20 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     David Niklas <Hgntkwis@vfemail.net>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-input@vger.kernel.org
-Subject: Re: I need advice with UPS connection. (ping)
-Message-ID: <YZm03KTcWOwtMtCN@rowland.harvard.edu>
-References: <20201109220000.2ae98fa5@Phenom-II-x6.niklas.com>
- <20211114144842.72463ccc@Zen-II-x12.niklas.com>
- <20211114211435.GA87082@rowland.harvard.edu>
- <20211114220222.31755871@Zen-II-x12.niklas.com>
- <20211115160918.GB109771@rowland.harvard.edu>
- <20211117002359.03b36ec6@Zen-II-x12.niklas.com>
- <20211117170817.GD172151@rowland.harvard.edu>
- <20211119171915.6a8cac47@Zen-II-x12.niklas.com>
+        Sat, 20 Nov 2021 22:29:25 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AL3PmCJ117153;
+        Sat, 20 Nov 2021 21:25:48 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1637465148;
+        bh=dwovKqCilm51jOCmGaV3r/XWOt+HClI9vWaQx7Ppyz8=;
+        h=Date:From:To:CC:Subject;
+        b=DxjHSyw0jT0pcScnnM8Y3+4ehnepso0TOoiBg18EWW6q/8ENNKCAq+C5BfCFEsNH3
+         epnXIKPaFdEZWn75uPaWMKlhBOpVoe5FavVhTnFdITyB4Sdfq+qOVn2jKr8okaB1v2
+         l/U/sxnZv/+Hza5tzSIpkZSKcEVkR2VLOEmM4/Dk=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AL3PmPq017265
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 20 Nov 2021 21:25:48 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Sat, 20
+ Nov 2021 21:25:48 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Sat, 20 Nov 2021 21:25:48 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AL3Pmj0123626;
+        Sat, 20 Nov 2021 21:25:48 -0600
+Date:   Sat, 20 Nov 2021 21:25:48 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+CC:     "Raghavendra, Vignesh" <vigneshr@ti.com>, <tony@atomide.com>,
+        <kristo@kernel.org>,
+        "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>
+Subject: Request: Add Transition TI Tree to linux-next
+Message-ID: <20211121032548.c56zt66ac5hjbu7j@garden>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xskazjy2ohcxysn3"
 Content-Disposition: inline
-In-Reply-To: <20211119171915.6a8cac47@Zen-II-x12.niklas.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 05:19:15PM -0500, David Niklas wrote:
-> On Wed, 17 Nov 2021 12:08:17 -0500
-> Alan Stern <stern@rowland.harvard.edu> wrote:
-> > On Wed, Nov 17, 2021 at 12:23:59AM -0500, David Niklas wrote:
+--xskazjy2ohcxysn3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > > I can also try and use SnoopyPro and busdog if the output is
-> > > undesirable. USBPcap spits out a pcap file which can be analyzed by
-> > > wireshark using dissectors -- somehow (I really should practice using
-> > > wireshark.)  
-> > 
-> > Wireshark on my system has no trouble reading your pcap file.
-> 
-> Misunderstanding then. I was thinking in terms of the USBPcap docs. I was
-> saying a dissector would need to be written. I'm glad it worked for you.
-> https://desowin.org/usbpcap/dissectors.html
-> "Writing USB class dissector"
+Hi Stephen,
 
-Evidently wireshark already has built-in dissectors for standard USB 
-communications.
+We have been working towards a rotating maintainership for various
+TI dts and potentially related areas that Santosh is currently
+maintaining. As part of this, my tree[1] is now integrated into the
+common effort.
 
-> > This will cause the kernel to ask for 1060 bytes rather than 996.
-> > (It's also potentially dangerous, because it asks for 1060 bytes to be
-> > stored into a 996-byte buffer; if the device sends more data than
-> > expected then the excess will be written beyond the end of the buffer.)
-> > 
-> > Please send a usbmon trace showing what happens with this patch
-> > applied. And you might as well put the Set-Idle request back in,
-> > because now we know Windows does send that request.
-> > 
-> <snip>
-> 
-> It still disconnects. I've attached the usbmon output.
+Please replace my current tree[1] with:
 
-The trace clearly shows the request for a 1060-byte HID report 
-descriptor and the device sending back a 996-byte reply, just like in 
-Windows.  And yet the disconnect still occurs.
+   git://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git#ti-next
 
-The only remaining difference is the transfer of string descriptors.  
-You can prevent Linux from asking for them by editing usb_string() in 
-drivers/usb/core/message.c.  Just make the function return -ENOMEM 
-unconditionally.  That will stop the requests from going out.
+We will follow the usual rules (GPLv2, contributer's guidelines,
+reviews, successfully tested, meant for next merge window and intent
+towards linus's tree via submaintainers) and this would be a rebased
+tree as needed.
 
-Alan Stern
+[1]
+git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git#ti-k3-next (=
+ti-k3-new)
+
+--=20
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5=
+ 849D 1736 249D
+
+--xskazjy2ohcxysn3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE+KKGk1TrgjIXoxo03bWEnRc2JJ0FAmGZvDUACgkQ3bWEnRc2
+JJ3jFRAAnAiBqbXtaetLqGud1qLs2pdcoTs5hFCHIk3NVYHNZnhhHNaR2emEDivu
+iMizYCNuNSeSqXDe8Xv8V9uwHZDeQn3yS88RWEgbptp7h0HTJaoN+rr28NgmqWTO
+1urHj1D8os/P2uCupzWFkUzwdql2ShoncxOJk/spwctq7oVx/u3owhIyqkMJq9SS
+uko6mDg4oruziTFFLxqxwaNovolpWe7+Lxt+x7gh/u6bR+jEEV0OZtuHTBWxnxZ2
+XBc/VkcvnYp8xdo//vp3/g00BcvBbZbaN2tgomxUYomJKxuoRLH3hr0WOFvNrR/D
+yDVSsGs0sR15WsWYLbmGJJlnMjqqMW47hxYAx3kwAqNL2qhvZ93iJbuWp3l+BOtB
+FtID+95BcMAkr2D1A3MZUmEzmS1aEW/iaSlGcMrznezemC+i0xcHw5uUjbw9VAay
+u27QDC5K/ZnbYeCIoSVn/9rtsEPuUipFtZynWWGkEbE4j36kXZHp268B5xhhsTRN
+qs7SoOL2r3dwMsJ/9kZ/vm9ouE+K/5hSf6Eoy7+fOPhMOl7X8kCBi24USIMmTMot
+h4rXx5BrkLK7DLMufmAzRMmmi03zR127sfCOU5XxWS8FKi2QpGxWgvBdPfodKMCu
+T+lmrRj3fp4H9uTFlNC+mZkUpxyjzsxby+YQ8rVCBI5YakM6jf4=
+=cCe1
+-----END PGP SIGNATURE-----
+
+--xskazjy2ohcxysn3--
