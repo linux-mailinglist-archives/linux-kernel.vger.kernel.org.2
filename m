@@ -2,75 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5144583F8
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 15:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 916CD4583FF
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 15:12:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238276AbhKUOGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 09:06:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238265AbhKUOGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 09:06:36 -0500
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2CD1A60E75;
-        Sun, 21 Nov 2021 14:03:28 +0000 (UTC)
-Date:   Sun, 21 Nov 2021 14:08:23 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH 03/15] iio: buffer-dma: Use round_down() instead of
- rounddown()
-Message-ID: <20211121140823.6b2922f6@jic23-huawei>
-In-Reply-To: <20211115141925.60164-4-paul@crapouillou.net>
-References: <20211115141925.60164-1-paul@crapouillou.net>
-        <20211115141925.60164-4-paul@crapouillou.net>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S238093AbhKUOPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 09:15:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236405AbhKUOPF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 09:15:05 -0500
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5AA3C061574;
+        Sun, 21 Nov 2021 06:12:00 -0800 (PST)
+Received: by mail-ua1-x933.google.com with SMTP id b17so31307421uas.0;
+        Sun, 21 Nov 2021 06:12:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ekq5nYIICzg5NIjoLxX2n2oDnL+G6sOR9vxyDeRhzUM=;
+        b=WTt3G4WMYmY0iRBD+80UqNFoPQKEdmcYTe8VGuFTmahv4O+B+jVy06eePdGfjWcXCZ
+         k7Scxoe4NoN7wOHtE9iMjCzcpGAzK4uJE9pYkoTMLAjJecv0NRczgRRXSsC+ksEDttKV
+         t5ZxtmfSh3CAQpJ3CoiEsoWh6POHxswn489nR8svXCG0H9fQMl0FfRY8eUwB5h7vQihs
+         KeDv0hfG/JEkJAtYHnqw0tvf1+ZDxoRTpBTGlDu0pFuMVtnzl6Ql/Knhr4L6YG7/zuI9
+         4/3bgQeR11UHwaoK+BRmmJspMF2B8hFzjY9QK14lnfsNRDFkNOlMTNhYFPfJy+SiRoae
+         VWyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ekq5nYIICzg5NIjoLxX2n2oDnL+G6sOR9vxyDeRhzUM=;
+        b=czMLJQgTzYaipQPXR7LFQXYO53Rdqf8r4kOPk+X6tRNaDvVRZMlxs6CpAegvMfKCFO
+         e2mJ5lN112DqFt3ZvbVpS+LQ/VgR/1wzKwtWseyvGki28XI+5O3XLXEAb9VDI1hi9q8g
+         gHudYFydi2eb8e7eIiWspwOYs+NLBK8zp6uRSgoo4XmdMjuJtXzFTkyFA9Bzx7c2oc1Z
+         oBY8rUHuYVkUEBP1Edr+aQMlcPaF5td1RwMaKVhnSrc8/NgU0URHsr97LSm4YLGz1m90
+         8u+JePVu+Z4cmp3ad3BDPXL3eDwGVy+HMKKvxkzAhxbIhEkuWyV/7qiq3H5F9KArST1U
+         0kqw==
+X-Gm-Message-State: AOAM532HbLeRJn6OfYiVUeCiqNVYsmLAmDe4IvzGw4Fiqrksz7CEsbag
+        2QvamaoleU51dviXmjnGcwJCRyzJ63HcPKSN1gY=
+X-Google-Smtp-Source: ABdhPJzbFG6H2qloDUjJhgEiV0ZggzLG3OhnovVTs6t1Lv+tULfU1/SIrI40NftSMr1h2p/Go5T6lU29Ukmf9kXZrjg=
+X-Received: by 2002:a67:f988:: with SMTP id b8mr116392725vsq.51.1637503919575;
+ Sun, 21 Nov 2021 06:11:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211104161804.587250-1-aford173@gmail.com> <CAJ+vNU2jcWyCm3UyiOnvknS0t+mSdpaB+CgGWYO3jxXTa3LhRA@mail.gmail.com>
+ <CAHCN7xJrnZMQgXVMJg7MZdFMWyesf6Ph7HnfMH7-9bm1qODHFw@mail.gmail.com>
+ <CAJ+vNU32GXtbKWGQXoE7pkXU8FcKh+HQJJduwRbRJ0tC-d6GoA@mail.gmail.com> <CAHCN7xLAm21zUJQ8s4s--+ygmeVY0qyo0WSLp7ZM9bT9R3sjxw@mail.gmail.com>
+In-Reply-To: <CAHCN7xLAm21zUJQ8s4s--+ygmeVY0qyo0WSLp7ZM9bT9R3sjxw@mail.gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Sun, 21 Nov 2021 11:11:49 -0300
+Message-ID: <CAOMZO5Am4P17mOXWrPs0ns9AwOXM_ZpBdzbYTYJfv_48Ea=BHg@mail.gmail.com>
+Subject: Re: [PATCH V3 0/9] arm64: imx8mn: Enable more imx8m Nano functions
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Tim Harvey <tharvey@gateworks.com>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        "Ariel D'Alessandro" <ariel.dalessandro@collabora.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Device Tree Mailing List <devicetree@vger.kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Nov 2021 14:19:13 +0000
-Paul Cercueil <paul@crapouillou.net> wrote:
+Hi Adam,
 
-> We know that the buffer's alignment will always be a power of two;
-> therefore, we can use the faster round_down() macro.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-*groan*.  I don't want to know where the naming of these two came from but that
-is spectacular... 
+On Sun, Nov 21, 2021 at 10:07 AM Adam Ford <aford173@gmail.com> wrote:
 
-Anyhow, happy to pick up 1-3 now if you like as all are good cleanup of
-existing code.
+> I cannot replicate your issue.  I applied the patch series to
+> 5.16-rc1, and it's still working for me.
 
-Jonathan
+Could the different behavior be caused by different TF-A versions that
+you and Tim used?
 
-> ---
->  drivers/iio/buffer/industrialio-buffer-dmaengine.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/buffer/industrialio-buffer-dmaengine.c b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-> index 1ac94c4e9792..f8ce26a24c57 100644
-> --- a/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-> +++ b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-> @@ -67,7 +67,7 @@ static int iio_dmaengine_buffer_submit_block(struct iio_dma_buffer_queue *queue,
->  	dma_cookie_t cookie;
->  
->  	block->bytes_used = min(block->size, dmaengine_buffer->max_size);
-> -	block->bytes_used = rounddown(block->bytes_used,
-> +	block->bytes_used = round_down(block->bytes_used,
->  			dmaengine_buffer->align);
->  
->  	desc = dmaengine_prep_slave_single(dmaengine_buffer->chan,
+Which ATF version do you use? Is it TF-A v2.5?
 
+Thanks
