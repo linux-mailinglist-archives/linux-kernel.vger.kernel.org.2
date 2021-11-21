@@ -2,261 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E1D458403
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 15:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C2245840C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 15:21:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238211AbhKUOTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 09:19:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50220 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236405AbhKUOTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 09:19:03 -0500
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5CD86604DC;
-        Sun, 21 Nov 2021 14:15:55 +0000 (UTC)
-Date:   Sun, 21 Nov 2021 14:20:49 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH 04/15] iio: buffer-dma: Enable buffer write support
-Message-ID: <20211121142049.2d000c04@jic23-huawei>
-In-Reply-To: <20211115141925.60164-5-paul@crapouillou.net>
-References: <20211115141925.60164-1-paul@crapouillou.net>
-        <20211115141925.60164-5-paul@crapouillou.net>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S238037AbhKUOY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 09:24:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236478AbhKUOYZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 09:24:25 -0500
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C8DC061574;
+        Sun, 21 Nov 2021 06:21:20 -0800 (PST)
+Received: by mail-ua1-x92b.google.com with SMTP id az37so31191083uab.13;
+        Sun, 21 Nov 2021 06:21:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zwuwEheueqJDq8ge9CRsITwWPfBpC9vA8U9g8O5Iw/c=;
+        b=P5GXPjb/NbvN7BQjLiP3quKUmWVf2UHwuNClrBYZVoq5gBIXSLVZrL0ZBoM1HOfRwV
+         j2wjlJZgVAyeR0b+8CkftbF8yz40eY8S9oZ0WGHZECZ4FHFIiF0bRLV1SthWK/ffNCv7
+         zNK6OtOa4ilpi36Q2K5KEpz6n4IwscF7ZDOktfAJSS6x3BOuCX1L+GO7JUVonXo0HFJB
+         PH/yFSvoh6URbFUj39DIoEKvY+dMh+zBW7yR5R93WHw92PfBlGkYTGtqhBun9nqzNkZ/
+         5mn7N7aPntWwMxwoDSt9UiNEL7sFw3pR+rdTCSVtFiIdRFSQgmquvoTbV18EkEh5aH+B
+         sP9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zwuwEheueqJDq8ge9CRsITwWPfBpC9vA8U9g8O5Iw/c=;
+        b=7ZohHz+Fknhe8bds9W/RNzbIsV7xXgR2NZqdWFE6FSaYpCeTp4kOyZQtajOWPPZAhT
+         L+i92Cza0T/hL9elqp+zGx9tEvnmen6h2a1EQ1+tQ+wR6aisdyKaHTghf3x57/rUnCh5
+         IORNalGF2DjGvW0n9imWuEkjzOSmu8qH0gErhRTH/nmGIzGOtCtr1jl8h600WvSnXU/v
+         ebrhC/qBnpM2BAdJGdXqWUEHctm7PBU4oReuQ7JHSAWBR5dDFARGKj8p7jFKCr0F4qrH
+         yK8KIYinC8a3s0TJvkkVbA7CgNyOotmM7spxxNXdlunZMJXyuPAx4OkSOJQ+73cbjugf
+         gdGw==
+X-Gm-Message-State: AOAM532lH4+R3k8j7PAJRZ5n9SYOeZp5YcmVV+bb+uf14YyJyyNKXQ5u
+        3hGfw/hl3PpIHBHOpf8dr4S+8tHq+vyeYXCkFuM=
+X-Google-Smtp-Source: ABdhPJyhOT6OMErKMRcLfgo4DYC3ludPCveDgR+Oi9vgSf5my5Hatp5pjXY5SgvN8WEDYWU2K7aIi63SromCnsDSsrY=
+X-Received: by 2002:a67:f988:: with SMTP id b8mr116469116vsq.51.1637504479247;
+ Sun, 21 Nov 2021 06:21:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211104161804.587250-1-aford173@gmail.com> <CAJ+vNU2jcWyCm3UyiOnvknS0t+mSdpaB+CgGWYO3jxXTa3LhRA@mail.gmail.com>
+ <CAHCN7xJrnZMQgXVMJg7MZdFMWyesf6Ph7HnfMH7-9bm1qODHFw@mail.gmail.com>
+ <CAJ+vNU32GXtbKWGQXoE7pkXU8FcKh+HQJJduwRbRJ0tC-d6GoA@mail.gmail.com>
+ <CAHCN7xLAm21zUJQ8s4s--+ygmeVY0qyo0WSLp7ZM9bT9R3sjxw@mail.gmail.com>
+ <CAOMZO5Am4P17mOXWrPs0ns9AwOXM_ZpBdzbYTYJfv_48Ea=BHg@mail.gmail.com> <CAHCN7xLzR5LqqydC7uydsXQPFVn=nyqKD8ZEH3EjcPuwQky5WA@mail.gmail.com>
+In-Reply-To: <CAHCN7xLzR5LqqydC7uydsXQPFVn=nyqKD8ZEH3EjcPuwQky5WA@mail.gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Sun, 21 Nov 2021 11:21:08 -0300
+Message-ID: <CAOMZO5AnXDV3jdR6hP_+uqyss4KftzjahcrGq1XA37nGsfQedw@mail.gmail.com>
+Subject: Re: [PATCH V3 0/9] arm64: imx8mn: Enable more imx8m Nano functions
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Tim Harvey <tharvey@gateworks.com>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        "Ariel D'Alessandro" <ariel.dalessandro@collabora.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Device Tree Mailing List <devicetree@vger.kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Nov 2021 14:19:14 +0000
-Paul Cercueil <paul@crapouillou.net> wrote:
+Hi Adam,
 
-> Adding write support to the buffer-dma code is easy - the write()
-> function basically needs to do the exact same thing as the read()
-> function: dequeue a block, read or write the data, enqueue the block
-> when entirely processed.
-> 
-> Therefore, the iio_buffer_dma_read() and the new iio_buffer_dma_write()
-> now both call a function iio_buffer_dma_io(), which will perform this
-> task.
-> 
-> The .space_available() callback can return the exact same value as the
-> .data_available() callback for input buffers, since in both cases we
-> count the exact same thing (the number of bytes in each available
-> block).
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Hi Paul,
+On Sun, Nov 21, 2021 at 11:17 AM Adam Ford <aford173@gmail.com> wrote:
 
-There are a few changes in here, such as the bytes_used value being set that
-I'm not following the reasoning behind. More info on those?
-Also good to provide something about those in this patch description.
+> I am using https://source.codeaurora.org/external/imx/imx-atf/log/?h=lf_v2.4
+>
+> Since the driver sending SMCC commands to ATF isn't doing that, I
+> assume it's safe to use the linux power-domain drivers with the ATF
+> from NXP's kernel.
+>
+> If you can point me to the repo you think I should be using, I'll give it a try.
 
-Thanks,
+Do you know if the mainline TF-A repo v2.5 works too?
+https://github.com/ARM-software/arm-trusted-firmware/tree/v2.5
 
-Jonathan
-
-
-> ---
->  drivers/iio/buffer/industrialio-buffer-dma.c | 75 +++++++++++++++-----
->  include/linux/iio/buffer-dma.h               |  7 ++
->  2 files changed, 66 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/iio/buffer/industrialio-buffer-dma.c b/drivers/iio/buffer/industrialio-buffer-dma.c
-> index abac88f20104..eeeed6b2e0cf 100644
-> --- a/drivers/iio/buffer/industrialio-buffer-dma.c
-> +++ b/drivers/iio/buffer/industrialio-buffer-dma.c
-> @@ -179,7 +179,8 @@ static struct iio_dma_buffer_block *iio_dma_buffer_alloc_block(
->  	}
->  
->  	block->size = size;
-> -	block->state = IIO_BLOCK_STATE_DEQUEUED;
-> +	block->bytes_used = size;
-> +	block->state = IIO_BLOCK_STATE_DONE;
-
-I don't know why these are here - some more info?
-
->  	block->queue = queue;
->  	INIT_LIST_HEAD(&block->head);
->  	kref_init(&block->kref);
-> @@ -195,6 +196,18 @@ static void _iio_dma_buffer_block_done(struct iio_dma_buffer_block *block)
->  		block->state = IIO_BLOCK_STATE_DONE;
->  }
->  
-> +static void iio_dma_buffer_queue_wake(struct iio_dma_buffer_queue *queue)
-> +{
-> +	__poll_t flags;
-> +
-> +	if (queue->buffer.direction == IIO_BUFFER_DIRECTION_IN)
-> +		flags = EPOLLIN | EPOLLRDNORM;
-> +	else
-> +		flags = EPOLLOUT | EPOLLWRNORM;
-> +
-> +	wake_up_interruptible_poll(&queue->buffer.pollq, flags);
-> +}
-> +
->  /**
->   * iio_dma_buffer_block_done() - Indicate that a block has been completed
->   * @block: The completed block
-> @@ -212,7 +225,7 @@ void iio_dma_buffer_block_done(struct iio_dma_buffer_block *block)
->  	spin_unlock_irqrestore(&queue->list_lock, flags);
->  
->  	iio_buffer_block_put_atomic(block);
-> -	wake_up_interruptible_poll(&queue->buffer.pollq, EPOLLIN | EPOLLRDNORM);
-> +	iio_dma_buffer_queue_wake(queue);
->  }
->  EXPORT_SYMBOL_GPL(iio_dma_buffer_block_done);
->  
-> @@ -241,7 +254,7 @@ void iio_dma_buffer_block_list_abort(struct iio_dma_buffer_queue *queue,
->  	}
->  	spin_unlock_irqrestore(&queue->list_lock, flags);
->  
-> -	wake_up_interruptible_poll(&queue->buffer.pollq, EPOLLIN | EPOLLRDNORM);
-> +	iio_dma_buffer_queue_wake(queue);
->  }
->  EXPORT_SYMBOL_GPL(iio_dma_buffer_block_list_abort);
->  
-> @@ -334,7 +347,8 @@ int iio_dma_buffer_request_update(struct iio_buffer *buffer)
->  			queue->fileio.blocks[i] = block;
->  		}
->  
-> -		block->state = IIO_BLOCK_STATE_QUEUED;
-> +		if (queue->buffer.direction == IIO_BUFFER_DIRECTION_IN)
-> +			block->state = IIO_BLOCK_STATE_QUEUED;
-
-Possibly worth a comment on the state being set here.  I figured it out, but might
-save some brain cells in future if it's stated in the code.
-
->  	}
->  
->  out_unlock:
-> @@ -467,20 +481,12 @@ static struct iio_dma_buffer_block *iio_dma_buffer_dequeue(
->  	return block;
->  }
->  
-> -/**
-> - * iio_dma_buffer_read() - DMA buffer read callback
-> - * @buffer: Buffer to read form
-> - * @n: Number of bytes to read
-> - * @user_buffer: Userspace buffer to copy the data to
-> - *
-> - * Should be used as the read callback for iio_buffer_access_ops
-> - * struct for DMA buffers.
-> - */
-> -int iio_dma_buffer_read(struct iio_buffer *buffer, size_t n,
-> -	char __user *user_buffer)
-> +static int iio_dma_buffer_io(struct iio_buffer *buffer,
-> +			     size_t n, char __user *user_buffer, bool is_write)
->  {
->  	struct iio_dma_buffer_queue *queue = iio_buffer_to_queue(buffer);
->  	struct iio_dma_buffer_block *block;
-> +	void *addr;
->  	int ret;
->  
->  	if (n < buffer->bytes_per_datum)
-> @@ -503,8 +509,13 @@ int iio_dma_buffer_read(struct iio_buffer *buffer, size_t n,
->  	n = rounddown(n, buffer->bytes_per_datum);
->  	if (n > block->bytes_used - queue->fileio.pos)
->  		n = block->bytes_used - queue->fileio.pos;
-> +	addr = block->vaddr + queue->fileio.pos;
->  
-> -	if (copy_to_user(user_buffer, block->vaddr + queue->fileio.pos, n)) {
-> +	if (is_write)
-> +		ret = !!copy_from_user(addr, user_buffer, n);
-> +	else
-> +		ret = !!copy_to_user(user_buffer, addr, n);
-
-What is the !! gaining us here?  We only care about == 0 vs != 0 so
-forcing it to be 0 or 1 isn't useful.
-
-> +	if (ret) {
->  		ret = -EFAULT;
->  		goto out_unlock;
->  	}
-> @@ -513,6 +524,7 @@ int iio_dma_buffer_read(struct iio_buffer *buffer, size_t n,
->  
->  	if (queue->fileio.pos == block->bytes_used) {
->  		queue->fileio.active_block = NULL;
-> +		block->bytes_used = block->size;
-
-This seems to be a functional change that isn't called out in the patch description.
-
->  		iio_dma_buffer_enqueue(queue, block);
->  	}
->  
-> @@ -523,8 +535,39 @@ int iio_dma_buffer_read(struct iio_buffer *buffer, size_t n,
->  
->  	return ret;
->  }
-> +
-> +/**
-> + * iio_dma_buffer_read() - DMA buffer read callback
-> + * @buffer: Buffer to read form
-> + * @n: Number of bytes to read
-> + * @user_buffer: Userspace buffer to copy the data to
-> + *
-> + * Should be used as the read callback for iio_buffer_access_ops
-> + * struct for DMA buffers.
-> + */
-> +int iio_dma_buffer_read(struct iio_buffer *buffer, size_t n,
-> +	char __user *user_buffer)
-> +{
-> +	return iio_dma_buffer_io(buffer, n, user_buffer, false);
-> +}
->  EXPORT_SYMBOL_GPL(iio_dma_buffer_read);
->  
-> +/**
-> + * iio_dma_buffer_write() - DMA buffer write callback
-> + * @buffer: Buffer to read form
-> + * @n: Number of bytes to read
-> + * @user_buffer: Userspace buffer to copy the data from
-> + *
-> + * Should be used as the write callback for iio_buffer_access_ops
-> + * struct for DMA buffers.
-> + */
-> +int iio_dma_buffer_write(struct iio_buffer *buffer, size_t n,
-> +			 const char __user *user_buffer)
-> +{
-> +	return iio_dma_buffer_io(buffer, n, (__force char *)user_buffer, true);
-> +}
-> +EXPORT_SYMBOL_GPL(iio_dma_buffer_write);
-> +
->  /**
->   * iio_dma_buffer_data_available() - DMA buffer data_available callback
->   * @buf: Buffer to check for data availability
-> diff --git a/include/linux/iio/buffer-dma.h b/include/linux/iio/buffer-dma.h
-> index a65a005c4a19..09c07d5563c0 100644
-> --- a/include/linux/iio/buffer-dma.h
-> +++ b/include/linux/iio/buffer-dma.h
-> @@ -132,6 +132,8 @@ int iio_dma_buffer_disable(struct iio_buffer *buffer,
->  	struct iio_dev *indio_dev);
->  int iio_dma_buffer_read(struct iio_buffer *buffer, size_t n,
->  	char __user *user_buffer);
-> +int iio_dma_buffer_write(struct iio_buffer *buffer, size_t n,
-> +			 const char __user *user_buffer);
->  size_t iio_dma_buffer_data_available(struct iio_buffer *buffer);
->  int iio_dma_buffer_set_bytes_per_datum(struct iio_buffer *buffer, size_t bpd);
->  int iio_dma_buffer_set_length(struct iio_buffer *buffer, unsigned int length);
-> @@ -142,4 +144,9 @@ int iio_dma_buffer_init(struct iio_dma_buffer_queue *queue,
->  void iio_dma_buffer_exit(struct iio_dma_buffer_queue *queue);
->  void iio_dma_buffer_release(struct iio_dma_buffer_queue *queue);
->  
-> +static inline size_t iio_dma_buffer_space_available(struct iio_buffer *buffer)
-> +{
-> +	return iio_dma_buffer_data_available(buffer);
-> +}
-> +
->  #endif
-
+Thanks
