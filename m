@@ -2,85 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 916CD4583FF
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 15:12:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 386F0458407
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 15:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238093AbhKUOPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 09:15:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236405AbhKUOPF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 09:15:05 -0500
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5AA3C061574;
-        Sun, 21 Nov 2021 06:12:00 -0800 (PST)
-Received: by mail-ua1-x933.google.com with SMTP id b17so31307421uas.0;
-        Sun, 21 Nov 2021 06:12:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ekq5nYIICzg5NIjoLxX2n2oDnL+G6sOR9vxyDeRhzUM=;
-        b=WTt3G4WMYmY0iRBD+80UqNFoPQKEdmcYTe8VGuFTmahv4O+B+jVy06eePdGfjWcXCZ
-         k7Scxoe4NoN7wOHtE9iMjCzcpGAzK4uJE9pYkoTMLAjJecv0NRczgRRXSsC+ksEDttKV
-         t5ZxtmfSh3CAQpJ3CoiEsoWh6POHxswn489nR8svXCG0H9fQMl0FfRY8eUwB5h7vQihs
-         KeDv0hfG/JEkJAtYHnqw0tvf1+ZDxoRTpBTGlDu0pFuMVtnzl6Ql/Knhr4L6YG7/zuI9
-         4/3bgQeR11UHwaoK+BRmmJspMF2B8hFzjY9QK14lnfsNRDFkNOlMTNhYFPfJy+SiRoae
-         VWyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ekq5nYIICzg5NIjoLxX2n2oDnL+G6sOR9vxyDeRhzUM=;
-        b=czMLJQgTzYaipQPXR7LFQXYO53Rdqf8r4kOPk+X6tRNaDvVRZMlxs6CpAegvMfKCFO
-         e2mJ5lN112DqFt3ZvbVpS+LQ/VgR/1wzKwtWseyvGki28XI+5O3XLXEAb9VDI1hi9q8g
-         gHudYFydi2eb8e7eIiWspwOYs+NLBK8zp6uRSgoo4XmdMjuJtXzFTkyFA9Bzx7c2oc1Z
-         oBY8rUHuYVkUEBP1Edr+aQMlcPaF5td1RwMaKVhnSrc8/NgU0URHsr97LSm4YLGz1m90
-         8u+JePVu+Z4cmp3ad3BDPXL3eDwGVy+HMKKvxkzAhxbIhEkuWyV/7qiq3H5F9KArST1U
-         0kqw==
-X-Gm-Message-State: AOAM532HbLeRJn6OfYiVUeCiqNVYsmLAmDe4IvzGw4Fiqrksz7CEsbag
-        2QvamaoleU51dviXmjnGcwJCRyzJ63HcPKSN1gY=
-X-Google-Smtp-Source: ABdhPJzbFG6H2qloDUjJhgEiV0ZggzLG3OhnovVTs6t1Lv+tULfU1/SIrI40NftSMr1h2p/Go5T6lU29Ukmf9kXZrjg=
-X-Received: by 2002:a67:f988:: with SMTP id b8mr116392725vsq.51.1637503919575;
- Sun, 21 Nov 2021 06:11:59 -0800 (PST)
+        id S238244AbhKUOTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 09:19:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236405AbhKUOTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 09:19:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A835B603E9;
+        Sun, 21 Nov 2021 14:16:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637504161;
+        bh=NdN7wxU/ouLqpxo8zR4Fcy0GAiOMueq3uf3+8wncIXs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QEkj9s9N87UfWIPu2ywNL83UqHQKZ0ZHFthEDvalnxMoAufegvYOPL/L/1Sw6QbNH
+         YNT5BDTwkTQ1ZUWRuosOodrZGGVaaQPzdwJnTpkTTrhtfxTqvcRQPSh5SAje9nuy3n
+         3aLbUo0xfQtp0HawOLacmyMqzUyfrk5eX8z+s9AUr/K9g5S2oLJj7eHTQ4lU6ztrU5
+         zZg8dsXYzrMj+T4ydh+chEo1QX4WBdtNF7QFVllxFObaER5xuuCvJXDMk8y/ga6wmf
+         d7bnwL3soW3Gwrv7GnwMn3fyTB6x0qBSnr9gwiKN7ttQasNBcbDmSx4ZGVYnOy+HLb
+         aY/TtbTxuJoXw==
+Date:   Sun, 21 Nov 2021 16:15:57 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     syzbot <syzbot+aab53008a5adf26abe91@syzkaller.appspotmail.com>,
+        dledford@redhat.com, jgg@ziepe.ca, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, zyjzyj2000@gmail.com
+Subject: Re: [syzbot] KASAN: use-after-free Read in rxe_queue_cleanup
+Message-ID: <YZpUnR05mK6taHs9@unreal>
+References: <000000000000c4e52d05d120e1b0@google.com>
+ <91426976-b784-e480-6e3a-52da5d1268cc@gmail.com>
 MIME-Version: 1.0
-References: <20211104161804.587250-1-aford173@gmail.com> <CAJ+vNU2jcWyCm3UyiOnvknS0t+mSdpaB+CgGWYO3jxXTa3LhRA@mail.gmail.com>
- <CAHCN7xJrnZMQgXVMJg7MZdFMWyesf6Ph7HnfMH7-9bm1qODHFw@mail.gmail.com>
- <CAJ+vNU32GXtbKWGQXoE7pkXU8FcKh+HQJJduwRbRJ0tC-d6GoA@mail.gmail.com> <CAHCN7xLAm21zUJQ8s4s--+ygmeVY0qyo0WSLp7ZM9bT9R3sjxw@mail.gmail.com>
-In-Reply-To: <CAHCN7xLAm21zUJQ8s4s--+ygmeVY0qyo0WSLp7ZM9bT9R3sjxw@mail.gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Sun, 21 Nov 2021 11:11:49 -0300
-Message-ID: <CAOMZO5Am4P17mOXWrPs0ns9AwOXM_ZpBdzbYTYJfv_48Ea=BHg@mail.gmail.com>
-Subject: Re: [PATCH V3 0/9] arm64: imx8mn: Enable more imx8m Nano functions
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Tim Harvey <tharvey@gateworks.com>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        "Ariel D'Alessandro" <ariel.dalessandro@collabora.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Device Tree Mailing List <devicetree@vger.kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <91426976-b784-e480-6e3a-52da5d1268cc@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
+On Sat, Nov 20, 2021 at 06:02:02PM +0300, Pavel Skripkin wrote:
+> On 11/19/21 12:27, syzbot wrote:
+> > Hello,
+> > 
+> > syzbot found the following issue on:
+> > 
+> > HEAD commit:    8d0112ac6fd0 Merge tag 'net-5.16-rc2' of git://git.kernel...
+> > git tree:       net
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=14e3eeaab00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=6d3b8fd1977c1e73
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=aab53008a5adf26abe91
+> > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> > 
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+aab53008a5adf26abe91@syzkaller.appspotmail.com
+> > 
+> > Free swap  = 0kB
+> > Total swap = 0kB
+> > 2097051 pages RAM
+> > 0 pages HighMem/MovableOnly
+> > 384517 pages reserved
+> > 0 pages cma reserved
+> > ==================================================================
+> > BUG: KASAN: use-after-free in rxe_queue_cleanup+0xf4/0x100 drivers/infiniband/sw/rxe/rxe_queue.c:193
+> > Read of size 8 at addr ffff88814a6b6e90 by task syz-executor.3/9534
+> > 
+> 
+> On error handling path in rxe_qp_from_init() qp->sq.queue is freed and then
+> rxe_create_qp() will drop last reference to this object. qp clean up
+> function will try to free this queue one time and it causes UAF bug.
+> 
+> Just for thoughts.
 
-On Sun, Nov 21, 2021 at 10:07 AM Adam Ford <aford173@gmail.com> wrote:
-
-> I cannot replicate your issue.  I applied the patch series to
-> 5.16-rc1, and it's still working for me.
-
-Could the different behavior be caused by different TF-A versions that
-you and Tim used?
-
-Which ATF version do you use? Is it TF-A v2.5?
+You are right, can you please submit patch?
 
 Thanks
+
+> 
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c
+> b/drivers/infiniband/sw/rxe/rxe_qp.c
+> index 975321812c87..54b8711321c1 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+> @@ -359,6 +359,7 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp
+> *qp, struct rxe_pd *pd,
+> 
+>  err2:
+>  	rxe_queue_cleanup(qp->sq.queue);
+> +	qp->sq.queue = NULL;
+>  err1:
+>  	qp->pd = NULL;
+>  	qp->rcq = NULL;
+> 
+> 
+> 
+> 
+> 
+> With regards,
+> Pavel Skripkin
