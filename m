@@ -2,132 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 878AF45855C
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 18:19:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C6445855F
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 18:19:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238450AbhKURWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 12:22:14 -0500
-Received: from mail-eopbgr130041.outbound.protection.outlook.com ([40.107.13.41]:21230
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238440AbhKURWJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 12:22:09 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G1Ye8yr/OuryMw3sIoO5vUyowth1rWMNxdZwFJo33ouSrLfiP9OwFuuLh5Crd6zlISrBYt2KxSwBF32VNFulHggi2R5GF5qrwX8exl4nGWl4ObplSUAZqWuAxLg+Izl6Avd3UrLC6o2u2xI5jY2UILAWjj8wEXkIEJ6BH435lB39/etKCSuqdd5Xp6vXCvm3t1x0O5qj6RV0q2h7QRyYBIXwcY5FGG6KmWV5wmVR/1Ofdhf01WAru0G3eXqT+dBmf3iYfMSdGiRdQIBq4rUHJD5DwCdV3cBy4orCrf0eic0M74ZOKvjraxuqqGGHyiqUWj74ZS65Er51f2KrbBHIGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OTSQjkQwLXkzV3J0bovKqco0rW7jKkP6R1Pu6GZyIEo=;
- b=BK3dEDytY7HQoxDfSNLGgFY9iFp4/dFwRwaUhaoO0O6Uj0NimkqwzEx+YC+bRyjplxgGH7F6ql4fLEPneitpBoLjoymBXeiMP6tqOGyX0w/JTPaOofyqjC0R+hlJ6WYiYY1KVQXh3E/mzG1W9li9KLSqMXjnVNbS62T+tXPZm5dz2IMWZ5OxK1JdNRab16VDzk7VEPn7ZkR3KY6kGVw91+e5dLGs1BVA4w3kMuh/7Jo6VYDxB1hD7Ws+wl3j8r53YWKu9bS078ljS5D80v1HhJt3e2Dkhc50n7vWaZfjn0rexavabZZS2JWkW+WW4FwTuBn3KnLthQlpJ18cUMPfSA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OTSQjkQwLXkzV3J0bovKqco0rW7jKkP6R1Pu6GZyIEo=;
- b=TVmtjFSTeraDA7qf0UjssqTvT7j9hgybjt4F4LCPffKFjV0SMeRdfbWtQwhxa3Mkfr+QWHf5tWuPBzds7UVEtGdziPLamvoN4g+WmcHpE/n2/29Ty9HW7i+CZ1C4p9NnHuW35Ar9Vq+33SKEMGkL1tlc1bclw7bg4XLk/ZxoAO0=
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
- by VI1PR04MB5343.eurprd04.prod.outlook.com (2603:10a6:803:48::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Sun, 21 Nov
- 2021 17:19:02 +0000
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e4ed:b009:ae4:83c5]) by VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e4ed:b009:ae4:83c5%7]) with mapi id 15.20.4713.024; Sun, 21 Nov 2021
- 17:19:02 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Colin Foster <colin.foster@in-advantage.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Subject: Re: [PATCH v1 net-next 3/6] net: dsa: ocelot: felix: add interface
- for custom regmaps
-Thread-Topic: [PATCH v1 net-next 3/6] net: dsa: ocelot: felix: add interface
- for custom regmaps
-Thread-Index: AQHX3ZbhuZ+MuOcG/UKDWCVExhOGcawOPJKA
-Date:   Sun, 21 Nov 2021 17:19:02 +0000
-Message-ID: <20211121171901.nodvawmwxp6uwnim@skbuf>
-References: <20211119224313.2803941-1-colin.foster@in-advantage.com>
- <20211119224313.2803941-4-colin.foster@in-advantage.com>
-In-Reply-To: <20211119224313.2803941-4-colin.foster@in-advantage.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 457f1b62-f587-49ee-89fc-08d9ad130363
-x-ms-traffictypediagnostic: VI1PR04MB5343:
-x-microsoft-antispam-prvs: <VI1PR04MB5343CAAED79441D4C5576807E09E9@VI1PR04MB5343.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0ez0IefacxtUbxBGbpQItT41vGTOV5YEE6b1126Z/6eu0F+oBz2nzz//QgvShfhck1DNOsiHSeTy/MxrJnOdbf+gLwzjBFeaxxk8gD8BVPMEn8XaQQLbhPTf4iA2kHP2RPduvb0idOWSuo0ryjhKrqhyvahyGRQbB4FxtfFGrgBLFEI8yzvDV98H7+U4NFMrV/43HeJ3ZTg92Gdo7sDITTRwYzxLjHxsuKqubns2NlIAdMfA/K4cDYMJ3wePX2eQN9ZiW09rmF0r+g+GQ+wpYHsfcWASzWvnJO6/P17awfyQtst0xf/sa+G+JiL6WiGPXInZRUGkp130KKaXaBgwr255QyGTB3+HB6Zp+iq0qYc4tLMxaKN1joUpiEjH2fWpUmqh9cqyT+ttRmn1jJcoAU4vzgb6E1tTxoYS7vgQEnkSkFRHc4qQ892YCvENYSlJ+Y9f749nHTkefKN6UE2fKe3+SzlUQ8qOArLNclidD0sSFWMUgaU6D5yuaJDwZPC63AkLII6Gq0UoSLAgoFCto76eltq/5zoRwYgxu+cxeLAjUX360rAxA9jqGBX00Xvq59smX9zy5pWkiGnPUHajKMx653lE67tmvQV2bU62fFgnZW5R+6hcud0PDEtV7t+z9OkT19ayrqFmJ2flo0rP8FqgEvotFT9k+2ZmUjuD5TodMobnjDxjWsC6pPMJz0/im7WOXSBeds51YW3HLqO5UQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(7416002)(33716001)(5660300002)(6916009)(26005)(9686003)(4326008)(64756008)(66446008)(44832011)(38100700002)(54906003)(71200400001)(2906002)(122000001)(66476007)(66556008)(38070700005)(1076003)(66946007)(6506007)(6486002)(508600001)(4744005)(8936002)(316002)(8676002)(91956017)(76116006)(86362001)(6512007)(186003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?/P61tdET269OovB7PODTHB0+UTdtBX8W77otIL9W4N23GEL+KITgUCtjdQAE?=
- =?us-ascii?Q?ZZie74KwaFxaITX4wLTVThxdn+Mndp41EdBI+C1j/JYhH4BpOzwOz3BwNJQK?=
- =?us-ascii?Q?b5GTUpJgKokeoUamBUIANVqJdYOqmxjeLqRG7XtZI9GGtlSfFWLZxFCuLBUN?=
- =?us-ascii?Q?dNlQbpUSnitdm9PLTyT2ZrY40AQX+9x8+KJJRyxTodJUUt6grMMSxvd2oUZp?=
- =?us-ascii?Q?VxNYg5xtdOGKphySDKNqGDFoeeLGvanY9BS072h30e2WAb2WqjMwBe/ze32U?=
- =?us-ascii?Q?wAslviY5fTiAYxrW3htZCIOCk6Vmq49amgLU3n45UrWRzSxhYrTDsSjjU021?=
- =?us-ascii?Q?WVyrz2lh7I/ayrFcJ7S/N9nUHw6Qg5EklnsBc/yeW1GmA4aHxsZCWlXAlUXu?=
- =?us-ascii?Q?ZVlTRwZr56bK4W0JjWZGBhiagV3BkKd1D1BAVrk9d3/sjxmp2Z6L1PbYV//q?=
- =?us-ascii?Q?QIdNFs1l77iWVa/r5vXn0sCpVwrHEskF8vPbkjhNZO56tzvzUgQbTs36euLZ?=
- =?us-ascii?Q?qT99LHlWZMg5JqDbXZ36xqJMCDGyVtjeAUNJaPhAyRt3aAN2C/5ma3Q2FDbe?=
- =?us-ascii?Q?KzU6dRZrgwBZ9BRJj9MOvnztLc9QfEo+wnICK9aJ8QEiK7+JGvWwGzYnN4R1?=
- =?us-ascii?Q?lNlA0R2xzfDG7xZ9pAEqWAgInWz5PO41sqJHY4YBFg6U3/qrI3n9raEuCYuq?=
- =?us-ascii?Q?edLWwuWiT905rifbxlcylMRuSuT9xX5WcthHdF7yN1jujx9Xh0VuplKgl8v4?=
- =?us-ascii?Q?C2GdqYN6HXH+OKw99rJ94eluETBAcT5urGPqvieiUDf13H6vYH1ZY42NNY+8?=
- =?us-ascii?Q?AP2vSZib0QVZc57fii0A+7EbHFLjge2DA4sw51xbbavz3tRqfR2ETKlOYaZn?=
- =?us-ascii?Q?+d8aPNOC/O4WE7kzAEmH9Nit2+eHuuRKQRbIVGCHaHKZENJQrD9OCNfJWHJo?=
- =?us-ascii?Q?ewKDE6ZcLAuZNWwJNBfdWbBGu3sdIMA4t5APaqfXYHXSXvp1hqKyCguQesv8?=
- =?us-ascii?Q?CnARwRUlebDMlfQR6Cy8QTMQ1LpT52SAOtRSKzkEogvDnGgkkZ8FjPrKdAVf?=
- =?us-ascii?Q?qBflObtdtNrfp02XV2V9Y2y/JgaFqNZ7ThSrOSfRdhITa0yOKKWHXzZqmXsP?=
- =?us-ascii?Q?apbt0rL7ppQKQLZXevJQr2QJhtBJ35JtnzWgrw/ZlSqAbc+uJTCD91S7BWLc?=
- =?us-ascii?Q?89qh3W9cRRjdZVNo3V06+FSPjqA0wBdphLP6lhJmNrXpCymssE6ZBXyFcLfJ?=
- =?us-ascii?Q?h4YLUA7cYb6dV6cR4Gtt6OAyRRHR76XNcM41WanAFynvCzY9aCx4tCyBzWIm?=
- =?us-ascii?Q?BDAszCLpxTGT9V90vkkAzOG+XDVmdm5SQK1AxWTaTwG+TDw4rCU06uFaCVEH?=
- =?us-ascii?Q?VUU8AuSl5OyoSJTuY547lDmjvoqkn1m8LU6+jaqeOVluklTLZfH4ZYAwPe/9?=
- =?us-ascii?Q?p2FJ06Xcav1RWDOkswVccxTX/syCRrnoQmbXuGUgM69eF5wyrW+VvBSOSnzm?=
- =?us-ascii?Q?En/Sg2HJsRGZMhPXoCUcd+9ijGBPD9Ac6W0H5lNa/y0ygBNs0tACw1CuR4ll?=
- =?us-ascii?Q?3tvc1oXCt4UaWecXysx6tGNOmH+nDt/KVDetF+OPj8J5iPHXDaTMH1Bwh527?=
- =?us-ascii?Q?CYzRArdVYxO8W3N8muYA4F4=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <5EE6E7837A89CB428417A7E90DFE4C1A@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S238470AbhKURWy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 21 Nov 2021 12:22:54 -0500
+Received: from aposti.net ([89.234.176.197]:57646 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235965AbhKURWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 12:22:53 -0500
+Date:   Sun, 21 Nov 2021 17:19:32 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 04/15] iio: buffer-dma: Enable buffer write support
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?b?S/ZuaWc=?= <christian.koenig@amd.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+Message-Id: <KSMX2R.V0Q6PW6OC9Q62@crapouillou.net>
+In-Reply-To: <20211121142049.2d000c04@jic23-huawei>
+References: <20211115141925.60164-1-paul@crapouillou.net>
+        <20211115141925.60164-5-paul@crapouillou.net>
+        <20211121142049.2d000c04@jic23-huawei>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 457f1b62-f587-49ee-89fc-08d9ad130363
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Nov 2021 17:19:02.0735
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cSp6ZC7f9XTIZBHaQ3jgR2Vyw8Jv1iiIggpmZ1QfQUgd0Qr7gIFm78jUlqDN7rBBmh5XMr/GLtEb/07LZFKjiQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5343
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 02:43:10PM -0800, Colin Foster wrote:
-> Add an interface so that non-mmio regmaps can be used
->=20
-> Signed-off-by: Colin Foster <colin.foster@in-advantage.com>
-> ---
+Hi Jonathan,
 
-What is your plan with treating the vsc7514 spi chip as a multi function
-device, of which the DSA driver would probe only on the Ethernet switch
-portion of it? Would this patch still be needed in its current form?=
+Le dim., nov. 21 2021 at 14:20:49 +0000, Jonathan Cameron 
+<jic23@kernel.org> a écrit :
+> On Mon, 15 Nov 2021 14:19:14 +0000
+> Paul Cercueil <paul@crapouillou.net> wrote:
+> 
+>>  Adding write support to the buffer-dma code is easy - the write()
+>>  function basically needs to do the exact same thing as the read()
+>>  function: dequeue a block, read or write the data, enqueue the block
+>>  when entirely processed.
+>> 
+>>  Therefore, the iio_buffer_dma_read() and the new 
+>> iio_buffer_dma_write()
+>>  now both call a function iio_buffer_dma_io(), which will perform 
+>> this
+>>  task.
+>> 
+>>  The .space_available() callback can return the exact same value as 
+>> the
+>>  .data_available() callback for input buffers, since in both cases we
+>>  count the exact same thing (the number of bytes in each available
+>>  block).
+>> 
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> Hi Paul,
+> 
+> There are a few changes in here, such as the bytes_used value being 
+> set that
+> I'm not following the reasoning behind. More info on those?
+> Also good to provide something about those in this patch description.
+> 
+> Thanks,
+> 
+> Jonathan
+> 
+> 
+>>  ---
+>>   drivers/iio/buffer/industrialio-buffer-dma.c | 75 
+>> +++++++++++++++-----
+>>   include/linux/iio/buffer-dma.h               |  7 ++
+>>   2 files changed, 66 insertions(+), 16 deletions(-)
+>> 
+>>  diff --git a/drivers/iio/buffer/industrialio-buffer-dma.c 
+>> b/drivers/iio/buffer/industrialio-buffer-dma.c
+>>  index abac88f20104..eeeed6b2e0cf 100644
+>>  --- a/drivers/iio/buffer/industrialio-buffer-dma.c
+>>  +++ b/drivers/iio/buffer/industrialio-buffer-dma.c
+>>  @@ -179,7 +179,8 @@ static struct iio_dma_buffer_block 
+>> *iio_dma_buffer_alloc_block(
+>>   	}
+>> 
+>>   	block->size = size;
+>>  -	block->state = IIO_BLOCK_STATE_DEQUEUED;
+>>  +	block->bytes_used = size;
+>>  +	block->state = IIO_BLOCK_STATE_DONE;
+> 
+> I don't know why these are here - some more info?
+
+When using an input buffer the block->bytes_used is unconditionally 
+reset in iio_dmaengine_buffer_submit_block(), so this was fine until 
+now.
+
+When using an output buffer the block->bytes_used can actually (with 
+the new API) be specified by the user, so we don't want 
+iio_dmaengine_buffer_submit_block() to unconditionally override it. 
+Which means that in the case where we have an output buffer in fileio 
+mode, we do need block->bytes_used to be initialized to the buffer's 
+size since it won't be set anywhere else.
+
+About the change in block->state: in patch [01/15] we removed the 
+incoming/outgoing queues, and while the "enqueued" state is still 
+useful to know which buffers have to be submitted when the buffer is 
+enabled, the "dequeued" state is not useful anymore since there is no 
+more distinction vs. the "done" state.
+
+I believe this change should be moved to patch [01/15] then, and I 
+should go further and remove the IIO_BLOCK_STATE_DEQUEUED completely.
+
+>>   	block->queue = queue;
+>>   	INIT_LIST_HEAD(&block->head);
+>>   	kref_init(&block->kref);
+>>  @@ -195,6 +196,18 @@ static void _iio_dma_buffer_block_done(struct 
+>> iio_dma_buffer_block *block)
+>>   		block->state = IIO_BLOCK_STATE_DONE;
+>>   }
+>> 
+>>  +static void iio_dma_buffer_queue_wake(struct iio_dma_buffer_queue 
+>> *queue)
+>>  +{
+>>  +	__poll_t flags;
+>>  +
+>>  +	if (queue->buffer.direction == IIO_BUFFER_DIRECTION_IN)
+>>  +		flags = EPOLLIN | EPOLLRDNORM;
+>>  +	else
+>>  +		flags = EPOLLOUT | EPOLLWRNORM;
+>>  +
+>>  +	wake_up_interruptible_poll(&queue->buffer.pollq, flags);
+>>  +}
+>>  +
+>>   /**
+>>    * iio_dma_buffer_block_done() - Indicate that a block has been 
+>> completed
+>>    * @block: The completed block
+>>  @@ -212,7 +225,7 @@ void iio_dma_buffer_block_done(struct 
+>> iio_dma_buffer_block *block)
+>>   	spin_unlock_irqrestore(&queue->list_lock, flags);
+>> 
+>>   	iio_buffer_block_put_atomic(block);
+>>  -	wake_up_interruptible_poll(&queue->buffer.pollq, EPOLLIN | 
+>> EPOLLRDNORM);
+>>  +	iio_dma_buffer_queue_wake(queue);
+>>   }
+>>   EXPORT_SYMBOL_GPL(iio_dma_buffer_block_done);
+>> 
+>>  @@ -241,7 +254,7 @@ void iio_dma_buffer_block_list_abort(struct 
+>> iio_dma_buffer_queue *queue,
+>>   	}
+>>   	spin_unlock_irqrestore(&queue->list_lock, flags);
+>> 
+>>  -	wake_up_interruptible_poll(&queue->buffer.pollq, EPOLLIN | 
+>> EPOLLRDNORM);
+>>  +	iio_dma_buffer_queue_wake(queue);
+>>   }
+>>   EXPORT_SYMBOL_GPL(iio_dma_buffer_block_list_abort);
+>> 
+>>  @@ -334,7 +347,8 @@ int iio_dma_buffer_request_update(struct 
+>> iio_buffer *buffer)
+>>   			queue->fileio.blocks[i] = block;
+>>   		}
+>> 
+>>  -		block->state = IIO_BLOCK_STATE_QUEUED;
+>>  +		if (queue->buffer.direction == IIO_BUFFER_DIRECTION_IN)
+>>  +			block->state = IIO_BLOCK_STATE_QUEUED;
+> 
+> Possibly worth a comment on the state being set here.  I figured it 
+> out, but might
+> save some brain cells in future if it's stated in the code.
+
+Ok.
+
+>>   	}
+>> 
+>>   out_unlock:
+>>  @@ -467,20 +481,12 @@ static struct iio_dma_buffer_block 
+>> *iio_dma_buffer_dequeue(
+>>   	return block;
+>>   }
+>> 
+>>  -/**
+>>  - * iio_dma_buffer_read() - DMA buffer read callback
+>>  - * @buffer: Buffer to read form
+>>  - * @n: Number of bytes to read
+>>  - * @user_buffer: Userspace buffer to copy the data to
+>>  - *
+>>  - * Should be used as the read callback for iio_buffer_access_ops
+>>  - * struct for DMA buffers.
+>>  - */
+>>  -int iio_dma_buffer_read(struct iio_buffer *buffer, size_t n,
+>>  -	char __user *user_buffer)
+>>  +static int iio_dma_buffer_io(struct iio_buffer *buffer,
+>>  +			     size_t n, char __user *user_buffer, bool is_write)
+>>   {
+>>   	struct iio_dma_buffer_queue *queue = iio_buffer_to_queue(buffer);
+>>   	struct iio_dma_buffer_block *block;
+>>  +	void *addr;
+>>   	int ret;
+>> 
+>>   	if (n < buffer->bytes_per_datum)
+>>  @@ -503,8 +509,13 @@ int iio_dma_buffer_read(struct iio_buffer 
+>> *buffer, size_t n,
+>>   	n = rounddown(n, buffer->bytes_per_datum);
+>>   	if (n > block->bytes_used - queue->fileio.pos)
+>>   		n = block->bytes_used - queue->fileio.pos;
+>>  +	addr = block->vaddr + queue->fileio.pos;
+>> 
+>>  -	if (copy_to_user(user_buffer, block->vaddr + queue->fileio.pos, 
+>> n)) {
+>>  +	if (is_write)
+>>  +		ret = !!copy_from_user(addr, user_buffer, n);
+>>  +	else
+>>  +		ret = !!copy_to_user(user_buffer, addr, n);
+> 
+> What is the !! gaining us here?  We only care about == 0 vs != 0 so
+> forcing it to be 0 or 1 isn't useful.
+
+Right.
+
+>>  +	if (ret) {
+>>   		ret = -EFAULT;
+>>   		goto out_unlock;
+>>   	}
+>>  @@ -513,6 +524,7 @@ int iio_dma_buffer_read(struct iio_buffer 
+>> *buffer, size_t n,
+>> 
+>>   	if (queue->fileio.pos == block->bytes_used) {
+>>   		queue->fileio.active_block = NULL;
+>>  +		block->bytes_used = block->size;
+> 
+> This seems to be a functional change that isn't called out in the 
+> patch description.
+
+See the explanation above. Although I most likely don't need to set it 
+at two different spots... I'll check that in detail next week.
+
+Cheers,
+-Paul
+
+>>   		iio_dma_buffer_enqueue(queue, block);
+>>   	}
+>> 
+>>  @@ -523,8 +535,39 @@ int iio_dma_buffer_read(struct iio_buffer 
+>> *buffer, size_t n,
+>> 
+>>   	return ret;
+>>   }
+>>  +
+>>  +/**
+>>  + * iio_dma_buffer_read() - DMA buffer read callback
+>>  + * @buffer: Buffer to read form
+>>  + * @n: Number of bytes to read
+>>  + * @user_buffer: Userspace buffer to copy the data to
+>>  + *
+>>  + * Should be used as the read callback for iio_buffer_access_ops
+>>  + * struct for DMA buffers.
+>>  + */
+>>  +int iio_dma_buffer_read(struct iio_buffer *buffer, size_t n,
+>>  +	char __user *user_buffer)
+>>  +{
+>>  +	return iio_dma_buffer_io(buffer, n, user_buffer, false);
+>>  +}
+>>   EXPORT_SYMBOL_GPL(iio_dma_buffer_read);
+>> 
+>>  +/**
+>>  + * iio_dma_buffer_write() - DMA buffer write callback
+>>  + * @buffer: Buffer to read form
+>>  + * @n: Number of bytes to read
+>>  + * @user_buffer: Userspace buffer to copy the data from
+>>  + *
+>>  + * Should be used as the write callback for iio_buffer_access_ops
+>>  + * struct for DMA buffers.
+>>  + */
+>>  +int iio_dma_buffer_write(struct iio_buffer *buffer, size_t n,
+>>  +			 const char __user *user_buffer)
+>>  +{
+>>  +	return iio_dma_buffer_io(buffer, n, (__force char *)user_buffer, 
+>> true);
+>>  +}
+>>  +EXPORT_SYMBOL_GPL(iio_dma_buffer_write);
+>>  +
+>>   /**
+>>    * iio_dma_buffer_data_available() - DMA buffer data_available 
+>> callback
+>>    * @buf: Buffer to check for data availability
+>>  diff --git a/include/linux/iio/buffer-dma.h 
+>> b/include/linux/iio/buffer-dma.h
+>>  index a65a005c4a19..09c07d5563c0 100644
+>>  --- a/include/linux/iio/buffer-dma.h
+>>  +++ b/include/linux/iio/buffer-dma.h
+>>  @@ -132,6 +132,8 @@ int iio_dma_buffer_disable(struct iio_buffer 
+>> *buffer,
+>>   	struct iio_dev *indio_dev);
+>>   int iio_dma_buffer_read(struct iio_buffer *buffer, size_t n,
+>>   	char __user *user_buffer);
+>>  +int iio_dma_buffer_write(struct iio_buffer *buffer, size_t n,
+>>  +			 const char __user *user_buffer);
+>>   size_t iio_dma_buffer_data_available(struct iio_buffer *buffer);
+>>   int iio_dma_buffer_set_bytes_per_datum(struct iio_buffer *buffer, 
+>> size_t bpd);
+>>   int iio_dma_buffer_set_length(struct iio_buffer *buffer, unsigned 
+>> int length);
+>>  @@ -142,4 +144,9 @@ int iio_dma_buffer_init(struct 
+>> iio_dma_buffer_queue *queue,
+>>   void iio_dma_buffer_exit(struct iio_dma_buffer_queue *queue);
+>>   void iio_dma_buffer_release(struct iio_dma_buffer_queue *queue);
+>> 
+>>  +static inline size_t iio_dma_buffer_space_available(struct 
+>> iio_buffer *buffer)
+>>  +{
+>>  +	return iio_dma_buffer_data_available(buffer);
+>>  +}
+>>  +
+>>   #endif
+> 
+
+
