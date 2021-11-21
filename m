@@ -2,93 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ACFF458629
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 20:38:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BFF345862A
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 20:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbhKUTlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 14:41:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbhKUTlK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 14:41:10 -0500
-Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEBFDC061574;
-        Sun, 21 Nov 2021 11:38:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-         s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=X4ZdQLsHRGdzyKd89uTk5n2iF2RS6Cx5daUk9p5dFhU=; b=ZUdyI7Gp2CHH++7KcHrMBoQi7E
-        k3tHGmyvut+DI6fM3O7a71dCjKh/stiVfCfTVmSsfmOgmfCSAvPajyUXml/tInCjP+jhQtzjmJyzj
-        WkObs9kC4QT7bQig/f7j1V5dI4s1/AE8nkimoKJbcpSDqBdBXxIVDFWHf0XgyZjq8K3s=;
-Received: from p54ae9f3f.dip0.t-ipconnect.de ([84.174.159.63] helo=nf.local)
-        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <nbd@nbd.name>)
-        id 1mosex-0007Z5-Ld; Sun, 21 Nov 2021 20:37:55 +0100
-Message-ID: <31021122-d1c1-181b-0b95-2ef1c1592452@nbd.name>
-Date:   Sun, 21 Nov 2021 20:37:54 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.2
-Subject: Re: [BISECTED REGRESSION] Wireless networking kernel crashes
-Content-Language: en-US
-To:     Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20211118132556.GD334428@darkstar.musicnaut.iki.fi>
-From:   Felix Fietkau <nbd@nbd.name>
-In-Reply-To: <20211118132556.GD334428@darkstar.musicnaut.iki.fi>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        id S231384AbhKUTm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 14:42:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229640AbhKUTmZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 14:42:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 58EB160C4A;
+        Sun, 21 Nov 2021 19:39:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637523560;
+        bh=oc+cr+aCb2ZYVdGYDIYeJMkXKZoH5MqM9N5prfUHn18=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=BblavEip/kThopXNVN7wjFBC1BfW+mUF36THHNanLKIDOO4tP9avfWWK1xZ768H6N
+         hZ6Kta1wFMCGjEgf5cyOTf1zqePoTd7be5h6RbvVxRR5nt34LQvTgZxOsjmuJw6VaY
+         CdAmudmlDcTTFo2529q9wSVW6IKzJ6EQ4zfAD1egUGNq6t1XuF3kuBOF5EQB3iYltI
+         hQx3RsjJY4RFx5l40jJL6TczS0oFZFKqHzszWtKsrDO+uuTszyOD/kdM7KEBG1XkVg
+         3CCnLeypR94SkGm9c+Z2FN2aaC0NCaaT/3ciFuQ3K7MZ8+uLltsD9zfEYn04mcmqx7
+         OxKiJCvygV5eQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 46064609D9;
+        Sun, 21 Nov 2021 19:39:20 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.16-2 tag
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <87lf1iqflp.fsf@mpe.ellerman.id.au>
+References: <87lf1iqflp.fsf@mpe.ellerman.id.au>
+X-PR-Tracked-List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.lists.ozlabs.org>
+X-PR-Tracked-Message-Id: <87lf1iqflp.fsf@mpe.ellerman.id.au>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.16-2
+X-PR-Tracked-Commit-Id: 8e80a73fa9a7747e3e8255cb149c543aabf65a24
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 75603b14ed142fa142976bd962c1b44b8e0d2714
+Message-Id: <163752356022.15895.14088560581974981189.pr-tracker-bot@kernel.org>
+Date:   Sun, 21 Nov 2021 19:39:20 +0000
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>, aik@ozlabs.ru,
+        maz@kernel.org, masahiroy@kernel.org, npiggin@gmail.com,
+        linux-kernel@vger.kernel.org, clg@kaod.org,
+        u.kleine-koenig@pengutronix.de, linuxppc-dev@lists.ozlabs.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-18 14:25, Aaro Koskinen wrote:
-> Hello,
-> 
-> I have tried to upgrade my wireless AP (Raspberry Pi with rt2x00usb)
-> from v5.9 to the current mainline, but now it keeps crashing every hour
-> or so, basically making my wireless network unusable.
-> 
-> I have bisected this to:
-> 
-> commit 03c3911d2d67a43ad4ffd15b534a5905d6ce5c59
-> Author: Ryder Lee <ryder.lee@mediatek.com>
-> Date:   Thu Jun 17 18:31:12 2021 +0200
-> 
->      mac80211: call ieee80211_tx_h_rate_ctrl() when dequeue
-> 
-> With the previous commit the system stays up for weeks...
-> 
-> I just tried today's mainline, and it crashed after 10 minutes:
-Please test if this patch fixes the issue:
+The pull request you sent on Sun, 21 Nov 2021 15:48:02 +1100:
 
----
---- a/net/mac80211/tx.c
-+++ b/net/mac80211/tx.c
-@@ -1822,15 +1822,15 @@ static int invoke_tx_handlers_late(struct ieee80211_tx_data *tx)
-  	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(tx->skb);
-  	ieee80211_tx_result res = TX_CONTINUE;
-  
-+	if (!ieee80211_hw_check(&tx->local->hw, HAS_RATE_CONTROL))
-+		CALL_TXH(ieee80211_tx_h_rate_ctrl);
-+
-  	if (unlikely(info->flags & IEEE80211_TX_INTFL_RETRANSMISSION)) {
-  		__skb_queue_tail(&tx->skbs, tx->skb);
-  		tx->skb = NULL;
-  		goto txh_done;
-  	}
-  
--	if (!ieee80211_hw_check(&tx->local->hw, HAS_RATE_CONTROL))
--		CALL_TXH(ieee80211_tx_h_rate_ctrl);
--
-  	CALL_TXH(ieee80211_tx_h_michael_mic_add);
-  	CALL_TXH(ieee80211_tx_h_sequence);
-  	CALL_TXH(ieee80211_tx_h_fragment);
+> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.16-2
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/75603b14ed142fa142976bd962c1b44b8e0d2714
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
