@@ -2,233 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF47745845B
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 16:09:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2712545844C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 16:05:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238253AbhKUPMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 10:12:35 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:54416 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238231AbhKUPMe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 10:12:34 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637507369;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=Lil0iTrb8L+Tl2mMonq7n7UHjEcqkSjmzCQ8U0rW3SM=;
-        b=r9WPn3ZBdIrEi6dNA313dE+O8tHDU88fhJXR9Z2hwvXIevxm4cKGJgqw5a7nASse31u0Bn
-        43KQ5TeWrvm6RzvVONCf9BqXsFUEycuuTKy4i4zSvLAyeHpwu2/VV/v/m8uSZDO3q+/4tv
-        gEHCOFuccv8Z0KS38OTvHk5IPeWjJErxYEKh8Z0DJ/TluDivJiQDjE+wFK8uc58qfmzmMf
-        JdIX2UbUMQ092syRUoA5VplNmAN3NQFNEU1IzZMHo0hyoRnCcbQuyITiV6nhvDGgpgG0uc
-        sCfGADSt4x6bxqVVvdD+d81Qb11teVjjayBWp/s0bJP7fTCU3CkIF3f92zZxQQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637507369;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=Lil0iTrb8L+Tl2mMonq7n7UHjEcqkSjmzCQ8U0rW3SM=;
-        b=E6y9uvVvIuIwMYYEX73TTCyOIBa7Mp5Y1uSL7BEPOR023JxUVvx3X2cZhx6kovmvAD4Zcs
-        7BVekdMQj27BtzBw==
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [GIT pull] x86/urgent for v5.16-rc1
-References: <163750734517.21962.4980600300710105647.tglx@xen13>
-Message-ID: <163750734663.21962.15919226186457637549.tglx@xen13>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        id S238378AbhKUPIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 10:08:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56184 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232721AbhKUPIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 10:08:39 -0500
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 620A16069B;
+        Sun, 21 Nov 2021 15:05:32 +0000 (UTC)
+Date:   Sun, 21 Nov 2021 15:10:26 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH 15/15] Documentation: iio: Document high-speed DMABUF
+ based API
+Message-ID: <20211121151026.0cc95f40@jic23-huawei>
+In-Reply-To: <20211115142243.60605-4-paul@crapouillou.net>
+References: <20211115141925.60164-1-paul@crapouillou.net>
+        <20211115142243.60605-1-paul@crapouillou.net>
+        <20211115142243.60605-4-paul@crapouillou.net>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Date:   Sun, 21 Nov 2021 16:09:28 +0100 (CET)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Mon, 15 Nov 2021 14:22:43 +0000
+Paul Cercueil <paul@crapouillou.net> wrote:
 
-please pull the latest x86/urgent branch from:
+> Document the new DMABUF based API.
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2021-=
-11-21
+Hi Paul,
 
-up to:  ac5d272a0ad0: x86/sgx: Fix free page accounting
+A few trivial things inline but looks good to me if we do end up using DMABUF
+anyway.
 
-Two X86 fixes:
+Jonathan
 
- - Move the command line preparation and the early command line parsing
-   earlier so that the command line parameters which affect
-   early_reserve_memory(), e.g. efi=3Dnosftreserve, are taken into
-   account. This was broken when the invocation of early_reserve_memory()
-   was moved recently.
+> ---
+>  Documentation/driver-api/dma-buf.rst |  2 +
+>  Documentation/iio/dmabuf_api.rst     | 94 ++++++++++++++++++++++++++++
+>  Documentation/iio/index.rst          |  2 +
+>  3 files changed, 98 insertions(+)
+>  create mode 100644 Documentation/iio/dmabuf_api.rst
+> 
+> diff --git a/Documentation/driver-api/dma-buf.rst b/Documentation/driver-api/dma-buf.rst
+> index 2cd7db82d9fe..d3c9b58d2706 100644
+> --- a/Documentation/driver-api/dma-buf.rst
+> +++ b/Documentation/driver-api/dma-buf.rst
+> @@ -1,3 +1,5 @@
+> +.. _dma-buf:
+> +
 
- - Use an atomic type for the SGX page accounting, which is read and
-   written lockless, to plug various race conditions related to it.
+Why this change?
 
-Thanks,
+>  Buffer Sharing and Synchronization
+>  ==================================
+>  
+> diff --git a/Documentation/iio/dmabuf_api.rst b/Documentation/iio/dmabuf_api.rst
+> new file mode 100644
+> index 000000000000..b4e120a4ef0c
+> --- /dev/null
+> +++ b/Documentation/iio/dmabuf_api.rst
+> @@ -0,0 +1,94 @@
+> +===================================
+> +High-speed DMABUF interface for IIO
+> +===================================
+> +
+> +1. Overview
+> +===========
+> +
+> +The Industrial I/O subsystem supports access to buffers through a file-based
+> +interface, with read() and write() access calls through the IIO device's dev
+> +node.
+> +
+> +It additionally supports a DMABUF based interface, where the userspace
+> +application can allocate and append DMABUF objects to the buffer's queue.
 
-	tglx
+I would note somewhere that this interface is optional for a given IIO driver.
+I don't want people to start assuming their i2c ADC will support this and
+wondering why it doesn't work :)
 
------------------->
-Borislav Petkov (1):
-      x86/boot: Pull up cmdline preparation and early param parsing
+> +
+> +The advantage of this DMABUF based interface vs. the fileio
+> +interface, is that it avoids an extra copy of the data between the
+> +kernel and userspace. This is particularly userful for high-speed
+> +devices which produce several megabytes or even gigabytes of data per
+> +second.
+> +
+> +The data in this DMABUF interface is managed at the granularity of
+> +DMABUF objects. Reducing the granularity from byte level to block level
+> +is done to reduce the userspace-kernelspace synchronization overhead
+> +since performing syscalls for each byte at a few Mbps is just not
+> +feasible.
+> +
+> +This of course leads to a slightly increased latency. For this reason an
+> +application can choose the size of the DMABUFs as well as how many it
+> +allocates. E.g. two DMABUFs would be a traditional double buffering
+> +scheme. But using a higher number might be necessary to avoid
+> +underflow/overflow situations in the presence of scheduling latencies.
+> +
+> +2. User API
+> +===========
+> +
+> +``IIO_BUFFER_DMABUF_ALLOC_IOCTL(struct iio_dmabuf_alloc_req *)``
+> +----------------------------------------------------------------
+> +
+> +Each call will allocate a new DMABUF object. The return value (if not
+> +a negative errno value as error) will be the file descriptor of the new
+> +DMABUF.
+> +
+> +``IIO_BUFFER_DMABUF_ENQUEUE_IOCTL(struct iio_dmabuf *)``
+> +--------------------------------------------------------
+> +
+> +Place the DMABUF object into the queue pending for hardware process.
+> +
+> +These two IOCTLs have to be performed on the IIO buffer's file
+> +descriptor (either opened from the corresponding /dev/iio:deviceX, or
+> +obtained using the `IIO_BUFFER_GET_FD_IOCTL` ioctl).
+> +
+> +3. Usage
+> +========
+> +
+> +To access the data stored in a block by userspace the block must be
+> +mapped to the process's memory. This is done by calling mmap() on the
+> +DMABUF's file descriptor.
+> +
+> +Before accessing the data through the map, you must use the
+> +DMA_BUF_IOCTL_SYNC(struct dma_buf_sync *) ioctl, with the
+> +DMA_BUF_SYNC_START flag, to make sure that the data is available.
+> +This call may block until the hardware is done with this block. Once
+> +you are done reading or writing the data, you must use this ioctl again
+> +with the DMA_BUF_SYNC_END flag, before enqueueing the DMABUF to the
+> +kernel's queue.
+> +
+> +If you need to know when the hardware is done with a DMABUF, you can
+> +poll its file descriptor for the EPOLLOUT event.
+> +
+> +Finally, to destroy a DMABUF object, simply call close() on its file
+> +descriptor.
+> +
+> +For more information about manipulating DMABUF objects, see: :ref:`dma-buf`.
+> +
+> +A typical workflow for the new interface is:
+> +
+> +    for block in blocks:
+> +      DMABUF_ALLOC block
+> +      mmap block
+> +
+> +    enable buffer
+> +
+> +    while !done
+> +      for block in blocks:
+> +        DMABUF_ENQUEUE block
+> +
+> +        DMABUF_SYNC_START block
+> +        process data
+> +        DMABUF_SYNC_END block
+> +
+> +    disable buffer
+> +
+> +    for block in blocks:
+> +      close block
+> diff --git a/Documentation/iio/index.rst b/Documentation/iio/index.rst
+> index 58b7a4ebac51..9ce799fbf262 100644
+> --- a/Documentation/iio/index.rst
+> +++ b/Documentation/iio/index.rst
+> @@ -10,3 +10,5 @@ Industrial I/O
+>     iio_configfs
+>  
+>     ep93xx_adc
+> +
+> +   dmabuf_api
 
-Reinette Chatre (1):
-      x86/sgx: Fix free page accounting
+Given this is core stuff rather than driver specific, perhaps move it up a few lines?
 
-
- arch/x86/kernel/cpu/sgx/main.c | 12 ++++----
- arch/x86/kernel/setup.c        | 66 +++++++++++++++++++++++++---------------=
---
- 2 files changed, 45 insertions(+), 33 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index 63d3de02bbcc..8471a8b9b48e 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -28,8 +28,7 @@ static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
- static LIST_HEAD(sgx_active_page_list);
- static DEFINE_SPINLOCK(sgx_reclaimer_lock);
-=20
--/* The free page list lock protected variables prepend the lock. */
--static unsigned long sgx_nr_free_pages;
-+static atomic_long_t sgx_nr_free_pages =3D ATOMIC_LONG_INIT(0);
-=20
- /* Nodes with one or more EPC sections. */
- static nodemask_t sgx_numa_mask;
-@@ -403,14 +402,15 @@ static void sgx_reclaim_pages(void)
-=20
- 		spin_lock(&node->lock);
- 		list_add_tail(&epc_page->list, &node->free_page_list);
--		sgx_nr_free_pages++;
- 		spin_unlock(&node->lock);
-+		atomic_long_inc(&sgx_nr_free_pages);
- 	}
- }
-=20
- static bool sgx_should_reclaim(unsigned long watermark)
- {
--	return sgx_nr_free_pages < watermark && !list_empty(&sgx_active_page_list);
-+	return atomic_long_read(&sgx_nr_free_pages) < watermark &&
-+	       !list_empty(&sgx_active_page_list);
- }
-=20
- static int ksgxd(void *p)
-@@ -471,9 +471,9 @@ static struct sgx_epc_page *__sgx_alloc_epc_page_from_nod=
-e(int nid)
-=20
- 	page =3D list_first_entry(&node->free_page_list, struct sgx_epc_page, list);
- 	list_del_init(&page->list);
--	sgx_nr_free_pages--;
-=20
- 	spin_unlock(&node->lock);
-+	atomic_long_dec(&sgx_nr_free_pages);
-=20
- 	return page;
- }
-@@ -625,9 +625,9 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
- 	spin_lock(&node->lock);
-=20
- 	list_add_tail(&page->list, &node->free_page_list);
--	sgx_nr_free_pages++;
-=20
- 	spin_unlock(&node->lock);
-+	atomic_long_inc(&sgx_nr_free_pages);
- }
-=20
- static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 49b596db5631..c410be738ae7 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -742,6 +742,28 @@ dump_kernel_offset(struct notifier_block *self, unsigned=
- long v, void *p)
- 	return 0;
- }
-=20
-+static char *prepare_command_line(void)
-+{
-+#ifdef CONFIG_CMDLINE_BOOL
-+#ifdef CONFIG_CMDLINE_OVERRIDE
-+	strlcpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
-+#else
-+	if (builtin_cmdline[0]) {
-+		/* append boot loader cmdline to builtin */
-+		strlcat(builtin_cmdline, " ", COMMAND_LINE_SIZE);
-+		strlcat(builtin_cmdline, boot_command_line, COMMAND_LINE_SIZE);
-+		strlcpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
-+	}
-+#endif
-+#endif
-+
-+	strlcpy(command_line, boot_command_line, COMMAND_LINE_SIZE);
-+
-+	parse_early_param();
-+
-+	return command_line;
-+}
-+
- /*
-  * Determine if we were loaded by an EFI loader.  If so, then we have also b=
-een
-  * passed the efi memmap, systab, etc., so we should use these data structur=
-es
-@@ -830,6 +852,23 @@ void __init setup_arch(char **cmdline_p)
-=20
- 	x86_init.oem.arch_setup();
-=20
-+	/*
-+	 * x86_configure_nx() is called before parse_early_param() (called by
-+	 * prepare_command_line()) to detect whether hardware doesn't support
-+	 * NX (so that the early EHCI debug console setup can safely call
-+	 * set_fixmap()). It may then be called again from within noexec_setup()
-+	 * during parsing early parameters to honor the respective command line
-+	 * option.
-+	 */
-+	x86_configure_nx();
-+
-+	/*
-+	 * This parses early params and it needs to run before
-+	 * early_reserve_memory() because latter relies on such settings
-+	 * supplied as early params.
-+	 */
-+	*cmdline_p =3D prepare_command_line();
-+
- 	/*
- 	 * Do some memory reservations *before* memory is added to memblock, so
- 	 * memblock allocations won't overwrite it.
-@@ -863,33 +902,6 @@ void __init setup_arch(char **cmdline_p)
- 	bss_resource.start =3D __pa_symbol(__bss_start);
- 	bss_resource.end =3D __pa_symbol(__bss_stop)-1;
-=20
--#ifdef CONFIG_CMDLINE_BOOL
--#ifdef CONFIG_CMDLINE_OVERRIDE
--	strlcpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
--#else
--	if (builtin_cmdline[0]) {
--		/* append boot loader cmdline to builtin */
--		strlcat(builtin_cmdline, " ", COMMAND_LINE_SIZE);
--		strlcat(builtin_cmdline, boot_command_line, COMMAND_LINE_SIZE);
--		strlcpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
--	}
--#endif
--#endif
--
--	strlcpy(command_line, boot_command_line, COMMAND_LINE_SIZE);
--	*cmdline_p =3D command_line;
--
--	/*
--	 * x86_configure_nx() is called before parse_early_param() to detect
--	 * whether hardware doesn't support NX (so that the early EHCI debug
--	 * console setup can safely call set_fixmap()). It may then be called
--	 * again from within noexec_setup() during parsing early parameters
--	 * to honor the respective command line option.
--	 */
--	x86_configure_nx();
--
--	parse_early_param();
--
- #ifdef CONFIG_MEMORY_HOTPLUG
- 	/*
- 	 * Memory used by the kernel cannot be hot-removed because Linux
 
