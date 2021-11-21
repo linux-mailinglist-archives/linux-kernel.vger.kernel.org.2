@@ -2,78 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C97474585BB
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 19:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34A9E4585BE
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 19:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238563AbhKUSEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 13:04:05 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:37666 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238020AbhKUSEE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 13:04:04 -0500
-Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mor96-0007x2-7a; Sun, 21 Nov 2021 19:00:56 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     linux-i2c@vger.kernel.org, John Keeping <john@metanate.com>
-Cc:     John Keeping <john@metanate.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: rk3x: enable clock before getting rate
-Date:   Sun, 21 Nov 2021 19:00:55 +0100
-Message-ID: <1738891.e3IbIVKTtj@diego>
-In-Reply-To: <20211004131539.1253195-1-john@metanate.com>
-References: <20211004131539.1253195-1-john@metanate.com>
+        id S238594AbhKUSEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 13:04:14 -0500
+Received: from smtp01.smtpout.orange.fr ([80.12.242.123]:64997 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238578AbhKUSEN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 13:04:13 -0500
+Received: from pop-os.home ([86.243.171.122])
+        by smtp.orange.fr with ESMTPA
+        id or9EmhhgNdmYbor9EmGDZk; Sun, 21 Nov 2021 19:01:07 +0100
+X-ME-Helo: pop-os.home
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Sun, 21 Nov 2021 19:01:07 +0100
+X-ME-IP: 86.243.171.122
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     davem@davemloft.net, kuba@kernel.org, atenart@kernel.org,
+        alexanderduyck@fb.com, pabeni@redhat.com, weiwan@google.com,
+        lucien.xin@gmail.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] net-sysfs: Slightly optimize 'xps_queue_show()'
+Date:   Sun, 21 Nov 2021 19:01:03 +0100
+Message-Id: <498b1a0a7a0cba019c9d95693cd489827168b79e.1637517554.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, 4. Oktober 2021, 15:15:39 CET schrieb John Keeping:
-> clk_get_rate() is documented as requiring the clock to be enabled.
-> Ensure that the bus clock is enabled before calling clk_get_rate() in
-> rk3x_i2c_probe() to satisfy this requirement.
-> 
-> Signed-off-by: John Keeping <john@metanate.com>
+The 'mask' bitmap is local to this function. So the non-atomic
+'__set_bit()' can be used to save a few cycles.
 
-Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ net/core/net-sysfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Do you maybe want to repost and include the actual i2c-maintainers
-in the recipient list?
-
-
-Heiko
-
-> ---
->  drivers/i2c/busses/i2c-rk3x.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/i2c/busses/i2c-rk3x.c b/drivers/i2c/busses/i2c-rk3x.c
-> index 819ab4ee517e..332755fab2a1 100644
-> --- a/drivers/i2c/busses/i2c-rk3x.c
-> +++ b/drivers/i2c/busses/i2c-rk3x.c
-> @@ -1338,8 +1338,15 @@ static int rk3x_i2c_probe(struct platform_device *pdev)
->  		goto err_pclk;
->  	}
->  
-> +	ret = clk_enable(i2c->clk);
-> +	if (ret < 0) {
-> +		dev_err(&pdev->dev, "Can't enable bus clk: %d\n", ret);
-> +		goto err_clk_notifier;
-> +	}
-> +
->  	clk_rate = clk_get_rate(i2c->clk);
->  	rk3x_i2c_adapt_div(i2c, clk_rate);
-> +	clk_disable(i2c->clk);
->  
->  	ret = i2c_add_adapter(&i2c->adap);
->  	if (ret < 0)
-> 
-
-
-
+diff --git a/net/core/net-sysfs.c b/net/core/net-sysfs.c
+index 9c01c642cf9e..3be3f4a6add3 100644
+--- a/net/core/net-sysfs.c
++++ b/net/core/net-sysfs.c
+@@ -1452,7 +1452,7 @@ static ssize_t xps_queue_show(struct net_device *dev, unsigned int index,
+ 
+ 		for (i = map->len; i--;) {
+ 			if (map->queues[i] == index) {
+-				set_bit(j, mask);
++				__set_bit(j, mask);
+ 				break;
+ 			}
+ 		}
+-- 
+2.30.2
 
