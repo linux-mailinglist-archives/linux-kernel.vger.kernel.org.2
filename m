@@ -2,73 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C3E458670
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 22:11:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14528458685
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 22:18:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbhKUVOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 16:14:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42064 "EHLO
+        id S230344AbhKUVTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 16:19:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhKUVOb (ORCPT
+        with ESMTP id S229586AbhKUVTv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 16:14:31 -0500
-Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C58FC061574;
-        Sun, 21 Nov 2021 13:11:25 -0800 (PST)
-Received: from [2a04:4540:1403:bf00:8037:5e39:572a:8804]
-        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <john@phrozen.org>)
-        id 1mou7H-0002CP-Tk; Sun, 21 Nov 2021 22:11:15 +0100
-Message-ID: <9c169aad-3c7b-2ffb-90a2-1ca791a3f411@phrozen.org>
-Date:   Sun, 21 Nov 2021 22:11:15 +0100
+        Sun, 21 Nov 2021 16:19:51 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D3BC061574;
+        Sun, 21 Nov 2021 13:16:46 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id y12so67953815eda.12;
+        Sun, 21 Nov 2021 13:16:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B4q70pTY89cGs15Hv5VpCBikru6wI5Q8HQLcS091NI0=;
+        b=LhKl8FqQ5Y5wBgF7faDHsjfHEO7tB+tXkt2LPKJN89QAOG3hWmSgFlCrCBLlDNj6O7
+         o6gWg7M3MJg1HOCwK6LufDZAftuOj0OspAill5ng0YHcP8BFK/JLJ2HCoYWaod65mFTS
+         0OXEeZZSV180aWoBNM+TxNfkl9dfanbK/26135ySMSr12S/SJ2q7RgmfDdkhyi3ihmYc
+         cEiUARenywL3r8RNx3zrMeElxPVSQBp1qzCLv9wU3Urcv2Ee3QMCvk+xmYWFXiwoNwy3
+         HkN4ZPysGZEeuyCIKzCeeauYnKi1EhdFWQRjrewKIsN5CWIpluLjMBzls/eKn9enOzmW
+         T/8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B4q70pTY89cGs15Hv5VpCBikru6wI5Q8HQLcS091NI0=;
+        b=VhEUEisYHFDAVRyv68fSjmN5NC/UBLIWIvj/reqwA1uXDu0gCFCpmtEosrEMMQCq8z
+         leNSfkpMrjQpphYsB6lPbV9t0kpauu2MKX+45StgMGFNRn4vNtcNGXyqzEFhmoSJmwhb
+         o7cBV29x5BfVubdnYE8RQwgfidIXPPSsxI45PwVo4eDmuxZq/jZujQowYSP8Zpq3AkCN
+         RPxruRgbyDB2HdevGwPaskuJMOEqkpBmz6sC0+yNPaFN+QL1m5FVJDtO5tdgpqQ+dFgR
+         NKd4J1imbKXqSsKBmN9Kw5N55tbob6qYftYpV2UQozoOOMGVCsQqBRZnNKRHkosDUksJ
+         7B1Q==
+X-Gm-Message-State: AOAM5304SUvXM4FSxLF9/BED8OtPSMr2+KD618nSExu1jBOcPCRNYJx7
+        i3DT1+48g6bIpH3q2tYom7c5gROYe/KgnyZezOYniY8komQ=
+X-Google-Smtp-Source: ABdhPJxQ/rjDsEQhZKv5AdPHqRy66HuXandz0Q3xxeGoncv874rtNgcziUkr3pCWS5ox/fH4LvlTxKTH4fz3BWz6K8Q=
+X-Received: by 2002:a17:906:140b:: with SMTP id p11mr33911285ejc.116.1637529404454;
+ Sun, 21 Nov 2021 13:16:44 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: realtek,rtl-intc IRQ mapping broken on 5.16-rc1
-Content-Language: en-GB
-To:     Sander Vanheule <sander@svanheule.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Birger Koblitz <mail@birger-koblitz.de>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bert Vermeulen <bert@biot.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>
-References: <bbe5506a2458b2d6049bd22a5fda77ae6175ddec.camel@svanheule.net>
- <87ilwp6zm6.wl-maz@kernel.org>
- <fdfe6615a0ec0d4a770b04a437922956e8586078.camel@svanheule.net>
- <877dd46w2b.wl-maz@kernel.org>
- <763394a6e5c83006eb4628a9d0242b7eb04b889d.camel@svanheule.net>
-From:   John Crispin <john@phrozen.org>
-In-Reply-To: <763394a6e5c83006eb4628a9d0242b7eb04b889d.camel@svanheule.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <DM6PR12MB45165BFF3AB84602238FA595D89B9@DM6PR12MB4516.namprd12.prod.outlook.com>
+ <CAKgT0UfGvcGXAC5VBjXRpR5Y5uAPEPPCsYWjQR8RmW_1kw8TMQ@mail.gmail.com> <DM6PR12MB45162662DF7FAF82E7BD2207D89E9@DM6PR12MB4516.namprd12.prod.outlook.com>
+In-Reply-To: <DM6PR12MB45162662DF7FAF82E7BD2207D89E9@DM6PR12MB4516.namprd12.prod.outlook.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Sun, 21 Nov 2021 13:16:33 -0800
+Message-ID: <CAKgT0Uc5ggH24LuKCbSTubDSiTnD5UsLbrC5G6C73rj7ZEnTYQ@mail.gmail.com>
+Subject: Re: [igb] netconsole triggers warning in netpoll_poll_dev
+To:     Danielle Ratson <danieller@nvidia.com>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Nov 21, 2021 at 3:44 AM Danielle Ratson <danieller@nvidia.com> wrote:
+>
+> > > > >  drivers/net/ethernet/intel/igb/igb_main.c | 12 ++++++++----
+> > > > >  1 file changed, 8 insertions(+), 4 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/net/ethernet/intel/igb/igb_main.c
+> > > > > b/drivers/net/ethernet/intel/igb/igb_main.c
+> > > > > index 0cd37ad81b4e..b0a9bed14071 100644
+> > > > > --- a/drivers/net/ethernet/intel/igb/igb_main.c
+> > > > > +++ b/drivers/net/ethernet/intel/igb/igb_main.c
+> > > > > @@ -7991,12 +7991,16 @@ static void igb_ring_irq_enable(struct
+> > > > igb_q_vector *q_vector)
+> > > > >   **/
+> > > > >  static int igb_poll(struct napi_struct *napi, int budget)  {
+> > > > > -       struct igb_q_vector *q_vector = container_of(napi,
+> > > > > -                                                    struct igb_q_vector,
+> > > > > -                                                    napi);
+> > > > > -       bool clean_complete = true;
+> > > > > +       struct igb_q_vector *q_vector;
+> > > > > +       bool clean_complete;
+> > > > >         int work_done = 0;
+> > > > >
+> > > > > +       /* if budget is zero, we have a special case for netconsole, so
+> > > > > +        * make sure to set clean_complete to false in that case.
+> > > > > +        */
+> > > > > +       clean_complete = !!budget;
+> > > > > +
+> > > > > +       q_vector = container_of(napi, struct igb_q_vector, napi);
+> > > > >  #ifdef CONFIG_IGB_DCA
+> > > > >         if (q_vector->adapter->flags & IGB_FLAG_DCA_ENABLED)
+> > > > >                 igb_update_dca(q_vector);
+> > > >
+> > > > I'm not a big fan of moving the q_vector init as a part of this
+> > > > patch since it just means more backport work.
+> > > >
+> > > > That said the change itself should be harmless so I am good with it
+> > > > either way.
+> > > >
+> > > > Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+> > >
+> > > Hi,
+> > >
+> > > I have lately added the netconsole module, and since then we see the
+> > same warning constantly in the logs.
+> > > I have tried to apply Jesse's patch but it didn't seem to solve the issue.
+> > >
+> > > Did anyone managed to solve the issue and can share with us?
+> > >
+> > > Thanks,
+> > > Danielle
+> >
+> > The one issue I can see is that it basically leaves the igb_poll call stuck in
+> > polling mode.
+> >
+> > The easiest fix for all of this in the in-kernel driver is to just get rid of the
+> > "min" at the end and instead just "return work_done;". The extra
+> > complication is only needed if you were to be polling multiple queues and
+> > that isn't the case here so we should simplify it and get rid of the buggy
+> > "budget - 1" return value.
+>
+> Thank you very much for your reply Alexander!
+> It seems to work well!
+>
+> Are you planning to send it upstream?
 
+No, I was just suggesting it as a possible solution. Feel free to put
+together your own patch and submit it if it is working for you.
 
-On 21.11.21 21:33, Sander Vanheule wrote:
-> Alternatively, a second compatible could perhaps be introduced and the current
-> one would be deprecated, using (2) to prevent breaking 5.16+ kernels. I don't
-> think that's really worth the effort though.
-> 
-> Best,
-
-Hey,
-
-I think that what Marc proposed as (1) is the clean solution. We want to 
-describe the HW as it exists. Yes we have zero docs, and the RLT 2.6 sdk 
-kernel is a pain to extract info from, yet we should move fwd with a 
-clean implementation.
-
-breaking pseudo owrt dts ABI is imho acceptable. owrt users are well 
-able to reflash their units from uboot, they are at the end flying 
-without wings on bleeding edge. asking for some backward compat for a 
-de-facto broken dts mapping of the HW is imho a no-go.
-	
-	John
+- Alex
