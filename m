@@ -2,144 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04FE34583E0
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 14:44:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63DFD4583E3
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 14:52:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238179AbhKUNrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 08:47:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38750 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234993AbhKUNrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 08:47:23 -0500
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D012603E8;
-        Sun, 21 Nov 2021 13:44:15 +0000 (UTC)
-Date:   Sun, 21 Nov 2021 13:49:09 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: Re: [PATCH 08/15] iio: buffer-dma: split
- iio_dma_buffer_fileio_free() function
-Message-ID: <20211121134909.605cef5a@jic23-huawei>
-In-Reply-To: <CA+U=DsqP0Wg54xgL3_-SmRc2v0GXQv9fDf=350P+sLvJhhYnng@mail.gmail.com>
-References: <20211115141925.60164-1-paul@crapouillou.net>
-        <20211115141925.60164-9-paul@crapouillou.net>
-        <CA+U=DsqP0Wg54xgL3_-SmRc2v0GXQv9fDf=350P+sLvJhhYnng@mail.gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S238227AbhKUNzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 08:55:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238196AbhKUNzG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 08:55:06 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC960C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 05:52:01 -0800 (PST)
+Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1monGC-0005ft-7s; Sun, 21 Nov 2021 14:52:00 +0100
+Message-ID: <6cc591c5-ed71-3213-3119-c778b3b2823d@leemhuis.info>
+Date:   Sun, 21 Nov 2021 14:51:59 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: mm: LTP/memcg testcase regression induced by
+ 8cd7c588decf..66ce520bb7c2 series
+Content-Language: en-BS
+To:     Mike Galbraith <efault@gmx.de>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+Cc:     Mel Gorman <mgorman@techsingularity.net>
+References: <99e779783d6c7fce96448a3402061b9dc1b3b602.camel@gmx.de>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <99e779783d6c7fce96448a3402061b9dc1b3b602.camel@gmx.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1637502721;e91716e0;
+X-HE-SMSGID: 1monGC-0005ft-7s
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Nov 2021 12:59:30 +0200
-Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
 
-> On Mon, Nov 15, 2021 at 4:20 PM Paul Cercueil <paul@crapouillou.net> wrote:
-> >
-> > From: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> >
-> > A part of the logic in the iio_dma_buffer_exit() is required for the change
-> > to add mmap support to IIO buffers.
-> > This change splits the logic into a separate function, which will be
-> > re-used later.
-> >  
-> 
-> Not sure how the protocol is here, since my old @analog.com email
-> isn't working anymore.
-> 
-> But:
-> 
-> Signed-off-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+Hi, this is your Linux kernel regression tracker speaking.
 
-If you want to both document your email address change and make various scripts
-find you more easily, send a patch for .mailmap
+CCing regression mailing list, which should be in the loop for all
+regressions, as explained here:
+https://www.kernel.org/doc/html/latest/admin-guide/reporting-issues.html
 
-In meantime we can probably leave your original sign off in place but add
-a Cc: with an up to date email address. That will reflect that the sign off
-for this was (I assume) given back when you were at Analog.
-
+On 21.11.21 11:57, Mike Galbraith wrote:
+> Greetings,
 > 
-> Thanks :)
-> Alex
+> FYI, something in this series causes LTP controllers::memcg_regression
+> testcase to hang forever.  Verified via brute force revert of the lot.
 > 
-> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> > ---
-> >  drivers/iio/buffer/industrialio-buffer-dma.c | 39 +++++++++++---------
-> >  1 file changed, 22 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/drivers/iio/buffer/industrialio-buffer-dma.c b/drivers/iio/buffer/industrialio-buffer-dma.c
-> > index eeeed6b2e0cf..eb8cfd3af030 100644
-> > --- a/drivers/iio/buffer/industrialio-buffer-dma.c
-> > +++ b/drivers/iio/buffer/industrialio-buffer-dma.c
-> > @@ -358,6 +358,27 @@ int iio_dma_buffer_request_update(struct iio_buffer *buffer)
-> >  }
-> >  EXPORT_SYMBOL_GPL(iio_dma_buffer_request_update);
-> >
-> > +static void iio_dma_buffer_fileio_free(struct iio_dma_buffer_queue *queue)
-> > +{
-> > +       unsigned int i;
-> > +
-> > +       spin_lock_irq(&queue->list_lock);
-> > +       for (i = 0; i < ARRAY_SIZE(queue->fileio.blocks); i++) {
-> > +               if (!queue->fileio.blocks[i])
-> > +                       continue;
-> > +               queue->fileio.blocks[i]->state = IIO_BLOCK_STATE_DEAD;
-> > +       }
-> > +       spin_unlock_irq(&queue->list_lock);
-> > +
-> > +       for (i = 0; i < ARRAY_SIZE(queue->fileio.blocks); i++) {
-> > +               if (!queue->fileio.blocks[i])
-> > +                       continue;
-> > +               iio_buffer_block_put(queue->fileio.blocks[i]);
-> > +               queue->fileio.blocks[i] = NULL;
-> > +       }
-> > +       queue->fileio.active_block = NULL;
-> > +}
-> > +
-> >  static void iio_dma_buffer_submit_block(struct iio_dma_buffer_queue *queue,
-> >         struct iio_dma_buffer_block *block)
-> >  {
-> > @@ -681,25 +702,9 @@ EXPORT_SYMBOL_GPL(iio_dma_buffer_init);
-> >   */
-> >  void iio_dma_buffer_exit(struct iio_dma_buffer_queue *queue)
-> >  {
-> > -       unsigned int i;
-> > -
-> >         mutex_lock(&queue->lock);
-> >
-> > -       spin_lock_irq(&queue->list_lock);
-> > -       for (i = 0; i < ARRAY_SIZE(queue->fileio.blocks); i++) {
-> > -               if (!queue->fileio.blocks[i])
-> > -                       continue;
-> > -               queue->fileio.blocks[i]->state = IIO_BLOCK_STATE_DEAD;
-> > -       }
-> > -       spin_unlock_irq(&queue->list_lock);
-> > -
-> > -       for (i = 0; i < ARRAY_SIZE(queue->fileio.blocks); i++) {
-> > -               if (!queue->fileio.blocks[i])
-> > -                       continue;
-> > -               iio_buffer_block_put(queue->fileio.blocks[i]);
-> > -               queue->fileio.blocks[i] = NULL;
-> > -       }
-> > -       queue->fileio.active_block = NULL;
-> > +       iio_dma_buffer_fileio_free(queue);
-> >         queue->ops = NULL;
-> >
-> >         mutex_unlock(&queue->lock);
-> > --
-> > 2.33.0
-> >  
+> After letting box moan for 4.5 hours, I poked ^C repeatedly, but runltp
+> didn't exit/recover gracefully, and ps hung, so I nuked the box.  All
+> memcg_test_1 instances were stuck in reclaim_throttle().
+> [...]
 
+TWIMC: To be sure this issue doesn't fall through the cracks unnoticed,
+I'm adding it to regzbot, my Linux kernel regression tracking bot:
+
+#regzbot ^introduced 8cd7c588decf..66ce520bb7c2
+#regzbot ignore-activity
+
+Ciao, Thorsten, your Linux kernel regression tracker.
+
+P.S.: If you want to know more about regzbot, check out its
+web-interface, the getting start guide, and/or the references documentation:
+
+https://linux-regtracking.leemhuis.info/regzbot/
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
+
+The last two documents will explain how you can interact with regzbot
+yourself if your want to.
+
+Hint for the reporter: when reporting a regression it's in your interest
+to tell #regzbot about it in the report, as that will ensure the
+regression gets on the radar of regzbot and the regression tracker.
+That's in your interest, as they will make sure the report won't fall
+through the cracks unnoticed.
+
+Hint for developers: you normally don't need to care about regzbot, just
+fix the issue as you normally would. Just remember to include a 'Link:'
+tag to the report in the commit message, as explained in
+Documentation/process/submitting-patches.rst
+That aspect was recently was made more explicit in commit 1f57bd42b77c:
+https://git.kernel.org/linus/1f57bd42b77c
+
+
+P.P.S.: As a Linux kernel regression tracker I'm getting a lot of
+reports on my table. I can only look briefly into most of them.
+Unfortunately therefore I sometimes will get things wrong or miss
+something important. I hope that's not the case here; if you think it
+is, don't hesitate to tell me about it in a public reply. That's in
+everyone's interest, as what I wrote above might be misleading to
+everyone reading this; any suggestion I gave they thus might sent
+someone reading this down the wrong rabbit hole, which none of us wants.
+
+BTW, I have no personal interest in this issue, which is tracked using
+regzbot, my Linux kernel regression tracking bot
+(https://linux-regtracking.leemhuis.info/regzbot/). I'm only posting
+this mail to get things rolling again and hence don't need to be CC on
+all further activity wrt to this regression.
