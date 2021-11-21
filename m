@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C73D54584F5
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 17:57:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DADC945852B
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 17:58:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238464AbhKURAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 12:00:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42924 "EHLO
+        id S238507AbhKURBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 12:01:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238345AbhKUQ77 (ORCPT
+        with ESMTP id S237971AbhKURAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 11:59:59 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40CB1C061714
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 08:56:54 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id m27so68909834lfj.12
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 08:56:54 -0800 (PST)
+        Sun, 21 Nov 2021 12:00:01 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B27F9C061748
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 08:56:55 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id m27so68910033lfj.12
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 08:56:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Del8LI9YEPdJpP+4p1EB8ZApYUMffVccPxz+BZ6gv/k=;
-        b=EKb8gYulhRPbZ9beHPNPqBsNdjnbkAtuOB/QvieqoqZEJVU+pUq5KCcegyAQyyi2yK
-         /1H8n2mahcrLjPh2NsDlDwm83kfwA4d0zShVTAz7Maw7Z0pWxRyNnsHvY+NnZ5L2vVa9
-         4cHWPy1mqHLtiLMkU2Jc804G74IpzdAaLigS58EUanX+7PR+z4Nm2dATY40hkGwR0izZ
-         6SJWPiiPpPzty0WKsSGFM7R16/za3TFAJXPWfggGsHG279LHitIRMIpKMd9vQ9tUxHC2
-         82nr3Frj1u03olscm9k1KHbE9WA9rXcegO2/sGT23sbg/7EQyCe+DQxAz1Q70mS28JLR
-         Dwgw==
+        bh=avAIqxonoUpxUgZ8evBQJpwJeOjfCUq9oOQFKLq1vLw=;
+        b=l8/nixacKiaxqNeKCxYAE0IUTq5hEDB8TTXvtvby/62PVSbNYfYY6252ILQpVGtR7i
+         sbemH3A5gPoGfbrUD6LEW5wIvv6tC1kb1A0t7BeDEdUIMRdwCB1hjNGnjc+9H9rCRsNk
+         DXXISrdJn5HHIZXbdLJHiG7Y9ItMeM9TZ/ES3JmOx0e9G2qGzUZuOSe92a6M6u1aOFXF
+         R22l12gpRGIxgeJkSiXfNQEeK9ADL6+2q2qrx6U5YawFgqS88WzYpaQkcQoT9LLaob7N
+         eOcCpXMC44QyGjOw6QQmYqcDhm4wHPqsDR75s6Mh7apWxp9VUt9JGFwMxszPSsQmLQuf
+         wyZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Del8LI9YEPdJpP+4p1EB8ZApYUMffVccPxz+BZ6gv/k=;
-        b=bsyqZprGwYxpKufainooAmv/H5E1SerG8q0kzWNH6ClTsPrZU/48xb34s+hLZlBQHc
-         BExzsfV9BjHXtOaJZZMcpcfk+FI9Pn5yGA2WCL12jxL2af8qOiXuyHBsMlcbYhpjDkQZ
-         VvzmzILlwNnB8DJ8hd76Zo/4XxOnj3VxfHKuM4BGmJ2hixZHC4sZ/cUxwPoyytjSrxSN
-         uqUsnR5BIG/cDuUpDNdy23BNmxyaTD5C/DCToatSGUo7ESf0JNrSfDx0xYdCS5EqDEmf
-         G+8X0zDIcNJFxHJyQ1wkoE6ccjS1pOgXBvarHSleyAmxQ/6eIRkb9jlILECYKyH0szTU
-         Fm1w==
-X-Gm-Message-State: AOAM531Yuns1xrS2jddgKqjQVdfvdtTLxoAEwVcYNY9dcPXr4z+cJpCC
-        M/kzmCx7O/J9pR6Zc6u3XTiFZA==
-X-Google-Smtp-Source: ABdhPJwByYlSUkKarH/6XQ7u6iIs3tUQ5iCRt+UZjCRsz3CVRb3RBS1aolkwMIh9NJJi+tWY7Y4NSg==
-X-Received: by 2002:a2e:8753:: with SMTP id q19mr44493709ljj.310.1637513812661;
-        Sun, 21 Nov 2021 08:56:52 -0800 (PST)
+        bh=avAIqxonoUpxUgZ8evBQJpwJeOjfCUq9oOQFKLq1vLw=;
+        b=aytyzEcAt32GN4AjfOOql8hEWScpDePXk3QyJdXeMJ/LDlHA9askJAU+TN9rE26+zP
+         OsHv9xpzPMnxq230FRQu4KXSFGzkRStUS+QI+eEs57356efcn3Hb7Yui2tZsGHm4QF6Y
+         VwKTYuY4mFGsjB4nrlQVi13D38ffzpzcIXoK2e20WCfC3jm/hQLDnCjYN2s26g8Bgy8W
+         Da0yUFpC6aFiVUPo9uaFc08UQU1R6HzsKWFeQCMjJSjseExh/fpathHwi7ZnvsMprXlb
+         HXbQWq5wHNrYJQmKUcxfpKcPr9MtWlQQ+NdbShpe7S7CGd+IgKrVQSHmCTdj6zIKp0lv
+         CtWg==
+X-Gm-Message-State: AOAM5314A4dDBjrkUaHPGwbIKr9jWEMlN30+ukLQjlOmUNjIlxv8Kkyf
+        87GpOfueOVQqc3nleRPx+Z9s1NAcxa1MW4qj
+X-Google-Smtp-Source: ABdhPJwYEKjZatumNr73KLVhsFjF7ggTEf2VUTH3bcl9kKsPaJy+T2FEelvbOp4Uw4qCh4SilM5EBQ==
+X-Received: by 2002:a05:651c:2dd:: with SMTP id f29mr44338195ljo.464.1637513814116;
+        Sun, 21 Nov 2021 08:56:54 -0800 (PST)
 Received: from localhost ([31.134.121.151])
-        by smtp.gmail.com with ESMTPSA id j11sm720689ljc.9.2021.11.21.08.56.51
+        by smtp.gmail.com with ESMTPSA id s15sm688642lfp.252.2021.11.21.08.56.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Nov 2021 08:56:52 -0800 (PST)
+        Sun, 21 Nov 2021 08:56:53 -0800 (PST)
 From:   Sam Protsenko <semen.protsenko@linaro.org>
 To:     Guenter Roeck <linux@roeck-us.net>,
         Wim Van Sebroeck <wim@linux-watchdog.org>
@@ -56,9 +56,9 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org
-Subject: [PATCH v4 02/12] dt-bindings: watchdog: Document Exynos850 watchdog bindings
-Date:   Sun, 21 Nov 2021 18:56:37 +0200
-Message-Id: <20211121165647.26706-3-semen.protsenko@linaro.org>
+Subject: [PATCH v4 03/12] watchdog: s3c2410: Fail probe if can't find valid timeout
+Date:   Sun, 21 Nov 2021 18:56:38 +0200
+Message-Id: <20211121165647.26706-4-semen.protsenko@linaro.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211121165647.26706-1-semen.protsenko@linaro.org>
 References: <20211121165647.26706-1-semen.protsenko@linaro.org>
@@ -68,125 +68,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Exynos850 SoC has two CPU clusters:
-  - cluster 0: contains CPUs #0, #1, #2, #3
-  - cluster 1: contains CPUs #4, #5, #6, #7
-
-Each cluster has its own dedicated watchdog timer. Those WDT instances
-are controlled using different bits in PMU registers, new
-"samsung,index" property is added to tell the driver which bits to use
-for defined watchdog node.
-
-Also on Exynos850 the peripheral clock and the source clock are two
-different clocks. Provide a way to specify two clocks in watchdog device
-tree node.
+Driver can't work properly if there no valid timeout was found in
+s3c2410wdt_set_heartbeat(). Ideally, that function should be reworked in
+a way that it's always able to find some valid timeout. As a temporary
+solution let's for now just fail the driver probe in case the valid
+timeout can't be found in s3c2410wdt_set_heartbeat() function.
 
 Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Suggested-by: Guenter Roeck <linux@roeck-us.net>
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
 Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 ---
 Changes in v4:
-  - Added R-b tag by Krzysztof Kozlowski
-  - Added R-b tag by Rob Herring
   - Added R-b tag by Guenter Roeck
 
 Changes in v3:
-  - Renamed "samsung,index" property to more descriptive
-    "samsung,cluster-index"
-  - Disabled "samsung,cluster-index" property for SoCs other than
-    Exynos850
+  - Added R-b tag by Krzysztof Kozlowski
 
 Changes in v2:
-  - Stated explicitly that Exynos850 driver requires 2 clocks
-  - Used single compatible for Exynos850
-  - Added "index" property to specify CPU cluster index
-  - Fixed a typo in commit message: dedicater -> dedicated
+  - (none): it's a new patch
 
- .../bindings/watchdog/samsung-wdt.yaml        | 45 +++++++++++++++++--
- 1 file changed, 41 insertions(+), 4 deletions(-)
+ drivers/watchdog/s3c2410_wdt.c | 21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/watchdog/samsung-wdt.yaml b/Documentation/devicetree/bindings/watchdog/samsung-wdt.yaml
-index 93cd77a6e92c..b08373336b16 100644
---- a/Documentation/devicetree/bindings/watchdog/samsung-wdt.yaml
-+++ b/Documentation/devicetree/bindings/watchdog/samsung-wdt.yaml
-@@ -22,25 +22,32 @@ properties:
-       - samsung,exynos5250-wdt                # for Exynos5250
-       - samsung,exynos5420-wdt                # for Exynos5420
-       - samsung,exynos7-wdt                   # for Exynos7
-+      - samsung,exynos850-wdt                 # for Exynos850
+diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
+index 2395f353e52d..00421cf22556 100644
+--- a/drivers/watchdog/s3c2410_wdt.c
++++ b/drivers/watchdog/s3c2410_wdt.c
+@@ -515,7 +515,6 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
+ 	struct s3c2410_wdt *wdt;
+ 	struct resource *wdt_irq;
+ 	unsigned int wtcon;
+-	int started = 0;
+ 	int ret;
  
-   reg:
-     maxItems: 1
+ 	wdt = devm_kzalloc(dev, sizeof(*wdt), GFP_KERNEL);
+@@ -581,15 +580,15 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
+ 	ret = s3c2410wdt_set_heartbeat(&wdt->wdt_device,
+ 					wdt->wdt_device.timeout);
+ 	if (ret) {
+-		started = s3c2410wdt_set_heartbeat(&wdt->wdt_device,
+-					S3C2410_WATCHDOG_DEFAULT_TIME);
+-
+-		if (started == 0)
+-			dev_info(dev,
+-				 "tmr_margin value out of range, default %d used\n",
++		ret = s3c2410wdt_set_heartbeat(&wdt->wdt_device,
++					       S3C2410_WATCHDOG_DEFAULT_TIME);
++		if (ret == 0) {
++			dev_warn(dev, "tmr_margin value out of range, default %d used\n",
+ 				 S3C2410_WATCHDOG_DEFAULT_TIME);
+-		else
+-			dev_info(dev, "default timer value is out of range, cannot start\n");
++		} else {
++			dev_err(dev, "failed to use default timeout\n");
++			goto err_cpufreq;
++		}
+ 	}
  
-   clocks:
--    maxItems: 1
-+    minItems: 1
-+    maxItems: 2
+ 	ret = devm_request_irq(dev, wdt_irq->start, s3c2410wdt_irq, 0,
+@@ -613,10 +612,10 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		goto err_unregister;
  
-   clock-names:
--    items:
--      - const: watchdog
-+    minItems: 1
-+    maxItems: 2
- 
-   interrupts:
-     maxItems: 1
- 
-+  samsung,cluster-index:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      Index of CPU cluster on which watchdog is running (in case of Exynos850)
-+
-   samsung,syscon-phandle:
-     $ref: /schemas/types.yaml#/definitions/phandle
-     description:
-       Phandle to the PMU system controller node (in case of Exynos5250,
--      Exynos5420 and Exynos7).
-+      Exynos5420, Exynos7 and Exynos850).
- 
- required:
-   - compatible
-@@ -59,9 +66,39 @@ allOf:
-               - samsung,exynos5250-wdt
-               - samsung,exynos5420-wdt
-               - samsung,exynos7-wdt
-+              - samsung,exynos850-wdt
-     then:
-       required:
-         - samsung,syscon-phandle
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - samsung,exynos850-wdt
-+    then:
-+      properties:
-+        clocks:
-+          items:
-+            - description: Bus clock, used for register interface
-+            - description: Source clock (driving watchdog counter)
-+        clock-names:
-+          items:
-+            - const: watchdog
-+            - const: watchdog_src
-+        samsung,cluster-index:
-+          enum: [0, 1]
-+      required:
-+        - samsung,cluster-index
-+    else:
-+      properties:
-+        clocks:
-+          items:
-+            - description: Bus clock, which is also a source clock
-+        clock-names:
-+          items:
-+            - const: watchdog
-+        samsung,cluster-index: false
- 
- unevaluatedProperties: false
- 
+-	if (tmr_atboot && started == 0) {
++	if (tmr_atboot) {
+ 		dev_info(dev, "starting watchdog timer\n");
+ 		s3c2410wdt_start(&wdt->wdt_device);
+-	} else if (!tmr_atboot) {
++	} else {
+ 		/* if we're not enabling the watchdog, then ensure it is
+ 		 * disabled if it has been left running from the bootloader
+ 		 * or other source */
 -- 
 2.30.2
 
