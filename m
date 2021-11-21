@@ -2,58 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE12D458189
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 03:37:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C07A45818E
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 03:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237128AbhKUCk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 21:40:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42088 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232742AbhKUCk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 21:40:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2370160698;
-        Sun, 21 Nov 2021 02:37:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637462272;
-        bh=AIg7BQZM+9GqHp1BCEin8J61OMIiMctzQ1i1ktIqPvQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lcaeu6LIka6LUOdS1LWWnNtfIe5pqVV4vwaDukSPMRQzAmCcgx6TyITt1JF1kTiqm
-         POoCKJ+FPInqgN8xQZwmsg2ZJ4JYE7id7T77wzLY9OeM6crM1DDE8PypWJ9ChTz0Vu
-         rtoKFPh4D59mT9D4St+AOxZa3oZOkwQsPUXRV93NSCzFEi+M5hq7ZV2Gwu6Lou5oOA
-         q16O60cxl6oRRyEARDXK9WpNJ/auD+fq6WGxMmxDqnwQwBt2D07Oodn4FIGOrW28My
-         s5+Wade0XbAZlhCIf4sNPYQlLrP63wAmtWSSuFBbstGeutLsIIWNBT6AWykTmp+j1A
-         VgI+s5pjRbywQ==
-Date:   Sun, 21 Nov 2021 10:37:47 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: Re: [PATCH devicetree 0/3] Update SJA1105 switch RGMII delay bindings
-Message-ID: <20211121023746.GH31998@dragon>
-References: <20211020113613.815210-1-vladimir.oltean@nxp.com>
+        id S237681AbhKUC50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 21:57:26 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:55761 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S237631AbhKUC50 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 21:57:26 -0500
+Received: (qmail 68548 invoked by uid 1000); 20 Nov 2021 21:54:20 -0500
+Date:   Sat, 20 Nov 2021 21:54:20 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     David Niklas <Hgntkwis@vfemail.net>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-input@vger.kernel.org
+Subject: Re: I need advice with UPS connection. (ping)
+Message-ID: <YZm03KTcWOwtMtCN@rowland.harvard.edu>
+References: <20201109220000.2ae98fa5@Phenom-II-x6.niklas.com>
+ <20211114144842.72463ccc@Zen-II-x12.niklas.com>
+ <20211114211435.GA87082@rowland.harvard.edu>
+ <20211114220222.31755871@Zen-II-x12.niklas.com>
+ <20211115160918.GB109771@rowland.harvard.edu>
+ <20211117002359.03b36ec6@Zen-II-x12.niklas.com>
+ <20211117170817.GD172151@rowland.harvard.edu>
+ <20211119171915.6a8cac47@Zen-II-x12.niklas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211020113613.815210-1-vladimir.oltean@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20211119171915.6a8cac47@Zen-II-x12.niklas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 02:36:10PM +0300, Vladimir Oltean wrote:
-> The sja1105 driver has received a set of new DT bindings for RGMII
-> delays, and it warns when the old ones are in use:
-> https://patchwork.kernel.org/project/netdevbpf/cover/20211013222313.3767605-1-vladimir.oltean@nxp.com/
-> 
-> This patch set adds the new bindings to the in-kernel device trees.
-> It would be nice if these patches could make it for v5.16, so that we
-> don't have warnings in the kernel log.
-> 
-> Vladimir Oltean (3):
->   ARM: dts: imx6qp-prtwd3: update RGMII delays for sja1105 switch
->   ARM: dts: ls1021a-tsn: update RGMII delays for sja1105 switch
->   arm64: dts: lx2160abluebox3: update RGMII delays for sja1105 switch
+On Fri, Nov 19, 2021 at 05:19:15PM -0500, David Niklas wrote:
+> On Wed, 17 Nov 2021 12:08:17 -0500
+> Alan Stern <stern@rowland.harvard.edu> wrote:
+> > On Wed, Nov 17, 2021 at 12:23:59AM -0500, David Niklas wrote:
 
-Applied for 5.16-rc, thanks!
+> > > I can also try and use SnoopyPro and busdog if the output is
+> > > undesirable. USBPcap spits out a pcap file which can be analyzed by
+> > > wireshark using dissectors -- somehow (I really should practice using
+> > > wireshark.)  
+> > 
+> > Wireshark on my system has no trouble reading your pcap file.
+> 
+> Misunderstanding then. I was thinking in terms of the USBPcap docs. I was
+> saying a dissector would need to be written. I'm glad it worked for you.
+> https://desowin.org/usbpcap/dissectors.html
+> "Writing USB class dissector"
+
+Evidently wireshark already has built-in dissectors for standard USB 
+communications.
+
+> > This will cause the kernel to ask for 1060 bytes rather than 996.
+> > (It's also potentially dangerous, because it asks for 1060 bytes to be
+> > stored into a 996-byte buffer; if the device sends more data than
+> > expected then the excess will be written beyond the end of the buffer.)
+> > 
+> > Please send a usbmon trace showing what happens with this patch
+> > applied. And you might as well put the Set-Idle request back in,
+> > because now we know Windows does send that request.
+> > 
+> <snip>
+> 
+> It still disconnects. I've attached the usbmon output.
+
+The trace clearly shows the request for a 1060-byte HID report 
+descriptor and the device sending back a 996-byte reply, just like in 
+Windows.  And yet the disconnect still occurs.
+
+The only remaining difference is the transfer of string descriptors.  
+You can prevent Linux from asking for them by editing usb_string() in 
+drivers/usb/core/message.c.  Just make the function return -ENOMEM 
+unconditionally.  That will stop the requests from going out.
+
+Alan Stern
