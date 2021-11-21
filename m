@@ -2,97 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C174585DE
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 19:14:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F9A4585E1
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 19:17:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238563AbhKUSRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 13:17:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60370 "EHLO
+        id S238594AbhKUSUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 13:20:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231214AbhKUSRh (ORCPT
+        with ESMTP id S231659AbhKUSUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 13:17:37 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E732C061574;
-        Sun, 21 Nov 2021 10:14:32 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id r11so66690522edd.9;
-        Sun, 21 Nov 2021 10:14:32 -0800 (PST)
+        Sun, 21 Nov 2021 13:20:19 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDF1BC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 10:17:14 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id v23so20325255iom.12
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 10:17:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fQHIbJRBk7doa/Y7HuWJn6OmTTaP5LB/b60eVfyiu5M=;
-        b=I9aDEtuBACIm02PiuIKfxb/0DPS0rWKFD013l9J1+WlMtlUTknLjiykIuHPqAa38/Q
-         dcgP8eOPfjCuua2MwQKN5hMMu1sreNZuhDtinz1x5Y79pTtVwHT+XSgznR1beGGDk6IU
-         Lahs6lFXhZuU1D29MhVsYs8dCq3DL9F510G4N5bzJDfe5BqY+bA+5y04shcFmgTVX4wG
-         zMn7LPN9jJmD2aLvC0MEtRiRSLFx2x/OtXEDEVx1Pi8DT4VGykcchd0b2hPn3dEnzfbv
-         Kk0+JNTJK8CgrzPLAlrqGeBl41Oh4Xf6WhfclMrsbJisiV3dfJUdi51FQKUmWFt+OHtQ
-         qpCw==
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=65ULih4jdhx6XkQY8ehRAlPWusFwZCWzdiFX6NIjolQ=;
+        b=zsu+Q+VX2+NPXr/UZpR3x8W6pK2OUzMcgE9wIP3twPbveAU5n6DCF9iCldcLy6JDM4
+         KH0YOJnq3845kg/IwYFUHqsX+y2rPHel5OGwTXxMdYA8Kc6x7xJv58Gesr5xLxy7I+PO
+         Xxzzenfqcv8tOqA/CrwXaq8l4o/W+CFe+aaC3snazzVCEEqHzaiYwaQ274/A1P85Lu0y
+         7tYKQsr2c/U1nnczak+Ay6lLm97LUQ0y7uiK6z7pI7EmvgIPFGIJ+JxFWkzi8tgh64Sm
+         oCl/PD5AMaMPSPh4nNossSRAURME9mAooZWtYWejKzUlwt32f+0DHAsdChx9WIQtZ8Uu
+         FdtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fQHIbJRBk7doa/Y7HuWJn6OmTTaP5LB/b60eVfyiu5M=;
-        b=XhmWGoxPolW5ho8Ntker1nVSFp+HKYS4Rg73nxMZ6tOG51zNEhoIT9CGFuY7c7zSoI
-         aeQBIPqJ6oe9WRX6ctk7W+QKjtUAY7wodoAXiVjKI1bQdlmY1k7SUQ8UQ+WCRPXetWdV
-         DzNhoiaWjWzFjNeog59dXAcv9EcerCiR2djBVdggM6WRTqPcl9g3mgFET5VejIqMf1az
-         gE8L0V1FEzLmKEyMhCcaRj777SuWWn9zN7PGDnk2038aiO+NQsnGFVcmheFI9jx2gqVf
-         VGU69Fj/JTqVOi87fL4qvLoIBV/MGHzvaYlgBNDXcdQ5Yw57ewfQMzokza8rcNT2isHZ
-         oduw==
-X-Gm-Message-State: AOAM531NA4KeCkKsP5jGer8T+8SPHGD+5V2YMqqPvmEPOEHa7ZkGxvJ4
-        /l2LK25eS7CBYFpHqJCzoec=
-X-Google-Smtp-Source: ABdhPJx1RvMK2YcYKeH0ysEKQda6MxMT95puk4YslbfDfcCvL/omTghKrRgjBjRYwZjUsOKrjXu+gw==
-X-Received: by 2002:a17:907:6e8e:: with SMTP id sh14mr32912010ejc.536.1637518470754;
-        Sun, 21 Nov 2021 10:14:30 -0800 (PST)
-Received: from skbuf ([188.25.163.189])
-        by smtp.gmail.com with ESMTPSA id o8sm2939601edc.25.2021.11.21.10.14.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Nov 2021 10:14:30 -0800 (PST)
-Date:   Sun, 21 Nov 2021 20:14:29 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan McDowell <noodles@earth.li>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Robert Marko <robert.marko@sartura.hr>
-Subject: Re: [net PATCH 2/2] net: dsa: qca8k: fix MTU calculation
-Message-ID: <20211121181429.jyelad2jbiebdtic@skbuf>
-References: <20211119020350.32324-1-ansuelsmth@gmail.com>
- <20211119020350.32324-2-ansuelsmth@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=65ULih4jdhx6XkQY8ehRAlPWusFwZCWzdiFX6NIjolQ=;
+        b=IK0p0Od9bwoNQ2/lgn/CSy/qGWZmsIqUPl7cJBjN7c6f9tWHxthp+2N8/Je1Dy8BTF
+         3Ew378fAZ2c1e2mS637gI20m8ljNc+fWpaH4F8X7hDfc1B1h7Hge6tu+hdb2iPcBa5lZ
+         R5LM3sL4ooegYim9aXJERi/crLcQXLBFf6ZK6A6ojQhmLdKHGj/nvitEt0oat58rCzfT
+         pFQRt8h8IOUNMZEyUtCJuWFiTRWggllJQ7dtiso1o2YASax8pxJZh47h4Zv74v3wsFmO
+         Q7k0aELIuvDZu5SlJxwhiL5f9mre/zVKhlF4QCacP0X6TGpWpJY5en4ttIpCHyZ0GXyS
+         QUxw==
+X-Gm-Message-State: AOAM530DdRKsGD2H02Ll1Z7UvUHL7GYgdbNonVJM9OtLxFD/SjfbiZr8
+        o+SPG4TKyFkL//l1ueQ2L8y00Q==
+X-Google-Smtp-Source: ABdhPJzw33awYOKSTWKfJtvcy+AEFNV9QEEPzQz4YtCnyDKg7Y8JpBa2tT4xsZNOEkt3tdNz09enPg==
+X-Received: by 2002:a05:6638:3a4:: with SMTP id z4mr43190679jap.76.1637518633978;
+        Sun, 21 Nov 2021 10:17:13 -0800 (PST)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id l1sm3323116ioj.29.2021.11.21.10.17.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Nov 2021 10:17:13 -0800 (PST)
+Subject: Re: [PATCH V5 07/10] io_uring: switch to kernel_worker
+To:     Mike Christie <michael.christie@oracle.com>, geert@linux-m68k.org,
+        vverma@digitalocean.com, hdanton@sina.com, hch@infradead.org,
+        stefanha@redhat.com, jasowang@redhat.com, mst@redhat.com,
+        sgarzare@redhat.com, virtualization@lists.linux-foundation.org,
+        christian.brauner@ubuntu.com, linux-kernel@vger.kernel.org
+Cc:     Christoph Hellwig <hch@lst.de>
+References: <20211121174930.6690-1-michael.christie@oracle.com>
+ <20211121174930.6690-8-michael.christie@oracle.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <0a69a253-3865-322c-3a6d-6f8bb1c36023@kernel.dk>
+Date:   Sun, 21 Nov 2021 11:17:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211119020350.32324-2-ansuelsmth@gmail.com>
+In-Reply-To: <20211121174930.6690-8-michael.christie@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 03:03:50AM +0100, Ansuel Smith wrote:
-> From: Robert Marko <robert.marko@sartura.hr>
-> 
-> qca8k has a global MTU, so its tracking the MTU per port to make sure
-> that the largest MTU gets applied.
-> Since it uses the frame size instead of MTU the driver MTU change function
-> will then add the size of Ethernet header and checksum on top of MTU.
-> 
-> The driver currently populates the per port MTU size as Ethernet frame
-> length + checksum which equals 1518.
-> 
-> The issue is that then MTU change function will go through all of the
-> ports, find the largest MTU and apply the Ethernet header + checksum on
-> top of it again, so for a desired MTU of 1500 you will end up with 1536.
-> 
-> This is obviously incorrect, so to correct it populate the per port struct
-> MTU with just the MTU and not include the Ethernet header + checksum size
-> as those will be added by the MTU change function.
-> 
-> Fixes: f58d2598cf70 ("net: dsa: qca8k: implement the port MTU callbacks")
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
+On 11/21/21 10:49 AM, Mike Christie wrote:
+> Convert io_uring and io-wq to use kernel_worker.
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+I don't like the kernel_worker name, that implies it's always giving you
+a kernel thread or kthread. That's not the io_uring use case, it's
+really just a thread off the original task that just happens to never
+exit to userspace.
+
+Can we do a better name? At least io_thread doesn't imply that.
+
+Also I do think this deserves a bit more commit message, there's really
+nothing in here.
+
+-- 
+Jens Axboe
+
