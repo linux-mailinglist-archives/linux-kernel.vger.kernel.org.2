@@ -2,102 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB0F458442
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 16:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B4EF458446
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 16:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238357AbhKUPFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 10:05:42 -0500
-Received: from mout.gmx.net ([212.227.17.22]:58551 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238335AbhKUPFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 10:05:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1637506951;
-        bh=E2btNeFRA3GGsbq5L/SotP+/jQ/dSxz3Noz23olq0u4=;
-        h=X-UI-Sender-Class:Date:To:From:Subject;
-        b=Hy3L4m48u/kwwQxjOcBs0cw2J+Bq80ux+SivO6CtqcTMeYG17uHe5aZPkcnTv8CUz
-         0ydLLdfUAl4GhrxGzpSr/YmANhontpCeMZPc/L/nEnDHAVDtprzLG9ly+8qjKp9RlL
-         /EEkXGRrRXlURZeNXKyaZSpEzD9HrdDDv1thegQ4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.23] ([77.6.127.250]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MFbRm-1mrYzo3wlC-00H7OQ; Sun, 21
- Nov 2021 16:02:31 +0100
-Message-ID: <747802b9-6c5d-cdb5-66e2-05b820f5213c@gmx.de>
-Date:   Sun, 21 Nov 2021 16:02:30 +0100
+        id S238366AbhKUPGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 10:06:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232721AbhKUPGD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 10:06:03 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD7CC061574;
+        Sun, 21 Nov 2021 07:02:58 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id a9so27742597wrr.8;
+        Sun, 21 Nov 2021 07:02:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=7eqor91/imhfG72H3lrj1aVDpyF8iy7jgStipaya1tw=;
+        b=LyCHdXqfKAmaXgigAFrww+HgSpbc/NiFgGuQQ6zmSfpgu2IZNcQampoLBAjZvFYra1
+         qlYInC+ZbEeRHqG43MmF6F7cCkvQU/ogXuqLk6QltbcyNn31jTIh0qfTWg+un07vSoyT
+         Yj8We1EJ+LEb3jY5gLMTjOj0wkeJu17+SvEyZB9tncbAEeRTamvFq1Lk2GuoN9zq2GKr
+         cA0dxvLbnA8PvTWCb2VeagVEdhbJJsFHafEhU8Ryvrdhk8TurS4Pza+ANd2i4lVEqmXU
+         eH14g7WfqS9AUpnq+OOOKrDn6A1GRwnFZS/xtMG5zDHU9kV6uhgM3xjIh0S5nJhwY8rN
+         JcLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=7eqor91/imhfG72H3lrj1aVDpyF8iy7jgStipaya1tw=;
+        b=oTpskWZVf1DJYwA8Cjv32ErTeuvHh+5bPigCEqzUZe6zTVK+OhovUdbQy9QT+/K8wk
+         c1gpTnLFiDE8URz8VpuvJb2ZBLzIDs42YWC/ZDmzQye10XJlEkCytwtaW0lwNX6Vkcnc
+         oHDyc1SJNiSC/GGr2wHtgftiwNoG4mY46JHnw9Slb6zdZ92VivBapr9u4x2lS9Q/NwFJ
+         Cq/7DpmJtOKgnm7zQJbJ7VAbSI1P31Wljk7kaKlg7AcVi8rDrXquGW1Ac40twRbnk6gq
+         uy12oe51+A9dicc9VnqlCCG9IAhItSiXRWSbA+fn9o06nXn2IDZT81q0hQmgbtQaHAu3
+         ExyA==
+X-Gm-Message-State: AOAM530Rz0R4aLJjVmQohkQ91PAAcVvWJnXKAzKT3LciHy8lUxRpQP9f
+        HKI7Yt/v4diWTYecgQU0kh8=
+X-Google-Smtp-Source: ABdhPJw9ymZYq+3sS+QnRE/KUrRNLZmhJC3mzLHo42GAbJELsCum88Bm+sizc3Gg+e4LV85a/8w7OQ==
+X-Received: by 2002:a5d:51cf:: with SMTP id n15mr30269347wrv.106.1637506976703;
+        Sun, 21 Nov 2021 07:02:56 -0800 (PST)
+Received: from yacov-PR601-VR603 ([87.68.152.183])
+        by smtp.gmail.com with ESMTPSA id f15sm7579952wmg.30.2021.11.21.07.02.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 21 Nov 2021 07:02:56 -0800 (PST)
+Date:   Sun, 21 Nov 2021 17:02:53 +0200
+From:   Yacov Simhony <ysimhony@gmail.com>
+To:     Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Fix coverity issue 'Uninitialized scalar variable"
+Message-ID: <20211121145624.GA5334@yacov-PR601-VR603>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Content-Language: en-US
-To:     Linux Kernel <linux-kernel@vger.kernel.org>,
-        dmaengine@vger.kernel.org
-From:   =?UTF-8?Q?Toralf_F=c3=b6rster?= <toralf.foerster@gmx.de>
-Subject: compile error for 5.15.4
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:uNQHiFJp8tRsTyJkn/mjNH13VO4TkrchGNKyrrezdYlm9F2M4RG
- 6ektVLEgFsUgV+pnsyP67aAGw+d8LMWnBexp1kMJtN6EbTei4uf9iOyc0p5po4iAbCkpZhx
- k61Rvy76Hb+IUyy7gd6/MaxS7e0Ev0otg8rSmD3ta1UlNxios244QCU8oHiRFkJ8W7Sj2YK
- iqz9Bsm9nN9LATWu45+Zw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:djnb1xtSlSA=:k337GDmwoR7b90Nw/0ByAl
- psUi37nQauW0QSRXSBBiblM4m71d2XjRUFhiEXuC/8nd3QRhq9KOj1kboxIv+QwrO6+1VCtb1
- TfGzqPCzD0umUVItVwgHsfJCikd42RXB52MraYcIKgK5lD73NIvcaH6wlHLQxiBZr5vZU8pOK
- uMT1xt0Uh+kPdg+vDrozW8M+hhOzTWT3293UMQ9GNvbuW0Le/y/6mXBOgwfrg9MLmX40CT4bn
- XSts3E4XFvMeejnZKcW5WtLrJbVKN/C/7AoyCAZ+d7auIlxBp2S7p9blZUste5mgmi3t6SZXb
- LZ4AuU7pAzrCHkI4OpItVnSdxCbbNpoQljoKplVQHTdZIwuWGNRlGaTq1VGVCoALEmidwT+Fa
- QWyJ8JYd7qDFKBKRQdSTxdJk3DkSHqx/pVzxWP1WNKwp3vCy+UcYbNNhqYwJr+HyVv0G2yrDQ
- A5vuBoqvSyiHcFhV4EabTWaO91sA1NIeejfTytTfQopi3T9gY8WbdVc/BpOBHaCyFHD1Un8z4
- /fVFa3Q9WKpKkSflQRUMcTGX2OfpO5rjpUnb6R6CNChNlcrW71DV+uuOXUl3o3yIPrmT8pq6E
- ymfjOm8xx6TeYkcgMiqApFB2mCXTvNjq4kBeiDcr408ONI5V+de/w/nXhm35CPEcsHsTvdLS6
- dLKivAF8KSczsgtVzcLdvnLL5yB5NuzlfR/Zh6RroHgvbakIYA+m2IHXq6BTqsW+JwuM4QN2B
- Xo4AfOjJ6Zsq9smQLRJWxxTKIExvqfwpeTbcKJDM5Tn3K+LtrTk+jETrxm7XYDgQmoNyE3P3+
- Gd57+5LprNKaBEWvhMVLfdYrzxdZ4fQ4gJiepkySOUvzs9qS0MYAFbaBFFMMzzkPHUjdfWw4E
- /Q8MmuakeOP0ODbQlQfUKLdqeoV5ZPuesKvm11CCaf7TgXNffueSSNBwQxmubRQ2apb5fmRSn
- iNrYq+8EkrAxFgTfeX+03pR/ulWXzalMQunGzV4x3Mlv3RdqZ75jjentP4Xue5YDNxYu6tPkv
- cT5svJu7SMA0358/FBjvJqTDFSlTwRm4RP56Aqh2MkxlZ6h1ptZqzz7CYDkHsOttp+b7jKWM5
- lc4aZoFqgET7xo=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+There are three boolean variable which were not initialized and later
+being used in the code.
 
-got this at a hardened stable Gentoo Server:
+Signed-off-by: Yacov Simhony <ysimhony@gmail.com>
+---
+ drivers/net/ethernet/cadence/macb_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-# uname -a
-Linux mr-fox 5.14.17 #1 SMP Thu Nov 18 14:02:58 CET 2021 x86_64 AMD
-Ryzen 9 5950X 16-Core Processor AuthenticAMD GNU/Linux
+diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+index 57c5f48..d23c3f6 100644
+--- a/drivers/net/ethernet/cadence/macb_main.c
++++ b/drivers/net/ethernet/cadence/macb_main.c
+@@ -513,7 +513,7 @@ static void macb_validate(struct phylink_config *config,
+ 	struct net_device *ndev = to_net_dev(config->dev);
+ 	__ETHTOOL_DECLARE_LINK_MODE_MASK(mask) = { 0, };
+ 	struct macb *bp = netdev_priv(ndev);
+-	bool have_1g, have_sgmii, have_10g;
++	bool have_1g=false, have_sgmii=false, have_10g=false;
+ 
+ 	/* Determine what modes are supported */
+ 	if (macb_is_gem(bp) &&
+-- 
+2.7.4
 
-
-   CC      net/ipv4/tcp_timer.o
-   CC      lib/raid6/sse1.o
-drivers/dma/ptdma/ptdma-debugfs.c: In function =E2=80=98ptdma_debugfs_setu=
-p=E2=80=99:
-drivers/dma/ptdma/ptdma-debugfs.c:93:54: error: =E2=80=98struct dma_device=
-=E2=80=99 has
-no member named =E2=80=98dbg_dev_root=E2=80=99
-    93 |         debugfs_create_file("info", 0400,
-pt->dma_dev.dbg_dev_root, pt,
-       |                                                      ^
-drivers/dma/ptdma/ptdma-debugfs.c:96:55: error: =E2=80=98struct dma_device=
-=E2=80=99 has
-no member named =E2=80=98dbg_dev_root=E2=80=99
-    96 |         debugfs_create_file("stats", 0400,
-pt->dma_dev.dbg_dev_root, pt,
-       |                                                       ^
-drivers/dma/ptdma/ptdma-debugfs.c:102:52: error: =E2=80=98struct dma_devic=
-e=E2=80=99 has
-no member named =E2=80=98dbg_dev_root=E2=80=99
-   102 |                 debugfs_create_dir("q", pt->dma_dev.dbg_dev_root)=
-;
-       |                                                    ^
-make[3]: *** [scripts/Makefile.build:277:
-drivers/dma/ptdma/ptdma-debugfs.o] Error 1
-make[2]: *** [scripts/Makefile.build:540: drivers/dma/ptdma] Error 2
-make[1]: *** [scripts/Makefile.build:540: drivers/dma] Error 2
-make[1]: *** Waiting for unfinished jobs....
-   CC      mm/usercopy.o
-   CC      lib/argv_split.o
-
-=2D-
-Toralf
