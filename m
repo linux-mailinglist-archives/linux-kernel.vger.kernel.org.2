@@ -2,103 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2B54582CD
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 10:45:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88F964582DA
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 10:53:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233441AbhKUJr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 04:47:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232486AbhKUJr5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 04:47:57 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A8EC061574;
-        Sun, 21 Nov 2021 01:44:52 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id y16so19037849ioc.8;
-        Sun, 21 Nov 2021 01:44:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RC6de6MWhYCf7e2tsmK+OyxaD0ok72SRMINmAEMjGL0=;
-        b=FqVMTJCTyV1aEhJxH5JmMECHEr0Jm6Mkzw5IZRg2OFlhzmDHTfNG8DNGAJOFLwdCmD
-         yu92PtvAL0e70ATPi40ceXndpXS/bTCS74cJR+P55DdgJzY5+5eGf9NcZ+N3Ha7ux7OX
-         EoeQX0scPHt/bZWWrJ1HB+pYCdfdieP2Kbs027pLuccyduFocrc7540REg9w76QpxKN8
-         G5A8rZQj5YdCgWvEn/Ln6MOXU8brqZq3cgAr+0hHIzh8hbSVZEH26fqEjLheTpKwZxO1
-         XvvCGFt8IypRk2uWaC5CvGHSimgEFVbkXMBGaZQqwCkWYvZBoWgiC89PBdtOeKyb1rwd
-         FTxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RC6de6MWhYCf7e2tsmK+OyxaD0ok72SRMINmAEMjGL0=;
-        b=FDFtXcPTWPWtubnHh+1mnmgg6/NHTvYWoBGZxMqAxIIZNZA6aHPWyPK16sPIJvyqs2
-         3LBafiQG3+ZGfIFZUIocUqCq5tqd2UG9dc7navmrXndbi5z+FFyrL9qnzP7XUdWCfh2V
-         dpZWTase0U2WRe5lLTKqQzwhCDEEFWpkBR7Z5gJBjrQzdSrIfP4L/PmhToUgDiQwi5Dy
-         ZiaZtu1aYs4BWZavJBq2HL5J0J3njH1/JSKAStA9BeqVAjB4IMJISAGuh4+IJ2zoSMRG
-         IoQ1DYejl+vjVF1APEWMvM7DQ2KUMQx9mER5uzz7UR3aNwHQ16C7xum+t9Y5ekV23O6S
-         BUfg==
-X-Gm-Message-State: AOAM532HB+Nu4D9sPCy1ls2MMuTCgLQp3mxogHY6So6bmYlHxfSYU4Eu
-        PE5R9UXs2xiOlIjX/zhpRCdaYc/FMcvmSjOO2iKwMlpP4zQ=
-X-Google-Smtp-Source: ABdhPJzY31VEBXTw0nffYiMRdN2GR5XaqlH24Uejy6diRnkpvdnu18BmDGON83ijGsPOJ5BdN9elyWSFeqJLzm0xvPY=
-X-Received: by 2002:a05:6638:4113:: with SMTP id ay19mr40738224jab.149.1637487891807;
- Sun, 21 Nov 2021 01:44:51 -0800 (PST)
+        id S237953AbhKUJ4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 04:56:30 -0500
+Received: from ixit.cz ([94.230.151.217]:41286 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234495AbhKUJ43 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 04:56:29 -0500
+Received: from [192.168.1.138] (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id 702DC20064;
+        Sun, 21 Nov 2021 10:53:19 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1637488400;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fjsRD3fZ0smLhNsEv4gWgFfjGle4NLMaLlq2XBmcfFU=;
+        b=U5Ho6lOf9cm6Vwfugh7tdN2wFeiM77H1WGWA0IC4/Uyn/hpsxkWHBeFM7LCe8eIa7UC2bG
+        ALfSG/3uW9xn6EGe8tPEP58lEUgpPcJstn33u9Fqa5MPlKSiwYp19KgF2mUjynBPdN5dTV
+        kepKT3gPAILi2Tjo/nfpr34rSqu/BLg=
+Date:   Sun, 21 Nov 2021 10:53:13 +0100
+From:   David Heidelberg <david@ixit.cz>
+Subject: Re: [PATCH] arm64: dts: imx8mq: fix the schema check errors for
+ fsl,tmu-calibration
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        ~okias/devicetree@lists.sr.ht, phone-devel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Message-Id: <P42X2R.2KJI0X4G52WJ1@ixit.cz>
+In-Reply-To: <20211121085102.GM31998@dragon>
+References: <20211029114050.39520-1-david@ixit.cz>
+        <20211121085102.GM31998@dragon>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-References: <20211120015008.3780032-1-seanjc@google.com>
-In-Reply-To: <20211120015008.3780032-1-seanjc@google.com>
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-Date:   Sun, 21 Nov 2021 17:44:40 +0800
-Message-ID: <CAJhGHyAvoLYWEfHCaa+GTyDybqK_7++0qSzMDncfTt55NYP12A@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86/mmu: Use yield-safe TDP MMU root iter in MMU
- notifier unmapping
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Hou Wenlong <houwenlong93@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I guess it would conflict with c7785d85b6c6 ("KVM: x86/mmu:
-Skip tlb flush if it has been done in zap_gfn_range()") from
-Hou in the recent master branch in kvm tree.
+Hello Shawn,
 
-On Sat, Nov 20, 2021 at 11:22 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> Use the yield-safe variant of the TDP MMU iterator when handling an
-> unmapping event from the MMU notifier, as most occurences of the event
-> allow yielding.
+yes, when I get back to working on Linux kernel patches, I'll resend.
 
-My spell check add-on in the browser tells:
- occurences ->  occurrences
+David
 
->
-> Fixes: e1eed5847b09 ("KVM: x86/mmu: Allow yielding during MMU notifier unmap/zap, if possible")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/mmu/tdp_mmu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 377a96718a2e..a29ebff1cfa0 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -1031,7 +1031,7 @@ bool kvm_tdp_mmu_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range,
->  {
->         struct kvm_mmu_page *root;
->
-> -       for_each_tdp_mmu_root(kvm, root, range->slot->as_id)
-> +       for_each_tdp_mmu_root_yield_safe(kvm, root, range->slot->as_id, false)
->                 flush |= zap_gfn_range(kvm, root, range->start, range->end,
->                                        range->may_block, flush, false);
->
-> --
-> 2.34.0.rc2.393.gf8c9666880-goog
->
+
+On Sun, Nov 21 2021 at 16:51:03 +0800, Shawn Guo <shawnguo@kernel.org> 
+wrote:
+> On Fri, Oct 29, 2021 at 01:40:49PM +0200, David Heidelberg wrote:
+>>  fsl,tmu-calibration is in u32-matrix. Use matching property syntax.
+>>  No functional changes. Fixes warnings as:
+>>  $ make dtbs_check
+>>  ...
+>>  arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dt.yaml: 
+>> tmu@30260000: fsl,tmu-calibration:0: Additional items are not 
+>> allowed (1, 41, 2, 47, 3, 53, 4, 61, 5, 67, 6, 75, 7, 81, 8, 87, 9, 
+>> 95, 10, 103, 11, 111, 65536, 27, 65537, 35, 65538, 43, 65539, 51, 
+>> 65540, 59, 65541, 67, 65542, 75, 65543, 85, 65544, 93, 65545, 103, 
+>> 65546, 112, 131072, 23, 131073, 35, 131074, 45, 131075, 55, 131076, 
+>> 65, 131077, 75, 131078, 87, 131079, 99, 131080, 111, 196608, 21, 
+>> 196609, 33, 196610, 45, 196611, 57, 196612, 69, 196613, 83, 196614, 
+>> 95, 196615, 113 were unexpected)
+>>          From schema: 
+>> /home/ubuntu/projects_remote/linux/Documentation/devicetree/bindings/thermal/qoriq-thermal.yaml
+>>  ...
+>> 
+>>  Signed-off-by: David Heidelberg <david@ixit.cz>
+>>  ---
+>>   arch/arm64/boot/dts/freescale/imx8mq.dtsi | 87 
+>> ++++++++++++-----------
+>>   1 file changed, 44 insertions(+), 43 deletions(-)
+>> 
+>>  diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi 
+>> b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+>>  index 972766b67a15..50088b110ad4 100644
+>>  --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+>>  +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+>>  @@ -429,49 +429,50 @@ tmu: tmu@30260000 {
+>>   				clocks = <&clk IMX8MQ_CLK_TMU_ROOT>;
+>>   				little-endian;
+>>   				fsl,tmu-range = <0xb0000 0xa0026 0x80048 0x70061>;
+>>  -				fsl,tmu-calibration = <0x00000000 0x00000023
+>>  -						       0x00000001 0x00000029
+>>  -						       0x00000002 0x0000002f
+>>  -						       0x00000003 0x00000035
+>>  -						       0x00000004 0x0000003d
+>>  -						       0x00000005 0x00000043
+>>  -						       0x00000006 0x0000004b
+>>  -						       0x00000007 0x00000051
+>>  -						       0x00000008 0x00000057
+>>  -						       0x00000009 0x0000005f
+>>  -						       0x0000000a 0x00000067
+>>  -						       0x0000000b 0x0000006f
+>>  -
+>>  -						       0x00010000 0x0000001b
+>>  -						       0x00010001 0x00000023
+>>  -						       0x00010002 0x0000002b
+>>  -						       0x00010003 0x00000033
+>>  -						       0x00010004 0x0000003b
+>>  -						       0x00010005 0x00000043
+>>  -						       0x00010006 0x0000004b
+>>  -						       0x00010007 0x00000055
+>>  -						       0x00010008 0x0000005d
+>>  -						       0x00010009 0x00000067
+>>  -						       0x0001000a 0x00000070
+>>  -
+>>  -						       0x00020000 0x00000017
+>>  -						       0x00020001 0x00000023
+>>  -						       0x00020002 0x0000002d
+>>  -						       0x00020003 0x00000037
+>>  -						       0x00020004 0x00000041
+>>  -						       0x00020005 0x0000004b
+>>  -						       0x00020006 0x00000057
+>>  -						       0x00020007 0x00000063
+>>  -						       0x00020008 0x0000006f
+>>  -
+>>  -						       0x00030000 0x00000015
+>>  -						       0x00030001 0x00000021
+>>  -						       0x00030002 0x0000002d
+>>  -						       0x00030003 0x00000039
+>>  -						       0x00030004 0x00000045
+>>  -						       0x00030005 0x00000053
+>>  -						       0x00030006 0x0000005f
+>>  -						       0x00030007 0x00000071>;
+>>  +				fsl,tmu-calibration =
+>>  +						<0x00000000 0x00000023>,
+>>  +						<0x00000001 0x00000029>,
+> 
+> Can we keep the indentation like below?
+> 
+> 	fsl,tmu-calibration = <0x00000000 0x00000023>,
+> 			      <0x00000001 0x00000029>,
+> 			      ...
+> 
+> 
+> Shawn
+> 
+>>  +						<0x00000002 0x0000002f>,
+>>  +						<0x00000003 0x00000035>,
+>>  +						<0x00000004 0x0000003d>,
+>>  +						<0x00000005 0x00000043>,
+>>  +						<0x00000006 0x0000004b>,
+>>  +						<0x00000007 0x00000051>,
+>>  +						<0x00000008 0x00000057>,
+>>  +						<0x00000009 0x0000005f>,
+>>  +						<0x0000000a 0x00000067>,
+>>  +						<0x0000000b 0x0000006f>,
+>>  +
+>>  +						<0x00010000 0x0000001b>,
+>>  +						<0x00010001 0x00000023>,
+>>  +						<0x00010002 0x0000002b>,
+>>  +						<0x00010003 0x00000033>,
+>>  +						<0x00010004 0x0000003b>,
+>>  +						<0x00010005 0x00000043>,
+>>  +						<0x00010006 0x0000004b>,
+>>  +						<0x00010007 0x00000055>,
+>>  +						<0x00010008 0x0000005d>,
+>>  +						<0x00010009 0x00000067>,
+>>  +						<0x0001000a 0x00000070>,
+>>  +
+>>  +						<0x00020000 0x00000017>,
+>>  +						<0x00020001 0x00000023>,
+>>  +						<0x00020002 0x0000002d>,
+>>  +						<0x00020003 0x00000037>,
+>>  +						<0x00020004 0x00000041>,
+>>  +						<0x00020005 0x0000004b>,
+>>  +						<0x00020006 0x00000057>,
+>>  +						<0x00020007 0x00000063>,
+>>  +						<0x00020008 0x0000006f>,
+>>  +
+>>  +						<0x00030000 0x00000015>,
+>>  +						<0x00030001 0x00000021>,
+>>  +						<0x00030002 0x0000002d>,
+>>  +						<0x00030003 0x00000039>,
+>>  +						<0x00030004 0x00000045>,
+>>  +						<0x00030005 0x00000053>,
+>>  +						<0x00030006 0x0000005f>,
+>>  +						<0x00030007 0x00000071>;
+>>   				#thermal-sensor-cells =  <1>;
+>>   			};
+>> 
+>>  --
+>>  2.33.0
+>> 
+
+
