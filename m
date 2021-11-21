@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC4D4586E1
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 23:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA96A4586E4
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 23:58:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231584AbhKUXAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 18:00:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36626 "EHLO
+        id S234054AbhKUXBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 18:01:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbhKUXAP (ORCPT
+        with ESMTP id S230123AbhKUXBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 18:00:15 -0500
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45157C061714
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 14:57:10 -0800 (PST)
-Received: by mail-ot1-x32c.google.com with SMTP id h19-20020a9d3e53000000b0056547b797b2so26119323otg.4
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 14:57:10 -0800 (PST)
+        Sun, 21 Nov 2021 18:01:19 -0500
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB085C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 14:58:13 -0800 (PST)
+Received: by mail-oi1-x235.google.com with SMTP id q25so34349069oiw.0
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 14:58:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=9XpcC2OzJKUPIULTfHPzivkbHxJbmpO+PtuVvED5p2I=;
-        b=mVoyODWPGJCR+2Aba02Adr7LwF8b5MfaDHuieArmPUpfYS778GnhgKQAbvpVFoNWTM
-         BFf/+vNPQfOSWaZiNcYF7XwGuGJgnYy6RnCa/9sljFofJACgWpichxq9pTbJUyjkgmKW
-         ulkzWJm5Qck6BKKVyVHxNZzis2Lz1BPBL2eTPruicv/xWAwkV4Q9vwPwgS093JrilN4o
-         Nv5IslpCAjs9AKKA2NMiCsNAUzwtx+5Z757VFEvIIp8uvjprc1boLADUzpC+O0yexslY
-         RnEW7OJwhiOR09CkfYGoKfkNTbbJDjQW8g4aojgo64VOhyI/pFySTWwaEiZ3RP6mJI2j
-         ShZg==
+        bh=/5OZU0dPITJ79B0ldHvptsJJjqxj5kJ42lpkT+u7EAE=;
+        b=dnSoV/tSD+rfrE9UnR0LqWTICHhNjqERhGtexoeub25ZTDwZbCaePnvxpiyrmLQnW5
+         oRjynhxCJKKJWK12DJMB6oF6WhnngL5V+F9GvAQlIgDz4aVHqo0Lbg2vFjtwIi+XrHzJ
+         Tnji7disVwfdrSyVd/BphgXXA0tR4CI86OmfFowviZFLOAKQnt6xiaLO9zl7BbDrN6Ri
+         y4VPAsYFAmPVyea7JCLuALUcewsNt4WwpBQJ5kAallC7q6ySyLiEr5nqdy7Rp9NUCoDO
+         eLiom8oxJngJefdNG2Dlx4f8S8S9GBng8O+3QOlVZh/UZoWgXy3P/l5KcflHjgLyRApS
+         6xEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9XpcC2OzJKUPIULTfHPzivkbHxJbmpO+PtuVvED5p2I=;
-        b=4r86IE4g+FFdpv2gBYbc69HI74EH7mLwRHf81dLbh9bmsivQTlgGmCjquhDERufeyw
-         WamRpr9HcArAn8E4JE52BfLJELZBN0Ltx6NiMumleauNWXB6VySbxl1WO6P2f4YlpOyE
-         Gd4E8LbBTRBlwIfoeatHDcIWpEczzy935eGbqlqHxC9hR7CX+GLjVUq0ZvB7IZmInQU4
-         V4yJoIP/RF013+PV3z75qTXvaBpCyLerwrDNnIfWx8dSA290zauglV2gAJ1kK5BmDKIz
-         Izch27IIVO+DhioYU6MM0QWwMvxnHtA45Dvfc4yYFXPRlRhMGy8Ucu6Kbz2uKht4cKZB
-         s6yA==
-X-Gm-Message-State: AOAM532CY1NkvR+uQ8z+pauOgFd7AVtAwEKfmOyNyYsWQJZH15b0mAvi
-        zslwG/ulPw4gsifi0tB+UdlUVSG5q/K81r1Sw1lCJDdKH3Q=
-X-Google-Smtp-Source: ABdhPJxzNFh6C9N+oywTSQc3Tu6q4zZFkC2s7yr/nmKU6Lmxipg1uw0WFkxVFR5of0PSyTxufTbf5CuuXzrFU4AEA5w=
-X-Received: by 2002:a9d:a42:: with SMTP id 60mr21295623otg.179.1637535429674;
- Sun, 21 Nov 2021 14:57:09 -0800 (PST)
+        bh=/5OZU0dPITJ79B0ldHvptsJJjqxj5kJ42lpkT+u7EAE=;
+        b=ryFPCE6KTjc9fb5sDNjipU0HNc4CiIiBy0rMUQV7CrBlGNOTh/ai2+vs9mIRpUEHrY
+         S+lTqoTgds8lMo6KgDCsRKBkxTGDZxxy06tnYPVKpeOuGfih2069hct48pXfwYH3T/f6
+         04LAauu4qWqW82WJXKraglWhED/4lEi5IoM4BrKGJpF54vr9ppuHtb5sAcip4bSuA4rl
+         mGh4Zt7H84u6L+PJFlaPsSrtteeIf0/uVIcK8917Pd8taNGVOhdiQS0kA3d00sk/GdBd
+         aiHzcH/Qh/k6M9yuhGT/d7NpsOu93dQ1YfYHqQ18nCtyZaclNj7oLGA0Hy7CIr16Hdpf
+         3ROQ==
+X-Gm-Message-State: AOAM531TtvrRqPL0uXCesRWkpDdrkdTCbG97bvLdUUc/CCGerVLKhBVB
+        YhXcHSzp3Mr6f02aCcyPhuPR9DMNSdCBgb+aOE49nvzdc60=
+X-Google-Smtp-Source: ABdhPJyVeByS26CUTL6DtZHU3tOXB2fRzb6opZhfyZVeuemgt5Kvq+XhBTiDAtDzxeTbOO6EexIMaBes3AiawHPQtzw=
+X-Received: by 2002:a54:4791:: with SMTP id o17mr17766392oic.114.1637535493362;
+ Sun, 21 Nov 2021 14:58:13 -0800 (PST)
 MIME-Version: 1.0
-References: <20211110165720.30242-1-zajec5@gmail.com>
-In-Reply-To: <20211110165720.30242-1-zajec5@gmail.com>
+References: <20211110165720.30242-1-zajec5@gmail.com> <20211110165720.30242-2-zajec5@gmail.com>
+In-Reply-To: <20211110165720.30242-2-zajec5@gmail.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 21 Nov 2021 23:56:58 +0100
-Message-ID: <CACRpkdbQVJTnVH8LBKAY3eCXvZLRnXXEMdgNtGwWVb0Zhk94sA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: convert controller description
- to the json-schema
+Date:   Sun, 21 Nov 2021 23:58:01 +0100
+Message-ID: <CACRpkdbfMFa9wt2XqhzK6-ZbAgRPPu3C7o2=4PbK2FEYFgkJ2Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] dt-bindings: pinctrl: use pinctrl.yaml
 To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
 Cc:     Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -67,12 +66,13 @@ wrote:
 
 > From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
 >
-> This helps validating DTS and writing YAML files.
+> Also fix some examples to avoid warnings like:
+> brcm,ns-pinmux.example.dt.yaml: pin-controller@1800c1c0: $nodename:0: 'pi=
+n-controller@1800c1c0' does not match '^pinctrl|pinmux@[0-9a-f]+$'
 >
 > Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
 
-This looks good to my eyes but I definitely need Rob to look at this before
-merging!
+Looks good to me, Rob?
 
 Yours,
 Linus Walleij
