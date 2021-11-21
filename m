@@ -2,169 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F27458591
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 18:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5CE0458594
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 18:47:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238625AbhKURtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 12:49:45 -0500
-Received: from mail-eopbgr70059.outbound.protection.outlook.com ([40.107.7.59]:45404
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238540AbhKURtn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 12:49:43 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lxAtJFi1JwYGbwaLPgVWs0EnL9WNd0J84NKntCxascC8G/IArdkqnu/bxp9HYGH/jgl/QBQjUEv3w4N24SakMR2Ck7n8by5gQ49W7dZ9DsexClU9MVcS3njPIytuTkNoJTbd4XcIvB0J/RVrErSc2MDNDcnCDtpxkwHDBKaNVgSJAROg50RvPehweI5u8TpUOuaA2DZ45IwW5rjZ/WQIHTXG7uzuyLTHwalJSiT8M/0KU+LgkyLEHIpQ5vvJ/dvLXlhSPAVHLDllKDhdq7WfId/wu1o8NlGhWTholmvhYWkCzyvXIQ4V283n/B55VqHuYxODf84b/HRcCqrilP6u+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tl67/t1Vowfqo8jd/1M5yu2t0R+9I5gdq+fUXeA5jLo=;
- b=Jdf9TLyNehfJn/VOWSX6j19gV1ZNZyrOnqWCCT271tXzvzKAK2fITKY/QAIY4NxUp5GsE5TgtRn28Z41rKsgif78zc6qBya42URxVQaxrOJZZWbPHuPfwWTmlCg8oorgngqMyxV7pGQWjMevp8SjiYeq+NT5ILTlGu+zNKe6PA7NnIG9+4CT8SOiswZ3okEDdPLZHxCP2hZY1yf3CsNsjkNke93uQFo3JWRr9WZRpoE+Rhcht4uKLHZHVWh+TrkXhUC2RkfPo2YqF98reJqKB18ihhf/ei8O4FCzkGBfKF8Ce4AhUxlPL0I9xfqzzlu/fHxBHAi1pF+Tz0Mhl+XcSQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tl67/t1Vowfqo8jd/1M5yu2t0R+9I5gdq+fUXeA5jLo=;
- b=GhHng4XvMO3FWGN21/EQlAI8uvdHok/WUrMV7kQVzihsaWi/2V6MxQG7IP2obqy+Jenmzf6VD0fMIR/zYD7OHW63uEtrIUcUhalr5VP+/F+gZRsAreBiCJBA0rhOnpMzXAfVPJwoqcU2YgRkQygRSEBmLbnbIGjrhM4ypUPLftw=
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
- by VE1PR04MB7327.eurprd04.prod.outlook.com (2603:10a6:800:1ac::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Sun, 21 Nov
- 2021 17:46:36 +0000
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e4ed:b009:ae4:83c5]) by VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e4ed:b009:ae4:83c5%7]) with mapi id 15.20.4713.024; Sun, 21 Nov 2021
- 17:46:36 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
-        Yannick Vignon <yannick.vignon@nxp.com>,
-        Michael Olbrich <m.olbrich@pengutronix.de>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Holger Assmann <h.assmann@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        Kurt Kanzenbach <kurt@linutronix.de>
-Subject: Re: [PATCH net] net: stmmac: retain PTP clock time during
- SIOCSHWTSTAMP ioctls
-Thread-Topic: [PATCH net] net: stmmac: retain PTP clock time during
- SIOCSHWTSTAMP ioctls
-Thread-Index: AQHX3ZoAkTIcPNTQCUeJkFszF9TJdqwLyqeAgAJ5mYA=
-Date:   Sun, 21 Nov 2021 17:46:36 +0000
-Message-ID: <20211121174635.y7ljlas26xpgfp4j@skbuf>
-References: <20211119230542.3402726-1-vladimir.oltean@nxp.com>
- <20211119195851.2181aab3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211119195851.2181aab3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: befc56b6-234a-4c12-5193-08d9ad16dda0
-x-ms-traffictypediagnostic: VE1PR04MB7327:
-x-microsoft-antispam-prvs: <VE1PR04MB7327AA1C38A3F318998940DCE09E9@VE1PR04MB7327.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Pmt+LpabY4El9qzNEVok+hlZxOaUafcGETNTpovTuIb1j2lAMCI5ckVFQdxon+cPTkacC2W2+KaMr4Y5OvYdBd4YOd6QsCqXdt3hPdU2yvFqMIs8Lb8e8mEdQ5RjD5Pp9l8M0Mz/Do9lw2Ro9ql/JH6gIn5TO7kq9X3cygcIlN7IB+9JNn/JD0/Sx7o4B1NBYRSgB6rcbqVzUIFb6zQAErC0cCcqu5kNrDA8e+Q8EvIGidxuPtotFSrq2oK0STovUWf6ilL6nvXHJ1oz4vxwlDitP5q5d7Z0a8/m8JFebRjKsQs8kaVLKlq0iDce4YjMjbTVh8thVYXGgu85fyqB747GLXuMLXivh08Hoa7muD/8URkuAqIvvs3XzgVGPdTbnnGDTaEEj8cOBGaaVjHwWwEyvIXMCVRPHrBFqZh0QkQKjiJ9K/8b4eJVpf2DVkMnALCanN3llHAie5Ulr9LtxiI3SQbHx3VR+QBV8FloFJ7EVGI1mpPXsMsahPD4vXwp/20I4dqDN5zLPzAq/zB4tHLXTAu9e7M6Z+esMH0Z9XtDir/FtPb5LBr3OUrKFpsthaAXRGyA5ub+1HxJ/hhMztUpnKAKtJXc4AyLHyX5U7vJLu/g2+CwMFocTfdrDnBIQBJu1TbQuPgcLkUzmsP5hnUBoZg7R4Gt1HJVGWndmbYNHUexpzeZ5yBjTPZDAy7NKk2W5Nj9PcYYhTv7+DQ1Hw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(366004)(186003)(66446008)(8936002)(508600001)(2906002)(54906003)(6916009)(6506007)(7416002)(38070700005)(83380400001)(316002)(8676002)(4326008)(86362001)(44832011)(122000001)(6486002)(91956017)(76116006)(66476007)(66556008)(66946007)(6512007)(64756008)(5660300002)(1076003)(9686003)(38100700002)(71200400001)(26005)(33716001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ISElCfBhoxL2gcfyIYO5cidiHSluYt5iMEZStrh1WxEfHQSy03tqipgRLEo7?=
- =?us-ascii?Q?YY5vNGPK7PmI8nrzGh7HqpZom+c5QsX3onbD5STL35PkXBlfX1HFshyeAmA7?=
- =?us-ascii?Q?bUZ1iJSsecNV9Nm7yJBpOJLJ4QzymTNxM2+08vrlobLxS7f0E1QEUAauAEY9?=
- =?us-ascii?Q?c1k/Fh4K+bQWBTwOSBxlN9688U2l/S/WQwi6pNPlPTSNv9FXfgdPelE/Fd8V?=
- =?us-ascii?Q?HAMj7e5YW9OLy0/n9ntZJ6VgA0bpNdEPOLn1BC1B3bsyW0QenQsd8D+UW0L8?=
- =?us-ascii?Q?wDVPr58fefZg7oGhCpTiWrTHibfH/S61Yw6aIPYRgaWFB1tXXcjHvDmInUmR?=
- =?us-ascii?Q?tHqdXq9YFEj+DX/9LAvHI4MhZp2t3DK9A5Tf4pKVQWrZ27KTwqkAdglUFCqz?=
- =?us-ascii?Q?+C1dwgVA3pjhoxLabdxMlIu8NBicyVwA5ME82fdFs/QEnmx4+M405AibQ3KD?=
- =?us-ascii?Q?qTKmf2DtQmXxcavS98F/zBQu0P48s1i0XSsI/vwK52/v6cnBbaOa6ENg7E3z?=
- =?us-ascii?Q?tCGKKcLxcOXc/8sVOueU2g9lYUxet+2rVax5s/0WBFFHg4JE10Rc+ffzvYoE?=
- =?us-ascii?Q?ro/953GDZkLCt92QlJOhig4N+G9srxiWSjV1mzFCLnR/N/fPaUwK0z19/dTZ?=
- =?us-ascii?Q?zg5XM369Ihniurhi8EYxKeNJiozwvqExNrTwsibC5vAEcrw9moh4tS94Pate?=
- =?us-ascii?Q?3ZkKvnARsVw0G/MCsx0ozPZQKo7mZ6XxYGQPBhetFU17xa2wyYpFSuQ7DqiR?=
- =?us-ascii?Q?GOxbm/47nGotulwC6Vtn3EzROBb+tN+LTDQY7q5SQNvDwjnLmPtpH1QrvAcc?=
- =?us-ascii?Q?hIuQ45puMWlXntITnXVkbgim+Oi9Rk6ikGpbCDOs4LeXglXJroB4U+i8OSb/?=
- =?us-ascii?Q?19axUoPmtturXSo2IwIU5voY5X393SH8TTq68Dj9GD440X9UbKgsO33cdDmP?=
- =?us-ascii?Q?E0C7xhNBbCSYPMc+lFQYrRuCq37jCX7qrZL876uuwy3Tev4qpahNy9pfCZUE?=
- =?us-ascii?Q?6YKdu5C1npBRFzUkrgLxYZli+E1LDaPIuJleM2/84CTR0xa/YtarjzZ6IRAv?=
- =?us-ascii?Q?hcDe4/Lsk/aEJ7lZjBJ4auId5Ag1unW28DbX0xd3BaNQMLZ+qgkbVaYH+/Wu?=
- =?us-ascii?Q?sQ5j0wps/w+iwxS8YL4FbTQ3WhhOoOrz25WaZKL8OU3m1nH2PBwwpqgqBo23?=
- =?us-ascii?Q?Y9A63Rl1ge2OzSi2PkHzb2tpXd6zhQieG5+9iSIXYD7vlbtxXf/J9Q+tkFPA?=
- =?us-ascii?Q?8/izEmDtGftB7t/3cli9NWDQmgCToRN+aoW5MODPX0G1ZoZpW5VlzUFa+EDv?=
- =?us-ascii?Q?YJYU3WzPKuPJV+F0gHGgczeUuco+YikZzOtvtnZZ9ou25fXyRDj5SeVA7dBx?=
- =?us-ascii?Q?k3imUCcH/5NylsTqgPTGQ4IYy8lP7jflAbDCo9A71iWRkgzGfFrTyHVIovXK?=
- =?us-ascii?Q?+UErLvAxlze6Ao4V01iLr5CNVawQw8a8Nsujk+7QftY9FbUviLG1DIbSfwvj?=
- =?us-ascii?Q?uh9lBjfewcKmE0lwpI4KCGH8U/eyxdzhlD270+9CovsFjGfXz4toLMA7x739?=
- =?us-ascii?Q?mW8harw+1ESj3iV99HYeIcRFl15vC5MpLMnL4W/JiV4/Y0oLUp5YsfkV3YP/?=
- =?us-ascii?Q?lFiCULCOA2ebGzE/n9mUW2o=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <20FD58246351734A93FC43AB4DAEF2CF@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S238638AbhKURuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 12:50:06 -0500
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:44601 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238480AbhKURuF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 12:50:05 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 678832B00900;
+        Sun, 21 Nov 2021 12:46:59 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Sun, 21 Nov 2021 12:46:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.in; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=NF8A30VDPgxo4gV5iWZLIEuYq0B
+        stUMwp7oBomp9GCE=; b=gn3TJpPQJUCsdPBSN6sYQBTxFGHJNyQ2BUAQv1P8wKf
+        LBihnD7oUU/d+hCGNLify1s28gYiTFgbRZSVNQ6pYUMNVl3uMuqUx1gwoIyZ8Aoh
+        zEinPwO22dIrrL/ssqh2c/49dZTHJGIYQgOfnL/jj8gN7HXMvd9XcCfqMBf5lT2g
+        P1TXi6Va37RFgO9/XznLfz3ZtNrZ0K8o5YLDm4m63tO0W8AVCiZ42HWvuGC5TfbA
+        iedUN9FYB1Olrd9Vfo0QrwdW8FfeXfHJOkQTgpTmuiWpwSi92Nw9LMT/IxDQBxYV
+        j1JDCHPcmBECknxNsVFv2oPcB3IYIlqqqjwDyPj9d1Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=NF8A30
+        VDPgxo4gV5iWZLIEuYq0BstUMwp7oBomp9GCE=; b=PbWT94mpUa7Lur523jDCcD
+        C9SjT6Po8wZrq2PoQUhFbN0NJKMqo8VT2TUEqR+Xf9vBbJevJhTNi8ZWfuU+BVp2
+        9SFKzkIoEVDb7S4KJj1YRPxC3Mwvfxkf1muCqH8ZmhzoxzZ1KFGxm1s8AxhSF6f/
+        rdQfRSq5W8i/jK22OeQfXU/Q4zVXFrhpIQI+cbsqfBP/mrxP6E1egwycx0KVitms
+        bnwWF1hC02mFsh8+CmMTWbw/UKh19aMgriDP+2voxWmOHFeDn9NISd8ZVHDmvUwd
+        /et5mFcSkTBH7NQrxTr2lxeVkTxzwfXzjoEHxi4VvxDrio2MmP7IqYV0wdyM2sgw
+        ==
+X-ME-Sender: <xms:EoaaYWxHGOQexl99TZa1ju4W7_ywlG6vNCbnWBRYEu5SSahwgJQ3gg>
+    <xme:EoaaYSSNB7a8TgrAY0IriYXsjAclSTh5GASlrWwhS6ozV4HWI1bKtUl2pt43l8qrO
+    L3lhPyqG9XIgu9kSAk>
+X-ME-Received: <xmr:EoaaYYXIlZatBSNB23wx2XXmcNwowxhAQbhF6wnCSRZqR02VXLctki9E>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrgedvgddutdejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeffvggvphcu
+    ofgrjhhumhguvghruceouggvvghpsehfrghsthhmrghilhdrihhnqeenucggtffrrghtth
+    gvrhhnpeejieeijeekudeffeeivdeujeetffeuhfefudejudeiteevhfelueekvedugeeu
+    feenucffohhmrghinhepnhigphdrtghomhdpphholhholhhurdgtohhmnecuvehluhhsth
+    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepuggvvghpsehfrghsthhm
+    rghilhdrihhn
+X-ME-Proxy: <xmx:EoaaYchKbSXnqu_kzuuVV12uHdqPKWZ8gxr76_wy0o-CAtU-ZlW8vQ>
+    <xmx:EoaaYYBLXL25f3Rrn5vAvDF18Niq_Qpxgv3hMNCs9tF7x30Gqpdvyg>
+    <xmx:EoaaYdLBB6e8dLVC8EYDonolxejL-vdm2A5Qd55ZdKnDn-i6czT4vQ>
+    <xmx:EoaaYbPPY7DbWNV0R_T5AMA7rZMPWe52ST9op4Fi_A5IL3bKX9vItyOXTjQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 21 Nov 2021 12:46:57 -0500 (EST)
+Date:   Sun, 21 Nov 2021 23:16:54 +0530
+From:   Deep Majumder <deep@fastmail.in>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     wsa@kernel.org, linux-doc@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Docs: Fixes link to I2C specification
+Message-ID: <20211121174654.hu26uxcd3lsdpypq@CodeMachine>
+Mail-Followup-To: Randy Dunlap <rdunlap@infradead.org>, wsa@kernel.org,
+        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211119061401.19852-1-deep@fastmail.in>
+ <4c16a9f5-3728-5377-1286-001b1b362bb1@infradead.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: befc56b6-234a-4c12-5193-08d9ad16dda0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Nov 2021 17:46:36.7453
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /yXS/NBFleUBcmEerg6BxlLwV72zaJeXpV4QGD9ZaLbjnsnFbZcpXSTzUV+X8ZMpq3Q2toY6act8ZvIfuubbVA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7327
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4c16a9f5-3728-5377-1286-001b1b362bb1@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 07:58:51PM -0800, Jakub Kicinski wrote:
-> On Sat, 20 Nov 2021 01:05:42 +0200 Vladimir Oltean wrote:
-> > Currently, when user space emits SIOCSHWTSTAMP ioctl calls such as
-> > enabling/disabling timestamping or changing filter settings, the driver
-> > reads the current CLOCK_REALTIME value and programming this into the
-> > NIC's hardware clock. This might be necessary during system
-> > initialization, but at runtime, when the PTP clock has already been
-> > synchronized to a grandmaster, a reset of the timestamp settings might
-> > result in a clock jump. Furthermore, if the clock is also controlled by
-> > phc2sys in automatic mode (where the UTC offset is queried from ptp4l),
-> > that UTC-to-TAI offset (currently 37 seconds in 2021) would be
-> > temporarily reset to 0, and it would take a long time for phc2sys to
-> > readjust so that CLOCK_REALTIME and the PHC are apart by 37 seconds
-> > again.
-> >=20
-> > To address the issue, we introduce a new function called
-> > stmmac_init_tstamp_counter(), which gets called during ndo_open().
-> > It contains the code snippet moved from stmmac_hwtstamp_set() that
-> > manages the time synchronization. Besides, the sub second increment
-> > configuration is also moved here since the related values are hardware
-> > dependent and runtime invariant.
-> >=20
-> > Furthermore, the hardware clock must be kept running even when no time
-> > stamping mode is selected in order to retain the synchronized time base=
-.
-> > That way, timestamping can be enabled again at any time only with the
-> > need to compensate the clock's natural drifting.
-> >=20
-> > As a side effect, this patch fixes the issue that ptp_clock_info::enabl=
-e
-> > can be called before SIOCSHWTSTAMP and the driver (which looks at
-> > priv->systime_flags) was not prepared to handle that ordering.
->=20
-> Makes build fail:
->=20
-> ERROR: modpost: "stmmac_init_tstamp_counter" [drivers/net/ethernet/stmicr=
-o/stmmac/stmmac-platform.ko] undefined!
+Randy Dunlap wrote:
+> On 11/18/21 10:14 PM, Deep Majumder wrote:
+> > The link to the I2C specification is broken and is replaced in this
+> > patch by one that points to Rev 6 (2014) of the specification.
+> > Although `https://www.nxp.com" hosts the Rev 7 (2021) of this
+> > specification, it is behind a login-wall and thus cannot be used.
+> 
+> I don't quite get the "cannot be used" part.
+> I created a free login and downloaded this spec,
+> so yes, it's a hassle, but why can it not be used?
 
-You're right, I'm missing an EXPORT_SYMBOL, thanks.=
+Perhaps a more appropriate wording would be "cannot be used as the only
+source of the spec"? Because as I understand, many users may be
+unwilling to sign up to a website just to download a spec sheet (if for
+no other reason, for the fear of spam).
+
+> > Thus, an additional link has been added (which doesn't require a login)
+> > and the NXP official docs link has been updated. The additional link is
+> > not the Wayback Machine link since it seems that the PDF has not been
+> > archived.
+> > 
+> > Signed-off-by: Deep Majumder <deep@fastmail.in>
+> > ---
+> >   Documentation/i2c/summary.rst | 8 +++++---
+> >   1 file changed, 5 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/Documentation/i2c/summary.rst b/Documentation/i2c/summary.rst
+> > index 136c4e333be7..3395e2e46d9c 100644
+> > --- a/Documentation/i2c/summary.rst
+> > +++ b/Documentation/i2c/summary.rst
+> > @@ -11,9 +11,11 @@ systems.  Some systems use variants that don't meet branding requirements,
+> >   and so are not advertised as being I2C but come under different names,
+> >   e.g. TWI (Two Wire Interface), IIC.
+> > -The official I2C specification is the `"I2C-bus specification and user
+> > -manual" (UM10204) <https://www.nxp.com/docs/en/user-guide/UM10204.pdf>`_
+> > -published by NXP Semiconductors.
+> > +The official I2C specification (revision 7) is the `"I2C-bus specification and user
+> > +manual" (UM10204) <https://www.nxp.com/webapp/Download?colCode=UM10204&location=null>`_
+> > +published by NXP Semiconductors. However, you need to log-in to the site to
+> > +access the PDF. An older version of the specification (revision 6) is available
+> > +`here <https://www.pololu.com/file/0J435/UM10204.pdf>`_.
+> >   SMBus (System Management Bus) is based on the I2C protocol, and is mostly
+> >   a subset of I2C protocols and signaling.  Many I2C devices will work on an
+> > 
+> 
+> 
+> -- 
+> ~Randy
