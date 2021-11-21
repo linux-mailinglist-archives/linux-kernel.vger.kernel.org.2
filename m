@@ -2,96 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19597458648
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 21:22:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF0245864B
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 21:23:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232126AbhKUUZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 15:25:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231347AbhKUUZu (ORCPT
+        id S232355AbhKUU0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 15:26:14 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:38419 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229441AbhKUU0N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 15:25:50 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17FF0C061574;
-        Sun, 21 Nov 2021 12:22:45 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id l22so70563412lfg.7;
-        Sun, 21 Nov 2021 12:22:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=aRweFMVog2aHsU0N6H/aidV/g7xHJC1fx25ZnuGgZpQ=;
-        b=eSKwrNYYO2iofFhzHJTxYOEEIzFaH5XSMpN1E1EMREe8nsJo/yyBAF8tHJXVUG4aRf
-         EOrx9NRyWZ2qQtB6awThelCivp5xzgrAK0P2Ue2glyQK3hLcXZ070+666GAjw3n9AD0e
-         gFCDZ1s4Ioh2C5hP3KTAJqk0T0GGrT0fgqlP2eDHOZwL01JEHd6ISxu8ejDTtWucwhN8
-         QNPITMcGZNnMjtqhHxsKAvEGzmIwfpgN0tQ6uFw+DAGAM7B0wbAgG8DIUVONvovPI7iq
-         7lAFLWXu5RXU/EFRiekZjLmx9YTnqou0CdR2neVR5GPuSsmQpjC/eqIIXAEPHxUqYq2U
-         xtrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aRweFMVog2aHsU0N6H/aidV/g7xHJC1fx25ZnuGgZpQ=;
-        b=cc3bDtSrPFr7LIcmXhKFi9soF8B/UVOnIGRU6yRmsprsu0nYu3F+wEpGRNs/z77H1m
-         lWGvgiGzF3LGLZRcjBmAOw+gXu/JmuSzQPVRPCvTcXqlREdEAFd8GJs9IQOJgJhMsoCy
-         xT1qst+DqB37afgLikmGzkCF44Lab2LwfmPk8LyBBgVDczsRv9ageKs0QLHAa8JIgx/i
-         5CsOxfc0lklvauLnD1CN17I45o3bGURTzQ1Q0UMgq3qMW4bAw/c5eTt2lXaKa0/IOh5y
-         JQT8h264JQIMqDzCrNB+UMCOcltYzN+ILms4KFItLkh8OOyzRsBGdqdmuQLb9aTPpRkW
-         OjzA==
-X-Gm-Message-State: AOAM532/gISdmaF8ZW7d6TZ73fKi6uJ5OVVZZu751u6GKvGBx+zxuIs8
-        mSl46E7PYpdWQQmQBIHp3M0=
-X-Google-Smtp-Source: ABdhPJx3YOB9aYPu4+BI7zu4n6h85bz/460L3Jz/7ow5gDHD2lQLBTs18O4u+SYDjvci6JYJnkA9zQ==
-X-Received: by 2002:a2e:2e0e:: with SMTP id u14mr45632583lju.28.1637526163262;
-        Sun, 21 Nov 2021 12:22:43 -0800 (PST)
-Received: from localhost.localdomain ([217.117.245.63])
-        by smtp.gmail.com with ESMTPSA id a25sm850936lfm.250.2021.11.21.12.22.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Nov 2021 12:22:42 -0800 (PST)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     zyjzyj2000@gmail.com, dledford@redhat.com, jgg@ziepe.ca,
-        leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+aab53008a5adf26abe91@syzkaller.appspotmail.com
-Subject: [PATCH] RDMA: fix use-after-free in rxe_queue_cleanup
-Date:   Sun, 21 Nov 2021 23:22:39 +0300
-Message-Id: <20211121202239.3129-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <YZpUnR05mK6taHs9@unreal>
-References: <YZpUnR05mK6taHs9@unreal>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sun, 21 Nov 2021 15:26:13 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 93C00580788;
+        Sun, 21 Nov 2021 15:23:07 -0500 (EST)
+Received: from imap47 ([10.202.2.97])
+  by compute3.internal (MEProxy); Sun, 21 Nov 2021 15:23:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm3; bh=Lwf/LrY/vE+XfQ2/Z92KIftl2TmX
+        RB7ZTlFzeqJGXNQ=; b=XOuHG3LQgih+VPL0zEycQIAQS4SH+cqYCG/qlQPF9YAS
+        burGyn8RjULH0IKt+evegCRWlwmUMP41QCoQ1z7yfEkA/qukZ4XE1MPGZsnjXUmi
+        FTrumL76+A4D6GbvzI5AnyU0CDB038GbhcjQY1FrOYVibBhmycoDJplGnROL4ouA
+        Er28FhLapOt2+qxs6ooo11ePEzzBWo0FlcgXqFFs8XYsfhSQWbrScqb8vmYQhruJ
+        UIw6gwCZFsLUxb57jjgUnmTB2QYGyl0pqTl+df1kiJ8jn4ytZ72nk0/uTfbCA+Jt
+        uSzY5amJ3U3vPl3C1FLY2VM4u8c/ullKw0DqMP2U9A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Lwf/Lr
+        Y/vE+XfQ2/Z92KIftl2TmXRB7ZTlFzeqJGXNQ=; b=UJ3HwRgtmw7K+DpeuWDEOx
+        rFazcoVi5aZu5uHJF5leS6+/BP4fK+ghav+SelaocCvlzN0cZJV/bDkY3rXrV4ZN
+        iRn7fLv9bhh8mRjdKnXDgKYnq1VFZnBu29v/ah8Z06hYWf8Hmv16LFWZIY7eiurm
+        SfBq2cry3mCyZi4RQGi4QphIn/wXQlq03LAO9zcTshrkLxyXhfG1cXiqvvL/5C+X
+        LzjP157yO7QDBfuFeAY6kZ2DKgSOy4AQVODq4Gal66fmuWbx+QCG7a6H9pICXJh2
+        yjA0X7N2Fl+9WbCLn5NdX4sclCpU4/8lN/6XiEXfvD5THcJqs6kz7Uah9nNmAcTg
+        ==
+X-ME-Sender: <xms:q6qaYUNcT_AofxWkRAiZBJVh5JWEF0j58dmKLGKM_G4XGuQQWHvPYA>
+    <xme:q6qaYa-WaA5J_sv4SRcLfhSB0LE_q2qYaKV1b37OKIeUOm0iLDzzEtnNS0i5iPmt4
+    dmS8hBFRX2AKoxYRPE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrgedvgddufeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdfuvhgv
+    nhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrg
+    htthgvrhhnpefgieegieffuefhtedtjefgteejteefleefgfefgfdvvddtgffhffduhedv
+    feekffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hsvhgvnhesshhvvghnphgvthgvrhdruggvvh
+X-ME-Proxy: <xmx:q6qaYbS6nbxT-X9KYwWt8IiskYv6fJPo7O6I5q3eyEzOEopUU1mWGg>
+    <xmx:q6qaYcuiuX_CAawIrVN_AzVO62BBB76-tQ9UByW3gfi5AFBj6LuQzA>
+    <xmx:q6qaYcd2tIN1PuwJ5QIW_ma6GBY_NPNC30Pkfyqrq-bOUYYF4Du11g>
+    <xmx:q6qaYdVIUtzooA9FK0zaQSKQE-j1rNWxz1SVz5EJLpa7Fu9SvLpz6w>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 54102274055F; Sun, 21 Nov 2021 15:23:07 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1371-g2296cc3491-fm-20211109.003-g2296cc34
+Mime-Version: 1.0
+Message-Id: <2baebbe6-0080-4cff-86de-a00f23aea95e@www.fastmail.com>
+In-Reply-To: <20211121171545.27402-3-j@jannau.net>
+References: <20211121171545.27402-1-j@jannau.net>
+ <20211121171545.27402-3-j@jannau.net>
+Date:   Sun, 21 Nov 2021 21:22:47 +0100
+From:   "Sven Peter" <sven@svenpeter.dev>
+To:     "Janne Grunau" <j@jannau.net>, "Hector Martin" <marcan@marcan.st>,
+        "Alyssa Rosenzweig" <alyssa@rosenzweig.io>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Wolfram Sang" <wsa@kernel.org>, "Olof Johansson" <olof@lixom.net>,
+        "Arnd Bergmann" <arnd@arndb.de>
+Cc:     "Mark Kettenis" <kettenis@openbsd.org>,
+        "Rob Herring" <robh@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] dt-bindings: i2c: apple,i2c: allow multiple compatibles
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On error handling path in rxe_qp_from_init() qp->sq.queue is freed and
-then rxe_create_qp() will drop last reference to this object. qp clean
-up function will try to free this queue one time and it causes UAF bug.
+Hi,
 
-Fix it by zeroing queue pointer after freeing queue in
-rxe_qp_from_init().
+On Sun, Nov 21, 2021, at 18:15, Janne Grunau wrote:
+> The intention was to have a SoC-specific and base compatible string
+> to allow forward compatibility and SoC specific quirks,
+>
+> Fixes: df7c4a8c1b47 ("dt-bindings: i2c: Add Apple I2C controller bindings")
+> Signed-off-by: Janne Grunau <j@jannau.net>
+> Cc: Mark Kettenis <kettenis@openbsd.org>
+> ---
 
-Fixes: 514aee660df4 ("RDMA: Globally allocate and release QP memory")
-Reported-by: syzbot+aab53008a5adf26abe91@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_qp.c | 1 +
- 1 file changed, 1 insertion(+)
+Yeah, this should've been "apple,t8103-i2c", "apple,i2c" all along :/
+Given that we have no i2c nodes in the dts yet and that this binding was
+only added for -rc1 I think it's fine to just drop "apple,t8103-i2c"
+here instead of marking it as deprecated and keeping it around forever
+if Mark Kettenis also agrees.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index 975321812c87..54b8711321c1 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -359,6 +359,7 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
- 
- err2:
- 	rxe_queue_cleanup(qp->sq.queue);
-+	qp->sq.queue = NULL;
- err1:
- 	qp->pd = NULL;
- 	qp->rcq = NULL;
--- 
-2.33.1
+>  Documentation/devicetree/bindings/i2c/apple,i2c.yaml | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/i2c/apple,i2c.yaml 
+> b/Documentation/devicetree/bindings/i2c/apple,i2c.yaml
+> index 22fc8483256f..f1cb96c08212 100644
+> --- a/Documentation/devicetree/bindings/i2c/apple,i2c.yaml
+> +++ b/Documentation/devicetree/bindings/i2c/apple,i2c.yaml
+> @@ -20,9 +20,10 @@ allOf:
+> 
+>  properties:
+>    compatible:
+> -    enum:
+> -      - apple,t8103-i2c
+> -      - apple,i2c
+> +    items:
+> +      - enum:
+> +        - apple,t8103-i2c
+> +      - const: apple,i2c
 
+Nit: the enum makes sense once we add t6000-i2c but right now
+
+properties:
+  compatible:
+    items:
+      - const: apple,t8103-i2c
+      - const: apple,i2c
+
+also works and look a bit less weird.
+
+Either way,
+
+Reviewed-by: Sven Peter <sven@svenpeter.dev>
+
+
+Sven
