@@ -2,80 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4919F4583C8
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 14:18:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 608BD4583C9
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 14:20:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237994AbhKUNVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 08:21:35 -0500
-Received: from mout.kundenserver.de ([212.227.126.134]:44015 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236405AbhKUNVd (ORCPT
+        id S238037AbhKUNXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 08:23:06 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:35138 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236405AbhKUNXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 08:21:33 -0500
-Received: from mail-oi1-f172.google.com ([209.85.167.172]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MidPj-1mCA0C0raB-00flBB for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021
- 14:18:27 +0100
-Received: by mail-oi1-f172.google.com with SMTP id s139so32028433oie.13
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 05:18:27 -0800 (PST)
-X-Gm-Message-State: AOAM532vnnmjla0aRk4KBFhmcRg0IpT7mJBrGK3IGlJWTVV+qNBf2dYL
-        r61oOJhLwy4rGtCZn8qI6sZ6p7ZrconcZrDiJpA=
-X-Google-Smtp-Source: ABdhPJxF21qjfMuWZFlLNCPKu+y3IOySCFfDq2FMuj0sbiUW9pDP9pIX9bg/3xsZR9dHW5yxi7DZTCNAun2vqKxQ64w=
-X-Received: by 2002:a54:4e93:: with SMTP id c19mr14332057oiy.11.1637500705949;
- Sun, 21 Nov 2021 05:18:25 -0800 (PST)
+        Sun, 21 Nov 2021 08:23:04 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R231e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UxW0YE6_1637500797;
+Received: from B-X3VXMD6M-2058.local(mailfrom:xhao@linux.alibaba.com fp:SMTPD_---0UxW0YE6_1637500797)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 21 Nov 2021 21:19:58 +0800
+From:   Xin Hao <xhao@linux.alibaba.com>
+Reply-To: xhao@linux.alibaba.com
+Subject: Re: [PATCH V1 1/2] mm/damon/dbgfs: Modify Damon dbfs interface
+ dependency in Kconfig
+To:     SeongJae Park <sj@kernel.org>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20211121112417.33255-1-sj@kernel.org>
+Message-ID: <32a90a3d-5cf6-66cc-fa3b-19753a057052@linux.alibaba.com>
+Date:   Sun, 21 Nov 2021 21:19:57 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211119113644.1600-1-alx.manpages@gmail.com> <20211120130104.185699-1-alx.manpages@gmail.com>
- <20211120130104.185699-13-alx.manpages@gmail.com> <YZkOolX1SBsqXAsP@localhost.localdomain>
-In-Reply-To: <YZkOolX1SBsqXAsP@localhost.localdomain>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sun, 21 Nov 2021 14:18:09 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a23xv=FtTcpO=R-uDXJPor4sQ_MZr92oSXE4Ez6gpg03g@mail.gmail.com>
-Message-ID: <CAK8P3a23xv=FtTcpO=R-uDXJPor4sQ_MZr92oSXE4Ez6gpg03g@mail.gmail.com>
-Subject: Re: [PATCH v2 12/20] linux/must_be.h: Add must_be() to improve
- readability of BUILD_BUG_ON_ZERO()
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Joe Perches <joe@perches.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:gh7BF0JcyLgQryqW7955zRhBtB5HtggiKGxzFqQOCOARmWDLtgG
- qDjXbGG+J/DmRqvRSOt3IMVHTB9g6fwWAHd2pKCeh0q5yWIRuMTuFiIWu6SJFbZjJZyRZYf
- jUCX/LFmqzDAw+ViiZW2zuC5NLfRQjPezM/rPwG4dKsM/A55mIDXTPIzsthASvn8/aIykPg
- kzgb3VgGkngSBzH/ryCAw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Gk2BvdF6smU=:nCaLv64gvaR8HWoKaeH9UQ
- KqIkj5uXcJZIVx7prc50Qc8fJz7RnJlXdol352/7KnLbE3jVU1mNF6378pbnjrx9gIAq4Vdr9
- P/HG3yVACJvgjyMJWL19aICBYJtbt+nj++KngUC2JoNyYKPIa2eAXmSHvSuwQwYKkOUQPfVAV
- OfM2/SHlJVvNEj9NvBogRs6sXykPecn36Nh+Z8VeZOW1eri1x+rFQq3PHRLxP7ppv/XQCUm5j
- ChIpQ81370ec+HTx5Sj5DYbuDk/uvR99zmTV9QF27+AYzDVRB8/hxXWxctqgWpKJhk2fYOvY/
- eiP+DONJhm2hfQCZN/Zlxdyy/bUClGh7BQijf2Rki53vWbINJmDhbrFDSwDSmgViJwaVT04I1
- m7tQcKgQwWSlXWgKre4R03R6KiKs3sKtblq9O/vefM1hxmjpxn3auM2cAduGO13uNKIY0+30l
- 4uCpKKhK9DNWE67S/eCtQXfdePloegM97JkDAgTCbdaAA1e7lCQCEqwOjiPs727yZ4ntjo01c
- AJEvPi/AWkTwwWY5/YmEPXuQUD2QhKdhw5MY8f4J3RdGDLGesa0fazk17JNyXR9v/BTaG7mbM
- nds6yqXdPAIQ8LR3zw/Yk/dcxWWS8RRfxdHKV2XE8LbVJM+uJbwR20ThqjiLxymq2nkOfjjNL
- UBCOJj4fnOxpnxt9Y+xtekhSyzyF57wq/UjGX5SryjWl4jGu3ec3yqqrK3RntNDbRWD4=
+In-Reply-To: <20211121112417.33255-1-sj@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 20, 2021 at 4:05 PM Alexey Dobriyan <adobriyan@gmail.com> wrote:
->
-> On Sat, Nov 20, 2021 at 02:00:55PM +0100, Alejandro Colomar wrote:
-> > Historically, BUILD_BUG_ON_ZERO() has been hard to read.
-> > __must_be_array() is based on BUILD_BUG_ON_ZERO(),
-> > and unlike BUILD_BUG_ON_*(),
-> > it has a pretty readable name.
->
-> The best name is assert() which userspace uses and is standartised.
+Hi Park,
 
-I would argue that this macro is best left out: we have BUILD_BUG_ON()
-as the interface that everyone knows, having another macro that has the
-same results only makes things more confusing, and I would ask anyone
-using it to use an open-coded BUILD_BUG_ON instead.
+On 11/21/21 7:24 PM, SeongJae Park wrote:
+> Hi Xin,
+>
+> On Sun, 21 Nov 2021 01:27:53 +0800 Xin Hao <xhao@linux.alibaba.com> wrote:
+>
+>> If you want to support "DAMON_DBGFS" in config file, it only depends on
+>> any one of "DAMON_VADDR" and "DAMON_PADDR".
+> This is not true.  DAMON_DBGFS really depends on both.
+>
+> This patch even makes the build fails with some configs.
+>
+>        CC      mm/damon/dbgfs.o
+>      linux/mm/damon/dbgfs.c: In function ‘dbgfs_target_ids_write’:
+>      linux/mm/damon/dbgfs.c:409:3: error: implicit declaration of function ‘damon_pa_set_primitives’; did you mean ‘damon_va_set_primitives’? [-Werror=implicit-function-declaration]
+>         damon_pa_set_primitives(ctx);
+>         ^~~~~~~~~~~~~~~~~~~~~~~
+>         damon_va_set_primitives
+>      cc1: some warnings being treated as errors
 
-      Arnd
+That is my fault,  i have found a solution, and i will send a v2 patch 
+to solve it,  i I think DAMON_VADDR and DAMON_PADDR
+
+must be decoupled，the kconfig must support it, becasue sometimes i don't 
+want to use damon paddr function, just only need to include
+
+DAMON_VADDR, therefore, it is not necessary to include damon/paddr.c 
+during compile time.
+
+>
+>
+> Thanks,
+> SJ
+>
+>> Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
+>> ---
+>>   mm/damon/Kconfig | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/mm/damon/Kconfig b/mm/damon/Kconfig
+>> index 5bcf05851ad0..971ffc496596 100644
+>> --- a/mm/damon/Kconfig
+>> +++ b/mm/damon/Kconfig
+>> @@ -54,7 +54,7 @@ config DAMON_VADDR_KUNIT_TEST
+>>   
+>>   config DAMON_DBGFS
+>>   	bool "DAMON debugfs interface"
+>> -	depends on DAMON_VADDR && DAMON_PADDR && DEBUG_FS
+>> +	depends on DAMON_VADDR || DAMON_PADDR && DEBUG_FS
+>>   	help
+>>   	  This builds the debugfs interface for DAMON.  The user space admins
+>>   	  can use the interface for arbitrary data access monitoring.
+>> -- 
+>> 2.31.0
+>>
+>>
+-- 
+Best Regards!
+Xin Hao
+
