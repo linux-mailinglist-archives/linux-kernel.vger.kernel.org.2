@@ -2,322 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C6445855F
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 18:19:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B046A458564
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 18:20:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238470AbhKURWy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 21 Nov 2021 12:22:54 -0500
-Received: from aposti.net ([89.234.176.197]:57646 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235965AbhKURWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 12:22:53 -0500
-Date:   Sun, 21 Nov 2021 17:19:32 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 04/15] iio: buffer-dma: Enable buffer write support
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?b?S/ZuaWc=?= <christian.koenig@amd.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org
-Message-Id: <KSMX2R.V0Q6PW6OC9Q62@crapouillou.net>
-In-Reply-To: <20211121142049.2d000c04@jic23-huawei>
-References: <20211115141925.60164-1-paul@crapouillou.net>
-        <20211115141925.60164-5-paul@crapouillou.net>
-        <20211121142049.2d000c04@jic23-huawei>
+        id S238482AbhKURXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 12:23:48 -0500
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:49660
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235965AbhKURXq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 12:23:46 -0500
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id A54333F1B9
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 17:20:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1637515240;
+        bh=NhrY2YoYU8o49TvBH2U7Xc9BTYaL2Sw0oQZK6cM53jg=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=A790Fe7d5Pgr4WRmbxlyDsOGjRddmKqGwOMTmQxiWXNZew6AO3HSTQi0xA7QXb0Dx
+         hmNXHB9/QmjKlRYGTwOVm2o7fWVcnlC/bKIHrSeiOgXUhHyIBAdV/Flc0ebjx8DhAf
+         IgSWMLr6UtXeoV2V1ZvpCGv0Gabme1r+kvMK/wBgI53dO+SwOli91pib9xB4KSAg6K
+         kVvUPmC+qOtRmup8H/GpkWsbdMaoivXvmF9cAVjY9i9yW4c0rjoP0yPZPhLqAkHL+W
+         30ADOV0kFUtwM52dgrERdvW4q2gEwGZhlWro/smYJVzMtOogIG/rohMYiCSo0/tZ9t
+         doEwsPohFB8AA==
+Received: by mail-lf1-f69.google.com with SMTP id c14-20020a056512104e00b004036d17f91bso10358841lfb.17
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 09:20:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=NhrY2YoYU8o49TvBH2U7Xc9BTYaL2Sw0oQZK6cM53jg=;
+        b=ZCWgG0DtUhyuKNzXuqTRwVFb6+hXZCtSQpBlsNf9UGm4w6J0l0Hk3WDzdAekHsWKKA
+         8usPiVnobwOa3ta95Ck7r9GYywdYC1IT+eLU1BxDAGiG6pD6pSX5xw9Pst7+PI1D5I+0
+         qoegUdwe+DTMbi2xX2RNxiyctlJWI0CG5zTEgiMFUgrOhj9fVyxrGmcl9pZl1Pp2UKWk
+         b9dLeqlIZdusGa4mBW0q8c5ZHV9yJJ4ERDXCbiMyy/hb0zETA+Xpp2t0Fso17dRzLPe4
+         FLszDas8z0EJ8hexQHzbxgzQLmB+qZg0Nx34nudb2vNvtv74il6pYuRssPeCJmDSZa0E
+         DbdQ==
+X-Gm-Message-State: AOAM532L3eaEk7TKTOm3jyT+leYHRIuJHFTO4tClttxkQPZ/kXT8zqA1
+        9xtiT1WL8/GREWjqIRGNEr+Y3HgGiUnBIyn+NSYGY+4OUlipvzSObaNwRO6m8to1rUKYdLi2eu8
+        C7EFw30h/Zbtti139hxJ5IDTO1k2Oi4HvByaAmEB9Bg==
+X-Received: by 2002:a05:6512:3996:: with SMTP id j22mr52673218lfu.637.1637515239404;
+        Sun, 21 Nov 2021 09:20:39 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw3OJlK6L++IcfAoz7b9WAy/3faXnNWTTp/ncrpwEtPTPXJ5uUwkzUh2rlxkju/Nt2T4ynj0w==
+X-Received: by 2002:a05:6512:3996:: with SMTP id j22mr52673176lfu.637.1637515239152;
+        Sun, 21 Nov 2021 09:20:39 -0800 (PST)
+Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id m8sm799964lfg.140.2021.11.21.09.20.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Nov 2021 09:20:36 -0800 (PST)
+Message-ID: <42516013-3b4e-0c05-5e4a-5a1fe9ff942b@canonical.com>
+Date:   Sun, 21 Nov 2021 18:20:34 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH v4 5/9] mfd: max77714: Add driver for Maxim MAX77714 PMIC
+Content-Language: en-US
+To:     Luca Ceresoli <luca@lucaceresoli.net>, linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        Chiwoong Byun <woong.byun@samsung.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+References: <20211120155707.4019487-1-luca@lucaceresoli.net>
+ <20211120155707.4019487-6-luca@lucaceresoli.net>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20211120155707.4019487-6-luca@lucaceresoli.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
-
-Le dim., nov. 21 2021 at 14:20:49 +0000, Jonathan Cameron 
-<jic23@kernel.org> a écrit :
-> On Mon, 15 Nov 2021 14:19:14 +0000
-> Paul Cercueil <paul@crapouillou.net> wrote:
+On 20/11/2021 16:57, Luca Ceresoli wrote:
+> Add a simple driver for the Maxim MAX77714 PMIC, supporting RTC and
+> watchdog only.
 > 
->>  Adding write support to the buffer-dma code is easy - the write()
->>  function basically needs to do the exact same thing as the read()
->>  function: dequeue a block, read or write the data, enqueue the block
->>  when entirely processed.
->> 
->>  Therefore, the iio_buffer_dma_read() and the new 
->> iio_buffer_dma_write()
->>  now both call a function iio_buffer_dma_io(), which will perform 
->> this
->>  task.
->> 
->>  The .space_available() callback can return the exact same value as 
->> the
->>  .data_available() callback for input buffers, since in both cases we
->>  count the exact same thing (the number of bytes in each available
->>  block).
->> 
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> Hi Paul,
+> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
 > 
-> There are a few changes in here, such as the bytes_used value being 
-> set that
-> I'm not following the reasoning behind. More info on those?
-> Also good to provide something about those in this patch description.
+> ---
 > 
-> Thanks,
+> Changes in v4: none
 > 
-> Jonathan
+> Changes in v3:
+>  - Suggested by Lee Jones:
+>    - move struct mfd_cell to top of file
+>    - remove struct max77714 and its kmalloc, not used after probe
+>    - reword error messages
+>    - add "/* pF */" onto the end of the load_cap line
 > 
-> 
->>  ---
->>   drivers/iio/buffer/industrialio-buffer-dma.c | 75 
->> +++++++++++++++-----
->>   include/linux/iio/buffer-dma.h               |  7 ++
->>   2 files changed, 66 insertions(+), 16 deletions(-)
->> 
->>  diff --git a/drivers/iio/buffer/industrialio-buffer-dma.c 
->> b/drivers/iio/buffer/industrialio-buffer-dma.c
->>  index abac88f20104..eeeed6b2e0cf 100644
->>  --- a/drivers/iio/buffer/industrialio-buffer-dma.c
->>  +++ b/drivers/iio/buffer/industrialio-buffer-dma.c
->>  @@ -179,7 +179,8 @@ static struct iio_dma_buffer_block 
->> *iio_dma_buffer_alloc_block(
->>   	}
->> 
->>   	block->size = size;
->>  -	block->state = IIO_BLOCK_STATE_DEQUEUED;
->>  +	block->bytes_used = size;
->>  +	block->state = IIO_BLOCK_STATE_DONE;
-> 
-> I don't know why these are here - some more info?
-
-When using an input buffer the block->bytes_used is unconditionally 
-reset in iio_dmaengine_buffer_submit_block(), so this was fine until 
-now.
-
-When using an output buffer the block->bytes_used can actually (with 
-the new API) be specified by the user, so we don't want 
-iio_dmaengine_buffer_submit_block() to unconditionally override it. 
-Which means that in the case where we have an output buffer in fileio 
-mode, we do need block->bytes_used to be initialized to the buffer's 
-size since it won't be set anywhere else.
-
-About the change in block->state: in patch [01/15] we removed the 
-incoming/outgoing queues, and while the "enqueued" state is still 
-useful to know which buffers have to be submitted when the buffer is 
-enabled, the "dequeued" state is not useful anymore since there is no 
-more distinction vs. the "done" state.
-
-I believe this change should be moved to patch [01/15] then, and I 
-should go further and remove the IIO_BLOCK_STATE_DEQUEUED completely.
-
->>   	block->queue = queue;
->>   	INIT_LIST_HEAD(&block->head);
->>   	kref_init(&block->kref);
->>  @@ -195,6 +196,18 @@ static void _iio_dma_buffer_block_done(struct 
->> iio_dma_buffer_block *block)
->>   		block->state = IIO_BLOCK_STATE_DONE;
->>   }
->> 
->>  +static void iio_dma_buffer_queue_wake(struct iio_dma_buffer_queue 
->> *queue)
->>  +{
->>  +	__poll_t flags;
->>  +
->>  +	if (queue->buffer.direction == IIO_BUFFER_DIRECTION_IN)
->>  +		flags = EPOLLIN | EPOLLRDNORM;
->>  +	else
->>  +		flags = EPOLLOUT | EPOLLWRNORM;
->>  +
->>  +	wake_up_interruptible_poll(&queue->buffer.pollq, flags);
->>  +}
->>  +
->>   /**
->>    * iio_dma_buffer_block_done() - Indicate that a block has been 
->> completed
->>    * @block: The completed block
->>  @@ -212,7 +225,7 @@ void iio_dma_buffer_block_done(struct 
->> iio_dma_buffer_block *block)
->>   	spin_unlock_irqrestore(&queue->list_lock, flags);
->> 
->>   	iio_buffer_block_put_atomic(block);
->>  -	wake_up_interruptible_poll(&queue->buffer.pollq, EPOLLIN | 
->> EPOLLRDNORM);
->>  +	iio_dma_buffer_queue_wake(queue);
->>   }
->>   EXPORT_SYMBOL_GPL(iio_dma_buffer_block_done);
->> 
->>  @@ -241,7 +254,7 @@ void iio_dma_buffer_block_list_abort(struct 
->> iio_dma_buffer_queue *queue,
->>   	}
->>   	spin_unlock_irqrestore(&queue->list_lock, flags);
->> 
->>  -	wake_up_interruptible_poll(&queue->buffer.pollq, EPOLLIN | 
->> EPOLLRDNORM);
->>  +	iio_dma_buffer_queue_wake(queue);
->>   }
->>   EXPORT_SYMBOL_GPL(iio_dma_buffer_block_list_abort);
->> 
->>  @@ -334,7 +347,8 @@ int iio_dma_buffer_request_update(struct 
->> iio_buffer *buffer)
->>   			queue->fileio.blocks[i] = block;
->>   		}
->> 
->>  -		block->state = IIO_BLOCK_STATE_QUEUED;
->>  +		if (queue->buffer.direction == IIO_BUFFER_DIRECTION_IN)
->>  +			block->state = IIO_BLOCK_STATE_QUEUED;
-> 
-> Possibly worth a comment on the state being set here.  I figured it 
-> out, but might
-> save some brain cells in future if it's stated in the code.
-
-Ok.
-
->>   	}
->> 
->>   out_unlock:
->>  @@ -467,20 +481,12 @@ static struct iio_dma_buffer_block 
->> *iio_dma_buffer_dequeue(
->>   	return block;
->>   }
->> 
->>  -/**
->>  - * iio_dma_buffer_read() - DMA buffer read callback
->>  - * @buffer: Buffer to read form
->>  - * @n: Number of bytes to read
->>  - * @user_buffer: Userspace buffer to copy the data to
->>  - *
->>  - * Should be used as the read callback for iio_buffer_access_ops
->>  - * struct for DMA buffers.
->>  - */
->>  -int iio_dma_buffer_read(struct iio_buffer *buffer, size_t n,
->>  -	char __user *user_buffer)
->>  +static int iio_dma_buffer_io(struct iio_buffer *buffer,
->>  +			     size_t n, char __user *user_buffer, bool is_write)
->>   {
->>   	struct iio_dma_buffer_queue *queue = iio_buffer_to_queue(buffer);
->>   	struct iio_dma_buffer_block *block;
->>  +	void *addr;
->>   	int ret;
->> 
->>   	if (n < buffer->bytes_per_datum)
->>  @@ -503,8 +509,13 @@ int iio_dma_buffer_read(struct iio_buffer 
->> *buffer, size_t n,
->>   	n = rounddown(n, buffer->bytes_per_datum);
->>   	if (n > block->bytes_used - queue->fileio.pos)
->>   		n = block->bytes_used - queue->fileio.pos;
->>  +	addr = block->vaddr + queue->fileio.pos;
->> 
->>  -	if (copy_to_user(user_buffer, block->vaddr + queue->fileio.pos, 
->> n)) {
->>  +	if (is_write)
->>  +		ret = !!copy_from_user(addr, user_buffer, n);
->>  +	else
->>  +		ret = !!copy_to_user(user_buffer, addr, n);
-> 
-> What is the !! gaining us here?  We only care about == 0 vs != 0 so
-> forcing it to be 0 or 1 isn't useful.
-
-Right.
-
->>  +	if (ret) {
->>   		ret = -EFAULT;
->>   		goto out_unlock;
->>   	}
->>  @@ -513,6 +524,7 @@ int iio_dma_buffer_read(struct iio_buffer 
->> *buffer, size_t n,
->> 
->>   	if (queue->fileio.pos == block->bytes_used) {
->>   		queue->fileio.active_block = NULL;
->>  +		block->bytes_used = block->size;
-> 
-> This seems to be a functional change that isn't called out in the 
-> patch description.
-
-See the explanation above. Although I most likely don't need to set it 
-at two different spots... I'll check that in detail next week.
-
-Cheers,
--Paul
-
->>   		iio_dma_buffer_enqueue(queue, block);
->>   	}
->> 
->>  @@ -523,8 +535,39 @@ int iio_dma_buffer_read(struct iio_buffer 
->> *buffer, size_t n,
->> 
->>   	return ret;
->>   }
->>  +
->>  +/**
->>  + * iio_dma_buffer_read() - DMA buffer read callback
->>  + * @buffer: Buffer to read form
->>  + * @n: Number of bytes to read
->>  + * @user_buffer: Userspace buffer to copy the data to
->>  + *
->>  + * Should be used as the read callback for iio_buffer_access_ops
->>  + * struct for DMA buffers.
->>  + */
->>  +int iio_dma_buffer_read(struct iio_buffer *buffer, size_t n,
->>  +	char __user *user_buffer)
->>  +{
->>  +	return iio_dma_buffer_io(buffer, n, user_buffer, false);
->>  +}
->>   EXPORT_SYMBOL_GPL(iio_dma_buffer_read);
->> 
->>  +/**
->>  + * iio_dma_buffer_write() - DMA buffer write callback
->>  + * @buffer: Buffer to read form
->>  + * @n: Number of bytes to read
->>  + * @user_buffer: Userspace buffer to copy the data from
->>  + *
->>  + * Should be used as the write callback for iio_buffer_access_ops
->>  + * struct for DMA buffers.
->>  + */
->>  +int iio_dma_buffer_write(struct iio_buffer *buffer, size_t n,
->>  +			 const char __user *user_buffer)
->>  +{
->>  +	return iio_dma_buffer_io(buffer, n, (__force char *)user_buffer, 
->> true);
->>  +}
->>  +EXPORT_SYMBOL_GPL(iio_dma_buffer_write);
->>  +
->>   /**
->>    * iio_dma_buffer_data_available() - DMA buffer data_available 
->> callback
->>    * @buf: Buffer to check for data availability
->>  diff --git a/include/linux/iio/buffer-dma.h 
->> b/include/linux/iio/buffer-dma.h
->>  index a65a005c4a19..09c07d5563c0 100644
->>  --- a/include/linux/iio/buffer-dma.h
->>  +++ b/include/linux/iio/buffer-dma.h
->>  @@ -132,6 +132,8 @@ int iio_dma_buffer_disable(struct iio_buffer 
->> *buffer,
->>   	struct iio_dev *indio_dev);
->>   int iio_dma_buffer_read(struct iio_buffer *buffer, size_t n,
->>   	char __user *user_buffer);
->>  +int iio_dma_buffer_write(struct iio_buffer *buffer, size_t n,
->>  +			 const char __user *user_buffer);
->>   size_t iio_dma_buffer_data_available(struct iio_buffer *buffer);
->>   int iio_dma_buffer_set_bytes_per_datum(struct iio_buffer *buffer, 
->> size_t bpd);
->>   int iio_dma_buffer_set_length(struct iio_buffer *buffer, unsigned 
->> int length);
->>  @@ -142,4 +144,9 @@ int iio_dma_buffer_init(struct 
->> iio_dma_buffer_queue *queue,
->>   void iio_dma_buffer_exit(struct iio_dma_buffer_queue *queue);
->>   void iio_dma_buffer_release(struct iio_dma_buffer_queue *queue);
->> 
->>  +static inline size_t iio_dma_buffer_space_available(struct 
->> iio_buffer *buffer)
->>  +{
->>  +	return iio_dma_buffer_data_available(buffer);
->>  +}
->>  +
->>   #endif
+> Changes in v2:
+>  - fix "watchdog" word in heading comment (Guenter Roeck)
+>  - move struct max77714 to .c file (Krzysztof Kozlowski)
+>  - change include guard format (Krzysztof Kozlowski)
+>  - allow building as a module (Krzysztof Kozlowski)
+>  - remove of_match_ptr usage (Krzysztof Kozlowski / lkp)
+>    (Reported-by: kernel test robot <lkp@intel.com>)
+> ---
+>  MAINTAINERS                  |   2 +
+>  drivers/mfd/Kconfig          |  14 ++++
+>  drivers/mfd/Makefile         |   1 +
+>  drivers/mfd/max77714.c       | 152 +++++++++++++++++++++++++++++++++++
+>  include/linux/mfd/max77714.h |  60 ++++++++++++++
+>  5 files changed, 229 insertions(+)
+>  create mode 100644 drivers/mfd/max77714.c
+>  create mode 100644 include/linux/mfd/max77714.h
 > 
 
 
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+
+
+Best regards,
+Krzysztof
