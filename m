@@ -2,90 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04BA245852F
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 17:59:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E53FC458533
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 17:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236367AbhKURCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 12:02:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41704 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230330AbhKURCA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 12:02:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EEC4D60E73;
-        Sun, 21 Nov 2021 16:58:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637513934;
-        bh=DcQmWAAu2hzVevIzFTvFCZ/6VlHnfAI9Bg1LDlVdlu0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PX1wta7JlJjqJjqtmuw/4LEkg/pkhxNB8N6TPjNMBTB+ILGyV+dnFsipnD70+xdwr
-         zcr4xL6W3/zyvc2W4R9dIErYHTwdHA3suymnve8iMS6VGM0uHgisd6WJzWrR+irebC
-         BuM8/By0EFI9HiCTMBj8It5MYdwR7V1ANGKnlYYb/cnYH12i5mQlMX9N90qx85W2nH
-         WjeTqmMkQQf7yc/xsUuUMRUJZ5tBhj0hYY+Vx1HNW1MYa3AXb/sGrE337eqwsBgLIg
-         UfYYTrWju6j7xmHKY+cD+7f+52ChsVFB0hdyodE5XNRtzYNTwwhjtaOC1X2vFrXbh8
-         aTGh3HNMuFXpQ==
-Date:   Sun, 21 Nov 2021 22:28:49 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Toralf =?iso-8859-1?Q?F=F6rster?= <toralf.foerster@gmx.de>
-Cc:     Linux Kernel <linux-kernel@vger.kernel.org>,
-        dmaengine@vger.kernel.org
-Subject: Re: compile error for 5.15.4
-Message-ID: <YZp6yfVUx4eEwaxm@matsya>
-References: <747802b9-6c5d-cdb5-66e2-05b820f5213c@gmx.de>
+        id S238119AbhKURC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 12:02:57 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:41570 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236882AbhKURC4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 12:02:56 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 6A62E1C0B76; Sun, 21 Nov 2021 17:59:50 +0100 (CET)
+Date:   Sun, 21 Nov 2021 17:59:49 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Pavel Machek <pavel@denx.de>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Tadeusz Struk <tadeusz.struk@linaro.org>
+Subject: Re: [PATCH 5.10 03/21] loop: Use blk_validate_block_size() to
+ validate block size
+Message-ID: <20211121165949.GA19702@duo.ucw.cz>
+References: <20211119171443.892729043@linuxfoundation.org>
+ <20211119171444.002617211@linuxfoundation.org>
+ <20211119214522.GA23353@amd>
+ <YZimRBMpcbcLMCJN@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="6c2NcOVqGQ03X4Wi"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <747802b9-6c5d-cdb5-66e2-05b820f5213c@gmx.de>
+In-Reply-To: <YZimRBMpcbcLMCJN@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
+--6c2NcOVqGQ03X4Wi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 21-11-21, 16:02, Toralf Förster wrote:
-> Hi,
-> 
-> got this at a hardened stable Gentoo Server:
-> 
-> # uname -a
-> Linux mr-fox 5.14.17 #1 SMP Thu Nov 18 14:02:58 CET 2021 x86_64 AMD
-> Ryzen 9 5950X 16-Core Processor AuthenticAMD GNU/Linux
-> 
-> 
->   CC      net/ipv4/tcp_timer.o
->   CC      lib/raid6/sse1.o
-> drivers/dma/ptdma/ptdma-debugfs.c: In function ‘ptdma_debugfs_setup’:
-> drivers/dma/ptdma/ptdma-debugfs.c:93:54: error: ‘struct dma_device’ has
-> no member named ‘dbg_dev_root’
->    93 |         debugfs_create_file("info", 0400,
-> pt->dma_dev.dbg_dev_root, pt,
+On Sat 2021-11-20 08:39:48, Greg Kroah-Hartman wrote:
+> On Fri, Nov 19, 2021 at 10:45:22PM +0100, Pavel Machek wrote:
+> > Hi!
+> >=20
+> > > commit af3c570fb0df422b4906ebd11c1bf363d89961d5 upstream.
+> > >=20
+> > > Remove loop_validate_block_size() and use the block layer helper
+> > > to validate block size.
+> >=20
+> > This is just a cleanup, and it needs previous cleanup to be
+> > applied. I would not mind if both were dropped from stable series.
+>=20
+> No, it is not a cleanup, it fixes a real bug as reported on the stable
+> mailing list.
 
-Can you please send your config file when you saw this, which toolchain
-was used to compile...
+Aha:
+https://lore.kernel.org/all/7e6c4c23-f071-f33b-7bd4-da11980d34c6@linaro.org/
 
-Thanks
+Thanks for explanation.
 
->       |                                                      ^
-> drivers/dma/ptdma/ptdma-debugfs.c:96:55: error: ‘struct dma_device’ has
-> no member named ‘dbg_dev_root’
->    96 |         debugfs_create_file("stats", 0400,
-> pt->dma_dev.dbg_dev_root, pt,
->       |                                                       ^
-> drivers/dma/ptdma/ptdma-debugfs.c:102:52: error: ‘struct dma_device’ has
-> no member named ‘dbg_dev_root’
->   102 |                 debugfs_create_dir("q", pt->dma_dev.dbg_dev_root);
->       |                                                    ^
-> make[3]: *** [scripts/Makefile.build:277:
-> drivers/dma/ptdma/ptdma-debugfs.o] Error 1
-> make[2]: *** [scripts/Makefile.build:540: drivers/dma/ptdma] Error 2
-> make[1]: *** [scripts/Makefile.build:540: drivers/dma] Error 2
-> make[1]: *** Waiting for unfinished jobs....
->   CC      mm/usercopy.o
->   CC      lib/argv_split.o
-> 
-> --
-> Toralf
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
--- 
-~Vinod
+--6c2NcOVqGQ03X4Wi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYZp7BQAKCRAw5/Bqldv6
+8nxrAJ9U9uSCJ5hTE89nwDSK2xkBAHHvNwCeNzttJnvtfoc2JZ/0KpDz9BcyXZk=
+=0UcK
+-----END PGP SIGNATURE-----
+
+--6c2NcOVqGQ03X4Wi--
