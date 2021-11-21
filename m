@@ -2,106 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63DFD4583E3
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 14:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05DFF4583EB
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 14:55:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238227AbhKUNzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 08:55:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238196AbhKUNzG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 08:55:06 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC960C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 05:52:01 -0800 (PST)
-Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1monGC-0005ft-7s; Sun, 21 Nov 2021 14:52:00 +0100
-Message-ID: <6cc591c5-ed71-3213-3119-c778b3b2823d@leemhuis.info>
-Date:   Sun, 21 Nov 2021 14:51:59 +0100
+        id S238256AbhKUN6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 08:58:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234993AbhKUN6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 08:58:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5C7D603E8;
+        Sun, 21 Nov 2021 13:54:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637502899;
+        bh=RcfZsnPLw3rO0pzRMpMxv5KHNSIfG8d0yKgbcOFOweY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Pbf1oXEoNHcmssqp70xEBLJOTJXQBnEKAx8gL70kRgC0wfOPdhXXWH4ZurF/vNM/5
+         6TgMA5jx/YAtwkFZkg3RHYbaEEBN2T5z3AfqS1LQGH9DEjPgX0VrJx4lzG6QQsq+/N
+         FzS0/m2C2Z4W2WiW9cY7hnxbAu8aDzm3rIvO++zTpA4sW3OMj31dud1tpZBboGzYSL
+         aKiPcZdwmGdepd4gVCQ6ZSLevrTn3F/Nrlh1kAMmQDJHOP8CQEj/UBLGgAXZCsjs76
+         YMu0uqUfEq5xjM7pt4lXur0Y9R8qljO9KMDYOOzB8hXTY9NplL5mAgTDRmR4+k+vdP
+         +w9DbtLq2ZBlA==
+Date:   Sun, 21 Nov 2021 15:54:55 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] RDMA/mlx5: Use memset_after() to zero struct mlx5_ib_mr
+Message-ID: <YZpPr2P11LJNtrIm@unreal>
+References: <20211118203138.1287134-1-keescook@chromium.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: mm: LTP/memcg testcase regression induced by
- 8cd7c588decf..66ce520bb7c2 series
-Content-Language: en-BS
-To:     Mike Galbraith <efault@gmx.de>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
-Cc:     Mel Gorman <mgorman@techsingularity.net>
-References: <99e779783d6c7fce96448a3402061b9dc1b3b602.camel@gmx.de>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <99e779783d6c7fce96448a3402061b9dc1b3b602.camel@gmx.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1637502721;e91716e0;
-X-HE-SMSGID: 1monGC-0005ft-7s
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211118203138.1287134-1-keescook@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi, this is your Linux kernel regression tracker speaking.
-
-CCing regression mailing list, which should be in the loop for all
-regressions, as explained here:
-https://www.kernel.org/doc/html/latest/admin-guide/reporting-issues.html
-
-On 21.11.21 11:57, Mike Galbraith wrote:
-> Greetings,
+On Thu, Nov 18, 2021 at 12:31:38PM -0800, Kees Cook wrote:
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field bounds checking for memset(), avoid intentionally writing across
+> neighboring fields.
 > 
-> FYI, something in this series causes LTP controllers::memcg_regression
-> testcase to hang forever.  Verified via brute force revert of the lot.
+> Use memset_after() to zero the end of struct mlx5_ib_mr that should
+> be initialized.
 > 
-> After letting box moan for 4.5 hours, I poked ^C repeatedly, but runltp
-> didn't exit/recover gracefully, and ps hung, so I nuked the box.  All
-> memcg_test_1 instances were stuck in reclaim_throttle().
-> [...]
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  drivers/infiniband/hw/mlx5/mlx5_ib.h | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> index e636e954f6bf..af94c9fe8753 100644
+> --- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> +++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> @@ -665,8 +665,7 @@ struct mlx5_ib_mr {
+>  	/* User MR data */
+>  	struct mlx5_cache_ent *cache_ent;
+>  	struct ib_umem *umem;
+> -
+> -	/* This is zero'd when the MR is allocated */
+> +	/* Everything after umem is zero'd when the MR is allocated */
+>  	union {
+>  		/* Used only while the MR is in the cache */
+>  		struct {
+> @@ -718,7 +717,7 @@ struct mlx5_ib_mr {
+>  /* Zero the fields in the mr that are variant depending on usage */
+>  static inline void mlx5_clear_mr(struct mlx5_ib_mr *mr)
+>  {
+> -	memset(mr->out, 0, sizeof(*mr) - offsetof(struct mlx5_ib_mr, out));
+> +	memset_after(mr, 0, umem);
 
-TWIMC: To be sure this issue doesn't fall through the cracks unnoticed,
-I'm adding it to regzbot, my Linux kernel regression tracking bot:
+I think that it is not equivalent change and you need "memset_after(mr, 0, cache_ent);"
+to clear umem pointer too.
 
-#regzbot ^introduced 8cd7c588decf..66ce520bb7c2
-#regzbot ignore-activity
-
-Ciao, Thorsten, your Linux kernel regression tracker.
-
-P.S.: If you want to know more about regzbot, check out its
-web-interface, the getting start guide, and/or the references documentation:
-
-https://linux-regtracking.leemhuis.info/regzbot/
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
-
-The last two documents will explain how you can interact with regzbot
-yourself if your want to.
-
-Hint for the reporter: when reporting a regression it's in your interest
-to tell #regzbot about it in the report, as that will ensure the
-regression gets on the radar of regzbot and the regression tracker.
-That's in your interest, as they will make sure the report won't fall
-through the cracks unnoticed.
-
-Hint for developers: you normally don't need to care about regzbot, just
-fix the issue as you normally would. Just remember to include a 'Link:'
-tag to the report in the commit message, as explained in
-Documentation/process/submitting-patches.rst
-That aspect was recently was made more explicit in commit 1f57bd42b77c:
-https://git.kernel.org/linus/1f57bd42b77c
-
-
-P.P.S.: As a Linux kernel regression tracker I'm getting a lot of
-reports on my table. I can only look briefly into most of them.
-Unfortunately therefore I sometimes will get things wrong or miss
-something important. I hope that's not the case here; if you think it
-is, don't hesitate to tell me about it in a public reply. That's in
-everyone's interest, as what I wrote above might be misleading to
-everyone reading this; any suggestion I gave they thus might sent
-someone reading this down the wrong rabbit hole, which none of us wants.
-
-BTW, I have no personal interest in this issue, which is tracked using
-regzbot, my Linux kernel regression tracking bot
-(https://linux-regtracking.leemhuis.info/regzbot/). I'm only posting
-this mail to get things rolling again and hence don't need to be CC on
-all further activity wrt to this regression.
+>  }
+>  
+>  static inline bool is_odp_mr(struct mlx5_ib_mr *mr)
+> -- 
+> 2.30.2
+> 
