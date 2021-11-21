@@ -2,77 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E327145817A
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 03:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 103D345817C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 03:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236550AbhKUCYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 21:24:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231827AbhKUCYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 21:24:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69B466008E;
-        Sun, 21 Nov 2021 02:21:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637461266;
-        bh=UCzrbM2fD+0HR8OTJ7bvKM6jrnWGIk1QV2RUx+6+AcA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FfnIEeglJ9iE1+Wx5hFdSxZpOkvthyDqWEDkBw4C1Vd6ZtaZf+8fR4cr43d08z7dA
-         qcRRdvOY8CW8F17K4HbW6cJjr16Txh7jeyBnYADlO1yuTRhW0R/weewwrnJ68hFKG7
-         jPeEveZVC6QAPjyRgxVmvfgUyx1q35NqXxgHciXYmvpu9L06qqEQ+XoDO8oJihks9W
-         +8rtWRYyyz7ni5kVSl8g1CbBxxaN8lGlCMnJaZ+z3kikfg30k036wL3o35OFuP6WK0
-         /65KBwUqpvJcx5cC5FCxVyLAhw3OHPbBdaFRj+Gn+30cLlYG2Ln2ElZ3A8vAAvechV
-         IWP+EDosvx0XA==
-Date:   Sun, 21 Nov 2021 10:20:57 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Arnaud Ferraris <arnaud.ferraris@collabora.com>
-Cc:     linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Martin Kepplinger <martink@posteo.de>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Lucas Stach <dev@lynxeye.de>, Angus Ainslie <angus@akkea.ca>,
-        Guido Gunther <agx@sigxcpu.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Johan Jonker <jbx6244@gmail.com>,
-        Eddie Cai <eddie.cai.linux@gmail.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Brian Norris <briannorris@chromium.org>,
-        Dan Johansen <strit@manjaro.org>,
-        Simon South <simon@simonsouth.net>,
-        Matthias Brugger <mbrugger@suse.com>
-Subject: Re: [PATCH 2/4] arm64: dts: freescale: add 'chassis-type' property
-Message-ID: <20211121022056.GD31998@dragon>
-References: <20211016102025.23346-1-arnaud.ferraris@collabora.com>
- <20211016102025.23346-3-arnaud.ferraris@collabora.com>
+        id S236748AbhKUCZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 21:25:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236566AbhKUCZH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 21:25:07 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A67AC06173E
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 18:22:03 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id 28so11976323pgq.8
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 18:22:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=dcLX5XSyAj/Z/Yrsc0ArVVJPNOvo1GGT6lVIrGqLj3k=;
+        b=FZYsjKkMFtA3yngT9XxzmB6an6BxsOv1PcveRaSID0XAqZ1it3EqzUTzGzsJHoVzEo
+         1j/DHrF6hOlhknt+2M6o/Itgs1tIuZd4fLaDC7sSyJDdD8h5OwverqtWxX1z8H3AJ1Vr
+         g4yyt2KE04jQ08YVF7raDNXsgWcC4yHYS68A2YzcScEl3jm6jF1R2WakeidyOdt8lv9w
+         GttuCzXqqnkWeoxsCrNLZV3InxaL1tctX5D4t8/4uatsJTb/e3HYHj23CcZIoLvRwUdC
+         YRgkKW2ykoX95q2e1cBoNywohTrY/BDou5UrvzYkqn+cVYemk8cK6qm8h62WNhkdPCKT
+         fAUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=dcLX5XSyAj/Z/Yrsc0ArVVJPNOvo1GGT6lVIrGqLj3k=;
+        b=AHi/f2oB1QON30n1D4QUX4CVvN6MXpmqNQQ/dbvWX5uG5g8XXEF2LM+OJ/Z7akmNgF
+         dHC24ygS0S65zHnxFWRS8kRpZHrMFeS+ZfFORcrV72LwID0jopE3gIGFBPsJY2v03lCR
+         2NydvR5HEn88ifCzP57Xv/DkkYwxvwsIkIIsCiVB26lfD4Btv4iU/DleHs6yMm/ims0v
+         F9nNqvrwpX5ntYTn3YitQi/SJz6UTzA9blbstfe44uXbx1usMMMzEavY0KA/8oy3gTwC
+         ZocG4taqRMdYO9b+gANiJViCIyaDPCrqcwxGOgsgEXwUNXZna0mLhVlzYt4CT4ZPT+7C
+         jCWA==
+X-Gm-Message-State: AOAM530zlit6Ybz+447C1i4kzYUkiyPuoM6N4eMSjccb8sVRBxMy2cLC
+        0QemiECqeNk4wqtIXT6oDHn05LamUw3QkhrLSm8=
+X-Google-Smtp-Source: ABdhPJzxk7i9XXZXTO9AXkywAIIYTWd5u6uvC+9nKdvesVdHbMtswD553fgmUE3z8jURM823zb6RylhthQSlf5Sx8cI=
+X-Received: by 2002:a63:914c:: with SMTP id l73mr4344824pge.184.1637461322492;
+ Sat, 20 Nov 2021 18:22:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211016102025.23346-3-arnaud.ferraris@collabora.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Reply-To: sgtkaylamanthey612@gmail.com
+Sender: reineassibi403@gmail.com
+Received: by 2002:a05:6a10:8c03:0:0:0:0 with HTTP; Sat, 20 Nov 2021 18:22:02
+ -0800 (PST)
+From:   Kayla Manthey <sgtkaylamanthey612@gmail.com>
+Date:   Sun, 21 Nov 2021 02:22:02 +0000
+X-Google-Sender-Auth: gQnsD478MCJlNTeGBIYPxEFpTUs
+Message-ID: <CA+j7dZpF_SmMUPAV7OJckq4erykjAiHa0BosmMaXOY5NwRuxdg@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 16, 2021 at 12:20:23PM +0200, Arnaud Ferraris wrote:
-> A new 'chassis-type' root node property has recently been approved for
-> the device-tree specification, in order to provide a simple way for
-> userspace to detect the device form factor and adjust their behavior
-> accordingly.
-> 
-> This patch fills in this property for end-user devices (such as laptops,
-> smartphones and tablets) based on NXP ARM64 processors.
-> 
-> Signed-off-by: Arnaud Ferraris <arnaud.ferraris@collabora.com>
-
-Applied, thanks.
+Ahoj, dostali si moje dva predch=C3=A1dzaj=C3=BAce emaily? pros=C3=ADm skon=
+trolujte a
+odpovedzte mi.
