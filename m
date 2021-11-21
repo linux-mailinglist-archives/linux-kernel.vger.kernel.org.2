@@ -2,89 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B28F458362
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 13:31:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A56CD458350
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 13:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238237AbhKUMee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 07:34:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43780 "EHLO mail.kernel.org"
+        id S238212AbhKUMai convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 21 Nov 2021 07:30:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237951AbhKUMed (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 07:34:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24A4E60E54;
-        Sun, 21 Nov 2021 12:31:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637497888;
-        bh=EoeQm9C3wSEDl8ywX9BTGB6uTnymAI7q/suW4MEAlRw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GG3syEThaDdxM4aL1G60Xv5AWV8SrObra35Lnv4WnFDaiM9Ol3idIiutqkuucv7+5
-         BtEh9hNuLyWBJW/ItyIMM6dkEzdSmkmVFZ9ICTxJ8Drf07bnhRVE+3sDmiviRl55fl
-         pHfpzPWJNcvT+D1qCqkCwnG+A5AGB4ZqzmWXDLEg=
-Date:   Sun, 21 Nov 2021 13:31:25 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     lee.jones@linaro.org, hdegoede@redhat.com, bhelgaas@google.com,
-        andriy.shevchenko@linux.intel.com, srinivas.pandruvada@intel.com,
-        mgross@linux.intel.com, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 4/4] platform/x86: Add Intel Software Defined Silicon
- driver
-Message-ID: <YZo8HUxx8LNgOMeK@kroah.com>
-References: <20211120231705.189969-1-david.e.box@linux.intel.com>
- <20211120231705.189969-5-david.e.box@linux.intel.com>
+        id S232954AbhKUMah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 07:30:37 -0500
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 478216023E;
+        Sun, 21 Nov 2021 12:27:31 +0000 (UTC)
+Date:   Sun, 21 Nov 2021 12:32:25 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com>
+Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/4] iio:filter:admv8818: Add sysfs ABI documentation
+Message-ID: <20211121123225.5776c510@jic23-huawei>
+In-Reply-To: <CY4PR03MB3399908F8ED22DF23C89A09E9B999@CY4PR03MB3399.namprd03.prod.outlook.com>
+References: <20211109123127.96399-1-antoniu.miclaus@analog.com>
+        <20211109123127.96399-5-antoniu.miclaus@analog.com>
+        <20211112175625.4a9f393d@jic23-huawei>
+        <CY4PR03MB3399908F8ED22DF23C89A09E9B999@CY4PR03MB3399.namprd03.prod.outlook.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211120231705.189969-5-david.e.box@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 20, 2021 at 03:17:05PM -0800, David E. Box wrote:
-> +static ssize_t registers_read(struct file *filp, struct kobject *kobj,
-> +			      struct bin_attribute *attr, char *buf, loff_t off,
-> +			      size_t count)
-> +{
-> +	struct device *dev = kobj_to_dev(kobj);
-> +	struct sdsi_priv *priv = dev_get_drvdata(dev);
-> +	void __iomem *addr = priv->regs_addr;
-> +
-> +	memcpy_fromio(buf, addr + off, count);
+On Tue, 16 Nov 2021 14:43:16 +0000
+"Miclaus, Antoniu" <Antoniu.Miclaus@analog.com> wrote:
 
-Oh nice, this will be fun if I provide "interesting" values for off to
-the function right?
+> Hello Jonathan,
+Hi Antoniu
+> 
+> --
+> Antoniu Miclăuş
+> 
+> > -----Original Message-----
+> > From: Jonathan Cameron <jic23@kernel.org>
+> > Sent: Friday, November 12, 2021 7:56 PM
+> > To: Miclaus, Antoniu <Antoniu.Miclaus@analog.com>
+> > Cc: robh+dt@kernel.org; linux-iio@vger.kernel.org;
+> > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
+> > Subject: Re: [PATCH 4/4] iio:filter:admv8818: Add sysfs ABI documentation
+> > 
+> > [External]
+> > 
+> > On Tue, 9 Nov 2021 14:31:27 +0200
+> > Antoniu Miclaus <antoniu.miclaus@analog.com> wrote:
+> >   
+> > > Add initial ABI documentation for admv8818 filter sysfs interfaces.
+> > >
+> > > Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+> > > ---
+> > >  .../ABI/testing/sysfs-bus-iio-filter-admv8818 | 60 +++++++++++++++++++
+> > >  1 file changed, 60 insertions(+)
+> > >  create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-filter-  
+> > admv8818  
+> > >
+> > > diff --git a/Documentation/ABI/testing/sysfs-bus-iio-filter-admv8818  
+> > b/Documentation/ABI/testing/sysfs-bus-iio-filter-admv8818  
+> > > new file mode 100644
+> > > index 000000000000..7fa5b0819055
+> > > --- /dev/null
+> > > +++ b/Documentation/ABI/testing/sysfs-bus-iio-filter-admv8818
+> > > @@ -0,0 +1,60 @@
+> > > +What:  
+> > 	/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_filter_high_pass_3
+> > db_frequency  
+> > > +KernelVersion:
+> > > +Contact:	linux-iio@vger.kernel.org
+> > > +Description:
+> > > +		The cut-off frequency of the ADMV8818 high pass filter. The  
+> > value is scaled using  
+> > > +		the `out_altvoltageY_scale` attribute so that GHz frequencies  
+> > are valid inputs,  
+> > > +		The accepted range of values for the frequencies is between  
+> > 1.75GHz and 19.9GHz.  
+> > > +
+> > > +		The default value for the scale is 1000000, therefore MHz  
+> > frequency values are  
+> > > +		passed as input.  
+> > 
+> > I don't think this ABI really works unfortunately.  What we are talking here is
+> > a bunch of
+> > selectable filters and one high pass + one low pass filter max can be enabled
+> > at a time.
+> > 
+> > So two options, we either have simply a single
+> > out_altvoltage_filter_low_pass_3db_frequency
+> > out_altvoltage_filter_high_pass_3db_frequency
+> > Probably both with index 0 and index free channels are a silly idea given it's
+> > fine to just have
+> > one with index 0.
+> > 
+> > or if there is sufficient reason to setup a selectable set of options then
+> > we could look at indexed filters and a _symbol type selection which may
+> > seem
+> > odd but generalises fairly well from Phase Shift Keying type symbol stuff we
+> > have had before (though still in staging because no one has cleaned the
+> > drivers
+> > up yet).
+> > 
+> >   
+> > > +
+> > > +What:  
+> > 	/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_filter_low_pass_3
+> > db_frequency  
+> > > +KernelVersion:
+> > > +Contact:	linux-iio@vger.kernel.org
+> > > +Description:
+> > > +		The cut-off frequency of the ADMV8818 low pass filter. The  
+> > value is scaled using  
+> > > +		the `out_altvoltageY_scale` attribute so that GHz frequencies  
+> > are valid inputs,  
+> > > +		The accepted range of values for the frequencies is between  
+> > 2.05GHz and 18.85GHz.  
+> > > +
+> > > +		The default value for the scale is 1000000, therefore MHz  
+> > frequency values are  
+> > > +		passed as input.
+> > > +
+> > > +What:  
+> > 	/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_scale  
+> > > +KernelVersion:
+> > > +Contact:	linux-iio@vger.kernel.org
+> > > +Description:
+> > > +		Scale high pass and lowpass filter frequency values to Hz.
+> > > +
+> > > +What:  
+> > 	/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_mode_available  
+> > > +KernelVersion:
+> > > +Contact:	linux-iio@vger.kernel.org
+> > > +Description:
+> > > +		Reading this returns the valid values that can be written to  
+> > the  
+> > > +		on_altvoltage0_mode attribute:
+> > > +
+> > > +		- auto -> enable/register the clock rate notifier  
 
-Remember:
-	All input is evil.
+Probably want to separate this description from the 'how'
 
-> +
-> +	return count;
-> +}
-> +static BIN_ATTR(registers, 0400, registers_read, NULL, SDSI_SIZE_REGS);
-> +
-> +static struct bin_attribute *sdsi_bin_attrs[] = {
-> +	&bin_attr_registers,
-> +	&bin_attr_state_certificate,
-> +	&bin_attr_provision_akc,
-> +	&bin_attr_provision_cap,
-> +	NULL
-> +};
-> +
-> +static ssize_t guid_show(struct device *dev, struct device_attribute *attr, char *buf)
-> +{
-> +	struct sdsi_priv *priv = dev_get_drvdata(dev);
-> +
-> +	return sprintf(buf, "0x%x\n", priv->guid);
+So "auto -> Adjust bandpass filter to track changes in input clock rate."
+or something along those lines.
 
-sysfs_emit() please.
+> > 
+> > Hmm I'm wondering about the usecases of this.
+> > 
+> > If this is being used with a clk device, then I think only the notifier option
+> > makes much
+> > sense.  If it's not a clk that linux is aware of then manual makes more sense.
+> >   
+> > > +		- manual -> disable/unregister the clock rate notifier
+> > > +		- bypass -> bypass LPF/HPF and disable/unregister the clock  
+> > rate notifier
+> > 
+> > This should be separate enable for the two filters though I think we've use
+> > the value 0
+> > to mean this in the past.  The bypasses look to be per filter anyway, so a
+> > single
+> > mode is insufficiently flexible.
+> > 
+> > In the vast majority of cases, mode attributes are not used because they are
+> > always device
+> > specific and hence generic code has no idea what to do with them.
+> >   
+> 
+> As I mentioned also in the dt-bindings comments, these attributes were added  
+> because they were requested by the users of the application in which this part
+> was involved.
+> 
+> If you think these attributes/properties are way too custom, I can drop them.
+> 
+> Same goes for the bandwidth attribute.
 
-These sysfs attributes are crazy.  Who has audited them to be correct
-and work properly?  It feels like there are just buffer overflows
-waiting to be exploited in them due to the reading/writing of raw memory
-buffers all over the place.
+If that's the most common use case then it's fine to keep them in my view.
 
-Where is the userspace tool that uses these files?
+Bypass is disabling a particular filter though so we should express it like that.
+out_altvotage0_low_pass_filter_en etc
 
-thanks,
+Also I think a single 1/0 attribute called something like
 
-greg k-h
+out_altvoltage0_filter_auto_en
+
+which, when set makes the control parameters read only.
+
+
+
+> 
+> > > +
+> > > +What:  
+> > 	/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_mode  
+> > > +KernelVersion:
+> > > +Contact:	linux-iio@vger.kernel.org
+> > > +Description:
+> > > +		This attribute configures the filter mode.
+> > > +		Reading returns the actual mode.
+> > > +
+> > > +What:  
+> > 	/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_filter_band_pass_
+> > bandwidth_3db_frequency  
+> > > +KernelVersion:
+> > > +Contact:	linux-iio@vger.kernel.org
+> > > +Description:
+> > > +		Store the band pass bandwidth frequency value applied.
+> > > +		Reading returns the bandwidth frequency scaled.  
+> > 
+> > The device has no concept of bandpass that I can find so why are we
+> > introducing it?
+> > Let the user set the two filters to achieve this result.  Userspace can do the
+> > maths for us :)
+
+Definitely expose the two filters separately. The auto path can control them
+appropriately but if things have moved to userspace control then I think
+exposing each filter is a better bet.  Given we should be able to disable them
+independently it's more than possible a user will want just a low pass or just
+a high pass filter depending on their application.
+
+> >   
+> > > +
+> > > +
+> > > +What:  
+> > 	/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_filter_band_pass_
+> > center_frequency  
+> > > +KernelVersion:
+> > > +Contact:	linux-iio@vger.kernel.org
+> > > +Description:
+> > > +		Store the band pass center frequency value applied.
+> > > +		Reading returns the center frequency scaled.  
+> 
+
