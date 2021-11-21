@@ -2,273 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6563458416
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 15:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F86A45841D
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 15:35:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238245AbhKUO3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 09:29:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51900 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236798AbhKUO3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 09:29:16 -0500
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3DD81604E9;
-        Sun, 21 Nov 2021 14:26:08 +0000 (UTC)
-Date:   Sun, 21 Nov 2021 14:31:02 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH 07/15] iio: core: Add new DMABUF interface
- infrastructure
-Message-ID: <20211121143102.0ae208eb@jic23-huawei>
-In-Reply-To: <20211115141925.60164-8-paul@crapouillou.net>
-References: <20211115141925.60164-1-paul@crapouillou.net>
-        <20211115141925.60164-8-paul@crapouillou.net>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S238268AbhKUOiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 09:38:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237141AbhKUOiP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 09:38:15 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49965C061574;
+        Sun, 21 Nov 2021 06:35:10 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id y12so65057341eda.12;
+        Sun, 21 Nov 2021 06:35:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uVWJrGUhmNY+5JO5COkw5yTLxe0P/eEhJzzrs9rKS80=;
+        b=pPQtvw1oWzKCCaSlHXkMN2HGFkW1mYIh6uaHutvd/Rc3mRbYodwWovDjLUfXKhi0/g
+         8sDaVot9XAxSgCXlZkldX8sgWFzlwSXKsFV6uqvI+wY59F9Z3KDxXNnYXNwEPsXeazBO
+         +60VVXz5WVfbOxF6CUP/KQ5ABWPi6XggL0FRf2mU0iCMwN8FJbNlIVJepeTW2JC3WPdN
+         J9adJ51b3EaHlLJyvQZFI2s/TNpyMAYa4KrScx/D+8xaoZe4V4jm6haMGOJSD9YqGv0J
+         fm+Y1IeWhkYLzNtl9g4MenpUgj/nqprnmtkXIrhsP5qdfq5iHPNJtV38i9JAFom4bG3o
+         7Lmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uVWJrGUhmNY+5JO5COkw5yTLxe0P/eEhJzzrs9rKS80=;
+        b=S6FmrD1eca6ZEMsfnVtIhM7bOkSsIbRIUAaNR0Pz+T4YSJP2NjS5JUZZGN5PxhEiop
+         oPeZ43utGruwEewTBC6D44UhOhPdqQInzVu062xjAyJ6p8XSv+wZnN7lxrDpfJP4oYim
+         G28Eg8tZOegycinohX4RJlstFCQB9HbET6jRNTkwEYp1MMp1Gc0Lt/QGn38R1TDt64+L
+         kXpJGzsypUHamAObYbaBuPR5APHWJXk20oHbTLSVZHaB/DW760jqBsvlt5FfFYEHQUsa
+         lVb7PvxunTK6k+OPs4ZNF7STY/hH0/DbPcdU3PVLuOvdI0OBxGCJ8/51QKCelEXiIJf3
+         RzQw==
+X-Gm-Message-State: AOAM532wsUuXdkXiPC21rYd8wUpOp8+avxOm4oHhizuz4NzRhq9+xk/9
+        TR0N/1fWZMKS09Wjn03ip7E/y6sBXFMyMmlVPC8=
+X-Google-Smtp-Source: ABdhPJwq3Ba4opXjf0mtBzSWbRxwHpLA6KQV4nWd8uJXSGR4AB362UA1kpnuwf2ADgdZqExGejZpUDPWQPUVD/Lx8P4=
+X-Received: by 2002:a17:906:3c46:: with SMTP id i6mr29158150ejg.371.1637505308545;
+ Sun, 21 Nov 2021 06:35:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211104161804.587250-1-aford173@gmail.com> <CAJ+vNU2jcWyCm3UyiOnvknS0t+mSdpaB+CgGWYO3jxXTa3LhRA@mail.gmail.com>
+ <CAHCN7xJrnZMQgXVMJg7MZdFMWyesf6Ph7HnfMH7-9bm1qODHFw@mail.gmail.com>
+ <CAJ+vNU32GXtbKWGQXoE7pkXU8FcKh+HQJJduwRbRJ0tC-d6GoA@mail.gmail.com>
+ <CAHCN7xLAm21zUJQ8s4s--+ygmeVY0qyo0WSLp7ZM9bT9R3sjxw@mail.gmail.com>
+ <CAOMZO5Am4P17mOXWrPs0ns9AwOXM_ZpBdzbYTYJfv_48Ea=BHg@mail.gmail.com>
+ <CAHCN7xLzR5LqqydC7uydsXQPFVn=nyqKD8ZEH3EjcPuwQky5WA@mail.gmail.com> <CAOMZO5AnXDV3jdR6hP_+uqyss4KftzjahcrGq1XA37nGsfQedw@mail.gmail.com>
+In-Reply-To: <CAOMZO5AnXDV3jdR6hP_+uqyss4KftzjahcrGq1XA37nGsfQedw@mail.gmail.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Sun, 21 Nov 2021 08:34:57 -0600
+Message-ID: <CAHCN7xKJBHY1o94VDkBaXXFjMUm=5WoshddT4DVWD04aiPV8MA@mail.gmail.com>
+Subject: Re: [PATCH V3 0/9] arm64: imx8mn: Enable more imx8m Nano functions
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Tim Harvey <tharvey@gateworks.com>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        "Ariel D'Alessandro" <ariel.dalessandro@collabora.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Device Tree Mailing List <devicetree@vger.kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Nov 2021 14:19:17 +0000
-Paul Cercueil <paul@crapouillou.net> wrote:
+On Sun, Nov 21, 2021 at 8:21 AM Fabio Estevam <festevam@gmail.com> wrote:
+>
+> Hi Adam,
+>
+> On Sun, Nov 21, 2021 at 11:17 AM Adam Ford <aford173@gmail.com> wrote:
+>
+> > I am using https://source.codeaurora.org/external/imx/imx-atf/log/?h=lf_v2.4
+> >
+> > Since the driver sending SMCC commands to ATF isn't doing that, I
+> > assume it's safe to use the linux power-domain drivers with the ATF
+> > from NXP's kernel.
+> >
+> > If you can point me to the repo you think I should be using, I'll give it a try.
+>
+> Do you know if the mainline TF-A repo v2.5 works too?
+> https://github.com/ARM-software/arm-trusted-firmware/tree/v2.5
 
-> Add the necessary infrastructure to the IIO core to support a new DMABUF
-> based interface.
-> 
-> The advantage of this new DMABUF based interface vs. the read()
-> interface, is that it avoids an extra copy of the data between the
-> kernel and userspace. This is particularly userful for high-speed
-> devices which produce several megabytes or even gigabytes of data per
-> second.
-> 
-> The data in this new DMABUF interface is managed at the granularity of
-> DMABUF objects. Reducing the granularity from byte level to block level
-> is done to reduce the userspace-kernelspace synchronization overhead
-> since performing syscalls for each byte at a few Mbps is just not
-> feasible.
-> 
-> This of course leads to a slightly increased latency. For this reason an
-> application can choose the size of the DMABUFs as well as how many it
-> allocates. E.g. two DMABUFs would be a traditional double buffering
-> scheme. But using a higher number might be necessary to avoid
-> underflow/overflow situations in the presence of scheduling latencies.
-> 
-> As part of the interface, 2 new IOCTLs have been added:
-> 
-> IIO_BUFFER_DMABUF_ALLOC_IOCTL(struct iio_dmabuf_alloc_req *):
->  Each call will allocate a new DMABUF object. The return value (if not
->  a negative errno value as error) will be the file descriptor of the new
->  DMABUF.
-> 
-> IIO_BUFFER_DMABUF_ENQUEUE_IOCTL(struct iio_dmabuf *):
->  Place the DMABUF object into the queue pending for hardware process.
-> 
-> These two IOCTLs have to be performed on the IIO buffer's file
-> descriptor (either opened from the corresponding /dev/iio:deviceX, or
-> obtained using the IIO_BUFFER_GET_FD_IOCTL() ioctl).
+That's good to know.
 
-Unrelated to this patch except tangentially.  Maybe we should enable
-new buffer features only on the IIO_BUFFER_GET_FD_IOCTL() route as
-we probably want to deprecate the old interfaces due to the it only
-supporting a single buffer / datastream per device.
+I just built it into U-Boot:
 
-Possibly something for another day...
+NOTICE:  BL31: v2.5(release):v2.5
+NOTICE:  BL31: Built : 08:24:13, Nov 21 2021
 
-Nothing to add on actual code...
+The Etnaviv driver is still loading without hanging
 
-Jonathan
+root@beacon-imx8mn-kit:~# dmesg |grep -i etna
+[   12.393936] etnaviv etnaviv: bound 38000000.gpu (ops gpu_ops [etnaviv])
+[   12.400676] etnaviv-gpu 38000000.gpu: model: GC7000, revision: 6203
+[   12.641297] [drm] Initialized etnaviv 1.3.0 20151214 for etnaviv on minor 0
 
-> 
-> To access the data stored in a block by userspace the block must be
-> mapped to the process's memory. This is done by calling mmap() on the
-> DMABUF's file descriptor.
-> 
-> Before accessing the data through the map, you must use the
-> DMA_BUF_IOCTL_SYNC(struct dma_buf_sync *) ioctl, with the
-> DMA_BUF_SYNC_START flag, to make sure that the data is available.
-> This call may block until the hardware is done with this block. Once
-> you are done reading or writing the data, you must use this ioctl again
-> with the DMA_BUF_SYNC_END flag, before enqueueing the DMABUF to the
-> kernel's queue.
-> 
-> If you need to know when the hardware is done with a DMABUF, you can
-> poll its file descriptor for the EPOLLOUT event.
-> 
-> Finally, to destroy a DMABUF object, simply call close() on its file
-> descriptor.
-> 
-> A typical workflow for the new interface is:
-> 
->   for block in blocks:
->     DMABUF_ALLOC block
->     mmap block
-> 
->   enable buffer
-> 
->   while !done
->     for block in blocks:
->       DMABUF_ENQUEUE block
-> 
->       DMABUF_SYNC_START block
->       process data
->       DMABUF_SYNC_END block
-> 
->   disable buffer
-> 
->   for block in blocks:
->     close block
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  drivers/iio/industrialio-buffer.c | 44 +++++++++++++++++++++++++++++++
->  include/linux/iio/buffer_impl.h   |  8 ++++++
->  include/uapi/linux/iio/buffer.h   | 29 ++++++++++++++++++++
->  3 files changed, 81 insertions(+)
-> 
-> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> index e180728914c0..30910e6c2346 100644
-> --- a/drivers/iio/industrialio-buffer.c
-> +++ b/drivers/iio/industrialio-buffer.c
-> @@ -17,6 +17,7 @@
->  #include <linux/fs.h>
->  #include <linux/cdev.h>
->  #include <linux/slab.h>
-> +#include <linux/mm.h>
->  #include <linux/poll.h>
->  #include <linux/sched/signal.h>
->  
-> @@ -1585,12 +1586,55 @@ static long iio_device_buffer_getfd(struct iio_dev *indio_dev, unsigned long arg
->  	return ret;
->  }
->  
-> +static int iio_buffer_enqueue_dmabuf(struct iio_buffer *buffer,
-> +				     struct iio_dmabuf __user *user_buf)
-> +{
-> +	struct iio_dmabuf dmabuf;
-> +
-> +	if (!buffer->access->enqueue_dmabuf)
-> +		return -EPERM;
-> +
-> +	if (copy_from_user(&dmabuf, user_buf, sizeof(dmabuf)))
-> +		return -EFAULT;
-> +
-> +	if (dmabuf.flags & ~IIO_BUFFER_DMABUF_SUPPORTED_FLAGS)
-> +		return -EINVAL;
-> +
-> +	return buffer->access->enqueue_dmabuf(buffer, &dmabuf);
-> +}
-> +
-> +static int iio_buffer_alloc_dmabuf(struct iio_buffer *buffer,
-> +				   struct iio_dmabuf_alloc_req __user *user_req)
-> +{
-> +	struct iio_dmabuf_alloc_req req;
-> +
-> +	if (!buffer->access->alloc_dmabuf)
-> +		return -EPERM;
-> +
-> +	if (copy_from_user(&req, user_req, sizeof(req)))
-> +		return -EFAULT;
-> +
-> +	if (req.resv)
-> +		return -EINVAL;
-> +
-> +	return buffer->access->alloc_dmabuf(buffer, &req);
-> +}
-> +
->  static long iio_device_buffer_ioctl(struct iio_dev *indio_dev, struct file *filp,
->  				    unsigned int cmd, unsigned long arg)
->  {
-> +	struct iio_dev_buffer_pair *ib = filp->private_data;
-> +	struct iio_buffer *buffer = ib->buffer;
-> +	void __user *_arg = (void __user *)arg;
-> +
->  	switch (cmd) {
->  	case IIO_BUFFER_GET_FD_IOCTL:
->  		return iio_device_buffer_getfd(indio_dev, arg);
-> +	case IIO_BUFFER_DMABUF_ALLOC_IOCTL:
-> +		return iio_buffer_alloc_dmabuf(buffer, _arg);
-> +	case IIO_BUFFER_DMABUF_ENQUEUE_IOCTL:
-> +		/* TODO: support non-blocking enqueue operation */
-> +		return iio_buffer_enqueue_dmabuf(buffer, _arg);
->  	default:
->  		return IIO_IOCTL_UNHANDLED;
->  	}
-> diff --git a/include/linux/iio/buffer_impl.h b/include/linux/iio/buffer_impl.h
-> index e2ca8ea23e19..728541bc2c63 100644
-> --- a/include/linux/iio/buffer_impl.h
-> +++ b/include/linux/iio/buffer_impl.h
-> @@ -39,6 +39,9 @@ struct iio_buffer;
->   *                      device stops sampling. Calles are balanced with @enable.
->   * @release:		called when the last reference to the buffer is dropped,
->   *			should free all resources allocated by the buffer.
-> + * @alloc_dmabuf:	called from userspace via ioctl to allocate one DMABUF.
-> + * @enqueue_dmabuf:	called from userspace via ioctl to queue this DMABUF
-> + *			object to this buffer. Requires a valid DMABUF fd.
->   * @modes:		Supported operating modes by this buffer type
->   * @flags:		A bitmask combination of INDIO_BUFFER_FLAG_*
->   *
-> @@ -68,6 +71,11 @@ struct iio_buffer_access_funcs {
->  
->  	void (*release)(struct iio_buffer *buffer);
->  
-> +	int (*alloc_dmabuf)(struct iio_buffer *buffer,
-> +			    struct iio_dmabuf_alloc_req *req);
-> +	int (*enqueue_dmabuf)(struct iio_buffer *buffer,
-> +			      struct iio_dmabuf *block);
-> +
->  	unsigned int modes;
->  	unsigned int flags;
->  };
-> diff --git a/include/uapi/linux/iio/buffer.h b/include/uapi/linux/iio/buffer.h
-> index 13939032b3f6..e4621b926262 100644
-> --- a/include/uapi/linux/iio/buffer.h
-> +++ b/include/uapi/linux/iio/buffer.h
-> @@ -5,6 +5,35 @@
->  #ifndef _UAPI_IIO_BUFFER_H_
->  #define _UAPI_IIO_BUFFER_H_
->  
-> +#include <linux/types.h>
-> +
-> +#define IIO_BUFFER_DMABUF_SUPPORTED_FLAGS	0x00000000
-> +
-> +/**
-> + * struct iio_dmabuf_alloc_req - Descriptor for allocating IIO DMABUFs
-> + * @size:	the size of a single DMABUF
-> + * @resv:	reserved
-> + */
-> +struct iio_dmabuf_alloc_req {
-> +	__u64 size;
-> +	__u64 resv;
-> +};
-> +
-> +/**
-> + * struct iio_dmabuf - Descriptor for a single IIO DMABUF object
-> + * @fd:		file descriptor of the DMABUF object
-> + * @flags:	one or more IIO_BUFFER_DMABUF_* flags
-> + * @bytes_used:	number of bytes used in this DMABUF for the data transfer.
-> + *		If zero, the full buffer is used.
-> + */
-> +struct iio_dmabuf {
-> +	__u32 fd;
-> +	__u32 flags;
-> +	__u64 bytes_used;
-> +};
-> +
->  #define IIO_BUFFER_GET_FD_IOCTL			_IOWR('i', 0x91, int)
-> +#define IIO_BUFFER_DMABUF_ALLOC_IOCTL		_IOW('i', 0x92, struct iio_dmabuf_alloc_req)
-> +#define IIO_BUFFER_DMABUF_ENQUEUE_IOCTL		_IOW('i', 0x93, struct iio_dmabuf)
->  
->  #endif /* _UAPI_IIO_BUFFER_H_ */
 
+
+>
+> Thanks
