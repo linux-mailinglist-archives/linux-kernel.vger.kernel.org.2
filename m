@@ -2,219 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 574FC458438
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 15:55:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2B7458440
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 16:02:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238328AbhKUO6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 09:58:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55418 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238071AbhKUO6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 09:58:51 -0500
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 972786069B;
-        Sun, 21 Nov 2021 14:55:44 +0000 (UTC)
-Date:   Sun, 21 Nov 2021 15:00:37 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH 11/15] iio: buffer-dma: Boost performance using
- write-combine cache setting
-Message-ID: <20211121150037.2a606be0@jic23-huawei>
-In-Reply-To: <20211115141925.60164-12-paul@crapouillou.net>
-References: <20211115141925.60164-1-paul@crapouillou.net>
-        <20211115141925.60164-12-paul@crapouillou.net>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S238345AbhKUPFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 10:05:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238338AbhKUPFg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 10:05:36 -0500
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3CDEC06173E
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 07:02:31 -0800 (PST)
+Received: by mail-ua1-x933.google.com with SMTP id p37so31347230uae.8
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 07:02:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ewCR+zztptKsJ8KIVGfIJqeRh+t6Nh5hBzYWdIOddbI=;
+        b=DSjlOXuFLR7fltc2k0KwMobb2ttHVi01kU8LQbXxB4/ZoJNVGakI1uUnUpqRG+TQiC
+         ajP4SRxqDR5m3WtzrWAJ7s64fJnWhcJ6j1U3s28rYZI5v4VqQ87Q86V70FosO5DmcEAj
+         orxqnTbNjtQD41OMApZpL2I4T4qtNla09xA9fBYlOKehTJHENu9xdDRADhVYOq67FxT/
+         fkeLCT1rO5Locz14W5zmawwgXQ2UaUdYzXwFhf5VD6nGF75SRP+lHeAYL7y9SPlAOZUQ
+         iJofS02RBpZJEMbn5nWppRCw3gzbhuAsYv6QweIa2t30uunwUJCthDZ2HwkhfnzOFDhj
+         oHWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ewCR+zztptKsJ8KIVGfIJqeRh+t6Nh5hBzYWdIOddbI=;
+        b=AKG2DwBEvzUwFAMfppurKhZAgrWHVnM+urNTBF7BDk3gUxsNhkgeN2ok+jUxmQSjnF
+         01m+ujEkjCgGG/Ku8naBbYFsPUqC8cj8sH7g8vZ1yggDTAdEtAEb6z+xTLD9c3FJckbe
+         DdTi58d1UeKL2oOdOAF2CXDt3lyU9WKT422ubABL6yBcbPzvTyQ99Mlb5tGbMI6Xc563
+         DkdViiBq0blWwqUwcBUOgKmQS5sewm4eHE+VZs87p+oUb4K41PNP7OkUeSY0sjFjMxjw
+         Mphl5wd0AePgio96iDYQdGospIYEzkGwx0XcyWd0RFRO7dPKpwU0UzfC9P5MOs0EcPK+
+         syPw==
+X-Gm-Message-State: AOAM530ms0IRPjnzIH9f7ebCriXUqDEGDYqUfl/4nuOk8hAdJ4Ml2inr
+        X/GrROSr6+vkplRRlap6tducyc3Tz5ho/PQw5+VWLg==
+X-Google-Smtp-Source: ABdhPJyGlYS/dAMmh8S6nbKcs5k5Z/LtQK+tCLwZxz2GaoFXq8JvxOqmAYnacyFaR7rjYK52hB72Yq3KW5hpk1W2hcw=
+X-Received: by 2002:a67:d893:: with SMTP id f19mr116652012vsj.39.1637506950538;
+ Sun, 21 Nov 2021 07:02:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211108134901.20490-1-semen.protsenko@linaro.org> <b374d1a6-6478-cf2f-924e-425825731ad5@canonical.com>
+In-Reply-To: <b374d1a6-6478-cf2f-924e-425825731ad5@canonical.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Sun, 21 Nov 2021 17:02:19 +0200
+Message-ID: <CAPLW+4mq1H9N4BEAT2zoPxa85SXN2jPHqEJA7HCgavaDDpfEDQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] arm: samsung: Remove HAVE_S3C2410_I2C and use direct dependencies
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Will McVicker <willmcvicker@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Nov 2021 14:19:21 +0000
-Paul Cercueil <paul@crapouillou.net> wrote:
+On Sun, 21 Nov 2021 at 14:39, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On 08/11/2021 14:49, Sam Protsenko wrote:
+> > A separate Kconfig option HAVE_S3C2410_I2C for Samsung SoCs is not
+> > really needed and the i2c-s3c24xx driver can depend on Samsung ARM
+> > architectures instead. This also enables i2c-s3c2410 for arm64 Exynos
+> > SoCs, which is required for example by Exynos850.
+> >
+> > This is basically continuation of work made in following commits:
+> >   - commit d96890fca9fd ("rtc: s3c: remove HAVE_S3C_RTC in favor of
+> >     direct dependencies")
+> >   - commit 7dd3cae90d85 ("ARM: samsung: remove HAVE_S3C2410_WATCHDOG and
+> >     use direct dependencies")
+> >
+> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > ---
+> >  arch/arm/Kconfig                  |  1 -
+> >  arch/arm/mach-exynos/Kconfig      |  1 -
+> >  arch/arm/mach-s3c/Kconfig.s3c64xx |  1 -
+> >  arch/arm/mach-s5pv210/Kconfig     |  1 -
+> >  drivers/i2c/busses/Kconfig        | 10 ++--------
+> >  5 files changed, 2 insertions(+), 12 deletions(-)
+> >
+>
+> This does not apply, which is weird because there were no changes here.
+> It seems you based your work on some older tree, so please rebase and
+> re-test on current tree (my for-next branch or linux-next).
+>
 
-> We can be certain that the input buffers will only be accessed by
-> userspace for reading, and output buffers will mostly be accessed by
-> userspace for writing.
+This is strange indeed, those two patches are rebased flawlessly on
+linux-next for me. Anyway, I'll send v2 today, thanks for letting me
+know.
 
-Mostly?  Perhaps a little more info on why that's not 'only'.
-
-> 
-> Therefore, it makes more sense to use only fully cached input buffers,
-> and to use the write-combine cache coherency setting for output buffers.
-> 
-> This boosts performance, as the data written to the output buffers does
-> not have to be sync'd for coherency. It will halve performance if the
-> userspace application tries to read from the output buffer, but this
-> should never happen.
-> 
-> Since we don't need to sync the cache when disabling CPU access either
-> for input buffers or output buffers, the .end_cpu_access() callback can
-> be dropped completely.
-
-We have an odd mix of coherent and non coherent DMA in here as you noted,
-but are you sure this is safe on all platforms?
-
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-
-Any numbers to support this patch?  The mapping types are performance
-optimisations so nice to know how much of a difference they make.
-
-
-> ---
->  drivers/iio/buffer/industrialio-buffer-dma.c | 82 +++++++++++++-------
->  1 file changed, 54 insertions(+), 28 deletions(-)
-> 
-> diff --git a/drivers/iio/buffer/industrialio-buffer-dma.c b/drivers/iio/buffer/industrialio-buffer-dma.c
-> index 92356ee02f30..fb39054d8c15 100644
-> --- a/drivers/iio/buffer/industrialio-buffer-dma.c
-> +++ b/drivers/iio/buffer/industrialio-buffer-dma.c
-> @@ -229,8 +229,33 @@ static int iio_buffer_dma_buf_mmap(struct dma_buf *dbuf,
->  	if (vma->vm_ops->open)
->  		vma->vm_ops->open(vma);
->  
-> -	return dma_mmap_pages(dev, vma, vma->vm_end - vma->vm_start,
-> -			      virt_to_page(block->vaddr));
-> +	if (block->queue->buffer.direction == IIO_BUFFER_DIRECTION_IN) {
-> +		/*
-> +		 * With an input buffer, userspace will only read the data and
-> +		 * never write. We can mmap the buffer fully cached.
-> +		 */
-> +		return dma_mmap_pages(dev, vma, vma->vm_end - vma->vm_start,
-> +				      virt_to_page(block->vaddr));
-> +	} else {
-> +		/*
-> +		 * With an output buffer, userspace will only write the data
-> +		 * and should rarely (if never) read from it. It is better to
-> +		 * use write-combine in this case.
-> +		 */
-> +		return dma_mmap_wc(dev, vma, block->vaddr, block->phys_addr,
-> +				   vma->vm_end - vma->vm_start);
-> +	}
-> +}
-> +
-> +static void iio_dma_buffer_free_dmamem(struct iio_dma_buffer_block *block)
-> +{
-> +	struct device *dev = block->queue->dev;
-> +	size_t size = PAGE_ALIGN(block->size);
-> +
-> +	if (block->queue->buffer.direction == IIO_BUFFER_DIRECTION_IN)
-> +		dma_free_coherent(dev, size, block->vaddr, block->phys_addr);
-> +	else
-> +		dma_free_wc(dev, size, block->vaddr, block->phys_addr);
->  }
->  
->  static void iio_buffer_dma_buf_release(struct dma_buf *dbuf)
-> @@ -243,9 +268,7 @@ static void iio_buffer_dma_buf_release(struct dma_buf *dbuf)
->  
->  	mutex_lock(&queue->lock);
->  
-> -	dma_free_coherent(queue->dev, PAGE_ALIGN(block->size),
-> -			  block->vaddr, block->phys_addr);
-> -
-> +	iio_dma_buffer_free_dmamem(block);
->  	kfree(block);
->  
->  	queue->num_blocks--;
-> @@ -268,19 +291,6 @@ static int iio_buffer_dma_buf_begin_cpu_access(struct dma_buf *dbuf,
->  	return 0;
->  }
->  
-> -static int iio_buffer_dma_buf_end_cpu_access(struct dma_buf *dbuf,
-> -					     enum dma_data_direction dma_dir)
-> -{
-> -	struct iio_dma_buffer_block *block = dbuf->priv;
-> -	struct device *dev = block->queue->dev;
-> -
-> -	/* We only need to sync the cache for output buffers */
-> -	if (block->queue->buffer.direction == IIO_BUFFER_DIRECTION_OUT)
-> -		dma_sync_single_for_device(dev, block->phys_addr, block->size, dma_dir);
-> -
-> -	return 0;
-> -}
-> -
->  static const struct dma_buf_ops iio_dma_buffer_dmabuf_ops = {
->  	.attach			= iio_buffer_dma_buf_attach,
->  	.map_dma_buf		= iio_buffer_dma_buf_map,
-> @@ -288,9 +298,28 @@ static const struct dma_buf_ops iio_dma_buffer_dmabuf_ops = {
->  	.mmap			= iio_buffer_dma_buf_mmap,
->  	.release		= iio_buffer_dma_buf_release,
->  	.begin_cpu_access	= iio_buffer_dma_buf_begin_cpu_access,
-> -	.end_cpu_access		= iio_buffer_dma_buf_end_cpu_access,
->  };
->  
-> +static int iio_dma_buffer_alloc_dmamem(struct iio_dma_buffer_block *block)
-> +{
-> +	struct device *dev = block->queue->dev;
-> +	size_t size = PAGE_ALIGN(block->size);
-> +
-> +	if (block->queue->buffer.direction == IIO_BUFFER_DIRECTION_IN) {
-> +		block->vaddr = dma_alloc_coherent(dev, size,
-> +						  &block->phys_addr,
-> +						  GFP_KERNEL);
-> +	} else {
-> +		block->vaddr = dma_alloc_wc(dev, size,
-> +					    &block->phys_addr,
-> +					    GFP_KERNEL);
-> +	}
-> +	if (!block->vaddr)
-> +		return -ENOMEM;
-> +
-> +	return 0;
-> +}
-> +
->  static struct iio_dma_buffer_block *iio_dma_buffer_alloc_block(
->  	struct iio_dma_buffer_queue *queue, size_t size, bool fileio)
->  {
-> @@ -303,12 +332,12 @@ static struct iio_dma_buffer_block *iio_dma_buffer_alloc_block(
->  	if (!block)
->  		return ERR_PTR(-ENOMEM);
->  
-> -	block->vaddr = dma_alloc_coherent(queue->dev, PAGE_ALIGN(size),
-> -		&block->phys_addr, GFP_KERNEL);
-> -	if (!block->vaddr) {
-> -		err = -ENOMEM;
-> +	block->size = size;
-> +	block->queue = queue;
-> +
-> +	err = iio_dma_buffer_alloc_dmamem(block);
-> +	if (err)
->  		goto err_free_block;
-> -	}
->  
->  	einfo.ops = &iio_dma_buffer_dmabuf_ops;
->  	einfo.size = PAGE_ALIGN(size);
-> @@ -322,10 +351,8 @@ static struct iio_dma_buffer_block *iio_dma_buffer_alloc_block(
->  	}
->  
->  	block->dmabuf = dmabuf;
-> -	block->size = size;
->  	block->bytes_used = size;
->  	block->state = IIO_BLOCK_STATE_DONE;
-> -	block->queue = queue;
->  	block->fileio = fileio;
->  	INIT_LIST_HEAD(&block->head);
->  
-> @@ -338,8 +365,7 @@ static struct iio_dma_buffer_block *iio_dma_buffer_alloc_block(
->  	return block;
->  
->  err_free_dma:
-> -	dma_free_coherent(queue->dev, PAGE_ALIGN(size),
-> -			  block->vaddr, block->phys_addr);
-> +	iio_dma_buffer_free_dmamem(block);
->  err_free_block:
->  	kfree(block);
->  	return ERR_PTR(err);
-
+> Best regards,
+> Krzysztof
