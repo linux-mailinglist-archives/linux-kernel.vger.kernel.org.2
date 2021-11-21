@@ -2,183 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B31458724
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 00:28:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD17C458729
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 00:29:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232218AbhKUXbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 18:31:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43426 "EHLO
+        id S231168AbhKUXcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 18:32:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232164AbhKUXbC (ORCPT
+        with ESMTP id S229886AbhKUXcK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 18:31:02 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA45FC0613D7
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 15:27:54 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id m27so71849390lfj.12
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 15:27:54 -0800 (PST)
+        Sun, 21 Nov 2021 18:32:10 -0500
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB493C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 15:29:04 -0800 (PST)
+Received: by mail-ot1-x32f.google.com with SMTP id h12-20020a056830034c00b0055c8458126fso26274184ote.0
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 15:29:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6aqpdUn2ADmAje4X3NYNku5B4XO9mUxiC98/Xj1uCXg=;
-        b=vpJc6TLBfNnEFinKdNtG8MKQSF+JD1sNhlYhlunu3mk0YFsKMbPc/rPmDVXqQrHU2C
-         lD2wx3/ZKq9UdyxV5vVPbBCm/C/KIphlIUA2loHUAgLTeQrIxQHt9cGZVigM/D3grRFO
-         wUps0JEOEzGpQdUEWCDryN9TQWzKkvrwFzYjEdXolKEAnR96frGJz/kgp/lmeC/+RFwK
-         dALpG1m65xJX7zhVghz/DeLHUKZiLoAab4RLlDnUmAWLS+OYK3rrTLCxRepv9hIfajPI
-         uF1xZ3aj3XWejROFYTr0/BN1A/ZImsn7d8c7Q94T0njqfB9YYbAq/af+kOKxaU8IRd63
-         K2ag==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uawdrL9VOMlIqlvJ0mj5tyfriQh05XU0vtoIzgfnGzw=;
+        b=B3a6gp5YyLEyWRk2RBPz4+9gEODV95HoQcpiVwp6PIKpBPC/dm0wRZAqBydbs0IUtU
+         Vy4ud2krF6fE1+/NDYoGjMeVbCEMVPFMS+lZe1tnZf0G6ZKVcJIa2NbD5l2qCkWjzXrG
+         MFX5m/l9RoOdGEyiASjFLLyM/tAHysbmS8VsgJrTxpRGkFWKfAWx3kVd0zVZ2aL+i9gm
+         2gc4cjD8y8eO23vdCs0mblQp9p7KaUMIeFNFCJkY5zP8judtj+sYkv+8cJf+ewNbkyCH
+         IYH2El+UGJ8h219SYHJMdsFyBAtcglqPkMJ1pOQ4Vv5tfkq93ysVx+7V4S6x5f65eWAo
+         XjBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6aqpdUn2ADmAje4X3NYNku5B4XO9mUxiC98/Xj1uCXg=;
-        b=xNnAxmyWWRS84RtGl64nmMyfRpEh/17R4JN2uZVPYX2k5F21smqVp5k/t8DMqhfFZ6
-         W8/AvAzsGEx23igioqMfau499lHr0CgyJPEe9HLf3DkTfDTKHhiUafbckZlMOR+Ad7KQ
-         nRMXDK7qgSBxo2MGKLnQJmy9aD14AL0twC6EogDopzJ7ULxS2y96TyNh83M0ogoCNHUz
-         MAX00U18f+x1myjr1+Q2H+q2n7YU7gwRoxeLYta36bPSUoGsiAGIXO7Qpnq+gkJTVJCp
-         mqDVhGdDxr99/3VqA91jYyqfW+l2ZoXD/imw5l9ZL2ScBOEk781p4f7j5THbkm3uAGFp
-         OFRw==
-X-Gm-Message-State: AOAM5300ackUnqmxb8yjSZ8ojOr4pFNnQFMERkuDs0CQpkJzZiKx7JeA
-        crAMeDGZ7T/+0LoRWx7F6S+tsg==
-X-Google-Smtp-Source: ABdhPJz+S1jtyGQkCNs22HZj8wJZpFPp/LS44MVhNbn0orvX/Q2jDmdyb1HX35k+HJwKcz9RG2JgpQ==
-X-Received: by 2002:a05:6512:128f:: with SMTP id u15mr52325994lfs.92.1637537273121;
-        Sun, 21 Nov 2021 15:27:53 -0800 (PST)
-Received: from localhost ([31.134.121.151])
-        by smtp.gmail.com with ESMTPSA id x6sm777498lfu.79.2021.11.21.15.27.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Nov 2021 15:27:52 -0800 (PST)
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     David Virag <virag.david003@gmail.com>,
-        =?UTF-8?q?Pawe=C5=82=20Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: [PATCH 6/6] clk: samsung: exynos850: Keep some crucial clocks running
-Date:   Mon, 22 Nov 2021 01:27:41 +0200
-Message-Id: <20211121232741.6967-7-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211121232741.6967-1-semen.protsenko@linaro.org>
-References: <20211121232741.6967-1-semen.protsenko@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uawdrL9VOMlIqlvJ0mj5tyfriQh05XU0vtoIzgfnGzw=;
+        b=aKWWmK4i0PVgW5Frz3KiUXy8Va8ymaWeI8Ajyq1UmkFoV9aONqMPYWu3neE9gsK2gA
+         zIBBQlx6LVYGVwUzul31tAjYN6LLiBYvRDQvA7xIG4Vs/pd03r3XPAJPZhaqSQrGpTnh
+         wcSk0E6zEuIoEVczL6NkFsUUUDjuf9lxNwQGzoJNeLL0vXGmgyFxqE+jwkXmoYZbdWxb
+         n4cjcYvXPOg6qOkMrbl42y+h9u1lvcLg9KKrB10BBe8qzDLRe5mT7DBgE6M1VHd8yt9P
+         oUonX4ktUNeyOWQlY4MQW6oQmyQEvykju7jz2xZDZN3DSs99FoL2DahBA+Cl+JjtbqPQ
+         lV2g==
+X-Gm-Message-State: AOAM532DfPApRIz/Ammz/i3mbSXKH3N/0wWVRI/rodqItAx4JGEvQZrP
+        f8M28EBQIAMgDVCeE3up9zKRGbbEx5IEB3tjr9inBA==
+X-Google-Smtp-Source: ABdhPJzaxxQYv3+ed3jVIfR+ikdBi3My7RqP2nQArMaBHdQPUz2wbnV0Ic/1oih14zYbo/y3Ko52yHuTC+/gee84Dm8=
+X-Received: by 2002:a9d:a42:: with SMTP id 60mr21445284otg.179.1637537344362;
+ Sun, 21 Nov 2021 15:29:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1637041084-3299-1-git-send-email-rnayak@codeaurora.org>
+In-Reply-To: <1637041084-3299-1-git-send-email-rnayak@codeaurora.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 22 Nov 2021 00:28:53 +0100
+Message-ID: <CACRpkdY8Vw-UGGmFEGzXYd_tVf7Sv252UPrBhd_jmrmW0T7uWg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] pinctrl: qcom: Add egpio feature support
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, psodagud@codeaurora.org,
+        dianders@chromium.org, swboyd@chromium.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some clocks shouldn't be automatically disabled in clk_disable_unused(),
-otherwise kernel hangs. Mark those clocks with:
-  - CLK_IS_CRITICAL flag, when there won't be any consumers for that
-    clock, but system can't function when it's gated
-  - CLK_IGNORE_UNUSED flag, when consumer driver will be probably added
-    later
+On Tue, Nov 16, 2021 at 6:38 AM Rajendra Nayak <rnayak@codeaurora.org> wrote:
 
-That makes it possible to run the kernel without passing the
-"clk_ignore_unused" param.
+> From: Prasad Sodagudi <psodagud@codeaurora.org>
+>
+> egpio is a scheme which allows special power Island Domain IOs
+> (LPASS,SSC) to be reused as regular chip GPIOs by muxing regular
+> TLMM functions with Island Domain functions.
+> With this scheme, an IO can be controlled both by the cpu running
+> linux and the Island processor. This provides great flexibility to
+> re-purpose the Island IOs for regular TLMM usecases.
+>
+> 2 new bits are added to ctl_reg, egpio_present is a read only bit
+> which shows if egpio feature is available or not on a given gpio.
+> egpio_enable is the read/write bit and only effective if egpio_present
+> is 1. Once its set, the Island IO is controlled from Chip TLMM.
+> egpio_enable when set to 0 means the GPIO is used as Island Domain IO.
+>
+> To support this we add a new function 'egpio' which can be used to
+> set the egpio_enable to 0, for any other TLMM controlled functions
+> we set the egpio_enable to 1.
+>
+> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
 
-Next clocks were modified:
-  - "gout_dpu_cmu_dpu_pclk":	CLK_IGNORE_UNUSED
+This patch 1/2 does not have Bjorn's ACK but since he acked
+patch 2 I just applied both anyway, Bjorn if you don't like this
+just tell me and I pull them out again.
 
-    Will be enabled later in DSIM driver (Display Serial Interface
-    Master).
-
-  - "gout_gpio_peri_pclk":	CLK_IGNORE_UNUSED
-    "gout_gpio_cmgp_pclk":	CLK_IGNORE_UNUSED
-    "gout_gpio_hsi_pclk":	CLK_IGNORE_UNUSED
-
-    Should be probably enabled in corresponding GPIO driver later, or
-    made CLK_IS_CRITICAL. "gout_gpio_peri_clk" is actually used by LEDs
-    on Exynos850-based dev board, so kernel hangs if this clock is not
-    running. Other clocks were marked as "ignore unused" to prevent
-    similar issues for other use cases or boards that might be added
-    later.
-
-  - "gout_cci_aclk":		CLK_IS_CRITICAL
-
-    CCI (Cache Coherent Interconnect): obviously is critical.
-
-  - "gout_gic_clk":		CLK_IS_CRITICAL
-
-    GIC (Generic Interrupt Controller): obviously is critical.
-
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
----
- drivers/clk/samsung/clk-exynos850.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/clk/samsung/clk-exynos850.c b/drivers/clk/samsung/clk-exynos850.c
-index 1d257bca8b37..c885ffb1aa24 100644
---- a/drivers/clk/samsung/clk-exynos850.c
-+++ b/drivers/clk/samsung/clk-exynos850.c
-@@ -596,9 +596,10 @@ static const struct samsung_gate_clock cmgp_gate_clks[] __initconst = {
- 	GATE(CLK_GOUT_CMGP_ADC_S1_PCLK, "gout_adc_s1_pclk",
- 	     "gout_clkcmu_cmgp_bus",
- 	     CLK_CON_GAT_GOUT_CMGP_ADC_PCLK_S1, 21, 0, 0),
-+	/* TODO: Should be enabled in GPIO driver (or made CLK_IS_CRITICAL) */
- 	GATE(CLK_GOUT_CMGP_GPIO_PCLK, "gout_gpio_cmgp_pclk",
- 	     "gout_clkcmu_cmgp_bus",
--	     CLK_CON_GAT_GOUT_CMGP_GPIO_PCLK, 21, 0, 0),
-+	     CLK_CON_GAT_GOUT_CMGP_GPIO_PCLK, 21, CLK_IGNORE_UNUSED, 0),
- 	GATE(CLK_GOUT_CMGP_USI0_IPCLK, "gout_cmgp_usi0_ipclk", "dout_cmgp_usi0",
- 	     CLK_CON_GAT_GOUT_CMGP_USI_CMGP0_IPCLK, 21, 0, 0),
- 	GATE(CLK_GOUT_CMGP_USI0_PCLK, "gout_cmgp_usi0_pclk",
-@@ -685,8 +686,9 @@ static const struct samsung_gate_clock hsi_gate_clks[] __initconst = {
- 	     CLK_CON_GAT_HSI_USB20DRD_TOP_I_REF_CLK_50, 21, 0, 0),
- 	GATE(CLK_GOUT_USB_PHY_REF_CLK, "gout_usb_phy_ref", "oscclk",
- 	     CLK_CON_GAT_HSI_USB20DRD_TOP_I_PHY_REFCLK_26, 21, 0, 0),
-+	/* TODO: Should be enabled in GPIO driver (or made CLK_IS_CRITICAL) */
- 	GATE(CLK_GOUT_GPIO_HSI_PCLK, "gout_gpio_hsi_pclk", "mout_hsi_bus_user",
--	     CLK_CON_GAT_GOUT_HSI_GPIO_HSI_PCLK, 21, 0, 0),
-+	     CLK_CON_GAT_GOUT_HSI_GPIO_HSI_PCLK, 21, CLK_IGNORE_UNUSED, 0),
- 	GATE(CLK_GOUT_MMC_CARD_ACLK, "gout_mmc_card_aclk", "mout_hsi_bus_user",
- 	     CLK_CON_GAT_GOUT_HSI_MMC_CARD_I_ACLK, 21, 0, 0),
- 	GATE(CLK_GOUT_MMC_CARD_SDCLKIN, "gout_mmc_card_sdclkin",
-@@ -869,9 +871,10 @@ static const struct samsung_gate_clock peri_gate_clks[] __initconst = {
- 	     CLK_CON_GAT_GOUT_PERI_WDT_0_PCLK, 21, 0, 0),
- 	GATE(CLK_GOUT_WDT1_PCLK, "gout_wdt1_pclk", "mout_peri_bus_user",
- 	     CLK_CON_GAT_GOUT_PERI_WDT_1_PCLK, 21, 0, 0),
-+	/* TODO: Should be enabled in GPIO driver (or made CLK_IS_CRITICAL) */
- 	GATE(CLK_GOUT_GPIO_PERI_PCLK, "gout_gpio_peri_pclk",
- 	     "mout_peri_bus_user",
--	     CLK_CON_GAT_GOUT_PERI_GPIO_PERI_PCLK, 21, 0, 0),
-+	     CLK_CON_GAT_GOUT_PERI_GPIO_PERI_PCLK, 21, CLK_IGNORE_UNUSED, 0),
- };
- 
- static const struct samsung_cmu_info peri_cmu_info __initconst = {
-@@ -954,10 +957,12 @@ static const struct samsung_div_clock core_div_clks[] __initconst = {
- };
- 
- static const struct samsung_gate_clock core_gate_clks[] __initconst = {
-+	/* CCI (interconnect) clock must be always running */
- 	GATE(CLK_GOUT_CCI_ACLK, "gout_cci_aclk", "mout_core_cci_user",
--	     CLK_CON_GAT_GOUT_CORE_CCI_550_ACLK, 21, 0, 0),
-+	     CLK_CON_GAT_GOUT_CORE_CCI_550_ACLK, 21, CLK_IS_CRITICAL, 0),
-+	/* GIC (interrupt controller) clock must be always running */
- 	GATE(CLK_GOUT_GIC_CLK, "gout_gic_clk", "mout_core_gic",
--	     CLK_CON_GAT_GOUT_CORE_GIC_CLK, 21, 0, 0),
-+	     CLK_CON_GAT_GOUT_CORE_GIC_CLK, 21, CLK_IS_CRITICAL, 0),
- 	GATE(CLK_GOUT_MMC_EMBD_ACLK, "gout_mmc_embd_aclk", "dout_core_busp",
- 	     CLK_CON_GAT_GOUT_CORE_MMC_EMBD_I_ACLK, 21, 0, 0),
- 	GATE(CLK_GOUT_MMC_EMBD_SDCLKIN, "gout_mmc_embd_sdclkin",
-@@ -1023,8 +1028,10 @@ static const struct samsung_div_clock dpu_div_clks[] __initconst = {
- };
- 
- static const struct samsung_gate_clock dpu_gate_clks[] __initconst = {
-+	/* TODO: Should be enabled in DSIM driver */
- 	GATE(CLK_GOUT_DPU_CMU_DPU_PCLK, "gout_dpu_cmu_dpu_pclk",
--	     "dout_dpu_busp", CLK_CON_GAT_CLK_DPU_CMU_DPU_PCLK, 21, 0, 0),
-+	     "dout_dpu_busp",
-+	     CLK_CON_GAT_CLK_DPU_CMU_DPU_PCLK, 21, CLK_IGNORE_UNUSED, 0),
- 	GATE(CLK_GOUT_DPU_DECON0_ACLK, "gout_dpu_decon0_aclk", "mout_dpu_user",
- 	     CLK_CON_GAT_GOUT_DPU_ACLK_DECON0, 21, 0, 0),
- 	GATE(CLK_GOUT_DPU_DMA_ACLK, "gout_dpu_dma_aclk", "mout_dpu_user",
--- 
-2.30.2
-
+Yours,
+Linus Walleij
