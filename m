@@ -2,131 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0C44582E7
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 11:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3EF24582EA
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 11:25:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237932AbhKUKUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 05:20:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235124AbhKUKUM (ORCPT
+        id S237961AbhKUK2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 05:28:45 -0500
+Received: from mail-vk1-f173.google.com ([209.85.221.173]:41904 "EHLO
+        mail-vk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235969AbhKUK2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 05:20:12 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5436C061574;
-        Sun, 21 Nov 2021 02:17:07 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id t5so63545501edd.0;
-        Sun, 21 Nov 2021 02:17:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h2zLchppySdpE8EpBae61HxqhoEyd6PsW/aQFno/ElQ=;
-        b=M/2JiZsLVl+92XkV2xqsXEUFr0YX2c6steGdmuTwoyAMq01+2TMb+W9Ry1u85xRgKg
-         BiDuaBT+pkJ4ptyJubYohqy3WVW7QOZiFLRM1e9YQbvUVY7r3VBQLUwPyPsumFLE4nBu
-         ufUOzVqasjkFIs89/sLBqHotTH0hSCD1xIUaIGTRBsNBAcS7iinKZSB78PSEGz5gtON6
-         wfbxlgj5fHJwPNR/DWNn2Gz1hyblfA9+BCZV+IDSkgbWSX3BZYkr2vdBhrA2lnswstyw
-         9HcUmJajn6D7gdM1H4NRlMiR/0B6uTkvFAxY4hgn2HINGsUHVMvmEzki61v69/g0yhxH
-         ksrA==
+        Sun, 21 Nov 2021 05:28:44 -0500
+Received: by mail-vk1-f173.google.com with SMTP id 188so5503090vku.8;
+        Sun, 21 Nov 2021 02:25:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=h2zLchppySdpE8EpBae61HxqhoEyd6PsW/aQFno/ElQ=;
-        b=ejCwokBd6GBEsKsqMExDZtRdLpMTBSlP/WhBCIFLvoqBPFY2Mrp9lkqoHRTY80rIBI
-         IevpsgWBXEZwxPtArGfTH+g+xcfTIdFJhUpH1NcyxY1EcpVIcBUZ6noL7ywFYPnU8T2p
-         QWO4GqXoTgJ5Di+rBKzADXMSJ7lyet1jhOmnX2SXkB84YjTPsAbW+kPXWbQoFJSHFZrE
-         nbJcX6ymSd9ebXvYQAcyUnhHYqJ24exgPwKavLLKCuPuloIafO/9Rd0SaBdSnMmuW59+
-         WASrpa0VI3Z+Qu0K10qdIkq9UrcS9Je/kExZ6yibo8eH48htKSzFrwbRVOwGQm4Vdy++
-         fXNQ==
-X-Gm-Message-State: AOAM531sobXC7arPTZxOZkubt+euF4CEjW7mc4BFqcQBpqQytLXV6VWQ
-        e+ToeJFwtWUARY1CWHLICaYPDYSNaqg/1LkalHEFqpUEIyL+Qw==
-X-Google-Smtp-Source: ABdhPJxFf6CY6MHmth0JsOkte32L09pdwXMxzhCCXVga143+2rfG+/xmmmEvpCTKDrzcCLOPi2JpTHJl+7CQ9s34+KU=
-X-Received: by 2002:a05:6402:26d4:: with SMTP id x20mr49236068edd.119.1637489826225;
- Sun, 21 Nov 2021 02:17:06 -0800 (PST)
+        bh=76gUnwG+pJE+hG34Clu5oVhtc4cHsXMWN/mmsz4K8hk=;
+        b=Z6ywDiA3koLvSkqD9n/0g4esUUoLqJ8Klx5oJlZkezfA9G0cGuhIEFTi3ubs9z+NZy
+         PyKGEZbkeo2nKELE4WsX1NNDQvP8k2eUodJTfU04gwCDjaK7SsIJlnsM3LONjYLmj0JD
+         JupN4wTkHoEL0E/+HijbmJe9v5IGsQq7tUGqSqWGkf6UMjC0O+y8uP5At7OlXgzlw9tR
+         vaZYiZ2NhcHCt2S0nLjIgscMYoMQinU2Sg875Jk5A8vdQSFvFv4OR2tfT5nJdO/xmZEq
+         0mQYDfoAvNA3yYVN09N+qlr2FvdWEWCP83ihhA0+sXD9UTCv5UVgzW89GZ76Didx3jPx
+         YVpA==
+X-Gm-Message-State: AOAM531te05QC9DN/5cf6mqJXbbfleEH9DW973xSQctf631Zp/sxlTHe
+        j2MVX8+Lvu0e+eACKCSd/xpPe18wm25/Ag==
+X-Google-Smtp-Source: ABdhPJx01Z5AKcsTdfiawScpRE/COhi4VpqGxUH3XQGmpP9fV7m/ays2Lf/0YRbxq5qIgTEmDpjUDQ==
+X-Received: by 2002:a05:6122:c8b:: with SMTP id ba11mr141800228vkb.3.1637490339348;
+        Sun, 21 Nov 2021 02:25:39 -0800 (PST)
+Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com. [209.85.221.173])
+        by smtp.gmail.com with ESMTPSA id q26sm3189229vsp.23.2021.11.21.02.25.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Nov 2021 02:25:39 -0800 (PST)
+Received: by mail-vk1-f173.google.com with SMTP id u68so8463022vke.11;
+        Sun, 21 Nov 2021 02:25:39 -0800 (PST)
+X-Received: by 2002:a1f:f24f:: with SMTP id q76mr144641464vkh.11.1637490336147;
+ Sun, 21 Nov 2021 02:25:36 -0800 (PST)
 MIME-Version: 1.0
-References: <20211117145750.43911-1-andriy.shevchenko@linux.intel.com>
- <b99aabbe-add9-9c1e-ed4b-8850c69233de@accesio.com> <YZdfAdOcH2Bn1K+W@smile.fi.intel.com>
- <633bbad1-7b13-7299-a570-2bf1a87c47a5@accesio.com> <7e83c01f-1aa4-56ef-e28f-9e7421864183@accesio.com>
-In-Reply-To: <7e83c01f-1aa4-56ef-e28f-9e7421864183@accesio.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 21 Nov 2021 12:16:29 +0200
-Message-ID: <CAHp75VedLLiB=Ujrymq9F1=SG2NRCeempUwqSbX9KHu1ND4x5g@mail.gmail.com>
-Subject: Re: [PATCH v1 0/2] serial: 8250_pci: Split Pericom driver
-To:     Jay Dolan <jay.dolan@accesio.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+References: <20211116181559.3975566-1-keescook@chromium.org>
+ <163710862474.168539.12611066078131838062.b4-ty@kernel.dk> <202111181026.D7EF6BCED@keescook>
+In-Reply-To: <202111181026.D7EF6BCED@keescook>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sun, 21 Nov 2021 11:25:25 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdX6Su_4G4H5GEjy17a0xkZrqPj0kh9Tg++-2-=SGSsj_Q@mail.gmail.com>
+Message-ID: <CAMuHMdX6Su_4G4H5GEjy17a0xkZrqPj0kh9Tg++-2-=SGSsj_Q@mail.gmail.com>
+Subject: Re: [PATCH] Revert "mark pstore-blk as broken"
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>
+        Colin Cross <ccross@android.com>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Tony Luck <tony.luck@intel.com>,
+        linux-hardening@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 20, 2021 at 11:46 PM Jay Dolan <jay.dolan@accesio.com> wrote:
-> On 11/19/21 6:33 AM, Jay Dolan wrote:
-> > On 11/19/21 12:23 AM, Andy Shevchenko wrote:
-> >> On Thu, Nov 18, 2021 at 10:32:51PM -0800, Jay Dolan wrote:
-> >>> On 11/17/21 6:57 AM, Andy Shevchenko wrote:
-
-> >>>> Split Pericom driver to a separate module.
-> >>>> While at it, re-enable high baud rates.
-> >>>>
-> >>>> Jay, can you, please, test this on as many hardware as you have?
-> >>>>
-> >>>> The series depends on the fix-series:
-> >>>> https://lore.kernel.org/linux-serial/20211117145502.43645-1-andriy.shevchenko@linux.intel.com/T/#u
-> >>
-> >>> I have my current state here:
-> >>> https://github.com/accesio/linux/blob/split-pericom-driver/drivers/tty/serial/8250/8250_pericom.c
-> >>>
-> >>>
-> >>> * Change port type to UPIO_PORT
-> >>> * Add in pericom_do_startup() because the UPF_MAGIC_MULTIPLIER doesn't
-> >>> stick.
-> >>
-> >> Thanks, I have updated my local tree with these changes.
-> >>
-> >>> When I'm testing baud rates greater than baud_base I'm seeing strange
-> >>> things
-> >>> on the scope.
-> >>
-> >> Can you confirm that there are no issues with the first (fixes) series?
-> > Yes. The fixes series has no issues, and was tested up to baud_base for
-> > both 14 and 24 MHz crystals.
-> >> I have slightly changed your set_divisor() refactoring, it may be that
-> >> issue
-> >> is there.
-> >>
-> >>> Maybe I'm just tired, and it's human error. I should be able
-> >>> to get back to it and get it done on Saturday.
-> >>
-> >> Thank you.
+On Thu, Nov 18, 2021 at 7:29 PM Kees Cook <keescook@chromium.org> wrote:
+> On Tue, Nov 16, 2021 at 05:23:44PM -0700, Jens Axboe wrote:
+> > On Tue, 16 Nov 2021 10:15:59 -0800, Kees Cook wrote:
+> > > This reverts commit d07f3b081ee632268786601f55e1334d1f68b997.
+> > >
+> > > pstore-blk was fixed to avoid the unwanted APIs in commit 7bb9557b48fc
+> > > ("pstore/blk: Use the normal block device I/O path"), which landed in
+> > > the same release as the commit adding BROKEN.
+> > >
+> > >
+> > > [...]
+> >
+> > Applied, thanks!
+> >
+> > [1/1] Revert "mark pstore-blk as broken"
+> >       commit: d1faacbf67b1944f0e0c618dc581d929263f6fe9
 >
-> Latest code is still here
-> https://github.com/accesio/linux/blob/split-pericom-driver/drivers/tty/serial/8250/8250_pericom.c
+> Thanks! I realize now what Geert meant in an earlier thread that I
+> actually can't split this change from a warning fix that was living in
+> the pstore tree (and was masked by the now removed BROKEN). Can you take
+> this patch as well? I've removed it from my tree now...
 >
-> Changes from last update:
-> * Avoid divide by zero when initializing delta
+> https://lore.kernel.org/lkml/20211118182621.1280983-1-keescook@chromium.org/
 
-Thanks for digging into it. But doesn't it mean that the issue is in
-the fix series as I assumed before?
+Which is now a build error instead of a warning in Linus' tree.
 
-> I retested and verified on the scope that speeds are now being set
-> correctly.
->
-> I have also confirmed that all of the ACCES four port cards in the
-> driver do have the offset fourth port. The item I raised about PCI was a
-> misunderstanding that was all on my end.
+Gr{oetje,eeting}s,
 
-Good to know that is not relevant.
+                        Geert
 
-> Are there any other action items I should be handling?
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-I think I have to issue two new iterations of each series and collect
-your formal Tested-by on the second one.
-
--- 
-With Best Regards,
-Andy Shevchenko
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
