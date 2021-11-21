@@ -2,347 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C228C45837B
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 13:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA5345837C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 13:49:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238106AbhKUMuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 07:50:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235036AbhKUMux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 07:50:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 636A360E54;
-        Sun, 21 Nov 2021 12:47:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637498868;
-        bh=l05ocOsP9GWlgTn0ORJOtoh/lVNe+MPRcxXli1dg8MM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n2H3iQxXDogzcb9ZH+AbrFYXxAk5APpJMcfF29/XJjtagemJtcAWxpI+QlTri27KG
-         1wyu7a1cMPlPtLVVZfKSJ/AXV0Af5ZuKx/8bIYpQMJx8F1kYkhSaQHD7euIlewU4JZ
-         hWIST03RoFDRflQR+ABDuvjlvx5x6hncDGxZ0if8=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Linux 5.4.161
-Date:   Sun, 21 Nov 2021 13:47:38 +0100
-Message-Id: <1637498857255241@kroah.com>
-X-Mailer: git-send-email 2.34.0
-In-Reply-To: <163749885759102@kroah.com>
-References: <163749885759102@kroah.com>
+        id S238122AbhKUMwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 07:52:30 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:36691 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237988AbhKUMwa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 07:52:30 -0500
+Received: by mail-il1-f200.google.com with SMTP id i10-20020a056e02152a00b00293be3da5c0so7682272ilu.3
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 04:49:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=iB6Fss+wDuhQjrFvZzxbPmya635R61SJlT+nAZoDV6A=;
+        b=a/kYVceH1NBIWOli+EHg27dsCnEZBzw3OYu6piBL45iITRI3/c7921RaqFnynU6m+M
+         YLZGpr/yyTH+2dGUN6BdhBgUz2ReIVlozXNZIFlf/uHgpykrK46N8+/HTGn/svRvVAKI
+         0wBBFN5hQpS+Kn1kU4krZf4GVdX2UEJlXoSFA+EA15SqiQrvUZcTyY/VAvx3rl3twE5n
+         6Q2+WQQBm9pzFOp/oMKAqb4s+pyv5v0clJXGWCI98lQbLgZxTEhMyIYfvaNN0Bvhod/h
+         YmdxjDNoEaWqGIAraEpsH8vZdsuIOU6QD6MgmdhiudT4SMBE5+vwi5Aik32l9lT+cPSa
+         XABw==
+X-Gm-Message-State: AOAM530/Q1DMogvVg/RxuD+2NCrO52Q3BgNNpo1yoEdxdju+IhXv+L1R
+        clt4MxH9bfgSnsICjYUbivLi8zBOKFYmJptuSJr4kLJXo6lL
+X-Google-Smtp-Source: ABdhPJy18tz2twPcODTi1gsQY7KZP9HLhOSTPP31FgmKWvbYH9tHcVKFcNZoYFqICDI6eTpIohV4dRSi3EU7xMZBz3lrph9HZrJs
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a02:6666:: with SMTP id l38mr39485790jaf.146.1637498965047;
+ Sun, 21 Nov 2021 04:49:25 -0800 (PST)
+Date:   Sun, 21 Nov 2021 04:49:25 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000021bb9b05d14bf0c7@google.com>
+Subject: [syzbot] WARNING in page_counter_cancel (3)
+From:   syzbot <syzbot+bc9e2d2dbcb347dd215a@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-diff --git a/Makefile b/Makefile
-index e938662dab28..f552556966f1 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- VERSION = 5
- PATCHLEVEL = 4
--SUBLEVEL = 160
-+SUBLEVEL = 161
- EXTRAVERSION =
- NAME = Kleptomaniac Octopus
- 
-diff --git a/arch/mips/include/asm/cmpxchg.h b/arch/mips/include/asm/cmpxchg.h
-index f6136871561d..9182ce828f54 100644
---- a/arch/mips/include/asm/cmpxchg.h
-+++ b/arch/mips/include/asm/cmpxchg.h
-@@ -239,6 +239,7 @@ static inline unsigned long __cmpxchg64(volatile void *ptr,
- 	"	.set	" MIPS_ISA_ARCH_LEVEL "		\n"
- 	/* Load 64 bits from ptr */
- 	"1:	lld	%L0, %3		# __cmpxchg64	\n"
-+	"	.set	pop				\n"
- 	/*
- 	 * Split the 64 bit value we loaded into the 2 registers that hold the
- 	 * ret variable.
-@@ -266,6 +267,8 @@ static inline unsigned long __cmpxchg64(volatile void *ptr,
- 	"	or	%L1, %L1, $at			\n"
- 	"	.set	at				\n"
- #  endif
-+	"	.set	push				\n"
-+	"	.set	" MIPS_ISA_ARCH_LEVEL "		\n"
- 	/* Attempt to store new at ptr */
- 	"	scd	%L1, %2				\n"
- 	/* If we failed, loop! */
-diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
-index 7d14e9ae18fb..2f64f112934b 100644
---- a/arch/parisc/kernel/entry.S
-+++ b/arch/parisc/kernel/entry.S
-@@ -1842,7 +1842,7 @@ syscall_restore:
- 
- 	/* Are we being ptraced? */
- 	LDREG	TI_FLAGS-THREAD_SZ_ALGN-FRAME_SIZE(%r30),%r19
--	ldi	_TIF_SYSCALL_TRACE_MASK,%r2
-+	ldi	_TIF_SINGLESTEP|_TIF_BLOCKSTEP,%r2
- 	and,COND(=)	%r19,%r2,%r0
- 	b,n	syscall_restore_rfi
- 
-diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
-index c8bd243717b7..d0cc6c0d74d6 100644
---- a/drivers/pci/msi.c
-+++ b/drivers/pci/msi.c
-@@ -395,18 +395,6 @@ static void free_msi_irqs(struct pci_dev *dev)
- 			for (i = 0; i < entry->nvec_used; i++)
- 				BUG_ON(irq_has_action(entry->irq + i));
- 
--	pci_msi_teardown_msi_irqs(dev);
--
--	list_for_each_entry_safe(entry, tmp, msi_list, list) {
--		if (entry->msi_attrib.is_msix) {
--			if (list_is_last(&entry->list, msi_list))
--				iounmap(entry->mask_base);
--		}
--
--		list_del(&entry->list);
--		free_msi_entry(entry);
--	}
--
- 	if (dev->msi_irq_groups) {
- 		sysfs_remove_groups(&dev->dev.kobj, dev->msi_irq_groups);
- 		msi_attrs = dev->msi_irq_groups[0]->attrs;
-@@ -422,6 +410,18 @@ static void free_msi_irqs(struct pci_dev *dev)
- 		kfree(dev->msi_irq_groups);
- 		dev->msi_irq_groups = NULL;
- 	}
-+
-+	pci_msi_teardown_msi_irqs(dev);
-+
-+	list_for_each_entry_safe(entry, tmp, msi_list, list) {
-+		if (entry->msi_attrib.is_msix) {
-+			if (list_is_last(&entry->list, msi_list))
-+				iounmap(entry->mask_base);
-+		}
-+
-+		list_del(&entry->list);
-+		free_msi_entry(entry);
-+	}
- }
- 
- static void pci_intx_for_msi(struct pci_dev *dev, int enable)
-@@ -591,6 +591,9 @@ msi_setup_entry(struct pci_dev *dev, int nvec, struct irq_affinity *affd)
- 		goto out;
- 
- 	pci_read_config_word(dev, dev->msi_cap + PCI_MSI_FLAGS, &control);
-+	/* Lies, damned lies, and MSIs */
-+	if (dev->dev_flags & PCI_DEV_FLAGS_HAS_MSI_MASKING)
-+		control |= PCI_MSI_FLAGS_MASKBIT;
- 
- 	entry->msi_attrib.is_msix	= 0;
- 	entry->msi_attrib.is_64		= !!(control & PCI_MSI_FLAGS_64BIT);
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index fb7c5518447d..cf3986d4413f 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -5777,3 +5777,9 @@ static void apex_pci_fixup_class(struct pci_dev *pdev)
- }
- DECLARE_PCI_FIXUP_CLASS_HEADER(0x1ac1, 0x089a,
- 			       PCI_CLASS_NOT_DEFINED, 8, apex_pci_fixup_class);
-+
-+static void nvidia_ion_ahci_fixup(struct pci_dev *pdev)
-+{
-+	pdev->dev_flags |= PCI_DEV_FLAGS_HAS_MSI_MASKING;
-+}
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_NVIDIA, 0x0ab8, nvidia_ion_ahci_fixup);
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 24396f4d5f2d..29c7a76d2c65 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -4748,7 +4748,8 @@ ufshcd_transfer_rsp_status(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
- 		break;
- 	} /* end of switch */
- 
--	if ((host_byte(result) != DID_OK) && !hba->silence_err_logs)
-+	if ((host_byte(result) != DID_OK) &&
-+	    (host_byte(result) != DID_REQUEUE) && !hba->silence_err_logs)
- 		ufshcd_print_trs(hba, 1 << lrbp->task_tag, true);
- 	return result;
- }
-@@ -5661,9 +5662,12 @@ static irqreturn_t ufshcd_intr(int irq, void *__hba)
- 		intr_status = ufshcd_readl(hba, REG_INTERRUPT_STATUS);
- 	}
- 
--	if (retval == IRQ_NONE) {
--		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x\n",
--					__func__, intr_status);
-+	if (enabled_intr_status && retval == IRQ_NONE &&
-+				!ufshcd_eh_in_progress(hba)) {
-+		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x (-, 0x%08x)\n",
-+					__func__,
-+					intr_status,
-+					enabled_intr_status);
- 		ufshcd_dump_regs(hba, 0, UFSHCI_REG_SPACE_SIZE, "host_regs: ");
- 	}
- 
-@@ -5705,7 +5709,10 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba *hba,
- 	/*
- 	 * blk_get_request() is used here only to get a free tag.
- 	 */
--	req = blk_get_request(q, REQ_OP_DRV_OUT, BLK_MQ_REQ_RESERVED);
-+	req = blk_get_request(q, REQ_OP_DRV_OUT, 0);
-+	if (IS_ERR(req))
-+		return PTR_ERR(req);
-+
- 	req->end_io_data = &wait;
- 	ufshcd_hold(hba, false);
- 
-diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
-index ab75f41e9c0c..d11320a4dfcf 100644
---- a/drivers/soc/tegra/pmc.c
-+++ b/drivers/soc/tegra/pmc.c
-@@ -579,7 +579,7 @@ static int tegra_powergate_power_up(struct tegra_powergate *pg,
- 
- 	err = tegra_powergate_enable_clocks(pg);
- 	if (err)
--		goto disable_clks;
-+		goto powergate_off;
- 
- 	usleep_range(10, 20);
- 
-diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
-index fad80c97d247..fdd18c250811 100644
---- a/fs/erofs/zdata.c
-+++ b/fs/erofs/zdata.c
-@@ -288,11 +288,10 @@ static inline bool z_erofs_try_inplace_io(struct z_erofs_collector *clt,
- 
- /* callers must be with collection lock held */
- static int z_erofs_attach_page(struct z_erofs_collector *clt,
--			       struct page *page,
--			       enum z_erofs_page_type type)
-+			       struct page *page, enum z_erofs_page_type type,
-+			       bool pvec_safereuse)
- {
- 	int ret;
--	bool occupied;
- 
- 	/* give priority for inplaceio */
- 	if (clt->mode >= COLLECT_PRIMARY &&
-@@ -300,10 +299,9 @@ static int z_erofs_attach_page(struct z_erofs_collector *clt,
- 	    z_erofs_try_inplace_io(clt, page))
- 		return 0;
- 
--	ret = z_erofs_pagevec_enqueue(&clt->vector,
--				      page, type, &occupied);
-+	ret = z_erofs_pagevec_enqueue(&clt->vector, page, type,
-+				      pvec_safereuse);
- 	clt->cl->vcnt += (unsigned int)ret;
--
- 	return ret ? 0 : -EAGAIN;
- }
- 
-@@ -654,14 +652,15 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
- 		tight &= (clt->mode >= COLLECT_PRIMARY_FOLLOWED);
- 
- retry:
--	err = z_erofs_attach_page(clt, page, page_type);
-+	err = z_erofs_attach_page(clt, page, page_type,
-+				  clt->mode >= COLLECT_PRIMARY_FOLLOWED);
- 	/* should allocate an additional staging page for pagevec */
- 	if (err == -EAGAIN) {
- 		struct page *const newpage =
- 			__stagingpage_alloc(pagepool, GFP_NOFS);
- 
- 		err = z_erofs_attach_page(clt, newpage,
--					  Z_EROFS_PAGE_TYPE_EXCLUSIVE);
-+					  Z_EROFS_PAGE_TYPE_EXCLUSIVE, true);
- 		if (!err)
- 			goto retry;
- 	}
-diff --git a/fs/erofs/zpvec.h b/fs/erofs/zpvec.h
-index 58556903aa94..6a20b2c3a24c 100644
---- a/fs/erofs/zpvec.h
-+++ b/fs/erofs/zpvec.h
-@@ -108,12 +108,17 @@ static inline void z_erofs_pagevec_ctor_init(struct z_erofs_pagevec_ctor *ctor,
- static inline bool z_erofs_pagevec_enqueue(struct z_erofs_pagevec_ctor *ctor,
- 					   struct page *page,
- 					   enum z_erofs_page_type type,
--					   bool *occupied)
-+					   bool pvec_safereuse)
- {
--	*occupied = false;
--	if (!ctor->next && type)
--		if (ctor->index + 1 == ctor->nr)
-+	if (!ctor->next) {
-+		/* some pages cannot be reused as pvec safely without I/O */
-+		if (type == Z_EROFS_PAGE_TYPE_EXCLUSIVE && !pvec_safereuse)
-+			type = Z_EROFS_VLE_PAGE_TYPE_TAIL_SHARED;
-+
-+		if (type != Z_EROFS_PAGE_TYPE_EXCLUSIVE &&
-+		    ctor->index + 1 == ctor->nr)
- 			return false;
-+	}
- 
- 	if (ctor->index >= ctor->nr)
- 		z_erofs_pagevec_ctor_pagedown(ctor, false);
-@@ -125,7 +130,6 @@ static inline bool z_erofs_pagevec_enqueue(struct z_erofs_pagevec_ctor *ctor,
- 	/* should remind that collector->next never equal to 1, 2 */
- 	if (type == (uintptr_t)ctor->next) {
- 		ctor->next = page;
--		*occupied = true;
- 	}
- 	ctor->pages[ctor->index++] = tagptr_fold(erofs_vtptr_t, page, type);
- 	return true;
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 1211ae203fac..f68dfef5939f 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -3071,8 +3071,8 @@ static int ext4_run_li_request(struct ext4_li_request *elr)
- 	struct ext4_group_desc *gdp = NULL;
- 	ext4_group_t group, ngroups;
- 	struct super_block *sb;
--	unsigned long timeout = 0;
- 	int ret = 0;
-+	u64 start_time;
- 
- 	sb = elr->lr_super;
- 	ngroups = EXT4_SB(sb)->s_groups_count;
-@@ -3092,13 +3092,12 @@ static int ext4_run_li_request(struct ext4_li_request *elr)
- 		ret = 1;
- 
- 	if (!ret) {
--		timeout = jiffies;
-+		start_time = ktime_get_real_ns();
- 		ret = ext4_init_inode_table(sb, group,
- 					    elr->lr_timeout ? 0 : 1);
- 		if (elr->lr_timeout == 0) {
--			timeout = (jiffies - timeout) *
--				  elr->lr_sbi->s_li_wait_mult;
--			elr->lr_timeout = timeout;
-+			elr->lr_timeout = nsecs_to_jiffies((ktime_get_real_ns() - start_time) *
-+				  elr->lr_sbi->s_li_wait_mult);
- 		}
- 		elr->lr_next_sched = jiffies + elr->lr_timeout;
- 		elr->lr_next_group = group + 1;
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 9a937f8b2783..bc35b15efadd 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -208,6 +208,8 @@ enum pci_dev_flags {
- 	PCI_DEV_FLAGS_NO_FLR_RESET = (__force pci_dev_flags_t) (1 << 10),
- 	/* Don't use Relaxed Ordering for TLPs directed at this device */
- 	PCI_DEV_FLAGS_NO_RELAXED_ORDERING = (__force pci_dev_flags_t) (1 << 11),
-+	/* Device does honor MSI masking despite saying otherwise */
-+	PCI_DEV_FLAGS_HAS_MSI_MASKING = (__force pci_dev_flags_t) (1 << 12),
- };
- 
- enum pci_irq_reroute_variant {
-diff --git a/security/Kconfig b/security/Kconfig
-index 2a1a2d396228..52e5109f2c1b 100644
---- a/security/Kconfig
-+++ b/security/Kconfig
-@@ -191,6 +191,9 @@ config HARDENED_USERCOPY_PAGESPAN
- config FORTIFY_SOURCE
- 	bool "Harden common str/mem functions against buffer overflows"
- 	depends on ARCH_HAS_FORTIFY_SOURCE
-+	# https://bugs.llvm.org/show_bug.cgi?id=50322
-+	# https://bugs.llvm.org/show_bug.cgi?id=41459
-+	depends on !CC_IS_CLANG
- 	help
- 	  Detect overflows of buffers in common string and memory functions
- 	  where the compiler can determine and validate the buffer sizes.
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    42eb8fdac2fc Merge tag 'gfs2-v5.16-rc2-fixes' of git://git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1483f0e9b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b7264d1cb8ba2795
+dashboard link: https://syzkaller.appspot.com/bug?extid=bc9e2d2dbcb347dd215a
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bc9e2d2dbcb347dd215a@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+page_counter underflow: -4294964789 nr_pages=4294967295
+WARNING: CPU: 2 PID: 3785 at mm/page_counter.c:56 page_counter_cancel+0xcf/0xe0 mm/page_counter.c:56
+Modules linked in:
+CPU: 2 PID: 3785 Comm: kworker/2:6 Not tainted 5.16.0-rc1-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+Workqueue: events mptcp_worker
+
+RIP: 0010:page_counter_cancel+0xcf/0xe0 mm/page_counter.c:56
+Code: c7 04 24 00 00 00 00 45 31 f6 eb 97 e8 2a 2b b5 ff 4c 89 ea 48 89 ee 48 c7 c7 00 9e b8 89 c6 05 a0 c1 ba 0b 01 e8 95 e4 4b 07 <0f> 0b eb a8 4c 89 e7 e8 25 5a fb ff eb c7 0f 1f 00 41 56 41 55 49
+RSP: 0018:ffffc90002d4f918 EFLAGS: 00010082
+
+RAX: 0000000000000000 RBX: ffff88806a494120 RCX: 0000000000000000
+RDX: ffff8880688c41c0 RSI: ffffffff815e8f28 RDI: fffff520005a9f15
+RBP: ffffffff000009cb R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815e2cfe R11: 0000000000000000 R12: ffff88806a494120
+R13: 00000000ffffffff R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff88802cc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2de21000 CR3: 000000005ad59000 CR4: 0000000000150ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ page_counter_uncharge+0x2e/0x60 mm/page_counter.c:160
+ drain_stock+0xc1/0x180 mm/memcontrol.c:2219
+ refill_stock+0x139/0x2f0 mm/memcontrol.c:2271
+ __sk_mem_reduce_allocated+0x24d/0x550 net/core/sock.c:2945
+ __mptcp_rmem_reclaim net/mptcp/protocol.c:167 [inline]
+ __mptcp_mem_reclaim_partial+0x124/0x410 net/mptcp/protocol.c:975
+ mptcp_mem_reclaim_partial net/mptcp/protocol.c:982 [inline]
+ mptcp_alloc_tx_skb net/mptcp/protocol.c:1212 [inline]
+ mptcp_sendmsg_frag+0x18c6/0x2190 net/mptcp/protocol.c:1279
+ __mptcp_push_pending+0x232/0x720 net/mptcp/protocol.c:1545
+ mptcp_release_cb+0xfe/0x200 net/mptcp/protocol.c:2975
+ release_sock+0xb4/0x1b0 net/core/sock.c:3306
+ mptcp_worker+0x51e/0xc10 net/mptcp/protocol.c:2443
+ process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
+ kthread+0x405/0x4f0 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
