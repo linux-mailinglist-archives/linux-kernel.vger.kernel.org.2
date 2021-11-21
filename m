@@ -2,154 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5D5D4584CF
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 17:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D7A4584BD
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 17:46:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238458AbhKUQxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 11:53:03 -0500
-Received: from mo4-p04-ob.smtp.rzone.de ([85.215.255.120]:10845 "EHLO
-        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238306AbhKUQwx (ORCPT
+        id S238172AbhKUQtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 11:49:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229641AbhKUQtl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 11:52:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637513309;
-    s=strato-dkim-0002; d=chronox.de;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=2hMaWq6oi/giQ5c7HJsU1MvykDzI+di3k30Ov4UZd6w=;
-    b=hk+7ockI0xAGZqsLHY7nE0HsDZ/spu3LyiPIQvDMr5pp7O8Ymynsdyy1pF71aNmFRJ
-    Su82J5cjUVashFPSX71RGNmnZN1Eagu9JA+ROSSKEwxz+I80s/LcMsIBLeDyxfABAIWE
-    HpzCPEOhUpSjhN5ekMuVJ5xtRAWorTwwuVR2vZYwL7T/8l3P0sEIqnjtoWlYsMhtLghy
-    Kcr2xo5rvXSN6Qri0G+ZMz46UTxkccCd6/Y6Q7Bh7BnqntlQpwc4Z6ibllTbNUVrzrVI
-    wRqrCB4BwmgK3EI7NN6VVyt2DzR/Fw0giVE82yEJ1CB28a7W4Uo6B4yRcJN8EdkqzY2z
-    d8iA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPbJvSfE+K2"
-X-RZG-CLASS-ID: mo00
-Received: from positron.chronox.de
-    by smtp.strato.de (RZmta 47.34.5 DYNA|AUTH)
-    with ESMTPSA id U02dfbxALGmS3Wd
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Sun, 21 Nov 2021 17:48:28 +0100 (CET)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     Tso Ted <tytso@mit.edu>, linux-crypto@vger.kernel.org
-Cc:     Willy Tarreau <w@1wt.eu>, Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Petr Tesarik <ptesarik@suse.cz>,
-        John Haxby <john.haxby@oracle.com>,
-        Alexander Lobakin <alobakin@mailbox.org>,
-        Jirka Hladky <jhladky@redhat.com>
-Subject: [PATCH v43 11/15] crypto: move Jitter RNG header include dir
-Date:   Sun, 21 Nov 2021 17:45:50 +0100
-Message-ID: <18610849.fSG56mABFh@positron.chronox.de>
-In-Reply-To: <2036923.9o76ZdvQCi@positron.chronox.de>
-References: <2036923.9o76ZdvQCi@positron.chronox.de>
+        Sun, 21 Nov 2021 11:49:41 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026DEC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 08:46:36 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id t8so5751235ilu.8
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 08:46:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=egauge.net; s=google;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :organization:user-agent:mime-version:content-transfer-encoding;
+        bh=HuFgrGg2bNqZfAVR0F7+pPQW9sww/mE5aTG7ilf+0e4=;
+        b=Bt1kDRz9ap4XGE/8gsQwAbG/EpWvpqYYrQ6Hsirta3pqThaza9MYYUAEWiHslezgcY
+         GUhhKPOzSYtRCu3lHMOGKRKveBhUhzzVO0vK3xsz4BvRFjkziq1DD6lkoqTYfhOqFmnt
+         +9yfCL4oPGizrgdamfM1gP+i2xfKRp/tn3lJ5VjoKhEWx3oSzGtgrV/ozXGAOGQlafPk
+         5vNs8IzQulILMNQMUQXd82Q2kiBQ3UNHLV08Kxi1YKvNexqRQp3EeWt2MuOBwGR7bjKI
+         c0qpLnna8Cohgc+KK0kKq2K3ZFJUHi2IHpLPSWntfJVMcnyxKNStxHcNgxVBpZ5G/HyH
+         n4hA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=HuFgrGg2bNqZfAVR0F7+pPQW9sww/mE5aTG7ilf+0e4=;
+        b=ye46hrogXJbYR+htSNoUPYkJhoXp2dvOwsRw4O7zmU/EFR7tmSAXCkynG2WM3tEG1I
+         lBg1G3n092aBQFA6Ed9s8I5haaQu1W2loa1ZtHLdElJtI86qYz5V8i36wMKyuq6h+dR1
+         35Ysi2TEc69fhpLgiC4bHMoGQm387F/kFN9MrPutOwcUlnjxue14E29sxvLUgrnhH7oA
+         gZ8eF2BLOTTMz9WPelE6gz+MHK+qnJGtETS9ztAfm119unzbZQE7zXNwHONDrqDaNQgj
+         cvcnIjI1oFC/U6HUrgtQRaUaeGCpMcYmMt2S0pz6wePZIUUjrztBSWbqiExzkAy67jOt
+         iHTg==
+X-Gm-Message-State: AOAM530V5SJh5KchXwtEnBsspGCqer/rnYP9zNsljev6fhNmK8oOD29H
+        d2+A5EibTpgztkLAJsrIP//f
+X-Google-Smtp-Source: ABdhPJzdjbC8MkTh06xDYAl+ykRvm2SdDwuq1d5v4/3FtjoIB3xnSEcfgVETjzbw2h4E5jfcqtcYFQ==
+X-Received: by 2002:a05:6e02:546:: with SMTP id i6mr3912979ils.208.1637513195004;
+        Sun, 21 Nov 2021 08:46:35 -0800 (PST)
+Received: from ?IPv6:2601:281:8300:4e0:2ba9:697d:eeec:13b? ([2601:281:8300:4e0:2ba9:697d:eeec:13b])
+        by smtp.gmail.com with ESMTPSA id k8sm4239846ilu.23.2021.11.21.08.46.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Nov 2021 08:46:34 -0800 (PST)
+Message-ID: <f4ec6ca2fd8994fcd43bb1cb553371beea5de261.camel@egauge.net>
+Subject: Re: [PATCH] hwmon: (sht4x) Add device tree match table
+From:   David Mosberger-Tang <davidm@egauge.net>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Navin Sankar Velliangiri <navin@linumiz.com>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 21 Nov 2021 09:46:30 -0700
+In-Reply-To: <20211121163137.GA3534505@roeck-us.net>
+References: <20211121160637.2312106-1-davidm@egauge.net>
+         <20211121163137.GA3534505@roeck-us.net>
+Organization: eGauge Systems LLC
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To support the LRNG operation which uses the Jitter RNG separately
-from the kernel crypto API, the header file must be accessible to
-the LRNG code.
+On Sun, 2021-11-21 at 08:31 -0800, Guenter Roeck wrote:
+> On Sun, Nov 21, 2021 at 04:07:02PM +0000, David Mosberger-Tang wrote:
+> > This patch enables automatic loading of the sht4x module via a device
+> > tree table entry.
+> > 
+> > Signed-off-by: David Mosberger-Tang <davidm@egauge.net>
+> 
+> I'll wait for the DT patch to be approved before applying.
+> 
+> Please send related patches as series in the future; this should have been
+> patch 2/2, with the DT patch as first patch.
 
-CC: Torsten Duwe <duwe@lst.de>
-CC: "Eric W. Biederman" <ebiederm@xmission.com>
-CC: "Alexander E. Patrakov" <patrakov@gmail.com>
-CC: "Ahmed S. Darwish" <darwish.07@gmail.com>
-CC: "Theodore Y. Ts'o" <tytso@mit.edu>
-CC: Willy Tarreau <w@1wt.eu>
-CC: Matthew Garrett <mjg59@srcf.ucam.org>
-CC: Vito Caputo <vcaputo@pengaru.com>
-CC: Andreas Dilger <adilger.kernel@dilger.ca>
-CC: Jan Kara <jack@suse.cz>
-CC: Ray Strode <rstrode@redhat.com>
-CC: William Jon McCann <mccann@jhu.edu>
-CC: zhangjs <zachary@baishancloud.com>
-CC: Andy Lutomirski <luto@kernel.org>
-CC: Florian Weimer <fweimer@redhat.com>
-CC: Lennart Poettering <mzxreary@0pointer.de>
-CC: Nicolai Stange <nstange@suse.de>
-Reviewed-by: Alexander Lobakin <alobakin@pm.me>
-Tested-by: Alexander Lobakin <alobakin@pm.me>
-Reviewed-by: Roman Drahtmueller <draht@schaltsekun.de>
-Tested-by: Roman Drahtm=FCller <draht@schaltsekun.de>
-Tested-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
-Tested-by: Neil Horman <nhorman@redhat.com>
-Tested-by: Jirka Hladky <jhladky@redhat.com>
-Reviewed-by: Jirka Hladky <jhladky@redhat.com>
-Signed-off-by: Stephan Mueller <smueller@chronox.de>
-=2D--
- crypto/jitterentropy-kcapi.c                        | 3 +--
- crypto/jitterentropy.c                              | 2 +-
- {crypto =3D> include/crypto/internal}/jitterentropy.h | 0
- 3 files changed, 2 insertions(+), 3 deletions(-)
- rename {crypto =3D> include/crypto/internal}/jitterentropy.h (100%)
+Ah, I misunderstood.  I thought you wanted me to send the two patches
+to the relevant maintainers only.  I got it now.
 
-diff --git a/crypto/jitterentropy-kcapi.c b/crypto/jitterentropy-kcapi.c
-index e8a4165a1874..c90e60910827 100644
-=2D-- a/crypto/jitterentropy-kcapi.c
-+++ b/crypto/jitterentropy-kcapi.c
-@@ -43,8 +43,7 @@
- #include <linux/fips.h>
- #include <linux/time.h>
- #include <crypto/internal/rng.h>
-=2D
-=2D#include "jitterentropy.h"
-+#include <crypto/internal/jitterentropy.h>
-=20
- /*************************************************************************=
-**
-  * Helper function
-diff --git a/crypto/jitterentropy.c b/crypto/jitterentropy.c
-index a11b3208760f..f36a391319e1 100644
-=2D-- a/crypto/jitterentropy.c
-+++ b/crypto/jitterentropy.c
-@@ -117,7 +117,7 @@ struct rand_data {
- #define JENT_EHEALTH		9 /* Health test failed during initialization */
- #define JENT_ERCT		10 /* RCT failed during initialization */
-=20
-=2D#include "jitterentropy.h"
-+#include <crypto/internal/jitterentropy.h>
-=20
- /*************************************************************************=
-**
-  * Adaptive Proportion Test
-diff --git a/crypto/jitterentropy.h b/include/crypto/internal/jitterentropy=
-=2Eh
-similarity index 100%
-rename from crypto/jitterentropy.h
-rename to include/crypto/internal/jitterentropy.h
-=2D-=20
-2.31.1
+Thanks,
 
-
+  --david
 
 
