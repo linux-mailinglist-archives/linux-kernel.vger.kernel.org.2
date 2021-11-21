@@ -2,70 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01493458665
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 21:48:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6333445866C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 22:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233236AbhKUUvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 15:51:13 -0500
-Received: from mail.godzilla.net.ua ([178.209.51.88]:51370 "EHLO
-        mail.godzilla.net.ua" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbhKUUvL (ORCPT
+        id S229735AbhKUVMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 16:12:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhKUVMB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 15:51:11 -0500
-Received: from refinery (unknown [31.43.105.136])
-        by mail.godzilla.net.ua (Postfix) with ESMTPSA id 58518127;
-        Sun, 21 Nov 2021 22:48:04 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=dedrozeba.org.ua;
-        s=dedrozeba1; t=1637527684;
-        bh=CgaGwblDkEzI1kbHAQwtAHpClopf+h9NF4o8XWTEQnI=;
-        h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
-         MIME-Version:Content-Type:from;
-        b=04rmagia85NtUC+uHdHDYFKgO6f9gAReuG/yHLGHQy600tu2asoxqRihQcV53UGIU
-         5OnhYM7welhiLnnjeE3xAShBThjSKYAoRwR7c21h+6pDeormVYswmoShQEjhCmM1aJ
-         5A5zEQw2RWve24FOoDtBFCAi+ZfuPiOTv3L5tlpoHXuqolCTYc/DRF2D0DSr+EmWtT
-         rLpPRbFVV/5GCjb5/DiAWtDxkHGN4Cw1X3yXoUIu4kggo5djj/QtaVK0/XdavHUniP
-         4cRnETg6jmyqax98hJUEbl6gS+BUxzoa+Ji6crycQaxPzx6ixzpO+fKrlAZLT0v13q
-         q/MoCVsrLe47Q==
-Date:   Sun, 21 Nov 2021 22:48:02 +0200
-From:   Maxym Synytsky <synytsky@dedrozeba.org.ua>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>,
-        Yuji Nakao <contact@yujinakao.com>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        linux-kernel@vger.kernel.org,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        ". Bjorn Helgaas" <bhelgaas@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
-Subject: Re: Kernel 5.15 doesn't detect SATA drive on boot
-Message-ID: <20211121224802.24b0565b@refinery>
-In-Reply-To: <87a6hxs2l4.wl-maz@kernel.org>
-References: <87h7ccw9qc.fsf@yujinakao.com>
-        <8951152e-12d7-0ebe-6f61-7d3de7ef28cb@opensource.wdc.com>
-        <YZQ+GhRR+CPbQ5dX@rocinante>
-        <8735nv880m.wl-maz@kernel.org>
-        <YZTNCO4OBUrVkCuA@rocinante>
-        <20211121174118.231086eb@refinery>
-        <87a6hxs2l4.wl-maz@kernel.org>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        Sun, 21 Nov 2021 16:12:01 -0500
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1C8C061714
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 13:08:56 -0800 (PST)
+Received: by mail-ua1-x935.google.com with SMTP id w23so32541730uao.5
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 13:08:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=posk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E3RG2vReGUIVq+WNNt5JWAHps80g21M6WWVDlgLB+xM=;
+        b=YxiA8N/7/sjAkelyk35enzFTfyAW6EdOfmwrteLYipmIZUnFGhOJ9Oh0CYuWsfEILw
+         rxmkvCtT+888/8k2PvC/zWpH4Tm2JL5B43SN18AFT4LDMiHF25skzWMzgkXiL0EdsQqU
+         JgECz0t3Ia/biABswrAEHNKVEqq8D7p2aXKMDHwV4I01I3eaqaw4j3AJo1UQ6b2BWpEG
+         faqJAMu6O6VxeSMLRMir/Z3dT+5e7njOGti79S+iqjTmTnT6R7VsFATWkhSSwyZUnIXF
+         WNCu+Cmw/o+/VjWKiYpd2iYn10kSZKka0acSCPmrrOmq1GfTZP+RFVGFUjjIyRzq6060
+         FLIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E3RG2vReGUIVq+WNNt5JWAHps80g21M6WWVDlgLB+xM=;
+        b=dLTbHQ3H45lxDq0bTGAFU1aC9x0lporafSLhJKVh4LnfIPAk+vX324lCzmD3Ulr285
+         p/mJx/YCMeFWlJ0cSr9gNtAn8eeiRIN1OrVUu8BoTQ5sMUTHbXvGRlOKc4u0N2bi6H+K
+         ynV3iTvPeM/h5CMpAlrrpzXEkAoC5OaV22wZe6or5DsVwilULIZiZV7jleNHq5GeqxMw
+         by90VW5yVLRkFaxD8aHNmLjz/CpGbJkvntz71TI62epDlbfKFc3FfmSuwX99/a5vy4W0
+         J9y5DhodLQ6GQfKhqeVRk3rvkeHb91DE6OZDjz7vHb6AiwOYRFUKCvz4S2HvtUVvkJzV
+         FeKg==
+X-Gm-Message-State: AOAM532PhbA2BS9OfKqwaiNMO+1ndfaabX2Zpss7NnFiXyldnN5IqWu/
+        I4HjSuKxc+wQ7FJ9ZdBY5vGT7E7zUnNKZbbQjdglSg==
+X-Google-Smtp-Source: ABdhPJw/qx9alSo1fxC94rpmGEce3mXe/rYpa9MHb1r3NsJwXYJjx3Fxup49rxNpgdrig2M4LBkQk0m+LqyiDyAbFwI=
+X-Received: by 2002:a05:6102:94b:: with SMTP id a11mr126647964vsi.39.1637528935155;
+ Sun, 21 Nov 2021 13:08:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211104195804.83240-4-posk@google.com> <202111160425.fea03oXq-lkp@intel.com>
+In-Reply-To: <202111160425.fea03oXq-lkp@intel.com>
+From:   Peter Oskolkov <posk@posk.io>
+Date:   Sun, 21 Nov 2021 13:08:44 -0800
+Message-ID: <CAFTs51UYjU_=b0SccT=LCetTTZPbMG8b=JaWf=YR6zVtK-oYew@mail.gmail.com>
+Subject: Re: [PATCH v0.8 3/6] sched/umcg: implement UMCG syscalls
+To:     kernel test robot <lkp@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org, kbuild-all@lists.01.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Paul Turner <pjt@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 21 Nov 2021 19:58:31 +0000
-Marc Zyngier <maz@kernel.org> wrote:
+On Mon, Nov 15, 2021 at 12:12 PM kernel test robot <lkp@intel.com> wrote:
+>
+> Hi Peter,
+>
+> Thank you for the patch! Yet something to improve:
+>
+> [auto build test ERROR on 8ea9183db4ad8afbcb7089a77c23eaf965b0cacd]
+>
+> url:    https://github.com/0day-ci/linux/commits/Peter-Oskolkov/sched-mm-x86-uaccess-implement-User-Managed-Concurrency-Groups/20211105-035945
+> base:   8ea9183db4ad8afbcb7089a77c23eaf965b0cacd
+> config: i386-allyesconfig (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce (this is a W=1 build):
+>         # https://github.com/0day-ci/linux/commit/93e6110356346b226e3a41044aafe3d3b0906d10
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Peter-Oskolkov/sched-mm-x86-uaccess-implement-User-Managed-Concurrency-Groups/20211105-035945
+>         git checkout 93e6110356346b226e3a41044aafe3d3b0906d10
+>         # save the attached .config to linux build tree
+>         mkdir build_dir
+>         make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
 
-> > Hi.
-> > I am also experiencing this issue on Gigabyte GA-M720-US3 mobo which uses
-> > NVIDIA nForce 720D chipset. As I understand from the quirks patch it does
-> > not fix my controller?  
-> 
-> Are you sure? The dmesg you attached to this email shows otherwise:
-> 
-Yes, this dmesg is for 5.14 kernel which works fine.
-For some reason Arch complains in initramfs that root is locked and I am not
-dropped to recovery shell so getting dmesg for 5.15 would be tricky for me.
+I cannot reproduce this. Both in my tree on top of tip, and the one
+referenced above, I can compile i386 ok:
 
-Max.
+$ make ARCH=i386 allyesconfig
+$ make ARCH=i386 -j16
+
+succeeds.
+
+$ gcc --version
+gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
+
+>
+>    In file included from <command-line>:32:
+> >> ./usr/include/linux/umcg.h:80:2: error: unknown type name 'u64'
+>       80 |  u64 state_ts;  /* r/w */
+>          |  ^~~
+> >> ./usr/include/linux/umcg.h:91:2: error: unknown type name 'u32'
+>       91 |  u32 next_tid;  /* r   */
+>          |  ^~~
+>    ./usr/include/linux/umcg.h:93:2: error: unknown type name 'u32'
+>       93 |  u32 flags;   /* Reserved; must be zero. */
+>          |  ^~~
+>    ./usr/include/linux/umcg.h:101:2: error: unknown type name 'u64'
+>      101 |  u64 idle_workers_ptr; /* r/w */
+>          |  ^~~
+>    ./usr/include/linux/umcg.h:107:2: error: unknown type name 'u64'
+>      107 |  u64 idle_server_tid_ptr; /* r   */
+>          |  ^~~
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
