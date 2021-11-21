@@ -2,51 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A00AD45849E
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 17:07:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD51D4584A0
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 17:13:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238424AbhKUQKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 11:10:09 -0500
-Received: from o1.ptr2625.egauge.net ([167.89.112.53]:27954 "EHLO
+        id S238420AbhKUQQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 11:16:46 -0500
+Received: from o1.ptr2625.egauge.net ([167.89.112.53]:62966 "EHLO
         o1.ptr2625.egauge.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbhKUQKI (ORCPT
+        with ESMTP id S238362AbhKUQQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 11:10:08 -0500
+        Sun, 21 Nov 2021 11:16:45 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=egauge.net;
         h=from:subject:mime-version:to:cc:content-transfer-encoding:
         content-type;
-        s=sgd; bh=+6eAYYS1zGVdyeCag4dsRhNxxP3Pce/RMzvHMKYoPqE=;
-        b=nTPVZH6o+ZW9I9tfGdVfYEgbjIAUExRCJBMSg6UCg/Ix8TkvzMYoevySFpdaHjJZPzco
-        iQW+4hh1aQlhjquMgp7pyvgykdUI3me/30To/VWbGDrnN566xU2HLyKvUQuYEDzDmkXP/Q
-        kWrrHstS5QSUbe0ek3ScgKKFI6c+5RmirgP+rI4zc3oUGPGX4bDWV5e/d0kNCYnX/kTf4z
-        a6u6bab3k+Y8k+IPXRO6xoGTQ5vQCqDnqk5KcfcMRq0l0sNJGU+Vx8VrHoNq3UTvGWvHIO
-        QeJFl7oybCDtefJkpuQFWpQwmb25hGGasL4Hs9tBnseCw5TrKQQKjMg2Bsa3lXuQ==
-Received: by filterdrecv-7bf5c69d5-ckn2p with SMTP id filterdrecv-7bf5c69d5-ckn2p-1-619A6EA6-2D
-        2021-11-21 16:07:02.407210084 +0000 UTC m=+6976002.270461382
+        s=sgd; bh=0m8oub9Sqbg42DmQixWK/323NaRfv+ybWQ1cHvrIgqQ=;
+        b=PuNI8kvtIzVk6YOaGiH1KRzwP4fB6SSwsEMtdGjENDIBH/Ereoaixqvaz0zgOQTnojGv
+        lUXnh7jV48f26P9q8t9I//dp0STMDcZNgWgTdKvnVXppkoAE0AMtU7utEk0qIipZ2UaIHc
+        51BAgByw/jwmw80OkFLmOpADrzETUayAGBceH73ylt1tRSPfCipvKww6QeHRvk3hRVx8SR
+        A3y5yqyJ+WHrtyWizmeaFUkpz0oCCsiEjl85sP3N/v+lFXdEzXLO3iZ5UAewMX4/hV0idO
+        FvNsuWXXpT3p0/r9DiXgdc2u6mRkAO5qkZKr6mf+vofaBDlqGpLGtdEro0kOFOGA==
+Received: by filterdrecv-656998cfdd-phncc with SMTP id filterdrecv-656998cfdd-phncc-1-619A7034-1D
+        2021-11-21 16:13:40.544532967 +0000 UTC m=+5244381.730779738
 Received: from pearl.egauge.net (unknown)
-        by geopod-ismtpd-3-0 (SG)
+        by geopod-ismtpd-6-0 (SG)
         with ESMTP
-        id L3hssTnOT82k7db98nqgig
-        Sun, 21 Nov 2021 16:07:02.265 +0000 (UTC)
+        id Cw5TBdvfRU6QLFIHqCUgHg
+        Sun, 21 Nov 2021 16:13:40.381 +0000 (UTC)
 Received: by pearl.egauge.net (Postfix, from userid 1000)
-        id BC11B700479; Sun, 21 Nov 2021 09:07:01 -0700 (MST)
+        id A2C78700479; Sun, 21 Nov 2021 09:13:39 -0700 (MST)
 From:   David Mosberger-Tang <davidm@egauge.net>
-Subject: [PATCH] hwmon: (sht4x) Add device tree match table
-Date:   Sun, 21 Nov 2021 16:07:02 +0000 (UTC)
-Message-Id: <20211121160637.2312106-1-davidm@egauge.net>
+Subject: [PATCH] Update trivial-devices.yaml with Sensirion,sht4x
+Date:   Sun, 21 Nov 2021 16:13:40 +0000 (UTC)
+Message-Id: <20211121161320.2312393-1-davidm@egauge.net>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 X-SG-EID: =?us-ascii?Q?+kMxBqj35EdRUKoy8diX1j4AXmPtd302oan+iXZuF8m2Nw4HRW2irNspffT=2Fkh?=
- =?us-ascii?Q?ET6RJF6+Prbl0h=2FEtF1rRLvBjwDxJhsTdt2+w8T?=
- =?us-ascii?Q?2ZJXZyNCtjHkCjO0qDnyrd+XD1XbSrphSwxu8yj?=
- =?us-ascii?Q?BJg8T79lJC5LOMlgOvQs0XDpEhYnzOMaaGe1V24?=
- =?us-ascii?Q?e3NYVr9bGht5DcoUoJiLd2l=2FswBKhAIecZ=2FUMSh?=
- =?us-ascii?Q?HobQPisPycWHOJfbW16MAkZqENAFiVzFPNJR0Hn?=
- =?us-ascii?Q?niMde8zuApU+kaNTR+S9w=3D=3D?=
+ =?us-ascii?Q?ET6RJF6+Prbl0h=2FEtF1rRLvAeiqsadiSQ8w=2FuBS?=
+ =?us-ascii?Q?BMnK0k2GmOJBAl=2FRrGN7842LA4GasdWthoSPZHY?=
+ =?us-ascii?Q?3tlR4fYpfB0VqglU1i4=2FHaEFMUjw=2FL3mtC=2FQ=2Fqp?=
+ =?us-ascii?Q?pLKHUI7QcsMGzeQJIlAYyEupwqvDOHcJspi6rqY?=
+ =?us-ascii?Q?ADD0tbeSLDCAXoZ4=2FU7vQ10cMyEwI9zdCefwKM1?=
+ =?us-ascii?Q?=2FyDsLJ3CNanB5cpDku7+w=3D=3D?=
 To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Navin Sankar Velliangiri <navin@linumiz.com>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
+Cc:     Rob Herring <robh+dt@kernel.org>, Jiri Kosina <trivial@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         David Mosberger-Tang <davidm@egauge.net>
 X-Entity-ID: Xg4JGAcGrJFIz2kDG9eoaQ==
 Content-Transfer-Encoding: 7bit
@@ -55,35 +54,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch enables automatic loading of the sht4x module via a device
-tree table entry.
+Add Sensirion SHT4x, a precision temperature and humidity sensor, to
+trivial-devices.yaml.
 
 Signed-off-by: David Mosberger-Tang <davidm@egauge.net>
 ---
- drivers/hwmon/sht4x.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/hwmon/sht4x.c b/drivers/hwmon/sht4x.c
-index 3415d7a0e0fc..6e53d81e32d4 100644
---- a/drivers/hwmon/sht4x.c
-+++ b/drivers/hwmon/sht4x.c
-@@ -281,9 +281,16 @@ static const struct i2c_device_id sht4x_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, sht4x_id);
- 
-+static const struct of_device_id sht4x_of_match[] = {
-+	{ .compatible = "sensirion,sht4x" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, sht4x_of_match);
-+
- static struct i2c_driver sht4x_driver = {
- 	.driver = {
- 		.name = "sht4x",
-+		.of_match_table = sht4x_of_match
- 	},
- 	.probe		= sht4x_probe,
- 	.id_table	= sht4x_id,
+diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
+index 1e4b3464d734..bbd1f49faa88 100644
+--- a/Documentation/devicetree/bindings/trivial-devices.yaml
++++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+@@ -277,6 +277,8 @@ properties:
+           - sensirion,sgp30
+             # Sensirion gas sensor with I2C interface
+           - sensirion,sgp40
++            # Sensirion temperature & humidity sensor with I2C interface
++          - sensirion,sht4x
+             # Sensortek 3 axis accelerometer
+           - sensortek,stk8312
+             # Sensortek 3 axis accelerometer
 -- 
 2.25.1
 
