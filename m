@@ -2,73 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8370458153
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 01:23:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 523C6458158
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 01:31:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236830AbhKUA0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 19:26:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55268 "EHLO
+        id S237000AbhKUAe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 19:34:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234854AbhKUA0s (ORCPT
+        with ESMTP id S233455AbhKUAe5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 19:26:48 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79C0C06173E
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 16:23:43 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id bi37so61766188lfb.5
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 16:23:43 -0800 (PST)
+        Sat, 20 Nov 2021 19:34:57 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 740A0C061756
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 16:31:53 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id t4so4562145pgn.9
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 16:31:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=MdPOSP4E0dm3Pe3Hdqt216qxaOvAQQUTEhIkI5PQL/M=;
-        b=VMy+ws6iNaQtPQlEwXH4cp+1vnB8i5jCQ+oDGJBzGtpT9hTRQPBDDOJtH3/87mUs78
-         c8D4idmDG6ubKfmfEWTeRr7HTC0OkAkigjV3L2gSlmxPyd11LZ8xWV+gc5j/GPEhVL8K
-         Fhtvj42IRR9HZqFWshNTb3v6C9UbSJNCNFSlO+6WVyRUI7nHkVGoed9WZ9uHY1daLLbP
-         th8wxn3SAuMYthhaEG+wJxwXGCFHB8FB94RjvM1PweKUb9Xv7JGyFz1z/pT7ZcJJXAkY
-         kmy8gMHLqzJhYchKAwknPMexTV33szQPrm3Mz3aHHzNPXoHkCG5p0YHUt1Ifrhf27tpZ
-         JtPg==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XxGWmTZwHsm0RN01kjRmL3HzDw86SFLpP/0ZpXpaZRc=;
+        b=mqLPe+mzN9Dl/E2s2wRLW9ghNZxzkxV9cQ7rzDcRi9/vEWM/1M/T9ZtHoNE4KsrZ5j
+         0dUrpsPnoEXXwUde09T2wZxbStgM88DZvGgmc0978ncxOd0TJDgINT5vSKtNkNjbTJUo
+         9aK6twgJ7kHLOHU+XH7Ad1bYAiBkodz9okdE0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=MdPOSP4E0dm3Pe3Hdqt216qxaOvAQQUTEhIkI5PQL/M=;
-        b=h9x4j9NkackFt5a5/TkGIqWU3tsaXtbqGlsYKhjXeic8JZg5iH2UCC6gxX2QUL/Jwz
-         yJ1xT46wUYTFbQZIJRtLnTYlic9gPmlINSyhXEqPWQzLOa6f1gykCsAID6PWNsBfSt2D
-         LePQELNdUetnv0tSsvGSrV80olMCYzdjhkpWFt6IFePRTCnIpJ0yry/HzQfCYfIM0gfg
-         +D1R3eJSPdf89Nh/M6YeE4zMlUakPC+TpeadB77+mYdmLdoO2m06RLLspjj7u3LBc7NL
-         6q4NroTtJ+vOoE2MPInIlXOhs6u0Imqo57sqsHdQwzYzz+cEk6ZrFkvIo7p8Ml3E5Jn5
-         QJ0w==
-X-Gm-Message-State: AOAM532rQ4n2Yc/ls3JCCDzGxk0/vWZf8U4MTjirR/oARiyuOoXRfWNC
-        fJLSAuD4s2+CHsQ7l4fYmDs57RQTgo+wOy/gCns=
-X-Google-Smtp-Source: ABdhPJzt13fsQ3AoyGmpOnrRI7lKCXRsMxb5OUXZKzsE0vngfYLZZHvdWygTsD6NnzO+Qv0FWMGdX86toLk7VoDfpxo=
-X-Received: by 2002:a05:6512:238d:: with SMTP id c13mr45488779lfv.350.1637454221394;
- Sat, 20 Nov 2021 16:23:41 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XxGWmTZwHsm0RN01kjRmL3HzDw86SFLpP/0ZpXpaZRc=;
+        b=HaKcaQbd+lkgD0pbpkQdTQDVn5pZhHlWRKBtkoxN72yxhjRPoNQMndf8lm3cwtEDWQ
+         uoObNZGTLpwepjlRbocSYBdc/Li03kdbHN9nAgMoh4XWFKXzO5jRddunqve/8bE77jKE
+         uTPQkqhOAp3L9yil7ayMO5jMvyZY0gP+bzFr4MGP5Wb8nRdPz1/THCpvJAxPzggkrBZh
+         +n//YkdQoQDKGvYXXB6EOp1zkax3VK+I4yd934HRZLWjE7ojvhBof6aBiHrppxCLRLkn
+         WLLA1s032PzwlBPx0GhFFpbNcWIVkqjK2Cm0Fkwbuh46vsDNqibs/9CSrgz6ipYEcICX
+         x2UA==
+X-Gm-Message-State: AOAM532WEEuJcM8LnhVFJhpuDrH3gMoMuB6V96mq8/5UdsLjkJBy33TC
+        muL1acidCXLpPuL/B7AvG2ycWQ==
+X-Google-Smtp-Source: ABdhPJx48K+tBtBfbJQf3sSRXIucI8Y6zCrUy5h3//aCrSN9nw8UbzVlU9gBgDoTvSGJtDP7M2mUdg==
+X-Received: by 2002:a05:6a00:2351:b0:47b:d092:d2e4 with SMTP id j17-20020a056a00235100b0047bd092d2e4mr73088775pfj.76.1637454712802;
+        Sat, 20 Nov 2021 16:31:52 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j127sm3932775pfg.14.2021.11.20.16.31.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Nov 2021 16:31:52 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Talal Ahmad <talalahmad@google.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        linux-kernel@vger.kernel.org, wireguard@lists.zx2c4.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v2 net-next 0/2] skbuff: Switch structure bounds to struct_group()
+Date:   Sat, 20 Nov 2021 16:31:47 -0800
+Message-Id: <20211121003149.28397-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Received: by 2002:ac2:5ec6:0:0:0:0:0 with HTTP; Sat, 20 Nov 2021 16:23:40
- -0800 (PST)
-Reply-To: yousefzongo5722@gmail.com
-From:   Mr yousef zongo <expoimpo2000@gmail.com>
-Date:   Sat, 20 Nov 2021 16:23:40 -0800
-Message-ID: <CANOAVM1W5XC1yvEjh2BECiuWrWK6OOiubwqSYFcby6Wcib708Q@mail.gmail.com>
-Subject: THE AMOUNT IS 27.5 MILLIOMS USD
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=654; h=from:subject; bh=JyIoux+3mSqRrP5c5yAm1k2PCuE3ujZ9X+hh+TTSdkw=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhmZN06M3ei451eaMBJ4tlO/hieAlz+BhYFDkIdlX1 eX61FpWJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYZmTdAAKCRCJcvTf3G3AJtbrD/ 9eR2KNvgCn/YPwypnUGU/RNNqA4O4bYEFLj4ElzB1qqQlG2RgJdcz+rq2yQisqqs16klI6tC11SBhN W7udXMhGJ+Py7w1vVEBAjVNZmGKGlJXE5U8WAHjfZcQac0sOe4DaoyxEKDhZ4dVEtfM9n+INWySh7M uDr1c3vaP+cgXlX5lMFiVoFtjG416sLde9ZZ8i/AAoEtj13SqOYM69cCvB3ZV5sD6z171ju8LuL8V0 0/gPsQggl4r2PI9mSi0ATgA4nL9uxPXZ+WimwvtpoW3euJOXl3R5qx7YEJpMVEhQb+h7bsHU8+554G Mr/5XtAumV32/xkgbaaZzuXsqDpE7wlAaVucANa3AQEj21s9tjkelAJu7HA0AlFNxD1vdytn7CWZlk pZMaqvAW5drzcrEzYLOo+fXRjVbz/qGY1eHIl8O1AdM1Yl5bxOyoHeJ6+Bh5Bgajfi3DtMZFSy3y9b OpoS11g+KF4T5o4t9R3wBjQCyP+hGBmGNCpm6N3kBHTnOLW1hoF9P7WSGHblOL5gn/lWS1rXatOn5H Vacu7NXyluL8MFDh6ynTM7+DGECqimJOIry6vmwHNkpv8jjqqF+jTWDoJGkFAn2/aA49Zpg/XonIcy 94jGLJObRNcJnXtDPIWtQUQA7/UNnVofu/gJMtbIHUh4j4L/74FL/AmwVMfg==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am Mr  yousef zongo,
-Hi Friend I work in United Bank for Africa (BOA) here in BURKINA FASO
-.I wants to transfer an abandoned sum of 27.5 millions USD to you
-through ATM VISA CARD .50% will be for you. No risk involved. The
-(BOA) bank was being used by many African Politicians to divert funds
-(the Politicians looted over 5billion United States dollars) to their
-foreign accounts and they did Not bother to know how much was
-transferred because the funds belonged to the 'State' that is why I
-also decided to put apart the sum of $27.5million Dollars which is
-still in our bank under my custody for a long period now! I have to
-give you all the required guidelines so that you do not make any
-mistake. If you are capable to handle the transaction
-Contact me for more details. Kindly reply me back to my alternative
-email address ( yousefzongo5722@gmail.com )
-Mr  yousef zongo
+Hi,
+
+This is a pair of patches to add struct_group() to struct sk_buff. The
+first is needed to work around sparse-specific complaints, and is new
+for v2. The second patch is the same as originally sent as v1.
+
+-Kees
+
+Kees Cook (2):
+  skbuff: Move conditional preprocessor directives out of struct sk_buff
+  skbuff: Switch structure bounds to struct_group()
+
+ drivers/net/wireguard/queueing.h |  4 +--
+ include/linux/skbuff.h           | 46 +++++++++++++++-----------------
+ net/core/filter.c                | 10 +++----
+ net/core/skbuff.c                | 14 ++++------
+ 4 files changed, 33 insertions(+), 41 deletions(-)
+
+-- 
+2.30.2
+
