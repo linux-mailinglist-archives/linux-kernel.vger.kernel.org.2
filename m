@@ -2,151 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CC04581B8
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 05:48:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1E14581C2
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 05:58:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237790AbhKUEvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 23:51:14 -0500
-Received: from gandalf.ozlabs.org ([150.107.74.76]:54509 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236708AbhKUEvN (ORCPT
+        id S229621AbhKUFB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 00:01:28 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:50858 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229477AbhKUFB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 23:51:13 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HxdFK0fbtz4xcs;
-        Sun, 21 Nov 2021 15:48:05 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1637470088;
-        bh=mC6rnoasBXMiC83+R9ITQ95F9G2PxGIWjseaTS+tZZE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=GJ51HJe0PIGy54baJ900wWm+2Cn0zqpEQuY3aYovHSvF0yy3m8Nwy+f/p75j34TXo
-         SjYJ1KdUbJK0/vYrt6AnQNngW2TAIxx0HxR9ZaqqlE/zVO77Ya4ydthh9PZlBm0Bs3
-         R9EAXoZXjxvtuV6BLT6LurOYyrah59PlyD3T16sYfNONGbx1rH+xUPpaCg4KT4sdS0
-         tNT6b6QQLpmKyuzQVTZz5PhWL48EGXeeEDYEm8cq6UyYJevHtAEAYpwmRjzrFpm5Zl
-         QDj4A18u/3oZN1K5pKClDAUF6SRswtC5nrqcBOX0ojR9V63TWC6/CcgbXvTke9IEzt
-         MA1hHB0OrktOw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     aik@ozlabs.ru, christophe.leroy@csgroup.eu, clg@kaod.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        masahiroy@kernel.org, maz@kernel.org, npiggin@gmail.com,
-        u.kleine-koenig@pengutronix.de
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.16-2 tag
-Date:   Sun, 21 Nov 2021 15:48:02 +1100
-Message-ID: <87lf1iqflp.fsf@mpe.ellerman.id.au>
+        Sun, 21 Nov 2021 00:01:28 -0500
+Received: by mail-io1-f70.google.com with SMTP id e14-20020a6bf10e000000b005e23f0f5e08so8815130iog.17
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 20:58:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=dql/mQT21Xn5uTk2H7K7jiSz1stq9yitA0pxzgY7x5Y=;
+        b=QvRumtnRgNKYANm8Yj7PWFsPZOtrHAimZZD1ynB+pXJRUlpx7HwXkZiqFf/biabUJ0
+         iPeZISSpvvlvtTV8gn+TnfnpsIW5lpvdf7XyESXrCiT3AYebODTocgrrrpp8TUWPoXxM
+         +2vGgvFLY0ShIZIfb6mLtsCCqyUftUktop+yUrZBgdZ5sgsO4OoD211FQgLvmrtrly2F
+         ZvQM6i4CgptaheGLWOoqBQhBYnYG2AniCkby2sjxwE7MDvcqhLdMmXoaiP6Uwd7AWAWL
+         qDCiwvW2ERCoEZ0FBY7UmXomAaepEUMpSusHaPYD1q4f6vK8cHB2cpx06w1qJCh654yq
+         sJgQ==
+X-Gm-Message-State: AOAM533EhCYbta5KhggYi5nQUfYqxEGsCriRWBU2nYwch7Op6KKGUKs9
+        dC07xkA+1ybCMDfBOyMa5PjShUpwAEhgz3fhU87EyOUqt9SQ
+X-Google-Smtp-Source: ABdhPJy/a3XGaUPFR1Dr55TXOAp2/Ov7k9sELlKca3fZoS+E9C5xF2kIz8u65aj3Qa460o9eRoJ6s3JeVrlzaVmL1y7X5oTPKhFu
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a6b:5c02:: with SMTP id z2mr14595232ioh.138.1637470703586;
+ Sat, 20 Nov 2021 20:58:23 -0800 (PST)
+Date:   Sat, 20 Nov 2021 20:58:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009e104205d1455b77@google.com>
+Subject: [syzbot] INFO: task hung in del_gendisk (2)
+From:   syzbot <syzbot+14aea3976ea68c2c5f01@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+Hello,
 
-Hi Linus,
+syzbot found the following issue on:
 
-Please pull some powerpc fixes for 5.16:
+HEAD commit:    a90af8f15bdc Merge tag 'libata-5.16-rc2' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13df9b11b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6d3b8fd1977c1e73
+dashboard link: https://syzkaller.appspot.com/bug?extid=14aea3976ea68c2c5f01
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-The following changes since commit 158ea2d2b2ff8fb49f39209a31b4920f13193a3d:
+Unfortunately, I don't have any reproducer for this issue yet.
 
-  kbuild: Fix -Wimplicit-fallthrough=3D5 error for GCC 5.x and 6.x (2021-11=
--14 18:59:49 -0800)
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+14aea3976ea68c2c5f01@syzkaller.appspotmail.com
 
-are available in the git repository at:
+INFO: task kworker/u4:10:5840 blocked for more than 143 seconds.
+      Not tainted 5.16.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/u4:10   state:D stack:26616 pid: 5840 ppid:     2 flags:0x00004000
+Workqueue: nbd-del nbd_dev_remove_work
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:4972 [inline]
+ __schedule+0xa9a/0x4940 kernel/sched/core.c:6253
+ schedule+0xd2/0x260 kernel/sched/core.c:6326
+ blk_mq_freeze_queue_wait+0x112/0x160 block/blk-mq.c:178
+ del_gendisk+0x598/0x860 block/genhd.c:623
+ nbd_dev_remove+0x3c/0xf0 drivers/block/nbd.c:252
+ process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
+ kthread+0x405/0x4f0 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+ </TASK>
+INFO: task kworker/u4:15:6546 blocked for more than 143 seconds.
+      Not tainted 5.16.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/u4:15   state:D stack:27496 pid: 6546 ppid:     2 flags:0x00004000
+Workqueue: nbd-del nbd_dev_remove_work
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:4972 [inline]
+ __schedule+0xa9a/0x4940 kernel/sched/core.c:6253
+ schedule+0xd2/0x260 kernel/sched/core.c:6326
+ blk_mq_freeze_queue_wait+0x112/0x160 block/blk-mq.c:178
+ del_gendisk+0x598/0x860 block/genhd.c:623
+ nbd_dev_remove+0x3c/0xf0 drivers/block/nbd.c:252
+ process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
+ kthread+0x405/0x4f0 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+ </TASK>
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/po=
-werpc-5.16-2
+Showing all locks held in the system:
+1 lock held by khungtaskd/27:
+ #0: ffffffff8bb83b60 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6458
+1 lock held by in:imklog/6233:
+ #0: ffff888022de7270 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:990
+5 locks held by agetty/6454:
+2 locks held by kworker/u4:10/5840:
+ #0: ffff88801a512138 ((wq_completion)nbd-del){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff88801a512138 ((wq_completion)nbd-del){+.+.}-{0:0}, at: arch_atomic_long_set include/linux/atomic/atomic-long.h:41 [inline]
+ #0: ffff88801a512138 ((wq_completion)nbd-del){+.+.}-{0:0}, at: atomic_long_set include/linux/atomic/atomic-instrumented.h:1198 [inline]
+ #0: ffff88801a512138 ((wq_completion)nbd-del){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:635 [inline]
+ #0: ffff88801a512138 ((wq_completion)nbd-del){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:662 [inline]
+ #0: ffff88801a512138 ((wq_completion)nbd-del){+.+.}-{0:0}, at: process_one_work+0x896/0x1690 kernel/workqueue.c:2269
+ #1: ffffc9000ba87db0 ((work_completion)(&nbd->remove_work)){+.+.}-{0:0}, at: process_one_work+0x8ca/0x1690 kernel/workqueue.c:2273
+2 locks held by kworker/u4:15/6546:
+ #0: ffff88801a512138 ((wq_completion)nbd-del){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff88801a512138 ((wq_completion)nbd-del){+.+.}-{0:0}, at: arch_atomic_long_set include/linux/atomic/atomic-long.h:41 [inline]
+ #0: ffff88801a512138 ((wq_completion)nbd-del){+.+.}-{0:0}, at: atomic_long_set include/linux/atomic/atomic-instrumented.h:1198 [inline]
+ #0: ffff88801a512138 ((wq_completion)nbd-del){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:635 [inline]
+ #0: ffff88801a512138 ((wq_completion)nbd-del){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:662 [inline]
+ #0: ffff88801a512138 ((wq_completion)nbd-del){+.+.}-{0:0}, at: process_one_work+0x896/0x1690 kernel/workqueue.c:2269
+ #1: ffffc90002fffdb0 ((work_completion)(&nbd->remove_work)){+.+.}-{0:0}, at: process_one_work+0x8ca/0x1690 kernel/workqueue.c:2273
+4 locks held by kworker/u4:16/6563:
+ #0: ffff888011a03138 ((wq_completion)netns){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888011a03138 ((wq_completion)netns){+.+.}-{0:0}, at: arch_atomic_long_set include/linux/atomic/atomic-long.h:41 [inline]
+ #0: ffff888011a03138 ((wq_completion)netns){+.+.}-{0:0}, at: atomic_long_set include/linux/atomic/atomic-instrumented.h:1198 [inline]
+ #0: ffff888011a03138 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:635 [inline]
+ #0: ffff888011a03138 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:662 [inline]
+ #0: ffff888011a03138 ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work+0x896/0x1690 kernel/workqueue.c:2269
+ #1: ffffc90003127db0 (net_cleanup_work){+.+.}-{0:0}, at: process_one_work+0x8ca/0x1690 kernel/workqueue.c:2273
+ #2: ffffffff8d2f9290 (pernet_ops_rwsem){++++}-{3:3}, at: cleanup_net+0x9b/0xb00 net/core/net_namespace.c:555
+ #3: ffffffff8bb8cdf0 (rcu_state.barrier_mutex){+.+.}-{3:3}, at: rcu_barrier+0x44/0x440 kernel/rcu/tree.c:3985
 
-for you to fetch changes up to 8e80a73fa9a7747e3e8255cb149c543aabf65a24:
+=============================================
 
-  powerpc/xive: Change IRQ domain to a tree domain (2021-11-17 21:55:42 +11=
-00)
+NMI backtrace for cpu 0
+CPU: 0 PID: 27 Comm: khungtaskd Not tainted 5.16.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ nmi_cpu_backtrace.cold+0x47/0x144 lib/nmi_backtrace.c:111
+ nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
+ watchdog+0xc1d/0xf50 kernel/hung_task.c:295
+ kthread+0x405/0x4f0 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+ </TASK>
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 6454 Comm: agetty Not tainted 5.16.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:slow_down_io arch/x86/include/asm/paravirt.h:55 [inline]
+RIP: 0010:outb_p arch/x86/include/asm/io.h:334 [inline]
+RIP: 0010:vga_io_w include/video/vga.h:209 [inline]
+RIP: 0010:setmask drivers/video/fbdev/vga16fb.c:139 [inline]
+RIP: 0010:vga_8planes_imageblit drivers/video/fbdev/vga16fb.c:1141 [inline]
+RIP: 0010:vga_imageblit_expand drivers/video/fbdev/vga16fb.c:1203 [inline]
+RIP: 0010:vga16fb_imageblit+0x1c93/0x2aa0 drivers/video/fbdev/vga16fb.c:1260
+Code: 5d 0c 44 89 f6 89 df e8 9b 1f 5d fd 41 39 de 0f 82 0c ff ff ff 48 8b 5c 24 58 e8 88 1c 5d fd ba cf 03 00 00 0f b6 44 24 48 ee <48> b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 80 3c 02 00 0f
+RSP: 0018:ffffc90001cff4c0 EFLAGS: 00000293
+RAX: 00000000000000ff RBX: ffffffff8b9f7d20 RCX: 0000000000000000
+RDX: 00000000000003cf RSI: ffffffff841a7cd8 RDI: 0000000000000003
+RBP: ffffc90001cff650 R08: 0000000000000010 R09: 0000000000000001
+R10: ffffffff841a7cc5 R11: 0000000000000001 R12: dffffc0000000000
+R13: ffff8880000a144a R14: 0000000000000010 R15: ffff888017e3c000
+FS:  00007f84bd17a500(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055bfa2d56160 CR3: 0000000019976000 CR4: 0000000000350ee0
+Call Trace:
+ <TASK>
+ bit_putcs_unaligned drivers/video/fbdev/core/bitblit.c:124 [inline]
+ bit_putcs+0x6e1/0xd20 drivers/video/fbdev/core/bitblit.c:173
+ fbcon_putcs+0x353/0x440 drivers/video/fbdev/core/fbcon.c:1277
+ fbcon_redraw.constprop.0+0x41a/0x4b0 drivers/video/fbdev/core/fbcon.c:1435
+ fbcon_scroll+0x45c/0x610 drivers/video/fbdev/core/fbcon.c:1469
+ con_scroll+0x5b9/0x6d0 drivers/tty/vt/vt.c:630
+ lf+0x26b/0x2c0 drivers/tty/vt/vt.c:1507
+ vc_con_write_normal drivers/tty/vt/vt.c:2851 [inline]
+ do_con_write+0xf1c/0x1e40 drivers/tty/vt/vt.c:2955
+ con_write+0x21/0x40 drivers/tty/vt/vt.c:3295
+ n_tty_write+0xa7a/0xfd0 drivers/tty/n_tty.c:2311
+ do_tty_write drivers/tty/tty_io.c:1038 [inline]
+ file_tty_write.constprop.0+0x526/0x910 drivers/tty/tty_io.c:1110
+ call_write_iter include/linux/fs.h:2162 [inline]
+ new_sync_write+0x429/0x660 fs/read_write.c:503
+ vfs_write+0x7cd/0xae0 fs/read_write.c:590
+ ksys_write+0x12d/0x250 fs/read_write.c:643
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f84bcc97970
+Code: 73 01 c3 48 8b 0d 28 d5 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 83 3d 99 2d 2c 00 00 75 10 b8 01 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 7e 9b 01 00 48 89 04 24
+RSP: 002b:00007ffddedd0448 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000000009 RCX: 00007f84bcc97970
+RDX: 0000000000000009 RSI: 00007ffddedd0610 RDI: 0000000000000001
+RBP: 00007ffddedd0610 R08: 00007f84bd17a500 R09: 0000000000000009
+R10: 0000000000000073 R11: 0000000000000246 R12: 0000000000000009
+R13: 0000000000000001 R14: 00007f84bcf56600 R15: 0000000000000009
+ </TASK>
+----------------
+Code disassembly (best guess):
+   0:	5d                   	pop    %rbp
+   1:	0c 44                	or     $0x44,%al
+   3:	89 f6                	mov    %esi,%esi
+   5:	89 df                	mov    %ebx,%edi
+   7:	e8 9b 1f 5d fd       	callq  0xfd5d1fa7
+   c:	41 39 de             	cmp    %ebx,%r14d
+   f:	0f 82 0c ff ff ff    	jb     0xffffff21
+  15:	48 8b 5c 24 58       	mov    0x58(%rsp),%rbx
+  1a:	e8 88 1c 5d fd       	callq  0xfd5d1ca7
+  1f:	ba cf 03 00 00       	mov    $0x3cf,%edx
+  24:	0f b6 44 24 48       	movzbl 0x48(%rsp),%eax
+  29:	ee                   	out    %al,(%dx)
+* 2a:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax <-- trapping instruction
+  31:	fc ff df
+  34:	48 89 da             	mov    %rbx,%rdx
+  37:	48 c1 ea 03          	shr    $0x3,%rdx
+  3b:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+  3f:	0f                   	.byte 0xf
 
-- ------------------------------------------------------------------
-powerpc fixes for 5.16 #2
 
-Fix a bug in copying of sigset_t for 32-bit systems, which caused X to not =
-start.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Fix handling of shared LSIs (rare) with the xive interrupt controller (Powe=
-r9/10).
-
-Fix missing TOC setup in some KVM code, which could result in oopses depend=
-ing on kernel
-data layout.
-
-Fix DMA mapping when we have persistent memory and only one DMA window avai=
-lable.
-
-Fix further problems with STRICT_KERNEL_RWX on 8xx, exposed by a recent fix.
-
-A couple of other minor fixes.
-
-Thanks to: Alexey Kardashevskiy, Aneesh Kumar K.V, C=C3=A9dric Le Goater, C=
-hristian Zigotzky,
-Christophe Leroy, Daniel Axtens, Finn Thain, Greg Kurz, Masahiro Yamada, Ni=
-cholas Piggin,
-Uwe Kleine-K=C3=B6nig.
-
-- ------------------------------------------------------------------
-Alexey Kardashevskiy (3):
-      powerpc/pseries/ddw: Revert "Extend upper limit for huge DMA window f=
-or persistent memory"
-      powerpc/pseries/ddw: simplify enable_ddw()
-      powerpc/pseries/ddw: Do not try direct mapping with persistent memory=
- and one window
-
-Christophe Leroy (3):
-      powerpc/book3e: Fix TLBCAM preset at boot
-      powerpc/signal32: Fix sigset_t copy
-      powerpc/8xx: Fix pinned TLBs with CONFIG_STRICT_KERNEL_RWX
-
-C=C3=A9dric Le Goater (1):
-      powerpc/xive: Change IRQ domain to a tree domain
-
-Masahiro Yamada (1):
-      powerpc: clean vdso32 and vdso64 directories
-
-Michael Ellerman (1):
-      KVM: PPC: Book3S HV: Use GLOBAL_TOC for kvmppc_h_set_dabr/xdabr()
-
-Nicholas Piggin (2):
-      powerpc/pseries: rename numa_dist_table to form2_distances
-      powerpc/pseries: Fix numa FORM2 parsing fallback code
-
-Uwe Kleine-K=C3=B6nig (1):
-      powerpc/83xx/mpc8349emitx: Drop unused variable
-
-
- arch/powerpc/kernel/Makefile                   |  3 ++
- arch/powerpc/kernel/head_8xx.S                 | 13 +++---
- arch/powerpc/kernel/signal.h                   | 10 ++++-
- arch/powerpc/kvm/book3s_hv_rmhandlers.S        |  4 +-
- arch/powerpc/mm/nohash/kaslr_booke.c           |  2 +-
- arch/powerpc/mm/nohash/tlb.c                   |  4 +-
- arch/powerpc/mm/numa.c                         | 44 +++++++++-----------
- arch/powerpc/platforms/83xx/mcu_mpc8349emitx.c |  1 -
- arch/powerpc/platforms/pseries/iommu.c         | 26 ++++--------
- arch/powerpc/sysdev/xive/Kconfig               |  1 -
- arch/powerpc/sysdev/xive/common.c              |  3 +-
- 11 files changed, 52 insertions(+), 59 deletions(-)
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmGZzfUACgkQUevqPMjh
-pYDQNg//VzUcbRZgUaPw7NkPCberclTmpaFyUwk3iMx0rLH95vXhNjrCJa7tSxWk
-fBp3WwVkytglPSM8CTxXNZm7ufXJyv7gO2jcpIzzkFxdD+uMODNd7wdl2rGq6Vxq
-KLixLpP1696qVGKfma8NXsFlLJpUImDbRKNd5r2rYpLRSouQ8n5lfXVO1H0y4Pdn
-aBxHidR10wiIG/SmDYawlAyxVmxAQZV5z7nnXYbNulB4exZeIOrSqo+XtBnr5Hem
-CsLgsPizpERz6pRVKt08B9GUqNCqg8z/bwoU5xd8jlEdLGt3NX7MBkIhyoLOeSGu
-94A+aQHsdP9bLp4I1cwqaA2FQ5NvU3BLwETC0nVmHtl5+unzFdm5mQMeGfkeTTqI
-t0ki8d+JR5jyc8PayydXuy5RRwmRe9CHvr7mImb+RP3MMmL/ntOW0DnNWR7ARTSJ
-By5lgKrm5XSer7M63LUltne5ZPUvLL2RBbGXU4HkVTbMQ0YzZikBcAg7T08CbOMz
-0kMVlD+lygXk14u2WEFRYcwj4/aqGlxYVAYfKcJUiGI3jNNPi9ytGj5bL3Nityaf
-XiGQ51kJREAKUNqrVHumI8JFZGtdrl7YD/7gUiCKUUV7GF6L+3imX7KQYbCIKqUN
-HbN+Kni6KVkXvmu+0Y9w9aJf3l2pvyatY1cyliFfhTp1W8R7oOI=3D
-=3DkNrV
------END PGP SIGNATURE-----
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
