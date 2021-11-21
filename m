@@ -2,255 +2,389 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BAE458546
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 18:13:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4C9458549
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 18:15:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238400AbhKURQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 12:16:37 -0500
-Received: from mail-eopbgr40061.outbound.protection.outlook.com ([40.107.4.61]:48965
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230330AbhKURQe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 12:16:34 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LJDSvvpq4fp3DDPDdrGDIZgkTfN8faAB16YduNTBcoaPV+4dNCO6qSkeDmdX5X0kRbQhX/8nFM97ka06wQPV51s868zc9P9rL7t3wL5lT85zJ1msVDvHFKIM7CzBM1MMjNwOK60qoRseB06Ret9Z/Vp/DZr6jTSXyjP5T2yeURViPx+LXj0MBujbbFTazNz/mRGXK9KdCmFdr7H8rhCdp5YK3DEAm8scxSxslSmzsxgLYBS2/4T+kaSmxf7ho7m/byjRMDLjhxIGjexmWdBe3MZqmcgV2IqQ6tIUqLHFtA+5w/bwDxAEoHkwW8/76BnpICor9VK/omd1F8D5G3adPw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aDg5cArKypF6thDiEyJkdhnYlY9jqGLorjx5wv1g5JE=;
- b=HFaAR0s+RWu/RJkb49qv1OCqzUlvpu8O0qKtlr9pncjX7y5R+Jv+s43UNskAZnUJlBtrRH4sdzByXZLLATk3/qP3i3WsQlAOa0YiqyZ/CLJkv9YGCkRHSXHO1HpIRuuWjx2OVCnev+Alqvxj16GOsXGvzl1/i0FbCA8S6ul1KodU6ZpEPl7S7RcVuU/4V2+5vrIFsMD5U+v8VsUN5ql68lJYoz/Hn940QXy1ljYjl6NPePNMMdbXhn7l1R33khBzzwOqNSBarNnEpyh+LmNTZgEWw9zBkh41s3lqB3sSLap5Ll5VCs9baLjfIRY7G1NO7/sB94g4EoS59La5D1JrFA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aDg5cArKypF6thDiEyJkdhnYlY9jqGLorjx5wv1g5JE=;
- b=R8v8R3Tw2+m8eAjqkK926VPHytP8cckt0SCPWNGVynnwmEILKeE8ya/2qYtH2/r/9JludfsKnkuFF0nDet3DdY7ARwoFme9TBoipRnKOv32W/ue/DEjNmrmRU//35/akGZsOC1VpdXYK/WbXGJ1C5NYIOlxciQgQCaCXW0rWeu0=
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
- by VI1PR04MB5343.eurprd04.prod.outlook.com (2603:10a6:803:48::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Sun, 21 Nov
- 2021 17:13:25 +0000
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e4ed:b009:ae4:83c5]) by VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::e4ed:b009:ae4:83c5%7]) with mapi id 15.20.4713.024; Sun, 21 Nov 2021
- 17:13:25 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Colin Foster <colin.foster@in-advantage.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Subject: Re: [PATCH v1 net-next 4/6] net: dsa: ocelot: felix: add
- per-device-per-port quirks
-Thread-Topic: [PATCH v1 net-next 4/6] net: dsa: ocelot: felix: add
- per-device-per-port quirks
-Thread-Index: AQHX3ZbybzsFc4blWU6OwKIocdCQW6wOOwAA
-Date:   Sun, 21 Nov 2021 17:13:25 +0000
-Message-ID: <20211121171324.j6kxclyhaheihpja@skbuf>
-References: <20211119224313.2803941-1-colin.foster@in-advantage.com>
- <20211119224313.2803941-5-colin.foster@in-advantage.com>
-In-Reply-To: <20211119224313.2803941-5-colin.foster@in-advantage.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c6d1d9e2-1b99-4537-a3d8-08d9ad123ac6
-x-ms-traffictypediagnostic: VI1PR04MB5343:
-x-microsoft-antispam-prvs: <VI1PR04MB534381F8CA6596CA18C36632E09E9@VI1PR04MB5343.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 60GCCcyIUkcStqZFcL47IlXcizw2zZ22tAixUWkDUCYdqcErlQKEwH5TcrZKRsDMuu788Od9eokN6rEI2qDKAtFoLS1+JedCqKlTjR6a+xHX4/KrXtbJzH8PTCagHSU69P8aCAJPHL+fZtcAAubGyYQsjxGTZIFdiT6aS4snjEs+bEbWAXW5PS6cwv5AYWWjJm8aPaB0aYylCzwVX72ewHpY/WE7b8OV+MIM+PLGW5lwuMCzEUYxGK5ufIv6urnadj9BixsoILTlHYZEPl/48mIIC6okplKTeajkqIZI8oXb+e7WTHZnersAJ6uOuTSS8hxS7GgzYWtIDgMR+sxLuBNHp5Bl7+3gL2O2aiZWNunHFQtulqTsyl3DZ4BGJGEDvkKwQHE1EyY210fqV5P+BKDXvEg3pQXMIoAzvNsWA1/JJUpZInmHVscpOcdegZoneZPnBrf+d0wJwkhtXXPZuZ+plnpYFBys+/Z1ujsm7xbkpT8+Pc5SwCVPYPEUKJofaE3/nO1lPLLUTlI0X/5qeYqovGkOrXQZQCz+VMkfLp6RKfZzJgkfXL5guo7UPZLAcXRM/dH6joaBPUAYhg4hU30qZoXn5/SjTD6y0ta4gj1+A4J2fzZ8MBqI12h8bJsiW936GSHkCLibHxdBqX+K3vggw95DYv+SRbEgBBinzVx3UgYQc7ptJhgm9xx1VCTA40872lvfhCgvUKOlGQLW+g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(7416002)(33716001)(5660300002)(6916009)(26005)(9686003)(83380400001)(4326008)(64756008)(66446008)(44832011)(38100700002)(54906003)(71200400001)(2906002)(122000001)(66476007)(66556008)(38070700005)(1076003)(66946007)(6506007)(6486002)(508600001)(8936002)(316002)(8676002)(91956017)(76116006)(86362001)(6512007)(186003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?jRvnZFZm51F79NE0INJN14+V+BpBTvAGsQkuvkFJFTyOuFP+40/ZVJ60cfO+?=
- =?us-ascii?Q?p3xgpeWkcZ7a4qcEoQxx84C4jixZgiQ7gLM22sO1EgquOkQXvhMmcSv4EOvi?=
- =?us-ascii?Q?DMsGAH+3ITDfR8vQYTBwpHx3RDX1TSjKS8dHJoUhovdbBSC6JOQ4h+QS9e2H?=
- =?us-ascii?Q?DoLyHDUB5iEuzcUwiJVqSRrYqz+ANFHqUIGO69cHVAz0zBaa94mxUzs9HUac?=
- =?us-ascii?Q?r3OnCsHMChn2AjCwdBuYxFlSQH5GUfXUGAjIlGwSXJc5Kx5coXqAdZE6rl5V?=
- =?us-ascii?Q?7boOgV9cxw65mXzpARQU7Gqi0IcsWW8qD+hDhw9bgC+fot6+cC1zsY2J42P9?=
- =?us-ascii?Q?3C6nSW2eHV67Nz+aGKjgroQjty7clNELq4zO/m1SUXHdn3lyXE3Z1GSjSu6p?=
- =?us-ascii?Q?ma0N40P7CBJEC4uBBdABOoT8GzcqVf91iI3Z3ODQUJWz5entTu4uzGlnqcEU?=
- =?us-ascii?Q?F+L0f8YX67T0ONxdwOVM6gUe+mlqBGFimxVq34aGq5C20uU4PsBJ+0bl7TMV?=
- =?us-ascii?Q?uQ5EXtosVcdKcyTSN5E5Sv1aRI52XAuWd6SOUgFk9Z69XxuaBpOokBN6WPxB?=
- =?us-ascii?Q?ZrDtx01/51b5TMAyBTuCYH2ZRy2o+y6JiM7/WYk3wJKS8VS+HH6hF/a1pOme?=
- =?us-ascii?Q?t8hvWzVjQryEZQ4QUBKMwnLhNtYxEfjjvPyQK8Q0JgEck2sR6ppvt7bxiUCk?=
- =?us-ascii?Q?Oza0fWSk2cses4UlDfEUEygd8hOYukQumClmOADNSvqB1y6xe+iuQzITIxiU?=
- =?us-ascii?Q?T3IEA+vhk8Og915Z+9fPF2aj/IiWBbx1FTnBlpfZWekrTTHP7ULdPmGEKP6c?=
- =?us-ascii?Q?IjfKJFX2A0VXUES8rohCtAzdaDKkyfSywutmfuhNlgRwXS+b6YD8s67rzdWf?=
- =?us-ascii?Q?YvrAN0ONmYFX0LN2nsyfVRRSDSCkYN8OZj2CATw7kDEh+dLl1DpvE2G96Mm5?=
- =?us-ascii?Q?LOe+ELlrxvnoBpKvV5Tf5zBu0HhFeQkxes1eAhIdl3+ppp2ITutDPepVYnRK?=
- =?us-ascii?Q?htuEVvM7nhApKiPaqrRY3AlPIBYvi5HEjLh1wLN13Beusfp31IjJkfh+G1Df?=
- =?us-ascii?Q?FzB1jA1nAUU7LqvO1vLkfZVkUwzPpEM+JI7cbICSxR4hhkc35k74nNB8aCQv?=
- =?us-ascii?Q?JwQcIkbWMd5jKhVwvDo93p0QjgOBOqJT0hqI/NcECi246vT8CWMHRVoHS/t2?=
- =?us-ascii?Q?WgT/ifrVY0p5mS1lL+MDbrm5YYwCx/oU20na5QJrvgo8J0MVKWpMBZoh6K3u?=
- =?us-ascii?Q?81lBUtYhYe8gTte0/jPps+I3IO6wtm/m4BJPpNe62VYjjqszEfrch9h/fChc?=
- =?us-ascii?Q?DnJtIwTmoG5abFSHV2eTMaJeKt7Mpm6gH3ZLMK2zBfBwojLWa8NT1TEvYem2?=
- =?us-ascii?Q?w6VTbnlbTqZKsXnZ1fmC17jlg+fDe95X2KFxP/49vE/jWe4vhd/RhC95n1OG?=
- =?us-ascii?Q?ORNGhyE+lxGg/RZnHmS9GurKFz5qdzqF8ot7WaBr3ZzTrwgBbD7Z+Le8PkdU?=
- =?us-ascii?Q?raWriR1bw9IUeQGy8i/4X3qWzH1dtiaJBXSeeGVeTZH1VaNDdS7ADjja+w5a?=
- =?us-ascii?Q?FOxLnQE8jYzIbc3BzCgXz3DGSV+0iNl+7j/0cwNsVR59tO2jkK0BMDIdmsYe?=
- =?us-ascii?Q?AiGNlsKzubeqC7I6EjIEnd0=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <18A326311691EE498E92B40B9B5A02C5@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S238269AbhKURSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 12:18:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229770AbhKURSu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 12:18:50 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A93EC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 09:15:45 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id c71-20020a1c9a4a000000b0032cdcc8cbafso11648700wme.3
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 09:15:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8QuktcrIwLk5vr06YXXWskp3xmCNZD0hgm87M3KqPXc=;
+        b=GD2y4JFkVOlk6MKceu9nInBCz7yHBTGflnbce0ynjcLqNDduKJouz08CFvPQfFO0HD
+         xZQ95+fY3+s/q2Nu9nZ9lpTDpy9U6oesA6iRtNxLWu60hid3SZAfAk57SzvLv94fJV3v
+         vtUp6w5RVkPPyloVmSm6kfr4pcgh7pWMEhZwn65HPoFS+Mjq4DL2aGgOmsPXdWaxWdBc
+         vfDH3gQSboqqVz6KCgLp2BGhU5es94z9XyFgQeLoSp9/vaRoffyhXU88x8j+M2Vos9KN
+         l0pRUn+ZCyK97iftXy7LwN//yb28Z14r6F6mzHiL6uh3yOYTSSfJ+nknnbWC9NZE03mp
+         wnSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8QuktcrIwLk5vr06YXXWskp3xmCNZD0hgm87M3KqPXc=;
+        b=hK6feTBiM+Ig3B8QOnGEo4Vpor7nYNi7WVfbPIbTBvw/hpyK9zmaeuRAjdeFrN9OCR
+         EcjF0y7cra5YOj6X3sKjK/qpvPkuc257tOKbQUvQXSP9G1SPWaKWvZs1aGuekKeVo021
+         Evb2vlnZSxA7fUKnYdETidJJvem0uQYYaSLdnUWxFpl9qghr3WmwjnvVq62jXBvYHQYq
+         wNl9TGFp/mG9N7DMQLBv9nOuMNUnRdjyEcFjywVB8FjETDqzmohv0ntp6WUnSPKbWs3/
+         V8EyrLu+SBiatk1f6bveB1bMox0w5ghhVERA78RDv6vmDtk+idL5938BAw+owKrnRWOo
+         WWVQ==
+X-Gm-Message-State: AOAM533P4fxNblEbEpS7hAZujrJH5TwtGKrKpgvjS9i1sasx7FGmk279
+        b9AvmusK9rb31ZbY7TqZmMLPnJ1f3JoK53LbM+ds5d8c
+X-Google-Smtp-Source: ABdhPJwA5C1LfyQQuyN1hrlMFeqWzD01l8n5Sc30QSkaMFiAMuZZuSEthFQShCeGVEDJS8DZD3kcGDA8a8kFPhCZFtQ=
+X-Received: by 2002:a1c:9814:: with SMTP id a20mr20937782wme.18.1637514944141;
+ Sun, 21 Nov 2021 09:15:44 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c6d1d9e2-1b99-4537-a3d8-08d9ad123ac6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Nov 2021 17:13:25.4850
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: eK0G2+rMBiIoRKmsNZc6g2Vjz72B/UaS7lNEgH2LsTh4cBtBZYJTWUl2uKzqRMSivZOSD6OFe9lX4Og6eFHaYw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5343
+References: <20211113120632.94754-1-xiehuan09@gmail.com> <20211113120632.94754-2-xiehuan09@gmail.com>
+ <20211119230118.2f8689d630817cb103161402@kernel.org>
+In-Reply-To: <20211119230118.2f8689d630817cb103161402@kernel.org>
+From:   Jeff Xie <xiehuan09@gmail.com>
+Date:   Mon, 22 Nov 2021 01:15:31 +0800
+Message-ID: <CAEr6+EAcfhF15vsYrkBWsjZEFe=LZ4ZfbgPM2BC9sGpweofEfA@mail.gmail.com>
+Subject: Re: [RFC][PATCH v5 2/4] trace/objtrace: get the value of the object
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, mingo@redhat.com,
+        Tom Zanussi <zanussi@kernel.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 02:43:11PM -0800, Colin Foster wrote:
-> Initial Felix-driver products (VSC9959 and VSC9953) both had quirks
-> where the PCS was in charge of rate adaptation. In the case of the
-> VSC7512 there is a differnce in that some ports (ports 0-3) don't have
-> a PCS and others might have different quirks based on how they are
-> configured.
->=20
-> This adds a generic method by which any port can have any quirks that
-> are handled by each device's driver.
->=20
-> Signed-off-by: Colin Foster <colin.foster@in-advantage.com>
-> ---
->  drivers/net/dsa/ocelot/felix.c           | 20 +++++++++++++++++---
->  drivers/net/dsa/ocelot/felix.h           |  4 ++++
->  drivers/net/dsa/ocelot/felix_vsc9959.c   |  1 +
->  drivers/net/dsa/ocelot/seville_vsc9953.c |  1 +
->  4 files changed, 23 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/net/dsa/ocelot/felix.c b/drivers/net/dsa/ocelot/feli=
-x.c
-> index 2a90a703162d..5be2baa83bd8 100644
-> --- a/drivers/net/dsa/ocelot/felix.c
-> +++ b/drivers/net/dsa/ocelot/felix.c
-> @@ -824,14 +824,25 @@ static void felix_phylink_mac_config(struct dsa_swi=
-tch *ds, int port,
->  		phylink_set_pcs(dp->pl, &felix->pcs[port]->pcs);
->  }
-> =20
-> +unsigned long felix_quirks_have_rate_adaptation(struct ocelot *ocelot,
-> +						int port)
-> +{
-> +	return FELIX_MAC_QUIRKS;
-> +}
-> +EXPORT_SYMBOL(felix_quirks_have_rate_adaptation);
-> +
+Hi Masami,
 
-I would prefer if you don't introduce an actual virtual function for
-this. An unsigned long bitmask constant per device family should be
-enough. Even if we end up in a situation where internal PHY ports have
-one set of quirks and SERDES ports another, I would rather keep all
-quirks in a global namespace from 0 to 31, or whatever. So the quirks
-can be per device, instead or per port, and they can still say "this
-device's internal PHY ports need this", or "this device's SERDES ports
-need that". Does that make sense?
+On Fri, Nov 19, 2021 at 10:01 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> Hi Jeff,
+>
+> On Sat, 13 Nov 2021 20:06:30 +0800
+> Jeff Xie <xiehuan09@gmail.com> wrote:
+>
+> Please describe here what feature this patch adds.
+> How to use, and new syntax, etc.
+>
+> BTW, the syntax for this value trace is a bit confusing.
+>
+> objtrace:add:OFFS(OBJ):TYPE[:COUNT]
+>
+> This trace "OBJ", but from the user point of view, this seems to trace
+> "OFFS(OBJ)".
+>
+> I rather like make it optional and split from OBJ as below;
+>
+> objtrace:add:OBJ[,OFFS:TYPE][:COUNT]
+>
+> (Note that the part braced by [] is optional.)
 
->  static void felix_phylink_mac_link_down(struct dsa_switch *ds, int port,
->  					unsigned int link_an_mode,
->  					phy_interface_t interface)
->  {
->  	struct ocelot *ocelot =3D ds->priv;
-> +	unsigned long quirks;
-> +	struct felix *felix;
-> =20
-> +	felix =3D ocelot_to_felix(ocelot);
-> +	quirks =3D felix->info->get_quirks_for_port(ocelot, port);
->  	ocelot_phylink_mac_link_down(ocelot, port, link_an_mode, interface,
-> -				     FELIX_MAC_QUIRKS);
-> +				     quirks);
->  }
-> =20
->  static void felix_phylink_mac_link_up(struct dsa_switch *ds, int port,
-> @@ -842,11 +853,14 @@ static void felix_phylink_mac_link_up(struct dsa_sw=
-itch *ds, int port,
->  				      bool tx_pause, bool rx_pause)
->  {
->  	struct ocelot *ocelot =3D ds->priv;
-> -	struct felix *felix =3D ocelot_to_felix(ocelot);
-> +	unsigned long quirks;
-> +	struct felix *felix;
-> =20
-> +	felix =3D ocelot_to_felix(ocelot);
-> +	quirks =3D felix->info->get_quirks_for_port(ocelot, port);
->  	ocelot_phylink_mac_link_up(ocelot, port, phydev, link_an_mode,
->  				   interface, speed, duplex, tx_pause, rx_pause,
-> -				   FELIX_MAC_QUIRKS);
-> +				   quirks);
-> =20
->  	if (felix->info->port_sched_speed_set)
->  		felix->info->port_sched_speed_set(ocelot, port, speed);
-> diff --git a/drivers/net/dsa/ocelot/felix.h b/drivers/net/dsa/ocelot/feli=
-x.h
-> index 515bddc012c0..251463f7e882 100644
-> --- a/drivers/net/dsa/ocelot/felix.h
-> +++ b/drivers/net/dsa/ocelot/felix.h
-> @@ -52,6 +52,7 @@ struct felix_info {
->  					u32 speed);
->  	struct regmap *(*init_regmap)(struct ocelot *ocelot,
->  				      struct resource *res);
-> +	unsigned long (*get_quirks_for_port)(struct ocelot *ocelot, int port);
->  };
-> =20
->  extern const struct dsa_switch_ops felix_switch_ops;
-> @@ -72,4 +73,7 @@ struct felix {
->  struct net_device *felix_port_to_netdev(struct ocelot *ocelot, int port)=
-;
->  int felix_netdev_to_port(struct net_device *dev);
-> =20
-> +unsigned long felix_quirks_have_rate_adaptation(struct ocelot *ocelot,
-> +						int port);
-> +
->  #endif
-> diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/oce=
-lot/felix_vsc9959.c
-> index 4ddec3325f61..7fc5cf28b7d9 100644
-> --- a/drivers/net/dsa/ocelot/felix_vsc9959.c
-> +++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
-> @@ -2166,6 +2166,7 @@ static const struct felix_info felix_info_vsc9959 =
-=3D {
->  	.port_setup_tc		=3D vsc9959_port_setup_tc,
->  	.port_sched_speed_set	=3D vsc9959_sched_speed_set,
->  	.init_regmap		=3D ocelot_regmap_init,
-> +	.get_quirks_for_port	=3D felix_quirks_have_rate_adaptation,
->  };
-> =20
->  static irqreturn_t felix_irq_handler(int irq, void *data)
-> diff --git a/drivers/net/dsa/ocelot/seville_vsc9953.c b/drivers/net/dsa/o=
-celot/seville_vsc9953.c
-> index ce30464371e2..c996fc45dc5e 100644
-> --- a/drivers/net/dsa/ocelot/seville_vsc9953.c
-> +++ b/drivers/net/dsa/ocelot/seville_vsc9953.c
-> @@ -1188,6 +1188,7 @@ static const struct felix_info seville_info_vsc9953=
- =3D {
->  	.phylink_validate	=3D vsc9953_phylink_validate,
->  	.prevalidate_phy_mode	=3D vsc9953_prevalidate_phy_mode,
->  	.init_regmap		=3D ocelot_regmap_init,
-> +	.get_quirks_for_port	=3D felix_quirks_have_rate_adaptation,
->  };
-> =20
->  static int seville_probe(struct platform_device *pdev)
-> --=20
-> 2.25.1
->=
+Thank you for your suggestion, it does seem clearer, I will modify it like this.
+
+> Thank you,
+>
+> > Signed-off-by: Jeff Xie <xiehuan09@gmail.com>
+> > ---
+> >  kernel/trace/trace_entries.h |   5 +-
+> >  kernel/trace/trace_object.c  | 121 +++++++++++++++++++++++++++++------
+> >  kernel/trace/trace_output.c  |   6 +-
+> >  3 files changed, 107 insertions(+), 25 deletions(-)
+> >
+> > diff --git a/kernel/trace/trace_entries.h b/kernel/trace/trace_entries.h
+> > index bb120d9498a9..2407c45a568c 100644
+> > --- a/kernel/trace/trace_entries.h
+> > +++ b/kernel/trace/trace_entries.h
+> > @@ -413,8 +413,9 @@ FTRACE_ENTRY(object, trace_object_entry,
+> >               __field(        unsigned long,          ip              )
+> >               __field(        unsigned long,          parent_ip       )
+> >               __field(        unsigned long,          object          )
+> > +             __field(        unsigned long,          value           )
+> >       ),
+> >
+> > -     F_printk(" %ps <-- %ps object:%lx\n",
+> > -              (void *)__entry->ip, (void *)__entry->parent_ip, __entry->object)
+> > +     F_printk(" %ps <-- %ps object:%lx value:%lx\n", (void *)__entry->ip,
+> > +            (void *)__entry->parent_ip, __entry->object, __entry->value)
+> >  );
+> > diff --git a/kernel/trace/trace_object.c b/kernel/trace/trace_object.c
+> > index 69465c2ffb7e..14993f7d0e5a 100644
+> > --- a/kernel/trace/trace_object.c
+> > +++ b/kernel/trace/trace_object.c
+> > @@ -11,14 +11,25 @@
+> >
+> >  static DEFINE_PER_CPU(atomic_t, trace_object_event_disable);
+> >  static struct trace_event_file event_trace_file;
+> > -static const int max_args_num = 6;
+> >  static const int max_obj_pool = 10;
+> >  static atomic_t trace_object_ref;
+> >  static int exit_trace_object(void);
+> >  static int init_trace_object(void);
+> >
+> > +struct objtrace_trigger_data {
+> > +     struct ftrace_event_field *field;
+> > +     long offset;
+> > +     int type_size;
+> > +};
+> > +
+> > +struct objtrace_fetch_type {
+> > +     char *name;
+> > +     int type_size;
+> > +};
+> > +
+> >  struct object_instance {
+> >       void *object;
+> > +     int obj_type_size;
+> >       struct freelist_node freelist;
+> >  };
+> >
+> > @@ -59,8 +70,7 @@ static bool object_empty(void)
+> >       return ret;
+> >  }
+> >
+> > -
+> > -static void set_trace_object(void *obj)
+> > +static void set_trace_object(void *obj, int type_size)
+> >  {
+> >       struct freelist_node *fn;
+> >       struct object_instance *ins;
+> > @@ -79,6 +89,7 @@ static void set_trace_object(void *obj)
+> >
+> >       ins = container_of(fn, struct object_instance, freelist);
+> >       ins->object = obj;
+> > +     ins->obj_type_size = type_size;
+> >
+> >       freelist_add(&ins->freelist, &obj_pool->customer_freelist);
+> >       atomic_inc(&obj_pool->nobject);
+> > @@ -135,7 +146,7 @@ static int init_object_pool(void)
+> >  }
+> >
+> >  static void submit_trace_object(unsigned long ip, unsigned long parent_ip,
+> > -                              unsigned long object)
+> > +                              unsigned long object, unsigned long value)
+> >  {
+> >
+> >       struct trace_buffer *buffer;
+> > @@ -152,6 +163,7 @@ static void submit_trace_object(unsigned long ip, unsigned long parent_ip,
+> >       entry->ip                       = ip;
+> >       entry->parent_ip                = parent_ip;
+> >       entry->object                   = object;
+> > +     entry->value                    = value;
+> >
+> >       event_trigger_unlock_commit(&event_trace_file, buffer, event,
+> >               entry, pc);
+> > @@ -161,10 +173,11 @@ static void
+> >  trace_object_events_call(unsigned long ip, unsigned long parent_ip,
+> >               struct ftrace_ops *op, struct ftrace_regs *fregs)
+> >  {
+> > -     struct pt_regs *pt_regs = ftrace_get_regs(fregs);
+> > -     unsigned long obj;
+> > +     struct freelist_node *node;
+> > +     struct object_instance *inst;
+> > +     unsigned long val = 0;
+> >       long disabled;
+> > -     int cpu, n;
+> > +     int cpu;
+> >
+> >       preempt_disable_notrace();
+> >
+> > @@ -177,10 +190,14 @@ trace_object_events_call(unsigned long ip, unsigned long parent_ip,
+> >       if (object_empty())
+> >               goto out;
+> >
+> > -     for (n = 0; n < max_args_num; n++) {
+> > -             obj = regs_get_kernel_argument(pt_regs, n);
+> > -             if (object_exist((void *)obj))
+> > -                     submit_trace_object(ip, parent_ip, obj);
+> > +     node = obj_pool->customer_freelist.head;
+> > +
+> > +     while (node) {
+> > +             inst = container_of(node, struct object_instance, freelist);
+> > +             if (copy_from_kernel_nofault(&val, inst->object, inst->obj_type_size))
+> > +                     goto out;
+> > +             submit_trace_object(ip, parent_ip, (unsigned long)inst->object, val);
+> > +             node = node->next;
+> >       }
+> >
+> >  out:
+> > @@ -198,12 +215,14 @@ trace_object_trigger(struct event_trigger_data *data,
+> >                  struct trace_buffer *buffer,  void *rec,
+> >                  struct ring_buffer_event *event)
+> >  {
+> > +     struct objtrace_trigger_data *obj_data = data->private_data;
+> > +     struct ftrace_event_field *field;
+> > +     void *obj, *val = NULL;
+> >
+> > -     struct ftrace_event_field *field = data->private_data;
+> > -     void *obj = NULL;
+> > -
+> > -     memcpy(&obj, rec + field->offset, sizeof(obj));
+> > -     set_trace_object(obj);
+> > +     field = obj_data->field;
+> > +     memcpy(&val, rec + field->offset, sizeof(val));
+> > +     obj = val + obj_data->offset;
+> > +     set_trace_object(obj, obj_data->type_size);
+> >  }
+> >
+> >  static void
+> > @@ -350,6 +369,22 @@ static void unregister_object_trigger(char *glob, struct event_trigger_ops *ops,
+> >       }
+> >  }
+> >
+> > +static const struct objtrace_fetch_type objtrace_fetch_types[] = {
+> > +     {"u8", 1},
+> > +     {"s8", 1},
+> > +     {"x8", 1},
+> > +     {"u16", 2},
+> > +     {"s16", 2},
+> > +     {"x16", 2},
+> > +     {"u32", 4},
+> > +     {"s32", 4},
+> > +     {"x32", 4},
+> > +     {"u64", 8},
+> > +     {"s64", 8},
+> > +     {"x64", 8},
+> > +     {}
+> > +};
+> > +
+> >  static int
+> >  event_object_trigger_callback(struct event_command *cmd_ops,
+> >                      struct trace_event_file *file,
+> > @@ -357,13 +392,15 @@ event_object_trigger_callback(struct event_command *cmd_ops,
+> >  {
+> >       struct event_trigger_data *trigger_data;
+> >       struct event_trigger_ops *trigger_ops;
+> > +     struct objtrace_trigger_data *obj_data;
+> >       struct trace_event_call *call;
+> >       struct ftrace_event_field *field;
+> >       char *objtrace_cmd;
+> > +     long offset = 0;
+> >       char *trigger = NULL;
+> > -     char *arg;
+> > +     char *arg, *type, *tr, *tr_end;
+> >       char *number;
+> > -     int ret;
+> > +     int ret, i, type_size = 0;
+> >
+> >       ret = -EINVAL;
+> >       if (!param)
+> > @@ -386,6 +423,38 @@ event_object_trigger_callback(struct event_command *cmd_ops,
+> >       arg = strsep(&trigger, ":");
+> >       if (!arg)
+> >               goto out;
+> > +
+> > +     tr = strchr(arg, '(');
+> > +     /* now force to get the value of the val. */
+> > +     if (!tr)
+> > +             goto out;
+> > +     tr_end = strchr(tr, ')');
+> > +     if (!tr_end)
+> > +             goto out;
+> > +     *tr++ = '\0';
+> > +     *tr_end = '\0';
+> > +     ret = kstrtol(arg, 0, &offset);
+> > +     if (ret)
+> > +             goto out;
+> > +     arg = tr;
+> > +     ret = -EINVAL;
+> > +     if (!trigger)
+> > +             goto out;
+> > +
+> > +     type = strsep(&trigger, ":");
+> > +     if (!type)
+> > +             goto out;
+> > +     for (i = 0; objtrace_fetch_types[i].name; i++) {
+> > +             if (strcmp(objtrace_fetch_types[i].name, type) == 0) {
+> > +                     type_size = objtrace_fetch_types[i].type_size;
+> > +                     break;
+> > +             }
+> > +     }
+> > +
+> > +     if (type_size == 0)
+> > +             goto out;
+> > +
+> > +
+> >       call = file->event_call;
+> >       field = trace_find_event_field(call, arg);
+> >       if (!field)
+> > @@ -394,19 +463,30 @@ event_object_trigger_callback(struct event_command *cmd_ops,
+> >       trigger_ops = cmd_ops->get_trigger_ops(cmd, trigger);
+> >
+> >       ret = -ENOMEM;
+> > +     obj_data = kzalloc(sizeof(*obj_data), GFP_KERNEL);
+> > +     if (!obj_data)
+> > +             goto out;
+> > +
+> > +     obj_data->field = field;
+> > +     obj_data->offset = offset;
+> > +     obj_data->type_size = type_size;
+> > +
+> >       trigger_data = kzalloc(sizeof(*trigger_data), GFP_KERNEL);
+> > -     if (!trigger_data)
+> > +     if (!trigger_data) {
+> > +             kfree(obj_data);
+> >               goto out;
+> > +     }
+> >
+> >       trigger_data->count = -1;
+> >       trigger_data->ops = trigger_ops;
+> >       trigger_data->cmd_ops = cmd_ops;
+> > -     trigger_data->private_data = field;
+> > +     trigger_data->private_data = obj_data;
+> >       INIT_LIST_HEAD(&trigger_data->list);
+> >       INIT_LIST_HEAD(&trigger_data->named_list);
+> >
+> >       if (glob[0] == '!') {
+> >               cmd_ops->unreg(glob+1, trigger_ops, trigger_data, file);
+> > +             kfree(obj_data);
+> >               kfree(trigger_data);
+> >               ret = 0;
+> >               goto out;
+> > @@ -461,6 +541,7 @@ event_object_trigger_callback(struct event_command *cmd_ops,
+> >   out_free:
+> >       if (cmd_ops->set_filter)
+> >               cmd_ops->set_filter(NULL, trigger_data, NULL);
+> > +     kfree(obj_data);
+> >       kfree(trigger_data);
+> >       goto out;
+> >  }
+> > diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+> > index 76ca560af693..c8c427c23127 100644
+> > --- a/kernel/trace/trace_output.c
+> > +++ b/kernel/trace/trace_output.c
+> > @@ -1562,6 +1562,7 @@ static enum print_line_t trace_object_print(struct trace_iterator *iter, int fla
+> >       trace_assign_type(field, iter->ent);
+> >       print_fn_trace(s, field->ip, field->parent_ip, flags);
+> >       trace_seq_printf(s, " object:0x%lx", field->object);
+> > +     trace_seq_printf(s, " value:0x%lx", field->value);
+> >       trace_seq_putc(s, '\n');
+> >
+> >       return trace_handle_return(s);
+> > @@ -1574,9 +1575,8 @@ static enum print_line_t trace_object_raw(struct trace_iterator *iter, int flags
+> >
+> >       trace_assign_type(field, iter->ent);
+> >
+> > -     trace_seq_printf(&iter->seq, "%lx %lx\n",
+> > -                      field->ip,
+> > -                      field->parent_ip);
+> > +     trace_seq_printf(&iter->seq, "%lx %lx %lx %lx\n", field->ip,
+> > +                     field->parent_ip, field->object, field->value);
+> >
+> >       return trace_handle_return(&iter->seq);
+> >  }
+> > --
+> > 2.25.1
+> >
+>
+>
+> --
+> Masami Hiramatsu <mhiramat@kernel.org>
+
+Thanks,
+---
+JeffXie
