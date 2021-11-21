@@ -2,113 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A46884584C4
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 17:48:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE5A4584ED
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 17:56:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238146AbhKUQvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 11:51:39 -0500
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:49356
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237885AbhKUQvd (ORCPT
+        id S238306AbhKUQ75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 11:59:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237304AbhKUQ74 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 11:51:33 -0500
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 8F5EE4001C
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 16:48:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1637513307;
-        bh=K8WNLh2BhNltzeUMzWCHhBj0rP6siNBgFRXvuYUpglA=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=XS0scDyAfhoejAEElxhW8ih9X6w/Li/cXcwoVbVgEbJr6Rv8ebxnu7X+mJBvFpRQq
-         H7u/1N4HxJvU77HdnhRwijtd9vRpnHWhCnFUZoiGCP/zt+FBiecqcTeObbKeEYpK1t
-         WnxT+W4M8fHCXZoAYOp0vldU32/gtS5LHVmDt13NApO1TFvvFMV7WfkDOd7jXYrBhR
-         tZDeB3ScYK7oulc8dpw+Qh5PyGIQa2mNpWz9qFrR8+hgxmi+2l/ZPFQVuJWCfQ/8jg
-         vmI28leUo3Ftzvlh+5R4jaZSoySykHyswxa14xG77baqVQyImTSayayAmrhyEEFoy6
-         urb3VZTxIp3Rw==
-Received: by mail-lf1-f69.google.com with SMTP id x17-20020a0565123f9100b003ff593b7c65so10329113lfa.12
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 08:48:27 -0800 (PST)
+        Sun, 21 Nov 2021 11:59:56 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CFD5C06173E
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 08:56:51 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id n12so69326354lfe.1
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 08:56:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7osbeXL+1CyqsigAAd8jmW1+rCcPt1AGKsERDXyK0YI=;
+        b=WUPLA7RjKT3xPKZygE2w3taTSB5twgC2eq9PDKRSfa1PPRPzL8+MkrBce6yGyEQAF3
+         mch1OD1BCukVhN6aLSfIVkkcG0gMVKtrHW1pG6CDGBi6xuiUvY10g5mkWODWvIxjtDT/
+         CqWkbj/89y2AA5AqjgVj1mgOKlVbu06qKpMHEATr0ktsCsf7EYNtlAReE76UNjnUF+0V
+         g5sZTk9B5EisOc+ijKVqOct9b8Z8atujfDodfxJ4G3YyvUiLbcIaH5EPLFLw/soSbG9U
+         VPkHAdl8YpHZg/PfDSsksahOIPDbJEJpSv4JTwE8r9wF3tU5HMIC0bfe0A7CZ+cc87qR
+         2wcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=K8WNLh2BhNltzeUMzWCHhBj0rP6siNBgFRXvuYUpglA=;
-        b=KOGMt4o5Ycl3hIZSVqtRK8H+zIK49dn/herxzIqKe96rKQZpU7C2rUj0NZ9Ox3W9HU
-         PsdddMMh6pB43j48U5hdCmrAHjzz9FQoHYkA6df+Yc+nc9n5uMsZdSKBQOqa+mzA2FLC
-         97JzXqpuMtBT5ARioc4Z+3pQy8K0P6nN2k8otR++MPldslArO2qJ7v6LP7qwnN0VMX1i
-         hMhbwGv+2oJJELpVXMZwffZLD1Jz0mYj0O64yzrVXs/qjDkMGkWJSHZx6lrvk0kjkzFF
-         tKTxhv844Oix1c/S4RVzUGAIXv91GGfzTBZ3ciWFMw/D4xbmSnJ9M4cd7r48jTJspHyW
-         QMNA==
-X-Gm-Message-State: AOAM533vJjfE3DrRX8iF4WfdK1r3qwV9+d4iqzkfKE/8gQ40QC6ABq5E
-        Ym3jkxn1b1QcOr8CGz5JnZ8rxTJmNqBTC/YL6W33bPyqYap+m41xgo68JUyEkAHpapTHoXIvrLU
-        ZDh3bYHhPSwg2em5LHpCVXe1pIEoi2Oa9ISWv0/qxBQ==
-X-Received: by 2002:a2e:141e:: with SMTP id u30mr44782268ljd.434.1637513306837;
-        Sun, 21 Nov 2021 08:48:26 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzivQ+d3pUhfOFGcDUzWT7iqm/ykn54rpcjdMc9CACB6IBgMojuJVrO+qMAr6C3C6u/fB2log==
-X-Received: by 2002:a2e:141e:: with SMTP id u30mr44782237ljd.434.1637513306650;
-        Sun, 21 Nov 2021 08:48:26 -0800 (PST)
-Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id bp41sm692511lfb.129.2021.11.21.08.48.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Nov 2021 08:48:26 -0800 (PST)
-Message-ID: <5e5bc9ca-b648-e465-1638-adb0a26500de@canonical.com>
-Date:   Sun, 21 Nov 2021 17:48:24 +0100
+        bh=7osbeXL+1CyqsigAAd8jmW1+rCcPt1AGKsERDXyK0YI=;
+        b=i+u4c4RKFaTbJdWFe+Ats+ZzjXSvt0Ijtj5BwkiMtDd+LBP5Xm2FeDr9iLFw6o5b2E
+         87/SNCcPc4mRPsRp8j49hhuvFJCSiNdzNhWZlq6SpJJfx7C5pMXNHxB9NTHQrtyZrH5g
+         D1ydUyWURzPKfW2lQ3eNvykYEkX/X7ti2bJ3d/GdAwxLDh7dMayqpoNmDszgJiTMli28
+         qJKfcUJmtYASPKawORE229Kw8ebxxtO/nlomnWFv0GI98TFtx5bi+c/ZOmINNwujoOid
+         rf0CNG2ZKm270qWqebzzuEqE+HslQpKExgt+z0lYtfTualtpnpKzWZoCGkJTfUg4RA3k
+         u4eg==
+X-Gm-Message-State: AOAM530b0dhwGmG3EXLHb1BjM3jApSsDJQ7QNn1Cbi5SthoLSJDE6XqQ
+        pECiqAP65VRhC5MCuj/ihPZ/uA==
+X-Google-Smtp-Source: ABdhPJzKRvqwD4Q6Xp7gSwZpW/mjFpjkrELigO8PKAoLdpnI45QpaFepdc7bJOl5p9prPFM6xBC0eA==
+X-Received: by 2002:a2e:a593:: with SMTP id m19mr46616034ljp.407.1637513809310;
+        Sun, 21 Nov 2021 08:56:49 -0800 (PST)
+Received: from localhost ([31.134.121.151])
+        by smtp.gmail.com with ESMTPSA id g30sm614429lja.22.2021.11.21.08.56.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Nov 2021 08:56:48 -0800 (PST)
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: [PATCH v4 00/12] watchdog: s3c2410: Add Exynos850 support
+Date:   Sun, 21 Nov 2021 18:56:35 +0200
+Message-Id: <20211121165647.26706-1-semen.protsenko@linaro.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v4 4/9] dt-bindings: mfd: add Maxim MAX77714 PMIC
-Content-Language: en-US
-To:     Luca Ceresoli <luca@lucaceresoli.net>, linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        Chiwoong Byun <woong.byun@samsung.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rob Herring <robh@kernel.org>
-References: <20211120155707.4019487-1-luca@lucaceresoli.net>
- <20211120155707.4019487-5-luca@lucaceresoli.net>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20211120155707.4019487-5-luca@lucaceresoli.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/2021 16:57, Luca Ceresoli wrote:
-> Add bindings for the MAX77714 PMIC with GPIO, RTC and watchdog.
-> 
-> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> 
-> ---
-> 
-> Changes in v4: none
-> 
-> Changes in v3:
->  - add 'regulators' node (Krzysztof Kozlowski, Rob Herring)
-> 
-> Changes in v2: none
-> ---
->  .../bindings/mfd/maxim,max77714.yaml          | 68 +++++++++++++++++++
->  MAINTAINERS                                   |  5 ++
->  2 files changed, 73 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/maxim,max77714.yaml
-> 
+Exynos850 WDT IP-core differs a bit from existing platforms:
+  - Another set of PMU registers
+  - Separate WDT instance for each CPU cluster, having different PMU
+    registers/bits
+  - Source clock is different from PCLK
 
+Implement all missing features above and enable Exynos850 WDT support.
+While at it, do a bit of cleaning up.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Changes in v4:
+  - Fixed build error when CONFIG_OF is disabled (found by 0-day)
+  - Added R-b tag by Guenter Roeck to all patches
 
+Changes in v3:
+  - Renamed "samsung,index" property to more descriptive
+    "samsung,cluster-index"
+  - bindings: Disabled "samsung,cluster-index" property for SoCs other
+    than Exynos850
+  - Added quirks documentation
+  - Removed has_src_clk field: clk framework can handle NULL clk; added
+    s3c2410wdt_get_freq() function instead, to figure out which clock to
+    use for getting the rate
+  - Used pre-defined and completely set driver data for cluster0 and
+    cluster1
+  - Coding style changes
+  - Added R-b tags
 
-Best regards,
-Krzysztof
+Changes in v2:
+  - Added patch to fail probe if no valid timeout was found, as
+    suggested by Guenter Roeck (03/12)
+  - Extracted code for separating disable/mask functions into separate
+    patch (06/12)
+  - Added patch for inverting mask register value (07/12)
+  - Extracted PMU cleanup code to separate patch, to ease the review and
+    porting (09/12)
+  - Added patch for removing not needed 'err' label in probe function
+    (11/12)
+  - Addressed all outstanding review comments on mailing list
+
+Sam Protsenko (12):
+  dt-bindings: watchdog: Require samsung,syscon-phandle for Exynos7
+  dt-bindings: watchdog: Document Exynos850 watchdog bindings
+  watchdog: s3c2410: Fail probe if can't find valid timeout
+  watchdog: s3c2410: Let kernel kick watchdog
+  watchdog: s3c2410: Make reset disable register optional
+  watchdog: s3c2410: Extract disable and mask code into separate
+    functions
+  watchdog: s3c2410: Implement a way to invert mask reg value
+  watchdog: s3c2410: Add support for WDT counter enable register
+  watchdog: s3c2410: Cleanup PMU related code
+  watchdog: s3c2410: Support separate source clock
+  watchdog: s3c2410: Remove superfluous err label
+  watchdog: s3c2410: Add Exynos850 support
+
+ .../bindings/watchdog/samsung-wdt.yaml        |  48 ++-
+ drivers/watchdog/s3c2410_wdt.c                | 324 +++++++++++++-----
+ 2 files changed, 289 insertions(+), 83 deletions(-)
+
+-- 
+2.30.2
+
