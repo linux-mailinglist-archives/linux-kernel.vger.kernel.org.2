@@ -2,143 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C57E45870A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 00:24:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88CB545870E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 00:27:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbhKUX1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 18:27:20 -0500
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:7720 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbhKUX1T (ORCPT
+        id S230090AbhKUXau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 18:30:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229780AbhKUXau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 18:27:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1637537053; x=1669073053;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=tlwdWbWglkxZo5YzvFa5+BGoWfDC7z1mUE2T+vWMsiI=;
-  b=ZCYdHqIBQLoyu+KfryOdvVQsBTPaWB58rbghZGdU7cRKFe45YGAPXAQA
-   pYcwrw3Yb9gg2gX9B8+JcIPpBM44rLBOGA9JRqYJ1Eh/xmvpqtsy6CmGh
-   O3ls5nyMDT+qXA3N3TitgObjhiHHsWlusgSKNyH7EJRpQ77LsnSgN2AL/
-   hkAKEZXgFomwbTkwTB+oA8qISX3d+vD7phDR0sNgZwNGOMfnVhZyKjg8G
-   J3yf/haYZVOsWjKQ4hecDx7/UieIU8DgQ+4RcNaCWqV3qV1TvYCpP6l5X
-   0VHnajgnPlFXfd43uwpdhGRpY8aV65VA1zVpsyU0LRKKY9bRiN8csLU+9
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.87,253,1631548800"; 
-   d="scan'208";a="185247300"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 22 Nov 2021 07:24:13 +0800
-IronPort-SDR: NQYcxpNR5w/IhKkFWRqZvr3r5bYRbaP11/W2oHGDSXvPOj5eYnsmrhAJh4HFhFUO8NUfiCyMC6
- c1yizx4vXLWMJ5YgnPvF/wFP1ehV9ma3QR8BOMsGSWtIwkIMx3G3MwY8rDfazHLcstSLxgCOxM
- VBbZM0MORXgjVOHfsWz9lBVX4rTcmSZ2QlKEe+PZu2qjg8qRdVssFGpDR475f3X01ZYM2pmhGY
- 5jDcNxAn4gxQqw2CYsPT9W+7Cnmfppq14zmPVqcTrutT+vNFvyjn4MnAzc6JbMUBJiOJu3OBIP
- tAb8dy+2LLpAw9+oRhji8ZHa
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2021 14:57:37 -0800
-IronPort-SDR: kDzkV0RtnLeRDey3oa0L9EXhUYu5ZOpJWPwqBDYa8mSYk9nzubrU0Y8Yg0dLoFR9GyvcUj076j
- H+VoluwBH4WqEAIhfdyBTB40trvzCr4fVFoxvumeSpZmr8AUlyaAsOfOv40ivAPU1J4U0TSGMo
- WfEhwzo2dYBNBJnkrXaWd+njT7HJx4gHginvl+NhZ6X6qJ1QfmdcxQv1U3V/ZGe/zQ03auViRn
- tbqj1Y79KPYly06B/WlzChKUEpG2NAk7gX7PLA4dQsD6i7aSIjxyjQ7+492gkrk9QmGPaExaET
- v/Y=
-WDCIronportException: Internal
-Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2021 15:24:15 -0800
-Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4Hy6183n2Qz1RtVv
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 15:24:12 -0800 (PST)
-Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)"
-        header.d=opensource.wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-        opensource.wdc.com; h=content-transfer-encoding:content-type
-        :in-reply-to:organization:from:references:to:content-language
-        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
-        1637537051; x=1640129052; bh=tlwdWbWglkxZo5YzvFa5+BGoWfDC7z1mUE2
-        T+vWMsiI=; b=DnSnRNGG6BynAEvTGN5AppgQL4iHbRy3x5PqjncUbtH7qSD0jgk
-        HVFZKFrZgBe6+ZYOaCOZESO8Z/UQM05LgZmmHJvsZ99W/5kBsSsKZIl4gS2ij0mh
-        2Cdjx+1vNbAf7zfZ4XcEVJUa6pmFPiTUW7BvEjVjWP7YIar88aMqaBu7DbAZBlYE
-        HdXZzW3MhZ3DxeMzKgSGw09XGjWYD8pD87Y/vnYnhqp/1O1Ut24e5n2z155OTIYB
-        4oyCtlMg6GrZqLxWOSKuSobKf72KH8d/d3tYJXHY2Lf+iYTxGP2BGVbemMTMYSrq
-        E0n6LlCaeNruYFhr9ubGaH9hyIpn2wIpHOw==
-X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
-Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
-        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id qLqHCFN8HTai for <linux-kernel@vger.kernel.org>;
-        Sun, 21 Nov 2021 15:24:11 -0800 (PST)
-Received: from [10.225.54.48] (unknown [10.225.54.48])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4Hy6163Xtcz1RtVl;
-        Sun, 21 Nov 2021 15:24:10 -0800 (PST)
-Message-ID: <f45d8750-4dfb-ec46-4ef9-a96169722ca4@opensource.wdc.com>
-Date:   Mon, 22 Nov 2021 08:24:08 +0900
+        Sun, 21 Nov 2021 18:30:50 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B1AC06173E
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 15:27:44 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id u3so72049997lfl.2
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 15:27:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S/y2Kn8oygwVIw9lHmxg8VDs1DipgumUOS8XzTiyOsU=;
+        b=eV49/GXY3ZioR5KCVbQdQdb0HGYbBDnWGEI7zVz5iAJxaBoHolB7hBvjl/b+xC6xCc
+         EcjjTCKhCfWAzb93zYheTsWA0lt4hPkCLZL9HtQRFZnFcZfYRCoG0ZeNvrM07hwsFoCV
+         mGKXU8qXUOtTin1366adw7r5Km6ZsIjf32NKre6QTokEjz92J3Jd6JW9uwHhgeYIdNn8
+         Ro7KM34j6ZMdOatdOgzVKAmO8ko6wEGF0+nu2w9wi6dmTudea0kZR0BaNTLxrgGphdJu
+         6nhHjaDAhH2nUVG4CB7ZLDEZ7YFTc2utNuC3Tira+a3zbVcAWu+NaEjHV+jWI+IfoWJ7
+         qxZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S/y2Kn8oygwVIw9lHmxg8VDs1DipgumUOS8XzTiyOsU=;
+        b=JOqOFFFbGGaoe7tFZvO2L37Go/JOt1KCRWesSD5PzM8dyVvh93FflK0mQBRrcyYHMT
+         pCC+pxQyvqnlYPib3IvW2qRJV++oI4VWAejMB+ev6vMfpk1uRR4otMVEUGu8bOoH/Jy8
+         ENGTyyS3jToEc+gnzcgHIQ7z3Xe4vXMNXZFtDXapdE92+s4E3cNs34NW4IKexqHX3DTz
+         4e5tkp2mw4fgzAgQn5w1dUEa4ECr//3nSWg+TXqEaAs6IoSEZB3nD10unOMzlqcW0+fu
+         lzLLTKMSvGlfkHk5e1IhlQqwiUXrZeYEIEVa7SZFh3pTTEkBrCMdGjG9yH7MKpUucvIL
+         OtGw==
+X-Gm-Message-State: AOAM533fSQJWWU9xuHsrLQOkc8SJrneHxwud9ZyJykvDHIOaKW5QrieP
+        Mxgb+XBM58PiDP1VivDvPRIXKQ==
+X-Google-Smtp-Source: ABdhPJwR3sqr8nwxIXnSTyEMLZqeyhXKmPjaWT8w9k9jEqiYszGxV9YsWV6WDGESVr+GY1ln3aaeiQ==
+X-Received: by 2002:a05:6512:159d:: with SMTP id bp29mr51450000lfb.257.1637537262579;
+        Sun, 21 Nov 2021 15:27:42 -0800 (PST)
+Received: from localhost ([31.134.121.151])
+        by smtp.gmail.com with ESMTPSA id z3sm780779lfh.17.2021.11.21.15.27.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Nov 2021 15:27:42 -0800 (PST)
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     David Virag <virag.david003@gmail.com>,
+        =?UTF-8?q?Pawe=C5=82=20Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: [PATCH 0/6] clk: samsung: exynos850: Clock driver improvements
+Date:   Mon, 22 Nov 2021 01:27:35 +0200
+Message-Id: <20211121232741.6967-1-semen.protsenko@linaro.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.1
-Subject: Re: [PATCH -next 2/2] sata_fsl: fix warning in remove_proc_entry when
- rmmod sata_fsl
-Content-Language: en-US
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Baokun Li <libaokun1@huawei.com>, axboe@kernel.dk,
-        tj@kernel.org, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     yebin10@huawei.com, yukuai3@huawei.com,
-        Hulk Robot <hulkci@huawei.com>
-References: <20211119041128.2436889-1-libaokun1@huawei.com>
- <20211119041128.2436889-3-libaokun1@huawei.com>
- <283712c0-bab7-de13-fc27-6ae2e6f9532f@gmail.com>
- <fcf2d384-ee03-298c-c1ac-5a39c0d85784@opensource.wdc.com>
- <361abc20-e01e-3c3a-3217-2e7ed6cb3f76@gmail.com>
-From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Organization: Western Digital
-In-Reply-To: <361abc20-e01e-3c3a-3217-2e7ed6cb3f76@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/11/20 18:51, Sergei Shtylyov wrote:
-> On 20.11.2021 9:08, Damien Le Moal wrote:
->> On 11/20/21 00:43, Sergei Shtylyov wrote:
->>>> diff --git a/drivers/ata/sata_fsl.c b/drivers/ata/sata_fsl.c
->>>> index 30759fd1c3a2..011daac4a14e 100644
->>>> --- a/drivers/ata/sata_fsl.c
->>>> +++ b/drivers/ata/sata_fsl.c
->>>> @@ -1493,7 +1493,7 @@ static int sata_fsl_probe(struct platform_device *ofdev)
->>>>    	host_priv->ssr_base = ssr_base;
->>>>    	host_priv->csr_base = csr_base;
->>>>    
->>>> -	irq = irq_of_parse_and_map(ofdev->dev.of_node, 0);
->>>> +	irq = platform_get_irq(ofdev, 0);
->>>>    	if (!irq) {
->>>
->>> 	if (irq < 0) {
->>>
->>>      platform_get_irq() returns negative error codes, not 0 on failure.
->>
->> Sergei,
->>
->> By the way, the kdoc comment for platform_get_irq() says:
->>
->> "Return: non-zero IRQ number on success, negative error number on failure."
->>
->> But irq	0 is valid, isn't it ? So shouldn't this be changed to something
->> like:
->>
->> "Return: IRQ number on success, negative error number on failure."
-> 
->     No, it's not valid (the current code WARN()s about it) and won't be 
-> returned anymore after my patch [1] gets applied.
-> 
-> [1] https://marc.info/?l=linux-kernel&m=163623041902285
+This cumulative series supersedes next patches/series:
+  1. CMU_APM domain implementation series [1]
+  2. CMU_CMGP domain implementation series [2]
+  3. "Register clocks early" patch [3]
 
-OK. Got it. Thanks.
+with changes as follows:
+  - add "Keep some crucial clocks running" patch [6/6]
+  - enable CMU_PERI parent clock early
+  - move bindings headers changes into bindings doc patches
 
-> 
-> MBR, Sergei
-> 
+Tested:
+  - CMU_TOP is registered before CMU_PERI
+  - CMU_PERI parent clock is enabled early and successfully, and running
+    before any access to CMU_PERI registers
+  - kernel boots successfully without "clk_ignore_unused" param
+  - MCT timer works fine and doesn't panic during bootup
 
+[1] https://lkml.org/lkml/2021/10/22/978
+[2] https://lkml.org/lkml/2021/11/9/660
+[3] https://lkml.org/lkml/2021/10/25/818
+
+Sam Protsenko (6):
+  dt-bindings: clock: Add bindings for Exynos850 CMU_APM
+  clk: samsung: exynos850: Implement CMU_APM domain
+  dt-bindings: clock: Add bindings for Exynos850 CMU_CMGP
+  clk: samsung: exynos850: Implement CMU_CMGP domain
+  clk: samsung: exynos850: Register clocks early
+  clk: samsung: exynos850: Keep some crucial clocks running
+
+ .../clock/samsung,exynos850-clock.yaml        |  38 ++
+ drivers/clk/samsung/clk-exynos850.c           | 327 ++++++++++++++++--
+ include/dt-bindings/clock/exynos850.h         |  46 ++-
+ 3 files changed, 387 insertions(+), 24 deletions(-)
 
 -- 
-Damien Le Moal
-Western Digital Research
+2.30.2
+
