@@ -2,172 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD88A458295
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 09:51:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0377458299
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 09:55:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236997AbhKUIyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 03:54:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57782 "EHLO mail.kernel.org"
+        id S237211AbhKUI6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 03:58:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231913AbhKUIyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 03:54:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 748BE60E90;
-        Sun, 21 Nov 2021 08:51:07 +0000 (UTC)
+        id S229972AbhKUI6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 03:58:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 689BA60231;
+        Sun, 21 Nov 2021 08:55:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637484669;
-        bh=wXp5EP6n1++fB2l1O4aW2QaUL4JglSU8mtQzpuD7of8=;
+        s=k20201202; t=1637484907;
+        bh=BSrNBk1+xTVdjY/KH9HeiQ19aqGKk4qtpYXlS/s+Bi0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K1Pi6HMpBISxG8U4F9kmiFWRzmt19i0MjDLkFAbXJ+6A6JGWh9bBPFsl/qApHTrmZ
-         q7w+3JgV8rJjcZ8IQYhv3R8N4OJOc+0nrIteUxFPrp4CNblUp3qfKnzrsGkuIPwhhn
-         7CGigxkgggtL2txfaa029W1vwmvI3PUVCq+Tui40rrdvAWg1vrQyiaWoaCjS+oJLsw
-         1xFFAk6e31BvHj7GsP01acVkhCTfSEKy5KLAuLSQTcjccuXajIzmQ5hkBj9hWIcPk0
-         qb39RAulbQB0Ufs9qQVu4boeBYGg19Gu9sxh2uR3jpU4DOr+0jR9rbSoadyZW1WZ56
-         35/rqZgxVgI4w==
-Date:   Sun, 21 Nov 2021 16:51:03 +0800
+        b=tatESt2cVzf7HD/KkoxWzf6u8sn0XI27B+PpnyEvnlG5TRXVuC3dZOd3am3b8I+C0
+         5G3PaGYVPSDNLTfsws9MbU7DSfDXQec8L3S1EMA9SYP602lbQgq6TdNKLPv8gTEa5W
+         h4DCKpMJQ69txcLZBiZHHTb+zpZ7YZa6TMBeXJeGSrQo2O1ejc+DSL0yiwmEZ0s+V+
+         WCx5dJPVXpxqkVOL46x0LUbKwTPT8WRQ0p3QZIEzDFCrXuB3380URRWhZ3jicWE4qv
+         oOo20/GIDVTxQJ1xkqHyCxvtvXYImCo1uJ/UQjPqhwKjtnE9Iw3RWmw+ZHfm4kZCJx
+         gaXkZ8rHGV2lw==
+Date:   Sun, 21 Nov 2021 16:55:00 +0800
 From:   Shawn Guo <shawnguo@kernel.org>
 To:     David Heidelberg <david@ixit.cz>
 Cc:     Rob Herring <robh+dt@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
         Sascha Hauer <s.hauer@pengutronix.de>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
         Fabio Estevam <festevam@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>,
+        Heiko Stuebner <heiko@sntech.de>,
         ~okias/devicetree@lists.sr.ht, phone-devel@vger.kernel.org,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: imx8mq: fix the schema check errors for
- fsl,tmu-calibration
-Message-ID: <20211121085102.GM31998@dragon>
-References: <20211029114050.39520-1-david@ixit.cz>
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v2 2/3] arm64: dts: make dts use gpio-fan matrix instead
+ of array
+Message-ID: <20211121085457.GN31998@dragon>
+References: <20211029114948.41841-1-david@ixit.cz>
+ <20211029114948.41841-2-david@ixit.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211029114050.39520-1-david@ixit.cz>
+In-Reply-To: <20211029114948.41841-2-david@ixit.cz>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 01:40:49PM +0200, David Heidelberg wrote:
-> fsl,tmu-calibration is in u32-matrix. Use matching property syntax.
-> No functional changes. Fixes warnings as:
-> $ make dtbs_check
-> ...
-> arch/arm64/boot/dts/freescale/imx8mq-librem5-r3.dt.yaml: tmu@30260000: fsl,tmu-calibration:0: Additional items are not allowed (1, 41, 2, 47, 3, 53, 4, 61, 5, 67, 6, 75, 7, 81, 8, 87, 9, 95, 10, 103, 11, 111, 65536, 27, 65537, 35, 65538, 43, 65539, 51, 65540, 59, 65541, 67, 65542, 75, 65543, 85, 65544, 93, 65545, 103, 65546, 112, 131072, 23, 131073, 35, 131074, 45, 131075, 55, 131076, 65, 131077, 75, 131078, 87, 131079, 99, 131080, 111, 196608, 21, 196609, 33, 196610, 45, 196611, 57, 196612, 69, 196613, 83, 196614, 95, 196615, 113 were unexpected)
->         From schema: /home/ubuntu/projects_remote/linux/Documentation/devicetree/bindings/thermal/qoriq-thermal.yaml
-> ...
+On Fri, Oct 29, 2021 at 01:49:45PM +0200, David Heidelberg wrote:
+> No functional changes.
+> 
+> Adjust to comply with dt-schema requirements
+> and make possible to validate values.
 > 
 > Signed-off-by: David Heidelberg <david@ixit.cz>
 > ---
->  arch/arm64/boot/dts/freescale/imx8mq.dtsi | 87 ++++++++++++-----------
->  1 file changed, 44 insertions(+), 43 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> index 972766b67a15..50088b110ad4 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> @@ -429,49 +429,50 @@ tmu: tmu@30260000 {
->  				clocks = <&clk IMX8MQ_CLK_TMU_ROOT>;
->  				little-endian;
->  				fsl,tmu-range = <0xb0000 0xa0026 0x80048 0x70061>;
-> -				fsl,tmu-calibration = <0x00000000 0x00000023
-> -						       0x00000001 0x00000029
-> -						       0x00000002 0x0000002f
-> -						       0x00000003 0x00000035
-> -						       0x00000004 0x0000003d
-> -						       0x00000005 0x00000043
-> -						       0x00000006 0x0000004b
-> -						       0x00000007 0x00000051
-> -						       0x00000008 0x00000057
-> -						       0x00000009 0x0000005f
-> -						       0x0000000a 0x00000067
-> -						       0x0000000b 0x0000006f
-> -
-> -						       0x00010000 0x0000001b
-> -						       0x00010001 0x00000023
-> -						       0x00010002 0x0000002b
-> -						       0x00010003 0x00000033
-> -						       0x00010004 0x0000003b
-> -						       0x00010005 0x00000043
-> -						       0x00010006 0x0000004b
-> -						       0x00010007 0x00000055
-> -						       0x00010008 0x0000005d
-> -						       0x00010009 0x00000067
-> -						       0x0001000a 0x00000070
-> -
-> -						       0x00020000 0x00000017
-> -						       0x00020001 0x00000023
-> -						       0x00020002 0x0000002d
-> -						       0x00020003 0x00000037
-> -						       0x00020004 0x00000041
-> -						       0x00020005 0x0000004b
-> -						       0x00020006 0x00000057
-> -						       0x00020007 0x00000063
-> -						       0x00020008 0x0000006f
-> -
-> -						       0x00030000 0x00000015
-> -						       0x00030001 0x00000021
-> -						       0x00030002 0x0000002d
-> -						       0x00030003 0x00000039
-> -						       0x00030004 0x00000045
-> -						       0x00030005 0x00000053
-> -						       0x00030006 0x0000005f
-> -						       0x00030007 0x00000071>;
-> +				fsl,tmu-calibration =
-> +						<0x00000000 0x00000023>,
-> +						<0x00000001 0x00000029>,
+>  arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 9 +++++----
+>  arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts     | 2 +-
 
-Can we keep the indentation like below?
-
-	fsl,tmu-calibration = <0x00000000 0x00000023>,
-			      <0x00000001 0x00000029>,
-			      ...
-
+You may want to split it per platform, so that corresponding platform
+maintainer can pick them up.
 
 Shawn
 
-> +						<0x00000002 0x0000002f>,
-> +						<0x00000003 0x00000035>,
-> +						<0x00000004 0x0000003d>,
-> +						<0x00000005 0x00000043>,
-> +						<0x00000006 0x0000004b>,
-> +						<0x00000007 0x00000051>,
-> +						<0x00000008 0x00000057>,
-> +						<0x00000009 0x0000005f>,
-> +						<0x0000000a 0x00000067>,
-> +						<0x0000000b 0x0000006f>,
-> +
-> +						<0x00010000 0x0000001b>,
-> +						<0x00010001 0x00000023>,
-> +						<0x00010002 0x0000002b>,
-> +						<0x00010003 0x00000033>,
-> +						<0x00010004 0x0000003b>,
-> +						<0x00010005 0x00000043>,
-> +						<0x00010006 0x0000004b>,
-> +						<0x00010007 0x00000055>,
-> +						<0x00010008 0x0000005d>,
-> +						<0x00010009 0x00000067>,
-> +						<0x0001000a 0x00000070>,
-> +
-> +						<0x00020000 0x00000017>,
-> +						<0x00020001 0x00000023>,
-> +						<0x00020002 0x0000002d>,
-> +						<0x00020003 0x00000037>,
-> +						<0x00020004 0x00000041>,
-> +						<0x00020005 0x0000004b>,
-> +						<0x00020006 0x00000057>,
-> +						<0x00020007 0x00000063>,
-> +						<0x00020008 0x0000006f>,
-> +
-> +						<0x00030000 0x00000015>,
-> +						<0x00030001 0x00000021>,
-> +						<0x00030002 0x0000002d>,
-> +						<0x00030003 0x00000039>,
-> +						<0x00030004 0x00000045>,
-> +						<0x00030005 0x00000053>,
-> +						<0x00030006 0x0000005f>,
-> +						<0x00030007 0x00000071>;
->  				#thermal-sensor-cells =  <1>;
->  			};
+>  arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi     | 2 +-
+>  arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts    | 5 +++--
+>  4 files changed, 10 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+> index 86bdc0baf032..fbbcacf24f2e 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+> +++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+> @@ -52,10 +52,11 @@ gpio_fan: gpio-fan {
+>  		gpios = <&gpio GPIODV_14 GPIO_ACTIVE_HIGH
+>  			 &gpio GPIODV_15 GPIO_ACTIVE_HIGH>;
+>  		/* Dummy RPM values since fan is optional */
+> -		gpio-fan,speed-map = <0 0
+> -				      1 1
+> -				      2 2
+> -				      3 3>;
+> +		gpio-fan,speed-map =
+> +				<0 0>,
+> +				<1 1>,
+> +				<2 2>,
+> +				<3 3>;
+>  		#cooling-cells = <2>;
+>  	};
+>  
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts b/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts
+> index a3b9d615a3b4..e34045d10a12 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8mq-phanbell.dts
+> @@ -39,7 +39,7 @@ reg_usdhc2_vmmc: regulator-usdhc2-vmmc {
+>  
+>  	fan: gpio-fan {
+>  		compatible = "gpio-fan";
+> -		gpio-fan,speed-map = <0 0 8600 1>;
+> +		gpio-fan,speed-map = <0 0>, <8600 1>;
+>  		gpios = <&gpio3 5 GPIO_ACTIVE_HIGH>;
+>  		#cooling-cells = <2>;
+>  		pinctrl-names = "default";
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
+> index 46b0f97a0b1c..4af535866d1f 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399-sapphire.dtsi
+> @@ -44,7 +44,7 @@ dc_12v: dc-12v {
+>  	fan0: gpio-fan {
+>  		#cooling-cells = <2>;
+>  		compatible = "gpio-fan";
+> -		gpio-fan,speed-map = <0 0 3000 1>;
+> +		gpio-fan,speed-map = <0 0>, <3000 1>;
+>  		gpios = <&gpio1 RK_PC2 GPIO_ACTIVE_HIGH>;
+>  		status = "okay";
+>  	};
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
+> index 4d4b2a301b1a..8af3763daaba 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
+> +++ b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
+> @@ -30,8 +30,9 @@ gmac1_clkin: external-gmac1-clock {
+>  	fan: gpio_fan {
+>  		compatible = "gpio-fan";
+>  		gpios = <&gpio0 RK_PD5 GPIO_ACTIVE_HIGH>;
+> -		gpio-fan,speed-map = <0    0
+> -				      4500 1>;
+> +		gpio-fan,speed-map =
+> +				<   0 0>,
+> +				<4500 1>;
+>  		#cooling-cells = <2>;
+>  	};
 >  
 > -- 
 > 2.33.0
