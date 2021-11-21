@@ -2,76 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B402A45817F
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 03:24:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 129A6458186
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 03:33:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237082AbhKUC1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 21:27:11 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:37460 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236901AbhKUC1K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 21:27:10 -0500
-Received: by mail-io1-f69.google.com with SMTP id w8-20020a0566022c0800b005dc06acea8dso8707010iov.4
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 18:24:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=LtUl4z87GOaDU5n0H8iK+P9twUYQ08LpbtGLszWSXRc=;
-        b=C/j6+DHsbx4OVRWOf9yCVI+lZWOsybAxDOXqmGAEnAxlJ31QicxJjDWQlikdz2vcT0
-         P5pMBZmBr8W+wyRSJgsiOYAKgVMZ0H9qe9jkWkAe2yjqV5W2IJ/gvJHtb8AaJrDmieBJ
-         1bGmUKHCBWeSHzWGiRqAplRsO6cUXjQMUBK2CSu+/66xtrh9/RVsDgV+86XdpafCxfXy
-         Ktl/jJGt0PvLIXSFkvasIpDL4DImnhYl+8x+LX0EydfJxPzpBgkCy1UhyjhYQNgkWMMw
-         Od5zzwLd/ZbAn2PvuU7Fq4YH6tfv1FPOzMWx1WgQJ8vG70VWaf9MlYGuYtFihTmJl+Gr
-         1UmA==
-X-Gm-Message-State: AOAM532i+X6446XwwbTYRRq5/6nj5vHG92BJZYZ+PUCaZ335+iwW6fnW
-        oEZ8t7u2jHgTVGp6gEMlK5y5AVJMmBAEFtOxdjbn9SB5opoD
-X-Google-Smtp-Source: ABdhPJyLC4dN9+5VCm/mej8aJrMaFCsJiYnTKo9BvfORLV/ZGN5kSEAKCIIBTbE9HCZ+ugiVq5QX+g5u7/0gwFXWS1buNYxVh4Ym
+        id S236865AbhKUCgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 21:36:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236578AbhKUCgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 21:36:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9E99603E5;
+        Sun, 21 Nov 2021 02:33:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637461985;
+        bh=1vJkUHmxjXjLq+QS2nKtQb+a1e39GkVQQpl+uQJLPyc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FPzj7A0ssEJN1IVQsrt4+UxkwucUOsK/nj6SsOtpUJoCgumPCFC/JE6uWUvx8g9mV
+         6cvP/2ucBnkdTEmjzrTqjpxo9v8m8D0ctefrFn5eW7XjcUeAWz8yQuj9y5uvYzAxpO
+         HHSJjoEaz0fNXJ0OAqnjx/N4Tk+8fA++mh03X7pXz9QKGf57G78QPMLLvlZI0ZbVm6
+         ii+AQ0L/jSuCODsc3fhh56geS1281nQhy/e7JnJS5my1vAm1MAx8p48YJ/+3Zm3OZA
+         g9b0vLhjN2cMtt8Ok/PnSZGPn4yZk5zF1XzkLsPJxBYOEE3mz0oqJWAB7MKPbnHvhx
+         ZMw4ot4XWwNIQ==
+Date:   Sun, 21 Nov 2021 10:32:58 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Heiko Thiery <heiko.thiery@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Michael Walle <michael@walle.cc>
+Subject: Re: [PATCH] arm64: dts: fsl: imx8mq-kontron-pitx-imx8m: get rid of
+ unneeded off-on-delay-us
+Message-ID: <20211121023258.GG31998@dragon>
+References: <20211020054842.10246-1-heiko.thiery@gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:18c5:: with SMTP id s5mr13033774ilu.193.1637461446245;
- Sat, 20 Nov 2021 18:24:06 -0800 (PST)
-Date:   Sat, 20 Nov 2021 18:24:06 -0800
-In-Reply-To: <000000000000e79ab005a56292f5@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d6442705d143337a@google.com>
-Subject: Re: [syzbot] WARNING in cgroup_finalize_control
-From:   syzbot <syzbot+9c08aaa363ca5784c9e9@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, christian@brauner.io,
-        coreteam@netfilter.org, daniel@iogearbox.net, davem@davemloft.net,
-        hannes@cmpxchg.org, john.fastabend@gmail.com, kaber@trash.net,
-        kadlec@blackhole.kfki.hu, kafai@fb.com, kpsingh@chromium.org,
-        linux-kernel@vger.kernel.org, linux-sctp@vger.kernel.org,
-        lizefan.x@bytedance.com, lizefan@huawei.com, longman@redhat.com,
-        marcelo.leitner@gmail.com, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, nhorman@tuxdriver.com,
-        pablo@netfilter.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, tj@kernel.org,
-        vyasevich@gmail.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211020054842.10246-1-heiko.thiery@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Wed, Oct 20, 2021 at 07:48:43AM +0200, Heiko Thiery wrote:
+> The default delay value for power cycle the sd card is 1ms. Since this is
+> sufficient we can remove this value here.
+> 
+> Fixes: 5dbadc848259 ("arm64: dts: fsl: add support for Kontron pitx-imx8m board")
 
-commit 7ee285395b211cad474b2b989db52666e0430daf
-Author: Waiman Long <longman@redhat.com>
-Date:   Sat Sep 18 22:53:08 2021 +0000
+This is more like a small cleanup/optimization than a fix to me.
 
-    cgroup: Make rebind_subsystems() disable v2 controllers all at once
+Shawn
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12232c06b00000
-start commit:   442489c21923 Merge tag 'timers-core-2020-08-04' of git://g..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b3f0df8558780a7d
-dashboard link: https://syzkaller.appspot.com/bug?extid=9c08aaa363ca5784c9e9
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14148c62900000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: cgroup: Make rebind_subsystems() disable v2 controllers all at once
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
+> ---
+>  arch/arm64/boot/dts/freescale/imx8mq-kontron-pitx-imx8m.dts | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mq-kontron-pitx-imx8m.dts b/arch/arm64/boot/dts/freescale/imx8mq-kontron-pitx-imx8m.dts
+> index f593e4ff62e1..e4429a1c874d 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mq-kontron-pitx-imx8m.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8mq-kontron-pitx-imx8m.dts
+> @@ -51,7 +51,6 @@ reg_usdhc2_vmmc: regulator-usdhc2-vmmc {
+>  		regulator-min-microvolt = <3300000>;
+>  		regulator-max-microvolt = <3300000>;
+>  		gpio = <&gpio2 19 GPIO_ACTIVE_HIGH>;
+> -		off-on-delay-us = <20000>;
+>  		enable-active-high;
+>  	};
+>  };
+> -- 
+> 2.30.2
+> 
