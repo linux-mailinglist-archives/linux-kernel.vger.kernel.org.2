@@ -2,196 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2712545844C
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 16:05:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9857458463
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 16:16:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238378AbhKUPIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 10:08:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56184 "EHLO mail.kernel.org"
+        id S238248AbhKUPT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 10:19:29 -0500
+Received: from mga03.intel.com ([134.134.136.65]:1365 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232721AbhKUPIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 10:08:39 -0500
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 620A16069B;
-        Sun, 21 Nov 2021 15:05:32 +0000 (UTC)
-Date:   Sun, 21 Nov 2021 15:10:26 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH 15/15] Documentation: iio: Document high-speed DMABUF
- based API
-Message-ID: <20211121151026.0cc95f40@jic23-huawei>
-In-Reply-To: <20211115142243.60605-4-paul@crapouillou.net>
-References: <20211115141925.60164-1-paul@crapouillou.net>
-        <20211115142243.60605-1-paul@crapouillou.net>
-        <20211115142243.60605-4-paul@crapouillou.net>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S237517AbhKUPT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 10:19:28 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10174"; a="234614712"
+X-IronPort-AV: E=Sophos;i="5.87,252,1631602800"; 
+   d="scan'208";a="234614712"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2021 07:16:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,252,1631602800"; 
+   d="scan'208";a="496550643"
+Received: from chenyu-desktop.sh.intel.com ([10.239.158.186])
+  by orsmga007.jf.intel.com with ESMTP; 21 Nov 2021 07:16:20 -0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     linux-acpi@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Mike Rapoport <rppt@kernel.org>, Chen Yu <yu.c.chen@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v11 0/4] Introduce Platform Firmware Runtime Update and Telemetry drivers
+Date:   Sun, 21 Nov 2021 23:15:23 +0800
+Message-Id: <cover.1637505679.git.yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Nov 2021 14:22:43 +0000
-Paul Cercueil <paul@crapouillou.net> wrote:
+The PFRU (Platform Firmware Runtime Update) kernel interface is designed
+to interact with the platform firmware interface defined in the
+`Management Mode Firmware Runtime Update
+<https://uefi.org/sites/default/files/resources/Intel_MM_OS_Interface_Spec_Rev100.pdf>`
+specification. The primary function of PFRU is to carry out runtime
+updates of the platform firmware, which doesn't require the system to
+be restarted. It also allows telemetry data to be retrieved from the
+platform firmware.
 
-> Document the new DMABUF based API.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+=============
+- Change from v10 to v11:
+  - Revise the commit log to explain why version check is introduced
+    in kernel rather than letting Management Mode to do it.
+    (Rafael J. Wysocki)
+    Revise the commit log to better describe the pack attribute.
+    (Rafael J. Wysocki)
+    Refine the comment for hw_ins and capsule_support.
+    (Rafael J. Wysocki)
+- Change from v9 to v10:
+  - Remove the explicit assignment of the last item of enum.
+    (Andy Shevchenko)
+- Change from v8 to v9:
+  - Use GUID_INIT() instead of guid_parse() during boot up.
+    (Andy Shevchenko)
+  - Drop uuid, code_uuid, drv_uuid in struct pfru_device as they
+    are not needed. (Andy Shevchenko)
+  - Drop type casting from void * in valid_version().
+    (Andy Shevchenko)
+  - Use kfree() instead of ACPI_FREE() in non-ACPICA usage.
+    (Andy Shevchenko)
+  - Use sizeof(rev) instead of sizeof(u32) in copy_from_user().
+    (Andy Shevchenko)
+  - Generate physical address from MSB part to LSB.
+    (Andy Shevchenko)
+  - Use devm_add_action_or_reset() to add ida release into dev resource
+    management. (Andy Shevchenko)
+  - Use devm_kasprintf() instead of kasprintf() to format the
+    pfru_dev name.(Andy Shevchenko)
+  - Remove redundant 0 in acpi_pfru_ids. (Andy Shevchenko)
+  - Adjust the order of included headers in pfru.h.
+    (Andy Shevchenko)
+  - Replace PFRU_MAGIC with PFRU_MAGIC_FOR_IOCTL in uapi file.
+    (Andy Shevchenko)
+    Use devm_kasprintf() instead of kasprintf() to format the
+    pfru_log_dev name.(Andy Shevchenko)
+    Remove redundant 0 in acpi_pfru_log_ids. (Andy Shevchenko)
+- Change from v7 to v8:
+  - Remove the variable-length array in struct pfru_update_cap_info, and
+    copy the non-variable-length struct pfru_update_cap_info to userspace
+    directly. (Greg Kroah-Hartman)
+  - Use efi_guid_t instead of guid_t when parsing capsule file.
+    (Andy Shevchenko)
+  - Change the type of rev_id from int to u32, because this data will
+    be copied between kernel and userspace. (Greg Kroah-Hartman)
+  - Add a prefix for dev in struct pfru_device to parent_dev, so as
+    to indicate that this filed is the parent of the created miscdev.
+    (Greg Kroah-Hartman)
+  - Use blank lines between different macro sections. (Greg Kroah-Hartman)
+    Illusatrate the possible errno for each ioctl interface.
+    (Greg Kroah-Hartman)
+  - Remove pfru_valid_revid() from uapi header to avoid poluting the global
+    namespace.(Greg Kroah-Hartman)
+  - Assign the value to the enum type explicitly.(Greg Kroah-Hartman)
+  - Change the guid_t to efi_guid_t when parsing image header in get_image_type()
+    (Greg Kroah-Hartman)
+  - Remove the void * to other type casting in valid_version(). (Andy Shevchenko)
+  - Combined the assignment of variables with definitions. (Andy Shevchenko)
+  - Define this magic for revision ID. (Andy Shevchenko)
+  - Make the labeling consistent for error handling. (Andy Shevchenko)
+  - Replace the UUID_SIZE in uapi with 16 directly. (Andy Shevchenko)
+  - Add blank line between generic include header and uapi header.
+    (Andy Shevchenko)
+  - Arrange the order between devm_kzalloc() and normal allocation in
+    acpi_pfru_probe() that, the former should always be ahead of the
+    latter. (Andy Shevchenko)
+- Change from v6 to v7:
+  - Use __packed instead of pragma pack(1).
+    (Greg Kroah-Hartman, Ard Biesheuve)
+  - Use ida_alloc() to allocate a ID, and release the ID when
+    device is removed. (Greg Kroah-Hartman)
+  - Check the _DSM method at early stage, before allocate or parse
+    anything in acpi_pfru_[log_]probe(). (Greg Kroah-Hartman)
+  - Set the parent of the misc device. (Greg Kroah-Hartman)
+  - Use module_platform_driver() instead of platform_driver_register()
+    in module_init(). Separate pfru driver and pfru_telemetry driver
+    to two files. (Greg Kroah-Hartman) 
+- Change from v5 to v6:
+  - Use Link: tag to add the specification download address.
+    (Andy Shevchenko)
+  - Drop comma for each terminator entry in the enum structure.
+    (Andy Shevchenko)
+  - Remove redundant 'else' in get_image_type().
+    (Andy Shevchenko)
+  - Directly return results from the switch cases in adjust_efi_size()
+    and pfru_ioctl().(Andy Shevchenko)
+  - Keep comment style consistency by removing the period for
+    one line comment.
+    (Andy Shevchenko)
+  - Remove devm_kfree() if .probe() failed. 
+    (Andy Shevchenko)
+  - Remove linux/uuid.h and use raw buffers to contain uuid.
+    (Andy Shevchenko)
+  - Include types.h in pfru.h. (Andy Shevchenko)
+  - Use __u8[16] instead of uuid_t. (Andy Shevchenko)
+  - Replace enum in pfru.h with __u32 as enum size is not the
+    same size on all possible architectures.
+    (Andy Shevchenko)
+  - Simplify the userspace tool to use while loop for getopt_long().
+    (Andy Shevchenko)
+- Change from v4 to v5:
+  - Remove Documentation/ABI/pfru, and move the content to kernel doc
+    in include/uapi/linux/pfru.h (Greg Kroah-Hartman)
+  - Shrink the range of ioctl numbers declared in
+    Documentation/userspace-api/ioctl/ioctl-number.rst
+    from 16 to 8. (Greg Kroah-Hartman)
+  - Change global variable struct pfru_device *pfru_dev to
+    per PFRU device. (Greg Kroah-Hartman)
+  - Unregister the misc device in acpi_pfru_remove().
+    (Greg Kroah-Hartman)
+  - Convert the kzalloc() to devm_kzalloc() in the driver so
+    as to avoid freeing the memory. (Greg Kroah-Hartman)
+  - Fix the compile warning by declaring the pfru_log_ioctl() as
+    static. (kernel test robot LKP)
+  - Change to global variable misc_device to per PFRU device.
+    (Greg Kroah-Hartman)
+  - Remove the telemetry output in commit log. (Greg Kroah-Hartman)
+  - Add link for corresponding userspace tool in the commit log.
+    (Greg Kroah-Hartman)
+  - Replace the telemetry .read() with .mmap() so that the userspace
+    could mmap once, and read multiple times. (Greg Kroah-Hartman)
+- Change from v3 to v4:
+  - Add Documentation/ABI/testing/pfru to document the ABI and
+    remove Documentation/x86/pfru.rst (Rafael J. Wysocki)
+  - Replace all pr_err() with dev_dbg() (Greg Kroah-Hartman,
+    Rafael J. Wysocki)
+  - returns ENOTTY rather than ENOIOCTLCMD if invalid ioctl command
+    is provided. (Greg Kroah-Hartman)
+  - Remove compat ioctl. (Greg Kroah-Hartman)
+  - Rename /dev/pfru/pfru_update to /dev/acpi_pfru (Greg Kroah-Hartman)
+  - Simplify the check for element of the package in query_capability()
+    (Rafael J. Wysocki)
+  - Remove the loop in query_capability(), query_buffer() and query
+    the package elemenet directly. (Rafael J. Wysocki)
+  - Check the number of elements in case the number of package
+    elements is too small. (Rafael J. Wysocki)
+  - Doing the assignment as initialization in get_image_type().
+    Meanwhile, returns the type or a negative error code in
+    get_image_type(). (Rafael J. Wysocki)
+  - Put the comments inside the function. (Rafael J. Wysocki)
+  - Returns the size or a negative error code in adjust_efi_size()
+    (Rafael J. Wysocki)
+  - Fix the return value from EFAULT to EINVAL if pfru_valid_revid()
+    does not pass. (Rafael J. Wysocki)
+  - Change the write() to be the code injection/update, the read() to
+    be telemetry retrieval and all of the rest to be ioctl()s under
+    one special device file.(Rafael J. Wysocki)
+  - Remove redundant parens. (Rafael J. Wysocki)
+  - Putting empty code lines after an if () statement that is not
+    followed by a block. (Rafael J. Wysocki)
+  - Remove "goto" tags to make the code more readable. (Rafael J. Wysocki)
+- Change from v2 to v3:
+  - Use valid types for structures that cross the user/kernel boundary
+    in the uapi header. (Greg Kroah-Hartman)
+  - Rename the structure in uapi to start with a prefix pfru so as
+    to avoid confusing in the global namespace. (Greg Kroah-Hartman)
+- Change from v1 to v2:
+  - Add a spot in index.rst so it becomes part of the docs build
+    (Jonathan Corbet).
+  - Sticking to the 80-column limit(Jonathan Corbet).
+  - Underline lengths should match the title text(Jonathan Corbet).
+  - Use literal blocks for the code samples(Jonathan Corbet).
+  - Add sanity check for duplicated instance of ACPI device.
+  - Update the driver to work with allocated pfru_device objects.
+    (Mike Rapoport)
+  - For each switch case pair, get rid of the magic case numbers
+    and add a default clause with the error handling.(Mike Rapoport)
+  - Move the obj->type checks outside the switch to reduce redundancy.
+    (Mike Rapoport)
+  - Parse the code_inj_id and drv_update_id at driver initialization time
+    to reduce the re-parsing at runtime. (Mike Rapoport)
+  - Explain in detail how the size needs to be adjusted when doing
+    version check. (Mike Rapoport)
+  - Rename parse_update_result() to dump_update_result()
+    (Mike Rapoport)
+  - Remove redundant return.(Mike Rapoport)
+  - Do not expose struct capsulate_buf_info to uapi, since it is
+    not needed in userspace. (Mike Rapoport)
+  - Do not allow non-root user to run this test.(Shuah Khan)
+  - Test runs on platform without pfru_telemetry should skip
+    instead of reporting failure/error.(Shuah Khan)
+  - Reuse uapi/linux/pfru.h instead of copying it into the test
+    directory. (Mike Rapoport)
 
-Hi Paul,
+Chen Yu (4):
+  efi: Introduce EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER and
+    corresponding structures
+  drivers/acpi: Introduce Platform Firmware Runtime Update device driver
+  drivers/acpi: Introduce Platform Firmware Runtime Update Telemetry
+  tools: Introduce power/acpi/tools/pfru
 
-A few trivial things inline but looks good to me if we do end up using DMABUF
-anyway.
+ .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+ drivers/acpi/Kconfig                          |   1 +
+ drivers/acpi/Makefile                         |   1 +
+ drivers/acpi/pfru/Kconfig                     |  13 +
+ drivers/acpi/pfru/Makefile                    |   2 +
+ drivers/acpi/pfru/pfru_telemetry.c            | 457 +++++++++++++
+ drivers/acpi/pfru/pfru_update.c               | 601 ++++++++++++++++++
+ include/linux/efi.h                           |  46 ++
+ include/uapi/linux/pfru.h                     | 262 ++++++++
+ tools/power/acpi/.gitignore                   |   1 +
+ tools/power/acpi/Makefile                     |  16 +-
+ tools/power/acpi/Makefile.rules               |   2 +-
+ tools/power/acpi/man/pfru.8                   | 137 ++++
+ tools/power/acpi/tools/pfru/Makefile          |  23 +
+ tools/power/acpi/tools/pfru/pfru.c            | 417 ++++++++++++
+ 15 files changed, 1971 insertions(+), 9 deletions(-)
+ create mode 100644 drivers/acpi/pfru/Kconfig
+ create mode 100644 drivers/acpi/pfru/Makefile
+ create mode 100644 drivers/acpi/pfru/pfru_telemetry.c
+ create mode 100644 drivers/acpi/pfru/pfru_update.c
+ create mode 100644 include/uapi/linux/pfru.h
+ create mode 100644 tools/power/acpi/man/pfru.8
+ create mode 100644 tools/power/acpi/tools/pfru/Makefile
+ create mode 100644 tools/power/acpi/tools/pfru/pfru.c
 
-Jonathan
-
-> ---
->  Documentation/driver-api/dma-buf.rst |  2 +
->  Documentation/iio/dmabuf_api.rst     | 94 ++++++++++++++++++++++++++++
->  Documentation/iio/index.rst          |  2 +
->  3 files changed, 98 insertions(+)
->  create mode 100644 Documentation/iio/dmabuf_api.rst
-> 
-> diff --git a/Documentation/driver-api/dma-buf.rst b/Documentation/driver-api/dma-buf.rst
-> index 2cd7db82d9fe..d3c9b58d2706 100644
-> --- a/Documentation/driver-api/dma-buf.rst
-> +++ b/Documentation/driver-api/dma-buf.rst
-> @@ -1,3 +1,5 @@
-> +.. _dma-buf:
-> +
-
-Why this change?
-
->  Buffer Sharing and Synchronization
->  ==================================
->  
-> diff --git a/Documentation/iio/dmabuf_api.rst b/Documentation/iio/dmabuf_api.rst
-> new file mode 100644
-> index 000000000000..b4e120a4ef0c
-> --- /dev/null
-> +++ b/Documentation/iio/dmabuf_api.rst
-> @@ -0,0 +1,94 @@
-> +===================================
-> +High-speed DMABUF interface for IIO
-> +===================================
-> +
-> +1. Overview
-> +===========
-> +
-> +The Industrial I/O subsystem supports access to buffers through a file-based
-> +interface, with read() and write() access calls through the IIO device's dev
-> +node.
-> +
-> +It additionally supports a DMABUF based interface, where the userspace
-> +application can allocate and append DMABUF objects to the buffer's queue.
-
-I would note somewhere that this interface is optional for a given IIO driver.
-I don't want people to start assuming their i2c ADC will support this and
-wondering why it doesn't work :)
-
-> +
-> +The advantage of this DMABUF based interface vs. the fileio
-> +interface, is that it avoids an extra copy of the data between the
-> +kernel and userspace. This is particularly userful for high-speed
-> +devices which produce several megabytes or even gigabytes of data per
-> +second.
-> +
-> +The data in this DMABUF interface is managed at the granularity of
-> +DMABUF objects. Reducing the granularity from byte level to block level
-> +is done to reduce the userspace-kernelspace synchronization overhead
-> +since performing syscalls for each byte at a few Mbps is just not
-> +feasible.
-> +
-> +This of course leads to a slightly increased latency. For this reason an
-> +application can choose the size of the DMABUFs as well as how many it
-> +allocates. E.g. two DMABUFs would be a traditional double buffering
-> +scheme. But using a higher number might be necessary to avoid
-> +underflow/overflow situations in the presence of scheduling latencies.
-> +
-> +2. User API
-> +===========
-> +
-> +``IIO_BUFFER_DMABUF_ALLOC_IOCTL(struct iio_dmabuf_alloc_req *)``
-> +----------------------------------------------------------------
-> +
-> +Each call will allocate a new DMABUF object. The return value (if not
-> +a negative errno value as error) will be the file descriptor of the new
-> +DMABUF.
-> +
-> +``IIO_BUFFER_DMABUF_ENQUEUE_IOCTL(struct iio_dmabuf *)``
-> +--------------------------------------------------------
-> +
-> +Place the DMABUF object into the queue pending for hardware process.
-> +
-> +These two IOCTLs have to be performed on the IIO buffer's file
-> +descriptor (either opened from the corresponding /dev/iio:deviceX, or
-> +obtained using the `IIO_BUFFER_GET_FD_IOCTL` ioctl).
-> +
-> +3. Usage
-> +========
-> +
-> +To access the data stored in a block by userspace the block must be
-> +mapped to the process's memory. This is done by calling mmap() on the
-> +DMABUF's file descriptor.
-> +
-> +Before accessing the data through the map, you must use the
-> +DMA_BUF_IOCTL_SYNC(struct dma_buf_sync *) ioctl, with the
-> +DMA_BUF_SYNC_START flag, to make sure that the data is available.
-> +This call may block until the hardware is done with this block. Once
-> +you are done reading or writing the data, you must use this ioctl again
-> +with the DMA_BUF_SYNC_END flag, before enqueueing the DMABUF to the
-> +kernel's queue.
-> +
-> +If you need to know when the hardware is done with a DMABUF, you can
-> +poll its file descriptor for the EPOLLOUT event.
-> +
-> +Finally, to destroy a DMABUF object, simply call close() on its file
-> +descriptor.
-> +
-> +For more information about manipulating DMABUF objects, see: :ref:`dma-buf`.
-> +
-> +A typical workflow for the new interface is:
-> +
-> +    for block in blocks:
-> +      DMABUF_ALLOC block
-> +      mmap block
-> +
-> +    enable buffer
-> +
-> +    while !done
-> +      for block in blocks:
-> +        DMABUF_ENQUEUE block
-> +
-> +        DMABUF_SYNC_START block
-> +        process data
-> +        DMABUF_SYNC_END block
-> +
-> +    disable buffer
-> +
-> +    for block in blocks:
-> +      close block
-> diff --git a/Documentation/iio/index.rst b/Documentation/iio/index.rst
-> index 58b7a4ebac51..9ce799fbf262 100644
-> --- a/Documentation/iio/index.rst
-> +++ b/Documentation/iio/index.rst
-> @@ -10,3 +10,5 @@ Industrial I/O
->     iio_configfs
->  
->     ep93xx_adc
-> +
-> +   dmabuf_api
-
-Given this is core stuff rather than driver specific, perhaps move it up a few lines?
-
+-- 
+2.25.1
 
