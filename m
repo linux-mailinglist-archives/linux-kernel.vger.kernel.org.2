@@ -2,144 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E350458148
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 01:05:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D879745814A
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 01:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbhKUAI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 19:08:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbhKUAI2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 19:08:28 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2EDEC061748
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 16:05:24 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id m192so9702879qke.2
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 16:05:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6kf0/w3Hs1LmxnVhawaFCuKI3Bol3tZdSQQzWs8byfA=;
-        b=Eu9tUAhvgTI39XRCgxe+Jp08cFeT8T3hFyVYcEyCfpJZ/9//e91DHQodhxUFFVeKX3
-         EAh2D7HiMmk/XJO8/23Bwbc2IMWKufpGX3TuMxYxmYEBo3fxYPh4XbxA3/yi35ppr7UR
-         MeW0iep4uj/s+PfeXw4Oi6o9pzpyPILyXGe9p3fMK7gVYs3IQsE07bDSYmKDvRU31xsH
-         I9AszubKwbiVvIidR65oTOi4Jwh4aBuq0HiZv70UZ/E+uUKx+HexzvVkG7BbnnMUW75G
-         kisyixitbh8q4pERKXhJRTrw/dKmm5p2xbgLCDLTGzMursE/1dxcHdo5PSugqhx71NsJ
-         U6Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6kf0/w3Hs1LmxnVhawaFCuKI3Bol3tZdSQQzWs8byfA=;
-        b=5kN5KXlm685wfWfXkB6gDGYzXlZNuWcCUsaSmR9BlNINBfGxTg94nFXDfsDXqKz1vp
-         XBvuzP6rUULBUPbIGKbj9KOe49VpkE+uIR935ReGjU3fSul3G+ZYSrOJSgPO+Z1Vg+ke
-         /sX4Hsg4W0wYYvPoJhmH/pbTfQ5Cewin6oJ/E42ahqKIQ9WZjaVr1tFnWmBKYyApun1K
-         +j7OG8mokqmH90M4IL1QgnI1TtwKcOkgooH65MfW8INx5F8hQ1dFKY3zD+l6VYYrBxb5
-         TewYLli/jNyzk80CZPk6cjHsOGFPWGao3N7JDUzYGUYWp8Ik6UfJP1vME5efio+t6Mdg
-         fBcQ==
-X-Gm-Message-State: AOAM531qxKzD+fXvaceyJpRzDtxKbfndkTUo+A4TZ81jlj1xG8jdJCw9
-        Uuru5+qjEwNyvhlpg3z5QYEbnw==
-X-Google-Smtp-Source: ABdhPJzZj9ReBVUwh/WgmkPvKfwGr6/EBPjNWPCz36F6uolqc0T3L8/Tzkwwaj4TEzJoCDzGgJ3vxw==
-X-Received: by 2002:a05:620a:1029:: with SMTP id a9mr37789932qkk.186.1637453124120;
-        Sat, 20 Nov 2021 16:05:24 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id a16sm2114487qta.94.2021.11.20.16.05.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Nov 2021 16:05:23 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1moaME-00DLbk-EV; Sat, 20 Nov 2021 20:05:22 -0400
-Date:   Sat, 20 Nov 2021 20:05:22 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, qemu-devel@nongnu.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        "J . Bruce Fields" <bfields@fieldses.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
-        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com
-Subject: Re: [RFC v2 PATCH 01/13] mm/shmem: Introduce F_SEAL_GUEST
-Message-ID: <20211121000522.GP876299@ziepe.ca>
-References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
- <20211119134739.20218-2-chao.p.peng@linux.intel.com>
- <20211119151943.GH876299@ziepe.ca>
- <df11d753-6242-8f7c-cb04-c095f68b41fa@redhat.com>
- <YZf4aAlbyeWw8wUk@google.com>
- <20211119194746.GM876299@ziepe.ca>
- <YZgjc5x6FeBxOqbD@google.com>
- <20211119233312.GO876299@ziepe.ca>
- <YZhOBD6vlkBEyq8t@google.com>
+        id S231908AbhKUAMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 19:12:46 -0500
+Received: from mga14.intel.com ([192.55.52.115]:21790 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229513AbhKUAMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Nov 2021 19:12:34 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10174"; a="234855287"
+X-IronPort-AV: E=Sophos;i="5.87,251,1631602800"; 
+   d="scan'208";a="234855287"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2021 16:09:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,251,1631602800"; 
+   d="scan'208";a="508428020"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 20 Nov 2021 16:09:27 -0800
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1moaQA-0006PX-Qt; Sun, 21 Nov 2021 00:09:26 +0000
+Date:   Sun, 21 Nov 2021 08:09:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh@kernel.org>
+Subject: dtbs_check: arch/arm/boot/dts/bcm47189-luxul-xap-1440.dt.yaml:
+ mpcore@18310000: $nodename:0: 'mpcore@18310000' does not match
+ '^([a-z][a-z0-9\-]+-bus|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
+Message-ID: <202111210808.2q4ncTEZ-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YZhOBD6vlkBEyq8t@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 20, 2021 at 01:23:16AM +0000, Sean Christopherson wrote:
-> On Fri, Nov 19, 2021, Jason Gunthorpe wrote:
-> > On Fri, Nov 19, 2021 at 10:21:39PM +0000, Sean Christopherson wrote:
-> > > On Fri, Nov 19, 2021, Jason Gunthorpe wrote:
-> > > > On Fri, Nov 19, 2021 at 07:18:00PM +0000, Sean Christopherson wrote:
-> > > > > No ideas for the kernel API, but that's also less concerning since
-> > > > > it's not set in stone.  I'm also not sure that dedicated APIs for
-> > > > > each high-ish level use case would be a bad thing, as the semantics
-> > > > > are unlikely to be different to some extent.  E.g. for the KVM use
-> > > > > case, there can be at most one guest associated with the fd, but
-> > > > > there can be any number of VFIO devices attached to the fd.
-> > > > 
-> > > > Even the kvm thing is not a hard restriction when you take away
-> > > > confidential compute.
-> > > > 
-> > > > Why can't we have multiple KVMs linked to the same FD if the memory
-> > > > isn't encrypted? Sure it isn't actually useful but it should work
-> > > > fine.
-> > > 
-> > > Hmm, true, but I want the KVM semantics to be 1:1 even if memory
-> > > isn't encrypted.
-> > 
-> > That is policy and it doesn't belong hardwired into the kernel.
-> 
-> Agreed.  I had a blurb typed up about that policy just being an "exclusive" flag
-> in the kernel API that KVM would set when creating a confidential
-> VM,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   9539ba4308ad5bdca6cb41c7b73cbb9f796dcdd7
+commit: a7b4dba9a71d64e07fbc9802bbc1eaad5494f071 dt-bindings: phy: exynos: add the samsung,exynos-pcie-phy binding
+date:   12 months ago
+compiler: arm-linux-gnueabi-gcc (GCC) 11.2.0
+reproduce: make ARCH=arm dtbs_check
 
-I still think that is policy in the kernel, what is wrong with
-userspace doing it?
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-> > Your explanation makes me think that the F_SEAL_XX isn't defined
-> > properly. It should be a userspace trap door to prevent any new
-> > external accesses, including establishing new kvms, iommu's, rdmas,
-> > mmaps, read/write, etc.
-> 
-> Hmm, the way I was thinking of it is that it the F_SEAL_XX itself would prevent
-> mapping/accessing it from userspace, and that any policy beyond that would be
-> done via kernel APIs and thus handled by whatever in-kernel agent can access the
-> memory.  E.g. in the confidential VM case, without support for trusted devices,
-> KVM would require that it be the sole owner of the file.
 
-And how would kvm know if there is support for trusted devices?
-Again seems like policy choices that should be left in userspace.
+dtcheck warnings: (new ones prefixed by >>)
+   arch/arm/boot/dts/bcm47189-luxul-xap-1440.dt.yaml: mpcore@18310000: $nodename:0: 'mpcore@18310000' does not match '^([a-z][a-z0-9\\-]+-bus|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/simple-bus.yaml
+   arch/arm/boot/dts/bcm47189-luxul-xap-1440.dt.yaml: chipcommon@0: $nodename:0: 'chipcommon@0' does not match '^([a-z][a-z0-9\\-]+-bus|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/simple-bus.yaml
+>> arch/arm/boot/dts/bcm47189-luxul-xap-1440.dt.yaml: pcie@2000: 'device_type' is a required property
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/pci/pci-bus.yaml
+>> arch/arm/boot/dts/bcm47189-luxul-xap-1440.dt.yaml: pcie@2000: 'ranges' is a required property
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/pci/pci-bus.yaml
+>> arch/arm/boot/dts/bcm47189-luxul-xap-1440.dt.yaml: pcie@2000: '#address-cells' is a required property
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/pci/pci-bus.yaml
+>> arch/arm/boot/dts/bcm47189-luxul-xap-1440.dt.yaml: pcie@2000: '#size-cells' is a required property
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/pci/pci-bus.yaml
+   arch/arm/boot/dts/bcm47189-luxul-xap-1440.dt.yaml: ehci@4000: $nodename:0: 'ehci@4000' does not match '^usb(@.*)?'
+   	From schema: Documentation/devicetree/bindings/usb/generic-ehci.yaml
+   arch/arm/boot/dts/bcm47189-luxul-xap-1440.dt.yaml: ehci@4000: '#address-cells', '#size-cells', 'port@1', 'port@2' do not match any of the regexes: 'pinctrl-[0-9]+'
+   	From schema: Documentation/devicetree/bindings/usb/generic-ehci.yaml
+   arch/arm/boot/dts/bcm47189-luxul-xap-1440.dt.yaml: ohci@d000: $nodename:0: 'ohci@d000' does not match '^usb(@.*)?'
+   	From schema: Documentation/devicetree/bindings/usb/generic-ohci.yaml
+   arch/arm/boot/dts/bcm47189-luxul-xap-1440.dt.yaml: ohci@d000: '#address-cells', '#size-cells', '#usb-cells', 'port@1', 'port@2' do not match any of the regexes: 'pinctrl-[0-9]+'
+   	From schema: Documentation/devicetree/bindings/usb/generic-ohci.yaml
+>> arch/arm/boot/dts/bcm47189-luxul-xap-1440.dt.yaml: leds: 'system', 'wlan' do not match any of the regexes: '(^led-[0-9a-f]$|led)', 'pinctrl-[0-9]+'
+   	From schema: Documentation/devicetree/bindings/leds/leds-gpio.yaml
+   schemas/input/input.yaml: ignoring, error in schema: properties: power-off-time-sec
+   Traceback (most recent call last):
+     File "/usr/local/bin/dt-validate", line 164, in <module>
+       sg.check_trees(filename, testtree)
+     File "/usr/local/bin/dt-validate", line 113, in check_trees
+       self.check_subtree(dt, subtree, "/", "/", filename)
+     File "/usr/local/bin/dt-validate", line 104, in check_subtree
+       self.check_subtree(tree, value, name, fullname + name, filename)
+     File "/usr/local/bin/dt-validate", line 99, in check_subtree
+--
+   arch/arm/boot/dts/bcm47189-luxul-xap-810.dt.yaml: mpcore@18310000: $nodename:0: 'mpcore@18310000' does not match '^([a-z][a-z0-9\\-]+-bus|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/simple-bus.yaml
+   arch/arm/boot/dts/bcm47189-luxul-xap-810.dt.yaml: chipcommon@0: $nodename:0: 'chipcommon@0' does not match '^([a-z][a-z0-9\\-]+-bus|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/simple-bus.yaml
+>> arch/arm/boot/dts/bcm47189-luxul-xap-810.dt.yaml: pcie@2000: ranges: 'oneOf' conditional failed, one must be fixed:
+>> 	arch/arm/boot/dts/bcm47189-luxul-xap-810.dt.yaml: pcie@2000: ranges: 'oneOf' conditional failed, one must be fixed:
+   		[[0, 0, 0, 0, 0, 1048576]] is not of type 'boolean'
+   		True was expected
+   		[[0, 0, 0, 0, 0, 1048576]] is not of type 'null'
+   	0 is not one of [16777216, 33554432, 50331648, 1107296256, 1124073472, 2164260864, 2181038080, 2197815296, 3254779904, 3271557120]
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/pci/pci-bus.yaml
+   arch/arm/boot/dts/bcm47189-luxul-xap-810.dt.yaml: pcie@2000: 'device_type' is a required property
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/pci/pci-bus.yaml
+   arch/arm/boot/dts/bcm47189-luxul-xap-810.dt.yaml: ehci@4000: $nodename:0: 'ehci@4000' does not match '^usb(@.*)?'
+   	From schema: Documentation/devicetree/bindings/usb/generic-ehci.yaml
+   arch/arm/boot/dts/bcm47189-luxul-xap-810.dt.yaml: ehci@4000: '#address-cells', '#size-cells', 'port@1', 'port@2' do not match any of the regexes: 'pinctrl-[0-9]+'
+   	From schema: Documentation/devicetree/bindings/usb/generic-ehci.yaml
+   arch/arm/boot/dts/bcm47189-luxul-xap-810.dt.yaml: ohci@d000: $nodename:0: 'ohci@d000' does not match '^usb(@.*)?'
+   	From schema: Documentation/devicetree/bindings/usb/generic-ohci.yaml
+   arch/arm/boot/dts/bcm47189-luxul-xap-810.dt.yaml: ohci@d000: '#address-cells', '#size-cells', '#usb-cells', 'port@1', 'port@2' do not match any of the regexes: 'pinctrl-[0-9]+'
+   	From schema: Documentation/devicetree/bindings/usb/generic-ohci.yaml
+>> arch/arm/boot/dts/bcm47189-luxul-xap-810.dt.yaml: leds: '5ghz', 'system' do not match any of the regexes: '(^led-[0-9a-f]$|led)', 'pinctrl-[0-9]+'
+   	From schema: Documentation/devicetree/bindings/leds/leds-gpio.yaml
+   arch/arm/boot/dts/bcm47189-luxul-xap-810.dt.yaml: leds: '5ghz' does not match any of the regexes: '.*-names$', '.*-supply$', '^#.*-cells$', '^#[a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-fA-F]+(,[0-9a-fA-F]+)*$', '^__.*__$', 'pinctrl-[0-9]+'
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/dt-core.yaml
+>> arch/arm/boot/dts/bcm47189-luxul-xap-810.dt.yaml: pcie0_leds: '2ghz' does not match any of the regexes: '(^led-[0-9a-f]$|led)', 'pinctrl-[0-9]+'
+   	From schema: Documentation/devicetree/bindings/leds/leds-gpio.yaml
+   arch/arm/boot/dts/bcm47189-luxul-xap-810.dt.yaml: pcie0_leds: '2ghz' does not match any of the regexes: '.*-names$', '.*-supply$', '^#.*-cells$', '^#[a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-fA-F]+(,[0-9a-fA-F]+)*$', '^__.*__$', 'pinctrl-[0-9]+'
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/dt-core.yaml
+   schemas/input/input.yaml: ignoring, error in schema: properties: power-off-time-sec
+   Traceback (most recent call last):
+     File "/usr/local/bin/dt-validate", line 164, in <module>
+       sg.check_trees(filename, testtree)
+     File "/usr/local/bin/dt-validate", line 113, in check_trees
+       self.check_subtree(dt, subtree, "/", "/", filename)
+     File "/usr/local/bin/dt-validate", line 104, in check_subtree
+--
+   arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: mpcore@18310000: $nodename:0: 'mpcore@18310000' does not match '^([a-z][a-z0-9\\-]+-bus|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/simple-bus.yaml
+   arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: chipcommon@0: $nodename:0: 'chipcommon@0' does not match '^([a-z][a-z0-9\\-]+-bus|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/simple-bus.yaml
+>> arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: pcie@2000: ranges: 'oneOf' conditional failed, one must be fixed:
+>> 	arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: pcie@2000: ranges: 'oneOf' conditional failed, one must be fixed:
+   		[[0, 0, 0, 0, 0, 1048576]] is not of type 'boolean'
+   		True was expected
+   		[[0, 0, 0, 0, 0, 1048576]] is not of type 'null'
+   	0 is not one of [16777216, 33554432, 50331648, 1107296256, 1124073472, 2164260864, 2181038080, 2197815296, 3254779904, 3271557120]
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/pci/pci-bus.yaml
+>> arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: pcie@2000: 'device_type' is a required property
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/pci/pci-bus.yaml
+   arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: ehci@4000: $nodename:0: 'ehci@4000' does not match '^usb(@.*)?'
+   	From schema: Documentation/devicetree/bindings/usb/generic-ehci.yaml
+   arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: ehci@4000: '#address-cells', '#size-cells', 'port@1', 'port@2' do not match any of the regexes: 'pinctrl-[0-9]+'
+   	From schema: Documentation/devicetree/bindings/usb/generic-ehci.yaml
+   arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: ohci@d000: $nodename:0: 'ohci@d000' does not match '^usb(@.*)?'
+   	From schema: Documentation/devicetree/bindings/usb/generic-ohci.yaml
+   arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: ohci@d000: '#address-cells', '#size-cells', '#usb-cells', 'port@1', 'port@2' do not match any of the regexes: 'pinctrl-[0-9]+'
+   	From schema: Documentation/devicetree/bindings/usb/generic-ohci.yaml
+>> arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: leds: '5ghz', 'system', 'usb', 'wps' do not match any of the regexes: '(^led-[0-9a-f]$|led)', 'pinctrl-[0-9]+'
+   	From schema: Documentation/devicetree/bindings/leds/leds-gpio.yaml
+   arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: leds: '5ghz' does not match any of the regexes: '.*-names$', '.*-supply$', '^#.*-cells$', '^#[a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-fA-F]+(,[0-9a-fA-F]+)*$', '^__.*__$', 'pinctrl-[0-9]+'
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/dt-core.yaml
+>> arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: pcie0_leds: '2ghz' does not match any of the regexes: '(^led-[0-9a-f]$|led)', 'pinctrl-[0-9]+'
+   	From schema: Documentation/devicetree/bindings/leds/leds-gpio.yaml
+   arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: pcie0_leds: '2ghz' does not match any of the regexes: '.*-names$', '.*-supply$', '^#.*-cells$', '^#[a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-fA-F]+(,[0-9a-fA-F]+)*$', '^__.*__$', 'pinctrl-[0-9]+'
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/dt-core.yaml
+   schemas/input/input.yaml: ignoring, error in schema: properties: power-off-time-sec
+   Traceback (most recent call last):
+     File "/usr/local/bin/dt-validate", line 164, in <module>
+       sg.check_trees(filename, testtree)
+     File "/usr/local/bin/dt-validate", line 113, in check_trees
+       self.check_subtree(dt, subtree, "/", "/", filename)
+     File "/usr/local/bin/dt-validate", line 104, in check_subtree
+--
+   arch/arm/boot/dts/bcm947189acdbmr.dt.yaml: mpcore@18310000: $nodename:0: 'mpcore@18310000' does not match '^([a-z][a-z0-9\\-]+-bus|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/simple-bus.yaml
+   arch/arm/boot/dts/bcm947189acdbmr.dt.yaml: chipcommon@0: $nodename:0: 'chipcommon@0' does not match '^([a-z][a-z0-9\\-]+-bus|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/simple-bus.yaml
+>> arch/arm/boot/dts/bcm947189acdbmr.dt.yaml: pcie@2000: ranges: 'oneOf' conditional failed, one must be fixed:
+>> 	arch/arm/boot/dts/bcm947189acdbmr.dt.yaml: pcie@2000: ranges: 'oneOf' conditional failed, one must be fixed:
+   		[[0, 0, 0, 0, 0, 1048576]] is not of type 'boolean'
+   		True was expected
+   		[[0, 0, 0, 0, 0, 1048576]] is not of type 'null'
+   	0 is not one of [16777216, 33554432, 50331648, 1107296256, 1124073472, 2164260864, 2181038080, 2197815296, 3254779904, 3271557120]
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/pci/pci-bus.yaml
+>> arch/arm/boot/dts/bcm947189acdbmr.dt.yaml: pcie@2000: 'device_type' is a required property
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/pci/pci-bus.yaml
+   arch/arm/boot/dts/bcm947189acdbmr.dt.yaml: ehci@4000: $nodename:0: 'ehci@4000' does not match '^usb(@.*)?'
+   	From schema: Documentation/devicetree/bindings/usb/generic-ehci.yaml
+   arch/arm/boot/dts/bcm947189acdbmr.dt.yaml: ehci@4000: '#address-cells', '#size-cells', 'port@1', 'port@2' do not match any of the regexes: 'pinctrl-[0-9]+'
+   	From schema: Documentation/devicetree/bindings/usb/generic-ehci.yaml
+   arch/arm/boot/dts/bcm947189acdbmr.dt.yaml: ohci@d000: $nodename:0: 'ohci@d000' does not match '^usb(@.*)?'
+   	From schema: Documentation/devicetree/bindings/usb/generic-ohci.yaml
+   arch/arm/boot/dts/bcm947189acdbmr.dt.yaml: ohci@d000: '#address-cells', '#size-cells', '#usb-cells', 'port@1', 'port@2' do not match any of the regexes: 'pinctrl-[0-9]+'
+   	From schema: Documentation/devicetree/bindings/usb/generic-ohci.yaml
+>> arch/arm/boot/dts/bcm947189acdbmr.dt.yaml: leds: '2ghz', '5ghz', 'wps' do not match any of the regexes: '(^led-[0-9a-f]$|led)', 'pinctrl-[0-9]+'
+   	From schema: Documentation/devicetree/bindings/leds/leds-gpio.yaml
+   arch/arm/boot/dts/bcm947189acdbmr.dt.yaml: leds: '2ghz', '5ghz' do not match any of the regexes: '.*-names$', '.*-supply$', '^#.*-cells$', '^#[a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-fA-F]+(,[0-9a-fA-F]+)*$', '^__.*__$', 'pinctrl-[0-9]+'
+   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/dt-core.yaml
+   schemas/input/input.yaml: ignoring, error in schema: properties: power-off-time-sec
+   Traceback (most recent call last):
+     File "/usr/local/bin/dt-validate", line 164, in <module>
+       sg.check_trees(filename, testtree)
+     File "/usr/local/bin/dt-validate", line 113, in check_trees
+       self.check_subtree(dt, subtree, "/", "/", filename)
+     File "/usr/local/bin/dt-validate", line 104, in check_subtree
 
-Especially for what could be a general in-kernel mechanism with many
-users and not tightly linked to KVM as imagined here.
-
-Jason
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
