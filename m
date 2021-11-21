@@ -2,495 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1504581A2
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 04:50:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B03A14581AF
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 05:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237896AbhKUDxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 22:53:17 -0500
-Received: from mail-0301.mail-europe.com ([188.165.51.139]:40261 "EHLO
-        mail-0301.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237884AbhKUDxQ (ORCPT
+        id S237912AbhKUEUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 23:20:17 -0500
+Received: from mx0a-002c1b01.pphosted.com ([148.163.151.68]:57418 "EHLO
+        mx0a-002c1b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231205AbhKUEUP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 22:53:16 -0500
-Date:   Sun, 21 Nov 2021 03:50:03 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1637466608;
-        bh=XpEBgdlM09HjmAZhScWwGpU2Xf/z2jThaEqQ3MdHN8A=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=Etp8TE+ZigcIgNkfcNco9lPr7Uk7MduJg94gwDHFxPsJZwU//jXZIKh3wbsc+v7OC
-         l/1VTeNzqGqQQI3s6zku04Y0BWV0oYOCh74faYbp0NTSueV/4FoFPqtEzpM4NYhEap
-         LZs4ceJ5AhLz8wbzPk3MKK4i3rdgTIyJ7a7/WaV8=
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>
-From:   Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        linux-kernel@vger.kernel.org
-Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: [PATCH v3 2/2] drm/panel: Add driver for LG.Philips SW43101 DSI video mode panel
-Message-ID: <20211121034748.158296-3-y.oudjana@protonmail.com>
-In-Reply-To: <20211121034748.158296-1-y.oudjana@protonmail.com>
-References: <20211121034748.158296-1-y.oudjana@protonmail.com>
+        Sat, 20 Nov 2021 23:20:15 -0500
+Received: from pps.filterd (m0127838.ppops.net [127.0.0.1])
+        by mx0a-002c1b01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AL3t36v022803;
+        Sat, 20 Nov 2021 20:16:23 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version;
+ s=proofpoint20171006; bh=L8+/aMJMZ96HwFCics/BdrN9OIrEredTiJ/ASW1pyGA=;
+ b=Pj/MPz0Jp3izql6NTVzKsYg1fe55Knxq7zBGmzBiY0mwLOwKBC/cciMd5QJMWSHkl5+w
+ JRqmm/1YeFUcsoOY8ovAmewXhgyIJfgMK5tfcNcaJ28lW5PDy0oU7jFcv2fHsydNQVog
+ lvJdPpI0UFFPU/Srm7mEkkJ3N71sSJq5jR+cXwLOVW6CiPAwMdovF7v+cbnXdSniRE6c
+ BWuIV28VWMDwqXmrrVnRsv7XAf94YGiiCPHK7VGfcaRioKtwkUshE2AKc+WAjiZ2qxgh
+ YZFRTY29ARsvOA0XNlV4ur/c8gHKBNXndV++Tq9Dnq6S3QxE6kSwwF2LjpWsutfq1c3g jA== 
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
+        by mx0a-002c1b01.pphosted.com (PPS) with ESMTPS id 3cf1f38vjc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 20 Nov 2021 20:16:23 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IzmRCfmMXDVvSP0lvY6RZUPFsQWY6u02/vqba4OzLeZfDFEJ0QBCm98yRljdSv4M7GLUlhu6o1oT/7Kjb0bORB9cdSbodW3e+KMqYHrDfM6Nm633KwmkI/hdraBHm/+VvSLApPRvaZmpcrKaR+iKL8/Ba7eXWfJ/tY5ymWf9lyt7/LJawXJKGaQOy9zMnfM3eQiPruaw78k7pKkym63egAc2oOW7cjUy1NYVelIiLDV11abY87QqIb6TIXxMSeUpzseN3PuwpzQeIPb31GQQam0CsS2Dk1Ak71EqzTq6Vh+sHFdVjnfaKRLBGSMjhwQ+En1Xwht6MI6YDvzLCSM6DA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=L8+/aMJMZ96HwFCics/BdrN9OIrEredTiJ/ASW1pyGA=;
+ b=D3/rVtBBPDXVW+pUvGveMQXVHuzMxB5BVnwzUPJ2I7eRND2FSdt2SDO1iyIyqq2zn04og0bPelz6WNVNWFZO29nSzUYZHN9qJh4/tsQm7VQJ/pmTRfIpjJFH52KZ/JXI+SEPn7vi1zY3D1Qk6NdO1hoaK9CjWZXDBufrDfMVdW07kM9d5+gfXuE+ZmPphfaAO2RN4DATkaDLOZJHJWl8gbUV6tTOgkuRtIQ36UFklYPI3R0q+PUCBUW2frShFlbE9Ugon5yZubQoplCE2vuDw1xuKL6ozmi6uyHHeC7js/06vSw9BpIIuTsWlGIlaN+M3DpjyDmLvjp421V6hr98Vw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nutanix.com; dmarc=pass action=none header.from=nutanix.com;
+ dkim=pass header.d=nutanix.com; arc=none
+Received: from CH0PR02MB8041.namprd02.prod.outlook.com (2603:10b6:610:106::10)
+ by CH2PR02MB7094.namprd02.prod.outlook.com (2603:10b6:610:89::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21; Sun, 21 Nov
+ 2021 04:16:21 +0000
+Received: from CH0PR02MB8041.namprd02.prod.outlook.com
+ ([fe80::c549:4f6b:774b:d63b]) by CH0PR02MB8041.namprd02.prod.outlook.com
+ ([fe80::c549:4f6b:774b:d63b%4]) with mapi id 15.20.4713.024; Sun, 21 Nov 2021
+ 04:16:21 +0000
+From:   Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+To:     dhowells@redhat.com, marc.dionne@auristor.com, davem@davemloft.net,
+        kuba@kernel.org, linux-afs@lists.infradead.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+Subject: [PATCH net 1/2] rxrpc: Fix rxrpc_peer leak in rxrpc_look_up_bundle()
+Date:   Sun, 21 Nov 2021 04:16:07 +0000
+Message-Id: <20211121041608.133740-1-eiichi.tsukata@nutanix.com>
+X-Mailer: git-send-email 2.9.3
+Content-Type: text/plain
+X-ClientProxiedBy: SJ0PR13CA0130.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c6::15) To CH0PR02MB8041.namprd02.prod.outlook.com
+ (2603:10b6:610:106::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Received: from eiichi-tsukata.ubvm.nutanix.com (192.146.154.244) by SJ0PR13CA0130.namprd13.prod.outlook.com (2603:10b6:a03:2c6::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.13 via Frontend Transport; Sun, 21 Nov 2021 04:16:20 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ede21af5-f99b-49d1-1135-08d9aca5ac7d
+X-MS-TrafficTypeDiagnostic: CH2PR02MB7094:
+X-Microsoft-Antispam-PRVS: <CH2PR02MB7094E53F04B93E773752CB10809E9@CH2PR02MB7094.namprd02.prod.outlook.com>
+x-proofpoint-crosstenant: true
+X-MS-Oob-TLC-OOBClassifiers: OLM:2887;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KWlixl+sqNtKMPBNLi3PPAdl6jJWzUY6eKGf6jH4mHY6NAXuz9s7J2z1ADTTHlVVuSwJJG+uQpt7Wv/skkz2acp1yJxh7zkeZEK9iP7qjZnAFAeCrTI300KZ31re1dkda2uErYvjjnHPS4/aIBOQtfkoWMllYV3r8OI59a8lJxNMbVuOufVwj2I3RJFu0mYsDEcKfOOScNVeRb4GDxawkqsBsy/wkQ5gNhw6mL1MVVXNa7AbaUB5+R5mRWQh6fFOCZjxz/MAzm6gWaJhtc1cSlGigIAuYW9iuY0otgm2cpvuljJD3viJB897I8D81JMdVBLgfQ5V9hePkdxNIRX6WvnrYwcQwjaXAjhSLTze5vULMnbTN8ZkAmSq/keTtA/t06u2gb2lE8fKfddr7Yb3dOwVZGQYPA8OkHfWDUvNXkOx7oBCyh0vd4StHg31e5v+F4rC+xEGBBukQ2GuADpLy+EtQv+46bGlpPs0RAVmRQy1p1SNrad0cG5RnM54PpRD+PCsauLaMUo3e84hgtBElnzQ6NL4YawHBwQEW7aqjd85rm3z8So9sIl6oul7cWG+bfPOVmbyCmrcbKoKdBYNqpAkS6Ye7vHm5xY9cRkstwQ2JH3A99jAiRzUn5Y9xzLpmf3CyXARCY+3oX2DDl7ylxjGJ/k5BL55Oo64ycmglcrI/j6T8KyHSQmoTdpp/mUM08cFTseyv1CrQ4llwGYB9A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR02MB8041.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(107886003)(186003)(38100700002)(508600001)(66556008)(4326008)(5660300002)(66946007)(8936002)(26005)(38350700002)(66476007)(316002)(86362001)(2616005)(4744005)(8676002)(956004)(52116002)(6486002)(2906002)(1076003)(44832011)(6666004)(7696005)(36756003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?PXvI053rtR4UPY+0l6+fXy1yTs0O96bqN9T8eU6hwgImZ8l+QUz0P8BF3+jq?=
+ =?us-ascii?Q?bR3jyxB+zrRYuCZiIGszVBzsJ3LV2AeOp2YKf1ytW3h2V/W+FcsByjACD1dE?=
+ =?us-ascii?Q?GYlAYm78M26CC/mWDjdBG9LNobhTVu6BgD10nfO3FeMfLsOHn9jmtogiEaHR?=
+ =?us-ascii?Q?EHiGxvI+4na2Ymyo/jrbmbSyjH56wxCy3/+/qVvXKHnpqscGQD2LSFMp06Yj?=
+ =?us-ascii?Q?PdjjMHA8q+XMipntlKHtdrfIRbsoiguaGvKbeDpsm/SJRKr2m8XkpPwR53Ab?=
+ =?us-ascii?Q?AKCmXjfBB5P7PvLCxCKySmVH8xlNHC5c/szGAmDMx0FabAKSCVAJUoWskzuM?=
+ =?us-ascii?Q?kOlC6jn0/x+BdLaysC543ufCbxVX4QoDBJsqOt6Pa0uamxLn1jCWjYRfpbdv?=
+ =?us-ascii?Q?akVIg7K9JNC0yiPJKnm9URuirplFhcgXk6YaE5+sTrq4RoL2/u7ZI8Vns7Hn?=
+ =?us-ascii?Q?1Ddu5MvtAmfLE2zrkEB1OSmZEgMNKV85AwmNZotCj1SexOgB6tpN090Jp/eb?=
+ =?us-ascii?Q?GlV71YSwYQCIWgZ+Kb7F1Dwm1aDEPZKKESJHJkPH214brd/J6COYZpR0x/OV?=
+ =?us-ascii?Q?n9NZtFWZ5zSXL7K2dgEkT2B0/r6lbddWHXf+L7LPejafbIxPv9C9rnL2mnKK?=
+ =?us-ascii?Q?uGXqCUY0kyTgcyjuwXeO9ukQyYtbquugYlLrUNiaEC3sGs5WXr+Agw4SMyHV?=
+ =?us-ascii?Q?kmzr3aSoo/P6xyobK8P7dvKU6TszmMos59wuavvbevi36+d6vpP95Foc9iWG?=
+ =?us-ascii?Q?XaFSlejrGeUOJoMo0N4gjcXRhy3R+e2IWpd7UG8/gLnUGDUQRshawS5ocbl/?=
+ =?us-ascii?Q?VOYL5C40fqJvgcr3PfDGkjTSzX3P9v3hwz+oMsUDoOLKYs/+dGjxZ6ggMxrh?=
+ =?us-ascii?Q?gcarJO52v6bt67dtOgx+e350sG7OKhfFhd9VITJV9dQH92va5w98Iqw8+v2f?=
+ =?us-ascii?Q?xCW6pef7vha39+Gcrrt0PcOKyzv5/VI6ZiLzj5zSRTCgvGW92EDJL6Lr+6cN?=
+ =?us-ascii?Q?ggCLBkERRmRojPd4eNlxSRDdF6rZ0co+0Ws/oR7bjg56J4hzmU6CIjDeRs/R?=
+ =?us-ascii?Q?Kz1yW26sc1NZbS7x6bqs6U/cwgu7BHrQUjENg7hUMon8v5BdrBOyTeogQHr0?=
+ =?us-ascii?Q?ZpDcWQVzLd0MgdoXKPubvXTrQr//1byonUoM32CTh7CpvoRkLIchGsa4jas6?=
+ =?us-ascii?Q?YKY5FwMeISu+MlGo1hAnsRfTn8+bo9SYvsdZktB7EZFKQQ1DlGB3ZwlK5fHh?=
+ =?us-ascii?Q?gt1aIg2mAXTGYbEvTmdA6BfbgqQjQ4IiW9jEMn6bRgyTQkhqkjrvrbxG6mp9?=
+ =?us-ascii?Q?IJ04SVh7GfGjROOBSsWzJdVLybhU1SWg93JBBtGTXIsGombPj1L4KRTCPQq4?=
+ =?us-ascii?Q?LYswnlLGaDm5y58IskOB2YesYGXhHEBlm66+BQEa9vN1s9XixjpsJSso2T9o?=
+ =?us-ascii?Q?fQtw0Esk5epC5BPwPY5b8y2nhfSY2IEx7JKm2PLQ9iFZ5KrEg/lCjIgkXPL+?=
+ =?us-ascii?Q?cajhfRVoKlS3VXOcf3sHm40XlCknv22kSE7g/CFoMGRer4yiNfnyYtpxpuYC?=
+ =?us-ascii?Q?Y2iZbCsD7919qBiBzGPNu7RqlYouFYC1S72NIpv8AclKcKfiNDWRKslB60go?=
+ =?us-ascii?Q?I9dP+toqp2vcxwtxyEn4PTNHQFtG89oFfIj4mHJMGD/whxItOE+25z2xmymj?=
+ =?us-ascii?Q?f6zu0k6J+nhtWY33xe7MBgL6acQ=3D?=
+X-OriginatorOrg: nutanix.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ede21af5-f99b-49d1-1135-08d9aca5ac7d
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR02MB8041.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2021 04:16:21.5235
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: bb047546-786f-4de1-bd75-24e5b6f79043
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BIZDLJdbPritCqif/dmMZeP4Yf8pp3Kw+vF4uXWme2ggSOk4OXEVI73UDrPNLqGN2yFqUkt6ijTPF3JlEow5LeGIUCdgT7hQH/w96yXhXgI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR02MB7094
+X-Proofpoint-ORIG-GUID: JuTU_yk60cCzqsmPeLwgh9t55Kfhmkf1
+X-Proofpoint-GUID: JuTU_yk60cCzqsmPeLwgh9t55Kfhmkf1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-21_02,2021-11-17_01,2020-04-07_01
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a driver for the LG.Philips SW43101 FHD (1080x1920) OLED DSI video mode=
- panel.
-This driver has been generated using linux-mdss-dsi-panel-driver-generator.
+Need to call rxrpc_put_peer() for bundle candidate before kfree() as it
+holds a ref to rxrpc_peer.
 
-Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
+Fixes: 245500d853e9 ("rxrpc: Rewrite the client connection manager")
+Signed-off-by: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
 ---
-Changes since v2:
- - Make the DT schema patch first in the series.
- - Use backlight_get_brightness where needed.
- - Remove 0xff mask from return value in sw43101_bl_get_brightness.
- - Constify struct backlight_properties props in sw43101_create_backlight.
-Changes since v1:
- - Add regulator support.
- - Add MAINTAINERS entry.
- - Dual-license DT binding.
+ net/rxrpc/conn_client.c | 1 +
+ 1 file changed, 1 insertion(+)
 
- MAINTAINERS                                   |   1 +
- drivers/gpu/drm/panel/Kconfig                 |  10 +
- drivers/gpu/drm/panel/Makefile                |   1 +
- .../gpu/drm/panel/panel-lgphilips-sw43101.c   | 358 ++++++++++++++++++
- 4 files changed, 370 insertions(+)
- create mode 100644 drivers/gpu/drm/panel/panel-lgphilips-sw43101.c
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b096425e3c01..d987bb703863 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6006,6 +6006,7 @@ DRM DRIVER FOR LG.PHILIPS SW43101 PANEL
- M:=09Yassine Oudjana <y.oudjana@protonmail.com>
- S:=09Maintained
- F:=09Documentation/devicetree/bindings/display/panel/lgphilips,sw43101.yam=
-l
-+F:=09drivers/gpu/drm/panel/panel-lgphilips-sw43101.c
-=20
- DRM DRIVER FOR LVDS PANELS
- M:=09Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-index cfc8d644cedf..5157689fa3e6 100644
---- a/drivers/gpu/drm/panel/Kconfig
-+++ b/drivers/gpu/drm/panel/Kconfig
-@@ -238,6 +238,16 @@ config DRM_PANEL_SAMSUNG_LD9040
- =09depends on OF && SPI
- =09select VIDEOMODE_HELPERS
-=20
-+config DRM_PANEL_LGPHILIPS_SW43101
-+=09tristate "LG.Philips SW43101 DSI video mode panel"
-+=09depends on OF
-+=09depends on DRM_MIPI_DSI
-+=09depends on BACKLIGHT_CLASS_DEVICE
-+=09help
-+=09  Say Y here if you want to enable support for the LG.Philips SW43101 F=
-HD
-+=09  (1080x1920) OLED DSI video mode panel found on the Xiaomi Mi Note 2.
-+=09  To compile this driver as a module, choose M here.
-+
- config DRM_PANEL_LG_LB035Q02
- =09tristate "LG LB035Q024573 RGB panel"
- =09depends on GPIOLIB && OF && SPI
-diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefil=
-e
-index bca4cc1f2715..605954e2de70 100644
---- a/drivers/gpu/drm/panel/Makefile
-+++ b/drivers/gpu/drm/panel/Makefile
-@@ -21,6 +21,7 @@ obj-$(CONFIG_DRM_PANEL_KHADAS_TS050) +=3D panel-khadas-ts=
-050.o
- obj-$(CONFIG_DRM_PANEL_KINGDISPLAY_KD097D04) +=3D panel-kingdisplay-kd097d=
-04.o
- obj-$(CONFIG_DRM_PANEL_LEADTEK_LTK050H3146W) +=3D panel-leadtek-ltk050h314=
-6w.o
- obj-$(CONFIG_DRM_PANEL_LEADTEK_LTK500HD1829) +=3D panel-leadtek-ltk500hd18=
-29.o
-+obj-$(CONFIG_DRM_PANEL_LGPHILIPS_SW43101) +=3D panel-lgphilips-sw43101.o
- obj-$(CONFIG_DRM_PANEL_LG_LB035Q02) +=3D panel-lg-lb035q02.o
- obj-$(CONFIG_DRM_PANEL_LG_LG4573) +=3D panel-lg-lg4573.o
- obj-$(CONFIG_DRM_PANEL_NEC_NL8048HL11) +=3D panel-nec-nl8048hl11.o
-diff --git a/drivers/gpu/drm/panel/panel-lgphilips-sw43101.c b/drivers/gpu/=
-drm/panel/panel-lgphilips-sw43101.c
-new file mode 100644
-index 000000000000..5b5b3fad1ab2
---- /dev/null
-+++ b/drivers/gpu/drm/panel/panel-lgphilips-sw43101.c
-@@ -0,0 +1,358 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * LG.Philips SW43101 OLED Panel driver
-+ * Generated with linux-mdss-dsi-panel-driver-generator
-+ *
-+ * Copyright (c) 2020 Yassine Oudjana <y.oudjana@protonmail.com>
-+ */
-+
-+#include <linux/backlight.h>
-+#include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/regulator/consumer.h>
-+
-+#include <video/mipi_display.h>
-+
-+#include <drm/drm_mipi_dsi.h>
-+#include <drm/drm_modes.h>
-+#include <drm/drm_panel.h>
-+
-+static const char * const regulator_names[] =3D {
-+=09"vdd",
-+=09"avdd",
-+=09"elvdd",
-+=09"elvss",
-+};
-+
-+struct sw43101_device {
-+=09struct drm_panel panel;
-+=09struct mipi_dsi_device *dsi;
-+=09struct gpio_desc *reset_gpio;
-+=09struct regulator_bulk_data supplies[ARRAY_SIZE(regulator_names)];
-+=09bool prepared;
-+};
-+
-+static inline
-+struct sw43101_device *to_sw43101_device(struct drm_panel *panel)
-+{
-+=09return container_of(panel, struct sw43101_device, panel);
-+}
-+
-+#define dsi_dcs_write_seq(dsi, seq...) do {=09=09=09=09\
-+=09=09static const u8 d[] =3D { seq };=09=09=09=09\
-+=09=09int ret;=09=09=09=09=09=09\
-+=09=09ret =3D mipi_dsi_dcs_write_buffer(dsi, d, ARRAY_SIZE(d));=09\
-+=09=09if (ret < 0)=09=09=09=09=09=09\
-+=09=09=09return ret;=09=09=09=09=09\
-+=09} while (0)
-+
-+static void sw43101_reset(struct sw43101_device *ctx)
-+{
-+=09gpiod_set_value_cansleep(ctx->reset_gpio, 0);
-+=09usleep_range(10000, 11000);
-+=09gpiod_set_value_cansleep(ctx->reset_gpio, 1);
-+=09usleep_range(1000, 2000);
-+=09gpiod_set_value_cansleep(ctx->reset_gpio, 0);
-+=09msleep(20);
-+}
-+
-+static int sw43101_on(struct sw43101_device *ctx)
-+{
-+=09struct mipi_dsi_device *dsi =3D ctx->dsi;
-+=09struct device *dev =3D &dsi->dev;
-+=09int ret;
-+
-+=09dsi->mode_flags |=3D MIPI_DSI_MODE_LPM;
-+
-+=09dsi_dcs_write_seq(dsi, 0xb0, 0x5a);
-+=09usleep_range(1000, 2000);
-+=09dsi_dcs_write_seq(dsi, 0xb2, 0x13, 0x12, 0x40, 0xd0, 0xff, 0xff, 0x15);
-+=09dsi_dcs_write_seq(dsi, 0xe3, 0x01);
-+=09usleep_range(1000, 2000);
-+=09dsi_dcs_write_seq(dsi, 0xf3, 0x03, 0x00, 0x00);
-+
-+=09ret =3D mipi_dsi_dcs_set_display_brightness(dsi, 0x0020);
-+=09if (ret < 0) {
-+=09=09dev_err(dev, "Failed to set display brightness: %d\n", ret);
-+=09=09return ret;
-+=09}
-+
-+=09dsi_dcs_write_seq(dsi, MIPI_DCS_WRITE_CONTROL_DISPLAY, 0x20);
-+=09dsi_dcs_write_seq(dsi, MIPI_DCS_WRITE_POWER_SAVE, 0x00);
-+=09dsi_dcs_write_seq(dsi, 0xb0, 0x00);
-+=09usleep_range(1000, 2000);
-+
-+=09ret =3D mipi_dsi_dcs_exit_sleep_mode(dsi);
-+=09if (ret < 0) {
-+=09=09dev_err(dev, "Failed to exit sleep mode: %d\n", ret);
-+=09=09return ret;
-+=09}
-+=09msleep(120);
-+
-+=09ret =3D mipi_dsi_dcs_set_display_on(dsi);
-+=09if (ret < 0) {
-+=09=09dev_err(dev, "Failed to set display on: %d\n", ret);
-+=09=09return ret;
-+=09}
-+=09msleep(20);
-+
-+=09return 0;
-+}
-+
-+static int sw43101_off(struct sw43101_device *ctx)
-+{
-+=09struct mipi_dsi_device *dsi =3D ctx->dsi;
-+=09struct device *dev =3D &dsi->dev;
-+=09int ret;
-+
-+=09dsi->mode_flags &=3D ~MIPI_DSI_MODE_LPM;
-+
-+=09ret =3D mipi_dsi_dcs_set_display_off(dsi);
-+=09if (ret < 0) {
-+=09=09dev_err(dev, "Failed to set display off: %d\n", ret);
-+=09=09return ret;
-+=09}
-+=09usleep_range(2000, 3000);
-+
-+=09ret =3D mipi_dsi_dcs_enter_sleep_mode(dsi);
-+=09if (ret < 0) {
-+=09=09dev_err(dev, "Failed to enter sleep mode: %d\n", ret);
-+=09=09return ret;
-+=09}
-+=09msleep(128);
-+
-+=09return 0;
-+}
-+
-+static int sw43101_prepare(struct drm_panel *panel)
-+{
-+=09struct sw43101_device *ctx =3D to_sw43101_device(panel);
-+=09struct device *dev =3D &ctx->dsi->dev;
-+=09int ret;
-+
-+=09if (ctx->prepared)
-+=09=09return 0;
-+
-+=09ret =3D regulator_bulk_enable(ARRAY_SIZE(ctx->supplies), ctx->supplies)=
-;
-+=09if (ret < 0) {
-+=09=09dev_err(dev, "Failed to enable regulators: %d\n", ret);
-+=09=09return ret;
-+=09}
-+
-+=09sw43101_reset(ctx);
-+
-+=09ret =3D sw43101_on(ctx);
-+=09if (ret < 0) {
-+=09=09dev_err(dev, "Failed to initialize panel: %d\n", ret);
-+=09=09gpiod_set_value_cansleep(ctx->reset_gpio, 1);
-+=09=09return ret;
-+=09}
-+
-+=09ctx->prepared =3D true;
-+=09return 0;
-+}
-+
-+static int sw43101_unprepare(struct drm_panel *panel)
-+{
-+=09struct sw43101_device *ctx =3D to_sw43101_device(panel);
-+=09struct device *dev =3D &ctx->dsi->dev;
-+=09int ret;
-+
-+=09if (!ctx->prepared)
-+=09=09return 0;
-+
-+=09ret =3D sw43101_off(ctx);
-+=09if (ret < 0)
-+=09=09dev_err(dev, "Failed to un-initialize panel: %d\n", ret);
-+
-+=09gpiod_set_value_cansleep(ctx->reset_gpio, 1);
-+
-+=09ret =3D regulator_bulk_disable(ARRAY_SIZE(ctx->supplies), ctx->supplies=
-);
-+=09if (ret < 0) {
-+=09=09dev_err(dev, "Failed to disable regulators: %d\n", ret);
-+=09=09return ret;
-+=09}
-+
-+=09ctx->prepared =3D false;
-+=09return 0;
-+}
-+
-+static const struct drm_display_mode sw43101_mode =3D {
-+=09.clock =3D (1080 + 56 + 8 + 60) * (1920 + 40 + 8 + 48) * 58 / 1000,
-+=09.hdisplay =3D 1080,
-+=09.hsync_start =3D 1080 + 56,
-+=09.hsync_end =3D 1080 + 56 + 8,
-+=09.htotal =3D 1080 + 56 + 8 + 60,
-+=09.vdisplay =3D 1920,
-+=09.vsync_start =3D 1920 + 40,
-+=09.vsync_end =3D 1920 + 40 + 8,
-+=09.vtotal =3D 1920 + 40 + 8 + 48,
-+=09.width_mm =3D 71,
-+=09.height_mm =3D 126,
-+};
-+
-+static int sw43101_get_modes(struct drm_panel *panel,
-+=09=09=09=09     struct drm_connector *connector)
-+{
-+=09struct drm_display_mode *mode;
-+
-+=09mode =3D drm_mode_duplicate(connector->dev, &sw43101_mode);
-+=09if (!mode)
-+=09=09return -ENOMEM;
-+
-+=09drm_mode_set_name(mode);
-+
-+=09mode->type =3D DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
-+=09connector->display_info.width_mm =3D mode->width_mm;
-+=09connector->display_info.height_mm =3D mode->height_mm;
-+=09drm_mode_probed_add(connector, mode);
-+
-+=09return 1;
-+}
-+
-+static const struct drm_panel_funcs sw43101_panel_funcs =3D {
-+=09.prepare =3D sw43101_prepare,
-+=09.unprepare =3D sw43101_unprepare,
-+=09.get_modes =3D sw43101_get_modes,
-+};
-+
-+static int sw43101_bl_update_status(struct backlight_device *bl)
-+{
-+=09struct mipi_dsi_device *dsi =3D bl_get_data(bl);
-+=09u16 brightness =3D backlight_get_brightness(bl);
-+=09int ret;
-+
-+=09dsi->mode_flags &=3D ~MIPI_DSI_MODE_LPM;
-+
-+=09ret =3D mipi_dsi_dcs_set_display_brightness(dsi, brightness);
-+=09if (ret < 0)
-+=09=09return ret;
-+
-+=09dsi->mode_flags |=3D MIPI_DSI_MODE_LPM;
-+
-+=09return 0;
-+}
-+
-+static int sw43101_bl_get_brightness(struct backlight_device *bl)
-+{
-+=09struct mipi_dsi_device *dsi =3D bl_get_data(bl);
-+=09u16 brightness =3D backlight_get_brightness(bl);
-+=09int ret;
-+
-+=09dsi->mode_flags &=3D ~MIPI_DSI_MODE_LPM;
-+
-+=09ret =3D mipi_dsi_dcs_get_display_brightness(dsi, &brightness);
-+=09if (ret < 0)
-+=09=09return ret;
-+
-+=09dsi->mode_flags |=3D MIPI_DSI_MODE_LPM;
-+
-+=09return brightness;
-+}
-+
-+static const struct backlight_ops sw43101_bl_ops =3D {
-+=09.update_status =3D sw43101_bl_update_status,
-+=09.get_brightness =3D sw43101_bl_get_brightness,
-+};
-+
-+static struct backlight_device *
-+sw43101_create_backlight(struct mipi_dsi_device *dsi)
-+{
-+=09struct device *dev =3D &dsi->dev;
-+=09const struct backlight_properties props =3D {
-+=09=09.type =3D BACKLIGHT_RAW,
-+=09=09.brightness =3D 255,
-+=09=09.max_brightness =3D 255,
-+=09};
-+
-+=09return devm_backlight_device_register(dev, dev_name(dev), dev, dsi,
-+=09=09=09=09=09      &sw43101_bl_ops, &props);
-+}
-+
-+static int sw43101_probe(struct mipi_dsi_device *dsi)
-+{
-+=09struct device *dev =3D &dsi->dev;
-+=09struct sw43101_device *ctx;
-+=09size_t i;
-+=09int ret;
-+
-+=09ctx =3D devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
-+=09if (!ctx)
-+=09=09return -ENOMEM;
-+
-+=09ctx->reset_gpio =3D devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
-+=09if (IS_ERR(ctx->reset_gpio))
-+=09=09return dev_err_probe(dev, PTR_ERR(ctx->reset_gpio),
-+=09=09=09=09     "Failed to get reset-gpios\n");
-+
-+=09for (i =3D 0; i < ARRAY_SIZE(ctx->supplies); ++i)
-+=09=09ctx->supplies[i].supply =3D regulator_names[i];
-+
-+=09ret =3D devm_regulator_bulk_get(&dsi->dev, ARRAY_SIZE(ctx->supplies),
-+=09=09=09=09      ctx->supplies);
-+=09if (ret < 0) {
-+=09=09dev_err(&dsi->dev, "Failed to get regulators\n");
-+=09=09return ret;
-+=09}
-+
-+=09ctx->dsi =3D dsi;
-+=09mipi_dsi_set_drvdata(dsi, ctx);
-+
-+=09dsi->lanes =3D 4;
-+=09dsi->format =3D MIPI_DSI_FMT_RGB888;
-+=09dsi->mode_flags =3D MIPI_DSI_MODE_VIDEO | MIPI_DSI_CLOCK_NON_CONTINUOUS=
-;
-+
-+=09drm_panel_init(&ctx->panel, dev, &sw43101_panel_funcs,
-+=09=09       DRM_MODE_CONNECTOR_DSI);
-+
-+=09ctx->panel.backlight =3D sw43101_create_backlight(dsi);
-+=09if (IS_ERR(ctx->panel.backlight))
-+=09=09return dev_err_probe(dev, PTR_ERR(ctx->panel.backlight),
-+=09=09=09=09     "Failed to create backlight\n");
-+
-+=09drm_panel_add(&ctx->panel);
-+
-+=09ret =3D mipi_dsi_attach(dsi);
-+=09if (ret < 0) {
-+=09=09dev_err(dev, "Failed to attach to DSI host: %d\n", ret);
-+=09=09return ret;
-+=09}
-+
-+=09return 0;
-+}
-+
-+static int sw43101_remove(struct mipi_dsi_device *dsi)
-+{
-+=09struct sw43101_device *ctx =3D mipi_dsi_get_drvdata(dsi);
-+=09int ret;
-+
-+=09ret =3D mipi_dsi_detach(dsi);
-+=09if (ret < 0)
-+=09=09dev_err(&dsi->dev, "Failed to detach from DSI host: %d\n", ret);
-+
-+=09drm_panel_remove(&ctx->panel);
-+
-+=09return 0;
-+}
-+
-+static const struct of_device_id sw43101_of_match[] =3D {
-+=09{ .compatible =3D "lgphilips,sw43101" },
-+=09{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, sw43101_of_match);
-+
-+static struct mipi_dsi_driver sw43101_driver =3D {
-+=09.probe =3D sw43101_probe,
-+=09.remove =3D sw43101_remove,
-+=09.driver =3D {
-+=09=09.name =3D "panel-lgphilips-sw43101",
-+=09=09.of_match_table =3D sw43101_of_match,
-+=09},
-+};
-+module_mipi_dsi_driver(sw43101_driver);
-+
-+MODULE_AUTHOR("Yassine Oudjana <y.oudjana@protonmail.com>");
-+MODULE_DESCRIPTION("LG.Philips SW43101 DSI video mode panel driver");
-+MODULE_LICENSE("GPL v2");
---=20
+diff --git a/net/rxrpc/conn_client.c b/net/rxrpc/conn_client.c
+index dbea0bfee48e..46dcb33888ff 100644
+--- a/net/rxrpc/conn_client.c
++++ b/net/rxrpc/conn_client.c
+@@ -328,6 +328,7 @@ static struct rxrpc_bundle *rxrpc_look_up_bundle(struct rxrpc_conn_parameters *c
+ 	return candidate;
+ 
+ found_bundle_free:
++	rxrpc_put_peer(candidate->params.peer);
+ 	kfree(candidate);
+ found_bundle:
+ 	rxrpc_get_bundle(bundle);
+-- 
 2.33.1
-
 
