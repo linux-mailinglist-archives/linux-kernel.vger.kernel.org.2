@@ -2,31 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6B4458551
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 18:16:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1331458550
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 18:16:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238515AbhKURS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 12:18:59 -0500
-Received: from soltyk.jannau.net ([144.76.91.90]:53150 "EHLO soltyk.jannau.net"
+        id S238509AbhKURS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 12:18:57 -0500
+Received: from soltyk.jannau.net ([144.76.91.90]:53168 "EHLO soltyk.jannau.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238414AbhKURSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 12:18:54 -0500
+        id S238450AbhKURSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 12:18:55 -0500
 Received: from coburn.home.jannau.net (p579ad520.dip0.t-ipconnect.de [87.154.213.32])
-        by soltyk.jannau.net (Postfix) with ESMTPSA id 1D3E7261B2E;
+        by soltyk.jannau.net (Postfix) with ESMTPSA id CA18B261B2F;
         Sun, 21 Nov 2021 18:15:48 +0100 (CET)
 From:   Janne Grunau <j@jannau.net>
 To:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
         Alyssa Rosenzweig <alyssa@rosenzweig.io>,
         Rob Herring <robh+dt@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>, Olof Johansson <olof@lixom.net>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Mark Kettenis <kettenis@openbsd.org>,
-        Rob Herring <robh@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] dt-bindings: i2c: apple,i2c: allow multiple compatibles
-Date:   Sun, 21 Nov 2021 18:15:44 +0100
-Message-Id: <20211121171545.27402-3-j@jannau.net>
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 3/3] arm64: dts: apple: add #interrupt-cells property to pinctrl nodes
+Date:   Sun, 21 Nov 2021 18:15:45 +0100
+Message-Id: <20211121171545.27402-4-j@jannau.net>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211121171545.27402-1-j@jannau.net>
 References: <20211121171545.27402-1-j@jannau.net>
@@ -36,43 +35,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The intention was to have a SoC-specific and base compatible string
-to allow forward compatibility and SoC specific quirks,
+Required for devices trying to use pinctrl devices as interrupt
+controller.
 
-Fixes: df7c4a8c1b47 ("dt-bindings: i2c: Add Apple I2C controller bindings")
+Fixes: 0a8282b83119 ("arm64: apple: Add pinctrl nodes")
 Signed-off-by: Janne Grunau <j@jannau.net>
 Cc: Mark Kettenis <kettenis@openbsd.org>
 ---
- Documentation/devicetree/bindings/i2c/apple,i2c.yaml | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/apple/t8103.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/i2c/apple,i2c.yaml b/Documentation/devicetree/bindings/i2c/apple,i2c.yaml
-index 22fc8483256f..f1cb96c08212 100644
---- a/Documentation/devicetree/bindings/i2c/apple,i2c.yaml
-+++ b/Documentation/devicetree/bindings/i2c/apple,i2c.yaml
-@@ -20,9 +20,10 @@ allOf:
+diff --git a/arch/arm64/boot/dts/apple/t8103.dtsi b/arch/arm64/boot/dts/apple/t8103.dtsi
+index fc8b2bb06ffe..c320c8baeb41 100644
+--- a/arch/arm64/boot/dts/apple/t8103.dtsi
++++ b/arch/arm64/boot/dts/apple/t8103.dtsi
+@@ -143,6 +143,7 @@ pinctrl_ap: pinctrl@23c100000 {
+ 			apple,npins = <212>;
  
- properties:
-   compatible:
--    enum:
--      - apple,t8103-i2c
--      - apple,i2c
-+    items:
-+      - enum:
-+        - apple,t8103-i2c
-+      - const: apple,i2c
+ 			interrupt-controller;
++			#interrupt-cells = <2>;
+ 			interrupt-parent = <&aic>;
+ 			interrupts = <AIC_IRQ 190 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <AIC_IRQ 191 IRQ_TYPE_LEVEL_HIGH>,
+@@ -169,6 +170,7 @@ pinctrl_aop: pinctrl@24a820000 {
+ 			apple,npins = <42>;
  
-   reg:
-     maxItems: 1
-@@ -51,7 +52,7 @@ unevaluatedProperties: false
- examples:
-   - |
-     i2c@35010000 {
--      compatible = "apple,t8103-i2c";
-+      compatible = "apple,t8103-i2c", "apple,i2c";
-       reg = <0x35010000 0x4000>;
-       interrupt-parent = <&aic>;
-       interrupts = <0 627 4>;
+ 			interrupt-controller;
++			#interrupt-cells = <2>;
+ 			interrupt-parent = <&aic>;
+ 			interrupts = <AIC_IRQ 268 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <AIC_IRQ 269 IRQ_TYPE_LEVEL_HIGH>,
+@@ -189,6 +191,7 @@ pinctrl_nub: pinctrl@23d1f0000 {
+ 			apple,npins = <23>;
+ 
+ 			interrupt-controller;
++			#interrupt-cells = <2>;
+ 			interrupt-parent = <&aic>;
+ 			interrupts = <AIC_IRQ 330 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <AIC_IRQ 331 IRQ_TYPE_LEVEL_HIGH>,
+@@ -209,6 +212,7 @@ pinctrl_smc: pinctrl@23e820000 {
+ 			apple,npins = <16>;
+ 
+ 			interrupt-controller;
++			#interrupt-cells = <2>;
+ 			interrupt-parent = <&aic>;
+ 			interrupts = <AIC_IRQ 391 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <AIC_IRQ 392 IRQ_TYPE_LEVEL_HIGH>,
 -- 
 2.34.0
 
