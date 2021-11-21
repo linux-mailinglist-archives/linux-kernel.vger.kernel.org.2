@@ -2,100 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7786458496
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 16:55:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F51D45849B
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 16:59:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238414AbhKUP6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 10:58:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238335AbhKUP6B (ORCPT
+        id S238420AbhKUQCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 11:02:25 -0500
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:62168 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230298AbhKUQCZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 10:58:01 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F34AC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 07:54:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=cYs06rCiSJLo2niacctZbBcCGz2tP/7rUUeqqAAMX2s=; b=LjbEPYNRSnQ5ZwW6TsejV4Hbpg
-        9y+GLeHwmsA/BgeIFUQ+RPL1FKb+gG/cpC++l3WYTND426O3jGapRWr8RI7zd0uS9RjWfl1zkO6nj
-        kBARsDwbqHH7P+RdSsAu+Dy7aG/x9vnibEJUVqqA3klqALhcXBxDQb0bOt/4zgi07K38XEuolDmW0
-        v2AzKLCs6e0WEd7VyG2+nRVMFVkuyWXIQGHNn8W5XDGJKeIIZfvzXrgrBM3FkGF5+RJGBx+b+yi0U
-        hfqsy7Y+4k4PYQmhTz3o8/KwUoXqHsL5mAAsDPkdn+iu97eeEhiyL5GjQVzzOJpAuyhdzTTlHJDLL
-        5SomG9/w==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mopB8-00Ds9r-Go; Sun, 21 Nov 2021 15:54:54 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>, dri-devel@lists.freedesktop.org
-Subject: [PATCH] drm: ttm: correct ttm_range_manager kernel-doc notation
-Date:   Sun, 21 Nov 2021 07:54:52 -0800
-Message-Id: <20211121155453.29736-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Sun, 21 Nov 2021 11:02:25 -0500
+Received: from pop-os.home ([86.243.171.122])
+        by smtp.orange.fr with ESMTPA
+        id opFKmFXqaf6fnopFKmxINg; Sun, 21 Nov 2021 16:59:18 +0100
+X-ME-Helo: pop-os.home
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Sun, 21 Nov 2021 16:59:18 +0100
+X-ME-IP: 86.243.171.122
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] mtd: gen_probe: Use bitmap_zalloc() when applicable
+Date:   Sun, 21 Nov 2021 16:59:12 +0100
+Message-Id: <a6fe58dffe553a3e79303777d3ba9c60d7613c5b.1637510255.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix kernel-doc warnings in ttm_range_manager.c:
+'chip_map' is a bitmap. So use 'bitmap_zalloc()' to simplify code,
+improve the semantic and avoid some open-coded arithmetic in allocator
+arguments.
 
-drivers/gpu/drm/ttm/ttm_range_manager.c:144: warning: expecting prototype for ttm_range_man_init(). Prototype was for ttm_range_man_init_nocheck() instead
-drivers/gpu/drm/ttm/ttm_range_manager.c:178: warning: expecting prototype for ttm_range_man_fini(). Prototype was for ttm_range_man_fini_nocheck() instead
+Also change the corresponding 'kfree()' into 'bitmap_free()' to keep
+consistency.
 
-Also fix subsequent warnings from scripts/kernel-doc.
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Christian König <christian.koenig@amd.com>
-Cc: Huang Rui <ray.huang@amd.com>
-Cc: dri-devel@lists.freedesktop.org
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- drivers/gpu/drm/ttm/ttm_range_manager.c |   11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/mtd/chips/gen_probe.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
---- linux-next-20211118.orig/drivers/gpu/drm/ttm/ttm_range_manager.c
-+++ linux-next-20211118/drivers/gpu/drm/ttm/ttm_range_manager.c
-@@ -128,15 +128,17 @@ static const struct ttm_resource_manager
- };
+diff --git a/drivers/mtd/chips/gen_probe.c b/drivers/mtd/chips/gen_probe.c
+index e5bd3c2bc3b2..4d4f97841016 100644
+--- a/drivers/mtd/chips/gen_probe.c
++++ b/drivers/mtd/chips/gen_probe.c
+@@ -61,8 +61,8 @@ static struct cfi_private *genprobe_ident_chips(struct map_info *map, struct chi
+ 	struct cfi_private cfi;
+ 	struct cfi_private *retcfi;
+ 	unsigned long *chip_map;
+-	int i, j, mapsize;
+ 	int max_chips;
++	int i, j;
  
- /**
-- * ttm_range_man_init
-+ * ttm_range_man_init_nocheck - Initialise a generic range manager for the
-+ * selected memory type.
-  *
-  * @bdev: ttm device
-  * @type: memory manager type
-  * @use_tt: if the memory manager uses tt
-  * @p_size: size of area to be managed in pages.
-  *
-- * Initialise a generic range manager for the selected memory type.
-  * The range manager is installed for this device in the type slot.
-+ *
-+ * Return: %0 on success or a negative error code on failure
-  */
- int ttm_range_man_init_nocheck(struct ttm_device *bdev,
- 		       unsigned type, bool use_tt,
-@@ -166,12 +168,13 @@ int ttm_range_man_init_nocheck(struct tt
- EXPORT_SYMBOL(ttm_range_man_init_nocheck);
+ 	memset(&cfi, 0, sizeof(cfi));
  
- /**
-- * ttm_range_man_fini
-+ * ttm_range_man_fini_nocheck - Remove the generic range manager from a slot
-+ * and tear it down.
-  *
-  * @bdev: ttm device
-  * @type: memory manager type
-  *
-- * Remove the generic range manager from a slot and tear it down.
-+ * Return: %0 on success or a negative error code on failure
-  */
- int ttm_range_man_fini_nocheck(struct ttm_device *bdev,
- 		       unsigned type)
+@@ -111,8 +111,7 @@ static struct cfi_private *genprobe_ident_chips(struct map_info *map, struct chi
+ 		max_chips = 1;
+ 	}
+ 
+-	mapsize = sizeof(long) * DIV_ROUND_UP(max_chips, BITS_PER_LONG);
+-	chip_map = kzalloc(mapsize, GFP_KERNEL);
++	chip_map = bitmap_zalloc(max_chips, GFP_KERNEL);
+ 	if (!chip_map) {
+ 		kfree(cfi.cfiq);
+ 		return NULL;
+@@ -139,7 +138,7 @@ static struct cfi_private *genprobe_ident_chips(struct map_info *map, struct chi
+ 
+ 	if (!retcfi) {
+ 		kfree(cfi.cfiq);
+-		kfree(chip_map);
++		bitmap_free(chip_map);
+ 		return NULL;
+ 	}
+ 
+@@ -157,7 +156,7 @@ static struct cfi_private *genprobe_ident_chips(struct map_info *map, struct chi
+ 		}
+ 	}
+ 
+-	kfree(chip_map);
++	bitmap_free(chip_map);
+ 	return retcfi;
+ }
+ 
+-- 
+2.30.2
+
