@@ -2,92 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8251C4584AA
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 17:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 650694584AE
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 17:23:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238453AbhKUQ0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 11:26:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28424 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237804AbhKUQ0j (ORCPT
+        id S238469AbhKUQ0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 11:26:48 -0500
+Received: from www381.your-server.de ([78.46.137.84]:34030 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237804AbhKUQ0r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 11:26:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637511813;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5o6/wBGbGY6DcbOKW8sJZyFNOEtnCAysm1b68CJVM+g=;
-        b=f/eRZKAZxiYr1bJyNUD6VP71vaIeslR83uXJaYAL8ZO5u/adAvn3HMZDe9v/dH1v5eW/Kj
-        i9cC0C7ZMz5HteVfceDbmUIgBIPaIBLughU7YYJ/0cZbWiFrBTCOxY0izitnj5P5YfOZgD
-        FeDoVj+GOkiikG6r6KFSHmaYHQuDnaw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-138-4J9HxJ_TPf2uHCKYncaYYw-1; Sun, 21 Nov 2021 11:23:29 -0500
-X-MC-Unique: 4J9HxJ_TPf2uHCKYncaYYw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EAF0D18125C0;
-        Sun, 21 Nov 2021 16:23:24 +0000 (UTC)
-Received: from [10.22.8.49] (unknown [10.22.8.49])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C5B4E60C5F;
-        Sun, 21 Nov 2021 16:23:18 +0000 (UTC)
-Message-ID: <97cf8c1f-2a1d-d505-9216-37a3da0fc7f6@redhat.com>
-Date:   Sun, 21 Nov 2021 11:22:56 -0500
+        Sun, 21 Nov 2021 11:26:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=oZVCnlPC3T6cEUOtCE9ILr/4ExEi3Cvw3mp4gMnNg/4=; b=Q+8ikT8LHTflCRifKN7/GdmmFu
+        AjbGDFjvXhBwuj7G0SN3oOEl7CzyOJaxw3/NcsU4DV4aboW68kayZEtYcOFXbwvYwaD2HP+HkJjpp
+        VznB5LMl2SuskGBaIUi8Qo55mJaihRRvyxAveX1yMWcyNSXmoLpX/HaZi7Q/vnaxtEGOC/FCv1OT0
+        73052P+KU+aN/RkhrXeJYArqT4Z8/Fpwpx4fOTrMeF27eSJ9JV/0lY992WBqPpBdxhE1ZjdS4FgtI
+        pHr/ZD0kIwY7YC02lhb1vi4+hk0hyVzvoFPV96E+gtn2DvysrOt5Vr3KrXgyXxwHvNlqk3qkqtXEx
+        ln/6SXTg==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1mopcu-0008HE-57; Sun, 21 Nov 2021 17:23:36 +0100
+Received: from [82.135.83.112] (helo=[192.168.178.20])
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1mopct-000Qqa-T4; Sun, 21 Nov 2021 17:23:35 +0100
+Subject: Re: [PATCH 01/15] iio: buffer-dma: Get rid of incoming/outgoing
+ queues
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Jonathan Cameron <jic23@kernel.org>
+Cc:     Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+References: <20211115141925.60164-1-paul@crapouillou.net>
+ <20211115141925.60164-2-paul@crapouillou.net>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <e2689f0d-dc16-2519-57df-d98caadb07b0@metafoo.de>
+Date:   Sun, 21 Nov 2021 17:23:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [syzbot] WARNING in cgroup_finalize_control
-Content-Language: en-US
-To:     syzbot <syzbot+9c08aaa363ca5784c9e9@syzkaller.appspotmail.com>,
-        andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, christian@brauner.io,
-        coreteam@netfilter.org, daniel@iogearbox.net, davem@davemloft.net,
-        hannes@cmpxchg.org, john.fastabend@gmail.com, kaber@trash.net,
-        kadlec@blackhole.kfki.hu, kafai@fb.com, kpsingh@chromium.org,
-        linux-kernel@vger.kernel.org, linux-sctp@vger.kernel.org,
-        lizefan.x@bytedance.com, lizefan@huawei.com,
-        marcelo.leitner@gmail.com, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, nhorman@tuxdriver.com,
-        pablo@netfilter.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, tj@kernel.org,
-        vyasevich@gmail.com, yhs@fb.com
-References: <000000000000d6442705d143337a@google.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <000000000000d6442705d143337a@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <20211115141925.60164-2-paul@crapouillou.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26360/Sun Nov 21 10:19:26 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz fix: cgroup: Make rebind_subsystems() disable v2 controllers all at once
-
-
-On 11/20/21 21:24, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
+On 11/15/21 3:19 PM, Paul Cercueil wrote:
+> The buffer-dma code was using two queues, incoming and outgoing, to
+> manage the state of the blocks in use.
 >
-> commit 7ee285395b211cad474b2b989db52666e0430daf
-> Author: Waiman Long <longman@redhat.com>
-> Date:   Sat Sep 18 22:53:08 2021 +0000
+> While this totally works, it adds some complexity to the code,
+> especially since the code only manages 2 blocks. It is much easier to
+> just check each block's state manually, and keep a counter for the next
+> block to dequeue.
 >
->      cgroup: Make rebind_subsystems() disable v2 controllers all at once
+> Since the new DMABUF based API wouldn't use these incoming and outgoing
+> queues anyway, getting rid of them now makes the upcoming changes
+> simpler.
 >
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12232c06b00000
-> start commit:   442489c21923 Merge tag 'timers-core-2020-08-04' of git://g..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=b3f0df8558780a7d
-> dashboard link: https://syzkaller.appspot.com/bug?extid=9c08aaa363ca5784c9e9
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14148c62900000
->
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: cgroup: Make rebind_subsystems() disable v2 controllers all at once
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
->
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+The outgoing queue is going to be replaced by fences, but I think we 
+need to keep the incoming queue.
+> [...]
+> @@ -442,28 +435,33 @@ EXPORT_SYMBOL_GPL(iio_dma_buffer_disable);
+>   static void iio_dma_buffer_enqueue(struct iio_dma_buffer_queue *queue,
+>   	struct iio_dma_buffer_block *block)
+>   {
+> -	if (block->state == IIO_BLOCK_STATE_DEAD) {
+> +	if (block->state == IIO_BLOCK_STATE_DEAD)
+>   		iio_buffer_block_put(block);
+> -	} else if (queue->active) {
+> +	else if (queue->active)
+>   		iio_dma_buffer_submit_block(queue, block);
+> -	} else {
+> +	else
+>   		block->state = IIO_BLOCK_STATE_QUEUED;
+> -		list_add_tail(&block->head, &queue->incoming);
+If iio_dma_buffer_enqueue() is called with a dmabuf and the buffer is 
+not active, it will be marked as queued, but we don't actually keep a 
+reference to it anywhere. It will never be submitted to the DMA, and it 
+will never be signaled as completed.
 
