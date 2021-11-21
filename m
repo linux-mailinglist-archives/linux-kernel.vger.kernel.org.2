@@ -2,134 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8882F45835F
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 13:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E414B458376
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 13:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238225AbhKUMeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 07:34:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237951AbhKUMeP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 07:34:15 -0500
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S235797AbhKUMmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 07:42:20 -0500
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:58480
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233666AbhKUMmT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 07:42:19 -0500
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9A7060E54;
-        Sun, 21 Nov 2021 12:31:09 +0000 (UTC)
-Date:   Sun, 21 Nov 2021 12:36:03 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Cc:     <robh+dt@kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/2] dt-bindings:iio:amplifiers: add ad7293 doc
-Message-ID: <20211121123603.3d683f96@jic23-huawei>
-In-Reply-To: <20211115102340.164547-2-antoniu.miclaus@analog.com>
-References: <20211115102340.164547-1-antoniu.miclaus@analog.com>
-        <20211115102340.164547-2-antoniu.miclaus@analog.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D47B94001D
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 12:39:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1637498352;
+        bh=TFA1LNPBLrquSyjdPdpl7pD/tLLoRLNXb4nnei/Z6/0=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=ng+3AzcwfCspD2AuZwwXQ+Kk7Nfr/2JtueH2s9RjDKI0XXrvPbwpViMdkoBYNGUOI
+         aJzhnQVTy89UWso8J4svS8M0ququoiyXb0IDyF0VuKcRAoRrRNYSsob350mWWly9eF
+         q0gn82iGhC4XfY8abUy0PgOdJSOIOflO8aHfpJWnUG/V5zpHK95hVBHGj5N2TUqmdM
+         ZbMCAc2a6hh1JhEo/9HFc88jdogHyPD8jm5pLcI2A5i3GLIgLhV/vKUGxEiumP5dNs
+         VUjHbaN9vyzhzR3A1K45Gafqzg76tcTBWpule/5lw21vnYcy2NlK4RTu+UyQM0iDmY
+         8TU/VCkJ9PMCg==
+Received: by mail-lf1-f71.google.com with SMTP id j9-20020a05651231c900b004037efe9fddso10069926lfe.18
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 04:39:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=TFA1LNPBLrquSyjdPdpl7pD/tLLoRLNXb4nnei/Z6/0=;
+        b=MnENWf2YR6WqQkiywt6MIwZU8AzWxDDkagATPJs0Btz+uH0LhgfdUn4aV3x7UntlLn
+         XWuqZS8sTlpDPUfRl0lTbSq+4+VCFSEr+wPhQAzp+Yu/07d2yHQDuxTK5S2ZZDS3hRuk
+         JvqyaXJEEeSnq308imiBt0UUimENfrUjmo14m+Fyo5IZPS3892SqIReGoBag2LH0aUyv
+         SskED0wGqsY5+0YHwv/hC9lIhcc53FzV60GoF6n1z4Mc06Q6NrArfVmyfaZnkZTipsEV
+         JZBrfMOym00XvWXcBtITJwbQiciSOnMJQThSwqG+QVxGJnDRMGKEbS/sZOO147ctHEKJ
+         aipw==
+X-Gm-Message-State: AOAM530FoI++DQ7u/d9uIIryyhup/pez37Kfs68nC88vTWv/B01ZKAYg
+        p2TjxL5dAwpOFuk5JnzrvGqeAPGJxsd/ZNNLyqZpKR4CsyI54geuJTLH4WHpM8QVN1OBuUU6PFf
+        MCt9GapyIzdpy3uLeCrdhujPDKZvwcLAyaV6GbUBgjA==
+X-Received: by 2002:ac2:4571:: with SMTP id k17mr49746440lfm.369.1637498352234;
+        Sun, 21 Nov 2021 04:39:12 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxYMWr4FvuZ7Nqv9X59p0QzJvAJXMV+d9GpFfumZBpc0w/0S1Kvup1vykMeuihBU1HnXXXRUA==
+X-Received: by 2002:ac2:4571:: with SMTP id k17mr49746416lfm.369.1637498352038;
+        Sun, 21 Nov 2021 04:39:12 -0800 (PST)
+Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id a28sm426341ljm.65.2021.11.21.04.39.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Nov 2021 04:39:11 -0800 (PST)
+Message-ID: <b374d1a6-6478-cf2f-924e-425825731ad5@canonical.com>
+Date:   Sun, 21 Nov 2021 13:39:10 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH 1/2] arm: samsung: Remove HAVE_S3C2410_I2C and use direct
+ dependencies
+Content-Language: en-US
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Will McVicker <willmcvicker@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org
+References: <20211108134901.20490-1-semen.protsenko@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20211108134901.20490-1-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Nov 2021 12:23:40 +0200
-Antoniu Miclaus <antoniu.miclaus@analog.com> wrote:
-
-> Add device tree bindings for the AD7293 Power Amplifier.
+On 08/11/2021 14:49, Sam Protsenko wrote:
+> A separate Kconfig option HAVE_S3C2410_I2C for Samsung SoCs is not
+> really needed and the i2c-s3c24xx driver can depend on Samsung ARM
+> architectures instead. This also enables i2c-s3c2410 for arm64 Exynos
+> SoCs, which is required for example by Exynos850.
 > 
-> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
-
-Hi Antoniu,
-
-A few trivial things inline that I'd missed before.
-
-Jonathan
-
+> This is basically continuation of work made in following commits:
+>   - commit d96890fca9fd ("rtc: s3c: remove HAVE_S3C_RTC in favor of
+>     direct dependencies")
+>   - commit 7dd3cae90d85 ("ARM: samsung: remove HAVE_S3C2410_WATCHDOG and
+>     use direct dependencies")
+> 
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
 > ---
-> no changes in v3
->  .../bindings/iio/amplifiers/adi,ad7293.yaml   | 64 +++++++++++++++++++
->  1 file changed, 64 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/amplifiers/adi,ad7293.yaml
+>  arch/arm/Kconfig                  |  1 -
+>  arch/arm/mach-exynos/Kconfig      |  1 -
+>  arch/arm/mach-s3c/Kconfig.s3c64xx |  1 -
+>  arch/arm/mach-s5pv210/Kconfig     |  1 -
+>  drivers/i2c/busses/Kconfig        | 10 ++--------
+>  5 files changed, 2 insertions(+), 12 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/iio/amplifiers/adi,ad7293.yaml b/Documentation/devicetree/bindings/iio/amplifiers/adi,ad7293.yaml
-> new file mode 100644
-> index 000000000000..9f1b2eb78af3
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/amplifiers/adi,ad7293.yaml
-> @@ -0,0 +1,64 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/amplifiers/adi,ad7293.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: AD7293 12-Bit Power Amplifier Current Controller with ADC,
-> +       DACs, Temperature and Current Sensors
-> +
-> +maintainers:
-> +  - Antoniu Miclaus <antoniu.miclaus@analog.com>
-> +
-> +description: |
-> +   Power Amplifier drain current controller containing functionality
-> +   for general-purpose monitoring and control of current, voltage,
-> +   and temperature, integrated into a single chip solution with an
-> +   SPI-compatible interface.
-> +
-> +   https://www.analog.com/en/products/ad7293.html
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - adi,ad7293
-> +
-> +  avdd-supply:
-> +    description:
-> +      AVDD voltage regulator.
 
-Not sure these descriptions add anything. 
-avdd-supply: true 
-is fine. 
+This does not apply, which is weird because there were no changes here.
+It seems you based your work on some older tree, so please rebase and
+re-test on current tree (my for-next branch or linux-next).
 
-> +
-> +  vdrive-supply:
-> +    description:
-> +      VDRIVE voltage regulator.
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  spi-max-frequency:
-> +    maximum: 1000000
-> +
-> +  reset-gpios: true
-
-Specify how many?
-maxItems: 1
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - avdd-supply
-> +  - vdrive-supply
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    spi {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +      ad7293@0 {
-> +        compatible = "adi,ad7293";
-> +        reg = <0>;
-> +        spi-max-frequency = <1000000>;
-> +        avdd-supply = <&avdd>;
-> +        vdrive-supply = <&vdrive>;
-> +        reset-gpios = <&gpio 10 0>;
-> +      };
-> +    };
-> +...
-
+Best regards,
+Krzysztof
