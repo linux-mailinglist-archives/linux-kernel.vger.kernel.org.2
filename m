@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A37A54585CD
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 19:08:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 081D84585CF
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 19:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238673AbhKUSLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 13:11:10 -0500
-Received: from soltyk.jannau.net ([144.76.91.90]:55046 "EHLO soltyk.jannau.net"
+        id S238641AbhKUSLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 13:11:13 -0500
+Received: from soltyk.jannau.net ([144.76.91.90]:55066 "EHLO soltyk.jannau.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230454AbhKUSLH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 13:11:07 -0500
+        id S238625AbhKUSLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 13:11:08 -0500
 Received: from coburn.home.jannau.net (p579ad520.dip0.t-ipconnect.de [87.154.213.32])
-        by soltyk.jannau.net (Postfix) with ESMTPSA id E5951261B35;
-        Sun, 21 Nov 2021 19:08:00 +0100 (CET)
+        by soltyk.jannau.net (Postfix) with ESMTPSA id E41DA261B36;
+        Sun, 21 Nov 2021 19:08:01 +0100 (CET)
 From:   Janne Grunau <j@jannau.net>
 To:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
         Alyssa Rosenzweig <alyssa@rosenzweig.io>,
@@ -21,9 +21,9 @@ To:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
 Cc:     Mark Kettenis <kettenis@openbsd.org>,
         linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] arm64: dts: apple: Add missing M1 (t8103) devices
-Date:   Sun, 21 Nov 2021 19:07:57 +0100
-Message-Id: <20211121180758.29477-3-j@jannau.net>
+Subject: [PATCH 3/3] arm64: dts: apple: t8103: Add i2c and cd321x nodes
+Date:   Sun, 21 Nov 2021 19:07:58 +0100
+Message-Id: <20211121180758.29477-4-j@jannau.net>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211121180758.29477-1-j@jannau.net>
 References: <20211121180758.29477-1-j@jannau.net>
@@ -33,327 +33,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support for following Apple M1 devices:
- - MacBook Pro (13-inch, M1, 2020)
- - MacBook Air (M1, 2020)
- - iMac (24-inch 2021)
+i2c0, i2c1 and i2c3 are used on all M1 devices, i2c2 is only used on
+the 2020 Mac Mini and 13-inch MacBook Pro. All devices have identical
+i2c addresses for the cd321x' and use the same i2c bus.
 
-Reviewed-by: Mark Kettenis <kettenis@openbsd.org>
 Signed-off-by: Janne Grunau <j@jannau.net>
 ---
- arch/arm64/boot/dts/apple/Makefile        |  4 ++
- arch/arm64/boot/dts/apple/t8103-j274.dts  | 29 +-------------
- arch/arm64/boot/dts/apple/t8103-j293.dts  | 33 +++++++++++++++
- arch/arm64/boot/dts/apple/t8103-j313.dts  | 33 +++++++++++++++
- arch/arm64/boot/dts/apple/t8103-j456.dts  | 41 +++++++++++++++++++
- arch/arm64/boot/dts/apple/t8103-j457.dts  | 47 ++++++++++++++++++++++
- arch/arm64/boot/dts/apple/t8103-jxxx.dtsi | 49 +++++++++++++++++++++++
- 7 files changed, 208 insertions(+), 28 deletions(-)
- create mode 100644 arch/arm64/boot/dts/apple/t8103-j293.dts
- create mode 100644 arch/arm64/boot/dts/apple/t8103-j313.dts
- create mode 100644 arch/arm64/boot/dts/apple/t8103-j456.dts
- create mode 100644 arch/arm64/boot/dts/apple/t8103-j457.dts
- create mode 100644 arch/arm64/boot/dts/apple/t8103-jxxx.dtsi
+ arch/arm64/boot/dts/apple/t8103-j274.dts  |  4 ++
+ arch/arm64/boot/dts/apple/t8103-j293.dts  |  4 ++
+ arch/arm64/boot/dts/apple/t8103-jxxx.dtsi | 18 ++++++
+ arch/arm64/boot/dts/apple/t8103.dtsi      | 73 +++++++++++++++++++++++
+ 4 files changed, 99 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/apple/Makefile b/arch/arm64/boot/dts/apple/Makefile
-index cbbd701ebf05..c0510c25ca6a 100644
---- a/arch/arm64/boot/dts/apple/Makefile
-+++ b/arch/arm64/boot/dts/apple/Makefile
-@@ -1,2 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- dtb-$(CONFIG_ARCH_APPLE) += t8103-j274.dtb
-+dtb-$(CONFIG_ARCH_APPLE) += t8103-j293.dtb
-+dtb-$(CONFIG_ARCH_APPLE) += t8103-j313.dtb
-+dtb-$(CONFIG_ARCH_APPLE) += t8103-j456.dtb
-+dtb-$(CONFIG_ARCH_APPLE) += t8103-j457.dtb
 diff --git a/arch/arm64/boot/dts/apple/t8103-j274.dts b/arch/arm64/boot/dts/apple/t8103-j274.dts
-index 02c36301e985..9e01ef70039d 100644
+index 9e01ef70039d..2cd429efba5b 100644
 --- a/arch/arm64/boot/dts/apple/t8103-j274.dts
 +++ b/arch/arm64/boot/dts/apple/t8103-j274.dts
-@@ -10,39 +10,15 @@
- /dts-v1/;
- 
- #include "t8103.dtsi"
-+#include "t8103-jxxx.dtsi"
- 
- / {
- 	compatible = "apple,j274", "apple,t8103", "apple,arm-platform";
- 	model = "Apple Mac mini (M1, 2020)";
- 
- 	aliases {
--		serial0 = &serial0;
- 		ethernet0 = &ethernet0;
+@@ -39,3 +39,7 @@ ethernet0: ethernet@0,0 {
+ 		local-mac-address = [00 10 18 00 00 00];
  	};
--
--	chosen {
--		#address-cells = <2>;
--		#size-cells = <2>;
--		ranges;
--
--		stdout-path = "serial0";
--
--		framebuffer0: framebuffer@0 {
--			compatible = "apple,simple-framebuffer", "simple-framebuffer";
--			reg = <0 0 0 0>; /* To be filled by loader */
--			/* Format properties will be added by loader */
--			status = "disabled";
--		};
--	};
--
--	memory@800000000 {
--		device_type = "memory";
--		reg = <0x8 0 0x2 0>; /* To be filled by loader */
--	};
--};
--
--&serial0 {
--	status = "okay";
  };
- 
- /*
-@@ -50,9 +26,6 @@ &serial0 {
-  * on-board devices and properties that are populated by the bootloader
-  * (such as MAC addresses).
-  */
--&port00 {
--	bus-range = <1 1>;
--};
- 
- &port01 {
- 	bus-range = <2 2>;
-diff --git a/arch/arm64/boot/dts/apple/t8103-j293.dts b/arch/arm64/boot/dts/apple/t8103-j293.dts
-new file mode 100644
-index 000000000000..466035f00b69
---- /dev/null
-+++ b/arch/arm64/boot/dts/apple/t8103-j293.dts
-@@ -0,0 +1,33 @@
-+// SPDX-License-Identifier: GPL-2.0+ OR MIT
-+/*
-+ * Apple MacBook Pro (13-inch, M1, 2020)
-+ *
-+ * target-type: J293
-+ *
-+ * Copyright The Asahi Linux Contributors
-+ */
 +
-+/dts-v1/;
-+
-+#include "t8103.dtsi"
-+#include "t8103-jxxx.dtsi"
-+
-+/ {
-+	compatible = "apple,j293", "apple,t8103", "apple,arm-platform";
-+	model = "Apple MacBook Pro (13-inch, M1, 2020)";
-+};
-+
-+/*
-+ * Remove unused PCIe ports and disable the associated DARTs.
-+ */
-+
-+&pcie0_dart_1 {
-+	status = "disabled";
-+};
-+
-+&pcie0_dart_2 {
-+	status = "disabled";
-+};
-+
-+/delete-node/ &port01;
-+/delete-node/ &port02;
-diff --git a/arch/arm64/boot/dts/apple/t8103-j313.dts b/arch/arm64/boot/dts/apple/t8103-j313.dts
-new file mode 100644
-index 000000000000..b0ebb45bdb6f
---- /dev/null
-+++ b/arch/arm64/boot/dts/apple/t8103-j313.dts
-@@ -0,0 +1,33 @@
-+// SPDX-License-Identifier: GPL-2.0+ OR MIT
-+/*
-+ * Apple MacBook Air (M1, 2020)
-+ *
-+ * target-type: J313
-+ *
-+ * Copyright The Asahi Linux Contributors
-+ */
-+
-+/dts-v1/;
-+
-+#include "t8103.dtsi"
-+#include "t8103-jxxx.dtsi"
-+
-+/ {
-+	compatible = "apple,j313", "apple,t8103", "apple,arm-platform";
-+	model = "Apple MacBook Air (M1, 2020)";
-+};
-+
-+/*
-+ * Remove unused PCIe ports and disable the associated DARTs.
-+ */
-+
-+&pcie0_dart_1 {
-+	status = "disabled";
-+};
-+
-+&pcie0_dart_2 {
-+	status = "disabled";
-+};
-+
-+/delete-node/ &port01;
-+/delete-node/ &port02;
-diff --git a/arch/arm64/boot/dts/apple/t8103-j456.dts b/arch/arm64/boot/dts/apple/t8103-j456.dts
-new file mode 100644
-index 000000000000..7267e069355b
---- /dev/null
-+++ b/arch/arm64/boot/dts/apple/t8103-j456.dts
-@@ -0,0 +1,41 @@
-+// SPDX-License-Identifier: GPL-2.0+ OR MIT
-+/*
-+ * Apple iMac (24-inch, 4x USB-C, M1, 2020)
-+ *
-+ * target-type: J456
-+ *
-+ * Copyright The Asahi Linux Contributors
-+ */
-+
-+/dts-v1/;
-+
-+#include "t8103.dtsi"
-+#include "t8103-jxxx.dtsi"
-+
-+/ {
-+	compatible = "apple,j456", "apple,t8103", "apple,arm-platform";
-+	model = "Apple iMac (24-inch, 4x USB-C, M1, 2020)";
-+
-+	aliases {
-+		ethernet0 = &ethernet0;
-+	};
-+};
-+
-+/*
-+ * Force the bus number assignments so that we can declare some of the
-+ * on-board devices and properties that are populated by the bootloader
-+ * (such as MAC addresses).
-+ */
-+
-+&port01 {
-+	bus-range = <2 2>;
-+};
-+
-+&port02 {
-+	bus-range = <3 3>;
-+	ethernet0: ethernet@0,0 {
-+		reg = <0x30000 0x0 0x0 0x0 0x0>;
-+		/* To be filled by the loader */
-+		local-mac-address = [00 10 18 00 00 00];
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/apple/t8103-j457.dts b/arch/arm64/boot/dts/apple/t8103-j457.dts
-new file mode 100644
-index 000000000000..d7c622931627
---- /dev/null
-+++ b/arch/arm64/boot/dts/apple/t8103-j457.dts
-@@ -0,0 +1,47 @@
-+// SPDX-License-Identifier: GPL-2.0+ OR MIT
-+/*
-+ * Apple iMac (24-inch, 2x USB-C, M1, 2020)
-+ *
-+ * target-type: J457
-+ *
-+ * Copyright The Asahi Linux Contributors
-+ */
-+
-+/dts-v1/;
-+
-+#include "t8103.dtsi"
-+#include "t8103-jxxx.dtsi"
-+
-+/ {
-+	compatible = "apple,j457", "apple,t8103", "apple,arm-platform";
-+	model = "Apple iMac (24-inch, 2x USB-C, M1, 2020)";
-+
-+	aliases {
-+		ethernet0 = &ethernet0;
-+	};
-+};
-+
-+/*
-+ * Force the bus number assignments so that we can declare some of the
-+ * on-board devices and properties that are populated by the bootloader
-+ * (such as MAC addresses).
-+ */
-+
-+&port02 {
-+	bus-range = <3 3>;
-+	ethernet0: ethernet@0,0 {
-+		reg = <0x30000 0x0 0x0 0x0 0x0>;
-+		/* To be filled by the loader */
-+		local-mac-address = [00 10 18 00 00 00];
-+	};
-+};
-+
-+/*
-+ * Remove unused PCIe port and disable the associated DART.
-+ */
-+
-+&pcie0_dart_1 {
-+	status = "disabled";
-+};
-+
-+/delete-node/ &port01;
-diff --git a/arch/arm64/boot/dts/apple/t8103-jxxx.dtsi b/arch/arm64/boot/dts/apple/t8103-jxxx.dtsi
-new file mode 100644
-index 000000000000..53d22b434d76
---- /dev/null
-+++ b/arch/arm64/boot/dts/apple/t8103-jxxx.dtsi
-@@ -0,0 +1,49 @@
-+// SPDX-License-Identifier: GPL-2.0+ OR MIT
-+/*
-+ * Apple M1 Mac mini, MacBook Air/Pro, iMac 24" (M1, 2020/2021)
-+ *
-+ * This file contains parts common to all Apple M1 devices using the t8103.
-+ *
-+ * target-type: J274, J293, J313, J456, J457
-+ *
-+ * Copyright The Asahi Linux Contributors
-+ */
-+
-+/ {
-+	aliases {
-+		serial0 = &serial0;
-+	};
-+
-+	chosen {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		stdout-path = "serial0";
-+
-+		framebuffer0: framebuffer@0 {
-+			compatible = "apple,simple-framebuffer", "simple-framebuffer";
-+			reg = <0 0 0 0>; /* To be filled by loader */
-+			/* Format properties will be added by loader */
-+			status = "disabled";
-+		};
-+	};
-+
-+	memory@800000000 {
-+		device_type = "memory";
-+		reg = <0x8 0 0x2 0>; /* To be filled by loader */
-+	};
-+};
-+
-+&serial0 {
++&i2c2 {
 +	status = "okay";
 +};
+diff --git a/arch/arm64/boot/dts/apple/t8103-j293.dts b/arch/arm64/boot/dts/apple/t8103-j293.dts
+index 466035f00b69..a3b084d50da3 100644
+--- a/arch/arm64/boot/dts/apple/t8103-j293.dts
++++ b/arch/arm64/boot/dts/apple/t8103-j293.dts
+@@ -31,3 +31,7 @@ &pcie0_dart_2 {
+ 
+ /delete-node/ &port01;
+ /delete-node/ &port02;
 +
-+/*
-+ * Force the bus number assignments so that we can declare some of the
-+ * on-board devices and properties that are populated by the bootloader
-+ * (such as MAC addresses).
-+ */
-+&port00 {
-+	bus-range = <1 1>;
++&i2c2 {
++	status = "okay";
 +};
+diff --git a/arch/arm64/boot/dts/apple/t8103-jxxx.dtsi b/arch/arm64/boot/dts/apple/t8103-jxxx.dtsi
+index 53d22b434d76..5f748f3f60d2 100644
+--- a/arch/arm64/boot/dts/apple/t8103-jxxx.dtsi
++++ b/arch/arm64/boot/dts/apple/t8103-jxxx.dtsi
+@@ -39,6 +39,24 @@ &serial0 {
+ 	status = "okay";
+ };
+ 
++&i2c0 {
++	hpm0: tps6598x@38 {
++		compatible = "apple,cd321x";
++		reg = <0x38>;
++		interrupt-parent = <&pinctrl_ap>;
++		interrupts = <106 IRQ_TYPE_LEVEL_LOW>;
++		interrupt-names = "irq";
++	};
++
++	hpm1: tps6598x@3f {
++		compatible = "apple,cd321x";
++		reg = <0x3f>;
++		interrupt-parent = <&pinctrl_ap>;
++		interrupts = <106 IRQ_TYPE_LEVEL_LOW>;
++		interrupt-names = "irq";
++	};
++};
++
+ /*
+  * Force the bus number assignments so that we can declare some of the
+  * on-board devices and properties that are populated by the bootloader
+diff --git a/arch/arm64/boot/dts/apple/t8103.dtsi b/arch/arm64/boot/dts/apple/t8103.dtsi
+index c320c8baeb41..6c6dd988bd60 100644
+--- a/arch/arm64/boot/dts/apple/t8103.dtsi
++++ b/arch/arm64/boot/dts/apple/t8103.dtsi
+@@ -126,6 +126,59 @@ serial0: serial@235200000 {
+ 			status = "disabled";
+ 		};
+ 
++		i2c0: i2c@235010000 {
++			compatible = "apple,t8103-i2c", "apple,i2c";
++			reg = <0x2 0x35010000 0x0 0x4000>;
++			clocks = <&clk24>;
++			clock-names = "ref";
++			interrupt-parent = <&aic>;
++			interrupts = <AIC_IRQ 627 IRQ_TYPE_LEVEL_HIGH>;
++			pinctrl-0 = <&i2c0_pins>;
++			pinctrl-names = "default";
++			#address-cells = <0x1>;
++			#size-cells = <0x0>;
++		};
++
++		i2c1: i2c@235014000 {
++			compatible = "apple,t8103-i2c", "apple,i2c";
++			reg = <0x2 0x35014000 0x0 0x4000>;
++			clocks = <&clk24>;
++			clock-names = "ref";
++			interrupt-parent = <&aic>;
++			interrupts = <AIC_IRQ 628 IRQ_TYPE_LEVEL_HIGH>;
++			pinctrl-0 = <&i2c1_pins>;
++			pinctrl-names = "default";
++			#address-cells = <0x1>;
++			#size-cells = <0x0>;
++		};
++
++		i2c2: i2c@235018000 {
++			compatible = "apple,t8103-i2c", "apple,i2c";
++			reg = <0x2 0x35018000 0x0 0x4000>;
++			clocks = <&clk24>;
++			clock-names = "ref";
++			interrupt-parent = <&aic>;
++			interrupts = <AIC_IRQ 628 IRQ_TYPE_LEVEL_HIGH>;
++			pinctrl-0 = <&i2c2_pins>;
++			pinctrl-names = "default";
++			#address-cells = <0x1>;
++			#size-cells = <0x0>;
++			status = "disabled"; /* not used in all devices */
++		};
++
++		i2c3: i2c@23501c000 {
++			compatible = "apple,t8103-i2c", "apple,i2c";
++			reg = <0x2 0x3501c000 0x0 0x4000>;
++			clocks = <&clk24>;
++			clock-names = "ref";
++			interrupt-parent = <&aic>;
++			interrupts = <AIC_IRQ 630 IRQ_TYPE_LEVEL_HIGH>;
++			pinctrl-0 = <&i2c3_pins>;
++			pinctrl-names = "default";
++			#address-cells = <0x1>;
++			#size-cells = <0x0>;
++		};
++
+ 		aic: interrupt-controller@23b100000 {
+ 			compatible = "apple,t8103-aic", "apple,aic";
+ 			#interrupt-cells = <3>;
+@@ -153,6 +206,26 @@ pinctrl_ap: pinctrl@23c100000 {
+ 				     <AIC_IRQ 195 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <AIC_IRQ 196 IRQ_TYPE_LEVEL_HIGH>;
+ 
++			i2c0_pins: i2c0-pins {
++				pinmux = <APPLE_PINMUX(192, 1)>,
++					 <APPLE_PINMUX(188, 1)>;
++			};
++
++			i2c1_pins: i2c1-pins {
++				pinmux = <APPLE_PINMUX(201, 1)>,
++					 <APPLE_PINMUX(199, 1)>;
++			};
++
++			i2c2_pins: i2c2-pins {
++				pinmux = <APPLE_PINMUX(163, 1)>,
++					 <APPLE_PINMUX(162, 1)>;
++			};
++
++			i2c3_pins: i2c3-pins {
++				pinmux = <APPLE_PINMUX(73, 1)>,
++					 <APPLE_PINMUX(72, 1)>;
++			};
++
+ 			pcie_pins: pcie-pins {
+ 				pinmux = <APPLE_PINMUX(150, 1)>,
+ 					 <APPLE_PINMUX(151, 1)>,
 -- 
 2.34.0
 
