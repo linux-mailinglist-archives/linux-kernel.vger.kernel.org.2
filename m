@@ -2,72 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8839B45834B
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 13:24:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9C3458347
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 13:20:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238206AbhKUM1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 07:27:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42874 "EHLO mail.kernel.org"
+        id S238189AbhKUMXH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 21 Nov 2021 07:23:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233019AbhKUM1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 07:27:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF78D6023E;
-        Sun, 21 Nov 2021 12:24:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637497452;
-        bh=eMYFmoZSFX2jyVOSCFjFFwc/RwT1DrSIr7UoN3UV1zY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yhA5l4/fq4dGiMzBP9UEo6VKSq2+Y8NLneGwVFnYVQjp963jn1aK8kW/32WSu2xZR
-         84fjSTgs1mkLutflZnOuHSbnPfNOrLIeS/Bp9dMLmFT2Z5rjZ+4eXPaN9N2aSugR71
-         ph6JmWtMVYcanb5vpO42MjgM2Bu0YUkklZSsNoKQ=
-Date:   Sun, 21 Nov 2021 13:24:09 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     lee.jones@linaro.org, hdegoede@redhat.com, bhelgaas@google.com,
-        andriy.shevchenko@linux.intel.com, srinivas.pandruvada@intel.com,
-        mgross@linux.intel.com, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 1/4] PCI: Add #defines for accessing PCIe DVSEC fields
-Message-ID: <YZo6aczgqoobIcDC@kroah.com>
-References: <20211120231705.189969-1-david.e.box@linux.intel.com>
- <20211120231705.189969-2-david.e.box@linux.intel.com>
+        id S238114AbhKUMXF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 07:23:05 -0500
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6010160E54;
+        Sun, 21 Nov 2021 12:19:58 +0000 (UTC)
+Date:   Sun, 21 Nov 2021 12:24:51 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com>
+Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/4] dt-bindings:iio:filter: add admv8818 doc
+Message-ID: <20211121122451.569e41f5@jic23-huawei>
+In-Reply-To: <CY4PR03MB339956D5EAA5D20C9D6579419B999@CY4PR03MB3399.namprd03.prod.outlook.com>
+References: <20211109123127.96399-1-antoniu.miclaus@analog.com>
+        <20211109123127.96399-4-antoniu.miclaus@analog.com>
+        <20211112174601.3c1f6b4b@jic23-huawei>
+        <CY4PR03MB339956D5EAA5D20C9D6579419B999@CY4PR03MB3399.namprd03.prod.outlook.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211120231705.189969-2-david.e.box@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 20, 2021 at 03:17:02PM -0800, David E. Box wrote:
-> Add #defines for accessing Vendor ID, Revision, Length, and ID offsets
-> in the Designated Vendor Specific Extended Capability (DVSEC). Defined
-> in PCIe r5.0, sec 7.9.6.
+On Tue, 16 Nov 2021 14:43:14 +0000
+"Miclaus, Antoniu" <Antoniu.Miclaus@analog.com> wrote:
+
+> Hello Jonathan,
 > 
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
->  include/uapi/linux/pci_regs.h | 4 ++++
->  1 file changed, 4 insertions(+)
+> --
+> Antoniu Miclăuş
 > 
-> diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
-> index ff6ccbc6efe9..318f3f1f9e92 100644
-> --- a/include/uapi/linux/pci_regs.h
-> +++ b/include/uapi/linux/pci_regs.h
-> @@ -1086,7 +1086,11 @@
->  
->  /* Designated Vendor-Specific (DVSEC, PCI_EXT_CAP_ID_DVSEC) */
->  #define PCI_DVSEC_HEADER1		0x4 /* Designated Vendor-Specific Header1 */
-> +#define  PCI_DVSEC_HEADER1_VID(x)	((x) & 0xffff)
-> +#define  PCI_DVSEC_HEADER1_REV(x)	(((x) >> 16) & 0xf)
-> +#define  PCI_DVSEC_HEADER1_LEN(x)	(((x) >> 20) & 0xfff)
->  #define PCI_DVSEC_HEADER2		0x8 /* Designated Vendor-Specific Header2 */
-> +#define  PCI_DVSEC_HEADER2_ID(x)		((x) & 0xffff)
+> > -----Original Message-----
+> > From: Jonathan Cameron <jic23@kernel.org>
+> > Sent: Friday, November 12, 2021 7:46 PM
+> > To: Miclaus, Antoniu <Antoniu.Miclaus@analog.com>
+> > Cc: robh+dt@kernel.org; linux-iio@vger.kernel.org;
+> > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
+> > Subject: Re: [PATCH 3/4] dt-bindings:iio:filter: add admv8818 doc
+> > 
+> > [External]
+> > 
+> > On Tue, 9 Nov 2021 14:31:26 +0200
+> > Antoniu Miclaus <antoniu.miclaus@analog.com> wrote:
+> >   
+> > > Add device tree bindings for the ADMV8818 Filter.
+> > >
+> > > Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+> > > ---
+> > >  .../bindings/iio/filter/adi,admv8818.yaml     | 78 +++++++++++++++++++
+> > >  1 file changed, 78 insertions(+)
+> > >  create mode 100644  
+> > Documentation/devicetree/bindings/iio/filter/adi,admv8818.yaml  
+> > >
+> > > diff --git  
+> > a/Documentation/devicetree/bindings/iio/filter/adi,admv8818.yaml
+> > b/Documentation/devicetree/bindings/iio/filter/adi,admv8818.yaml  
+> > > new file mode 100644
+> > > index 000000000000..d581e236dbdc
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/iio/filter/adi,admv8818.yaml
+> > > @@ -0,0 +1,78 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id:  
+> > https://urldefense.com/v3/__http://devicetree.org/schemas/iio/filter/adi,a
+> > dmv8818.yaml*__;Iw!!A3Ni8CS0y2Y!qkKokhmcgS0YEIy3uC6OfOOF7Bq3yE_r
+> > Ny91yIkDRTXFe54x-cHq_BtsyzDOedLohB5D$  
+> > > +$schema: https://urldefense.com/v3/__http://devicetree.org/meta-  
+> > schemas/core.yaml*__;Iw!!A3Ni8CS0y2Y!qkKokhmcgS0YEIy3uC6OfOOF7Bq3
+> > yE_rNy91yIkDRTXFe54x-cHq_BtsyzDOeYdHtx0a$  
+> > > +
+> > > +title: ADMV8818 Digitally Tunable, High-Pass and Low-Pass Filter
+> > > +
+> > > +maintainers:
+> > > +  - Antoniu Miclaus <antoniu.miclaus@analog.com>
+> > > +
+> > > +description: |
+> > > +    Fully monolithic microwave integrated circuit (MMIC) that
+> > > +    features a digitally selectable frequency of operation.
+> > > +    The device features four independently controlled high-pass
+> > > +    filters (HPFs) and four independently controlled low-pass filters
+> > > +    (LPFs) that span the 2 GHz to 18 GHz frequency range.
+> > > +
+> > > +    https://www.analog.com/en/products/admv8818.html
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - adi,admv8818
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  spi-max-frequency:
+> > > +    maximum: 10000000
+> > > +
+> > > +  clocks:
+> > > +    description:
+> > > +      Definition of the external clock.
+> > > +    minItems: 1
+> > > +
+> > > +  clock-names:
+> > > +    items:
+> > > +      - const: "rf_in"  
+> > 
+> > Is this what we'd normally think of as a clock signal?  I'd not expect
+> > a nice squarewave on that pin for example so this seems an odd way to
+> > define it.
+> >   
+> The only actual use of this part, until now, was to filter the output of the following part:
+> https://www.analog.com/en/products/adf5610.html
+> This is the reason of using the clock framework in the driver. Moreover, the clock input is
+> optional inside the driver.
 
-Why does userspace need to have these defines?  What userspace tool is
-going to use these?
+OK, so in theory that part is generating a sinusoid. I guess the clk framework works for
+handling such devices, even if it's not typically what people expect from a clk.
 
-thanks,
+> > > +
+> > > +  clock-output-names:
+> > > +    maxItems: 1
+> > > +
+> > > +  adi,bw-hz:
+> > > +    description:
+> > > +      Allows the user to increase the Bandpass Filter (BPF) bandwidth
+> > > +      in Hz. Normally when invoked by the clk notifier, the driver
+> > > +      sets the HPF cutoff close below the frequency and the LPF cutoff
+> > > +      close above the frequency, and thus creating a BPF.  
+> > 
+> > I don't understand this item at all.  Why do we need a control to
+> > basically change how the other filter parameters are expressed?
+> >   
+> 
+> Indeed, this property was requested by the users of the application in which this part was involved.
+> Same goes for the filter modes and the bandwidth in the ABI documentation.
+> 
+> If you think these attributes/properties are way too custom, I can drop them.
 
-greg k-h
+It's interesting.  I guess the point here is people want a nice autonomous system to
+keep the filter set appropriately for cleaning up a generated sine wave.
+
+It could be argued that is a hardware related thing so makes sense in DT.
+
+We are sort of 'emulating' a bandpass filter in the driver if we use this, but
+I guess if that's the main use case then this is perhaps a reasonable decision.
+> 
+> Let me know your thoughts.
+> > > +    $ref: /schemas/types.yaml#/definitions/uint64
+> > > +
+> > > +  '#clock-cells':
+> > > +    const: 0
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +  - clocks
+> > > +  - clock-names
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    spi {
+> > > +      #address-cells = <1>;
+> > > +      #size-cells = <0>;
+> > > +      admv8818@0 {
+> > > +        compatible = "adi,admv8818";
+> > > +        reg = <0>;
+> > > +        spi-max-frequency = <10000000>;
+> > > +        clocks = <&admv8818_rfin>;
+> > > +        clock-names = "rf_in";
+> > > +        adi,bw-hz = /bits/ 64 <600000000>;
+> > > +      };
+> > > +    };
+> > > +...
+> > > +  
+> 
+
