@@ -2,104 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2B7458440
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 16:02:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB0F458442
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 16:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238345AbhKUPFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 10:05:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238338AbhKUPFg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 10:05:36 -0500
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3CDEC06173E
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 07:02:31 -0800 (PST)
-Received: by mail-ua1-x933.google.com with SMTP id p37so31347230uae.8
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 07:02:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ewCR+zztptKsJ8KIVGfIJqeRh+t6Nh5hBzYWdIOddbI=;
-        b=DSjlOXuFLR7fltc2k0KwMobb2ttHVi01kU8LQbXxB4/ZoJNVGakI1uUnUpqRG+TQiC
-         ajP4SRxqDR5m3WtzrWAJ7s64fJnWhcJ6j1U3s28rYZI5v4VqQ87Q86V70FosO5DmcEAj
-         orxqnTbNjtQD41OMApZpL2I4T4qtNla09xA9fBYlOKehTJHENu9xdDRADhVYOq67FxT/
-         fkeLCT1rO5Locz14W5zmawwgXQ2UaUdYzXwFhf5VD6nGF75SRP+lHeAYL7y9SPlAOZUQ
-         iJofS02RBpZJEMbn5nWppRCw3gzbhuAsYv6QweIa2t30uunwUJCthDZ2HwkhfnzOFDhj
-         oHWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ewCR+zztptKsJ8KIVGfIJqeRh+t6Nh5hBzYWdIOddbI=;
-        b=AKG2DwBEvzUwFAMfppurKhZAgrWHVnM+urNTBF7BDk3gUxsNhkgeN2ok+jUxmQSjnF
-         01m+ujEkjCgGG/Ku8naBbYFsPUqC8cj8sH7g8vZ1yggDTAdEtAEb6z+xTLD9c3FJckbe
-         DdTi58d1UeKL2oOdOAF2CXDt3lyU9WKT422ubABL6yBcbPzvTyQ99Mlb5tGbMI6Xc563
-         DkdViiBq0blWwqUwcBUOgKmQS5sewm4eHE+VZs87p+oUb4K41PNP7OkUeSY0sjFjMxjw
-         Mphl5wd0AePgio96iDYQdGospIYEzkGwx0XcyWd0RFRO7dPKpwU0UzfC9P5MOs0EcPK+
-         syPw==
-X-Gm-Message-State: AOAM530ms0IRPjnzIH9f7ebCriXUqDEGDYqUfl/4nuOk8hAdJ4Ml2inr
-        X/GrROSr6+vkplRRlap6tducyc3Tz5ho/PQw5+VWLg==
-X-Google-Smtp-Source: ABdhPJyGlYS/dAMmh8S6nbKcs5k5Z/LtQK+tCLwZxz2GaoFXq8JvxOqmAYnacyFaR7rjYK52hB72Yq3KW5hpk1W2hcw=
-X-Received: by 2002:a67:d893:: with SMTP id f19mr116652012vsj.39.1637506950538;
- Sun, 21 Nov 2021 07:02:30 -0800 (PST)
+        id S238357AbhKUPFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 10:05:42 -0500
+Received: from mout.gmx.net ([212.227.17.22]:58551 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238335AbhKUPFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 10:05:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1637506951;
+        bh=E2btNeFRA3GGsbq5L/SotP+/jQ/dSxz3Noz23olq0u4=;
+        h=X-UI-Sender-Class:Date:To:From:Subject;
+        b=Hy3L4m48u/kwwQxjOcBs0cw2J+Bq80ux+SivO6CtqcTMeYG17uHe5aZPkcnTv8CUz
+         0ydLLdfUAl4GhrxGzpSr/YmANhontpCeMZPc/L/nEnDHAVDtprzLG9ly+8qjKp9RlL
+         /EEkXGRrRXlURZeNXKyaZSpEzD9HrdDDv1thegQ4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.23] ([77.6.127.250]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MFbRm-1mrYzo3wlC-00H7OQ; Sun, 21
+ Nov 2021 16:02:31 +0100
+Message-ID: <747802b9-6c5d-cdb5-66e2-05b820f5213c@gmx.de>
+Date:   Sun, 21 Nov 2021 16:02:30 +0100
 MIME-Version: 1.0
-References: <20211108134901.20490-1-semen.protsenko@linaro.org> <b374d1a6-6478-cf2f-924e-425825731ad5@canonical.com>
-In-Reply-To: <b374d1a6-6478-cf2f-924e-425825731ad5@canonical.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Sun, 21 Nov 2021 17:02:19 +0200
-Message-ID: <CAPLW+4mq1H9N4BEAT2zoPxa85SXN2jPHqEJA7HCgavaDDpfEDQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] arm: samsung: Remove HAVE_S3C2410_I2C and use direct dependencies
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Will McVicker <willmcvicker@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Content-Language: en-US
+To:     Linux Kernel <linux-kernel@vger.kernel.org>,
+        dmaengine@vger.kernel.org
+From:   =?UTF-8?Q?Toralf_F=c3=b6rster?= <toralf.foerster@gmx.de>
+Subject: compile error for 5.15.4
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:uNQHiFJp8tRsTyJkn/mjNH13VO4TkrchGNKyrrezdYlm9F2M4RG
+ 6ektVLEgFsUgV+pnsyP67aAGw+d8LMWnBexp1kMJtN6EbTei4uf9iOyc0p5po4iAbCkpZhx
+ k61Rvy76Hb+IUyy7gd6/MaxS7e0Ev0otg8rSmD3ta1UlNxios244QCU8oHiRFkJ8W7Sj2YK
+ iqz9Bsm9nN9LATWu45+Zw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:djnb1xtSlSA=:k337GDmwoR7b90Nw/0ByAl
+ psUi37nQauW0QSRXSBBiblM4m71d2XjRUFhiEXuC/8nd3QRhq9KOj1kboxIv+QwrO6+1VCtb1
+ TfGzqPCzD0umUVItVwgHsfJCikd42RXB52MraYcIKgK5lD73NIvcaH6wlHLQxiBZr5vZU8pOK
+ uMT1xt0Uh+kPdg+vDrozW8M+hhOzTWT3293UMQ9GNvbuW0Le/y/6mXBOgwfrg9MLmX40CT4bn
+ XSts3E4XFvMeejnZKcW5WtLrJbVKN/C/7AoyCAZ+d7auIlxBp2S7p9blZUste5mgmi3t6SZXb
+ LZ4AuU7pAzrCHkI4OpItVnSdxCbbNpoQljoKplVQHTdZIwuWGNRlGaTq1VGVCoALEmidwT+Fa
+ QWyJ8JYd7qDFKBKRQdSTxdJk3DkSHqx/pVzxWP1WNKwp3vCy+UcYbNNhqYwJr+HyVv0G2yrDQ
+ A5vuBoqvSyiHcFhV4EabTWaO91sA1NIeejfTytTfQopi3T9gY8WbdVc/BpOBHaCyFHD1Un8z4
+ /fVFa3Q9WKpKkSflQRUMcTGX2OfpO5rjpUnb6R6CNChNlcrW71DV+uuOXUl3o3yIPrmT8pq6E
+ ymfjOm8xx6TeYkcgMiqApFB2mCXTvNjq4kBeiDcr408ONI5V+de/w/nXhm35CPEcsHsTvdLS6
+ dLKivAF8KSczsgtVzcLdvnLL5yB5NuzlfR/Zh6RroHgvbakIYA+m2IHXq6BTqsW+JwuM4QN2B
+ Xo4AfOjJ6Zsq9smQLRJWxxTKIExvqfwpeTbcKJDM5Tn3K+LtrTk+jETrxm7XYDgQmoNyE3P3+
+ Gd57+5LprNKaBEWvhMVLfdYrzxdZ4fQ4gJiepkySOUvzs9qS0MYAFbaBFFMMzzkPHUjdfWw4E
+ /Q8MmuakeOP0ODbQlQfUKLdqeoV5ZPuesKvm11CCaf7TgXNffueSSNBwQxmubRQ2apb5fmRSn
+ iNrYq+8EkrAxFgTfeX+03pR/ulWXzalMQunGzV4x3Mlv3RdqZ75jjentP4Xue5YDNxYu6tPkv
+ cT5svJu7SMA0358/FBjvJqTDFSlTwRm4RP56Aqh2MkxlZ6h1ptZqzz7CYDkHsOttp+b7jKWM5
+ lc4aZoFqgET7xo=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 21 Nov 2021 at 14:39, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 08/11/2021 14:49, Sam Protsenko wrote:
-> > A separate Kconfig option HAVE_S3C2410_I2C for Samsung SoCs is not
-> > really needed and the i2c-s3c24xx driver can depend on Samsung ARM
-> > architectures instead. This also enables i2c-s3c2410 for arm64 Exynos
-> > SoCs, which is required for example by Exynos850.
-> >
-> > This is basically continuation of work made in following commits:
-> >   - commit d96890fca9fd ("rtc: s3c: remove HAVE_S3C_RTC in favor of
-> >     direct dependencies")
-> >   - commit 7dd3cae90d85 ("ARM: samsung: remove HAVE_S3C2410_WATCHDOG and
-> >     use direct dependencies")
-> >
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > ---
-> >  arch/arm/Kconfig                  |  1 -
-> >  arch/arm/mach-exynos/Kconfig      |  1 -
-> >  arch/arm/mach-s3c/Kconfig.s3c64xx |  1 -
-> >  arch/arm/mach-s5pv210/Kconfig     |  1 -
-> >  drivers/i2c/busses/Kconfig        | 10 ++--------
-> >  5 files changed, 2 insertions(+), 12 deletions(-)
-> >
->
-> This does not apply, which is weird because there were no changes here.
-> It seems you based your work on some older tree, so please rebase and
-> re-test on current tree (my for-next branch or linux-next).
->
+Hi,
 
-This is strange indeed, those two patches are rebased flawlessly on
-linux-next for me. Anyway, I'll send v2 today, thanks for letting me
-know.
+got this at a hardened stable Gentoo Server:
 
-> Best regards,
-> Krzysztof
+# uname -a
+Linux mr-fox 5.14.17 #1 SMP Thu Nov 18 14:02:58 CET 2021 x86_64 AMD
+Ryzen 9 5950X 16-Core Processor AuthenticAMD GNU/Linux
+
+
+   CC      net/ipv4/tcp_timer.o
+   CC      lib/raid6/sse1.o
+drivers/dma/ptdma/ptdma-debugfs.c: In function =E2=80=98ptdma_debugfs_setu=
+p=E2=80=99:
+drivers/dma/ptdma/ptdma-debugfs.c:93:54: error: =E2=80=98struct dma_device=
+=E2=80=99 has
+no member named =E2=80=98dbg_dev_root=E2=80=99
+    93 |         debugfs_create_file("info", 0400,
+pt->dma_dev.dbg_dev_root, pt,
+       |                                                      ^
+drivers/dma/ptdma/ptdma-debugfs.c:96:55: error: =E2=80=98struct dma_device=
+=E2=80=99 has
+no member named =E2=80=98dbg_dev_root=E2=80=99
+    96 |         debugfs_create_file("stats", 0400,
+pt->dma_dev.dbg_dev_root, pt,
+       |                                                       ^
+drivers/dma/ptdma/ptdma-debugfs.c:102:52: error: =E2=80=98struct dma_devic=
+e=E2=80=99 has
+no member named =E2=80=98dbg_dev_root=E2=80=99
+   102 |                 debugfs_create_dir("q", pt->dma_dev.dbg_dev_root)=
+;
+       |                                                    ^
+make[3]: *** [scripts/Makefile.build:277:
+drivers/dma/ptdma/ptdma-debugfs.o] Error 1
+make[2]: *** [scripts/Makefile.build:540: drivers/dma/ptdma] Error 2
+make[1]: *** [scripts/Makefile.build:540: drivers/dma] Error 2
+make[1]: *** Waiting for unfinished jobs....
+   CC      mm/usercopy.o
+   CC      lib/argv_split.o
+
+=2D-
+Toralf
