@@ -2,90 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D7A4584BD
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 17:46:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F18B74584DE
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 17:50:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238172AbhKUQtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 11:49:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbhKUQtl (ORCPT
+        id S238480AbhKUQxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 11:53:31 -0500
+Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.102]:19631 "EHLO
+        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238326AbhKUQxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 11:49:41 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026DEC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 08:46:36 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id t8so5751235ilu.8
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 08:46:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=egauge.net; s=google;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :organization:user-agent:mime-version:content-transfer-encoding;
-        bh=HuFgrGg2bNqZfAVR0F7+pPQW9sww/mE5aTG7ilf+0e4=;
-        b=Bt1kDRz9ap4XGE/8gsQwAbG/EpWvpqYYrQ6Hsirta3pqThaza9MYYUAEWiHslezgcY
-         GUhhKPOzSYtRCu3lHMOGKRKveBhUhzzVO0vK3xsz4BvRFjkziq1DD6lkoqTYfhOqFmnt
-         +9yfCL4oPGizrgdamfM1gP+i2xfKRp/tn3lJ5VjoKhEWx3oSzGtgrV/ozXGAOGQlafPk
-         5vNs8IzQulILMNQMUQXd82Q2kiBQ3UNHLV08Kxi1YKvNexqRQp3EeWt2MuOBwGR7bjKI
-         c0qpLnna8Cohgc+KK0kKq2K3ZFJUHi2IHpLPSWntfJVMcnyxKNStxHcNgxVBpZ5G/HyH
-         n4hA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=HuFgrGg2bNqZfAVR0F7+pPQW9sww/mE5aTG7ilf+0e4=;
-        b=ye46hrogXJbYR+htSNoUPYkJhoXp2dvOwsRw4O7zmU/EFR7tmSAXCkynG2WM3tEG1I
-         lBg1G3n092aBQFA6Ed9s8I5haaQu1W2loa1ZtHLdElJtI86qYz5V8i36wMKyuq6h+dR1
-         35Ysi2TEc69fhpLgiC4bHMoGQm387F/kFN9MrPutOwcUlnjxue14E29sxvLUgrnhH7oA
-         gZ8eF2BLOTTMz9WPelE6gz+MHK+qnJGtETS9ztAfm119unzbZQE7zXNwHONDrqDaNQgj
-         cvcnIjI1oFC/U6HUrgtQRaUaeGCpMcYmMt2S0pz6wePZIUUjrztBSWbqiExzkAy67jOt
-         iHTg==
-X-Gm-Message-State: AOAM530V5SJh5KchXwtEnBsspGCqer/rnYP9zNsljev6fhNmK8oOD29H
-        d2+A5EibTpgztkLAJsrIP//f
-X-Google-Smtp-Source: ABdhPJzdjbC8MkTh06xDYAl+ykRvm2SdDwuq1d5v4/3FtjoIB3xnSEcfgVETjzbw2h4E5jfcqtcYFQ==
-X-Received: by 2002:a05:6e02:546:: with SMTP id i6mr3912979ils.208.1637513195004;
-        Sun, 21 Nov 2021 08:46:35 -0800 (PST)
-Received: from ?IPv6:2601:281:8300:4e0:2ba9:697d:eeec:13b? ([2601:281:8300:4e0:2ba9:697d:eeec:13b])
-        by smtp.gmail.com with ESMTPSA id k8sm4239846ilu.23.2021.11.21.08.46.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Nov 2021 08:46:34 -0800 (PST)
-Message-ID: <f4ec6ca2fd8994fcd43bb1cb553371beea5de261.camel@egauge.net>
-Subject: Re: [PATCH] hwmon: (sht4x) Add device tree match table
-From:   David Mosberger-Tang <davidm@egauge.net>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Navin Sankar Velliangiri <navin@linumiz.com>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Sun, 21 Nov 2021 09:46:30 -0700
-In-Reply-To: <20211121163137.GA3534505@roeck-us.net>
-References: <20211121160637.2312106-1-davidm@egauge.net>
-         <20211121163137.GA3534505@roeck-us.net>
-Organization: eGauge Systems LLC
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        Sun, 21 Nov 2021 11:53:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637513308;
+    s=strato-dkim-0002; d=chronox.de;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=v3VE4sz9UanANB1pBtIQXd8R3GDdDazSufrH3xmz0kU=;
+    b=WmuwXtmk/09WylE/IqDxEoesY9AV5RVPW8wq6HUu4dgfSlL9+35Gny1p+3kH1TLunj
+    N3Jnjdt0NeTw9YhNiFXrr09X1Hn7mvOtxHsAF11rg4eHooaNfX7+CT7/L/pSJfAzxtrY
+    6/qKoQxeW8MZXpit5mAzB1Ft7Q5efy7BzANcUcL867+V4qEOgL1fWI8UTFGauY4R5NB/
+    iBklKNtbz+cc65mc3b8P5WWs9AlmLxPPv+RTodWWlID9joZt8ceCQW+pex3xGhVJNGq9
+    LSpLdK/UqOP5AIJRd4nqhAESDZws3owd3jemrZBLeiPJc8ScsFbyvLWUi5Z48gIUr1ZH
+    YLZw==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPbJvSfE+K2"
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+    by smtp.strato.de (RZmta 47.34.5 DYNA|AUTH)
+    with ESMTPSA id U02dfbxALGmR3Wc
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Sun, 21 Nov 2021 17:48:27 +0100 (CET)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     Tso Ted <tytso@mit.edu>, linux-crypto@vger.kernel.org
+Cc:     Willy Tarreau <w@1wt.eu>, Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andy Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Petr Tesarik <ptesarik@suse.cz>,
+        John Haxby <john.haxby@oracle.com>,
+        Alexander Lobakin <alobakin@mailbox.org>,
+        Jirka Hladky <jhladky@redhat.com>
+Subject: [PATCH v43 12/15] LRNG - add Jitter RNG fast noise source
+Date:   Sun, 21 Nov 2021 17:46:32 +0100
+Message-ID: <1784588.LH7GnMWURc@positron.chronox.de>
+In-Reply-To: <2036923.9o76ZdvQCi@positron.chronox.de>
+References: <2036923.9o76ZdvQCi@positron.chronox.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-11-21 at 08:31 -0800, Guenter Roeck wrote:
-> On Sun, Nov 21, 2021 at 04:07:02PM +0000, David Mosberger-Tang wrote:
-> > This patch enables automatic loading of the sht4x module via a device
-> > tree table entry.
-> > 
-> > Signed-off-by: David Mosberger-Tang <davidm@egauge.net>
-> 
-> I'll wait for the DT patch to be approved before applying.
-> 
-> Please send related patches as series in the future; this should have been
-> patch 2/2, with the DT patch as first patch.
+The Jitter RNG fast noise source implemented as part of the kernel
+crypto API is queried for 256 bits of entropy at the time the seed
+buffer managed by the LRNG is about to be filled.
 
-Ah, I misunderstood.  I thought you wanted me to send the two patches
-to the relevant maintainers only.  I got it now.
+CC: Torsten Duwe <duwe@lst.de>
+CC: "Eric W. Biederman" <ebiederm@xmission.com>
+CC: "Alexander E. Patrakov" <patrakov@gmail.com>
+CC: "Ahmed S. Darwish" <darwish.07@gmail.com>
+CC: "Theodore Y. Ts'o" <tytso@mit.edu>
+CC: Willy Tarreau <w@1wt.eu>
+CC: Matthew Garrett <mjg59@srcf.ucam.org>
+CC: Vito Caputo <vcaputo@pengaru.com>
+CC: Andreas Dilger <adilger.kernel@dilger.ca>
+CC: Jan Kara <jack@suse.cz>
+CC: Ray Strode <rstrode@redhat.com>
+CC: William Jon McCann <mccann@jhu.edu>
+CC: zhangjs <zachary@baishancloud.com>
+CC: Andy Lutomirski <luto@kernel.org>
+CC: Florian Weimer <fweimer@redhat.com>
+CC: Lennart Poettering <mzxreary@0pointer.de>
+CC: Nicolai Stange <nstange@suse.de>
+Reviewed-by: Alexander Lobakin <alobakin@pm.me>
+Tested-by: Alexander Lobakin <alobakin@pm.me>
+Reviewed-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
+Tested-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
+Tested-by: Neil Horman <nhorman@redhat.com>
+Tested-by: Jirka Hladky <jhladky@redhat.com>
+Reviewed-by: Jirka Hladky <jhladky@redhat.com>
+Signed-off-by: Stephan Mueller <smueller@chronox.de>
+---
+ drivers/char/lrng/Kconfig        | 29 ++++++++++
+ drivers/char/lrng/Makefile       |  1 +
+ drivers/char/lrng/lrng_es_jent.c | 97 ++++++++++++++++++++++++++++++++
+ 3 files changed, 127 insertions(+)
+ create mode 100644 drivers/char/lrng/lrng_es_jent.c
 
-Thanks,
+diff --git a/drivers/char/lrng/Kconfig b/drivers/char/lrng/Kconfig
+index 25684c54d6a9..478b12839907 100644
+--- a/drivers/char/lrng/Kconfig
++++ b/drivers/char/lrng/Kconfig
+@@ -215,6 +215,35 @@ config LRNG_IRQ_ENTROPY_RATE
+ 	  interrupt entropy source will still deliver data but without
+ 	  being credited with entropy.
+ 
++comment "Jitter RNG Entropy Source"
++
++config LRNG_JENT
++	bool "Enable Jitter RNG as LRNG Seed Source"
++	depends on CRYPTO
++	select CRYPTO_JITTERENTROPY
++	help
++	  The Linux RNG may use the Jitter RNG as noise source. Enabling
++	  this option enables the use of the Jitter RNG. Its default
++	  entropy level is 16 bits of entropy per 256 data bits delivered
++	  by the Jitter RNG. This entropy level can be changed at boot
++	  time or at runtime with the lrng_base.jitterrng configuration
++	  variable.
++
++config LRNG_JENT_ENTROPY_RATE
++	int "Jitter RNG Entropy Source Entropy Rate"
++	depends on LRNG_JENT
++	range 0 256
++	default 16
++	help
++	  The option defines the amount of entropy the LRNG applies to 256
++	  bits of data obtained from the Jitter RNG entropy source. The
++	  LRNG enforces the limit that this value must be in the range
++	  between 0 and 256.
++
++	  When configuring this value to 0, the Jitter RNG entropy source
++	  will provide 256 bits of data without being credited to contain
++	  entropy.
++
+ comment "CPU Entropy Source"
+ 
+ config LRNG_CPU
+diff --git a/drivers/char/lrng/Makefile b/drivers/char/lrng/Makefile
+index 85abeaa68136..c797fbd10a98 100644
+--- a/drivers/char/lrng/Makefile
++++ b/drivers/char/lrng/Makefile
+@@ -15,3 +15,4 @@ obj-$(CONFIG_LRNG_DRNG_SWITCH)	+= lrng_switch.o
+ obj-$(CONFIG_LRNG_KCAPI_HASH)	+= lrng_kcapi_hash.o
+ obj-$(CONFIG_LRNG_DRBG)		+= lrng_drbg.o
+ obj-$(CONFIG_LRNG_KCAPI)	+= lrng_kcapi.o
++obj-$(CONFIG_LRNG_JENT)		+= lrng_es_jent.o
+diff --git a/drivers/char/lrng/lrng_es_jent.c b/drivers/char/lrng/lrng_es_jent.c
+new file mode 100644
+index 000000000000..2ed221cc9372
+--- /dev/null
++++ b/drivers/char/lrng/lrng_es_jent.c
+@@ -0,0 +1,97 @@
++// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
++/*
++ * LRNG Fast Entropy Source: Jitter RNG
++ *
++ * Copyright (C) 2016 - 2021, Stephan Mueller <smueller@chronox.de>
++ */
++
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
++#include <linux/types.h>
++#include <crypto/internal/jitterentropy.h>
++
++#include "lrng_internal.h"
++
++/*
++ * Estimated entropy of data is a 16th of LRNG_DRNG_SECURITY_STRENGTH_BITS.
++ * Albeit a full entropy assessment is provided for the noise source indicating
++ * that it provides high entropy rates and considering that it deactivates
++ * when it detects insufficient hardware, the chosen under estimation of
++ * entropy is considered to be acceptable to all reviewers.
++ */
++static u32 jitterrng = CONFIG_LRNG_JENT_ENTROPY_RATE;
++#ifdef CONFIG_LRNG_RUNTIME_ES_CONFIG
++module_param(jitterrng, uint, 0644);
++MODULE_PARM_DESC(jitterrng, "Entropy in bits of 256 data bits from Jitter RNG noise source");
++#endif
++
++static bool lrng_jent_initialized = false;
++static struct rand_data *lrng_jent_state;
++
++static int __init lrng_jent_initialize(void)
++{
++	/* Initialize the Jitter RNG after the clocksources are initialized. */
++	if (jent_entropy_init() ||
++	    (lrng_jent_state = jent_entropy_collector_alloc(1, 0)) == NULL) {
++		jitterrng = 0;
++		pr_info("Jitter RNG unusable on current system\n");
++		return 0;
++	}
++	lrng_jent_initialized = true;
++	lrng_pool_add_entropy();
++	pr_debug("Jitter RNG working on current system\n");
++
++	return 0;
++}
++device_initcall(lrng_jent_initialize);
++
++/*
++ * lrng_get_jent() - Get Jitter RNG entropy
++ *
++ * @outbuf: buffer to store entropy
++ * @outbuflen: length of buffer
++ *
++ * Return:
++ * * > 0 on success where value provides the added entropy in bits
++ * * 0 if no fast source was available
++ */
++u32 lrng_get_jent(u8 *outbuf, u32 requested_bits)
++{
++	int ret;
++	u32 ent_bits = lrng_jent_entropylevel(requested_bits);
++	unsigned long flags;
++	static DEFINE_SPINLOCK(lrng_jent_lock);
++
++	spin_lock_irqsave(&lrng_jent_lock, flags);
++
++	if (!lrng_jent_initialized) {
++		spin_unlock_irqrestore(&lrng_jent_lock, flags);
++		return 0;
++	}
++
++	ret = jent_read_entropy(lrng_jent_state, outbuf, requested_bits >> 3);
++	spin_unlock_irqrestore(&lrng_jent_lock, flags);
++
++	if (ret) {
++		pr_debug("Jitter RNG failed with %d\n", ret);
++		return 0;
++	}
++
++	pr_debug("obtained %u bits of entropy from Jitter RNG noise source\n",
++		 ent_bits);
++
++	return ent_bits;
++}
++
++u32 lrng_jent_entropylevel(u32 requested_bits)
++{
++	return lrng_fast_noise_entropylevel((lrng_jent_initialized) ?
++					    jitterrng : 0, requested_bits);
++}
++
++void lrng_jent_es_state(unsigned char *buf, size_t buflen)
++{
++	snprintf(buf, buflen,
++		 "JitterRNG ES properties:\n"
++		 " Enabled: %s\n", lrng_jent_initialized ? "true" : "false");
++}
+-- 
+2.31.1
 
-  --david
+
 
 
