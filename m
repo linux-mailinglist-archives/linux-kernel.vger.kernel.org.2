@@ -2,89 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB0045848E
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 16:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7786458496
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 16:55:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238410AbhKUPvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 10:51:51 -0500
-Received: from mga07.intel.com ([134.134.136.100]:28739 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233114AbhKUPvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 10:51:51 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10174"; a="298086781"
-X-IronPort-AV: E=Sophos;i="5.87,252,1631602800"; 
-   d="scan'208";a="298086781"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2021 07:48:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,252,1631602800"; 
-   d="scan'208";a="738905129"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga005.fm.intel.com with ESMTP; 21 Nov 2021 07:48:45 -0800
-Received: from mradosav-MOBL1.amr.corp.intel.com (unknown [10.252.142.12])
-        by linux.intel.com (Postfix) with ESMTP id E37445807D4;
-        Sun, 21 Nov 2021 07:48:44 -0800 (PST)
-Message-ID: <66279e39a81cd4837b11e516a053ebb337e3756e.camel@linux.intel.com>
-Subject: Re: [PATCH 1/4] PCI: Add #defines for accessing PCIe DVSEC fields
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     lee.jones@linaro.org, hdegoede@redhat.com, bhelgaas@google.com,
-        andriy.shevchenko@linux.intel.com, srinivas.pandruvada@intel.com,
-        mgross@linux.intel.com, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-pci@vger.kernel.org
-Date:   Sun, 21 Nov 2021 07:48:43 -0800
-In-Reply-To: <YZo6aczgqoobIcDC@kroah.com>
-References: <20211120231705.189969-1-david.e.box@linux.intel.com>
-         <20211120231705.189969-2-david.e.box@linux.intel.com>
-         <YZo6aczgqoobIcDC@kroah.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S238414AbhKUP6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 10:58:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238335AbhKUP6B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 10:58:01 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F34AC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 07:54:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=cYs06rCiSJLo2niacctZbBcCGz2tP/7rUUeqqAAMX2s=; b=LjbEPYNRSnQ5ZwW6TsejV4Hbpg
+        9y+GLeHwmsA/BgeIFUQ+RPL1FKb+gG/cpC++l3WYTND426O3jGapRWr8RI7zd0uS9RjWfl1zkO6nj
+        kBARsDwbqHH7P+RdSsAu+Dy7aG/x9vnibEJUVqqA3klqALhcXBxDQb0bOt/4zgi07K38XEuolDmW0
+        v2AzKLCs6e0WEd7VyG2+nRVMFVkuyWXIQGHNn8W5XDGJKeIIZfvzXrgrBM3FkGF5+RJGBx+b+yi0U
+        hfqsy7Y+4k4PYQmhTz3o8/KwUoXqHsL5mAAsDPkdn+iu97eeEhiyL5GjQVzzOJpAuyhdzTTlHJDLL
+        5SomG9/w==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mopB8-00Ds9r-Go; Sun, 21 Nov 2021 15:54:54 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>, dri-devel@lists.freedesktop.org
+Subject: [PATCH] drm: ttm: correct ttm_range_manager kernel-doc notation
+Date:   Sun, 21 Nov 2021 07:54:52 -0800
+Message-Id: <20211121155453.29736-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-11-21 at 13:24 +0100, Greg KH wrote:
-> On Sat, Nov 20, 2021 at 03:17:02PM -0800, David E. Box wrote:
-> > Add #defines for accessing Vendor ID, Revision, Length, and ID offsets
-> > in the Designated Vendor Specific Extended Capability (DVSEC). Defined
-> > in PCIe r5.0, sec 7.9.6.
-> > 
-> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> > Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >  include/uapi/linux/pci_regs.h | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
-> > index ff6ccbc6efe9..318f3f1f9e92 100644
-> > --- a/include/uapi/linux/pci_regs.h
-> > +++ b/include/uapi/linux/pci_regs.h
-> > @@ -1086,7 +1086,11 @@
-> >  
-> >  /* Designated Vendor-Specific (DVSEC, PCI_EXT_CAP_ID_DVSEC) */
-> >  #define PCI_DVSEC_HEADER1		0x4 /* Designated Vendor-Specific
-> > Header1 */
-> > +#define  PCI_DVSEC_HEADER1_VID(x)	((x) & 0xffff)
-> > +#define  PCI_DVSEC_HEADER1_REV(x)	(((x) >> 16) & 0xf)
-> > +#define  PCI_DVSEC_HEADER1_LEN(x)	(((x) >> 20) & 0xfff)
-> >  #define PCI_DVSEC_HEADER2		0x8 /* Designated Vendor-Specific
-> > Header2 */
-> > +#define  PCI_DVSEC_HEADER2_ID(x)		((x) & 0xffff)
-> 
-> Why does userspace need to have these defines?  What userspace tool is
-> going to use these?
+Fix kernel-doc warnings in ttm_range_manager.c:
 
-These headers should useful for userspace tools that access PCI devices. DVSEC
-is also used by CXL so they should come in handy for tools accesses those
-devices.
+drivers/gpu/drm/ttm/ttm_range_manager.c:144: warning: expecting prototype for ttm_range_man_init(). Prototype was for ttm_range_man_init_nocheck() instead
+drivers/gpu/drm/ttm/ttm_range_manager.c:178: warning: expecting prototype for ttm_range_man_fini(). Prototype was for ttm_range_man_fini_nocheck() instead
 
-> 
-> thanks,
-> 
-> greg k-h
+Also fix subsequent warnings from scripts/kernel-doc.
 
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Christian König <christian.koenig@amd.com>
+Cc: Huang Rui <ray.huang@amd.com>
+Cc: dri-devel@lists.freedesktop.org
+---
+ drivers/gpu/drm/ttm/ttm_range_manager.c |   11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+--- linux-next-20211118.orig/drivers/gpu/drm/ttm/ttm_range_manager.c
++++ linux-next-20211118/drivers/gpu/drm/ttm/ttm_range_manager.c
+@@ -128,15 +128,17 @@ static const struct ttm_resource_manager
+ };
+ 
+ /**
+- * ttm_range_man_init
++ * ttm_range_man_init_nocheck - Initialise a generic range manager for the
++ * selected memory type.
+  *
+  * @bdev: ttm device
+  * @type: memory manager type
+  * @use_tt: if the memory manager uses tt
+  * @p_size: size of area to be managed in pages.
+  *
+- * Initialise a generic range manager for the selected memory type.
+  * The range manager is installed for this device in the type slot.
++ *
++ * Return: %0 on success or a negative error code on failure
+  */
+ int ttm_range_man_init_nocheck(struct ttm_device *bdev,
+ 		       unsigned type, bool use_tt,
+@@ -166,12 +168,13 @@ int ttm_range_man_init_nocheck(struct tt
+ EXPORT_SYMBOL(ttm_range_man_init_nocheck);
+ 
+ /**
+- * ttm_range_man_fini
++ * ttm_range_man_fini_nocheck - Remove the generic range manager from a slot
++ * and tear it down.
+  *
+  * @bdev: ttm device
+  * @type: memory manager type
+  *
+- * Remove the generic range manager from a slot and tear it down.
++ * Return: %0 on success or a negative error code on failure
+  */
+ int ttm_range_man_fini_nocheck(struct ttm_device *bdev,
+ 		       unsigned type)
