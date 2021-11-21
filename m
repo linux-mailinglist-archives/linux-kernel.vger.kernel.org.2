@@ -2,87 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5E14586E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 00:04:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4411F4586EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 00:13:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232719AbhKUXHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 18:07:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38172 "EHLO
+        id S230135AbhKUXRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 18:17:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231168AbhKUXHQ (ORCPT
+        with ESMTP id S229586AbhKUXQ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 18:07:16 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F9BC061714
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 15:04:10 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id v15-20020a9d604f000000b0056cdb373b82so26078140otj.7
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 15:04:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IKUzxLRhbxmNcnwsOFKDQdF/Nr4S67ZStxmJXr/lOM0=;
-        b=zSoZ2TqVC2lf3rXicbt0O+mrUpC+dHa3Y5y9BHWx7Ozsd61qvo7E7h6E+ZWsZVIt3g
-         sAB3mKzhD3v/qyxa2UFPNHDn/Z6O7j+rSJqDvUk4na6B9evZ/h2GbCsmyQZXzyavR+vo
-         uruDWWRGbRXuYbjdovFC8H9XnZzNLSebSXyw8n4xggjeqN9D+xXMVhj+JTzaT74lnrLF
-         ChCP7/RS+7lwbojtgCfFKSAa7XmsDo4yfdkO8a3Eg3hujUDn1NXqkbM4XaipWcY/rjWa
-         n/h1DRcLNtxSF4W45IDam/Q+a4I4GakkyAJGQMSDTyJNFuQxA6A5AZJqYGcp8luoVB6x
-         v8zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IKUzxLRhbxmNcnwsOFKDQdF/Nr4S67ZStxmJXr/lOM0=;
-        b=V7A5Ym+V1u8bnHsWF/oYLz1pBRZ1LULlvTRXo8U1WZcioMrJM5GbfpoKylFodu1xqq
-         CXxxaBs1rimLM6+HsgzbNEVtKYAXoPHQOf49Astfe9dbFWq6m7ZtHQmnWmoBZX+Q1WBX
-         6gdONXS5r2yFUYXBe7wnJrQ92VQrCTMR9HhChWEuX+ZFyBDQd0vm4QRQRoEr3SmrvFD8
-         p3frA9XiNRIBBa4aSV8eb3larP//Z4mnS9dFu7exm4vQq5nPNpVpZgdGIPnyPcU0hDXl
-         ysuC/VS4Mzi/g2aDWdp8luqSdTtjyv9cjZWJaJy8bcvzC3AphK4Kvn6aL/qIyjQUpBEe
-         4QYA==
-X-Gm-Message-State: AOAM532ACpr3YYg1sAyxwX94Nk0MuQumkGAWKlZbZZMiyNxPiGCRB8iA
-        HcFRUR4qmsRK8rhxu1eeG1752PreAt8BErLbqzZsOg==
-X-Google-Smtp-Source: ABdhPJyJftrJGkaAE01C15jlXvMwwX+b0zacf33mq/QM8/O1wDwdW/TxpLreaxzKiJSOjfGrlzGJb4lnENCZH8brIsE=
-X-Received: by 2002:a9d:a42:: with SMTP id 60mr21329974otg.179.1637535849462;
- Sun, 21 Nov 2021 15:04:09 -0800 (PST)
+        Sun, 21 Nov 2021 18:16:59 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704CBC061574;
+        Sun, 21 Nov 2021 15:13:54 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 74DADA1B;
+        Mon, 22 Nov 2021 00:13:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1637536431;
+        bh=Tu+RjwacW2BJKA36e6xcjc2MGwUQqcz0mqJfhJupGNQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=v8fA8I8HCchrMhuJyQquZ27s13KMTuzXBVF79WrtvLGkZvWf2w78R0JDssLabiroN
+         ExtgwcaY7aMsn2GHHPaUFwHGq2xvDasKRo+nQRDO3L4v2f5ehf8DFif4aBvkpxWoUJ
+         cp8rl0NGxcgJsceJXq/5L6eZBwU2BzNOzqJr9Agk=
+Date:   Mon, 22 Nov 2021 01:13:28 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Tim Harvey <tharvey@gateworks.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Schrempf Frieder <frieder.schrempf@kontron.de>,
+        linux-media <linux-media@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        cstevens@beaconembedded.com, Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peng Fan <peng.fan@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Device Tree Mailing List <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH V2 1/5] soc: imx: imx8m-blk-ctrl: Fix imx8mm mipi reset
+Message-ID: <YZrSmESJnVuzRxDa@pendragon.ideasonboard.com>
+References: <20211106155427.753197-1-aford173@gmail.com>
+ <CAMty3ZDi+FMLBooi2jt=dPKVC8PhaBWLgtjoe3m=GHCNiqDqQw@mail.gmail.com>
+ <CAJ+vNU3sCk2r2TX0=-N76wWxWNna7qnYnruxVxPTGD8L6yVtug@mail.gmail.com>
+ <CAHCN7xLKDgPNT2pwW6r9nRN_L4k0zUhwN9FZw6t=Sf_yOKDo=w@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAKXUXMxBW0qM06i7TvFG+8HrwbR1eYR+9Ed648aZ95mtXiA7Tg@mail.gmail.com>
-In-Reply-To: <CAKXUXMxBW0qM06i7TvFG+8HrwbR1eYR+9Ed648aZ95mtXiA7Tg@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 22 Nov 2021 00:03:57 +0100
-Message-ID: <CACRpkdYfqrSOJYh9trvcioBAVXZRZsjhNEgxpCNFtpjJCPrMfg@mail.gmail.com>
-Subject: Re: Removal of config MACH_FSG and dead reference in LEDS_FSG
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Linus Walleij <linusw@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Imre Kaloz <kaloz@openwrt.org>,
-        Krzysztof Halasa <khalasa@piap.pl>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHCN7xLKDgPNT2pwW6r9nRN_L4k0zUhwN9FZw6t=Sf_yOKDo=w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 8:59 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+Hi Adam,
 
-> Your commit b71377b3e1e0 ("ARM: ixp4xx: Delete the Freecom FSG-3
-> boardfiles") removes the config MACH_FSG. Hence, the config LEDS_FSG
-> and its corresponding driver leds-fsg.c is effectively not selectable.
-> I do not know much about how with device trees we ensure that specific
-> drivers are selected, or how Kconfig build dependencies are combined
-> with device trees properly here. So, I do not know what the right
-> patch is here.
->
-> Was it intended that this code is now made obsolete? Can this driver
-> really be deleted?
+On Sat, Nov 20, 2021 at 12:33:25PM -0600, Adam Ford wrote:
+> On Fri, Nov 19, 2021 at 5:51 PM Tim Harvey wrote:
+> > On Thu, Nov 11, 2021 at 10:55 PM Jagan Teki wrote:
+> > > On Sat, Nov 6, 2021 at 9:24 PM Adam Ford wrote:
+> > > >
+> > > > Most of the blk-ctrl reset bits are found in one register, however
+> > > > there are two bits in offset 8 for pulling the MIPI DPHY out of reset
+> > > > and these need to be set when IMX8MM_DISPBLK_PD_MIPI_CSI is brought
+> > > > out of reset or the MIPI_CSI hangs.
+> > > >
+> > > > Fixes: 926e57c065df ("soc: imx: imx8m-blk-ctrl: add DISP blk-ctrl")
+> > > > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > > > ---
+> > > >
+> > > > V2:  Make a note that the extra register is only for Mini/Nano DISPLAY_BLK_CTRL
+> > > >      Rename the new register to mipi_phy_rst_mask
+> > > >      Encapsulate the edits to this register with an if-statement
+> > >
+> > > This is DPHY reset mask, not sure we can handle this via blk-ctrl.
+> > > Marek has similar patch to support this [1]. we need to phandle the
+> > > phy in host node in order to work this.
+> > >
+> > > However this current patch change seems directly handling dphy reset
+> > > which indeed fine me as well.
+> > >
+> > > >
+> > > >  drivers/soc/imx/imx8m-blk-ctrl.c | 18 ++++++++++++++++++
+> > > >  1 file changed, 18 insertions(+)
+> > > >
+> > > > diff --git a/drivers/soc/imx/imx8m-blk-ctrl.c b/drivers/soc/imx/imx8m-blk-ctrl.c
+> > > > index 519b3651d1d9..581eb4bc7f7d 100644
+> > > > --- a/drivers/soc/imx/imx8m-blk-ctrl.c
+> > > > +++ b/drivers/soc/imx/imx8m-blk-ctrl.c
+> > > > @@ -17,6 +17,7 @@
+> > > >
+> > > >  #define BLK_SFT_RSTN   0x0
+> > > >  #define BLK_CLK_EN     0x4
+> > > > +#define BLK_MIPI_RESET_DIV     0x8 /* Mini/Nano DISPLAY_BLK_CTRL only */
+> > > >
+> > > >  struct imx8m_blk_ctrl_domain;
+> > > >
+> > > > @@ -36,6 +37,15 @@ struct imx8m_blk_ctrl_domain_data {
+> > > >         const char *gpc_name;
+> > > >         u32 rst_mask;
+> > > >         u32 clk_mask;
+> > > > +
+> > > > +       /*
+> > > > +        * i.MX8M Mini and Nano have a third DISPLAY_BLK_CTRL register
+> > > > +        * which is used to control the reset for the MIPI Phy.
+> > > > +        * Since it's only present in certain circumstances,
+> > > > +        * an if-statement should be used before setting and clearing this
+> > > > +        * register.
+> > > > +        */
+> > > > +       u32 mipi_phy_rst_mask;
+> > >
+> > > May be dphy_rst_mask (above comment may not be required, as it
+> > > understand directly with commit message).
+> > >
+> > > >  };
+> > > >
+> > > >  #define DOMAIN_MAX_CLKS 3
+> > > > @@ -78,6 +88,8 @@ static int imx8m_blk_ctrl_power_on(struct generic_pm_domain *genpd)
+> > > >
+> > > >         /* put devices into reset */
+> > > >         regmap_clear_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
+> > > > +       if (data->mipi_phy_rst_mask)
+> > > > +               regmap_clear_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
+> > > >
+> > > >         /* enable upstream and blk-ctrl clocks to allow reset to propagate */
+> > > >         ret = clk_bulk_prepare_enable(data->num_clks, domain->clks);
+> > > > @@ -99,6 +111,8 @@ static int imx8m_blk_ctrl_power_on(struct generic_pm_domain *genpd)
+> > > >
+> > > >         /* release reset */
+> > > >         regmap_set_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
+> > > > +       if (data->mipi_phy_rst_mask)
+> > > > +               regmap_set_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
+> > > >
+> > > >         /* disable upstream clocks */
+> > > >         clk_bulk_disable_unprepare(data->num_clks, domain->clks);
+> > > > @@ -120,6 +134,9 @@ static int imx8m_blk_ctrl_power_off(struct generic_pm_domain *genpd)
+> > > >         struct imx8m_blk_ctrl *bc = domain->bc;
+> > > >
+> > > >         /* put devices into reset and disable clocks */
+> > > > +       if (data->mipi_phy_rst_mask)
+> > > > +               regmap_clear_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
+> > > > +
+> > > >         regmap_clear_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
+> > > >         regmap_clear_bits(bc->regmap, BLK_CLK_EN, data->clk_mask);
+> > > >
+> > > > @@ -488,6 +505,7 @@ static const struct imx8m_blk_ctrl_domain_data imx8mm_disp_blk_ctl_domain_data[]
+> > > >                 .gpc_name = "mipi-csi",
+> > > >                 .rst_mask = BIT(3) | BIT(4),
+> > > >                 .clk_mask = BIT(10) | BIT(11),
+> > > > +               .mipi_phy_rst_mask = BIT(16) | BIT(17),
+> > >
+> > > DPHY has BIT(17) for Master reset and BIT(16) for Slave reset. I think
+> > > we just need master reset to enable. I've tested only BIT(17) on
+> > > mipi-dsi gpc and it is working.
+> > >
+> >
+> > Jagan,
+> >
+> > In my testing I had to use BIT(16) | BIT(17) in order to capture via CSI.
+> 
+> Lucas,
+> 
+> Based on this, should I redo the patch but without clearing bits 16
+> and 17?  It seems like both DSI and CSI need at least bit 17, and CSI
+> appears to need both.  If we clear them, we risk stomping on one
+> peripheral or another.  If we need both, in theory, we could drop the
+> need for a DPHY driver on the DSI side.
 
-Oops no.
+I've tested camera on the i.MX8MM with an NXP BSP v5.4-based kernel.
+Register BLK_MIPI_RESET_DIV is set to 0x00030000 by default. The camera
+still works if I clear bit 17, and doesn't if I clear bit 16.
 
-> Or does it require just some further adjustment to make the leds-fsg
-> driver productive again?
+-- 
+Regards,
 
-Yes. I'll look into it!
-
-Yours,
-Linus Walleij
+Laurent Pinchart
