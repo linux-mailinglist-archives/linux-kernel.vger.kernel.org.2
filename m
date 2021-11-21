@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1234583FB
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 15:07:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 901904583FC
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 15:07:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238291AbhKUOKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 09:10:18 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:43360 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238225AbhKUOKQ (ORCPT
+        id S238299AbhKUOKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 09:10:22 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:41215 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238075AbhKUOKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 09:10:16 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R751e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UxWwTCe_1637503628;
+        Sun, 21 Nov 2021 09:10:17 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UxWwTCe_1637503628;
 Received: from localhost.localdomain(mailfrom:xhao@linux.alibaba.com fp:SMTPD_---0UxWwTCe_1637503628)
           by smtp.aliyun-inc.com(127.0.0.1);
           Sun, 21 Nov 2021 22:07:10 +0800
@@ -20,9 +20,9 @@ From:   Xin Hao <xhao@linux.alibaba.com>
 To:     sj@kernel.org
 Cc:     xhao@linux.alibaba.com, akpm@linux-foundation.org,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 1/2] mm/damon/dbgfs: Modify Damon dbfs interface dependency in Kconfig
-Date:   Sun, 21 Nov 2021 22:07:04 +0800
-Message-Id: <39a61385187fbc293dcf0e32f20137148ca97db6.1637503141.git.xhao@linux.alibaba.com>
+Subject: [PATCH V2 2/2] mm/damon: move damon_rand() definition into damon.h
+Date:   Sun, 21 Nov 2021 22:07:05 +0800
+Message-Id: <778a31d6aaa847c30bf6c1b715aa3b936bd41d67.1637503141.git.xhao@linux.alibaba.com>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <cover.1637503141.git.xhao@linux.alibaba.com>
 References: <cover.1637503141.git.xhao@linux.alibaba.com>
@@ -32,58 +32,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If you want to support "DAMON_DBGFS" in config file, it only depends on
-any one of "DAMON_VADDR" and "DAMON_PADDR", and sometimes we just want to
-use damon virtual address function, but it is unreasonable to include "DAMON_PADDR"
-in config file which cause the damon/paddr.c be compiled, so there fix it.
+damon_rand() is called in three files:damon/core.c, damon/
+paddr.c, damon/vaddr.c, i think there is no need to redefine
+this twice, So move it to damon.h will be a good choice.
 
 Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
+Reviewed-by: SeongJae Park <sj@kernel.org>
 ---
- include/linux/damon.h | 12 ++++++++++++
- mm/damon/Kconfig      |  2 +-
- 2 files changed, 13 insertions(+), 1 deletion(-)
+ include/linux/damon.h   | 4 ++++
+ mm/damon/core.c         | 4 ----
+ mm/damon/prmtv-common.h | 4 ----
+ 3 files changed, 4 insertions(+), 8 deletions(-)
 
 diff --git a/include/linux/damon.h b/include/linux/damon.h
-index 8a73e825e0d5..00ad96f2ec10 100644
+index 00ad96f2ec10..c6df025d8704 100644
 --- a/include/linux/damon.h
 +++ b/include/linux/damon.h
-@@ -463,11 +463,23 @@ int damon_stop(struct damon_ctx **ctxs, int nr_ctxs);
- #ifdef CONFIG_DAMON_VADDR
- void damon_va_set_primitives(struct damon_ctx *ctx);
- bool damon_va_target_valid(void *t);
-+#else
-+static inline void damon_va_set_primitives(struct damon_ctx *ctx) {}
-+static inline bool damon_va_target_valid(void *t)
-+{
-+	return false;
-+}
- #endif	/* CONFIG_DAMON_VADDR */
- 
- #ifdef CONFIG_DAMON_PADDR
- void damon_pa_set_primitives(struct damon_ctx *ctx);
- bool damon_pa_target_valid(void *t);
-+#else
-+static inline void damon_pa_set_primitives(struct damon_ctx *ctx) {}
-+static inline bool damon_pa_target_valid(void *t)
-+{
-+	return false;
-+}
- #endif	/* CONFIG_DAMON_PADDR */
- 
- #endif	/* _DAMON_H */
-diff --git a/mm/damon/Kconfig b/mm/damon/Kconfig
-index 5bcf05851ad0..971ffc496596 100644
---- a/mm/damon/Kconfig
-+++ b/mm/damon/Kconfig
-@@ -54,7 +54,7 @@ config DAMON_VADDR_KUNIT_TEST
- 
- config DAMON_DBGFS
- 	bool "DAMON debugfs interface"
--	depends on DAMON_VADDR && DAMON_PADDR && DEBUG_FS
-+	depends on DAMON_VADDR || DAMON_PADDR && DEBUG_FS
- 	help
- 	  This builds the debugfs interface for DAMON.  The user space admins
- 	  can use the interface for arbitrary data access monitoring.
--- 
-2.31.0
+@@ -11,12 +11,16 @@
+ #include <linux/mutex.h>
+ #include <linux/time64.h>
+ #include <linux/types.h>
++#include <linux/random.h>
 
+ /* Minimal region size.  Every damon_region is aligned by this. */
+ #define DAMON_MIN_REGION	PAGE_SIZE
+ /* Max priority score for DAMON-based operation schemes */
+ #define DAMOS_MAX_SCORE		(99)
+
++/* Get a random number in [l, r) */
++#define damon_rand(l, r) (l + prandom_u32_max(r - l))
++
+ /**
+  * struct damon_addr_range - Represents an address region of [@start, @end).
+  * @start:	Start address of the region (inclusive).
+diff --git a/mm/damon/core.c b/mm/damon/core.c
+index 4d2c3a0c7c8a..bdec32ef78c0 100644
+--- a/mm/damon/core.c
++++ b/mm/damon/core.c
+@@ -11,7 +11,6 @@
+ #include <linux/delay.h>
+ #include <linux/kthread.h>
+ #include <linux/mm.h>
+-#include <linux/random.h>
+ #include <linux/slab.h>
+ #include <linux/string.h>
+
+@@ -23,9 +22,6 @@
+ #define DAMON_MIN_REGION 1
+ #endif
+
+-/* Get a random number in [l, r) */
+-#define damon_rand(l, r) (l + prandom_u32_max(r - l))
+-
+ static DEFINE_MUTEX(damon_lock);
+ static int nr_running_ctxs;
+
+diff --git a/mm/damon/prmtv-common.h b/mm/damon/prmtv-common.h
+index 61f27037603e..e790cb5f8fe0 100644
+--- a/mm/damon/prmtv-common.h
++++ b/mm/damon/prmtv-common.h
+@@ -6,10 +6,6 @@
+  */
+
+ #include <linux/damon.h>
+-#include <linux/random.h>
+-
+-/* Get a random number in [l, r) */
+-#define damon_rand(l, r) (l + prandom_u32_max(r - l))
+
+ struct page *damon_get_page(unsigned long pfn);
+
+--
+2.31.0
