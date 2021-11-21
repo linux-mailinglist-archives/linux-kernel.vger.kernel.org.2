@@ -2,112 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E430458170
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 02:46:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F769458172
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 02:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237609AbhKUBtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Nov 2021 20:49:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237566AbhKUBtN (ORCPT
+        id S237669AbhKUBxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Nov 2021 20:53:45 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:36157 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237631AbhKUBxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Nov 2021 20:49:13 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D7AC061748
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 17:46:08 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id f18so62431201lfv.6
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Nov 2021 17:46:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eC7ekTcNVcHToA7WbyMk8TOSIabpI8giHuuCFWYBVHY=;
-        b=ZLaZpQncZZfoAiI8KH3Z6X84qkK27pbn9jZmBbIsmzNChnaRDRQo0/rxwhCbcxMZln
-         A/L2fC3hg5lQ74xdjhEWlSJolhWBGICGVuov/cCwGc2IebcpF/pxu6AVPEJByavl2bIu
-         THIvhXCAqYYICY3jWybcDAjT8BNkrrR889btRCfUnCXJV6Sgrdh9RrDx6LTeMv7x/PQT
-         yXFPCTuFi14AlPH178sBL4sNovZEnFQcEA/yodB32eY6+5Sd11BJeVAg0XvPS5xYnJar
-         l56iwSUpsyARR72VnBfO5ZWoqq8P86ZZmkyQ6IKPPTdTb6eLOoRVPm5ylWem6I6R+0AV
-         CpAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eC7ekTcNVcHToA7WbyMk8TOSIabpI8giHuuCFWYBVHY=;
-        b=i8jYJBh3l5MIbxiluqW2lZaJqDMoniiUviuk1S+V7N66xMJkZzxnTeresHqpaJGwvz
-         FrSh08txTXf+BDdZTrEQRsBbZzbzez4B1RSgl2eHJhyvqv5nGz3UWq/sKzRfeucY2uMj
-         Bo11uIA35SVjf6Jp+xT+B9zHbLdPY7/vs59Jv3sY0YW/rwp4IJ4hAtsi1HYuqO4aT58R
-         m5kDPV37gvZea/3TnQegrc+RQvx9+SDWyxeGrAvZE8xPfEz7gznjhcvKTFhZlp4LLqyL
-         rRLjaXlRoP4a2rK5JMPPd2Pl5tohYtQju4oJNJzgSParQih9o56bJ4XTWgmgrZ0UN9Fg
-         iImQ==
-X-Gm-Message-State: AOAM530nXDg3bRCHP/M31I2ENNfwzzUfYprQ4ZkG3S7o25DDbiHXMBbL
-        6m2f2gQtIYhypdkJBXyXagvmtOaYyR0+Zw7uJBPhMA==
-X-Google-Smtp-Source: ABdhPJxfWi45CRv/695sTqDhdy6mX54xURuW0+JjIkOQYekJSB/icDp4YLBXjbdux+sf1/mczR3mZrREiZtrK5Xe6+E=
-X-Received: by 2002:a05:6512:6d1:: with SMTP id u17mr46632225lff.427.1637459166469;
- Sat, 20 Nov 2021 17:46:06 -0800 (PST)
+        Sat, 20 Nov 2021 20:53:44 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R941e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=zhangliguang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UxSv4gj_1637459437;
+Received: from 30.39.229.109(mailfrom:zhangliguang@linux.alibaba.com fp:SMTPD_---0UxSv4gj_1637459437)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 21 Nov 2021 09:50:38 +0800
+Message-ID: <d226b80f-8e11-dcf9-084b-af22f4803b93@linux.alibaba.com>
+Date:   Sun, 21 Nov 2021 09:50:38 +0800
 MIME-Version: 1.0
-References: <20211119120521.18813-1-vincent.whitchurch@axis.com> <163742160874.26850.6419902452041932137.git-patchwork-notify@kernel.org>
-In-Reply-To: <163742160874.26850.6419902452041932137.git-patchwork-notify@kernel.org>
-From:   "Jiang Wang ." <jiang.wang@bytedance.com>
-Date:   Sat, 20 Nov 2021 17:45:55 -0800
-Message-ID: <CAP_N_Z_x9OCvGM4YyimdWLs-n90b=MHg2oVaTsNRo6DsXyQ53g@mail.gmail.com>
-Subject: Re: Re: [PATCH] af_unix: fix regression in read after shutdown
-To:     patchwork-bot+netdevbpf@kernel.org
-Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, kernel@axis.com,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH] PCI: pciehp: clear cmd_busy bit when Command Completed in
+ polling mode
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Amey Narkhede <ameynarkhede03@gmail.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211111054258.7309-1-zhangliguang@linux.alibaba.com>
+ <20211119120012.GC9692@wunner.de>
+From:   luanshi <zhangliguang@linux.alibaba.com>
+In-Reply-To: <20211119120012.GC9692@wunner.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the fix.
+Hi，thanks for your comments.
 
-Regards,
+在 2021/11/19 20:00, Lukas Wunner 写道:
+> On Thu, Nov 11, 2021 at 01:42:58PM +0800, Liguang Zhang wrote:
+>> Both the CCIE and HPIE bits are masked in pcie_disable_notification(),
+>> when we issue a hotplug command, pcie_wait_cmd() will polling the
+>> Command Completed bit instead of waiting for an interrupt. But cmd_busy
+>> bit was not cleared when Command Completed which results in timeouts
+>> like this in pciehp_power_off_slot() and pcie_init_notification():
+>>
+>>    pcieport 0000:00:03.0: pciehp: Timeout on hotplug command 0x01c0
+>> (issued 2264 msec ago)
+>>    pcieport 0000:00:03.0: pciehp: Timeout on hotplug command 0x05c0
+>> (issued 2288 msec ago)
+> The first timeout occurs with the following bits set in ctrl->slot_ctrl:
+>    PCI_EXP_SLTCTL_PWR_IND_ON | PCI_EXP_SLTCTL_ATTN_IND_OFF
 
-Jiang
+After some debug, the first timeout occurs:
 
-On Sat, Nov 20, 2021 at 7:20 AM <patchwork-bot+netdevbpf@kernel.org> wrote:
+     pciehp_power_off_slot
+
+         pcie_write_cmd(ctrl, PCI_EXP_SLTCTL_PWR_OFF, PCI_EXP_SLTCTL_PCC)
+
+             pcie_do_write_cmd
+
+                     /*
+                      * Always wait for any previous command that might 
+still be in progress
+                      */
+                     pcie_wait_cmd(ctrl);  // at the beginning
+
+                         if (!ctrl->cmd_busy)  // cmd_busy was not zero
+                             return;
+
+
+Why cmd_busy was not flase, because in function 
+pcie_disable_notification cmd_busy was not setting correctly:
+
+     pcie_disable_notification  //  Both the CCIE and HPIE bits are masked
+
+         pcie_write_cmd
+
+             pcie_do_write_cmd
+
+                 ctrl->cmd_busy = 1  // cmd_busy was setting to 1
+
+                 pcie_wait_cmd
+
+                     pcie_poll_cmd // pcie_wait_cmd() will polling the 
+Command Completed bit instead of waiting for an interrupt
+
+                          After debug we found Command Completed can be 
+signaled without cmd_busy was setting to 0.
+
+
+If we use interrupt mode pciehp_isr:
+
+         pciehp_isr
+
+             if (events & PCI_EXP_SLTSTA_CC) {
+                 ctrl->cmd_busy = 0;  //  cmd_busy was setting to zero, 
+this was left in pcie_poll_cmd.
+
+
+Thanks,
+
+Liguang
+
 >
-> Hello:
->
-> This patch was applied to netdev/net.git (master)
-> by David S. Miller <davem@davemloft.net>:
->
-> On Fri, 19 Nov 2021 13:05:21 +0100 you wrote:
-> > On kernels before v5.15, calling read() on a unix socket after
-> > shutdown(SHUT_RD) or shutdown(SHUT_RDWR) would return the data
-> > previously written or EOF.  But now, while read() after
-> > shutdown(SHUT_RD) still behaves the same way, read() after
-> > shutdown(SHUT_RDWR) always fails with -EINVAL.
-> >
-> > This behaviour change was apparently inadvertently introduced as part of
-> > a bug fix for a different regression caused by the commit adding sockmap
-> > support to af_unix, commit 94531cfcbe79c359 ("af_unix: Add
-> > unix_stream_proto for sockmap").  Those commits, for unclear reasons,
-> > started setting the socket state to TCP_CLOSE on shutdown(SHUT_RDWR),
-> > while this state change had previously only been done in
-> > unix_release_sock().
-> >
-> > [...]
->
-> Here is the summary with links:
->   - af_unix: fix regression in read after shutdown
->     https://git.kernel.org/netdev/net/c/f9390b249c90
->
-> You are awesome, thank you!
-> --
-> Deet-doot-dot, I am a bot.
-> https://korg.docs.kernel.org/patchwork/pwbot.html
+> Those bits are set by:
+>    board_added()
+>      pciehp_set_indicators()
 >
 >
+> The second timeout occurs with:
+>    PCI_EXP_SLTCTL_PWR_IND_ON | PCI_EXP_SLTCTL_ATTN_IND_OFF |
+>    PCI_EXP_SLTCTL_PWR_OFF
+>
+> This might be triggered by:
+>    remove_board()
+>      pciehp_power_off_slot()
+>
+>
+> So it seems Command Completed is not signaled when changing the
+> Power Indicator, Attention Indicator and Power Controller Control
+> bits in the Slot Control register.  But apparently it works for
+> the other bits.
+>
+> We know there are hotplug controllers out there which suffer from
+> broken Command Completed support.  They support it for the bits
+> mentioned above but not the others.  So the inverse behavior from
+> your hotplug controller.  See this code comment in pcie_do_write_cmd():
+>
+> 	/*
+> 	 * Controllers with the Intel CF118 and similar errata advertise
+> 	 * Command Completed support, but they only set Command Completed
+> 	 * if we change the "Control" bits for power, power indicator,
+> 	 * attention indicator, or interlock.  If we only change the
+> 	 * "Enable" bits, they never set the Command Completed bit.
+> 	 */
+>
+>
+>> --- a/drivers/pci/hotplug/pciehp_hpc.c
+>> +++ b/drivers/pci/hotplug/pciehp_hpc.c
+>> @@ -98,6 +98,8 @@ static int pcie_poll_cmd(struct controller *ctrl, int timeout)
+>>   		if (slot_status & PCI_EXP_SLTSTA_CC) {
+>>   			pcie_capability_write_word(pdev, PCI_EXP_SLTSTA,
+>>   						   PCI_EXP_SLTSTA_CC);
+>> +			ctrl->cmd_busy = 0;
+>> +			smp_mb();
+>>   			return 1;
+>>   		}
+>>   		msleep(10);
+> I suspect that this patch merely papers over the problem and that
+> the real solution would be to either apply quirk_cmd_compl or a
+> similar quirk to your hotplug controller.
+>
+> Please open a bug on bugzilla.kernel.org and attach full output
+> of lspci -vv and dmesg.  Be sure to add the following to the
+> command line:
+>    pciehp.pciehp_debug=1 dyndbg="file pciehp* +p"
+>
+> Once you've done that, please report the bugzilla link here
+> so that we can analyze the issue properly.
+>
+> Thanks,
+>
+> Lukas
