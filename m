@@ -2,105 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901904583FC
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 15:07:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5144583F8
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 15:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238299AbhKUOKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 09:10:22 -0500
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:41215 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238075AbhKUOKR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 09:10:17 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UxWwTCe_1637503628;
-Received: from localhost.localdomain(mailfrom:xhao@linux.alibaba.com fp:SMTPD_---0UxWwTCe_1637503628)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 21 Nov 2021 22:07:10 +0800
-From:   Xin Hao <xhao@linux.alibaba.com>
-To:     sj@kernel.org
-Cc:     xhao@linux.alibaba.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 2/2] mm/damon: move damon_rand() definition into damon.h
-Date:   Sun, 21 Nov 2021 22:07:05 +0800
-Message-Id: <778a31d6aaa847c30bf6c1b715aa3b936bd41d67.1637503141.git.xhao@linux.alibaba.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <cover.1637503141.git.xhao@linux.alibaba.com>
-References: <cover.1637503141.git.xhao@linux.alibaba.com>
+        id S238276AbhKUOGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 09:06:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47456 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238265AbhKUOGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 09:06:36 -0500
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2CD1A60E75;
+        Sun, 21 Nov 2021 14:03:28 +0000 (UTC)
+Date:   Sun, 21 Nov 2021 14:08:23 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH 03/15] iio: buffer-dma: Use round_down() instead of
+ rounddown()
+Message-ID: <20211121140823.6b2922f6@jic23-huawei>
+In-Reply-To: <20211115141925.60164-4-paul@crapouillou.net>
+References: <20211115141925.60164-1-paul@crapouillou.net>
+        <20211115141925.60164-4-paul@crapouillou.net>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-damon_rand() is called in three files:damon/core.c, damon/
-paddr.c, damon/vaddr.c, i think there is no need to redefine
-this twice, So move it to damon.h will be a good choice.
+On Mon, 15 Nov 2021 14:19:13 +0000
+Paul Cercueil <paul@crapouillou.net> wrote:
 
-Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
-Reviewed-by: SeongJae Park <sj@kernel.org>
----
- include/linux/damon.h   | 4 ++++
- mm/damon/core.c         | 4 ----
- mm/damon/prmtv-common.h | 4 ----
- 3 files changed, 4 insertions(+), 8 deletions(-)
+> We know that the buffer's alignment will always be a power of two;
+> therefore, we can use the faster round_down() macro.
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+*groan*.  I don't want to know where the naming of these two came from but that
+is spectacular... 
 
-diff --git a/include/linux/damon.h b/include/linux/damon.h
-index 00ad96f2ec10..c6df025d8704 100644
---- a/include/linux/damon.h
-+++ b/include/linux/damon.h
-@@ -11,12 +11,16 @@
- #include <linux/mutex.h>
- #include <linux/time64.h>
- #include <linux/types.h>
-+#include <linux/random.h>
+Anyhow, happy to pick up 1-3 now if you like as all are good cleanup of
+existing code.
 
- /* Minimal region size.  Every damon_region is aligned by this. */
- #define DAMON_MIN_REGION	PAGE_SIZE
- /* Max priority score for DAMON-based operation schemes */
- #define DAMOS_MAX_SCORE		(99)
+Jonathan
 
-+/* Get a random number in [l, r) */
-+#define damon_rand(l, r) (l + prandom_u32_max(r - l))
-+
- /**
-  * struct damon_addr_range - Represents an address region of [@start, @end).
-  * @start:	Start address of the region (inclusive).
-diff --git a/mm/damon/core.c b/mm/damon/core.c
-index 4d2c3a0c7c8a..bdec32ef78c0 100644
---- a/mm/damon/core.c
-+++ b/mm/damon/core.c
-@@ -11,7 +11,6 @@
- #include <linux/delay.h>
- #include <linux/kthread.h>
- #include <linux/mm.h>
--#include <linux/random.h>
- #include <linux/slab.h>
- #include <linux/string.h>
+> ---
+>  drivers/iio/buffer/industrialio-buffer-dmaengine.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/buffer/industrialio-buffer-dmaengine.c b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
+> index 1ac94c4e9792..f8ce26a24c57 100644
+> --- a/drivers/iio/buffer/industrialio-buffer-dmaengine.c
+> +++ b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
+> @@ -67,7 +67,7 @@ static int iio_dmaengine_buffer_submit_block(struct iio_dma_buffer_queue *queue,
+>  	dma_cookie_t cookie;
+>  
+>  	block->bytes_used = min(block->size, dmaengine_buffer->max_size);
+> -	block->bytes_used = rounddown(block->bytes_used,
+> +	block->bytes_used = round_down(block->bytes_used,
+>  			dmaengine_buffer->align);
+>  
+>  	desc = dmaengine_prep_slave_single(dmaengine_buffer->chan,
 
-@@ -23,9 +22,6 @@
- #define DAMON_MIN_REGION 1
- #endif
-
--/* Get a random number in [l, r) */
--#define damon_rand(l, r) (l + prandom_u32_max(r - l))
--
- static DEFINE_MUTEX(damon_lock);
- static int nr_running_ctxs;
-
-diff --git a/mm/damon/prmtv-common.h b/mm/damon/prmtv-common.h
-index 61f27037603e..e790cb5f8fe0 100644
---- a/mm/damon/prmtv-common.h
-+++ b/mm/damon/prmtv-common.h
-@@ -6,10 +6,6 @@
-  */
-
- #include <linux/damon.h>
--#include <linux/random.h>
--
--/* Get a random number in [l, r) */
--#define damon_rand(l, r) (l + prandom_u32_max(r - l))
-
- struct page *damon_get_page(unsigned long pfn);
-
---
-2.31.0
