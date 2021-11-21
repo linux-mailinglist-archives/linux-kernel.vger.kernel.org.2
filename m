@@ -2,129 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A9845869C
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 22:45:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 207B34586A7
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 22:56:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230325AbhKUVsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 16:48:09 -0500
-Received: from mga02.intel.com ([134.134.136.20]:8919 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230222AbhKUVsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 16:48:08 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10175"; a="221912351"
-X-IronPort-AV: E=Sophos;i="5.87,253,1631602800"; 
-   d="scan'208";a="221912351"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2021 13:45:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,253,1631602800"; 
-   d="scan'208";a="456060389"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 21 Nov 2021 13:45:01 -0800
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1moudw-0007AO-IO; Sun, 21 Nov 2021 21:45:00 +0000
-Date:   Mon, 22 Nov 2021 05:44:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: dtbs_check: arch/arm/boot/dts/bcm47189-luxul-xap-1440.dt.yaml:
- usb@4000: '#address-cells', '#size-cells', 'port@1', 'port@2' do not match
- any of the regexes: 'pinctrl-[0-9]+'
-Message-ID: <202111220524.xi5j8vz7-lkp@intel.com>
+        id S231543AbhKUV7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 16:59:50 -0500
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:62142 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229727AbhKUV7t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 16:59:49 -0500
+Received: from pop-os.home ([86.243.171.122])
+        by smtp.orange.fr with ESMTPA
+        id oupFmUkCKE8xToupFmqrnz; Sun, 21 Nov 2021 22:56:42 +0100
+X-ME-Helo: pop-os.home
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Sun, 21 Nov 2021 22:56:42 +0100
+X-ME-IP: 86.243.171.122
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] hv_netvsc: Use bitmap_zalloc() when applicable
+Date:   Sun, 21 Nov 2021 22:56:39 +0100
+Message-Id: <534578d2296a1f4bd86c9bd4676e9d6b92eceb59.1637531723.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   923dcc5eb0c111eccd51cc7ce1658537e3c38b25
-commit: 80e73332ee829cd55d86272b7d3d4d5f0fc4c4ff dt-bindings: mstar: Add binding details for mstar,smpctrl
-date:   12 months ago
-compiler: arm-linux-gnueabi-gcc (GCC) 11.2.0
-reproduce: make ARCH=arm dtbs_check
+'send_section_map' is a bitmap. So use 'bitmap_zalloc()' to simplify code,
+improve the semantic and avoid some open-coded arithmetic in allocator
+arguments.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Also change the corresponding 'kfree()' into 'bitmap_free()' to keep
+consistency.
 
+While at it, change an '== NULL' test into a '!'.
 
-dtcheck warnings: (new ones prefixed by >>)
-   arch/arm/boot/dts/bcm47189-luxul-xap-1440.dt.yaml: chipcommon@0: $nodename:0: 'chipcommon@0' does not match '^([a-z][a-z0-9\\-]+-bus|bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
-   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/simple-bus.yaml
-   arch/arm/boot/dts/bcm47189-luxul-xap-1440.dt.yaml: pcie@2000: 'device_type' is a required property
-   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/pci/pci-bus.yaml
-   arch/arm/boot/dts/bcm47189-luxul-xap-1440.dt.yaml: pcie@2000: 'ranges' is a required property
-   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/pci/pci-bus.yaml
-   arch/arm/boot/dts/bcm47189-luxul-xap-1440.dt.yaml: pcie@2000: '#address-cells' is a required property
-   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/pci/pci-bus.yaml
-   arch/arm/boot/dts/bcm47189-luxul-xap-1440.dt.yaml: pcie@2000: '#size-cells' is a required property
-   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/pci/pci-bus.yaml
->> arch/arm/boot/dts/bcm47189-luxul-xap-1440.dt.yaml: usb@4000: '#address-cells', '#size-cells', 'port@1', 'port@2' do not match any of the regexes: 'pinctrl-[0-9]+'
-   	From schema: Documentation/devicetree/bindings/usb/generic-ehci.yaml
->> arch/arm/boot/dts/bcm47189-luxul-xap-1440.dt.yaml: usb@d000: '#address-cells', '#size-cells', '#usb-cells', 'port@1', 'port@2' do not match any of the regexes: 'pinctrl-[0-9]+'
-   	From schema: Documentation/devicetree/bindings/usb/generic-ohci.yaml
-   arch/arm/boot/dts/bcm47189-luxul-xap-1440.dt.yaml: leds: 'system', 'wlan' do not match any of the regexes: '(^led-[0-9a-f]$|led)', 'pinctrl-[0-9]+'
-   	From schema: Documentation/devicetree/bindings/leds/leds-gpio.yaml
-   schemas/input/input.yaml: ignoring, error in schema: properties: power-off-time-sec
-   Traceback (most recent call last):
-     File "/usr/local/bin/dt-validate", line 164, in <module>
-       sg.check_trees(filename, testtree)
-     File "/usr/local/bin/dt-validate", line 113, in check_trees
-       self.check_subtree(dt, subtree, "/", "/", filename)
-     File "/usr/local/bin/dt-validate", line 104, in check_subtree
---
-   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/simple-bus.yaml
-   arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: pcie@2000: ranges: 'oneOf' conditional failed, one must be fixed:
-   	arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: pcie@2000: ranges: 'oneOf' conditional failed, one must be fixed:
-   		[[0, 0, 0, 0, 0, 1048576]] is not of type 'boolean'
-   		True was expected
-   		[[0, 0, 0, 0, 0, 1048576]] is not of type 'null'
-   	0 is not one of [16777216, 33554432, 50331648, 1107296256, 1124073472, 2164260864, 2181038080, 2197815296, 3254779904, 3271557120]
-   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/pci/pci-bus.yaml
-   arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: pcie@2000: 'device_type' is a required property
-   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/pci/pci-bus.yaml
->> arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: usb@4000: '#address-cells', '#size-cells', 'port@1', 'port@2' do not match any of the regexes: 'pinctrl-[0-9]+'
-   	From schema: Documentation/devicetree/bindings/usb/generic-ehci.yaml
->> arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: usb@d000: '#address-cells', '#size-cells', '#usb-cells', 'port@1', 'port@2' do not match any of the regexes: 'pinctrl-[0-9]+'
-   	From schema: Documentation/devicetree/bindings/usb/generic-ohci.yaml
-   arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: leds: '5ghz', 'system', 'usb', 'wps' do not match any of the regexes: '(^led-[0-9a-f]$|led)', 'pinctrl-[0-9]+'
-   	From schema: Documentation/devicetree/bindings/leds/leds-gpio.yaml
-   arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: leds: '5ghz' does not match any of the regexes: '.*-names$', '.*-supply$', '^#.*-cells$', '^#[a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-fA-F]+(,[0-9a-fA-F]+)*$', '^__.*__$', 'pinctrl-[0-9]+'
-   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/dt-core.yaml
-   arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: pcie0_leds: '2ghz' does not match any of the regexes: '(^led-[0-9a-f]$|led)', 'pinctrl-[0-9]+'
-   	From schema: Documentation/devicetree/bindings/leds/leds-gpio.yaml
-   arch/arm/boot/dts/bcm47189-tenda-ac9.dt.yaml: pcie0_leds: '2ghz' does not match any of the regexes: '.*-names$', '.*-supply$', '^#.*-cells$', '^#[a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-fA-F]+(,[0-9a-fA-F]+)*$', '^__.*__$', 'pinctrl-[0-9]+'
-   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/dt-core.yaml
-   schemas/input/input.yaml: ignoring, error in schema: properties: power-off-time-sec
---
-   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/simple-bus.yaml
-   arch/arm/boot/dts/bcm947189acdbmr.dt.yaml: pcie@2000: ranges: 'oneOf' conditional failed, one must be fixed:
-   	arch/arm/boot/dts/bcm947189acdbmr.dt.yaml: pcie@2000: ranges: 'oneOf' conditional failed, one must be fixed:
-   		[[0, 0, 0, 0, 0, 1048576]] is not of type 'boolean'
-   		True was expected
-   		[[0, 0, 0, 0, 0, 1048576]] is not of type 'null'
-   	0 is not one of [16777216, 33554432, 50331648, 1107296256, 1124073472, 2164260864, 2181038080, 2197815296, 3254779904, 3271557120]
-   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/pci/pci-bus.yaml
-   arch/arm/boot/dts/bcm947189acdbmr.dt.yaml: pcie@2000: 'device_type' is a required property
-   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/pci/pci-bus.yaml
->> arch/arm/boot/dts/bcm947189acdbmr.dt.yaml: usb@4000: '#address-cells', '#size-cells', 'port@1', 'port@2' do not match any of the regexes: 'pinctrl-[0-9]+'
-   	From schema: Documentation/devicetree/bindings/usb/generic-ehci.yaml
->> arch/arm/boot/dts/bcm947189acdbmr.dt.yaml: usb@d000: '#address-cells', '#size-cells', '#usb-cells', 'port@1', 'port@2' do not match any of the regexes: 'pinctrl-[0-9]+'
-   	From schema: Documentation/devicetree/bindings/usb/generic-ohci.yaml
-   arch/arm/boot/dts/bcm947189acdbmr.dt.yaml: leds: '2ghz', '5ghz', 'wps' do not match any of the regexes: '(^led-[0-9a-f]$|led)', 'pinctrl-[0-9]+'
-   	From schema: Documentation/devicetree/bindings/leds/leds-gpio.yaml
-   arch/arm/boot/dts/bcm947189acdbmr.dt.yaml: leds: '2ghz', '5ghz' do not match any of the regexes: '.*-names$', '.*-supply$', '^#.*-cells$', '^#[a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-fA-F]+(,[0-9a-fA-F]+)*$', '^__.*__$', 'pinctrl-[0-9]+'
-   	From schema: /usr/local/lib/python3.9/dist-packages/dtschema/schemas/dt-core.yaml
-   schemas/input/input.yaml: ignoring, error in schema: properties: power-off-time-sec
-   Traceback (most recent call last):
-     File "/usr/local/bin/dt-validate", line 164, in <module>
-       sg.check_trees(filename, testtree)
-     File "/usr/local/bin/dt-validate", line 113, in check_trees
-
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/net/hyperv/netvsc.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
+index 396bc1c204e6..5086cd07d1ed 100644
+--- a/drivers/net/hyperv/netvsc.c
++++ b/drivers/net/hyperv/netvsc.c
+@@ -155,7 +155,7 @@ static void free_netvsc_device(struct rcu_head *head)
+ 	kfree(nvdev->extension);
+ 	vfree(nvdev->recv_buf);
+ 	vfree(nvdev->send_buf);
+-	kfree(nvdev->send_section_map);
++	bitmap_free(nvdev->send_section_map);
+ 
+ 	for (i = 0; i < VRSS_CHANNEL_MAX; i++) {
+ 		xdp_rxq_info_unreg(&nvdev->chan_table[i].xdp_rxq);
+@@ -336,7 +336,6 @@ static int netvsc_init_buf(struct hv_device *device,
+ 	struct net_device *ndev = hv_get_drvdata(device);
+ 	struct nvsp_message *init_packet;
+ 	unsigned int buf_size;
+-	size_t map_words;
+ 	int i, ret = 0;
+ 
+ 	/* Get receive buffer area. */
+@@ -528,10 +527,9 @@ static int netvsc_init_buf(struct hv_device *device,
+ 		   net_device->send_section_size, net_device->send_section_cnt);
+ 
+ 	/* Setup state for managing the send buffer. */
+-	map_words = DIV_ROUND_UP(net_device->send_section_cnt, BITS_PER_LONG);
+-
+-	net_device->send_section_map = kcalloc(map_words, sizeof(ulong), GFP_KERNEL);
+-	if (net_device->send_section_map == NULL) {
++	net_device->send_section_map = bitmap_zalloc(net_device->send_section_cnt,
++						     GFP_KERNEL);
++	if (!net_device->send_section_map) {
+ 		ret = -ENOMEM;
+ 		goto cleanup;
+ 	}
+-- 
+2.30.2
+
