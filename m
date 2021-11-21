@@ -2,92 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F51D45849B
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 16:59:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A00AD45849E
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 17:07:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238420AbhKUQCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 11:02:25 -0500
-Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:62168 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbhKUQCZ (ORCPT
+        id S238424AbhKUQKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 11:10:09 -0500
+Received: from o1.ptr2625.egauge.net ([167.89.112.53]:27954 "EHLO
+        o1.ptr2625.egauge.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230298AbhKUQKI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 11:02:25 -0500
-Received: from pop-os.home ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id opFKmFXqaf6fnopFKmxINg; Sun, 21 Nov 2021 16:59:18 +0100
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Sun, 21 Nov 2021 16:59:18 +0100
-X-ME-IP: 86.243.171.122
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] mtd: gen_probe: Use bitmap_zalloc() when applicable
-Date:   Sun, 21 Nov 2021 16:59:12 +0100
-Message-Id: <a6fe58dffe553a3e79303777d3ba9c60d7613c5b.1637510255.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sun, 21 Nov 2021 11:10:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=egauge.net;
+        h=from:subject:mime-version:to:cc:content-transfer-encoding:
+        content-type;
+        s=sgd; bh=+6eAYYS1zGVdyeCag4dsRhNxxP3Pce/RMzvHMKYoPqE=;
+        b=nTPVZH6o+ZW9I9tfGdVfYEgbjIAUExRCJBMSg6UCg/Ix8TkvzMYoevySFpdaHjJZPzco
+        iQW+4hh1aQlhjquMgp7pyvgykdUI3me/30To/VWbGDrnN566xU2HLyKvUQuYEDzDmkXP/Q
+        kWrrHstS5QSUbe0ek3ScgKKFI6c+5RmirgP+rI4zc3oUGPGX4bDWV5e/d0kNCYnX/kTf4z
+        a6u6bab3k+Y8k+IPXRO6xoGTQ5vQCqDnqk5KcfcMRq0l0sNJGU+Vx8VrHoNq3UTvGWvHIO
+        QeJFl7oybCDtefJkpuQFWpQwmb25hGGasL4Hs9tBnseCw5TrKQQKjMg2Bsa3lXuQ==
+Received: by filterdrecv-7bf5c69d5-ckn2p with SMTP id filterdrecv-7bf5c69d5-ckn2p-1-619A6EA6-2D
+        2021-11-21 16:07:02.407210084 +0000 UTC m=+6976002.270461382
+Received: from pearl.egauge.net (unknown)
+        by geopod-ismtpd-3-0 (SG)
+        with ESMTP
+        id L3hssTnOT82k7db98nqgig
+        Sun, 21 Nov 2021 16:07:02.265 +0000 (UTC)
+Received: by pearl.egauge.net (Postfix, from userid 1000)
+        id BC11B700479; Sun, 21 Nov 2021 09:07:01 -0700 (MST)
+From:   David Mosberger-Tang <davidm@egauge.net>
+Subject: [PATCH] hwmon: (sht4x) Add device tree match table
+Date:   Sun, 21 Nov 2021 16:07:02 +0000 (UTC)
+Message-Id: <20211121160637.2312106-1-davidm@egauge.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-SG-EID: =?us-ascii?Q?+kMxBqj35EdRUKoy8diX1j4AXmPtd302oan+iXZuF8m2Nw4HRW2irNspffT=2Fkh?=
+ =?us-ascii?Q?ET6RJF6+Prbl0h=2FEtF1rRLvBjwDxJhsTdt2+w8T?=
+ =?us-ascii?Q?2ZJXZyNCtjHkCjO0qDnyrd+XD1XbSrphSwxu8yj?=
+ =?us-ascii?Q?BJg8T79lJC5LOMlgOvQs0XDpEhYnzOMaaGe1V24?=
+ =?us-ascii?Q?e3NYVr9bGht5DcoUoJiLd2l=2FswBKhAIecZ=2FUMSh?=
+ =?us-ascii?Q?HobQPisPycWHOJfbW16MAkZqENAFiVzFPNJR0Hn?=
+ =?us-ascii?Q?niMde8zuApU+kaNTR+S9w=3D=3D?=
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Navin Sankar Velliangiri <navin@linumiz.com>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        David Mosberger-Tang <davidm@egauge.net>
+X-Entity-ID: Xg4JGAcGrJFIz2kDG9eoaQ==
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'chip_map' is a bitmap. So use 'bitmap_zalloc()' to simplify code,
-improve the semantic and avoid some open-coded arithmetic in allocator
-arguments.
+This patch enables automatic loading of the sht4x module via a device
+tree table entry.
 
-Also change the corresponding 'kfree()' into 'bitmap_free()' to keep
-consistency.
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: David Mosberger-Tang <davidm@egauge.net>
 ---
- drivers/mtd/chips/gen_probe.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/hwmon/sht4x.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/mtd/chips/gen_probe.c b/drivers/mtd/chips/gen_probe.c
-index e5bd3c2bc3b2..4d4f97841016 100644
---- a/drivers/mtd/chips/gen_probe.c
-+++ b/drivers/mtd/chips/gen_probe.c
-@@ -61,8 +61,8 @@ static struct cfi_private *genprobe_ident_chips(struct map_info *map, struct chi
- 	struct cfi_private cfi;
- 	struct cfi_private *retcfi;
- 	unsigned long *chip_map;
--	int i, j, mapsize;
- 	int max_chips;
-+	int i, j;
+diff --git a/drivers/hwmon/sht4x.c b/drivers/hwmon/sht4x.c
+index 3415d7a0e0fc..6e53d81e32d4 100644
+--- a/drivers/hwmon/sht4x.c
++++ b/drivers/hwmon/sht4x.c
+@@ -281,9 +281,16 @@ static const struct i2c_device_id sht4x_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, sht4x_id);
  
- 	memset(&cfi, 0, sizeof(cfi));
- 
-@@ -111,8 +111,7 @@ static struct cfi_private *genprobe_ident_chips(struct map_info *map, struct chi
- 		max_chips = 1;
- 	}
- 
--	mapsize = sizeof(long) * DIV_ROUND_UP(max_chips, BITS_PER_LONG);
--	chip_map = kzalloc(mapsize, GFP_KERNEL);
-+	chip_map = bitmap_zalloc(max_chips, GFP_KERNEL);
- 	if (!chip_map) {
- 		kfree(cfi.cfiq);
- 		return NULL;
-@@ -139,7 +138,7 @@ static struct cfi_private *genprobe_ident_chips(struct map_info *map, struct chi
- 
- 	if (!retcfi) {
- 		kfree(cfi.cfiq);
--		kfree(chip_map);
-+		bitmap_free(chip_map);
- 		return NULL;
- 	}
- 
-@@ -157,7 +156,7 @@ static struct cfi_private *genprobe_ident_chips(struct map_info *map, struct chi
- 		}
- 	}
- 
--	kfree(chip_map);
-+	bitmap_free(chip_map);
- 	return retcfi;
- }
- 
++static const struct of_device_id sht4x_of_match[] = {
++	{ .compatible = "sensirion,sht4x" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, sht4x_of_match);
++
+ static struct i2c_driver sht4x_driver = {
+ 	.driver = {
+ 		.name = "sht4x",
++		.of_match_table = sht4x_of_match
+ 	},
+ 	.probe		= sht4x_probe,
+ 	.id_table	= sht4x_id,
 -- 
-2.30.2
+2.25.1
 
