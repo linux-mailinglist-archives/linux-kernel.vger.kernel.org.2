@@ -2,98 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3EF24582EA
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 11:25:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7416E4582F9
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 11:47:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237961AbhKUK2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 05:28:45 -0500
-Received: from mail-vk1-f173.google.com ([209.85.221.173]:41904 "EHLO
-        mail-vk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235969AbhKUK2o (ORCPT
+        id S238001AbhKUKuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 05:50:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237987AbhKUKuk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 05:28:44 -0500
-Received: by mail-vk1-f173.google.com with SMTP id 188so5503090vku.8;
-        Sun, 21 Nov 2021 02:25:39 -0800 (PST)
+        Sun, 21 Nov 2021 05:50:40 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BA49C061574;
+        Sun, 21 Nov 2021 02:47:35 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id l25so46922315eda.11;
+        Sun, 21 Nov 2021 02:47:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MXLo+ltgSmCvyGffXWjUxfxqUK//tZmJbyrhfQ9Q0t0=;
+        b=g5r1kyroze1qFZ3o47+fhGaEUI3MgKiusnrLbcyk0k7571xBgSxdaKNk7s/JodvL92
+         D3mrafLfQZv9SXvt6PoNwSk8KrfVOFklS3q1eU0FrCAYGwySmyj48RSKZe2P/AYj8oYb
+         +nnebsxSgm5hAeFqPZlodMzp/1M5UL/pZ/InpJQ9rYdcszHfVV4UXQP14OctUziLuZoI
+         gMUBd1mtMFIsyuTj1KJ7imKiYBFbK+4b4mziXFuPVC1rgO5iZ9TcbZ0cDDAzVGopHXOe
+         gf2Dm7R0QjGSCFI0qsL7BU19uDujxvRNTOZX5Whw5fGOtHBJSia/IWrX/ysl5ChE+bZm
+         iMhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=76gUnwG+pJE+hG34Clu5oVhtc4cHsXMWN/mmsz4K8hk=;
-        b=Z6ywDiA3koLvSkqD9n/0g4esUUoLqJ8Klx5oJlZkezfA9G0cGuhIEFTi3ubs9z+NZy
-         PyKGEZbkeo2nKELE4WsX1NNDQvP8k2eUodJTfU04gwCDjaK7SsIJlnsM3LONjYLmj0JD
-         JupN4wTkHoEL0E/+HijbmJe9v5IGsQq7tUGqSqWGkf6UMjC0O+y8uP5At7OlXgzlw9tR
-         vaZYiZ2NhcHCt2S0nLjIgscMYoMQinU2Sg875Jk5A8vdQSFvFv4OR2tfT5nJdO/xmZEq
-         0mQYDfoAvNA3yYVN09N+qlr2FvdWEWCP83ihhA0+sXD9UTCv5UVgzW89GZ76Didx3jPx
-         YVpA==
-X-Gm-Message-State: AOAM531te05QC9DN/5cf6mqJXbbfleEH9DW973xSQctf631Zp/sxlTHe
-        j2MVX8+Lvu0e+eACKCSd/xpPe18wm25/Ag==
-X-Google-Smtp-Source: ABdhPJx01Z5AKcsTdfiawScpRE/COhi4VpqGxUH3XQGmpP9fV7m/ays2Lf/0YRbxq5qIgTEmDpjUDQ==
-X-Received: by 2002:a05:6122:c8b:: with SMTP id ba11mr141800228vkb.3.1637490339348;
-        Sun, 21 Nov 2021 02:25:39 -0800 (PST)
-Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com. [209.85.221.173])
-        by smtp.gmail.com with ESMTPSA id q26sm3189229vsp.23.2021.11.21.02.25.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Nov 2021 02:25:39 -0800 (PST)
-Received: by mail-vk1-f173.google.com with SMTP id u68so8463022vke.11;
-        Sun, 21 Nov 2021 02:25:39 -0800 (PST)
-X-Received: by 2002:a1f:f24f:: with SMTP id q76mr144641464vkh.11.1637490336147;
- Sun, 21 Nov 2021 02:25:36 -0800 (PST)
+        bh=MXLo+ltgSmCvyGffXWjUxfxqUK//tZmJbyrhfQ9Q0t0=;
+        b=IFOkjoH3Zudjl4W3RLxmlrTWLsUZtWim14tGNk+WwCRPMFoYcWNbVRVdLtgpKZm9th
+         Yz02VNKvRhHeF6a1Mpl27CRfjUalkUtD4UeQcPWOYJPDCkTtwoEgWa1vNHWLGvHS1HKk
+         l/Slu+lKBJtkHigci+GWAmVt8OPLdgsXMH3RwvqG0A3bQ0/ezS2EMTg58CLMX2+RV8xo
+         5fnTaQNOdXdKi6usNw4yj3Xg6RuHvyozrbZxBWlv6GnjH9vkJHujLScpW3czz+WqNOQm
+         rhmjijsygCxbf71GEGw4cryZ1oC1IPtVjhp9+UMoIFkL6rf/ZZNNgQAyTb6Nv9NGz6qb
+         s7xA==
+X-Gm-Message-State: AOAM533WvdHsWFvkrZJqjE05GMxP3du34m+yhP/uIZJOk5HRRjmywYud
+        NM64IvhiA01XSsMzeS5lQCmzqD+oNor48YMn+Bg=
+X-Google-Smtp-Source: ABdhPJw8mBzy1laOl7vp8X7saDuoWaIte2D0YeXSxEbpq6sqKZ1ZmJFHIeXR1AT+f/g3diZzKrhlmiTDeJwMTQRIJlo=
+X-Received: by 2002:a17:907:2d0e:: with SMTP id gs14mr29452540ejc.249.1637491653691;
+ Sun, 21 Nov 2021 02:47:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20211116181559.3975566-1-keescook@chromium.org>
- <163710862474.168539.12611066078131838062.b4-ty@kernel.dk> <202111181026.D7EF6BCED@keescook>
-In-Reply-To: <202111181026.D7EF6BCED@keescook>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sun, 21 Nov 2021 11:25:25 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdX6Su_4G4H5GEjy17a0xkZrqPj0kh9Tg++-2-=SGSsj_Q@mail.gmail.com>
-Message-ID: <CAMuHMdX6Su_4G4H5GEjy17a0xkZrqPj0kh9Tg++-2-=SGSsj_Q@mail.gmail.com>
-Subject: Re: [PATCH] Revert "mark pstore-blk as broken"
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Colin Cross <ccross@android.com>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Tony Luck <tony.luck@intel.com>,
-        linux-hardening@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20211118124812.106538-1-imagedong@tencent.com>
+ <67b36bd8-2477-88ac-83a0-35a1eeaf40c9@gmail.com> <CADxym3ZfBVAecK-oFdMVV2gkOV6iUrq5XGkRZx3yXCuXDOS=2A@mail.gmail.com>
+ <9ad07da4-8523-b861-6111-729b8d1d6d57@gmail.com>
+In-Reply-To: <9ad07da4-8523-b861-6111-729b8d1d6d57@gmail.com>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Sun, 21 Nov 2021 18:47:21 +0800
+Message-ID: <CADxym3bTScvYzpUzvz62zpUvqksbfW-f=JpCUHbEJCagjY6wuQ@mail.gmail.com>
+Subject: Re: [PATCH v2 net-next 0/2] net: snmp: tracepoint support for snmp
+To:     David Ahern <dsahern@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>, mingo@redhat.com,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        dsahern@kernel.org, Menglong Dong <imagedong@tencent.com>,
+        Yuchung Cheng <ycheng@google.com>, kuniyu@amazon.co.jp,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 7:29 PM Kees Cook <keescook@chromium.org> wrote:
-> On Tue, Nov 16, 2021 at 05:23:44PM -0700, Jens Axboe wrote:
-> > On Tue, 16 Nov 2021 10:15:59 -0800, Kees Cook wrote:
-> > > This reverts commit d07f3b081ee632268786601f55e1334d1f68b997.
-> > >
-> > > pstore-blk was fixed to avoid the unwanted APIs in commit 7bb9557b48fc
-> > > ("pstore/blk: Use the normal block device I/O path"), which landed in
-> > > the same release as the commit adding BROKEN.
-> > >
-> > >
-> > > [...]
-> >
-> > Applied, thanks!
-> >
-> > [1/1] Revert "mark pstore-blk as broken"
-> >       commit: d1faacbf67b1944f0e0c618dc581d929263f6fe9
+On Fri, Nov 19, 2021 at 11:54 AM David Ahern <dsahern@gmail.com> wrote:
 >
-> Thanks! I realize now what Geert meant in an earlier thread that I
-> actually can't split this change from a warning fix that was living in
-> the pstore tree (and was masked by the now removed BROKEN). Can you take
-> this patch as well? I've removed it from my tree now...
+[...]
 >
-> https://lore.kernel.org/lkml/20211118182621.1280983-1-keescook@chromium.org/
+> But it integrates into existing tooling which is a big win.
+>
+> Ido gave the references for his work:
+> https://github.com/nhorman/dropwatch/pull/11
+> https://github.com/nhorman/dropwatch/commit/199440959a288dd97e3b7ae701d4e78968cddab7
+>
 
-Which is now a build error instead of a warning in Linus' tree.
+I have been thinking about this all day, and I think your words make sense.
+Indeed, this can make use of the frame of the 'drop monitor' module of kernel
+and the userspace tools of wireshark, dropwatch, etc. And this idea is more
+suitable for the aim of 'get the reason for packet drop'. However, the
+shortcoming
+of this idea is that it can't reuse the drop reason for the 'snmp'
+frame.
 
-Gr{oetje,eeting}s,
+With creating a tracepoint for 'snmp', it can make use of the 'snmp' frame and
+the modifications can be easier. However, it's not friendly to the
+users, such as
+dropwatch, wireshark, etc. And it seems it is a little redundant with what
+the tracepoint for 'kfree_sbk()' do. However, I think it's not
+difficult to develop
+a userspace tool. In fact, I have already write a tool based on BCC, which is
+able to make use of 'snmp' tracepoint, such as:
 
-                        Geert
+$ sudo ./nettrace.py --tracer snmp -p udp --addr 192.168.122.8
+begin tracing......
+785487.366412: [snmp][udplite_noports]: UDP: 192.168.122.8:35310 ->
+192.168.122.1:7979
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+And it can monitor packet drop of udp with ip 192.168.122.8 (filter by port,
+statistics type are supported too).
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+And maybe we can integrate tracepoint of  'snmp' into 'drop monitor' with
+NET_DM_ATTR_SNMP, just link NET_DM_ATTR_SW_DROPS and
+NET_DM_ATTR_HW_DROPS?
+
+@Steven What do you think? I think I'm ok with both ideas, as my main target
+is to get the reason for the packet drop. As for the idea of
+'kfree_skb_with_reason', I'm just a little worry about if we can accept the
+modification it brings in.
+
+Thanks!
+Menglong Dong
+
+> And the Wireshark dissector is also upstream:
+> https://github.com/wireshark/wireshark/commit/a94a860c0644ec3b8a129fd243674a2e376ce1c8
+>
+> i.e., the skb is already pushed to userspace for packet analysis. You
+> would just be augmenting more metadata along with it and not reinventing
+> all of this for just snmp counter based drops.
