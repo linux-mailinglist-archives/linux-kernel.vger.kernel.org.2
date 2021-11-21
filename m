@@ -2,112 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E414B458376
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 13:39:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E7B458379
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 13:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235797AbhKUMmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 07:42:20 -0500
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:58480
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233666AbhKUMmT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 07:42:19 -0500
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D47B94001D
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 12:39:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1637498352;
-        bh=TFA1LNPBLrquSyjdPdpl7pD/tLLoRLNXb4nnei/Z6/0=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=ng+3AzcwfCspD2AuZwwXQ+Kk7Nfr/2JtueH2s9RjDKI0XXrvPbwpViMdkoBYNGUOI
-         aJzhnQVTy89UWso8J4svS8M0ququoiyXb0IDyF0VuKcRAoRrRNYSsob350mWWly9eF
-         q0gn82iGhC4XfY8abUy0PgOdJSOIOflO8aHfpJWnUG/V5zpHK95hVBHGj5N2TUqmdM
-         ZbMCAc2a6hh1JhEo/9HFc88jdogHyPD8jm5pLcI2A5i3GLIgLhV/vKUGxEiumP5dNs
-         VUjHbaN9vyzhzR3A1K45Gafqzg76tcTBWpule/5lw21vnYcy2NlK4RTu+UyQM0iDmY
-         8TU/VCkJ9PMCg==
-Received: by mail-lf1-f71.google.com with SMTP id j9-20020a05651231c900b004037efe9fddso10069926lfe.18
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 04:39:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=TFA1LNPBLrquSyjdPdpl7pD/tLLoRLNXb4nnei/Z6/0=;
-        b=MnENWf2YR6WqQkiywt6MIwZU8AzWxDDkagATPJs0Btz+uH0LhgfdUn4aV3x7UntlLn
-         XWuqZS8sTlpDPUfRl0lTbSq+4+VCFSEr+wPhQAzp+Yu/07d2yHQDuxTK5S2ZZDS3hRuk
-         JvqyaXJEEeSnq308imiBt0UUimENfrUjmo14m+Fyo5IZPS3892SqIReGoBag2LH0aUyv
-         SskED0wGqsY5+0YHwv/hC9lIhcc53FzV60GoF6n1z4Mc06Q6NrArfVmyfaZnkZTipsEV
-         JZBrfMOym00XvWXcBtITJwbQiciSOnMJQThSwqG+QVxGJnDRMGKEbS/sZOO147ctHEKJ
-         aipw==
-X-Gm-Message-State: AOAM530FoI++DQ7u/d9uIIryyhup/pez37Kfs68nC88vTWv/B01ZKAYg
-        p2TjxL5dAwpOFuk5JnzrvGqeAPGJxsd/ZNNLyqZpKR4CsyI54geuJTLH4WHpM8QVN1OBuUU6PFf
-        MCt9GapyIzdpy3uLeCrdhujPDKZvwcLAyaV6GbUBgjA==
-X-Received: by 2002:ac2:4571:: with SMTP id k17mr49746440lfm.369.1637498352234;
-        Sun, 21 Nov 2021 04:39:12 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxYMWr4FvuZ7Nqv9X59p0QzJvAJXMV+d9GpFfumZBpc0w/0S1Kvup1vykMeuihBU1HnXXXRUA==
-X-Received: by 2002:ac2:4571:: with SMTP id k17mr49746416lfm.369.1637498352038;
-        Sun, 21 Nov 2021 04:39:12 -0800 (PST)
-Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id a28sm426341ljm.65.2021.11.21.04.39.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Nov 2021 04:39:11 -0800 (PST)
-Message-ID: <b374d1a6-6478-cf2f-924e-425825731ad5@canonical.com>
-Date:   Sun, 21 Nov 2021 13:39:10 +0100
+        id S238039AbhKUMuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 07:50:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44998 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235036AbhKUMuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 07:50:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 239DB60E54;
+        Sun, 21 Nov 2021 12:47:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637498865;
+        bh=bQwfMsoglto+9LtXcZRfDvcKrFI0K8pTukrI7BVldhg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=iL/i9UVQUhD5gKKisM079Ezu0Di2AvQGRtzDDKCu4lIn02PGVcrt/w/vhtBZJoHdh
+         BqO3620ESRmw24YyJFxrpjpuwX6KSMrIVQMNpHemcjyiiIlnfnCNt1dpv6TrCf+z7i
+         VGoaIjSdAfcQFhHp+EGVVVF7aJkgG9IxoRJ3GLzI=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 5.4.161
+Date:   Sun, 21 Nov 2021 13:47:37 +0100
+Message-Id: <163749885759102@kroah.com>
+X-Mailer: git-send-email 2.34.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH 1/2] arm: samsung: Remove HAVE_S3C2410_I2C and use direct
- dependencies
-Content-Language: en-US
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Will McVicker <willmcvicker@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org
-References: <20211108134901.20490-1-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20211108134901.20490-1-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/11/2021 14:49, Sam Protsenko wrote:
-> A separate Kconfig option HAVE_S3C2410_I2C for Samsung SoCs is not
-> really needed and the i2c-s3c24xx driver can depend on Samsung ARM
-> architectures instead. This also enables i2c-s3c2410 for arm64 Exynos
-> SoCs, which is required for example by Exynos850.
-> 
-> This is basically continuation of work made in following commits:
->   - commit d96890fca9fd ("rtc: s3c: remove HAVE_S3C_RTC in favor of
->     direct dependencies")
->   - commit 7dd3cae90d85 ("ARM: samsung: remove HAVE_S3C2410_WATCHDOG and
->     use direct dependencies")
-> 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
->  arch/arm/Kconfig                  |  1 -
->  arch/arm/mach-exynos/Kconfig      |  1 -
->  arch/arm/mach-s3c/Kconfig.s3c64xx |  1 -
->  arch/arm/mach-s5pv210/Kconfig     |  1 -
->  drivers/i2c/busses/Kconfig        | 10 ++--------
->  5 files changed, 2 insertions(+), 12 deletions(-)
-> 
+I'm announcing the release of the 5.4.161 kernel.
 
-This does not apply, which is weird because there were no changes here.
-It seems you based your work on some older tree, so please rebase and
-re-test on current tree (my for-next branch or linux-next).
+All users of the 5.4 kernel series must upgrade.
 
-Best regards,
-Krzysztof
+The updated 5.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+
+thanks,
+
+greg k-h
+
+------------
+
+ Makefile                        |    2 +-
+ arch/mips/include/asm/cmpxchg.h |    3 +++
+ arch/parisc/kernel/entry.S      |    2 +-
+ drivers/pci/msi.c               |   27 +++++++++++++++------------
+ drivers/pci/quirks.c            |    6 ++++++
+ drivers/scsi/ufs/ufshcd.c       |   17 ++++++++++++-----
+ drivers/soc/tegra/pmc.c         |    2 +-
+ fs/erofs/zdata.c                |   15 +++++++--------
+ fs/erofs/zpvec.h                |   14 +++++++++-----
+ fs/ext4/super.c                 |    9 ++++-----
+ include/linux/pci.h             |    2 ++
+ security/Kconfig                |    3 +++
+ 12 files changed, 64 insertions(+), 38 deletions(-)
+
+Adrian Hunter (1):
+      scsi: ufs: Fix interrupt error message for shared interrupts
+
+Dmitry Osipenko (1):
+      soc/tegra: pmc: Fix imbalanced clock disabling in error code path
+
+Gao Xiang (1):
+      erofs: fix unsafe pagevec reuse of hooked pclusters
+
+Greg Kroah-Hartman (1):
+      Linux 5.4.161
+
+Jaegeuk Kim (1):
+      scsi: ufs: Fix tm request when non-fatal error happens
+
+Kees Cook (1):
+      fortify: Explicitly disable Clang support
+
+Maciej W. Rozycki (1):
+      MIPS: Fix assembly error from MIPSr2 code used within MIPS_ISA_ARCH_LEVEL
+
+Marc Zyngier (2):
+      PCI/MSI: Deal with devices lying about their MSI mask capability
+      PCI: Add MSI masking quirk for Nvidia ION AHCI
+
+Shaoying Xu (1):
+      ext4: fix lazy initialization next schedule time computation in more granular unit
+
+Sven Schnelle (1):
+      parisc/entry: fix trace test in syscall exit path
+
+Thomas Gleixner (1):
+      PCI/MSI: Destroy sysfs before freeing entries
+
+Yue Hu (1):
+      erofs: remove the occupied parameter from z_erofs_pagevec_enqueue()
+
