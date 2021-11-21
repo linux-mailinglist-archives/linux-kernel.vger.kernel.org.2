@@ -2,421 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6DE9458317
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 12:21:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5489F45831D
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 12:26:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238114AbhKULYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 06:24:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36668 "EHLO mail.kernel.org"
+        id S238123AbhKUL3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 06:29:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238106AbhKULYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 06:24:09 -0500
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5AF3F60174;
-        Sun, 21 Nov 2021 11:21:02 +0000 (UTC)
-Date:   Sun, 21 Nov 2021 11:25:56 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Liam Beguin <liambeguin@gmail.com>
-Cc:     peda@axentia.se, lars@metafoo.de, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org
-Subject: Re: [PATCH v9 00/14] iio: afe: add temperature rescaling support
-Message-ID: <20211121112556.2b5b161c@jic23-huawei>
-In-Reply-To: <20211115034334.1713050-1-liambeguin@gmail.com>
-References: <20211115034334.1713050-1-liambeguin@gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S232729AbhKUL3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 06:29:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C01360E75;
+        Sun, 21 Nov 2021 11:26:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637493971;
+        bh=22UmVfopvnDXaeJMkQaZz5Oy5qzXLVCC0UkVrMFJy2U=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=igI7i4tXAtsLHCxljrzGxP0LhNVxbS5GMbBh7F9nSGY3dxigmH9vhmUEXWpoFlRa8
+         2k42lmk1XaFX/DfjVpDfqRWlr4aHJhdIDRE4Ceu5cWhIAFQI/ZWQMaB0qyq68yzn7y
+         Mh91gewvXprZ6VzYF1AZ8VcG7zA/Vm4XfeYYjvqUbl5LBrZPB71IL1Guv3+2E3WEG8
+         SpJfZWcJWNH8UTE8gnSUNDumECkR2P5vE2a4i/OZAK/n8Yf+FH0bESutQyB7RHnY3U
+         1b9FccOtMjjRs7mxmC83Pku1uQm8//PsbmKOxIpujCV6qvv/vA9Sdd0ZwvgqOM7QuD
+         Wm4PO0MqHGPow==
+Received: by mail-ot1-f51.google.com with SMTP id v15-20020a9d604f000000b0056cdb373b82so24289263otj.7;
+        Sun, 21 Nov 2021 03:26:11 -0800 (PST)
+X-Gm-Message-State: AOAM533O7Tbbya2tT0gBMfJDxTLxvgwcoj+4cSqP4bJHG1BPuvkmdGYU
+        P67w7lhI6OmmSIP7++kq+CiLbcGSJT0WryCblRM=
+X-Google-Smtp-Source: ABdhPJw6WxTHIfz9R4IRmne715fdSz80V4AbDlgXYlltEsKz14bTzUr7FwDpXECjEWccCAOuWXuzGPj2FojiC6ISgGs=
+X-Received: by 2002:a9d:6653:: with SMTP id q19mr17657650otm.116.1637493970744;
+ Sun, 21 Nov 2021 03:26:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: by 2002:ac9:4448:0:0:0:0:0 with HTTP; Sun, 21 Nov 2021 03:26:10
+ -0800 (PST)
+In-Reply-To: <5892347.VCoq2IW8ci@natalenko.name>
+References: <5831447.lOV4Wx5bFT@natalenko.name> <CAKYAXd_mf9DFQsyzvow=VC6o4xDOn_nncJeo_7gOyG77WfCNqw@mail.gmail.com>
+ <CAKYAXd-bi-pgFurDF3dfQ0dSZjT0KEDSWK7FtwN5V-Z+FkVgoQ@mail.gmail.com> <5892347.VCoq2IW8ci@natalenko.name>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Sun, 21 Nov 2021 20:26:10 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd8D2F=5EZWsJKhnz+KER5y98Kk893sjX1HkToRcXqu_3Q@mail.gmail.com>
+Message-ID: <CAKYAXd8D2F=5EZWsJKhnz+KER5y98Kk893sjX1HkToRcXqu_3Q@mail.gmail.com>
+Subject: Re: [Test Request] Re: ksmbd: Unsupported addition info
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steve French <sfrench@samba.org>,
+        Hyunchul Lee <hyc.lee@gmail.com>, linux-cifs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 14 Nov 2021 22:43:20 -0500
-Liam Beguin <liambeguin@gmail.com> wrote:
+2021-11-21 18:11 GMT+09:00, Oleksandr Natalenko <oleksandr@natalenko.name>:
+> Hello.
+>
+> On ned=C4=9Ble 21. listopadu 2021 2:27:12 CET Namjae Jeon wrote:
+>> I attached the patch to fix this issue.
+>> You need to apply this patch to ksmbd-tools.
+>>
+>> Please check if your issue is fixed or not. :)
+>
+> I can confirm that with patched ksmbd-tools the issue is fixed. Thanks!
+>
+> As applicable,
+>
+> Reported-by: Olha Cherevyk <olha.cherevyk@gmail.com>
+> Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+The problem was fixed in an unexpected place. :)
+I can not fix this issue without your help.
+Really thank you very much!
 
-> Hi Jonathan, Peter,
-> 
-> Apologies for not getting back to you sooner. I got caught up on other
-> work and wasn't able to dedicate time to this earlier. Hopefully, this
-> time around, I'll be able to get this to the finish line :-)
-> 
-> I left out IIO_VAL_INT overflows for now, so that I can focus on getting
-> the rest of these changes pulled in, but I don't mind adding a patch for
-> that later on.
-> 
-> This series focuses on adding temperature rescaling support to the IIO
-> Analog Front End (AFE) driver.
-> 
-> The first few patches address minor bugs in IIO inkernel functions, and
-> prepare the AFE driver for the additional features.
-> 
-> The main changes to the AFE driver include an initial Kunit test suite,
-> support for IIO_VAL_INT_PLUS_{NANO,MICRO} scales, and support for RTDs
-> and temperature transducer sensors.
-> 
-> Thanks for your time,
-> Liam
+I will add your tags to the patch.
 
-Hi Liam,
-
-I'm fine with these.  The comment about using the MICRO etc defines can
-be handled as as trivial follow up patch. Hopefully someone else can
-figure out the 0-day build issue as I didn't managed to.
-
-However, I've long ago lost track of the various precision discussions
-you and Peter were having so would like Peter's input before taking these.
-
-Thanks again for your persistence with this,
-
-Jonathan
-
-> 
-> Changes since v8:
-> - reword comment
-> - fix erroneous 64-bit division
-> - optimize and use 32-bit divisions when values are know to not overflow
-> - keep IIO_VAL_FRACTIONAL scale when possible, if not default to fixed
->   point
-> - add test cases
-> - use nano precision in test cases
-> - simplify offset calculation in rtd_props()
-> 
-> Changes since v7:
-> - drop gcd() logic in rescale_process_scale()
-> - use div_s64() instead of do_div() for signed 64-bit divisions
-> - combine IIO_VAL_FRACTIONAL and IIO_VAL_FRACTIONAL_LOG2 scale cases
-> - switch to INT_PLUS_NANO when accuracy is lost with FRACTIONAL scales
-> - rework test logic to allow for small relative error
-> - rename test variables to align error output messages
-> 
-> Changes since v6:
-> - rework IIO_VAL_INT_PLUS_{NANO,MICRO} based on Peter's suggestion
-> - combine IIO_VAL_INT_PLUS_{NANO,MICRO} cases
-> - add test cases for negative IIO_VAL_INT_PLUS_{NANO,MICRO} corner cases
-> - force use of positive integers with gcd()
-> - reduce risk of integer overflow in IIO_VAL_FRACTIONAL_LOG2
-> - fix duplicate symbol build error
-> - apply Reviewed-by
-> 
-> Changes since v5:
-> - add include/linux/iio/afe/rescale.h
-> - expose functions use to process scale and offset
-> - add basic iio-rescale kunit test cases
-> - fix integer overflow case
-> - improve precision for IIO_VAL_FRACTIONAL_LOG2
-> 
-> Changes since v4:
-> - only use gcd() when necessary in overflow mitigation
-> - fix INT_PLUS_{MICRO,NANO} support
-> - apply Reviewed-by
-> - fix temperature-transducer bindings
-> 
-> Changes since v3:
-> - drop unnecessary fallthrough statements
-> - drop redundant local variables in some calculations
-> - fix s64 divisions on 32bit platforms by using do_div
-> - add comment describing iio-rescaler offset calculation
-> - drop unnecessary MAINTAINERS entry
-> 
-> Changes since v2:
-> - don't break implicit offset truncations
-> - make a best effort to get a valid value for fractional types
-> - drop return value change in iio_convert_raw_to_processed_unlocked()
-> - don't rely on processed value for offset calculation
-> - add INT_PLUS_{MICRO,NANO} support in iio-rescale
-> - revert generic implementation in favor of temperature-sense-rtd and
->   temperature-transducer
-> - add separate section to MAINTAINERS file
-> 
-> Changes since v1:
-> - rebase on latest iio `testing` branch
-> - also apply consumer scale on integer channel scale types
-> - don't break implicit truncation in processed channel offset
->   calculation
-> - drop temperature AFE flavors in favor of a simpler generic
->   implementation
-> 
-> Liam Beguin (14):
->   iio: inkern: apply consumer scale on IIO_VAL_INT cases
->   iio: inkern: apply consumer scale when no channel scale is available
->   iio: inkern: make a best effort on offset calculation
->   iio: afe: rescale: expose scale processing function
->   iio: afe: rescale: add INT_PLUS_{MICRO,NANO} support
->   iio: afe: rescale: add offset support
->   iio: afe: rescale: use s64 for temporary scale calculations
->   iio: afe: rescale: reduce risk of integer overflow
->   iio: afe: rescale: fix accuracy for small fractional scales
->   iio: test: add basic tests for the iio-rescale driver
->   iio: afe: rescale: add RTD temperature sensor support
->   iio: afe: rescale: add temperature transducers
->   dt-bindings: iio: afe: add bindings for temperature-sense-rtd
->   dt-bindings: iio: afe: add bindings for temperature transducers
-> 
->  .../iio/afe/temperature-sense-rtd.yaml        | 101 +++
->  .../iio/afe/temperature-transducer.yaml       | 114 +++
->  drivers/iio/afe/iio-rescale.c                 | 271 ++++++-
->  drivers/iio/inkern.c                          |  40 +-
->  drivers/iio/test/Kconfig                      |  10 +
->  drivers/iio/test/Makefile                     |   1 +
->  drivers/iio/test/iio-test-rescale.c           | 705 ++++++++++++++++++
->  include/linux/iio/afe/rescale.h               |  34 +
->  8 files changed, 1232 insertions(+), 44 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/iio/afe/temperature-sense-rtd.yaml
->  create mode 100644 Documentation/devicetree/bindings/iio/afe/temperature-transducer.yaml
->  create mode 100644 drivers/iio/test/iio-test-rescale.c
->  create mode 100644 include/linux/iio/afe/rescale.h
-> 
-> Range-diff against v8:
->  1:  42a7a1047edc =  1:  ae3cc93baee6 iio: inkern: apply consumer scale on IIO_VAL_INT cases
->  2:  a1cd89fdad11 =  2:  06f66e7f7403 iio: inkern: apply consumer scale when no channel scale is available
->  3:  ed0721fb6bd1 =  3:  2dbf6b3bbaeb iio: inkern: make a best effort on offset calculation
->  4:  f8fb78bb1112 =  4:  b083cf307268 iio: afe: rescale: expose scale processing function
->  5:  504b7a3f830b !  5:  a0bde29ecc8c iio: afe: rescale: add INT_PLUS_{MICRO,NANO} support
->     @@ drivers/iio/afe/iio-rescale.c: int rescale_process_scale(struct rescale *rescale
->      +		else
->      +			mult = 1000000LL;
->      +		/*
->     -+		 * For IIO_VAL_INT_PLUS_{MICRO,NANO} scale types if *val OR
->     -+		 * *val2 is negative the schan scale is negative
->     ++		 * For IIO_VAL_INT_PLUS_{MICRO,NANO} scale types if either *val
->     ++		 * OR *val2 is negative the schan scale is negative, i.e.
->     ++		 * *val = 1 and *val2 = -0.5 yields -1.5 not -0.5.
->      +		 */
->      +		neg = *val < 0 || *val2 < 0;
->      +
->  6:  c254e9ae813e =  6:  c3d0e6248033 iio: afe: rescale: add offset support
->  7:  ee8814d6abe4 =  7:  2a81fa735103 iio: afe: rescale: use s64 for temporary scale calculations
->  8:  62cdcfbc9836 =  8:  8315548d0fce iio: afe: rescale: reduce risk of integer overflow
->  9:  88309a5136ee !  9:  223ed0569cd2 iio: afe: rescale: fix accuracy for small fractional scales
->     @@ drivers/iio/afe/iio-rescale.c: int rescale_process_scale(struct rescale *rescale
->      +
->      +		tmp = div_s64_rem(tmp, 1000000000LL, &rem);
->       		*val = tmp;
->     +-		return scale_type;
->     ++
->     ++		if (!rem)
->     ++			return scale_type;
->      +
->     -+		/*
->     -+		 * For small values, the approximation can be costly,
->     -+		 * change scale type to maintain accuracy.
->     -+		 *
->     -+		 * 100 vs. 10000000 NANO caps the error to about 100 ppm.
->     -+		 */
->      +		if (scale_type == IIO_VAL_FRACTIONAL)
->      +			tmp = *val2;
->      +		else
->      +			tmp = 1 << *val2;
->      +
->     -+		 if (abs(rem) > 10000000 && abs(*val / tmp) < 100) {
->     -+			 *val = div_s64_rem(*val, tmp, &rem2);
->     -+
->     -+			 *val2 = div_s64(rem, tmp);
->     -+			 if (rem2)
->     -+				 *val2 += div_s64(rem2 * 1000000000LL, tmp);
->     ++		rem2 = *val % (int)tmp;
->     ++		*val = *val / (int)tmp;
->      +
->     -+			 return IIO_VAL_INT_PLUS_NANO;
->     -+		 }
->     ++		*val2 = rem / (int)tmp;
->     ++		if (rem2)
->     ++			*val2 += div_s64((s64)rem2 * 1000000000LL, tmp);
->      +
->     - 		return scale_type;
->     ++		return IIO_VAL_INT_PLUS_NANO;
->       	case IIO_VAL_INT_PLUS_NANO:
->       	case IIO_VAL_INT_PLUS_MICRO:
->     + 		if (scale_type == IIO_VAL_INT_PLUS_NANO)
-> 10:  fb505a9f42f1 ! 10:  90044efdf8be iio: test: add basic tests for the iio-rescale driver
->     @@ drivers/iio/test/Makefile
->       # Keep in alphabetical order
->      +obj-$(CONFIG_IIO_RESCALE_KUNIT_TEST) += iio-test-rescale.o ../afe/iio-rescale.o
->       obj-$(CONFIG_IIO_TEST_FORMAT) += iio-test-format.o
->     + CFLAGS_iio-test-format.o += $(DISABLE_STRUCTLEAK_PLUGIN)
->      
->       ## drivers/iio/test/iio-test-rescale.c (new) ##
->      @@
->     @@ drivers/iio/test/iio-test-rescale.c (new)
->      +	 * Use cases with small scales involving divisions
->      +	 */
->      +	{
->     ++		.name = "small IIO_VAL_FRACTIONAL, 261/509 scaled by 90/1373754273",
->     ++		.numerator = 261,
->     ++		.denominator = 509,
->     ++		.schan_scale_type = IIO_VAL_FRACTIONAL,
->     ++		.schan_val = 90,
->     ++		.schan_val2 = 1373754273,
->     ++		.expected = "0.000000033594",
->     ++	},
->     ++	{
->     ++		.name = "small IIO_VAL_FRACTIONAL, 90/1373754273 scaled by 261/509",
->     ++		.numerator = 90,
->     ++		.denominator = 1373754273,
->     ++		.schan_scale_type = IIO_VAL_FRACTIONAL,
->     ++		.schan_val = 261,
->     ++		.schan_val2 = 509,
->     ++		.expected = "0.000000033594",
->     ++	},
->     ++	{
->     ++		.name = "small IIO_VAL_FRACTIONAL, 760/1373754273 scaled by 427/2727",
->     ++		.numerator = 760,
->     ++		.denominator = 1373754273,
->     ++		.schan_scale_type = IIO_VAL_FRACTIONAL,
->     ++		.schan_val = 427,
->     ++		.schan_val2 = 2727,
->     ++		.expected = "0.000000086626",
->     ++	},
->     ++	{
->     ++		.name = "small IIO_VAL_FRACTIONAL, 761/1373754273 scaled by 427/2727",
->     ++		.numerator = 761,
->     ++		.denominator = 1373754273,
->     ++		.schan_scale_type = IIO_VAL_FRACTIONAL,
->     ++		.schan_val = 427,
->     ++		.schan_val2 = 2727,
->     ++		.expected = "0.000000086740",
->     ++	},
->     ++	{
->     ++		.name = "small IIO_VAL_FRACTIONAL, 5/32768 scaled by 3/10000",
->     ++		.numerator = 5,
->     ++		.denominator = 32768,
->     ++		.schan_scale_type = IIO_VAL_FRACTIONAL,
->     ++		.schan_val = 3,
->     ++		.schan_val2 = 10000,
->     ++		.expected = "0.0000000457763671875",
->     ++	},
->     ++	{
->      +		.name = "small IIO_VAL_FRACTIONAL, 0 < scale < 1",
->      +		.numerator = 6,
->      +		.denominator = 6,
->     @@ drivers/iio/test/iio-test-rescale.c (new)
->      +		.expected = "-1.3333333333333333",
->      +	},
->      +	{
->     ++		.name = "small IIO_VAL_FRACTIONAL_LOG2, 760/32768 scaled by 15/22",
->     ++		.numerator = 760,
->     ++		.denominator = 32768,
->     ++		.schan_scale_type = IIO_VAL_FRACTIONAL_LOG2,
->     ++		.schan_val = 15,
->     ++		.schan_val2 = 22,
->     ++		.expected = "0.000000082946",
->     ++	},
->     ++	{
->     ++		.name = "small IIO_VAL_FRACTIONAL_LOG2, 761/32768 scaled by 15/22",
->     ++		.numerator = 761,
->     ++		.denominator = 32768,
->     ++		.schan_scale_type = IIO_VAL_FRACTIONAL_LOG2,
->     ++		.schan_val = 15,
->     ++		.schan_val2 = 22,
->     ++		.expected = "0.000000083055",
->     ++	},
->     ++	{
->      +		.name = "small IIO_VAL_FRACTIONAL_LOG2, 0 < scale < 1",
->      +		.numerator = 16,
->      +		.denominator = 3,
->     @@ drivers/iio/test/iio-test-rescale.c (new)
->      +KUNIT_ARRAY_PARAM(iio_rescale_offset, offset_cases, case_to_desc);
->      +
->      +/**
->     -+ * iio_str_to_micro() - Parse a fixed-point string to get an
->     -+ *                      IIO_VAL_INT_PLUS_MICRO value
->     ++ * iio_str_to_nano() - Parse a fixed-point string to get an
->     ++ *                      IIO_VAL_INT_PLUS_NANO value
->      + * @str: The string to parse
->     -+ * @micro: The number as an integer
->     ++ * @nano: The number as an integer
->      + *
->      + * Returns 0 on success, or a negative error code if the string cound not be
->      + * parsed.
->      + */
->     -+static int iio_str_to_micro(const char *str, s64 *micro)
->     ++static int iio_str_to_nano(const char *str, s64 *nano)
->      +{
->     -+	int fract_mult = 100000LL;
->     ++	int fract_mult = 100000000LL;
->      +	int tmp, tmp2;
->      +	int ret = 0;
->      +
->     @@ drivers/iio/test/iio-test-rescale.c (new)
->      +	if (tmp < 0)
->      +		tmp2 *= -1;
->      +
->     -+	*micro = (s64)tmp * 10 * fract_mult + tmp2;
->     ++	*nano = (s64)tmp * 10 * fract_mult + tmp2;
->      +
->      +	return ret;
->      +}
->      +
->      +/**
->     -+ * iio_test_relative_error_ppm() - Compute relative error (in ppm) between two
->     -+ *                                 fixed-point strings
->     ++ * iio_test_relative_error_ppm() - Compute relative error (in parts-per-million)
->     ++ *                                 between two fixed-point strings
->      + * @real_str: The real value as a string
->      + * @exp_str: The expected value as a string
->      + *
->      + * Returns a negative error code if the strings cound not be parsed, or the
->     -+ * relative error in ppm.
->     ++ * relative error in parts-per-million.
->      + */
->      +static int iio_test_relative_error_ppm(const char *real_str, const char *exp_str)
->      +{
->      +	s64 real, exp, err;
->      +	int ret;
->      +
->     -+	ret = iio_str_to_micro(real_str, &real);
->     ++	ret = iio_str_to_nano(real_str, &real);
->      +	if (ret < 0)
->      +		return ret;
->      +
->     -+	ret = iio_str_to_micro(exp_str, &exp);
->     ++	ret = iio_str_to_nano(exp_str, &exp);
->      +	if (ret < 0)
->      +		return ret;
->      +
->     ++	if (!exp) {
->     ++		pr_err("Expected value is null, relative error is undefined\n");
->     ++		return -EINVAL;
->     ++	}
->     ++
->      +	err = 1000000 * abs(exp - real);
->      +	err = div64_u64(err, abs(exp));
->      +	return (int)err;
->     @@ drivers/iio/test/iio-test-rescale.c (new)
->      +	rel_ppm = iio_test_relative_error_ppm(buff, t->expected);
->      +	KUNIT_EXPECT_GE_MSG(test, rel_ppm, 0, "failed to compute ppm\n");
->      +
->     -+	KUNIT_EXPECT_LT_MSG(test, rel_ppm, 500,
->     ++	KUNIT_EXPECT_EQ_MSG(test, rel_ppm, 0,
->      +			    "\t    real=%s"
->      +			    "\texpected=%s\n",
->      +			    buff, t->expected);
-> 11:  050487186e14 = 11:  c4ed463e5fb0 iio: afe: rescale: add RTD temperature sensor support
-> 12:  f36a44a5d898 ! 12:  ff2f0dc248a7 iio: afe: rescale: add temperature transducers
->     @@ drivers/iio/afe/iio-rescale.c: static int rescale_temp_sense_rtd_props(struct de
->      +	s32 offset = 0;
->      +	s32 sense = 1;
->      +	s32 alpha;
->     -+	s64 tmp;
->      +	int ret;
->      +
->      +	device_property_read_u32(dev, "sense-offset-millicelsius", &offset);
->     @@ drivers/iio/afe/iio-rescale.c: static int rescale_temp_sense_rtd_props(struct de
->      +	rescale->numerator = 1000000;
->      +	rescale->denominator = alpha * sense;
->      +
->     -+	tmp = (s64)offset * (s64)alpha * (s64)sense;
->     -+	rescale->offset = div_s64(tmp, (s32)1000000);
->     ++	rescale->offset = div_s64((s64)offset * rescale->denominator,
->     ++				  rescale->numerator);
->      +
->      +	return 0;
->      +}
-> 13:  63be647fd110 = 13:  84bc1f7d1ab5 dt-bindings: iio: afe: add bindings for temperature-sense-rtd
-> 14:  c2f5c19dece3 = 14:  1b76cfb37e23 dt-bindings: iio: afe: add bindings for temperature transducers
-> 
-> base-commit: 2b6bff0b122785f09cfbdc34b1aa9edceea6e4c1
-
+Thanks again!
+>
+>> 2021-11-21 9:18 GMT+09:00, Namjae Jeon <linkinjeon@kernel.org>:
+>> > I have reproduced this issue!
+>> > If you change share name from "Shared" to "shared", problem is improve=
+d
+>> > ?
+>> > Please try it after rebooting your windows PC.
+>> >
+>> > 2021-11-21 8:41 GMT+09:00, Namjae Jeon <linkinjeon@kernel.org>:
+>> >> I have attached one more patch.
+>> >>
+>> >> Please apply it on the top of previous patches :)
+>> >>
+>> >> 2021-11-21 8:14 GMT+09:00, Oleksandr Natalenko
+>> >>
+>> >> <oleksandr@natalenko.name>:
+>> >>> On sobota 20. listopadu 2021 23:51:39 CET Namjae Jeon wrote:
+>> >>>> Thanks for your test and help:)
+>> >>>> I have attached 2 patches. you can apply them on the top of previou=
+s
+>> >>>> patch. please don't revert previous patches.
+>> >>>>
+>> >>>> no need to send tcpdump, please just check if problem is improved o=
+r
+>> >>>> not.
+>> >>>
+>> >>> The issue is still there after applying new 3 patches on top of old =
+3
+>> >>> patches.
+>> >>>
+>> >>> Just in case, I've also collected the dump: [1].
+>> >>>
+>> >>> [1] https://natalenko.name/myfiles/misc/ksmbd-4.pcap.gz
+>> >>>
+>> >>>> 2021-11-20 23:50 GMT+09:00, Oleksandr Natalenko
+>> >>>>
+>> >>>> <oleksandr@natalenko.name>:
+>> >>>> > On sobota 20. listopadu 2021 14:07:45 CET Namjae Jeon wrote:
+>> >>>> >> I probably found why default stream is not included in response.
+>> >>>> >> Please revert previous patches and apply attached patches.
+>> >>>> >>
+>> >>>> >> no need to check print log. if problem is still reproduced,
+>> >>>> >> please
+>> >>>> >> give me a tcpdump one more.
+>> >>>> >
+>> >>>> > Still no luck. The traffic dump is here: [1].
+>> >>>> >
+>> >>>> > The only difference I've noticed is that in those "Unsupported
+>> >>>> > addition
+>> >>>> > info"
+>> >>>> > messages there's 0x20 only, and 0xf has disappeared.
+>> >>>> >
+>> >>>> > [1] https://natalenko.name/myfiles/misc/ksmbd-3.pcap.gz
+>> >>>> >
+>> >>>> >> 2021-11-20 21:46 GMT+09:00, Oleksandr Natalenko
+>> >>>> >>
+>> >>>> >> <oleksandr@natalenko.name>:
+>> >>>> >> > On sobota 20. listopadu 2021 1:46:16 CET Namjae Jeon wrote:
+>> >>>> >> >> >> >  1. ksmbd get stream info doesn't include default stream=
+.
+>> >>>> >> >>
+>> >>>> >> >> ksmbd doesn't still include default stream(::DATA) in get
+>> >>>> >> >> stream
+>> >>>> >> >> info
+>> >>>> >> >> response. very stranged..
+>> >>>> >> >>
+>> >>>> >> >> So I attached test patch that added print info in mail. Could
+>> >>>> >> >> you
+>> >>>> >> >> please check it and share print info to me ?
+>> >>>> >> >
+>> >>>> >> > Do I need to apply this patch only, or some previous patches
+>> >>>> >> > have
+>> >>>> >> > to
+>> >>>> >> > be
+>> >>>> >> > applied as well? If I apply this patch only, there's no extra
+>> >>>> >> > info
+>> >>>> >> > printed
+>> >>>> >> > in
+>> >>>> >> > the kernel log when I copy files from the share.
+>> >>>> >> >
+>> >>>> >> >> 2021-11-20 7:41 GMT+09:00, Oleksandr Natalenko
+>> >>>> >> >>
+>> >>>> >> >> <oleksandr@natalenko.name>:
+>> >>>> >> >> > On p=C3=A1tek 19. listopadu 2021 11:29:35 CET Namjae Jeon w=
+rote:
+>> >>>> >> >> >> Could you please give a tcpdump me after applying attached
+>> >>>> >> >> >> patch
+>> >>>> >> >> >> ?
+>> >>>> >> >> >
+>> >>>> >> >> > It's here: [1]. The problem is still there with the patch
+>> >>>> >> >> > you've
+>> >>>> >> >> > sent
+>> >>>> >> >> > me
+>> >>>> >> >> > recently.
+>> >>>> >> >> >
+>> >>>> >> >> > [1] https://natalenko.name/myfiles/misc/ksmbd-2.pcap.gz
+>> >>>> >> >> >
+>> >>>> >> >> >> 2021-11-19 10:48 GMT+09:00, Namjae Jeon
+>> >>>> >> >> >>
+>> >>>> >> >> >> <linkinjeon@kernel.org>:
+>> >>>> >> >> >> > Really thanks for your help!
+>> >>>> >> >> >> >
+>> >>>> >> >> >> > I found two difference.
+>> >>>> >> >> >> >
+>> >>>> >> >> >> >  1. ksmbd get stream info doesn't include default stream=
+.
+>> >>>> >> >> >> >  2. samba return access denied error if addtion_info
+>> >>>> >> >> >> > contain
+>> >>>> >> >> >> >
+>> >>>> >> >> >> > SACL_SECINFO.
+>> >>>> >> >> >> >
+>> >>>> >> >> >> > Could you please check attached patch ?
+>> >>>> >> >> >> >
+>> >>>> >> >> >> > 2021-11-19 8:10 GMT+09:00, Oleksandr Natalenko
+>> >>>> >> >> >> >
+>> >>>> >> >> >> > <oleksandr@natalenko.name>:
+>> >>>> >> >> >> >> On =C4=8Dtvrtek 18. listopadu 2021 21:00:52 CET you wro=
+te:
+>> >>>> >> >> >> >>> Thank you for your test!
+>> >>>> >> >> >> >>>
+>> >>>> >> >> >> >>> Could you please give me a tcpdump against samba ?
+>> >>>> >> >> >> >>> I would like to find any clue at that.
+>> >>>> >> >> >> >>
+>> >>>> >> >> >> >> Sure [3].
+>> >>>> >> >> >> >>
+>> >>>> >> >> >> >> [3] https://natalenko.name/myfiles/misc/samba.pcap.gz
+>> >>>> >> >> >> >>
+>> >>>> >> >> >> >>> 2021-11-18 22:33 GMT+09:00, Oleksandr Natalenko
+>> >>>> >> >> >> >>>
+>> >>>> >> >> >> >>> <oleksandr@natalenko.name>:
+>> >>>> >> >> >> >>> > On =C4=8Dtvrtek 18. listopadu 2021 14:26:44 CET Olek=
+sandr
+>> >>>> >> >> >> >>> > Natalenko
+>> >>>> >> >> >> >>> >
+>> >>>> >> >> >> >>> > wrote:
+>> >>>> >> >> >> >>> >> On =C4=8Dtvrtek 18. listopadu 2021 13:53:53 CET Nam=
+jae
+>> >>>> >> >> >> >>> >> Jeon
+>> >>>> >> >> >> >>> >>
+>> >>>> >> >> >> >>> >> wrote:
+>> >>>> >> >> >> >>> >> > I am trying to reproduce this issue on my setup.
+>> >>>> >> >> >> >>> >> > can't..
+>> >>>> >> >> >> >>> >> >
+>> >>>> >> >> >> >>> >> > Could you please check attached patch again ?
+>> >>>> >> >> >> >>> >> > I remove AdditionalInformation flags check code
+>> >>>> >> >> >> >>> >> > not
+>> >>>> >> >> >> >>> >> > to
+>> >>>> >> >> >> >>> >> > happen
+>> >>>> >> >> >> >>> >> > "Unsupported addition info" error message.
+>> >>>> >> >> >> >>> >>
+>> >>>> >> >> >> >>> >> No luck, sorry, the issue is still there. The
+>> >>>> >> >> >> >>> >> messages
+>> >>>> >> >> >> >>> >> are
+>> >>>> >> >> >> >>> >> gone
+>> >>>> >> >> >> >>> >> from
+>> >>>> >> >> >> >>> >> the
+>> >>>> >> >> >> >>> >> kernel log on the server side though (as expected),
+>> >>>> >> >> >> >>> >> but
+>> >>>> >> >> >> >>> >> apparently
+>> >>>> >> >> >> >>> >> those
+>> >>>> >> >> >> >>> >> are
+>> >>>> >> >> >> >>> >> not directly related to the issue.
+>> >>>> >> >> >> >>> >
+>> >>>> >> >> >> >>> > And just to be on the safe side, I've re-tested it
+>> >>>> >> >> >> >>> > with
+>> >>>> >> >> >> >>> > Samba,
+>> >>>> >> >> >> >>> > and
+>> >>>> >> >> >> >>> > with
+>> >>>> >> >> >> >>> > Samba
+>> >>>> >> >> >> >>> > it just works.
+>> >>>> >> >> >> >>> >
+>> >>>> >> >> >> >>> > For reference, my Samba config is:
+>> >>>> >> >> >> >>> >
+>> >>>> >> >> >> >>> > ```
+>> >>>> >> >> >> >>> > [global]
+>> >>>> >> >> >> >>> > workgroup =3D WORKGROUP
+>> >>>> >> >> >> >>> > server string =3D Samba Server %v
+>> >>>> >> >> >> >>> > netbios name =3D defiant
+>> >>>> >> >> >> >>> > name resolve order =3D host
+>> >>>> >> >> >> >>> > domain master =3D no
+>> >>>> >> >> >> >>> > load printers =3D no
+>> >>>> >> >> >> >>> > show add printer wizard =3D no
+>> >>>> >> >> >> >>> > printing =3D bsd
+>> >>>> >> >> >> >>> > printcap name =3D /dev/null
+>> >>>> >> >> >> >>> > disable spoolss =3D yes
+>> >>>> >> >> >> >>> > socket options =3D TCP_NODELAY SO_KEEPALIVE
+>> >>>> >> >> >> >>> > valid users =3D __guest
+>> >>>> >> >> >> >>> >
+>> >>>> >> >> >> >>> > [Shared]
+>> >>>> >> >> >> >>> > path =3D /mnt/shared
+>> >>>> >> >> >> >>> > force user =3D _shared
+>> >>>> >> >> >> >>> > force group =3D _shared
+>> >>>> >> >> >> >>> > browsable =3D no
+>> >>>> >> >> >> >>> > writeable =3D yes
+>> >>>> >> >> >> >>> > veto files =3D /lost+found/
+>> >>>> >> >> >> >>> > ```
+>> >>>> >> >> >> >>> >
+>> >>>> >> >> >> >>> > I fail to see any substantial difference here, so th=
+e
+>> >>>> >> >> >> >>> > issue
+>> >>>> >> >> >> >>> > must
+>> >>>> >> >> >> >>> > be
+>> >>>> >> >> >> >>> > hidden
+>> >>>> >> >> >> >>> > somewhere inside ksmbd.
+>> >>>> >> >> >> >>> >
+>> >>>> >> >> >> >>> > I'm still open for further testing, of course!
+>
+> --
+> Oleksandr Natalenko (post-factum)
+>
+>
+>
