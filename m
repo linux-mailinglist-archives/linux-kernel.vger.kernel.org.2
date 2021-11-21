@@ -2,107 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33FAE458308
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 12:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3493345830D
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 12:06:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238059AbhKULFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 06:05:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34432 "EHLO mail.kernel.org"
+        id S238081AbhKULJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 06:09:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238054AbhKULFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 06:05:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B67AD608FB;
-        Sun, 21 Nov 2021 11:02:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637492549;
-        bh=Ufdx8ARO4THgjUCgnF+gxz8aDr/YgOiNmfXPT9ZpqNo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZBF83KaobljbaaJHUuggWujZFm3neyoLpPN16qo3IUNGlLYGLYtmBB/l6Mko3JQEY
-         qfRHQbd0pnJpTKrTHsaEWFxkFnCeGL3disH4QTConTzOfDroNBhIbV5868l6TOYEux
-         tdzZRbAk/PPtkBv7RFRY5kK+UgLKT24sRlUSSqkBCueWwn4IFl2oq7/3yEgQwkU69O
-         g5blPr7aZhJ088ee+TAVwMjQzzaQNpzPPeHTpC4iYV0m+FbCGdMfKvV9kpcHJoQibq
-         mll/nT7nliW+YpMVBsdbzEbRXV/p/p+wsPpXNjGo9XgQvMWno2lR1piAPa8HTcde2Z
-         frViPCtFB7Ygw==
-From:   SeongJae Park <sj@kernel.org>
-To:     stable@vger.kernel.org, gregkh@linuxfoundation.org
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, SeongJae Park <sj@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH for-5.15.x 2/2] mm/damon/dbgfs: fix missed use of damon_dbgfs_lock
-Date:   Sun, 21 Nov 2021 11:02:11 +0000
-Message-Id: <20211121110211.17032-3-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211121110211.17032-1-sj@kernel.org>
-References: <20211121110211.17032-1-sj@kernel.org>
+        id S238066AbhKULJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 06:09:41 -0500
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0937B60E0C;
+        Sun, 21 Nov 2021 11:06:34 +0000 (UTC)
+Date:   Sun, 21 Nov 2021 11:11:29 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Liam Beguin <liambeguin@gmail.com>
+Cc:     peda@axentia.se, lars@metafoo.de, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org
+Subject: Re: [PATCH v9 05/14] iio: afe: rescale: add INT_PLUS_{MICRO,NANO}
+ support
+Message-ID: <20211121111129.31104550@jic23-huawei>
+In-Reply-To: <20211115034334.1713050-6-liambeguin@gmail.com>
+References: <20211115034334.1713050-1-liambeguin@gmail.com>
+        <20211115034334.1713050-6-liambeguin@gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit d78f3853f831eee46c6dbe726debf3be9e9c0d05 upstream.
+On Sun, 14 Nov 2021 22:43:25 -0500
+Liam Beguin <liambeguin@gmail.com> wrote:
 
-DAMON debugfs is supposed to protect dbgfs_ctxs, dbgfs_nr_ctxs, and
-dbgfs_dirs using damon_dbgfs_lock.  However, some of the code is
-accessing the variables without the protection.  This fixes it by
-protecting all such accesses.
+> From: Liam Beguin <lvb@xiphos.com>
+> 
+> Some ADCs use IIO_VAL_INT_PLUS_{NANO,MICRO} scale types.
+> Add support for these to allow using the iio-rescaler with them.
+> 
+> Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> ---
+>  drivers/iio/afe/iio-rescale.c | 36 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 36 insertions(+)
+> 
+> diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-rescale.c
+> index d0669fd8eac5..2c25a6375f99 100644
+> --- a/drivers/iio/afe/iio-rescale.c
+> +++ b/drivers/iio/afe/iio-rescale.c
+> @@ -22,6 +22,9 @@ int rescale_process_scale(struct rescale *rescale, int scale_type,
+>  			  int *val, int *val2)
+>  {
+>  	unsigned long long tmp;
+> +	s32 rem;
+> +	u32 mult;
+> +	u32 neg;
+>  
+>  	switch (scale_type) {
+>  	case IIO_VAL_FRACTIONAL:
+> @@ -40,6 +43,39 @@ int rescale_process_scale(struct rescale *rescale, int scale_type,
+>  		tmp *= rescale->numerator;
+>  		do_div(tmp, 1000000000LL);
+>  		*val = tmp;
+> +		return scale_type;
+> +	case IIO_VAL_INT_PLUS_NANO:
+> +	case IIO_VAL_INT_PLUS_MICRO:
+> +		if (scale_type == IIO_VAL_INT_PLUS_NANO)
+> +			mult = 1000000000LL;
+> +		else
+> +			mult = 1000000LL;
 
-Link: https://lkml.kernel.org/r/20211110145758.16558-3-sj@kernel.org
-Fixes: 75c1c2b53c78 ("mm/damon/dbgfs: support multiple contexts")
-Signed-off-by: SeongJae Park <sj@kernel.org>
-Cc: <stable@vger.kernel.org> # 5.15.x
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
----
- mm/damon/dbgfs.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+Trivial but perhaps you can use the multipliers defined in include/linux/units.h?
+			mut = MICRO; etc.
 
-diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
-index 2741ff79e8e8..f94d19a690df 100644
---- a/mm/damon/dbgfs.c
-+++ b/mm/damon/dbgfs.c
-@@ -538,12 +538,14 @@ static ssize_t dbgfs_monitor_on_write(struct file *file,
- 		return -EINVAL;
- 	}
- 
-+	mutex_lock(&damon_dbgfs_lock);
- 	if (!strncmp(kbuf, "on", count))
- 		err = damon_start(dbgfs_ctxs, dbgfs_nr_ctxs);
- 	else if (!strncmp(kbuf, "off", count))
- 		err = damon_stop(dbgfs_ctxs, dbgfs_nr_ctxs);
- 	else
- 		err = -EINVAL;
-+	mutex_unlock(&damon_dbgfs_lock);
- 
- 	if (err)
- 		ret = err;
-@@ -596,15 +598,16 @@ static int __init __damon_dbgfs_init(void)
- 
- static int __init damon_dbgfs_init(void)
- {
--	int rc;
-+	int rc = -ENOMEM;
- 
-+	mutex_lock(&damon_dbgfs_lock);
- 	dbgfs_ctxs = kmalloc(sizeof(*dbgfs_ctxs), GFP_KERNEL);
- 	if (!dbgfs_ctxs)
--		return -ENOMEM;
-+		goto out;
- 	dbgfs_ctxs[0] = dbgfs_new_ctx();
- 	if (!dbgfs_ctxs[0]) {
- 		kfree(dbgfs_ctxs);
--		return -ENOMEM;
-+		goto out;
- 	}
- 	dbgfs_nr_ctxs = 1;
- 
-@@ -615,6 +618,8 @@ static int __init damon_dbgfs_init(void)
- 		pr_err("%s: dbgfs init failed\n", __func__);
- 	}
- 
-+out:
-+	mutex_unlock(&damon_dbgfs_lock);
- 	return rc;
- }
- 
--- 
-2.17.1
+I think that patch set crossed with the earlier versions of this one but given
+it's now there I think it would slightly improve readability.
+
+
+> +		/*
+> +		 * For IIO_VAL_INT_PLUS_{MICRO,NANO} scale types if either *val
+> +		 * OR *val2 is negative the schan scale is negative, i.e.
+> +		 * *val = 1 and *val2 = -0.5 yields -1.5 not -0.5.
+> +		 */
+> +		neg = *val < 0 || *val2 < 0;
+> +
+> +		tmp = (s64)abs(*val) * abs(rescale->numerator);
+> +		*val = div_s64_rem(tmp, abs(rescale->denominator), &rem);
+> +
+> +		tmp = (s64)rem * mult + (s64)abs(*val2) * abs(rescale->numerator);
+> +		tmp = div_s64(tmp, abs(rescale->denominator));
+> +
+> +		*val += div_s64_rem(tmp, mult, val2);
+> +
+> +		/*
+> +		 * If only one of the rescaler elements or the schan scale is
+> +		 * negative, the combined scale is negative.
+> +		 */
+> +		if (neg ^ ((rescale->numerator < 0) ^ (rescale->denominator < 0))) {
+> +			if (*val)
+> +				*val = -*val;
+> +			else
+> +				*val2 = -*val2;
+> +		}
+> +
+>  		return scale_type;
+>  	default:
+>  		return -EOPNOTSUPP;
 
