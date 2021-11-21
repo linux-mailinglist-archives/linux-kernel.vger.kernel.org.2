@@ -2,115 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 297474586D6
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 23:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 468FD4586DE
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 23:55:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232520AbhKUW4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 17:56:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35846 "EHLO
+        id S234329AbhKUW6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 17:58:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhKUW4v (ORCPT
+        with ESMTP id S230449AbhKUW6r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 17:56:51 -0500
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C67C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 14:53:46 -0800 (PST)
-Received: by mail-ua1-x92e.google.com with SMTP id n6so32911338uak.1
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 14:53:46 -0800 (PST)
+        Sun, 21 Nov 2021 17:58:47 -0500
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7178C061748
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 14:55:41 -0800 (PST)
+Received: by mail-ua1-x934.google.com with SMTP id r15so32907485uao.3
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 14:55:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7ZLP9fQhGwNjrWJyLOt3Pzje9V6HonG+6QyQP8b20Tw=;
-        b=GZvzyGHvtM96yYXUaTzccRThsxoj/RB9CSGafatzts7iIzjPowy3nFSLfbr7dKw/T6
-         /9ipS8Sn74n52fmjuxrCkxUqTYR4Ja519pXOMP9y67W0OWRyzwXLLvtA5WoFnGZjuHgg
-         eVBB3sWRsRGHqt5QXvl5IJ12aQCZvEdj5+9coDFrNHz2ZuiTuXH084wDxtwx/wIJJpZx
-         SBUu3vQ4I4vq+uZIVnYtsHbBwzcx7f/qHIwhVdYoopjkjYZ4b5oty8NrAxzz+pgnHsgq
-         H6OdgquCre14Uhva5UcODqAQIfZgn1OY3XJAFABUgUTw0Z4x9+ThDjzx7LnUWWK5bbb0
-         TGmQ==
+        bh=S438G+utz8pjDkvXqx18EM21msuvfiLmqt/53NycU20=;
+        b=zF4VuhMkOvolYehi5B/JWkTO1dRxbjNScex3BHFGl5I82XST22YzhAWj5ykjWWb1Eo
+         X1SmjNqdH/CeStdilN4MB9awVlBKEudQ0oaI4rkKrZEcjDyGoDT+6tlJlzLHrispfEsK
+         qSfaSsn6TIlcsAw6AqEetnZZXf2YxO6GvYphbP4/fLNYRd+HDRPL6IoCdiO50rvHCgCD
+         ErDkX1+6ann6fiQH/lsRxQvPIz99xsbQBb1PRPkfOwsI43WL5vCRcUfpy8lzxm+XbxSH
+         sWaEPZX2Sd8g4EaPYeB42Flkmlm/IQ3A6GFBwQ1T0xJERsfale5p6LuhlPFFPU455Rxo
+         QqUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7ZLP9fQhGwNjrWJyLOt3Pzje9V6HonG+6QyQP8b20Tw=;
-        b=g0imQD9QEsFSpo6EvEwc0k15gw2o/cCnFwIAYLe9V4mfCObQ8Xb9V6A3KwgioCf7qC
-         2ixfQ8iMaxnjtBcSpQ953ztrpy2uGcmGD41RdW6Op2TXqpoZd2bSvk121RqrZtZ0Xx1f
-         DUlBFeBQMwn3OStFV5xBEtXnN8pGixs3a/oLWIeNdn9T+mjreQN6TLzmXbRsA5JZIfOP
-         3GSkX5KRfOQNZwk0fjGYJJC/zZ70GGMTK433pDG0YSU8JtGtjwPt4UEvwa7qscU6jS/p
-         9MhUOPUTr7VY3qgoHrBJLI7Ywm3RmPK6rn29il9nQcioMwLMZUEPR9JSL+Dvxw+cRhuY
-         gQGA==
-X-Gm-Message-State: AOAM533b+qJrwRd0z1k0MQAa/X+hRhtAriTaIYoUYrXgsHI/BtREl+nt
-        aeEbKOm0X0vJAMP4IzijycJXZBDVaho5g5JTt2D5tw==
-X-Google-Smtp-Source: ABdhPJyZDCljPC+L3CUnOG8d34T+97AClO2CZiiR5mtmJtqr75V48osArA7V2GYS+OHAXlsi01fdjb3drkXCNuLASx8=
-X-Received: by 2002:a67:d893:: with SMTP id f19mr120722604vsj.39.1637535225617;
- Sun, 21 Nov 2021 14:53:45 -0800 (PST)
+        bh=S438G+utz8pjDkvXqx18EM21msuvfiLmqt/53NycU20=;
+        b=nYeQDuxSpvkY6K46PY9eF69OXv2zemvvVjo1zhb9MlzZF1WKMBEv1F9h8WUG8VBTtP
+         m+SD7BP4RyWdElZAzcncmAV8rSGF6Nha9+g+LvX3l239HJd1pUVpnP4/E19oCHAnT7p6
+         arZRGN9LBdAUahCSO5JYtsgQ6PtP8NmkTDn/Mp4T7CMCcMn8E2ls6tASdL6gxJ9JEe40
+         o6vBWcoF4xXLXnJ5eE+rzyNngV4IYjjEVTL68xLzweT0jrz3I5QmpjpHe3pt11y018pG
+         J0u49eQmNaZXmD9xb5/MoEXyr1pn5fQilVKjSccIyLwNbQsM//C6N2TRzhhyNoKko8aY
+         iHYQ==
+X-Gm-Message-State: AOAM530dG3Wf0cZFMGKuHOJ26oK4F6Zw2pe/NrsCEMu+MooM21TUThI3
+        hYzmw9BkysBmMDbTfbn89V+ZHdaLTXHEoONip08rJw==
+X-Google-Smtp-Source: ABdhPJwgf46PvVFqRlUS2culzCgQuSh0I0XL196ZF7cYR8TmgHwR+Gs2ynsMw9ktq+ZcHsUQSvUH0wfBjwF/ur2ckbw=
+X-Received: by 2002:a05:6102:4192:: with SMTP id cd18mr123860031vsb.35.1637535340797;
+ Sun, 21 Nov 2021 14:55:40 -0800 (PST)
 MIME-Version: 1.0
-References: <20211109164436.11098-1-semen.protsenko@linaro.org>
-In-Reply-To: <20211109164436.11098-1-semen.protsenko@linaro.org>
+References: <20211022224556.18742-1-semen.protsenko@linaro.org> <YXtVS1YrZqE5kW32@robh.at.kernel.org>
+In-Reply-To: <YXtVS1YrZqE5kW32@robh.at.kernel.org>
 From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Mon, 22 Nov 2021 00:53:34 +0200
-Message-ID: <CAPLW+4mLEbmtC=M5q_RJSn7UGca5dk=uTJE9E2ruYTK_9AhxDg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] clk: samsung: exynos850: Implement CMU_CMGP
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        =?UTF-8?Q?Pawe=C5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
+Date:   Mon, 22 Nov 2021 00:55:29 +0200
+Message-ID: <CAPLW+4kgQ8CVS6eNXxwePiATHT41E2EhhAP3AbxgFTCnjyO-VQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: clock: samsung: Document Exynos850 CMU_APM
+To:     Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc:     linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-arm-kernel@lists.infradead.org,
         Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        =?UTF-8?Q?Pawe=C5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, Rob Herring <robh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Nov 2021 at 18:44, Sam Protsenko <semen.protsenko@linaro.org> wrote:
+On Fri, 29 Oct 2021 at 04:58, Rob Herring <robh@kernel.org> wrote:
 >
-> This series adds CMU_CMGP clock domain to Exynos850 clock driver. In
-> particular it needs to enable HSI2C (High-Speed I2C) nodes. This series
-> depends on CMU_APM series [1].
+> On Sat, 23 Oct 2021 01:45:55 +0300, Sam Protsenko wrote:
+> > CMU_APM generates clocks for APM IP-core (Active Power Management). In
+> > particular it generates RTC clocks, which are needed to enable rtc-s3c
+> > driver on Exynos850 SoC.
+> >
+> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> > Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+> > ---
+> > Changes in v2:
+> >   - Added R-b tag by Krzysztof Kozlowski
+> >   - Added Ack by Chanwoo Choi
+> >
+> >  .../clock/samsung,exynos850-clock.yaml        | 19 +++++++++++++++++++
+> >  1 file changed, 19 insertions(+)
+> >
 >
-> Tested via /sys/kernel/debug/clk/clk_summary:
->
-> <<<<<<<<<<<<<<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
->                                  enable  prepare  protect
->    clock                          count    count    count        rate
-> ---------------------------------------------------------------------
->
-> clk_rco_cmgp                         0        0        0    49152000
-> oscclk                               1        1        0    26000000
->     mout_cmgp_adc                    0        0        0    26000000
-> ...
->     gout_clkcmu_cmgp_bus             1        1        0   399750000
->        gout_cmgp_usi1_pclk           0        0        0   399750000
->        gout_cmgp_usi0_pclk           0        0        0   399750000
->        gout_gpio_cmgp_pclk           0        0        0   399750000
->        dout_cmgp_adc                 0        0        0    28553572
->        mout_cmgp_usi1                0        0        0   399750000
->           dout_cmgp_usi1             0        0        0   199875000
->              gout_cmgp_usi1_ipclk    0        0        0   199875000
->        mout_cmgp_usi0                0        0        0   399750000
->           dout_cmgp_usi0             0        0        0   199875000
->              gout_cmgp_usi0_ipclk    0        0        0   199875000
-> <<<<<<<<<<<<<<<<<<<<<<<<<<<< cut here >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
->
-> [1] https://lkml.org/lkml/2021/10/22/979
->
-> Sam Protsenko (2):
->   dt-bindings: clock: samsung: Document Exynos850 CMU_CMGP
->   clk: samsung: exynos850: Implement CMU_CMGP domain
->
->  .../clock/samsung,exynos850-clock.yaml        |  19 ++++
->  drivers/clk/samsung/clk-exynos850.c           | 100 ++++++++++++++++++
->  include/dt-bindings/clock/exynos850.h         |  17 +++
->  3 files changed, 136 insertions(+)
->
-> --
-> 2.30.2
->
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
 This patch series is superseded by:
 
