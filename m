@@ -2,180 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30293458312
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 12:15:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A4F458321
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 12:27:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238096AbhKULSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 06:18:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36216 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234679AbhKULSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 06:18:10 -0500
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED79B60E54;
-        Sun, 21 Nov 2021 11:15:03 +0000 (UTC)
-Date:   Sun, 21 Nov 2021 11:19:58 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Liam Beguin <liambeguin@gmail.com>, peda@axentia.se,
-        lars@metafoo.de, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Subject: Re: [PATCH v9 10/14] iio: test: add basic tests for the iio-rescale
- driver
-Message-ID: <20211121111958.3ed740dc@jic23-huawei>
-In-Reply-To: <202111172344.tSkzL3S5-lkp@intel.com>
-References: <20211115034334.1713050-11-liambeguin@gmail.com>
-        <202111172344.tSkzL3S5-lkp@intel.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S238142AbhKULaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 06:30:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238136AbhKULaV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 06:30:21 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4973FC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 03:27:16 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id l25so47175860eda.11
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 03:27:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t8qwozoI4ZgvY8N3QOUrFpTNybxtK5/UyM93WgmSUcs=;
+        b=FYbFHF2QM+ZPPXDFsPv/so2dy8U9Ff855nzNxC/vY6iUEN0Ys1bjUUs9G29y0uHjF8
+         aVw1jQMB/0c5Pw7Pzle31twT8hQy7X8ONbqK47uU3Sp3JvXO2fqsHn3v1y6bT4e6xWuj
+         0hemHxZU466JbWRht3jNPlJIhwNXScho6CsrhfeVhnkdbrAINqpmvV380Xl6IpmmzL9A
+         ZIrHlaZ1CIi3q5t6V8DBN/96VbzCaqo8x9lkeXviCwuAKyA9MWW0cmjDXyja4U3f9s8i
+         rQgh1RidJeIHztdKFo5lKtk1ypXUGEeCVFkbuVmESasOFykXQPShzoV+tRoZUH3V3zhV
+         oznw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t8qwozoI4ZgvY8N3QOUrFpTNybxtK5/UyM93WgmSUcs=;
+        b=yZ5dnpE87q4rYMZvnXcl1WeiWgyZgc42jzQbJ8rCZO4baSVhJk0zWaDtisvieGX4YY
+         RBxJl8CsPazErgVfcEHawJNiBpWHAzBZj2Vai+o65OC6Kv6EAdz/zLn77kLGGLSfh2fU
+         tr0j+DFXDi214F+tI3/JFfup6S4gv1S4V+3MkUc3dGcaeEfVrUWCeXcE/1NpbDjQV/Px
+         ROUDoDv3Kzh/1As/XBNrAjpEKnofFk36Aq0fXkvvw/bND9CaI4iLk+v6UP1UFGgncxt4
+         NrxnaZvd+IBGpNvi5Eni/x4rh79hj+9yQ7x00oAKpRlEswo/QT1VHd7Bnik0kszVxoS/
+         IqQg==
+X-Gm-Message-State: AOAM533+6PF+y6aUOW9QpA6qWAEWZ/W6lxDua8/4BJzQRTEX+bBNkzeT
+        +b+EFHwn3oBe7icg5oEDkNKZUoM0j6U=
+X-Google-Smtp-Source: ABdhPJyaVEhpifhFF0K+5F/45yMmT3PeLDFfsQeShkF7DuGSZYcOfrnfOWustG0rVCYxJuvAtQ/vrQ==
+X-Received: by 2002:a17:907:7f1a:: with SMTP id qf26mr28790469ejc.543.1637494034513;
+        Sun, 21 Nov 2021 03:27:14 -0800 (PST)
+Received: from bulldog.fritz.box (host-95-252-102-163.retail.telecomitalia.it. [95.252.102.163])
+        by smtp.gmail.com with ESMTPSA id nb4sm2309065ejc.21.2021.11.21.03.27.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Nov 2021 03:27:14 -0800 (PST)
+From:   Alberto Merciai <alb3rt0.m3rciai@gmail.com>
+To:     alb3rt0.m3rciai@gmail.com
+Cc:     Forest Bond <forest@alittletooquiet.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tommaso Merciai <tomm.merciai@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        =?UTF-8?q?Aldas=20Tara=C5=A1kevi=C4=8Dius?= <aldas60@gmail.com>,
+        Karolina Drobnik <karolinadrobnik@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Lucas Henneman <lucas.henneman@linaro.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: vt6655: rename variable bHWRadioOff
+Date:   Sun, 21 Nov 2021 12:19:59 +0100
+Message-Id: <20211121112000.632456-1-alb3rt0.m3rciai@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Nov 2021 23:03:24 +0800
-kernel test robot <lkp@intel.com> wrote:
+Replace camelcase hungarian notated variable "bHWRadioOff"
+into linux kernel coding style equivalent variable "hw_radio_off".
 
-> Hi Liam,
-> 
-> Thank you for the patch! Yet something to improve:
-> 
-> [auto build test ERROR on 2b6bff0b122785f09cfbdc34b1aa9edceea6e4c1]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Liam-Beguin/iio-afe-add-temperature-rescaling-support/20211115-114729
-> base:   2b6bff0b122785f09cfbdc34b1aa9edceea6e4c1
-> config: nds32-randconfig-r003-20211115 (attached as .config)
-> compiler: nds32le-linux-gcc (GCC) 11.2.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/bef63a2e36c2ceccc6f5954ab7e7cbb178c08fd8
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Liam-Beguin/iio-afe-add-temperature-rescaling-support/20211115-114729
->         git checkout bef63a2e36c2ceccc6f5954ab7e7cbb178c08fd8
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=nds32 SHELL=/bin/bash
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
+Signed-off-by: Alberto Merciai <alb3rt0.m3rciai@gmail.com>
+---
+ drivers/staging/vt6655/device.h      | 2 +-
+ drivers/staging/vt6655/device_main.c | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-This one has me stumped.  The new tests have a depends on KUNIT and that should result in these
-functions being built.
+diff --git a/drivers/staging/vt6655/device.h b/drivers/staging/vt6655/device.h
+index ff171acc11f4..e9d1b56d8809 100644
+--- a/drivers/staging/vt6655/device.h
++++ b/drivers/staging/vt6655/device.h
+@@ -229,7 +229,7 @@ struct vnt_private {
+ 	/* GPIO Radio Control */
+ 	unsigned char byRadioCtl;
+ 	unsigned char byGPIO;
+-	bool bHWRadioOff;
++	bool hw_radio_off;
+ 	bool bPrvActive4RadioOFF;
+ 	bool bGPIOBlockRead;
  
-Anyone know what might have caused these?
-
-Jonathan
-
-
-> All errors (new ones prefixed by >>):
-> 
->    nds32le-linux-ld: drivers/iio/test/iio-test-rescale.o: in function `iio_rescale_test_offset':
-> >> iio-test-rescale.c:(.text+0x16): undefined reference to `kunit_kmalloc_array'
-> >> nds32le-linux-ld: iio-test-rescale.c:(.text+0x1a): undefined reference to `kunit_kmalloc_array'
-> >> nds32le-linux-ld: iio-test-rescale.c:(.text+0x80): undefined reference to `kunit_binary_assert_format'  
->    nds32le-linux-ld: iio-test-rescale.c:(.text+0x84): undefined reference to `kunit_binary_assert_format'
-> >> nds32le-linux-ld: iio-test-rescale.c:(.text+0xe0): undefined reference to `kunit_do_assertion'  
->    nds32le-linux-ld: iio-test-rescale.c:(.text+0xe4): undefined reference to `kunit_do_assertion'
-> >> nds32le-linux-ld: iio-test-rescale.c:(.text+0x104): undefined reference to `kunit_binary_str_assert_format'  
->    nds32le-linux-ld: iio-test-rescale.c:(.text+0x108): undefined reference to `kunit_binary_str_assert_format'
->    nds32le-linux-ld: iio-test-rescale.c:(.text+0x158): undefined reference to `kunit_do_assertion'
->    nds32le-linux-ld: iio-test-rescale.c:(.text+0x15c): undefined reference to `kunit_do_assertion'
->    nds32le-linux-ld: drivers/iio/test/iio-test-rescale.o: in function `iio_rescale_test_scale':
->    iio-test-rescale.c:(.text+0x236): undefined reference to `kunit_kmalloc_array'
->    nds32le-linux-ld: iio-test-rescale.c:(.text+0x23a): undefined reference to `kunit_kmalloc_array'
->    nds32le-linux-ld: iio-test-rescale.c:(.text+0x2d8): undefined reference to `kunit_binary_assert_format'
->    nds32le-linux-ld: iio-test-rescale.c:(.text+0x2dc): undefined reference to `kunit_binary_assert_format'
->    nds32le-linux-ld: iio-test-rescale.c:(.text+0x30a): undefined reference to `kunit_do_assertion'
->    nds32le-linux-ld: iio-test-rescale.c:(.text+0x30e): undefined reference to `kunit_do_assertion'
->    nds32le-linux-ld: iio-test-rescale.c:(.text+0x476): undefined reference to `kunit_do_assertion'
->    nds32le-linux-ld: iio-test-rescale.c:(.text+0x47a): undefined reference to `kunit_do_assertion'
->    nds32le-linux-ld: iio-test-rescale.c:(.text+0x4d8): undefined reference to `kunit_do_assertion'
->    nds32le-linux-ld: drivers/iio/test/iio-test-rescale.o:iio-test-rescale.c:(.text+0x4dc): more undefined references to `kunit_do_assertion' follow
->    nds32le-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_set_suspend':
->    (.text+0x330): undefined reference to `fb_set_suspend'
->    nds32le-linux-ld: (.text+0x334): undefined reference to `fb_set_suspend'
->    nds32le-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_resume_worker':
->    drm_fb_helper.c:(.text+0x35c): undefined reference to `fb_set_suspend'
->    nds32le-linux-ld: drm_fb_helper.c:(.text+0x360): undefined reference to `fb_set_suspend'
->    nds32le-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_unregister_fbi':
->    (.text+0x3c4): undefined reference to `unregister_framebuffer'
->    nds32le-linux-ld: (.text+0x3c8): undefined reference to `unregister_framebuffer'
->    nds32le-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_fini':
->    (.text+0x424): undefined reference to `fb_dealloc_cmap'
->    nds32le-linux-ld: (.text+0x428): undefined reference to `fb_dealloc_cmap'
->    nds32le-linux-ld: (.text+0x432): undefined reference to `framebuffer_release'
->    nds32le-linux-ld: (.text+0x436): undefined reference to `framebuffer_release'
->    nds32le-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_sys_read':
->    (.text+0x4fc): undefined reference to `fb_sys_read'
->    nds32le-linux-ld: (.text+0x500): undefined reference to `fb_sys_read'
->    nds32le-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_alloc_fbi':
->    (.text+0xec2): undefined reference to `framebuffer_alloc'
->    nds32le-linux-ld: (.text+0xec6): undefined reference to `framebuffer_alloc'
->    nds32le-linux-ld: (.text+0xede): undefined reference to `fb_alloc_cmap'
->    nds32le-linux-ld: (.text+0xee2): undefined reference to `fb_alloc_cmap'
->    nds32le-linux-ld: (.text+0xf08): undefined reference to `fb_dealloc_cmap'
->    nds32le-linux-ld: (.text+0xf0c): undefined reference to `fb_dealloc_cmap'
->    nds32le-linux-ld: (.text+0xf2e): undefined reference to `framebuffer_release'
->    nds32le-linux-ld: (.text+0xf32): undefined reference to `framebuffer_release'
->    nds32le-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_generic_probe':
->    drm_fb_helper.c:(.text+0x102a): undefined reference to `fb_deferred_io_init'
->    nds32le-linux-ld: drm_fb_helper.c:(.text+0x102e): undefined reference to `fb_deferred_io_init'
->    nds32le-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `__drm_fb_helper_initial_config_and_unlock':
->    drm_fb_helper.c:(.text+0x1118): undefined reference to `register_framebuffer'
->    nds32le-linux-ld: drm_fb_helper.c:(.text+0x111c): undefined reference to `register_framebuffer'
->    nds32le-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_set_suspend_unlocked':
->    (.text+0x1680): undefined reference to `fb_set_suspend'
->    nds32le-linux-ld: (.text+0x1684): undefined reference to `fb_set_suspend'
->    nds32le-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_sys_write':
->    (.text+0x1b96): undefined reference to `fb_sys_write'
->    nds32le-linux-ld: (.text+0x1b9a): undefined reference to `fb_sys_write'
->    nds32le-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_sys_fillrect':
->    (.text+0x1bdc): undefined reference to `sys_fillrect'
->    nds32le-linux-ld: (.text+0x1be0): undefined reference to `sys_fillrect'
->    nds32le-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_sys_copyarea':
->    (.text+0x1c0c): undefined reference to `sys_copyarea'
->    nds32le-linux-ld: (.text+0x1c10): undefined reference to `sys_copyarea'
->    nds32le-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_sys_imageblit':
->    (.text+0x1c3c): undefined reference to `sys_imageblit'
->    nds32le-linux-ld: (.text+0x1c40): undefined reference to `sys_imageblit'
->    nds32le-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_cfb_fillrect':
->    (.text+0x1c6c): undefined reference to `cfb_fillrect'
->    nds32le-linux-ld: (.text+0x1c70): undefined reference to `cfb_fillrect'
->    nds32le-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_cfb_copyarea':
->    (.text+0x1c9c): undefined reference to `cfb_copyarea'
->    nds32le-linux-ld: (.text+0x1ca0): undefined reference to `cfb_copyarea'
->    nds32le-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_cfb_imageblit':
->    (.text+0x1ccc): undefined reference to `cfb_imageblit'
->    nds32le-linux-ld: (.text+0x1cd0): undefined reference to `cfb_imageblit'
->    nds32le-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fbdev_fb_copyarea':
->    drm_fb_helper.c:(.text+0x1f3e): undefined reference to `cfb_copyarea'
->    nds32le-linux-ld: drm_fb_helper.c:(.text+0x1f42): undefined reference to `cfb_copyarea'
->    nds32le-linux-ld: drm_fb_helper.c:(.text+0x1f4e): undefined reference to `sys_copyarea'
->    nds32le-linux-ld: drm_fb_helper.c:(.text+0x1f52): undefined reference to `sys_copyarea'
->    nds32le-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fbdev_fb_fillrect':
->    drm_fb_helper.c:(.text+0x1f8e): undefined reference to `cfb_fillrect'
->    nds32le-linux-ld: drm_fb_helper.c:(.text+0x1f92): undefined reference to `cfb_fillrect'
->    nds32le-linux-ld: drm_fb_helper.c:(.text+0x1f9e): undefined reference to `sys_fillrect'
->    nds32le-linux-ld: drm_fb_helper.c:(.text+0x1fa2): undefined reference to `sys_fillrect'
->    nds32le-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fbdev_fb_imageblit':
->    drm_fb_helper.c:(.text+0x1fde): undefined reference to `cfb_imageblit'
->    nds32le-linux-ld: drm_fb_helper.c:(.text+0x1fe2): undefined reference to `cfb_imageblit'
->    nds32le-linux-ld: drm_fb_helper.c:(.text+0x1fee): undefined reference to `sys_imageblit'
->    nds32le-linux-ld: drm_fb_helper.c:(.text+0x1ff2): undefined reference to `sys_imageblit'
->    nds32le-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fbdev_cleanup':
->    drm_fb_helper.c:(.text+0x2040): undefined reference to `fb_deferred_io_cleanup'
->    nds32le-linux-ld: drm_fb_helper.c:(.text+0x2044): undefined reference to `fb_deferred_io_cleanup'
->    nds32le-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fbdev_client_unregister':
->    drm_fb_helper.c:(.text+0x20dc): undefined reference to `unregister_framebuffer'
->    nds32le-linux-ld: drm_fb_helper.c:(.text+0x20e0): undefined reference to `unregister_framebuffer'
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+diff --git a/drivers/staging/vt6655/device_main.c b/drivers/staging/vt6655/device_main.c
+index 1f98f2b069c4..897d70cf32b8 100644
+--- a/drivers/staging/vt6655/device_main.c
++++ b/drivers/staging/vt6655/device_main.c
+@@ -373,7 +373,7 @@ static void device_init_registers(struct vnt_private *priv)
+ 
+ 	priv->byRadioCtl = SROMbyReadEmbedded(priv->port_offset,
+ 					      EEP_OFS_RADIOCTL);
+-	priv->bHWRadioOff = false;
++	priv->hw_radio_off = false;
+ 
+ 	if (priv->byRadioCtl & EEP_RADIOCTL_ENABLE) {
+ 		/* Get GPIO */
+@@ -383,10 +383,10 @@ static void device_init_registers(struct vnt_private *priv)
+ 		     !(priv->byRadioCtl & EEP_RADIOCTL_INV)) ||
+ 		     (!(priv->byGPIO & GPIO0_DATA) &&
+ 		     (priv->byRadioCtl & EEP_RADIOCTL_INV)))
+-			priv->bHWRadioOff = true;
++			priv->hw_radio_off = true;
+ 	}
+ 
+-	if (priv->bHWRadioOff || priv->bRadioControlOff)
++	if (priv->hw_radio_off || priv->bRadioControlOff)
+ 		CARDbRadioPowerOff(priv);
+ 
+ 	/* get Permanent network address */
+-- 
+2.25.1
 
