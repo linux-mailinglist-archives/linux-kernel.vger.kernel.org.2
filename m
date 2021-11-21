@@ -2,149 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4E34586BE
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 23:30:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD4A4586C0
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 23:32:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233089AbhKUWds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 17:33:48 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:54720 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbhKUWdr (ORCPT
+        id S233443AbhKUWfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 17:35:25 -0500
+Received: from vulcan.natalenko.name ([104.207.131.136]:33904 "EHLO
+        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230090AbhKUWfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 17:33:47 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 754ED9DD;
-        Sun, 21 Nov 2021 23:30:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1637533840;
-        bh=u+LCXcKgD3CQv4a7GesCp6npU+9K0WaYiowSO5x1OXc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RpkPn+LTjWca4aqiRCkIUwVnTsmUgJ1T73HoSxhsMDcinwFYr48/yWq3by+6fKshR
-         BwEzlfBQDwUS0vDDCpi2aid43yepFnGJkyehbj0gvO+4UsmLEpyOagi1BgXXfJBRGF
-         p2S4maHR29wr8+CGAoTYRtY9+Op3mcs0xKKeuURo=
-Date:   Mon, 22 Nov 2021 00:30:17 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org, tharvey@gateworks.com,
-        frieder.schrempf@kontron.de, linux-media@vger.kernel.org,
-        aford@beaconembedded.com, cstevens@beaconembedded.com,
-        jagan@amarulasolutions.com, Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peng Fan <peng.fan@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 1/5] soc: imx: imx8m-blk-ctrl: Fix imx8mm mipi reset
-Message-ID: <YZrIeUYdBCkB2tuP@pendragon.ideasonboard.com>
-References: <20211106155427.753197-1-aford173@gmail.com>
- <YZrHWkbYkrILP9oo@pendragon.ideasonboard.com>
+        Sun, 21 Nov 2021 17:35:21 -0500
+Received: from spock.localnet (unknown [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id A43F8CABF2F;
+        Sun, 21 Nov 2021 23:32:13 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1637533934;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pCrlPvC0WGxM7eYrtDYCXvvxIBvtiK/+MSRZDk4ICxA=;
+        b=DmsUaWr3xqSoMPQP+NTwYBGIFGrJN8oNwka1rXGb/ILx41IXaSe7oWUnydPj32im4jeqwB
+        4sNmSyLpXEe0yKU+uXmSHgBMh6WZGQqnEQSbt0HnIJkjxQ68SNSQtqVOlGQAWeLEBQC+Eg
+        gn+qwDfJ9/RkLZKkJ25BmMmx8tdv59I=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     akpm@linux-foundation.org, SeongJae Park <sj@kernel.org>,
+        Jonathan.Cameron@huawei.com
+Cc:     amit@kernel.org, benh@kernel.crashing.org, corbet@lwn.net,
+        david@redhat.com, dwmw@amazon.com, elver@google.com,
+        foersleo@amazon.de, gthelen@google.com, markubo@amazon.de,
+        rientjes@google.com, shakeelb@google.com, shuah@kernel.org,
+        linux-damon@amazon.com, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/15] Introduce DAMON-based Proactive Reclamation
+Date:   Sun, 21 Nov 2021 23:32:12 +0100
+Message-ID: <11868371.O9o76ZdvQC@natalenko.name>
+In-Reply-To: <20211019150731.16699-1-sj@kernel.org>
+References: <20211019150731.16699-1-sj@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YZrHWkbYkrILP9oo@pendragon.ideasonboard.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
+Hello.
 
-On Mon, Nov 22, 2021 at 12:25:31AM +0200, Laurent Pinchart wrote:
-> On Sat, Nov 06, 2021 at 10:54:23AM -0500, Adam Ford wrote:
-> > Most of the blk-ctrl reset bits are found in one register, however
-> > there are two bits in offset 8 for pulling the MIPI DPHY out of reset
-> > and these need to be set when IMX8MM_DISPBLK_PD_MIPI_CSI is brought
-> > out of reset or the MIPI_CSI hangs.
-> > 
-> > Fixes: 926e57c065df ("soc: imx: imx8m-blk-ctrl: add DISP blk-ctrl")
-> > Signed-off-by: Adam Ford <aford173@gmail.com>
-> > ---
-> > 
-> > V2:  Make a note that the extra register is only for Mini/Nano DISPLAY_BLK_CTRL
-> >      Rename the new register to mipi_phy_rst_mask
-> >      Encapsulate the edits to this register with an if-statement
-> > 
-> >  drivers/soc/imx/imx8m-blk-ctrl.c | 18 ++++++++++++++++++
-> >  1 file changed, 18 insertions(+)
-> > 
-> > diff --git a/drivers/soc/imx/imx8m-blk-ctrl.c b/drivers/soc/imx/imx8m-blk-ctrl.c
-> > index 519b3651d1d9..581eb4bc7f7d 100644
-> > --- a/drivers/soc/imx/imx8m-blk-ctrl.c
-> > +++ b/drivers/soc/imx/imx8m-blk-ctrl.c
-> > @@ -17,6 +17,7 @@
-> >  
-> >  #define BLK_SFT_RSTN	0x0
-> >  #define BLK_CLK_EN	0x4
-> > +#define BLK_MIPI_RESET_DIV	0x8 /* Mini/Nano DISPLAY_BLK_CTRL only */
-> >  
-> >  struct imx8m_blk_ctrl_domain;
-> >  
-> > @@ -36,6 +37,15 @@ struct imx8m_blk_ctrl_domain_data {
-> >  	const char *gpc_name;
-> >  	u32 rst_mask;
-> >  	u32 clk_mask;
-> > +
-> > +	/*
-> > +	 * i.MX8M Mini and Nano have a third DISPLAY_BLK_CTRL register
-> > +	 * which is used to control the reset for the MIPI Phy.
-> > +	 * Since it's only present in certain circumstances,
-> > +	 * an if-statement should be used before setting and clearing this
-> > +	 * register.
-> > +	 */
-> > +	u32 mipi_phy_rst_mask;
-> >  };
-> >  
-> >  #define DOMAIN_MAX_CLKS 3
-> > @@ -78,6 +88,8 @@ static int imx8m_blk_ctrl_power_on(struct generic_pm_domain *genpd)
-> >  
-> >  	/* put devices into reset */
-> >  	regmap_clear_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
-> > +	if (data->mipi_phy_rst_mask)
-> > +		regmap_clear_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
-> >  
-> >  	/* enable upstream and blk-ctrl clocks to allow reset to propagate */
-> >  	ret = clk_bulk_prepare_enable(data->num_clks, domain->clks);
-> > @@ -99,6 +111,8 @@ static int imx8m_blk_ctrl_power_on(struct generic_pm_domain *genpd)
-> >  
-> >  	/* release reset */
-> >  	regmap_set_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
-> > +	if (data->mipi_phy_rst_mask)
-> > +		regmap_set_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
-> >  
-> >  	/* disable upstream clocks */
-> >  	clk_bulk_disable_unprepare(data->num_clks, domain->clks);
-> > @@ -120,6 +134,9 @@ static int imx8m_blk_ctrl_power_off(struct generic_pm_domain *genpd)
-> >  	struct imx8m_blk_ctrl *bc = domain->bc;
-> >  
-> >  	/* put devices into reset and disable clocks */
-> > +	if (data->mipi_phy_rst_mask)
-> > +		regmap_clear_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
-> > +
-> 
-> Is it the best option to enable/disable both the master and slave MIPI
-> DPHY, regardless of whether they're used or not ? Or would it be better
-> to implement a reset controller to expose the two resets independently,
-> and acquire them from the corresponding display and camera drivers ?
+On =C3=BAter=C3=BD 19. =C5=99=C3=ADjna 2021 17:07:16 CET SeongJae Park wrot=
+e:
+> In short, DAMON_RECLAIM with 50ms/s time quota and regions prioritization=
+ on
+> v5.15-rc5 Linux kernel with ZRAM swap device achieves 38.58% memory saving
+> with only 1.94% runtime overhead.  For this, DAMON_RECLAIM consumes only
+> 4.97% of single CPU time.
 
-And I've now seen this has been raised by Jagan. I'll reply to that
-e-mail.
+While it really consumes little CPU time, is it fine for `kdamond.0` to be =
+in a=20
+D (uninterruptible sleep) state all the time while active, pushing loadavg=
+=20
+over 1.0?
 
-> >  	regmap_clear_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
-> >  	regmap_clear_bits(bc->regmap, BLK_CLK_EN, data->clk_mask);
-> >  
-> > @@ -488,6 +505,7 @@ static const struct imx8m_blk_ctrl_domain_data imx8mm_disp_blk_ctl_domain_data[]
-> >  		.gpc_name = "mipi-csi",
-> >  		.rst_mask = BIT(3) | BIT(4),
-> >  		.clk_mask = BIT(10) | BIT(11),
-> > +		.mipi_phy_rst_mask = BIT(16) | BIT(17),
-> >  	},
-> >  };
-> >  
+Thanks.
 
--- 
-Regards,
+=2D-=20
+Oleksandr Natalenko (post-factum)
 
-Laurent Pinchart
+
