@@ -2,81 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDCA945828B
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 09:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B9B45828E
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Nov 2021 09:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236099AbhKUIrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 03:47:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50902 "EHLO mail.kernel.org"
+        id S236691AbhKUIsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 03:48:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231700AbhKUIrI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 03:47:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E834C60249;
-        Sun, 21 Nov 2021 08:43:39 +0000 (UTC)
+        id S231700AbhKUIsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 03:48:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E01C60555;
+        Sun, 21 Nov 2021 08:45:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637484243;
-        bh=tu69UPs2oFYdHGpPkYWSO++YLwvfUcLbBzuvXbiASYU=;
+        s=k20201202; t=1637484316;
+        bh=oIzTeQ8dWAqf5/wiroWk46ZDKNRp9gwSpRMBo2v6U34=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D5Er70nazIbKppLsd5F5Xp/QgKOjqOlEYkmYtQAD0y5OpCROq1qwnPjiUGqIeKcZ8
-         QOO4vJmuckEkXlZuydebEuZRyTvuMW/b5mhCpIOGZhRcOOs5SqdyCDrsC6/r6zVqDo
-         HmA0WVOq8M9ANGfm1YLgLfunPKpkDwXmEpFjzP4mPa2cifyRIpKUjJHgRxp0qqN8ge
-         aAFZ/vP97Nfvl6V0Z1FDaRZ8/KstBjxPa4GYQSGNJoqsypN3TnKS0dMrrmiuh+agVj
-         xVbs4DbIeG00oLvkMJiS3xFGdKExpFCqrfLyKaelKtxsdi4wbGSomDVWFP544XHxmf
-         k7pa5d51aJc7Q==
-Date:   Sun, 21 Nov 2021 16:43:28 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linusw@kernel.org>,
-        Imre Kaloz <kaloz@openwrt.org>,
-        Krzysztof Halasa <khalasa@piap.pl>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel@lists.infradead.org, openbmc@lists.ozlabs.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 07/13] arm: imx: remove dead left-over from
- i.MX{27,31,35} removal
-Message-ID: <20211121083934.GK31998@dragon>
-References: <20211028141938.3530-1-lukas.bulwahn@gmail.com>
- <20211028141938.3530-8-lukas.bulwahn@gmail.com>
+        b=LMvUbGy4dpaXt/9MkfEvTpXXzKfVEU7u1KfV0iD7HtBVSRJq1rdnPkgxj3e9DzDI+
+         1yjjzFlTUaQnALRouTEiWI2jCkp0rcEIpzL4Qu+0wpntZAqZ/8lTP+BAu+ZpiWesqb
+         6Qw/Q4VD1Vt8xFrkWehtozTxZAsYb/4OXr7gZZM+zY+FBYudZuYdtkit4xEG+RNxnL
+         sIQMQyFuzItDxRm4iNyXPBusEgniI6M+yH+AB2eES5GS0E2NiVEKjWadDwD34o7aZc
+         gycj1JeqS8h1/vPbc1+VpjNqcka6gZ0jNy+998KYW5lYW7AuJQkU3mKl0L+Z1tAiIQ
+         Y36AogvhKIMIA==
+Date:   Sun, 21 Nov 2021 10:45:12 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Aya Levin <ayal@mellanox.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>, drivers@pensando.io,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Michael Chan <michael.chan@broadcom.com>,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Simon Horman <simon.horman@corigine.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [PATCH net-next 5/6] devlink: Reshuffle resource registration
+ logic
+Message-ID: <YZoHGKqLz6UBk2Sx@unreal>
+References: <cover.1637173517.git.leonro@nvidia.com>
+ <6176a137a4ded48501e8a06fda0e305f9cfc787c.1637173517.git.leonro@nvidia.com>
+ <20211117204956.6a36963b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YZYFvIK9mkP107tD@unreal>
+ <20211118174813.54c3731f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YZfFDSnnjOG+wSyK@unreal>
+ <20211119081017.6676843b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211028141938.3530-8-lukas.bulwahn@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20211119081017.6676843b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 04:19:32PM +0200, Lukas Bulwahn wrote:
-> The commits:
+On Fri, Nov 19, 2021 at 08:10:17AM -0800, Jakub Kicinski wrote:
+> On Fri, 19 Nov 2021 17:38:53 +0200 Leon Romanovsky wrote:
+> > On Thu, Nov 18, 2021 at 05:48:13PM -0800, Jakub Kicinski wrote:
+> > > On Thu, 18 Nov 2021 09:50:20 +0200 Leon Romanovsky wrote:  
+> > > > And it shouldn't. devlink_resource_find() will return valid resource only
+> > > > if there driver is completely bogus with races or incorrect allocations of
+> > > > resource_id.
+> > > > 
+> > > > devlink_*_register(..)
+> > > >  mutex_lock(&devlink->lock);
+> > > >  if (devlink_*_find(...)) {
+> > > >     mutex_unlock(&devlink->lock);
+> > > >     return ....;
+> > > >  }
+> > > >  .....
+> > > > 
+> > > > It is almost always wrong from locking and layering perspective the pattern above,
+> > > > as it is racy by definition if not protected by top layer.
+> > > > 
+> > > > There are exceptions from the rule above, but devlink is clearly not the
+> > > > one of such exceptions.  
+> > > 
+> > > Just drop the unnecessary "cleanup" patches and limit the amount 
+> > > of driver code we'll have to revert if your approach fails.  
+> > 
+> > My approach works, exactly like it works in other subsystems.
+> > https://lore.kernel.org/netdev/cover.1636390483.git.leonro@nvidia.com/
 > 
->   commit 879c0e5e0ac7 ("ARM: imx: Remove i.MX27 board files")
->   commit c93197b0041d ("ARM: imx: Remove i.MX31 board files")
->   commit e1324ece2af4 ("ARM: imx: Remove i.MX35 board files")
-> 
-> remove the config MACH_MX27_3DS, MACH_MX31_3DS and MACH_MX35_3DS.
-> Commit a542fc18168c ("ARM: imx31: Remove remaining i.MX31 board code")
-> further removes arch/arm/mach-imx/3ds_debugboard.{c,h}. So, only some
-> dead left-over in Kconfig and Makefile remains.
-> 
-> Remove this remaining left-over.
-> 
-> This issue was identified with ./scripts/checkkconfigsymbols.py,
-> which warns on references to the non-existing configs
-> MACH_MX{27,31,35}_3DS in ./arch/arm/mach-imx/Kconfig.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> What "other subsystems"? I'm aware of the RFC version of these patches.
 
-Applied, thanks!
+Approach to have fine-grained locking scheme, instead of having one big lock.
+This was done in MM for mmap_sem, we did it for RDMA too.
+
+> 
+> Breaking up the locks to to protect sub-objects only is fine for
+> protecting internal lists but now you can't guarantee that the object
+> exists when driver is called.
+
+I can only guess about which objects you are talking.
+
+If you are talking about various devlink sub-objects (ports, traps,
+e.t.c), they created by the drivers and as such should be managed by them.
+Also they are connected to devlink which is guaranteed to exist. At the end,
+they called to devlink_XXX->devlink pointer without any existence check.
+
+If you are talking about devlink instance itself, we guarantee that it
+exists between devlink_alloc() and devlink_free(). It seems to me pretty
+reasonable request from drivers do not access devlink before devlink_alloc()
+or after devlink_free(),
+
+> 
+> I'm sure you'll utter your unprovable "in real drivers.." but the fact
+> is my approach does not suffer from any such issues. Or depends on
+> drivers registering devlink last.
+
+Registration of devlink doesn't do anything except opening it to the world.
+The lifetime is controlled with alloc and free. My beloved sentence "in
+real drivers ..." belongs to use of devlink_put and devlink_locks outside
+of devlink.c and nothing more.
+
+> 
+> I can start passing a pointer to a devlink_port to split/unsplit
+> functions, which is a great improvement to the devlink driver API.
+
+You can do it with my approach too. We incremented reference counter
+of devlink instance when devlink_nl_cmd_port_split_doit() was called,
+and we can safely take devlink->port_list_lock lock before returning
+from pre_doit.
+
+> 
+> > We are waiting to see your proposal extended to support parallel devlink
+> > execution and to be applied to real drivers.
+> > https://lore.kernel.org/netdev/20211030231254.2477599-1-kuba@kernel.org/
+> 
+> The conversion to xarray you have done is a great improvement, I don't
+> disagree with the way you convert to allow parallel calls either.
+> 
+> I already told you that real drivers can be converted rather easily,
+> even if it's not really necessary.
+> 
+> But I'm giving you time to make your proposal. If I spend time
+> polishing my patches I'll be even more eager to put this behind me.
+
+I see exposure of devlink internals to the driver as last resort, so I
+stopped to make proposals after your responses:
+
+"I prefer my version."
+https://lore.kernel.org/netdev/20211108101646.0a4e5ca4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com/
+
+"If by "fixed first" you mean it needs 5 locks to be added and to remove
+any guarantees on sub-object lifetime then no thanks."
+https://lore.kernel.org/netdev/20211108104608.378c106e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com/
+
+> 
+> > Anyway, you are maintainer, you want half work, you will get half work.
+> 
+> What do you mean half work? You have a record of breaking things 
+> in the area and changing directions. How is my request to limit
+> unnecessary "cleanups" affecting drivers until the work is finished
+> not perfectly reasonable?!?!
+
+I don't know what made you think so. My end goals (parallel execution
+and safe devlink reload) and solutions didn't changes:
+ * Devlink instance is safe to access by kernel between devlink_alloc() and devlink_free().
+ * Devlink instance is visible for users between devlink_register() and devlink_unregister().
+ * Locks should be fine-grained and limited.
+
+By saying, half work, I mean that attempt to limit locks leave many
+functions to be such that can't fail and as such should be void and not
+"return 0".
+
+And regarding "breaking things", I'm not doing it for fun, but with real
+desire to improve kernel for everyone, not only for our driver.
+
+> 
+> > > I spent enough time going back and forth with you.
+> > 
+> > Disagreements are hard for everyone, not only for you.
