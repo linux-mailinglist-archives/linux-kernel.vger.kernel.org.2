@@ -2,143 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92BF3459691
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 22:24:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 168414596AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 22:29:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232953AbhKVV1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 16:27:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56302 "EHLO
+        id S232342AbhKVVcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 16:32:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbhKVV1y (ORCPT
+        with ESMTP id S229502AbhKVVcM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 16:27:54 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB38C061574;
-        Mon, 22 Nov 2021 13:24:47 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HygJr2Wrxz4xbH;
-        Tue, 23 Nov 2021 08:24:44 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1637616285;
-        bh=7Iuw+l76crKRR36inaZ9fpNgWQTDmKdXJwIb/VQ/gVA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ZBzlQl7N8FFWpFDvitmbFz6ghofjcv16xHonA4oGk5LD/8dF7yyFYzLSx7sswRuuA
-         kXQO0ek1H+IMbG1lQ8WuOHadOVdkXHxpgRsCYnK2nr0Dtwxup21/AcrgUvwKLsYelz
-         96QmAnVnckpUBHhIPMOld/pLubegQRDugO+H83FYSv/FbfuvKpHVaPM9IOCr0rZ8iV
-         EX4pfGxZQqtFbM613IvmQ+6W0zKDHY1cu8bWoNS38T87NwLBbMBvmvZTErjS3gabUD
-         CYr2TJdTyjZFQMgmloxAs1H2ZzVmKJcc3rhKvd+PZ0xbZx67+aCJMFmMlBM8FPKo6F
-         DBOkTouKP8zQQ==
-Date:   Tue, 23 Nov 2021 08:24:43 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Dillon Min <dillon.minfei@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tags need some work in the v4l-dvb tree
-Message-ID: <20211123082443.0a0740e1@canb.auug.org.au>
+        Mon, 22 Nov 2021 16:32:12 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF9EC061574;
+        Mon, 22 Nov 2021 13:29:05 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id d24so35268687wra.0;
+        Mon, 22 Nov 2021 13:29:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YU04lNfSw6056ENwW5csldH8LgLJmhuf/rxtXEphcoU=;
+        b=HXoISZE70aA5DDHoEVLz7DmaYsveCifR+QMkfPVic7M6QWJwR9pYK5OoAH6Vsm/XyO
+         p9lJV/I6elOyyWJXkyCpqcuJrzdfJXCbkX/3UwL3j6XxiEkO0Q+sBKxj3dR+cCa5w+5B
+         ApSbp/Z5YhqFye0V/3JMgCOU0hdDP46dpq0aGly8ijcE0dTnmNN9pYcKHv/nVwnsZycG
+         KfBQuAXI0aI3mbcyGML4flyiFlBKO8mdQtbj09JBGxv5xXwHKFnGY4BAc58TQitGeRJt
+         99CxEuYXg7frCu1fEF48zDl0j7xM1a9yN1iyCsK+bsJ2Ly/7IgRdqWWD6OJrQh6CeAY2
+         8e1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YU04lNfSw6056ENwW5csldH8LgLJmhuf/rxtXEphcoU=;
+        b=sxFtcudcL1Qj38mrMnfDGV5PbEkJrpZuYIEGlqTXFG5nc4vCnxKSJIekyzHNXXvv8/
+         r4/6QUgWAUcwRQ+ZUgrqGMWJA/zcLSmwSb9AAhBqS2CLN+NzvflWwuGv5QHSnoRD7qoE
+         s5bTBCQZn8OhW6tSD7+03woKoLJpDz+G67X5Mt4B23o4NN2zrN90wgUOyoB4hHfZdGfV
+         9L2LR5ktoLpjVOPFrVu9/Wlg0lMzhZbiB8LjicUvFByaYbaDr189bZz/n6rPK3+RrvMO
+         xOwxjuLb9owwHz8ilc/nEdRCiLGaCMAUDG7ipnFS+dmjMsFI/GbiV7aVY/GIPhV5Q4T2
+         ArTA==
+X-Gm-Message-State: AOAM532BT2gZo6LlHt3ZQAcWzukNBL3HdqPdnLhdUTZ4Aaw5H4cjS2pw
+        EFqLYx4x+pnIMuo8PAKw3/UFD2n8zQzcEQ==
+X-Google-Smtp-Source: ABdhPJyuj49EFk3Dr9T0ATIMCiynQw5lRpDWlCzxQX1jX0LvirdarrPgCsBim1jWUMmycRMf33+ViQ==
+X-Received: by 2002:adf:ea0a:: with SMTP id q10mr428797wrm.1.1637616543976;
+        Mon, 22 Nov 2021 13:29:03 -0800 (PST)
+Received: from localhost.localdomain (149-45-179-94.pool.ukrtel.net. [94.179.45.149])
+        by smtp.gmail.com with ESMTPSA id k8sm9767928wrn.91.2021.11.22.13.29.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Nov 2021 13:29:03 -0800 (PST)
+From:   Denis Pauk <pauk.denis@gmail.com>
+Cc:     eugene.shalygin@gmail.com, andy.shevchenko@gmail.com,
+        pauk.denis@gmail.com, platform-driver-x86@vger.kernel.org,
+        thomas@weissschuh.net, Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] hwmon: (nct6775) Support lock by ACPI mutex
+Date:   Mon, 22 Nov 2021 23:28:47 +0200
+Message-Id: <20211122212850.321542-1-pauk.denis@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/qAR40pRs60EGlK7m5JYVp/G";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/qAR40pRs60EGlK7m5JYVp/G
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Lock by ACPI mutex that is required for support ASUS MAXIMUS VII HERO 
+motherboard. In other case, all methods are returned zero instead of real 
+values. Code uses acpi mutex before any IO operations in case when such 
+acpi mutex is known.
 
-Hi all,
+Patch series adds additional check for ChipID, and if method returned 
+zero, all calls by acpi_wmi are disabled. 
 
-In commit
+Could you please review? Is it correct usage of ACPI mutex or better 
+to use some other method for reuse same ACPI mutex?
 
-  d9fbdedc56ea ("media: stm32-dma2d: fix compile-testing failed")
+---
 
-Fixes tag
+Denis Pauk (3):
+  hwmon: (nct6775) Use nct6775_*() lock function pointers in
+    nct6775_data.
+  hwmon: (nct6775) Implement custom lock by ACPI mutex.
+  hwmon: (nct6775) add MAXIMUS VII HERO.
 
-  Fixes: bff6e3e2f4c9 ("media: stm32-dma2d: STM32 DMA2D driver")
+ drivers/hwmon/nct6775.c | 358 +++++++++++++++++++++++++++++-----------
+ 1 file changed, 259 insertions(+), 99 deletions(-)
 
-has these problem(s):
 
-  - Target SHA1 does not exist
+base-commit: fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf
+-- 
+2.33.0
 
-Maybe you meant
-
-Fixes: 002e8f0d5927 ("media: stm32-dma2d: STM32 DMA2D driver")
-
-In commit
-
-  147907e93224 ("media: stm32-dma2d: fix compile errors when W=3D1")
-
-Fixes tag
-
-  Fixes: bff6e3e2f4c9 ("media: stm32-dma2d: STM32 DMA2D driver")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: 002e8f0d5927 ("media: stm32-dma2d: STM32 DMA2D driver")
-
-In commit
-
-  22f2cac62dea ("media: atomisp-ov2680: properly set the vts value")
-
-Fixes tag
-
-  Fixes: 62b984359b6f ("media: atomisp-ov2680: Fix ov2680_set_fmt() messing=
- up high exposure settings")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: 29400b5063db ("media: atomisp-ov2680: Fix ov2680_set_fmt() messing u=
-p high exposure settings")
-
-In commit
-
-  d9916e7c87c9 ("media: atomisp-ov2680: initialize return var")
-
-Fixes tag
-
-  Fixes: 6b5b60687ada ("media: atomisp-ov2680: Save/restore exposure and ga=
-in over sensor power-down")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: 4ed2caf85337 ("media: atomisp-ov2680: Save/restore exposure and gain=
- over sensor power-down")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/qAR40pRs60EGlK7m5JYVp/G
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGcCpsACgkQAVBC80lX
-0GzS6gf/ShnKjZvN47rNCBtRogwUuAgIvNVD4vYyWbv3h9ul1cOq10Ve4INgj0cb
-qAVohjQyCuHBsm4ukjJpDuHnB0DtmNnlgPUlsHW5mdqmF0aMWqM4UBPckzQjbIzY
-7CLGJlWKsNOY2Ta+WhxGKL9TzLTf9mxAvk8aAjAvawzemS5Z3H6qsZS7rwyk6jEF
-8ly3b30UgFVh/sqrgLEjd9JpQqE8PSNJ1NEITLgZHE/9HNpzv4qEzXW8ACru3Xvk
-Bih9klxwcFLo32G8aC91ZfrkdVmETPem+vRPW/zYUCzse1/z3zXceDFriEO4c1gv
-+BWwW8zF/ElGb3cvvezTKseeA7Af9g==
-=7Kqj
------END PGP SIGNATURE-----
-
---Sig_/qAR40pRs60EGlK7m5JYVp/G--
