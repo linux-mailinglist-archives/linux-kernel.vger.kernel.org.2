@@ -2,215 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E19CE4588CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 06:21:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC844588F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 06:29:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbhKVFYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 00:24:34 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:44775 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229636AbhKVFYd (ORCPT
+        id S229983AbhKVFcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 00:32:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229527AbhKVFcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 00:24:33 -0500
-Received: by mail-io1-f72.google.com with SMTP id 7-20020a6b0107000000b005ed196a2546so230044iob.11
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 21:21:27 -0800 (PST)
+        Mon, 22 Nov 2021 00:32:17 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86FB6C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 21:29:10 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id n8so13099470plf.4
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 21:29:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:subject:date:message-id;
+        bh=uPLgIBlHzlDQAOxeK/1rgfm4GBYhPTkogYnAxbthSW4=;
+        b=amL2AcIf4MijIAxFlA4zp8S+pih7hjHTs+2DPv7zcdL6CSlJvsWw9D/BbIkvgnJQPP
+         EC2dZNRKYEwtlxQSjemxgTb42pAN67c7IBWHvvmBYvc2+cDIk889jYsCtF5vD2+l5COR
+         vHINg8Jqj4lZUuHNw7WXZ+uYI9miAmX5jhOC1SnTM+QFCypuIuCVTQ+R1ilGkt5Bv7dh
+         9uBiKm+SWdLG/fVCRGpeXG+PNIcxMD6jWbvh80/4PVuSlhD0cCc+3LiqEzdrj35/+j1z
+         vnwEmhyKpRJi5lQXijSjvsCTPliOtt3ZhkL/pKZH05v3fzAHVmBAtTFw3But/sJp6mDL
+         3pDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=AfGbe8pSXev/P+LkZEL8O6Kdv4ktDQehCAQGE4pUMyQ=;
-        b=oujMSGxEhaSC1A4sxaRUHrvPP2JBUA6vJcXDCo+n7fkGsy9+5EBcnPkBoWZrAy0+vC
-         8/UhbFLfm+XxOAegio+Dkb1VCBZX7LLMZC17QUxy+E2Pry0qFaaMN7of09G0kAzUqoO9
-         cWA3dWMhGor9o0NPN2R4sznClec4iNVjGDunSutd2L4AfbYHVLU+zm5XRCO8nepxQmO4
-         1855eKOo1+unfo5yrg7eeRZKrmDHUfJ2051t6AGJP8/bivh9aCK2zbwa7Ihcb5xn2Gnf
-         ltlP+KNobPbJfPq2BI6oC08Zu+aQBe9vfW3piH4dJJW55gcNtharpGNE22jtjhLJ1Hh/
-         SnCg==
-X-Gm-Message-State: AOAM533WP0pV0pmk/r2+iFn0FhgNSOMo4xjVFR61lfSVDi1DMK8jHtEA
-        lgNSBa3JEeOWFtrpk2jZsnezfwkjTXICeKId9a8RXsJfIf1W
-X-Google-Smtp-Source: ABdhPJzQREm2oDznoIFaInXKIuHhsovnfaznepYR4+2eDSKfHCsrVVDY2vWdTItLwPOQ6YGz7k3DR6zElJI6d18pcduNK7yykECh
-MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1607:: with SMTP id x7mr46156355jas.27.1637558487660;
- Sun, 21 Nov 2021 21:21:27 -0800 (PST)
-Date:   Sun, 21 Nov 2021 21:21:27 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f4ba3505d159cbf7@google.com>
-Subject: [syzbot] possible deadlock in usb_reset_and_verify_device
-From:   syzbot <syzbot+7f3f8da319285fc76bcb@syzkaller.appspotmail.com>
-To:     Thinh.Nguyen@synopsys.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        mathias.nyman@linux.intel.com, stern@rowland.harvard.edu,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=uPLgIBlHzlDQAOxeK/1rgfm4GBYhPTkogYnAxbthSW4=;
+        b=Vgc0FYdPNKuuq0PMDi2xZ/EFxwa/mit8LDQcp7aNqADjOWfWW7X8gMeMFRsH6b1fDY
+         qIPGv3RkNT77eWDYaLvsyLFVI5+xVnuXFzyFZ521KHL6iyThLcouSsZADd72XEASn2pC
+         k8VgT+CV9QSg3KhoMjq/BLxw7ixUNdS1ZoZHsn+g9Uouly7c4kSUstMUgM7FauQa2qwz
+         J5LrqaJrwaEpsoIjGqpe1oNrDSBSVlTYZMAP8UAxMm+d4ZPiWevIt6gZwpcNoA5CWjSq
+         pkcPXT3Qqrp9YAqIzALBOG4ilvAO5CJxf0Pr1hMN5eMaPNIC4gGFVfnnhLzH7uFL2msQ
+         hx2g==
+X-Gm-Message-State: AOAM532yocBzz9C26jG6ZoBGjyGHzi97XOwJQ4NzWL0r0KXkD8BsiL/z
+        nj8gi9XawdeWBlfo38R+3Q6oLz4xOEFzKg==
+X-Google-Smtp-Source: ABdhPJwzZQByaR18uPu69Kq/3ouZzOAOpUx9v+kDWevWfW8GYWYxEoicSE+M8rNxgkhr890XjMhybQ==
+X-Received: by 2002:a17:902:e405:b0:141:b2fa:b00 with SMTP id m5-20020a170902e40500b00141b2fa0b00mr103683808ple.22.1637558949950;
+        Sun, 21 Nov 2021 21:29:09 -0800 (PST)
+Received: from bj03382pcu.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id g21sm7592725pfc.95.2021.11.21.21.29.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 21 Nov 2021 21:29:09 -0800 (PST)
+From:   Huangzhaoyang <huangzhaoyang@gmail.com>
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] arch: arm64: introduce RODATA_FULL_USE_PTE_CONT
+Date:   Mon, 22 Nov 2021 13:28:49 +0800
+Message-Id: <1637558929-22971-1-git-send-email-huangzhaoyang@gmail.com>
+X-Mailer: git-send-email 1.7.9.5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-syzbot found the following issue on:
+Kernel linear mapping will be split to the smallest granularity when
+RODATA_FULL applied, which could lead to TLB pressure. Introduce a method
+to apply PTE_CONT on pte.
 
-HEAD commit:    5191249f8803 Add linux-next specific files for 20211118
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=126edbc9b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fca39774e64812b0
-dashboard link: https://syzkaller.appspot.com/bug?extid=7f3f8da319285fc76bcb
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7f3f8da319285fc76bcb@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-5.16.0-rc1-next-20211118-syzkaller #0 Not tainted
-------------------------------------------------------
-kworker/1:2/136 is trying to acquire lock:
-ffff88801d292c68 (hcd->address0_mutex){+.+.}-{3:3}, at: usb_reset_and_verify_device+0x3ee/0xee0 drivers/usb/core/hub.c:5923
-
-but task is already holding lock:
-ffff88801da345c0 (&port_dev->status_lock){+.+.}-{3:3}, at: usb_lock_port drivers/usb/core/hub.c:3086 [inline]
-ffff88801da345c0 (&port_dev->status_lock){+.+.}-{3:3}, at: usb_port_resume+0x2a6/0x1950 drivers/usb/core/hub.c:3644
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&port_dev->status_lock){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:607 [inline]
-       __mutex_lock+0x12f/0x12f0 kernel/locking/mutex.c:740
-       usb_lock_port drivers/usb/core/hub.c:3086 [inline]
-       hub_port_connect drivers/usb/core/hub.c:5279 [inline]
-       hub_port_connect_change drivers/usb/core/hub.c:5493 [inline]
-       port_event drivers/usb/core/hub.c:5639 [inline]
-       hub_event+0x21c1/0x4450 drivers/usb/core/hub.c:5721
-       process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
-       worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
-       kthread+0x405/0x4f0 kernel/kthread.c:327
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
--> #0 (hcd->address0_mutex){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3063 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3186 [inline]
-       validate_chain kernel/locking/lockdep.c:3801 [inline]
-       __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5027
-       lock_acquire kernel/locking/lockdep.c:5637 [inline]
-       lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5602
-       __mutex_lock_common kernel/locking/mutex.c:607 [inline]
-       __mutex_lock+0x12f/0x12f0 kernel/locking/mutex.c:740
-       usb_reset_and_verify_device+0x3ee/0xee0 drivers/usb/core/hub.c:5923
-       finish_port_resume drivers/usb/core/hub.c:3499 [inline]
-       usb_port_resume+0x12f7/0x1950 drivers/usb/core/hub.c:3699
-       usb_generic_driver_resume+0x40/0xa0 drivers/usb/core/generic.c:305
-       usb_resume_device drivers/usb/core/driver.c:1288 [inline]
-       usb_resume_both+0x627/0x8d0 drivers/usb/core/driver.c:1512
-       __rpm_callback+0xc9/0x330 drivers/base/power/runtime.c:377
-       rpm_callback+0x1da/0x220 drivers/base/power/runtime.c:504
-       rpm_resume+0xf5d/0x1bd0 drivers/base/power/runtime.c:879
-       __pm_runtime_resume+0xb7/0x170 drivers/base/power/runtime.c:1110
-       pm_runtime_get_sync include/linux/pm_runtime.h:393 [inline]
-       usb_autoresume_device+0x1e/0x60 drivers/usb/core/driver.c:1705
-       usb_remote_wakeup+0x8b/0xe0 drivers/usb/core/hub.c:3723
-       hub_port_connect_change drivers/usb/core/hub.c:5479 [inline]
-       port_event drivers/usb/core/hub.c:5639 [inline]
-       hub_event+0x2d69/0x4450 drivers/usb/core/hub.c:5721
-       process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
-       worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
-       kthread+0x405/0x4f0 kernel/kthread.c:327
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&port_dev->status_lock);
-                               lock(hcd->address0_mutex);
-                               lock(&port_dev->status_lock);
-  lock(hcd->address0_mutex);
-
- *** DEADLOCK ***
-
-5 locks held by kworker/1:2/136:
- #0: ffff888011abb138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888011abb138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic_long_set include/linux/atomic/atomic-long.h:41 [inline]
- #0: ffff888011abb138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/linux/atomic/atomic-instrumented.h:1198 [inline]
- #0: ffff888011abb138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:635 [inline]
- #0: ffff888011abb138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:662 [inline]
- #0: ffff888011abb138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x896/0x1690 kernel/workqueue.c:2269
- #1: ffffc900027ffdb0 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x8ca/0x1690 kernel/workqueue.c:2273
- #2: ffff88801da31220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:760 [inline]
- #2: ffff88801da31220 (&dev->mutex){....}-{3:3}, at: hub_event+0x1c1/0x4450 drivers/usb/core/hub.c:5667
- #3: ffff88814a94a220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:760 [inline]
- #3: ffff88814a94a220 (&dev->mutex){....}-{3:3}, at: usb_remote_wakeup+0x1f/0xe0 drivers/usb/core/hub.c:3720
- #4: ffff88801da345c0 (&port_dev->status_lock){+.+.}-{3:3}, at: usb_lock_port drivers/usb/core/hub.c:3086 [inline]
- #4: ffff88801da345c0 (&port_dev->status_lock){+.+.}-{3:3}, at: usb_port_resume+0x2a6/0x1950 drivers/usb/core/hub.c:3644
-
-stack backtrace:
-CPU: 1 PID: 136 Comm: kworker/1:2 Not tainted 5.16.0-rc1-next-20211118-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2143
- check_prev_add kernel/locking/lockdep.c:3063 [inline]
- check_prevs_add kernel/locking/lockdep.c:3186 [inline]
- validate_chain kernel/locking/lockdep.c:3801 [inline]
- __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5027
- lock_acquire kernel/locking/lockdep.c:5637 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5602
- __mutex_lock_common kernel/locking/mutex.c:607 [inline]
- __mutex_lock+0x12f/0x12f0 kernel/locking/mutex.c:740
- usb_reset_and_verify_device+0x3ee/0xee0 drivers/usb/core/hub.c:5923
- finish_port_resume drivers/usb/core/hub.c:3499 [inline]
- usb_port_resume+0x12f7/0x1950 drivers/usb/core/hub.c:3699
- usb_generic_driver_resume+0x40/0xa0 drivers/usb/core/generic.c:305
- usb_resume_device drivers/usb/core/driver.c:1288 [inline]
- usb_resume_both+0x627/0x8d0 drivers/usb/core/driver.c:1512
- __rpm_callback+0xc9/0x330 drivers/base/power/runtime.c:377
- rpm_callback+0x1da/0x220 drivers/base/power/runtime.c:504
- rpm_resume+0xf5d/0x1bd0 drivers/base/power/runtime.c:879
- __pm_runtime_resume+0xb7/0x170 drivers/base/power/runtime.c:1110
- pm_runtime_get_sync include/linux/pm_runtime.h:393 [inline]
- usb_autoresume_device+0x1e/0x60 drivers/usb/core/driver.c:1705
- usb_remote_wakeup+0x8b/0xe0 drivers/usb/core/hub.c:3723
- hub_port_connect_change drivers/usb/core/hub.c:5479 [inline]
- port_event drivers/usb/core/hub.c:5639 [inline]
- hub_event+0x2d69/0x4450 drivers/usb/core/hub.c:5721
- process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
- kthread+0x405/0x4f0 kernel/kthread.c:327
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
- </TASK>
-usb 4-1: USB disconnect, device number 2
-usblp0: removed
-usb 6-1: new high-speed USB device number 2 using dummy_hcd
-usb 6-1: Using ep0 maxpacket: 32
-usb 6-1: config 1 interface 0 altsetting 0 endpoint 0x81 has an invalid bInterval 0, changing to 7
-usb 6-1: config 1 interface 0 altsetting 0 endpoint 0x81 has invalid wMaxPacketSize 0
-usb 6-1: config 1 interface 1 altsetting 1 endpoint 0x82 has invalid wMaxPacketSize 0
-usb 6-1: config 1 interface 1 altsetting 1 bulk endpoint 0x82 has invalid maxpacket 0
-usb 6-1: config 1 interface 1 altsetting 1 endpoint 0x3 has invalid wMaxPacketSize 0
-usb 6-1: config 1 interface 1 altsetting 1 bulk endpoint 0x3 has invalid maxpacket 0
-usb 6-1: New USB device found, idVendor=0525, idProduct=a4a1, bcdDevice= 0.40
-usb 6-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-usb 6-1: Product: syz
-usb 6-1: Manufacturer: syz
-usb 6-1: SerialNumber: syz
-cdc_ncm 6-1:1.0: bind() failure
-cdc_ncm 6-1:1.1: CDC Union missing and no IAD found
-cdc_ncm 6-1:1.1: bind() failure
-usb 6-1: USB disconnect, device number 2
-
-
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/arm64/Kconfig       |  9 +++++++++
+ arch/arm64/mm/mmu.c      | 10 ++++++++--
+ arch/arm64/mm/pageattr.c |  9 +++++++++
+ 3 files changed, 26 insertions(+), 2 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index fee914c..3f8fbf0 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -1198,6 +1198,15 @@ config RODATA_FULL_DEFAULT_ENABLED
+ 	  This requires the linear region to be mapped down to pages,
+ 	  which may adversely affect performance in some cases.
+ 
++config RODATA_FULL_USE_PTE_CONT
++       bool "Apply PTE_CONT when RODATA_FULL_DEFAULT_ENABLED enabled"
++       depends on RODATA_FULL_DEFAULT_ENABLED
++       default y
++       help
++         Apply PTE_CONT on linear mapping as much as we can when
++         RODATA_FULL_DEFAULT_ENABLED enabled which could decrease the
++         impaction on performance by small pte granularity.
++
+ config ARM64_SW_TTBR0_PAN
+ 	bool "Emulate Privileged Access Never using TTBR0_EL1 switching"
+ 	help
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index cfd9deb..8017b17 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -124,15 +124,21 @@ static bool pgattr_change_is_safe(u64 old, u64 new)
+ 	 * The following mapping attributes may be updated in live
+ 	 * kernel mappings without the need for break-before-make.
+ 	 */
++#ifndef CONFIG_RODATA_FULL_USE_PTE_CONT
+ 	pteval_t mask = PTE_PXN | PTE_RDONLY | PTE_WRITE | PTE_NG;
++#else
++	pteval_t mask = PTE_PXN | PTE_RDONLY | PTE_WRITE | PTE_NG | PTE_CONT;
++#endif
+ 
+ 	/* creating or taking down mappings is always safe */
+ 	if (old == 0 || new == 0)
+ 		return true;
+ 
+ 	/* live contiguous mappings may not be manipulated at all */
+-	if ((old | new) & PTE_CONT)
++#ifndef CONFIG_RODATA_FULL_USE_PTE_CONT
++	if (old | new) & PTE_CONT)
+ 		return false;
++#endif
+ 
+ 	/* Transitioning from Non-Global to Global is unsafe */
+ 	if (old & ~new & PTE_NG)
+@@ -206,7 +212,7 @@ static void alloc_init_cont_pte(pmd_t *pmdp, unsigned long addr,
+ 
+ 		/* use a contiguous mapping if the range is suitably aligned */
+ 		if ((((addr | next | phys) & ~CONT_PTE_MASK) == 0) &&
+-		    (flags & NO_CONT_MAPPINGS) == 0)
++		    (IS_ENABLED(CONFIG_RODATA_FULL_USE_PTE_CONT) || (flags & NO_CONT_MAPPINGS) == 0))
+ 			__prot = __pgprot(pgprot_val(prot) | PTE_CONT);
+ 
+ 		init_pte(pmdp, addr, next, phys, __prot);
+diff --git a/arch/arm64/mm/pageattr.c b/arch/arm64/mm/pageattr.c
+index a3bacd7..88a87eb 100644
+--- a/arch/arm64/mm/pageattr.c
++++ b/arch/arm64/mm/pageattr.c
+@@ -99,6 +99,15 @@ static int change_memory_common(unsigned long addr, int numpages,
+ 	if (rodata_full && (pgprot_val(set_mask) == PTE_RDONLY ||
+ 			    pgprot_val(clear_mask) == PTE_RDONLY)) {
+ 		for (i = 0; i < area->nr_pages; i++) {
++#ifdef CONFIG_RODATA_FULL_USE_PTE_CONT
++			unsigned long cont_pte_low_bound;
++			unsigned long addr;
++
++			addr = (u64)page_address(area->pages[i]);
++			cont_pte_low_bound = addr & CONT_PTE_MASK;
++			__change_memory_common(cont_pte_low_bound,
++					       (~CONT_PTE_MASK + 1), __pgprot(0) , __pgprot(PTE_CONT));
++#endif
+ 			__change_memory_common((u64)page_address(area->pages[i]),
+ 					       PAGE_SIZE, set_mask, clear_mask);
+ 		}
+-- 
+1.9.1
+
