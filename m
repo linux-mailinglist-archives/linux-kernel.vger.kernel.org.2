@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FCDD458B15
+	by mail.lfdr.de (Postfix) with ESMTP id E8A8C458B16
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 10:08:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231734AbhKVJLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 04:11:11 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:56681 "EHLO
+        id S239065AbhKVJLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 04:11:13 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:51965 "EHLO
         wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232560AbhKVJLB (ORCPT
+        by vger.kernel.org with ESMTP id S239002AbhKVJLE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 04:11:01 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id DA8A2320187F;
-        Mon, 22 Nov 2021 04:07:54 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Mon, 22 Nov 2021 04:07:55 -0500
+        Mon, 22 Nov 2021 04:11:04 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id D6D623200E83;
+        Mon, 22 Nov 2021 04:07:57 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 22 Nov 2021 04:07:58 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
         :mime-version:content-type:content-transfer-encoding; s=fm1; bh=
-        6Ms+ZvKg1RmXpLcufzRehl6C0N3v0HxGSH1+fC9MD5c=; b=iOcoMyOkihQRdiiw
-        O9sUhjrIv/8cwU4fM+x7k21KIcwOzAfvscALUvdBn5Hs4xzeVmESu7yDiVs0Dmj/
-        UJv6Nsjpissyf+/FxQLGzWGPKgrNUaa9/E1BVI7lrdbGTWhhpYl+Ln/DfXLDAQZ/
-        QUbDG1LTq4WpFondmuVVu7dYdqWZe3vTXqk/Ml5NTUkPu7yqhWFGOPAPvhqi4ojM
-        JMIXiqG/mvgKgISM3iiLKrD3lhP3An9sb6YbOWxZqnf2Ah2zMV/KHDvbJxE6dUmU
-        Nka2E3yO6vEX+ORDvebGm1qx20oxLGjsDD8Z4O3mji5pMN7IaZjiQZUpcN63Vmyv
-        7iqf1g==
+        G/XaaQn1wpINf7ztTpVzNG/AUZxJhlmbIY1Y0oQZkGg=; b=nhwkT/eLzc38lou4
+        OXDf9ZsWteb3IyvPSH9UeoHSGuS+iO0IHaHYuodkHjKXxgBQ4ihLZ9HJNuc2kuOa
+        aT5AGDfMu2PFndKAJlI/d+O3ymj8Js7P3GkKRIr7lnXzjY0aMVAb4WQ5DaDTCBOk
+        2P2oHTPJsSo43ugUlqVnpui1i0P1o1apQl9zTKyMARw6JJLTg1aoQ2uvQRlv/05Y
+        NGhwfD+OX/BYM+4JHNZqbWKc1f9qMksI+sNnqaMLGmpivGK6A+Gsw1dRYwgzscqg
+        hong4BZBwFpa0hF6glZN5w/wqhzwhRS6Z2CIpNDESlSR8l65xB843lgAC72f2XhF
+        Ac58Ow==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:from:in-reply-to:message-id:mime-version:references
         :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=6Ms+ZvKg1RmXpLcufzRehl6C0N3v0HxGSH1+fC9MD
-        5c=; b=Dd6kgV/L/PiKFZzTm/4OVqTzdYqdehduqFZVmFPpOnhZ3CrZoCPybZfB1
-        M2AVb9Zi/beZ0UHEMEbaMEZkFZ/VTpeTn/5MQb8RpCaIJGMXqIbP+nQ6MjSCa1lu
-        julMC5JdQSy0ge0f2DlmCCMFn+jxX2tcE/XEBDoUz4X6IbkSW1mL/F5aQ1eVPyZc
-        FQXHKbtOEeM02i6iWxvW+8UpeZ3/aGjOVs2YpLWcwuf6ttH87AhvDdPnBxS2+3QD
-        9meXnleTacisNaKpe0UBRtwGAL0yZVnPiTHJTAanEdpAglLC833SaFao8VDr9Yxr
-        89wSnj3pftI+60YQ4cDVzlFGXoegA==
-X-ME-Sender: <xms:6l2bYbgXvmqE4JjzMvS9Nui_GLQnjiPXYoubeBg5QIqxthLorfnG6g>
-    <xme:6l2bYYCF1fFbEvwsihFPZ7miWGqCwZZwJGAx0jj8LtrRRnObkydlHrk-fOQHlDxPq
-    jTswhLDk-vc6P_NQ4s>
-X-ME-Received: <xmr:6l2bYbEvO9cZzMsMcEnGZc9lU_znyusiQ3zzC0ss8YbYPrmvxbEg8Y760KI6rZ_cPwfvYaRf9W4SdFRfh6K4A5io5hBdydrpmCk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrgeegucetufdoteggodetrfdotffvucfrrh
-    hofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgenuceurghi
-    lhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurh
-    ephffvufffkffojghfgggtgfesthekredtredtjeenucfhrhhomhepofgrgihimhgvucft
-    ihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtthgvrh
-    hnpeejuefggeekfffgueevtddvudffhfejffejjedvvdduudethefhfefhfeegieekkeen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigih
-    hmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:6l2bYYTAG4u0VR4Fwv-5kkuS9yNY8COFy21l50nrHGqzVSYzMXXTmA>
-    <xmx:6l2bYYxUu1dUgAVjVJ8s23DO7d3Qgd4SI9bZcaHjaj9uddBeeb-4-g>
-    <xmx:6l2bYe5jr4LL2eQ4fgv_97eqBKfi3EZW8un79uZhTnfWkUyUpbvMZA>
-    <xmx:6l2bYbxvq4J0tpfI798pvyMJXIpU0L2fSkIvTPwFfwoNc-DK0cmqfw>
+        :x-sasl-enc; s=fm1; bh=G/XaaQn1wpINf7ztTpVzNG/AUZxJhlmbIY1Y0oQZk
+        Gg=; b=MTsa4PRzKRhbw2EAoa/k1da4JIP2iEAwM6Y4mjbTGVdRvuv2uLHF4gQZZ
+        nZO8nGJK8cwu11eRQ+PY0M3p5vUZYxbmTNPyb4Tgf2moDPOAaXoMtsNKi3uIVpqY
+        VhSFryDmI5UWK5sTJjV8/yCuucPWN17NzORuGZOpn3tkHRcVn8h+sknuD0FmDb1T
+        fAAT+pQywBMje5bU3kMhYmupKzuxgw/hcanmVsr9nCFt3LzTx6UsYSJ6A/K0yzWe
+        gbYtyC+lersA+xwTA207K+VqZEbp4Fu4LLhpmnhbgDng6cuDy5vhUQ4ZLuiqnGGm
+        si115r/Uqy9aMAJaRRylFD7aExCRA==
+X-ME-Sender: <xms:7V2bYUyuL7oUONUJwYZ3cB52g-m1Cvc67f4BptJXgdhqn1zcXIotqA>
+    <xme:7V2bYYSa6_rlKMja9F6_oi975Rpqp8JnSo4QbMx9XHW8aKwjB1b6naoXeg3xKQN0w
+    3SRoNiznUhdiftKjFQ>
+X-ME-Received: <xmr:7V2bYWW6M2RY8e1fR_5J0TyM12tCwzZ-JveWfFcDvVnm57XApEsK_seWcfpkFOWhOiBmVHNiajkFsLZ157-wt5yFvOMLzOfiink>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrgeefgdduvdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffojghfgggtgfesthekredtredtjeenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeejuefggeekfffgueevtddvudffhfejffejjedvvdduudethefhfefhfeeg
+    ieekkeenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:7V2bYSiHfNOcsjUv9xYsm6XHTkB5aZPrPFUNA8rcjZMxRZ7Svg4hIA>
+    <xmx:7V2bYWBAl3LKqTz-_sPtXbh7F15QZZXGuMYv-g1Hkc3v2bsA1u0g5w>
+    <xmx:7V2bYTJFo8eMKqQGG5bKby02-MOm_AauA-KqKhGYqVaH0B6Q4235rA>
+    <xmx:7V2bYcDNQAMyl0mAMGzVWOi7wNJ8ZaHL8BZTcRqtRfFPUwF-u4CHaA>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 22 Nov 2021 04:07:53 -0500 (EST)
+ 22 Nov 2021 04:07:56 -0500 (EST)
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     mripard@kernel.org, wens@csie.org,
         Jernej Skrabec <jernej.skrabec@gmail.com>
 Cc:     Maxime Ripard <maxime@cerno.tech>, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
         devicetree@vger.kernel.org, linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH] ARM: dts: sun8i: h3: beelink-x2: Add GPIO CEC node
-Date:   Mon, 22 Nov 2021 10:07:43 +0100
-Message-Id: <163757205949.21212.16394303935375288513.b4-ty@cerno.tech>
+Subject: Re: [PATCH] ARM: dts: sun8i: h3: beelink-x2: Sort nodes
+Date:   Mon, 22 Nov 2021 10:07:44 +0100
+Message-Id: <163757205949.21212.16601638001637017389.b4-ty@cerno.tech>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211120102024.439456-1-jernej.skrabec@gmail.com>
-References: <20211120102024.439456-1-jernej.skrabec@gmail.com>
+In-Reply-To: <20211121070321.601659-1-jernej.skrabec@gmail.com>
+References: <20211121070321.601659-1-jernej.skrabec@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -75,11 +75,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 20 Nov 2021 11:20:24 +0100, Jernej Skrabec wrote:
-> Beelink X2 doesn't use HW CEC controller found in DW HDMI core. It has
-> dedicated GPIO pin for that purpose.
+On Sun, 21 Nov 2021 08:03:21 +0100, Jernej Skrabec wrote:
+> Nodes are not sorted alphabetically. Do it.
 > 
-> Add a node for it.
+> There is no functional change.
 > 
 > 
 
