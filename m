@@ -2,114 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A93E458E72
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 13:33:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 626E1458E76
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 13:33:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239552AbhKVMgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 07:36:13 -0500
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:38818 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239482AbhKVMgL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 07:36:11 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Uxl5nz3_1637584373;
-Received: from e02h04404.eu6sqa(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0Uxl5nz3_1637584373)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 22 Nov 2021 20:33:03 +0800
-From:   Wen Gu <guwen@linux.alibaba.com>
-To:     kgraul@linux.ibm.com, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dust.li@linux.alibaba.com,
-        tonylu@linux.alibaba.com, syzkaller-bugs@googlegroups.com
-Subject: [PATCH net] net/smc: Avoid warning of possible recursive locking
-Date:   Mon, 22 Nov 2021 20:32:53 +0800
-Message-Id: <1637584373-49664-1-git-send-email-guwen@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S239367AbhKVMgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 07:36:42 -0500
+Received: from mga03.intel.com ([134.134.136.65]:60414 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234638AbhKVMgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 07:36:41 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10175"; a="234719872"
+X-IronPort-AV: E=Sophos;i="5.87,254,1631602800"; 
+   d="scan'208";a="234719872"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 04:33:34 -0800
+X-IronPort-AV: E=Sophos;i="5.87,254,1631602800"; 
+   d="scan'208";a="537859733"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 04:33:33 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1mp8Vl-009QnG-3a;
+        Mon, 22 Nov 2021 14:33:29 +0200
+Date:   Mon, 22 Nov 2021 14:33:28 +0200
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] gpio: add sloppy logic analyzer using polling
+Message-ID: <YZuOGAxO5ZslW5vB@smile.fi.intel.com>
+References: <20210918083307.3195-1-wsa+renesas@sang-engineering.com>
+ <20210918083307.3195-2-wsa+renesas@sang-engineering.com>
+ <CAHp75Vdv=0i05EitMi6JjbjML-jFD_1M0q7ps2KVHcN4UtFU-w@mail.gmail.com>
+ <YUhGkBdXJUI3XadP@ninjato>
+ <CAHp75VcXuYLM4cPAb+rv47wz0v+Q6tjek6tKuBj32K81XxkKaA@mail.gmail.com>
+ <YZuKyEcsXb8dwiHG@ninjato>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZuKyEcsXb8dwiHG@ninjato>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Possible recursive locking is detected by lockdep when SMC
-falls back to TCP. The corresponding warnings are as follows:
+On Mon, Nov 22, 2021 at 01:19:20PM +0100, Wolfram Sang wrote:
 
- ============================================
- WARNING: possible recursive locking detected
- 5.16.0-rc1+ #18 Tainted: G            E
- --------------------------------------------
- wrk/1391 is trying to acquire lock:
- ffff975246c8e7d8 (&ei->socket.wq.wait){..-.}-{3:3}, at: smc_switch_to_fallback+0x109/0x250 [smc]
+...
 
- but task is already holding lock:
- ffff975246c8f918 (&ei->socket.wq.wait){..-.}-{3:3}, at: smc_switch_to_fallback+0xfe/0x250 [smc]
+> > > > > +       if (ret < 0) {
+> > > >
+> > > > > +               dev_err(dev, "error naming the GPIOs: %d\n", ret);
+> > > > > +               return ret;
+> > > > > +       }
+> > > >
+> > > > Perhaps
+> > > >
+> > > >   return dev_err_probe() ?
+> > >
+> > > Reading strings from DT can be deferred? I don't think so.
+> > 
+> > There is a new development, i.e. the documentation for dev_err_probe()
+> > is going to be amended to allow this. But I can't quickly find a patch
+> > in mailing list with the related discussion.
+> 
+> I still don't get this one, so if there is new development and you have
+> a pointer, I'd be glad to hear about it. Otherwise we can fix it
+> incrementally later.
 
- other info that might help us debug this:
-  Possible unsafe locking scenario:
+See 7065f92255bb ("driver core: Clarify that dev_err_probe() is OK even w/out
+-EPROBE_DEFER").
 
-        CPU0
-        ----
-   lock(&ei->socket.wq.wait);
-   lock(&ei->socket.wq.wait);
-
-  *** DEADLOCK ***
-
-  May be due to missing lock nesting notation
-
- 2 locks held by wrk/1391:
-  #0: ffff975246040130 (sk_lock-AF_SMC){+.+.}-{0:0}, at: smc_connect+0x43/0x150 [smc]
-  #1: ffff975246c8f918 (&ei->socket.wq.wait){..-.}-{3:3}, at: smc_switch_to_fallback+0xfe/0x250 [smc]
-
- stack backtrace:
- Call Trace:
-  <TASK>
-  dump_stack_lvl+0x56/0x7b
-  __lock_acquire+0x951/0x11f0
-  lock_acquire+0x27a/0x320
-  ? smc_switch_to_fallback+0x109/0x250 [smc]
-  ? smc_switch_to_fallback+0xfe/0x250 [smc]
-  _raw_spin_lock_irq+0x3b/0x80
-  ? smc_switch_to_fallback+0x109/0x250 [smc]
-  smc_switch_to_fallback+0x109/0x250 [smc]
-  smc_connect_fallback+0xe/0x30 [smc]
-  __smc_connect+0xcf/0x1090 [smc]
-  ? mark_held_locks+0x61/0x80
-  ? __local_bh_enable_ip+0x77/0xe0
-  ? lockdep_hardirqs_on+0xbf/0x130
-  ? smc_connect+0x12a/0x150 [smc]
-  smc_connect+0x12a/0x150 [smc]
-  __sys_connect+0x8a/0xc0
-  ? syscall_enter_from_user_mode+0x20/0x70
-  __x64_sys_connect+0x16/0x20
-  do_syscall_64+0x34/0x90
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-The nested locking in smc_switch_to_fallback() is considered to
-possibly cause a deadlock because smc_wait->lock and clc_wait->lock
-are the same type of lock. But actually it is safe so far since
-there is no other place trying to obtain smc_wait->lock when
-clc_wait->lock is held. So the patch replaces spin_lock() with
-spin_lock_nested() to avoid false report by lockdep.
-
-Link: https://lkml.org/lkml/2021/11/19/962
-Fixes: 2153bd1e3d3d ("Transfer remaining wait queue entries during fallback")
-Reported-by: syzbot+e979d3597f48262cb4ee@syzkaller.appspotmail.com
-Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
----
- net/smc/af_smc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index b61c802..2692cba 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -585,7 +585,7 @@ static void smc_switch_to_fallback(struct smc_sock *smc, int reason_code)
- 		 * to clcsocket->wq during the fallback.
- 		 */
- 		spin_lock_irqsave(&smc_wait->lock, flags);
--		spin_lock(&clc_wait->lock);
-+		spin_lock_nested(&clc_wait->lock, SINGLE_DEPTH_NESTING);
- 		list_splice_init(&smc_wait->head, &clc_wait->head);
- 		spin_unlock(&clc_wait->lock);
- 		spin_unlock_irqrestore(&smc_wait->lock, flags);
 -- 
-1.8.3.1
+With Best Regards,
+Andy Shevchenko
+
 
