@@ -2,106 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ECC545888F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 05:14:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A2F458891
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 05:14:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbhKVERQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 23:17:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhKVERP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 23:17:15 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C815FC061714
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 20:14:09 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id g17so46345685ybe.13
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 20:14:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ufl+2uObLITemAu7uloYFsoe/3xNUfHY/I0EtFNIV8Y=;
-        b=5aecOjRkc9aLOLkzu2uDthsl37YvSVjvTyMWLPECyRTFNifHUei2xI+c6kJSnkBbXA
-         dL6NCp9o/kTrwsLDBOXgNmJAzPkSzHZx2fy0zC/Vzs4ZehwydwyZzXIa1CUe15+gDHOo
-         CWP/bEvLLQADhSE3EC0/Fot+hgUFPn79xZtCFbbOZ1SECjdtA7rWVeooExU8Lv4cyOgs
-         rK4adpXz4mUFyhb+x8qXpUt5mgMCg6E/S7jWk0cn7wdu7VW6A63J2g/K+xYIG6DM9Wya
-         2GQvPfznECSNNgZOXK0/OhvPq3LE79eRHwmkUs4CCzXaBUkZqoq7PtwX/cBFGeDXOM+G
-         IAsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ufl+2uObLITemAu7uloYFsoe/3xNUfHY/I0EtFNIV8Y=;
-        b=qKAx8zcziIUvN7HlYJ2zxAbi0ySpCeOa5panH6JImKLZdt5Bj9aKL40X80ZfxSbVKw
-         58S3Q3gzLArKdddJzdgXa+c5sBT1pK2dS2y7TJrCbXMyH212I8Nsjb1nooh1qPsZC/I7
-         WD2Oa49dAmcdZIxY0VpzEigu5Bto5vGfK8VmKLZCk5Re57E/85HiAL7hWfH+qgwlVOt4
-         JOP6gtIuMkiQGkPsdHzWp626oB1WnB5//nZzgHi/2o5y7p61bojfhLD5NTBNXb0AjvVo
-         ULxA0wdfXNHR88GRGzm7bm6UQMhHHeKIgloxMxg3jTCsj5JBGM6f3qY8cm9wRGFiqkj/
-         4LvA==
-X-Gm-Message-State: AOAM533mzkUxHuwn1q55FyXc6EP1buEPbhjwyfv22pru1bZA6cTfvupi
-        oER0kO0a4YnMLQJD4lkzJgUCz0bocilkafn3hBV/eQ==
-X-Google-Smtp-Source: ABdhPJxewORqZoBMGaaxO4om0D8FAxIpf6byiMm6K3qnsT6twjozIDqCQveLRQqVrpnPUKnBAObQHoXwFPuAkibE3o0=
-X-Received: by 2002:a25:b0a8:: with SMTP id f40mr56470993ybj.125.1637554448962;
- Sun, 21 Nov 2021 20:14:08 -0800 (PST)
+        id S230487AbhKVERz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 23:17:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38460 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229544AbhKVERy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 23:17:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63E1E606A5;
+        Mon, 22 Nov 2021 04:14:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637554488;
+        bh=YNn4+8WDKdGZ8O44BogasOLlwHLNvIIYf1h2THEU4a0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JjOF/MztR8BScLqSpiXQw+VaHTKIq3bqKUJfQlJ9fBY7fYdXHC0Q7KPLT5DFxK5FK
+         ySi0iA4wOsAWuT3F0y0DM97WihsQScXkoLiLaYoAAIaZF07SA5SdarFjj0mXH9XVoz
+         DcNpyzmWGNo7sSlHBS6V2UFqBbDUekYt2aDXV/6bsUaTRDYrpejGOjeyQjYhIX0pe0
+         RovhvPo+fnITvDCLuLecl5b6K6+OOW+lq9zm8zfH9C6IVy3fljyN4E8IAODGG/9E0U
+         4c+eP+BcChDXSp8J6K0V/WJaojAOK//zHFeaNysTEYfb9VefSPJra+uq4u6OqAE2oQ
+         DXkjtni1VNwHA==
+Date:   Mon, 22 Nov 2021 09:44:43 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Toralf =?iso-8859-1?Q?F=F6rster?= <toralf.foerster@gmx.de>
+Cc:     Linux Kernel <linux-kernel@vger.kernel.org>,
+        dmaengine@vger.kernel.org
+Subject: Re: compile error for 5.15.4
+Message-ID: <YZsZM/FqwJTqqJfj@matsya>
+References: <747802b9-6c5d-cdb5-66e2-05b820f5213c@gmx.de>
+ <YZp6yfVUx4eEwaxm@matsya>
+ <fda4aa94-22d9-b54c-2bde-b91a579af802@gmx.de>
 MIME-Version: 1.0
-References: <20211119041104.27662-1-songmuchun@bytedance.com>
- <YZdQ+0D7n5xCnw5A@infradead.org> <20211119145643.21bbd5ee8e2830dd72d983e3@linux-foundation.org>
-In-Reply-To: <20211119145643.21bbd5ee8e2830dd72d983e3@linux-foundation.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 22 Nov 2021 12:13:33 +0800
-Message-ID: <CAMZfGtV7pNaVNtzPCmXnGgeojPzyVxXSeawnp5znJxkjFweAgA@mail.gmail.com>
-Subject: Re: [PATCH v2] fs: proc: store PDE()->data into inode->i_private
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        gladkov.alexey@gmail.com, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fda4aa94-22d9-b54c-2bde-b91a579af802@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 20, 2021 at 6:56 AM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Thu, 18 Nov 2021 23:23:39 -0800 Christoph Hellwig <hch@infradead.org> wrote:
->
-> > On Fri, Nov 19, 2021 at 12:11:04PM +0800, Muchun Song wrote:
-> > > +
-> > > +/*
-> > > + * Obtain the private data passed by user through proc_create_data() or
-> > > + * related.
-> > > + */
-> > > +static inline void *pde_data(const struct inode *inode)
-> > > +{
-> > > +   return inode->i_private;
-> > > +}
-> > > +
-> > > +#define PDE_DATA(i)        pde_data(i)
-> >
-> > What is the point of pde_data?
->
-> It's a regular old C function, hence should be in lower case.
->
-> I assume the upper case thing is a holdover from when it was
-> implemented as a macro.
->
-> >  If we really think changing to lower
-> > case is worth it (I don't think so, using upper case for getting at
-> > private data is a common idiom in file systems),
->
-> It is?  How odd.
->
-> I find the upper-case thing to be actively misleading.  It's mildly
-> surprising to discover that it's actually a plain old C function.
->
-> > we can just do that
-> > scripted in one go.
->
-> Yes, I'd like to see a followup patch which converts the current
-> PDE_DATA() callsites.
->
+On 21-11-21, 18:18, Toralf Förster wrote:
+> On 11/21/21 17:58, Vinod Koul wrote:
+> > Can you please send your config file when you saw this, which toolchain
+> > was used to compile...
+> > 
+> > Thanks
+> sure,
 
-You mean replace all PDE_DATA with pde_data in another patch?
+This is fixed by:
+b3b180e73540 ("dmaengine: remove debugfs #ifdef")
 
-Thanks.
+Pls confirm by cherry-picking. I will send this fix to stable.
+
+-- 
+~Vinod
