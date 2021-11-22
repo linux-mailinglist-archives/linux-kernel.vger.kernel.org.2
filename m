@@ -2,123 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 188B14595CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 20:53:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96AE44595CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 20:54:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240284AbhKVT4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 14:56:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35860 "EHLO
+        id S240300AbhKVT5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 14:57:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240254AbhKVT4k (ORCPT
+        with ESMTP id S237596AbhKVT5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 14:56:40 -0500
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF503C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 11:53:33 -0800 (PST)
-Received: by mail-il1-x12f.google.com with SMTP id s14so19316814ilv.10
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 11:53:33 -0800 (PST)
+        Mon, 22 Nov 2021 14:57:04 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70EF3C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 11:53:55 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id y7so15100617plp.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 11:53:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aYWRo4OnMSjtGg0tX+Mk+QuvsqmMl0X/zqqUxoDxPuQ=;
-        b=qoIiOgAz8Ked6kslZpQ1ZXKr3ZWose+cMbN8e9bUt2W9tM31pFZfHHWfthnKAumbo/
-         1iP0vPgfFO1apG/C8gEGIo6yTpnJ6JPgdrRwSgIAqStCoogmfCmweTHT/YQQ469eLX23
-         T8Y3uvEi8+aNAfk3DCwP1TzSgZHmy0qJS7/uXfgkgcGEtpsWhdMTngaYY9BXV/61i+a9
-         SW3V5XEHG8wSYxT+88+G0ie4lIJuZ7yx4a4nP+IW2R8k4nXEHpHA/nr+9jVYIUaUwrL5
-         QBGPVGnUUFY7x+w4KS7oAAv5gRkF+1rM3ZekVRyRutgpFYSnbxMpoeLU9UOr6l6yh2zs
-         LMgg==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=AMkuTcoJTkYSjfeIFypgDSDy28ltI3FST8ly2AlCH+k=;
+        b=fUgUK1UtUnhY2xM13JM5thRmVs8VPz82G/yccZNMuKOYiJRMP4SNjGMHXaA06rySdQ
+         1XE5W55+qoFXLPQv8MCyyx/CV/G0fkezN+k8QphQDwYSQLXRjoLuYtwcZxENdCKw+KKb
+         lngRxJBTZ4ZSye0oek5DWObaYQCvqmWwqDEQel+PnKQVciZ1By15Tshry791B3+1tVVx
+         Uy6Wdz1wD+wlG1HLQ1bbdV+XTXRPtf+PV8Sdu8vpQVhQDt0UNWTsZtLZ/WSyasetyQWb
+         XXGfqRmY0aEiRUw0coFJHhJlKkf8JNlnMmKOwO3eCE5mZyY/kDoaFoTJh5k6dyhEYwTR
+         10bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aYWRo4OnMSjtGg0tX+Mk+QuvsqmMl0X/zqqUxoDxPuQ=;
-        b=QUEvN8UinoBl5UQOd7+4nzmsPlnY/Pc5K37AZURzM5aXQL820b7+i6OMt/8g6dMhyS
-         ra7RH5aEZUZfzbkeJHoZfD8o+hJcxPM2w23/Ma0ZUvh/68TNts4xn3soXW+jzyQIoidp
-         75rKy6sRt5JQ4wB3GrfB9IhOBFrZO6es32gvcWjX0+HnhFHCjSv9PR/gJrfN1EiC/gsy
-         BSIs3LkRkCtIA94G2++DFMC5LJAw+4C/mnv6jdEyYKAlLwFh8iZOet9kxsMXlgh01exw
-         KFenRDuy5Y9owtDK/Sh7i3qbCNeAreQGQrrfK+gjWbpGy370JB9WDtmSzGBZaH34ArUN
-         uMOg==
-X-Gm-Message-State: AOAM532aKBbeOnz5P2QdHwGemV0vqgpRQMFab5EKIh9N+Yb4+EJhxsQ8
-        kgIdfsmR7jbfyPXa1w0r5Poniw==
-X-Google-Smtp-Source: ABdhPJwP3wYrRTZQJ8HHrsPBlUltYe5Z5Bf7eDFAFZOy32OsoOlu2fOqGFaq9YOGEZF+8WYUctP5NQ==
-X-Received: by 2002:a05:6e02:1563:: with SMTP id k3mr21659500ilu.256.1637610813112;
-        Mon, 22 Nov 2021 11:53:33 -0800 (PST)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id a25sm5389768ioa.24.2021.11.22.11.53.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Nov 2021 11:53:32 -0800 (PST)
-Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
-To:     David Hildenbrand <david@redhat.com>,
-        Andrew Dona-Couch <andrew@donacou.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Drew DeVault <sir@cmpwn.com>
-Cc:     Ammar Faizi <ammarfaizi2@gnuweeb.org>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        io_uring Mailing List <io-uring@vger.kernel.org>,
-        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
-References: <20211028080813.15966-1-sir@cmpwn.com>
- <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
- <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
- <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
- <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
- <CFQZSHV700KV.18Y62SACP8KOO@taiga>
- <20211116114727.601021d0763be1f1efe2a6f9@linux-foundation.org>
- <CFRGQ58D9IFX.PEH1JI9FGHV4@taiga>
- <20211116133750.0f625f73a1e4843daf13b8f7@linux-foundation.org>
- <b84bc345-d4ea-96de-0076-12ff245c5e29@redhat.com>
- <8f219a64-a39f-45f0-a7ad-708a33888a3b@www.fastmail.com>
- <333cb52b-5b02-648e-af7a-090e23261801@redhat.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <ca96bb88-295c-ccad-ed2f-abc585cb4904@kernel.dk>
-Date:   Mon, 22 Nov 2021 12:53:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=AMkuTcoJTkYSjfeIFypgDSDy28ltI3FST8ly2AlCH+k=;
+        b=1fLJZ3jYhOYR7EdWXJAErkximF3+BNO8hxhjAJSEjODhPOeMRVKx8lDp2ilhmsKVJE
+         bLELNoOTST6J/4ZYD8oR6TIDlv4unVMt6OuEBK3Nk44z1YW0ci9XiXlWu/OhbzJ2PtMp
+         DrBNXVRmrcqWOW9AWAy5lXOtifcheFEm+oQfkyXq4XmnLfMIdwId61moRLufaIyjK/og
+         GiGfqF5gO+DYmcfLRQHou8NBEHBSmvXcCtWC8SvqfxjTJGeUmlBm4IkD9DL5lWyO42a7
+         R6HlZA2Gyxn1reAe8jZwaQaT7GTfDmVDpRZEcyGH5iRfVZdVjMww0xw1ivEMlAKCH5ai
+         9jaA==
+X-Gm-Message-State: AOAM533U6ybeYjda9VCBurMKmukbvlw62JIaAqPfK+M4vOpmMeUQB36m
+        AqHh8zbdYTfNYgdmd3wv5reZ/EpXn/xtVw==
+X-Google-Smtp-Source: ABdhPJwM+lCFwmfFMiO8v1VS33gT8JDPpKnUGfSaEXnhaPSeFMpbxHLkG1vZKsQbuPwYXsOsGpkSxA==
+X-Received: by 2002:a17:903:22c4:b0:141:deda:a744 with SMTP id y4-20020a17090322c400b00141dedaa744mr112777598plg.25.1637610834850;
+        Mon, 22 Nov 2021 11:53:54 -0800 (PST)
+Received: from makvihas ([103.238.104.128])
+        by smtp.gmail.com with ESMTPSA id t4sm10322369pfq.163.2021.11.22.11.53.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Nov 2021 11:53:54 -0800 (PST)
+Date:   Tue, 23 Nov 2021 01:23:50 +0530
+From:   Vihas Mak <makvihas@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk
+Cc:     gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        martin@kaiser.cx, paskripkin@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: r8188eu: remove unnecessary NULL check
+Message-ID: <20211122195350.GA166134@makvihas>
 MIME-Version: 1.0
-In-Reply-To: <333cb52b-5b02-648e-af7a-090e23261801@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/22/21 11:26 AM, David Hildenbrand wrote:
-> On 22.11.21 18:55, Andrew Dona-Couch wrote:
->> Forgive me for jumping in to an already overburdened thread.  But can
->> someone pushing back on this clearly explain the issue with applying
->> this patch?
-> 
-> It will allow unprivileged users to easily and even "accidentally"
-> allocate more unmovable memory than it should in some environments. Such
-> limits exist for a reason. And there are ways for admins/distros to
-> tweak these limits if they know what they are doing.
+remove unnecessary NULL check surrounding rtw_free_netdev(), as the check
+is already performed inside rtw_free_netdev() in
+drivers/staging/r8188eu/os_dep/osdep_service.c.
 
-But that's entirely the point, the cases where this change is needed are
-already screwed by a distro and the user is the administrator. This is
-_exactly_ the case where things should just work out of the box. If
-you're managing farms of servers, yeah you have competent administration
-and you can be expected to tweak settings to get the best experience and
-performance, but the kernel should provide a sane default. 64K isn't a
-sane default.
+Signed-off-by: Vihas Mak <makvihas@gmail.com>
+---
+ drivers/staging/r8188eu/os_dep/usb_intf.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> This is not a step into the right direction. This is all just trying to
-> hide the fact that we're exposing FOLL_LONGTERM usage to random
-> unprivileged users.
-> 
-> Maybe we could instead try getting rid of FOLL_LONGTERM usage and the
-> memlock limit in io_uring altogether, for example, by using mmu
-> notifiers. But I'm no expert on the io_uring code.
-
-You can't use mmu notifiers without impacting the fast path. This isn't
-just about io_uring, there are other users of memlock right now (like
-bpf) which just makes it even worse.
-
-We should just make this 0.1% of RAM (min(0.1% ram, 64KB)) or something
-like what was suggested, if that will help move things forward. IMHO the
-32MB machine is mostly a theoretical case, but whatever .
-
+diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
+index 5a35d9fe3fc9..392bd7868519 100644
+--- a/drivers/staging/r8188eu/os_dep/usb_intf.c
++++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
+@@ -466,8 +466,7 @@ static void rtw_usb_if1_deinit(struct adapter *if1)
+ 		if1->hw_init_completed);
+ 	rtw_handle_dualmac(if1, 0);
+ 	rtw_free_drv_sw(if1);
+-	if (pnetdev)
+-		rtw_free_netdev(pnetdev);
++	rtw_free_netdev(pnetdev);
+ }
+ 
+ static int rtw_drv_init(struct usb_interface *pusb_intf, const struct usb_device_id *pdid)
 -- 
-Jens Axboe
+2.25.1
 
