@@ -2,170 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B1045971C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 23:04:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F71A459716
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 23:04:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239829AbhKVWHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 17:07:54 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:2486 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239995AbhKVWHm (ORCPT
+        id S239866AbhKVWHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 17:07:30 -0500
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:49283 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239472AbhKVWHZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 17:07:42 -0500
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AMKp8Or031836;
-        Mon, 22 Nov 2021 22:04:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=TZ6vik4grgqtOJgtAy8rPWATYXJh62sMicdI+zK2Hh8=;
- b=byen7eZLVTtiljgcYcer0w1Un0xEGE+646DAclhdQitah5CeZWb4Zwywnfnv9nGVi3H4
- aVIHYefFlfIajtgtlhYKvk83U33W7KoBnC685y2G/KDnIEaVj9OVeRbxDcIJNa+lH1cB
- f2814APMRHFvAJThJfCrBdR9nyfmZNV7LBEKN/pZFEO9jDRdd2hWe3GnRv2jcFz/Y9pV
- 15lQeL9fiH74Sbx7PHow8RBcIGcJrgqqHWtRLIV3u/Tfkx/YDB36AP/vjhkzJJOZ80qV
- MDehTY4j8KCSzcRPnNfDarCwc0/SjFh1J75RJ3etxUpGEBrYT9+HIZR1d+CMQ3dd18/o cw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3cg461d3pq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Nov 2021 22:04:11 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AMM0Yh4007842;
-        Mon, 22 Nov 2021 22:04:10 GMT
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2172.outbound.protection.outlook.com [104.47.73.172])
-        by userp3030.oracle.com with ESMTP id 3cep4xcwc7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Nov 2021 22:04:10 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FJSFO+upYJIlSaRos2J+rVDtNGAJ2OOJQ8hSjfXjq475YbnIoVczEzsWXfX2wPL1RcsPejjVD6ej5DiZqbCw8PzZrNr7BrMGbw9RoPo8hpU74+U7x2kNVyu91rfutKMjoZQSO6tW/oDhrE+8T1vkDzyz5HWd1GtPKowTmaYqF0rqvF/ywblb366wj8mQF3ITsppq3H6OeOVSMIr2ukl7vUTTaMWL1+gZKmDVGGJFgt9h/8N1XKkYburRltNJKxO9j8L+oBy54D43SW8L27pBdCyQYLzNB1p47uyG6DPHcOmmV/uaWVsBFW5IcGfc6ypHNCRTONceiiV4V3wJA0YIcw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TZ6vik4grgqtOJgtAy8rPWATYXJh62sMicdI+zK2Hh8=;
- b=SBA2JlpLL5ewEzo3Cmcn8sWENAghahBJpGm6oL2iEWnAkFusCdlSdcNyUcbCWKR68VxoYzONI4QfttbEQJXZbEeOEYmJlWeHMhrBN8kwzHM1VFRqXxryhXnVRvI57Z/5ZyPu6NfUIC2zUGuTLPJ5c+0KUhKoF22XbSLiwBYJz7GagNIu0SBELJXyZefKJHr37EhY0WeXsgka7EE5j3sK30l0ljAMUNni/IaQg2xwEa0rt0dXPnMuVWuFpg02G/97iiD8AJQOghoW1ZAiO/dJWjw6W0jCZohWZNzPStdDjI0ZS4YA+nnpN6otXiLdC+gHZ7daeo2nHKLZf8SZI79GIg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TZ6vik4grgqtOJgtAy8rPWATYXJh62sMicdI+zK2Hh8=;
- b=ghhTjjjbC268qN1Tk5GCWFhFsEKne8swcbxX7vDmGuJlp5aAZL6YBgWRH5Dz/4qSrqpqcMee7YQyzlJ+RfymGFppplKePUaH3MkqmO2S+AuiGqHjqfAFL5MjU4P9MPHKkcsP/fHUgKpL0pJrKNBio7d2d+4iOnur/CRfb89CFr8=
-Received: from CH0PR10MB5020.namprd10.prod.outlook.com (2603:10b6:610:c0::22)
- by CH0PR10MB4956.namprd10.prod.outlook.com (2603:10b6:610:c9::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Mon, 22 Nov
- 2021 22:04:08 +0000
-Received: from CH0PR10MB5020.namprd10.prod.outlook.com
- ([fe80::8c5d:23d6:3381:fefe]) by CH0PR10MB5020.namprd10.prod.outlook.com
- ([fe80::8c5d:23d6:3381:fefe%5]) with mapi id 15.20.4713.024; Mon, 22 Nov 2021
- 22:04:08 +0000
-Message-ID: <550dcbd7-d48e-0b3f-4029-a887c84a72c5@oracle.com>
-Date:   Mon, 22 Nov 2021 17:04:01 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.1
-Subject: Re: [PATCH] xen/pvh: add missing prototype to header
-Content-Language: en-US
-To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, kernel test robot <lkp@intel.com>
-References: <20211119153913.21678-1-jgross@suse.com>
-From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
-In-Reply-To: <20211119153913.21678-1-jgross@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA0PR11CA0199.namprd11.prod.outlook.com
- (2603:10b6:806:1bc::24) To CH0PR10MB5020.namprd10.prod.outlook.com
- (2603:10b6:610:c0::22)
+        Mon, 22 Nov 2021 17:07:25 -0500
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20211122220416euoutp02fd0bb19b24bce6833deb724aefafcdc2~5-X3VVRiM0087900879euoutp02_
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 22:04:16 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20211122220416euoutp02fd0bb19b24bce6833deb724aefafcdc2~5-X3VVRiM0087900879euoutp02_
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1637618656;
+        bh=ynjXecPy+x67xYtTl2zbxpDhdENHt074ow1WT4E9cBU=;
+        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+        b=OawMEl5As2nOSeQqux2L/uF4pLlxegHJhPp4DzXNXUUankmL4e4JIfTssqBXH5wgK
+         c8ViAGt016gtOUz4XIRcBM3fVN4pvaX/hMgZTMRqedmd5HZxFlzt3MBLf3xkswSTLY
+         25epVBwnbJNMm7B2rOQajfOo7t03CB8VmcymDpLg=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20211122220415eucas1p228be94b02883e594aa747b4808d1ba11~5-X2W2yAI2755827558eucas1p20;
+        Mon, 22 Nov 2021 22:04:15 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id F6.2B.10260.FD31C916; Mon, 22
+        Nov 2021 22:04:15 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20211122220414eucas1p2aed07333fea9caccf343404365a8a0f5~5-X1tGKi32755827558eucas1p2x;
+        Mon, 22 Nov 2021 22:04:14 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20211122220414eusmtrp25b1be8ede9a482596ccfef5ecb53d3ef~5-X1sL7y11106011060eusmtrp2J;
+        Mon, 22 Nov 2021 22:04:14 +0000 (GMT)
+X-AuditID: cbfec7f5-bddff70000002814-5c-619c13dfae7b
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id D1.69.09522.ED31C916; Mon, 22
+        Nov 2021 22:04:14 +0000 (GMT)
+Received: from [106.210.134.141] (unknown [106.210.134.141]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20211122220413eusmtip183fbf441f0a72e3fa73503374721a174~5-X1AhJ9u1648416484eusmtip1D;
+        Mon, 22 Nov 2021 22:04:13 +0000 (GMT)
+Message-ID: <95864889-e80b-e627-7b63-1079caa0fa12@samsung.com>
+Date:   Mon, 22 Nov 2021 23:04:13 +0100
 MIME-Version: 1.0
-Received: from [10.74.108.248] (138.3.200.56) by SA0PR11CA0199.namprd11.prod.outlook.com (2603:10b6:806:1bc::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.24 via Frontend Transport; Mon, 22 Nov 2021 22:04:05 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f28178ce-44ba-4509-958b-08d9ae040168
-X-MS-TrafficTypeDiagnostic: CH0PR10MB4956:
-X-Microsoft-Antispam-PRVS: <CH0PR10MB4956E78E9C4989E82CCACD178A9F9@CH0PR10MB4956.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1247;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +zyHqIwBbf/0XLiS9aKrTow0I2AukwmdmTr9IhPAcLHl3mUFgdoEwK6JN9dORb1PnRgXwFNyo2/HYDQh1gBx7HThM8N4v2Uuv0YIl/Z+KlUo/pONG6b3L2BFurGJk/d9wSvmy6BUB4HZg5+CDGhJYDWAM95/NPlBaJm2VEE3ESdU53WoLnFgFjXKj36vi8/5StWO3hY9yoTrUsel08ngkZrKlL4F11i0PVFpKWLY+j73X6VaYQ0dNYOzZjTOfdsS/eia/qKTiaeuPGCJVDZlGwKvr149basyKzvjVK3n3k0hByuHtgchiZXzRML9nETHR643L5pR7hjfltHKqfid9eOSmofi8IbLDgrR8iJOTHexY8GQZMwzLCZaWWsOmXcCU2iMHol8qn5gA4kTypQ8g3S8y1n6ZIIBYqAvv6JDYONOdK6KDi6QH0t7n6bjz5xs/7wQv+w7V/G4tQ6gxTP01P84L610Vl6TNSCNKNEKnzUDFWCsYISq1+zrpixLuAJZMPWz+tQh3WNXTtHo9jX8C9JnenALXY5K0FJIolOjR4qJh/Asb7g6r2vCoyKYUgKQ+MY8ueT0kL0kR7HnOaxeKChuc6N2vkCnGOuCBDUalWc3viJzn2aMMH3T4uvaG5fLyxYaUeRDgEnZ5mYPMldHidc3+zl/vLSoW52X/HqknW+E8JFq1n3NTciDIdc8xbWy4K3IdmWe9nXzSfi9E4DA1Cdx8fmRETzNq819PZdoE+E=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR10MB5020.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(44832011)(31696002)(54906003)(86362001)(36756003)(26005)(16576012)(316002)(4326008)(4744005)(38100700002)(53546011)(5660300002)(66556008)(7416002)(66476007)(186003)(6666004)(6486002)(2616005)(508600001)(31686004)(8676002)(956004)(2906002)(8936002)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OThFd0dMbk1yQ3ZibzZKV2pFNHFHTUVSVGtmRU1kOVYzTnQ1RWdNenRvR1F0?=
- =?utf-8?B?NkgzL1gzMkYxM29aVWkxcWltOStORFdXM3l4cGx3ZDBBbGl6UDBvOWxaRFZi?=
- =?utf-8?B?YUlOYlg4THR0Z2d0R0xGa2QvYUZvOFB3SndsRTNjbXJ1Zk8rbXF4UlB3MjE4?=
- =?utf-8?B?aXRLb3BQZ0d1RzVCanpjQndoWnR4ZVBES21nVlFiTnlkMno4VHROZ1VUdU5q?=
- =?utf-8?B?eG1PT2llVjNnODhpcE9hUC9TeEFsK1FjN1dNOEtMZjA1ZUFtWnRnNERmdDlj?=
- =?utf-8?B?VWpZVXRobmJXa3FRelRtREJRSG1NYmw2L0ZKcFJXczRGeXQwdU04bFl6NVJI?=
- =?utf-8?B?KzRadEF3U1MzSENkVGkvSnJKQXFreDZTYTZJa2ZCVEJyMllIQ0k2bVU1MERY?=
- =?utf-8?B?K0k4TFBzd0V5L1ZSMlVURzRxbW5IVlY3ai9kRFNzZWQ3M2ZaMFl3YkkrS3Nw?=
- =?utf-8?B?RS9yR0NnSW9ha3hnSkpuYU40cEFrSnI5a25KbDdwcG1VZjhKMTVuYnhBdlhn?=
- =?utf-8?B?NVJ3QzUzVDF2Q2RmWVNiZEI0SUtqVWpzSzExT0xabXlqQk9rWHpGRk9zcjdn?=
- =?utf-8?B?aUcxZ1lVRWVEZy9JQ243MFlVa1dtVzdybndDdGZNMmI4UTdnempRVGdaZnFW?=
- =?utf-8?B?cVQ4dkN4VWQrc1U5cUtUem1HS3VBNkRGUDEvekNqNWhUckJnbFpZNnRuVi8z?=
- =?utf-8?B?Nzg0WDd5NWppbENFMER6SGpsZ3JEWVFLamsyUmZETGJoVFJ6VjFtUHFJZVFx?=
- =?utf-8?B?a1o0U2d1K0NKTXFBOVU5cjhjL3BBUGNZdHhRM1VaU3FFWWRjZWxqWmhzaER6?=
- =?utf-8?B?VWpWVzh1WkNjRWs3d01pREFLamtGQmRWb3JIdjloWlNFKzR1bWVVK3d2ODBB?=
- =?utf-8?B?L1FRa0wxUkpPVkRtTkdqMnNBZEZZaURRZmRsZlBsQ2k4Q212ZU5pb25DQ1Fm?=
- =?utf-8?B?VndzeWg3Z1BySEJZOTNKMmRhRGU0S1VlRHFYaWtYT1JDelVvOGlkb1h1SU1J?=
- =?utf-8?B?UER0Z3liYzNkL3FCMmRITGhxOFVXYkhHVnBNN2Z5ckFOQ1ZLWks5TWdCbjBl?=
- =?utf-8?B?bXVVeEM1dDJnSmN0U0tuaC9rS2x0bWlySGMvSDZxbUROYmtTMVN4ZXFpRFcv?=
- =?utf-8?B?bml1ZllzdEFrVG1yeTh6b1piZmJPaWFnbllWYzFPczl2OW5ibVJUUHZlQmw4?=
- =?utf-8?B?bGVwUVg0ZllXcWozam1YVDdYYTU5eER1bUEvbC9OdkJVUGJWeksyUldMdDNn?=
- =?utf-8?B?UDRkWmpVNk11UmpaazMwbHhjd0FYUXU3YzNQaFB5OFFwckdlUHY0SXpjd3RX?=
- =?utf-8?B?ZGdiYTM0SHp3ZTNLVWFTa21JbnJRd2dobHV4VzlTWXNNZjRDRVpEYXlQQVJO?=
- =?utf-8?B?QVAxSUtVTmR0NEZWMmh0ck1QOTZLbWoyNUE0NkdKbEJJVkZBMm9uTHpQK3FS?=
- =?utf-8?B?UEFKUzIxd21wYU82SHBXOVh4b0JmbXUwYlhnMFg1KzRZRDJES1RtSkwvWm5R?=
- =?utf-8?B?eHJmUXdQc1psaWNOMEdLQWVmbDR6OUhyNG9UVE8xK0FWcVgrM1N5NlArYzhr?=
- =?utf-8?B?NUNFazlTelBJTTFBVVd6cEhQM3gyMmlxZUVxTWN0Z3A4WmJ3T0hTYkpZNzFJ?=
- =?utf-8?B?aHQ2RW9YWnpxZzNPUDAwUHpxNTd6QzA4YmJRU0pWeWxlQ3RXSmNZcE9QUm9Y?=
- =?utf-8?B?TnBrWjF1TXlaa2FhcENlRTBWY0tyMXhBNWZHVWlmVEJPUVpDdmt1TnYwLzYr?=
- =?utf-8?B?cXdJUDkxUk91SU1zcnB6NlUxTGloVmg5TythUU96Q3RWSUdpRkF4ZmFJWWw5?=
- =?utf-8?B?ZVFvQ095Qy9rODBQbEh3Y1R3djIvbnFQa1Z5cXdKcVRTYTFGWWIveWRiYVFL?=
- =?utf-8?B?UFNRQ0ZZVkRaSk43NU9xK0E4bndDQ0VmbnYray85S1RLZUtNNk5KTHJYY3Fr?=
- =?utf-8?B?bS81S1Y1ZkkvZ1U2NXZpdzFGQkZEcGlJd09UWSs2S094alpKcU0vOERQRTRp?=
- =?utf-8?B?bFJ2WGg1VnRWQk91YnNrQkZtVUwzZGlhMm1id01HOUJGVXFzbEVXYlJhMGkv?=
- =?utf-8?B?cTlGbGlDSzd0L1k2Q3Q2N0F5dGo1dU1GVHZGUHRUTDhCVXZ1VGlMUUdxeWc4?=
- =?utf-8?B?V1UzeHJFdVZBSnliU1pyZmNEbGZGbWhwcjZFTlZxY0pZdUVQV0tDcnlXOWhN?=
- =?utf-8?B?aVByaTZRUzJxNlRwUmJBelE5VVZMTHZmYldmRFBYTUZUQjloYmF4dWlxZWxV?=
- =?utf-8?Q?0pNWNvcUkdootFb80tDS9FfVxannwQNhRRFbYdvvOk=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f28178ce-44ba-4509-958b-08d9ae040168
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR10MB5020.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2021 22:04:07.9565
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: n3naG5B1AGMqvwMauhooMFV+Z6UPJztU7q+EVM7KpQ9zbX+SizPo0CiLb9tuWLeU4LrfoA9QAL6BF7tkmhpAQBYxpX9tQUpxc1nan6F/gAU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB4956
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10176 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
- mlxlogscore=999 bulkscore=0 mlxscore=0 suspectscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111220110
-X-Proofpoint-GUID: DdGrCZAsQ_QH3Cn225y0FGjJmKHZvuyX
-X-Proofpoint-ORIG-GUID: DdGrCZAsQ_QH3Cn225y0FGjJmKHZvuyX
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0)
+        Gecko/20100101 Thunderbird/91.3.1
+Subject: Re: [PATCH v2 1/1] clk: samsung: exynos850: Register clocks early
+Content-Language: en-US
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Cc:     David Virag <virag.david003@gmail.com>,
+        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
+In-Reply-To: <20211122144206.23134-1-semen.protsenko@linaro.org>
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrHKsWRmVeSWpSXmKPExsWy7djP87r3heckGix7xGtx/ctzVov5R86x
+        Wmx8+4PJYtPja6wWH3vusVpc3jWHzWLG+X1MFhdPuVr8ON7HbNG69wi7xb9rG1ksnvcBxVft
+        +sNocfz9Y0YHPo/3N1rZPWY19LJ57Jx1l91j06pONo871/aweWxeUu/Rt2UVo8fnTXIBHFFc
+        NimpOZllqUX6dglcGe3f/zEXrGKvOHhlDVMDYyNbFyMHh4SAicT19QZdjFwcQgIrGCWmNp1m
+        hXC+MEqcvP2FCcL5zCjx/uc0oAwnWMepowsYIRLLGSUWLTzHBuF8BGp5tJsJpIpXwE5i1e7P
+        YDaLgKpE/9JHLBBxQYmTM5+A2aICSRKnWycxg9jCAl4S3Tfvg8WZBcQlbj2ZD9YrIhAuseTT
+        fmaQBcwCb5klbmx4wA6SYBMwlOg92scIYnMKOEhsWNTLDNEsL7H97RywBgmB5ZwSXx+sYIG4
+        20Wib8dNZghbWOLV8S3sELaMxP+d85kgGpoZJXp232aHcCYwStw/voARospa4s65X+AwYxbQ
+        lFi/Sx8SfI4SE17kQph8EjfeCkLcwCcxadt0Zogwr0RHmxDEDBWJ36umM0HYUhLdT/6zTGBU
+        moUULLOQvD8LyTezENYuYGRZxSieWlqcm55abJyXWq5XnJhbXJqXrpecn7uJEZjkTv87/nUH
+        44pXH/UOMTJxMB5ilOBgVhLhvbZkdqIQb0piZVVqUX58UWlOavEhRmkOFiVxXpE/DYlCAumJ
+        JanZqakFqUUwWSYOTqkGJsN7X65e95kiYbRwxYLsnMRjPx71fr8o9d5MddVm880zSxRXy26V
+        PecoKZPh2nJL0vDNep74XtsqpfQwR43so/+2XIiIkTwSw6AQqfSrK7PV82CExuXnJlsLciJO
+        7+Rp1eDcvalUNohJcc21m4tnfI9fUxbHM2HWop06YSIMO9eIO9bflmR8E8zr89VkpnXWkuCY
+        h/FBh67d1JjQ8MJ1sbJbc0fV+/vlj8VOpKzf+mlhg9NCBdbbxXdLV5w1M12ZkcXTE2i4ZQ9T
+        SZJGgyaP+co1yxn6El9WJ+zI19X7m5QYlJlu2ivzRXDKHt2v/CZtTO8WLPU/qvh3YcLp23o/
+        G+bn/Qm/LLRAIz2cNcZbiaU4I9FQi7moOBEA3Qxlh+EDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLIsWRmVeSWpSXmKPExsVy+t/xu7r3hOckGmy7LWNx/ctzVov5R86x
+        Wmx8+4PJYtPja6wWH3vusVpc3jWHzWLG+X1MFhdPuVr8ON7HbNG69wi7xb9rG1ksnvcBxVft
+        +sNocfz9Y0YHPo/3N1rZPWY19LJ57Jx1l91j06pONo871/aweWxeUu/Rt2UVo8fnTXIBHFF6
+        NkX5pSWpChn5xSW2StGGFkZ6hpYWekYmlnqGxuaxVkamSvp2NimpOZllqUX6dgl6Ge3f/zEX
+        rGKvOHhlDVMDYyNbFyMnh4SAicSpowsYQWwhgaWMEr87C7oYOYDiUhLzW5QgSoQl/lzrAirn
+        Aip5zyjxaftisF5eATuJVbs/M4HYLAKqEv1LH7FAxAUlTs58AmaLCiRJ9H/fxQxiCwt4SXTf
+        vA8WZxYQl7j1ZD4TyC4RgXCJxft0QeYzC7xnlpjc+ZYVYtlkRokZR9rAlrEJGEr0Hu0DO5RT
+        wEFiw6JeZpBmZgF1ifXzhCBmyktsfzuHeQKj0CwkZ8xCsm4WQscsJB0LGFlWMYqklhbnpucW
+        G+oVJ+YWl+al6yXn525iBMbztmM/N+9gnPfqo94hRiYOxkOMEhzMSiK815bMThTiTUmsrEot
+        yo8vKs1JLT7EaAoMionMUqLJ+cCEklcSb2hmYGpoYmZpYGppZqwkzutZ0JEoJJCeWJKanZpa
+        kFoE08fEwSnVwNS2NOXMz+kM9kUVK/dfmtc+f3Hb5w+PfO0tPeT4pspe4amd1prQHO1cNzGf
+        xT0o+eui3Wsst5f5ZsYYJT9NnnXX6HHGPAXvp+Wsj6TUWl9f91+/ak3NdE6XL2Vz6z59WTX1
+        3bof5UeTk4ycfHoWTt63fuKOOXzNjZlT5vXemvT0X9LNmj+1jpeiZ3e+MIr7fKgjMLz7ebBt
+        xsM39ifEBJPEC58Xh0YxaNvqqkw2YV+78DTjg4qIH2uF5aesnHFg/2YvFxOBZfkbL75vPTyr
+        qGpr4skvlTwFz97q2Z/8NrXsR+h7jql8Ec9v/H1WdKHiQa5d6jmmtPmerh9jyp1kJX4dcJ9a
+        PHEa/3rPCZYTNLKVWIozEg21mIuKEwE5jDC+cAMAAA==
+X-CMS-MailID: 20211122220414eucas1p2aed07333fea9caccf343404365a8a0f5
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20211122144217eucas1p21c5f4930563ee051d625bb8e3a932a4a
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20211122144217eucas1p21c5f4930563ee051d625bb8e3a932a4a
+References: <CGME20211122144217eucas1p21c5f4930563ee051d625bb8e3a932a4a@eucas1p2.samsung.com>
+        <20211122144206.23134-1-semen.protsenko@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 22.11.2021 15:42, Sam Protsenko wrote:
+> Some clocks must be registered before init calls. For example MCT clock
+> (from CMU_PERI) is needed for MCT timer driver, which is registered
+> with TIMER_OF_DECLARE(). By the time we get to core_initcall() used for
+> clk-exynos850 platform driver init, it's already too late. Inability to
+> get "mct" clock in MCT driver leads to kernel panic, as functions
+> registered with *_OF_DECLARE() can't do deferred calls. MCT timer driver
+> can't be fixed either, as it's acting as a clock source and it's
+> essential to register it in start_kernel() -> time_init().
+> 
+> Let's register CMU_PERI clocks early, using CLK_OF_DECLARE(). CMU_TOP
+> generates clocks needed for CMU_PERI, but it's already registered early.
+> 
+> While at it, let's cleanup the code a bit, by extracting everything
+> related to CMU initialization and registration to the separate function.
 
-On 11/19/21 10:39 AM, Juergen Gross wrote:
-> The prototype of mem_map_via_hcall() is missing in its header, so add
-> it.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Fixes: a43fb7da53007e67ad ("xen/pvh: Move Xen code for getting mem map via hcall out of common file")
-> Signed-off-by: Juergen Gross <jgross@suse.com>
-
-
-
-Applied to for-linus-5.16c
-
-
--boris
-
+Applied, thanks.
