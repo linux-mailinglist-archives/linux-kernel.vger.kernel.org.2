@@ -2,83 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE8845936A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 17:49:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC74459370
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 17:51:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240432AbhKVQwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 11:52:06 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:58754 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238381AbhKVQwF (ORCPT
+        id S240453AbhKVQyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 11:54:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238381AbhKVQyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 11:52:05 -0500
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AMGUNIu007646;
-        Mon, 22 Nov 2021 16:48:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2021-07-09;
- bh=kP+BdsCFC6A/kqdU5tYpFZ1Iw1wtbnEK3DTGxzFZeIg=;
- b=HSwMC2uy3zifMCM85LrwugOSCRcvtCWErTlbgkNz4j+AJQpBIXYtjW0uSbE2UE7OloJI
- NPPk+TrdaZ2xbePpwYTm6Den/fspHRR3ZTA7F1vxBKGek/VRJnVKCx8lbcSbIQCFl+HM
- jak/pnTy1s9ClTO586veJkg39PK6EAwQlYvTffGOfl9z9N0txKTQ/gGUEtaQX09uUBBo
- 7224heyQTQIOjOH6fpSjrPSL65/glfwtpeLYfE2l0S6AYg5uJDjxXXxEPR9u749+wL7M
- dbY1YW8yIltHdl+ROxxVB/a05ZqjFm3zBJGsUNEqE7oOX1atvybr0XDhvfemWmfZKKfm Dw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3cg461bba1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Nov 2021 16:48:56 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AMGkj61142675;
-        Mon, 22 Nov 2021 16:48:55 GMT
-Received: from lab02.no.oracle.com (lab02.no.oracle.com [10.172.144.56])
-        by aserp3030.oracle.com with ESMTP id 3ceq2cvjnr-1;
-        Mon, 22 Nov 2021 16:48:55 +0000
-From:   =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
-To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH for-rc] RDMA/cma: Remove open coding for overflow in cma_connect_ib
-Date:   Mon, 22 Nov 2021 17:48:53 +0100
-Message-Id: <1637599733-11096-1-git-send-email-haakon.bugge@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
+        Mon, 22 Nov 2021 11:54:25 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44208C061574;
+        Mon, 22 Nov 2021 08:51:18 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id d27so33942616wrb.6;
+        Mon, 22 Nov 2021 08:51:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:reply-to:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=APE9ce1oamnPdQjXEcMukuKqcJOxL3i0qU2D/3ee32Y=;
+        b=VZFBq1ErQERStcDQb/RfavsYGCXwgxmYoWSKcpcMPPSv1L6iDHUHXmjGL+ALaUajIc
+         zyvnV0494M2isgnA1IWQ9p4TpjnufkRB4TnCGAevuvWuJxZOvBxvvZF0DodYXM9AvYlE
+         mA05DPwpbdtyTjgGzBD/ky5Sct5ZRUlfUAsMLrETcxnP535JdTB5b9z+1HpKo1kssz/m
+         xJ/ulE3KEjLbvZxiGiwdvpNv6Osz9elXtH65e9NAdsGhs5wy8n+32WDqj34AI5jhLrzI
+         Rpt+Hkz/TNi4NpVugyCsu5f0ASPSqIjigtHEYEypxxGKRLIrnwpDXVMKd/u+WaV1i6X0
+         NCNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:reply-to
+         :subject:content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=APE9ce1oamnPdQjXEcMukuKqcJOxL3i0qU2D/3ee32Y=;
+        b=ixe8n45EFEVqxKO8k8bsLcWe38JU3WfjsymlepjgyVXd9CzlT2g1gTKXbOUO79oNJ0
+         OHjTMLr2wWAR2n+pJIl0O1W4gr5e6yjKB0C1KPViXFBZEfhtkpVd0D+sb0lOWeMQTaWj
+         2PzYKQSZNiBAlgZ1QoaQK9+ToGkK5feKGd58FWQ4nZVaLGqRzxuI0uLVDoROQVzEHNrB
+         RDpXhKJrBgRLPRNnRDlXthDo3lyF7P8xHaqqeH3YO7OPJ3z52DrpFl6ydgazpiCiGIb+
+         4ZFfMcrNYezI+VU2dF0D9EvYWfA//37kNROJymwRo3F4xMQ7iA+cm52ngq9Kj3FwoQhS
+         5dew==
+X-Gm-Message-State: AOAM532jl6ajYKTzukI+ZlLIcOqCr9wb0DfSGzr2Avm+BuCl4DYyzFNF
+        FRWjn/NWx/S8LK7/4wPWQSsUplz7i+y+3Q==
+X-Google-Smtp-Source: ABdhPJwiCdHnVEJcvSR3PYQyyVUEvELVqDkgOhTYvCGt/mA5mTfb+wjYeTcjhlkJLajz8I2ECfSaLg==
+X-Received: by 2002:a05:6000:1a88:: with SMTP id f8mr39590723wry.54.1637599876815;
+        Mon, 22 Nov 2021 08:51:16 -0800 (PST)
+Received: from [10.168.10.170] ([170.253.36.171])
+        by smtp.gmail.com with ESMTPSA id o25sm10501981wms.17.2021.11.22.08.51.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Nov 2021 08:51:16 -0800 (PST)
+Message-ID: <8dfbe1be-0b4d-cdda-2c71-7a098faf07da@gmail.com>
+Date:   Mon, 22 Nov 2021 17:51:15 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10176 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0 spamscore=0
- bulkscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111220085
-X-Proofpoint-GUID: LtKnd9wgIt4Mocnu3dHW_HJhAXwMt8TW
-X-Proofpoint-ORIG-GUID: LtKnd9wgIt4Mocnu3dHW_HJhAXwMt8TW
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Reply-To: alx.manpages@gmail.com
+Subject: Re: [PATCH] uapi: Make __{u,s}64 match {u,}int64_t in userspace
+Content-Language: en-US
+To:     Cyril Hrubis <chrubis@suse.cz>, linux-kernel@vger.kernel.org
+Cc:     linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        libc-alpha@sourceware.org, ltp@lists.linux.it
+References: <YZvIlz7J6vOEY+Xu@yuki>
+From:   "Alejandro Colomar (mailing lists)" <alx.mailinglists@gmail.com>
+In-Reply-To: <YZvIlz7J6vOEY+Xu@yuki>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existing test is a little hard to comprehend. Use
-check_add_overflow() instead.
+Hi Cyril,
 
-Fixes: 04ded1672402 ("RDMA/cma: Verify private data length")
-Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
----
- drivers/infiniband/core/cma.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+On 11/22/21 17:43, Cyril Hrubis wrote:
+> This changes the __u64 and __s64 in userspace on 64bit platforms from
+> long long (unsigned) int to just long (unsigned) int in order to match
+> the uint64_t and int64_t size in userspace.
+> 
+> This allows us to use the kernel structure definitions in userspace. For
+> example we can use PRIu64 and PRId64 modifiers in printf() to print
+> structure members. Morever with this there would be no need to redefine
+> these structures in libc implementations as it is done now.
+> 
+> Consider for example the newly added statx() syscall. If we use the
+> header from uapi we will get warnings when attempting to print it's
+> members as:
+> 
+> 	printf("%" PRIu64 "\n", stx.stx_size);
+> 
+> We get:
+> 
+> 	warning: format '%lu' expects argument of type 'long unsigned int',
+> 	         but argument 5 has type '__u64' {aka 'long long unsigned int'}
+> 
+> After this patch the types match and no warnings are generated.
+This would make it even easier to ignore the existence of different 
+kernel types, and let userspace use standard types.
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 835ac54..0435768 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -4093,8 +4093,7 @@ static int cma_connect_ib(struct rdma_id_private *id_priv,
- 
- 	memset(&req, 0, sizeof req);
- 	offset = cma_user_data_offset(id_priv);
--	req.private_data_len = offset + conn_param->private_data_len;
--	if (req.private_data_len < conn_param->private_data_len)
-+	if (check_add_overflow(offset, conn_param->private_data_len, &req.private_data_len))
- 		return -EINVAL;
- 
- 	if (req.private_data_len) {
--- 
-1.8.3.1
+Related recent discussion:
+<https://lore.kernel.org/linux-man/20210423230609.13519-1-alx.manpages@gmail.com/>
 
+> 
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+
+Acked-by: Alejandro Colomar <alx.manpages@gmail.com>
+
+Thanks,
+Alex
+
+> ---
+>   include/uapi/asm-generic/types.h | 11 +++++++++--
+>   1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/uapi/asm-generic/types.h b/include/uapi/asm-generic/types.h
+> index dfaa50d99d8f..ae748a3678a4 100644
+> --- a/include/uapi/asm-generic/types.h
+> +++ b/include/uapi/asm-generic/types.h
+> @@ -1,9 +1,16 @@
+>   /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+>   #ifndef _ASM_GENERIC_TYPES_H
+>   #define _ASM_GENERIC_TYPES_H
+> +
+> +#include <asm/bitsperlong.h>
+> +
+>   /*
+> - * int-ll64 is used everywhere now.
+> + * int-ll64 is used everywhere in kernel now.
+>    */
+> -#include <asm-generic/int-ll64.h>
+> +#if __BITS_PER_LONG == 64 && !defined(__KERNEL__)
+
+BTW, C2X adds LONG_WIDTH in <limits.h> (and in general TYPE_WIDTH) to 
+get the bits of a long.
+
+> +# include <asm-generic/int-l64.h>
+> +#else
+> +# include <asm-generic/int-ll64.h>
+> +#endif
+>   
+>   #endif /* _ASM_GENERIC_TYPES_H */
+> 
