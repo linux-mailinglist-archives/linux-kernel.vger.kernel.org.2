@@ -2,79 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BDC458B5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 10:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2875458B5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 10:27:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239204AbhKVJaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 04:30:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59126 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239022AbhKVJ3W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 04:29:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11C3E60F70;
-        Mon, 22 Nov 2021 09:26:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637573176;
-        bh=2TBPg9ri3q38X3YzSB4nmTwNdwJiq6mEQ0j1aWUitBY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B84vH1e1fzwmGhPur9mgGPea5csWUT52nXqaSWhd+uN/Z80YyNOFURB0k6flekuo+
-         Z3Oq54nfUziyrdnZ3Tgf8sjf1+JD27YuIl2WTDZHKOi8y9QSJyOk0kJMWRbi1Xyaxa
-         NjrcbpCOkQgO/PZqr/r0lMh2RteK4/J1QFaoZgMeaOyZCSRNnh/zdPs7GbV5DxjjHI
-         pC8fuubG+oMECxzjUhtEoH7nBNjicpWiIZMiqSMAqhydCbbsSJgTjmXy/DbNiS31A+
-         Hf9CgoZTaJP/Rh0L8tBnboMKara2JlmrHGLEwfKrHuB3gVuOe042xRrj6aB8T7CqYZ
-         szvojkfHSinvQ==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1mp5aX-003hib-6d; Mon, 22 Nov 2021 09:26:13 +0000
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: [PATCH 09/10] media: omap3isp: mark isp_isr_dbg as __maybe_unused
-Date:   Mon, 22 Nov 2021 09:26:11 +0000
-Message-Id: <4293d53b747388a65ea06382e2041ae6322ecd89.1637573097.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <cover.1637573097.git.mchehab+huawei@kernel.org>
-References: <cover.1637573097.git.mchehab+huawei@kernel.org>
+        id S239140AbhKVJaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 04:30:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45455 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239045AbhKVJ3Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 04:29:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637573177;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W24LOqoXm5rO4QnnE3nnOA9qNOGul+S9uy89jqjOA+M=;
+        b=JsDWvvyOwg7B1qEHfHgUTlJBgb/rH5nZAqr/wCm59mY0ufqqLWqbW4U4+aI8z2vK5M0GKT
+        zp2npE0kwCrqCIxizdonnROTfIbcboRxa0SJjuOW25g00FtoejRVTh9I8MDjSz7byMvTz6
+        A80LXZLhh1uOdZlPCwBhfvvy1yTVFmA=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-588-GlMD84PuOjCwIkBr2Mpg-A-1; Mon, 22 Nov 2021 04:26:15 -0500
+X-MC-Unique: GlMD84PuOjCwIkBr2Mpg-A-1
+Received: by mail-wr1-f69.google.com with SMTP id p3-20020a056000018300b00186b195d4ddso2920306wrx.15
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 01:26:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=W24LOqoXm5rO4QnnE3nnOA9qNOGul+S9uy89jqjOA+M=;
+        b=qVUfZQyrw2E9CfcKvOgR+gj6I3LRtw6WTm+gViOTi40RBdqIfcLeEo9oRe2S5e1LKz
+         lK8Ka5LVoDuiyqTzDP+Fi1WmiWO3QqcTcTf22FZR5my19XpRFbEvGs1+iAErgrf/wqh/
+         xMCjovkDUaG80u+VBqZYyL0YjQghP5mhljWnMk1K49p2EGLh5UAc54fm9dL4sXGRKSBF
+         KQkoUInhHr0GAgrKrCJTS9s2qPeeRx9zJDwsufX/6ux0oR1TcsGo5Nk+3oEg9ijCkMOj
+         yGv5pMie/08LtrsBunIO4HamGA1OgJzidW8F/eV3g9mIh2eYdyhdLo0hXlysfh6t4LVM
+         gdrA==
+X-Gm-Message-State: AOAM531Xg5iWbKdd0X3QS/r3ix59EsPrbrPgjqQ9atgqr4TFYkTzHbGY
+        w/PCEEdVQ2c0tGzhgauuX7q96wfcy4kLXvxb5CKubLEk1FZt6Obgv1EC8Y/ErPGO/1+D83pykDu
+        /NH0Lhv77Dc6ztMS2CMLU5LTn
+X-Received: by 2002:a05:600c:104b:: with SMTP id 11mr28668570wmx.54.1637573174582;
+        Mon, 22 Nov 2021 01:26:14 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyLFJu5j4VPLLnAmpU8CA4IejbWxqy8Vo0yv4T3cYINYpxhqk/tZpLIoYKCers6pf22TsjTpQ==
+X-Received: by 2002:a05:600c:104b:: with SMTP id 11mr28668518wmx.54.1637573174383;
+        Mon, 22 Nov 2021 01:26:14 -0800 (PST)
+Received: from [192.168.3.132] (p5b0c667b.dip0.t-ipconnect.de. [91.12.102.123])
+        by smtp.gmail.com with ESMTPSA id t8sm8351680wrv.30.2021.11.22.01.26.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Nov 2021 01:26:13 -0800 (PST)
+Message-ID: <4efdccac-245f-eb1f-5b7f-c1044ff0103d@redhat.com>
+Date:   Mon, 22 Nov 2021 10:26:12 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [RFC v2 PATCH 01/13] mm/shmem: Introduce F_SEAL_GUEST
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Chao Peng <chao.p.peng@linux.intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, qemu-devel@nongnu.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J . Bruce Fields" <bfields@fieldses.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
+        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com
+References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
+ <20211119134739.20218-2-chao.p.peng@linux.intel.com>
+ <20211119151943.GH876299@ziepe.ca>
+ <df11d753-6242-8f7c-cb04-c095f68b41fa@redhat.com>
+ <20211119160023.GI876299@ziepe.ca>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20211119160023.GI876299@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function is only used for debugging purposes. When DEBUG
-is disabled, it becomes unused, causing a clang warning with W=1.
+On 19.11.21 17:00, Jason Gunthorpe wrote:
+> On Fri, Nov 19, 2021 at 04:39:15PM +0100, David Hildenbrand wrote:
+> 
+>>> If qmeu can put all the guest memory in a memfd and not map it, then
+>>> I'd also like to see that the IOMMU can use this interface too so we
+>>> can have VFIO working in this configuration.
+>>
+>> In QEMU we usually want to (and must) be able to access guest memory
+>> from user space, with the current design we wouldn't even be able to
+>> temporarily mmap it -- which makes sense for encrypted memory only. The
+>> corner case really is encrypted memory. So I don't think we'll see a
+>> broad use of this feature outside of encrypted VMs in QEMU. I might be
+>> wrong, most probably I am :)
+> 
+> Interesting..
+> 
+> The non-encrypted case I had in mind is the horrible flow in VFIO to
+> support qemu re-execing itself (VFIO_DMA_UNMAP_FLAG_VADDR).
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
+Thanks for sharing!
 
-To avoid mailbombing on a large number of people, only mailing lists were C/C on the cover.
-See [PATCH 00/10] at: https://lore.kernel.org/all/cover.1637573097.git.mchehab+huawei@kernel.org/
+> 
+> Here VFIO is connected to a VA in a mm_struct that will become invalid
+> during the kexec period, but VFIO needs to continue to access it. For
+> IOMMU cases this is OK because the memory is already pinned, but for
+> the 'emulated iommu' used by mdevs pages are pinned dynamically. qemu
+> needs to ensure that VFIO can continue to access the pages across the
+> kexec, even though there is nothing to pin_user_pages() on.
+> 
+> This flow would work a lot better if VFIO was connected to the memfd
+> that is storing the guest memory. Then it naturally doesn't get
+> disrupted by exec() and we don't need the mess in the kernel..
 
- drivers/media/platform/omap3isp/isp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+I do wonder if we want to support sharing such memfds between processes
+in all cases ... we most certainly don't want to be able to share
+encrypted memory between VMs (I heard that the kernel has to forbid
+that). It would make sense in the use case you describe, though.
 
-diff --git a/drivers/media/platform/omap3isp/isp.c b/drivers/media/platform/omap3isp/isp.c
-index 6de377ce281d..4c937f3f323e 100644
---- a/drivers/media/platform/omap3isp/isp.c
-+++ b/drivers/media/platform/omap3isp/isp.c
-@@ -476,7 +476,8 @@ void omap3isp_hist_dma_done(struct isp_device *isp)
- 	}
- }
- 
--static inline void isp_isr_dbg(struct isp_device *isp, u32 irqstatus)
-+static inline void __maybe_unused isp_isr_dbg(struct isp_device *isp,
-+					      u32 irqstatus)
- {
- 	static const char *name[] = {
- 		"CSIA_IRQ",
+> 
+> I was wondering if we could get here using the direct_io APIs but this
+> would do the job too.
+> 
+>> Apart from the special "encrypted memory" semantics, I assume nothing
+>> speaks against allowing for mmaping these memfds, for example, for any
+>> other VFIO use cases.
+> 
+> We will eventually have VFIO with "encrypted memory". There was a talk
+> in LPC about the enabling work for this.
+
+Yes, I heard about that as well. In the foreseeable future, we'll have
+shared memory only visible for VFIO devices.
+
+> 
+> So, if the plan is to put fully encrpyted memory inside a memfd, then
+> we still will eventually need a way to pull the pfns it into the
+> IOMMU, presumably along with the access control parameters needed to
+> pass to the secure monitor to join a PCI device to the secure memory.
+
+Long-term, agreed.
+
 -- 
-2.33.1
+Thanks,
+
+David / dhildenb
 
