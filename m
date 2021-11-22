@@ -2,182 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A01458BBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 10:43:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 750BE458BBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 10:45:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238925AbhKVJq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 04:46:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232421AbhKVJqx (ORCPT
+        id S235099AbhKVJsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 04:48:41 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:39666 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229806AbhKVJsl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 04:46:53 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69AB9C061574;
-        Mon, 22 Nov 2021 01:43:47 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id bu18so78104262lfb.0;
-        Mon, 22 Nov 2021 01:43:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version;
-        bh=96YdYnrZU5YLxN1JzFIGG7wsDdU9R5NPYgLUAZOsBTE=;
-        b=VTqdQfaP+qvVnDG3bStis/xCYyypIyT+471LdosA7whE/T+oVfo9jWGHt5XyVoLlnU
-         ZU+TyADxR9ZApFtRWKeRkwdNWU1pcDVSqGVbyopG6gn7pByUhSF5zQdp1xV/nDTTQA11
-         O92gShWh8DW9Qg/MUO3U7hEopnrXo5KWeQYWIiJolxdAI8TUZibOpSubIxflTxmMjQoE
-         p7FHuX4p/+WZsAleEQUy0/EbyDDKCj5TOWDFLgyp2w9wvaLLEpyG67DCyhz6c8PUhaLZ
-         wvmmQyTTK8fbdcId1xdbaa8IQajw+x+2eUJ9fp6sRfDpFVwJsSyMjhP4wVgSwW/gU6pi
-         /8ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version;
-        bh=96YdYnrZU5YLxN1JzFIGG7wsDdU9R5NPYgLUAZOsBTE=;
-        b=LcW916WQVLsQm4+ZXmW59gcKFHO/D0L4ze5scjGglVrCtnfUTPrqBo3WK5kMAY/fPj
-         Vhd6XecEEj9fzFcevNOUWjcT0WYoSuKpnVbpbqwdJpXApgwh+XcJBaKT94bxtMoimTj2
-         QEKdGtlA/5vhZovuGJxVt01C0mxaT9pOgXup5dPZ6R7p1ifc/ih7RtQQNZMhi5GRtF6g
-         r8EtpgqIVmsul04ChriGNhpSmXFi32zbqwR5OsUOf3y1SPHaeh5aOXkVIo1dkkg41Myq
-         eVMVpvqzoL12hms0wAzZhPcPIvmIGKeKdBTf3NYxcpwzakir1VzS0XYL5xZ8DYGp2nhg
-         yewA==
-X-Gm-Message-State: AOAM5304rACrGR723SOfRDNfhQVKIfCpScM5SL18tPSWkGPTEIhvzbEY
-        Qyqco7DymcejQLU9fLYmqXI=
-X-Google-Smtp-Source: ABdhPJyVJLl2xLchsCGW10or57QJEWPuQfw4b5lPbZL4JZeso1zXXGSWnfL4uP/pDhnt+ZUrEggi9g==
-X-Received: by 2002:a2e:4a0a:: with SMTP id x10mr51646760lja.322.1637574225739;
-        Mon, 22 Nov 2021 01:43:45 -0800 (PST)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id z2sm902449lfd.301.2021.11.22.01.43.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 01:43:45 -0800 (PST)
-Date:   Mon, 22 Nov 2021 11:43:42 +0200
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Simon Ser <contact@emersion.fr>,
-        Rob Clark <robdclark@chromium.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        David Airlie <airlied@linux.ie>,
+        Mon, 22 Nov 2021 04:48:41 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 91F37218CE;
+        Mon, 22 Nov 2021 09:45:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637574333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=RUgtGZEv8kFLAr6AGZeX30vZZtwVH1MnCIGjXREhNaw=;
+        b=F2zwfF2pOQhqXQRBTH1bRSrX68JoF1Lkx0OvXSLeBTUoRvyiL/OVuvAKRU6bKjsiMz227T
+        qALtb6cOTf9KmlfDBXYSxPFhsgUzh5pWJWzAqXUT0w4qkuVntrTuhie9CgTihNOu+Jid7S
+        gxcP2/ppMpPGe8oRPKReGD09qJnL7oY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637574333;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=RUgtGZEv8kFLAr6AGZeX30vZZtwVH1MnCIGjXREhNaw=;
+        b=UUhzaEHlkdRucDXR8XDYagT7CKiDW8LFTvX9VBnVpMsxKR8k93nllAKHOdo+I2QIoTc6c1
+        udObPnmD0IYP7zDQ==
+Received: from localhost.localdomain (unknown [10.100.208.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id EC1D5A3B83;
+        Mon, 22 Nov 2021 09:45:32 +0000 (UTC)
+From:   Jiri Slaby <jslaby@suse.cz>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiri Slaby <jslaby@suse.cz>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Doug Anderson <dianders@chromium.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-input@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] drm/input_helper: Add new input-handling helper
-Message-ID: <20211122114342.0d23890f@eldfell>
-In-Reply-To: <YZfMm3GkFereYPTZ@phenom.ffwll.local>
-References: <20211117224841.3442482-1-briannorris@chromium.org>
-        <20211117144807.v2.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid>
-        <20211118123928.545dec8a@eldfell>
-        <CAF6AEGuc9JbOsC4Lrvoqo8VzMHq+7ru7Y6_UwoZaGV2wHQ6E5g@mail.gmail.com>
-        <20211119115419.505155b5@eldfell>
-        <YZfIgd8s7uGXAD2X@phenom.ffwll.local>
-        <98236dpcx39iOz8xAYrwGLfiLdwgUlljrbBgHL3wd8A0Wz4KzRk3PR8s_tb5Rxu4eScKI4483kB6Vhv-T64CJYOeQqwXlqo2c-64HvoS5cg=@emersion.fr>
-        <YZfMm3GkFereYPTZ@phenom.ffwll.local>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andreas Koensgen <ajk@comnets.uni-bremen.de>,
+        Paul Mackerras <paulus@samba.org>
+Subject: [PATCH v2] tty: remove file from tty_ldisc_ops::ioctl and compat_ioctl
+Date:   Mon, 22 Nov 2021 10:45:29 +0100
+Message-Id: <20211122094529.24171-1-jslaby@suse.cz>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/_evsixBuO_dMS.WYC8Ptp6x";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/_evsixBuO_dMS.WYC8Ptp6x
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+After the previous patches, noone needs 'file' parameter in neither
+ioctl hook from tty_ldisc_ops. So remove 'file' from both of them.
 
-On Fri, 19 Nov 2021 17:11:07 +0100
-Daniel Vetter <daniel@ffwll.ch> wrote:
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> [NFC]
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Marcel Holtmann <marcel@holtmann.org>
+Cc: Johan Hedberg <johan.hedberg@gmail.com>
+Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Andreas Koensgen <ajk@comnets.uni-bremen.de>
+Cc: Paul Mackerras <paulus@samba.org>
+---
+[v2]
+ - keep arguments aligned as they were as noted by Dmitry.
 
-> On Fri, Nov 19, 2021 at 04:04:28PM +0000, Simon Ser wrote:
-> > On Friday, November 19th, 2021 at 16:53, Daniel Vetter <daniel@ffwll.ch=
-> wrote:
-> >  =20
-> > > Random idea ... should we perhaps let userspace connect the boosting?=
- I.e.
-> > > we do a bunch of standardized boost targets (render clocks, display sr
-> > > exit), and userspace can then connect it to whichever input device it
-> > > wants to? =20
-> >=20
-> > On IRC we discussed having user-space hand over a FD to the kernel. Whe=
-n the FD
-> > becomes readable, the kernel triggers the boost.
-> >=20
-> > This would let user-space use e.g. an input device, an eventfd, or an e=
-poll FD
-> > with any combination of these as the boost signal. =20
->=20
-> Can userspace filter eventfd appropriately like we do here? And can they
-> get at that maybe 2nd eventfd from logind or whatever there is on distros
-> where /dev access is locked down for compositors/users.
+ drivers/bluetooth/hci_ldisc.c |  5 ++---
+ drivers/input/serio/serport.c |  5 ++---
+ drivers/net/can/slcan.c       |  4 ++--
+ drivers/net/hamradio/6pack.c  |  4 ++--
+ drivers/net/hamradio/mkiss.c  |  4 ++--
+ drivers/net/ppp/ppp_async.c   |  3 +--
+ drivers/net/ppp/ppp_synctty.c |  3 +--
+ drivers/net/slip/slip.c       |  4 ++--
+ drivers/tty/n_gsm.c           |  4 ++--
+ drivers/tty/n_hdlc.c          |  5 ++---
+ drivers/tty/n_tty.c           |  4 ++--
+ drivers/tty/tty_io.c          |  8 ++++----
+ include/linux/tty_ldisc.h     | 15 +++++++--------
+ net/nfc/nci/uart.c            |  5 ++---
+ 14 files changed, 33 insertions(+), 40 deletions(-)
 
-(Mind, eventfd is a specific thing, see 'man eventfd', and evdev/input
-device fd is different.)
+diff --git a/drivers/bluetooth/hci_ldisc.c b/drivers/bluetooth/hci_ldisc.c
+index ecdf8e034351..f537673ede17 100644
+--- a/drivers/bluetooth/hci_ldisc.c
++++ b/drivers/bluetooth/hci_ldisc.c
+@@ -739,14 +739,13 @@ static int hci_uart_set_flags(struct hci_uart *hu, unsigned long flags)
+  * Arguments:
+  *
+  *    tty        pointer to tty instance data
+- *    file       pointer to open file object for device
+  *    cmd        IOCTL command code
+  *    arg        argument for IOCTL call (cmd dependent)
+  *
+  * Return Value:    Command dependent
+  */
+-static int hci_uart_tty_ioctl(struct tty_struct *tty, struct file *file,
+-			      unsigned int cmd, unsigned long arg)
++static int hci_uart_tty_ioctl(struct tty_struct *tty, unsigned int cmd,
++			      unsigned long arg)
+ {
+ 	struct hci_uart *hu = tty->disc_data;
+ 	int err = 0;
+diff --git a/drivers/input/serio/serport.c b/drivers/input/serio/serport.c
+index 17eb8f2aa48d..669a728095b8 100644
+--- a/drivers/input/serio/serport.c
++++ b/drivers/input/serio/serport.c
+@@ -207,8 +207,8 @@ static void serport_set_type(struct tty_struct *tty, unsigned long type)
+  * serport_ldisc_ioctl() allows to set the port protocol, and device ID
+  */
+ 
+-static int serport_ldisc_ioctl(struct tty_struct *tty, struct file *file,
+-			       unsigned int cmd, unsigned long arg)
++static int serport_ldisc_ioctl(struct tty_struct *tty, unsigned int cmd,
++			       unsigned long arg)
+ {
+ 	if (cmd == SPIOCSTYPE) {
+ 		unsigned long type;
+@@ -226,7 +226,6 @@ static int serport_ldisc_ioctl(struct tty_struct *tty, struct file *file,
+ #ifdef CONFIG_COMPAT
+ #define COMPAT_SPIOCSTYPE	_IOW('q', 0x01, compat_ulong_t)
+ static int serport_ldisc_compat_ioctl(struct tty_struct *tty,
+-				       struct file *file,
+ 				       unsigned int cmd, unsigned long arg)
+ {
+ 	if (cmd == COMPAT_SPIOCSTYPE) {
+diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
+index 9a4ebda30510..113763790ac9 100644
+--- a/drivers/net/can/slcan.c
++++ b/drivers/net/can/slcan.c
+@@ -670,8 +670,8 @@ static void slcan_hangup(struct tty_struct *tty)
+ }
+ 
+ /* Perform I/O control on an active SLCAN channel. */
+-static int slcan_ioctl(struct tty_struct *tty, struct file *file,
+-		       unsigned int cmd, unsigned long arg)
++static int slcan_ioctl(struct tty_struct *tty, unsigned int cmd,
++		       unsigned long arg)
+ {
+ 	struct slcan *sl = (struct slcan *) tty->disc_data;
+ 	unsigned int tmp;
+diff --git a/drivers/net/hamradio/6pack.c b/drivers/net/hamradio/6pack.c
+index 8a19a06b505d..b1fc153125d9 100644
+--- a/drivers/net/hamradio/6pack.c
++++ b/drivers/net/hamradio/6pack.c
+@@ -681,8 +681,8 @@ static void sixpack_close(struct tty_struct *tty)
+ }
+ 
+ /* Perform I/O control on an active 6pack channel. */
+-static int sixpack_ioctl(struct tty_struct *tty, struct file *file,
+-	unsigned int cmd, unsigned long arg)
++static int sixpack_ioctl(struct tty_struct *tty, unsigned int cmd,
++		unsigned long arg)
+ {
+ 	struct sixpack *sp = sp_get(tty);
+ 	struct net_device *dev;
+diff --git a/drivers/net/hamradio/mkiss.c b/drivers/net/hamradio/mkiss.c
+index e2b332b54f06..894b5f92b85f 100644
+--- a/drivers/net/hamradio/mkiss.c
++++ b/drivers/net/hamradio/mkiss.c
+@@ -804,8 +804,8 @@ static void mkiss_close(struct tty_struct *tty)
+ }
+ 
+ /* Perform I/O control on an active ax25 channel. */
+-static int mkiss_ioctl(struct tty_struct *tty, struct file *file,
+-	unsigned int cmd, unsigned long arg)
++static int mkiss_ioctl(struct tty_struct *tty, unsigned int cmd,
++		unsigned long arg)
+ {
+ 	struct mkiss *ax = mkiss_get(tty);
+ 	struct net_device *dev;
+diff --git a/drivers/net/ppp/ppp_async.c b/drivers/net/ppp/ppp_async.c
+index f4429b93a9c8..15a179631903 100644
+--- a/drivers/net/ppp/ppp_async.c
++++ b/drivers/net/ppp/ppp_async.c
+@@ -281,8 +281,7 @@ ppp_asynctty_write(struct tty_struct *tty, struct file *file,
+  */
+ 
+ static int
+-ppp_asynctty_ioctl(struct tty_struct *tty, struct file *file,
+-		   unsigned int cmd, unsigned long arg)
++ppp_asynctty_ioctl(struct tty_struct *tty, unsigned int cmd, unsigned long arg)
+ {
+ 	struct asyncppp *ap = ap_get(tty);
+ 	int err, val;
+diff --git a/drivers/net/ppp/ppp_synctty.c b/drivers/net/ppp/ppp_synctty.c
+index b3a71b409a80..18283b7b94bc 100644
+--- a/drivers/net/ppp/ppp_synctty.c
++++ b/drivers/net/ppp/ppp_synctty.c
+@@ -274,8 +274,7 @@ ppp_sync_write(struct tty_struct *tty, struct file *file,
+ }
+ 
+ static int
+-ppp_synctty_ioctl(struct tty_struct *tty, struct file *file,
+-		  unsigned int cmd, unsigned long arg)
++ppp_synctty_ioctl(struct tty_struct *tty, unsigned int cmd, unsigned long arg)
+ {
+ 	struct syncppp *ap = sp_get(tty);
+ 	int __user *p = (int __user *)arg;
+diff --git a/drivers/net/slip/slip.c b/drivers/net/slip/slip.c
+index 9f3b4c1aa5ce..98f586f910fb 100644
+--- a/drivers/net/slip/slip.c
++++ b/drivers/net/slip/slip.c
+@@ -1072,8 +1072,8 @@ static void slip_unesc6(struct slip *sl, unsigned char s)
+ #endif /* CONFIG_SLIP_MODE_SLIP6 */
+ 
+ /* Perform I/O control on an active SLIP channel. */
+-static int slip_ioctl(struct tty_struct *tty, struct file *file,
+-					unsigned int cmd, unsigned long arg)
++static int slip_ioctl(struct tty_struct *tty, unsigned int cmd,
++		unsigned long arg)
+ {
+ 	struct slip *sl = tty->disc_data;
+ 	unsigned int tmp;
+diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
+index 68e6df27d2e3..ba27b274c967 100644
+--- a/drivers/tty/n_gsm.c
++++ b/drivers/tty/n_gsm.c
+@@ -2687,8 +2687,8 @@ static __poll_t gsmld_poll(struct tty_struct *tty, struct file *file,
+ 	return mask;
+ }
+ 
+-static int gsmld_ioctl(struct tty_struct *tty, struct file *file,
+-		       unsigned int cmd, unsigned long arg)
++static int gsmld_ioctl(struct tty_struct *tty, unsigned int cmd,
++		       unsigned long arg)
+ {
+ 	struct gsm_config c;
+ 	struct gsm_mux *gsm = tty->disc_data;
+diff --git a/drivers/tty/n_hdlc.c b/drivers/tty/n_hdlc.c
+index 7e0884ecc74f..a66915032e7e 100644
+--- a/drivers/tty/n_hdlc.c
++++ b/drivers/tty/n_hdlc.c
+@@ -572,14 +572,13 @@ static ssize_t n_hdlc_tty_write(struct tty_struct *tty, struct file *file,
+ /**
+  * n_hdlc_tty_ioctl - process IOCTL system call for the tty device.
+  * @tty: pointer to tty instance data
+- * @file: pointer to open file object for device
+  * @cmd: IOCTL command code
+  * @arg: argument for IOCTL call (cmd dependent)
+  *
+  * Returns command dependent result.
+  */
+-static int n_hdlc_tty_ioctl(struct tty_struct *tty, struct file *file,
+-			    unsigned int cmd, unsigned long arg)
++static int n_hdlc_tty_ioctl(struct tty_struct *tty, unsigned int cmd,
++			    unsigned long arg)
+ {
+ 	struct n_hdlc *n_hdlc = tty->disc_data;
+ 	int error = 0;
+diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
+index 9fc2319a394d..2d64d93805af 100644
+--- a/drivers/tty/n_tty.c
++++ b/drivers/tty/n_tty.c
+@@ -2400,8 +2400,8 @@ static unsigned long inq_canon(struct n_tty_data *ldata)
+ 	return nr;
+ }
+ 
+-static int n_tty_ioctl(struct tty_struct *tty, struct file *file,
+-		       unsigned int cmd, unsigned long arg)
++static int n_tty_ioctl(struct tty_struct *tty, unsigned int cmd,
++		       unsigned long arg)
+ {
+ 	struct n_tty_data *ldata = tty->disc_data;
+ 	int retval;
+diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+index 99cad1560876..3c2349b2089c 100644
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -2811,7 +2811,7 @@ long tty_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 		return hung_up_tty_ioctl(file, cmd, arg);
+ 	retval = -EINVAL;
+ 	if (ld->ops->ioctl) {
+-		retval = ld->ops->ioctl(tty, file, cmd, arg);
++		retval = ld->ops->ioctl(tty, cmd, arg);
+ 		if (retval == -ENOIOCTLCMD)
+ 			retval = -ENOTTY;
+ 	}
+@@ -2990,10 +2990,10 @@ static long tty_compat_ioctl(struct file *file, unsigned int cmd,
+ 	if (!ld)
+ 		return hung_up_tty_compat_ioctl(file, cmd, arg);
+ 	if (ld->ops->compat_ioctl)
+-		retval = ld->ops->compat_ioctl(tty, file, cmd, arg);
++		retval = ld->ops->compat_ioctl(tty, cmd, arg);
+ 	if (retval == -ENOIOCTLCMD && ld->ops->ioctl)
+-		retval = ld->ops->ioctl(tty, file,
+-				(unsigned long)compat_ptr(cmd), arg);
++		retval = ld->ops->ioctl(tty, (unsigned long)compat_ptr(cmd),
++				arg);
+ 	tty_ldisc_deref(ld);
+ 
+ 	return retval;
+diff --git a/include/linux/tty_ldisc.h b/include/linux/tty_ldisc.h
+index b85d84fb5f49..25f07017bbad 100644
+--- a/include/linux/tty_ldisc.h
++++ b/include/linux/tty_ldisc.h
+@@ -45,8 +45,7 @@ struct tty_struct;
+  *	some processing on the characters first.  If this function is
+  *	not defined, the user will receive an EIO error.
+  *
+- * int	(*ioctl)(struct tty_struct * tty, struct file * file,
+- *		 unsigned int cmd, unsigned long arg);
++ * int	(*ioctl)(struct tty_struct *tty, unsigned int cmd, unsigned long arg);
+  *
+  *	This function is called when the user requests an ioctl which
+  *	is not handled by the tty layer or the low-level tty driver.
+@@ -56,8 +55,8 @@ struct tty_struct;
+  *	low-level driver can "grab" an ioctl request before the line
+  *	discpline has a chance to see it.
+  *
+- * int	(*compat_ioctl)(struct tty_struct * tty, struct file * file,
+- *		        unsigned int cmd, unsigned long arg);
++ * int	(*compat_ioctl)(struct tty_struct *tty, unsigned int cmd,
++ *			unsigned long arg);
+  *
+  *	Process ioctl calls from 32-bit process on 64-bit system
+  *
+@@ -192,10 +191,10 @@ struct tty_ldisc_ops {
+ 			void **cookie, unsigned long offset);
+ 	ssize_t	(*write)(struct tty_struct *tty, struct file *file,
+ 			 const unsigned char *buf, size_t nr);
+-	int	(*ioctl)(struct tty_struct *tty, struct file *file,
+-			 unsigned int cmd, unsigned long arg);
+-	int	(*compat_ioctl)(struct tty_struct *tty, struct file *file,
+-				unsigned int cmd, unsigned long arg);
++	int	(*ioctl)(struct tty_struct *tty, unsigned int cmd,
++			unsigned long arg);
++	int	(*compat_ioctl)(struct tty_struct *tty, unsigned int cmd,
++			unsigned long arg);
+ 	void	(*set_termios)(struct tty_struct *tty, struct ktermios *old);
+ 	__poll_t (*poll)(struct tty_struct *, struct file *,
+ 			     struct poll_table_struct *);
+diff --git a/net/nfc/nci/uart.c b/net/nfc/nci/uart.c
+index c027c76d493c..cc8fa9e36159 100644
+--- a/net/nfc/nci/uart.c
++++ b/net/nfc/nci/uart.c
+@@ -317,14 +317,13 @@ static void nci_uart_tty_receive(struct tty_struct *tty, const u8 *data,
+  * Arguments:
+  *
+  *    tty        pointer to tty instance data
+- *    file       pointer to open file object for device
+  *    cmd        IOCTL command code
+  *    arg        argument for IOCTL call (cmd dependent)
+  *
+  * Return Value:    Command dependent
+  */
+-static int nci_uart_tty_ioctl(struct tty_struct *tty, struct file *file,
+-			      unsigned int cmd, unsigned long arg)
++static int nci_uart_tty_ioctl(struct tty_struct *tty, unsigned int cmd,
++			      unsigned long arg)
+ {
+ 	struct nci_uart *nu = (void *)tty->disc_data;
+ 	int err = 0;
+-- 
+2.33.1
 
-I don't think any of that is any problem when userspace prepares an
-epoll fd to be given to the boosting machinery. The boosting machinery
-could have several different targets as well, PSR vs. GPU clocks and
-whatnot.
-
-I envision a compositor to maintain an epoll fd for boosting by
-adding/removing the same device fds to it that it already uses in its
-operations. I don't see any need to open new device fds just for
-boosting. It's only the epoll fd given to the kernel and after that the
-epoll set can still be changed, right?
-
-The boosting machinery would never actually read or write the
-registered fd(s), so it would not interfere with the normal operations.
-But it also means the fd will remain readable until userspace services
-it. Userspace may need to set up that epoll set very carefully to have
-it work right (e.g. edge-triggered?).
-
-If your input handling is in a different process than the DRM poking
-for some reason, the epoll fd should still work if:
-- it is possible to use SCM_RIGHTS to pass the epollfd from the
-  input process to the DRM process, and
-- you cannot extract the watched fds from an epoll fd.
-
-Do we have those assumptions today?
-
-Then the attack surface in the DRM process is limited to changing the
-epoll set of which fds can trigger boosting, but the DRM process can do
-that anyway. I also presume the input process can still add and remove
-fds from the epoll set even afterwards.
-
-> I do agree that if we can do this generically maybe we should, but also
-> the use-case for input boosting is pretty well defined. I think it's just
-> about making sure that compositors is in control, and that we don't make
-> it worse (e.g. with the sr exit adding latency when the compositor can
-> redraw quickly enough).
-
-The epollfd design sounds very good to me. One can register an
-arbitrary set of fds with it, and use even eventfds in the set to have
-purely software triggers.
-
-
-Thanks,
-pq
-
---Sig_/_evsixBuO_dMS.WYC8Ptp6x
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmGbZk4ACgkQI1/ltBGq
-qqddPw//Qlx3c98y/lzr7O5yeBvbHMGOutdUbTN4frjqqEhhM6TRvl1yMT3oNxBC
-N2MxbN1yhJKJihbRqLMI5RkDEiJMqE2e5VBWqwV9ir2DdNG5vR1qqimzkeJeuJsr
-f77q2taZwGgnXqqmocroQPPeMxmJD5274xzF55cerzZy6YKE1JoQSpsr4Km1lc/j
-/B+N3CDx9c/ezZ6k0Lc0NvuhFFHB1IVtstwOKSPKPqo8XGDrDW9PehcpGOaNGFD8
-4wBdVzHGC8JzWfGZqNdVXAtxWZgGDkHYg2uXDUq6Y/BMEilRCXrBYlxjTnce4JAT
-wq6jZZXtchRYmXaqyIZ+D93smC1vxxkIBvErCVc/Z1AiCgq99P752jcpUq39QFN+
-/bVcr57syOk6+u/WU2S5chtU64zyNcLwu6vEKUZO9/DIDF4rGsGci0ZgjXdj9kHf
-/BiYybwmZWmXjxbGjHMU6ZaBjTvl8cq1cIt7Nq1A5IcoBpiqb6ohL5b3i0gg7WCB
-Z3J8rPoNQIZTPIusSb6L1BJZCqeRiIA95tTiX7UIlgDQoHOVPdMPU1of0wQa4uke
-7K6P5Sg0QSfIpfIVd8Tu657ia53/ucnr1GyTnep9Cm+o46pFfNzZSEgoBOQB4ugl
-4MCipr9Y8XvCskwR6myOwajP7qfdjJ0Lm36vfxShtbiSVieen+8=
-=kYcC
------END PGP SIGNATURE-----
-
---Sig_/_evsixBuO_dMS.WYC8Ptp6x--
