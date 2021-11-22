@@ -2,116 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2CA4591BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:54:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9E445922C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:57:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240096AbhKVP5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:57:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37080 "EHLO
+        id S240291AbhKVP7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:59:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240070AbhKVP5M (ORCPT
+        with ESMTP id S240114AbhKVP64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:57:12 -0500
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1160C061748
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:54:05 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:e4da:38c:79e9:48bf])
-        by xavier.telenet-ops.be with bizsmtp
-        id MTu5260054yPVd601Tu5EE; Mon, 22 Nov 2021 16:54:05 +0100
+        Mon, 22 Nov 2021 10:58:56 -0500
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D488C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:55:42 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by albert.telenet-ops.be with bizsmtp
+        id MTuz260014C55Sk06Tuzyl; Mon, 22 Nov 2021 16:55:40 +0100
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mpBds-00EL23-Ql; Mon, 22 Nov 2021 16:54:04 +0100
+        id 1mpBe6-00EL3g-9G; Mon, 22 Nov 2021 16:54:18 +0100
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mpBds-00HGnV-48; Mon, 22 Nov 2021 16:54:04 +0100
+        id 1mpBe5-00HGz8-Ni; Mon, 22 Nov 2021 16:54:17 +0100
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+To:     Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Paul Walmsley <paul@pwsan.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Benoit Parrot <bparrot@ti.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Keerthy <j-keerthy@ti.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
+        alsa-devel@alsa-project.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] crypto: sa2ul - Use bitfield helpers
-Date:   Mon, 22 Nov 2021 16:54:02 +0100
-Message-Id: <ca89d204ef2e40193479db2742eadf0d9cf3c0ff.1637593297.git.geert+renesas@glider.be>
+Subject: [PATCH/RFC 10/17] media: ti-vpe: cal: Use bitfield helpers
+Date:   Mon, 22 Nov 2021 16:54:03 +0100
+Message-Id: <d0ec5ecf5681cc36e0b86f8b35dde5d4a79dd5e8.1637592133.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <a1445d3abb45cfc95cb1b03180fd53caf122035b.1637593297.git.geert+renesas@glider.be>
-References: <a1445d3abb45cfc95cb1b03180fd53caf122035b.1637593297.git.geert+renesas@glider.be>
+In-Reply-To: <cover.1637592133.git.geert+renesas@glider.be>
+References: <cover.1637592133.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the FIELD_PREP() helper, instead of open-coding the same operation.
+Use the field_prep() helper, instead of open-coding the same operation.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
 Compile-tested only.
-
-See "[PATCH 00/17] Non-const bitfield helper conversions"
-(https://lore.kernel.org/r/cover.1637592133.git.geert+renesas@glider.be)
-for background and more conversions.
+Marked RFC, as this depends on [PATCH 01/17], but follows a different
+path to upstream.
 ---
- drivers/crypto/sa2ul.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ drivers/media/platform/ti-vpe/cal.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/sa2ul.c b/drivers/crypto/sa2ul.c
-index bcbc38dc6ae8fa6b..51b58e57153f61d2 100644
---- a/drivers/crypto/sa2ul.c
-+++ b/drivers/crypto/sa2ul.c
-@@ -8,6 +8,7 @@
-  *		Vitaly Andrianov
-  *		Tero Kristo
-  */
-+#include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/dma-mapping.h>
- #include <linux/dmaengine.h>
-@@ -646,8 +647,8 @@ static inline void sa_update_cmdl(struct sa_req *req, u32 *cmdl,
- 		cmdl[upd_info->enc_offset.index] &=
- 						~SA_CMDL_SOP_BYPASS_LEN_MASK;
- 		cmdl[upd_info->enc_offset.index] |=
--			((u32)req->enc_offset <<
--			 __ffs(SA_CMDL_SOP_BYPASS_LEN_MASK));
-+			FIELD_PREP(SA_CMDL_SOP_BYPASS_LEN_MASK,
-+				   req->enc_offset);
+diff --git a/drivers/media/platform/ti-vpe/cal.h b/drivers/media/platform/ti-vpe/cal.h
+index 527e22d022f300b7..5fcf1b55ff2879ac 100644
+--- a/drivers/media/platform/ti-vpe/cal.h
++++ b/drivers/media/platform/ti-vpe/cal.h
+@@ -303,7 +303,7 @@ static inline void cal_write_field(struct cal_dev *cal, u32 offset, u32 value,
+ 	u32 val = cal_read(cal, offset);
  
- 		if (likely(upd_info->flags & SA_CMDL_UPD_ENC_IV)) {
- 			__be32 *data = (__be32 *)&cmdl[upd_info->enc_iv.index];
-@@ -666,8 +667,8 @@ static inline void sa_update_cmdl(struct sa_req *req, u32 *cmdl,
- 		cmdl[upd_info->auth_offset.index] &=
- 			~SA_CMDL_SOP_BYPASS_LEN_MASK;
- 		cmdl[upd_info->auth_offset.index] |=
--			((u32)req->auth_offset <<
--			 __ffs(SA_CMDL_SOP_BYPASS_LEN_MASK));
-+			FIELD_PREP(SA_CMDL_SOP_BYPASS_LEN_MASK,
-+				   req->auth_offset);
- 		if (upd_info->flags & SA_CMDL_UPD_AUTH_IV) {
- 			sa_copy_iv((void *)&cmdl[upd_info->auth_iv.index],
- 				   req->auth_iv,
-@@ -689,16 +690,16 @@ void sa_set_swinfo(u8 eng_id, u16 sc_id, dma_addr_t sc_phys,
- 		   u8 hash_size, u32 *swinfo)
- {
- 	swinfo[0] = sc_id;
--	swinfo[0] |= (flags << __ffs(SA_SW0_FLAGS_MASK));
-+	swinfo[0] |= FIELD_PREP(SA_SW0_FLAGS_MASK, flags);
- 	if (likely(cmdl_present))
--		swinfo[0] |= ((cmdl_offset | SA_SW0_CMDL_PRESENT) <<
--						__ffs(SA_SW0_CMDL_INFO_MASK));
--	swinfo[0] |= (eng_id << __ffs(SA_SW0_ENG_ID_MASK));
-+		swinfo[0] |= FIELD_PREP(SA_SW0_CMDL_INFO_MASK,
-+					cmdl_offset | SA_SW0_CMDL_PRESENT);
-+	swinfo[0] |= FIELD_PREP(SA_SW0_ENG_ID_MASK, eng_id);
- 
- 	swinfo[0] |= SA_SW0_DEST_INFO_PRESENT;
- 	swinfo[1] = (u32)(sc_phys & 0xFFFFFFFFULL);
- 	swinfo[2] = (u32)((sc_phys & 0xFFFFFFFF00000000ULL) >> 32);
--	swinfo[2] |= (hash_size << __ffs(SA_SW2_EGRESS_LENGTH));
-+	swinfo[2] |= FIELD_PREP(SA_SW2_EGRESS_LENGTH, hash_size);
+ 	val &= ~mask;
+-	val |= (value << __ffs(mask)) & mask;
++	val |= field_prep(mask, value);
+ 	cal_write(cal, offset, val);
  }
  
- /* Dump the security context */
+@@ -312,7 +312,7 @@ static inline void cal_set_field(u32 *valp, u32 field, u32 mask)
+ 	u32 val = *valp;
+ 
+ 	val &= ~mask;
+-	val |= (field << __ffs(mask)) & mask;
++	val |= field_prep(mask, field);
+ 	*valp = val;
+ }
+ 
 -- 
 2.25.1
 
