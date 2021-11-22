@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CD8458AB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 09:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B40458AB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 09:49:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238917AbhKVIwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 03:52:31 -0500
+        id S238957AbhKVIwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 03:52:33 -0500
 Received: from pegase2.c-s.fr ([93.17.235.10]:49365 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238924AbhKVIwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 03:52:16 -0500
+        id S238948AbhKVIwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 03:52:19 -0500
 Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HyLXh4LfKz9sSk;
-        Mon, 22 Nov 2021 09:48:52 +0100 (CET)
+        by localhost (Postfix) with ESMTP id 4HyLXj2Q6dz9sSZ;
+        Mon, 22 Nov 2021 09:48:53 +0100 (CET)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from pegase2.c-s.fr ([172.26.127.65])
         by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id F-Hpno9y4Il3; Mon, 22 Nov 2021 09:48:52 +0100 (CET)
+        with ESMTP id WylMaZ_oXXeG; Mon, 22 Nov 2021 09:48:53 +0100 (CET)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HyLXc0mQLz9sSZ;
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HyLXc1Klqz9sSp;
         Mon, 22 Nov 2021 09:48:48 +0100 (CET)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 025038B77E;
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1704B8B765;
         Mon, 22 Nov 2021 09:48:48 +0100 (CET)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 9UYHqUPi79zJ; Mon, 22 Nov 2021 09:48:47 +0100 (CET)
+        with ESMTP id gtie3yuamvMT; Mon, 22 Nov 2021 09:48:47 +0100 (CET)
 Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.108])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9C6258B765;
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A10998B778;
         Mon, 22 Nov 2021 09:48:47 +0100 (CET)
 Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1AM8meZD631732
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1AM8meEq631736
         (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
         Mon, 22 Nov 2021 09:48:40 +0100
 Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1AM8mecI631731;
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1AM8memW631735;
         Mon, 22 Nov 2021 09:48:40 +0100
 X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
@@ -46,106 +46,186 @@ To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
 Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
         linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-mm@kvack.org
-Subject: [PATCH 6/8] mm: Allow arch specific arch_randomize_brk() with CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
-Date:   Mon, 22 Nov 2021 09:48:26 +0100
-Message-Id: <e2209d0f1f3c1b581592bd6c32243402ccfe3dde.1637570556.git.christophe.leroy@csgroup.eu>
+Subject: [PATCH 7/8] powerpc/mm: Convert to default topdown mmap layout
+Date:   Mon, 22 Nov 2021 09:48:27 +0100
+Message-Id: <49d4ee53eb28ac76bc6c4979c735c4b1c7e45548.1637570556.git.christophe.leroy@csgroup.eu>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <cover.1637570556.git.christophe.leroy@csgroup.eu>
 References: <cover.1637570556.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1637570906; l=3140; s=20211009; h=from:subject:message-id; bh=AZ109l+llHd6MRuKtoBs1/7LX92fJnFaX5ppcmPYk/k=; b=c1K5qNiDUgf938Fhv0hbNI+x4nVqzA7W5nodpE2TVdar2U38+lhjeUFeWrVU1Yi1kaX+tJephyQT aDVmg4c9ANTiDlaXYDL9TLsmsG3NFa80zhie1WS5xJ91T5Jv/r9q
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1637570906; l=5023; s=20211009; h=from:subject:message-id; bh=tK6qNg9t0+26MFuTrnCae4Ffx33oTJnm6+vMdPreY6s=; b=jCuVpkkKoFx1318rjb62AgscrBDJqgpAus42sPuqv22A3aFR+82yd63TjdbTmlmKfFppoNNqZfmG /JACpinnCvCLAnyKExJCRy888/c2fXGmymELabZOnIx7jtmHYW0I
 X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit e7142bf5d231 ("arm64, mm: make randomization selected by
-generic topdown mmap layout") introduced a default version of
-arch_randomize_brk() provided when
-CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT is selected.
+Select CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT and
+remove arch/powerpc/mm/mmap.c
 
-powerpc could select CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
-but needs to provide its own arch_randomize_brk().
+This change provides standard randomisation of mmaps.
 
-In order to allow that, don't make
-CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT select
-CONFIG_ARCH_HAS_ELF_RANDOMIZE. Instead, ensure that
-selecting CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT and
-selecting CONFIG_ARCH_HAS_ELF_RANDOMIZE has the same effect.
+See commit 8b8addf891de ("x86/mm/32: Enable full randomization on i386
+and X86_32") for all the benefits of mmap randomisation.
 
-Then only provide the default arch_randomize_brk() when the
-architecture has not selected CONFIG_ARCH_HAS_ELF_RANDOMIZE.
-
-Cc: Alexandre Ghiti <alex@ghiti.fr>
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/Kconfig                  | 1 -
- fs/binfmt_elf.c               | 3 ++-
- include/linux/elf-randomize.h | 3 ++-
- mm/util.c                     | 2 ++
- 4 files changed, 6 insertions(+), 3 deletions(-)
+ arch/powerpc/Kconfig                 |   1 +
+ arch/powerpc/include/asm/processor.h |   2 -
+ arch/powerpc/mm/Makefile             |   2 +-
+ arch/powerpc/mm/mmap.c               | 105 ---------------------------
+ 4 files changed, 2 insertions(+), 108 deletions(-)
+ delete mode 100644 arch/powerpc/mm/mmap.c
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 26b8ed11639d..ef3ce947b7a1 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -1000,7 +1000,6 @@ config HAVE_ARCH_COMPAT_MMAP_BASES
- config ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
- 	bool
- 	depends on MMU
--	select ARCH_HAS_ELF_RANDOMIZE
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index dea74d7717c0..05ddcf99cb34 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -158,6 +158,7 @@ config PPC
+ 	select ARCH_USE_MEMTEST
+ 	select ARCH_USE_QUEUED_RWLOCKS		if PPC_QUEUED_SPINLOCKS
+ 	select ARCH_USE_QUEUED_SPINLOCKS	if PPC_QUEUED_SPINLOCKS
++	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
+ 	select ARCH_WANT_IPC_PARSE_VERSION
+ 	select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
+ 	select ARCH_WANT_LD_ORPHAN_WARN
+diff --git a/arch/powerpc/include/asm/processor.h b/arch/powerpc/include/asm/processor.h
+index e39bd0ff69f3..d906b14dd599 100644
+--- a/arch/powerpc/include/asm/processor.h
++++ b/arch/powerpc/include/asm/processor.h
+@@ -378,8 +378,6 @@ static inline void prefetchw(const void *x)
  
- config HAVE_STACK_VALIDATION
- 	bool
-diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index f8c7f26f1fbb..28968a189a91 100644
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -1287,7 +1287,8 @@ static int load_elf_binary(struct linux_binprm *bprm)
- 		 * (since it grows up, and may collide early with the stack
- 		 * growing down), and into the unused ELF_ET_DYN_BASE region.
- 		 */
--		if (IS_ENABLED(CONFIG_ARCH_HAS_ELF_RANDOMIZE) &&
-+		if ((IS_ENABLED(CONFIG_ARCH_HAS_ELF_RANDOMIZE) ||
-+		     IS_ENABLED(CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT)) &&
- 		    elf_ex->e_type == ET_DYN && !interpreter) {
- 			mm->brk = mm->start_brk = ELF_ET_DYN_BASE;
- 		}
-diff --git a/include/linux/elf-randomize.h b/include/linux/elf-randomize.h
-index da0dbb7b6be3..1e471ca7caaf 100644
---- a/include/linux/elf-randomize.h
-+++ b/include/linux/elf-randomize.h
-@@ -4,7 +4,8 @@
+ #define spin_lock_prefetch(x)	prefetchw(x)
  
- struct mm_struct;
+-#define HAVE_ARCH_PICK_MMAP_LAYOUT
+-
+ /* asm stubs */
+ extern unsigned long isa300_idle_stop_noloss(unsigned long psscr_val);
+ extern unsigned long isa300_idle_stop_mayloss(unsigned long psscr_val);
+diff --git a/arch/powerpc/mm/Makefile b/arch/powerpc/mm/Makefile
+index d4c20484dad9..503a6e249940 100644
+--- a/arch/powerpc/mm/Makefile
++++ b/arch/powerpc/mm/Makefile
+@@ -5,7 +5,7 @@
  
--#ifndef CONFIG_ARCH_HAS_ELF_RANDOMIZE
-+#if !defined(CONFIG_ARCH_HAS_ELF_RANDOMIZE) && \
-+	!defined(CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT)
- static inline unsigned long arch_mmap_rnd(void) { return 0; }
- # if defined(arch_randomize_brk) && defined(CONFIG_COMPAT_BRK)
- #  define compat_brk_randomized
-diff --git a/mm/util.c b/mm/util.c
-index e58151a61255..edb9e94cceb5 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -344,6 +344,7 @@ unsigned long randomize_stack_top(unsigned long stack_top)
- }
+ ccflags-$(CONFIG_PPC64)	:= $(NO_MINIMAL_TOC)
  
- #ifdef CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
-+#ifndef CONFIG_ARCH_HAS_ELF_RANDOMIZE
- unsigned long arch_randomize_brk(struct mm_struct *mm)
- {
- 	/* Is the current task 32bit ? */
-@@ -352,6 +353,7 @@ unsigned long arch_randomize_brk(struct mm_struct *mm)
- 
- 	return randomize_page(mm->brk, SZ_1G);
- }
-+#endif
- 
- unsigned long arch_mmap_rnd(void)
- {
+-obj-y				:= fault.o mem.o pgtable.o mmap.o maccess.o pageattr.o \
++obj-y				:= fault.o mem.o pgtable.o maccess.o pageattr.o \
+ 				   init_$(BITS).o pgtable_$(BITS).o \
+ 				   pgtable-frag.o ioremap.o ioremap_$(BITS).o \
+ 				   init-common.o mmu_context.o drmem.o \
+diff --git a/arch/powerpc/mm/mmap.c b/arch/powerpc/mm/mmap.c
+deleted file mode 100644
+index 5972d619d274..000000000000
+--- a/arch/powerpc/mm/mmap.c
++++ /dev/null
+@@ -1,105 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-/*
+- *  flexible mmap layout support
+- *
+- * Copyright 2003-2004 Red Hat Inc., Durham, North Carolina.
+- * All Rights Reserved.
+- *
+- * Started by Ingo Molnar <mingo@elte.hu>
+- */
+-
+-#include <linux/personality.h>
+-#include <linux/mm.h>
+-#include <linux/random.h>
+-#include <linux/sched/signal.h>
+-#include <linux/sched/mm.h>
+-#include <linux/elf-randomize.h>
+-#include <linux/security.h>
+-#include <linux/mman.h>
+-
+-/*
+- * Top of mmap area (just below the process stack).
+- *
+- * Leave at least a ~128 MB hole.
+- */
+-#define MIN_GAP (128*1024*1024)
+-#define MAX_GAP (TASK_SIZE/6*5)
+-
+-static inline int mmap_is_legacy(struct rlimit *rlim_stack)
+-{
+-	if (current->personality & ADDR_COMPAT_LAYOUT)
+-		return 1;
+-
+-	if (rlim_stack->rlim_cur == RLIM_INFINITY)
+-		return 1;
+-
+-	return sysctl_legacy_va_layout;
+-}
+-
+-unsigned long arch_mmap_rnd(void)
+-{
+-	unsigned long shift, rnd;
+-
+-	shift = mmap_rnd_bits;
+-#ifdef CONFIG_COMPAT
+-	if (is_32bit_task())
+-		shift = mmap_rnd_compat_bits;
+-#endif
+-	rnd = get_random_long() % (1ul << shift);
+-
+-	return rnd << PAGE_SHIFT;
+-}
+-
+-static inline unsigned long stack_maxrandom_size(void)
+-{
+-	if (!(current->flags & PF_RANDOMIZE))
+-		return 0;
+-
+-	/* 8MB for 32bit, 1GB for 64bit */
+-	if (is_32bit_task())
+-		return (1<<23);
+-	else
+-		return (1<<30);
+-}
+-
+-static inline unsigned long mmap_base(unsigned long rnd,
+-				      struct rlimit *rlim_stack)
+-{
+-	unsigned long gap = rlim_stack->rlim_cur;
+-	unsigned long pad = stack_maxrandom_size() + stack_guard_gap;
+-
+-	/* Values close to RLIM_INFINITY can overflow. */
+-	if (gap + pad > gap)
+-		gap += pad;
+-
+-	if (gap < MIN_GAP)
+-		gap = MIN_GAP;
+-	else if (gap > MAX_GAP)
+-		gap = MAX_GAP;
+-
+-	return PAGE_ALIGN(DEFAULT_MAP_WINDOW - gap - rnd);
+-}
+-
+-/*
+- * This function, called very early during the creation of a new
+- * process VM image, sets up which VM layout function to use:
+- */
+-void arch_pick_mmap_layout(struct mm_struct *mm, struct rlimit *rlim_stack)
+-{
+-	unsigned long random_factor = 0UL;
+-
+-	if (current->flags & PF_RANDOMIZE)
+-		random_factor = arch_mmap_rnd();
+-
+-	/*
+-	 * Fall back to the standard layout if the personality
+-	 * bit is set, or if the expected stack growth is unlimited:
+-	 */
+-	if (mmap_is_legacy(rlim_stack)) {
+-		mm->mmap_base = TASK_UNMAPPED_BASE;
+-		mm->get_unmapped_area = arch_get_unmapped_area;
+-	} else {
+-		mm->mmap_base = mmap_base(random_factor, rlim_stack);
+-		mm->get_unmapped_area = arch_get_unmapped_area_topdown;
+-	}
+-}
 -- 
 2.33.1
 
