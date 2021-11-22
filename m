@@ -2,79 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A57459559
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 20:10:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E1845955C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 20:11:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239573AbhKVTNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 14:13:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46148 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231418AbhKVTNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 14:13:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27BE360F41;
-        Mon, 22 Nov 2021 19:10:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637608211;
-        bh=F5k27c9VISEEVN+CMOp9ub+sALErxhbWmPf1J1GJdG8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NL7FQhQi1YPzjaKzIl+DS70pfK6bfKHgnN/UStn1gSDRTBM+SGjITUrza1k0m1HsS
-         oP9o4MBK4Lwqk/En9qby9crtR1MIZljK/q4yYS/dX7Zmh6lfxBJwekYEwUt8pW+qot
-         8+Be6/bRySMZ4NmjSGbQ/P8wOH26hKg4PnovmXH+Pnb3WMmDaAVX06nGMCINL20wp5
-         SYi6qxVP+Khr44nWVmVaszT1ZEBBswOh+qEqQzAzXpYyGn7F9ZDaw4xPzBtSh8O8md
-         TClDFqz2I1I4/D1xpmQ0GdYaquJH7woTblJRN9xHVvGnwNkfC7Xl3if2ZzxxtDcLfh
-         oUZq9TJqmulKQ==
-Received: by pali.im (Postfix)
-        id 9AAD3A87; Mon, 22 Nov 2021 20:10:08 +0100 (CET)
-Date:   Mon, 22 Nov 2021 20:10:08 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Armin Wolf <W_Armin@gmx.de>
-Cc:     Guenter Roeck <linux@roeck-us.net>, jdelvare@suse.com,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] hwmon: (dell-smm) Unify i8k_ioctl() and
- i8k_ioctl_unlocked()
-Message-ID: <20211122191008.uw2tk4orb7p2elb7@pali>
-References: <20211120170319.72369-1-W_Armin@gmx.de>
- <20211120170319.72369-3-W_Armin@gmx.de>
- <20211122160122.gf6i3qj6dnwi6wla@pali>
- <c23caeab-dd27-4c95-2e25-9eb0ff7b33f6@roeck-us.net>
- <e336f501-fe07-7b49-bc65-d6ca443491ca@gmx.de>
+        id S235437AbhKVTOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 14:14:05 -0500
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:49178 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231418AbhKVTOC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 14:14:02 -0500
+Received: from [192.168.1.18] ([86.243.171.122])
+        by smtp.orange.fr with ESMTPA
+        id pEiKmh80URLGppEiKmZETn; Mon, 22 Nov 2021 20:10:54 +0100
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Mon, 22 Nov 2021 20:10:54 +0100
+X-ME-IP: 86.243.171.122
+Subject: Re: [PATCH] net-sysfs: Slightly optimize 'xps_queue_show()'
+To:     Xin Long <lucien.xin@gmail.com>
+Cc:     davem <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+        atenart@kernel.org, Alexander Duyck <alexanderduyck@fb.com>,
+        Paolo Abeni <pabeni@redhat.com>, Wei Wang <weiwan@google.com>,
+        network dev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+References: <498b1a0a7a0cba019c9d95693cd489827168b79e.1637517554.git.christophe.jaillet@wanadoo.fr>
+ <CADvbK_du8Oya986Ae9YJ+w5kkexE5S5mvAb+DWod-1_F85=sgA@mail.gmail.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <27107a39-3073-4995-194d-5caa330d1313@wanadoo.fr>
+Date:   Mon, 22 Nov 2021 20:10:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <CADvbK_du8Oya986Ae9YJ+w5kkexE5S5mvAb+DWod-1_F85=sgA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <e336f501-fe07-7b49-bc65-d6ca443491ca@gmx.de>
-User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 22 November 2021 19:50:14 Armin Wolf wrote:
-> Am 22.11.21 um 18:55 schrieb Guenter Roeck:
-> > On 11/22/21 8:01 AM, Pali Rohár wrote:
-> > > On Saturday 20 November 2021 18:03:19 Armin Wolf wrote:
-> > > > The only purpose of i8k_ioctl() is to call i8k_ioctl_unlocked()
-> > > > with i8k_mutex held. Judging from the hwmon code, this mutex
-> > > > only needs to be held when setting the fan speed/mode.
-> > > 
-> > > Really? I think that there is no difference between setting and getting
-> > > fan speed/mode. At least I do not see why 'set' needs mutex and 'get' do
-> > > not need it. Some more explanation is needed...
-> > > 
-> > I8K_SET_FAN sets the fan speed and returns the current status. Without
-> > locking, the returned status may not match or be associated with the
-> > previous
-> > set operation.
-> > 
-> > Maybe that doesn't matter, and the synchronization is not needed. If so,
-> > you can probably remove the locking entirely.
-> > 
-> > Guenter
+Le 22/11/2021 à 16:23, Xin Long a écrit :
+> On Sun, Nov 21, 2021 at 2:38 PM Christophe JAILLET
+> <christophe.jaillet@wanadoo.fr> wrote:
+>>
+>> The 'mask' bitmap is local to this function. So the non-atomic
+>> '__set_bit()' can be used to save a few cycles.
+>>
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>>   net/core/net-sysfs.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/net/core/net-sysfs.c b/net/core/net-sysfs.c
+>> index 9c01c642cf9e..3be3f4a6add3 100644
+>> --- a/net/core/net-sysfs.c
+>> +++ b/net/core/net-sysfs.c
+>> @@ -1452,7 +1452,7 @@ static ssize_t xps_queue_show(struct net_device *dev, unsigned int index,
+>>
+>>                  for (i = map->len; i--;) {
+>>                          if (map->queues[i] == index) {
+>> -                               set_bit(j, mask);
+>> +                               __set_bit(j, mask);
+>>                                  break;
+>>                          }
+>>                  }
+>> --
+>> 2.30.2
+>>
+> The similar optimization can seem to be done in br_vlan.c and br_if.c as well.
 > 
-> That is the reason i kept the locking code. Since i do not want to break
-> the ioctl interfacein any way, removing the locking code seems too risky
-> to me.
 
-I see. That is a good point.
+Hi,
 
-But there is same race condition also when at the same time going to
-change speed via ioctl and also via hwmon sysfs.
+br_if.c should be fixed in cc0be1ad686f.
+
+br_vlan.c was not spotted by my heuristic (a set of grep, while looking 
+at something else). So, thanks for your feedback.
+
+Feel free to propose a patch for it, it was not part of my todo list :)
+
+If you prefer, I can also send a patch. Let me know.
+
+CJ
