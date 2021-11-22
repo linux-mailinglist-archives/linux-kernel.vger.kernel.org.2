@@ -2,149 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F460458F2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:10:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 672F1458F32
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:12:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236161AbhKVNNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 08:13:53 -0500
-Received: from mail-ua1-f54.google.com ([209.85.222.54]:42975 "EHLO
-        mail-ua1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230406AbhKVNNw (ORCPT
+        id S235881AbhKVNPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 08:15:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231444AbhKVNPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 08:13:52 -0500
-Received: by mail-ua1-f54.google.com with SMTP id t13so36302655uad.9;
-        Mon, 22 Nov 2021 05:10:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cZ0Uo7ATYpsrQwJTgWsP7rE+IeWkbDLgOg8WiWSro+k=;
-        b=P8xa34PwI4rEBzGV6oa9Y+gXAl4vHC+nj2+lYXRsTS9tTnNRieDdIT0VY54Pacs1oD
-         Tbf6omcCU9EVf5Pwp24iajO5u0Omi9NY6uI23RGyLAawbnLrpcza9VUQaxYwDwcFjz4o
-         PzJsDL1V0VZNHnHVAU5/It7RcD/BzEjAyn8lLZiuJBUm6tO2Dv9SMLckkQZ2loiLZoK8
-         FpSyN1VQ4F/KlMUTCLpfma37U96GxsQD9tenv1XQmdrI18/Fa2WOuEdhOdeeLo473wkn
-         2IAtLgXDcn7bW526yYkOrk0Wt+ALHCJFoHMOzlmUasHoPablpYU1YtcyNItY9OAJyRN/
-         qwNQ==
-X-Gm-Message-State: AOAM5323f69rOTH0KweWoNHAzwij+VqXjE5nw0GmmCcDjuOufmDfcH66
-        ekWLUNdKWSzyDRtqF/uSdygXuIzgELWAMA==
-X-Google-Smtp-Source: ABdhPJyNhqOS6tRWNHbm3rsot+gZcrjLREyOg+sIVjlHAxdnYYe15zNU9UHWiFwzKyIKH0AcIQGTSw==
-X-Received: by 2002:a67:e114:: with SMTP id d20mr102840526vsl.5.1637586644751;
-        Mon, 22 Nov 2021 05:10:44 -0800 (PST)
-Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com. [209.85.222.42])
-        by smtp.gmail.com with ESMTPSA id bl34sm4762214vsb.31.2021.11.22.05.10.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Nov 2021 05:10:44 -0800 (PST)
-Received: by mail-ua1-f42.google.com with SMTP id n6so36419878uak.1;
-        Mon, 22 Nov 2021 05:10:44 -0800 (PST)
-X-Received: by 2002:a05:6102:e82:: with SMTP id l2mr130142461vst.37.1637586643812;
- Mon, 22 Nov 2021 05:10:43 -0800 (PST)
+        Mon, 22 Nov 2021 08:15:42 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCCFAC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 05:12:35 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1mp97P-0002EZ-GO; Mon, 22 Nov 2021 14:12:23 +0100
+Received: from pengutronix.de (2a03-f580-87bc-d400-c7fb-0fe8-e8cb-8e33.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:c7fb:fe8:e8cb:8e33])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 1D4826B2CFD;
+        Mon, 22 Nov 2021 13:12:22 +0000 (UTC)
+Date:   Mon, 22 Nov 2021 14:12:21 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Peter Rosin <peda@axentia.se>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-phy@lists.infradead.org
+Subject: Re: [PATCH RFC v2 4/4] phy: phy-can-transceiver: Add support for
+ setting mux
+Message-ID: <20211122131221.i3djuarw2ae5lbdk@pengutronix.de>
+References: <20211122125624.6431-1-a-govindraju@ti.com>
+ <20211122125624.6431-5-a-govindraju@ti.com>
 MIME-Version: 1.0
-References: <20211122103032.517923-1-maz@kernel.org>
-In-Reply-To: <20211122103032.517923-1-maz@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 22 Nov 2021 14:10:32 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdX2ZRvDYA3idmw3nBcP6CO=2od6ZU-UeJo9vYsuB=fQNQ@mail.gmail.com>
-Message-ID: <CAMuHMdX2ZRvDYA3idmw3nBcP6CO=2od6ZU-UeJo9vYsuB=fQNQ@mail.gmail.com>
-Subject: Re: [PATCH] of/irq: Add a quirk for controllers with their own
- definition of interrupt-map
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        kernel-team@android.com, Rob Herring <robh@kernel.org>,
-        John Crispin <john@phrozen.org>, Biwen Li <biwen.li@nxp.com>,
-        Chris Brandt <chris.brandt@renesas.com>,
-        linux-renesas-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gvhvfddsmx63z7gf"
+Content-Disposition: inline
+In-Reply-To: <20211122125624.6431-5-a-govindraju@ti.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
 
-On Mon, Nov 22, 2021 at 11:30 AM Marc Zyngier <maz@kernel.org> wrote:
-> Since 041284181226 ("of/irq: Allow matching of an interrupt-map local
-> to an interrupt controller"), a handful of interrupt controllers have
-> stopped working correctly. This is due to the DT exposing a non-sensical
-> interrupt-map property, and their drivers relying on the kernel ignoring
-> this property.
->
-> Since we cannot realistically fix this terrible behaviour, add a quirk
-> for the limited set of devices that have implemented this monster,
-> and document that this is a pretty bad practice.
->
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: John Crispin <john@phrozen.org>
-> Cc: Biwen Li <biwen.li@nxp.com>
-> Cc: Chris Brandt <chris.brandt@renesas.com>
-> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
+--gvhvfddsmx63z7gf
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for your patch!
-
-> --- a/drivers/of/irq.c
-> +++ b/drivers/of/irq.c
-> @@ -76,6 +76,36 @@ struct device_node *of_irq_find_parent(struct device_node *child)
+On 22.11.2021 18:26:24, Aswath Govindraju wrote:
+> On some boards, for routing CAN signals from controller to transceiver,
+> muxes might need to be set. Therefore, add support for setting the mux by
+> reading the mux-controls property from the device tree node.
+>=20
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
+>  drivers/phy/phy-can-transceiver.c | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+>=20
+> diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-tran=
+sceiver.c
+> index 6f3fe37dee0e..15056b9d68ba 100644
+> --- a/drivers/phy/phy-can-transceiver.c
+> +++ b/drivers/phy/phy-can-transceiver.c
+> @@ -10,6 +10,7 @@
+>  #include<linux/module.h>
+>  #include<linux/gpio.h>
+>  #include<linux/gpio/consumer.h>
+> +#include <linux/mux/consumer.h>
+> =20
+>  struct can_transceiver_data {
+>  	u32 flags;
+> @@ -21,13 +22,23 @@ struct can_transceiver_phy {
+>  	struct phy *generic_phy;
+>  	struct gpio_desc *standby_gpio;
+>  	struct gpio_desc *enable_gpio;
+> +	struct mux_control *mux_ctrl;
+>  };
+> =20
+>  /* Power on function */
+>  static int can_transceiver_phy_power_on(struct phy *phy)
+>  {
+> +	int ret;
+>  	struct can_transceiver_phy *can_transceiver_phy =3D phy_get_drvdata(phy=
+);
+> =20
+> +	if (can_transceiver_phy->mux_ctrl) {
+> +		ret =3D mux_control_select(can_transceiver_phy->mux_ctrl,
+> +					 mux_control_enable_state(can_transceiver_phy->mux_ctrl));
+> +		if (ret) {
+> +			dev_err(&phy->dev, "Failed to select CAN mux: %d\n", ret);
+> +			return ret;
+> +		}
+> +	}
+>  	if (can_transceiver_phy->standby_gpio)
+>  		gpiod_set_value_cansleep(can_transceiver_phy->standby_gpio, 0);
+>  	if (can_transceiver_phy->enable_gpio)
+> @@ -45,6 +56,8 @@ static int can_transceiver_phy_power_off(struct phy *ph=
+y)
+>  		gpiod_set_value_cansleep(can_transceiver_phy->standby_gpio, 1);
+>  	if (can_transceiver_phy->enable_gpio)
+>  		gpiod_set_value_cansleep(can_transceiver_phy->enable_gpio, 0);
+> +	if (can_transceiver_phy->mux_ctrl)
+> +		mux_control_deselect(can_transceiver_phy->mux_ctrl);
+> =20
+>  	return 0;
 >  }
->  EXPORT_SYMBOL_GPL(of_irq_find_parent);
->
-> +/*
-> + * These interrupt controllers abuse interrupt-map for unspeakable
-> + * reasons and rely on the core code to *ignore* it (the drivers do
-> + * their own parsing of the property).
-> + *
-> + * If you think of adding to the list for something *new*, think
-> + * again. There is a high chance that you will be sent back to the
-> + * drawing board.
-> + */
-> +static const char * const of_irq_imap_abusers[] = {
-> +       "CBEA,platform-spider-pic",
-> +       "sti,platform-spider-pic",
-> +       "realtek,rtl-intc",
-> +       "fsl,ls1021a-extirq",
-> +       "fsl,ls1043a-extirq",
-> +       "fsl,ls1088a-extirq",
-> +       "renesas,rza1-irqc",
-> +};
+> @@ -95,6 +108,19 @@ static int can_transceiver_phy_probe(struct platform_=
+device *pdev)
+>  	match =3D of_match_node(can_transceiver_phy_ids, pdev->dev.of_node);
+>  	drvdata =3D match->data;
+> =20
+> +	if (of_property_read_bool(dev->of_node, "mux-controls")) {
+> +		struct mux_control *control;
+> +		int ret;
+> +
+> +		control =3D devm_mux_control_get(dev, NULL);
+> +		if (IS_ERR(control)) {
+> +			ret =3D PTR_ERR(control);
+> +			dev_err_probe(&pdev->dev, ret, "failed to get mux\n");
+> +			return PTR_ERR(control);
+> +		}
+> +		can_transceiver_phy->mux_ctrl =3D control;
+> +	}
 
-Are you sure "renesas,rza1-irqc" handles this wrong? How should it
-be handled instead? I read the other thread[1], but didn't became
-any wiser: interrupts are mapped one-to-one with the RZ/A1 IRQC.
+What about adding a devm_mux_control_get_optional(), which doesn't
+return a -ENODEV but a NULL pointer if the device doesn't exist?
 
-In both v5.15 and v5.16-rc1, interrupts seem to work fine on RSK+RZA1
-and RZA2MEVB, both with gpio-keys and when used as a wake-up interrupt.
+Marc
 
-With this patch applied, I see double keypresses with evtest: when
-pressing a key, I get a key-down event, immediately followed by a
-key-up event. When releasing the key, I again get two events.
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-Good (v5.15 or v5.16-rc1):
+--gvhvfddsmx63z7gf
+Content-Type: application/pgp-signature; name="signature.asc"
 
-    Event: time 1637585631.288990, type 1 (EV_KEY), code 2 (KEY_1), value 1
-    Event: time 1637585631.288990, -------------- SYN_REPORT ------------
-    Event: time 1637585631.499924, type 1 (EV_KEY), code 2 (KEY_1), value 0
-    Event: time 1637585631.499924, -------------- SYN_REPORT ------------
+-----BEGIN PGP SIGNATURE-----
 
-Bad (v5.16-rc1 + this patch):
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmGblzMACgkQqclaivrt
+76n5jQf/bvjlyjVTxnqe4ORD1NDhaoVzWDGHqD+iyEWl4PyU8w8PINWY7af2oqxO
+XwnfYZxryhwTT1cxdr27EcnnhVU24G4bKu/pm8Bz9EQTTG9CuTR/Eg+PgApzWtYX
+dFQkqq6tLiUgAHsc7QFqGNVNoFxOcE2KCUOFS1jdn3gT07FrvN4M+qTVJQOpAi9c
+SYJ6F8DT3duS45KjWaQuEG6YnCNQTYA2PA2r0Y6/IHqqMvWcApQf+IcdMhztJ7B7
+5rJqAiPKq0OZAN4P2146WYodjO5b1c5aeH1lbjud2Kp3VPCptGX5trm9jEnZhstb
+dLP7NjeZqyixrl63w5bp+7AHqX9SPw==
+=IqZw
+-----END PGP SIGNATURE-----
 
-    Event: time 1637585341.946647, type 1 (EV_KEY), code 2 (KEY_1), value 1
-    Event: time 1637585341.946647, -------------- SYN_REPORT ------------
-    Event: time 1637585341.960256, type 1 (EV_KEY), code 2 (KEY_1), value 0
-    Event: time 1637585341.960256, -------------- SYN_REPORT ------------
-    Event: time 1637585342.146775, type 1 (EV_KEY), code 2 (KEY_1), value 1
-    Event: time 1637585342.146775, -------------- SYN_REPORT ------------
-    Event: time 1637585342.160092, type 1 (EV_KEY), code 2 (KEY_1), value 0
-    Event: time 1637585342.160092, -------------- SYN_REPORT ------------
-
-Thanks!
-
-[1] https://lore.kernel.org/all/bbe5506a2458b2d6049bd22a5fda77ae6175ddec.camel@svanheule.net/
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--gvhvfddsmx63z7gf--
