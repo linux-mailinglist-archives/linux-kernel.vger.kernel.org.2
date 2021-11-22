@@ -2,226 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F6645935B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 17:47:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE127459364
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 17:48:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240392AbhKVQu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 11:50:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240388AbhKVQuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 11:50:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BB8460C49
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 16:47:18 +0000 (UTC)
-Authentication-Results: mail.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="iOCicwL2"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1637599637;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=nx1NlZdwj8PiM1PkkfjZLo7ZeKru7gZg5nAsco+kW4s=;
-        b=iOCicwL2JFJ9wuSXZb/K3vmWDQ9s2K25J+oTxVSHB5Enjp/uXVM59zhr1PjFEFtnl4ONy4
-        lL1dlXFzgPIvyiMp+afDjjYsjhOD4IGH913za0oVgzRkwCRYLv1/WW5Yv8NBsYKuDYB3H9
-        OQtjUTTHsO14O8Bz41uc2UUboaLRKXQ=
-Received: by mail.zx2c4.com (OpenSMTPD) with ESMTPSA id fbad0dd1 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO)
-        for <linux-kernel@vger.kernel.org>;
-        Mon, 22 Nov 2021 16:47:16 +0000 (UTC)
-Received: by mail-yb1-f178.google.com with SMTP id v7so51961025ybq.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 08:47:16 -0800 (PST)
-X-Gm-Message-State: AOAM530p5gKVUlKOqgTYdb29GUy1vTP0LAc3X1pfoZj4PXorLa1m5HwZ
-        GvAojfHAGyRhEpDwUpHsTLNbZ0NgRUm0wcpRClM=
-X-Google-Smtp-Source: ABdhPJyObd5dZicfYqfgZGS7t623RNq1HBJuihwrzy+uNE8E/S1ybLq2MDhXTWvYE6go/0WP8FDk7HMUmfiwoT/terk=
-X-Received: by 2002:a25:ae12:: with SMTP id a18mr62038171ybj.412.1637599635956;
- Mon, 22 Nov 2021 08:47:15 -0800 (PST)
+        id S240424AbhKVQvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 11:51:49 -0500
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:37414 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238381AbhKVQvs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 11:51:48 -0500
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AMGZxWK006223;
+        Mon, 22 Nov 2021 16:48:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=rmlrfvHOE+vc1jJgdXkKcyGMLcUVaCQoxcnA5ulo9/I=;
+ b=L0hihobK+s5QeJ+GT86erfSX3BMqIbu7YQb0AbgIQlSAZlamFMLXvwz8EB+OFlk5gaUD
+ eh0EjjEaG7cjv6zjOL9xhVw14nH0iZ4irCatcJSOAdhvuoGkLeyOddoX3C6rYJ89O1Le
+ x7vV+2oxSrCYav+WhbCDk1I0FNhcdPIL5hvqXXyja+7BzcLVqeWEk+RhTj4lVLL1GnT4
+ 5iN0fIQBNQLQQ1BgNntIDdpOZuyGJczW6896w8qzxd5Lsfm3MvrLF2l9mGOd3qO1jB/F
+ jk85k5tHKmYEYFScPofsYjiADb4VCqCCF8gryUKpobxSpt0AutuC6XoIHpWu4ygTrjv0 zQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3cg3053e4h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Nov 2021 16:48:16 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AMGkXUE055297;
+        Mon, 22 Nov 2021 16:47:33 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2177.outbound.protection.outlook.com [104.47.59.177])
+        by userp3030.oracle.com with ESMTP id 3cep4wyjhh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Nov 2021 16:47:32 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PDI+yflAVNutORdn24lKfZCTaghb/jXAZ60/URo+Rbx+RzA3TMoeQP56GxzNcXBMUDcq8en5gW92vIBXU6/bPcoi+1xzQ02ZikXd9627qpqEtk4LtTzFDMSSZIHwjiRz94vpWJbIqqg33erolp3JwoaLCL0b9bOxtIj3Z6kwHuWi3zCFcNZ/GBQiBGH1E7aaSAy7jHIzO4lUsxe4jDa9FJPO+Mi3xw4F7wF6IwXT8w9mgCUn0Nbww7CZ4WfcUjFbTdBCTdm3WlgKrDWBM1tRqK+IOqGMnyzFbkcpv/SPNunRp+rVNrSI2gaJR9zBh40QyCCRLKZs+2wRCJpgGiSh7Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rmlrfvHOE+vc1jJgdXkKcyGMLcUVaCQoxcnA5ulo9/I=;
+ b=kFqZSMocjmkU9wuQ3p1DmCP1ebK0aLmq5nMNhN7gOicKM3tZ6np7qLM7aV/5NaTAiHFj7UXm1ceG4dxttPHs+M0IDb4GK6sbWUq6orQxZsOfKIm0LEsX1MHOS0ol9EinurjX4phY1mdWgyDdWqxOp0/EwCmQShVVJd5+Vx3nVs3R4XZvxKfE0YbkUfFvawbb6Guf/cOsqB7P3+yE23y88H5/ce5ZDtP1c7ByMsvQVeVguqBkF5ZFLtcQI4ZVpmXP94A/zkUstM2JpNpvm6D7rZv9K/anvyB/9ProblyLoYcbzedRyS77bM1TOGRaGI2MR3rx+l/KZGFBU1IBFDdWow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rmlrfvHOE+vc1jJgdXkKcyGMLcUVaCQoxcnA5ulo9/I=;
+ b=AdSv1iIaG69kT9fbzw5p1v4bG+Osvcf0JBsmGKi1MwX/ObNLhtM/HaO2+EOAbLO5OtOZo2fMTMfmiyS5mfu2QZasMmuOvmyQ02wwNHjelF2Rzv2qMYKcFKX488tgnhYWhrQSpVeZJlXxe7u1sjc+MWfkL1doXW/4Mu1Diy+IbWM=
+Received: from DM5PR10MB1466.namprd10.prod.outlook.com (2603:10b6:3:b::7) by
+ DM6PR10MB3067.namprd10.prod.outlook.com (2603:10b6:5:6e::29) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4713.24; Mon, 22 Nov 2021 16:47:30 +0000
+Received: from DM5PR10MB1466.namprd10.prod.outlook.com
+ ([fe80::601a:d0f6:b9db:f041]) by DM5PR10MB1466.namprd10.prod.outlook.com
+ ([fe80::601a:d0f6:b9db:f041%11]) with mapi id 15.20.4713.025; Mon, 22 Nov
+ 2021 16:47:30 +0000
+Message-ID: <766e8487-c83f-5ed1-1e49-0f17ef5ad97d@oracle.com>
+Date:   Mon, 22 Nov 2021 10:47:28 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.2
+Subject: Re: [PATCH V5 07/10] io_uring: switch to kernel_worker
+Content-Language: en-US
+To:     Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     geert@linux-m68k.org, vverma@digitalocean.com, hdanton@sina.com,
+        hch@infradead.org, stefanha@redhat.com, jasowang@redhat.com,
+        mst@redhat.com, sgarzare@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+References: <20211121174930.6690-1-michael.christie@oracle.com>
+ <20211121174930.6690-8-michael.christie@oracle.com>
+ <0a69a253-3865-322c-3a6d-6f8bb1c36023@kernel.dk>
+ <20211122100228.wdeovpqxg6gl3ldb@wittgenstein>
+ <f2a421da-1bb0-c65a-d8e2-7cbbb2cccfab@kernel.dk>
+From:   michael.christie@oracle.com
+In-Reply-To: <f2a421da-1bb0-c65a-d8e2-7cbbb2cccfab@kernel.dk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DS7PR03CA0182.namprd03.prod.outlook.com
+ (2603:10b6:5:3b6::7) To DM5PR10MB1466.namprd10.prod.outlook.com
+ (2603:10b6:3:b::7)
 MIME-Version: 1.0
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Mon, 22 Nov 2021 17:47:05 +0100
-X-Gmail-Original-Message-ID: <CAHmME9pShXywMogVkcBsXtfKxFHmQLe0F9cMF27aveUz6iyWhA@mail.gmail.com>
-Message-ID: <CAHmME9pShXywMogVkcBsXtfKxFHmQLe0F9cMF27aveUz6iyWhA@mail.gmail.com>
-Subject: RPM raw-wakeref not held in intel_pxp_fini_hw
-To:     Vitaly Lubart <vitaly.lubart@intel.com>,
-        Anshuman Gupta <anshuman.gupta@intel.com>,
-        Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        intel-gfx@lists.freedesktop.org,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from [20.15.0.19] (73.88.28.6) by DS7PR03CA0182.namprd03.prod.outlook.com (2603:10b6:5:3b6::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.20 via Frontend Transport; Mon, 22 Nov 2021 16:47:30 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ec8a1c4f-457a-4db0-c861-08d9add7c631
+X-MS-TrafficTypeDiagnostic: DM6PR10MB3067:
+X-Microsoft-Antispam-PRVS: <DM6PR10MB30672633EFB0E1836D41113DF19F9@DM6PR10MB3067.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:221;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rqgvdg9I+kpbrbi9N/5cipuOHlF9uTKY3IJw5XL0DACLew8rV2eFOdJXjb71VRW5+kAB3dqcTT9ieQfi9jflK8btJor/Br8QEas1dGIRTmXRmkfh6Ew8LYPacG06fMv8Tri2BKP4yoTtW9Z2Hr9hNCBhgRgORVPG3JOxEaoQYNXp1GLlSBCW2tbghrJ51DbrHXAKoCSHLfcI4NFVoKivYdNx2KjKicBGxM/Tg/sD7xPRJlU4sjzvD5Crb6mxhxZIp3TLKdWrGRHb7Jnr1jPwrccPdP+hOWm8BXTDta/wTA/66/Kzxv0egBAHQ4DfJAt21SnC4CboaJz9T3oEgK7Ke+6jln9iomw2C1Y7hJFxJhzjhBXGTv6ehE2RMlBcfVhyYrzq/NoZTUJ6firuvcykSvLqkFNuSsohbNcLNlX3qTOIllI/fTAfXm8FEBqqG5zp3TAcS5AHGEDZNv/s4huI/TXIBrwBryhFtn6iltGtf36FykZ7yW9q9/1Vbr1QAPdJI1xOmZzYQ/vy/TRKfMX5z72SLpYJjud6Y7dMTjaKJINqK43ntDjg53hJtTvxvP//GcPeJ593Xlrc2RXoP4kqctIMW4wreXi4twOCoWcXhFEOLXJcAAiALcZLnaOd/MvuXEWUvi3abRl0rqfnYINmRhsjO+h3fCY2GXudwkK/o8ZESynJ2RA9zd/eMxRv+oXAUXTU8UqcY7WmVcM66PEEewdC2L5w+CYQGFqoW4RFxSU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR10MB1466.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(110136005)(31696002)(26005)(8936002)(186003)(4326008)(16576012)(8676002)(6706004)(316002)(5660300002)(83380400001)(508600001)(9686003)(956004)(36756003)(66476007)(53546011)(2616005)(31686004)(66556008)(86362001)(7416002)(6486002)(38100700002)(66946007)(2906002)(78286007)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZHA3MTBEMFZWYzR0OGIrdmtoTmo5U1UvWi9KQSs3Z2UyVnhKRVVLQ295dzBW?=
+ =?utf-8?B?QXZRMWFuRWZvU1loUzl0cmlpWjV6eHExOFN1SmpmRE1KQTh4VFZwNzY5aTMw?=
+ =?utf-8?B?a3YySWN0N01JVmQ0VmxaQzRqSUlDbzVndmdrTGZyNDFreHNoRFQ5WjhWcm5k?=
+ =?utf-8?B?SHduRDQ5QkpEZ1kzN3A2d25zK1V2eWU1QWpDOWdCVmZsekMyTlBtZjJjODVu?=
+ =?utf-8?B?THBRSVVsampOYjN3UmMxMFdacTlWc3MyUFEvSlIyTlVod0RPdnhOak1IVmRK?=
+ =?utf-8?B?bkZDT0hJWXJqTHNTWEI3NG5SdlBpQ2JGb0VFSHRVcE4rWDN4N1R0d1p0U1F2?=
+ =?utf-8?B?QWdjSit2MmJQRmxzRktoTGtrR0NmRFlmYTV4OHdpMFFVbmNoRHJ2SUl4b3dR?=
+ =?utf-8?B?VTllTk5ac1pmekFhSTlUcFltZGhPVkMvTk9ONVh6Y0ttcmlXNVMvOUtlamJV?=
+ =?utf-8?B?UmhEOEtGZjBpazV4bUhMZURwcytNc2JHUHBKeEtYTmNBb2hYSXlzL2FzdC9p?=
+ =?utf-8?B?clQ1V0JydXB5dmpja0krT0ZmelFLODNLS3BPNkdZUmN4SHJCQVlDOVliWGF1?=
+ =?utf-8?B?RGlsaDQrZGpwUzlVR0FjSkF3Vm9VY0YzV3M2dlFnelN0Z2NVbkFwT05Fd2FR?=
+ =?utf-8?B?emVxVUZsenQrbXJQK1pYNEJBc1pLY3Jqcml5bTA1aE42bU1lbzhYUXNmTGFB?=
+ =?utf-8?B?cmdGdGxQSmpmUmUvK1pWN1VmS09DSFNYUDY4MStqeGV3QnFyZ2Ireng4U2ZV?=
+ =?utf-8?B?alU1WTNkUFd4TVlXQk5tTGlyNWM3SkV4YmdBeCtUdXp3OUpaYnBWRFQwaHZo?=
+ =?utf-8?B?Y21BWWNxUi9jeHlTbTV5K2xxd0Y4L05LZlRwK2k2bFpZWkI1cytpM2lVQUJZ?=
+ =?utf-8?B?VE5MUjJ3dE0zaXZGdXdjMk0xRHlSSElaenhmZlpzWGlxZ2ppNzJYcjVrc1FX?=
+ =?utf-8?B?Z0JMdTJJQ2JtUEJEamhrZytyY00zbGVVUUNnTHVTeHdDNm1CaFlvVCs3bTd0?=
+ =?utf-8?B?TVl5bHZ5QkY0NFlqbW1ieDlRVTd2Qmg2Smd3YkZiU0RzT0ZxUmtMWG5kMmpy?=
+ =?utf-8?B?K3hXZEVpM3ZTUFZLaXdkTTJZYVJjUnNjcDViU0ZURzlZM0VhT2g3QTl4cVJB?=
+ =?utf-8?B?RWRXY3RRQjNxbnZxTk5WZGk3cEZ1eWlyVFRicjZPUVZkS2dFOEh6Q2xEMisx?=
+ =?utf-8?B?aHlZMG8rRlhqc3kwd2ZpVm0wNVQxaFV0ZzRVMHV4ZlM2WVEwRmJ4OHBXSXVa?=
+ =?utf-8?B?M3NudEtwWW9NNDMrZ0pHQVdUQk1BalF5Q2NqQWJpYWN1ZzdEM2tQZytDTjJ4?=
+ =?utf-8?B?bkJhL1FFRDg0ODR5WEtJcUZvVUUwZitiZEdySEJEL3UvUVc5VmhPWm8xdkZq?=
+ =?utf-8?B?VHRIdHh5emFHOVhDM3RYYzNSTUhhUC9JQkxiQjJNcFhXRjRadWxhREJPcFF6?=
+ =?utf-8?B?RWFEektqbERBSXpMVWllVTVRZzVJVU9iS0pvdlNHRlpJaWpIOE5OSG5RMmQ1?=
+ =?utf-8?B?Z2ZoNTcrNk1aTWM0OHlZM3daRmRSMTh1VnVlVElWbW1xVThyTkJyTG1URTNK?=
+ =?utf-8?B?azdueHQreGJtbmtka0wrSEhGeEd5bnVzTFU5Z2tGblFNU0lFNnVKQWc1aUFy?=
+ =?utf-8?B?ejd5VHVPUVVtWTY2Z0xtdkV2Z0ZQSURPWUNMMnNablhhZjM4ci8ySDFzRVpL?=
+ =?utf-8?B?OXFjOHg5cEhZdVdxSHIrc25sdzdxaTlOU1dveE51THRSZEowQnFjOThyMktJ?=
+ =?utf-8?B?VEJuQkNmV0JEZjdiSTVTc3MwWXdHZ0dCOTVxMDh2dVJONTJUTHEvY2lHcUFL?=
+ =?utf-8?B?QWUrSnorUVBFRjJySnJhSndINlVnQXBwMHRSUlZjREhpQTdnWklZRnZLQU05?=
+ =?utf-8?B?U2ZnNEMrOFZMYmo0amJBSEhCamlJczhxbndhbjV4SEVJRjAzWWxMdzFmZ1px?=
+ =?utf-8?B?aVFvNmRCSWh2Z000dUUvd3pQTGJDbksrYzJwTWszT3lpd0NtWHhUV1dPVmVG?=
+ =?utf-8?B?Nmw2YjYvZFF2SlNWQjUwRWFXckpLODI2Y05xdFNjbEwxME9LT2hWdlV4Y1RF?=
+ =?utf-8?B?dHJYdkF2UTVtYktNdmZwZFcxejlyanpTV2RIQUxSU3hDSXZDMlhrelVNdmRo?=
+ =?utf-8?B?K2RncnZpWUdnMlFHSDZHRmFQU2EvQnplT3FrekJkelpBZ3d3djAyM0hNUXdB?=
+ =?utf-8?B?R3A2cVR5QXNkM0tNd01zVzZySXB2TzlRTU42ejJUWmRCVjErSXBrVUdmWWJK?=
+ =?utf-8?B?V0hnZkVGREZiaTUyTEROb2VDZS93PT0=?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ec8a1c4f-457a-4db0-c861-08d9add7c631
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR10MB1466.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2021 16:47:30.6440
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8dm41NhcKWc3pZHvT2MzvEV+4KmA86/5PEHyBWO0D1U+f7gSwijWMXXQc4OuOWhFIoLdr+PNWnoRNqT3HGkzU9qOGHFRC2op+8jq29ar2bw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB3067
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10176 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
+ mlxlogscore=999 bulkscore=0 mlxscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111220085
+X-Proofpoint-GUID: -ITnadqsR3L0O8evZFcds7pyQ8712iYt
+X-Proofpoint-ORIG-GUID: -ITnadqsR3L0O8evZFcds7pyQ8712iYt
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Intel PXPers,
+On 11/22/21 8:20 AM, Jens Axboe wrote:
+> On 11/22/21 3:02 AM, Christian Brauner wrote:
+>> On Sun, Nov 21, 2021 at 11:17:11AM -0700, Jens Axboe wrote:
+>>> On 11/21/21 10:49 AM, Mike Christie wrote:
+>>>> Convert io_uring and io-wq to use kernel_worker.
+>>>
+>>> I don't like the kernel_worker name, that implies it's always giving you
+>>> a kernel thread or kthread. That's not the io_uring use case, it's
+>>> really just a thread off the original task that just happens to never
+>>> exit to userspace.
+>>>
+>>> Can we do a better name? At least io_thread doesn't imply that.
+>>
+>> Yeah, I had thought about that as well and at first had kernel_uworker()
+>> locally but wasn't convinced. Maybe we should just make it
+>> create_user_worker()?
+> 
+> That's better, or maybe even create_user_inkernel_thread() or something?
+> Pretty long, though... I'd be fine with create_user_worker().
+> 
 
-I hit this splat on 5.16-rc1 during system suspend:
+Ok, I'll do:
 
-Nov 22 13:54:09 thinkpad systemd-logind[934]: Lid closed.
-Nov 22 13:54:09 thinkpad systemd[1]: Reached target Sleep.
-Nov 22 13:54:09 thinkpad systemd[1]: Starting System Suspend...
-Nov 22 13:54:09 thinkpad systemd-sleep[519259]: Entering sleep state
-'suspend'...
-Nov 22 13:54:09 thinkpad kernel: PM: suspend entry (s2idle)
-Nov 22 15:22:05 thinkpad kernel: Filesystems sync: 0.124 seconds
-Nov 22 15:22:05 thinkpad kernel: Freezing user space processes ...
-(elapsed 0.001 seconds) done.
-Nov 22 15:22:05 thinkpad kernel: OOM killer disabled.
-Nov 22 15:22:05 thinkpad kernel: Freezing remaining freezable tasks
-... (elapsed 0.001 seconds) done.
-Nov 22 15:22:05 thinkpad kernel: printk: Suspending console(s) (use
-no_console_suspend to debug)
-Nov 22 15:22:05 thinkpad kernel: ------------[ cut here ]------------
-Nov 22 15:22:05 thinkpad kernel: RPM wakelock ref not held during HW access
-Nov 22 15:22:05 thinkpad kernel: WARNING: CPU: 10 PID: 519259 at
-drivers/gpu/drm/i915/intel_runtime_pm.h:112
-fwtable_write32+0x1cb/0x200 [i915]
-Nov 22 15:22:05 thinkpad kernel: Modules linked in: cdc_mbim cdc_wdm
-cdc_ncm cdc_ether usbnet mii snd_seq_dummy snd_hrtimer snd_seq
-snd_seq_device rfcomm cmac algif_skcipher bnep uvcvideo
-videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 btusb
-videobuf2_common btintel blue>
-Nov 22 15:22:05 thinkpad kernel:  i2c_designware_platform
-i2c_designware_core mei_pxp mei_hdcp ac97_bus kvm_intel snd_hda_intel
-snd_intel_dspcfg intel_rapl_msr think_lmi snd_intel_sdw_acpi i915
-firmware_attributes_class wmi_bmof snd_hda_codec kvm i2c_algo_bit
-snd_hwdep int>
-Nov 22 15:22:05 thinkpad kernel: CPU: 10 PID: 519259 Comm:
-systemd-sleep Tainted: G S   U            5.16.0-rc1+ #192
-Nov 22 15:22:05 thinkpad kernel: Hardware name: LENOVO
-20Y5CTO1WW/20Y5CTO1WW, BIOS N40ET28W (1.10 ) 09/09/2021
-Nov 22 15:22:05 thinkpad kernel: RIP: 0010:fwtable_write32+0x1cb/0x200 [i915]
-Nov 22 15:22:05 thinkpad kernel: Code: 21 cb df 0f 0b e9 85 fe ff ff
-80 3d 36 68 1f 00 00 0f 85 82 fe ff ff 48 c7 c7 70 cf c4 a1 c6 05 22
-68 1f 00 01 e8 1c 21 cb df <0f> 0b e9 68 fe ff ff 48 8b bb 40 01 00 00
-e8 a2 cf ce df b9 01 00
-Nov 22 15:22:05 thinkpad kernel: RSP: 0018:ffff88821d283c80 EFLAGS: 00010282
-Nov 22 15:22:05 thinkpad kernel: RAX: 000000000000002a RBX:
-ffff88813df707d0 RCX: 0000000000000027
-Nov 22 15:22:05 thinkpad kernel: RDX: ffff88901f69b448 RSI:
-0000000000000001 RDI: ffff88901f69b440
-Nov 22 15:22:05 thinkpad kernel: RBP: 00000000000320f0 R08:
-0000000000000d17 R09: ffff88821d283c20
-Nov 22 15:22:05 thinkpad kernel: R10: 3fffffffffffffff R11:
-fffffffffff93a78 R12: 0000000040000000
-Nov 22 15:22:05 thinkpad kernel: R13: 0000000000000000 R14:
-ffff888101311150 R15: ffffffff81491b20
-Nov 22 15:22:05 thinkpad kernel: FS:  00007efcfaa87800(0000)
-GS:ffff88901f680000(0000) knlGS:0000000000000000
-Nov 22 15:22:05 thinkpad kernel: CS:  0010 DS: 0000 ES: 0000 CR0:
-0000000080050033
-Nov 22 15:22:05 thinkpad kernel: CR2: 00007efcfb41e6f0 CR3:
-00000005ed937004 CR4: 0000000000770ee0
-Nov 22 15:22:05 thinkpad kernel: PKRU: 55555554
-Nov 22 15:22:05 thinkpad kernel: Call Trace:
-Nov 22 15:22:05 thinkpad kernel:  <TASK>
-Nov 22 15:22:05 thinkpad kernel:  intel_pxp_fini_hw+0x23/0x30 [i915]
-Nov 22 15:22:05 thinkpad kernel:  intel_pxp_suspend+0x2f/0x40 [i915]
-Nov 22 15:22:05 thinkpad kernel:  i915_gem_backup_suspend+0x6e/0x150 [i915]
-Nov 22 15:22:05 thinkpad kernel:  ? pci_target_state+0xc/0xc0
-Nov 22 15:22:05 thinkpad kernel:  pci_pm_prepare+0x28/0x60
-Nov 22 15:22:05 thinkpad kernel:  dpm_prepare+0xbd/0x370
-Nov 22 15:22:05 thinkpad kernel:  dpm_suspend_start+0x16/0x80
-Nov 22 15:22:05 thinkpad kernel:  suspend_devices_and_enter+0x104/0x6d0
-Nov 22 15:22:05 thinkpad kernel:  pm_suspend.cold+0x2f6/0x33d
-Nov 22 15:22:05 thinkpad kernel:  state_store+0x6b/0xe0
-Nov 22 15:22:05 thinkpad kernel:  kernfs_fop_write_iter+0x107/0x190
-Nov 22 15:22:05 thinkpad kernel:  new_sync_write+0x100/0x170
-Nov 22 15:22:05 thinkpad kernel:  vfs_write+0x1c5/0x260
-Nov 22 15:22:05 thinkpad kernel:  ksys_write+0x4a/0xc0
-Nov 22 15:22:05 thinkpad kernel:  do_syscall_64+0x35/0x80
-Nov 22 15:22:05 thinkpad kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xae
-Nov 22 15:22:05 thinkpad kernel: RIP: 0033:0x7efcfb27ccb3
-Nov 22 15:22:05 thinkpad kernel: Code: 8b 15 81 11 0f 00 f7 d8 64 89
-02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 64 8b 04 25 18 00 00 00 85 c0
-75 14 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 55 c3 0f 1f 40 00 48
-83 ec 28 48 89 54 24 18
-Nov 22 15:22:05 thinkpad kernel: RSP: 002b:00007fff279a5308 EFLAGS:
-00000246 ORIG_RAX: 0000000000000001
-Nov 22 15:22:05 thinkpad kernel: RAX: ffffffffffffffda RBX:
-0000000000000004 RCX: 00007efcfb27ccb3
-Nov 22 15:22:05 thinkpad kernel: RDX: 0000000000000004 RSI:
-00007fff279a5400 RDI: 0000000000000004
-Nov 22 15:22:05 thinkpad kernel: RBP: 00005571997e72d0 R08:
-0000000000000007 R09: 00005571997eb4a0
-Nov 22 15:22:05 thinkpad kernel: R10: 11500bc5676901a3 R11:
-0000000000000246 R12: 0000000000000004
-Nov 22 15:22:05 thinkpad kernel: R13: 00007fff279a5400 R14:
-0000000000000004 R15: 00007efcfb36aa00
-Nov 22 15:22:05 thinkpad kernel:  </TASK>
-Nov 22 15:22:05 thinkpad kernel: ---[ end trace efcf3c6627ff7163 ]---
-Nov 22 15:22:05 thinkpad kernel: ------------[ cut here ]------------
-Nov 22 15:22:05 thinkpad kernel: RPM raw-wakeref not held
-Nov 22 15:22:05 thinkpad kernel: WARNING: CPU: 0 PID: 518230 at
-drivers/gpu/drm/i915/intel_runtime_pm.h:104
-fwtable_write32+0x1a4/0x200 [i915]
-Nov 22 15:22:05 thinkpad kernel: Modules linked in: cdc_mbim cdc_wdm
-cdc_ncm cdc_ether usbnet mii snd_seq_dummy snd_hrtimer snd_seq
-snd_seq_device rfcomm cmac algif_skcipher bnep uvcvideo
-videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 btusb
-videobuf2_common btintel blue>
-Nov 22 15:22:05 thinkpad kernel:  i2c_designware_platform
-i2c_designware_core mei_pxp mei_hdcp ac97_bus kvm_intel snd_hda_intel
-snd_intel_dspcfg intel_rapl_msr think_lmi snd_intel_sdw_acpi i915
-firmware_attributes_class wmi_bmof snd_hda_codec kvm i2c_algo_bit
-snd_hwdep int>
-Nov 22 15:22:05 thinkpad kernel: CPU: 0 PID: 518230 Comm:
-kworker/u32:4 Tainted: G S   U  W         5.16.0-rc1+ #192
-Nov 22 15:22:05 thinkpad kernel: Hardware name: LENOVO
-20Y5CTO1WW/20Y5CTO1WW, BIOS N40ET28W (1.10 ) 09/09/2021
-Nov 22 15:22:05 thinkpad kernel: Workqueue: events_unbound async_run_entry_fn
-Nov 22 15:22:05 thinkpad kernel: RIP: 0010:fwtable_write32+0x1a4/0x200 [i915]
-Nov 22 15:22:05 thinkpad kernel: Code: 00 00 c6 00 00 e9 02 ff ff ff
-80 3d 5e 68 1f 00 00 0f 85 9f fe ff ff 48 c7 c7 a0 51 c7 a1 c6 05 4a
-68 1f 00 01 e8 43 21 cb df <0f> 0b e9 85 fe ff ff 80 3d 36 68 1f 00 00
-0f 85 82 fe ff ff 48 c7
-Nov 22 15:22:05 thinkpad kernel: RSP: 0018:ffff8882e341bc60 EFLAGS: 00010286
-Nov 22 15:22:05 thinkpad kernel: RAX: 0000000000000018 RBX:
-ffff88813df707d0 RCX: 0000000000000027
-Nov 22 15:22:05 thinkpad kernel: RDX: ffff88901f41b448 RSI:
-0000000000000001 RDI: ffff88901f41b440
-Nov 22 15:22:05 thinkpad kernel: RBP: 00000000000320f0 R08:
-0000000000000da7 R09: ffff8882e341bc00
-Nov 22 15:22:05 thinkpad kernel: R10: 3fffffffffffffff R11:
-fffffffffff94e08 R12: 0000000040000000
-Nov 22 15:22:05 thinkpad kernel: R13: 0000000000000000 R14:
-ffff888102394150 R15: ffff888100068005
-Nov 22 15:22:05 thinkpad kernel: FS:  0000000000000000(0000)
-GS:ffff88901f400000(0000) knlGS:0000000000000000
-Nov 22 15:22:05 thinkpad kernel: CS:  0010 DS: 0000 ES: 0000 CR0:
-0000000080050033
-Nov 22 15:22:05 thinkpad kernel: CR2: 00007f3018027098 CR3:
-000000000200a001 CR4: 0000000000770ef0
-Nov 22 15:22:05 thinkpad kernel: PKRU: 55555554
-Nov 22 15:22:05 thinkpad kernel: Call Trace:
-Nov 22 15:22:05 thinkpad kernel:  <TASK>
-Nov 22 15:22:05 thinkpad kernel:  intel_pxp_fini_hw+0x23/0x30 [i915]
-Nov 22 15:22:05 thinkpad kernel:  i915_pxp_tee_component_unbind+0x19/0x40 [i915]
-Nov 22 15:22:05 thinkpad kernel:  component_unbind+0x26/0x40
-Nov 22 15:22:05 thinkpad kernel:  component_unbind_all+0x85/0x90
-Nov 22 15:22:05 thinkpad kernel:  component_master_del+0x73/0x90
-Nov 22 15:22:05 thinkpad kernel:  mei_pxp_remove+0x23/0x50 [mei_pxp]
-Nov 22 15:22:05 thinkpad kernel:  mei_cl_device_remove+0x1a/0x80 [mei]
-Nov 22 15:22:05 thinkpad kernel:  __device_release_driver+0x172/0x230
-Nov 22 15:22:05 thinkpad kernel:  device_release_driver+0x1f/0x30
-Nov 22 15:22:05 thinkpad kernel:  mei_cl_bus_remove_devices+0x56/0x70 [mei]
-Nov 22 15:22:05 thinkpad kernel:  mei_stop+0x32/0xc0 [mei]
-Nov 22 15:22:05 thinkpad kernel:  mei_me_pci_suspend+0x1f/0x50 [mei_me]
-Nov 22 15:22:05 thinkpad kernel:  ? pci_pm_suspend_noirq+0x270/0x270
-Nov 22 15:22:05 thinkpad kernel:  pci_pm_suspend+0x6c/0x200
-Nov 22 15:22:05 thinkpad kernel:  ? pci_pm_suspend_noirq+0x270/0x270
-Nov 22 15:22:05 thinkpad kernel:  dpm_run_callback+0x36/0x100
-Nov 22 15:22:05 thinkpad kernel:  __device_suspend+0x122/0x4c0
-Nov 22 15:22:05 thinkpad kernel:  async_suspend+0x16/0x90
-Nov 22 15:22:05 thinkpad kernel:  async_run_entry_fn+0x15/0x90
-Nov 22 15:22:05 thinkpad kernel:  process_one_work+0x1ce/0x370
-Nov 22 15:22:05 thinkpad kernel:  worker_thread+0x48/0x3c0
-Nov 22 15:22:05 thinkpad kernel:  ? rescuer_thread+0x350/0x350
-Nov 22 15:22:05 thinkpad kernel:  kthread+0x13c/0x160
-Nov 22 15:22:05 thinkpad kernel:  ? set_kthread_struct+0x40/0x40
-Nov 22 15:22:05 thinkpad kernel:  ret_from_fork+0x1f/0x30
-Nov 22 15:22:05 thinkpad kernel:  </TASK>
-Nov 22 15:22:05 thinkpad kernel: ---[ end trace efcf3c6627ff7164 ]---
+create_user_worker()
+start_user_worker()
 
-As this is new code in 5.16, I thought I should report it to you. I
-haven't started debugging it yet, and I'll load up rc2 this evening as
-well.
+since you guys agree. It will also match the PF flag naming.
 
-Jason
+I'll also add more details to the commit message you requested.
