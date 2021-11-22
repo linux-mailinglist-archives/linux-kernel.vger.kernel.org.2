@@ -2,112 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF6F459199
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:47:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C9445919C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:48:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239985AbhKVPuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:50:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234636AbhKVPuY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:50:24 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F15C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:47:18 -0800 (PST)
-Date:   Mon, 22 Nov 2021 16:47:14 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637596035;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=BEoYoKO1FJBa2ukBy23+bj3uF+7X+WvM0sv+jH9o6GY=;
-        b=ZUGKHWh5Cws9FzM8WnZZFWuVIu10DS5k+RyUyJTEhFaLzhPDt5yVuREv+l1mAFo5M7/CEz
-        9eDTJWLD6aqbgRfzOys8i6Mzlx6LiHKBTufdSTpRFiXd/qFi+rk0m7aHKUNgl+5CTgE9HI
-        rPYlXwLn3O6kCXtmiBCJLh80NdbUqhNVIrnbGZWHZH1Ge8qSRma/zH4+kXdubMD26xHV1H
-        3TZ9t7bmyf/7xRdSyObEd/20CemC56TGdkaLf7+Ubav8SH0fcT2KKCyeC5omjwpYBM644D
-        /uVPDsWTQmuo1XUEeAL/uLFjyCblJ57kMDNx6JG0kZ8DJp0S/53eBMWD4TtULg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637596035;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=BEoYoKO1FJBa2ukBy23+bj3uF+7X+WvM0sv+jH9o6GY=;
-        b=let+1knIfa2gh2XASxf6daDfL3UJiKCPCwp+ezq0bLm721yygvSfMZN5U8VWQPHhd/OyFg
-        AV4vqOpn+gw4mXCg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>, x86@kernel.org,
-        xen-devel@lists.xenproject.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH] cpu/hotplug: Allow the CPU in CPU_UP_PREPARE state to be
- brought up again.
-Message-ID: <20211122154714.xaoxok3fpk5bgznz@linutronix.de>
+        id S240004AbhKVPvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:51:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42324 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239994AbhKVPvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 10:51:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 396E160F50;
+        Mon, 22 Nov 2021 15:47:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637596077;
+        bh=coG1lVPGdNUMGzA0WSI5lrzbJGCJcGknXTWKVgL1jMI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BrCSo6m/1i8cNP7jGkFxesXBzfUzd1tIbQjLPeTITTBS27fSca78OAPQbxfG6rEoD
+         O+j8J3/zSGH96LiWqhEzWbmq7WrupXr4j4RRtxTGBzyjW8F4meXPdPXgOInTACfqKM
+         /u0eiDqQZJX6jElovK6JAFCMlB5dXiZMjgkPI3O/25Pjrg6ZwimmSvDkxDylhN2jM5
+         moAVOuivwVXc5XvPmo9/Q0umaQdLJnxBsEki8Gx2Jdw8daLYzaO6whbDD9wl5IaoJa
+         9zM3DK7Xhx8R4LLJa0R/+rmnoLYcihQ+NBT2rZElUGTrq7nvbeSKojhxWtN2JIdwb2
+         KK1l/qaZhqwvg==
+Date:   Mon, 22 Nov 2021 15:47:53 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] spi: Fix multi-line comment style
+Message-ID: <YZu7qWKYbWnmy20q@sirena.org.uk>
+References: <20211119173718.52938-1-andriy.shevchenko@linux.intel.com>
+ <20211119173718.52938-2-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4uRR4lEApAfCq+Eb"
 Content-Disposition: inline
+In-Reply-To: <20211119173718.52938-2-andriy.shevchenko@linux.intel.com>
+X-Cookie: Neutrinos have bad breadth.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Longpeng(Mike)" <longpeng2@huawei.com>
 
-A CPU will not show up in virtualized environment which includes an
-Enclave. The VM splits its resources into a primary VM and a Enclave
-VM. While the Enclave is active, the hypervisor will ignore all requests
-to bring up a CPU and this CPU will remain in CPU_UP_PREPARE state.
-The kernel will wait up to ten seconds for CPU to show up
-(do_boot_cpu()) and then rollback the hotplug state back to
-CPUHP_OFFLINE leaving the CPU state in CPU_UP_PREPARE. The CPU state is
-set back to CPUHP_TEARDOWN_CPU during the CPU_POST_DEAD stage.
+--4uRR4lEApAfCq+Eb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-After the Enclave VM terminates, the primary VM can bring up the CPU
-again.
+On Fri, Nov 19, 2021 at 07:37:18PM +0200, Andy Shevchenko wrote:
+>   /*
+>    * Fix multi-line comment style as in this short example. Pay attention
+>    * to the capitalization, period and starting line of the text.
+>    */
+>=20
+> While at it, split the (supposedly short) description of couple of functi=
+ons
+> to summary (short description) and (long) description.
 
-Allow to bring up the CPU if it is in the CPU_UP_PREPARE state.
+This doesn't apply against current code, please check and resend.
 
-[bigeasy: Rewrite commit description.]
+--4uRR4lEApAfCq+Eb
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Link: https://lore.kernel.org/r/20210901051143.2752-1-longpeng2@huawei.com
----
+-----BEGIN PGP SIGNATURE-----
 
-For XEN: this changes the behaviour as it allows to invoke
-cpu_initialize_context() again should it have have earlier. I *think*
-this is okay and would to bring up the CPU again should the memory
-allocation in cpu_initialize_context() fail.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGbu6gACgkQJNaLcl1U
+h9Bz0gf/SbXpl6cBivIjgq1t4hhTzW1gr4X0wcKwWMcuo0reAf9G4um/3VWgaO0m
+j+aWYW/lzxXliCZX8lscRPNmUcydNGS2fdwwtWpCs2rA8nShfsqbSuQLwfxNxN73
+iuR9wWgA94nPfZ7fanNEWlXTLQYQCQND5lHbaDhMFjs2v0nAf1hG1nKuaZ8cxeM4
+Ow1+k9u1YSbYSVyHRU0WZL0b71iNMivqQdFLKwl+rmS0eKwXTBfSW5ZC8oaii4hs
+kJbB41wqn4NC/gfc1+Ua/W0aUMJCpANiisk9SoU2a8pyi3C6TdYPDaDUhs+xP+By
+2n6Ya3LyVR5upP+qmjA2qj1Vxyn2rg==
+=yjzK
+-----END PGP SIGNATURE-----
 
- kernel/smpboot.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/kernel/smpboot.c b/kernel/smpboot.c
-index f6bc0bc8a2aab..34958d7fe2c1c 100644
---- a/kernel/smpboot.c
-+++ b/kernel/smpboot.c
-@@ -392,6 +392,13 @@ int cpu_check_up_prepare(int cpu)
- 		 */
- 		return -EAGAIN;
- 
-+	case CPU_UP_PREPARE:
-+		/*
-+		 * Timeout while waiting for the CPU to show up. Allow to try
-+		 * again later.
-+		 */
-+		return 0;
-+
- 	default:
- 
- 		/* Should not happen.  Famous last words. */
--- 
-2.33.1
-
+--4uRR4lEApAfCq+Eb--
