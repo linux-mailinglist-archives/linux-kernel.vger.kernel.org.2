@@ -2,91 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 021694590ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:08:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17B6B4590F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:09:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239483AbhKVPLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:11:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232194AbhKVPLG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:11:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C46C6054E;
-        Mon, 22 Nov 2021 15:07:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637593680;
-        bh=7CiwEOoYK4966oM7tixuCMDNr4WY1V73nIRWiKch93g=;
-        h=From:To:Cc:Subject:Date:From;
-        b=TkBEdpp9Cq8I2qsQsKiQBnA0KeD1hakdMrPPO+CBcFSeuP1abE/qd9Sj/qpoJybIO
-         lUBUSg8858my6558b+GndDPASPF7Kmb22Y/HL9NiWx1HcY01M4lCpaMg3xPT/pwwl6
-         TI6mYXmvHmRIFkEKxhkcNCJUlJAS8zMl64bV2attF0cIAigL8chP1qoYrh8Qsb9j2T
-         i1czliZljSueHcfmdM471FY+Rq7ONEDNNSIvzP7YeymnTL95lQKTKEDppuCk+CX+26
-         nqvHhz+NRPnbHcHp8x57nxOXUdMmJjJZoHQ31mpGkm683t2NGEFe6Z1GWdmHEimlKo
-         rgrCydzhNKzmg==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Moritz Fischer <mdf@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Huazhong Tan <tanhuazhong@huawei.com>,
-        Yufeng Mo <moyufeng@huawei.com>,
-        Cai Huoqing <caihuoqing@baidu.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] nixge: fix mac address error handling again
-Date:   Mon, 22 Nov 2021 16:07:44 +0100
-Message-Id: <20211122150754.4044081-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S239577AbhKVPMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:12:07 -0500
+Received: from www381.your-server.de ([78.46.137.84]:57628 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237918AbhKVPMG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 10:12:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=etu9YMUmHzasU+XwW6nQHDIBMOGhRRs59fj7iJUc9rc=; b=BaYq3aYuoIk4qqZ+qqsEQI9UhP
+        yNAe+Ow0sjoJju5JZCniJxYrzgjWpDxiKUuZTsyi7sDf2jebsnClCedL5TwZiVvzKn+XZid0LNGgd
+        6It9is0Knf5c1ICKsmTFY+0a5SzKCa9Rt8J59YmtnS6lf4DxVU/ic2P/kMydblHHB+ObL+tL0xS5T
+        ksJdPeYH0S/foXcRZLFW2CkZnjISf4pOduWchnORKLDJfswYAumHZKcdQHtTzTATu33FyfLtSE8cz
+        pua3iqlKCZJ5tvqQJpyUShFcu9z7G2kzpomyyiYu+NRq7XfVWa8UfOHb6wDzSHyFkWdtQL6aVN0bj
+        +zCeVV5g==;
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1mpAw8-000Bss-C6; Mon, 22 Nov 2021 16:08:52 +0100
+Received: from [82.135.83.112] (helo=[192.168.178.20])
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1mpAw8-000Btg-2M; Mon, 22 Nov 2021 16:08:52 +0100
+Subject: Re: [PATCH 01/15] iio: buffer-dma: Get rid of incoming/outgoing
+ queues
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+References: <20211115141925.60164-1-paul@crapouillou.net>
+ <20211115141925.60164-2-paul@crapouillou.net>
+ <e2689f0d-dc16-2519-57df-d98caadb07b0@metafoo.de>
+ <0COX2R.BSNX3NW8N48T@crapouillou.net>
+ <332d001d-8b5a-bba2-c490-ed2e5efd0b1d@metafoo.de>
+ <AMUX2R.XLGW1EZOMU9B2@crapouillou.net>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <d542865e-2a0b-089f-e63c-b24d16c58ec6@metafoo.de>
+Date:   Mon, 22 Nov 2021 16:08:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <AMUX2R.XLGW1EZOMU9B2@crapouillou.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26361/Mon Nov 22 10:19:53 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On 11/21/21 9:08 PM, Paul Cercueil wrote:
+>
+>
+> Le dim., nov. 21 2021 at 19:49:03 +0100, Lars-Peter Clausen 
+> <lars@metafoo.de> a écrit :
+>> On 11/21/21 6:52 PM, Paul Cercueil wrote:
+>>> Hi Lars,
+>>>
+>>> Le dim., nov. 21 2021 at 17:23:35 +0100, Lars-Peter Clausen 
+>>> <lars@metafoo.de> a écrit :
+>>>> On 11/15/21 3:19 PM, Paul Cercueil wrote:
+>>>>> The buffer-dma code was using two queues, incoming and outgoing, to
+>>>>> manage the state of the blocks in use.
+>>>>>
+>>>>> While this totally works, it adds some complexity to the code,
+>>>>> especially since the code only manages 2 blocks. It is much easier to
+>>>>> just check each block's state manually, and keep a counter for the 
+>>>>> next
+>>>>> block to dequeue.
+>>>>>
+>>>>> Since the new DMABUF based API wouldn't use these incoming and 
+>>>>> outgoing
+>>>>> queues anyway, getting rid of them now makes the upcoming changes
+>>>>> simpler.
+>>>>>
+>>>>> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>>> The outgoing queue is going to be replaced by fences, but I think 
+>>>> we need to keep the incoming queue.
+>>>
+>>> Blocks are always accessed in sequential order, so we now have a 
+>>> "queue->next_dequeue" that cycles between the buffers allocated for 
+>>> fileio.
+>>>
+>>>>> [...]
+>>>>> @@ -442,28 +435,33 @@ EXPORT_SYMBOL_GPL(iio_dma_buffer_disable);
+>>>>>   static void iio_dma_buffer_enqueue(struct iio_dma_buffer_queue 
+>>>>> *queue,
+>>>>>       struct iio_dma_buffer_block *block)
+>>>>>   {
+>>>>> -    if (block->state == IIO_BLOCK_STATE_DEAD) {
+>>>>> +    if (block->state == IIO_BLOCK_STATE_DEAD)
+>>>>>           iio_buffer_block_put(block);
+>>>>> -    } else if (queue->active) {
+>>>>> +    else if (queue->active)
+>>>>>           iio_dma_buffer_submit_block(queue, block);
+>>>>> -    } else {
+>>>>> +    else
+>>>>>           block->state = IIO_BLOCK_STATE_QUEUED;
+>>>>> -        list_add_tail(&block->head, &queue->incoming);
+>>>> If iio_dma_buffer_enqueue() is called with a dmabuf and the buffer 
+>>>> is not active, it will be marked as queued, but we don't actually 
+>>>> keep a reference to it anywhere. It will never be submitted to 
+>>>> the DMA, and it will never be signaled as completed.
+>>>
+>>> We do keep a reference to the buffers, in the queue->fileio.blocks 
+>>> array. When the buffer is enabled, all the blocks in that array 
+>>> that are in the "queued" state will be submitted to the DMA.
+>>>
+>> But not when used in combination with the DMA buf changes later in 
+>> this series.
+>>
+>
+> That's still the case after the DMABUF changes of the series. Or can 
+> you point me exactly what you think is broken?
+>
+When you allocate a DMABUF with the allocate IOCTL and then submit it 
+with the enqueue IOCTL before the buffer is enabled it will end up 
+marked as queued, but not actually be queued anywhere.
 
-The change to eth_hw_addr_set() caused gcc to correctly spot a
-bug that was introduced in an earlier incorrect fix:
-
-In file included from include/linux/etherdevice.h:21,
-                 from drivers/net/ethernet/ni/nixge.c:7:
-In function '__dev_addr_set',
-    inlined from 'eth_hw_addr_set' at include/linux/etherdevice.h:319:2,
-    inlined from 'nixge_probe' at drivers/net/ethernet/ni/nixge.c:1286:3:
-include/linux/netdevice.h:4648:9: error: 'memcpy' reading 6 bytes from a region of size 0 [-Werror=stringop-overread]
- 4648 |         memcpy(dev->dev_addr, addr, len);
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-As nixge_get_nvmem_address() can return either NULL or an error
-pointer, the NULL check is wrong, and we can end up reading from
-ERR_PTR(-EOPNOTSUPP), which gcc knows to contain zero readable
-bytes.
-
-Make the function always return NULL on error for consistency,
-this addresses the bug and the compiler warning.
-
-Fixes: f3956ebb3bf0 ("ethernet: use eth_hw_addr_set() instead of ether_addr_copy()")
-Fixes: abcd3d6fc640 ("net: nixge: Fix error path for obtaining mac address")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-v2: return NULL consistently, rather than returning error pointer
----
- drivers/net/ethernet/ni/nixge.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/net/ethernet/ni/nixge.c b/drivers/net/ethernet/ni/nixge.c
-index cfeb7620ae20..9d8826ad84a6 100644
---- a/drivers/net/ethernet/ni/nixge.c
-+++ b/drivers/net/ethernet/ni/nixge.c
-@@ -1213,6 +1213,8 @@ static void *nixge_get_nvmem_address(struct device *dev)
- 
- 	mac = nvmem_cell_read(cell, &cell_size);
- 	nvmem_cell_put(cell);
-+	if (IS_ERR(mac))
-+		return NULL;
- 
- 	return mac;
- }
--- 
-2.29.2
 
