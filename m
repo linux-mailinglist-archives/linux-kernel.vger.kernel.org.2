@@ -2,34 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 221474595E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 21:04:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB7D4595E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 21:04:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240410AbhKVUHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 15:07:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38202 "EHLO
+        id S229575AbhKVUHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 15:07:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbhKVUGx (ORCPT
+        with ESMTP id S231504AbhKVUHP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 15:06:53 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64893C061574;
-        Mon, 22 Nov 2021 12:03:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vvLpdHaUFHt3N4gXjtu6QffcwbzuOaP9bKHqPEhJSIU=; b=NSPF2sIpkdz+XiHcIyNY0ST1Jv
-        K2ZNfT306Fy+mxo/Gf2WkwXBKzfrj0dQGgzpV5DJ1nlp+G1p1Ox/c280f/EWTNqP2BOwIQ93Nb4Q+
-        oTijhwzjuaQcQkzzlQJMnyIrHpDS2zBSohyuHeuRb+KIPlkvdnrdKlHb+bKYtXWSbeTV+cwLYjR8M
-        oWO7W7vsAzy2ZRIUKlI4m4U89oMomMTLskgyvQCWpdOwan2Perc3bQrRuDO1Eq7f+546jmLP0Z+4f
-        VzWfhzURZhSpJA6Db/7pK9oKljfOuDn3scDi+bYonCk1EooQVblVUABFlXF/po/0GLsy4OmHb93aL
-        cEOBoYTg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mpFXG-00D8NV-R5; Mon, 22 Nov 2021 20:03:30 +0000
-Date:   Mon, 22 Nov 2021 20:03:30 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jens Axboe <axboe@kernel.dk>
+        Mon, 22 Nov 2021 15:07:15 -0500
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7332C06173E
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 12:04:08 -0800 (PST)
+Received: by mail-il1-x132.google.com with SMTP id e8so19364398ilu.9
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 12:04:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WcnIZFGVTPnrcYytNY02ni75O1bSYxfUiY64xA9VdJw=;
+        b=oZB5IQXQN9L8o8iGXNo3OyAra+BxdLQvxICWQywbHB2Q1I6+6Pp+Wz8/5g8ze3VGkR
+         lqeS1aJSbN9ttOXV0YvvS15DwWBX5NO6t1Gr9VC7Z0mnX5NMNU1MGrF0CwL/56m2hH4h
+         aQeX4BYQ7o1IOT/LkkbFYGxAMqlJT2jFXOKYTpEt75y7y6Am4P314kHwe1BJQkwa4Iwx
+         4fvjao9tsBMvGCYc5Cb+tgYyzn2Sx9mx+MjE0Z/qlPPyXcAD0GrYszUz2uBEMUK0Us4n
+         Yrrv6KObfacGoSgBD0gmMyNaFh86lb0W0WrqebDFJKNCm4rj0vbuYefGds6NwQvn4mek
+         l6NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WcnIZFGVTPnrcYytNY02ni75O1bSYxfUiY64xA9VdJw=;
+        b=PdFfb8JlG2CLU+/nA9aqz5R9q3gXl12+rJeUaIoTIqZYpXluY7rbxu8kmNpRic/zAG
+         6Pno8uMRby/bHMZe3FCHf1sw6ii/eBPz/hpJgsiVrevDVk/lt6Y41KTRU81gBYRwxb3D
+         IHg7Qo36lUb+og+otq7Csqrn9BAiIfYT795+PCRYfVNmE4OCQ7jhrNtr87RX6YlLfuF+
+         GIFdFJMoC20bBzHEVycqP+BkA1CwkB2G0swEhJr35I8HsazkuIteeYcFujfRZ3rUwvJF
+         Rc84SJc5hZxGiT6cgVrbZ7/jzhDM7jBH4x5cn45v/HTIBA0kjcyp+8QRgzMtK1yKvLbv
+         a7hg==
+X-Gm-Message-State: AOAM533QDk6OzEaQLnRVLAt1IZJV7gzlrXm4oQ7lX+S6kJSswqYwi0y7
+        BTaslhvUTIS/wQqCaRaC4jZ21Q==
+X-Google-Smtp-Source: ABdhPJxfnND7HpPceC1uzpXx0XP6oJwV4n5DAJWri6sMooF2XhmePsbBGeWC4HcwLKMXRQxHqBbpNg==
+X-Received: by 2002:a92:6e07:: with SMTP id j7mr988145ilc.188.1637611448241;
+        Mon, 22 Nov 2021 12:04:08 -0800 (PST)
+Received: from [192.168.1.170] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id g4sm7765452ila.78.2021.11.22.12.04.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Nov 2021 12:04:07 -0800 (PST)
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+To:     Matthew Wilcox <willy@infradead.org>
 Cc:     David Hildenbrand <david@redhat.com>,
         Andrew Dona-Couch <andrew@donacou.ch>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -38,8 +59,6 @@ Cc:     David Hildenbrand <david@redhat.com>,
         linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
         io_uring Mailing List <io-uring@vger.kernel.org>,
         Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
-Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
-Message-ID: <YZv3khUomkmRh/X6@casper.infradead.org>
 References: <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
  <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
  <CFQZSHV700KV.18Y62SACP8KOO@taiga>
@@ -50,17 +69,31 @@ References: <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
  <8f219a64-a39f-45f0-a7ad-708a33888a3b@www.fastmail.com>
  <333cb52b-5b02-648e-af7a-090e23261801@redhat.com>
  <ca96bb88-295c-ccad-ed2f-abc585cb4904@kernel.dk>
+ <YZv3khUomkmRh/X6@casper.infradead.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <7b1e8055-4d25-64ec-5756-848dc4283422@kernel.dk>
+Date:   Mon, 22 Nov 2021 13:04:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ca96bb88-295c-ccad-ed2f-abc585cb4904@kernel.dk>
+In-Reply-To: <YZv3khUomkmRh/X6@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 12:53:31PM -0700, Jens Axboe wrote:
-> We should just make this 0.1% of RAM (min(0.1% ram, 64KB)) or something
-> like what was suggested, if that will help move things forward. IMHO the
-> 32MB machine is mostly a theoretical case, but whatever .
+On 11/22/21 1:03 PM, Matthew Wilcox wrote:
+> On Mon, Nov 22, 2021 at 12:53:31PM -0700, Jens Axboe wrote:
+>> We should just make this 0.1% of RAM (min(0.1% ram, 64KB)) or something
+>> like what was suggested, if that will help move things forward. IMHO the
+>> 32MB machine is mostly a theoretical case, but whatever .
+> 
+> I think you mean max(0.1% ram, 64KB).  with that change, I agree.
 
-I think you mean max(0.1% ram, 64KB).  with that change, I agree.
+Heh yes, that is indeed what I meant :-)
+
+-- 
+Jens Axboe
+
