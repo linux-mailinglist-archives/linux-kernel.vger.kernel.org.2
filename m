@@ -2,94 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C4F45946F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 18:59:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B12459472
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 18:59:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239754AbhKVSCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 13:02:14 -0500
-Received: from soltyk.jannau.net ([144.76.91.90]:50470 "EHLO soltyk.jannau.net"
+        id S239790AbhKVSCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 13:02:23 -0500
+Received: from foss.arm.com ([217.140.110.172]:43874 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230159AbhKVSCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 13:02:12 -0500
-Received: by soltyk.jannau.net (Postfix, from userid 1000)
-        id 3EDF5261B33; Mon, 22 Nov 2021 18:59:03 +0100 (CET)
-Date:   Mon, 22 Nov 2021 18:59:03 +0100
-From:   Janne Grunau <j@jannau.net>
-To:     Sven Peter <sven@svenpeter.dev>
-Cc:     Hector Martin <marcan@marcan.st>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>, Olof Johansson <olof@lixom.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mark Kettenis <kettenis@openbsd.org>,
-        Rob Herring <robh@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] dt-bindings: i2c: apple,i2c: allow multiple
- compatibles
-Message-ID: <20211122175903.GA28130@jannau.net>
-References: <20211121171545.27402-1-j@jannau.net>
- <20211121171545.27402-3-j@jannau.net>
- <2baebbe6-0080-4cff-86de-a00f23aea95e@www.fastmail.com>
+        id S239764AbhKVSCT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 13:02:19 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 465811042;
+        Mon, 22 Nov 2021 09:59:12 -0800 (PST)
+Received: from bogus (unknown [10.57.46.248])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4833A3F73B;
+        Mon, 22 Nov 2021 09:59:11 -0800 (PST)
+Date:   Mon, 22 Nov 2021 17:59:08 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Robert Moore <robert.moore@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
+Subject: Re: [PATCH 0/3] ACPI: Add support for PCC Operation Region
+Message-ID: <20211122175908.uprdvok2kruj4qko@bogus>
+References: <20211102182542.3460787-1-sudeep.holla@arm.com>
+ <CAJZ5v0jL2+1rzqB2aAJ0T6w3md2dyuHWZNKOk+AbioeD-4ccDA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2baebbe6-0080-4cff-86de-a00f23aea95e@www.fastmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAJZ5v0jL2+1rzqB2aAJ0T6w3md2dyuHWZNKOk+AbioeD-4ccDA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-21 21:22:47 +0100, Sven Peter wrote:
-> Hi,
-> 
-> On Sun, Nov 21, 2021, at 18:15, Janne Grunau wrote:
-> > The intention was to have a SoC-specific and base compatible string
-> > to allow forward compatibility and SoC specific quirks,
-> >
-> > Fixes: df7c4a8c1b47 ("dt-bindings: i2c: Add Apple I2C controller bindings")
-> > Signed-off-by: Janne Grunau <j@jannau.net>
-> > Cc: Mark Kettenis <kettenis@openbsd.org>
-> > ---
-> 
-> Yeah, this should've been "apple,t8103-i2c", "apple,i2c" all along :/
-> Given that we have no i2c nodes in the dts yet and that this binding was
-> only added for -rc1 I think it's fine to just drop "apple,t8103-i2c"
-> here instead of marking it as deprecated and keeping it around forever
-> if Mark Kettenis also agrees.
-> 
-> >  Documentation/devicetree/bindings/i2c/apple,i2c.yaml | 9 +++++----
-> >  1 file changed, 5 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/i2c/apple,i2c.yaml 
-> > b/Documentation/devicetree/bindings/i2c/apple,i2c.yaml
-> > index 22fc8483256f..f1cb96c08212 100644
-> > --- a/Documentation/devicetree/bindings/i2c/apple,i2c.yaml
-> > +++ b/Documentation/devicetree/bindings/i2c/apple,i2c.yaml
-> > @@ -20,9 +20,10 @@ allOf:
-> > 
-> >  properties:
-> >    compatible:
-> > -    enum:
-> > -      - apple,t8103-i2c
-> > -      - apple,i2c
-> > +    items:
-> > +      - enum:
-> > +        - apple,t8103-i2c
-> > +      - const: apple,i2c
-> 
-> Nit: the enum makes sense once we add t6000-i2c but right now
-> 
-> properties:
->   compatible:
->     items:
->       - const: apple,t8103-i2c
->       - const: apple,i2c
-> 
-> also works and look a bit less weird.
+Hi Rafael,
 
-I split it from change which in addition added "apple,t6000-i2c" as 
-second enum value. I have no strong preference but the weirdness will 
-hopefully vanish soon.
 
-Janne
+Thanks for the response, sorry for the delay as I was away.
+
+On Fri, Nov 05, 2021 at 03:58:14PM +0100, Rafael J. Wysocki wrote:
+> Hi Sudeep,
+> 
+> On Tue, Nov 2, 2021 at 7:26 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
+> >
+> > Hi,
+> >
+> > This series adds support for ACPI PCC OpRegion added in ACPI 6.3
+> > I understand that the ACPICA changes need to go via different route,
+> > but I am posting it together to give complete narative/picture for
+> > the review/discussion.
+> >
+> > Regards,
+> > Sudeep
+> >
+> > Sudeep Holla (3):
+> >   ACPICA: Fix wrong interpretation of PCC address
+> >   ACPICA: Add support for PCC Opregion special context data
+> 
+> The above two need to be submitted to the upstream project via GitHub
+> at https://github.com/acpica/acpica
+> 
+
+Thanks for the info, I had a rough idea but posted these for reference here
+anyways.
+
+> The will be applicable to the Linux code base only after they have
+> been accepted by the upstream.
+>
+
+Sure, I have now sent the pull request(https://github.com/acpica/acpica/pull/735)
+
+> >   ACPI: PCC: Implement OperationRegion handler for the PCC Type 3 subtype
+> 
+> And this one will be applied when the above happens.
+>
+
+Make sense.
+
+-- 
+Regards,
+Sudeep
