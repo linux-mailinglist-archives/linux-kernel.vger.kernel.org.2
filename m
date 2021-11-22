@@ -2,81 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACBB34587C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 02:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 248104587CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 02:36:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233914AbhKVBgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 20:36:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229594AbhKVBgo (ORCPT
+        id S234226AbhKVBjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 20:39:22 -0500
+Received: from mail-1.ca.inter.net ([208.85.220.69]:45231 "EHLO
+        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229594AbhKVBjW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 20:36:44 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C866EC061574;
-        Sun, 21 Nov 2021 17:33:38 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id x6so57928063edr.5;
-        Sun, 21 Nov 2021 17:33:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gXpHZJwJDWKbvv70bGAkshFgWIdTC5hHCzGXFH42fUU=;
-        b=UrRLPlxhwZdYlYz4fh/jjJjokyOwUqh9gI+qlkkBpfz15drwNj4kg4ehs/5X0zWPiM
-         lFblbtJg3M75v5C1GRsJWfWz390+hzBgg2Q/fyrimuG45/qPiG+loVyz+o6B/AVKfKMi
-         0vMTiVhqUVs7xnxQ8xi5scoBXlXjXhxU3/XhmknEx/fJ042l4gdyHgOfdRMk9dsnpq1a
-         V79kZ0/8Rg5IwntnbjbKYDTY4A0B39bmsTYfouVmz2yzRJ0VQKW3eGmO18/QoNukKO6U
-         R3EtgOw53FBD+ErTTe6ASs+ac8p/QwLdlP6fFWHCZet3xvcMBDGNDYSJBGW+BzMFkj7Y
-         7+yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gXpHZJwJDWKbvv70bGAkshFgWIdTC5hHCzGXFH42fUU=;
-        b=lbHY4bxSWjcp51IrVHv8MuYIqP+l5ZQh3KpBmNBUUi6j9q86P9FWtugvR9R9XhcSpx
-         VZ2g5YLjYfnM4ClWertntQxdg+YgOWFCJ18eCXDQ30qjBL7PJ7QBamh2I4NRh/fBqva2
-         pJBeeBGMAoPeMDnnTMIZWib9W5xmDVsqBpRQ5+/uYilrDMbV41a1Vs2RAQ5ZSwUSJQrJ
-         ZqerYEbCU8lAeOKhEiRDUfiyGVXo9ND0KRpQ5fUx9O/EdQxDpj9sjVh8DawjGux1HMUZ
-         Le7WDBV2hFIMaGyDpFSZvShuTTwWKS6hON3e5pkmJpqWWhtLqMhre6lwCSbpOMfx+vM9
-         /b+A==
-X-Gm-Message-State: AOAM5329s+UJA4Xr1WgxLCYNIRU8GZhKl0Ht2Y0B6p+ELmlHQtUo5HsV
-        rqDt6MR0pb7XVHqMwzbXHY8=
-X-Google-Smtp-Source: ABdhPJw0HPLnRqi0KfmYKkz1p2vwX4gr2EbyeESENd1jMIr3PYLZ/jZrseq3XtQIDKC8fTdAH40opg==
-X-Received: by 2002:a17:906:3c46:: with SMTP id i6mr33843238ejg.371.1637544817452;
-        Sun, 21 Nov 2021 17:33:37 -0800 (PST)
-Received: from skbuf ([188.25.163.189])
-        by smtp.gmail.com with ESMTPSA id qb28sm2986434ejc.93.2021.11.21.17.33.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Nov 2021 17:33:37 -0800 (PST)
-Date:   Mon, 22 Nov 2021 03:33:36 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH v2 4/9] net: dsa: qca8k: move regmap init in
- probe and set it mandatory
-Message-ID: <20211122013336.c7dzjbx6qmoajvbu@skbuf>
-References: <20211122010313.24944-1-ansuelsmth@gmail.com>
- <20211122010313.24944-5-ansuelsmth@gmail.com>
+        Sun, 21 Nov 2021 20:39:22 -0500
+Received: from mp-mx11.ca.inter.net (mp-mx11.ca.inter.net [208.85.217.19])
+        by mail-1.ca.inter.net (Postfix) with ESMTP id A4B892EA40C;
+        Sun, 21 Nov 2021 20:36:15 -0500 (EST)
+Received: from mail-1.ca.inter.net ([208.85.220.69])
+        by mp-mx11.ca.inter.net (mp-mx11.ca.inter.net [208.85.217.19]) (amavisd-new, port 10024)
+        with ESMTP id PwnOgINoB2YU; Sun, 21 Nov 2021 20:36:14 -0500 (EST)
+Received: from [192.168.48.23] (host-45-58-208-241.dyn.295.ca [45.58.208.241])
+        (using TLSv1 with cipher AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dgilbert@interlog.com)
+        by mail-1.ca.inter.net (Postfix) with ESMTPSA id 076CC2EA475;
+        Sun, 21 Nov 2021 20:36:14 -0500 (EST)
+Reply-To: dgilbert@interlog.com
+Subject: Re: [PATCH] scsi: scsi_debug: sanity check block descriptor length in
+ resp_mode_select
+To:     George Kennedy <george.kennedy@oracle.com>,
+        gregkh@linuxfoundation.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1637262208-28850-1-git-send-email-george.kennedy@oracle.com>
+From:   Douglas Gilbert <dgilbert@interlog.com>
+Message-ID: <f4897f94-4321-8a37-8371-8f68036c5f3a@interlog.com>
+Date:   Sun, 21 Nov 2021 20:36:13 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211122010313.24944-5-ansuelsmth@gmail.com>
+In-Reply-To: <1637262208-28850-1-git-send-email-george.kennedy@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 02:03:08AM +0100, Ansuel Smith wrote:
-> In preparation for regmap conversion, move regmap init in the probe
-> function and make it mandatory as any read/write/rmw operation will be
-> converted to regmap API.
+On 2021-11-18 2:03 p.m., George Kennedy wrote:
+> In resp_mode_select() sanity check the block descriptor len to avoid UAF.
 > 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
+> BUG: KASAN: use-after-free in resp_mode_select+0xa4c/0xb40 drivers/scsi/scsi_debug.c:2509
+> Read of size 1 at addr ffff888026670f50 by task scsicmd/15032
+> 
+> CPU: 1 PID: 15032 Comm: scsicmd Not tainted 5.15.0-01d0625 #15
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> Call Trace:
+>   <TASK>
+>   dump_stack_lvl+0x89/0xb5 lib/dump_stack.c:107
+>   print_address_description.constprop.9+0x28/0x160 mm/kasan/report.c:257
+>   kasan_report.cold.14+0x7d/0x117 mm/kasan/report.c:443
+>   __asan_report_load1_noabort+0x14/0x20 mm/kasan/report_generic.c:306
+>   resp_mode_select+0xa4c/0xb40 drivers/scsi/scsi_debug.c:2509
+>   schedule_resp+0x4af/0x1a10 drivers/scsi/scsi_debug.c:5483
+>   scsi_debug_queuecommand+0x8c9/0x1e70 drivers/scsi/scsi_debug.c:7537
+>   scsi_queue_rq+0x16b4/0x2d10 drivers/scsi/scsi_lib.c:1521
+>   blk_mq_dispatch_rq_list+0xb9b/0x2700 block/blk-mq.c:1640
+>   __blk_mq_sched_dispatch_requests+0x28f/0x590 block/blk-mq-sched.c:325
+>   blk_mq_sched_dispatch_requests+0x105/0x190 block/blk-mq-sched.c:358
+>   __blk_mq_run_hw_queue+0xe5/0x150 block/blk-mq.c:1762
+>   __blk_mq_delay_run_hw_queue+0x4f8/0x5c0 block/blk-mq.c:1839
+>   blk_mq_run_hw_queue+0x18d/0x350 block/blk-mq.c:1891
+>   blk_mq_sched_insert_request+0x3db/0x4e0 block/blk-mq-sched.c:474
+>   blk_execute_rq_nowait+0x16b/0x1c0 block/blk-exec.c:63
+>   sg_common_write.isra.18+0xeb3/0x2000 drivers/scsi/sg.c:837
+>   sg_new_write.isra.19+0x570/0x8c0 drivers/scsi/sg.c:775
+>   sg_ioctl_common+0x14d6/0x2710 drivers/scsi/sg.c:941
+>   sg_ioctl+0xa2/0x180 drivers/scsi/sg.c:1166
+>   __x64_sys_ioctl+0x19d/0x220 fs/ioctl.c:52
+>   do_syscall_64+0x3a/0x80 arch/x86/entry/common.c:50
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae arch/x86/entry/entry_64.S:113
+> 
+> Reported-by: syzkaller <syzkaller@googlegroups.com>
+> Signed-off-by: George Kennedy <george.kennedy@oracle.com>
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+So this patch makes sure we don't read outside the parameter data (at least
+for the 0th byte of the mode page) so that is an improvement. It could be
+stronger if it took into account the size of the mode page which is copied
+inside the following switch.
+
+But I can't see how that leads to use after free from KASAN. Hmm, I suppose
+any out-of-bounds read could be reported as a use after free. It would be
+useful if KASAN differentiated the two cases.
+
+Anyway, the patch can't hurt.
+
+Acked-by: Douglas Gilbert <dgilbert@interlog.com>
+
+> ---
+>   drivers/scsi/scsi_debug.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/scsi/scsi_debug.c b/drivers/scsi/scsi_debug.c
+> index 1d0278d..51e3b57 100644
+> --- a/drivers/scsi/scsi_debug.c
+> +++ b/drivers/scsi/scsi_debug.c
+> @@ -2499,11 +2499,11 @@ static int resp_mode_select(struct scsi_cmnd *scp,
+>   			    __func__, param_len, res);
+>   	md_len = mselect6 ? (arr[0] + 1) : (get_unaligned_be16(arr + 0) + 2);
+>   	bd_len = mselect6 ? arr[3] : get_unaligned_be16(arr + 6);
+> -	if (md_len > 2) {
+> +	off = bd_len + (mselect6 ? 4 : 8);
+> +	if (md_len > 2 || off >= res) {
+>   		mk_sense_invalid_fld(scp, SDEB_IN_DATA, 0, -1);
+>   		return check_condition_result;
+>   	}
+> -	off = bd_len + (mselect6 ? 4 : 8);
+>   	mpage = arr[off] & 0x3f;
+>   	ps = !!(arr[off] & 0x80);
+>   	if (ps) {
+> 
+
