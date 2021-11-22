@@ -2,136 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCBC458D1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:13:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E73458D1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:13:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236312AbhKVLQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 06:16:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24638 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233901AbhKVLQe (ORCPT
+        id S236320AbhKVLQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 06:16:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235759AbhKVLQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 06:16:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637579608;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y6VXcLw5X3uiBZIAHdyQgcXUhgzdVRHz8ZP32LM6T7E=;
-        b=fu1GTfwwGxyHPnaRPAkNHREwZCuSXm/AW6IIAVkSMn/3lpU7nFLZ4XGXfipkLf84pcPf1+
-        1alL0oWIrNg8NrsgTliLMch62GNg0zLflDTRT4bHbabw1DrLboFKRr7GpM3CU170o2r/hs
-        xjpo+/G9xTBH68qwvDufTrIfi+xo4K0=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-334-9WA-9hnYOSu39hag6_uzMg-1; Mon, 22 Nov 2021 06:13:27 -0500
-X-MC-Unique: 9WA-9hnYOSu39hag6_uzMg-1
-Received: by mail-wm1-f70.google.com with SMTP id g81-20020a1c9d54000000b003330e488323so4103672wme.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 03:13:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=y6VXcLw5X3uiBZIAHdyQgcXUhgzdVRHz8ZP32LM6T7E=;
-        b=HMRoZPJFPzU7YkHBMOYJNyxVSi/aaK8qpVwpR7OJvL0asrkeTKgBhxazIe/IgCJ26B
-         xmNzsL6/WBvV/7gpkNnb0fvoAM6HoF5DEh7IAYNYucdiBCt8bRuwxGstXI5u3DDSYJiu
-         r2Om7YKhPAu5DXwjFbdplTtuNOKSrC9vnMqmoDGxYOQkCmy+Gaepmlhp7wwZJ+6Cmufs
-         X7SOPUT5hL4/XR9h8C9bRt/66bT0BwI5ibh/pj+wlvTvYhILQ0duOcfCGY70lxfkljjZ
-         MhXY7h2enuZZygcn4Bhr1Ll2Q7fi0J6IPIQv8TYHGpw7sMGJLJ/1KE/AGdxGlELgEXgR
-         W1pg==
-X-Gm-Message-State: AOAM5335VKrQqzT6mt7RHnFgFFx4KtX9F2UFxIEXpAQyy4XxWz4fkzoK
-        hxK+ubOHMxL545A68AdZ7NsnmEDpA7gJxn7NdrKZwhy+Mbw+J45JamaaquwcVrRzTElAlRtrJSL
-        MFbFUezorS2IWnZb94pLesk+F
-X-Received: by 2002:a7b:c934:: with SMTP id h20mr29443425wml.94.1637579605755;
-        Mon, 22 Nov 2021 03:13:25 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwjcFE8ijIkUoMntFaszqHarPnfNVk0OpT2sg9vvgErKXCyyG7gOUahAUb0whahijqTQfYjhA==
-X-Received: by 2002:a7b:c934:: with SMTP id h20mr29443400wml.94.1637579605561;
-        Mon, 22 Nov 2021 03:13:25 -0800 (PST)
-Received: from [192.168.3.132] (p5b0c667b.dip0.t-ipconnect.de. [91.12.102.123])
-        by smtp.gmail.com with ESMTPSA id l7sm10407970wry.86.2021.11.22.03.13.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Nov 2021 03:13:25 -0800 (PST)
-Message-ID: <62fb425d-4bda-63e0-469b-f0ae43539929@redhat.com>
-Date:   Mon, 22 Nov 2021 12:13:24 +0100
+        Mon, 22 Nov 2021 06:16:52 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106B9C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 03:13:46 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: hector@marcansoft.com)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id CCA6841E57;
+        Mon, 22 Nov 2021 11:13:41 +0000 (UTC)
+From:   Hector Martin <marcan@marcan.st>
+To:     Marc Zyngier <maz@kernel.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hector Martin <marcan@marcan.st>
+Subject: [PATCH] PCI: apple: Configure link speeds properly
+Date:   Mon, 22 Nov 2021 20:13:32 +0900
+Message-Id: <20211122111332.72264-1-marcan@marcan.st>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To:     Janosch Frank <frankja@linux.ibm.com>,
-        Janis Schoetterl-Glausch <scgl@linux.vnet.ibm.com>,
-        Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211028135556.1793063-1-scgl@linux.ibm.com>
- <20211028135556.1793063-4-scgl@linux.ibm.com>
- <4ac7c459-8e13-087a-f98d-9f3e0e6d8ee6@redhat.com>
- <457896b2-b462-639e-bb40-dee3716fcb9a@linux.vnet.ibm.com>
- <1a380055-536e-123d-499e-40314cf35f44@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v2 3/3] KVM: s390: gaccess: Cleanup access to guest frames
-In-Reply-To: <1a380055-536e-123d-499e-40314cf35f44@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.11.21 10:00, Janosch Frank wrote:
-> On 10/28/21 16:48, Janis Schoetterl-Glausch wrote:
->> On 10/28/21 16:25, David Hildenbrand wrote:
->>> On 28.10.21 15:55, Janis Schoetterl-Glausch wrote:
->>>> Introduce a helper function for guest frame access.
->>>
->>> "guest page access"
->>
->> Ok.
->>>
->>> But I do wonder if you actually want to call it
->>>
->>> "access_guest_abs"
->>>
->>> and say "guest absolute access" instead here.
->>>
->>> Because we're dealing with absolute addresses and the fact that we are
->>> accessing it page-wise is just because we have to perform a page-wise
->>> translation in the callers (either virtual->absolute or real->absolute).
->>>
->>> Theoretically, if you know you're across X pages but they are contiguous
->>> in absolute address space, nothing speaks against using that function
->>> directly across X pages with a single call.
->>
->> There currently is no point to this, is there?
->> kvm_read/write_guest break the region up into pages anyway,
->> so no reason to try to identify larger continuous chunks.
-> 
+This sets the maximum link speed from the devicetree, and also requests
+a link speed change from the controller. Without the request, the link
+always comes up at Gen1 initially, and the core PCIe code complains
+about a bandwidth bottleneck.
 
-Right, we're changing the calls from e.g., kvm_write_guest() and
-write_guest_abs() to kvm_write_guest_page().
+It turns out ASPM ends up retraining at a higher speed anyway even
+without this code, but let's not rely on that.
 
-As we're not exposing this function via arch/s390/kvm/gaccess.h, I think
-it's ok. Because for external functions we have nice function names like
-write_guest_abs(), write_guest_real(), write_guest_lc(), write_guest(),
-which implicitly state in their name which kind of address they expect.
-access_guest_page() now accepts an absolute address whereby
-access_guest() accepts a virtual address. This is for example different
-to kvm_read_guest() and kvm_read_guest_page(), which expect absolute
-addresses. But there, the _page functions are not internal helpers.
+Signed-off-by: Hector Martin <marcan@marcan.st>
+---
+ drivers/pci/controller/pcie-apple.c | 53 +++++++++++++++++++++++++++++
+ 1 file changed, 53 insertions(+)
 
-> 
-> @David: How strongly do you feel about this?
-
-Not strongly :)
-
+diff --git a/drivers/pci/controller/pcie-apple.c b/drivers/pci/controller/pcie-apple.c
+index 03bfe977c579..073cbac49d8b 100644
+--- a/drivers/pci/controller/pcie-apple.c
++++ b/drivers/pci/controller/pcie-apple.c
+@@ -30,6 +30,10 @@
+ #include <linux/of_irq.h>
+ #include <linux/pci-ecam.h>
+ 
++#include "../pci.h"
++/* Apple PCIe is based on DesignWare IP and shares some registers */
++#include "dwc/pcie-designware.h"
++
+ #define CORE_RC_PHYIF_CTL		0x00024
+ #define   CORE_RC_PHYIF_CTL_RUN		BIT(0)
+ #define CORE_RC_PHYIF_STAT		0x00028
+@@ -130,9 +134,13 @@
+  */
+ #define DOORBELL_ADDR		CONFIG_PCIE_APPLE_MSI_DOORBELL_ADDR
+ 
++/* The offset of the PCIe capabilities structure in bridge config space */
++#define PCIE_CAP_BASE		0x70
++
+ struct apple_pcie {
+ 	struct mutex		lock;
+ 	struct device		*dev;
++	struct pci_config_window *cfg;
+ 	void __iomem            *base;
+ 	struct irq_domain	*domain;
+ 	unsigned long		*bitmap;
+@@ -506,6 +514,48 @@ static u32 apple_pcie_rid2sid_write(struct apple_pcie_port *port,
+ 	return readl_relaxed(port->base + PORT_RID2SID(idx));
+ }
+ 
++static inline void __iomem *bridge_reg(struct apple_pcie_port *port,
++						  int where)
++{
++	struct pci_config_window *cfg = port->pcie->cfg;
++
++	return cfg->win + PCIE_ECAM_OFFSET(0, PCI_DEVFN(port->idx, 0), where);
++}
++
++static void apple_pcie_unlock_dwc_regs(struct apple_pcie_port *port)
++{
++	rmw_set(PCIE_DBI_RO_WR_EN, bridge_reg(port, PCIE_MISC_CONTROL_1_OFF));
++}
++
++static void apple_pcie_lock_dwc_regs(struct apple_pcie_port *port)
++{
++	rmw_clear(PCIE_DBI_RO_WR_EN, bridge_reg(port, PCIE_MISC_CONTROL_1_OFF));
++}
++
++static int apple_pcie_link_configure_max_speed(struct apple_pcie_port *port)
++{
++	int max_gen;
++	u32 ctrl2;
++
++	max_gen = of_pci_get_max_link_speed(port->np);
++	if (max_gen < 0) {
++		dev_err(port->pcie->dev, "max link speed not specified\n");
++		return max_gen;
++	}
++
++	ctrl2 = readw_relaxed(bridge_reg(port, PCIE_CAP_BASE + PCI_EXP_LNKCTL2));
++	ctrl2 &= ~PCI_EXP_LNKCTL2_TLS;
++	ctrl2 |= FIELD_PREP(PCI_EXP_LNKCTL2_TLS, max_gen);
++	writew_relaxed(ctrl2, bridge_reg(port, PCIE_CAP_BASE + PCI_EXP_LNKCTL2));
++
++	apple_pcie_unlock_dwc_regs(port);
++	rmw_set(PORT_LOGIC_SPEED_CHANGE,
++		bridge_reg(port, PCIE_LINK_WIDTH_SPEED_CONTROL));
++	apple_pcie_lock_dwc_regs(port);
++
++	return 0;
++}
++
+ static int apple_pcie_setup_port(struct apple_pcie *pcie,
+ 				 struct device_node *np)
+ {
+@@ -577,6 +627,8 @@ static int apple_pcie_setup_port(struct apple_pcie *pcie,
+ 	ret = apple_pcie_port_register_irqs(port);
+ 	WARN_ON(ret);
+ 
++	apple_pcie_link_configure_max_speed(port);
++
+ 	writel_relaxed(PORT_LTSSMCTL_START, port->base + PORT_LTSSMCTL);
+ 
+ 	if (!wait_for_completion_timeout(&pcie->event, HZ / 10))
+@@ -762,6 +814,7 @@ static int apple_pcie_init(struct pci_config_window *cfg)
+ 		return -ENOMEM;
+ 
+ 	pcie->dev = dev;
++	pcie->cfg = cfg;
+ 
+ 	mutex_init(&pcie->lock);
+ 
 -- 
-Thanks,
-
-David / dhildenb
+2.33.0
 
