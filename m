@@ -2,81 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7108A4591C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:54:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E3A5459269
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240206AbhKVP5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:57:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37112 "EHLO
+        id S240279AbhKVQAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 11:00:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240069AbhKVP5S (ORCPT
+        with ESMTP id S240464AbhKVQAG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:57:18 -0500
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B80BC061746
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:54:10 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:e4da:38c:79e9:48bf])
-        by xavier.telenet-ops.be with bizsmtp
-        id MTu92600q4yPVd601Tu9GX; Mon, 22 Nov 2021 16:54:10 +0100
+        Mon, 22 Nov 2021 11:00:06 -0500
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C3E8C061763
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:56:59 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by baptiste.telenet-ops.be with bizsmtp
+        id MTwG2600F4C55Sk01TwGVb; Mon, 22 Nov 2021 16:56:57 +0100
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mpBdx-00EL2z-M5; Mon, 22 Nov 2021 16:54:09 +0100
+        id 1mpBe6-00EL3m-Lm; Mon, 22 Nov 2021 16:54:18 +0100
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mpBdx-00HGv8-8E; Mon, 22 Nov 2021 16:54:09 +0100
+        id 1mpBe5-00HH1L-TK; Mon, 22 Nov 2021 16:54:17 +0100
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
+To:     Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Paul Walmsley <paul@pwsan.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Benoit Parrot <bparrot@ti.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Keerthy <j-keerthy@ti.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
+        alsa-devel@alsa-project.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] regulator: lp873x: Use bitfield helpers
+Subject: [PATCH/RFC 15/17] thermal/ti-soc-thermal: Use bitfield helpers
 Date:   Mon, 22 Nov 2021 16:54:08 +0100
-Message-Id: <44d60384b640c8586b4ca7edbc9287a34ce21c5b.1637593297.git.geert+renesas@glider.be>
+Message-Id: <37efc6013a24653e316215424b160d613f42dcd5.1637592133.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <a1445d3abb45cfc95cb1b03180fd53caf122035b.1637593297.git.geert+renesas@glider.be>
-References: <a1445d3abb45cfc95cb1b03180fd53caf122035b.1637593297.git.geert+renesas@glider.be>
+In-Reply-To: <cover.1637592133.git.geert+renesas@glider.be>
+References: <cover.1637592133.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the FIELD_PREP() helper, instead open-coding the same operation.
+Use the field_{get,prep}() helpers, instead of open-coding the same
+operations.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
 Compile-tested only.
-
-See "[PATCH 00/17] Non-const bitfield helper conversions"
-(https://lore.kernel.org/r/cover.1637592133.git.geert+renesas@glider.be)
-for background and more conversions.
+Marked RFC, as this depends on [PATCH 01/17], but follows a different
+path to upstream.
 ---
- drivers/regulator/lp873x-regulator.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/thermal/ti-soc-thermal/ti-bandgap.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/regulator/lp873x-regulator.c b/drivers/regulator/lp873x-regulator.c
-index c38387e0fbb2a33d..f1f5be7b54cd9e90 100644
---- a/drivers/regulator/lp873x-regulator.c
-+++ b/drivers/regulator/lp873x-regulator.c
-@@ -13,6 +13,7 @@
-  * GNU General Public License version 2 for more details.
+diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.c b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
+index ea0603b59309f5f0..83a34d698414b177 100644
+--- a/drivers/thermal/ti-soc-thermal/ti-bandgap.c
++++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
+@@ -9,6 +9,7 @@
+  *   Eduardo Valentin <eduardo.valentin@ti.com>
   */
  
 +#include <linux/bitfield.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
-@@ -101,7 +102,7 @@ static int lp873x_buck_set_ramp_delay(struct regulator_dev *rdev,
+ #include <linux/clk.h>
+ #include <linux/cpu_pm.h>
+ #include <linux/device.h>
+@@ -80,10 +81,10 @@ do {								\
+ 	struct temp_sensor_registers *t;			\
+ 	u32 r;							\
+ 								\
+-	t = bgp->conf->sensors[(id)].registers;		\
++	t = bgp->conf->sensors[(id)].registers;			\
+ 	r = ti_bandgap_readl(bgp, t->reg);			\
+ 	r &= ~t->mask;						\
+-	r |= (val) << __ffs(t->mask);				\
++	r |= field_prep(t->mask, val);				\
+ 	ti_bandgap_writel(bgp, r, t->reg);			\
+ } while (0)
  
- 	ret = regmap_update_bits(lp873->regmap, regulators[id].ctrl2_reg,
- 				 LP873X_BUCK0_CTRL_2_BUCK0_SLEW_RATE,
--				 reg << __ffs(LP873X_BUCK0_CTRL_2_BUCK0_SLEW_RATE));
-+				 FIELD_PREP(LP873X_BUCK0_CTRL_2_BUCK0_SLEW_RATE, reg));
- 	if (ret) {
- 		dev_err(lp873->dev, "SLEW RATE write failed: %d\n", ret);
- 		return ret;
+@@ -342,8 +343,7 @@ static void ti_bandgap_read_counter(struct ti_bandgap *bgp, int id,
+ 
+ 	tsr = bgp->conf->sensors[id].registers;
+ 	time = ti_bandgap_readl(bgp, tsr->bgap_counter);
+-	time = (time & tsr->counter_mask) >>
+-					__ffs(tsr->counter_mask);
++	time = field_get(tsr->counter_mask, time);
+ 	time = time * 1000 / bgp->clk_rate;
+ 	*interval = time;
+ }
+@@ -363,8 +363,7 @@ static void ti_bandgap_read_counter_delay(struct ti_bandgap *bgp, int id,
+ 	tsr = bgp->conf->sensors[id].registers;
+ 
+ 	reg_val = ti_bandgap_readl(bgp, tsr->bgap_mask_ctrl);
+-	reg_val = (reg_val & tsr->mask_counter_delay_mask) >>
+-				__ffs(tsr->mask_counter_delay_mask);
++	reg_val = field_get(tsr->mask_counter_delay_mask, reg_val);
+ 	switch (reg_val) {
+ 	case 0:
+ 		*interval = 0;
 -- 
 2.25.1
 
