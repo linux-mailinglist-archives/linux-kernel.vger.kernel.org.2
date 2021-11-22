@@ -2,75 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 744514592DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 17:18:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B624592DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 17:19:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239469AbhKVQVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 11:21:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbhKVQVP (ORCPT
+        id S240150AbhKVQWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 11:22:49 -0500
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:42216
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232643AbhKVQWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 11:21:15 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39B6C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 08:18:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=24LjR7gSAjMhRN/vywVP1+SlgTQtcn8P8tFurSL+i2o=; b=LPbs3R9yHEGt5XVWTVcNGe9NSb
-        SsTfagyVS204f1CijpQwuVjOmklRJOHVeASb7QPcEIzTkzHFTrFCVcUatC94rwY63vFBKxAzQjS/4
-        HciZnMMPOvKyn9IPyXoFigDgJzxcaSgc8162QdYDSpByRmD74lp1o9a+UuhA30GK+QWdsvU12m7Z+
-        PGjCtvwBiURAJ1lmFLuWPxmOfC28lD5BrInXMPZ/7lLbus4CCt5G5Pk44UuQa9COQYPdr68yDrxuK
-        bKkSoSqOQP3bmb61mPI88qrgm5GVVz0SROWRNj4yYDfs0PT92N7w+dNkHCuz2Q9EAdYh6EmQkzfr7
-        SH0zNF0Q==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55792)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mpC11-0006u7-3J; Mon, 22 Nov 2021 16:17:59 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mpC0y-0007pI-Vn; Mon, 22 Nov 2021 16:17:56 +0000
-Date:   Mon, 22 Nov 2021 16:17:56 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: ptrace: Use bitfield helpers
-Message-ID: <YZvCtN/WNyogs9JZ@shell.armlinux.org.uk>
-References: <a1445d3abb45cfc95cb1b03180fd53caf122035b.1637593297.git.geert+renesas@glider.be>
+        Mon, 22 Nov 2021 11:22:49 -0500
+Received: from HP-EliteBook-840-G7.. (1-171-213-156.dynamic-ip.hinet.net [1.171.213.156])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 42C523F253;
+        Mon, 22 Nov 2021 16:19:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1637597979;
+        bh=9DFzQ/hGOpPY2w9z421LKZyZIqGCdRtsLKMhNNyM3q4=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=ktHlX7NdqNRgkSwTTi5sjdU1txHiKE5YJ0aNFTcs9BAaFCO7Q4IWZ+wh5rdpYTnw/
+         8onYaPehsORGbk16wae1tXJWWrVjTLBsopf3EnncQYFX8UV8ZVHvFp0zZ1GR38O+2l
+         kLnSDsDbk5eRbSpQqSppDygBAAd8on+ilvPnDRP2bnfclqlaXPGaqxJ7q3Jc6IKVuO
+         dIf7ieaPXQ5STbOEIrwsvAWGRhe4wyEoMqfLVHqU6aNCirgkr460TdhtcjlGN3/NhR
+         27t7suuzHst7RnzO9tzdXv45YZzLkcrI1YmIvGYF2yQs6Jo2bMZuC4Ac9adw9KqmNN
+         gFzJOun79e3pg==
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com
+Cc:     sasha.neftin@intel.com, acelan.kao@canonical.com,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] Revert "e1000e: Additional PHY power saving in S0ix"
+Date:   Tue, 23 Nov 2021 00:19:25 +0800
+Message-Id: <20211122161927.874291-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a1445d3abb45cfc95cb1b03180fd53caf122035b.1637593297.git.geert+renesas@glider.be>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 04:53:41PM +0100, Geert Uytterhoeven wrote:
-> The isa_mode() macro extracts two fields, and recombines them into a
-> single value.  The shift value of the J-bit may look off-by-one to the
-> casual reader, as it is the net result of the extraction and
-> recombination steps.
+This reverts commit 3ad3e28cb203309fb29022dea41cd65df0583632.
 
-I'd recommend avoiding the suggestion that the explicit "- 1" could
-be misinterpreted as an off-by-one error.
+The s0ix series makes e1000e on TGL and ADL fails to work after s2idle
+resume.
 
->  #define isa_mode(regs) \
-> -	((((regs)->ARM_cpsr & PSR_J_BIT) >> (__ffs(PSR_J_BIT) - 1)) | \
-> -	 (((regs)->ARM_cpsr & PSR_T_BIT) >> (__ffs(PSR_T_BIT))))
-> +	((FIELD_GET(PSR_J_BIT, (regs)->ARM_cpsr) << 1) | \
+There doesn't seem to be any solution soon, so revert the whole series.
 
-I'd suggest getting rid of the extra unnecessary parens there.
-Too many parens leads to a decrease in readability.
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=214821
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ drivers/net/ethernet/intel/e1000e/netdev.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
+diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+index 44e2dc8328a22..e16b7c0d98089 100644
+--- a/drivers/net/ethernet/intel/e1000e/netdev.c
++++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+@@ -6380,16 +6380,10 @@ static void e1000e_s0ix_entry_flow(struct e1000_adapter *adapter)
+ 		ew32(CTRL_EXT, mac_data);
+ 
+ 		/* DFT control: PHY bit: page769_20[0] = 1
+-		 * page769_20[7] - PHY PLL stop
+-		 * page769_20[8] - PHY go to the electrical idle
+-		 * page769_20[9] - PHY serdes disable
+ 		 * Gate PPW via EXTCNF_CTRL - set 0x0F00[7] = 1
+ 		 */
+ 		e1e_rphy(hw, I82579_DFT_CTRL, &phy_data);
+ 		phy_data |= BIT(0);
+-		phy_data |= BIT(7);
+-		phy_data |= BIT(8);
+-		phy_data |= BIT(9);
+ 		e1e_wphy(hw, I82579_DFT_CTRL, phy_data);
+ 
+ 		mac_data = er32(EXTCNF_CTRL);
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.32.0
+
