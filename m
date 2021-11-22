@@ -2,105 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19284459481
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 19:07:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6AFC459485
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 19:10:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239912AbhKVSK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 13:10:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39838 "EHLO
+        id S239995AbhKVSNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 13:13:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239790AbhKVSK5 (ORCPT
+        with ESMTP id S239938AbhKVSNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 13:10:57 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52950C061574;
-        Mon, 22 Nov 2021 10:07:50 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id 13so5661409ljj.11;
-        Mon, 22 Nov 2021 10:07:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:content-language:to:cc
-         :references:from:subject:in-reply-to:content-transfer-encoding;
-        bh=TlT7QEDEVoVqR1uMHZtQsjoaJXJhc4T6ceWBzoyGtaM=;
-        b=E2TvTy0wDE6xxBX7mcXCZgcuFXiH+2qi2tV9v+38NAg4inwKz9wmjC33+P3d9gmjLz
-         BFNvNzzcE2+JEdoO9ikT1oLAFvwzipONkTTI8qVQfVMSX5h8YB5a1oLUofO9G9R5Z2fr
-         kj/4/msvz5Y9lOpl357iUXe6K56/XHLxMriRS6gxzlbm8OBmXq//T0V6N5wep06EpsDd
-         gPtQmEXlm8k9mCxlEjauBGeYS47aIw5r1yN5Q+51DxWG5O3njWpqfK+IocT4Rer3rxNw
-         e8XM1L5m9nn4xIo5P7KKIML2rRRKguVOhJPx70ndNyAiDu7CKIVS3goGMHoKVIqmnvPx
-         AScw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:subject:in-reply-to
-         :content-transfer-encoding;
-        bh=TlT7QEDEVoVqR1uMHZtQsjoaJXJhc4T6ceWBzoyGtaM=;
-        b=AfcumeSiycatYZu2zihboYfWdNFzpLFOSnGt+52Du1vePEolvegleeXQ3t1fYWRWPF
-         R6wemlhau2L98kbioLUgfBS0hP8KsR+NVwr6Rn469pGcxcpgirBKIWqnr5YopoGxLNSc
-         ZYPZifu8g3V9Wn9lfhgTI6gPj+nN6SE7rfdtoI05pVXcBjcTpWYwuI/Dxg6aU9Hpp1ec
-         TI5+zkQGzGpkJyK9vIofzqS/B0WItpaB5dQ/vJ5qKRnUxnQeG3kfgRURuqA/IJM9qCvc
-         D2KIj/2moIeFHWBp+pAUtvYMllwtBwAHLM/TpI43C3gXjT3r9nG5RHtEO+VnCTSzYqrr
-         eqSw==
-X-Gm-Message-State: AOAM532JdE2eoNO/bH5zjPRfk2VtrPO7MLd6PkhiPyU1BlxwM2LGJV81
-        iXVDHbByo/Xa90YuloHDJPE=
-X-Google-Smtp-Source: ABdhPJxD88nkyfyUBOYDBOuN5m4/4EHB+MEbMzubFqP9/JqlfgQWQulOh4gMVeRh2HksgIexK/N7jA==
-X-Received: by 2002:a2e:7216:: with SMTP id n22mr53702276ljc.44.1637604468358;
-        Mon, 22 Nov 2021 10:07:48 -0800 (PST)
-Received: from [10.0.0.115] (91-153-170-164.elisa-laajakaista.fi. [91.153.170.164])
-        by smtp.gmail.com with ESMTPSA id m18sm1029044lfj.265.2021.11.22.10.07.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Nov 2021 10:07:47 -0800 (PST)
-Message-ID: <4e11d837-1534-adb7-d902-1d171c3bc0cb@gmail.com>
-Date:   Mon, 22 Nov 2021 20:08:13 +0200
+        Mon, 22 Nov 2021 13:13:06 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC4EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 10:09:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nLJQCSLMEKOdB1HX5XlkIMpIxd4c7zFZGDjX6eke1B0=; b=GiR5EuuQOCac6X0B/XiRdYT0lv
+        xpSQHsu2u4JpUg50cFt0GAsk5U2vDlGT4F8u4JxCA7nZi4qPrLW3ha2T42Yp9+Qxjb1UYPMXlyNgT
+        slFiDARonHcJarCEE7i1erfR62pI5N2irekJikYVEFO+/du0FVIXE0wQyPY4HuKMXzM2apApBUj/7
+        0gOxYOF4RfG6cG+F7p1Zh945/ZDlcXve5ws7BgiZK51qkYUfoiUpL1upY770sJ03B8Jcosw6lXNCm
+        v699QF1iWLxjH56qyLjbuEJkPeN8o/KlMJDQlqrgIv3HeKVQAwPjJ8DRwyFX9hCXmK1ZqUo6Zv14I
+        GsnmWG7w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mpDlD-00D41G-3g; Mon, 22 Nov 2021 18:09:48 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1F8E798664C; Mon, 22 Nov 2021 19:09:47 +0100 (CET)
+Date:   Mon, 22 Nov 2021 19:09:47 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     x86@kernel.org, joao@overdrivepizza.com, hjl.tools@gmail.com,
+        jpoimboe@redhat.com, andrew.cooper3@citrix.com
+Cc:     linux-kernel@vger.kernel.org, ndesaulniers@google.com,
+        keescook@chromium.org, samitolvanen@google.com
+Subject: Re: [RFC][PATCH 3/6] x86: Add ENDBR to IRET-to-Self
+Message-ID: <20211122180947.GA721624@worktop.programming.kicks-ass.net>
+References: <20211122170301.764232470@infradead.org>
+ <20211122170805.149482391@infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Content-Language: en-US
-To:     Aswath Govindraju <a-govindraju@ti.com>
-Cc:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, linux-kernel@vger.kernel.org,
-        dmaengine@vger.kernel.org
-References: <20211119132315.15901-1-a-govindraju@ti.com>
-From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-Subject: Re: [PATCH 0/2] J721S2: Add initial support
-In-Reply-To: <20211119132315.15901-1-a-govindraju@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211122170805.149482391@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Aswath,
+On Mon, Nov 22, 2021 at 06:03:04PM +0100, Peter Zijlstra wrote:
+> The IRET-to-Self chunks trigger forward code references without ENDBR,
+> fix that.
 
-On 19/11/2021 15:23, Aswath Govindraju wrote:
-> The following series of patches add support for J721S2 SoC.
-> 
-> Currently, the PSIL source and destination thread IDs for only a few of the
-> IPs have been added. The remaning ones will be added as and when they are
-> tested.
+Andy corrected me, IRET doesn't take ENBR, the alternative is the below.
 
-I would have added the complete map as the hardware is not going to
-change (likely), but fine this way as well.
-
-> The following series of patches are dependent on,
-> - http://lists.infradead.org/pipermail/linux-arm-kernel/2021-November/697574.html
-
-It is runtime dependency, so not an issue.
-
-Acked-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-
-> Aswath Govindraju (2):
->   dmaengine: ti: k3-udma: Add SoC dependent data for J721S2 SoC
->   drivers: dma: ti: k3-psil: Add support for J721S2
-> 
->  drivers/dma/ti/Makefile         |   3 +-
->  drivers/dma/ti/k3-psil-j721s2.c | 167 ++++++++++++++++++++++++++++++++
->  drivers/dma/ti/k3-psil-priv.h   |   1 +
->  drivers/dma/ti/k3-psil.c        |   1 +
->  drivers/dma/ti/k3-udma.c        |   1 +
->  5 files changed, 172 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/dma/ti/k3-psil-j721s2.c
-> 
-
--- 
-Péter
+---
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -1316,7 +1316,6 @@ SYM_CODE_START(asm_exc_nmi)
+ 	iretq			/* continues at repeat_nmi below */
+ 	UNWIND_HINT_IRET_REGS entry=0
+ 1:
+-	ENDBR
+ #endif
+ 
+ repeat_nmi:
+--- a/arch/x86/include/asm/sync_core.h
++++ b/arch/x86/include/asm/sync_core.h
+@@ -6,7 +6,6 @@
+ #include <asm/processor.h>
+ #include <asm/cpufeature.h>
+ #include <asm/special_insns.h>
+-#include <asm/ibt.h>
+ 
+ #ifdef CONFIG_X86_32
+ static inline void iret_to_self(void)
+@@ -35,7 +34,6 @@ static inline void iret_to_self(void)
+ 		"pushq $1f\n\t"
+ 		"iretq\n\t"
+ 		"1:"
+-		ASM_ENDBR
+ 		: "=&r" (tmp), ASM_CALL_CONSTRAINT : : "cc", "memory");
+ }
+ #endif /* CONFIG_X86_32 */
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -598,6 +598,7 @@ int arch_decode_instruction(struct objto
+ 				op->dest.type = OP_DEST_REG;
+ 				op->dest.reg = CFI_SP;
+ 			}
++			*type = INSN_IRET;
+ 			break;
+ 		}
+ 
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -3587,7 +3587,7 @@ static int validate_ibt_reloc(struct obj
+ static void validate_ibt_insn(struct objtool_file *file, struct instruction *insn)
+ {
+ 	struct reloc *reloc = insn_reloc(file, insn);
+-	struct instruction *target;
++	struct instruction *target, *n;
+ 	unsigned long offset;
+ 
+ 	if (!reloc)
+@@ -3599,8 +3599,16 @@ static void validate_ibt_insn(struct obj
+ 	offset = reloc->sym->offset + reloc->addend;
+ 
+ 	target = find_insn(file, reloc->sym->sec, offset);
+-	if (target && insn->func == target->func && target->this_ip)
+-		return;
++	if (target && insn->func == target->func) {
++		if (target->this_ip)
++			return;
++
++		for (n = insn; n->offset <= target->offset;
++		     n = next_insn_same_func(file, n)) {
++			if (n->type == INSN_IRET)
++				return;
++		}
++	}
+ 
+ 	WARN_FUNC("relocation to !ENDBR: %s+0x%lx",
+ 		  insn->sec, insn->offset,
+--- a/tools/objtool/include/objtool/arch.h
++++ b/tools/objtool/include/objtool/arch.h
+@@ -27,6 +27,7 @@ enum insn_type {
+ 	INSN_STD,
+ 	INSN_CLD,
+ 	INSN_ENDBR,
++	INSN_IRET,
+ 	INSN_OTHER,
+ };
+ 
