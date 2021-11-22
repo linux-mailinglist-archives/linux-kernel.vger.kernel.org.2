@@ -2,104 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC8C459513
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 19:49:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22903459516
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 19:50:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236031AbhKVSw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 13:52:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233227AbhKVSwu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 13:52:50 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D30C061714
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 10:49:43 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id b68so16958423pfg.11
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 10:49:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=SxyojBVqeaMPTAohryY0gMBBMQdskNaj/27cUyyvEcg=;
-        b=E/y1Pj2+aJIiLou8CqMiukr0R8bAAo39P9fIFHYiZAB1TbjdSALxZOu/gO4icwQ8HN
-         pBq2gy9C88qNBjU0tP0xbnF09tj/Dbf4vubPmp0WhUVgggHeC7NAtiGNEWXcVGOlL6Y4
-         /culURmitKhs75/Wv8X1cIsDFRrrDuJDp0g8Pz6B1xrlAoq/fcyjPEpMgWJDgaWqYz42
-         4xTiCqJ+gCaQ4CgldXctQjTMcqEpZPM2bq+nfbKEY0LTn8qSIxz/XaqfJWs+lbtifW5Q
-         TefNXpa/SGNaQMdTasIKZzRaE0aKbPfoLGx7mrLXu+V64e24O/jfu7dTEP70imdx7A1U
-         pjmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=SxyojBVqeaMPTAohryY0gMBBMQdskNaj/27cUyyvEcg=;
-        b=qVfTMa7B9an2xDUJ43XrKGNKIUOyQi4AKMb0u8SZtvegzoQoYPAG07gl5abbDXPM5f
-         iQDx8+8ub9xVNyBEMS0bT/skykcw0RCb5JcB9/OshHLLMsyuHSMAXX8xTFVMziQXk0IC
-         1O1ycxtMjPJlHiU7r4w2lmwIYdkwXsd7FKAkfnk7XgtSwQEEXsw3hkIyPfFtcPH/glrO
-         MZ1fyNbqEXIMkRt6fi0tl+ic3E/z6edNYlnxdvqQROUbWdNrMi2WVLpRN3xVT68WD+zj
-         oa9gBWrXIUw+KZjAcyzg4ypZtD5/BaKqk07Rju73qkbkkJuCEL9KYuM0SuP13LwYPEbI
-         Nlew==
-X-Gm-Message-State: AOAM530fUevQWCnBnYJKheTcDMmkFQ2F/KyeXJkGqxrE+YmEBK4cdKS+
-        5EO8CeYjnJFeg8B1hLWNRnilHQ==
-X-Google-Smtp-Source: ABdhPJy6vQvpO9AA3EUN/NOxIUg/gapr34v5QUIwYSn7IPS6idN+DBYnD4AKQnVLingib+jUtEDqUQ==
-X-Received: by 2002:a05:6a00:1991:b0:4a4:f002:66f0 with SMTP id d17-20020a056a00199100b004a4f00266f0mr8565162pfl.81.1637606983105;
-        Mon, 22 Nov 2021 10:49:43 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id oc10sm20851413pjb.26.2021.11.22.10.49.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 10:49:42 -0800 (PST)
-Date:   Mon, 22 Nov 2021 18:49:38 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        butt3rflyh4ck <butterflyhuangxx@gmail.com>, kvm@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: KVM: Warn if mark_page_dirty() is called without an active vCPU
-Message-ID: <YZvmQjgdI/gQj6T6@google.com>
-References: <CAFcO6XOmoS7EacN_n6v4Txk7xL7iqRa2gABg3F7E3Naf5uG94g@mail.gmail.com>
- <9eb83cdd-9314-0d1f-0d4b-0cf4432e1e84@redhat.com>
- <e8f40b8765f2feefb653d8a67e487818f66581aa.camel@infradead.org>
- <YZvNB0ByFmdEkUVX@google.com>
- <ee872549432eaf62c0c5a722b94ac4390ef3df83.camel@infradead.org>
+        id S233166AbhKVSxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 13:53:41 -0500
+Received: from mout.gmx.net ([212.227.15.19]:38847 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231699AbhKVSxk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 13:53:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1637607015;
+        bh=lE3hAYAJQ/qcZuhnjnZSZiuOuT/DfD3hCHSy2l/ZcKY=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=iZNE1qYAdNggYvvHnI1iXOeHZZDLCPok5FMHeTrEaofLth4vfMGuqOv6PXrfVFxyh
+         JA2pGf2teC4l4sNsMjX2+52akiVDoCylI2gsZ+Vbqm/i/7UNAyCfg1sTqoo7RUjglB
+         OqLsJdA5mOXM4W4FfcgVF6ZXrhzp9jRdebkf0CuY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.2.29] ([91.137.126.34]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N1Obh-1mdAqa2pPX-012msj; Mon, 22
+ Nov 2021 19:50:15 +0100
+Subject: Re: [PATCH 2/2] hwmon: (dell-smm) Unify i8k_ioctl() and
+ i8k_ioctl_unlocked()
+To:     Guenter Roeck <linux@roeck-us.net>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211120170319.72369-1-W_Armin@gmx.de>
+ <20211120170319.72369-3-W_Armin@gmx.de>
+ <20211122160122.gf6i3qj6dnwi6wla@pali>
+ <c23caeab-dd27-4c95-2e25-9eb0ff7b33f6@roeck-us.net>
+From:   Armin Wolf <W_Armin@gmx.de>
+Message-ID: <e336f501-fe07-7b49-bc65-d6ca443491ca@gmx.de>
+Date:   Mon, 22 Nov 2021 19:50:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ee872549432eaf62c0c5a722b94ac4390ef3df83.camel@infradead.org>
+In-Reply-To: <c23caeab-dd27-4c95-2e25-9eb0ff7b33f6@roeck-us.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Provags-ID: V03:K1:+U/yhAZc+ahbuRqVIOPG9v69dobZxB22akiDB1NPWd4KQe/RxYv
+ hryo/d1U9MbBVhLIomW+lHTcf251+ViwN9MH6ePZv/4mqm32OKLQwVBI43wwRBDtytNPwE3
+ NhlXCFzkGW8Sbfk71OdqPaoEnpul48/uSpP7z+b2GGPDDQq2JFp3ECYILPz39zHplc34V9r
+ BwKTDpLVRQDD+NwLbvTkA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:cwXnVz/4slc=:VVaZm5GRAYQIDMV9v52Nbp
+ AO6k8BcaHoNCAz7NTeBxp/CM43hJO2cyq/BtzRuL6cT5WeDBn5DKNlRgWCDazPhjmS5JtEhhC
+ BRork3Qlaye2F8l//brh1Derch1VJXPKSHcqNgg+MXVmBiCnsgke6wAUEZWatrEFihqvDOlY9
+ f8RNDVHEG+It1PwyFtGzouQfjR7irLDO2hrGUrkXOwZLSSCVTc2uWcdDJoF1XKFh7mF9B24vP
+ J3xdjcNuQhn66+rdRKSHZOssAAqU7/JW1heyssIEskXpY6daAsNiufxfJn6Bn3WJUotlFYGGM
+ a+ywYUZb9OT7lo7DC0b3m8Pn2HbOQ2gp84KVh50wkn/8a3E9MSYBuII++K/dcCIrGE9lr1y1N
+ yEsHSGtdxE78/GuWUvy1bkX/1ymtNTvlkpitdJaqHtxkfyesfJbfvpHS96e323cU2rAUA7YdQ
+ 8/dm6ScCaXmklLu7Fko27uMj13iTTBIEs0ZE+O1y7SDZ5tXosufxqSr7ectCKVee9oGVpO+q4
+ QLAmBBZ7MT1uU+R0BeI2z8Rqr0jGYR4zlYoH0MISNbaYvfh5Fnt5gxaMXUPcHfUxQ9MmiqWgw
+ npeZypUo0HHQ5JZck+EPXfwvWokolN8yEXqjyWuRT935+zgiDkHvVruuvQRmJQGzr51Lh8yKr
+ /IB9JlkoWjtbI3+iHxrdUz39AZ6EQCK2hStRvvPdK1hfh0EBluST8TEPm84EBMLja8bVwrppH
+ JL1+E4z5T7+ZYTatwlGoof4tcc6lVkPK83rEwbowhsM+d2PYVicfhLOlm/iSrdXpEplWfc8cu
+ Uv+phswh1plpkDzr+v+K5g46s+bwjXb4iz7J+Rs7mKeq8UctI6mF5k4foK8oI2LLZdKLdaBXo
+ mCFLiITc42i/O9t/fB/hpgZqCBJi6ZbvHNJ6EyfkKqcqVzYtx1+8LITCip+pI0f89M063r/D1
+ yC8iX0ruarJZL1WKWHsrPTw/FpQOars7aHAd/fxpULwerIsgWfXhOQVSaqjNFsHuin3W0jJkO
+ gkO9Q/uXMowozvCJcH7hFQDvbzrMpuQvTWiw3FIi//me1D4DYRUGGdB1oyeR+VuX7WBxoSWOx
+ oa6V1RsreqAzMA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021, David Woodhouse wrote:
-> On Mon, 2021-11-22 at 17:01 +0000, Sean Christopherson wrote:
-> > On Sat, Nov 20, 2021, David Woodhouse wrote:
-> > > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> > > index 6c5083f2eb50..72c6453bcef4 100644
-> > > --- a/virt/kvm/kvm_main.c
-> > > +++ b/virt/kvm/kvm_main.c
-> > > @@ -3020,12 +3020,17 @@ void mark_page_dirty_in_slot(struct kvm *kvm,
-> > >  			     struct kvm_memory_slot *memslot,
-> > >  		 	     gfn_t gfn)
-> > >  {
-> > > +	struct kvm_vcpu *vcpu = kvm_get_running_vcpu();
-> > > +
-> > > +	if (WARN_ON_ONCE(!vcpu) || WARN_ON_ONCE(vcpu->kvm != kvm))
-> > 
-> > Maybe use KVM_BUG_ON?  And two separate WARNs are probably overkill.
-> > 
-> > 	if (KVM_BUG_ON(!vcpu || vcpu->kvm != kvm, kvm))
-> > 
-> > 
-> > I'd also prefer to not retrieve the vCPU in the dirty_bitmap path, at least not
-> > until it's necessary (for the proposed dirty quota throttling), though that's not
-> > a strong preference.
-> 
-> I don't think that would achieve my objective. This was my reaction to
-> learning that I was never supposed to have called kvm_write_guest()
-> when I didn't have an active vCPU context¹. I wanted there to have been
-> a *warning* about that, right there and then when I first did it
-> instead of waiting for syzkaller to find it.
 
-Fair enough.  And probably a moot point since Paolo hasn't vehemently objected
-to the dirty quota idea.
+Am 22.11.21 um 18:55 schrieb Guenter Roeck:
+> On 11/22/21 8:01 AM, Pali Roh=C3=A1r wrote:
+>> On Saturday 20 November 2021 18:03:19 Armin Wolf wrote:
+>>> The only purpose of i8k_ioctl() is to call i8k_ioctl_unlocked()
+>>> with i8k_mutex held. Judging from the hwmon code, this mutex
+>>> only needs to be held when setting the fan speed/mode.
+>>
+>> Really? I think that there is no difference between setting and getting
+>> fan speed/mode. At least I do not see why 'set' needs mutex and 'get' d=
+o
+>> not need it. Some more explanation is needed...
+>>
+> I8K_SET_FAN sets the fan speed and returns the current status. Without
+> locking, the returned status may not match or be associated with the
+> previous
+> set operation.
+>
+> Maybe that doesn't matter, and the synchronization is not needed. If so,
+> you can probably remove the locking entirely.
+>
+> Guenter
+
+That is the reason i kept the locking code. Since i do not want to break
+the ioctl interfacein any way, removing the locking code seems too risky
+to me.
+
+Armin
+
