@@ -2,208 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CDEE4591BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:54:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 473E5459258
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:57:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240140AbhKVP5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:57:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37086 "EHLO
+        id S240504AbhKVP75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:59:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240074AbhKVP5N (ORCPT
+        with ESMTP id S240306AbhKVP7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:57:13 -0500
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 787DDC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:54:06 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:e4da:38c:79e9:48bf])
-        by baptiste.telenet-ops.be with bizsmtp
-        id MTu6260024yPVd601Tu6vX; Mon, 22 Nov 2021 16:54:06 +0100
+        Mon, 22 Nov 2021 10:59:41 -0500
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139C4C0617A2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:56:23 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by laurent.telenet-ops.be with bizsmtp
+        id MTvi2600Z4C55Sk01TviwZ; Mon, 22 Nov 2021 16:56:23 +0100
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mpBdt-00EL28-Nt; Mon, 22 Nov 2021 16:54:05 +0100
+        id 1mpBe6-00EL3i-LK; Mon, 22 Nov 2021 16:54:18 +0100
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mpBdt-00HGon-3o; Mon, 22 Nov 2021 16:54:05 +0100
+        id 1mpBe5-00HGzM-PZ; Mon, 22 Nov 2021 16:54:17 +0100
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc:     dmaengine@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+To:     Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Paul Walmsley <paul@pwsan.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Benoit Parrot <bparrot@ti.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Keerthy <j-keerthy@ti.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
+        alsa-devel@alsa-project.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] dmaengine: stm32-mdma: Use bitfield helpers
-Date:   Mon, 22 Nov 2021 16:54:04 +0100
-Message-Id: <36ceab242a594233dc7dc6f1dddb4ac32d1e846f.1637593297.git.geert+renesas@glider.be>
+Subject: [PATCH/RFC 12/17] pinctrl: aspeed: Use bitfield helpers
+Date:   Mon, 22 Nov 2021 16:54:05 +0100
+Message-Id: <15158715ad2278191e310ac5a8d3dba7cc4fb9cc.1637592133.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <a1445d3abb45cfc95cb1b03180fd53caf122035b.1637593297.git.geert+renesas@glider.be>
-References: <a1445d3abb45cfc95cb1b03180fd53caf122035b.1637593297.git.geert+renesas@glider.be>
+In-Reply-To: <cover.1637592133.git.geert+renesas@glider.be>
+References: <cover.1637592133.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the FIELD_{GET,PREP}() helpers, instead of defining custom macros
-implementing the same operations.
+Use the field_{get,prep}() helpers, instead of open-coding the same
+operations.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
 Compile-tested only.
-
-See "[PATCH 00/17] Non-const bitfield helper conversions"
-(https://lore.kernel.org/r/cover.1637592133.git.geert+renesas@glider.be)
-for background and more conversions.
+Marked RFC, as this depends on [PATCH 01/17], but follows a different
+path to upstream.
 ---
- drivers/dma/stm32-mdma.c | 74 +++++++++++++---------------------------
- 1 file changed, 23 insertions(+), 51 deletions(-)
+ drivers/pinctrl/aspeed/pinctrl-aspeed-g4.c | 3 ++-
+ drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c | 3 ++-
+ drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c | 3 ++-
+ drivers/pinctrl/aspeed/pinctrl-aspeed.c    | 5 +++--
+ drivers/pinctrl/aspeed/pinmux-aspeed.c     | 6 ++++--
+ 5 files changed, 13 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/dma/stm32-mdma.c b/drivers/dma/stm32-mdma.c
-index d30a4a28d3bfd585..03ff64ff34bf594e 100644
---- a/drivers/dma/stm32-mdma.c
-+++ b/drivers/dma/stm32-mdma.c
-@@ -10,6 +10,7 @@
-  * Inspired by stm32-dma.c and dma-jz4780.c
+diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g4.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g4.c
+index bfed0e2746437b4a..bfb2a7b229915a68 100644
+--- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g4.c
++++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g4.c
+@@ -2,6 +2,7 @@
+ /*
+  * Copyright (C) 2016 IBM Corp.
+  */
++#include <linux/bitfield.h>
+ #include <linux/bitops.h>
+ #include <linux/init.h>
+ #include <linux/io.h>
+@@ -2551,7 +2552,7 @@ static int aspeed_g4_sig_expr_set(struct aspeed_pinmux_data *ctx,
+ 	for (i = 0; i < expr->ndescs; i++) {
+ 		const struct aspeed_sig_desc *desc = &expr->descs[i];
+ 		u32 pattern = enable ? desc->enable : desc->disable;
+-		u32 val = (pattern << __ffs(desc->mask));
++		u32 val = field_prep(desc->mask, pattern);
+ 
+ 		if (!ctx->maps[desc->ip])
+ 			return -ENODEV;
+diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c
+index 4c0d26606b6cc7d6..8cc6d9c1f1c78296 100644
+--- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c
++++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c
+@@ -2,6 +2,7 @@
+ /*
+  * Copyright (C) 2016 IBM Corp.
+  */
++#include <linux/bitfield.h>
+ #include <linux/bitops.h>
+ #include <linux/init.h>
+ #include <linux/io.h>
+@@ -2724,7 +2725,7 @@ static int aspeed_g5_sig_expr_set(struct aspeed_pinmux_data *ctx,
+ 	for (i = 0; i < expr->ndescs; i++) {
+ 		const struct aspeed_sig_desc *desc = &expr->descs[i];
+ 		u32 pattern = enable ? desc->enable : desc->disable;
+-		u32 val = (pattern << __ffs(desc->mask));
++		u32 val = field_prep(desc->mask, pattern);
+ 		struct regmap *map;
+ 
+ 		map = aspeed_g5_acquire_regmap(ctx, desc->ip);
+diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
+index a3fa03bcd9a30577..00f7b69a74e9e743 100644
+--- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
++++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /* Copyright (C) 2019 IBM Corp. */
++#include <linux/bitfield.h>
+ #include <linux/bitops.h>
+ #include <linux/init.h>
+ #include <linux/io.h>
+@@ -2649,7 +2650,7 @@ static int aspeed_g6_sig_expr_set(struct aspeed_pinmux_data *ctx,
+ 	for (i = 0; i < expr->ndescs; i++) {
+ 		const struct aspeed_sig_desc *desc = &expr->descs[i];
+ 		u32 pattern = enable ? desc->enable : desc->disable;
+-		u32 val = (pattern << __ffs(desc->mask));
++		u32 val = field_prep(desc->mask, pattern);
+ 		bool is_strap;
+ 
+ 		if (!ctx->maps[desc->ip])
+diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed.c b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
+index c94e24aadf922d2a..839ac48f75836352 100644
+--- a/drivers/pinctrl/aspeed/pinctrl-aspeed.c
++++ b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
+@@ -3,6 +3,7 @@
+  * Copyright (C) 2016 IBM Corp.
   */
  
 +#include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/dmaengine.h>
-@@ -32,13 +33,6 @@
+ #include <linux/mfd/syscon.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+@@ -547,7 +548,7 @@ int aspeed_pin_config_get(struct pinctrl_dev *pctldev, unsigned int offset,
+ 		return rc;
  
- #include "virt-dma.h"
+ 	pmap = find_pinconf_map(pdata, param, MAP_TYPE_VAL,
+-			(val & pconf->mask) >> __ffs(pconf->mask));
++				field_get(pconf->mask, val));
  
--/*  MDMA Generic getter/setter */
--#define STM32_MDMA_SHIFT(n)		(ffs(n) - 1)
--#define STM32_MDMA_SET(n, mask)		(((n) << STM32_MDMA_SHIFT(mask)) & \
--					 (mask))
--#define STM32_MDMA_GET(n, mask)		(((n) & (mask)) >> \
--					 STM32_MDMA_SHIFT(mask))
--
- #define STM32_MDMA_GISR0		0x0000 /* MDMA Int Status Reg 1 */
- #define STM32_MDMA_GISR1		0x0004 /* MDMA Int Status Reg 2 */
+ 	if (!pmap)
+ 		return -EINVAL;
+@@ -595,7 +596,7 @@ int aspeed_pin_config_set(struct pinctrl_dev *pctldev, unsigned int offset,
+ 		if (WARN_ON(!pmap))
+ 			return -EINVAL;
  
-@@ -80,8 +74,7 @@
- #define STM32_MDMA_CCR_HEX		BIT(13)
- #define STM32_MDMA_CCR_BEX		BIT(12)
- #define STM32_MDMA_CCR_PL_MASK		GENMASK(7, 6)
--#define STM32_MDMA_CCR_PL(n)		STM32_MDMA_SET(n, \
--						       STM32_MDMA_CCR_PL_MASK)
-+#define STM32_MDMA_CCR_PL(n)		FIELD_PREP(STM32_MDMA_CCR_PL_MASK, (n))
- #define STM32_MDMA_CCR_TCIE		BIT(5)
- #define STM32_MDMA_CCR_BTIE		BIT(4)
- #define STM32_MDMA_CCR_BRTIE		BIT(3)
-@@ -99,48 +92,33 @@
- #define STM32_MDMA_CTCR_BWM		BIT(31)
- #define STM32_MDMA_CTCR_SWRM		BIT(30)
- #define STM32_MDMA_CTCR_TRGM_MSK	GENMASK(29, 28)
--#define STM32_MDMA_CTCR_TRGM(n)		STM32_MDMA_SET((n), \
--						       STM32_MDMA_CTCR_TRGM_MSK)
--#define STM32_MDMA_CTCR_TRGM_GET(n)	STM32_MDMA_GET((n), \
--						       STM32_MDMA_CTCR_TRGM_MSK)
-+#define STM32_MDMA_CTCR_TRGM(n)		FIELD_PREP(STM32_MDMA_CTCR_TRGM_MSK, (n))
-+#define STM32_MDMA_CTCR_TRGM_GET(n)	FIELD_GET(STM32_MDMA_CTCR_TRGM_MSK, (n))
- #define STM32_MDMA_CTCR_PAM_MASK	GENMASK(27, 26)
--#define STM32_MDMA_CTCR_PAM(n)		STM32_MDMA_SET(n, \
--						       STM32_MDMA_CTCR_PAM_MASK)
-+#define STM32_MDMA_CTCR_PAM(n)		FIELD_PREP(STM32_MDMA_CTCR_PAM_MASK, (n))
- #define STM32_MDMA_CTCR_PKE		BIT(25)
- #define STM32_MDMA_CTCR_TLEN_MSK	GENMASK(24, 18)
--#define STM32_MDMA_CTCR_TLEN(n)		STM32_MDMA_SET((n), \
--						       STM32_MDMA_CTCR_TLEN_MSK)
--#define STM32_MDMA_CTCR_TLEN_GET(n)	STM32_MDMA_GET((n), \
--						       STM32_MDMA_CTCR_TLEN_MSK)
-+#define STM32_MDMA_CTCR_TLEN(n)		FIELD_PREP(STM32_MDMA_CTCR_TLEN_MSK, (n))
-+#define STM32_MDMA_CTCR_TLEN_GET(n)	FIELD_GET(STM32_MDMA_CTCR_TLEN_MSK, (n))
- #define STM32_MDMA_CTCR_LEN2_MSK	GENMASK(25, 18)
--#define STM32_MDMA_CTCR_LEN2(n)		STM32_MDMA_SET((n), \
--						       STM32_MDMA_CTCR_LEN2_MSK)
--#define STM32_MDMA_CTCR_LEN2_GET(n)	STM32_MDMA_GET((n), \
--						       STM32_MDMA_CTCR_LEN2_MSK)
-+#define STM32_MDMA_CTCR_LEN2(n)		FIELD_PREP(STM32_MDMA_CTCR_LEN2_MSK, (n))
-+#define STM32_MDMA_CTCR_LEN2_GET(n)	FIELD_GET(STM32_MDMA_CTCR_LEN2_MSK, (n))
- #define STM32_MDMA_CTCR_DBURST_MASK	GENMASK(17, 15)
--#define STM32_MDMA_CTCR_DBURST(n)	STM32_MDMA_SET(n, \
--						    STM32_MDMA_CTCR_DBURST_MASK)
-+#define STM32_MDMA_CTCR_DBURST(n)	FIELD_PREP(STM32_MDMA_CTCR_DBURST_MASK, (n))
- #define STM32_MDMA_CTCR_SBURST_MASK	GENMASK(14, 12)
--#define STM32_MDMA_CTCR_SBURST(n)	STM32_MDMA_SET(n, \
--						    STM32_MDMA_CTCR_SBURST_MASK)
-+#define STM32_MDMA_CTCR_SBURST(n)	FIELD_PREP(STM32_MDMA_CTCR_SBURST_MASK, (n))
- #define STM32_MDMA_CTCR_DINCOS_MASK	GENMASK(11, 10)
--#define STM32_MDMA_CTCR_DINCOS(n)	STM32_MDMA_SET((n), \
--						    STM32_MDMA_CTCR_DINCOS_MASK)
-+#define STM32_MDMA_CTCR_DINCOS(n)	FIELD_PREP(STM32_MDMA_CTCR_DINCOS_MASK, (n))
- #define STM32_MDMA_CTCR_SINCOS_MASK	GENMASK(9, 8)
--#define STM32_MDMA_CTCR_SINCOS(n)	STM32_MDMA_SET((n), \
--						    STM32_MDMA_CTCR_SINCOS_MASK)
-+#define STM32_MDMA_CTCR_SINCOS(n)	FIELD_PREP(STM32_MDMA_CTCR_SINCOS_MASK, (n))
- #define STM32_MDMA_CTCR_DSIZE_MASK	GENMASK(7, 6)
--#define STM32_MDMA_CTCR_DSIZE(n)	STM32_MDMA_SET(n, \
--						     STM32_MDMA_CTCR_DSIZE_MASK)
-+#define STM32_MDMA_CTCR_DSIZE(n)	FIELD_PREP(STM32_MDMA_CTCR_DSIZE_MASK, (n))
- #define STM32_MDMA_CTCR_SSIZE_MASK	GENMASK(5, 4)
--#define STM32_MDMA_CTCR_SSIZE(n)	STM32_MDMA_SET(n, \
--						     STM32_MDMA_CTCR_SSIZE_MASK)
-+#define STM32_MDMA_CTCR_SSIZE(n)	FIELD_PREP(STM32_MDMA_CTCR_SSIZE_MASK, (n))
- #define STM32_MDMA_CTCR_DINC_MASK	GENMASK(3, 2)
--#define STM32_MDMA_CTCR_DINC(n)		STM32_MDMA_SET((n), \
--						      STM32_MDMA_CTCR_DINC_MASK)
-+#define STM32_MDMA_CTCR_DINC(n)		FIELD_PREP(STM32_MDMA_CTCR_DINC_MASK, (n))
- #define STM32_MDMA_CTCR_SINC_MASK	GENMASK(1, 0)
--#define STM32_MDMA_CTCR_SINC(n)		STM32_MDMA_SET((n), \
--						      STM32_MDMA_CTCR_SINC_MASK)
-+#define STM32_MDMA_CTCR_SINC(n)		FIELD_PREP(STM32_MDMA_CTCR_SINC_MASK, (n))
- #define STM32_MDMA_CTCR_CFG_MASK	(STM32_MDMA_CTCR_SINC_MASK \
- 					| STM32_MDMA_CTCR_DINC_MASK \
- 					| STM32_MDMA_CTCR_SINCOS_MASK \
-@@ -151,16 +129,13 @@
- /* MDMA Channel x block number of data register */
- #define STM32_MDMA_CBNDTR(x)		(0x54 + 0x40 * (x))
- #define STM32_MDMA_CBNDTR_BRC_MK	GENMASK(31, 20)
--#define STM32_MDMA_CBNDTR_BRC(n)	STM32_MDMA_SET(n, \
--						       STM32_MDMA_CBNDTR_BRC_MK)
--#define STM32_MDMA_CBNDTR_BRC_GET(n)	STM32_MDMA_GET((n), \
--						       STM32_MDMA_CBNDTR_BRC_MK)
-+#define STM32_MDMA_CBNDTR_BRC(n)	FIELD_PREP(STM32_MDMA_CBNDTR_BRC_MK, (n))
-+#define STM32_MDMA_CBNDTR_BRC_GET(n)	FIELD_GET(STM32_MDMA_CBNDTR_BRC_MK, (n))
+-		val = pmap->val << __ffs(pconf->mask);
++		val = field_prep(pconf->mask, pmap->val);
  
- #define STM32_MDMA_CBNDTR_BRDUM		BIT(19)
- #define STM32_MDMA_CBNDTR_BRSUM		BIT(18)
- #define STM32_MDMA_CBNDTR_BNDT_MASK	GENMASK(16, 0)
--#define STM32_MDMA_CBNDTR_BNDT(n)	STM32_MDMA_SET(n, \
--						    STM32_MDMA_CBNDTR_BNDT_MASK)
-+#define STM32_MDMA_CBNDTR_BNDT(n)	FIELD_PREP(STM32_MDMA_CBNDTR_BNDT_MASK, (n))
+ 		rc = regmap_update_bits(pdata->scu, pconf->reg,
+ 					pconf->mask, val);
+diff --git a/drivers/pinctrl/aspeed/pinmux-aspeed.c b/drivers/pinctrl/aspeed/pinmux-aspeed.c
+index 4aa46383c2c533f0..61ddd550439325ee 100644
+--- a/drivers/pinctrl/aspeed/pinmux-aspeed.c
++++ b/drivers/pinctrl/aspeed/pinmux-aspeed.c
+@@ -3,6 +3,8 @@
  
- /* MDMA Channel x source address register */
- #define STM32_MDMA_CSAR(x)		(0x58 + 0x40 * (x))
-@@ -171,11 +146,9 @@
- /* MDMA Channel x block repeat address update register */
- #define STM32_MDMA_CBRUR(x)		(0x60 + 0x40 * (x))
- #define STM32_MDMA_CBRUR_DUV_MASK	GENMASK(31, 16)
--#define STM32_MDMA_CBRUR_DUV(n)		STM32_MDMA_SET(n, \
--						      STM32_MDMA_CBRUR_DUV_MASK)
-+#define STM32_MDMA_CBRUR_DUV(n)		FIELD_PREP(STM32_MDMA_CBRUR_DUV_MASK, (n))
- #define STM32_MDMA_CBRUR_SUV_MASK	GENMASK(15, 0)
--#define STM32_MDMA_CBRUR_SUV(n)		STM32_MDMA_SET(n, \
--						      STM32_MDMA_CBRUR_SUV_MASK)
-+#define STM32_MDMA_CBRUR_SUV(n)		FIELD_PREP(STM32_MDMA_CBRUR_SUV_MASK, (n))
+ /* Pieces to enable drivers to implement the .set callback */
  
- /* MDMA Channel x link address register */
- #define STM32_MDMA_CLAR(x)		(0x64 + 0x40 * (x))
-@@ -185,8 +158,7 @@
- #define STM32_MDMA_CTBR_DBUS		BIT(17)
- #define STM32_MDMA_CTBR_SBUS		BIT(16)
- #define STM32_MDMA_CTBR_TSEL_MASK	GENMASK(7, 0)
--#define STM32_MDMA_CTBR_TSEL(n)		STM32_MDMA_SET(n, \
--						      STM32_MDMA_CTBR_TSEL_MASK)
-+#define STM32_MDMA_CTBR_TSEL(n)		FIELD_PREP(STM32_MDMA_CTBR_TSEL_MASK, (n))
++#include <linux/bitfield.h>
++
+ #include "pinmux-aspeed.h"
  
- /* MDMA Channel x mask address register */
- #define STM32_MDMA_CMAR(x)		(0x70 + 0x40 * (x))
+ static const char *const aspeed_pinmux_ips[] = {
+@@ -17,7 +19,7 @@ static inline void aspeed_sig_desc_print_val(
+ 	pr_debug("Want %s%X[0x%08X]=0x%X, got 0x%X from 0x%08X\n",
+ 			aspeed_pinmux_ips[desc->ip], desc->reg,
+ 			desc->mask, enable ? desc->enable : desc->disable,
+-			(rv & desc->mask) >> __ffs(desc->mask), rv);
++			field_get(desc->mask, rv), rv);
+ }
+ 
+ /**
+@@ -55,7 +57,7 @@ int aspeed_sig_desc_eval(const struct aspeed_sig_desc *desc,
+ 	aspeed_sig_desc_print_val(desc, enabled, raw);
+ 	want = enabled ? desc->enable : desc->disable;
+ 
+-	return ((raw & desc->mask) >> __ffs(desc->mask)) == want;
++	return field_get(desc->mask, raw) == want;
+ }
+ 
+ /**
 -- 
 2.25.1
 
