@@ -2,103 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F6A458B01
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 10:04:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9225B458B08
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 10:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238964AbhKVJHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 04:07:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbhKVJHo (ORCPT
+        id S238905AbhKVJKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 04:10:03 -0500
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:36311 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229716AbhKVJKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 04:07:44 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43062C061574;
-        Mon, 22 Nov 2021 01:04:38 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id x15so73664749edv.1;
-        Mon, 22 Nov 2021 01:04:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/n2Vm5z8nFGK+sbMSre7nkEQgLie2yLLJputlZIF0rw=;
-        b=MGM9gXKyZV26D2lbgtxuuQwoJ9UQxDrIdr1g22N9dWWKStYfmVIfWgKcAeTAU2qFoh
-         lkDXU/77a7NYdBZLLfansRByZ6LiJkpl+E6fasDgmtEYZjVwEL8PNuaAZQTBnzXsQxqR
-         LnOX4xT/gYYayGwbXFAQyJoJszrL0txDfx6Xa+XZ0MSlsTYCzt/XHRBckPtKyA24sWCd
-         90UPzxQx/YgyPDPoN5OzKUB5pbkHDVxtTBc6IDV6g/oYocP7F7j3vWm/D0/a9opZnnR6
-         2NfLOThgtZslMgvYFBJEW53hlyu4OC6pDPXaeyA/fghOpmyvsMZ0ofu2q4FDbIqjZWAv
-         PhDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/n2Vm5z8nFGK+sbMSre7nkEQgLie2yLLJputlZIF0rw=;
-        b=ISKbu8c9wTw+f5L0v0DqgHVOzY+RNRKX5m7BrsrxAJCbjL6ZyFDk0jYk2hymZI+8Iu
-         VYleXKMGKOIPxgkza2RaajKKn09X1TebFWr4hGGSG7lLlc8Et++6fPjuw9etbnBwtKH3
-         SFDRGweuYm1U7rzyiPnTDgcbCOe75RklKCQGkB0S9cZiI1cu4H+SGk5uJUympUagKliq
-         A5jQsP/nEzoxLogHE54IVnq/UGTbYuZXbyQVDbYMGKtHRUPMdHxMbDiLWOZLrVdt9iDR
-         kjD5TzgpnxaA4ua4bfefLBZcx+DxDzBoSWKE8UT00aNmnnDMl9GRL/s+/7M41xpK4YM7
-         uxrQ==
-X-Gm-Message-State: AOAM531lTn1csqbf3PJOD7+ViGGU8uVS/LQBbl6f7RIYbOeQ7NUbeUWW
-        n/jDCqsNqkToGANMbqu8ZGAwaSc7Eg9Ob2kZKOA=
-X-Google-Smtp-Source: ABdhPJw1Y/E8hlBCt4M0ZxIE/6dl4jAqFgcMD+6FREtOB29ObDhN9iSjRxOlsQ2zIkKb4HicLv91Qy5jg7lWpWCJE4U=
-X-Received: by 2002:aa7:dbc1:: with SMTP id v1mr62739440edt.49.1637571876741;
- Mon, 22 Nov 2021 01:04:36 -0800 (PST)
+        Mon, 22 Nov 2021 04:10:01 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 1803F2B01C7D;
+        Mon, 22 Nov 2021 04:06:54 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 22 Nov 2021 04:06:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-type:content-transfer-encoding; s=fm1; bh=
+        3sAYDhdU8A/Wo/wR51x2QNHufjbDBbL+eEem9wZy/BE=; b=YjQgWbk1fEx+mRCE
+        N2IyrXzXMxMT6Bi8dEdXkHvwPVx+skHzxolDlWeZ+PjoixxVsNVprIUzZp1kB7LE
+        B5ryQqsxyb1t2cTLh9RF6m2QKY0LCv6XeSoAHrV7dv6N1yNzLGcOE6q4XO5ijqng
+        zJYBSeiAdT5+W5ooKq0VJZ6hThSho6xCJ2dLd5gQAGYanxktjkfJ7IYp6bErhPuZ
+        En35MTx48YLGN9+TLaIXF9qKL1Y6sVUA8Pq7LJaZHYzyxxQSjCcF4C2Y3dC1QFWj
+        StbrhAzSSa/5JQB3QmpnqUZJnAzz8+msRV1hjmvat4nAJ4fLB6LpxiNKJQlyYdxK
+        GlTUCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=3sAYDhdU8A/Wo/wR51x2QNHufjbDBbL+eEem9wZy/
+        BE=; b=kK+Ag1tFMj2D4Thqhnd3vQaVNbySJBY+KWz+iKaORexurPizJJGXmmIGS
+        L3ZE9b0OgMPNPb1FoRuXUcHgWux/4//wesdlSTQsINRIc1JGyMy9YMLDl1WwOpbg
+        hCquhCuwskubV2Y+L7jjz5rAcThAn51y/FpCAiQopGRGC1xf1JUhbdsLgoaYBzwJ
+        TQTZu95+tUBvZhB2kww/fKjZ0PN1byi8VxzzP8pmbXwa3RsAVn4kEnlAHAFHhKKW
+        K6GI54UzNm9zLND0gqDPw4HE1Vanim9eWoLmYxoSq1INyvoxGpQQyPOdPbE9ZiDh
+        HN6VPJw/xRz4BVrrqm37uzahyKP5w==
+X-ME-Sender: <xms:rV2bYSxhZnKc6bQeyk2njC-pz30-joVHb01-RfkyKBnh0qVzkMegQw>
+    <xme:rV2bYeQDa7WQcc3_vaJIKbgzGfKAf7pw05yjuZER7L8DILQxwJzkGlz4pnzoo89Ez
+    b4l2rAIXIPX6PW9Ih8>
+X-ME-Received: <xmr:rV2bYUXYn6nnijuPzv5J1gxvDIAWBplu7W8RQBekPzps7rAZBR4zvw_jBTEaZhzqcaiaQv2EdXtmrCgi0Qv891gtGgtYwJoQr10>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrgeefgdduvdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffojghfgggtgfesthekredtredtjeenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeejuefggeekfffgueevtddvudffhfejffejjedvvdduudethefhfefhfeeg
+    ieekkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:rV2bYYh_3E_bgI-B6eSeaSiPHyAOgAM5OF8vdemmpk9KYrB9Z3CslQ>
+    <xmx:rV2bYUBBGtmJ0W6lAXnY8NYaxaQZ17LAq19YQqAyTcFFWr7XC19npg>
+    <xmx:rV2bYZLksy5GxP_nFxnnxd2OwWZFB0kAuhc08E9t93hU7gvDgzjW7w>
+    <xmx:rV2bYdI_NNSyXCCegfwICYDl95QcQSjHz9N2lkzDB7i85z1_g6QJ_8sSofY>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 22 Nov 2021 04:06:52 -0500 (EST)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <mripard@kernel.org>, linux-sunxi@lists.linux.dev
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 0/6] clk: sunxi-ng: Allwinner D1 clock support
+Date:   Mon, 22 Nov 2021 10:06:48 +0100
+Message-Id: <163757200586.20884.2695235529451513458.b4-ty@cerno.tech>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211119043545.4010-1-samuel@sholland.org>
+References: <20211119043545.4010-1-samuel@sholland.org>
 MIME-Version: 1.0
-References: <20211112162827.128319-1-aouledameur@baylibre.com>
- <20211112162827.128319-3-aouledameur@baylibre.com> <CAFBinCDNMCT4KZjw8HnYer9NJBx09yF=KpguGm8Q4vKw8eBr9A@mail.gmail.com>
-In-Reply-To: <CAFBinCDNMCT4KZjw8HnYer9NJBx09yF=KpguGm8Q4vKw8eBr9A@mail.gmail.com>
-From:   Anand Moon <linux.amoon@gmail.com>
-Date:   Mon, 22 Nov 2021 14:34:26 +0530
-Message-ID: <CANAwSgRoBCao2fh1jgBwb-7r+ng3LabNbH8i4G=kn668uhCasg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] usb: dwc3: meson-g12a: fix shared reset control use
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     Amjad Ouled-Ameur <aouledameur@baylibre.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-amlogic@lists.infradead.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Linux USB Mailing List <linux-usb@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Amjad
+On Thu, 18 Nov 2021 22:35:38 -0600, Samuel Holland wrote:
+> This series adds support for the D1's CCU and R_CCU.
+> 
+> I attempted to hook up clock parents the "right" way, not using global
+> names. To accomplish that, I added several new macros. I am open to
+> comments on this approach. It looks a bit messier, but seems like it
+> could be less prone to errors.
+> 
+> [...]
 
-On Sun, 21 Nov 2021 at 05:21, Martin Blumenstingl
-<martin.blumenstingl@googlemail.com> wrote:
->
-> Hi Amjad,
->
-> +Cc Anand who was also investigating the original issue one year ago
->
-Thanks.
-> On Fri, Nov 12, 2021 at 5:33 PM Amjad Ouled-Ameur
-> <aouledameur@baylibre.com> wrote:
-> >
-> >
-> it seems that there's an extraneous blank line here
->
-> > reset_control_(de)assert() calls are called on a shared reset line when
-> > reset_control_reset has been used. This is not allowed by the reset
-> > framework.
-> >
-> > Use reset_control_rearm() call in suspend() and remove() as a way to state
-> > that the resource is no longer used, hence the shared reset line
-> > may be triggered again by other devices. Use reset_control_rearm() also in
-> > case probe fails after reset() has been called.
-> >
-> > reset_control_rearm() keeps use of triggered_count sane in the reset
-> > framework, use of reset_control_reset() on shared reset line should be
-> > balanced with reset_control_rearm().
-> >
-> > Signed-off-by: Amjad Ouled-Ameur <aouledameur@baylibre.com>
-> > Reported-by: Jerome Brunet <jbrunet@baylibre.com>
-> Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Applied to sunxi/linux.git (sunxi/clk-for-5.17).
 
-Changes fix the warning messages on my odroid n2 during suspend / resume.
-Please add my
-Tested-by: Anand Moon <linux.amoon@gmail.com>
+Thanks!
+Maxime
