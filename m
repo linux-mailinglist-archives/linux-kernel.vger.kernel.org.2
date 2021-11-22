@@ -2,72 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607564592F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 17:26:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7054592F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 17:25:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240207AbhKVQ3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 11:29:44 -0500
-Received: from uho.ysoft.cz ([81.19.3.130]:58440 "EHLO uho.ysoft.cz"
+        id S238087AbhKVQ2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 11:28:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233901AbhKVQ3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 11:29:41 -0500
-Received: from vokac-Latitude-7410.ysoft.local (unknown [10.0.29.92])
-        by uho.ysoft.cz (Postfix) with ESMTP id C1932A8BE4;
-        Mon, 22 Nov 2021 17:26:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ysoft.com;
-        s=20160406-ysoft-com; t=1637598392;
-        bh=OcDmR1BoAZa+eN19EndyCBQXXPz0sieOuuQ9l8VO0Oo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=UQVtjQLI8YvjhxysnB29eLRYs/YnWa46YhTpZTLM2QdB4lbe+tRDdj9NGqpfvs+yB
-         iKL6Zytcc1tT2HeehIF+wNLuVDhccPMUAKHgz3sOBBW7/pwOSIAh5e7a8OebxMpPZr
-         1COLBazxoUWvYlNycv2yiXuMZGf8Yza1FTMpAiKU=
-From:   =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
-Subject: [PATCH 1/2] dt-bindings: arm: fsl: Add Y Soft IOTA Crux/Crux+ boards
-Date:   Mon, 22 Nov 2021 17:25:19 +0100
-Message-Id: <20211122162520.90211-1-michal.vokac@ysoft.com>
-X-Mailer: git-send-email 2.25.1
+        id S231307AbhKVQ23 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 11:28:29 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 735F6608FB;
+        Mon, 22 Nov 2021 16:25:22 +0000 (UTC)
+Date:   Mon, 22 Nov 2021 11:25:20 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Beau Belgrave <beaub@linux.microsoft.com>,
+        linux-kernel@vger.kernel.org, Namhyung Kim <namhyung@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>
+Subject: Re: [PATCH 4/5] libtraceevent: Add __rel_loc relative location
+ attribute support
+Message-ID: <20211122112520.5de93c47@gandalf.local.home>
+In-Reply-To: <20211122140538.a981ac0bdaa1b375f9545433@kernel.org>
+References: <163697159970.131454.2661507704362599471.stgit@devnote2>
+        <163697163637.131454.1385316505107139633.stgit@devnote2>
+        <20211116172332.655bae77@gandalf.local.home>
+        <20211122140538.a981ac0bdaa1b375f9545433@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add devicetree binding for Crux/Crux+ boards from the IOTA family.
-These boards have the very same HW configuration as the Orion board
-except the usage of Quad/QuadPlus SoC.
+On Mon, 22 Nov 2021 14:05:38 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
----
- Documentation/devicetree/bindings/arm/fsl.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+> So it seems that the in-kernel libtraceevent source and header are
+> still in use.
 
-diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-index 0b595b26061f..d68e8e23703e 100644
---- a/Documentation/devicetree/bindings/arm/fsl.yaml
-+++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-@@ -240,6 +240,7 @@ properties:
-               - uniwest,imx6q-evi         # Uniwest Evi
-               - variscite,dt6customboard
-               - wand,imx6q-wandboard      # Wandboard i.MX6 Quad Board
-+              - ysoft,imx6q-yapp4-crux    # i.MX6 Quad Y Soft IOTA Crux board
-               - zealz,imx6q-gk802         # Zealz GK802
-               - zii,imx6q-zii-rdu2        # ZII RDU2 Board
-           - const: fsl,imx6q
-@@ -334,6 +335,7 @@ properties:
-               - kvg,vicutp                # Kverneland UT1P board
-               - prt,prtwd3                # Protonic WD3 board
-               - wand,imx6qp-wandboard     # Wandboard i.MX6 QuadPlus Board
-+              - ysoft,imx6qp-yapp4-crux-plus  # i.MX6 Quad Plus Y Soft IOTA Crux+ board
-               - zii,imx6qp-zii-rdu2       # ZII RDU2+ Board
-           - const: fsl,imx6qp
- 
--- 
-2.25.1
+I believe it's still used if it's not found in the system.
 
+I'll include this patch to the code as well.
+
+Thanks!
+
+-- Steve
