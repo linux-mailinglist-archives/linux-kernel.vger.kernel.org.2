@@ -2,132 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 886844595D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 20:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 440F24595D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 20:57:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240023AbhKVUAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 15:00:02 -0500
-Received: from mga12.intel.com ([192.55.52.136]:36504 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239711AbhKVUAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 15:00:01 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="214894091"
-X-IronPort-AV: E=Sophos;i="5.87,255,1631602800"; 
-   d="scan'208";a="214894091"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 11:56:54 -0800
-X-IronPort-AV: E=Sophos;i="5.87,255,1631602800"; 
-   d="scan'208";a="456773329"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 11:56:51 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mpFQl-009ZN3-31;
-        Mon, 22 Nov 2021 21:56:47 +0200
-Date:   Mon, 22 Nov 2021 21:56:46 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/4] bitops: Add single_bit_set()
-Message-ID: <YZv1/vKe46jmRMJa@smile.fi.intel.com>
-References: <cover.1637330431.git.matti.vaittinen@fi.rohmeurope.com>
- <73d5e4286282a47b614d1cc5631eb9ff2a7e2b44.1637330431.git.matti.vaittinen@fi.rohmeurope.com>
- <YZt+x2moR632x///@smile.fi.intel.com>
- <2c22b52f-9a1f-06f5-f008-d568096f5c4d@fi.rohmeurope.com>
- <YZuTt3+PPvyJsFQ/@smile.fi.intel.com>
- <20211122175414.GA1588@lapt>
+        id S240363AbhKVUAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 15:00:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240197AbhKVUAi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 15:00:38 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32024C061714
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 11:57:31 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id x6so3210286iol.13
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 11:57:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Tu3lxcIg7V05BfeRU1lfgCDNUx8anDFHSWBxng5Jwac=;
+        b=srhMB9M6hX0PkCDJD/JQkumC/IQ8M7Lz+cplUXYaHfAi76HHbwUnWECul4L4RyW3GZ
+         w1ashi5ZD6M2Std6cYhwV68h2Oek1z9hhwcbYqJduTemt9RX7vRtMkAIX4Scg3jiWfJ6
+         L19cXhw/DAa7JB41HMYsjsNBKGjjunmogVFekOu8oi2kg5RyRi0p1jCrYKRfOUPVsA5l
+         ViZNpsmbYOPVjM5hEek05EhquFS15s4A8GxJYDNhVixHuFAk3Fbk4J/rMjFqaYxYEqnv
+         N7NFJ+2Z1p0OW9A9GFli/pvYeLEjO9UQbwIsCNSOru8/ZDz25V2MSfmjXudcVOxTxc+E
+         khYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Tu3lxcIg7V05BfeRU1lfgCDNUx8anDFHSWBxng5Jwac=;
+        b=7bsWJt4y2ntZjLtVkLR4WXofPcE7yQEO7cLyFg9AWs9pzg/Ma033eGGgu0BhWYRTj4
+         SSzOmLtyMrmUiuhaGN8SVZaiMEPWkKfrp8T3CHJoDarwNATjv820H+JtYghiLACZVP/Y
+         +7Cl9OzL1bCTbsUtsEYrfA4XW9BVLPDs5XsLOpRmoYDpXoteyU4MaCZ9SmhVGznQkhOR
+         csKjq6BHcuaJCSBaRDJdaoD4OMd3oKUZVMmAA1HYOT7LvBsq74qahtxGHmYB+S/R9Sxo
+         37sunmmWThqVlUkGZ7nYxZXKx/nBnLPfscPq5JQxu2niW5StAhNYEHhmGux2q5YHKNxg
+         Hlog==
+X-Gm-Message-State: AOAM5313O2Mgs9qlQ7AoPc3tKyG8p04lvyAiS8MJznqc/Ly2DYFjVEKH
+        2C60hVKIaDLWxd61XsxBmYw8MruJHwnwKnGgsu84Xw==
+X-Google-Smtp-Source: ABdhPJyHs56CGDl8ro/bvC8wCPGXjqMFzrf4zkecyaHKTPWrCYSJk7Xl8Ol3tNmm5cWwTHdBhkyJ1bFqwou2YOv2q/4=
+X-Received: by 2002:a5d:9493:: with SMTP id v19mr24296286ioj.34.1637611050436;
+ Mon, 22 Nov 2021 11:57:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211122175414.GA1588@lapt>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20211120045046.3940942-1-seanjc@google.com> <20211120045046.3940942-6-seanjc@google.com>
+In-Reply-To: <20211120045046.3940942-6-seanjc@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Mon, 22 Nov 2021 11:57:19 -0800
+Message-ID: <CANgfPd8nRH+6ovkNETgx6fLjf4bNsHjHCMMq7ZVxtuU-J30UrQ@mail.gmail.com>
+Subject: Re: [PATCH 05/28] KVM: x86/mmu: Check for present SPTE when clearing
+ dirty bit in TDP MMU
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Hou Wenlong <houwenlong93@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 09:54:14AM -0800, Yury Norov wrote:
-> On Mon, Nov 22, 2021 at 02:57:27PM +0200, Andy Shevchenko wrote:
-> > On Mon, Nov 22, 2021 at 12:42:21PM +0000, Vaittinen, Matti wrote:
-> > > On 11/22/21 13:28, Andy Shevchenko wrote:
-> > > > On Mon, Nov 22, 2021 at 01:03:25PM +0200, Matti Vaittinen wrote:
-> > > >> There are cases when it is useful to check a bit-mask has only one bit
-> > > >> set. Add a generic helper for it instead of baking own one for each
-> > > >> user.
-> > 
-> > > > So, you decided to reinvent hamming weight...
-> > > > Please, drop this patch and use corresponding hweight() call.
-> > 
-> > > Thanks Andy.
-> > > 
-> > > There are few differences to hamming weight here. We scan only given 
-> > > amount of bits - and we will end scanning immediately when we hit second 
-> > > set bit. Oh, and obviously we only return information whether there is 
-> > > exactly one bit set. So no, this is not hamming weight().
-> > 
-> > What do you mean by this?
-> > 
-> > hweight() will return you the number of the non-zero elements in the set.
-> > In application to boolean based arrays it means the number of bits that
-> > are set. Obviously, the condition `hweight() == 1` is what you are looking
-> > for.
-> 
-> Hi Andy,
-> 
-> I think, Matti means earlier return when part of bitmap counts set
-> bits to a greater nubmer, and we can skip the rest. Right, Matti?
-> 
-> I agree that for Matti's usecase it's useless because 32-bit int is small,
-> and hweight() would count set bits with a single machine instruction. (And
-> it should be hweight32(), not bitmap_weight() in this case.)
-> 
-> But in general, it might be useful for long bitmaps.
-> 
-> The more complete way of doing this would be adding a new set of
-> functions: bitmap_weight_{eq,neq,gt,le}
-> 
-> I'm looking at how bitmap_weight is used in the kernel and see
-> quite a lot of places where this optimization may take place. For
-> example otx2_remove_flow() in drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c:
-> 
->         if (bitmap_weight(&flow_cfg->dmacflt_bmap,
->                           flow_cfg->dmacflt_max_flows) == 1)
->                 otx2_update_rem_pfmac(pfvf, DMAC_ADDR_DEL);
-> 
-> may be replaced with:
-> 
->         if (bitmap_weight_eq(&flow_cfg->dmacflt_bmap, flow_cfg->dmacflt_max_flows, 1)
->                 otx2_update_rem_pfmac(pfvf, DMAC_ADDR_DEL);
-> 
-> Most of that places are in drivers however, and the length of bitmaps
-> there is typically small, so that there's no chance to get any
-> measurable performance improvement.
-> 
-> There is always a chance that we have opencoded bitmap_weight_eq()
-> et all. If we add these API, it might help people wright better code.
-> 
-> What do you think?
+On Fri, Nov 19, 2021 at 8:51 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Explicitly check for preset SPTEs when clearing dirty bits in the TDP
+> MMU.  This isn't strictly required for correctness, as setting the dirty
+> bit in a defunct SPTE will not change the SPTE from !PRESENT to PRESENT.
+> However, the guarded MMU_WARN_ON() in spte_ad_need_write_protect() would
+> complain if anyone actually turned on KVM's MMU debugging.
+>
+> Fixes: a6a0b05da9f3 ("kvm: x86/mmu: Support dirty logging for the TDP MMU")
+> Cc: Ben Gardon <bgardon@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-Before answering this I would like to see how hweight() is currently being used
-in the kernel against bitmaps. Like histogram collection
+Reviewed-by: Ben Gardon <bgardon@google.com>
 
-	comparison number	number of usages
-	variadic			X
-	1				Y
-	2				Z
-	...				...
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> ---
+>  arch/x86/kvm/mmu/tdp_mmu.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 1db8496259ad..c575df121b19 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -1246,6 +1246,9 @@ static bool clear_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+>                 if (tdp_mmu_iter_cond_resched(kvm, &iter, false, true))
+>                         continue;
+>
+> +               if (!is_shadow_present_pte(iter.old_spte))
+> +                       continue;
+> +
+>                 if (spte_ad_need_write_protect(iter.old_spte)) {
+>                         if (is_writable_pte(iter.old_spte))
+>                                 new_spte = iter.old_spte & ~PT_WRITABLE_MASK;
+> --
+> 2.34.0.rc2.393.gf8c9666880-goog
+>
