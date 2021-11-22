@@ -2,125 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B2545888B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 05:05:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ECC545888F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 05:14:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229544AbhKVEI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 23:08:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47424 "EHLO
+        id S230218AbhKVERQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 23:17:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbhKVEI5 (ORCPT
+        with ESMTP id S229596AbhKVERP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 23:08:57 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70269C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 20:05:51 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id y26so74331657lfa.11
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 20:05:51 -0800 (PST)
+        Sun, 21 Nov 2021 23:17:15 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C815FC061714
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 20:14:09 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id g17so46345685ybe.13
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 20:14:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=MEXpnLmyGEfL4QdZ+Rfyk6e7ekko34wkUVL3dw83Htw=;
-        b=b3q40qxxvL/hojnrO+JRZoj+SZs3pclT654cL7B40cuKPhHA/oR6ivlykIgcXsDQU6
-         alcQaelnfqp+CVGgQvc1d0D7Av0HkD+qG9cT31KMXbb5qCMldUdL07jopwZWqsHzENdt
-         DRvTRZGQg6Dq8O2AOBHe0Ey0WDF9zXMJv+mJ0=
+        bh=Ufl+2uObLITemAu7uloYFsoe/3xNUfHY/I0EtFNIV8Y=;
+        b=5aecOjRkc9aLOLkzu2uDthsl37YvSVjvTyMWLPECyRTFNifHUei2xI+c6kJSnkBbXA
+         dL6NCp9o/kTrwsLDBOXgNmJAzPkSzHZx2fy0zC/Vzs4ZehwydwyZzXIa1CUe15+gDHOo
+         CWP/bEvLLQADhSE3EC0/Fot+hgUFPn79xZtCFbbOZ1SECjdtA7rWVeooExU8Lv4cyOgs
+         rK4adpXz4mUFyhb+x8qXpUt5mgMCg6E/S7jWk0cn7wdu7VW6A63J2g/K+xYIG6DM9Wya
+         2GQvPfznECSNNgZOXK0/OhvPq3LE79eRHwmkUs4CCzXaBUkZqoq7PtwX/cBFGeDXOM+G
+         IAsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=MEXpnLmyGEfL4QdZ+Rfyk6e7ekko34wkUVL3dw83Htw=;
-        b=fdNxUjIqaafImDKD5ilcd14AMV+DIGxGJ4dqI/tIRSnEc19XScYcQX/nG/Cf19buw/
-         HqNXZf8xpu9aMWmYtnQe9zqXnRI0XQN9mNNLyvTEOX4b1HspDm8J4MsuhEmfRMRTteI3
-         2gpn+owxkFvrkWv+qWTO3R7X0PxZ8QaG/PJ/F84L38Wgwn7I8fmGbbQJoR0b9antzISa
-         VsEjxLatcqdjV1IRAPuPYs5gPYQAewx+Rixy2zstA3PObVtZCsTSpcufva2xGaleHcyN
-         H57urZ4Pza6s5gK13O54DKsQcwnbLW7C2mlms2WmSPzj4kRloEJC0fz7LqwkTtdXX7NQ
-         rc1g==
-X-Gm-Message-State: AOAM530h/nvDU0q6htrx0NVtKjjKXsxlZRAJ4hu3PZdZEi7724s+5lir
-        hGj5lawT2VJT3jqlXgQbo/c1eavxz84RsBknx/4KHQ==
-X-Google-Smtp-Source: ABdhPJwi59W/Iebbn0+AUvtuYczG7cqI5vz1jJFcFkBoqjmIZWr7SxCmBZd9hholFHZChanwij52WsOGMVexUaabt1I=
-X-Received: by 2002:a2e:a5c5:: with SMTP id n5mr40217324ljp.457.1637553949722;
- Sun, 21 Nov 2021 20:05:49 -0800 (PST)
+        bh=Ufl+2uObLITemAu7uloYFsoe/3xNUfHY/I0EtFNIV8Y=;
+        b=qKAx8zcziIUvN7HlYJ2zxAbi0ySpCeOa5panH6JImKLZdt5Bj9aKL40X80ZfxSbVKw
+         58S3Q3gzLArKdddJzdgXa+c5sBT1pK2dS2y7TJrCbXMyH212I8Nsjb1nooh1qPsZC/I7
+         WD2Oa49dAmcdZIxY0VpzEigu5Bto5vGfK8VmKLZCk5Re57E/85HiAL7hWfH+qgwlVOt4
+         JOP6gtIuMkiQGkPsdHzWp626oB1WnB5//nZzgHi/2o5y7p61bojfhLD5NTBNXb0AjvVo
+         ULxA0wdfXNHR88GRGzm7bm6UQMhHHeKIgloxMxg3jTCsj5JBGM6f3qY8cm9wRGFiqkj/
+         4LvA==
+X-Gm-Message-State: AOAM533mzkUxHuwn1q55FyXc6EP1buEPbhjwyfv22pru1bZA6cTfvupi
+        oER0kO0a4YnMLQJD4lkzJgUCz0bocilkafn3hBV/eQ==
+X-Google-Smtp-Source: ABdhPJxewORqZoBMGaaxO4om0D8FAxIpf6byiMm6K3qnsT6twjozIDqCQveLRQqVrpnPUKnBAObQHoXwFPuAkibE3o0=
+X-Received: by 2002:a25:b0a8:: with SMTP id f40mr56470993ybj.125.1637554448962;
+ Sun, 21 Nov 2021 20:14:08 -0800 (PST)
 MIME-Version: 1.0
-References: <20211107075646.4366-1-chunfeng.yun@mediatek.com>
- <20211107075646.4366-4-chunfeng.yun@mediatek.com> <71f83770-b12f-2452-d24b-ae1be9b5b075@linaro.org>
-In-Reply-To: <71f83770-b12f-2452-d24b-ae1be9b5b075@linaro.org>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Mon, 22 Nov 2021 12:05:38 +0800
-Message-ID: <CAGXv+5GzP1SXi2ihhifK_Ui8Rt04UgeFyjivzHc532yvPFo3OA@mail.gmail.com>
-Subject: Re: [PATCH 4/6] dt-bindings: phy: mediatek: tphy: support software
- efuse load
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org,
-        Eddie Hung <eddie.hung@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Yz Wu <yz.wu@mediatek.com>
+References: <20211119041104.27662-1-songmuchun@bytedance.com>
+ <YZdQ+0D7n5xCnw5A@infradead.org> <20211119145643.21bbd5ee8e2830dd72d983e3@linux-foundation.org>
+In-Reply-To: <20211119145643.21bbd5ee8e2830dd72d983e3@linux-foundation.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 22 Nov 2021 12:13:33 +0800
+Message-ID: <CAMZfGtV7pNaVNtzPCmXnGgeojPzyVxXSeawnp5znJxkjFweAgA@mail.gmail.com>
+Subject: Re: [PATCH v2] fs: proc: store PDE()->data into inode->i_private
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        gladkov.alexey@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 20, 2021 at 1:19 AM Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
-> On 07/11/2021 07:56, Chunfeng Yun wrote:
-> > Add optional property nvmem-cells and nvmem-cell-names to support
-> > software efuse load, this helps to fix the efuse bit shift issue
-> > on mt8195 etc.
-> >
-> > Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+On Sat, Nov 20, 2021 at 6:56 AM Andrew Morton <akpm@linux-foundation.org> wrote:
 >
-> Applied thanks,
-
-This is a PHY DT binding change. Shouldn't it go in with patch 5, the
-phy driver patch, through the PHY tree instead?
-
-ChenYu
-
-> --srini
+> On Thu, 18 Nov 2021 23:23:39 -0800 Christoph Hellwig <hch@infradead.org> wrote:
 >
-> > ---
-> >   .../devicetree/bindings/phy/mediatek,tphy.yaml | 18 ++++++++++++++++++
-> >   1 file changed, 18 insertions(+)
+> > On Fri, Nov 19, 2021 at 12:11:04PM +0800, Muchun Song wrote:
+> > > +
+> > > +/*
+> > > + * Obtain the private data passed by user through proc_create_data() or
+> > > + * related.
+> > > + */
+> > > +static inline void *pde_data(const struct inode *inode)
+> > > +{
+> > > +   return inode->i_private;
+> > > +}
+> > > +
+> > > +#define PDE_DATA(i)        pde_data(i)
 > >
-> > diff --git a/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml b/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
-> > index 9e6c0f43f1c6..05ee274b4b71 100644
-> > --- a/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
-> > +++ b/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
-> > @@ -160,6 +160,24 @@ patternProperties:
-> >                   - PHY_TYPE_PCIE
-> >                   - PHY_TYPE_SATA
-> >
-> > +      nvmem-cells:
-> > +        items:
-> > +          - description: internal R efuse for U2 PHY or U3/PCIe PHY
-> > +          - description: rx_imp_sel efuse for U3/PCIe PHY
-> > +          - description: tx_imp_sel efuse for U3/PCIe PHY
-> > +        description: |
-> > +          Phandles to nvmem cell that contains the efuse data;
-> > +          Available only for U2 PHY or U3/PCIe PHY of version 2/3, these
-> > +          three items should be provided at the same time for U3/PCIe PHY,
-> > +          when use software to load efuse;
-> > +          If unspecified, will use hardware auto-load efuse.
-> > +
-> > +      nvmem-cell-names:
-> > +        items:
-> > +          - const: intr
-> > +          - const: rx_imp
-> > +          - const: tx_imp
-> > +
-> >         # The following optional vendor properties are only for debug or HQA test
-> >         mediatek,eye-src:
-> >           description:
-> >
+> > What is the point of pde_data?
 >
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+> It's a regular old C function, hence should be in lower case.
+>
+> I assume the upper case thing is a holdover from when it was
+> implemented as a macro.
+>
+> >  If we really think changing to lower
+> > case is worth it (I don't think so, using upper case for getting at
+> > private data is a common idiom in file systems),
+>
+> It is?  How odd.
+>
+> I find the upper-case thing to be actively misleading.  It's mildly
+> surprising to discover that it's actually a plain old C function.
+>
+> > we can just do that
+> > scripted in one go.
+>
+> Yes, I'd like to see a followup patch which converts the current
+> PDE_DATA() callsites.
+>
+
+You mean replace all PDE_DATA with pde_data in another patch?
+
+Thanks.
