@@ -2,120 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D889B45920A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:57:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CDEE4591BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:54:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240232AbhKVP7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:59:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37600 "EHLO
+        id S240140AbhKVP5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:57:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240095AbhKVP6u (ORCPT
+        with ESMTP id S240074AbhKVP5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:58:50 -0500
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30B7C061785
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:55:40 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by michel.telenet-ops.be with bizsmtp
-        id MTuz260074C55Sk06TuzF0; Mon, 22 Nov 2021 16:55:40 +0100
+        Mon, 22 Nov 2021 10:57:13 -0500
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 787DDC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:54:06 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:e4da:38c:79e9:48bf])
+        by baptiste.telenet-ops.be with bizsmtp
+        id MTu6260024yPVd601Tu6vX; Mon, 22 Nov 2021 16:54:06 +0100
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mpBe6-00EL3h-Gu; Mon, 22 Nov 2021 16:54:18 +0100
+        id 1mpBdt-00EL28-Nt; Mon, 22 Nov 2021 16:54:05 +0100
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mpBe5-00HGzF-Od; Mon, 22 Nov 2021 16:54:17 +0100
+        id 1mpBdt-00HGon-3o; Mon, 22 Nov 2021 16:54:05 +0100
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Tony Lindgren <tony@atomide.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Paul Walmsley <paul@pwsan.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Benoit Parrot <bparrot@ti.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Keerthy <j-keerthy@ti.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
-        alsa-devel@alsa-project.org,
+To:     Vinod Koul <vkoul@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc:     dmaengine@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH/RFC 11/17] mmc: sdhci-of-aspeed: Use bitfield helpers
+Subject: [PATCH] dmaengine: stm32-mdma: Use bitfield helpers
 Date:   Mon, 22 Nov 2021 16:54:04 +0100
-Message-Id: <9e5d21f088c3b571d6a6bdeb8899726f51d5bc47.1637592133.git.geert+renesas@glider.be>
+Message-Id: <36ceab242a594233dc7dc6f1dddb4ac32d1e846f.1637593297.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1637592133.git.geert+renesas@glider.be>
-References: <cover.1637592133.git.geert+renesas@glider.be>
+In-Reply-To: <a1445d3abb45cfc95cb1b03180fd53caf122035b.1637593297.git.geert+renesas@glider.be>
+References: <a1445d3abb45cfc95cb1b03180fd53caf122035b.1637593297.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the field_prep() helper, instead open-coding the same operation.
+Use the FIELD_{GET,PREP}() helpers, instead of defining custom macros
+implementing the same operations.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
 Compile-tested only.
-Marked RFC, as this depends on [PATCH 01/17], but follows a different
-path to upstream.
----
- drivers/mmc/host/sdhci-of-aspeed.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-of-aspeed.c
-index 6e4e132903a6346b..26ac73aafb2ed55d 100644
---- a/drivers/mmc/host/sdhci-of-aspeed.c
-+++ b/drivers/mmc/host/sdhci-of-aspeed.c
-@@ -2,6 +2,7 @@
- /* Copyright (C) 2019 ASPEED Technology Inc. */
- /* Copyright (C) 2019 IBM Corp. */
+See "[PATCH 00/17] Non-const bitfield helper conversions"
+(https://lore.kernel.org/r/cover.1637592133.git.geert+renesas@glider.be)
+for background and more conversions.
+---
+ drivers/dma/stm32-mdma.c | 74 +++++++++++++---------------------------
+ 1 file changed, 23 insertions(+), 51 deletions(-)
+
+diff --git a/drivers/dma/stm32-mdma.c b/drivers/dma/stm32-mdma.c
+index d30a4a28d3bfd585..03ff64ff34bf594e 100644
+--- a/drivers/dma/stm32-mdma.c
++++ b/drivers/dma/stm32-mdma.c
+@@ -10,6 +10,7 @@
+  * Inspired by stm32-dma.c and dma-jz4780.c
+  */
  
 +#include <linux/bitfield.h>
  #include <linux/clk.h>
  #include <linux/delay.h>
- #include <linux/device.h>
-@@ -131,8 +132,8 @@ aspeed_sdc_set_phase_tap(const struct aspeed_sdhci_tap_desc *desc,
- {
- 	reg &= ~(desc->enable_mask | desc->tap_mask);
- 	if (enable) {
--		reg |= tap << __ffs(desc->tap_mask);
--		reg |= desc->enable_value << __ffs(desc->enable_mask);
-+		reg |= field_prep(desc->tap_mask, tap);
-+		reg |= field_prep(desc->enable_mask, desc->enable_value);
- 	}
+ #include <linux/dmaengine.h>
+@@ -32,13 +33,6 @@
  
- 	return reg;
+ #include "virt-dma.h"
+ 
+-/*  MDMA Generic getter/setter */
+-#define STM32_MDMA_SHIFT(n)		(ffs(n) - 1)
+-#define STM32_MDMA_SET(n, mask)		(((n) << STM32_MDMA_SHIFT(mask)) & \
+-					 (mask))
+-#define STM32_MDMA_GET(n, mask)		(((n) & (mask)) >> \
+-					 STM32_MDMA_SHIFT(mask))
+-
+ #define STM32_MDMA_GISR0		0x0000 /* MDMA Int Status Reg 1 */
+ #define STM32_MDMA_GISR1		0x0004 /* MDMA Int Status Reg 2 */
+ 
+@@ -80,8 +74,7 @@
+ #define STM32_MDMA_CCR_HEX		BIT(13)
+ #define STM32_MDMA_CCR_BEX		BIT(12)
+ #define STM32_MDMA_CCR_PL_MASK		GENMASK(7, 6)
+-#define STM32_MDMA_CCR_PL(n)		STM32_MDMA_SET(n, \
+-						       STM32_MDMA_CCR_PL_MASK)
++#define STM32_MDMA_CCR_PL(n)		FIELD_PREP(STM32_MDMA_CCR_PL_MASK, (n))
+ #define STM32_MDMA_CCR_TCIE		BIT(5)
+ #define STM32_MDMA_CCR_BTIE		BIT(4)
+ #define STM32_MDMA_CCR_BRTIE		BIT(3)
+@@ -99,48 +92,33 @@
+ #define STM32_MDMA_CTCR_BWM		BIT(31)
+ #define STM32_MDMA_CTCR_SWRM		BIT(30)
+ #define STM32_MDMA_CTCR_TRGM_MSK	GENMASK(29, 28)
+-#define STM32_MDMA_CTCR_TRGM(n)		STM32_MDMA_SET((n), \
+-						       STM32_MDMA_CTCR_TRGM_MSK)
+-#define STM32_MDMA_CTCR_TRGM_GET(n)	STM32_MDMA_GET((n), \
+-						       STM32_MDMA_CTCR_TRGM_MSK)
++#define STM32_MDMA_CTCR_TRGM(n)		FIELD_PREP(STM32_MDMA_CTCR_TRGM_MSK, (n))
++#define STM32_MDMA_CTCR_TRGM_GET(n)	FIELD_GET(STM32_MDMA_CTCR_TRGM_MSK, (n))
+ #define STM32_MDMA_CTCR_PAM_MASK	GENMASK(27, 26)
+-#define STM32_MDMA_CTCR_PAM(n)		STM32_MDMA_SET(n, \
+-						       STM32_MDMA_CTCR_PAM_MASK)
++#define STM32_MDMA_CTCR_PAM(n)		FIELD_PREP(STM32_MDMA_CTCR_PAM_MASK, (n))
+ #define STM32_MDMA_CTCR_PKE		BIT(25)
+ #define STM32_MDMA_CTCR_TLEN_MSK	GENMASK(24, 18)
+-#define STM32_MDMA_CTCR_TLEN(n)		STM32_MDMA_SET((n), \
+-						       STM32_MDMA_CTCR_TLEN_MSK)
+-#define STM32_MDMA_CTCR_TLEN_GET(n)	STM32_MDMA_GET((n), \
+-						       STM32_MDMA_CTCR_TLEN_MSK)
++#define STM32_MDMA_CTCR_TLEN(n)		FIELD_PREP(STM32_MDMA_CTCR_TLEN_MSK, (n))
++#define STM32_MDMA_CTCR_TLEN_GET(n)	FIELD_GET(STM32_MDMA_CTCR_TLEN_MSK, (n))
+ #define STM32_MDMA_CTCR_LEN2_MSK	GENMASK(25, 18)
+-#define STM32_MDMA_CTCR_LEN2(n)		STM32_MDMA_SET((n), \
+-						       STM32_MDMA_CTCR_LEN2_MSK)
+-#define STM32_MDMA_CTCR_LEN2_GET(n)	STM32_MDMA_GET((n), \
+-						       STM32_MDMA_CTCR_LEN2_MSK)
++#define STM32_MDMA_CTCR_LEN2(n)		FIELD_PREP(STM32_MDMA_CTCR_LEN2_MSK, (n))
++#define STM32_MDMA_CTCR_LEN2_GET(n)	FIELD_GET(STM32_MDMA_CTCR_LEN2_MSK, (n))
+ #define STM32_MDMA_CTCR_DBURST_MASK	GENMASK(17, 15)
+-#define STM32_MDMA_CTCR_DBURST(n)	STM32_MDMA_SET(n, \
+-						    STM32_MDMA_CTCR_DBURST_MASK)
++#define STM32_MDMA_CTCR_DBURST(n)	FIELD_PREP(STM32_MDMA_CTCR_DBURST_MASK, (n))
+ #define STM32_MDMA_CTCR_SBURST_MASK	GENMASK(14, 12)
+-#define STM32_MDMA_CTCR_SBURST(n)	STM32_MDMA_SET(n, \
+-						    STM32_MDMA_CTCR_SBURST_MASK)
++#define STM32_MDMA_CTCR_SBURST(n)	FIELD_PREP(STM32_MDMA_CTCR_SBURST_MASK, (n))
+ #define STM32_MDMA_CTCR_DINCOS_MASK	GENMASK(11, 10)
+-#define STM32_MDMA_CTCR_DINCOS(n)	STM32_MDMA_SET((n), \
+-						    STM32_MDMA_CTCR_DINCOS_MASK)
++#define STM32_MDMA_CTCR_DINCOS(n)	FIELD_PREP(STM32_MDMA_CTCR_DINCOS_MASK, (n))
+ #define STM32_MDMA_CTCR_SINCOS_MASK	GENMASK(9, 8)
+-#define STM32_MDMA_CTCR_SINCOS(n)	STM32_MDMA_SET((n), \
+-						    STM32_MDMA_CTCR_SINCOS_MASK)
++#define STM32_MDMA_CTCR_SINCOS(n)	FIELD_PREP(STM32_MDMA_CTCR_SINCOS_MASK, (n))
+ #define STM32_MDMA_CTCR_DSIZE_MASK	GENMASK(7, 6)
+-#define STM32_MDMA_CTCR_DSIZE(n)	STM32_MDMA_SET(n, \
+-						     STM32_MDMA_CTCR_DSIZE_MASK)
++#define STM32_MDMA_CTCR_DSIZE(n)	FIELD_PREP(STM32_MDMA_CTCR_DSIZE_MASK, (n))
+ #define STM32_MDMA_CTCR_SSIZE_MASK	GENMASK(5, 4)
+-#define STM32_MDMA_CTCR_SSIZE(n)	STM32_MDMA_SET(n, \
+-						     STM32_MDMA_CTCR_SSIZE_MASK)
++#define STM32_MDMA_CTCR_SSIZE(n)	FIELD_PREP(STM32_MDMA_CTCR_SSIZE_MASK, (n))
+ #define STM32_MDMA_CTCR_DINC_MASK	GENMASK(3, 2)
+-#define STM32_MDMA_CTCR_DINC(n)		STM32_MDMA_SET((n), \
+-						      STM32_MDMA_CTCR_DINC_MASK)
++#define STM32_MDMA_CTCR_DINC(n)		FIELD_PREP(STM32_MDMA_CTCR_DINC_MASK, (n))
+ #define STM32_MDMA_CTCR_SINC_MASK	GENMASK(1, 0)
+-#define STM32_MDMA_CTCR_SINC(n)		STM32_MDMA_SET((n), \
+-						      STM32_MDMA_CTCR_SINC_MASK)
++#define STM32_MDMA_CTCR_SINC(n)		FIELD_PREP(STM32_MDMA_CTCR_SINC_MASK, (n))
+ #define STM32_MDMA_CTCR_CFG_MASK	(STM32_MDMA_CTCR_SINC_MASK \
+ 					| STM32_MDMA_CTCR_DINC_MASK \
+ 					| STM32_MDMA_CTCR_SINCOS_MASK \
+@@ -151,16 +129,13 @@
+ /* MDMA Channel x block number of data register */
+ #define STM32_MDMA_CBNDTR(x)		(0x54 + 0x40 * (x))
+ #define STM32_MDMA_CBNDTR_BRC_MK	GENMASK(31, 20)
+-#define STM32_MDMA_CBNDTR_BRC(n)	STM32_MDMA_SET(n, \
+-						       STM32_MDMA_CBNDTR_BRC_MK)
+-#define STM32_MDMA_CBNDTR_BRC_GET(n)	STM32_MDMA_GET((n), \
+-						       STM32_MDMA_CBNDTR_BRC_MK)
++#define STM32_MDMA_CBNDTR_BRC(n)	FIELD_PREP(STM32_MDMA_CBNDTR_BRC_MK, (n))
++#define STM32_MDMA_CBNDTR_BRC_GET(n)	FIELD_GET(STM32_MDMA_CBNDTR_BRC_MK, (n))
+ 
+ #define STM32_MDMA_CBNDTR_BRDUM		BIT(19)
+ #define STM32_MDMA_CBNDTR_BRSUM		BIT(18)
+ #define STM32_MDMA_CBNDTR_BNDT_MASK	GENMASK(16, 0)
+-#define STM32_MDMA_CBNDTR_BNDT(n)	STM32_MDMA_SET(n, \
+-						    STM32_MDMA_CBNDTR_BNDT_MASK)
++#define STM32_MDMA_CBNDTR_BNDT(n)	FIELD_PREP(STM32_MDMA_CBNDTR_BNDT_MASK, (n))
+ 
+ /* MDMA Channel x source address register */
+ #define STM32_MDMA_CSAR(x)		(0x58 + 0x40 * (x))
+@@ -171,11 +146,9 @@
+ /* MDMA Channel x block repeat address update register */
+ #define STM32_MDMA_CBRUR(x)		(0x60 + 0x40 * (x))
+ #define STM32_MDMA_CBRUR_DUV_MASK	GENMASK(31, 16)
+-#define STM32_MDMA_CBRUR_DUV(n)		STM32_MDMA_SET(n, \
+-						      STM32_MDMA_CBRUR_DUV_MASK)
++#define STM32_MDMA_CBRUR_DUV(n)		FIELD_PREP(STM32_MDMA_CBRUR_DUV_MASK, (n))
+ #define STM32_MDMA_CBRUR_SUV_MASK	GENMASK(15, 0)
+-#define STM32_MDMA_CBRUR_SUV(n)		STM32_MDMA_SET(n, \
+-						      STM32_MDMA_CBRUR_SUV_MASK)
++#define STM32_MDMA_CBRUR_SUV(n)		FIELD_PREP(STM32_MDMA_CBRUR_SUV_MASK, (n))
+ 
+ /* MDMA Channel x link address register */
+ #define STM32_MDMA_CLAR(x)		(0x64 + 0x40 * (x))
+@@ -185,8 +158,7 @@
+ #define STM32_MDMA_CTBR_DBUS		BIT(17)
+ #define STM32_MDMA_CTBR_SBUS		BIT(16)
+ #define STM32_MDMA_CTBR_TSEL_MASK	GENMASK(7, 0)
+-#define STM32_MDMA_CTBR_TSEL(n)		STM32_MDMA_SET(n, \
+-						      STM32_MDMA_CTBR_TSEL_MASK)
++#define STM32_MDMA_CTBR_TSEL(n)		FIELD_PREP(STM32_MDMA_CTBR_TSEL_MASK, (n))
+ 
+ /* MDMA Channel x mask address register */
+ #define STM32_MDMA_CMAR(x)		(0x70 + 0x40 * (x))
 -- 
 2.25.1
 
