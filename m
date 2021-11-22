@@ -2,84 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B656459062
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 15:40:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB85459065
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 15:41:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239767AbhKVOnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 09:43:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38716 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239770AbhKVOnV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 09:43:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3864A604D1;
-        Mon, 22 Nov 2021 14:40:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637592009;
-        bh=3iFuKliPS+OS4p3jtvyWWwr3LNFHl6PYi7GnohJOviY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=uG/ykPIBpaO2fxZsG4wB2HdsnRCrS+tc0X5Kx8mi/wsan0HF0fAvjDZj7dKTPEmV8
-         hMFcAiRoJkdxXg2rqRelE9YpNtbqv9RLSFNR0JkOtTOizlAfqwtAZ1rKPRnzznoFJz
-         fHDRApQqOTNvOYuFN3TYYLPXL9Fjseb3kROga5jSj1TYnsdsb4z5G5lu93a4Pwd74n
-         soDDE3vA5Lar7J5vH7HjoH+Sb3KRM4rb73RF4TnMSWwSm0kasJTUeKxgrkQR/Jo20R
-         6AIT9GarrmTTEj48LDo+eFBqez84hvruj4t1obXSv/9w/jHCRKHNEHz9DeUa2Gfa+7
-         kal2iX7+nQKJA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 28815609D9;
-        Mon, 22 Nov 2021 14:40:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S239764AbhKVOoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 09:44:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238864AbhKVOoY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 09:44:24 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F2FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 06:41:17 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1mpAVQ-0004oj-6w; Mon, 22 Nov 2021 15:41:16 +0100
+Subject: Re: [PATCH v2] iio: adc: stm32: fix null pointer on defer_probe error
+To:     Olivier Moysan <olivier.moysan@foss.st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Wan Jiabing <wanjiabing@vivo.com>, Xu Wang <vulab@iscas.ac.cn>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+References: <20211122143809.2332-1-olivier.moysan@foss.st.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <2ca4ad17-d7e5-f4be-1596-7c7de0fa5661@pengutronix.de>
+Date:   Mon, 22 Nov 2021 15:41:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 net] net: stmmac: retain PTP clock time during
- SIOCSHWTSTAMP ioctls
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163759200916.2046.16368068009111419388.git-patchwork-notify@kernel.org>
-Date:   Mon, 22 Nov 2021 14:40:09 +0000
-References: <20211121175704.6813-1-vladimir.oltean@nxp.com>
-In-Reply-To: <20211121175704.6813-1-vladimir.oltean@nxp.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     netdev@vger.kernel.org, peppe.cavallaro@st.com,
-        alexandre.torgue@foss.st.com, joabreu@synopsys.com,
-        davem@davemloft.net, kuba@kernel.org, mcoquelin.stm32@gmail.com,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        xiaoliang.yang_1@nxp.com, yannick.vignon@nxp.com,
-        m.olbrich@pengutronix.de, a.fatoum@pengutronix.de,
-        h.assmann@pengutronix.de, kernel@pengutronix.de,
-        kurt@linutronix.de, richardcochran@gmail.com
+In-Reply-To: <20211122143809.2332-1-olivier.moysan@foss.st.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
-
-On Sun, 21 Nov 2021 19:57:04 +0200 you wrote:
-> From: Holger Assmann <h.assmann@pengutronix.de>
+On 22.11.21 15:38, Olivier Moysan wrote:
+> dev_err_probe() calls __device_set_deferred_probe_reason()
+> on -EPROBE_DEFER error. If device pointer to driver core
+> private structure is not initialized, an null pointer error occurs.
+> This pointer is set on iio_device_register() call for iio device.
 > 
-> Currently, when user space emits SIOCSHWTSTAMP ioctl calls such as
-> enabling/disabling timestamping or changing filter settings, the driver
-> reads the current CLOCK_REALTIME value and programming this into the
-> NIC's hardware clock. This might be necessary during system
-> initialization, but at runtime, when the PTP clock has already been
-> synchronized to a grandmaster, a reset of the timestamp settings might
-> result in a clock jump. Furthermore, if the clock is also controlled by
-> phc2sys in automatic mode (where the UTC offset is queried from ptp4l),
-> that UTC-to-TAI offset (currently 37 seconds in 2021) would be
-> temporarily reset to 0, and it would take a long time for phc2sys to
-> readjust so that CLOCK_REALTIME and the PHC are apart by 37 seconds
-> again.
+> dev_err_probe() must be called with the device which is probing.
+> Replace iio device by its parent device.
 > 
-> [...]
+> Fixes: 0e346b2cfa85 ("iio: adc: stm32-adc: add vrefint calibration support")
+> 
+> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
 
-Here is the summary with links:
-  - [v2,net] net: stmmac: retain PTP clock time during SIOCSHWTSTAMP ioctls
-    https://git.kernel.org/netdev/net/c/a6da2bbb0005
+Reviewed-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-You are awesome, thank you!
+> ---
+> Changes in v2:
+> - Use parent device from indio_dev instead of private structure
+> ---
+>  drivers/iio/adc/stm32-adc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+> index 7f1fb36c747c..341afdd342cc 100644
+> --- a/drivers/iio/adc/stm32-adc.c
+> +++ b/drivers/iio/adc/stm32-adc.c
+> @@ -1986,7 +1986,7 @@ static int stm32_adc_populate_int_ch(struct iio_dev *indio_dev, const char *ch_n
+>  			/* Get calibration data for vrefint channel */
+>  			ret = nvmem_cell_read_u16(&indio_dev->dev, "vrefint", &vrefint);
+>  			if (ret && ret != -ENOENT) {
+> -				return dev_err_probe(&indio_dev->dev, ret,
+> +				return dev_err_probe(indio_dev->dev.parent, ret,
+>  						     "nvmem access error\n");
+>  			}
+>  			if (ret == -ENOENT)
+> 
+
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
