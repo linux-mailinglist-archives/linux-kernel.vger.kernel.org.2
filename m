@@ -2,101 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA31E458E11
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 13:15:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA38458E06
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 13:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239473AbhKVMSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 07:18:30 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:55792 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236711AbhKVMS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 07:18:29 -0500
-Received: from localhost.localdomain.localdomain (unknown [10.2.5.46])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx79PDiZthKyUAAA--.851S3;
-        Mon, 22 Nov 2021 20:15:04 +0800 (CST)
-From:   Yinbo Zhu <zhuyinbo@loongson.cn>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Cc:     zhuyinbo@loongson.cn
-Subject: [PATCH v1 2/2] net: mdio: fixup ethernet phy module auto-load function
-Date:   Mon, 22 Nov 2021 20:14:58 +0800
-Message-Id: <1637583298-20321-2-git-send-email-zhuyinbo@loongson.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1637583298-20321-1-git-send-email-zhuyinbo@loongson.cn>
-References: <1637583298-20321-1-git-send-email-zhuyinbo@loongson.cn>
-X-CM-TRANSID: AQAAf9Dx79PDiZthKyUAAA--.851S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxJr1DXFyxJF43WFyfWr1rZwb_yoW8GFyUpF
-        sYyFyrtrWUXwsrWws5Cw4DGF1F93y0y3srGrW0939Y9rs8Jry0qFWfKFyjvF15GFWrZ3W7
-        Xay0qF18XF97ArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUPq14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
-        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84
-        ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
-        xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-        vE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
-        r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04
-        v7MxkIecxEwVCm-wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s02
-        6c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw
-        0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvE
-        c7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14
-        v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x
-        0JU2_M3UUUUU=
-X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
+        id S239466AbhKVMJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 07:09:59 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15847 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230425AbhKVMJ5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 07:09:57 -0500
+Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HyQwc0PV9z9170;
+        Mon, 22 Nov 2021 20:06:24 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 22 Nov 2021 20:06:49 +0800
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 22 Nov 2021 20:06:48 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-s390@vger.kernel.org>,
+        <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Alexander Potapenko <glider@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Yongqiang Liu <liuyongqiang13@huawei.com>
+Subject: [PATCH] mm: Delay kmemleak object creation of module_alloc()
+Date:   Mon, 22 Nov 2021 20:17:42 +0800
+Message-ID: <20211122121742.142203-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-the phy_id is only phy identifier, that phy module auto-load function
-should according the phy_id event rather than other information, this
-patch is remove other unnecessary information and add phy_id event in
-mdio_uevent function and ethernet phy module auto-load function will
-work well.
+Yongqiang reports a kmemleak panic when module ismod/rmmod with KASAN
+enabled[1] on x86.
 
-Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
+The module allocate memory, and it's kmemleak_object is created successfully,
+but the KASAN shadow memory of module allocation is not ready, when kmemleak
+scan the module's pointer, it will panic due to no shadow memory.
+
+module_alloc
+  __vmalloc_node_range
+    kmemleak_vmalloc
+				kmemleak_scan
+				  update_checksum
+  kasan_module_alloc
+    kmemleak_ignore
+
+The bug should exist on ARM64/S390 too, add a VM_DELAY_KMEMLEAK flags, delay
+vmalloc'ed object register of kmemleak in module_alloc().
+
+[1] https://lore.kernel.org/all/6d41e2b9-4692-5ec4-b1cd-cbe29ae89739@huawei.com/
+Reported-by: Yongqiang Liu <liuyongqiang13@huawei.com>
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- drivers/net/phy/mdio_bus.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ arch/arm64/kernel/module.c | 4 ++--
+ arch/s390/kernel/module.c  | 5 +++--
+ arch/x86/kernel/module.c   | 7 ++++---
+ include/linux/kasan.h      | 4 ++--
+ include/linux/vmalloc.h    | 7 +++++++
+ mm/kasan/shadow.c          | 9 +++++++--
+ mm/vmalloc.c               | 3 ++-
+ 7 files changed, 27 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
-index 6865d93..999f0d4 100644
---- a/drivers/net/phy/mdio_bus.c
-+++ b/drivers/net/phy/mdio_bus.c
-@@ -962,12 +962,12 @@ static int mdio_bus_match(struct device *dev, struct device_driver *drv)
+diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
+index b5ec010c481f..e6da010716d0 100644
+--- a/arch/arm64/kernel/module.c
++++ b/arch/arm64/kernel/module.c
+@@ -36,7 +36,7 @@ void *module_alloc(unsigned long size)
+ 		module_alloc_end = MODULES_END;
  
- static int mdio_uevent(struct device *dev, struct kobj_uevent_env *env)
+ 	p = __vmalloc_node_range(size, MODULE_ALIGN, module_alloc_base,
+-				module_alloc_end, gfp_mask, PAGE_KERNEL, 0,
++				module_alloc_end, gfp_mask, PAGE_KERNEL, VM_DELAY_KMEMLEAK,
+ 				NUMA_NO_NODE, __builtin_return_address(0));
+ 
+ 	if (!p && IS_ENABLED(CONFIG_ARM64_MODULE_PLTS) &&
+@@ -58,7 +58,7 @@ void *module_alloc(unsigned long size)
+ 				PAGE_KERNEL, 0, NUMA_NO_NODE,
+ 				__builtin_return_address(0));
+ 
+-	if (p && (kasan_module_alloc(p, size) < 0)) {
++	if (p && (kasan_module_alloc(p, size, gfp_mask) < 0)) {
+ 		vfree(p);
+ 		return NULL;
+ 	}
+diff --git a/arch/s390/kernel/module.c b/arch/s390/kernel/module.c
+index b01ba460b7ca..8d66a93562ca 100644
+--- a/arch/s390/kernel/module.c
++++ b/arch/s390/kernel/module.c
+@@ -37,14 +37,15 @@
+ 
+ void *module_alloc(unsigned long size)
  {
--	int rc;
-+	struct phy_device *pdev;
++	gfp_t gfp_mask = GFP_KERNEL;
+ 	void *p;
  
--	/* Some devices have extra OF data and an OF-style MODALIAS */
--	rc = of_device_uevent_modalias(dev, env);
--	if (rc != -ENODEV)
--		return rc;
-+	pdev = to_phy_device(dev);
+ 	if (PAGE_ALIGN(size) > MODULES_LEN)
+ 		return NULL;
+ 	p = __vmalloc_node_range(size, MODULE_ALIGN, MODULES_VADDR, MODULES_END,
+-				 GFP_KERNEL, PAGE_KERNEL_EXEC, 0, NUMA_NO_NODE,
++				 gfp_mask, PAGE_KERNEL_EXEC, VM_DELAY_KMEMLEAK, NUMA_NO_NODE,
+ 				 __builtin_return_address(0));
+-	if (p && (kasan_module_alloc(p, size) < 0)) {
++	if (p && (kasan_module_alloc(p, size, gfp_mask) < 0)) {
+ 		vfree(p);
+ 		return NULL;
+ 	}
+diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
+index 169fb6f4cd2e..ff134d0f1ca1 100644
+--- a/arch/x86/kernel/module.c
++++ b/arch/x86/kernel/module.c
+@@ -67,6 +67,7 @@ static unsigned long int get_module_load_offset(void)
+ 
+ void *module_alloc(unsigned long size)
+ {
++	gfp_t gfp_mask = GFP_KERNEL;
+ 	void *p;
+ 
+ 	if (PAGE_ALIGN(size) > MODULES_LEN)
+@@ -74,10 +75,10 @@ void *module_alloc(unsigned long size)
+ 
+ 	p = __vmalloc_node_range(size, MODULE_ALIGN,
+ 				    MODULES_VADDR + get_module_load_offset(),
+-				    MODULES_END, GFP_KERNEL,
+-				    PAGE_KERNEL, 0, NUMA_NO_NODE,
++				    MODULES_END, gfp_mask,
++				    PAGE_KERNEL, VM_DELAY_KMEMLEAK, NUMA_NO_NODE,
+ 				    __builtin_return_address(0));
+-	if (p && (kasan_module_alloc(p, size) < 0)) {
++	if (p && (kasan_module_alloc(p, size, gfp_mask) < 0)) {
+ 		vfree(p);
+ 		return NULL;
+ 	}
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index d8783b682669..89c99e5e67de 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -474,12 +474,12 @@ static inline void kasan_populate_early_vm_area_shadow(void *start,
+  * allocations with real shadow memory. With KASAN vmalloc, the special
+  * case is unnecessary, as the work is handled in the generic case.
+  */
+-int kasan_module_alloc(void *addr, size_t size);
++int kasan_module_alloc(void *addr, size_t size, gfp_t gfp_mask);
+ void kasan_free_shadow(const struct vm_struct *vm);
+ 
+ #else /* (CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS) && !CONFIG_KASAN_VMALLOC */
+ 
+-static inline int kasan_module_alloc(void *addr, size_t size) { return 0; }
++static inline int kasan_module_alloc(void *addr, size_t size, gfp_t gfp_mask) { return 0; }
+ static inline void kasan_free_shadow(const struct vm_struct *vm) {}
+ 
+ #endif /* (CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS) && !CONFIG_KASAN_VMALLOC */
+diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+index 6e022cc712e6..56d2b7828b31 100644
+--- a/include/linux/vmalloc.h
++++ b/include/linux/vmalloc.h
+@@ -28,6 +28,13 @@ struct notifier_block;		/* in notifier.h */
+ #define VM_MAP_PUT_PAGES	0x00000200	/* put pages and free array in vfree */
+ #define VM_NO_HUGE_VMAP		0x00000400	/* force PAGE_SIZE pte mapping */
+ 
++#if defined(CONFIG_KASAN) && (defined(CONFIG_KASAN_GENERIC) || \
++	defined(CONFIG_KASAN_SW_TAGS)) && !defined(CONFIG_KASAN_VMALLOC)
++#define VM_DELAY_KMEMLEAK	0x00000800	/* delay kmemleak object create */
++#else
++#define VM_DELAY_KMEMLEAK	0
++#endif
 +
-+	if (add_uevent_var(env, "MODALIAS=mdio:p%08X", pdev->phy_id))
-+		return -ENOMEM;
+ /*
+  * VM_KASAN is used slightly differently depending on CONFIG_KASAN_VMALLOC.
+  *
+diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
+index 4a4929b29a23..6ca43b43419b 100644
+--- a/mm/kasan/shadow.c
++++ b/mm/kasan/shadow.c
+@@ -498,7 +498,7 @@ void kasan_release_vmalloc(unsigned long start, unsigned long end,
  
- 	return 0;
- }
-@@ -991,7 +991,7 @@ static int mdio_uevent(struct device *dev, struct kobj_uevent_env *env)
- };
+ #else /* CONFIG_KASAN_VMALLOC */
  
- struct bus_type mdio_bus_type = {
--	.name		= "mdio_bus",
-+	.name		= "mdio",
- 	.dev_groups	= mdio_bus_dev_groups,
- 	.match		= mdio_bus_match,
- 	.uevent		= mdio_uevent,
+-int kasan_module_alloc(void *addr, size_t size)
++int kasan_module_alloc(void *addr, size_t size, gfp_mask)
+ {
+ 	void *ret;
+ 	size_t scaled_size;
+@@ -520,9 +520,14 @@ int kasan_module_alloc(void *addr, size_t size)
+ 			__builtin_return_address(0));
+ 
+ 	if (ret) {
++		struct vm_struct *vm = find_vm_area(addr);
+ 		__memset(ret, KASAN_SHADOW_INIT, shadow_size);
+-		find_vm_area(addr)->flags |= VM_KASAN;
++		vm->flags |= VM_KASAN;
+ 		kmemleak_ignore(ret);
++
++		if (vm->flags | VM_DELAY_KMEMLEAK)
++			kmemleak_vmalloc(vm, size, gfp_mask);
++
+ 		return 0;
+ 	}
+ 
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index d2a00ad4e1dd..23c595b15839 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -3074,7 +3074,8 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
+ 	clear_vm_uninitialized_flag(area);
+ 
+ 	size = PAGE_ALIGN(size);
+-	kmemleak_vmalloc(area, size, gfp_mask);
++	if (!(vm_flags & VM_DELAY_KMEMLEAK))
++		kmemleak_vmalloc(area, size, gfp_mask);
+ 
+ 	return addr;
+ 
 -- 
-1.8.3.1
+2.26.2
 
