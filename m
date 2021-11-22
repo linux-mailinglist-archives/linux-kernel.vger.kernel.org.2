@@ -2,487 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDAED459540
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 20:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1F5459541
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 20:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233926AbhKVTFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 14:05:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52656 "EHLO
+        id S234897AbhKVTGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 14:06:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231959AbhKVTFl (ORCPT
+        with ESMTP id S231959AbhKVTGj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 14:05:41 -0500
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DDD7C06173E
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 11:02:34 -0800 (PST)
-Received: by mail-qt1-x833.google.com with SMTP id p19so17488012qtw.12
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 11:02:34 -0800 (PST)
+        Mon, 22 Nov 2021 14:06:39 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C66C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 11:03:32 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id y12so81354835eda.12
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 11:03:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kBpXytAzQOrR99XHaH1+0ENKC++IaMvvkd2HL9FLmDM=;
-        b=v4W7QOGy8F2YhyeuUeOPOePlsyW9AUPUc+OG+/EFR1YBVqvGfmpMJFIsPLMEndCtVI
-         YGda/bGcwaUcyI0JWsM4rKcubyDgi4I0iyQBMsWGKBXLNBliRr8iIWXvz5DgvnOVc6AO
-         N9nurGC8AIEHlRZKjqWi/tRgLw3iFy3ObbyR47QydRuQ564Kzw7FSMzupo+JtHYBQeCV
-         /l85kO9G1yvlik2h4emwGGNzpPjaPspD5BiOmiiMW/1vBvU5Rh6Ab594iaeC8xDACDD1
-         ptNT4ZP0jyPMI/J9qEbgkTb1nMF8K9HMxvdAY/oX+wdooZj6o5NSDMsahgAHlykYgTm5
-         P1OQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=88MiCrNUO1fu1ZV77EpG2zm8wlaV03pygYzQ5K3Jbkc=;
+        b=hvC5Ebadv1xLbNrESA8R/fltWWJ2K40QDdsBlrqtbua2y0lC062juL6avNj4AbPRv5
+         au08LCuSjgOvQhJykgwXhKHor2m6z0CEK83nfNX26yJwZRzqgjFvLBh1HXO7OEl3u43G
+         gApz2Mwdcg9F9kU/HuxvTWVUyPVT4F7mXLd4bclmFNqHxi0c8tbbjdFWAuysG0yIba7s
+         Wah+MwsqyAi3e6JDBYRNmyucTe8kmBa72/bUSViYHQQq3xhjasPMqNxBXafKJeecgdfy
+         cHASNJvd91nSanmXZJ9+iHvCRd33HFkyv1ndhZlgihv67Myj1lqG2XmeJFps4wxNmJ4R
+         kFEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kBpXytAzQOrR99XHaH1+0ENKC++IaMvvkd2HL9FLmDM=;
-        b=XS+kGe+XZBA8cNm6c4bCmuWsxPtdkogeC3fn73C3wlupM42ihDt7ROtzTNxyd3AW2l
-         AwCdx9EILvmd0DWs8Lc9Jiqtncs3V3QK9jv3NuSyRJd5DmRLitPCG7UUuVhl2kJqaBkE
-         IDvEp9UmVD5kEbmT2CFqQJmSqE41OZ1v5+7+YVrDgJaDa21JK4N6IeDyQIlNhEDb5D+Z
-         Ww7NbBoSiePkriwn0Kcc20qCZbZs5LoWmMbELrC6Fn2L0aJeWHDqNAqzr++pQxLTJKjW
-         zQOnAY6WM/RN+I8WpWWxx/6SYVXKuw/G0RyvGpppsdPCrie4/LLYzgXGumLlzO77+qVo
-         1sIg==
-X-Gm-Message-State: AOAM5324smuV6XSvzSsLLKxkBPxaoL9Uyoh1USrTt4F56pIvAPewllTo
-        uqBFROgriRhb4WUWwiRYsM3iFsWSiNksuw==
-X-Google-Smtp-Source: ABdhPJwcZtekkNIUs+HfPqaFBu7jzNmcir8UQo38Go9pn5lmznRdmIK3c8wP6+K/OuiqwqmnWNOBXA==
-X-Received: by 2002:ac8:7e83:: with SMTP id w3mr34592572qtj.160.1637607753338;
-        Mon, 22 Nov 2021 11:02:33 -0800 (PST)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id x4sm4988078qtw.44.2021.11.22.11.02.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Nov 2021 11:02:32 -0800 (PST)
-Subject: Re: [PATCH] arm64: dts: qcom: sm8250: Add CPU opp tables
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211110215330.74257-1-thara.gopinath@linaro.org>
- <9bb87351-9a1f-6171-5788-92c41075869b@linaro.org>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <033ff218-bdae-0759-2837-38863341f62a@linaro.org>
-Date:   Mon, 22 Nov 2021 14:02:32 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=88MiCrNUO1fu1ZV77EpG2zm8wlaV03pygYzQ5K3Jbkc=;
+        b=FAisfAsaZgXq/7/oagSAJ5y2Pe7NLMVAfQHmcMupJWFqHye4YrjrhF9Jm+uDMpSvPo
+         7fGym0dbtt1fDZJzSkNde+aU1VVu6CSWOzwB8L4duAobhooZ+7YCwabGmSfMaVRK10Mm
+         GZ7KaChR5Uu+tl/ByQv7YHRFZEh+KcFrfA1mQIEJ6mlmcuJwHzOehQiQsCNWmYQ5BVib
+         O0dRa+AaZdCs/9zmj9ow/EjiWa5KUpH5wqzNywbmEModw+pPHUgiebNXPlEaPK8i9jpz
+         kWMJtWuR/2JcB6098G9/Ss9xx9YRVQy9m5DKyVtFwYRtaYhxOUR9Tbx/DJUQZG83vHoB
+         +OpA==
+X-Gm-Message-State: AOAM5323tAJu8UT1bWImTp99EHeL0W8L7hpHQtees7xjezVXXeg8OOTf
+        uTzypIxzVwlbvLEBXtcB087Pndfjx7p/1SppRFk=
+X-Google-Smtp-Source: ABdhPJyAEj062POSm32f+YSEoYXryO5reyMb9qNmunkYCkGfTlhed21lrKBgQfDlcBipKqlNo5wK9Rlm+YMWfM/mXM0=
+X-Received: by 2002:a50:a6ca:: with SMTP id f10mr66794394edc.81.1637607811163;
+ Mon, 22 Nov 2021 11:03:31 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <9bb87351-9a1f-6171-5788-92c41075869b@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211116193247.21102-1-shy828301@gmail.com> <CAHbLzkooDg-KbtBxofBYFvNF8nN=vTCwb6+srYZOHqqBLH58Zg@mail.gmail.com>
+ <CAHk-=whDwowy+Q_M74f=0AFW3izcqU9U1OL2agyOF7=4fvPefQ@mail.gmail.com>
+In-Reply-To: <CAHk-=whDwowy+Q_M74f=0AFW3izcqU9U1OL2agyOF7=4fvPefQ@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 22 Nov 2021 11:03:19 -0800
+Message-ID: <CAHbLzkrXdknzNmBWCnTPS0ey1vnhMB5-hPPDTORvnc2dMXwkKw@mail.gmail.com>
+Subject: Re: [v2 UPDATE PATCH] mm: shmem: don't truncate page if memory
+ failure happens
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
+        Peter Xu <peterx@redhat.com>,
+        Ajay Garg <ajaygargnsit@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Nov 20, 2021 at 2:13 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Thu, Nov 18, 2021 at 10:55 AM Yang Shi <shy828301@gmail.com> wrote:
+> >
+> > Does this version look good to you? Would you please consider to apply
+> > this to -rc2? Or you prefer to get it from Andrew?
+>
+> I don't see anything wrong, but yes, I'd prefer this to go through the
+> -mm tree and get at least that minimal testing (and maybe extra eyes)
 
+Thanks, it has been in the -mm tree.
 
-On 11/19/21 8:23 PM, Dmitry Baryshkov wrote:
-> On 11/11/2021 00:53, Thara Gopinath wrote:
->> Add OPP tables to scale DDR and L3 with CPUs for SM8250 SoCs.
->>
->> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-> 
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
-Thanks!
-
--- 
-Warm Regards
-Thara (She/Her/Hers)
-> 
-> 
->> ---
->>   arch/arm64/boot/dts/qcom/sm8250.dtsi | 314 +++++++++++++++++++++++++++
->>   1 file changed, 314 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi 
->> b/arch/arm64/boot/dts/qcom/sm8250.dtsi
->> index d12e4cbfc852..7c35415a05be 100644
->> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
->> @@ -100,6 +100,9 @@ CPU0: cpu@0 {
->>               dynamic-power-coefficient = <205>;
->>               next-level-cache = <&L2_0>;
->>               qcom,freq-domain = <&cpufreq_hw 0>;
->> +            operating-points-v2 = <&cpu0_opp_table>;
->> +            interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt 
->> SLAVE_EBI_CH0>,
->> +                    <&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
->>               #cooling-cells = <2>;
->>               L2_0: l2-cache {
->>                   compatible = "cache";
->> @@ -119,6 +122,9 @@ CPU1: cpu@100 {
->>               dynamic-power-coefficient = <205>;
->>               next-level-cache = <&L2_100>;
->>               qcom,freq-domain = <&cpufreq_hw 0>;
->> +            operating-points-v2 = <&cpu0_opp_table>;
->> +            interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt 
->> SLAVE_EBI_CH0>,
->> +                    <&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
->>               #cooling-cells = <2>;
->>               L2_100: l2-cache {
->>                   compatible = "cache";
->> @@ -135,6 +141,9 @@ CPU2: cpu@200 {
->>               dynamic-power-coefficient = <205>;
->>               next-level-cache = <&L2_200>;
->>               qcom,freq-domain = <&cpufreq_hw 0>;
->> +            operating-points-v2 = <&cpu0_opp_table>;
->> +            interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt 
->> SLAVE_EBI_CH0>,
->> +                    <&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
->>               #cooling-cells = <2>;
->>               L2_200: l2-cache {
->>                   compatible = "cache";
->> @@ -151,6 +160,9 @@ CPU3: cpu@300 {
->>               dynamic-power-coefficient = <205>;
->>               next-level-cache = <&L2_300>;
->>               qcom,freq-domain = <&cpufreq_hw 0>;
->> +            operating-points-v2 = <&cpu0_opp_table>;
->> +            interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt 
->> SLAVE_EBI_CH0>,
->> +                    <&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
->>               #cooling-cells = <2>;
->>               L2_300: l2-cache {
->>                   compatible = "cache";
->> @@ -167,6 +179,9 @@ CPU4: cpu@400 {
->>               dynamic-power-coefficient = <379>;
->>               next-level-cache = <&L2_400>;
->>               qcom,freq-domain = <&cpufreq_hw 1>;
->> +            operating-points-v2 = <&cpu4_opp_table>;
->> +            interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt 
->> SLAVE_EBI_CH0>,
->> +                    <&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
->>               #cooling-cells = <2>;
->>               L2_400: l2-cache {
->>                   compatible = "cache";
->> @@ -183,6 +198,9 @@ CPU5: cpu@500 {
->>               dynamic-power-coefficient = <379>;
->>               next-level-cache = <&L2_500>;
->>               qcom,freq-domain = <&cpufreq_hw 1>;
->> +            operating-points-v2 = <&cpu4_opp_table>;
->> +            interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt 
->> SLAVE_EBI_CH0>,
->> +                    <&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
->>               #cooling-cells = <2>;
->>               L2_500: l2-cache {
->>                   compatible = "cache";
->> @@ -200,6 +218,9 @@ CPU6: cpu@600 {
->>               dynamic-power-coefficient = <379>;
->>               next-level-cache = <&L2_600>;
->>               qcom,freq-domain = <&cpufreq_hw 1>;
->> +            operating-points-v2 = <&cpu4_opp_table>;
->> +            interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt 
->> SLAVE_EBI_CH0>,
->> +                    <&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
->>               #cooling-cells = <2>;
->>               L2_600: l2-cache {
->>                   compatible = "cache";
->> @@ -216,6 +237,9 @@ CPU7: cpu@700 {
->>               dynamic-power-coefficient = <444>;
->>               next-level-cache = <&L2_700>;
->>               qcom,freq-domain = <&cpufreq_hw 2>;
->> +            operating-points-v2 = <&cpu7_opp_table>;
->> +            interconnects = <&gem_noc MASTER_AMPSS_M0 &mc_virt 
->> SLAVE_EBI_CH0>,
->> +                    <&epss_l3 MASTER_OSM_L3_APPS &epss_l3 SLAVE_OSM_L3>;
->>               #cooling-cells = <2>;
->>               L2_700: l2-cache {
->>                   compatible = "cache";
->> @@ -260,6 +284,296 @@ core7 {
->>           };
->>       };
->> +    cpu0_opp_table: cpu0_opp_table {
->> +        compatible = "operating-points-v2";
->> +        opp-shared;
->> +
->> +        cpu0_opp1: opp-300000000 {
->> +            opp-hz = /bits/ 64 <300000000>;
->> +            opp-peak-kBps = <800000 9600000>;
->> +        };
->> +
->> +        cpu0_opp2: opp-403200000 {
->> +            opp-hz = /bits/ 64 <403200000>;
->> +            opp-peak-kBps = <800000 9600000>;
->> +        };
->> +
->> +        cpu0_opp3: opp-518400000 {
->> +            opp-hz = /bits/ 64 <518400000>;
->> +            opp-peak-kBps = <800000 16588800>;
->> +        };
->> +
->> +        cpu0_opp4: opp-614400000 {
->> +            opp-hz = /bits/ 64 <614400000>;
->> +            opp-peak-kBps = <800000 16588800>;
->> +        };
->> +
->> +        cpu0_opp5: opp-691200000 {
->> +            opp-hz = /bits/ 64 <691200000>;
->> +            opp-peak-kBps = <800000 19660800>;
->> +        };
->> +
->> +        cpu0_opp6: opp-787200000 {
->> +            opp-hz = /bits/ 64 <787200000>;
->> +            opp-peak-kBps = <1804000 19660800>;
->> +        };
->> +
->> +        cpu0_opp7: opp-883200000 {
->> +            opp-hz = /bits/ 64 <883200000>;
->> +            opp-peak-kBps = <1804000 23347200>;
->> +        };
->> +
->> +        cpu0_opp8: opp-979200000 {
->> +            opp-hz = /bits/ 64 <979200000>;
->> +            opp-peak-kBps = <1804000 26419200>;
->> +        };
->> +
->> +        cpu0_opp9: opp-1075200000 {
->> +            opp-hz = /bits/ 64 <1075200000>;
->> +            opp-peak-kBps = <1804000 29491200>;
->> +        };
->> +
->> +        cpu0_opp10: opp-1171200000 {
->> +            opp-hz = /bits/ 64 <1171200000>;
->> +            opp-peak-kBps = <1804000 32563200>;
->> +        };
->> +
->> +        cpu0_opp11: opp-1248000000 {
->> +            opp-hz = /bits/ 64 <1248000000>;
->> +            opp-peak-kBps = <1804000 36249600>;
->> +        };
->> +
->> +        cpu0_opp12: opp-1344000000 {
->> +            opp-hz = /bits/ 64 <1344000000>;
->> +            opp-peak-kBps = <2188000 36249600>;
->> +        };
->> +
->> +        cpu0_opp13: opp-1420800000 {
->> +            opp-hz = /bits/ 64 <1420800000>;
->> +            opp-peak-kBps = <2188000 39321600>;
->> +        };
->> +
->> +        cpu0_opp14: opp-1516800000 {
->> +            opp-hz = /bits/ 64 <1516800000>;
->> +            opp-peak-kBps = <3072000 42393600>;
->> +        };
->> +
->> +        cpu0_opp15: opp-1612800000 {
->> +            opp-hz = /bits/ 64 <1612800000>;
->> +            opp-peak-kBps = <3072000 42393600>;
->> +        };
->> +
->> +        cpu0_opp16: opp-1708800000 {
->> +            opp-hz = /bits/ 64 <1708800000>;
->> +            opp-peak-kBps = <4068000 42393600>;
->> +        };
->> +
->> +        cpu0_opp17: opp-1804800000 {
->> +            opp-hz = /bits/ 64 <1804800000>;
->> +            opp-peak-kBps = <4068000 42393600>;
->> +        };
->> +    };
->> +
->> +    cpu4_opp_table: cpu4_opp_table {
->> +        compatible = "operating-points-v2";
->> +        opp-shared;
->> +
->> +        cpu4_opp1: opp-710400000 {
->> +            opp-hz = /bits/ 64 <710400000>;
->> +            opp-peak-kBps = <1804000 19660800>;
->> +        };
->> +
->> +        cpu4_opp2: opp-825600000 {
->> +            opp-hz = /bits/ 64 <825600000>;
->> +            opp-peak-kBps = <2188000 23347200>;
->> +        };
->> +
->> +        cpu4_opp3: opp-940800000 {
->> +            opp-hz = /bits/ 64 <940800000>;
->> +            opp-peak-kBps = <2188000 26419200>;
->> +        };
->> +
->> +        cpu4_opp4: opp-1056000000 {
->> +            opp-hz = /bits/ 64 <1056000000>;
->> +            opp-peak-kBps = <3072000 26419200>;
->> +        };
->> +
->> +        cpu4_opp5: opp-1171200000 {
->> +            opp-hz = /bits/ 64 <1171200000>;
->> +            opp-peak-kBps = <3072000 29491200>;
->> +        };
->> +
->> +        cpu4_opp6: opp-1286400000 {
->> +            opp-hz = /bits/ 64 <1286400000>;
->> +            opp-peak-kBps = <4068000 29491200>;
->> +        };
->> +
->> +        cpu4_opp7: opp-1382400000 {
->> +            opp-hz = /bits/ 64 <1382400000>;
->> +            opp-peak-kBps = <4068000 32563200>;
->> +        };
->> +
->> +        cpu4_opp8: opp-1478400000 {
->> +            opp-hz = /bits/ 64 <1478400000>;
->> +            opp-peak-kBps = <4068000 32563200>;
->> +        };
->> +
->> +        cpu4_opp9: opp-1574400000 {
->> +            opp-hz = /bits/ 64 <1574400000>;
->> +            opp-peak-kBps = <5412000 39321600>;
->> +        };
->> +
->> +        cpu4_opp10: opp-1670400000 {
->> +            opp-hz = /bits/ 64 <1670400000>;
->> +            opp-peak-kBps = <5412000 42393600>;
->> +        };
->> +
->> +        cpu4_opp11: opp-1766400000 {
->> +            opp-hz = /bits/ 64 <1766400000>;
->> +            opp-peak-kBps = <5412000 45465600>;
->> +        };
->> +
->> +        cpu4_opp12: opp-1862400000 {
->> +            opp-hz = /bits/ 64 <1862400000>;
->> +            opp-peak-kBps = <6220000 45465600>;
->> +        };
->> +
->> +        cpu4_opp13: opp-1958400000 {
->> +            opp-hz = /bits/ 64 <1958400000>;
->> +            opp-peak-kBps = <6220000 48537600>;
->> +        };
->> +
->> +        cpu4_opp14: opp-2054400000 {
->> +            opp-hz = /bits/ 64 <2054400000>;
->> +            opp-peak-kBps = <7216000 48537600>;
->> +        };
->> +
->> +        cpu4_opp15: opp-2150400000 {
->> +            opp-hz = /bits/ 64 <2150400000>;
->> +            opp-peak-kBps = <7216000 51609600>;
->> +        };
->> +
->> +        cpu4_opp16: opp-2246400000 {
->> +            opp-hz = /bits/ 64 <2246400000>;
->> +            opp-peak-kBps = <7216000 51609600>;
->> +        };
->> +
->> +        cpu4_opp17: opp-2342400000 {
->> +            opp-hz = /bits/ 64 <2342400000>;
->> +            opp-peak-kBps = <8368000 51609600>;
->> +        };
->> +
->> +        cpu4_opp18: opp-2419200000 {
->> +            opp-hz = /bits/ 64 <2419200000>;
->> +            opp-peak-kBps = <8368000 51609600>;
->> +        };
->> +    };
->> +
->> +    cpu7_opp_table: cpu7_opp_table {
->> +        compatible = "operating-points-v2";
->> +        opp-shared;
->> +
->> +        cpu7_opp1: opp-844800000 {
->> +            opp-hz = /bits/ 64 <844800000>;
->> +            opp-peak-kBps = <2188000 19660800>;
->> +        };
->> +
->> +        cpu7_opp2: opp-960000000 {
->> +            opp-hz = /bits/ 64 <960000000>;
->> +            opp-peak-kBps = <2188000 26419200>;
->> +        };
->> +
->> +        cpu7_opp3: opp-1075200000 {
->> +            opp-hz = /bits/ 64 <1075200000>;
->> +            opp-peak-kBps = <3072000 26419200>;
->> +        };
->> +
->> +        cpu7_opp4: opp-1190400000 {
->> +            opp-hz = /bits/ 64 <1190400000>;
->> +            opp-peak-kBps = <3072000 29491200>;
->> +        };
->> +
->> +        cpu7_opp5: opp-1305600000 {
->> +            opp-hz = /bits/ 64 <1305600000>;
->> +            opp-peak-kBps = <4068000 32563200>;
->> +        };
->> +
->> +        cpu7_opp6: opp-1401600000 {
->> +            opp-hz = /bits/ 64 <1401600000>;
->> +            opp-peak-kBps = <4068000 32563200>;
->> +        };
->> +
->> +        cpu7_opp7: opp-1516800000 {
->> +            opp-hz = /bits/ 64 <1516800000>;
->> +            opp-peak-kBps = <4068000 36249600>;
->> +        };
->> +
->> +        cpu7_opp8: opp-1632000000 {
->> +            opp-hz = /bits/ 64 <1632000000>;
->> +            opp-peak-kBps = <5412000 39321600>;
->> +        };
->> +
->> +        cpu7_opp9: opp-1747200000 {
->> +            opp-hz = /bits/ 64 <1708800000>;
->> +            opp-peak-kBps = <5412000 42393600>;
->> +        };
->> +
->> +        cpu7_opp10: opp-1862400000 {
->> +            opp-hz = /bits/ 64 <1862400000>;
->> +            opp-peak-kBps = <6220000 45465600>;
->> +        };
->> +
->> +        cpu7_opp11: opp-1977600000 {
->> +            opp-hz = /bits/ 64 <1977600000>;
->> +            opp-peak-kBps = <6220000 48537600>;
->> +        };
->> +
->> +        cpu7_opp12: opp-2073600000 {
->> +            opp-hz = /bits/ 64 <2073600000>;
->> +            opp-peak-kBps = <7216000 48537600>;
->> +        };
->> +
->> +        cpu7_opp13: opp-2169600000 {
->> +            opp-hz = /bits/ 64 <2169600000>;
->> +            opp-peak-kBps = <7216000 51609600>;
->> +        };
->> +
->> +        cpu7_opp14: opp-2265600000 {
->> +            opp-hz = /bits/ 64 <2265600000>;
->> +            opp-peak-kBps = <7216000 51609600>;
->> +        };
->> +
->> +        cpu7_opp15: opp-2361600000 {
->> +            opp-hz = /bits/ 64 <2361600000>;
->> +            opp-peak-kBps = <8368000 51609600>;
->> +        };
->> +
->> +        cpu7_opp16: opp-2457600000 {
->> +            opp-hz = /bits/ 64 <2457600000>;
->> +            opp-peak-kBps = <8368000 51609600>;
->> +        };
->> +
->> +        cpu7_opp17: opp-2553600000 {
->> +            opp-hz = /bits/ 64 <2553600000>;
->> +            opp-peak-kBps = <8368000 51609600>;
->> +        };
->> +
->> +        cpu7_opp18: opp-2649600000 {
->> +            opp-hz = /bits/ 64 <2649600000>;
->> +            opp-peak-kBps = <8368000 51609600>;
->> +        };
->> +
->> +        cpu7_opp19: opp-2745600000 {
->> +            opp-hz = /bits/ 64 <2745600000>;
->> +            opp-peak-kBps = <8368000 51609600>;
->> +        };
->> +
->> +        cpu7_opp20: opp-2841600000 {
->> +            opp-hz = /bits/ 64 <2841600000>;
->> +            opp-peak-kBps = <8368000 51609600>;
->> +        };
->> +    };
->> +
->>       firmware {
->>           scm: scm {
->>               compatible = "qcom,scm";
->>
-> 
-> 
-
-
+>
+>          Linus
