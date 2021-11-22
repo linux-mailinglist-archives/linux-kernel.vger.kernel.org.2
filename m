@@ -2,156 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4D2459398
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 18:03:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A255F45939A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 18:04:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235395AbhKVRGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 12:06:50 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:39444 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234435AbhKVRGt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 12:06:49 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        id S237048AbhKVRHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 12:07:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60332 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234435AbhKVRHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 12:07:14 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5444221709;
-        Mon, 22 Nov 2021 17:03:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637600621; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4rRkvJNhAxWx1zyxF3tUb1zr1nvSxZ9nWkvMm51WNrQ=;
-        b=cKEZqdfqMr3kLw1vFZhwmecn+FJayjamhLA9XKKumc4O5xj1x5AWqQ7f9UJlwxi0ST9Ja3
-        dMifHwzdNrvmUA+5IUc45aw0vgZ6z8l/SV11lEuU/MjptXYlAU6jSQgZpsQgFLREMaj7sx
-        k2mcCM5Doj/4X41chTeiRZ0ENf7wXR4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637600621;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4rRkvJNhAxWx1zyxF3tUb1zr1nvSxZ9nWkvMm51WNrQ=;
-        b=H3f6ATUtgp03kEO0DJKZkjPwUUL6XgXB+JBO7QX9kELJzZDpaa1Cb11GOOX+s/Z/vkD2M2
-        HKhNCExz+g0iSWAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C349113B44;
-        Mon, 22 Nov 2021 17:03:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id gnD3LmzNm2F6QQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Mon, 22 Nov 2021 17:03:40 +0000
-Message-ID: <6e67f74a-fb4e-fda4-9583-dad28f14ed3a@suse.cz>
-Date:   Mon, 22 Nov 2021 18:03:40 +0100
+        by mail.kernel.org (Postfix) with ESMTPSA id 58EE860249;
+        Mon, 22 Nov 2021 17:04:07 +0000 (UTC)
+Date:   Mon, 22 Nov 2021 12:04:05 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc:     Thorsten Leemhuis <linux@leemhuis.info>, workflows@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [RFC PATCH v1 0/1] Create 'Reported:' and 'Reviewed:' tags for
+ links in commit messages
+Message-ID: <20211122120405.7a1e1c9f@gandalf.local.home>
+In-Reply-To: <20211122151233.54xtnpwdmnrdj3jf@meerkat.local>
+References: <cover.1637566224.git.linux@leemhuis.info>
+        <20211122151233.54xtnpwdmnrdj3jf@meerkat.local>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
- Hypervisor Support
-Content-Language: en-US
-To:     Brijesh Singh <brijesh.singh@amd.com>,
-        Peter Gonda <pgonda@google.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
- <daf5066b-e89b-d377-ed8a-9338f1a04c0d@amd.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <daf5066b-e89b-d377-ed8a-9338f1a04c0d@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/22/21 16:23, Brijesh Singh wrote:
-> Hi Peter,
-> 
-> On 11/12/21 9:43 AM, Peter Gonda wrote:
->> Hi Brijesh,,
->>
->> One high level discussion I'd like to have on these SNP KVM patches.
->>
->> In these patches (V5) if a host userspace process writes a guest
->> private page a SIGBUS is issued to that process. If the kernel writes
->> a guest private page then the kernel panics due to the unhandled RMP
->> fault page fault. This is an issue because not all writes into guest
->> memory may come from a bug in the host. For instance a malicious or
->> even buggy guest could easily point the host to writing a private page
->> during the emulation of many virtual devices (virtio, NVMe, etc). For
->> example if a well behaved guests behavior is to: start up a driver,
->> select some pages to share with the guest, ask the host to convert
->> them to shared, then use those pages for virtual device DMA, if a
->> buggy guest forget the step to request the pages be converted to
->> shared its easy to see how the host could rightfully write to private
->> memory. I think we can better guarantee host reliability when running
->> SNP guests without changing SNP’s security properties.
->>
->> Here is an alternative to the current approach: On RMP violation (host
->> or userspace) the page fault handler converts the page from private to
->> shared to allow the write to continue. This pulls from s390’s error
->> handling which does exactly this. See ‘arch_make_page_accessible()’.
->> Additionally it adds less complexity to the SNP kernel patches, and
->> requires no new ABI.
->>
->> In the current (V5) KVM implementation if a userspace process
->> generates an RMP violation (writes to guest private memory) the
->> process receives a SIGBUS. At first glance, it would appear that
->> user-space shouldn’t write to private memory. However, guaranteeing
->> this in a generic fashion requires locking the RMP entries (via locks
->> external to the RMP). Otherwise, a user-space process emulating a
->> guest device IO may be vulnerable to having the guest memory
->> (maliciously or by guest bug) converted to private while user-space
->> emulation is happening. This results in a well behaved userspace
->> process receiving a SIGBUS.
->>
->> This proposal allows buggy and malicious guests to run under SNP
->> without jeopardizing the reliability / safety of host processes. This
->> is very important to a cloud service provider (CSP) since it’s common
->> to have host wide daemons that write/read all guests, i.e. a single
->> process could manage the networking for all VMs on the host. Crashing
->> that singleton process kills networking for all VMs on the system.
->>
-> Thank you for starting the thread; based on the discussion, I am keeping the
-> current implementation as-is and *not* going with the auto conversion from
-> private to shared. To summarize what we are doing in the current SNP series:
-> 
-> - If userspace accesses guest private memory, it gets SIGBUS.
+On Mon, 22 Nov 2021 10:12:33 -0500
+Konstantin Ryabitsev <konstantin@linuxfoundation.org> wrote:
 
-So, is there anything protecting host userspace processes from malicious guests?
+> As an alternative, I can offer that we continue to use Link: trailers with
+> extra data following the hashtag, as is already done for other trailers:
+> 
+>     Link: https://bugzilla.kernel.org/show_bug.cgi?id=215101   #report
+>     Link: https://lore.kernel.org/r/fobarbaz.5551212@localhost #review
+> 
+> Note, that this merely for completeness, not in opposition to the proposal. I
+> find the "Link:" trailer to be semantically redundant, since what follows is
+> already clearly a hyperlink. Adding "Link: " in front of it is only necessary
+> for consistency and machine parsing reasons.
 
-> - If kernel accesses[*] guest private memory, it does panic.
-> 
-> [*] Kernel consults the RMP table for the page ownership before the access.
-> If the page is shared, then it uses the locking mechanism to ensure that a
-> guest will not be able to change the page ownership while kernel has it mapped.
-> 
-> thanks
-> 
+Machine parsing is the main reason for the Link: tag. I have scripts that
+key off of that tag and ignore any other "http" reference.
+
+Perhaps the above is better, as it means we don't need to update our
+scripts for that parsing.
+
+-- Steve
