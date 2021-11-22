@@ -2,67 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7785458DA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:42:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5CE458DA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:43:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239140AbhKVLpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 06:45:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236718AbhKVLph (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 06:45:37 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF99CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 03:42:30 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so16622139pjc.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 03:42:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=mGzGffVcYG//d78DMdC2Nd/hajJeF6vAHXgZ+XxABQg=;
-        b=Xl55lkcCV2n32xg+WcqQ/jvAtJ8/3QjL1F/XMHaAG5GY0qubtb6IYMS+btSz9u/YbA
-         gZEpnPw9Qy9LrZ/qVmBv9PZsl+xMYULuQZaDvNux2PHNCuw0TJkalhW6ePTkcW6QmXVF
-         DGW0QG9FIqedrPqEGCgi50ITuGOWPACHLaPv0ueYV8DOyovAYv+jeIm4HWou7l8uTFcm
-         rnuv6NRl5eirKUzPg5dm0KofH/Yj7O435BFXRoyHndHnfslwtXdUa37LCo32rlcGZARo
-         vw5eNTdYV6cdxmPIzv5MSDLHJtyZnUhps6bYOgC5L70AAGTv5C+HJZmt5V33Wb4+8ANn
-         Nyxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=mGzGffVcYG//d78DMdC2Nd/hajJeF6vAHXgZ+XxABQg=;
-        b=7RkyUFiFrJhsxBlxnOfAZzxM9FNDIu+nbgdt7G4D2RfeVAkt2kK6eOUFyI9OTz59ii
-         pAsRCeS0DMZugDygjgW8/wsfcR40CMYNPKk1YgmnYEukXdzZNNqaGLejIIwlSj+olZpY
-         cGQHT/lFF0zfhWXqmYlMKC1GXeZvDWho/Q510XJV73E5Rm7piR5T1Au2Rp9tXE/NpRhD
-         PBbtlD3yn26PGh1MMJcduOeNuMmtkB9ByhJCTRnJy6Prr7AAgCEv116lhPxVWYRMw9q3
-         xAdHvdJ1DET1AexNO2aiP2XOykIOqwrxVVN2TnMx0zkdE8unCDu/eJXT7DwS11ATRbvB
-         2bkA==
-X-Gm-Message-State: AOAM531Bku1iRAgDzabt2Gq0qV1hsrVumLRQa1nkawk2DMKgzDAQadOc
-        3u0KRRmzey1ufySIK7KWszOEbuYiaMI44Iv3r2I=
-X-Google-Smtp-Source: ABdhPJyKR7bFhSI1uS18AzQvB6G71S6j78DajyqlyiNsN86koSplQMBnIhuLmMutMRXAIkXTvASxLysBkWaUNTmrcg4=
-X-Received: by 2002:a17:902:c407:b0:142:28fe:668e with SMTP id
- k7-20020a170902c40700b0014228fe668emr105243371plk.31.1637581350409; Mon, 22
- Nov 2021 03:42:30 -0800 (PST)
+        id S239222AbhKVLqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 06:46:14 -0500
+Received: from www.zeus03.de ([194.117.254.33]:52178 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233849AbhKVLqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 06:46:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=PnCEnaUq3vutr+dPiGSuA0WqLJ48
+        BXfWQsyovlkEAsc=; b=iDmohpgz9tJYZIe8T/HCQjycGKzsSE5TFhnU88yoB2Eh
+        A7b3Ue6FShneOO8mnAkQ32en8OYd92zxskknXm5L5pgY6ayZLrE9ZPowJjLb20Gr
+        dO/XWPe5FXF7RDXf9S+NILjdSU8An2RzeSAvwMnl6X5X77vvEVnqECnpdTkw3nE=
+Received: (qmail 782451 invoked from network); 22 Nov 2021 12:43:04 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Nov 2021 12:43:04 +0100
+X-UD-Smtp-Session: l3s3148p1@Xy64IF/ROt0gAwDPXwnCAFkDAkP2hjT7
+Date:   Mon, 22 Nov 2021 12:43:04 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/1] gpio: add sloppy logic analyzer using polling
+Message-ID: <YZuCSNeT3xeKlCv7@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210918083307.3195-1-wsa+renesas@sang-engineering.com>
+ <20210918083307.3195-2-wsa+renesas@sang-engineering.com>
+ <CAMuHMdXYpK861-=Esa3GqjkNMAqzLBiGN5NQKpHNo5d0w=FWmQ@mail.gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:ed20:0:0:0:0 with HTTP; Mon, 22 Nov 2021 03:42:29
- -0800 (PST)
-Reply-To: ao783072@gmail.com
-From:   Ying HO <sergiogiroldi.md@gmail.com>
-Date:   Mon, 22 Nov 2021 12:42:29 +0100
-Message-ID: <CAN8H=DHW9F21mpxYeW0PESfK8g3DoXkYrQWM2Zcxu1vtQr16VQ@mail.gmail.com>
-Subject: Can I have your attention please?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="II7g/Il5Yng/Np5H"
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXYpK861-=Esa3GqjkNMAqzLBiGN5NQKpHNo5d0w=FWmQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Please permit me to respectfully ask for your kind attention and
-consideration. My name is Mrs. Ying HO, from Hong Kong but married to
-a Thai politician, I trust this message meets you in good health? I
-have very important and confidential information for you. Please reply
-to me as soon as possible so I can tell you more.
-Regards,
-Mrs. Ying HO
+
+--II7g/Il5Yng/Np5H
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Geert,
+
+thanks for the review!
+
+> Note that this is the second posting using v2, and the previous version
+> was simultaneously v1 and v3 (branch renesas/gpio-logic-analyzer-v3).
+> Resetting version numbers may confuse people and tools (e.g. b4).
+
+Well, there was an "RFC v2" once but to avoid confusion, I'll go with v5
+for the next iteration. Only one thing I did not pick up for v5 yet.
+
+> > +Samples 50us at 2MHz waiting for a falling edge on channel 2. CPU and =
+instance as above:
+>=20
+> =C2=B5s
+
+I'd like to stay ASCII here because the script may run on limited
+systems without UTF8 support. Too anxious?
+
+All the best,
+
+   Wolfram
+
+
+--II7g/Il5Yng/Np5H
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmGbgkQACgkQFA3kzBSg
+KbZfiA/+KYdF+8E2WvXfTcfXxNcy9a33+/K2ttZSzx9q69G3HfL5XJr0xhJsAyib
+F+YDUNM99igIvxGMOMLDnMauVyDQwtHcG9p1M9Ua1uKREPV8qy1uTt1sBAVjTTDN
+MVaps/K/qlUYHMYYLlfWyuy4p4iCsu6GE7UAGFVxKN9Mhsw98F0a1+my2P0SC+5T
+7JYLR+QYc6pfRch7bSX+y1ossRzvufpbDRhS8gF6Xljr0aLqwOyoBW06whK7UseM
+H7NveZnj8WfQwWIH0/XdelzSDFEN+PwjyYGeUhs0AByam9ptAEbMnwiW2y01Qx7N
+3KqaO9EWJZq52wv7VwqzPZf77oLoOGzkfTcNle530UyEvhJkJEOIzMpt3tR5U0a8
+Anu3ETkdDnLSCiYpeEVRc8KD6bJcflHMQdEHmCODE4EjLbUzKQlQeOlxs5u1CIZ5
+22oipOZBnQIe/Xw+L1rIHJkbEgAf0IDnhzVKDwQDadDunlgrRvqSfo2AAwdphsVM
+1NkFY9JR4yI9ZyURTntkV1N7NilOx6zR8kPc3jzopVBYX1bPbszW9TTx3NCAe35w
+feIP2dTSU6n7gX1tx0LsexWD3jxJRvPIDxG3IlsSx23Jv+2c9MHut4yuO3GIkeoE
+A+ksDvEP1yGt6hRxYGX8G1LEhP3bczm/Qjbn1lf+NSenAiGco8M=
+=OdU3
+-----END PGP SIGNATURE-----
+
+--II7g/Il5Yng/Np5H--
