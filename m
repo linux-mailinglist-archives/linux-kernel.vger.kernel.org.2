@@ -2,177 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E3A45895D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 07:41:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C4D458960
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 07:42:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbhKVGoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 01:44:23 -0500
-Received: from mail-mw2nam10on2083.outbound.protection.outlook.com ([40.107.94.83]:2657
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229906AbhKVGoW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 01:44:22 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XVCl943PEn2SJujXrBkQHV6L3s7/HKa+K029dg8nHdBfx+hvqcwfnuugEYTph6XTMT0ptXBTtbZhPH233ARizGC7cZROBXWaqb5/bispRKA03nWPwmgamV39ZXIXmnc2t5yDqFx78nNbkGX9u4MKODKUwt3DrZIoyB6s7AfFrnNA623GGdFHhbvnHWNbGKwjIkMlaNksQNhSxM/x7RIUx1NMTmNkso+RfDJVcqjTkeWhxNsYtnQBKoOWdbJBFjUfSQ4SrFfJLXgbFLgYct34Y2iZDtaU8O0Ys6i9hLIrC5bk6NsUlwaIpCx1vS7z2nPbuL1D0KYAPdBEmAMgwOU6xg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0AQPWPBg8KDp7ax79vniXOdGp9gtqy2QP1o51hygw5I=;
- b=bXUHJeb9wNQuSFEitJW8zUvoGbsRTLucVm3TW0dI4u7x6zYHR8SJNe6hGApTSuQtKFPmNWADN7LJG5B3JriJ5qy5ZaZQhSyOnQJFwQS7eNB4PZENhFTd774XMf1iVcydTQXpVe26Gu5pwbrWvXIwDcYcaWqLXb1fnzDQXB2WMA4Cp169K42YxA8nUSsmah+y0fOcIOfjCvWdXxt8baHQFyWzTFSi+sKoFNHwSZh9eMB3wmZW1yDh8wCYDuBr8S5JsM19n/eULPCiwx/YiWb6o+EmUOfyvY2yznFy7ZQ2q6MJbuzPBcxovY5BqgoxnWx9FXdP/1gN9kDaqdexPoPn8g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=linaro.org smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
+        id S231552AbhKVGox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 01:44:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231183AbhKVGos (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 01:44:48 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17429C061714
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 22:41:43 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id gt5so13005672pjb.1
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 22:41:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0AQPWPBg8KDp7ax79vniXOdGp9gtqy2QP1o51hygw5I=;
- b=SNE0vubEMvIwo+g7pi/M4ZpeEIjPWB6zBGQc1fdQ/RhAfVIlFm/aYLPxVSoSIHivV0MrvPNSnu9LFTYYcN9jtn+FWGRJsT666gB9Img94VlWFyHB+6CIkHFvfs96T7ZxYkBwHqaBiw/tuA4pB4bF2UA1v4wW4cKz8eWQPay9ocU=
-Received: from SA0PR13CA0004.namprd13.prod.outlook.com (2603:10b6:806:130::9)
- by PH0PR02MB8859.namprd02.prod.outlook.com (2603:10b6:510:df::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Mon, 22 Nov
- 2021 06:41:14 +0000
-Received: from SN1NAM02FT0011.eop-nam02.prod.protection.outlook.com
- (2603:10b6:806:130:cafe::ca) by SA0PR13CA0004.outlook.office365.com
- (2603:10b6:806:130::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.7 via Frontend
- Transport; Mon, 22 Nov 2021 06:41:14 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT0011.mail.protection.outlook.com (10.97.5.171) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4713.19 via Frontend Transport; Mon, 22 Nov 2021 06:41:14 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Sun, 21 Nov 2021 22:41:13 -0800
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Sun, 21 Nov 2021 22:41:13 -0800
-Envelope-to: bjorn.andersson@linaro.org,
- mathieu.poirier@linaro.org,
- robh+dt@kernel.org,
- laurent.pinchart@ideasonboard.com,
- bill.mills@linaro.org,
- linux-remoteproc@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-Received: from [10.23.120.12] (port=63331)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <tanmay.shah@xilinx.com>)
-        id 1mp30r-0003UG-8I; Sun, 21 Nov 2021 22:41:13 -0800
-Message-ID: <2e06646d-67f0-1560-d968-e72c3164d6df@xilinx.com>
-Date:   Mon, 22 Nov 2021 12:11:06 +0530
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c6luE0x1Txd3w3w56rJ0UKpQXDWDNrMSolAkksUQvV0=;
+        b=YPovlI/7m21B6tofIcXvrA5HXrkiOxOWOKnWCkf7gazJevBwI9qHo52/W9QzkDsWPh
+         svgkwzNuxt2vu7mJU6LYzUGNPFd2Xl8tBJr1FeretoOlHIsbwWXrZRaNQ37y24ZUttli
+         Ehfbfy78vHLSaaRtmWjBx50wKIvxWcX273RhKg98+R5JGInPUDiPPKToukP1Qh+WCGrf
+         7AiDdf+r6MtJ5R1okDBeYt8Bk5gb/xzNY2UgAT0rMbTzoPEDbz9JDvK/0EJl0TFPQIwG
+         jNRkiEoRXaPiNFmBFZOEZbRkefNFwfNUbWSYkS1YSSzKSMdNjF8tyZLFWcYUNvto2Tm4
+         Qwpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c6luE0x1Txd3w3w56rJ0UKpQXDWDNrMSolAkksUQvV0=;
+        b=t6ua7jc+p13yJM2c4DFNEzc57hp5P66jP97eBRVH/OMRM2OhQ5gKElQ+AK4GOvHWRS
+         6BLkAuqf/2xDfx9MeO9VRHWxMp9Op/w3QbMieEZBM1BsEx3an83Wki1JiVBGN4XLc/yx
+         1uFCiCqkRLpb6fzWW99CQdLqPOXqnRTYAGt4Lh43AdjW8kUZC+MlCFqwpIAVN2w5gjpI
+         8iN5gNXZgsfyS5cmXy6ZbJmonBvz2k/1bW8iwxHE4q3O6TtrNdGBLFiH+vSPLK3R1AWV
+         qrKTO3hA/vItDWLtW+iGxQILM+dhXRwQwHkvyGySU4rZ8nBdOTIICfX12gwvKL3iTvZw
+         mOEA==
+X-Gm-Message-State: AOAM533si105pri+PpQdTNh7wLUr/223PL00SbfCN0LDEiAQaOLa1zcJ
+        Cu6ovFNGHDvHesk5/3XN7adIbA==
+X-Google-Smtp-Source: ABdhPJwTGOGQcC8UPl37F/VrxiCporykUGVd1cUX9tTfLcgzD63dKYMorXSxptvvgkyh1WhzRnkdPA==
+X-Received: by 2002:a17:90b:1c81:: with SMTP id oo1mr28274619pjb.5.1637563302669;
+        Sun, 21 Nov 2021 22:41:42 -0800 (PST)
+Received: from C02FT5A6MD6R.bytedance.net ([61.120.150.76])
+        by smtp.gmail.com with ESMTPSA id e13sm5395304pgb.8.2021.11.21.22.41.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 21 Nov 2021 22:41:42 -0800 (PST)
+From:   Gang Li <ligang.bdlg@bytedance.com>
+To:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Gang Li <ligang.bdlg@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1] shmem: change shrinklist_lock form spinlock to mutex and move iput into it
+Date:   Mon, 22 Nov 2021 14:41:26 +0800
+Message-Id: <20211122064126.76734-1-ligang.bdlg@bytedance.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.2
-Subject: Re: [PATCH 0/6] Add Xilinx RPU subsystem support
-Content-Language: en-US
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>
-CC:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Ben Levinsky <ben.levinsky@xilinx.com>,
-        Bill Mills <bill.mills@linaro.org>,
-        Sergei Korneichuk <sergei.korneichuk@xilinx.com>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20211122053856.1342859-1-tanmay.shah@xilinx.com>
-From:   Tanmay Shah <tanmay.shah@xilinx.com>
-In-Reply-To: <20211122053856.1342859-1-tanmay.shah@xilinx.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6ebd2d04-dedd-4f66-4b05-08d9ad831445
-X-MS-TrafficTypeDiagnostic: PH0PR02MB8859:
-X-Microsoft-Antispam-PRVS: <PH0PR02MB8859CFF17E631ADDFC404ABCCA9F9@PH0PR02MB8859.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:238;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oXBop40COLMBpTXSNsfXNSMoLMDdOTXtfwksGFyiB/XiTcq1blG/vlgRuew1A71z2ttMs4SmjPmYhHP+gXAIAFuY9DGscHADClDlcnS5eLoj6slMuaIr5xkFCs82M3UKzE2/fHQsVcH3Ck+u56U23JqYK2ZlCppTddwE/yvka5ALFKlCvgZu+Ux0uB2T/py4E0GRZUHAtum++Lt/Ma+xn1p8N2tv4ruxWFdF9Cwbj48M9odQP0jMELWB4E4glN3/KNPKJkYQa7GUvDjeRJ5KzOeKtnJpEucxnW5dIPM+IxpZR/KR83/Jo23PLT9HC9vw65kk8Vpmt2RDZx5l8g3A3cS7avik5HbUjTKE7pniYFUMnB0GKhSz63ghe3fh23BdCxHKlnkHfm/VUzEvKxGG4vmhbkWkLk+NORT+6AdjGf6rOSLMmeeEMZddOKyBOxmVaTJX0b2qo2Qhx7GRdL/O0Pw2Dg06t1xROwLPjiYkHdnwPTbR6sNr7O+zRbV6UPrkXwHAzvMqGW/dJebmXMi0fPvfq/l/lFTiVyBf3d2N+8cYf02tPm9F9bvKyPN/Xj/rulAxfwrv46dvn9RGQ1r02CNvCBaU1MnrRsx7ZWQKTDAvkGoIOvbI/mXtEeSw2Oko/mJ28EfrUQCEbvcEjAVFWXpS6I+ddWdUdgJncirMmwyg3vSkijaw34NdIHxmRBjI1/fQKYywbv6bFg0ENPrPfSeuitkmGq3GxL45cz52AygO/0jCpRvWku0+G+vjKF+XFLpHSK0CTUz2mh7X25e+aA==
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(36840700001)(46966006)(31686004)(54906003)(82310400003)(8936002)(316002)(186003)(70586007)(53546011)(8676002)(2906002)(70206006)(356005)(5660300002)(36860700001)(44832011)(36906005)(83380400001)(426003)(110136005)(26005)(36756003)(4326008)(508600001)(6636002)(2616005)(6666004)(47076005)(31696002)(9786002)(7636003)(336012)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2021 06:41:14.1222
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6ebd2d04-dedd-4f66-4b05-08d9ad831445
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0011.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR02MB8859
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch fixes commit 779750d20b93 ("shmem: split huge pages
+beyond i_size under memory pressure").
 
-On 11/22/21 11:08 AM, Tanmay Shah wrote:
-> This patch series adds bindings document for RPU subsystem found on Xilinx
-> ZynqMP platforms. It also adds device nodes and driver to enable RPU subsytem
-> in split mode and lockstep mode.
->
-> Xilinx ZynqMP platform contains Remote Processing Unit(RPU). RPU subsystem
-> contains two arm cortex r5f cores. RPU subsystem can be configured in
-> split mode, locsktep mode and single-cpu mode.
->
-> RPU subsystem also contains 4 Tightly Coupled Memory(TCM) banks. In lockstep
-> mode, all 4 banks are combined and total of 256KB memory is made available to
-> r5 core0. In split mode, both cores can access two TCM banks i.e. 128 KB.
->
-> RPU can also fetch data and execute instructions from DDR memory along with
-> TCM memory.
->
-> Ben Levinsky (3):
->    firmware: xilinx: Add ZynqMP firmware ioctl enums for RPU
->      configuration.
->    firmware: xilinx: Add shutdown/wakeup APIs
->    firmware: xilinx: Add RPU configuration APIs
->
-> Tanmay Shah (3):
->    dt-bindings: remoteproc: Add Xilinx RPU subsystem bindings
->    arm64: dts: xilinx: zynqmp: Add RPU subsystem device node
->    drivers: remoteproc: Add Xilinx r5 remoteproc driver
->
->   .../bindings/remoteproc/xlnx,r5f-rproc.yaml   | 139 +++
->   arch/arm64/boot/dts/xilinx/zynqmp.dtsi        |  17 +
->   drivers/firmware/xilinx/zynqmp.c              |  96 ++
->   drivers/remoteproc/Kconfig                    |  12 +
->   drivers/remoteproc/Makefile                   |   1 +
->   drivers/remoteproc/xlnx_r5_remoteproc.c       | 959 ++++++++++++++++++
->   include/dt-bindings/power/xlnx-zynqmp-power.h |   6 +
->   include/linux/firmware/xlnx-zynqmp.h          |  60 ++
->   8 files changed, 1290 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/remoteproc/xlnx,r5f-rproc.yaml
->   create mode 100644 drivers/remoteproc/xlnx_r5_remoteproc.c
->
->
-> base-commit: c1fe10d238c0256a77dbc4bf6493b9782b2a218d
-> --
-> 2.25.1
->
-> This email and any attachments are intended for the sole use of the named recipient(s) and contain(s) confidential information that may be proprietary, privileged or copyrighted under applicable law. If you are not the intended recipient, do not read, copy, or forward this email message or any attachments. Delete this email message and any attachments immediately.
+iput out of sbinfo->shrinklist_lock will let shmem_evict_inode grab
+and delete the inode, which will berak the consistency between
+shrinklist_len and shrinklist. The simultaneous deletion of adjacent
+elements in the local list "list" by shmem_unused_huge_shrink and
+shmem_evict_inode will also break the list.
 
+iput must in lock or after lock, but shrinklist_lock is a spinlock
+which can not sleep and iput may sleep.[1]
 
-Hi all, above footer (with proprietary copyrights) was appended 
-automatically out of my knowledge after using git send-email command.
+Fix it by changing shrinklist_lock from spinlock to mutex and moving iput
+into this lock.
 
-I will work on this and send v2 which does not contain this footer. 
-Please ignore this patch series for now.
+[1]. Link: http://lkml.kernel.org/r/20170131093141.GA15899@node.shutemov.name
+Fixes: 779750d20b93 ("shmem: split huge pages beyond i_size under memory pressure")
+Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
+---
+ include/linux/shmem_fs.h |  2 +-
+ mm/shmem.c               | 16 +++++++---------
+ 2 files changed, 8 insertions(+), 10 deletions(-)
 
-Thanks,
-
-Tanmay
-
+diff --git a/include/linux/shmem_fs.h b/include/linux/shmem_fs.h
+index 166158b6e917..65804fd264d0 100644
+--- a/include/linux/shmem_fs.h
++++ b/include/linux/shmem_fs.h
+@@ -41,7 +41,7 @@ struct shmem_sb_info {
+ 	ino_t next_ino;		    /* The next per-sb inode number to use */
+ 	ino_t __percpu *ino_batch;  /* The next per-cpu inode number to use */
+ 	struct mempolicy *mpol;     /* default memory policy for mappings */
+-	spinlock_t shrinklist_lock;   /* Protects shrinklist */
++	struct mutex shrinklist_mutex;/* Protects shrinklist */
+ 	struct list_head shrinklist;  /* List of shinkable inodes */
+ 	unsigned long shrinklist_len; /* Length of shrinklist */
+ };
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 18f93c2d68f1..2165a28631c5 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -559,7 +559,7 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+ 	if (list_empty(&sbinfo->shrinklist))
+ 		return SHRINK_STOP;
+ 
+-	spin_lock(&sbinfo->shrinklist_lock);
++	mutex_lock(&sbinfo->shrinklist_mutex);
+ 	list_for_each_safe(pos, next, &sbinfo->shrinklist) {
+ 		info = list_entry(pos, struct shmem_inode_info, shrinklist);
+ 
+@@ -586,7 +586,6 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+ 		if (!--batch)
+ 			break;
+ 	}
+-	spin_unlock(&sbinfo->shrinklist_lock);
+ 
+ 	list_for_each_safe(pos, next, &to_remove) {
+ 		info = list_entry(pos, struct shmem_inode_info, shrinklist);
+@@ -643,10 +642,9 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+ 		iput(inode);
+ 	}
+ 
+-	spin_lock(&sbinfo->shrinklist_lock);
+ 	list_splice_tail(&list, &sbinfo->shrinklist);
+ 	sbinfo->shrinklist_len -= removed;
+-	spin_unlock(&sbinfo->shrinklist_lock);
++	mutex_unlock(&sbinfo->shrinklist_mutex);
+ 
+ 	return split;
+ }
+@@ -1137,12 +1135,12 @@ static void shmem_evict_inode(struct inode *inode)
+ 		inode->i_size = 0;
+ 		shmem_truncate_range(inode, 0, (loff_t)-1);
+ 		if (!list_empty(&info->shrinklist)) {
+-			spin_lock(&sbinfo->shrinklist_lock);
++		    mutex_lock(&sbinfo->shrinklist_mutex);
+ 			if (!list_empty(&info->shrinklist)) {
+ 				list_del_init(&info->shrinklist);
+ 				sbinfo->shrinklist_len--;
+ 			}
+-			spin_unlock(&sbinfo->shrinklist_lock);
++		    mutex_unlock(&sbinfo->shrinklist_mutex);
+ 		}
+ 		while (!list_empty(&info->swaplist)) {
+ 			/* Wait while shmem_unuse() is scanning this inode... */
+@@ -1954,7 +1952,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+ 		 * Part of the huge page is beyond i_size: subject
+ 		 * to shrink under memory pressure.
+ 		 */
+-		spin_lock(&sbinfo->shrinklist_lock);
++		mutex_lock(&sbinfo->shrinklist_mutex);
+ 		/*
+ 		 * _careful to defend against unlocked access to
+ 		 * ->shrink_list in shmem_unused_huge_shrink()
+@@ -1964,7 +1962,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+ 				      &sbinfo->shrinklist);
+ 			sbinfo->shrinklist_len++;
+ 		}
+-		spin_unlock(&sbinfo->shrinklist_lock);
++		mutex_unlock(&sbinfo->shrinklist_mutex);
+ 	}
+ 
+ 	/*
+@@ -3652,7 +3650,7 @@ static int shmem_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	raw_spin_lock_init(&sbinfo->stat_lock);
+ 	if (percpu_counter_init(&sbinfo->used_blocks, 0, GFP_KERNEL))
+ 		goto failed;
+-	spin_lock_init(&sbinfo->shrinklist_lock);
++	mutex_init(&sbinfo->shrinklist_mutex);
+ 	INIT_LIST_HEAD(&sbinfo->shrinklist);
+ 
+ 	sb->s_maxbytes = MAX_LFS_FILESIZE;
+-- 
+2.20.1
 
