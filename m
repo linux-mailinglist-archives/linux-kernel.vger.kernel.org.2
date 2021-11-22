@@ -2,112 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB7445982F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 00:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 281EF459833
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 00:07:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbhKVXHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 18:07:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbhKVXHJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 18:07:09 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04FE5C061714
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 15:04:02 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id j7so12453370ilk.13
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 15:04:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Tz3Lamka2YWw1ugKbuX9+hCMQFBh2lnWq929aaGVVgE=;
-        b=ph7uvnZiFUq/ff+ocagZiD+GeIG5MPPSlug2Ty+mOZzKrnXwc8a7i16KSuG+B/5AM1
-         11p1IvTfszKs/ptL2Xjd36jNO1ZgtaTSkMpSzHZ45XNMwMn2+9h0gNEDaVNbiyY0C2/g
-         2M/QSW6aI1qjEr2+XWMJspjgxvs5ttE6zqtXImgMiNyR3qgUOCn5JVS33Kv61zp9wgBh
-         a3DtSfGfLjg6zSfllVmtQUkKl/J1w9M/dwGb8OrwBIyW9sKFAF6CyRfd2Rfg7RJHpgwl
-         qvirWf9Dg9sxlKToRuZ5RdIoRXbGKKmtbj1Q7LyXJpIfwauADWaUZ88TDUHLGDB6mwoU
-         dt5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Tz3Lamka2YWw1ugKbuX9+hCMQFBh2lnWq929aaGVVgE=;
-        b=rdfUNQAEDqi0Q5K1X01w6SzCHKQShg9Obxv9sznic/A164HejWi9y8RldeL6+rLuTV
-         kQFClJXDOxTMqVgH5NExTFBaQK/1ZD1dGJBvZBycc/5SESssWKbxRSi3ZyoMJE0USKkw
-         YXd1drwAuviV6ObQnxMjZDl9DR5NFv0TxOKqpC/4wJxZWzFk+z2X4r/+BV6abUdlXAij
-         QSq8i6kiFMyFywOF5H+5WihathImQ8BtN28bOTWbRIm6cbyJ3Z9tabCBKou6QOsqIVDA
-         APxbjrZKprwPlafptDbT39Rb0d58FpvAQQ2gMSh6AM8VymkFL0uitnIilItun+b+vXIm
-         sX8A==
-X-Gm-Message-State: AOAM530cWyQvp0VzinY49HG5FOxH/Kelvu95JRzoqrbUSOcwsBZFEcdh
-        qMoivWF57ymiq4AQya7zdcy02z4OPST974rNenrVyvXEOfE=
-X-Google-Smtp-Source: ABdhPJyd6leyGJJwvBDnFoD8APFPNMT8rOixMoghmRYjLvjtKT3G1a4IcVfJY8HWBWHnVwqCIDpSV9MSkcHdBGqFwNU=
-X-Received: by 2002:a92:cda2:: with SMTP id g2mr662459ild.2.1637622241357;
- Mon, 22 Nov 2021 15:04:01 -0800 (PST)
-MIME-Version: 1.0
-References: <20211120045046.3940942-1-seanjc@google.com> <20211120045046.3940942-11-seanjc@google.com>
- <CANgfPd_H3CZn_rFfEZoZ7Sa==Lnwt4tXSMsO+eg5d8q9n39BSQ@mail.gmail.com> <YZwcbu/qt3obyWSK@google.com>
-In-Reply-To: <YZwcbu/qt3obyWSK@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Mon, 22 Nov 2021 15:03:50 -0800
-Message-ID: <CANgfPd-Kb9PwB=3nHFwGE4M2cg40h7QpbEU1ZedfKVwGtgCyVA@mail.gmail.com>
-Subject: Re: [PATCH 10/28] KVM: x86/mmu: Allow yielding when zapping GFNs for
- defunct TDP MMU root
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Hou Wenlong <houwenlong93@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S231230AbhKVXKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 18:10:12 -0500
+Received: from foss.arm.com ([217.140.110.172]:46088 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230318AbhKVXKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 18:10:11 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B0E12ED1;
+        Mon, 22 Nov 2021 15:07:03 -0800 (PST)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 588773F5A1;
+        Mon, 22 Nov 2021 15:07:02 -0800 (PST)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com,
+        cristian.marussi@arm.com
+Subject: [PATCH v6 00/16] Introduce atomic support for SCMI transports
+Date:   Mon, 22 Nov 2021 23:06:24 +0000
+Message-Id: <20211122230640.1345-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 2:40 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Mon, Nov 22, 2021, Ben Gardon wrote:
-> > On Fri, Nov 19, 2021 at 8:51 PM Sean Christopherson <seanjc@google.com> wrote:
-> > >
-> > > Allow yielding when zapping SPTEs for a defunct TDP MMU root.  Yielding
-> > > is safe from a TDP perspective, as the root is unreachable.  The only
-> > > potential danger is putting a root from a non-preemptible context, and
-> > > KVM currently does not do so.
-> > >
-> > > Yield-unfriendly iteration uses for_each_tdp_mmu_root(), which doesn't
-> > > take a reference to each root (it requires mmu_lock be held for the
-> > > entire duration of the walk).
-> > >
-> > > tdp_mmu_next_root() is used only by the yield-friendly iterator.
-> > >
-> > > kvm_tdp_mmu_zap_invalidated_roots() is explicitly yield friendly.
-> > >
-> > > kvm_mmu_free_roots() => mmu_free_root_page() is a much bigger fan-out,
-> > > but is still yield-friendly in all call sites, as all callers can be
-> > > traced back to some combination of vcpu_run(), kvm_destroy_vm(), and/or
-> > > kvm_create_vm().
-> > >
-> > > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> >
-> > Reviewed-by: Ben Gardon <bgardon@google.com>
-> >
-> > I'm glad to see this fixed. I assume we don't usually hit this in
-> > testing because most of the teardown happens in the zap-all path when
-> > we unregister for MMU notifiers
->
-> Or more likely, when the userspace process exits and kvm_mmu_notifier_ops.release
-> is invoked.  But yeah, same difference, VM teardown is unlikely to trigger zapping
-> by putting the last TDP MMU reference.
->
-> > and actually deleting a fully populated root while the VM is running is pretty
-> > rare.
->
-> Hmm, probably not that rare, e.g. guest reboot (emulated RESET) is all but
-> guaranteed to trigger kvm_mmu_reset_context() on all vCPUs and thus drop all roots,
-> and QEMU at least doesn't (always) do memslot updates as part of reboot.
+Hi all,
 
-I don't think we have a selftest or kvm-unit-test that builds a large
-EPT structure and then reboots the guest though. That'd be a cool test
-to have.
+This series mainly aims to introduce atomic support for SCMI transports
+that can support it.
+
+After a bit of refactoring in the first 5 patches of the series, in
+[06/16], as a closely related addition, it is introduced a common way for a
+transport to signal to the SCMI core that it does not offer completion
+interrupts, so that the usual polling behaviour will be required: this can
+be done enabling statically a global polling behaviour for the whole
+transport with flag scmi_desc.force_polling OR dynamically enabling at
+runtime such polling behaviour on a per-channel basis using the flag
+scmi_chan_info.no_completion_irq, typically during .chan_setup().
+The usual per-command polling selection behaviour based on
+hdr.poll_completion is preserved as before.
+
+Patch [07/16], ports SMC transport to use the common core completions when
+completion interrupt is available or otherwise revert to use common core
+polling mechanism above introduced: this avoids the improper call of
+scmi_rx_callback directly in smc_send_message.
+
+With [08/16] I introduce a flag to allow a transport to signal to the core
+that upon return of a .send_message() the requested command execution can
+be assumed by the core to have been fully completed by the platform, so
+that the response payload (if any) can be immediately fetched without the
+need to poll the channel.
+
+In [09/16] and [10/16] I enable such flag for SMC amd OPTEE transports.
+
+With [11/16] a transport that supports atomic operations on its TX
+path can now declare itself as .atomic_enabled and, if the platform has
+been also configured to use such atomic operation mode via Kconfig, the
+SCMI core will refrain itself too from sleeping on the RX path and instead
+rely on polling on the correspondent when such atomic behaviour is
+requested from the upper layers. (like the Clock framework)
+
+Then in [12/16] SMC is converted to be .atomic_enabled by substituting
+the mutexes with busy-waiting to keep the channel 'locked' ONLY IF the
+SMC transport is configured to operate in atomic mode.
+(CONFIG_ARM_SCMI_TRANSPORT_SMC_ATOMIC_ENABLE=y)
+
+In [13/16] a new parameter is added to mark_txdone transport operation;
+this will be needed to support polling/atomic support in SCMI virtio.
+
+[14/16] adds polling and configurable atomic mode support to SCMI virtio.
+(CONFIG_ARM_SCMI_TRANSPORT_VIRTIO_ATOMIC_ENABLE=y)
+
+Finally [15/16] adds support for atomic clock enable/disable requests to
+the SCMI Clock protocol layer, while in [16/16] the SCMI Clock driver is
+modified to get optional support for atomic operations when operating on
+an atomically configured SCMI transport.
+
+Atomic support has been tested against the virtio transport in regards to
+the above mentioned Clock enable/disable operations.
+(echo 1 > /sys/kernel/debug/clk/myclock/clk_prepare_enable)
+Polling has been tested on mailbox transport.
+
+The series is based on sudeep/for-next/scmi [1] on top of:
+
+commit 530897ecdb3d ("firmware: arm_scmi: Make virtio Version_1 compliance optional")
+
+Any feedback welcome.
+
+Thanks,
+
+Cristian
+
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/log/?h=for-next/scmi 
+
+---
+V5 --> V6
+- changed default polling timeout
+- refactored SCMI RX path
+- added timeout_ms to traces in RX-path
+- added OPTEE support for sync_cmds_atomic_replies
+- reworked the whole atomic support in SCMI core removing any reliance
+  on IRQs. (using pure polling)
+- added new parameter to mark_txdone
+- added new SCMI VirtIO polling/atomic support
+- reviewed Clock SCMI Driver atomic support: now supporting both
+  clk_prepare and clk_enable when atomic transport is detected
+- added CCs
+
+V4 --> V5
+- removed RFCs tags
+- added scmi_desc.atomic_enabled flags and a few Kconfig options to set
+  atomic mode for SMC and VirtIO transports. Default disabled.
+- added Kconfig option to enable forced polling as a whole on the Mailbox
+  transport
+- removed .poll_done callback from SMC transport since no real polling is
+  needed once sync_cmds_atomic_replies is set
+- made atomic_capable changes on SMC transport dependent on Kconfig
+  CONFIG_ARM_SCMI_TRANSPORT_SMC_ATOMIC_ENABLE: so no change and no busy waiting
+  if atomic mode is NOT enabled in Kconfig.
+- made const: force_polling/atomic_capable/atomic_enabled/sync_cmds_atomic_replies
+
+V3 --> V4
+- rebased on linux-next/master next-20210824
+- renamed .needs_polling to .no_completion_irq
+- added .sync_cmds_atomic_replies
+- make SMC use .sync_cmd_atomic_replies
+
+V2 --> v3
+- rebased on SCMI VirtIO V6 which in turn is based on v5.14-rc1
+
+
+Cristian Marussi (16):
+  firmware: arm_scmi: Perform earlier cinfo lookup call in do_xfer
+  firmware: arm_scmi: Set polling timeout to max_rx_timeout_ms
+  firmware: arm_scmi: Refactor message response path
+  include: trace: Add new scmi_xfer_response_wait event
+  firmware: arm_scmi: Use new trace event scmi_xfer_response_wait
+  firmware: arm_scmi: Add configurable polling mode for transports
+  firmware: arm_scmi: Make smc transport use common completions
+  firmware: arm_scmi: Add sync_cmds_atomic_replies transport flag
+  firmware: arm_scmi: Make smc support atomic sync commands replies
+  firmware: arm_scmi: Make optee support atomic sync commands replies
+  firmware: arm_scmi: Add support for atomic transports
+  firmware: arm_scmi: Add atomic mode support to smc transport
+  firmware: arm_scmi: Add new parameter to mark_txdone
+  firmware: arm_scmi: Add atomic mode support to virtio transport
+  firmware: arm_scmi: Add atomic support to clock protocol
+  clk: scmi: Support atomic clock enable/disable API
+
+ drivers/clk/clk-scmi.c              |  56 ++++++--
+ drivers/firmware/arm_scmi/Kconfig   |  29 ++++
+ drivers/firmware/arm_scmi/clock.c   |  22 ++-
+ drivers/firmware/arm_scmi/common.h  |  26 +++-
+ drivers/firmware/arm_scmi/driver.c  | 195 +++++++++++++++++++------
+ drivers/firmware/arm_scmi/mailbox.c |   3 +-
+ drivers/firmware/arm_scmi/optee.c   |  18 +--
+ drivers/firmware/arm_scmi/smc.c     | 108 ++++++++++----
+ drivers/firmware/arm_scmi/virtio.c  | 212 ++++++++++++++++++++++++++--
+ include/linux/scmi_protocol.h       |  11 ++
+ include/trace/events/scmi.h         |  28 ++++
+ 11 files changed, 606 insertions(+), 102 deletions(-)
+
+-- 
+2.17.1
+
