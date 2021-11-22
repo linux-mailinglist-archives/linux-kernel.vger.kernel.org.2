@@ -2,143 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3BB458E26
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 13:19:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC17458E22
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 13:19:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239522AbhKVMWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 07:22:55 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4123 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239539AbhKVMWy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 07:22:54 -0500
-Received: from fraeml739-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HyRBx0H9Pz6H8CN;
-        Mon, 22 Nov 2021 20:18:49 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml739-chm.china.huawei.com (10.206.15.220) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Mon, 22 Nov 2021 13:19:45 +0100
-Received: from A2006125610.china.huawei.com (10.202.227.178) by
- lhreml710-chm.china.huawei.com (10.201.108.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Mon, 22 Nov 2021 12:19:39 +0000
-From:   Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-To:     <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>
-CC:     <maz@kernel.org>, <will@kernel.org>, <catalin.marinas@arm.com>,
-        <james.morse@arm.com>, <julien.thierry.kdev@gmail.com>,
-        <suzuki.poulose@arm.com>, <jean-philippe@linaro.org>,
-        <Alexandru.Elisei@arm.com>, <qperret@google.com>,
-        <jonathan.cameron@huawei.com>, <linuxarm@huawei.com>
-Subject: [PATCH v4 4/4] KVM: arm64: Make active_vmids invalid on vCPU schedule out
-Date:   Mon, 22 Nov 2021 12:18:44 +0000
-Message-ID: <20211122121844.867-5-shameerali.kolothum.thodi@huawei.com>
-X-Mailer: git-send-email 2.12.0.windows.1
-In-Reply-To: <20211122121844.867-1-shameerali.kolothum.thodi@huawei.com>
-References: <20211122121844.867-1-shameerali.kolothum.thodi@huawei.com>
+        id S239520AbhKVMWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 07:22:40 -0500
+Received: from www.zeus03.de ([194.117.254.33]:34414 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239506AbhKVMWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 07:22:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=rHDAtzlq4yZRIQ810fdaUSF1e6YC
+        9KKZiymAjzTNLi8=; b=MARUeGD49sLiBFwpEbvCgneGq2qaVUsj+HNPnOdWtMrU
+        6JDHqdkTgUoUaajMwzpuixFNQcW5kZokTHBA5xkzqBZsujTTqWn2B+NWoNbfeVs8
+        3p4ZoR2o7OAblNxolruEt+1ekkpJCi5Um52RWEHJCkbYH4YYY+Jeqwc6c3AvQLQ=
+Received: (qmail 795569 invoked from network); 22 Nov 2021 13:19:30 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Nov 2021 13:19:30 +0100
+X-UD-Smtp-Session: l3s3148p1@cz3Eol/RqN0gAwDPXwnCAFkDAkP2hjT7
+Date:   Mon, 22 Nov 2021 13:19:20 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] gpio: add sloppy logic analyzer using polling
+Message-ID: <YZuKyEcsXb8dwiHG@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org
+References: <20210918083307.3195-1-wsa+renesas@sang-engineering.com>
+ <20210918083307.3195-2-wsa+renesas@sang-engineering.com>
+ <CAHp75Vdv=0i05EitMi6JjbjML-jFD_1M0q7ps2KVHcN4UtFU-w@mail.gmail.com>
+ <YUhGkBdXJUI3XadP@ninjato>
+ <CAHp75VcXuYLM4cPAb+rv47wz0v+Q6tjek6tKuBj32K81XxkKaA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.202.227.178]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="UUeC4Ll6cpV9GYTC"
+Content-Disposition: inline
+In-Reply-To: <CAHp75VcXuYLM4cPAb+rv47wz0v+Q6tjek6tKuBj32K81XxkKaA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like ASID allocator, we copy the active_vmids into the
-reserved_vmids on a rollover. But it's unlikely that
-every CPU will have a vCPU as current task and we may
-end up unnecessarily reserving the VMID space.
 
-Hence, set active_vmids to an invalid one when scheduling
-out a vCPU.
+--UUeC4Ll6cpV9GYTC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
----
- arch/arm64/include/asm/kvm_host.h |  1 +
- arch/arm64/kvm/arm.c              |  1 +
- arch/arm64/kvm/vmid.c             | 25 ++++++++++++++++++++++---
- 3 files changed, 24 insertions(+), 3 deletions(-)
+Hi Andy,
 
-diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index 752d4408e3d0..22f952effd03 100644
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -692,6 +692,7 @@ extern unsigned int kvm_arm_vmid_bits;
- int kvm_arm_vmid_alloc_init(void);
- void kvm_arm_vmid_alloc_free(void);
- void kvm_arm_vmid_update(struct kvm_vmid *kvm_vmid);
-+void kvm_arm_vmid_clear_active(void);
- 
- static inline void kvm_arm_pvtime_vcpu_init(struct kvm_vcpu_arch *vcpu_arch)
- {
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 0544011b0fc6..bfe926805240 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -431,6 +431,7 @@ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
- 	kvm_timer_vcpu_put(vcpu);
- 	kvm_vgic_put(vcpu);
- 	kvm_vcpu_pmu_restore_host(vcpu);
-+	kvm_arm_vmid_clear_active();
- 
- 	vcpu->cpu = -1;
- }
-diff --git a/arch/arm64/kvm/vmid.c b/arch/arm64/kvm/vmid.c
-index 9aff692b6b7d..966ebb2d12e5 100644
---- a/arch/arm64/kvm/vmid.c
-+++ b/arch/arm64/kvm/vmid.c
-@@ -32,6 +32,13 @@ static DEFINE_PER_CPU(u64, reserved_vmids);
- #define vmid2idx(vmid)		((vmid) & ~VMID_MASK)
- #define idx2vmid(idx)		vmid2idx(idx)
- 
-+/*
-+ * As vmid #0 is always reserved, we will never allocate one
-+ * as below and can be treated as invalid. This is used to
-+ * set the active_vmids on vCPU schedule out.
-+ */
-+#define VMID_ACTIVE_INVALID		VMID_FIRST_VERSION
-+
- #define vmid_gen_match(vmid) \
- 	(!(((vmid) ^ atomic64_read(&vmid_generation)) >> kvm_arm_vmid_bits))
- 
-@@ -122,6 +129,12 @@ static u64 new_vmid(struct kvm_vmid *kvm_vmid)
- 	return vmid;
- }
- 
-+/* Called from vCPU sched out with preemption disabled */
-+void kvm_arm_vmid_clear_active(void)
-+{
-+	atomic64_set(this_cpu_ptr(&active_vmids), VMID_ACTIVE_INVALID);
-+}
-+
- void kvm_arm_vmid_update(struct kvm_vmid *kvm_vmid)
- {
- 	unsigned long flags;
-@@ -132,11 +145,17 @@ void kvm_arm_vmid_update(struct kvm_vmid *kvm_vmid)
- 	/*
- 	 * Please refer comments in check_and_switch_context() in
- 	 * arch/arm64/mm/context.c.
-+	 *
-+	 * Unlike ASID allocator, we set the active_vmids to
-+	 * VMID_ACTIVE_INVALID on vCPU schedule out to avoid
-+	 * reserving the VMID space needlessly on rollover.
-+	 * Hence explicitly check here for a "!= 0" to
-+	 * handle the sync with a concurrent rollover.
- 	 */
- 	old_active_vmid = atomic64_read(this_cpu_ptr(&active_vmids));
--	if (old_active_vmid && vmid_gen_match(vmid) &&
--	    atomic64_cmpxchg_relaxed(this_cpu_ptr(&active_vmids),
--				     old_active_vmid, vmid))
-+	if (old_active_vmid != 0 && vmid_gen_match(vmid) &&
-+	    0 != atomic64_cmpxchg_relaxed(this_cpu_ptr(&active_vmids),
-+					  old_active_vmid, vmid))
- 		return;
- 
- 	raw_spin_lock_irqsave(&cpu_vmid_lock, flags);
--- 
-2.17.1
+> > ? Dunno, maybe it is not arbitrary that it is < PAGE_SIZE but other than
+> > that the value I chose is arbitrary. There is no technical reason for
+> > 2048.
+>=20
+> I understand, but the comment is a bit misleading. My proposal is to
+> extend / amend the comment to point the upper-upper limit out. Perhaps
+> you need to rename "upper" for your case, or use a different word for
+> the PAGE_SIZE limit. Up to you.
 
+I use now "upper limit is arbitrary but should be less than PAGE_SIZE".
+
+> > > > +       if (ret < 0) {
+> > >
+> > > > +               dev_err(dev, "error naming the GPIOs: %d\n", ret);
+> > > > +               return ret;
+> > > > +       }
+> > >
+> > > Perhaps
+> > >
+> > >   return dev_err_probe() ?
+> >
+> > Reading strings from DT can be deferred? I don't think so.
+>=20
+> There is a new development, i.e. the documentation for dev_err_probe()
+> is going to be amended to allow this. But I can't quickly find a patch
+> in mailing list with the related discussion.
+
+I still don't get this one, so if there is new development and you have
+a pointer, I'd be glad to hear about it. Otherwise we can fix it
+incrementally later.
+
+All the best,
+
+   Wolfram
+
+
+--UUeC4Ll6cpV9GYTC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmGbisQACgkQFA3kzBSg
+KbYjVxAAhAEkgJ9mkVKfVHzW7nH/rKKhQUNyA277eADWyw+pOXSfIO/k92g1q20s
+bJ7BrUdJpvyMqC91wsOL/v8jEMzNRUKduYKRU8/nRCF8gyRT93yYpsXa8CG4DQrC
+i+ZkLUloiIeqkzD7tn4oj72duihVGEPjljohhwmRlxUEImVMXpcpdTqFeUtj55Ak
+2h9rZp61rmz6Fy1f+fRX3wMyG2/7lPr5uTo2NjYpM/z9eNeEyuziZCuawj24zk12
+rvxn/Y2ZdIrqBOzD6L0QvqEONX2bCs3n7SxnYK4H+GMSc3RGH+0Ovd5f01zE6kH6
+bW5ADVic+qhEQrmlQ5728x/x6pr99634K1tFrj3v1thVhIzqdT1wK0kW3YduLibi
+n04hhKw6GuHPj4evoVr9p3tjg+GjtUYLTKTCHsxzk8vKLLZvgxSqFfTaYLAuI1Er
+CSVepIhhlC3ba4v7Cq/xIYgT5c1ZRLNcIRWLqk0A9FPordyW22VqQULenSzZOE9d
+MyKF5zzOHphzimtD/1Ym+3O77KgNv4HZnXYHkiBtuorWjLiD7UG2i2UWZTRHsbvv
+hTAOKHiGeJcSOHPLC9NUXMJ+w6bF19kUzIw54pU+aOKSc2gOEASh7yHtw/B3Z6EP
+qZQZLKfmIn6fmCXMP6fb4o92SRP5fse1oo/llDP8sLtD6p0CShY=
+=tn0o
+-----END PGP SIGNATURE-----
+
+--UUeC4Ll6cpV9GYTC--
