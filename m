@@ -2,109 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 969054592EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 17:21:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A2234592F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 17:23:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239580AbhKVQYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 11:24:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36370 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233052AbhKVQYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 11:24:20 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 710B160D42;
-        Mon, 22 Nov 2021 16:21:08 +0000 (UTC)
-Date:   Mon, 22 Nov 2021 11:21:06 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul McKenney <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Maciej Rozycki <macro@orcam.me.uk>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Luis Chamberlain <mcgrof@kernel.org>, Wei Liu <wl@xen.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Laura Abbott <labbott@kernel.org>,
-        David S Miller <davem@davemloft.net>,
-        Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Scull <ascull@google.com>,
-        Marc Zyngier <maz@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Wang Qing <wangqing@vivo.com>, Mel Gorman <mgorman@suse.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
-        Mathieu Chouquet-Stringer <me@mathieu.digital>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stephen Kitt <steve@sk2.org>, Stephen Boyd <sboyd@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-hardening@vger.kernel.org,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>, notify@kernel.org,
-        main@lists.elisa.tech, safety-architecture@lists.elisa.tech,
-        devel@lists.elisa.tech, Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH v2 0/2] Introduce the pkill_on_warn parameter
-Message-ID: <20211122112106.5fa656bc@gandalf.local.home>
-In-Reply-To: <YZjnREFGhEO9pX6O@elver.google.com>
-References: <20211027233215.306111-1-alex.popov@linux.com>
-        <ac989387-3359-f8da-23f9-f5f6deca4db8@linux.com>
-        <CAHk-=wgRmjkP3+32XPULMLTkv24AkA=nNLa7xxvSg-F0G1sJ9g@mail.gmail.com>
-        <77b79f0c-48f2-16dd-1d00-22f3a1b1f5a6@linux.com>
-        <CAKXUXMx5Oi-dNVKB+8E-pdrz+ooELMZf=oT_oGXKFrNWejz=fg@mail.gmail.com>
-        <20211115110649.4f9cb390@gandalf.local.home>
-        <202111151116.933184F716@keescook>
-        <YZjnREFGhEO9pX6O@elver.google.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S236161AbhKVQ1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 11:27:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38619 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231307AbhKVQ05 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 11:26:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637598229;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=efSmwxiUUtJf26Hl785CQMfaXFiaJqB6njx3g5TY46w=;
+        b=E4qAHURxmqEuHN4QyPFGhPIVH+X/C5eSjohOgQbJbUWvetsWLfiksQCnl+lQJEgBlFgkoZ
+        n5Cd8qdlC9S5VvuBUZvWbCoTQaB14+2WlvHVxeLwl2OvKCBdsdd3xk+Y2YthPgLHl2lSNx
+        ksSRCJ92Ub181EGSqgDRM8ulEdZT7zc=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-214-sj5crUMtOuGZSR1wcO3cCQ-1; Mon, 22 Nov 2021 11:23:30 -0500
+X-MC-Unique: sj5crUMtOuGZSR1wcO3cCQ-1
+Received: by mail-ed1-f69.google.com with SMTP id f4-20020a50e084000000b003db585bc274so15244750edl.17
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 08:23:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=efSmwxiUUtJf26Hl785CQMfaXFiaJqB6njx3g5TY46w=;
+        b=K3srT54Bj/gkt+Z5aSit98NI1xhiPAKAfDxhrjL1INvkTTcdTyCt27Army3RVt5x4d
+         9PUhRPKVZ5YvClMerL+gOj7gRxONwr59xNDAu+oo89rY8nKDuJrsZnRe0tS9jwrmmhV1
+         DZh7+rbu10K0mi/nHZ6G6MKJxuWz/T+zmjNuWzXZxzlj2aFRfugkD0RA6sMv+hfJXqsU
+         F8KxBqE3k+jkUEMKA1z9H9GZGwy68eXthGJ3qFpB9rH3amknhyMAnRfd7JMNA9DMjHxq
+         nMWBVcPWNbTY4m1EhD/wTFNzMByPqpLTX2fYwxe4dfkN5DnbDAkBhjow1bD2MAgyshaF
+         TyKQ==
+X-Gm-Message-State: AOAM530fcKpmA/q990fB1DbPSQNbTxWpDtVWpOeALjDsCJGraphnxyVg
+        9x/M3CLaQYhLq8D11Or6dsdZ2rKdQfnMU1limj7uvlqb1KCTSBN5UIOwvIoyCdMqLFMtuIP+M/c
+        uGR1R4VYL4i0KHFtVB6bccjyQ
+X-Received: by 2002:aa7:df9a:: with SMTP id b26mr66258646edy.107.1637598209589;
+        Mon, 22 Nov 2021 08:23:29 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJypOCvvJc4Uunk8NDr5uqUQL2+zRETKUnZEB8ll4wnoYCNHncNxVvfAIWCG/0rhW4OJYhc7qg==
+X-Received: by 2002:aa7:df9a:: with SMTP id b26mr66258601edy.107.1637598209339;
+        Mon, 22 Nov 2021 08:23:29 -0800 (PST)
+Received: from steredhat (host-87-10-72-39.retail.telecomitalia.it. [87.10.72.39])
+        by smtp.gmail.com with ESMTPSA id j4sm4285620edk.64.2021.11.22.08.23.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Nov 2021 08:23:29 -0800 (PST)
+Date:   Mon, 22 Nov 2021 17:23:26 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     Jason Wang <jasowang@redhat.com>, mst <mst@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "kaplan, david" <david.kaplan@amd.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>
+Subject: Re: [PATCH V5 1/4] virtio_ring: validate used buffer length
+Message-ID: <20211122162326.f22bpzse74skqjex@steredhat>
+References: <20211027022107.14357-1-jasowang@redhat.com>
+ <20211027022107.14357-2-jasowang@redhat.com>
+ <20211119160951.5f2294c8.pasic@linux.ibm.com>
+ <CACGkMEtja2TPC=ujgMrpaPmdsy+zHowbBTvPj8k7nm_+zB8vig@mail.gmail.com>
+ <20211122063518.37929c01.pasic@linux.ibm.com>
+ <20211122064922.51b3678e.pasic@linux.ibm.com>
+ <CACGkMEu+9FvMsghyi55Ee5BxetP-YK9wh2oaT8OgLiY5+tV0QQ@mail.gmail.com>
+ <20211122075524.lzojug4hspzglzhl@steredhat>
+ <20211122110822.3xqcdluezrcapkyp@steredhat>
+ <20211122152432.23a70a12.pasic@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20211122152432.23a70a12.pasic@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 20 Nov 2021 13:17:08 +0100
-Marco Elver <elver@google.com> wrote:
+On Mon, Nov 22, 2021 at 03:24:32PM +0100, Halil Pasic wrote:
+>On Mon, 22 Nov 2021 12:08:22 +0100
+>Stefano Garzarella <sgarzare@redhat.com> wrote:
+>
+>> On Mon, Nov 22, 2021 at 08:55:24AM +0100, Stefano Garzarella wrote:
+>> >On Mon, Nov 22, 2021 at 02:25:26PM +0800, Jason Wang wrote:
+>> >>On Mon, Nov 22, 2021 at 1:49 PM Halil Pasic <pasic@linux.ibm.com> wrote:
+>> >>>
+>> >>>On Mon, 22 Nov 2021 06:35:18 +0100
+>> >>>Halil Pasic <pasic@linux.ibm.com> wrote:
+>> >>>
+>> >>>> > I think it should be a common issue, looking at
+>> >>>> > vhost_vsock_handle_tx_kick(), it did:
+>> >>>> >
+>> >>>> > len += sizeof(pkt->hdr);
+>> >>>> > vhost_add_used(vq, head, len);
+>> >>>> >
+>> >>>> > which looks like a violation of the spec since it's TX.
+>> >>>>
+>> >>>> I'm not sure the lines above look like a violation of the spec. If you
+>> >>>> examine vhost_vsock_alloc_pkt() I believe that you will agree that:
+>> >>>> len == pkt->len == pkt->hdr.len
+>> >>>> which makes sense since according to the spec both tx and rx messages
+>> >>>> are hdr+payload. And I believe hdr.len is the size of the payload,
+>> >>>> although that does not seem to be properly documented by the spec.
+>> >>
+>> >>Sorry for being unclear, what I meant is that we probably should use
+>> >>zero here. TX doesn't use in buffer actually.
+>> >>
+>> >>According to the spec, 0 should be the used length:
+>> >>
+>> >>"and len the total of bytes written into the buffer."
+>> >>
+>> >>>>
+>> >>>> On the other hand tx messages are stated to be device read-only (in the
+>> >>>> spec) so if the device writes stuff, that is certainly wrong.
+>> >>>>
+>> >>
+>> >>Yes.
+>> >>
+>> >>>> If that is what happens.
+>> >>>>
+>> >>>> Looking at virtqueue_get_buf_ctx_split() I'm not sure that is what
+>> >>>> happens. My hypothesis is that we just a last descriptor is an 'in'
+>> >>>> type descriptor (i.e. a device writable one). For tx that assumption
+>> >>>> would be wrong.
+>> >>>>
+>> >>>> I will have another look at this today and send a fix patch if my
+>> >>>> suspicion is confirmed.
+>> >>>
+>> >>>If my suspicion is right something like:
+>> >>>
+>> >>>diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+>> >>>index 00f64f2f8b72..efb57898920b 100644
+>> >>>--- a/drivers/virtio/virtio_ring.c
+>> >>>+++ b/drivers/virtio/virtio_ring.c
+>> >>>@@ -764,6 +764,7 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
+>> >>>        struct vring_virtqueue *vq = to_vvq(_vq);
+>> >>>        void *ret;
+>> >>>        unsigned int i;
+>> >>>+       bool has_in;
+>> >>>        u16 last_used;
+>> >>>
+>> >>>        START_USE(vq);
+>> >>>@@ -787,6 +788,9 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
+>> >>>                        vq->split.vring.used->ring[last_used].id);
+>> >>>        *len = virtio32_to_cpu(_vq->vdev,
+>> >>>                        vq->split.vring.used->ring[last_used].len);
+>> >>>+       has_in = virtio16_to_cpu(_vq->vdev,
+>> >>>+                       vq->split.vring.used->ring[last_used].flags)
+>> >>>+                               & VRING_DESC_F_WRITE;
+>> >>
+>> >>Did you mean vring.desc actually? If yes, it's better not depend on
+>> >>the descriptor ring which can be modified by the device. We've stored
+>> >>the flags in desc_extra[].
+>> >>
+>> >>>
+>> >>>        if (unlikely(i >= vq->split.vring.num)) {
+>> >>>                BAD_RING(vq, "id %u out of range\n", i);
+>> >>>@@ -796,7 +800,7 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
+>> >>>                BAD_RING(vq, "id %u is not a head!\n", i);
+>> >>>                return NULL;
+>> >>>        }
+>> >>>-       if (vq->buflen && unlikely(*len > vq->buflen[i])) {
+>> >>>+       if (has_in && q->buflen && unlikely(*len > vq->buflen[i])) {
+>> >>>                BAD_RING(vq, "used len %d is larger than in buflen %u\n",
+>> >>>                        *len, vq->buflen[i]);
+>> >>>                return NULL;
+>> >>>
+>> >>>would fix the problem for split. I will try that out and let you know
+>> >>>later.
+>> >>
+>> >>I'm not sure I get this, in virtqueue_add_split, the buflen[i] only
+>> >>contains the in buffer length.
+>> >>
+>> >>I think the fixes are:
+>> >>
+>> >>1) fixing the vhost vsock
+>> >
+>> >Yep, in vhost_vsock_handle_tx_kick() we should have vhost_add_used(vq,
+>> >head, 0) since the device doesn't write anything.
+>> >
+>> >>2) use suppress_used_validation=true to let vsock driver to validate
+>> >>the in buffer length
+>> >>3) probably a new feature so the driver can only enable the validation
+>> >>when the feature is enabled.
+>> >
+>> >I fully agree with these steps.
+>>
+>> Michael sent a patch to suppress the validation, so I think we should
+>> just fix vhost-vsock. I mean something like this:
+>>
+>> diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+>> index 938aefbc75ec..4e3b95af7ee4 100644
+>> --- a/drivers/vhost/vsock.c
+>> +++ b/drivers/vhost/vsock.c
+>> @@ -554,7 +554,7 @@ static void vhost_vsock_handle_tx_kick(struct vhost_work *work)
+>>                          virtio_transport_free_pkt(pkt);
+>>
+>>                  len += sizeof(pkt->hdr);
+>> -               vhost_add_used(vq, head, len);
+>> +               vhost_add_used(vq, head, 0);
+>>                  total_len += len;
+>>                  added = true;
+>>          } while(likely(!vhost_exceeds_weight(vq, ++pkts, total_len)));
+>>
+>> I checked and the problem is there from the first commit, so we should
+>> add:
+>>
+>> Fixes: 433fc58e6bf2 ("VSOCK: Introduce vhost_vsock.ko")
+>>
+>> I tested this patch and it works even without suppressing validation in
+>> the virtio core.  But for backwards compatibility we have to suppress it
+>> for sure as Michael did.
+>>
+>> Maybe we can have a patch just with this change to backport it easily
+>> and one after to clean up a bit the code that was added after (len,
+>> total_len).
+>>
+>> @Halil Let me know if you want to do it, otherwise I can do it.
+>>
+>
+>It is fine, it was you guys who figured out the solution so I think
+>it should either be Jason or you who take credit for the patch.
 
+Okay, I'm finishing the tests and sending the patch.
 
-> I think userspace would want something other than perf tool to handle it
-> of course.  There are several options:
-> 
-> 	1. Open trace pipe to be notified (/sys/kernel/tracing/trace_pipe).
-> 	   This already includes the pid.
+>Thanks for addressing the issue this quickly!
 
-I would suggest using /sys/kernel/tracing/per_cpu/cpu*/trace_pipe_raw
+Thanks for reporting!
 
-and use libtracefs[1] to read it.
+Stefano
 
--- Steve
-
-[1] https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
