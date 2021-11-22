@@ -2,110 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B411745930E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 17:31:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C46E1459313
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 17:31:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239446AbhKVQev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 11:34:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43752 "EHLO mail.kernel.org"
+        id S240292AbhKVQez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 11:34:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230099AbhKVQeu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232912AbhKVQeu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Nov 2021 11:34:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C2AB60F24;
-        Mon, 22 Nov 2021 16:31:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637598699;
-        bh=iFOBiXk1C/As6/il8FGU5DiqUhIBtU/YMVkyvDJzQME=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XYC0QVZe/yHz4tn1Ns+3SkcvOpWvBTvUo3eDiFl+LMVW2VmQVljeAVXqs+uEgWo5j
-         Bn3Hr1OA1n9R+SqMDcTIBZ+U4CRlLsz5WrJ5U3phLVmG5YErMn8IAtyWdLD3GEgpTk
-         1OFUk2QerMpoYcASzaxIN35W/DlD2VlfD7R7w8gpMfuFRpjGrwzFQRaP0E2f1lYvfD
-         8oyujkH+Ipt5JGY4bNgZxPE/yxJYVGlRR+74nkiluH5nzYaUkeR7ovS8Gguch81/zw
-         PTDrwU6YHu8IRdG4PltzeEvJO0VZVADDdju2Mi2EJ3rgjxwVY3lzLdY5MnHCtaHk5f
-         GtEJSF+kC4eLw==
-Date:   Mon, 22 Nov 2021 16:31:27 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Paul Walmsley <paul@pwsan.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Benoit Parrot <bparrot@ti.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Keerthy <j-keerthy@ti.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH/RFC 14/17] regulator: ti-abb: Use bitfield helpers
-Message-ID: <YZvF3yh9XnTcaXe9@sirena.org.uk>
-References: <cover.1637592133.git.geert+renesas@glider.be>
- <c8508cae36c52c750dbb12493dd44d92fcf51ad4.1637592133.git.geert+renesas@glider.be>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jRjZyYaT+L2tgnde"
-Content-Disposition: inline
-In-Reply-To: <c8508cae36c52c750dbb12493dd44d92fcf51ad4.1637592133.git.geert+renesas@glider.be>
-X-Cookie: Lake Erie died for your sins.
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8EFB460F90;
+        Mon, 22 Nov 2021 16:31:40 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mpCEE-0075vS-8n; Mon, 22 Nov 2021 16:31:38 +0000
+Date:   Mon, 22 Nov 2021 16:31:37 +0000
+Message-ID: <87y25gcfti.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [RFC PATCH v2 03/11] KVM: Introduce kvm_vm_has_run_once
+In-Reply-To: <20211113012234.1443009-4-rananta@google.com>
+References: <20211113012234.1443009-1-rananta@google.com>
+        <20211113012234.1443009-4-rananta@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: rananta@google.com, drjones@redhat.com, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, pbonzini@redhat.com, catalin.marinas@arm.com, will@kernel.org, pshier@google.com, ricarkol@google.com, oupton@google.com, reijiw@google.com, jingzhangos@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, 13 Nov 2021 01:22:26 +0000,
+Raghavendra Rao Ananta <rananta@google.com> wrote:
+> 
+> The upcoming patches need a way to detect if the VM, as
+> a whole, has started. Hence, unionize kvm_vcpu_has_run_once()
+> of all the vcpus of the VM and build kvm_vm_has_run_once()
+> to achieve the functionality.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> ---
+>  include/linux/kvm_host.h |  2 ++
+>  virt/kvm/kvm_main.c      | 17 +++++++++++++++++
+>  2 files changed, 19 insertions(+)
+> 
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index b373929c71eb..102e00c0e21c 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -1854,4 +1854,6 @@ static inline bool kvm_vcpu_has_run_once(struct kvm_vcpu *vcpu)
+>  	return vcpu->has_run_once;
+>  }
+>  
+> +bool kvm_vm_has_run_once(struct kvm *kvm);
+> +
+>  #endif
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 1ec8a8e959b2..3d8d96e8f61d 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -4339,6 +4339,23 @@ static int kvm_vm_ioctl_get_stats_fd(struct kvm *kvm)
+>  	return fd;
+>  }
+>  
+> +bool kvm_vm_has_run_once(struct kvm *kvm)
+> +{
+> +	int i, ret = false;
+> +	struct kvm_vcpu *vcpu;
+> +
+> +	mutex_lock(&kvm->lock);
+> +
+> +	kvm_for_each_vcpu(i, vcpu, kvm) {
+> +		ret = kvm_vcpu_has_run_once(vcpu);
+> +		if (ret)
+> +			break;
+> +	}
+> +
+> +	mutex_unlock(&kvm->lock);
+> +	return ret;
+> +}
 
---jRjZyYaT+L2tgnde
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This is horribly racy. Nothing prevents a vcpu from running behind
+your back. If you want any sort of guarantee, look at what we do in
+kvm_vgic_create(). Alexandru has patches that extract it to make it
+generally available (at least for arm64).
 
-On Mon, Nov 22, 2021 at 04:54:07PM +0100, Geert Uytterhoeven wrote:
-> Use the field_{get,prep}() helpers, instead of open-coding the same
-> operations.
+	M.
 
-Acked-by: Mark Brown <broonie@kernel.org>
-
---jRjZyYaT+L2tgnde
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGbxd8ACgkQJNaLcl1U
-h9Au/Qf/V1gk6vuEyYqep3F+nkFeONrTZVKuCnRfhWw5gYk2o7IrGtqaN4L0XgcG
-LQLotuaAu0BBZX/+cxF2XPbrWNjnR9MQMIUZo98nlGSTjxam1UhUdHJPbpXm2fbk
-K8DExTJKv+DKeOGRk8LcmAyVHyrkTmZbcPcEE5qwaQldeS/Iuvmg6i889evqj3oD
-FKHeZo8KvkL9B69w+j8bvlnCPiUZJd1spFZc3KMhS1N7HfzQxDGAIsEhezb0vSKa
-Vu8+J+B7goS0IcpAHyB8ng4sUvJZAWDWTzaW+VKb818Swfd84YLF8vEEYabZTM9c
-OVDG47kEUXwqHRPv3qz2+BqXpg9oYw==
-=aIIx
------END PGP SIGNATURE-----
-
---jRjZyYaT+L2tgnde--
+-- 
+Without deviation from the norm, progress is not possible.
