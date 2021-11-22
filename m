@@ -2,134 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6AFC459485
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 19:10:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66AAE45948B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 19:12:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239995AbhKVSNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 13:13:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40300 "EHLO
+        id S240158AbhKVSPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 13:15:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239938AbhKVSNG (ORCPT
+        with ESMTP id S239961AbhKVSPN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 13:13:06 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC4EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 10:09:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nLJQCSLMEKOdB1HX5XlkIMpIxd4c7zFZGDjX6eke1B0=; b=GiR5EuuQOCac6X0B/XiRdYT0lv
-        xpSQHsu2u4JpUg50cFt0GAsk5U2vDlGT4F8u4JxCA7nZi4qPrLW3ha2T42Yp9+Qxjb1UYPMXlyNgT
-        slFiDARonHcJarCEE7i1erfR62pI5N2irekJikYVEFO+/du0FVIXE0wQyPY4HuKMXzM2apApBUj/7
-        0gOxYOF4RfG6cG+F7p1Zh945/ZDlcXve5ws7BgiZK51qkYUfoiUpL1upY770sJ03B8Jcosw6lXNCm
-        v699QF1iWLxjH56qyLjbuEJkPeN8o/KlMJDQlqrgIv3HeKVQAwPjJ8DRwyFX9hCXmK1ZqUo6Zv14I
-        GsnmWG7w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mpDlD-00D41G-3g; Mon, 22 Nov 2021 18:09:48 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1F8E798664C; Mon, 22 Nov 2021 19:09:47 +0100 (CET)
-Date:   Mon, 22 Nov 2021 19:09:47 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org, joao@overdrivepizza.com, hjl.tools@gmail.com,
-        jpoimboe@redhat.com, andrew.cooper3@citrix.com
-Cc:     linux-kernel@vger.kernel.org, ndesaulniers@google.com,
-        keescook@chromium.org, samitolvanen@google.com
-Subject: Re: [RFC][PATCH 3/6] x86: Add ENDBR to IRET-to-Self
-Message-ID: <20211122180947.GA721624@worktop.programming.kicks-ass.net>
-References: <20211122170301.764232470@infradead.org>
- <20211122170805.149482391@infradead.org>
+        Mon, 22 Nov 2021 13:15:13 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B64E1C061714
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 10:12:06 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id k1so19040471ilo.7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 10:12:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p6/8uM+NimmsItYVu7awvBFOK5lN31Sf9yeeX+5zQIs=;
+        b=PLO5Rz6qCRt6kyLFwICfoY1F8IoEssWROqiQoJEstRqbksS2hDNtWrbnxCS3+eJRnR
+         EOgXAgdA8uBJ6o8vEOSQGhD99q8+K6A2ZIBGRimd2TQGHON0/YZKS7xyRqoxe6zggCSl
+         ymcHk5OtCc+Yq2hxNnsraKzVe4ky174OAU+txst3vn/KYxIX3VMyw/9MRlBc6cMvxyEQ
+         IY4k52zN2E6sc2kex6ryADL9CiZqrIoxmxg1+sVLLosIWpYqg80ZPiqbu+PpURZCWE/F
+         i1Vci8nfqdjq5+8XOlwVA2udXzcC40XLNS31BtmjnRugWxIaX67Vfp04aPuBuLzSH5uo
+         yUxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p6/8uM+NimmsItYVu7awvBFOK5lN31Sf9yeeX+5zQIs=;
+        b=dqHvB9BaE8wqXH3EY2gTQHYBp80kRpPrAAuc3MyR4U8qmObYAri/jyEsu69oiEISrE
+         svOPrxekCCfgTwF5kMl+Zo44QNR28jIIEwpizN2faGZU4SvhBSaLvsxJY55xKPGBsm82
+         RlGhtqlcCfW8PLgEqovMXfZdwubXQhF7F78pTdDWIFuAp/xlU108kZJKe6nMkKrltomL
+         PtWWyA1fOuPx4ZcW8tM0zz9ycUdT4BX/9R2D1BLjBsN+tLMBBmX6pavNbr6OZoEK6R0h
+         BPq5UzQFwfz2DiY+wK1Hof0GS4dzl6uIviR9PMbw37XR2zZynvZ7tfq16lUZXiTEYjj1
+         ajFA==
+X-Gm-Message-State: AOAM53083U6uRAOA6SwJVnNghVDl1lLFQGGjc2Rg0ezHYT68xS6ZZNtN
+        7Z0WNs14JX2Ifk3HK5/Gk4KYMS0CAaOoQnskYM2Rfg==
+X-Google-Smtp-Source: ABdhPJxJuvT7i6OSzB4lM5dDSpcLPxT4IvshhbwD/+Fe5beRzQCFEFUaH3Rdt465r4JhzmzyVJH83xJN/x84pja1Puc=
+X-Received: by 2002:a05:6e02:52d:: with SMTP id h13mr21561146ils.274.1637604725887;
+ Mon, 22 Nov 2021 10:12:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211122170805.149482391@infradead.org>
+References: <20211115234603.2908381-1-bgardon@google.com> <20211115234603.2908381-12-bgardon@google.com>
+ <a1be97c6-6784-fd5f-74a8-85124f039530@redhat.com> <YZZxivgSeGH4wZnB@google.com>
+ <942d487e-ba6b-9c60-e200-3590524137b9@redhat.com>
+In-Reply-To: <942d487e-ba6b-9c60-e200-3590524137b9@redhat.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Mon, 22 Nov 2021 10:11:53 -0800
+Message-ID: <CANgfPd-_7tR9tSJg85-0wAG72454qeedovhBvbX6OS1YNRxvMw@mail.gmail.com>
+Subject: Re: [PATCH 11/15] KVM: x86/MMU: Refactor vmx_get_mt_mask
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>,
+        David Hildenbrand <david@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 06:03:04PM +0100, Peter Zijlstra wrote:
-> The IRET-to-Self chunks trigger forward code references without ENDBR,
-> fix that.
+On Fri, Nov 19, 2021 at 1:03 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 11/18/21 16:30, Sean Christopherson wrote:
+> > On Thu, Nov 18, 2021, Paolo Bonzini wrote:
+> >> On 11/16/21 00:45, Ben Gardon wrote:
+> >>> Remove the gotos from vmx_get_mt_mask to make it easier to separate out
+> >>> the parts which do not depend on vcpu state.
+> >>>
+> >>> No functional change intended.
+> >>>
+> >>>
+> >>> Signed-off-by: Ben Gardon <bgardon@google.com>
+> >>
+> >> Queued, thanks (with a slightly edited commit message; the patch is a
+> >> simplification anyway).
+> >
+> > Don't know waht message you've queued, but just in case you kept some of the original,
+> > can you further edit it to remove any snippets that mention separating out the parts
+> > that don't depend on vCPU state?
+>
+> Indeed I did keep some:
+>
+> commit b7297e02826857e068d03f844c8336ce48077d78
+> Author: Ben Gardon <bgardon@google.com>
+> Date:   Mon Nov 15 15:45:59 2021 -0800
+>
+>      KVM: x86/MMU: Simplify flow of vmx_get_mt_mask
+>
+>      Remove the gotos from vmx_get_mt_mask.  This may later make it easier
+>      to separate out the parts which do not depend on vcpu state, but it also
+>      simplifies the code in general.
+>
+>      No functional change intended.
+>
+> i.e. keeping it conditional but I can edit it further, like
+>
+>      Remove the gotos from vmx_get_mt_mask.  It's easier to build the whole
+>      memory type at once, than it is to combine separate cacheability and ipat
+>      fields.
+>
+> Paolo
+>
+> > IMO, we should not separate vmx_get_mt_mask() into per-VM and per-vCPU variants,
+> > because the per-vCPU variant is a lie.  The memtype of a SPTE is not tracked anywhere,
+> > which means that if the guest has non-uniform CR0.CD/NW or MTRR settings, KVM will
+> > happily let the guest consumes SPTEs with the incorrect memtype.  In practice, this
+> > isn't an issue because no sane BIOS or kernel uses per-CPU MTRRs, nor do they have
+> > DMA operations running while the cacheability state is in flux.
+> >
+> > If we really want to make this state per-vCPU, KVM would need to incorporate the
+> > CR0.CD and MTRR settings in kvm_mmu_page_role.  For MTRRs in particular, the worst
+> > case scenario is that every vCPU has different MTRR settings, which means that
+> > kvm_mmu_page_role would need to be expanded by 10 bits in order to track every
+> > possible vcpu_idx (currently capped at 1024).
+>
+> Yes, that's insanity.  I was also a bit skeptical about Ben's try_get_mt_mask callback,
+> but this would be much much worse.
 
-Andy corrected me, IRET doesn't take ENBR, the alternative is the below.
+Yeah, the implementation of that felt a bit kludgy to me too, but
+refactoring the handling of all those CR bits was way more complex
+than I wanted to handle in this patch set.
+I'd love to see some of those CR0 / MTRR settings be set on a VM basis
+and enforced as uniform across vCPUs.
+Looking up vCPU 0 and basing things on that feels extra hacky though,
+especially if we're still not asserting uniformity of settings across
+vCPUs.
+If we need to track that state to accurately virtualize the hardware
+though, that would be unfortunate.
 
----
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -1316,7 +1316,6 @@ SYM_CODE_START(asm_exc_nmi)
- 	iretq			/* continues at repeat_nmi below */
- 	UNWIND_HINT_IRET_REGS entry=0
- 1:
--	ENDBR
- #endif
- 
- repeat_nmi:
---- a/arch/x86/include/asm/sync_core.h
-+++ b/arch/x86/include/asm/sync_core.h
-@@ -6,7 +6,6 @@
- #include <asm/processor.h>
- #include <asm/cpufeature.h>
- #include <asm/special_insns.h>
--#include <asm/ibt.h>
- 
- #ifdef CONFIG_X86_32
- static inline void iret_to_self(void)
-@@ -35,7 +34,6 @@ static inline void iret_to_self(void)
- 		"pushq $1f\n\t"
- 		"iretq\n\t"
- 		"1:"
--		ASM_ENDBR
- 		: "=&r" (tmp), ASM_CALL_CONSTRAINT : : "cc", "memory");
- }
- #endif /* CONFIG_X86_32 */
---- a/tools/objtool/arch/x86/decode.c
-+++ b/tools/objtool/arch/x86/decode.c
-@@ -598,6 +598,7 @@ int arch_decode_instruction(struct objto
- 				op->dest.type = OP_DEST_REG;
- 				op->dest.reg = CFI_SP;
- 			}
-+			*type = INSN_IRET;
- 			break;
- 		}
- 
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -3587,7 +3587,7 @@ static int validate_ibt_reloc(struct obj
- static void validate_ibt_insn(struct objtool_file *file, struct instruction *insn)
- {
- 	struct reloc *reloc = insn_reloc(file, insn);
--	struct instruction *target;
-+	struct instruction *target, *n;
- 	unsigned long offset;
- 
- 	if (!reloc)
-@@ -3599,8 +3599,16 @@ static void validate_ibt_insn(struct obj
- 	offset = reloc->sym->offset + reloc->addend;
- 
- 	target = find_insn(file, reloc->sym->sec, offset);
--	if (target && insn->func == target->func && target->this_ip)
--		return;
-+	if (target && insn->func == target->func) {
-+		if (target->this_ip)
-+			return;
-+
-+		for (n = insn; n->offset <= target->offset;
-+		     n = next_insn_same_func(file, n)) {
-+			if (n->type == INSN_IRET)
-+				return;
-+		}
-+	}
- 
- 	WARN_FUNC("relocation to !ENDBR: %s+0x%lx",
- 		  insn->sec, insn->offset,
---- a/tools/objtool/include/objtool/arch.h
-+++ b/tools/objtool/include/objtool/arch.h
-@@ -27,6 +27,7 @@ enum insn_type {
- 	INSN_STD,
- 	INSN_CLD,
- 	INSN_ENDBR,
-+	INSN_IRET,
- 	INSN_OTHER,
- };
- 
+>
+> Paolo
+>
+> > So unless we want to massively complicate kvm_mmu_page_role and gfn_track for a
+> > scenario no one cares about, I would strongly prefer to acknowledge that KVM assumes
+> > memtypes are a per-VM property, e.g. on top:
+> >
+> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > index 77f45c005f28..8a84d30f1dbd 100644
+> > --- a/arch/x86/kvm/vmx/vmx.c
+> > +++ b/arch/x86/kvm/vmx/vmx.c
+> > @@ -6984,8 +6984,9 @@ static int __init vmx_check_processor_compat(void)
+> >          return 0;
+> >   }
+> >
+> > -static u64 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
+> > +static u64 vmx_get_mt_mask(struct kvm *kvm, gfn_t gfn, bool is_mmio)
+> >   {
+> > +       struct kvm_vcpu *vcpu;
+> >          u8 cache;
+> >
+> >          /* We wanted to honor guest CD/MTRR/PAT, but doing so could result in
+> > @@ -7009,11 +7010,15 @@ static u64 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
+> >          if (is_mmio)
+> >                  return MTRR_TYPE_UNCACHABLE << VMX_EPT_MT_EPTE_SHIFT;
+> >
+> > -       if (!kvm_arch_has_noncoherent_dma(vcpu->kvm))
+> > +       if (!kvm_arch_has_noncoherent_dma(kvm))
+> >                  return (MTRR_TYPE_WRBACK << VMX_EPT_MT_EPTE_SHIFT) | VMX_EPT_IPAT_BIT;
+> >
+> > +       vcpu = kvm_get_vcpu_by_id(kvm, 0);
+> > +       if (KVM_BUG_ON(!vcpu, kvm))
+> > +               return;
+> > +
+> >          if (kvm_read_cr0(vcpu) & X86_CR0_CD) {
+> > -               if (kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_CD_NW_CLEARED))
+> > +               if (kvm_check_has_quirk(kvm, KVM_X86_QUIRK_CD_NW_CLEARED))
+> >                          cache = MTRR_TYPE_WRBACK;
+> >                  else
+> >                          cache = MTRR_TYPE_UNCACHABLE;
+> >
+>
