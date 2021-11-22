@@ -2,100 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 124B5459335
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 17:37:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD50459333
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 17:37:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240302AbhKVQkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 11:40:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:58899 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240218AbhKVQki (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 11:40:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637599051;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FtiMabVFYcwNMDFttEd/wf2XPW5romYn4RuDWOa8zdA=;
-        b=DdM9HAYtvPyuSYN0lyFj5RnNhH09YWI4H2Iu8WtfSt1rK8H8JPgVJ9XeAC8BY76W/XuXwc
-        a3NYwrwctzcbwEMsvvfGwWapK/2zGIiu1b5cslOF6QIS8y3nXFvhX7F2ihl046kXZNNxbZ
-        KRJ8+WmjOOMAJZdS5zny9H9t4Lpi6s8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-83-YXZzuXfLNl6_9piSG5gpeQ-1; Mon, 22 Nov 2021 11:37:30 -0500
-X-MC-Unique: YXZzuXfLNl6_9piSG5gpeQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ED2501851723;
-        Mon, 22 Nov 2021 16:37:28 +0000 (UTC)
-Received: from steredhat.redhat.com (unknown [10.39.192.181])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 17B2B60CC4;
-        Mon, 22 Nov 2021 16:36:45 +0000 (UTC)
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     virtualization@lists.linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>, netdev@vger.kernel.org,
-        Halil Pasic <pasic@linux.ibm.com>, kvm@vger.kernel.org,
-        Asias He <asias@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH 2/2] vhost/vsock: cleanup removing `len` variable
-Date:   Mon, 22 Nov 2021 17:35:25 +0100
-Message-Id: <20211122163525.294024-3-sgarzare@redhat.com>
-In-Reply-To: <20211122163525.294024-1-sgarzare@redhat.com>
-References: <20211122163525.294024-1-sgarzare@redhat.com>
+        id S240270AbhKVQkd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 22 Nov 2021 11:40:33 -0500
+Received: from foss.arm.com ([217.140.110.172]:43204 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232071AbhKVQkc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 11:40:32 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 57A04ED1;
+        Mon, 22 Nov 2021 08:37:25 -0800 (PST)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5A2243F66F;
+        Mon, 22 Nov 2021 08:37:23 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kbuild@vger.kernel.org
+Cc:     Marco Elver <elver@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Mike Galbraith <efault@gmx.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: [PATCH v2 2/5] preempt/dynamic: Introduce preempt mode accessors
+In-Reply-To: <2f22c57d-9bf0-3cc1-f0f1-61ecdf5dfa52@csgroup.eu>
+References: <20211110202448.4054153-1-valentin.schneider@arm.com> <20211110202448.4054153-3-valentin.schneider@arm.com> <2f22c57d-9bf0-3cc1-f0f1-61ecdf5dfa52@csgroup.eu>
+Date:   Mon, 22 Nov 2021 16:37:16 +0000
+Message-ID: <87y25gcfk3.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can increment `total_len` directly and remove `len` since it
-is no longer used for vhost_add_used().
+On 16/11/21 14:29, Christophe Leroy wrote:
+> Le 10/11/2021 à 21:24, Valentin Schneider a écrit :
+>> CONFIG_PREEMPT{_NONE, _VOLUNTARY} designate either:
+>> o The build-time preemption model when !PREEMPT_DYNAMIC
+>> o The default boot-time preemption model when PREEMPT_DYNAMIC
+>>
+>> IOW, using those on PREEMPT_DYNAMIC kernels is meaningless - the actual
+>> model could have been set to something else by the "preempt=foo" cmdline
+>> parameter.
+>>
+>> Introduce a set of helpers to determine the actual preemption mode used by
+>> the live kernel.
+>>
+>> Suggested-by: Marco Elver <elver@google.com>
+>> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+>> ---
+>>   include/linux/sched.h | 16 ++++++++++++++++
+>>   kernel/sched/core.c   | 11 +++++++++++
+>>   2 files changed, 27 insertions(+)
+>>
+>> diff --git a/include/linux/sched.h b/include/linux/sched.h
+>> index 5f8db54226af..0640d5622496 100644
+>> --- a/include/linux/sched.h
+>> +++ b/include/linux/sched.h
+>> @@ -2073,6 +2073,22 @@ static inline void cond_resched_rcu(void)
+>>   #endif
+>>   }
+>>
+>> +#ifdef CONFIG_PREEMPT_DYNAMIC
+>> +
+>> +extern bool is_preempt_none(void);
+>> +extern bool is_preempt_voluntary(void);
+>> +extern bool is_preempt_full(void);
+>
+> Those are trivial tests supposed to be used in fast pathes. They should
+> be static inlines in order to minimise the overhead.
+>
+>> +
+>> +#else
+>> +
+>> +#define is_preempt_none() IS_ENABLED(CONFIG_PREEMPT_NONE)
+>> +#define is_preempt_voluntary() IS_ENABLED(CONFIG_PREEMPT_VOLUNTARY)
+>> +#define is_preempt_full() IS_ENABLED(CONFIG_PREEMPT)
+>
+> Would be better to use static inlines here as well instead of macros.
+>
 
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
----
- drivers/vhost/vsock.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+I realize I stripped all ppc folks from the cclist after dropping the ppc
+snippet, but you guys might still be interested - my bad. That's done in
+v3:
 
-diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
-index 4e3b95af7ee4..d6ca1c7ad513 100644
---- a/drivers/vhost/vsock.c
-+++ b/drivers/vhost/vsock.c
-@@ -511,8 +511,6 @@ static void vhost_vsock_handle_tx_kick(struct vhost_work *work)
- 
- 	vhost_disable_notify(&vsock->dev, vq);
- 	do {
--		u32 len;
--
- 		if (!vhost_vsock_more_replies(vsock)) {
- 			/* Stop tx until the device processes already
- 			 * pending replies.  Leave tx virtqueue
-@@ -540,7 +538,7 @@ static void vhost_vsock_handle_tx_kick(struct vhost_work *work)
- 			continue;
- 		}
- 
--		len = pkt->len;
-+		total_len += sizeof(pkt->hdr) + pkt->len;
- 
- 		/* Deliver to monitoring devices all received packets */
- 		virtio_transport_deliver_tap_pkt(pkt);
-@@ -553,9 +551,7 @@ static void vhost_vsock_handle_tx_kick(struct vhost_work *work)
- 		else
- 			virtio_transport_free_pkt(pkt);
- 
--		len += sizeof(pkt->hdr);
- 		vhost_add_used(vq, head, 0);
--		total_len += len;
- 		added = true;
- 	} while(likely(!vhost_exceeds_weight(vq, ++pkts, total_len)));
- 
--- 
-2.31.1
+https://lore.kernel.org/lkml/20211112185203.280040-1-valentin.schneider@arm.com/
 
+>> +
+>> +#endif
+>> +
+>> +#define is_preempt_rt() IS_ENABLED(CONFIG_PREEMPT_RT)
+>> +
+>>   /*
+>>    * Does a critical section need to be broken due to another
+>>    * task waiting?: (technically does not depend on CONFIG_PREEMPTION,
+>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>> index 97047aa7b6c2..9db7f77e53c3 100644
+>> --- a/kernel/sched/core.c
+>> +++ b/kernel/sched/core.c
+>> @@ -6638,6 +6638,17 @@ static void __init preempt_dynamic_init(void)
+>>      }
+>>   }
+>>
+>> +#define PREEMPT_MODE_ACCESSOR(mode) \
+>> +	bool is_preempt_##mode(void)						 \
+>> +	{									 \
+>> +		WARN_ON_ONCE(preempt_dynamic_mode == preempt_dynamic_undefined); \
+>
+> Not sure using WARN_ON is a good idea here, as it may be called very
+> early, see comment on powerpc patch.
+
+Bah, I was gonna say that you *don't* want users of is_preempt_*() to be
+called before the "final" preemption model is set up (such users would need
+to make use of static_calls), but I realize there's a debug interface to
+flip the preemption model at will... Say an initcall sees
+is_preempt_voluntary() and sets things up accordingly, and then the debug
+knob switches to preempt_full. I don't think there's much we can really do
+here though :/
+
+>
+>> +		return preempt_dynamic_mode == preempt_dynamic_##mode;		 \
+>> +	}
+>
+> I'm not sure that's worth a macro. You only have 3 accessors, 2 lines of
+> code each. Just define all 3 in plain text.
+>
+> CONFIG_PREEMPT_DYNAMIC is based on using strategies like static_calls in
+> order to minimise the overhead. For those accessors you should use the
+> same kind of approach and use things like jump_labels in order to not
+> redo the test at each time and minimise overhead as much as possible.
+>
+
+That's a valid point, though the few paths that need patching up and don't
+make use of static calls already (AFAICT the ppc irq path I was touching in
+v2 needs to make use of irqentry_exit_cond_resched()) really seem like
+slow-paths.
+
+>> +
+>> +PREEMPT_MODE_ACCESSOR(none)
+>> +PREEMPT_MODE_ACCESSOR(voluntary)
+>> +PREEMPT_MODE_ACCESSOR(full)
+>> +
+>>   #else /* !CONFIG_PREEMPT_DYNAMIC */
+>>
+>>   static inline void preempt_dynamic_init(void) { }
+>>
