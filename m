@@ -2,87 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1F5459541
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 20:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF643459544
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 20:04:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234897AbhKVTGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 14:06:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231959AbhKVTGj (ORCPT
+        id S237621AbhKVTHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 14:07:12 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:54072 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230094AbhKVTHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 14:06:39 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C66C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 11:03:32 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id y12so81354835eda.12
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 11:03:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=88MiCrNUO1fu1ZV77EpG2zm8wlaV03pygYzQ5K3Jbkc=;
-        b=hvC5Ebadv1xLbNrESA8R/fltWWJ2K40QDdsBlrqtbua2y0lC062juL6avNj4AbPRv5
-         au08LCuSjgOvQhJykgwXhKHor2m6z0CEK83nfNX26yJwZRzqgjFvLBh1HXO7OEl3u43G
-         gApz2Mwdcg9F9kU/HuxvTWVUyPVT4F7mXLd4bclmFNqHxi0c8tbbjdFWAuysG0yIba7s
-         Wah+MwsqyAi3e6JDBYRNmyucTe8kmBa72/bUSViYHQQq3xhjasPMqNxBXafKJeecgdfy
-         cHASNJvd91nSanmXZJ9+iHvCRd33HFkyv1ndhZlgihv67Myj1lqG2XmeJFps4wxNmJ4R
-         kFEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=88MiCrNUO1fu1ZV77EpG2zm8wlaV03pygYzQ5K3Jbkc=;
-        b=FAisfAsaZgXq/7/oagSAJ5y2Pe7NLMVAfQHmcMupJWFqHye4YrjrhF9Jm+uDMpSvPo
-         7fGym0dbtt1fDZJzSkNde+aU1VVu6CSWOzwB8L4duAobhooZ+7YCwabGmSfMaVRK10Mm
-         GZ7KaChR5Uu+tl/ByQv7YHRFZEh+KcFrfA1mQIEJ6mlmcuJwHzOehQiQsCNWmYQ5BVib
-         O0dRa+AaZdCs/9zmj9ow/EjiWa5KUpH5wqzNywbmEModw+pPHUgiebNXPlEaPK8i9jpz
-         kWMJtWuR/2JcB6098G9/Ss9xx9YRVQy9m5DKyVtFwYRtaYhxOUR9Tbx/DJUQZG83vHoB
-         +OpA==
-X-Gm-Message-State: AOAM5323tAJu8UT1bWImTp99EHeL0W8L7hpHQtees7xjezVXXeg8OOTf
-        uTzypIxzVwlbvLEBXtcB087Pndfjx7p/1SppRFk=
-X-Google-Smtp-Source: ABdhPJyAEj062POSm32f+YSEoYXryO5reyMb9qNmunkYCkGfTlhed21lrKBgQfDlcBipKqlNo5wK9Rlm+YMWfM/mXM0=
-X-Received: by 2002:a50:a6ca:: with SMTP id f10mr66794394edc.81.1637607811163;
- Mon, 22 Nov 2021 11:03:31 -0800 (PST)
+        Mon, 22 Nov 2021 14:07:08 -0500
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+        by linux.microsoft.com (Postfix) with ESMTPSA id CE15420B4865;
+        Mon, 22 Nov 2021 11:04:01 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CE15420B4865
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1637607841;
+        bh=YBDmGsj+w3Lu1UUMBhU8o1vq1OWBkE9hg87FRdzFKVM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KbZRDnI+gHqD/SVzsxm3p4KM25rj8N0mGx6tKTTtt++TZLDxMzeiX34BCGxWmWAqS
+         e/WUJvcFIqcS5Vp3NjqjcRrYmDwPwk7b8YBx3L5evviDSxYn96ZGTyZm66efCAImzr
+         tlD10xGPz3beb42YhJitO4ZCZvOfvaYT9hRjJ9dM=
+Date:   Mon, 22 Nov 2021 11:04:00 -0800
+From:   Katherine Perez <kaperez@linux.microsoft.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Felipe Balbi <balbi@kernel.org>
+Subject: Re: [RESEND PATCH 2/2] arm64: dts: sm8350: fix tlmm base address
+Message-ID: <20211122190400.GA11727@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20211116235045.3748572-1-kaperez@linux.microsoft.com>
+ <20211116235045.3748572-3-kaperez@linux.microsoft.com>
+ <YZcd/lFm8HgQ8SLs@builder.lan>
 MIME-Version: 1.0
-References: <20211116193247.21102-1-shy828301@gmail.com> <CAHbLzkooDg-KbtBxofBYFvNF8nN=vTCwb6+srYZOHqqBLH58Zg@mail.gmail.com>
- <CAHk-=whDwowy+Q_M74f=0AFW3izcqU9U1OL2agyOF7=4fvPefQ@mail.gmail.com>
-In-Reply-To: <CAHk-=whDwowy+Q_M74f=0AFW3izcqU9U1OL2agyOF7=4fvPefQ@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 22 Nov 2021 11:03:19 -0800
-Message-ID: <CAHbLzkrXdknzNmBWCnTPS0ey1vnhMB5-hPPDTORvnc2dMXwkKw@mail.gmail.com>
-Subject: Re: [v2 UPDATE PATCH] mm: shmem: don't truncate page if memory
- failure happens
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
-        Peter Xu <peterx@redhat.com>,
-        Ajay Garg <ajaygargnsit@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZcd/lFm8HgQ8SLs@builder.lan>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 20, 2021 at 2:13 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Thu, Nov 18, 2021 at 10:55 AM Yang Shi <shy828301@gmail.com> wrote:
-> >
-> > Does this version look good to you? Would you please consider to apply
-> > this to -rc2? Or you prefer to get it from Andrew?
->
-> I don't see anything wrong, but yes, I'd prefer this to go through the
-> -mm tree and get at least that minimal testing (and maybe extra eyes)
+On Thu, Nov 18, 2021 at 09:46:06PM -0600, Bjorn Andersson wrote:
+> On Tue 16 Nov 17:50 CST 2021, Katherine Perez wrote:
+> 
+> > TLMM controller base address is incorrect and will hang on some platforms.
+> > Fix by giving the correct address.
+> > 
+> > Signed-off-by: Katherine Perez <kaperez@linux.microsoft.com>
+> > ---
+> >  arch/arm64/boot/dts/qcom/sm8350.dtsi | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+> > index d134280e2939..624d294612d8 100644
+> > --- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+> > @@ -960,9 +960,9 @@ spmi_bus: spmi@c440000 {
+> >  			#interrupt-cells = <4>;
+> >  		};
+> >  
+> > -		tlmm: pinctrl@f100000 {
+> > +		tlmm: pinctrl@f000000 {
+> >  			compatible = "qcom,sm8350-tlmm";
+> > -			reg = <0 0x0f100000 0 0x300000>;
+> > +			reg = <0 0x0f000000 0 0x300000>;
+> 
+> There's a group of register blocks related to TLMM starting at
+> 0x0f000000 and then there's the register block that is relevant to the
+> OS that starts at 0x0f100000.
+> 
+> Downstream uses the group, while upstream describes only the hardware
+> block that's relevant to the OS. Unfortunately it seems that the shift
+> was missed for the UFS and SDC pins as the driver was upstreamed.
+> 
+> So I recently submitted this patch, which I expect would help you:
+> https://lore.kernel.org/all/20211104170835.1993686-1-bjorn.andersson@linaro.org/
+> 
+> Please let me know if that's not sufficient, or if I'm missed something
+> in my analysis.
+> 
+> Regards,
+> Bjorn
+> 
+> >  			interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
+> >  			gpio-controller;
+> >  			#gpio-cells = <2>;
+> > -- 
+> > 2.31.1
+> > 
 
-Thanks, it has been in the -mm tree.
+Hi Bjorn,
 
->
->          Linus
+I tested without the change to the TLMM address and made sure your patch was included, but my
+platform is unable to boot without my patch to the TLMM address.
+
+Best,
+Katherine
