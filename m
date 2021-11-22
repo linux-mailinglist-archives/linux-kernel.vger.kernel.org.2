@@ -2,295 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE601458D0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:09:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E482A458D03
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:08:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235603AbhKVLMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 06:12:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236161AbhKVLLo (ORCPT
+        id S235437AbhKVLLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 06:11:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:29889 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234897AbhKVLLe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 06:11:44 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59628C061757
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 03:08:38 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id j6-20020a17090a588600b001a78a5ce46aso16604853pji.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 03:08:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=igel-co-jp.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zWlby2sFftHMLmve376Nr7mmMkSU248+Ur4FH61bHpc=;
-        b=0rKS43idbB+hATRIgfuw+HwVROS1wVMp1IWzOKdaA0HUjwDtvVMb970KswaOpBWOE0
-         yx3jSQTvMmyMUkW3djgyG+1GcHjZ2fvqA9C08xBdBfEEcaMgEgNcOwlN9IkhWipMktBz
-         sGFFxBZX/15TKe+RzqptXBEZeqXLDnXNvDLm8jWMpqrsCU8zYGWmvaZVfDi/zdmrTiYK
-         4UOChwQt+pA5N67fe+VdAiA8pzI3tQRaNorzE8EBOqiCRoCPFHertZpLsK5XfQCPDBUm
-         sJgQOxu0Mdc2J9fwoo01/uXGy0TQrJhmVUvloxajLk9LN1baJhhZT7QDtD1LCOYUiZbc
-         95rg==
+        Mon, 22 Nov 2021 06:11:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637579307;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BwJpINfDmr6hb4fHSaMa0diME90ILD5FuLJ1mMrsekU=;
+        b=So0f+Tocu1wEdpWGcE+oGz9TjrkgdUuQImZTm9rOe4V1WK6PuhY3Z2BhCuc3wtvFG4jv0P
+        kR1qGI4otnIUbtV+EnhBtLzO8gVviAbaEvcgz1Pi5SEayGCut/0xEauP02BQ/o04CEUqXi
+        i6i5+nwHQEgTOgbf4vNLq7DUg8Avxy0=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-425-fpNkB55HMTWFOf7B51XHvw-1; Mon, 22 Nov 2021 06:08:26 -0500
+X-MC-Unique: fpNkB55HMTWFOf7B51XHvw-1
+Received: by mail-ed1-f70.google.com with SMTP id p4-20020aa7d304000000b003e7ef120a37so14467360edq.16
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 03:08:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zWlby2sFftHMLmve376Nr7mmMkSU248+Ur4FH61bHpc=;
-        b=29e1cuIGinG6sxGuQIoVz22GSSG6kUswTe2V81bWQ4CxAo44GIV2oj9WIsRv3oHjyQ
-         YTkiXUkO7jeIrmnfqAY7YfZe1WFAMpkpkBRb+ErZXjqHCWQOkAkynMZRJKssHmulECtA
-         t5DSBQRhWVqmqurb/3zdFtSQSkCE5BLje2lVIKa2jl4axndfTYFS1GZo4j1rbkdIbc3T
-         jDQ+qqfs774eQPNkL2HSRkHFUm1TiNgg8A1OxFRksgZ4zEEkEtUqK+v1EpL59DA/TAVh
-         kxmKLplw+g/GWYxLHcBQeaiqAiVJEPTBai3pDrBFftkS0Q6w1QeW444u/KZpt0uKn7KC
-         2+mw==
-X-Gm-Message-State: AOAM533cicSplSoiFaGcIKsx2CxROqSvoeTNbyUzt8Ts0C/L6cr2Rx0P
-        FjG4N4fbNhSfwLf2SDV5UySHTA==
-X-Google-Smtp-Source: ABdhPJwGV7PdqdYCWBksNRXXGS0hy/fqd8dJUJXINnVkFj0H9VrDJgpVsnczgdxodacHp9K/lZzWAA==
-X-Received: by 2002:a17:903:2045:b0:142:3d07:2866 with SMTP id q5-20020a170903204500b001423d072866mr106231404pla.17.1637579317824;
-        Mon, 22 Nov 2021 03:08:37 -0800 (PST)
-Received: from tyrell.hq.igel.co.jp (napt.igel.co.jp. [219.106.231.132])
-        by smtp.gmail.com with ESMTPSA id h6sm9572816pfh.82.2021.11.22.03.08.33
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BwJpINfDmr6hb4fHSaMa0diME90ILD5FuLJ1mMrsekU=;
+        b=cyicNaz+q4TJyiFiQJaBfgGhL3jRo1g8URdEHFQs0zgOWWJTJVGzMWHvgLvk1Kew+m
+         SfvFdsBv7MypbYsGWJd2uvtDldp3ANBP/EPyKpp7UW/Jl4qhlfDxC6Je72IdxZpDEVAG
+         CrFlPqOPCqRyWSsxLZcSHx1e9nZKIFRE8ITUY8AIfsSh2PrTDBtkBGyBUdHxHvulWraW
+         JRE1q7BGFR3w+ktGMRnZD9wAz1iRaziB80j31AisV1wPTQifFItmtVmStFCZKI3Itn2T
+         jGJzihPgzoCcQkvVIv9w0MCm5+TsxhM/VLuvN+nEcL8ryxFpzt78m6X2laCoVVYAOAy5
+         LkFA==
+X-Gm-Message-State: AOAM532cuCqITG674LrVBgkQO50O07XpXZTrDG34J+KMpso0YEkfg/5A
+        8QWBOgHm+uPT5rehDOprQS4hq3z2Fp/fAHb3ZN7s44+3mr/PN7DQ/hsCFuasQxaPrs/ayzH6LA7
+        wLKw1mk/R/M8DGXTfcOpVBAjq
+X-Received: by 2002:a05:6402:1450:: with SMTP id d16mr64822320edx.144.1637579304968;
+        Mon, 22 Nov 2021 03:08:24 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJysfwr7XNBaTmEKGm5Bk/WKD+VkoiIivrsilYo8AQiUBXDw+nsBrImmuAY2gVX68Djdg/vK5g==
+X-Received: by 2002:a05:6402:1450:: with SMTP id d16mr64822285edx.144.1637579304795;
+        Mon, 22 Nov 2021 03:08:24 -0800 (PST)
+Received: from steredhat (host-87-10-72-39.retail.telecomitalia.it. [87.10.72.39])
+        by smtp.gmail.com with ESMTPSA id qb21sm3564077ejc.78.2021.11.22.03.08.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 03:08:37 -0800 (PST)
-From:   Shunsuke Mie <mie@igel.co.jp>
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc:     Shunsuke Mie <mie@igel.co.jp>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Sean Hefty <sean.hefty@intel.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, dhobsong@igel.co.jp, taki@igel.co.jp,
-        etom@igel.co.jp
-Subject: [RFC PATCH v4 2/2] RDMA/rxe: Add dma-buf support
-Date:   Mon, 22 Nov 2021 20:08:17 +0900
-Message-Id: <20211122110817.33319-3-mie@igel.co.jp>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211122110817.33319-1-mie@igel.co.jp>
-References: <20211122110817.33319-1-mie@igel.co.jp>
+        Mon, 22 Nov 2021 03:08:24 -0800 (PST)
+Date:   Mon, 22 Nov 2021 12:08:22 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>, Halil Pasic <pasic@linux.ibm.com>
+Cc:     mst <mst@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "kaplan, david" <david.kaplan@amd.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>
+Subject: Re: [PATCH V5 1/4] virtio_ring: validate used buffer length
+Message-ID: <20211122110822.3xqcdluezrcapkyp@steredhat>
+References: <20211027022107.14357-1-jasowang@redhat.com>
+ <20211027022107.14357-2-jasowang@redhat.com>
+ <20211119160951.5f2294c8.pasic@linux.ibm.com>
+ <CACGkMEtja2TPC=ujgMrpaPmdsy+zHowbBTvPj8k7nm_+zB8vig@mail.gmail.com>
+ <20211122063518.37929c01.pasic@linux.ibm.com>
+ <20211122064922.51b3678e.pasic@linux.ibm.com>
+ <CACGkMEu+9FvMsghyi55Ee5BxetP-YK9wh2oaT8OgLiY5+tV0QQ@mail.gmail.com>
+ <20211122075524.lzojug4hspzglzhl@steredhat>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20211122075524.lzojug4hspzglzhl@steredhat>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement a ib device operation ‘reg_user_mr_dmabuf’. Generate a
-rxe_map from the memory space linked the passed dma-buf.
+On Mon, Nov 22, 2021 at 08:55:24AM +0100, Stefano Garzarella wrote:
+>On Mon, Nov 22, 2021 at 02:25:26PM +0800, Jason Wang wrote:
+>>On Mon, Nov 22, 2021 at 1:49 PM Halil Pasic <pasic@linux.ibm.com> wrote:
+>>>
+>>>On Mon, 22 Nov 2021 06:35:18 +0100
+>>>Halil Pasic <pasic@linux.ibm.com> wrote:
+>>>
+>>>> > I think it should be a common issue, looking at
+>>>> > vhost_vsock_handle_tx_kick(), it did:
+>>>> >
+>>>> > len += sizeof(pkt->hdr);
+>>>> > vhost_add_used(vq, head, len);
+>>>> >
+>>>> > which looks like a violation of the spec since it's TX.
+>>>>
+>>>> I'm not sure the lines above look like a violation of the spec. If you
+>>>> examine vhost_vsock_alloc_pkt() I believe that you will agree that:
+>>>> len == pkt->len == pkt->hdr.len
+>>>> which makes sense since according to the spec both tx and rx messages
+>>>> are hdr+payload. And I believe hdr.len is the size of the payload,
+>>>> although that does not seem to be properly documented by the spec.
+>>
+>>Sorry for being unclear, what I meant is that we probably should use
+>>zero here. TX doesn't use in buffer actually.
+>>
+>>According to the spec, 0 should be the used length:
+>>
+>>"and len the total of bytes written into the buffer."
+>>
+>>>>
+>>>> On the other hand tx messages are stated to be device read-only (in the
+>>>> spec) so if the device writes stuff, that is certainly wrong.
+>>>>
+>>
+>>Yes.
+>>
+>>>> If that is what happens.
+>>>>
+>>>> Looking at virtqueue_get_buf_ctx_split() I'm not sure that is what
+>>>> happens. My hypothesis is that we just a last descriptor is an 'in'
+>>>> type descriptor (i.e. a device writable one). For tx that assumption
+>>>> would be wrong.
+>>>>
+>>>> I will have another look at this today and send a fix patch if my
+>>>> suspicion is confirmed.
+>>>
+>>>If my suspicion is right something like:
+>>>
+>>>diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+>>>index 00f64f2f8b72..efb57898920b 100644
+>>>--- a/drivers/virtio/virtio_ring.c
+>>>+++ b/drivers/virtio/virtio_ring.c
+>>>@@ -764,6 +764,7 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
+>>>        struct vring_virtqueue *vq = to_vvq(_vq);
+>>>        void *ret;
+>>>        unsigned int i;
+>>>+       bool has_in;
+>>>        u16 last_used;
+>>>
+>>>        START_USE(vq);
+>>>@@ -787,6 +788,9 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
+>>>                        vq->split.vring.used->ring[last_used].id);
+>>>        *len = virtio32_to_cpu(_vq->vdev,
+>>>                        vq->split.vring.used->ring[last_used].len);
+>>>+       has_in = virtio16_to_cpu(_vq->vdev,
+>>>+                       vq->split.vring.used->ring[last_used].flags)
+>>>+                               & VRING_DESC_F_WRITE;
+>>
+>>Did you mean vring.desc actually? If yes, it's better not depend on
+>>the descriptor ring which can be modified by the device. We've stored
+>>the flags in desc_extra[].
+>>
+>>>
+>>>        if (unlikely(i >= vq->split.vring.num)) {
+>>>                BAD_RING(vq, "id %u out of range\n", i);
+>>>@@ -796,7 +800,7 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
+>>>                BAD_RING(vq, "id %u is not a head!\n", i);
+>>>                return NULL;
+>>>        }
+>>>-       if (vq->buflen && unlikely(*len > vq->buflen[i])) {
+>>>+       if (has_in && q->buflen && unlikely(*len > vq->buflen[i])) {
+>>>                BAD_RING(vq, "used len %d is larger than in buflen %u\n",
+>>>                        *len, vq->buflen[i]);
+>>>                return NULL;
+>>>
+>>>would fix the problem for split. I will try that out and let you know
+>>>later.
+>>
+>>I'm not sure I get this, in virtqueue_add_split, the buflen[i] only
+>>contains the in buffer length.
+>>
+>>I think the fixes are:
+>>
+>>1) fixing the vhost vsock
+>
+>Yep, in vhost_vsock_handle_tx_kick() we should have vhost_add_used(vq, 
+>head, 0) since the device doesn't write anything.
+>
+>>2) use suppress_used_validation=true to let vsock driver to validate
+>>the in buffer length
+>>3) probably a new feature so the driver can only enable the validation
+>>when the feature is enabled.
+>
+>I fully agree with these steps.
 
-Signed-off-by: Shunsuke Mie <mie@igel.co.jp>
----
- drivers/infiniband/sw/rxe/rxe_loc.h   |   2 +
- drivers/infiniband/sw/rxe/rxe_mr.c    | 113 ++++++++++++++++++++++++++
- drivers/infiniband/sw/rxe/rxe_verbs.c |  34 ++++++++
- 3 files changed, 149 insertions(+)
+Michael sent a patch to suppress the validation, so I think we should 
+just fix vhost-vsock. I mean something like this:
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index 1ca43b859d80..8bc19ea1a376 100644
---- a/drivers/infiniband/sw/rxe/rxe_loc.h
-+++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -75,6 +75,8 @@ u8 rxe_get_next_key(u32 last_key);
- void rxe_mr_init_dma(struct rxe_pd *pd, int access, struct rxe_mr *mr);
- int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
- 		     int access, struct rxe_mr *mr);
-+int rxe_mr_dmabuf_init_user(struct rxe_pd *pd, int fd, u64 start, u64 length,
-+			    u64 iova, int access, struct rxe_mr *mr);
- int rxe_mr_init_fast(struct rxe_pd *pd, int max_pages, struct rxe_mr *mr);
- int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
- 		enum rxe_mr_copy_dir dir);
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 53271df10e47..b954e5647f82 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -4,6 +4,8 @@
-  * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
-  */
- 
-+#include <linux/dma-buf.h>
-+#include <linux/dma-buf-map.h>
- #include "rxe.h"
- #include "rxe_loc.h"
- 
-@@ -245,6 +247,114 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
- 	return err;
- }
- 
-+static int rxe_map_dmabuf_mr(struct rxe_mr *mr,
-+			     struct ib_umem_dmabuf *umem_dmabuf)
-+{
-+	struct rxe_map_set *set;
-+	struct rxe_phys_buf *buf = NULL;
-+	struct rxe_map **map;
-+	void *vaddr;
-+	int num_buf = 0;
-+	int err;
-+	size_t remain;
-+	struct dma_buf_map dmabuf_map;
-+
-+	err = dma_buf_vmap(umem_dmabuf->dmabuf, &dmabuf_map);
-+	if (err || dmabuf_map.is_iomem)
-+		goto err_out;
-+
-+	set = mr->cur_map_set;
-+	set->page_shift = PAGE_SHIFT;
-+	set->page_mask = PAGE_SIZE - 1;
-+
-+	map = set->map;
-+	buf = map[0]->buf;
-+
-+	vaddr = dmabuf_map.vaddr;
-+	remain = umem_dmabuf->dmabuf->size;
-+
-+	for (; remain; vaddr += PAGE_SIZE) {
-+		if (num_buf >= RXE_BUF_PER_MAP) {
-+			map++;
-+			buf = map[0]->buf;
-+			num_buf = 0;
-+		}
-+
-+		buf->addr = (uintptr_t)vaddr;
-+		if (remain >= PAGE_SIZE)
-+			buf->size = PAGE_SIZE;
-+		else
-+			buf->size = remain;
-+		remain -= buf->size;
-+
-+		num_buf++;
-+		buf++;
-+	}
-+
-+	return 0;
-+
-+err_out:
-+	return err;
-+}
-+
-+static void rxe_unmap_dmabuf_mr(struct rxe_mr *mr)
-+{
-+	struct ib_umem_dmabuf *umem_dmabuf = to_ib_umem_dmabuf(mr->umem);
-+	struct rxe_map *map = mr->cur_map_set->map[0];
-+	struct dma_buf_map dma_buf_map =
-+		DMA_BUF_MAP_INIT_VADDR((void *)(uintptr_t)map->buf->addr);
-+
-+	dma_buf_vunmap(umem_dmabuf->dmabuf, &dma_buf_map);
-+}
-+
-+int rxe_mr_dmabuf_init_user(struct rxe_pd *pd, int fd, u64 start, u64 length,
-+			    u64 iova, int access, struct rxe_mr *mr)
-+{
-+	struct ib_umem_dmabuf *umem_dmabuf;
-+	struct rxe_map_set *set;
-+	int err;
-+
-+	umem_dmabuf = ib_umem_dmabuf_get(pd->ibpd.device, start, length, fd,
-+					 access, NULL);
-+	if (IS_ERR(umem_dmabuf)) {
-+		err = PTR_ERR(umem_dmabuf);
-+		goto err_out;
-+	}
-+
-+	rxe_mr_init(access, mr);
-+
-+	err = rxe_mr_alloc(mr, ib_umem_num_pages(&umem_dmabuf->umem), 0);
-+	if (err) {
-+		pr_warn("%s: Unable to allocate memory for map\n", __func__);
-+		goto err_release_umem;
-+	}
-+
-+	mr->ibmr.pd = &pd->ibpd;
-+	mr->umem = &umem_dmabuf->umem;
-+	mr->access = access;
-+	mr->state = RXE_MR_STATE_VALID;
-+	mr->type = IB_MR_TYPE_USER;
-+
-+	set = mr->cur_map_set;
-+	set->length = length;
-+	set->iova = iova;
-+	set->va = start;
-+	set->offset = ib_umem_offset(mr->umem);
-+
-+	err = rxe_map_dmabuf_mr(mr, umem_dmabuf);
-+	if (err)
-+		goto err_free_map_set;
-+
-+	return 0;
-+
-+err_free_map_set:
-+	rxe_mr_free_map_set(mr->num_map, mr->cur_map_set);
-+err_release_umem:
-+	ib_umem_release(&umem_dmabuf->umem);
-+err_out:
-+	return err;
-+}
-+
- int rxe_mr_init_fast(struct rxe_pd *pd, int max_pages, struct rxe_mr *mr)
- {
- 	int err;
-@@ -703,6 +813,9 @@ void rxe_mr_cleanup(struct rxe_pool_entry *arg)
- {
- 	struct rxe_mr *mr = container_of(arg, typeof(*mr), pelem);
- 
-+	if (mr->umem && mr->umem->is_dmabuf)
-+		rxe_unmap_dmabuf_mr(mr);
-+
- 	ib_umem_release(mr->umem);
- 
- 	if (mr->cur_map_set)
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 0aa0d7e52773..dc7d27b3cb90 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -940,6 +940,39 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
- 	return ERR_PTR(err);
- }
- 
-+static struct ib_mr *rxe_reg_user_mr_dmabuf(struct ib_pd *ibpd, u64 start,
-+					    u64 length, u64 iova, int fd,
-+					    int access, struct ib_udata *udata)
-+{
-+	int err;
-+	struct rxe_dev *rxe = to_rdev(ibpd->device);
-+	struct rxe_pd *pd = to_rpd(ibpd);
-+	struct rxe_mr *mr;
-+
-+	mr = rxe_alloc(&rxe->mr_pool);
-+	if (!mr) {
-+		err = -ENOMEM;
-+		goto err2;
-+	}
-+
-+	rxe_add_index(mr);
-+
-+	rxe_add_ref(pd);
-+
-+	err = rxe_mr_dmabuf_init_user(pd, fd, start, length, iova, access, mr);
-+	if (err)
-+		goto err3;
-+
-+	return &mr->ibmr;
-+
-+err3:
-+	rxe_drop_ref(pd);
-+	rxe_drop_index(mr);
-+	rxe_drop_ref(mr);
-+err2:
-+	return ERR_PTR(err);
-+}
-+
- static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
- 				  u32 max_num_sg)
- {
-@@ -1105,6 +1138,7 @@ static const struct ib_device_ops rxe_dev_ops = {
- 	.query_qp = rxe_query_qp,
- 	.query_srq = rxe_query_srq,
- 	.reg_user_mr = rxe_reg_user_mr,
-+	.reg_user_mr_dmabuf = rxe_reg_user_mr_dmabuf,
- 	.req_notify_cq = rxe_req_notify_cq,
- 	.resize_cq = rxe_resize_cq,
- 
--- 
-2.17.1
+diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+index 938aefbc75ec..4e3b95af7ee4 100644
+--- a/drivers/vhost/vsock.c
++++ b/drivers/vhost/vsock.c
+@@ -554,7 +554,7 @@ static void vhost_vsock_handle_tx_kick(struct vhost_work *work)
+                         virtio_transport_free_pkt(pkt);
+
+                 len += sizeof(pkt->hdr);
+-               vhost_add_used(vq, head, len);
++               vhost_add_used(vq, head, 0);
+                 total_len += len;
+                 added = true;
+         } while(likely(!vhost_exceeds_weight(vq, ++pkts, total_len)));
+
+I checked and the problem is there from the first commit, so we should 
+add:
+
+Fixes: 433fc58e6bf2 ("VSOCK: Introduce vhost_vsock.ko")
+
+I tested this patch and it works even without suppressing validation in 
+the virtio core.  But for backwards compatibility we have to suppress it 
+for sure as Michael did.
+
+Maybe we can have a patch just with this change to backport it easily 
+and one after to clean up a bit the code that was added after (len, 
+total_len).
+
+@Halil Let me know if you want to do it, otherwise I can do it.
+
+Stefano
 
