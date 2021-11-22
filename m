@@ -2,120 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4716C459289
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:58:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C34CB4591B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:54:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240488AbhKVQAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 11:00:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37788 "EHLO
+        id S240082AbhKVP5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:57:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240539AbhKVQAS (ORCPT
+        with ESMTP id S240058AbhKVP5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 11:00:18 -0500
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AC43C0617A1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:57:00 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by andre.telenet-ops.be with bizsmtp
-        id MTwG260014C55Sk01TwGyl; Mon, 22 Nov 2021 16:56:58 +0100
+        Mon, 22 Nov 2021 10:57:11 -0500
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06CE0C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:54:04 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:e4da:38c:79e9:48bf])
+        by baptiste.telenet-ops.be with bizsmtp
+        id MTu22600J4yPVd601Tu2ug; Mon, 22 Nov 2021 16:54:02 +0100
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mpBe6-00EL3P-62; Mon, 22 Nov 2021 16:54:18 +0100
+        id 1mpBdq-00EL1u-HG; Mon, 22 Nov 2021 16:54:02 +0100
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mpBe5-00HGyZ-Hn; Mon, 22 Nov 2021 16:54:17 +0100
+        id 1mpBdp-00HGmE-Te; Mon, 22 Nov 2021 16:54:01 +0100
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Tony Lindgren <tony@atomide.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Paul Walmsley <paul@pwsan.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Benoit Parrot <bparrot@ti.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Keerthy <j-keerthy@ti.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
-        alsa-devel@alsa-project.org,
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH/RFC 05/17] bus: omap_l3_noc: Use bitfield helpers
+Subject: [PATCH] MIPS: CPS: Use bitfield helpers
 Date:   Mon, 22 Nov 2021 16:53:58 +0100
-Message-Id: <8f5ac0ff643fcfe29ba671b434c57d88524f0450.1637592133.git.geert+renesas@glider.be>
+Message-Id: <8bd8b1b9a3787e594285addcf2057754540d0a5f.1637593297.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1637592133.git.geert+renesas@glider.be>
-References: <cover.1637592133.git.geert+renesas@glider.be>
+In-Reply-To: <a1445d3abb45cfc95cb1b03180fd53caf122035b.1637593297.git.geert+renesas@glider.be>
+References: <a1445d3abb45cfc95cb1b03180fd53caf122035b.1637593297.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the field_get() bitfield helper, instead of open-coding the same
-operation.
+Use the FIELD_GET() helper, instead of open-coding the same operation.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
 Compile-tested only.
-Marked RFC, as this depends on [PATCH 01/17], but follows a different
-path to upstream.
----
- drivers/bus/omap_l3_noc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/bus/omap_l3_noc.c b/drivers/bus/omap_l3_noc.c
-index dcfb32ee5cb60239..1a692c86d085f43e 100644
---- a/drivers/bus/omap_l3_noc.c
-+++ b/drivers/bus/omap_l3_noc.c
-@@ -14,6 +14,7 @@
-  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  */
+See "[PATCH 00/17] Non-const bitfield helper conversions"
+(https://lore.kernel.org/r/cover.1637592133.git.geert+renesas@glider.be)
+for background and more conversions.
+---
+ arch/mips/include/asm/mips-cps.h | 19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
+
+diff --git a/arch/mips/include/asm/mips-cps.h b/arch/mips/include/asm/mips-cps.h
+index fd43d876892ec4c6..c077e8d100f584f9 100644
+--- a/arch/mips/include/asm/mips-cps.h
++++ b/arch/mips/include/asm/mips-cps.h
+@@ -7,6 +7,7 @@
+ #ifndef __MIPS_ASM_MIPS_CPS_H__
+ #define __MIPS_ASM_MIPS_CPS_H__
+ 
 +#include <linux/bitfield.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
  #include <linux/io.h>
-@@ -118,8 +119,7 @@ static int l3_handle_target(struct omap_l3 *l3, void __iomem *base,
- 	}
+ #include <linux/types.h>
  
- 	/* STDERRLOG_MSTADDR Stores the NTTP master address. */
--	masterid = (readl_relaxed(l3_targ_mstaddr) &
--		    l3->mst_addr_mask) >> __ffs(l3->mst_addr_mask);
-+	masterid = field_get(l3->mst_addr_mask, readl_relaxed(l3_targ_mstaddr));
+@@ -112,14 +113,10 @@ static inline void clear_##unit##_##name(uint##sz##_t val)		\
+  */
+ static inline unsigned int mips_cps_numclusters(void)
+ {
+-	unsigned int num_clusters;
+-
+ 	if (mips_cm_revision() < CM_REV_CM3_5)
+ 		return 1;
  
- 	for (k = 0, master = l3->l3_masters; k < l3->num_masters;
- 	     k++, master++) {
+-	num_clusters = read_gcr_config() & CM_GCR_CONFIG_NUM_CLUSTERS;
+-	num_clusters >>= __ffs(CM_GCR_CONFIG_NUM_CLUSTERS);
+-	return num_clusters;
++	return FIELD_GET(CM_GCR_CONFIG_NUM_CLUSTERS, read_gcr_config());
+ }
+ 
+ /**
+@@ -169,7 +166,8 @@ static inline unsigned int mips_cps_numcores(unsigned int cluster)
+ 		return 0;
+ 
+ 	/* Add one before masking to handle 0xff indicating no cores */
+-	return (mips_cps_cluster_config(cluster) + 1) & CM_GCR_CONFIG_PCORES;
++	return FIELD_GET(CM_GCR_CONFIG_PCORES,
++			 mips_cps_cluster_config(cluster) + 1);
+ }
+ 
+ /**
+@@ -181,14 +179,11 @@ static inline unsigned int mips_cps_numcores(unsigned int cluster)
+  */
+ static inline unsigned int mips_cps_numiocu(unsigned int cluster)
+ {
+-	unsigned int num_iocu;
+-
+ 	if (!mips_cm_present())
+ 		return 0;
+ 
+-	num_iocu = mips_cps_cluster_config(cluster) & CM_GCR_CONFIG_NUMIOCU;
+-	num_iocu >>= __ffs(CM_GCR_CONFIG_NUMIOCU);
+-	return num_iocu;
++	return FIELD_GET(CM_GCR_CONFIG_NUMIOCU,
++			 mips_cps_cluster_config(cluster));
+ }
+ 
+ /**
+@@ -230,7 +225,7 @@ static inline unsigned int mips_cps_numvps(unsigned int cluster, unsigned int co
+ 
+ 	mips_cm_unlock_other();
+ 
+-	return (cfg + 1) & CM_GCR_Cx_CONFIG_PVPE;
++	return FIELD_GET(CM_GCR_Cx_CONFIG_PVPE, cfg + 1);
+ }
+ 
+ #endif /* __MIPS_ASM_MIPS_CPS_H__ */
 -- 
 2.25.1
 
