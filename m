@@ -2,102 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83109458C94
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 11:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39641458C9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 11:45:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239376AbhKVKrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 05:47:35 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:32924 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239112AbhKVKr3 (ORCPT
+        id S239023AbhKVKsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 05:48:45 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:52488 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230058AbhKVKso (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 05:47:29 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: dafna)
-        with ESMTPSA id 9ACCA1F44822
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637577862; bh=BZwKyzVx4ruuAqlnDN1dIueQvzsa4RZzFJANK5WOaYE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eZEc8ECeOmsw4ezw2hpNmvicqyp8cDuBNRLXFHOI2d19wIHaibjoEtA5Yv2PqKAjV
-         YKZ/CbZsVsqJ6w/5VeW06fsPymIpCst9vxkAARiQpPKdjiabtO4oR9PYSM6HoCKvJB
-         GjYyAoKdv3XDQ+B9SvA4/4JCVZfRRLgMGoJBpGB8sp0PQ1/TPM22EFIz8Qd6Cl2Icx
-         S0LxEdhn4hV2jBYPlXnYC4/Ues5/XExzqaCx8liG7pUQIvC//aonPhpuhlLwC21iaM
-         8lZjy+3kwbNn45qUk+Rk1NJmNSWkJB5WjZjlPjNNycq/4lpHA24O65A6UBKmj5padv
-         Q9CDSLcHfaLZg==
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-To:     iommu@lists.linux-foundation.org
-Cc:     Sebastian Reichel <sebastian.reichel@collabora.com>,
-        dafna.hirschfeld@collabora.com, kernel@collabora.com,
-        Yong Wu <yong.wu@mediatek.com>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mediatek@lists.infradead.org (moderated list:MEDIATEK IOMMU
-        DRIVER),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support), linux-kernel@vger.kernel.org (open list),
-        linux-media@vger.kernel.org
-Subject: [PATCH 2/2] iommu/mediatek: always check runtime PM status in tlb flush range callback
-Date:   Mon, 22 Nov 2021 12:44:00 +0200
-Message-Id: <20211122104400.4160-3-dafna.hirschfeld@collabora.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211122104400.4160-1-dafna.hirschfeld@collabora.com>
-References: <20211122104400.4160-1-dafna.hirschfeld@collabora.com>
+        Mon, 22 Nov 2021 05:48:44 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 0F8FF1FD26;
+        Mon, 22 Nov 2021 10:45:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637577937; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JzpfsgD821LrTjZLYdBTVR+TwWqFF7kj4zqgUkZFaOY=;
+        b=kPa6b1FMXFNVDaJNZJhDSTX0o96rPB7R3uMCbqKdz/S+5lp5Bp0kK5vMSbo7uf7sWLaKf8
+        /Vi/60qh14ti9h+uqJy8WQiI0Ty43s5HiW5FwfkPq5DhhOKO7NA5zmRfpRdE3EpbtrN23+
+        DcojimCcdGjvoELjzYcx9mup9s9IrLc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637577937;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JzpfsgD821LrTjZLYdBTVR+TwWqFF7kj4zqgUkZFaOY=;
+        b=/lMmYOqMRhn2FLPjathCRD7Xc05m1NS++UnGAmSQToDg/MH5+ltYJWTRue4aaauZ7jY5sd
+        wyR0LC7JtAI4Z8DA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C92DB13C56;
+        Mon, 22 Nov 2021 10:45:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id z39SMNB0m2EyfwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Mon, 22 Nov 2021 10:45:36 +0000
+Message-ID: <148d2774-77b9-bb25-c132-80b00e16ea06@suse.cz>
+Date:   Mon, 22 Nov 2021 11:45:36 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Content-Language: en-US
+To:     Christoph Lameter <cl@gentwo.org>
+Cc:     Rustam Kovhaev <rkovhaev@gmail.com>, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, corbet@lwn.net, djwong@kernel.org,
+        david@fromorbit.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        gregkh@linuxfoundation.org, viro@zeniv.linux.org.uk,
+        dvyukov@google.com
+References: <037227db-c869-7d9c-65e8-8f5f8682171d@suse.cz>
+ <20211122013026.909933-1-rkovhaev@gmail.com>
+ <alpine.DEB.2.22.394.2111221018070.202803@gentwo.de>
+ <3c996e22-034f-1013-3978-1f786aae38fb@suse.cz>
+ <alpine.DEB.2.22.394.2111221133110.204314@gentwo.de>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v4] slob: add size header to all allocations
+In-Reply-To: <alpine.DEB.2.22.394.2111221133110.204314@gentwo.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
+On 11/22/21 11:36, Christoph Lameter wrote:
+> On Mon, 22 Nov 2021, Vlastimil Babka wrote:
+> 
+>> But it seems there's no reason we couldn't do better? I.e. use the value of
+>> SLOB_HDR_SIZE only to align the beginning of actual object (and name the
+>> define different than SLOB_HDR_SIZE). But the size of the header, where we
+>> store the object lenght could be just a native word - 4 bytes on 32bit, 8 on
+>> 64bit. The address of the header shouldn't have a reason to be also aligned
+>> to ARCH_KMALLOC_MINALIGN / ARCH_SLAB_MINALIGN as only SLOB itself processes
+>> it and not the slab consumers which rely on those alignments?
+> 
+> Well the best way would be to put it at the end of the object in order to
+> avoid the alignment problem. This is a particular issue with SLOB because
+> it allows multiple types of objects in a single page frame.
+> 
+> If only one type of object would be allowed then the object size etc can
+> be stored in the page struct.
+> 
+> So I guess placement at the beginning cannot be avoided. That in turn runs
+> into trouble with the DMA requirements on some platforms where the
+> beginning of the object has to be cache line aligned.
 
-In case of v4l2_reqbufs() it is possible, that a TLB flush is done
-without runtime PM being enabled. In that case the "Partial TLB flush
-timed out, falling back to full flush" warning is printed.
+It's no problem to have the real beginning of the object aligned, and the
+prepended header not. The code already does that before this patch for the
+kmalloc power-of-two alignments, where e.g. the object can be aligned to 256
+bytes, but the prepended header to a smaller ARCH_KMALLOC_MINALIGN /
+ARCH_SLAB_MINALIGN.
 
-Commit c0b57581b73b ("iommu/mediatek: Add power-domain operation")
-introduced has_pm as optimization to avoid checking runtime PM
-when there is no power domain attached. But without the PM domain
-there is still the device driver's runtime PM suspend handler, which
-disables the clock. Thus flushing should also be avoided when there
-is no PM domain involved.
+> I dont know but it seems that making slob that sophisticated is counter
+> productive. Remove SLOB?
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Reviewed-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
----
- drivers/iommu/mtk_iommu.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+I wouldn't mind, but somebody might :)
 
-diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-index 28dc4b95b6d9..b0535fcfd1d7 100644
---- a/drivers/iommu/mtk_iommu.c
-+++ b/drivers/iommu/mtk_iommu.c
-@@ -227,16 +227,13 @@ static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
- 					   size_t granule,
- 					   struct mtk_iommu_data *data)
- {
--	bool has_pm = !!data->dev->pm_domain;
- 	unsigned long flags;
- 	int ret;
- 	u32 tmp;
- 
- 	for_each_m4u(data) {
--		if (has_pm) {
--			if (pm_runtime_get_if_in_use(data->dev) <= 0)
--				continue;
--		}
-+		if (pm_runtime_get_if_in_use(data->dev) <= 0)
-+			continue;
- 
- 		spin_lock_irqsave(&data->tlb_lock, flags);
- 		writel_relaxed(F_INVLD_EN1 | F_INVLD_EN0,
-@@ -261,8 +258,7 @@ static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
- 		writel_relaxed(0, data->base + REG_MMU_CPE_DONE);
- 		spin_unlock_irqrestore(&data->tlb_lock, flags);
- 
--		if (has_pm)
--			pm_runtime_put(data->dev);
-+		pm_runtime_put(data->dev);
- 	}
- }
- 
--- 
-2.17.1
 
