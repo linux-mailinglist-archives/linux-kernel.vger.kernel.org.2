@@ -2,105 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0434587D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 02:42:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AFD74587D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 02:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233981AbhKVBpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 20:45:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44400 "EHLO
+        id S235464AbhKVBq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 20:46:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231954AbhKVBpd (ORCPT
+        with ESMTP id S229920AbhKVBqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 20:45:33 -0500
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD7EC061574;
-        Sun, 21 Nov 2021 17:42:28 -0800 (PST)
-Received: by mail-qt1-x833.google.com with SMTP id l8so15172171qtk.6;
-        Sun, 21 Nov 2021 17:42:28 -0800 (PST)
+        Sun, 21 Nov 2021 20:46:55 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8B02C061574;
+        Sun, 21 Nov 2021 17:43:49 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id y12so69746196eda.12;
+        Sun, 21 Nov 2021 17:43:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YHhX9mRLFg+NIZQtcWR5hAWGG8rnJ/nSmaMwFzPyXvo=;
-        b=ZeJBxBIntjTCL2KUjzUQwwULcRs5wsLGmL8wsvlyILNAGgZHAt0ovQUME3SdbyBxUJ
-         RUUNM4oCr6UDeXsJgTfPNKq2JBhnyNHfLyFZXnFt6ASiSndfQ/tFdFH8wxvXpxFaSBiM
-         e0xfsWYgM/pOlu9rgLEqUER0J8hdt03Z1tNYTse9KE2GPiwzBvcT/+cp6U3RYc15yWl8
-         IOZLBWFCO68HDW6voh+PzgOdnqJFwv/pgg6R20hBnPpwtZ5wegYIAsbPutpWAGiHYiha
-         6XN4LVDVuRSMlWbSPV9WNu8JpBhIszOI7wmVrQcFADXWaRuLYqDq0smdq/ke9hZx6prM
-         3oIA==
+        h=message-id:date:from:to:cc:subject:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WKetCckwp95p/4tHTwxvu1lpAVsr+WXyeyDyPpEwckk=;
+        b=KWZXzYHrUpUVae1bW8xVBF9UtM29jIfc62dzdgcN62fhSXhkINpxOUbgNhovU7mC4D
+         1z4YURpiM4k8+CuOXr7Hmns6R4hGp40P3k+FKv/Cb1Z+AJfyXzq5pgg4SL9OyArpPWvZ
+         Jng3GwhxokxWcsd+gvScfRa792FZTnDgjc6V7wXaIGVCndaa+3hMGzak+lthoRRSnIKe
+         Cs8AQGLbBiqlCV6EZaWASuPF5TWl138OV1bc48NVFDIrXFKK9WMRX8Aeat6/tiwxdgMZ
+         An5ZigcR4efd9JSYSqLZSRNy0ZrRhEqdPvRAKL0p8km6+l2mQbyasEJMaqvaCo9xuLeu
+         jDOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YHhX9mRLFg+NIZQtcWR5hAWGG8rnJ/nSmaMwFzPyXvo=;
-        b=qrT7879PACOhRyLA0FX7hOnp0uDckbKa3M4pMrW/4ramSIcGxotOpk3/BY6o1bmYLL
-         IMeA/Mp7xO5tOl80WPIcnobvvJEspufZ37Li6MHdBmLEsfrQmT+Pxu5D1SgFcotDG1uR
-         EpPQBdMrJv/to9uwjScqCzXHgkJhjbpErwvjdj01v75d48GvL7jYd60uYMG65QUlVWu6
-         rBXyvIrPCw4s4nSjd5aueZKrHdutGKb4ElimCT163KvVNtuWKVe1lwq5FDsTIwOfExN6
-         jPMJiEWvkt6k63jlKuAUwpAbsYE6QR+fuf9TZnIzraO/BCCuhXGQEwZw82Fl0OJ/tvpC
-         rvlw==
-X-Gm-Message-State: AOAM5308zjbfA2H2Y/0KnDdaZ2qBb0dhPNCXnQFW1d96i12c/sOEG+U5
-        JmvxAsoPPnViNBbM+STT+mVYTzGmJjE=
-X-Google-Smtp-Source: ABdhPJy0nVvLsQj2tLHWvOF/u8edeBg/d+NxTVryRBk6UZKV1fWq4585WPeY3Q80rBlSSHH8tha1/Q==
-X-Received: by 2002:ac8:5f47:: with SMTP id y7mr27000452qta.342.1637545347485;
-        Sun, 21 Nov 2021 17:42:27 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id j22sm3914218qko.68.2021.11.21.17.42.23
+        h=x-gm-message-state:message-id:date:from:to:cc:subject:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WKetCckwp95p/4tHTwxvu1lpAVsr+WXyeyDyPpEwckk=;
+        b=dRyzQ1p0lNgGNYMqwrS+04A9hm/bIpD0QdEsoXtQRgOyq8VF+lhzd6dWGgsF+jfCB2
+         GnbSXRMUMVsQVuN55K/X+QcZl7FD9KCA7Z0t63WP/2PDqgzDjSRMEmVAW29nyZnYGlTj
+         IISJeZHRlG32an0/8OIsFzAQlnjCVoMe24v9f04KL7xM4dFQUN+Lw4UZtSZjS//X3O6A
+         fCGdE/pqDsBO0t94pc6GgZLHJZpObL6VvcaDY2tBU9lWIdVTfjAYOMO8zwJGnRXwsLxL
+         4WedGfItmbdM8AkhGSaT3iFMll+g+zyZsRk11gujupUwI9AT93RfWfZOPKCLUQOD3SxX
+         UKUw==
+X-Gm-Message-State: AOAM532DjhZtjYgCVDKBKiO4/Ev/F51yPxniisKs317upA93ui8ygvox
+        Pc6fC5Y36PnvDMBbf5Wzhps=
+X-Google-Smtp-Source: ABdhPJxTuHLm6KHuQZ2JbIZcsu6KqTiEvFQuLMjQPhpAiZSk1HbLIVBhMqtYQTPsQ3LbN3fgm9tF/w==
+X-Received: by 2002:a17:906:90da:: with SMTP id v26mr36140187ejw.442.1637545428256;
+        Sun, 21 Nov 2021 17:43:48 -0800 (PST)
+Received: from Ansuel-xps. (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
+        by smtp.gmail.com with ESMTPSA id r3sm2980472ejr.79.2021.11.21.17.43.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Nov 2021 17:42:26 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: ran.jianping@zte.com.cn
-To:     peterz@infradead.org
-Cc:     mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, yao.jin@linux.intel.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ran jianping <ran.jianping@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] perf tools: remove unneeded variable
-Date:   Mon, 22 Nov 2021 01:41:59 +0000
-Message-Id: <20211122014159.25317-1-ran.jianping@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Sun, 21 Nov 2021 17:43:47 -0800 (PST)
+Message-ID: <619af5d3.1c69fb81.36176.ca79@mx.google.com>
+X-Google-Original-Message-ID: <YZr10ojSVwLGQABI@Ansuel-xps.>
+Date:   Mon, 22 Nov 2021 02:43:46 +0100
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH v2 0/9] Multiple cleanup and feature for qca8k
+References: <20211122010313.24944-1-ansuelsmth@gmail.com>
+ <20211122012910.bd33slbrfk4h6xbw@skbuf>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211122012910.bd33slbrfk4h6xbw@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ran jianping <ran.jianping@zte.com.cn>
+On Mon, Nov 22, 2021 at 03:29:10AM +0200, Vladimir Oltean wrote:
+> On Mon, Nov 22, 2021 at 02:03:04AM +0100, Ansuel Smith wrote:
+> > This is a reduced version of the old massive series.
+> > Refer to the changelog to know what is removed from this.
+> > 
+> > THIS IS BASED ON net-next WITH THE 2 FIXES FROM net ALREADY REVIEWED
+> > net: dsa: qca8k: fix MTU calculation
+> > net: dsa: qca8k: fix internal delay applied to the wrong PAD config
+> 
+> Since patchwork has auto build hooks now, it doesn't detect dependencies
+> to other trees like "net" in this case, and your patches will fail to
+> apply without the other ones you've mentioned, which in turn will make
+> the builds fail. Patches without clean build reports aren't accepted, so
+> you'll have to resend either way. Your options are:
+> (a) wait until the bugfix patches get applied to "net", and Jakub and/or
+>     David send the networking pull request for v5.16-rc3 to Linus, then
+>     they'll merge the "net" tree into "net-next" quickly afterwards and
+>     your patches apply cleanly. Last two "net" pull requests were
+>     submitted on Nov 18th and 12th, if that is any indication as to when
+>     the next one is going to be.
+> (b) base your patches on "net-next" without the bug fixes, and let
+>     Jakub/David handle the merge conflict when the'll merge "net" into
+>     "net-next" next time. Please note that if you do this, there is a
+>     small chance that mistakes can be made, and you can't easily
+>     backport patches to a stable tree such as OpenWRT if that's what
+>     you're into, since part of the delta will be in a merge commit, and
+>     there isn't any simple way in which you can linearize that during
+>     cherry-pick time, if you're picking from divergent branches.
 
-Fix the following coccicheck review:
-./tools/perf/util/evlist.c:1303:5-8: Unneeded variable
+Mhhh I honestly think b option can be accepted here (due to the fact
+that fixes patch are very small) but the backport part can be
+problematic.
+Think it's better to just wait and get the reviewed by tag.
 
-Remove unneeded variable used to store return value.
+Is it problematic to add stuff to this series while the fixes are
+merged? (for example the LAGs or mirror part / the code split)
+Or having big series is still problematic even if half of the patch are
+already reviewed?
+Just asking if there is a way to continue the review process while we
+wait for the merge process.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: ran jianping <ran.jianping@zte.com.cn>
----
- tools/perf/util/evlist.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index 5f92319ce258..d64fe767f583 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -1300,7 +1300,6 @@ static int evlist__create_syswide_maps(struct evlist *evlist)
- {
- 	struct perf_cpu_map *cpus;
- 	struct perf_thread_map *threads;
--	int err = -ENOMEM;
- 
- 	/*
- 	 * Try reading /sys/devices/system/cpu/online to get
-@@ -1325,7 +1324,7 @@ static int evlist__create_syswide_maps(struct evlist *evlist)
- out_put:
- 	perf_cpu_map__put(cpus);
- out:
--	return err;
-+	return -ENOMEM;
- }
- 
- int evlist__open(struct evlist *evlist)
 -- 
-2.25.1
-
+	Ansuel
