@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B61E4590BC
+	by mail.lfdr.de (Postfix) with ESMTP id D43EF4590BE
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:00:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239866AbhKVPDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:03:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43152 "EHLO mail.kernel.org"
+        id S239880AbhKVPDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:03:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239827AbhKVPDQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239832AbhKVPDQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Nov 2021 10:03:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id BD1A060F4F;
+Received: by mail.kernel.org (Postfix) with ESMTPS id EB95D60F94;
         Mon, 22 Nov 2021 15:00:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637593209;
-        bh=OUpLZtjY8kNT23P/QJBYo8Kmqis2Y0vaMryHUFSittw=;
+        s=k20201202; t=1637593210;
+        bh=biH42iAtiMWPihyI1AHFoYnYBLNFW9sOi+G4pIBNQto=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=NzXjWlTWS+D3k+5XsqdHlLXNL5XQT/BGnTrQthwG4noF4QCzXcRVCGiEM8kliWbQb
-         +N0B9du4BurSdAqphhqQyxo+oHmk0/jzsc6zraNkcC+ludDcbgjYrYv2yoPQwVHzlt
-         +QU6axWEEGQPJCSkdmlW3Re5r9PKevIYTAwSI86+87/aLg+JNbQ2AtaslPPZT1qAYU
-         0X0qy5+YvxXeBZhX5PHX0leP5ugp7sykDQN5pHbQpnTAzRCa6+e2ACRBMbcg9xQDJM
-         Y4WSQge5ORwIIRcaUWZ1dHgzJ1CrH21pVCdAHjKwfqctg/QYeMNaNddxjReNTbD4zF
-         II6OeC1C1NaLg==
+        b=luQF4YhdcPmJQzZIlOBuo5PiyGYCYnwDpzz2z/u9e8j3ZK3ZjxwIKIBHF2ACGLQ93
+         MVPSBgEs99l34J/14V53oITp1ZfpM2REP43dFq+xxmFi3neHejS9nylQmanavhFviA
+         SBonI58k+v9P3Mg9kEh2TvnygJENSDJ6s5KKoUXte17yzdlqi87Knporir7sVviGKs
+         BKNMLdrnXKzG7giXsefwGeX1qg/WQrxoAPc+06EypeJn9KPBmINLjcQHY+UQtNjZKk
+         CWuxAX0Byxp4ScBotd7lIgoTyr0Whsd0qA+FlfAwpcWI4L94z8JYzTyw+VQdKLawCg
+         PJKWVJ16yGg9w==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B7B6A609B9;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DCF1360A94;
         Mon, 22 Nov 2021 15:00:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] arp: Remove #ifdef CONFIG_PROC_FS
+Subject: Re: [PATCH] qed: Use the bitmap API to simplify some functions
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163759320974.11926.4532259507042097436.git-patchwork-notify@kernel.org>
+Message-Id: <163759320990.11926.9744757405183008773.git-patchwork-notify@kernel.org>
 Date:   Mon, 22 Nov 2021 15:00:09 +0000
-References: <20211122070236.14218-1-yajun.deng@linux.dev>
-In-Reply-To: <20211122070236.14218-1-yajun.deng@linux.dev>
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <5f585ae692e1045b9f12c483cdaf87ee5db9a716.1637521924.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <5f585ae692e1045b9f12c483cdaf87ee5db9a716.1637521924.git.christophe.jaillet@wanadoo.fr>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     davem@davemloft.net, kuba@kernel.org, aelior@marvell.com,
+        GR-everest-linux-l2@marvell.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -48,18 +48,19 @@ Hello:
 This patch was applied to netdev/net-next.git (master)
 by David S. Miller <davem@davemloft.net>:
 
-On Mon, 22 Nov 2021 15:02:36 +0800 you wrote:
-> proc_create_net() and remove_proc_entry() already contain the case
-> whether to define CONFIG_PROC_FS, so remove #ifdef CONFIG_PROC_FS.
+On Sun, 21 Nov 2021 20:12:54 +0100 you wrote:
+> 'cid_map' is a bitmap. So use 'bitmap_zalloc()' to simplify code,
+> improve the semantic and avoid some open-coded arithmetic in allocator
+> arguments.
 > 
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> ---
->  net/ipv4/arp.c | 33 ++++++++-------------------------
->  1 file changed, 8 insertions(+), 25 deletions(-)
+> Also change the corresponding 'kfree()' into 'bitmap_free()' to keep
+> consistency.
+> 
+> [...]
 
 Here is the summary with links:
-  - [net-next] arp: Remove #ifdef CONFIG_PROC_FS
-    https://git.kernel.org/netdev/net-next/c/e968b1b3e9b8
+  - qed: Use the bitmap API to simplify some functions
+    https://git.kernel.org/netdev/net-next/c/5e6c7ccd3ea4
 
 You are awesome, thank you!
 -- 
