@@ -2,77 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DCF14588AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 05:56:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C8F4588AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 06:02:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232279AbhKVE7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 23:59:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231656AbhKVE7p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 23:59:45 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D47C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 20:56:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2aCQpVDlbYWsNB09YHVxAuw9fyHTyZh0tb1unY+8gTY=; b=IKxhl0e7JezN6sCtME5ISB8xjq
-        Lpu74sETuf4Ogz2z5L/1c+Pd+wudeSTFDVQ8+LJNHx7K4N8QudQWunKWpzQIgvwBydtPD55RCpTnn
-        v/D0s5IbNx1x+uzOk2gyspiINa6l7vKVMe1i/22enAeLdIZXmURiCM09zFIObo4v8FczPftK/S1Jw
-        9oBqhqLE2Kp70p7Unl6BhBqR8YWT7KsMmuG76IQKr3rNOK6NnPBeeW9rU2hkW6xJoY2oOlRSmW4q4
-        aLqRyYMC6vkxmcvbg9/7YusTGBslg06mvdnaDQcubvWJ86LwvNIFY4eYpXoaFXsW1sSLz5fyzH+vd
-        pdHSaDdw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mp1NR-00CZRG-My; Mon, 22 Nov 2021 04:56:25 +0000
-Date:   Mon, 22 Nov 2021 04:56:25 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: split thp synchronously on MADV_DONTNEED
-Message-ID: <YZsi+RFed3hX9T8w@casper.infradead.org>
-References: <20211120201230.920082-1-shakeelb@google.com>
+        id S229664AbhKVFFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 00:05:35 -0500
+Received: from mga18.intel.com ([134.134.136.126]:7310 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229505AbhKVFFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 00:05:34 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10175"; a="221604288"
+X-IronPort-AV: E=Sophos;i="5.87,253,1631602800"; 
+   d="scan'208";a="221604288"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2021 21:02:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,253,1631602800"; 
+   d="scan'208";a="496725351"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.189])
+  by orsmga007.jf.intel.com with ESMTP; 21 Nov 2021 21:02:25 -0800
+Date:   Mon, 22 Nov 2021 13:02:24 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Cassio Neri <cassio.neri@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v3 3/4] clocksource: Dynamically increase
+ watchdog_max_skew
+Message-ID: <20211122050224.GH34844@shbuild999.sh.intel.com>
+References: <20211118191439.1000012-1-longman@redhat.com>
+ <20211118191439.1000012-4-longman@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211120201230.920082-1-shakeelb@google.com>
+In-Reply-To: <20211118191439.1000012-4-longman@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 20, 2021 at 12:12:30PM -0800, Shakeel Butt wrote:
-> Many applications do sophisticated management of their heap memory for
-> better performance but with low cost. We have a bunch of such
-> applications running on our production and examples include caching and
-> data storage services. These applications keep their hot data on the
-> THPs for better performance and release the cold data through
-> MADV_DONTNEED to keep the memory cost low.
+On Thu, Nov 18, 2021 at 02:14:38PM -0500, Waiman Long wrote:
+> It is possible that a long-lasting intensive workload running on
+> a system may cause the clock skew test to be skipped for extended
+> period of time. One way to avoid this is to dynamically increase the
+> watchdog_max_skew used in the clock skew test.
 > 
-> The kernel defers the split and release of THPs until there is memory
-> pressure. This causes complicates the memory management of these
-> sophisticated applications which then needs to look into low level
-> kernel handling of THPs to better gauge their headroom for expansion. In
-> addition these applications are very latency sensitive and would prefer
-> to not face memory reclaim due to non-deterministic nature of reclaim.
+> However, we also don't want watchdog_max_skew to be continuously increased
+> without bound. So we limit the increase up to 10*WATCHDOG_MAX_SKEW. If
+> that happens, there is something wrong the current watchdog and we are
+> going to mark it as unstable and select a new watchdog, if possible.
+ 
+For reselecting watchdog, in these cases, I think it's the extreme system
+stress causing the MMIO read of hpet to be slow (plus some lock), fallback
+to other watchdog whose read is MMIO or ioport may not help much. I tried
+this patch, and when "acpi_pm" timer is used instead of "hpet", similar
+thing can still happen.
+
+Thanks,
+Feng
+
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>  include/linux/clocksource.h |  1 +
+>  kernel/time/clocksource.c   | 57 +++++++++++++++++++++++++++++++++----
+>  2 files changed, 52 insertions(+), 6 deletions(-)
 > 
-> This patch let such applications not worry about the low level handling
-> of THPs in the kernel and splits the THPs synchronously on
-> MADV_DONTNEED.
-
-I've been wondering about whether this is really the right strategy
-(and this goes wider than just this one, new case)
-
-We chose to use a 2MB page here, based on whatever heuristics are
-currently in play.  Now userspace is telling us we were wrong and should
-have used smaller pages.  2MB pages are precious, and we currently
-have one.  Surely it is better to migrate the still-valid contents of
-this 2MB page to smaller pages, and then free the 2MB page as a single
-unit than it is to fragment this 2MB page into smaller chunks, and keep
-using some of it, virtually guaranteeing this particular 2MB page can't
-be reassembled without significant work?
+> diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
+> index 1d42d4b17327..6a62a1a4da85 100644
+> --- a/include/linux/clocksource.h
+> +++ b/include/linux/clocksource.h
+> @@ -108,6 +108,7 @@ struct clocksource {
+>  	const char		*name;
+>  	struct list_head	list;
+>  	int			rating;
+> +	int			clock_skew_skipcnt;
+>  	enum clocksource_ids	id;
+>  	enum vdso_clock_mode	vdso_clock_mode;
+>  	unsigned long		flags;
+> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+> index b7e52a642948..284910b07f0c 100644
+> --- a/kernel/time/clocksource.c
+> +++ b/kernel/time/clocksource.c
+> @@ -108,6 +108,14 @@ static u64 suspend_start;
+>   * a lower bound for cs->uncertainty_margin values when registering clocks.
+>   */
+>  #define WATCHDOG_MAX_SKEW (100 * NSEC_PER_USEC)
+> +static u64 watchdog_max_skew = WATCHDOG_MAX_SKEW;
+> +
+> +/*
+> + * The clock-skew check will be skipped if the watchdog shows too much
+> + * read-back delay. To avoid indefinite test skips, watchdog_max_skew will be
+> + * increased after a certain number of test skips.
+> + */
+> +#define CLOCK_SKEW_SKIP_MAX	10
+>  
+>  #ifdef CONFIG_CLOCKSOURCE_WATCHDOG
+>  static void clocksource_watchdog_work(struct work_struct *work);
+> @@ -205,6 +213,8 @@ EXPORT_SYMBOL_GPL(max_cswd_read_retries);
+>  static int verify_n_cpus = 8;
+>  module_param(verify_n_cpus, int, 0644);
+>  
+> +static void __clocksource_select_watchdog(bool fallback);
+> +
+>  enum wd_read_status {
+>  	WD_READ_SUCCESS,
+>  	WD_READ_UNSTABLE,
+> @@ -228,7 +238,7 @@ static enum wd_read_status cs_watchdog_read(struct clocksource *cs, u64 *csnow,
+>  		wd_delta = clocksource_delta(wd_end, *wdnow, watchdog->mask);
+>  		wd_delay = clocksource_cyc2ns(wd_delta, watchdog->mult,
+>  					      watchdog->shift);
+> -		if (wd_delay <= WATCHDOG_MAX_SKEW) {
+> +		if (wd_delay <= watchdog_max_skew) {
+>  			if (nretries > 1 || nretries >= max_cswd_read_retries) {
+>  				pr_warn("timekeeping watchdog on CPU%d: %s retried %d times before success\n",
+>  					smp_processor_id(), watchdog->name, nretries);
+> @@ -241,13 +251,13 @@ static enum wd_read_status cs_watchdog_read(struct clocksource *cs, u64 *csnow,
+>  		 * there is too much external interferences that cause
+>  		 * significant delay in reading both clocksource and watchdog.
+>  		 *
+> -		 * If consecutive WD read-back delay > WATCHDOG_MAX_SKEW/2,
+> +		 * If consecutive WD read-back delay > watchdog_max_skew/2,
+>  		 * report system busy, reinit the watchdog and skip the current
+>  		 * watchdog test.
+>  		 */
+>  		wd_delta = clocksource_delta(wd_end2, wd_end, watchdog->mask);
+>  		wd_seq_delay = clocksource_cyc2ns(wd_delta, watchdog->mult, watchdog->shift);
+> -		if (wd_seq_delay > WATCHDOG_MAX_SKEW/2)
+> +		if (wd_seq_delay > watchdog_max_skew/2)
+>  			goto skip_test;
+>  	}
+>  
+> @@ -260,6 +270,35 @@ static enum wd_read_status cs_watchdog_read(struct clocksource *cs, u64 *csnow,
+>  		smp_processor_id(), watchdog->name, wd_seq_delay);
+>  	pr_info("wd-%s-wd read-back delay of %lldns, clock-skew test skipped!\n",
+>  		cs->name, wd_delay);
+> +	if (++watchdog->clock_skew_skipcnt > CLOCK_SKEW_SKIP_MAX) {
+> +		/*
+> +		 * Increase watchdog_max_skew and watchdog->uncertainty_margin
+> +		 * unless it will exceed 10*WATCHDOG_MAX_SKEW. In that case, the
+> +		 * watchdog itself will be marked unstable.
+> +		 */
+> +		watchdog->clock_skew_skipcnt = 0;
+> +		if (wd_seq_delay > 5 * WATCHDOG_MAX_SKEW) {
+> +			const char *old_wd_name = watchdog->name;
+> +
+> +			/*
+> +			 * Consecutive watchdog delay exceed limit, mark
+> +			 * watchdog as unstable & select a new watchdog,
+> +			 * if possible.
+> +			 */
+> +			local_irq_disable();
+> +			__clocksource_unstable(watchdog);
+> +			__clocksource_select_watchdog(true);
+> +			local_irq_enable();
+> +			pr_warn("timekeeping watchdog: old %s watchdog marked unstable, new %s watchdog selected\n",
+> +				old_wd_name, watchdog->name);
+> +			return WD_READ_SKIP;
+> +		}
+> +		watchdog_max_skew = 2 * wd_seq_delay;
+> +		if (wd_seq_delay > watchdog->uncertainty_margin)
+> +			watchdog->uncertainty_margin = wd_seq_delay;
+> +		pr_warn("timekeeping watchdog on CPU%d: watchdog_max_skew increased to %lldns\n",
+> +			smp_processor_id(), watchdog_max_skew);
+> +	}
+>  	return WD_READ_SKIP;
+>  }
+>  
+> @@ -559,12 +598,10 @@ static void clocksource_enqueue_watchdog(struct clocksource *cs)
+>  	}
+>  }
+>  
+> -static void clocksource_select_watchdog(bool fallback)
+> +static void __clocksource_select_watchdog(bool fallback)
+>  {
+>  	struct clocksource *cs, *old_wd;
+> -	unsigned long flags;
+>  
+> -	spin_lock_irqsave(&watchdog_lock, flags);
+>  	/* save current watchdog */
+>  	old_wd = watchdog;
+>  	if (fallback)
+> @@ -593,6 +630,14 @@ static void clocksource_select_watchdog(bool fallback)
+>  
+>  	/* Check if the watchdog timer needs to be started. */
+>  	clocksource_start_watchdog();
+> +}
+> +
+> +static void clocksource_select_watchdog(bool fallback)
+> +{
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&watchdog_lock, flags);
+> +	__clocksource_select_watchdog(fallback);
+>  	spin_unlock_irqrestore(&watchdog_lock, flags);
+>  }
+>  
+> -- 
+> 2.27.0
