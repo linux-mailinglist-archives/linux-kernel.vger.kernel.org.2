@@ -2,146 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68835458F8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:37:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F06FD458F94
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:42:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239275AbhKVNkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 08:40:07 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:16288 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233849AbhKVNkF (ORCPT
+        id S236971AbhKVNpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 08:45:23 -0500
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:47134 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229983AbhKVNpW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 08:40:05 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AM7DXtP009084;
-        Mon, 22 Nov 2021 08:36:59 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3cg6mksvc7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Nov 2021 08:36:58 -0500
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 1AMDapCi033989
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 22 Nov 2021 08:36:51 -0500
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Mon, 22 Nov 2021
- 08:36:50 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.858.5 via Frontend Transport;
- Mon, 22 Nov 2021 08:36:50 -0500
-Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.145])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 1AMDakCX005963;
-        Mon, 22 Nov 2021 08:36:48 -0500
-From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
-To:     <jic23@kernel.org>, <robh+dt@kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Subject: [PATCH v4 2/2] dt-bindings:iio:amplifiers: add ad7293 doc
-Date:   Mon, 22 Nov 2021 15:36:39 +0200
-Message-ID: <20211122133639.132972-2-antoniu.miclaus@analog.com>
-X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211122133639.132972-1-antoniu.miclaus@analog.com>
-References: <20211122133639.132972-1-antoniu.miclaus@analog.com>
+        Mon, 22 Nov 2021 08:45:22 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AMDg4Nv078183;
+        Mon, 22 Nov 2021 07:42:04 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1637588524;
+        bh=Dyen+lVjWHjVEWqkuyugmG3UgJfDIzdT6V++Fe0FhZM=;
+        h=From:To:CC:Subject:Date;
+        b=Wa1yCsVmrbi79WgJP1IfrPGuiqLJKplS98NZw+rUB3yi97YKaTO8B+rG6CJrQckZS
+         x7E97oC6z8400xIeuzqzqqNJdebQNZ4of6INaeemM66INMgK/PhJPUrg6+fL9iTyHL
+         1LmRLMwkRCnRNim30k6cyjrjVkPZXOT8YrAGjGUo=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AMDg4Vo000792
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 22 Nov 2021 07:42:04 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 22
+ Nov 2021 07:42:04 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 22 Nov 2021 07:42:04 -0600
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AMDg04r023508;
+        Mon, 22 Nov 2021 07:42:01 -0600
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v5 0/6] CAN: Add support for CAN in AM65,J721e and AM64
+Date:   Mon, 22 Nov 2021 19:11:52 +0530
+Message-ID: <20211122134159.29936-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: i-DnEY4y7mE_SRUYfraDyau06H01gfqX
-X-Proofpoint-ORIG-GUID: i-DnEY4y7mE_SRUYfraDyau06H01gfqX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-22_06,2021-11-22_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1015 mlxlogscore=999 impostorscore=0 mlxscore=0 spamscore=0
- bulkscore=0 suspectscore=0 adultscore=0 malwarescore=0 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111220072
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree bindings for the AD7293 Power Amplifier.
 
-Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
----
-changes in v4:
- - set `avdd-supply: true`
- - set `maxItems` for reset-gpios
- .../bindings/iio/dac/adi,ad7293.yaml          | 63 +++++++++++++++++++
- 1 file changed, 63 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/dac/adi,ad7293.yaml
+The following series of patches add support for CAN in SoC's AM65, J721e
+and AM64.
 
-diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad7293.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad7293.yaml
-new file mode 100644
-index 000000000000..7951ffe8805b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/dac/adi,ad7293.yaml
-@@ -0,0 +1,63 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/dac/adi,ad7293.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: AD7293 12-Bit Power Amplifier Current Controller with ADC,
-+       DACs, Temperature and Current Sensors
-+
-+maintainers:
-+  - Antoniu Miclaus <antoniu.miclaus@analog.com>
-+
-+description: |
-+   Power Amplifier drain current controller containing functionality
-+   for general-purpose monitoring and control of current, voltage,
-+   and temperature, integrated into a single chip solution with an
-+   SPI-compatible interface.
-+
-+   https://www.analog.com/en/products/ad7293.html
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,ad7293
-+
-+  avdd-supply: true
-+
-+  vdrive-supply:
-+    description:
-+      VDRIVE voltage regulator.
-+
-+  reset-gpios:
-+    maxItems: 1
-+
-+  reg:
-+    maxItems: 1
-+
-+  spi-max-frequency:
-+    maximum: 1000000
-+
-+required:
-+  - compatible
-+  - reg
-+  - avdd-supply
-+  - vdrive-supply
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    spi {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+      ad7293@0 {
-+        compatible = "adi,ad7293";
-+        reg = <0>;
-+        spi-max-frequency = <1000000>;
-+        avdd-supply = <&avdd>;
-+        vdrive-supply = <&vdrive>;
-+        reset-gpios = <&gpio 10 0>;
-+      };
-+    };
-+...
+changes since v4 -
+- Rebased the series on top of ti-k3-dts-next branch
+
+changes since v3 -
+- Rebased the series on top of ti-k3-dts-next branch
+
+changes since v2 -
+- correct the dtbs_check errors. clock names order and interrupts
+  property added in the dt bindings
+- added support for main mcan instances on common processor board
+  for j721e
+- rebased the series on top of latest linux-next head
+
+changes since v1 -
+- changed the message ram configuration to use the maximum value
+  in each field, for better performance.
+
+Aswath Govindraju (3):
+  arm64: dts: ti: am654-base-board/am65-iot2050-common: Disable mcan
+    nodes
+  arm64: dts: ti: k3-am64-main: Add support for MCAN
+  arm64: dts: ti: k3-am642-evm/sk: Add support for main domain mcan
+    nodes in EVM and disable them on SK
+
+Faiz Abbas (3):
+  arm64: dts: ti: k3-am65-mcu: Add Support for MCAN
+  arm64: dts: ti: k3-j721e: Add support for MCAN nodes
+  arm64: dts: ti: k3-j721e-common-proc-board: Add support for mcu and
+    main mcan nodes
+
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi      |  28 +++
+ arch/arm64/boot/dts/ti/k3-am642-evm.dts       |  40 ++++
+ arch/arm64/boot/dts/ti/k3-am642-sk.dts        |   8 +
+ .../boot/dts/ti/k3-am65-iot2050-common.dtsi   |   8 +
+ arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi       |  30 +++
+ .../arm64/boot/dts/ti/k3-am654-base-board.dts |   8 +
+ .../dts/ti/k3-j721e-common-proc-board.dts     | 155 ++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 196 ++++++++++++++++++
+ .../boot/dts/ti/k3-j721e-mcu-wakeup.dtsi      |  28 +++
+ 9 files changed, 501 insertions(+)
+
 -- 
-2.34.0
+2.17.1
 
