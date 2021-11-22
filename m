@@ -2,205 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0653C459860
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 00:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 745FD45988C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 00:50:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbhKVX0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 18:26:16 -0500
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:44520 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231253AbhKVX0O (ORCPT
+        id S231950AbhKVXxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 18:53:17 -0500
+Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:33831 "EHLO
+        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231894AbhKVXxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 18:26:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1637623386; x=1669159386;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=cW6tKnHnT46fju5wQk23yzM0+ePdggRMpkOpnMzhj4U=;
-  b=Ru3a6yFhO78HTsxTTDELk3jtTeKhyAp1Wuz04iCCWDhF/MLaUCOc728v
-   YxF8sqerB+PorTLITLDY4VMqVhIRqVCRZ57qKuWrQxjrw6+pBtosDaJ/T
-   hHevRhTutUVOoJAgg6wUKoHIiGh8kSkGphJFyuZ0P5Tktomg6RAZ6771L
-   PKbJUmO/Op4eufvFscv6palyH5hHWkbvbYbdPG9A5v+uXxHUYIQCBtpV9
-   Ovr5Go0rk9MITd73eo/LGEzlNp2v0ZwKc8dvIppXMTh0gbG5v5nKT1wDv
-   86uVlKSt4Y0Ipbf6Nl4ghXu9MKqWmH6uk94CgmpLQta2ECjpN46BJ5rqs
-   g==;
-X-IronPort-AV: E=Sophos;i="5.87,255,1631548800"; 
-   d="scan'208";a="191158521"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 23 Nov 2021 07:23:06 +0800
-IronPort-SDR: 0A7ydrRzE/b6b0S1ErYI+MZENgr0JuPnQqmVyq2A5Io69mD8ldB2PqNgc9+Uftn6tqZavzB0Ij
- U2rPTB+VuBfsMFqKRzVq7D8Aqib0cA/QDkr9+2vHfC8kl9qCTMDZ+mEZ7dAhrEfP+hxzywFg11
- TINKNnItqmyZSl+kZi7n/LEIJ6t0UG3mkLFcqzdrcZr3S5S6/UGB4f4w6/i5RLjoISnqp1oTvL
- 7Ov+acgfr235rT1JV3T77/q3qd8c1CBS5DyxR+ZS9RO8bQGlRmeRu7WOMJxQFx/CHwH12f6xMV
- i20amV9kz5B20VnXjLxwWOGw
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 14:58:02 -0800
-IronPort-SDR: xqBgfMKfJuv1UOcq35R9brO1GTSPeF9bssDTXyylV1FwEj4CKT39OAWhMUCtLvixNGcH9xllrw
- IvduYiOv1Re0DTZfyQxHA9Ld5SSUqSshtv9ede3lkq8P2xai7pzOVhGC8vJ/QRwpbV3Bz/xzQH
- dpfBvwuTXUF23tsZTPVZEys5TvkqC7+gTXg71VePBaIKNcHzxG9TycDROD6xwyAV9IpVjeM9Sd
- Hm5+fEq51K68cuK5iiCdGsX/gEkwdvRrp0jJC2rT/ewMD6d/CAcMs7OFU6c0qA0355WtC1VqGY
- b0g=
-WDCIronportException: Internal
-Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 15:23:08 -0800
-Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4HyjxQ6KGpz1RtW3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 15:23:06 -0800 (PST)
-Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)"
-        header.d=opensource.wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-        opensource.wdc.com; h=content-transfer-encoding:mime-version
-        :references:in-reply-to:x-mailer:message-id:date:subject:to
-        :from; s=dkim; t=1637623385; x=1640215386; bh=cW6tKnHnT46fju5wQk
-        23yzM0+ePdggRMpkOpnMzhj4U=; b=OVmVNDlRcCmsB50kGHheqayKTOkbh0YKmU
-        rUFwReqsy750zw78a/CjaaI2w8hTXAfHMTCWVQqqn6l3uijWUVV6T+6yRWG7pI6X
-        e93Dlx2lPIFb+Tw1MgD+p1TnRHMllnilQW0WLKmThFg/NHNZ1YLd8XYnI1XnG0lU
-        pRTx4rZL80kkC1YSiN9BP2Ld7sO77WM6kUNei9PSHZhrKMUR23fOBATHkAZxouJ2
-        SJqfI8MmbSiV1Aaod5WIzkFGvXEEmt3TPtQYFPfb1KWtGvjRo4ZKnk3VS9PS+Skp
-        QoFYh+xevkHlac2fvHKcVjhkeMb0EoHm2gSLaHTTUbyMdO3+Q3yA==
-X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
-Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
-        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id mGZ_UtUgH_fY for <linux-kernel@vger.kernel.org>;
-        Mon, 22 Nov 2021 15:23:05 -0800 (PST)
-Received: from toolbox.alistair23.me (unknown [10.225.165.60])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4HyjxD2k8Cz1RtVn;
-        Mon, 22 Nov 2021 15:22:55 -0800 (PST)
-From:   Alistair Francis <alistair.francis@opensource.wdc.com>
-To:     linux-perf-users@vger.kernel.org, linux-riscv@lists.infradead.org
-Cc:     mark.rutland@arm.com, atish.patra@wdc.com,
-        alexander.shishkin@linux.intel.com, peterz@infradead.org,
-        tglx@linutronix.de, namhyung@kernel.org, dave@stgolabs.net,
-        arnd@arndb.de, linux-kernel@vger.kernel.org, jolsa@redhat.com,
-        acme@kernel.org, alistair23@gmail.com, dvhart@infradead.org,
-        mingo@redhat.com, Alistair Francis <alistair.francis@wdc.com>
-Subject: [PATCH v6 2/2] selftests: futex: Add support for 32-bit systems with 64-bit time_t
-Date:   Tue, 23 Nov 2021 09:22:36 +1000
-Message-Id: <20211122232236.119533-2-alistair.francis@opensource.wdc.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211122232236.119533-1-alistair.francis@opensource.wdc.com>
-References: <20211122232236.119533-1-alistair.francis@opensource.wdc.com>
+        Mon, 22 Nov 2021 18:53:16 -0500
+X-Greylist: delayed 1321 seconds by postgrey-1.27 at vger.kernel.org; Mon, 22 Nov 2021 18:53:15 EST
+Received: from dread.disaster.area (pa49-195-103-97.pa.nsw.optusnet.com.au [49.195.103.97])
+        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id E109286793B;
+        Tue, 23 Nov 2021 10:26:59 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mpIi9-00C3kR-HA; Tue, 23 Nov 2021 10:26:57 +1100
+Date:   Tue, 23 Nov 2021 10:26:57 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Brian Foster <bfoster@redhat.com>
+Cc:     Ian Kent <raven@themaw.net>, Miklos Szeredi <miklos@szeredi.hu>,
+        xfs <linux-xfs@vger.kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] xfs: make sure link path does not go away at access
+Message-ID: <20211122232657.GF449541@dread.disaster.area>
+References: <20211115222417.GO449541@dread.disaster.area>
+ <f8425d1270fe011897e7e14eaa6ba8a77c1ed077.camel@themaw.net>
+ <20211116030120.GQ449541@dread.disaster.area>
+ <YZPVSTDIWroHNvFS@bfoster>
+ <20211117002251.GR449541@dread.disaster.area>
+ <YZVQUSCWWgOs+cRB@bfoster>
+ <20211117214852.GU449541@dread.disaster.area>
+ <YZf+lRsb0lBWdYgN@bfoster>
+ <20211122000851.GE449541@dread.disaster.area>
+ <YZvvP9RFXi3/jX0q@bfoster>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZvvP9RFXi3/jX0q@bfoster>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=e9dl9Yl/ c=1 sm=1 tr=0 ts=619c2746
+        a=fP9RlOTWD4uZJjPSFnn6Ew==:117 a=fP9RlOTWD4uZJjPSFnn6Ew==:17
+        a=HsDoLlocmGUuF16g:21 a=kj9zAlcOel0A:10 a=vIxV3rELxO4A:10 a=7-415B0cAAAA:8
+        a=8lsCNJXj5NFy3Ic0CI0A:9 a=7Zwj6sZBwVKJAoWSPKxL6X1jA+E=:19
+        a=CjuIK1q_8ugA:10 a=hl_xKfOxWho2XEkUDbUg:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alistair Francis <alistair.francis@wdc.com>
+On Mon, Nov 22, 2021 at 02:27:59PM -0500, Brian Foster wrote:
+> On Mon, Nov 22, 2021 at 11:08:51AM +1100, Dave Chinner wrote:
+> > On Fri, Nov 19, 2021 at 02:44:21PM -0500, Brian Foster wrote:
+> > > In
+> > > any event, another experiment I ran in light of the above results that
+> > > might be similar was to put the inode queueing component of
+> > > destroy_inode() behind an rcu callback. This reduces the single threaded
+> > > perf hit from the previous approach by about 50%. So not entirely
+> > > baseline performance, but it's back closer to baseline if I double the
+> > > throttle threshold (and actually faster at 4x). Perhaps my crude
+> > > prototype logic could be optimized further to not rely on percpu
+> > > threshold changes to match the baseline.
+> > > 
+> > > My overall takeaway from these couple hacky experiments is that the
+> > > unconditional synchronous rcu wait is indeed probably too heavy weight,
+> > > as you point out. The polling or callback (or perhaps your separate
+> > > queue) approach seems to be in the ballpark of viability, however,
+> > > particularly when we consider the behavior of scaled or mixed workloads
+> > > (since inactive queue processing seems to be size driven vs. latency
+> > > driven).
+> > > 
+> > > So I dunno.. if you consider the various severity and complexity
+> > > tradeoffs, this certainly seems worth more consideration to me. I can
+> > > think of other potentially interesting ways to experiment with
+> > > optimizing the above or perhaps tweak queueing to better facilitate
+> > > taking advantage of grace periods, but it's not worth going too far down
+> > > that road if you're wedded to the "busy inodes" approach.
+> > 
+> > I'm not wedded to "busy inodes" but, as your experiments are
+> > indicating, trying to handle rcu grace periods into the deferred
+> > inactivation path isn't completely mitigating the impact of having
+> > to wait for a grace period for recycling of inodes.
+> > 
+> 
+> What I'm seeing so far is that the impact seems to be limited to the
+> single threaded workload and largely mitigated by an increase in the
+> percpu throttle limit. IOW, it's not completely free right out of the
+> gate, but the impact seems isolated and potentially mitigated by
+> adjustment of the pipeline.
+> 
+> I realize the throttle is a percpu value, so that is what has me
+> wondering about some potential for gains in efficiency to try and get
+> more of that single-threaded performance back in other ways, or perhaps
+> enhancements that might be more broadly beneficial to deferred
+> inactivations in general (i.e. some form of adaptive throttling
+> thresholds to balance percpu thresholds against a global threshold).
 
-Some 32-bit architectures (such are 32-bit RISC-V) only have a 64-bit
-time_t and as such don't have the SYS_futex syscall. This patch will
-allow us to use the SYS_futex_time64 syscall on those platforms.
+I ran experiments on queue depth early on. Once we go over a few
+tens of inodes we start to lose the "hot cache" effect and
+performance starts to go backwards. By queue depths of hundreds,
+we've lost all the hot cache and nothing else gets that performance
+back because we can't avoid the latency of all the memory writes
+from cache eviction and the followup memory loads that result.
 
-This also converts the futex calls to be y2038 safe (when built for a
-5.1+ kernel).
+Making the per-cpu queues longer or shorter based on global state
+won't gain us anything. ALl it will do is slow down local operations
+that don't otherwise need slowing down....
 
-Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
----
- .../futex/functional/futex_requeue_pi.c       |  2 +-
- .../selftests/futex/include/futextest.h       | 44 ++++++++++++++++++-
- 2 files changed, 43 insertions(+), 3 deletions(-)
+> > I suspect a rethink on the inode recycling mechanism is needed. THe
+> > way it is currently implemented was a brute force solution - it is
+> > simple and effective. However, we need more nuance in the recycling
+> > logic now.  That is, if we are recycling an inode that is clean, has
+> > nlink >=1 and has not been unlinked, it means the VFS evicted it too
+> > soon and we are going to re-instantiate it as the identical inode
+> > that was evicted from cache.
+> > 
+> 
+> Probably. How advantageous is inode memory reuse supposed to be in the
+> first place? I've more considered it a necessary side effect of broader
+> architecture (i.e. deferred reclaim, etc.) as opposed to a primary
+> optimization.
 
-diff --git a/tools/testing/selftests/futex/functional/futex_requeue_pi.c =
-b/tools/testing/selftests/futex/functional/futex_requeue_pi.c
-index 1ee5518ee6b7..d3673996fed4 100644
---- a/tools/testing/selftests/futex/functional/futex_requeue_pi.c
-+++ b/tools/testing/selftests/futex/functional/futex_requeue_pi.c
-@@ -294,7 +294,7 @@ int unit_test(int broadcast, long lock, int third_par=
-ty_owner, long timeout_ns)
- 		secs =3D (ts.tv_nsec + timeout_ns) / 1000000000;
- 		ts.tv_nsec =3D ((int64_t)ts.tv_nsec + timeout_ns) % 1000000000;
- 		ts.tv_sec +=3D secs;
--		info("ts.tv_sec  =3D %ld\n", ts.tv_sec);
-+		info("ts.tv_sec  =3D %lld\n", ts.tv_sec);
- 		info("ts.tv_nsec =3D %ld\n", ts.tv_nsec);
- 		tsp =3D &ts;
- 	}
-diff --git a/tools/testing/selftests/futex/include/futextest.h b/tools/te=
-sting/selftests/futex/include/futextest.h
-index c786fffecb8a..b303d0d492ff 100644
---- a/tools/testing/selftests/futex/include/futextest.h
-+++ b/tools/testing/selftests/futex/include/futextest.h
-@@ -17,10 +17,12 @@
- #ifndef _FUTEXTEST_H
- #define _FUTEXTEST_H
-=20
-+#include <errno.h>
- #include <unistd.h>
- #include <sys/syscall.h>
- #include <sys/types.h>
- #include <linux/futex.h>
-+#include <linux/time_types.h>
-=20
- typedef volatile u_int32_t futex_t;
- #define FUTEX_INITIALIZER 0
-@@ -69,14 +71,52 @@ static inline int
- futex_syscall(volatile u_int32_t *uaddr, int op, u_int32_t val, struct t=
-imespec *timeout,
- 	      volatile u_int32_t *uaddr2, int val3, int opflags)
- {
--	return syscall(SYS_futex, uaddr, op | opflags, val, timeout, uaddr2, va=
-l3);
-+#if defined(__NR_futex_time64)
-+	if (sizeof(*timeout) !=3D sizeof(struct __kernel_old_timespec)) {
-+		int ret =3D  syscall(__NR_futex_time64, uaddr, op | opflags, val, time=
-out,
-+				   uaddr2, val3);
-+	if (ret =3D=3D 0 || errno !=3D ENOSYS)
-+		return ret;
-+	}
-+#endif
-+
-+#if defined(__NR_futex)
-+	if (sizeof(*timeout) =3D=3D sizeof(struct __kernel_old_timespec))
-+		return syscall(__NR_futex, uaddr, op | opflags, val, timeout, uaddr2, =
-val3);
-+
-+	if (timeout && timeout->tv_sec =3D=3D (long)timeout->tv_sec) {
-+		struct __kernel_old_timespec ts32;
-+
-+		ts32.tv_sec =3D (__kernel_long_t) timeout->tv_sec;
-+		ts32.tv_nsec =3D (__kernel_long_t) timeout->tv_nsec;
-+
-+		return syscall(__NR_futex, uaddr, op | opflags, val, ts32, uaddr2, val=
-3);
-+	} else if (!timeout) {
-+		return syscall(__NR_futex, uaddr, op | opflags, val, NULL, uaddr2, val=
-3);
-+	}
-+#endif
-+
-+	errno =3D ENOSYS;
-+	return -1;
- }
-=20
- static inline int
- futex_syscall_nr_requeue(volatile u_int32_t *uaddr, int op, u_int32_t va=
-l, int nr_requeue,
- 			 volatile u_int32_t *uaddr2, int val3, int opflags)
- {
--	return syscall(SYS_futex, uaddr, op | opflags, val, nr_requeue, uaddr2,=
- val3);
-+#if defined(__NR_futex_time64)
-+	int ret =3D  syscall(__NR_futex_time64, uaddr, op | opflags, val, nr_re=
-queue,
-+			   uaddr2, val3);
-+	if (ret =3D=3D 0 || errno !=3D ENOSYS)
-+		return ret;
-+#endif
-+
-+#if defined(__NR_futex)
-+	return syscall(__NR_futex, uaddr, op | opflags, val, nr_requeue, uaddr2=
-, val3);
-+#endif
-+
-+	errno =3D ENOSYS;
-+	return -1;
- }
-=20
- /**
---=20
-2.31.1
+Yes, it's an architectural feature resulting from the filesystem
+inode life cycle being different to the VFS inode life cycle. This
+was inherited from Irix - it had separate inactivation vs reclaim
+states and action steps for vnodes - inactivation occurred when the
+vnode refcount went to zero, reclaim occurred when the vnode was to
+be freed.
 
+Architecturally, Linux doesn't have this two-step infrastructure; it
+just has evict() that runs everything when the inode needs to be
+reclaimed. Hence we hide the two-phase reclaim architecture of XFS
+behind that, and so we always had this troublesome impedence
+mismatch on Linux.
+
+Thinking a bit about this, maybe there is a more integrated way to
+handle this life cycle impedence mismatch by making the way we
+interact with the linux inode cache to be more ...  Irix like. Linux
+does actually give us a a callback when the last reference to an
+inode goes away: .drop_inode()
+
+i.e. Maybe we should look to triggering inactivation work from
+->drop_inode instead of ->destroy_inode and hence always leaving
+unreferenced, reclaimable inodes in the VFS cache on the LRU. i.e.
+rather than hiding the two-phase XFS inode inactivation+reclaim
+algorithm from the VFS, move it up into the VFS.  If we prevent
+inodes from being reclaimed from the LRU until they have finished
+inactivation and are clean (easy enough just by marking the inode as
+dirty), that would allow us to immediately reclaim and free inodes
+in evict() context. Integration with __wait_on_freeing_inode() would
+like solve the RCU reuse/recycling issues.
+
+There's more to it than just this, but perhaps the longer term
+direction should be closer integration with the Linux inode cache
+life cycle rather than trying to solve all these problems underneath
+the VFS cache whilst still trying to play by it's rules...
+
+> I still see reuse occur with deferred inactivation, we
+> just end up cycling through the same set of inodes as they fall through
+> the queue rather than recycling the same one over and over. I'm sort of
+> wondering what the impact would be if we didn't do this at all (for the
+> new allocation case at least).
+
+We end up with a larger pool of free inodes in the finobt. This is
+basically what my "busy inode check" proposal is based on - inodes
+that we can't allocate without recycling just remain on the finobt
+for longer before they can be used. This would be awful if we didn't
+have the finobt to efficiently locate free inodes - the finobt
+record iteration makes it pretty low overhead to scan inodes here.
+
+> > So how much re-initialisation do we actually need for that inode?
+> > Almost everything in the inode is still valid; the problems come
+> > from inode_init_always() resetting the entire internal inode state
+> > and XFS then having to set them up again.  The internal state is
+> > already largely correct when we start recycling, and the identity of
+> > the recycled inode does not change when nlink >= 1. Hence eliding
+> > inode_init_always() would also go a long way to avoiding the need
+> > for a RCU grace period to pass before we can make the inode visible
+> > to the VFS again.
+> > 
+> > If we can do that, then the only indoes that need a grace period
+> > before they can be recycled are unlinked inodes as they change
+> > identity when being recycled. That identity change absolutely
+> > requires a grace period to expire before the new instantiation can
+> > be made visible.  Given the arbitrary delay that this can introduce
+> > for an inode allocation operation, it seems much better suited to
+> > detecting busy inodes than waiting for a global OS state change to
+> > occur...
+> > 
+> 
+> Maybe..? The experiments I've been doing are aimed at simplicity and
+> reducing the scope of the changes. Part of the reason for this is tbh
+> I'm not totally convinced we really need to do anything more complex
+> than preserve the inline symlink buffer one way or another (for example,
+> see the rfc patch below for an alternative to the inline symlink rcuwalk
+> disable patch). Maybe we should consider something like this anyways.
+> 
+> With busy inodes, we need to alter inode allocation to some degree to
+> accommodate. We can have (tens of?) thousands of inodes under the grace
+> period at any time based on current batching behavior, so it's not
+> totally evident to me that we won't end up with some of the same
+> fundamental issues to deal with here, just needing to be accommodated in
+> the inode allocation algorithm rather than the teardown sequence.
+
+Sure, but the purpose of the allocation selection
+policy is to select the best inode to allocate for the current
+context.  The cost of not being able to use an inode immediately
+needs to be factored into that allocation policy. i.e. if the
+selected inode has an associated delay with it before it can be
+reused and other free inodes don't, then we should not be selecting
+the inode with a delay associcated with it.
+
+This is exactly the reasoning and logic we use for busy extents.  We
+only take the blocking penalty for resolving busy extent state if we
+run out of free extents to search before we've found an allocation
+candidate. I think it makes sense for inode allocation, too.
+
+> --- 8< ---
+> 
+> diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
+> index 64b9bf334806..058e3fc69ff7 100644
+> --- a/fs/xfs/xfs_inode.c
+> +++ b/fs/xfs/xfs_inode.c
+> @@ -2644,7 +2644,7 @@ xfs_ifree(
+>  	 * already been freed by xfs_attr_inactive.
+>  	 */
+>  	if (ip->i_df.if_format == XFS_DINODE_FMT_LOCAL) {
+> -		kmem_free(ip->i_df.if_u1.if_data);
+> +		kfree_rcu(ip->i_df.if_u1.if_data);
+>  		ip->i_df.if_u1.if_data = NULL;
+
+That would need to be rcu_assign_pointer(ip->i_df.if_u1.if_data,
+NULL) to put the correct memory barriers in place, right? Also, I
+think ip->i_df.if_u1.if_data needs to be set to NULL before calling
+kfree_rcu() so racing lookups will always see NULL before
+the object is freed.
+
+But again, as I asked up front, why do we even need to free this
+memory buffer here? It will be freed in xfs_inode_free_callback()
+after the current RCU grace period expires, so what do we gain by
+freeing it separately here?
+
+>  		ip->i_df.if_bytes = 0;
+>  	}
+> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> index a607d6aca5c4..e98d7f10ba7d 100644
+> --- a/fs/xfs/xfs_iops.c
+> +++ b/fs/xfs/xfs_iops.c
+> @@ -511,27 +511,6 @@ xfs_vn_get_link(
+>  	return ERR_PTR(error);
+>  }
+>  
+> -STATIC const char *
+> -xfs_vn_get_link_inline(
+> -	struct dentry		*dentry,
+> -	struct inode		*inode,
+> -	struct delayed_call	*done)
+> -{
+> -	struct xfs_inode	*ip = XFS_I(inode);
+> -	char			*link;
+> -
+> -	ASSERT(ip->i_df.if_format == XFS_DINODE_FMT_LOCAL);
+> -
+> -	/*
+> -	 * The VFS crashes on a NULL pointer, so return -EFSCORRUPTED if
+> -	 * if_data is junk.
+> -	 */
+> -	link = ip->i_df.if_u1.if_data;
+> -	if (XFS_IS_CORRUPT(ip->i_mount, !link))
+> -		return ERR_PTR(-EFSCORRUPTED);
+> -	return link;
+> -}
+> -
+>  static uint32_t
+>  xfs_stat_blksize(
+>  	struct xfs_inode	*ip)
+> @@ -1250,14 +1229,6 @@ static const struct inode_operations xfs_symlink_inode_operations = {
+>  	.update_time		= xfs_vn_update_time,
+>  };
+>  
+> -static const struct inode_operations xfs_inline_symlink_inode_operations = {
+> -	.get_link		= xfs_vn_get_link_inline,
+> -	.getattr		= xfs_vn_getattr,
+> -	.setattr		= xfs_vn_setattr,
+> -	.listxattr		= xfs_vn_listxattr,
+> -	.update_time		= xfs_vn_update_time,
+> -};
+> -
+>  /* Figure out if this file actually supports DAX. */
+>  static bool
+>  xfs_inode_supports_dax(
+> @@ -1409,9 +1380,8 @@ xfs_setup_iops(
+>  		break;
+>  	case S_IFLNK:
+>  		if (ip->i_df.if_format == XFS_DINODE_FMT_LOCAL)
+> -			inode->i_op = &xfs_inline_symlink_inode_operations;
+> -		else
+> -			inode->i_op = &xfs_symlink_inode_operations;
+> +			inode->i_link = ip->i_df.if_u1.if_data;
+> +		inode->i_op = &xfs_symlink_inode_operations;
+
+This still needs corruption checks - ip->i_df.if_u1.if_data can be
+null if there's some kind of inode corruption detected.
+
+>  		break;
+>  	default:
+>  		inode->i_op = &xfs_inode_operations;
+> diff --git a/fs/xfs/xfs_symlink.c b/fs/xfs/xfs_symlink.c
+> index fc2c6a404647..20ec2f450c56 100644
+> --- a/fs/xfs/xfs_symlink.c
+> +++ b/fs/xfs/xfs_symlink.c
+> @@ -497,6 +497,7 @@ xfs_inactive_symlink(
+>  	 * do here in that case.
+>  	 */
+>  	if (ip->i_df.if_format == XFS_DINODE_FMT_LOCAL) {
+> +		WRITE_ONCE(VFS_I(ip)->i_link, NULL);
+
+Again, rcu_assign_pointer(), yes?
+
+>  		xfs_iunlock(ip, XFS_ILOCK_EXCL);
+>  		return 0;
+>  	}
+> 
+> 
+
+-- 
+Dave Chinner
+david@fromorbit.com
