@@ -2,118 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE4D54587DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 02:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2394587DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 02:56:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238408AbhKVB65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 20:58:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:39462 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232296AbhKVB64 (ORCPT
+        id S238579AbhKVB7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 20:59:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238482AbhKVB7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 20:58:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637546150;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=foL2qzsSmwXF+mZ2MGe7BLerROLxedXKdXca4/aLKDo=;
-        b=dCVU/eC29y6xGvQhn4VwtaVcifrH/PE5xOqcv2QzBdGnCH6mnsHS/qTU6HGXJxsSRaFiNY
-        E+L5oUCYlqqtOyZpjhx5rO6MOLNoJfqboR0SQjPiHqHWb/OsviotTuDZUaar10j8q/5v3O
-        o8Gt9TOPxVAS4sqXJy5pMiV3VpzPYFM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-189--M8HS8O5MrKP_GhfL0sfvw-1; Sun, 21 Nov 2021 20:55:46 -0500
-X-MC-Unique: -M8HS8O5MrKP_GhfL0sfvw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A77353938D;
-        Mon, 22 Nov 2021 01:55:45 +0000 (UTC)
-Received: from localhost (ovpn-12-61.pek2.redhat.com [10.72.12.61])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 07FE39808;
-        Mon, 22 Nov 2021 01:55:31 +0000 (UTC)
-Date:   Mon, 22 Nov 2021 09:55:29 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kexec@lists.infradead.org, dyoung@redhat.com,
-        akpm@linux-foundation.org
-Subject: Re: [PATCH 1/3] x86/kexec: fix memory leak of elf header buffer
-Message-ID: <20211122015529.GA7968@MiWiFi-R3L-srv>
-References: <20211029072424.9109-1-bhe@redhat.com>
- <20211029072424.9109-2-bhe@redhat.com>
+        Sun, 21 Nov 2021 20:59:04 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C58CC061574;
+        Sun, 21 Nov 2021 17:55:58 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id r25so32926961edq.7;
+        Sun, 21 Nov 2021 17:55:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yAMBLIWcgPcTELLwg6eU2Wm/MMJdqWWpdYWxaZx0w7I=;
+        b=f9TKYg2LnQUvlKW4M4mZ36DxqkM/0x5Bhl98TqCgy3kf/Q3SrDlnDvJiQNkwzAzJp4
+         23TEWeGofLHyC/5OL7Ty3mXx+B5QJUDL9bCZ1s7pcwCsWq/LxKR3oBdX8HI3skASaZOv
+         fLRye1ADTG8fXuV4FuYrDohQJOlQT1l7WpQJmElCVby2RSu2XWF8+2GMFnT/1AeR05tP
+         uMKYRnbthX+OC0MMrr36IcY0XNksf5mYW67DMnTwJGwP2bLv4gxW+HOuQAF+LK7efuQ6
+         gHJBOADCd0jHq0rkeprXwkBNpVU3M3th2mt0dmSEQVYfHk+uR7plGWmQwqlLN11vlEKQ
+         yOoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yAMBLIWcgPcTELLwg6eU2Wm/MMJdqWWpdYWxaZx0w7I=;
+        b=QPH9Z5fFUqexk8m2NnA8SNqzlsW0HUd85OWWLuySCdRxwFaBV5cZ9H+TGyCuP+Wyo6
+         GIGZCYNNO+SbGdiO/alkcO9oIgq2k83G4eCTkZwyBxwrhi1AGXmbI5JG4/qR56lN5Xfj
+         lr21XAG/G+JGKRxWIFT1NZyIB+jTuxrJV9HSmmQTWsuIiAo0KVjm7Q5//2TbOpBakUhw
+         P0Uqbw0I/YCOfxEx9K6cGKDUdH4OEPDMvgcNcqYmrSDr4FpJRgmrICUKPoj7xB26izZX
+         jJ0cykNoiQ7i4mz8zhYrhiGKDs4rIhkhqBRM1adXkm2HTsKPK50GMTWr9UpCq8qzUbyj
+         kA6g==
+X-Gm-Message-State: AOAM5324D7ewfYSK2camkO2i4YUw6C9p6/IOZtKnSNSqLVHJIUFiNbiJ
+        9Qgm3Yg6IHnhqpg6rLKQPHY=
+X-Google-Smtp-Source: ABdhPJxh9wtPbj/9SAkLHPD5rnxsYEkDvC05lZHgF3s41jG7S7NRGUWSefW0Tp7MFqUjXF6m8nWpng==
+X-Received: by 2002:aa7:d052:: with SMTP id n18mr57814252edo.104.1637546157208;
+        Sun, 21 Nov 2021 17:55:57 -0800 (PST)
+Received: from skbuf ([188.25.163.189])
+        by smtp.gmail.com with ESMTPSA id n16sm3262786edt.67.2021.11.21.17.55.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Nov 2021 17:55:56 -0800 (PST)
+Date:   Mon, 22 Nov 2021 03:55:55 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH v2 0/9] Multiple cleanup and feature for qca8k
+Message-ID: <20211122015555.ucbi77ytiokgbovu@skbuf>
+References: <20211122010313.24944-1-ansuelsmth@gmail.com>
+ <20211122012910.bd33slbrfk4h6xbw@skbuf>
+ <619af5d3.1c69fb81.36176.ca79@mx.google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211029072424.9109-2-bhe@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <619af5d3.1c69fb81.36176.ca79@mx.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/29/21 at 03:24pm, Baoquan He wrote:
-> This is reported by kmemleak detector:
+On Mon, Nov 22, 2021 at 02:43:46AM +0100, Ansuel Smith wrote:
+> On Mon, Nov 22, 2021 at 03:29:10AM +0200, Vladimir Oltean wrote:
+> > On Mon, Nov 22, 2021 at 02:03:04AM +0100, Ansuel Smith wrote:
+> > > This is a reduced version of the old massive series.
+> > > Refer to the changelog to know what is removed from this.
+> > > 
+> > > THIS IS BASED ON net-next WITH THE 2 FIXES FROM net ALREADY REVIEWED
+> > > net: dsa: qca8k: fix MTU calculation
+> > > net: dsa: qca8k: fix internal delay applied to the wrong PAD config
+> > 
+> > Since patchwork has auto build hooks now, it doesn't detect dependencies
+> > to other trees like "net" in this case, and your patches will fail to
+> > apply without the other ones you've mentioned, which in turn will make
+> > the builds fail. Patches without clean build reports aren't accepted, so
+> > you'll have to resend either way. Your options are:
+> > (a) wait until the bugfix patches get applied to "net", and Jakub and/or
+> >     David send the networking pull request for v5.16-rc3 to Linus, then
+> >     they'll merge the "net" tree into "net-next" quickly afterwards and
+> >     your patches apply cleanly. Last two "net" pull requests were
+> >     submitted on Nov 18th and 12th, if that is any indication as to when
+> >     the next one is going to be.
+> > (b) base your patches on "net-next" without the bug fixes, and let
+> >     Jakub/David handle the merge conflict when the'll merge "net" into
+> >     "net-next" next time. Please note that if you do this, there is a
+> >     small chance that mistakes can be made, and you can't easily
+> >     backport patches to a stable tree such as OpenWRT if that's what
+> >     you're into, since part of the delta will be in a merge commit, and
+> >     there isn't any simple way in which you can linearize that during
+> >     cherry-pick time, if you're picking from divergent branches.
 > 
-> unreferenced object 0xffffc900002a9000 (size 4096):
->   comm "kexec", pid 14950, jiffies 4295110793 (age 373.951s)
->   hex dump (first 32 bytes):
->     7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00  .ELF............
->     04 00 3e 00 01 00 00 00 00 00 00 00 00 00 00 00  ..>.............
->   backtrace:
->     [<0000000016a8ef9f>] __vmalloc_node_range+0x101/0x170
->     [<000000002b66b6c0>] __vmalloc_node+0xb4/0x160
->     [<00000000ad40107d>] crash_prepare_elf64_headers+0x8e/0xcd0
->     [<0000000019afff23>] crash_load_segments+0x260/0x470
->     [<0000000019ebe95c>] bzImage64_load+0x814/0xad0
->     [<0000000093e16b05>] arch_kexec_kernel_image_load+0x1be/0x2a0
->     [<000000009ef2fc88>] kimage_file_alloc_init+0x2ec/0x5a0
->     [<0000000038f5a97a>] __do_sys_kexec_file_load+0x28d/0x530
->     [<0000000087c19992>] do_syscall_64+0x3b/0x90
->     [<0000000066e063a4>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> In crash_prepare_elf64_headers(), a buffer is allocated via vmalloc() to
-> store elf headers. While it's not freed back to system correctly when
-> kdump kernel is reloaded or unloaded. Then memory leak is caused.
-> 
-> Fix it by introducing x86 specific function
-> arch_kimage_file_post_load_cleanup(), and freeing the buffer there.
-> 
-> Signed-off-by: Baoquan He <bhe@redhat.com>
+> Mhhh I honestly think b option can be accepted here (due to the fact
+> that fixes patch are very small) but the backport part can be
+> problematic.
+> Think it's better to just wait and get the reviewed by tag.
 
-It deserves to add a Fixes tag, and this drawback exists since
-kexec_file_load added. It wastes one page of memory, or severa pages
-depending on the cpu numbers, not sure if it deserves to cc stable.
+There is an option (c), which sometimes can be done and sometimes can't,
+which is to write the patches in such a way that they don't conflict
+with each other. I haven't checked what the exact conflicts are here,
+but that regmap conversion thing is pretty noisy, you're renaming every
+register read and write. Being more moderate about it can work to your
+advantage.
 
-Fixes: cb1052581e2b ("kexec: implementation of new syscall kexec_file_load")
+> Is it problematic to add stuff to this series while the fixes are
+> merged? (for example the LAGs or mirror part / the code split)
+> Or having big series is still problematic even if half of the patch are
+> already reviewed?
+> Just asking if there is a way to continue the review process while we
+> wait for the merge process.
 
+You can always send RFC patches because for those, the build part isn't
+so important, and there you can specifically ask for review tags and/or
+point reviewers to other patch sets that they should apply first, were
+they to review your submission by actually applying to a git tree and
+not just from reading the patches in the email client.
 
-> ---
->  arch/x86/kernel/machine_kexec_64.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/arch/x86/kernel/machine_kexec_64.c b/arch/x86/kernel/machine_kexec_64.c
-> index 131f30fdcfbd..fd8223fa2de5 100644
-> --- a/arch/x86/kernel/machine_kexec_64.c
-> +++ b/arch/x86/kernel/machine_kexec_64.c
-> @@ -511,6 +511,15 @@ int arch_kexec_apply_relocations_add(struct purgatory_info *pi,
->  	       (int)ELF64_R_TYPE(rel[i].r_info), value);
->  	return -ENOEXEC;
->  }
-> +
-> +int arch_kimage_file_post_load_cleanup(struct kimage *image)
-> +{
-> +	vfree(image->elf_headers);
-> +	image->elf_headers = NULL;
-> +	image->elf_headers_sz = 0;
-> +
-> +	return kexec_image_post_load_cleanup_default(image);
-> +}
->  #endif /* CONFIG_KEXEC_FILE */
->  
->  static int
-> -- 
-> 2.17.2
-> 
-
+I would still have multiple series of manageable sizes instead of a
+monolithic one, just because it is conceptually easier to refer to them
+("add qca8k support for X/Y/Z features" rather than "qca8k-misc-2021-11-22").
