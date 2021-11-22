@@ -2,227 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 417C4459705
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 22:55:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8092B459709
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 22:56:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236649AbhKVV6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 16:58:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236023AbhKVV6x (ORCPT
+        id S237433AbhKVV7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 16:59:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32091 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236774AbhKVV7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 16:58:53 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7139EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 13:55:46 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id z26so25285489iod.10
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 13:55:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XSpq6ZH1XcxQkNF3HIQ8h0JgHQppNbExjsyr2yer2lQ=;
-        b=B1TQ5q1O5biipLy30+j2jKbzjyqx2EuiNpdaaLz69KllhJNLLvPBgj+qfmUJvGEGtr
-         cTxDsc99NKNbZjk22HHhyvYFFq/a2ItTTjloVLqQNFRTHkxhcn5swA24blkujFmQ39l1
-         1O+6oSSSbk33pyPhrt2a9OQcc9A8LQwK+H23q/hCGMaGd+hGzEnIo1hXzAHnaqaNMGTb
-         8jytBiWRphDJnWVx9hzC6DQjwPLqzEAYjME5Zmi9iuV7/F54Tw0I6NLKq1SKy37rve5C
-         0akp3sX7tp2f8jQtIx+r9c5lSuBsV7LM+wPBi31gFl+SrYxy1IxMPZG9KrfqfpzWJA/I
-         G62Q==
+        Mon, 22 Nov 2021 16:59:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637618188;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W5DAe1gdf6Kwi2vx+MSMPnRhHLBKz9idjNkHP8MSJ3s=;
+        b=eJzlQTUIrW2h9w5GZAjEgU2F0JskkVAhAvBx6IdSkV0Md978KsxQK31fJ8b3Wl2GcYN3tu
+        NTee58HU/CedzjYegLUr8IJ3BqSM0A8RiJOk/pMotCENDY1sZEQWjIlQ6X6DF+9iJB+Jh0
+        nJRQRf3l4pgdB6Ig0vv/T/4An95nTQ0=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-16-5-9FTf37PC6q8kZ-jkoNYg-1; Mon, 22 Nov 2021 16:56:27 -0500
+X-MC-Unique: 5-9FTf37PC6q8kZ-jkoNYg-1
+Received: by mail-wm1-f70.google.com with SMTP id z138-20020a1c7e90000000b003319c5f9164so211498wmc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 13:56:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XSpq6ZH1XcxQkNF3HIQ8h0JgHQppNbExjsyr2yer2lQ=;
-        b=A0SbFnlWsQMTUa9bFHkb9L5sCNfNxA0ZL2emqJYtR0635g3jIaCnRWY/uF2opWjGEC
-         nyS+YGezk79+k2is87pOhykZTUffeGGxVLLpJr0tBioblku6AsZHMH+lsdSnX5fY7SAi
-         9obHBatPv9+cFigfZaaBtFVyVFwBcaY0K4kC0cDj6oXevO6ntK55rXusPbloGYhQbJlM
-         0RqAKr4i8SJlMfVZ3y3mHE2Y74gRxkbd0gmkcZXnFDln43szZNKgyResPpn9lIrqo0Hu
-         NaOcUEucGS0XC2r7A/U7h38oflMPC4ZHJU1ejjnsLz0gJDNOzo9MhJZobb1F4vfs/12l
-         7uoQ==
-X-Gm-Message-State: AOAM531WBo2sdfQ3yfs55iC/+17YR2CzvvlT1DAXTqMR4a+xstZ1QeBs
-        fkmuOeEOE00CIdbQBgDyE5+WjT7/UMp+hsgwnyaaZw==
-X-Google-Smtp-Source: ABdhPJyv3XAiVt3H7JjwH30n/KmuT3bcPexjTxPLf3oNbI3GWmlKL8kperzLHDNa2HIKw2qSbZBm3nyYeldfIT3R8qA=
-X-Received: by 2002:a05:6638:1923:: with SMTP id p35mr360649jal.16.1637618145708;
- Mon, 22 Nov 2021 13:55:45 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:organization:subject
+         :in-reply-to:content-transfer-encoding;
+        bh=W5DAe1gdf6Kwi2vx+MSMPnRhHLBKz9idjNkHP8MSJ3s=;
+        b=vcrANTDJSsmfn3dRQLVES1DdXldgoMPMHWfuYr0Xw/kYUMehSLdfyxWRI0BQ4EKm+6
+         IsF6Fw36WjD3+w9Tb9HUVX+6EGNP1sXVfpXCzPc9x5y/Vbhh12Iap2Wqag9F+LMIUs1+
+         ZoUHiLoTjIu6pYb6AfOM9hOfTgI1bQnDKu0J09f6NoNA8o9WcuZN9u5Vbb03p/J+6hSt
+         JxBpNiq2YTlp0scYab1H96QXekfskK097AmO6pd5zmfdcba0on5KI23ya83xbA0NOahj
+         vpOS7eCsnf9U2JweHRSzBlOCskmj0I+7TQIeX4GN2Kpqb6UDh4UX+ajelskGAxdolzm9
+         /kGA==
+X-Gm-Message-State: AOAM53031cJZHzlzVVImp5VfDoL6XZGui9q3F/19w3L0aRSxmIua1Ezv
+        /V1VAcdwlKlifE1yx1MFY4RGEuP6yLcXp+kS+X4v+sxIQbGXd60qIGOZZ79s3qLyz3T90Vl2T7G
+        qjlVB3MnsABHxC34k3exnucOL
+X-Received: by 2002:a5d:68ce:: with SMTP id p14mr708351wrw.116.1637618186173;
+        Mon, 22 Nov 2021 13:56:26 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxKXRB9yEqdwVRzeunUOwgploM8hm0Lx19ZeHTw7CQCkN1pDTfPBIbiiZcU9xqPM8Lk/YdiAw==
+X-Received: by 2002:a5d:68ce:: with SMTP id p14mr708315wrw.116.1637618185919;
+        Mon, 22 Nov 2021 13:56:25 -0800 (PST)
+Received: from [192.168.3.132] (p5b0c667b.dip0.t-ipconnect.de. [91.12.102.123])
+        by smtp.gmail.com with ESMTPSA id s8sm10545506wra.9.2021.11.22.13.56.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Nov 2021 13:56:25 -0800 (PST)
+Message-ID: <ffa66565-d546-a2cf-1748-38b9992fd5b8@redhat.com>
+Date:   Mon, 22 Nov 2021 22:56:24 +0100
 MIME-Version: 1.0
-References: <20211120045046.3940942-1-seanjc@google.com> <20211120045046.3940942-15-seanjc@google.com>
-In-Reply-To: <20211120045046.3940942-15-seanjc@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Mon, 22 Nov 2021 13:55:34 -0800
-Message-ID: <CANgfPd-QcU1FYkTQRnWY8w_GANbRGf2ZWzEGEFnV18ZdQUgEKQ@mail.gmail.com>
-Subject: Re: [PATCH 14/28] KVM: x86/mmu: Add helpers to read/write TDP MMU
- SPTEs and document RCU
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Hou Wenlong <houwenlong93@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Content-Language: en-US
+To:     Jens Axboe <axboe@kernel.dk>,
+        Andrew Dona-Couch <andrew@donacou.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Drew DeVault <sir@cmpwn.com>
+Cc:     Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+References: <20211028080813.15966-1-sir@cmpwn.com>
+ <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
+ <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
+ <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
+ <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
+ <CFQZSHV700KV.18Y62SACP8KOO@taiga>
+ <20211116114727.601021d0763be1f1efe2a6f9@linux-foundation.org>
+ <CFRGQ58D9IFX.PEH1JI9FGHV4@taiga>
+ <20211116133750.0f625f73a1e4843daf13b8f7@linux-foundation.org>
+ <b84bc345-d4ea-96de-0076-12ff245c5e29@redhat.com>
+ <8f219a64-a39f-45f0-a7ad-708a33888a3b@www.fastmail.com>
+ <333cb52b-5b02-648e-af7a-090e23261801@redhat.com>
+ <ca96bb88-295c-ccad-ed2f-abc585cb4904@kernel.dk>
+ <5f998bb7-7b5d-9253-2337-b1d9ea59c796@redhat.com>
+ <3adc55d3-f383-efa9-7319-740fc6ab5d7a@kernel.dk>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+In-Reply-To: <3adc55d3-f383-efa9-7319-740fc6ab5d7a@kernel.dk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 8:51 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> Add helpers to read and write TDP MMU SPTEs instead of open coding
-> rcu_dereference() all over the place, and to provide a convenient
-> location to document why KVM doesn't exempt holding mmu_lock for write
-> from having to hold RCU (and any future changes to the rules).
->
-> No functional change intended.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+On 22.11.21 21:44, Jens Axboe wrote:
+> On 11/22/21 1:08 PM, David Hildenbrand wrote:
+>> On 22.11.21 20:53, Jens Axboe wrote:
+>>> On 11/22/21 11:26 AM, David Hildenbrand wrote:
+>>>> On 22.11.21 18:55, Andrew Dona-Couch wrote:
+>>>>> Forgive me for jumping in to an already overburdened thread.  But can
+>>>>> someone pushing back on this clearly explain the issue with applying
+>>>>> this patch?
+>>>>
+>>>> It will allow unprivileged users to easily and even "accidentally"
+>>>> allocate more unmovable memory than it should in some environments. Such
+>>>> limits exist for a reason. And there are ways for admins/distros to
+>>>> tweak these limits if they know what they are doing.
+>>>
+>>> But that's entirely the point, the cases where this change is needed are
+>>> already screwed by a distro and the user is the administrator. This is
+>>> _exactly_ the case where things should just work out of the box. If
+>>> you're managing farms of servers, yeah you have competent administration
+>>> and you can be expected to tweak settings to get the best experience and
+>>> performance, but the kernel should provide a sane default. 64K isn't a
+>>> sane default.
+>>
+>> 0.1% of RAM isn't either.
+> 
+> No default is perfect, byt 0.1% will solve 99% of the problem. And most
+> likely solve 100% of the problems for the important case, which is where
+> you want things to Just Work on your distro without doing any
+> administration.  If you're aiming for perfection, it doesn't exist.
 
-Reviewed-by: Ben Gardon <bgardon@google.com>
+... and my Fedora is already at 16 MiB *sigh*.
 
-Modulo a couple nits below.
+And I'm not aiming for perfection, I'm aiming for as little
+FOLL_LONGTERM users as possible ;)
 
-> ---
->  arch/x86/kvm/mmu/tdp_iter.c |  6 +++---
->  arch/x86/kvm/mmu/tdp_iter.h | 16 ++++++++++++++++
->  arch/x86/kvm/mmu/tdp_mmu.c  | 14 +++++++-------
->  3 files changed, 26 insertions(+), 10 deletions(-)
->
-> diff --git a/arch/x86/kvm/mmu/tdp_iter.c b/arch/x86/kvm/mmu/tdp_iter.c
-> index b3ed302c1a35..1f7741c725f6 100644
-> --- a/arch/x86/kvm/mmu/tdp_iter.c
-> +++ b/arch/x86/kvm/mmu/tdp_iter.c
-> @@ -12,7 +12,7 @@ static void tdp_iter_refresh_sptep(struct tdp_iter *iter)
->  {
->         iter->sptep = iter->pt_path[iter->level - 1] +
->                 SHADOW_PT_INDEX(iter->gfn << PAGE_SHIFT, iter->level);
-> -       iter->old_spte = READ_ONCE(*rcu_dereference(iter->sptep));
-> +       iter->old_spte = kvm_tdp_mmu_read_spte(iter->sptep);
->  }
->
->  static gfn_t round_gfn_for_level(gfn_t gfn, int level)
-> @@ -86,7 +86,7 @@ static bool try_step_down(struct tdp_iter *iter)
->          * Reread the SPTE before stepping down to avoid traversing into page
->          * tables that are no longer linked from this entry.
->          */
-> -       iter->old_spte = READ_ONCE(*rcu_dereference(iter->sptep));
-> +       iter->old_spte = kvm_tdp_mmu_read_spte(iter->sptep);
->
->         child_pt = spte_to_child_pt(iter->old_spte, iter->level);
->         if (!child_pt)
-> @@ -120,7 +120,7 @@ static bool try_step_side(struct tdp_iter *iter)
->         iter->gfn += KVM_PAGES_PER_HPAGE(iter->level);
->         iter->next_last_level_gfn = iter->gfn;
->         iter->sptep++;
-> -       iter->old_spte = READ_ONCE(*rcu_dereference(iter->sptep));
-> +       iter->old_spte = kvm_tdp_mmu_read_spte(iter->sptep);
->
->         return true;
->  }
-> diff --git a/arch/x86/kvm/mmu/tdp_iter.h b/arch/x86/kvm/mmu/tdp_iter.h
-> index b1748b988d3a..9c04d8677cb3 100644
-> --- a/arch/x86/kvm/mmu/tdp_iter.h
-> +++ b/arch/x86/kvm/mmu/tdp_iter.h
-> @@ -9,6 +9,22 @@
->
->  typedef u64 __rcu *tdp_ptep_t;
->
-> +/*
-> + * TDP MMU SPTEs are RCU protected to allow paging structures (non-leaf SPTEs)
-> + * to be zapped while holding mmu_lock for read.  Holding RCU isn't required for
-> + * correctness if mmu_lock is held for write, but plumbing "struct kvm" down to
-> + * the lower* depths of the TDP MMU just to make lockdep happy is a nightmare,
-> + * so all* accesses to SPTEs are must be done under RCU protection.
+> 
+>>>> This is not a step into the right direction. This is all just trying to
+>>>> hide the fact that we're exposing FOLL_LONGTERM usage to random
+>>>> unprivileged users.
+>>>>
+>>>> Maybe we could instead try getting rid of FOLL_LONGTERM usage and the
+>>>> memlock limit in io_uring altogether, for example, by using mmu
+>>>> notifiers. But I'm no expert on the io_uring code.
+>>>
+>>> You can't use mmu notifiers without impacting the fast path. This isn't
+>>> just about io_uring, there are other users of memlock right now (like
+>>> bpf) which just makes it even worse.
+>>
+>> 1) Do we have a performance evaluation? Did someone try and come up with
+>> a conclusion how bad it would be?
+> 
+> I honestly don't remember the details, I took a look at it about a year
+> ago due to some unrelated reasons. These days it just pertains to
+> registered buffers, so it's less of an issue than back then when it
+> dealt with the rings as well. Hence might be feasible, I'm certainly not
+> against anyone looking into it. Easy enough to review and test for
+> performance concerns.
 
-Nit: Are those extra asterisks intentional?  I think this line should also be:
-so all accesses to SPTEs must be done under RCU protection.
+That at least sounds promising.
 
-> + */
-> +static inline u64 kvm_tdp_mmu_read_spte(tdp_ptep_t sptep)
+> 
+>> 2) Could be provide a mmu variant to ordinary users that's just good
+>> enough but maybe not as fast as what we have today? And limit
+>> FOLL_LONGTERM to special, privileged users?
+> 
+> If it's not as fast, then it's most likely not good enough though...
 
-Nit: function names could also be tdp_iter_read/write_spte. It's a
-little shorter, and in the tdp_iter file, but doesn't matter too much
-either way.
+There is always a compromise of course.
 
-> +{
-> +       return READ_ONCE(*rcu_dereference(sptep));
-> +}
-> +static inline void kvm_tdp_mmu_write_spte(tdp_ptep_t sptep, u64 val)
-> +{
-> +       WRITE_ONCE(*rcu_dereference(sptep), val);
-> +}
-> +
->  /*
->   * A TDP iterator performs a pre-order walk over a TDP paging structure.
->   */
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 3ff7b4cd7d0e..ca6b30a7130d 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -572,7 +572,7 @@ static inline bool tdp_mmu_zap_spte_atomic(struct kvm *kvm,
->          * here since the SPTE is going from non-present
->          * to non-present.
->          */
-> -       WRITE_ONCE(*rcu_dereference(iter->sptep), 0);
-> +       kvm_tdp_mmu_write_spte(iter->sptep, 0);
->
->         return true;
->  }
-> @@ -609,7 +609,7 @@ static inline void __tdp_mmu_set_spte(struct kvm *kvm, struct tdp_iter *iter,
->          */
->         WARN_ON(is_removed_spte(iter->old_spte));
->
-> -       WRITE_ONCE(*rcu_dereference(iter->sptep), new_spte);
-> +       kvm_tdp_mmu_write_spte(iter->sptep, new_spte);
->
->         __handle_changed_spte(kvm, iter->as_id, iter->gfn, iter->old_spte,
->                               new_spte, iter->level, false);
-> @@ -775,7 +775,7 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
->                          * The iter must explicitly re-read the SPTE because
->                          * the atomic cmpxchg failed.
->                          */
-> -                       iter.old_spte = READ_ONCE(*rcu_dereference(iter.sptep));
-> +                       iter.old_spte = kvm_tdp_mmu_read_spte(iter.sptep);
->                         goto retry;
->                 }
->         }
-> @@ -1012,7 +1012,7 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
->                          * because the new value informs the !present
->                          * path below.
->                          */
-> -                       iter.old_spte = READ_ONCE(*rcu_dereference(iter.sptep));
-> +                       iter.old_spte = kvm_tdp_mmu_read_spte(iter.sptep);
->                 }
->
->                 if (!is_shadow_present_pte(iter.old_spte)) {
-> @@ -1225,7 +1225,7 @@ static bool wrprot_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
->                          * The iter must explicitly re-read the SPTE because
->                          * the atomic cmpxchg failed.
->                          */
-> -                       iter.old_spte = READ_ONCE(*rcu_dereference(iter.sptep));
-> +                       iter.old_spte = kvm_tdp_mmu_read_spte(iter.sptep);
->                         goto retry;
->                 }
->                 spte_set = true;
-> @@ -1296,7 +1296,7 @@ static bool clear_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
->                          * The iter must explicitly re-read the SPTE because
->                          * the atomic cmpxchg failed.
->                          */
-> -                       iter.old_spte = READ_ONCE(*rcu_dereference(iter.sptep));
-> +                       iter.old_spte = kvm_tdp_mmu_read_spte(iter.sptep);
->                         goto retry;
->                 }
->                 spte_set = true;
-> @@ -1427,7 +1427,7 @@ static void zap_collapsible_spte_range(struct kvm *kvm,
->                          * The iter must explicitly re-read the SPTE because
->                          * the atomic cmpxchg failed.
->                          */
-> -                       iter.old_spte = READ_ONCE(*rcu_dereference(iter.sptep));
-> +                       iter.old_spte = kvm_tdp_mmu_read_spte(iter.sptep);
+See, FOLL_LONGTERM is *the worst* kind of memory allocation thingy you
+could possible do to your MM subsystem. It's absolutely the worst thing
+you can do to swap and compaction.
 
-Wow this was open coded in a LOT of places. Thanks for cleaning it up.
+I really don't want random feature X to be next and say "well, io_uring
+uses it, so I can just use it for max performance and we'll adjust the
+memlock limit, who cares!".
 
->                         goto retry;
->                 }
->         }
-> --
-> 2.34.0.rc2.393.gf8c9666880-goog
->
+> 
+>> 3) Just because there are other memlock users is not an excuse. For
+>> example, VFIO/VDPA have to use it for a reason, because there is no way
+>> not do use FOLL_LONGTERM.
+> 
+> It's not an excuse, the statement merely means that the problem is
+> _worse_ as there are other memlock users.
+
+Yes, and it will keep getting worse every time we introduce more
+FOLL_LONGTERM users that really shouldn't be FOLL_LONGTERM users unless
+really required. Again, VFIO/VDPA/RDMA are prime examples, because the
+HW forces us to do it. And these are privileged features either way.
+
+> 
+>>>
+>>> We should just make this 0.1% of RAM (min(0.1% ram, 64KB)) or something
+>>> like what was suggested, if that will help move things forward. IMHO the
+>>> 32MB machine is mostly a theoretical case, but whatever .
+>>
+>> 1) I'm deeply concerned about large ZONE_MOVABLE and MIGRATE_CMA ranges
+>> where FOLL_LONGTERM cannot be used, as that memory is not available.
+>>
+>> 2) With 0.1% RAM it's sufficient to start 1000 processes to break any
+>> system completely and deeply mess up the MM. Oh my.
+> 
+> We're talking per-user limits here. But if you want to talk hyperbole,
+> then 64K multiplied by some other random number will also allow
+> everything to be pinned, potentially.
+> 
+
+Right, it's per-user. 0.1% per user FOLL_LONGTERM locked into memory in
+the worst case.
+
+-- 
+Thanks,
+
+David / dhildenb
+
