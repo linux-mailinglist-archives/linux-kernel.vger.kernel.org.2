@@ -2,198 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63C344590F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:09:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2510E4590FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:10:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237918AbhKVPMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:12:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55390 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239609AbhKVPMQ (ORCPT
+        id S239731AbhKVPNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:13:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233449AbhKVPNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:12:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637593749;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x6FKvlRZrt4m5mC/c2VxqmjglipRP1IiZmDEAqO2Wrw=;
-        b=Tv9YJJV2cZQywzSfMKOAQukKk64uiqUX/h4R9M6e0Ms3WA2rJL8c5tycDs+8EJ2gvPpZv/
-        o0XWycrxyeiG/gZ+FnSnUTzdf1C8lpqAZ2A2XbNfS8UZtm59fWEBXplCtSiz0zszC6Xucv
-        F6WzOpa49Fk4H+KsyavuiV6Z/QLZTNw=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-551-1qycwTnDOSqn0tBWR871lw-1; Mon, 22 Nov 2021 10:09:08 -0500
-X-MC-Unique: 1qycwTnDOSqn0tBWR871lw-1
-Received: by mail-qk1-f199.google.com with SMTP id p18-20020a05620a057200b00467bc32b45aso15100480qkp.12
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:09:07 -0800 (PST)
+        Mon, 22 Nov 2021 10:13:04 -0500
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B32CC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:09:58 -0800 (PST)
+Received: by mail-qt1-x834.google.com with SMTP id v22so16761037qtx.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:09:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5VTof+3edSRysBWJfMrn+QjeSl3KM16l29/PC/dx3o4=;
+        b=GgW+p5PeHc0bQly0v21nzAJ3y6uv9j+6GJjj3/kSRMtOhXgQUdo630hHq9WFNfMw3+
+         7jwm/pEg3OMqP3OSiHN9g6X2ApOK6D6i97qPCojv4hHg6bX3hTJX1VRV9wv9AJivwnTz
+         NMbrhhMDJdFriocGD9Q87qSC2eg3XWgnsBQvzED4l/rtGH5c3J9RkR24eZLMQVocatzk
+         16fEwCdt4zSVbLzcMUR1znohS2vSzntWqte0ryaXUwXGyQptkpXIcQYp/zc6kdLcBhqC
+         Cg6yB3MWTxm24NNgtuPBXuKgfkuCI4/QoYWo4AoHhvWYPVXt8w84jQYnFFi6M8A4ngDL
+         vRoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=x6FKvlRZrt4m5mC/c2VxqmjglipRP1IiZmDEAqO2Wrw=;
-        b=DsncZmLbRqZjSCL2yL7ZaVQoI3UXC7HjMPlrt1FxUcMvsQZI9W9dIG69y34CTCCDHZ
-         NnUNPMBF5ecT8mizcv6+TnwDNpek9udiNT7SEBHyzYZNIg7K7TmF3EV1bxgRbIYYUh9s
-         hrRsak2ML5Zx9mj0mYmnLWXVQ4mmdyEb0To1ezaooLaGkR4y4/2fLwWmx6VNIpDpUYzN
-         pUW34KLrmAPJVwOP81q2URVbZyG+ebfvqMNvai3dwqXbvmWfELsTRUt9d16Pkc/PPfI6
-         w1BoXtKMLz0lB0uvo1iGqSO9cv+c3457Palho0xjI32bVjhO0x3ccFx1mlEY2gi78ysL
-         h1XA==
-X-Gm-Message-State: AOAM533NQb3ypQh9E6AVSTQ7yauXCKk/qyB+3hb7g9++MU/J+W3Lk+Qm
-        6UqjN9mlcciW88ItxSpNVXQUOQMN3PZbiYa1XpbYB0iwYhDbFmh/SdMYpKOgmeyqwMJj2Gs7tgm
-        GLFqD2IgrKhf7Vx6pFk07Q1q5
-X-Received: by 2002:ac8:7d09:: with SMTP id g9mr31906472qtb.179.1637593747399;
-        Mon, 22 Nov 2021 07:09:07 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzbZVVq9tqUsY/mwtqtd3tKobzHPLElrLwYu91NlYg9m6H6Npakdn38yAM5k07w9Xe3N4TUzA==
-X-Received: by 2002:ac8:7d09:: with SMTP id g9mr31906441qtb.179.1637593747162;
-        Mon, 22 Nov 2021 07:09:07 -0800 (PST)
-Received: from m8.users.ipa.redhat.com (cpe-158-222-141-151.nyc.res.rr.com. [158.222.141.151])
-        by smtp.gmail.com with ESMTPSA id v16sm4407640qkj.93.2021.11.22.07.09.05
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5VTof+3edSRysBWJfMrn+QjeSl3KM16l29/PC/dx3o4=;
+        b=nGPLpjMW2uL0l0ggylkxkc0I26Xvbyc/jM6ZfYZiHF+TmafU8rZ/UNWPfqvitE4nr3
+         4V+tLLY2BpHh/+ni7FIr9uGBU7vC0GbZkns3IbrHMXdI6/sbBooi5QKa8OZKUJRnxaDt
+         /oh+vaAqE58BIYoLIacgNyp9HXzYdHpWJKGHU8uYnjWlxxHXfXLCEbahnmfIZroPGo/c
+         l39NtYixz3aAJK+6x6a9/SlvEQzCpBi1T1lt56saK4SYj7jZCHMEf33cphjuQZDU7HVz
+         EvHGBivkshwWT7sId7Mkrkvavv+2iri2gos9GGcbZyFAbsnJTMUz++nR/MHsA/hRdy+z
+         ya0A==
+X-Gm-Message-State: AOAM532llauG5fH9IrSjvJX7Yoc9HLJk9kUzRgmmVYi8RdljdCwOFMRC
+        j2VisRCabiGdQCH4P9Jgf03uHQ==
+X-Google-Smtp-Source: ABdhPJyRLMA8XcwBk54ljNUHf6oDk+V6lmAhSa4hBpytn+jTTywY+jUzb27EMb9+9wB5t9Defs2Bqw==
+X-Received: by 2002:a05:622a:189:: with SMTP id s9mr31877263qtw.352.1637593797445;
+        Mon, 22 Nov 2021 07:09:57 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id b9sm4563076qtb.53.2021.11.22.07.09.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 07:09:06 -0800 (PST)
-Message-ID: <afdf9c4a4005f6aeaded9e976c48160933f3c447.camel@redhat.com>
-Subject: Re: [PATCH v43 01/15] Linux Random Number Generator
-From:   Simo Sorce <simo@redhat.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephan Mueller <smueller@chronox.de>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>, Tso Ted <tytso@mit.edu>,
-        linux-crypto@vger.kernel.org, Willy Tarreau <w@1wt.eu>,
-        Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Petr Tesarik <ptesarik@suse.cz>,
-        John Haxby <john.haxby@oracle.com>,
-        Alexander Lobakin <alobakin@mailbox.org>,
-        Jirka Hladky <jhladky@redhat.com>
-Date:   Mon, 22 Nov 2021 10:09:05 -0500
-In-Reply-To: <YZs+5ZGc1G5O3vF5@kroah.com>
-References: <2036923.9o76ZdvQCi@positron.chronox.de>
-         <2560758.ogP2UNPRoF@tauon.chronox.de> <YZsyZua9T8DD6JF5@kroah.com>
-         <11035663.0FQYWtqqoJ@tauon.chronox.de> <YZs+5ZGc1G5O3vF5@kroah.com>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-2.fc34) 
+        Mon, 22 Nov 2021 07:09:57 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mpAxA-00DtLu-8c; Mon, 22 Nov 2021 11:09:56 -0400
+Date:   Mon, 22 Nov 2021 11:09:56 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Chao Peng <chao.p.peng@linux.intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, qemu-devel@nongnu.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J . Bruce Fields" <bfields@fieldses.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
+        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com
+Subject: Re: [RFC v2 PATCH 01/13] mm/shmem: Introduce F_SEAL_GUEST
+Message-ID: <20211122150956.GS876299@ziepe.ca>
+References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
+ <20211119134739.20218-2-chao.p.peng@linux.intel.com>
+ <20211119151943.GH876299@ziepe.ca>
+ <df11d753-6242-8f7c-cb04-c095f68b41fa@redhat.com>
+ <20211119160023.GI876299@ziepe.ca>
+ <4efdccac-245f-eb1f-5b7f-c1044ff0103d@redhat.com>
+ <20211122133145.GQ876299@ziepe.ca>
+ <56c0dffc-5fc4-c337-3e85-a5c9ce619140@redhat.com>
+ <20211122140148.GR876299@ziepe.ca>
+ <d2b46b84-8930-4304-2946-4d4a16698b24@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d2b46b84-8930-4304-2946-4d4a16698b24@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-11-22 at 07:55 +0100, Greg Kroah-Hartman wrote:
-> On Mon, Nov 22, 2021 at 07:42:02AM +0100, Stephan Mueller wrote:
-> > Am Montag, 22. November 2021, 07:02:14 CET schrieb Greg Kroah-Hartman:
+On Mon, Nov 22, 2021 at 03:57:17PM +0100, David Hildenbrand wrote:
+> On 22.11.21 15:01, Jason Gunthorpe wrote:
+> > On Mon, Nov 22, 2021 at 02:35:49PM +0100, David Hildenbrand wrote:
+> >> On 22.11.21 14:31, Jason Gunthorpe wrote:
+> >>> On Mon, Nov 22, 2021 at 10:26:12AM +0100, David Hildenbrand wrote:
+> >>>
+> >>>> I do wonder if we want to support sharing such memfds between processes
+> >>>> in all cases ... we most certainly don't want to be able to share
+> >>>> encrypted memory between VMs (I heard that the kernel has to forbid
+> >>>> that). It would make sense in the use case you describe, though.
+> >>>
+> >>> If there is a F_SEAL_XX that blocks every kind of new access, who
+> >>> cares if userspace passes the FD around or not?
+> >> I was imagining that you actually would want to do some kind of "change
+> >> ownership". But yeah, the intended semantics and all use cases we have
+> >> in mind are not fully clear to me yet. If it's really "no new access"
+> >> (side note: is "access" the right word?) then sure, we can pass the fd
+> >> around.
 > > 
-> > Hi Greg,
-> > 
-> > > On Mon, Nov 22, 2021 at 06:34:43AM +0100, Stephan Mueller wrote:
-> > > > Am Sonntag, 21. November 2021, 23:42:33 CET schrieb Jason A. Donenfeld:
-> > > > 
-> > > > Hi Jason,
-> > > > 
-> > > > > Hi Stephan,
-> > > > > 
-> > > > > You've posted it again, and yet I still believe this is not the
-> > > > > correct design or direction. I do not think the explicit goal of
-> > > > > extended configurability ("flexibility") or the explicit goal of being
-> > > > > FIPS compatible represent good directions, and I think this introduces
-> > > > > new problems rather than solving any existing ones.
-> > > > 
-> > > > The members from the Linux distributions that are on copy on this may tell
-> > > > you a different story. They all developed their own downstream patches to
-> > > > somehow add the flexibility that is needed for them. So, we have a great
-> > > > deal of fragmentation at the resting-foundation of Linux cryptography.
-> > > 
-> > > What distros specifically have patches in their kernels that do
-> > > different things to the random code path?  Do you have pointers to those
-> > > patches anywhere?  Why have the distros not submitted their changes
-> > > upstream?
-> > 
-> > I will leave the representatives from the distros to chime in and point to 
-> > these patches.
+> > What is "ownership" in a world with kvm and iommu are reading pages
+> > out of the same fd?
 > 
-> Then why not work with the distros to get these changes merged into the
-> kernel tree?  They know that keeping things out-of-the-tree costs them
-> time and money, so why are they keeping them there?
+> In the world of encrypted memory / TDX, KVM somewhat "owns" that memory
+> IMHO (for example, only it can migrate or swap out these pages; it's
+> might be debatable if the TDX module or KVM actually "own" these pages ).
 
-I can speak for my distro.
-We have not proposed them because they are hacks, we know they are
-hacks, and we know they are not the long term solution.
-Yet we have no better way (in our products, today) so far to deal with
-these issues because what is needed is an effort like LRNG (does not
-have to be this specific implementation), because hacks will not cut it
-in the long term.
+Sounds like it is a swap provider more than an owner?
 
-> I recommend getting the distros to chime in on what their requirements
-> are for the random code would probably be best as they are the ones that
-> take on the "random fips requirement of the day" more than anyone else.
-
-Greg,
-I think you can takes Stephan's introduction and supporting material
-from this patchset to see what are the requirements. These patches have
-not been maturing in a void, but Stephan basically distilled
-discussions between multiple vendors as well as regulatory bodies (as
-you can see he has reviews from BSI and NIST requirements are also
-fully represented here).
-
-He addressed a few aspects I can mention but are not the only ones:
-performance (esp on NUMA systems), not blocking at boot due to lack of
-entropy, NIST/BSI conformance, flexibility so that future regulatory
-requirements can be easily integrated and upstreamed.
-
-
-> > Yet, these changes are commonly a band-aid only that have some additional 
-> > drawbacks. Bottom line, there is no appropriate way with the current code to 
-> > allow vendors what they want to achieve. One hint to what changes vendors are 
-> > attempting can be found in [1] slide 20.
-> 
-> What exactly do vendors "want to achieve"?  Where are they saying this?
-> 
-> > [1] https://www.chronox.de/lrng/doc/lrng_presentation_v43.pdf
-> 
-> I see nothing on that slide that mentions actual requirements other than
-> "the current code does not match this random government regulation".
-> 
-> Please provide valid reasons, from distros.
-> 
-
-Please let me know in what format you want to see these requirements,
-and I will work with other to provide them.
-
-Simo.
-
-
-> thanks,
-> 
-> greg k-h
-> 
-
--- 
-Simo Sorce
-RHEL Crypto Team
-Red Hat, Inc
-
-
-
-
+Jason
