@@ -2,91 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2EF4591AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C914591B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:53:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240030AbhKVPyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:54:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240028AbhKVPyv (ORCPT
+        id S240036AbhKVP4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:56:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51555 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239950AbhKVP4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:54:51 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871EFC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:51:44 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id f186so14338613ybg.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:51:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=88SXHTkYo3rO3ewGyZ0SUHGdG7MDoIEqXnN6sJd6UZc=;
-        b=ir7vHJfzSSgqccibUfngx1+pH8F88684qsF2mzBi81QnYN70yfyP08PpZh89KwCJop
-         IGe8EZflQjTxe/rAYKujXPivXKz+cam73RSXqH4YpemcAFzpySwXxvDUfDRicXeV7xB2
-         LHPo602IP89yvQc3oR/+ggN3hlQHz34361x6rm4rqjv7jKfTZR08rUV3A5+SepW+6Uzg
-         J5Tsa5fuZw3gXJlNPF+4KRFTg9MvMYrziuokquGlL/lw8Ad6c/G8O00Vn8aAavtKn4YA
-         cX3nxz39juFzjCjgraWjLor1csEKMBMMuKxBHBfA/uEx6Xn3GP3/Z9WPRDIDNwDQACfU
-         W9fw==
+        Mon, 22 Nov 2021 10:56:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637596405;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OJ9xzZY5FeccmukwMdR9fcM2Iiv+nWzTkmOO43/ifUs=;
+        b=hIESrfmMydnvjp2zZOwJ9tVLdWQtbVLiOn172JbHZOtwTjfzN5rss3cgOjaNhJ/q6e3UMZ
+        WdAeIH6Olx/muOFuzDM7tbg0zA6b1AZ13OVaIzXG5vHEgw1jaDm6C5XDjDJfk2mOLOJS8J
+        8zoaQyipFULCSEEEBzVIqJDno683bMM=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-601-Jvq22jGOO2Ko7MnzCsXdMA-1; Mon, 22 Nov 2021 10:53:24 -0500
+X-MC-Unique: Jvq22jGOO2Ko7MnzCsXdMA-1
+Received: by mail-qt1-f200.google.com with SMTP id v32-20020a05622a18a000b002b04d0d410dso10933223qtc.11
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:53:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=88SXHTkYo3rO3ewGyZ0SUHGdG7MDoIEqXnN6sJd6UZc=;
-        b=g8pBIr26z2WqE9T5waD2xZRKrzR9OakDbJsuokhd6HEDtYibRVfWN+feK4QqR4+c8B
-         m01Bec9esy4Ih8Nllfn+IQF8Mg+2qc3016cM8goT/EwcXx4rZMB3YX0cw1xakzQehCoU
-         aOjIAfAuokBSsFLQu0jFuNMMmjKCv8BKUtZv/7dellvl9qn+/3rtYZ6KOU/GvdtprkJr
-         kEwG2f53LqOQ4yhU2gZODuxWid5/RySfq4mGwAoaXDUqLkFVSHW9hLh4pIGExWPV2Rnv
-         064az7dFEttNZo+9mSP6IMlxtRYpTPToiXENYYZqle/GbFxtKVA4XGF4jKbfgwRg/bg6
-         mCLA==
-X-Gm-Message-State: AOAM530KWbEwL1bfTeV4BXrDq0sF6DnK6VHzXvmnHx447JlaeBlmUCbx
-        y/j7AE9e4WsU2A3AekJ/8BdGWR8aLVbXVMwhdFE=
-X-Google-Smtp-Source: ABdhPJzRbJJFNNSK4VbBzZJLBS2d34s5XQU0Dzj321+K9DZk8ERvzYftOK3bRQF4WjE6cy2cbPT/N2mXDajQPlfKmmw=
-X-Received: by 2002:a25:ccd0:: with SMTP id l199mr64753636ybf.39.1637596302657;
- Mon, 22 Nov 2021 07:51:42 -0800 (PST)
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OJ9xzZY5FeccmukwMdR9fcM2Iiv+nWzTkmOO43/ifUs=;
+        b=tccT3n+Y7jhhFfOkw2TvTVw4q7nh3gJWGkjgxcIpqv5+mCBkQfuFwxal4jhMBeY2Ka
+         qLbknfTg8UKe0a8PW4D6v7vDH6zuUi4yMhRW14l5gnhzySPBB81zZjQtpGC+seO+Yq8Y
+         H04t4jJcqtOGqCT8tU5QjscTr7X/rTqQRLF1mSJ4lIKS2cMyEmhIe0r7IF5ser1sQkSH
+         MKx0octxtDsM9dQkuj41Odd8RRyCZijS8PjGsgMUttRsO0eLP1lZWRZ9aYZnDq0yKeD+
+         dk5GCMXYWH9cO1ihm8SaMv7Y98fJLQF2YTJAtGPIgHvFWFD9Nsj3FBJLBFVm6jGC69KK
+         rDAg==
+X-Gm-Message-State: AOAM533Js91yEDKFmBJY3PCVAJ0QcTLjKHAoRN+8Uv3IR97qKAigvK1+
+        CPCP0IwDwoBgr/R66gvK6sqroIemjDnU62phnGBiVsTcWwfMqd1LuO1HvzLpG0N/aM3Fz0C39lt
+        II9cImxpNn1Dd3tPeLJD3cbKC
+X-Received: by 2002:a05:620a:4f6:: with SMTP id b22mr47916386qkh.98.1637596403455;
+        Mon, 22 Nov 2021 07:53:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzPD4/b7lgHJ1aacYNO3wJRJsislsVZmoXjxxgp5SWcJOf6UdvGe1TRnOUvngCMxGXcKx7dCg==
+X-Received: by 2002:a05:620a:4f6:: with SMTP id b22mr47916359qkh.98.1637596403194;
+        Mon, 22 Nov 2021 07:53:23 -0800 (PST)
+Received: from [192.168.1.9] (pool-68-163-101-245.bstnma.fios.verizon.net. [68.163.101.245])
+        by smtp.gmail.com with ESMTPSA id x16sm2254188qko.15.2021.11.22.07.53.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Nov 2021 07:53:22 -0800 (PST)
+To:     Miroslav Benes <mbenes@suse.cz>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     jikos@kernel.org, pmladek@suse.com, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, live-patching@vger.kernel.org,
+        shuah@kernel.org, linux-kselftest@vger.kernel.org
+References: <20211119090327.12811-1-mbenes@suse.cz>
+ <20211119090327.12811-3-mbenes@suse.cz>
+ <20211119182005.t3p5iyxyibzktrbj@treble>
+ <alpine.LSU.2.21.2111220853010.5064@pobox.suse.cz>
+From:   Joe Lawrence <joe.lawrence@redhat.com>
+Subject: Re: [PATCH 2/3] livepatch: Allow user to specify functions to search
+ for on a stack
+Message-ID: <40edd48c-6f45-29e3-4749-be37fb61afba@redhat.com>
+Date:   Mon, 22 Nov 2021 10:53:21 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Received: by 2002:a05:7010:7e27:b0:1e3:79b9:8116 with HTTP; Mon, 22 Nov 2021
- 07:51:42 -0800 (PST)
-Reply-To: rco.ben189@outlook.fr
-From:   "Mrs. Susan Dansuki" <judgemarickakudo@gmail.com>
-Date:   Mon, 22 Nov 2021 07:51:42 -0800
-Message-ID: <CAAgrTz-zkE6u2dS+sJ+rNMOSw4jxdrNVX4wGgNrDmu1dG1z3wQ@mail.gmail.com>
-Subject: Re: COVID-19 RELIEF FUND WORTH $1,500,000.00 USD
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <alpine.LSU.2.21.2111220853010.5064@pobox.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/22/21 2:57 AM, Miroslav Benes wrote:
+> On Fri, 19 Nov 2021, Josh Poimboeuf wrote:
+> 
+>> Thanks for doing this!  And at peterz-esque speed no less :-)
+>>
+>> On Fri, Nov 19, 2021 at 10:03:26AM +0100, Miroslav Benes wrote:
+>>> livepatch's consistency model requires that no live patched function
+>>> must be found on any task's stack during a transition process after a
+>>> live patch is applied. It is achieved by walking through stacks of all
+>>> blocked tasks.
+>>>
+>>> The user might also want to define more functions to search for without
+>>> them being patched at all. It may either help with preparing a live
+>>> patch, which would otherwise require additional touches to achieve the
+>>> consistency
+>>
+>> Do we have any examples of this situation we can add to the commit log?
+> 
+> I do not have anything at hand. Joe, do you remember the case you 
+> mentioned previously about adding a nop to a function?
+>  
+
+I went looking in my inbox to see... Unfortunately the closest thing I
+found was a kpatchset in which we added nops to coax kpatch-build into
+reverting previous patch version changes.  Not applicable here, but I
+was certain we entertained the same idea to increase the task stack
+check for some other problem.
+
+Maybe adding a hypothetical scenario to the commit log would suffice?
+
+>>> or it can be used to overcome deficiencies the stack
+>>> checking inherently has. For example, GCC may optimize a function so
+>>> that a part of it is moved to a different section and the function would
+>>> jump to it. This child function would not be found on a stack in this
+>>> case, but it may be important to search for it so that, again, the
+>>> consistency is achieved.
+>>>
+>>> Allow the user to specify such functions on klp_object level.
+>>>
+>>> Signed-off-by: Miroslav Benes <mbenes@suse.cz>
+>>> ---
+>>>  include/linux/livepatch.h     | 11 +++++++++++
+>>>  kernel/livepatch/core.c       | 16 ++++++++++++++++
+>>>  kernel/livepatch/transition.c | 21 ++++++++++++++++-----
+>>>  3 files changed, 43 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/include/linux/livepatch.h b/include/linux/livepatch.h
+>>> index 2614247a9781..89df578af8c3 100644
+>>> --- a/include/linux/livepatch.h
+>>> +++ b/include/linux/livepatch.h
+>>> @@ -106,9 +106,11 @@ struct klp_callbacks {
+>>>   * struct klp_object - kernel object structure for live patching
+>>>   * @name:	module name (or NULL for vmlinux)
+>>>   * @funcs:	function entries for functions to be patched in the object
+>>> + * @funcs_stack:	function entries for functions to be stack checked
+>>
+>> So there are two arrays/lists of 'klp_func', and two implied meanings of
+>> what a 'klp_func' is and how it's initialized.
+>>
+>> Might it be simpler and more explicit to just add a new external field
+>> to 'klp_func' and continue to have a single 'funcs' array?  Similar to
+>> what we already do with the special-casing of 'nop', except it would be
+>> an external field, e.g. 'no_patch' or 'stack_only'.
+>>
+>> Then instead of all the extra klp_for_each_func_stack_static()
+>> incantations, and the special cases in higher-level callers like
+>> klp_init_object() and klp_init_patch_early(), the lower-level functions
+>> like klp_init_func() and klp_init_func_early() can check the field to
+>> determine which initializations need to be made.  Which is kind of nice
+>> IMO as it pushes that detail down more where it belongs.  And makes the
+>> different types of 'klp_func' more explicit.
+> 
+> I thought about doing this for a moment but then I was worried there would 
+> be many places which would require special-casing, so I tried to keep it 
+> separate. But yes, it would be cleaner, so definitely worth trying for v2.
+> 
+
+I'll add that the first thing that came to mind when you raised this
+feature idea in the other thread was to support existing klp_funcs array
+with NULL new_func's.  I didn't go look to see how invasive it would be,
+but it will be interesting to see if a single list approach turns out
+any simpler for v2.
+
 -- 
-Dear Beneficiary,
+Joe
 
-In line with the directive of the United Nations organization on their
-fight to cushion the bad effect of Covid-19 around the world. We wish
-to bring you the good news of hope. The United Nations organization
-department for disaster management in conjunction with IMF, World Bank
-is giving out Covid-19 stimulus package worth $1,500,000.00 USD, and
-you are among the lucky beneficiary selected to receive this stimulus
-package.
-
-Therefore, on receipt of this email, you should count yourself as the
-lucky individual. Your email address was chosen online while searching
-at random. Kindly contact our grants manager (Mr. Robert Taiwo) at
-your earliest convenience, with the contacts details listed below,to
-claim your stimulus package worth $1,500,000.00 USD.
-
-Name: Mr.Robert TAIWO
-Email:   mr.roberttaiwo73@qq.com
-Telephone:   +229 96548388 (WhatsApp)
-
-Please confirm the following information to him as soon as possible.
-
-1. Full Name :
-2. Address :
-3. Nationality :
-4. Direct Telephone #:
-
-Congratulations once again.
-
-Yours Sincerely
-Mrs. Susan Dansuki.
-Director of the Centers for Disease Control and Prevention.
