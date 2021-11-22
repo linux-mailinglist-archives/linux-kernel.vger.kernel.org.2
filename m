@@ -2,336 +2,625 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A5D459727
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 23:10:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8956A45972A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 23:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239307AbhKVWNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 17:13:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38252 "EHLO
+        id S239875AbhKVWNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 17:13:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234198AbhKVWND (ORCPT
+        with ESMTP id S233806AbhKVWNl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 17:13:03 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61A0C061714
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 14:09:56 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id x10so25371047ioj.9
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 14:09:56 -0800 (PST)
+        Mon, 22 Nov 2021 17:13:41 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A3EC061746;
+        Mon, 22 Nov 2021 14:10:34 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id y13so83111273edd.13;
+        Mon, 22 Nov 2021 14:10:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=RIlD62miMbzZn12/Kgwlc/RowOKN6DZhvcu78eFq1AU=;
-        b=JLTGLRuyYCB7VkcDH95/Fc5RG/CY9iUl/N+535ZnzSm04bQoNpo+ubyYYlyCFbrHA2
-         Q+thhFZGpgFSkPizJvk3Na+BMuZ3bpi8X/3sHGh6t8J5ELfZbQ4QEgAXJm0WrJKA0asa
-         BYIElsb/0gyT0Kzo1HVBlq1MWO0y/pa1x5XRJg9Z54BG/2Eg3lMYcYW4BZPDfzj6EeMH
-         utJf2yIQqz6/Sgz1ze2XLaPXbWLym9pAyGXNM2zb50qDgrLQDkEPd414g/HPN2gebps8
-         9yeT4FVo/Mz7Zyxk7+FukSsmkl492NEVLeeUEnVwgTLE8GrIdFHFDTAtCv7vzoC1dLQB
-         0xNQ==
+        bh=iIP8X/GQ/zXH+OqmQkkmK8AOlGNQWXCC8HDQ4K4jkSc=;
+        b=YrdMKv9p5UXwMFZRJgNjVFQgdHCA4lCcRpWUVgvpPCc0Y7105mYSSC4OYL/OeUqLtv
+         d/NhGu0bMnZFFZJG1pz8j8ls7JB/Ob8RqjxcXfv1+viht5hTynDvi7G9yD82vkfcPYy0
+         YoFo4XlN/pdSjoroAajopm2vG/TAJx2veUcWYSQ7EbWKn6uPxYBbekF8Nq0TrLY2PCrI
+         Gx5B/7CtMcfEKae7Y3qgGj5CLhq+XM65y4I4FUIfUoUprvSw4okrnj17LN4mxwtvQ87m
+         EgkwkQikj3kd69kPMnH/H0huwGP6z4xuyKlzcxcYcrJ3QVZ4swzwsNmAUc9kVsy0GhHA
+         HFNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RIlD62miMbzZn12/Kgwlc/RowOKN6DZhvcu78eFq1AU=;
-        b=5BTw233kOaTYU6uAzMC4G9tNcP+Hh2EqaozkBeWN62EyWOq7euAZWyIERi9dFevTca
-         JVeEicM8iZcDWEH3MR2Z6mB7kI/4uDecuXsAc9fwIBgiYr06sOoenKcRP590qa1GFE+X
-         buRdmdL9S+iGpb+vjrmpTSHyLg4/sdRUCelHtzsNqUn6rI9nkfyWM4PqnBQLNpI8iF3T
-         ySCdRMkocv/RJbaP5hK4ReCVxPWIsPTF8UpyuwK1vTRBsuhYO/n+k+1sj7Mh4syycfw2
-         7H/cW1/KyjnBkkR3x8jjiX/UEY24uphEbDGLo5yeroLfTcKUKV4DDyPmQ/vgbS3sjZYB
-         xKag==
-X-Gm-Message-State: AOAM530E8rcHluNGRdEug6gEZI9JhrFjH6z6/sdelL+TZ2I3DntE/4SS
-        7I247CVhUPTbMDUzKaeWIrSVt4CUT6aWIstLMG6l/Q==
-X-Google-Smtp-Source: ABdhPJyUBmOn2KEY0n/5ZM4uzN4oybki5Fth5xLP/XHvE1gpnMnZGUhC94nrBsDioqr4LuBx36oxyAjrmGKwQyiM3og=
-X-Received: by 2002:a6b:ea0a:: with SMTP id m10mr131226ioc.91.1637618995703;
- Mon, 22 Nov 2021 14:09:55 -0800 (PST)
+        bh=iIP8X/GQ/zXH+OqmQkkmK8AOlGNQWXCC8HDQ4K4jkSc=;
+        b=V+r2mC+b2l2GcCV1RS8MmcnJA8V0HwRR6ChvKb5zCymw2trcnB4oCCVkyFfVrTNmJj
+         5HZ4VmoPe8fRMi/vfHelYiF+keHLktURHTvh70Brw0DOYexlwDccAUQdaiH2W3c8rBrT
+         /OlSpoGprvz1Z54oezxkDJimXGqBUFlK7Ln4AclDbV9hknR4jgvp1JEnBwdjj3Hb7ot1
+         QTAkwurgxi0hJRIULggCfUGpk+TOZUw3pKdM1+9Un3+TFL7lJoNY7JIOP9eSL/mHG8rz
+         bYJcL+2GpF6kyc6R7C/JusnnUSCeKVgTZMG7jIDXykLGsAt5GGjY3M1T8t/HB6OEUyYC
+         Omhw==
+X-Gm-Message-State: AOAM530KY3HuS+h5+PJnDCRzOXh2ju+upsg/H3YYv07aCLKpb8fbFM05
+        pMPN3J9DBFDXbkwGmnjvcrGPuafI5OYWtFI5tmw=
+X-Google-Smtp-Source: ABdhPJzx2poYmInv/5piC/WYqWeeSXH48WP68AWfNwuNmFkMOqoGlujRYSbGEw69PIfgSgsi4uf/7c+P2PcDKrUzzJY=
+X-Received: by 2002:aa7:df9a:: with SMTP id b26mr708866edy.107.1637619032745;
+ Mon, 22 Nov 2021 14:10:32 -0800 (PST)
 MIME-Version: 1.0
-References: <20211120045011.3074840-1-almasrymina@google.com> <YZvppKvUPTIytM/c@cmpxchg.org>
-In-Reply-To: <YZvppKvUPTIytM/c@cmpxchg.org>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Mon, 22 Nov 2021 14:09:43 -0800
-Message-ID: <CAHS8izM7xH8qoTTu3Fgq84xydxuK_3LKhX26-i72fHPhz95iNw@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] Deterministic charging of shared memory
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Hugh Dickins <hughd@google.com>, Shuah Khan <shuah@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Roman Gushchin <guro@fb.com>, "Theodore Ts'o" <tytso@mit.edu>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
+References: <1635747525-31243-1-git-send-email-lh.kuo@sunplus.com>
+ <cover.1637547799.git.lh.kuo@sunplus.com> <e5f2549224cf875d81306ef5f6e98db1cfd81c2e.1637547799.git.lh.kuo@sunplus.com>
+In-Reply-To: <e5f2549224cf875d81306ef5f6e98db1cfd81c2e.1637547799.git.lh.kuo@sunplus.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 23 Nov 2021 00:09:54 +0200
+Message-ID: <CAHp75Vd2=OHbrpGtsU8AMXdtNfvSPhpc7vhzkWnahaV48XbfUQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] SPI: Add SPI driver for Sunplus SP7021
+To:     "LH.Kuo" <lhjeff911@gmail.com>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dvorkin@tibbo.com, qinjian@cqplus1.com, wells.lu@sunplus.com,
+        "LH.Kuo" <lh.kuo@sunplus.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 11:04 AM Johannes Weiner <hannes@cmpxchg.org> wrote=
-:
+On Mon, Nov 22, 2021 at 4:34 AM LH.Kuo <lhjeff911@gmail.com> wrote:
 >
-> On Fri, Nov 19, 2021 at 08:50:06PM -0800, Mina Almasry wrote:
-> > Problem:
-> > Currently shared memory is charged to the memcg of the allocating
-> > process. This makes memory usage of processes accessing shared memory
-> > a bit unpredictable since whichever process accesses the memory first
-> > will get charged. We have a number of use cases where our userspace
-> > would like deterministic charging of shared memory:
-> >
-> > 1. System services allocating memory for client jobs:
-> > We have services (namely a network access service[1]) that provide
-> > functionality for clients running on the machine and allocate memory
-> > to carry out these services. The memory usage of these services
-> > depends on the number of jobs running on the machine and the nature of
-> > the requests made to the service, which makes the memory usage of
-> > these services hard to predict and thus hard to limit via memory.max.
-> > These system services would like a way to allocate memory and instruct
-> > the kernel to charge this memory to the client=E2=80=99s memcg.
-> >
-> > 2. Shared filesystem between subtasks of a large job
-> > Our infrastructure has large meta jobs such as kubernetes which spawn
-> > multiple subtasks which share a tmpfs mount. These jobs and its
-> > subtasks use that tmpfs mount for various purposes such as data
-> > sharing or persistent data between the subtask restarts. In kubernetes
-> > terminology, the meta job is similar to pods and subtasks are
-> > containers under pods. We want the shared memory to be
-> > deterministically charged to the kubernetes's pod and independent to
-> > the lifetime of containers under the pod.
-> >
-> > 3. Shared libraries and language runtimes shared between independent jo=
-bs.
-> > We=E2=80=99d like to optimize memory usage on the machine by sharing li=
-braries
-> > and language runtimes of many of the processes running on our machines
-> > in separate memcgs. This produces a side effect that one job may be
-> > unlucky to be the first to access many of the libraries and may get
-> > oom killed as all the cached files get charged to it.
-> >
-> > Design:
-> > My rough proposal to solve this problem is to simply add a
-> > =E2=80=98memcg=3D/path/to/memcg=E2=80=99 mount option for filesystems:
-> > directing all the memory of the file system to be =E2=80=98remote charg=
-ed=E2=80=99 to
-> > cgroup provided by that memcg=3D option.
-> >
-> > Caveats:
-> >
-> > 1. One complication to address is the behavior when the target memcg
-> > hits its memory.max limit because of remote charging. In this case the
-> > oom-killer will be invoked, but the oom-killer may not find anything
-> > to kill in the target memcg being charged. Thera are a number of consid=
-erations
-> > in this case:
-> >
-> > 1. It's not great to kill the allocating process since the allocating p=
-rocess
-> >    is not running in the memcg under oom, and killing it will not free =
-memory
-> >    in the memcg under oom.
-> > 2. Pagefaults may hit the memcg limit, and we need to handle the pagefa=
-ult
-> >    somehow. If not, the process will forever loop the pagefault in the =
-upstream
-> >    kernel.
-> >
-> > In this case, I propose simply failing the remote charge and returning =
-an ENOSPC
-> > to the caller. This will cause will cause the process executing the rem=
-ote
-> > charge to get an ENOSPC in non-pagefault paths, and get a SIGBUS on the=
- pagefault
-> > path.  This will be documented behavior of remote charging, and this fe=
-ature is
-> > opt-in. Users can:
-> > - Not opt-into the feature if they want.
-> > - Opt-into the feature and accept the risk of received ENOSPC or SIGBUS=
- and
-> >   abort if they desire.
-> > - Gracefully handle any resulting ENOSPC or SIGBUS errors and continue =
-their
-> >   operation without executing the remote charge if possible.
-> >
-> > 2. Only processes allowed the enter cgroup at mount time can mount a
-> > tmpfs with memcg=3D<cgroup>. This is to prevent intential DoS of random=
- cgroups
-> > on the machine. However, once a filesysetem is mounted with memcg=3D<cg=
-roup>, any
-> > process with write access to this mount point will be able to charge me=
-mory to
-> > <cgroup>. This is largely a non-issue because in configurations where t=
-here is
-> > untrusted code running on the machine, mount point access needs to be
-> > restricted to the intended users only regardless of whether the mount p=
-oint
-> > memory is deterministly charged or not.
->
-> I'm not a fan of this. It uses filesystem mounts to create shareable
-> resource domains outside of the cgroup hierarchy, which has all the
-> downsides you listed, and more:
->
-> 1. You need a filesystem interface in the first place, and a new
->    ad-hoc channel and permission model to coordinate with the cgroup
->    tree, which isn't great. All filesystems you want to share data on
->    need to be converted.
->
+> Add SPI driver for Sunplus SP7021.
 
-My understanding is that this problem exists today with tmpfs-shared
-memory, regardless of memcg=3D support or not. I.e. for processes to
-share memory via tmpfs the sys admin needs to limit access to the
-mount point to the processes regardless of which cgroup[s] the
-processes are in for the machine to be properly configured, or risk
-unintended data access and a security violation. So existing tmpfs
-shared memory would/should already have these permissions in place,
-and (I'm hoping) we can piggy back or that and provide deterministic
-charging.
+Much better, but needs more work to be good enough, see my comments below.
 
-> 2. It doesn't extend to non-filesystem sources of shared data, such as
->    memfds, ipc shm etc.
->
+...
 
-I was hoping - if possible - to extend similar APIs/semantics to other
-shared memory sources, although to be honest I'll concede I haven't
-thoroughly thought of how the implementation would look like.
+> +config SPI_SUNPLUS_SP7021
+> +       tristate "Sunplus SP7021 SPI controller"
+> +       depends on SOC_SP7021
+> +       help
+> +         This enable Sunplus SP7021 spi controller driver on the SP7021 =
+SoCs.
 
-> 3. It requires unintuitive configuration for what should be basic
->    shared accounting semantics. Per default you still get the old
->    'first touch' semantics, but to get sharing you need to reconfigure
->    the filesystems?
->
+enables
+SPI
 
-Yes, this is indeed an explicit option that needs to be configured by
-the sys admin. I'm not so sure about changing the default in the
-kernel and potentially breaking existing accounting like you mention
-below. I think the kernel also automagically trying to figure out the
-proper memcg to deterministically charge has its own issues (comments
-on the proposal below).
+> +         This driver can also be built as a module. If so, the module wi=
+ll be
+> +         called as spi-sunplus-sp7021.
+> +
+> +         If you have a  Sunplus SP7021 platform say Y here.
+> +         If unsure, say N.
 
-> 4. If a task needs to work with a hierarchy of data sharing domains -
->    system-wide, group of jobs, job - it must interact with a hierarchy
->    of filesystem mounts. This is a pain to setup and may require task
->    awareness. Moving data around, working with different mount points.
->    Also, no shared and private data accounting within the same file.
->
+...
 
-Again, my impression/feeling here is that this is a generic problem
-with tmpfs shared memory, and maybe shared memory in general, which
-folks find very useful already despite the existing shortcomings.
-Today AFAIK we don't have interfaces to say 'this is shared memory and
-it's shared between processes in cgroups A, B, and C'. Instead we say
-this is shared memory and the tmpfs access permissions or visibility
-decree who can access the shared memory (and the permissions are
-oblivious to cgroups) and the memory charging is first touch based and
-not deterministic.
+> +// SPDX-License-Identifier: GPL-2.0-only
 
-> 5. It reintroduces cgroup1 semantics of tasks and resouces, which are
->    entangled, sitting in disjunct domains. OOM killing is one quirk of
->    that, but there are others you haven't touched on. Who is charged
->    for the CPU cycles of reclaim in the out-of-band domain?  Who is
->    charged for the paging IO? How is resource pressure accounted and
->    attributed? Soon you need cpu=3D and io=3D as well.
->
+> +//
 
-I think the allocating task is charged for cpu and io resources and
-I'm not sure I see a compelling reason to change that. I think the
-distinction is that memory is shared but charged to the one faulting
-it which is maybe not really fair or can be deterministically
-predicted by the sys admin setting limits on the various cgroups. I
-don't see that logic extending to cpu, but perhaps to io maybe.
+Do you need this line?
 
-> My take on this is that it might work for your rather specific
-> usecase, but it doesn't strike me as a general-purpose feature
-> suitable for upstream.
->
->
-> If we want sharing semantics for memory, I think we need a more
-> generic implementation with a cleaner interface.
->
+> +// Copyright (c) 2021 Sunplus Inc.
+> +// Author: LH Kuo <lh.kuo@sunplus.com>
 
-My issue here is that AFAICT in the upstream kernel there is no way to
-deterministically charge the shared memory other than preallocation
-which doesn't work so well on overcommitted systems and requires
-changes in the individual tasks that are allocating the shared memory.
-I'm definitely on board with any proposal that achieves what we want,
-although there are issues with the specific proposal you mentioned.
-(and thanks for reviewing and suggesting alternatives!)
+...
 
-> Here is one idea:
->
-> Have you considered reparenting pages that are accessed by multiple
-> cgroups to the first common ancestor of those groups?
->
-> Essentially, whenever there is a memory access (minor fault, buffered
-> IO) to a page that doesn't belong to the accessing task's cgroup, you
-> find the common ancestor between that task and the owning cgroup, and
-> move the page there.
->
-> With a tree like this:
->
->         root - job group - job
->                         `- job
->             `- job group - job
->                         `- job
->
-> all pages accessed inside that tree will propagate to the highest
-> level at which they are shared - which is the same level where you'd
-> also set shared policies, like a job group memory limit or io weight.
->
-> E.g. libc pages would (likely) bubble to the root, persistent tmpfs
-> pages would bubble to the respective job group, private data would
-> stay within each job.
->
-> No further user configuration necessary. Although you still *can* use
-> mount namespacing etc. to prohibit undesired sharing between cgroups.
->
-> The actual user-visible accounting change would be quite small, and
-> arguably much more intuitive. Remember that accounting is recursive,
-> meaning that a job page today also shows up in the counters of job
-> group and root. This would not change. The only thing that IS weird
-> today is that when two jobs share a page, it will arbitrarily show up
-> in one job's counter but not in the other's. That would change: it
-> would no longer show up as either, since it's not private to either;
-> it would just be a job group (and up) page.
->
-> This would be a generic implementation of resource sharing semantics:
-> independent of data source and filesystems, contained inside the
-> cgroup interface, and reusing the existing hierarchies of accounting
-> and control domains to also represent levels of common property.
->
-> Thoughts?
+> +#include <linux/module.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/spi/spi.h>
+> +#include <linux/clk.h>
+> +#include <linux/reset.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/io.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/gpio.h>
+> +#include <linux/of_gpio.h>
+> +#include <linux/delay.h>
 
-2 issues I see here:
-1. This is a default change, somewhat likely to break existing accounting.
-2. I think we're trying to make the charging deterministic, and this
-makes it even harder to a priori predict where memory is charged:
-(a) memory is initially charged to the allocating task, which forces
-the sys admin to over provision cgroups that access shared memory,
-because what if they pre-allocate the shared memory and get charged
-for all of it?
-(b) The shared memory will only land "where it's supposed to land" if
-the sys admin has correctly set the permissions of the shared memory
-(tmpfs file system permissions/visibility for example). If the mount
-access is incorrectly configured and accessed by a bad actor the
-memory will likely be reparented to root, which is likely worse than
-causing ENOSPC/SIGBUS in the current proposal. Hence, it's really an
-implicit requirement for the shared memory permissions to be correct
-for this to work, in which case memcg=3D seems better to me since it
-doesn't suffer from issue (a).
+Sort them, please.
 
-I'm loosely aware of past conversations with Shakeel where it was
-recommended to charge the first common ancestor, mainly to side-step
-issues with the oom-killer not finding anything to kill. IMO I quite
-like memcg=3D approach because you can:
-1. memcg=3D<first common ancestor cgroup>, and not deal with potential
-SIGBUS/ENOSPC
-2. memcg=3D<remote cgroup>, and deal with potential SIGBUS/ENOSPC.
+...
 
-And the user has flexibility to decide. But regardless of the
-proposal, I see it as an existing/orthogonal problem that shared
-memory permissions be 'correct', and AFAICT existing shared memory
-permission models are completely oblivious to cgroups, so there is
-work for the sys admin to do anyway to make sure that processes in the
-intended processes only are able to access the shared memory.
+> +#define SLAVE_INT_IN
+
+What's this?
+
+...
+
+> +#define SP7021_MAS_REG_NAME "spi_master"
+> +#define SP7021_SLA_REG_NAME "spi_slave"
+> +
+> +#define SP7021_MAS_IRQ_NAME "mas_risc_intr"
+> +#define SP7021_SLA_IRQ_NAME "slave_risc_intr"
+
+Why do you need these?
+
+...
+
+> +#define SP7021_CLR_MAS_INT (1<<6)
+
+Make use of BIT() and GENMASK() here and below.
+
+> +#define SP7021_SLA_DMA_READ (0xd)
+> +#define SP7021_SLA_SW_RST (1<<1)
+> +#define SP7021_SLA_DMA_WRITE (0x4d)
+> +#define SP7021_SLA_DMA_W_INT (1<<8)
+> +#define SP7021_SLA_CLR_INT (1<<8)
+> +#define SP7021_SLA_DATA_RDY (1<<0)
+
+This is a mess. Make sure they are sorted by the value.
+Also it's visible that bit 6 defines READ vs. WRITE (at least for DMA).
+
+> +#define SP7021_CLR_MAS_W_INT (1<<7)
+> +
+> +#define SP7021_TOTAL_LENGTH(x) (x<<24)
+> +#define SP7021_TX_LENGTH(x) (x<<16)
+> +#define SP7021_GET_LEN(x)     ((x>>24)&0xFF)
+> +#define SP7021_GET_TX_LEN(x)  ((x>>16)&0xFF)
+> +#define SP7021_GET_RX_CNT(x)  ((x>>12)&0x0F)
+> +#define SP7021_GET_TX_CNT(x)  ((x>>8)&0x0F)
+> +
+> +#define SP7021_FINISH_FLAG (1<<6)
+> +#define SP7021_FINISH_FLAG_MASK (1<<15)
+> +#define SP7021_RX_FULL_FLAG (1<<5)
+> +#define SP7021_RX_FULL_FLAG_MASK (1<<14)
+> +#define SP7021_RX_EMP_FLAG (1<<4)
+> +#define SP7021_TX_EMP_FLAG (1<<2)
+> +#define SP7021_TX_EMP_FLAG_MASK (1<<11)
+> +#define SP7021_SPI_START_FD (1<<0)
+> +#define SP7021_FD_SEL (1<<6)
+> +#define SP7021_LSB_SEL (1<<4)
+> +#define SP7021_WRITE_BYTE(x) (x<<9)
+> +#define SP7021_READ_BYTE(x) (x<<7)
+> +#define SP7021_CLEAN_RW_BYTE (~0x780)
+> +#define SP7021_CLEAN_FLUG_MASK (~0xF800)
+> +
+> +#define SP7021_CPOL_FD (1<<0)
+> +#define SP7021_CPHA_R (1<<1)
+> +#define SP7021_CPHA_W (1<<2)
+> +#define SP7021_CS_POR (1<<5)
+> +
+> +#define SP7021_FD_SW_RST (1<<1)
+> +#define SP7021_FIFO_DATA_BITS (16*8)    // 16 BYTES
+> +#define SP7021_INT_BYPASS (1<<3)
+> +
+> +#define SP7021_FIFO_REG 0x0034
+> +#define SP7021_SPI_STATUS_REG 0x0038
+> +#define SP7021_SPI_CONFIG_REG 0x003c
+> +#define SP7021_INT_BUSY_REG 0x004c
+> +#define SP7021_DMA_CTRL_REG 0x0050
+> +
+> +#define SP7021_DATA_RDY_REG 0x0044
+> +#define SP7021_SLV_DMA_CTRL_REG 0x0048
+> +#define SP7021_SLV_DMA_LENGTH_REG 0x004c
+> +#define SP7021_SLV_DMA_ADDR_REG 0x004c
+
+...
+
+> +enum SPI_MODE {
+
+Besides unneeded names, which may collide with generic definitions...
+
+> +       SP7021_SLA_READ =3D 0,
+> +       SP7021_SLA_WRITE =3D 1,
+> +       SP7021_SPI_IDLE =3D 2
+
+...add a comma here, since it doesn't look like a terminator.
+
+> +};
+
+...
+
+> +enum {
+> +       SP7021_MASTER_MODE,
+> +       SP7021_SLAVE_MODE,
+> +};
+
+Is it related to hardware? Then assign proper values explicitly.
+
+...
+
+> +struct sp7021_spi_ctlr {
+
+> +
+
+Redundant blank line.
+
+> +       struct device *dev;
+> +       int mode;
+> +       struct spi_controller *ctlr;
+
+> +       void __iomem *mas_base;
+> +       void __iomem *sla_base;
+
+Why do you need this to be separated?
+
+> +       u32 xfer_conf;
+
+> +       int mas_irq;
+> +       int sla_irq;
+
+Ditto.
+
+> +       struct clk *spi_clk;
+> +       struct reset_control *rstc;
+> +
+> +       spinlock_t lock;
+> +       struct mutex buf_lock;
+> +
+> +       struct completion isr_done;
+> +       struct completion sla_isr;
+
+Ditto.
+
+> +       unsigned int  rx_cur_len;
+> +       unsigned int  tx_cur_len;
+> +
+> +       const u8 *tx_buf;
+> +       u8 *rx_buf;
+> +
+> +       unsigned int  data_unit;
+> +};
+
+...
+
+> +// spi slave irq handler
+
+Useless comments.
+
+...
+
+> +// slave only. usually called on driver remove
+
+Why is it so?
+Also find use of proper English grammar (capitalization, periods, etc.
+Ditto for all your comments.
+
+...
+
+> +// slave R/W, called from S_transfer_one() only
+
+Ditto here and for all similar comments. If you point out that
+something is called from something either explain why or drop useless
+comments since anybody can see what function called from which
+function (even indirectly).
+
+...
+
+> +int sp7021_spi_sla_tx(struct spi_device *spi, struct spi_transfer *xfer)
+> +{
+> +       struct sp7021_spi_ctlr *pspim =3D spi_controller_get_devdata(spi-=
+>controller);
+
+> +       struct device *devp =3D &(spi->dev);
+
+Here and everywhere else, first of all we are using dev for struct
+device pointers, second there are too many parentheses.
+
+> +       int err =3D 0;
+
+What's the use? See below...
+
+> +       mutex_lock(&pspim->buf_lock);
+> +
+> +       reinit_completion(&pspim->sla_isr);
+> +
+> +       writel_relaxed(SP7021_SLA_DMA_WRITE, pspim->sla_base + SP7021_SLV=
+_DMA_CTRL_REG);
+> +       writel_relaxed(xfer->len, pspim->sla_base + SP7021_SLV_DMA_LENGTH=
+_REG);
+> +       writel_relaxed(xfer->tx_dma, pspim->sla_base + SP7021_SLV_DMA_ADD=
+R_REG);
+> +       writel(readl(pspim->sla_base + SP7021_DATA_RDY_REG) | SP7021_SLA_=
+DATA_RDY,
+> +                       pspim->sla_base + SP7021_DATA_RDY_REG);
+
+> +       if (wait_for_completion_interruptible(&pspim->sla_isr))
+> +               dev_err(devp, "%s() wait_for_completion timeout\n", __fun=
+c__);
+
+...seems you missed to assign proper error code.
+
+> +       mutex_unlock(&pspim->buf_lock);
+> +       return err;
+> +}
+
+...
+
+> +exit_spi_slave_rw:
+
+Make names of goto labels meaningful, what does above mean? What it
+should mean is what will be done when goto to it, i.e. out_unlock: in
+this case.
+
+> +       mutex_unlock(&pspim->buf_lock);
+> +       return err;
+
+> +
+
+You need to clean up your code before submission.
+So, let's see -50 LOCs next time, I see it's achievable.
+
+> +}
+
+...
+
+> +void sp7021_spi_mas_rb(struct sp7021_spi_ctlr *pspim, u8 len)
+> +{
+> +       int i;
+> +
+> +       for (i =3D 0; i < len; i++) {
+> +               pspim->rx_buf[pspim->rx_cur_len] =3D
+> +                       readl(pspim->mas_base + SP7021_FIFO_REG);
+> +               pspim->rx_cur_len++;
+> +       }
+> +}
+> +
+> +void sp7021_spi_mas_wb(struct sp7021_spi_ctlr *pspim, u8 len)
+> +{
+> +       int i;
+> +
+> +       for (i =3D 0; i < len; i++) {
+> +               writel(pspim->tx_buf[pspim->tx_cur_len],
+> +                       pspim->mas_base + SP7021_FIFO_REG);
+> +               pspim->tx_cur_len++;
+> +       }
+> +}
+
+Are these NIH of readsl() / writesl()?
+
+...
+
+> +       unsigned long flags;
+> +       struct sp7021_spi_ctlr *pspim =3D dev;
+> +       u32 fd_status =3D 0;
+> +       unsigned int tx_len, rx_cnt, tx_cnt, total_len;
+> +       bool isrdone =3D false;
+
+Reversed xmas tree order here and everywhere else.
+
+...
+
+> +               writel(readl(pspim->mas_base + SP7021_INT_BUSY_REG)
+> +                       | SP7021_CLR_MAS_INT, pspim->mas_base + SP7021_IN=
+T_BUSY_REG);
+
+Use a temporary variable instead of this mess.
+
+...
+
+> +static void sp7021_prep_transfer(struct spi_controller *ctlr,
+> +                       struct spi_device *spi)
+
+One line?
+
+...
+
+> +       // set clock
+> +       clk_rate =3D clk_get_rate(pspim->spi_clk);
+> +       div =3D clk_rate / xfer->speed_hz;
+> +
+> +       clk_sel =3D (div / 2) - 1;
+
+When div =3D=3D 0 is it okay to have this value for clk_sel?
+
+...
+
+> +       // set full duplex (bit 6) and fd freq (bits 31:16)
+
+Useless, and use GENMASK()
+
+> +       rc =3D SP7021_FD_SEL | (0xffff << 16);
+> +       rs =3D SP7021_FD_SEL | ((clk_sel & 0xffff) << 16);
+
+What' the point of having SP7021_FD_SEL in rc and rs simultaneously?
+
+> +       writel((pspim->xfer_conf & ~rc) | rs, pspim->mas_base + SP7021_SP=
+I_CONFIG_REG);
+
+...
+
+> +       writel(readl(pspim->mas_base + SP7021_SPI_STATUS_REG) | SP7021_FD=
+_SW_RST,
+> +                                       pspim->mas_base + SP7021_SPI_STAT=
+US_REG);
+
+Introduce proper IO accessors as other drivers do.
+
+> +       //set up full duplex frequency and enable  full duplex
+> +       rs =3D SP7021_FD_SEL | ((0xffff) << 16);
+
+Seems like d=C3=A9j=C3=A0-vu to me. Perhaps it makes sense to have a dedica=
+ted definition.
+
+...
+
+> +       unsigned long timeout =3D msecs_to_jiffies(1000);
+> +       unsigned int i;
+> +       int ret;
+> +       unsigned int xfer_cnt, xfer_len, last_len;
+
+...
+
+> +       for (i =3D 0; i <=3D xfer_cnt; i++) {
+
+> +
+
+Redundant. As I said you have a lot of this kind of blank lines sparse
+over the code.
+
+> +               mutex_lock(&pspim->buf_lock);
+> +
+> +               sp7021_prep_transfer(ctlr, spi);
+> +               sp7021_spi_setup_transfer(spi, ctlr, xfer);
+> +
+> +               reinit_completion(&pspim->isr_done);
+> +
+> +               if (i =3D=3D xfer_cnt)
+> +                       xfer_len =3D last_len;
+> +               else
+> +                       xfer_len =3D SP7021_SPI_DATA_SIZE;
+
+If xfer_len =3D=3D 0 does it make any sense to go via the entire loop?
+
+...
+
+> +               if (!wait_for_completion_interruptible_timeout(&pspim->is=
+r_done,
+> +                                                              timeout)){
+
+One line? Also check wrong spacing.
+
+...
+
+> +free_maste_xfer:
+> +       return ret;
+
+Useless label. You may return directly. Actually the entire function
+needs a bit of care.
+
+...
+
+> +                       dma_unmap_single(dev, xfer->tx_dma,
+> +                               xfer->len, DMA_TO_DEVICE);
+
+One line
+
+...
+
+> +                       dma_unmap_single(dev, xfer->rx_dma,
+> +                               xfer->len, DMA_FROM_DEVICE);
+
+Ditto.
+
+...
+
+> +       pdev->id =3D 0;
+
+Why?
+
+...
+
+> +       if (pdev->dev.of_node) {
+> +               pdev->id =3D of_alias_get_id(pdev->dev.of_node, "sp_spi")=
+;
+
+Ditto.
+
+...
+
+> +               if (of_property_read_bool(pdev->dev.of_node, "spi-slave")=
+)
+> +                       mode =3D SP7021_SLAVE_MODE;
+
+There is no need to check of_node for this call.
+
+...
+
+> +       dev_dbg(&pdev->dev, "pdev->id =3D %d\n", pdev->id);
+
+Useless.
+
+...
+
+> +       ctlr->dev.of_node =3D pdev->dev.of_node;
+
+Use device_set_node().
+
+...
+
+> +       pspim->mas_base =3D devm_platform_ioremap_resource_byname
+> +               (pdev, SP7021_MAS_REG_NAME);
+> +       pspim->sla_base =3D devm_platform_ioremap_resource_byname
+> +               (pdev, SP7021_SLA_REG_NAME);
+
+Something is wrong with the indentation.
+
+...
+
+> +       dev_dbg(&pdev->dev, "mas_base 0x%x\n", (unsigned int)pspim->mas_b=
+ase);
+
+Redundant.
+
+...
+
+> +       pspim->mas_irq =3D platform_get_irq_byname(pdev, SP7021_MAS_IRQ_N=
+AME);
+> +       if (pspim->mas_irq < 0) {
+
+> +               dev_err(&pdev->dev, "failed to get %s\n", SP7021_MAS_IRQ_=
+NAME);
+
+Duplicate message printing.
+
+> +               return pspim->mas_irq;
+> +       }
+> +
+> +       pspim->sla_irq =3D platform_get_irq_byname(pdev, SP7021_SLA_IRQ_N=
+AME);
+> +       if (pspim->sla_irq < 0) {
+
+> +               dev_err(&pdev->dev, "failed to get %s\n", SP7021_SLA_IRQ_=
+NAME);
+
+Ditto.
+
+> +               return pspim->sla_irq;
+> +       }
+
+...
+
+> +       // clk
+
+Meaningless.
+
+...
+
+> +       dev_dbg(&pdev->dev, "pspim->rstc : 0x%x\n", (unsigned int)pspim->=
+rstc);
+
+Get rid of the debugging like this, it's not for production use at all.
+
+...
+
+> +               return dev_err_probe(&pdev->dev, PTR_ERR(pspim->rstc),
+> +                                    "devm_rst_get fail\n");
+
+One line.
+
+...
+
+> +               return dev_err_probe(&pdev->dev, ret,
+> +                       "failed to enable clk\n");
+
+Ditto. And so on...
+To make lines shorter, utilize a temporary variable for struct device *dev.
+
+...
+
+> +       dev_dbg(&pdev->dev, "pm init done\n");
+
+Redundant.
+
+> +       dev_dbg(&pdev->dev, "spi_master_probe done\n");
+
+Redundant.
+
+...
+
+> +       dev_dbg(dev, "devid:%d\n", dev->id);
+
+Redundant.
+
+...
+
+> +       dev_dbg(dev, "devid:%d\n", dev->id);
+
+Ditto.
+
+--=20
+With Best Regards,
+Andy Shevchenko
