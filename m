@@ -2,123 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB72458963
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 07:43:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E83EE458966
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 07:46:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232178AbhKVGqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 01:46:35 -0500
-Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.170]:10479 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230087AbhKVGqd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 01:46:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637563326;
-    s=strato-dkim-0002; d=chronox.de;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=16MMtPuos/hf7WCLpbhZlSOUlQcAe+4TJmECh7cIO+0=;
-    b=qeQ7SGjqvY/pTu6GNNWh96lTESaBwd6hTe2cDc0lo+VrbEBJ6c/IBselZFMLy7/zcT
-    4W9aahJFLt7MJU3weS9UtDUZwMTDUU1x/skvVX6EFJntLZQeR8HVe2OoRxA/aNQtS2w2
-    dLj6BJcJp1OlhbZ5diFryQt2j21ZLQ7b8R+BdbG55o/kLpP33OHyBoF3iX8bI5o8zhdt
-    hm6fiz98LeH4/dYDgfSpU+1SDs73xoYumc19+fR02islCRIqiQfXenFXOGVd6TZZWmQ7
-    tsROmXSUDFY4JTUjsb8z+9X32z1xW5K+sifGtWG4GeBuzOygW7DX4OdE8tLNkqaqEA8a
-    OuJw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPZIfSfAhhe"
-X-RZG-CLASS-ID: mo00
-Received: from tauon.chronox.de
-    by smtp.strato.de (RZmta 47.34.5 DYNA|AUTH)
-    with ESMTPSA id U02dfbxAM6g34hM
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Mon, 22 Nov 2021 07:42:03 +0100 (CET)
-From:   Stephan Mueller <smueller@chronox.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>, Tso Ted <tytso@mit.edu>,
-        linux-crypto@vger.kernel.org, Willy Tarreau <w@1wt.eu>,
-        Nicolai Stange <nstange@suse.de>,
+        id S232357AbhKVGtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 01:49:19 -0500
+Received: from mga18.intel.com ([134.134.136.126]:34315 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230087AbhKVGtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 01:49:18 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10175"; a="221614709"
+X-IronPort-AV: E=Sophos;i="5.87,254,1631602800"; 
+   d="scan'208";a="221614709"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2021 22:46:11 -0800
+X-IronPort-AV: E=Sophos;i="5.87,254,1631602800"; 
+   d="scan'208";a="508829387"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.101])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2021 22:46:09 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Marco Elver <elver@google.com>,
+        syzbot <syzbot+aa5bebed695edaccf0df@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Petr Tesarik <ptesarik@suse.cz>,
-        John Haxby <john.haxby@oracle.com>,
-        Alexander Lobakin <alobakin@mailbox.org>,
-        Jirka Hladky <jhladky@redhat.com>
-Subject: Re: [PATCH v43 01/15] Linux Random Number Generator
-Date:   Mon, 22 Nov 2021 07:42:02 +0100
-Message-ID: <11035663.0FQYWtqqoJ@tauon.chronox.de>
-In-Reply-To: <YZsyZua9T8DD6JF5@kroah.com>
-References: <2036923.9o76ZdvQCi@positron.chronox.de> <2560758.ogP2UNPRoF@tauon.chronox.de> <YZsyZua9T8DD6JF5@kroah.com>
+        Linux-MM <linux-mm@kvack.org>, syzkaller-bugs@googlegroups.com,
+        Mel Gorman <mgorman@suse.de>
+Subject: Re: [syzbot] KCSAN: data-race in flush_tlb_batched_pending /
+ try_to_unmap_one
+References: <00000000000020805d05d110dc77@google.com>
+        <YZZn4CPEK7pP4ohN@elver.google.com>
+        <D32C44CD-2010-48C1-A213-9059A9D62C56@gmail.com>
+Date:   Mon, 22 Nov 2021 14:46:06 +0800
+In-Reply-To: <D32C44CD-2010-48C1-A213-9059A9D62C56@gmail.com> (Nadav Amit's
+        message of "Fri, 19 Nov 2021 22:11:10 -0800")
+Message-ID: <87bl2cg029.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, 22. November 2021, 07:02:14 CET schrieb Greg Kroah-Hartman:
+Nadav Amit <nadav.amit@gmail.com> writes:
 
-Hi Greg,
+>> On Nov 18, 2021, at 6:49 AM, Marco Elver <elver@google.com> wrote:
+>> 
+>> On Thu, Nov 18, 2021 at 06:20AM -0800, syzbot wrote:
+>>> Hello,
+>>> 
+>>> syzbot found the following issue on:
+>>> 
+>>> HEAD commit:    42eb8fdac2fc Merge tag 'gfs2-v5.16-rc2-fixes' of git://git..
+>>> git tree:       upstream
+>>> console output: https://syzkaller.appspot.com/x/log.txt?x=13160026b00000
+>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=a70237460d215073
+>>> dashboard link: https://syzkaller.appspot.com/bug?extid=aa5bebed695edaccf0df
+>>> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
+>>> 
+>>> Unfortunately, I don't have any reproducer for this issue yet.
+>>> 
+>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>> Reported-by: syzbot+aa5bebed695edaccf0df@syzkaller.appspotmail.com
+>>> 
+>>> ==================================================================
+>>> BUG: KCSAN: data-race in flush_tlb_batched_pending / try_to_unmap_one
+>>> 
+>>> write to 0xffff8881072cfbbc of 1 bytes by task 17406 on cpu 1:
+>>> flush_tlb_batched_pending+0x5f/0x80 mm/rmap.c:691
+>>> madvise_free_pte_range+0xee/0x7d0 mm/madvise.c:594
+>>> walk_pmd_range mm/pagewalk.c:128 [inline]
+>>> walk_pud_range mm/pagewalk.c:205 [inline]
+>>> walk_p4d_range mm/pagewalk.c:240 [inline]
+>>> walk_pgd_range mm/pagewalk.c:277 [inline]
+>>> __walk_page_range+0x981/0x1160 mm/pagewalk.c:379
+>>> walk_page_range+0x131/0x300 mm/pagewalk.c:475
+>>> madvise_free_single_vma mm/madvise.c:734 [inline]
+>>> madvise_dontneed_free mm/madvise.c:822 [inline]
+>>> madvise_vma mm/madvise.c:996 [inline]
+>>> do_madvise+0xe4a/0x1140 mm/madvise.c:1202
+>>> __do_sys_madvise mm/madvise.c:1228 [inline]
+>>> __se_sys_madvise mm/madvise.c:1226 [inline]
+>>> __x64_sys_madvise+0x5d/0x70 mm/madvise.c:1226
+>>> do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>>> do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+>>> entry_SYSCALL_64_after_hwframe+0x44/0xae
+>>> 
+>>> write to 0xffff8881072cfbbc of 1 bytes by task 71 on cpu 0:
+>>> set_tlb_ubc_flush_pending mm/rmap.c:636 [inline]
+>>> try_to_unmap_one+0x60e/0x1220 mm/rmap.c:1515
+>>> rmap_walk_anon+0x2fb/0x470 mm/rmap.c:2301
+>>> try_to_unmap+0xec/0x110
+>>> shrink_page_list+0xe91/0x2620 mm/vmscan.c:1719
+>>> shrink_inactive_list+0x3fb/0x730 mm/vmscan.c:2394
+>>> shrink_list mm/vmscan.c:2621 [inline]
+>>> shrink_lruvec+0x3c9/0x710 mm/vmscan.c:2940
+>>> shrink_node_memcgs+0x23e/0x410 mm/vmscan.c:3129
+>>> shrink_node+0x8f6/0x1190 mm/vmscan.c:3252
+>>> kswapd_shrink_node mm/vmscan.c:4022 [inline]
+>>> balance_pgdat+0x702/0xd30 mm/vmscan.c:4213
+>>> kswapd+0x200/0x340 mm/vmscan.c:4473
+>>> kthread+0x2c7/0x2e0 kernel/kthread.c:327
+>>> ret_from_fork+0x1f/0x30
+>>> 
+>>> value changed: 0x01 -> 0x00
+>>> 
+>>> Reported by Kernel Concurrency Sanitizer on:
+>>> CPU: 0 PID: 71 Comm: kswapd0 Not tainted 5.16.0-rc1-syzkaller #0
+>>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>>> ==================================================================
+>> 
+>> Reading 3ea277194daae, I can't quite determine if this is safe and
+>> expected.
+>> 
+>> Per this observed write/write race, depending on interleaving
+>> tlb_flush_batched can randomly be true or false after
+>> set_tlb_ubc_flush_pending().
+>> 
+>> Is this safe?
+>> 
+>
+> I do not think it is safe and I am not the only one.
+>
+> https://lore.kernel.org/linux-mm/20210131001132.3368247-21-namit@vmware.com/
+>
+> Perhaps Huang has the cycles to fix it.
 
-> On Mon, Nov 22, 2021 at 06:34:43AM +0100, Stephan Mueller wrote:
-> > Am Sonntag, 21. November 2021, 23:42:33 CET schrieb Jason A. Donenfeld:
-> > 
-> > Hi Jason,
-> > 
-> > > Hi Stephan,
-> > > 
-> > > You've posted it again, and yet I still believe this is not the
-> > > correct design or direction. I do not think the explicit goal of
-> > > extended configurability ("flexibility") or the explicit goal of being
-> > > FIPS compatible represent good directions, and I think this introduces
-> > > new problems rather than solving any existing ones.
-> > 
-> > The members from the Linux distributions that are on copy on this may tell
-> > you a different story. They all developed their own downstream patches to
-> > somehow add the flexibility that is needed for them. So, we have a great
-> > deal of fragmentation at the resting-foundation of Linux cryptography.
-> 
-> What distros specifically have patches in their kernels that do
-> different things to the random code path?  Do you have pointers to those
-> patches anywhere?  Why have the distros not submitted their changes
-> upstream?
+Yes.  I will send out a fix to discuss this soon.  Sorry for long delay.
 
-I will leave the representatives from the distros to chime in and point to 
-these patches.
-
-Yet, these changes are commonly a band-aid only that have some additional 
-drawbacks. Bottom line, there is no appropriate way with the current code to 
-allow vendors what they want to achieve. One hint to what changes vendors are 
-attempting can be found in [1] slide 20.
-
-[1] https://www.chronox.de/lrng/doc/lrng_presentation_v43.pdf
-> 
-> thanks,
-> 
-> greg k-h
-
-
-Ciao
-Stephan
-
-
+Best Regards,
+Huang, Ying
