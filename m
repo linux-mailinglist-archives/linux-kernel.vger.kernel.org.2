@@ -2,141 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5433B4596C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 22:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F1E4596C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 22:34:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238406AbhKVVhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 16:37:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58462 "EHLO
+        id S238882AbhKVVhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 16:37:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236375AbhKVVhS (ORCPT
+        with ESMTP id S236375AbhKVVhm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 16:37:18 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92372C061714
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 13:34:11 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id r138so6821767pgr.13
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 13:34:11 -0800 (PST)
+        Mon, 22 Nov 2021 16:37:42 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F46C061574;
+        Mon, 22 Nov 2021 13:34:35 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id r11so82935147edd.9;
+        Mon, 22 Nov 2021 13:34:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=C6kqWf8YL8Pc2dhuN/yLLDflJewwm9k+jgx8JhJxfWI=;
-        b=Y4jFEgnmso7slD8LmL+kHkcNuNHAU/37pom02AnkOXJQBehxeoCWnx+y1Ay+5jTHkt
-         coGzrMB4Xgugt8yyYmw4BNvCxgmlYN0WS0xiPHG+ISwHq0tRZ0Mg7IiiBPlthWJPFiIc
-         wbqm5LT0GOi5tfvtMY7V2y7btZs0kYlE9HXxCc1Dt0dpcJXHkADQLyitH82pTJmfJ5ze
-         ti+OahblPqZ4/SyJAQN7CRkytCBKXGQQVU2LWiqdmqN/xzx6cdci5pw1hiM9FeGyHAYZ
-         n+aaI/WVszqxWu+ZAg88mTKSERwgqTtW0RqEMFl6fIZ87hlbdUk2bmolJLE3N3NqCFBX
-         bNyQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OrAz2qSS0v6VrYhP03ydDVHSa28f05qdX2rEWeofBjI=;
+        b=K215rzp9LK1Ef0esI9zQ303MZmdKQYXlhmUZ3qhkr6HQEokyuckEaeZXXAGglh77E+
+         +HSbHXEjTgoQbZR0ytSzjiJ7RSBkpWiBP1/RyszA33WGeDKp1s01dQxEsrjd7UJuRKQq
+         H87wzMWUOhKC6NCLw7wJ+V+O8zswFn71lmofspDNOTKv9vPjRRPA6OK4DReKCh3bXZlc
+         LZomnxfeHk6dQreOqFOnv2y6Zwed9qlx0h+E5AWJ1/vkq8n5Q0XIo7+IakDV0OeMN4Wo
+         adKm2tDaPkDpiN+vzYe30A7fL6OC1ZdJ17IJPYumq0ye8GNzH+eUZe9qM8NSSOJFvpP1
+         CUIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=C6kqWf8YL8Pc2dhuN/yLLDflJewwm9k+jgx8JhJxfWI=;
-        b=2h3O/maoRPpwni8RWYO7fAoBZVynddxzdXIAe/k5EZ/j2vLS2n2xYxazCd2XtKCA3I
-         fEZPnBfI32iBLt/N3jYPwKXnN7Li1QLSA8Bg7OxgQstrw4CIsV+uoZHZ32ZlxMvhI36L
-         xt05X+4XBAweeTgPYglyzwATTxaRJ1Tmb6kwNym3BQZ1OYuJph/v0DsPb35fXAj95cGY
-         LVLgwUAyppMzPDwbPhIhOp4G+Z6pArI1SU8ICmojwpuK760HkuclAxQ7S0zgwZTRIlu0
-         ZEHCnahctbD7LPv+9M58BItJ5FB7mLjv0qKYbwaJOFaD4qsqqfkJPHgcp9CTGF0YH7pG
-         DdSg==
-X-Gm-Message-State: AOAM533h3H2B0Af71c6GJh4FzgH9aGs7sWYELboUkkceKuf8vVYsXMbF
-        FF+wX+U5/LvEBJWigYKJDEI86w==
-X-Google-Smtp-Source: ABdhPJzg1Ma8Ooke2Tu2SRT4bzBeuNYSa3FNKmTYJnIPrnbr5F4nQ/snq2bFZz6CLLSh1eNnhZn30Q==
-X-Received: by 2002:a63:87c1:: with SMTP id i184mr35130pge.75.1637616850788;
-        Mon, 22 Nov 2021 13:34:10 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id c5sm8228997pjm.52.2021.11.22.13.34.10
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OrAz2qSS0v6VrYhP03ydDVHSa28f05qdX2rEWeofBjI=;
+        b=WXet/BWGSbi58qzgJ/dB/A0Ouup9z5r05i3cYTR4OzOjDaxrTlMKDuOXMPmCozCpPS
+         +XCJ0yXkGsyDoGflaK2FDQ5as1NGSp3NNw6GCSysOWad6i7uPzHaYAPoBPGEuuILHIve
+         yagdJHSs4CFwDODZEVbYEih1KnYGFmUcCwgeABAPWthMo55W5rvMBXMRzacad0M1eTz5
+         uPHRbxZxAhq+6Fqbckib+RKpCX75fasZGmwXTMCrtToELl0kPSykFIOdvc9HTiHrXhqx
+         hWgZmCgC+1cW8zKFaBLhrWsbtU8ajLQHCixxPHpVl9KMfrU4qC79aDZqf4/yMnvzu9O4
+         7JCg==
+X-Gm-Message-State: AOAM530ypE110l9msMtHAURHG9dXIDkUx8AfmwV3jHTXk5XSpMxg2uMJ
+        lyv4dtg0PdIP47j8HNXO5igMYtKMHho=
+X-Google-Smtp-Source: ABdhPJxRWrON1ypXU/5yf9g86BJvKtRrnf7u4KiFdwfv1C8JCjCkSNxtCIqYr3QPXJ7pZzJQUdiEWA==
+X-Received: by 2002:a05:6402:280b:: with SMTP id h11mr264474ede.341.1637616873667;
+        Mon, 22 Nov 2021 13:34:33 -0800 (PST)
+Received: from kista.localdomain (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
+        by smtp.gmail.com with ESMTPSA id hq9sm4482933ejc.119.2021.11.22.13.34.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 13:34:10 -0800 (PST)
-Date:   Mon, 22 Nov 2021 21:34:06 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Peter Gonda <pgonda@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
- Hypervisor Support
-Message-ID: <YZwMzpx8422JiJTS@google.com>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
- <daf5066b-e89b-d377-ed8a-9338f1a04c0d@amd.com>
- <d673f082-9023-dafb-e42e-eab32a3ddd0c@intel.com>
- <f15597a0-e7e0-0a57-39fd-20715abddc7f@amd.com>
- <5f3b3aab-9ec2-c489-eefd-9136874762ee@intel.com>
- <d83e6668-bec4-8d1f-7f8a-085829146846@amd.com>
+        Mon, 22 Nov 2021 13:34:33 -0800 (PST)
+From:   Jernej Skrabec <jernej.skrabec@gmail.com>
+To:     mripard@kernel.org, wens@csie.org
+Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Subject: [PATCH] arm64: dts: allwinner: h6: Add Hantro G2 node
+Date:   Mon, 22 Nov 2021 22:34:29 +0100
+Message-Id: <20211122213429.921919-1-jernej.skrabec@gmail.com>
+X-Mailer: git-send-email 2.34.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d83e6668-bec4-8d1f-7f8a-085829146846@amd.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021, Brijesh Singh wrote:
-> 
-> On 11/22/21 1:14 PM, Dave Hansen wrote:
-> > On 11/22/21 11:06 AM, Brijesh Singh wrote:
-> > > > 3. Kernel accesses guest private memory via a kernel mapping.  This one
-> > > >     is tricky.  These probably *do* result in a panic() today, but
-> > > >     ideally shouldn't.
-> > > KVM has defined some helper functions to maps and unmap the guest pages.
-> > > Those helper functions do the GPA to PFN lookup before calling the
-> > > kmap(). Those helpers are enhanced such that it check the RMP table
-> > > before the kmap() and acquire a lock to prevent a page state change
-> > > until the kunmap() is called. So, in the current implementation, we
-> > > should *not* see a panic() unless there is a KVM driver bug that didn't
-> > > use the helper functions or a bug in the helper function itself.
-> > 
-> > I don't think this is really KVM specific.
-> > 
-> > Think of a remote process doing ptrace(PTRACE_POKEUSER) or pretty much
-> > any generic get_user_pages() instance.  As long as the memory is mapped
-> > into the page tables, you're exposed to users that walk the page tables.
-> > 
-> > How do we, for example, prevent ptrace() from inducing a panic()?
-> > 
-> 
-> In the current approach, this access will induce a panic(). In general,
-> supporting the ptrace() for the encrypted VM region is going to be
-> difficult.
+H6 SoC has a second VPU, dedicated to VP9 decoding. It's a slightly
+older design, though.
 
-But ptrace() is just an example, any path in the kernel that accesses a gup'd
-page through a kernel mapping will explode if handed a guest private page.
+Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+---
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-> The upcoming TDX work to unmap the guest memory region from the current process
-> page table can easily extend for the SNP to cover the current limitations.
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+index 4c4547f7d0c7..878061e75098 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+@@ -153,6 +153,15 @@ mixer0_out_tcon_top_mixer0: endpoint {
+ 			};
+ 		};
+ 
++		video-codec-g2@1c00000 {
++			compatible = "allwinner,sun50i-h6-vpu-g2";
++			reg = <0x01c00000 0x1000>;
++			interrupts = <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&ccu CLK_BUS_VP9>, <&ccu CLK_VP9>;
++			clock-names = "bus", "mod";
++			resets = <&ccu RST_BUS_VP9>;
++		};
++
+ 		video-codec@1c0e000 {
+ 			compatible = "allwinner,sun50i-h6-video-engine";
+ 			reg = <0x01c0e000 0x2000>;
+-- 
+2.34.0
 
-That represents an ABI change though.  If KVM allows userspace to create SNP guests
-without any guarantees that userspace cannot coerce the kernel into accessing guest
-private memory, then we are stuck supporting that behavior even if KVM later gains
-the ability to provide such guarantees through new APIs.
-
-If allowing this behavior was only a matter of the system admin opting into a
-dangerous configuration, I would probably be ok merging SNP with it buried behind
-EXPERT or something scarier, but this impacts KVM's ABI as well as kernel internals,
-e.g. the hooks in kvm_vcpu_map() and friends are unnecessary if KVM can differentiate
-between shared and private gfns in its memslots, as gfn_to_pfn() will either fail or
-point at memory that is guaranteed to be in the shared state.
