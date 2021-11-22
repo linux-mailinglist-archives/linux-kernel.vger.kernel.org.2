@@ -2,199 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F132458FC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:52:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4976458FCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:54:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239543AbhKVNzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 08:55:50 -0500
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:60313 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229984AbhKVNzr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 08:55:47 -0500
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20211122135239euoutp011849d20d9a8dfdc9b2462c25ccd581d2~54qoHoq3L3005830058euoutp01g;
-        Mon, 22 Nov 2021 13:52:39 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20211122135239euoutp011849d20d9a8dfdc9b2462c25ccd581d2~54qoHoq3L3005830058euoutp01g
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1637589159;
-        bh=5UPvjGb4q8O15eAxfvLNzLhdKg1UMmGL6QheNnLVuMQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=swr9CLFf530hVdopI0/vccgN08qh0/gpk1Y3LoYTB23e4yVgVT67GqLBHtr3z7FBv
-         LCrNCXCflrTOenTSIKurtgEAPnsK/tFU1IwR9lTt8VR1wWMi5ibvAwD2gUysp3cVcK
-         xATdJH9XYD8NJlltDj6FQwTcNjxtixZ7XAKbVzoQ=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20211122135239eucas1p153183b212646a619fd65f799aa4c9668~54qn7sD3N1646016460eucas1p16;
-        Mon, 22 Nov 2021 13:52:39 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 7C.3A.10260.6A0AB916; Mon, 22
-        Nov 2021 13:52:39 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20211122135238eucas1p1e46674d13b4f6f504558f4102cfe3a85~54qnRdMfV0785307853eucas1p1o;
-        Mon, 22 Nov 2021 13:52:38 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20211122135238eusmtrp238e5b09563a94bd7418698862a2ad03e~54qnQx22y1415314153eusmtrp2Q;
-        Mon, 22 Nov 2021 13:52:38 +0000 (GMT)
-X-AuditID: cbfec7f5-bf3ff70000002814-31-619ba0a63763
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id AC.F6.09404.6A0AB916; Mon, 22
-        Nov 2021 13:52:38 +0000 (GMT)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20211122135238eusmtip28b300fcd29e37939b374ea1136c3d6e2~54qnE06z91468714687eusmtip2v;
-        Mon, 22 Nov 2021 13:52:38 +0000 (GMT)
-From:   Lukasz Stelmach <l.stelmach@samsung.com>
-To:     Nicolas Iooss <nicolas.iooss_linux@m4x.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] net: ax88796c: do not receive data in pointer
-Date:   Mon, 22 Nov 2021 14:52:27 +0100
-In-Reply-To: <20211121200642.2083316-1-nicolas.iooss_linux@m4x.org> (Nicolas
-        Iooss's message of "Sun, 21 Nov 2021 21:06:42 +0100")
-Message-ID: <dleftjk0h0e1r8.fsf%l.stelmach@samsung.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
-        protocol="application/pgp-signature"
-X-Brightmail-Tracker: H4sIAAAAAAAAA01SaUwTURDO227LUm2zLVXHesRUNB5YVDwKotGIWP9p/AEeCa6yqSi02IIg
-        EiWxagVRaFUsYsRIANcUsSIBvNvIVaV4QBTxCGAVPJBLwQNl2Zr475uZ73gzeQRPWsiXEzHa
-        BFqvpWIVAiFeXj3knleUf46an3cZU+W5jbiqsfwEX/W0Kk+gqs4fr7pntPBW8tVll19gajtz
-        TKBu+naWr+6zT12PbxaGRtOxMXtpfeCKbcKd1vRKPL5JnvzTdZ6fhjrHpSOCAHIRvK6Ym458
-        CSlZjKD6ti4dCUdwP4JCmxXnij4EFS2diGWxgoF8l4AbFCFoeziMccV7BJVPOwSsrYBUgs0W
-        yQpkZCA4L7QglsMjTQjav3wQsAM/Mhzc/RYfFuPkDLhW4Bg18iWNCLr6WkZJInIpfHybg7F4
-        HBkMvzw9PlxfAnXWDpzFPDIOrO5PowlAviWgoKpJwL01DBhXL85hP+iqKfPh8GT4U3kB4w5w
-        ECzmJZz2OILyvEEvfxm0Nvzw+qyC8wNsMMsXw/PPEi5XDObyHB7XFoHpiJRj+0PJyVteFzlk
-        dhV7L6eG0p4O77HOIPiUfYifhabl/rdO7n/r5I7Y8sjZcLUqkGvPhcKLH3kcXg4lJd14PuIz
-        aAKdaIjT0IYgLZ2kNFBxhkStRrlDF2dHI9/HNVwzUIGKu3qUDoQRyIH8R8RtpVcakRzX6rS0
-        QiYiSnMoqSia2pdC63VR+sRY2uBAkwhcMUEk+5VGSUkNlUDvpul4Wv9vihG+8jQsm/9mfJ2f
-        85VHVvSY7u9d018TGF8Y3wy9wc0uz5fMr482re0b3O5J1p1urItwEsztVQ0MlnqibczdgA2H
-        GdNRSbff0VdDTJi5LCJzi/Dg0MbsSHGtpHrrvpAPC8XrNoiPTIzcEbFm48tWm/2+9YrHBLsy
-        9TNqmW+XJhkLpoPb34zt2mNONg42hAxVLTrFpDY/2Z9wun77saCATc69qboQRUbwoDilPcUZ
-        Yw+a2Rua9ed3lObBQLTkeNaBSk/J2cWrNd2WKWNqv7dfdciUYzMarc0Pwg0/fTpbhzNsSUVh
-        ex5GHboRveBNKFUfYrm+DF9NJ22dVV/zbnfoOdPNZ00BdxS4YSe1YA5Pb6D+AunTV5u5AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprPIsWRmVeSWpSXmKPExsVy+t/xe7rLFsxONFi0QcxizvkWFosL2/pY
-        LS7vmsNmcWyBmMWBlsnMDqweW1beZPLYtKqTzePqtxmsHp83yQWwROnZFOWXlqQqZOQXl9gq
-        RRtaGOkZWlroGZlY6hkam8daGZkq6dvZpKTmZJalFunbJehlzOzayVJwVari9+m5rA2ML0W7
-        GDk5JARMJL4uOM3WxcjFISSwlFFi8rLVTF2MHEAJKYmVc9MhaoQl/lzrgqp5yihxaPkvRpAa
-        NgE9ibVrI0BqRAT0JQ7Pv8UIUsMs0MEosXLpPRaQhLCAm8T5L5PZQWwhASeJm2++sIHYLAKq
-        EhuXHGICaeAUaGGUePX5FliCV8Bc4vWD6UwgtqiApcSfZx/ZIeKCEidnPgEbyiyQLfF19XPm
-        CYwCs5CkZiFJzQK6j1lAU2L9Ln2IsLbEsoWvmSFsW4l1696zLGBkXcUoklpanJueW2ykV5yY
-        W1yal66XnJ+7iREYO9uO/dyyg3Hlq496hxiZOBgPMaoAdT7asPoCoxRLXn5eqpIIL8eG6YlC
-        vCmJlVWpRfnxRaU5qcWHGE2BfpvILCWanA+M6rySeEMzA1NDEzNLA1NLM2MlcV7Pgo5EIYH0
-        xJLU7NTUgtQimD4mDk6pBqaWe+xb/t3qfsRVe9KlaN4G4Q12scIlMixG4i/eWa9qFXt0/OuK
-        Kbsa2p3/i1ayO9e0dEqKu0xzurArOFfdP41fukxEKXR1JJeC2MMDHEejox7PzRPxD1w/seTZ
-        5aeKKyw1tRqFU1R/722z1Cy4XXPHKvFLwUqre3s9q7hcDfQTSueZv1vr6DzdSOHzIcm+hO4J
-        Wa7fJTRdWZfIP9i+P2taxMxdP2KZZosavV9me8nio+j8tpViid9eM5+vlZ2YbiKaOOfDqucC
-        L+RUnC991rfaXrola+OFhUJqF342ZHIGNh5s/HqR7WeV+Zensv9tWox31GqtXv3ksnhISarO
-        oqJb0mGZj3LFVS41v7+7TYmlOCPRUIu5qDgRAK7oywcyAwAA
-X-CMS-MailID: 20211122135238eucas1p1e46674d13b4f6f504558f4102cfe3a85
-X-Msg-Generator: CA
-X-RootMTR: 20211122135238eucas1p1e46674d13b4f6f504558f4102cfe3a85
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20211122135238eucas1p1e46674d13b4f6f504558f4102cfe3a85
-References: <20211121200642.2083316-1-nicolas.iooss_linux@m4x.org>
-        <CGME20211122135238eucas1p1e46674d13b4f6f504558f4102cfe3a85@eucas1p1.samsung.com>
+        id S239609AbhKVN5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 08:57:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229984AbhKVN5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 08:57:31 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C59B160C3F;
+        Mon, 22 Nov 2021 13:54:24 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mp9m2-00749T-Hd; Mon, 22 Nov 2021 13:54:22 +0000
+Date:   Mon, 22 Nov 2021 13:54:22 +0000
+Message-ID: <8735no70tt.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        kernel-team@android.com, Rob Herring <robh@kernel.org>,
+        John Crispin <john@phrozen.org>, Biwen Li <biwen.li@nxp.com>,
+        Chris Brandt <chris.brandt@renesas.com>,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH] of/irq: Add a quirk for controllers with their own definition of interrupt-map
+In-Reply-To: <CAMuHMdX2ZRvDYA3idmw3nBcP6CO=2od6ZU-UeJo9vYsuB=fQNQ@mail.gmail.com>
+References: <20211122103032.517923-1-maz@kernel.org>
+        <CAMuHMdX2ZRvDYA3idmw3nBcP6CO=2od6ZU-UeJo9vYsuB=fQNQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: geert@linux-m68k.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, kernel-team@android.com, robh@kernel.org, john@phrozen.org, biwen.li@nxp.com, chris.brandt@renesas.com, linux-renesas-soc@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+On Mon, 22 Nov 2021 13:10:32 +0000,
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> 
+> Hi Marc,
+> 
+> On Mon, Nov 22, 2021 at 11:30 AM Marc Zyngier <maz@kernel.org> wrote:
+> > Since 041284181226 ("of/irq: Allow matching of an interrupt-map local
+> > to an interrupt controller"), a handful of interrupt controllers have
+> > stopped working correctly. This is due to the DT exposing a non-sensical
+> > interrupt-map property, and their drivers relying on the kernel ignoring
+> > this property.
+> >
+> > Since we cannot realistically fix this terrible behaviour, add a quirk
+> > for the limited set of devices that have implemented this monster,
+> > and document that this is a pretty bad practice.
+> >
+> > Cc: Rob Herring <robh@kernel.org>
+> > Cc: John Crispin <john@phrozen.org>
+> > Cc: Biwen Li <biwen.li@nxp.com>
+> > Cc: Chris Brandt <chris.brandt@renesas.com>
+> > Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> 
+> Thanks for your patch!
+> 
+> > --- a/drivers/of/irq.c
+> > +++ b/drivers/of/irq.c
+> > @@ -76,6 +76,36 @@ struct device_node *of_irq_find_parent(struct device_node *child)
+> >  }
+> >  EXPORT_SYMBOL_GPL(of_irq_find_parent);
+> >
+> > +/*
+> > + * These interrupt controllers abuse interrupt-map for unspeakable
+> > + * reasons and rely on the core code to *ignore* it (the drivers do
+> > + * their own parsing of the property).
+> > + *
+> > + * If you think of adding to the list for something *new*, think
+> > + * again. There is a high chance that you will be sent back to the
+> > + * drawing board.
+> > + */
+> > +static const char * const of_irq_imap_abusers[] = {
+> > +       "CBEA,platform-spider-pic",
+> > +       "sti,platform-spider-pic",
+> > +       "realtek,rtl-intc",
+> > +       "fsl,ls1021a-extirq",
+> > +       "fsl,ls1043a-extirq",
+> > +       "fsl,ls1088a-extirq",
+> > +       "renesas,rza1-irqc",
+> > +};
+> 
+> Are you sure "renesas,rza1-irqc" handles this wrong? How should it
+> be handled instead? I read the other thread[1], but didn't became
+> any wiser: interrupts are mapped one-to-one with the RZ/A1 IRQC.
+> 
+> In both v5.15 and v5.16-rc1, interrupts seem to work fine on RSK+RZA1
+> and RZA2MEVB, both with gpio-keys and when used as a wake-up interrupt.
 
-It was <2021-11-21 nie 21:06>, when Nicolas Iooss wrote:
-> Function axspi_read_status calls:
->
->     ret =3D spi_write_then_read(ax_spi->spi, ax_spi->cmd_buf, 1,
->                               (u8 *)&status, 3);
->
-> status is a pointer to a struct spi_status, which is 3-byte wide:
->
->     struct spi_status {
->         u16 isr;
->         u8 status;
->     };
->
-> But &status is the pointer to this pointer, and spi_write_then_read does
-> not dereference this parameter:
->
->     int spi_write_then_read(struct spi_device *spi,
->                             const void *txbuf, unsigned n_tx,
->                             void *rxbuf, unsigned n_rx)
->
-> Therefore axspi_read_status currently receive a SPI response in the
-> pointer status, which overwrites 24 bits of the pointer.
->
-> Thankfully, on Little-Endian systems, the pointer is only used in
->
->     le16_to_cpus(&status->isr);
->
-> ... which is a no-operation. So there, the overwritten pointer is not
-> dereferenced. Nevertheless on Big-Endian systems, this can lead to
-> dereferencing pointers after their 24 most significant bits were
-> overwritten. And in all systems this leads to possible use of
-> uninitialized value in functions calling spi_write_then_read which
-> expect status to be initialized when the function returns.
->
-> Moreover function axspi_read_status (and macro AX_READ_STATUS) do not
-> seem to be used anywhere. So currently this seems to be dead code. Fix
-> the issue anyway so that future code works properly when using function
-> axspi_read_status.
->
+This is odd. 5.16-rc1 should actively breaks the behaviour, as each
+interrupt is directly routed to the GIC. Here's an extract of the DT
+for r7s9210:
 
-Thank you for spotting and fixing this one.
+    interrupt-map = <0 0 &gic GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
+                    <1 0 &gic GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
+                    <2 0 &gic GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
+                    <3 0 &gic GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
+                    <4 0 &gic GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
+                    <5 0 &gic GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>,
+                    <6 0 &gic GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>,
+                    <7 0 &gic GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
 
-> Fixes: a97c69ba4f30 ("net: ax88796c: ASIX AX88796C SPI Ethernet Adapter D=
-river")
->
-> Signed-off-by: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
-> ---
->  drivers/net/ethernet/asix/ax88796c_spi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
+I expect v5.16-rc1 to honour the routing described here and not
+involve rza1-irqc, because that's what the DT says.
 
-Acked-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
+> With this patch applied, I see double keypresses with evtest: when
+> pressing a key, I get a key-down event, immediately followed by a
+> key-up event. When releasing the key, I again get two events.
+> 
+> Good (v5.15 or v5.16-rc1):
+> 
+>     Event: time 1637585631.288990, type 1 (EV_KEY), code 2 (KEY_1), value 1
+>     Event: time 1637585631.288990, -------------- SYN_REPORT ------------
+>     Event: time 1637585631.499924, type 1 (EV_KEY), code 2 (KEY_1), value 0
+>     Event: time 1637585631.499924, -------------- SYN_REPORT ------------
+> 
+> Bad (v5.16-rc1 + this patch):
+> 
+>     Event: time 1637585341.946647, type 1 (EV_KEY), code 2 (KEY_1), value 1
+>     Event: time 1637585341.946647, -------------- SYN_REPORT ------------
+>     Event: time 1637585341.960256, type 1 (EV_KEY), code 2 (KEY_1), value 0
+>     Event: time 1637585341.960256, -------------- SYN_REPORT ------------
+>     Event: time 1637585342.146775, type 1 (EV_KEY), code 2 (KEY_1), value 1
+>     Event: time 1637585342.146775, -------------- SYN_REPORT ------------
+>     Event: time 1637585342.160092, type 1 (EV_KEY), code 2 (KEY_1), value 0
+>     Event: time 1637585342.160092, -------------- SYN_REPORT ------------
 
-> diff --git a/drivers/net/ethernet/asix/ax88796c_spi.c b/drivers/net/ether=
-net/asix/ax88796c_spi.c
-> index 94df4f96d2be..0710e716d682 100644
-> --- a/drivers/net/ethernet/asix/ax88796c_spi.c
-> +++ b/drivers/net/ethernet/asix/ax88796c_spi.c
-> @@ -34,7 +34,7 @@ int axspi_read_status(struct axspi_data *ax_spi, struct=
- spi_status *status)
->=20=20
->  	/* OP */
->  	ax_spi->cmd_buf[0] =3D AX_SPICMD_READ_STATUS;
-> -	ret =3D spi_write_then_read(ax_spi->spi, ax_spi->cmd_buf, 1, (u8 *)&sta=
-tus, 3);
-> +	ret =3D spi_write_then_read(ax_spi->spi, ax_spi->cmd_buf, 1, (u8 *)stat=
-us, 3);
->  	if (ret)
->  		dev_err(&ax_spi->spi->dev, "%s() failed: ret =3D %d\n", __func__, ret);
->  	else
+Is there any chance you could trace whether rza1-irqc gets called at
+all when setting up and handling the interrupt?
 
-=2D-=20
-=C5=81ukasz Stelmach
-Samsung R&D Institute Poland
-Samsung Electronics
+Thanks,
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+	M.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAmGboJsACgkQsK4enJil
-gBBbAQf+LGRklhU4VJHDmVpF8P0R/Dqjs9+NNBmydtCQTkcJ6uuHwvE1igEJL/Ap
-zQxWk143mdmbvhWThnVah83o0RH/0qArJ78iAFNyDikon+wtEqiiEWLuj/UBTplS
-AwqvGYhSrkwrzErdMxSzH6M6cCUl9zUThlmExGwqUHGfsatecbo26uV2cBe9cPhs
-5QoDNGjuhs2RTCOGpcYL9xL7xyqe6xh+AwAsUsGTPn+dnn13z95Ih+IxbrhYXrga
-zYvjRPTmZZDKUDsQs6xdvHSw3Qgt0u8GoB7ZyDDGgBeh5zLy6zev5VPOyPp12kRE
-xJjS1XqOPFZcPFJsSIHIkGx9X6BbOQ==
-=u3wQ
------END PGP SIGNATURE-----
---=-=-=--
+-- 
+Without deviation from the norm, progress is not possible.
