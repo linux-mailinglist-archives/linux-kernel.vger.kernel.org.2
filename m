@@ -2,83 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16DC745915B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:25:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA54459162
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:27:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239915AbhKVP2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:28:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56758 "EHLO mail.kernel.org"
+        id S239834AbhKVPad convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 22 Nov 2021 10:30:33 -0500
+Received: from aposti.net ([89.234.176.197]:42842 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239771AbhKVP2j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:28:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D35B60F48;
-        Mon, 22 Nov 2021 15:25:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637594733;
-        bh=Dvp+HhTrhkQyvZ3Oi3ekjS9nvlbLN+xCqwLYoQL7qw4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=InyxsYWEW1pg35ixtAQ384nfnPcSgAE/Gv+4653Phc2tHKb30qPEHMNIO94mqf+yQ
-         wm1KHNOuqhGxyuNuMGdVX3Ny8Ztg/5Ssjg8QGsANYmHj4qR56Uq3SlAm7NQH/no1gg
-         diNdvMYTMLWpORufL+xgtu26JbW9mKYJah+dM0Psk24BVHEUdvdbTCynsniinpEPA9
-         y1EyT/tGTc6OPo2HIXah5owTpZEulRlO7GDsOcYFF/0/WDBzN6M5Bt6+BsyhJap6CZ
-         utzChOYz80M72kCfLQx0F7dKx+EhuYVk5ZfY/rJXiaIY+2OQXOAQun8b+76DKGoGgc
-         /ZDYHAr2pY1ug==
-Message-ID: <68544192-0c4f-ed64-27a2-0bfe2d7805b5@kernel.org>
-Date:   Mon, 22 Nov 2021 17:25:27 +0200
+        id S231883AbhKVPac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 10:30:32 -0500
+Date:   Mon, 22 Nov 2021 15:27:14 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 01/15] iio: buffer-dma: Get rid of incoming/outgoing
+ queues
+To:     Lars-Peter Clausen <lars@metafoo.de>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?b?S/ZuaWc=?= <christian.koenig@amd.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+Message-Id: <E9CZ2R.4VU3MCLBDDR72@crapouillou.net>
+In-Reply-To: <a5a9a07c-5e71-196f-da48-aa424c7001b0@metafoo.de>
+References: <20211115141925.60164-1-paul@crapouillou.net>
+        <20211115141925.60164-2-paul@crapouillou.net>
+        <e2689f0d-dc16-2519-57df-d98caadb07b0@metafoo.de>
+        <0COX2R.BSNX3NW8N48T@crapouillou.net>
+        <332d001d-8b5a-bba2-c490-ed2e5efd0b1d@metafoo.de>
+        <AMUX2R.XLGW1EZOMU9B2@crapouillou.net>
+        <d542865e-2a0b-089f-e63c-b24d16c58ec6@metafoo.de>
+        <UQBZ2R.HLXHH4QWJ0JS1@crapouillou.net>
+        <a5a9a07c-5e71-196f-da48-aa424c7001b0@metafoo.de>
 MIME-Version: 1.0
-Subject: Re: [v8 3/3] arm64: dts: qcom: sc7280: Add EPSS L3 interconnect
- provider
-Content-Language: en-US
-To:     bjorn.andersson@linaro.org,
-        Odelu Kukatla <okukatla@codeaurora.org>,
-        georgi.djakov@linaro.org, evgreen@google.com,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     sboyd@kernel.org, mdtipton@codeaurora.org, sibis@codeaurora.org,
-        saravanak@google.com, seansw@qti.qualcomm.com, elder@linaro.org,
-        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
-References: <1634812857-10676-1-git-send-email-okukatla@codeaurora.org>
- <1634812857-10676-4-git-send-email-okukatla@codeaurora.org>
-From:   Georgi Djakov <djakov@kernel.org>
-In-Reply-To: <1634812857-10676-4-git-send-email-okukatla@codeaurora.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.10.21 13:40, Odelu Kukatla wrote:
-> Add Epoch Subsystem (EPSS) L3 interconnect provider node on SC7280
-> SoCs.
-> 
-> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
 
-Acked-by: Georgi Djakov <djakov@kernel.org>
 
-> ---
->   arch/arm64/boot/dts/qcom/sc7280.dtsi | 8 ++++++++
->   1 file changed, 8 insertions(+)
+Le lun., nov. 22 2021 at 16:17:59 +0100, Lars-Peter Clausen 
+<lars@metafoo.de> a écrit :
+> On 11/22/21 4:16 PM, Paul Cercueil wrote:
+>> Hi Lars,
+>> 
+>> Le lun., nov. 22 2021 at 16:08:51 +0100, Lars-Peter Clausen 
+>> <lars@metafoo.de> a écrit :
+>>> On 11/21/21 9:08 PM, Paul Cercueil wrote:
+>>>> 
+>>>> 
+>>>> Le dim., nov. 21 2021 at 19:49:03 +0100, Lars-Peter Clausen 
+>>>> <lars@metafoo.de> a écrit :
+>>>>> On 11/21/21 6:52 PM, Paul Cercueil wrote:
+>>>>>> Hi Lars,
+>>>>>> 
+>>>>>> Le dim., nov. 21 2021 at 17:23:35 +0100, Lars-Peter Clausen 
+>>>>>> <lars@metafoo.de> a écrit :
+>>>>>>> On 11/15/21 3:19 PM, Paul Cercueil wrote:
+>>>>>>>> The buffer-dma code was using two queues, incoming and 
+>>>>>>>> outgoing, to
+>>>>>>>> manage the state of the blocks in use.
+>>>>>>>> 
+>>>>>>>> While this totally works, it adds some complexity to the code,
+>>>>>>>> especially since the code only manages 2 blocks. It is much 
+>>>>>>>> easier to
+>>>>>>>> just check each block's state manually, and keep a counter for 
+>>>>>>>> the next
+>>>>>>>> block to dequeue.
+>>>>>>>> 
+>>>>>>>> Since the new DMABUF based API wouldn't use these incoming and 
+>>>>>>>> outgoing
+>>>>>>>> queues anyway, getting rid of them now makes the upcoming 
+>>>>>>>> changes
+>>>>>>>> simpler.
+>>>>>>>> 
+>>>>>>>> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>>>>>> The outgoing queue is going to be replaced by fences, but I 
+>>>>>>> think we need to keep the incoming queue.
+>>>>>> 
+>>>>>> Blocks are always accessed in sequential order, so we now have a 
+>>>>>> "queue->next_dequeue" that cycles between the buffers 
+>>>>>> allocated for fileio.
+>>>>>> 
+>>>>>>>> [...]
+>>>>>>>> @@ -442,28 +435,33 @@ 
+>>>>>>>> EXPORT_SYMBOL_GPL(iio_dma_buffer_disable);
+>>>>>>>>   static void iio_dma_buffer_enqueue(struct 
+>>>>>>>> iio_dma_buffer_queue *queue,
+>>>>>>>>       struct iio_dma_buffer_block *block)
+>>>>>>>>   {
+>>>>>>>> -    if (block->state == IIO_BLOCK_STATE_DEAD) {
+>>>>>>>> +    if (block->state == IIO_BLOCK_STATE_DEAD)
+>>>>>>>>           iio_buffer_block_put(block);
+>>>>>>>> -    } else if (queue->active) {
+>>>>>>>> +    else if (queue->active)
+>>>>>>>>           iio_dma_buffer_submit_block(queue, block);
+>>>>>>>> -    } else {
+>>>>>>>> +    else
+>>>>>>>>           block->state = IIO_BLOCK_STATE_QUEUED;
+>>>>>>>> -        list_add_tail(&block->head, &queue->incoming);
+>>>>>>> If iio_dma_buffer_enqueue() is called with a dmabuf and the 
+>>>>>>> buffer is not active, it will be marked as queued, 
+>>>>>>> but we don't actually keep a reference to it 
+>>>>>>> anywhere. It will never be submitted to the DMA, and 
+>>>>>>> it will never be signaled as completed.
+>>>>>> 
+>>>>>> We do keep a reference to the buffers, in the 
+>>>>>> queue->fileio.blocks array. When the buffer is enabled, 
+>>>>>> all the blocks in that array that are in the "queued" 
+>>>>>> state will be submitted to the DMA.
+>>>>>> 
+>>>>> But not when used in combination with the DMA buf changes later 
+>>>>> in this series.
+>>>>> 
+>>>> 
+>>>> That's still the case after the DMABUF changes of the series. Or 
+>>>> can you point me exactly what you think is broken?
+>>>> 
+>>> When you allocate a DMABUF with the allocate IOCTL and then submit 
+>>> it with the enqueue IOCTL before the buffer is enabled it will 
+>>> end up marked as queued, but not actually be queued anywhere.
+>>> 
+>> 
+>> Ok, it works for me because I never enqueue blocks before enabling 
+>> the buffer. I can add a requirement that blocks must be enqueued 
+>> only after the buffer is enabled.
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index d74a4c8..0b55742 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -3687,6 +3687,14 @@
->   			};
->   		};
->   
-> +		epss_l3: interconnect@18590000 {
-> +			compatible = "qcom,sc7280-epss-l3";
-> +			reg = <0 0x18590000 0 0x1000>;
-> +			clocks = <&rpmhcc RPMH_CXO_CLK>, <&gcc GCC_GPLL0>;
-> +			clock-names = "xo", "alternate";
-> +			#interconnect-cells = <1>;
-> +		};
-> +
->   		cpufreq_hw: cpufreq@18591000 {
->   			compatible = "qcom,cpufreq-epss";
->   			reg = <0 0x18591000 0 0x1000>,
+> I don't think that is a good idea. This way you are going to 
+> potentially drop data at the begining of your stream when the DMA 
+> isn't ready yet.
 > 
+
+You wouldn't drop data, but it could cause an underrun, yes. Is it such 
+a big deal, knowing that the buffer was just enabled? I don't think you 
+can disable then enable the buffer without causing a discontinuity in 
+the stream.
+
+-Paul
+
 
