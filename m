@@ -2,119 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B366458FDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 15:01:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 142F0458FE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 15:02:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236506AbhKVOE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 09:04:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235758AbhKVOE4 (ORCPT
+        id S239651AbhKVOFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 09:05:44 -0500
+Received: from mail-pl1-f172.google.com ([209.85.214.172]:46927 "EHLO
+        mail-pl1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235758AbhKVOFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 09:04:56 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 781CBC061714
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 06:01:50 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id d2so18105523qki.12
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 06:01:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AkVa9dgYFMW65oNWi3lEAnC5wvNaUzrKbDuhcPjVyAM=;
-        b=YbZPXtBUsIP409q2mT8lSr4BqkVNQQ7uwSh3flKk8k1tLdFvFH+qBcjZfbEQuRnSJt
-         ym7KIc8Rr2qe7cnTl58XYSE6lugUqTMCIbLTauRHYkZqs9rs3GKm1bMlBUWI+TRMcDGX
-         I0UZlTo4cd8ySiP1lEYqugVzwPTPEfPtKNmmPzejl2rh3HDr1pH7Jp2W80NczxtpUT2f
-         7DZmFWyXm06nxDnZOIMEP5lLL2tkQARwppJwaeUpCzINEB5Wi61hhIuu1iPds6HyRHDs
-         CkaIWL9eMwFvW3dqc9J2iSLvyxaUEjT+FHbVEY0VTDVLySkuR3731mB61RPDNMhCVl2Y
-         9yWg==
+        Mon, 22 Nov 2021 09:05:40 -0500
+Received: by mail-pl1-f172.google.com with SMTP id p18so14133024plf.13;
+        Mon, 22 Nov 2021 06:02:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AkVa9dgYFMW65oNWi3lEAnC5wvNaUzrKbDuhcPjVyAM=;
-        b=75VO7XbzKeWgEwgYsBifDzNeSQ4ohqXWAsx7XpdnuYLiMgG3dGp29+kAXyqmanpYFM
-         UWjaGVPi9Q9w2iIwMt+CRo46K1INWKC7g6AK+DyPsAr5V1PtBnd72bp6RUo/oi9G1Yy+
-         Hiv+9De+EFbiK+X2omKhAqJH+hRPuZXuiSkwZWKa2EiSpgCsABSNJ1dO4ktv74EhqKy8
-         u0f4kw7CYw907vWr1QNtrASQ8bTd4kSndcXSjBEqf1FwR7jNkikwujAWipNR6yvJRzMD
-         g7LZzR+w452H1Rhxy0iozbclilHxKDzR2pLADgD5P0sBKpl0FX09WTkYLopOx20joJ4W
-         6d/A==
-X-Gm-Message-State: AOAM532+ZLD7XQXdt9DLDsLWDoQeGazGn/rXcaamRperd+OZQiyORIkj
-        1JfEYanB/6aYZwiuBvWotKrOcw==
-X-Google-Smtp-Source: ABdhPJx4FBEsFukDClDSwGw8qd9OgvbrBef1ytO7EqEtX4yVEQkSoyHCZqYrRFEAi40duExffLYOuw==
-X-Received: by 2002:a05:620a:190b:: with SMTP id bj11mr47809423qkb.514.1637589709646;
-        Mon, 22 Nov 2021 06:01:49 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id s13sm4716120qki.23.2021.11.22.06.01.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 06:01:49 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mp9tE-00DsN8-Ie; Mon, 22 Nov 2021 10:01:48 -0400
-Date:   Mon, 22 Nov 2021 10:01:48 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Chao Peng <chao.p.peng@linux.intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, qemu-devel@nongnu.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        "J . Bruce Fields" <bfields@fieldses.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
-        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com
-Subject: Re: [RFC v2 PATCH 01/13] mm/shmem: Introduce F_SEAL_GUEST
-Message-ID: <20211122140148.GR876299@ziepe.ca>
-References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
- <20211119134739.20218-2-chao.p.peng@linux.intel.com>
- <20211119151943.GH876299@ziepe.ca>
- <df11d753-6242-8f7c-cb04-c095f68b41fa@redhat.com>
- <20211119160023.GI876299@ziepe.ca>
- <4efdccac-245f-eb1f-5b7f-c1044ff0103d@redhat.com>
- <20211122133145.GQ876299@ziepe.ca>
- <56c0dffc-5fc4-c337-3e85-a5c9ce619140@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CXsdV198ETc5Z4b8HkqNnBSItnEYeGqb45DkswhRR10=;
+        b=WZBO/+4G87fwunZkL6rLQfoGToadsvp6dysubkqOVwe/9wZWZoAGnpzDi8lFJKksJX
+         XLw2u9LqQDxOzzoH/SB5TK3BpKMmlAIGhIh0MaNHN7y5jSKUAB2CB9cfMS6dJuOtps9w
+         50Nz6S+s+af4Upkyvut3CVr8rxjUKcRDW7hqsPD70FvYbMQ7w3fQHsk2fOIZx6wxnWL5
+         xr14Rn1w+KigD5c5K5nyIYqp2n6+wjIHhjMwmBJvz8v9x6CU/1gAX2IBuqf4FO/w25Vk
+         VareCbCblrFy7rfQUOulVwPyJxr8ZWhnWlG/HVwWKGw0ldW9xR1vEul97okHAomiZb/h
+         nFTA==
+X-Gm-Message-State: AOAM533FM+CjF2TAzlSfXcWAo3NqliCY5wXCqGq1Ol2HTrRjE/R9AkxE
+        fXb+2HmxxcJNL4UKfkQdYlEvyO6It+CZAjiHMmyPTMtJeWo=
+X-Google-Smtp-Source: ABdhPJwgDW7QnFYaRXQx8WMqdI3IoaCx11UiPY/TY96xWHkzvW+86RsBX57z5zjgEHmwt2m4CJlWhRK0P1C2/0hu1wE=
+X-Received: by 2002:a17:902:728e:b0:143:a388:868b with SMTP id
+ d14-20020a170902728e00b00143a388868bmr108553260pll.33.1637589748634; Mon, 22
+ Nov 2021 06:02:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <56c0dffc-5fc4-c337-3e85-a5c9ce619140@redhat.com>
+References: <20211102161125.1144023-1-kernel@esmil.dk> <20211102161125.1144023-12-kernel@esmil.dk>
+ <CACRpkdb0CrJ_uTbtfg-xGq8uu0AKoqfAB03mF2CA_G8ys_8Lzg@mail.gmail.com>
+ <CANBLGcwvGptHxP5+JQEQV1Y7G=dNTt86QuVgfUuvQDDBfNrzOA@mail.gmail.com> <CACRpkdbsP1zibFvg2yL67ndQJ1MxBRmH5j+cZ-giZkmrnGROdw@mail.gmail.com>
+In-Reply-To: <CACRpkdbsP1zibFvg2yL67ndQJ1MxBRmH5j+cZ-giZkmrnGROdw@mail.gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+Date:   Mon, 22 Nov 2021 15:02:17 +0100
+Message-ID: <CANBLGcyWGeYUk_RcL6rhmu4608bP7LQ35o-B5FiNckQUDJ83Wg@mail.gmail.com>
+Subject: Re: [PATCH v3 11/16] dt-bindings: pinctrl: Add StarFive JH7100 bindings
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sagar Kadam <sagar.kadam@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        soc@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 02:35:49PM +0100, David Hildenbrand wrote:
-> On 22.11.21 14:31, Jason Gunthorpe wrote:
-> > On Mon, Nov 22, 2021 at 10:26:12AM +0100, David Hildenbrand wrote:
-> > 
-> >> I do wonder if we want to support sharing such memfds between processes
-> >> in all cases ... we most certainly don't want to be able to share
-> >> encrypted memory between VMs (I heard that the kernel has to forbid
-> >> that). It would make sense in the use case you describe, though.
-> > 
-> > If there is a F_SEAL_XX that blocks every kind of new access, who
-> > cares if userspace passes the FD around or not?
-> I was imagining that you actually would want to do some kind of "change
-> ownership". But yeah, the intended semantics and all use cases we have
-> in mind are not fully clear to me yet. If it's really "no new access"
-> (side note: is "access" the right word?) then sure, we can pass the fd
-> around.
+On Mon, 22 Nov 2021 at 00:19, Linus Walleij <linus.walleij@linaro.org> wrote:
+> On Fri, Nov 12, 2021 at 12:04 AM Emil Renner Berthing <kernel@esmil.dk> wrote:
+> > On Tue, 9 Nov 2021 at 01:46, Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> > > As it appears to have some cross dependencies I assume
+> > > it will be merged through the SoC tree?
+> >
+> > I don't know. I've never tried this before, so whatever is easiest I
+> > guess. Do I do anything special other than cc'ing soc@kernel.org for
+> > v4 to make that happen?
+>
+> You create a pull request with git request-pull and sent it to
+> soc@vger.kernel.org and linux-arm-kernel on Cc that should
+> work fine and it appears here:
+> https://patchwork.kernel.org/project/linux-soc/list/
 
-What is "ownership" in a world with kvm and iommu are reading pages
-out of the same fd?
+Thanks. I'm just waiting for Palmer to ack the riscv bits then I'll do that.
 
-"no new access" makes sense to me, we have access through
-read/write/mmap/splice/etc and access to pages through the private in
-kernel interface (kvm, iommu)
-
-Jason
+/Emil
