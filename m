@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0BAD4597C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 23:38:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3EE4597C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 23:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233691AbhKVWlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 17:41:09 -0500
-Received: from sibelius.xs4all.nl ([83.163.83.176]:56015 "EHLO
+        id S234273AbhKVWmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 17:42:22 -0500
+Received: from sibelius.xs4all.nl ([83.163.83.176]:55974 "EHLO
         sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231307AbhKVWlI (ORCPT
+        with ESMTP id S233768AbhKVWmV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 17:41:08 -0500
+        Mon, 22 Nov 2021 17:42:21 -0500
 Received: from localhost (bloch.sibelius.xs4all.nl [local])
-        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 3af5fc62;
-        Mon, 22 Nov 2021 23:37:59 +0100 (CET)
-Date:   Mon, 22 Nov 2021 23:37:59 +0100 (CET)
+        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id cdd96034;
+        Mon, 22 Nov 2021 23:39:12 +0100 (CET)
+Date:   Mon, 22 Nov 2021 23:39:12 +0100 (CET)
 From:   Mark Kettenis <mark.kettenis@xs4all.nl>
 To:     Janne Grunau <j@jannau.net>
 Cc:     marcan@marcan.st, sven@svenpeter.dev, alyssa@rosenzweig.io,
-        robh+dt@kernel.org, linus.walleij@linaro.org, maz@kernel.org,
-        kettenis@openbsd.org, linux-arm-kernel@lists.infradead.org,
+        robh+dt@kernel.org, wsa@kernel.org, olof@lixom.net, arnd@arndb.de,
+        kettenis@openbsd.org, robh@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20211122222440.21177-4-j@jannau.net> (message from Janne Grunau
-        on Mon, 22 Nov 2021 23:24:40 +0100)
-Subject: Re: [PATCH v2 3/3] arm64: dts: apple: add #interrupt-cells property to pinctrl nodes
-References: <20211122222440.21177-1-j@jannau.net> <20211122222440.21177-4-j@jannau.net>
-Message-ID: <d3caf40ce7b7b5ee@bloch.sibelius.xs4all.nl>
+In-Reply-To: <20211122222440.21177-3-j@jannau.net> (message from Janne Grunau
+        on Mon, 22 Nov 2021 23:24:39 +0100)
+Subject: Re: [PATCH v2 2/3] dt-bindings: i2c: apple,i2c: allow multiple compatibles
+References: <20211122222440.21177-1-j@jannau.net> <20211122222440.21177-3-j@jannau.net>
+Message-ID: <d3caf42a8fea181b@bloch.sibelius.xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 > From: Janne Grunau <j@jannau.net>
-> Date: Mon, 22 Nov 2021 23:24:40 +0100
+> Date: Mon, 22 Nov 2021 23:24:39 +0100
 > 
-> Required for devices trying to use pinctrl devices as interrupt
-> controller.
+> The intention was to have a SoC-specific and base compatible string
+> to allow forward compatibility and SoC specific quirks,
 > 
-> Fixes: 0a8282b83119 ("arm64: apple: Add pinctrl nodes")
+> Fixes: df7c4a8c1b47 ("dt-bindings: i2c: Add Apple I2C controller bindings")
 > Signed-off-by: Janne Grunau <j@jannau.net>
 > Cc: Mark Kettenis <kettenis@openbsd.org>
 > Reviewed-by: Sven Peter <sven@svenpeter.dev>
@@ -45,45 +46,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Reviewed-by: Mark Kettenis <kettenis@openbsd.org>
 
 > ---
->  arch/arm64/boot/dts/apple/t8103.dtsi | 4 ++++
->  1 file changed, 4 insertions(+)
+>  Documentation/devicetree/bindings/i2c/apple,i2c.yaml | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> diff --git a/arch/arm64/boot/dts/apple/t8103.dtsi b/arch/arm64/boot/dts/apple/t8103.dtsi
-> index fc8b2bb06ffe..c320c8baeb41 100644
-> --- a/arch/arm64/boot/dts/apple/t8103.dtsi
-> +++ b/arch/arm64/boot/dts/apple/t8103.dtsi
-> @@ -143,6 +143,7 @@ pinctrl_ap: pinctrl@23c100000 {
->  			apple,npins = <212>;
+> diff --git a/Documentation/devicetree/bindings/i2c/apple,i2c.yaml b/Documentation/devicetree/bindings/i2c/apple,i2c.yaml
+> index 22fc8483256f..82b953181a52 100644
+> --- a/Documentation/devicetree/bindings/i2c/apple,i2c.yaml
+> +++ b/Documentation/devicetree/bindings/i2c/apple,i2c.yaml
+> @@ -20,9 +20,9 @@ allOf:
 >  
->  			interrupt-controller;
-> +			#interrupt-cells = <2>;
->  			interrupt-parent = <&aic>;
->  			interrupts = <AIC_IRQ 190 IRQ_TYPE_LEVEL_HIGH>,
->  				     <AIC_IRQ 191 IRQ_TYPE_LEVEL_HIGH>,
-> @@ -169,6 +170,7 @@ pinctrl_aop: pinctrl@24a820000 {
->  			apple,npins = <42>;
+>  properties:
+>    compatible:
+> -    enum:
+> -      - apple,t8103-i2c
+> -      - apple,i2c
+> +    items:
+> +      - const: apple,t8103-i2c
+> +      - const: apple,i2c
 >  
->  			interrupt-controller;
-> +			#interrupt-cells = <2>;
->  			interrupt-parent = <&aic>;
->  			interrupts = <AIC_IRQ 268 IRQ_TYPE_LEVEL_HIGH>,
->  				     <AIC_IRQ 269 IRQ_TYPE_LEVEL_HIGH>,
-> @@ -189,6 +191,7 @@ pinctrl_nub: pinctrl@23d1f0000 {
->  			apple,npins = <23>;
->  
->  			interrupt-controller;
-> +			#interrupt-cells = <2>;
->  			interrupt-parent = <&aic>;
->  			interrupts = <AIC_IRQ 330 IRQ_TYPE_LEVEL_HIGH>,
->  				     <AIC_IRQ 331 IRQ_TYPE_LEVEL_HIGH>,
-> @@ -209,6 +212,7 @@ pinctrl_smc: pinctrl@23e820000 {
->  			apple,npins = <16>;
->  
->  			interrupt-controller;
-> +			#interrupt-cells = <2>;
->  			interrupt-parent = <&aic>;
->  			interrupts = <AIC_IRQ 391 IRQ_TYPE_LEVEL_HIGH>,
->  				     <AIC_IRQ 392 IRQ_TYPE_LEVEL_HIGH>,
+>    reg:
+>      maxItems: 1
+> @@ -51,7 +51,7 @@ unevaluatedProperties: false
+>  examples:
+>    - |
+>      i2c@35010000 {
+> -      compatible = "apple,t8103-i2c";
+> +      compatible = "apple,t8103-i2c", "apple,i2c";
+>        reg = <0x35010000 0x4000>;
+>        interrupt-parent = <&aic>;
+>        interrupts = <0 627 4>;
 > -- 
 > 2.34.0
 > 
