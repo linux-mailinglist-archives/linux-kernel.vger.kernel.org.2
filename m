@@ -2,133 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C206E458878
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 04:51:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A00458880
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 04:57:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238659AbhKVDya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 22:54:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49057 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229862AbhKVDy3 (ORCPT
+        id S238778AbhKVEAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 23:00:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238673AbhKVEAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 22:54:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637553083;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4ZoTqA9iiFG9nkpS66qOwO3q3VJpM/VpcOc+Jqz0mA0=;
-        b=TuahKyIb6Hwj1V+4WiaHUKVf31E3U8MKH1BlKvlKtAf6SGJm2KmMmAKUstlF/F5ncW7OND
-        isxvUkR+lBS+b8v9INGcqQy/QTQKChGpHDfHzAl+CbSK8UEj9Le5AA6i5UJC6YdL97zhd9
-        Bnt9B3eks5rSiUdMMTWtiwUoNQe6a2k=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-74-wibcb-3OP2uemofykEenSg-1; Sun, 21 Nov 2021 22:51:22 -0500
-X-MC-Unique: wibcb-3OP2uemofykEenSg-1
-Received: by mail-lf1-f69.google.com with SMTP id k5-20020a05651210c500b0040934a07fbdso11112436lfg.22
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 19:51:21 -0800 (PST)
+        Sun, 21 Nov 2021 23:00:22 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A13CC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 19:57:16 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id f18so74499107lfv.6
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 19:57:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YPH+0EiaxzoumZ5BogpFk3ypvqyIvp8gCd3yQ5SMSQs=;
+        b=je7U59HM902HnyDDvdrsniCHFenLkHrcZN6VCMpNpziBhBG/b8cf/91XvGLb4dL/Cy
+         OjsK4ODk9USfQZBOTBtFBB0qWELL7iRtFYk33udnOjVSx/v9y6hLu6hGL4T2XwF+NOYz
+         zA6wqKts1sYYjrtrmTruWJFcxKMtZJWGZW0Hs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4ZoTqA9iiFG9nkpS66qOwO3q3VJpM/VpcOc+Jqz0mA0=;
-        b=VepkYSSaPUxM/oiD3Z2CuXXkFYeemQh9bhAgM9vxSS3j8/S3PP6djPjDOMvHVSDFUX
-         dXPoHeCeGGpX9BWAhV+p5RNwJVm87nk/p73srpGYKTuNX2nvD6BrMMPO6KaPbZ5O/1p7
-         Hz0X/mVycgfAIF0GZRIpsrOX0F84o54NuML9ZX48XEvmx/8n6Z2B8zcj4h/4bFZmwg4U
-         I7TBmPs6wjlCYf+0ZsN3RV45fq8LQGhGAHL6Co4SZKx12aVc2fSJjETtsTr8vr8gKJGo
-         znjWxu1gPMRxFhNGkeFHsnyDYXbR0xCY9m5wIXIrXuAwksQvKLCy/NnZLr9EJ9lgHfuI
-         DNfw==
-X-Gm-Message-State: AOAM531Vzt56cVkAq6PxqsEO74BFwqW0F3hc99818W8iOPsAKgzkqsJi
-        UbvEf45y1Z7rGg5Htkx9UAENGJZszKMwOMEvqy/HHTnQ4ncyzQ015eg0L4gnJ49Cj+dJOYkNFjY
-        7YZ3364MGdz9b2f562u/spASJdZDJGLVY01TvTpRk
-X-Received: by 2002:a05:6512:3d09:: with SMTP id d9mr55542520lfv.481.1637553080340;
-        Sun, 21 Nov 2021 19:51:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzRhp3qnggyh9IV/j+nxJud16x/I5z46Jl3/q8pwRp7lFSjvOjUZebdYRAYcWh6jwM4VsQB8bwBiyV068HiNRY=
-X-Received: by 2002:a05:6512:3d09:: with SMTP id d9mr55542487lfv.481.1637553080159;
- Sun, 21 Nov 2021 19:51:20 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YPH+0EiaxzoumZ5BogpFk3ypvqyIvp8gCd3yQ5SMSQs=;
+        b=uV/LoWHpDHCgDIx17lZZxacBf/cFrbmcTBGRhHl49cUrQQ9RxxnT8apQDRqCKgvEKk
+         i3C+cM8b8N3DoHqL8/d092CWqM9H5vD91I9p2TnbnYprr4nkr6ktOFCO4x4Z4Q8eugUv
+         SNn324oKbBMNKL1/U2TveeNpdVTgkybNfU1fZElWgJxLfpncR6CgG3QtQQO7pIJpLWLA
+         rzOx+m1gxaEiHZhzYcGOlt5IR5IXl7FjJTFCEvq02bA+ync4lhPhiWWpXKxoE6vZQDvM
+         Q2a+2FrFSSkDH0f9rVJxcUIfqcIKChBeE1Ai2x7t1dmkx5qLcusJaYTXY6s0TJmz3JpK
+         jyQw==
+X-Gm-Message-State: AOAM532FctRYJ3a3agES4RrxbjXosNF0hX8acjemh2DM+f0WJxGjxNmR
+        3F8iDW2dpkT+LyEfL8+Hw55wgmikZgyeIZU9oAT/YQ==
+X-Google-Smtp-Source: ABdhPJzjZY+DcDHCyM4+GAs+uYCYy7Sv0RCNUU5ODlpGRz9jfKtWgMv8J2hf23GvVJ7rYzAPGd6ocKQULp3zp0K7pHk=
+X-Received: by 2002:a05:6512:32c9:: with SMTP id f9mr51649260lfg.308.1637553434248;
+ Sun, 21 Nov 2021 19:57:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20211027022107.14357-1-jasowang@redhat.com> <20211027022107.14357-2-jasowang@redhat.com>
- <20211119160951.5f2294c8.pasic@linux.ibm.com>
-In-Reply-To: <20211119160951.5f2294c8.pasic@linux.ibm.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Mon, 22 Nov 2021 11:51:09 +0800
-Message-ID: <CACGkMEtja2TPC=ujgMrpaPmdsy+zHowbBTvPj8k7nm_+zB8vig@mail.gmail.com>
-Subject: Re: [PATCH V5 1/4] virtio_ring: validate used buffer length
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     mst <mst@redhat.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "kaplan, david" <david.kaplan@amd.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>
+References: <20211119074654.470729-1-wenst@chromium.org> <5d23258a954eb0076cacf89d6c88b5e6ef13695f.camel@ndufresne.ca>
+In-Reply-To: <5d23258a954eb0076cacf89d6c88b5e6ef13695f.camel@ndufresne.ca>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Mon, 22 Nov 2021 11:57:03 +0800
+Message-ID: <CAGXv+5Gf-gsB7JXnLiZF_R=0RdxXS7CDZaFftyZ+aESXLXy1Ew@mail.gmail.com>
+Subject: Re: [PATCH] media: hantro: Hook up RK3399 JPEG encoder output
+To:     Nicolas Dufresne <nicolas@ndufresne.ca>
+Cc:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 11:10 PM Halil Pasic <pasic@linux.ibm.com> wrote:
+On Sat, Nov 20, 2021 at 12:00 AM Nicolas Dufresne <nicolas@ndufresne.ca> wr=
+ote:
 >
-> On Wed, 27 Oct 2021 10:21:04 +0800
-> Jason Wang <jasowang@redhat.com> wrote:
->
-> > This patch validate the used buffer length provided by the device
-> > before trying to use it. This is done by record the in buffer length
-> > in a new field in desc_state structure during virtqueue_add(), then we
-> > can fail the virtqueue_get_buf() when we find the device is trying to
-> > give us a used buffer length which is greater than the in buffer
-> > length.
+> Le vendredi 19 novembre 2021 =C3=A0 15:46 +0800, Chen-Yu Tsai a =C3=A9cri=
+t :
+> > The JPEG encoder found in the Hantro H1 encoder block only produces a
+> > raw entropy-encoded scan. The driver is responsible for building a JPEG
+> > compliant bitstream and placing the entropy-encoded scan in it. Right
+> > now the driver uses a bounce buffer for the hardware to output the raw
+> > scan to.
 > >
-> > Since some drivers have already done the validation by themselves,
-> > this patch tries to makes the core validation optional. For the driver
-> > that doesn't want the validation, it can set the
-> > suppress_used_validation to be true (which could be overridden by
-> > force_used_validation module parameter). To be more efficient, a
-> > dedicate array is used for storing the validate used length, this
-> > helps to eliminate the cache stress if validation is done by the
-> > driver.
+> > In commit e765dba11ec2 ("hantro: Move hantro_enc_buf_finish to JPEG
+> > codec_ops.done"), the code that copies the raw scan from the bounce
+> > buffer to the capture buffer was moved, but was only hooked up for the
+> > Hantro H1 (then RK3288) variant. The RK3399 variant was broken,
+> > producing a JPEG bitstream without the scan, and the capture buffer's
+> > .bytesused field unset.
 > >
-> > Signed-off-by: Jason Wang <jasowang@redhat.com>
+> > Fix this by duplicating the code that is executed when the JPEG encoder
+> > finishes encoding a frame. As the encoded length is read back from
+> > hardware, and the variants having different register layouts, the
+> > code is duplicated rather than shared.
+> >
+> > Fixes: e765dba11ec2 ("hantro: Move hantro_enc_buf_finish to JPEG codec_=
+ops.done")
+> > Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+> > ---
+> > This was developed on the downstream ChromeOS 5.10 kernel (with a hack
+> > for .data_offset) and tested with ChromeOS's jpeg_encode_accelerator_un=
+ittest
+> > patched to accept non-JFIF JPEG streams (https://crrev.com/c/3291480).
+> >
+> > This was then forward-ported to mainline (name and filename changes) an=
+d
+> > compile tested only.
 >
-> Hi Jason!
+> Tested with GStreamer on top of 5.16-rc1 from media_stage.git. Not perfec=
+t but
+> at least the the output it valid. Test command was:
 >
-> Our CI has detected, that virtio-vsock became unusable with this
-> patch on s390x. I didn't test on x86 yet. The guest kernel says
-> something like:
-> vmw_vsock_virtio_transport virtio1: tx: used len 44 is larger than in buflen 0
+>   gst-launch-1.0 videotestsrc num-buffers=3D2 ! v4l2jpegenc ! filesink
+> location=3Dtest.jpg
 >
-> Did you, or anybody else, see something like this on platforms other that
-> s390x?
+> Notice that I encode two frames, it seems like the draining flow is broke=
+n in
+> this driver. GStreamer will queue the frame and issue CMD_START immediate=
+ly, the
+> driver will skip the encode, leaving me with an empty file.
 
-Adding Stefan and Stefano.
+The hantro driver doesn't implement ENC_CMD, which IIRC is used for the
+draining flow. I guess that's something to fix, since the mem2mem stateful
+encoder spec seems to require it. Or does that spec not apply to the JPEG
+encoders?
 
-I think it should be a common issue, looking at
-vhost_vsock_handle_tx_kick(), it did:
+> Tested-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
 
-len += sizeof(pkt->hdr);
-vhost_add_used(vq, head, len);
+Thanks!
 
-which looks like a violation of the spec since it's TX.
-
->
-> I had a quick look at this code, and I speculate that it probably
-> uncovers a pre-existig bug, rather than introducing a new one.
-
-I agree.
-
->
-> If somebody is already working on this please reach out to me.
-
-AFAIK, no. I think the plan is to fix both the device and drive side
-(but I'm not sure we need a new feature for this if we stick to the
-validation).
-
-Thanks
-
->
-> Regards,
-> Halil
->
-
+ChenYu
