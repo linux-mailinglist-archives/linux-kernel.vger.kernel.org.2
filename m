@@ -2,217 +2,466 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD061458833
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 04:07:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 947B9458835
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 04:09:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238620AbhKVDKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 22:10:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34620 "EHLO
+        id S238630AbhKVDM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 22:12:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229870AbhKVDKp (ORCPT
+        with ESMTP id S229870AbhKVDM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 22:10:45 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFAB3C061574;
-        Sun, 21 Nov 2021 19:07:39 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id e3so70417862edu.4;
-        Sun, 21 Nov 2021 19:07:39 -0800 (PST)
+        Sun, 21 Nov 2021 22:12:27 -0500
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4338EC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 19:09:22 -0800 (PST)
+Received: by mail-oi1-x236.google.com with SMTP id m6so35125035oim.2
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 19:09:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=66pEqIh/hxjDI6IBVhVyZpaU/DnBMngjj367QoH2zX0=;
-        b=Aqjc20wwIhycN0UKtBDX8hk8+SZqdK6QHoJMvYJk4AKC/cqbi2UTNG7aqqJTnoQxal
-         fCflrOw0AoXsgAQZbNG3a7FfxAQaqlfITU9LQy5mMF7h6HbYDr/4hj/Oi4QAFVD9SESS
-         XNAtFHuWr5SRm2+cair5AR1gHcXwfytxCTbjXUl130X+vxF2gcDUkqRqwyj+1EbJYul+
-         STFP8kXDXfXSgNx4CMMGDwZabn6H/N5mgj6Dc1glYCCEKUiXI6Un4FpSr/cfuczuy7lx
-         HNOvRNSUTlnnGkPTTNKzXz2T7/Co4G3F3FQVyqr8Bz4kIKGBUMnlU8EeD4l7c1InqP9m
-         3Org==
+         :cc:content-transfer-encoding;
+        bh=rgmlx+cUIee7e6jUQzbA8OJEpyg/d4Sfx3iE7KKuH28=;
+        b=oORpft5GJ/l5UTjfdhCrpM6geNetIBDC560VV1PoLz4tumVLdhogMS4ccLQQua87NH
+         ydACfzAB47OOQQ4SP6XZ9YkuawkMzy7a5lrb4l9zBdpndsMuxjfV7LSOZZuT3eqgQu47
+         3HRFBiQatS6CM6XCW/11KbGWHh8UxAQHiEcuswdfyreSGyX/iwcyPqQh2aFfkqlrhf2G
+         MuUt1DrgykyN3kYvFSEHqvBDBNK+/wgFaPrv76FsQUcnWi51xQZKdJ7PDRlo853hcGlt
+         yLw5oCFp0atFqSqyfQ6kZ8qf2UhiR5pq79s4iWdToHx/1HcW6E5qErM4uHxFhksxL+wQ
+         rs9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=66pEqIh/hxjDI6IBVhVyZpaU/DnBMngjj367QoH2zX0=;
-        b=gUU4uh/yJymwDgwh9mbECy1OXM+kA9jSkH31Ahl+Sz8ni8OH/QIt5T8fFRHwwfRRz+
-         1UxDU7vtSuMX52IBPe5SziYdN1xsFRKwFuiAoNrKML+81Evasia5F9+lL3dNc8Fvmwuy
-         7Q0RM+bWOWGItsNQuVdJ4xyVa/NfO7Ul+hkNwCzGunUEaP4F0obaCvcNYk4wOn1R6XIk
-         wQeov5/sICxvXhck3cSCRbnc10O6qSrL92B4Nwy+aQrR14I2/FUzOSzTpNr82KvISsAb
-         YlZ+QJ4AYbv9n8T6DbYZss2ffZVtnpIpwHo7RzTNY8dya36BqJYhdzi+FfmiXPEV06n5
-         S/AA==
-X-Gm-Message-State: AOAM532tiRwsPEGx470k80fqWkrYQTlLZX8RRfAAeUT//73gy7bJrOOL
-        GiYpprxpi6Y1Q467xg1Ii7mk07r/yTpoNjoUTj0=
-X-Google-Smtp-Source: ABdhPJzYXM0wvHPRwKFahjWfK6XpvYJQTI45zRB1/4YIlDwncdDUkdId6Lx3prs7CUL2O+Lh3zDylnOkLUO5Yhgqva4=
-X-Received: by 2002:a17:907:160b:: with SMTP id hb11mr37468062ejc.336.1637550458015;
- Sun, 21 Nov 2021 19:07:38 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=rgmlx+cUIee7e6jUQzbA8OJEpyg/d4Sfx3iE7KKuH28=;
+        b=m0hByhxzWMqCcXSNSwmjMpIhFVaRp2yxiw6ZHf5C3pRU0+5n98sKjxG+8E2xsX2vs1
+         5doCA6q1Fs0wv1QfFsOM8MO7mHSOLAKOS3+xlLapopV9/IXNwbpj5u7wF5ynX0xxT9ZY
+         ThPuJfdA9wqZzw+RrArvRA4P4PgIsSmDErpXt9GceewkSoprKg4guTs7s34oumw+W7yv
+         TDyEql7wlt6XZkk54pn0hMZ5BQaOEon9+bDP1JxaoB4Uz6efb63a5BrRPeVqu2VHq8TV
+         pe8xqKgyZHTs4JQ7QQuKZNGwYyFI1MLCaNYqY8hPLzkEDJt6/s6rwbGhRVvZrA0P0mjj
+         hBcQ==
+X-Gm-Message-State: AOAM533CGWE5vSLacTHO1/eF8lQwDcOcD+1jeoeQjiIPUc3VFgP3IoO3
+        zWlf0G5N/vikIMSkk0O/5NSvYsWxmNDkz2fk8rE=
+X-Google-Smtp-Source: ABdhPJz5kaJjCnaHncCv4O7SSe15ht/Kpfczr0ShtCVBdGPaK7sfx5wY2QlW7WPLP//vezSL2wJCK/TywWNNYJa1tcw=
+X-Received: by 2002:aca:2b09:: with SMTP id i9mr18752686oik.14.1637550560814;
+ Sun, 21 Nov 2021 19:09:20 -0800 (PST)
 MIME-Version: 1.0
-References: <20211106155427.753197-1-aford173@gmail.com> <20211106155427.753197-4-aford173@gmail.com>
- <YZrTyVJR8VN6dQAf@pendragon.ideasonboard.com>
-In-Reply-To: <YZrTyVJR8VN6dQAf@pendragon.ideasonboard.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Sun, 21 Nov 2021 21:07:26 -0600
-Message-ID: <CAHCN7xK=SNgiC2kRzX4gftjkZX4Ms8PVbL69n7+eR-EAe68xag@mail.gmail.com>
-Subject: Re: [PATCH V2 4/5] arm64: dts: imx8mm-beacon: Enable OV5640 Camera
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Schrempf Frieder <frieder.schrempf@kontron.de>,
-        linux-media <linux-media@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        cstevens@beaconembedded.com,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Peng Fan <peng.fan@nxp.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1637130234-57238-1-git-send-email-quic_jiangenj@quicinc.com>
+ <CACT4Y+YwNawV9H7uFMVSCA5WB-Dkyu9TX+rMM3FR6gNGkKFPqw@mail.gmail.com>
+ <DM8PR02MB8247720860A08914CAA41D42F89C9@DM8PR02MB8247.namprd02.prod.outlook.com>
+ <CACT4Y+a07DxQdYFY6uc5Y4GhTUbcnETij6gg3y+JRDvtwSmK5g@mail.gmail.com>
+ <DM8PR02MB8247A19843220E03B34BA440F89C9@DM8PR02MB8247.namprd02.prod.outlook.com>
+ <CACT4Y+Y36wgP_xjYVQApNLdMOFTr2-KCHc=AipcZyZiAhwf1Nw@mail.gmail.com> <CACT4Y+YF4Ngm6em_Sn2p+N0x1L+O8A=BEVTNhd00LmSZ+aH1iQ@mail.gmail.com>
+In-Reply-To: <CACT4Y+YF4Ngm6em_Sn2p+N0x1L+O8A=BEVTNhd00LmSZ+aH1iQ@mail.gmail.com>
+From:   Kaipeng Zeng <kaipeng94@gmail.com>
+Date:   Mon, 22 Nov 2021 11:09:09 +0800
+Message-ID: <CAHk8ZdsPDDshy2EVtdGs=rjVOEWDctcNo2H+B5=d4GRcpQunog@mail.gmail.com>
+Subject: Re: [PATCH] kcov: add KCOV_PC_RANGE to limit pc range
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     "JianGen Jiao (QUIC)" <quic_jiangenj@quicinc.com>,
+        syzkaller <syzkaller@googlegroups.com>,
+        "andreyknvl@gmail.com" <andreyknvl@gmail.com>,
+        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexander Lochmann <info@alexander-lochmann.de>,
+        "Likai Ding (QUIC)" <quic_likaid@quicinc.com>,
+        Hangbin Liu <liuhangbin@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 21, 2021 at 5:18 PM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Adam,
->
-> Thank you for the patch.
->
-> On Sat, Nov 06, 2021 at 10:54:26AM -0500, Adam Ford wrote:
-> > The baseboard has support for a TDNext 5640 Camera which
-> > uses an OV5640 connected to a 2-lane CSI2 interface.
-> >
-> > With the CSI and mipi_csi2 drivers pointing to an OV5640 camera, the media
-> > pipeline can be configured with the following:
-> >
-> >     media-ctl --links "'ov5640 1-003c':0->'imx7-mipi-csis.0':0[1]"
-> >
-> > The camera and various nodes in the pipeline can be configured for UYVY:
-> >     media-ctl -v -V "'ov5640 1-003c':0 [fmt:UYVY8_1X16/640x480 field:none]"
-> >     media-ctl -v -V "'csi':0 [fmt:UYVY8_1X16/640x480 field:none]"
-> >
-> > Signed-off-by: Adam Ford <aford173@gmail.com>
->
-> As the ov5640 is on an add-on module, would a DT overlay be better ?
+Hi Dmitry,
 
-At least for the Beacon / LogicPD boards, I would prefer to avoid the
-overlays.  We have an i.M6Q and an OMAP3 board with cameras enabled in
-our development kit device trees.  If the cameras are not connected,
-they just display a message that the cameras are not communicating and
-move on.  I'm OK with that.
+On Fri, Nov 19, 2021 at 9:07 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Fri, 19 Nov 2021 at 13:55, Dmitry Vyukov <dvyukov@google.com> wrote:
+> >
+> > +Kaipeng, Hangbin who contributed the coverage filter to syzkaller.
+> > This is a discussion about adding a similar filter to the kernel. You
+> > can see whole discussion here:
+> > https://groups.google.com/g/kasan-dev/c/TQmYUdUC08Y
+>
+> Joey, what do you think in general about passing a filter bitmap to the k=
+ernel?
+>
+> Since the bitmap is large, it can make sense to reuse it across
+> different KCOV instances.
+> I am thinking about something along the following lines:
+>
+> kcov_fd =3D open("/debugfs/kcov");
+> filter_fd =3D ioctl(kcov_fd, KCOV_CREATE_FILTER, &{... some args
+> specifying start/end ...});
+> filter =3D mmap(..., filter_fd);
+> ... write to the filter ...
+>
+> ...
+> kcov_fd2 =3D open("/debugfs/kcov");
+> ioctl(kcov_fd2, KCOV_ATTACH_FILTER, filter_fd);
+> ioctl(kcov_fd2, KCOV_ENABLE);
+>
+>
+> This would allow us to create 2 filters:
+> 1. One the interesting subsystems
+> 2. Second only for yet uncovered PCs in the interesting subsystems
+> (updated as we discover more coverage)
+>
+> During fuzzing we attach the second filter to KCOV.
+> But when we want to obtain full program coverage, we attach the first one=
+.
+>
+> The filters (bitmaps) are reused across all threads in all executor
+> processes (so that we have only 2 filters globally per VM).
+>
 
+I think implementing such a filter in kernel would be harmful to
+syzkaller fuzzing:
+1. Both two bitmaps would impede syzkaller from getting backward and
+forward edge between interesting and uninteresting code.
+Currently, syzkaller uses edge but not coverage to decide if the prog
+should be collected to the corpus. And the second bitmap actually
+destroys the CFG in the interesting subsystem.
+It's impossible that syzkaller restores such information by analyzing
+the filtered coverage. While syzkaller coverage filter doesn't have
+this problem.
+2. The First bitmap would impede syzkaller from getting full coverage
+of the whole kernel. So that it would be hard to analyze how the
+kernel path gets into the interesting subsystem.
+It's OK if the syscall description is completed. But, we always need
+to do such analysis if we try to improve syscall descriptions.
+3. Coverage of prog would be imcompleted.
+
+It seems the only reason to introduce in-kernel coverage filter is to
+defense KCOV area overflow. Do nothing in improving the fuzzing loop.
+It is reasonable that a fuzzer should collect full information as
+feedback, then analyze and decide how to use that information and
+which to drop.
+In the other hand, kernel should try its best to send more information
+to fuzzer. Only if the memory is not enough to store such information.
+Doing such in-kernel filtering would be reasonable.
+
+An alternative choice is doing edge analyzing in kernel also, but KCOV
+would be more and more restricted and limited.
+
+So, I think the pc_range is enough for defense KCOV area overflow. And
+keep it from the syzkaller fuzzing loop. But not implement such bitmap
+into kernel.
+Coverage filter in syzkaller would be more flexible. A user could
+effectively fuzz their objective subsystems and easier to customize
+fuzzing loop.
+
+BTW, our coverage filter is for Linux/amd64 only. Seems the author
+needs a coverage filter on arm.
+
+
+> KCOV_CREATE_FILTER could also accept how many bytes each bit
+> represents (that scaling factor, as hardcoding 4, 8, 16 may be bad for
+> a stable kernel interface).
 >
-> > ---
-> > V2:  No change
-> >
-> >  .../freescale/imx8mm-beacon-baseboard.dtsi    | 58 +++++++++++++++++++
-> >  1 file changed, 58 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
-> > index 6f5e63696ec0..0fb95f4a5e78 100644
-> > --- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
-> > +++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
-> > @@ -43,6 +43,16 @@ reg_audio: regulator-audio {
-> >               enable-active-high;
-> >       };
-> >
-> > +     reg_camera: regulator-camera {
-> > +             compatible = "regulator-fixed";
-> > +             regulator-name = "mipi_pwr";
-> > +             regulator-min-microvolt = <2800000>;
-> > +             regulator-max-microvolt = <2800000>;
-> > +             gpio = <&pca6416_1 0 GPIO_ACTIVE_HIGH>;
-> > +             enable-active-high;
-> > +             startup-delay-us = <100000>;
-> > +     };
-> > +
-> >       reg_usdhc2_vmmc: regulator-usdhc2 {
-> >               compatible = "regulator-fixed";
-> >               regulator-name = "VSD_3V3";
-> > @@ -67,6 +77,10 @@ sound {
-> >       };
-> >  };
-> >
-> > +&csi {
-> > +     status = "okay";
-> > +};
-> > +
-> >  &ecspi2 {
-> >       pinctrl-names = "default";
-> >       pinctrl-0 = <&pinctrl_espi2>;
-> > @@ -90,6 +104,30 @@ &i2c2 {
-> >       pinctrl-names = "default";
-> >       pinctrl-0 = <&pinctrl_i2c2>;
-> >       status = "okay";
-> > +
-> > +     camera@3c {
-> > +             compatible = "ovti,ov5640";
-> > +             pinctrl-names = "default";
-> > +             pinctrl-0 = <&pinctrl_ov5640>;
-> > +             reg = <0x3c>;
-> > +             clocks = <&clk IMX8MM_CLK_CLKO1>;
-> > +             clock-names = "xclk";
-> > +             assigned-clocks = <&clk IMX8MM_CLK_CLKO1>;
-> > +             assigned-clock-parents = <&clk IMX8MM_CLK_24M>;
-> > +             assigned-clock-rates = <24000000>;
-> > +             AVDD-supply = <&reg_camera>;  /* 2.8v */
-> > +             powerdown-gpios = <&gpio1 7 GPIO_ACTIVE_HIGH>;
-> > +             reset-gpios = <&gpio1 6 GPIO_ACTIVE_LOW>;
-> > +
-> > +             port {
-> > +                     /* MIPI CSI-2 bus endpoint */
-> > +                     ov5640_to_mipi_csi2: endpoint {
-> > +                             remote-endpoint = <&imx8mm_mipi_csi_in>;
-> > +                             clock-lanes = <0>;
-> > +                             data-lanes = <1 2>;
-> > +                     };
-> > +             };
-> > +     };
-> >  };
-> >
-> >  &i2c4 {
-> > @@ -141,6 +179,18 @@ pca6416_1: gpio@21 {
-> >       };
-> >  };
-> >
-> > +&mipi_csi {
-> > +     status = "okay";
-> > +     ports {
-> > +             port@0 {
-> > +                     imx8mm_mipi_csi_in: endpoint {
-> > +                             remote-endpoint = <&ov5640_to_mipi_csi2>;
-> > +                             data-lanes = <1 2>;
-> > +                     };
-> > +             };
-> > +     };
-> > +};
-> > +
-> >  &sai3 {
-> >       pinctrl-names = "default";
-> >       pinctrl-0 = <&pinctrl_sai3>;
-> > @@ -209,6 +259,14 @@ MX8MM_IOMUXC_SAI3_RXFS_GPIO4_IO28        0x41
-> >               >;
-> >       };
-> >
-> > +     pinctrl_ov5640: ov5640grp {
-> > +             fsl,pins = <
-> > +                     MX8MM_IOMUXC_GPIO1_IO07_GPIO1_IO7               0x19
-> > +                     MX8MM_IOMUXC_GPIO1_IO06_GPIO1_IO6               0x19
-> > +                     MX8MM_IOMUXC_GPIO1_IO14_CCMSRCGPCMIX_CLKO1      0x59
-> > +             >;
-> > +     };
-> > +
-> >       pinctrl_pcal6414: pcal6414-gpiogrp {
-> >               fsl,pins = <
-> >                       MX8MM_IOMUXC_SAI2_MCLK_GPIO4_IO27               0x19
+> But I am still not sure how to support both the main kernel and
+> modules. We could allow setting up multiple filters for different PC
+> ranges. Or may be just 2 (one for kernel and one for modules range).
+> Or maybe 1 bitmap can cover both kernel and modules?
 >
-> --
-> Regards,
+> Thoughts?
 >
-> Laurent Pinchart
+>
+> > On Fri, 19 Nov 2021 at 12:21, JianGen Jiao (QUIC)
+> > <quic_jiangenj@quicinc.com> wrote:
+> > >
+> > > Yes, on x86_64, module address space is after kernel. But like below =
+on arm64, it's different.
+> > >
+> > > # grep stext /proc/kallsyms
+> > > ffffffc010010000 T _stext
+> > > # cat /proc/modules |sort -k 6 | tail -2
+> > > Some_module_1 552960 0 - Live 0xffffffc00ca05000 (O)
+> > > Some_module_1 360448 0 - Live 0xffffffc00cb8f000 (O) # cat /proc/modu=
+les |sort -k 6 | head -2
+> > > Some_module_3 16384 1 - Live 0xffffffc009430000
+> > >
+> > > -----Original Message-----
+> > > From: Dmitry Vyukov <dvyukov@google.com>
+> > > Sent: Friday, November 19, 2021 6:38 PM
+> > > To: JianGen Jiao (QUIC) <quic_jiangenj@quicinc.com>
+> > > Cc: andreyknvl@gmail.com; kasan-dev@googlegroups.com; LKML <linux-ker=
+nel@vger.kernel.org>; Alexander Lochmann <info@alexander-lochmann.de>; Lika=
+i Ding (QUIC) <quic_likaid@quicinc.com>
+> > > Subject: Re: [PATCH] kcov: add KCOV_PC_RANGE to limit pc range
+> > >
+> > > WARNING: This email originated from outside of Qualcomm. Please be wa=
+ry of any links or attachments, and do not enable macros.
+> > >
+> > > On Fri, 19 Nov 2021 at 04:17, JianGen Jiao (QUIC) <quic_jiangenj@quic=
+inc.com> wrote:
+> > > >
+> > > > Hi Dmitry,
+> > > > I'm using the start, end pc from cover filter, which currently is t=
+he fast way compared to the big bitmap passing from syzkaller solution, as =
+I only set the cover filter to dirs/files I care about.
+> > >
+> > > I see.
+> > > But if we are unlucky and our functions of interest are at the very l=
+ow and high addresses, start/end will cover almost all kernel code...
+> > >
+> > > > I checked
+> > > > https://groups.google.com/g/kasan-dev/c/oVz3ZSWaK1Q/m/9ASztdzCAAAJ,
+> > > > The bitmap seems not the same as syzkaller one, which one will be u=
+sed finally?
+> > >
+> > > I don't know yet. We need to decide.
+> > > In syzkaller we are more flexible and can change code faster, while k=
+ernel interfaces are stable and need to be kept forever. So I think we need=
+ to concentrate more on the good kernel interface and then support it in sy=
+zkaller.
+> > >
+> > > > ``` Alexander's one
+> > > > + pos =3D (ip - canonicalize_ip((unsigned long)&_stext)) / 4; idx =
+=3D pos
+> > > > + % BITS_PER_LONG; pos /=3D BITS_PER_LONG; if (likely(pos <
+> > > > + t->kcov_size)) WRITE_ONCE(area[pos], READ_ONCE(area[pos]) | 1L <<
+> > > > + idx);
+> > > > ```
+> > > > Pc offset is divided by 4 and start is _stext. But for some arch, p=
+c is less than _stext.
+> > >
+> > > You mean that modules can have PC < _stext?
+> > >
+> > > > ``` https://github.com/google/syzkaller/blob/master/syz-manager/cov=
+filter.go#L139-L154
+> > > >         data :=3D make([]byte, 8+((size>>4)/8+1))
+> > > >         order :=3D binary.ByteOrder(binary.BigEndian)
+> > > >         if target.LittleEndian {
+> > > >                 order =3D binary.LittleEndian
+> > > >         }
+> > > >         order.PutUint32(data, start)
+> > > >         order.PutUint32(data[4:], size)
+> > > >
+> > > >         bitmap :=3D data[8:]
+> > > >         for pc :=3D range pcs {
+> > > >                 // The lowest 4-bit is dropped.
+> > > >                 pc =3D uint32(backend.NextInstructionPC(target, uin=
+t64(pc)))
+> > > >                 pc =3D (pc - start) >> 4
+> > > >                 bitmap[pc/8] |=3D (1 << (pc % 8))
+> > > >         }
+> > > >         return data
+> > > > ```
+> > > > Pc offset is divided by 16 and start is cover filter start pc.
+> > > >
+> > > > I think divided by 8 is more reasonable? Because there is at least =
+one instruction before each __sanitizer_cov_trace_pc call.
+> > > > 0000000000000160 R_AARCH64_CALL26  __sanitizer_cov_trace_pc
+> > > > 0000000000000168 R_AARCH64_CALL26  __sanitizer_cov_trace_pc
+> > > >
+> > > > I think we still need my patch because we still need a way to keep =
+the trace_pc call and post-filter in syzkaller doesn't solve trace_pc dropp=
+ing, right?
+> > >
+> > > Yes, the in-kernel filter solves the problem of trace capacity/overfl=
+ows.
+> > >
+> > >
+> > > > But for sure I can use the bitmap from syzkaller.
+> > > >
+> > > > THX
+> > > > Joey
+> > > > -----Original Message-----
+> > > > From: Dmitry Vyukov <dvyukov@google.com>
+> > > > Sent: Thursday, November 18, 2021 10:00 PM
+> > > > To: JianGen Jiao (QUIC) <quic_jiangenj@quicinc.com>
+> > > > Cc: andreyknvl@gmail.com; kasan-dev@googlegroups.com; LKML
+> > > > <linux-kernel@vger.kernel.org>; Alexander Lochmann
+> > > > <info@alexander-lochmann.de>
+> > > > Subject: Re: [PATCH] kcov: add KCOV_PC_RANGE to limit pc range
+> > > >
+> > > > WARNING: This email originated from outside of Qualcomm. Please be =
+wary of any links or attachments, and do not enable macros.
+> > > >
+> > > > ,On Wed, 17 Nov 2021 at 07:24, Joey Jiao <quic_jiangenj@quicinc.com=
+> wrote:
+> > > > >
+> > > > > Sometimes we only interested in the pcs within some range, while
+> > > > > there are cases these pcs are dropped by kernel due to `pos >=3D
+> > > > > t->kcov_size`, and by increasing the map area size doesn't help.
+> > > > >
+> > > > > To avoid disabling KCOV for these not intereseted pcs during buil=
+d
+> > > > > time, adding this new KCOV_PC_RANGE cmd.
+> > > >
+> > > > Hi Joey,
+> > > >
+> > > > How do you use this? I am concerned that a single range of PCs is t=
+oo restrictive. I can only see how this can work for single module (continu=
+ous in memory) or a single function. But for anything else (something in th=
+e main kernel, or several modules), it won't work as PCs are not continuous=
+.
+> > > >
+> > > > Maybe we should use a compressed bitmap of interesting PCs? It allo=
+ws to support all cases and we already have it in syz-executor, then syz-ex=
+ecutor could simply pass the bitmap to the kernel rather than post-filter.
+> > > > It's also overlaps with the KCOV_MODE_UNIQUE mode that +Alexander p=
+roposed here:
+> > > > https://groups.google.com/g/kasan-dev/c/oVz3ZSWaK1Q/m/9ASztdzCAAAJ
+> > > > It would be reasonable if kernel uses the same bitmap format for th=
+ese
+> > > > 2 features.
+> > > >
+> > > >
+> > > >
+> > > > > An example usage is to use together syzkaller's cov filter.
+> > > > >
+> > > > > Change-Id: I954f6efe1bca604f5ce31f8f2b6f689e34a2981d
+> > > > > Signed-off-by: Joey Jiao <quic_jiangenj@quicinc.com>
+> > > > > ---
+> > > > >  Documentation/dev-tools/kcov.rst | 10 ++++++++++
+> > > > >  include/uapi/linux/kcov.h        |  7 +++++++
+> > > > >  kernel/kcov.c                    | 18 ++++++++++++++++++
+> > > > >  3 files changed, 35 insertions(+)
+> > > > >
+> > > > > diff --git a/Documentation/dev-tools/kcov.rst
+> > > > > b/Documentation/dev-tools/kcov.rst
+> > > > > index d83c9ab..fbcd422 100644
+> > > > > --- a/Documentation/dev-tools/kcov.rst
+> > > > > +++ b/Documentation/dev-tools/kcov.rst
+> > > > > @@ -52,9 +52,15 @@ program using kcov:
+> > > > >      #include <fcntl.h>
+> > > > >      #include <linux/types.h>
+> > > > >
+> > > > > +    struct kcov_pc_range {
+> > > > > +      uint32 start;
+> > > > > +      uint32 end;
+> > > > > +    };
+> > > > > +
+> > > > >      #define KCOV_INIT_TRACE                    _IOR('c', 1, unsi=
+gned long)
+> > > > >      #define KCOV_ENABLE                        _IO('c', 100)
+> > > > >      #define KCOV_DISABLE                       _IO('c', 101)
+> > > > > +    #define KCOV_TRACE_RANGE                   _IOW('c', 103, st=
+ruct kcov_pc_range)
+> > > > >      #define COVER_SIZE                 (64<<10)
+> > > > >
+> > > > >      #define KCOV_TRACE_PC  0
+> > > > > @@ -64,6 +70,8 @@ program using kcov:
+> > > > >      {
+> > > > >         int fd;
+> > > > >         unsigned long *cover, n, i;
+> > > > > +        /* Change start and/or end to your interested pc range. =
+*/
+> > > > > +        struct kcov_pc_range pc_range =3D {.start =3D 0, .end =
+=3D
+> > > > > + (uint32)(~((uint32)0))};
+> > > > >
+> > > > >         /* A single fd descriptor allows coverage collection on a=
+ single
+> > > > >          * thread.
+> > > > > @@ -79,6 +87,8 @@ program using kcov:
+> > > > >                                      PROT_READ | PROT_WRITE, MAP_=
+SHARED, fd, 0);
+> > > > >         if ((void*)cover =3D=3D MAP_FAILED)
+> > > > >                 perror("mmap"), exit(1);
+> > > > > +        if (ioctl(fd, KCOV_PC_RANGE, pc_range))
+> > > > > +               dprintf(2, "ignore KCOV_PC_RANGE error.\n");
+> > > > >         /* Enable coverage collection on the current thread. */
+> > > > >         if (ioctl(fd, KCOV_ENABLE, KCOV_TRACE_PC))
+> > > > >                 perror("ioctl"), exit(1); diff --git
+> > > > > a/include/uapi/linux/kcov.h b/include/uapi/linux/kcov.h index
+> > > > > 1d0350e..353ff0a 100644
+> > > > > --- a/include/uapi/linux/kcov.h
+> > > > > +++ b/include/uapi/linux/kcov.h
+> > > > > @@ -16,12 +16,19 @@ struct kcov_remote_arg {
+> > > > >         __aligned_u64   handles[0];
+> > > > >  };
+> > > > >
+> > > > > +#define PC_RANGE_MASK ((__u32)(~((u32) 0))) struct kcov_pc_range=
+ {
+> > > > > +       __u32           start;          /* start pc & 0xFFFFFFFF =
+*/
+> > > > > +       __u32           end;            /* end pc & 0xFFFFFFFF */
+> > > > > +};
+> > > > > +
+> > > > >  #define KCOV_REMOTE_MAX_HANDLES                0x100
+> > > > >
+> > > > >  #define KCOV_INIT_TRACE                        _IOR('c', 1, unsi=
+gned long)
+> > > > >  #define KCOV_ENABLE                    _IO('c', 100)
+> > > > >  #define KCOV_DISABLE                   _IO('c', 101)
+> > > > >  #define KCOV_REMOTE_ENABLE             _IOW('c', 102, struct kco=
+v_remote_arg)
+> > > > > +#define KCOV_PC_RANGE                  _IOW('c', 103, struct kco=
+v_pc_range)
+> > > > >
+> > > > >  enum {
+> > > > >         /*
+> > > > > diff --git a/kernel/kcov.c b/kernel/kcov.c index 36ca640..5955045=
+0
+> > > > > 100644
+> > > > > --- a/kernel/kcov.c
+> > > > > +++ b/kernel/kcov.c
+> > > > > @@ -36,6 +36,7 @@
+> > > > >   *  - initial state after open()
+> > > > >   *  - then there must be a single ioctl(KCOV_INIT_TRACE) call
+> > > > >   *  - then, mmap() call (several calls are allowed but not usefu=
+l)
+> > > > > + *  - then, optional to set trace pc range
+> > > > >   *  - then, ioctl(KCOV_ENABLE, arg), where arg is
+> > > > >   *     KCOV_TRACE_PC - to trace only the PCs
+> > > > >   *     or
+> > > > > @@ -69,6 +70,8 @@ struct kcov {
+> > > > >          * kcov_remote_stop(), see the comment there.
+> > > > >          */
+> > > > >         int                     sequence;
+> > > > > +       /* u32 Trace PC range from start to end. */
+> > > > > +       struct kcov_pc_range    pc_range;
+> > > > >  };
+> > > > >
+> > > > >  struct kcov_remote_area {
+> > > > > @@ -192,6 +195,7 @@ static notrace unsigned long
+> > > > > canonicalize_ip(unsigned long ip)  void notrace
+> > > > > __sanitizer_cov_trace_pc(void)  {
+> > > > >         struct task_struct *t;
+> > > > > +       struct kcov_pc_range pc_range;
+> > > > >         unsigned long *area;
+> > > > >         unsigned long ip =3D canonicalize_ip(_RET_IP_);
+> > > > >         unsigned long pos;
+> > > > > @@ -199,6 +203,11 @@ void notrace __sanitizer_cov_trace_pc(void)
+> > > > >         t =3D current;
+> > > > >         if (!check_kcov_mode(KCOV_MODE_TRACE_PC, t))
+> > > > >                 return;
+> > > > > +       pc_range =3D t->kcov->pc_range;
+> > > > > +       if (pc_range.start < pc_range.end &&
+> > > > > +               ((ip & PC_RANGE_MASK) < pc_range.start ||
+> > > > > +               (ip & PC_RANGE_MASK) > pc_range.end))
+> > > > > +               return;
+> > > > >
+> > > > >         area =3D t->kcov_area;
+> > > > >         /* The first 64-bit word is the number of subsequent PCs.=
+ */
+> > > > > @@ -568,6 +577,7 @@ static int kcov_ioctl_locked(struct kcov *kco=
+v, unsigned int cmd,
+> > > > >         int mode, i;
+> > > > >         struct kcov_remote_arg *remote_arg;
+> > > > >         struct kcov_remote *remote;
+> > > > > +       struct kcov_pc_range *pc_range;
+> > > > >         unsigned long flags;
+> > > > >
+> > > > >         switch (cmd) {
+> > > > > @@ -589,6 +599,14 @@ static int kcov_ioctl_locked(struct kcov *kc=
+ov, unsigned int cmd,
+> > > > >                 kcov->size =3D size;
+> > > > >                 kcov->mode =3D KCOV_MODE_INIT;
+> > > > >                 return 0;
+> > > > > +       case KCOV_PC_RANGE:
+> > > > > +               /* Limit trace pc range. */
+> > > > > +               pc_range =3D (struct kcov_pc_range *)arg;
+> > > > > +               if (copy_from_user(&kcov->pc_range, pc_range, siz=
+eof(kcov->pc_range)))
+> > > > > +                       return -EINVAL;
+> > > > > +               if (kcov->pc_range.start >=3D kcov->pc_range.end)
+> > > > > +                       return -EINVAL;
+> > > > > +               return 0;
+> > > > >         case KCOV_ENABLE:
+> > > > >                 /*
+> > > > >                  * Enable coverage for the current task.
+> > > > > --
+> > > > > 2.7.4
