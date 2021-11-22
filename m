@@ -2,248 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6844458FBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:50:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E83C7458FBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:51:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239594AbhKVNx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 08:53:29 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23370 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230322AbhKVNx2 (ORCPT
+        id S239604AbhKVNy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 08:54:28 -0500
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:52680 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229984AbhKVNy1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 08:53:28 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AMCVOU6026884;
-        Mon, 22 Nov 2021 13:50:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=aHA4C480Nz6E5NCmgObls4kSHKluFhtPQOoxtzr4X+s=;
- b=m9vNL65RVP9mn5VPMktT8iNgRmNE65dAFixuxKksb1EpVB/hMfjHdAefnWVZqVlWZCLi
- Xm+lOrL5IaPONBFMJHyeGFfssm3g+X/72sae2cpeD2cteLwQmj8ickIEZwadvoU9COmQ
- JKuu2OHluGawijEKcALHy6OLj7PvfGkU8ndj3cVnJaDHg/8lo4j97zZzBzwB3LP2yYLv
- ldvIhJMEhHUtutdXV/Mb33TWW5wFT7s7vu7b7JZVQTGkqnfaClzMe7tO70iDN9+54zXP
- oTWVXX0G5vifvmdNlYllUrWk7LWmS4kzz7nS/YP8YsJ4u5m49MMyHoUWoO4ivV7Ko2P7 cw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cgb3qt23p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Nov 2021 13:50:12 +0000
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AMCVX8o028200;
-        Mon, 22 Nov 2021 13:50:12 GMT
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cgb3qt22g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Nov 2021 13:50:12 +0000
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AMDmrFc010044;
-        Mon, 22 Nov 2021 13:50:10 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06fra.de.ibm.com with ESMTP id 3cer9je9ef-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Nov 2021 13:50:09 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AMDgw4P64618962
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Nov 2021 13:42:58 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 63CF44C086;
-        Mon, 22 Nov 2021 13:50:07 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D758D4C072;
-        Mon, 22 Nov 2021 13:50:06 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.37.164])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Mon, 22 Nov 2021 13:50:06 +0000 (GMT)
-Date:   Mon, 22 Nov 2021 14:50:03 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     mst <mst@redhat.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "kaplan, david" <david.kaplan@amd.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [PATCH V5 1/4] virtio_ring: validate used buffer length
-Message-ID: <20211122145003.3e127a03.pasic@linux.ibm.com>
-In-Reply-To: <CACGkMEu+9FvMsghyi55Ee5BxetP-YK9wh2oaT8OgLiY5+tV0QQ@mail.gmail.com>
-References: <20211027022107.14357-1-jasowang@redhat.com>
-        <20211027022107.14357-2-jasowang@redhat.com>
-        <20211119160951.5f2294c8.pasic@linux.ibm.com>
-        <CACGkMEtja2TPC=ujgMrpaPmdsy+zHowbBTvPj8k7nm_+zB8vig@mail.gmail.com>
-        <20211122063518.37929c01.pasic@linux.ibm.com>
-        <20211122064922.51b3678e.pasic@linux.ibm.com>
-        <CACGkMEu+9FvMsghyi55Ee5BxetP-YK9wh2oaT8OgLiY5+tV0QQ@mail.gmail.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Mon, 22 Nov 2021 08:54:27 -0500
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AMDhRB9024892;
+        Mon, 22 Nov 2021 13:51:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=ODi8wmnRWLHXAvJgDBgRGdkcGI+rtpoV+/xdkYmnZ7I=;
+ b=ColXMnzMXGtc0yzH2x3iO8HIU9qMkY70bqcgZDz7HAqYp3eYyBZil62dBwocOTRiD9Et
+ ZQjaQPiQmPy/tR4mrpcKOuLUXZFTOPK/8T9tHCYn4b6938uJKPdggTu0csCeCGAlKNND
+ SdOy6KSAMe+8tKhDA5n+4aCq+m6gkCpQjC0qgcOgf06xM83X1DnGqTcOHvRhCjFif4tr
+ 59KVgrfGj80C9g8g+wBYTeByPdUhcDhzNvUp3wMImQVuFB6z+79ZbHbidG6j74cP39Tc
+ 6JLY6Tio5pLuWCrjHyfn4MVcwZ5XNDzH3i4xMo5/5lajKU3rV10nfViTMq4pkwWa57sN +Q== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3cg69m9uh9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Nov 2021 13:51:00 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AMDowYG148042;
+        Mon, 22 Nov 2021 13:50:59 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2173.outbound.protection.outlook.com [104.47.56.173])
+        by aserp3020.oracle.com with ESMTP id 3ceru3guw4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Nov 2021 13:50:59 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Vkoj5S39RNJmGhWjEqlebZXSTMmywtxkwN08V84NTYoNxhxLju9AfRTp3mBG1PODaKFNb6qzSthuMQhXmC9F6afbUTwxzc7jlzcxrSnPXXgMUxjPO993/ugxRkaLSBcBCXpvwbwnvQdUZusGcn0l3MGrVRs5LFCmWLvdtTpApykRcwpVT1RRg5IpRhs+htZZNnyw+en6EakcBm9/Mr9ehk+YiPNxW4izrW23PfYAUmcoZTKLJvhskS0d6m8IFBN5xXWiER1i9QQdjtAwtUv7U+AruPuNCoJiDVO85CSI3/runUV5XwL322giCBZnRYtUO5eT8eIz8WP42alkOoBsLw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ODi8wmnRWLHXAvJgDBgRGdkcGI+rtpoV+/xdkYmnZ7I=;
+ b=fbPJD2uhtuyYBORQ2XjDnQ8EHC92wuKrX9Z9BSBGFwkNyZ88yYBiYxk4Xq35E/at0jTsOLUWJfnhsOgkmm4BckmJzoJxNzvTLBDLHpuH1nAQ8IGNwJykMjGlQY5HWICGvVnz4FIo9/C2HPzTWlZx6DZNe6jBGqQn450nBQ0Vt4AtiGeEBsMBaE0K8rgnBPEacG+MRddPEWWFFCmrR7IUNzBM26wsTjq2btNajueA+frNDVB40Uvwm6tUgf6W/dXgPjjXINgHuYWDQtcytBsWOdcB6m3KwUJxoeb4063FhLHWgtElE88uwgl1aeE3f2l5+9um+6K89gBvKGwZ1x3mSQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ODi8wmnRWLHXAvJgDBgRGdkcGI+rtpoV+/xdkYmnZ7I=;
+ b=Rzhcqsvq+NM5/5oRndfeom42NHEOsR9FVIvFQrDzb1e9Ea0iPMCT2Thkbjtb0JE6KnFCn7tk0RotYdTUHGf8FXmMyNk2gsZyMNVjbWarjFui3LPm7T6bUE+nmTDnZeMmfNgChkJh4z+wRUNN4Cyse85WeREpqRHsk1r3yLYgpqo=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MW4PR10MB5725.namprd10.prod.outlook.com
+ (2603:10b6:303:18b::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.15; Mon, 22 Nov
+ 2021 13:50:55 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::495f:a05d:ba7a:682]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::495f:a05d:ba7a:682%6]) with mapi id 15.20.4713.024; Mon, 22 Nov 2021
+ 13:50:54 +0000
+Date:   Mon, 22 Nov 2021 16:50:31 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Gaston Gonzalez <gascoar@gmail.com>
+Cc:     linux-staging@lists.linux.dev, gregkh@linuxfoundation.org,
+        nsaenz@kernel.org, stefan.wahren@i2se.com, arnd@arndb.de,
+        ojaswin98@gmail.com, amarjargal16@gmail.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND] staging: vchiq_core: remove superfluous
+ static_assert statement
+Message-ID: <20211122135031.GB6514@kadam>
+References: <20211122130926.342128-1-gascoar@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211122130926.342128-1-gascoar@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNXP275CA0033.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:18::21)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: bivJ9jbi1sDW8XxX0FXZYrfoA8zF0D4o
-X-Proofpoint-ORIG-GUID: V3BmkPAMFxZjyy_N1jwN4amxaZqnNUJ1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-22_07,2021-11-22_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- impostorscore=0 clxscore=1015 lowpriorityscore=0 adultscore=0
- priorityscore=1501 bulkscore=0 mlxlogscore=999 spamscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111220071
+Received: from kadam (102.222.70.114) by JNXP275CA0033.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:18::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21 via Frontend Transport; Mon, 22 Nov 2021 13:50:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: dc258970-147a-4036-c4c5-08d9adbf1a8a
+X-MS-TrafficTypeDiagnostic: MW4PR10MB5725:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MW4PR10MB57259831EF59FD3150F772898E9F9@MW4PR10MB5725.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:473;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: z1CoAZ2aq7/ubL2wGNOPBLp5x7EXRIfheCa/iU2HvPgyQKvn1sHK2n5vkNG79yDYEj+WL50GemGbolRCbGDNL/TRB0qGqAwphOaBORfaDsQre2U3yF2ChE/ZW/E4dd2J/cPRZ9iEQOtkkW5pstyWxUsVJKbuwCE10GqT3U1dUZW20GLRMQV1AN5/V0KQNywIP7j3K+Qrf0WyLp8NyuprSG0mq/dTXiL4C7LN1o/q11bmKmTm/VMDvH9tWpKPeYx+NG8iQX4SUBzPuTSSvHMrzk5ie5y/E+gXQTMdwGXhWQK68BK7JVN2ULj5z3wkSLDGIIWvTzJpjfdJtMum5MRRym3N1/EWdX8AKajQqWgTfJUdZIeGa8mxVc3fS8jZcjEAI8bxSXGIieVV8imFwa3/nLfM2myNN+Hi5mkhaJ3aEdBYyvdd1KMPgzuEvbeG44Y9ehg1Qd+bq9uk2jggWSw0wycUTHlKBHkPox10j568LDQNEEfrMr1pspSf+i2Zk0T0HDkgkbHPF690b91D7vpv0tMi+IPonbXn11LEviu9aqH0JzZ9XOMaroWRksSmiy09ahhAio9y4eREJCfclOYQJyvbkySqDxt0FP4j1ZX9r7ObMGBUrY82kBfMC0dIZF2MsfF4NS60Y6Y+FhMJ3Z4R7VNebBXGbnT8NtuX8+RVP0YG+ogX4+i5h/aBq+1ZlkpMM+vGkoYAvh7eXOfsc7ePIA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(9576002)(6666004)(8676002)(26005)(86362001)(38100700002)(1076003)(52116002)(55016002)(44832011)(66556008)(66946007)(9686003)(38350700002)(33716001)(186003)(6496006)(4326008)(4744005)(2906002)(508600001)(33656002)(956004)(66476007)(6916009)(8936002)(7416002)(5660300002)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Qon2LslK6lZJT10gGY/d03tY08/quCbpBfCrT61EM1JAXL5Hu9PTfHm/PO4e?=
+ =?us-ascii?Q?y9EbsFpAB/KPqBA96htA5bzXECxgNDzcost+6bQJWLKBFJFIH/uvGp/W8QQW?=
+ =?us-ascii?Q?c3nBDNDVo4MZYNh2Nw8C41Hv5ii66AB7WcQtBZ8Sp57pRRFf+oAapI1/L29Q?=
+ =?us-ascii?Q?1lvMTypSHdtvER5s5eRAB+HXRX4W9tFRAU2w26y1i0v1yW8cDLh24edvn+DH?=
+ =?us-ascii?Q?CdA4Si/D+ulBEBoY5c/ENvrPhVy+VyXHbsUijGG2eykjOgmPr8XnZgz77AV3?=
+ =?us-ascii?Q?U6dccZUK12r9j+OYeiQbUPsDTW9rogXKI8a/lgJ3j6o5t4NcmdGVmqkuJJea?=
+ =?us-ascii?Q?o2PxgL6fP5IYPEKX7nE+4UsKxMkuPIxcEwqXdRS6wmFFEsjXTX8LojKgOGeR?=
+ =?us-ascii?Q?tBOUMSdEjFoj/jFrfK2BDl0btv8oCL9FNoG9lbwpdLjxy9q+Gi+tWe12V56q?=
+ =?us-ascii?Q?KhU45voOk/EffJB8vyz1pL+WB3qXWarVZTeXHhLb3m8IT2AQM9tu6ztACe6O?=
+ =?us-ascii?Q?wFhhQB6kd/5Sh/xuxlSrCeRtOoyeMHZQv56dT1el+VIzqGWv7w2vQRF5OvQY?=
+ =?us-ascii?Q?/dGVO/9p1hAKVN9pUlbtc80xt6UJ8tcz3/73ArLCOMQo3Vtnn3umJbSYDknE?=
+ =?us-ascii?Q?VoeYE3tcu+xYGyj2qfpX8vu/SmMCyk/yU0/+wrYcs6NZqpkn6fY0Flju6ccB?=
+ =?us-ascii?Q?Yv1VB1hXC8rvjsk4BSNTjFEFP1Myn/iiQRUMVFosjT6G5BoQz1usl6YnZGUO?=
+ =?us-ascii?Q?QliockK0M3p90/tofd7NNg2QgtGNA7J/kTAMYrs7tez2e79z8K1rVU4n3o1M?=
+ =?us-ascii?Q?/cDcw8Tr1AIlmP0r9kGcvoEM0xUJ0ZqnBcGtmRO8av/jnj1ggPt/txxWTOyo?=
+ =?us-ascii?Q?tL1m36VHu1mJa1hIVAHGkik6sqt5UcdOhBC30a1vVlEPSGxNfq8wP3RQU2oq?=
+ =?us-ascii?Q?01oTzwyWNWOcSIeMoHUJQ9O8QeYX8RCFjiLxrsuILM+6sepUxZsqbSV9g7QW?=
+ =?us-ascii?Q?VwmbnhuY83zF3tcejOenVD9YaGAsbI5dDMxLr9JancWHJwPBAGkc1yBmKmLd?=
+ =?us-ascii?Q?DdxsBhXswbcRM24YNmJUhj7z3OdT9Wtjd4VJFT/wi88zeWemVwP/gK5lU0vK?=
+ =?us-ascii?Q?Q9uhECVRsu+q28qPCDmRY6whmWbah0OkNE36+T1+iaGj50HdiCkD3uNpWaMQ?=
+ =?us-ascii?Q?WHqRJAcDj1JoemRcdEVOUjxlw1kunAS3KDreE+BJNqITiVQiXAzwXXKN+buD?=
+ =?us-ascii?Q?gT0sv0MYgb6yM4SMldocVmaS6WKOOX0s1ffJoGAfvVZVYJgroJGDvXlngsDF?=
+ =?us-ascii?Q?G2yeERbomC0nT4r9M85WJ2/V?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dc258970-147a-4036-c4c5-08d9adbf1a8a
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2021 13:50:54.7585
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: p9xhCtTOSl47Oy/GamyPWI1pa+pVTCZ114rb+2lqiGEQPlNpKddvwysaavTyItMfoYgYBRo8QmvsGR2e96mXQjGYE1Hkj1iKSGPI4edn7pE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR10MB5725
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10175 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 phishscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111220073
+X-Proofpoint-GUID: Zf1xbx-XS5ENE_H19ESPYJAQwHo7mxYv
+X-Proofpoint-ORIG-GUID: Zf1xbx-XS5ENE_H19ESPYJAQwHo7mxYv
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Nov 2021 14:25:26 +0800
-Jason Wang <jasowang@redhat.com> wrote:
-
-> On Mon, Nov 22, 2021 at 1:49 PM Halil Pasic <pasic@linux.ibm.com> wrote:
-> >
-> > On Mon, 22 Nov 2021 06:35:18 +0100
-> > Halil Pasic <pasic@linux.ibm.com> wrote:
-> >  
-> > > > I think it should be a common issue, looking at
-> > > > vhost_vsock_handle_tx_kick(), it did:
-> > > >
-> > > > len += sizeof(pkt->hdr);
-> > > > vhost_add_used(vq, head, len);
-> > > >
-> > > > which looks like a violation of the spec since it's TX.  
-> > >
-> > > I'm not sure the lines above look like a violation of the spec. If you
-> > > examine vhost_vsock_alloc_pkt() I believe that you will agree that:
-> > > len == pkt->len == pkt->hdr.len
-> > > which makes sense since according to the spec both tx and rx messages
-> > > are hdr+payload. And I believe hdr.len is the size of the payload,
-> > > although that does not seem to be properly documented by the spec.  
+On Mon, Nov 22, 2021 at 10:09:26AM -0300, Gaston Gonzalez wrote:
+> After removing the BITSET_T typedef in commit d8a364820e01 ("staging:
+> vchiq_core: get rid of typedef") the static_assert statement becomes superfluous
+> as now we are checking if the size of the u32 type is 4 bytes. Hence, just
+> remove the static_assert statement.
 > 
-> Sorry for being unclear, what I meant is that we probably should use
-> zero here. TX doesn't use in buffer actually.
-> 
-> According to the spec, 0 should be the used length:
-> 
-> "and len the total of bytes written into the buffer."
+> Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Gaston Gonzalez <gascoar@gmail.com>
+> ---
 
-Right, I was wrong. I somehow assumed this is the total length and not
-just the number of bytes written.
+You sent the first version after the merge window had just started.
+It's too early to be resending stuff.  Leave it for two weeks after the
+end of the merge window at least.
 
-> 
-> > >
-> > > On the other hand tx messages are stated to be device read-only (in the
-> > > spec) so if the device writes stuff, that is certainly wrong.
-> > >  
-> 
-> Yes.
-> 
-> > > If that is what happens.
-> > >
-> > > Looking at virtqueue_get_buf_ctx_split() I'm not sure that is what
-> > > happens. My hypothesis is that we just a last descriptor is an 'in'
-> > > type descriptor (i.e. a device writable one). For tx that assumption
-> > > would be wrong.
-> > >
-> > > I will have another look at this today and send a fix patch if my
-> > > suspicion is confirmed.
-
-Yeah, I didn't remember the semantic of
-vq->split.vring.used->ring[last_used].len
-correctly, and in fact also how exactly the rings work. So your objection
-is correct. 
-
-Maybe updating some stuff would make it easier to not make this mistake.
-
-For example the spec and also the linux header says:
-
-/* le32 is used here for ids for padding reasons. */ 
-struct virtq_used_elem { 
-        /* Index of start of used descriptor chain. */ 
-        le32 id; 
-        /* Total length of the descriptor chain which was used (written to) */ 
-        le32 len; 
-};
-
-I think that comment isn't as clear as it could be. I would prefer:
-/* The number of bytes written into the device writable portion of the
-buffer described by the descriptor chain. */
-
-I believe "the descriptor chain which was used" includes both the
-descriptors that map the device read only and the device write
-only portions of the buffer described by the descriptor chain. And the
-total length of that descriptor chain may be defined either as a number
-of the descriptors that form the chain, or the length of the buffer.
-
-One has to use the descriptor chain even if the whole buffer is device
-read only. So "used" == "written to" does not make any sense to me.
-
-Also something like
-int vhost_add_used(struct vhost_virtqueue *vq, unsigned int head, int bytes_written)
-instead of
-int vhost_add_used(struct vhost_virtqueue *vq, unsigned int head, int len)
-would make it easier to read the code correctly.
-
-> >
-> > If my suspicion is right something like:
-> >
-> > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> > index 00f64f2f8b72..efb57898920b 100644
-> > --- a/drivers/virtio/virtio_ring.c
-> > +++ b/drivers/virtio/virtio_ring.c
-> > @@ -764,6 +764,7 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
-> >         struct vring_virtqueue *vq = to_vvq(_vq);
-> >         void *ret;
-> >         unsigned int i;
-> > +       bool has_in;
-> >         u16 last_used;
-> >
-> >         START_USE(vq);
-> > @@ -787,6 +788,9 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
-> >                         vq->split.vring.used->ring[last_used].id);
-> >         *len = virtio32_to_cpu(_vq->vdev,
-> >                         vq->split.vring.used->ring[last_used].len);
-> > +       has_in = virtio16_to_cpu(_vq->vdev,
-> > +                       vq->split.vring.used->ring[last_used].flags)
-> > +                               & VRING_DESC_F_WRITE;  
-> 
-> Did you mean vring.desc actually? If yes, it's better not depend on
-> the descriptor ring which can be modified by the device. We've stored
-> the flags in desc_extra[].
-> 
-> >
-> >         if (unlikely(i >= vq->split.vring.num)) {
-> >                 BAD_RING(vq, "id %u out of range\n", i);
-> > @@ -796,7 +800,7 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
-> >                 BAD_RING(vq, "id %u is not a head!\n", i);
-> >                 return NULL;
-> >         }
-> > -       if (vq->buflen && unlikely(*len > vq->buflen[i])) {
-> > +       if (has_in && q->buflen && unlikely(*len > vq->buflen[i])) {
-> >                 BAD_RING(vq, "used len %d is larger than in buflen %u\n",
-> >                         *len, vq->buflen[i]);
-> >                 return NULL;
-> >
-> > would fix the problem for split. I will try that out and let you know
-> > later.  
-> 
-> I'm not sure I get this, in virtqueue_add_split, the buflen[i] only
-> contains the in buffer length.
-
-Sorry my diff is indeed silly.
-
-> 
-> I think the fixes are:
-> 
-> 1) fixing the vhost vsock
-> 2) use suppress_used_validation=true to let vsock driver to validate
-> the in buffer length
-> 3) probably a new feature so the driver can only enable the validation
-> when the feature is enabled.
-> 
-
-Makes sense!
-
-Regards,
-Halil
+regards,
+dan carpenter
 
