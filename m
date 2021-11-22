@@ -2,97 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37343458F58
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:27:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85F73458F5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:27:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239505AbhKVNaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 08:30:22 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:52958 "EHLO
+        id S239555AbhKVNa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 08:30:27 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:52980 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232089AbhKVNaQ (ORCPT
+        with ESMTP id S239302AbhKVNaS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 08:30:16 -0500
+        Mon, 22 Nov 2021 08:30:18 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 09E10217BA;
-        Mon, 22 Nov 2021 13:27:09 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 6185221910;
+        Mon, 22 Nov 2021 13:27:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637587629; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=ZOqoB6LrLA0edOmgFk3g+T1lzcj5WWJLexHPanjjwxY=;
-        b=TyQDPRkiGPWDsM/SklH8myiiP+oJa/KxfXnKMEmxeiGEQkOHW7UBUkWNBWkabeRVZPXWT/
-        10GrmJ/mS28xoiRLkC9h4JcVrjU0hGI+pXrr1ODP28dNyXEl26nllet3eDqH7+zcG0LP7D
-        cdeQH/3Z5eBWO6qbf3BUPHZX4IHx3fc=
+        t=1637587631; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rgDu+zmIUSJ3es9E2L+WjsfRzdC3UJEhdodvSrFGzsI=;
+        b=J6nEus+BF4XYNRXJe0dsl/9HPVlQ1bU77WiqZtoHcxSZulg9z2oMYl7VZVjHYWmYYphN3s
+        AUvZpoxPQ+SvZzZv7dWekI2+L/tRvwdNEHM0tCq55ODlcvqbuSFVj24tq570WFsc1IJYK3
+        LlLm++eBiY7gX9bGEHwGjbjZGoybdiA=
 Received: from alley.suse.cz (unknown [10.100.224.162])
-        by relay2.suse.de (Postfix) with ESMTP id B5B68A3B83;
-        Mon, 22 Nov 2021 13:27:07 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 37A19A3B84;
+        Mon, 22 Nov 2021 13:27:11 +0000 (UTC)
 From:   Petr Mladek <pmladek@suse.com>
 To:     John Ogness <john.ogness@linutronix.de>,
         Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>
 Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>
-Subject: [PATCH 0/5] printk/console: Registration code cleanup - part 1
-Date:   Mon, 22 Nov 2021 14:26:44 +0100
-Message-Id: <20211122132649.12737-1-pmladek@suse.com>
+Subject: [PATCH 1/5] printk/console: Split out code that enables default console
+Date:   Mon, 22 Nov 2021 14:26:45 +0100
+Message-Id: <20211122132649.12737-2-pmladek@suse.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20211122132649.12737-1-pmladek@suse.com>
+References: <20211122132649.12737-1-pmladek@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The console registration code has several twists that are hard to follow.
-It is result of various features added over the last few decades.
+Put the code enabling a console by default into a separate function
+called try_enable_default_console().
 
-I have already spent many days to understand all the effects and
-the desired behavior. I am always scared to touch the console registration
-code even after years working as printk maintainer.
+Rename try_enable_new_console() to try_enable_preferred_console() to
+make the purpose of the different variants more clear.
 
-There were several changes in the code that had to be reverted because
-they caused regression, for example:
+It is a code refactoring without any functional change.
 
-   + commit dac8bbbae1d0ccba96402 ("Revert "printk: fix double printing
-     with earlycon")
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+---
+ kernel/printk/printk.c | 38 +++++++++++++++++++++++---------------
+ 1 file changed, 23 insertions(+), 15 deletions(-)
 
-   + commit c6c7d83b9c9e6a8b3e6d ("Revert "console: don't prefer first
-     registered if DT specifies stdout-path")
-
-
-This patchset removes the most tricky twists from my POV. I have worked
-on it when time permitted since January. I have spent most of the time
-writing the commit message, understanding, and explaining the effects.
-I am not sure if I succeeded but it is time to send this.
-
-
-Behavior change:
-
-There is one behavior change caused by 4th patch. I consider it bug fix.
-It should be acceptable. See the commit message for more details.
-
-
-Future plans:
-
-I already have additional 18 patches that do further clean up of
-the console registration code. They still need more love.
-
-I send this 5 patchset first because they are clear win from my POV.
-And I wanted to do it by smaller steps.
-
-I would appreciate if anyone double checks logic of the changes.
-Anyway, we could put it into linux-next and see. I am quite
-confident and optimistic ;-)
-
-
-Petr Mladek (5):
-  printk/console: Split out code that enables default console
-  printk/console: Rename has_preferred_console to need_default_console
-  printk/console: Remove unnecessary need_default_console manipulation
-  printk/console: Remove need_default_console variable
-  printk/console: Clean up boot console handling in register_console()
-
- kernel/printk/printk.c | 104 +++++++++++++++++++++++------------------
- 1 file changed, 58 insertions(+), 46 deletions(-)
-
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 57b132b658e1..1acbe39dd47c 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -2861,7 +2861,8 @@ early_param("keep_bootcon", keep_bootcon_setup);
+  * Care need to be taken with consoles that are statically
+  * enabled such as netconsole
+  */
+-static int try_enable_new_console(struct console *newcon, bool user_specified)
++static int try_enable_preferred_console(struct console *newcon,
++					bool user_specified)
+ {
+ 	struct console_cmdline *c;
+ 	int i, err;
+@@ -2909,6 +2910,23 @@ static int try_enable_new_console(struct console *newcon, bool user_specified)
+ 	return -ENOENT;
+ }
+ 
++/* Try to enable the console unconditionally */
++static void try_enable_default_console(struct console *newcon)
++{
++	if (newcon->index < 0)
++		newcon->index = 0;
++
++	if (newcon->setup && newcon->setup(newcon, NULL) != 0)
++		return;
++
++	newcon->flags |= CON_ENABLED;
++
++	if (newcon->device) {
++		newcon->flags |= CON_CONSDEV;
++		has_preferred_console = true;
++	}
++}
++
+ /*
+  * The console driver calls this routine during kernel initialization
+  * to register the console printing procedure with printk() and to
+@@ -2964,25 +2982,15 @@ void register_console(struct console *newcon)
+ 	 *	didn't select a console we take the first one
+ 	 *	that registers here.
+ 	 */
+-	if (!has_preferred_console) {
+-		if (newcon->index < 0)
+-			newcon->index = 0;
+-		if (newcon->setup == NULL ||
+-		    newcon->setup(newcon, NULL) == 0) {
+-			newcon->flags |= CON_ENABLED;
+-			if (newcon->device) {
+-				newcon->flags |= CON_CONSDEV;
+-				has_preferred_console = true;
+-			}
+-		}
+-	}
++	if (!has_preferred_console)
++		try_enable_default_console(newcon);
+ 
+ 	/* See if this console matches one we selected on the command line */
+-	err = try_enable_new_console(newcon, true);
++	err = try_enable_preferred_console(newcon, true);
+ 
+ 	/* If not, try to match against the platform default(s) */
+ 	if (err == -ENOENT)
+-		err = try_enable_new_console(newcon, false);
++		err = try_enable_preferred_console(newcon, false);
+ 
+ 	/* printk() messages are not printed to the Braille console. */
+ 	if (err || newcon->flags & CON_BRL)
 -- 
 2.26.2
 
