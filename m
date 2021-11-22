@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E65A0459630
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 21:39:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B22459631
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 21:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240586AbhKVUmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 15:42:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48372 "EHLO mail.kernel.org"
+        id S240602AbhKVUmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 15:42:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235045AbhKVUmP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 15:42:15 -0500
+        id S238087AbhKVUmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 15:42:16 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0BEE460FE7;
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B51260FF2;
         Mon, 22 Nov 2021 20:39:06 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@goodmis.org>)
-        id 1mpG5h-001r5r-5T;
+        id 1mpG5h-001r6Q-Ba;
         Mon, 22 Nov 2021 15:39:05 -0500
-Message-ID: <20211122203905.001687595@goodmis.org>
+Message-ID: <20211122203905.190967569@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Mon, 22 Nov 2021 15:38:56 -0500
+Date:   Mon, 22 Nov 2021 15:38:57 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org,
         linux-rt-users <linux-rt-users@vger.kernel.org>
@@ -31,10 +31,8 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         John Kacur <jkacur@redhat.com>, Daniel Wagner <wagi@monom.org>,
         Tom Zanussi <zanussi@kernel.org>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        Clark Williams <williams@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: [PATCH RT 09/10] drm/i915/gt: Queue and wait for the irq_work item.
+        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+Subject: [PATCH RT 10/10] Linux 5.10.78-rt56-rc2
 References: <20211122203847.390551309@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,47 +45,18 @@ If anyone has any objections, please let me know.
 
 ------------------
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Disabling interrupts and invoking the irq_work function directly breaks
-on PREEMPT_RT.
-PREEMPT_RT does not invoke all irq_work from hardirq context because
-some of the user have spinlock_t locking in the callback function.
-These locks are then turned into a sleeping locks which can not be
-acquired with disabled interrupts.
-
-Using irq_work_queue() has the benefit that the irqwork will be invoked
-in the regular context. In general there is "no" delay between enqueuing
-the callback and its invocation because the interrupt is raised right
-away on architectures which support it (which includes x86).
-
-Use irq_work_queue() + irq_work_sync() instead invoking the callback
-directly.
-
-Reported-by: Clark Williams <williams@redhat.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Reviewed-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- drivers/gpu/drm/i915/gt/intel_breadcrumbs.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ localversion-rt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c b/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c
-index 0040b4765a54..3f4f854786f2 100644
---- a/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c
-+++ b/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c
-@@ -342,10 +342,9 @@ void intel_breadcrumbs_park(struct intel_breadcrumbs *b)
- 	/* Kick the work once more to drain the signalers */
- 	irq_work_sync(&b->irq_work);
- 	while (unlikely(READ_ONCE(b->irq_armed))) {
--		local_irq_disable();
--		signal_irq_work(&b->irq_work);
--		local_irq_enable();
-+		irq_work_queue(&b->irq_work);
- 		cond_resched();
-+		irq_work_sync(&b->irq_work);
- 	}
- 	GEM_BUG_ON(!list_empty(&b->signalers));
- }
+diff --git a/localversion-rt b/localversion-rt
+index 51b05e9abe6f..075041f2f7e9 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt55
++-rt56-rc2
 -- 
 2.33.0
