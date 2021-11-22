@@ -2,162 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A7145881E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 03:48:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED776458821
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 03:49:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235070AbhKVCv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 21:51:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25478 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229870AbhKVCvz (ORCPT
+        id S236539AbhKVCwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 21:52:11 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:26345 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238269AbhKVCwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 21:51:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637549329;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bCpHgtK0TLoUoBYAl3rKsWf4v1EviHMP7QNyo8Nuefw=;
-        b=eO+1y7hhModGV9J3rCIiD4km7JibIdbZZuGNesyTUYp9O2diAMjY9NNPWCPSJ9zjAtt/zq
-        m69MjJaXNRamcy/qs+jqxc7OKpN2L4HvzGIQ3luNRJaURioCf1wjdcBwqNLj1/0+rUhVpa
-        0LvMbtdTPZf/y4b17XXwn/Q6Po+AktQ=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-48-AkLZZ1oiOJu0CulX3PDYxw-1; Sun, 21 Nov 2021 21:48:48 -0500
-X-MC-Unique: AkLZZ1oiOJu0CulX3PDYxw-1
-Received: by mail-lf1-f72.google.com with SMTP id k5-20020a05651210c500b0040934a07fbdso11026947lfg.22
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 18:48:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bCpHgtK0TLoUoBYAl3rKsWf4v1EviHMP7QNyo8Nuefw=;
-        b=XwGt1G3ye70V4PnLhl5BODil8btGoYQViI1Vs3aZk0PPetGxKaIAeBk4YuSQYdDje7
-         nPFBde3vabjFRIUtCtN4qZkIRGoOYY/rRmWT5rwC9tWhrtHjqmAtjyDe8lJUc8ucDb7G
-         JxG3sFjZgTqfMUUhSHi4I+APPPNTCzDxKH2Bae6F6MBSO9L9HqXCCI7YpTXqMxV1JTft
-         p43J6X07EbUK1W56BHC+yJNgpf+vz8eDzSS6L1T6iLOlo9Ww6nPmbDcnY5vIN7tTwwIu
-         ijAk+QZFbvGhyoZ3Y7H/qg8xKHEslfg/FGmJYFRz8/vlo/soT9CZjzMJBrtbglVJO9ur
-         dKkw==
-X-Gm-Message-State: AOAM5318BEa9LhmNDu5ucoedR89CZ+0Hpcv7xlJDaKggkdY/zKVQYZ2k
-        GsHfteoENf7lz85OmPbnzpqm6vKPTjspGZfguanw9YRkgGjG9xDvUW55z7T/Sp7RMF9/C58k7OM
-        FnjtVc/3krRV9SACtGz2H+a/csQbZ01BlKrzgTnMG
-X-Received: by 2002:a2e:3012:: with SMTP id w18mr47494876ljw.217.1637549326834;
-        Sun, 21 Nov 2021 18:48:46 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzhMUoYJy/fa5HNf3Y1dZw9n8WaAFEGalW9iZHLhJvk00Yldk6U6avgseBmGbi5f8k7IKQdMCJIgKYGrl1mobY=
-X-Received: by 2002:a2e:3012:: with SMTP id w18mr47494851ljw.217.1637549326643;
- Sun, 21 Nov 2021 18:48:46 -0800 (PST)
+        Sun, 21 Nov 2021 21:52:08 -0500
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HyBRj2hdnzbhxW;
+        Mon, 22 Nov 2021 10:44:01 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 22 Nov 2021 10:49:00 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 22 Nov 2021 10:48:59 +0800
+Subject: Re: [PATCH 5.10 00/21] 5.10.81-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20211119171443.892729043@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <3576636d-4e18-841c-2524-0896b6aadfee@huawei.com>
+Date:   Mon, 22 Nov 2021 10:48:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20211115153003.9140-1-arbn@yandex-team.com> <20211115153003.9140-6-arbn@yandex-team.com>
- <CACGkMEumax9RFVNgWLv5GyoeQAmwo-UgAq=DrUd4yLxPAUUqBw@mail.gmail.com> <b163233f-090f-baaf-4460-37978cab4d55@yandex-team.com>
-In-Reply-To: <b163233f-090f-baaf-4460-37978cab4d55@yandex-team.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Mon, 22 Nov 2021 10:48:35 +0800
-Message-ID: <CACGkMEuNhRf8_nhAsJ68J4HFxGJcnjNyA8ZyktNcBhNGfSafmA@mail.gmail.com>
-Subject: Re: [PATCH 6/6] vhost_net: use RCU callbacks instead of synchronize_rcu()
-To:     Andrey Ryabinin <arbn@yandex-team.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        kvm <kvm@vger.kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211119171443.892729043@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 7:31 PM Andrey Ryabinin <arbn@yandex-team.com> wrote:
->
->
->
-> On 11/16/21 8:00 AM, Jason Wang wrote:
-> > On Mon, Nov 15, 2021 at 11:32 PM Andrey Ryabinin <arbn@yandex-team.com> wrote:
-> >>
-> >> Currently vhost_net_release() uses synchronize_rcu() to synchronize
-> >> freeing with vhost_zerocopy_callback(). However synchronize_rcu()
-> >> is quite costly operation. It take more than 10 seconds
-> >> to shutdown qemu launched with couple net devices like this:
-> >>         -netdev tap,id=tap0,..,vhost=on,queues=80
-> >> because we end up calling synchronize_rcu() netdev_count*queues times.
-> >>
-> >> Free vhost net structures in rcu callback instead of using
-> >> synchronize_rcu() to fix the problem.
-> >
-> > I admit the release code is somehow hard to understand. But I wonder
-> > if the following case can still happen with this:
-> >
-> > CPU 0 (vhost_dev_cleanup)   CPU1
-> > (vhost_net_zerocopy_callback()->vhost_work_queue())
-> >                                                 if (!dev->worker)
-> > dev->worker = NULL
-> >
-> > wake_up_process(dev->worker)
-> >
-> > If this is true. It seems the fix is to move RCU synchronization stuff
-> > in vhost_net_ubuf_put_and_wait()?
-> >
->
-> It all depends whether vhost_zerocopy_callback() can be called outside of vhost
-> thread context or not.
 
-I think the answer is yes, the callback will be mainly used in the
-zerocopy path when the underlayer NIC finishes the DMA of a packet.
 
-> If it can run after vhost thread stopped, than the race you
-> describe seems possible and the fix in commit b0c057ca7e83 ("vhost: fix a theoretical race in device cleanup")
-> wasn't complete. I would fix it by calling synchronize_rcu() after vhost_net_flush()
-> and before vhost_dev_cleanup().
->
-> As for the performance problem, it can be solved by replacing synchronize_rcu() with synchronize_rcu_expedited().
+On 2021/11/20 1:37, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.81 release.
+> There are 21 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 21 Nov 2021 17:14:35 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.81-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Yes, that's another way, but see below.
+Tested on arm64 and x86 for 5.10.81-rc1,
 
->
-> But now I'm not sure that this race is actually exists and that synchronize_rcu() needed at all.
-> I did a bit of testing and I only see callback being called from vhost thread:
->
-> vhost-3724  3733 [002]  2701.768731: probe:vhost_zerocopy_callback: (ffffffff81af8c10)
->         ffffffff81af8c11 vhost_zerocopy_callback+0x1 ([kernel.kallsyms])
->         ffffffff81bb34f6 skb_copy_ubufs+0x256 ([kernel.kallsyms])
->         ffffffff81bce621 __netif_receive_skb_core.constprop.0+0xac1 ([kernel.kallsyms])
->         ffffffff81bd062d __netif_receive_skb_one_core+0x3d ([kernel.kallsyms])
->         ffffffff81bd0748 netif_receive_skb+0x38 ([kernel.kallsyms])
->         ffffffff819a2a1e tun_get_user+0xdce ([kernel.kallsyms])
->         ffffffff819a2cf4 tun_sendmsg+0xa4 ([kernel.kallsyms])
->         ffffffff81af9229 handle_tx_zerocopy+0x149 ([kernel.kallsyms])
->         ffffffff81afaf05 handle_tx+0xc5 ([kernel.kallsyms])
->         ffffffff81afce86 vhost_worker+0x76 ([kernel.kallsyms])
->         ffffffff811581e9 kthread+0x169 ([kernel.kallsyms])
->         ffffffff810018cf ret_from_fork+0x1f ([kernel.kallsyms])
->                        0 [unknown] ([unknown])
->
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.10.y
+Version: 5.10.81-rc1
+Commit: ed689bd1df46a07911fffa509cd06c5ec7beb9c1
+Compiler: gcc version 7.3.0 (GCC)
 
-From the call trace you can send packets between two TAP. Since the TX
-of TAP is synchronous so we can't see callback to be called out of
-vhost thread.
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 9019
+passed: 9019
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
 
-In order to test it, we need 1) enable zerocopy
-(experimental_zcopytx=1) and 2) sending the packet to the real NIC
-with bridge or macvlan
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 9019
+passed: 9019
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
 
-Zerocopy was disalbed due to a lot of isuses (098eadce3c62 "vhost_net:
-disable zerocopy by default"). So if we fix by moving it to
-vhost_net_ubuf_put_and_wait(), there won't be a synchronize_rcu() in
-the non-zerocopy path which seems to be sufficient. And we can use
-synchronize_rcu_expedited() on top if it is really needed.
-
-Thanks
-
-> This means that the callback can't run after kthread_stop() in vhost_dev_cleanup() and no synchronize_rcu() needed.
->
-> I'm not confident that my quite limited testing cover all possible vhost_zerocopy_callback() callstacks.
->
-
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
