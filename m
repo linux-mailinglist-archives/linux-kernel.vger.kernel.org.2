@@ -2,155 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89DA1458E9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 13:44:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D49F3458EB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 13:51:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239197AbhKVMri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 07:47:38 -0500
-Received: from mail-eopbgr70085.outbound.protection.outlook.com ([40.107.7.85]:10085
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233483AbhKVMrf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 07:47:35 -0500
+        id S239518AbhKVMyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 07:54:36 -0500
+Received: from buffalo.u-blox.com ([195.34.89.137]:33247 "EHLO
+        buffalo.u-blox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229983AbhKVMyf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 07:54:35 -0500
+X-Greylist: delayed 356 seconds by postgrey-1.27 at vger.kernel.org; Mon, 22 Nov 2021 07:54:34 EST
+Received: from mail_filter (localhost [127.0.0.1])
+        by buffalo.u-blox.com (PF_LO_10026) with ESMTP id D57953A205;
+        Mon, 22 Nov 2021 13:45:30 +0100 (CET)
+Received: from ASSP.nospam (localhost [127.0.0.1])
+        by buffalo.u-blox.com (Postfix) with ESMTP id 743403A1F7;
+        Mon, 22 Nov 2021 13:45:30 +0100 (CET)
+Received: from unknown ([127.0.0.1] helo=anyhost.local) by ASSP.nospam with
+        SMTP (2.4.7); 22 Nov 2021 13:45:30 +0100
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ml+7ykrxBOOSE2arnd0g2wvKWAgw0+y2mDHmECTKA82KbMwN0n1J27uHyC71/KBUOn83euQf+zhbB8P2q/wtq3STCDlfLcDm8GoAmQlmaOcZuEVtIFyyTRqnZGTbe0smDxtD5hMJzA8/sccU90wMpgoSTURZZBWKuOE5K7mBPXNZK71KxhJlox8YJtyyiG/jmLcVFQsScGxadDLJ9Y7Qhgewro9CXOGqscbRZfAmp97Rhf+TIU/Id+dnAAe6An0f8MqKhccskk0bnSK0hXI9RnjMNDXfwCI7e0bbdDISu2TVQ9rxnJY/7epjUDlhkc103j5HlcqpuE3oIy7AF7AmuA==
+ b=nRKomBBhsGWjda+Lj1k+MMyCslumqpHC4wQpRvgPcP8EXAGgwHMXoZQ+F+H0rFmwd3iFECVlOCX/hTFbdsaKBp+laj7Xp0FxvhPIW69f+G3Mrx3QjwqYfE9/Kxh5IB1d5EAjRk0tRQEIV45UBd4Zc2OWWa0NYCYsY5ypSl1AWFCsUw7tkCOrrJ2d5oGwP1zB5/rkiIIR63MBHZuNyrfxsmJv44dqU0CWu/das0c7E2vKhyPv7uVkQNt3Kf7PE/l7fpjWwiNj1jxSIDdu3oVDOX70i4KfYhipy8U5MpyuKSX2Wxn1graVJ82WgH+XTIeDeQeBDmdfeMh0WKLAh6qEfw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HfPbyLRSCyC8bcHdAuZBTubeKb6HcGnuVYS78qO2qD4=;
- b=n+K8EZ6U6bMeMVq/edQMRInSxroeJxkf/Xb8W03J+ITWvaHuOOdeTgOoB79rJA8gG6ayPr7wlf5oJH6jDuPKIeJxhGY22TrXpWV3gvaTdrTzK8mEtRIxM1ekElsJkyXxDx5LyNwWAqUWa3+oeQDFkx2BiR8LofcZciTtZg1niuyiMw7O/2eGyOg9R0CuBZShieLVn/k2uBN4aQO4gccD8H1zWQsuJ8af3Q2nA3w+5v1D9i6brL8pQuTDLN2Dkx2hhi6mk7fvjUof8lXY+SFeaNp0NFtv9TJQCKf31ukKQffNtP1CjPwumu26gRqyXVOnaeUCas3Xv2bWShl4IhdEqw==
+ bh=K3zqhyhurrsFKeHlyXwXT+jdvRVHlcFALdX/Xe7EY8U=;
+ b=Oc7k6AXapxnw47rIxnmTmbgOY5YpsIuSi6jSMmn5qtxTBvw4544ESC/SFqECHnWmgp7Sec8TSrVvqh8L7jG1hjL8Z9GBMzl7idQjtyR/w3TI+XyJ6uK+4LmovQrLXp06ltZpuQPLokta3oSHP/QdAKP5f7xaayT3mKGZzSpAYfZ4iaYDMtcWdKIxVXHoP9HuePjYF2e3KmyTRAu1AG/EhCh3KR2LhfW5gfTaVXb5ArHDcvE3i3/gEP1/VtU4LhST7zo3o0IeB1u1SfH6s3pvR0EKOE3E5AZVN5KFcQI2HgOAOVBURNnFJ34/v63fxRi3avW/H77bVcc2IC5Yx+K2Nw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fi.rohmeurope.com; dmarc=pass action=none
- header.from=fi.rohmeurope.com; dkim=pass header.d=fi.rohmeurope.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=rohmsemiconductoreurope.onmicrosoft.com;
- s=selector1-rohmsemiconductoreurope-onmicrosoft-com;
+ smtp.mailfrom=u-blox.com; dmarc=pass action=none header.from=u-blox.com;
+ dkim=pass header.d=u-blox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=u-blox.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HfPbyLRSCyC8bcHdAuZBTubeKb6HcGnuVYS78qO2qD4=;
- b=LOWrIbu6RZHaXIot2aUvHSYbKhmlyfCzHZ/QvxcsdaX/9I5WVOxBPZEyayutjbNCYzIGVw0GLXvGP8et98Y5NgRltXfnivG/GDud1dkyiWgzhRat8AYa/5knZxNWTJOTi2jnpk8XGnoeCHqgF9WP+ux1GuczaXELCbn3eevdu/g=
-Received: from HE1PR03MB3162.eurprd03.prod.outlook.com (2603:10a6:7:55::20) by
- HE1PR0302MB2586.eurprd03.prod.outlook.com (2603:10a6:3:eb::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4713.19; Mon, 22 Nov 2021 12:44:25 +0000
-Received: from HE1PR03MB3162.eurprd03.prod.outlook.com
- ([fe80::544e:754:6241:aa7f]) by HE1PR03MB3162.eurprd03.prod.outlook.com
- ([fe80::544e:754:6241:aa7f%6]) with mapi id 15.20.4713.024; Mon, 22 Nov 2021
- 12:44:25 +0000
-From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/4] regulators: irq_helper: Provide helper for trivial
- IRQ notifications
-Thread-Topic: [PATCH 3/4] regulators: irq_helper: Provide helper for trivial
- IRQ notifications
-Thread-Index: AQHX35C1xKJZ2J95XUWBjS7fJK/346wPbrKAgAAPiIA=
-Date:   Mon, 22 Nov 2021 12:44:25 +0000
-Message-ID: <3239d539-a2da-b913-b644-83766c6cabfd@fi.rohmeurope.com>
-References: <cover.1637330431.git.matti.vaittinen@fi.rohmeurope.com>
- <fc622a2135be79f718d32efac156558470568340.1637330431.git.matti.vaittinen@fi.rohmeurope.com>
- <YZuDoSvGj8/SpqjU@smile.fi.intel.com>
-In-Reply-To: <YZuDoSvGj8/SpqjU@smile.fi.intel.com>
-Accept-Language: fi-FI, en-US
-Content-Language: fi-FI
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fi.rohmeurope.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 51f770fd-01ad-4d10-6fb8-08d9adb5d11b
-x-ms-traffictypediagnostic: HE1PR0302MB2586:
-x-microsoft-antispam-prvs: <HE1PR0302MB258675431B1849C18180E895AD9F9@HE1PR0302MB2586.eurprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZEvyvNeE0YLPu9mZRliOvJxsLRWZW0ZLzoIVjxH8xjkAkPP8h4JjRguXipASEJRA29VcP0J8jb51JF698Bd/9j+1oT4JIwLW9JR1M7YtyXGPI+5js/5JSF529JTbmJTt6lx5mj9dL4Ktmg/8R0Cng44dtIehLtMs/glQqTOcde+2FSlVTS2wuTzhmGYsnfrspowQn0mWCtfSxhNHc6DuoWIk9PWSjInqjddNxwmN8c+Hbjz1NVbPTbLCocC9EhDYkSqc34F0a8LtbYRSPK3QIfVx3k/QcmO35kkbVkIoy60lMCPBa6aBs4lNVIM+jl8uIaj1CWvsWFho2q+nvbOcCktktL78ETndfrVmbgm+QBPTgNy1vTrv2Vsg9PXNSu+v0ZI4s88V8p5rcWVELzGPJu7c0xrOsL7Vi+SR+yWER+ALV8CPqXVsbE8u56V+PR3eOmOPxbrPQufUTtlGIBq+0AaSYjoL8JJu+kyiGy7rjNwJ0+CaXkE4VeZPYfdjYAJ5xkdKL+d2yQV4261Rdw4Yuhaf1dOINC0Jd5oSJvsaYPnFQFfnkCRjUuY9nak68zs1CxPcOkH4WuvPnGq6PPkSp5N6lUO18gQP4rR7ZKg9C04FZeJvuZmYaWka/i9kS1AaXsyPmHRKQ9oLi7Kft89OBwZNJZ/hkcmMjXMey8o9kPwH+AnRwalMd+XpSHN9b2G28Gw6auPx0FMSr5K54pYcL7dycYn3fes84Cy/h3OnBKNiFK9eVApQek6Ixe6JbrYB3t/qnDi4MlGmJVlpHICs8w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR03MB3162.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(15650500001)(66446008)(6512007)(4744005)(64756008)(316002)(26005)(31686004)(122000001)(8936002)(83380400001)(4326008)(186003)(38100700002)(2906002)(76116006)(38070700005)(31696002)(66556008)(2616005)(6486002)(508600001)(66476007)(5660300002)(71200400001)(8676002)(86362001)(66946007)(54906003)(6506007)(6916009)(53546011)(7416002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Z2l4dkpiRmpoNmg2SmJsZnpubTMwNytBY2VlV3VuZXdZeFU5bTJzUjlYVXZV?=
- =?utf-8?B?T3hDZFRLTVFrbGxGNldIRWNXYXVSREdVNzBzcUN1akYxcFgvTnVDR3VYMm91?=
- =?utf-8?B?U3JWcVphYmZ2dTAxcnMwcFc4K1NXVVFlTm0vdUhMQk5HM2VWbUJndG9OazMz?=
- =?utf-8?B?V0FGSnNwazBpMzl0bGczLy9nN2ZLclFPdW5rSk1WbDhFeHY4UWJ3RFR0Z09T?=
- =?utf-8?B?RGVOS1UyNWZtQkd5aUlWcmxzT2E1N3ZUcW9IOForN0lPYW1GME1RYlFZbW9V?=
- =?utf-8?B?RFRRVU9sTkszVkZwZEw5c1c1dHk3OEQxVHZJeGlzazhuLzg5UURXWDROd1FX?=
- =?utf-8?B?RUJtVVZSQ2RLS2srZTNKclVlMnJkOGRlMW9wZmVnc1pXdjFsa3JjSWNNMHZl?=
- =?utf-8?B?TWZaRmhVcjUraEF4RlhST1F0MVdJakFtTFp2WjJUWFNyY1lST0x1NlRjUWEy?=
- =?utf-8?B?bjY2SGI2dG5GbWNTWk1zNmhFNnBtQkJaY0l0YnBxTEZ1dkhQN3Y5SjJSYzFD?=
- =?utf-8?B?MHd3OEJ4aTg0UzIwbFNSNjBHVWhVeDVya3l6TzZpVm9UUHlocDg3Z0xtM1BV?=
- =?utf-8?B?SlovZWQ4RUd6OGg3dFkxQ1JQbU16UWpZaGVrZ2lpZDQ3S1B0Q25UN2pLeGV3?=
- =?utf-8?B?QTk0QklBTlNvMHAwT0NtZ0UxSFFLQ0Y2UXA0WFg1YnVkc2NYZ3FYUzFDd3ZS?=
- =?utf-8?B?OFRvKzAvVE5Ud0F3ZWNDZWJTTW11cUxpQytsQTBnK2Y1d1piZFg4ZmRmR1dD?=
- =?utf-8?B?YitOdG92SE1VcngxK2V4aGJYa0F6Z0RLRlR3Q003Vzg4VlNrZEtYdEwydzdP?=
- =?utf-8?B?RjVxK3lnaWhUMDVWM1RBRzlwRm9FdXhtUERVdVBpa0dveTZJaFlLMnZnL3JL?=
- =?utf-8?B?Ly91VE5FYUtHMjJuWEF6VWRodTR3NEluM1RPdFhQR3pBNkIyR04rM01NcFVu?=
- =?utf-8?B?OFpPQXJ4a3NCendqeGZzN3pEMFFhL29QUWVZNFFuQ2dvR0k2UGRaWmwzRlcz?=
- =?utf-8?B?ZWRFcXh3ZUZDWVdWczZCbVArZnNFb3ZpMFl6REhhZitsNUJ0SDMyMURCWjFM?=
- =?utf-8?B?UlZjbGMyZ2toMk1yUFVCd0NlbTlmWTFxRGlGODE5ZGlQNVE4YjZqdUxwcXhP?=
- =?utf-8?B?YWx2SE1DMERsQlorcmREWHpOWUlJMDI5OVJlUFcwVExOMCsreU4vQWxZTTlU?=
- =?utf-8?B?RWIzcys5dER1M0VCbkVzc2lMY1pKN2NPWkxwYWVpSnMwK3hqYkxtM3pCdGhD?=
- =?utf-8?B?SXp4VDllT0FWNSthQ254UTBKZi9FZEptdW1URzVrYytDSHJ6YWY2ZzVLT1hQ?=
- =?utf-8?B?U0tQOVc5dDlOSDVaQVdGZEtYTnZHTUN2RkVqckdONzJuNGNRMVozQ25PbnE4?=
- =?utf-8?B?RWhFNGFNRU9LYTF1cUxOS05FSEtUcVhYa1krWEorcnF1eDlGbm9iK1hqbUMw?=
- =?utf-8?B?T1dKcXYvcjYwb2d6bCtJVkRUTVdNWklaT09qbnN1NHdQNFltMGRSNG1JdU8x?=
- =?utf-8?B?SXYwenhsSElGN0d3WjFuNmV1enpTUlh6a3FmV1g4ckRNSlBnYjJWejZFQnhz?=
- =?utf-8?B?dDcyNkswa0czYzgrNE5pRVVOS1R6OFJ5SDF0RVRnYVRNWndwdWptTVF0RHIv?=
- =?utf-8?B?TUt5VmN0TkF1MmRFUnBxZGFOZFVUMGQrektWRW5rK1pTMFk4ZGdhU1g2Zm1G?=
- =?utf-8?B?eGl4cjNVU0dtQXd4WGNaNU9OMVVRRjQ0YVRtaHRHVTcxMFZCUk5TRVRva2t6?=
- =?utf-8?B?M0MxM2VCbnBPOUxHNXQ2OHlLOU1SbG1kZFdQK3dYNnIrREduNEF1OGlUSUxa?=
- =?utf-8?B?Y0tXRktZUnlyYnJNZTkydVFTRnFwQ3U1d1BQc2UvY200Q3N6aTk1NkZRbm55?=
- =?utf-8?B?Qk1Rd2l3c0hMOTRvSHpyS0p0dXZXeUhTMnFhY2lpUWFIRlMvbFRGYWJuelEx?=
- =?utf-8?B?UWFYNzdFaDBuYXNUaVJkSlRGQjAzU1g2dzYyQ3dDMHFzVHRTZXpoRnB5TmZX?=
- =?utf-8?B?bDlsdEFOSTVWN0RGL0ZVdVlvSnFZNXVVSDlITERwOHZOV1NhK2tQMmluNEta?=
- =?utf-8?B?RVlNZzJQUjlSSUVXU0F4WDVBbmtUR1lKNEhjZjZPbmxpRjV4R3BCNEViSDkr?=
- =?utf-8?B?aWs2bjM5azBMQ2NHc0RkWlIvWEpRd3VoYUZNaDZjTGw0cW1GS2laVXNLZzA0?=
- =?utf-8?B?ajVmMTEvbXI4NDdHSlBNalZJTytBVXpyZGh5ZWRRZ3VLTnZlVEh1Uk8rblU1?=
- =?utf-8?B?UWZuQm1LQVdnRFVIMXNpeXp1MjlkSVFVZ1dvS2lsRHVwZXJ5bFA1TGVwb1Vl?=
- =?utf-8?Q?hnYxbVWXIZ359aS+29?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <CC484DAE5FB76347910CFDAE80BB54F5@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ bh=K3zqhyhurrsFKeHlyXwXT+jdvRVHlcFALdX/Xe7EY8U=;
+ b=mNxOvSoD+OUbCq8yBcHn9k8Yhpivguu/0/MAX+1xYPRC59AkKL2Gf4Xsmw8B1gIBX2kTDqjz3H4utkZdIwzN4hjqKYIXNvRZeNi+WAYgkXJHiXic5dTUUL+tZpmvC6oPtLXejHGXUZNR8qHdjEsSqOP7hHE9ljxmVFtOR40U0d4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=u-blox.com;
+From:   Patrik John <patrik.john@u-blox.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <gregkh@linuxfoundation.org>, <ldewangan@nvidia.com>,
+        <thierry.reding@gmail.com>, <jonathan@nvidia.com>,
+        <linux-serial@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        Patrik John <patrik.john@u-blox.com>
+Subject: [PATCH] serial: tegra: Fixes lower tolerance baud rate limit for older tegra chips introduced by d781ec21bae6
+Date:   Mon, 22 Nov 2021 13:44:26 +0100
+Message-Id: <sig.096060f39c.20211122124425.74031-1-patrik.john@u-blox.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AS8P251CA0006.EURP251.PROD.OUTLOOK.COM
+ (2603:10a6:20b:2f2::32) To CWXP265MB2072.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:400:7c::7)
 MIME-Version: 1.0
-X-OriginatorOrg: fi.rohmeurope.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f3da21db-f688-4c09-0dee-08d9adb5f6bc
+X-MS-TrafficTypeDiagnostic: CWLP265MB4036:
+X-Microsoft-Antispam-PRVS: <CWLP265MB40365D8EA24D305B06C13D63CC9F9@CWLP265MB4036.GBRP265.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:619;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hTmZLRv/oUbDR5DmAQQHG9GkBywlVfTYn2rqCzUYMu2Dk6q8FQxlZONWhPS/BehJqo2yYnTkVyW569KtISd+RJkxXVAXJiXiA35hj4BFyPBVsfJY6rNyeKKdUqWAac/SN7ojkrJoxDCrkZaI/ZsVn+lGV/pDX+OaYzBiblpPRbqpMB/fmkT2lLj+CJQ8+LkA3ZogarzbYfpXEfaH/P1j13ljefH1Uivma0sptB1yFMI4zHrodosTMdLDTbXHdxWzJWJAAzbzoMi7d/8Vuy42BWJ4Yj1nG6d9Q3+q4fditTHirv5swLb737vnqrLdGAyjj9pzOvwUFSjJbxIpRLYFNAOC0Ap5gW+e6SBWXUAH0Q/783CcPSc7tPnIwg1tdp+rM4YFlOL6iud5QGc8GOBvLKVIdOcrVdhqUYMKuHrF+jHz4yIzvoJo/oR/V4g4zQ+pYSVQ9PSSJrQ5S+fceVmA0ihoqj129yrSozsLnGW9kNIBMMPMgXCGpHbkofUNInjw5bn2lrW91gW+gEycoWqaloeSO5CcqQkrB1Ph9CjgiIcQ+66OoKjBE1RLAZGJtFXZ8MpgwVxhEH3BFgs6edReaIYIYM33EPiYx4QwIrnCUk4jxKNsgRWMDBORvlS96UgihVx9tjKM30NiMnj5Yw4uP0gVAQO+DnHaAZ1JgrKkK8t398qtIsLePDRtvMG0pY5vm8bGA2FPaaTL60ddXxegLFvFsyjN6OXBSmA6HbRuU7Gwu2CghkVaaFckj8J5EEwZfXmljdj8QWReZAMxQ7CiFfjcSTXHM7LhVmCEGPRRSOvXkynCDVx7WCkVuPzCW5rAhlGuhjRwWVxyust/EYCOj6U+a30amw1ndI/dqxRzMe8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2072.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(36756003)(52116002)(38350700002)(107886003)(86362001)(8676002)(38100700002)(966005)(6916009)(66556008)(66476007)(66946007)(44832011)(956004)(2616005)(1076003)(6486002)(6512007)(4326008)(2906002)(508600001)(316002)(83380400001)(26005)(186003)(8936002)(5660300002)(6506007)(16453003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?W6kSAXldpUknoght0Bi5UHthsls5OcrxxblWRpMTpqI/rCkugKjZ3ccR25LF?=
+ =?us-ascii?Q?ms81vjvFNMd4RoU98Vn6QbH8HcxXQQjRFgAgW8uzH2x1/XntievO2MFtFkyH?=
+ =?us-ascii?Q?xOaGw2SZZkiq5xH9NhgdfgIDEpCMO+YROadUPFzOo4RiHQbdxkgmqUFxw3qA?=
+ =?us-ascii?Q?eMMyOnqX8XrY/JZali2dSigagWf5dvxdBne+6EBpWFt8D76+vP2+earzjDrH?=
+ =?us-ascii?Q?jjKmOQIczS35pPn5nX3ZS3Hw6UrBKc/moErZSEWAFTY/LpIXqMjHee61pxkN?=
+ =?us-ascii?Q?nijsFoSRv71T1dq8hQStiMRc73SqlbHQLkfaRyc0uG7PC1PwS2dWgHLnZ6SI?=
+ =?us-ascii?Q?7x7Y1XJctfZNnguA06rBleguNCzNBiYrolQ9uLDujDCelXBogzvZRC639Cpz?=
+ =?us-ascii?Q?20Pqja93ZsVImgCDnGhGvVVZa2uRa5Gtb0UxGKSrt9fRXE9D7arD1JRkIjea?=
+ =?us-ascii?Q?sy5SgqePMUWY5TlmX9otOx+QloSYi3BOipkjknLuCGz0KSivj3ScrqsT67gp?=
+ =?us-ascii?Q?UkwVh+/jx38X/NlLKf3rBnncPsCImNBR7G8zt4f0uuCFN+/pCUy4WKRuEtAw?=
+ =?us-ascii?Q?LQYRg9kP6w1I8vMxmRZ0ZR9Rl2leqRxWJe1hgeNxt681V4mmNjTEyPlW7PTs?=
+ =?us-ascii?Q?9dNVL1YOhsgwzlpCHNIV2OllOA+SSOP5xFPmMxF/G0KHAmU9blZoPG/tBmSV?=
+ =?us-ascii?Q?wWL5qExoywtPJ9YVXAFNJ+v6GQG9JQnWXyR9vMTSr3mZ+mYHegBHDcozbhB9?=
+ =?us-ascii?Q?zC6lXST/xj6LeF7RCjSWpHVyqFsVLjkUmOT8zBiXmV/aSrwZ7BkrnhtD+p8C?=
+ =?us-ascii?Q?plH2Gt7LtwDUOUUBkfV+EUBAvmsa7PqvAwm9GtXfuMPN8C4bFKc9FnQ7K9Fp?=
+ =?us-ascii?Q?Ze/YaL02ZClojvWUuES5qVAp+pjfDwIXT0MAz4eugq39gRFBrLMwjL4t7rQ7?=
+ =?us-ascii?Q?Pc0cb65fwBiT8Noq7vuBLAV8/GE4jxvGMi/plVnjKV/1tBAWfLU5FMEO4M5q?=
+ =?us-ascii?Q?G+wMl4O8yZvpgsoUowZLfgg2kWW/1ccGfwrSC8RFORct/UKZAoDTkMxhXP3m?=
+ =?us-ascii?Q?jhRVdUSxTuXCSQjvF68AEDmNNS+QVM56KRmpvF7NV+vGYxphQWP+uJIadNTW?=
+ =?us-ascii?Q?n5Eefn9nofaX3+ZNy8yA3KPtFsFNxmBgURVshHrTiMs7pdaVw7gUvY6E6gJw?=
+ =?us-ascii?Q?yjGfSBk1WAefsSjTs1Xu251zky/tnMe4PKGlF/OCYLV8Z1bwBwjG5vPZEWE2?=
+ =?us-ascii?Q?pHD7P8LfDtiWgemvBsRjDLypdehpMZO1i7vc+RISggVMZPpPHYXss2K33caV?=
+ =?us-ascii?Q?TPnjQ0CoRMHVja0wn8Un+Q+nZtltP8drrxXWVXP9fZMfxJsWcFzWsxMs2N7o?=
+ =?us-ascii?Q?hoMDyruf05EOvl0jT0LVQqaVTz2+OerOO9issioqfaG+xMWBuxYA/+NcBdJm?=
+ =?us-ascii?Q?ytNNvHrOut04uh0ov5NPOJDuzGjwTJtfL2FXvl4o3IYvVXVB8xbAB2oEQgya?=
+ =?us-ascii?Q?jCODc/JZP1mX7DSyE0UniiL85+esERnOE9QuuSVExqb1p+H6m2SVG/F5160Q?=
+ =?us-ascii?Q?JsuFjn1/6QCMjBMP6nSFGYTHrUw9duy3Ha9ZzbQZ5TzQqTQlRi9HNbdj6Urs?=
+ =?us-ascii?Q?BSyGI9ujWCCQ/xLm/PvKTM4=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f3da21db-f688-4c09-0dee-08d9adb5f6bc
+X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2072.GBRP265.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR03MB3162.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 51f770fd-01ad-4d10-6fb8-08d9adb5d11b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Nov 2021 12:44:25.7198
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2021 12:45:29.0528
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 94f2c475-a538-4112-b5dd-63f17273d67a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2CKH9S4P2897IhX3ddJ3pUzZ7mB/f8n7tDURhfvwfdrv7YQo1vlmzt4FiCjOaLPGuDtDnDgf0vGOm50aWGrwpHnOczbfoEjX6a+1+gBbEHS1GjMKcvMgFTT1mcucRbqW
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0302MB2586
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 80c4ffa6-7511-4bba-9f03-e5872a660c9b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kgtMpxD7hS1kAz+DntN7wG8IIk3aQVdxCvObEH0PHaG5oqb1iPcBIyNUYeHwAdLA31mroOUdQ2pl86AdgGXwGA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB4036
+X-OriginatorOrg: u-blox.com
+X-Assp-Version: 2.4.7(16004) on ASSP.nospam
+X-Assp-ID: ASSP.nospam 85130-23316
+X-Assp-Session: 66720294 (mail 1)
+X-Assp-Original-Subject: [PATCH] serial: tegra: Fixes lower tolerance baud
+        rate limit for older tegra chips introduced by d781ec21bae6
+X-Assp-Client-TLS: yes
+X-Virus-Scanned: clamav-milter 0.99.4 at buffalo
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTEvMjIvMjEgMTM6NDgsIEFuZHkgU2hldmNoZW5rbyB3cm90ZToNCj4gT24gTW9uLCBOb3Yg
-MjIsIDIwMjEgYXQgMDE6MDQ6MTJQTSArMDIwMCwgTWF0dGkgVmFpdHRpbmVuIHdyb3RlOg0KPj4g
-UHJvdmlkZSBhIGdlbmVyaWMgbWFwX2V2ZW50IGhlbHBlciBmb3IgcmVndWxhdG9ycyB3aGljaCBo
-YXZlIGEgbm90aWZpY2F0aW9uDQo+PiBJUlEgd2l0aCBzaW5nbGUsIHdlbGwgZGVmaW5lZCBwdXJw
-b3NlLiBFZywgSVJRIGFsd2F5cyBpbmRpY2F0ZXMgZXhhY3RseSBvbmUNCj4+IGV2ZW50IGZvciBl
-eGFjdGx5IG9uZSByZWd1bGF0b3IgZGV2aWNlLiBGb3Igc3VjaCBJUlFzIHRoZSBtYXBwaW5nIGlz
-DQo+PiB0cml2aWFsLg0KPiANCj4gLi4uDQo+IA0KPj4gKwlpbnQgZXJyID0gcmlkLT5zdGF0ZXNb
-MF0ucG9zc2libGVfZXJyczsNCj4gDQo+IEkgd291bGQgcmF0aGVyIG1ha2UgaXQgdW5zaWduZWQs
-IGJ1dCBhbnl3YXkuLi4NCj4gDQo+PiArCSAgICAhc2luZ2xlX2JpdF9zZXQoZXJyLCBzaXplb2Yo
-ZXJyKSAqIDgpKSkNCj4gDQo+IGh3ZWlnaHQzMigpIHNlZW1zIHN1aXRhYmxlIGhlcmUuDQoNClRo
-YW5rcyBBbmR5LA0KDQpJXGxsIHNlZSBob3cgaXQgd29ya3Mgb3V0IGFuZCByZXNwaW4uIEkgYWdy
-ZWUgdGhpcyB1c2UvY2FzZSBwcm9iYWJseSANCmRvZXMgbm90IHdhcnJhbnQgYWRkaW5nIHRoZSBz
-aW5nbGVfYml0X3NldCgpLg0KDQpCZXN0IFJlZ2FyZHMNCgktLSBNYXR0aSBWYWl0dGluZW4NCg0K
-DQotLSANClRoZSBMaW51eCBLZXJuZWwgZ3V5IGF0IFJPSE0gU2VtaWNvbmR1Y3RvcnMNCg0KTWF0
-dGkgVmFpdHRpbmVuLCBMaW51eCBkZXZpY2UgZHJpdmVycw0KUk9ITSBTZW1pY29uZHVjdG9ycywg
-RmlubGFuZCBTV0RDDQpLaXZpaGFyanVubGVua2tpIDFFDQo5MDIyMCBPVUxVDQpGSU5MQU5EDQoN
-Cn5+IHRoaXMgeWVhciBpcyB0aGUgeWVhciBvZiBhIHNpZ25hdHVyZSB3cml0ZXJzIGJsb2NrIH5+
-DQo=
+The current implementation uses 0 as lower limit for the baud rate tolerance which contradicts the initial commit description (https://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git/commit/drivers/tty/serial/serial-tegra.c?h=for-next&id=d781ec21bae6ff8f9e07682e8947a654484611f5) of +4/-4% tolerance for older tegra chips other than Tegra186 and Tegra194.
+This causes issues on UART initilization as soon as the actual baud rate clock is slightly lower than required which we have seen on the Tegra124-based Toradex Apalis TK1 which also uses tegra30-hsuart as compatible in the DT serial node (for reference line 1540ff https://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git/tree/arch/arm/boot/dts/tegra124-apalis-v1.2.dtsi?h=for-next)
+
+The standard baud rate tolerance limits are also stated in the tegra20-hsuart driver description (https://www.kernel.org/doc/Documentation/devicetree/bindings/serial/nvidia%2Ctegra20-hsuart.txt).
+
+The previously introduced check_rate_in_range() always fails due to the lower limit set to 0 even if the actual baud rate is within the required -4% tolerance.
+
+static int tegra_check_rate_in_range(struct tegra_uart_port *tup)
+{
+    long diff;
+    diff = ((long)(tup->configured_rate - tup->required_rate) * 10000)
+        / tup->required_rate;
+    if (diff < (tup->cdata->error_tolerance_low_range * 100) ||
+        diff > (tup->cdata->error_tolerance_high_range * 100)) {
+        dev_err(tup->uport.dev,
+            "configured baud rate is out of range by %ld", diff);
+        return -EIO;
+    }
+    return 0;
+}
+
+Changing the lower tolerance limit to the actual -4% resolved the issues for the Tegra124 and should resolve potential issues for other Tegra20/Tegra30 based platforms as well.
+
+Signed-off-by: Patrik John <patrik.john@u-blox.com>
+---
+ drivers/tty/serial/serial-tegra.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/tty/serial/serial-tegra.c b/drivers/tty/serial/serial-tegra.c
+index 45e2e4109acd..b6223fab0687 100644
+--- a/drivers/tty/serial/serial-tegra.c
++++ b/drivers/tty/serial/serial-tegra.c
+@@ -1506,7 +1506,7 @@ static struct tegra_uart_chip_data tegra20_uart_chip_data = {
+ 	.fifo_mode_enable_status	= false,
+ 	.uart_max_port			= 5,
+ 	.max_dma_burst_bytes		= 4,
+-	.error_tolerance_low_range	= 0,
++	.error_tolerance_low_range	= -4,
+ 	.error_tolerance_high_range	= 4,
+ };
+ 
+@@ -1517,7 +1517,7 @@ static struct tegra_uart_chip_data tegra30_uart_chip_data = {
+ 	.fifo_mode_enable_status	= false,
+ 	.uart_max_port			= 5,
+ 	.max_dma_burst_bytes		= 4,
+-	.error_tolerance_low_range	= 0,
++	.error_tolerance_low_range	= -4,
+ 	.error_tolerance_high_range	= 4,
+ };
+ 
+-- 
+2.25.1
+
