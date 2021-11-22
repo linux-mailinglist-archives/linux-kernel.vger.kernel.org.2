@@ -2,170 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF10458FA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:44:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A595E458FA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:44:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239581AbhKVNrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 08:47:19 -0500
-Received: from bedivere.hansenpartnership.com ([96.44.175.130]:43142 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239591AbhKVNrR (ORCPT
+        id S239589AbhKVNsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 08:48:00 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59490 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230322AbhKVNr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 08:47:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1637588650;
-        bh=/6FwUIopWGEZF2iH1TImnWQkKZ/1gFqOd7wHAdmKlBQ=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=HzmqkquWAZhr0kVjs8geFPZDLWzJW2gieSY7v2k+PkOjYL/Bga7Xz8xa4bfvaZCyb
-         tElGS9eJNC9EBwW35gQ2vH+7JtsHQnYDob43/m6Zyvw4Wi/9uSyelPZK9HBPA1yUGf
-         3Tahc9eZ/jrOKSWPeP6NxhWxojfAIckcFGwCKOBA=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id E4866128028D;
-        Mon, 22 Nov 2021 08:44:10 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id E3eGFrCm2n21; Mon, 22 Nov 2021 08:44:10 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1637588650;
-        bh=/6FwUIopWGEZF2iH1TImnWQkKZ/1gFqOd7wHAdmKlBQ=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=HzmqkquWAZhr0kVjs8geFPZDLWzJW2gieSY7v2k+PkOjYL/Bga7Xz8xa4bfvaZCyb
-         tElGS9eJNC9EBwW35gQ2vH+7JtsHQnYDob43/m6Zyvw4Wi/9uSyelPZK9HBPA1yUGf
-         3Tahc9eZ/jrOKSWPeP6NxhWxojfAIckcFGwCKOBA=
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4300:c551::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 81F7712800CE;
-        Mon, 22 Nov 2021 08:44:09 -0500 (EST)
-Message-ID: <4d2b08aa854fcccd51247105edb18fe466a2a3f1.camel@HansenPartnership.com>
-Subject: Re: [RFC PATCH 0/4] namespacefs: Proof-of-Concept
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Yordan Karadzhov <y.karadz@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, mingo@redhat.com, hagen@jauu.net,
-        rppt@kernel.org, akpm@linux-foundation.org, vvs@virtuozzo.com,
-        shakeelb@google.com, christian.brauner@ubuntu.com,
-        mkoutny@suse.com, Linux Containers <containers@lists.linux.dev>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Date:   Mon, 22 Nov 2021 08:44:07 -0500
-In-Reply-To: <ba0f624c-fc24-a3f4-749a-00e419960de2@gmail.com>
-References: <20211118181210.281359-1-y.karadz@gmail.com>
-         <87a6i1xpis.fsf@email.froward.int.ebiederm.org>
-         <20211118142440.31da20b3@gandalf.local.home>
-         <1349346e1d5daca991724603d1495ec311cac058.camel@HansenPartnership.com>
-         <20211119092758.1012073e@gandalf.local.home>
-         <f6ca1f5bdb3b516688f291d9685a6a59f49f1393.camel@HansenPartnership.com>
-         <20211119114736.5d9dcf6c@gandalf.local.home>
-         <20211119114910.177c80d6@gandalf.local.home>
-         <cc6783315193be5acb0e2e478e2827d1ad76ba2a.camel@HansenPartnership.com>
-         <ba0f624c-fc24-a3f4-749a-00e419960de2@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Mon, 22 Nov 2021 08:47:59 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AMDifip101911;
+        Mon, 22 Nov 2021 07:44:41 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1637588681;
+        bh=4aEDuUEwwhUks1YMR682x5k41bzpSbH1JYgjk2P31Dw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=WYnW3qAUdQPcffmBypxU+4/ypn5NPYrEzdwzzecNs75Ba6t4a8+9bYPlcFFgnhtIn
+         g0zwwaNJx5dU8HIfPnJzXJ/h+4p0Np4/KDetfuf1f5Z+Kg2HZOlRidBi9gX5ffBOGi
+         VW4FF41anIgnK6+kLeRATj4u0yh+AbT5dcgQGN1A=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AMDifb3053455
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 22 Nov 2021 07:44:41 -0600
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 22
+ Nov 2021 07:44:41 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 22 Nov 2021 07:44:41 -0600
+Received: from [10.250.233.118] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AMDibMa029183;
+        Mon, 22 Nov 2021 07:44:37 -0600
+Subject: Re: [PATCH RFC v2 4/4] phy: phy-can-transceiver: Add support for
+ setting mux
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Peter Rosin <peda@axentia.se>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Vinod Koul <vkoul@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-can@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>
+References: <20211122125624.6431-1-a-govindraju@ti.com>
+ <20211122125624.6431-5-a-govindraju@ti.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <cc28796e-2ebc-4aad-ffc2-4fe570b269db@ti.com>
+Date:   Mon, 22 Nov 2021 19:14:36 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211122125624.6431-5-a-govindraju@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-11-22 at 15:02 +0200, Yordan Karadzhov wrote:
+Hi Aswath,
+
+On 22/11/21 6:26 pm, Aswath Govindraju wrote:
+> On some boards, for routing CAN signals from controller to transceiver,
+> muxes might need to be set. Therefore, add support for setting the mux by
+> reading the mux-controls property from the device tree node.
 > 
-> On 20.11.21 г. 1:08 ч., James Bottomley wrote:
-> > [trying to reconstruct cc list, since the cc: field is bust again]
-> > > On Fri, 19 Nov 2021 11:47:36 -0500
-> > > Steven Rostedt <rostedt@goodmis.org> wrote:
-> > > 
-> > > > > Can we back up and ask what problem you're trying to solve
-> > > > > before we start introducing new objects like namespace name?
-> > > 
-> > > TL;DR; verison:
-> > > 
-> > > We want to be able to install a container on a machine that will
-> > > let us view all namespaces currently defined on that machine and
-> > > which tasks are associated with them.
-> > > 
-> > > That's basically it.
-> > 
-> > So you mentioned kubernetes.  Have you tried
-> > 
-> > kubectl get pods --all-namespaces
-> > 
-> > ?
-> > 
-> > The point is that orchestration systems usually have interfaces to
-> > get this information, even if the kernel doesn't.  In fact,
-> > userspace is almost certainly the best place to construct this
-> > from.
-> > 
-> > To look at this another way, what if you were simply proposing the
-> > exact same thing but for the process tree.  The push back would be
-> > that we can get that all in userspace and there's even a nice tool
-> > (pstree) to do it which simply walks the /proc interface.  Why,
-> > then, do we have to do nstree in the kernel when we can get all the
-> > information in exactly the same way (walking the process tree)?
-> > 
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
+>  drivers/phy/phy-can-transceiver.c | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
 > 
-> I see on important difference between the problem we have and the
-> problem in your example. /proc contains all the 
-> information needed to unambiguously reconstruct the process tree.
+> diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-transceiver.c
+> index 6f3fe37dee0e..15056b9d68ba 100644
+> --- a/drivers/phy/phy-can-transceiver.c
+> +++ b/drivers/phy/phy-can-transceiver.c
+> @@ -10,6 +10,7 @@
+>  #include<linux/module.h>
+>  #include<linux/gpio.h>
+>  #include<linux/gpio/consumer.h>
+> +#include <linux/mux/consumer.h>
+>  
+>  struct can_transceiver_data {
+>  	u32 flags;
+> @@ -21,13 +22,23 @@ struct can_transceiver_phy {
+>  	struct phy *generic_phy;
+>  	struct gpio_desc *standby_gpio;
+>  	struct gpio_desc *enable_gpio;
+> +	struct mux_control *mux_ctrl;
+>  };
+>  
+>  /* Power on function */
+>  static int can_transceiver_phy_power_on(struct phy *phy)
+>  {
+> +	int ret;
+>  	struct can_transceiver_phy *can_transceiver_phy = phy_get_drvdata(phy);
+>  
+> +	if (can_transceiver_phy->mux_ctrl) {
+> +		ret = mux_control_select(can_transceiver_phy->mux_ctrl,
+> +					 mux_control_enable_state(can_transceiver_phy->mux_ctrl));
+
+Would need 'select MULTIPLEXER' in Kconfig.
+
+Thanks,
+Kishon
+> +		if (ret) {
+> +			dev_err(&phy->dev, "Failed to select CAN mux: %d\n", ret);
+> +			return ret;
+> +		}
+> +	}
+>  	if (can_transceiver_phy->standby_gpio)
+>  		gpiod_set_value_cansleep(can_transceiver_phy->standby_gpio, 0);
+>  	if (can_transceiver_phy->enable_gpio)
+> @@ -45,6 +56,8 @@ static int can_transceiver_phy_power_off(struct phy *phy)
+>  		gpiod_set_value_cansleep(can_transceiver_phy->standby_gpio, 1);
+>  	if (can_transceiver_phy->enable_gpio)
+>  		gpiod_set_value_cansleep(can_transceiver_phy->enable_gpio, 0);
+> +	if (can_transceiver_phy->mux_ctrl)
+> +		mux_control_deselect(can_transceiver_phy->mux_ctrl);
+>  
+>  	return 0;
+>  }
+> @@ -95,6 +108,19 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
+>  	match = of_match_node(can_transceiver_phy_ids, pdev->dev.of_node);
+>  	drvdata = match->data;
+>  
+> +	if (of_property_read_bool(dev->of_node, "mux-controls")) {
+> +		struct mux_control *control;
+> +		int ret;
+> +
+> +		control = devm_mux_control_get(dev, NULL);
+> +		if (IS_ERR(control)) {
+> +			ret = PTR_ERR(control);
+> +			dev_err_probe(&pdev->dev, ret, "failed to get mux\n");
+> +			return PTR_ERR(control);
+> +		}
+> +		can_transceiver_phy->mux_ctrl = control;
+> +	}
+> +
+>  	phy = devm_phy_create(dev, dev->of_node,
+>  			      &can_transceiver_phy_ops);
+>  	if (IS_ERR(phy)) {
 > 
-> On the other hand, I do not see how one can reconstruct the namespace
-> tree using only the information in proc/ (maybe this is because of my
-> ignorance).
-
-Well, no, the information may not all exist.  However, the point is we
-can add it without adding additional namespace objects.
-
-> Let's look the following case (oversimplified just to get the idea):
-> 1. The process X is a parent of the process Y and both are in
-> namespace 'A'.
-> 3. "unshare" is used to place process Y (and all its child processes)
-> in a new namespace B (A is a parent namespace of B).
-> 4. "setns" is s used to move process X in namespace C.
-> 
-> How would you find the parent namespace of B?
-
-Actually this one's quite easy: the parent of X in your setup still has
-it.
-
-However, I think you're looking to set up a scenario where the
-namespace information isn't carried by live processes and that's
-certainly possible if we unshare the namespace, bind it to a mount
-point and exit the process that unshared it.  If will exist as a bound
-namespace with no processes until it gets entered via the binding and
-when that happens the parent information can't be deduced from the
-process tree.
-
-There's another problem, that I think you don't care about but someone
-will at some point: the owning user_ns can't be deduced from the
-current tree either because it depends on the order of entry.  We fixed
-unshare so that if you enter multiple namespaces, it enters the user_ns
-first so the latter is always the owning namespace, but if you enter
-the rest of the namespaces first via one unshare then unshare the
-user_ns second, that won't be true.
-
-Neither of the above actually matter for docker like containers because
-that's not the way the orchestration system works (it doesn't use mount
-bindings or the user_ns) but one day, hopefully, it might.
-
-> Again, using your arguments, I can reformulate the problem statement
-> this way: a userspace program is well instrumented 
-> to create an arbitrary complex tree of namespaces. In the same time,
-> the only place where the information about the 
-> created structure can be retrieved is in the userspace program
-> itself. And when we have multiple userspace programs 
-> adding to the namespaces tree, the global picture gets impossible to
-> recover.
-
-So figure out what's missing in the /proc tree and propose adding it. 
-The interface isn't immutable it's just that what exists today is an
-ABI and can't be altered.  I think this is the last time we realised we
-needed to add missing information in /proc/<pid>/ns:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eaa0d190bfe1ed891b814a52712dcd852554cb08
-
-So you can use that as the pattern.
-
-James
-
-
