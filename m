@@ -2,107 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC13458B98
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 10:32:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5614F458B9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 10:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239154AbhKVJfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 04:35:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29058 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238918AbhKVJfO (ORCPT
+        id S238979AbhKVJfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 04:35:34 -0500
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:36054
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232524AbhKVJfb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 04:35:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637573527;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=belxqpIEPM8b5ddVw8XKTj7NYwBuhVnMMeNM/xGD1js=;
-        b=e9KycYzwqc/zDGu+ifks2yqEGqKI/fLCZRPm2vclsBSqiKT1U+rnLRXw18yJSPdqMb7YWn
-        DNmBlm2xFvmmnKA1tHZKsuUcixpIQ7NjFj7Zo0K7UkXM6hkWGEXot1sMvZeWN1l51tPfB+
-        b3LDTCPZydhhpfsuTm0MIpNLnvmlsPM=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-110-Ac8Gn3ZHO0CmBGAI6GG4qQ-1; Mon, 22 Nov 2021 04:32:06 -0500
-X-MC-Unique: Ac8Gn3ZHO0CmBGAI6GG4qQ-1
-Received: by mail-ed1-f72.google.com with SMTP id q17-20020aa7da91000000b003e7c0641b9cso14264384eds.12
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 01:32:06 -0800 (PST)
+        Mon, 22 Nov 2021 04:35:31 -0500
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 97DD93F32D
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 09:32:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1637573544;
+        bh=6sbqD1+5Siu68STzvxvEowqyfmYjVmX0yjDAVo+n4mU=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=oFKRQ73/EEACWJuHrfsPSzvVl1AE0nGZLPJvMHXQovnhLcnYjv2ZqcP4C/7oEaabk
+         sboYCR+/Pzbn8dsLSC3c6WkrbPiiZa0Hm94diSqbPLGeP8gTDaX5UGZDX7jx3NTNpK
+         VNJwIbsj3x0rVRYl3xuKcAwS74WVsxfRumsiGKkxeK7CWnUZat2SuXn7Igdgw84Cu6
+         AaxEEu+PPCP5VBWtl9r6zMfguniYv0ewo7TTuMQtOu/qkwExfPs17G262JB0ifDgsm
+         LHgau2I8Y4qn28dbwtZhgxuvtqDpFWdCVK9OCg4SgaVAdxO31hvLpBVnyNGdY1jj18
+         sq2QeDsjgXAiQ==
+Received: by mail-lf1-f69.google.com with SMTP id bp10-20020a056512158a00b0040376f60e35so11770131lfb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 01:32:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=belxqpIEPM8b5ddVw8XKTj7NYwBuhVnMMeNM/xGD1js=;
-        b=eTKpHbonmawanuQlQ8s/lmCMdG3ChW4OPb6CsBjP77D9jFC6p56anIRem24M/denQ2
-         8tcZajmsIok7JhGe8eCTUW8i7GV7f29HQTrMzOrWg6zH9rbfMJe0qvUkqABLKmfL7oYr
-         e5/AwY7Ty4pcaCBiVNX/wOY5v6l/+c0lQBSRSnbBVFx85ji1dJzOjd4ZgULjbhDhb0HF
-         hM3UBUnPr1ZvIxYDadakB0J2UFz5+hwsVZCx8h9jN862Tn+f7lnGc5pHyFtEhfIW+MYI
-         vYO3VloapKOF3MVQhfZzfjeWDV1NwHYwOcjwVVk9FctG5S8jxAIx/uujX8b0x6VsXr0R
-         F5ig==
-X-Gm-Message-State: AOAM530brTZDIjB4ptcspDzSQbuA/r5vlsF2HkU4dW74DaIiHyWe0meb
-        diGvetps3NzxGaWBbO2gesGehWuSia1e420DInDqWJDjTG68L/GSxKZOWOFJ65peY7wvwDIGmZO
-        qk+TYKHBN2lcSOCGtm7L5VzMYVNCLa/403T7oo8Wv7QEPe0v7RkmItXwPzskc/5QPj/hkRA==
-X-Received: by 2002:a17:906:b2d0:: with SMTP id cf16mr38631574ejb.52.1637573525322;
-        Mon, 22 Nov 2021 01:32:05 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwaDt8hngfWzHfFUTs49+2toJfr7BA5IoCX89wF8FGrB5kAMe2yz7xlpf9wWvnAeYerGQlgwg==
-X-Received: by 2002:a17:906:b2d0:: with SMTP id cf16mr38631543ejb.52.1637573525115;
-        Mon, 22 Nov 2021 01:32:05 -0800 (PST)
-Received: from redhat.com ([2.55.128.84])
-        by smtp.gmail.com with ESMTPSA id jg32sm3539120ejc.43.2021.11.22.01.32.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 01:32:04 -0800 (PST)
-Date:   Mon, 22 Nov 2021 04:32:01 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Halil Pasic <pasic@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        f.hetzelt@tu-berlin.de, david.kaplan@amd.com,
-        konrad.wilk@oracle.com
-Subject: [PATCH] vsock/virtio: suppress used length validation
-Message-ID: <20211122093036.285952-1-mst@redhat.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=6sbqD1+5Siu68STzvxvEowqyfmYjVmX0yjDAVo+n4mU=;
+        b=tGl7lJF/9pO5UkUlrQg+SxDFCEWPc53Yhd/UsZtzhsT5661Z5xjnPZFnDWKXvJ5QFE
+         g+gawozWLehmODYMX7FE9bcU3dnFf/IvUHM7KnKs0X9tmjCtkD3WfyAT0ByvKbIkV4OA
+         itVR9UVgJ2LGdAiWuhz0+j6AyCCZs4HXUQmrBbkDKWZj5F06ZVmmIyjpgay0tIrTjHPc
+         mMWMtPYCajCQlblKLHxs9Oxm3ZbRLic0oh9CU6/eBu4ZFMYWtBNsITF0HQ6NlT3TqXLX
+         +I3FM/pI6n1ARt2SHDMFKVA3Z/O0uFUNsIuLtLf80zhmL/GIfzj2bGBeYOb+uGemp1Et
+         SH4A==
+X-Gm-Message-State: AOAM531/mmHmdDro7SYVQHf5KzbP+tWxzWTIZHJeAP/AXu9hRyd82aRv
+        PRzyJGvvHvUMDzYpszoMliP68gLlCdgrwJWFsziqmdpAEjZSrXOczA36yQwQ8AwAPvUnJkegfJ0
+        LozHSk0HZ1slRlFCPvZX5BGrrjO9IW5+rMbhCSrD/9A==
+X-Received: by 2002:a2e:a314:: with SMTP id l20mr52899058lje.86.1637573543911;
+        Mon, 22 Nov 2021 01:32:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxQpfyjBTtEprk7qBKeyvZ3vNul843lbt9yNFPYmiwteRd4nScQ4+hV7xfxkfQojpZN84GYgg==
+X-Received: by 2002:a2e:a314:: with SMTP id l20mr52899034lje.86.1637573543744;
+        Mon, 22 Nov 2021 01:32:23 -0800 (PST)
+Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id c6sm897368ljn.84.2021.11.22.01.32.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Nov 2021 01:32:23 -0800 (PST)
+Message-ID: <7eeeb5d0-3ef1-35cd-e7e2-cdeeb979b83b@canonical.com>
+Date:   Mon, 22 Nov 2021 10:32:22 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
-X-Mutt-Fcc: =sent
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH] memory: renesas-rpc-if: Silence clang warning
+Content-Language: en-US
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+References: <20211121180155.9062-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CAMuHMdUTLYn=14RzJORp1mn-TSwC1rk1BO_9L6TG4g9JhH27JA@mail.gmail.com>
+ <CA+V-a8sGA4=oxwp87VonC6zdPYT5-BHmsVoV8L1ggTUV8m4ooA@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+In-Reply-To: <CA+V-a8sGA4=oxwp87VonC6zdPYT5-BHmsVoV8L1ggTUV8m4ooA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It turns out that vhost vsock violates the virtio spec
-by supplying the out buffer length in the used length
-(should just be the in length).
-As a result, attempts to validate the used length fail with:
-vmw_vsock_virtio_transport virtio1: tx: used len 44 is larger than in buflen 0
+On 22/11/2021 09:46, Lad, Prabhakar wrote:
+> Hi Geert,
+> 
+> Thank you for the review.
+> 
+> On Mon, Nov 22, 2021 at 7:50 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>>
+>> Hi Prabhakar,
+>>
+>> On Sun, Nov 21, 2021 at 7:05 PM Lad Prabhakar
+>> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+>>> This patch silences the following clang warning:
+>>>
+>>> | drivers/memory/renesas-rpc-if.c:253:14: warning: cast to smaller integer
+>>> | type 'enum rpcif_type' from 'const void *' [-Wvoid-pointer-to-enum-cast]
+>>> |           rpc->type = (enum rpcif_type)of_device_get_match_data(dev);
+>>> |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>>
+>>> Fixes: b04cc0d912eb8 ("memory: renesas-rpc-if: Add support for RZ/G2L")
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>>
+>> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>>
+>>> --- a/drivers/memory/renesas-rpc-if.c
+>>> +++ b/drivers/memory/renesas-rpc-if.c
+>>> @@ -250,7 +250,7 @@ int rpcif_sw_init(struct rpcif *rpc, struct device *dev)
+>>>                 return PTR_ERR(rpc->dirmap);
+>>>         rpc->size = resource_size(res);
+>>>
+>>> -       rpc->type = (enum rpcif_type)of_device_get_match_data(dev);
+>>> +       rpc->type = (enum rpcif_type)(uintptr_t)of_device_get_match_data(dev);
+>>
+>> While correct, the cast to "enum rpcif_type" is not stricly needed anymore.
+>>
+> Agreed.
+> 
+> @Krzysztof, let me know if you want me to resend the patch with the
+> cast to "enum rpcif_type" dropped.
 
-Since vsock driver does not use the length fox tx and
-validates the length before use for rx, it is safe to
-suppress the validation in virtio core for this driver.
+I can fix it when applying, thanks!
 
-Reported-by: Halil Pasic <pasic@linux.ibm.com>
-Fixes: 939779f5152d ("virtio_ring: validate used buffer length")
-Cc: "Jason Wang" <jasowang@redhat.com>
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- net/vmw_vsock/virtio_transport.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
-index 4f7c99dfd16c..3f82b2f1e6dd 100644
---- a/net/vmw_vsock/virtio_transport.c
-+++ b/net/vmw_vsock/virtio_transport.c
-@@ -731,6 +731,7 @@ static unsigned int features[] = {
- static struct virtio_driver virtio_vsock_driver = {
- 	.feature_table = features,
- 	.feature_table_size = ARRAY_SIZE(features),
-+	.suppress_used_validation = true,
- 	.driver.name = KBUILD_MODNAME,
- 	.driver.owner = THIS_MODULE,
- 	.id_table = id_table,
--- 
-MST
-
+Best regards,
+Krzysztof
