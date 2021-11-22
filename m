@@ -2,134 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1240A459806
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 23:55:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7413145980B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 23:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhKVW6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 17:58:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231363AbhKVW6Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 17:58:16 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993C7C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 14:55:09 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id v23so25477081iom.12
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 14:55:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zh9CFupaQEsImYNyAs58bopMZGL1j+sruJ4MSTS5OT8=;
-        b=T/RhWcG4Bhqm7CtvqKJ5jA68sB38XyNr32oMSgKc2wQswplPemB9jd5eagcW+3pP6m
-         wjvnq1mF/8wiPmHtmGcYF6ooGbPl4OZ26V6JNS6jAmT1uxtAPwEXnIxo1CF839xds1Nh
-         omfvmUBuFr6f0asEEJw0rzQ+wWetTRu3FfPcHdUIwnAzY4/D/xz0bsxWPsqTAMkR4MVW
-         1WurGYJX/HDZdern0dxZRWtKLhXxbf40PnWx4f9JkzSJuzNz/MTIYoFkZWmmh5yPkfOv
-         pMxKZ7m/m/Khg2aYukSDtjjuC6Q97nNmoDYFJwM161Smkv4bhQod0aOanJu/pcGg7IQf
-         WQ3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zh9CFupaQEsImYNyAs58bopMZGL1j+sruJ4MSTS5OT8=;
-        b=a5BSrvCcYzMkjOOk8g263/tkzYTb+ap4c9x+YNOhB/6I7Ze6yg8WgfePM61sVd2Qcj
-         WBvqpJd09lwYgER7fmwZRQM1tUo6w2sZ3aN8eVAvRpumkKwYmmKlg7XxFYrHJxzln86J
-         JlEt+Aa3B7rnDuJ3SEc6KJDCm8P7uIFYJMVEhMfz4rt6s0Yn132AFiDUm2iSaJ8ZENSM
-         wVTL4goxyx4yGyeqWQPm82h90iNvAjqCm3f6hUW9dis5rsgQbYD4ET6q6NY6FEJeI7kp
-         RjUuQJOiO3jZU58GIJBZMr2cdzqVKB4o2kFo+2ldzvQQdOpLhEDGUxNTPVK8l76msdAD
-         TG0A==
-X-Gm-Message-State: AOAM531NWZGfgrLnWJLmBwVvbyYAt2txkmeATQ20cU21edpo1nwOXlAe
-        DTchREv+Egrm+t7wYHt0e0u6M7ZWitpizF3TzOV4TQ==
-X-Google-Smtp-Source: ABdhPJzQf+uXOlKY00zavpohO2RVjxIgnyYkQZO79zO2ndWUHwKR/Em345CTtZYRg5LGdARhllrhxoaGOM6Ok7AuQ7Y=
-X-Received: by 2002:a5d:9493:: with SMTP id v19mr502434ioj.34.1637621708875;
- Mon, 22 Nov 2021 14:55:08 -0800 (PST)
+        id S230201AbhKVXBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 18:01:17 -0500
+Received: from soltyk.jannau.net ([144.76.91.90]:60244 "EHLO soltyk.jannau.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229672AbhKVXBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 18:01:16 -0500
+Received: from coburn.home.jannau.net (p579ad520.dip0.t-ipconnect.de [87.154.213.32])
+        by soltyk.jannau.net (Postfix) with ESMTPSA id EEC96261B41;
+        Mon, 22 Nov 2021 23:58:07 +0100 (CET)
+From:   Janne Grunau <j@jannau.net>
+To:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Mark Kettenis <mark.kettenis@xs4all.nl>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/4] Add DTs for all Apple M1 (t8103) devices
+Date:   Mon, 22 Nov 2021 23:58:03 +0100
+Message-Id: <20211122225807.8105-1-j@jannau.net>
+X-Mailer: git-send-email 2.34.0
 MIME-Version: 1.0
-References: <20211120045046.3940942-1-seanjc@google.com> <20211120045046.3940942-22-seanjc@google.com>
-In-Reply-To: <20211120045046.3940942-22-seanjc@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Mon, 22 Nov 2021 14:54:57 -0800
-Message-ID: <CANgfPd83-1yT=p1bMTRiOqCBq_m5AZuuhzmmyKKau9ODML39oA@mail.gmail.com>
-Subject: Re: [PATCH 21/28] KVM: x86/mmu: Add TDP MMU helper to zap a root
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Hou Wenlong <houwenlong93@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 8:51 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> Add a small wrapper to handle zapping a specific root.  For now, it's
-> little more than syntactic sugar, but in the future it will become a
-> unique flow with rules specific to zapping an unreachable root.
->
-> No functional change intended.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/mmu/tdp_mmu.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 9449cb5baf0b..31fb622249e5 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -79,11 +79,18 @@ static void tdp_mmu_free_sp_rcu_callback(struct rcu_head *head)
->         tdp_mmu_free_sp(sp);
->  }
->
-> +static bool tdp_mmu_zap_root(struct kvm *kvm, struct kvm_mmu_page *root,
-> +                            bool shared)
-> +{
-> +       return zap_gfn_range(kvm, root, 0, -1ull, true, false, shared);
+Hej All,
 
-Total aside:
-Remembering the order of these three boolean parameters through all
-these functions drives me nuts.
-It'd be really nice to put them into a neat, reusable struct that tracks:
-MMU lock mode (read / write / none)
-If yielding is okay
-If the TLBs are dirty and need to be flushed
+this series extends the device tree files and bindings to all current
+Apple M1 devices. Specifically it adds DTs for following devices:
+- MacBook Air (M1, 2020)
+- Macbook Pro (13-inch, M1, 2020)
+- iMac (24-inch, M1, 2021)
 
-I don't know when I'll have time to do that refactor, but it would
-make this code so much more sensible.
+It also adds i2c and cd321x devices nodes. Bindings and code changes for
+those were merged for 5.16 without adding devices to the device tree.
+Patches are include in a single series for dependencies
 
-> +}
-> +
->  /*
->   * Note, putting a root might sleep, i.e. the caller must have IRQs enabled and
->   * must not explicitly disable preemption (it will be disabled by virtue of
->   * holding mmu_lock, hence the lack of a might_sleep()).
->   */
-> +
->  void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root,
->                           bool shared)
->  {
-> @@ -118,7 +125,7 @@ void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root,
->          * should have been zapped by kvm_tdp_mmu_zap_invalidated_roots(), and
->          * inserting new SPTEs under an invalid root is a KVM bug.
->          */
-> -       if (zap_gfn_range(kvm, root, 0, -1ull, true, false, shared))
-> +       if (tdp_mmu_zap_root(kvm, root, shared))
->                 WARN_ON_ONCE(root->role.invalid);
->
->         call_rcu(&root->rcu_head, tdp_mmu_free_sp_rcu_callback);
-> @@ -923,7 +930,7 @@ void kvm_tdp_mmu_zap_invalidated_roots(struct kvm *kvm,
->                  * will still flush on yield, but that's a minor performance
->                  * blip and not a functional issue.
->                  */
-> -               (void)zap_gfn_range(kvm, root, 0, -1ull, true, false, true);
-> +               (void)tdp_mmu_zap_root(kvm, root, true);
->                 kvm_tdp_mmu_put_root(kvm, root, true);
->         }
->  }
-> --
-> 2.34.0.rc2.393.gf8c9666880-goog
->
+Changes since v2:
+ - split i2c and cd321x changes into 2 commit
+ - add i2c4 used by MacBooc Pros (j293, 13-inch, M1, 2020)
+ - add hpm2 and hpm3 for the additional USB-C ports on j456 iMac
+   (24-inch, M1, 2021) models
+
+Series depends for functionality and dtbs verification on
+"[PATCH 0/3] Apple Arm patform device tree and bindings fixes".
+
+thanks,
+Janne
+
+The series is available as branch from:
+    https://github.com/jannau/linux/tree/apple_m1/dt-for-5.17_v3
+
+Janne Grunau (4):
+  dt-bindings: arm: apple: Add iMac (24-inch 2021) to Apple bindings
+  arm64: dts: apple: Add missing M1 (t8103) devices
+  arm64: dts: apple: t8103: Add i2c nodes
+  arm64: dts: apple: t8103: Add cd321x nodes
+
+ .../devicetree/bindings/arm/apple.yaml        |  6 +-
+ arch/arm64/boot/dts/apple/Makefile            |  4 +
+ arch/arm64/boot/dts/apple/t8103-j274.dts      | 33 +------
+ arch/arm64/boot/dts/apple/t8103-j293.dts      | 41 +++++++++
+ arch/arm64/boot/dts/apple/t8103-j313.dts      | 33 +++++++
+ arch/arm64/boot/dts/apple/t8103-j456.dts      | 59 ++++++++++++
+ arch/arm64/boot/dts/apple/t8103-j457.dts      | 47 ++++++++++
+ arch/arm64/boot/dts/apple/t8103-jxxx.dtsi     | 67 ++++++++++++++
+ arch/arm64/boot/dts/apple/t8103.dtsi          | 92 +++++++++++++++++++
+ 9 files changed, 352 insertions(+), 30 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/apple/t8103-j293.dts
+ create mode 100644 arch/arm64/boot/dts/apple/t8103-j313.dts
+ create mode 100644 arch/arm64/boot/dts/apple/t8103-j456.dts
+ create mode 100644 arch/arm64/boot/dts/apple/t8103-j457.dts
+ create mode 100644 arch/arm64/boot/dts/apple/t8103-jxxx.dtsi
+
+-- 
+2.34.0
+
