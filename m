@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBFC645962C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 21:39:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB50F45962A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 21:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240542AbhKVUmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 15:42:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48138 "EHLO mail.kernel.org"
+        id S239995AbhKVUmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 15:42:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231663AbhKVUmP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231978AbhKVUmP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Nov 2021 15:42:15 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B44C660F9F;
+        by mail.kernel.org (Postfix) with ESMTPSA id DEC2960FD8;
         Mon, 22 Nov 2021 20:39:04 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@goodmis.org>)
-        id 1mpG5f-001r1w-Qw;
-        Mon, 22 Nov 2021 15:39:03 -0500
-Message-ID: <20211122203903.667159165@goodmis.org>
+        id 1mpG5g-001r2U-0x;
+        Mon, 22 Nov 2021 15:39:04 -0500
+Message-ID: <20211122203903.858719209@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Mon, 22 Nov 2021 15:38:49 -0500
+Date:   Mon, 22 Nov 2021 15:38:50 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org,
         linux-rt-users <linux-rt-users@vger.kernel.org>
@@ -32,9 +32,8 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         John Kacur <jkacur@redhat.com>, Daniel Wagner <wagi@monom.org>,
         Tom Zanussi <zanussi@kernel.org>,
         "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        stable-rt@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH RT 02/10] sched: Fix get_push_task() vs migrate_disable()
+        stable-rt@vger.kernel.org
+Subject: [PATCH RT 03/10] sched: Switch wait_task_inactive to HRTIMER_MODE_REL_HARD
 References: <20211122203847.390551309@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,42 +48,43 @@ If anyone has any objections, please let me know.
 
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-push_rt_task() attempts to move the currently running task away if the
-next runnable task has migration disabled and therefore is pinned on the
-current CPU.
+With PREEMPT_RT enabled all hrtimers callbacks will be invoked in
+softirq mode unless they are explicitly marked as HRTIMER_MODE_HARD.
+During boot kthread_bind() is used for the creation of per-CPU threads
+and then hangs in wait_task_inactive() if the ksoftirqd is not
+yet up and running.
+The hang disappeared since commit
+   26c7295be0c5e ("kthread: Do not preempt current task if it is going to call schedule()")
 
-The current task is retrieved via get_push_task() which only checks for
-nr_cpus_allowed == 1, but does not check whether the task has migration
-disabled and therefore cannot be moved either. The consequence is a
-pointless invocation of the migration thread which correctly observes
-that the task cannot be moved.
+but enabling function trace on boot reliably leads to the freeze on boot
+behaviour again.
+The timer in wait_task_inactive() can not be directly used by an user
+interface to abuse it and create a mass wake of several tasks at the
+same time which would to long sections with disabled interrupts.
+Therefore it is safe to make the timer HRTIMER_MODE_REL_HARD.
 
-Return NULL if the task has migration disabled and cannot be moved to
-another CPU.
+Switch the timer to HRTIMER_MODE_REL_HARD.
 
 Cc: stable-rt@vger.kernel.org
-Fixes: a7c81556ec4d3 ("sched: Fix migrate_disable() vs rt/dl balancing")
+Link: https://lkml.kernel.org/r/20210826170408.vm7rlj7odslshwch@linutronix.de
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210826133738.yiotqbtdaxzjsnfj@linutronix.de
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/sched/sched.h | 3 +++
- 1 file changed, 3 insertions(+)
+ kernel/sched/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 826ea17e144d..c2c9c386456d 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1949,6 +1949,9 @@ static inline struct task_struct *get_push_task(struct rq *rq)
- 	if (p->nr_cpus_allowed == 1)
- 		return NULL;
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index f638d9420553..54fa3bb1b7c4 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2734,7 +2734,7 @@ unsigned long wait_task_inactive(struct task_struct *p, long match_state)
+ 			ktime_t to = NSEC_PER_SEC / HZ;
  
-+	if (p->migration_disabled)
-+		return NULL;
-+
- 	rq->push_busy = true;
- 	return get_task_struct(p);
- }
+ 			set_current_state(TASK_UNINTERRUPTIBLE);
+-			schedule_hrtimeout(&to, HRTIMER_MODE_REL);
++			schedule_hrtimeout(&to, HRTIMER_MODE_REL_HARD);
+ 			continue;
+ 		}
+ 
 -- 
 2.33.0
