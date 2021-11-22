@@ -2,328 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B853459111
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:12:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5DFD459112
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:12:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239800AbhKVPPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:15:33 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:57335 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239771AbhKVPPb (ORCPT
+        id S239809AbhKVPPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:15:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239771AbhKVPPo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:15:31 -0500
-Received: by mail-il1-f198.google.com with SMTP id s10-20020a056e021a0a00b0029e76c20cc0so2419165ild.23
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:12:25 -0800 (PST)
+        Mon, 22 Nov 2021 10:15:44 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A905AC061714
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:12:37 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id z18so23772105iof.5
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:12:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=i/Ts0Os9qMFGThwHOtCiyhHMh/4YYH+c2424NHLIYCM=;
+        b=badXmSjTu1JoDNUZ9NDIV7spgpAjIoEfdD9ic1e77G7P2LHAXwYp9epDLMgiUYLnav
+         9W69UkENu4Ov86ohNMq2B2JZdBNLHZT4aDyzuF8gynIyOdI/0+WDNUWSX3Wag4aEMjqT
+         mP5w8mu7pAseUIlqrlv7cZ6id4iI2ZPVTwQBw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=9zfPbTH6EhmbuWX63gHOJAyXkrLkLRUhWK2123YhmQU=;
-        b=XlKYcbL5yXwXE2FpQWH+qlLyRsqv8S6KM9OVn8nmZ4QFaM3QWTIfVxoQh1lkOB4qCO
-         WTjwgJRYA0ftLQxLKc015AP/jin4K1LE9yb6cNpgOUo5h89ErQLB/2+yWfP6iOX/ahq2
-         brdhZjlsYlt4JrQOPfXgp6/d5IoJABf610CggnkqIvP2+CjMv4nXsknKXz5U3KKnWQoM
-         EZgG4W496Qt3IAFhhFfCXUCmBkn/Zz+xUMQXG4kU7qLKJFkD3sh5zIDWHJjXdI3ikfCX
-         LSQ3EuLteEmGQqFNj+vU0266nuVTBQsFEh2502eKsfsEjmITyaG55fX44xygHnD+tRiJ
-         HWpA==
-X-Gm-Message-State: AOAM532aDztjLIxA02M1xnkPnGT/oMuR9nG0n/VsZsDJjaYfoPaj9qaN
-        DzPueNaOSmUNwdv8+VH4ZrWha9NG38nPjV6ACbXVY+jjsukT
-X-Google-Smtp-Source: ABdhPJxpb8fXburtZmWEWzHRgC3xOXswoUcS3J5LPKIv8I1k+S+xlrEillNqV5iwDtaSGP4BvLpQ619CtH7LIplCbVIx0mT+zy1h
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=i/Ts0Os9qMFGThwHOtCiyhHMh/4YYH+c2424NHLIYCM=;
+        b=VBNfX5OnPM1VE3EhPmQ0AZB1dhguurd5vGYrH6/k5KJ+1PBmv7Rv566ThelnWY6raw
+         U6TBLarwlAM8h46PkCiW2HK8DBh+Uka0QGgtgS8poRzaVB7kZrpdBmFBFTffPZWNK+Vq
+         ZTZwiIvnxA6NI4zZdZxAdC/3lgCaZ5TRzrJIy5DdYrVr/1AVzlX/d1/ZZqVuu0YWf3Vs
+         0sbc4uEfa5tPfYMCjwlYCJolQpWQDSLhYUHmqT09SidbJBNPIE4jbOCi723UmwV4vuMX
+         cdOYzZrlHsua1C6lD2LMxtR6Ei/X2JDQg4F/+hm6pBmRDcwb9F86aZIANwchgkH0rFMl
+         i8ew==
+X-Gm-Message-State: AOAM5310f2knnUSJSkU8Kli7nkoKabP7AXcjUinydxbr90M0fwpaGeed
+        3vpoZyAJbrZ6r3+ZpZc4tXy4wg==
+X-Google-Smtp-Source: ABdhPJwbnPYUWBVjPezWcamXeiCUf/myETmHg+GaUYaQq5hNj/HU+vHelq4BAjqnuTeQmqLr7JkmGA==
+X-Received: by 2002:a02:6064:: with SMTP id d36mr49689614jaf.80.1637593956072;
+        Mon, 22 Nov 2021 07:12:36 -0800 (PST)
+Received: from meerkat.local (bras-base-mtrlpq5031w-grc-32-216-209-220-181.dsl.bell.ca. [216.209.220.181])
+        by smtp.gmail.com with ESMTPSA id f5sm5198012ioo.34.2021.11.22.07.12.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Nov 2021 07:12:35 -0800 (PST)
+Date:   Mon, 22 Nov 2021 10:12:33 -0500
+From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+To:     Thorsten Leemhuis <linux@leemhuis.info>
+Cc:     workflows@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [RFC PATCH v1 0/1] Create 'Reported:' and 'Reviewed:' tags for
+ links in commit messages
+Message-ID: <20211122151233.54xtnpwdmnrdj3jf@meerkat.local>
+References: <cover.1637566224.git.linux@leemhuis.info>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1aa2:: with SMTP id l2mr19554392ilv.114.1637593944927;
- Mon, 22 Nov 2021 07:12:24 -0800 (PST)
-Date:   Mon, 22 Nov 2021 07:12:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005fb57e05d1620da1@google.com>
-Subject: [syzbot] KMSAN: uninit-value in ax88772a_hw_reset
-From:   syzbot <syzbot+8d179821571093c5f928@syzkaller.appspotmail.com>
-To:     andrew@lunn.ch, davem@davemloft.net, glider@google.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux@rempel-privat.de,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <cover.1637566224.git.linux@leemhuis.info>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Nov 22, 2021 at 08:33:41AM +0100, Thorsten Leemhuis wrote:
+> The following patch proposes to create two new tags for mentioning links in
+> commit messages. They are meant to make it obvious what provided links are
+> about, which is useful for both users and scripts studying commits.
+> 
+> The new tag 'Reported:' is meant to be used for linking to bug reports, while
+> 'Reviewed:' should point to the last review of the patch in question. They
+> supplement 'Link:', which until now has been used for these two as well as other
+> purposes; it stays around for the latter use case, for example for links to PDFs
+> or webpages with background information relevant for the patch.
 
-syzbot found the following issue on:
+As an alternative, I can offer that we continue to use Link: trailers with
+extra data following the hashtag, as is already done for other trailers:
 
-HEAD commit:    412af9cd936d ioremap.c: move an #include around
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=136fb126b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2d142cdf4204061
-dashboard link: https://syzkaller.appspot.com/bug?extid=8d179821571093c5f928
-compiler:       clang version 14.0.0 (git@github.com:llvm/llvm-project.git 0996585c8e3b3d409494eb5f1cad714b9e1f7fb5), GNU ld (GNU Binutils for Debian) 2.35.2
+    Link: https://bugzilla.kernel.org/show_bug.cgi?id=215101   #report
+    Link: https://lore.kernel.org/r/fobarbaz.5551212@localhost #review
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Note, that this merely for completeness, not in opposition to the proposal. I
+find the "Link:" trailer to be semantically redundant, since what follows is
+already clearly a hyperlink. Adding "Link: " in front of it is only necessary
+for consistency and machine parsing reasons.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8d179821571093c5f928@syzkaller.appspotmail.com
-
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0016: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable hardware MII access
-=====================================================
-BUG: KMSAN: uninit-value in ax88772a_hw_reset+0xc2a/0x12c0 drivers/net/usb/asix_devices.c:523
- ax88772a_hw_reset+0xc2a/0x12c0 drivers/net/usb/asix_devices.c:523
- ax88772_bind+0x838/0x19b0 drivers/net/usb/asix_devices.c:762
- usbnet_probe+0x1285/0x40c0 drivers/net/usb/usbnet.c:1745
- usb_probe_interface+0xf15/0x1530 drivers/usb/core/driver.c:396
- really_probe+0x66e/0x1510 drivers/base/dd.c:596
- __driver_probe_device+0x3e9/0x530 drivers/base/dd.c:751
- driver_probe_device drivers/base/dd.c:781 [inline]
- __device_attach_driver+0x79f/0x1120 drivers/base/dd.c:898
- bus_for_each_drv+0x2f0/0x410 drivers/base/bus.c:427
- __device_attach+0x593/0x8e0 drivers/base/dd.c:969
- device_initial_probe+0x4a/0x60 drivers/base/dd.c:1016
- bus_probe_device+0x17b/0x3e0 drivers/base/bus.c:487
- device_add+0x1d46/0x2400 drivers/base/core.c:3396
- usb_set_configuration+0x389f/0x3ee0 drivers/usb/core/message.c:2170
- usb_generic_driver_probe+0x13c/0x300 drivers/usb/core/generic.c:238
- usb_probe_device+0x309/0x570 drivers/usb/core/driver.c:293
- really_probe+0x66e/0x1510 drivers/base/dd.c:596
- __driver_probe_device+0x3e9/0x530 drivers/base/dd.c:751
- driver_probe_device drivers/base/dd.c:781 [inline]
- __device_attach_driver+0x79f/0x1120 drivers/base/dd.c:898
- bus_for_each_drv+0x2f0/0x410 drivers/base/bus.c:427
- __device_attach+0x593/0x8e0 drivers/base/dd.c:969
- device_initial_probe+0x4a/0x60 drivers/base/dd.c:1016
- bus_probe_device+0x17b/0x3e0 drivers/base/bus.c:487
- device_add+0x1d46/0x2400 drivers/base/core.c:3396
- usb_new_device+0x1b9a/0x2960 drivers/usb/core/hub.c:2563
- hub_port_connect drivers/usb/core/hub.c:5348 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5488 [inline]
- port_event drivers/usb/core/hub.c:5634 [inline]
- hub_event+0x57cf/0x8690 drivers/usb/core/hub.c:5716
- process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
- worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
- kthread+0x66b/0x780 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30
-
-Local variable smsr.i created at:
- asix_mdio_read_nopm+0xb7/0xab0 drivers/net/usb/asix_common.c:574
- ax88772a_hw_reset+0x822/0x12c0 drivers/net/usb/asix_devices.c:511
-=====================================================
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0014: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable hardware MII access
-=====================================================
-BUG: KMSAN: uninit-value in ax88772a_hw_reset+0xc37/0x12c0 drivers/net/usb/asix_devices.c:527
- ax88772a_hw_reset+0xc37/0x12c0 drivers/net/usb/asix_devices.c:527
- ax88772_bind+0x838/0x19b0 drivers/net/usb/asix_devices.c:762
- usbnet_probe+0x1285/0x40c0 drivers/net/usb/usbnet.c:1745
- usb_probe_interface+0xf15/0x1530 drivers/usb/core/driver.c:396
- really_probe+0x66e/0x1510 drivers/base/dd.c:596
- __driver_probe_device+0x3e9/0x530 drivers/base/dd.c:751
- driver_probe_device drivers/base/dd.c:781 [inline]
- __device_attach_driver+0x79f/0x1120 drivers/base/dd.c:898
- bus_for_each_drv+0x2f0/0x410 drivers/base/bus.c:427
- __device_attach+0x593/0x8e0 drivers/base/dd.c:969
- device_initial_probe+0x4a/0x60 drivers/base/dd.c:1016
- bus_probe_device+0x17b/0x3e0 drivers/base/bus.c:487
- device_add+0x1d46/0x2400 drivers/base/core.c:3396
- usb_set_configuration+0x389f/0x3ee0 drivers/usb/core/message.c:2170
- usb_generic_driver_probe+0x13c/0x300 drivers/usb/core/generic.c:238
- usb_probe_device+0x309/0x570 drivers/usb/core/driver.c:293
- really_probe+0x66e/0x1510 drivers/base/dd.c:596
- __driver_probe_device+0x3e9/0x530 drivers/base/dd.c:751
- driver_probe_device drivers/base/dd.c:781 [inline]
- __device_attach_driver+0x79f/0x1120 drivers/base/dd.c:898
- bus_for_each_drv+0x2f0/0x410 drivers/base/bus.c:427
- __device_attach+0x593/0x8e0 drivers/base/dd.c:969
- device_initial_probe+0x4a/0x60 drivers/base/dd.c:1016
- bus_probe_device+0x17b/0x3e0 drivers/base/bus.c:487
- device_add+0x1d46/0x2400 drivers/base/core.c:3396
- usb_new_device+0x1b9a/0x2960 drivers/usb/core/hub.c:2563
- hub_port_connect drivers/usb/core/hub.c:5348 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5488 [inline]
- port_event drivers/usb/core/hub.c:5634 [inline]
- hub_event+0x57cf/0x8690 drivers/usb/core/hub.c:5716
- process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
- worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
- kthread+0x66b/0x780 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30
-
-Local variable smsr.i created at:
- asix_mdio_read_nopm+0xb7/0xab0 drivers/net/usb/asix_common.c:574
- ax88772a_hw_reset+0x8af/0x12c0 drivers/net/usb/asix_devices.c:513
-=====================================================
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to read reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to write reg index 0x0000: -71
-asix 4-1:0.0 (unnamed net_device) (uninitialized): Failed to enable software MII access
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Regards,
+-K
