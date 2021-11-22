@@ -2,221 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D324D459857
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 00:20:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7456345985A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 00:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhKVXXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 18:23:19 -0500
-Received: from mga05.intel.com ([192.55.52.43]:55425 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229619AbhKVXXS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 18:23:18 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="321135918"
-X-IronPort-AV: E=Sophos;i="5.87,255,1631602800"; 
-   d="scan'208";a="321135918"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 15:20:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,255,1631602800"; 
-   d="scan'208";a="739558240"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga005.fm.intel.com with ESMTP; 22 Nov 2021 15:20:10 -0800
-Received: from xwu17-mobl1.amr.corp.intel.com (xwu17-mobl1.amr.corp.intel.com [10.212.223.69])
-        by linux.intel.com (Postfix) with ESMTP id 4922C580418;
-        Mon, 22 Nov 2021 15:20:10 -0800 (PST)
-Message-ID: <895af131b2c43cf6b7c2b4c6c339e6babb85e6e1.camel@linux.intel.com>
-Subject: Re: [PATCH 4/4] platform/x86: Add Intel Software Defined Silicon
- driver
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     lee.jones@linaro.org, hdegoede@redhat.com, bhelgaas@google.com,
-        gregkh@linuxfoundation.org, andriy.shevchenko@linux.intel.com,
-        srinivas.pandruvada@intel.com, mgross@linux.intel.com,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Date:   Mon, 22 Nov 2021 15:20:10 -0800
-In-Reply-To: <20211122184418.GA2159461@bhelgaas>
-References: <20211122184418.GA2159461@bhelgaas>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S230295AbhKVXZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 18:25:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28908 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229619AbhKVXZE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 18:25:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637623317;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gFIU64wEJNmUi1Y7D91ACkp2wpuGCouToHN5ND11zdg=;
+        b=XOUdw8zTdKxKZmm4Xy2N0OgUuVXQmJUocwBAaBqxr6vdpskRUzornZN/amDy0Frnk6IF+F
+        sq8o9vPEUz8nJ8ufvNn9Tp0fgRgI+aSnazEVhUw6OkGLNsMpLBOPGNyzZWCnLDivwVbx7e
+        cm4upuwTM5ZQxx/1hlodERwKVOjuUD0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-320-9uUOuh-zMwKCAtL1-p09Zg-1; Mon, 22 Nov 2021 18:21:52 -0500
+X-MC-Unique: 9uUOuh-zMwKCAtL1-p09Zg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1FE6D801AE3;
+        Mon, 22 Nov 2021 23:21:51 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9E6595DF5F;
+        Mon, 22 Nov 2021 23:21:50 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     David Woodhouse <dwmw@amazon.co.uk>,
+        syzbot+7b7db8bb4db6fd5e157b@syzkaller.appspotmail.com
+Subject: [PATCH] KVM: VMX: do not use uninitialized gfn_to_hva_cache
+Date:   Mon, 22 Nov 2021 18:21:49 -0500
+Message-Id: <20211122232149.2927356-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+An uninitialized gfn_to_hva_cache has ghc->len == 0, which causes
+the accessors to croak very loudly.  While a BUG_ON is definitely
+_too_ loud and a bug on its own, there is indeed an issue of using
+the caches in such a way that they could not have been initialized,
+because ghc->gpa == 0 might match and thus kvm_gfn_to_hva_cache_init
+would not be called.
 
-Thanks for reviewing.
+For the vmcs12_cache, the solution is simply to invoke
+kvm_gfn_to_hva_cache_init unconditionally: we already know
+that the cache does not match the current VMCS pointer.
+For the shadow_vmcs12_cache, there is no similar condition
+that checks the VMCS link pointer, so invalidate the cache
+on VMXON.
 
-On Mon, 2021-11-22 at 12:44 -0600, Bjorn Helgaas wrote:
-> On Sat, Nov 20, 2021 at 03:17:05PM -0800, David E. Box wrote:
-> > Intel Software Defined Silicon (SDSi) is a post manufacturing mechanism for
-> > activating additional silicon features. Features are enabled through a
-> > license activation process.  The SDSi driver provides a per socket, sysfs
-> > attribute interface for applications to perform 3 main provisioning
-> > functions:
-> > 
-> > 1. Provision an Authentication Key Certificate (AKC), a key written to
-> >    internal NVRAM that is used to authenticate a capability specific
-> >    activation payload.
-> > 
-> > 2. Provision a Capability Activation Payload (CAP), a token authenticated
-> >    using the AKC and applied to the CPU configuration to activate a new
-> >    feature.
-> > 
-> > 3. Read the SDSi State Certificate, containing the CPU configuration
-> >    state.
-> > 
-> > The operations perform function specific mailbox commands that forward the
-> > requests to SDSi hardware to perform authentication of the payloads and
-> > enable the silicon configuration (to be made available after power
-> > cycling).
-> > 
-> > The SDSi device itself is enumerated as an auxiliary device from the
-> > intel_vsec driver and as such has a build dependency on CONFIG_INTEL_VSEC.
-> > 
-> > Link: https://github.com/intel/intel-sdsi
-> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > Reviewed-by: Mark Gross <markgross@kernel.org>
-> > ---
-> >  .../ABI/testing/sysfs-driver-intel_sdsi       |  75 +++
-> >  MAINTAINERS                                   |   5 +
-> >  drivers/platform/x86/intel/Kconfig            |  12 +
-> >  drivers/platform/x86/intel/Makefile           |   2 +
-> >  drivers/platform/x86/intel/sdsi.c             | 571 ++++++++++++++++++
-> >  drivers/platform/x86/intel/vsec.c             |  12 +-
-> >  6 files changed, 676 insertions(+), 1 deletion(-)
-> >  create mode 100644 Documentation/ABI/testing/sysfs-driver-intel_sdsi
-> >  create mode 100644 drivers/platform/x86/intel/sdsi.c
-> > 
-> > diff --git a/Documentation/ABI/testing/sysfs-driver-intel_sdsi
-> > b/Documentation/ABI/testing/sysfs-driver-intel_sdsi
-> > new file mode 100644
-> > index 000000000000..32a017ed3dd3
-> > --- /dev/null
-> > +++ b/Documentation/ABI/testing/sysfs-driver-intel_sdsi
-> > @@ -0,0 +1,75 @@
-> > +What:		/sys/bus/auxiliary/devices/intel_extended_cap.sdsi.X
-> > +Date:		Nov 2021
-> > +KernelVersion:	5.17
-> > +Contact:	"David E. Box" <david.e.box@linux.intel.com>
-> > +Description:
-> > +		This folder contains interface files for accessing Intel
-> > +		Software Defined Silicon (SDSi) features on a CPU. X
-> > +		represent the socket instance (though not the socket id).
-> 
-> s/represent/represents/
-> s/socket id/socket ID/
+Fixes: cee66664dcd6 ("KVM: nVMX: Use a gfn_to_hva_cache for vmptrld")
+Cc: David Woodhouse <dwmw@amazon.co.uk>
+Reported-by: syzbot+7b7db8bb4db6fd5e157b@syzkaller.appspotmail.com
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/vmx/nested.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Ack
-
-> 
-> As a user, how do I learn the socket instance?  Look at dmesg?  Look
-> at some other sysfs file?
-
-Instances are just the list of SDSi devices in this folder. Each device
-represents a socket. They are enumerated in the order they are discovered. If
-you meant socket ID, that is read from the registers file in this folder per the
-spec. Ideally the two would be the same, but the socket ID is not known until
-probe.
-
-> 
-> > +		Some files communicate with SDSi hardware through a mailbox.
-> > +		Should the operation fail, one of the following error codes
-> > +		may be returned:
-> > +
-> > +		Error Code	Cause
-> > +	        ----------	-----
-> > +	        EIO		General mailbox failure. Log may indicate cause.
-> > +	        EBUSY		Mailbox is owned by another agent.
-> > +	        EPERM		SDSI capability is not enabled in hardware.
-> > +	        EPROTO		Failure in mailbox protocol detected by
-> > driver.
-> > +				See log for details.
-> > +	        EOVERFLOW	For provision commands, the size of the data
-> > +				exceeds what may be written.
-> > +	        ESPIPE		Seeking is not allowed.
-> > +	        ETIMEDOUT	Failure to complete mailbox transaction in time.
-> > +
-> > +What:		/sys/bus/auxiliary/devices/intel_extended_cap.sdsi.X/gui
-> > d
-> > +Date:		Nov 2021
-> > +KernelVersion:	5.17
-> > +Contact:	"David E. Box" <david.e.box@linux.intel.com>
-> > +Description:
-> > +		(RO) The GUID for the registers file. The GUID identifies
-> > +		the register layout of the registers file in this folder.
-> > +		Information about the register layouts for a particular GUID
-> > +		is available at http://github.com/intel/intel-sdsi
-> 
-> s/register layout of the registers file/layout of the registers file/
-
-Ack
-
-> 
-> > +What:		/sys/bus/auxiliary/devices/intel_extended_cap.sdsi.X/reg
-> > isters
-> > +Date:		Nov 2021
-> > +KernelVersion:	5.17
-> > +Contact:	"David E. Box" <david.e.box@linux.intel.com>
-> > +Description:
-> > +		(RO) Contains information needed by applications to provision
-> > +		a CPU and monitor status information. The layout of this file
-> > +		is determined by the GUID in this folder. Information about the
-> > +		layout for a particular GUID is available at
-> > +		http://github.com/intel/intel-sdsi
-> > +
-> > +What:		/sys/bus/auxiliary/devices/intel_extended_cap.sdsi.X/pro
-> > vision_akc
-> > +Date:		Nov 2021
-> > +KernelVersion:	5.17
-> > +Contact:	"David E. Box" <david.e.box@linux.intel.com>
-> > +Description:
-> > +		(WO) Used to write an Authentication Key Certificate (AKC) to
-> > +		the SDSi NVRAM for the CPU. The AKC is used to authentication a
-> > +		Capability Activation Payload. Mailbox command.
-> 
-> s/used to authentication/used to authenticate/
-
-Ack
-
-> 
-> > +What:		/sys/bus/auxiliary/devices/intel_extended_cap.sdsi.X/pro
-> > vision_cap
-> > +Date:		Nov 2021
-> > +KernelVersion:	5.17
-> > +Contact:	"David E. Box" <david.e.box@linux.intel.com>
-> > +Description:
-> > +		(WO) Used to write a Capability Activation Payload (CAP) to the
-> > +		SDSi NVRAM for the CPU. CAP files are used to activate a given
-> > +		CPU feature. The CAP file is validated by SDSi hardware using a
-> > +		previously provision AKC file. Upon successful authentication,
-> > the
-> > +		CPU configuration is updated. A cold reboot is required to fully
-> > +		activate the feature. Mailbox command.
-> 
-> "CAP file" sounds like it might be redundant.  It *seems* like the
-> *payload* is what will be validated by SDSi and activate the feature.
-> Not sure "file" is meaningful if this is really talking about the
-> content of the CAP.
-> 
-> s/previously provision/previously provisioned/
-
-Ack
-
-David
-
-> 
-> > +What:		/sys/bus/auxiliary/devices/intel_extended_cap.sdsi.X/rea
-> > d_state_cert
-> > +Date:		Nov 2021
-> > +KernelVersion:	5.17
-> > +Contact:	"David E. Box" <david.e.box@linux.intel.com>
-> > +Description:
-> > +		(RO) Used to read back the current State Certificate for the CPU
-> > +		from SDSi hardware. The State Certificate contains information
-> > +		about the current licenses on the CPU. Mailbox command.
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index 1e2f66951566..315fa456d368 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -4857,6 +4857,7 @@ static int enter_vmx_operation(struct kvm_vcpu *vcpu)
+ 	if (!vmx->nested.cached_vmcs12)
+ 		goto out_cached_vmcs12;
+ 
++	vmx->nested.shadow_vmcs12_cache.gpa = INVALID_GPA;
+ 	vmx->nested.cached_shadow_vmcs12 = kzalloc(VMCS12_SIZE, GFP_KERNEL_ACCOUNT);
+ 	if (!vmx->nested.cached_shadow_vmcs12)
+ 		goto out_cached_shadow_vmcs12;
+@@ -5289,8 +5290,7 @@ static int handle_vmptrld(struct kvm_vcpu *vcpu)
+ 		struct gfn_to_hva_cache *ghc = &vmx->nested.vmcs12_cache;
+ 		struct vmcs_hdr hdr;
+ 
+-		if (ghc->gpa != vmptr &&
+-		    kvm_gfn_to_hva_cache_init(vcpu->kvm, ghc, vmptr, VMCS12_SIZE)) {
++		if (kvm_gfn_to_hva_cache_init(vcpu->kvm, ghc, vmptr, VMCS12_SIZE)) {
+ 			/*
+ 			 * Reads from an unbacked page return all 1s,
+ 			 * which means that the 32 bits located at the
+-- 
+2.27.0
 
