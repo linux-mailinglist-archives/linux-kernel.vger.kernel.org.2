@@ -2,120 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 668D345889D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 05:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3544588A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 05:47:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231656AbhKVEZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 23:25:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230218AbhKVEZO (ORCPT
+        id S232059AbhKVEuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 23:50:55 -0500
+Received: from smtprelay0190.hostedemail.com ([216.40.44.190]:55612 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231656AbhKVEuz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 23:25:14 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE80BC061714
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 20:22:08 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id v7so46671364ybq.0
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 20:22:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mQsLjE4VGO0GATJ9B+7NKTiNyNHw6FkgFYmoa5dRxaE=;
-        b=n2wxVyb1ktE/Q3z6Up43RPvke0doMGm7LsaT1A3inEXXo7bAW8Rv4agR9gFi4nxpYu
-         QpRn+MB5CK+ksrmTA+vEFDRq+SBlaSnERuN8x4q3V87cSyalGIW1H8AcPIJ4ySa+il2C
-         Upg+Ir/DKLdh+MGVdQoFBfT7pZJK8map2eTu3cqgYtA7UwZniDV+rcTlfYTduQ+X+Eja
-         tmkpNU07wpIZbPVIoo+oG6Ca04ao5Wt+ny9hrx553Sh6afvyRqrtpfPs7M0bW39UqWzd
-         7ZwNKkjK4iru7FuLlVJ3F4JesEcJ7S+GspwGvM98J5bnSys3BhVg54PZWfIIyQIJlK1K
-         TxBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mQsLjE4VGO0GATJ9B+7NKTiNyNHw6FkgFYmoa5dRxaE=;
-        b=Pd+6XUlZmnkmXEzqPknRnaKXWsVGWJ9X8QSBPM4oxSldyQ/prXGcRFsBqxq5Bv4Jeb
-         1LEgB9uD6YHeOCb1t0UN7hR5lBxzbso+HOs61C2v7URPhaWwVzs6leZSygPYhgHkSIRD
-         rEGMb+9OjSU21tp09Fr1VJJ0umOJ2PP6SMPX/ifsjs5zhELGEhEUPVVokgQIGcaklIyw
-         kLW+Eqo12WaJJBd8S3J0omKdidQUr27F4Bs0ZdnEJCrtLzVbHpw8V3xQiRYPTfBEYMM2
-         buKzOmYBPcGDAHxsAx7S37G+SEyhZ8ZaNAw0axDWIF1dJJrhxRERtQrsXWsiyMUJFsrF
-         w6rw==
-X-Gm-Message-State: AOAM533JcWYvCZK1uL7VIyzQdYJvAfHZLK4AQpwpTmw9yth4/1S6Edtp
-        EMQ3SVG/7VCZYZHPPR29D+TtLighh/1DvSOvlWSmFw==
-X-Google-Smtp-Source: ABdhPJxkQANMOc1KWaxVyyp66k2Es4bDOOEupiGo2PTdTOZqGNwZC04+EYiUjduPrrRpVNzw4kkPbidwB/luXt/4NV0=
-X-Received: by 2002:a05:6902:1144:: with SMTP id p4mr3480817ybu.189.1637554928109;
- Sun, 21 Nov 2021 20:22:08 -0800 (PST)
+        Sun, 21 Nov 2021 23:50:55 -0500
+Received: from omf04.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 7847F10229386;
+        Mon, 22 Nov 2021 04:47:48 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf04.hostedemail.com (Postfix) with ESMTPA id 5436FA000417;
+        Mon, 22 Nov 2021 04:47:38 +0000 (UTC)
+Message-ID: <06c0cdc157ae1502e8e9eb3624b9ea995cf11e7a.camel@perches.com>
+Subject: [PATCH] checkpatch: Improve Kconfig help test
+From:   Joe Perches <joe@perches.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 21 Nov 2021 20:47:46 -0800
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-References: <20211101031651.75851-1-songmuchun@bytedance.com>
- <CAMZfGtUeL45=WG3ceaZ_tALMGZTLtuD9jbfKEzeQv270OnaLYQ@mail.gmail.com>
- <35c5217d-eb8f-6f70-544a-a3e8bd009a46@oracle.com> <CAMZfGtW=e___8kpe1B5a1rK+SV63bP_Nwucj89QKaX4ZOMUpaw@mail.gmail.com>
-In-Reply-To: <CAMZfGtW=e___8kpe1B5a1rK+SV63bP_Nwucj89QKaX4ZOMUpaw@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 22 Nov 2021 12:21:32 +0800
-Message-ID: <CAMZfGtV0JKcjVL0qGoYCQJ-LsXdng7Z2UjBym5hf_WM0LcYi=Q@mail.gmail.com>
-Subject: Re: [PATCH v7 0/5] Free the 2nd vmemmap page associated with each
- HugeTLB page
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com, Muchun Song <smuchun@gmail.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Chen Huang <chenhuang5@huawei.com>,
-        "Bodeddula, Balasubramaniam" <bodeddub@amazon.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.40
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: 5436FA000417
+X-Stat-Signature: mhs638tj7htpm6ne9eb73ranyw3743o7
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18bNBTebDLzld17O4NwMZnbHfffQQ0JHKU=
+X-HE-Tag: 1637556458-620712
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 2:18 PM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> On Tue, Nov 9, 2021 at 3:33 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> >
-> > On 11/8/21 12:16 AM, Muchun Song wrote:
-> > > On Mon, Nov 1, 2021 at 11:22 AM Muchun Song <songmuchun@bytedance.com> wrote:
-> > >>
-> > >> This series can minimize the overhead of struct page for 2MB HugeTLB pages
-> > >> significantly. It further reduces the overhead of struct page by 12.5% for
-> > >> a 2MB HugeTLB compared to the previous approach, which means 2GB per 1TB
-> > >> HugeTLB. It is a nice gain. Comments and reviews are welcome. Thanks.
-> > >>
-> > >
-> > > Hi,
-> > >
-> > > Ping guys. Does anyone have any comments or suggestions
-> > > on this series?
-> > >
-> > > Thanks.
-> > >
-> >
-> > I did look over the series earlier.  I have no issue with the hugetlb and
-> > vmemmap modifications as they are enhancements to the existing
-> > optimizations.  My primary concern is the (small) increased overhead
-> > for the helpers as outlined in your cover letter.  Since these helpers
-> > are not limited to hugetlb and used throughout the kernel, I would
-> > really like to get comments from others with a better understanding of
-> > the potential impact.
->
-> Thanks Mike. I'd like to hear others' comments about this as well.
-> From my point of view, maybe the (small) overhead is acceptable
-> since it only affects the head page, however Matthew Wilcox's folio
-> series could reduce this situation as well.
->
-> Looking forward to others' comments.
->
+The Kconfig help test erroneously counts patch context lines as part of
+the help text.
 
-Ping guys.
+Fix that and improve the message block output.
 
-Hi Andrew,
+Signed-off-by: Joe Perches <joe@perches.com>
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+---
+ scripts/checkpatch.pl | 52 +++++++++++++++++++++++++--------------------------
+ 1 file changed, 26 insertions(+), 26 deletions(-)
 
-Do you have any suggestions on this series to move it on?
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 1784921c645da..21397fbc22c88 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3479,47 +3479,47 @@ sub process {
+ 		    # Kconfig supports named choices), so use a word boundary
+ 		    # (\b) rather than a whitespace character (\s)
+ 		    $line =~ /^\+\s*(?:config|menuconfig|choice)\b/) {
+-			my $length = 0;
+-			my $cnt = $realcnt;
+-			my $ln = $linenr + 1;
+-			my $f;
+-			my $is_start = 0;
+-			my $is_end = 0;
+-			for (; $cnt > 0 && defined $lines[$ln - 1]; $ln++) {
+-				$f = $lines[$ln - 1];
+-				$cnt-- if ($lines[$ln - 1] !~ /^-/);
+-				$is_end = $lines[$ln - 1] =~ /^\+/;
++			my $ln = $linenr;
++			my $needs_help = 0;
++			my $has_help = 0;
++			my $help_length = 0;
++			while (defined $lines[$ln]) {
++				my $f = $lines[$ln++];
+ 
+ 				next if ($f =~ /^-/);
+-				last if (!$file && $f =~ /^\@\@/);
++				last if ($f !~ /^[\+ ]/);	# !patch context
+ 
+-				if ($lines[$ln - 1] =~ /^\+\s*(?:bool|tristate|prompt)\s*["']/) {
+-					$is_start = 1;
+-				} elsif ($lines[$ln - 1] =~ /^\+\s*(?:---)?help(?:---)?$/) {
+-					$length = -1;
++				if ($f =~ /^\+\s*(?:bool|tristate|prompt)\s*["']/) {
++					$needs_help = 1;
++					next;
++				}
++				if ($f =~ /^\+\s*help\s*$/) {
++					$has_help = 1;
++					next;
+ 				}
+ 
+-				$f =~ s/^.//;
+-				$f =~ s/#.*//;
+-				$f =~ s/^\s+//;
+-				next if ($f =~ /^$/);
++				$f =~ s/^.//;	# strip patch context [+ ]
++				$f =~ s/#.*//;	# strip # directives
++				$f =~ s/^\s+//;	# strip leading blanks
++				next if ($f =~ /^$/);	# skip blank lines
+ 
++				# At the end of this Kconfig block:
+ 				# This only checks context lines in the patch
+ 				# and so hopefully shouldn't trigger false
+ 				# positives, even though some of these are
+ 				# common words in help texts
+-				if ($f =~ /^\s*(?:config|menuconfig|choice|endchoice|
+-						  if|endif|menu|endmenu|source)\b/x) {
+-					$is_end = 1;
++				if ($f =~ /^(?:config|menuconfig|choice|endchoice|
++					       if|endif|menu|endmenu|source)\b/x) {
+ 					last;
+ 				}
+-				$length++;
++				$help_length++ if ($has_help);
+ 			}
+-			if ($is_start && $is_end && $length < $min_conf_desc_length) {
++			if ($needs_help &&
++			    $help_length < $min_conf_desc_length) {
++				my $stat_real = get_stat_real($linenr, $ln - 1);
+ 				WARN("CONFIG_DESCRIPTION",
+-				     "please write a paragraph that describes the config symbol fully\n" . $herecurr);
++				     "please write a help paragraph that fully describes the config symbol\n" . "$here\n$stat_real\n");
+ 			}
+-			#print "is_start<$is_start> is_end<$is_end> length<$length>\n";
+ 		}
+ 
+ # check MAINTAINERS entries
 
-Thanks.
+
