@@ -2,137 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 865F745923A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:57:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 010A34591C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:54:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240202AbhKVP7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:59:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37798 "EHLO
+        id S240068AbhKVP5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:57:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240070AbhKVP7a (ORCPT
+        with ESMTP id S240075AbhKVP5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:59:30 -0500
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA741C06175C
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:56:16 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by albert.telenet-ops.be with bizsmtp
-        id MTvb260044C55Sk06Tvb5d; Mon, 22 Nov 2021 16:56:16 +0100
+        Mon, 22 Nov 2021 10:57:16 -0500
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52CC7C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:54:09 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:e4da:38c:79e9:48bf])
+        by andre.telenet-ops.be with bizsmtp
+        id MTu82600i4yPVd601Tu8P6; Mon, 22 Nov 2021 16:54:09 +0100
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mpBe6-00EL3k-Le; Mon, 22 Nov 2021 16:54:18 +0100
+        id 1mpBdw-00EL2i-KM; Mon, 22 Nov 2021 16:54:08 +0100
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mpBe5-00HH0g-SI; Mon, 22 Nov 2021 16:54:17 +0100
+        id 1mpBdv-00HGsc-NS; Mon, 22 Nov 2021 16:54:07 +0100
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Tony Lindgren <tony@atomide.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Paul Walmsley <paul@pwsan.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Benoit Parrot <bparrot@ti.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Keerthy <j-keerthy@ti.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
-        alsa-devel@alsa-project.org,
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH/RFC 14/17] regulator: ti-abb: Use bitfield helpers
+Subject: [PATCH] irqchip/mips-gic: Use bitfield helpers
 Date:   Mon, 22 Nov 2021 16:54:07 +0100
-Message-Id: <c8508cae36c52c750dbb12493dd44d92fcf51ad4.1637592133.git.geert+renesas@glider.be>
+Message-Id: <74f9d126961a90d3e311b92a54870eaac5b3ae57.1637593297.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1637592133.git.geert+renesas@glider.be>
-References: <cover.1637592133.git.geert+renesas@glider.be>
+In-Reply-To: <a1445d3abb45cfc95cb1b03180fd53caf122035b.1637593297.git.geert+renesas@glider.be>
+References: <a1445d3abb45cfc95cb1b03180fd53caf122035b.1637593297.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the field_{get,prep}() helpers, instead of open-coding the same
-operations.
+Use the FIELD_GET() helper, instead of open-coding the same operation.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
 Compile-tested only.
-Marked RFC, as this depends on [PATCH 01/17], but follows a different
-path to upstream.
----
- drivers/regulator/ti-abb-regulator.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/regulator/ti-abb-regulator.c b/drivers/regulator/ti-abb-regulator.c
-index 2931a0b89bffbf7a..3bc6ca5c382a4273 100644
---- a/drivers/regulator/ti-abb-regulator.c
-+++ b/drivers/regulator/ti-abb-regulator.c
-@@ -17,6 +17,7 @@
-  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  */
+See "[PATCH 00/17] Non-const bitfield helper conversions"
+(https://lore.kernel.org/r/cover.1637592133.git.geert+renesas@glider.be)
+for background and more conversions.
+---
+ drivers/irqchip/irq-mips-gic.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
+index d02b05a067d950a0..ff89b36267dd4955 100644
+--- a/drivers/irqchip/irq-mips-gic.c
++++ b/drivers/irqchip/irq-mips-gic.c
+@@ -9,6 +9,7 @@
+ 
+ #define pr_fmt(fmt) "irq-mips-gic: " fmt
+ 
 +#include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/err.h>
-@@ -132,7 +133,7 @@ static inline u32 ti_abb_rmw(u32 mask, u32 value, void __iomem *reg)
+ #include <linux/bitmap.h>
+ #include <linux/clocksource.h>
+ #include <linux/cpuhotplug.h>
+@@ -735,8 +736,7 @@ static int __init gic_of_init(struct device_node *node,
+ 	mips_gic_base = ioremap(gic_base, gic_len);
  
- 	val = readl(reg);
- 	val &= ~mask;
--	val |= (value << __ffs(mask)) & mask;
-+	val |= field_prep(mask, value);
- 	writel(val, reg);
+ 	gicconfig = read_gic_config();
+-	gic_shared_intrs = gicconfig & GIC_CONFIG_NUMINTERRUPTS;
+-	gic_shared_intrs >>= __ffs(GIC_CONFIG_NUMINTERRUPTS);
++	gic_shared_intrs = FIELD_GET(GIC_CONFIG_NUMINTERRUPTS, gicconfig);
+ 	gic_shared_intrs = (gic_shared_intrs + 1) * 8;
  
- 	return val;
-@@ -229,7 +230,7 @@ static void ti_abb_program_ldovbb(struct device *dev, const struct ti_abb *abb,
- 	case TI_ABB_SLOW_OPP:
- 	case TI_ABB_FAST_OPP:
- 		val |= abb->ldovbb_override_mask;
--		val |= info->vset << __ffs(abb->ldovbb_vset_mask);
-+		val |= field_prep(abb->ldovbb_vset_mask, info->vset);
- 		break;
- 	}
- 
-@@ -606,7 +607,7 @@ static int ti_abb_init_table(struct device *dev, struct ti_abb *abb,
- 					pname, *volt_table, vset_mask);
- 			continue;
- 		}
--		info->vset = (efuse_val & vset_mask) >> __ffs(vset_mask);
-+		info->vset = field_get(vset_mask, efuse_val);
- 		dev_dbg(dev, "[%d]v=%d vset=%x\n", i, *volt_table, info->vset);
- check_abb:
- 		switch (info->opp_sel) {
+ 	if (cpu_has_veic) {
 -- 
 2.25.1
 
