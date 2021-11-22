@@ -2,314 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E50458FA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:43:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF10458FA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:44:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236316AbhKVNq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 08:46:56 -0500
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:27348 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229797AbhKVNqz (ORCPT
+        id S239581AbhKVNrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 08:47:19 -0500
+Received: from bedivere.hansenpartnership.com ([96.44.175.130]:43142 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239591AbhKVNrR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 08:46:55 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yinan@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UxmRdYN_1637588626;
-Received: from localhost.localdomain(mailfrom:yinan@linux.alibaba.com fp:SMTPD_---0UxmRdYN_1637588626)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 22 Nov 2021 21:43:47 +0800
-From:   Yinan Liu <yinan@linux.alibaba.com>
-To:     rostedt@goodmis.org
-Cc:     mark-pk.tsai@mediatek.com, peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] scripts: ftrace - move the sort-processing in ftrace_init to compile time
-Date:   Mon, 22 Nov 2021 21:43:45 +0800
-Message-Id: <20211122134345.7407-1-yinan@linux.alibaba.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
-In-Reply-To: <20210911135043.16014-1-yinan@linux.alibaba.com>
-References: <20210911135043.16014-1-yinan@linux.alibaba.com>
+        Mon, 22 Nov 2021 08:47:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1637588650;
+        bh=/6FwUIopWGEZF2iH1TImnWQkKZ/1gFqOd7wHAdmKlBQ=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=HzmqkquWAZhr0kVjs8geFPZDLWzJW2gieSY7v2k+PkOjYL/Bga7Xz8xa4bfvaZCyb
+         tElGS9eJNC9EBwW35gQ2vH+7JtsHQnYDob43/m6Zyvw4Wi/9uSyelPZK9HBPA1yUGf
+         3Tahc9eZ/jrOKSWPeP6NxhWxojfAIckcFGwCKOBA=
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id E4866128028D;
+        Mon, 22 Nov 2021 08:44:10 -0500 (EST)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id E3eGFrCm2n21; Mon, 22 Nov 2021 08:44:10 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1637588650;
+        bh=/6FwUIopWGEZF2iH1TImnWQkKZ/1gFqOd7wHAdmKlBQ=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=HzmqkquWAZhr0kVjs8geFPZDLWzJW2gieSY7v2k+PkOjYL/Bga7Xz8xa4bfvaZCyb
+         tElGS9eJNC9EBwW35gQ2vH+7JtsHQnYDob43/m6Zyvw4Wi/9uSyelPZK9HBPA1yUGf
+         3Tahc9eZ/jrOKSWPeP6NxhWxojfAIckcFGwCKOBA=
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4300:c551::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 81F7712800CE;
+        Mon, 22 Nov 2021 08:44:09 -0500 (EST)
+Message-ID: <4d2b08aa854fcccd51247105edb18fe466a2a3f1.camel@HansenPartnership.com>
+Subject: Re: [RFC PATCH 0/4] namespacefs: Proof-of-Concept
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Yordan Karadzhov <y.karadz@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, mingo@redhat.com, hagen@jauu.net,
+        rppt@kernel.org, akpm@linux-foundation.org, vvs@virtuozzo.com,
+        shakeelb@google.com, christian.brauner@ubuntu.com,
+        mkoutny@suse.com, Linux Containers <containers@lists.linux.dev>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Date:   Mon, 22 Nov 2021 08:44:07 -0500
+In-Reply-To: <ba0f624c-fc24-a3f4-749a-00e419960de2@gmail.com>
+References: <20211118181210.281359-1-y.karadz@gmail.com>
+         <87a6i1xpis.fsf@email.froward.int.ebiederm.org>
+         <20211118142440.31da20b3@gandalf.local.home>
+         <1349346e1d5daca991724603d1495ec311cac058.camel@HansenPartnership.com>
+         <20211119092758.1012073e@gandalf.local.home>
+         <f6ca1f5bdb3b516688f291d9685a6a59f49f1393.camel@HansenPartnership.com>
+         <20211119114736.5d9dcf6c@gandalf.local.home>
+         <20211119114910.177c80d6@gandalf.local.home>
+         <cc6783315193be5acb0e2e478e2827d1ad76ba2a.camel@HansenPartnership.com>
+         <ba0f624c-fc24-a3f4-749a-00e419960de2@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 2021-11-22 at 15:02 +0200, Yordan Karadzhov wrote:
+> 
+> On 20.11.21 г. 1:08 ч., James Bottomley wrote:
+> > [trying to reconstruct cc list, since the cc: field is bust again]
+> > > On Fri, 19 Nov 2021 11:47:36 -0500
+> > > Steven Rostedt <rostedt@goodmis.org> wrote:
+> > > 
+> > > > > Can we back up and ask what problem you're trying to solve
+> > > > > before we start introducing new objects like namespace name?
+> > > 
+> > > TL;DR; verison:
+> > > 
+> > > We want to be able to install a container on a machine that will
+> > > let us view all namespaces currently defined on that machine and
+> > > which tasks are associated with them.
+> > > 
+> > > That's basically it.
+> > 
+> > So you mentioned kubernetes.  Have you tried
+> > 
+> > kubectl get pods --all-namespaces
+> > 
+> > ?
+> > 
+> > The point is that orchestration systems usually have interfaces to
+> > get this information, even if the kernel doesn't.  In fact,
+> > userspace is almost certainly the best place to construct this
+> > from.
+> > 
+> > To look at this another way, what if you were simply proposing the
+> > exact same thing but for the process tree.  The push back would be
+> > that we can get that all in userspace and there's even a nice tool
+> > (pstree) to do it which simply walks the /proc interface.  Why,
+> > then, do we have to do nstree in the kernel when we can get all the
+> > information in exactly the same way (walking the process tree)?
+> > 
+> 
+> I see on important difference between the problem we have and the
+> problem in your example. /proc contains all the 
+> information needed to unambiguously reconstruct the process tree.
+> 
+> On the other hand, I do not see how one can reconstruct the namespace
+> tree using only the information in proc/ (maybe this is because of my
+> ignorance).
 
-patch V3 has fixed the issue reported-by robot and adjusted
-the formatting problem again.
+Well, no, the information may not all exist.  However, the point is we
+can add it without adding additional namespace objects.
 
-Signed-off-by: Yinan Liu <yinan@linux.alibaba.com>
-Reported-by: kernel test robot <lkp@intel.com>
----
- kernel/trace/ftrace.c   |   6 ++-
- scripts/Makefile        |   2 +-
- scripts/link-vmlinux.sh |   6 +--
- scripts/sorttable.c     |   2 +
- scripts/sorttable.h     | 113 ++++++++++++++++++++++++++++++++++++++++++++++--
- 5 files changed, 119 insertions(+), 10 deletions(-)
+> Let's look the following case (oversimplified just to get the idea):
+> 1. The process X is a parent of the process Y and both are in
+> namespace 'A'.
+> 3. "unshare" is used to place process Y (and all its child processes)
+> in a new namespace B (A is a parent namespace of B).
+> 4. "setns" is s used to move process X in namespace C.
+> 
+> How would you find the parent namespace of B?
 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 7b180f6..f5af419 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -6189,8 +6189,10 @@ static int ftrace_process_locs(struct module *mod,
- 	if (!count)
- 		return 0;
- 
--	sort(start, count, sizeof(*start),
--	     ftrace_cmp_ips, NULL);
-+	if (mod) {
-+		sort(start, count, sizeof(*start),
-+		     ftrace_cmp_ips, NULL);
-+	}
- 
- 	start_pg = ftrace_allocate_pages(count);
- 	if (!start_pg)
-diff --git a/scripts/Makefile b/scripts/Makefile
-index 9adb6d2..b286e11 100644
---- a/scripts/Makefile
-+++ b/scripts/Makefile
-@@ -17,6 +17,7 @@ hostprogs-always-$(CONFIG_SYSTEM_EXTRA_CERTIFICATE)	+= insert-sys-cert
- hostprogs-always-$(CONFIG_SYSTEM_REVOCATION_LIST)	+= extract-cert
- 
- HOSTCFLAGS_sorttable.o = -I$(srctree)/tools/include
-+HOSTLDLIBS_sorttable = -lpthread
- HOSTCFLAGS_asn1_compiler.o = -I$(srctree)/include
- HOSTCFLAGS_sign-file.o = $(CRYPTO_CFLAGS)
- HOSTLDLIBS_sign-file = $(CRYPTO_LIBS)
-@@ -29,7 +30,6 @@ ARCH := x86
- endif
- HOSTCFLAGS_sorttable.o += -I$(srctree)/tools/arch/x86/include
- HOSTCFLAGS_sorttable.o += -DUNWINDER_ORC_ENABLED
--HOSTLDLIBS_sorttable = -lpthread
- endif
- 
- # The following programs are only built on demand
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index 36ef7b3..e2e1a8f 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -422,6 +422,9 @@ if [ -n "${CONFIG_DEBUG_INFO_BTF}" -a -n "${CONFIG_BPF}" ]; then
- 	${RESOLVE_BTFIDS} vmlinux
- fi
- 
-+info SYSMAP System.map
-+mksysmap vmlinux System.map
-+
- if [ -n "${CONFIG_BUILDTIME_TABLE_SORT}" ]; then
- 	info SORTTAB vmlinux
- 	if ! sorttable vmlinux; then
-@@ -430,9 +433,6 @@ if [ -n "${CONFIG_BUILDTIME_TABLE_SORT}" ]; then
- 	fi
- fi
- 
--info SYSMAP System.map
--mksysmap vmlinux System.map
--
- # step a (see comment above)
- if [ -n "${CONFIG_KALLSYMS}" ]; then
- 	mksysmap ${kallsyms_vmlinux} .tmp_System.map
-diff --git a/scripts/sorttable.c b/scripts/sorttable.c
-index 0ef3abf..11a595c 100644
---- a/scripts/sorttable.c
-+++ b/scripts/sorttable.c
-@@ -30,6 +30,8 @@
- #include <stdlib.h>
- #include <string.h>
- #include <unistd.h>
-+#include <errno.h>
-+#include <pthread.h>
- 
- #include <tools/be_byteshift.h>
- #include <tools/le_byteshift.h>
-diff --git a/scripts/sorttable.h b/scripts/sorttable.h
-index a2baa2f..1effc08 100644
---- a/scripts/sorttable.h
-+++ b/scripts/sorttable.h
-@@ -19,6 +19,9 @@
- 
- #undef extable_ent_size
- #undef compare_extable
-+#undef get_mcount_loc
-+#undef sort_mcount_loc
-+#undef elf_mcount_loc
- #undef do_sort
- #undef Elf_Addr
- #undef Elf_Ehdr
-@@ -41,6 +44,9 @@
- #ifdef SORTTABLE_64
- # define extable_ent_size	16
- # define compare_extable	compare_extable_64
-+# define get_mcount_loc	get_mcount_loc_64
-+# define sort_mcount_loc	sort_mcount_loc_64
-+# define elf_mcount_loc	elf_mcount_loc_64
- # define do_sort		do_sort_64
- # define Elf_Addr		Elf64_Addr
- # define Elf_Ehdr		Elf64_Ehdr
-@@ -62,6 +68,9 @@
- #else
- # define extable_ent_size	8
- # define compare_extable	compare_extable_32
-+# define get_mcount_loc	get_mcount_loc_32
-+# define sort_mcount_loc	sort_mcount_loc_32
-+# define elf_mcount_loc	elf_mcount_loc_32
- # define do_sort		do_sort_32
- # define Elf_Addr		Elf32_Addr
- # define Elf_Ehdr		Elf32_Ehdr
-@@ -84,8 +93,6 @@
- 
- #if defined(SORTTABLE_64) && defined(UNWINDER_ORC_ENABLED)
- /* ORC unwinder only support X86_64 */
--#include <errno.h>
--#include <pthread.h>
- #include <asm/orc_types.h>
- 
- #define ERRSTR_MAXSZ	256
-@@ -191,6 +198,62 @@ static int compare_extable(const void *a, const void *b)
- 		return 1;
- 	return 0;
- }
-+struct elf_mcount_loc {
-+	Elf_Ehdr *ehdr;
-+	Elf_Shdr *init_data_sec;
-+	uint_t start_mcount_loc;
-+	uint_t stop_mcount_loc;
-+};
-+
-+/* Sort the addresses stored between __start_mcount_loc to __stop_mcount_loc in vmlinux */
-+static void *sort_mcount_loc(void *arg)
-+{
-+	struct elf_mcount_loc *emloc = (struct elf_mcount_loc *)arg;
-+	uint_t offset = emloc->start_mcount_loc - _r(&(emloc->init_data_sec)->sh_addr)
-+					+ _r(&(emloc->init_data_sec)->sh_offset);
-+	uint_t count = emloc->stop_mcount_loc - emloc->start_mcount_loc;
-+	unsigned char *start_loc = (void *)emloc->ehdr + offset;
-+
-+	qsort(start_loc, count/sizeof(uint_t), sizeof(uint_t), compare_extable);
-+	return NULL;
-+}
-+
-+/* Get the address of __start_mcount_loc and __stop_mcount_loc in System.map */
-+static void get_mcount_loc(uint_t *_start, uint_t *_stop)
-+{
-+	FILE *file_start, *file_stop;
-+	char start_buff[20];
-+	char stop_buff[20];
-+	int len = 0;
-+
-+	file_start = popen(" grep start_mcount System.map | awk '{print $1}' ", "r");
-+	if (!file_start) {
-+		fprintf(stderr, "get start_mcount_loc error!");
-+		return;
-+	}
-+
-+	file_stop = popen(" grep stop_mcount System.map | awk '{print $1}' ", "r");
-+	if (!file_stop) {
-+		fprintf(stderr, "get stop_mcount_loc error!");
-+		pclose(file_start);
-+		return;
-+	}
-+
-+	while (fgets(start_buff, sizeof(start_buff), file_start) != NULL) {
-+		len = strlen(start_buff);
-+		start_buff[len - 1] = '\0';
-+	}
-+	*_start = strtoul(start_buff, NULL, 16);
-+
-+	while (fgets(stop_buff, sizeof(stop_buff), file_stop) != NULL) {
-+		len = strlen(stop_buff);
-+		stop_buff[len - 1] = '\0';
-+	}
-+	*_stop = strtoul(stop_buff, NULL, 16);
-+
-+	pclose(file_start);
-+	pclose(file_stop);
-+}
- 
- static int do_sort(Elf_Ehdr *ehdr,
- 		   char const *const fname,
-@@ -217,6 +280,10 @@ static int do_sort(Elf_Ehdr *ehdr,
- 	int idx;
- 	unsigned int shnum;
- 	unsigned int shstrndx;
-+	struct elf_mcount_loc mstruct;
-+	uint_t _start_mcount_loc = 0;
-+	uint_t _stop_mcount_loc = 0;
-+	pthread_t mcount_sort_thread;
- #if defined(SORTTABLE_64) && defined(UNWINDER_ORC_ENABLED)
- 	unsigned int orc_ip_size = 0;
- 	unsigned int orc_size = 0;
-@@ -253,6 +320,14 @@ static int do_sort(Elf_Ehdr *ehdr,
- 			symtab_shndx = (Elf32_Word *)((const char *)ehdr +
- 						      _r(&s->sh_offset));
- 
-+		/* locate the .init.data section in vmlinux */
-+		if (!strcmp(secstrings + idx, ".init.data")) {
-+			get_mcount_loc(&_start_mcount_loc, &_stop_mcount_loc);
-+			mstruct.ehdr = ehdr;
-+			mstruct.init_data_sec = s;
-+			mstruct.start_mcount_loc = _start_mcount_loc;
-+			mstruct.stop_mcount_loc = _stop_mcount_loc;
-+		}
- #if defined(SORTTABLE_64) && defined(UNWINDER_ORC_ENABLED)
- 		/* locate the ORC unwind tables */
- 		if (!strcmp(secstrings + idx, ".orc_unwind_ip")) {
-@@ -294,6 +369,21 @@ static int do_sort(Elf_Ehdr *ehdr,
- 		goto out;
- 	}
- #endif
-+	if (!mstruct.init_data_sec || !_start_mcount_loc || !_stop_mcount_loc) {
-+		fprintf(stderr,
-+			"incomplete mcount's sort in file: %s\n",
-+			fname);
-+		goto out;
-+	}
-+
-+	/* create thread to sort mcount_loc concurrently */
-+	if (pthread_create(&mcount_sort_thread, NULL, &sort_mcount_loc, &mstruct)) {
-+		fprintf(stderr,
-+			"pthread_create mcount_sort_thread failed '%s': %s\n",
-+			strerror(errno), fname);
-+		goto out;
-+	}
-+
- 	if (!extab_sec) {
- 		fprintf(stderr,	"no __ex_table in file: %s\n", fname);
- 		goto out;
-@@ -364,11 +454,11 @@ static int do_sort(Elf_Ehdr *ehdr,
- 		void *retval = NULL;
- 		/* wait for ORC tables sort done */
- 		rc = pthread_join(orc_sort_thread, &retval);
--		if (rc)
-+		if (rc) {
- 			fprintf(stderr,
- 				"pthread_join failed '%s': %s\n",
- 				strerror(errno), fname);
--		else if (retval) {
-+		} else if (retval) {
- 			rc = -1;
- 			fprintf(stderr,
- 				"failed to sort ORC tables '%s': %s\n",
-@@ -376,5 +466,20 @@ static int do_sort(Elf_Ehdr *ehdr,
- 		}
- 	}
- #endif
-+	if (mcount_sort_thread) {
-+		void *retval = NULL;
-+		/* wait for mcount sort done */
-+		rc = pthread_join(mcount_sort_thread, &retval);
-+		if (rc) {
-+			fprintf(stderr,
-+				"pthread_join failed '%s': %s\n",
-+				strerror(errno), fname);
-+		} else if (retval) {
-+			rc = -1;
-+			fprintf(stderr,
-+				"failed to sort mcount '%s': %s\n",
-+				(char *)retval, fname);
-+		}
-+	}
- 	return rc;
- }
--- 
-1.8.3.1
+Actually this one's quite easy: the parent of X in your setup still has
+it.
+
+However, I think you're looking to set up a scenario where the
+namespace information isn't carried by live processes and that's
+certainly possible if we unshare the namespace, bind it to a mount
+point and exit the process that unshared it.  If will exist as a bound
+namespace with no processes until it gets entered via the binding and
+when that happens the parent information can't be deduced from the
+process tree.
+
+There's another problem, that I think you don't care about but someone
+will at some point: the owning user_ns can't be deduced from the
+current tree either because it depends on the order of entry.  We fixed
+unshare so that if you enter multiple namespaces, it enters the user_ns
+first so the latter is always the owning namespace, but if you enter
+the rest of the namespaces first via one unshare then unshare the
+user_ns second, that won't be true.
+
+Neither of the above actually matter for docker like containers because
+that's not the way the orchestration system works (it doesn't use mount
+bindings or the user_ns) but one day, hopefully, it might.
+
+> Again, using your arguments, I can reformulate the problem statement
+> this way: a userspace program is well instrumented 
+> to create an arbitrary complex tree of namespaces. In the same time,
+> the only place where the information about the 
+> created structure can be retrieved is in the userspace program
+> itself. And when we have multiple userspace programs 
+> adding to the namespaces tree, the global picture gets impossible to
+> recover.
+
+So figure out what's missing in the /proc tree and propose adding it. 
+The interface isn't immutable it's just that what exists today is an
+ABI and can't be altered.  I think this is the last time we realised we
+needed to add missing information in /proc/<pid>/ns:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eaa0d190bfe1ed891b814a52712dcd852554cb08
+
+So you can use that as the pattern.
+
+James
+
 
