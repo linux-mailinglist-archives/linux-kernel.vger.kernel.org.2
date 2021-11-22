@@ -2,98 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BCB458DE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:54:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 316F6458DEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:55:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239470AbhKVL5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 06:57:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33010 "EHLO mail.kernel.org"
+        id S236908AbhKVL6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 06:58:23 -0500
+Received: from mga18.intel.com ([134.134.136.126]:55307 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239459AbhKVL5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 06:57:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EEFB60240;
-        Mon, 22 Nov 2021 11:54:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637582051;
-        bh=/UfjuMxMloWjQpp8SissYGZGqNvquzZ24EkrpWjAC5Q=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JIBxA2I2WJLo3WLcVV3hVNDt2532jANyjR/0SWi1Um+HR5RRxrCjt0tRMeL40Uv6C
-         qipCkUGUKiaAL3mt3n/WachkMcJbT//KRGFtnk+F3f9UxyNvS5xn7nBl+vqbFaiLz8
-         8zTSuJ3DeTb+HwiFuS+DY31PHYAO6XLYnIZn+vWckBUhqzHTpdb7DwUuclb6f1IR/V
-         PDcvOrTVYfJks8408vDR7P8YcHlCe2bG1L5fm3qA1OQRE+6+h/Wl/z3LL4E6ZTQsUG
-         zGC7bOcQ1nc11YFs77CUaEhZJ0TAcxdof5jRJ3bc+wpxT2nrbKc6vQiUmFJqjD3Hr+
-         gZ2tfsI8g35VA==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Avihai Horon <avihaih@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Mark Zhang <markzhang@nvidia.com>
-Subject: [PATCH rdma-next 3/3] RDMA/cma: Let cma_resolve_ib_dev() continue search even after empty entry
-Date:   Mon, 22 Nov 2021 13:53:58 +0200
-Message-Id: <3e133449a4c7484cafc0fe6bd7f9dbaec63a0c87.1637581778.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <cover.1637581778.git.leonro@nvidia.com>
-References: <cover.1637581778.git.leonro@nvidia.com>
+        id S236711AbhKVL6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 06:58:19 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10175"; a="221653662"
+X-IronPort-AV: E=Sophos;i="5.87,254,1631602800"; 
+   d="scan'208";a="221653662"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 03:55:12 -0800
+X-IronPort-AV: E=Sophos;i="5.87,254,1631602800"; 
+   d="scan'208";a="674040540"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 03:55:11 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mp7uc-009QHv-SA;
+        Mon, 22 Nov 2021 13:55:06 +0200
+Date:   Mon, 22 Nov 2021 13:55:06 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jay Dolan <jay.dolan@accesio.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH v2 0/2] serial: 8250_pci patches to address issues with
+ pericom_do_set_divisor()
+Message-ID: <YZuFGik6oinuTX3z@smile.fi.intel.com>
+References: <20211117145502.43645-1-andriy.shevchenko@linux.intel.com>
+ <89c2f319-b0b9-3c64-e9f8-6c4081cdcce4@accesio.com>
+ <CAHp75VcboxaNnSnt1wKvE9JefSsLtMReZkMDVEpUVOJnd_oQnA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VcboxaNnSnt1wKvE9JefSsLtMReZkMDVEpUVOJnd_oQnA@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Avihai Horon <avihaih@nvidia.com>
+On Thu, Nov 18, 2021 at 11:52:06AM +0200, Andy Shevchenko wrote:
+> On Thu, Nov 18, 2021 at 8:09 AM Jay Dolan <jay.dolan@accesio.com> wrote:
+> > On 11/17/21 6:55 AM, Andy Shevchenko wrote:
 
-Currently, when cma_resolve_ib_dev() searches for a matching GID it will
-stop searching after encountering the first empty GID table entry. This
-behavior is wrong since neither IB nor RoCE spec enforce tightly packed
-GID tables.
+...
 
-For example, when the matching valid GID entry exists at index N, and if
-a GID entry is empty at index N-1, cma_resolve_ib_dev() will fail to
-find the matching valid entry.
+> > > Jay, can you retest this, please?
+> > I was able to verify that the fourth port was placed at the fixed
+> > address for the card that previously had it at the wrong offset.
+> > I was also able to verify all of the standard baud rates for 24 and
+> > 14.7456 MHz crystals from 50 to their respective uartclk speed on the
+> > oscilloscope.
+> 
+> Thanks!
 
-Fix it by making cma_resolve_ib_dev() continue searching even after
-encountering missing entries.
+Greg, there is a subtle bug found in the second patch, I'll issue the v2 soon.
 
-Fixes: f17df3b0dede ("RDMA/cma: Add support for AF_IB to rdma_resolve_addr()")
-Signed-off-by: Avihai Horon <avihaih@nvidia.com>
-Reviewed-by: Mark Zhang <markzhang@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/cma.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 835ac54d4a24..b669002c9255 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -766,6 +766,7 @@ static int cma_resolve_ib_dev(struct rdma_id_private *id_priv)
- 	unsigned int p;
- 	u16 pkey, index;
- 	enum ib_port_state port_state;
-+	int ret;
- 	int i;
- 
- 	cma_dev = NULL;
-@@ -784,9 +785,16 @@ static int cma_resolve_ib_dev(struct rdma_id_private *id_priv)
- 
- 			if (ib_get_cached_port_state(cur_dev->device, p, &port_state))
- 				continue;
--			for (i = 0; !rdma_query_gid(cur_dev->device,
--						    p, i, &gid);
--			     i++) {
-+
-+			for (i = 0; i < cur_dev->device->port_data[p].immutable.gid_tbl_len;
-+			     ++i) {
-+				ret = rdma_query_gid(cur_dev->device, p, i,
-+						     &gid);
-+				if (ret == -ENOENT)
-+					continue;
-+				if (ret)
-+					break;
-+
- 				if (!memcmp(&gid, dgid, sizeof(gid))) {
- 					cma_dev = cur_dev;
- 					sgid = gid;
 -- 
-2.33.1
+With Best Regards,
+Andy Shevchenko
+
 
