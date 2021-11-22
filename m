@@ -2,135 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B94445880F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 03:35:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A7145881E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 03:48:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233496AbhKVCi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 21:38:28 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:27155 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbhKVCi1 (ORCPT
+        id S235070AbhKVCv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 21:51:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25478 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229870AbhKVCvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 21:38:27 -0500
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HyBBp4N1Zz1DDfZ;
-        Mon, 22 Nov 2021 10:32:50 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Mon, 22 Nov
- 2021 10:35:19 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <axboe@kernel.dk>, <asml.silence@gmail.com>,
-        <io-uring@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Ye Bin <yebin10@huawei.com>
-Subject: [PATCH -next] io_uring: fix soft lockup when call __io_remove_buffers
-Date:   Mon, 22 Nov 2021 10:47:37 +0800
-Message-ID: <20211122024737.2198530-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Sun, 21 Nov 2021 21:51:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637549329;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bCpHgtK0TLoUoBYAl3rKsWf4v1EviHMP7QNyo8Nuefw=;
+        b=eO+1y7hhModGV9J3rCIiD4km7JibIdbZZuGNesyTUYp9O2diAMjY9NNPWCPSJ9zjAtt/zq
+        m69MjJaXNRamcy/qs+jqxc7OKpN2L4HvzGIQ3luNRJaURioCf1wjdcBwqNLj1/0+rUhVpa
+        0LvMbtdTPZf/y4b17XXwn/Q6Po+AktQ=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-48-AkLZZ1oiOJu0CulX3PDYxw-1; Sun, 21 Nov 2021 21:48:48 -0500
+X-MC-Unique: AkLZZ1oiOJu0CulX3PDYxw-1
+Received: by mail-lf1-f72.google.com with SMTP id k5-20020a05651210c500b0040934a07fbdso11026947lfg.22
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 18:48:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bCpHgtK0TLoUoBYAl3rKsWf4v1EviHMP7QNyo8Nuefw=;
+        b=XwGt1G3ye70V4PnLhl5BODil8btGoYQViI1Vs3aZk0PPetGxKaIAeBk4YuSQYdDje7
+         nPFBde3vabjFRIUtCtN4qZkIRGoOYY/rRmWT5rwC9tWhrtHjqmAtjyDe8lJUc8ucDb7G
+         JxG3sFjZgTqfMUUhSHi4I+APPPNTCzDxKH2Bae6F6MBSO9L9HqXCCI7YpTXqMxV1JTft
+         p43J6X07EbUK1W56BHC+yJNgpf+vz8eDzSS6L1T6iLOlo9Ww6nPmbDcnY5vIN7tTwwIu
+         ijAk+QZFbvGhyoZ3Y7H/qg8xKHEslfg/FGmJYFRz8/vlo/soT9CZjzMJBrtbglVJO9ur
+         dKkw==
+X-Gm-Message-State: AOAM5318BEa9LhmNDu5ucoedR89CZ+0Hpcv7xlJDaKggkdY/zKVQYZ2k
+        GsHfteoENf7lz85OmPbnzpqm6vKPTjspGZfguanw9YRkgGjG9xDvUW55z7T/Sp7RMF9/C58k7OM
+        FnjtVc/3krRV9SACtGz2H+a/csQbZ01BlKrzgTnMG
+X-Received: by 2002:a2e:3012:: with SMTP id w18mr47494876ljw.217.1637549326834;
+        Sun, 21 Nov 2021 18:48:46 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzhMUoYJy/fa5HNf3Y1dZw9n8WaAFEGalW9iZHLhJvk00Yldk6U6avgseBmGbi5f8k7IKQdMCJIgKYGrl1mobY=
+X-Received: by 2002:a2e:3012:: with SMTP id w18mr47494851ljw.217.1637549326643;
+ Sun, 21 Nov 2021 18:48:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
+References: <20211115153003.9140-1-arbn@yandex-team.com> <20211115153003.9140-6-arbn@yandex-team.com>
+ <CACGkMEumax9RFVNgWLv5GyoeQAmwo-UgAq=DrUd4yLxPAUUqBw@mail.gmail.com> <b163233f-090f-baaf-4460-37978cab4d55@yandex-team.com>
+In-Reply-To: <b163233f-090f-baaf-4460-37978cab4d55@yandex-team.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Mon, 22 Nov 2021 10:48:35 +0800
+Message-ID: <CACGkMEuNhRf8_nhAsJ68J4HFxGJcnjNyA8ZyktNcBhNGfSafmA@mail.gmail.com>
+Subject: Re: [PATCH 6/6] vhost_net: use RCU callbacks instead of synchronize_rcu()
+To:     Andrey Ryabinin <arbn@yandex-team.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        kvm <kvm@vger.kernel.org>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got issue as follows:
-[ 567.094140] __io_remove_buffers: [1]start ctx=0xffff8881067bf000 bgid=65533 buf=0xffff8881fefe1680
-[  594.360799] watchdog: BUG: soft lockup - CPU#2 stuck for 26s! [kworker/u32:5:108]
-[  594.364987] Modules linked in:
-[  594.365405] irq event stamp: 604180238
-[  594.365906] hardirqs last  enabled at (604180237): [<ffffffff93fec9bd>] _raw_spin_unlock_irqrestore+0x2d/0x50
-[  594.367181] hardirqs last disabled at (604180238): [<ffffffff93fbbadb>] sysvec_apic_timer_interrupt+0xb/0xc0
-[  594.368420] softirqs last  enabled at (569080666): [<ffffffff94200654>] __do_softirq+0x654/0xa9e
-[  594.369551] softirqs last disabled at (569080575): [<ffffffff913e1d6a>] irq_exit_rcu+0x1ca/0x250
-[  594.370692] CPU: 2 PID: 108 Comm: kworker/u32:5 Tainted: G            L    5.15.0-next-20211112+ #88
-[  594.371891] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
-[  594.373604] Workqueue: events_unbound io_ring_exit_work
-[  594.374303] RIP: 0010:_raw_spin_unlock_irqrestore+0x33/0x50
-[  594.375037] Code: 48 83 c7 18 53 48 89 f3 48 8b 74 24 10 e8 55 f5 55 fd 48 89 ef e8 ed a7 56 fd 80 e7 02 74 06 e8 43 13 7b fd fb bf 01 00 00 00 <e8> f8 78 474
-[  594.377433] RSP: 0018:ffff888101587a70 EFLAGS: 00000202
-[  594.378120] RAX: 0000000024030f0d RBX: 0000000000000246 RCX: 1ffffffff2f09106
-[  594.379053] RDX: 0000000000000000 RSI: ffffffff9449f0e0 RDI: 0000000000000001
-[  594.379991] RBP: ffffffff9586cdc0 R08: 0000000000000001 R09: fffffbfff2effcab
-[  594.380923] R10: ffffffff977fe557 R11: fffffbfff2effcaa R12: ffff8881b8f3def0
-[  594.381858] R13: 0000000000000246 R14: ffff888153a8b070 R15: 0000000000000000
-[  594.382787] FS:  0000000000000000(0000) GS:ffff888399c00000(0000) knlGS:0000000000000000
-[  594.383851] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  594.384602] CR2: 00007fcbe71d2000 CR3: 00000000b4216000 CR4: 00000000000006e0
-[  594.385540] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  594.386474] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[  594.387403] Call Trace:
-[  594.387738]  <TASK>
-[  594.388042]  find_and_remove_object+0x118/0x160
-[  594.389321]  delete_object_full+0xc/0x20
-[  594.389852]  kfree+0x193/0x470
-[  594.390275]  __io_remove_buffers.part.0+0xed/0x147
-[  594.390931]  io_ring_ctx_free+0x342/0x6a2
-[  594.392159]  io_ring_exit_work+0x41e/0x486
-[  594.396419]  process_one_work+0x906/0x15a0
-[  594.399185]  worker_thread+0x8b/0xd80
-[  594.400259]  kthread+0x3bf/0x4a0
-[  594.401847]  ret_from_fork+0x22/0x30
-[  594.402343]  </TASK>
+On Fri, Nov 19, 2021 at 7:31 PM Andrey Ryabinin <arbn@yandex-team.com> wrote:
+>
+>
+>
+> On 11/16/21 8:00 AM, Jason Wang wrote:
+> > On Mon, Nov 15, 2021 at 11:32 PM Andrey Ryabinin <arbn@yandex-team.com> wrote:
+> >>
+> >> Currently vhost_net_release() uses synchronize_rcu() to synchronize
+> >> freeing with vhost_zerocopy_callback(). However synchronize_rcu()
+> >> is quite costly operation. It take more than 10 seconds
+> >> to shutdown qemu launched with couple net devices like this:
+> >>         -netdev tap,id=tap0,..,vhost=on,queues=80
+> >> because we end up calling synchronize_rcu() netdev_count*queues times.
+> >>
+> >> Free vhost net structures in rcu callback instead of using
+> >> synchronize_rcu() to fix the problem.
+> >
+> > I admit the release code is somehow hard to understand. But I wonder
+> > if the following case can still happen with this:
+> >
+> > CPU 0 (vhost_dev_cleanup)   CPU1
+> > (vhost_net_zerocopy_callback()->vhost_work_queue())
+> >                                                 if (!dev->worker)
+> > dev->worker = NULL
+> >
+> > wake_up_process(dev->worker)
+> >
+> > If this is true. It seems the fix is to move RCU synchronization stuff
+> > in vhost_net_ubuf_put_and_wait()?
+> >
+>
+> It all depends whether vhost_zerocopy_callback() can be called outside of vhost
+> thread context or not.
 
-Message from syslogd@localhost at Nov 13 09:09:54 ...
-kernel:watchdog: BUG: soft lockup - CPU#2 stuck for 26s! [kworker/u32:5:108]
-[  596.793660] __io_remove_buffers: [2099199]start ctx=0xffff8881067bf000 bgid=65533 buf=0xffff8881fefe1680
+I think the answer is yes, the callback will be mainly used in the
+zerocopy path when the underlayer NIC finishes the DMA of a packet.
 
-We can reproduce this issue by follow syzkaller log:
-r0 = syz_io_uring_setup(0x401, &(0x7f0000000300), &(0x7f0000003000/0x2000)=nil, &(0x7f0000ff8000/0x4000)=nil, &(0x7f0000000280)=<r1=>0x0, &(0x7f0000000380)=<r2=>0x0)
-sendmsg$ETHTOOL_MSG_FEATURES_SET(0xffffffffffffffff, &(0x7f0000003080)={0x0, 0x0, &(0x7f0000003040)={&(0x7f0000000040)=ANY=[], 0x18}}, 0x0)
-syz_io_uring_submit(r1, r2, &(0x7f0000000240)=@IORING_OP_PROVIDE_BUFFERS={0x1f, 0x5, 0x0, 0x401, 0x1, 0x0, 0x100, 0x0, 0x1, {0xfffd}}, 0x0)
-io_uring_enter(r0, 0x3a2d, 0x0, 0x0, 0x0, 0x0)
+> If it can run after vhost thread stopped, than the race you
+> describe seems possible and the fix in commit b0c057ca7e83 ("vhost: fix a theoretical race in device cleanup")
+> wasn't complete. I would fix it by calling synchronize_rcu() after vhost_net_flush()
+> and before vhost_dev_cleanup().
+>
+> As for the performance problem, it can be solved by replacing synchronize_rcu() with synchronize_rcu_expedited().
 
-The reason above issue  is 'buf->list' has 2,100,000 nodes, occupied cpu lead
-to soft lockup.
-To solve this issue, we need add schedule point when do while loop in
-'__io_remove_buffers'.
-After add  schedule point we do regression, get follow data.
-[  240.141864] __io_remove_buffers: [1]start ctx=0xffff888170603000 bgid=65533 buf=0xffff8881116fcb00
-[  268.408260] __io_remove_buffers: [1]start ctx=0xffff8881b92d2000 bgid=65533 buf=0xffff888130c83180
-[  275.899234] __io_remove_buffers: [2099199]start ctx=0xffff888170603000 bgid=65533 buf=0xffff8881116fcb00
-[  296.741404] __io_remove_buffers: [1]start ctx=0xffff8881b659c000 bgid=65533 buf=0xffff8881010fe380
-[  305.090059] __io_remove_buffers: [2099199]start ctx=0xffff8881b92d2000 bgid=65533 buf=0xffff888130c83180
-[  325.415746] __io_remove_buffers: [1]start ctx=0xffff8881b92d1000 bgid=65533 buf=0xffff8881a17d8f00
-[  333.160318] __io_remove_buffers: [2099199]start ctx=0xffff8881b659c000 bgid=65533 buf=0xffff8881010fe380
-...
+Yes, that's another way, but see below.
 
-Fixes:8bab4c09f24e("io_uring: allow conditional reschedule for intensive iterators")
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- fs/io_uring.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> But now I'm not sure that this race is actually exists and that synchronize_rcu() needed at all.
+> I did a bit of testing and I only see callback being called from vhost thread:
+>
+> vhost-3724  3733 [002]  2701.768731: probe:vhost_zerocopy_callback: (ffffffff81af8c10)
+>         ffffffff81af8c11 vhost_zerocopy_callback+0x1 ([kernel.kallsyms])
+>         ffffffff81bb34f6 skb_copy_ubufs+0x256 ([kernel.kallsyms])
+>         ffffffff81bce621 __netif_receive_skb_core.constprop.0+0xac1 ([kernel.kallsyms])
+>         ffffffff81bd062d __netif_receive_skb_one_core+0x3d ([kernel.kallsyms])
+>         ffffffff81bd0748 netif_receive_skb+0x38 ([kernel.kallsyms])
+>         ffffffff819a2a1e tun_get_user+0xdce ([kernel.kallsyms])
+>         ffffffff819a2cf4 tun_sendmsg+0xa4 ([kernel.kallsyms])
+>         ffffffff81af9229 handle_tx_zerocopy+0x149 ([kernel.kallsyms])
+>         ffffffff81afaf05 handle_tx+0xc5 ([kernel.kallsyms])
+>         ffffffff81afce86 vhost_worker+0x76 ([kernel.kallsyms])
+>         ffffffff811581e9 kthread+0x169 ([kernel.kallsyms])
+>         ffffffff810018cf ret_from_fork+0x1f ([kernel.kallsyms])
+>                        0 [unknown] ([unknown])
+>
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 76871e3807fd..d8a6446a7921 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -4327,6 +4327,7 @@ static int __io_remove_buffers(struct io_ring_ctx *ctx, struct io_buffer *buf,
- 		kfree(nxt);
- 		if (++i == nbufs)
- 			return i;
-+		cond_resched();
- 	}
- 	i++;
- 	kfree(buf);
-@@ -9258,10 +9259,8 @@ static void io_destroy_buffers(struct io_ring_ctx *ctx)
- 	struct io_buffer *buf;
- 	unsigned long index;
- 
--	xa_for_each(&ctx->io_buffers, index, buf) {
-+	xa_for_each(&ctx->io_buffers, index, buf)
- 		__io_remove_buffers(ctx, buf, index, -1U);
--		cond_resched();
--	}
- }
- 
- static void io_req_caches_free(struct io_ring_ctx *ctx)
--- 
-2.31.1
+From the call trace you can send packets between two TAP. Since the TX
+of TAP is synchronous so we can't see callback to be called out of
+vhost thread.
+
+In order to test it, we need 1) enable zerocopy
+(experimental_zcopytx=1) and 2) sending the packet to the real NIC
+with bridge or macvlan
+
+Zerocopy was disalbed due to a lot of isuses (098eadce3c62 "vhost_net:
+disable zerocopy by default"). So if we fix by moving it to
+vhost_net_ubuf_put_and_wait(), there won't be a synchronize_rcu() in
+the non-zerocopy path which seems to be sufficient. And we can use
+synchronize_rcu_expedited() on top if it is really needed.
+
+Thanks
+
+> This means that the callback can't run after kthread_stop() in vhost_dev_cleanup() and no synchronize_rcu() needed.
+>
+> I'm not confident that my quite limited testing cover all possible vhost_zerocopy_callback() callstacks.
+>
 
