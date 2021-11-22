@@ -2,101 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B5CE458DA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4079458DB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:46:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239222AbhKVLqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 06:46:14 -0500
-Received: from www.zeus03.de ([194.117.254.33]:52178 "EHLO mail.zeus03.de"
+        id S239255AbhKVLtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 06:49:01 -0500
+Received: from mx1.tq-group.com ([93.104.207.81]:64615 "EHLO mx1.tq-group.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233849AbhKVLqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 06:46:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=PnCEnaUq3vutr+dPiGSuA0WqLJ48
-        BXfWQsyovlkEAsc=; b=iDmohpgz9tJYZIe8T/HCQjycGKzsSE5TFhnU88yoB2Eh
-        A7b3Ue6FShneOO8mnAkQ32en8OYd92zxskknXm5L5pgY6ayZLrE9ZPowJjLb20Gr
-        dO/XWPe5FXF7RDXf9S+NILjdSU8An2RzeSAvwMnl6X5X77vvEVnqECnpdTkw3nE=
-Received: (qmail 782451 invoked from network); 22 Nov 2021 12:43:04 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Nov 2021 12:43:04 +0100
-X-UD-Smtp-Session: l3s3148p1@Xy64IF/ROt0gAwDPXwnCAFkDAkP2hjT7
-Date:   Mon, 22 Nov 2021 12:43:04 +0100
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/1] gpio: add sloppy logic analyzer using polling
-Message-ID: <YZuCSNeT3xeKlCv7@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210918083307.3195-1-wsa+renesas@sang-engineering.com>
- <20210918083307.3195-2-wsa+renesas@sang-engineering.com>
- <CAMuHMdXYpK861-=Esa3GqjkNMAqzLBiGN5NQKpHNo5d0w=FWmQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="II7g/Il5Yng/Np5H"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdXYpK861-=Esa3GqjkNMAqzLBiGN5NQKpHNo5d0w=FWmQ@mail.gmail.com>
+        id S233849AbhKVLtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 06:49:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1637581554; x=1669117554;
+  h=from:to:cc:subject:date:message-id;
+  bh=3JJZDUu1j9baszZ4dgxQHmWH6Y7rD/2UOc8z4zphYxg=;
+  b=hx/ump2QVi+DOtYGw3U6dSrJmK0VUil4Iriv5JPRryKXEwFmxcJpPKfd
+   28Ouf3N88Wpvfx73HAzyAJZnJyRjsuysmGKQVcpz2p0XmFH5UuuBvldmD
+   UOFM/tEjrsJIcFyJY4k3fASLvjNDux4ENmJ/13bGQDfpBqznKPlI3rHpO
+   KnDm9O/CurgLtyWbF5gLOFirtSoMkVdP0S25C+beItiLfLMMRTxgnOn0d
+   XXsRWfzB0z1aFSfVkwgIppxEKozYHjOpNrquM88u+Rhw96qx6eyaYRZuS
+   NSdoTNtoZmnB7mtRyh2RxTqSTAfbZTDP7UD8QDk92EmZYrIuzqmqULNPm
+   w==;
+X-IronPort-AV: E=Sophos;i="5.87,254,1631570400"; 
+   d="scan'208";a="20594175"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 22 Nov 2021 12:45:52 +0100
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Mon, 22 Nov 2021 12:45:52 +0100
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Mon, 22 Nov 2021 12:45:52 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1637581552; x=1669117552;
+  h=from:to:cc:subject:date:message-id;
+  bh=3JJZDUu1j9baszZ4dgxQHmWH6Y7rD/2UOc8z4zphYxg=;
+  b=Iq0BZkl4eYPaUoUIUm0sqMbhvbI76MMjqb/D1AhznWhQJtyiFxbA4cJG
+   RxlVkqfvD815NmBW+GOpltMJTfSOs9KGUwYsEximANzecsNoDfw2S3M2X
+   R+NEpXLtjzicqRVG/giBPUyVWvdNOOvrwte8HyqmZTgiHMDgWzZ8TcPFK
+   0WcbCUHZca8eXLvyTwkDcYBwnSQHWyTk7FT9qq5Ynl7tKiIiVe2LR8n63
+   usPsvB0aam70DQ3UfUt0gTES7w17zpQPWwH/fsm8H3sGrYrqLTMDPfzKQ
+   w9rIcOxC6yBBXsEe9uGtJWY3PtHlMYIGZUYx8/2ewY8aibBDVSHPanMS0
+   g==;
+X-IronPort-AV: E=Sophos;i="5.87,254,1631570400"; 
+   d="scan'208";a="20594174"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 22 Nov 2021 12:45:52 +0100
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id AF12C280065;
+        Mon, 22 Nov 2021 12:45:52 +0100 (CET)
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH v2] of: base: Skip CPU nodes with "fail"/"fail-..." status
+Date:   Mon, 22 Nov 2021 12:45:36 +0100
+Message-Id: <20211122114536.2981-1-matthias.schiffer@ew.tq-group.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Allow fully disabling CPU nodes using status = "fail".
 
---II7g/Il5Yng/Np5H
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This allows a bootloader to change the number of available CPUs (for
+example when a common DTS is used for SoC variants with different numbers
+of cores) without deleting the nodes altogether, which could require
+additional fixups to avoid dangling phandle references.
 
-Hi Geert,
+Unknown status values (everything that is not "okay"/"ok", "disabled" or
+"fail"/"fail-...") will continue to be interpreted like "disabled",
+meaning that the CPU can be enabled during boot.
 
-thanks for the review!
+References:
+- https://www.lkml.org/lkml/2020/8/26/1237
+- https://www.spinics.net/lists/devicetree-spec/msg01007.html
+- https://github.com/devicetree-org/dt-schema/pull/61
 
-> Note that this is the second posting using v2, and the previous version
-> was simultaneously v1 and v3 (branch renesas/gpio-logic-analyzer-v3).
-> Resetting version numbers may confuse people and tools (e.g. b4).
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+---
 
-Well, there was an "RFC v2" once but to avoid confusion, I'll go with v5
-for the next iteration. Only one thing I did not pick up for v5 yet.
-
-> > +Samples 50us at 2MHz waiting for a falling edge on channel 2. CPU and =
-instance as above:
->=20
-> =C2=B5s
-
-I'd like to stay ASCII here because the script may run on limited
-systems without UTF8 support. Too anxious?
-
-All the best,
-
-   Wolfram
+v2: Treat unknown status values like "disabled", not like "fail"
 
 
---II7g/Il5Yng/Np5H
-Content-Type: application/pgp-signature; name="signature.asc"
+ drivers/of/base.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/drivers/of/base.c b/drivers/of/base.c
+index 61de453b885c..5b907600f5b0 100644
+--- a/drivers/of/base.c
++++ b/drivers/of/base.c
+@@ -650,6 +650,28 @@ bool of_device_is_available(const struct device_node *device)
+ }
+ EXPORT_SYMBOL(of_device_is_available);
+ 
++/**
++ *  __of_device_is_fail - check if a device has status "fail" or "fail-..."
++ *
++ *  @device: Node to check status for, with locks already held
++ *
++ *  Return: True if the status property is set to "fail" or "fail-..." (for any
++ *  error code suffix), false otherwise
++ */
++static bool __of_device_is_fail(const struct device_node *device)
++{
++	const char *status;
++
++	if (!device)
++		return false;
++
++	status = __of_get_property(device, "status", NULL);
++	if (status == NULL)
++		return false;
++
++	return !strcmp(status, "fail") || !strncmp(status, "fail-", 5);
++}
++
+ /**
+  *  of_device_is_big_endian - check if a device has BE registers
+  *
+@@ -796,6 +818,9 @@ EXPORT_SYMBOL(of_get_next_available_child);
+  * of_get_next_cpu_node - Iterate on cpu nodes
+  * @prev:	previous child of the /cpus node, or NULL to get first
+  *
++ * Unusable CPUs (those with the status property set to "fail" or "fail-...")
++ * will be skipped.
++ *
+  * Return: A cpu node pointer with refcount incremented, use of_node_put()
+  * on it when done. Returns NULL when prev is the last child. Decrements
+  * the refcount of prev.
+@@ -817,6 +842,8 @@ struct device_node *of_get_next_cpu_node(struct device_node *prev)
+ 		of_node_put(node);
+ 	}
+ 	for (; next; next = next->sibling) {
++		if (__of_device_is_fail(next))
++			continue;
+ 		if (!(of_node_name_eq(next, "cpu") ||
+ 		      __of_node_is_type(next, "cpu")))
+ 			continue;
+-- 
+2.17.1
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmGbgkQACgkQFA3kzBSg
-KbZfiA/+KYdF+8E2WvXfTcfXxNcy9a33+/K2ttZSzx9q69G3HfL5XJr0xhJsAyib
-F+YDUNM99igIvxGMOMLDnMauVyDQwtHcG9p1M9Ua1uKREPV8qy1uTt1sBAVjTTDN
-MVaps/K/qlUYHMYYLlfWyuy4p4iCsu6GE7UAGFVxKN9Mhsw98F0a1+my2P0SC+5T
-7JYLR+QYc6pfRch7bSX+y1ossRzvufpbDRhS8gF6Xljr0aLqwOyoBW06whK7UseM
-H7NveZnj8WfQwWIH0/XdelzSDFEN+PwjyYGeUhs0AByam9ptAEbMnwiW2y01Qx7N
-3KqaO9EWJZq52wv7VwqzPZf77oLoOGzkfTcNle530UyEvhJkJEOIzMpt3tR5U0a8
-Anu3ETkdDnLSCiYpeEVRc8KD6bJcflHMQdEHmCODE4EjLbUzKQlQeOlxs5u1CIZ5
-22oipOZBnQIe/Xw+L1rIHJkbEgAf0IDnhzVKDwQDadDunlgrRvqSfo2AAwdphsVM
-1NkFY9JR4yI9ZyURTntkV1N7NilOx6zR8kPc3jzopVBYX1bPbszW9TTx3NCAe35w
-feIP2dTSU6n7gX1tx0LsexWD3jxJRvPIDxG3IlsSx23Jv+2c9MHut4yuO3GIkeoE
-A+ksDvEP1yGt6hRxYGX8G1LEhP3bczm/Qjbn1lf+NSenAiGco8M=
-=OdU3
------END PGP SIGNATURE-----
-
---II7g/Il5Yng/Np5H--
