@@ -2,235 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2234592F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 17:23:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 607564592F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 17:26:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236161AbhKVQ1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 11:27:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38619 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231307AbhKVQ05 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 11:26:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637598229;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=efSmwxiUUtJf26Hl785CQMfaXFiaJqB6njx3g5TY46w=;
-        b=E4qAHURxmqEuHN4QyPFGhPIVH+X/C5eSjohOgQbJbUWvetsWLfiksQCnl+lQJEgBlFgkoZ
-        n5Cd8qdlC9S5VvuBUZvWbCoTQaB14+2WlvHVxeLwl2OvKCBdsdd3xk+Y2YthPgLHl2lSNx
-        ksSRCJ92Ub181EGSqgDRM8ulEdZT7zc=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-214-sj5crUMtOuGZSR1wcO3cCQ-1; Mon, 22 Nov 2021 11:23:30 -0500
-X-MC-Unique: sj5crUMtOuGZSR1wcO3cCQ-1
-Received: by mail-ed1-f69.google.com with SMTP id f4-20020a50e084000000b003db585bc274so15244750edl.17
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 08:23:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=efSmwxiUUtJf26Hl785CQMfaXFiaJqB6njx3g5TY46w=;
-        b=K3srT54Bj/gkt+Z5aSit98NI1xhiPAKAfDxhrjL1INvkTTcdTyCt27Army3RVt5x4d
-         9PUhRPKVZ5YvClMerL+gOj7gRxONwr59xNDAu+oo89rY8nKDuJrsZnRe0tS9jwrmmhV1
-         DZh7+rbu10K0mi/nHZ6G6MKJxuWz/T+zmjNuWzXZxzlj2aFRfugkD0RA6sMv+hfJXqsU
-         F8KxBqE3k+jkUEMKA1z9H9GZGwy68eXthGJ3qFpB9rH3amknhyMAnRfd7JMNA9DMjHxq
-         nMWBVcPWNbTY4m1EhD/wTFNzMByPqpLTX2fYwxe4dfkN5DnbDAkBhjow1bD2MAgyshaF
-         TyKQ==
-X-Gm-Message-State: AOAM530fcKpmA/q990fB1DbPSQNbTxWpDtVWpOeALjDsCJGraphnxyVg
-        9x/M3CLaQYhLq8D11Or6dsdZ2rKdQfnMU1limj7uvlqb1KCTSBN5UIOwvIoyCdMqLFMtuIP+M/c
-        uGR1R4VYL4i0KHFtVB6bccjyQ
-X-Received: by 2002:aa7:df9a:: with SMTP id b26mr66258646edy.107.1637598209589;
-        Mon, 22 Nov 2021 08:23:29 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJypOCvvJc4Uunk8NDr5uqUQL2+zRETKUnZEB8ll4wnoYCNHncNxVvfAIWCG/0rhW4OJYhc7qg==
-X-Received: by 2002:aa7:df9a:: with SMTP id b26mr66258601edy.107.1637598209339;
-        Mon, 22 Nov 2021 08:23:29 -0800 (PST)
-Received: from steredhat (host-87-10-72-39.retail.telecomitalia.it. [87.10.72.39])
-        by smtp.gmail.com with ESMTPSA id j4sm4285620edk.64.2021.11.22.08.23.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 08:23:29 -0800 (PST)
-Date:   Mon, 22 Nov 2021 17:23:26 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Jason Wang <jasowang@redhat.com>, mst <mst@redhat.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "kaplan, david" <david.kaplan@amd.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>
-Subject: Re: [PATCH V5 1/4] virtio_ring: validate used buffer length
-Message-ID: <20211122162326.f22bpzse74skqjex@steredhat>
-References: <20211027022107.14357-1-jasowang@redhat.com>
- <20211027022107.14357-2-jasowang@redhat.com>
- <20211119160951.5f2294c8.pasic@linux.ibm.com>
- <CACGkMEtja2TPC=ujgMrpaPmdsy+zHowbBTvPj8k7nm_+zB8vig@mail.gmail.com>
- <20211122063518.37929c01.pasic@linux.ibm.com>
- <20211122064922.51b3678e.pasic@linux.ibm.com>
- <CACGkMEu+9FvMsghyi55Ee5BxetP-YK9wh2oaT8OgLiY5+tV0QQ@mail.gmail.com>
- <20211122075524.lzojug4hspzglzhl@steredhat>
- <20211122110822.3xqcdluezrcapkyp@steredhat>
- <20211122152432.23a70a12.pasic@linux.ibm.com>
+        id S240207AbhKVQ3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 11:29:44 -0500
+Received: from uho.ysoft.cz ([81.19.3.130]:58440 "EHLO uho.ysoft.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233901AbhKVQ3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 11:29:41 -0500
+Received: from vokac-Latitude-7410.ysoft.local (unknown [10.0.29.92])
+        by uho.ysoft.cz (Postfix) with ESMTP id C1932A8BE4;
+        Mon, 22 Nov 2021 17:26:32 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ysoft.com;
+        s=20160406-ysoft-com; t=1637598392;
+        bh=OcDmR1BoAZa+eN19EndyCBQXXPz0sieOuuQ9l8VO0Oo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UQVtjQLI8YvjhxysnB29eLRYs/YnWa46YhTpZTLM2QdB4lbe+tRDdj9NGqpfvs+yB
+         iKL6Zytcc1tT2HeehIF+wNLuVDhccPMUAKHgz3sOBBW7/pwOSIAh5e7a8OebxMpPZr
+         1COLBazxoUWvYlNycv2yiXuMZGf8Yza1FTMpAiKU=
+From:   =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>
+Cc:     Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
+Subject: [PATCH 1/2] dt-bindings: arm: fsl: Add Y Soft IOTA Crux/Crux+ boards
+Date:   Mon, 22 Nov 2021 17:25:19 +0100
+Message-Id: <20211122162520.90211-1-michal.vokac@ysoft.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20211122152432.23a70a12.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 03:24:32PM +0100, Halil Pasic wrote:
->On Mon, 22 Nov 2021 12:08:22 +0100
->Stefano Garzarella <sgarzare@redhat.com> wrote:
->
->> On Mon, Nov 22, 2021 at 08:55:24AM +0100, Stefano Garzarella wrote:
->> >On Mon, Nov 22, 2021 at 02:25:26PM +0800, Jason Wang wrote:
->> >>On Mon, Nov 22, 2021 at 1:49 PM Halil Pasic <pasic@linux.ibm.com> wrote:
->> >>>
->> >>>On Mon, 22 Nov 2021 06:35:18 +0100
->> >>>Halil Pasic <pasic@linux.ibm.com> wrote:
->> >>>
->> >>>> > I think it should be a common issue, looking at
->> >>>> > vhost_vsock_handle_tx_kick(), it did:
->> >>>> >
->> >>>> > len += sizeof(pkt->hdr);
->> >>>> > vhost_add_used(vq, head, len);
->> >>>> >
->> >>>> > which looks like a violation of the spec since it's TX.
->> >>>>
->> >>>> I'm not sure the lines above look like a violation of the spec. If you
->> >>>> examine vhost_vsock_alloc_pkt() I believe that you will agree that:
->> >>>> len == pkt->len == pkt->hdr.len
->> >>>> which makes sense since according to the spec both tx and rx messages
->> >>>> are hdr+payload. And I believe hdr.len is the size of the payload,
->> >>>> although that does not seem to be properly documented by the spec.
->> >>
->> >>Sorry for being unclear, what I meant is that we probably should use
->> >>zero here. TX doesn't use in buffer actually.
->> >>
->> >>According to the spec, 0 should be the used length:
->> >>
->> >>"and len the total of bytes written into the buffer."
->> >>
->> >>>>
->> >>>> On the other hand tx messages are stated to be device read-only (in the
->> >>>> spec) so if the device writes stuff, that is certainly wrong.
->> >>>>
->> >>
->> >>Yes.
->> >>
->> >>>> If that is what happens.
->> >>>>
->> >>>> Looking at virtqueue_get_buf_ctx_split() I'm not sure that is what
->> >>>> happens. My hypothesis is that we just a last descriptor is an 'in'
->> >>>> type descriptor (i.e. a device writable one). For tx that assumption
->> >>>> would be wrong.
->> >>>>
->> >>>> I will have another look at this today and send a fix patch if my
->> >>>> suspicion is confirmed.
->> >>>
->> >>>If my suspicion is right something like:
->> >>>
->> >>>diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
->> >>>index 00f64f2f8b72..efb57898920b 100644
->> >>>--- a/drivers/virtio/virtio_ring.c
->> >>>+++ b/drivers/virtio/virtio_ring.c
->> >>>@@ -764,6 +764,7 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
->> >>>        struct vring_virtqueue *vq = to_vvq(_vq);
->> >>>        void *ret;
->> >>>        unsigned int i;
->> >>>+       bool has_in;
->> >>>        u16 last_used;
->> >>>
->> >>>        START_USE(vq);
->> >>>@@ -787,6 +788,9 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
->> >>>                        vq->split.vring.used->ring[last_used].id);
->> >>>        *len = virtio32_to_cpu(_vq->vdev,
->> >>>                        vq->split.vring.used->ring[last_used].len);
->> >>>+       has_in = virtio16_to_cpu(_vq->vdev,
->> >>>+                       vq->split.vring.used->ring[last_used].flags)
->> >>>+                               & VRING_DESC_F_WRITE;
->> >>
->> >>Did you mean vring.desc actually? If yes, it's better not depend on
->> >>the descriptor ring which can be modified by the device. We've stored
->> >>the flags in desc_extra[].
->> >>
->> >>>
->> >>>        if (unlikely(i >= vq->split.vring.num)) {
->> >>>                BAD_RING(vq, "id %u out of range\n", i);
->> >>>@@ -796,7 +800,7 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
->> >>>                BAD_RING(vq, "id %u is not a head!\n", i);
->> >>>                return NULL;
->> >>>        }
->> >>>-       if (vq->buflen && unlikely(*len > vq->buflen[i])) {
->> >>>+       if (has_in && q->buflen && unlikely(*len > vq->buflen[i])) {
->> >>>                BAD_RING(vq, "used len %d is larger than in buflen %u\n",
->> >>>                        *len, vq->buflen[i]);
->> >>>                return NULL;
->> >>>
->> >>>would fix the problem for split. I will try that out and let you know
->> >>>later.
->> >>
->> >>I'm not sure I get this, in virtqueue_add_split, the buflen[i] only
->> >>contains the in buffer length.
->> >>
->> >>I think the fixes are:
->> >>
->> >>1) fixing the vhost vsock
->> >
->> >Yep, in vhost_vsock_handle_tx_kick() we should have vhost_add_used(vq,
->> >head, 0) since the device doesn't write anything.
->> >
->> >>2) use suppress_used_validation=true to let vsock driver to validate
->> >>the in buffer length
->> >>3) probably a new feature so the driver can only enable the validation
->> >>when the feature is enabled.
->> >
->> >I fully agree with these steps.
->>
->> Michael sent a patch to suppress the validation, so I think we should
->> just fix vhost-vsock. I mean something like this:
->>
->> diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
->> index 938aefbc75ec..4e3b95af7ee4 100644
->> --- a/drivers/vhost/vsock.c
->> +++ b/drivers/vhost/vsock.c
->> @@ -554,7 +554,7 @@ static void vhost_vsock_handle_tx_kick(struct vhost_work *work)
->>                          virtio_transport_free_pkt(pkt);
->>
->>                  len += sizeof(pkt->hdr);
->> -               vhost_add_used(vq, head, len);
->> +               vhost_add_used(vq, head, 0);
->>                  total_len += len;
->>                  added = true;
->>          } while(likely(!vhost_exceeds_weight(vq, ++pkts, total_len)));
->>
->> I checked and the problem is there from the first commit, so we should
->> add:
->>
->> Fixes: 433fc58e6bf2 ("VSOCK: Introduce vhost_vsock.ko")
->>
->> I tested this patch and it works even without suppressing validation in
->> the virtio core.  But for backwards compatibility we have to suppress it
->> for sure as Michael did.
->>
->> Maybe we can have a patch just with this change to backport it easily
->> and one after to clean up a bit the code that was added after (len,
->> total_len).
->>
->> @Halil Let me know if you want to do it, otherwise I can do it.
->>
->
->It is fine, it was you guys who figured out the solution so I think
->it should either be Jason or you who take credit for the patch.
+Add devicetree binding for Crux/Crux+ boards from the IOTA family.
+These boards have the very same HW configuration as the Orion board
+except the usage of Quad/QuadPlus SoC.
 
-Okay, I'm finishing the tests and sending the patch.
+Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
+---
+ Documentation/devicetree/bindings/arm/fsl.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
->Thanks for addressing the issue this quickly!
-
-Thanks for reporting!
-
-Stefano
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 0b595b26061f..d68e8e23703e 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -240,6 +240,7 @@ properties:
+               - uniwest,imx6q-evi         # Uniwest Evi
+               - variscite,dt6customboard
+               - wand,imx6q-wandboard      # Wandboard i.MX6 Quad Board
++              - ysoft,imx6q-yapp4-crux    # i.MX6 Quad Y Soft IOTA Crux board
+               - zealz,imx6q-gk802         # Zealz GK802
+               - zii,imx6q-zii-rdu2        # ZII RDU2 Board
+           - const: fsl,imx6q
+@@ -334,6 +335,7 @@ properties:
+               - kvg,vicutp                # Kverneland UT1P board
+               - prt,prtwd3                # Protonic WD3 board
+               - wand,imx6qp-wandboard     # Wandboard i.MX6 QuadPlus Board
++              - ysoft,imx6qp-yapp4-crux-plus  # i.MX6 Quad Plus Y Soft IOTA Crux+ board
+               - zii,imx6qp-zii-rdu2       # ZII RDU2+ Board
+           - const: fsl,imx6qp
+ 
+-- 
+2.25.1
 
