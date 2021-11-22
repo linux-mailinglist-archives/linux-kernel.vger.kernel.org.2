@@ -2,187 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11CE7459109
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:11:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B9E459117
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:14:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239182AbhKVPOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:14:38 -0500
-Received: from forwardcorp1j.mail.yandex.net ([5.45.199.163]:48714 "EHLO
-        forwardcorp1j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231697AbhKVPOh (ORCPT
+        id S239738AbhKVPRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:17:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238634AbhKVPRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:14:37 -0500
-Received: from sas1-4cbebe29391b.qloud-c.yandex.net (sas1-4cbebe29391b.qloud-c.yandex.net [IPv6:2a02:6b8:c08:789:0:640:4cbe:be29])
-        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id CFFCD2E19B0;
-        Mon, 22 Nov 2021 18:11:27 +0300 (MSK)
-Received: from sas2-d40aa8807eff.qloud-c.yandex.net (sas2-d40aa8807eff.qloud-c.yandex.net [2a02:6b8:c08:b921:0:640:d40a:a880])
-        by sas1-4cbebe29391b.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id YiPih2xZ0h-BQsOL2aO;
-        Mon, 22 Nov 2021 18:11:27 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.com; s=default;
-        t=1637593887; bh=5SoeLo1xTGbCZidoCkfBDOnFEuE/R0Qz7W+q8Uyq6I4=;
-        h=In-Reply-To:References:Date:From:To:Subject:Message-ID:Cc;
-        b=2vRHIv1S2bOBt4EJL7FB9EKnVMkVu9oyf8rr4twhznsXRqq5168NXXdVTmcwf/eNL
-         UL1VclENnC3L8CvkHPhRAddD7J3UvfONOCX5W+STzaLH1tc7ZSY5CHVU7HgWQa3QPo
-         TZ3NZJgTcGM+1KFGzxgUW2rSTxR5i18rmAEju04M=
-Authentication-Results: sas1-4cbebe29391b.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.com
-Received: from [IPv6:2a02:6b8:0:107:3e85:844d:5b1d:60a] (dynamic-red3.dhcp.yndx.net [2a02:6b8:0:107:3e85:844d:5b1d:60a])
-        by sas2-d40aa8807eff.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPS id adw8Ie3kCo-BQw4PPnO;
-        Mon, 22 Nov 2021 18:11:26 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-X-Yandex-Fwd: 2
-Subject: Re: [PATCH 6/6] vhost_net: use RCU callbacks instead of
- synchronize_rcu()
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        kvm <kvm@vger.kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org
-References: <20211115153003.9140-1-arbn@yandex-team.com>
- <20211115153003.9140-6-arbn@yandex-team.com>
- <CACGkMEumax9RFVNgWLv5GyoeQAmwo-UgAq=DrUd4yLxPAUUqBw@mail.gmail.com>
- <b163233f-090f-baaf-4460-37978cab4d55@yandex-team.com>
- <20211122043620-mutt-send-email-mst@kernel.org>
-From:   Andrey Ryabinin <arbn@yandex-team.com>
-Message-ID: <ba4dbc25-f912-fb34-a0e2-c6c85b34b918@yandex-team.com>
-Date:   Mon, 22 Nov 2021 18:12:59 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Mon, 22 Nov 2021 10:17:54 -0500
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF3EC06173E
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:14:47 -0800 (PST)
+Received: by mail-ua1-x930.google.com with SMTP id r15so37285175uao.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:14:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=poS5/ZkkPxvtzD22F0lVSI3r9e0b9RG+7VJETyoPoIg=;
+        b=TywNwI4xVcUHaTxzzNsfna40gripLivuJ7MFTK83mECnSR4WEvMLG4GGh/WxqLhgSQ
+         iVNbugZvKmwY34OT7zb+LLIevaJIMtjOXZbQLsVQEV72+tmu2G3E/x2v7aIrcu318Pnh
+         LKurfoWikwicl+phNM17yy1abyVKwWOmz56eASAScq5NSXcZfZBkmDcT5MgqIofw0dA2
+         knCYy+4qh1KV15oU/bG3fVjj3zwQY/ZZ3cNevac5AT+TzKwCBKYg1J2NOwpGK53yZmKk
+         0Hj/314aubMIvQhOxEjydfa9oKJPmY20KcwEz/WGVLtg1aHKb2EZ4+9tpfDK7vSt9C1Q
+         1tJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=poS5/ZkkPxvtzD22F0lVSI3r9e0b9RG+7VJETyoPoIg=;
+        b=g/RzY+HbAOP9uttagXr7CJQ8h1ZAuyG5vxtDMxBTtPAHEpQqYNynHQSlYdqLvoGbxB
+         s7rIbhNXHyRyMN6+65vKd1l3FeFfMGeKtBGCWFxRBfycByCesSdCVhVjPZvnpaFDzD1G
+         Kes6/lSmVA/L2Lv9DtjRQRWJK4fdpxBHXHOGp1XkMpanMsTqsNm8f9oX9e0UuQZeKoTE
+         Gz8SICsVYPIfS2MKYW6g+M6O2HaFm2Urw3qSSoKw7ssNqIVTalBZ38aDYO5wwsbxFFjW
+         z6yv5nQE92YqYsWLxrYz4lGHSQHwIf1tImyrQ345UqS7UuUHxODHah3hx//yK+neaAs7
+         4BqQ==
+X-Gm-Message-State: AOAM531Wd295FMcuSfvKxOhsZPGjVZr8WEFzpx8eIFCvxv2SEaMgP/r/
+        LjffjpvX3KjVraZytwYZcj/7+iLH/8DPPvNi/vOSew==
+X-Google-Smtp-Source: ABdhPJw1wNxRm9yPXD1GQ+f/A1NtWJ2Stf4A605YHIA5GbkNnFK9OsunsY4bFzRgCO2pMCIgmqkZo9kmM3qJVwwLmhY=
+X-Received: by 2002:a05:6102:4192:: with SMTP id cd18mr132128250vsb.35.1637594086878;
+ Mon, 22 Nov 2021 07:14:46 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211122043620-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211121165647.26706-1-semen.protsenko@linaro.org> <20211121165647.26706-13-semen.protsenko@linaro.org>
+In-Reply-To: <20211121165647.26706-13-semen.protsenko@linaro.org>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Mon, 22 Nov 2021 17:14:35 +0200
+Message-ID: <CAPLW+4myd2JDEKmv+E1HsxK_yNaLC+iUWSo99+Lqujof3MGpCg@mail.gmail.com>
+Subject: Re: [PATCH v4 12/12] watchdog: s3c2410: Add Exynos850 support
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 21 Nov 2021 at 18:57, Sam Protsenko <semen.protsenko@linaro.org> wrote:
+>
+> Exynos850 is a bit different from SoCs already supported in WDT driver:
+>   - AUTOMATIC_WDT_RESET_DISABLE register is removed, so its value is
+>     always 0; .disable_auto_reset callback is not set for that reason
+>   - MASK_WDT_RESET_REQUEST register is replaced with
+>     CLUSTERx_NONCPU_IN_EN register; instead of masking (disabling) WDT
+>     reset interrupt it's now enabled with the same value; .mask_reset
+>     callback is reused for that functionality though
+>   - To make WDT functional, WDT counter needs to be enabled in
+>     CLUSTERx_NONCPU_OUT register; it's done using .enable_counter
+>     callback
+>
+> Also Exynos850 has two CPU clusters, each has its own dedicated WDT
+> instance. Different PMU registers and bits are used for each cluster. So
+> driver data is now modified in probe, adding needed info depending on
+> cluster index passed from device tree.
+>
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> ---
 
+Hi Guenter,
 
-On 11/22/21 12:37 PM, Michael S. Tsirkin wrote:
-> On Fri, Nov 19, 2021 at 02:32:05PM +0300, Andrey Ryabinin wrote:
->>
->>
->> On 11/16/21 8:00 AM, Jason Wang wrote:
->>> On Mon, Nov 15, 2021 at 11:32 PM Andrey Ryabinin <arbn@yandex-team.com> wrote:
->>>>
->>>> Currently vhost_net_release() uses synchronize_rcu() to synchronize
->>>> freeing with vhost_zerocopy_callback(). However synchronize_rcu()
->>>> is quite costly operation. It take more than 10 seconds
->>>> to shutdown qemu launched with couple net devices like this:
->>>>         -netdev tap,id=tap0,..,vhost=on,queues=80
->>>> because we end up calling synchronize_rcu() netdev_count*queues times.
->>>>
->>>> Free vhost net structures in rcu callback instead of using
->>>> synchronize_rcu() to fix the problem.
->>>
->>> I admit the release code is somehow hard to understand. But I wonder
->>> if the following case can still happen with this:
->>>
->>> CPU 0 (vhost_dev_cleanup)   CPU1
->>> (vhost_net_zerocopy_callback()->vhost_work_queue())
->>>                                                 if (!dev->worker)
->>> dev->worker = NULL
->>>
->>> wake_up_process(dev->worker)
->>>
->>> If this is true. It seems the fix is to move RCU synchronization stuff
->>> in vhost_net_ubuf_put_and_wait()?
->>>
->>
->> It all depends whether vhost_zerocopy_callback() can be called outside of vhost
->> thread context or not. If it can run after vhost thread stopped, than the race you
->> describe seems possible and the fix in commit b0c057ca7e83 ("vhost: fix a theoretical race in device cleanup")
->> wasn't complete. I would fix it by calling synchronize_rcu() after vhost_net_flush()
->> and before vhost_dev_cleanup().
->>
->> As for the performance problem, it can be solved by replacing synchronize_rcu() with synchronize_rcu_expedited().
-> 
-> expedited causes a stop of IPIs though, so it's problematic to
-> do it upon a userspace syscall.
-> 
+I've resent the whole series, but I can see you already applied my
+previous series to your watchdog-next branch. So this patch is the
+only one that actually changed in the whole series (with fixes for
+0-day warning).
 
-How about something like this?
-
-
----
- drivers/vhost/net.c | 40 ++++++++++++++++++++++++++--------------
- 1 file changed, 26 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-index 97a209d6a527..556df26c584d 100644
---- a/drivers/vhost/net.c
-+++ b/drivers/vhost/net.c
-@@ -144,6 +144,10 @@ struct vhost_net {
- 	struct page_frag page_frag;
- 	/* Refcount bias of page frag */
- 	int refcnt_bias;
-+
-+	struct socket *tx_sock;
-+	struct socket *rx_sock;
-+	struct rcu_work rwork;
- };
- 
- static unsigned vhost_net_zcopy_mask __read_mostly;
-@@ -1389,6 +1393,24 @@ static void vhost_net_flush(struct vhost_net *n)
- 	}
- }
- 
-+static void vhost_net_cleanup(struct work_struct *work)
-+{
-+	struct vhost_net *n =
-+		container_of(to_rcu_work(work), struct vhost_net, rwork);
-+	vhost_dev_cleanup(&n->dev);
-+	vhost_net_vq_reset(n);
-+	if (n->tx_sock)
-+		sockfd_put(n->tx_sock);
-+	if (n->rx_sock)
-+		sockfd_put(n->rx_sock);
-+	kfree(n->vqs[VHOST_NET_VQ_RX].rxq.queue);
-+	kfree(n->vqs[VHOST_NET_VQ_TX].xdp);
-+	kfree(n->dev.vqs);
-+	if (n->page_frag.page)
-+		__page_frag_cache_drain(n->page_frag.page, n->refcnt_bias);
-+	kvfree(n);
-+}
-+
- static int vhost_net_release(struct inode *inode, struct file *f)
- {
- 	struct vhost_net *n = f->private_data;
-@@ -1398,21 +1420,11 @@ static int vhost_net_release(struct inode *inode, struct file *f)
- 	vhost_net_stop(n, &tx_sock, &rx_sock);
- 	vhost_net_flush(n);
- 	vhost_dev_stop(&n->dev);
--	vhost_dev_cleanup(&n->dev);
--	vhost_net_vq_reset(n);
--	if (tx_sock)
--		sockfd_put(tx_sock);
--	if (rx_sock)
--		sockfd_put(rx_sock);
--	/* Make sure no callbacks are outstanding */
--	synchronize_rcu();
-+	n->tx_sock = tx_sock;
-+	n->rx_sock = rx_sock;
- 
--	kfree(n->vqs[VHOST_NET_VQ_RX].rxq.queue);
--	kfree(n->vqs[VHOST_NET_VQ_TX].xdp);
--	kfree(n->dev.vqs);
--	if (n->page_frag.page)
--		__page_frag_cache_drain(n->page_frag.page, n->refcnt_bias);
--	kvfree(n);
-+	INIT_RCU_WORK(&n->rwork, vhost_net_cleanup);
-+	queue_rcu_work(system_wq, &n->rwork);
- 	return 0;
- }
- 
--- 
-
+> Changes in v4:
+>   - Fixed build error when CONFIG_OF is disabled (found by 0-day):
+>     added #ifdef CONFIG_OF guard in s3c2410_get_wdt_drv_data()
+>   - Added R-b tag by Guenter Roeck
+>
+> Changes in v3:
+>   - Renamed "samsung,index" property to more descriptive
+>     "samsung,cluster-index"
+>   - Used pre-defined and completely set driver data for cluster0 and
+>     cluster1
+>
+> Changes in v2:
+>   - Used single compatible for Exynos850, populating missing driver data
+>     in probe
+>   - Added "index" property to specify CPU cluster index
+>
+>  drivers/watchdog/s3c2410_wdt.c | 64 +++++++++++++++++++++++++++++++++-
+>  1 file changed, 63 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
+> index 96aa5d9c6ed4..115a6fe7da57 100644
+> --- a/drivers/watchdog/s3c2410_wdt.c
+> +++ b/drivers/watchdog/s3c2410_wdt.c
+> @@ -56,6 +56,13 @@
+>  #define EXYNOS5_RST_STAT_REG_OFFSET            0x0404
+>  #define EXYNOS5_WDT_DISABLE_REG_OFFSET         0x0408
+>  #define EXYNOS5_WDT_MASK_RESET_REG_OFFSET      0x040c
+> +#define EXYNOS850_CLUSTER0_NONCPU_OUT          0x1220
+> +#define EXYNOS850_CLUSTER0_NONCPU_INT_EN       0x1244
+> +#define EXYNOS850_CLUSTER1_NONCPU_OUT          0x1620
+> +#define EXYNOS850_CLUSTER1_NONCPU_INT_EN       0x1644
+> +
+> +#define EXYNOS850_CLUSTER0_WDTRESET_BIT                24
+> +#define EXYNOS850_CLUSTER1_WDTRESET_BIT                23
+>
+>  /**
+>   * Quirk flags for different Samsung watchdog IP-cores.
+> @@ -205,6 +212,30 @@ static const struct s3c2410_wdt_variant drv_data_exynos7 = {
+>                   QUIRK_HAS_PMU_RST_STAT | QUIRK_HAS_PMU_AUTO_DISABLE,
+>  };
+>
+> +static const struct s3c2410_wdt_variant drv_data_exynos850_cl0 = {
+> +       .mask_reset_reg = EXYNOS850_CLUSTER0_NONCPU_INT_EN,
+> +       .mask_bit = 2,
+> +       .mask_reset_inv = true,
+> +       .rst_stat_reg = EXYNOS5_RST_STAT_REG_OFFSET,
+> +       .rst_stat_bit = EXYNOS850_CLUSTER0_WDTRESET_BIT,
+> +       .cnt_en_reg = EXYNOS850_CLUSTER0_NONCPU_OUT,
+> +       .cnt_en_bit = 7,
+> +       .quirks = QUIRK_HAS_WTCLRINT_REG | QUIRK_HAS_PMU_MASK_RESET | \
+> +                 QUIRK_HAS_PMU_RST_STAT | QUIRK_HAS_PMU_CNT_EN,
+> +};
+> +
+> +static const struct s3c2410_wdt_variant drv_data_exynos850_cl1 = {
+> +       .mask_reset_reg = EXYNOS850_CLUSTER1_NONCPU_INT_EN,
+> +       .mask_bit = 2,
+> +       .mask_reset_inv = true,
+> +       .rst_stat_reg = EXYNOS5_RST_STAT_REG_OFFSET,
+> +       .rst_stat_bit = EXYNOS850_CLUSTER1_WDTRESET_BIT,
+> +       .cnt_en_reg = EXYNOS850_CLUSTER1_NONCPU_OUT,
+> +       .cnt_en_bit = 7,
+> +       .quirks = QUIRK_HAS_WTCLRINT_REG | QUIRK_HAS_PMU_MASK_RESET | \
+> +                 QUIRK_HAS_PMU_RST_STAT | QUIRK_HAS_PMU_CNT_EN,
+> +};
+> +
+>  static const struct of_device_id s3c2410_wdt_match[] = {
+>         { .compatible = "samsung,s3c2410-wdt",
+>           .data = &drv_data_s3c2410 },
+> @@ -216,6 +247,8 @@ static const struct of_device_id s3c2410_wdt_match[] = {
+>           .data = &drv_data_exynos5420 },
+>         { .compatible = "samsung,exynos7-wdt",
+>           .data = &drv_data_exynos7 },
+> +       { .compatible = "samsung,exynos850-wdt",
+> +         .data = &drv_data_exynos850_cl0 },
+>         {},
+>  };
+>  MODULE_DEVICE_TABLE(of, s3c2410_wdt_match);
+> @@ -587,14 +620,40 @@ static inline const struct s3c2410_wdt_variant *
+>  s3c2410_get_wdt_drv_data(struct platform_device *pdev)
+>  {
+>         const struct s3c2410_wdt_variant *variant;
+> +       struct device *dev = &pdev->dev;
+>
+> -       variant = of_device_get_match_data(&pdev->dev);
+> +       variant = of_device_get_match_data(dev);
+>         if (!variant) {
+>                 /* Device matched by platform_device_id */
+>                 variant = (struct s3c2410_wdt_variant *)
+>                            platform_get_device_id(pdev)->driver_data;
+>         }
+>
+> +#ifdef CONFIG_OF
+> +       /* Choose Exynos850 driver data w.r.t. cluster index */
+> +       if (variant == &drv_data_exynos850_cl0) {
+> +               u32 index;
+> +               int err;
+> +
+> +               err = of_property_read_u32(dev->of_node,
+> +                                          "samsung,cluster-index", &index);
+> +               if (err) {
+> +                       dev_err(dev, "failed to get cluster index\n");
+> +                       return NULL;
+> +               }
+> +
+> +               switch (index) {
+> +               case 0:
+> +                       return &drv_data_exynos850_cl0;
+> +               case 1:
+> +                       return &drv_data_exynos850_cl1;
+> +               default:
+> +                       dev_err(dev, "wrong cluster index: %u\n", index);
+> +                       return NULL;
+> +               }
+> +       }
+> +#endif
+> +
+>         return variant;
+>  }
+>
+> @@ -615,6 +674,9 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
+>         wdt->wdt_device = s3c2410_wdd;
+>
+>         wdt->drv_data = s3c2410_get_wdt_drv_data(pdev);
+> +       if (!wdt->drv_data)
+> +               return -EINVAL;
+> +
+>         if (wdt->drv_data->quirks & QUIRKS_HAVE_PMUREG) {
+>                 wdt->pmureg = syscon_regmap_lookup_by_phandle(dev->of_node,
+>                                                 "samsung,syscon-phandle");
+> --
+> 2.30.2
+>
