@@ -2,121 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A00458880
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 04:57:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9286458873
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 04:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238778AbhKVEAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 23:00:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238673AbhKVEAW (ORCPT
+        id S238742AbhKVDsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 22:48:17 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:14967 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229862AbhKVDsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 23:00:22 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A13CC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 19:57:16 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id f18so74499107lfv.6
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 19:57:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YPH+0EiaxzoumZ5BogpFk3ypvqyIvp8gCd3yQ5SMSQs=;
-        b=je7U59HM902HnyDDvdrsniCHFenLkHrcZN6VCMpNpziBhBG/b8cf/91XvGLb4dL/Cy
-         OjsK4ODk9USfQZBOTBtFBB0qWELL7iRtFYk33udnOjVSx/v9y6hLu6hGL4T2XwF+NOYz
-         zA6wqKts1sYYjrtrmTruWJFcxKMtZJWGZW0Hs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YPH+0EiaxzoumZ5BogpFk3ypvqyIvp8gCd3yQ5SMSQs=;
-        b=uV/LoWHpDHCgDIx17lZZxacBf/cFrbmcTBGRhHl49cUrQQ9RxxnT8apQDRqCKgvEKk
-         i3C+cM8b8N3DoHqL8/d092CWqM9H5vD91I9p2TnbnYprr4nkr6ktOFCO4x4Z4Q8eugUv
-         SNn324oKbBMNKL1/U2TveeNpdVTgkybNfU1fZElWgJxLfpncR6CgG3QtQQO7pIJpLWLA
-         rzOx+m1gxaEiHZhzYcGOlt5IR5IXl7FjJTFCEvq02bA+ync4lhPhiWWpXKxoE6vZQDvM
-         Q2a+2FrFSSkDH0f9rVJxcUIfqcIKChBeE1Ai2x7t1dmkx5qLcusJaYTXY6s0TJmz3JpK
-         jyQw==
-X-Gm-Message-State: AOAM532FctRYJ3a3agES4RrxbjXosNF0hX8acjemh2DM+f0WJxGjxNmR
-        3F8iDW2dpkT+LyEfL8+Hw55wgmikZgyeIZU9oAT/YQ==
-X-Google-Smtp-Source: ABdhPJzjZY+DcDHCyM4+GAs+uYCYy7Sv0RCNUU5ODlpGRz9jfKtWgMv8J2hf23GvVJ7rYzAPGd6ocKQULp3zp0K7pHk=
-X-Received: by 2002:a05:6512:32c9:: with SMTP id f9mr51649260lfg.308.1637553434248;
- Sun, 21 Nov 2021 19:57:14 -0800 (PST)
+        Sun, 21 Nov 2021 22:48:16 -0500
+Received: from dggeml756-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HyClM6DWbzZcNX;
+        Mon, 22 Nov 2021 11:42:39 +0800 (CST)
+Received: from huawei.com (10.67.174.191) by dggeml756-chm.china.huawei.com
+ (10.1.199.158) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.20; Mon, 22
+ Nov 2021 11:45:09 +0800
+From:   Li Hua <hucool.lihua@huawei.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+CC:     <yuehaibing@huawei.com>, <weiyongjun1@huawei.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <w.f@huawei.com>,
+        <hucool.lihua@huawei.com>, <cj.chengjian@huawei.com>,
+        <judy.chenhui@huawei.com>, <stable@vger.kernel.org>
+Subject: [PATCH v2] sched/rt: Try to restart rt period timer when rt runtime exceeded
+Date:   Mon, 22 Nov 2021 04:03:53 +0000
+Message-ID: <20211122040353.7850-1-hucool.lihua@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20211119074654.470729-1-wenst@chromium.org> <5d23258a954eb0076cacf89d6c88b5e6ef13695f.camel@ndufresne.ca>
-In-Reply-To: <5d23258a954eb0076cacf89d6c88b5e6ef13695f.camel@ndufresne.ca>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Mon, 22 Nov 2021 11:57:03 +0800
-Message-ID: <CAGXv+5Gf-gsB7JXnLiZF_R=0RdxXS7CDZaFftyZ+aESXLXy1Ew@mail.gmail.com>
-Subject: Re: [PATCH] media: hantro: Hook up RK3399 JPEG encoder output
-To:     Nicolas Dufresne <nicolas@ndufresne.ca>
-Cc:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.191]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeml756-chm.china.huawei.com (10.1.199.158)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 20, 2021 at 12:00 AM Nicolas Dufresne <nicolas@ndufresne.ca> wr=
-ote:
->
-> Le vendredi 19 novembre 2021 =C3=A0 15:46 +0800, Chen-Yu Tsai a =C3=A9cri=
-t :
-> > The JPEG encoder found in the Hantro H1 encoder block only produces a
-> > raw entropy-encoded scan. The driver is responsible for building a JPEG
-> > compliant bitstream and placing the entropy-encoded scan in it. Right
-> > now the driver uses a bounce buffer for the hardware to output the raw
-> > scan to.
-> >
-> > In commit e765dba11ec2 ("hantro: Move hantro_enc_buf_finish to JPEG
-> > codec_ops.done"), the code that copies the raw scan from the bounce
-> > buffer to the capture buffer was moved, but was only hooked up for the
-> > Hantro H1 (then RK3288) variant. The RK3399 variant was broken,
-> > producing a JPEG bitstream without the scan, and the capture buffer's
-> > .bytesused field unset.
-> >
-> > Fix this by duplicating the code that is executed when the JPEG encoder
-> > finishes encoding a frame. As the encoded length is read back from
-> > hardware, and the variants having different register layouts, the
-> > code is duplicated rather than shared.
-> >
-> > Fixes: e765dba11ec2 ("hantro: Move hantro_enc_buf_finish to JPEG codec_=
-ops.done")
-> > Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> > ---
-> > This was developed on the downstream ChromeOS 5.10 kernel (with a hack
-> > for .data_offset) and tested with ChromeOS's jpeg_encode_accelerator_un=
-ittest
-> > patched to accept non-JFIF JPEG streams (https://crrev.com/c/3291480).
-> >
-> > This was then forward-ported to mainline (name and filename changes) an=
-d
-> > compile tested only.
->
-> Tested with GStreamer on top of 5.16-rc1 from media_stage.git. Not perfec=
-t but
-> at least the the output it valid. Test command was:
->
->   gst-launch-1.0 videotestsrc num-buffers=3D2 ! v4l2jpegenc ! filesink
-> location=3Dtest.jpg
->
-> Notice that I encode two frames, it seems like the draining flow is broke=
-n in
-> this driver. GStreamer will queue the frame and issue CMD_START immediate=
-ly, the
-> driver will skip the encode, leaving me with an empty file.
+When rt_runtime is modified from -1 to a valid control value, it may
+cause the task to be throttled all the time. Operations like the following
+will trigger the bug. E.g:
+1. echo -1 > /proc/sys/kernel/sched_rt_runtime_us
+2. Run a FIFO task named A that executes while(1)
+3. echo 950000 > /proc/sys/kernel/sched_rt_runtime_us
 
-The hantro driver doesn't implement ENC_CMD, which IIRC is used for the
-draining flow. I guess that's something to fix, since the mem2mem stateful
-encoder spec seems to require it. Or does that spec not apply to the JPEG
-encoders?
+When rt_runtime is -1, The rt period timer will not be activated when task A
+enqueued. And then the task will be throttled after setting rt_runtime to
+950,000. The task will always be throttled because the rt period timer is not
+activated.
 
-> Tested-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Li Hua <hucool.lihua@huawei.com>
 
-Thanks!
+v1->v2:
+  - call do_start_rt_bandwidth to reduce repetitive code.
+  - use raw_spin_lock_irqsave to avoid deadlock on a timer context.
+---
+ kernel/sched/rt.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
 
-ChenYu
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index b48baaba2fc2..7b4f4fbbb404 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -52,11 +52,8 @@ void init_rt_bandwidth(struct rt_bandwidth *rt_b, u64 period, u64 runtime)
+ 	rt_b->rt_period_timer.function = sched_rt_period_timer;
+ }
+ 
+-static void start_rt_bandwidth(struct rt_bandwidth *rt_b)
++static inline void do_start_rt_bandwidth(struct rt_bandwidth *rt_b)
+ {
+-	if (!rt_bandwidth_enabled() || rt_b->rt_runtime == RUNTIME_INF)
+-		return;
+-
+ 	raw_spin_lock(&rt_b->rt_runtime_lock);
+ 	if (!rt_b->rt_period_active) {
+ 		rt_b->rt_period_active = 1;
+@@ -75,6 +72,14 @@ static void start_rt_bandwidth(struct rt_bandwidth *rt_b)
+ 	raw_spin_unlock(&rt_b->rt_runtime_lock);
+ }
+ 
++static void start_rt_bandwidth(struct rt_bandwidth *rt_b)
++{
++	if (!rt_bandwidth_enabled() || rt_b->rt_runtime == RUNTIME_INF)
++		return;
++
++	do_start_rt_bandwidth(rt_b);
++}
++
+ void init_rt_rq(struct rt_rq *rt_rq)
+ {
+ 	struct rt_prio_array *array;
+@@ -1031,13 +1036,17 @@ static void update_curr_rt(struct rq *rq)
+ 
+ 	for_each_sched_rt_entity(rt_se) {
+ 		struct rt_rq *rt_rq = rt_rq_of_se(rt_se);
++		int exceeded;
+ 
+ 		if (sched_rt_runtime(rt_rq) != RUNTIME_INF) {
+ 			raw_spin_lock(&rt_rq->rt_runtime_lock);
+ 			rt_rq->rt_time += delta_exec;
+-			if (sched_rt_runtime_exceeded(rt_rq))
++			exceeded = sched_rt_runtime_exceeded(rt_rq);
++			if (exceeded)
+ 				resched_curr(rq);
+ 			raw_spin_unlock(&rt_rq->rt_runtime_lock);
++			if (exceeded)
++				do_start_rt_bandwidth(sched_rt_bandwidth(rt_rq));
+ 		}
+ 	}
+ }
+@@ -2911,8 +2920,12 @@ static int sched_rt_global_validate(void)
+ 
+ static void sched_rt_do_global(void)
+ {
++	unsigned long flags;
++
++	raw_spin_lock_irqsave(&def_rt_bandwidth.rt_runtime_lock, flags);
+ 	def_rt_bandwidth.rt_runtime = global_rt_runtime();
+ 	def_rt_bandwidth.rt_period = ns_to_ktime(global_rt_period());
++	raw_spin_unlock_irqrestore(&def_rt_bandwidth.rt_runtime_lock, flags);
+ }
+ 
+ int sched_rt_handler(struct ctl_table *table, int write, void *buffer,
+-- 
+2.17.1
+
