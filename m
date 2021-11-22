@@ -2,125 +2,429 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C431E459748
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 23:20:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1292459745
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 23:20:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235025AbhKVWX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 17:23:59 -0500
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:46035 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233754AbhKVWX6 (ORCPT
+        id S233381AbhKVWXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 17:23:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229868AbhKVWXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 17:23:58 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id F04595C0216;
-        Mon, 22 Nov 2021 17:20:49 -0500 (EST)
-Received: from imap45 ([10.202.2.95])
-  by compute5.internal (MEProxy); Mon, 22 Nov 2021 17:20:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=owlfolio.org; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=FCiOZI9Dv20tAQ/7weQX2U+Lw8g5MWM
-        QEAl+y42pkKY=; b=QeNEi/AvK+hUIh19j4A+w35hKQD6AvtNdPGl90BKWAdJZbi
-        X0dlB5XmiTonKKlE3TfNxWUA8CnP8C4D3Koui8OWgTNn6cgpFdmjmxPVqWvXY02x
-        eUv5KaGaRNAiDXPnZlqP5GV6z5t64Op5ijxfokgiWt+prR/83JcgUu1KmW4p6u4p
-        JWrYxfBvURPXEk9/RcT3Wf4G5HJcfA4NmjpabgA2+JAD9CwuOe2LTy+LKjjO84Hf
-        6dgD0noO2GJRdKgwZlxuBSIBEnp8ChH+YV1go5nPw1qeqQOiqOnk2m7OB//nGa+r
-        i5Wy9GudkLvgQ858Yy1KHtLuJw6dgrELjCE7RlA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=FCiOZI
-        9Dv20tAQ/7weQX2U+Lw8g5MWMQEAl+y42pkKY=; b=ewXBhaKwZLdmIj+sVkHsf9
-        a0YSi9sP0qm9FmmmKZiGKfjGEJqBOI0PwYjRT/tm8wPlVyMQpaHenat9tthmfJNp
-        hvhhMkVPyq9aBgnxPz7vG+NaGRlLAooKioTubxNhyzraHFL6zN0O0DAfN1GZWG3u
-        oNc2JXxb4rwNDCXYigmtGzeO8OZZsWGUoR1PXsSygAO/6RVqSRZXMkhjAzPmOR4o
-        AoWnsRjtL5HXh4BSry0m48O5ZyiUxmlQvE3YrzNCIQy3zKIE7blR9Ue/2e6bWgJd
-        mWBHpKCQyrbMfufQXgNpdfSqdFgJTBs564Da0Xhkrhd6YyKbSUpNw9cdAoAvzxtg
-        ==
-X-ME-Sender: <xms:wRecYZdfCh09993z-RORgZjn0BOI_8kLoYaGF3jMOdIUfnPfmvsI8g>
-    <xme:wRecYXN5dggdlACAyRkvZsUt6oqUnQoyl00nJRjjEt5w9bYXw5dkjLf34AjrdJpZR
-    YmCfMH1KLoUNkLkxxg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrgeeggdduiedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdgkrggt
-    khcuhggvihhnsggvrhhgfdcuoeiirggtkhesohiflhhfohhlihhordhorhhgqeenucggtf
-    frrghtthgvrhhnpefhuefhveeuffetfffgjeetgfekkeehfedtfeelgfehffffveehkeel
-    fefgheffudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpeiirggtkhesohiflhhfohhlihhordhorhhg
-X-ME-Proxy: <xmx:wRecYShg87In53jYFl4bkLTO_d4fVgJeFcvgzaVd7xtXrC2El82iwg>
-    <xmx:wRecYS9Nx3NXMazQy4eNpUK3utqVVP3bE3-db4qGrhIhD0g_oDntPg>
-    <xmx:wRecYVvby4ByQWrYB4nSaXRaL2-thVvNo16RHugYiavRR9uod8TCFQ>
-    <xmx:wRecYdI655DXx77lkf7cprqbo_ioS7XxEV5dg57HePNcF6rLB4g8Og>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 5B74024A0079; Mon, 22 Nov 2021 17:20:49 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1371-g2296cc3491-fm-20211109.003-g2296cc34
-Mime-Version: 1.0
-Message-Id: <c5993ee9-1b5d-4469-9c0e-8d4e0fbd575a@www.fastmail.com>
-In-Reply-To: <YZvIlz7J6vOEY+Xu@yuki>
-References: <YZvIlz7J6vOEY+Xu@yuki>
-Date:   Mon, 22 Nov 2021 22:19:59 +0000
-From:   "Zack Weinberg" <zack@owlfolio.org>
-To:     "Cyril Hrubis" <chrubis@suse.cz>, linux-kernel@vger.kernel.org
-Cc:     linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        libc-alpha@sourceware.org, ltp@lists.linux.it
-Subject: Re: [PATCH] uapi: Make __{u,s}64 match {u,}int64_t in userspace
-Content-Type: text/plain
+        Mon, 22 Nov 2021 17:23:47 -0500
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB0BC061714
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 14:20:40 -0800 (PST)
+Received: by mail-il1-x132.google.com with SMTP id i6so301786ila.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 14:20:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CmqVwNzUDpZoH6bsvYXYEHqpdVF8n0sF5oZqJr68Q4U=;
+        b=VZ7G7DGSBqNwZxgA1/jlUhqnZYwGAuwK2WI3FO+X16sMxle36ROOGVqbwi1rdH2QIt
+         mluxaznXS+wc6uixdPJYoEVZNcl7nBC/Y1uPTwRBEfH1BMLzhLyNkGlHewNg411x8qAs
+         hfHdR6gvln/6iDNUB5XfSC1w3u5WfgaB9+sbxBODrMtiieMIgsIQ3hBcF2dk3qdLT7et
+         tzueWVazZ33ofncYXMJgkTJ0e2gvkxDoFwTx00sUwVs/lUliEs4Gnghz/omakritVkrY
+         w/MCH3IpgCC8FWZfiyXKSk6nrN4ZHu1d/JNg3FsZTxl292f7J4oo+3yJRMA2Zg1+16us
+         du0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CmqVwNzUDpZoH6bsvYXYEHqpdVF8n0sF5oZqJr68Q4U=;
+        b=LqyyO2QknNiIZgG/LSL5oiEWFXqHCDIkTEFH79hJ0OhJvKmy6ilj4x2sO4wwAWjK8r
+         FPdjkUz6tZizEoe+zCejzktOdsPuOBrb/bf5ZIYkNMH6ULH2uZiXTyYjR0sLcuFrAO/3
+         k9VE+/XnZZA5t7GmmWZqVbHTm1EOSvEW9q6fwXZkUjTu2MIEZ1CY6BF/LQa9N6P18rbl
+         U4hsFsEhnUetdWbc7oU5/fUhZOh0mpmmlD9tdg3JttS+B/52wU/6iZwnnasx6DTw9Yxz
+         VwrBfJWpaYgmRw7mdlSEOyV8YgCxgQFsUAheAsW9r+db1lofaWJ297Y+3ehdrYb3PbbR
+         WSHg==
+X-Gm-Message-State: AOAM532biVcrHRVPmVrOHNPt8WXXQVnZzVOQoBU27JrGbtoqUC4y4qYp
+        aPNsTAjYq8P+NDZM1m3KJ5OLCLTDoiDWlWzptuwFhw==
+X-Google-Smtp-Source: ABdhPJwQfNtrZU53DDgpMGF+qBzdFfBhgZzG+fcOicmOqJ5ekfYzoNXN1wbndukW/B6rvBydRBIEtF61G0bahf1a9OM=
+X-Received: by 2002:a92:cda2:: with SMTP id g2mr402777ild.2.1637619639542;
+ Mon, 22 Nov 2021 14:20:39 -0800 (PST)
+MIME-Version: 1.0
+References: <20211120045046.3940942-1-seanjc@google.com> <20211120045046.3940942-16-seanjc@google.com>
+In-Reply-To: <20211120045046.3940942-16-seanjc@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Mon, 22 Nov 2021 14:20:28 -0800
+Message-ID: <CANgfPd8Kz41FpvooznGW2VLp8GZFei28FCjonr2+YEZoturi0A@mail.gmail.com>
+Subject: Re: [PATCH 15/28] KVM: x86/mmu: Take TDP MMU roots off list when
+ invalidating all roots
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Hou Wenlong <houwenlong93@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021, at 4:43 PM, Cyril Hrubis wrote:
-> This changes the __u64 and __s64 in userspace on 64bit platforms from
-> long long (unsigned) int to just long (unsigned) int in order to match
-> the uint64_t and int64_t size in userspace.
-...
-> +
-> +#include <asm/bitsperlong.h>
-> +
->  /*
-> - * int-ll64 is used everywhere now.
-> + * int-ll64 is used everywhere in kernel now.
+"/
+
+On Fri, Nov 19, 2021 at 8:51 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Take TDP MMU roots off the list of roots when they're invalidated instead
+> of walking later on to find the roots that were just invalidated.  In
+> addition to making the flow more straightforward, this allows warning
+> if something attempts to elevate the refcount of an invalid root, which
+> should be unreachable (no longer on the list so can't be reached by MMU
+> notifier, and vCPUs must reload a new root before installing new SPTE).
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+
+There are a bunch of awesome little cleanups and unrelated fixes
+included in this commit that could be factored out.
+
+I'm skeptical of immediately moving the invalidated roots into another
+list as that seems like it has a lot of potential for introducing
+weird races. I'm not sure it actually solves a problem either. Part of
+the motive from the commit description "this allows warning if
+something attempts to elevate the refcount of an invalid root" can be
+achieved already without moving the roots into a separate list.
+
+Maybe this would seem more straightforward with some of the little
+cleanups factored out, but this feels more complicated to me.
+
+> ---
+>  arch/x86/kvm/mmu/mmu.c     |   6 +-
+>  arch/x86/kvm/mmu/tdp_mmu.c | 171 ++++++++++++++++++++-----------------
+>  arch/x86/kvm/mmu/tdp_mmu.h |  14 ++-
+>  3 files changed, 108 insertions(+), 83 deletions(-)
+>
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index e00e46205730..e3cd330c9532 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -5664,6 +5664,8 @@ static void kvm_zap_obsolete_pages(struct kvm *kvm)
 >   */
-> -#include <asm-generic/int-ll64.h>
-> +#if __BITS_PER_LONG == 64 && !defined(__KERNEL__)
-> +# include <asm-generic/int-l64.h>
-> +#else
-> +# include <asm-generic/int-ll64.h>
-> +#endif
+>  static void kvm_mmu_zap_all_fast(struct kvm *kvm)
+>  {
+> +       LIST_HEAD(invalidated_roots);
+> +
+>         lockdep_assert_held(&kvm->slots_lock);
+>
+>         write_lock(&kvm->mmu_lock);
+> @@ -5685,7 +5687,7 @@ static void kvm_mmu_zap_all_fast(struct kvm *kvm)
+>          * could drop the MMU lock and yield.
+>          */
+>         if (is_tdp_mmu_enabled(kvm))
+> -               kvm_tdp_mmu_invalidate_all_roots(kvm);
+> +               kvm_tdp_mmu_invalidate_all_roots(kvm, &invalidated_roots);
+>
+>         /*
+>          * Notify all vcpus to reload its shadow page table and flush TLB.
+> @@ -5703,7 +5705,7 @@ static void kvm_mmu_zap_all_fast(struct kvm *kvm)
+>
+>         if (is_tdp_mmu_enabled(kvm)) {
+>                 read_lock(&kvm->mmu_lock);
+> -               kvm_tdp_mmu_zap_invalidated_roots(kvm);
+> +               kvm_tdp_mmu_zap_invalidated_roots(kvm, &invalidated_roots);
+>                 read_unlock(&kvm->mmu_lock);
+>         }
+>  }
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index ca6b30a7130d..085f6b09e5f3 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -94,9 +94,17 @@ void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root,
+>
+>         WARN_ON(!root->tdp_mmu_page);
+>
+> -       spin_lock(&kvm->arch.tdp_mmu_pages_lock);
+> -       list_del_rcu(&root->link);
+> -       spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
+> +       /*
+> +        * Remove the root from tdp_mmu_roots, unless the root is invalid in
+> +        * which case the root was pulled off tdp_mmu_roots when it was
+> +        * invalidated.  Note, this must be an RCU-protected deletion to avoid
+> +        * use-after-free in the yield-safe iterator!
+> +        */
+> +       if (!root->role.invalid) {
+> +               spin_lock(&kvm->arch.tdp_mmu_pages_lock);
+> +               list_del_rcu(&root->link);
+> +               spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
+> +       }
+>
+>         /*
+>          * A TLB flush is not necessary as KVM performs a local TLB flush when
+> @@ -105,18 +113,23 @@ void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root,
+>          * invalidates any paging-structure-cache entries, i.e. TLB entries for
+>          * intermediate paging structures, that may be zapped, as such entries
+>          * are associated with the ASID on both VMX and SVM.
+> +        *
+> +        * WARN if a flush is reported for an invalid root, as its child SPTEs
+> +        * should have been zapped by kvm_tdp_mmu_zap_invalidated_roots(), and
+> +        * inserting new SPTEs under an invalid root is a KVM bug.
+>          */
+> -       (void)zap_gfn_range(kvm, root, 0, -1ull, true, false, shared);
+> +       if (zap_gfn_range(kvm, root, 0, -1ull, true, false, shared))
+> +               WARN_ON_ONCE(root->role.invalid);
+>
+>         call_rcu(&root->rcu_head, tdp_mmu_free_sp_rcu_callback);
+>  }
+>
+>  /*
+> - * Finds the next valid root after root (or the first valid root if root
+> - * is NULL), takes a reference on it, and returns that next root. If root
+> - * is not NULL, this thread should have already taken a reference on it, and
+> - * that reference will be dropped. If no valid root is found, this
+> - * function will return NULL.
+> + * Finds the next root after @prev_root (or the first root if @prev_root is NULL
+> + * or invalid), takes a reference on it, and returns that next root.  If root is
+> + * not NULL, this thread should have already taken a reference on it, and that
+> + * reference will be dropped. If no valid root is found, this function will
+> + * return NULL.
+>   */
+>  static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
+>                                               struct kvm_mmu_page *prev_root,
+> @@ -124,6 +137,27 @@ static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
+>  {
+>         struct kvm_mmu_page *next_root;
+>
+> +       lockdep_assert_held(&kvm->mmu_lock);
+> +
+> +       /*
+> +        * Restart the walk if the previous root was invalidated, which can
+> +        * happen if the caller drops mmu_lock when yielding.  Restarting the
+> +        * walke is necessary because invalidating a root also removes it from
 
-I am all for matching __uN / __sN to uintN_t / intN_t in userspace, but may I suggest the technically simpler and guaranteed-to-be-accurate
+Nit: *walk
 
- /*
-- * int-ll64 is used everywhere now.
-+ * int-ll64 is used everywhere in kernel now.
-+ * In user space match <stdint.h>.
-  */
-+#ifdef __KERNEL__
- # include <asm-generic/int-ll64.h>
-+#elif __has_include (<bits/types.h>)
-+# include <bits/types.h>
-+typedef __int8_t __s8;
-+typedef __uint8_t __u8;
-+typedef __int16_t __s16;
-+typedef __uint16_t __u16;
-+typedef __int32_t __s32;
-+typedef __uint32_t __u32;
-+typedef __int64_t __s64;
-+typedef __uint64_t __u64;
-+#else
-+# include <stdint.h>
-+typedef int8_t __s8;
-+typedef uint8_t __u8;
-+typedef int16_t __s16;
-+typedef uint16_t __u16;
-+typedef int32_t __s32;
-+typedef uint32_t __u32;
-+typedef int64_t __s64;
-+typedef uint64_t __u64;
-+#endif
+> +        * tdp_mmu_roots.  Restarting is safe and correct because invalidating
+> +        * a root is done if and only if _all_ roots are invalidated, i.e. any
+> +        * root on tdp_mmu_roots was added _after_ the invalidation event.
+> +        */
+> +       if (prev_root && prev_root->role.invalid) {
+> +               kvm_tdp_mmu_put_root(kvm, prev_root, shared);
+> +               prev_root = NULL;
+> +       }
+> +
+> +       /*
+> +        * Finding the next root must be done under RCU read lock.  Although
+> +        * @prev_root itself cannot be removed from tdp_mmu_roots because this
+> +        * task holds a reference, its next and prev pointers can be modified
+> +        * when freeing a different root.  Ditto for tdp_mmu_roots itself.
+> +        */
 
-The middle clause could be dropped if we are okay with all uapi headers potentially exposing the non-implementation-namespace names defined by <stdint.h>.  I do not know what the musl libc equivalent of <bits/types.h> is.
+I'm not sure this is correct with the rest of the changes in this
+patch. The new version of invalidate_roots removes roots from the list
+immediately, even if they have a non-zero ref-count.
 
-zw
+>         rcu_read_lock();
+>
+>         if (prev_root)
+> @@ -230,10 +264,13 @@ hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
+>         root = alloc_tdp_mmu_page(vcpu, 0, vcpu->arch.mmu->shadow_root_level);
+>         refcount_set(&root->tdp_mmu_root_count, 1);
+>
+> -       spin_lock(&kvm->arch.tdp_mmu_pages_lock);
+> -       list_add_rcu(&root->link, &kvm->arch.tdp_mmu_roots);
+> -       spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
+> -
+> +       /*
+> +        * Because mmu_lock must be held for write to ensure that KVM doesn't
+> +        * create multiple roots for a given role, this does not need to use
+> +        * an RCU-friendly variant as readers of tdp_mmu_roots must also hold
+> +        * mmu_lock in some capacity.
+> +        */
+
+I doubt we're doing it now, but in principle we could allocate new
+roots with mmu_lock in read + tdp_mmu_pages_lock. That might be better
+than depending on the write lock.
+
+> +       list_add(&root->link, &kvm->arch.tdp_mmu_roots);
+>  out:
+>         return __pa(root->spt);
+>  }
+> @@ -814,28 +851,6 @@ void kvm_tdp_mmu_zap_all(struct kvm *kvm)
+>                 kvm_flush_remote_tlbs(kvm);
+>  }
+>
+> -static struct kvm_mmu_page *next_invalidated_root(struct kvm *kvm,
+> -                                                 struct kvm_mmu_page *prev_root)
+> -{
+> -       struct kvm_mmu_page *next_root;
+> -
+> -       if (prev_root)
+> -               next_root = list_next_or_null_rcu(&kvm->arch.tdp_mmu_roots,
+> -                                                 &prev_root->link,
+> -                                                 typeof(*prev_root), link);
+> -       else
+> -               next_root = list_first_or_null_rcu(&kvm->arch.tdp_mmu_roots,
+> -                                                  typeof(*next_root), link);
+> -
+> -       while (next_root && !(next_root->role.invalid &&
+> -                             refcount_read(&next_root->tdp_mmu_root_count)))
+> -               next_root = list_next_or_null_rcu(&kvm->arch.tdp_mmu_roots,
+> -                                                 &next_root->link,
+> -                                                 typeof(*next_root), link);
+> -
+> -       return next_root;
+> -}
+> -
+>  /*
+>   * Since kvm_tdp_mmu_zap_all_fast has acquired a reference to each
+>   * invalidated root, they will not be freed until this function drops the
+> @@ -844,22 +859,21 @@ static struct kvm_mmu_page *next_invalidated_root(struct kvm *kvm,
+>   * only has to do a trivial amount of work. Since the roots are invalid,
+>   * no new SPTEs should be created under them.
+>   */
+> -void kvm_tdp_mmu_zap_invalidated_roots(struct kvm *kvm)
+> +void kvm_tdp_mmu_zap_invalidated_roots(struct kvm *kvm,
+> +                                      struct list_head *invalidated_roots)
+>  {
+> -       struct kvm_mmu_page *next_root;
+> -       struct kvm_mmu_page *root;
+> +       struct kvm_mmu_page *root, *tmp;
+>
+> +       lockdep_assert_held(&kvm->slots_lock);
+>         lockdep_assert_held_read(&kvm->mmu_lock);
+>
+> -       rcu_read_lock();
+> -
+> -       root = next_invalidated_root(kvm, NULL);
+> -
+> -       while (root) {
+> -               next_root = next_invalidated_root(kvm, root);
+> -
+> -               rcu_read_unlock();
+> -
+> +       /*
+> +        * Put the ref to each root, acquired by kvm_tdp_mmu_put_root().  The
+
+Nit: s/kvm_tdp_mmu_put_root/kvm_tdp_mmu_get_root/
+
+> +        * safe variant is required even though kvm_tdp_mmu_put_root() doesn't
+> +        * explicitly remove the root from the invalid list, as this task does
+> +        * not take rcu_read_lock() and so the list object itself can be freed.
+> +        */
+> +       list_for_each_entry_safe(root, tmp, invalidated_roots, link) {
+>                 /*
+>                  * A TLB flush is unnecessary, invalidated roots are guaranteed
+>                  * to be unreachable by the guest (see kvm_tdp_mmu_put_root()
+> @@ -870,49 +884,50 @@ void kvm_tdp_mmu_zap_invalidated_roots(struct kvm *kvm)
+>                  * blip and not a functional issue.
+>                  */
+>                 (void)zap_gfn_range(kvm, root, 0, -1ull, true, false, true);
+> -
+> -               /*
+> -                * Put the reference acquired in
+> -                * kvm_tdp_mmu_invalidate_roots
+> -                */
+>                 kvm_tdp_mmu_put_root(kvm, root, true);
+> -
+> -               root = next_root;
+> -
+> -               rcu_read_lock();
+>         }
+> -
+> -       rcu_read_unlock();
+>  }
+>
+>  /*
+> - * Mark each TDP MMU root as invalid so that other threads
+> - * will drop their references and allow the root count to
+> - * go to 0.
+> + * Mark each TDP MMU root as invalid so that other threads will drop their
+> + * references and allow the root count to go to 0.
+>   *
+> - * Also take a reference on all roots so that this thread
+> - * can do the bulk of the work required to free the roots
+> - * once they are invalidated. Without this reference, a
+> - * vCPU thread might drop the last reference to a root and
+> - * get stuck with tearing down the entire paging structure.
+> + * Take a reference on each root and move it to a local list so that this task
+> + * can do the actual work required to free the roots once they are invalidated,
+> + * e.g. zap the SPTEs and trigger a remote TLB flush. Without this reference, a
+> + * vCPU task might drop the last reference to a root and get stuck with tearing
+> + * down the entire paging structure.
+>   *
+> - * Roots which have a zero refcount should be skipped as
+> - * they're already being torn down.
+> - * Already invalid roots should be referenced again so that
+> - * they aren't freed before kvm_tdp_mmu_zap_all_fast is
+> - * done with them.
+> + * Roots which have a zero refcount are skipped as they're already being torn
+> + * down.  Encountering a root that is already invalid is a KVM bug, as this is
+> + * the only path that is allowed to invalidate roots and (a) it's proteced by
+
+Nit: protected
+
+> + * slots_lock and (b) pulls each root off tdp_mmu_roots.
+>   *
+> - * This has essentially the same effect for the TDP MMU
+> - * as updating mmu_valid_gen does for the shadow MMU.
+> + * This has essentially the same effect for the TDP MMU as updating
+> + * mmu_valid_gen does for the shadow MMU.
+>   */
+> -void kvm_tdp_mmu_invalidate_all_roots(struct kvm *kvm)
+> +void kvm_tdp_mmu_invalidate_all_roots(struct kvm *kvm,
+> +                                     struct list_head *invalidated_roots)
+>  {
+> -       struct kvm_mmu_page *root;
+> +       struct kvm_mmu_page *root, *tmp;
+>
+> +       /*
+> +        * mmu_lock must be held for write, moving entries off an RCU-protected
+> +        * list is not safe, entries can only be deleted.   All accesses to
+> +        * tdp_mmu_roots are required to hold mmu_lock in some capacity, thus
+> +        * holding it for write ensures there are no concurrent readers.
+> +        */
+>         lockdep_assert_held_write(&kvm->mmu_lock);
+> -       list_for_each_entry(root, &kvm->arch.tdp_mmu_roots, link)
+> -               if (refcount_inc_not_zero(&root->tdp_mmu_root_count))
+> -                       root->role.invalid = true;
+> +
+> +       list_for_each_entry_safe(root, tmp, &kvm->arch.tdp_mmu_roots, link) {
+> +               if (!kvm_tdp_mmu_get_root(root))
+> +                       continue;
+> +
+> +               list_move_tail(&root->link, invalidated_roots);
+> +
+> +               WARN_ON_ONCE(root->role.invalid);
+> +               root->role.invalid = true;
+> +       }
+>  }
+>
+>  /*
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
+> index 599714de67c3..ced6d8e47362 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.h
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.h
+> @@ -9,7 +9,13 @@ hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu);
+>
+>  __must_check static inline bool kvm_tdp_mmu_get_root(struct kvm_mmu_page *root)
+>  {
+> -       if (root->role.invalid)
+> +       /*
+> +        * Acquiring a reference on an invalid root is a KVM bug.  Invalid roots
+> +        * are supposed to be reachable only by references that were acquired
+> +        * before the invalidation, and taking an additional reference to an
+> +        * invalid root is not allowed.
+> +        */
+> +       if (WARN_ON_ONCE(root->role.invalid))
+>                 return false;
+>
+>         return refcount_inc_not_zero(&root->tdp_mmu_root_count);
+> @@ -44,8 +50,10 @@ static inline bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
+>  }
+>
+>  void kvm_tdp_mmu_zap_all(struct kvm *kvm);
+> -void kvm_tdp_mmu_invalidate_all_roots(struct kvm *kvm);
+> -void kvm_tdp_mmu_zap_invalidated_roots(struct kvm *kvm);
+> +void kvm_tdp_mmu_invalidate_all_roots(struct kvm *kvm,
+> +                                     struct list_head *invalidated_roots);
+> +void kvm_tdp_mmu_zap_invalidated_roots(struct kvm *kvm,
+> +                                      struct list_head *invalidated_roots);
+>
+>  int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault);
+>
+> --
+> 2.34.0.rc2.393.gf8c9666880-goog
+>
