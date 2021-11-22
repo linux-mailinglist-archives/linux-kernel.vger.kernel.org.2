@@ -2,114 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E3D459731
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 23:13:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABCD6459735
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 23:14:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239940AbhKVWQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 17:16:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:31675 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231771AbhKVWQy (ORCPT
+        id S239995AbhKVWRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 17:17:43 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:44772 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231771AbhKVWRj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 17:16:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637619227;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=S+R9BINaX+51Qr2T4l6sCMbvLwjW2/vrLNYAwc3Z9lU=;
-        b=Yz0rrADwAF/pU/Kxj+e1rDuIJBis+Wwtr9V43RsGs8TeOsbv7zrHzvjhnwXYxaBgu/67ZU
-        f9GvHonL3z3J93DX8cS8CcpmE8NB6hRk96xU3JCY6qiqvT4MFJA265ZCQNtAzEXaMndJ73
-        JH+ZjR2W8VJa/SCYhD8ihde9F13FMnk=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-459-Na6IQFvYMEKTaYcpc9RNbQ-1; Mon, 22 Nov 2021 17:13:46 -0500
-X-MC-Unique: Na6IQFvYMEKTaYcpc9RNbQ-1
-Received: by mail-qk1-f200.google.com with SMTP id h8-20020a05620a284800b0045ec745583cso15963668qkp.6
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 14:13:46 -0800 (PST)
+        Mon, 22 Nov 2021 17:17:39 -0500
+Received: by mail-io1-f70.google.com with SMTP id 7-20020a6b0107000000b005ed196a2546so2800842iob.11
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 14:14:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=S+R9BINaX+51Qr2T4l6sCMbvLwjW2/vrLNYAwc3Z9lU=;
-        b=XhZdb9WhpBTAzkZ5aBnZKlBLyBMEJsZMIeHFJCSEDCTkkw6T+mtxbjsTrxvY14kOZu
-         2oUfYTnZ/f+hdyZffXDuy5Rwk8i4DKPsyTXzVnZv3yCMXmzdEXl1susO/oWGLHYLhUGI
-         JCA/jFCXq/hsk9WJvZRxQq7GWV6YLxrDX4JUxfAn9n6lJcil8u6QuXozAmVnBvDRbVCa
-         6vUC27ryeIH4RgrL7jSdEhnm0hifSzFYIVKzcSEY+vZSEB6wGW/RhuZg65UE+VoXdhAk
-         +0679neM+8kA/njSp3XO9U0El9mULswT7Z/3QhJ+1mqoQwP9+YWOTsedFxnZFbjY3LGQ
-         MELg==
-X-Gm-Message-State: AOAM531IYc+gk4bCMp7ttUOfBw9TbZdshr6VH5ZbGIcF384aNow8oQCN
-        tI9C0UqqcXq4RHQ6D5hq9Z8ZnBEwPSdEubkA6T30/p8K/UZNk3O8GUj/X3YTBlBVJhhN8k9fbPF
-        1VaKVXKmKObYVMm+1TNSM5JP4
-X-Received: by 2002:a05:620a:2686:: with SMTP id c6mr124707qkp.223.1637619225702;
-        Mon, 22 Nov 2021 14:13:45 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxjge0K0A/nuJhOKxTMumEKKOBE3aDs/sL07dbK3PKluKwLUOKRHtkgUX+iQF2cQOqBhIFyMQ==
-X-Received: by 2002:a05:620a:2686:: with SMTP id c6mr124688qkp.223.1637619225558;
-        Mon, 22 Nov 2021 14:13:45 -0800 (PST)
-Received: from [192.168.8.138] (pool-96-230-249-157.bstnma.fios.verizon.net. [96.230.249.157])
-        by smtp.gmail.com with ESMTPSA id t15sm5265046qta.45.2021.11.22.14.13.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 14:13:45 -0800 (PST)
-Message-ID: <60cfa0c45da408f1c87fc0e85bba389339ea9109.camel@redhat.com>
-Subject: Re: [PATCH] drm/selftest: fix potential memleak in error branch
-From:   Lyude Paul <lyude@redhat.com>
-To:     Bernard Zhao <bernard@vivo.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Lee Jones <lee.jones@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Date:   Mon, 22 Nov 2021 17:13:43 -0500
-In-Reply-To: <20211117014834.36999-1-bernard@vivo.com>
-References: <20211117014834.36999-1-bernard@vivo.com>
-Organization: Red Hat Inc.
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Kz/44B8X7NBFkqbuicYsbZq4Sql/M2zFV0XxqztyEos=;
+        b=5m4B24zzN1cemFm3FQmcGYFtMYMTFQUfhiddusgQANF6FMReL85BKROv4K/PofTaq/
+         L/mJjpKfCey3VgqMzbnvnJMaSZ018Ze3h61li9hdkvSkNEPAx5H42xf5p+2sZ2IAzx+8
+         gHcYE7J/h0EiJsTHXTxP53ri2mQQF5kqnHBiVLjE0wHq0/HAPYTdrfUiLwdjeJ9OxUJj
+         AxvZefwco3SrIrB7yCejS6fPUoWXe7Iur++F1c6tWqYACYRwu/+WsHLzCsEP6OliO1dN
+         tMMgeUiHwxRloJZ/PRnxIgBYE8mLbOebRZXT801Bkn9VS7AInS4h/+9Aa0iyq35IcBFh
+         Sd1w==
+X-Gm-Message-State: AOAM530yhQqMD+XWmMgqAeDXx2bzsAhPOHCZwKhVHaJRNHpiBO246QN3
+        gZlWRAsotw/gqrvGiN+2QLnPCSIsew11fT2IPjuxiJjt8N3c
+X-Google-Smtp-Source: ABdhPJwtWfap1cILHXA8iY6bhxmVBc5DuHMjm1DNzMmWeuU1dmiVBqd5gR4zDlKDr42C/cujKKfJcxy+RDqnjoVt+wBxmFTK/rtM
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:3a4:: with SMTP id z4mr521453jap.76.1637619271749;
+ Mon, 22 Nov 2021 14:14:31 -0800 (PST)
+Date:   Mon, 22 Nov 2021 14:14:31 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f854ec05d167f227@google.com>
+Subject: [syzbot] kernel BUG in kvm_read_guest_offset_cached
+From:   syzbot <syzbot+7b7db8bb4db6fd5e157b@syzkaller.appspotmail.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I wonder what vivo's interested in this for!
+Hello,
 
-Anyway:
+syzbot found the following issue on:
 
-Reviewed-by: Lyude Paul <lyude@redhat.com>
+HEAD commit:    4c388a8e740d Merge tag 'zstd-for-linus-5.16-rc1' of git://..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=171ff6eeb00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6d3b8fd1977c1e73
+dashboard link: https://syzkaller.appspot.com/bug?extid=7b7db8bb4db6fd5e157b
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-Do you need me to push this to drm-misc-next for you?
+Unfortunately, I don't have any reproducer for this issue yet.
 
-On Tue, 2021-11-16 at 17:48 -0800, Bernard Zhao wrote:
-> This patch try to fix the potential memleak in error branch.
-> 
-> Signed-off-by: Bernard Zhao <bernard@vivo.com>
-> ---
->  drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
-> b/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
-> index 6b4759ed6bfd..dbac073ed385 100644
-> --- a/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
-> +++ b/drivers/gpu/drm/selftests/test-drm_dp_mst_helper.c
-> @@ -131,8 +131,10 @@ sideband_msg_req_encode_decode(struct
-> drm_dp_sideband_msg_req_body *in)
->                 return false;
->  
->         txmsg = kzalloc(sizeof(*txmsg), GFP_KERNEL);
-> -       if (!txmsg)
-> -               return false;
-> +       if (!txmsg) {
-> +               result = false;
-> +               goto out;
-> +       }
->  
->         drm_dp_encode_sideband_req(in, txmsg);
->         ret = drm_dp_decode_sideband_req(txmsg, out);
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7b7db8bb4db6fd5e157b@syzkaller.appspotmail.com
 
--- 
-Cheers,
- Lyude Paul (she/her)
- Software Engineer at Red Hat
+------------[ cut here ]------------
+kernel BUG at arch/x86/kvm/../../../virt/kvm/kvm_main.c:2955!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 27639 Comm: syz-executor.0 Not tainted 5.16.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:kvm_read_guest_offset_cached+0x3aa/0x440 arch/x86/kvm/../../../virt/kvm/kvm_main.c:2955
+Code: 00 48 c7 c2 c0 08 a2 89 be 0b 03 00 00 48 c7 c7 60 0d a2 89 c6 05 71 f9 73 0c 01 e8 62 19 f8 07 e9 d6 fc ff ff e8 36 1b 6f 00 <0f> 0b e8 2f 1b 6f 00 48 8b 74 24 10 4c 89 ef 4c 89 e1 48 8b 54 24
+RSP: 0018:ffffc9000589fa18 EFLAGS: 00010216
+RAX: 0000000000003b75 RBX: ffff8880722ba798 RCX: ffffc90002b94000
+RDX: 0000000000040000 RSI: ffffffff81087cda RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000004 R09: ffffc900049dbf53
+R10: ffffffff81087a0f R11: 0000000000000002 R12: 0000000000000004
+R13: ffffc900049d1000 R14: 0000000000000000 R15: ffff8880886c0000
+FS:  00007fd7a562f700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000200 CR3: 0000000038e62000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000000000000c0fe
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ handle_vmptrld arch/x86/kvm/vmx/nested.c:5304 [inline]
+ handle_vmptrld+0x39d/0x820 arch/x86/kvm/vmx/nested.c:5266
+ __vmx_handle_exit arch/x86/kvm/vmx/vmx.c:6012 [inline]
+ vmx_handle_exit+0x4f7/0x18a0 arch/x86/kvm/vmx/vmx.c:6029
+ vcpu_enter_guest+0x2b41/0x4440 arch/x86/kvm/x86.c:9941
+ vcpu_run arch/x86/kvm/x86.c:10008 [inline]
+ kvm_arch_vcpu_ioctl_run+0x4fc/0x21a0 arch/x86/kvm/x86.c:10203
+ kvm_vcpu_ioctl+0x570/0xf30 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3709
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:874 [inline]
+ __se_sys_ioctl fs/ioctl.c:860 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fd7a80b9ae9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fd7a562f188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fd7a81ccf60 RCX: 00007fd7a80b9ae9
+RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000006
+RBP: 00007fd7a8113f6d R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fd7a8700b2f R14: 00007fd7a562f300 R15: 0000000000022000
+ </TASK>
+Modules linked in:
+---[ end trace 05ad48ac8b464d71 ]---
+RIP: 0010:kvm_read_guest_offset_cached+0x3aa/0x440 arch/x86/kvm/../../../virt/kvm/kvm_main.c:2955
+Code: 00 48 c7 c2 c0 08 a2 89 be 0b 03 00 00 48 c7 c7 60 0d a2 89 c6 05 71 f9 73 0c 01 e8 62 19 f8 07 e9 d6 fc ff ff e8 36 1b 6f 00 <0f> 0b e8 2f 1b 6f 00 48 8b 74 24 10 4c 89 ef 4c 89 e1 48 8b 54 24
+RSP: 0018:ffffc9000589fa18 EFLAGS: 00010216
+RAX: 0000000000003b75 RBX: ffff8880722ba798 RCX: ffffc90002b94000
+RDX: 0000000000040000 RSI: ffffffff81087cda RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000004 R09: ffffc900049dbf53
+R10: ffffffff81087a0f R11: 0000000000000002 R12: 0000000000000004
+R13: ffffc900049d1000 R14: 0000000000000000 R15: ffff8880886c0000
+FS:  00007fd7a562f700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f18994c5000 CR3: 0000000038e62000 CR4: 00000000003526e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000003000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
 
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
