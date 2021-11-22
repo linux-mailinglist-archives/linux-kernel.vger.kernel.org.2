@@ -2,102 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8309F458A1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 08:50:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33DDE458A22
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 08:52:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233463AbhKVHxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 02:53:47 -0500
-Received: from mail-ua1-f54.google.com ([209.85.222.54]:43635 "EHLO
-        mail-ua1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229906AbhKVHxo (ORCPT
+        id S238812AbhKVHzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 02:55:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232708AbhKVHzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 02:53:44 -0500
-Received: by mail-ua1-f54.google.com with SMTP id j14so24919792uan.10;
-        Sun, 21 Nov 2021 23:50:38 -0800 (PST)
+        Mon, 22 Nov 2021 02:55:22 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0194C06173E
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 23:52:16 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id k4so13325838plx.8
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 23:52:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=RIo6b7gmK4IYXUe1DoTdRALWvvAnaEpK12w1IXrlnqU=;
+        b=t7FuivjODiqwLuAHZx/KfC5Prl8itJs+ogBRoUAT7v5I1kwWFdROOXl26Po28oYzOm
+         62fbNxMIBTPeZt0B9XSOaUnl8eT4KtzQce7q7Du3R24uUC5wrXSDNyexfyeX32yVg65j
+         p8FWNBGoJ7vHhdDrCu4fn43qKZZf2KcEGXbEbKvJjeScj3W9akF1+zb+ULEquZV8FD2O
+         e+HRBgSZw0qgB0qk4tIVksCQ/bmzbytQZwDR+sCp5hNMNL2+sy9qfEuBmpX3S2K8dpiq
+         hBOydc3/f+P3cwAUWlnnUSCd+KA/L4czK79o6LYiwYuBdV9zMzXkG6Cz0h0KVveYb8yH
+         K5SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kT5Hh6yPK9g0/wKHmuficJ8QC8SNf9TRKWAOYqxbSfY=;
-        b=lsVBN8YmUv5eDLrtVFnV2XySjIH12wBvsJr6ZOow1ErdMkAneuPm5RFnn2omuamCNc
-         OsMGcnE7ppKypAS72qzhOYE0KgINVqkaJpc3uFXaKlUKo6+2HNFuhF+5Ied6p1MELJAW
-         /3AZWQmQLctRfgw3Uh9Jk737r1j9afaQDqEOureXXcxFMX9H4H9wQdpV94MdtdogMmJF
-         zBvR73rqJv1/ZZ+l+UvEn1DraNI0Sh1tkUUG4J+PD8LIXVxPGl9toDml0aJ+sEJVa1FQ
-         9YzmU7fB8VQXdigZeHHRKwro86u2pPk6UBJ/kExbd836HHmGVFvw2i+8AaGRvEChkWb4
-         I+EA==
-X-Gm-Message-State: AOAM532QEr0OxozaWUS83zMEdAX+cDgBzk6VzVG/b7CLcrB6PgH6qitz
-        Ozm64KgLHtCCvwJNPO5x+kEMlxv4l4JNEQ==
-X-Google-Smtp-Source: ABdhPJwO+LaKdZGLlP1WxivDbOshh/lSX37IcvC+iYanH+ZPDbwzXYqKU+aw2TfafOVN3nIUL+EGoA==
-X-Received: by 2002:a67:e109:: with SMTP id d9mr127999943vsl.19.1637567437870;
-        Sun, 21 Nov 2021 23:50:37 -0800 (PST)
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com. [209.85.222.47])
-        by smtp.gmail.com with ESMTPSA id q9sm4042363vkn.44.2021.11.21.23.50.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Nov 2021 23:50:37 -0800 (PST)
-Received: by mail-ua1-f47.google.com with SMTP id p2so34648969uad.11;
-        Sun, 21 Nov 2021 23:50:37 -0800 (PST)
-X-Received: by 2002:a67:c38f:: with SMTP id s15mr127486612vsj.50.1637567437054;
- Sun, 21 Nov 2021 23:50:37 -0800 (PST)
-MIME-Version: 1.0
-References: <20211121180155.9062-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20211121180155.9062-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 22 Nov 2021 08:50:26 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUTLYn=14RzJORp1mn-TSwC1rk1BO_9L6TG4g9JhH27JA@mail.gmail.com>
-Message-ID: <CAMuHMdUTLYn=14RzJORp1mn-TSwC1rk1BO_9L6TG4g9JhH27JA@mail.gmail.com>
-Subject: Re: [PATCH] memory: renesas-rpc-if: Silence clang warning
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=RIo6b7gmK4IYXUe1DoTdRALWvvAnaEpK12w1IXrlnqU=;
+        b=aSI0cTtk2LDipCU0eeOCzXD2M+jwpW5DKGdBXZg5p8vOyWD8dZ9gInWnUTfPb6nzCl
+         GrjH0pixaKk403mEBsAfP6N2980aJHHzCtsR+i4Emb3igWqYkRed1gRaDPssm2T5ToEk
+         rm5400Z/L/8/otRG4gUWdaZMkCSVfUm45lc3n9b/odg9kp0XF6ngNVk5Wk1UXoULiKau
+         zsOeSUrfJusfNK72jgJ8HThFScAFxsyuZP8Xq68f6B3M57wE+BdjQtJ1DxkAi9fZNWHY
+         JsNeQGyi5uHlcooVnH+0hPVaoYrFWQ/a35IcPjsfSMWUDV+8H/Gu3ddlEUWWs9zHaETL
+         Kcvw==
+X-Gm-Message-State: AOAM532DMdjxvvimVJRx5vrKOp07Jqb8eBC11uQVR29b5c93j1LnJW43
+        phFrU50q3bnNMXzEwm5RA0MZQg==
+X-Google-Smtp-Source: ABdhPJwlQ7UzBGfzuzYKV5e3PAqN06bY5rs3M2xs8RkmPTUCwYTyT6pkpvg67ZeL8NyaJgMsevYKig==
+X-Received: by 2002:a17:903:124a:b0:143:a627:a992 with SMTP id u10-20020a170903124a00b00143a627a992mr102004893plh.32.1637567536553;
+        Sun, 21 Nov 2021 23:52:16 -0800 (PST)
+Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id bf13sm6355961pjb.47.2021.11.21.23.52.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Nov 2021 23:52:16 -0800 (PST)
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Marc Zyngier <maz@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCH 0/2] Add Qualcomm MPM irqchip driver support
+Date:   Mon, 22 Nov 2021 15:52:05 +0800
+Message-Id: <20211122075207.20114-1-shawn.guo@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+It adds DT binding and driver support for Qualcomm MPM (MSM Power Manager)
+interrupt controller.
 
-On Sun, Nov 21, 2021 at 7:05 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> This patch silences the following clang warning:
->
-> | drivers/memory/renesas-rpc-if.c:253:14: warning: cast to smaller integer
-> | type 'enum rpcif_type' from 'const void *' [-Wvoid-pointer-to-enum-cast]
-> |           rpc->type = (enum rpcif_type)of_device_get_match_data(dev);
-> |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->
-> Fixes: b04cc0d912eb8 ("memory: renesas-rpc-if: Add support for RZ/G2L")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Shawn Guo (2):
+  dt-bindings: interrupt-controller: Add Qualcomm MPM support
+  irqchip: Add Qualcomm MPM controller driver
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+ .../interrupt-controller/qcom,mpm.yaml        |  69 +++
+ drivers/irqchip/Kconfig                       |   8 +
+ drivers/irqchip/Makefile                      |   1 +
+ drivers/irqchip/qcom-mpm.c                    | 542 ++++++++++++++++++
+ 4 files changed, 620 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/qcom,mpm.yaml
+ create mode 100644 drivers/irqchip/qcom-mpm.c
 
-> --- a/drivers/memory/renesas-rpc-if.c
-> +++ b/drivers/memory/renesas-rpc-if.c
-> @@ -250,7 +250,7 @@ int rpcif_sw_init(struct rpcif *rpc, struct device *dev)
->                 return PTR_ERR(rpc->dirmap);
->         rpc->size = resource_size(res);
->
-> -       rpc->type = (enum rpcif_type)of_device_get_match_data(dev);
-> +       rpc->type = (enum rpcif_type)(uintptr_t)of_device_get_match_data(dev);
+-- 
+2.17.1
 
-While correct, the cast to "enum rpcif_type" is not stricly needed anymore.
-
->         rpc->rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
->
->         return PTR_ERR_OR_ZERO(rpc->rstc);
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
