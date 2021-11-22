@@ -2,125 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93547459868
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 00:27:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3DA045986B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 00:29:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231550AbhKVXa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 18:30:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbhKVXa2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 18:30:28 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F6CC061574;
-        Mon, 22 Nov 2021 15:27:21 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hyk2G6NHCz4xZ5;
-        Tue, 23 Nov 2021 10:27:18 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1637623639;
-        bh=cNN1KH3IiFOzRnbbUMcFEjeDGKA7GrqRdSkqp6HqSLw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=JOBxwxJVw2w6YDUsXlssPtUg2JOAj9uS17byy9MbYQ1mDPsCLu/yDQK3vlXWoR5ls
-         l8hzja4HYKaEml+cie5lq6y2Exj0JyfQmTAvsriEqIeGrGuNebC1wI7qY/xABXORn2
-         Lw++AwvN/SPCHUe6hfeUhqwDJM/tn6CncMz6CNgCuPQQgmpCjiTGBd+RCLPLPM6lro
-         k6agmfI0SkSLY7ZO0iqyqPqoNg6BW5vL+wuzF8G/dT1lKt343x+OCHKp3YVZTtzW/8
-         vo/7tYiYUkmIT9akHHOmdHakkzazmXJEIr3LjUHU4omDzayhsYlhIHTqYYQlNj09Rz
-         JSNdK2rKsxFhQ==
-Date:   Tue, 23 Nov 2021 10:27:17 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>
-Cc:     Samuel Holland <samuel@sholland.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the sunxi tree
-Message-ID: <20211123102717.1c3b086f@canb.auug.org.au>
+        id S231776AbhKVXcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 18:32:13 -0500
+Received: from mail-dm6nam08on2059.outbound.protection.outlook.com ([40.107.102.59]:30688
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229575AbhKVXcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 18:32:12 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SXu+E1ot8/sAuZMoH3s64q6BCY6SA77mum0tkDPoFgE2YU6UeiLPQId3IAi4r+mAWxXSsXh8mQ6RhG0bP2Q2ITE4QZOx1wM2Yiyj2wtODo5IjLHalu5AAoIAWyJEojsD90fKlhd4e1eiBWWr9Tzpy/qWHnpfoJoIkwhkGA9eZA3OHkJHDLKYd9ttLbbtlJeTGgar5zV9ppuKPnd/QdVi+4rcPzHGyURE0MKDdQed9KdbLL4T4KF/KeGc+sXcO8oOLJJbZVigcHVP306o0M/Op/Anz2hj5jtpB6WfbKM5/eiHSy2+Ew8qDf6NyvdoJRU+wW6pnzQxAtZcFBg/1ucvZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2qwXQOTsIP4ATxk7oCznQWA3EXkBFjDkh/AFs6uTG+8=;
+ b=krVjLE3rgTSGeKoxs7SGrGCAGBpgJYJGxBiMVK1WwA8PpjsmcXuLG7zJlsL/J24yJWNMqxfp4QkSTlRuTo282+NlWk9EPGHKNxdeXN71kzLN+QnmE9arua8M7G/IMX1W4+oDcCEJZTIoW+J0HKedzAGKOj8UFnVOioeGjBV0FnAS1/3aSVl2+E7F1ffBzvzOu9Db53o+MGi2S8MJ4gfe4yBi9TEL1ZT7uhpQFvi4MVnZvziEZBORmLP0hUoSGcvqI7/aKAinUE54xX+DLSdvRS9OlNtBilrc/ZjukD44Y+RdfxEMVA3B+9oUfEji9w1bHMiJJnyi2ucNJmrZ0nS5Kw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=temperror (sender ip
+ is 216.228.112.34) smtp.rcpttodomain=vger.kernel.org
+ smtp.mailfrom=nvidia.com; dmarc=temperror action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2qwXQOTsIP4ATxk7oCznQWA3EXkBFjDkh/AFs6uTG+8=;
+ b=IYhR/isw23L8tGKRHpn9ZvSxIK79BuJaWGdSbiyeE79jR94cf9eJNsjnLU6lklTNsRZ+SVk4fswJcvKs2N8KE68J8NZ/0vp336H3UV4kuOOg07limR5hApz7Gxp+qxbzIDEHbVqji+yeuQM6B7HUxCbqYo8c7U92L25Us7F2hgvbG1W4cuY70EZpMkyDhQkmO0lOKdgKLwARD4Q6unzAlrYtxlt+rsPzZfUdWU0YZsG/WWZc+oJv+3cv1H/s5jMm/LqC98hJflls0aMEb5ZNhxWVeefzwhIB/lMdkNLkdksCHWZj1ZOKJcvLOA2l9FL4N54lBNv1wU7QSg5JnkmyIg==
+Received: from BN1PR10CA0023.namprd10.prod.outlook.com (2603:10b6:408:e0::28)
+ by MN2PR12MB3709.namprd12.prod.outlook.com (2603:10b6:208:167::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Mon, 22 Nov
+ 2021 23:29:02 +0000
+Received: from BN8NAM11FT068.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:e0:cafe::71) by BN1PR10CA0023.outlook.office365.com
+ (2603:10b6:408:e0::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21 via Frontend
+ Transport; Mon, 22 Nov 2021 23:29:02 +0000
+X-MS-Exchange-Authentication-Results: spf=temperror (sender IP is
+ 216.228.112.34) smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=temperror action=none header.from=nvidia.com;
+Received-SPF: TempError (protection.outlook.com: error in processing during
+ lookup of nvidia.com: DNS Timeout)
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT068.mail.protection.outlook.com (10.13.177.69) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4713.20 via Frontend Transport; Mon, 22 Nov 2021 23:28:59 +0000
+Received: from nvdebian.localnet (172.20.187.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 22 Nov
+ 2021 23:28:56 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>
+CC:     <willy@infradead.org>, <dhowells@redhat.com>, <hughd@google.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <jglisse@redhat.com>, <jgg@nvidia.com>, <rcampbell@nvidia.com>,
+        <jhubbard@nvidia.com>
+Subject: Re: [PATCH v4] mm/migrate.c: Rework migration_entry_wait() to not take a pageref
+Date:   Tue, 23 Nov 2021 10:28:54 +1100
+Message-ID: <2895271.4lBpGFk6aU@nvdebian>
+In-Reply-To: <d2697d9e-92b7-649f-5afa-313350578286@redhat.com>
+References: <20211118020754.954425-1-apopple@nvidia.com> <d2697d9e-92b7-649f-5afa-313350578286@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/V/kQEjOnOWoeMFQP_pY7bHa";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4eb66bfe-d247-45d6-0525-08d9ae0fdca3
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3709:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB3709D31A29FF31282F7981B7DF9F9@MN2PR12MB3709.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2512;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aHTBSKnKxzAtizNWVq3T5jVLa71JE22v+nHVN1T9bfMwjGzdwdwqi0QZ1q8qD+kflrzMhYeWgjgVMeX4zW39IHFf3a9xeOIZOk6/rCdRsSDRPqNSFyPtnw8/fT5NcvM/L5vbzefSeQvltdjR/MhvUe2q1KwfxUJqvzytuDd7o2QlafTglsD7JUdEowf5Ds4WtFsglIDCEwB1OHgBEEmJJsHSfZjbQXP4RWWAXA0KyDKYkWJkZyW1HeXvEAWSsGKkKScVtxS8vpVJM66xez2xf74XCimPV8+x+g8rcYVmuqilT80W2y36VaUOOavbnFwLeJC5aDkZ4qNpdnbasv3fsq96EvwzeiwNG2WpW+Chw5l6MgrUgAcRVCK9wDSuMF0x7tP3c7+eOfBacRApC9/fXUThWFRVELR9fHQz72jzB8bLxuONx+gtKtGzrZUhMOlXdh+ZwD5FJDTstkOOwUPUmPC3yJX6Nb267qQYRi6jBcYWDH6inICaB7nnldTP1sMbHUMlVy/ebohMggmOtv2pXhKTidbJacGEcOTfKqIluiupH+x85x7W7tRis2kVIXUq+59Hoo1R1JFwYsZEyHNyN+ydJS0f38xvfXDLsgwgZyavnFC6Q8D1zxHpFE6LKmN3uQ9APAkR8QM7YACWZbsrKCwVXmJuY1GWEw0uaEdtkhTo6ct/F2tvnskSrxTQCskJaC9lJmUCA3LxMRHBvT9Q0qPstoDxTQST9hejc66rswo=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(33716001)(9686003)(82310400003)(4326008)(36860700001)(426003)(508600001)(70206006)(63350400001)(83380400001)(47076005)(316002)(7636003)(356005)(54906003)(63370400001)(16526019)(26005)(9576002)(186003)(8676002)(86362001)(107886003)(5660300002)(70586007)(8936002)(110136005)(2906002)(336012)(39026012);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2021 23:28:59.7410
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4eb66bfe-d247-45d6-0525-08d9ae0fdca3
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT068.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3709
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/V/kQEjOnOWoeMFQP_pY7bHa
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tuesday, 23 November 2021 5:15:27 AM AEDT David Hildenbrand wrote:
 
-Hi all,
+[...]
 
-After merging the sunxi tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+> > +#ifdef CONFIG_MIGRATION
+> > +/**
+> > + * migration_entry_wait_on_locked - Wait for a migration entry to be removed
+> > + * @folio: folio referenced by the migration entry.
+> > + * @ptep: mapped pte pointer. This function will return with the ptep unmapped.
+> > + * @ptl: already locked ptl. This function will drop the lock.
+> > + *
+> > + * Wait for a migration entry referencing the given page to be removed. This is
+> > + * equivalent to put_and_wait_on_page_locked(page, TASK_UNINTERRUPTIBLE) except
+> > + * this can be called without taking a reference on the page. Instead this
+> > + * should be called while holding the ptl for the migration entry referencing
+> > + * the page.
+> > + *
+> > + * Returns after unmapping and unlocking the pte/ptl with pte_unmap_unlock().
+> 
+> You could maybe make it clear that callers have to pass the ptep only
+> for PTE migration entries. For a PMD migration entry, pass NULL.
 
-drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c: In function 'suniv_f1c100s_ccu_se=
-tup':
-drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c:532:39: error: 'pdev' undeclared (=
-first use in this function)
-  532 |  reg =3D devm_platform_ioremap_resource(pdev, 0);
-      |                                       ^~~~
-drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c:532:39: note: each undeclared iden=
-tifier is reported only once for each function it appears in
-drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c:534:10: error: 'return' with a val=
-ue, in function returning void [-Werror=3Dreturn-type]
-  534 |   return PTR_ERR(reg);
-      |          ^~~~~~~~~~~~
-drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c:526:20: note: declared here
-  526 | static void __init suniv_f1c100s_ccu_setup(struct device_node *node)
-      |                    ^~~~~~~~~~~~~~~~~~~~~~~
-drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c:543:10: error: 'return' with a val=
-ue, in function returning void [-Werror=3Dreturn-type]
-  543 |   return ret;
-      |          ^~~
-drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c:526:20: note: declared here
-  526 | static void __init suniv_f1c100s_ccu_setup(struct device_node *node)
-      |                    ^~~~~~~~~~~~~~~~~~~~~~~
-drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c:552:9: error: 'return' with a valu=
-e, in function returning void [-Werror=3Dreturn-type]
-  552 |  return 0;
-      |         ^
-drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c:526:20: note: declared here
-  526 | static void __init suniv_f1c100s_ccu_setup(struct device_node *node)
-      |                    ^~~~~~~~~~~~~~~~~~~~~~~
-drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c: At top level:
-drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c:561:11: error: 'suniv_f1c100s_ccu_=
-probe' undeclared here (not in a function); did you mean 'suniv_f1c100s_ccu=
-_driver'?
-  561 |  .probe =3D suniv_f1c100s_ccu_probe,
-      |           ^~~~~~~~~~~~~~~~~~~~~~~
-      |           suniv_f1c100s_ccu_driver
-drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c:526:20: error: 'suniv_f1c100s_ccu_=
-setup' defined but not used [-Werror=3Dunused-function]
-  526 | static void __init suniv_f1c100s_ccu_setup(struct device_node *node)
-      |                    ^~~~~~~~~~~~~~~~~~~~~~~
+Will do.
+ 
+> > + *
+> > + * This follows the same logic as wait_on_page_bit_common() so see the comments
+> 
+> s/wait_on_page_bit_common/folio_wait_bit_common/ ?
 
-Caused by commit
+Evidently this escaped my s// when rebasing on top of folio's. Will fix.
 
-  72dc8e122383 ("clk: sunxi-ng: Convert early providers to platform drivers=
-")
+> > + * there.
+> > + */
+> > +void migration_entry_wait_on_locked(struct folio *folio, pte_t *ptep,
+> > +				spinlock_t *ptl)
+> > +{
+> > +	struct wait_page_queue wait_page;
+> > +	wait_queue_entry_t *wait = &wait_page.wait;
+> > +	bool thrashing = false;
+> > +	bool delayacct = false;
+> > +	unsigned long pflags;
+> > +	wait_queue_head_t *q;
+> > +
+> > +	q = folio_waitqueue(folio);
+> > +	if (!folio_test_uptodate(folio) && folio_test_workingset(folio)) {
+> > +		if (!folio_test_swapbacked(folio)) {
+> > +			delayacct_thrashing_start();
+> > +			delayacct = true;
+> > +		}
+> > +		psi_memstall_enter(&pflags);
+> > +		thrashing = true;
+> > +	}
+> > +
+> > +	init_wait(wait);
+> > +	wait->func = wake_page_function;
+> > +	wait_page.folio = folio;
+> > +	wait_page.bit_nr = PG_locked;
+> > +	wait->flags = 0;
+> > +
+> > +	spin_lock_irq(&q->lock);
+> > +	folio_set_waiters(folio);
+> > +	if (!folio_trylock_flag(folio, PG_locked, wait))
+> > +		__add_wait_queue_entry_tail(q, wait);
+> > +	spin_unlock_irq(&q->lock);
+> > +
+> > +	/*
+> > +	 * If a migration entry exists for the page the migration path must hold
+> > +	 * a valid reference to the page, and it must take the ptl to remove the
+> > +	 * migration entry. So the page is valid until the ptl is dropped.
+> > +	 */
+> > +	if (ptep)
+> > +		pte_unmap_unlock(ptep, ptl);
+> > +	else
+> > +		spin_unlock(ptl);
+> > +
+> > +	for (;;) {
+> > +		unsigned int flags;
+> > +
+> > +		set_current_state(TASK_UNINTERRUPTIBLE);
+> > +
+> > +		/* Loop until we've been woken or interrupted */
+> > +		flags = smp_load_acquire(&wait->flags);
+> > +		if (!(flags & WQ_FLAG_WOKEN)) {
+> > +			if (signal_pending_state(TASK_UNINTERRUPTIBLE, current))
+> > +				break;
+> > +
+> > +			io_schedule();
+> > +			continue;
+> > +		}
+> > +		break;
+> > +	}
+> > +
+> > +	finish_wait(q, wait);
+> > +
+> > +	if (thrashing) {
+> > +		if (delayacct)
+> > +			delayacct_thrashing_end();
+> > +		psi_memstall_leave(&pflags);
+> > +	}
+> > +}
+> > +#endif
+> > +
+> 
+> I'm fairly new to the glory details of core migration entry and page bit
+> waiting code, but it makes sense to me and removing the temporary extra
+> references is very nice! Feel free to add my
+> 
+> Acked-by: David Hildenbrand <david@redhat.com>
 
-I have used the sunxi tree from next-20211118 for today.
+Thanks for taking a look, really appreciate it!
 
---=20
-Cheers,
-Stephen Rothwell
+ - Alistair
 
---Sig_/V/kQEjOnOWoeMFQP_pY7bHa
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGcJ1UACgkQAVBC80lX
-0GzEVwf/Us+FSe2QOqvy73v4WxNSs9fr1XKPIhuXm1jEwiRl7JZRjXOuvPgibKEB
-kC5xl8htOfRpyIqQ3RwtlGT/a6tJnb5bMOKpVnMSZZrMkkL+YQ68mxjUSsYBV96B
-ZB++qoBlAWKdRuVYbYx9be47j9q1zjBFn5AJiNsaWD362FCU60Bmxw8MiE1rqXtw
-ybZWCz5J+FpqHkrErdYMS4qC+5VVrs1oqW+SjROF6SEuQQweZvUNqFts4xQm8+1c
-TJ41CNXgrhAmC5Mju1oRCAQ6vIBWIZZAlPt/1RaqD47gDexQX8h5UpMEPPx0o8LY
-eP5Ha9/L0dm44+TmCP4GtzmwubA3rQ==
-=3lHg
------END PGP SIGNATURE-----
-
---Sig_/V/kQEjOnOWoeMFQP_pY7bHa--
