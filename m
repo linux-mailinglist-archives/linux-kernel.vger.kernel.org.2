@@ -2,81 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19338459431
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 18:45:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F68459435
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 18:46:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240363AbhKVRsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 12:48:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240514AbhKVRs3 (ORCPT
+        id S240185AbhKVRuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 12:50:00 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:41414 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231438AbhKVRt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 12:48:29 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 187AAC06173E
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 09:45:22 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id v1so46846038edx.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 09:45:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=dcw+Rz/hUeKmQgOK5oiXMwiGgX0oy7PQUINQwMOxCY8=;
-        b=BlgvDQH69bLeIDNLp3CJ9+gkLC1KFeaCn8kRENAkbp8fLA5GIZsDI2piwmFZGkXoux
-         02M6TVZHkh4JbQGtButkeOdM5SAtxVohViSYF7MFJVwqYJu8swpenyLDhuRGgAwXb7mC
-         0FSHM7TuQtpKLajFiK6YEXq8GIEybOQziIHDO/lIVpvFhKRuILd6J6mw48TVKB6Ysupw
-         QloDGBAEDtwA52Ya7nI4ONqhxivaH4sVDU8ysTaP4YUyyhpUViwtFP4AR7faWj4uZJlW
-         OzZNoyigCH01/Y1aB5safJSC4nFvAfNyYycTL2TCb3KQIGjF7w1+Q93EaHKN5wDJTKS9
-         PjIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=dcw+Rz/hUeKmQgOK5oiXMwiGgX0oy7PQUINQwMOxCY8=;
-        b=A/E8H1BC5xr54tXItbeos4ETirTUqAzhPoot2zl3QihCkaGhjdGMBGI6+l1yf7qALe
-         Cv8DXNL6z3VjP4AhYA3KKVHAXYQxdgnW6ZwzuuIPciqzvo12K7D05sfaaKNvKzGGnPLG
-         oftyFouSUqFewKnVIc4K7TISgpifC9aBTNLOSsB49UODT3B01idppceiLJWjF80Yu8co
-         PeGOlYjes7JX+PcpX0i/JWrFJTM1Zl1vnQ9Gt0krRsZRoMatrK+rAM8c1J2OWBOmU4f4
-         a8h3Z0FpUsrKltmY/YeyVHJr/W51TzOGsxA/9wPs8kLVoyqoj+jWo6b7lV8Sw92Qk6On
-         Il4g==
-X-Gm-Message-State: AOAM533d+nActckOHohd9ii8uF0kYk5dPmC3q3/Y4qW7OA7uoYd9b1QL
-        MSzMxd9Xxi8KCM+Qm8Z5uQDTRqh6B9NbnQRbRDM=
-X-Google-Smtp-Source: ABdhPJwQEGwr2CeQkVn/dgb5EoJ8AD/RCcgLChenbMrxtz51gmW2fThdxO1a+YwU0SlCzSqEH/ZxI6vNWDKnu2M2CLQ=
-X-Received: by 2002:a17:906:a041:: with SMTP id bg1mr41928822ejb.470.1637603120443;
- Mon, 22 Nov 2021 09:45:20 -0800 (PST)
+        Mon, 22 Nov 2021 12:49:56 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 63D89218D9;
+        Mon, 22 Nov 2021 17:46:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637603208; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IVyCpk3Enlbt6FlcDd28jnmXorqsQH3XWfqrWEWV2RQ=;
+        b=pv3Kg2WGahcnYOPDpoAePsmS/PpntbddIc9ju0hKOg9AtndhWdb+TGNSicv8VAaF0R4YnM
+        4RLlVCvUgsN1NQhFTqmK8oJp7NqtJvRU5c3ExiLc/IumE99XCpZlOf+gucq4ZqpS3nBg/X
+        aDiCBmwFS4gbasy/nX0rlD1ZbAvp3Q4=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 2432DA3B85;
+        Mon, 22 Nov 2021 17:46:48 +0000 (UTC)
+Date:   Mon, 22 Nov 2021 18:46:44 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     David Laight <David.Laight@aculab.com>,
+        'Peter Zijlstra' <peterz@infradead.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Bill Wendling <morbo@google.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "dvyukov@google.com" <dvyukov@google.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "mbenes@suse.cz" <mbenes@suse.cz>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH 20/22] x86,word-at-a-time: Remove .fixup usage
+Message-ID: <YZvXhAYjHrnc3/rv@alley>
+References: <20211108164711.mr2cqdcvedin2lvx@treble>
+ <YYlshkTmf5zdvf1Q@hirez.programming.kicks-ass.net>
+ <CAKwvOdkFZ4PSN0GGmKMmoCrcp7_VVNjau_b0sNRm3MuqVi8yow@mail.gmail.com>
+ <YYov8SVHk/ZpFsUn@hirez.programming.kicks-ass.net>
+ <CAKwvOdn8yrRopXyfd299=SwZS9TAPfPj4apYgdCnzPb20knhbg@mail.gmail.com>
+ <20211109210736.GV174703@worktop.programming.kicks-ass.net>
+ <f6dbe42651e84278b44e44ed7d0ed74f@AcuMS.aculab.com>
+ <YYuogZ+2Dnjyj1ge@hirez.programming.kicks-ass.net>
+ <2734a37ebed2432291345aaa8d9fd47e@AcuMS.aculab.com>
+ <20211112015003.pefl656m3zmir6ov@treble>
 MIME-Version: 1.0
-Received: by 2002:a17:906:4fd1:0:0:0:0 with HTTP; Mon, 22 Nov 2021 09:45:19
- -0800 (PST)
-Reply-To: lisshuuu1@gmail.com
-From:   MS LISA HUGH <safi.kabore360@gmail.com>
-Date:   Mon, 22 Nov 2021 18:45:19 +0100
-Message-ID: <CAAoJS395zL7n+fTwqHogLq44oohT16dK78e9y2OVx6kCP-eZ3Q@mail.gmail.com>
-Subject: HOPE YOU UNDERSTAND MY EMAIL?( Ms Lisa)
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211112015003.pefl656m3zmir6ov@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Thu 2021-11-11 17:50:03, Josh Poimboeuf wrote:
+> On Wed, Nov 10, 2021 at 12:20:47PM +0000, David Laight wrote:
+> > > > Wouldn't moving part of a function to .text.cold (or .text.unlikely)
+> > > > generate the same problems with the stack backtrace code as the
+> > > > .text.fixup section you are removing had??
+> > > 
+> > > GCC can already split a function into func and func.cold today (or
+> > > worse: func, func.isra.N, func.cold, func.isra.N.cold etc..).
+> > > 
+> > > I'm assuming reliable unwind and livepatch know how to deal with this.
+> > 
+> > They'll have 'proper' function labels at the top - so backtrace
+> > stands a chance.
+> > Indeed you (probably) want it to output "func.irsa.n.cold" rather
+> > than just "func" to help show which copy it is in.  > 
+> > I guess that livepatch will need separate patches for each
+> > version of the function - which might be 'interesting' if
+> > all the copies actually need patching at the same time.
+> > You'd certainly want a warning if there seemed to be multiple
+> > copies of the function.
+> 
+> Hm, I think there is actually a livepatch problem here.
+> 
+> If the .cold (aka "child") function actually had a fentry hook then we'd
+> be fine.  Then we could just patch both "parent" and "child" functions
+> at the same time.  We already have the ability to patch multiple
+> functions having dependent interface changes.
+> 
+> But there's no fentry hook in the child, so we can only patch the
+> parent.
+> 
+> If the child schedules out, and then the parent gets patched, things can
+> go off-script if the child later jumps back to the unpatched version of
+> the parent, and then for example the old parent tries to call another
+> patched function with a since-changed ABI.
 
-I am Ms Lisa Hugh, work in the department of Audit and accounting
-manager here in the Bank.
+This thread seems to be motivation for the patchset
+https://lore.kernel.org/all/20211119090327.12811-1-mbenes@suse.cz/
+I am trying to understand the problem here, first. And I am
+a bit lost.
 
-Please i need your assistance for the transferring of this fund to
-your bank account for both  of us benefit for life time investment,
+How exactly is child called in the above scenario, please?
+How could parent get livepatched when child is sleeping?
 
-I have every inquiry details to make the bank believe you and release
-the fund in within 5
+I imagine it the following way:
 
-banking working days with your full co-operation with me for success.
+    parent_func()
+       fentry
 
-Below information is what i need from you so will can be reaching each other
+       /* some parent code */
+       jmp child
+	   /* child code */
+	   jmp back_to_parent
+       /* more parent code */
+       ret
 
-1)Private telephone number for communication............
-2)Age.............
-3)Country..........
-4)Occupation........
+In the above example, parent_func() would be on stack and could not
+get livepatched even when the process is sleeping in the child code.
 
-Thanks.
+The livepatching is done via ftrace. Only code with fentry could be
+livepatched. And code called via fentry must be visible on stack.
 
-Ms Lisa Hugh,
+
+Anyway, this looks to me like yet another compiler optimization where
+we need to livepatch the callers. The compiler might produce completely
+different optimizations for the new code. I do not see a reasonable
+way how to create compatible func, func.isra.N, func.cold,
+func.isra.N.cold variants.
+
+Best Regards,
+Petr
