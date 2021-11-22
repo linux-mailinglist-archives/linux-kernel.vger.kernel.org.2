@@ -2,66 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6113458948
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 07:21:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3650345894A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 07:25:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232395AbhKVGY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 01:24:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229527AbhKVGYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 01:24:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AD5560E08;
-        Mon, 22 Nov 2021 06:21:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637562109;
-        bh=fzsRN4izc+0jRBS7aC+AnWDJdXqUSKg6OSnIdhhFAxc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F1neIeXxphTLVqAMO4AQgvcHh8s03h+MeFaPz/RpjL2BobhAbGpta6xGAkP7grzRl
-         MEmsMHSHhsCd0I4/E6EYJvVYv4QZIdLaV1mtJlafgIz/xhloLSeBq1PWbyLTgOt2Er
-         LdfnBC3V6VXeePIONb7cClfQkrFCIAyws4oWKNiA=
-Date:   Mon, 22 Nov 2021 07:21:38 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     lee.jones@linaro.org, hdegoede@redhat.com, bhelgaas@google.com,
-        andriy.shevchenko@linux.intel.com, srinivas.pandruvada@intel.com,
-        mgross@linux.intel.com, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 4/4] platform/x86: Add Intel Software Defined Silicon
- driver
-Message-ID: <YZs28g87GE3XgAKk@kroah.com>
-References: <20211120231705.189969-1-david.e.box@linux.intel.com>
- <20211120231705.189969-5-david.e.box@linux.intel.com>
- <YZo8HUxx8LNgOMeK@kroah.com>
- <4d8ba355de09a4a806b6075305ca8d7156dc70ef.camel@linux.intel.com>
+        id S232524AbhKVG2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 01:28:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42270 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229527AbhKVG2s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 01:28:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637562342;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=we/obok4HmO9SGZqYAFpede1GV0eMYxSu1MvSfp00RM=;
+        b=jP5rVvSnfZmgp1egSxufrMGamijt7E78SSdH/laxPpHxb4rJcXBoQvx0OLY1G5ZXIVlNhe
+        WFDzKEsWrVpeRfISUsPpM3EPd6vVdYkZ5H0eddGfr8fP+gLlg6gZaNFELkCwS8bRKUADFR
+        5/xbTBBo7NDJ44y6V0x1n7h3GMrvBik=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-580-Ypn_mfe5OA-hco1p4hqfnw-1; Mon, 22 Nov 2021 01:25:40 -0500
+X-MC-Unique: Ypn_mfe5OA-hco1p4hqfnw-1
+Received: by mail-lf1-f71.google.com with SMTP id s18-20020ac25c52000000b004016bab6a12so11362937lfp.21
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 22:25:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=we/obok4HmO9SGZqYAFpede1GV0eMYxSu1MvSfp00RM=;
+        b=UVDbaaupsTXN/r66x2yeOW8ZfcPdFEAK6yEbFqmT2wDJ5jttxUhy1Eml8T8M2z3k0Q
+         bQOjB0QbrHu+ePdES28jrPi74wntIYjgvHv/8WJYNlyVmBJ3HtF/JL7joTb/Q4fpn2Df
+         DkBcWMLmZ3uLuQdEZQ5Yc1mfTdrlCqBrGzC2DSzkSPlqS3ba5Lch0leI4tNEVETRa5LZ
+         8QT98zdNl64A6dSUg5EcJA/TNnNt/TC4FwqS4CpQ19BOu4A/FaK08zxmaZ4QM+mEpXvw
+         G6v2g2S2/xR+DGBTxTl5RtMwqY3sIQLwq2AqlqmOST3H/s0ncFsASfTonrJq3BM0cFdc
+         mGQQ==
+X-Gm-Message-State: AOAM531D7QwV8NMWHN1IbV90xdqe37IXgSuI1HqdlXNbbWHZrfl8N2Kw
+        hbQgJrlzsPajyB9waoyJ8LJyX+6D+O36IUbC09qJmAKq6CZfBbBiIvFBWd4m1NIKrkHMdJozvYQ
+        2JXnVCoBOx2BMWzsgrnO4EI4eR7bQKJCyZjjEeBjY
+X-Received: by 2002:a05:6512:685:: with SMTP id t5mr55997115lfe.84.1637562339163;
+        Sun, 21 Nov 2021 22:25:39 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyvjpNkAqopUpG7y0WdBxsfbN0K27yrPbxpDn/zySxBCcwoxJhlPE2nEiPKcfgRGp9c5O9SVHRQl77cLFFhm/8=
+X-Received: by 2002:a05:6512:685:: with SMTP id t5mr55997098lfe.84.1637562338934;
+ Sun, 21 Nov 2021 22:25:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4d8ba355de09a4a806b6075305ca8d7156dc70ef.camel@linux.intel.com>
+References: <20211027022107.14357-1-jasowang@redhat.com> <20211027022107.14357-2-jasowang@redhat.com>
+ <20211119160951.5f2294c8.pasic@linux.ibm.com> <CACGkMEtja2TPC=ujgMrpaPmdsy+zHowbBTvPj8k7nm_+zB8vig@mail.gmail.com>
+ <20211122063518.37929c01.pasic@linux.ibm.com> <20211122064922.51b3678e.pasic@linux.ibm.com>
+In-Reply-To: <20211122064922.51b3678e.pasic@linux.ibm.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Mon, 22 Nov 2021 14:25:26 +0800
+Message-ID: <CACGkMEu+9FvMsghyi55Ee5BxetP-YK9wh2oaT8OgLiY5+tV0QQ@mail.gmail.com>
+Subject: Re: [PATCH V5 1/4] virtio_ring: validate used buffer length
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     mst <mst@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "kaplan, david" <david.kaplan@amd.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 21, 2021 at 09:18:25AM -0800, David E. Box wrote:
-> > These sysfs attributes are crazy.  Who has audited them to be correct
-> > and work properly? It feels like there are just buffer overflows
-> > waiting to be exploited in them due to the reading/writing of raw memory
-> > buffers all over the place.
-> 
-> Agree with the concern. I can submit the tests that were used. Is selftests the
-> best place?
+On Mon, Nov 22, 2021 at 1:49 PM Halil Pasic <pasic@linux.ibm.com> wrote:
+>
+> On Mon, 22 Nov 2021 06:35:18 +0100
+> Halil Pasic <pasic@linux.ibm.com> wrote:
+>
+> > > I think it should be a common issue, looking at
+> > > vhost_vsock_handle_tx_kick(), it did:
+> > >
+> > > len += sizeof(pkt->hdr);
+> > > vhost_add_used(vq, head, len);
+> > >
+> > > which looks like a violation of the spec since it's TX.
+> >
+> > I'm not sure the lines above look like a violation of the spec. If you
+> > examine vhost_vsock_alloc_pkt() I believe that you will agree that:
+> > len == pkt->len == pkt->hdr.len
+> > which makes sense since according to the spec both tx and rx messages
+> > are hdr+payload. And I believe hdr.len is the size of the payload,
+> > although that does not seem to be properly documented by the spec.
+
+Sorry for being unclear, what I meant is that we probably should use
+zero here. TX doesn't use in buffer actually.
+
+According to the spec, 0 should be the used length:
+
+"and len the total of bytes written into the buffer."
+
+> >
+> > On the other hand tx messages are stated to be device read-only (in the
+> > spec) so if the device writes stuff, that is certainly wrong.
+> >
 
 Yes.
 
-> > Where is the userspace tool that uses these files?
-> 
-> The tool will be published in the same github repo as the spec once the driver
-> is ready.
+> > If that is what happens.
+> >
+> > Looking at virtqueue_get_buf_ctx_split() I'm not sure that is what
+> > happens. My hypothesis is that we just a last descriptor is an 'in'
+> > type descriptor (i.e. a device writable one). For tx that assumption
+> > would be wrong.
+> >
+> > I will have another look at this today and send a fix patch if my
+> > suspicion is confirmed.
+>
+> If my suspicion is right something like:
+>
+> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> index 00f64f2f8b72..efb57898920b 100644
+> --- a/drivers/virtio/virtio_ring.c
+> +++ b/drivers/virtio/virtio_ring.c
+> @@ -764,6 +764,7 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
+>         struct vring_virtqueue *vq = to_vvq(_vq);
+>         void *ret;
+>         unsigned int i;
+> +       bool has_in;
+>         u16 last_used;
+>
+>         START_USE(vq);
+> @@ -787,6 +788,9 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
+>                         vq->split.vring.used->ring[last_used].id);
+>         *len = virtio32_to_cpu(_vq->vdev,
+>                         vq->split.vring.used->ring[last_used].len);
+> +       has_in = virtio16_to_cpu(_vq->vdev,
+> +                       vq->split.vring.used->ring[last_used].flags)
+> +                               & VRING_DESC_F_WRITE;
 
-Isn't the driver "ready" if you are asking for it to be accepted
-here?  Why isn't it published already so we can see if it actually is
-tested?
+Did you mean vring.desc actually? If yes, it's better not depend on
+the descriptor ring which can be modified by the device. We've stored
+the flags in desc_extra[].
 
-thanks,
+>
+>         if (unlikely(i >= vq->split.vring.num)) {
+>                 BAD_RING(vq, "id %u out of range\n", i);
+> @@ -796,7 +800,7 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
+>                 BAD_RING(vq, "id %u is not a head!\n", i);
+>                 return NULL;
+>         }
+> -       if (vq->buflen && unlikely(*len > vq->buflen[i])) {
+> +       if (has_in && q->buflen && unlikely(*len > vq->buflen[i])) {
+>                 BAD_RING(vq, "used len %d is larger than in buflen %u\n",
+>                         *len, vq->buflen[i]);
+>                 return NULL;
+>
+> would fix the problem for split. I will try that out and let you know
+> later.
 
-greg k-h
+I'm not sure I get this, in virtqueue_add_split, the buflen[i] only
+contains the in buffer length.
+
+I think the fixes are:
+
+1) fixing the vhost vsock
+2) use suppress_used_validation=true to let vsock driver to validate
+the in buffer length
+3) probably a new feature so the driver can only enable the validation
+when the feature is enabled.
+
+Thanks
+
+>
+> Regards,
+> Halil
+>
+
