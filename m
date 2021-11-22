@@ -2,118 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A336F459852
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 00:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D324D459857
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 00:20:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbhKVXTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 18:19:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229947AbhKVXTB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 18:19:01 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45882C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 15:15:54 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id u11so15434852plf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 15:15:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nVnyNoswxokQnIp8Sl4QeAE/5l97hmGoQDaJg8lEee0=;
-        b=bXgw2P3rx9AgGhvco+g9dtKPOB7N1sgFLBRZ7W3edCUECJx+PDePPq8cuzlWMJ6rZI
-         swMuf5G8aL47MHZhOZYst8mSuOEDnvkY2zo6+Szi7BYfsbf8vElNhh/+xEH6W5xpZIiA
-         h1/ZYEQut9aaEOJqjcVMof4F74Dalz4kxIkXJhDAdujK9SFaaFPo3JAzfGfgdtSAifA2
-         ms1wlRPffyWoYe7E0H3aqanqnVDrIHkqNkt1Nom1uvvbmUoczfNiWmUJu/7hvBw2pifs
-         40y2/epKg7LuppIdCZN1Nl+n3XHJufLKBC7rYLk4EKvupbyr2SlAA2cC6pl7lf52H+ql
-         Dbcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nVnyNoswxokQnIp8Sl4QeAE/5l97hmGoQDaJg8lEee0=;
-        b=H/t9/qQ5gdhkx7WQ4S/RKPEmmtmcZPB8BaNZIur98qfwU3zdE6jv7pyUd9Or9Y+8Yg
-         FQvnUKgoHOE5iPmwzsBBydYExdKyCZ8WdFB9X4QSbfOx2kEI3maPeRKcAXws4pfsanSx
-         B0Im06ERo30MVlNgcdw5gRBArK0A89nR5NnHCCEZE4ecXLaJC3rG1WY1ZzHP7JYq38nu
-         VLESHmUYwy5vrYuWP0QYJFJh+MKCxRq731JipYMjN4nk3+cmsb87+jGXJUcD+Amo3tIu
-         rwP1kofjM58VywCwNzbBdTgbXRY/P8Y7OHFfzo8zhEzM8mjuS8pEHIPuZcS/oQYkJ6IX
-         1jMQ==
-X-Gm-Message-State: AOAM532lflkwmAO4k3DFi67Ta33USAtXp4r2F0XUV4kqoPtbDKYNvxFv
-        3ctxdGo9ZyAumqM5/uGcHqm2+g==
-X-Google-Smtp-Source: ABdhPJwxp63OKH7j6ECzy3xy8yex+lgpwydbsFbhhnhddRB4GZaNKCxYwhknWNDlf5gNtR5pM1NWyw==
-X-Received: by 2002:a17:90b:4a05:: with SMTP id kk5mr732949pjb.142.1637622953702;
-        Mon, 22 Nov 2021 15:15:53 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id w8sm3892503pgf.60.2021.11.22.15.15.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 15:15:53 -0800 (PST)
-Date:   Mon, 22 Nov 2021 23:15:49 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Hou Wenlong <houwenlong93@linux.alibaba.com>
-Subject: Re: [PATCH 21/28] KVM: x86/mmu: Add TDP MMU helper to zap a root
-Message-ID: <YZwkpcmAi07fOgbz@google.com>
-References: <20211120045046.3940942-1-seanjc@google.com>
- <20211120045046.3940942-22-seanjc@google.com>
- <CANgfPd83-1yT=p1bMTRiOqCBq_m5AZuuhzmmyKKau9ODML39oA@mail.gmail.com>
+        id S229955AbhKVXXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 18:23:19 -0500
+Received: from mga05.intel.com ([192.55.52.43]:55425 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229619AbhKVXXS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 18:23:18 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="321135918"
+X-IronPort-AV: E=Sophos;i="5.87,255,1631602800"; 
+   d="scan'208";a="321135918"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 15:20:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,255,1631602800"; 
+   d="scan'208";a="739558240"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga005.fm.intel.com with ESMTP; 22 Nov 2021 15:20:10 -0800
+Received: from xwu17-mobl1.amr.corp.intel.com (xwu17-mobl1.amr.corp.intel.com [10.212.223.69])
+        by linux.intel.com (Postfix) with ESMTP id 4922C580418;
+        Mon, 22 Nov 2021 15:20:10 -0800 (PST)
+Message-ID: <895af131b2c43cf6b7c2b4c6c339e6babb85e6e1.camel@linux.intel.com>
+Subject: Re: [PATCH 4/4] platform/x86: Add Intel Software Defined Silicon
+ driver
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     lee.jones@linaro.org, hdegoede@redhat.com, bhelgaas@google.com,
+        gregkh@linuxfoundation.org, andriy.shevchenko@linux.intel.com,
+        srinivas.pandruvada@intel.com, mgross@linux.intel.com,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Date:   Mon, 22 Nov 2021 15:20:10 -0800
+In-Reply-To: <20211122184418.GA2159461@bhelgaas>
+References: <20211122184418.GA2159461@bhelgaas>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANgfPd83-1yT=p1bMTRiOqCBq_m5AZuuhzmmyKKau9ODML39oA@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021, Ben Gardon wrote:
-> On Fri, Nov 19, 2021 at 8:51 PM Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > Add a small wrapper to handle zapping a specific root.  For now, it's
-> > little more than syntactic sugar, but in the future it will become a
-> > unique flow with rules specific to zapping an unreachable root.
-> >
-> > No functional change intended.
-> >
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+Hi Bjorn,
+
+Thanks for reviewing.
+
+On Mon, 2021-11-22 at 12:44 -0600, Bjorn Helgaas wrote:
+> On Sat, Nov 20, 2021 at 03:17:05PM -0800, David E. Box wrote:
+> > Intel Software Defined Silicon (SDSi) is a post manufacturing mechanism for
+> > activating additional silicon features. Features are enabled through a
+> > license activation process.  The SDSi driver provides a per socket, sysfs
+> > attribute interface for applications to perform 3 main provisioning
+> > functions:
+> > 
+> > 1. Provision an Authentication Key Certificate (AKC), a key written to
+> >    internal NVRAM that is used to authenticate a capability specific
+> >    activation payload.
+> > 
+> > 2. Provision a Capability Activation Payload (CAP), a token authenticated
+> >    using the AKC and applied to the CPU configuration to activate a new
+> >    feature.
+> > 
+> > 3. Read the SDSi State Certificate, containing the CPU configuration
+> >    state.
+> > 
+> > The operations perform function specific mailbox commands that forward the
+> > requests to SDSi hardware to perform authentication of the payloads and
+> > enable the silicon configuration (to be made available after power
+> > cycling).
+> > 
+> > The SDSi device itself is enumerated as an auxiliary device from the
+> > intel_vsec driver and as such has a build dependency on CONFIG_INTEL_VSEC.
+> > 
+> > Link: https://github.com/intel/intel-sdsi
+> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> > Reviewed-by: Mark Gross <markgross@kernel.org>
 > > ---
-> >  arch/x86/kvm/mmu/tdp_mmu.c | 11 +++++++++--
-> >  1 file changed, 9 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> > index 9449cb5baf0b..31fb622249e5 100644
-> > --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> > +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> > @@ -79,11 +79,18 @@ static void tdp_mmu_free_sp_rcu_callback(struct rcu_head *head)
-> >         tdp_mmu_free_sp(sp);
-> >  }
-> >
-> > +static bool tdp_mmu_zap_root(struct kvm *kvm, struct kvm_mmu_page *root,
-> > +                            bool shared)
-> > +{
-> > +       return zap_gfn_range(kvm, root, 0, -1ull, true, false, shared);
+> >  .../ABI/testing/sysfs-driver-intel_sdsi       |  75 +++
+> >  MAINTAINERS                                   |   5 +
+> >  drivers/platform/x86/intel/Kconfig            |  12 +
+> >  drivers/platform/x86/intel/Makefile           |   2 +
+> >  drivers/platform/x86/intel/sdsi.c             | 571 ++++++++++++++++++
+> >  drivers/platform/x86/intel/vsec.c             |  12 +-
+> >  6 files changed, 676 insertions(+), 1 deletion(-)
+> >  create mode 100644 Documentation/ABI/testing/sysfs-driver-intel_sdsi
+> >  create mode 100644 drivers/platform/x86/intel/sdsi.c
+> > 
+> > diff --git a/Documentation/ABI/testing/sysfs-driver-intel_sdsi
+> > b/Documentation/ABI/testing/sysfs-driver-intel_sdsi
+> > new file mode 100644
+> > index 000000000000..32a017ed3dd3
+> > --- /dev/null
+> > +++ b/Documentation/ABI/testing/sysfs-driver-intel_sdsi
+> > @@ -0,0 +1,75 @@
+> > +What:		/sys/bus/auxiliary/devices/intel_extended_cap.sdsi.X
+> > +Date:		Nov 2021
+> > +KernelVersion:	5.17
+> > +Contact:	"David E. Box" <david.e.box@linux.intel.com>
+> > +Description:
+> > +		This folder contains interface files for accessing Intel
+> > +		Software Defined Silicon (SDSi) features on a CPU. X
+> > +		represent the socket instance (though not the socket id).
 > 
-> Total aside:
-> Remembering the order of these three boolean parameters through all
-> these functions drives me nuts.
-> It'd be really nice to put them into a neat, reusable struct that tracks:
-> MMU lock mode (read / write / none)
-> If yielding is okay
-> If the TLBs are dirty and need to be flushed
+> s/represent/represents/
+> s/socket id/socket ID/
+
+Ack
+
 > 
-> I don't know when I'll have time to do that refactor, but it would
-> make this code so much more sensible.
+> As a user, how do I learn the socket instance?  Look at dmesg?  Look
+> at some other sysfs file?
 
-Heh, I did exactly that, then threw away the code when I realized that I could
-break up zap_gfn_range() into three separate helpers and avoid control knob hell
-(spoiler alert for later patches in this series).
+Instances are just the list of SDSi devices in this folder. Each device
+represents a socket. They are enumerated in the order they are discovered. If
+you meant socket ID, that is read from the registers file in this folder per the
+spec. Ideally the two would be the same, but the socket ID is not known until
+probe.
 
-There are still two booleans (to what ends up being tdp_mmu_zap_leafs()), but none
-none of the call sites pass true/false for _both_ params, so the call sites end up
-being quite readable.  At that point, using a struct ended up being a net negative,
-e.g. kvm_tdp_mmu_unmap_gfn_range() had to marshall from one struct to another.
+> 
+> > +		Some files communicate with SDSi hardware through a mailbox.
+> > +		Should the operation fail, one of the following error codes
+> > +		may be returned:
+> > +
+> > +		Error Code	Cause
+> > +	        ----------	-----
+> > +	        EIO		General mailbox failure. Log may indicate cause.
+> > +	        EBUSY		Mailbox is owned by another agent.
+> > +	        EPERM		SDSI capability is not enabled in hardware.
+> > +	        EPROTO		Failure in mailbox protocol detected by
+> > driver.
+> > +				See log for details.
+> > +	        EOVERFLOW	For provision commands, the size of the data
+> > +				exceeds what may be written.
+> > +	        ESPIPE		Seeking is not allowed.
+> > +	        ETIMEDOUT	Failure to complete mailbox transaction in time.
+> > +
+> > +What:		/sys/bus/auxiliary/devices/intel_extended_cap.sdsi.X/gui
+> > d
+> > +Date:		Nov 2021
+> > +KernelVersion:	5.17
+> > +Contact:	"David E. Box" <david.e.box@linux.intel.com>
+> > +Description:
+> > +		(RO) The GUID for the registers file. The GUID identifies
+> > +		the register layout of the registers file in this folder.
+> > +		Information about the register layouts for a particular GUID
+> > +		is available at http://github.com/intel/intel-sdsi
+> 
+> s/register layout of the registers file/layout of the registers file/
+
+Ack
+
+> 
+> > +What:		/sys/bus/auxiliary/devices/intel_extended_cap.sdsi.X/reg
+> > isters
+> > +Date:		Nov 2021
+> > +KernelVersion:	5.17
+> > +Contact:	"David E. Box" <david.e.box@linux.intel.com>
+> > +Description:
+> > +		(RO) Contains information needed by applications to provision
+> > +		a CPU and monitor status information. The layout of this file
+> > +		is determined by the GUID in this folder. Information about the
+> > +		layout for a particular GUID is available at
+> > +		http://github.com/intel/intel-sdsi
+> > +
+> > +What:		/sys/bus/auxiliary/devices/intel_extended_cap.sdsi.X/pro
+> > vision_akc
+> > +Date:		Nov 2021
+> > +KernelVersion:	5.17
+> > +Contact:	"David E. Box" <david.e.box@linux.intel.com>
+> > +Description:
+> > +		(WO) Used to write an Authentication Key Certificate (AKC) to
+> > +		the SDSi NVRAM for the CPU. The AKC is used to authentication a
+> > +		Capability Activation Payload. Mailbox command.
+> 
+> s/used to authentication/used to authenticate/
+
+Ack
+
+> 
+> > +What:		/sys/bus/auxiliary/devices/intel_extended_cap.sdsi.X/pro
+> > vision_cap
+> > +Date:		Nov 2021
+> > +KernelVersion:	5.17
+> > +Contact:	"David E. Box" <david.e.box@linux.intel.com>
+> > +Description:
+> > +		(WO) Used to write a Capability Activation Payload (CAP) to the
+> > +		SDSi NVRAM for the CPU. CAP files are used to activate a given
+> > +		CPU feature. The CAP file is validated by SDSi hardware using a
+> > +		previously provision AKC file. Upon successful authentication,
+> > the
+> > +		CPU configuration is updated. A cold reboot is required to fully
+> > +		activate the feature. Mailbox command.
+> 
+> "CAP file" sounds like it might be redundant.  It *seems* like the
+> *payload* is what will be validated by SDSi and activate the feature.
+> Not sure "file" is meaningful if this is really talking about the
+> content of the CAP.
+> 
+> s/previously provision/previously provisioned/
+
+Ack
+
+David
+
+> 
+> > +What:		/sys/bus/auxiliary/devices/intel_extended_cap.sdsi.X/rea
+> > d_state_cert
+> > +Date:		Nov 2021
+> > +KernelVersion:	5.17
+> > +Contact:	"David E. Box" <david.e.box@linux.intel.com>
+> > +Description:
+> > +		(RO) Used to read back the current State Certificate for the CPU
+> > +		from SDSi hardware. The State Certificate contains information
+> > +		about the current licenses on the CPU. Mailbox command.
+
