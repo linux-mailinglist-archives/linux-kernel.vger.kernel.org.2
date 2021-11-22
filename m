@@ -2,100 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF643459544
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 20:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D10C3459546
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 20:04:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237621AbhKVTHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 14:07:12 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:54072 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbhKVTHI (ORCPT
+        id S239261AbhKVTHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 14:07:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237463AbhKVTHO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 14:07:08 -0500
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-        by linux.microsoft.com (Postfix) with ESMTPSA id CE15420B4865;
-        Mon, 22 Nov 2021 11:04:01 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CE15420B4865
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1637607841;
-        bh=YBDmGsj+w3Lu1UUMBhU8o1vq1OWBkE9hg87FRdzFKVM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KbZRDnI+gHqD/SVzsxm3p4KM25rj8N0mGx6tKTTtt++TZLDxMzeiX34BCGxWmWAqS
-         e/WUJvcFIqcS5Vp3NjqjcRrYmDwPwk7b8YBx3L5evviDSxYn96ZGTyZm66efCAImzr
-         tlD10xGPz3beb42YhJitO4ZCZvOfvaYT9hRjJ9dM=
-Date:   Mon, 22 Nov 2021 11:04:00 -0800
-From:   Katherine Perez <kaperez@linux.microsoft.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Felipe Balbi <balbi@kernel.org>
-Subject: Re: [RESEND PATCH 2/2] arm64: dts: sm8350: fix tlmm base address
-Message-ID: <20211122190400.GA11727@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <20211116235045.3748572-1-kaperez@linux.microsoft.com>
- <20211116235045.3748572-3-kaperez@linux.microsoft.com>
- <YZcd/lFm8HgQ8SLs@builder.lan>
+        Mon, 22 Nov 2021 14:07:14 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAAAAC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 11:04:06 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id b67so5827814qkg.6
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 11:04:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=9nYbwee9dwTTMA5Npe3OVsEJCXk4RA71Ql0QtnWfjU0=;
+        b=JtHUo6A8zLkK/EpyOJKz5ZT20MGUUz0mZp1LI9C5ZnspXeCN9IBcawDymrkBCLDcwP
+         7GQgF/V3Xod3sS1OGKANSKUslAY1mCVrIEacf0GEDq61py7vOSeUJcv/95Rqy62HoXpB
+         JEoFlpN+KQ/Vxgw1b1AEGUKgORx+Y9KZJqCYHfyRvC8zMurFmgaCnX64KcWPj4gmIwYU
+         YViqW2vGFAhe9nd3DcS0drL3NVuh0wTI7/E0cHtKS0aanSEPsWHbDdbUacrYPcRy9D8N
+         B55Yu/A4Au7aejvADkDGZ+5w8IuQDGCjGG2iqWoBme66j/m2v3XsTu/MoO/GPE5o/xD5
+         BPuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=9nYbwee9dwTTMA5Npe3OVsEJCXk4RA71Ql0QtnWfjU0=;
+        b=Gstir9ma2ZjCLMp6RylqzPVJC5nnzKb4IFPoR6cZOCLa5C2eA19o0AUU04+1kDPCy5
+         IXW1OJdzWQyHzx2zGLdIOecFWEfJ2dLXfMWsFKmnEHxTaGmDRAS3Zaa0P9FeRdQenfbZ
+         cqvUDpjyGOsIXS/JcpS8XxoctBzZDJjQ6SM0dKYuRD5j4ZjU4oFKCpKQmoRzHrJ4MaHA
+         jJH6PyWo7AJCM5vpmp8G/JiAN4OBeLAMwxMQQ9k4ElBcaQvIqbArrUk3cP70G0nOgXOM
+         4sSCDGYYi3Qjl5UbtfrWFjdifHPZSPtMi7nS8JfJ6wswngXaB4yzB2/rAoSVB+WwPJrE
+         4g0A==
+X-Gm-Message-State: AOAM533jvKx6WId90Nhu+zQ4hpgBjGMXZ618fDclGDcxySR2n8JDCND7
+        wh0ocPx7+jcy52cb7QC/I8nGyA==
+X-Google-Smtp-Source: ABdhPJy8w/1BGtWyFliVVZQGLy3CiRBXUPhP0AMM9nOZznVLVuNxI3M3+zeQqTveob9SqROfgHjdUA==
+X-Received: by 2002:a05:620a:4722:: with SMTP id bs34mr12518875qkb.181.1637607846007;
+        Mon, 22 Nov 2021 11:04:06 -0800 (PST)
+Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
+        by smtp.gmail.com with ESMTPSA id 2sm2829781qkr.126.2021.11.22.11.04.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Nov 2021 11:04:05 -0800 (PST)
+Date:   Mon, 22 Nov 2021 14:04:04 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>, Shuah Khan <shuah@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Roman Gushchin <guro@fb.com>, Theodore Ts'o <tytso@mit.edu>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v4 0/4] Deterministic charging of shared memory
+Message-ID: <YZvppKvUPTIytM/c@cmpxchg.org>
+References: <20211120045011.3074840-1-almasrymina@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YZcd/lFm8HgQ8SLs@builder.lan>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211120045011.3074840-1-almasrymina@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 09:46:06PM -0600, Bjorn Andersson wrote:
-> On Tue 16 Nov 17:50 CST 2021, Katherine Perez wrote:
+On Fri, Nov 19, 2021 at 08:50:06PM -0800, Mina Almasry wrote:
+> Problem:
+> Currently shared memory is charged to the memcg of the allocating
+> process. This makes memory usage of processes accessing shared memory
+> a bit unpredictable since whichever process accesses the memory first
+> will get charged. We have a number of use cases where our userspace
+> would like deterministic charging of shared memory:
 > 
-> > TLMM controller base address is incorrect and will hang on some platforms.
-> > Fix by giving the correct address.
-> > 
-> > Signed-off-by: Katherine Perez <kaperez@linux.microsoft.com>
-> > ---
-> >  arch/arm64/boot/dts/qcom/sm8350.dtsi | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-> > index d134280e2939..624d294612d8 100644
-> > --- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
-> > @@ -960,9 +960,9 @@ spmi_bus: spmi@c440000 {
-> >  			#interrupt-cells = <4>;
-> >  		};
-> >  
-> > -		tlmm: pinctrl@f100000 {
-> > +		tlmm: pinctrl@f000000 {
-> >  			compatible = "qcom,sm8350-tlmm";
-> > -			reg = <0 0x0f100000 0 0x300000>;
-> > +			reg = <0 0x0f000000 0 0x300000>;
+> 1. System services allocating memory for client jobs:
+> We have services (namely a network access service[1]) that provide
+> functionality for clients running on the machine and allocate memory
+> to carry out these services. The memory usage of these services
+> depends on the number of jobs running on the machine and the nature of
+> the requests made to the service, which makes the memory usage of
+> these services hard to predict and thus hard to limit via memory.max.
+> These system services would like a way to allocate memory and instruct
+> the kernel to charge this memory to the client’s memcg.
 > 
-> There's a group of register blocks related to TLMM starting at
-> 0x0f000000 and then there's the register block that is relevant to the
-> OS that starts at 0x0f100000.
+> 2. Shared filesystem between subtasks of a large job
+> Our infrastructure has large meta jobs such as kubernetes which spawn
+> multiple subtasks which share a tmpfs mount. These jobs and its
+> subtasks use that tmpfs mount for various purposes such as data
+> sharing or persistent data between the subtask restarts. In kubernetes
+> terminology, the meta job is similar to pods and subtasks are
+> containers under pods. We want the shared memory to be
+> deterministically charged to the kubernetes's pod and independent to
+> the lifetime of containers under the pod.
 > 
-> Downstream uses the group, while upstream describes only the hardware
-> block that's relevant to the OS. Unfortunately it seems that the shift
-> was missed for the UFS and SDC pins as the driver was upstreamed.
+> 3. Shared libraries and language runtimes shared between independent jobs.
+> We’d like to optimize memory usage on the machine by sharing libraries
+> and language runtimes of many of the processes running on our machines
+> in separate memcgs. This produces a side effect that one job may be
+> unlucky to be the first to access many of the libraries and may get
+> oom killed as all the cached files get charged to it.
 > 
-> So I recently submitted this patch, which I expect would help you:
-> https://lore.kernel.org/all/20211104170835.1993686-1-bjorn.andersson@linaro.org/
+> Design:
+> My rough proposal to solve this problem is to simply add a
+> ‘memcg=/path/to/memcg’ mount option for filesystems:
+> directing all the memory of the file system to be ‘remote charged’ to
+> cgroup provided by that memcg= option.
 > 
-> Please let me know if that's not sufficient, or if I'm missed something
-> in my analysis.
+> Caveats:
 > 
-> Regards,
-> Bjorn
+> 1. One complication to address is the behavior when the target memcg
+> hits its memory.max limit because of remote charging. In this case the
+> oom-killer will be invoked, but the oom-killer may not find anything
+> to kill in the target memcg being charged. Thera are a number of considerations
+> in this case:
 > 
-> >  			interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
-> >  			gpio-controller;
-> >  			#gpio-cells = <2>;
-> > -- 
-> > 2.31.1
-> > 
+> 1. It's not great to kill the allocating process since the allocating process
+>    is not running in the memcg under oom, and killing it will not free memory
+>    in the memcg under oom.
+> 2. Pagefaults may hit the memcg limit, and we need to handle the pagefault
+>    somehow. If not, the process will forever loop the pagefault in the upstream
+>    kernel.
+> 
+> In this case, I propose simply failing the remote charge and returning an ENOSPC
+> to the caller. This will cause will cause the process executing the remote
+> charge to get an ENOSPC in non-pagefault paths, and get a SIGBUS on the pagefault
+> path.  This will be documented behavior of remote charging, and this feature is
+> opt-in. Users can:
+> - Not opt-into the feature if they want.
+> - Opt-into the feature and accept the risk of received ENOSPC or SIGBUS and
+>   abort if they desire.
+> - Gracefully handle any resulting ENOSPC or SIGBUS errors and continue their
+>   operation without executing the remote charge if possible.
+> 
+> 2. Only processes allowed the enter cgroup at mount time can mount a
+> tmpfs with memcg=<cgroup>. This is to prevent intential DoS of random cgroups
+> on the machine. However, once a filesysetem is mounted with memcg=<cgroup>, any
+> process with write access to this mount point will be able to charge memory to
+> <cgroup>. This is largely a non-issue because in configurations where there is
+> untrusted code running on the machine, mount point access needs to be
+> restricted to the intended users only regardless of whether the mount point
+> memory is deterministly charged or not.
 
-Hi Bjorn,
+I'm not a fan of this. It uses filesystem mounts to create shareable
+resource domains outside of the cgroup hierarchy, which has all the
+downsides you listed, and more:
 
-I tested without the change to the TLMM address and made sure your patch was included, but my
-platform is unable to boot without my patch to the TLMM address.
+1. You need a filesystem interface in the first place, and a new
+   ad-hoc channel and permission model to coordinate with the cgroup
+   tree, which isn't great. All filesystems you want to share data on
+   need to be converted.
 
-Best,
-Katherine
+2. It doesn't extend to non-filesystem sources of shared data, such as
+   memfds, ipc shm etc.
+
+3. It requires unintuitive configuration for what should be basic
+   shared accounting semantics. Per default you still get the old
+   'first touch' semantics, but to get sharing you need to reconfigure
+   the filesystems?
+
+4. If a task needs to work with a hierarchy of data sharing domains -
+   system-wide, group of jobs, job - it must interact with a hierarchy
+   of filesystem mounts. This is a pain to setup and may require task
+   awareness. Moving data around, working with different mount points.
+   Also, no shared and private data accounting within the same file.
+
+5. It reintroduces cgroup1 semantics of tasks and resouces, which are
+   entangled, sitting in disjunct domains. OOM killing is one quirk of
+   that, but there are others you haven't touched on. Who is charged
+   for the CPU cycles of reclaim in the out-of-band domain?  Who is
+   charged for the paging IO? How is resource pressure accounted and
+   attributed? Soon you need cpu= and io= as well.
+
+My take on this is that it might work for your rather specific
+usecase, but it doesn't strike me as a general-purpose feature
+suitable for upstream.
+
+
+If we want sharing semantics for memory, I think we need a more
+generic implementation with a cleaner interface.
+
+Here is one idea:
+
+Have you considered reparenting pages that are accessed by multiple
+cgroups to the first common ancestor of those groups?
+
+Essentially, whenever there is a memory access (minor fault, buffered
+IO) to a page that doesn't belong to the accessing task's cgroup, you
+find the common ancestor between that task and the owning cgroup, and
+move the page there.
+
+With a tree like this:
+
+	root - job group - job
+                        `- job
+            `- job group - job
+                        `- job
+
+all pages accessed inside that tree will propagate to the highest
+level at which they are shared - which is the same level where you'd
+also set shared policies, like a job group memory limit or io weight.
+
+E.g. libc pages would (likely) bubble to the root, persistent tmpfs
+pages would bubble to the respective job group, private data would
+stay within each job.
+
+No further user configuration necessary. Although you still *can* use
+mount namespacing etc. to prohibit undesired sharing between cgroups.
+
+The actual user-visible accounting change would be quite small, and
+arguably much more intuitive. Remember that accounting is recursive,
+meaning that a job page today also shows up in the counters of job
+group and root. This would not change. The only thing that IS weird
+today is that when two jobs share a page, it will arbitrarily show up
+in one job's counter but not in the other's. That would change: it
+would no longer show up as either, since it's not private to either;
+it would just be a job group (and up) page.
+
+This would be a generic implementation of resource sharing semantics:
+independent of data source and filesystems, contained inside the
+cgroup interface, and reusing the existing hierarchies of accounting
+and control domains to also represent levels of common property.
+
+Thoughts?
