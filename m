@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 693F5458F5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:27:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F455458F5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:28:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239614AbhKVNat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 08:30:49 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:32978 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239503AbhKVNaW (ORCPT
+        id S239590AbhKVNbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 08:31:02 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:52988 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239508AbhKVNaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Nov 2021 08:30:22 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id CABE21FD58;
-        Mon, 22 Nov 2021 13:27:14 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id B9814218DF;
+        Mon, 22 Nov 2021 13:27:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637587634; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1637587635; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3AZibCGij3y/JvMKMitR5GfZ45pYMOdGxKzJnjs1Mxo=;
-        b=estj9cBq3F8LHzD3euGwdN9Mtztzcj0eB9ExRg+trFmnfs9QJUcdZQtgY3D/uu/Z7NAIKD
-        Rhg9mqwgH6VTSgEaQ1abo5uVRK5PD2OIy1k+dl3Ca0btnyrh8ef1YR7S2S4asRinOWpPxU
-        7g5O+sX1G9puTipo5SrQ2KKKkSqTnKI=
+        bh=L6RK5iXuIU/zE44QHGRfpKM7V7hxZJgGyGT/3ZVRc68=;
+        b=vYDu9oUVpTnm8DwPkuaxn3jeo60lisDuXRmR+FlPGbMde+Bu67eDvJeXduV8+PUruakEl/
+        tDDmPg9ydVr6UJMzsTRgae9ID19r8OjQzNqgDHRYE3Z3ylkNr8ulxSWrg64qp1qp2oAkj8
+        bFzdY7lw1y0LjeWkKU8CDe3tkCtZBcQ=
 Received: from alley.suse.cz (unknown [10.100.224.162])
-        by relay2.suse.de (Postfix) with ESMTP id A0F5AA3B89;
-        Mon, 22 Nov 2021 13:27:14 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 91D3EA3B81;
+        Mon, 22 Nov 2021 13:27:15 +0000 (UTC)
 From:   Petr Mladek <pmladek@suse.com>
 To:     John Ogness <john.ogness@linutronix.de>,
         Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>
 Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>
-Subject: [PATCH 4/5] printk/console: Remove need_default_console variable
-Date:   Mon, 22 Nov 2021 14:26:48 +0100
-Message-Id: <20211122132649.12737-5-pmladek@suse.com>
+Subject: [PATCH 5/5] printk/console: Clean up boot console handling in register_console()
+Date:   Mon, 22 Nov 2021 14:26:49 +0100
+Message-Id: <20211122132649.12737-6-pmladek@suse.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20211122132649.12737-1-pmladek@suse.com>
 References: <20211122132649.12737-1-pmladek@suse.com>
@@ -45,203 +45,226 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable @need_default_console is used to decide whether a newly
-registered console should get enabled by default.
+The variable @bcon has two meanings. It is used several times for iterating
+the list of registered consoles. In the meantime, it holds the information
+whether a boot console is first in @console_drivers list.
 
-The logic is complicated. It can be modified in a register_console()
-call. But it is always re-evaluated in the next call by the following
-condition:
+The information about the 1st console driver used to be important for
+the decision whether to install the new console by default or not.
+It allowed to re-evaluate the variable @need_default_console when
+a real console with tty binding has been unregistered in the meantime.
 
-	if (need_default_console || bcon || !console_drivers)
-		need_default_console = preferred_console < 0;
+The decision about the default console is not longer affected by @bcon
+variable. The current code checks whether the first driver is real
+and has tty binding directly.
 
-In short, the value is updated when either of the condition is valid:
+The information about the first console is still used for two more
+decisions:
 
-  + the value is still, or again, "true"
-  + boot/early console is still the first in @console_driver list
-  + @console_driver list is empty
+  1. It prevents duplicate output on non-boot consoles with
+     CON_CONSDEV flag set.
 
-The value is updated according to @preferred_console. In particular,
-it is set to "false" when a @preferred_console was set by
-__add_preferred_console(). This happens when a non-braille console
-was added via the command line, device tree, or SPCR.
+  2. Early/boot consoles are unregistered when a real console with
+     CON_CONSDEV is registered and @keep_bootcon is not set.
 
-It far from clear what this all means together. Let's look at
-@need_default_console from another angle:
+The behavior in the real life is far from obvious. @bcon is set according
+to the first console @console_drivers list. But the first position in
+the list is special:
 
-1. The value is "true" by default. It means that it is always set
-   according to @preferred_console during the first register_console()
-   call.
+  1. Consoles with CON_CONSDEV flag are put at the beginning of
+     the list. It is either the preferred console or any console
+     with tty binding registered by default.
 
-   By other words, the first register_console() call will register
-   the console by default only when none non-braille console was defined
-   via the command line, device tree, or SPCR.
+  2. Another console might become the first in the list when
+     the first console in the list is unregistered. It might
+     happen either explicitly or automatically when boot
+     consoles are unregistered.
 
-2. The value will always stay "false" when @preferred_console is set.
+There is one more important rule:
 
-   By other words, try_enable_default_console() will never get called
-   when a non-braille console is explicitly required.
+  + Boot consoles can't be registered when any real console
+    is already registered.
 
-4. The value might be set to "false" in try_enable_default_console()
-   when a console with tty binding (driver) gets enabled.
+It is a puzzle. The main complication is the dependency on the first
+position is the list and the complicated rules around it.
 
-   In this case CON_CONSDEV is set as well. It causes that the console
-   will be inserted as first into the list @console_driver. It might
-   be either real or boot/early console.
+Let's try to make it easier:
 
-5. The value will be set _back_ to "true" in the next register_console()
-   call when:
+1. Add variable @bootcon_enabled and set it by iterating all registered
+   consoles. The variable has obvious meaning and more predictable
+   behavior. Any speed optimization and other tricks are not worth it.
 
-      + The console added by the previous register_console() had been
-	a boot/early one.
-
-      + The last console has been unregistered in the meantime and
-	a boot/early console became first in @console_drivers list
-	again. Or the list became empty.
-
-   By other words, the value will stay "false" only when the last
-   registered console was real, had tty binding, and was not removed
-   in the mean time.
-
-The main logic looks clear:
-
-  + Consoles are enabled by default only when no one is preferred
-    via the command line, device tree, or SPCR.
-
-  + By default, any console is enabled until a real console
-    with tty binding gets registered.
-
-The behavior when the real console with tty binding is later removed
-is a bit unclear:
-
-  + By default, any new console is registered again only when there
-    is no console or the first console in the list is a boot one.
-
-The question is why the code is suddenly happy when a real console
-without tty binding is the first in the list. It looks like an overlook
-and bug.
-
-Conclusion:
-
-The state of @preferred_console and the first console in @console_driver
-list should be enough to decide whether we need to enable the given console
-by default.
-
-The rules are simple. New consoles are _not_ enabled by default
-when either of the following conditions is true:
-
-  + @preferred_console is set. It means that a non-braille console
-    is explicitly configured via the command line, device tree, or SPCR.
-
-  + A real console with tty binding is registered. Such a console will
-    have CON_CONSDEV flag set and will always be the first in
-    @console_drivers list.
-
-Note:
-
-The new code does not use @bcon variable. The meaning of the variable
-is far from clear. The direct check of the first console in the list
-makes it more clear that only real console fulfills requirements
-of the default console.
+2. Use a generic name for the variable that is used to iterate
+   the list on registered console drivers.
 
 Behavior change:
 
-As already discussed above. There was one situation where the original
-code worked a strange way. Let's have:
+No, maybe surprisingly, there is _no_ behavior change!
 
-	+ console A: real console without tty binding
-	+ console B: real console with tty binding
+Let's provide the proof by contradiction. Both operations, duplicate
+output prevention and boot consoles removal, are done only when
+the newly added console has CON_CONSDEV flag set. The behavior
+would change when the new @bootcon_enabled has different value
+than the original @bcon.
 
-and do:
+By other words, the behavior would change when the following conditions
+are true:
 
-	register_console(A);	/* 1st step */
-	register_console(B);	/* 2nd step */
-	unregister_console(B);	/* 3rd step */
-	register_console(B);	/* 4th step */
+   + a console with CON_CONSDEV flag is added
+   + a real (non-boot) console is the first in the list
+   + a boot console is later in the list
 
-The original code will not register the console B in the 4th step.
-@need_default_console is set to "false" in 2nd step. The real console
-with tty binding (driver) is then removed in the 3rd step.
-But @need_default_console will stay "false" in the 4th step because
-there is no boot/early console and @registered_consoles list is not
-empty.
+Now, a real console might be first in the list only when:
 
-The new code will register the console B in the 4th step because
-it checks whether the first console has tty binding (->driver)
+   + It was the first registered console. In this case, there can't be
+     any boot console because any later ones were rejected.
 
-This behavior change should acceptable:
+   + It was put at the first position because it had CON_CONSDEV flag
+     set. It was either the preferred console or it was a console with
+     tty binding registered by default. We are interested only in
+     a real consoles here. And real console with tty binding fulfills
+     conditions of the default console.
 
-  1. The scenario requires manual intervention (console removal).
-     The system should boot with the same consoles as before.
+     Now, there is always only one console that is either preferred
+     or fulfills conditions of the default console. It can't be already
+     in the list and being registered at the same time.
 
-  2. Console B is registered again probably because the user wants
-     to use it. The most likely scenario is that the related
-     module is reloaded.
+As a result, the above three conditions could newer be "true" at
+the same time. Therefore the behavior can't change.
 
-  3. It makes the behavior more consistent and predictable.
+Final dilemma:
+
+OK, the new code has the same behavior. But is the change in the right
+direction? What if the handling of @console_drivers is updated in
+the future?
+
+OK, let's look at it from another angle:
+
+1. The ordering of @console_drivers list is important only in
+   console_device() function. The first console driver with tty
+   binding gets associated with /dev/console.
+
+2. CON_CONSDEV flag is shown in /proc/consoles. And it should be set
+   for the driver that is returned by console_device().
+
+3. A boot console is removed and the duplicated output is prevented
+   when the real console with CON_CONSDEV flag is registered.
+
+Now, in the ideal world:
+
++ The driver associated with /dev/console should be either a console
+  preferred via the command line, device tree, or SPCR. Or it should
+  be the first real console with tty binding registered by default.
+
++ The code should match the related boot and real console drivers.
+  It should unregister only the obsolete boot driver. And the duplicated
+  output should be prevented only on the related real driver.
+
+It is clear that it is not guaranteed by the current code. Instead,
+the current code looks like a maze of heuristics that try to achieve
+the above.
+
+It is result of adding several features over last few decades. For example,
+a possibility to register more consoles, unregister consoles, boot
+consoles, consoles without tty binding, device tree, SPCR, braille
+consoles.
+
+Anyway, there is no reason why the decision, about removing boot consoles
+and preventing duplicated output, should depend on the first console
+in the list. The current code does the decisions primary by CON_CONSDEV
+flag that is used for the preferred console. It looks like a
+good compromise. And the change seems to be in the right direction.
 
 Signed-off-by: Petr Mladek <pmladek@suse.com>
 ---
- kernel/printk/printk.c | 29 +++++++++++++++++------------
- 1 file changed, 17 insertions(+), 12 deletions(-)
+ kernel/printk/printk.c | 47 +++++++++++++++++++++---------------------
+ 1 file changed, 24 insertions(+), 23 deletions(-)
 
 diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 3f845daa3a4a..6591da285a83 100644
+index 6591da285a83..155229f0cf0f 100644
 --- a/kernel/printk/printk.c
 +++ b/kernel/printk/printk.c
-@@ -280,7 +280,6 @@ static struct console *exclusive_console;
- static struct console_cmdline console_cmdline[MAX_CMDLINECONSOLES];
+@@ -2943,31 +2943,30 @@ static void try_enable_default_console(struct console *newcon)
+  */
+ void register_console(struct console *newcon)
+ {
+-	struct console *bcon = NULL;
++	struct console *con;
++	bool bootcon_enabled = false;
++	bool realcon_enabled = false;
+ 	int err;
  
- static int preferred_console = -1;
--static bool need_default_console = true;
- int console_set_on_cmdline;
- EXPORT_SYMBOL(console_set_on_cmdline);
+-	for_each_console(bcon) {
+-		if (WARN(bcon == newcon, "console '%s%d' already registered\n",
+-					 bcon->name, bcon->index))
++	for_each_console(con) {
++		if (WARN(con == newcon, "console '%s%d' already registered\n",
++					 con->name, con->index))
+ 			return;
+ 	}
  
-@@ -2919,10 +2918,8 @@ static void try_enable_default_console(struct console *newcon)
+-	/*
+-	 * before we register a new CON_BOOT console, make sure we don't
+-	 * already have a valid console
+-	 */
+-	if (newcon->flags & CON_BOOT) {
+-		for_each_console(bcon) {
+-			if (!(bcon->flags & CON_BOOT)) {
+-				pr_info("Too late to register bootconsole %s%d\n",
+-					newcon->name, newcon->index);
+-				return;
+-			}
+-		}
++	for_each_console(con) {
++		if (con->flags & CON_BOOT)
++			bootcon_enabled = true;
++		else
++			realcon_enabled = true;
+ 	}
  
- 	newcon->flags |= CON_ENABLED;
- 
--	if (newcon->device) {
-+	if (newcon->device)
- 		newcon->flags |= CON_CONSDEV;
--		need_default_console = false;
--	}
- }
- 
- /*
-@@ -2972,16 +2969,24 @@ void register_console(struct console *newcon)
- 	if (console_drivers && console_drivers->flags & CON_BOOT)
- 		bcon = console_drivers;
- 
--	if (need_default_console || bcon || !console_drivers)
--		need_default_console = preferred_console < 0;
--
- 	/*
--	 *	See if we want to use this console driver. If we
--	 *	didn't select a console we take the first one
--	 *	that registers here.
-+	 * See if we want to enable this console driver by default.
-+	 *
-+	 * Nope when a console is preferred by the command line, device
-+	 * tree, or SPCR.
-+	 *
-+	 * The first real console with tty binding (driver) wins. More
-+	 * consoles might get enabled before the right one is found.
-+	 *
-+	 * Note that a console with tty binding will have CON_CONSDEV
-+	 * flag set and will be first in the list.
- 	 */
--	if (need_default_console)
--		try_enable_default_console(newcon);
-+	if (preferred_console < 0) {
-+		if (!console_drivers || !console_drivers->device ||
-+		    console_drivers->flags & CON_BOOT) {
-+			try_enable_default_console(newcon);
-+		}
+-	if (console_drivers && console_drivers->flags & CON_BOOT)
+-		bcon = console_drivers;
++	/* Do not register boot consoles when there already is a real one. */
++	if (newcon->flags & CON_BOOT && realcon_enabled) {
++		pr_info("Too late to register bootconsole %s%d\n",
++			newcon->name, newcon->index);
++		return;
 +	}
  
- 	/* See if this console matches one we selected on the command line */
- 	err = try_enable_preferred_console(newcon, true);
+ 	/*
+ 	 * See if we want to enable this console driver by default.
+@@ -3005,8 +3004,10 @@ void register_console(struct console *newcon)
+ 	 * the real console are the same physical device, it's annoying to
+ 	 * see the beginning boot messages twice
+ 	 */
+-	if (bcon && ((newcon->flags & (CON_CONSDEV | CON_BOOT)) == CON_CONSDEV))
++	if (bootcon_enabled &&
++	    ((newcon->flags & (CON_CONSDEV | CON_BOOT)) == CON_CONSDEV)) {
+ 		newcon->flags &= ~CON_PRINTBUFFER;
++	}
+ 
+ 	/*
+ 	 *	Put this console in the list - keep the
+@@ -3062,15 +3063,15 @@ void register_console(struct console *newcon)
+ 	pr_info("%sconsole [%s%d] enabled\n",
+ 		(newcon->flags & CON_BOOT) ? "boot" : "" ,
+ 		newcon->name, newcon->index);
+-	if (bcon &&
++	if (bootcon_enabled &&
+ 	    ((newcon->flags & (CON_CONSDEV | CON_BOOT)) == CON_CONSDEV) &&
+ 	    !keep_bootcon) {
+ 		/* We need to iterate through all boot consoles, to make
+ 		 * sure we print everything out, before we unregister them.
+ 		 */
+-		for_each_console(bcon)
+-			if (bcon->flags & CON_BOOT)
+-				unregister_console(bcon);
++		for_each_console(con)
++			if (con->flags & CON_BOOT)
++				unregister_console(con);
+ 	}
+ }
+ EXPORT_SYMBOL(register_console);
 -- 
 2.26.2
 
