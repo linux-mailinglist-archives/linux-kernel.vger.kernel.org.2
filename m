@@ -2,63 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C154593B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 18:10:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4964593B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 18:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239761AbhKVRNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 12:13:04 -0500
-Received: from mga05.intel.com ([192.55.52.43]:26328 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238230AbhKVRNC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 12:13:02 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="321057776"
-X-IronPort-AV: E=Sophos;i="5.87,255,1631602800"; 
-   d="scan'208";a="321057776"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 09:09:55 -0800
-X-IronPort-AV: E=Sophos;i="5.87,255,1631602800"; 
-   d="scan'208";a="606489759"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 09:09:54 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mpCpC-009WtB-Km;
-        Mon, 22 Nov 2021 19:09:50 +0200
-Date:   Mon, 22 Nov 2021 19:09:50 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] spi: Fix multi-line comment style
-Message-ID: <YZvO3gxIQ61qNbWJ@smile.fi.intel.com>
-References: <20211119173718.52938-1-andriy.shevchenko@linux.intel.com>
- <20211119173718.52938-2-andriy.shevchenko@linux.intel.com>
- <YZu7qWKYbWnmy20q@sirena.org.uk>
+        id S239838AbhKVROm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 12:14:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31102 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239798AbhKVROl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 12:14:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637601094;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Phf2QrzzmaDIwGVfZVve7wU0yQ9D8hvAWEdQ6KPMNRo=;
+        b=cNM7ZaVz5cVMD+GdmxDEIrZ8WQofzzz2lbHg7QNv2myYqrTWycZLtVrWLRk6tEmkf97PgH
+        4TCn2oGbS93q9WY0+XJ8Pq8BbZkIqRzHxvRxit78SBqxMglXBfPnPGQmpsvk5wII+gDOju
+        /tY156nsHglXoq1cEMUpi6HKqf/F2MQ=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-144-zRFXtNfnNVi0ffWJ3_cuGw-1; Mon, 22 Nov 2021 12:11:33 -0500
+X-MC-Unique: zRFXtNfnNVi0ffWJ3_cuGw-1
+Received: by mail-wr1-f69.google.com with SMTP id r12-20020adfdc8c000000b0017d703c07c0so3292115wrj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 09:11:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:organization:subject
+         :in-reply-to:content-transfer-encoding;
+        bh=Phf2QrzzmaDIwGVfZVve7wU0yQ9D8hvAWEdQ6KPMNRo=;
+        b=43RqIzcfNmRqEkt7zJsWscV+8QnLacgRJuxWzjWD5h40c8vcakFNnUu+lHihTJ93OK
+         xDpaiM9zinBTmFMVsxuq+2PCQLZpohZ9+IhHPRhy3KrLXvQk3rWruwbfq1MkbIbfszeQ
+         CRgVfMeMgpGNoZHfaoVxDP+v4xAIiPiY2MX8XeFcYEwc/Lq3FCiSHeAkiaZZXspEKjWD
+         sso1L6nZ5y72P1Ac88c63C6x/bLq9fiyOmf5mUBFqGM7uRyW0pZGc8UbmtyCJNUdekLh
+         PCz5uJ3q/HqGxGi7PHpTvfidAH7unsIJ9zqVUUWRMDnNeSfjQnQ51opPyghGDJ/jknzB
+         ZAFQ==
+X-Gm-Message-State: AOAM533kvnqzFIAS/0pFEYH/ydmVmOGpwiN+hJTgITT+d9u9YjRLJlO+
+        9Isgq+JHKceQMKBi/asoQAYhaFLVk4GIZJF4oZzqXgFjOP+YxVu3SlpGfdlhWUbW30AsOb7+ctv
+        iDX5qiJDIn0IRasXd1X+bCqkZ
+X-Received: by 2002:a7b:cd93:: with SMTP id y19mr30737768wmj.190.1637601090601;
+        Mon, 22 Nov 2021 09:11:30 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwJSOfXqMAnLV5Q/tuhdq3GNQ8VLl419MW+cfbNy8G3bRV/AYoyovM3ensDWzOdfrrIx6af/Q==
+X-Received: by 2002:a7b:cd93:: with SMTP id y19mr30737727wmj.190.1637601090332;
+        Mon, 22 Nov 2021 09:11:30 -0800 (PST)
+Received: from [192.168.3.132] (p5b0c667b.dip0.t-ipconnect.de. [91.12.102.123])
+        by smtp.gmail.com with ESMTPSA id k37sm11072331wms.21.2021.11.22.09.11.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Nov 2021 09:11:29 -0800 (PST)
+Message-ID: <b84bc345-d4ea-96de-0076-12ff245c5e29@redhat.com>
+Date:   Mon, 22 Nov 2021 18:11:28 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZu7qWKYbWnmy20q@sirena.org.uk>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Content-Language: en-US
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Drew DeVault <sir@cmpwn.com>
+Cc:     Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+References: <20211028080813.15966-1-sir@cmpwn.com>
+ <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
+ <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
+ <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
+ <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
+ <CFQZSHV700KV.18Y62SACP8KOO@taiga>
+ <20211116114727.601021d0763be1f1efe2a6f9@linux-foundation.org>
+ <CFRGQ58D9IFX.PEH1JI9FGHV4@taiga>
+ <20211116133750.0f625f73a1e4843daf13b8f7@linux-foundation.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+In-Reply-To: <20211116133750.0f625f73a1e4843daf13b8f7@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 03:47:53PM +0000, Mark Brown wrote:
-> On Fri, Nov 19, 2021 at 07:37:18PM +0200, Andy Shevchenko wrote:
-> >   /*
-> >    * Fix multi-line comment style as in this short example. Pay attention
-> >    * to the capitalization, period and starting line of the text.
-> >    */
-> > 
-> > While at it, split the (supposedly short) description of couple of functions
-> > to summary (short description) and (long) description.
+On 16.11.21 22:37, Andrew Morton wrote:
+> On Tue, 16 Nov 2021 20:48:48 +0100 "Drew DeVault" <sir@cmpwn.com> wrote:
 > 
-> This doesn't apply against current code, please check and resend.
+>> On Tue Nov 16, 2021 at 8:47 PM CET, Andrew Morton wrote:
+>>> Well, why change the default? Surely anyone who cares is altering it
+>>> at runtime anyway. And if they are not, we should encourage them to do
+>>> so?
+>>
+>> I addressed this question in the original patch's commit message.
+> 
+> Kinda.
+> 
+> We're never going to get this right, are we?  The only person who can
+> decide on a system's appropriate setting is the operator of that
+> system.  Haphazardly increasing the limit every few years mainly
+> reduces incentive for people to get this right.
+> 
+> And people who test their software on 5.17 kernels will later find that
+> it doesn't work on 5.16 and earlier, so they still need to tell their
+> users to configure their systems appropriately.  Until 5.16 is
+> obsolete, by which time we're looking at increasing the default again.
+> 
+> I don't see how this change gets us closer to the desired state:
+> getting distros and their users to configure their systems
+> appropriately.
+> 
 
-I have merged your for-next branch (is it correct approach) on top of v5.16-rc2
-and patches are applied cleanly. Is it something addition I should care about?
+My 2 cents: while we should actually try to avoid new FOLL_LONGTERM
+users where possible, we introduce more (IOURING_REGISTER_BUFFERS) to be
+consumed by ordinary, unprivileged users. These new features, *when
+used* require us to raise the MLOCK_LIMIT. Secretmem is similar, but for
+now it rather "replaces" old mlock usage and IIRC has similarly small
+memory demands; that might change in the future, though.
+
+Why is FOLL_LONGTERM bad? Not only does it prevent swapping like mlock
+does, the pages are also unmovable in memory, such that they cannot be
+moved around, for example, for memory compaction.
+
+Well, I'm not too mad about IOURING_REGISTER_BUFFERS, it actually helped
+me to write a simple reproducer for the COW issues we have in upstream
+mm, and can be quite beneficial in some setups. Still, I think it should
+be used with care depending on the actual environment.
+
+So, just because a new feature is around that could be used, does it
+mean that we should adjust our kernel default? I'd say in this case,
+rather not. Distributions, or much better, the responsible admin, should
+make such decisions, knowing the environment and the effect this could have.
+
+(I know that we can similarly trigger allocation of a lot of unmovable
+memory using other means by malicious user space; but that is rather
+something to limit or handle in the future IMHO)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Thanks,
 
+David / dhildenb
 
