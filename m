@@ -2,135 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D3544588A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 05:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DCF14588AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 05:56:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232059AbhKVEuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 23:50:55 -0500
-Received: from smtprelay0190.hostedemail.com ([216.40.44.190]:55612 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231656AbhKVEuz (ORCPT
+        id S232279AbhKVE7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 23:59:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231656AbhKVE7p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 23:50:55 -0500
-Received: from omf04.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 7847F10229386;
-        Mon, 22 Nov 2021 04:47:48 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf04.hostedemail.com (Postfix) with ESMTPA id 5436FA000417;
-        Mon, 22 Nov 2021 04:47:38 +0000 (UTC)
-Message-ID: <06c0cdc157ae1502e8e9eb3624b9ea995cf11e7a.camel@perches.com>
-Subject: [PATCH] checkpatch: Improve Kconfig help test
-From:   Joe Perches <joe@perches.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Sun, 21 Nov 2021 23:59:45 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D47C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 20:56:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2aCQpVDlbYWsNB09YHVxAuw9fyHTyZh0tb1unY+8gTY=; b=IKxhl0e7JezN6sCtME5ISB8xjq
+        Lpu74sETuf4Ogz2z5L/1c+Pd+wudeSTFDVQ8+LJNHx7K4N8QudQWunKWpzQIgvwBydtPD55RCpTnn
+        v/D0s5IbNx1x+uzOk2gyspiINa6l7vKVMe1i/22enAeLdIZXmURiCM09zFIObo4v8FczPftK/S1Jw
+        9oBqhqLE2Kp70p7Unl6BhBqR8YWT7KsMmuG76IQKr3rNOK6NnPBeeW9rU2hkW6xJoY2oOlRSmW4q4
+        aLqRyYMC6vkxmcvbg9/7YusTGBslg06mvdnaDQcubvWJ86LwvNIFY4eYpXoaFXsW1sSLz5fyzH+vd
+        pdHSaDdw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mp1NR-00CZRG-My; Mon, 22 Nov 2021 04:56:25 +0000
+Date:   Mon, 22 Nov 2021 04:56:25 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Date:   Sun, 21 Nov 2021 20:47:46 -0800
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
+Subject: Re: [PATCH] mm: split thp synchronously on MADV_DONTNEED
+Message-ID: <YZsi+RFed3hX9T8w@casper.infradead.org>
+References: <20211120201230.920082-1-shakeelb@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.40
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: 5436FA000417
-X-Stat-Signature: mhs638tj7htpm6ne9eb73ranyw3743o7
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18bNBTebDLzld17O4NwMZnbHfffQQ0JHKU=
-X-HE-Tag: 1637556458-620712
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211120201230.920082-1-shakeelb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Kconfig help test erroneously counts patch context lines as part of
-the help text.
+On Sat, Nov 20, 2021 at 12:12:30PM -0800, Shakeel Butt wrote:
+> Many applications do sophisticated management of their heap memory for
+> better performance but with low cost. We have a bunch of such
+> applications running on our production and examples include caching and
+> data storage services. These applications keep their hot data on the
+> THPs for better performance and release the cold data through
+> MADV_DONTNEED to keep the memory cost low.
+> 
+> The kernel defers the split and release of THPs until there is memory
+> pressure. This causes complicates the memory management of these
+> sophisticated applications which then needs to look into low level
+> kernel handling of THPs to better gauge their headroom for expansion. In
+> addition these applications are very latency sensitive and would prefer
+> to not face memory reclaim due to non-deterministic nature of reclaim.
+> 
+> This patch let such applications not worry about the low level handling
+> of THPs in the kernel and splits the THPs synchronously on
+> MADV_DONTNEED.
 
-Fix that and improve the message block output.
+I've been wondering about whether this is really the right strategy
+(and this goes wider than just this one, new case)
 
-Signed-off-by: Joe Perches <joe@perches.com>
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
----
- scripts/checkpatch.pl | 52 +++++++++++++++++++++++++--------------------------
- 1 file changed, 26 insertions(+), 26 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 1784921c645da..21397fbc22c88 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3479,47 +3479,47 @@ sub process {
- 		    # Kconfig supports named choices), so use a word boundary
- 		    # (\b) rather than a whitespace character (\s)
- 		    $line =~ /^\+\s*(?:config|menuconfig|choice)\b/) {
--			my $length = 0;
--			my $cnt = $realcnt;
--			my $ln = $linenr + 1;
--			my $f;
--			my $is_start = 0;
--			my $is_end = 0;
--			for (; $cnt > 0 && defined $lines[$ln - 1]; $ln++) {
--				$f = $lines[$ln - 1];
--				$cnt-- if ($lines[$ln - 1] !~ /^-/);
--				$is_end = $lines[$ln - 1] =~ /^\+/;
-+			my $ln = $linenr;
-+			my $needs_help = 0;
-+			my $has_help = 0;
-+			my $help_length = 0;
-+			while (defined $lines[$ln]) {
-+				my $f = $lines[$ln++];
- 
- 				next if ($f =~ /^-/);
--				last if (!$file && $f =~ /^\@\@/);
-+				last if ($f !~ /^[\+ ]/);	# !patch context
- 
--				if ($lines[$ln - 1] =~ /^\+\s*(?:bool|tristate|prompt)\s*["']/) {
--					$is_start = 1;
--				} elsif ($lines[$ln - 1] =~ /^\+\s*(?:---)?help(?:---)?$/) {
--					$length = -1;
-+				if ($f =~ /^\+\s*(?:bool|tristate|prompt)\s*["']/) {
-+					$needs_help = 1;
-+					next;
-+				}
-+				if ($f =~ /^\+\s*help\s*$/) {
-+					$has_help = 1;
-+					next;
- 				}
- 
--				$f =~ s/^.//;
--				$f =~ s/#.*//;
--				$f =~ s/^\s+//;
--				next if ($f =~ /^$/);
-+				$f =~ s/^.//;	# strip patch context [+ ]
-+				$f =~ s/#.*//;	# strip # directives
-+				$f =~ s/^\s+//;	# strip leading blanks
-+				next if ($f =~ /^$/);	# skip blank lines
- 
-+				# At the end of this Kconfig block:
- 				# This only checks context lines in the patch
- 				# and so hopefully shouldn't trigger false
- 				# positives, even though some of these are
- 				# common words in help texts
--				if ($f =~ /^\s*(?:config|menuconfig|choice|endchoice|
--						  if|endif|menu|endmenu|source)\b/x) {
--					$is_end = 1;
-+				if ($f =~ /^(?:config|menuconfig|choice|endchoice|
-+					       if|endif|menu|endmenu|source)\b/x) {
- 					last;
- 				}
--				$length++;
-+				$help_length++ if ($has_help);
- 			}
--			if ($is_start && $is_end && $length < $min_conf_desc_length) {
-+			if ($needs_help &&
-+			    $help_length < $min_conf_desc_length) {
-+				my $stat_real = get_stat_real($linenr, $ln - 1);
- 				WARN("CONFIG_DESCRIPTION",
--				     "please write a paragraph that describes the config symbol fully\n" . $herecurr);
-+				     "please write a help paragraph that fully describes the config symbol\n" . "$here\n$stat_real\n");
- 			}
--			#print "is_start<$is_start> is_end<$is_end> length<$length>\n";
- 		}
- 
- # check MAINTAINERS entries
-
-
+We chose to use a 2MB page here, based on whatever heuristics are
+currently in play.  Now userspace is telling us we were wrong and should
+have used smaller pages.  2MB pages are precious, and we currently
+have one.  Surely it is better to migrate the still-valid contents of
+this 2MB page to smaller pages, and then free the 2MB page as a single
+unit than it is to fragment this 2MB page into smaller chunks, and keep
+using some of it, virtually guaranteeing this particular 2MB page can't
+be reassembled without significant work?
