@@ -2,167 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4336C4594A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 19:20:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5334594A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 19:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240053AbhKVSXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 13:23:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237217AbhKVSXi (ORCPT
+        id S240237AbhKVSZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 13:25:16 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:43014 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236375AbhKVSZL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 13:23:38 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 336B6C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 10:20:32 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1mpDvQ-0004Re-Vt; Mon, 22 Nov 2021 19:20:21 +0100
-Message-ID: <82c5da8862abaa430ee52b57e15d29a67106d61f.camel@pengutronix.de>
-Subject: Re: [PATCH V3 0/9] arm64: imx8mn: Enable more imx8m Nano functions
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Tim Harvey <tharvey@gateworks.com>, Adam Ford <aford173@gmail.com>
-Cc:     Fabio Estevam <festevam@gmail.com>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Ariel D'Alessandro <ariel.dalessandro@collabora.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Device Tree Mailing List <devicetree@vger.kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Mon, 22 Nov 2021 19:20:18 +0100
-In-Reply-To: <CAJ+vNU37=qPuuNaSsvRntKU5wbVZoOtS_tAx7En6EMGfKN=QLg@mail.gmail.com>
-References: <20211104161804.587250-1-aford173@gmail.com>
-         <CAJ+vNU2jcWyCm3UyiOnvknS0t+mSdpaB+CgGWYO3jxXTa3LhRA@mail.gmail.com>
-         <CAHCN7xJrnZMQgXVMJg7MZdFMWyesf6Ph7HnfMH7-9bm1qODHFw@mail.gmail.com>
-         <CAJ+vNU32GXtbKWGQXoE7pkXU8FcKh+HQJJduwRbRJ0tC-d6GoA@mail.gmail.com>
-         <CAHCN7xLAm21zUJQ8s4s--+ygmeVY0qyo0WSLp7ZM9bT9R3sjxw@mail.gmail.com>
-         <CAOMZO5Am4P17mOXWrPs0ns9AwOXM_ZpBdzbYTYJfv_48Ea=BHg@mail.gmail.com>
-         <CAHCN7xLzR5LqqydC7uydsXQPFVn=nyqKD8ZEH3EjcPuwQky5WA@mail.gmail.com>
-         <CAOMZO5AnXDV3jdR6hP_+uqyss4KftzjahcrGq1XA37nGsfQedw@mail.gmail.com>
-         <CAHCN7xKJBHY1o94VDkBaXXFjMUm=5WoshddT4DVWD04aiPV8MA@mail.gmail.com>
-         <CAHCN7xKpjVWiTvXpYH11kaHX=0Figh=ALQS4qnUroGCu-q3NNA@mail.gmail.com>
-         <CAJ+vNU37=qPuuNaSsvRntKU5wbVZoOtS_tAx7En6EMGfKN=QLg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        Mon, 22 Nov 2021 13:25:11 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id BA1C9218E1;
+        Mon, 22 Nov 2021 18:22:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637605323; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=c98fpZGdGI0+ZOj58/qJeZeQJlRUaVRpLHlnxLE/4jg=;
+        b=n6o+Xij9eQN5/lnRfvOlkAuNc3Ry7zqNfnE+ivf0R6aJ2hgpU7kdDin4yuEhpHcsUv9nVj
+        xj9d3vyvsjI/2rsnCDXUlnOxMCKv6C3nf4fZlUF2axVoHXTPQJ8EHmHr9HCSCIln3ymwlv
+        HVt6I7j6EHzczXMQl/7IuJPmlTLZ67Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637605323;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=c98fpZGdGI0+ZOj58/qJeZeQJlRUaVRpLHlnxLE/4jg=;
+        b=EzDsjigdjabVLoLgMbsPiExi1SZ12ft2deZ0BZQGfgGPC7Ee+CQvx0/hg8LWTvpHzgIrrR
+        9jDDRDv8VoffkNDg==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id A0CDBA3B81;
+        Mon, 22 Nov 2021 18:22:03 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 4D9991E3C6D; Mon, 22 Nov 2021 19:22:03 +0100 (CET)
+Date:   Mon, 22 Nov 2021 19:22:03 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jack@suse.cz
+Subject: Re: [PATCH -next] jbd2: discard last transaction when commit block
+ checksum broken in v2v3
+Message-ID: <20211122182203.GC32119@quack2.suse.cz>
+References: <20210929035528.1990993-1-yebin10@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210929035528.1990993-1-yebin10@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, dem 22.11.2021 um 09:59 -0800 schrieb Tim Harvey:
-> On Sun, Nov 21, 2021 at 7:25 AM Adam Ford <aford173@gmail.com> wrote:
-> > 
-> > On Sun, Nov 21, 2021 at 8:34 AM Adam Ford <aford173@gmail.com> wrote:
-> > > 
-> > > On Sun, Nov 21, 2021 at 8:21 AM Fabio Estevam <festevam@gmail.com> wrote:
-> > > > 
-> > > > Hi Adam,
-> > > > 
-> > > > On Sun, Nov 21, 2021 at 11:17 AM Adam Ford <aford173@gmail.com> wrote:
-> > > > 
-> > > > > I am using https://source.codeaurora.org/external/imx/imx-atf/log/?h=lf_v2.4
-> > > > > 
-> > > > > Since the driver sending SMCC commands to ATF isn't doing that, I
-> > > > > assume it's safe to use the linux power-domain drivers with the ATF
-> > > > > from NXP's kernel.
-> > > > > 
-> > > > > If you can point me to the repo you think I should be using, I'll give it a try.
-> > > > 
-> > > > Do you know if the mainline TF-A repo v2.5 works too?
-> > > > https://github.com/ARM-software/arm-trusted-firmware/tree/v2.5
-> > > 
-> > > That's good to know.
-> > > 
-> > > I just built it into U-Boot:
-> > > 
-> > > NOTICE:  BL31: v2.5(release):v2.5
-> > > NOTICE:  BL31: Built : 08:24:13, Nov 21 2021
-> > > 
-> > > The Etnaviv driver is still loading without hanging
-> > > 
-> > > root@beacon-imx8mn-kit:~# dmesg |grep -i etna
-> > > [   12.393936] etnaviv etnaviv: bound 38000000.gpu (ops gpu_ops [etnaviv])
-> > > [   12.400676] etnaviv-gpu 38000000.gpu: model: GC7000, revision: 6203
-> > > [   12.641297] [drm] Initialized etnaviv 1.3.0 20151214 for etnaviv on minor 0
-> > > 
-> > > 
-> > 
-> > Tim,
-> > 
-> > Which version of Nano do you have?  Not all Nano SoC's have a GPU from
-> > looking at the datasheet [1] .  I am using MIMX8MN2CVTIZAA (Nano Solo)
-> > 
-> > [1] - https://www.nxp.com/docs/en/data-sheet/IMX8MNIEC.pdf
-> > 
+On Wed 29-09-21 11:55:28, Ye Bin wrote:
+> Now, we meet an issue that commit block has broken checksum when cold reboot
+> device, that lead to mount failed.
+> The reason maybe only some sector store on disk, and then device power off.
+> But we calculate checksum with whole logic block.The data stored on disk can
+> only ensure the atomicity of sector level.
+> Actually, we already replay previous transactions. We can just discard last
+> transaction. As now, descriptor/revocation/commit/superblock has it's own
+> checksum.
 > 
-> Adam,
-> 
-> The board I have here has MIMX8MN5CVTIZAA so i.MX 8M Nano QuadLite
-> with 'No GPU' as you expected.
-> 
-> So I have to add the following to keep my board from hanging after your series:
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
-> b/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
-> index 236f425e1570..0d256a607b7c 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
-> @@ -251,6 +251,10 @@
->         };
->  };
-> 
-> +&gpu {
-> +       status = "disabled";
-> +};
-> +
->  &i2c1 {
->         clock-frequency = <100000>;
->         pinctrl-names = "default";
-> 
-> This situation is similar to the one I encountered with the
-> imx8mm-venice-gw7901 where adding the GPC node caused my board (which
-> did not power the GPU) to hang until I added disables to the
-> device-tree with commit 7973009235e2 ("arm64: dts:
-> imx8mm-venice-gw7901.dts: disable pgc_gpumix"). It feels painful to
-> have to add patches to keep things from hanging after additional
-> functionality is added to dt but perhaps that is more common than I
-> think esp for SoC's like IMX8M which have a lot of lingering support
-> still coming in.
-> 
-Yea, it's unfortunate that those patches break your board, but I guess
-we need to accept this, while there is still a lot of feature work
-going on.
+> Fixes:80b3767fbe15("jbd2: don't wipe the journal on a failed journal checksum")
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
 
-> I don't mind at all submitting the above patch to fix my board after
-> your series is accepted as I think that having an IMX8MN with 'no gpu'
-> is perhaps less likely than having one with a GPU and thus we probably
-> shouldn't mark the node as disabled and force everyone that has a GPU
-> to go and enable it.
+Thanks for the patch. It seems to have fallen through the cracks. Sorry for
+that.
+
+> ---
+>  fs/jbd2/journal.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> I wonder however if we should think about adding something to etnaviv
-> to check the capability so that the same dt could be used with both
-> CPU variants?
+> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> index 35302bc192eb..a3dd7b757b3d 100644
+> --- a/fs/jbd2/journal.c
+> +++ b/fs/jbd2/journal.c
+> @@ -2080,7 +2080,7 @@ int jbd2_journal_load(journal_t *journal)
+>  	if (jbd2_journal_recover(journal))
+>  		goto recovery_error;
+>  
+> -	if (journal->j_failed_commit) {
+> +	if (journal->j_failed_commit && !jbd2_journal_has_csum_v2or3(journal)) {
 
-etnaviv or really the kernel at all is not the place to handle this.
-The DT is supposed to describe the hardware and the kernel should be
-able to trust this description.
+I guess this decision somewhat questionable. If the failed commit was
+indeed the last one, I guess loosing the last transaction as you suggest is
+a sensible thing to do. However if the checksum failed somewhere in the
+middle of the journal because of a bitflip or something like that, we
+probably don't want to loose that many transactions and rather want to do
+fsck and try to recover as much data as possible... What do others think?
 
-If there is some way to read the chip capabilities and avoid having too
-much DT variants in the kernel, the right place to handle this is the
-software running before the kernel is started, i.e. your bootloader.
-Barebox for example reads the SCU fuses on i.MX6 and removes the DT
-nodes for the fused off CPU cores on i.MX6S and i.MX6D.
+								Honza
 
-Regards,
-Lucas
-
+>  		printk(KERN_ERR "JBD2: journal transaction %u on %s "
+>  		       "is corrupt.\n", journal->j_failed_commit,
+>  		       journal->j_devname);
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
