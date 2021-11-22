@@ -2,58 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A255F45939A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 18:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C154593B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 18:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237048AbhKVRHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 12:07:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60332 "EHLO mail.kernel.org"
+        id S239761AbhKVRNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 12:13:04 -0500
+Received: from mga05.intel.com ([192.55.52.43]:26328 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234435AbhKVRHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 12:07:14 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58EE860249;
-        Mon, 22 Nov 2021 17:04:07 +0000 (UTC)
-Date:   Mon, 22 Nov 2021 12:04:05 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Cc:     Thorsten Leemhuis <linux@leemhuis.info>, workflows@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [RFC PATCH v1 0/1] Create 'Reported:' and 'Reviewed:' tags for
- links in commit messages
-Message-ID: <20211122120405.7a1e1c9f@gandalf.local.home>
-In-Reply-To: <20211122151233.54xtnpwdmnrdj3jf@meerkat.local>
-References: <cover.1637566224.git.linux@leemhuis.info>
-        <20211122151233.54xtnpwdmnrdj3jf@meerkat.local>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S238230AbhKVRNC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 12:13:02 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="321057776"
+X-IronPort-AV: E=Sophos;i="5.87,255,1631602800"; 
+   d="scan'208";a="321057776"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 09:09:55 -0800
+X-IronPort-AV: E=Sophos;i="5.87,255,1631602800"; 
+   d="scan'208";a="606489759"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 09:09:54 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mpCpC-009WtB-Km;
+        Mon, 22 Nov 2021 19:09:50 +0200
+Date:   Mon, 22 Nov 2021 19:09:50 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] spi: Fix multi-line comment style
+Message-ID: <YZvO3gxIQ61qNbWJ@smile.fi.intel.com>
+References: <20211119173718.52938-1-andriy.shevchenko@linux.intel.com>
+ <20211119173718.52938-2-andriy.shevchenko@linux.intel.com>
+ <YZu7qWKYbWnmy20q@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZu7qWKYbWnmy20q@sirena.org.uk>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Nov 2021 10:12:33 -0500
-Konstantin Ryabitsev <konstantin@linuxfoundation.org> wrote:
-
-> As an alternative, I can offer that we continue to use Link: trailers with
-> extra data following the hashtag, as is already done for other trailers:
+On Mon, Nov 22, 2021 at 03:47:53PM +0000, Mark Brown wrote:
+> On Fri, Nov 19, 2021 at 07:37:18PM +0200, Andy Shevchenko wrote:
+> >   /*
+> >    * Fix multi-line comment style as in this short example. Pay attention
+> >    * to the capitalization, period and starting line of the text.
+> >    */
+> > 
+> > While at it, split the (supposedly short) description of couple of functions
+> > to summary (short description) and (long) description.
 > 
->     Link: https://bugzilla.kernel.org/show_bug.cgi?id=215101   #report
->     Link: https://lore.kernel.org/r/fobarbaz.5551212@localhost #review
-> 
-> Note, that this merely for completeness, not in opposition to the proposal. I
-> find the "Link:" trailer to be semantically redundant, since what follows is
-> already clearly a hyperlink. Adding "Link: " in front of it is only necessary
-> for consistency and machine parsing reasons.
+> This doesn't apply against current code, please check and resend.
 
-Machine parsing is the main reason for the Link: tag. I have scripts that
-key off of that tag and ignore any other "http" reference.
+I have merged your for-next branch (is it correct approach) on top of v5.16-rc2
+and patches are applied cleanly. Is it something addition I should care about?
 
-Perhaps the above is better, as it means we don't need to update our
-scripts for that parsing.
+-- 
+With Best Regards,
+Andy Shevchenko
 
--- Steve
+
