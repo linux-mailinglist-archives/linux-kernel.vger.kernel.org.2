@@ -2,111 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F804597A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 23:23:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1004597AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 23:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239995AbhKVW06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 17:26:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37494 "EHLO mail.kernel.org"
+        id S234057AbhKVW1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 17:27:51 -0500
+Received: from soltyk.jannau.net ([144.76.91.90]:59130 "EHLO soltyk.jannau.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240277AbhKVW0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 17:26:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 064F96103C;
-        Mon, 22 Nov 2021 22:23:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637619824;
-        bh=kK/0hn3Tn2Fi1LQ6SeIagL/0lsO2CrpknZyQZAqq6H8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D2/yNDzBENZCV3sSIl45F//FfTAukYJn/aB/UGh8I2KaOy7hp22Bp+4Hk7x39Hi7u
-         6e+dm5/YqhRogLXgrZ4AGc43mg64vHlOq1gIn5GVeiq9ATMgMjPD8mxPFDFaQ3aa+j
-         MQv7bncgFO5dExmwoX3s7KxgzNmRdjAvJ8L8yiSvS5qic4CJs5WDTicWXy2EK3Rvgg
-         cAaYtYpjbFTPUW/LIgaSPH1XVukM1CNyFl/il1Z3hpw7wYnUGTRu2xxQu7y1304Q4O
-         DqXPeJwj0DSwecC7x7qSXRZYQTTmspHVwU6Jw3E235yowtMHJ5mtFd1BPBQlG3mqm6
-         Syi2DD+et8CSw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Andy Gross <agross@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Scott Branden <sbranden@broadcom.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        alsa-devel@alsa-project.org, bcm-kernel-feedback-list@broadcom.com,
-        dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH v2 11/11] dmaengine: remove slave_id config field
-Date:   Mon, 22 Nov 2021 23:22:03 +0100
-Message-Id: <20211122222203.4103644-12-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20211122222203.4103644-1-arnd@kernel.org>
-References: <20211122222203.4103644-1-arnd@kernel.org>
+        id S230394AbhKVW1u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 17:27:50 -0500
+Received: from coburn.home.jannau.net (p579ad520.dip0.t-ipconnect.de [87.154.213.32])
+        by soltyk.jannau.net (Postfix) with ESMTPSA id 75681261B41;
+        Mon, 22 Nov 2021 23:24:41 +0100 (CET)
+From:   Janne Grunau <j@jannau.net>
+To:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Olof Johansson <olof@lixom.net>, Wolfram Sang <wsa@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] Apple Arm patform device tree and bindings fixes
+Date:   Mon, 22 Nov 2021 23:24:37 +0100
+Message-Id: <20211122222440.21177-1-j@jannau.net>
+X-Mailer: git-send-email 2.34.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hej All,
 
-All references to the slave_id field have been removed, so remove the
-field as well to prevent new references from creeping in again.
+this series fixes small issues in the device tree bindings and files
+for the Apple Arm platform in v5.16-rc1. The fixes are non-critical
+but make things easier moving forward.
 
-Originally this allowed slave DMA drivers to configure which device
-is accessed with the dmaengine_slave_config() call, but this was
-inconsistent, as the same information is also passed while requesting
-a channel, and never changes in practice.
+Changes since v1:
+ - replaced single value enum in apple,i2c.yaml with const
+ - added Sven Peter's Reviewed-by tags to Patch 2 and 3
 
-In modern kernels, the device is always selected when requesting
-the channel, so the .slave_id field is no longer useful.
+thanks
+Janne
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- include/linux/dmaengine.h | 4 ----
- 1 file changed, 4 deletions(-)
+The series is available as branch at
+https://github.com/jannau/linux/tree/apple_m1/dt-fixes-for-5.16_v2
 
-diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-index 9000f3ffce8b..0349b35235e6 100644
---- a/include/linux/dmaengine.h
-+++ b/include/linux/dmaengine.h
-@@ -418,9 +418,6 @@ enum dma_slave_buswidth {
-  * @device_fc: Flow Controller Settings. Only valid for slave channels. Fill
-  * with 'true' if peripheral should be flow controller. Direction will be
-  * selected at Runtime.
-- * @slave_id: Slave requester id. Only valid for slave channels. The dma
-- * slave peripheral will have unique id as dma requester which need to be
-- * pass as slave config.
-  * @peripheral_config: peripheral configuration for programming peripheral
-  * for dmaengine transfer
-  * @peripheral_size: peripheral configuration buffer size
-@@ -448,7 +445,6 @@ struct dma_slave_config {
- 	u32 src_port_window_size;
- 	u32 dst_port_window_size;
- 	bool device_fc;
--	unsigned int slave_id;
- 	void *peripheral_config;
- 	size_t peripheral_size;
- };
+Janne Grunau (3):
+  arm64: dts: apple: change ethernet0 device type to ethernet
+  dt-bindings: i2c: apple,i2c: allow multiple compatibles
+  arm64: dts: apple: add #interrupt-cells property to pinctrl nodes
+
+ Documentation/devicetree/bindings/i2c/apple,i2c.yaml | 8 ++++----
+ arch/arm64/boot/dts/apple/t8103-j274.dts             | 2 +-
+ arch/arm64/boot/dts/apple/t8103.dtsi                 | 4 ++++
+ 3 files changed, 9 insertions(+), 5 deletions(-)
+
 -- 
-2.29.2
+2.34.0
 
