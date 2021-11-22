@@ -2,141 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F34F458FDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 15:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B366458FDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 15:01:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239623AbhKVODN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 09:03:13 -0500
-Received: from mout.kundenserver.de ([212.227.126.134]:35483 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239629AbhKVODK (ORCPT
+        id S236506AbhKVOE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 09:04:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235758AbhKVOE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 09:03:10 -0500
-Received: from mail-wr1-f48.google.com ([209.85.221.48]) by
- mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MQPVR-1n2AXj19g9-00MISw; Mon, 22 Nov 2021 15:00:02 +0100
-Received: by mail-wr1-f48.google.com with SMTP id d27so32937965wrb.6;
-        Mon, 22 Nov 2021 06:00:02 -0800 (PST)
-X-Gm-Message-State: AOAM532USYFTjyWyqv0r5i0ajCTmqRaI6m8AhA/04btDaqBZQp+oyyEz
-        8riZKD2vgw3J+2YO0ieG6u9tmcath27PSH8V2hA=
-X-Google-Smtp-Source: ABdhPJxCh/ojyr4/SvHXuW7U5+p/QmDPoj1YMC2LiBq4NIhZQKGlqYVI5GRqdzj/oKKcTQft5I91wqEjPDD580xe1kE=
-X-Received: by 2002:adf:f7c2:: with SMTP id a2mr39150340wrq.71.1637589601683;
- Mon, 22 Nov 2021 06:00:01 -0800 (PST)
+        Mon, 22 Nov 2021 09:04:56 -0500
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 781CBC061714
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 06:01:50 -0800 (PST)
+Received: by mail-qk1-x734.google.com with SMTP id d2so18105523qki.12
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 06:01:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AkVa9dgYFMW65oNWi3lEAnC5wvNaUzrKbDuhcPjVyAM=;
+        b=YbZPXtBUsIP409q2mT8lSr4BqkVNQQ7uwSh3flKk8k1tLdFvFH+qBcjZfbEQuRnSJt
+         ym7KIc8Rr2qe7cnTl58XYSE6lugUqTMCIbLTauRHYkZqs9rs3GKm1bMlBUWI+TRMcDGX
+         I0UZlTo4cd8ySiP1lEYqugVzwPTPEfPtKNmmPzejl2rh3HDr1pH7Jp2W80NczxtpUT2f
+         7DZmFWyXm06nxDnZOIMEP5lLL2tkQARwppJwaeUpCzINEB5Wi61hhIuu1iPds6HyRHDs
+         CkaIWL9eMwFvW3dqc9J2iSLvyxaUEjT+FHbVEY0VTDVLySkuR3731mB61RPDNMhCVl2Y
+         9yWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AkVa9dgYFMW65oNWi3lEAnC5wvNaUzrKbDuhcPjVyAM=;
+        b=75VO7XbzKeWgEwgYsBifDzNeSQ4ohqXWAsx7XpdnuYLiMgG3dGp29+kAXyqmanpYFM
+         UWjaGVPi9Q9w2iIwMt+CRo46K1INWKC7g6AK+DyPsAr5V1PtBnd72bp6RUo/oi9G1Yy+
+         Hiv+9De+EFbiK+X2omKhAqJH+hRPuZXuiSkwZWKa2EiSpgCsABSNJ1dO4ktv74EhqKy8
+         u0f4kw7CYw907vWr1QNtrASQ8bTd4kSndcXSjBEqf1FwR7jNkikwujAWipNR6yvJRzMD
+         g7LZzR+w452H1Rhxy0iozbclilHxKDzR2pLADgD5P0sBKpl0FX09WTkYLopOx20joJ4W
+         6d/A==
+X-Gm-Message-State: AOAM532+ZLD7XQXdt9DLDsLWDoQeGazGn/rXcaamRperd+OZQiyORIkj
+        1JfEYanB/6aYZwiuBvWotKrOcw==
+X-Google-Smtp-Source: ABdhPJx4FBEsFukDClDSwGw8qd9OgvbrBef1ytO7EqEtX4yVEQkSoyHCZqYrRFEAi40duExffLYOuw==
+X-Received: by 2002:a05:620a:190b:: with SMTP id bj11mr47809423qkb.514.1637589709646;
+        Mon, 22 Nov 2021 06:01:49 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id s13sm4716120qki.23.2021.11.22.06.01.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Nov 2021 06:01:49 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mp9tE-00DsN8-Ie; Mon, 22 Nov 2021 10:01:48 -0400
+Date:   Mon, 22 Nov 2021 10:01:48 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Chao Peng <chao.p.peng@linux.intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, qemu-devel@nongnu.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J . Bruce Fields" <bfields@fieldses.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
+        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com
+Subject: Re: [RFC v2 PATCH 01/13] mm/shmem: Introduce F_SEAL_GUEST
+Message-ID: <20211122140148.GR876299@ziepe.ca>
+References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
+ <20211119134739.20218-2-chao.p.peng@linux.intel.com>
+ <20211119151943.GH876299@ziepe.ca>
+ <df11d753-6242-8f7c-cb04-c095f68b41fa@redhat.com>
+ <20211119160023.GI876299@ziepe.ca>
+ <4efdccac-245f-eb1f-5b7f-c1044ff0103d@redhat.com>
+ <20211122133145.GQ876299@ziepe.ca>
+ <56c0dffc-5fc4-c337-3e85-a5c9ce619140@redhat.com>
 MIME-Version: 1.0
-References: <cover.1636973694.git.quic_saipraka@quicinc.com>
- <9396fbdc415a3096ab271868960372b21479e4fb.1636973694.git.quic_saipraka@quicinc.com>
- <CAK8P3a2Bp4LP7C1-XLKvjyxV-e1vrHb-=3zpm75CRgPYNbY2jA@mail.gmail.com>
- <b07e339c-530d-683c-c626-14b73b42e72a@quicinc.com> <1609f1f7-6f61-6e17-d907-c526f09bffe5@quicinc.com>
-In-Reply-To: <1609f1f7-6f61-6e17-d907-c526f09bffe5@quicinc.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 22 Nov 2021 14:59:45 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1KxJFwgock3XiRDZYzT=5PZ=Hsh_8uFv9heoa1rwNqtA@mail.gmail.com>
-Message-ID: <CAK8P3a1KxJFwgock3XiRDZYzT=5PZ=Hsh_8uFv9heoa1rwNqtA@mail.gmail.com>
-Subject: Re: [PATCHv4 2/2] arm64/io: Add a header for mmio access instrumentation
-To:     Sai Prakash Ranjan <quic_saipraka@quicinc.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        quic_psodagud@quicinc.com, Marc Zyngier <maz@kernel.org>,
-        gregkh <gregkh@linuxfoundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:XMyzNBAgZe7xR74QkrtGedvidtRv+2nwpPxPhI2n8pLeWwq4pn6
- RnK47A4GM9m84bEYGjA8hIP1DIZCmumOPDrz46KP6e8Tfg8Jpkib3pe5mIyFaU36D2m+vbs
- 9MQdv+gOqwYetfsY++nYd4Z9l1buaTZNzFA2ed2QmnqaGzCLKfMs+4iELWB3BqOkrJ9Mm81
- 9BUD0iGih2qahJtbnr9QQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:yEMk/TlXXDE=:wtUPzDsummXOstf1bOJ8yj
- JU7GINL66BITQtoWWFBYEknpklvS98bJowFowTdupih81RxqVBItcHviQijdw9UKDYLQIXS1U
- UHOtSpf3G5/FiSdN8Brj8SO28eQqf3iMCYa0MfcuWlNlkiA3u31CJx8z+ZEYfKUMMPrfcfV5Q
- jRqM5sM7UuboPPJxHP0t4cSFDcNvnKWehVGPfVNPgZRapLpEcM0Vw4z+tulQznm2drGSNQFx3
- rxUbUHg1HSzdQxb3j18rAgBsoFYPIsLhd3yhPa0Q+Bl1PeggRainsq+t06fQnxv9LAYETsQ93
- 2qdh+LMzVW69pVqObgTGVn0tIsORm0vaZsbQ8cnj99ucxXc42iCo+8tc442Iqf9OeNXan0PqT
- cmb5qBoAC3qz3jHVUIIpa92LvsefsbYF/uYw048v7rJZjBqGTtiuQz66j2n+/PfCycm3fZllt
- 3mVMPFeeehCeJQ7joi0b0Zy5XD2rLmB0/rTbu4kA1Yyh4Y2MHd/V3Gf4KIuL6CO8bm1xcQoTG
- 1OcWwC91UNV2BA9A5gl6GLFBcwpfRcvy2suzJ4QIFsIsfazEOUo2A8Ve/JCamY/GMrl6ChRb5
- Q+/FNLdSX6otO/7ORGLSu99hGscWal1cVR1MMWa1Dz/LAUrgHASHyW4bxvRGydCqp6Jz6mGj6
- FYHsAPDSTyYgTW6oPnl57YAmj/A1L8doQuFuQ5GK50iG+VKN+V/M6YQMCePtevEwvUtc=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56c0dffc-5fc4-c337-3e85-a5c9ce619140@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 2:35 PM Sai Prakash Ranjan
-<quic_saipraka@quicinc.com> wrote:
-> On 11/19/2021 9:36 AM, Sai Prakash Ranjan wrote:
->
-> So I looked at logic_iomem.c which seems to be useful for emulated IO
-> for virtio drivers
-> but our usecase just needs to log the mmio operations and no additional
-> stuff, similar to
-> the logging access of x86 msr registers via tracepoint
-> (arch/x86/include/asm/msr-trace.h).
+On Mon, Nov 22, 2021 at 02:35:49PM +0100, David Hildenbrand wrote:
+> On 22.11.21 14:31, Jason Gunthorpe wrote:
+> > On Mon, Nov 22, 2021 at 10:26:12AM +0100, David Hildenbrand wrote:
+> > 
+> >> I do wonder if we want to support sharing such memfds between processes
+> >> in all cases ... we most certainly don't want to be able to share
+> >> encrypted memory between VMs (I heard that the kernel has to forbid
+> >> that). It would make sense in the use case you describe, though.
+> > 
+> > If there is a F_SEAL_XX that blocks every kind of new access, who
+> > cares if userspace passes the FD around or not?
+> I was imagining that you actually would want to do some kind of "change
+> ownership". But yeah, the intended semantics and all use cases we have
+> in mind are not fully clear to me yet. If it's really "no new access"
+> (side note: is "access" the right word?) then sure, we can pass the fd
+> around.
 
-I think it depends on whether one wants to filter the MMIO access based
-on the device, or based on the caller.
+What is "ownership" in a world with kvm and iommu are reading pages
+out of the same fd?
 
-> Also raw read/write macros in logic_iomem.c have the callbacks which
-> seems to be pretty costly
-> than inlining or direct function call given it has to be called for
-> every register read and write
-> which are going to be thousands in our case. In their usecase, read and
-> write callbacks are just
-> pci cfgspace reads and writes which may not be that frequently called
-> and the latency might not
-> be visible but in our case, I think it would be visible if we have a
-> callback as such. I know this is a
-> debug feature and perf isn't expected much but that wouldn't mean we
-> should not have a debug
-> feature which performs better right.
+"no new access" makes sense to me, we have access through
+read/write/mmap/splice/etc and access to pages through the private in
+kernel interface (kvm, iommu)
 
-I would expect the cost of a bus access to always dwarf the cost of
-indirect function calls and instrumentation. On the other hand,
-the cost of an inline trace call is nontrivial in terms of code size,
-which may lead to wasting significant amounts of both RAM and
-instruction cache on small machines. If you want to continue with
-your approach, it would help to include code size numbers before/after
-for a defconfig kernel, and maybe some performance numbers to
-show what this does when you enable tracing for all registers of
-a device with a lot of accesses.
-
-> On the second point, filtering by ioremap isn't much useful for our
-> usecase since ioremapped
-> region can have 100s of registers and we are interested in the exact
-> register read/write which
-> would cause any of the issues mentioned in the description of this patchset.
->
-> So I feel like the current way where we consolidate the instrumentation
-> in mmio-instrumented.h
-> seems like the better way than adding tracing to an emulated iomem
-> library.
-
-There is another point that I don't like in the implementation, which is
-the extra indirection. If we end up with your approach of doing it
-inline per caller, I would prefer having the instrumentation in
-include/asm-generic/io.h, like
-
-#ifndef readl
-#define readl readl
-static inline u32 readl(const volatile void __iomem *addr)
-{
-        u32 val;
-
-        __io_br();
-        val = __le32_to_cpu((__le32 __force)__raw_readl(addr));
-        __io_ar(val);
-        if (tracepoint_enabled(rwmmio_read))
-               log_read_mmio("readl", addr, val);
-        return val;
-}
-#endif
-
-I think this would be a lot less confusing to readers, as it is implemented
-exactly in the place that has the normal definition, and it can also have
-somewhat more logical semantics by only instrumenting the
-normal/relaxed/ioport accessors but not the __raw_* versions that
-are meant to be little more than a pointer dereference.
-
-         Arnd
+Jason
