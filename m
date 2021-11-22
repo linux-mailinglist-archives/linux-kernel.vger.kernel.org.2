@@ -2,85 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE7B458C1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 11:14:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5010458C29
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 11:17:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239111AbhKVKRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 05:17:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238914AbhKVKRX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 05:17:23 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43565C061714
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 02:14:12 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mp6Kw-0004HX-D7; Mon, 22 Nov 2021 11:14:10 +0100
-Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mp6Kv-00035t-5m; Mon, 22 Nov 2021 11:14:09 +0100
-Date:   Mon, 22 Nov 2021 11:14:09 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     devicetree@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v1 3/3] ARM: dts: add JOZ Access Point
-Message-ID: <20211122101409.GA23569@pengutronix.de>
-References: <20211014083313.26671-1-o.rempel@pengutronix.de>
- <20211014083313.26671-3-o.rempel@pengutronix.de>
- <20211121020629.GC31998@dragon>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211121020629.GC31998@dragon>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 11:12:21 up 277 days, 13:36, 154 users,  load average: 0.29, 0.59,
- 0.50
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        id S239192AbhKVKUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 05:20:53 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:33114 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236312AbhKVKUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 05:20:52 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxZ+hCbpthlxkAAA--.616S2;
+        Mon, 22 Nov 2021 18:17:38 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] MIPS: Fix using smp_processor_id() in preemptible in show_cpuinfo()
+Date:   Mon, 22 Nov 2021 18:17:37 +0800
+Message-Id: <1637576257-11590-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9AxZ+hCbpthlxkAAA--.616S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7WF47JF1Dur17Zr47ZryftFb_yoW8CFy3pa
+        y7ArW8tr4UWw4DJa4rJrZagryrXFs8Za4IkayxJ3y3Za15WF1DXrnaqF4xuFyqgr4rta1I
+        gF9FqF4Yga48ZaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvK14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VAC
+        jcxG62k0Y48FwI0_Jr0_Gr1lYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAq
+        YI8I648v4I1lc2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+        b7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+        vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
+        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxh
+        VjvjDU0xZFpf9x0JU38n5UUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 21, 2021 at 10:06:30AM +0800, Shawn Guo wrote:
-> On Thu, Oct 14, 2021 at 10:33:13AM +0200, Oleksij Rempel wrote:
-> > JOZ Access Point is imx6ull based device designed for agricultural
-> > +&usdhc2 {
-> > +	pinctrl-names = "default";
-> > +	pinctrl-0 = <&pinctrl_usdhc2>;
-> > +	mmc-pwrseq = <&usdhc2_wifi_pwrseq>;
-> > +	bus-width = <4>;
-> > +	no-1-8-v;
-> > +	no-mmc;
-> > +	no-sd;
-> > +	non-removable;
-> > +	pm-ignore-notify;
-> 
-> Not sure what this property is.
+There exists the following issue under DEBUG_PREEMPT:
 
-Huh... good point. Thx!
-Looks like it is artifact from linux-imx...
+ BUG: using smp_processor_id() in preemptible [00000000] code: systemd/1
+ caller is show_cpuinfo+0x460/0xea0
+ ...
+ Call Trace:
+ [<ffffffff8020f0dc>] show_stack+0x94/0x128
+ [<ffffffff80e6cab4>] dump_stack_lvl+0x94/0xd8
+ [<ffffffff80e74c5c>] check_preemption_disabled+0x104/0x110
+ [<ffffffff802209c8>] show_cpuinfo+0x460/0xea0
+ [<ffffffff80539d54>] seq_read_iter+0xfc/0x4f8
+ [<ffffffff804fcc10>] new_sync_read+0x110/0x1b8
+ [<ffffffff804ff57c>] vfs_read+0x1b4/0x1d0
+ [<ffffffff804ffb18>] ksys_read+0xd0/0x110
+ [<ffffffff8021c090>] syscall_common+0x34/0x58
 
-Regards,
-Oleksij
+We can see the following call trace:
+ show_cpuinfo()
+   cpu_has_fpu
+     current_cpu_data
+       smp_processor_id()
+
+ $ addr2line -f -e vmlinux 0xffffffff802209c8
+ show_cpuinfo
+ arch/mips/kernel/proc.c:188
+
+ $ head -188 arch/mips/kernel/proc.c | tail -1
+	 if (cpu_has_fpu)
+
+ arch/mips/include/asm/cpu-features.h
+ #  define cpu_has_fpu		(current_cpu_data.options & MIPS_CPU_FPU)
+
+ arch/mips/include/asm/cpu-info.h
+ #define current_cpu_data cpu_data[smp_processor_id()]
+
+Based on the above analysis, fix the issue by disabling preemption
+around cpu_has_fpu in show_cpuinfo().
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/mips/kernel/proc.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
+index 376a6e2..c6c2661 100644
+--- a/arch/mips/kernel/proc.c
++++ b/arch/mips/kernel/proc.c
+@@ -185,8 +185,10 @@ static int show_cpuinfo(struct seq_file *m, void *v)
+ 		seq_puts(m, " tx39_cache");
+ 	if (cpu_has_octeon_cache)
+ 		seq_puts(m, " octeon_cache");
++	preempt_disable();
+ 	if (cpu_has_fpu)
+ 		seq_puts(m, " fpu");
++	preempt_enable();
+ 	if (cpu_has_32fpr)
+ 		seq_puts(m, " 32fpr");
+ 	if (cpu_has_cache_cdex_p)
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.1.0
+
