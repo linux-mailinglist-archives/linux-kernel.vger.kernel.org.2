@@ -2,90 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 943374595F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 21:13:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7532F4595F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 21:14:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240250AbhKVUQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 15:16:34 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:33125 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S237217AbhKVUQc (ORCPT
+        id S240376AbhKVURF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 15:17:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237217AbhKVURD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 15:16:32 -0500
-Received: (qmail 112284 invoked by uid 1000); 22 Nov 2021 15:13:24 -0500
-Date:   Mon, 22 Nov 2021 15:13:24 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     David Niklas <Hgntkwis@vfemail.net>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-input@vger.kernel.org
-Subject: Re: I need advice with UPS connection. (ping)
-Message-ID: <YZv55KMsuSYanfYp@rowland.harvard.edu>
-References: <20201109220000.2ae98fa5@Phenom-II-x6.niklas.com>
- <20211114144842.72463ccc@Zen-II-x12.niklas.com>
- <20211114211435.GA87082@rowland.harvard.edu>
- <20211114220222.31755871@Zen-II-x12.niklas.com>
- <20211115160918.GB109771@rowland.harvard.edu>
- <20211117002359.03b36ec6@Zen-II-x12.niklas.com>
- <20211117170817.GD172151@rowland.harvard.edu>
- <20211119171915.6a8cac47@Zen-II-x12.niklas.com>
- <YZm03KTcWOwtMtCN@rowland.harvard.edu>
- <20211122112526.501c5f66@Zen-II-x12.niklas.com>
+        Mon, 22 Nov 2021 15:17:03 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7899DC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 12:13:56 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id v15-20020a9d604f000000b0056cdb373b82so30431152otj.7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 12:13:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YH8kAQYBMNnEP5TJ/7f0iMbajrYVM/MJL8tkaAu5au0=;
+        b=kiBfJe0Sp/7fCUicBIpbzkEOPjjfZpR4p9FbobWCrON11/bEjzmtsvZPcJMhGgVTY2
+         LoQkQlCqmfVGW0/woOQpVBOS0rGXYjcaF6CT764Yb28NKqWabJ9JYQTV8ZEOxYOlEVaW
+         P5AR+BSFRQg/foOghRwx7Dokjp7RrI6i/raqO5vtjfZmeUcg0Lh7lo5ASP3JRnwphsTf
+         bMXrvHiHV0++ABnI2H23EXPOfrW7w81a0JHyv1VU7J3weTk4lSZq9zIK2zG8fyb38Xlj
+         fATjXhd1rUSHY9Mvk8BKxpmhGddggEeGqA9yZxqBWqFxPKpoPwQeTIVeUT1A0U6D0OCk
+         aAGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=YH8kAQYBMNnEP5TJ/7f0iMbajrYVM/MJL8tkaAu5au0=;
+        b=EXmXFEXMBqulHzLEQOnam34vOGgKxdF8MbHiyIYnItfOFdUq3+P8pqJ1jtRrIB3F+A
+         zJsq8XJLz8q+fl58w4HqmsvsSxPcIMHZ5GTHjRl7sVWnuoFz5yYgdlgv67E3dgTH3gjK
+         tOBDOUYUY0It2prRHm4YvXbQR0Z7xP05Hx4wcX/EbgcmczGOeoBxzKjC7kDhzIi6HMfu
+         DzdiPHdPYfqWUxtFa4/KG2T1hWA3YIWw+wfD52gd0YJQMVuESwAcFfO9lkFkbPopaClg
+         XVpXUdmAPtj4Jbuk08CpkmLuEj+J01QypCilOTjMMf5ogeP2amRj9t7KVIEC/UgvjuKW
+         NvoA==
+X-Gm-Message-State: AOAM532P/4RGNq79seHdH/hIbK2Dx0Kh4V7vThH4/vhCO/xGNtllLCKU
+        sczM2uHm/7jTrlUb2wPlX9k=
+X-Google-Smtp-Source: ABdhPJwqz1stO7SbKWI65P+sB5nLu8zupwaD0LmiUxLUxg4JUn5glmM6mbDXWNPuIVDDXBJYp/QT3w==
+X-Received: by 2002:a05:6830:44ab:: with SMTP id r43mr27009175otv.251.1637612035909;
+        Mon, 22 Nov 2021 12:13:55 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w71sm2073832oiw.6.2021.11.22.12.13.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Nov 2021 12:13:55 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Anton Altaparmakov <anton@tuxera.com>
+Cc:     linux-ntfs-dev@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH] fs: ntfs: Mark NTFS_RW as BROKEN for PPC
+Date:   Mon, 22 Nov 2021 12:13:52 -0800
+Message-Id: <20211122201352.1754061-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211122112526.501c5f66@Zen-II-x12.niklas.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 11:25:26AM -0500, David Niklas wrote:
-> Ok, I first edited the kernel to return -ENOMEM like you suggested but
-> the UPS still disconnected. I then edited it again to re-add the 1060
-> byte request and the UPS still disconnected.
-> 
-> I'm attaching the usbmon traces.
-> If you need any additional info I'll do my best to provide it.
+NTFS_RW code allocates page size dependent arrays on the stack. This
+results in build failures if the page size is 64k, which is now the
+default for PPC.
 
-Holy cow!  I just realized what's going on.  And these little changes 
-we've been messing around with have nothing to do with it.
+fs/ntfs/aops.c: In function 'ntfs_write_mst_block':
+fs/ntfs/aops.c:1311:1: error:
+	the frame size of 2240 bytes is larger than 2048 bytes
 
-For the first time, I looked at the timestamps in the usbmon traces.  It 
-turns out that the disconnects occur several seconds after the kernel 
-retrieves the HID report descriptor from the device.  Under normal 
-conditions we would expect to see report packets coming in from the 
-device, starting just a fraction of a second after the descriptor is 
-received.  But that isn't happening in the Linux traces, whereas it does 
-happen in the Windows pcap log.
+Increasing the maximum frame size for PPC just to silence this error does
+not really help. It would have to be set to a really large value for 256k
+pages. Such a large frame size could potentially result in stack overruns
+in this code and elsewhere and is therefore not desirable. Mark NTFS_RW
+as broken for PPC instead.
 
-I would guess that the UPS is programmed to disconnect itself 
-electronically from the USB bus if it doesn't get any requests for 
-reports within a couple of seconds.  That certainly would explain what 
-you've been seeing.  I can't imagine why it would be programmed to 
-behave this way, but companies have been known to do stranger things.
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+The Kconfig language does not support "depends on XXX if YYY",
+so this is the next best choice.
 
-As for why the kernel doesn't try to get the reports...  That's a little 
-harder to answer.  Maybe Jiri or Benjamin will know something about it.  
+ fs/ntfs/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-The UPS's vendor ID is 0d9f (POWERCOM) and the product ID is 0004.  Now, 
-the drivers/hid/hid-quirks.c file contains a quirk entry for 0d9f:0002 
-(product POWERCOM_UPS), which is probably an earlier model of the same 
-device, or a very similar device.  This quirk entry is in the 
-hid_ignore_list; it tells the HID core not to handle the device at all.
+diff --git a/fs/ntfs/Kconfig b/fs/ntfs/Kconfig
+index 1667a7e590d8..094ddef6010a 100644
+--- a/fs/ntfs/Kconfig
++++ b/fs/ntfs/Kconfig
+@@ -51,6 +51,7 @@ config NTFS_DEBUG
+ 
+ config NTFS_RW
+ 	bool "NTFS write support"
++	depends on BROKEN || !PPC
+ 	depends on NTFS_FS
+ 	help
+ 	  This enables the partial, but safe, write support in the NTFS driver.
+-- 
+2.33.0
 
-I don't know why that quirk entry is present, and furthermore, it can't 
-directly affect what is happening with your device because the product 
-IDs are different.  Still, it is an indication that something strange is 
-going on behind the scenes.
-
-Perhaps there is no kernel driver for these UPS devices?  Perhaps the 
-intention is that some user program will handle all the communication 
-when one of them is detected?  A quick search on Google turns up 
-usbhid-ups, part of Network USB Tools (NUT) -- maybe you need to 
-install that package in order to use the device.
-
-I don't know what the full story is.  With luck, Jiri or Benjamin can 
-help more.
-
-Alan Stern
