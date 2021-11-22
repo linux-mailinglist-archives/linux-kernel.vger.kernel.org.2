@@ -2,113 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B79458865
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 04:35:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B27DA45884A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 04:17:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238637AbhKVDiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 22:38:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232690AbhKVDiD (ORCPT
+        id S238799AbhKVDTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 22:19:53 -0500
+Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17266 "EHLO
+        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238680AbhKVDTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 22:38:03 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA2EC061574;
-        Sun, 21 Nov 2021 19:34:57 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id r138so4535749pgr.13;
-        Sun, 21 Nov 2021 19:34:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:organization:mime-version
-         :content-transfer-encoding;
-        bh=JGBn1lQayMnvk5SYEnWwopHGKPW7YJeqgCL9mkpoJ34=;
-        b=GKuf5TJI6uvcJKJwjsXYULnUa66irwmLfzeztcZ8oAHAtL0PLYvORmDI/X0iWIxzdL
-         HmMBaBNDfREaIiMwVvp+k7VUFuWM8nA8POMCFO9Hyjsno/6DXPwrYiW82gTxAo4LNBTP
-         f12S6SkQyMVkPJNT6O8hLHtMkT1xpBw1uQzOLESDmz4dqvnoZgUsBbGIGySjTZZmMyYf
-         QP3rZ1qLhNfzLsJeC0jJHDrUkghJ5uM4Gqjh+g2mqXAxoPzLSkqTKfzacOCnHFgdfzqk
-         OpcIf7nkgJk+7PM5/sTU9suzJ1WYlBtmP3g4igBBUdnZ/tSfbrxO8XMGNl9SFLoSSk7f
-         l+og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:organization
-         :mime-version:content-transfer-encoding;
-        bh=JGBn1lQayMnvk5SYEnWwopHGKPW7YJeqgCL9mkpoJ34=;
-        b=a//yWCzauN0Jv5lM2pQMc1kIae+2r8yOkOnb21/di5d12Z7WBxjD+k4LEdJvb+xQNR
-         WU7n8GVLSo34POn9E3XoSRlbXp3wRAsCYToqjb3FqqHwlApukspSOV2YdSOtGY/SY/m5
-         +lqUD45RsZvuNiEShWA8t71cZma/MOHZnGepo6q6TLI5H7wOHRPSLtw4Q5eIzC074aHx
-         iJcbyQowXGb6Yvo5xsH2Z4fEsjJFoaAEGPtUkATRwFMunCznAEw4H/j6sb3d/Y0WoswD
-         jWHqh1KhZAcEirjHz4zzvd5SSw0zZ/1vRGPpQLrfy+DCu6fPb95DYZTGRuLncvCodQ0A
-         PD+w==
-X-Gm-Message-State: AOAM533cpGDojpkj5hiHAsqAXJnZ1ydkB5+VK2AdQwnnGsEY9cox4gRX
-        npEQjFT+9GHdDXFDGp+xbLc=
-X-Google-Smtp-Source: ABdhPJzbtMlHIwYNN2ppajgDSPNxu3KUwho2MEopPGg2LjwXiAjme+TJwfxsAur8aU+h8LTGasVMqA==
-X-Received: by 2002:a63:f749:: with SMTP id f9mr31061332pgk.330.1637552096890;
-        Sun, 21 Nov 2021 19:34:56 -0800 (PST)
-Received: from ubuntu ([222.129.53.202])
-        by smtp.gmail.com with ESMTPSA id k2sm7327273pfc.9.2021.11.21.19.34.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Nov 2021 19:34:56 -0800 (PST)
-Date:   Mon, 22 Nov 2021 09:58:05 +0800
-From:   Aili Yao <yaoaili126@gmail.com>
-To:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com
-Cc:     x86@kernel.org, hpa@zytor.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yaoaili@kingsoft.com
-Subject: [PATCH] KVM: LAPIC: Per vCPU control over
- kvm_can_post_timer_interrupt
-Message-ID: <20211122095619.000060d2@gmail.com>
-Organization: ksyun
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; x86_64-w64-mingw32)
+        Sun, 21 Nov 2021 22:19:43 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1637550055; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=SQ4HznWkzxNzbiGpThM6yk0xH2hNm1Zw6oMu1lXCI9i7aUb6zB5/dst5s4WZhQ+4hitgVMosItNKXtDALUm/64VKTAspOk665Pskm9UfD08FwoppMx8sYGQOOGdcw2lqgcoV3u0E47CSgPyMWedC2nDvVwBVPfvM5tMXwGlka7w=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1637550055; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=BgufH6WwCixRjbj4dwf1Rqs1qZmdzDxvnYVfr7T13V0=; 
+        b=kwPWe05wABZhXZ6rYo27kz5GuLZLDCiZcD4XNdQveWj5HzsqDCoCRK4AGhFK8S4uZvIsuv7sdLc2gHhTseadFQAQ9dge+g4mctmQfkhUEcEqMBaLDCjq6+EBjghri0qdtICwoj9ao8bO9ScCyTfX8ZkDhUbVNgQ4bgyF9H1YOr4=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1637550055;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
+        bh=BgufH6WwCixRjbj4dwf1Rqs1qZmdzDxvnYVfr7T13V0=;
+        b=GHgDgbScnnz8kcon/45tZcZ2Tr5rw5Ews4IW+5JtHkj5oTKl8PhVVQcH8x7aYsTe
+        oMXxkwcF16GXUSWg4vVirBWVcZ/K8NKNxXNNHctUM9hrfZi+421ZS7WemvEZbkntr7N
+        fyG4ALxonuenwmrLKDQYb/ukaFwM/6Wgs7LgcbZQ=
+Received: from localhost.localdomain (81.71.33.115 [81.71.33.115]) by mx.zoho.com.cn
+        with SMTPS id 1637550053957227.19268519972252; Mon, 22 Nov 2021 11:00:53 +0800 (CST)
+From:   Chengguang Xu <cgxu519@mykernel.net>
+To:     miklos@szeredi.hu, jack@suse.cz, amir73il@gmail.com
+Cc:     linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chengguang Xu <charliecgxu@tencent.com>
+Message-ID: <20211122030038.1938875-1-cgxu519@mykernel.net>
+Subject: [RFC PATCH V6 0/7] implement containerized syncfs for overlayfs
+Date:   Mon, 22 Nov 2021 11:00:31 +0800
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=utf8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aili Yao <yaoaili@kingsoft.com>
+From: Chengguang Xu <charliecgxu@tencent.com>
 
-When we isolate some pyhiscal cores, We may not use them for kvm guests,
-We may use them for other purposes like DPDK, or we can make some kvm
-guests isolated and some not, the global judgement pi_inject_timer is
-not enough; We may make wrong decisions:
+Current syncfs(2) syscall on overlayfs just calls sync_filesystem()
+on upper_sb to synchronize whole dirty inodes in upper filesystem
+regardless of the overlay ownership of the inode. In the use case of
+container, when multiple containers using the same underlying upper
+filesystem, it has some shortcomings as below.
 
-In such a scenario, the guests without isolated cores will not be
-permitted to use vmx preemption timer, and tscdeadline fastpath also be
-disabled, both will lead to performance penalty.
+(1) Performance
+Synchronization is probably heavy because it actually syncs unnecessary
+inodes for target overlayfs.
 
-So check whether the vcpu->cpu is isolated, if not, don't post timer
-interrupt.
+(2) Interference
+Unplanned synchronization will probably impact IO performance of
+unrelated container processes on the other overlayfs.
 
-Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
----
- arch/x86/kvm/lapic.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+This series try to implement containerized syncfs for overlayfs so that
+only sync target dirty upper inodes which are belong to specific overlayfs
+instance. By doing this, it is able to reduce cost of synchronization and=
+=20
+will not seriously impact IO performance of unrelated processes.
 
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index 759952dd1222..72dde5532101 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -34,6 +34,7 @@
- #include <asm/delay.h>
- #include <linux/atomic.h>
- #include <linux/jump_label.h>
-+#include <linux/sched/isolation.h>
- #include "kvm_cache_regs.h"
- #include "irq.h"
- #include "ioapic.h"
-@@ -113,7 +114,8 @@ static inline u32 kvm_x2apic_id(struct kvm_lapic *apic)
- 
- static bool kvm_can_post_timer_interrupt(struct kvm_vcpu *vcpu)
- {
--	return pi_inject_timer && kvm_vcpu_apicv_active(vcpu);
-+	return pi_inject_timer && kvm_vcpu_apicv_active(vcpu) &&
-+		!housekeeping_cpu(vcpu->cpu, HK_FLAG_TIMER);
- }
- 
- bool kvm_can_use_hv_timer(struct kvm_vcpu *vcpu)
--- 
-2.25.1
+v1->v2:
+- Mark overlayfs' inode dirty itself instead of adding notification
+mechanism to vfs inode.
+
+v2->v3:
+- Introduce overlayfs' extra syncfs wait list to wait target upper inodes
+in ->sync_fs.
+
+v3->v4:
+- Using wait_sb_inodes() to wait syncing upper inodes.
+- Mark overlay inode dirty only when having upper inode and VM_SHARED
+flag in ovl_mmap().
+- Check upper i_state after checking upper mmap state
+in ovl_write_inode.
+
+v4->v5:
+- Add underlying inode dirtiness check after mnt_drop_write().
+- Handle both wait/no-wait mode of syncfs(2) in overlayfs' ->sync_fs().
+
+v5->v6:
+- Rebase to latest overlayfs-next tree.
+- Mark oerlay inode dirty when it has upper instead of marking dirty on
+  modification.
+- Trigger dirty page writeback in overlayfs' ->write_inode().
+- Mark overlay inode 'DONTCACHE' flag.
+- Delete overlayfs' ->writepages() and ->evict_inode() operations.
+
+Chengguang Xu (7):
+  ovl: setup overlayfs' private bdi
+  ovl: mark overlayfs inode dirty when it has upper
+  ovl: implement overlayfs' own ->write_inode operation
+  ovl: set 'DONTCACHE' flag for overlayfs inode
+  fs: export wait_sb_inodes()
+  ovl: introduce ovl_sync_upper_blockdev()
+  ovl: implement containerized syncfs for overlayfs
+
+ fs/fs-writeback.c         |  3 ++-
+ fs/overlayfs/inode.c      |  5 +++-
+ fs/overlayfs/super.c      | 49 ++++++++++++++++++++++++++++++++-------
+ fs/overlayfs/util.c       |  1 +
+ include/linux/writeback.h |  1 +
+ 5 files changed, 48 insertions(+), 11 deletions(-)
+
+--=20
+2.27.0
+
 
