@@ -2,82 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CC74587D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 02:41:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0434587D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 02:42:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235088AbhKVBoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 20:44:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44076 "EHLO
+        id S233981AbhKVBpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 20:45:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230132AbhKVBoH (ORCPT
+        with ESMTP id S231954AbhKVBpd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 20:44:07 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 325A5C061574;
-        Sun, 21 Nov 2021 17:41:02 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id t5so70094660edd.0;
-        Sun, 21 Nov 2021 17:41:02 -0800 (PST)
+        Sun, 21 Nov 2021 20:45:33 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD7EC061574;
+        Sun, 21 Nov 2021 17:42:28 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id l8so15172171qtk.6;
+        Sun, 21 Nov 2021 17:42:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=j8XFWWjDsVEnC3bQiBgasTNHcyOoBnNSVWKYjD0uv+Q=;
-        b=SliAfjpeJtw6aAbl3ATj7cbUydN04jSl6QGK23hQ0Mu41WpyAOu203eYTVZ5svSnI4
-         qYHElZFmfdNn9IGruxb5MGeygWSJxs18+eCEQhFIt5fjxlkziVMFdG/smjb5jB7pluAj
-         csZISjJfjWE2jVNv95VO5amTheGmb7hGCeAGSoageVrjo/U9Lw+2vKe5TkhgjnsXxqW5
-         5rT7G99UJxH5nL+Q++AruEO7AXN+hiKpY0VZBv8PKhn2BKWEdHbd3tYsXfSMJovde3x7
-         OId5S4wJgfvSgF6210loy7wQqjDOBdMR+fxS7q4KS0mz5C0x+vtlgf67QWPpYeFPrmcd
-         hCjQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YHhX9mRLFg+NIZQtcWR5hAWGG8rnJ/nSmaMwFzPyXvo=;
+        b=ZeJBxBIntjTCL2KUjzUQwwULcRs5wsLGmL8wsvlyILNAGgZHAt0ovQUME3SdbyBxUJ
+         RUUNM4oCr6UDeXsJgTfPNKq2JBhnyNHfLyFZXnFt6ASiSndfQ/tFdFH8wxvXpxFaSBiM
+         e0xfsWYgM/pOlu9rgLEqUER0J8hdt03Z1tNYTse9KE2GPiwzBvcT/+cp6U3RYc15yWl8
+         IOZLBWFCO68HDW6voh+PzgOdnqJFwv/pgg6R20hBnPpwtZ5wegYIAsbPutpWAGiHYiha
+         6XN4LVDVuRSMlWbSPV9WNu8JpBhIszOI7wmVrQcFADXWaRuLYqDq0smdq/ke9hZx6prM
+         3oIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=j8XFWWjDsVEnC3bQiBgasTNHcyOoBnNSVWKYjD0uv+Q=;
-        b=nu5QFmHhWV5TqSAiRyG+Wkte7fzNRacCMlSeAYxCUWVP3syzSJUrn+IHCR/DXEFjRW
-         AGT67CacPQuQLQb3VpKxmj7LLu1LsxhYBaXBOCutrrPyGOw0jTMWyNrw9EXv3KHg6QLf
-         +Mj85cQBkn9NfbbC5gIcrpDW94Ip3FRcbOzHUsNgqEo97/rSt1QSsqJ1kdC9pJdYLqmq
-         Pvz4VZh0sSARopiiSTjki319p3JnH/GxDDKMMh03Y6+VkoKsf1QEcM7XbtIbweY6SKPo
-         /z+0Md+KqM+0syHIaqyVBhwibhv8ZbmOAUp+W4isZzvAzk6ppnZmFzbVO+vJl+O9y8UR
-         aW5A==
-X-Gm-Message-State: AOAM533ZhF74Ne8f9+0qBizDsZaBwQHsQPD5vlyVXFAWFmm+1HZlyTdh
-        Y6/+vggBRVNLOiBJqkOlf0vgsbieIJU=
-X-Google-Smtp-Source: ABdhPJyUvZP0+3tzw3IGRUG4Nbt1tGyB22GkhrT4R6nhT1tj9pVno3PRb48JolRLKK4aflm7w5AsQw==
-X-Received: by 2002:a17:907:94c2:: with SMTP id dn2mr23168746ejc.325.1637545260741;
-        Sun, 21 Nov 2021 17:41:00 -0800 (PST)
-Received: from skbuf ([188.25.163.189])
-        by smtp.gmail.com with ESMTPSA id c8sm3241427edu.60.2021.11.21.17.40.59
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YHhX9mRLFg+NIZQtcWR5hAWGG8rnJ/nSmaMwFzPyXvo=;
+        b=qrT7879PACOhRyLA0FX7hOnp0uDckbKa3M4pMrW/4ramSIcGxotOpk3/BY6o1bmYLL
+         IMeA/Mp7xO5tOl80WPIcnobvvJEspufZ37Li6MHdBmLEsfrQmT+Pxu5D1SgFcotDG1uR
+         EpPQBdMrJv/to9uwjScqCzXHgkJhjbpErwvjdj01v75d48GvL7jYd60uYMG65QUlVWu6
+         rBXyvIrPCw4s4nSjd5aueZKrHdutGKb4ElimCT163KvVNtuWKVe1lwq5FDsTIwOfExN6
+         jPMJiEWvkt6k63jlKuAUwpAbsYE6QR+fuf9TZnIzraO/BCCuhXGQEwZw82Fl0OJ/tvpC
+         rvlw==
+X-Gm-Message-State: AOAM5308zjbfA2H2Y/0KnDdaZ2qBb0dhPNCXnQFW1d96i12c/sOEG+U5
+        JmvxAsoPPnViNBbM+STT+mVYTzGmJjE=
+X-Google-Smtp-Source: ABdhPJy0nVvLsQj2tLHWvOF/u8edeBg/d+NxTVryRBk6UZKV1fWq4585WPeY3Q80rBlSSHH8tha1/Q==
+X-Received: by 2002:ac8:5f47:: with SMTP id y7mr27000452qta.342.1637545347485;
+        Sun, 21 Nov 2021 17:42:27 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id j22sm3914218qko.68.2021.11.21.17.42.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Nov 2021 17:41:00 -0800 (PST)
-Date:   Mon, 22 Nov 2021 03:40:58 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH v2 8/9] net: dsa: qca8k: add set_ageing_time
- support
-Message-ID: <20211122014058.ffamphqxrgbftpaq@skbuf>
-References: <20211122010313.24944-1-ansuelsmth@gmail.com>
- <20211122010313.24944-9-ansuelsmth@gmail.com>
+        Sun, 21 Nov 2021 17:42:26 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: ran.jianping@zte.com.cn
+To:     peterz@infradead.org
+Cc:     mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, yao.jin@linux.intel.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ran jianping <ran.jianping@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] perf tools: remove unneeded variable
+Date:   Mon, 22 Nov 2021 01:41:59 +0000
+Message-Id: <20211122014159.25317-1-ran.jianping@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211122010313.24944-9-ansuelsmth@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 02:03:12AM +0100, Ansuel Smith wrote:
-> qca8k support setting ageing time in step of 7s. Add support for it and
-> set the max value accepted of 7645m.
-> Documentation talks about support for 10000m but that values doesn't
-> make sense as the value doesn't match the max value in the reg.
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
+From: ran jianping <ran.jianping@zte.com.cn>
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Fix the following coccicheck review:
+./tools/perf/util/evlist.c:1303:5-8: Unneeded variable
+
+Remove unneeded variable used to store return value.
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: ran jianping <ran.jianping@zte.com.cn>
+---
+ tools/perf/util/evlist.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index 5f92319ce258..d64fe767f583 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -1300,7 +1300,6 @@ static int evlist__create_syswide_maps(struct evlist *evlist)
+ {
+ 	struct perf_cpu_map *cpus;
+ 	struct perf_thread_map *threads;
+-	int err = -ENOMEM;
+ 
+ 	/*
+ 	 * Try reading /sys/devices/system/cpu/online to get
+@@ -1325,7 +1324,7 @@ static int evlist__create_syswide_maps(struct evlist *evlist)
+ out_put:
+ 	perf_cpu_map__put(cpus);
+ out:
+-	return err;
++	return -ENOMEM;
+ }
+ 
+ int evlist__open(struct evlist *evlist)
+-- 
+2.25.1
+
