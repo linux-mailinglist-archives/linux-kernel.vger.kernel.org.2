@@ -2,79 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E074458DDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97DC1458DDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239397AbhKVLzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 06:55:04 -0500
-Received: from comms.puri.sm ([159.203.221.185]:43756 "EHLO comms.puri.sm"
+        id S239422AbhKVL4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 06:56:01 -0500
+Received: from foss.arm.com ([217.140.110.172]:40450 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238242AbhKVLzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 06:55:03 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id 545DCE13E7;
-        Mon, 22 Nov 2021 03:51:57 -0800 (PST)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id AKUhHz9mPKVs; Mon, 22 Nov 2021 03:51:56 -0800 (PST)
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com
-Cc:     peng.fan@nxp.com, l.stach@pengutronix.de, kernel@puri.sm,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Subject: [PATCH] soc: imx: gpcv2: avoid unbalanced powering off during system suspend
-Date:   Mon, 22 Nov 2021 12:51:45 +0100
-Message-Id: <20211122115145.177196-1-martin.kepplinger@puri.sm>
+        id S230425AbhKVL4A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 06:56:00 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0B96D6D;
+        Mon, 22 Nov 2021 03:52:54 -0800 (PST)
+Received: from bogus (unknown [10.57.46.248])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DC9913F73B;
+        Mon, 22 Nov 2021 03:52:52 -0800 (PST)
+Date:   Mon, 22 Nov 2021 11:52:50 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Michael Kelley <mikelley@microsoft.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] firmware: smccc: Fix check for ARCH_SOC_ID not
+ implemented
+Message-ID: <20211122115250.zlk4az3idtqhlm3z@bogus>
+References: <1637365141-16823-1-git-send-email-mikelley@microsoft.com>
+ <20211122083503.umkqv2t75osypsbx@bogus>
+ <CAK8P3a2c_Cw1p_3GpnwJ9ycRjAEDyLSsRMuK12w0TYNYQ2xh7Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2c_Cw1p_3GpnwJ9ycRjAEDyLSsRMuK12w0TYNYQ2xh7Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yes, I don't yet sign-off on this - I'm not sure whether this works around
-a probem in the power domain (or regulator?) core:
+On Mon, Nov 22, 2021 at 11:56:16AM +0100, Arnd Bergmann wrote:
+> On Mon, Nov 22, 2021 at 9:35 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
+> > On Fri, Nov 19, 2021 at 03:39:01PM -0800, Michael Kelley wrote:
+> > > The ARCH_FEATURES function ID is a 32-bit SMC call, which returns
+> > > a 32-bit result per the SMCCC spec.  Current code is doing a 64-bit
+> > > comparison against -1 (SMCCC_RET_NOT_SUPPORTED) to detect that the
+> > > feature is unimplemented.  That check doesn't work in a Hyper-V VM,
+> > > where the upper 32-bits are zero as allowed by the spec.
+> > >
+> > > Cast the result as an 'int' so the comparison works. The change also
+> > > makes the code consistent with other similar checks in this file.
+> > >
+> > > Fixes: 821b67fa4639 ("firmware: smccc: Add ARCH_SOC_ID support")
+> >
+> > Good catch.
+> >
+> > Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+> >
+> > Can you please re-post with my review tag keeping arm@kernel.org and
+> > soc@kernel.org ? I don't have any other fixes at the moment, we can
+> > ask SoC maintainers to fix this up directly.
+>
+> In general, I think the easiest way would be for you to forward the
+> patch with your Signed-off-by, when you don't have other material
+> for a pull request.
+>
 
-When tranisioning to system sleep on imx8mq I see the following errors
-(and resuming doesn't succeed):
+Thanks for the tip, I will follow that in future.
 
-[ 2594.505465] ldo5: Underflow of regulator enable count
-[ 2594.524045] imx-pgc imx-pgc-domain.0: failed to disable regulator: -22
-[ 2594.531352] imx-pgc imx-pgc-domain.5: failed to disable regulator: -5
-[ 2594.547119] imx-pgc imx-pgc-domain.6: failed to disable regulator: -5
+> I've applied this patch from the list now.
+>
 
-So I started debugging the "ldo5" regulator that is the power-supply for
-the imx8mq mipi power domain "0" (on the imx8mq-librem5 board).
+Thanks for that.
 
-During runtime-pm only, things are fine. When transitioning to system
-suspend, I at least see genpd_power_off() executing after the
-"System suspend is in progress" check, where it's supposed to have returned
-early already (due to genpd->prepared_count > 0). That leads to the
-unbalance power-off.
-
-While this patch "fixes" my problem, where is the root cause of this?
-Thank you for your help in this!
-
-so long,
-                                martin
----
- drivers/soc/imx/gpcv2.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/soc/imx/gpcv2.c b/drivers/soc/imx/gpcv2.c
-index b8d52d8d29db..4b1b9176127f 100644
---- a/drivers/soc/imx/gpcv2.c
-+++ b/drivers/soc/imx/gpcv2.c
-@@ -318,6 +318,9 @@ static int imx_pgc_power_down(struct generic_pm_domain *genpd)
- 	u32 reg_val, pgc;
- 	int ret;
- 
-+	if (pm_runtime_suspended(domain->dev))
-+		return 0;
-+
- 	/* Enable reset clocks for all devices in the domain */
- 	if (!domain->keep_clocks) {
- 		ret = clk_bulk_prepare_enable(domain->num_clks, domain->clks);
--- 
-2.30.2
-
+--
+Regards,
+Sudeep
