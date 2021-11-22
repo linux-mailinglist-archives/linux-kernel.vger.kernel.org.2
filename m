@@ -2,91 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C21458D47
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:22:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A010458D48
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:23:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234167AbhKVLZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 06:25:52 -0500
-Received: from mga11.intel.com ([192.55.52.93]:26883 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229516AbhKVLZv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 06:25:51 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10175"; a="232252613"
-X-IronPort-AV: E=Sophos;i="5.87,254,1631602800"; 
-   d="scan'208";a="232252613"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 03:22:44 -0800
-X-IronPort-AV: E=Sophos;i="5.87,254,1631602800"; 
-   d="scan'208";a="456248443"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 03:22:43 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mp7PC-009PlW-Pv;
-        Mon, 22 Nov 2021 13:22:38 +0200
-Date:   Mon, 22 Nov 2021 13:22:38 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Orlando Chamberlain <redecorating@protonmail.com>
-Cc:     lee.jones@linaro.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mfd: intel-lpss-pci: fix clock speed for 38a8 UART
-Message-ID: <YZt9fpdd284FdKSh@smile.fi.intel.com>
-References: <20211120083312.41230-1-redecorating@protonmail.com>
+        id S233345AbhKVL0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 06:26:05 -0500
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:32935 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238574AbhKVLZ6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 06:25:58 -0500
+Received: (Authenticated sender: alex@ghiti.fr)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 732BD1C000F;
+        Mon, 22 Nov 2021 11:22:47 +0000 (UTC)
+Message-ID: <325663a5-d9a1-a8b8-7f16-c2985c319864@ghiti.fr>
+Date:   Mon, 22 Nov 2021 12:22:46 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211120083312.41230-1-redecorating@protonmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH 6/8] mm: Allow arch specific arch_randomize_brk() with
+ CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
+Content-Language: fr
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-mm@kvack.org
+References: <cover.1637570556.git.christophe.leroy@csgroup.eu>
+ <e2209d0f1f3c1b581592bd6c32243402ccfe3dde.1637570556.git.christophe.leroy@csgroup.eu>
+From:   Alex Ghiti <alex@ghiti.fr>
+In-Reply-To: <e2209d0f1f3c1b581592bd6c32243402ccfe3dde.1637570556.git.christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 20, 2021 at 08:34:26AM +0000, Orlando Chamberlain wrote:
+Hi Christophe,
 
-Thanks, my comments below.
-
-> This device is found in the MacBookPro16,2, and as the MacBookPro16,1 is
-> from the same generation of MacBooks and has a UART with bxt_uart_info,
-> it was incorrectly assumed that the MacBookPro16,2's UART would have the
-> same info.
+Le 22/11/2021 à 09:48, Christophe Leroy a écrit :
+> Commit e7142bf5d231 ("arm64, mm: make randomization selected by
+> generic topdown mmap layout") introduced a default version of
+> arch_randomize_brk() provided when
+> CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT is selected.
 > 
-> This led to the wrong clock speed being used, and the Bluetooth
-> controller exposed by the UART receiving and sending random data, which
-> was incorrectly assumed to be an issue with the Bluetooth stuff, not an
-> error with the UART side of things.
+> powerpc could select CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
+> but needs to provide its own arch_randomize_brk().
 > 
-> Changing the info to spt_uart_info changes the clock speed and makes it
-> send and receive data correctly.
+> In order to allow that, don't make
+> CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT select
+> CONFIG_ARCH_HAS_ELF_RANDOMIZE. Instead, ensure that
+> selecting CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT and
+> selecting CONFIG_ARCH_HAS_ELF_RANDOMIZE has the same effect.
 
-> Fixes: ddb1ada416fd ("mfd: intel-lpss: Add support for MacBookPro16,2 ICL-N UART")
+This feels weird to me since if CONFIG_ARCH_HAS_ELF_RANDOMIZE is used 
+somewhere else at some point, it is not natural to add 
+CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT: can't we use a __weak 
+function or a new CONFIG_ARCH_HAS_RANDOMIZE_BRK?
+
+Thanks,
+
+Alex
+
 > 
-> Signed-off-by: Orlando Chamberlain <redecorating@protonmail.com>
-
-Tag block shouldn't have blank lines. Otherwise LGTM,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
->  drivers/mfd/intel-lpss-pci.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Then only provide the default arch_randomize_brk() when the
+> architecture has not selected CONFIG_ARCH_HAS_ELF_RANDOMIZE.
 > 
-> diff --git a/drivers/mfd/intel-lpss-pci.c b/drivers/mfd/intel-lpss-pci.c
-> index a872b4485eac..f70464ce8e3d 100644
-> --- a/drivers/mfd/intel-lpss-pci.c
-> +++ b/drivers/mfd/intel-lpss-pci.c
-> @@ -254,7 +254,7 @@ static const struct pci_device_id intel_lpss_pci_ids[] = {
->  	{ PCI_VDEVICE(INTEL, 0x34eb), (kernel_ulong_t)&bxt_i2c_info },
->  	{ PCI_VDEVICE(INTEL, 0x34fb), (kernel_ulong_t)&spt_info },
->  	/* ICL-N */
-> -	{ PCI_VDEVICE(INTEL, 0x38a8), (kernel_ulong_t)&bxt_uart_info },
-> +	{ PCI_VDEVICE(INTEL, 0x38a8), (kernel_ulong_t)&spt_uart_info },
->  	/* TGL-H */
->  	{ PCI_VDEVICE(INTEL, 0x43a7), (kernel_ulong_t)&bxt_uart_info },
->  	{ PCI_VDEVICE(INTEL, 0x43a8), (kernel_ulong_t)&bxt_uart_info },
-> -- 
-> 2.34.0
+> Cc: Alexandre Ghiti <alex@ghiti.fr>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>   arch/Kconfig                  | 1 -
+>   fs/binfmt_elf.c               | 3 ++-
+>   include/linux/elf-randomize.h | 3 ++-
+>   mm/util.c                     | 2 ++
+>   4 files changed, 6 insertions(+), 3 deletions(-)
 > 
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index 26b8ed11639d..ef3ce947b7a1 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -1000,7 +1000,6 @@ config HAVE_ARCH_COMPAT_MMAP_BASES
+>   config ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
+>   	bool
+>   	depends on MMU
+> -	select ARCH_HAS_ELF_RANDOMIZE
+>   
+>   config HAVE_STACK_VALIDATION
+>   	bool
+> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+> index f8c7f26f1fbb..28968a189a91 100644
+> --- a/fs/binfmt_elf.c
+> +++ b/fs/binfmt_elf.c
+> @@ -1287,7 +1287,8 @@ static int load_elf_binary(struct linux_binprm *bprm)
+>   		 * (since it grows up, and may collide early with the stack
+>   		 * growing down), and into the unused ELF_ET_DYN_BASE region.
+>   		 */
+> -		if (IS_ENABLED(CONFIG_ARCH_HAS_ELF_RANDOMIZE) &&
+> +		if ((IS_ENABLED(CONFIG_ARCH_HAS_ELF_RANDOMIZE) ||
+> +		     IS_ENABLED(CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT)) &&
+>   		    elf_ex->e_type == ET_DYN && !interpreter) {
+>   			mm->brk = mm->start_brk = ELF_ET_DYN_BASE;
+>   		}
+> diff --git a/include/linux/elf-randomize.h b/include/linux/elf-randomize.h
+> index da0dbb7b6be3..1e471ca7caaf 100644
+> --- a/include/linux/elf-randomize.h
+> +++ b/include/linux/elf-randomize.h
+> @@ -4,7 +4,8 @@
+>   
+>   struct mm_struct;
+>   
+> -#ifndef CONFIG_ARCH_HAS_ELF_RANDOMIZE
+> +#if !defined(CONFIG_ARCH_HAS_ELF_RANDOMIZE) && \
+> +	!defined(CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT)
+>   static inline unsigned long arch_mmap_rnd(void) { return 0; }
+>   # if defined(arch_randomize_brk) && defined(CONFIG_COMPAT_BRK)
+>   #  define compat_brk_randomized
+> diff --git a/mm/util.c b/mm/util.c
+> index e58151a61255..edb9e94cceb5 100644
+> --- a/mm/util.c
+> +++ b/mm/util.c
+> @@ -344,6 +344,7 @@ unsigned long randomize_stack_top(unsigned long stack_top)
+>   }
+>   
+>   #ifdef CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
+> +#ifndef CONFIG_ARCH_HAS_ELF_RANDOMIZE
+>   unsigned long arch_randomize_brk(struct mm_struct *mm)
+>   {
+>   	/* Is the current task 32bit ? */
+> @@ -352,6 +353,7 @@ unsigned long arch_randomize_brk(struct mm_struct *mm)
+>   
+>   	return randomize_page(mm->brk, SZ_1G);
+>   }
+> +#endif
+>   
+>   unsigned long arch_mmap_rnd(void)
+>   {
 > 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
