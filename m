@@ -2,144 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F9C45946A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 18:58:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C4F45946F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 18:59:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239829AbhKVSBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 13:01:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:30376 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239761AbhKVSBm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 13:01:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637603915;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rKBdp+c5ShVw+K+W5BqKDAfh3gXZdMMO+xQSPcJQJv4=;
-        b=Su8BlT4fAW1cPkxz2HoG86CdGQjmDCrJozwL4tPK0U8XWQnDApJDzHy7iUAE0wcmNMgbpm
-        thL5orjmDpns5bxa8DES7bdErtlImPs5q5/fAfy2ZoZr7XGvJtEOzEWPW2td5U0v5cR7nw
-        7bKl+8Z/89aUfm0GmVU5yW9xmIQbmCM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-427--DQANkk4NAG4cdzY6Hl0Mw-1; Mon, 22 Nov 2021 12:58:32 -0500
-X-MC-Unique: -DQANkk4NAG4cdzY6Hl0Mw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3E56BA0CAE;
-        Mon, 22 Nov 2021 17:58:31 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.40.192.236])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5F10F1002D71;
-        Mon, 22 Nov 2021 17:58:29 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] KVM: x86: Forbid KVM_SET_CPUID{,2} after KVM_RUN
-Date:   Mon, 22 Nov 2021 18:58:18 +0100
-Message-Id: <20211122175818.608220-3-vkuznets@redhat.com>
-In-Reply-To: <20211122175818.608220-1-vkuznets@redhat.com>
-References: <20211122175818.608220-1-vkuznets@redhat.com>
+        id S239754AbhKVSCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 13:02:14 -0500
+Received: from soltyk.jannau.net ([144.76.91.90]:50470 "EHLO soltyk.jannau.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230159AbhKVSCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 13:02:12 -0500
+Received: by soltyk.jannau.net (Postfix, from userid 1000)
+        id 3EDF5261B33; Mon, 22 Nov 2021 18:59:03 +0100 (CET)
+Date:   Mon, 22 Nov 2021 18:59:03 +0100
+From:   Janne Grunau <j@jannau.net>
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Hector Martin <marcan@marcan.st>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>, Olof Johansson <olof@lixom.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Rob Herring <robh@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] dt-bindings: i2c: apple,i2c: allow multiple
+ compatibles
+Message-ID: <20211122175903.GA28130@jannau.net>
+References: <20211121171545.27402-1-j@jannau.net>
+ <20211121171545.27402-3-j@jannau.net>
+ <2baebbe6-0080-4cff-86de-a00f23aea95e@www.fastmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2baebbe6-0080-4cff-86de-a00f23aea95e@www.fastmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 63f5a1909f9e ("KVM: x86: Alert userspace that KVM_SET_CPUID{,2}
-after KVM_RUN is broken") officially deprecated KVM_SET_CPUID{,2} ioctls
-after first successful KVM_RUN and promissed to make this sequence forbiden
-in 5.16. It's time to fulfil the promise.
+On 2021-11-21 21:22:47 +0100, Sven Peter wrote:
+> Hi,
+> 
+> On Sun, Nov 21, 2021, at 18:15, Janne Grunau wrote:
+> > The intention was to have a SoC-specific and base compatible string
+> > to allow forward compatibility and SoC specific quirks,
+> >
+> > Fixes: df7c4a8c1b47 ("dt-bindings: i2c: Add Apple I2C controller bindings")
+> > Signed-off-by: Janne Grunau <j@jannau.net>
+> > Cc: Mark Kettenis <kettenis@openbsd.org>
+> > ---
+> 
+> Yeah, this should've been "apple,t8103-i2c", "apple,i2c" all along :/
+> Given that we have no i2c nodes in the dts yet and that this binding was
+> only added for -rc1 I think it's fine to just drop "apple,t8103-i2c"
+> here instead of marking it as deprecated and keeping it around forever
+> if Mark Kettenis also agrees.
+> 
+> >  Documentation/devicetree/bindings/i2c/apple,i2c.yaml | 9 +++++----
+> >  1 file changed, 5 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/i2c/apple,i2c.yaml 
+> > b/Documentation/devicetree/bindings/i2c/apple,i2c.yaml
+> > index 22fc8483256f..f1cb96c08212 100644
+> > --- a/Documentation/devicetree/bindings/i2c/apple,i2c.yaml
+> > +++ b/Documentation/devicetree/bindings/i2c/apple,i2c.yaml
+> > @@ -20,9 +20,10 @@ allOf:
+> > 
+> >  properties:
+> >    compatible:
+> > -    enum:
+> > -      - apple,t8103-i2c
+> > -      - apple,i2c
+> > +    items:
+> > +      - enum:
+> > +        - apple,t8103-i2c
+> > +      - const: apple,i2c
+> 
+> Nit: the enum makes sense once we add t6000-i2c but right now
+> 
+> properties:
+>   compatible:
+>     items:
+>       - const: apple,t8103-i2c
+>       - const: apple,i2c
+> 
+> also works and look a bit less weird.
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/kvm/mmu/mmu.c | 20 +++-----------------
- arch/x86/kvm/x86.c     | 27 +++++++++++++++++++++++++++
- 2 files changed, 30 insertions(+), 17 deletions(-)
+I split it from change which in addition added "apple,t6000-i2c" as 
+second enum value. I have no strong preference but the weirdness will 
+hopefully vanish soon.
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 3be9beea838d..669e86688cbf 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -5032,24 +5032,10 @@ void kvm_mmu_after_set_cpuid(struct kvm_vcpu *vcpu)
- 	kvm_mmu_reset_context(vcpu);
- 
- 	/*
--	 * KVM does not correctly handle changing guest CPUID after KVM_RUN, as
--	 * MAXPHYADDR, GBPAGES support, AMD reserved bit behavior, etc.. aren't
--	 * tracked in kvm_mmu_page_role.  As a result, KVM may miss guest page
--	 * faults due to reusing SPs/SPTEs.  Alert userspace, but otherwise
--	 * sweep the problem under the rug.
--	 *
--	 * KVM's horrific CPUID ABI makes the problem all but impossible to
--	 * solve, as correctly handling multiple vCPU models (with respect to
--	 * paging and physical address properties) in a single VM would require
--	 * tracking all relevant CPUID information in kvm_mmu_page_role.  That
--	 * is very undesirable as it would double the memory requirements for
--	 * gfn_track (see struct kvm_mmu_page_role comments), and in practice
--	 * no sane VMM mucks with the core vCPU model on the fly.
-+	 * Changing guest CPUID after KVM_RUN is forbidden, see the comment in
-+	 * kvm_arch_vcpu_ioctl().
- 	 */
--	if (vcpu->arch.last_vmentry_cpu != -1) {
--		pr_warn_ratelimited("KVM: KVM_SET_CPUID{,2} after KVM_RUN may cause guest instability\n");
--		pr_warn_ratelimited("KVM: KVM_SET_CPUID{,2} will fail after KVM_RUN starting with Linux 5.16\n");
--	}
-+	KVM_BUG_ON(vcpu->arch.last_vmentry_cpu != -1, vcpu->kvm);
- }
- 
- void kvm_mmu_reset_context(struct kvm_vcpu *vcpu)
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 5a403d92833f..3cfaccc24efb 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -5125,6 +5125,25 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 		struct kvm_cpuid cpuid;
- 
- 		r = -EFAULT;
-+
-+		/*
-+		 * KVM does not correctly handle changing guest CPUID after KVM_RUN, as
-+		 * MAXPHYADDR, GBPAGES support, AMD reserved bit behavior, etc.. aren't
-+		 * tracked in kvm_mmu_page_role.  As a result, KVM may miss guest page
-+		 * faults due to reusing SPs/SPTEs.  Alert userspace, but otherwise
-+		 * sweep the problem under the rug.
-+		 *
-+		 * KVM's horrific CPUID ABI makes the problem all but impossible to
-+		 * solve, as correctly handling multiple vCPU models (with respect to
-+		 * paging and physical address properties) in a single VM would require
-+		 * tracking all relevant CPUID information in kvm_mmu_page_role.  That
-+		 * is very undesirable as it would double the memory requirements for
-+		 * gfn_track (see struct kvm_mmu_page_role comments), and in practice
-+		 * no sane VMM mucks with the core vCPU model on the fly.
-+		 */
-+		if (vcpu->arch.last_vmentry_cpu != -1)
-+			goto out;
-+
- 		if (copy_from_user(&cpuid, cpuid_arg, sizeof(cpuid)))
- 			goto out;
- 		r = kvm_vcpu_ioctl_set_cpuid(vcpu, &cpuid, cpuid_arg->entries);
-@@ -5135,6 +5154,14 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 		struct kvm_cpuid2 cpuid;
- 
- 		r = -EFAULT;
-+
-+		/*
-+		 * KVM_SET_CPUID{,2} after KVM_RUN is forbidded, see the comment in
-+		 * KVM_SET_CPUID case above.
-+		 */
-+		if (vcpu->arch.last_vmentry_cpu != -1)
-+			goto out;
-+
- 		if (copy_from_user(&cpuid, cpuid_arg, sizeof(cpuid)))
- 			goto out;
- 		r = kvm_vcpu_ioctl_set_cpuid2(vcpu, &cpuid,
--- 
-2.33.1
-
+Janne
