@@ -2,96 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEAD54590C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F674590CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:02:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233166AbhKVPD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:03:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233449AbhKVPD4 (ORCPT
+        id S238653AbhKVPFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:05:41 -0500
+Received: from out01.mta.xmission.com ([166.70.13.231]:38428 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230152AbhKVPFh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:03:56 -0500
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B9CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:00:50 -0800 (PST)
-Received: by mail-ua1-x92d.google.com with SMTP id j14so27320075uan.10
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:00:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CmP2bXFruojw8kAtSj6UqlL7SjSwWnqcFws6u5CPCIc=;
-        b=RV2PJLQSLxWJZ05lnNtM5IHsLgLmaoeBTTm6NuL2w3SH0Ok11sJvC5PDbs5wklpr3i
-         uLtbywpCHvJHACFy/KiDjZwylIjxsrPQL4Coc6wynIX9+DDwvZlXS7C5BdGq5xTVCaMt
-         /lhUWQUgk75mXD6JJBcE//LoxodQkrKHzDk6bgDZesP7l9MR/muMaIqS9blW/nR4xEfE
-         yxME9JiDv8Z+FbgT9Galn0N77rBOFNfeiKuqH3E+89Ga+1HS62Bq+KU1dvblnM+1IHpb
-         LoRC8fC3fzDsZaXguVfEhdfdhUv5tJ9ZGQyXjKtUqc2nizxTr96kIlDdqM2uUsofyCcg
-         O8aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CmP2bXFruojw8kAtSj6UqlL7SjSwWnqcFws6u5CPCIc=;
-        b=xv6e+71HcHk08YRl/otlK2ISRfwKS5JNyTUF5dqnMWCY0ldxQ1/Vr/cADQzmQwAW/e
-         oUWpHiLwamdkKjqIbxpIBxwOOJOQYUHnKeYW6fMJmvkfVEubqfQaYaxvKI9S0nU8UqDW
-         gUw85rKBHmTHLDyNmzW+o+g6SW6GSYeu2Ujq8o2m6910CtL5ShDmxekjnhWfO48PzLuc
-         x4NQJsUHQxTVxDcQojy+yWT0F53JuSelJxfZ0bZTOfXPwSM0mawXFI+ixs5WU1TqlOxU
-         VmSMAOXXpaV1XZ/FXG6Hjjb0zMtCe4jQ1DauZfzwZbWdJft7zOWoOsWbjvqaKzKO8itU
-         y2lw==
-X-Gm-Message-State: AOAM532yx6SnnZwcFgUz561QUSHZcWWvnyqhhuQLXCLrdlMcbErucGff
-        0tjQt2q7/F7allBqQoAI8sg=
-X-Google-Smtp-Source: ABdhPJz9tzowrWuZIQ3HOMTaJtFV2Ir4Q64/HuLIOszlDfJP6qTyEx83/hpiSV7n7aFklOsDmdramQ==
-X-Received: by 2002:a67:846:: with SMTP id 67mr53758720vsi.7.1637593249362;
-        Mon, 22 Nov 2021 07:00:49 -0800 (PST)
-Received: from localhost.localdomain ([181.23.85.46])
-        by smtp.gmail.com with ESMTPSA id o5sm476798vsa.4.2021.11.22.07.00.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 07:00:48 -0800 (PST)
-Date:   Mon, 22 Nov 2021 12:00:31 -0300
-From:   Gaston Gonzalez <gascoar@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     linux-staging@lists.linux.dev, gregkh@linuxfoundation.org,
-        nsaenz@kernel.org, stefan.wahren@i2se.com, arnd@arndb.de,
-        ojaswin98@gmail.com, amarjargal16@gmail.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND] staging: vchiq_core: remove superfluous
- static_assert statement
-Message-ID: <YZuwj0mhn3qEgQbW@localhost.localdomain>
-References: <20211122130926.342128-1-gascoar@gmail.com>
- <20211122135031.GB6514@kadam>
+        Mon, 22 Nov 2021 10:05:37 -0500
+Received: from in01.mta.xmission.com ([166.70.13.51]:51368)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mpApw-002FBc-Ru; Mon, 22 Nov 2021 08:02:28 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:52422 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mpApu-00ChBL-Jd; Mon, 22 Nov 2021 08:02:28 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Vladimir Divjak <vladimir.divjak@bmw.de>
+Cc:     <oleg@redhat.com>, <jnewsome@torproject.org>, <tglx@linutronix.de>,
+        <akpm@linux-foundation.org>, <asml.silence@gmail.com>,
+        <linux-kernel@vger.kernel.org>
+In-Reply-To: <20211122005347.1467288-1-vladimir.divjak@bmw.de> (Vladimir
+        Divjak's message of "Mon, 22 Nov 2021 01:53:47 +0100")
+References: <20211122005347.1467288-1-vladimir.divjak@bmw.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+Date:   Mon, 22 Nov 2021 09:02:15 -0600
+Message-ID: <875ysknsi0.fsf@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211122135031.GB6514@kadam>
+Content-Type: text/plain
+X-XM-SPF: eid=1mpApu-00ChBL-Jd;;;mid=<875ysknsi0.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+YS9+H3cN9mVA3trJJZMYtEKpoB6QI+KQ=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4481]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Vladimir Divjak <vladimir.divjak@bmw.de>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1678 ms - load_scoreonly_sql: 0.08 (0.0%),
+        signal_user_changed: 10 (0.6%), b_tie_ro: 9 (0.5%), parse: 1.65 (0.1%),
+         extract_message_metadata: 36 (2.2%), get_uri_detail_list: 1.61 (0.1%),
+         tests_pri_-1000: 36 (2.2%), tests_pri_-950: 18 (1.1%),
+        tests_pri_-900: 1.50 (0.1%), tests_pri_-90: 162 (9.7%), check_bayes:
+        150 (8.9%), b_tokenize: 29 (1.8%), b_tok_get_all: 15 (0.9%),
+        b_comp_prob: 3.1 (0.2%), b_tok_touch_all: 76 (4.6%), b_finish: 1.18
+        (0.1%), tests_pri_0: 1292 (77.0%), check_dkim_signature: 0.89 (0.1%),
+        check_dkim_adsp: 37 (2.2%), poll_dns_idle: 19 (1.1%), tests_pri_10:
+        4.3 (0.3%), tests_pri_500: 110 (6.5%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH] ptrace: exit: re-trigger PTRACE_EVENT_EXIT after coredump finished
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 04:50:31PM +0300, Dan Carpenter wrote:
-> On Mon, Nov 22, 2021 at 10:09:26AM -0300, Gaston Gonzalez wrote:
-> > After removing the BITSET_T typedef in commit d8a364820e01 ("staging:
-> > vchiq_core: get rid of typedef") the static_assert statement becomes superfluous
-> > as now we are checking if the size of the u32 type is 4 bytes. Hence, just
-> > remove the static_assert statement.
-> > 
-> > Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > Signed-off-by: Gaston Gonzalez <gascoar@gmail.com>
-> > ---
-> 
-> You sent the first version after the merge window had just started.
-> It's too early to be resending stuff.  Leave it for two weeks after the
-> end of the merge window at least.
-> 
-> regards,
-> dan carpenter
+Vladimir Divjak <vladimir.divjak@bmw.de> writes:
+
+> Re-trigger PTRACE_EVENT_EXIT
+> (if one is requested with PTRACE_SEIZE setting PTRACE_O_TRACEEXIT option)
+> for a process being core-dumped, after the coredump is finished.
 >
+> This enables a potential tracer - coredump user mode helper
+> (or any other tracer started after the coredump was initiated)
+> to receive the PTRACE_EVENT_EXIT for all threads of the crashing process.
+>
+> Rationale:
+>
+> For zapped threads, PTRACE_EVENT_EXIT is triggered early during do_exit(),
+> before the point at which they sleep, waiting for
+> coredump to finish - in exit_mm(), and before a potential
+> coredump user mode helper process is launched.
+>
+> That makes it impossible for the coredump user mode helper process to
+> receive PTRACE_EVENT_EXIT events for all threads of the crashing process,
+> except for the thread handling the core-dump, which will trigger
+> the PTRACE_EVENT_EXIT after the coredump has been finished.
 
-Ah, ok. I thought it was ok to resend after one week once the merge
-window was closed.
+Please test the latest kernel.
 
-Sorry for the noise.
+The coredump now stops much earlier than exit_mm, and PTRACE_EVENT_EXIT
+is after the point the coredump stops.
 
-Gaston
+If you need this functionality on older kernels it should be possible to
+backport a subset of my changes without too much trouble
+
+Eric
