@@ -2,113 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E471459832
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 00:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83482459846
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 00:09:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbhKVXKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 18:10:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51680 "EHLO
+        id S231428AbhKVXMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 18:12:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbhKVXKG (ORCPT
+        with ESMTP id S229619AbhKVXLy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 18:10:06 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F9BC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 15:06:59 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id n104-20020a9d2071000000b005799790cf0bso10476638ota.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 15:06:59 -0800 (PST)
+        Mon, 22 Nov 2021 18:11:54 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E5AC061714
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 15:08:46 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id j6-20020a17090a588600b001a78a5ce46aso555911pji.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 15:08:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fNbh4iBAHtA98kCW/4qyB0yZvvbQ/JGxjB2BIT2nPCM=;
-        b=SEUjHEAuj1Oke1LXdMd1FEwywDKBRx5VsImHR2as39yZmasjJsfjRyS4nk6gKUOGu1
-         hC7LZjm+bydtVUXtsIAjADcwzUjkfVOG+j20a19BJE9IMSyGwLy/DFIWeO9OYRqd8Sxi
-         2XlrRW7H7NSlaT/yoSnODNCjEeF9U4IJXEgwfYRSXFa+8wp6stEHKRqCgZ8OjCRNJ8oQ
-         Ca1mc9wK0S7OOMfQXOl+FXqK8ySR5XavoiZX/BeL5AuXWUVdY8T54PxD+Ai3S/GGqTJt
-         VltHoow615e/meIMMqBhtuQdC/LVDMiLGODUcIzonzMoXcfxAI6WpUwk6hGvzqOmUwrf
-         dp7w==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=C3M3VDAz8v2lptAuLdLoPEVMDwHdi1Hdtg7AjRZiumw=;
+        b=fKL9TGp7QAW1czNovJUbKasEoTacuIJwSY1AqQgwbeopJv8CFaIdiM0hzs3L7PLrg4
+         ge0QOTbv+eraAcABai9uZYMFC7GZLma7/WFLYfbiFdZ8iSdfR0eF4keejO4rlrJ3fP98
+         Q3ECM7tpdpsihotxoSUiY9ciNSDInmqwudyy1Juqsjf90dEAmAhFUv2LfMcbbjBfR86B
+         jvZ2xZqWDSKR8QO9xklb0SHOCtVZE5eV5sbB1jajJeFyfEQD9NLSqEk0bDHmdGfwd5mz
+         c38x67Sr2mA66b1VyyECBy2IOEHYldxs9jN4Afhdix3o4fWfbZFbiykUCJRnOGVhl57x
+         st+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=fNbh4iBAHtA98kCW/4qyB0yZvvbQ/JGxjB2BIT2nPCM=;
-        b=MOp3VOjcant8cj3i4ZXAnE70SDDn5nleDVSuz3qr6EG/BCHeJf8FZC4szGVLfjENH9
-         wAtVlEWrsYj2nlcKIf+Y/Ot3OwfcSPIH4Ye+sdE6qU04WLLyZmLZnyEA2rTiLuTXEBT6
-         gYFkeX0XGawQuItpzjId2fh9sZvvZ0ZzE7Wc6g5Ho9pi/1sIVdbmWdTWY+RQxPZ3Mq8V
-         gVTmP17pfOLn2S2C4a1Cwldl1wZAwr/kQyDUgJGHavvMQKzOBoLr2NoRNEnPF3B7YqEJ
-         kwY3Psje+k97AosaFLgXL3R7olEeXlJkaTicnK0sEiMWOOMVAt9c/Z+B2W9W2c4mdzOw
-         JJsA==
-X-Gm-Message-State: AOAM533cK0LkKOsjBm9z1VtjX1d4n/BCG8dhsIsBt0Bc7iGPNpuNOX22
-        wtfmiggGyuD5OphDvdd1E2U=
-X-Google-Smtp-Source: ABdhPJw7FwHd8+4Op4c6sBQCv1y8vRlTt/cK4rS3BYcjRarllz9egCpeccQl8HEkvID7eGtpIL3GYQ==
-X-Received: by 2002:a9d:4702:: with SMTP id a2mr13348otf.262.1637622418769;
-        Mon, 22 Nov 2021 15:06:58 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id bi20sm2379591oib.29.2021.11.22.15.06.57
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C3M3VDAz8v2lptAuLdLoPEVMDwHdi1Hdtg7AjRZiumw=;
+        b=EA3IsLFmbrtvXCkOiAIzhLWybZwCU1I6OJuRKvY/S9Hlb/XC8tVMMLwQWzqPCjj9le
+         ZnbL2eE73gAVP3++KVthGfj1ga2kAvuozpFgwQGfR223NWtLQvYBEz4NGowyp8da5sZN
+         Kd2bnDlq3FPETnkYp1YIT7A4/f+2//OLFH8qjnSZlpzppu5T+FqJCvg4vp0ftC5uOKtM
+         2YPRtkqd7mA9dAnn3C0R6Z+4OeWAsCXASFmEQJyKZmHKHf64bdxl+Xfe6eSM9UCCKII2
+         6ox/KJ1jb6tdgjo11sBQRV5oGDEX8J7GXbPT47+vrH8h7zKYI8wrktJw+SlIw6bV7rf7
+         wICg==
+X-Gm-Message-State: AOAM53109qu1WLzJwCpn2EOTTvigp0V8GcqMU1YeEW+KKSAYZgmiiItd
+        vXGziEl/yfcmjusXWlerlO/15A==
+X-Google-Smtp-Source: ABdhPJyu6RVl1K5Li/JR7TjfZUoitw3SzM99pVCoNtfWZrGec4a7CbHV0+ttxU0FiMCLBc2dRL/ccg==
+X-Received: by 2002:a17:902:c20d:b0:142:1009:585d with SMTP id 13-20020a170902c20d00b001421009585dmr1177081pll.83.1637622525819;
+        Mon, 22 Nov 2021 15:08:45 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id t2sm10064117pfd.36.2021.11.22.15.08.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 15:06:58 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Anton Altaparmakov <anton@tuxera.com>
-Cc:     linux-ntfs-dev@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH v2] fs: ntfs: Disable NTFS_RW for PPC
-Date:   Mon, 22 Nov 2021 15:06:53 -0800
-Message-Id: <20211122230653.1779162-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.33.0
+        Mon, 22 Nov 2021 15:08:45 -0800 (PST)
+Date:   Mon, 22 Nov 2021 23:08:41 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Hou Wenlong <houwenlong93@linux.alibaba.com>
+Subject: Re: [PATCH 15/28] KVM: x86/mmu: Take TDP MMU roots off list when
+ invalidating all roots
+Message-ID: <YZwi+TzVLQi5YlIX@google.com>
+References: <20211120045046.3940942-1-seanjc@google.com>
+ <20211120045046.3940942-16-seanjc@google.com>
+ <CANgfPd8Kz41FpvooznGW2VLp8GZFei28FCjonr2+YEZoturi0A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANgfPd8Kz41FpvooznGW2VLp8GZFei28FCjonr2+YEZoturi0A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-NTFS_RW code allocates page size dependent arrays on the stack. This
-results in build failures if the page size is 64k, which is now the
-default for PPC.
+On Mon, Nov 22, 2021, Ben Gardon wrote:
+> On Fri, Nov 19, 2021 at 8:51 PM Sean Christopherson <seanjc@google.com> wrote:
+> >
+> > Take TDP MMU roots off the list of roots when they're invalidated instead
+> > of walking later on to find the roots that were just invalidated.  In
+> > addition to making the flow more straightforward, this allows warning
+> > if something attempts to elevate the refcount of an invalid root, which
+> > should be unreachable (no longer on the list so can't be reached by MMU
+> > notifier, and vCPUs must reload a new root before installing new SPTE).
+> >
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> 
+> There are a bunch of awesome little cleanups and unrelated fixes
+> included in this commit that could be factored out.
+> 
+> I'm skeptical of immediately moving the invalidated roots into another
+> list as that seems like it has a lot of potential for introducing
+> weird races.
 
-fs/ntfs/aops.c: In function 'ntfs_write_mst_block':
-fs/ntfs/aops.c:1311:1: error:
-	the frame size of 2240 bytes is larger than 2048 bytes
+I disagree, the entire premise of fast invalidate is that there can't be races,
+i.e. mmu_lock must be held for write.  IMO, it's actually the opposite, as the only
+reason leaving roots on the per-VM list doesn't have weird races is because slots_lock
+is held.  If slots_lock weren't required to do a fast zap, which is feasible for the
+TDP MMU since it doesn't rely on the memslots generation, then it would be possible
+for multiple calls to kvm_tdp_mmu_zap_invalidated_roots() to run in parallel.  And in
+that case, leaving roots on the per-VM list would lead to a single instance of a
+"fast zap" zapping roots it didn't invalidate.  That's wouldn't be problematic per se,
+but I don't like not having a clear "owner" of the invalidated root.
 
-Increasing the maximum frame size for PPC just to silence this error does
-not really help. It would have to be set to a really large value for 256k
-pages. Such a large frame size could potentially result in stack overruns
-in this code and elsewhere and is therefore not desirable. Disable NTFS_RW
-for PPC instead.
+> I'm not sure it actually solves a problem either. Part of
+> the motive from the commit description "this allows warning if
+> something attempts to elevate the refcount of an invalid root" can be
+> achieved already without moving the roots into a separate list.
 
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
-v2: Introduce new configuration flag DISABLE_NTFS_RW and use it to disable NTFS_RW
-    for PPC
+Hmm, true in the sense that kvm_tdp_mmu_get_root() could be converted to a WARN,
+but that would require tdp_mmu_next_root() to manually skip invalid roots.
+kvm_tdp_mmu_get_vcpu_root_hpa() is naturally safe because page_role_for_level()
+will never set the invalid flag.
 
- fs/ntfs/Kconfig | 5 +++++
- 1 file changed, 5 insertions(+)
+I don't care too much about adding a manual check in tdp_mmu_next_root(), what I don't
+like is that a WARN in kvm_tdp_mmu_get_root() wouldn't be establishing an invariant
+that invalidated roots are unreachable, it would simply be forcing callers to check
+role.invalid.
 
-diff --git a/fs/ntfs/Kconfig b/fs/ntfs/Kconfig
-index 1667a7e590d8..324224febb6a 100644
---- a/fs/ntfs/Kconfig
-+++ b/fs/ntfs/Kconfig
-@@ -49,8 +49,13 @@ config NTFS_DEBUG
- 	  When reporting bugs, please try to have available a full dump of
- 	  debugging messages while the misbehaviour was occurring.
+> Maybe this would seem more straightforward with some of the little
+> cleanups factored out, but this feels more complicated to me.
+> > @@ -124,6 +137,27 @@ static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
+> >  {
+> >         struct kvm_mmu_page *next_root;
+> >
+> > +       lockdep_assert_held(&kvm->mmu_lock);
+> > +
+> > +       /*
+> > +        * Restart the walk if the previous root was invalidated, which can
+> > +        * happen if the caller drops mmu_lock when yielding.  Restarting the
+> > +        * walke is necessary because invalidating a root also removes it from
+> 
+> Nit: *walk
+> 
+> > +        * tdp_mmu_roots.  Restarting is safe and correct because invalidating
+> > +        * a root is done if and only if _all_ roots are invalidated, i.e. any
+> > +        * root on tdp_mmu_roots was added _after_ the invalidation event.
+> > +        */
+> > +       if (prev_root && prev_root->role.invalid) {
+> > +               kvm_tdp_mmu_put_root(kvm, prev_root, shared);
+> > +               prev_root = NULL;
+> > +       }
+> > +
+> > +       /*
+> > +        * Finding the next root must be done under RCU read lock.  Although
+> > +        * @prev_root itself cannot be removed from tdp_mmu_roots because this
+> > +        * task holds a reference, its next and prev pointers can be modified
+> > +        * when freeing a different root.  Ditto for tdp_mmu_roots itself.
+> > +        */
+> 
+> I'm not sure this is correct with the rest of the changes in this
+> patch. The new version of invalidate_roots removes roots from the list
+> immediately, even if they have a non-zero ref-count.
+
+Roots don't have to be invalidated to be removed, e.g. if the last reference is
+put due to kvm_mmu_reset_context().  Or did I misunderstand?
+
+> >         rcu_read_lock();
+> >
+> >         if (prev_root)
+> > @@ -230,10 +264,13 @@ hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
+> >         root = alloc_tdp_mmu_page(vcpu, 0, vcpu->arch.mmu->shadow_root_level);
+> >         refcount_set(&root->tdp_mmu_root_count, 1);
+> >
+> > -       spin_lock(&kvm->arch.tdp_mmu_pages_lock);
+> > -       list_add_rcu(&root->link, &kvm->arch.tdp_mmu_roots);
+> > -       spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
+> > -
+> > +       /*
+> > +        * Because mmu_lock must be held for write to ensure that KVM doesn't
+> > +        * create multiple roots for a given role, this does not need to use
+> > +        * an RCU-friendly variant as readers of tdp_mmu_roots must also hold
+> > +        * mmu_lock in some capacity.
+> > +        */
+> 
+> I doubt we're doing it now, but in principle we could allocate new
+> roots with mmu_lock in read + tdp_mmu_pages_lock. That might be better
+> than depending on the write lock.
+
+We're not, this function does lockdep_assert_held_write(&kvm->mmu_lock) a few
+lines above.  I don't have a preference between using mmu_lock.read+tdp_mmu_pages_lock
+versus mmu_lock.write, but I do care that the current code doesn't incorrectly imply
+that it's possible for something else to be walking the roots while this runs.
+
+Either way, this should definitely be a separate patch, pretty sure I just lost
+track of it.
  
-+config DISABLE_NTFS_RW
-+	bool
-+	default y if PPC
-+
- config NTFS_RW
- 	bool "NTFS write support"
-+	depends on !DISABLE_NTFS_RW
- 	depends on NTFS_FS
- 	help
- 	  This enables the partial, but safe, write support in the NTFS driver.
--- 
-2.33.0
-
+> > +       list_add(&root->link, &kvm->arch.tdp_mmu_roots);
+> >  out:
+> >         return __pa(root->spt);
+> >  }
