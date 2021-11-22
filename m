@@ -2,125 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985144595EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 21:08:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF884595F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 21:08:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239925AbhKVULq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 15:11:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233234AbhKVULn (ORCPT
+        id S231547AbhKVUMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 15:12:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:41331 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239844AbhKVUL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 15:11:43 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F44C061574;
-        Mon, 22 Nov 2021 12:08:36 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id v7so53435490ybq.0;
-        Mon, 22 Nov 2021 12:08:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a5jVOagTt0Kg5zCB4wpCaOvINomhqISo4S93iKwz7ac=;
-        b=IbatkhZ7LjG0vTlUqb2C3Mj1rHLSIyXn/VDnDjWD5dpCYy4rrSQwUYvmZSUAOacAkc
-         heVjwQbS0yuAA9Q4vVuX/re8nS/KLGznfr8bE3GqaMiCzRkUQS1Zr1dwULkWSlv2dEz6
-         3dNCJsh1lgrOrCtOf9yKg3V/3Njug0Il1qrI0N+A8k8x790WAtUU4VldE07cDJYG5c2d
-         qJKouhc58m9DAThyAyYKzRhtOiADDMA3kxqkySvy8uKtWyyqBRSHiPHL4Vdu5GAunqfe
-         pJOkjJ+Bc0r0kOviWnWS8qTUr6PKn+gZz4W19DxxVAr68+hwo5Kn0Vv29jsajL53p2MU
-         CECw==
+        Mon, 22 Nov 2021 15:11:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637611731;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wx9owdJOrmjGXLWEhFvkrVgkkHwU/2JlwqTvYXsyeFw=;
+        b=TqxE3/VE9R+psUEWcF3Rizu94GU0aTW5u+zs4gdvyD6NaeYokSLZPzVRvq6s0ck19ZDgSu
+        5qhogR8oIOWDIKv11GMFRqKYPKlw4Qu6aX2gz3+qNxsSanrbmLrUmBZTBVxDkKJ4mXQ4Zm
+        NFGwDk64KV2HndjqSBZ8eazclo/5m44=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-37-aZ1FTpUEOpCDc2OACLGyBw-1; Mon, 22 Nov 2021 15:08:49 -0500
+X-MC-Unique: aZ1FTpUEOpCDc2OACLGyBw-1
+Received: by mail-wm1-f70.google.com with SMTP id 144-20020a1c0496000000b003305ac0e03aso83265wme.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 12:08:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a5jVOagTt0Kg5zCB4wpCaOvINomhqISo4S93iKwz7ac=;
-        b=QYA9SZmeSKzPlGnv5iFLxAhe60j3O35bpwgf74u21DRtElzC2blL7FbR39V5Jd7dp3
-         /E7XC3esrFM672cQw+el+jrknVkqrkY+Hjq4xdUrYRDsIERigZkQGf1Jia121kJRukI8
-         Ra4hOc+nsqgi/cv2byYHhqRGehknpY6NDPcpKUbRP+eq69M0l8tYOyap78XbfbLPORrH
-         J6/LmkX2oED0SZEvDH5dwMd04nfK2hGCBWtZlHkOOSGwIM2B8jVmLGYlbwThemWtHek0
-         f3RbdmjqChsCB6Q8HcLsX2bOzjm41n9CJ9dvyntwT5KNyGNCNqVNtEpm4eJaCTE9BSev
-         2Ykw==
-X-Gm-Message-State: AOAM533EBVLMygpVj0CxqOLPep/1imoXcLM6Uo8iBJd2QnlL+889wgQE
-        nUZ7SRHGwT0kzsZLJxdHIX/ws8DOen1M3zQ9LqA=
-X-Google-Smtp-Source: ABdhPJwKvELa/ggMRKoyGlsc1ohyUEQCelrewlGse3v42ehXaQAjyTin1OBPCuV1IwSDpa+QliWp+tSClSy+SNz4SUo=
-X-Received: by 2002:a25:56c3:: with SMTP id k186mr66811954ybb.543.1637611715665;
- Mon, 22 Nov 2021 12:08:35 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:organization:subject
+         :in-reply-to:content-transfer-encoding;
+        bh=wx9owdJOrmjGXLWEhFvkrVgkkHwU/2JlwqTvYXsyeFw=;
+        b=fdzZkA2bvaTpihBKWAbNMrrv/uGXqOxRDc8xM2mqGvT131Y61blE67G7dK9/8ERm4B
+         Ine4hvsq+ED63/4I4gO0lz9Y6T//Ku7ew0o9zvltz/E6nqj+UHqwb+CWnN/Vfvb6XilT
+         kOYtriHezdOPwiGoAClxyPTI09sQoxV5T+MFY3zED8jbA2YW9tucf7BV057KTWKhqgCs
+         E5+qQEGkQnhEWevB4PFCyp2h0Y4azs5U5Qyzb/TtWlMQ5an05krUdtLD9qoJn2HDqNvV
+         eWAQKKAU+lk8DfqflvZ17B7wwhM2WDQkVfWLsjJRJX0g/+wOg1YR7+8Nlkkw3+bJC6qb
+         PXxA==
+X-Gm-Message-State: AOAM530Y1fpDK1BAJ7huLtq7aRjsJ9YgzyDD+e7FrcaM1BBTjA9w+ADW
+        ttwnKi2MebBPgj8FRUu3CaQVNYje/xivupDwybUCzV76aFxa2uWe01AlHQD22BQbMJmgVchG3eV
+        KbRQj2tvzX5W5QtBieRQ8DoPz
+X-Received: by 2002:a1c:4c19:: with SMTP id z25mr33463169wmf.177.1637611728787;
+        Mon, 22 Nov 2021 12:08:48 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz4rF1zQh8IxxZ21UD3M7noCmiFkX9+K7yUl3FtS0Rnvm9Mdu8ZgNai9WbpFa7URCgixu8GMQ==
+X-Received: by 2002:a1c:4c19:: with SMTP id z25mr33463131wmf.177.1637611728568;
+        Mon, 22 Nov 2021 12:08:48 -0800 (PST)
+Received: from [192.168.3.132] (p5b0c667b.dip0.t-ipconnect.de. [91.12.102.123])
+        by smtp.gmail.com with ESMTPSA id l5sm24227434wms.16.2021.11.22.12.08.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Nov 2021 12:08:47 -0800 (PST)
+Message-ID: <5f998bb7-7b5d-9253-2337-b1d9ea59c796@redhat.com>
+Date:   Mon, 22 Nov 2021 21:08:47 +0100
 MIME-Version: 1.0
-References: <20211121234906.9602-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <09b5b453-ed88-8359-4145-a5ec981069e6@omp.ru>
-In-Reply-To: <09b5b453-ed88-8359-4145-a5ec981069e6@omp.ru>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Mon, 22 Nov 2021 20:08:09 +0000
-Message-ID: <CA+V-a8sMEM5msvSNy1118dAN9jB-dUOeoOxRkbizmmEdXAJPjw@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64: dts: renesas: rzg2l-smarc-som: Enable serial
- NOR flash
-To:     Sergey Shtylyov <s.shtylyov@omp.ru>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Content-Language: en-US
+To:     Jens Axboe <axboe@kernel.dk>,
+        Andrew Dona-Couch <andrew@donacou.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Drew DeVault <sir@cmpwn.com>
+Cc:     Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+References: <20211028080813.15966-1-sir@cmpwn.com>
+ <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
+ <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
+ <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
+ <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
+ <CFQZSHV700KV.18Y62SACP8KOO@taiga>
+ <20211116114727.601021d0763be1f1efe2a6f9@linux-foundation.org>
+ <CFRGQ58D9IFX.PEH1JI9FGHV4@taiga>
+ <20211116133750.0f625f73a1e4843daf13b8f7@linux-foundation.org>
+ <b84bc345-d4ea-96de-0076-12ff245c5e29@redhat.com>
+ <8f219a64-a39f-45f0-a7ad-708a33888a3b@www.fastmail.com>
+ <333cb52b-5b02-648e-af7a-090e23261801@redhat.com>
+ <ca96bb88-295c-ccad-ed2f-abc585cb4904@kernel.dk>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+In-Reply-To: <ca96bb88-295c-ccad-ed2f-abc585cb4904@kernel.dk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sergey,
+On 22.11.21 20:53, Jens Axboe wrote:
+> On 11/22/21 11:26 AM, David Hildenbrand wrote:
+>> On 22.11.21 18:55, Andrew Dona-Couch wrote:
+>>> Forgive me for jumping in to an already overburdened thread.  But can
+>>> someone pushing back on this clearly explain the issue with applying
+>>> this patch?
+>>
+>> It will allow unprivileged users to easily and even "accidentally"
+>> allocate more unmovable memory than it should in some environments. Such
+>> limits exist for a reason. And there are ways for admins/distros to
+>> tweak these limits if they know what they are doing.
+> 
+> But that's entirely the point, the cases where this change is needed are
+> already screwed by a distro and the user is the administrator. This is
+> _exactly_ the case where things should just work out of the box. If
+> you're managing farms of servers, yeah you have competent administration
+> and you can be expected to tweak settings to get the best experience and
+> performance, but the kernel should provide a sane default. 64K isn't a
+> sane default.
 
-Thank you for the review.
+0.1% of RAM isn't either.
 
-On Mon, Nov 22, 2021 at 8:06 PM Sergey Shtylyov <s.shtylyov@omp.ru> wrote:
->
-> On 22.11.2021 2:49, Lad Prabhakar wrote:
->
-> > Enable mt25qu512a flash connected to QSPI0.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> > ---
-> > v1->v2
-> > -> Renamed qspi_pins0 to qspi0_pins
-> > ---
-> >   .../boot/dts/renesas/rzg2l-smarc-som.dtsi     | 40 +++++++++++++++++++
-> >   1 file changed, 40 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/renesas/rzg2l-smarc-som.dtsi b/arch/arm64/boot/dts/renesas/rzg2l-smarc-som.dtsi
-> > index 7e84a29dddfa..aef1b8736732 100644
-> > --- a/arch/arm64/boot/dts/renesas/rzg2l-smarc-som.dtsi
-> > +++ b/arch/arm64/boot/dts/renesas/rzg2l-smarc-som.dtsi
-> > @@ -178,6 +178,18 @@
-> >               line-name = "gpio_sd0_pwr_en";
-> >       };
-> >
-> > +     qspi0_pins: qspi0 {
-> > +             qspi0-data {
-> > +                     pins = "QSPI0_IO0", "QSPI0_IO1", "QSPI0_IO2", "QSPI0_IO3";
-> > +                     power-source  = <1800>;
->
->     Hrm, sorry for more nitpicking... Why 2 spaces before =?
->
-Argh my bad...
-> > +             };
-> > +
-> > +             qspi0-ctrl {
-> > +                     pins = "QSPI0_SPCLK", "QSPI0_SSL", "QSPI_RESET#";
-> > +                     power-source  = <1800>;
->
->     Here as well...
->
-.. will fix that.
+> 
+>> This is not a step into the right direction. This is all just trying to
+>> hide the fact that we're exposing FOLL_LONGTERM usage to random
+>> unprivileged users.
+>>
+>> Maybe we could instead try getting rid of FOLL_LONGTERM usage and the
+>> memlock limit in io_uring altogether, for example, by using mmu
+>> notifiers. But I'm no expert on the io_uring code.
+> 
+> You can't use mmu notifiers without impacting the fast path. This isn't
+> just about io_uring, there are other users of memlock right now (like
+> bpf) which just makes it even worse.
 
-Cheers,
-Prabhakar
+1) Do we have a performance evaluation? Did someone try and come up with
+a conclusion how bad it would be?
 
-> > +             };
-> > +     };
-> > +
-> >       /*
-> >        * SD0 device selection is XOR between GPIO_SD0_DEV_SEL and SW1[2]
-> >        * The below switch logic can be used to select the device between
-> [...]
->
-> MBR, Sergey
->
+2) Could be provide a mmu variant to ordinary users that's just good
+enough but maybe not as fast as what we have today? And limit
+FOLL_LONGTERM to special, privileged users?
+
+3) Just because there are other memlock users is not an excuse. For
+example, VFIO/VDPA have to use it for a reason, because there is no way
+not do use FOLL_LONGTERM.
+
+> 
+> We should just make this 0.1% of RAM (min(0.1% ram, 64KB)) or something
+> like what was suggested, if that will help move things forward. IMHO the
+> 32MB machine is mostly a theoretical case, but whatever .
+
+1) I'm deeply concerned about large ZONE_MOVABLE and MIGRATE_CMA ranges
+where FOLL_LONGTERM cannot be used, as that memory is not available.
+
+2) With 0.1% RAM it's sufficient to start 1000 processes to break any
+system completely and deeply mess up the MM. Oh my.
+
+
+No, I don't like this, absolutely not. I neither like raising the
+memlock limit as default to such high values nor using FOLL_LONGTERM in
+cases where it could be avoided for random, unprivileged users.
+
+But I assume this is mostly for the records, because I assume nobody
+cares about my opinion here.
+
+-- 
+Thanks,
+
+David / dhildenb
+
