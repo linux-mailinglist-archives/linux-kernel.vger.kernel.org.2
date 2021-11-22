@@ -2,157 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B33F458FA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E50458FA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:43:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239485AbhKVNrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 08:47:13 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:59200 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239559AbhKVNpo (ORCPT
+        id S236316AbhKVNq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 08:46:56 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:27348 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229797AbhKVNqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 08:45:44 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AMDgWbl101506;
-        Mon, 22 Nov 2021 07:42:32 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1637588552;
-        bh=gwmy1g7upSs451Tvms0rbChOLQpMToAcL1SFZbrXNh0=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=VrGtK/6MjhvEpbcleg11dFmPK7mavHfGboSMjVuxhGs0cl4Cpb6Q6vhVYD0wvlmom
-         mve3xuRFO54BdDlSZDa3r+JfsvFBAsXaK52cRbHbGpTKJMO7P3e8OLUjtq1M5ludNU
-         KrStlsJoDQL1cXNC0qEUIYSHbsM9NNWld/0E3bSI=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AMDgWI7050757
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 22 Nov 2021 07:42:32 -0600
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 22
- Nov 2021 07:42:32 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 22 Nov 2021 07:42:32 -0600
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AMDg04x023508;
-        Mon, 22 Nov 2021 07:42:29 -0600
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5 6/6] arm64: dts: ti: k3-am642-evm/sk: Add support for main domain mcan nodes in EVM and disable them on SK
-Date:   Mon, 22 Nov 2021 19:11:58 +0530
-Message-ID: <20211122134159.29936-7-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211122134159.29936-1-a-govindraju@ti.com>
-References: <20211122134159.29936-1-a-govindraju@ti.com>
+        Mon, 22 Nov 2021 08:46:55 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yinan@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UxmRdYN_1637588626;
+Received: from localhost.localdomain(mailfrom:yinan@linux.alibaba.com fp:SMTPD_---0UxmRdYN_1637588626)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 22 Nov 2021 21:43:47 +0800
+From:   Yinan Liu <yinan@linux.alibaba.com>
+To:     rostedt@goodmis.org
+Cc:     mark-pk.tsai@mediatek.com, peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] scripts: ftrace - move the sort-processing in ftrace_init to compile time
+Date:   Mon, 22 Nov 2021 21:43:45 +0800
+Message-Id: <20211122134345.7407-1-yinan@linux.alibaba.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+In-Reply-To: <20210911135043.16014-1-yinan@linux.alibaba.com>
+References: <20210911135043.16014-1-yinan@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AM642 EVM has two CAN connecters brought out from the two MCAN instances in
-the main domain through transceivers. Add device tree nodes for
-transceivers and set the required properties in the mcan device tree nodes,
-in EVM device tree file.
+Hi,
 
-On AM642 SK there are no connectors brought out for CAN. Therefore, disable
-the mcan device tree nodes in the SK device tree file.
+patch V3 has fixed the issue reported-by robot and adjusted
+the formatting problem again.
 
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+Signed-off-by: Yinan Liu <yinan@linux.alibaba.com>
+Reported-by: kernel test robot <lkp@intel.com>
 ---
- arch/arm64/boot/dts/ti/k3-am642-evm.dts | 40 +++++++++++++++++++++++++
- arch/arm64/boot/dts/ti/k3-am642-sk.dts  |  8 +++++
- 2 files changed, 48 insertions(+)
+ kernel/trace/ftrace.c   |   6 ++-
+ scripts/Makefile        |   2 +-
+ scripts/link-vmlinux.sh |   6 +--
+ scripts/sorttable.c     |   2 +
+ scripts/sorttable.h     | 113 ++++++++++++++++++++++++++++++++++++++++++++++--
+ 5 files changed, 119 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-index 6726c4c7c28c..e94ae178b1ae 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-@@ -184,6 +184,20 @@
- 			};
- 		};
- 	};
-+
-+	transceiver1: can-phy0 {
-+		compatible = "ti,tcan1042";
-+		#phy-cells = <0>;
-+		max-bitrate = <5000000>;
-+		standby-gpios = <&exp1 8 GPIO_ACTIVE_HIGH>;
-+	};
-+
-+	transceiver2: can-phy1 {
-+		compatible = "ti,tcan1042";
-+		#phy-cells = <0>;
-+		max-bitrate = <5000000>;
-+		standby-gpios = <&exp1 9 GPIO_ACTIVE_HIGH>;
-+	};
- };
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 7b180f6..f5af419 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -6189,8 +6189,10 @@ static int ftrace_process_locs(struct module *mod,
+ 	if (!count)
+ 		return 0;
  
- &main_pmx0 {
-@@ -294,6 +308,20 @@
- 			AM64X_IOPAD(0x0270, PIN_INPUT, 0) /* (D18) ECAP0_IN_APWM_OUT */
- 		>;
- 	};
-+
-+	main_mcan0_pins_default: main-mcan0-pins-default {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x0254, PIN_INPUT, 0) /* (B17) MCAN0_RX */
-+			AM64X_IOPAD(0x0250, PIN_OUTPUT, 0) /* (A17) MCAN0_TX */
-+		>;
-+	};
-+
-+	main_mcan1_pins_default: main-mcan1-pins-default {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x025c, PIN_INPUT, 0) /* (D17) MCAN1_RX */
-+			AM64X_IOPAD(0x0258, PIN_OUTPUT, 0) /* (C17) MCAN1_TX */
-+		>;
-+	};
- };
+-	sort(start, count, sizeof(*start),
+-	     ftrace_cmp_ips, NULL);
++	if (mod) {
++		sort(start, count, sizeof(*start),
++		     ftrace_cmp_ips, NULL);
++	}
  
- &main_uart0 {
-@@ -638,3 +666,15 @@
- &icssg1_mdio {
- 	status = "disabled";
- };
+ 	start_pg = ftrace_allocate_pages(count);
+ 	if (!start_pg)
+diff --git a/scripts/Makefile b/scripts/Makefile
+index 9adb6d2..b286e11 100644
+--- a/scripts/Makefile
++++ b/scripts/Makefile
+@@ -17,6 +17,7 @@ hostprogs-always-$(CONFIG_SYSTEM_EXTRA_CERTIFICATE)	+= insert-sys-cert
+ hostprogs-always-$(CONFIG_SYSTEM_REVOCATION_LIST)	+= extract-cert
+ 
+ HOSTCFLAGS_sorttable.o = -I$(srctree)/tools/include
++HOSTLDLIBS_sorttable = -lpthread
+ HOSTCFLAGS_asn1_compiler.o = -I$(srctree)/include
+ HOSTCFLAGS_sign-file.o = $(CRYPTO_CFLAGS)
+ HOSTLDLIBS_sign-file = $(CRYPTO_LIBS)
+@@ -29,7 +30,6 @@ ARCH := x86
+ endif
+ HOSTCFLAGS_sorttable.o += -I$(srctree)/tools/arch/x86/include
+ HOSTCFLAGS_sorttable.o += -DUNWINDER_ORC_ENABLED
+-HOSTLDLIBS_sorttable = -lpthread
+ endif
+ 
+ # The following programs are only built on demand
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 36ef7b3..e2e1a8f 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -422,6 +422,9 @@ if [ -n "${CONFIG_DEBUG_INFO_BTF}" -a -n "${CONFIG_BPF}" ]; then
+ 	${RESOLVE_BTFIDS} vmlinux
+ fi
+ 
++info SYSMAP System.map
++mksysmap vmlinux System.map
 +
-+&main_mcan0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_mcan0_pins_default>;
-+	phys = <&transceiver1>;
+ if [ -n "${CONFIG_BUILDTIME_TABLE_SORT}" ]; then
+ 	info SORTTAB vmlinux
+ 	if ! sorttable vmlinux; then
+@@ -430,9 +433,6 @@ if [ -n "${CONFIG_BUILDTIME_TABLE_SORT}" ]; then
+ 	fi
+ fi
+ 
+-info SYSMAP System.map
+-mksysmap vmlinux System.map
+-
+ # step a (see comment above)
+ if [ -n "${CONFIG_KALLSYMS}" ]; then
+ 	mksysmap ${kallsyms_vmlinux} .tmp_System.map
+diff --git a/scripts/sorttable.c b/scripts/sorttable.c
+index 0ef3abf..11a595c 100644
+--- a/scripts/sorttable.c
++++ b/scripts/sorttable.c
+@@ -30,6 +30,8 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
++#include <errno.h>
++#include <pthread.h>
+ 
+ #include <tools/be_byteshift.h>
+ #include <tools/le_byteshift.h>
+diff --git a/scripts/sorttable.h b/scripts/sorttable.h
+index a2baa2f..1effc08 100644
+--- a/scripts/sorttable.h
++++ b/scripts/sorttable.h
+@@ -19,6 +19,9 @@
+ 
+ #undef extable_ent_size
+ #undef compare_extable
++#undef get_mcount_loc
++#undef sort_mcount_loc
++#undef elf_mcount_loc
+ #undef do_sort
+ #undef Elf_Addr
+ #undef Elf_Ehdr
+@@ -41,6 +44,9 @@
+ #ifdef SORTTABLE_64
+ # define extable_ent_size	16
+ # define compare_extable	compare_extable_64
++# define get_mcount_loc	get_mcount_loc_64
++# define sort_mcount_loc	sort_mcount_loc_64
++# define elf_mcount_loc	elf_mcount_loc_64
+ # define do_sort		do_sort_64
+ # define Elf_Addr		Elf64_Addr
+ # define Elf_Ehdr		Elf64_Ehdr
+@@ -62,6 +68,9 @@
+ #else
+ # define extable_ent_size	8
+ # define compare_extable	compare_extable_32
++# define get_mcount_loc	get_mcount_loc_32
++# define sort_mcount_loc	sort_mcount_loc_32
++# define elf_mcount_loc	elf_mcount_loc_32
+ # define do_sort		do_sort_32
+ # define Elf_Addr		Elf32_Addr
+ # define Elf_Ehdr		Elf32_Ehdr
+@@ -84,8 +93,6 @@
+ 
+ #if defined(SORTTABLE_64) && defined(UNWINDER_ORC_ENABLED)
+ /* ORC unwinder only support X86_64 */
+-#include <errno.h>
+-#include <pthread.h>
+ #include <asm/orc_types.h>
+ 
+ #define ERRSTR_MAXSZ	256
+@@ -191,6 +198,62 @@ static int compare_extable(const void *a, const void *b)
+ 		return 1;
+ 	return 0;
+ }
++struct elf_mcount_loc {
++	Elf_Ehdr *ehdr;
++	Elf_Shdr *init_data_sec;
++	uint_t start_mcount_loc;
++	uint_t stop_mcount_loc;
 +};
 +
-+&main_mcan1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_mcan1_pins_default>;
-+	phys = <&transceiver2>;
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-sk.dts b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-index 6b04745147be..a9785bec12df 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-@@ -525,3 +525,11 @@
- &icssg1_mdio {
- 	status = "disabled";
- };
++/* Sort the addresses stored between __start_mcount_loc to __stop_mcount_loc in vmlinux */
++static void *sort_mcount_loc(void *arg)
++{
++	struct elf_mcount_loc *emloc = (struct elf_mcount_loc *)arg;
++	uint_t offset = emloc->start_mcount_loc - _r(&(emloc->init_data_sec)->sh_addr)
++					+ _r(&(emloc->init_data_sec)->sh_offset);
++	uint_t count = emloc->stop_mcount_loc - emloc->start_mcount_loc;
++	unsigned char *start_loc = (void *)emloc->ehdr + offset;
 +
-+&main_mcan0 {
-+	status = "disabled";
-+};
++	qsort(start_loc, count/sizeof(uint_t), sizeof(uint_t), compare_extable);
++	return NULL;
++}
 +
-+&main_mcan1 {
-+	status = "disabled";
-+};
++/* Get the address of __start_mcount_loc and __stop_mcount_loc in System.map */
++static void get_mcount_loc(uint_t *_start, uint_t *_stop)
++{
++	FILE *file_start, *file_stop;
++	char start_buff[20];
++	char stop_buff[20];
++	int len = 0;
++
++	file_start = popen(" grep start_mcount System.map | awk '{print $1}' ", "r");
++	if (!file_start) {
++		fprintf(stderr, "get start_mcount_loc error!");
++		return;
++	}
++
++	file_stop = popen(" grep stop_mcount System.map | awk '{print $1}' ", "r");
++	if (!file_stop) {
++		fprintf(stderr, "get stop_mcount_loc error!");
++		pclose(file_start);
++		return;
++	}
++
++	while (fgets(start_buff, sizeof(start_buff), file_start) != NULL) {
++		len = strlen(start_buff);
++		start_buff[len - 1] = '\0';
++	}
++	*_start = strtoul(start_buff, NULL, 16);
++
++	while (fgets(stop_buff, sizeof(stop_buff), file_stop) != NULL) {
++		len = strlen(stop_buff);
++		stop_buff[len - 1] = '\0';
++	}
++	*_stop = strtoul(stop_buff, NULL, 16);
++
++	pclose(file_start);
++	pclose(file_stop);
++}
+ 
+ static int do_sort(Elf_Ehdr *ehdr,
+ 		   char const *const fname,
+@@ -217,6 +280,10 @@ static int do_sort(Elf_Ehdr *ehdr,
+ 	int idx;
+ 	unsigned int shnum;
+ 	unsigned int shstrndx;
++	struct elf_mcount_loc mstruct;
++	uint_t _start_mcount_loc = 0;
++	uint_t _stop_mcount_loc = 0;
++	pthread_t mcount_sort_thread;
+ #if defined(SORTTABLE_64) && defined(UNWINDER_ORC_ENABLED)
+ 	unsigned int orc_ip_size = 0;
+ 	unsigned int orc_size = 0;
+@@ -253,6 +320,14 @@ static int do_sort(Elf_Ehdr *ehdr,
+ 			symtab_shndx = (Elf32_Word *)((const char *)ehdr +
+ 						      _r(&s->sh_offset));
+ 
++		/* locate the .init.data section in vmlinux */
++		if (!strcmp(secstrings + idx, ".init.data")) {
++			get_mcount_loc(&_start_mcount_loc, &_stop_mcount_loc);
++			mstruct.ehdr = ehdr;
++			mstruct.init_data_sec = s;
++			mstruct.start_mcount_loc = _start_mcount_loc;
++			mstruct.stop_mcount_loc = _stop_mcount_loc;
++		}
+ #if defined(SORTTABLE_64) && defined(UNWINDER_ORC_ENABLED)
+ 		/* locate the ORC unwind tables */
+ 		if (!strcmp(secstrings + idx, ".orc_unwind_ip")) {
+@@ -294,6 +369,21 @@ static int do_sort(Elf_Ehdr *ehdr,
+ 		goto out;
+ 	}
+ #endif
++	if (!mstruct.init_data_sec || !_start_mcount_loc || !_stop_mcount_loc) {
++		fprintf(stderr,
++			"incomplete mcount's sort in file: %s\n",
++			fname);
++		goto out;
++	}
++
++	/* create thread to sort mcount_loc concurrently */
++	if (pthread_create(&mcount_sort_thread, NULL, &sort_mcount_loc, &mstruct)) {
++		fprintf(stderr,
++			"pthread_create mcount_sort_thread failed '%s': %s\n",
++			strerror(errno), fname);
++		goto out;
++	}
++
+ 	if (!extab_sec) {
+ 		fprintf(stderr,	"no __ex_table in file: %s\n", fname);
+ 		goto out;
+@@ -364,11 +454,11 @@ static int do_sort(Elf_Ehdr *ehdr,
+ 		void *retval = NULL;
+ 		/* wait for ORC tables sort done */
+ 		rc = pthread_join(orc_sort_thread, &retval);
+-		if (rc)
++		if (rc) {
+ 			fprintf(stderr,
+ 				"pthread_join failed '%s': %s\n",
+ 				strerror(errno), fname);
+-		else if (retval) {
++		} else if (retval) {
+ 			rc = -1;
+ 			fprintf(stderr,
+ 				"failed to sort ORC tables '%s': %s\n",
+@@ -376,5 +466,20 @@ static int do_sort(Elf_Ehdr *ehdr,
+ 		}
+ 	}
+ #endif
++	if (mcount_sort_thread) {
++		void *retval = NULL;
++		/* wait for mcount sort done */
++		rc = pthread_join(mcount_sort_thread, &retval);
++		if (rc) {
++			fprintf(stderr,
++				"pthread_join failed '%s': %s\n",
++				strerror(errno), fname);
++		} else if (retval) {
++			rc = -1;
++			fprintf(stderr,
++				"failed to sort mcount '%s': %s\n",
++				(char *)retval, fname);
++		}
++	}
+ 	return rc;
+ }
 -- 
-2.17.1
+1.8.3.1
 
