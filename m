@@ -2,143 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E4964593B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 18:11:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E99744593BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 18:13:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239838AbhKVROm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 12:14:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31102 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239798AbhKVROl (ORCPT
+        id S239909AbhKVRQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 12:16:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239798AbhKVRQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 12:14:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637601094;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Phf2QrzzmaDIwGVfZVve7wU0yQ9D8hvAWEdQ6KPMNRo=;
-        b=cNM7ZaVz5cVMD+GdmxDEIrZ8WQofzzz2lbHg7QNv2myYqrTWycZLtVrWLRk6tEmkf97PgH
-        4TCn2oGbS93q9WY0+XJ8Pq8BbZkIqRzHxvRxit78SBqxMglXBfPnPGQmpsvk5wII+gDOju
-        /tY156nsHglXoq1cEMUpi6HKqf/F2MQ=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-144-zRFXtNfnNVi0ffWJ3_cuGw-1; Mon, 22 Nov 2021 12:11:33 -0500
-X-MC-Unique: zRFXtNfnNVi0ffWJ3_cuGw-1
-Received: by mail-wr1-f69.google.com with SMTP id r12-20020adfdc8c000000b0017d703c07c0so3292115wrj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 09:11:31 -0800 (PST)
+        Mon, 22 Nov 2021 12:16:28 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC017C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 09:13:21 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id e136so51964034ybc.4
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 09:13:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=ISqgH/11FtFmYSMgNWFhzK6WZuWyyhvXoxNOBN5qquE=;
+        b=L/bT9jrjnjCiWZagI48UOCNWoOMLSN1zi3Fhi3/ptim8uRSNZEzpse0wUoopEoaGzU
+         otsyJnWFGl7XCHbPWjXI0YcDoYFJ5+twanbJbQQ3NxzQGAb3aUZQXNk7ISiVgMmFk2yH
+         Lgv36BmsBogqV5rg290+2AnUDnUkx3Im4CuLRCb7+PgA/SJhTHDlHEDovgUNwg5fI5uO
+         spH2vKQ6IsBf76SeRF5d+5I1QDiANv03F6A0+OFi/fFqpCXrLr21KhLHRuxhYV38dbRk
+         bEV4oYqbW59OxvPlePBRJa11Vap79O3C9gFc1dA/BgN/qd5tnWxtzH+SrLkaxNmSXD7w
+         E3fA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=Phf2QrzzmaDIwGVfZVve7wU0yQ9D8hvAWEdQ6KPMNRo=;
-        b=43RqIzcfNmRqEkt7zJsWscV+8QnLacgRJuxWzjWD5h40c8vcakFNnUu+lHihTJ93OK
-         xDpaiM9zinBTmFMVsxuq+2PCQLZpohZ9+IhHPRhy3KrLXvQk3rWruwbfq1MkbIbfszeQ
-         CRgVfMeMgpGNoZHfaoVxDP+v4xAIiPiY2MX8XeFcYEwc/Lq3FCiSHeAkiaZZXspEKjWD
-         sso1L6nZ5y72P1Ac88c63C6x/bLq9fiyOmf5mUBFqGM7uRyW0pZGc8UbmtyCJNUdekLh
-         PCz5uJ3q/HqGxGi7PHpTvfidAH7unsIJ9zqVUUWRMDnNeSfjQnQ51opPyghGDJ/jknzB
-         ZAFQ==
-X-Gm-Message-State: AOAM533kvnqzFIAS/0pFEYH/ydmVmOGpwiN+hJTgITT+d9u9YjRLJlO+
-        9Isgq+JHKceQMKBi/asoQAYhaFLVk4GIZJF4oZzqXgFjOP+YxVu3SlpGfdlhWUbW30AsOb7+ctv
-        iDX5qiJDIn0IRasXd1X+bCqkZ
-X-Received: by 2002:a7b:cd93:: with SMTP id y19mr30737768wmj.190.1637601090601;
-        Mon, 22 Nov 2021 09:11:30 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwJSOfXqMAnLV5Q/tuhdq3GNQ8VLl419MW+cfbNy8G3bRV/AYoyovM3ensDWzOdfrrIx6af/Q==
-X-Received: by 2002:a7b:cd93:: with SMTP id y19mr30737727wmj.190.1637601090332;
-        Mon, 22 Nov 2021 09:11:30 -0800 (PST)
-Received: from [192.168.3.132] (p5b0c667b.dip0.t-ipconnect.de. [91.12.102.123])
-        by smtp.gmail.com with ESMTPSA id k37sm11072331wms.21.2021.11.22.09.11.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Nov 2021 09:11:29 -0800 (PST)
-Message-ID: <b84bc345-d4ea-96de-0076-12ff245c5e29@redhat.com>
-Date:   Mon, 22 Nov 2021 18:11:28 +0100
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=ISqgH/11FtFmYSMgNWFhzK6WZuWyyhvXoxNOBN5qquE=;
+        b=YLuHzCsIIRYGbGBbz6pIsaOY4FT13lxqSRwV5T+01CkC2Uaf75unVLcnJ1uCGsr8+P
+         9RPH33rn4aNhCYUV7hMnR6Awq8DIwcnTc9ydQPnEcPjBhwBvCLRepazuapifcnIeZaxF
+         fqHarMxxX4X8/4w5tItKp01hKGjZLvNJ8nbP1c8MeVRCJy35FzDf23XEdDsXH4VDHLgI
+         /3o7O1zRKymipkZt3kfsVoX/M5Bzg7tkmRvVMeC/TdDxZgQHYN3BcfLEpLa4MJd2HOrZ
+         PM017UTXSgIWgDCBgRQGFyvH6v867DwGINTyhPh3UOuHwSG4sa1LEAZcXfBhKy2/gc+i
+         c02g==
+X-Gm-Message-State: AOAM531VkEO//rJRndugzxplYG35ZZCzdjaqJtSBt1ptGIpVyKrY6YGR
+        Z7omkcZI2l7+GInbyem5NjatWsxfZhcToUXpfek=
+X-Google-Smtp-Source: ABdhPJym93eP2h41KpUXixbCwk7v2pQo/37RQP8enyzkH/aseA02r883vbbwUJXD9wS5nLb+zHiDUKivjxmSQsagc5s=
+X-Received: by 2002:a25:d188:: with SMTP id i130mr10361033ybg.475.1637601200806;
+ Mon, 22 Nov 2021 09:13:20 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Drew DeVault <sir@cmpwn.com>
-Cc:     Ammar Faizi <ammarfaizi2@gnuweeb.org>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        io_uring Mailing List <io-uring@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
-References: <20211028080813.15966-1-sir@cmpwn.com>
- <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
- <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
- <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
- <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
- <CFQZSHV700KV.18Y62SACP8KOO@taiga>
- <20211116114727.601021d0763be1f1efe2a6f9@linux-foundation.org>
- <CFRGQ58D9IFX.PEH1JI9FGHV4@taiga>
- <20211116133750.0f625f73a1e4843daf13b8f7@linux-foundation.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
-In-Reply-To: <20211116133750.0f625f73a1e4843daf13b8f7@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a05:7108:3a90:0:0:0:0 with HTTP; Mon, 22 Nov 2021 09:13:20
+ -0800 (PST)
+Reply-To: peacemaurice132@gmail.com
+From:   Peace Maurice <kikialida35@gmail.com>
+Date:   Mon, 22 Nov 2021 09:13:20 -0800
+Message-ID: <CAJzfNqrADesvpULUBT+T_3xDo_F-GW-8GyRYmjQZG-ByozK-YQ@mail.gmail.com>
+Subject: HELLO
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.11.21 22:37, Andrew Morton wrote:
-> On Tue, 16 Nov 2021 20:48:48 +0100 "Drew DeVault" <sir@cmpwn.com> wrote:
-> 
->> On Tue Nov 16, 2021 at 8:47 PM CET, Andrew Morton wrote:
->>> Well, why change the default? Surely anyone who cares is altering it
->>> at runtime anyway. And if they are not, we should encourage them to do
->>> so?
->>
->> I addressed this question in the original patch's commit message.
-> 
-> Kinda.
-> 
-> We're never going to get this right, are we?  The only person who can
-> decide on a system's appropriate setting is the operator of that
-> system.  Haphazardly increasing the limit every few years mainly
-> reduces incentive for people to get this right.
-> 
-> And people who test their software on 5.17 kernels will later find that
-> it doesn't work on 5.16 and earlier, so they still need to tell their
-> users to configure their systems appropriately.  Until 5.16 is
-> obsolete, by which time we're looking at increasing the default again.
-> 
-> I don't see how this change gets us closer to the desired state:
-> getting distros and their users to configure their systems
-> appropriately.
-> 
+Please can we talk?
+Something just came up and it's very urgent, please I need your attention.
 
-My 2 cents: while we should actually try to avoid new FOLL_LONGTERM
-users where possible, we introduce more (IOURING_REGISTER_BUFFERS) to be
-consumed by ordinary, unprivileged users. These new features, *when
-used* require us to raise the MLOCK_LIMIT. Secretmem is similar, but for
-now it rather "replaces" old mlock usage and IIRC has similarly small
-memory demands; that might change in the future, though.
-
-Why is FOLL_LONGTERM bad? Not only does it prevent swapping like mlock
-does, the pages are also unmovable in memory, such that they cannot be
-moved around, for example, for memory compaction.
-
-Well, I'm not too mad about IOURING_REGISTER_BUFFERS, it actually helped
-me to write a simple reproducer for the COW issues we have in upstream
-mm, and can be quite beneficial in some setups. Still, I think it should
-be used with care depending on the actual environment.
-
-So, just because a new feature is around that could be used, does it
-mean that we should adjust our kernel default? I'd say in this case,
-rather not. Distributions, or much better, the responsible admin, should
-make such decisions, knowing the environment and the effect this could have.
-
-(I know that we can similarly trigger allocation of a lot of unmovable
-memory using other means by malicious user space; but that is rather
-something to limit or handle in the future IMHO)
-
--- 
-Thanks,
-
-David / dhildenb
-
+Regards
+Peace Maurice.
