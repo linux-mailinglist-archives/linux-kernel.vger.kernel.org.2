@@ -2,61 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991B04588A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 05:30:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B79458865
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 04:35:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231948AbhKVEdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 23:33:37 -0500
-Received: from mailgw.kylinos.cn ([123.150.8.42]:15825 "EHLO nksmu.kylinos.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229870AbhKVEdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 23:33:36 -0500
-X-UUID: 5057995b7f234a8b99c4f879a224f744-20211122
-X-UUID: 5057995b7f234a8b99c4f879a224f744-20211122
-X-User: wenzhiwei@kylinos.cn
-Received: from localhost.localdomain [(172.17.127.26)] by nksmu.kylinos.cn
-        (envelope-from <wenzhiwei@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 437737254; Mon, 22 Nov 2021 12:39:05 +0800
-From:   Wen Zhiwei <wenzhiwei@kylinos.cn>
-To:     subbu.seetharaman@broadcom.com, ketan.mukadam@broadcom.com,
-        jitendra.bhivare@broadcom.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: be2iscsi:Fix the problem that the array may be out of bounds
-Date:   Sat, 20 Nov 2021 08:32:33 +0800
-Message-Id: <20211120003233.69789-1-wenzhiwei@kylinos.cn>
-X-Mailer: git-send-email 2.30.0
+        id S238637AbhKVDiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 22:38:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232690AbhKVDiD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 22:38:03 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA2EC061574;
+        Sun, 21 Nov 2021 19:34:57 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id r138so4535749pgr.13;
+        Sun, 21 Nov 2021 19:34:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:organization:mime-version
+         :content-transfer-encoding;
+        bh=JGBn1lQayMnvk5SYEnWwopHGKPW7YJeqgCL9mkpoJ34=;
+        b=GKuf5TJI6uvcJKJwjsXYULnUa66irwmLfzeztcZ8oAHAtL0PLYvORmDI/X0iWIxzdL
+         HmMBaBNDfREaIiMwVvp+k7VUFuWM8nA8POMCFO9Hyjsno/6DXPwrYiW82gTxAo4LNBTP
+         f12S6SkQyMVkPJNT6O8hLHtMkT1xpBw1uQzOLESDmz4dqvnoZgUsBbGIGySjTZZmMyYf
+         QP3rZ1qLhNfzLsJeC0jJHDrUkghJ5uM4Gqjh+g2mqXAxoPzLSkqTKfzacOCnHFgdfzqk
+         OpcIf7nkgJk+7PM5/sTU9suzJ1WYlBtmP3g4igBBUdnZ/tSfbrxO8XMGNl9SFLoSSk7f
+         l+og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:organization
+         :mime-version:content-transfer-encoding;
+        bh=JGBn1lQayMnvk5SYEnWwopHGKPW7YJeqgCL9mkpoJ34=;
+        b=a//yWCzauN0Jv5lM2pQMc1kIae+2r8yOkOnb21/di5d12Z7WBxjD+k4LEdJvb+xQNR
+         WU7n8GVLSo34POn9E3XoSRlbXp3wRAsCYToqjb3FqqHwlApukspSOV2YdSOtGY/SY/m5
+         +lqUD45RsZvuNiEShWA8t71cZma/MOHZnGepo6q6TLI5H7wOHRPSLtw4Q5eIzC074aHx
+         iJcbyQowXGb6Yvo5xsH2Z4fEsjJFoaAEGPtUkATRwFMunCznAEw4H/j6sb3d/Y0WoswD
+         jWHqh1KhZAcEirjHz4zzvd5SSw0zZ/1vRGPpQLrfy+DCu6fPb95DYZTGRuLncvCodQ0A
+         PD+w==
+X-Gm-Message-State: AOAM533cpGDojpkj5hiHAsqAXJnZ1ydkB5+VK2AdQwnnGsEY9cox4gRX
+        npEQjFT+9GHdDXFDGp+xbLc=
+X-Google-Smtp-Source: ABdhPJzbtMlHIwYNN2ppajgDSPNxu3KUwho2MEopPGg2LjwXiAjme+TJwfxsAur8aU+h8LTGasVMqA==
+X-Received: by 2002:a63:f749:: with SMTP id f9mr31061332pgk.330.1637552096890;
+        Sun, 21 Nov 2021 19:34:56 -0800 (PST)
+Received: from ubuntu ([222.129.53.202])
+        by smtp.gmail.com with ESMTPSA id k2sm7327273pfc.9.2021.11.21.19.34.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Nov 2021 19:34:56 -0800 (PST)
+Date:   Mon, 22 Nov 2021 09:58:05 +0800
+From:   Aili Yao <yaoaili126@gmail.com>
+To:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com
+Cc:     x86@kernel.org, hpa@zytor.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yaoaili@kingsoft.com
+Subject: [PATCH] KVM: LAPIC: Per vCPU control over
+ kvm_can_post_timer_interrupt
+Message-ID: <20211122095619.000060d2@gmail.com>
+Organization: ksyun
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By observing that the value of ulp_num may be
-'BEISCSI_ULP_COUNT',this will cause the problem
-of data out of bounds.Increase judgments to
-eliminate risks.
+From: Aili Yao <yaoaili@kingsoft.com>
 
-Signed-off-by: Wen Zhiwei <wenzhiwei@kylinos.cn>
+When we isolate some pyhiscal cores, We may not use them for kvm guests,
+We may use them for other purposes like DPDK, or we can make some kvm
+guests isolated and some not, the global judgement pi_inject_timer is
+not enough; We may make wrong decisions:
+
+In such a scenario, the guests without isolated cores will not be
+permitted to use vmx preemption timer, and tscdeadline fastpath also be
+disabled, both will lead to performance penalty.
+
+So check whether the vcpu->cpu is isolated, if not, don't post timer
+interrupt.
+
+Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
 ---
- drivers/scsi/be2iscsi/be_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/kvm/lapic.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/be2iscsi/be_main.c b/drivers/scsi/be2iscsi/be_main.c
-index ab55681145f8..392a53184a00 100644
---- a/drivers/scsi/be2iscsi/be_main.c
-+++ b/drivers/scsi/be2iscsi/be_main.c
-@@ -3947,7 +3947,8 @@ static int beiscsi_init_sgl_handle(struct beiscsi_hba *phba)
- 	for (ulp_num = 0; ulp_num < BEISCSI_ULP_COUNT; ulp_num++)
- 		if (test_bit(ulp_num, &phba->fw_config.ulp_supported))
- 			break;
--
-+	if (ulp_num >= BEISCSI_ULP_COUNT)
-+		return -ENOMEM;
- 	ulp_icd_start = phba->fw_config.iscsi_icd_start[ulp_num];
+diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+index 759952dd1222..72dde5532101 100644
+--- a/arch/x86/kvm/lapic.c
++++ b/arch/x86/kvm/lapic.c
+@@ -34,6 +34,7 @@
+ #include <asm/delay.h>
+ #include <linux/atomic.h>
+ #include <linux/jump_label.h>
++#include <linux/sched/isolation.h>
+ #include "kvm_cache_regs.h"
+ #include "irq.h"
+ #include "ioapic.h"
+@@ -113,7 +114,8 @@ static inline u32 kvm_x2apic_id(struct kvm_lapic *apic)
  
- 	arr_index = 0;
+ static bool kvm_can_post_timer_interrupt(struct kvm_vcpu *vcpu)
+ {
+-	return pi_inject_timer && kvm_vcpu_apicv_active(vcpu);
++	return pi_inject_timer && kvm_vcpu_apicv_active(vcpu) &&
++		!housekeeping_cpu(vcpu->cpu, HK_FLAG_TIMER);
+ }
+ 
+ bool kvm_can_use_hv_timer(struct kvm_vcpu *vcpu)
 -- 
-2.30.0
+2.25.1
 
