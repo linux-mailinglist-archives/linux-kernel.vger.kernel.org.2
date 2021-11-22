@@ -2,130 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99821458BFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 11:02:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF05458C00
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 11:02:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239117AbhKVKFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 05:05:08 -0500
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:49576 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239094AbhKVKFG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 05:05:06 -0500
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20211122100159euoutp02a85d753e23b9e20e1f40fa2f113f3cbf~51hORtaDy1243912439euoutp02p
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 10:01:59 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20211122100159euoutp02a85d753e23b9e20e1f40fa2f113f3cbf~51hORtaDy1243912439euoutp02p
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1637575319;
-        bh=izJPFDq6gJoHKSNSUhfTnX2QS0k0c79bz/RasiifgC8=;
-        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-        b=cj18HsxWMduVzmm2Oav3I87LYMMtMPE+YdoC3mn161U8g44AcTCNo8/IlsxWC2bEW
-         msdzJHqpuw5b9l1J3MDoK0GqBJmI7nRmcakr6GpV11rHk8Wei7tK02qBAtN3ZGqex2
-         ZhKm6Z04RnTmM7WbXtRNVTmz5A/u3uaskr9rjliM=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20211122100158eucas1p16caf4868a630f4181542134fbee5179a~51hN-GXtX0053800538eucas1p1I;
-        Mon, 22 Nov 2021 10:01:58 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 7A.E9.10260.69A6B916; Mon, 22
-        Nov 2021 10:01:58 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20211122100158eucas1p198528016b824d3c428fbd64b5ce9b526~51hNiLZmh0114501145eucas1p1T;
-        Mon, 22 Nov 2021 10:01:58 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20211122100158eusmtrp14e31df5798217051c7d02c251e4e25e6~51hNhLWFa2552225522eusmtrp1Q;
-        Mon, 22 Nov 2021 10:01:58 +0000 (GMT)
-X-AuditID: cbfec7f5-bddff70000002814-b6-619b6a962d81
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id FD.21.09522.69A6B916; Mon, 22
-        Nov 2021 10:01:58 +0000 (GMT)
-Received: from [106.210.134.141] (unknown [106.210.134.141]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20211122100157eusmtip22ad39c90e0dfce9559e2fa20b24bfe6b~51hMxdwM90393903939eusmtip2k;
-        Mon, 22 Nov 2021 10:01:57 +0000 (GMT)
-Message-ID: <80a4e869-0a88-a523-2abd-37a0375e75c4@samsung.com>
-Date:   Mon, 22 Nov 2021 11:01:57 +0100
+        id S239125AbhKVKFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 05:05:33 -0500
+Received: from foss.arm.com ([217.140.110.172]:39356 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232675AbhKVKFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 05:05:32 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7AE8C1042;
+        Mon, 22 Nov 2021 02:02:25 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.58.187])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5CA483F73B;
+        Mon, 22 Nov 2021 02:02:24 -0800 (PST)
+Date:   Mon, 22 Nov 2021 10:01:58 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, kernel@axis.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: uaccess: fix put_user() with TTBR0 PAN
+Message-ID: <YZtqluBcA1mjzb17@FVFF77S0Q05N>
+References: <20211118163417.21617-1-vincent.whitchurch@axis.com>
+ <20211119130419.GA25912@lakrids.cambridge.arm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0)
-        Gecko/20100101 Thunderbird/91.3.1
-Subject: Re: [PATCH 6/6] clk: samsung: exynos850: Keep some crucial clocks
- running
-Content-Language: en-US
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Cc:     David Virag <virag.david003@gmail.com>,
-        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-In-Reply-To: <20211121232741.6967-7-semen.protsenko@linaro.org>
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrHKsWRmVeSWpSXmKPExsWy7djP87rTsmYnGvy5omFx/ctzVov5R86x
-        Wmx8+4PJYtPja6wWH3vusVpc3jWHzWLG+X1MFhdPuVr8ON7HbNG69wi7xb9rG1ksnvcBxVft
-        +sNocfz9Y0YHPo/3N1rZPWY19LJ57Jx1l91j06pONo871/aweWxeUu/Rt2UVo8fnTXIBHFFc
-        NimpOZllqUX6dglcGUc+/mMt+MVccXjPHeYGxsnMXYycHBICJhKrznwEs4UEVjBKvN+Z0sXI
-        BWR/YZQ4NaOdHcL5zChxfPU3NpiOjlM3GSESyxklWn9eZYZwPjJKdHxdzdLFyMHBK2AnceOB
-        BkgDi4CqxO9XkxhBbF4BQYmTM5+wgNiiAkkSp1snga0WFgiRmHPrNSuIzSwgLnHryXwmEFtE
-        IFxiyaf9YPOZBd4yS9zY8IAdJMEmYCjRe7QPbCingL3Ezd2roJrlJba/nQPWICGwnlPi2O+j
-        UI+6SOzecATqBWGJV8e3sEPYMhKnJ/ewQDQ0M0r07L7NDuFMYJS4f3wBI0SVtcSdc7/YQF5j
-        FtCUWL9LHyLsKHFm+X5WkLCEAJ/EjbeCEEfwSUzaNp0ZIswr0dEmBFGtIvF71XQmCFtKovvJ
-        f5YJjEqzkMJlFpL/ZyF5ZxbC3gWMLKsYxVNLi3PTU4uN81LL9YoTc4tL89L1kvNzNzECk9zp
-        f8e/7mBc8eqj3iFGJg7GQ4wSHMxKIrwcG6YnCvGmJFZWpRblxxeV5qQWH2KU5mBREucV+dOQ
-        KCSQnliSmp2aWpBaBJNl4uCUamCSXHqu/NLmtnmbq09Gbw1fr3kngiXaPnBi+8qAjINSCrE1
-        jrwHrtWGm6hXT+7fYvqp9sHrY1v2maY93MXWe/L3LKuwr60nj15zOzXhuek9H6O2f4469bby
-        rgfq3t336OSpu+X7KJrnbKe82/yKBfy/S3YHnNoRPLvp08n672s0SpZ6Pwtc1nxe5vqauasD
-        +5dkXfnx+Iza/aYlWQvUJD3DJf/8y/+4+9q35l8XXR0YDvX9kDzZo3WdPVX30ln3WUeNRO+p
-        V19f820qw5nalocHfDOcJ+zP59F+4BDP4sxmb/TIvn6+xfI3+o5WSzr87tXeFj69//W3n728
-        rYxJaxTMJ5f/Ydy+8toCv+mGpTvnK7EUZyQaajEXFScCALhpao3hAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrDIsWRmVeSWpSXmKPExsVy+t/xe7rTsmYnGjR/Zre4/uU5q8X8I+dY
-        LTa+/cFksenxNVaLjz33WC0u75rDZjHj/D4mi4unXC1+HO9jtmjde4Td4t+1jSwWz/uA4qt2
-        /WG0OP7+MaMDn8f7G63sHrMaetk8ds66y+6xaVUnm8eda3vYPDYvqffo27KK0ePzJrkAjig9
-        m6L80pJUhYz84hJbpWhDCyM9Q0sLPSMTSz1DY/NYKyNTJX07m5TUnMyy1CJ9uwS9jCMf/7EW
-        /GKuOLznDnMD42TmLkZODgkBE4mOUzcZuxi5OIQEljJKbG87wdLFyAGUkJKY36IEUSMs8eda
-        FxtEzXtGiW1fOllBangF7CRuPNAAqWERUJX4/WoSI4jNKyAocXLmExYQW1QgSaL/+y6wXcIC
-        IRJzbr1mBbGZBcQlbj2ZzwQyRkQgXGLxPl2Q8cwC75klJne+BasREjjOKHH4nzeIzSZgKNF7
-        tA9sPqeAvcTN3avATmAWUJdYP08IYqS8xPa3c5gnMArNQnLFLCTbZiF0zELSsYCRZRWjSGpp
-        cW56brGhXnFibnFpXrpecn7uJkZgNG879nPzDsZ5rz7qHWJk4mA8xCjBwawkwsuxYXqiEG9K
-        YmVValF+fFFpTmrxIUZTYEhMZJYSTc4HppO8knhDMwNTQxMzSwNTSzNjJXFez4KORCGB9MSS
-        1OzU1ILUIpg+Jg5OqQam/bvPyWlyrPhk9Id3Wmx68M1Ns5bOi047+uxsYqTn91jG5X2bt9ru
-        WPc48E7izYJZk15/XtpjwxX7Xt069FXbNbW909+ZdMs8XKj5ftG7T1t1+WYfv5fBaCj9trZN
-        uLfzcnhnwkmb6b/s/93mbDpfG9dm+HrGjMKmxiP3XG8VT2Ff7lK0XfTQMXYeDaOKn+KGyrt2
-        +h+43X64Pvy2yUfTNfFHzCr+K+kk1TyrdXu5rjle/6jk3r1Tz8SKdN6fOnt9m66pnPKiVy9v
-        uc07+YKvcH7oglXP+1W4rm43NC7a1/g0ZENwQegJtcO1R/s+NFj+Cd2/orj9bqDVd5vCv4dZ
-        Hi+2n3ioad9e7XcLwz75BiqxFGckGmoxFxUnAgApa4ZibwMAAA==
-X-CMS-MailID: 20211122100158eucas1p198528016b824d3c428fbd64b5ce9b526
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20211121232755eucas1p123f1ca7278430865e5585abd1ded8b45
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20211121232755eucas1p123f1ca7278430865e5585abd1ded8b45
-References: <20211121232741.6967-1-semen.protsenko@linaro.org>
-        <CGME20211121232755eucas1p123f1ca7278430865e5585abd1ded8b45@eucas1p1.samsung.com>
-        <20211121232741.6967-7-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211119130419.GA25912@lakrids.cambridge.arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.11.2021 00:27, Sam Protsenko wrote:
-> Some clocks shouldn't be automatically disabled in clk_disable_unused(),
-> otherwise kernel hangs. Mark those clocks with:
->   - CLK_IS_CRITICAL flag, when there won't be any consumers for that
->     clock, but system can't function when it's gated
->   - CLK_IGNORE_UNUSED flag, when consumer driver will be probably added
->     later
-> 
-> That makes it possible to run the kernel without passing the
-> "clk_ignore_unused" param.
+On Fri, Nov 19, 2021 at 01:04:50PM +0000, Mark Rutland wrote:
+> I think it would be better to use temporaries in __raw_put_user(), along
+> with a comment there, so that the requirement is documented and dealt
+> with in once place. Example diff at the end of this mail; I'm happy for
+> you to pick that for v2, or I can send it out as a patch if your prefer.
 
-Applied, thanks.
+Looking at this again, it's easier than I thought to fix up the get_*() cases;
+the only real pain point iss `err` in get_user_error() and put_user_error(),
+but as those are only used externally in the architectural signal code, we can
+sort that out as a follow-up.
+
+With that in mind, I reckon we should so something like the below.
+
+Thanks,
+Mark.
+
+---->8----
+diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
+index 6e2e0b7031ab..3a5ff5e20586 100644
+--- a/arch/arm64/include/asm/uaccess.h
++++ b/arch/arm64/include/asm/uaccess.h
+@@ -281,12 +281,22 @@ do {									\
+ 	(x) = (__force __typeof__(*(ptr)))__gu_val;			\
+ } while (0)
+ 
++/*
++ * We must not call into the scheduler between uaccess_ttbr0_enable() and
++ * uaccess_ttbr0_disable(). As `x` and `ptr` could contain blocking functions,
++ * we must evaluate these outside of the critical section.
++ */
+ #define __raw_get_user(x, ptr, err)					\
+ do {									\
++	__typeof__(*(ptr)) __user *__rgu_ptr = (ptr);			\
++	__typeof__(x) __rgu_val;					\
+ 	__chk_user_ptr(ptr);						\
++									\
+ 	uaccess_ttbr0_enable();						\
+-	__raw_get_mem("ldtr", x, ptr, err);				\
++	__raw_get_mem("ldtr", __rgu_val, __rgu_ptr, err);		\
+ 	uaccess_ttbr0_disable();					\
++									\
++	(x) = __rgu_val;						\
+ } while (0)
+ 
+ #define __get_user_error(x, ptr, err)					\
+@@ -310,14 +320,22 @@ do {									\
+ 
+ #define get_user	__get_user
+ 
++/*
++ * We must not call into the scheduler between __uaccess_enable_tco_async() and
++ * __uaccess_disable_tco_async(). As `dst` and `src` may contain blocking
++ * functions, we must evaluate these outside of the critical section.
++ */
+ #define __get_kernel_nofault(dst, src, type, err_label)			\
+ do {									\
++	__typeof__(dst) __gkn_dst = (dst);				\
++	__typeof__(src) __gkn_src = (src);				\
+ 	int __gkn_err = 0;						\
+ 									\
+ 	__uaccess_enable_tco_async();					\
+-	__raw_get_mem("ldr", *((type *)(dst)),				\
+-		      (__force type *)(src), __gkn_err);		\
++	__raw_get_mem("ldr", *((type *)(__gkn_dst)),			\
++		      (__force type *)(__gkn_src), __gkn_err);		\
+ 	__uaccess_disable_tco_async();					\
++									\
+ 	if (unlikely(__gkn_err))					\
+ 		goto err_label;						\
+ } while (0)
+@@ -351,11 +369,19 @@ do {									\
+ 	}								\
+ } while (0)
+ 
++/*
++ * We must not call into the scheduler between uaccess_ttbr0_enable() and
++ * uaccess_ttbr0_disable(). As `x` and `ptr` could contain blocking functions,
++ * we must evaluate these outside of the critical section.
++ */
+ #define __raw_put_user(x, ptr, err)					\
+ do {									\
+-	__chk_user_ptr(ptr);						\
++	__typeof__(*(ptr)) __user *__rpu_ptr = (ptr);			\
++	__typeof__(*(ptr)) __rpu_val = (x);				\
++	__chk_user_ptr(__rpu_ptr);					\
++									\
+ 	uaccess_ttbr0_enable();						\
+-	__raw_put_mem("sttr", x, ptr, err);				\
++	__raw_put_mem("sttr", __rpu_val, __rpu_ptr, err);		\
+ 	uaccess_ttbr0_disable();					\
+ } while (0)
+ 
+@@ -380,14 +406,22 @@ do {									\
+ 
+ #define put_user	__put_user
+ 
++/*
++ * We must not call into the scheduler between __uaccess_enable_tco_async() and
++ * __uaccess_disable_tco_async(). As `dst` and `src` may contain blocking
++ * functions, we must evaluate these outside of the critical section.
++ */
+ #define __put_kernel_nofault(dst, src, type, err_label)			\
+ do {									\
++	__typeof__(dst) __pkn_dst = (dst);				\
++	__typeof__(src) __pkn_src = (src);				\
+ 	int __pkn_err = 0;						\
+ 									\
+ 	__uaccess_enable_tco_async();					\
+-	__raw_put_mem("str", *((type *)(src)),				\
+-		      (__force type *)(dst), __pkn_err);		\
++	__raw_put_mem("str", *((type *)(__pkn_src)),			\
++		      (__force type *)(__pkn_dst), __pkn_err);		\
+ 	__uaccess_disable_tco_async();					\
++									\
+ 	if (unlikely(__pkn_err))					\
+ 		goto err_label;						\
+ } while(0)
+-- 
+2.11.0
 
