@@ -2,99 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC2445905C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 15:40:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C73459061
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 15:40:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239746AbhKVOnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 09:43:02 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:34764 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235099AbhKVOmx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 09:42:53 -0500
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AMDXEST003144;
-        Mon, 22 Nov 2021 15:39:11 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=selector1;
- bh=qzuzXnps8uoSg/5ew9p+2cb+8oRWmDxyBUwVDf0JQFk=;
- b=LDLlWUJxqdFImWXoAb0qbfbYMpq+V6bq9Dg7wKPpgxsumRcp/g0c6ya59q3fe8IaiICB
- 06DBqVbrwvXKZ/9j8inUeBB/P1E+ohezfv5DCPxNN8K8qFNF5bMnfxJLC4P5Sepsiz0b
- 6GoDetiSly76xNjt0A+Rrcwp2ZTQAJvaVR8ZiqosIb+wVu7a/da+4ko+lM/UqSWRjjZ8
- 02P3supEAj95/PdGiCsQ0bqQd1SZAkiEOaQIj2A8ylxj+TQaoS4X8naaDxFYDaV+xsWS
- re07pz3h6c/6d7fg7ihLeeJreEvEiAf4QTdIgC8TMD5tFUD9i/RVsR1uNYfrWM9G2v2c Bg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3cgc6p0c2y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Nov 2021 15:39:11 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3C00B10002A;
-        Mon, 22 Nov 2021 15:39:08 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3276821AAAC;
-        Mon, 22 Nov 2021 15:39:08 +0100 (CET)
-Received: from localhost (10.75.127.47) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.26; Mon, 22 Nov 2021 15:39:07
- +0100
-From:   Olivier Moysan <olivier.moysan@foss.st.com>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Olivier Moysan <olivier.moysan@foss.st.com>,
-        Wan Jiabing <wanjiabing@vivo.com>, Xu Wang <vulab@iscas.ac.cn>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: [PATCH v2] iio: adc: stm32: fix null pointer on defer_probe error
-Date:   Mon, 22 Nov 2021 15:38:09 +0100
-Message-ID: <20211122143809.2332-1-olivier.moysan@foss.st.com>
-X-Mailer: git-send-email 2.17.1
+        id S239751AbhKVOnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 09:43:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239769AbhKVOnV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 09:43:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 28CFE60E78;
+        Mon, 22 Nov 2021 14:40:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637592009;
+        bh=EB0EgnL1LmOnfcTSS87OT1BJlmhpKmqE3T/MtNoAAd4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=s+lKInhPQzjyMdFExwPGW62F2ED9t47iu4IjZ+BYmfzv5BF4oU3vKhPN11/HFna+w
+         90suBASBEgRysrW9QnSnzmWTU1Nu/PwuIJHE974UCY9Yd/RAMkLNB8PzpktDwlCWmd
+         0ltAzf6d1TfMGE8uNPAujqbef87erRPlFDELhiVb6/VAA3snQqLsTq4oH/ip1pnvj+
+         Vi4gsqgMZlipcT/fel3WBHd1br/3Mxw9VOUNSOI4fy9OLu49JAom4YGmgurPQmA6qD
+         p2avQ+vhPAtC30QLfzHw+9lqaBd7t2pnJ9PM9I84x1QYJq+Ksdd9d/owB5hGpx/vDs
+         vmEinAff9mLEw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1C67360A94;
+        Mon, 22 Nov 2021 14:40:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-22_07,2021-11-22_02,2020-04-07_01
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 1/1] net: ax88796c: do not receive data in pointer
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163759200911.2046.9687497998289586030.git-patchwork-notify@kernel.org>
+Date:   Mon, 22 Nov 2021 14:40:09 +0000
+References: <20211121200642.2083316-1-nicolas.iooss_linux@m4x.org>
+In-Reply-To: <20211121200642.2083316-1-nicolas.iooss_linux@m4x.org>
+To:     Nicolas Iooss <nicolas.iooss_linux@m4x.org>
+Cc:     l.stelmach@samsung.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dev_err_probe() calls __device_set_deferred_probe_reason()
-on -EPROBE_DEFER error. If device pointer to driver core
-private structure is not initialized, an null pointer error occurs.
-This pointer is set on iio_device_register() call for iio device.
+Hello:
 
-dev_err_probe() must be called with the device which is probing.
-Replace iio device by its parent device.
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
 
-Fixes: 0e346b2cfa85 ("iio: adc: stm32-adc: add vrefint calibration support")
+On Sun, 21 Nov 2021 21:06:42 +0100 you wrote:
+> Function axspi_read_status calls:
+> 
+>     ret = spi_write_then_read(ax_spi->spi, ax_spi->cmd_buf, 1,
+>                               (u8 *)&status, 3);
+> 
+> status is a pointer to a struct spi_status, which is 3-byte wide:
+> 
+> [...]
 
-Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
----
-Changes in v2:
-- Use parent device from indio_dev instead of private structure
----
- drivers/iio/adc/stm32-adc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Here is the summary with links:
+  - [1/1] net: ax88796c: do not receive data in pointer
+    https://git.kernel.org/netdev/net/c/f93fd0ca5e7d
 
-diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-index 7f1fb36c747c..341afdd342cc 100644
---- a/drivers/iio/adc/stm32-adc.c
-+++ b/drivers/iio/adc/stm32-adc.c
-@@ -1986,7 +1986,7 @@ static int stm32_adc_populate_int_ch(struct iio_dev *indio_dev, const char *ch_n
- 			/* Get calibration data for vrefint channel */
- 			ret = nvmem_cell_read_u16(&indio_dev->dev, "vrefint", &vrefint);
- 			if (ret && ret != -ENOENT) {
--				return dev_err_probe(&indio_dev->dev, ret,
-+				return dev_err_probe(indio_dev->dev.parent, ret,
- 						     "nvmem access error\n");
- 			}
- 			if (ret == -ENOENT)
+You are awesome, thank you!
 -- 
-2.17.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
