@@ -2,76 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C9445919C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:48:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A39304591A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240004AbhKVPvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:51:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42324 "EHLO mail.kernel.org"
+        id S240009AbhKVPwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:52:03 -0500
+Received: from mga02.intel.com ([134.134.136.20]:55738 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239994AbhKVPvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:51:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 396E160F50;
-        Mon, 22 Nov 2021 15:47:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637596077;
-        bh=coG1lVPGdNUMGzA0WSI5lrzbJGCJcGknXTWKVgL1jMI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BrCSo6m/1i8cNP7jGkFxesXBzfUzd1tIbQjLPeTITTBS27fSca78OAPQbxfG6rEoD
-         O+j8J3/zSGH96LiWqhEzWbmq7WrupXr4j4RRtxTGBzyjW8F4meXPdPXgOInTACfqKM
-         /u0eiDqQZJX6jElovK6JAFCMlB5dXiZMjgkPI3O/25Pjrg6ZwimmSvDkxDylhN2jM5
-         moAVOuivwVXc5XvPmo9/Q0umaQdLJnxBsEki8Gx2Jdw8daLYzaO6whbDD9wl5IaoJa
-         9zM3DK7Xhx8R4LLJa0R/+rmnoLYcihQ+NBT2rZElUGTrq7nvbeSKojhxWtN2JIdwb2
-         KK1l/qaZhqwvg==
-Date:   Mon, 22 Nov 2021 15:47:53 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] spi: Fix multi-line comment style
-Message-ID: <YZu7qWKYbWnmy20q@sirena.org.uk>
-References: <20211119173718.52938-1-andriy.shevchenko@linux.intel.com>
- <20211119173718.52938-2-andriy.shevchenko@linux.intel.com>
+        id S239850AbhKVPwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 10:52:02 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10175"; a="222030849"
+X-IronPort-AV: E=Sophos;i="5.87,255,1631602800"; 
+   d="scan'208";a="222030849"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 07:48:55 -0800
+X-IronPort-AV: E=Sophos;i="5.87,255,1631602800"; 
+   d="scan'208";a="674105379"
+Received: from lvzhongw-mobl2.ccr.corp.intel.com (HELO chenyu5-mobl1) ([10.255.29.135])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 07:48:51 -0800
+Date:   Mon, 22 Nov 2021 23:48:42 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     linux-acpi@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
+        Robert Moore <robert.moore@intel.com>
+Subject: Re: [PATCH v11 4/4] tools: Introduce power/acpi/tools/pfru
+Message-ID: <20211122154842.GA10345@chenyu5-mobl1>
+References: <cover.1637505679.git.yu.c.chen@intel.com>
+ <a1f688cd4ade1257e96d13c91eba72a1aeef5d59.1637505679.git.yu.c.chen@intel.com>
+ <YZt+VPI2n/MED9O6@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4uRR4lEApAfCq+Eb"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211119173718.52938-2-andriy.shevchenko@linux.intel.com>
-X-Cookie: Neutrinos have bad breadth.
+In-Reply-To: <YZt+VPI2n/MED9O6@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Andy,
+On Mon, Nov 22, 2021 at 01:26:12PM +0200, Andy Shevchenko wrote:
+> On Sun, Nov 21, 2021 at 11:17:29PM +0800, Chen Yu wrote:
+> > Introduce a user space tool to make use of the interface exposed by
+> > Platform Firmware Runtime Update and Telemetry drivers. The users
+> > can use this tool to do firmware code injection, driver update and
+> > to retrieve the telemetry data.
+> 
+> Have you tried to build tools with `make O=/my/tmp/folder/for/kernel/build ...`
+> which previously has been used for kernel builds?
+>
+I was not aware of that and just had a try. It seems that there is an issue in
+tools/power/acpi that, only with the following patch appiled, the make O=xxx
+would work:
 
---4uRR4lEApAfCq+Eb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+diff --git a/tools/power/acpi/Makefile.config b/tools/power/acpi/Makefile.config
+index 331f6d30f472..cd7106876a5f 100644
+--- a/tools/power/acpi/Makefile.config
++++ b/tools/power/acpi/Makefile.config
+@@ -69,6 +69,7 @@ KERNEL_INCLUDE := $(OUTPUT)include
+ ACPICA_INCLUDE := $(srctree)/../../../drivers/acpi/acpica
+ CFLAGS += -D_LINUX -I$(KERNEL_INCLUDE) -I$(ACPICA_INCLUDE)
+ CFLAGS += $(WARNINGS)
++MKDIR = mkdir
+ 
+ ifeq ($(strip $(V)),false)
+ 	QUIET=@
+diff --git a/tools/power/acpi/Makefile.rules b/tools/power/acpi/Makefile.rules
+index 2a6c170b57cd..1d7616f5d0ae 100644
+--- a/tools/power/acpi/Makefile.rules
++++ b/tools/power/acpi/Makefile.rules
+@@ -21,6 +21,7 @@ $(KERNEL_INCLUDE):
+ 
+ $(objdir)%.o: %.c $(KERNEL_INCLUDE)
+ 	$(ECHO) "  CC      " $(subst $(OUTPUT),,$@)
++	$(QUIET) $(MKDIR) -p $(objdir) 2>/dev/null
+ 	$(QUIET) $(CC) -c $(CFLAGS) -o $@ $<
+ 
+ all: $(OUTPUT)$(TOOL)
+-- 
+2.25.1
 
-On Fri, Nov 19, 2021 at 07:37:18PM +0200, Andy Shevchenko wrote:
->   /*
->    * Fix multi-line comment style as in this short example. Pay attention
->    * to the capitalization, period and starting line of the text.
->    */
->=20
-> While at it, split the (supposedly short) description of couple of functi=
-ons
-> to summary (short description) and (long) description.
+Should above patch be a separate one or folded in [4/4]?
 
-This doesn't apply against current code, please check and resend.
-
---4uRR4lEApAfCq+Eb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGbu6gACgkQJNaLcl1U
-h9Bz0gf/SbXpl6cBivIjgq1t4hhTzW1gr4X0wcKwWMcuo0reAf9G4um/3VWgaO0m
-j+aWYW/lzxXliCZX8lscRPNmUcydNGS2fdwwtWpCs2rA8nShfsqbSuQLwfxNxN73
-iuR9wWgA94nPfZ7fanNEWlXTLQYQCQND5lHbaDhMFjs2v0nAf1hG1nKuaZ8cxeM4
-Ow1+k9u1YSbYSVyHRU0WZL0b71iNMivqQdFLKwl+rmS0eKwXTBfSW5ZC8oaii4hs
-kJbB41wqn4NC/gfc1+Ua/W0aUMJCpANiisk9SoU2a8pyi3C6TdYPDaDUhs+xP+By
-2n6Ya3LyVR5upP+qmjA2qj1Vxyn2rg==
-=yjzK
------END PGP SIGNATURE-----
-
---4uRR4lEApAfCq+Eb--
+thanks,
+Chenyu
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
