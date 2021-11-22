@@ -2,128 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABCD6459735
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 23:14:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6BE45973A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 23:16:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239995AbhKVWRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 17:17:43 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:44772 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231771AbhKVWRj (ORCPT
+        id S240069AbhKVWTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 17:19:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233409AbhKVWTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 17:17:39 -0500
-Received: by mail-io1-f70.google.com with SMTP id 7-20020a6b0107000000b005ed196a2546so2800842iob.11
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 14:14:32 -0800 (PST)
+        Mon, 22 Nov 2021 17:19:11 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A02C06173E
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 14:16:02 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id gf14-20020a17090ac7ce00b001a7a2a0b5c3so413527pjb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 14:16:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2OV23+MScTURnMhYeuk3+zM35TT9kFx77CgHKYQgzCA=;
+        b=i6TqQhY8ZD3wjTveGWx1ihr1j69B07becCRLjNTkblFGFcH6InIrFdSoTO4rC7CeEX
+         rMMjKJF0b6mOaoxQc//ApgjDTtEoh4Rg7SFx4MXKNWP4KXQrrd2NugXi3vukgCnSQoK2
+         nNMFJAX35uyka0XzQsTfgP0flmLwX3UXFavB8T63O0yesBn91rpTmbX2X76m8SInjzZX
+         hMUBk1AyDVg/nWt8qDmgn/udVd7gWqz1NPNR8OctvhAY1x2ML+FweonqQXmWIGAtrH2Q
+         lqEwxyDm0Pod2/0Xm0X4gG9xGRn7hETvJk4NwP6VSn9CoblymOnXp/mphELYK/y7lRec
+         QcOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Kz/44B8X7NBFkqbuicYsbZq4Sql/M2zFV0XxqztyEos=;
-        b=5m4B24zzN1cemFm3FQmcGYFtMYMTFQUfhiddusgQANF6FMReL85BKROv4K/PofTaq/
-         L/mJjpKfCey3VgqMzbnvnJMaSZ018Ze3h61li9hdkvSkNEPAx5H42xf5p+2sZ2IAzx+8
-         gHcYE7J/h0EiJsTHXTxP53ri2mQQF5kqnHBiVLjE0wHq0/HAPYTdrfUiLwdjeJ9OxUJj
-         AxvZefwco3SrIrB7yCejS6fPUoWXe7Iur++F1c6tWqYACYRwu/+WsHLzCsEP6OliO1dN
-         tMMgeUiHwxRloJZ/PRnxIgBYE8mLbOebRZXT801Bkn9VS7AInS4h/+9Aa0iyq35IcBFh
-         Sd1w==
-X-Gm-Message-State: AOAM530yhQqMD+XWmMgqAeDXx2bzsAhPOHCZwKhVHaJRNHpiBO246QN3
-        gZlWRAsotw/gqrvGiN+2QLnPCSIsew11fT2IPjuxiJjt8N3c
-X-Google-Smtp-Source: ABdhPJwtWfap1cILHXA8iY6bhxmVBc5DuHMjm1DNzMmWeuU1dmiVBqd5gR4zDlKDr42C/cujKKfJcxy+RDqnjoVt+wBxmFTK/rtM
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2OV23+MScTURnMhYeuk3+zM35TT9kFx77CgHKYQgzCA=;
+        b=WOLC0J3szjpq8lKZc3p7kPzdqtCb5BDVaIwx1q1BN8wfpszYruD6TgBiR9pKx/ORME
+         9nLVJzenf1Qhgse3t0UWy5sJCrBgwfEEE1TEgZGH+Cp+Itm62FuPgVXdWWSzvql3EYHx
+         IZZprdZtf+bXEH5hGDJm+3vzJz+tC8gZnxTBDdq2UIyPNXHUJesvBt6UcAR7P0NOEU1E
+         5s1sbpr5PQLGjZaoC4Lm3bYoCHH5Yxjvgf/RJ4p9/4TrVEQCae/u2brqHn4CQYpli4E0
+         5fcPDRErjg6P6LuleCqJulnZbjyVWHSJbBusLs0dRK2FfyQSbp9iFi9lUf3HXVgZpgZS
+         ek5w==
+X-Gm-Message-State: AOAM533bj3QS3vf6vyuic/GhN7GiNXDdjipkavGBK90TELy4g+WZ62kI
+        Sq8OR8W6zqMq9tIdOMyDnwr4oQ==
+X-Google-Smtp-Source: ABdhPJyOvYIGtLSIBLMipAMguqSLFYrGrnGbr2edAXGEc0SyZut7+pCav7nhK9U2LG1x79V3cIpEeA==
+X-Received: by 2002:a17:90b:33c8:: with SMTP id lk8mr218438pjb.97.1637619361773;
+        Mon, 22 Nov 2021 14:16:01 -0800 (PST)
+Received: from localhost.localdomain ([50.39.160.154])
+        by smtp.gmail.com with ESMTPSA id v13sm10338616pfu.38.2021.11.22.14.16.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Nov 2021 14:16:01 -0800 (PST)
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        john.stultz@linaro.org, linux-kernel@vger.kernel.org,
+        Tadeusz Struk <tadeusz.struk@linaro.org>
+Subject: [PATCH RESEND] media: venus: Synchronize probe() between venus_core and enc/dec
+Date:   Mon, 22 Nov 2021 14:15:46 -0800
+Message-Id: <20211122221546.178236-1-tadeusz.struk@linaro.org>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:3a4:: with SMTP id z4mr521453jap.76.1637619271749;
- Mon, 22 Nov 2021 14:14:31 -0800 (PST)
-Date:   Mon, 22 Nov 2021 14:14:31 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f854ec05d167f227@google.com>
-Subject: [syzbot] kernel BUG in kvm_read_guest_offset_cached
-From:   syzbot <syzbot+7b7db8bb4db6fd5e157b@syzkaller.appspotmail.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Venus video encode/decode hardware driver consists of three modules.
+The parent module venus-core, and two sub modules venus-enc and venus-dec.
+The venus-core module allocates a common structure that is used by the
+enc/dec modules, loads the firmware, and performs some common hardware
+initialization. Since the three modules are loaded one after the other,
+and their probe functions can run in parallel it is possible that
+the venc_probe and vdec_probe functions can finish before the core
+venus_probe function, which then can fail when, for example it
+fails to load the firmware. In this case the subsequent call to venc_open
+causes an Oops as it tries to dereference already uninitialized structures
+through dev->parent and the system crashes in __pm_runtime_resume() as in
+the trace below:
 
-syzbot found the following issue on:
+[   26.064835][  T485] Internal error: Oops: 96000006 [#1] PREEMPT SMP
+[   26.270914][  T485] Hardware name: Thundercomm Dragonboard 845c (DT)
+[   26.285019][  T485] pc : __pm_runtime_resume+0x34/0x178
+[   26.286374][  T213] lt9611 10-003b: hdmi cable connected
+[   26.290285][  T485] lr : venc_open+0xc0/0x278 [venus_enc]
+[   26.290326][  T485] Call trace:
+[   26.290328][  T485]  __pm_runtime_resume+0x34/0x178
+[   26.290330][  T485]  venc_open+0xc0/0x278 [venus_enc]
+[   26.290335][  T485]  v4l2_open+0x184/0x294
+[   26.290340][  T485]  chrdev_open+0x468/0x5c8
+[   26.290344][  T485]  do_dentry_open+0x260/0x54c
+[   26.290349][  T485]  path_openat+0xbe8/0xd5c
+[   26.290352][  T485]  do_filp_open+0xb8/0x168
+[   26.290354][  T485]  do_sys_openat2+0xa4/0x1e8
+[   26.290357][  T485]  __arm64_compat_sys_openat+0x70/0x9c
+[   26.290359][  T485]  invoke_syscall+0x60/0x170
+[   26.290363][  T485]  el0_svc_common+0xb8/0xf8
+[   26.290365][  T485]  do_el0_svc_compat+0x20/0x30
+[   26.290367][  T485]  el0_svc_compat+0x24/0x84
+[   26.290372][  T485]  el0t_32_sync_handler+0x7c/0xbc
+[   26.290374][  T485]  el0t_32_sync+0x1b8/0x1bc
+[   26.290381][  T485] ---[ end trace 04ca7c088b4c1a9c ]---
+[   26.290383][  T485] Kernel panic - not syncing: Oops: Fatal exception
 
-HEAD commit:    4c388a8e740d Merge tag 'zstd-for-linus-5.16-rc1' of git://..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=171ff6eeb00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6d3b8fd1977c1e73
-dashboard link: https://syzkaller.appspot.com/bug?extid=7b7db8bb4db6fd5e157b
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+This can be fixed by synchronizing the three probe functions and
+only allowing the venc_probe() and vdec_probe() to pass when venus_probe()
+returns success.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Changes in v2:
+- Change locking from mutex_lock to mutex_trylock
+  in venc_probe and vdec_probe to avoid potential deadlock.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7b7db8bb4db6fd5e157b@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-kernel BUG at arch/x86/kvm/../../../virt/kvm/kvm_main.c:2955!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 27639 Comm: syz-executor.0 Not tainted 5.16.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:kvm_read_guest_offset_cached+0x3aa/0x440 arch/x86/kvm/../../../virt/kvm/kvm_main.c:2955
-Code: 00 48 c7 c2 c0 08 a2 89 be 0b 03 00 00 48 c7 c7 60 0d a2 89 c6 05 71 f9 73 0c 01 e8 62 19 f8 07 e9 d6 fc ff ff e8 36 1b 6f 00 <0f> 0b e8 2f 1b 6f 00 48 8b 74 24 10 4c 89 ef 4c 89 e1 48 8b 54 24
-RSP: 0018:ffffc9000589fa18 EFLAGS: 00010216
-RAX: 0000000000003b75 RBX: ffff8880722ba798 RCX: ffffc90002b94000
-RDX: 0000000000040000 RSI: ffffffff81087cda RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000004 R09: ffffc900049dbf53
-R10: ffffffff81087a0f R11: 0000000000000002 R12: 0000000000000004
-R13: ffffc900049d1000 R14: 0000000000000000 R15: ffff8880886c0000
-FS:  00007fd7a562f700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000200 CR3: 0000000038e62000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000000000000c0fe
-DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- handle_vmptrld arch/x86/kvm/vmx/nested.c:5304 [inline]
- handle_vmptrld+0x39d/0x820 arch/x86/kvm/vmx/nested.c:5266
- __vmx_handle_exit arch/x86/kvm/vmx/vmx.c:6012 [inline]
- vmx_handle_exit+0x4f7/0x18a0 arch/x86/kvm/vmx/vmx.c:6029
- vcpu_enter_guest+0x2b41/0x4440 arch/x86/kvm/x86.c:9941
- vcpu_run arch/x86/kvm/x86.c:10008 [inline]
- kvm_arch_vcpu_ioctl_run+0x4fc/0x21a0 arch/x86/kvm/x86.c:10203
- kvm_vcpu_ioctl+0x570/0xf30 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3709
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:874 [inline]
- __se_sys_ioctl fs/ioctl.c:860 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fd7a80b9ae9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fd7a562f188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007fd7a81ccf60 RCX: 00007fd7a80b9ae9
-RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000006
-RBP: 00007fd7a8113f6d R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fd7a8700b2f R14: 00007fd7a562f300 R15: 0000000000022000
- </TASK>
-Modules linked in:
----[ end trace 05ad48ac8b464d71 ]---
-RIP: 0010:kvm_read_guest_offset_cached+0x3aa/0x440 arch/x86/kvm/../../../virt/kvm/kvm_main.c:2955
-Code: 00 48 c7 c2 c0 08 a2 89 be 0b 03 00 00 48 c7 c7 60 0d a2 89 c6 05 71 f9 73 0c 01 e8 62 19 f8 07 e9 d6 fc ff ff e8 36 1b 6f 00 <0f> 0b e8 2f 1b 6f 00 48 8b 74 24 10 4c 89 ef 4c 89 e1 48 8b 54 24
-RSP: 0018:ffffc9000589fa18 EFLAGS: 00010216
-RAX: 0000000000003b75 RBX: ffff8880722ba798 RCX: ffffc90002b94000
-RDX: 0000000000040000 RSI: ffffffff81087cda RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000004 R09: ffffc900049dbf53
-R10: ffffffff81087a0f R11: 0000000000000002 R12: 0000000000000004
-R13: ffffc900049d1000 R14: 0000000000000000 R15: ffff8880886c0000
-FS:  00007fd7a562f700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f18994c5000 CR3: 0000000038e62000 CR4: 00000000003526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000003000
-DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
-
-
+Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/media/platform/qcom/venus/core.c |  6 ++++++
+ drivers/media/platform/qcom/venus/core.h |  2 ++
+ drivers/media/platform/qcom/venus/vdec.c | 24 +++++++++++++++++++++---
+ drivers/media/platform/qcom/venus/venc.c | 24 +++++++++++++++++++++---
+ 4 files changed, 50 insertions(+), 6 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+index f5fa81896012..3c126755f598 100644
+--- a/drivers/media/platform/qcom/venus/core.c
++++ b/drivers/media/platform/qcom/venus/core.c
+@@ -317,6 +317,7 @@ static int venus_probe(struct platform_device *pdev)
+ 
+ 	INIT_LIST_HEAD(&core->instances);
+ 	mutex_init(&core->lock);
++	mutex_init(&core->sync_lock);
+ 	INIT_DELAYED_WORK(&core->work, venus_sys_error_handler);
+ 	init_waitqueue_head(&core->sys_err_done);
+ 
+@@ -332,6 +333,8 @@ static int venus_probe(struct platform_device *pdev)
+ 
+ 	venus_assign_register_offsets(core);
+ 
++	mutex_lock(&core->sync_lock);
++
+ 	ret = v4l2_device_register(dev, &core->v4l2_dev);
+ 	if (ret)
+ 		goto err_core_deinit;
+@@ -378,6 +381,7 @@ static int venus_probe(struct platform_device *pdev)
+ 		goto err_dev_unregister;
+ 	}
+ 
++	mutex_unlock(&core->sync_lock);
+ 	venus_dbgfs_init(core);
+ 
+ 	return 0;
+@@ -393,6 +397,7 @@ static int venus_probe(struct platform_device *pdev)
+ 	hfi_destroy(core);
+ err_core_deinit:
+ 	hfi_core_deinit(core, false);
++	mutex_unlock(&core->sync_lock);
+ err_core_put:
+ 	if (core->pm_ops->core_put)
+ 		core->pm_ops->core_put(core);
+@@ -429,6 +434,7 @@ static int venus_remove(struct platform_device *pdev)
+ 
+ 	mutex_destroy(&core->pm_lock);
+ 	mutex_destroy(&core->lock);
++	mutex_destroy(&core->sync_lock);
+ 	venus_dbgfs_deinit(core);
+ 
+ 	return ret;
+diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+index 7c3bac01cd49..80a2d2b43578 100644
+--- a/drivers/media/platform/qcom/venus/core.h
++++ b/drivers/media/platform/qcom/venus/core.h
+@@ -121,6 +121,7 @@ struct venus_format {
+  * @use_tz:	a flag that suggests presence of trustzone
+  * @fw:		structure of firmware parameters
+  * @lock:	a lock for this strucure
++ * @sync_lock	a lock for probe sync between venus_core and venus_enc/dec
+  * @instances:	a list_head of all instances
+  * @insts_count:	num of instances
+  * @state:	the state of the venus core
+@@ -178,6 +179,7 @@ struct venus_core {
+ 		size_t mem_size;
+ 	} fw;
+ 	struct mutex lock;
++	struct mutex sync_lock;
+ 	struct list_head instances;
+ 	atomic_t insts_count;
+ 	unsigned int state;
+diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+index 91da3f509724..b2fb0e096b21 100644
+--- a/drivers/media/platform/qcom/venus/vdec.c
++++ b/drivers/media/platform/qcom/venus/vdec.c
+@@ -1706,17 +1706,32 @@ static int vdec_probe(struct platform_device *pdev)
+ 	if (!core)
+ 		return -EPROBE_DEFER;
+ 
++	/* Sync and wait on the venus core to initialize first.
++	 * If we manage to acquire the sync_lock here it means
++	 * that the venus_probe() finished running */
++	ret = mutex_trylock(&core->sync_lock);
++	if (!ret) {
++		return -EPROBE_DEFER;
++	} else {
++		if (core->state != CORE_INIT) {
++			ret = -ENODEV;
++			goto err_core_unlock;
++		}
++	}
++
+ 	platform_set_drvdata(pdev, core);
+ 
+ 	if (core->pm_ops->vdec_get) {
+ 		ret = core->pm_ops->vdec_get(dev);
+ 		if (ret)
+-			return ret;
++			goto err_core_unlock;
+ 	}
+ 
+ 	vdev = video_device_alloc();
+-	if (!vdev)
+-		return -ENOMEM;
++	if (!vdev) {
++		ret = -ENOMEM;
++		goto err_core_unlock;
++	}
+ 
+ 	strscpy(vdev->name, "qcom-venus-decoder", sizeof(vdev->name));
+ 	vdev->release = video_device_release;
+@@ -1737,11 +1752,14 @@ static int vdec_probe(struct platform_device *pdev)
+ 	pm_runtime_set_autosuspend_delay(dev, 2000);
+ 	pm_runtime_use_autosuspend(dev);
+ 	pm_runtime_enable(dev);
++	mutex_unlock(&core->sync_lock);
+ 
+ 	return 0;
+ 
+ err_vdev_release:
+ 	video_device_release(vdev);
++err_core_unlock:
++	mutex_unlock(&core->sync_lock);
+ 	return ret;
+ }
+ 
+diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
+index 84bafc3118cc..adb7ba14bc2a 100644
+--- a/drivers/media/platform/qcom/venus/venc.c
++++ b/drivers/media/platform/qcom/venus/venc.c
+@@ -1436,17 +1436,32 @@ static int venc_probe(struct platform_device *pdev)
+ 	if (!core)
+ 		return -EPROBE_DEFER;
+ 
++	/* Sync and wait on the venus core to initialize first.
++	 * If we manage to acquire the sync_lock here it means
++	 * that the venus_probe() finished running */
++	ret = mutex_trylock(&core->sync_lock);
++	if (!ret) {
++		return -EPROBE_DEFER;
++	} else {
++		if (core->state != CORE_INIT) {
++			ret = -ENODEV;
++			goto err_core_unlock;
++		}
++	}
++
+ 	platform_set_drvdata(pdev, core);
+ 
+ 	if (core->pm_ops->venc_get) {
+ 		ret = core->pm_ops->venc_get(dev);
+ 		if (ret)
+-			return ret;
++			goto err_core_unlock;
+ 	}
+ 
+ 	vdev = video_device_alloc();
+-	if (!vdev)
+-		return -ENOMEM;
++	if (!vdev) {
++		ret = -ENOMEM;
++		goto err_core_unlock;
++	}
+ 
+ 	strscpy(vdev->name, "qcom-venus-encoder", sizeof(vdev->name));
+ 	vdev->release = video_device_release;
+@@ -1467,11 +1482,14 @@ static int venc_probe(struct platform_device *pdev)
+ 	pm_runtime_set_autosuspend_delay(dev, 2000);
+ 	pm_runtime_use_autosuspend(dev);
+ 	pm_runtime_enable(dev);
++	mutex_unlock(&core->sync_lock);
+ 
+ 	return 0;
+ 
+ err_vdev_release:
+ 	video_device_release(vdev);
++err_core_unlock:
++	mutex_unlock(&core->sync_lock);
+ 	return ret;
+ }
+ 
+-- 
+2.33.1
+
