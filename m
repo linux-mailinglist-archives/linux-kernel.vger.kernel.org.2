@@ -2,232 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C914587D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 02:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4D54587DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 02:56:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235962AbhKVBvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 20:51:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbhKVBva (ORCPT
+        id S238408AbhKVB65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 20:58:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:39462 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232296AbhKVB64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 20:51:30 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F1CC061574;
-        Sun, 21 Nov 2021 17:48:24 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id z5so69873967edd.3;
-        Sun, 21 Nov 2021 17:48:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=i1J0Xb2sfQHrmsobBbTZtxUiY6+9/kLkq8Mq2CDUntQ=;
-        b=PR3MPsCr6h037YzD86rArigSgb4AenakNnTh8X+OxJVl1Il+XYdl5x9fp6SPA+ZjWt
-         Dv9O2gtBNeWtGD2TymMzlQEmEmMmsAa/8hv1xykOAARGARaHLExx6D+mtUp0Oxx2jkrX
-         JCQu2PNy4M1l7JYVhAjY6ZwHBT+BmKahlZrdhCyraiQZ76PsQhd4eD1mrUqf5NimDFl3
-         1sM0jKTRKs64jgPTvQ0JlOMybKr9drN6Q65TqGkPP6Xh0mpFdPIT7vAEKINtyPOTYDQ7
-         BuRnnUV3un78y//tputIt9tDw99HihC0d2S8JkcM+ayz6TaxfI9aruQwmH88NgTWxyok
-         bIWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i1J0Xb2sfQHrmsobBbTZtxUiY6+9/kLkq8Mq2CDUntQ=;
-        b=6SXPHrCi6gE6MqIH5wHdwmm8dSDbTYf1iGhgqj+eYLuA5BDEUIq+CYDCu1Bo760KeL
-         jXJUPlZnSGi54dqyIv5LwTTU/Wr1BsUfqKcFreia1UtMNgGNZy0dAhxd6IxGJahtN0X8
-         OH/RHawfLPu9i0AHJo+F1jG/+d/joY3o/deXehqqP+eDjzOfuVTH+2VPH6uPx61LClWG
-         c+OAquHXY0Lc+wmG818J0O36roNkbPu013dbGfwkdO2naNKsqtBHnAEkQKavHMCvG7Oi
-         xpFn6/I0UPdfrkkrUgWDszPTbl8pLTa3laBpX/8puIrp54L86q3/xBgT57mx/QnbKNbl
-         WWzQ==
-X-Gm-Message-State: AOAM5323rMv5SLbp0Ririv7xj3a/kCwKtP15CmFLKjwjM4AEL9mY+nLh
-        f89SIOjKsUf6GL77YOvfBmU=
-X-Google-Smtp-Source: ABdhPJwSbzrFapuOgEJps4E94InvBYzusW40ToT/ETszC0Ee+/UDoKKO64HIvAOzs4VSdvbnQjmhww==
-X-Received: by 2002:aa7:d412:: with SMTP id z18mr27181312edq.315.1637545702893;
-        Sun, 21 Nov 2021 17:48:22 -0800 (PST)
-Received: from skbuf ([188.25.163.189])
-        by smtp.gmail.com with ESMTPSA id gn26sm3005025ejc.14.2021.11.21.17.48.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Nov 2021 17:48:22 -0800 (PST)
-Date:   Mon, 22 Nov 2021 03:48:21 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH v2 9/9] net: dsa: qca8k: add support for
- mdb_add/del
-Message-ID: <20211122014821.syd7qrlthenwak4b@skbuf>
-References: <20211122010313.24944-1-ansuelsmth@gmail.com>
- <20211122010313.24944-10-ansuelsmth@gmail.com>
+        Sun, 21 Nov 2021 20:58:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637546150;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=foL2qzsSmwXF+mZ2MGe7BLerROLxedXKdXca4/aLKDo=;
+        b=dCVU/eC29y6xGvQhn4VwtaVcifrH/PE5xOqcv2QzBdGnCH6mnsHS/qTU6HGXJxsSRaFiNY
+        E+L5oUCYlqqtOyZpjhx5rO6MOLNoJfqboR0SQjPiHqHWb/OsviotTuDZUaar10j8q/5v3O
+        o8Gt9TOPxVAS4sqXJy5pMiV3VpzPYFM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-189--M8HS8O5MrKP_GhfL0sfvw-1; Sun, 21 Nov 2021 20:55:46 -0500
+X-MC-Unique: -M8HS8O5MrKP_GhfL0sfvw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A77353938D;
+        Mon, 22 Nov 2021 01:55:45 +0000 (UTC)
+Received: from localhost (ovpn-12-61.pek2.redhat.com [10.72.12.61])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 07FE39808;
+        Mon, 22 Nov 2021 01:55:31 +0000 (UTC)
+Date:   Mon, 22 Nov 2021 09:55:29 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     kexec@lists.infradead.org, dyoung@redhat.com,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH 1/3] x86/kexec: fix memory leak of elf header buffer
+Message-ID: <20211122015529.GA7968@MiWiFi-R3L-srv>
+References: <20211029072424.9109-1-bhe@redhat.com>
+ <20211029072424.9109-2-bhe@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211122010313.24944-10-ansuelsmth@gmail.com>
+In-Reply-To: <20211029072424.9109-2-bhe@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 02:03:13AM +0100, Ansuel Smith wrote:
-> Add support for mdb add/del function. The ARL table is used to insert
-> the rule. The rule will be searched, deleted and reinserted with the
-> port mask updated. The function will check if the rule has to be updated
-> or insert directly with no deletion of the old rule.
-> If every port is removed from the port mask, the rule is removed.
-> The rule is set STATIC in the ARL table (aka it doesn't age) to not be
-> flushed by fast age function.
+On 10/29/21 at 03:24pm, Baoquan He wrote:
+> This is reported by kmemleak detector:
 > 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> unreferenced object 0xffffc900002a9000 (size 4096):
+>   comm "kexec", pid 14950, jiffies 4295110793 (age 373.951s)
+>   hex dump (first 32 bytes):
+>     7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00  .ELF............
+>     04 00 3e 00 01 00 00 00 00 00 00 00 00 00 00 00  ..>.............
+>   backtrace:
+>     [<0000000016a8ef9f>] __vmalloc_node_range+0x101/0x170
+>     [<000000002b66b6c0>] __vmalloc_node+0xb4/0x160
+>     [<00000000ad40107d>] crash_prepare_elf64_headers+0x8e/0xcd0
+>     [<0000000019afff23>] crash_load_segments+0x260/0x470
+>     [<0000000019ebe95c>] bzImage64_load+0x814/0xad0
+>     [<0000000093e16b05>] arch_kexec_kernel_image_load+0x1be/0x2a0
+>     [<000000009ef2fc88>] kimage_file_alloc_init+0x2ec/0x5a0
+>     [<0000000038f5a97a>] __do_sys_kexec_file_load+0x28d/0x530
+>     [<0000000087c19992>] do_syscall_64+0x3b/0x90
+>     [<0000000066e063a4>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> In crash_prepare_elf64_headers(), a buffer is allocated via vmalloc() to
+> store elf headers. While it's not freed back to system correctly when
+> kdump kernel is reloaded or unloaded. Then memory leak is caused.
+> 
+> Fix it by introducing x86 specific function
+> arch_kimage_file_post_load_cleanup(), and freeing the buffer there.
+> 
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+
+It deserves to add a Fixes tag, and this drawback exists since
+kexec_file_load added. It wastes one page of memory, or severa pages
+depending on the cpu numbers, not sure if it deserves to cc stable.
+
+Fixes: cb1052581e2b ("kexec: implementation of new syscall kexec_file_load")
+
+
 > ---
->  drivers/net/dsa/qca8k.c | 97 +++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 97 insertions(+)
+>  arch/x86/kernel/machine_kexec_64.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-> index 21a7f1ed7a5c..e37528c8dbf2 100644
-> --- a/drivers/net/dsa/qca8k.c
-> +++ b/drivers/net/dsa/qca8k.c
-> @@ -417,6 +417,79 @@ qca8k_fdb_flush(struct qca8k_priv *priv)
->  	mutex_unlock(&priv->reg_mutex);
+> diff --git a/arch/x86/kernel/machine_kexec_64.c b/arch/x86/kernel/machine_kexec_64.c
+> index 131f30fdcfbd..fd8223fa2de5 100644
+> --- a/arch/x86/kernel/machine_kexec_64.c
+> +++ b/arch/x86/kernel/machine_kexec_64.c
+> @@ -511,6 +511,15 @@ int arch_kexec_apply_relocations_add(struct purgatory_info *pi,
+>  	       (int)ELF64_R_TYPE(rel[i].r_info), value);
+>  	return -ENOEXEC;
 >  }
+> +
+> +int arch_kimage_file_post_load_cleanup(struct kimage *image)
+> +{
+> +	vfree(image->elf_headers);
+> +	image->elf_headers = NULL;
+> +	image->elf_headers_sz = 0;
+> +
+> +	return kexec_image_post_load_cleanup_default(image);
+> +}
+>  #endif /* CONFIG_KEXEC_FILE */
 >  
-> +static int
-> +qca8k_fdb_search_and_insert(struct qca8k_priv *priv, u8 port_mask, const u8 *mac, u16 vid)
-
-FYI the networking tree is still sticking to its guns w.r.t. the 80
-character per line limit. You can ignore the rule if you want to and it
-makes sense, for example if you're printing a long string on nearby
-lines (which shouldn't be split into multiple lines, because people grep
-for error messages) and therefore it wouldn't look so out of place to
-also have lines that are a bit longer. But in this case, the function
-prototypes are sticking out like a sore thumb IMO, the nearby lines are
-short otherwise.
-
-And to be honest I don't understand your choice of where to split the
-line either, this consumes two lines too, but doesn't exceed 80 characters:
-
-static int qca8k_fdb_search_and_insert(struct qca8k_priv *priv, u8 port_mask,
-				       const u8 *mac, u16 vid)
-
-Otherwise:
-
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-
-> +{
-> +	struct qca8k_fdb fdb = { 0 };
-> +	int ret;
-> +
-> +	mutex_lock(&priv->reg_mutex);
-> +
-> +	qca8k_fdb_write(priv, vid, 0, mac, 0);
-> +	ret = qca8k_fdb_access(priv, QCA8K_FDB_SEARCH, -1);
-> +	if (ret < 0)
-> +		goto exit;
-> +
-> +	ret = qca8k_fdb_read(priv, &fdb);
-> +	if (ret < 0)
-> +		goto exit;
-> +
-> +	/* Rule exist. Delete first */
-> +	if (!fdb.aging) {
-> +		ret = qca8k_fdb_access(priv, QCA8K_FDB_PURGE, -1);
-> +		if (ret)
-> +			goto exit;
-> +	}
-> +
-> +	/* Add port to fdb portmask */
-> +	fdb.port_mask |= port_mask;
-> +
-> +	qca8k_fdb_write(priv, vid, fdb.port_mask, mac, fdb.aging);
-> +	ret = qca8k_fdb_access(priv, QCA8K_FDB_LOAD, -1);
-> +
-> +exit:
-> +	mutex_unlock(&priv->reg_mutex);
-> +	return ret;
-> +}
-> +
-> +static int
-> +qca8k_fdb_search_and_del(struct qca8k_priv *priv, u8 port_mask, const u8 *mac, u16 vid)
-> +{
-> +	struct qca8k_fdb fdb = { 0 };
-> +	int ret;
-> +
-> +	mutex_lock(&priv->reg_mutex);
-> +
-> +	qca8k_fdb_write(priv, vid, 0, mac, 0);
-> +	ret = qca8k_fdb_access(priv, QCA8K_FDB_SEARCH, -1);
-> +	if (ret < 0)
-> +		goto exit;
-> +
-> +	/* Rule doesn't exist. Why delete? */
-> +	if (!fdb.aging) {
-> +		ret = -EINVAL;
-> +		goto exit;
-> +	}
-> +
-> +	ret = qca8k_fdb_access(priv, QCA8K_FDB_PURGE, -1);
-> +	if (ret)
-> +		goto exit;
-> +
-> +	/* Only port in the rule is this port. Don't re insert */
-> +	if (fdb.port_mask == port_mask)
-> +		goto exit;
-> +
-> +	/* Remove port from port mask */
-> +	fdb.port_mask &= ~port_mask;
-> +
-> +	qca8k_fdb_write(priv, vid, fdb.port_mask, mac, fdb.aging);
-> +	ret = qca8k_fdb_access(priv, QCA8K_FDB_LOAD, -1);
-> +
-> +exit:
-> +	mutex_unlock(&priv->reg_mutex);
-> +	return ret;
-> +}
-> +
 >  static int
->  qca8k_vlan_access(struct qca8k_priv *priv, enum qca8k_vlan_cmd cmd, u16 vid)
->  {
-> @@ -1915,6 +1988,28 @@ qca8k_port_fdb_dump(struct dsa_switch *ds, int port,
->  	return 0;
->  }
->  
-> +static int
-> +qca8k_port_mdb_add(struct dsa_switch *ds, int port,
-> +		   const struct switchdev_obj_port_mdb *mdb)
-> +{
-> +	struct qca8k_priv *priv = ds->priv;
-> +	const u8 *addr = mdb->addr;
-> +	u16 vid = mdb->vid;
-> +
-> +	return qca8k_fdb_search_and_insert(priv, BIT(port), addr, vid);
-> +}
-> +
-> +static int
-> +qca8k_port_mdb_del(struct dsa_switch *ds, int port,
-> +		   const struct switchdev_obj_port_mdb *mdb)
-> +{
-> +	struct qca8k_priv *priv = ds->priv;
-> +	const u8 *addr = mdb->addr;
-> +	u16 vid = mdb->vid;
-> +
-> +	return qca8k_fdb_search_and_del(priv, BIT(port), addr, vid);
-> +}
-> +
->  static int
->  qca8k_port_vlan_filtering(struct dsa_switch *ds, int port, bool vlan_filtering,
->  			  struct netlink_ext_ack *extack)
-> @@ -2023,6 +2118,8 @@ static const struct dsa_switch_ops qca8k_switch_ops = {
->  	.port_fdb_add		= qca8k_port_fdb_add,
->  	.port_fdb_del		= qca8k_port_fdb_del,
->  	.port_fdb_dump		= qca8k_port_fdb_dump,
-> +	.port_mdb_add		= qca8k_port_mdb_add,
-> +	.port_mdb_del		= qca8k_port_mdb_del,
->  	.port_vlan_filtering	= qca8k_port_vlan_filtering,
->  	.port_vlan_add		= qca8k_port_vlan_add,
->  	.port_vlan_del		= qca8k_port_vlan_del,
 > -- 
-> 2.32.0
+> 2.17.2
 > 
 
