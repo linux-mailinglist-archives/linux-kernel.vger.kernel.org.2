@@ -2,149 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A595E458FA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:44:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66DDC458FAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239589AbhKVNsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 08:48:00 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:59490 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230322AbhKVNr7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 08:47:59 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AMDifip101911;
-        Mon, 22 Nov 2021 07:44:41 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1637588681;
-        bh=4aEDuUEwwhUks1YMR682x5k41bzpSbH1JYgjk2P31Dw=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=WYnW3qAUdQPcffmBypxU+4/ypn5NPYrEzdwzzecNs75Ba6t4a8+9bYPlcFFgnhtIn
-         g0zwwaNJx5dU8HIfPnJzXJ/h+4p0Np4/KDetfuf1f5Z+Kg2HZOlRidBi9gX5ffBOGi
-         VW4FF41anIgnK6+kLeRATj4u0yh+AbT5dcgQGN1A=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AMDifb3053455
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 22 Nov 2021 07:44:41 -0600
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 22
- Nov 2021 07:44:41 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 22 Nov 2021 07:44:41 -0600
-Received: from [10.250.233.118] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AMDibMa029183;
-        Mon, 22 Nov 2021 07:44:37 -0600
-Subject: Re: [PATCH RFC v2 4/4] phy: phy-can-transceiver: Add support for
- setting mux
-To:     Aswath Govindraju <a-govindraju@ti.com>
-CC:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Peter Rosin <peda@axentia.se>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Vinod Koul <vkoul@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-can@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>
-References: <20211122125624.6431-1-a-govindraju@ti.com>
- <20211122125624.6431-5-a-govindraju@ti.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <cc28796e-2ebc-4aad-ffc2-4fe570b269db@ti.com>
-Date:   Mon, 22 Nov 2021 19:14:36 +0530
+        id S239200AbhKVNt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 08:49:57 -0500
+Received: from foss.arm.com ([217.140.110.172]:41664 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230322AbhKVNtz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 08:49:55 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C65481063;
+        Mon, 22 Nov 2021 05:46:48 -0800 (PST)
+Received: from [10.1.35.125] (e127744.cambridge.arm.com [10.1.35.125])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0A40F3F66F;
+        Mon, 22 Nov 2021 05:46:46 -0800 (PST)
+Subject: Re: [PATCH 1/1] perf arm-spe: extend Arm SPE test script with
+ regression testing
+To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org
+Cc:     James Clark <james.clark@arm.com>, leo.yan@linaro.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+References: <20211112162005.11876-1-german.gomez@arm.com>
+ <20211112162005.11876-2-german.gomez@arm.com>
+From:   German Gomez <german.gomez@arm.com>
+Message-ID: <f5abae0b-acf8-f674-30f1-4b5c1fe6a49e@arm.com>
+Date:   Mon, 22 Nov 2021 13:46:45 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <20211122125624.6431-5-a-govindraju@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+In-Reply-To: <20211112162005.11876-2-german.gomez@arm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Aswath,
 
-On 22/11/21 6:26 pm, Aswath Govindraju wrote:
-> On some boards, for routing CAN signals from controller to transceiver,
-> muxes might need to be set. Therefore, add support for setting the mux by
-> reading the mux-controls property from the device tree node.
-> 
-> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-> ---
->  drivers/phy/phy-can-transceiver.c | 26 ++++++++++++++++++++++++++
->  1 file changed, 26 insertions(+)
-> 
-> diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-transceiver.c
-> index 6f3fe37dee0e..15056b9d68ba 100644
-> --- a/drivers/phy/phy-can-transceiver.c
-> +++ b/drivers/phy/phy-can-transceiver.c
-> @@ -10,6 +10,7 @@
->  #include<linux/module.h>
->  #include<linux/gpio.h>
->  #include<linux/gpio/consumer.h>
-> +#include <linux/mux/consumer.h>
->  
->  struct can_transceiver_data {
->  	u32 flags;
-> @@ -21,13 +22,23 @@ struct can_transceiver_phy {
->  	struct phy *generic_phy;
->  	struct gpio_desc *standby_gpio;
->  	struct gpio_desc *enable_gpio;
-> +	struct mux_control *mux_ctrl;
->  };
->  
->  /* Power on function */
->  static int can_transceiver_phy_power_on(struct phy *phy)
->  {
-> +	int ret;
->  	struct can_transceiver_phy *can_transceiver_phy = phy_get_drvdata(phy);
->  
-> +	if (can_transceiver_phy->mux_ctrl) {
-> +		ret = mux_control_select(can_transceiver_phy->mux_ctrl,
-> +					 mux_control_enable_state(can_transceiver_phy->mux_ctrl));
+On 12/11/2021 16:20, German Gomez wrote:
+> Extend the test_arm_spe.sh script to test for regressions in the
+> decoding flow of Arm SPE samples. In order to support the tests, a set
+> of perf.data files has been generated offline and is being hosted under
+> tools/perf/tests/shell/test_arm_spe.tgz:
+>
+> (See perf report --header-only to see the actual commands used)
 
-Would need 'select MULTIPLEXER' in Kconfig.
+Looking back at this patch, I don't think it can be applied as is. I
+notice that the docs for the --itrace argument aren't up to date (it
+says the default is --itrace=ibxwpe but lately it has changed ([1] &
+[2]). The value of --itrace should be locked in the test script.
 
-Thanks,
-Kishon
-> +		if (ret) {
-> +			dev_err(&phy->dev, "Failed to select CAN mux: %d\n", ret);
-> +			return ret;
-> +		}
-> +	}
->  	if (can_transceiver_phy->standby_gpio)
->  		gpiod_set_value_cansleep(can_transceiver_phy->standby_gpio, 0);
->  	if (can_transceiver_phy->enable_gpio)
-> @@ -45,6 +56,8 @@ static int can_transceiver_phy_power_off(struct phy *phy)
->  		gpiod_set_value_cansleep(can_transceiver_phy->standby_gpio, 1);
->  	if (can_transceiver_phy->enable_gpio)
->  		gpiod_set_value_cansleep(can_transceiver_phy->enable_gpio, 0);
-> +	if (can_transceiver_phy->mux_ctrl)
-> +		mux_control_deselect(can_transceiver_phy->mux_ctrl);
->  
->  	return 0;
->  }
-> @@ -95,6 +108,19 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
->  	match = of_match_node(can_transceiver_phy_ids, pdev->dev.of_node);
->  	drvdata = match->data;
->  
-> +	if (of_property_read_bool(dev->of_node, "mux-controls")) {
-> +		struct mux_control *control;
-> +		int ret;
-> +
-> +		control = devm_mux_control_get(dev, NULL);
-> +		if (IS_ERR(control)) {
-> +			ret = PTR_ERR(control);
-> +			dev_err_probe(&pdev->dev, ret, "failed to get mux\n");
-> +			return PTR_ERR(control);
-> +		}
-> +		can_transceiver_phy->mux_ctrl = control;
-> +	}
-> +
->  	phy = devm_phy_create(dev, dev->of_node,
->  			      &can_transceiver_phy_ops);
->  	if (IS_ERR(phy)) {
-> 
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/Documentation/itrace.txt?id=136057256686de39cc3a07c2e39ef6bc43003ff6#n26
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/util/auxtrace.c?id=136057256686de39cc3a07c2e39ef6bc43003ff6#n1335
+
+>
+>   - test_arm_spe.tgz
+>     `- arm_spe_decode_contextidr.data
+>     `- arm_spe_decode_contextidr.data.inject
+>     `- arm_spe_decode_switch_events.data
+>     `- arm_spe_decode_switch_events.data.inject
+>
+> [...]
