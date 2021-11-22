@@ -2,134 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B8BD458F69
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:31:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B509458F6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:31:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234881AbhKVNeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 08:34:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32814 "EHLO
+        id S236375AbhKVNez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 08:34:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233052AbhKVNeJ (ORCPT
+        with ESMTP id S232316AbhKVNey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 08:34:09 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B624C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 05:31:03 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1mp9PH-0004SB-Ej; Mon, 22 Nov 2021 14:30:51 +0100
-Received: from pengutronix.de (2a03-f580-87bc-d400-c7fb-0fe8-e8cb-8e33.ip6.dokom21.de [IPv6:2a03:f580:87bc:d400:c7fb:fe8:e8cb:8e33])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id D01366B2D3B;
-        Mon, 22 Nov 2021 13:30:49 +0000 (UTC)
-Date:   Mon, 22 Nov 2021 14:30:49 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-Cc:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Peter Rosin <peda@axentia.se>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-phy@lists.infradead.org
-Subject: Re: [PATCH RFC v2 4/4] phy: phy-can-transceiver: Add support for
- setting mux
-Message-ID: <20211122133049.mlbshta6ksck2ngo@pengutronix.de>
-References: <20211122125624.6431-1-a-govindraju@ti.com>
- <20211122125624.6431-5-a-govindraju@ti.com>
- <20211122131221.i3djuarw2ae5lbdk@pengutronix.de>
- <47a0f27f-4d44-cc8f-f2ef-0919f38843bf@ti.com>
+        Mon, 22 Nov 2021 08:34:54 -0500
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC8FC06173E
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 05:31:47 -0800 (PST)
+Received: by mail-qk1-x729.google.com with SMTP id m192so13627010qke.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 05:31:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=u7JEhlzeqWEWi1WfdsbI31hG4XTiKs7YjTVY93B2ee4=;
+        b=CRLeFVlaDHYADj0c4pdgyA6WVjM0CriKWH34VQ3Zgnf0WtTraYkd/cgjTCbMDOczww
+         NdXiD8njOfcPQpNHpYRgBzhYd2yhCkVtjUBQDrAQcLu+SgaPJ18JLMcHZiSnAkVeknnd
+         0r6V6MGiqUoTitEC42jbkgtqGFrBYYzJPumsEkVo7XS5sE6Xgi92bWwMj7cA04T9KZgG
+         KBEMYlzIWnHu0BDIdQb3DAJr0IAt/qNWxoYSuFBMXOWkuMB4UlcMl9O5g8H1aCzjXOTg
+         YIexlAtl5QrrWHsZHnXp+oDhqqchuEu2x1mCbFWEHmpRnxygBJW2KKryq/0Wb2YGQp6B
+         zPUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=u7JEhlzeqWEWi1WfdsbI31hG4XTiKs7YjTVY93B2ee4=;
+        b=wG9JFWPi1lo0mhxiHpJzA9aBwY0lOFrCOTdzj0GahrBnIGjaNLu9Q/a24zxByaDrvT
+         U08S5duRPDDTisbcXLvfNrtNNnxvW0r8tmZYaLn1MzBduMR0Ax3t7G4WvdzSaOecDuMN
+         +XgQLrdjIMh5zhAS6gpiZvRExUjRi3hp2hDj+PW0WNDzJ2D4uK5DBVPL3Ci7JMN2SaCq
+         0dj0gO/s321GpniIzF/ap2sdrkfuIegWujLO1I0HEKbblDxX9QrQjfM7PwCWYG+vX4tn
+         ePOFlr6qhOOGd8vDFS3TRig2wT3433fYN87pQtQMUhMPWkrcv6tgoWgIHf8JAOIgbfvd
+         3tiA==
+X-Gm-Message-State: AOAM5326zspFSCiH76UDKtluX0d7iqdlf8P/xuzUF/2yaPOq2sODpK7Q
+        BYIki4fMN9b+2PWdM2qk28jxmQ==
+X-Google-Smtp-Source: ABdhPJyVecFgN4ENVdXtmS+AeA6UBpyD+QSrsm4bekxw4Uozjfi2oAytM0ALDEqjOc3nqbmPpEzZDw==
+X-Received: by 2002:a05:620a:c84:: with SMTP id q4mr47040794qki.176.1637587906879;
+        Mon, 22 Nov 2021 05:31:46 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id n19sm4455570qta.78.2021.11.22.05.31.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Nov 2021 05:31:46 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mp9Q9-00DrvP-FD; Mon, 22 Nov 2021 09:31:45 -0400
+Date:   Mon, 22 Nov 2021 09:31:45 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Chao Peng <chao.p.peng@linux.intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, qemu-devel@nongnu.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J . Bruce Fields" <bfields@fieldses.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
+        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com
+Subject: Re: [RFC v2 PATCH 01/13] mm/shmem: Introduce F_SEAL_GUEST
+Message-ID: <20211122133145.GQ876299@ziepe.ca>
+References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
+ <20211119134739.20218-2-chao.p.peng@linux.intel.com>
+ <20211119151943.GH876299@ziepe.ca>
+ <df11d753-6242-8f7c-cb04-c095f68b41fa@redhat.com>
+ <20211119160023.GI876299@ziepe.ca>
+ <4efdccac-245f-eb1f-5b7f-c1044ff0103d@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="avg66bt642mchbik"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <47a0f27f-4d44-cc8f-f2ef-0919f38843bf@ti.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <4efdccac-245f-eb1f-5b7f-c1044ff0103d@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 22, 2021 at 10:26:12AM +0100, David Hildenbrand wrote:
 
---avg66bt642mchbik
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> I do wonder if we want to support sharing such memfds between processes
+> in all cases ... we most certainly don't want to be able to share
+> encrypted memory between VMs (I heard that the kernel has to forbid
+> that). It would make sense in the use case you describe, though.
 
-On 22.11.2021 18:50:00, Aswath Govindraju wrote:
-> > What about adding a devm_mux_control_get_optional(), which doesn't
-> > return a -ENODEV but a NULL pointer if the device doesn't exist?
-> >=20
->=20
-> I tried adding it in the following manner,
->=20
-> +/**
-> + * devm_mux_control_optional_get() - Optionally get the mux-control for a
-> + *                                  device, with resource management.
-> + * @dev: The device that needs a mux-control.
-> + * @mux_name: The name identifying the mux-control.
-> + *
-> + * This differs from devm_mux_control_get in that if the mux does not
-> + * exist, it is not considered an error and -ENODEV will not be
-> + * returned. Instead the NULL is returned.
-> + *
-> + * Return: Pointer to the mux-control, or an ERR_PTR with a negative err=
-no.
-> + */
-> +struct mux_control *devm_mux_control_optional_get(struct device *dev,
-> +                                                 const char *mux_name)
-> +{
-> +       struct mux_control *mux_ctrl;
-> +
-> +       mux_ctrl =3D devm_mux_control_get(dev, mux_name);
-> +       if (PTR_ERR(mux_ctrl) =3D=3D -ENOENT)
-> +                mux_ctrl =3D NULL;
-> +
-> +       return mux_ctrl;
-> +}
-> +EXPORT_SYMBOL_GPL(devm_mux_control_optional_get);
-> +
->=20
-> However the issue is that there is a print in mux_control_get()
->  dev_err(dev, "%pOF: failed to get mux-control %s(%i)\n",
->=20
-> which is getting printed, whenever mux-controls property is not found.
-> Therefore, I was not sure about how to go about this issue and did not
-> implement it.
+If there is a F_SEAL_XX that blocks every kind of new access, who
+cares if userspace passes the FD around or not?
 
-Ok, this would require more tweaking in the mux layer. Then leave it as
-is.
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---avg66bt642mchbik
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEyBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmGbm4YACgkQqclaivrt
-76kInAf4uEpOfpZiBZBlMCXUyEFrjiLrb5O4rk8Maf8VyIaPVEU5rIfaHdk1Xjz8
-Ey8c66bHh4J6fuyPv03rz/HjqcwK14M3aiFMWYWkJ5+FpqGOizgCsRAbSR3u9yWg
-Aqwdw4wTYy7I2wwxWE09E5klkYwScrsPFOH2Gg0B5PFS8RFDtAU8ubTOehB1aKB+
-hf8NE+qeIgixJMbFgSc8pwPOtZt6w9Zsk522+vIZ86MMYEpo+LN6/VTuEtwrkYPI
-X9wl1dmD9AeOkyjKqO9gC4Bplr3q7BDi2xAoWF+XvHxSAhW9EsYXNNZQUy8l8bZ1
-Zce3ZUXLA7a5hzHvumr5sPUDbn0i
-=kEtH
------END PGP SIGNATURE-----
-
---avg66bt642mchbik--
+Jason
