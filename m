@@ -2,66 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58225459187
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:40:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AADD459186
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:40:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239894AbhKVPnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:43:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231697AbhKVPnR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S239856AbhKVPnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 22 Nov 2021 10:43:17 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06BE3C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:40:10 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id c4so33458838wrd.9
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:40:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=c/jp+wSxnIkr9QpoLLv6VX0FsRgiOMy8DIwpndZqZcM=;
-        b=jZd7kmpsteHejATCm61oZ5ammZ/hYZX8eRvz93oKNVGiAqdprn/xXPL8nKiVhEccNr
-         T5cQsZRmd5EK7nyt9e+GsxVcc0JEjxN1JLDeBeGbmyasjCbHpX+uxW5aHMVPXaHEOG0h
-         aygrQJ24gDBEmQvptUYt8UUmuKkSBqYlcsfKYWlmxmU4t5nh9dEGY54SAi0rVo9fjqhY
-         FvcZh1+DPxQUTFu4RWEjs+KR+7l8CIwOPDsxPZaqS3YmK3XbdsY4Oh9M+3WW1EtOv6oL
-         bRRcdxbWzxTKzDK500RD4uQdkRsDRkvbkcPSePtKFBWHcNOerZGbC9mkhx/qyP9BffGA
-         LrHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=c/jp+wSxnIkr9QpoLLv6VX0FsRgiOMy8DIwpndZqZcM=;
-        b=UzygnmlQx/B59ECL61+f5d7Es9aAz173qop5ff90JzUG7h0HUEjeLacTmgnAEmUq8B
-         4iRzMOvYdFxgwI/GZ8m0KBApmJeta3NfowRvTzgH5paUPTh7SB6eQOdeTS+fBhdlfLDW
-         JoJXuYY/mpdyBKE3KiZ+2JEH0Lzn9a5gkJk+L+uF5HxOhvu8RWYNSt3cy3f9fiF7jKIG
-         +dbg5iuBAKgbKfo0MqcHvzqsFJaggTXUyY1OwS8ZrtwzceHt8hk0ID52peu0ZYyJXEqe
-         p6XQgnVysDO03GQQWKSkyjOFCtCoprLfArfBMM9HrMH9uJiKbIB7sgb26PAkicTl1eGb
-         jimw==
-X-Gm-Message-State: AOAM530bpFbGSnnOsM9krg0SLm1u0h8u96QT5dHac3otxWazR2KexDJk
-        +4XGv9qbgXMQG1LUvSshsQa0N+lQs3uZIqRROXc=
-X-Google-Smtp-Source: ABdhPJwVl98plG2dG08L9L2wme8ccYTe6EMY5tZ9SnxHHBxs5/QKEUtRPFpHbm6SnLE2rRRJEUgxYdUzBN/iZGXofFE=
-X-Received: by 2002:a5d:6a4b:: with SMTP id t11mr39198306wrw.78.1637595609383;
- Mon, 22 Nov 2021 07:40:09 -0800 (PST)
+Received: from mail.kernel.org ([198.145.29.99]:37844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231697AbhKVPnQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 10:43:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4EADC60273;
+        Mon, 22 Nov 2021 15:40:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637595609;
+        bh=cZfewvS5PAlcJFDY0Eq/GWJt9fC6OHF87EZvnel4SM8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=fMkWVy/mTr0j7q3xu3b26dtnE550OSHSUJAQH/chzdvoT2iDzsA8ajZjHcleXe89z
+         lQFvcRoKRinudp9oKSG3V3zh+isSAjBi8zr73/JCmMnv77dxZ0fpG2Mp8fgaYVDYD0
+         GFeVzCxUTQC8cK/ETd5jWXJZWC/WbCaf2vnrQX4w8rcDG4xoFnik3zuvWsQ2xAs7MK
+         whuafjatQiXzTc8pmPpSSCI5yh6u4iAHFbaMUHrYjAgNv6nkPrlN9fmdfAksdvxxOn
+         f/mU5WraWhUr5GjoSRGhqWC+oX/QiFh3mP9nFrSyLBLwL29iWpHKwRqWr9uMvR5MRz
+         MBKb1ZfwYFaPw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3F250609D9;
+        Mon, 22 Nov 2021 15:40:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Received: by 2002:a1c:7c02:0:0:0:0:0 with HTTP; Mon, 22 Nov 2021 07:40:08
- -0800 (PST)
-Reply-To: sylvainnicolas485@gmail.com
-From:   sylvain nicolas <banglebea@gmail.com>
-Date:   Mon, 22 Nov 2021 16:40:08 +0100
-Message-ID: <CADTJrWND_L5nrJC_LzWGOqf=YsgRrE-u4wtr6UWRhP6qFU69vg@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 net-next 0/2] skbuff: Switch structure bounds to
+ struct_group()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163759560925.30526.865099452539818028.git-patchwork-notify@kernel.org>
+Date:   Mon, 22 Nov 2021 15:40:09 +0000
+References: <20211121003149.28397-1-keescook@chromium.org>
+In-Reply-To: <20211121003149.28397-1-keescook@chromium.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     kuba@kernel.org, davem@davemloft.net, jonathan.lemon@gmail.com,
+        alobakin@pm.me, jakub@cloudflare.com, elver@google.com,
+        willemb@google.com, gustavoars@kernel.org, Jason@zx2c4.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, edumazet@google.com,
+        cong.wang@bytedance.com, pabeni@redhat.com, talalahmad@google.com,
+        haokexin@gmail.com, ilias.apalodimas@linaro.org, vvs@virtuozzo.com,
+        linux-kernel@vger.kernel.org, wireguard@lists.zx2c4.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
+
+This series was applied to netdev/net-next.git (master)
+by David S. Miller <davem@davemloft.net>:
+
+On Sat, 20 Nov 2021 16:31:47 -0800 you wrote:
+> Hi,
+> 
+> This is a pair of patches to add struct_group() to struct sk_buff. The
+> first is needed to work around sparse-specific complaints, and is new
+> for v2. The second patch is the same as originally sent as v1.
+> 
+> -Kees
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2,net-next,1/2] skbuff: Move conditional preprocessor directives out of struct sk_buff
+    https://git.kernel.org/netdev/net-next/c/fba84957e2e2
+  - [v2,net-next,2/2] skbuff: Switch structure bounds to struct_group()
+    https://git.kernel.org/netdev/net-next/c/03f61041c179
+
+You are awesome, thank you!
 -- 
-Dear  Friend,
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-How are you doing today, i sent you an important message but no
-response from you please get back to me for an important message.
 
-Sincerely
-Mrs.sylvain nicolas
