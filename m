@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9225B458B08
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 10:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BFF458B0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 10:07:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238905AbhKVJKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 04:10:03 -0500
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:36311 "EHLO
+        id S238985AbhKVJKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 04:10:06 -0500
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:45769 "EHLO
         wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229716AbhKVJKB (ORCPT
+        by vger.kernel.org with ESMTP id S229716AbhKVJKE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 04:10:01 -0500
+        Mon, 22 Nov 2021 04:10:04 -0500
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 1803F2B01C7D;
-        Mon, 22 Nov 2021 04:06:54 -0500 (EST)
+        by mailnew.west.internal (Postfix) with ESMTP id 703A02B01C7F;
+        Mon, 22 Nov 2021 04:06:57 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 22 Nov 2021 04:06:54 -0500
+  by compute4.internal (MEProxy); Mon, 22 Nov 2021 04:06:58 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
         :mime-version:content-type:content-transfer-encoding; s=fm1; bh=
-        3sAYDhdU8A/Wo/wR51x2QNHufjbDBbL+eEem9wZy/BE=; b=YjQgWbk1fEx+mRCE
-        N2IyrXzXMxMT6Bi8dEdXkHvwPVx+skHzxolDlWeZ+PjoixxVsNVprIUzZp1kB7LE
-        B5ryQqsxyb1t2cTLh9RF6m2QKY0LCv6XeSoAHrV7dv6N1yNzLGcOE6q4XO5ijqng
-        zJYBSeiAdT5+W5ooKq0VJZ6hThSho6xCJ2dLd5gQAGYanxktjkfJ7IYp6bErhPuZ
-        En35MTx48YLGN9+TLaIXF9qKL1Y6sVUA8Pq7LJaZHYzyxxQSjCcF4C2Y3dC1QFWj
-        StbrhAzSSa/5JQB3QmpnqUZJnAzz8+msRV1hjmvat4nAJ4fLB6LpxiNKJQlyYdxK
-        GlTUCQ==
+        eqM54/FiBN8e0G1yCKed9r80ApXBDuOG4JGVgmMH+3E=; b=j6jin+Fm4vg8LDi8
+        Qs5zcKIjySFSf8OVKz84gI6fIuJ4TF5F01D1Zg+VL/BcxQWAjYppu09CKQxS/EN/
+        0N6srpzGJF5SSWaIilofDAqJynw8c8/gADoqGs84I3tofztDeiy1Nrk1vokVtXS3
+        F3S17WG48zpw6AdM8H6G5h4pIv9zSD9mHNdf8KihbW7pNonbhuKMC7xH/Zi6nQk9
+        zlt2T66VYxl2ih0vLedTB3HE2bDBtaQzEC8TII6ciw3dru0zDxcRUZn3hsJgGtEB
+        +kwGO3KFEWTCuqa5qdCm+1MnYA+5BlyF7nQnQgbgmYXAqU8jGiTUPPQ6RkqQk7sW
+        4lgBjA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:from:in-reply-to:message-id:mime-version:references
         :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=3sAYDhdU8A/Wo/wR51x2QNHufjbDBbL+eEem9wZy/
-        BE=; b=kK+Ag1tFMj2D4Thqhnd3vQaVNbySJBY+KWz+iKaORexurPizJJGXmmIGS
-        L3ZE9b0OgMPNPb1FoRuXUcHgWux/4//wesdlSTQsINRIc1JGyMy9YMLDl1WwOpbg
-        hCquhCuwskubV2Y+L7jjz5rAcThAn51y/FpCAiQopGRGC1xf1JUhbdsLgoaYBzwJ
-        TQTZu95+tUBvZhB2kww/fKjZ0PN1byi8VxzzP8pmbXwa3RsAVn4kEnlAHAFHhKKW
-        K6GI54UzNm9zLND0gqDPw4HE1Vanim9eWoLmYxoSq1INyvoxGpQQyPOdPbE9ZiDh
-        HN6VPJw/xRz4BVrrqm37uzahyKP5w==
-X-ME-Sender: <xms:rV2bYSxhZnKc6bQeyk2njC-pz30-joVHb01-RfkyKBnh0qVzkMegQw>
-    <xme:rV2bYeQDa7WQcc3_vaJIKbgzGfKAf7pw05yjuZER7L8DILQxwJzkGlz4pnzoo89Ez
-    b4l2rAIXIPX6PW9Ih8>
-X-ME-Received: <xmr:rV2bYUXYn6nnijuPzv5J1gxvDIAWBplu7W8RQBekPzps7rAZBR4zvw_jBTEaZhzqcaiaQv2EdXtmrCgi0Qv891gtGgtYwJoQr10>
+        :x-sasl-enc; s=fm1; bh=eqM54/FiBN8e0G1yCKed9r80ApXBDuOG4JGVgmMH+
+        3E=; b=i+GpXJ998IXC6BmkS9k4AR2Qm3cWt19qoL8W4S1Rqc5UJ7dYPc/VeC7Tl
+        F8X0xvy1L0XzHTJr/VBUZ+FbWigNLi+YpPSsBYx2+0cHUBog+ygHgcS7+i3NwVf0
+        ywewRok1P3Lx60l/9JXvMeEhKOtYkn4DVd9QAWBDLAB5gVoVlhY1GJMamkDUMzCR
+        0u5j5YXIB9F8gqnOBhVNmiws2EJI0ub6XDXchHjNifhTf7e1U3Ji7iMoAObykhap
+        3HIMf7XEUMUULDLl/0A+wACf5HFw4uMQ7I8eYZScr1MDDRm+eV52HOWbMQFuTgbX
+        KX1gkS3K+cb1N31DcEfPBE26q4nDA==
+X-ME-Sender: <xms:sF2bYTy6cz_-jKHEvxK45MM-nw9zVbqOGfOFU73IEiOD_63aFYcelA>
+    <xme:sF2bYbRP3vz0gt_359ePurYx1O8uw0gB04raOPqyCtBzD1KZrOlm_vGOJHiPTnqRC
+    s5ebxZDCJiuJYnoOss>
+X-ME-Received: <xmr:sF2bYdX_k-8yJPMHM4Htdovz3nsR5eIuQbqwKpLK-LYUD04uEEiNt_HPYt-GJJ11awh7arIaWgEQzqO16cAet2-e8jmA8jbeaRA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrgeefgdduvdelucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
@@ -50,12 +50,12 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrgeefgdduvdelucetufdoteggod
     htthgvrhhnpeejuefggeekfffgueevtddvudffhfejffejjedvvdduudethefhfefhfeeg
     ieekkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
     hmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:rV2bYYh_3E_bgI-B6eSeaSiPHyAOgAM5OF8vdemmpk9KYrB9Z3CslQ>
-    <xmx:rV2bYUBBGtmJ0W6lAXnY8NYaxaQZ17LAq19YQqAyTcFFWr7XC19npg>
-    <xmx:rV2bYZLksy5GxP_nFxnnxd2OwWZFB0kAuhc08E9t93hU7gvDgzjW7w>
-    <xmx:rV2bYdI_NNSyXCCegfwICYDl95QcQSjHz9N2lkzDB7i85z1_g6QJ_8sSofY>
+X-ME-Proxy: <xmx:sV2bYdi3HM0AM1uNBjYIx3DC1sQdQ3ypgKTqJ3lY75erRXkq6U2zzA>
+    <xmx:sV2bYVAbyiljbyLsOYqxTf_AVhA8OreVkSLu8UmMrhjtxpQzz5BR9g>
+    <xmx:sV2bYWIdPm650Pw9smersTxE3k9lOINo4itqAd9KkeumRnUkU1u-Hw>
+    <xmx:sV2bYZt-r7gVqC3paxegOzrVFh9cPc7yo9668mxZNl4XJ7WzsVs7cYgi4Tc>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 22 Nov 2021 04:06:52 -0500 (EST)
+ 22 Nov 2021 04:06:56 -0500 (EST)
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     Jernej Skrabec <jernej.skrabec@gmail.com>,
         Samuel Holland <samuel@sholland.org>,
@@ -63,16 +63,15 @@ To:     Jernej Skrabec <jernej.skrabec@gmail.com>,
         Maxime Ripard <mripard@kernel.org>, linux-sunxi@lists.linux.dev
 Cc:     Maxime Ripard <maxime@cerno.tech>,
         linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/6] clk: sunxi-ng: Allwinner D1 clock support
-Date:   Mon, 22 Nov 2021 10:06:48 +0100
-Message-Id: <163757200586.20884.2695235529451513458.b4-ty@cerno.tech>
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [PATCH v3 0/4] clk: sunxi-ng: Module support
+Date:   Mon, 22 Nov 2021 10:06:49 +0100
+Message-Id: <163757200585.20884.6496466863849967854.b4-ty@cerno.tech>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211119043545.4010-1-samuel@sholland.org>
-References: <20211119043545.4010-1-samuel@sholland.org>
+In-Reply-To: <20211119033338.25486-1-samuel@sholland.org>
+References: <20211119033338.25486-1-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -80,13 +79,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Nov 2021 22:35:38 -0600, Samuel Holland wrote:
-> This series adds support for the D1's CCU and R_CCU.
+On Thu, 18 Nov 2021 21:33:33 -0600, Samuel Holland wrote:
+> This series allows the CCU core and drivers to be loaded/unloaded as
+> modules. As part of this, patch 3 converts most of the early OF clock
+> providers to platform drivers.
 > 
-> I attempted to hook up clock parents the "right" way, not using global
-> names. To accomplish that, I added several new macros. I am open to
-> comments on this approach. It looks a bit messier, but seems like it
-> could be less prone to errors.
+> Changes in v3:
+>  - Also export helper functions.
 > 
 > [...]
 
