@@ -2,109 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D20459463
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 18:55:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49365459460
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 18:55:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239730AbhKVR6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 12:58:48 -0500
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:42729 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239678AbhKVR6p (ORCPT
+        id S239672AbhKVR6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 12:58:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231383AbhKVR6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 12:58:45 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 5C2183201C3F;
-        Mon, 22 Nov 2021 12:55:37 -0500 (EST)
-Received: from imap46 ([10.202.2.96])
-  by compute5.internal (MEProxy); Mon, 22 Nov 2021 12:55:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=donacou.ch; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=cYX68/tlnyBJ5NTK8kDwRhrwensMZNH
-        1rRq5EtEsxJg=; b=JR4QLX6PmJCeeJG5PTVokYUz+hjko0ZBEXTofFB11T7kP5V
-        NGOYsXgk3EZOndMm5tAeIWw/jrj9RT71Gpo0WiI4M9pe0hu3t3lKQUeBDrlo8C5M
-        o5hDjgCXHhMyajCbCwzyWor1y0pez69t4tz3Xq1QHMQSuumAGVeVW9ohrFof19mz
-        eqSmXPvmSPnB7/uMay7nlx+Q6J4X2EMfhxpZ/A0UEM3Mshc++MHLu9XzMW0n4FUD
-        b+KfEdu+bWkpahzbWJKUSpQ926ktJN1nOgUhKFXchLAofEhtxHIpntftWQBfqPj3
-        0LO7g2znE0LDw09mo2wSM92NqVVJV80gGPs9Q6g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=cYX68/
-        tlnyBJ5NTK8kDwRhrwensMZNH1rRq5EtEsxJg=; b=nKw0WhAv/bihxTfTzquONb
-        TTwocn0G+XI14kQqLPJ3od5Q/h83eAz/NvwySq3Sca1Cdk7cS6GCHN6p0dAuNRvN
-        QaYCVPchkW3yF+K/TxmuMOWILsTiNMHiMqVNiPRtB/4hc9hEtdPP0GhUsMVwQL10
-        9vjQzVpYV9Le1fbfnoFM/EZLDLHnphoCLw5reFWjfcyTJW5RkOp49Hd7VsLd1Es0
-        Lj4FkYkP7JaXhKlaKMe41M7BCQSu9iBZeEUufFWbmwBQYMJejPjTcBYdgyAWe5uQ
-        Sxg0XnDjA2xAdP3dmoJ4NCtJ5fkyTlxJD71Htp4jtXKdtmjkCpul2HMX/HWJO+Eg
-        ==
-X-ME-Sender: <xms:mNmbYTox6gGWVwoDHPtUmXvu0-alMYrnjXNVyymB-09xHL_SPzjpng>
-    <xme:mNmbYdotXy4Eu4HSo1MGc16RJi54C7RXOo8RCOSTI0712loKK3swy47o0dX1Tbzmq
-    83gaIZ9ycuPefvO>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrgeeggddutdejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
-    rhgvficuffhonhgrqdevohhutghhfdcuoegrnhgurhgvfiesughonhgrtghouhdrtghhqe
-    enucggtffrrghtthgvrhhnpedvueegkeehudelhfeuvdefffelueegvdehueefgedtiefh
-    ffetjeeutddtkefhudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpegrnhgurhgvfiesughonhgrtghouhdrtghh
-X-ME-Proxy: <xmx:mNmbYQO6EIoJG-adK0lppqYh8-9kA6g514Kx3Su4kVrzug_U0EXO8Q>
-    <xmx:mNmbYW5R5SkhCLIxjQ5RJvYmB1wWo2ndF0iR0TW6ZZLHtDohh3gdRA>
-    <xmx:mNmbYS5EeI-nRscdHzMH71x5Y7grKR1c-ha1IrFpXmQH6yPh2abozA>
-    <xmx:mdmbYZbit_2JjYeMckTaBaihK41udfrfN4Dv_8k9rBsQ3hKezlM5uA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 9B7941EE0076; Mon, 22 Nov 2021 12:55:36 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1371-g2296cc3491-fm-20211109.003-g2296cc34
-Mime-Version: 1.0
-Message-Id: <8f219a64-a39f-45f0-a7ad-708a33888a3b@www.fastmail.com>
-In-Reply-To: <b84bc345-d4ea-96de-0076-12ff245c5e29@redhat.com>
-References: <20211028080813.15966-1-sir@cmpwn.com>
- <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
- <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
- <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
- <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
- <CFQZSHV700KV.18Y62SACP8KOO@taiga>
- <20211116114727.601021d0763be1f1efe2a6f9@linux-foundation.org>
- <CFRGQ58D9IFX.PEH1JI9FGHV4@taiga>
- <20211116133750.0f625f73a1e4843daf13b8f7@linux-foundation.org>
- <b84bc345-d4ea-96de-0076-12ff245c5e29@redhat.com>
-Date:   Mon, 22 Nov 2021 12:55:16 -0500
-From:   "Andrew Dona-Couch" <andrew@donacou.ch>
-To:     "David Hildenbrand" <david@redhat.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Drew DeVault" <sir@cmpwn.com>
-Cc:     "Ammar Faizi" <ammarfaizi2@gnuweeb.org>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        "io_uring Mailing List" <io-uring@vger.kernel.org>,
-        "Jens Axboe" <axboe@kernel.dk>,
-        "Pavel Begunkov" <asml.silence@gmail.com>, linux-mm@kvack.org
-Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
-Content-Type: text/plain
+        Mon, 22 Nov 2021 12:58:39 -0500
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF411C061574;
+        Mon, 22 Nov 2021 09:55:32 -0800 (PST)
+Received: by mail-oi1-x235.google.com with SMTP id t23so39377985oiw.3;
+        Mon, 22 Nov 2021 09:55:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=A3/GZswFZkAIstso6YZ0M3u2bPkXBpTewgmCnfB9rd4=;
+        b=AhwjdRjBupoQ1rkrWr0DPJoZkZWqqfwpGfIA+ZzO2LB/8F4QWG4lidalXHwbWVgZWb
+         HrqvxVavVxLw6e2nCEnUINMQr1OPBdDjVYrUzJlVKYy3QjeKxxo89G07WufAe9884btr
+         S8qdz36OZhoDIXb8Y/izRD72ESqQ7uskDqkhtvZZBtdqnoHmHHyMJBWYAMAlk0/SSfHI
+         0V0S1pSi31jc3aJYMhVeJyp+N0nkLKGE7nvMk2RjosXbkjNJIreH/O0OUBiCoHak7AKP
+         t7ATKwud9WTqndG+EBTLLyFMu6WqOEwzn81rAXm9i2wAqJ5wOfMYk6LzeqVoZ/Lv6ruv
+         c6/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=A3/GZswFZkAIstso6YZ0M3u2bPkXBpTewgmCnfB9rd4=;
+        b=MfrwWTAWUaKcsee5+xkdJaOkI9QdK0KQ1A/d4pTapsNzCgk3y9QbTtOxyhRLf3mbvE
+         J4SwGeUoWsZzhd2fcoHQ9rNMlm0Up4F6aLp7ZgiMVKZ5qbHlu9fzaTMCoqHBNaByF+w7
+         PgxLnM3Qv7nuII9TbbgpSoZ7hqnEqsal61EbLf3yd+KLgcKNx15MzNcLtK5QvrG58MP6
+         5Pvv95TuQhBq+tXY61EfF9dst4MEtqQAfqpp/sJUzfmuWCnffKbU10pBOvgzB0GZ9xf+
+         zhN05Gppddt569ac4nLQJxvEhed80kDtKXaNQKNjwpABf8wG8D1E5GWFBdPst7vNWPCj
+         f8pw==
+X-Gm-Message-State: AOAM5332HGSiLMCsa6RaTvXFgCld35cnhCjWKYLivQpk6KHvhlJRtSC2
+        8xotFHO1A7Ys9eHjgT4KA/HtNMuacNc=
+X-Google-Smtp-Source: ABdhPJzsjywB7pHSYU5CCgNdn7Y6FVaSVQH49xrsoIO0XVEOcy2khmcJsAHgs1VWIASzI1BDRn6uiQ==
+X-Received: by 2002:a05:6808:4d2:: with SMTP id a18mr23199608oie.99.1637603731857;
+        Mon, 22 Nov 2021 09:55:31 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i3sm1500922ooq.39.2021.11.22.09.55.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Nov 2021 09:55:31 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 2/2] hwmon: (dell-smm) Unify i8k_ioctl() and
+ i8k_ioctl_unlocked()
+To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        Armin Wolf <W_Armin@gmx.de>
+Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211120170319.72369-1-W_Armin@gmx.de>
+ <20211120170319.72369-3-W_Armin@gmx.de>
+ <20211122160122.gf6i3qj6dnwi6wla@pali>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <c23caeab-dd27-4c95-2e25-9eb0ff7b33f6@roeck-us.net>
+Date:   Mon, 22 Nov 2021 09:55:29 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20211122160122.gf6i3qj6dnwi6wla@pali>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Forgive me for jumping in to an already overburdened thread.  But can
-someone pushing back on this clearly explain the issue with applying
-this patch?
+On 11/22/21 8:01 AM, Pali Rohár wrote:
+> On Saturday 20 November 2021 18:03:19 Armin Wolf wrote:
+>> The only purpose of i8k_ioctl() is to call i8k_ioctl_unlocked()
+>> with i8k_mutex held. Judging from the hwmon code, this mutex
+>> only needs to be held when setting the fan speed/mode.
+> 
+> Really? I think that there is no difference between setting and getting
+> fan speed/mode. At least I do not see why 'set' needs mutex and 'get' do
+> not need it. Some more explanation is needed...
+> 
+I8K_SET_FAN sets the fan speed and returns the current status. Without
+locking, the returned status may not match or be associated with the previous
+set operation.
 
-The only concerns I've heard are that it doesn't go far enough.  That
-another strategy (that everyone seems to agree would be a fair bit more
-effort) could potentially achieve the same goal and then some.  Isn't
-that exactly what's meant by "don't let perfection be the enemy of the
-good"? The saying is not talking about literal perfection -- the idea is
-that you make progress where you can, and that incremental progress and
-broader changes are not necessarily in conflict.
+Maybe that doesn't matter, and the synchronization is not needed. If so,
+you can probably remove the locking entirely.
 
-This tiny patch could be a step in the right direction.  Why does this
-thread need dozens of replies?
-
-Thanks,
-Andrew
-
-
-
-
---
-We all do better when we all do better.  -Paul Wellstone
+Guenter
