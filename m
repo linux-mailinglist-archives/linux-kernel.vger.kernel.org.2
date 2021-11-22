@@ -2,122 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 321AA458AAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 09:47:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5BC458AAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 09:47:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238906AbhKVIuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 03:50:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52404 "EHLO
+        id S238914AbhKVIu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 03:50:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233105AbhKVIuK (ORCPT
+        with ESMTP id S238906AbhKVIuz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 03:50:10 -0500
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D723C061574;
-        Mon, 22 Nov 2021 00:47:04 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id 131so47977117ybc.7;
-        Mon, 22 Nov 2021 00:47:04 -0800 (PST)
+        Mon, 22 Nov 2021 03:50:55 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EFB6C061714
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 00:47:49 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id j6-20020a17090a588600b001a78a5ce46aso16316244pji.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 00:47:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k7dFNlJV0aiK4eRfnLcjhzT0QcNW9OU+Syl2O1W9rtM=;
-        b=jveALE0mGgLPe3soMNH88c5rEXlhrV7EBCdkqjm33Gp8KySjWC150GQDLD9kL85aF3
-         XcvZ61D7oWAnz4+Jg8lrnoV+8AYaM9w6kwjlVDalJVtE/LF0WFE0IBiEIB8EPERV76XY
-         /obdbspS5CUrN+tngGjJOlxcNhDxKrNNQiRooau3HKBjV2TO6/3XxQZLcmp1DSYTvnX/
-         CoipyRH7c1kKg3dNjMe3KT9MLpC6QtvqH306ryiiHwZA+SJSTx7kVUGf/9HqkaWEziX3
-         8k9hPM3rwP8ZP5iGUle6RYYC7K2RlKrLsFVhq6YbbRVF7dZgysy7yESc0VX4hoB/zmll
-         H6OQ==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=KAbhMQt4nCgWni6Pt6IcGkUBR1XzjBlAXekRoPKEnOo=;
+        b=jXkX/8xiG2y3badTiE8MKyApgJi7frOSGal5CQRZb4qZVi2SQQTN7Hmxr7jR7LcS0g
+         Z9A5CseqQwuX6q+L0LCw8Wl9lpoHSyE6vCNkHMvjNgRhn/jrCDuEglGJ8WRlnDhFkU4F
+         U2JkxHyYq4xRcMnhzvWgMcrwPCN2cPYeD2OPx59BKixnOOA8v8ESHYblSgvvtSGBXZeu
+         /lDp1Oc6lWHOOYvvzaY2RrzNKlOjwEiDcsTrfbmwkUgqt52GW0naSNx0tSo/fX7YREIZ
+         YKo0PAoZGr7+JoQMbvFS//YCIVkDrQB4R8ynEbP//5cRA/UqoeFa2VRdtI4Gi/Z5fILt
+         jPbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k7dFNlJV0aiK4eRfnLcjhzT0QcNW9OU+Syl2O1W9rtM=;
-        b=hIq+yubFEViOL2oCLwFKxThyRLzIn8fG33PAXUBzCp8crktCDnRpGkg6Aww/4CVbxa
-         Nxl+QlGeLYHM4LJ4Eetn5VdWEBQtuSNNPFmsdL4FF324HQbGAaP7M+Lh3yIknI1KS6gc
-         5NewhzMKjH8XWB49NmbIA4IoYmCCLI8uYbkUvhvAFkmAhi5iqjQgudnzqiuoOS57ddbn
-         08upKPrJNiGMIyBr828yukjz2YoMwufEUAuA11/IzCrqzi5H/DeIw2PP0TW2+Thf+IlC
-         vPwKzBZczMPlH+SFaBkkhpigcVgHxdEDydrdSiJt5Vn5yKVbW3p3JWvFUYBJtCJEGKzD
-         Qhqg==
-X-Gm-Message-State: AOAM531eL/Qc3sK62TaNO88gh6JurgVu3hHxdlXWwJRdHU6Fx2ivfZ3n
-        q+/kzcjqe42fCMzFbsduVQvbRJ50EgPzTzr05nwqSgWWRvEsgw==
-X-Google-Smtp-Source: ABdhPJz9LYLMASit0aK9KFAkCvkJvAyq3Jjhdm/QzHUW7PTiMFuur7T93e5gGx6hEkzHPT6kg3pLL0+RIQ5nqf5cOnw=
-X-Received: by 2002:a25:dc4d:: with SMTP id y74mr58492098ybe.422.1637570823634;
- Mon, 22 Nov 2021 00:47:03 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=KAbhMQt4nCgWni6Pt6IcGkUBR1XzjBlAXekRoPKEnOo=;
+        b=z9K8A/sxr8ZjpCjYtjyAWXIggZ0kOkNe0P1seYPIycNmBWjilmHrNdIT+IIOndpTjV
+         fGDP4hdJm0TTflzWKUl/PQiL+EsXCJhQUbkN4/AYXiUH8u/EkM2uq5ixmlfBFZDfHbRB
+         7O8SgADZeo0tPxuB5kOY4QFJrBQqOpRGlkFBC2oLKidUFPyqz4wuOCYGTSr5uDo7WJ5i
+         91d7Bu3VmYYtRJWyvzef2/KGdZ7oEzFyE5eFd1zPjlmOQn0aVj2XB/Bk4THWVHrNerWL
+         i5EhjKuKEgn98tR/NEPOMEhc/RKspcxuzhT80qhOfCNXsdBDjbcTJ85QvzUQZ5WSOHiw
+         2k3A==
+X-Gm-Message-State: AOAM530lniH0vduy0sF9LZ6pT/B6TatK5BH++9zqNH0qR8h5vIgMVltW
+        2LtZetNooQVzRFzkFHupcAqtrz3a2mVfbLv0lIU=
+X-Google-Smtp-Source: ABdhPJyJ3fz+zu1gjA1jqgwSOl2bPwOEe5uIm7znr0ixL9y2mJBY/T8lJHGh5zcB1LVlhbJo4Ey3sfj9ikcVWQvLqDg=
+X-Received: by 2002:a17:902:b20b:b0:141:a92c:a958 with SMTP id
+ t11-20020a170902b20b00b00141a92ca958mr107166350plr.24.1637570869066; Mon, 22
+ Nov 2021 00:47:49 -0800 (PST)
 MIME-Version: 1.0
-References: <20211121180155.9062-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdUTLYn=14RzJORp1mn-TSwC1rk1BO_9L6TG4g9JhH27JA@mail.gmail.com>
-In-Reply-To: <CAMuHMdUTLYn=14RzJORp1mn-TSwC1rk1BO_9L6TG4g9JhH27JA@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Mon, 22 Nov 2021 08:46:37 +0000
-Message-ID: <CA+V-a8sGA4=oxwp87VonC6zdPYT5-BHmsVoV8L1ggTUV8m4ooA@mail.gmail.com>
-Subject: Re: [PATCH] memory: renesas-rpc-if: Silence clang warning
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+Received: by 2002:a17:90b:4c10:0:0:0:0 with HTTP; Mon, 22 Nov 2021 00:47:48
+ -0800 (PST)
+Reply-To: justinseydou@gmail.com
+From:   Justin Seydou <fredericmoustapha44@gmail.com>
+Date:   Mon, 22 Nov 2021 09:47:48 +0100
+Message-ID: <CAAH=C4=Mui8+yhPyj=nQt4WMRyDDZMfGLHxoTjhai541UKOcjQ@mail.gmail.com>
+Subject: Proposal
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+Estimado amigo,
 
-Thank you for the review.
+Con mucha sinceridad de coraz=C3=B3n les escribo para informarles sobre un =
+negocio
+propuesta que tengo que me gustar=C3=ADa manejar con ustedes.
 
-On Mon, Nov 22, 2021 at 7:50 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Sun, Nov 21, 2021 at 7:05 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > This patch silences the following clang warning:
-> >
-> > | drivers/memory/renesas-rpc-if.c:253:14: warning: cast to smaller integer
-> > | type 'enum rpcif_type' from 'const void *' [-Wvoid-pointer-to-enum-cast]
-> > |           rpc->type = (enum rpcif_type)of_device_get_match_data(dev);
-> > |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >
-> > Fixes: b04cc0d912eb8 ("memory: renesas-rpc-if: Add support for RZ/G2L")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
->
-> > --- a/drivers/memory/renesas-rpc-if.c
-> > +++ b/drivers/memory/renesas-rpc-if.c
-> > @@ -250,7 +250,7 @@ int rpcif_sw_init(struct rpcif *rpc, struct device *dev)
-> >                 return PTR_ERR(rpc->dirmap);
-> >         rpc->size = resource_size(res);
-> >
-> > -       rpc->type = (enum rpcif_type)of_device_get_match_data(dev);
-> > +       rpc->type = (enum rpcif_type)(uintptr_t)of_device_get_match_data(dev);
->
-> While correct, the cast to "enum rpcif_type" is not stricly needed anymore.
->
-Agreed.
+Indique amablemente su inter=C3=A9s para habilitar
+Yo les doy m=C3=A1s detalles de la propuesta.
 
-@Krzysztof, let me know if you want me to resend the patch with the
-cast to "enum rpcif_type" dropped.
+Esperando por tu respuesta.
 
-Cheers,
-Prabhakar
+Atentamente,
 
-> >         rpc->rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
-> >
-> >         return PTR_ERR_OR_ZERO(rpc->rstc);
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+Se=C3=B1or Justin Seydou.
+
+
+
+
+Dear friend,
+
+With much sincerity of heart I write to inform you about a business
+proposal I have which I would like to handle with you.
+
+Kindly indicate your interest so as to enable
+me give you more details of the proposal.
+
+Waiting for your response.
+
+Yours faithfully,
+
+Mr.Justin Seydou.
