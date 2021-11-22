@@ -2,130 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B5A045909F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 15:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE5C4590A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 15:57:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239825AbhKVO5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 09:57:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238762AbhKVO5f (ORCPT
+        id S232494AbhKVPAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:00:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:26002 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239113AbhKVPAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 09:57:35 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAEEEC061574;
-        Mon, 22 Nov 2021 06:54:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=O+eh7K1k2QSvOZZ7TCMe4K+QTFxIpsBZGSPwLICIa1Q=; b=R3xtDXjkZPOQSoZAd5+WJiAFGN
-        xZv9sKaw+4RBL8RfQDjowl3hozDzZWRNfenOM22ydshHq3EWIZTOlwEt+PmD7QspMpQ2fSwYzbUls
-        jGU5H7sAbaPtT9acjqhVe4I4G9UQHblMH1QOcmi+oXFQ9gf2mXu14gPOqh54UjWVbjPasfcy2lDYj
-        xzHrzL0n6/7/qRV/FLUvCfNz0wHVZaC411OypbJVIEa84hRBIHGTSx1L8up1etvZFTAaQ/wP274vD
-        jXup151jRJASYvapQ+EqY4KDT6rQ4erZHqnVBsjDxnwHbK9jSoeTnNg+2go5s8/L7KraYpUSybETB
-        JSCqWdcg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55788)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mpAi2-0006nF-71; Mon, 22 Nov 2021 14:54:18 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mpAhx-0007m3-CQ; Mon, 22 Nov 2021 14:54:13 +0000
-Date:   Mon, 22 Nov 2021 14:54:13 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Yinbo Zhu <zhuyinbo@loongson.cn>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] net: mdio: fixup ethernet phy module auto-load
- function
-Message-ID: <YZuvFVXuKFdwpFmY@shell.armlinux.org.uk>
-References: <1637583298-20321-1-git-send-email-zhuyinbo@loongson.cn>
- <1637583298-20321-2-git-send-email-zhuyinbo@loongson.cn>
+        Mon, 22 Nov 2021 10:00:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637593043;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=a6sxP8BbpsAMN/5roSu3j/ZWT90syA5vCmiIsqjbMtk=;
+        b=CTZzBYOj9NMS5ihn+fb5DQ0CxKjOREYArVSwooh1gGYa7KVAOl/GRdo+Lm3TQbPQ0N5RMX
+        trHokDDWh6MqpRVL150h4rHCDPS8CKctvHJXt7xOcml7yfI84XG/1CzOa+lx8Ku+yVMg34
+        1mEDWYR0JMwosIttyQ5pqFLcz9/tpK8=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-209--c-6Yx7xNOyD5alqw02PGg-1; Mon, 22 Nov 2021 09:57:22 -0500
+X-MC-Unique: -c-6Yx7xNOyD5alqw02PGg-1
+Received: by mail-wr1-f72.google.com with SMTP id v17-20020adfedd1000000b0017c5e737b02so3170565wro.18
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 06:57:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=a6sxP8BbpsAMN/5roSu3j/ZWT90syA5vCmiIsqjbMtk=;
+        b=aZ2pzCz5RiYADaL5Xm37A2xsnx2aYmKUK9lmwZbpyElWOWucqEClSzjvvsqXNAHaLp
+         PzkA0I+GayuRst2aTPW/X82+OJF6V2ZNs7v16t9f6PtQawHyVSWcjg4+NmWqGkQjqPo1
+         AC8N1ryHplA+oxc4E9ydhRy8vfpDkbgg+H1lLxtYhmHMiU7qPP2sQsuMHcd5gv+E3pya
+         JH3chrvHAfaAtSbp0sHj5042WGm8SiMOqP27hDd1wzaeXzERDaGRlRx7NkWVRYccfFce
+         ZzvcMfklDxf//P2JFoZkqDXH4/KMvrOV9EBukqkpQ+E0OIIx+tu5jSs3XynyJLe3K5Re
+         E1Pg==
+X-Gm-Message-State: AOAM533ukWUTWinDKNSCXvF0WiFgeq3PPt5V6UyhmNEV1y/n6b+BPcl2
+        HyNVGeGmG5pFgQY4L4BO3PX5dAQEkVyBUDr9Sktcqzr5WYGGZEtUL8aovEF/xXTiDWMidRzxIyD
+        pB9C/Uhlgsa+aUXq/RkwXIoHz
+X-Received: by 2002:a7b:ce8c:: with SMTP id q12mr29900037wmj.91.1637593040916;
+        Mon, 22 Nov 2021 06:57:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzb1fVkmOhpRnzBJsEnrS5eq+nBwa2MfaKvZWrzzGVY0sVj4OHkUiEBZAugOc7zSp386W7pog==
+X-Received: by 2002:a7b:ce8c:: with SMTP id q12mr29899978wmj.91.1637593040715;
+        Mon, 22 Nov 2021 06:57:20 -0800 (PST)
+Received: from [192.168.3.132] (p5b0c667b.dip0.t-ipconnect.de. [91.12.102.123])
+        by smtp.gmail.com with ESMTPSA id s63sm10249585wme.22.2021.11.22.06.57.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Nov 2021 06:57:20 -0800 (PST)
+Message-ID: <d2b46b84-8930-4304-2946-4d4a16698b24@redhat.com>
+Date:   Mon, 22 Nov 2021 15:57:17 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1637583298-20321-2-git-send-email-zhuyinbo@loongson.cn>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [RFC v2 PATCH 01/13] mm/shmem: Introduce F_SEAL_GUEST
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Chao Peng <chao.p.peng@linux.intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, qemu-devel@nongnu.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J . Bruce Fields" <bfields@fieldses.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
+        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com
+References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
+ <20211119134739.20218-2-chao.p.peng@linux.intel.com>
+ <20211119151943.GH876299@ziepe.ca>
+ <df11d753-6242-8f7c-cb04-c095f68b41fa@redhat.com>
+ <20211119160023.GI876299@ziepe.ca>
+ <4efdccac-245f-eb1f-5b7f-c1044ff0103d@redhat.com>
+ <20211122133145.GQ876299@ziepe.ca>
+ <56c0dffc-5fc4-c337-3e85-a5c9ce619140@redhat.com>
+ <20211122140148.GR876299@ziepe.ca>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20211122140148.GR876299@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 08:14:58PM +0800, Yinbo Zhu wrote:
-> the phy_id is only phy identifier, that phy module auto-load function
-> should according the phy_id event rather than other information, this
-> patch is remove other unnecessary information and add phy_id event in
-> mdio_uevent function and ethernet phy module auto-load function will
-> work well.
+On 22.11.21 15:01, Jason Gunthorpe wrote:
+> On Mon, Nov 22, 2021 at 02:35:49PM +0100, David Hildenbrand wrote:
+>> On 22.11.21 14:31, Jason Gunthorpe wrote:
+>>> On Mon, Nov 22, 2021 at 10:26:12AM +0100, David Hildenbrand wrote:
+>>>
+>>>> I do wonder if we want to support sharing such memfds between processes
+>>>> in all cases ... we most certainly don't want to be able to share
+>>>> encrypted memory between VMs (I heard that the kernel has to forbid
+>>>> that). It would make sense in the use case you describe, though.
+>>>
+>>> If there is a F_SEAL_XX that blocks every kind of new access, who
+>>> cares if userspace passes the FD around or not?
+>> I was imagining that you actually would want to do some kind of "change
+>> ownership". But yeah, the intended semantics and all use cases we have
+>> in mind are not fully clear to me yet. If it's really "no new access"
+>> (side note: is "access" the right word?) then sure, we can pass the fd
+>> around.
 > 
-> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
-> ---
->  drivers/net/phy/mdio_bus.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
-> index 6865d93..999f0d4 100644
-> --- a/drivers/net/phy/mdio_bus.c
-> +++ b/drivers/net/phy/mdio_bus.c
-> @@ -962,12 +962,12 @@ static int mdio_bus_match(struct device *dev, struct device_driver *drv)
->  
->  static int mdio_uevent(struct device *dev, struct kobj_uevent_env *env)
->  {
-> -	int rc;
-> +	struct phy_device *pdev;
->  
-> -	/* Some devices have extra OF data and an OF-style MODALIAS */
-> -	rc = of_device_uevent_modalias(dev, env);
-> -	if (rc != -ENODEV)
-> -		return rc;
-> +	pdev = to_phy_device(dev);
-> +
-> +	if (add_uevent_var(env, "MODALIAS=mdio:p%08X", pdev->phy_id))
-> +		return -ENOMEM;
+> What is "ownership" in a world with kvm and iommu are reading pages
+> out of the same fd?
 
-The MDIO bus contains more than just PHYs. This completely breaks
-anything that isn't a PHY device - likely by performing an
-out-of-bounds access.
-
-This change also _totally_ breaks any MDIO devices that rely on
-matching via the "of:" mechanism using the compatible specified in
-DT. An example of that is the B53 DSA switch.
-
-Sorry, but we've already learnt this lesson from a similar case with
-SPI. Once one particular way of dealing with MODALIAS has been
-established for auto-loading modules for a subsystem, it is very
-difficult to change it without causing regressions.
-
-We need a very clear description of the problem that these patches are
-attempting to address, and then we need to see that effort has been
-put in to verify that changing the auto-loading mechanism is safe to
-do - such as auditing every single driver that use the MDIO subsystem.
-
->  
->  	return 0;
->  }
-> @@ -991,7 +991,7 @@ static int mdio_uevent(struct device *dev, struct kobj_uevent_env *env)
->  };
->  
->  struct bus_type mdio_bus_type = {
-> -	.name		= "mdio_bus",
-> +	.name		= "mdio",
-
-This looks like an unrelated user-interface breaking change. This
-changes the path of all MDIO devices and drivers in /sys/bus/mdio_bus/*
-
-Thanks.
+In the world of encrypted memory / TDX, KVM somewhat "owns" that memory
+IMHO (for example, only it can migrate or swap out these pages; it's
+might be debatable if the TDX module or KVM actually "own" these pages ).
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Thanks,
+
+David / dhildenb
+
