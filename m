@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 129AF458AB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 09:49:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDDB1458AB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 09:49:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238960AbhKVIw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 03:52:26 -0500
+        id S238981AbhKVIww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 03:52:52 -0500
 Received: from pegase2.c-s.fr ([93.17.235.10]:49365 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238916AbhKVIwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 03:52:06 -0500
+        id S238994AbhKVIwl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 03:52:41 -0500
 Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HyLXf26fvz9sSP;
-        Mon, 22 Nov 2021 09:48:50 +0100 (CET)
+        by localhost (Postfix) with ESMTP id 4HyLXm0zGYz9sSL;
+        Mon, 22 Nov 2021 09:48:56 +0100 (CET)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from pegase2.c-s.fr ([172.26.127.65])
         by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id BKp-NtUlD4Pi; Mon, 22 Nov 2021 09:48:50 +0100 (CET)
+        with ESMTP id X-aGPodMYSyc; Mon, 22 Nov 2021 09:48:56 +0100 (CET)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HyLXc0nS8z9sSm;
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HyLXc1m9kz9sSr;
         Mon, 22 Nov 2021 09:48:48 +0100 (CET)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 05E898B787;
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 256468B774;
         Mon, 22 Nov 2021 09:48:48 +0100 (CET)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 3F2pnbczwszx; Mon, 22 Nov 2021 09:48:47 +0100 (CET)
+        with ESMTP id 9HhFgcCOVwLX; Mon, 22 Nov 2021 09:48:48 +0100 (CET)
 Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.108])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A7E358B77A;
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A668B8B779;
         Mon, 22 Nov 2021 09:48:47 +0100 (CET)
 Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1AM8meSh631720
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1AM8mei2631724
         (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
         Mon, 22 Nov 2021 09:48:40 +0100
 Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1AM8meK6631719;
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1AM8meCH631723;
         Mon, 22 Nov 2021 09:48:40 +0100
 X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
@@ -46,147 +46,103 @@ To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
 Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
         linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-mm@kvack.org
-Subject: [PATCH 3/8] powerpc/mm: Remove asm/slice.h
-Date:   Mon, 22 Nov 2021 09:48:23 +0100
-Message-Id: <a4943516369e465480948a867d0539eb19cbdc8c.1637570556.git.christophe.leroy@csgroup.eu>
+Subject: [PATCH 4/8] powerpc/mm: Move vma_mmu_pagesize() and hugetlb_get_unmapped_area() to slice.c
+Date:   Mon, 22 Nov 2021 09:48:24 +0100
+Message-Id: <b9fe71514684c92239d2f44cd5a6330992ec1f88.1637570556.git.christophe.leroy@csgroup.eu>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <cover.1637570556.git.christophe.leroy@csgroup.eu>
 References: <cover.1637570556.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1637570906; l=4295; s=20211009; h=from:subject:message-id; bh=pCjWbm/6i4DsGWKoGQCBa7BOgwjRuzeKkXX4A957v14=; b=kgoCPzN+agQfltGFjADSaz/iRb+fubzHaC5xjnbbYCj7R4pYjqXcU+72xfe9KP0Ny6RLdetFm3zt BgdXw9NtC0RmXF5kBBDzsJ6Q0/gWGXg6G/wKXo8ZO9LKEiwjRcIb
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1637570906; l=2819; s=20211009; h=from:subject:message-id; bh=bAMv1qE3z5Fq0BLMA+9Ex8Wew7DRe92t24mVDmFzu8M=; b=EDoWFoSjFoTQFLeBg5vpnvbMirOOsruAGa1Pntjc3nkBZOH9J3VL9acRGhJr9JkfZ/3aM0BWB9yb fuIuk3tbBAjIlu08jxDiiPnywDgrzjoQd89aiNE2Q09EHM0xphSR
 X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move necessary stuff in asm/book3s/64/slice.h and
-remove asm/slice.h
+vma_mmu_pagesize() is only required for slices,
+otherwise there is a generic weak version.
+
+hugetlb_get_unmapped_area() is dedicated to slices.
+
+Move them to slice.c
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/include/asm/book3s/64/hash.h     |  3 ++
- arch/powerpc/include/asm/book3s/64/mmu-hash.h |  1 +
- arch/powerpc/include/asm/book3s/64/slice.h    | 18 +++++++++
- arch/powerpc/include/asm/page.h               |  1 -
- arch/powerpc/include/asm/slice.h              | 37 -------------------
- 5 files changed, 22 insertions(+), 38 deletions(-)
- delete mode 100644 arch/powerpc/include/asm/slice.h
+ arch/powerpc/mm/book3s64/slice.c | 22 ++++++++++++++++++++++
+ arch/powerpc/mm/hugetlbpage.c    | 28 ----------------------------
+ 2 files changed, 22 insertions(+), 28 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/book3s/64/hash.h b/arch/powerpc/include/asm/book3s/64/hash.h
-index 25f8e90985eb..27be22e6f848 100644
---- a/arch/powerpc/include/asm/book3s/64/hash.h
-+++ b/arch/powerpc/include/asm/book3s/64/hash.h
-@@ -99,6 +99,9 @@
-  * Defines the address of the vmemap area, in its own region on
-  * hash table CPUs.
-  */
-+#ifdef CONFIG_HUGETLB_PAGE
-+#define HAVE_ARCH_HUGETLB_UNMAPPED_AREA
-+#endif
- #define HAVE_ARCH_UNMAPPED_AREA
- #define HAVE_ARCH_UNMAPPED_AREA_TOPDOWN
+diff --git a/arch/powerpc/mm/book3s64/slice.c b/arch/powerpc/mm/book3s64/slice.c
+index 82b45b1cb973..62848c5fa2d6 100644
+--- a/arch/powerpc/mm/book3s64/slice.c
++++ b/arch/powerpc/mm/book3s64/slice.c
+@@ -779,4 +779,26 @@ int slice_is_hugepage_only_range(struct mm_struct *mm, unsigned long addr,
  
-diff --git a/arch/powerpc/include/asm/book3s/64/mmu-hash.h b/arch/powerpc/include/asm/book3s/64/mmu-hash.h
-index 3004f3323144..b4b2ca111f75 100644
---- a/arch/powerpc/include/asm/book3s/64/mmu-hash.h
-+++ b/arch/powerpc/include/asm/book3s/64/mmu-hash.h
-@@ -18,6 +18,7 @@
-  * complete pgtable.h but only a portion of it.
-  */
- #include <asm/book3s/64/pgtable.h>
-+#include <asm/book3s/64/slice.h>
- #include <asm/task_size_64.h>
- #include <asm/cpu_has_feature.h>
+ 	return !slice_check_range_fits(mm, maskp, addr, len);
+ }
++
++unsigned long vma_mmu_pagesize(struct vm_area_struct *vma)
++{
++	/* With radix we don't use slice, so derive it from vma*/
++	if (radix_enabled())
++		return vma_kernel_pagesize(vma);
++
++	return 1UL << mmu_psize_to_shift(get_slice_psize(vma->vm_mm, vma->vm_start));
++}
++
++unsigned long hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
++					unsigned long len, unsigned long pgoff,
++					unsigned long flags)
++{
++	struct hstate *hstate = hstate_file(file);
++	int mmu_psize = shift_to_mmu_psize(huge_page_shift(hstate));
++
++	if (radix_enabled())
++		return radix__hugetlb_get_unmapped_area(file, addr, len, pgoff, flags);
++
++	return slice_get_unmapped_area(addr, len, flags, mmu_psize, 1);
++}
+ #endif
+diff --git a/arch/powerpc/mm/hugetlbpage.c b/arch/powerpc/mm/hugetlbpage.c
+index 10c3b2b8e9d8..eb9de09e49a3 100644
+--- a/arch/powerpc/mm/hugetlbpage.c
++++ b/arch/powerpc/mm/hugetlbpage.c
+@@ -542,34 +542,6 @@ struct page *follow_huge_pd(struct vm_area_struct *vma,
+ 	return page;
+ }
  
-diff --git a/arch/powerpc/include/asm/book3s/64/slice.h b/arch/powerpc/include/asm/book3s/64/slice.h
-index f0d3194ba41b..5b0f7105bc8b 100644
---- a/arch/powerpc/include/asm/book3s/64/slice.h
-+++ b/arch/powerpc/include/asm/book3s/64/slice.h
-@@ -2,6 +2,8 @@
- #ifndef _ASM_POWERPC_BOOK3S_64_SLICE_H
- #define _ASM_POWERPC_BOOK3S_64_SLICE_H
- 
-+#ifndef __ASSEMBLY__
-+
- #define SLICE_LOW_SHIFT		28
- #define SLICE_LOW_TOP		(0x100000000ul)
- #define SLICE_NUM_LOW		(SLICE_LOW_TOP >> SLICE_LOW_SHIFT)
-@@ -13,4 +15,20 @@
- 
- #define SLB_ADDR_LIMIT_DEFAULT	DEFAULT_MAP_WINDOW_USER64
- 
-+struct mm_struct;
-+
-+unsigned long slice_get_unmapped_area(unsigned long addr, unsigned long len,
-+				      unsigned long flags, unsigned int psize,
-+				      int topdown);
-+
-+unsigned int get_slice_psize(struct mm_struct *mm, unsigned long addr);
-+
-+void slice_set_range_psize(struct mm_struct *mm, unsigned long start,
-+			   unsigned long len, unsigned int psize);
-+
-+void slice_init_new_context_exec(struct mm_struct *mm);
-+void slice_setup_new_exec(void);
-+
-+#endif /* __ASSEMBLY__ */
-+
- #endif /* _ASM_POWERPC_BOOK3S_64_SLICE_H */
-diff --git a/arch/powerpc/include/asm/page.h b/arch/powerpc/include/asm/page.h
-index 254687258f42..62e0c6f12869 100644
---- a/arch/powerpc/include/asm/page.h
-+++ b/arch/powerpc/include/asm/page.h
-@@ -329,6 +329,5 @@ static inline unsigned long kaslr_offset(void)
- 
- #include <asm-generic/memory_model.h>
- #endif /* __ASSEMBLY__ */
--#include <asm/slice.h>
- 
- #endif /* _ASM_POWERPC_PAGE_H */
-diff --git a/arch/powerpc/include/asm/slice.h b/arch/powerpc/include/asm/slice.h
-deleted file mode 100644
-index be4acc52e8ec..000000000000
---- a/arch/powerpc/include/asm/slice.h
-+++ /dev/null
-@@ -1,37 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _ASM_POWERPC_SLICE_H
--#define _ASM_POWERPC_SLICE_H
--
 -#ifdef CONFIG_PPC_BOOK3S_64
--#include <asm/book3s/64/slice.h>
+-unsigned long hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
+-					unsigned long len, unsigned long pgoff,
+-					unsigned long flags)
+-{
+-	struct hstate *hstate = hstate_file(file);
+-	int mmu_psize = shift_to_mmu_psize(huge_page_shift(hstate));
+-
+-#ifdef CONFIG_PPC_RADIX_MMU
+-	if (radix_enabled())
+-		return radix__hugetlb_get_unmapped_area(file, addr, len,
+-						       pgoff, flags);
+-#endif
+-	return slice_get_unmapped_area(addr, len, flags, mmu_psize, 1);
+-}
 -#endif
 -
--#ifndef __ASSEMBLY__
+-unsigned long vma_mmu_pagesize(struct vm_area_struct *vma)
+-{
+-	/* With radix we don't use slice, so derive it from vma*/
+-	if (IS_ENABLED(CONFIG_PPC_BOOK3S_64) && !radix_enabled()) {
+-		unsigned int psize = get_slice_psize(vma->vm_mm, vma->vm_start);
 -
--struct mm_struct;
+-		return 1UL << mmu_psize_to_shift(psize);
+-	}
+-	return vma_kernel_pagesize(vma);
+-}
 -
--#ifdef CONFIG_PPC_BOOK3S_64
--
--#ifdef CONFIG_HUGETLB_PAGE
--#define HAVE_ARCH_HUGETLB_UNMAPPED_AREA
--#endif
--#define HAVE_ARCH_UNMAPPED_AREA
--#define HAVE_ARCH_UNMAPPED_AREA_TOPDOWN
--
--unsigned long slice_get_unmapped_area(unsigned long addr, unsigned long len,
--				      unsigned long flags, unsigned int psize,
--				      int topdown);
--
--unsigned int get_slice_psize(struct mm_struct *mm, unsigned long addr);
--
--void slice_set_range_psize(struct mm_struct *mm, unsigned long start,
--			   unsigned long len, unsigned int psize);
--
--void slice_init_new_context_exec(struct mm_struct *mm);
--void slice_setup_new_exec(void);
--
--#endif /* CONFIG_PPC_BOOK3S_64 */
--
--#endif /* __ASSEMBLY__ */
--
--#endif /* _ASM_POWERPC_SLICE_H */
+ bool __init arch_hugetlb_valid_size(unsigned long size)
+ {
+ 	int shift = __ffs(size);
 -- 
 2.33.1
 
