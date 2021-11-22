@@ -2,107 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A0845917D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:35:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 038784591A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:51:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239955AbhKVPi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:38:27 -0500
-Received: from mout.kundenserver.de ([212.227.17.10]:36729 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239815AbhKVPiZ (ORCPT
+        id S240023AbhKVPyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:54:47 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20206 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231714AbhKVPyp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:38:25 -0500
-Received: from mail-wr1-f46.google.com ([209.85.221.46]) by
- mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MBmDy-1mwqJV3ohI-00C6OF; Mon, 22 Nov 2021 16:35:17 +0100
-Received: by mail-wr1-f46.google.com with SMTP id u1so33439657wru.13;
-        Mon, 22 Nov 2021 07:35:17 -0800 (PST)
-X-Gm-Message-State: AOAM530sLAVQvXK6/g3gPJ0jseTqmSumX0z1NsbxMYoE/+QNsiu1rnAC
-        NXu7PvV0GQKDfsGhZZT2BPfs8rccrJylifWtO1A=
-X-Google-Smtp-Source: ABdhPJxJtyPDgupGJO5dvWb1SjNslTHYXWjP3r97r/gd2zxQeFi9EA/iMblGVL3S0bnNlwwqB0nbTHmFAH/3E6PXgg8=
-X-Received: by 2002:adf:efc6:: with SMTP id i6mr40179592wrp.428.1637595317455;
- Mon, 22 Nov 2021 07:35:17 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1636973694.git.quic_saipraka@quicinc.com>
- <9396fbdc415a3096ab271868960372b21479e4fb.1636973694.git.quic_saipraka@quicinc.com>
- <CAK8P3a2Bp4LP7C1-XLKvjyxV-e1vrHb-=3zpm75CRgPYNbY2jA@mail.gmail.com>
- <b07e339c-530d-683c-c626-14b73b42e72a@quicinc.com> <1609f1f7-6f61-6e17-d907-c526f09bffe5@quicinc.com>
- <CAK8P3a1KxJFwgock3XiRDZYzT=5PZ=Hsh_8uFv9heoa1rwNqtA@mail.gmail.com>
- <9ef8b483-f15f-eda8-d430-2d01e6cad70e@quicinc.com> <CAK8P3a0Zo+PTGAAvisAZamfLUm1ToGZpmHDn-Xk0Eo8TTRGyZg@mail.gmail.com>
- <4ed41054-3868-d5e2-9958-56250b7f9be0@quicinc.com>
-In-Reply-To: <4ed41054-3868-d5e2-9958-56250b7f9be0@quicinc.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 22 Nov 2021 16:35:01 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a07sMdR9NUz5AOJk+O-op9qLU_PjnhvqvTz9xrHE7NXEg@mail.gmail.com>
-Message-ID: <CAK8P3a07sMdR9NUz5AOJk+O-op9qLU_PjnhvqvTz9xrHE7NXEg@mail.gmail.com>
-Subject: Re: [PATCHv4 2/2] arm64/io: Add a header for mmio access instrumentation
-To:     Sai Prakash Ranjan <quic_saipraka@quicinc.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        quic_psodagud@quicinc.com, Marc Zyngier <maz@kernel.org>,
-        gregkh <gregkh@linuxfoundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:afe0cawbtPSkXEpDaURr+UUlHsPTEzS/tUjQeRZIDw8hix9rMzH
- rRTDvuz45huZDfzu80RI0J4udYOpJl0YsSusZzona0T1fro74mJm0DrgpVzqlDEvOep+1p2
- aKkslwZ14vzaZiQxYskVvTlfvyZC8sn+Mhv8g/7Gp3cKuin1KyQUrD3yLoOAFGwHPcE33DW
- 0yYknpYZdEyocQ49yNQ3g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wv+83+BqJV8=:wICOjBZ/A8ofZ8nbL3NFMs
- d8XlJeQljC5DvoIoxuuMXHQB5zS58kZxtPOPPoE5Fuv0IsGE1SosB3ofn2HrfqFB9UKfO4gQL
- JzbhwOi5FZ4V6kgDdZILboya3FF/euDlHaO5sC/zuYwFtK8iyyvtXfFA1UXfgPBxJoUN/+hoW
- k3/3TLf82af095JEZ6XXWTUbWu9OaFKXVGn+lu4PvNWgzrH2tX2h4YxptaYIuHeTEOdesdJzU
- sygKigS3wmHwpmugL8VhLzmtf1/IK51DHGxqu6EpJTB9oMuQTHh727SQX38iUFoL4SNZaXUqt
- oCmQz1N9V8w1hQRynXGPidoQ7LMlxDPydzAk0yznqWkVS6+yGos+AgAuWQC55RsCul5FuQTr5
- TqAWyptla3MEvvqRJa64pY4LK5heXPJzUbTO2UM2yLTCO799Sk1kzN5h2CIH07uqeNNG9VV1b
- lrvlHl03ZMpwbtEtBXA21h/jH/Q1gkG/e5YRDtZDAHK92j5KXaSMwBdo84pb5wbnbQb9BnvFo
- Y7Bix7zxUcTsXOMHQRiDAzJvsZr6/FJqdCFn4+hYRagG+80JNAOQcdhIm/p1vOZ6cxuTLJG7R
- NOeWCULUH87x0Ah+buaaJgQo60olDk9XMvnItHXsouLcCfKUG4UVS3MhbD4XfO6niWvU6wPvK
- K54xeKN2F59i7yMClFtDcIiTXBEkfch7iEc88qGEieElptt4V9BvrOH+Nnx+F7WAk1ylHFY7o
- MxXIPYHecx5nEa1/C7Q1uJva3PxOKsFjHHO5FkyIRZKyP0UkjnL6g7816UuJDTc6BkC+lACEw
- A25O8z9d4HcBqz58FEtlrcDeMk5IqN91U7Zaki2Iizs6FEu61E=
+        Mon, 22 Nov 2021 10:54:45 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AMFCZbM018481;
+        Mon, 22 Nov 2021 15:51:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=OBJC4YXHaOSL0/NtF92tKECm1NAnOoXcRD7rwv18+zg=;
+ b=HHgdHpdfxtzZBOCMoDFMSLQbNUPC3CfvlQysWlWAbnQsJAaWxM7aBJjUnf/6D1Apors8
+ VMbPXa+b9EV5VP8NahWSSpBeHZcs6CF9wxjlBWgOgM1EdW35g+UsNWgBJ8qQqYD5FWtd
+ s5XHPTdTOaIfFcnu2jEfETDPlFPkcVfs1uLbE+bv/s1j08WSCaJCh6a0mxaJdDKIgF2a
+ grUqkNrf/xSSvGyCDBJ2Jjb2oxBN8Ask7DO6gYxCx5esCjLkUNRXwgxz3+d5bpoJDEuZ
+ ntm9gNWjFHHY/hb2nJCTU3Sm0nkLqPyrWZ7TlXn+OGzH2SzqhzTsvoL3XpeSFQ0/6TDB wA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cgdn10wbn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Nov 2021 15:51:34 +0000
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AMFUD65002578;
+        Mon, 22 Nov 2021 15:51:33 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cgdn10wae-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Nov 2021 15:51:33 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AMFMuh6021202;
+        Mon, 22 Nov 2021 15:36:46 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 3cern9qwsy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Nov 2021 15:36:45 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AMFahgN16777556
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Nov 2021 15:36:43 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 98471AE055;
+        Mon, 22 Nov 2021 15:36:43 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 809FFAE051;
+        Mon, 22 Nov 2021 15:36:42 +0000 (GMT)
+Received: from sig-9-65-91-201.ibm.com (unknown [9.65.91.201])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 22 Nov 2021 15:36:42 +0000 (GMT)
+Message-ID: <9b414c36080138ac2862b9d6c24dfd98b7ccf974.camel@linux.ibm.com>
+Subject: Re: [PATCH v4 2/2] integrity: support including firmware
+ ".platform" keys at build time
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Nayna Jain <nayna@linux.ibm.com>, linux-integrity@vger.kernel.org,
+        keyrings@vger.kernel.org
+Cc:     dhowells@redhat.com, jarkko@kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dimitri John Ledkov <dimitri.ledkov@canonical.com>,
+        Seth Forshee <seth@forshee.me>
+Date:   Mon, 22 Nov 2021 10:36:41 -0500
+In-Reply-To: <20211111002057.123741-3-nayna@linux.ibm.com>
+References: <20211111002057.123741-1-nayna@linux.ibm.com>
+         <20211111002057.123741-3-nayna@linux.ibm.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: GsZ93kKRGic-zGX_fwDLkS4mLLSWdLam
+X-Proofpoint-GUID: 1AmcxhbxIX0GJyO1lUHSjNQeHsUeZd_A
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-22_08,2021-11-22_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 bulkscore=0 mlxscore=0 adultscore=0 phishscore=0
+ spamscore=0 malwarescore=0 suspectscore=0 clxscore=1011 mlxlogscore=999
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111220081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 3:59 PM Sai Prakash Ranjan
-<quic_saipraka@quicinc.com> wrote:
-> >> And if we do move this instrumentation to asm-generic/io.h, how will
-> >> that be executed since
-> >> the arch specifc read{b,w,l,q} overrides this generic version?
-> > As I understand it, your version also requires architecture specific
-> > changes, so that would be the same: it only works for architectures
-> > that get the definition of readl()/readl_relaxed()/inl()/... from
-> > include/asm-generic/io.h and only override the __raw version. Arnd
->
-> Sorry, I didn't get this part, so  I am trying this on ARM64:
->
-> arm64/include/asm/io.h has read{b,l,w,q} defined.
-> include/asm-generic/io.h has below:
->    #ifndef readl
->    #define readl readl
->    static inline u32 readl(const volatile void __iomem *addr)
->
-> and we include asm-generic/io.h in arm64/include/asm/io.h at the end
-> after the definitions for arm64 mmio accesors.
-> So arch implementation here overrides generic ones as I see it, am I
-> missing something? I even confirmed this
-> with some trace_printk to generic and arch specific definitions of readl
-> and I see arch specific ones being called.
+On Wed, 2021-11-10 at 19:20 -0500, Nayna Jain wrote:
 
-Ah, you are right that the arm64 version currently has custom definitions
-of the high-level interfaces. These predate the introduction of the
-__io_{p,}{b,a}{r,w} macros and are currently only used on risc-v.
+> diff --git a/security/integrity/Kconfig b/security/integrity/Kconfig
+> index 71f0177e8716..b2009b792882 100644
+> --- a/security/integrity/Kconfig
+> +++ b/security/integrity/Kconfig
+> @@ -62,6 +62,16 @@ config INTEGRITY_PLATFORM_KEYRING
+>           provided by the platform for verifying the kexec'ed kerned image
+>           and, possibly, the initramfs signature.
+>  
+> +config INTEGRITY_PLATFORM_BUILTIN_KEYS
 
-I think in this case you should start by changing arm64 to use the
-generic readl() etc definitions, by removing the extra definitions and
-using
+With the ".builtin_trusted_keys" keyring, using the word "BUILTIN" here
+could be confusing.  Instead, similar to SYSTEM_TRUSTED_KEYRING and
+SYSTEM_TRUSTED_KEYS, this config should be named
+INTEGRITY_PLATFORM_KEYS.
 
-#define __io_ar(v) __iormb(__v)
-#define __io_bw() dma_wmb()
+> +        string "Builtin X.509 keys for .platform keyring"
+> +        depends on KEYS
+> +        depends on ASYMMETRIC_KEY_TYPE
+> +        depends on INTEGRITY_PLATFORM_KEYRING
+> +        help
+> +          If set, this option should be the filename of a PEM-formatted file
+> +          containing X.509 certificates to be loaded onto the ".platform"
+> +          keyring.
+> +
 
-      Arnd
+> 
+> @@ -37,6 +41,28 @@ void __init add_to_platform_keyring(const char *source, const void *data,
+>  		pr_info("Error adding keys to platform keyring %s\n", source);
+>  }
+>  
+> +static __init int load_builtin_platform_cert(void)
+
+Similarly, this should be named load_platform_cert_list() or
+load_platform_certificate_list().
+
+> +{
+> +	const u8 *p;
+> +	unsigned long size;
+> +	int rc;
+> +	struct key *keyring;
+> +
+> +	p = platform_certificate_list;
+> +	size = platform_certificate_list_size;
+> +
+> +	keyring = integrity_keyring_from_id(INTEGRITY_KEYRING_PLATFORM);
+> +	if (IS_ERR(keyring))
+> +		return PTR_ERR(keyring);
+> +
+> +	rc = load_certificate_list(p, size, keyring);
+> +	if (rc)
+> +		pr_info("Error adding keys to platform keyring %d\n", rc);
+> +
+> +	return rc;
+> +}
+> +late_initcall(load_builtin_platform_cert);
+> +
+>  /*
+>   * Create the trusted keyrings.
+>   */
+
+
