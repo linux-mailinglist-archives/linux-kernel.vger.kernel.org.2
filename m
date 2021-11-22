@@ -2,87 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E1845955C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 20:11:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF5045955F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 20:13:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235437AbhKVTOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 14:14:05 -0500
-Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:49178 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231418AbhKVTOC (ORCPT
+        id S237463AbhKVTQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 14:16:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230159AbhKVTQO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 14:14:02 -0500
-Received: from [192.168.1.18] ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id pEiKmh80URLGppEiKmZETn; Mon, 22 Nov 2021 20:10:54 +0100
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Mon, 22 Nov 2021 20:10:54 +0100
-X-ME-IP: 86.243.171.122
-Subject: Re: [PATCH] net-sysfs: Slightly optimize 'xps_queue_show()'
-To:     Xin Long <lucien.xin@gmail.com>
-Cc:     davem <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
-        atenart@kernel.org, Alexander Duyck <alexanderduyck@fb.com>,
-        Paolo Abeni <pabeni@redhat.com>, Wei Wang <weiwan@google.com>,
-        network dev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-References: <498b1a0a7a0cba019c9d95693cd489827168b79e.1637517554.git.christophe.jaillet@wanadoo.fr>
- <CADvbK_du8Oya986Ae9YJ+w5kkexE5S5mvAb+DWod-1_F85=sgA@mail.gmail.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <27107a39-3073-4995-194d-5caa330d1313@wanadoo.fr>
-Date:   Mon, 22 Nov 2021 20:10:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Mon, 22 Nov 2021 14:16:14 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05280C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 11:13:08 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id f65so6476249pgc.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 11:13:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xdP/1E/sjsU4zxgXiTU4EW1L3AvShi1LySCVgiuwxhk=;
+        b=pgAhS8MM5EonlJPkdQAeawThA4p4egLanaMBN6/4TKVldxH9LVZ7k9WHaYVGo82KX7
+         18aFXBTWlhy0r/V4IOx8/8UAgghLzT09K0F9iCHD30AQvsa4Qt+CSvMLRp5SvJjtT/gi
+         1PqBcprOLhMQoW5KlGtsACtBcaGDwM0bSlRJd65uOqAG5ciWprx28kvVT/YCQFd1rj7U
+         376ehb8bHBDi9adfN3SfvlYq/nyxAuTfnV9uoanvKLMC61PL5czLo8QVib+HUNC/wLrt
+         ieOxttB5hSPlfSshaRcdbBLJbF+aZVwSAzHz9ED2YhoDiAwAZ4JPOuBkXvo6xB5av/py
+         6DNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xdP/1E/sjsU4zxgXiTU4EW1L3AvShi1LySCVgiuwxhk=;
+        b=xYze0CcEcKda5K7yhhGVy6Y1aaaTKd5ff4UTHHvahxWdp09EDVrH/5PFLVZ9/Aiwr/
+         nyuSYfinj3b/EWuy4NjFpDx2AzuyFNyb14y/nDCiCZdv1GYFUfbd+Am85gohQhr5u7X0
+         XCnXA8H49yan9LwSc5Douqbq9k1xNeJbzjoecXiLdHiI5VKZ0iKT31PH5kO0MfFKP/ej
+         ri5O+nNp1mvQ7MePNHP+ey1Yj9ziAm3DNVpJ3pqbYTMlAdVwQZwxVw2OPr82LsegWYOP
+         rwzvhAxBJA9bhk5SgAovjlZCky3R38zu68lLnpm76PDILZMtSJndLlEl0ZjcT7tyETDv
+         Oh/g==
+X-Gm-Message-State: AOAM533Uqj8qniD4o4Q6upXUSw1lay34QFJ7DMA4i7QrCz5NPp1kqFBN
+        jizImrgJGTSB8nRC23Q8Lixozg==
+X-Google-Smtp-Source: ABdhPJywWf83H/xNNjbfsd1y6iSA/s+3iEDb0YY1d+t06wff/MSS3oF9BLmYM22aWFFftqWP9pxyxg==
+X-Received: by 2002:a62:1b51:0:b0:49f:a8d8:84b with SMTP id b78-20020a621b51000000b0049fa8d8084bmr87130253pfb.31.1637608387283;
+        Mon, 22 Nov 2021 11:13:07 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id b15sm9600038pfv.48.2021.11.22.11.13.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Nov 2021 11:13:06 -0800 (PST)
+Date:   Mon, 22 Nov 2021 19:13:02 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Aili Yao <yaoaili126@gmail.com>
+Cc:     pbonzini@redhat.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yaoaili@kingsoft.com
+Subject: Re: [PATCH] KVM: LAPIC: Per vCPU control over
+ kvm_can_post_timer_interrupt
+Message-ID: <YZvrvmRnuDc1e+gi@google.com>
+References: <20211122095619.000060d2@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CADvbK_du8Oya986Ae9YJ+w5kkexE5S5mvAb+DWod-1_F85=sgA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211122095619.000060d2@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 22/11/2021 à 16:23, Xin Long a écrit :
-> On Sun, Nov 21, 2021 at 2:38 PM Christophe JAILLET
-> <christophe.jaillet@wanadoo.fr> wrote:
->>
->> The 'mask' bitmap is local to this function. So the non-atomic
->> '__set_bit()' can be used to save a few cycles.
->>
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->>   net/core/net-sysfs.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/net/core/net-sysfs.c b/net/core/net-sysfs.c
->> index 9c01c642cf9e..3be3f4a6add3 100644
->> --- a/net/core/net-sysfs.c
->> +++ b/net/core/net-sysfs.c
->> @@ -1452,7 +1452,7 @@ static ssize_t xps_queue_show(struct net_device *dev, unsigned int index,
->>
->>                  for (i = map->len; i--;) {
->>                          if (map->queues[i] == index) {
->> -                               set_bit(j, mask);
->> +                               __set_bit(j, mask);
->>                                  break;
->>                          }
->>                  }
->> --
->> 2.30.2
->>
-> The similar optimization can seem to be done in br_vlan.c and br_if.c as well.
+On Mon, Nov 22, 2021, Aili Yao wrote:
+> From: Aili Yao <yaoaili@kingsoft.com>
 > 
+> When we isolate some pyhiscal cores, We may not use them for kvm guests,
+> We may use them for other purposes like DPDK, or we can make some kvm
+> guests isolated and some not, the global judgement pi_inject_timer is
+> not enough; We may make wrong decisions:
+> 
+> In such a scenario, the guests without isolated cores will not be
+> permitted to use vmx preemption timer, and tscdeadline fastpath also be
+> disabled, both will lead to performance penalty.
+> 
+> So check whether the vcpu->cpu is isolated, if not, don't post timer
+> interrupt.
+> 
+> Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
+> ---
+>  arch/x86/kvm/lapic.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+> index 759952dd1222..72dde5532101 100644
+> --- a/arch/x86/kvm/lapic.c
+> +++ b/arch/x86/kvm/lapic.c
+> @@ -34,6 +34,7 @@
+>  #include <asm/delay.h>
+>  #include <linux/atomic.h>
+>  #include <linux/jump_label.h>
+> +#include <linux/sched/isolation.h>
+>  #include "kvm_cache_regs.h"
+>  #include "irq.h"
+>  #include "ioapic.h"
+> @@ -113,7 +114,8 @@ static inline u32 kvm_x2apic_id(struct kvm_lapic *apic)
+>  
+>  static bool kvm_can_post_timer_interrupt(struct kvm_vcpu *vcpu)
+>  {
+> -	return pi_inject_timer && kvm_vcpu_apicv_active(vcpu);
+> +	return pi_inject_timer && kvm_vcpu_apicv_active(vcpu) &&
+> +		!housekeeping_cpu(vcpu->cpu, HK_FLAG_TIMER);
 
-Hi,
+I don't think this is safe, vcpu->cpu will be -1 if the vCPU isn't scheduled in.
+This also doesn't play nice with the admin forcing pi_inject_timer=1.  Not saying
+there's a reasonable use case for doing that, but it's supported today and this
+would break that behavior.  It would also lead to weird behavior if a vCPU were
+migrated on/off a housekeeping vCPU.  Again, probably not a reasonable use case,
+but I don't see anything that would outright prevent that behavior.
 
-br_if.c should be fixed in cc0be1ad686f.
+The existing behavior also feels a bit unsafe as pi_inject_timer is writable while
+KVM is running, though I supposed that's orthogonal to this discussion.
 
-br_vlan.c was not spotted by my heuristic (a set of grep, while looking 
-at something else). So, thanks for your feedback.
+Rather than check vcpu->cpu, is there an existing vCPU flag that can be queried,
+e.g. KVM_HINTS_REALTIME?
 
-Feel free to propose a patch for it, it was not part of my todo list :)
-
-If you prefer, I can also send a patch. Let me know.
-
-CJ
+>  }
+>  
+>  bool kvm_can_use_hv_timer(struct kvm_vcpu *vcpu)
+> -- 
+> 2.25.1
+> 
