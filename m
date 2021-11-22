@@ -2,98 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B14D4590D5
+	by mail.lfdr.de (Postfix) with ESMTP id D84D84590D6
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239416AbhKVPGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:06:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44690 "EHLO mail.kernel.org"
+        id S239546AbhKVPGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:06:36 -0500
+Received: from www.zeus03.de ([194.117.254.33]:34470 "EHLO mail.zeus03.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238762AbhKVPGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236031AbhKVPGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Nov 2021 10:06:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CACE160E78;
-        Mon, 22 Nov 2021 15:03:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637593406;
-        bh=i6Qp2qR/uQyO6caLKgwJaWmOLmpDkZkj/yPileR7hUE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=GboMgEHx/ttSvRcTngn9oJgSzqGxxAgfIIXtqW03pnxac3Zj+0K3BG8xmZUm0CYfu
-         Vaal1EG1uCkXUQGdUZCbneDo5lhzNWa1GlZdd3brrKcMhwQe51Ol1KIKBEQ9a7RT/B
-         p1KB1QhgFvCDF8PWlFLuZrLSlVpcmE8+DkobquFEhdtmxtcfPg5mpJfJUIfVIMSs2G
-         jtmHVRL2r9z04UBJBqZC5QzevpbAtAfr1wvInxkh9Mg56sUBivKWYmNKYZ/CEn1+kl
-         R8iIZrm3I6WHZNC0YUWv4q70km92RyFJAe7QGipBL33rLEHkgJ89clKtDIvNVhlZ02
-         2Svr/AgtRn0ig==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Moritz Fischer <mdf@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Yufeng Mo <moyufeng@huawei.com>,
-        Huazhong Tan <tanhuazhong@huawei.com>,
-        Cai Huoqing <caihuoqing@baidu.com>, netdev@vger.kernel.org,
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=TuS1lPMhs8uq9fCMz291pN9jdOQX
+        8p+QlOKA+q71wiw=; b=wLzXg45DD0jrpxQRlF5XJEPsvIeITtjkTa/yu4xadc4n
+        ZEWR0tjtrHLDQb8dLpR5fcXd9Zsnj3ZROk5zo0lJgUcqzL4neVRzbNBnAucZK/4/
+        HQ8em9gfvONtALvTFQz8f0O64cyEIWN9tO387WNBdPY+NguGloaJdlaf4DKLGB4=
+Received: (qmail 854439 invoked from network); 22 Nov 2021 16:03:24 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 22 Nov 2021 16:03:24 +0100
+X-UD-Smtp-Session: l3s3148p1@4/f+7GHRMLUgAwDPXwnCABI2E1xN8W/V
+Date:   Mon, 22 Nov 2021 16:03:21 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] nixge: fix mac address error handling again
-Date:   Mon, 22 Nov 2021 16:02:49 +0100
-Message-Id: <20211122150322.4043037-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+Subject: Re: [PATCH v2 1/1] gpio: add sloppy logic analyzer using polling
+Message-ID: <YZuxOZ1z9xDUxmte@kunai>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org
+References: <20210918083307.3195-1-wsa+renesas@sang-engineering.com>
+ <20210918083307.3195-2-wsa+renesas@sang-engineering.com>
+ <CAHp75Vdv=0i05EitMi6JjbjML-jFD_1M0q7ps2KVHcN4UtFU-w@mail.gmail.com>
+ <YUhGkBdXJUI3XadP@ninjato>
+ <CAHp75VcXuYLM4cPAb+rv47wz0v+Q6tjek6tKuBj32K81XxkKaA@mail.gmail.com>
+ <YZuKyEcsXb8dwiHG@ninjato>
+ <YZuOGAxO5ZslW5vB@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xvZJCXS/qfXIF3vJ"
+Content-Disposition: inline
+In-Reply-To: <YZuOGAxO5ZslW5vB@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
 
-The change to eth_hw_addr_set() caused gcc to correctly spot a
-bug that was introduced in an earlier incorrect fix:
+--xvZJCXS/qfXIF3vJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-In file included from include/linux/etherdevice.h:21,
-                 from drivers/net/ethernet/ni/nixge.c:7:
-In function '__dev_addr_set',
-    inlined from 'eth_hw_addr_set' at include/linux/etherdevice.h:319:2,
-    inlined from 'nixge_probe' at drivers/net/ethernet/ni/nixge.c:1286:3:
-include/linux/netdevice.h:4648:9: error: 'memcpy' reading 6 bytes from a region of size 0 [-Werror=stringop-overread]
- 4648 |         memcpy(dev->dev_addr, addr, len);
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-As nixge_get_nvmem_address() can return either NULL or an error
-pointer, the NULL check is wrong, and we can end up reading from
-ERR_PTR(-EOPNOTSUPP), which gcc knows to contain zero readable
-bytes.
+> See 7065f92255bb ("driver core: Clarify that dev_err_probe() is OK even w/out
+> -EPROBE_DEFER").
 
-Make the function always return an error pointer again but fix
-the check to match that.
+Thanks, very convincing. I'll use it.
 
-Fixes: f3956ebb3bf0 ("ethernet: use eth_hw_addr_set() instead of ether_addr_copy()")
-Fixes: abcd3d6fc640 ("net: nixge: Fix error path for obtaining mac address")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/net/ethernet/ni/nixge.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/ni/nixge.c b/drivers/net/ethernet/ni/nixge.c
-index cfeb7620ae20..07a00dd9cfe0 100644
---- a/drivers/net/ethernet/ni/nixge.c
-+++ b/drivers/net/ethernet/ni/nixge.c
-@@ -1209,7 +1209,7 @@ static void *nixge_get_nvmem_address(struct device *dev)
- 
- 	cell = nvmem_cell_get(dev, "address");
- 	if (IS_ERR(cell))
--		return NULL;
-+		return cell;
- 
- 	mac = nvmem_cell_read(cell, &cell_size);
- 	nvmem_cell_put(cell);
-@@ -1282,7 +1282,7 @@ static int nixge_probe(struct platform_device *pdev)
- 	ndev->max_mtu = NIXGE_JUMBO_MTU;
- 
- 	mac_addr = nixge_get_nvmem_address(&pdev->dev);
--	if (mac_addr && is_valid_ether_addr(mac_addr)) {
-+	if (!IS_ERR(mac_addr) && is_valid_ether_addr(mac_addr)) {
- 		eth_hw_addr_set(ndev, mac_addr);
- 		kfree(mac_addr);
- 	} else {
--- 
-2.29.2
+--xvZJCXS/qfXIF3vJ
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmGbsTUACgkQFA3kzBSg
+Kba22Q//doo1W5DbYl2qsorJAhRHfz8COprRU1yqSZbniDz215iB1BOMoDAsTPvz
+mlTperaQXWLDj0GOMm9Gyk1dbkY4Lna+99YacS/blTsmYwy4ZvFFSUDatD4yOTzO
+dr3IVhCdaxnQF2wMTiWfPFQfwKN2RrWdcjWOxBHmWlzXgBG6yzXeWF+6+igTjE86
+eahwA1c6ZIUYzSAxUWGhEjjB/mfyxL+K8Zd4WecWdl2RqS1LlTH2TcaJCEUPg0qi
+DfulahiQvr4xO4IKin6SD6cEcfxn8MAUH+X/MFGGEdKMURD+18Xu5glcEUG2We11
+bn2uNOm8/1/S1+QqvBNYCD0VWArP/jTtkPKiV8ABbVKXGh7H3tzXMl3tR4RcEVS7
+V50J2fVLzbmAUDK89/g/7zgHGzvjpoF0yF9yCllGfU5j1d+KpfIpi1l1i/YYpuY+
+hdiBNlJoaiXlStTHjUElniUNqqCg3USWGA1umT/U5VQqwFG5N1F9LHzpsPsJeRhA
+LuDmASmGxWD3Mz+gPrewoWCuqVlOIvzng7EdL68YycUlPqwWSIwQIW6s9GtvMFOz
+9MkLimapOYywX+3im0BoU+QW6UG7x8VXTUTyU1RuN3mO9Hr3J2iHNTioZVOWdYHM
+wnVhIYQlwt7kfeazAULcy1vxA4snt+ePY4KR+urnJ0os+bkt74g=
+=rNqY
+-----END PGP SIGNATURE-----
+
+--xvZJCXS/qfXIF3vJ--
