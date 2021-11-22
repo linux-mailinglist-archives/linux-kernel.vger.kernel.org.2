@@ -2,106 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5010458C29
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 11:17:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B340B458C2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 11:18:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239192AbhKVKUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 05:20:53 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:33114 "EHLO loongson.cn"
+        id S239213AbhKVKU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 05:20:57 -0500
+Received: from mail-mw2nam08on2064.outbound.protection.outlook.com ([40.107.101.64]:18374
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236312AbhKVKUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 05:20:52 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxZ+hCbpthlxkAAA--.616S2;
-        Mon, 22 Nov 2021 18:17:38 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
+        id S236312AbhKVKU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 05:20:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Zc7vmsg4Ojf7Cwtl99uK6PFZwweQW8k+ClMq/PN7/hiFeX//Q2tVXB6XF4ff3W4Z/VONkDosVU15HEKwFlCe4f/PW8C4olgVC22C0n+x+H+dPElMoIzcSLX99RMsBK7ssaWMOT0wwCw/UetYdhZDvhEc58Ou5l8q4NG85Sc7NaiOvGk50JO2d5/BUX9a3yEd17CFBq7fngokeUR2tsnuCgo30O6MrQ5TmLvQs59+Jrz4Swhx6IENukT3cZr43CW1uvVNPo/J5rM/mnr0ZatQ7IJhrLG3Mkb4r2X6rmm/m4a82eB7cRsT6qOj8LmBxndmTfLPPtj3/pTwiooTroWa/Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jkqXOICDwkvy3Uv45WLrn0veTuvdTBs8UNmAEkNg4Rk=;
+ b=UGvolmKirDBRtb55kkE2Yv8uJHXUDvWNUVnnbu3GcJjJhBqzeYtBxV/gzjoM42dUqTKaBE5nrG466MZRIbJR0c8PI92ZtkqFBsHoCb9YrmBY7psB02bxfCftcYs14t4aEfyotFZj4rJ/1tcMJjpdGj7Fwb70X5RD1klYdNhbqvL1n6En6m8sP4/9PNi5uMe3Z5mU27NJfYJubvDzRFHdAt3fkjwjtmKfecTMqiTwmUSMz/82XpcGcaPfoVG8KM6ylTW25obRBYf/APNelsbKZwZXp1246Ws6TbdUEOV4+MItrB77YviXlMGtXcf8sE2fIxrs81Uy1XJJ4xdiATj9LA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jkqXOICDwkvy3Uv45WLrn0veTuvdTBs8UNmAEkNg4Rk=;
+ b=r/l+M3N+741p2oJQYbNRDztQO0qwoR9YyLJ9Dp5qoS6fRL+vxKSMxe+LmuL1UN4WR5crZG5KDBHQ6q9og1w62SkrCzsbq5dq8OYOhsLS3PzFiY/h2oUSgW6U21Owp2uRD4ADQoJw+ys9WayQhqFKNLlOf8vxRMt5Lu4u/p2grMX8zyxL1tYvdnbDFYbEVl25n1WQvh+fMe+zvv6ffqoiwbAtmxhQoa/KLs9yUZcvHIXJL15KdmO9lMwtowHEesnOZvkoGivtZwdhAbdUszMT/1ASV57W/N+AfHqWQQWO5M2wOloFx37h7iat2pgxeLUNmgFLYm2UQqthA6PPs99OHA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM4PR12MB5278.namprd12.prod.outlook.com (2603:10b6:5:39e::17)
+ by DM4PR12MB5310.namprd12.prod.outlook.com (2603:10b6:5:39e::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Mon, 22 Nov
+ 2021 10:17:49 +0000
+Received: from DM4PR12MB5278.namprd12.prod.outlook.com
+ ([fe80::513c:d3d8:9c43:2cea]) by DM4PR12MB5278.namprd12.prod.outlook.com
+ ([fe80::513c:d3d8:9c43:2cea%9]) with mapi id 15.20.4690.027; Mon, 22 Nov 2021
+ 10:17:49 +0000
+Message-ID: <f98615d9-a129-d0b0-e444-cb649c14d7ce@nvidia.com>
+Date:   Mon, 22 Nov 2021 12:17:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] net/bridge: replace simple_strtoul to kstrtol
+Content-Language: en-US
+To:     Ido Schimmel <idosch@idosch.org>, Bernard Zhao <bernard@vivo.com>
+Cc:     Roopa Prabhu <roopa@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: Fix using smp_processor_id() in preemptible in show_cpuinfo()
-Date:   Mon, 22 Nov 2021 18:17:37 +0800
-Message-Id: <1637576257-11590-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9AxZ+hCbpthlxkAAA--.616S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF47JF1Dur17Zr47ZryftFb_yoW8CFy3pa
-        y7ArW8tr4UWw4DJa4rJrZagryrXFs8Za4IkayxJ3y3Za15WF1DXrnaqF4xuFyqgr4rta1I
-        gF9FqF4Yga48ZaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvK14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VAC
-        jcxG62k0Y48FwI0_Jr0_Gr1lYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
-        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAq
-        YI8I648v4I1lc2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
-        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
-        b7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
-        vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
-        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxh
-        VjvjDU0xZFpf9x0JU38n5UUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+References: <20211119020642.108397-1-bernard@vivo.com>
+ <YZtrM3Ukz7rKfNLN@shredder>
+From:   Nikolay Aleksandrov <nikolay@nvidia.com>
+In-Reply-To: <YZtrM3Ukz7rKfNLN@shredder>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: ZR0P278CA0132.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:40::11) To DM4PR12MB5278.namprd12.prod.outlook.com
+ (2603:10b6:5:39e::17)
+MIME-Version: 1.0
+Received: from [10.21.241.23] (213.179.129.39) by ZR0P278CA0132.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:40::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22 via Frontend Transport; Mon, 22 Nov 2021 10:17:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 575e1366-0d92-4b4b-01c0-08d9ada155c3
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5310:
+X-Microsoft-Antispam-PRVS: <DM4PR12MB53107AC70E5A8FDD345D4DC5DF9F9@DM4PR12MB5310.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1360;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +uBiS6mk6pjlXU4Q5alX3RhvLbFqpArhQMQvB/79W1JtpTO0cdPI/A/cYo3DkJnlq/eDEoF4yf+QxvPwWwiBGqHUmCWoFHMJ1w6KnbcOvNY299SgxDuXc8e3XB7kKDfkKs3CCfNBjv0ewj08AwX/SOShXSvk1kpVQ04CUMJmd8IBVE0O8zZ4PhUKQup8ztx9T7S6QKhSJnBii0j5EIhYgmYi68yDlrHOqMBzc7Cev8mRQp83CE2io0FRRxe+i14bXSBcLDu4mLIy6EYLfvrqZybl4gZIS6R95SvdbZzx2rXZviqwJXnYyeooRRnU4ajmziatsGNqK2O+IVUNqs7Dahzw2HwmCtwcaXm7gefDm0Wnd8jYsWZgUkQUEiVFiNYUMX/iHz9B8vx5JsCp8Mk8O6xK3+0Sas7tkTUOFS2NqggtiVWW65wI7kNh1ywuElvQslEiR6IU/8HVKmKRPj3c1aXkykaOM4L3YPLGFClmZT7d0zxn7uE5S2dKXQ3XR96wtx+m+ypYirPP3RysqgNVf9MJTU/R/MMoQlrXyxY2MKqs4s22ybIT5b4GKO5r2PMatoBSot0TI2sDKcuOP8SJCJWXkn73ZbFyUW5PVKtCLd+/9PaH4uDKHWCtlhiJCdHNjZzueAaJIy9PpWoCOzj8w949O1HzF14/KQjxXGBR2/IDVuvOtpAViCuqbJJvJsMmqyXWvUwjCsUa420omsqjO2zP40oZs4PfFYOAW6Xl/GU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5278.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38100700002)(53546011)(2906002)(66946007)(508600001)(31686004)(316002)(16576012)(110136005)(2616005)(66476007)(66556008)(36756003)(4326008)(86362001)(26005)(31696002)(8936002)(956004)(8676002)(5660300002)(54906003)(6666004)(186003)(83380400001)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?azRMcmorYXU2d0t3QnRpTHBsMmFYRnF6cHEwQjRrcG93YVdIVitKTmxjZzNY?=
+ =?utf-8?B?bllXdWVDOUxmZW43SmFOU05WdXpFbXdwTUFwMTRQQ0lLZnl1UUd6TnB3RjBY?=
+ =?utf-8?B?MUgzSm53VVM3WjA4VjNMRWZ1YWFsb3k5a3AvVVZPc0dMK2RUZk9qdVVKZ0Zx?=
+ =?utf-8?B?bno2NEowWWFVZFBrbTJGWmJJeHViQ2Z5b0xrQ3o0V2U2eUs3UkQ1UEhGL0Rm?=
+ =?utf-8?B?VitWb3V4ZW5CRzlLcU5lbDVFSnJqaEpBUHhqVWNFMURnRjA3NzBVbDhDRnZP?=
+ =?utf-8?B?cFlNOTQ5MktTMnVXSEZNbEVxM1lRdXE0VnF5K1hWK0x6OEpzOXdxZjhKUFJS?=
+ =?utf-8?B?SXJxcHE2VVZJbHlBWEhtTDRKVmFUSTJNRkR1NnFETlFFT3JGaFVZMGxWOXIw?=
+ =?utf-8?B?RVFOZnlBNGo5V1dpUCtyMGt4WkVFUUNPMm5IVk9rY0FzS3BhWk1yUzVVbGhj?=
+ =?utf-8?B?R0FoMWVJZDdEWC9tNVRRUWM0d1ZCQk8zK3RueTFyVlBjejVKcWN1OStrUWFS?=
+ =?utf-8?B?SFhuYjVTT2JKNEEzTHZBTktIZmRLWkI0MVZMUUpGNFF3b0VmTm1CTzFuL3J4?=
+ =?utf-8?B?ZnZhdXRrSW5ka2hRZ20wTCs5aklyeTdXNkdCVWNTKy91dzlUY1BkRDQ2ZW04?=
+ =?utf-8?B?Tk1RSTh6SmJkbndseUtNWXU1NEFnUGluc01CaWlDMTNzQ25GZFV5a0NXMld4?=
+ =?utf-8?B?SCt5QjVVNUE1R090SXBiaWx1endhS3RRVVVIYlIxNVZ6Vkd6a2xKZEUycHI2?=
+ =?utf-8?B?S2xpZmNzclR3aWlSZGV0cjZIR1lYNjhLR0xYd3VJUjZtQ1JYTE5EazBCak1v?=
+ =?utf-8?B?ZzhhT3lielN4MjhKakxjRXVuQnE5bUFxV1lQN0tRalJROTNpMGNMUitQbEpZ?=
+ =?utf-8?B?VHhsVlNsVUxZQUcyOGJOSExoVXlGWVpwTGY4UTNwd05velVrMDIrcW5vM2RH?=
+ =?utf-8?B?QUtZQVhBdWUxNVFuaEcxQ2NhbDhQbUZwd0twYjEvWGdPM3d6Z0hwNEg1UlM4?=
+ =?utf-8?B?SElUcVh4M1FYMTF6cDNUMHVNcmViR3k2UU5IUlBhTzd5MWJsUzU3U081YUxh?=
+ =?utf-8?B?THgyQVVTRVJoK2lXeXhOMS9iZ1VDNGhsWGlvRXpVV1ZZcW5sNDhhQlFCTW1F?=
+ =?utf-8?B?aEtUTGgrd2s5QWZpZjZhbGRuWmpmRlNLWVpyVE5VOFhDY2FmRzh4VDhZUFla?=
+ =?utf-8?B?cVk1ZFJXWCsrYzE4MGNRYWhOZmYzVlVrY1FyaXMya2ZmTEZDVGQwaWM4TW40?=
+ =?utf-8?B?UGY4MUZ5eVhFWmgxK2VxVHpDeFdTY05WZHNjWEtqL216TjBidFdIRkhaVEdX?=
+ =?utf-8?B?OURQVXd4a1NERWg1OXJTa0FieTJXMEtIOGI0U1VzNnV4L3dsclpJS0t5V2NX?=
+ =?utf-8?B?b05MQ2phNWVKR0dzWDhzQVZsM0diTnZNblVyQm1XNk5mUTE2MUhIQXBPUWlz?=
+ =?utf-8?B?K0Q1RXNFVDdXR3huMldDY04reXZsTkdsZmxzVXFzN0MxMlE1c3hHbG44NGlu?=
+ =?utf-8?B?cHl3WW5iNXlvVGpnTm5iSXZPV2ZQODdvUEdZczV4dFkrZlVwS3Q1ZHNSTVBp?=
+ =?utf-8?B?UittaXdOSHpCdkVmREFUL0xRUE4zTVpUaUtwSDhQQVdYRHcxam94eDJOSklm?=
+ =?utf-8?B?d0xKUWtVc3BBNlZUNlk1ZlZCTjdNMllwa3V2Z2FPRFJkallCdEJHQXVZNldH?=
+ =?utf-8?B?aW43V2J5c3plcnFtSGJwYjc4TFRyZ1FLWlU1TVdjU2lRWk1meDFmQXpwa01J?=
+ =?utf-8?B?bVNpM0k4UkNtMmh1dC8zWDBaTTZIRTg3eWVDNjBhc3lXSjYvUXp0K1g5bHNJ?=
+ =?utf-8?B?ajZ5YlNSTkYybE8vV254c3EyVUEzUHJnMnd5aGZTbUd3VjF2L05wdVhINWF0?=
+ =?utf-8?B?RWFMaThTdGx3OUNVcjUwWDU5ZVVhS2JEdC9OejZic05FTGp0L2tnK3NQQVpO?=
+ =?utf-8?B?Zi9PWXRFYnF2eWxoNktxZDYzdjlZa1F3Vm41dlVuUW5oekdCZXJXVGNObXFB?=
+ =?utf-8?B?VTBvUDBvQXdaT3c2WFh6cVd4UzJUQThHWUl2WEdHck9DR0JLc1ZVL0FwaTdy?=
+ =?utf-8?B?Z1NJczRCTVM2Sm1CMmcwT3pCWFZNNkwrV2ovVnkrbk80dnVvd3JhSXF3VXdI?=
+ =?utf-8?B?VHhDYkxaamNwc2Q0bnFsaERSMVRqeWxaTGFsSkM1V3JXcUZCQ1dIQzRhK2Zu?=
+ =?utf-8?Q?wTRqsnnCVqvJ+JZ6GVnJEs8=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 575e1366-0d92-4b4b-01c0-08d9ada155c3
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5278.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2021 10:17:49.2507
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DJZOft7BMBIi7DiNlIUuXU56axv9rrR8xWgivgoibPR7g0EAEj1jvyTSYUmXR6t5GbPrbmK7gtIjTNi/hWcu/A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5310
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There exists the following issue under DEBUG_PREEMPT:
+On 22/11/2021 12:04, Ido Schimmel wrote:
+> On Thu, Nov 18, 2021 at 06:06:42PM -0800, Bernard Zhao wrote:
+>> simple_strtoull is obsolete, use kstrtol instead.
+>>
+>> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+>> ---
+>>  net/bridge/br_sysfs_br.c | 7 +++----
+>>  1 file changed, 3 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/net/bridge/br_sysfs_br.c b/net/bridge/br_sysfs_br.c
+>> index d9a89ddd0331..11c490694296 100644
+>> --- a/net/bridge/br_sysfs_br.c
+>> +++ b/net/bridge/br_sysfs_br.c
+>> @@ -36,15 +36,14 @@ static ssize_t store_bridge_parm(struct device *d,
+>>  	struct net_bridge *br = to_bridge(d);
+>>  	struct netlink_ext_ack extack = {0};
+>>  	unsigned long val;
+>> -	char *endp;
+>>  	int err;
+>>  
+>>  	if (!ns_capable(dev_net(br->dev)->user_ns, CAP_NET_ADMIN))
+>>  		return -EPERM;
+>>  
+>> -	val = simple_strtoul(buf, &endp, 0);
+>> -	if (endp == buf)
+>> -		return -EINVAL;
+>> +	err = kstrtoul(buf, 10, &val);
+> 
+> Base 16 is valid.
+> 
+> Before this patch:
+> 
+> # ip link add name br0 type bridge vlan_filtering 1
+> # echo "0x88a8" > /sys/class/net/br0/bridge/vlan_protocol
+> # echo $?
+> 0
+> 
+> After this patch:
+> 
+> # ip link add name br0 type bridge vlan_filtering 1
+> # echo "0x88a8" > /sys/class/net/br0/bridge/vlan_protocol 
+> bash: echo: write error: Invalid argument
+> 
 
- BUG: using smp_processor_id() in preemptible [00000000] code: systemd/1
- caller is show_cpuinfo+0x460/0xea0
- ...
- Call Trace:
- [<ffffffff8020f0dc>] show_stack+0x94/0x128
- [<ffffffff80e6cab4>] dump_stack_lvl+0x94/0xd8
- [<ffffffff80e74c5c>] check_preemption_disabled+0x104/0x110
- [<ffffffff802209c8>] show_cpuinfo+0x460/0xea0
- [<ffffffff80539d54>] seq_read_iter+0xfc/0x4f8
- [<ffffffff804fcc10>] new_sync_read+0x110/0x1b8
- [<ffffffff804ff57c>] vfs_read+0x1b4/0x1d0
- [<ffffffff804ffb18>] ksys_read+0xd0/0x110
- [<ffffffff8021c090>] syscall_common+0x34/0x58
+Good catch, Bernard please send a revert. Thanks.
 
-We can see the following call trace:
- show_cpuinfo()
-   cpu_has_fpu
-     current_cpu_data
-       smp_processor_id()
 
- $ addr2line -f -e vmlinux 0xffffffff802209c8
- show_cpuinfo
- arch/mips/kernel/proc.c:188
-
- $ head -188 arch/mips/kernel/proc.c | tail -1
-	 if (cpu_has_fpu)
-
- arch/mips/include/asm/cpu-features.h
- #  define cpu_has_fpu		(current_cpu_data.options & MIPS_CPU_FPU)
-
- arch/mips/include/asm/cpu-info.h
- #define current_cpu_data cpu_data[smp_processor_id()]
-
-Based on the above analysis, fix the issue by disabling preemption
-around cpu_has_fpu in show_cpuinfo().
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/mips/kernel/proc.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
-index 376a6e2..c6c2661 100644
---- a/arch/mips/kernel/proc.c
-+++ b/arch/mips/kernel/proc.c
-@@ -185,8 +185,10 @@ static int show_cpuinfo(struct seq_file *m, void *v)
- 		seq_puts(m, " tx39_cache");
- 	if (cpu_has_octeon_cache)
- 		seq_puts(m, " octeon_cache");
-+	preempt_disable();
- 	if (cpu_has_fpu)
- 		seq_puts(m, " fpu");
-+	preempt_enable();
- 	if (cpu_has_32fpr)
- 		seq_puts(m, " 32fpr");
- 	if (cpu_has_cache_cdex_p)
--- 
-2.1.0
 
