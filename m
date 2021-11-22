@@ -2,120 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19CAE458D45
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:20:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C21458D47
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238242AbhKVLYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 06:24:02 -0500
-Received: from mga06.intel.com ([134.134.136.31]:41952 "EHLO mga06.intel.com"
+        id S234167AbhKVLZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 06:25:52 -0500
+Received: from mga11.intel.com ([192.55.52.93]:26883 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229516AbhKVLX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 06:23:57 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10175"; a="295577131"
+        id S229516AbhKVLZv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 06:25:51 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10175"; a="232252613"
 X-IronPort-AV: E=Sophos;i="5.87,254,1631602800"; 
-   d="scan'208";a="295577131"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 03:20:51 -0800
+   d="scan'208";a="232252613"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 03:22:44 -0800
 X-IronPort-AV: E=Sophos;i="5.87,254,1631602800"; 
-   d="scan'208";a="674029881"
+   d="scan'208";a="456248443"
 Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 03:20:50 -0800
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 03:22:43 -0800
 Received: from andy by smile.fi.intel.com with local (Exim 4.95)
         (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mp7NN-009Pk1-MS;
-        Mon, 22 Nov 2021 13:20:45 +0200
-Date:   Mon, 22 Nov 2021 13:20:45 +0200
+        id 1mp7PC-009PlW-Pv;
+        Mon, 22 Nov 2021 13:22:38 +0200
+Date:   Mon, 22 Nov 2021 13:22:38 +0200
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] gpiolib: check the 'ngpios' property in core
- gpiolib code
-Message-ID: <YZt9DVihGaq0kjKG@smile.fi.intel.com>
-References: <20211118132317.15898-1-brgl@bgdev.pl>
- <20211118132317.15898-2-brgl@bgdev.pl>
- <YZaH8rsMyUztOX/r@smile.fi.intel.com>
- <CAMRc=MdR_RGLLPJ5Hqetj5_7ZQfUXOijEoVp3uR7cgEDHKnchA@mail.gmail.com>
- <YZbCq5Xcohm/t/FP@smile.fi.intel.com>
- <CAMRc=MdBhm-+oDiBdYQJZXYEko8rGhZtHQfu6p3DFy_a3aJOZw@mail.gmail.com>
+To:     Orlando Chamberlain <redecorating@protonmail.com>
+Cc:     lee.jones@linaro.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mfd: intel-lpss-pci: fix clock speed for 38a8 UART
+Message-ID: <YZt9fpdd284FdKSh@smile.fi.intel.com>
+References: <20211120083312.41230-1-redecorating@protonmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMRc=MdBhm-+oDiBdYQJZXYEko8rGhZtHQfu6p3DFy_a3aJOZw@mail.gmail.com>
+In-Reply-To: <20211120083312.41230-1-redecorating@protonmail.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 08:35:33PM +0100, Bartosz Golaszewski wrote:
-> On Thu, Nov 18, 2021 at 10:16 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Thu, Nov 18, 2021 at 09:12:59PM +0100, Bartosz Golaszewski wrote:
-> > > On Thu, Nov 18, 2021 at 6:06 PM Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > On Thu, Nov 18, 2021 at 02:23:17PM +0100, Bartosz Golaszewski wrote:
+On Sat, Nov 20, 2021 at 08:34:26AM +0000, Orlando Chamberlain wrote:
 
-...
+Thanks, my comments below.
 
-> > > > >       if (gc->ngpio == 0) {
-> > > > > -             chip_err(gc, "tried to insert a GPIO chip with zero lines\n");
-> > > > > -             ret = -EINVAL;
-> > > > > -             goto err_free_descs;
-> > > > > +             ret = device_property_read_u32(&gdev->dev, "ngpios", &ngpios);
-> > > > > +             if (ret) {
-> > > > > +                     chip_err(gc, "tried to insert a GPIO chip with zero lines\n");
-> > > > > +                     ret = -EINVAL;
-> > > > > +                     goto err_free_descs;
-> > > > > +             }
-> > > > > +
-> > > > > +             gc->ngpio = ngpios;
-> > > > >       }
-> > > >
-> > > > This should be
-> > > >
-> > > >         if (gc->ngpio == 0) {
-> > > >                 ret = device_property_read_u32(&gdev->dev, "ngpios", &ngpios);
-> > > >                 if (ret)
-> > > >                         return ret;
-> > >
-> > > But device_property_read_u32() returning -ENODATA means there's no
-> > > such property, which should actually be converted to -EINVAL as the
-> > > caller wanting to create the chip provided invalid configuration - in
-> > > this case: a chip with 0 lines. In case of the non-array variant of
-> > > read_u32 that's also the only error that can be returned so this bit
-> > > looks right to me.
-> >
-> > So, what is so special about -EINVAL? Why -ENODATA is not good enough which
-> > will exactly explain to the caller what's going on, no?
-> >
+> This device is found in the MacBookPro16,2, and as the MacBookPro16,1 is
+> from the same generation of MacBooks and has a UART with bxt_uart_info,
+> it was incorrectly assumed that the MacBookPro16,2's UART would have the
+> same info.
 > 
-> Let's imagine the user sets gc->ngpio = 0 incorrectly thinking it'll
-> make gpiolib set it to some sane default. Then gpiochip_add_data()
-> returns -ENODATA (No data available). This is confusing IMO. But if we
-> convert it to -EINVAL, it now says "Invalid value" which points to the
-> wrong configuration.
+> This led to the wrong clock speed being used, and the Bluetooth
+> controller exposed by the UART receiving and sending random data, which
+> was incorrectly assumed to be an issue with the Bluetooth stuff, not an
+> error with the UART side of things.
 > 
-> ENODATA means "device tree property is not present" in this case but
-> the problem is that user supplies the gpiolib with invalid
-> configuration. EINVAL is the right error here.
+> Changing the info to spt_uart_info changes the clock speed and makes it
+> send and receive data correctly.
 
-Then be explicit, don't shadow other error codes from fwnode API.
-
-	if (ret && ret != -ENODATA)
-
-> > > >                 gc->ngpio = ngpios;
-> > > >         }
-> > > >
-> > > >         if (gc->ngpio == 0) {
-> > > >                 chip_err(gc, "tried to insert a GPIO chip with zero lines\n");
-> > > >                 ret = -EINVAL;
-> > > >                 goto err_free_descs;
-> >
-> > When the caller intended to create a chip with 0 GPIOs they will get an error
-> > as you wish with an error message.
+> Fixes: ddb1ada416fd ("mfd: intel-lpss: Add support for MacBookPro16,2 ICL-N UART")
 > 
-> Yes, as it was before.
+> Signed-off-by: Orlando Chamberlain <redecorating@protonmail.com>
+
+Tag block shouldn't have blank lines. Otherwise LGTM,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+>  drivers/mfd/intel-lpss-pci.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mfd/intel-lpss-pci.c b/drivers/mfd/intel-lpss-pci.c
+> index a872b4485eac..f70464ce8e3d 100644
+> --- a/drivers/mfd/intel-lpss-pci.c
+> +++ b/drivers/mfd/intel-lpss-pci.c
+> @@ -254,7 +254,7 @@ static const struct pci_device_id intel_lpss_pci_ids[] = {
+>  	{ PCI_VDEVICE(INTEL, 0x34eb), (kernel_ulong_t)&bxt_i2c_info },
+>  	{ PCI_VDEVICE(INTEL, 0x34fb), (kernel_ulong_t)&spt_info },
+>  	/* ICL-N */
+> -	{ PCI_VDEVICE(INTEL, 0x38a8), (kernel_ulong_t)&bxt_uart_info },
+> +	{ PCI_VDEVICE(INTEL, 0x38a8), (kernel_ulong_t)&spt_uart_info },
+>  	/* TGL-H */
+>  	{ PCI_VDEVICE(INTEL, 0x43a7), (kernel_ulong_t)&bxt_uart_info },
+>  	{ PCI_VDEVICE(INTEL, 0x43a8), (kernel_ulong_t)&bxt_uart_info },
+> -- 
+> 2.34.0
+> 
+> 
 
 -- 
 With Best Regards,
