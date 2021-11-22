@@ -2,148 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCEA4590C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B14D4590D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235040AbhKVPFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:05:38 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:60516 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhKVPFg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:05:36 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1C34E218F0;
-        Mon, 22 Nov 2021 15:02:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637593349; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZvPdialsrkJMgYvpdKiSnsfyGngxWmNa/ZN7M0ULl+o=;
-        b=myZMIq0j4sZ8Deql43cZdR3zYzUiBJe7aU7qwq52RjOk8FOj7Ziu6j4xrZy1m93ceFQ0HX
-        EOOZWxU53InTXg9jYpyBZzm41hUGJueDadyV6hYvrYbwx04BUzUGZJqWQp42MxN8O2pJg6
-        NmojDb5uBHj/Y/Q7mmjRMVKuPlog1OI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637593349;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZvPdialsrkJMgYvpdKiSnsfyGngxWmNa/ZN7M0ULl+o=;
-        b=G8bhMr7G6s/SNcLfl9NgCsVofulfiEKmZYKTougAofcsP4wv3IG8d/QkaqbmADtvZx03Nj
-        KEZwMpDqNnK2tVBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F0CDD13B44;
-        Mon, 22 Nov 2021 15:02:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 9Gn6OQSxm2HtBgAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Mon, 22 Nov 2021 15:02:28 +0000
-Message-ID: <b513bbcf-f1ea-cfa6-763a-003a60e51da5@suse.cz>
-Date:   Mon, 22 Nov 2021 16:02:28 +0100
+        id S239416AbhKVPGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:06:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44690 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238762AbhKVPGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 10:06:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CACE160E78;
+        Mon, 22 Nov 2021 15:03:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637593406;
+        bh=i6Qp2qR/uQyO6caLKgwJaWmOLmpDkZkj/yPileR7hUE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GboMgEHx/ttSvRcTngn9oJgSzqGxxAgfIIXtqW03pnxac3Zj+0K3BG8xmZUm0CYfu
+         Vaal1EG1uCkXUQGdUZCbneDo5lhzNWa1GlZdd3brrKcMhwQe51Ol1KIKBEQ9a7RT/B
+         p1KB1QhgFvCDF8PWlFLuZrLSlVpcmE8+DkobquFEhdtmxtcfPg5mpJfJUIfVIMSs2G
+         jtmHVRL2r9z04UBJBqZC5QzevpbAtAfr1wvInxkh9Mg56sUBivKWYmNKYZ/CEn1+kl
+         R8iIZrm3I6WHZNC0YUWv4q70km92RyFJAe7QGipBL33rLEHkgJ89clKtDIvNVhlZ02
+         2Svr/AgtRn0ig==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Moritz Fischer <mdf@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Yufeng Mo <moyufeng@huawei.com>,
+        Huazhong Tan <tanhuazhong@huawei.com>,
+        Cai Huoqing <caihuoqing@baidu.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] nixge: fix mac address error handling again
+Date:   Mon, 22 Nov 2021 16:02:49 +0100
+Message-Id: <20211122150322.4043037-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Content-Language: en-US
-To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Cc:     Faiyaz Mohammed <faiyazm@codeaurora.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20211117193932.4049412-1-gerald.schaefer@linux.ibm.com>
- <20211117193932.4049412-2-gerald.schaefer@linux.ibm.com>
- <9a4367c0-8141-f03c-e5a1-13483794d3e8@suse.cz>
- <20211119205943.1ee5da0d@thinkpad>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [RFC PATCH 1/1] mm/slub: fix endless "No data" printing for
- alloc/free_traces attribute
-In-Reply-To: <20211119205943.1ee5da0d@thinkpad>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/19/21 20:59, Gerald Schaefer wrote:
-> On Fri, 19 Nov 2021 11:41:38 +0100
-> Vlastimil Babka <vbabka@suse.cz> wrote:
-> 
->> On 11/17/21 20:39, Gerald Schaefer wrote:
->> > Reading from alloc/free_traces attribute in /sys/kernel/debug/slab/ results
->> > in an endless sequence of "No data". This is because slab_debugfs_start()
->> > does not check for a "past end of file" condition and return NULL.
->> 
->> I still have no idea how that endless sequence happens.
->> To get it, we would have to call slab_debugfs_show() repeatedly with such v
->> that *v == 0. Which should only happen with slab_debugfs_start() with *ppos
->> == 0. Which your patch won't change because you add a '*ppos > t->count'
->> condition, so *ppos has to be at least 1 to trigger this.
-> 
-> Yes, very strange. After a closer look to fs/seq_file.c, especially
-> seq_read_iter(), it seems that op->next will only be called when m->count == 0,
-> at least in the first while(1) loop. Printing "No data\n" sets m->count
-> to 8, so it will continue after Fill:, then call op->next, which returns NULL
-> and breaks the second while(1) loop, and also calls op->stop. Then it returns
-> from seq_read_iter(), only to be called again, and again, ...
-> 
-> Only when op->start returns NULL it will end it for good, probably
-> because seq_read_iter() will then return 0 instead of 8.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Ah, thanks for investigating.
+The change to eth_hw_addr_set() caused gcc to correctly spot a
+bug that was introduced in an earlier incorrect fix:
 
-> Not sure if
-> there is a better way to fix this than by adding a second "return NULL"
-> to op->start, which feels a bit awkward and makes you wonder why the
-> "return NULL" from op->next is not enough.
+In file included from include/linux/etherdevice.h:21,
+                 from drivers/net/ethernet/ni/nixge.c:7:
+In function '__dev_addr_set',
+    inlined from 'eth_hw_addr_set' at include/linux/etherdevice.h:319:2,
+    inlined from 'nixge_probe' at drivers/net/ethernet/ni/nixge.c:1286:3:
+include/linux/netdevice.h:4648:9: error: 'memcpy' reading 6 bytes from a region of size 0 [-Werror=stringop-overread]
+ 4648 |         memcpy(dev->dev_addr, addr, len);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-I think it's fine to require op->start to return NULL, even if it didn't
-cause this infinite loop.
+As nixge_get_nvmem_address() can return either NULL or an error
+pointer, the NULL check is wrong, and we can end up reading from
+ERR_PTR(-EOPNOTSUPP), which gcc knows to contain zero readable
+bytes.
 
->> 
->> But yeah, AFAIK we should detect this in slab_debugfs_start() anyway.
->> But I think the condition should be something like below, because we are
->> past end of file already with *ppos == t->count. But if both are 0, we want
->> to proceed for the "No data" output.
-> 
-> Ah ok, I wasn't sure about the "t->count > 0" case, i.e. if the check for
-> "*ppos > t->count" would still be correct there. So apparently it wouldn't,
-> and we need two checks, like you suggested
-> 
->> 
->> // to show the No data
->> if (!*ppos && !t->count)
->> 	return ppos;
->> 
->> if (*ppos >= t->count)
->> 	return ppos;
-> 
-> That should be return NULL here, right?
+Make the function always return an error pointer again but fix
+the check to match that.
 
-Doh, right.
+Fixes: f3956ebb3bf0 ("ethernet: use eth_hw_addr_set() instead of ether_addr_copy()")
+Fixes: abcd3d6fc640 ("net: nixge: Fix error path for obtaining mac address")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/ethernet/ni/nixge.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
->> 
->> return ppos;
->> 
-> 
-> Will send a new patch, unless I find a better way after investigating the
-> endless seq_read_iter() calls mentioned above.
-> Is there an easy way to test the "t->count > 0" case, i.e. what would need
-> to be done to get some other reply than "No data"?
+diff --git a/drivers/net/ethernet/ni/nixge.c b/drivers/net/ethernet/ni/nixge.c
+index cfeb7620ae20..07a00dd9cfe0 100644
+--- a/drivers/net/ethernet/ni/nixge.c
++++ b/drivers/net/ethernet/ni/nixge.c
+@@ -1209,7 +1209,7 @@ static void *nixge_get_nvmem_address(struct device *dev)
+ 
+ 	cell = nvmem_cell_get(dev, "address");
+ 	if (IS_ERR(cell))
+-		return NULL;
++		return cell;
+ 
+ 	mac = nvmem_cell_read(cell, &cell_size);
+ 	nvmem_cell_put(cell);
+@@ -1282,7 +1282,7 @@ static int nixge_probe(struct platform_device *pdev)
+ 	ndev->max_mtu = NIXGE_JUMBO_MTU;
+ 
+ 	mac_addr = nixge_get_nvmem_address(&pdev->dev);
+-	if (mac_addr && is_valid_ether_addr(mac_addr)) {
++	if (!IS_ERR(mac_addr) && is_valid_ether_addr(mac_addr)) {
+ 		eth_hw_addr_set(ndev, mac_addr);
+ 		kfree(mac_addr);
+ 	} else {
+-- 
+2.29.2
 
-Hm the debugfs files alloc_tracess/free_traces for any cache with non-zero
-objects (see /proc/slabinfo for that) should have t->count > 0. If the files
-are created for a cache, it means the related SLAB_STORE_USER debugging was
-enabled both during config and boot-time. If you see only a few caches with
-alloc_tracess/free_traces (because they are from e.g. some test module that
-adds SLAB_STORE_USER explicitly) and all happen to have 0 objects, boot with
-slub_debug=U parameter and then all caches will have this enabled and many
-will have >0 objects.
