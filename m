@@ -2,128 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68777458BD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 10:54:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6889D458BDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 10:55:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239182AbhKVJ5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 04:57:25 -0500
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:42054 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239142AbhKVJ5Y (ORCPT
+        id S239238AbhKVJ6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 04:58:14 -0500
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:47778
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239221AbhKVJ6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 04:57:24 -0500
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20211122095417euoutp022045952e0cd68fdd0eb35348938dd2ab~51agYdtTn0334703347euoutp02U
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 09:54:17 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20211122095417euoutp022045952e0cd68fdd0eb35348938dd2ab~51agYdtTn0334703347euoutp02U
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1637574857;
-        bh=68rnbGQJvudgz/GzPbQaVBz3JE4R7GWCtYkfEa5HInc=;
-        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-        b=Pl7RA7qLOX11iGZKHgmHipeTLvBILqkbUXNM1pevbHVUaS34hzsyKrxKzwyNlhA9H
-         39kdfDeYDoP7TtmwvalEcafbl06pGX5w2SE9mRnIuqf2SMKXi9BUtuZ7KorxkWvOHb
-         J8cpYWgR1tjmlbzV4xQVZ5BhTGRPgevWq0z22yjo=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20211122095416eucas1p18d00efb139a37e3e538fc905e374ba92~51af6-nH81249712497eucas1p1p;
-        Mon, 22 Nov 2021 09:54:16 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 82.48.10260.8C86B916; Mon, 22
-        Nov 2021 09:54:16 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20211122095416eucas1p2db4e0d5794ca293b6dc082b99e2719e7~51afeISef1298512985eucas1p2D;
-        Mon, 22 Nov 2021 09:54:16 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20211122095416eusmtrp1b819f742971f8b85f0735e13126a57a3~51afdJG_k1892418924eusmtrp1R;
-        Mon, 22 Nov 2021 09:54:16 +0000 (GMT)
-X-AuditID: cbfec7f5-bf3ff70000002814-07-619b68c8468f
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id F9.8F.09522.8C86B916; Mon, 22
-        Nov 2021 09:54:16 +0000 (GMT)
-Received: from [106.210.134.141] (unknown [106.210.134.141]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20211122095415eusmtip2fdfbbfa831eb6913e22389bbba125790~51aeu1mt20285002850eusmtip2N;
-        Mon, 22 Nov 2021 09:54:15 +0000 (GMT)
-Message-ID: <a4dd7688-a66f-3fd1-8696-e13b47244f56@samsung.com>
-Date:   Mon, 22 Nov 2021 10:54:15 +0100
+        Mon, 22 Nov 2021 04:58:10 -0500
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 7025A3FFE2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 09:55:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1637574903;
+        bh=XbrI8v5SiK/lQTgcd9wq3mq2WEL9a4Q5EFr23Q5MMJw=;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version:Content-Type;
+        b=dZLy8DdZnNife9klg87unVGKzWJIoRfQB0NaqTHY7sqdB5jj7nNCFS7sTrYvM/kOC
+         CGZhJUKDX5yoSJmk9wbomT4Dzof16bTD63LsH2zGEzMXaUAqWyfeAcw2wQAaxDPrwz
+         pvPSDb/qmeZ3Sln/kepduX7NQ85DaVYeRjOr/szTNbZT+epUT++fHoYQEhnLVnTvcg
+         auseX4tQhYUoBBRsDMljs2/41py2MwCOGvsm2d7rJJO9Ou8Z3OjCf7DPxSjFyCXeET
+         cdiDtO/GsuVX3ITCFOGf30xfyR4XdD6IcMQYQMwvuwhYdmfM+S9o09YTwqL7y9X7GX
+         xn8OHa0G1T93Q==
+Received: by mail-lf1-f70.google.com with SMTP id bi30-20020a0565120e9e00b00415d0e471e0so6451711lfb.19
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 01:55:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=XbrI8v5SiK/lQTgcd9wq3mq2WEL9a4Q5EFr23Q5MMJw=;
+        b=QdEZPLixmHZYHXMuk5tb/aK0ggMa6bVHfKRPbZMXLYOYQmsDGyhXYxHbJksNVvSuwi
+         581oKK8wwhkb+PsKqY0lKTWWWWQUfD6XuQvaWN34Wjd/i/RjyGox8Qgz8Hqzdng+/YTe
+         gnhA6ei4YiOmB0CLkuoGtumWnok2WuU9AkoD7QWXbEQMy/Dj2qlKb87OknpxfMxERiX5
+         VZsfdkVYj+NCyfj5Fsq7fAnyMWxctfGBO2h119gvDmaww+B5on8njJI/YEXbopgnn+Zp
+         faiAa+mZVQgfxITrvJNaNxFNyat5ORzP0UBYQF9ZjfRIdjiXiL7NkcZYLC6ePkYDRLhd
+         Xs9w==
+X-Gm-Message-State: AOAM532QDQ8KB54MGIEHJk8WsOwPmTxd78lGg5Nm78Z1D4QyYZLfVVue
+        yO0sNW+3x4N1jvUtE0szYqWPlatwPX+XUaQuNYJzEQFRj6Hs0Vfbd/UVdMrhhvaF3LHUQ9jqbrJ
+        3JnF/Pkbl5z6EeRN6q1tVvlBCbkNqvmwNZENwtXkJxA==
+X-Received: by 2002:a2e:9d05:: with SMTP id t5mr50466600lji.192.1637574902738;
+        Mon, 22 Nov 2021 01:55:02 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwke2myThe8Gt/0eU50mIFwZeGa186M95bQ6FjvfYp1F25HVbkpTO5cJFBtu8Cq5yDswcSrbw==
+X-Received: by 2002:a2e:9d05:: with SMTP id t5mr50466583lji.192.1637574902588;
+        Mon, 22 Nov 2021 01:55:02 -0800 (PST)
+Received: from localhost.localdomain (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id u22sm908676lff.118.2021.11.22.01.55.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Nov 2021 01:55:02 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, llvm@lists.linux.dev,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH] memory: renesas-rpc-if: Silence clang warning
+Date:   Mon, 22 Nov 2021 10:54:22 +0100
+Message-Id: <163757486271.327364.15013387046506082286.b4-ty@canonical.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211121180155.9062-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20211121180155.9062-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0)
-        Gecko/20100101 Thunderbird/91.3.1
-Subject: Re: [PATCH 2/6] clk: samsung: exynos850: Implement CMU_APM domain
-Content-Language: en-US
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     David Virag <virag.david003@gmail.com>,
-        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-In-Reply-To: <20211121232741.6967-3-semen.protsenko@linaro.org>
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrAKsWRmVeSWpSXmKPExsWy7djPc7onMmYnGiy8Z2Zx/ctzVov5R86x
-        Wmx8+4PJYtPja6wWH3vusVpc3jWHzWLG+X1MFhdPuVr8ON7HbNG69wi7xb9rG1ksnvcBxVft
-        +sNocfz9Y0YHPo/3N1rZPWY19LJ57Jx1l91j06pONo871/aweWxeUu/Rt2UVo8fnTXIBHFFc
-        NimpOZllqUX6dglcGS2bupgKHjJXLDjVy97A+Iepi5GTQ0LARGJn517mLkYuDiGBFYwS80/s
-        hHK+MErs+XiKHcL5zCjRen8xG0zL1653YO1CAssZJRZ2SUAUfWSUeNvwiAUkwStgJ7Ft/m6w
-        BhYBVYkrlw6zQ8QFJU7OfAJWIyqQJHG6dRIziC0s4CWxe8k0sBpmAXGJW0/mM4EMFRFYwSTx
-        YPosVhCHWaCPSeLMl/9gq9kEDCV6j/YxgticAvYS2/ruM0F0y0tsfzsH7AkJgdWcEnNnT4R6
-        1UVi2tFXLBC2sMSr41vYIWwZidOTe1ggGpoZJXp232aHcCYwStw/voARospa4s65X0APcQCt
-        0JRYv0sfIuwocePvdkaQsIQAn8SNt4IQR/BJTNo2nRkizCvR0SYEUa0i8XvVdKhzpCS6n/xn
-        mcCoNAspYGYhBcAsJO/MQti7gJFlFaN4amlxbnpqsXFearlecWJucWleul5yfu4mRmCiO/3v
-        +NcdjCtefdQ7xMjEwXiIUYKDWUmEl2PD9EQh3pTEyqrUovz4otKc1OJDjNIcLErivCJ/GhKF
-        BNITS1KzU1MLUotgskwcnFINTIlvhPO+latt5V6TEfdkSdqFvHKGVcoCN1l3sys7KbCfak08
-        8mDPGp5FLe8nb/ay5tpUI3lx27yKF8FBb640P2G7q3Tkj/Vz4RrLW9Pi5lru6H9ot2WxyYXd
-        m5zLzKL62b+vWuBl/O2Cut0DjROXZum/VVW0a8+4d5nNfI7J3Y37GfgMVSaE/fHPif6xS+7c
-        1IQJhoXrrwlzvDdv/a7Wn6YTJn9+v9scywPRkt/V7j1/tWRfl9H5th6Fn9LtG9KvLqtwP1jg
-        uaZd5H6a+ZWuIytaCz+cmK2uc3Pmguqyq3N2tO+ozou1XNkxYfXFcweCxSsTV/ybNyd9C3tq
-        k9Vr655nt+2uWf+sNjT8ocRjt0SJpTgj0VCLuag4EQC/VU3/4wMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrPIsWRmVeSWpSXmKPExsVy+t/xe7onMmYnGtw9L2Fx/ctzVov5R86x
-        Wmx8+4PJYtPja6wWH3vusVpc3jWHzWLG+X1MFhdPuVr8ON7HbNG69wi7xb9rG1ksnvcBxVft
-        +sNocfz9Y0YHPo/3N1rZPWY19LJ57Jx1l91j06pONo871/aweWxeUu/Rt2UVo8fnTXIBHFF6
-        NkX5pSWpChn5xSW2StGGFkZ6hpYWekYmlnqGxuaxVkamSvp2NimpOZllqUX6dgl6GS2bupgK
-        HjJXLDjVy97A+Iepi5GTQ0LAROJr1zswW0hgKaPE9dm5XYwcQHEpifktShAlwhJ/rnWxdTFy
-        AZW8Z5RYcmMNO0iCV8BOYtv83WwgNouAqsSVS4eh4oISJ2c+YQGxRQWSJPq/72IGsYUFvCR2
-        L5kGVsMsIC5x68l8JpChIgKrmCRePOhjBHGYBSYwSczp3MsIse44o8S6Z1fBzmMTMJToPQpS
-        xcnBKWAvsa3vPhPIqcwC6hLr5wlBTJWX2P52DvMERqFZSA6ZhWThLISOWUg6FjCyrGIUSS0t
-        zk3PLTbUK07MLS7NS9dLzs/dxAiM6W3Hfm7ewTjv1Ue9Q4xMHIyHGCU4mJVEeDk2TE8U4k1J
-        rKxKLcqPLyrNSS0+xGgKDIyJzFKiyfnApJJXEm9oZmBqaGJmaWBqaWasJM7rWdCRKCSQnliS
-        mp2aWpBaBNPHxMEp1cCU6ndi3onP90WPJQl6n9+4oUBH+dive9fCul7d38dw885dZcXMSwuP
-        7vFL3jvlV0TEK/NTmz1/K/ZznlsVWanaF9/cynV/s8S+5i2R4XlpCjmWyY0ibeL+R1de+jcp
-        emXcfb/dZ8W9GwRtWhtfnaqU+DlZ99iOpYc+HZ+4+Yj21JhY/ZhzNva+S/JfmR/guOb4YrFZ
-        YiH/R2vPQ9qlS3s6HgvJb311Pmuu7+ZrTbHanR9f2e7dsuSU1L1qrutGUYIMKjPVHwg12DoF
-        b734KW7HvGN6Ampv3MKiipcHTLttG3vASWSOXHWysciU/mC35mSOf492+e+bt+2evrKYz86p
-        q/5aJU798fz7ztcmXFd1lViKMxINtZiLihMBDo5cMHIDAAA=
-X-CMS-MailID: 20211122095416eucas1p2db4e0d5794ca293b6dc082b99e2719e7
-X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20211121232752eucas1p12ae842ea868eb7ecfd5f4015000ba15d
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20211121232752eucas1p12ae842ea868eb7ecfd5f4015000ba15d
-References: <20211121232741.6967-1-semen.protsenko@linaro.org>
-        <CGME20211121232752eucas1p12ae842ea868eb7ecfd5f4015000ba15d@eucas1p1.samsung.com>
-        <20211121232741.6967-3-semen.protsenko@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.11.2021 00:27, Sam Protsenko wrote:
-> CMU_APM clock domain provides clocks for APM IP-core (Active Power
-> Management). According to Exynos850 TRM, CMU_APM generates I3C, Mailbox,
-> Speedy, Timer, WDT, RTC and PMU clocks for BLK_ALIVE.
+On Sun, 21 Nov 2021 18:01:55 +0000, Lad Prabhakar wrote:
+> This patch silences the following clang warning:
 > 
-> This patch adds next clocks:
->   - bus clocks in CMU_TOP needed for CMU_APM
->   - all internal CMU_APM clocks
->   - leaf clocks for I3C, Speedy and RTC IP-cores
->   - bus clocks for CMU_CMGP and CMU_CHUB
+> | drivers/memory/renesas-rpc-if.c:253:14: warning: cast to smaller integer
+> | type 'enum rpcif_type' from 'const void *' [-Wvoid-pointer-to-enum-cast]
+> |           rpc->type = (enum rpcif_type)of_device_get_match_data(dev);
+> |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> [...]
 
-Applied, thanks.
+Applied, thanks!
+
+[1/1] memory: renesas-rpc-if: Silence clang warning
+      commit: 2602dc10f9d930bcc537467d13de4cfbfaa2126d
+
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
