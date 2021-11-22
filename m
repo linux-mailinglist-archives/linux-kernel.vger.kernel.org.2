@@ -2,108 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2EC1459198
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:47:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF6F459199
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:47:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239975AbhKVPuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:50:11 -0500
-Received: from bedivere.hansenpartnership.com ([96.44.175.130]:43144 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234636AbhKVPuJ (ORCPT
+        id S239985AbhKVPuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:50:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234636AbhKVPuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:50:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1637596023;
-        bh=1uDlFLrgaSL10WCfqyQ8IfoWuiwun2pKDp1EhWUNXLk=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=JgYHC0cnyxAcgzX+cc7Hzz1D+obsixUBRsh+JUOQH/rvaOvG9OjxLULw2Zv7T3ucn
-         paRnI2Lv8uuLD174oxGfbO07yPUCLXBO0fdhEoAmc+jCxbYW4IBu/RLA2F0YRyKUbu
-         KF74GQmFZFlHeghtZoAPqaxcIo5rKG8egrNGDI4c=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 17BAE128028D;
-        Mon, 22 Nov 2021 10:47:03 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id YwC9t3ajzgS8; Mon, 22 Nov 2021 10:47:03 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1637596022;
-        bh=1uDlFLrgaSL10WCfqyQ8IfoWuiwun2pKDp1EhWUNXLk=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=WtVIe+aHaqolJaW6i2Zjhkm0T3A7UTs7pjzuxPcJCivbcYccQKCVfMTrhnrwNScFV
-         2mLSqs8ZGCZ/+jExpMOtkXiTc4v7uDbUrXVUoXWjtNL0OrHaaxbumWv8j/TBZ2pXrz
-         tUflAC73YoXKFxxn8yHDvlmNd1sABXJcot8OzyYg=
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4300:c551::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id AF00A12800EF;
-        Mon, 22 Nov 2021 10:47:01 -0500 (EST)
-Message-ID: <63f54c213253b80fcf3f8653766d5c6f5761034a.camel@HansenPartnership.com>
-Subject: Re: [RFC PATCH 0/4] namespacefs: Proof-of-Concept
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Yordan Karadzhov <y.karadz@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, mingo@redhat.com, hagen@jauu.net,
-        rppt@kernel.org, akpm@linux-foundation.org, vvs@virtuozzo.com,
-        shakeelb@google.com, christian.brauner@ubuntu.com,
-        mkoutny@suse.com, Linux Containers <containers@lists.linux.dev>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Date:   Mon, 22 Nov 2021 10:47:00 -0500
-In-Reply-To: <e94c2ba9-226b-8275-bef7-28e854be3ffa@gmail.com>
-References: <20211118181210.281359-1-y.karadz@gmail.com>
-         <87a6i1xpis.fsf@email.froward.int.ebiederm.org>
-         <20211118142440.31da20b3@gandalf.local.home>
-         <1349346e1d5daca991724603d1495ec311cac058.camel@HansenPartnership.com>
-         <20211119092758.1012073e@gandalf.local.home>
-         <f6ca1f5bdb3b516688f291d9685a6a59f49f1393.camel@HansenPartnership.com>
-         <20211119114736.5d9dcf6c@gandalf.local.home>
-         <20211119114910.177c80d6@gandalf.local.home>
-         <cc6783315193be5acb0e2e478e2827d1ad76ba2a.camel@HansenPartnership.com>
-         <ba0f624c-fc24-a3f4-749a-00e419960de2@gmail.com>
-         <4d2b08aa854fcccd51247105edb18fe466a2a3f1.camel@HansenPartnership.com>
-         <e94c2ba9-226b-8275-bef7-28e854be3ffa@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Mon, 22 Nov 2021 10:50:24 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F15C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:47:18 -0800 (PST)
+Date:   Mon, 22 Nov 2021 16:47:14 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637596035;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=BEoYoKO1FJBa2ukBy23+bj3uF+7X+WvM0sv+jH9o6GY=;
+        b=ZUGKHWh5Cws9FzM8WnZZFWuVIu10DS5k+RyUyJTEhFaLzhPDt5yVuREv+l1mAFo5M7/CEz
+        9eDTJWLD6aqbgRfzOys8i6Mzlx6LiHKBTufdSTpRFiXd/qFi+rk0m7aHKUNgl+5CTgE9HI
+        rPYlXwLn3O6kCXtmiBCJLh80NdbUqhNVIrnbGZWHZH1Ge8qSRma/zH4+kXdubMD26xHV1H
+        3TZ9t7bmyf/7xRdSyObEd/20CemC56TGdkaLf7+Ubav8SH0fcT2KKCyeC5omjwpYBM644D
+        /uVPDsWTQmuo1XUEeAL/uLFjyCblJ57kMDNx6JG0kZ8DJp0S/53eBMWD4TtULg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637596035;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=BEoYoKO1FJBa2ukBy23+bj3uF+7X+WvM0sv+jH9o6GY=;
+        b=let+1knIfa2gh2XASxf6daDfL3UJiKCPCwp+ezq0bLm721yygvSfMZN5U8VWQPHhd/OyFg
+        AV4vqOpn+gw4mXCg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
+        <longpeng2@huawei.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Gonglei (Arei)" <arei.gonglei@huawei.com>, x86@kernel.org,
+        xen-devel@lists.xenproject.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH] cpu/hotplug: Allow the CPU in CPU_UP_PREPARE state to be
+ brought up again.
+Message-ID: <20211122154714.xaoxok3fpk5bgznz@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-11-22 at 17:00 +0200, Yordan Karadzhov wrote:
-> 
-> On 22.11.21 г. 15:44 ч., James Bottomley wrote:
-> > Well, no, the information may not all exist.  However, the point is
-> > we can add it without adding additional namespace objects.
-> > 
-> > > Let's look the following case (oversimplified just to get the
-> > > idea):
-> > > 1. The process X is a parent of the process Y and both are in
-> > > namespace 'A'.
-> > > 3. "unshare" is used to place process Y (and all its child
-> > > processes) in a new namespace B (A is a parent namespace of B).
-> > > 4. "setns" is s used to move process X in namespace C.
-> > > 
-> > > How would you find the parent namespace of B?
-> > Actually this one's quite easy: the parent of X in your setup still
-> > has it.
-> 
-> Hmm, Isn't that true only if somehow we know that (3) happened before
-> (4).
+From: "Longpeng(Mike)" <longpeng2@huawei.com>
 
-This depends.  There are only two parented namespaces: pid and user. 
-You said you were only interested in pid for now.  setns on the process
-only affects pid_for_children because you have to fork to enter the pid
-namespace, so in your scenario X has a new ns/pid_for_children but its
-own ns/pid never changed.  It's the ns/pid not the ns/pid_for_children
-which is the parent.  This makes me suspect that the specific thing
-you're trying to do: trace the pid parentage, can actually be done with
-the information we have now.
+A CPU will not show up in virtualized environment which includes an
+Enclave. The VM splits its resources into a primary VM and a Enclave
+VM. While the Enclave is active, the hypervisor will ignore all requests
+to bring up a CPU and this CPU will remain in CPU_UP_PREPARE state.
+The kernel will wait up to ten seconds for CPU to show up
+(do_boot_cpu()) and then rollback the hotplug state back to
+CPUHP_OFFLINE leaving the CPU state in CPU_UP_PREPARE. The CPU state is
+set back to CPUHP_TEARDOWN_CPU during the CPU_POST_DEAD stage.
 
-If you do this with the user_ns, then you have a problem because it's
-not fork on entry.  But, as I listed in the examples, there are a load
-of other problems with tracing the user_ns tree.
+After the Enclave VM terminates, the primary VM can bring up the CPU
+again.
 
-James
+Allow to bring up the CPU if it is in the CPU_UP_PREPARE state.
 
+[bigeasy: Rewrite commit description.]
+
+Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Link: https://lore.kernel.org/r/20210901051143.2752-1-longpeng2@huawei.com
+---
+
+For XEN: this changes the behaviour as it allows to invoke
+cpu_initialize_context() again should it have have earlier. I *think*
+this is okay and would to bring up the CPU again should the memory
+allocation in cpu_initialize_context() fail.
+
+ kernel/smpboot.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/kernel/smpboot.c b/kernel/smpboot.c
+index f6bc0bc8a2aab..34958d7fe2c1c 100644
+--- a/kernel/smpboot.c
++++ b/kernel/smpboot.c
+@@ -392,6 +392,13 @@ int cpu_check_up_prepare(int cpu)
+ 		 */
+ 		return -EAGAIN;
+ 
++	case CPU_UP_PREPARE:
++		/*
++		 * Timeout while waiting for the CPU to show up. Allow to try
++		 * again later.
++		 */
++		return 0;
++
+ 	default:
+ 
+ 		/* Should not happen.  Famous last words. */
+-- 
+2.33.1
 
