@@ -2,86 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D44458A4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 09:08:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82C9A458A50
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 09:08:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238853AbhKVIL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 03:11:27 -0500
-Received: from mail-ua1-f45.google.com ([209.85.222.45]:46804 "EHLO
-        mail-ua1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238735AbhKVILX (ORCPT
+        id S238871AbhKVIL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 03:11:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238735AbhKVIL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 03:11:23 -0500
-Received: by mail-ua1-f45.google.com with SMTP id az37so34740613uab.13
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 00:08:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pCwPVxjiiXjhwUGSnDBz+stSxiYomGO7y/AFBYehvbs=;
-        b=68o6uaV2sfWvBM5FIFZ+XokhpLaPIJCDABjcbEAZeHJdO7RQJQLXkCsYzpqOZ/fkEC
-         3I6asY2iO3Z9WAD9h99IinGwQ9XrJ8Fr1s6TAfCwf6G4LEnPLaD+tUFsZBZFsWIPGbQa
-         XIpLhH9xD+hsR+84DRMKR9q/Rsd9JBhXiuqvkud3OSUKsAznpssElbYJhZYwhLapIN1i
-         kss2t2b6Xd8T/KsWS2hhwFIRGYG555OS68m4B7ZP1JVShrJvinK21VIx1EwwEMvzGvwN
-         p9C9kKTpyfMjSxbHK4goYxE4JmsLdWSDsjuaos8BFg2U8MP1X4Z+6dvn6E5pAWT9z/Wm
-         IQog==
-X-Gm-Message-State: AOAM5331zMSbH9PBMUkl/BEowJH+5rkG3fGkOLIEGir4tYgFUMiLEwcu
-        Bf60wzTdS/Lgh9hxxAsjFMdeFzmFePz90Q==
-X-Google-Smtp-Source: ABdhPJwoYK+0BwL6TcVUHCjjbTY91wAqGFIuhBeryiGp4IXrT9pB3xFtvfqCo4ebcefwJ14V1auuYA==
-X-Received: by 2002:ab0:4405:: with SMTP id m5mr82033948uam.11.1637568496954;
-        Mon, 22 Nov 2021 00:08:16 -0800 (PST)
-Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com. [209.85.222.53])
-        by smtp.gmail.com with ESMTPSA id j145sm4006653vke.47.2021.11.22.00.08.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Nov 2021 00:08:16 -0800 (PST)
-Received: by mail-ua1-f53.google.com with SMTP id b17so34896472uas.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 00:08:16 -0800 (PST)
-X-Received: by 2002:a05:6102:e82:: with SMTP id l2mr127366434vst.37.1637568496222;
- Mon, 22 Nov 2021 00:08:16 -0800 (PST)
+        Mon, 22 Nov 2021 03:11:56 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE80C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 00:08:50 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mp4Nc-0003FA-Ry; Mon, 22 Nov 2021 09:08:48 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mp4Nc-000YKa-JV; Mon, 22 Nov 2021 09:08:47 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mp4Nb-0002m8-IH; Mon, 22 Nov 2021 09:08:47 +0100
+Date:   Mon, 22 Nov 2021 09:08:44 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        Ralph Siemsen <ralph.siemsen@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] spi: docs: improve the SPI userspace API documentation
+Message-ID: <20211122080844.ivweo7je2l57btam@pengutronix.de>
+References: <20211119121139.2412761-1-javierm@redhat.com>
 MIME-Version: 1.0
-References: <20211121174930.6690-1-michael.christie@oracle.com> <20211121174930.6690-3-michael.christie@oracle.com>
-In-Reply-To: <20211121174930.6690-3-michael.christie@oracle.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 22 Nov 2021 09:08:05 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUNiuFdwXgj3kvKybm0Jb2g9N-2FgaB0U0LnQQ88y72aA@mail.gmail.com>
-Message-ID: <CAMuHMdUNiuFdwXgj3kvKybm0Jb2g9N-2FgaB0U0LnQQ88y72aA@mail.gmail.com>
-Subject: Re: [PATCH V5 02/10] fork/vm: Move common PF_IO_WORKER behavior to
- new flag
-To:     Mike Christie <michael.christie@oracle.com>
-Cc:     vverma@digitalocean.com, hdanton@sina.com, hch@infradead.org,
-        stefanha@redhat.com, jasowang@redhat.com, mst@redhat.com,
-        sgarzare@redhat.com, virtualization@lists.linux-foundation.org,
-        christian.brauner@ubuntu.com, axboe@kernel.dk,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3y6lhn7agpqntgmo"
+Content-Disposition: inline
+In-Reply-To: <20211119121139.2412761-1-javierm@redhat.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 21, 2021 at 6:49 PM Mike Christie
-<michael.christie@oracle.com> wrote:
-> This adds a new flag, PF_USER_WORKER, that's used for behavior common to
-> to both PF_IO_WORKER and users like vhost which will use the new
-> kernel_worker helpers that will use the flag and are added later in this
-> patchset.
->
-> The common behavior PF_USER_WORKER covers is the initial frame and fpu
-> setup and the vm reclaim handling.
->
-> Signed-off-by: Mike Christie <michael.christie@oracle.com>
 
->  arch/m68k/kernel/process.c       | 2 +-
+--3y6lhn7agpqntgmo
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+On Fri, Nov 19, 2021 at 01:11:39PM +0100, Javier Martinez Canillas wrote:
+> This doc is fairly outdated and only uses legacy device instantiation
+> terminology. Let us update it and also mention the OF and ACPI device
+> tables, to make easier for users to figure out how should be defined.
+>=20
+> Also, mention that devices bind could be done in user-space now using
+> the "driver_override" sysfs entry.
+>=20
+> Suggested-by: Ralph Siemsen <ralph.siemsen@linaro.org>
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 
-Gr{oetje,eeting}s,
+Thanks for you effort here, that's a nice improvement
 
-                        Geert
+Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Best regards
+Uwe
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--3y6lhn7agpqntgmo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGbUAkACgkQwfwUeK3K
+7AkViggAm9jSNCNwKa4Wgj9ovX7tpAz/V2wlwnUMMcLtPbCarRZWND9b4fDFAFlx
+0h/Sp2OuSlrILVs7CChrUTHGVzEj3isTAWzZFNW/VcBI8P08/zpTafdQ+bzj+TZC
+R8ZsRu15Tj2vxxgmouIc1Xm5yfLqX7vUrDhCg4QNmU8OCF+8mbXisF4YIqZiNy5s
+gxJjvdy/DHgdsHu1cWuLTX45HiaxRMPeAS8fzUvp/q5/nU26tAVjiARQD1G3L5bE
+sl0Cxl2S6H6DKy5TGa5UVaGC6+1c4D09ZwmP4DrPJpq0JWDnZ2j8mv350f3jxsSC
+uJX7W9Pjob2FWTFKkW7LEOIyDyDhrQ==
+=18nE
+-----END PGP SIGNATURE-----
+
+--3y6lhn7agpqntgmo--
