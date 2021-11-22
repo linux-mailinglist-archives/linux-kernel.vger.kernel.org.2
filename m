@@ -2,101 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F08458DBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:47:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B13A458DCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239394AbhKVLuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 06:50:22 -0500
-Received: from pegase2.c-s.fr ([93.17.235.10]:37187 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239400AbhKVLuV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 06:50:21 -0500
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HyQVT4f10z9sSk;
-        Mon, 22 Nov 2021 12:47:13 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id YkgrPNJYfsxj; Mon, 22 Nov 2021 12:47:13 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HyQVT3h2Rz9sSZ;
-        Mon, 22 Nov 2021 12:47:13 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 662C68B774;
-        Mon, 22 Nov 2021 12:47:13 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id fbOL2ToGz7tZ; Mon, 22 Nov 2021 12:47:13 +0100 (CET)
-Received: from [172.25.230.108] (unknown [172.25.230.108])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 20B3A8B765;
-        Mon, 22 Nov 2021 12:47:13 +0100 (CET)
-Message-ID: <2dd4a22e-f1a5-683c-2d17-ce726f03f4c5@csgroup.eu>
-Date:   Mon, 22 Nov 2021 12:47:13 +0100
+        id S239414AbhKVLvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 06:51:43 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.53]:10778 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239233AbhKVLvm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 06:51:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637581665;
+    s=strato-dkim-0002; d=chronox.de;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=Va5hWs1VX9Y9ooPFaLxshreMZpO4nVxZePaTQ9rd1vw=;
+    b=kvkQvBHHYfMgldJJfXRg32NDXbpCH+OUs9kNJ8GNvBrnydZXTXANUEhnv4vui0Q7Y2
+    QIaPR9Lz+28X4/abjff7i/9gGYJBnoSWQgrjPi13n2fJSjawUFmDXroY/4OmT6Atl4tI
+    kSmsFSmRV/R3Ln8le0q3hcOM0QiB70xNl3hHMtaBbsSyea/hduI8qTbOXUb5/Olt8IWV
+    oiVGg8pTv23rvIFIWNtRTZhpz4Ql9SStATdC8BdFOuOx6get8wahkHbYe4UywwnYB6wP
+    YDcFUkdLyz3pwNfFRt8ukOgp59y1uljH+cpK6aXbG0rczs2tKDz61s9mkUfEXh+GPeHv
+    M+mw==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPZIfSfAhhe"
+X-RZG-CLASS-ID: mo00
+Received: from tauon.chronox.de
+    by smtp.strato.de (RZmta 47.34.6 DYNA|AUTH)
+    with ESMTPSA id y09e43xAMBli1I4
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 22 Nov 2021 12:47:44 +0100 (CET)
+From:   Stephan Mueller <smueller@chronox.de>
+To:     Tso Ted <tytso@mit.edu>, linux-crypto@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, Willy Tarreau <w@1wt.eu>,
+        Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>
+Subject: Re: [PATCH v43 01/15] Linux Random Number Generator
+Date:   Mon, 22 Nov 2021 12:47:43 +0100
+Message-ID: <5540546.7F5nsSknLy@tauon.chronox.de>
+In-Reply-To: <202111221831.lPHo6KJJ-lkp@intel.com>
+References: <4641592.OV4Wx5bFTl@positron.chronox.de> <202111221831.lPHo6KJJ-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH 6/8] mm: Allow arch specific arch_randomize_brk() with
- CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
-Content-Language: fr-FR
-To:     Alex Ghiti <alex@ghiti.fr>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-mm@kvack.org
-References: <cover.1637570556.git.christophe.leroy@csgroup.eu>
- <e2209d0f1f3c1b581592bd6c32243402ccfe3dde.1637570556.git.christophe.leroy@csgroup.eu>
- <325663a5-d9a1-a8b8-7f16-c2985c319864@ghiti.fr>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-In-Reply-To: <325663a5-d9a1-a8b8-7f16-c2985c319864@ghiti.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am Montag, 22. November 2021, 11:33:26 CET schrieb kernel test robot:
 
+Hi,
 
-Le 22/11/2021 à 12:22, Alex Ghiti a écrit :
-> Hi Christophe,
+> All errors (new ones prefixed by >>):
+> >> drivers/char/lrng/lrng_chacha20.c:32:8: error: structure variable
+> >> 'chacha20' with 'latent_entropy' attribute has a non-integer field
+> >> 'block'
+>       32 | struct chacha20_state chacha20 __latent_entropy;
 > 
-> Le 22/11/2021 à 09:48, Christophe Leroy a écrit :
->> Commit e7142bf5d231 ("arm64, mm: make randomization selected by
->> generic topdown mmap layout") introduced a default version of
->> arch_randomize_brk() provided when
->> CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT is selected.
->>
->> powerpc could select CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
->> but needs to provide its own arch_randomize_brk().
->>
->> In order to allow that, don't make
->> CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT select
->> CONFIG_ARCH_HAS_ELF_RANDOMIZE. Instead, ensure that
->> selecting CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT and
->> selecting CONFIG_ARCH_HAS_ELF_RANDOMIZE has the same effect.
+>          |        ^~~~~~~~~~~~~~
 > 
-> This feels weird to me since if CONFIG_ARCH_HAS_ELF_RANDOMIZE is used 
-> somewhere else at some point, it is not natural to add 
-> CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT: can't we use a __weak 
-> function or a new CONFIG_ARCH_HAS_RANDOMIZE_BRK?
+> vim +32 drivers/char/lrng/lrng_chacha20.c
+
+Thanks for the notification.
+
+I think this is a false-positive discussed before. __latent_entropy is 
+seemingly allowed for an entire linear buffer as seen in the declaration of 
+the variable input_pool_data in driver/char/random.c which is an array of u32.
+
+The struct chacha20_state is a linear buffer of u32 words. 
+
+struct chacha20_block {
+        u32 constants[4];
+        union {
+                u32 u[CHACHA_KEY_SIZE_WORDS];
+                u8  b[CHACHA_KEY_SIZE];
+        } key;
+        u32 counter;
+        u32 nonce[3];
+};
+
+Therefore it should be identical to the aforementioned example. The 
+__latent_entropy marker therefore seems to be appropriate for this structure.
+
+Ciao
+Stephan
 
 
-Yes I also found things a bit weird.
 
-CONFIG_ARCH_HAS_RANDOMIZE_BRK could be an idea but how different would 
-it be from CONFIG_ARCH_HAS_ELF_RANDOMIZE ? In fact I find it weird that 
-CONFIG_ARCH_HAS_ELF_RANDOMIZE is selected by 
-CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT and not by the arch itself.
-
-On the other hand CONFIG_ARCH_HAS_ELF_RANDOMIZE also handles 
-arch_mmap_rnd() and here we are talking about arch_randomize_brk() only.
-
-In the begining I was thinking about adding a 
-CONFIG_ARCH_WANT_DEFAULT_RANDOMIZE_BRK, but it was meaning adding it to 
-the few other arches selecting CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT.
-
-So I think I will go for the __weak function option.
-
-Thanks
-Christophe
