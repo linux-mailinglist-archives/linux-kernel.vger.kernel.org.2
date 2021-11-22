@@ -2,88 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D59E8458C56
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 11:33:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D15BB458C5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 11:34:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239220AbhKVKgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 05:36:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236258AbhKVKgp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 05:36:45 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F867C061574;
-        Mon, 22 Nov 2021 02:33:39 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id u3so78383964lfl.2;
-        Mon, 22 Nov 2021 02:33:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nrxZZZTUaK5PX2ySh0+vBqyiZXpekCDZnPCBfoLVNj8=;
-        b=PBRfkEeYxsKR7JApIAGoA9f/5z9fI/wiXjTBCL/PUUL1M2yf5L99Ocjs/ID34wmvxa
-         ccVyhqkPjMrZv4YC2K9g8y0Kl2IwE2TDrDfFwuKfwdYzl03rFrnAtp0KdET7oL4woquF
-         ya5NXRIbVvBsW6inbrBMwE2COQ5KdwVw7H+8QvYJrKtyZLgPm2weo4ZK1YkCxrL1qFgZ
-         g7TRwzqICHBaHaCME6zIkKdp59ENCOXAeiL/SyD0GjqLDrkNS4HPOQY71Qeuf5OZxcs/
-         YXF6rI5t9FtGjjObSRj3mJ+MkWoQa+8wwxDn3fDsNmNj9e+vUt9IrL0w9IsjoNGc1Lf3
-         6plw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nrxZZZTUaK5PX2ySh0+vBqyiZXpekCDZnPCBfoLVNj8=;
-        b=V5/vz1EtFUEZNXyHb/yB7be03nQB1F2lRDhBLAD5uXDe71F6eH3Ls/tSnuIhCe87w1
-         +6DA50ESvwBfAUdSJ6UzYOTNn2F6bJ2fwefx9qOBFFBA+ry88mhOf5tpHwPhXB247dez
-         AKKnvCQyOTuST3T7t3cc4nY+dr0F8QjxVboXXSTezZjCOE1X3CceU4QSHoF4UfIAL+n5
-         dnHXbGT4sulNVXOOsqiYP+4AMDhrqE+B7QtUybMWM3xAG9AKtJwiV6qXNBFaCuOf2oeG
-         J0x4vD4p8qQ25E1D1dou+/q8Xp/SBXQrkAiuWuZ4YCVeBnCfBNLBUSPBZoFs3Ay62AL9
-         WbZA==
-X-Gm-Message-State: AOAM531Du/Kup4/2ucWYOXP5QimecG+yTBoxtEqD1H6TZGz8kXauj5tB
-        05aZGuytcG4hLuAMva/0puU=
-X-Google-Smtp-Source: ABdhPJzZ/qm5LLGImo0I/3G8kIkfGaa7D9I8/JdE3U3vap72N3xDDHAzVRpK4BfX2bx0KTP6BS+BIA==
-X-Received: by 2002:a2e:6a11:: with SMTP id f17mr49823727ljc.206.1637577217813;
-        Mon, 22 Nov 2021 02:33:37 -0800 (PST)
-Received: from [192.168.2.145] (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
-        by smtp.googlemail.com with ESMTPSA id x4sm898633ljd.1.2021.11.22.02.33.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Nov 2021 02:33:36 -0800 (PST)
-Subject: Re: [PATCH] i2c: tegra: Add ACPI support
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Akhil R <akhilrajeev@nvidia.com>
-Cc:     Laxman Dewangan <ldewangan@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linaro-mm-sig@lists.linaro.org
-References: <1637328734-20576-1-git-send-email-akhilrajeev@nvidia.com>
- <CAHp75Vfi5gw4jnJg2bmubKMB_H8s09PfNWVVZWwewuCnW5_+hg@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <f213eb06-7b07-b01b-786d-4435a59d4fc3@gmail.com>
-Date:   Mon, 22 Nov 2021 13:33:35 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <CAHp75Vfi5gw4jnJg2bmubKMB_H8s09PfNWVVZWwewuCnW5_+hg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S239279AbhKVKhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 05:37:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239045AbhKVKhE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 05:37:04 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E2DAA60F70;
+        Mon, 22 Nov 2021 10:33:57 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mp6e3-0071rV-Ph; Mon, 22 Nov 2021 10:33:56 +0000
+Date:   Mon, 22 Nov 2021 10:33:55 +0000
+Message-ID: <874k847a3w.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     John Crispin <john@phrozen.org>
+Cc:     Sander Vanheule <sander@svanheule.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Birger Koblitz <mail@birger-koblitz.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bert Vermeulen <bert@biot.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Frank Rowand <frowand.list@gmail.com>
+Subject: Re: realtek,rtl-intc IRQ mapping broken on 5.16-rc1
+In-Reply-To: <9c169aad-3c7b-2ffb-90a2-1ca791a3f411@phrozen.org>
+References: <bbe5506a2458b2d6049bd22a5fda77ae6175ddec.camel@svanheule.net>
+        <87ilwp6zm6.wl-maz@kernel.org>
+        <fdfe6615a0ec0d4a770b04a437922956e8586078.camel@svanheule.net>
+        <877dd46w2b.wl-maz@kernel.org>
+        <763394a6e5c83006eb4628a9d0242b7eb04b889d.camel@svanheule.net>
+        <9c169aad-3c7b-2ffb-90a2-1ca791a3f411@phrozen.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: john@phrozen.org, sander@svanheule.net, robh+dt@kernel.org, mail@birger-koblitz.de, lorenzo.pieralisi@arm.com, bhelgaas@google.com, bert@biot.com, tglx@linutronix.de, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, frowand.list@gmail.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-19.11.2021 17:48, Andy Shevchenko пишет:
->> +       if (i2c_dev->nclocks == 0)
->> +               return;
-> Why? Make clocks optional.
+On Sun, 21 Nov 2021 21:11:15 +0000,
+John Crispin <john@phrozen.org> wrote:
+> 
+> 
+> 
+> On 21.11.21 21:33, Sander Vanheule wrote:
+> > Alternatively, a second compatible could perhaps be introduced and the current
+> > one would be deprecated, using (2) to prevent breaking 5.16+ kernels. I don't
+> > think that's really worth the effort though.
+> > 
+> > Best,
+> 
+> Hey,
+> 
+> I think that what Marc proposed as (1) is the clean solution. We want
+> to describe the HW as it exists. Yes we have zero docs, and the RLT
+> 2.6 sdk kernel is a pain to extract info from, yet we should move fwd
+> with a clean implementation.
+> 
+> breaking pseudo owrt dts ABI is imho acceptable. owrt users are well
+> able to reflash their units from uboot, they are at the end flying
+> without wings on bleeding edge. asking for some backward compat for a
+> de-facto broken dts mapping of the HW is imho a no-go.
 
-This check shouldn't be needed because both clk_disable() and
-clk_bulk_unprepare() should handle NULL/zero clocks without problems.
+I'm afraid this ship has sailed a long time ago. As I found out, there
+are a number of drivers having perpetuated the same horror:
+
++       "CBEA,platform-spider-pic",
++       "sti,platform-spider-pic",
++       "realtek,rtl-intc",
++       "fsl,ls1021a-extirq",
++       "fsl,ls1043a-extirq",
++       "fsl,ls1088a-extirq",
++       "renesas,rza1-irqc",
+
+We can't just change the bindings for those. For the first two, the DT
+is provided by the FW. For the others, there are numerous systems in
+the wild, and we can't break them (DT and kernel must be upgradable
+independently).
+
+I've posted a quirk patch[1], and I'd appreciate any feedback on
+whether it fixes your problem.
+
+Thanks,
+
+	M.
+
+[1] https://lore.kernel.org/r/20211122103032.517923-1-maz@kernel.org
+
+-- 
+Without deviation from the norm, progress is not possible.
