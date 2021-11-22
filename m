@@ -2,111 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B0445916F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:31:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22619459177
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239875AbhKVPey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:34:54 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:48200 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238634AbhKVPex (ORCPT
+        id S239956AbhKVPgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:36:02 -0500
+Received: from mail-ed1-f49.google.com ([209.85.208.49]:38616 "EHLO
+        mail-ed1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239885AbhKVPf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:34:53 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AMFVYFt003275;
-        Mon, 22 Nov 2021 09:31:34 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1637595094;
-        bh=l4IE6N+ggau1s09k9ExcCLkrfbZHkOUKLDDQDp1KkTA=;
-        h=Subject:To:References:From:Date:In-Reply-To;
-        b=l7LsCNtvzUMzFMuyiNF67DnAM7iMIP0ll3kwFq7xWAKzmhqREcSCt4sDkNZ8UuCyh
-         a2BvTVweEtziNS4jMvRhRyk/GxHtxo+D6eC62j5Dopqk8PlAuoF4eG4HqoQmBO75sn
-         +WGNb0FXjnRvvx58rhdzDQE0VMj6DgUk1fziZlz8=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AMFVYZh074258
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 22 Nov 2021 09:31:34 -0600
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 22
- Nov 2021 09:30:10 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 22 Nov 2021 09:30:10 -0600
-Received: from [10.249.45.167] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AMFUAlL007225;
-        Mon, 22 Nov 2021 09:30:10 -0600
-Subject: Re: [PATCH] soc: ti: pruss: fix referenced node in error message
-To:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        Kishon Vijay Abraham <kishon@ti.com>,
-        Nishanth Menon <nm@ti.com>
-References: <d6e24953-ea89-fd1c-6e16-7a0142118054@siemens.com>
- <d2e95cc3-2575-7c54-186e-aa421495862e@ti.com>
- <1cbf299b-cc4f-cab6-62ef-db7c19aa0876@siemens.com>
- <469b98e1-7500-0912-54c3-945c193f086a@siemens.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <a6d42845-dd9e-c8ba-cbc9-599bfe112ad3@ti.com>
-Date:   Mon, 22 Nov 2021 09:30:10 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Mon, 22 Nov 2021 10:35:56 -0500
+Received: by mail-ed1-f49.google.com with SMTP id x6so66752581edr.5;
+        Mon, 22 Nov 2021 07:32:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gTRfBSk+x9LO50sRJgq8tyBDTsu/Q0sC1r5n7ejGQ9w=;
+        b=Pm2bnE+JleZhetBTjB8KDMpOXkw6WQg6R4DVB9r8/dIe3I/lAS8dutEpALoJUBhQ30
+         zvcRYA0vXBWSOK2s1biXgdlWfiZrOEp1l83bMfgAJpT0KcK+2zqWq3d3u4V3d/o0mlsj
+         BuKbyzo4u5uP+i4ljzYpdtja5grzkgCoJyYA+QnNRzzp46h5FpVfPaERGvyNIlItZavk
+         OjhU3876xBCeCQXbWW3m99XVxdTrMri0dmnt7fwSBKwVIUoDWM5GsHsaYPV/50+9+Nwo
+         ztYYO8KFFbuCWt6ipRjIxyXyber1BQ8GcrKq7GDZghU+YFdLLmCMHXQgayBp3RzqlTWW
+         sEjg==
+X-Gm-Message-State: AOAM5321VEcck2NXKH2jIn5eGDQ/CfC2wa7tv7mZZ1157kWyCUIo6uCH
+        g+bp6GnYbm5iWEaBL/ij5oE=
+X-Google-Smtp-Source: ABdhPJwJZkSVFEgg5tE8x0mlYyjDL3+ku2hYq0MzK6qWENaRtGhDk0A9C0hK/js2yyKnw5GMHZbADA==
+X-Received: by 2002:a17:907:9612:: with SMTP id gb18mr41889123ejc.205.1637595165141;
+        Mon, 22 Nov 2021 07:32:45 -0800 (PST)
+Received: from localhost.localdomain (ip-85-160-4-65.eurotel.cz. [85.160.4.65])
+        by smtp.gmail.com with ESMTPSA id q7sm4247757edr.9.2021.11.22.07.32.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Nov 2021 07:32:44 -0800 (PST)
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
+        Christoph Hellwig <hch@lst.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH v2 0/4] extend vmalloc support for constrained allocations
+Date:   Mon, 22 Nov 2021 16:32:29 +0100
+Message-Id: <20211122153233.9924-1-mhocko@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <469b98e1-7500-0912-54c3-945c193f086a@siemens.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Nishanth
+Hi,
+The previous version has been posted here [1] 
 
-On 11/20/21 1:53 AM, Jan Kiszka wrote:
-> On 01.09.21 17:03, Jan Kiszka wrote:
->> On 23.06.21 17:51, Suman Anna wrote:
->>> On 6/21/21 1:08 PM, Jan Kiszka wrote:
->>>> From: Jan Kiszka <jan.kiszka@siemens.com>
->>>>
->>>> So far, "(null)" is reported for the node that is missing clocks.
->>>>
->>>> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
->>>
->>> Acked-by: Suman Anna <s-anna@ti.com>
->>>
->>>> ---
->>>>  drivers/soc/ti/pruss.c | 2 +-
->>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/soc/ti/pruss.c b/drivers/soc/ti/pruss.c
->>>> index f22ac1edbdd0..afc8aae68035 100644
->>>> --- a/drivers/soc/ti/pruss.c
->>>> +++ b/drivers/soc/ti/pruss.c
->>>> @@ -129,7 +129,7 @@ static int pruss_clk_init(struct pruss *pruss, struct device_node *cfg_node)
->>>>  
->>>>  	clks_np = of_get_child_by_name(cfg_node, "clocks");
->>>>  	if (!clks_np) {
->>>> -		dev_err(dev, "%pOF is missing its 'clocks' node\n", clks_np);
->>>> +		dev_err(dev, "%pOF is missing its 'clocks' node\n", cfg_node);
->>>>  		return -ENODEV;
->>>>  	}
->>>>  
->>>>
->>>
->>
->> This was not merged yet. Is it queued somewhere?
->>
->> Jan
->>
-> 
-> Second reminder - still not seeing this in upstream.
+I hope I have addressed all the feedback. There were some suggestions
+for further improvements but I would rather make this smaller as I
+cannot really invest more time and I believe further changes can be done
+on top.
 
-Nishanth,
-Can you pick this up?
+This version is a rebase on top of the current Linus tree. Except for
+the review feedback and conflicting changes in the area there is only
+one change to filter out __GFP_NOFAIL from the bulk allocator. This is
+not necessary strictly speaking AFAICS but I found it less confusing
+because vmalloc has its fallback strategy and the bulk allocator is
+meant only for the fast path.
 
-regards
-Suman
+Original cover:
+Based on a recent discussion with Dave and Neil [2] I have tried to
+implement NOFS, NOIO, NOFAIL support for the vmalloc to make
+life of kvmalloc users easier.
+
+A requirement for NOFAIL support for kvmalloc was new to me but this
+seems to be really needed by the xfs code.
+
+NOFS/NOIO was a known and a long term problem which was hoped to be
+handled by the scope API. Those scope should have been used at the
+reclaim recursion boundaries both to document them and also to remove
+the necessity of NOFS/NOIO constrains for all allocations within that
+scope. Instead workarounds were developed to wrap a single allocation
+instead (like ceph_kvmalloc).
+
+First patch implements NOFS/NOIO support for vmalloc. The second one
+adds NOFAIL support and the third one bundles all together into kvmalloc
+and drops ceph_kvmalloc which can use kvmalloc directly now.
+
+I hope I haven't missed anything in the vmalloc allocator.
+
+Thanks!
+
+[1] http://lkml.kernel.org/r/20211025150223.13621-1-mhocko@kernel.org
+[2] http://lkml.kernel.org/r/163184741778.29351.16920832234899124642.stgit@noble.brown
+
+
