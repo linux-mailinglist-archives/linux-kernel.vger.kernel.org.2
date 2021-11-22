@@ -2,116 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35511459192
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB4F459196
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239942AbhKVPq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:46:59 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:64869 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234686AbhKVPq6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:46:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637595831; x=1669131831;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=HHlZvgmdZ+PFsXOrt+M1Oftp4tKN2JLegGy2ST+BHpM=;
-  b=E2X6+PvDC33iYIQhKTnrw7DbybeMM3Wg0i3fZXysYPr+mGRaZdEklJKN
-   wNNRG6+7PT48PFk7fb0LpgNO+XFKUbVw3sObnivYWmno67bcalT0gAlsD
-   1jFeKGsJ2hqdj2Ni4ixfVkFvsI4jYj1FgDrMtWidpB5cFPtM0ybmBbxZm
-   k=;
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 22 Nov 2021 07:43:51 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 07:43:51 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Mon, 22 Nov 2021 07:43:50 -0800
-Received: from [10.50.17.71] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Mon, 22 Nov
- 2021 07:43:41 -0800
-Message-ID: <d216f201-183f-c253-495d-1d9203141a63@quicinc.com>
-Date:   Mon, 22 Nov 2021 21:13:30 +0530
+        id S239962AbhKVPrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:47:53 -0500
+Received: from mout.gmx.net ([212.227.15.15]:41009 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233449AbhKVPrw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 10:47:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1637595881;
+        bh=VAaW+o1uIRbUv/clS8qcRz1aeqUmiJaltnrY8fX+G3U=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=WsjrjhpRaeUWptezcEGm5yAlqPr93ecbr6Vhl/dzfxPoDxckv8FdOqqXI1jgq5PMS
+         e1Sk/Pk1KfsDLPMcuqp6LyQbGcNrmdkwloIo1ngcDnRwsrdwFLViy1Qzed6FvhL6am
+         1DS7pQl2PZF6idwTpOFpEUaW6qcTSn6HhZ0kUPAE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.23] ([77.10.78.233]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MPGW7-1n13a82Q8L-00PcPW; Mon, 22
+ Nov 2021 16:44:41 +0100
+Message-ID: <8e2dc5fc-b51b-1143-7eb2-8a1eed1f4d01@gmx.de>
+Date:   Mon, 22 Nov 2021 16:44:41 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCHv4 2/2] arm64/io: Add a header for mmio access
- instrumentation
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: compile error for 5.15.4
 Content-Language: en-US
-To:     Arnd Bergmann <arnd@arndb.de>
-CC:     Will Deacon <will@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        <quic_psodagud@quicinc.com>, "Marc Zyngier" <maz@kernel.org>,
-        gregkh <gregkh@linuxfoundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>
-References: <cover.1636973694.git.quic_saipraka@quicinc.com>
- <9396fbdc415a3096ab271868960372b21479e4fb.1636973694.git.quic_saipraka@quicinc.com>
- <CAK8P3a2Bp4LP7C1-XLKvjyxV-e1vrHb-=3zpm75CRgPYNbY2jA@mail.gmail.com>
- <b07e339c-530d-683c-c626-14b73b42e72a@quicinc.com>
- <1609f1f7-6f61-6e17-d907-c526f09bffe5@quicinc.com>
- <CAK8P3a1KxJFwgock3XiRDZYzT=5PZ=Hsh_8uFv9heoa1rwNqtA@mail.gmail.com>
- <9ef8b483-f15f-eda8-d430-2d01e6cad70e@quicinc.com>
- <CAK8P3a0Zo+PTGAAvisAZamfLUm1ToGZpmHDn-Xk0Eo8TTRGyZg@mail.gmail.com>
- <4ed41054-3868-d5e2-9958-56250b7f9be0@quicinc.com>
- <CAK8P3a07sMdR9NUz5AOJk+O-op9qLU_PjnhvqvTz9xrHE7NXEg@mail.gmail.com>
-From:   Sai Prakash Ranjan <quic_saipraka@quicinc.com>
-In-Reply-To: <CAK8P3a07sMdR9NUz5AOJk+O-op9qLU_PjnhvqvTz9xrHE7NXEg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Linux Kernel <linux-kernel@vger.kernel.org>,
+        dmaengine@vger.kernel.org
+References: <747802b9-6c5d-cdb5-66e2-05b820f5213c@gmx.de>
+ <YZp6yfVUx4eEwaxm@matsya> <fda4aa94-22d9-b54c-2bde-b91a579af802@gmx.de>
+ <YZsZM/FqwJTqqJfj@matsya>
+From:   =?UTF-8?Q?Toralf_F=c3=b6rster?= <toralf.foerster@gmx.de>
+In-Reply-To: <YZsZM/FqwJTqqJfj@matsya>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:HpHBwUprH7IyiGD+C28Emzpuc/1DzCw77nxar2yBIhZs8J3MypI
+ FRtSXhWGGo2RLGEHQJrw7h2eE3Xda7mSbuhv6bGNMuhv81eXZp4uLXh7t4NzaGQPhyAv1m/
+ /catZ6y9/z8xKQIgA9PZc7/64fhzpSFdam+erGBqxfwi49kI/hYuyft6f0iGcUZLQE6xc6g
+ DSwOYsLiYts1bDYlWbArA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:g1p5IM3/Yt0=:mCl1lKEUcJ26zH8eB7qiSu
+ leL64F2MV4QK5cQtD40kPG1Zt7d4VSvMyjPI3mbPJn1VdAu1bYRyjcvfILE6yHRSntBbVn3PM
+ s7TI4oMKujtIwr8T+8dt+N+r0PDgwB1fIbyIp9mn3ZvuagWRg7fM6gsrWAh7bar1uNXWjXPd7
+ PV/tcedSuGutwZnpfGxVp9UwyhJPdJuwoOlJZmXvjHmYW0kwVgUHizM7j8lbp3a25Zp8P8rUS
+ s0mdULvq2mKYQbOwpJhdE1AZvWGn0HNqbR/eZbpj1YdDU8k9peZooMhP8efzBWesqQSACXhUe
+ JBhNX1LHjVcX6jpIQEXtvkyCCHYHoQ4sBMyL16g65PqVefeehuMZqKJNjJ60S0BWNBvh9QW9A
+ v+PSyTPb/WQKQ9/EO0or1C3+b6eNSAFqIz4grkQhRbRDoWrRfHjHyOPxIanrchNTik1gb2LJB
+ /Q2bGJBxfMW5cm49nwuRgPrUDRW2kGn87RgzaithqC+V/1MwxkEr5HopuNVEKWfuv0eqfq5bk
+ 8nLEZxrEnss7FQ3Lw+HkSmfvZ6WCdhVdtMdegxwZLKU1OmM9wJLtQqXIKhSL1TlDzuj980Dcl
+ AJqxnqaEtvS5APloj77uneNXFcY9fYbNEDf5NDhWCPdFl4xSUE1bJV4Kbb1hhcXAhSuk2nPe3
+ n0xfxFc0H/+N1ZmMeppxUTVSdj4C2Ts3Jlf+guZ60p9Q9OOp9ttPKpq3lfZvX3USTQR1bZWDN
+ OAolA1wCK+rpaato5RBmA9HKRPF8/OqCv+0Gh2B294B9vLFoqvmv8Wl8FJXmx0T+GpAJRpSK8
+ mZroYlRnEmLVrM7dFiL1ESQ82C0ZidVM6NIqvtynD5Mhu5ei+oWaMN20zOkTrSl0BDmERU0zH
+ 9MwVnlAdDw40dv7ieHo4fFBavqgAXL+42Z6HmoRJNlLIHdZf4Ap1sQs9InQPGvOgYliuqXn4a
+ vW3AFfeboUFS5ILlilgGutHyKVJ/+buJjyPqpsyd+gwcbSieynuFmYp3y39eA/yqWrD4OOhaM
+ tarpoPOUKd3RMd8ebSa0Jf3PiBHY7yyjjB5SvqxHsiyah+9iAnhHlhjy/rhEhsKUu0YUoLoDD
+ fBCNEwwINq4cpQ=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/22/2021 9:05 PM, Arnd Bergmann wrote:
-> On Mon, Nov 22, 2021 at 3:59 PM Sai Prakash Ranjan
-> <quic_saipraka@quicinc.com> wrote:
->>>> And if we do move this instrumentation to asm-generic/io.h, how will
->>>> that be executed since
->>>> the arch specifc read{b,w,l,q} overrides this generic version?
->>> As I understand it, your version also requires architecture specific
->>> changes, so that would be the same: it only works for architectures
->>> that get the definition of readl()/readl_relaxed()/inl()/... from
->>> include/asm-generic/io.h and only override the __raw version. Arnd
->> Sorry, I didn't get this part, so  I am trying this on ARM64:
->>
->> arm64/include/asm/io.h has read{b,l,w,q} defined.
->> include/asm-generic/io.h has below:
->>     #ifndef readl
->>     #define readl readl
->>     static inline u32 readl(const volatile void __iomem *addr)
->>
->> and we include asm-generic/io.h in arm64/include/asm/io.h at the end
->> after the definitions for arm64 mmio accesors.
->> So arch implementation here overrides generic ones as I see it, am I
->> missing something? I even confirmed this
->> with some trace_printk to generic and arch specific definitions of readl
->> and I see arch specific ones being called.
-> Ah, you are right that the arm64 version currently has custom definitions
-> of the high-level interfaces. These predate the introduction of the
-> __io_{p,}{b,a}{r,w} macros and are currently only used on risc-v.
+On 11/22/21 05:14, Vinod Koul wrote:
+> On 21-11-21, 18:18, Toralf F=C3=B6rster wrote:
+>> On 11/21/21 17:58, Vinod Koul wrote:
+>>> Can you please send your config file when you saw this, which toolchai=
+n
+>>> was used to compile...
+>>>
+>>> Thanks
+>> sure,
 >
-> I think in this case you should start by changing arm64 to use the
-> generic readl() etc definitions, by removing the extra definitions and
-> using
+> This is fixed by:
+> b3b180e73540 ("dmaengine: remove debugfs #ifdef")
 >
-> #define __io_ar(v) __iormb(__v)
-> #define __io_bw() dma_wmb()
+> Pls confirm by cherry-picking. I will send this fix to stable.
 >
->
+confirmed - solved it.
+If you want you can add a Tested-by: to the commit.
 
-Sure, will do that.
-
-Thanks,
-Sai
+=2D-
+Toralf
