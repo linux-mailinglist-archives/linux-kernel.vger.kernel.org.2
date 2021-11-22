@@ -2,87 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE67E458E64
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 13:31:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A6D458E4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 13:27:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238297AbhKVMeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 07:34:31 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:49270 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234228AbhKVMea (ORCPT
+        id S239247AbhKVMbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 07:31:00 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:38632 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234761AbhKVMa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 07:34:30 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AMCVKO8081644;
-        Mon, 22 Nov 2021 06:31:20 -0600
+        Mon, 22 Nov 2021 07:30:58 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AMCRiiq100445;
+        Mon, 22 Nov 2021 06:27:44 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1637584280;
-        bh=D9u+kzIc/als2E0rT0GOJcXUCGY0rhYAyFolnSXcAGk=;
-        h=From:To:CC:Subject:Date;
-        b=yeEXWkK5+8NZ+/0DA84geGfpBpIOXz84lvDJhTzJc1fpDB/6SQ+8pwQN8PM4KXR7a
-         zGrNby7RLPI0HH0v+wk3zjO1dgit43mRkDHaiqx2/WGobXrER969A3Jp+8fFlI2PHW
-         77ULKiT1uQ8rNA5z+H0uwpFM88CXZqm1RGG1HtUE=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AMCVK2j085457
+        s=ti-com-17Q1; t=1637584064;
+        bh=RFOELONpazPjFEUocOZleZrVoiEn1nLSQfZ2WfIgFIw=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=ytyN/qK33MtqyQ7/jgb629NqUDNNlFrYObG7Rybmi3R1b/VtLRcx3cXEvW4Jna3SF
+         NCO/t9qV/eJ1aO5o0Ig7WnqIxwb0ujb+TOrMDtHO9uK+cfIfMbPZ3MSYtvtPACdNuS
+         U9NfiSXysqmaO0r4Tbd2W/B0ReUbPVcxlXPXZC5U=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AMCRipV094210
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 22 Nov 2021 06:31:20 -0600
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+        Mon, 22 Nov 2021 06:27:44 -0600
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 22
- Nov 2021 06:27:37 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ Nov 2021 06:27:44 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 22 Nov 2021 06:27:37 -0600
+ Frontend Transport; Mon, 22 Nov 2021 06:27:44 -0600
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AMCRbmK060635;
-        Mon, 22 Nov 2021 06:27:37 -0600
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AMCRhm6060724;
+        Mon, 22 Nov 2021 06:27:44 -0600
 From:   Hari Nagalla <hnagalla@ti.com>
 To:     <bjorn.andersson@linaro.org>, <mathieu.poirier@linaro.org>,
         <robh+dt@kernel.org>
 CC:     <devicetree@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>, <a-govindraju@ti.com>
-Subject: [PATCH 0/4] TI K3 R5F and C71x support on J721S2
-Date:   Mon, 22 Nov 2021 06:27:22 -0600
-Message-ID: <20211122122726.8532-1-hnagalla@ti.com>
+Subject: [PATCH 1/4] dt-bindings: remoteproc: k3-r5f: Update bindings for J721S2 SoCs
+Date:   Mon, 22 Nov 2021 06:27:23 -0600
+Message-ID: <20211122122726.8532-2-hnagalla@ti.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211122122726.8532-1-hnagalla@ti.com>
+References: <20211122122726.8532-1-hnagalla@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+The TI K3 J721S2 SoCs have three dual-core Arm R5F clusters/subsystems,
+with 2 R5F cores each, one in MCU voltage domain and the other two in
+MAIN voltage domain.
 
-The following series enhances the K3 R5F and DSP remoteproc drivers to
-add support for the R5F clusters and C71x DSP on the newer TI K3 J721S2
-SoC family. The J721S2 SoCs have 3 R5FSS clusters, one in MCU voltage
-domain and the other two in MAIN voltage domain. There are also 2 C71x
-DSP subsystems in MAIN voltage domain. The R5FSS is similar to the R5FSS
-in J7200 SoCs, while the C71x DSPs are similar to the C71x DSP on J721e
-SoCs.
+These clusters are similar to J7200 R5F clusters. Compatible info is
+updated for intuitively matching to the new J721S2 SoCs.
 
-See J721S2 Technical Reference Manual (SPRUJ28 – NOVEMBER 2021)
-for further details: http://www.ti.com/lit/pdf/spruj28
-
-Regards
-Hari
-
-Hari Nagalla (4):
-  dt-bindings: remoteproc: k3-r5f: Update bindings for J721S2 SoCs
-  dt-bindings: remoteproc: k3-dsp: Update bindings for J721S2 SoCs
-  remoteproc: k3-dsp: Extend support for C71x DSPs on J721S2 SoCs
-  remoteproc: k3-r5: Extend support for R5F clusters on J721S2 SoCs
-
- .../devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml   | 3 +++
+Signed-off-by: Hari Nagalla <hnagalla@ti.com>
+---
  .../devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml   | 8 +++++---
- drivers/remoteproc/ti_k3_dsp_remoteproc.c                 | 1 +
- drivers/remoteproc/ti_k3_r5_remoteproc.c                  | 5 +++--
- 4 files changed, 12 insertions(+), 5 deletions(-)
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml
+index eeef255c4045..36e095cbde4c 100644
+--- a/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml
++++ b/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml
+@@ -38,6 +38,7 @@ properties:
+       - ti,j721e-r5fss
+       - ti,j7200-r5fss
+       - ti,am64-r5fss
++      - ti,j721s2-r5fss
+ 
+   power-domains:
+     description: |
+@@ -64,9 +65,9 @@ properties:
+     description: |
+       Configuration Mode for the Dual R5F cores within the R5F cluster.
+       Should be either a value of 1 (LockStep mode) or 0 (Split mode) on
+-      most SoCs (AM65x, J721E, J7200), default is LockStep mode if omitted;
+-      and should be either a value of 0 (Split mode) or 2 (Single-CPU mode)
+-      on AM64x SoCs, default is Split mode if omitted.
++      most SoCs (AM65x, J721E, J7200, J721s2), default is LockStep mode if
++      omitted; and should be either a value of 0 (Split mode) or 2
++      (Single-CPU mode) on AM64x SoCs, default is Split mode if omitted.
+ 
+ # R5F Processor Child Nodes:
+ # ==========================
+@@ -104,6 +105,7 @@ patternProperties:
+           - ti,j721e-r5f
+           - ti,j7200-r5f
+           - ti,am64-r5f
++          - ti,j721s2-r5f
+ 
+       reg:
+         items:
 -- 
 2.17.1
 
