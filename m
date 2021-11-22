@@ -2,127 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59745458C76
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 11:40:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A81A5458C7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 11:42:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239357AbhKVKnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 05:43:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239322AbhKVKnK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 05:43:10 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E640C061574;
-        Mon, 22 Nov 2021 02:40:03 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id bi37so78522676lfb.5;
-        Mon, 22 Nov 2021 02:40:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=d2zC3GZX8uS+l6jcheKIGphOeFfmp6L0jvVLD+Y/Jgg=;
-        b=e9xey83dyEX1R8jouZHFbXYCyGbfzrF7RGhHRazW+A4EbXdOczICrLDI5vFSjMqyaC
-         YEDnaR9k/x0Jhz26HC8Qj7d0qdmFie/GKN8Os2iatdxGaaK8VvUxi70lBlwvnkszpZbg
-         pKrkthP3GjNll4KT0rnCXDTOd0HdZZbi3uDEORe5TefBJWgTAuJrT1zV/Foi7Rm0eQzj
-         iJzIl0dtXtkVb+gHZVbdU286KjzEAy2j+HiNRcllY8ZuiKsK9zdjPm1tWVJwTHovb6Wk
-         OTV22QCJlQtbPtMe2xALyYK3nuVFN8Ytjme1HmzppML5wLgzi1D8unL3p5Q0yZKlZ79j
-         9BIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=d2zC3GZX8uS+l6jcheKIGphOeFfmp6L0jvVLD+Y/Jgg=;
-        b=aMSw7eEL59YD3kgRL3QhjKud2abt04njjb+5xq31zewRrdyS2sOk/ffuSMkAmp53ak
-         Eu2BxLs5ehn1+Ht/nbasdTwJWC9YVeguMJ7IvVBS7hoDQ7MbUbCmRevvkIECMIbEbBZU
-         8MthmTahHuWWwQ4XrkBeLF6j8F/Ts2OaL7mipdFoe7ZetGOiTiVZVJi7pI5Fi0ZyU41w
-         3/auhrHoCOUDQ5KvnlBWcE9fR+Mu+mHUyZY4nI3xThthlRa3SGomneo3vVBvLWls3vU0
-         6QXUqQsFa9ODRgcWfBEJdZKdea8O2jITOJ84jBRbwGRzQymMQ7LobL5ciAz0YRIErk7o
-         T+cA==
-X-Gm-Message-State: AOAM533/QHa5C1EBHI9+7ag022jo5/ZffWAxoWTMqDcbjyoGxZe3TuJl
-        EraVXvZ8CLvpNmsJengcoy4=
-X-Google-Smtp-Source: ABdhPJz8MCr6N9OooxMtZp0JXg0RH1rMd+WUjNeUklGObs/fDFhoLmD6Spn0Rgm+TP5aJLvUKKCc/g==
-X-Received: by 2002:a05:6512:2033:: with SMTP id s19mr56816313lfs.290.1637577601896;
-        Mon, 22 Nov 2021 02:40:01 -0800 (PST)
-Received: from [192.168.2.145] (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
-        by smtp.googlemail.com with ESMTPSA id bp36sm1061426lfb.0.2021.11.22.02.40.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Nov 2021 02:40:01 -0800 (PST)
-Subject: Re: [PATCH] i2c: tegra: Add ACPI support
-To:     Akhil R <akhilrajeev@nvidia.com>, ldewangan@nvidia.com,
-        thierry.reding@gmail.com, jonathanh@nvidia.com,
-        p.zabel@pengutronix.de, sumit.semwal@linaro.org,
-        christian.koenig@amd.com, linux-i2c@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, andy.shevchenko@gmail.com
-References: <1637328734-20576-1-git-send-email-akhilrajeev@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <0c92231a-5bc5-be08-bf9d-0b77b85648be@gmail.com>
-Date:   Mon, 22 Nov 2021 13:40:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S239282AbhKVKpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 05:45:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33314 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236291AbhKVKpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 05:45:12 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D2AC660F9B;
+        Mon, 22 Nov 2021 10:42:05 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mp6lv-0071xL-L6; Mon, 22 Nov 2021 10:42:03 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org
+Cc:     kernel-team@android.com, Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH v2] PCI: apple: Follow the PCIe specifications when resetting the port
+Date:   Mon, 22 Nov 2021 10:41:56 +0000
+Message-Id: <20211122104156.518063-1-maz@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <1637328734-20576-1-git-send-email-akhilrajeev@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org, kernel-team@android.com, alyssa@rosenzweig.io, lorenzo.pieralisi@arm.com, bhelgaas@google.com, pali@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-19.11.2021 16:32, Akhil R пишет:
-> -	i2c_dev->rst = devm_reset_control_get_exclusive(i2c_dev->dev, "i2c");
-> -	if (IS_ERR(i2c_dev->rst)) {
-> -		dev_err_probe(i2c_dev->dev, PTR_ERR(i2c_dev->rst),
-> -			      "failed to get reset control\n");
-> -		return PTR_ERR(i2c_dev->rst);
-> -	}
-> -
->  	tegra_i2c_parse_dt(i2c_dev);
->  
-> -	err = tegra_i2c_init_clocks(i2c_dev);
-> -	if (err)
-> -		return err;
-> +	if (!has_acpi_companion(&pdev->dev)) {
-> +		i2c_dev->rst = devm_reset_control_get_exclusive(i2c_dev->dev, "i2c");
-> +		if (IS_ERR(i2c_dev->rst)) {
-> +			dev_err_probe(i2c_dev->dev, PTR_ERR(i2c_dev->rst),
-> +				      "failed to get reset control\n");
-> +			return PTR_ERR(i2c_dev->rst);
-> +		}
-> +
-> +		err = tegra_i2c_init_clocks(i2c_dev);
-> +		if (err)
-> +			return err;
-> +	}
+While the Apple PCIe driver works correctly when directly booted
+from the firmware, it fails to initialise when the kernel is booted
+from a bootloader using PCIe such as u-boot.
 
-What about to factor out the reset initialization into a separate function and write it like this:
+That's beacuse we're missing a proper reset of the port (we only
+clear the reset, but never assert it).
 
-static int tegra_i2c_init_reset(i2c_dev)
-{
-	if (has_acpi_companion(i2c_dev->dev)
-		return 0;
+The PCIe spec requirements are two-fold:
 
-	i2c_dev->rst = devm_reset_control_get_exclusive(i2c_dev->dev, "i2c");
-	if (IS_ERR(i2c_dev->rst))
-		return dev_err_probe(i2c_dev->dev, PTR_ERR(i2c_dev->rst),
-			      	     "failed to get reset control\n");
+- #PERST must be asserted before setting up the clocks, and
+  stay asserted for at least 100us (Tperst-clk).
 
-	return 0;
-}
+- Once #PERST is deasserted, the OS must wait for at least 100ms
+  "from the end of a Conventional Reset" before we can start talking
+  to the devices
 
-And then change tegra_i2c_init_clocks() to:
+Implementing this results in a booting system.
 
-static int tegra_i2c_init_clocks(i2c_dev)
-{
-	int err;
+Fixes: 1e33888fbe44 ("PCI: apple: Add initial hardware bring-up")
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Cc: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Pali Rohár <pali@kernel.org>
+---
+ drivers/pci/controller/pcie-apple.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-	if (has_acpi_companion(i2c_dev->dev))
-		return 0;
+diff --git a/drivers/pci/controller/pcie-apple.c b/drivers/pci/controller/pcie-apple.c
+index 1bf4d75b61be..957960a733c4 100644
+--- a/drivers/pci/controller/pcie-apple.c
++++ b/drivers/pci/controller/pcie-apple.c
+@@ -539,13 +539,23 @@ static int apple_pcie_setup_port(struct apple_pcie *pcie,
+ 
+ 	rmw_set(PORT_APPCLK_EN, port->base + PORT_APPCLK);
+ 
++	/* Engage #PERST before setting up the clock */
++	gpiod_set_value(reset, 0);
++
+ 	ret = apple_pcie_setup_refclk(pcie, port);
+ 	if (ret < 0)
+ 		return ret;
+ 
++	/* The minimal Tperst-clk value is 100us (PCIe CMS r2.0, 2.6.2) */
++	usleep_range(100, 200);
++
++	/* Deassert #PERST */
+ 	rmw_set(PORT_PERST_OFF, port->base + PORT_PERST);
+ 	gpiod_set_value(reset, 1);
+ 
++	/* Wait for 100ms after #PERST deassertion (PCIe r2.0, 6.6.1) */
++	msleep(100);
++
+ 	ret = readl_relaxed_poll_timeout(port->base + PORT_STATUS, stat,
+ 					 stat & PORT_STATUS_READY, 100, 250000);
+ 	if (ret < 0) {
+-- 
+2.30.2
 
-	...
-}
-
-This will make both reset/clocks initialization to look more consistent.
