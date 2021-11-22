@@ -2,99 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C39F845891B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 06:43:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98044458926
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 06:50:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbhKVFqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 00:46:51 -0500
-Received: from gandalf.ozlabs.org ([150.107.74.76]:44453 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbhKVFqu (ORCPT
+        id S231183AbhKVFw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 00:52:59 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8912 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229870AbhKVFw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 00:46:50 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HyGR213fVz4xbw;
-        Mon, 22 Nov 2021 16:43:41 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1637559823;
-        bh=UCNCwUWVyyLhjFIpiDc0PavICxKjZDvBSXN4abRrYfk=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=O7qEx+nL6V5nWOLcdA6PYMjxiiJNZqKsjbhTeX+h9yjGhFjFo8alAh3pzH+5FE67R
-         RjNleoNHhsSxnvxOZHnFY9bXoikFyVVMDiBiJbrPiqWFbBKRDsb8vyjTKBecTcNHWp
-         wJLDp+GZMh+RGb1LAKudMjr8u7Lb4ZkQ72Yi4QfZoavh/2TIAkOH2dxNfLgSP1J64G
-         Vv4m0AXzENGOxsGtubLora73+zWztHDoDmiTBJmzbBKGI7/6C1d2IhfoZyf08T2fBv
-         aAQn8yl3KqxvKzho2NS2xvd9qKg7je2CYfbhiSOMxilV2/NwW9LxMswAUHMBz6y9kw
-         Gk6QUOZWql06Q==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     LEROY Christophe <christophe.leroy@csgroup.eu>,
-        Kees Cook <keescook@chromium.org>
-Cc:     kernel test robot <lkp@intel.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-Subject: Re: [PATCH] powerpc/signal32: Use struct_group() to zero spe regs
-In-Reply-To: <1e312cbd-cd52-ddce-f839-db765173c526@csgroup.eu>
-References: <20211118203604.1288379-1-keescook@chromium.org>
- <1e312cbd-cd52-ddce-f839-db765173c526@csgroup.eu>
-Date:   Mon, 22 Nov 2021 16:43:36 +1100
-Message-ID: <87ilwkrbhz.fsf@mpe.ellerman.id.au>
+        Mon, 22 Nov 2021 00:52:58 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AM5fbaa029690;
+        Mon, 22 Nov 2021 05:49:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=F9O+V+kt17lgGUHVNesGojFNZS39jaURNh2TGEF8Ci0=;
+ b=TgXB/AXOP3Ku54H3OYiNFmlqJgpTfK6oluqBnNqUkUbOSK7ke8Cbme26pPt2inKNk3TD
+ 0APzKUSBtYM2jyv8Hjmd4uknueEzTNBS8ZvvSyMNKAfwccDPAOOmAlP7n//jHAGxjNvg
+ uGCJPFuiLYu8kUxu4QW+Mq3jNlffrhFe2InLp+2HCZTxnM8NZvKBgUkYI+6FhCJYhghH
+ O+4nm+M9D6GGIf9i+3quCgMscnktEfeOz6HD0UD2CsCUZhPUNbyliU2NTLCuZ8BAvqaF
+ 4MlVsH6h2iBCRgxTwC/XPDsTgOmS+8g7vZCPEazhtdT0sb2rexL8Vr02WcfW8VUZCmxo HA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cg59er3m7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Nov 2021 05:49:45 +0000
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AM5hlPf033550;
+        Mon, 22 Nov 2021 05:49:44 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cg59er3ks-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Nov 2021 05:49:44 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AM5cmqX018433;
+        Mon, 22 Nov 2021 05:49:43 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 3cern9hrd8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Nov 2021 05:49:42 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AM5neLn32178540
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Nov 2021 05:49:40 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A1D3C4C040;
+        Mon, 22 Nov 2021 05:49:40 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 18E764C046;
+        Mon, 22 Nov 2021 05:49:40 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.46.196])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Mon, 22 Nov 2021 05:49:40 +0000 (GMT)
+Date:   Mon, 22 Nov 2021 06:49:22 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     mst <mst@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "kaplan, david" <david.kaplan@amd.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [PATCH V5 1/4] virtio_ring: validate used buffer length
+Message-ID: <20211122064922.51b3678e.pasic@linux.ibm.com>
+In-Reply-To: <20211122063518.37929c01.pasic@linux.ibm.com>
+References: <20211027022107.14357-1-jasowang@redhat.com>
+        <20211027022107.14357-2-jasowang@redhat.com>
+        <20211119160951.5f2294c8.pasic@linux.ibm.com>
+        <CACGkMEtja2TPC=ujgMrpaPmdsy+zHowbBTvPj8k7nm_+zB8vig@mail.gmail.com>
+        <20211122063518.37929c01.pasic@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Or5FsZTqwydFQL6_bxk6t6saQ2A-dUUh
+X-Proofpoint-ORIG-GUID: Z0ya8A4jcWy5XM4o6jvpeKHvk5I-GvoC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-22_01,2021-11-22_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 mlxlogscore=999 impostorscore=0 clxscore=1015
+ priorityscore=1501 adultscore=0 mlxscore=0 spamscore=0 phishscore=0
+ suspectscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111220028
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LEROY Christophe <christophe.leroy@csgroup.eu> writes:
-> Le 18/11/2021 =C3=A0 21:36, Kees Cook a =C3=A9crit=C2=A0:
->> In preparation for FORTIFY_SOURCE performing compile-time and run-time
->> field bounds checking for memset(), avoid intentionally writing across
->> neighboring fields.
->>=20
->> Add a struct_group() for the spe registers so that memset() can correctl=
-y reason
->> about the size:
->>=20
->>     In function 'fortify_memset_chk',
->>         inlined from 'restore_user_regs.part.0' at arch/powerpc/kernel/s=
-ignal_32.c:539:3:
->>     >> include/linux/fortify-string.h:195:4: error: call to '__write_ove=
-rflow_field' declared with attribute warning: detected write beyond size of=
- field (1st parameter); maybe use struct_group()? [-Werror=3Dattribute-warn=
-ing]
->>       195 |    __write_overflow_field();
->>           |    ^~~~~~~~~~~~~~~~~~~~~~~~
->>=20
->> Reported-by: kernel test robot <lkp@intel.com>
->> Signed-off-by: Kees Cook <keescook@chromium.org>
->
-> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+On Mon, 22 Nov 2021 06:35:18 +0100
+Halil Pasic <pasic@linux.ibm.com> wrote:
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+> > I think it should be a common issue, looking at
+> > vhost_vsock_handle_tx_kick(), it did:
+> > 
+> > len += sizeof(pkt->hdr);
+> > vhost_add_used(vq, head, len);
+> > 
+> > which looks like a violation of the spec since it's TX.  
+> 
+> I'm not sure the lines above look like a violation of the spec. If you
+> examine vhost_vsock_alloc_pkt() I believe that you will agree that:
+> len == pkt->len == pkt->hdr.len
+> which makes sense since according to the spec both tx and rx messages
+> are hdr+payload. And I believe hdr.len is the size of the payload,
+> although that does not seem to be properly documented by the spec.
+> 
+> On the other hand tx messages are stated to be device read-only (in the
+> spec) so if the device writes stuff, that is certainly wrong.
+> 
+> If that is what happens. 
+> 
+> Looking at virtqueue_get_buf_ctx_split() I'm not sure that is what
+> happens. My hypothesis is that we just a last descriptor is an 'in'
+> type descriptor (i.e. a device writable one). For tx that assumption
+> would be wrong.
+> 
+> I will have another look at this today and send a fix patch if my
+> suspicion is confirmed.
 
-> However, is it really worth adding that grouping ? Wouldn't it be=20
-> cleaner to handle evr[] and acc separately ? Now that we are using=20
-> unsafe variants of get/put user performance wouldn't be impacted.
+If my suspicion is right something like:
 
-Yeah I agree we should be able to do less of these multi-field copies
-now that we have unsafe get/put user.
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 00f64f2f8b72..efb57898920b 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -764,6 +764,7 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
+        struct vring_virtqueue *vq = to_vvq(_vq);
+        void *ret;
+        unsigned int i;
++       bool has_in;
+        u16 last_used;
+ 
+        START_USE(vq);
+@@ -787,6 +788,9 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
+                        vq->split.vring.used->ring[last_used].id);
+        *len = virtio32_to_cpu(_vq->vdev,
+                        vq->split.vring.used->ring[last_used].len);
++       has_in = virtio16_to_cpu(_vq->vdev,
++                       vq->split.vring.used->ring[last_used].flags)
++                               & VRING_DESC_F_WRITE;
+ 
+        if (unlikely(i >= vq->split.vring.num)) {
+                BAD_RING(vq, "id %u out of range\n", i);
+@@ -796,7 +800,7 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
+                BAD_RING(vq, "id %u is not a head!\n", i);
+                return NULL;
+        }
+-       if (vq->buflen && unlikely(*len > vq->buflen[i])) {
++       if (has_in && q->buflen && unlikely(*len > vq->buflen[i])) {
+                BAD_RING(vq, "used len %d is larger than in buflen %u\n",
+                        *len, vq->buflen[i]);
+                return NULL;
 
-But I think that's an issue for another patch, Kees' patch is an
-improvement, even if the code could be improved further in future.
+would fix the problem for split. I will try that out and let you know
+later.
 
-Though TBH I'm not sure what the future of SPE support is. Both GCC and
-glibc have dropped support for it, more than 2 years ago, so it's not
-clear to me if we should continue to support it in the kernel much
-longer.
-
-cheers
+Regards,
+Halil
