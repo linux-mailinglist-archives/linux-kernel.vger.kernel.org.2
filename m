@@ -2,162 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE9645940F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 18:38:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DCEA459412
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 18:39:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239961AbhKVRlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 12:41:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32878 "EHLO
+        id S240004AbhKVRml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 12:42:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232963AbhKVRlN (ORCPT
+        with ESMTP id S232963AbhKVRmi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 12:41:13 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B2CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 09:38:06 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id h24so14445074pjq.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 09:38:06 -0800 (PST)
+        Mon, 22 Nov 2021 12:42:38 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387A7C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 09:39:31 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id gf14-20020a17090ac7ce00b001a7a2a0b5c3so17427171pjb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 09:39:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=RfgufGkge6LcOJ7o6WilfLIxcSMJwk5H2M7ujdcdjxk=;
-        b=pfx6iWvWQAdor0Us7spIoG6XdpIzT9Rrr22CxdxF4Hblv9omFuQJnIkyhFjnS8yfyo
-         sc7Wly/N2UOiFW0z/35Csss5Oe2EO0r6JHNbuhToVoqzCpGwgM2UPzPh66aJhC63/xBA
-         yuL+kPl1czFd97C0cRpsqHeecSL75+soc80Pq/1btngi1mzEZDJhm3/vMw+l0VqiqJwc
-         uCLHpcfYMkerpY+AC4+wMbBDxpGprbbyntkvf0QNAzY0tp0S0sp2LJn5VVc4T7YBhBRz
-         a4MiqMZKWlgxgfcw+GVKMmwJobw3rOwVJ1RR2xVun7szukQlHA/d0j8GlXXum9KgX6OK
-         xh/A==
+        bh=dzjj5orhwwSm2n2J0MVi5GizVnPUNuZLO6AAe4M0hDU=;
+        b=I844JISASdOxuOY2hzrnCyH+OXTW8kcT3MnXY7hlgwlWG18LcYCNZLfOfvL2L6kNZv
+         8BTX03GrbqmBCUZVFjKUiK1TGFUZ3Mb7uzZZli/XoWQaRJna3f0pLJ0YAr9ozRkhOTm3
+         wW8jxAogwrZCyhmon1srSKwt6s8nmLNfJUh+FubhT5KT2NY7qcqyotz4u0ET4P1+jn1H
+         ICDkniYNwYvtGXipEtjFf8IKvZk/3ABE2E9CEp1Qd5n8SzrC3hv6wv4a58yddnrU1EJu
+         b+ujLMPO8U+LuNCTNyuqD8o6HzqMHBnTpfaj/XjRwCAPpAU70c4dlCjSEe/4N3BB5Yna
+         J4YQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RfgufGkge6LcOJ7o6WilfLIxcSMJwk5H2M7ujdcdjxk=;
-        b=zu98wB46xZZPXCulycpf4ISuzeKobTUrKtcH0GMuO4+Kcst9KSHFylOqzM2yNPav7a
-         Hv0dguHukZO9Mtk6Uo+7c9nzZfg/n6fi4GJ6xCZzasZ+jncmxa/w+O4AuPoBe/vRoHaZ
-         oO6sxLFGqJH8MlA5WqVGAgsA62SvI9aq7OTCmEiorTeX+p3pmFmcPbZzjZJ7OYEXk+UU
-         VKueIk7flmgMZn029zt2qWZ1RKHvLmCN3Ei6g4BYVbs5dasCmdQJ7bVvXfXXGyk1VLis
-         fOsxEAYpJmRh5MkNGiHWozlq1Dypx57mOmmQ2vhd3wsLtr3oZRtm8UjaB5DHZFVakKF+
-         wPVw==
-X-Gm-Message-State: AOAM531iHhjza8GMvddJXtUKtjxSGXuJkaUJhD/YKEfXTKzTOVJFKygH
-        WMzaQ3V/3E2eSimcY78M+geCuw==
-X-Google-Smtp-Source: ABdhPJw1OcVRbaPF71e8wVXUv9wdNbQqpvjaMZwTzNZK7mPhYd/gMIe9BBeeCWKvdpsC9NKbf4CvGw==
-X-Received: by 2002:a17:902:b28a:b0:142:3e17:38d8 with SMTP id u10-20020a170902b28a00b001423e1738d8mr111179399plr.56.1637602685581;
-        Mon, 22 Nov 2021 09:38:05 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id f7sm9674738pfv.89.2021.11.22.09.38.04
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=dzjj5orhwwSm2n2J0MVi5GizVnPUNuZLO6AAe4M0hDU=;
+        b=YYneZqHFLefnc+5p4FD9Kj46RETosnYv1O76yYaBcnsUqkewGnW9G0JnLUraLm2tNG
+         CDbCESc4uDEa4+eplXllmR8nxIZuf4tB8eXaEb5KOFueou7kgX/EgSoqeDZGupVU9g8N
+         wNcpSlH4o0Auax712Ed+4MNgvdGGF8XtXXI2sCdT4vEkMMgWt58PbWj6VsuMM4R9+kxu
+         Dd8XF3v6XNLMo6+5nK+FSYzSlUiYdMAhXcFSOoBTgm0ywPVjO73J6SQMTozoz57cGaDA
+         rdN5SdBlqIntO+WAGaDYAzN5VnMJJlMFBZWZEapNU5xSu4nMhGEQpc0c87gH216bDYvn
+         vN0A==
+X-Gm-Message-State: AOAM5301wjcgGVC21uNeYoltrWgwcYjkKxXZ4ZsDBWclZr1BokmSJmvM
+        X4tf5OF3bg/sU9fv6eCt5BA=
+X-Google-Smtp-Source: ABdhPJzAiU3uG+5IECYMUEv8UQy1I2AL9KJBv9mrIQLqV+C156HIHdLyDSeDEVmGMstiuKqW4hHx3A==
+X-Received: by 2002:a17:90a:2fc7:: with SMTP id n7mr33268409pjm.141.1637602770704;
+        Mon, 22 Nov 2021 09:39:30 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:9276:1454:9a80:3095])
+        by smtp.gmail.com with ESMTPSA id t4sm10154265pfq.163.2021.11.22.09.39.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 09:38:05 -0800 (PST)
-Date:   Mon, 22 Nov 2021 17:38:01 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: selftests: Make sure kvm_create_max_vcpus test
- won't hit RLIMIT_NOFILE
-Message-ID: <YZvVeW6qYNb/kkSc@google.com>
-References: <20211122171920.603760-1-vkuznets@redhat.com>
+        Mon, 22 Nov 2021 09:39:30 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Mon, 22 Nov 2021 09:39:28 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Tejun Heo <tj@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] kernfs: switch global kernfs_rwsem lock to per-fs lock
+Message-ID: <YZvV0ESA+zHHqHBU@google.com>
+References: <20211118230008.2679780-1-minchan@kernel.org>
+ <YZbbxK1F7jY/RBFF@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211122171920.603760-1-vkuznets@redhat.com>
+In-Reply-To: <YZbbxK1F7jY/RBFF@slm.duckdns.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021, Vitaly Kuznetsov wrote:
-> With the elevated 'KVM_CAP_MAX_VCPUS' value kvm_create_max_vcpus test
-> may hit RLIMIT_NOFILE limits:
+On Thu, Nov 18, 2021 at 01:03:32PM -1000, Tejun Heo wrote:
+> On Thu, Nov 18, 2021 at 03:00:08PM -0800, Minchan Kim wrote:
+> > The kernfs implementation has big lock granularity(kernfs_rwsem) so
+> > every kernfs-based(e.g., sysfs, cgroup) fs are able to compete the
+> > lock. It makes trouble for some cases to wait the global lock
+> > for a long time even though they are totally independent contexts
+> > each other.
+> > 
+> > A general example is process A goes under direct reclaim with holding
+> > the lock when it accessed the file in sysfs and process B is waiting
+> > the lock with exclusive mode and then process C is waiting the lock
+> > until process B could finish the job after it gets the lock from
+> > process A.
+> > 
+> > This patch switches the global kernfs_rwsem to per-fs lock, which
+> > put the rwsem into kernfs_root.
+> > 
+> > Suggested-by: Tejun Heo <tj@kernel.org>
+> > Signed-off-by: Minchan Kim <minchan@kernel.org>
 > 
->  # ./kvm_create_max_vcpus
->  KVM_CAP_MAX_VCPU_ID: 4096
->  KVM_CAP_MAX_VCPUS: 1024
->  Testing creating 1024 vCPUs, with IDs 0...1023.
->  /dev/kvm not available (errno: 24), skipping test
+> Acked-by: Tejun Heo <tj@kernel.org>
 > 
-> Adjust RLIMIT_NOFILE limits to make sure KVM_CAP_MAX_VCPUS fds can be
-> opened. Note, raising hard limit ('rlim_max') requires CAP_SYS_RESOURCE
-> capability which is generally not needed to run kvm selftests (but without
-> raising the limit the test is doomed to fail anyway).
+> Greg, I think this is the right thing to do even if there is no concrete
+> performance argument (not saying there isn't). It's just weird to entangle
+> these completely unrelated users in a single rwsem.
 > 
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> ---
->  .../selftests/kvm/kvm_create_max_vcpus.c      | 22 +++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/kvm/kvm_create_max_vcpus.c b/tools/testing/selftests/kvm/kvm_create_max_vcpus.c
-> index f968dfd4ee88..19198477a10e 100644
-> --- a/tools/testing/selftests/kvm/kvm_create_max_vcpus.c
-> +++ b/tools/testing/selftests/kvm/kvm_create_max_vcpus.c
-> @@ -12,6 +12,7 @@
->  #include <stdio.h>
->  #include <stdlib.h>
->  #include <string.h>
-> +#include <sys/resource.h>
->  
->  #include "test_util.h"
->  
-> @@ -19,6 +20,9 @@
->  #include "asm/kvm.h"
->  #include "linux/kvm.h"
->  
-> +/* 'Safe' number of open file descriptors in addition to vCPU fds needed */
-> +#define NOFD 16
+> Thanks.
 
-Any reason not to make this "buffer" extra large, e.g. 100+ to avoid having to
-debug this issue again in the future?
-
-> +
->  void test_vcpu_creation(int first_vcpu_id, int num_vcpus)
->  {
->  	struct kvm_vm *vm;
-> @@ -40,10 +44,28 @@ int main(int argc, char *argv[])
->  {
->  	int kvm_max_vcpu_id = kvm_check_cap(KVM_CAP_MAX_VCPU_ID);
->  	int kvm_max_vcpus = kvm_check_cap(KVM_CAP_MAX_VCPUS);
-
-Rather than a separate define that's hard to describe succintly, what about:
-
-	int nr_fds_wanted = kvm_max_vcpus + <arbitrary number>
-
-and then the body becomes
-
-	if (nr_fds_wanted > rl.rlim_cur) {
-		rl.rlim_cur = nr_fds_wanted;
-		rl.rlim_max = max(rl.rlim_max, nr_fds_wanted);
-
-		...
-	}
-
-> +	struct rlimit rl;
->  
->  	pr_info("KVM_CAP_MAX_VCPU_ID: %d\n", kvm_max_vcpu_id);
->  	pr_info("KVM_CAP_MAX_VCPUS: %d\n", kvm_max_vcpus);
->  
-> +	/*
-> +	 * Creating KVM_CAP_MAX_VCPUS vCPUs require KVM_CAP_MAX_VCPUS open
-> +	 * file decriptors.
-> +	 */
-> +	TEST_ASSERT(!getrlimit(RLIMIT_NOFILE, &rl),
-> +		    "getrlimit() failed (errno: %d)", errno);
-
-And strerror() output too?
-
-> +
-> +	if (kvm_max_vcpus > rl.rlim_cur - NOFD) {
-> +		rl.rlim_cur = kvm_max_vcpus + NOFD;
-> +
-> +		if (kvm_max_vcpus > rl.rlim_max - NOFD)
-> +			rl.rlim_max = kvm_max_vcpus + NOFD;
-> +
-> +		TEST_ASSERT(!setrlimit(RLIMIT_NOFILE, &rl),
-> +			    "setrlimit() failed (errno: %d)", errno);
-> +	}
-> +
->  	/*
->  	 * Upstream KVM prior to 4.8 does not support KVM_CAP_MAX_VCPU_ID.
->  	 * Userspace is supposed to use KVM_CAP_MAX_VCPUS as the maximum ID
-> -- 
-> 2.33.1
-> 
+Greg, Do you mind picking this patch?
