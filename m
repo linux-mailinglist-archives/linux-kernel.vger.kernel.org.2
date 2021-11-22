@@ -2,165 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C914591B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:53:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B80DC4591B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:53:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240036AbhKVP4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:56:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51555 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239950AbhKVP4c (ORCPT
+        id S240046AbhKVP46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:56:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239950AbhKVP45 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:56:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637596405;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OJ9xzZY5FeccmukwMdR9fcM2Iiv+nWzTkmOO43/ifUs=;
-        b=hIESrfmMydnvjp2zZOwJ9tVLdWQtbVLiOn172JbHZOtwTjfzN5rss3cgOjaNhJ/q6e3UMZ
-        WdAeIH6Olx/muOFuzDM7tbg0zA6b1AZ13OVaIzXG5vHEgw1jaDm6C5XDjDJfk2mOLOJS8J
-        8zoaQyipFULCSEEEBzVIqJDno683bMM=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-601-Jvq22jGOO2Ko7MnzCsXdMA-1; Mon, 22 Nov 2021 10:53:24 -0500
-X-MC-Unique: Jvq22jGOO2Ko7MnzCsXdMA-1
-Received: by mail-qt1-f200.google.com with SMTP id v32-20020a05622a18a000b002b04d0d410dso10933223qtc.11
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:53:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OJ9xzZY5FeccmukwMdR9fcM2Iiv+nWzTkmOO43/ifUs=;
-        b=tccT3n+Y7jhhFfOkw2TvTVw4q7nh3gJWGkjgxcIpqv5+mCBkQfuFwxal4jhMBeY2Ka
-         qLbknfTg8UKe0a8PW4D6v7vDH6zuUi4yMhRW14l5gnhzySPBB81zZjQtpGC+seO+Yq8Y
-         H04t4jJcqtOGqCT8tU5QjscTr7X/rTqQRLF1mSJ4lIKS2cMyEmhIe0r7IF5ser1sQkSH
-         MKx0octxtDsM9dQkuj41Odd8RRyCZijS8PjGsgMUttRsO0eLP1lZWRZ9aYZnDq0yKeD+
-         dk5GCMXYWH9cO1ihm8SaMv7Y98fJLQF2YTJAtGPIgHvFWFD9Nsj3FBJLBFVm6jGC69KK
-         rDAg==
-X-Gm-Message-State: AOAM533Js91yEDKFmBJY3PCVAJ0QcTLjKHAoRN+8Uv3IR97qKAigvK1+
-        CPCP0IwDwoBgr/R66gvK6sqroIemjDnU62phnGBiVsTcWwfMqd1LuO1HvzLpG0N/aM3Fz0C39lt
-        II9cImxpNn1Dd3tPeLJD3cbKC
-X-Received: by 2002:a05:620a:4f6:: with SMTP id b22mr47916386qkh.98.1637596403455;
-        Mon, 22 Nov 2021 07:53:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzPD4/b7lgHJ1aacYNO3wJRJsislsVZmoXjxxgp5SWcJOf6UdvGe1TRnOUvngCMxGXcKx7dCg==
-X-Received: by 2002:a05:620a:4f6:: with SMTP id b22mr47916359qkh.98.1637596403194;
-        Mon, 22 Nov 2021 07:53:23 -0800 (PST)
-Received: from [192.168.1.9] (pool-68-163-101-245.bstnma.fios.verizon.net. [68.163.101.245])
-        by smtp.gmail.com with ESMTPSA id x16sm2254188qko.15.2021.11.22.07.53.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Nov 2021 07:53:22 -0800 (PST)
-To:     Miroslav Benes <mbenes@suse.cz>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     jikos@kernel.org, pmladek@suse.com, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, live-patching@vger.kernel.org,
-        shuah@kernel.org, linux-kselftest@vger.kernel.org
-References: <20211119090327.12811-1-mbenes@suse.cz>
- <20211119090327.12811-3-mbenes@suse.cz>
- <20211119182005.t3p5iyxyibzktrbj@treble>
- <alpine.LSU.2.21.2111220853010.5064@pobox.suse.cz>
-From:   Joe Lawrence <joe.lawrence@redhat.com>
-Subject: Re: [PATCH 2/3] livepatch: Allow user to specify functions to search
- for on a stack
-Message-ID: <40edd48c-6f45-29e3-4749-be37fb61afba@redhat.com>
-Date:   Mon, 22 Nov 2021 10:53:21 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Mon, 22 Nov 2021 10:56:57 -0500
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF5FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:53:49 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:e4da:38c:79e9:48bf])
+        by xavier.telenet-ops.be with bizsmtp
+        id MTtn2600X4yPVd601Ttn1C; Mon, 22 Nov 2021 16:53:47 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mpBdb-00EL1Y-2c; Mon, 22 Nov 2021 16:53:47 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mpBda-00HGjV-Fy; Mon, 22 Nov 2021 16:53:46 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Oleg Nesterov <oleg@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] ARM: ptrace: Use bitfield helpers
+Date:   Mon, 22 Nov 2021 16:53:41 +0100
+Message-Id: <a1445d3abb45cfc95cb1b03180fd53caf122035b.1637593297.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <alpine.LSU.2.21.2111220853010.5064@pobox.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/22/21 2:57 AM, Miroslav Benes wrote:
-> On Fri, 19 Nov 2021, Josh Poimboeuf wrote:
-> 
->> Thanks for doing this!  And at peterz-esque speed no less :-)
->>
->> On Fri, Nov 19, 2021 at 10:03:26AM +0100, Miroslav Benes wrote:
->>> livepatch's consistency model requires that no live patched function
->>> must be found on any task's stack during a transition process after a
->>> live patch is applied. It is achieved by walking through stacks of all
->>> blocked tasks.
->>>
->>> The user might also want to define more functions to search for without
->>> them being patched at all. It may either help with preparing a live
->>> patch, which would otherwise require additional touches to achieve the
->>> consistency
->>
->> Do we have any examples of this situation we can add to the commit log?
-> 
-> I do not have anything at hand. Joe, do you remember the case you 
-> mentioned previously about adding a nop to a function?
->  
+The isa_mode() macro extracts two fields, and recombines them into a
+single value.  The shift value of the J-bit may look off-by-one to the
+casual reader, as it is the net result of the extraction and
+recombination steps.
 
-I went looking in my inbox to see... Unfortunately the closest thing I
-found was a kpatchset in which we added nops to coax kpatch-build into
-reverting previous patch version changes.  Not applicable here, but I
-was certain we entertained the same idea to increase the task stack
-check for some other problem.
+Make this more obvious by using the FIELD_GET() helper, and shifting the
+result into its final resting place.
 
-Maybe adding a hypothetical scenario to the commit log would suffice?
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+No changes in generated assembler code.
 
->>> or it can be used to overcome deficiencies the stack
->>> checking inherently has. For example, GCC may optimize a function so
->>> that a part of it is moved to a different section and the function would
->>> jump to it. This child function would not be found on a stack in this
->>> case, but it may be important to search for it so that, again, the
->>> consistency is achieved.
->>>
->>> Allow the user to specify such functions on klp_object level.
->>>
->>> Signed-off-by: Miroslav Benes <mbenes@suse.cz>
->>> ---
->>>  include/linux/livepatch.h     | 11 +++++++++++
->>>  kernel/livepatch/core.c       | 16 ++++++++++++++++
->>>  kernel/livepatch/transition.c | 21 ++++++++++++++++-----
->>>  3 files changed, 43 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/include/linux/livepatch.h b/include/linux/livepatch.h
->>> index 2614247a9781..89df578af8c3 100644
->>> --- a/include/linux/livepatch.h
->>> +++ b/include/linux/livepatch.h
->>> @@ -106,9 +106,11 @@ struct klp_callbacks {
->>>   * struct klp_object - kernel object structure for live patching
->>>   * @name:	module name (or NULL for vmlinux)
->>>   * @funcs:	function entries for functions to be patched in the object
->>> + * @funcs_stack:	function entries for functions to be stack checked
->>
->> So there are two arrays/lists of 'klp_func', and two implied meanings of
->> what a 'klp_func' is and how it's initialized.
->>
->> Might it be simpler and more explicit to just add a new external field
->> to 'klp_func' and continue to have a single 'funcs' array?  Similar to
->> what we already do with the special-casing of 'nop', except it would be
->> an external field, e.g. 'no_patch' or 'stack_only'.
->>
->> Then instead of all the extra klp_for_each_func_stack_static()
->> incantations, and the special cases in higher-level callers like
->> klp_init_object() and klp_init_patch_early(), the lower-level functions
->> like klp_init_func() and klp_init_func_early() can check the field to
->> determine which initializations need to be made.  Which is kind of nice
->> IMO as it pushes that detail down more where it belongs.  And makes the
->> different types of 'klp_func' more explicit.
-> 
-> I thought about doing this for a moment but then I was worried there would 
-> be many places which would require special-casing, so I tried to keep it 
-> separate. But yes, it would be cleaner, so definitely worth trying for v2.
-> 
+See "[PATCH 00/17] Non-const bitfield helper conversions"
+(https://lore.kernel.org/r/cover.1637592133.git.geert+renesas@glider.be)
+for background and more conversions.
+---
+ arch/arm/include/asm/ptrace.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-I'll add that the first thing that came to mind when you raised this
-feature idea in the other thread was to support existing klp_funcs array
-with NULL new_func's.  I didn't go look to see how invasive it would be,
-but it will be interesting to see if a single list approach turns out
-any simpler for v2.
-
+diff --git a/arch/arm/include/asm/ptrace.h b/arch/arm/include/asm/ptrace.h
+index 93051e2f402c8452..982514aa83c1f459 100644
+--- a/arch/arm/include/asm/ptrace.h
++++ b/arch/arm/include/asm/ptrace.h
+@@ -10,6 +10,7 @@
+ #include <uapi/asm/ptrace.h>
+ 
+ #ifndef __ASSEMBLY__
++#include <linux/bitfield.h>
+ #include <linux/types.h>
+ 
+ struct pt_regs {
+@@ -35,8 +36,8 @@ struct svc_pt_regs {
+ 
+ #ifndef CONFIG_CPU_V7M
+ #define isa_mode(regs) \
+-	((((regs)->ARM_cpsr & PSR_J_BIT) >> (__ffs(PSR_J_BIT) - 1)) | \
+-	 (((regs)->ARM_cpsr & PSR_T_BIT) >> (__ffs(PSR_T_BIT))))
++	((FIELD_GET(PSR_J_BIT, (regs)->ARM_cpsr) << 1) | \
++	 FIELD_GET(PSR_T_BIT, (regs)->ARM_cpsr))
+ #else
+ #define isa_mode(regs) 1 /* Thumb */
+ #endif
 -- 
-Joe
+2.25.1
 
