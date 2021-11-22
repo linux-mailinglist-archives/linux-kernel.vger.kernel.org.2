@@ -2,148 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE4D6458A05
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 08:42:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8309F458A1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 08:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232847AbhKVHp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 02:45:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:39343 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230142AbhKVHp5 (ORCPT
+        id S233463AbhKVHxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 02:53:47 -0500
+Received: from mail-ua1-f54.google.com ([209.85.222.54]:43635 "EHLO
+        mail-ua1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229906AbhKVHxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 02:45:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637566970;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/XAbxjcnQGWVtvkYaQ80Gfqu/bCr+6feL1euVa+EhEk=;
-        b=XTmHVvfONn4FshdsjEIb25kSu0h45DSiMtE7uGG1JwP8Mdd4iCXre+NdoPyHByqJ/lI7lH
-        qqy+/5eWNrxxuP9S0c8+WN9grnJNCtRTiRrQwy2ko0iLJlQDi4aiycBV9Wbm+3vKPMt/tZ
-        pt1pORzmSVoAviUlnBLzWt8GIqjtHmE=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-333-pQBFSZgoNRmICEIvacpCLA-1; Mon, 22 Nov 2021 02:42:49 -0500
-X-MC-Unique: pQBFSZgoNRmICEIvacpCLA-1
-Received: by mail-ed1-f70.google.com with SMTP id r16-20020a056402019000b003e6cbb77ed2so13966235edv.10
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 23:42:49 -0800 (PST)
+        Mon, 22 Nov 2021 02:53:44 -0500
+Received: by mail-ua1-f54.google.com with SMTP id j14so24919792uan.10;
+        Sun, 21 Nov 2021 23:50:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/XAbxjcnQGWVtvkYaQ80Gfqu/bCr+6feL1euVa+EhEk=;
-        b=x5SrLOc+xfws2vFxOGUFvHGAiuCLAuMj8v4ZPc30mN0T1Xw1yttJuxlayBLpRHjsY3
-         Vf2qLkIFQfXUMqsTYyEKh2oXbsO1YAGdoPopY3kpDor9OiTf3qHQKkLFT30YvAZMR2bV
-         9L69nKyAbf3nATwwRUy0FXNiGCgxosoUrXAulPs+IRiC0BehkoExO8vxLonLbUTwz5mh
-         QddGu/fFF8ZTvqHFzQHAyuhNx1GIGHnECTSkqiCWE4WR9UTJOfRXFiVTv84vsV42g3jD
-         PHxy7WPm1lYmVPjw/91fHS7gWRI8td9DjB9zO+M328Gn8n2bZ4fcECAANmaz4eKwIn8n
-         wNtA==
-X-Gm-Message-State: AOAM532cXYsvlkW+n+f7h4wtXUo7G17jntyQu7XzvrT/rSBPMMw1VDUG
-        fsM0fWfdxnzpWOIFK8s+SVyqBmGtlFxj+4JRdQtfbCUKy7HLlEVJA7dLuih6gqdOrCb4CVM58/Q
-        1pCMj89/yrj6oJMRpIzIb1881
-X-Received: by 2002:a17:906:ad89:: with SMTP id la9mr37000368ejb.178.1637566968363;
-        Sun, 21 Nov 2021 23:42:48 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzTJqGs1B8o8V6KFilAJwvYHxoBKa2JlfENlQuYYQh/xLzQNbXGuOX/XyoPnu/ayfDrCqXk+g==
-X-Received: by 2002:a17:906:ad89:: with SMTP id la9mr37000350ejb.178.1637566968195;
-        Sun, 21 Nov 2021 23:42:48 -0800 (PST)
-Received: from steredhat (host-87-10-72-39.retail.telecomitalia.it. [87.10.72.39])
-        by smtp.gmail.com with ESMTPSA id w24sm3273814ejk.0.2021.11.21.23.42.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Nov 2021 23:42:47 -0800 (PST)
-Date:   Mon, 22 Nov 2021 08:42:45 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>, Halil Pasic <pasic@linux.ibm.com>
-Cc:     mst <mst@redhat.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "kaplan, david" <david.kaplan@amd.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>
-Subject: Re: [PATCH V5 1/4] virtio_ring: validate used buffer length
-Message-ID: <20211122074245.d75nqk5quyaopfpt@steredhat>
-References: <20211027022107.14357-1-jasowang@redhat.com>
- <20211027022107.14357-2-jasowang@redhat.com>
- <20211119160951.5f2294c8.pasic@linux.ibm.com>
- <CACGkMEtja2TPC=ujgMrpaPmdsy+zHowbBTvPj8k7nm_+zB8vig@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kT5Hh6yPK9g0/wKHmuficJ8QC8SNf9TRKWAOYqxbSfY=;
+        b=lsVBN8YmUv5eDLrtVFnV2XySjIH12wBvsJr6ZOow1ErdMkAneuPm5RFnn2omuamCNc
+         OsMGcnE7ppKypAS72qzhOYE0KgINVqkaJpc3uFXaKlUKo6+2HNFuhF+5Ied6p1MELJAW
+         /3AZWQmQLctRfgw3Uh9Jk737r1j9afaQDqEOureXXcxFMX9H4H9wQdpV94MdtdogMmJF
+         zBvR73rqJv1/ZZ+l+UvEn1DraNI0Sh1tkUUG4J+PD8LIXVxPGl9toDml0aJ+sEJVa1FQ
+         9YzmU7fB8VQXdigZeHHRKwro86u2pPk6UBJ/kExbd836HHmGVFvw2i+8AaGRvEChkWb4
+         I+EA==
+X-Gm-Message-State: AOAM532QEr0OxozaWUS83zMEdAX+cDgBzk6VzVG/b7CLcrB6PgH6qitz
+        Ozm64KgLHtCCvwJNPO5x+kEMlxv4l4JNEQ==
+X-Google-Smtp-Source: ABdhPJwO+LaKdZGLlP1WxivDbOshh/lSX37IcvC+iYanH+ZPDbwzXYqKU+aw2TfafOVN3nIUL+EGoA==
+X-Received: by 2002:a67:e109:: with SMTP id d9mr127999943vsl.19.1637567437870;
+        Sun, 21 Nov 2021 23:50:37 -0800 (PST)
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com. [209.85.222.47])
+        by smtp.gmail.com with ESMTPSA id q9sm4042363vkn.44.2021.11.21.23.50.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Nov 2021 23:50:37 -0800 (PST)
+Received: by mail-ua1-f47.google.com with SMTP id p2so34648969uad.11;
+        Sun, 21 Nov 2021 23:50:37 -0800 (PST)
+X-Received: by 2002:a67:c38f:: with SMTP id s15mr127486612vsj.50.1637567437054;
+ Sun, 21 Nov 2021 23:50:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CACGkMEtja2TPC=ujgMrpaPmdsy+zHowbBTvPj8k7nm_+zB8vig@mail.gmail.com>
+References: <20211121180155.9062-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20211121180155.9062-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 22 Nov 2021 08:50:26 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUTLYn=14RzJORp1mn-TSwC1rk1BO_9L6TG4g9JhH27JA@mail.gmail.com>
+Message-ID: <CAMuHMdUTLYn=14RzJORp1mn-TSwC1rk1BO_9L6TG4g9JhH27JA@mail.gmail.com>
+Subject: Re: [PATCH] memory: renesas-rpc-if: Silence clang warning
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 11:51:09AM +0800, Jason Wang wrote:
->On Fri, Nov 19, 2021 at 11:10 PM Halil Pasic <pasic@linux.ibm.com> wrote:
->>
->> On Wed, 27 Oct 2021 10:21:04 +0800
->> Jason Wang <jasowang@redhat.com> wrote:
->>
->> > This patch validate the used buffer length provided by the device
->> > before trying to use it. This is done by record the in buffer length
->> > in a new field in desc_state structure during virtqueue_add(), then we
->> > can fail the virtqueue_get_buf() when we find the device is trying to
->> > give us a used buffer length which is greater than the in buffer
->> > length.
->> >
->> > Since some drivers have already done the validation by themselves,
->> > this patch tries to makes the core validation optional. For the driver
->> > that doesn't want the validation, it can set the
->> > suppress_used_validation to be true (which could be overridden by
->> > force_used_validation module parameter). To be more efficient, a
->> > dedicate array is used for storing the validate used length, this
->> > helps to eliminate the cache stress if validation is done by the
->> > driver.
->> >
->> > Signed-off-by: Jason Wang <jasowang@redhat.com>
->>
->> Hi Jason!
->>
->> Our CI has detected, that virtio-vsock became unusable with this
->> patch on s390x. I didn't test on x86 yet. The guest kernel says
->> something like:
->> vmw_vsock_virtio_transport virtio1: tx: used len 44 is larger than in buflen 0
->>
->> Did you, or anybody else, see something like this on platforms other that
->> s390x?
->
->Adding Stefan and Stefano.
->
->I think it should be a common issue, looking at
+Hi Prabhakar,
 
-Yep, I confirm the same behaviour on x86_64. On Friday evening I had the 
-same failure while testing latest QEMU and Linux kernel.
+On Sun, Nov 21, 2021 at 7:05 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> This patch silences the following clang warning:
+>
+> | drivers/memory/renesas-rpc-if.c:253:14: warning: cast to smaller integer
+> | type 'enum rpcif_type' from 'const void *' [-Wvoid-pointer-to-enum-cast]
+> |           rpc->type = (enum rpcif_type)of_device_get_match_data(dev);
+> |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> Fixes: b04cc0d912eb8 ("memory: renesas-rpc-if: Add support for RZ/G2L")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
->vhost_vsock_handle_tx_kick(), it did:
->
->len += sizeof(pkt->hdr);
->vhost_add_used(vq, head, len);
->
->which looks like a violation of the spec since it's TX.
->
->>
->> I had a quick look at this code, and I speculate that it probably
->> uncovers a pre-existig bug, rather than introducing a new one.
->
->I agree.
->
->>
->> If somebody is already working on this please reach out to me.
->
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-My plan was to debug and test it today, so let me know if you need some 
-help.
-
->AFAIK, no. I think the plan is to fix both the device and drive side
->(but I'm not sure we need a new feature for this if we stick to the
->validation).
+> --- a/drivers/memory/renesas-rpc-if.c
+> +++ b/drivers/memory/renesas-rpc-if.c
+> @@ -250,7 +250,7 @@ int rpcif_sw_init(struct rpcif *rpc, struct device *dev)
+>                 return PTR_ERR(rpc->dirmap);
+>         rpc->size = resource_size(res);
 >
+> -       rpc->type = (enum rpcif_type)of_device_get_match_data(dev);
+> +       rpc->type = (enum rpcif_type)(uintptr_t)of_device_get_match_data(dev);
 
-Yes, maybe we need a new feature, since I believe there has been this 
-problem since the beginning.
+While correct, the cast to "enum rpcif_type" is not stricly needed anymore.
 
-Thanks,
-Stefano
+>         rpc->rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+>
+>         return PTR_ERR_OR_ZERO(rpc->rstc);
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
