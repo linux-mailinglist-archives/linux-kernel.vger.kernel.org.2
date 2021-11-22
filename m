@@ -2,123 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8270345897B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 07:55:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D8B45897F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 07:57:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbhKVG6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 01:58:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36008 "EHLO mail.kernel.org"
+        id S232730AbhKVHAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 02:00:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229983AbhKVG6o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 01:58:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7361B60F24;
-        Mon, 22 Nov 2021 06:55:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637564138;
-        bh=9sWF9nSUVGV0i4pLdKdx1qVM9my9wJIVR0V3Phw76LI=;
+        id S229983AbhKVHAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 02:00:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3715E60F24;
+        Mon, 22 Nov 2021 06:57:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637564222;
+        bh=j+WE6L/AzcbHD6oVlrySwtSIhpIS05+F8QB1g87jyq0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fN1llHvererPl11l8RVyzsC2B1JQXlK84m1/JkIm2mdGsZfdqp82pFPe428+FrKNE
-         n2+9ZJxwVFVgSPhWh0u9TXiOfKSvb86WyjAmlDDLd9VyAe8Np7sqoeLRMq80BiF+WU
-         tGad+WR2InYID+Ft1yxR+I1rNlSvfGUHUxAFJhDo=
-Date:   Mon, 22 Nov 2021 07:55:33 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Stephan Mueller <smueller@chronox.de>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>, Tso Ted <tytso@mit.edu>,
-        linux-crypto@vger.kernel.org, Willy Tarreau <w@1wt.eu>,
-        Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Petr Tesarik <ptesarik@suse.cz>,
-        John Haxby <john.haxby@oracle.com>,
-        Alexander Lobakin <alobakin@mailbox.org>,
-        Jirka Hladky <jhladky@redhat.com>
-Subject: Re: [PATCH v43 01/15] Linux Random Number Generator
-Message-ID: <YZs+5ZGc1G5O3vF5@kroah.com>
-References: <2036923.9o76ZdvQCi@positron.chronox.de>
- <2560758.ogP2UNPRoF@tauon.chronox.de>
- <YZsyZua9T8DD6JF5@kroah.com>
- <11035663.0FQYWtqqoJ@tauon.chronox.de>
+        b=AaoGxVUgKrF3svo6hsd5SEqVwgO6DgUQc91iSzYzOiujI08f20X0hRdB0wKSfukgD
+         7mQfQCoozchZUh8+v/JD/xIwQDmfUdnXc8fyrbj5lKU1iTt4fRoq5ywssRqfhuXRMT
+         XgAyQezNVGko1o5hsKmW5Ok9FfihCuYPQJAY+zriQ9L1E4QTj/Ehe/z9AeknsTt6AU
+         hWkqaWglWBrsqcTB6YPy7QDapPjuo6dNH4YWtcTGdh/j4voKF8qnQCYtD7M2DcZmKl
+         VNW21HbjMrrJ+zVjhenW6kBypFnpDpVWWN//V8894wMQFaoSxpCNC6O+Owip8Dli3L
+         FF167jiu56hQA==
+Date:   Mon, 22 Nov 2021 12:26:57 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     gustavo.pimentel@synopsys.com, wangqing@vivo.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] dmaengine: dw-edma: Fix (and simplify) the probe broken
+ since ecb8c88bd31c
+Message-ID: <YZs/OeBJDMc4A4EC@matsya>
+References: <935fbb40ae930c5fe87482a41dcb73abf2257973.1636492127.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <11035663.0FQYWtqqoJ@tauon.chronox.de>
+In-Reply-To: <935fbb40ae930c5fe87482a41dcb73abf2257973.1636492127.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 07:42:02AM +0100, Stephan Mueller wrote:
-> Am Montag, 22. November 2021, 07:02:14 CET schrieb Greg Kroah-Hartman:
+On 09-11-21, 22:09, Christophe JAILLET wrote:
+> The commit in the Fixes: tag has changed the logic of the code and now it
+> is likely that the probe will return an early success (0), even if not
+> completely executed.
 > 
-> Hi Greg,
+> This should lead to a crash or similar issue later on when the code
+> accesses to some never allocated resources.
 > 
-> > On Mon, Nov 22, 2021 at 06:34:43AM +0100, Stephan Mueller wrote:
-> > > Am Sonntag, 21. November 2021, 23:42:33 CET schrieb Jason A. Donenfeld:
-> > > 
-> > > Hi Jason,
-> > > 
-> > > > Hi Stephan,
-> > > > 
-> > > > You've posted it again, and yet I still believe this is not the
-> > > > correct design or direction. I do not think the explicit goal of
-> > > > extended configurability ("flexibility") or the explicit goal of being
-> > > > FIPS compatible represent good directions, and I think this introduces
-> > > > new problems rather than solving any existing ones.
-> > > 
-> > > The members from the Linux distributions that are on copy on this may tell
-> > > you a different story. They all developed their own downstream patches to
-> > > somehow add the flexibility that is needed for them. So, we have a great
-> > > deal of fragmentation at the resting-foundation of Linux cryptography.
-> > 
-> > What distros specifically have patches in their kernels that do
-> > different things to the random code path?  Do you have pointers to those
-> > patches anywhere?  Why have the distros not submitted their changes
-> > upstream?
+> Change the '!err' into a 'err' when checking if
+> 'dma_set_mask_and_coherent()' has failed or not.
 > 
-> I will leave the representatives from the distros to chime in and point to 
-> these patches.
+> While at it, simplify the code and remove the "can't success code" related
+> to 32 DMA mask.
+> As stated in [1], 'dma_set_mask_and_coherent(DMA_BIT_MASK(64))' can't fail
+> if 'dev->dma_mask' is non-NULL. And if it is NULL, it would fail for the
+> same reason when tried with DMA_BIT_MASK(32).
 
-Then why not work with the distros to get these changes merged into the
-kernel tree?  They know that keeping things out-of-the-tree costs them
-time and money, so why are they keeping them there?
+The patch title should describe the changes in the patch and not the
+outcome! So I have taken the liberty to update this to:
+dmaengine: dw-edma: Fix return value check for dma_set_mask_and_coherent()
 
-I recommend getting the distros to chime in on what their requirements
-are for the random code would probably be best as they are the ones that
-take on the "random fips requirement of the day" more than anyone else.
-
-> Yet, these changes are commonly a band-aid only that have some additional 
-> drawbacks. Bottom line, there is no appropriate way with the current code to 
-> allow vendors what they want to achieve. One hint to what changes vendors are 
-> attempting can be found in [1] slide 20.
-
-What exactly do vendors "want to achieve"?  Where are they saying this?
-
-> [1] https://www.chronox.de/lrng/doc/lrng_presentation_v43.pdf
-
-I see nothing on that slide that mentions actual requirements other than
-"the current code does not match this random government regulation".
-
-Please provide valid reasons, from distros.
-
-thanks,
-
-greg k-h
+-- 
+~Vinod
