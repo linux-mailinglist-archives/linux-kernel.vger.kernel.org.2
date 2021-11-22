@@ -2,130 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0222459661
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 22:07:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7D6459663
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 22:08:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239824AbhKVVKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 16:10:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52304 "EHLO
+        id S239942AbhKVVLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 16:11:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbhKVVKO (ORCPT
+        with ESMTP id S229634AbhKVVLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 16:10:14 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD92C061574;
-        Mon, 22 Nov 2021 13:07:07 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id gb13-20020a17090b060d00b001a674e2c4a8so967399pjb.4;
-        Mon, 22 Nov 2021 13:07:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=ne8hkoWG0z2fDBhpIIupmgnbEkE/DtgxjBNf8x/I1ZI=;
-        b=lXWMk6Wjl5CMUHIvg0r73HhVJsbq/QN8TLifNL32x7cNbyufn8nmU67jQ6SAuDmVYO
-         r8t9J7wMV6i+ZiEWRaaiUr+ghJjrpFPHiKIHAIeMTfMjwnG2EgFjkBUqjyE2k2sMylq7
-         qEiCrM/YouNW64juivQY8KsySImO49gS3BznhkcnNs5zSKnG3grQ91iiL7g73oz/N+NG
-         66kPDP5/z4GbRumdAc4MtZ5ROvSLtI1qSvIwER0dKRwKOoXKsxk+P0fAiwFW+atf+nG7
-         IDQNGA75G8B8Ccu1SG7XgtnBPEC7dvVB7lAijNaVkBSvBCYZfqsQbG3ezr0PRX8JK/UA
-         vgvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=ne8hkoWG0z2fDBhpIIupmgnbEkE/DtgxjBNf8x/I1ZI=;
-        b=CHO1uOiUaDkV/rehAgPEN5OXHVZ2tvHdpATJag28/x7JZ2oVIhO+t3SWWAgv4U4D6Y
-         dAbtDMyfiYULfN3xuv66jrM5DVvMXhhVUmu0+KtJPaklNbii7uQ/GcdauRdqMVCLsCpP
-         eESKbVAgNj1B5qyEUG9Ki6lw3CkgDwupLJfDO5gJY3ARt/xov8iOrqZc52e+jyEgQYgq
-         AX+B4yu6Z0mTKOEJEmQq1Hrk6al9t3vVkhC+/GczLGV1g3wugfB4PZMQ5ZqgrM0ctg7f
-         Ekmzhz8r4dvppCQ4FRZC/h6ljE4mYBVsGyyd166/NTg9CKA3I/hvkcEsp3p3h4p/GPKx
-         Ql9Q==
-X-Gm-Message-State: AOAM530x27vU506G6EKc4KB5C+M2+woHgy/a5RxzB/hAYk3e2uwCMk55
-        mdi1QLipQiqt1E11bpIP09GmjlFUrOocSRpmI9g=
-X-Google-Smtp-Source: ABdhPJwEHBACB+R4qQ+skgD90UCbRuqqP0i1P0ZOMuyRFt938zIEwoMPkKF9v0KyodZzEKV+CXy6Zz8JdL44aUgvR98=
-X-Received: by 2002:a17:90b:180b:: with SMTP id lw11mr36716938pjb.108.1637615227027;
- Mon, 22 Nov 2021 13:07:07 -0800 (PST)
+        Mon, 22 Nov 2021 16:11:45 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE26BC061574;
+        Mon, 22 Nov 2021 13:08:36 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HyfyC2l1Xz4xbM;
+        Tue, 23 Nov 2021 08:08:35 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1637615315;
+        bh=kGDqJ30lN+FF4+CqPtMyEqA6aPbD0Nsm8L4zU8P4LOQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=JM1L/tsXJDy8KWL85dRtPRO3xZL/Z8/fyAdQHUtVgRZx3Sr2U6MmHRMFhs4q+RG/4
+         uW1lRRjFCwaZIgV3NhXIyrWmqXDWTq9suiABTbpSClmhb1zSvU+Ud5tMVGra4XrvGk
+         lPketPkgD9aVdanTdbtrcvi6BbBZi3SxDrcK++FT3UtwdL6IrOTBJCAizS86HtyoWb
+         /rsSXIznXUBoq7bGdcOttPgK9SDVyNyrkiL6xv1KPewBxraeRCKsJvRJSpCy1/HVtB
+         OJl2zCuSxA5ZJsowcDiY++l7FHZZhukGXAuoDTKtj3V1HUBcqG15jhn94SipRW0R8r
+         mTE/jLQtTCVKg==
+Date:   Tue, 23 Nov 2021 08:08:34 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andy Gross <agross@kernel.org>
+Cc:     Prasad Malisetty <pmaliset@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the qcom tree
+Message-ID: <20211123080834.00ebc15a@canb.auug.org.au>
 MIME-Version: 1.0
-References: <2036923.9o76ZdvQCi@positron.chronox.de> <2560758.ogP2UNPRoF@tauon.chronox.de>
- <YZsyZua9T8DD6JF5@kroah.com> <11035663.0FQYWtqqoJ@tauon.chronox.de>
- <YZs+5ZGc1G5O3vF5@kroah.com> <afdf9c4a4005f6aeaded9e976c48160933f3c447.camel@redhat.com>
-In-Reply-To: <afdf9c4a4005f6aeaded9e976c48160933f3c447.camel@redhat.com>
-Reply-To: noloader@gmail.com
-From:   Jeffrey Walton <noloader@gmail.com>
-Date:   Mon, 22 Nov 2021 16:06:55 -0500
-Message-ID: <CAH8yC8niN=q-pD4B3OU9zj84GN-vfi=T_aLq9V3sLTZ-mRP_GQ@mail.gmail.com>
-Subject: Re: [PATCH v43 01/15] Linux Random Number Generator
-To:     Simo Sorce <simo@redhat.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephan Mueller <smueller@chronox.de>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Tso Ted <tytso@mit.edu>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Willy Tarreau <w@1wt.eu>, Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Petr Tesarik <ptesarik@suse.cz>,
-        John Haxby <john.haxby@oracle.com>,
-        Alexander Lobakin <alobakin@mailbox.org>,
-        Jirka Hladky <jhladky@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/jKQ1.rY/hoHPU7E9cZ/yPVQ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 10:10 AM Simo Sorce <simo@redhat.com> wrote:
->
-> On Mon, 2021-11-22 at 07:55 +0100, Greg Kroah-Hartman wrote:
-> > On Mon, Nov 22, 2021 at 07:42:02AM +0100, Stephan Mueller wrote:
-> > > ...
-> > > I will leave the representatives from the distros to chime in and point to
-> > > these patches.
-> >
-> > Then why not work with the distros to get these changes merged into the
-> > kernel tree?  They know that keeping things out-of-the-tree costs them
-> > time and money, so why are they keeping them there?
->
-> I can speak for my distro.
-> We have not proposed them because they are hacks, we know they are
-> hacks, and we know they are not the long term solution.
-> Yet we have no better way (in our products, today) so far to deal with
-> these issues because what is needed is an effort like LRNG (does not
-> have to be this specific implementation), because hacks will not cut it
-> in the long term.
+--Sig_/jKQ1.rY/hoHPU7E9cZ/yPVQ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Kernel support for FIPS validated crypto would be very useful, IMHO.
+Hi all,
 
-Currently most folks I know and consult with use CentOS because CentOS
-is free and includes the FIPS canister for OpenSSL. Several folks I
-know and consult with don't have a solution because they use Debian
-derivatives, like Ubuntu. They use Ubuntu because Ubuntu offers the
-image processing packages they need out of the box.
+In commit
 
-Moving the validated crypto into the kernel would be useful since all
-distros can provide it without the need for one-off patches.
+  66b788133030 ("arm64: dts: qcom: sc7280: Fix 'interrupt-map' parent addre=
+ss cells")
 
-What I am less clear about.... NIST is only one standard body, and not
-everyone trusts the US. There are other bodies that should probably be
-represented, like KISA. So the big question becomes, how does the
-kernel offer "approved" crypto for different consumers? (where
-"approved" means blessed by some agency like NIST or KISA).
+Fixes tag
 
-Jeff
+  Fixes: 92e0ee9f8 ("arm64: dts: qcom: sc7280: Add PCIe and PHY related nod=
+es")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+    or later) just making sure it is not set (or set to "auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/jKQ1.rY/hoHPU7E9cZ/yPVQ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGcBtIACgkQAVBC80lX
+0GxJOQf/ZgGrlbOu+teQ1PK7umv8DULsxWCXqFyBNvA76a7e85+w/GoaW3i37821
+FRvIutKAJNAqSAUWDO5gJk991i3usHaP2pa+JhWbF4YPC6G+HBmBgM3Ax2zs/wtH
+Lg2HmkD/XEjwLcQNeMqDvL4BLwxgMCsFImQCm5MmOd73ZMTBpZZ8etBNJsTbxw69
+yxA/S7O2d6eyShaCh9V9ipW7FFk5U7H6ipFmInZSJ4ltVUqHHWGxftZe9ptJGM26
+T3+mRytgn7dHZSmclA9SbA+w1Sj2rXb4wuDVSAGLZ/jTN0hgilR7XzEvzOHje7uX
+WqFeQ7GLqGyUNOgMN0gY/NvaJXRCFA==
+=LI1X
+-----END PGP SIGNATURE-----
+
+--Sig_/jKQ1.rY/hoHPU7E9cZ/yPVQ--
