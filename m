@@ -2,94 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D50144589BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 08:24:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4274589CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 08:27:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238727AbhKVH1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 02:27:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbhKVH1g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 02:27:36 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 811D6C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 23:24:30 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id u11so13313123plf.3
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 23:24:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FHPKEo5OIrRYlJIE6fzcRlVJnFV+bGBhYieXKHhfYaM=;
-        b=Xx9+J7G4V0SLP0zt2j/0jmwLZjjVJivV3EhKxSEmHpXBu/h58t9pAQLOFHUxmc8Zmz
-         MwCHw0b/q2rKtoFTkbWCkt0Ok3f+ryx5TV9S4DJLpXYw+CQm+xiaj1PGbNMrJCWCdsiv
-         yyowPQ9Ma0qBv/05GL12xl3ejriHPQd+HQiVSHhoS0hXhZv+6d+e9+/vJaEBgImQfFk3
-         eufr/UkWj8SAgT7B/tujZBdvJEfN9C7QSaRzAflbS3pOglzCmP3/XcYDUkbHBByZtlMF
-         jcHbTKsW7fzxBYGqsb4MCV6LSwMa1Oy1HZDagsHxP5cvagacCD6HJZVwpE34DX7rDrt2
-         hMCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FHPKEo5OIrRYlJIE6fzcRlVJnFV+bGBhYieXKHhfYaM=;
-        b=0UrG+v/OebxBF7qWy3bqyqC2Qo6stl93EvxcByCq/vtVzgkFozzcHZVSYhncgRR4rA
-         3kNOwVbsxlkdlvABVNAGDUHR77YWJfXqtfgXYFl297or3E55L5JGtVJRl9NKLGDWJeMt
-         m8y5YUWVuZSZ+gQL4w7nudvXOyrebzBAt7z2n2hBWT4cew3Mcy0m6HH9nBQUpFreaFS1
-         9HuDkCbVbBNS82dZBfwY+jAbR3X79Fa5p5/8Y0lgxeVwVoAVwd+7SUplP7vfyGUAxp+q
-         Z/mYwojMBwj2Wqu+pJrMN0lNgI1tkjEizbcAfd2pNt0x3g7vjIkxmFpNxxDEtVLJHJOs
-         5PwA==
-X-Gm-Message-State: AOAM532lY1/w22jGMwoS2BOI561+YFaknT4qURKFjH+tk/o2gqRd5Tau
-        NW3p10gKqRhOcvfwayWQVnNwVG6Fs9ltiTY6
-X-Google-Smtp-Source: ABdhPJwYyLOmTNlyFC9opPr6bqQ4vaZ7UhqH97H6j7uIgUPloBs28xczJN7icfi61q4jDaWUU65PBQ==
-X-Received: by 2002:a17:902:d50d:b0:141:ea03:5193 with SMTP id b13-20020a170902d50d00b00141ea035193mr104636337plg.89.1637565869937;
-        Sun, 21 Nov 2021 23:24:29 -0800 (PST)
-Received: from localhost.localdomain ([156.146.34.70])
-        by smtp.gmail.com with ESMTPSA id pc1sm1426628pjb.5.2021.11.21.23.24.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Nov 2021 23:24:29 -0800 (PST)
-From:   Drew Fustini <dfustini@baylibre.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Colin Ian King <colin.king@intel.com>,
-        Drew Fustini <dfustini@baylibre.com>,
-        zuoqilin <zuoqilin@yulong.com>,
-        Tom Saeger <tom.saeger@oracle.com>,
-        Sven Eckelmann <sven@narfation.org>,
-        tangchunyou <tangchunyou@yulong.com>,
-        linux-kernel@vger.kernel.org
-Cc:     "Gustavo A . R . Silva" <gustavoars@kernel.org>
-Subject: [PATCH] scripts/spelling.txt: add "oveflow"
-Date:   Sun, 21 Nov 2021 23:23:02 -0800
-Message-Id: <20211122072302.839102-1-dfustini@baylibre.com>
-X-Mailer: git-send-email 2.27.0
+        id S238774AbhKVHaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 02:30:30 -0500
+Received: from comms.puri.sm ([159.203.221.185]:58866 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233435AbhKVHa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 02:30:28 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id C06B7E139C;
+        Sun, 21 Nov 2021 23:27:21 -0800 (PST)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 436LXCLEsQLl; Sun, 21 Nov 2021 23:27:20 -0800 (PST)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     martin.kepplinger@puri.sm, laurent.pinchart@ideasonboard.com,
+        mchehab@kernel.org, rmfrfs@gmail.com
+Cc:     devicetree@vger.kernel.org, kernel@pengutronix.de, kernel@puri.sm,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        robh@kernel.org, shawnguo@kernel.org
+Subject: [PATCH v3 1/2] media: imx: imx7-media-csi: add support for imx8mq
+Date:   Mon, 22 Nov 2021 08:27:07 +0100
+Message-Id: <20211122072708.95269-1-martin.kepplinger@puri.sm>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add typo "oveflow" for "overflow". This typo was found and fixed in
-tools/testing/selftests/bpf/prog_tests/btf_dump.c
+Modeled after the NXP driver mx6s_capture.c that this driver is based on,
+imx8mq needs different settings for the baseaddr_switch mechanism. Define
+the needed bits and set that for imx8mq.
 
-Link: https://lore.kernel.org/all/20211122070528.837806-1-dfustini@baylibre.com/
-Suggested-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+Without these settings, the system will "sometimes" hang completely when
+starting to stream (the interrupt will never be called).
+
+Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+Acked-by: Rui Miguel Silva <rmfrfs@gmail.com>
 ---
- scripts/spelling.txt | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/scripts/spelling.txt b/scripts/spelling.txt
-index acf6ea711299..0c8b79cfb1bb 100644
---- a/scripts/spelling.txt
-+++ b/scripts/spelling.txt
-@@ -1046,6 +1046,7 @@ oustanding||outstanding
- overaall||overall
- overhread||overhead
- overlaping||overlapping
-+oveflow||overflow
- overflw||overflow
- overlfow||overflow
- overide||override
+revision history
+----------------
+v3:
+ * fix compiler warning when assigning a 64 bit (void *) to an int
+ * add Ruis' Acked-by tag
+
+v2: (thank you Rui and Laurent)
+ * rename function and enum
+ * remove unrealted newline
+ * add Laurents reviewed tag to the bindings patch
+ https://lore.kernel.org/linux-media/20211118063347.3370678-1-martin.kepplinger@puri.sm/
+
+v1:
+https://lore.kernel.org/linux-media/20211117092710.3084034-1-martin.kepplinger@puri.sm/T/#t
+
+
+
+ drivers/staging/media/imx/imx7-media-csi.c | 32 ++++++++++++++++++++--
+ 1 file changed, 30 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/staging/media/imx/imx7-media-csi.c b/drivers/staging/media/imx/imx7-media-csi.c
+index 2288dadb2683..32311fc0e2a4 100644
+--- a/drivers/staging/media/imx/imx7-media-csi.c
++++ b/drivers/staging/media/imx/imx7-media-csi.c
+@@ -12,6 +12,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/module.h>
++#include <linux/of_device.h>
+ #include <linux/of_graph.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
+@@ -122,6 +123,10 @@
+ #define BIT_DATA_FROM_MIPI		BIT(22)
+ #define BIT_MIPI_YU_SWAP		BIT(21)
+ #define BIT_MIPI_DOUBLE_CMPNT		BIT(20)
++#define BIT_MASK_OPTION_FIRST_FRAME	(0 << 18)
++#define BIT_MASK_OPTION_CSI_EN		(1 << 18)
++#define BIT_MASK_OPTION_SECOND_FRAME	(2 << 18)
++#define BIT_MASK_OPTION_ON_DATA		(3 << 18)
+ #define BIT_BASEADDR_CHG_ERR_EN		BIT(9)
+ #define BIT_BASEADDR_SWITCH_SEL		BIT(5)
+ #define BIT_BASEADDR_SWITCH_EN		BIT(4)
+@@ -154,6 +159,11 @@
+ #define CSI_CSICR18			0x48
+ #define CSI_CSICR19			0x4c
+ 
++enum imx_csi_model {
++	IMX7_CSI_IMX7 = 0,
++	IMX7_CSI_IMX8MQ,
++};
++
+ struct imx7_csi {
+ 	struct device *dev;
+ 	struct v4l2_subdev sd;
+@@ -189,6 +199,8 @@ struct imx7_csi {
+ 	bool is_csi2;
+ 
+ 	struct completion last_eof_completion;
++
++	enum imx_csi_model model;
+ };
+ 
+ static struct imx7_csi *
+@@ -537,6 +549,16 @@ static void imx7_csi_deinit(struct imx7_csi *csi,
+ 	clk_disable_unprepare(csi->mclk);
+ }
+ 
++static void imx7_csi_baseaddr_switch_on_second_frame(struct imx7_csi *csi)
++{
++	u32 cr18 = imx7_csi_reg_read(csi, CSI_CSICR18);
++
++	cr18 |= BIT_BASEADDR_SWITCH_EN | BIT_BASEADDR_SWITCH_SEL |
++		BIT_BASEADDR_CHG_ERR_EN;
++	cr18 |= BIT_MASK_OPTION_SECOND_FRAME;
++	imx7_csi_reg_write(csi, cr18, CSI_CSICR18);
++}
++
+ static void imx7_csi_enable(struct imx7_csi *csi)
+ {
+ 	/* Clear the Rx FIFO and reflash the DMA controller. */
+@@ -552,6 +574,9 @@ static void imx7_csi_enable(struct imx7_csi *csi)
+ 	/* Enable the RxFIFO DMA and the CSI. */
+ 	imx7_csi_dmareq_rff_enable(csi);
+ 	imx7_csi_hw_enable(csi);
++
++	if (csi->model == IMX7_CSI_IMX8MQ)
++		imx7_csi_baseaddr_switch_on_second_frame(csi);
+ }
+ 
+ static void imx7_csi_disable(struct imx7_csi *csi)
+@@ -1155,6 +1180,8 @@ static int imx7_csi_probe(struct platform_device *pdev)
+ 	if (IS_ERR(csi->regbase))
+ 		return PTR_ERR(csi->regbase);
+ 
++	csi->model = (enum imx_csi_model)(uintptr_t)of_device_get_match_data(&pdev->dev);
++
+ 	spin_lock_init(&csi->irqlock);
+ 	mutex_init(&csi->lock);
+ 
+@@ -1249,8 +1276,9 @@ static int imx7_csi_remove(struct platform_device *pdev)
+ }
+ 
+ static const struct of_device_id imx7_csi_of_match[] = {
+-	{ .compatible = "fsl,imx7-csi" },
+-	{ .compatible = "fsl,imx6ul-csi" },
++	{ .compatible = "fsl,imx8mq-csi", .data = (void *)IMX7_CSI_IMX8MQ },
++	{ .compatible = "fsl,imx7-csi", .data = (void *)IMX7_CSI_IMX7 },
++	{ .compatible = "fsl,imx6ul-csi", .data = (void *)IMX7_CSI_IMX7 },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(of, imx7_csi_of_match);
 -- 
-2.27.0
+2.30.2
 
