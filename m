@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3514458B0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 10:07:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7606A458B11
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 10:07:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238990AbhKVJKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 04:10:36 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:49297 "EHLO
+        id S239006AbhKVJLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 04:11:02 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:40797 "EHLO
         wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234234AbhKVJKd (ORCPT
+        by vger.kernel.org with ESMTP id S231734AbhKVJKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 04:10:33 -0500
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 42BE23200907;
-        Mon, 22 Nov 2021 04:07:27 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Mon, 22 Nov 2021 04:07:27 -0500
+        Mon, 22 Nov 2021 04:10:55 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id D469D3201C16;
+        Mon, 22 Nov 2021 04:07:48 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 22 Nov 2021 04:07:49 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
         :mime-version:content-type:content-transfer-encoding; s=fm1; bh=
-        LOwyR3SU1ameaj8zUnf/E4kX0J8aeTERW2J1xGtMV9E=; b=FU2uqHd4hCCk1rHE
-        8aVq2cwK/UZJC+irHd/RabT5bmul4AvWJuozdSz+xp4byBfAHaXnHjR1AB8cR3C2
-        MTo1PuSS0puWWV36BtC4SP5AKWuJF+MMEEjE1HNGl5wTvXdnW0ccZL/qsxxmLUfD
-        dnz5Tez1xM4Mrhqg8mI3qVQPDosxAr1JuC4b+0g6ox4x9oTeckAltrGX45TFO44G
-        ogU3ZPRSpcCw56Svn98ZxtZLgW5JlTePY/lTzfHgMe3sIttObd52SBfhUYuEkOCb
-        h8PLfOHnhSk0ZpWDmr2PO79Y0ZS5fFFy82KGIewrFBoO/L/LrCBiZ/8LKT2grxFt
-        69TAsA==
+        p4D+EdB7vVHuE51NduTFtiI1Vs/Dfbzr2dT0kQQL86o=; b=ewQK4D9jU79JZ92w
+        3FJJNDHVtWxh77Z6ALv9pNgBhgsm/28mPm1z/mvH+yWwX7nsRiP8jjl20u1zU2YX
+        N6PNMQEEwj4AkA2duf2v23M5DLZD6QG7Gu1GeQnQnh1U2CN7U1YbzNy9vDlXuF3D
+        h7qeLiksO22ugkDe2BvIllsFGdna8n9SnTLqA8a4Ba7xu+TAzg3M4j9Fpz+PpHok
+        C4jsKQU+R0ZDVbolQIbd1bCwLflsda2ADhFMmNYO22ODQDcbZOSA5XTG3Rq6dm+k
+        VPJp5bFfDgP3uk1aMh6J7cNKVGLJVN5mFg2q/EnH8ddW/NIFYLQjz2YOY+TVT59n
+        lDVt/g==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:from:in-reply-to:message-id:mime-version:references
         :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=LOwyR3SU1ameaj8zUnf/E4kX0J8aeTERW2J1xGtMV
-        9E=; b=XzpZ4bvPcBDfF7NBcGgNxQjWakkuXCdFnirbrYrWHBv5pqzqtThflDmNV
-        cW3KbpJP+mGdEAatPGASDBpJuEQ93I2xHVHqwca9WQRzMniGUSTp6g1++bEb2KBj
-        w6tX3v1uqWqwij8mPLqWD5Qqbn+7KAdEubCdQGV3Z3CmaHAUeqABTztf1DxCqOCn
-        andhd5NMvMldN2uMHTCrT0LwFwdfzGtJ1WATtPdpprf5tUmq+G3o236KJ0z6lbsn
-        DqsNDx+b6Y3+6SpUTML08eeshyonsUGjiUyaCqNQJ/zOtIfoT9v+KTSoJNeE/k+r
-        4k5i/clSzakq1mZqI3zWomO9BghNg==
-X-ME-Sender: <xms:zl2bYfAIa9E_nA7HYfx1EUP8XtsZ-VhBDnl1f3bHvjkjE_0VqHqPzg>
-    <xme:zl2bYViK0PmHdS75ihUHeyEYzgQt7Dv2YMTHDhSxYnSAUD-2parLe62W0UeMn-osg
-    oAMnAgR-dzTF9JUexc>
-X-ME-Received: <xmr:zl2bYalPlooTWzSFTndBcl1aopgvaFxYLTk8W-LainHpCRqPCy2z7fEiB8wbjZDVcakOgOxZTUgDH2ZPF22-tDeDgUOmiNoxXXs>
+        :x-sasl-enc; s=fm1; bh=p4D+EdB7vVHuE51NduTFtiI1Vs/Dfbzr2dT0kQQL8
+        6o=; b=dyWf87vzavzyQOROzFgIQQhe4wQXfCev7nuMh7JaydhyuGTrTiMDQ2icw
+        Mb1VC0QwhuPifsUdmoZzB8tantwC/LxunzlxPVSQlEEVGnlqCypmPcqYzZrXrFCJ
+        qVbiMJ6Q7rfx39TQF3zXUKgeh14oncrHhsM2jgT+d6TG7y1gDhO37PQcC8QWBHtE
+        fC2ipgjATCzIbR/eOmmMGBted4cYCf1wL1zP4xb95yqH3dYaKRpRsLYISa/Fw7rT
+        eX4aQZFGo9pFWH5XH43OISJ2wgICtr/xkCQ0mKx1tQn0rNhN/bkT6i7rM/jLfPUb
+        d+W1CMsSx40ZY/PD3s7mXHmXifrJA==
+X-ME-Sender: <xms:5F2bYTlfR6ygYO7D3oNcEUCmubjHHUI_ULA7jwuLHJx7g7fyb3fXww>
+    <xme:5F2bYW3dcvir-3NdvX-oxOUmveDQh_8rqrlTfljpDGKDDk44lNJIBrXDz-x-D4Yl5
+    8Gfm40BR6Cz_XOKpnM>
+X-ME-Received: <xmr:5F2bYZqNtJkPSIzcHgjbYtlzY-K58Itztb5Q3bxWWlTek7yZCFayfcMnMrauqRzFE60usyTUvHLvcobRxTyz4Udj2gNdt8kuVkk>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrgeefgdduvdelucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
@@ -50,24 +50,24 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrgeefgdduvdelucetufdoteggod
     htthgvrhhnpeejuefggeekfffgueevtddvudffhfejffejjedvvdduudethefhfefhfeeg
     ieekkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
     hmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:zl2bYRwtQVDj5jEMGTuTovE8c75uMBHnjc0KrL3eO7rqsmIZ6ZKuFw>
-    <xmx:zl2bYUQhW9RrTJw8sspGUMDuCDQcYHQNKxj9DbNzucZMGSwh9FGciA>
-    <xmx:zl2bYUbeRm6ePEj03bvjubRDvzyYBmQGV4219mJpdwkzHZdHFBsVJg>
-    <xmx:zl2bYTGKbLouB1Hczf7WjwKqOY4IgoCuEzz68_ERZj3JyqtJgbkaXw>
+X-ME-Proxy: <xmx:5F2bYbkS9AN-HARX116S2bg8i6zk4LG8872Ckyw_BsAUwAqv_c1giQ>
+    <xmx:5F2bYR3zjeQ4euHtZt7sVvEGs5v5zMZJDi9AYb-j4peNrfBXqYZlww>
+    <xmx:5F2bYastf55KkrMzlrT0PqWfE15LF7UwU9qu_GsTmSp1VE8lJS3d8Q>
+    <xmx:5F2bYemcsiKN68q6H3_uUNtmFdW50fzn6CDbk3ExQET_7QhlIY4f_g>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 22 Nov 2021 04:07:26 -0500 (EST)
+ 22 Nov 2021 04:07:47 -0500 (EST)
 From:   Maxime Ripard <maxime@cerno.tech>
-To:     Jernej Skrabec <jernej.skrabec@gmail.com>, wens@csie.org,
-        mripard@kernel.org
-Cc:     Maxime Ripard <maxime@cerno.tech>, samuel@sholland.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] bus: sunxi-rsb: Fix shutdown
-Date:   Mon, 22 Nov 2021 10:07:23 +0100
-Message-Id: <163757202921.21051.5589721835708378046.b4-ty@cerno.tech>
+To:     mripard@kernel.org, wens@csie.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc:     Maxime Ripard <maxime@cerno.tech>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH 0/2] dts: Add CEC clock to DW HDMI
+Date:   Mon, 22 Nov 2021 10:07:41 +0100
+Message-Id: <163757205949.21212.12709413525294127905.b4-ty@cerno.tech>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211121083537.612473-1-jernej.skrabec@gmail.com>
-References: <20211121083537.612473-1-jernej.skrabec@gmail.com>
+In-Reply-To: <20211120073448.32480-1-jernej.skrabec@gmail.com>
+References: <20211120073448.32480-1-jernej.skrabec@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -75,17 +75,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 21 Nov 2021 09:35:37 +0100, Jernej Skrabec wrote:
-> Function sunxi_rsb_hw_exit() is sometimes called with pm runtime
-> disabled, so in such cases pm_runtime_resume() will fail with -EACCES.
-> 
-> Instead of doing whole dance of enabling pm runtime and thus clock just
-> to disable it again immediately, just check if disabling clock is
-> needed. That way calling pm_runtime_resume() is not needed at all.
+On Sat, 20 Nov 2021 08:34:46 +0100, Jernej Skrabec wrote:
+> Experimentation proved that CEC controller in H3-like DW-HDMI core
+> depends on 32 kHz clock output from RTC. If board has external 32768 Hz
+> crystal, HDMI CEC always work. However, if external crystal is missing
+> and 32 kHz clock is generated by internal oscillator, CEC communication
+> may or may not work, depending on accuracy. Changing internal oscillator
+> prescaler can make CEC work.
 > 
 > [...]
 
-Applied to sunxi/linux.git (sunxi/drivers-for-5.17).
+Applied to sunxi/linux.git (sunxi/dt-for-5.17).
 
 Thanks!
 Maxime
