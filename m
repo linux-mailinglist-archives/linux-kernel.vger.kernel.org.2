@@ -2,76 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E34458EDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A21E0458EE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234308AbhKVNDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 08:03:16 -0500
-Received: from mga07.intel.com ([134.134.136.100]:43751 "EHLO mga07.intel.com"
+        id S234914AbhKVNE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 08:04:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231258AbhKVNDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 08:03:15 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10175"; a="298190983"
-X-IronPort-AV: E=Sophos;i="5.87,254,1631602800"; 
-   d="scan'208";a="298190983"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 05:00:08 -0800
-X-IronPort-AV: E=Sophos;i="5.87,254,1631602800"; 
-   d="scan'208";a="508553970"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 05:00:05 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mp8vR-009RBu-A1;
-        Mon, 22 Nov 2021 15:00:01 +0200
-Date:   Mon, 22 Nov 2021 15:00:00 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/4] bitops: Add single_bit_set()
-Message-ID: <YZuUUGvVjcHk79k0@smile.fi.intel.com>
-References: <cover.1637330431.git.matti.vaittinen@fi.rohmeurope.com>
- <73d5e4286282a47b614d1cc5631eb9ff2a7e2b44.1637330431.git.matti.vaittinen@fi.rohmeurope.com>
- <YZt+x2moR632x///@smile.fi.intel.com>
- <2c22b52f-9a1f-06f5-f008-d568096f5c4d@fi.rohmeurope.com>
- <YZuTt3+PPvyJsFQ/@smile.fi.intel.com>
+        id S230058AbhKVNEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 08:04:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE7B060F5B;
+        Mon, 22 Nov 2021 13:01:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637586107;
+        bh=cfIg/uCuc4p0nRwYuqPMNhFVEk2R7HhI93wi9j5XUh4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xY0t7XdeYDuvEgXTDk1mFWAOxEZwLc/VDUjeK/qujTUZvsMiXfjJWoJpgdxspvKyk
+         HzfWVPWB7NJ+Ulb3SuH9phY7p0Uz+YCb63mmrzHoLvDoE0NzwLHyzVhLiEY313cO+B
+         6trVaBHdpKbFDrx3kCOjISyorhYodLMe6te0jVr8=
+Date:   Mon, 22 Nov 2021 14:01:44 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Patrik John <patrik.john@u-blox.com>
+Cc:     linux-kernel@vger.kernel.org, ldewangan@nvidia.com,
+        thierry.reding@gmail.com, jonathan@nvidia.com,
+        linux-serial@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH] serial: tegra: Fixes lower tolerance baud rate limit for
+ older tegra chips introduced by d781ec21bae6
+Message-ID: <YZuUuNTCLS0yLH8A@kroah.com>
+References: <sig.096060f39c.20211122124425.74031-1-patrik.john@u-blox.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YZuTt3+PPvyJsFQ/@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <sig.096060f39c.20211122124425.74031-1-patrik.john@u-blox.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 02:57:27PM +0200, Andy Shevchenko wrote:
-> On Mon, Nov 22, 2021 at 12:42:21PM +0000, Vaittinen, Matti wrote:
-> > On 11/22/21 13:28, Andy Shevchenko wrote:
+On Mon, Nov 22, 2021 at 01:44:26PM +0100, Patrik John wrote:
+> The current implementation uses 0 as lower limit for the baud rate tolerance which contradicts the initial commit description (https://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git/commit/drivers/tty/serial/serial-tegra.c?h=for-next&id=d781ec21bae6ff8f9e07682e8947a654484611f5) of +4/-4% tolerance for older tegra chips other than Tegra186 and Tegra194.
+> This causes issues on UART initilization as soon as the actual baud rate clock is slightly lower than required which we have seen on the Tegra124-based Toradex Apalis TK1 which also uses tegra30-hsuart as compatible in the DT serial node (for reference line 1540ff https://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git/tree/arch/arm/boot/dts/tegra124-apalis-v1.2.dtsi?h=for-next)
 
-...
+All of these links will break in a few days.
 
-> > I think I actually tried using hweight() at some point but don't really 
-> > remember why I rolled the single_bit_set. (I remember the hweight() 
-> > usage because I had to do some googling as I had never heard term 
-> > hamming weight before).
+And a line number is not "1540ff" :(
+
 > 
-> Oh, it should be a very good reason not to use hweight() since on some
-> architectures it might become just one assembly instruction.
+> The standard baud rate tolerance limits are also stated in the tegra20-hsuart driver description (https://www.kernel.org/doc/Documentation/devicetree/bindings/serial/nvidia%2Ctegra20-hsuart.txt).
 
-(for the sake of educational purposes to us both)
-https://vaibhavsagar.com/blog/2019/09/08/popcount/
+You can just reference a file in the kernel source tree directly, no
+need to go back to kernel.org
 
--- 
-With Best Regards,
-Andy Shevchenko
+> 
+> The previously introduced check_rate_in_range() always fails due to the lower limit set to 0 even if the actual baud rate is within the required -4% tolerance.
 
+Can you please wrap your changelog text at 72 columns like git asked you
+to when you committed the change to your local tree?
 
+> 
+> static int tegra_check_rate_in_range(struct tegra_uart_port *tup)
+> {
+>     long diff;
+>     diff = ((long)(tup->configured_rate - tup->required_rate) * 10000)
+>         / tup->required_rate;
+>     if (diff < (tup->cdata->error_tolerance_low_range * 100) ||
+>         diff > (tup->cdata->error_tolerance_high_range * 100)) {
+>         dev_err(tup->uport.dev,
+>             "configured baud rate is out of range by %ld", diff);
+>         return -EIO;
+>     }
+>     return 0;
+> }
+
+I do not understand, why is this code in the changelog?
+
+> 
+> Changing the lower tolerance limit to the actual -4% resolved the issues for the Tegra124 and should resolve potential issues for other Tegra20/Tegra30 based platforms as well.
+> 
+> Signed-off-by: Patrik John <patrik.john@u-blox.com>
+
+What commit does this fix?  Should it have a "Fixes:" tag in it?
+
+And should it go to stable kernel(s)?
+
+Also, this is a v2 patch, please include below the --- line what changed
+from the previous version when you resend v3.
+
+thanks,
+
+greg k-h
