@@ -2,186 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD65045947B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 19:04:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19284459481
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 19:07:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239850AbhKVSHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 13:07:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40347 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235590AbhKVSHE (ORCPT
+        id S239912AbhKVSK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 13:10:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239790AbhKVSK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 13:07:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637604236;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/DEaToVlY5Aeangp7WiLsHVGQQfsjFmc4POHJyFMamU=;
-        b=QLJ9rbK0BJdAosqHLAIcXvfSTlvw5/oAQzFmjub4tVyDTiGFWRYuBPzYTvEzWydPfGnyTY
-        IgjEEPI1Ru6Kml9yL2jkD+arzNL/ViUxRLhBE4oXcj81qr7ivxhaKPnCBIAXBK0nTEE9is
-        Eq7zv+CzgyzSnI6SV8DYEcJ3LnrewOY=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-571-GIyX5X9HOBG6LfcmPvUmXw-1; Mon, 22 Nov 2021 13:03:55 -0500
-X-MC-Unique: GIyX5X9HOBG6LfcmPvUmXw-1
-Received: by mail-wm1-f70.google.com with SMTP id 187-20020a1c02c4000000b003335872db8dso6644956wmc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 10:03:55 -0800 (PST)
+        Mon, 22 Nov 2021 13:10:57 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52950C061574;
+        Mon, 22 Nov 2021 10:07:50 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id 13so5661409ljj.11;
+        Mon, 22 Nov 2021 10:07:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:content-language:to:cc
+         :references:from:subject:in-reply-to:content-transfer-encoding;
+        bh=TlT7QEDEVoVqR1uMHZtQsjoaJXJhc4T6ceWBzoyGtaM=;
+        b=E2TvTy0wDE6xxBX7mcXCZgcuFXiH+2qi2tV9v+38NAg4inwKz9wmjC33+P3d9gmjLz
+         BFNvNzzcE2+JEdoO9ikT1oLAFvwzipONkTTI8qVQfVMSX5h8YB5a1oLUofO9G9R5Z2fr
+         kj/4/msvz5Y9lOpl357iUXe6K56/XHLxMriRS6gxzlbm8OBmXq//T0V6N5wep06EpsDd
+         gPtQmEXlm8k9mCxlEjauBGeYS47aIw5r1yN5Q+51DxWG5O3njWpqfK+IocT4Rer3rxNw
+         e8XM1L5m9nn4xIo5P7KKIML2rRRKguVOhJPx70ndNyAiDu7CKIVS3goGMHoKVIqmnvPx
+         AScw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=/DEaToVlY5Aeangp7WiLsHVGQQfsjFmc4POHJyFMamU=;
-        b=fAcLU+CFHzk+KWW7OVrCDmWCcnCn711yQGtlvd4BynwDIKaa0i6QzZppl4SgAROGkw
-         CQco3pA7DDxQEDZ9XJ76+qsGLvY0yGsKu0eh0j9w9zykwxpe+KSbgFXRlbGvmdI0pIyj
-         JRBZuGM/ddFSa/aUzBmWSCuDZ+fv5TWMyIgcdPxxjabLvGPobvbgwdjhKD5+NN/ZC0go
-         7OUuYOEoTITbGDimrelmM9SU2g94EICwXg/uj+rL5AmsO1y2uGfklHq12Xw35C2eQjyC
-         76GI4OshdslkGDCfCzGbof++8wSy8Qa3QIjguCqZtmgHDW7OFboB0sWrmb7ypO8uyt8x
-         i7lA==
-X-Gm-Message-State: AOAM533lN6QY+Mx0hB541mb05+EC/oycqVqEa+kBIgYcsuyiwbY3O1KU
-        5/OsOGpmmCd3Gd88xkJTwcaL/ofVZa6cGGUi7qEaJUjaz58ZWF+dmE8ok2ab1EsGPFpQRkOHLDG
-        +yqdmwV2YWUHSwNgHhjxF48/f3yMZB3dYNjwCj73Ztyt4oi6VVUVisxGkfPeZh0eqoCdsX5FSn4
-        Oc
-X-Received: by 2002:a7b:c4c4:: with SMTP id g4mr30719682wmk.93.1637604234454;
-        Mon, 22 Nov 2021 10:03:54 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx/p3uFUzTXy9khuW7x18qGzSFTTSm7s3WYT3KBUot8+aI7MWQPX+T7zpzrsO0+qx9MA8Lm5A==
-X-Received: by 2002:a7b:c4c4:: with SMTP id g4mr30719604wmk.93.1637604234100;
-        Mon, 22 Nov 2021 10:03:54 -0800 (PST)
-Received: from fedora (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id j40sm11438126wms.16.2021.11.22.10.03.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 10:03:53 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: selftests: Make sure kvm_create_max_vcpus test
- won't hit RLIMIT_NOFILE
-In-Reply-To: <YZvVeW6qYNb/kkSc@google.com>
-References: <20211122171920.603760-1-vkuznets@redhat.com>
- <YZvVeW6qYNb/kkSc@google.com>
-Date:   Mon, 22 Nov 2021 19:03:52 +0100
-Message-ID: <87czmsm5iv.fsf@redhat.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:subject:in-reply-to
+         :content-transfer-encoding;
+        bh=TlT7QEDEVoVqR1uMHZtQsjoaJXJhc4T6ceWBzoyGtaM=;
+        b=AfcumeSiycatYZu2zihboYfWdNFzpLFOSnGt+52Du1vePEolvegleeXQ3t1fYWRWPF
+         R6wemlhau2L98kbioLUgfBS0hP8KsR+NVwr6Rn469pGcxcpgirBKIWqnr5YopoGxLNSc
+         ZYPZifu8g3V9Wn9lfhgTI6gPj+nN6SE7rfdtoI05pVXcBjcTpWYwuI/Dxg6aU9Hpp1ec
+         TI5+zkQGzGpkJyK9vIofzqS/B0WItpaB5dQ/vJ5qKRnUxnQeG3kfgRURuqA/IJM9qCvc
+         D2KIj/2moIeFHWBp+pAUtvYMllwtBwAHLM/TpI43C3gXjT3r9nG5RHtEO+VnCTSzYqrr
+         eqSw==
+X-Gm-Message-State: AOAM532JdE2eoNO/bH5zjPRfk2VtrPO7MLd6PkhiPyU1BlxwM2LGJV81
+        iXVDHbByo/Xa90YuloHDJPE=
+X-Google-Smtp-Source: ABdhPJxD88nkyfyUBOYDBOuN5m4/4EHB+MEbMzubFqP9/JqlfgQWQulOh4gMVeRh2HksgIexK/N7jA==
+X-Received: by 2002:a2e:7216:: with SMTP id n22mr53702276ljc.44.1637604468358;
+        Mon, 22 Nov 2021 10:07:48 -0800 (PST)
+Received: from [10.0.0.115] (91-153-170-164.elisa-laajakaista.fi. [91.153.170.164])
+        by smtp.gmail.com with ESMTPSA id m18sm1029044lfj.265.2021.11.22.10.07.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Nov 2021 10:07:47 -0800 (PST)
+Message-ID: <4e11d837-1534-adb7-d902-1d171c3bc0cb@gmail.com>
+Date:   Mon, 22 Nov 2021 20:08:13 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Content-Language: en-US
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, linux-kernel@vger.kernel.org,
+        dmaengine@vger.kernel.org
+References: <20211119132315.15901-1-a-govindraju@ti.com>
+From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+Subject: Re: [PATCH 0/2] J721S2: Add initial support
+In-Reply-To: <20211119132315.15901-1-a-govindraju@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+Hi Aswath,
 
-> On Mon, Nov 22, 2021, Vitaly Kuznetsov wrote:
->> With the elevated 'KVM_CAP_MAX_VCPUS' value kvm_create_max_vcpus test
->> may hit RLIMIT_NOFILE limits:
->> 
->>  # ./kvm_create_max_vcpus
->>  KVM_CAP_MAX_VCPU_ID: 4096
->>  KVM_CAP_MAX_VCPUS: 1024
->>  Testing creating 1024 vCPUs, with IDs 0...1023.
->>  /dev/kvm not available (errno: 24), skipping test
->> 
->> Adjust RLIMIT_NOFILE limits to make sure KVM_CAP_MAX_VCPUS fds can be
->> opened. Note, raising hard limit ('rlim_max') requires CAP_SYS_RESOURCE
->> capability which is generally not needed to run kvm selftests (but without
->> raising the limit the test is doomed to fail anyway).
->> 
->> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->> ---
->>  .../selftests/kvm/kvm_create_max_vcpus.c      | 22 +++++++++++++++++++
->>  1 file changed, 22 insertions(+)
->> 
->> diff --git a/tools/testing/selftests/kvm/kvm_create_max_vcpus.c b/tools/testing/selftests/kvm/kvm_create_max_vcpus.c
->> index f968dfd4ee88..19198477a10e 100644
->> --- a/tools/testing/selftests/kvm/kvm_create_max_vcpus.c
->> +++ b/tools/testing/selftests/kvm/kvm_create_max_vcpus.c
->> @@ -12,6 +12,7 @@
->>  #include <stdio.h>
->>  #include <stdlib.h>
->>  #include <string.h>
->> +#include <sys/resource.h>
->>  
->>  #include "test_util.h"
->>  
->> @@ -19,6 +20,9 @@
->>  #include "asm/kvm.h"
->>  #include "linux/kvm.h"
->>  
->> +/* 'Safe' number of open file descriptors in addition to vCPU fds needed */
->> +#define NOFD 16
->
-> Any reason not to make this "buffer" extra large, e.g. 100+ to avoid having to
-> debug this issue again in the future?
->
+On 19/11/2021 15:23, Aswath Govindraju wrote:
+> The following series of patches add support for J721S2 SoC.
+> 
+> Currently, the PSIL source and destination thread IDs for only a few of the
+> IPs have been added. The remaning ones will be added as and when they are
+> tested.
 
-No, not really. We could've avoided this ambiguity completely by
-checking how many fds are already open but all methods I can think of
-are 'too much'. In my testing I needed around 10 so I put '16' but '100'
-is even better.
+I would have added the complete map as the hardware is not going to
+change (likely), but fine this way as well.
 
->> +
->>  void test_vcpu_creation(int first_vcpu_id, int num_vcpus)
->>  {
->>  	struct kvm_vm *vm;
->> @@ -40,10 +44,28 @@ int main(int argc, char *argv[])
->>  {
->>  	int kvm_max_vcpu_id = kvm_check_cap(KVM_CAP_MAX_VCPU_ID);
->>  	int kvm_max_vcpus = kvm_check_cap(KVM_CAP_MAX_VCPUS);
->
-> Rather than a separate define that's hard to describe succintly, what about:
->
-> 	int nr_fds_wanted = kvm_max_vcpus + <arbitrary number>
->
-> and then the body becomes
->
-> 	if (nr_fds_wanted > rl.rlim_cur) {
-> 		rl.rlim_cur = nr_fds_wanted;
-> 		rl.rlim_max = max(rl.rlim_max, nr_fds_wanted);
->
-> 		...
-> 	}
+> The following series of patches are dependent on,
+> - http://lists.infradead.org/pipermail/linux-arm-kernel/2021-November/697574.html
 
-Sure but a "succinct" comment will still be needed, either near the
-'NOFD' define or above 'int nr_fds_wanted' :-)
+It is runtime dependency, so not an issue.
 
->
->> +	struct rlimit rl;
->>  
->>  	pr_info("KVM_CAP_MAX_VCPU_ID: %d\n", kvm_max_vcpu_id);
->>  	pr_info("KVM_CAP_MAX_VCPUS: %d\n", kvm_max_vcpus);
->>  
->> +	/*
->> +	 * Creating KVM_CAP_MAX_VCPUS vCPUs require KVM_CAP_MAX_VCPUS open
->> +	 * file decriptors.
->> +	 */
->> +	TEST_ASSERT(!getrlimit(RLIMIT_NOFILE, &rl),
->> +		    "getrlimit() failed (errno: %d)", errno);
->
-> And strerror() output too?
->
+Acked-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
 
-Sure, will add in v2.
-
->> +
->> +	if (kvm_max_vcpus > rl.rlim_cur - NOFD) {
->> +		rl.rlim_cur = kvm_max_vcpus + NOFD;
->> +
->> +		if (kvm_max_vcpus > rl.rlim_max - NOFD)
->> +			rl.rlim_max = kvm_max_vcpus + NOFD;
->> +
->> +		TEST_ASSERT(!setrlimit(RLIMIT_NOFILE, &rl),
->> +			    "setrlimit() failed (errno: %d)", errno);
->> +	}
->> +
->>  	/*
->>  	 * Upstream KVM prior to 4.8 does not support KVM_CAP_MAX_VCPU_ID.
->>  	 * Userspace is supposed to use KVM_CAP_MAX_VCPUS as the maximum ID
->> -- 
->> 2.33.1
->> 
->
+> Aswath Govindraju (2):
+>   dmaengine: ti: k3-udma: Add SoC dependent data for J721S2 SoC
+>   drivers: dma: ti: k3-psil: Add support for J721S2
+> 
+>  drivers/dma/ti/Makefile         |   3 +-
+>  drivers/dma/ti/k3-psil-j721s2.c | 167 ++++++++++++++++++++++++++++++++
+>  drivers/dma/ti/k3-psil-priv.h   |   1 +
+>  drivers/dma/ti/k3-psil.c        |   1 +
+>  drivers/dma/ti/k3-udma.c        |   1 +
+>  5 files changed, 172 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/dma/ti/k3-psil-j721s2.c
+> 
 
 -- 
-Vitaly
-
+Péter
