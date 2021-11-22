@@ -2,119 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91B88458863
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 04:33:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C206E458878
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 04:51:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238470AbhKVDgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 22:36:14 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:26346 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232868AbhKVDgJ (ORCPT
+        id S238659AbhKVDya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 22:54:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49057 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229862AbhKVDy3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 22:36:09 -0500
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HyCQW2BKczbhvx;
-        Mon, 22 Nov 2021 11:28:03 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Mon, 22 Nov
- 2021 11:33:01 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <damien.lemoal@opensource.wdc.com>, <axboe@kernel.dk>,
-        <tj@kernel.org>, <linux-ide@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <sergei.shtylyov@gmail.com>, <yebin10@huawei.com>,
-        <libaokun1@huawei.com>, <yukuai3@huawei.com>,
-        <stable@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next V3 2/2] sata_fsl: fix warning in remove_proc_entry when rmmod sata_fsl
-Date:   Mon, 22 Nov 2021 11:45:16 +0800
-Message-ID: <20211122034516.2280734-3-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211122034516.2280734-1-libaokun1@huawei.com>
-References: <20211122034516.2280734-1-libaokun1@huawei.com>
+        Sun, 21 Nov 2021 22:54:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637553083;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4ZoTqA9iiFG9nkpS66qOwO3q3VJpM/VpcOc+Jqz0mA0=;
+        b=TuahKyIb6Hwj1V+4WiaHUKVf31E3U8MKH1BlKvlKtAf6SGJm2KmMmAKUstlF/F5ncW7OND
+        isxvUkR+lBS+b8v9INGcqQy/QTQKChGpHDfHzAl+CbSK8UEj9Le5AA6i5UJC6YdL97zhd9
+        Bnt9B3eks5rSiUdMMTWtiwUoNQe6a2k=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-74-wibcb-3OP2uemofykEenSg-1; Sun, 21 Nov 2021 22:51:22 -0500
+X-MC-Unique: wibcb-3OP2uemofykEenSg-1
+Received: by mail-lf1-f69.google.com with SMTP id k5-20020a05651210c500b0040934a07fbdso11112436lfg.22
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Nov 2021 19:51:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4ZoTqA9iiFG9nkpS66qOwO3q3VJpM/VpcOc+Jqz0mA0=;
+        b=VepkYSSaPUxM/oiD3Z2CuXXkFYeemQh9bhAgM9vxSS3j8/S3PP6djPjDOMvHVSDFUX
+         dXPoHeCeGGpX9BWAhV+p5RNwJVm87nk/p73srpGYKTuNX2nvD6BrMMPO6KaPbZ5O/1p7
+         Hz0X/mVycgfAIF0GZRIpsrOX0F84o54NuML9ZX48XEvmx/8n6Z2B8zcj4h/4bFZmwg4U
+         I7TBmPs6wjlCYf+0ZsN3RV45fq8LQGhGAHL6Co4SZKx12aVc2fSJjETtsTr8vr8gKJGo
+         znjWxu1gPMRxFhNGkeFHsnyDYXbR0xCY9m5wIXIrXuAwksQvKLCy/NnZLr9EJ9lgHfuI
+         DNfw==
+X-Gm-Message-State: AOAM531Vzt56cVkAq6PxqsEO74BFwqW0F3hc99818W8iOPsAKgzkqsJi
+        UbvEf45y1Z7rGg5Htkx9UAENGJZszKMwOMEvqy/HHTnQ4ncyzQ015eg0L4gnJ49Cj+dJOYkNFjY
+        7YZ3364MGdz9b2f562u/spASJdZDJGLVY01TvTpRk
+X-Received: by 2002:a05:6512:3d09:: with SMTP id d9mr55542520lfv.481.1637553080340;
+        Sun, 21 Nov 2021 19:51:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzRhp3qnggyh9IV/j+nxJud16x/I5z46Jl3/q8pwRp7lFSjvOjUZebdYRAYcWh6jwM4VsQB8bwBiyV068HiNRY=
+X-Received: by 2002:a05:6512:3d09:: with SMTP id d9mr55542487lfv.481.1637553080159;
+ Sun, 21 Nov 2021 19:51:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+References: <20211027022107.14357-1-jasowang@redhat.com> <20211027022107.14357-2-jasowang@redhat.com>
+ <20211119160951.5f2294c8.pasic@linux.ibm.com>
+In-Reply-To: <20211119160951.5f2294c8.pasic@linux.ibm.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Mon, 22 Nov 2021 11:51:09 +0800
+Message-ID: <CACGkMEtja2TPC=ujgMrpaPmdsy+zHowbBTvPj8k7nm_+zB8vig@mail.gmail.com>
+Subject: Re: [PATCH V5 1/4] virtio_ring: validate used buffer length
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     mst <mst@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "kaplan, david" <david.kaplan@amd.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Trying to remove the fsl-sata module in the PPC64 GNU/Linux
-leads to the following warning:
- ------------[ cut here ]------------
- remove_proc_entry: removing non-empty directory 'irq/69',
-   leaking at least 'fsl-sata[ff0221000.sata]'
- WARNING: CPU: 3 PID: 1048 at fs/proc/generic.c:722
-   .remove_proc_entry+0x20c/0x220
- IRQMASK: 0
- NIP [c00000000033826c] .remove_proc_entry+0x20c/0x220
- LR [c000000000338268] .remove_proc_entry+0x208/0x220
- Call Trace:
-  .remove_proc_entry+0x208/0x220 (unreliable)
-  .unregister_irq_proc+0x104/0x140
-  .free_desc+0x44/0xb0
-  .irq_free_descs+0x9c/0xf0
-  .irq_dispose_mapping+0x64/0xa0
-  .sata_fsl_remove+0x58/0xa0 [sata_fsl]
-  .platform_drv_remove+0x40/0x90
-  .device_release_driver_internal+0x160/0x2c0
-  .driver_detach+0x64/0xd0
-  .bus_remove_driver+0x70/0xf0
-  .driver_unregister+0x38/0x80
-  .platform_driver_unregister+0x14/0x30
-  .fsl_sata_driver_exit+0x18/0xa20 [sata_fsl]
- ---[ end trace 0ea876d4076908f5 ]---
+On Fri, Nov 19, 2021 at 11:10 PM Halil Pasic <pasic@linux.ibm.com> wrote:
+>
+> On Wed, 27 Oct 2021 10:21:04 +0800
+> Jason Wang <jasowang@redhat.com> wrote:
+>
+> > This patch validate the used buffer length provided by the device
+> > before trying to use it. This is done by record the in buffer length
+> > in a new field in desc_state structure during virtqueue_add(), then we
+> > can fail the virtqueue_get_buf() when we find the device is trying to
+> > give us a used buffer length which is greater than the in buffer
+> > length.
+> >
+> > Since some drivers have already done the validation by themselves,
+> > this patch tries to makes the core validation optional. For the driver
+> > that doesn't want the validation, it can set the
+> > suppress_used_validation to be true (which could be overridden by
+> > force_used_validation module parameter). To be more efficient, a
+> > dedicate array is used for storing the validate used length, this
+> > helps to eliminate the cache stress if validation is done by the
+> > driver.
+> >
+> > Signed-off-by: Jason Wang <jasowang@redhat.com>
+>
+> Hi Jason!
+>
+> Our CI has detected, that virtio-vsock became unusable with this
+> patch on s390x. I didn't test on x86 yet. The guest kernel says
+> something like:
+> vmw_vsock_virtio_transport virtio1: tx: used len 44 is larger than in buflen 0
+>
+> Did you, or anybody else, see something like this on platforms other that
+> s390x?
 
-The driver creates the mapping by calling irq_of_parse_and_map(),
-so it also has to dispose the mapping. But the easy way out is to
-simply use platform_get_irq() instead of irq_of_parse_map(). Also
-we should adapt return value checking and propagate error values.
+Adding Stefan and Stefano.
 
-In this case the mapping is not managed by the device but by
-the of core, so the device has not to dispose the mapping.
+I think it should be a common issue, looking at
+vhost_vsock_handle_tx_kick(), it did:
 
-Fixes: faf0b2e5afe7 ("drivers/ata: add support to Freescale 3.0Gbps SATA Controller")
-Cc: stable@vger.kernel.org
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
-V1->V2:
-	Adapt return value checking and propagate error values.
-V2->V3:
-	Add fixed and CC stable.
+len += sizeof(pkt->hdr);
+vhost_add_used(vq, head, len);
 
- drivers/ata/sata_fsl.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+which looks like a violation of the spec since it's TX.
 
-diff --git a/drivers/ata/sata_fsl.c b/drivers/ata/sata_fsl.c
-index 30759fd1c3a2..f850dfab72a6 100644
---- a/drivers/ata/sata_fsl.c
-+++ b/drivers/ata/sata_fsl.c
-@@ -1493,8 +1493,9 @@ static int sata_fsl_probe(struct platform_device *ofdev)
- 	host_priv->ssr_base = ssr_base;
- 	host_priv->csr_base = csr_base;
- 
--	irq = irq_of_parse_and_map(ofdev->dev.of_node, 0);
--	if (!irq) {
-+	irq = platform_get_irq(ofdev, 0);
-+	if (irq < 0) {
-+		retval = irq;
- 		dev_err(&ofdev->dev, "invalid irq from platform\n");
- 		goto error_exit_with_cleanup;
- 	}
-@@ -1570,8 +1571,6 @@ static int sata_fsl_remove(struct platform_device *ofdev)
- 
- 	ata_host_detach(host);
- 
--	irq_dispose_mapping(host_priv->irq);
--
- 	return 0;
- }
- 
--- 
-2.31.1
+>
+> I had a quick look at this code, and I speculate that it probably
+> uncovers a pre-existig bug, rather than introducing a new one.
+
+I agree.
+
+>
+> If somebody is already working on this please reach out to me.
+
+AFAIK, no. I think the plan is to fix both the device and drive side
+(but I'm not sure we need a new feature for this if we stick to the
+validation).
+
+Thanks
+
+>
+> Regards,
+> Halil
+>
 
