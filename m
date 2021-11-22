@@ -2,127 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6CD459603
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 21:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3EE459605
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 21:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232880AbhKVUUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 15:20:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41232 "EHLO
+        id S240442AbhKVUXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 15:23:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232667AbhKVUUW (ORCPT
+        with ESMTP id S232880AbhKVUXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 15:20:22 -0500
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACEE2C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 12:17:15 -0800 (PST)
-Received: by mail-ua1-x92c.google.com with SMTP id w23so39076902uao.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 12:17:15 -0800 (PST)
+        Mon, 22 Nov 2021 15:23:03 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4956C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 12:19:56 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id gf14-20020a17090ac7ce00b001a7a2a0b5c3so189374pjb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 12:19:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=posk.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o7/4mC/JYrlbPMC5mTMOllHOhZpcab+DyW/7Z03WsSM=;
-        b=Ioe0wKMbX4DHin7wlvdFlj4MEKfvWB2K04WzO6Bh1WNDiox9t4LgjI8c+H59UvnOs6
-         g6OJS605i7CqxgVciSjzu013fB0T99jq7C3tGtm7+eI9k0pfTM3hyyliFvZ4o/oGmtVk
-         /ONIaqa4lZKQgcZvJJ+g4wfgw8uXgPUNkGfTVznvQ/5dtw8rS0Gf/8/91Edb3bMSGhTt
-         U9kWMe1MxmCVQIFNzrhgIuqDZn6NmP56OL75xQ4enV86Ocy9a8rjlBlw/wdZkq6Ve+DZ
-         g9ZetGIVTlka2LWRrP3MZVQwNeGzf+l+BciyCZSQzS08couN26QNvInhRbxU92Vhm8m1
-         vZ6g==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mRxIeU9HPgzOY3clEU+77o23b2EAQbNCRiTPpgLxklA=;
+        b=CKa8JazZ41nRBv/+ULd1g5vvoetmCxEd7/52ZApQmKaWjCkKzv4wX0aZcynTwBG44V
+         dp/yPAisfCYmXCGEtl96K9Dvesy2q4l76JsT5rxcVJ3epWACmiFg4Y8YRJ7LDZwlx/Ic
+         u3BtM8hd9e6keFl2lJWiRpXc5BGJn+kdyr0DJdBYkWuZXPogLKvJD4IRHVqHWo9IrGL4
+         XsgNrdtYF8TrbjEOgbpuWGcnsOYJUAjwz5z5qtv7l6WS04Ik89Ksmbg6auAPVWTPxVm5
+         uY1LjtFCsW/4IN1RbSbExW3o2r2XKCw/7R4tRrmrNqAra2UQjds5J0CuGupE1lPTaEQH
+         YZag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o7/4mC/JYrlbPMC5mTMOllHOhZpcab+DyW/7Z03WsSM=;
-        b=hKk0t4xbwll9/aqgAkoWhZozU7XZydJ0+D+QoT1uHO1lYb385PsS/Fdar+MMk6mpD6
-         Plf/zliWOTJItVyFu9S2ImxgbD6LNyLnkRb5yobsNR5eypJb8b38C1120v8vYFLJKDUZ
-         gHAPQUBK08AYmAkzzTOEcIQeg6229/NHWrpu9+fpUoWXhVX0rlxvunzLd5sY9yZccSuB
-         tD+1rAq291JGGWp+0f0zKBSC5vR0nk7WXiwiHQ5lPGUVTdlUj8nHE8ku4GQNHWiZwfdj
-         +ggXl0cGPtPwsgCWhT9Se4K35DlO5C38Q/olTYC3jfNdQaZitV8+EbE8tduFlaXSTI8e
-         PFXw==
-X-Gm-Message-State: AOAM533BVnV6vQOK2ghscI/wyYZ259N65PSrt7RI6XWcG8SVuWBgrOdp
-        WPWq9Vh+UJ7TVzwk+mxAC2BDZTU8KVvgeKBd8mOlDQ==
-X-Google-Smtp-Source: ABdhPJwuthN9TtqqxsMgdNkzCamK1Lw39KDHjTILUpDel6l8BKQ6fkW7mkhQZL4NTeYgq1rYLOB385Q4dvNrEQ7NK0E=
-X-Received: by 2002:a05:6102:dc7:: with SMTP id e7mr133295163vst.21.1637612234866;
- Mon, 22 Nov 2021 12:17:14 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mRxIeU9HPgzOY3clEU+77o23b2EAQbNCRiTPpgLxklA=;
+        b=3jgq1gY/37T+9g/MwqQnpMuzDtCfM6rTuVCXiO/iH87EW5vbWKlfefvOOl8LpX6wPy
+         qBjnVClt+zP96lBGn8hf6IJz+9DKUKNBsTNkUPEGC8FZJHtymQi+Is8N1ln5niAAFm/4
+         c/jRVuZSSQUgS+ETTJFYMCxBNMNam/nKk5gCfQ/NBsP11MMAS9oAzjlznv+R3kBIAxWT
+         VZBa3MxdyI0w3ZJNayDdNwG8ivbYiu5y1jgFCR/kblC8xrM8A/PYeXp5C1FJwisClE4S
+         FiTaqKJvYeIwgzsGwtfVRZBDi5KzwjFVKYQXx/yzlct14Rg7G7kVI0k7qCi6w6P0RxGT
+         2haQ==
+X-Gm-Message-State: AOAM532DD3UxJIOikCIw8oCE5IZJinMQCjup+RFqBsAlMt+/0Mv46pr0
+        CSwtexpVqYwj6+TQrZ+Isr//AA==
+X-Google-Smtp-Source: ABdhPJzQAX5rio7DTTwz9eNYQ6QSDxHgCK5fgM6VOwMLfwtHzlnXhLRnQp6cNfcC09xIgx8XvJICDQ==
+X-Received: by 2002:a17:902:d4d0:b0:141:c13d:6c20 with SMTP id o16-20020a170902d4d000b00141c13d6c20mr112062554plg.44.1637612396182;
+        Mon, 22 Nov 2021 12:19:56 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id v38sm6717082pgl.38.2021.11.22.12.19.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Nov 2021 12:19:55 -0800 (PST)
+Date:   Mon, 22 Nov 2021 20:19:52 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Hou Wenlong <houwenlong93@linux.alibaba.com>
+Subject: Re: [PATCH 09/28] KVM: x86/mmu: Require mmu_lock be held for write
+ in unyielding root iter
+Message-ID: <YZv7aIL8+7ESCfFc@google.com>
+References: <20211120045046.3940942-1-seanjc@google.com>
+ <20211120045046.3940942-10-seanjc@google.com>
+ <CANgfPd9=ce+JT3xEJy=p5MEfvkMGovEaBEu8KmxiZAJ1AA958g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211121212040.8649-4-posk@google.com> <202111221834.Q9LmeisY-lkp@intel.com>
-In-Reply-To: <202111221834.Q9LmeisY-lkp@intel.com>
-From:   Peter Oskolkov <posk@posk.io>
-Date:   Mon, 22 Nov 2021 12:17:04 -0800
-Message-ID: <CAFTs51Xr0jae345RA=uYq5-ZwPu4T20CcPBeRQqxGrhL73enfA@mail.gmail.com>
-Subject: Re: [PATCH v0.9 3/6] sched/umcg: implement UMCG syscalls
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-api@vger.kernel.org, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Paul Turner <pjt@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANgfPd9=ce+JT3xEJy=p5MEfvkMGovEaBEu8KmxiZAJ1AA958g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 2:02 AM kernel test robot <lkp@intel.com> wrote:
->
-> Hi Peter,
->
-> Thank you for the patch! Yet something to improve:
->
-> [auto build test ERROR on cb0e52b7748737b2cf6481fdd9b920ce7e1ebbdf]
->
-> url:    https://github.com/0day-ci/linux/commits/Peter-Oskolkov/sched-mm-x86-uaccess-implement-User-Managed-Concurrency-Groups/20211122-052209
-> base:   cb0e52b7748737b2cf6481fdd9b920ce7e1ebbdf
-> config: x86_64-randconfig-c007-20211121 (attached as .config)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/e455791cacec2b140558a717d2b8b07f5561a251
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Peter-Oskolkov/sched-mm-x86-uaccess-implement-User-Managed-Concurrency-Groups/20211122-052209
->         git checkout e455791cacec2b140558a717d2b8b07f5561a251
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->    In file included from <built-in>:1:
-> >> ./usr/include/linux/umcg.h:80:2: error: unknown type name 'u64'
->            u64     state_ts;               /* r/w */
+On Mon, Nov 22, 2021, Ben Gardon wrote:
+> > + * Holding mmu_lock for write obviates the need for RCU protection as the list
+> > + * is guaranteed to be stable.
+> > + */
+> > +#define for_each_tdp_mmu_root(_kvm, _root, _as_id)                     \
+> > +       list_for_each_entry(_root, &_kvm->arch.tdp_mmu_roots, link)     \
+> >                 if (kvm_mmu_page_as_id(_root) != _as_id) {              \
+> > +                       lockdep_assert_held_write(&(_kvm)->mmu_lock);   \
+> 
+> Did you mean for this lockdep to only be hit in this uncommon
+> non-matching ASID case?
 
-I figured it out - lkp manages to compile uapi so that it sees
-__u32/__u64 but not u32/u64. I'll make the change.
+Yes and no.  Yes, I intended what I wrote.  No, this isn't intended to be limited
+to a memslot address space mismatch, but at the time I wrote this I was apparently
+lazy or inept :-)
 
-As __u64 is actually a different type from u64 (long unsigned int vs
-long long unsigned int), I'll need to make corresponding changes in
-other files to avoid warnings of "comparing different types" sort.
+In hindsight, this would be better:
 
-Why does the kernel have both __u64 and u64, and have them defined as
-different types? (This is not really a question, just a complaint).
+/* blah blah blah */
+static inline struct list_head *kvm_get_tdp_mmu_roots_exclusive(struct kvm *kvm)
+{
+	lockdep_assert_held_write(&kvm->mmu_lock);
 
->            ^
-> >> ./usr/include/linux/umcg.h:91:2: error: unknown type name 'u32'
->            u32     next_tid;               /* r   */
->            ^
->    ./usr/include/linux/umcg.h:93:2: error: unknown type name 'u32'
->            u32     flags;                  /* Reserved; must be zero. */
->            ^
->    ./usr/include/linux/umcg.h:101:2: error: unknown type name 'u64'
->            u64     idle_workers_ptr;       /* r/w */
->            ^
->    ./usr/include/linux/umcg.h:107:2: error: unknown type name 'u64'
->            u64     idle_server_tid_ptr;    /* r   */
->            ^
->    5 errors generated.
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+	return &kvm->arch.tdp_mmu_roots;
+}
+
+#define for_each_tdp_mmu_root(_kvm, _root, _as_id)			       \
+	list_for_each_entry(_root, kvm_get_tdp_mmu_roots_exclusive(kvm), link) \
+		if (kvm_mmu_page_as_id(_root) != _as_id) {		       \
+		} else
