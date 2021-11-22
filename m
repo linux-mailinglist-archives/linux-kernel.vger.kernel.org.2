@@ -2,113 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81365458F53
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:24:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37343458F58
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 14:27:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239393AbhKVN1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 08:27:48 -0500
-Received: from mail-vk1-f181.google.com ([209.85.221.181]:45672 "EHLO
-        mail-vk1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238762AbhKVN1a (ORCPT
+        id S239505AbhKVNaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 08:30:22 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:52958 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232089AbhKVNaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 08:27:30 -0500
-Received: by mail-vk1-f181.google.com with SMTP id m19so10192130vko.12;
-        Mon, 22 Nov 2021 05:24:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=xarPnle33Vd1NAVNINArZXI9fdyD3SNGNTfacLEzKQo=;
-        b=KlvqecfGlnvLsbqzdvLgF1ojXbslWMuSdk/wAYQr5jUfxBQNFCOLNvOJXYr+9n9SEa
-         x3T6U5StVu5fxjlHcWbZgyvBPX0zmHoFCqUbSh8HEk5VqEnFQMBkGjsRL7cntcWOlxM3
-         QZPz3xvQs/PxHlwQrBIK25tJDIG8fjOaW5hss6Dusw9teuN9o5KOiNtD5l6ym3lJW3AQ
-         w8JKJABXOHawKdjzJXq6q8ELbCyzxcevfSmE27jc2AkrRW8v55eOn/gq/mGSMmfWrwnj
-         if2NXe7tHfZQDmZwB5RX/PBhEHPMlBTWRdvqoJtGfTYz+Pil5baFdUfEeJyTX9i1rc1z
-         UTPA==
-X-Gm-Message-State: AOAM531N3z0NXGHIYd1HO++s3Q3I6+WQngo/dhjLJtwnGsWDH4w6nFaj
-        vaYHSQ94j13uKPM3diuB1ZFP7H3+qazSKQ==
-X-Google-Smtp-Source: ABdhPJx17RU7ui0kgi1UHf+x9k2YHeHRASiW4eZAW7C52J/pinnD1Z08naWOHNtNRf31yqjTwWNZIg==
-X-Received: by 2002:a05:6122:1803:: with SMTP id ay3mr163411550vkb.24.1637587463141;
-        Mon, 22 Nov 2021 05:24:23 -0800 (PST)
-Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com. [209.85.222.43])
-        by smtp.gmail.com with ESMTPSA id e13sm4376235vkd.21.2021.11.22.05.24.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Nov 2021 05:24:22 -0800 (PST)
-Received: by mail-ua1-f43.google.com with SMTP id j14so26638821uan.10;
-        Mon, 22 Nov 2021 05:24:22 -0800 (PST)
-X-Received: by 2002:a9f:248b:: with SMTP id 11mr85736008uar.14.1637587462423;
- Mon, 22 Nov 2021 05:24:22 -0800 (PST)
+        Mon, 22 Nov 2021 08:30:16 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 09E10217BA;
+        Mon, 22 Nov 2021 13:27:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637587629; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=ZOqoB6LrLA0edOmgFk3g+T1lzcj5WWJLexHPanjjwxY=;
+        b=TyQDPRkiGPWDsM/SklH8myiiP+oJa/KxfXnKMEmxeiGEQkOHW7UBUkWNBWkabeRVZPXWT/
+        10GrmJ/mS28xoiRLkC9h4JcVrjU0hGI+pXrr1ODP28dNyXEl26nllet3eDqH7+zcG0LP7D
+        cdeQH/3Z5eBWO6qbf3BUPHZX4IHx3fc=
+Received: from alley.suse.cz (unknown [10.100.224.162])
+        by relay2.suse.de (Postfix) with ESMTP id B5B68A3B83;
+        Mon, 22 Nov 2021 13:27:07 +0000 (UTC)
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>
+Subject: [PATCH 0/5] printk/console: Registration code cleanup - part 1
+Date:   Mon, 22 Nov 2021 14:26:44 +0100
+Message-Id: <20211122132649.12737-1-pmladek@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20211122111214.3801534-1-geert@linux-m68k.org>
-In-Reply-To: <20211122111214.3801534-1-geert@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 22 Nov 2021 14:24:11 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW7jcoNHyBomcbkkHU-m32uAureeHYj_PhaMC=O2b4wLA@mail.gmail.com>
-Message-ID: <CAMuHMdW7jcoNHyBomcbkkHU-m32uAureeHYj_PhaMC=O2b4wLA@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v5.16-rc2
-To:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-um@lists.infradead.org, sparclinux@vger.kernel.org,
-        linux-ntfs-dev@lists.sourceforge.net, linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 12:28 PM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
-> Below is the list of build error/warning regressions/improvements in
-> v5.16-rc2[1] compared to v5.15[2].
->
-> Summarized:
->   - build errors: +13/-12
->   - build warnings: +3/-26
->
-> JFYI, when comparing v5.16-rc2[1] to v5.16-rc1[3], the summaries are:
->   - build errors: +6/-12
+The console registration code has several twists that are hard to follow.
+It is result of various features added over the last few decades.
 
-  + /kisskb/src/drivers/mtd/nand/raw/mpc5121_nfc.c: error: unused
-variable 'mtd' [-Werror=unused-variable]:  => 294:19
+I have already spent many days to understand all the effects and
+the desired behavior. I am always scared to touch the console registration
+code even after years working as printk maintainer.
 
-ppc32_allmodconfig (patch sent)
+There were several changes in the code that had to be reverted because
+they caused regression, for example:
 
-  + /kisskb/src/drivers/video/fbdev/nvidia/nvidia.c: error: passing
-argument 1 of 'iounmap' discards 'volatile' qualifier from pointer
-target type [-Werror=discarded-qualifiers]:  => 1439:10, 1414:10
-  + /kisskb/src/drivers/video/fbdev/riva/fbdev.c: error: passing
-argument 1 of 'iounmap' discards 'volatile' qualifier from pointer
-target type [-Werror=discarded-qualifiers]:  => 2095:11, 2062:11
+   + commit dac8bbbae1d0ccba96402 ("Revert "printk: fix double printing
+     with earlycon")
 
-um-all{mod,yes}config
+   + commit c6c7d83b9c9e6a8b3e6d ("Revert "console: don't prefer first
+     registered if DT specifies stdout-path")
 
-  + /kisskb/src/fs/netfs/read_helper.c: error: implicit declaration of
-function 'flush_dcache_folio' [-Werror=implicit-function-declaration]:
- => 435:4
 
-sparc-allmodconfig
-sparc64-allmodconfig
+This patchset removes the most tricky twists from my POV. I have worked
+on it when time permitted since January. I have spent most of the time
+writing the commit message, understanding, and explaining the effects.
+I am not sure if I succeeded but it is time to send this.
 
-  + /kisskb/src/fs/ntfs/aops.c: error: the frame size of 2192 bytes is
-larger than 2048 bytes [-Werror=frame-larger-than=]:  => 1311:1
 
-ppc64le_allmodconfig
+Behavior change:
 
-  + /kisskb/src/fs/ntfs/aops.c: error: the frame size of 2256 bytes is
-larger than 2048 bytes [-Werror=frame-larger-than=]:  => 1311:1
+There is one behavior change caused by 4th patch. I consider it bug fix.
+It should be acceptable. See the commit message for more details.
 
-powerpc-allyesconfig
 
-> Thanks to the linux-next team for providing the build service.
->
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/136057256686de39cc3a07c2e39ef6bc43003ff6/ (all 90 configs)
-> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf/ (all 90 configs)
+Future plans:
 
-Gr{oetje,eeting}s,
+I already have additional 18 patches that do further clean up of
+the console registration code. They still need more love.
 
-                        Geert
+I send this 5 patchset first because they are clear win from my POV.
+And I wanted to do it by smaller steps.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+I would appreciate if anyone double checks logic of the changes.
+Anyway, we could put it into linux-next and see. I am quite
+confident and optimistic ;-)
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
+Petr Mladek (5):
+  printk/console: Split out code that enables default console
+  printk/console: Rename has_preferred_console to need_default_console
+  printk/console: Remove unnecessary need_default_console manipulation
+  printk/console: Remove need_default_console variable
+  printk/console: Clean up boot console handling in register_console()
+
+ kernel/printk/printk.c | 104 +++++++++++++++++++++++------------------
+ 1 file changed, 58 insertions(+), 46 deletions(-)
+
+-- 
+2.26.2
+
