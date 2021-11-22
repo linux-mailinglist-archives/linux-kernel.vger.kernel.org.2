@@ -2,157 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD50459333
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 17:37:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6BC2459345
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 17:42:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240270AbhKVQkd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 22 Nov 2021 11:40:33 -0500
-Received: from foss.arm.com ([217.140.110.172]:43204 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232071AbhKVQkc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 11:40:32 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 57A04ED1;
-        Mon, 22 Nov 2021 08:37:25 -0800 (PST)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5A2243F66F;
-        Mon, 22 Nov 2021 08:37:23 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kbuild@vger.kernel.org
-Cc:     Marco Elver <elver@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Mike Galbraith <efault@gmx.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: [PATCH v2 2/5] preempt/dynamic: Introduce preempt mode accessors
-In-Reply-To: <2f22c57d-9bf0-3cc1-f0f1-61ecdf5dfa52@csgroup.eu>
-References: <20211110202448.4054153-1-valentin.schneider@arm.com> <20211110202448.4054153-3-valentin.schneider@arm.com> <2f22c57d-9bf0-3cc1-f0f1-61ecdf5dfa52@csgroup.eu>
-Date:   Mon, 22 Nov 2021 16:37:16 +0000
-Message-ID: <87y25gcfk3.mognet@arm.com>
+        id S240326AbhKVQpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 11:45:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240321AbhKVQpM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 11:45:12 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701C2C061714;
+        Mon, 22 Nov 2021 08:42:05 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id v19so14593222plo.7;
+        Mon, 22 Nov 2021 08:42:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=TjW1TgKLrc7ubU2vSzYzZL8ghSe+3NIEgSN3o9SQOHE=;
+        b=UDgbNCCXoGAIYiCSLRb5hkduO/YAB90rSC3X+TjSISze+lhKH0q8YcmDyjQZBd+8Lx
+         cu1yqaNvUF49+bdD54ikqPupQzADDJSI3GToC+gtIkPqTw4WKxvtQcO+ufm8eZhZVFJh
+         gvw7bITBeLSySdisq2bKOy+R7jjVDafFEq0UR2UCpG05IBWGyll9ihPnZSCZIdz1lEiA
+         m8Jy3TXHBQyBO+Jid0cdLA2AMTuokSAgDQzHHyB6FUuibDMcMUi7gp5ibVktzxuuhHsF
+         xCTnBdT3zluyVsHQqFCRsbNishB4ysKvgHJlkdnGfTdBaAFthMaAU0b8Nz+T9AinhyUq
+         r2/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=TjW1TgKLrc7ubU2vSzYzZL8ghSe+3NIEgSN3o9SQOHE=;
+        b=uFUGjRVAl3LpdHqzNDbc/Olw6YEEOmy/wb8HB2ZeSs+NZkKiTMNkpD8b6wTMYCVz6S
+         +dS0S/bEgzpJ/IQYH6XfnEfs/j7BcLYn6uAq9xyQpfTIUEEja2LPc+CtB17S7uoRg/HQ
+         OCh+Zj6n2w5sOVMci/ghWadYtjXwOqUxi8q45PK7qqVqAeEfg0v3mb4qW7APWuA/S9Dl
+         tGM/rA2S8ZrMYSWdjcyCrIMHo/LJJPd9U5mOEhvlDSFa2il/vabV+CkLRZqn2BPgr4FA
+         UQr/NgjH9MWIMlp5xpE5zXSW5Tm4znNOOVmblOa822hpKEablo/Yc5EaC7QoNlPHlBDF
+         NEbw==
+X-Gm-Message-State: AOAM533CaPXzTlIj+/a96Cg/Gk8Cqnbn7YWPaLv4+EcALv39IkcL7ZIN
+        6oM3s6x9cTeKWMpKKbYpWus=
+X-Google-Smtp-Source: ABdhPJyec6f9YsWAT2OCkT7F6eQ/F2n2BFQZH/vHxkGAlhJrB9TuioxLdHWiwgirFHequejdhf8aBA==
+X-Received: by 2002:a17:90a:ca81:: with SMTP id y1mr32705590pjt.231.1637599324858;
+        Mon, 22 Nov 2021 08:42:04 -0800 (PST)
+Received: from [172.16.0.2] ([8.45.47.42])
+        by smtp.googlemail.com with ESMTPSA id u22sm9849704pfk.148.2021.11.22.08.42.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Nov 2021 08:42:04 -0800 (PST)
+Message-ID: <3672df5b-7e23-f51c-c396-c9b8a782233e@gmail.com>
+Date:   Mon, 22 Nov 2021 09:42:02 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.1
+Subject: Re: [PATCH v2 net-next 0/2] net: snmp: tracepoint support for snmp
+Content-Language: en-US
+To:     Menglong Dong <menglong8.dong@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>, mingo@redhat.com,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        dsahern@kernel.org, Menglong Dong <imagedong@tencent.com>,
+        Yuchung Cheng <ycheng@google.com>, kuniyu@amazon.co.jp,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
+References: <20211118124812.106538-1-imagedong@tencent.com>
+ <67b36bd8-2477-88ac-83a0-35a1eeaf40c9@gmail.com>
+ <CADxym3ZfBVAecK-oFdMVV2gkOV6iUrq5XGkRZx3yXCuXDOS=2A@mail.gmail.com>
+ <9ad07da4-8523-b861-6111-729b8d1d6d57@gmail.com>
+ <CADxym3bTScvYzpUzvz62zpUvqksbfW-f=JpCUHbEJCagjY6wuQ@mail.gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+In-Reply-To: <CADxym3bTScvYzpUzvz62zpUvqksbfW-f=JpCUHbEJCagjY6wuQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/21 14:29, Christophe Leroy wrote:
-> Le 10/11/2021 à 21:24, Valentin Schneider a écrit :
->> CONFIG_PREEMPT{_NONE, _VOLUNTARY} designate either:
->> o The build-time preemption model when !PREEMPT_DYNAMIC
->> o The default boot-time preemption model when PREEMPT_DYNAMIC
+On 11/21/21 3:47 AM, Menglong Dong wrote:
+> On Fri, Nov 19, 2021 at 11:54 AM David Ahern <dsahern@gmail.com> wrote:
 >>
->> IOW, using those on PREEMPT_DYNAMIC kernels is meaningless - the actual
->> model could have been set to something else by the "preempt=foo" cmdline
->> parameter.
+> [...]
 >>
->> Introduce a set of helpers to determine the actual preemption mode used by
->> the live kernel.
+>> But it integrates into existing tooling which is a big win.
 >>
->> Suggested-by: Marco Elver <elver@google.com>
->> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
->> ---
->>   include/linux/sched.h | 16 ++++++++++++++++
->>   kernel/sched/core.c   | 11 +++++++++++
->>   2 files changed, 27 insertions(+)
+>> Ido gave the references for his work:
+>> https://github.com/nhorman/dropwatch/pull/11
+>> https://github.com/nhorman/dropwatch/commit/199440959a288dd97e3b7ae701d4e78968cddab7
 >>
->> diff --git a/include/linux/sched.h b/include/linux/sched.h
->> index 5f8db54226af..0640d5622496 100644
->> --- a/include/linux/sched.h
->> +++ b/include/linux/sched.h
->> @@ -2073,6 +2073,22 @@ static inline void cond_resched_rcu(void)
->>   #endif
->>   }
->>
->> +#ifdef CONFIG_PREEMPT_DYNAMIC
->> +
->> +extern bool is_preempt_none(void);
->> +extern bool is_preempt_voluntary(void);
->> +extern bool is_preempt_full(void);
->
-> Those are trivial tests supposed to be used in fast pathes. They should
-> be static inlines in order to minimise the overhead.
->
->> +
->> +#else
->> +
->> +#define is_preempt_none() IS_ENABLED(CONFIG_PREEMPT_NONE)
->> +#define is_preempt_voluntary() IS_ENABLED(CONFIG_PREEMPT_VOLUNTARY)
->> +#define is_preempt_full() IS_ENABLED(CONFIG_PREEMPT)
->
-> Would be better to use static inlines here as well instead of macros.
->
+> 
+> I have been thinking about this all day, and I think your words make sense.
+> Indeed, this can make use of the frame of the 'drop monitor' module of kernel
+> and the userspace tools of wireshark, dropwatch, etc. And this idea is more
+> suitable for the aim of 'get the reason for packet drop'. However, the
+> shortcoming
+> of this idea is that it can't reuse the drop reason for the 'snmp'
+> frame.
+> 
+> With creating a tracepoint for 'snmp', it can make use of the 'snmp' frame and
+> the modifications can be easier. However, it's not friendly to the
+> users, such as
+> dropwatch, wireshark, etc. And it seems it is a little redundant with what
+> the tracepoint for 'kfree_sbk()' do. However, I think it's not
+> difficult to develop
+> a userspace tool. In fact, I have already write a tool based on BCC, which is
+> able to make use of 'snmp' tracepoint, such as:
+> 
+> $ sudo ./nettrace.py --tracer snmp -p udp --addr 192.168.122.8
+> begin tracing......
+> 785487.366412: [snmp][udplite_noports]: UDP: 192.168.122.8:35310 ->
+> 192.168.122.1:7979
+> 
+> And it can monitor packet drop of udp with ip 192.168.122.8 (filter by port,
+> statistics type are supported too).
+> 
+> And maybe we can integrate tracepoint of  'snmp' into 'drop monitor' with
+> NET_DM_ATTR_SNMP, just link NET_DM_ATTR_SW_DROPS and
+> NET_DM_ATTR_HW_DROPS?
+> 
 
-I realize I stripped all ppc folks from the cclist after dropping the ppc
-snippet, but you guys might still be interested - my bad. That's done in
-v3:
+you don't need to add 'snmp' to drop monitor; you only need to add
+NET_DM_ATTR_ to the existing one.
 
-https://lore.kernel.org/lkml/20211112185203.280040-1-valentin.schneider@arm.com/
+This is the end of __udp4_lib_rcv:
 
->> +
->> +#endif
->> +
->> +#define is_preempt_rt() IS_ENABLED(CONFIG_PREEMPT_RT)
->> +
->>   /*
->>    * Does a critical section need to be broken due to another
->>    * task waiting?: (technically does not depend on CONFIG_PREEMPTION,
->> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
->> index 97047aa7b6c2..9db7f77e53c3 100644
->> --- a/kernel/sched/core.c
->> +++ b/kernel/sched/core.c
->> @@ -6638,6 +6638,17 @@ static void __init preempt_dynamic_init(void)
->>      }
->>   }
->>
->> +#define PREEMPT_MODE_ACCESSOR(mode) \
->> +	bool is_preempt_##mode(void)						 \
->> +	{									 \
->> +		WARN_ON_ONCE(preempt_dynamic_mode == preempt_dynamic_undefined); \
->
-> Not sure using WARN_ON is a good idea here, as it may be called very
-> early, see comment on powerpc patch.
+        __UDP_INC_STATS(net, UDP_MIB_CSUMERRORS, proto == IPPROTO_UDPLITE);
+drop:
+        __UDP_INC_STATS(net, UDP_MIB_INERRORS, proto == IPPROTO_UDPLITE);
+        kfree_skb(skb);
 
-Bah, I was gonna say that you *don't* want users of is_preempt_*() to be
-called before the "final" preemption model is set up (such users would need
-to make use of static_calls), but I realize there's a debug interface to
-flip the preemption model at will... Say an initcall sees
-is_preempt_voluntary() and sets things up accordingly, and then the debug
-knob switches to preempt_full. I don't think there's much we can really do
-here though :/
+you want to add a tracepoint at both UDP_INC_STATS making 3 consecutive
+lines that give access to the dropped skb with only slight variations in
+metadata.
 
->
->> +		return preempt_dynamic_mode == preempt_dynamic_##mode;		 \
->> +	}
->
-> I'm not sure that's worth a macro. You only have 3 accessors, 2 lines of
-> code each. Just define all 3 in plain text.
->
-> CONFIG_PREEMPT_DYNAMIC is based on using strategies like static_calls in
-> order to minimise the overhead. For those accessors you should use the
-> same kind of approach and use things like jump_labels in order to not
-> redo the test at each time and minimise overhead as much as possible.
->
+The last one, kfree_skb, gives you the address of the drop + the skb for
+analysis. Just add the metadata to the existing drop monitor.
 
-That's a valid point, though the few paths that need patching up and don't
-make use of static calls already (AFAICT the ppc irq path I was touching in
-v2 needs to make use of irqentry_exit_cond_resched()) really seem like
-slow-paths.
-
->> +
->> +PREEMPT_MODE_ACCESSOR(none)
->> +PREEMPT_MODE_ACCESSOR(voluntary)
->> +PREEMPT_MODE_ACCESSOR(full)
->> +
->>   #else /* !CONFIG_PREEMPT_DYNAMIC */
->>
->>   static inline void preempt_dynamic_init(void) { }
->>
