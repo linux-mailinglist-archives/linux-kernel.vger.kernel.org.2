@@ -2,122 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 629124590AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 15:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9DCE4590C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:00:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239718AbhKVPCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:02:49 -0500
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:28754 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234298AbhKVPCs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:02:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637593182; x=1669129182;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=A95SZUiBMQnSyLdP9iK6Je7MDarxoRjVsAbo3E7jjkc=;
-  b=oDUdnExkh4PnHsqDkRblvVs8sWAgjXkEqoku4ccgcdV40WJAbPOTcAAl
-   zOpvSBybnYU33E1kV7Uawo3q5kN9lBVVV0KSh/Z7mt/I7tEtDAsGp7lG4
-   gzHDD1HXeSP91Cdq3UygyYFG2fP3PJ7EoRlnfAQNpJUPnLpKmdvqBf4a5
-   w=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 22 Nov 2021 06:59:41 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 06:59:41 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Mon, 22 Nov 2021 06:59:41 -0800
-Received: from [10.50.17.71] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Mon, 22 Nov
- 2021 06:59:09 -0800
-Message-ID: <4ed41054-3868-d5e2-9958-56250b7f9be0@quicinc.com>
-Date:   Mon, 22 Nov 2021 20:29:05 +0530
+        id S239839AbhKVPDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:03:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43100 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239678AbhKVPDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 10:03:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9D61460F24;
+        Mon, 22 Nov 2021 15:00:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637593208;
+        bh=c2R7U7jRqFbZTUnZhuIlNTuETMxlaXWH8DOuaGHeN54=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=t8ghqzEjbvjD5KseRkXY33XkxI+i8tMbmuaEPAe6yOMjZ1PU8tDSueFkOlKBZ4u5B
+         01uFJ71GiCcqk5TI+SvVnTzatXsbQkdIfZhIbeH4rNF1F3lsy+6qOxY8dWlAwnbZ8h
+         H+91EkCS6LIcY44lNNP5FyJ/SgO7CJ7QWXtYtIWD+F4jjlVTQvjProo7L2YNCaa7hc
+         FBL9wSRHLC14vjoZ8hpK/u53cv/AJeYRDC/6HSr1ZO02iLcWXSxx6Aohql2FDo/dWZ
+         ME8wIZmTvJzkiXbLESmwkUj0RMjuAWH/9T+fYwKSFr9mVgv+2Oc70ikOlzzVJ9zkvE
+         aY8Ye5RRntqwQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 920C060A94;
+        Mon, 22 Nov 2021 15:00:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCHv4 2/2] arm64/io: Add a header for mmio access
- instrumentation
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@arndb.de>
-CC:     Will Deacon <will@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        <quic_psodagud@quicinc.com>, "Marc Zyngier" <maz@kernel.org>,
-        gregkh <gregkh@linuxfoundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>
-References: <cover.1636973694.git.quic_saipraka@quicinc.com>
- <9396fbdc415a3096ab271868960372b21479e4fb.1636973694.git.quic_saipraka@quicinc.com>
- <CAK8P3a2Bp4LP7C1-XLKvjyxV-e1vrHb-=3zpm75CRgPYNbY2jA@mail.gmail.com>
- <b07e339c-530d-683c-c626-14b73b42e72a@quicinc.com>
- <1609f1f7-6f61-6e17-d907-c526f09bffe5@quicinc.com>
- <CAK8P3a1KxJFwgock3XiRDZYzT=5PZ=Hsh_8uFv9heoa1rwNqtA@mail.gmail.com>
- <9ef8b483-f15f-eda8-d430-2d01e6cad70e@quicinc.com>
- <CAK8P3a0Zo+PTGAAvisAZamfLUm1ToGZpmHDn-Xk0Eo8TTRGyZg@mail.gmail.com>
-From:   Sai Prakash Ranjan <quic_saipraka@quicinc.com>
-In-Reply-To: <CAK8P3a0Zo+PTGAAvisAZamfLUm1ToGZpmHDn-Xk0Eo8TTRGyZg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Subject: Re: [PATCH net] net/smc: Avoid warning of possible recursive locking
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163759320859.11926.10316614383509162500.git-patchwork-notify@kernel.org>
+Date:   Mon, 22 Nov 2021 15:00:08 +0000
+References: <1637584373-49664-1-git-send-email-guwen@linux.alibaba.com>
+In-Reply-To: <1637584373-49664-1-git-send-email-guwen@linux.alibaba.com>
+To:     Wen Gu <guwen@linux.alibaba.com>
+Cc:     kgraul@linux.ibm.com, davem@davemloft.net, kuba@kernel.org,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dust.li@linux.alibaba.com,
+        tonylu@linux.alibaba.com, syzkaller-bugs@googlegroups.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/22/2021 8:00 PM, Arnd Bergmann wrote:
-> On Mon, Nov 22, 2021 at 3:19 PM Sai Prakash Ranjan
-> <quic_saipraka@quicinc.com> wrote:
->> On 11/22/2021 7:29 PM, Arnd Bergmann wrote:
->>> I think this would be a lot less confusing to readers, as it is implemented
->>> exactly in the place that has the normal definition, and it can also have
->>> somewhat more logical semantics by only instrumenting the
->>> normal/relaxed/ioport accessors but not the __raw_* versions that
->>> are meant to be little more than a pointer dereference.
->> But how is this different from logic in atomic-instrumented.h which also
->> has asm-generic version?
->> Initial review few years back mentioned about having something similar
->> to atomic instrumentation
->> and hence it was implemented with the similar approach keeping
->> instrumentation out of arch specific details.
-> This is only a cosmetic difference. I usually prefer fewer indirections,
-> and I like the way that include/asm-generic/io.h only has all the
-> normal 'static inline' definitions spelled out, and calling the __raw_*
-> versions. Your version adds an extra layer with the arch_raw_readl(),
-> which I'd prefer to avoid.
+Hello:
 
-I'm ok with your preference as long as we have some way to log these 
-MMIO accesses.
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
 
->> And if we do move this instrumentation to asm-generic/io.h, how will
->> that be executed since
->> the arch specifc read{b,w,l,q} overrides this generic version?
-> As I understand it, your version also requires architecture specific 
-> changes, so that would be the same: it only works for architectures 
-> that get the definition of readl()/readl_relaxed()/inl()/... from 
-> include/asm-generic/io.h and only override the __raw version. Arnd
+On Mon, 22 Nov 2021 20:32:53 +0800 you wrote:
+> Possible recursive locking is detected by lockdep when SMC
+> falls back to TCP. The corresponding warnings are as follows:
+> 
+>  ============================================
+>  WARNING: possible recursive locking detected
+>  5.16.0-rc1+ #18 Tainted: G            E
+> 
+> [...]
 
-Sorry, I didn't get this part, so  I am trying this on ARM64:
+Here is the summary with links:
+  - [net] net/smc: Avoid warning of possible recursive locking
+    https://git.kernel.org/netdev/net/c/7a61432dc813
 
-arm64/include/asm/io.h has read{b,l,w,q} defined.
-include/asm-generic/io.h has below:
-   #ifndef readl
-   #define readl readl
-   static inline u32 readl(const volatile void __iomem *addr)
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-and we include asm-generic/io.h in arm64/include/asm/io.h at the end 
-after the definitions for arm64 mmio accesors.
-So arch implementation here overrides generic ones as I see it, am I 
-missing something? I even confirmed this
-with some trace_printk to generic and arch specific definitions of readl 
-and I see arch specific ones being called.
 
-Thanks,
-Sai
