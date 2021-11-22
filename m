@@ -2,146 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D9DC458BAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 10:38:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAEF3458BB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 10:40:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239188AbhKVJlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 04:41:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44394 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239064AbhKVJlC (ORCPT
+        id S231734AbhKVJnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 04:43:16 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:39094 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238829AbhKVJnO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 04:41:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637573876;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Mon, 22 Nov 2021 04:43:14 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B1298212BA;
+        Mon, 22 Nov 2021 09:40:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637574007; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=bIlk+ihBReA4luef3l9FK2apG4r8ckQxVs4q15V5P4E=;
-        b=NLR+E018s2S7ZzYKWUob+eoSFm0wBoB+b328BV0Rzrf6RDlKY/H0JQW4KuuWV96Rv879KR
-        ZNAB9aQc/LpsQHbBrCxqwnXsn/ugmIRkdMnQWWlTBkW6VBt9iZ72aI6m/sXitm4kw5f2CK
-        IuS6zHKLtLeOwL97Ox6NAxQ4xFgwyT0=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-432-zT07mTZTNzm8rXt6zSVkHg-1; Mon, 22 Nov 2021 04:37:54 -0500
-X-MC-Unique: zT07mTZTNzm8rXt6zSVkHg-1
-Received: by mail-wm1-f72.google.com with SMTP id l187-20020a1c25c4000000b0030da46b76daso9905763wml.9
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 01:37:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bIlk+ihBReA4luef3l9FK2apG4r8ckQxVs4q15V5P4E=;
-        b=MWs6dTzJOlzHM7DkjNyYL2PHRXqsRaBBqQFFFdJyblyo5P9Ekmz6zTDWUiJ1kNAgfD
-         fciAEjsi098Ie5CDjVf+QsL0kiTlMip0al63qo343Jl8ya6NHGZFi/QbCX3wC+kbtnGl
-         s+xGUaGh/657NBm9/nsIcodoyF/NbHKRlr7BjGSk6fMt7wVInhXT6TQdzgpZlj5yPp8M
-         Tli52EcOC269BiuaoWIh6I5bJ4y1y+CecLQj1b+uMrof35zAb1fRRueKOzGEwIpslXny
-         1iQ0RzxHhl2pzKJO3xDLj7meuCcNJGv3PuIH9nc/oB11Wkr6uMODL3zfNHxMEZI0ZJQN
-         LQ+g==
-X-Gm-Message-State: AOAM533BLMP0fk7FZ6PiDmwWHCjM+DeylqwVOmX1Y4liqmjMgsvRzW/t
-        dzC5uExE9CZ+wSt0aed+nq4Ajzvr2U0CQz/D4oDLfGZAXalwdttB0AnUVBZtEif0XtlWFz+K3M6
-        KqseVz463c+N1qdkwMrFfs5oj
-X-Received: by 2002:a5d:6dc3:: with SMTP id d3mr36126805wrz.159.1637573873433;
-        Mon, 22 Nov 2021 01:37:53 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzxBO0fMZmz4vU5DDAWrAXgOEEtOabqFm5qkQuvtfLHepd8zMa6raRS+mZ6nm92m3RkPKn+JQ==
-X-Received: by 2002:a5d:6dc3:: with SMTP id d3mr36126776wrz.159.1637573873232;
-        Mon, 22 Nov 2021 01:37:53 -0800 (PST)
-Received: from redhat.com ([2.55.128.84])
-        by smtp.gmail.com with ESMTPSA id j11sm8373660wrt.3.2021.11.22.01.37.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 01:37:52 -0800 (PST)
-Date:   Mon, 22 Nov 2021 04:37:47 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Andrey Ryabinin <arbn@yandex-team.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        kvm <kvm@vger.kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH 6/6] vhost_net: use RCU callbacks instead of
- synchronize_rcu()
-Message-ID: <20211122043620-mutt-send-email-mst@kernel.org>
-References: <20211115153003.9140-1-arbn@yandex-team.com>
- <20211115153003.9140-6-arbn@yandex-team.com>
- <CACGkMEumax9RFVNgWLv5GyoeQAmwo-UgAq=DrUd4yLxPAUUqBw@mail.gmail.com>
- <b163233f-090f-baaf-4460-37978cab4d55@yandex-team.com>
+        bh=WwT6Zgy5Ma/gGcy/gPme7/lCbOC1WvnP8Sx49LFqUeM=;
+        b=14A6YcwFR0oNG9MYF3W6pKfanVHUbsm+ovvVn0JFgw/5Rcwuncj3v0znVMaP9OqlSPM+Un
+        rR7mb29yRKPMHjuCG4C7dizlyAH1A31taatVL9TbsLWKk6CdwZKA+kGTy9LEQNicWjq4TD
+        OPCIIx/XU3LqeJ0IrUss8CoUu/YG0l8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637574007;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WwT6Zgy5Ma/gGcy/gPme7/lCbOC1WvnP8Sx49LFqUeM=;
+        b=Kv/9M0niYUx/raFGEN++2Bdv9vMyDVJTsFFiSira2SOWZSSGwGPBcBFUgs5Y1k1EW3rmd3
+        KFpwI5DX68chWKBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7353D13C23;
+        Mon, 22 Nov 2021 09:40:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id m46GG3dlm2FaWwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Mon, 22 Nov 2021 09:40:07 +0000
+Message-ID: <3c996e22-034f-1013-3978-1f786aae38fb@suse.cz>
+Date:   Mon, 22 Nov 2021 10:40:07 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b163233f-090f-baaf-4460-37978cab4d55@yandex-team.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Content-Language: en-US
+To:     Christoph Lameter <cl@gentwo.org>,
+        Rustam Kovhaev <rkovhaev@gmail.com>
+Cc:     penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, corbet@lwn.net, djwong@kernel.org,
+        david@fromorbit.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        gregkh@linuxfoundation.org, viro@zeniv.linux.org.uk,
+        dvyukov@google.com
+References: <037227db-c869-7d9c-65e8-8f5f8682171d@suse.cz>
+ <20211122013026.909933-1-rkovhaev@gmail.com>
+ <alpine.DEB.2.22.394.2111221018070.202803@gentwo.de>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v4] slob: add size header to all allocations
+In-Reply-To: <alpine.DEB.2.22.394.2111221018070.202803@gentwo.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 02:32:05PM +0300, Andrey Ryabinin wrote:
+On 11/22/21 10:22, Christoph Lameter wrote:
+> On Sun, 21 Nov 2021, Rustam Kovhaev wrote:
+> 
+>> Let's prepend both kmalloc() and kmem_cache_alloc() allocations with the
+>> size header.
+>> It simplifies the slab API and guarantees that both kmem_cache_alloc()
+>> and kmalloc() memory could be freed by kfree().
+>>
+>> meminfo right after the system boot, x86-64 on xfs, without the patch:
+>> Slab:              34700 kB
+>>
+>> the same, with the patch:
+>> Slab:              35752 kB
+> 
+>> +#define SLOB_HDR_SIZE max(ARCH_KMALLOC_MINALIGN, ARCH_SLAB_MINALIGN)
+> 
+> Ok that is up to 128 bytes on some architectues. Mostly 32 or 64 bytes.
+> 
+>> @@ -307,6 +303,7 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node,
+>>  	unsigned long flags;
+>>  	bool _unused;
+>>
+>> +	size += SLOB_HDR_SIZE;
+> 
+> And every object now has this overhead? 128 bytes extra in extreme cases
+> per object?
 > 
 > 
-> On 11/16/21 8:00 AM, Jason Wang wrote:
-> > On Mon, Nov 15, 2021 at 11:32 PM Andrey Ryabinin <arbn@yandex-team.com> wrote:
-> >>
-> >> Currently vhost_net_release() uses synchronize_rcu() to synchronize
-> >> freeing with vhost_zerocopy_callback(). However synchronize_rcu()
-> >> is quite costly operation. It take more than 10 seconds
-> >> to shutdown qemu launched with couple net devices like this:
-> >>         -netdev tap,id=tap0,..,vhost=on,queues=80
-> >> because we end up calling synchronize_rcu() netdev_count*queues times.
-> >>
-> >> Free vhost net structures in rcu callback instead of using
-> >> synchronize_rcu() to fix the problem.
-> > 
-> > I admit the release code is somehow hard to understand. But I wonder
-> > if the following case can still happen with this:
-> > 
-> > CPU 0 (vhost_dev_cleanup)   CPU1
-> > (vhost_net_zerocopy_callback()->vhost_work_queue())
-> >                                                 if (!dev->worker)
-> > dev->worker = NULL
-> > 
-> > wake_up_process(dev->worker)
-> > 
-> > If this is true. It seems the fix is to move RCU synchronization stuff
-> > in vhost_net_ubuf_put_and_wait()?
-> > 
+>> -	if (size < PAGE_SIZE - minalign) {
+>> -		int align = minalign;
+>> +	if (size < PAGE_SIZE - SLOB_HDR_SIZE) {
+>> +		int align = SLOB_HDR_SIZE;
 > 
-> It all depends whether vhost_zerocopy_callback() can be called outside of vhost
-> thread context or not. If it can run after vhost thread stopped, than the race you
-> describe seems possible and the fix in commit b0c057ca7e83 ("vhost: fix a theoretical race in device cleanup")
-> wasn't complete. I would fix it by calling synchronize_rcu() after vhost_net_flush()
-> and before vhost_dev_cleanup().
+> And the object is also aligned to 128 bytes boundaries on some
+> architectures.
 > 
-> As for the performance problem, it can be solved by replacing synchronize_rcu() with synchronize_rcu_expedited().
+> So a 4 byte object occupies 256 bytes in SLOB?
+> 
+> SLOB will no longer be a low memory overhead allocator then.
 
-expedited causes a stop of IPIs though, so it's problematic to
-do it upon a userspace syscall.
+Hm good point, didn't realize those MINALIGN constants can be that large. I
+think this overhead was already the case with SLOB for kmalloc caches, but
+now it would be worse, as it would be for all kmem caches.
 
-> But now I'm not sure that this race is actually exists and that synchronize_rcu() needed at all.
-> I did a bit of testing and I only see callback being called from vhost thread:
-> 
-> vhost-3724  3733 [002]  2701.768731: probe:vhost_zerocopy_callback: (ffffffff81af8c10)
->         ffffffff81af8c11 vhost_zerocopy_callback+0x1 ([kernel.kallsyms])
->         ffffffff81bb34f6 skb_copy_ubufs+0x256 ([kernel.kallsyms])
->         ffffffff81bce621 __netif_receive_skb_core.constprop.0+0xac1 ([kernel.kallsyms])
->         ffffffff81bd062d __netif_receive_skb_one_core+0x3d ([kernel.kallsyms])
->         ffffffff81bd0748 netif_receive_skb+0x38 ([kernel.kallsyms])
->         ffffffff819a2a1e tun_get_user+0xdce ([kernel.kallsyms])
->         ffffffff819a2cf4 tun_sendmsg+0xa4 ([kernel.kallsyms])
->         ffffffff81af9229 handle_tx_zerocopy+0x149 ([kernel.kallsyms])
->         ffffffff81afaf05 handle_tx+0xc5 ([kernel.kallsyms])
->         ffffffff81afce86 vhost_worker+0x76 ([kernel.kallsyms])
->         ffffffff811581e9 kthread+0x169 ([kernel.kallsyms])
->         ffffffff810018cf ret_from_fork+0x1f ([kernel.kallsyms])
->                        0 [unknown] ([unknown])
-> 
-> This means that the callback can't run after kthread_stop() in vhost_dev_cleanup() and no synchronize_rcu() needed.
-> 
-> I'm not confident that my quite limited testing cover all possible vhost_zerocopy_callback() callstacks.
-
+But it seems there's no reason we couldn't do better? I.e. use the value of
+SLOB_HDR_SIZE only to align the beginning of actual object (and name the
+define different than SLOB_HDR_SIZE). But the size of the header, where we
+store the object lenght could be just a native word - 4 bytes on 32bit, 8 on
+64bit. The address of the header shouldn't have a reason to be also aligned
+to ARCH_KMALLOC_MINALIGN / ARCH_SLAB_MINALIGN as only SLOB itself processes
+it and not the slab consumers which rely on those alignments?
