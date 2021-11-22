@@ -2,205 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A0B45882E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 04:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD061458833
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 04:07:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238512AbhKVDFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Nov 2021 22:05:34 -0500
-Received: from mga02.intel.com ([134.134.136.20]:48333 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229870AbhKVDFd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Nov 2021 22:05:33 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10175"; a="221933965"
-X-IronPort-AV: E=Sophos;i="5.87,253,1631602800"; 
-   d="scan'208";a="221933965"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2021 19:02:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,253,1631602800"; 
-   d="scan'208";a="496697414"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.189])
-  by orsmga007.jf.intel.com with ESMTP; 21 Nov 2021 19:02:24 -0800
-Date:   Mon, 22 Nov 2021 11:02:23 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Cassio Neri <cassio.neri@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v3 1/4] clocksource: Avoid accidental unstable marking of
- clocksources
-Message-ID: <20211122030223.GG34844@shbuild999.sh.intel.com>
-References: <20211118191439.1000012-1-longman@redhat.com>
- <20211118191439.1000012-2-longman@redhat.com>
+        id S238620AbhKVDKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Nov 2021 22:10:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229870AbhKVDKp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Nov 2021 22:10:45 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFAB3C061574;
+        Sun, 21 Nov 2021 19:07:39 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id e3so70417862edu.4;
+        Sun, 21 Nov 2021 19:07:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=66pEqIh/hxjDI6IBVhVyZpaU/DnBMngjj367QoH2zX0=;
+        b=Aqjc20wwIhycN0UKtBDX8hk8+SZqdK6QHoJMvYJk4AKC/cqbi2UTNG7aqqJTnoQxal
+         fCflrOw0AoXsgAQZbNG3a7FfxAQaqlfITU9LQy5mMF7h6HbYDr/4hj/Oi4QAFVD9SESS
+         XNAtFHuWr5SRm2+cair5AR1gHcXwfytxCTbjXUl130X+vxF2gcDUkqRqwyj+1EbJYul+
+         STFP8kXDXfXSgNx4CMMGDwZabn6H/N5mgj6Dc1glYCCEKUiXI6Un4FpSr/cfuczuy7lx
+         HNOvRNSUTlnnGkPTTNKzXz2T7/Co4G3F3FQVyqr8Bz4kIKGBUMnlU8EeD4l7c1InqP9m
+         3Org==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=66pEqIh/hxjDI6IBVhVyZpaU/DnBMngjj367QoH2zX0=;
+        b=gUU4uh/yJymwDgwh9mbECy1OXM+kA9jSkH31Ahl+Sz8ni8OH/QIt5T8fFRHwwfRRz+
+         1UxDU7vtSuMX52IBPe5SziYdN1xsFRKwFuiAoNrKML+81Evasia5F9+lL3dNc8Fvmwuy
+         7Q0RM+bWOWGItsNQuVdJ4xyVa/NfO7Ul+hkNwCzGunUEaP4F0obaCvcNYk4wOn1R6XIk
+         wQeov5/sICxvXhck3cSCRbnc10O6qSrL92B4Nwy+aQrR14I2/FUzOSzTpNr82KvISsAb
+         YlZ+QJ4AYbv9n8T6DbYZss2ffZVtnpIpwHo7RzTNY8dya36BqJYhdzi+FfmiXPEV06n5
+         S/AA==
+X-Gm-Message-State: AOAM532tiRwsPEGx470k80fqWkrYQTlLZX8RRfAAeUT//73gy7bJrOOL
+        GiYpprxpi6Y1Q467xg1Ii7mk07r/yTpoNjoUTj0=
+X-Google-Smtp-Source: ABdhPJzYXM0wvHPRwKFahjWfK6XpvYJQTI45zRB1/4YIlDwncdDUkdId6Lx3prs7CUL2O+Lh3zDylnOkLUO5Yhgqva4=
+X-Received: by 2002:a17:907:160b:: with SMTP id hb11mr37468062ejc.336.1637550458015;
+ Sun, 21 Nov 2021 19:07:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211118191439.1000012-2-longman@redhat.com>
+References: <20211106155427.753197-1-aford173@gmail.com> <20211106155427.753197-4-aford173@gmail.com>
+ <YZrTyVJR8VN6dQAf@pendragon.ideasonboard.com>
+In-Reply-To: <YZrTyVJR8VN6dQAf@pendragon.ideasonboard.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Sun, 21 Nov 2021 21:07:26 -0600
+Message-ID: <CAHCN7xK=SNgiC2kRzX4gftjkZX4Ms8PVbL69n7+eR-EAe68xag@mail.gmail.com>
+Subject: Re: [PATCH V2 4/5] arm64: dts: imx8mm-beacon: Enable OV5640 Camera
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Schrempf Frieder <frieder.schrempf@kontron.de>,
+        linux-media <linux-media@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        cstevens@beaconembedded.com,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Peng Fan <peng.fan@nxp.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 02:14:36PM -0500, Waiman Long wrote:
-> Since commit db3a34e17433 ("clocksource: Retry clock read if long delays
-> detected") and commit 2e27e793e280 ("clocksource: Reduce clocksource-skew
-> threshold"), it is found that tsc clocksource fallback to hpet can
-> sometimes happen on both Intel and AMD systems especially when they are
-> running stressful benchmarking workloads. Of the 23 systems tested with
-> a v5.14 kernel, 10 of them have switched to hpet clock source during
-> the test run.
-> 
-> The result of falling back to hpet is a drastic reduction of performance
-> when running benchmarks. For example, the fio performance tests can
-> drop up to 70% whereas the iperf3 performance can drop up to 80%.
-> 
-> 4 hpet fallbacks happened during bootup. They were:
-> 
->   [    8.749399] clocksource: timekeeping watchdog on CPU13: hpet read-back delay of 263750ns, attempt 4, marking unstable
->   [   12.044610] clocksource: timekeeping watchdog on CPU19: hpet read-back delay of 186166ns, attempt 4, marking unstable
->   [   17.336941] clocksource: timekeeping watchdog on CPU28: hpet read-back delay of 182291ns, attempt 4, marking unstable
->   [   17.518565] clocksource: timekeeping watchdog on CPU34: hpet read-back delay of 252196ns, attempt 4, marking unstable
-> 
-> Other fallbacks happen when the systems were running stressful
-> benchmarks. For example:
-> 
->   [ 2685.867873] clocksource: timekeeping watchdog on CPU117: hpet read-back delay of 57269ns, attempt 4, marking unstable
->   [46215.471228] clocksource: timekeeping watchdog on CPU8: hpet read-back delay of 61460ns, attempt 4, marking unstable
-> 
-> Commit 2e27e793e280 ("clocksource: Reduce clocksource-skew threshold"),
-> changed the skew margin from 100us to 50us. I think this is too small
-> and can easily be exceeded when running some stressful workloads on a
-> thermally stressed system.  So it is switched back to 100us.
-> 
-> Even a maximum skew margin of 100us may be too small in for some systems
-> when booting up especially if those systems are under thermal stress. To
-> eliminate the case that the large skew is due to the system being too
-> busy slowing down the reading of both the watchdog and the clocksource,
-> an extra consecutive read of watchdog clock is being done to check this.
-> 
-> The consecutive watchdog read delay is compared against
-> WATCHDOG_MAX_SKEW/2. If the delay exceeds the limit, we assume that
-> the system is just too busy. A warning will be printed to the console
-> and the clock skew check is skipped for this round.
- 
-Reviewed-by: Feng Tang <feng.tang@intel.com>
+On Sun, Nov 21, 2021 at 5:18 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Adam,
+>
+> Thank you for the patch.
+>
+> On Sat, Nov 06, 2021 at 10:54:26AM -0500, Adam Ford wrote:
+> > The baseboard has support for a TDNext 5640 Camera which
+> > uses an OV5640 connected to a 2-lane CSI2 interface.
+> >
+> > With the CSI and mipi_csi2 drivers pointing to an OV5640 camera, the media
+> > pipeline can be configured with the following:
+> >
+> >     media-ctl --links "'ov5640 1-003c':0->'imx7-mipi-csis.0':0[1]"
+> >
+> > The camera and various nodes in the pipeline can be configured for UYVY:
+> >     media-ctl -v -V "'ov5640 1-003c':0 [fmt:UYVY8_1X16/640x480 field:none]"
+> >     media-ctl -v -V "'csi':0 [fmt:UYVY8_1X16/640x480 field:none]"
+> >
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+>
+> As the ov5640 is on an add-on module, would a DT overlay be better ?
 
-Thanks,
-Feng
+At least for the Beacon / LogicPD boards, I would prefer to avoid the
+overlays.  We have an i.M6Q and an OMAP3 board with cameras enabled in
+our development kit device trees.  If the cameras are not connected,
+they just display a message that the cameras are not communicating and
+move on.  I'm OK with that.
 
-> Fixes: db3a34e17433 ("clocksource: Retry clock read if long delays detected")
-> Fixes: 2e27e793e280 ("clocksource: Reduce clocksource-skew threshold")
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  kernel/time/clocksource.c | 50 ++++++++++++++++++++++++++++++++-------
->  1 file changed, 41 insertions(+), 9 deletions(-)
-> 
-> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-> index b8a14d2fb5ba..bcad1a1e5dcf 100644
-> --- a/kernel/time/clocksource.c
-> +++ b/kernel/time/clocksource.c
-> @@ -107,7 +107,7 @@ static u64 suspend_start;
->   * This delay could be due to SMIs, NMIs, or to VCPU preemptions.  Used as
->   * a lower bound for cs->uncertainty_margin values when registering clocks.
->   */
-> -#define WATCHDOG_MAX_SKEW (50 * NSEC_PER_USEC)
-> +#define WATCHDOG_MAX_SKEW (100 * NSEC_PER_USEC)
->  
->  #ifdef CONFIG_CLOCKSOURCE_WATCHDOG
->  static void clocksource_watchdog_work(struct work_struct *work);
-> @@ -205,17 +205,24 @@ EXPORT_SYMBOL_GPL(max_cswd_read_retries);
->  static int verify_n_cpus = 8;
->  module_param(verify_n_cpus, int, 0644);
->  
-> -static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
-> +enum wd_read_status {
-> +	WD_READ_SUCCESS,
-> +	WD_READ_UNSTABLE,
-> +	WD_READ_SKIP
-> +};
-> +
-> +static enum wd_read_status cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
->  {
->  	unsigned int nretries;
-> -	u64 wd_end, wd_delta;
-> -	int64_t wd_delay;
-> +	u64 wd_end, wd_end2, wd_delta;
-> +	int64_t wd_delay, wd_seq_delay;
->  
->  	for (nretries = 0; nretries <= max_cswd_read_retries; nretries++) {
->  		local_irq_disable();
->  		*wdnow = watchdog->read(watchdog);
->  		*csnow = cs->read(cs);
->  		wd_end = watchdog->read(watchdog);
-> +		wd_end2 = watchdog->read(watchdog);
->  		local_irq_enable();
->  
->  		wd_delta = clocksource_delta(wd_end, *wdnow, watchdog->mask);
-> @@ -226,13 +233,34 @@ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
->  				pr_warn("timekeeping watchdog on CPU%d: %s retried %d times before success\n",
->  					smp_processor_id(), watchdog->name, nretries);
->  			}
-> -			return true;
-> +			return WD_READ_SUCCESS;
->  		}
-> +
-> +		/*
-> +		 * Now compute delay in consecutive watchdog read to see if
-> +		 * there is too much external interferences that cause
-> +		 * significant delay in reading both clocksource and watchdog.
-> +		 *
-> +		 * If consecutive WD read-back delay > WATCHDOG_MAX_SKEW/2,
-> +		 * report system busy, reinit the watchdog and skip the current
-> +		 * watchdog test.
-> +		 */
-> +		wd_delta = clocksource_delta(wd_end2, wd_end, watchdog->mask);
-> +		wd_seq_delay = clocksource_cyc2ns(wd_delta, watchdog->mult, watchdog->shift);
-> +		if (wd_seq_delay > WATCHDOG_MAX_SKEW/2)
-> +			goto skip_test;
->  	}
->  
->  	pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, marking unstable\n",
->  		smp_processor_id(), watchdog->name, wd_delay, nretries);
-> -	return false;
-> +	return WD_READ_UNSTABLE;
-> +
-> +skip_test:
-> +	pr_info("timekeeping watchdog on CPU%d: %s wd-wd read-back delay of %lldns\n",
-> +		smp_processor_id(), watchdog->name, wd_seq_delay);
-> +	pr_info("wd-%s-wd read-back delay of %lldns, clock-skew test skipped!\n",
-> +		cs->name, wd_delay);
-> +	return WD_READ_SKIP;
->  }
->  
->  static u64 csnow_mid;
-> @@ -356,6 +384,7 @@ static void clocksource_watchdog(struct timer_list *unused)
->  	int next_cpu, reset_pending;
->  	int64_t wd_nsec, cs_nsec;
->  	struct clocksource *cs;
-> +	enum wd_read_status read_ret;
->  	u32 md;
->  
->  	spin_lock(&watchdog_lock);
-> @@ -373,9 +402,12 @@ static void clocksource_watchdog(struct timer_list *unused)
->  			continue;
->  		}
->  
-> -		if (!cs_watchdog_read(cs, &csnow, &wdnow)) {
-> -			/* Clock readout unreliable, so give it up. */
-> -			__clocksource_unstable(cs);
-> +		read_ret = cs_watchdog_read(cs, &csnow, &wdnow);
-> +
-> +		if (read_ret != WD_READ_SUCCESS) {
-> +			if (read_ret == WD_READ_UNSTABLE)
-> +				/* Clock readout unreliable, so give it up. */
-> +				__clocksource_unstable(cs);
->  			continue;
->  		}
->  
-> -- 
-> 2.27.0
+>
+> > ---
+> > V2:  No change
+> >
+> >  .../freescale/imx8mm-beacon-baseboard.dtsi    | 58 +++++++++++++++++++
+> >  1 file changed, 58 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
+> > index 6f5e63696ec0..0fb95f4a5e78 100644
+> > --- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
+> > @@ -43,6 +43,16 @@ reg_audio: regulator-audio {
+> >               enable-active-high;
+> >       };
+> >
+> > +     reg_camera: regulator-camera {
+> > +             compatible = "regulator-fixed";
+> > +             regulator-name = "mipi_pwr";
+> > +             regulator-min-microvolt = <2800000>;
+> > +             regulator-max-microvolt = <2800000>;
+> > +             gpio = <&pca6416_1 0 GPIO_ACTIVE_HIGH>;
+> > +             enable-active-high;
+> > +             startup-delay-us = <100000>;
+> > +     };
+> > +
+> >       reg_usdhc2_vmmc: regulator-usdhc2 {
+> >               compatible = "regulator-fixed";
+> >               regulator-name = "VSD_3V3";
+> > @@ -67,6 +77,10 @@ sound {
+> >       };
+> >  };
+> >
+> > +&csi {
+> > +     status = "okay";
+> > +};
+> > +
+> >  &ecspi2 {
+> >       pinctrl-names = "default";
+> >       pinctrl-0 = <&pinctrl_espi2>;
+> > @@ -90,6 +104,30 @@ &i2c2 {
+> >       pinctrl-names = "default";
+> >       pinctrl-0 = <&pinctrl_i2c2>;
+> >       status = "okay";
+> > +
+> > +     camera@3c {
+> > +             compatible = "ovti,ov5640";
+> > +             pinctrl-names = "default";
+> > +             pinctrl-0 = <&pinctrl_ov5640>;
+> > +             reg = <0x3c>;
+> > +             clocks = <&clk IMX8MM_CLK_CLKO1>;
+> > +             clock-names = "xclk";
+> > +             assigned-clocks = <&clk IMX8MM_CLK_CLKO1>;
+> > +             assigned-clock-parents = <&clk IMX8MM_CLK_24M>;
+> > +             assigned-clock-rates = <24000000>;
+> > +             AVDD-supply = <&reg_camera>;  /* 2.8v */
+> > +             powerdown-gpios = <&gpio1 7 GPIO_ACTIVE_HIGH>;
+> > +             reset-gpios = <&gpio1 6 GPIO_ACTIVE_LOW>;
+> > +
+> > +             port {
+> > +                     /* MIPI CSI-2 bus endpoint */
+> > +                     ov5640_to_mipi_csi2: endpoint {
+> > +                             remote-endpoint = <&imx8mm_mipi_csi_in>;
+> > +                             clock-lanes = <0>;
+> > +                             data-lanes = <1 2>;
+> > +                     };
+> > +             };
+> > +     };
+> >  };
+> >
+> >  &i2c4 {
+> > @@ -141,6 +179,18 @@ pca6416_1: gpio@21 {
+> >       };
+> >  };
+> >
+> > +&mipi_csi {
+> > +     status = "okay";
+> > +     ports {
+> > +             port@0 {
+> > +                     imx8mm_mipi_csi_in: endpoint {
+> > +                             remote-endpoint = <&ov5640_to_mipi_csi2>;
+> > +                             data-lanes = <1 2>;
+> > +                     };
+> > +             };
+> > +     };
+> > +};
+> > +
+> >  &sai3 {
+> >       pinctrl-names = "default";
+> >       pinctrl-0 = <&pinctrl_sai3>;
+> > @@ -209,6 +259,14 @@ MX8MM_IOMUXC_SAI3_RXFS_GPIO4_IO28        0x41
+> >               >;
+> >       };
+> >
+> > +     pinctrl_ov5640: ov5640grp {
+> > +             fsl,pins = <
+> > +                     MX8MM_IOMUXC_GPIO1_IO07_GPIO1_IO7               0x19
+> > +                     MX8MM_IOMUXC_GPIO1_IO06_GPIO1_IO6               0x19
+> > +                     MX8MM_IOMUXC_GPIO1_IO14_CCMSRCGPCMIX_CLKO1      0x59
+> > +             >;
+> > +     };
+> > +
+> >       pinctrl_pcal6414: pcal6414-gpiogrp {
+> >               fsl,pins = <
+> >                       MX8MM_IOMUXC_SAI2_MCLK_GPIO4_IO27               0x19
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
