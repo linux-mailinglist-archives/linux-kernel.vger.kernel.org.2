@@ -2,195 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30494458D7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:33:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C224A458D82
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:35:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239067AbhKVLgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 06:36:20 -0500
-Received: from mail-eopbgr140042.outbound.protection.outlook.com ([40.107.14.42]:29765
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237476AbhKVLgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 06:36:18 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DptEv5Dh1Sd0rq4V2H4a9o3BgEQs4rfICmn5AMsl5oCWApTsmNj/pSbQT5d/85h88PD6eJqCXOj7GKdg4RFBouJKuovdS0tuxPL2OQBEUm8fut8sAewBoqcuucaT7sx8J1VzK66Lye5HPQclRvy4eqWmUBDReAIi8ixj1NtIh1bDnNyutlRM9mmOA1FfOYA5POBr6whaunle9xP84oc/s+9e3XLLosSOpozBYSyd9Ep+5RsBbaCNQ5rRRpiaiLhuCfknQoUpmCmfpe+zDTwjO17QnnPQGV0awBf8XSIR/pl8cio/KayY5CQUZqq1vrOwGm+38tF24SkqHVs7QLd94g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mRUDTX+UDB/zv/LbERwPwEHYTzhENEC1bF11+aDDEvk=;
- b=h2y56oXfVfRmZzcJqKjJv5XthUYr3Q91b2XrTFHtX4xPHY6HJo0Vo/TO7Ghe35Q/VUOwy3+GshUTvr65Qk1mpmaHeIK5GzAiT1P0Nphq8iTpyY74JgG178tdmkQFU5d1kNbR3nd81a6DqKt1K6Z1sEy2hB9nx9WGS0lIxyx3OtMyc2YmR4EiYNe5WwAwnKfknQJsbBjrz77Wvunh6mqcHzY4pAM7Dsh2ANZuzWwfJJBle6bC7gOkKlrFCRzHYdhCLQ1KwshtxoIZFYCy6QEVk2rgHyk0MX8C+YR/6oGGYXIe5bvg+hKMaaTKdt+McLgDB+OX+lIKuwBLfyLT5j4DUA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mRUDTX+UDB/zv/LbERwPwEHYTzhENEC1bF11+aDDEvk=;
- b=op3sxGf9srbYjr88oFLmLFjpaa2LBdZck11NUTt8F5QiAa14RoUh3VKYuqhyxhr6tMPHmgLoRuzQ6u+ajBPZFUTYnwl+rmCBxphL9LjydYCk/pJnn8HFOUyzp2MC6ZFrSd7h7VEeF7fMDL7PQ7H/HvDHJKAayviJdOrn15D6vF8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB5342.eurprd04.prod.outlook.com (2603:10a6:803:46::16)
- by VI1PR04MB5502.eurprd04.prod.outlook.com (2603:10a6:803:c9::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Mon, 22 Nov
- 2021 11:33:08 +0000
-Received: from VI1PR04MB5342.eurprd04.prod.outlook.com
- ([fe80::9c7:29fc:3544:10fb]) by VI1PR04MB5342.eurprd04.prod.outlook.com
- ([fe80::9c7:29fc:3544:10fb%3]) with mapi id 15.20.4713.024; Mon, 22 Nov 2021
- 11:33:08 +0000
-From:   Gaurav Jain <gaurav.jain@nxp.com>
-To:     Horia Geanta <horia.geanta@nxp.com>,
-        Pankaj Gupta <pankaj.gupta@nxp.com>,
-        Varun Sethi <V.Sethi@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com, Gaurav Jain <gaurav.jain@nxp.com>
-Subject: [PATCH v2] crypto: caam: save caam memory to support crypto engine retry mechanism.
-Date:   Mon, 22 Nov 2021 17:02:34 +0530
-Message-Id: <20211122113234.851618-1-gaurav.jain@nxp.com>
-X-Mailer: git-send-email 2.25.1
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR0302CA0006.apcprd03.prod.outlook.com
- (2603:1096:3:2::16) To VI1PR04MB5342.eurprd04.prod.outlook.com
- (2603:10a6:803:46::16)
+        id S239109AbhKVLiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 06:38:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52236 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230173AbhKVLiQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 06:38:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38D5360C4A;
+        Mon, 22 Nov 2021 11:35:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637580910;
+        bh=fsxiu5OtiKvVSGwLIQuhcHrreWPtheesRrgoLqEG4iI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dlqPWe0KLZL/veZDmsa4GPtvRis/6V0euE04fmcoB83vRtaf6/AWGZ6q+XGgKIFO9
+         ucddsnwjto28/ctMGqFWyqKikkv3vsvhiJL0ucmwYvZ7HqcgHEF6uxxqsxaRCBGEPM
+         7/GLJ5DRco3cARJEsotBBnkDKpbFHO02OwHerB/YWgJH1GA9Ts//Z/635BgC7KzOBp
+         +EwqE3544TUpMWpOWo/PaHMVLeufcypvGbrhxmF8juXfOfrWhWq181CuttTEtS+o0Z
+         +QCC+bTDkvSRNgC3Lrs7SG+7EqIw4YEfXK8/ig/RfdghDHKujiF3q3fYRCEP3gCUWm
+         3BzkQ9oXYCbPQ==
+Date:   Mon, 22 Nov 2021 17:05:05 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org,
+        Eddie Hung <eddie.hung@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Yz Wu <yz.wu@mediatek.com>
+Subject: Re: [PATCH 5/6] phy: phy-mtk-tphy: add support efuse setting
+Message-ID: <YZuAab3j+flr1xXj@matsya>
+References: <20211107075646.4366-1-chunfeng.yun@mediatek.com>
+ <20211107075646.4366-5-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
-Received: from lsv03557.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR0302CA0006.apcprd03.prod.outlook.com (2603:1096:3:2::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.17 via Frontend Transport; Mon, 22 Nov 2021 11:33:05 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ea3588df-12cf-4a2f-3b6c-08d9adabdb7f
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5502:
-X-Microsoft-Antispam-PRVS: <VI1PR04MB5502EF5598A246C5524DBFE9E79F9@VI1PR04MB5502.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /3JAje0aX4yClBbSC0TpiwWKq+goevtDWdit3sT74bZ548ZZHtgXtNMXu2GA6yc9J1QdAE0wD7FMdCMGWSgf+1/CivKmELJO/QjU92XMD8Ik9sum8s7fJvOY1y0aMyRTXe/r2udK2Edvdr93YgW0EKA3jbo1jJIa+UmuKrkDW1RCNR0O59g7LgzSApjhsouTHiT9Bg257hM++7AbHKG0CZIAmkMsyjZOhT+FZZ1Psu9BD75YRis8XrBkfHHKAt7ZeEJZXMlKUoW/cfT2j83W/RByKuSXoKQvBee+SuUjHnmbdVaGCSBV+pfk8DLmUG9BR8VFdjgPB4oCEOmsT0dh20kLf2hKCS6NoTX9j+HMd5tDG8aIKWd+zBRGIwWDTtAJN7/wYEiqgbWWQwGKathO+CFQgd7UujDg0X+9y2rNwnDI7kvKitzFaxXuvBuA5p1D5naq4sfFmrb1aCEqjpF1gIZE/VXkPVv6Q535zUnUISEYA4vbjyBaFs4OM0t5+0xWIanidK7rbYWKI/dpJxze/dYLS65PpMVp+VrCOaCS472g9FqJG3Glf5+Us2E3ay38EljF90UMQn9ghJ8iO9tRBxs8IV9L05MzDoSAWyBqHHEnt0MIaX+/4bvNWhdDcNcxroi1/xnmg3y/3xTyWkZSQZQwl1vnh8KUrdXovuitIgCstg/ZV/+m78Zr/egGHpBOLhhp5srT7Bw42gH90EG9FvcL+fs4c5OczYhwYKRg+gE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5342.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(5660300002)(36756003)(8936002)(4326008)(26005)(186003)(8676002)(1006002)(6486002)(38350700002)(956004)(52116002)(2906002)(7696005)(110136005)(1076003)(66946007)(6636002)(508600001)(66556008)(86362001)(44832011)(2616005)(55236004)(66476007)(38100700002)(6666004)(316002)(110426009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cDZLbFo5NGpYWTFnRHdBbHFUdmh5S3lHK2EwV1RpQTVYcU5veFQ3R2pUK0dv?=
- =?utf-8?B?Vmh1b3dic1FZKzlPZkIrSEhPMCtxV04wMHp6N25pL3pHTzVIVTJubWUyNzkv?=
- =?utf-8?B?RU1na1BZSTVVVHNaRmNrTHpZOGYxZWIwMjQzN3I2cFJmRFVDMGJaZURmcVdr?=
- =?utf-8?B?OHBGV3UwYnJZZXVDbjZOOUxRV015dnBRQkY0VzFla2xEWnh0TFFhSlNOSHJM?=
- =?utf-8?B?cXoydnNkWmN4U2NaQmZCcFVTQmFHVTVaaDlDcDdsRFZmZVAxV0RuVWV3QmJQ?=
- =?utf-8?B?a1R3NTBTZmdsMjJZY1Z6MVh5U1FwQzBNYUN1YVdGZVpGenVJN0VjTldJTkxy?=
- =?utf-8?B?RDMyTC9qZ0RDeDRYSFZ5Y0dSTVBvRmRLL3hnamlKSG1JLzhvemZTdzJsOWph?=
- =?utf-8?B?TWE4Z0dtekQ3YTByb3NqTzFMNmlVWmFjWjRoems0cS9ScmtiT2RQZWpnOUE0?=
- =?utf-8?B?b1AvSlJxbFVuakdNM3Jzb2V2bW9XVXNhT1FJekhCeFFVYS9MYUxWNnVUVzVC?=
- =?utf-8?B?eko3QUZ1YjFnNnhoaEpzNk56T2V6M2U4eXJxdW8vRTJHWWFvZUdzQXlBL2RZ?=
- =?utf-8?B?S1U4Zk9KY1lveHd6RmF0ZElVYXRNb1k3QXJscStXV29wOHVaMzUxVmhQVVJV?=
- =?utf-8?B?WWZ5M01Od2NqT3JaeHVDMDVHbERmamJxNWUwcHJ2d0U5bU1jN1dTY0ZyZXBu?=
- =?utf-8?B?L09nY05VbGZOSmltdjN3UWNjdHhYMFlWbkZ2U0FweG5zN2pBTXdveWpVYk9Z?=
- =?utf-8?B?L0pxMlVLSzIzRU5TcmZQc0pkdE14TGIzMCtEMXg3WXZuZHpUaUtIRkh1QnE2?=
- =?utf-8?B?TkR3bjg3V1JNTVpoaWxMeEU3TVF5TGUxdytVdmhLS2RyY29RNzZsR0ViYjl4?=
- =?utf-8?B?OUtUT0VnTUZRWXZ5YzQvVjRzSnZ5a1FPVUdkak9nRXF4ZUxnTEtXTjFFZ2N1?=
- =?utf-8?B?amswMm5YajkvbWYrVEMzRjJJUnBTNFpjdm8xcXlxeDhIcFFpeWo2THlROFVU?=
- =?utf-8?B?Yk1sKytsd0FqZzNvRkVUNThHSDMxZHl3dk9KTENMUVozaGxMYjMxYTgwMDYx?=
- =?utf-8?B?NThRZ2V0R2ZUUGx1eFFjcmdIcG1ZQi9OeVFTak1UMzdUS0FiZDZaNnhid3Bz?=
- =?utf-8?B?NTJHZjBiV0sxRWZxeVJsb3p2MDlodWhpSi9SUUVpM3l3eC9xejB5ZXBIbGVm?=
- =?utf-8?B?UXp3cVR1YUsva0xIN001RW9PL3MveHdaV0hsMWlEaEErWnROenlxQ2FhMUNh?=
- =?utf-8?B?OUp2dGQwSlZ5dERCY0d4L0F3bVU0aEFSOGhoVngzcGJSVXlIQTd5ZkhHT2hh?=
- =?utf-8?B?aHQ0bHJSbERPb0VMMzdXbG1xNjI3SkJ3bzVhQjJPZTBYSHVhcExWU3FPU2Vj?=
- =?utf-8?B?RXhWUThMdTVvMFA2ekN0QlBHL3lRT2tmWk5reEFTbnkybFk5QWU2WExuV2c0?=
- =?utf-8?B?eHk2a29NYVNMWjNyNlFTaEYya2JpcnlnRXZuemNVd2FrMmFhWEhsVGFJNW5L?=
- =?utf-8?B?S0dNTzByZElSdmNVVnVZSS9Gb2VkbXlNdHBBd3FsMkMzWUhxOVRqdFJxZTFB?=
- =?utf-8?B?ak9sYXJpY1NUc0U4YUdhNWNaTkcrRjU3b1gyNkd6c3lBM1V1aVphaFlSTk9k?=
- =?utf-8?B?VlVWSDBsY09CN3RxZVpISmI4M3ExVUQ3K1BSd0ZnSFB5cnR5MzZQaXNGVFN1?=
- =?utf-8?B?elZBNWxOOVhSTmpPc1F1NDd3N0JjYjZtaXJra0dnTHV0b3ozaHZhZWk0Zzhy?=
- =?utf-8?B?WVErbUtCVUZhMGlxSTJSQVpIcUpibnpSZ096YWtUeDJCVTljVFFUdEgwMzVG?=
- =?utf-8?B?ZE9XS1NWdEF3N2l0bTh5T2g5N0FkQVdOUWZJd1hBSFFYZGhHajQ0VFZsSFFC?=
- =?utf-8?B?a0ZUQXozdkkvOXpiNFlsWmRmOS91b0c1Y1Rmai9QcnErNVJ5Zi93YWJza2M0?=
- =?utf-8?B?QXRWWkFOTmxWRGRvcG5tajhycEd1YnNJcHJjQk0wK3BJWGdvY2licEd2MXQv?=
- =?utf-8?B?VUxSUkltOVdVT3ljcTJueE5nb1U2d0h3K3BEWnVvNUV3SUpRcmN0SkQ4SVFZ?=
- =?utf-8?B?Zk5hcmF6aTNZdXBRWFpTNDYzRWJaRHI4UzhDR2Y0OU9vRlhydmZCTy9HdFB1?=
- =?utf-8?B?aDF1eHdrMkVDd0hGT2dNS0xvazFoNlJ2SlBGWHV2RDJUWkp4U1VlS2VzdHJ6?=
- =?utf-8?Q?qOGhiQXuSXcGz+cJ85X8c+o=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ea3588df-12cf-4a2f-3b6c-08d9adabdb7f
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5342.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2021 11:33:08.4926
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2HH5+MFC3Bzj+WGXjbDa1MfQL9ExhwawSNuQPDXid4agx92wfrl4CQNONTxHJiFLao5X2WeaPs3wECM6jTMIeg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5502
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211107075646.4366-5-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When caam queue is full (-ENOSPC), caam frees descriptor memory.
-crypto-engine checks if retry support is true and h/w queue
-is full(-ENOSPC), then requeue the crypto request.
-During processing the requested descriptor again, caam gives below error.
-(caam_jr 30902000.jr: 40000006: DECO: desc idx 0: Invalid KEY Command).
+On 07-11-21, 15:56, Chunfeng Yun wrote:
+> Due to some SoCs have a bit shift issue that will drop a bit for usb3
+> phy or pcie phy, fix it by adding software efuse reading and setting,
+> but only support it optionally for versoin 2/3.
 
-This patch adds a check to return when caam input ring is full
-and retry support is true. so descriptor memory is not freed
-and requeued request can be processed again.
+s/versoin/version
 
-Fixes: 2d653936eb2cf ("crypto: caam - enable crypto-engine retry mechanism")
-Signed-off-by: Gaurav Jain <gaurav.jain@nxp.com>
-Reviewed-by: Horia Geantă <horia.geanta@nxp.com>
----
- drivers/crypto/caam/caamalg.c  | 6 ++++++
- drivers/crypto/caam/caamhash.c | 3 +++
- drivers/crypto/caam/caampkc.c  | 3 +++
- 3 files changed, 12 insertions(+)
+> 
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+>  drivers/phy/mediatek/phy-mtk-tphy.c | 162 ++++++++++++++++++++++++++++
+>  1 file changed, 162 insertions(+)
+> 
+> diff --git a/drivers/phy/mediatek/phy-mtk-tphy.c b/drivers/phy/mediatek/phy-mtk-tphy.c
+> index cdcef865fe9e..3b5b1c266595 100644
+> --- a/drivers/phy/mediatek/phy-mtk-tphy.c
+> +++ b/drivers/phy/mediatek/phy-mtk-tphy.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/iopoll.h>
+>  #include <linux/mfd/syscon.h>
+>  #include <linux/module.h>
+> +#include <linux/nvmem-consumer.h>
+>  #include <linux/of_address.h>
+>  #include <linux/of_device.h>
+>  #include <linux/phy/phy.h>
+> @@ -41,6 +42,9 @@
+>  #define SSUSB_SIFSLV_V2_U3PHYD		0x200
+>  #define SSUSB_SIFSLV_V2_U3PHYA		0x400
+>  
+> +#define U3P_MISC_REG1		0x04
+> +#define MR1_EFUSE_AUTO_LOAD_DIS		BIT(6)
+> +
+>  #define U3P_USBPHYACR0		0x000
+>  #define PA0_RG_U2PLL_FORCE_ON		BIT(15)
+>  #define PA0_USB20_PLL_PREDIV		GENMASK(7, 6)
+> @@ -133,6 +137,8 @@
+>  #define P3C_RG_SWRST_U3_PHYD_FORCE_EN	BIT(24)
+>  
+>  #define U3P_U3_PHYA_REG0	0x000
+> +#define P3A_RG_IEXT_INTR		GENMASK(15, 10)
+> +#define P3A_RG_IEXT_INTR_VAL(x)		((0x3f & (x)) << 10)
+>  #define P3A_RG_CLKDRV_OFF		GENMASK(3, 2)
+>  #define P3A_RG_CLKDRV_OFF_VAL(x)	((0x3 & (x)) << 2)
+>  
+> @@ -187,6 +193,19 @@
+>  #define P3D_RG_FWAKE_TH		GENMASK(21, 16)
+>  #define P3D_RG_FWAKE_TH_VAL(x)	((0x3f & (x)) << 16)
+>  
+> +#define U3P_U3_PHYD_IMPCAL0		0x010
+> +#define P3D_RG_FORCE_TX_IMPEL		BIT(31)
+> +#define P3D_RG_TX_IMPEL			GENMASK(28, 24)
+> +#define P3D_RG_TX_IMPEL_VAL(x)		((0x1f & (x)) << 24)
+> +
+> +#define U3P_U3_PHYD_IMPCAL1		0x014
+> +#define P3D_RG_FORCE_RX_IMPEL		BIT(31)
+> +#define P3D_RG_RX_IMPEL			GENMASK(28, 24)
+> +#define P3D_RG_RX_IMPEL_VAL(x)		((0x1f & (x)) << 24)
+> +
+> +#define U3P_U3_PHYD_RSV			0x054
+> +#define P3D_RG_EFUSE_AUTO_LOAD_DIS	BIT(12)
+> +
+>  #define U3P_U3_PHYD_CDR1		0x05c
+>  #define P3D_RG_CDR_BIR_LTD1		GENMASK(28, 24)
+>  #define P3D_RG_CDR_BIR_LTD1_VAL(x)	((0x1f & (x)) << 24)
+> @@ -307,6 +326,11 @@ struct mtk_phy_pdata {
+>  	 * 48M PLL, fix it by switching PLL to 26M from default 48M
+>  	 */
+>  	bool sw_pll_48m_to_26m;
+> +	/*
+> +	 * Some SoCs (e.g. mt8195) drop a bit when use auto load efuse,
+> +	 * support sw way, also support it for v2/v3 optionally.
+> +	 */
+> +	bool sw_efuse_supported;
+>  	enum mtk_phy_version version;
+>  };
+>  
+> @@ -336,6 +360,10 @@ struct mtk_phy_instance {
+>  	struct regmap *type_sw;
+>  	u32 type_sw_reg;
+>  	u32 type_sw_index;
+> +	u32 efuse_sw_en;
+> +	u32 efuse_intr;
+> +	u32 efuse_tx_imp;
+> +	u32 efuse_rx_imp;
+>  	int eye_src;
+>  	int eye_vrt;
+>  	int eye_term;
+> @@ -1040,6 +1068,130 @@ static int phy_type_set(struct mtk_phy_instance *instance)
+>  	return 0;
+>  }
+>  
+> +static int phy_efuse_get(struct mtk_tphy *tphy, struct mtk_phy_instance *instance)
+> +{
+> +	struct device *dev = &instance->phy->dev;
+> +	int ret = 0;
+> +
+> +	/* tphy v1 doesn't support sw efuse, skip it */
+> +	if (!tphy->pdata->sw_efuse_supported) {
+> +		instance->efuse_sw_en = 0;
+> +		return 0;
+> +	}
+> +
+> +	/* software efuse is optional */
+> +	instance->efuse_sw_en = device_property_read_bool(dev, "nvmem-cells");
+> +	if (!instance->efuse_sw_en)
+> +		return 0;
+> +
+> +	switch (instance->type) {
+> +	case PHY_TYPE_USB2:
+> +		ret = nvmem_cell_read_variable_le_u32(dev, "intr", &instance->efuse_intr);
+> +		if (ret) {
+> +			dev_err(dev, "fail to get u2 intr efuse, %d\n", ret);
+> +			break;
+> +		}
+> +
+> +		/* no efuse, ignore it */
+> +		if (!instance->efuse_intr) {
+> +			dev_warn(dev, "no u2 intr efuse, but dts enable it\n");
+> +			instance->efuse_sw_en = 0;
+> +			break;
+> +		}
 
-diff --git a/drivers/crypto/caam/caamalg.c b/drivers/crypto/caam/caamalg.c
-index 8697ae53b063..d3d8bb0a6990 100644
---- a/drivers/crypto/caam/caamalg.c
-+++ b/drivers/crypto/caam/caamalg.c
-@@ -1533,6 +1533,9 @@ static int aead_do_one_req(struct crypto_engine *engine, void *areq)
- 
- 	ret = caam_jr_enqueue(ctx->jrdev, desc, aead_crypt_done, req);
- 
-+	if (ret == -ENOSPC && engine->retry_support)
-+		return ret;
-+
- 	if (ret != -EINPROGRESS) {
- 		aead_unmap(ctx->jrdev, rctx->edesc, req);
- 		kfree(rctx->edesc);
-@@ -1762,6 +1765,9 @@ static int skcipher_do_one_req(struct crypto_engine *engine, void *areq)
- 
- 	ret = caam_jr_enqueue(ctx->jrdev, desc, skcipher_crypt_done, req);
- 
-+	if (ret == -ENOSPC && engine->retry_support)
-+		return ret;
-+
- 	if (ret != -EINPROGRESS) {
- 		skcipher_unmap(ctx->jrdev, rctx->edesc, req);
- 		kfree(rctx->edesc);
-diff --git a/drivers/crypto/caam/caamhash.c b/drivers/crypto/caam/caamhash.c
-index e8a6d8bc43b5..36ef738e4a18 100644
---- a/drivers/crypto/caam/caamhash.c
-+++ b/drivers/crypto/caam/caamhash.c
-@@ -765,6 +765,9 @@ static int ahash_do_one_req(struct crypto_engine *engine, void *areq)
- 
- 	ret = caam_jr_enqueue(jrdev, desc, state->ahash_op_done, req);
- 
-+	if (ret == -ENOSPC && engine->retry_support)
-+		return ret;
-+
- 	if (ret != -EINPROGRESS) {
- 		ahash_unmap(jrdev, state->edesc, req, 0);
- 		kfree(state->edesc);
-diff --git a/drivers/crypto/caam/caampkc.c b/drivers/crypto/caam/caampkc.c
-index bf6275ffc4aa..886727576710 100644
---- a/drivers/crypto/caam/caampkc.c
-+++ b/drivers/crypto/caam/caampkc.c
-@@ -380,6 +380,9 @@ static int akcipher_do_one_req(struct crypto_engine *engine, void *areq)
- 
- 	ret = caam_jr_enqueue(jrdev, desc, req_ctx->akcipher_op_done, req);
- 
-+	if (ret == -ENOSPC && engine->retry_support)
-+		return ret;
-+
- 	if (ret != -EINPROGRESS) {
- 		rsa_pub_unmap(jrdev, req_ctx->edesc, req);
- 		rsa_io_unmap(jrdev, req_ctx->edesc, req);
+What does this check do...? so a zero value is not valid..?
+
+> +
+> +		dev_info(dev, "u2 efuse - intr %x\n", instance->efuse_intr);
+
+dev_dbg()?
+
+> +		break;
+
+empty line after break improves readability, pls add
+
+> +	case PHY_TYPE_USB3:
+> +	case PHY_TYPE_PCIE:
+> +		ret = nvmem_cell_read_variable_le_u32(dev, "intr", &instance->efuse_intr);
+> +		if (ret) {
+> +			dev_err(dev, "fail to get u3 intr efuse, %d\n", ret);
+> +			break;
+> +		}
+
+This seems to be common, why not read this before switch?
+
+> +
+> +		ret = nvmem_cell_read_variable_le_u32(dev, "rx_imp", &instance->efuse_rx_imp);
+> +		if (ret) {
+> +			dev_err(dev, "fail to get u3 rx_imp efuse, %d\n", ret);
+> +			break;
+> +		}
+> +
+> +		ret = nvmem_cell_read_variable_le_u32(dev, "tx_imp", &instance->efuse_tx_imp);
+> +		if (ret) {
+> +			dev_err(dev, "fail to get u3 tx_imp efuse, %d\n", ret);
+> +			break;
+> +		}
+> +
+> +		/* no efuse, ignore it */
+> +		if (!instance->efuse_intr &&
+> +		    !instance->efuse_rx_imp &&
+> +		    !instance->efuse_rx_imp) {
+> +			dev_warn(dev, "no u3 intr efuse, but dts enable it\n");
+> +			instance->efuse_sw_en = 0;
+> +			break;
+> +		}
+
+again, zero values are not valid?
+
+> +
+> +		dev_info(dev, "u3 efuse - intr %x, rx_imp %x, tx_imp %x\n",
+> +			 instance->efuse_intr, instance->efuse_rx_imp,
+> +			 instance->efuse_tx_imp);
+
+dbg pls
+
+> +		break;
+> +	default:
+> +		dev_err(dev, "no sw efuse for type %d\n", instance->type);
+> +		ret = -EINVAL;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static void phy_efuse_set(struct mtk_phy_instance *instance)
+> +{
+> +	struct device *dev = &instance->phy->dev;
+> +	struct u2phy_banks *u2_banks = &instance->u2_banks;
+> +	struct u3phy_banks *u3_banks = &instance->u3_banks;
+> +	u32 tmp;
+> +
+> +	if (!instance->efuse_sw_en)
+> +		return;
+> +
+> +	switch (instance->type) {
+> +	case PHY_TYPE_USB2:
+> +		tmp = readl(u2_banks->misc + U3P_MISC_REG1);
+> +		tmp |= MR1_EFUSE_AUTO_LOAD_DIS;
+> +		writel(tmp, u2_banks->misc + U3P_MISC_REG1);
+> +
+> +		tmp = readl(u2_banks->com + U3P_USBPHYACR1);
+> +		tmp &= ~PA1_RG_INTR_CAL;
+> +		tmp |= PA1_RG_INTR_CAL_VAL(instance->efuse_intr);
+> +		writel(tmp, u2_banks->com + U3P_USBPHYACR1);
+> +		break;
+> +	case PHY_TYPE_USB3:
+> +	case PHY_TYPE_PCIE:
+> +		tmp = readl(u3_banks->phyd + U3P_U3_PHYD_RSV);
+> +		tmp |= P3D_RG_EFUSE_AUTO_LOAD_DIS;
+> +		writel(tmp, u3_banks->phyd + U3P_U3_PHYD_RSV);
+
+add a updatel() macro and use this here and other places?
+
 -- 
-2.25.1
-
+~Vinod
