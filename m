@@ -2,157 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6AF459636
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 21:41:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8020045963A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 21:44:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232953AbhKVUoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 15:44:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:46488 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231307AbhKVUoE (ORCPT
+        id S233926AbhKVUrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 15:47:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230074AbhKVUrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 15:44:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637613656;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WRqDdF850L0C93VLFXSpRulH8UU6sU0ROB6ecfELzDs=;
-        b=BMI/vdsq6S1nDZ22oFc9UQ/E+Eu7l4BK9WLYRfNnReNWJnbdHPTCQ5b8oZwS/J4RP2sDOF
-        VTZPSVJ19Oq2lVNRkTJQCWuQD3X7fVtKMK7JxIyTqeeDq+qFJCRJuqD3s89pmunmuRFKGu
-        tWe4cqlrxtcyT0XsSk0SK/5jqS31rLM=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-165-jg_rV4FCPdWSHBgMgbeeFA-1; Mon, 22 Nov 2021 15:40:55 -0500
-X-MC-Unique: jg_rV4FCPdWSHBgMgbeeFA-1
-Received: by mail-wr1-f70.google.com with SMTP id y4-20020adfd084000000b00186b16950f3so3361080wrh.14
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 12:40:55 -0800 (PST)
+        Mon, 22 Nov 2021 15:47:21 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84EC7C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 12:44:14 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id m9so25193568iop.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 12:44:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Q/cvqnigMuuasyTrT0KugloRW/WUnqaCW0PrJCLnVCg=;
+        b=qKhi7NydH3bKPHQK819eJ/TidrRfYD0oXPb3qq1uSQBQza5+IghM8hITGlyNEYFdwf
+         hPEedboOxQt82x+1VBQm6D0RUKAF4j2pWg9j/QetFJCxphRacr9LppOCwYVL0TNpLb/Y
+         33tSufmPOfloFpV7xC8IgCjmkj9+MjFKOYbf7WGz5omynQJ1KPdAizOwDJcSUP76Jw0U
+         8/tT3OjljgQolO3SfoH7cFl9Bm63oOy/9ghTYsrbqapYmf9GXpB/lJoe6GbXF4ckhOg1
+         ILC4WU57gOzKXhrb2A2lURvGaQiPvjcAEJNN+/1gOYMRnKCxRwJ8HvxEVDBE/Ib0D1E8
+         1Pbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=WRqDdF850L0C93VLFXSpRulH8UU6sU0ROB6ecfELzDs=;
-        b=O0BakDB1S+7vhoMF/pbONGnGEYSNLX3uK9SSGrow0AbWnle9pqPERsw5bISDJVEC+Y
-         P3AyZ/R6zmdUfZXC3lRX71vZ4u//GJghPKCIAE73ZVqVvWXQcbNo66/uEpxc5u8rliZt
-         oUPYkMcfCkWCpdufzsgpENa5+l3R3Yvcrql/RsEyRfTyviQpWfselbIEiTqM6LWfTikJ
-         FszxM3Qsft4H42XdZkC3QLpJ270ok0/UtGDdRS1hphdBjaz1iwmPijD1vQv5NnIqkdvj
-         jaEHNwbMxjkgvgixWDtJv8QrhqJeA1ghWt086N7UwVvG0/vvD+/aRRDuC2EnibIviB/w
-         ZzSA==
-X-Gm-Message-State: AOAM530A3Cl2RRMl4kKS81n21hciq+TP5EE3rLDAZkFyPkRozIPM4mAV
-        o4MCMvCoqLrFhchLToZr26o4MD+OcJOxWKDHvcQxFZCrTL3MDkTiqSf0b7gCitl28NLWqZO/6iN
-        2rCV1DJF1WVMgiBUG2ZU9IaRn
-X-Received: by 2002:a05:600c:b43:: with SMTP id k3mr33145708wmr.159.1637613654390;
-        Mon, 22 Nov 2021 12:40:54 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzEBNm2G6Vn2RWskud4VMr0M2tZtX7miMSSkO0U/YK7/s72UGaytBV8OE+JlhmPzUPOrKU4+A==
-X-Received: by 2002:a05:600c:b43:: with SMTP id k3mr33145679wmr.159.1637613654177;
-        Mon, 22 Nov 2021 12:40:54 -0800 (PST)
-Received: from ?IPv6:2a0c:5a80:3c10:3400:3c70:6643:6e71:7eae? ([2a0c:5a80:3c10:3400:3c70:6643:6e71:7eae])
-        by smtp.gmail.com with ESMTPSA id z5sm27398883wmp.26.2021.11.22.12.40.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 12:40:53 -0800 (PST)
-Message-ID: <0e948a211bd8d63ba05594fb8c03bf3a77a227a0.camel@redhat.com>
-Subject: Re: [RFC PATCH 2/2] KVM: arm64: export cntvoff in debugfs
-From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, rostedt@goodmis.org,
-        james.morse@arm.com, alexandru.elisei@arm.com,
-        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
-        mingo@redhat.com, mtosatti@redhat.com, nilal@redhat.com
-Date:   Mon, 22 Nov 2021 21:40:52 +0100
-In-Reply-To: <87fsrs732b.wl-maz@kernel.org>
-References: <20211119102117.22304-1-nsaenzju@redhat.com>
-         <20211119102117.22304-3-nsaenzju@redhat.com> <87fsrs732b.wl-maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Q/cvqnigMuuasyTrT0KugloRW/WUnqaCW0PrJCLnVCg=;
+        b=oNQT21yXEDuGuJYuPkZWzE/7r6EmI7Z4WvYG9lMfFGzw531xVHb+kUjKv7y7X63KIV
+         P028Ai2GmBsrmL5Rdu1AIro/9HkZUBiB+JbfZ5iqx6beqV61xxbTWEdBNHeIVV2RSsss
+         b46VZAzkiKolqTFkoc4RkKsv51SK9x1HHZs5KOc1wWpXNWu3xtga/G977l1ON5JEJe3J
+         KmeBGe3hvsv3BMlfugPd+OuIHvXNjecAEerg92xDDuyXcJqNEe3xze69p2pv07tpo3jQ
+         ngF9ieq2Y3so45wPuYUOIFJdRirPSuWEO8cp+ChN5WnfhDYr5WnIasGgSp9oC95V0+4B
+         VvZg==
+X-Gm-Message-State: AOAM532D93c5B6UI9WKk/kDp72YAklN/GkqUbkIKRa4PyF4YuU5gvyT1
+        8B0TMsqXLf5c/cfgLbphOm96Ag==
+X-Google-Smtp-Source: ABdhPJwkZWbVkTTiFWI+g422byaFoSdWqtql9J9rLx3pzCORzzZXOHxqokwfNAgqaBm/lOMto8HetA==
+X-Received: by 2002:a05:6638:3012:: with SMTP id r18mr52123432jak.91.1637613852459;
+        Mon, 22 Nov 2021 12:44:12 -0800 (PST)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id a12sm3531723iow.6.2021.11.22.12.44.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Nov 2021 12:44:12 -0800 (PST)
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+To:     David Hildenbrand <david@redhat.com>,
+        Andrew Dona-Couch <andrew@donacou.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Drew DeVault <sir@cmpwn.com>
+Cc:     Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+References: <20211028080813.15966-1-sir@cmpwn.com>
+ <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
+ <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
+ <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
+ <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
+ <CFQZSHV700KV.18Y62SACP8KOO@taiga>
+ <20211116114727.601021d0763be1f1efe2a6f9@linux-foundation.org>
+ <CFRGQ58D9IFX.PEH1JI9FGHV4@taiga>
+ <20211116133750.0f625f73a1e4843daf13b8f7@linux-foundation.org>
+ <b84bc345-d4ea-96de-0076-12ff245c5e29@redhat.com>
+ <8f219a64-a39f-45f0-a7ad-708a33888a3b@www.fastmail.com>
+ <333cb52b-5b02-648e-af7a-090e23261801@redhat.com>
+ <ca96bb88-295c-ccad-ed2f-abc585cb4904@kernel.dk>
+ <5f998bb7-7b5d-9253-2337-b1d9ea59c796@redhat.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <3adc55d3-f383-efa9-7319-740fc6ab5d7a@kernel.dk>
+Date:   Mon, 22 Nov 2021 13:44:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <5f998bb7-7b5d-9253-2337-b1d9ea59c796@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc, thanks for the review.
-
-On Fri, 2021-11-19 at 12:17 +0000, Marc Zyngier wrote:
-> On Fri, 19 Nov 2021 10:21:18 +0000,
-> Nicolas Saenz Julienne <nsaenzju@redhat.com> wrote:
-> > 
-> > While using cntvct as the raw clock for tracing, it's possible to
-> > synchronize host/guest traces just by knowing the virtual offset applied
-> > to the guest's virtual counter.
-> > 
-> > This is also the case on x86 when TSC is available. The offset is
-> > exposed in debugfs as 'tsc-offset' on a per vcpu basis. So let's
-> > implement the same for arm64.
+On 11/22/21 1:08 PM, David Hildenbrand wrote:
+> On 22.11.21 20:53, Jens Axboe wrote:
+>> On 11/22/21 11:26 AM, David Hildenbrand wrote:
+>>> On 22.11.21 18:55, Andrew Dona-Couch wrote:
+>>>> Forgive me for jumping in to an already overburdened thread.  But can
+>>>> someone pushing back on this clearly explain the issue with applying
+>>>> this patch?
+>>>
+>>> It will allow unprivileged users to easily and even "accidentally"
+>>> allocate more unmovable memory than it should in some environments. Such
+>>> limits exist for a reason. And there are ways for admins/distros to
+>>> tweak these limits if they know what they are doing.
+>>
+>> But that's entirely the point, the cases where this change is needed are
+>> already screwed by a distro and the user is the administrator. This is
+>> _exactly_ the case where things should just work out of the box. If
+>> you're managing farms of servers, yeah you have competent administration
+>> and you can be expected to tweak settings to get the best experience and
+>> performance, but the kernel should provide a sane default. 64K isn't a
+>> sane default.
 > 
-> How does this work with NV, where the guest hypervisor is in control
-> of the virtual offset? 
+> 0.1% of RAM isn't either.
 
-TBH I handn't thought about NV. Looking at it from that angle, I now see my
-approach doesn't work on hosts that use CNTVCT (regardless of NV). Upon
-entering into a guest, we change CNTVOFF before the host is done with tracing,
-so traces like 'kvm_entry' will have weird timestamps. I was just lucky that
-the hosts I was testing with use CNTPCT.
+No default is perfect, byt 0.1% will solve 99% of the problem. And most
+likely solve 100% of the problems for the important case, which is where
+you want things to Just Work on your distro without doing any
+administration.  If you're aiming for perfection, it doesn't exist.
 
-I believe the solution would be to be able to force a 0 offset between
-guest/host. With that in mind, is there a reason why kvm_timer_vcpu_init()
-imposes a non-zero one by default? I checked out the commits that introduced
-that code, but couldn't find a compelling reason. VMMs can always change it
-through KVM_REG_ARM_TIMER_CNT afterwards.
-
-> I also wonder why we need this when userspace already has direct access to
-> that information without any extra kernel support (read the CNTVCT view of
-> the vcpu using the ONEREG API, subtract it from the host view of the counter,
-> job done).
-
-Well IIUC, you're at the mercy of how long it takes to return from the ONEREG
-ioctl. The results will be skewed. For some workloads, where low latency is
-key, we really need high precision traces in the order of single digit us or
-even 100s of ns. I'm not sure you'll be able to get there with that approach.
-
-[...]
-
-> > diff --git a/arch/arm64/kvm/debugfs.c b/arch/arm64/kvm/debugfs.c
-> > new file mode 100644
-> > index 000000000000..f0f5083ea8d4
-> > --- /dev/null
-> > +++ b/arch/arm64/kvm/debugfs.c
-> > @@ -0,0 +1,25 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Copyright (C) 2021 Red Hat Inc.
-> > + */
-> > +
-> > +#include <linux/kvm_host.h>
-> > +#include <linux/debugfs.h>
-> > +
-> > +#include <kvm/arm_arch_timer.h>
-> > +
-> > +static int vcpu_get_cntv_offset(void *data, u64 *val)
-> > +{
-> > +	struct kvm_vcpu *vcpu = (struct kvm_vcpu *)data;
-> > +
-> > +	*val = timer_get_offset(vcpu_vtimer(vcpu));
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +DEFINE_SIMPLE_ATTRIBUTE(vcpu_cntvoff_fops, vcpu_get_cntv_offset, NULL, "%lld\n");
-> > +
-> > +void kvm_arch_create_vcpu_debugfs(struct kvm_vcpu *vcpu, struct dentry *debugfs_dentry)
-> > +{
-> > +	debugfs_create_file("cntvoff", 0444, debugfs_dentry, vcpu, &vcpu_cntvoff_fops);
-> > +}
+>>> This is not a step into the right direction. This is all just trying to
+>>> hide the fact that we're exposing FOLL_LONGTERM usage to random
+>>> unprivileged users.
+>>>
+>>> Maybe we could instead try getting rid of FOLL_LONGTERM usage and the
+>>> memlock limit in io_uring altogether, for example, by using mmu
+>>> notifiers. But I'm no expert on the io_uring code.
+>>
+>> You can't use mmu notifiers without impacting the fast path. This isn't
+>> just about io_uring, there are other users of memlock right now (like
+>> bpf) which just makes it even worse.
 > 
-> This should be left in arch_timer.c until we actually need it for
-> multiple subsystems. When (and if) that happens, we will expose
-> per-subsystem debugfs initialisers instead of exposing the guts of the
-> timer code.
+> 1) Do we have a performance evaluation? Did someone try and come up with
+> a conclusion how bad it would be?
 
-Noted.
+I honestly don't remember the details, I took a look at it about a year
+ago due to some unrelated reasons. These days it just pertains to
+registered buffers, so it's less of an issue than back then when it
+dealt with the rings as well. Hence might be feasible, I'm certainly not
+against anyone looking into it. Easy enough to review and test for
+performance concerns.
+
+> 2) Could be provide a mmu variant to ordinary users that's just good
+> enough but maybe not as fast as what we have today? And limit
+> FOLL_LONGTERM to special, privileged users?
+
+If it's not as fast, then it's most likely not good enough though...
+
+> 3) Just because there are other memlock users is not an excuse. For
+> example, VFIO/VDPA have to use it for a reason, because there is no way
+> not do use FOLL_LONGTERM.
+
+It's not an excuse, the statement merely means that the problem is
+_worse_ as there are other memlock users.
+
+>>
+>> We should just make this 0.1% of RAM (min(0.1% ram, 64KB)) or something
+>> like what was suggested, if that will help move things forward. IMHO the
+>> 32MB machine is mostly a theoretical case, but whatever .
+> 
+> 1) I'm deeply concerned about large ZONE_MOVABLE and MIGRATE_CMA ranges
+> where FOLL_LONGTERM cannot be used, as that memory is not available.
+> 
+> 2) With 0.1% RAM it's sufficient to start 1000 processes to break any
+> system completely and deeply mess up the MM. Oh my.
+
+We're talking per-user limits here. But if you want to talk hyperbole,
+then 64K multiplied by some other random number will also allow
+everything to be pinned, potentially.
 
 -- 
-Nicolás Sáenz
+Jens Axboe
 
