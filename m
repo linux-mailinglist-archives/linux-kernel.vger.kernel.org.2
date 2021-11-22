@@ -2,283 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9BD45917B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:33:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A0845917D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:35:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239961AbhKVPgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:36:07 -0500
-Received: from mail-ed1-f48.google.com ([209.85.208.48]:38665 "EHLO
-        mail-ed1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239955AbhKVPgC (ORCPT
+        id S239955AbhKVPi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:38:27 -0500
+Received: from mout.kundenserver.de ([212.227.17.10]:36729 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239815AbhKVPiZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:36:02 -0500
-Received: by mail-ed1-f48.google.com with SMTP id x6so66753998edr.5;
-        Mon, 22 Nov 2021 07:32:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Zo6rdv8VWy1CbkCH3mCDWH3/iz/FJl3/IoCVBK7j9hk=;
-        b=A7rpTfcdeHqa1wg9ZiGYr9jT3b/oIxX9vWe/2I6gzzYQ2/UZKwgTww6buTqBX+QQfm
-         YHUM/frWn+tjObtvWLWsJWVm1lZKoOb79VhUm7fUhAp/7rTk+dmcJuH+t98+BiuqAo/g
-         rV+wUltjy5lwH+NyPAeGmo6gl+BPI7Sa5oVfGqrw+GQu4ganNsWmq68wjHUFAfbu24zh
-         GX9oGHZAqR4f80KKOi2CmMRMtOjO3oq5hfKBxoe4hFQJTvT5+F7dMZ/0qvSKOMUVJ8K/
-         pdMT6I14/EYtottR/GKCcJgvhHNIe+OkHPGNwRakP6dcnsL8AgOHPwVJ0hIzDAwZQ47I
-         PepQ==
-X-Gm-Message-State: AOAM533k3N19sV7Mak5wPPVF12NhrEndRmzeeXALUwaWo3jIeS7WpqR4
-        TByJjlYfnE0u8/08/L1zZb4=
-X-Google-Smtp-Source: ABdhPJwWaL8NNNJbUa6B7XJSuvfszHDZN1AlX5ClompjS+pcHwuTwksG4y4Lz+8Js376OffflN9Pnw==
-X-Received: by 2002:a05:6402:908:: with SMTP id g8mr61682534edz.59.1637595171483;
-        Mon, 22 Nov 2021 07:32:51 -0800 (PST)
-Received: from localhost.localdomain (ip-85-160-4-65.eurotel.cz. [85.160.4.65])
-        by smtp.gmail.com with ESMTPSA id q7sm4247757edr.9.2021.11.22.07.32.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 07:32:50 -0800 (PST)
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Michal Hocko <mhocko@suse.com>
-Subject: [PATCH v2 4/4] mm: allow !GFP_KERNEL allocations for kvmalloc
-Date:   Mon, 22 Nov 2021 16:32:33 +0100
-Message-Id: <20211122153233.9924-5-mhocko@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211122153233.9924-1-mhocko@kernel.org>
-References: <20211122153233.9924-1-mhocko@kernel.org>
+        Mon, 22 Nov 2021 10:38:25 -0500
+Received: from mail-wr1-f46.google.com ([209.85.221.46]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MBmDy-1mwqJV3ohI-00C6OF; Mon, 22 Nov 2021 16:35:17 +0100
+Received: by mail-wr1-f46.google.com with SMTP id u1so33439657wru.13;
+        Mon, 22 Nov 2021 07:35:17 -0800 (PST)
+X-Gm-Message-State: AOAM530sLAVQvXK6/g3gPJ0jseTqmSumX0z1NsbxMYoE/+QNsiu1rnAC
+        NXu7PvV0GQKDfsGhZZT2BPfs8rccrJylifWtO1A=
+X-Google-Smtp-Source: ABdhPJxJtyPDgupGJO5dvWb1SjNslTHYXWjP3r97r/gd2zxQeFi9EA/iMblGVL3S0bnNlwwqB0nbTHmFAH/3E6PXgg8=
+X-Received: by 2002:adf:efc6:: with SMTP id i6mr40179592wrp.428.1637595317455;
+ Mon, 22 Nov 2021 07:35:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1636973694.git.quic_saipraka@quicinc.com>
+ <9396fbdc415a3096ab271868960372b21479e4fb.1636973694.git.quic_saipraka@quicinc.com>
+ <CAK8P3a2Bp4LP7C1-XLKvjyxV-e1vrHb-=3zpm75CRgPYNbY2jA@mail.gmail.com>
+ <b07e339c-530d-683c-c626-14b73b42e72a@quicinc.com> <1609f1f7-6f61-6e17-d907-c526f09bffe5@quicinc.com>
+ <CAK8P3a1KxJFwgock3XiRDZYzT=5PZ=Hsh_8uFv9heoa1rwNqtA@mail.gmail.com>
+ <9ef8b483-f15f-eda8-d430-2d01e6cad70e@quicinc.com> <CAK8P3a0Zo+PTGAAvisAZamfLUm1ToGZpmHDn-Xk0Eo8TTRGyZg@mail.gmail.com>
+ <4ed41054-3868-d5e2-9958-56250b7f9be0@quicinc.com>
+In-Reply-To: <4ed41054-3868-d5e2-9958-56250b7f9be0@quicinc.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 22 Nov 2021 16:35:01 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a07sMdR9NUz5AOJk+O-op9qLU_PjnhvqvTz9xrHE7NXEg@mail.gmail.com>
+Message-ID: <CAK8P3a07sMdR9NUz5AOJk+O-op9qLU_PjnhvqvTz9xrHE7NXEg@mail.gmail.com>
+Subject: Re: [PATCHv4 2/2] arm64/io: Add a header for mmio access instrumentation
+To:     Sai Prakash Ranjan <quic_saipraka@quicinc.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        quic_psodagud@quicinc.com, Marc Zyngier <maz@kernel.org>,
+        gregkh <gregkh@linuxfoundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:afe0cawbtPSkXEpDaURr+UUlHsPTEzS/tUjQeRZIDw8hix9rMzH
+ rRTDvuz45huZDfzu80RI0J4udYOpJl0YsSusZzona0T1fro74mJm0DrgpVzqlDEvOep+1p2
+ aKkslwZ14vzaZiQxYskVvTlfvyZC8sn+Mhv8g/7Gp3cKuin1KyQUrD3yLoOAFGwHPcE33DW
+ 0yYknpYZdEyocQ49yNQ3g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wv+83+BqJV8=:wICOjBZ/A8ofZ8nbL3NFMs
+ d8XlJeQljC5DvoIoxuuMXHQB5zS58kZxtPOPPoE5Fuv0IsGE1SosB3ofn2HrfqFB9UKfO4gQL
+ JzbhwOi5FZ4V6kgDdZILboya3FF/euDlHaO5sC/zuYwFtK8iyyvtXfFA1UXfgPBxJoUN/+hoW
+ k3/3TLf82af095JEZ6XXWTUbWu9OaFKXVGn+lu4PvNWgzrH2tX2h4YxptaYIuHeTEOdesdJzU
+ sygKigS3wmHwpmugL8VhLzmtf1/IK51DHGxqu6EpJTB9oMuQTHh727SQX38iUFoL4SNZaXUqt
+ oCmQz1N9V8w1hQRynXGPidoQ7LMlxDPydzAk0yznqWkVS6+yGos+AgAuWQC55RsCul5FuQTr5
+ TqAWyptla3MEvvqRJa64pY4LK5heXPJzUbTO2UM2yLTCO799Sk1kzN5h2CIH07uqeNNG9VV1b
+ lrvlHl03ZMpwbtEtBXA21h/jH/Q1gkG/e5YRDtZDAHK92j5KXaSMwBdo84pb5wbnbQb9BnvFo
+ Y7Bix7zxUcTsXOMHQRiDAzJvsZr6/FJqdCFn4+hYRagG+80JNAOQcdhIm/p1vOZ6cxuTLJG7R
+ NOeWCULUH87x0Ah+buaaJgQo60olDk9XMvnItHXsouLcCfKUG4UVS3MhbD4XfO6niWvU6wPvK
+ K54xeKN2F59i7yMClFtDcIiTXBEkfch7iEc88qGEieElptt4V9BvrOH+Nnx+F7WAk1ylHFY7o
+ MxXIPYHecx5nEa1/C7Q1uJva3PxOKsFjHHO5FkyIRZKyP0UkjnL6g7816UuJDTc6BkC+lACEw
+ A25O8z9d4HcBqz58FEtlrcDeMk5IqN91U7Zaki2Iizs6FEu61E=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Hocko <mhocko@suse.com>
+On Mon, Nov 22, 2021 at 3:59 PM Sai Prakash Ranjan
+<quic_saipraka@quicinc.com> wrote:
+> >> And if we do move this instrumentation to asm-generic/io.h, how will
+> >> that be executed since
+> >> the arch specifc read{b,w,l,q} overrides this generic version?
+> > As I understand it, your version also requires architecture specific
+> > changes, so that would be the same: it only works for architectures
+> > that get the definition of readl()/readl_relaxed()/inl()/... from
+> > include/asm-generic/io.h and only override the __raw version. Arnd
+>
+> Sorry, I didn't get this part, so  I am trying this on ARM64:
+>
+> arm64/include/asm/io.h has read{b,l,w,q} defined.
+> include/asm-generic/io.h has below:
+>    #ifndef readl
+>    #define readl readl
+>    static inline u32 readl(const volatile void __iomem *addr)
+>
+> and we include asm-generic/io.h in arm64/include/asm/io.h at the end
+> after the definitions for arm64 mmio accesors.
+> So arch implementation here overrides generic ones as I see it, am I
+> missing something? I even confirmed this
+> with some trace_printk to generic and arch specific definitions of readl
+> and I see arch specific ones being called.
 
-A support for GFP_NO{FS,IO} and __GFP_NOFAIL has been implemented
-by previous patches so we can allow the support for kvmalloc. This
-will allow some external users to simplify or completely remove
-their helpers.
+Ah, you are right that the arm64 version currently has custom definitions
+of the high-level interfaces. These predate the introduction of the
+__io_{p,}{b,a}{r,w} macros and are currently only used on risc-v.
 
-GFP_NOWAIT semantic hasn't been supported so far but it hasn't been
-explicitly documented so let's add a note about that.
+I think in this case you should start by changing arm64 to use the
+generic readl() etc definitions, by removing the extra definitions and
+using
 
-ceph_kvmalloc is the first helper to be dropped and changed to
-kvmalloc.
+#define __io_ar(v) __iormb(__v)
+#define __io_bw() dma_wmb()
 
-Signed-off-by: Michal Hocko <mhocko@suse.com>
----
- include/linux/ceph/libceph.h |  1 -
- mm/util.c                    | 15 ++++-----------
- net/ceph/buffer.c            |  4 ++--
- net/ceph/ceph_common.c       | 27 ---------------------------
- net/ceph/crypto.c            |  2 +-
- net/ceph/messenger.c         |  2 +-
- net/ceph/messenger_v2.c      |  2 +-
- net/ceph/osdmap.c            | 12 ++++++------
- 8 files changed, 15 insertions(+), 50 deletions(-)
-
-diff --git a/include/linux/ceph/libceph.h b/include/linux/ceph/libceph.h
-index 409d8c29bc4f..309acbcb5a8a 100644
---- a/include/linux/ceph/libceph.h
-+++ b/include/linux/ceph/libceph.h
-@@ -295,7 +295,6 @@ extern bool libceph_compatible(void *data);
- 
- extern const char *ceph_msg_type_name(int type);
- extern int ceph_check_fsid(struct ceph_client *client, struct ceph_fsid *fsid);
--extern void *ceph_kvmalloc(size_t size, gfp_t flags);
- 
- struct fs_parameter;
- struct fc_log;
-diff --git a/mm/util.c b/mm/util.c
-index e58151a61255..7275f2829e3f 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -549,13 +549,10 @@ EXPORT_SYMBOL(vm_mmap);
-  * Uses kmalloc to get the memory but if the allocation fails then falls back
-  * to the vmalloc allocator. Use kvfree for freeing the memory.
-  *
-- * Reclaim modifiers - __GFP_NORETRY and __GFP_NOFAIL are not supported.
-+ * GFP_NOWAIT and GFP_ATOMIC are not supported, neither is the __GFP_NORETRY modifier.
-  * __GFP_RETRY_MAYFAIL is supported, and it should be used only if kmalloc is
-  * preferable to the vmalloc fallback, due to visible performance drawbacks.
-  *
-- * Please note that any use of gfp flags outside of GFP_KERNEL is careful to not
-- * fall back to vmalloc.
-- *
-  * Return: pointer to the allocated memory of %NULL in case of failure
-  */
- void *kvmalloc_node(size_t size, gfp_t flags, int node)
-@@ -563,13 +560,6 @@ void *kvmalloc_node(size_t size, gfp_t flags, int node)
- 	gfp_t kmalloc_flags = flags;
- 	void *ret;
- 
--	/*
--	 * vmalloc uses GFP_KERNEL for some internal allocations (e.g page tables)
--	 * so the given set of flags has to be compatible.
--	 */
--	if ((flags & GFP_KERNEL) != GFP_KERNEL)
--		return kmalloc_node(size, flags, node);
--
- 	/*
- 	 * We want to attempt a large physically contiguous block first because
- 	 * it is less likely to fragment multiple larger blocks and therefore
-@@ -582,6 +572,9 @@ void *kvmalloc_node(size_t size, gfp_t flags, int node)
- 
- 		if (!(kmalloc_flags & __GFP_RETRY_MAYFAIL))
- 			kmalloc_flags |= __GFP_NORETRY;
-+
-+		/* nofail semantic is implemented by the vmalloc fallback */
-+		kmalloc_flags &= ~__GFP_NOFAIL;
- 	}
- 
- 	ret = kmalloc_node(size, kmalloc_flags, node);
-diff --git a/net/ceph/buffer.c b/net/ceph/buffer.c
-index 5622763ad402..7e51f128045d 100644
---- a/net/ceph/buffer.c
-+++ b/net/ceph/buffer.c
-@@ -7,7 +7,7 @@
- 
- #include <linux/ceph/buffer.h>
- #include <linux/ceph/decode.h>
--#include <linux/ceph/libceph.h> /* for ceph_kvmalloc */
-+#include <linux/ceph/libceph.h> /* for kvmalloc */
- 
- struct ceph_buffer *ceph_buffer_new(size_t len, gfp_t gfp)
- {
-@@ -17,7 +17,7 @@ struct ceph_buffer *ceph_buffer_new(size_t len, gfp_t gfp)
- 	if (!b)
- 		return NULL;
- 
--	b->vec.iov_base = ceph_kvmalloc(len, gfp);
-+	b->vec.iov_base = kvmalloc(len, gfp);
- 	if (!b->vec.iov_base) {
- 		kfree(b);
- 		return NULL;
-diff --git a/net/ceph/ceph_common.c b/net/ceph/ceph_common.c
-index 97d6ea763e32..9441b4a4912b 100644
---- a/net/ceph/ceph_common.c
-+++ b/net/ceph/ceph_common.c
-@@ -190,33 +190,6 @@ int ceph_compare_options(struct ceph_options *new_opt,
- }
- EXPORT_SYMBOL(ceph_compare_options);
- 
--/*
-- * kvmalloc() doesn't fall back to the vmalloc allocator unless flags are
-- * compatible with (a superset of) GFP_KERNEL.  This is because while the
-- * actual pages are allocated with the specified flags, the page table pages
-- * are always allocated with GFP_KERNEL.
-- *
-- * ceph_kvmalloc() may be called with GFP_KERNEL, GFP_NOFS or GFP_NOIO.
-- */
--void *ceph_kvmalloc(size_t size, gfp_t flags)
--{
--	void *p;
--
--	if ((flags & (__GFP_IO | __GFP_FS)) == (__GFP_IO | __GFP_FS)) {
--		p = kvmalloc(size, flags);
--	} else if ((flags & (__GFP_IO | __GFP_FS)) == __GFP_IO) {
--		unsigned int nofs_flag = memalloc_nofs_save();
--		p = kvmalloc(size, GFP_KERNEL);
--		memalloc_nofs_restore(nofs_flag);
--	} else {
--		unsigned int noio_flag = memalloc_noio_save();
--		p = kvmalloc(size, GFP_KERNEL);
--		memalloc_noio_restore(noio_flag);
--	}
--
--	return p;
--}
--
- static int parse_fsid(const char *str, struct ceph_fsid *fsid)
- {
- 	int i = 0;
-diff --git a/net/ceph/crypto.c b/net/ceph/crypto.c
-index 92d89b331645..051d22c0e4ad 100644
---- a/net/ceph/crypto.c
-+++ b/net/ceph/crypto.c
-@@ -147,7 +147,7 @@ void ceph_crypto_key_destroy(struct ceph_crypto_key *key)
- static const u8 *aes_iv = (u8 *)CEPH_AES_IV;
- 
- /*
-- * Should be used for buffers allocated with ceph_kvmalloc().
-+ * Should be used for buffers allocated with kvmalloc().
-  * Currently these are encrypt out-buffer (ceph_buffer) and decrypt
-  * in-buffer (msg front).
-  *
-diff --git a/net/ceph/messenger.c b/net/ceph/messenger.c
-index 57d043b382ed..7b891be799d2 100644
---- a/net/ceph/messenger.c
-+++ b/net/ceph/messenger.c
-@@ -1920,7 +1920,7 @@ struct ceph_msg *ceph_msg_new2(int type, int front_len, int max_data_items,
- 
- 	/* front */
- 	if (front_len) {
--		m->front.iov_base = ceph_kvmalloc(front_len, flags);
-+		m->front.iov_base = kvmalloc(front_len, flags);
- 		if (m->front.iov_base == NULL) {
- 			dout("ceph_msg_new can't allocate %d bytes\n",
- 			     front_len);
-diff --git a/net/ceph/messenger_v2.c b/net/ceph/messenger_v2.c
-index cc40ce4e02fb..c4099b641b38 100644
---- a/net/ceph/messenger_v2.c
-+++ b/net/ceph/messenger_v2.c
-@@ -308,7 +308,7 @@ static void *alloc_conn_buf(struct ceph_connection *con, int len)
- 	if (WARN_ON(con->v2.conn_buf_cnt >= ARRAY_SIZE(con->v2.conn_bufs)))
- 		return NULL;
- 
--	buf = ceph_kvmalloc(len, GFP_NOIO);
-+	buf = kvmalloc(len, GFP_NOIO);
- 	if (!buf)
- 		return NULL;
- 
-diff --git a/net/ceph/osdmap.c b/net/ceph/osdmap.c
-index 75b738083523..2823bb3cff55 100644
---- a/net/ceph/osdmap.c
-+++ b/net/ceph/osdmap.c
-@@ -980,7 +980,7 @@ static struct crush_work *alloc_workspace(const struct crush_map *c)
- 	work_size = crush_work_size(c, CEPH_PG_MAX_SIZE);
- 	dout("%s work_size %zu bytes\n", __func__, work_size);
- 
--	work = ceph_kvmalloc(work_size, GFP_NOIO);
-+	work = kvmalloc(work_size, GFP_NOIO);
- 	if (!work)
- 		return NULL;
- 
-@@ -1190,9 +1190,9 @@ static int osdmap_set_max_osd(struct ceph_osdmap *map, u32 max)
- 	if (max == map->max_osd)
- 		return 0;
- 
--	state = ceph_kvmalloc(array_size(max, sizeof(*state)), GFP_NOFS);
--	weight = ceph_kvmalloc(array_size(max, sizeof(*weight)), GFP_NOFS);
--	addr = ceph_kvmalloc(array_size(max, sizeof(*addr)), GFP_NOFS);
-+	state = kvmalloc(array_size(max, sizeof(*state)), GFP_NOFS);
-+	weight = kvmalloc(array_size(max, sizeof(*weight)), GFP_NOFS);
-+	addr = kvmalloc(array_size(max, sizeof(*addr)), GFP_NOFS);
- 	if (!state || !weight || !addr) {
- 		kvfree(state);
- 		kvfree(weight);
-@@ -1222,7 +1222,7 @@ static int osdmap_set_max_osd(struct ceph_osdmap *map, u32 max)
- 	if (map->osd_primary_affinity) {
- 		u32 *affinity;
- 
--		affinity = ceph_kvmalloc(array_size(max, sizeof(*affinity)),
-+		affinity = kvmalloc(array_size(max, sizeof(*affinity)),
- 					 GFP_NOFS);
- 		if (!affinity)
- 			return -ENOMEM;
-@@ -1503,7 +1503,7 @@ static int set_primary_affinity(struct ceph_osdmap *map, int osd, u32 aff)
- 	if (!map->osd_primary_affinity) {
- 		int i;
- 
--		map->osd_primary_affinity = ceph_kvmalloc(
-+		map->osd_primary_affinity = kvmalloc(
- 		    array_size(map->max_osd, sizeof(*map->osd_primary_affinity)),
- 		    GFP_NOFS);
- 		if (!map->osd_primary_affinity)
--- 
-2.30.2
-
+      Arnd
