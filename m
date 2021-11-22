@@ -2,69 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF592458EAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 13:48:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87AC8458EB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 13:50:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239319AbhKVMvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 07:51:44 -0500
-Received: from mga01.intel.com ([192.55.52.88]:26794 "EHLO mga01.intel.com"
+        id S239675AbhKVMxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 07:53:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229797AbhKVMvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 07:51:42 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10175"; a="258597079"
-X-IronPort-AV: E=Sophos;i="5.87,254,1631602800"; 
-   d="scan'208";a="258597079"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 04:48:36 -0800
-X-IronPort-AV: E=Sophos;i="5.87,254,1631602800"; 
-   d="scan'208";a="456626505"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 04:48:34 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mp8kI-009Qzu-2a;
-        Mon, 22 Nov 2021 14:48:30 +0200
-Date:   Mon, 22 Nov 2021 14:48:29 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jay Dolan <jay.dolan@accesio.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH v1 0/2] serial: 8250_pci: Split Pericom driver
-Message-ID: <YZuRnSaZz04KJIDk@smile.fi.intel.com>
-References: <20211117145750.43911-1-andriy.shevchenko@linux.intel.com>
- <b99aabbe-add9-9c1e-ed4b-8850c69233de@accesio.com>
- <YZuRV8ipjcly26HB@smile.fi.intel.com>
+        id S239400AbhKVMxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 07:53:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id DB94060F9D;
+        Mon, 22 Nov 2021 12:50:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637585409;
+        bh=K1u8czjpn3Kfv1CdlAi/vtn4VNiUkH7HN0GGW5X1YEY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=GpXM2WwM1GMquPF6o4H6k6DjdkYdEvNFOoW0YauaknyEL6MUaq5nPG0PaSNqjP2Bg
+         p2+voFQPspn8bTkO/hOSsEtipNjTTSC72MK2vBv7mUwOUWoznlyZYUIW1i8/R47JeE
+         O1mk/yj20MmADh0CMbe18JiBGJLUqP3iiHxA0sHUQaIMoElUhmBRaBlNobX1vrJL4A
+         FLyShS5D49P63YRkSBxQyIKv4FbFwO8jaWCx5Jsej4ucTrePGrzBZKS1cb5VsYgzBW
+         5+s0b/1i11lwOqW/f1hgJHhrNieBmelRHNyDBx5+TA6VmpRdHkHnD1wi76fu5myJzg
+         u3RG/CoaAW2qQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CB29960AA4;
+        Mon, 22 Nov 2021 12:50:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZuRV8ipjcly26HB@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 1/2] selftests/tc-testing: match any qdisc type
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163758540982.16054.8349984035944815065.git-patchwork-notify@kernel.org>
+Date:   Mon, 22 Nov 2021 12:50:09 +0000
+References: <20211119062457.16668-1-zhijianx.li@intel.com>
+In-Reply-To: <20211119062457.16668-1-zhijianx.li@intel.com>
+To:     Li Zhijian <zhijianx.li@intel.com>
+Cc:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, davem@davemloft.net,
+        peilin.ye@bytedance.com, cong.wang@bytedance.com,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        philip.li@intel.com, lizhijian@cn.fujitsu.com, lkp@intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 02:47:20PM +0200, Andy Shevchenko wrote:
-> On Thu, Nov 18, 2021 at 10:32:51PM -0800, Jay Dolan wrote:
-> > On 11/17/21 6:57 AM, Andy Shevchenko wrote:
-> > > Split Pericom driver to a separate module.
-> > > While at it, re-enable high baud rates.
-> > > 
-> > > Jay, can you, please, test this on as many hardware as you have?
-> 
-> ...
-> 
-> > * Add in pericom_do_startup() because the UPF_MAGIC_MULTIPLIER doesn't
-> > stick.
-> 
-> Can't find an evidence that this is the case. Can you recheck this (reading
-> flags back via sysfs or so)? So, for v2 I'll leave my approach.
+Hello:
 
-Otherwise how the other drivers which are using that flag survive? If it's
-indeed an issue, it should be fixed on generic level.
+This series was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
 
+On Fri, 19 Nov 2021 14:24:56 +0800 you wrote:
+> We should not always presume all kernels use pfifo_fast as the default qdisc.
+> 
+> For example, a fq_codel qdisk could have below output:
+> qdisc fq_codel 0: parent 1:4 limit 10240p flows 1024 quantum 1514 target 5ms interval 100ms memory_limit 32Mb ecn drop_batch 64
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Suggested-by: Peilin Ye <peilin.ye@bytedance.com>
+> Signed-off-by: Li Zhijian <zhijianx.li@intel.com>
+> 
+> [...]
+
+Here is the summary with links:
+  - [1/2] selftests/tc-testing: match any qdisc type
+    https://git.kernel.org/netdev/net/c/bdf1565fe03d
+  - [2/2] selftests/tc-testings: Be compatible with newer tc output
+    https://git.kernel.org/netdev/net/c/ac2944abe4d7
+
+You are awesome, thank you!
 -- 
-With Best Regards,
-Andy Shevchenko
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
