@@ -2,83 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2874595EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 21:07:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 985144595EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 21:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239434AbhKVUK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 15:10:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39118 "EHLO
+        id S239925AbhKVULq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 15:11:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbhKVUKy (ORCPT
+        with ESMTP id S233234AbhKVULn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 15:10:54 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A2CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 12:07:46 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id g14so82180208edb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 12:07:46 -0800 (PST)
+        Mon, 22 Nov 2021 15:11:43 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F44C061574;
+        Mon, 22 Nov 2021 12:08:36 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id v7so53435490ybq.0;
+        Mon, 22 Nov 2021 12:08:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=EN3y8CxorbNscjUBvkhG/LJ1qt/IC8IA+9k0dCBOrnw=;
-        b=Wm/2M2ozsyOI74iplagoha6KzcYLf0aeWZzTyCsGmntJo/gn5yJli0CI9tUNXHgkFg
-         uyah9I93dZAYL0PJXz6H5DNCVTCIQg5mKGtMbxOpAmb6pyI++DkeO0qk7Mp2PX/gargZ
-         lZNVRJ4kZE1eggOy0/QnpiGNKOanHk1fXa1DKzBVQvyFQgt0qFvDILDMGe3j1rzzaQYX
-         fHw75qG66eqN76Ng3MQF7pJoPWdEB94YvKA9S1D6OGp3PPzs+yMYLkYS89oHGgw9yHUp
-         thtERhMcgKRHe5ZbBs/CM37mTyhm9p3flk2AX81rmWR7bY00BABz3fRvpRlW17Rwldrp
-         aqlw==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a5jVOagTt0Kg5zCB4wpCaOvINomhqISo4S93iKwz7ac=;
+        b=IbatkhZ7LjG0vTlUqb2C3Mj1rHLSIyXn/VDnDjWD5dpCYy4rrSQwUYvmZSUAOacAkc
+         heVjwQbS0yuAA9Q4vVuX/re8nS/KLGznfr8bE3GqaMiCzRkUQS1Zr1dwULkWSlv2dEz6
+         3dNCJsh1lgrOrCtOf9yKg3V/3Njug0Il1qrI0N+A8k8x790WAtUU4VldE07cDJYG5c2d
+         qJKouhc58m9DAThyAyYKzRhtOiADDMA3kxqkySvy8uKtWyyqBRSHiPHL4Vdu5GAunqfe
+         pJOkjJ+Bc0r0kOviWnWS8qTUr6PKn+gZz4W19DxxVAr68+hwo5Kn0Vv29jsajL53p2MU
+         CECw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=EN3y8CxorbNscjUBvkhG/LJ1qt/IC8IA+9k0dCBOrnw=;
-        b=x7gokXE73Do5+CDXJ38WEvmiqzOPXppnQKfJqXtvkJXUq64jJS+fnNWX/oVOF4MZgu
-         tt9KJf9lNC5JDlXULMQeu++M3d0u6l2hXqnMGGW//Om0NmXewW/mJbU3x9mXt5C4qSsK
-         LpFbM0tEfeWkKcZnYbHWv+YZ9i3g+q1vQqQ/7n4aIjeE9yo6TRetxfAlai2sBa1J6aBB
-         8E5fYVgt8s+oDAU9JYabX9H54kvTilplsNweQxgJQZsQdbSBUgVQmikKfJ733Ck8k09T
-         STJFascCBZqoT08JTWmdLCTsAxSeLTlh5izTRD0cRwYffysdeYJyasUwXCrMDvoQdZbn
-         CCeA==
-X-Gm-Message-State: AOAM533tZpcPyVTrORQAfbcg+32wtndt3mzyPmUtKrKjETe6r8pmoL8B
-        vsGhMQNQqr+c5c6XSu/IqRUC/L7icRhP65qZ8gs=
-X-Google-Smtp-Source: ABdhPJxAerlq2Le8IqaAvi8P37yxiHC0EUJ6QybRld1i0SZRi4qNh3iUurFMgRamFocU0r6M4U58VD2PLNqYul8qYvc=
-X-Received: by 2002:a17:906:730f:: with SMTP id di15mr44714046ejc.22.1637611665328;
- Mon, 22 Nov 2021 12:07:45 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a5jVOagTt0Kg5zCB4wpCaOvINomhqISo4S93iKwz7ac=;
+        b=QYA9SZmeSKzPlGnv5iFLxAhe60j3O35bpwgf74u21DRtElzC2blL7FbR39V5Jd7dp3
+         /E7XC3esrFM672cQw+el+jrknVkqrkY+Hjq4xdUrYRDsIERigZkQGf1Jia121kJRukI8
+         Ra4hOc+nsqgi/cv2byYHhqRGehknpY6NDPcpKUbRP+eq69M0l8tYOyap78XbfbLPORrH
+         J6/LmkX2oED0SZEvDH5dwMd04nfK2hGCBWtZlHkOOSGwIM2B8jVmLGYlbwThemWtHek0
+         f3RbdmjqChsCB6Q8HcLsX2bOzjm41n9CJ9dvyntwT5KNyGNCNqVNtEpm4eJaCTE9BSev
+         2Ykw==
+X-Gm-Message-State: AOAM533EBVLMygpVj0CxqOLPep/1imoXcLM6Uo8iBJd2QnlL+889wgQE
+        nUZ7SRHGwT0kzsZLJxdHIX/ws8DOen1M3zQ9LqA=
+X-Google-Smtp-Source: ABdhPJwKvELa/ggMRKoyGlsc1ohyUEQCelrewlGse3v42ehXaQAjyTin1OBPCuV1IwSDpa+QliWp+tSClSy+SNz4SUo=
+X-Received: by 2002:a25:56c3:: with SMTP id k186mr66811954ybb.543.1637611715665;
+ Mon, 22 Nov 2021 12:08:35 -0800 (PST)
 MIME-Version: 1.0
-Sender: anndims113@googlemail.com
-Received: by 2002:a50:36ca:0:0:0:0:0 with HTTP; Mon, 22 Nov 2021 12:07:44
- -0800 (PST)
-From:   Mike Uba <mikeuba1975@gmail.com>
-Date:   Mon, 22 Nov 2021 21:07:44 +0100
-X-Google-Sender-Auth: i7XAHFOEA7Btn2oAz1DZqQynKak
-Message-ID: <CAKWg3-e4w_99Pq6YNMn0Ga71XFwF3rnCmtVOSwW97NK7rmYkOw@mail.gmail.com>
-Subject: GET BACK TO ME BEFORE IS LATE
-To:     undisclosed-recipients:;
+References: <20211121234906.9602-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <09b5b453-ed88-8359-4145-a5ec981069e6@omp.ru>
+In-Reply-To: <09b5b453-ed88-8359-4145-a5ec981069e6@omp.ru>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Mon, 22 Nov 2021 20:08:09 +0000
+Message-ID: <CA+V-a8sMEM5msvSNy1118dAN9jB-dUOeoOxRkbizmmEdXAJPjw@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: dts: renesas: rzg2l-smarc-som: Enable serial
+ NOR flash
+To:     Sergey Shtylyov <s.shtylyov@omp.ru>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Beneficiary
+Hi Sergey,
 
-Please get back to me very quickly for a detailed brief on an ongoing
-plot to steal your compensation fund under a false report that you are
-dead. A man from Saudi Arabia has been lured to believe that you are
-dead, and he has forwarded an application and the processing is
-currently  being pursued vigorously with his influence,money and
-connections.
+Thank you for the review.
 
-As I write, all approvals, charges and taxes associated with the
-processing and release of this fund to Post Finance Bank account in
-Bern Switzerland has been completed. So, you MUST stop deflate this
-move by immediately writing the paying authority that you are still
-alive and well as against the lies told by the Saudi Billionaire and
-his cohorts. Do not doubt this information nor treat it with despise.
+On Mon, Nov 22, 2021 at 8:06 PM Sergey Shtylyov <s.shtylyov@omp.ru> wrote:
+>
+> On 22.11.2021 2:49, Lad Prabhakar wrote:
+>
+> > Enable mt25qu512a flash connected to QSPI0.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > ---
+> > v1->v2
+> > -> Renamed qspi_pins0 to qspi0_pins
+> > ---
+> >   .../boot/dts/renesas/rzg2l-smarc-som.dtsi     | 40 +++++++++++++++++++
+> >   1 file changed, 40 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/renesas/rzg2l-smarc-som.dtsi b/arch/arm64/boot/dts/renesas/rzg2l-smarc-som.dtsi
+> > index 7e84a29dddfa..aef1b8736732 100644
+> > --- a/arch/arm64/boot/dts/renesas/rzg2l-smarc-som.dtsi
+> > +++ b/arch/arm64/boot/dts/renesas/rzg2l-smarc-som.dtsi
+> > @@ -178,6 +178,18 @@
+> >               line-name = "gpio_sd0_pwr_en";
+> >       };
+> >
+> > +     qspi0_pins: qspi0 {
+> > +             qspi0-data {
+> > +                     pins = "QSPI0_IO0", "QSPI0_IO1", "QSPI0_IO2", "QSPI0_IO3";
+> > +                     power-source  = <1800>;
+>
+>     Hrm, sorry for more nitpicking... Why 2 spaces before =?
+>
+Argh my bad...
+> > +             };
+> > +
+> > +             qspi0-ctrl {
+> > +                     pins = "QSPI0_SPCLK", "QSPI0_SSL", "QSPI_RESET#";
+> > +                     power-source  = <1800>;
+>
+>     Here as well...
+>
+.. will fix that.
 
-You will get to know more about this upon your response because I
-shall give you all available hidden information as far as I know.await
-your urgent reaction to this so I can give you details and the right
-office to contact in order to swiftly foil this fraud.
+Cheers,
+Prabhakar
 
-Thanks.
-
-Mike Uba
+> > +             };
+> > +     };
+> > +
+> >       /*
+> >        * SD0 device selection is XOR between GPIO_SD0_DEV_SEL and SW1[2]
+> >        * The below switch logic can be used to select the device between
+> [...]
+>
+> MBR, Sergey
+>
