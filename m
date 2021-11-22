@@ -2,89 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 218D54591A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:50:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2EF4591AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240017AbhKVPxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:53:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43574 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239850AbhKVPxR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:53:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 63AF360232;
-        Mon, 22 Nov 2021 15:50:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637596210;
-        bh=E0ZIcTgQTF4uA66kD7n2bNvUJTP6AnjWQnN8APTWepw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=TEHK8PUXox5PGANewt9N1ApCdwfZeY7GJ/YhcxuoqCDx3tgbcyqLsSTSL/RcdL+fw
-         YmkDKGojdzf+EWWDYyNqvvsttqhbCuuSIH41GJUda6Zmu7A9i2vWUb3l52l5Ch8dWq
-         dfA/NaxsimVrRWTBLy3DDJzcZ75hqkoWTtcjfQEztAn/gnF6stw1w3Gp722t5lsLKw
-         5ruSJntWiUonY16/SW4qrigd0hyCOaqJ/+KTNahWaEUoJEaJJVoGxrf3+aIzrLnEHS
-         Lp8v0E7b9VSwIl/1VMEjInR8ZJhOCZ0J0UahgtZeR8VR6ww0x5oGjz+mlAVAlfsl5p
-         VUzaywF2AYnDQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 57A4760A94;
-        Mon, 22 Nov 2021 15:50:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S240030AbhKVPyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:54:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240028AbhKVPyv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 10:54:51 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871EFC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:51:44 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id f186so14338613ybg.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 07:51:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=88SXHTkYo3rO3ewGyZ0SUHGdG7MDoIEqXnN6sJd6UZc=;
+        b=ir7vHJfzSSgqccibUfngx1+pH8F88684qsF2mzBi81QnYN70yfyP08PpZh89KwCJop
+         IGe8EZflQjTxe/rAYKujXPivXKz+cam73RSXqH4YpemcAFzpySwXxvDUfDRicXeV7xB2
+         LHPo602IP89yvQc3oR/+ggN3hlQHz34361x6rm4rqjv7jKfTZR08rUV3A5+SepW+6Uzg
+         J5Tsa5fuZw3gXJlNPF+4KRFTg9MvMYrziuokquGlL/lw8Ad6c/G8O00Vn8aAavtKn4YA
+         cX3nxz39juFzjCjgraWjLor1csEKMBMMuKxBHBfA/uEx6Xn3GP3/Z9WPRDIDNwDQACfU
+         W9fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=88SXHTkYo3rO3ewGyZ0SUHGdG7MDoIEqXnN6sJd6UZc=;
+        b=g8pBIr26z2WqE9T5waD2xZRKrzR9OakDbJsuokhd6HEDtYibRVfWN+feK4QqR4+c8B
+         m01Bec9esy4Ih8Nllfn+IQF8Mg+2qc3016cM8goT/EwcXx4rZMB3YX0cw1xakzQehCoU
+         aOjIAfAuokBSsFLQu0jFuNMMmjKCv8BKUtZv/7dellvl9qn+/3rtYZ6KOU/GvdtprkJr
+         kEwG2f53LqOQ4yhU2gZODuxWid5/RySfq4mGwAoaXDUqLkFVSHW9hLh4pIGExWPV2Rnv
+         064az7dFEttNZo+9mSP6IMlxtRYpTPToiXENYYZqle/GbFxtKVA4XGF4jKbfgwRg/bg6
+         mCLA==
+X-Gm-Message-State: AOAM530KWbEwL1bfTeV4BXrDq0sF6DnK6VHzXvmnHx447JlaeBlmUCbx
+        y/j7AE9e4WsU2A3AekJ/8BdGWR8aLVbXVMwhdFE=
+X-Google-Smtp-Source: ABdhPJzRbJJFNNSK4VbBzZJLBS2d34s5XQU0Dzj321+K9DZk8ERvzYftOK3bRQF4WjE6cy2cbPT/N2mXDajQPlfKmmw=
+X-Received: by 2002:a25:ccd0:: with SMTP id l199mr64753636ybf.39.1637596302657;
+ Mon, 22 Nov 2021 07:51:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [net-next PATCH v3 0/9] Multiple cleanup and feature for qca8k
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163759621035.3677.10769025675490049511.git-patchwork-notify@kernel.org>
-Date:   Mon, 22 Nov 2021 15:50:10 +0000
-References: <20211122152348.6634-1-ansuelsmth@gmail.com>
-In-Reply-To: <20211122152348.6634-1-ansuelsmth@gmail.com>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Received: by 2002:a05:7010:7e27:b0:1e3:79b9:8116 with HTTP; Mon, 22 Nov 2021
+ 07:51:42 -0800 (PST)
+Reply-To: rco.ben189@outlook.fr
+From:   "Mrs. Susan Dansuki" <judgemarickakudo@gmail.com>
+Date:   Mon, 22 Nov 2021 07:51:42 -0800
+Message-ID: <CAAgrTz-zkE6u2dS+sJ+rNMOSw4jxdrNVX4wGgNrDmu1dG1z3wQ@mail.gmail.com>
+Subject: Re: COVID-19 RELIEF FUND WORTH $1,500,000.00 USD
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (master)
-by David S. Miller <davem@davemloft.net>:
-
-On Mon, 22 Nov 2021 16:23:39 +0100 you wrote:
-> This is a reduced version of the old massive series.
-> Refer to the changelog to know what is removed from this.
-> 
-> We clean and convert the driver to GENMASK FIELD_PREP to clean multiple
-> use of various naming scheme. (example we have a mix of _MASK, _S _M,
-> and various name) The idea is to ""simplify"" and remove some shift and
-> data handling by using FIELD API.
-> The patch contains various checkpatch warning and are ignored to not
-> create more mess in the header file. (fixing the too long line warning
-> would results in regs definition less readable)
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next,v3,1/9] net: dsa: qca8k: remove redundant check in parse_port_config
-    https://git.kernel.org/netdev/net-next/c/b9133f3ef5a2
-  - [net-next,v3,2/9] net: dsa: qca8k: convert to GENMASK/FIELD_PREP/FIELD_GET
-    https://git.kernel.org/netdev/net-next/c/90ae68bfc2ff
-  - [net-next,v3,3/9] net: dsa: qca8k: remove extra mutex_init in qca8k_setup
-    https://git.kernel.org/netdev/net-next/c/994c28b6f971
-  - [net-next,v3,4/9] net: dsa: qca8k: move regmap init in probe and set it mandatory
-    https://git.kernel.org/netdev/net-next/c/36b8af12f424
-  - [net-next,v3,5/9] net: dsa: qca8k: initial conversion to regmap helper
-    https://git.kernel.org/netdev/net-next/c/8b5f3f29a81a
-  - [net-next,v3,6/9] net: dsa: qca8k: add additional MIB counter and make it dynamic
-    https://git.kernel.org/netdev/net-next/c/c126f118b330
-  - [net-next,v3,7/9] net: dsa: qca8k: add support for port fast aging
-    https://git.kernel.org/netdev/net-next/c/4592538bfb0d
-  - [net-next,v3,8/9] net: dsa: qca8k: add set_ageing_time support
-    https://git.kernel.org/netdev/net-next/c/6a3bdc5209f4
-  - [net-next,v3,9/9] net: dsa: qca8k: add support for mdb_add/del
-    https://git.kernel.org/netdev/net-next/c/ba8f870dfa63
-
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Dear Beneficiary,
 
+In line with the directive of the United Nations organization on their
+fight to cushion the bad effect of Covid-19 around the world. We wish
+to bring you the good news of hope. The United Nations organization
+department for disaster management in conjunction with IMF, World Bank
+is giving out Covid-19 stimulus package worth $1,500,000.00 USD, and
+you are among the lucky beneficiary selected to receive this stimulus
+package.
 
+Therefore, on receipt of this email, you should count yourself as the
+lucky individual. Your email address was chosen online while searching
+at random. Kindly contact our grants manager (Mr. Robert Taiwo) at
+your earliest convenience, with the contacts details listed below,to
+claim your stimulus package worth $1,500,000.00 USD.
+
+Name: Mr.Robert TAIWO
+Email:   mr.roberttaiwo73@qq.com
+Telephone:   +229 96548388 (WhatsApp)
+
+Please confirm the following information to him as soon as possible.
+
+1. Full Name :
+2. Address :
+3. Nationality :
+4. Direct Telephone #:
+
+Congratulations once again.
+
+Yours Sincerely
+Mrs. Susan Dansuki.
+Director of the Centers for Disease Control and Prevention.
