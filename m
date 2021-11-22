@@ -2,101 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6008A459618
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 21:33:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79DD6459621
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 21:34:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233268AbhKVUgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 15:36:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231739AbhKVUgD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 15:36:03 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3B0260FBF;
-        Mon, 22 Nov 2021 20:32:55 +0000 (UTC)
-Date:   Mon, 22 Nov 2021 15:32:54 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Joe Korty <joe.korty@concurrent-rt.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Clark Williams <williams@redhat.com>,
-        Jun Miao <jun.miao@windriver.com>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5.10-rt+] drm/i915/gt: transform irq_disable into
- local_lock.
-Message-ID: <20211122153254.1f10e34a@gandalf.local.home>
-In-Reply-To: <20211122195048.GB6166@zipoli.concurrent-rt.com>
-References: <20211007165928.GA43890@zipoli.concurrent-rt.com>
-        <20211007171929.hegwwqelf46skjyw@linutronix.de>
-        <20211009164908.GA21269@zipoli.concurrent-rt.com>
-        <20211116152534.122f8357@gandalf.local.home>
-        <20211116210249.t3f6gw56iaow57mq@linutronix.de>
-        <20211116163924.5d5a2ffd@gandalf.local.home>
-        <20211122195048.GB6166@zipoli.concurrent-rt.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S240230AbhKVUhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 15:37:10 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20430 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239537AbhKVUgv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 15:36:51 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AMJNAX3017631;
+        Mon, 22 Nov 2021 20:33:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=pWXoERF+5c2HEobel7JaA89vYIzROWWFNszhOY05vZY=;
+ b=PK0KK7oj4Keor4DDEjdNJVZ2v3o1x80EeJVGalHs1mqYwL4VXbSoVRe1Jt5Ri7rims+t
+ adlTbbSxLtloM9DSRHWHpq7dd6m/DyXB74enQgdDOL6tFwUytsIvDKgBAENhqRxvWViG
+ fGCej5hJar/obI//2dpdLXSyIOE9rPtihznX6S3lqJCq/MAEjp6Xe+V9b4nCgQwnz+xH
+ eBsfTaqv2r4ZrhRA8yihpkOSqzVZjj78Q5XiohgxDP99rw+aEjVvg+Oz+eYuyM5XbxBU
+ 4lUGwxRuY96is3fhbo+pWWlCUHg1BCfgbpPjGCOat+uysto3YT0qv8+TcJM5Hm7sdtpL JA== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cghad1ax6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Nov 2021 20:33:37 +0000
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AMKIUr6016744;
+        Mon, 22 Nov 2021 20:33:35 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma01fra.de.ibm.com with ESMTP id 3cern98w25-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Nov 2021 20:33:34 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AMKQPq164225630
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Nov 2021 20:26:25 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 94D8F42045;
+        Mon, 22 Nov 2021 20:33:32 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3B2A24203F;
+        Mon, 22 Nov 2021 20:33:32 +0000 (GMT)
+Received: from thinkpad (unknown [9.171.26.122])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Mon, 22 Nov 2021 20:33:32 +0000 (GMT)
+Date:   Mon, 22 Nov 2021 21:33:30 +0100
+From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Faiyaz Mohammed <faiyazm@codeaurora.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RFC PATCH 1/1] mm/slub: fix endless "No data" printing for
+ alloc/free_traces attribute
+Message-ID: <20211122213330.66b7893e@thinkpad>
+In-Reply-To: <20211122211400.41bf64cf@thinkpad>
+References: <20211117193932.4049412-1-gerald.schaefer@linux.ibm.com>
+        <20211117193932.4049412-2-gerald.schaefer@linux.ibm.com>
+        <9a4367c0-8141-f03c-e5a1-13483794d3e8@suse.cz>
+        <20211119205943.1ee5da0d@thinkpad>
+        <b513bbcf-f1ea-cfa6-763a-003a60e51da5@suse.cz>
+        <20211122211400.41bf64cf@thinkpad>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: ACB8K8P-yJGMHCz3zqACIjhP6yr_oHIa
+X-Proofpoint-GUID: ACB8K8P-yJGMHCz3zqACIjhP6yr_oHIa
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-22_08,2021-11-22_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=784
+ lowpriorityscore=0 spamscore=0 bulkscore=0 malwarescore=0 suspectscore=0
+ phishscore=0 adultscore=0 mlxscore=0 clxscore=1015 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111220102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Nov 2021 14:50:48 -0500
-Joe Korty <joe.korty@concurrent-rt.com> wrote:
+On Mon, 22 Nov 2021 21:14:00 +0100
+Gerald Schaefer <gerald.schaefer@linux.ibm.com> wrote:
 
-> On Tue, Nov 16, 2021 at 04:39:24PM -0500, Steven Rostedt wrote:
-> > On Tue, 16 Nov 2021 22:02:49 +0100
-> > Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
-> >   
-> > > On 2021-11-16 15:25:34 [-0500], Steven Rostedt wrote:  
-> > > > I'm looking to see what needs to be added to 5.10-rt. Is there a particular
-> > > > fix in one of the 5.x-rt trees (x > 10) that I can pull from? Or is this
-> > > > only an issue with 5.10 and below?    
-> > > 
-> > > I have this:
-> > >   https://lore.kernel.org/all/20211026114100.2593433-1-bigeasy@linutronix.de
-> > > 
-> > > pending vs upstream and I *think* more than just that one (2/9 from the
-> > > series) needs to be backported here. We do have 1/9 differently in 5.10,
-> > > not sure about 4/9.
-> > > I would love more feedback here from people and I tried to motivate Joe
-> > > to provide some. Clark was so nice to test these patches and provide
-> > > feedback. My i915 does not trigger all the code paths I'm touching
-> > > there.
-> > > 
-> > > If you think that 2/9 is obvious enough, please go ahead. If you start
-> > > touching that irq_work area then you might also want to pick
-> > >   810979682ccc9 ("irq_work: Allow irq_work_sync() to sleep if irq_work() no IRQ support.")
-> > >   b4c6f86ec2f64 ("irq_work: Handle some irq_work in a per-CPU thread on PREEMPT_RT")
-> > >   09089db79859c ("irq_work: Also rcuwait for !IRQ_WORK_HARD_IRQ on PREEMPT_RT")
-> > > 
-> > > which made their way into v5.16-rc1.
-> > >  
-> > 
-> > I have a few boxes with i915, that maybe could help in testing.
-> > 
-> > I'll take a look.
-> > 
-> > -- Steve  
+[...]
 > 
-> Hi Steve, Sebastian,
-> I was on a no-Internet no-News vacation for the past week,
-> that is why I haven't responded.  Sorry.  In any case my
-> test stand suddenly started working, for no reason that I
-> can see, and so, for now, I have not been able to continue
-> my testing.
+> Thanks. While testing this properly, yet another bug showed up. The idx
+> in op->show remains 0 in all iterations, so I always see the same line
+> printed t->count times (or infinitely, ATM). Not sure if this only shows
+> on s390 due to endianness, but the reason is this:
 > 
-> I will keep poking at it from time to time, see if I can
-> get the issue to come back.
->
+>   unsigned int idx = *(unsigned int *)v;
+> 
+> IIUC, void *v is always the same as loff_t *ppos, and therefore idx also
+> should be *ppos. De-referencing the loff_t * with an unsigned int * only
+> gives the upper 32 bit half of the 64 bit value, which remains 0.
+> 
+> This would be fixed e.g. with
+> 
+>   unsigned int idx = (unsigned int) *(loff_t *) v;
+> 
+> With this fixed, my original patch actually also works for t->count > 0,
+> because then op->show would return w/o printing anything when idx reaches
+> t->count. For t->count > 0, it would even work w/o any extra checks in
+> op->start because of that, only "No data" would be printed infinitely.
 
-I just finished testing 5.10-rt-rc2 with Sebastian's patch 2/9. I'll post
-the new rc of it and then release it.
+Oh, no, that would actually also fix the "No data" part, as op->show
+will then also return w/o printing in the next iteration, so that op->next
+would correctly end it all.
 
-Thanks,
+This could also explain why it might all have worked fine on x86 (haven't
+verified), and really only showed on big-endian s390.
 
--- Steve
+Hmm, now I'm not so sure anymore if we really want the additional
+checks and return NULL in op->start, just to make it "double safe".
+
+> 
+> It probably still makes sense to make this explicit in op->start, by
+> checking separately for !*ppos && !t->count, and returning NULL for
+> *ppos >= t->count, as you suggested.
+> 
+> I think I will also make idx an unsigned long again, like it was before
+> commit 64dd68497be7, and similar to t->count. Not sure if it needs to
+> be, and with proper casting unsigned int is also possible, but why
+> change it?
 
