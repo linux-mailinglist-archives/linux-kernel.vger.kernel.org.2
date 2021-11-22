@@ -2,161 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF884595F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 21:08:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 841B64595F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 21:10:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231547AbhKVUMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 15:12:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:41331 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239844AbhKVUL6 (ORCPT
+        id S240173AbhKVUNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 15:13:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239667AbhKVUNW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 15:11:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637611731;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wx9owdJOrmjGXLWEhFvkrVgkkHwU/2JlwqTvYXsyeFw=;
-        b=TqxE3/VE9R+psUEWcF3Rizu94GU0aTW5u+zs4gdvyD6NaeYokSLZPzVRvq6s0ck19ZDgSu
-        5qhogR8oIOWDIKv11GMFRqKYPKlw4Qu6aX2gz3+qNxsSanrbmLrUmBZTBVxDkKJ4mXQ4Zm
-        NFGwDk64KV2HndjqSBZ8eazclo/5m44=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-37-aZ1FTpUEOpCDc2OACLGyBw-1; Mon, 22 Nov 2021 15:08:49 -0500
-X-MC-Unique: aZ1FTpUEOpCDc2OACLGyBw-1
-Received: by mail-wm1-f70.google.com with SMTP id 144-20020a1c0496000000b003305ac0e03aso83265wme.8
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 12:08:49 -0800 (PST)
+        Mon, 22 Nov 2021 15:13:22 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FCBCC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 12:10:15 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id x9so19349117ilu.6
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 12:10:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6LEE5kiT2TRIl7BNHFzJ59a75HPeibxuEmXR4XkzoQo=;
+        b=FIg0ozS6oCy5vaFfInXqVSUAJa7E0i7Ei6ZptC+1UPCiuT1cafIhfMGwiydDvvxmyC
+         KsLzOVuDU9AanKkdfb+G5CDseIRNFDMN9CSOA516PNHtjPGQHMVAEb/G08N04wgucgLS
+         JKU8medsjOWPIN9YsUvCgoEr7qlS87aNAjVNK6pusMvIjcb+9AXeQKL3u+X03e4MS7Tv
+         Zvtg2KNYxrCDXbYz3IYRG36zcse0W7ZaSjiwTXT/8Dq1sjv2zMKWq2YBFAblW2xfLedV
+         bbKUX9l1cOD3UCBeal0ph7gYbj9JNnfnrqcFaZntuZS0D1ArWGfKxPoGJ8YYcNZ32ZN7
+         9xbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=wx9owdJOrmjGXLWEhFvkrVgkkHwU/2JlwqTvYXsyeFw=;
-        b=fdzZkA2bvaTpihBKWAbNMrrv/uGXqOxRDc8xM2mqGvT131Y61blE67G7dK9/8ERm4B
-         Ine4hvsq+ED63/4I4gO0lz9Y6T//Ku7ew0o9zvltz/E6nqj+UHqwb+CWnN/Vfvb6XilT
-         kOYtriHezdOPwiGoAClxyPTI09sQoxV5T+MFY3zED8jbA2YW9tucf7BV057KTWKhqgCs
-         E5+qQEGkQnhEWevB4PFCyp2h0Y4azs5U5Qyzb/TtWlMQ5an05krUdtLD9qoJn2HDqNvV
-         eWAQKKAU+lk8DfqflvZ17B7wwhM2WDQkVfWLsjJRJX0g/+wOg1YR7+8Nlkkw3+bJC6qb
-         PXxA==
-X-Gm-Message-State: AOAM530Y1fpDK1BAJ7huLtq7aRjsJ9YgzyDD+e7FrcaM1BBTjA9w+ADW
-        ttwnKi2MebBPgj8FRUu3CaQVNYje/xivupDwybUCzV76aFxa2uWe01AlHQD22BQbMJmgVchG3eV
-        KbRQj2tvzX5W5QtBieRQ8DoPz
-X-Received: by 2002:a1c:4c19:: with SMTP id z25mr33463169wmf.177.1637611728787;
-        Mon, 22 Nov 2021 12:08:48 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz4rF1zQh8IxxZ21UD3M7noCmiFkX9+K7yUl3FtS0Rnvm9Mdu8ZgNai9WbpFa7URCgixu8GMQ==
-X-Received: by 2002:a1c:4c19:: with SMTP id z25mr33463131wmf.177.1637611728568;
-        Mon, 22 Nov 2021 12:08:48 -0800 (PST)
-Received: from [192.168.3.132] (p5b0c667b.dip0.t-ipconnect.de. [91.12.102.123])
-        by smtp.gmail.com with ESMTPSA id l5sm24227434wms.16.2021.11.22.12.08.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Nov 2021 12:08:47 -0800 (PST)
-Message-ID: <5f998bb7-7b5d-9253-2337-b1d9ea59c796@redhat.com>
-Date:   Mon, 22 Nov 2021 21:08:47 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6LEE5kiT2TRIl7BNHFzJ59a75HPeibxuEmXR4XkzoQo=;
+        b=EfetLYMRCe0H09h801bODQhjfn6ZA8ydbska91rLxFJGyl1wjy/1lcEjPWt9HMecSf
+         wUWwUYhrkwtQD8DHr9SbRoXZZ0vy2chhYtTbGHxLLOYZ5XNAyTLsnlp3GIqvFmtwRq8i
+         DFCifeDoHm6Gpi2jGOoPqaZo7YkzQ6F8Y4n1hM6F26JFtBSE4jdZUG85bfWJaUZ+z+62
+         7f8wxPEG1Qpb1rumvM7K02qgMWe5uLHjbwoVzPnchlduNCGu02qotPuCcBuEiL+tYSEc
+         lyDW+Y7PZU0hFBnEVOJvwNkwebWJWoTt33ehDdt5+rSNNYjza38wefYCmlFhNPY/NJ97
+         YGXg==
+X-Gm-Message-State: AOAM530krG/x0m4zlgfB0AkTT6IiFiBLna/xkXPdPFGRouSlBDIG5DEy
+        eeNZesq/M8cvovee/yIPoVI2IsAfCQQ0BGQ+xGFKmw==
+X-Google-Smtp-Source: ABdhPJwG4eM/lEDOPt1rsqMzmfCa+H2mVLWpS255Hd+gjyj8SKdBp3A0qazWRG4Tfjoabop2nsWRnrV99V932Lw6S64=
+X-Received: by 2002:a92:cda2:: with SMTP id g2mr20988283ild.2.1637611814468;
+ Mon, 22 Nov 2021 12:10:14 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To:     Jens Axboe <axboe@kernel.dk>,
-        Andrew Dona-Couch <andrew@donacou.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Drew DeVault <sir@cmpwn.com>
-Cc:     Ammar Faizi <ammarfaizi2@gnuweeb.org>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        io_uring Mailing List <io-uring@vger.kernel.org>,
-        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
-References: <20211028080813.15966-1-sir@cmpwn.com>
- <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
- <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
- <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
- <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
- <CFQZSHV700KV.18Y62SACP8KOO@taiga>
- <20211116114727.601021d0763be1f1efe2a6f9@linux-foundation.org>
- <CFRGQ58D9IFX.PEH1JI9FGHV4@taiga>
- <20211116133750.0f625f73a1e4843daf13b8f7@linux-foundation.org>
- <b84bc345-d4ea-96de-0076-12ff245c5e29@redhat.com>
- <8f219a64-a39f-45f0-a7ad-708a33888a3b@www.fastmail.com>
- <333cb52b-5b02-648e-af7a-090e23261801@redhat.com>
- <ca96bb88-295c-ccad-ed2f-abc585cb4904@kernel.dk>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
-In-Reply-To: <ca96bb88-295c-ccad-ed2f-abc585cb4904@kernel.dk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20211120045046.3940942-1-seanjc@google.com> <20211120045046.3940942-10-seanjc@google.com>
+In-Reply-To: <20211120045046.3940942-10-seanjc@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Mon, 22 Nov 2021 12:10:03 -0800
+Message-ID: <CANgfPd9=ce+JT3xEJy=p5MEfvkMGovEaBEu8KmxiZAJ1AA958g@mail.gmail.com>
+Subject: Re: [PATCH 09/28] KVM: x86/mmu: Require mmu_lock be held for write in
+ unyielding root iter
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Hou Wenlong <houwenlong93@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.11.21 20:53, Jens Axboe wrote:
-> On 11/22/21 11:26 AM, David Hildenbrand wrote:
->> On 22.11.21 18:55, Andrew Dona-Couch wrote:
->>> Forgive me for jumping in to an already overburdened thread.  But can
->>> someone pushing back on this clearly explain the issue with applying
->>> this patch?
->>
->> It will allow unprivileged users to easily and even "accidentally"
->> allocate more unmovable memory than it should in some environments. Such
->> limits exist for a reason. And there are ways for admins/distros to
->> tweak these limits if they know what they are doing.
-> 
-> But that's entirely the point, the cases where this change is needed are
-> already screwed by a distro and the user is the administrator. This is
-> _exactly_ the case where things should just work out of the box. If
-> you're managing farms of servers, yeah you have competent administration
-> and you can be expected to tweak settings to get the best experience and
-> performance, but the kernel should provide a sane default. 64K isn't a
-> sane default.
+On Fri, Nov 19, 2021 at 8:51 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Assert that mmu_lock is held for write by users of the yield-unfriendly
+> TDP iterator.  The nature of a shared walk means that the caller needs to
+> play nice with other tasks modifying the page tables, which is more or
+> less the same thing as playing nice with yielding.  Theoretically, KVM
+> could gain a flow where it could legitimately take mmu_lock for read in
+> a non-preemptible context, but that's highly unlikely and any such case
+> should be viewed with a fair amount of scrutiny.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/mmu/tdp_mmu.c | 16 ++++++++++++----
+>  1 file changed, 12 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 12a28afce73f..3086c6dc74fb 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -159,11 +159,17 @@ static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
+>                 if (kvm_mmu_page_as_id(_root) != _as_id) {              \
+>                 } else
+>
+> -#define for_each_tdp_mmu_root(_kvm, _root, _as_id)                             \
+> -       list_for_each_entry_rcu(_root, &_kvm->arch.tdp_mmu_roots, link,         \
+> -                               lockdep_is_held_type(&kvm->mmu_lock, 0) ||      \
+> -                               lockdep_is_held(&kvm->arch.tdp_mmu_pages_lock)) \
+> +/*
+> + * Iterate over all valid TDP MMU roots.  Requires that mmu_lock be held for
+> + * write, the implication being that any flow that holds mmu_lock for read is
+> + * inherently yield-friendly and should use the yielf-safe variant above.
 
-0.1% of RAM isn't either.
+Nit: *yield-safe
 
-> 
->> This is not a step into the right direction. This is all just trying to
->> hide the fact that we're exposing FOLL_LONGTERM usage to random
->> unprivileged users.
->>
->> Maybe we could instead try getting rid of FOLL_LONGTERM usage and the
->> memlock limit in io_uring altogether, for example, by using mmu
->> notifiers. But I'm no expert on the io_uring code.
-> 
-> You can't use mmu notifiers without impacting the fast path. This isn't
-> just about io_uring, there are other users of memlock right now (like
-> bpf) which just makes it even worse.
+> + * Holding mmu_lock for write obviates the need for RCU protection as the list
+> + * is guaranteed to be stable.
+> + */
+> +#define for_each_tdp_mmu_root(_kvm, _root, _as_id)                     \
+> +       list_for_each_entry(_root, &_kvm->arch.tdp_mmu_roots, link)     \
+>                 if (kvm_mmu_page_as_id(_root) != _as_id) {              \
+> +                       lockdep_assert_held_write(&(_kvm)->mmu_lock);   \
 
-1) Do we have a performance evaluation? Did someone try and come up with
-a conclusion how bad it would be?
+Did you mean for this lockdep to only be hit in this uncommon
+non-matching ASID case?
 
-2) Could be provide a mmu variant to ordinary users that's just good
-enough but maybe not as fast as what we have today? And limit
-FOLL_LONGTERM to special, privileged users?
-
-3) Just because there are other memlock users is not an excuse. For
-example, VFIO/VDPA have to use it for a reason, because there is no way
-not do use FOLL_LONGTERM.
-
-> 
-> We should just make this 0.1% of RAM (min(0.1% ram, 64KB)) or something
-> like what was suggested, if that will help move things forward. IMHO the
-> 32MB machine is mostly a theoretical case, but whatever .
-
-1) I'm deeply concerned about large ZONE_MOVABLE and MIGRATE_CMA ranges
-where FOLL_LONGTERM cannot be used, as that memory is not available.
-
-2) With 0.1% RAM it's sufficient to start 1000 processes to break any
-system completely and deeply mess up the MM. Oh my.
-
-
-No, I don't like this, absolutely not. I neither like raising the
-memlock limit as default to such high values nor using FOLL_LONGTERM in
-cases where it could be avoided for random, unprivileged users.
-
-But I assume this is mostly for the records, because I assume nobody
-cares about my opinion here.
-
--- 
-Thanks,
-
-David / dhildenb
-
+>                 } else
+>
+>  static union kvm_mmu_page_role page_role_for_level(struct kvm_vcpu *vcpu,
+> @@ -1063,6 +1069,8 @@ static __always_inline bool kvm_tdp_mmu_handle_gfn(struct kvm *kvm,
+>         struct tdp_iter iter;
+>         bool ret = false;
+>
+> +       lockdep_assert_held_write(&kvm->mmu_lock);
+> +
+>         rcu_read_lock();
+>
+>         /*
+> --
+> 2.34.0.rc2.393.gf8c9666880-goog
+>
