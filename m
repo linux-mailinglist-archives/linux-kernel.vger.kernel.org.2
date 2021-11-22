@@ -2,134 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46127458D32
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:17:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C01EC458D34
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 12:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237476AbhKVLUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 06:20:11 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:54040 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236936AbhKVLT6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 06:19:58 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 299041FD5B;
-        Mon, 22 Nov 2021 11:16:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637579811; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lEm+8vA9TCtL9DYsnrtmbGRRDo10Kj7WKBTDoClpP9I=;
-        b=rCDnM0RwIv5qarsHL34rHo/R7eQYKGi4deMZB4/mDl8ENy5l6AtpDUji7JQaYWv9bnGadu
-        LFkIPA1auB4hFwSXOVCmD46HNMqYrD729vysCKlB1uncjmP0BVQnxiCzK21qRI5y1QPmlU
-        DDD7jCcZr31cWucqFhBdQdEKX8X1Np0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637579811;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lEm+8vA9TCtL9DYsnrtmbGRRDo10Kj7WKBTDoClpP9I=;
-        b=8IyANcO6gqekMJKuEKeJK1xvikSQ+QI+yGakWkSD6hWT0tRr7W7Z39h3oQEIRnhwBTrAJ7
-        /RMYJQJ6pKMitQAQ==
-Received: from localhost.localdomain (unknown [10.100.208.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 01309A3B88;
-        Mon, 22 Nov 2021 11:16:50 +0000 (UTC)
-From:   Jiri Slaby <jslaby@suse.cz>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        johan@kernel.org, Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH v2 3/3] tty: drop tty_schedule_flip()
-Date:   Mon, 22 Nov 2021 12:16:48 +0100
-Message-Id: <20211122111648.30379-4-jslaby@suse.cz>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211122111648.30379-1-jslaby@suse.cz>
-References: <20211122111648.30379-1-jslaby@suse.cz>
+        id S237365AbhKVLUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 06:20:33 -0500
+Received: from mga11.intel.com ([192.55.52.93]:26531 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231383AbhKVLUc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 06:20:32 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10175"; a="232251960"
+X-IronPort-AV: E=Sophos;i="5.87,254,1631602800"; 
+   d="scan'208";a="232251960"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 03:17:25 -0800
+X-IronPort-AV: E=Sophos;i="5.87,254,1631602800"; 
+   d="scan'208";a="606378486"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 03:17:22 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mp7K1-009PgS-QF;
+        Mon, 22 Nov 2021 13:17:17 +0200
+Date:   Mon, 22 Nov 2021 13:17:17 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Alejandro Colomar <alx.manpages@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Joe Perches <joe@perches.com>
+Subject: Re: [PATCH v2 00/20] Add memberof(), split headers, and simplify code
+Message-ID: <YZt8PdBH5JcWTurH@smile.fi.intel.com>
+References: <20211119113644.1600-1-alx.manpages@gmail.com>
+ <20211120130104.185699-1-alx.manpages@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211120130104.185699-1-alx.manpages@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit a9c3f68f3cd8d (tty: Fix low_latency BUG) in 2014,
-tty_flip_buffer_push() is only a wrapper to tty_schedule_flip(). All
-users were converted in the previous patches, so remove
-tty_schedule_flip() completely while inlining its body into
-tty_flip_buffer_push().
+On Sat, Nov 20, 2021 at 02:00:43PM +0100, Alejandro Colomar wrote:
+> 
+> Hi all,
+> 
+> I splitted some macros into separate headers,
+> to be able to use them
+> without pulling too many deps.
+> 
+> I also simplified some of themr
+> to be implemented in terms of the others
+> and to remove some unnecessary explicit casts.
+> 
+> And I added memberof(),
+> which gives name to a typical construction
+> to get the member of a struct
+> without needing a variable of that type.
+> 
+> 
+> The next step after this patch set
+> is another one removing all redefinitions
+> (at least all that are possible,
+> since these headers can't be included everywhere)
+> of these macros,
+> by including these new tiny headers.
+> Since these headers are so tiny and bring no dependencies,
+> they should break anything.
+> 
+> It was hard for me to get this working
+> because the order of includes _matters a lot_,
+> and which headers you include _matters_ even outside of uapi.
+> So I think this should help fix that,
+> by allowing headers to pull exactly what they want,
+> without all of the stuff that came with
+> <linux/compiler.h>
+> <linux/compiler_types.h>
+> <linux/stddef.h>.
+> 
+> I already have much of the next patch set ready,
+> and it removes hundreds of redefinitions of these macros,
+> which should be a good thing.
+> 
+> 
+> Then,
+> when there are (almost) no redefinitions of these macros,
+> I'll prepare a 3rd patch set that
+> explicitly includes these tiny headers
+> wherever these macros were already in use,
+> to allow for removal of other bigger headers
+> (although I won't remove anything,
+> to avoid silently breaking anything).
+> 
+> 
+> And then,
+> a 4th patch set will
+> attempt to find all uses of these macros
+> that were not even named
+> (i.e., hard-coded sizeof divisions).
+> 
+> 
+> Hope this is clear and
+> that you like these changes.
 
-One less exported function.
+What happens to the indentation in your emails?!
+It looks like a bad poem :-)
 
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
----
-[v2] drop tty_schedule_flip (and not tty_flip_buffer_push)
+On top of that, never start a new thread inside the previous one.
 
- drivers/tty/tty_buffer.c | 30 ++++++++----------------------
- include/linux/tty_flip.h |  1 -
- 2 files changed, 8 insertions(+), 23 deletions(-)
-
-diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
-index 6c7e65b1d9a1..5b6875057ce2 100644
---- a/drivers/tty/tty_buffer.c
-+++ b/drivers/tty/tty_buffer.c
-@@ -401,27 +401,6 @@ int __tty_insert_flip_char(struct tty_port *port, unsigned char ch, char flag)
- }
- EXPORT_SYMBOL(__tty_insert_flip_char);
- 
--/**
-- *	tty_schedule_flip	-	push characters to ldisc
-- *	@port: tty port to push from
-- *
-- *	Takes any pending buffers and transfers their ownership to the
-- *	ldisc side of the queue. It then schedules those characters for
-- *	processing by the line discipline.
-- */
--
--void tty_schedule_flip(struct tty_port *port)
--{
--	struct tty_bufhead *buf = &port->buf;
--
--	/* paired w/ acquire in flush_to_ldisc(); ensures
--	 * flush_to_ldisc() sees buffer data.
--	 */
--	smp_store_release(&buf->tail->commit, buf->tail->used);
--	queue_work(system_unbound_wq, &buf->work);
--}
--EXPORT_SYMBOL(tty_schedule_flip);
--
- /**
-  *	tty_prepare_flip_string		-	make room for characters
-  *	@port: tty port
-@@ -566,7 +545,14 @@ static void flush_to_ldisc(struct work_struct *work)
- 
- void tty_flip_buffer_push(struct tty_port *port)
- {
--	tty_schedule_flip(port);
-+	struct tty_bufhead *buf = &port->buf;
-+
-+	/*
-+	 * Paired w/ acquire in flush_to_ldisc(); ensures flush_to_ldisc() sees
-+	 * buffer data.
-+	 */
-+	smp_store_release(&buf->tail->commit, buf->tail->used);
-+	queue_work(system_unbound_wq, &buf->work);
- }
- EXPORT_SYMBOL(tty_flip_buffer_push);
- 
-diff --git a/include/linux/tty_flip.h b/include/linux/tty_flip.h
-index 9916acb5de49..483d41cbcbb7 100644
---- a/include/linux/tty_flip.h
-+++ b/include/linux/tty_flip.h
-@@ -17,7 +17,6 @@ int tty_insert_flip_string_fixed_flag(struct tty_port *port,
- int tty_prepare_flip_string(struct tty_port *port, unsigned char **chars,
- 		size_t size);
- void tty_flip_buffer_push(struct tty_port *port);
--void tty_schedule_flip(struct tty_port *port);
- int __tty_insert_flip_char(struct tty_port *port, unsigned char ch, char flag);
- 
- static inline int tty_insert_flip_char(struct tty_port *port,
 -- 
-2.33.1
+With Best Regards,
+Andy Shevchenko
+
 
