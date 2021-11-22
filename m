@@ -2,140 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D72F45945D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 18:54:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D20459463
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 18:55:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239529AbhKVR5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 12:57:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231383AbhKVR5X (ORCPT
+        id S239730AbhKVR6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 12:58:48 -0500
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:42729 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239678AbhKVR6p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 12:57:23 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F018BC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 09:54:16 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id 8so17360187qtx.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 09:54:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UjrtRg1LqalLPKr1AWX1gQDA0Ps1SnF3wSZtFRr60mo=;
-        b=A1WJSIHWnaZ2uCkoBsPB+n1JT4/ulvix8Z5QPgRYC6zs60cN8XUhQ58uyOe2raG2Wg
-         y6ygr970ZPgddS0ET6v84W9MzsUIWLLWFMfHIzIfOPcsUP+zPJK+uzTsLYBmQw5xiUvh
-         w8rAAL/o327W4tN/69GE6f+PIt8hofNMcetz00ZW+xybg+FeZGu1ZVuHqZxgzy+HhvPu
-         JNO1M8lbs9oaWTbldhx6GLih1wTsNymh2XSTpkWWMPxgg6V3btB2eJghbpTlPUnk9oK/
-         Yv82viIqMH5P8z8/1cM/Grn6Op91WgSbI7hXdHAbpALz7avZq436PnLouvlM0zL96jpU
-         2Atw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UjrtRg1LqalLPKr1AWX1gQDA0Ps1SnF3wSZtFRr60mo=;
-        b=eQwxWPp4IsjYjleOF2w7m6EOGj6jY+ZNbIOVK/beTHWit5+GL3069oVEBKcedOccV/
-         HrdlNFhALndgxhWP/wtGA/QnYPKLm4Ix0/iWF1wQhaPSKU9xmkO033uV7meksQLYm3+B
-         fcRB2k+22WzxBkzFKox0IP3uW5MKpEJO8HSg1SlcpogFHfvmx3xLrpops9q2qSI4zaU3
-         RaMpydI+lxVUdnM/IdG23OVjdoDBWAD9NJy+vxXeFheXhj7FwUklJOxeGSbpGvGKLKNo
-         mo54AYROS15Nc7U0M5zL/DnZl2JNQAAUbAYHsWk094QPX957cfShCXo6RDgjLfa90TpT
-         2mAw==
-X-Gm-Message-State: AOAM533E9TGZ53g7f5crtqaeuJVYZeBxWjRRW8D5B3EH9lzUWCHnm3d4
-        aQCuy/vd8X7hURWkmmmgj4SRiJFYCsA=
-X-Google-Smtp-Source: ABdhPJxavGl5eMwE0Lyn3KjCniyNv7YmcrEae42m9xCf3dmCgFdMVWGC3+d3tIAx7ygqE7+NlCjLZA==
-X-Received: by 2002:ac8:7f43:: with SMTP id g3mr33728519qtk.127.1637603656051;
-        Mon, 22 Nov 2021 09:54:16 -0800 (PST)
-Received: from localhost ([66.216.211.25])
-        by smtp.gmail.com with ESMTPSA id v4sm5042049qkp.118.2021.11.22.09.54.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 09:54:15 -0800 (PST)
-Date:   Mon, 22 Nov 2021 09:54:14 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/4] bitops: Add single_bit_set()
-Message-ID: <20211122175414.GA1588@lapt>
-References: <cover.1637330431.git.matti.vaittinen@fi.rohmeurope.com>
- <73d5e4286282a47b614d1cc5631eb9ff2a7e2b44.1637330431.git.matti.vaittinen@fi.rohmeurope.com>
- <YZt+x2moR632x///@smile.fi.intel.com>
- <2c22b52f-9a1f-06f5-f008-d568096f5c4d@fi.rohmeurope.com>
- <YZuTt3+PPvyJsFQ/@smile.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZuTt3+PPvyJsFQ/@smile.fi.intel.com>
+        Mon, 22 Nov 2021 12:58:45 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 5C2183201C3F;
+        Mon, 22 Nov 2021 12:55:37 -0500 (EST)
+Received: from imap46 ([10.202.2.96])
+  by compute5.internal (MEProxy); Mon, 22 Nov 2021 12:55:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=donacou.ch; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=cYX68/tlnyBJ5NTK8kDwRhrwensMZNH
+        1rRq5EtEsxJg=; b=JR4QLX6PmJCeeJG5PTVokYUz+hjko0ZBEXTofFB11T7kP5V
+        NGOYsXgk3EZOndMm5tAeIWw/jrj9RT71Gpo0WiI4M9pe0hu3t3lKQUeBDrlo8C5M
+        o5hDjgCXHhMyajCbCwzyWor1y0pez69t4tz3Xq1QHMQSuumAGVeVW9ohrFof19mz
+        eqSmXPvmSPnB7/uMay7nlx+Q6J4X2EMfhxpZ/A0UEM3Mshc++MHLu9XzMW0n4FUD
+        b+KfEdu+bWkpahzbWJKUSpQ926ktJN1nOgUhKFXchLAofEhtxHIpntftWQBfqPj3
+        0LO7g2znE0LDw09mo2wSM92NqVVJV80gGPs9Q6g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=cYX68/
+        tlnyBJ5NTK8kDwRhrwensMZNH1rRq5EtEsxJg=; b=nKw0WhAv/bihxTfTzquONb
+        TTwocn0G+XI14kQqLPJ3od5Q/h83eAz/NvwySq3Sca1Cdk7cS6GCHN6p0dAuNRvN
+        QaYCVPchkW3yF+K/TxmuMOWILsTiNMHiMqVNiPRtB/4hc9hEtdPP0GhUsMVwQL10
+        9vjQzVpYV9Le1fbfnoFM/EZLDLHnphoCLw5reFWjfcyTJW5RkOp49Hd7VsLd1Es0
+        Lj4FkYkP7JaXhKlaKMe41M7BCQSu9iBZeEUufFWbmwBQYMJejPjTcBYdgyAWe5uQ
+        Sxg0XnDjA2xAdP3dmoJ4NCtJ5fkyTlxJD71Htp4jtXKdtmjkCpul2HMX/HWJO+Eg
+        ==
+X-ME-Sender: <xms:mNmbYTox6gGWVwoDHPtUmXvu0-alMYrnjXNVyymB-09xHL_SPzjpng>
+    <xme:mNmbYdotXy4Eu4HSo1MGc16RJi54C7RXOo8RCOSTI0712loKK3swy47o0dX1Tbzmq
+    83gaIZ9ycuPefvO>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrgeeggddutdejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
+    rhgvficuffhonhgrqdevohhutghhfdcuoegrnhgurhgvfiesughonhgrtghouhdrtghhqe
+    enucggtffrrghtthgvrhhnpedvueegkeehudelhfeuvdefffelueegvdehueefgedtiefh
+    ffetjeeutddtkefhudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpegrnhgurhgvfiesughonhgrtghouhdrtghh
+X-ME-Proxy: <xmx:mNmbYQO6EIoJG-adK0lppqYh8-9kA6g514Kx3Su4kVrzug_U0EXO8Q>
+    <xmx:mNmbYW5R5SkhCLIxjQ5RJvYmB1wWo2ndF0iR0TW6ZZLHtDohh3gdRA>
+    <xmx:mNmbYS5EeI-nRscdHzMH71x5Y7grKR1c-ha1IrFpXmQH6yPh2abozA>
+    <xmx:mdmbYZbit_2JjYeMckTaBaihK41udfrfN4Dv_8k9rBsQ3hKezlM5uA>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 9B7941EE0076; Mon, 22 Nov 2021 12:55:36 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1371-g2296cc3491-fm-20211109.003-g2296cc34
+Mime-Version: 1.0
+Message-Id: <8f219a64-a39f-45f0-a7ad-708a33888a3b@www.fastmail.com>
+In-Reply-To: <b84bc345-d4ea-96de-0076-12ff245c5e29@redhat.com>
+References: <20211028080813.15966-1-sir@cmpwn.com>
+ <CAFBCWQ+=2T4U7iNQz_vsBsGVQ72s+QiECndy_3AMFV98bMOLow@mail.gmail.com>
+ <CFII8LNSW5XH.3OTIVFYX8P65Y@taiga>
+ <593aea3b-e4a4-65ce-0eda-cb3885ff81cd@gnuweeb.org>
+ <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
+ <CFQZSHV700KV.18Y62SACP8KOO@taiga>
+ <20211116114727.601021d0763be1f1efe2a6f9@linux-foundation.org>
+ <CFRGQ58D9IFX.PEH1JI9FGHV4@taiga>
+ <20211116133750.0f625f73a1e4843daf13b8f7@linux-foundation.org>
+ <b84bc345-d4ea-96de-0076-12ff245c5e29@redhat.com>
+Date:   Mon, 22 Nov 2021 12:55:16 -0500
+From:   "Andrew Dona-Couch" <andrew@donacou.ch>
+To:     "David Hildenbrand" <david@redhat.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Drew DeVault" <sir@cmpwn.com>
+Cc:     "Ammar Faizi" <ammarfaizi2@gnuweeb.org>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        "io_uring Mailing List" <io-uring@vger.kernel.org>,
+        "Jens Axboe" <axboe@kernel.dk>,
+        "Pavel Begunkov" <asml.silence@gmail.com>, linux-mm@kvack.org
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 02:57:27PM +0200, Andy Shevchenko wrote:
-> On Mon, Nov 22, 2021 at 12:42:21PM +0000, Vaittinen, Matti wrote:
-> > On 11/22/21 13:28, Andy Shevchenko wrote:
-> > > On Mon, Nov 22, 2021 at 01:03:25PM +0200, Matti Vaittinen wrote:
-> > >> There are cases when it is useful to check a bit-mask has only one bit
-> > >> set. Add a generic helper for it instead of baking own one for each
-> > >> user.
-> 
-> > > So, you decided to reinvent hamming weight...
-> > > Please, drop this patch and use corresponding hweight() call.
-> 
-> > Thanks Andy.
-> > 
-> > There are few differences to hamming weight here. We scan only given 
-> > amount of bits - and we will end scanning immediately when we hit second 
-> > set bit. Oh, and obviously we only return information whether there is 
-> > exactly one bit set. So no, this is not hamming weight().
-> 
-> What do you mean by this?
-> 
-> hweight() will return you the number of the non-zero elements in the set.
-> In application to boolean based arrays it means the number of bits that
-> are set. Obviously, the condition `hweight() == 1` is what you are looking
-> for.
+Forgive me for jumping in to an already overburdened thread.  But can
+someone pushing back on this clearly explain the issue with applying
+this patch?
 
-Hi Andy,
+The only concerns I've heard are that it doesn't go far enough.  That
+another strategy (that everyone seems to agree would be a fair bit more
+effort) could potentially achieve the same goal and then some.  Isn't
+that exactly what's meant by "don't let perfection be the enemy of the
+good"? The saying is not talking about literal perfection -- the idea is
+that you make progress where you can, and that incremental progress and
+broader changes are not necessarily in conflict.
 
-I think, Matti means earlier return when part of bitmap counts set
-bits to a greater nubmer, and we can skip the rest. Right, Matti?
-
-I agree that for Matti's usecase it's useless because 32-bit int is small,
-and hweight() would count set bits with a single machine instruction. (And
-it should be hweight32(), not bitmap_weight() in this case.)
-
-But in general, it might be useful for long bitmaps.
-
-The more complete way of doing this would be adding a new set of
-functions: bitmap_weight_{eq,neq,gt,le}
-
-I'm looking at how bitmap_weight is used in the kernel and see
-quite a lot of places where this optimization may take place. For
-example otx2_remove_flow() in drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c:
-
-        if (bitmap_weight(&flow_cfg->dmacflt_bmap,
-                          flow_cfg->dmacflt_max_flows) == 1)
-                otx2_update_rem_pfmac(pfvf, DMAC_ADDR_DEL);
-
-may be replaced with:
-
-        if (bitmap_weight_eq(&flow_cfg->dmacflt_bmap, flow_cfg->dmacflt_max_flows, 1)
-                otx2_update_rem_pfmac(pfvf, DMAC_ADDR_DEL);
-
-Most of that places are in drivers however, and the length of bitmaps
-there is typically small, so that there's no chance to get any
-measurable performance improvement.
-
-There is always a chance that we have opencoded bitmap_weight_eq()
-et all. If we add these API, it might help people wright better code.
-
-What do you think?
+This tiny patch could be a step in the right direction.  Why does this
+thread need dozens of replies?
 
 Thanks,
-Yury
+Andrew
+
+
+
+
+--
+We all do better when we all do better.  -Paul Wellstone
