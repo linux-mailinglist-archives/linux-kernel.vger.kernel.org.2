@@ -2,211 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B6A45914E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:24:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0E60459157
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 16:25:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239967AbhKVP1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 10:27:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239961AbhKVP1h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:27:37 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B46C06173E;
-        Mon, 22 Nov 2021 07:24:30 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id t5so78953195edd.0;
-        Mon, 22 Nov 2021 07:24:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/xHrwBXHCYGGobA/XwgxAVUGJtHC2+MbSesHo+s9ndk=;
-        b=gBx5I9yDzUbKQoTPluhdGl2RPka6MnmRMgE958EP2tXu9FSNyx2x8f39nbBFgWoerm
-         9bhg+/fxuIgubhYWjTYbieWuSX233lJGXq2saVospYZynz7TkdP9pT5HC1r0Y/3InCoX
-         s+rlDiALO3Z5M51FGL9sKe2M75aHhaQg5OdDQzAsmGedxhA7EPVyq0ge+UmuHPxi2h/8
-         t5g73nzeger91SE03rOBTUoIDSaNcelD1ZIWL+ofVdBC5ir2lNMkK0AQLlSAJdrzrbmU
-         jZlqEdyTKwPp4lxJ6NP4s8VeeK5Fcznpk4BZ9KpQe44oGc0K8iYfY5JHLkZcYLGaeF6A
-         33JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/xHrwBXHCYGGobA/XwgxAVUGJtHC2+MbSesHo+s9ndk=;
-        b=GUqPjaPVvSRiMYb5qlnWmaBR9DRu3PlPGmDyGFv7DCV6OW69P2h2ca7uGNdCBq/bI2
-         bFJOrm5hqBVSZbwskkXx2taqHrtPTdhaMTj0/dIFoWdMORg5l+qejynoCyyKMnK00QOE
-         Litjznn/4eHU1zunVFEnlTB7h3ZzcaOkuJCMlL8rYt1yS1Z67LN84mWNqlUQDbrqSt2K
-         p1JSMqg7/vZMZ2nY8MMfThQ7mUFwfGqc4X2QGeLDcqWtny26qFrjDiHVgUEs335jqZKq
-         LFurhHEppaSnetk+dOzsQNhehLyKxf1l1wKjWpviI2fxwdjeb0CrwMdP83BKydiahyqA
-         ITKg==
-X-Gm-Message-State: AOAM531rz8ShImi+8ZGBTN/qV6kUEYIP6ux/NyY6zPziuBE6yRKLG138
-        Dg4Rrd0K8SF7tpBQftDRIhE=
-X-Google-Smtp-Source: ABdhPJy/X7D6Yb8pPW5Nzxx6E/zP1Gyg1U011yW8LRaUK0LKxi3+RX9DpDF0wczu1bJFus2fjiegjQ==
-X-Received: by 2002:a17:906:1256:: with SMTP id u22mr43517915eja.317.1637594665476;
-        Mon, 22 Nov 2021 07:24:25 -0800 (PST)
-Received: from localhost.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.googlemail.com with ESMTPSA id sb19sm3995307ejc.120.2021.11.22.07.24.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 07:24:25 -0800 (PST)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>
-Subject: [net-next PATCH v3 9/9] net: dsa: qca8k: add support for mdb_add/del
-Date:   Mon, 22 Nov 2021 16:23:48 +0100
-Message-Id: <20211122152348.6634-10-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211122152348.6634-1-ansuelsmth@gmail.com>
-References: <20211122152348.6634-1-ansuelsmth@gmail.com>
+        id S240007AbhKVP20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 10:28:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239945AbhKVP2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 10:28:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FD8D60230;
+        Mon, 22 Nov 2021 15:25:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637594709;
+        bh=GR8LyQtM0ZM0W2FoeSZ0IwjeQhHesgzQ9tX4AHyKytg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=poGol0emrDdzryc5UnGTptPoklyDE9E2uyhaJuvTRbxXW8bjb2r3pbcg2f6qau1ep
+         NLFh14w9Dxyb54cnIPZ0RuyoxpW7ARmyZCwj8OM8+REfiGWIj66BhiTCliSxcVEcn5
+         Md/FFwSgAejmmIvJas9wpPk2yd8yC5OXp4Nacn0F+i5+6+8OcXLc+LzpMm/XM2i2sn
+         GVTVuipPT1vCc4m1eBs7DAF9QQy0ssy4MjFbj2j2RY2c1xea76lmOb+LizkqKiIZDp
+         Mw6kPv8uOxZY1uhlcs4ucg8ArUdEADm+1GEGeBtsKAXnTzpLT8zcYEqNj7ctkI8MGn
+         edlM05akgLw2w==
+Message-ID: <1b9cdfba-6436-f2bd-d67b-7528758a6c35@kernel.org>
+Date:   Mon, 22 Nov 2021 17:25:03 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [v8 2/3] interconnect: qcom: Add EPSS L3 support on SC7280
+Content-Language: en-US
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Odelu Kukatla <okukatla@codeaurora.org>,
+        georgi.djakov@linaro.org
+Cc:     evgreen@google.com, Andy Gross <agross@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sboyd@kernel.org,
+        mdtipton@codeaurora.org, sibis@codeaurora.org,
+        saravanak@google.com, seansw@qti.qualcomm.com, elder@linaro.org,
+        linux-arm-msm-owner@vger.kernel.org
+References: <1634812857-10676-1-git-send-email-okukatla@codeaurora.org>
+ <1634812857-10676-3-git-send-email-okukatla@codeaurora.org>
+ <YZa9SStiYqfp6f7a@builder.lan>
+From:   Georgi Djakov <djakov@kernel.org>
+In-Reply-To: <YZa9SStiYqfp6f7a@builder.lan>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for mdb add/del function. The ARL table is used to insert
-the rule. The rule will be searched, deleted and reinserted with the
-port mask updated. The function will check if the rule has to be updated
-or insert directly with no deletion of the old rule.
-If every port is removed from the port mask, the rule is removed.
-The rule is set STATIC in the ARL table (aka it doesn't age) to not be
-flushed by fast age function.
+On 18.11.21 22:53, Bjorn Andersson wrote:
+> On Thu 21 Oct 05:40 CDT 2021, Odelu Kukatla wrote:
+> 
+>> Add Epoch Subsystem (EPSS) L3 interconnect provider support on
+>> SC7280 SoCs.
+>>
+> 
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
----
- drivers/net/dsa/qca8k.c | 99 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 99 insertions(+)
+Thanks!
 
-diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-index 45e769b9166b..67742fbd8040 100644
---- a/drivers/net/dsa/qca8k.c
-+++ b/drivers/net/dsa/qca8k.c
-@@ -435,6 +435,81 @@ qca8k_fdb_flush(struct qca8k_priv *priv)
- 	mutex_unlock(&priv->reg_mutex);
- }
- 
-+static int
-+qca8k_fdb_search_and_insert(struct qca8k_priv *priv, u8 port_mask,
-+			    const u8 *mac, u16 vid)
-+{
-+	struct qca8k_fdb fdb = { 0 };
-+	int ret;
-+
-+	mutex_lock(&priv->reg_mutex);
-+
-+	qca8k_fdb_write(priv, vid, 0, mac, 0);
-+	ret = qca8k_fdb_access(priv, QCA8K_FDB_SEARCH, -1);
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = qca8k_fdb_read(priv, &fdb);
-+	if (ret < 0)
-+		goto exit;
-+
-+	/* Rule exist. Delete first */
-+	if (!fdb.aging) {
-+		ret = qca8k_fdb_access(priv, QCA8K_FDB_PURGE, -1);
-+		if (ret)
-+			goto exit;
-+	}
-+
-+	/* Add port to fdb portmask */
-+	fdb.port_mask |= port_mask;
-+
-+	qca8k_fdb_write(priv, vid, fdb.port_mask, mac, fdb.aging);
-+	ret = qca8k_fdb_access(priv, QCA8K_FDB_LOAD, -1);
-+
-+exit:
-+	mutex_unlock(&priv->reg_mutex);
-+	return ret;
-+}
-+
-+static int
-+qca8k_fdb_search_and_del(struct qca8k_priv *priv, u8 port_mask,
-+			 const u8 *mac, u16 vid)
-+{
-+	struct qca8k_fdb fdb = { 0 };
-+	int ret;
-+
-+	mutex_lock(&priv->reg_mutex);
-+
-+	qca8k_fdb_write(priv, vid, 0, mac, 0);
-+	ret = qca8k_fdb_access(priv, QCA8K_FDB_SEARCH, -1);
-+	if (ret < 0)
-+		goto exit;
-+
-+	/* Rule doesn't exist. Why delete? */
-+	if (!fdb.aging) {
-+		ret = -EINVAL;
-+		goto exit;
-+	}
-+
-+	ret = qca8k_fdb_access(priv, QCA8K_FDB_PURGE, -1);
-+	if (ret)
-+		goto exit;
-+
-+	/* Only port in the rule is this port. Don't re insert */
-+	if (fdb.port_mask == port_mask)
-+		goto exit;
-+
-+	/* Remove port from port mask */
-+	fdb.port_mask &= ~port_mask;
-+
-+	qca8k_fdb_write(priv, vid, fdb.port_mask, mac, fdb.aging);
-+	ret = qca8k_fdb_access(priv, QCA8K_FDB_LOAD, -1);
-+
-+exit:
-+	mutex_unlock(&priv->reg_mutex);
-+	return ret;
-+}
-+
- static int
- qca8k_vlan_access(struct qca8k_priv *priv, enum qca8k_vlan_cmd cmd, u16 vid)
- {
-@@ -1925,6 +2000,28 @@ qca8k_port_fdb_dump(struct dsa_switch *ds, int port,
- 	return 0;
- }
- 
-+static int
-+qca8k_port_mdb_add(struct dsa_switch *ds, int port,
-+		   const struct switchdev_obj_port_mdb *mdb)
-+{
-+	struct qca8k_priv *priv = ds->priv;
-+	const u8 *addr = mdb->addr;
-+	u16 vid = mdb->vid;
-+
-+	return qca8k_fdb_search_and_insert(priv, BIT(port), addr, vid);
-+}
-+
-+static int
-+qca8k_port_mdb_del(struct dsa_switch *ds, int port,
-+		   const struct switchdev_obj_port_mdb *mdb)
-+{
-+	struct qca8k_priv *priv = ds->priv;
-+	const u8 *addr = mdb->addr;
-+	u16 vid = mdb->vid;
-+
-+	return qca8k_fdb_search_and_del(priv, BIT(port), addr, vid);
-+}
-+
- static int
- qca8k_port_vlan_filtering(struct dsa_switch *ds, int port, bool vlan_filtering,
- 			  struct netlink_ext_ack *extack)
-@@ -2033,6 +2130,8 @@ static const struct dsa_switch_ops qca8k_switch_ops = {
- 	.port_fdb_add		= qca8k_port_fdb_add,
- 	.port_fdb_del		= qca8k_port_fdb_del,
- 	.port_fdb_dump		= qca8k_port_fdb_dump,
-+	.port_mdb_add		= qca8k_port_mdb_add,
-+	.port_mdb_del		= qca8k_port_mdb_del,
- 	.port_vlan_filtering	= qca8k_port_vlan_filtering,
- 	.port_vlan_add		= qca8k_port_vlan_add,
- 	.port_vlan_del		= qca8k_port_vlan_del,
--- 
-2.32.0
+> @Georgi, do you intend to apply the two interconnect patches in this
+> series?
+
+Yes, applied!
+
+BR,
+Georgi
+
+> 
+> Regards,
+> Bjorn
+> 
+>> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
+>> ---
+>>   drivers/interconnect/qcom/osm-l3.c | 20 +++++++++++++++++++-
+>>   drivers/interconnect/qcom/sc7280.h |  2 ++
+>>   2 files changed, 21 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/interconnect/qcom/osm-l3.c b/drivers/interconnect/qcom/osm-l3.c
+>> index c7af143..eec1309 100644
+>> --- a/drivers/interconnect/qcom/osm-l3.c
+>> +++ b/drivers/interconnect/qcom/osm-l3.c
+>> @@ -1,6 +1,6 @@
+>>   // SPDX-License-Identifier: GPL-2.0
+>>   /*
+>> - * Copyright (c) 2020, The Linux Foundation. All rights reserved.
+>> + * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
+>>    */
+>>   
+>>   #include <linux/bitfield.h>
+>> @@ -15,6 +15,7 @@
+>>   #include <dt-bindings/interconnect/qcom,osm-l3.h>
+>>   
+>>   #include "sc7180.h"
+>> +#include "sc7280.h"
+>>   #include "sc8180x.h"
+>>   #include "sdm845.h"
+>>   #include "sm8150.h"
+>> @@ -114,6 +115,22 @@ static const struct qcom_osm_l3_desc sc7180_icc_osm_l3 = {
+>>   	.reg_perf_state = OSM_REG_PERF_STATE,
+>>   };
+>>   
+>> +DEFINE_QNODE(sc7280_epss_apps_l3, SC7280_MASTER_EPSS_L3_APPS, 32, SC7280_SLAVE_EPSS_L3);
+>> +DEFINE_QNODE(sc7280_epss_l3, SC7280_SLAVE_EPSS_L3, 32);
+>> +
+>> +static const struct qcom_osm_l3_node *sc7280_epss_l3_nodes[] = {
+>> +	[MASTER_EPSS_L3_APPS] = &sc7280_epss_apps_l3,
+>> +	[SLAVE_EPSS_L3_SHARED] = &sc7280_epss_l3,
+>> +};
+>> +
+>> +static const struct qcom_osm_l3_desc sc7280_icc_epss_l3 = {
+>> +	.nodes = sc7280_epss_l3_nodes,
+>> +	.num_nodes = ARRAY_SIZE(sc7280_epss_l3_nodes),
+>> +	.lut_row_size = EPSS_LUT_ROW_SIZE,
+>> +	.reg_freq_lut = EPSS_REG_FREQ_LUT,
+>> +	.reg_perf_state = EPSS_REG_PERF_STATE,
+>> +};
+>> +
+>>   DEFINE_QNODE(sc8180x_osm_apps_l3, SC8180X_MASTER_OSM_L3_APPS, 32, SC8180X_SLAVE_OSM_L3);
+>>   DEFINE_QNODE(sc8180x_osm_l3, SC8180X_SLAVE_OSM_L3, 32);
+>>   
+>> @@ -326,6 +343,7 @@ static int qcom_osm_l3_probe(struct platform_device *pdev)
+>>   
+>>   static const struct of_device_id osm_l3_of_match[] = {
+>>   	{ .compatible = "qcom,sc7180-osm-l3", .data = &sc7180_icc_osm_l3 },
+>> +	{ .compatible = "qcom,sc7280-epss-l3", .data = &sc7280_icc_epss_l3 },
+>>   	{ .compatible = "qcom,sdm845-osm-l3", .data = &sdm845_icc_osm_l3 },
+>>   	{ .compatible = "qcom,sm8150-osm-l3", .data = &sm8150_icc_osm_l3 },
+>>   	{ .compatible = "qcom,sc8180x-osm-l3", .data = &sc8180x_icc_osm_l3 },
+>> diff --git a/drivers/interconnect/qcom/sc7280.h b/drivers/interconnect/qcom/sc7280.h
+>> index 175e400..1fb9839 100644
+>> --- a/drivers/interconnect/qcom/sc7280.h
+>> +++ b/drivers/interconnect/qcom/sc7280.h
+>> @@ -150,5 +150,7 @@
+>>   #define SC7280_SLAVE_PCIE_1			139
+>>   #define SC7280_SLAVE_QDSS_STM			140
+>>   #define SC7280_SLAVE_TCU			141
+>> +#define SC7280_MASTER_EPSS_L3_APPS		142
+>> +#define SC7280_SLAVE_EPSS_L3			143
+>>   
+>>   #endif
+>> -- 
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+>> a Linux Foundation Collaborative Project
+>>
 
