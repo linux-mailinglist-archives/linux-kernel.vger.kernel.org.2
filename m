@@ -2,116 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B85714594F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 19:47:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB37B45950E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Nov 2021 19:48:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240402AbhKVSuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 13:50:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48826 "EHLO
+        id S240598AbhKVSvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 13:51:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240108AbhKVSuK (ORCPT
+        with ESMTP id S239444AbhKVSu3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 13:50:10 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CABDC061714
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 10:47:03 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id o4so16950695pfp.13
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 10:47:03 -0800 (PST)
+        Mon, 22 Nov 2021 13:50:29 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C008C061759;
+        Mon, 22 Nov 2021 10:47:18 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id t5so81598518edd.0;
+        Mon, 22 Nov 2021 10:47:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PNl9qmCVto3KUe1CsXAVRN/v/7RApWzP2E7VF0W9lc8=;
-        b=rVBvrXjxLAb1n/5LtIOr1nVP8HuXbXe7TAcAsYR2OuZ+ADxNq5z8iCPGFd1r/7ePgZ
-         3MTur8u/7ePJ+HDVUss72WdlYPR2bXKoW7sPDwhq5H76TfmQ/TlxNFThnc+4FaBKSMgG
-         BuhLBrXTI6DPG4HjeplQPNBoOa8bqspIvGeswwF7kMyXWmZOBBM8i+YweXXbY1I+X9RQ
-         Y9gROaYeWbnkAZvslmsXcUm0tn5gPfmuiGOtJn/pjdIleRpwiRAk6MLQYLZRGhRT5/JM
-         GrZFzdffyDr8u1pWw2Xf2kwwObj4YL1HiiGsxXQQwlgNooS6ehzLGScw6QygVBgUYalh
-         ezTg==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=MWqT8jgM+LxizZRnwNQ4lYoOgf1SpCYqwsAExcOLMVI=;
+        b=Hes/v+KIictHB9Qldriu0R0Qd+74EZhSW4B024o73zgqni34zeC7mkXgTMJkLtMm+i
+         vcnS6Qc6Z37MOOBzqOxcV+rv/TvxLDJimsZjN2X5WwfiN3/96AUjETN5yaT/AvgKrx3b
+         YwJ+0rSmwFY6kcTfK3LOrLxg9eCpGBITD1cm5ie7/l5oMSItGmq8ilvTzXcVXZbetgTX
+         Dew+15IJM20AAfD5Ek7ISIXz/FjD9smpJ8pdQe8hMLhhPDmU7atznfWgVFNrtyPNpQOZ
+         k2gRpRSmBY0A5knsMdYsxAju+8nT67k8oX7H2sA88WS5jBiIhqw5OY3jNjdmZF37PgvK
+         VZqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PNl9qmCVto3KUe1CsXAVRN/v/7RApWzP2E7VF0W9lc8=;
-        b=3KdHERsPhH18OmCmPkvzvk7jPtty4Ip47B8UfvQAEkWZ8GU4LyyCX4nR9ntzMRk/rq
-         fYJ0qNItZyXkK9cOKiGl2DLQVG8pGE+QN2ZCTShikDmDWS+WEViLPrd6AU3L9eaGJoEQ
-         zIS7RUS3aNXAig6BJCnYrWrP12QybRnq1qbTzYJSKxvTa+HyPkBTOo7M6TBabdR2+xfT
-         l4R2z8FsDFIfp2hhaURAau+2WVIEbIb+fI2VC3fOnBhdqRin2o1O8Khl0au3fvTHJKf0
-         u/M17j1k/R35DCVYXQNV1+DS+ys6YnLUnODPdMqo5ePDCuRrHbwg344arafrMAFZgLkD
-         sUdw==
-X-Gm-Message-State: AOAM5320cflCgUcezvMOkFVHwtjE4w6kEsWLKO1UYpZkI1JyLZ+lukp7
-        kPUbUV/P9tS7OlB+KT52H2kJOg==
-X-Google-Smtp-Source: ABdhPJyFEL+xAkz6QQ0tjJRGP5U11T9ZqMvExyunio/Erp2Cdyi/pMCfKbuWHOvUD3yEk3Iicj2hvA==
-X-Received: by 2002:a05:6a00:244d:b0:44d:c279:5155 with SMTP id d13-20020a056a00244d00b0044dc2795155mr45388090pfj.0.1637606822880;
-        Mon, 22 Nov 2021 10:47:02 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id c21sm9978151pfl.138.2021.11.22.10.47.02
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=MWqT8jgM+LxizZRnwNQ4lYoOgf1SpCYqwsAExcOLMVI=;
+        b=Ma+gIgGTHWkj7q7SZ/qIm048HpFxtnFtkVnjzsD71QCN9WZP/CKPurSWF8hj1D9kOa
+         eIkMdXiKsTgPomkOEpdmLhJaiznVKNsmGYwXSXABCbp64MAL0jxjPQJoBokeEkUQ01xV
+         cJY00ekLrh5cgxfOIinFdhpuuzoZDiuZ9mMvuGFKCSUxz2OtN7r4B+eje/OrAXDlOGwF
+         EBbDCtfdxtxVFPP9ZcRrFNEVlTHXJZSB+ruk19SZ/Bd0mHK0qjZc5x8i0LbHVTEvH97K
+         Sa2YWNQqqRUezsXtLc3wVAgbBfqV4f2ugWe2B8NcVMVOm0bhIdwlJIo3rDi4ByqyiuW8
+         wNww==
+X-Gm-Message-State: AOAM532vQD+gmyU0TTk8VZ4gFztpu/oQoasASP1RT9K7VdW6Jpfp4zkf
+        KkRw+2EdoDO8gd7iARyWb9fFKazbCLQTWA==
+X-Google-Smtp-Source: ABdhPJz35lPCNuyABipllxBzdcJzYzKIiQZ5XLS+pqrXIVlp7yUVBLtqgqtbilp4nqQsAW5aIh3sKQ==
+X-Received: by 2002:a17:906:2b16:: with SMTP id a22mr42530944ejg.447.1637606836941;
+        Mon, 22 Nov 2021 10:47:16 -0800 (PST)
+Received: from kista.localdomain (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
+        by smtp.gmail.com with ESMTPSA id h10sm4512312edr.95.2021.11.22.10.47.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 10:47:02 -0800 (PST)
-Date:   Mon, 22 Nov 2021 18:46:58 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH 11/15] KVM: x86/MMU: Refactor vmx_get_mt_mask
-Message-ID: <YZvloswO5g/o02V6@google.com>
-References: <20211115234603.2908381-1-bgardon@google.com>
- <20211115234603.2908381-12-bgardon@google.com>
- <a1be97c6-6784-fd5f-74a8-85124f039530@redhat.com>
- <YZZxivgSeGH4wZnB@google.com>
- <942d487e-ba6b-9c60-e200-3590524137b9@redhat.com>
- <CANgfPd-_7tR9tSJg85-0wAG72454qeedovhBvbX6OS1YNRxvMw@mail.gmail.com>
+        Mon, 22 Nov 2021 10:47:16 -0800 (PST)
+From:   Jernej Skrabec <jernej.skrabec@gmail.com>
+To:     linux-media@vger.kernel.org
+Cc:     ezequiel@vanguardiasur.com.ar, nicolas.dufresne@collabora.com,
+        mchehab@kernel.org, robh+dt@kernel.org, mripard@kernel.org,
+        wens@csie.org, p.zabel@pengutronix.de, andrzej.p@collabora.com,
+        gregkh@linuxfoundation.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Subject: [PATCH 4/7] media: hantro: move postproc enablement for old cores
+Date:   Mon, 22 Nov 2021 19:46:59 +0100
+Message-Id: <20211122184702.768341-5-jernej.skrabec@gmail.com>
+X-Mailer: git-send-email 2.34.0
+In-Reply-To: <20211122184702.768341-1-jernej.skrabec@gmail.com>
+References: <20211122184702.768341-1-jernej.skrabec@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANgfPd-_7tR9tSJg85-0wAG72454qeedovhBvbX6OS1YNRxvMw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021, Ben Gardon wrote:
-> On Fri, Nov 19, 2021 at 1:03 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
-> >
-> > On 11/18/21 16:30, Sean Christopherson wrote:
-> > > If we really want to make this state per-vCPU, KVM would need to incorporate the
-> > > CR0.CD and MTRR settings in kvm_mmu_page_role.  For MTRRs in particular, the worst
-> > > case scenario is that every vCPU has different MTRR settings, which means that
-> > > kvm_mmu_page_role would need to be expanded by 10 bits in order to track every
-> > > possible vcpu_idx (currently capped at 1024).
-> >
-> > Yes, that's insanity.  I was also a bit skeptical about Ben's try_get_mt_mask callback,
-> > but this would be much much worse.
-> 
-> Yeah, the implementation of that felt a bit kludgy to me too, but
-> refactoring the handling of all those CR bits was way more complex
-> than I wanted to handle in this patch set.
-> I'd love to see some of those CR0 / MTRR settings be set on a VM basis
-> and enforced as uniform across vCPUs.
+Older G2 cores, like that in Allwinner H6, seem to have issue with
+latching postproc register values if this is first thing done in job.
+Moving that to the end solves the issue.
 
-Architecturally, we can't do that.  Even a perfectly well-behaved guest will have
-(small) periods where the BSP has different settings than APs.  And it's technically
-legal to have non-uniform MTRR and CR0.CD/NW configurations, even though no modern
-BIOS/kernel does that.  Except for non-coherent DMA, it's a moot point because KVM
-can simply ignore guest cacheability settings.
+Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+---
+ drivers/staging/media/hantro/hantro_drv.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-> Looking up vCPU 0 and basing things on that feels extra hacky though,
-> especially if we're still not asserting uniformity of settings across
-> vCPUs.
+diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
+index 8c3de31f51b3..530994ab3024 100644
+--- a/drivers/staging/media/hantro/hantro_drv.c
++++ b/drivers/staging/media/hantro/hantro_drv.c
+@@ -130,7 +130,7 @@ void hantro_start_prepare_run(struct hantro_ctx *ctx)
+ 	v4l2_ctrl_request_setup(src_buf->vb2_buf.req_obj.req,
+ 				&ctx->ctrl_handler);
+ 
+-	if (!ctx->is_encoder) {
++	if (!ctx->is_encoder && !ctx->dev->variant->legacy_regs) {
+ 		if (hantro_needs_postproc(ctx, ctx->vpu_dst_fmt))
+ 			hantro_postproc_enable(ctx);
+ 		else
+@@ -142,6 +142,13 @@ void hantro_end_prepare_run(struct hantro_ctx *ctx)
+ {
+ 	struct vb2_v4l2_buffer *src_buf;
+ 
++	if (ctx->dev->variant->legacy_regs && !ctx->is_encoder) {
++		if (hantro_needs_postproc(ctx, ctx->vpu_dst_fmt))
++			hantro_postproc_enable(ctx);
++		else
++			hantro_postproc_disable(ctx);
++	}
++
+ 	src_buf = hantro_get_src_buf(ctx);
+ 	v4l2_ctrl_request_complete(src_buf->vb2_buf.req_obj.req,
+ 				   &ctx->ctrl_handler);
+-- 
+2.34.0
 
-IMO, it's marginally less hacky than what KVM has today as it allows KVM's behavior
-to be clearly and sanely stated, e.g. KVM uses vCPU0's cacheability settings when
-mapping non-coherent DMA.  Compare that with today's behavior where the cacheability
-settings depend on which vCPU first faulted in the address for a given MMU role and
-instance of the associated root, and whether other vCPUs share an MMU role/root.
-
-> If we need to track that state to accurately virtualize the hardware
-> though, that would be unfortunate.
