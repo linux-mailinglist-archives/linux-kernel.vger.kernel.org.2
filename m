@@ -2,130 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F4D45A3BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:29:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA00445A3C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:30:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236169AbhKWNcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 08:32:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52020 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235981AbhKWNcu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 08:32:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 129DE61028;
-        Tue, 23 Nov 2021 13:29:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637674182;
-        bh=+WvvLxaG81J/ubcccOG7qUn/hsfRxAN45jRXpuXsL84=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tl9UCwpXE1fJHsyctHRtKvhMSZOlWL7ESPn21C5M0kr9jnv/rxMPpVDM1TszcZHvW
-         huxJxzSXbQLQ3fK+Oxei2ArpLUhfYIeEb+71GD+2DW+Hdnd8HHT4sH9Ygl+EFixZ9D
-         f3srkp7jJ9gM/iEo7wn6ylmYGQ+3Pc8mNTyQpcC/GJ3ioNdmHTXOZS/vlEvX1fNVzj
-         8JVKGLu5qqS1gedU6adKddtuwxsSbPB5idx2zkEcHJJUYvt4HXFzu7eM3Ejn+nWKas
-         7f8oo8thV+F3sXCv8EoRPw+KQMoS88cjxswzL8chu0P2NMfhYNnxR9fYgInBfMlJfG
-         OrKzkwKVeWNVw==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Peter Collingbourne <pcc@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mel Gorman <mgorman@suse.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Balbir Singh <sblbir@amazon.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
-Subject: [RFC PATCH 3/3] tests: add new PR_SCHED_CORE_SHARE test
-Date:   Tue, 23 Nov 2021 14:29:07 +0100
-Message-Id: <20211123132907.3138476-4-brauner@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211123132907.3138476-1-brauner@kernel.org>
-References: <20211123132907.3138476-1-brauner@kernel.org>
+        id S235902AbhKWNdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 08:33:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236277AbhKWNdA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 08:33:00 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3512C061756;
+        Tue, 23 Nov 2021 05:29:52 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id x6so6163855iol.13;
+        Tue, 23 Nov 2021 05:29:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1mzzQH4LR8E9en0oLHeEKt75OwAJ6GPgE1N3vKIF5Ws=;
+        b=EIo2zpjMsvO81Q+EI8R8OfQZEXUoQwQClX2UVj0GR1MrfeNV9a2+iuM6IKMbfJesVu
+         5W++R+mfnHKAUBjb2m6wPb6Sfqmep6qhLW5scVdDgAqj3KvBsvWJ9c5XPr6tFEgvtpQV
+         e6nwS00xARewgIe5CpUn3IH9LWwEJ05wjGn8v7yaoRz9h8inoXZiIiq84LNAITBaJQpV
+         7K3P5Jp7/mXCjZuHeuaujwziT+pycwl9fWiyw5X8zWIxxcE8QOQHQujCuZwBbnVWt64V
+         7jXjBqcQATkgPpUKl/jNmU4MZRgd1ahChBNZ+dhDBnV44dn8DOUvmWaeGA68tZpWYOuP
+         LgYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1mzzQH4LR8E9en0oLHeEKt75OwAJ6GPgE1N3vKIF5Ws=;
+        b=r/tOiNxk5OdO67wrjgknl05LpEZs0nU3sF7A6MogsdEPq6eEgSn1dlvObQFLfkzZm/
+         G+cgjc+cApi2nqmm16OUcepfYo1iQ4H9BwY4ikCQdoaneds+ON5yqJXc6u7F33H3OLNI
+         huKj1NSlTrW2B6iPj5LGG04/khP5rg08ts2j7rHh7Uf1iGGUZOgA4yF5Rrc94L+lGTqW
+         MyO2tYAGjVOhyfvOnihOCZH0EIFguCSQLySMfAqLhLEO4Kw3D7usmc4TZEaUZiMQ/puq
+         lEknIJSZ++ygo17BKw4ooNYxG3RHdHUgcTXP+KDb+o0mI+JfVsJ9mwOUZh6+aTWunnKw
+         uLqg==
+X-Gm-Message-State: AOAM532bYFn0hJ+mmi7O7ddoMaF4QhIyUlmH08UBxXdi39ixOjkdtGwR
+        PpcIKSWwtHRFIT5jJABHi6NF8eVLfWFBHpOZnO8=
+X-Google-Smtp-Source: ABdhPJwMXgvkb/4JorRGYlbB9RBc9fTrr+yiBWVTdyS2Dguc9dZBlAvAFOrg/Q3ogahTOw2JtEq0LxkF6gaQvD7d6os=
+X-Received: by 2002:a6b:ea0a:: with SMTP id m10mr5581825ioc.91.1637674192312;
+ Tue, 23 Nov 2021 05:29:52 -0800 (PST)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3046; h=from:subject; bh=O+FmXC8yetMDZoRlha2v/e4w+wLt2pWZylWpT6XRQSQ=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMSTOeTN/9z+vg39v5/Pnmht/W/9yYufnzGc1s0TNK0w/Ncrn sKr3dpSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEzk/gKG/5nVPbuf8h/ZOrPKRrt3ig 23/t97D01fpPCwfrVu4TRyTmP477Iv0Pruxeqrj1fJBKQW9emGyL68OLF7UaJD2seDF+fkcgIA
-X-Developer-Key: i=christian.brauner@ubuntu.com; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+References: <20211110122948.188683-1-alistair@alistair23.me>
+ <20211110122948.188683-2-alistair@alistair23.me> <20211117223950.3a7eaf7a@aktux>
+In-Reply-To: <20211117223950.3a7eaf7a@aktux>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Tue, 23 Nov 2021 23:29:26 +1000
+Message-ID: <CAKmqyKP_gQ1qSADMPwmyf-V0TqGOYf2GitzpDXsmBUO6_iqK7Q@mail.gmail.com>
+Subject: Re: [PATCH v15 1/8] dt-bindings: mfd: Initial commit of silergy,sy7636a.yaml
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     Alistair Francis <alistair@alistair23.me>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>, lgirdwood@gmail.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        rui.zhang@intel.com, devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-hwmon@vger.kernel.org, amitk@kernel.org,
+        linux-pm@vger.kernel.org, dl-linux-imx <linux-imx@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Brauner <christian.brauner@ubuntu.com>
+On Thu, Nov 18, 2021 at 7:40 AM Andreas Kemnade <andreas@kemnade.info> wrote:
+>
+> On Wed, 10 Nov 2021 22:29:41 +1000
+> Alistair Francis <alistair@alistair23.me> wrote:
+>
+> > Initial support for the Silergy SY7636A Power Management chip
+> > and regulator.
+> >
+> > Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+> > Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  .../bindings/mfd/silergy,sy7636a.yaml         | 79 +++++++++++++++++++
+> >  1 file changed, 79 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml b/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
+> > new file mode 100644
+> > index 000000000000..0566f9498e2f
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
+> [...]
+> > +  regulators:
+> > +    type: object
+> > +
+> > +    properties:
+> > +      compatible:
+> > +        const: silergy,sy7636a-regulator
+> > +
+> > +      vcom:
+> > +        type: object
+> > +        $ref: /schemas/regulator/regulator.yaml#
+> > +        properties:
+> > +          regulator-name:
+> > +            const: vcom
+> > +
+> hmm, this is what? If I understand it correctly, vcom means some
+> voltage for compensation. On other comparable pmics (e.g. TPS65185
+> which has also a sane public datasheet, MAX17135) I have seen some
+> methods to measure a voltage while the display is doing something
+> defined and then program this voltage non-volatile for compensation
+> during manufacturing.
+>
+> If I understand the code correctly all the bunch of voltages are
+> powered up if this one is enabled.
+> So at least a description should be suitable.
+>
+> The other comparable PMICs have at least regulators named VCOM, DISPLAY
+> (controls several regulators, started with delays configured via
+> registers) and V3P3. MAX17135 source can be found in NXP kernels,
+> TPS65185 in Kobo vendor kernels.
+>
+> So I would expect to see something similar here and a description or at
+> least not such a misleading name as vcom if it is for some reason not
+> feasible to separate the regulators.
 
-Add tests for the new PR_SCHED_CORE_SHARE command.
+This is a vcom in the sense of voltage for compensation. We just
+currently don't support setting the vcom.
 
-Cc: Peter Collingbourne <pcc@google.com>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Chris Hyser <chris.hyser@oracle.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Balbir Singh <sblbir@amazon.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org
-Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
----
- tools/testing/selftests/sched/cs_prctl_test.c | 23 +++++++++++++++++++
- 1 file changed, 23 insertions(+)
+I had a look at the Kobo code and this is similar to
+https://github.com/akemnade/linux/blob/kobo/epdc-pmic-5.15/drivers/regulator/sy7636-regulator.c#L614
 
-diff --git a/tools/testing/selftests/sched/cs_prctl_test.c b/tools/testing/selftests/sched/cs_prctl_test.c
-index 8109b17dc764..985b83fe7221 100644
---- a/tools/testing/selftests/sched/cs_prctl_test.c
-+++ b/tools/testing/selftests/sched/cs_prctl_test.c
-@@ -229,6 +229,7 @@ int main(int argc, char *argv[])
- 	int pidx;
- 	int pid;
- 	int opt;
-+	int i;
- 
- 	while ((opt = getopt(argc, argv, ":hkT:P:d:")) != -1) {
- 		switch (opt) {
-@@ -325,6 +326,28 @@ int main(int argc, char *argv[])
- 	validate(get_cs_cookie(pid) != 0);
- 	validate(get_cs_cookie(pid) == get_cs_cookie(procs[pidx].thr_tids[0]));
- 
-+	printf("\n## Set a new cookie on a single thread/PR_SCHED_CORE_SCOPE_THREAD [%d]\n", pid);
-+	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_CREATE, pid, PR_SCHED_CORE_SCOPE_THREAD, 0) < 0)
-+		handle_error("core_sched create failed -- PR_SCHED_CORE_SCOPE_THREAD");
-+	disp_processes(num_processes, procs);
-+
-+	validate(get_cs_cookie(pid) != get_cs_cookie(procs[pidx].thr_tids[0]));
-+
-+	printf("\n## Copy cookie from a thread [%d] to [%d] as PR_SCHED_CORE_SCOPE_THREAD\n", pid, procs[pidx].thr_tids[0]);
-+	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_SHARE, procs[pidx].thr_tids[0], PR_SCHED_CORE_SCOPE_THREAD, pid) < 0)
-+		handle_error("core_sched share cookie from and to thread failed -- PR_SCHED_CORE_SCOPE_THREAD");
-+	disp_processes(num_processes, procs);
-+
-+	validate(get_cs_cookie(pid) == get_cs_cookie(procs[pidx].thr_tids[0]));
-+
-+	printf("\n## Copy cookie from a thread [%d] to [%d] as PR_SCHED_CORE_SCOPE_THREAD_GROUP\n", pid, pid);
-+	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_SHARE, pid, PR_SCHED_CORE_SCOPE_THREAD_GROUP, pid) < 0)
-+		handle_error("core_sched share cookie from and to thread-group failed -- PR_SCHED_CORE_SCOPE_THREAD_GROUP");
-+	disp_processes(num_processes, procs);
-+
-+	for (i = 0; i < procs[pidx].num_threads; ++i)
-+		validate(get_cs_cookie(pid) == get_cs_cookie(procs[pidx].thr_tids[i]));
-+
- 	if (errors) {
- 		printf("TESTS FAILED. errors: %d\n", errors);
- 		res = 10;
--- 
-2.30.2
+So I think that vcom is still the appropriate name for this.
 
+Alistair
+
+>
+> Regards,
+> Andreas
