@@ -2,74 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E9145A12D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A76745A13D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235860AbhKWLVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 06:21:14 -0500
-Received: from mout.gmx.net ([212.227.15.19]:50475 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233044AbhKWLVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 06:21:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1637666282;
-        bh=v9fmtfqFpWLetVfHAsYxm3tN/nAhvKj8KsPNVmOQsgU=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=Txk3DquhW4wDaJLyYYY19AQSKjW74RgzDralL+1ZpBaJXJ6kbqevYBHApnfwrGJzq
-         3949gHNDClGj72XV5Uc+Gb0DemhdvGwoqrVnUPESleytYJVGJ2uMVF0PmhEWP/k4Id
-         oJNl5EJzNTuldgyOC1o6gph/QG89bSj67g7be7R8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.148.50]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N4QwW-1mfxIi1wne-011R5t; Tue, 23
- Nov 2021 12:18:02 +0100
-Message-ID: <21c3489c7ce8342d392c08547a3222a9c289e9fc.camel@gmx.de>
-Subject: Re: mm: LTP/memcg testcase regression induced by
- 8cd7c588decf..66ce520bb7c2 series
-From:   Mike Galbraith <efault@gmx.de>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     lkml <linux-kernel@vger.kernel.org>
-Date:   Tue, 23 Nov 2021 12:18:01 +0100
-In-Reply-To: <20211123091304.GC3366@techsingularity.net>
-References: <99e779783d6c7fce96448a3402061b9dc1b3b602.camel@gmx.de>
-         <20211123091304.GC3366@techsingularity.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 
+        id S235353AbhKWLWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 06:22:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234990AbhKWLW0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 06:22:26 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346EEC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 03:19:18 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id e11so10319662ljo.13
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 03:19:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w+ogjWxG1DbsOOSKAdBRBvdcSf1vlOMjAXY68aT/3+U=;
+        b=g2Y3CYQC1NcCLavzUvr4ErWMQvZ4fzsgBv6CCbmTOoZcOun8WjSds54sZrtzeYEA0U
+         N5KF7mJ3kl8nFIULnhlxeAUeFZAuCfq+uX5Urd7Y31Xp8cHxNzCxkkp6HS46EZb3D6jZ
+         c7TwybE0YdC9woGghm+c/KCOlK35CIfDZrYTO7zFljpZaTHjklc27An1TOol1n/1idvS
+         kCKfDejnDdUw+aN2JJNNmUQf32+SP4pOXJVkzxhNH+rbEkLFMLkjE8yfz5ElxThNneaF
+         SJXtBIs1DuxaYn0676eJKdryXGQlku5s0UQEwOdM0oGilYhXoK+2140z6YDVV15iHy6a
+         9PQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w+ogjWxG1DbsOOSKAdBRBvdcSf1vlOMjAXY68aT/3+U=;
+        b=jgbZ24FfFzeZ8jhUojfX5z3jhwHOW018ovh6jhpldw79I/J8WNsZ/geE8kyTxkzuZ1
+         jtvJr8dZGpgQq8eHwyewP+KRsMbYUWHEJvWgmKSKYKWpPU1PSWfiDS3zET2pw7sNBpmR
+         EZ217r+eOSpIuIq/qUSdq1c8p/fy6BBYT4fZnF7Jkn21djF7uS6Px63+u817yjuvdQ+n
+         +jj2Y/dOaj5G8B5ldjVoab434gtlRZZm5cW/+ec1fQ/P6PsowlhS82rkvPdTlyDyHrCr
+         IC5S15gT7z6LkW9sWHMK2wb2qiORU3ju0YXXtsYqpeuCAVX2yghqpTdy535z3wNHsuTc
+         AQFQ==
+X-Gm-Message-State: AOAM530XsieAb+rfio6+0G4yTVMz4/CX9g62wR561QNIk2wA5Y4y+2Yo
+        VD20JgxbBGqX2taSAlkhFp5AGwWpHisAWXzE0rRm9Q==
+X-Google-Smtp-Source: ABdhPJxH+dIDF8nBsp8fxznpkoFe9y9Zmc/xUzjvp4Mfv2L5TNuCMH6djlHGcQ7ManpwMDd1PzQBcWJG8pF2EVa/HSY=
+X-Received: by 2002:a05:651c:1507:: with SMTP id e7mr4381662ljf.300.1637666356182;
+ Tue, 23 Nov 2021 03:19:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:XEFHFalrCVVntruBRqabWZ5cRGFKq4jgTybfHRi0bXDLoSBExSp
- bXowfG7wbd8KEdAmCEic5pQLV/5TmFSSuBbFN5HBCUudoHOH5rEiO1OO3PY+/n21EYDxLBH
- IJhqs+9rtHC8YPmy5eV4kbbnPoXAYHaXC5/dckmQM2Re9JUgxAAcwrhJBM/GKhe2pY39PLw
- UiA7UTUc1YaHRKbUegsYA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ZFfoiAEVQ+8=:Wz8gVMksgdJeoZIO5k7Ubj
- qq7r57a1XpetdjsvYFJMVh9SS2whbahRnhV3jojxHTgQynFjlkWqa1roHl5M3DqAUWHcyeOvq
- 8ZXPXN1hw4TTWS8pWz7P+/3VvKOFGcT1CxDMarcHR48AQQ9BfvjwavklUrf/DAEJw9eLqDF4f
- Qr/+7arkF+RBH+0biLUJOkn/j/h1Ey7y6IcA8wyk3pViITfIc47krXZucVoSRkwPVKirR2DOm
- Mp32hHtxXc6GmafQbLz30DnlYR+PAAboBzSvtcp9nNaQaZv+3vItc0d8o2v75DVwp6Risxe0T
- sZ3cmV6EkMEf1I3knd1VOiEKAZHjeacNZqjO0xj+otq/eu+5xg4PuskqRdfABhWdhV0LASBG1
- riPjqYzEvSoU/1cHWkhiAyJHj3CtTv3/VIzvPQi709fMdOKJynWizus/1jVrnnZ+eB2t8N2BL
- F9oWcFBvebsfPhZSX75imYQACOcoZ0PYBrfq0acr+8iu1eLrKln5cpuIRLo5xzWGBYXx/hs88
- OJ0JEi2s6TjMGo7arL6prby7FtDZKLRfkGiQ7d5DWL1fCR6t2M/ipNDFwzSPn374jygMGhUHJ
- 4naNz81PyvHdTKPwQXqhdoJBuE0Oqlb+Xjif5o84pn9xjOSa/P5ApKJX1Zgt3kvgwL3cVoJiP
- CeZzingzc/pI0R/zlbDYlj1cHNLYG2YwfRSFZ2SyLIh7pKmc+xkdTBPsJ4+9f1UF/1FmhHKiX
- a/jHhVd6MFTGWt18LZfEcevWeL/PSyT7rW47d1CnoI3CNi0Rk4+EXfbJuOnx00ioGM738tVBG
- bCxZtNHpVRXfuaVh6N3REv44epaV+lzBWK12fP46dUeMioolT0CqaMYTmynGyp0A8+Cc9iqCP
- VH30NSwqq4Q6TjlLY7EXmKwxBQ36XR4rRQ8AkMBEectpKQpIoliW8RVUPV2mx3ADZjc4AueM9
- XshtTLYyZUxpClSApdbtm0SUoadqja+Bb+jZ6rNOKunRrLwtTsBcZGj1E0ZcpWh5ZhfuoPeun
- oh9tkI3A5rrwKNifH/Jnrm0zdQw1nutFhUXZAhSZmryrmSVY/ak10+aquND6dIpSWIBWe0tPF
- yznJ2heGF6BMfQ=
+References: <20211122222203.4103644-1-arnd@kernel.org> <20211122222203.4103644-5-arnd@kernel.org>
+In-Reply-To: <20211122222203.4103644-5-arnd@kernel.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 23 Nov 2021 12:18:40 +0100
+Message-ID: <CAPDyKFrCOoFWuM_6Renu+M5SHotyuzXeyH99WZb69G1PFQ1z5A@mail.gmail.com>
+Subject: Re: [PATCH v2 04/11] mmc: bcm2835: stop setting chan_config->slave_id
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andy Gross <agross@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Scott Branden <sbranden@broadcom.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        alsa-devel@alsa-project.org, bcm-kernel-feedback-list@broadcom.com,
+        dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-tegra@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-11-23 at 09:13 +0000, Mel Gorman wrote:
+On Mon, 22 Nov 2021 at 23:23, Arnd Bergmann <arnd@kernel.org> wrote:
 >
-> I'll see can I reproduce this...
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The field is not interpreted by the DMA engine driver, as all the data
+> is passed from devicetree instead. Remove the assignment so the field
+> can eventually be deleted.
+>
+> Reviewed-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-You likely already know this, but just in case, just plunk the below
-into $LTPROOT/runtest/foo, and $LTPROOT/runltp -f foo.
+I think I acked the previous version, but nevermind:
 
-#DESCRIPTION:Resource Management testing
-memcg_regression        memcg_regression_test.sh
+Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-	-Mike
+Kind regards
+Uffe
+
+> ---
+>  drivers/mmc/host/bcm2835.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/mmc/host/bcm2835.c b/drivers/mmc/host/bcm2835.c
+> index 8c2361e66277..463b707d9e99 100644
+> --- a/drivers/mmc/host/bcm2835.c
+> +++ b/drivers/mmc/host/bcm2835.c
+> @@ -1293,14 +1293,12 @@ static int bcm2835_add_host(struct bcm2835_host *host)
+>
+>                 host->dma_cfg_tx.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+>                 host->dma_cfg_tx.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+> -               host->dma_cfg_tx.slave_id = 13;         /* DREQ channel */
+>                 host->dma_cfg_tx.direction = DMA_MEM_TO_DEV;
+>                 host->dma_cfg_tx.src_addr = 0;
+>                 host->dma_cfg_tx.dst_addr = host->phys_addr + SDDATA;
+>
+>                 host->dma_cfg_rx.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+>                 host->dma_cfg_rx.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+> -               host->dma_cfg_rx.slave_id = 13;         /* DREQ channel */
+>                 host->dma_cfg_rx.direction = DMA_DEV_TO_MEM;
+>                 host->dma_cfg_rx.src_addr = host->phys_addr + SDDATA;
+>                 host->dma_cfg_rx.dst_addr = 0;
+> --
+> 2.29.2
+>
