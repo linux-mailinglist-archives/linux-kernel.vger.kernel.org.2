@@ -2,116 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7100045A614
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:53:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6685B45A617
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:53:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238278AbhKWO4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 09:56:23 -0500
-Received: from mx1.tq-group.com ([93.104.207.81]:12591 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233112AbhKWO4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 09:56:22 -0500
+        id S238309AbhKWO4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 09:56:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238312AbhKWO4f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 09:56:35 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02CF5C061748
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 06:53:27 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id k4so17247394plx.8
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 06:53:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1637679194; x=1669215194;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=KGXbfqWN+3ZQbqGsNObl01CTxD3yxm7UN4OpU43QcPI=;
-  b=kedEf3bEKFqCnvEPolmsGzvHVwFTB1gaiu9e9X7N43xUnT1MD8Bfh5bQ
-   4C3Q1A7WJF5WasSs1s1FgUgdYF0HSJTME39GDxs6F4m4A8RwB4G2Nr+kx
-   iHKZttijQilmaW3PZc4LBhK4GR+oSslgv9uSg3UAM5I44S5bvfBwsL7Xu
-   quhQQKO6bOKstsGpqX33IXsSyOPrbI50PNAgz6KIpT3h106pMoK6dsxPO
-   q4TqYjGHKEd1ChrHXV5UYleRL9mJ753jnedu1TgQp3Zs2Tz71s4K1p9Gy
-   Yj4Z7MzBC8awYKjuZMqa7JguROJKSFwZ7h97tgplGeqElhejyseF+5gpH
-   g==;
-X-IronPort-AV: E=Sophos;i="5.87,258,1631570400"; 
-   d="scan'208";a="20626660"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 23 Nov 2021 15:53:12 +0100
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Tue, 23 Nov 2021 15:53:12 +0100
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Tue, 23 Nov 2021 15:53:12 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1637679192; x=1669215192;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=KGXbfqWN+3ZQbqGsNObl01CTxD3yxm7UN4OpU43QcPI=;
-  b=YyVX8yBHEP9BXNv/eudsfWaObmAGUlWpvXkNT3EERyywJR0HvUlelPZc
-   DbLKET2fPrkGNrOwKQLo5ibM6BdBI9pzwDoEkQb0aHAAGCsZ8t3jIwT+f
-   CGLXKQvgGdzZauO4JcqFsC32kYcQZmcRE+h3t7vq+hvEpqsyVQ++UgY9v
-   DTQVApctoPtIze9VIJnN6PHbPtThbMRXb9OPaH2W/RERqZtPbgRE7wuVq
-   CrMIUv7TdIE39dlrWOZ3cALKN2N9i5rcsAm0EDUzZPsYDpiw4mLZtECCf
-   4hPb+jkg5/0NMtFzrDmuR6rUmeYtQZZyxy+k+58hePGthBiUjHJXJHXco
-   w==;
-X-IronPort-AV: E=Sophos;i="5.87,258,1631570400"; 
-   d="scan'208";a="20626659"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 23 Nov 2021 15:53:12 +0100
-Received: from steina-w.tq-net.de (unknown [10.123.49.12])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 46A36280065;
-        Tue, 23 Nov 2021 15:53:12 +0100 (CET)
-From:   Alexander Stein <alexander.stein@ew.tq-group.com>
-To:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     Alexander Stein <alexander.stein@ew.tq-group.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] extcon: deduplicate code in extcon_set_state_sync()
-Date:   Tue, 23 Nov 2021 15:53:01 +0100
-Message-Id: <20211123145301.778629-1-alexander.stein@ew.tq-group.com>
-X-Mailer: git-send-email 2.25.1
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=maDqwh1X8f7cSN0fnXGtc0hBKQIUGOLhEANsObWEWYQ=;
+        b=j7P+vUaj6aapj1yh5efgw2hxrBEpwYJQ/NIyhVl5ysZ50e7lmC8FnMm402n/fHYemt
+         R7wna6zNxRo1dJCDMhLhwWXF9qU1DcmK9Of9R54tC9qRtduLv9HnKPl4B7Yvy6yzkvHw
+         14Ioc8TcdAM230smUcxAXob7ulehMN/1vIsdc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=maDqwh1X8f7cSN0fnXGtc0hBKQIUGOLhEANsObWEWYQ=;
+        b=oOJEF7L82xzGk/DPu8+pRLczWpinw+Ta4Lq46EVk7NZCw0FNGdi0LwN/v5RWvCkvrf
+         Ff3wGCtcIdSYVovgGZ5+sA66Y/IHWNlkMKzWdCnuyovyiLDdFdQ2tZYcV0S3cBVuj288
+         e5sM1Is/iQkCG/x2ZlHZj3vSUsUdrd6GbgbDSVCV9VwX1XNLYEBESQEy2AkBtpt4Brkp
+         QfK8Y2suiMbAan77FcKjC/urxELv5wk/nI8i4rgZ9IOGz3yjwYcaAVq1ypFJKA963Shw
+         FBWjFLekrMnXSFzzAyWWgnZ7OxmsQim/omKg2eHA24Z/tJWrR9PRd0v3r4x/TMgipoQW
+         6/uw==
+X-Gm-Message-State: AOAM5309RtbT01AfT6dArhG1rS/ft5/QfIRQOpNMy4yYb1QX4oMzqnPN
+        3gw+BdoCxoEpf0kCvAdfHb2H2fa8eqaitg==
+X-Google-Smtp-Source: ABdhPJzgy0vfyZ/bqcSxJYg6gCR8GQcLKZassfIXV5fVSVKubGoI/Dp6S2mc9J2JGpncofFsDCDpkg==
+X-Received: by 2002:a17:90b:4c89:: with SMTP id my9mr3585722pjb.229.1637679206572;
+        Tue, 23 Nov 2021 06:53:26 -0800 (PST)
+Received: from localhost ([2620:15c:202:201:5fa5:d920:9d68:9c16])
+        by smtp.gmail.com with UTF8SMTPSA id p188sm12693118pfg.102.2021.11.23.06.53.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Nov 2021 06:53:26 -0800 (PST)
+Date:   Tue, 23 Nov 2021 06:53:25 -0800
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sboyd@codeaurora.org,
+        dianders@chromium.org, kgodara@codeaurora.org
+Subject: Re: [PATCH 1/4] dt-bindings: arm: qcom: Document qcom,sc7280-crd
+ board
+Message-ID: <YZ0AZQDB6VPUAt8s@google.com>
+References: <1637650813-16654-1-git-send-email-rnayak@codeaurora.org>
+ <1637650813-16654-2-git-send-email-rnayak@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1637650813-16654-2-git-send-email-rnayak@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Finding the cable index and checking for changed status is also done
-in extcon_set_state(). So calling extcon_set_state_sync() will do these
-checks twice. Remove them and use these checks from extcon_set_state().
+On Tue, Nov 23, 2021 at 12:30:10PM +0530, Rajendra Nayak wrote:
+> Document the qcom,sc7280-crd board based off sc7280 SoC,
+> The board is also known as hoglin in the Chrome OS builds,
+> and given there would be multiple (at least one more) rev
+> of this board document the google,hoglin-rev0 compatible as well.
+> 
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/arm/qcom.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+> index c8808e0..2abfd28 100644
+> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
+> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+> @@ -203,6 +203,8 @@ properties:
+>            - enum:
+>                - qcom,sc7280-idp
+>                - qcom,sc7280-idp2
+> +              - qcom,sc7280-crd
+> +              - google,hoglin-rev0
 
-Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
----
-I noticed this duplicated code while debugging an extcon related issue.
-I do not know if it is allowed in the kernel to assume some behavior in
-EXPORT_SYMBOL* functions, but as the two functions mentioned are in the
-same source file it should be ok.
-In the case it is not okay to assume some behaviour,
-extcon_set_state_sync() is missing a check for !edev, like
-extcon_set_state() does.
+I think we also want the generic 'google,hoglin' compatible string, analogous to
+for example 'google,lazor' and 'google,lazor-revN'. For lazor there are no
+explicit compatible entries for rev3 and above, there were no DT relevant
+hardware changes for rev > 3, hence the 'google,lazor' compatible string is
+used, without the need to modify the DT for each new HW revision.
 
- drivers/extcon/extcon.c | 14 +-------------
- 1 file changed, 1 insertion(+), 13 deletions(-)
+Also on my CRD the bootloader thinks it is running on a rev4:
 
-diff --git a/drivers/extcon/extcon.c b/drivers/extcon/extcon.c
-index e7a9561a826d..a09e704fd0fa 100644
---- a/drivers/extcon/extcon.c
-+++ b/drivers/extcon/extcon.c
-@@ -576,19 +576,7 @@ EXPORT_SYMBOL_GPL(extcon_set_state);
-  */
- int extcon_set_state_sync(struct extcon_dev *edev, unsigned int id, bool state)
- {
--	int ret, index;
--	unsigned long flags;
--
--	index = find_cable_index_by_id(edev, id);
--	if (index < 0)
--		return index;
--
--	/* Check whether the external connector's state is changed. */
--	spin_lock_irqsave(&edev->lock, flags);
--	ret = is_extcon_changed(edev, index, state);
--	spin_unlock_irqrestore(&edev->lock, flags);
--	if (!ret)
--		return 0;
-+	int ret;
- 
- 	ret = extcon_set_state(edev, id, state);
- 	if (ret < 0)
--- 
-2.25.1
+  Compat preference: google,hoglin-rev4 google,hoglin
 
+The board still boots thanks to the 'google,hoglin' entry in my device tree,
+but it seems you need to add more revN entries, or start with rev4 if you
+don't really care about supporting older revisions. In the later case you
+coul only have 'google,hoglin' for now, and add 'rev4' when you add support
+for the next revision (supposing it has DT relevant hardware changes). The
+sc7180-trogdor boards can serve as an example on how to deal with board
+revisions.
