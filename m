@@ -2,129 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A4F2459D51
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:59:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B50D459CCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:34:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234621AbhKWICg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 03:02:36 -0500
-Received: from inva021.nxp.com ([92.121.34.21]:34696 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234555AbhKWICd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 03:02:33 -0500
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 9D4C120082E;
-        Tue, 23 Nov 2021 08:59:24 +0100 (CET)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 2A8B4200804;
-        Tue, 23 Nov 2021 08:59:24 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 27B8A183ACCB;
-        Tue, 23 Nov 2021 15:59:21 +0800 (+08)
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     l.stach@pengutronix.de, bhelgaas@google.com, broonie@kernel.org,
-        lorenzo.pieralisi@arm.com, jingoohan1@gmail.com
-Cc:     hongxing.zhu@nxp.com, linux-pci@vger.kernel.org, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [RESEND v4 6/6] PCI: imx6: Add the compliance tests mode support
-Date:   Tue, 23 Nov 2021 15:31:57 +0800
-Message-Id: <1637652717-17313-7-git-send-email-hongxing.zhu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1637652717-17313-1-git-send-email-hongxing.zhu@nxp.com>
-References: <1637652717-17313-1-git-send-email-hongxing.zhu@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S234119AbhKWHhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 02:37:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233737AbhKWHhb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 02:37:31 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F8A1C061574;
+        Mon, 22 Nov 2021 23:34:24 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id m24so16301334pls.10;
+        Mon, 22 Nov 2021 23:34:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+mNOFlAZbq9k+Mu/JTHbCIh5dzjFIh42+nN9c/Feohs=;
+        b=l0JBdqgCRB1aHsIneMfPrpWXDEhQ4wIH3TEB86TGCpfTxpM/WJ2LUeWmGM8ZC3/mw5
+         nl1zVETIxotOP4EQsjM+XWJC+520/1SVXPCddeICLzT373fVkL/7Lofg6QV+TP8Xv3k2
+         9zII7uO7WZJMD5P89jL9FxHV/g0iLmBBfbMVfBmhuuXnaAQqQn+5XSZ6AnR7kjs6tfI2
+         aY74XaRl1oDjHZE9tNFrbZm/SYPhYH7rXF+fEVECRStNw1s+OdLpfh+jg1Ln5mykFEVO
+         DuZlf6K1BtF/XgdCHyOED6GM+3SnMl9Lei8OWIaKhJyz44jncGXP138U2hXRNb4Mr/cu
+         WNYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+mNOFlAZbq9k+Mu/JTHbCIh5dzjFIh42+nN9c/Feohs=;
+        b=xfAclm147ku3c9b/1ewKodXw1FC8iP19Map7Tr4z9pPzKCnyhi4FtQ6tw6l65gpzI/
+         mz1RPhAF9agXX8WZPM52B1soEAg8LSriU11tJPT79E7F/7qCIyK7jXhLWjfIIg4a4PG5
+         Bw5/4KAV1bYPXyre+QHfUD9zqIX3e+Pep54ZNkANkya18H2wnU13aFBWOCvZIPrS2aaI
+         k1kg76zCI1lD/xA3PGwwSOLd2RgP5W2Xoj28avvjQFIZlGkd+KE46NY3QcbvivQkS0mK
+         FKdXfFRMGs+F9HSIp+/GcIqDxiDMD1ZbI/7MWCH1Li9vr8OXW+JA0YoChVhkkz8xJWJv
+         LAfg==
+X-Gm-Message-State: AOAM531TQ+J3P966hEwFVOnOaSF8Jsksi+3MF1a/Ic3mxyQCBl8pY1Jx
+        xfG4/C/UaQ2M8LfXr1bcVK8=
+X-Google-Smtp-Source: ABdhPJw5z4WJquUdWT1YiAZ4TL3ixYctETOA9h8mQB/W8qMyd0B3QBMfNjz9HLZi1D4oazMvtapCdg==
+X-Received: by 2002:a17:90b:3144:: with SMTP id ip4mr418708pjb.153.1637652864053;
+        Mon, 22 Nov 2021 23:34:24 -0800 (PST)
+Received: from nikka.usen.ad.jp (113x33x71x97.ap113.ftth.ucom.ne.jp. [113.33.71.97])
+        by smtp.googlemail.com with ESMTPSA id q10sm957627pjd.0.2021.11.22.23.34.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Nov 2021 23:34:23 -0800 (PST)
+From:   Akira Kawata <akirakawata1@gmail.com>
+To:     akpm@linux-foundation.org, adobriyan@gmail.com,
+        viro@zeniv.linux.org.uk, keescook@chromium.org,
+        linux-fsdevel@vger.kernel.org
+Cc:     akirakawata1@gmail.com, Eric Biederman <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] fs/binfmt_elf: Fix AT_PHDR for unusual ELF files
+Date:   Tue, 23 Nov 2021 16:31:59 +0900
+Message-Id: <20211123073157.198689-1-akirakawata1@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refer to the system board signal Quality of PCIe archiecture PHY test
-specification. Signal quality tests(for example: jitters,  differential
-eye opening and so on ) can be executed with devices in the
-polling.compliance state.
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=197921
 
-To let the device support polling.compliance stat, the clocks and powers
-shouldn't be turned off when the probe of device driver is failed.
+As pointed out in the discussion of buglink, we cannot calculate AT_PHDR
+as the sum of load_addr and exec->e_phoff. This is because exec->e_phoff
+is the offset of PHDRs in the file and the address of PHDRs in the
+memory may differ from it. This patch fixes the bug by calculating the
+address of program headers from PT_LOADs directly.
 
-Based on CLB(Compliance Load Board) Test Fixture and so on test
-equipments, the PHY link would be down during the compliance tests.
-Refer to this scenario, add the i.MX PCIe compliance tests mode enable
-support, and keep the clocks and powers on, and finish the driver probe
-without error return.
-
-Use the "pci_imx6.compliance=1" in kernel command line to enable the
-compliance tests mode.
-
-Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+Signed-off-by: Akira Kawata <akirakawata1@gmail.com>
 ---
- drivers/pci/controller/dwc/pci-imx6.c | 33 +++++++++++++++++++--------
- 1 file changed, 24 insertions(+), 9 deletions(-)
+Changes in v2:
+- Remove unused load_addr from create_elf_tables.
+- Improve the commit message.
 
-diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-index 8be4b8a9b564..d6769f95ca4e 100644
---- a/drivers/pci/controller/dwc/pci-imx6.c
-+++ b/drivers/pci/controller/dwc/pci-imx6.c
-@@ -143,6 +143,10 @@ struct imx6_pcie {
- #define PHY_RX_OVRD_IN_LO_RX_DATA_EN		BIT(5)
- #define PHY_RX_OVRD_IN_LO_RX_PLL_EN		BIT(3)
+ fs/binfmt_elf.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
+
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index f8c7f26f1fbb..af8313e36665 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -170,8 +170,8 @@ static int padzero(unsigned long elf_bss)
  
-+static bool imx6_pcie_cmp_mode;
-+module_param_named(compliance, imx6_pcie_cmp_mode, bool, 0644);
-+MODULE_PARM_DESC(compliance, "i.MX PCIe compliance test mode (1=compliance test mode enabled)");
-+
- static int pcie_phy_poll_ack(struct imx6_pcie *imx6_pcie, bool exp_val)
+ static int
+ create_elf_tables(struct linux_binprm *bprm, const struct elfhdr *exec,
+-		unsigned long load_addr, unsigned long interp_load_addr,
+-		unsigned long e_entry)
++		unsigned long interp_load_addr,
++		unsigned long e_entry, unsigned long phdr_addr)
  {
- 	struct dw_pcie *pci = imx6_pcie->pci;
-@@ -802,10 +806,12 @@ static int imx6_pcie_start_link(struct dw_pcie *pci)
- 	 * started in Gen2 mode, there is a possibility the devices on the
- 	 * bus will not be detected at all.  This happens with PCIe switches.
- 	 */
--	tmp = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCAP);
--	tmp &= ~PCI_EXP_LNKCAP_SLS;
--	tmp |= PCI_EXP_LNKCAP_SLS_2_5GB;
--	dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCAP, tmp);
-+	if (!imx6_pcie_cmp_mode) {
-+		tmp = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCAP);
-+		tmp &= ~PCI_EXP_LNKCAP_SLS;
-+		tmp |= PCI_EXP_LNKCAP_SLS_2_5GB;
-+		dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCAP, tmp);
-+	}
- 
- 	/* Start LTSSM. */
- 	imx6_pcie_ltssm_enable(dev);
-@@ -893,10 +899,12 @@ static void imx6_pcie_host_exit(struct pcie_port *pp)
- 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
- 	struct imx6_pcie *imx6_pcie = to_imx6_pcie(pci);
- 
--	imx6_pcie_reset_phy(imx6_pcie);
--	imx6_pcie_clk_disable(imx6_pcie);
--	if (imx6_pcie->vpcie)
--		regulator_disable(imx6_pcie->vpcie);
-+	if (!imx6_pcie_cmp_mode) {
-+		imx6_pcie_reset_phy(imx6_pcie);
-+		imx6_pcie_clk_disable(imx6_pcie);
-+		if (imx6_pcie->vpcie)
-+			regulator_disable(imx6_pcie->vpcie);
-+	}
- }
- 
- static const struct dw_pcie_host_ops imx6_pcie_host_ops = {
-@@ -1182,8 +1190,15 @@ static int imx6_pcie_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	ret = dw_pcie_host_init(&pci->pp);
--	if (ret < 0)
-+	if (ret < 0) {
-+		if (imx6_pcie_cmp_mode) {
-+			dev_info(dev, "Driver loaded with compliance test mode enabled.\n");
-+			ret = 0;
-+		} else {
-+			dev_err(dev, "Unable to add pcie port.\n");
+ 	struct mm_struct *mm = current->mm;
+ 	unsigned long p = bprm->p;
+@@ -257,7 +257,7 @@ create_elf_tables(struct linux_binprm *bprm, const struct elfhdr *exec,
+ 	NEW_AUX_ENT(AT_HWCAP, ELF_HWCAP);
+ 	NEW_AUX_ENT(AT_PAGESZ, ELF_EXEC_PAGESIZE);
+ 	NEW_AUX_ENT(AT_CLKTCK, CLOCKS_PER_SEC);
+-	NEW_AUX_ENT(AT_PHDR, load_addr + exec->e_phoff);
++	NEW_AUX_ENT(AT_PHDR, phdr_addr);
+ 	NEW_AUX_ENT(AT_PHENT, sizeof(struct elf_phdr));
+ 	NEW_AUX_ENT(AT_PHNUM, exec->e_phnum);
+ 	NEW_AUX_ENT(AT_BASE, interp_load_addr);
+@@ -823,7 +823,7 @@ static int parse_elf_properties(struct file *f, const struct elf_phdr *phdr,
+ static int load_elf_binary(struct linux_binprm *bprm)
+ {
+ 	struct file *interpreter = NULL; /* to shut gcc up */
+- 	unsigned long load_addr = 0, load_bias = 0;
++	unsigned long load_addr = 0, load_bias = 0, phdr_addr = 0;
+ 	int load_addr_set = 0;
+ 	unsigned long error;
+ 	struct elf_phdr *elf_ppnt, *elf_phdata, *interp_elf_phdata = NULL;
+@@ -1169,6 +1169,13 @@ static int load_elf_binary(struct linux_binprm *bprm)
+ 				reloc_func_desc = load_bias;
+ 			}
+ 		}
++
++		if (elf_ppnt->p_offset <= elf_ex->e_phoff &&
++		    elf_ex->e_phoff < elf_ppnt->p_offset + elf_ppnt->p_filesz) {
++			phdr_addr = elf_ex->e_phoff - elf_ppnt->p_offset +
++				    elf_ppnt->p_vaddr;
 +		}
- 		return ret;
-+	}
++
+ 		k = elf_ppnt->p_vaddr;
+ 		if ((elf_ppnt->p_flags & PF_X) && k < start_code)
+ 			start_code = k;
+@@ -1204,6 +1211,7 @@ static int load_elf_binary(struct linux_binprm *bprm)
+ 	}
  
- 	if (pci_msi_enabled()) {
- 		u8 offset = dw_pcie_find_capability(pci, PCI_CAP_ID_MSI);
+ 	e_entry = elf_ex->e_entry + load_bias;
++	phdr_addr += load_bias;
+ 	elf_bss += load_bias;
+ 	elf_brk += load_bias;
+ 	start_code += load_bias;
+@@ -1267,8 +1275,8 @@ static int load_elf_binary(struct linux_binprm *bprm)
+ 		goto out;
+ #endif /* ARCH_HAS_SETUP_ADDITIONAL_PAGES */
+ 
+-	retval = create_elf_tables(bprm, elf_ex,
+-			  load_addr, interp_load_addr, e_entry);
++	retval = create_elf_tables(bprm, elf_ex, interp_load_addr,
++				   e_entry, phdr_addr);
+ 	if (retval < 0)
+ 		goto out;
+ 
 -- 
 2.25.1
 
