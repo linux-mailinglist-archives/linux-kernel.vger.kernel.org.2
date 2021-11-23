@@ -2,136 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D53A45ADA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:54:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3CFF45ADAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:56:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhKWU6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 15:58:03 -0500
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:31223 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229521AbhKWU6C (ORCPT
+        id S231892AbhKWU7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 15:59:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229521AbhKWU7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 15:58:02 -0500
+        Tue, 23 Nov 2021 15:59:24 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0688C061574;
+        Tue, 23 Nov 2021 12:56:15 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id b11so71455pld.12;
+        Tue, 23 Nov 2021 12:56:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637700894; x=1669236894;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=77fnSIl5txLNdgIet3cL2IBEAHlYG5fyTR+1w8yCOuI=;
-  b=Ja2WSYdeisA/r6pjNQlvvhGq51W0wtA1NZpXKLeBWqwpEtvERvOkklXn
-   BW5ZTJ3+Ic/iaF7922Fw65otOnvdG4xvo6QHmJKaRkbnRhv2txmcCHzNL
-   BIvOSN8ts5KN2aiqnjOoEIJejwOxcdBM+WIaRx48k4VSQ8ZTDFifkEysP
-   s=;
-Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 23 Nov 2021 12:54:54 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg03-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 12:54:53 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Tue, 23 Nov 2021 12:54:53 -0800
-Received: from [10.111.161.155] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Tue, 23 Nov
- 2021 12:54:50 -0800
-Message-ID: <d1edfe2c-87eb-ec3e-a145-8466bf0f3265@quicinc.com>
-Date:   Tue, 23 Nov 2021 12:54:48 -0800
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YIZZn3EfhIV4B8xywTZD34ebhvmRwyiaGIZ1+xNz9a8=;
+        b=LB9MQdPfmfkpwuRRwEQ5fkzkuIN7FC6dTbCli9EiFEDqNfRnZz3uy/Rw+xkHmli205
+         ynAJBxt+TEjXwWLum4sa+altcBeGKtlqqyYFwqiOfnFjxY/y3sf6+AYh6sb21JxIiOx7
+         IVhFtHPf3PuGPT1dei9EzZ93nuPkgeg9jvdb2FiD+qDQWSpLokP5o2tG0ymGcz/6CTS7
+         K9bIdPPtQ/iujiHwcK0D1/YGnFeKlexjHa+pCd2ZC3HZAKyhZYz4ZkvjmHwWlar5kL8s
+         vAphQQYXovMy5qXuPR+tuuimNrg+8N2QTaqobHuMrz6w7xEHOOL8Bskk+nleDBRPQI8m
+         /gOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YIZZn3EfhIV4B8xywTZD34ebhvmRwyiaGIZ1+xNz9a8=;
+        b=Sw9zWMPyRcBsL6PdO/s8GkgFLOv6lpmpqKz4uxR+nd4i4vaBEDav5/nql7cJfP4XKX
+         WWKaMqcA4BkwFa3NF4gKamXWCAqWekByv/88f1bF4+wEbRRSi+VOKqU4Zk4N4Cj0n7sg
+         z1eODMNAcgc4ifD6y6D3lU2ECtaLmn97sczzJ2LhsWcvovgDEASP79kYjfEEv1rwxa+X
+         N3yMZz4JUyJloxWWVODDCpnQeZxahFQehgeAzmi6U3b7xLNLdcM21vhJEkEQMm7VCM/X
+         fNO5LnpKKWoz6h30PgxPAKAjROUGG8gAy0g5q+wru06VeKR3NNL3wpdsOE/yL1JLFMmk
+         c1AQ==
+X-Gm-Message-State: AOAM530XwNgKdBS23lWwFgpq2tkfQmwCNmI6WNlvMs5cwlFaY1WfEOAl
+        3pIbOtJoV0P7fMSkF8BhxcU=
+X-Google-Smtp-Source: ABdhPJx5vcos3QJeg5Fpvk38X+NWRxGmKKN/JhM+yuCozW6rdCcVM8MOWOVSocKhtwdfWNY+AU0JvA==
+X-Received: by 2002:a17:90b:4d8f:: with SMTP id oj15mr6807940pjb.127.1637700975394;
+        Tue, 23 Nov 2021 12:56:15 -0800 (PST)
+Received: from athina.mtv.corp.google.com ([2620:15c:211:200:cd70:5ac2:9066:1bb8])
+        by smtp.gmail.com with ESMTPSA id j7sm13526031pfu.164.2021.11.23.12.56.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 12:56:14 -0800 (PST)
+From:   =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <zenczykowski@gmail.com>
+To:     =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH bpf-next] bpf: allow readonly direct path access for skfilter
+Date:   Tue, 23 Nov 2021 12:56:07 -0800
+Message-Id: <20211123205607.452497-1-zenczykowski@gmail.com>
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [Freedreno] [PATCH] drm/msm/dpu: Add more of the INTF interrupt
- regions
-Content-Language: en-US
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <linux-arm-msm@vger.kernel.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        "Robert Foss" <robert.foss@linaro.org>,
-        <freedreno@lists.freedesktop.org>
-References: <20211123154050.40984-1-bjorn.andersson@linaro.org>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <20211123154050.40984-1-bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn
+From: Maciej Żenczykowski <maze@google.com>
 
-On 11/23/2021 7:40 AM, Bjorn Andersson wrote:
-> In addition to the other 7xxx INTF interrupt regions, SM8350 has
-> additional INTF regions at 0x0ae37000, 0x0ae38000 and 0x0ae39000, define
-> these. The 7xxx naming scheme of the bits are kept for consistency.
-> 
-More than consistency, this is because both sc7280 and SM8350 use MDP's
-7x hw version.
+skfilter bpf programs can read the packet directly via llvm.bpf.load.byte/
+/half/word which are 8/16/32-bit primitive bpf instructions and thus
+behave basically as well as DPA reads.  But there is no 64-bit equivalent,
+due to the support for the equivalent 64-bit bpf opcode never having been
+added (unclear why, there was a patch posted).
+DPA uses a slightly different mechanism, so doesn't suffer this limitation.
 
-Otherwise,
+Using 64-bit reads, 128-bit ipv6 address comparisons can be done in just
+2 steps, instead of the 4 steps needed with llvm.bpf.word.
 
-Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->   .../gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c  | 18 ++++++++++++++++++
->   .../gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h  |  3 +++
->   2 files changed, 21 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
-> index d2b6dca487e3..a77a5eaa78ad 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
-> @@ -30,6 +30,9 @@
->   #define MDP_AD4_INTR_STATUS_OFF		0x420
->   #define MDP_INTF_0_OFF_REV_7xxx             0x34000
->   #define MDP_INTF_1_OFF_REV_7xxx             0x35000
-> +#define MDP_INTF_2_OFF_REV_7xxx             0x36000
-> +#define MDP_INTF_3_OFF_REV_7xxx             0x37000
-> +#define MDP_INTF_4_OFF_REV_7xxx             0x38000
->   #define MDP_INTF_5_OFF_REV_7xxx             0x39000
->   
->   /**
-> @@ -110,6 +113,21 @@ static const struct dpu_intr_reg dpu_intr_set[] = {
->   		MDP_INTF_1_OFF_REV_7xxx+INTF_INTR_EN,
->   		MDP_INTF_1_OFF_REV_7xxx+INTF_INTR_STATUS
->   	},
-> +	{
-> +		MDP_INTF_2_OFF_REV_7xxx+INTF_INTR_CLEAR,
-> +		MDP_INTF_2_OFF_REV_7xxx+INTF_INTR_EN,
-> +		MDP_INTF_2_OFF_REV_7xxx+INTF_INTR_STATUS
-> +	},
-> +	{
-> +		MDP_INTF_3_OFF_REV_7xxx+INTF_INTR_CLEAR,
-> +		MDP_INTF_3_OFF_REV_7xxx+INTF_INTR_EN,
-> +		MDP_INTF_3_OFF_REV_7xxx+INTF_INTR_STATUS
-> +	},
-> +	{
-> +		MDP_INTF_4_OFF_REV_7xxx+INTF_INTR_CLEAR,
-> +		MDP_INTF_4_OFF_REV_7xxx+INTF_INTR_EN,
-> +		MDP_INTF_4_OFF_REV_7xxx+INTF_INTR_STATUS
-> +	},
->   	{
->   		MDP_INTF_5_OFF_REV_7xxx+INTF_INTR_CLEAR,
->   		MDP_INTF_5_OFF_REV_7xxx+INTF_INTR_EN,
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h
-> index d50e78c9f148..1ab75cccd145 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h
-> @@ -26,6 +26,9 @@ enum dpu_hw_intr_reg {
->   	MDP_AD4_1_INTR,
->   	MDP_INTF0_7xxx_INTR,
->   	MDP_INTF1_7xxx_INTR,
-> +	MDP_INTF2_7xxx_INTR,
-> +	MDP_INTF3_7xxx_INTR,
-> +	MDP_INTF4_7xxx_INTR,
->   	MDP_INTF5_7xxx_INTR,
->   	MDP_INTR_MAX,
->   };
-> 
+This should hopefully allow simpler (less instructions, and possibly less
+logic and maybe even less jumps) programs.  Less jumps may also mean vastly
+faster bpf verifier times (it can be exponential in the number of jumps...).
+
+This can be particularly important when trying to do something like scan
+a netlink message for a pattern (2000 iteration loop) to decide whether
+a message should be dropped, or delivered to userspace (thus waking it up).
+
+I'm requiring CAP_NET_ADMIN because I'm not sure of the security
+implications...
+
+Tested: only build tested
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+---
+ kernel/bpf/verifier.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 331b170d9fcc..0c2e25fb9844 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3258,6 +3258,11 @@ static bool may_access_direct_pkt_data(struct bpf_verifier_env *env,
+ 	enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
+ 
+ 	switch (prog_type) {
++	case BPF_PROG_TYPE_SOCKET_FILTER:
++		if (meta || !capable(CAP_NET_ADMIN))
++			return false;
++		fallthrough;
++
+ 	/* Program types only with direct read access go here! */
+ 	case BPF_PROG_TYPE_LWT_IN:
+ 	case BPF_PROG_TYPE_LWT_OUT:
+-- 
+2.34.0.rc2.393.gf8c9666880-goog
+
