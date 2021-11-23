@@ -2,185 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B000459CFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:44:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A11A459CFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:44:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234306AbhKWHrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 02:47:18 -0500
-Received: from mga12.intel.com ([192.55.52.136]:47599 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234157AbhKWHrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 02:47:17 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="214999852"
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="214999852"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 23:44:10 -0800
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="509307910"
-Received: from yhuang6-desk2.sh.intel.com ([10.239.159.101])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 23:44:06 -0800
-From:   Huang Ying <ying.huang@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Huang Ying <ying.huang@intel.com>,
-        syzbot+aa5bebed695edaccf0df@syzkaller.appspotmail.com,
-        Nadav Amit <namit@vmware.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Marco Elver <elver@google.com>
-Subject: [PATCH] mm/rmap: fix potential batched TLB flush race
-Date:   Tue, 23 Nov 2021 15:43:44 +0800
-Message-Id: <20211123074344.1877731-1-ying.huang@intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S234348AbhKWHrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 02:47:52 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45262 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234323AbhKWHrr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 02:47:47 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AN4NmBY022251;
+        Tue, 23 Nov 2021 07:44:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=7Izikt7bjG0cERrkxtMGGYIUF55KdaFWdipbuzLRGmM=;
+ b=bOAot3E6AnxIcv9A94dzcHKMqUnoa625+oMLbt38nIypt2ITZZgfmLp7AfDOK6fYjL8f
+ 0lvnpwkFLiMiA/CeHAGg39pz8B9qLmir/mXIX2q0P/3upOSoVaY/Q5+cCoOk+r5hZifr
+ gV2Bcnqyk1RrhsJyhVuAIsCGEGDvKSJhHvFSll6EzpZllhO2t0WrfOoMIcIhV3M2EFFe
+ wKLMyeoAz3OiRApaR551NU2dGYP5ZDmiDF/Q84KYRjDiR14U2iRA9OPpJE9asMR6h4IK
+ jd25Sm3osEVSWT8NITC/Au6UyDZXnEQynhNMt1jkz08CyazF8QGi4inE2hiUvDW5UUPl hQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cgs7tb00q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Nov 2021 07:44:18 +0000
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AN7YoVA006748;
+        Tue, 23 Nov 2021 07:44:18 GMT
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cgs7tb002-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Nov 2021 07:44:17 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AN7gGd8029841;
+        Tue, 23 Nov 2021 07:44:15 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma05fra.de.ibm.com with ESMTP id 3cern9m0cn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Nov 2021 07:44:15 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AN7b3BK62783776
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Nov 2021 07:37:03 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E0172A405C;
+        Tue, 23 Nov 2021 07:44:11 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8203BA4054;
+        Tue, 23 Nov 2021 07:44:05 +0000 (GMT)
+Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com (unknown [9.43.21.81])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 23 Nov 2021 07:44:05 +0000 (GMT)
+Subject: Re: [PATCH v2] bpf: Remove config check to enable bpf support for
+ branch records
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        KP Singh <kpsingh@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, maddy@linux.ibm.com,
+        atrajeev@linux.vnet.ibm.com,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        rnsastry@linux.ibm.com
+References: <20211118130507.170154-1-kjain@linux.ibm.com>
+ <CAEf4BzbDgCVLj0r=3iponPp81aVAGokhGti8WLfWKhHuTLdA8w@mail.gmail.com>
+ <ce150f51-ef50-de85-fc52-0f2ee3a3000f@linux.ibm.com>
+ <859f8b57-7ae2-3c68-5642-93bec7a59a20@iogearbox.net>
+ <CAEf4BzbP0hAJYr-dahNZqKe9wyYL6hD9FayS-qdQV+Lmyi_VTQ@mail.gmail.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <814c0e79-b8fd-38f1-bf17-cbf0993479bf@linux.ibm.com>
+Date:   Tue, 23 Nov 2021 13:14:04 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzbP0hAJYr-dahNZqKe9wyYL6hD9FayS-qdQV+Lmyi_VTQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: v7ir4QnkF6C65nsvbPFNGOpgqbtQ1UTr
+X-Proofpoint-ORIG-GUID: zuk4d111fp2t7655P5cJAQxqKC5sido5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-23_02,2021-11-22_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 clxscore=1015 phishscore=0 suspectscore=0 adultscore=0
+ spamscore=0 priorityscore=1501 mlxlogscore=999 malwarescore=0
+ impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111230038
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In theory, the following race is possible for batched TLB flushing.
 
-CPU0                               CPU1
-----                               ----
-shrink_page_list()
-                                   unmap
-                                     zap_pte_range()
-                                       flush_tlb_batched_pending()
-                                         flush_tlb_mm()
-  try_to_unmap()
-    set_tlb_ubc_flush_pending()
-      mm->tlb_flush_batched = true
-                                         mm->tlb_flush_batched = false
 
-After the TLB is flushed on CPU1 via flush_tlb_mm() and before
-mm->tlb_flush_batched is set to false, some PTE is unmapped on CPU0
-and the TLB flushing is pended.  Then the pended TLB flushing will be
-lost.  Although both set_tlb_ubc_flush_pending() and
-flush_tlb_batched_pending() are called with PTL locked, different PTL
-instances may be used.
+On 11/20/21 4:15 AM, Andrii Nakryiko wrote:
+> On Fri, Nov 19, 2021 at 8:08 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>
+>> On 11/19/21 10:35 AM, kajoljain wrote:
+>>> On 11/19/21 4:18 AM, Andrii Nakryiko wrote:
+>>>> On Thu, Nov 18, 2021 at 5:10 AM Kajol Jain <kjain@linux.ibm.com> wrote:
+>>>>>
+>>>>> Branch data available to bpf programs can be very useful to get
+>>>>> stack traces out of userspace application.
+>>>>>
+>>>>> Commit fff7b64355ea ("bpf: Add bpf_read_branch_records() helper")
+>>>>> added bpf support to capture branch records in x86. Enable this feature
+>>>>> for other architectures as well by removing check specific to x86.
+>>>>> Incase any platform didn't support branch stack, it will return with
+>>>>> -EINVAL.
+>>>>>
+>>>>> Selftest 'perf_branches' result on power9 machine with branch stacks
+>>>>> support.
+>>>>>
+>>>>> Before this patch changes:
+>>>>> [command]# ./test_progs -t perf_branches
+>>>>>   #88/1 perf_branches/perf_branches_hw:FAIL
+>>>>>   #88/2 perf_branches/perf_branches_no_hw:OK
+>>>>>   #88 perf_branches:FAIL
+>>>>> Summary: 0/1 PASSED, 0 SKIPPED, 1 FAILED
+>>>>>
+>>>>> After this patch changes:
+>>>>> [command]# ./test_progs -t perf_branches
+>>>>>   #88/1 perf_branches/perf_branches_hw:OK
+>>>>>   #88/2 perf_branches/perf_branches_no_hw:OK
+>>>>>   #88 perf_branches:OK
+>>>>> Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+>>>>>
+>>>>> Selftest 'perf_branches' result on power9 machine which doesn't
+>>>>> support branch stack
+>>>>>
+>>>>> After this patch changes:
+>>>>> [command]# ./test_progs -t perf_branches
+>>>>>   #88/1 perf_branches/perf_branches_hw:SKIP
+>>>>>   #88/2 perf_branches/perf_branches_no_hw:OK
+>>>>>   #88 perf_branches:OK
+>>>>> Summary: 1/1 PASSED, 1 SKIPPED, 0 FAILED
+>>>>>
+>>>>> Fixes: fff7b64355eac ("bpf: Add bpf_read_branch_records() helper")
+>>>>> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+>>>>> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+>>>>> ---
+>>>>>
+>>>>> Tested this patch changes on power9 machine using selftest
+>>>>> 'perf branches' which is added in commit 67306f84ca78 ("selftests/bpf:
+>>>>> Add bpf_read_branch_records()")
+>>>>>
+>>>>> Changelog:
+>>>>> v1 -> v2
+>>>>> - Inorder to add bpf support to capture branch record in
+>>>>>    powerpc, rather then adding config for powerpc, entirely
+>>>>>    remove config check from bpf_read_branch_records function
+>>>>>    as suggested by Peter Zijlstra
+>>>>
+>>>> what will be returned for architectures that don't support branch
+>>>> records? Will it be zero instead of -ENOENT?
+>>>
+>>> Hi Andrii,
+>>>       Incase any architecture doesn't support branch records and if it
+>>> tries to do branch sampling with sample type as
+>>> PERF_SAMPLE_BRANCH_STACK, perf_event_open itself will fail.
+>>>
+>>> And even if, perf_event_open succeeds  we have appropriate checks in
+>>> bpf_read_branch_records function, which will return -EINVAL for those
+>>> architectures.
+>>>
+>>> Reference from linux/kernel/trace/bpf_trace.c
+>>>
+>>> Here, br_stack will be empty, for unsupported architectures.
+>>>
+>>> BPF_CALL_4(bpf_read_branch_records, struct bpf_perf_event_data_kern *, ctx,
+>>>          void *, buf, u32, size, u64, flags)
+>>> {
+>>> .....
+>>>       if (unlikely(flags & ~BPF_F_GET_BRANCH_RECORDS_SIZE))
+>>>               return -EINVAL;
+>>>
+>>>       if (unlikely(!br_stack))
+>>>               return -EINVAL;
+>>
+>> In that case for unsupported archs we should probably bail out with -ENOENT here
+>> as helper doc says '**-ENOENT** if architecture does not support branch records'
+>> (see bpf_read_branch_records() doc in include/uapi/linux/bpf.h).
+> 
+> Yep, I think so too.
+> 
 
-Because the race window is really small, and the lost TLB flushing
-will cause problem only if a TLB entry is inserted before the
-unmapping in the race window, the race is only theoretical.  But the
-fix is simple and cheap too.
+Hi Andrii/Daniel,
+     I agree, changing return type to -ENOENT make sense, I will update
+in next version of this patch.
 
-Syzbot has reported this too as follows,
+Thanks,
+Kajol Jain
 
-==================================================================
-BUG: KCSAN: data-race in flush_tlb_batched_pending / try_to_unmap_one
-
-write to 0xffff8881072cfbbc of 1 bytes by task 17406 on cpu 1:
- flush_tlb_batched_pending+0x5f/0x80 mm/rmap.c:691
- madvise_free_pte_range+0xee/0x7d0 mm/madvise.c:594
- walk_pmd_range mm/pagewalk.c:128 [inline]
- walk_pud_range mm/pagewalk.c:205 [inline]
- walk_p4d_range mm/pagewalk.c:240 [inline]
- walk_pgd_range mm/pagewalk.c:277 [inline]
- __walk_page_range+0x981/0x1160 mm/pagewalk.c:379
- walk_page_range+0x131/0x300 mm/pagewalk.c:475
- madvise_free_single_vma mm/madvise.c:734 [inline]
- madvise_dontneed_free mm/madvise.c:822 [inline]
- madvise_vma mm/madvise.c:996 [inline]
- do_madvise+0xe4a/0x1140 mm/madvise.c:1202
- __do_sys_madvise mm/madvise.c:1228 [inline]
- __se_sys_madvise mm/madvise.c:1226 [inline]
- __x64_sys_madvise+0x5d/0x70 mm/madvise.c:1226
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-write to 0xffff8881072cfbbc of 1 bytes by task 71 on cpu 0:
- set_tlb_ubc_flush_pending mm/rmap.c:636 [inline]
- try_to_unmap_one+0x60e/0x1220 mm/rmap.c:1515
- rmap_walk_anon+0x2fb/0x470 mm/rmap.c:2301
- try_to_unmap+0xec/0x110
- shrink_page_list+0xe91/0x2620 mm/vmscan.c:1719
- shrink_inactive_list+0x3fb/0x730 mm/vmscan.c:2394
- shrink_list mm/vmscan.c:2621 [inline]
- shrink_lruvec+0x3c9/0x710 mm/vmscan.c:2940
- shrink_node_memcgs+0x23e/0x410 mm/vmscan.c:3129
- shrink_node+0x8f6/0x1190 mm/vmscan.c:3252
- kswapd_shrink_node mm/vmscan.c:4022 [inline]
- balance_pgdat+0x702/0xd30 mm/vmscan.c:4213
- kswapd+0x200/0x340 mm/vmscan.c:4473
- kthread+0x2c7/0x2e0 kernel/kthread.c:327
- ret_from_fork+0x1f/0x30
-
-value changed: 0x01 -> 0x00
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 0 PID: 71 Comm: kswapd0 Not tainted 5.16.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-==================================================================
-
-Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-Reported-by: syzbot+aa5bebed695edaccf0df@syzkaller.appspotmail.com
-Cc: Nadav Amit <namit@vmware.com>
-Cc: Mel Gorman <mgorman@techsingularity.net>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Yu Zhao <yuzhao@google.com>
-Cc: Marco Elver <elver@google.com>
----
- include/linux/mm_types.h |  2 +-
- mm/rmap.c                | 15 ++++++++-------
- 2 files changed, 9 insertions(+), 8 deletions(-)
-
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index c3a6e6209600..789778067db9 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -632,7 +632,7 @@ struct mm_struct {
- 		atomic_t tlb_flush_pending;
- #ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
- 		/* See flush_tlb_batched_pending() */
--		bool tlb_flush_batched;
-+		atomic_t tlb_flush_batched;
- #endif
- 		struct uprobes_state uprobes_state;
- #ifdef CONFIG_PREEMPT_RT
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 163ac4e6bcee..60902c3cfb4a 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -633,7 +633,7 @@ static void set_tlb_ubc_flush_pending(struct mm_struct *mm, bool writable)
- 	 * before the PTE is cleared.
- 	 */
- 	barrier();
--	mm->tlb_flush_batched = true;
-+	atomic_inc(&mm->tlb_flush_batched);
- 
- 	/*
- 	 * If the PTE was dirty then it's best to assume it's writable. The
-@@ -680,15 +680,16 @@ static bool should_defer_flush(struct mm_struct *mm, enum ttu_flags flags)
-  */
- void flush_tlb_batched_pending(struct mm_struct *mm)
- {
--	if (data_race(mm->tlb_flush_batched)) {
--		flush_tlb_mm(mm);
-+	int batched = atomic_read(&mm->tlb_flush_batched);
- 
-+	if (batched) {
-+		flush_tlb_mm(mm);
- 		/*
--		 * Do not allow the compiler to re-order the clearing of
--		 * tlb_flush_batched before the tlb is flushed.
-+		 * If the new TLB flushing is pended during flushing,
-+		 * leave mm->tlb_flush_batched as is, to avoid to lose
-+		 * flushing.
- 		 */
--		barrier();
--		mm->tlb_flush_batched = false;
-+		atomic_cmpxchg(&mm->tlb_flush_batched, batched, 0);
- 	}
- }
- #else
--- 
-2.30.2
-
+>>
+>>> ....
+>>> }
+>>>
+>>> Thanks,
+>>> Kajol Jain
