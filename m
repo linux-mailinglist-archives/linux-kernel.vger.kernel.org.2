@@ -2,115 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4F545ACF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:00:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B5045ACFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:01:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238621AbhKWUDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 15:03:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56600 "EHLO
+        id S240243AbhKWUEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 15:04:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231366AbhKWUDm (ORCPT
+        with ESMTP id S239128AbhKWUEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 15:03:42 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 866A9C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 12:00:33 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id r25so60041547edq.7
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 12:00:33 -0800 (PST)
+        Tue, 23 Nov 2021 15:04:50 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29BE6C061714
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 12:01:42 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id e136so662114ybc.4
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 12:01:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=atishpatra.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OLIu6dOhjs4vufgSpnksyOeHKMHxKx4U/q0KpSn1TzQ=;
-        b=LbeTL942XWZEuXwaE+lfkR5hT8RLhRTix2/UbYTfTJQ7M7lWyzt/ZXwGiumtoCUW+e
-         1hOIXOn9jK0zUrXfyma9qVp0XHZFTrNoJBwajRiR8XrXu9GWaWtzy2DPRWyeLd2xnX94
-         oAFICe7pBHzAcZBKtRMbay0jvUEPt1Xh/ZsSTACgntbCA/C3OtsQTxKJ/kPS6+iE4yaa
-         pSwiKRZYOnvtxOAjWom+25QCH6eslPvTTENHLz04dvU7W7lN2v10ffFlugNv87l6jAGh
-         q+KEmX28RFSS8ZS6mZGUyWPBrLVpt8HdoRekmpU8ymomMCcpi7csSIT4Aj0svE7GOOkF
-         aTFw==
+         :cc:content-transfer-encoding;
+        bh=t/v+kSxz1eiji85Dg0icG/ia7nsKdb5UQNgj4yu1XbA=;
+        b=IwRqsQL5HJZ2NNAgvFIi1eoEuWD9tyK9eiN7sz6ZqH03QgbCLrTVI5ymeaYArtG3rQ
+         Y6yudwUhG/R2NCwwz3YKxhz7q/2T+Vbe0HqrQpzUKdTBIWvkTcl/GTNfZkdudMkdxRli
+         EMoiBdEhsZYYwQAByJnvzZQHmWqqoANt2vLLQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OLIu6dOhjs4vufgSpnksyOeHKMHxKx4U/q0KpSn1TzQ=;
-        b=Vm1GFdnVd/jjTVwgIg/Xz8DzvSWFeDL3sTDhESsGDX0pU53OJ71rw9t4r3VeffLSGT
-         LZdLZ0zmw1j9yRQhEX0L0Xja4JCNnM53gW1ga28WkCt3Nqwx0tgABQxZgdDDQTP2DQEU
-         zW4ZVMccniDfuplUgu9teK/KFGjEyDEKNO1lqB6gL7jKJ/knLW3sPg5lvBs+GUuUmUwA
-         MhThZ8pkeSxHJlXBb6S13CyeiwPVl/hzLeydDsfFqJPGqJ7dirgllXrwvt12aojpI5Tc
-         XhhRntKDu5lSm8X7UvTMrPA3UQDtnPQ2dyH2ar709xinDu1y1lgLK7LEkfCG91Xtt0lq
-         12AQ==
-X-Gm-Message-State: AOAM532xzKngzUrfuUVQkOxR/UtkX2L2UoCUUY1B4R3qFVrIr7RG5hh7
-        Bbncw5GhMNZqu4es6Z/muUeYBOBKA/mICaouQls=
-X-Google-Smtp-Source: ABdhPJxGYJqFC7AvC31S9S38mojNSaXY0eQIavmTz6Qa3fAIaf5JamesroypEO91N4hGDq2TSg0wVUgrgR9d0SrR8PU=
-X-Received: by 2002:a50:a6ca:: with SMTP id f10mr13427258edc.81.1637697631969;
- Tue, 23 Nov 2021 12:00:31 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=t/v+kSxz1eiji85Dg0icG/ia7nsKdb5UQNgj4yu1XbA=;
+        b=X8PcSDFcy4qRiMEFd4HTjRlAKcGo6bdfN67R02k3t1XT7VjCHg5fuZXXSIIZMUODT5
+         ryxIWh22ZIVsgos31vjaiTDWqp7viLMsa78wKmQvHhBJEHr/YY53bfAZi8pW7R6mFB0A
+         7yuqxz5Vxn2rQ5gObiODpY004lriGD+2/SIZxIq2kFHScz7gIDFgn8iPbyOdFgPuzYdq
+         CDnT5R/wJcErjgkhAGbthWUqnoj7aIAKx2Nh2y2VXS2IowivZRbj1KwD5iGkiiDd5UMB
+         UB73qRmfW3GjJEtisSyzt4ETrzLS+EnY2LaW8xsXuKK55EAeBIRQmzGIEF7Zqy1pDmH4
+         HhtA==
+X-Gm-Message-State: AOAM532znPu/4bEzqDN3MK/ve6d4uzQoUSTZ9IEOGISEjdWwdjiNHeFU
+        fWYF0DLn2vNDKfVWkxJFDHC5ehV/8jLWcmpkAKx2
+X-Google-Smtp-Source: ABdhPJxwy2lpaMGVdBaEtmzNC/OVDfQyJQupRowAmg8DGXxghxRN8N4XPTU8UHC6petkfR4neTSFZGp5e6jxHqNyij8=
+X-Received: by 2002:a25:73d0:: with SMTP id o199mr8906443ybc.87.1637697700555;
+ Tue, 23 Nov 2021 12:01:40 -0800 (PST)
 MIME-Version: 1.0
-References: <20211123190916.1738458-1-shakeelb@google.com>
-In-Reply-To: <20211123190916.1738458-1-shakeelb@google.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 23 Nov 2021 12:00:19 -0800
-Message-ID: <CAHbLzkp7RVGrwrCL3+joEZbKxRQkC=-madvdKwL=xgwR8dhLhA@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: thp: update split_queue_len correctly
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Zi Yan <ziy@nvidia.com>, Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211123015717.542631-1-guoren@kernel.org> <1913356.JkcO0Xq8vV@diego>
+In-Reply-To: <1913356.JkcO0Xq8vV@diego>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Tue, 23 Nov 2021 12:01:29 -0800
+Message-ID: <CAOnJCU+-WCHA9vgrbcMFsLMaimwJNEXOpqMLS_0Gq_JRM5QNWQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/3] riscv: Add riscv.fwsz kernel parameter to save memory
+To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
+Cc:     Guo Ren <guoren@kernel.org>, Anup Patel <anup@brainfault.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>, atishp@rivosinc.com,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Philipp Tomsich <philipp.tomsich@vrull.eu>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 11:09 AM Shakeel Butt <shakeelb@google.com> wrote:
+On Tue, Nov 23, 2021 at 11:33 AM Heiko St=C3=BCbner <heiko@sntech.de> wrote=
+:
 >
-> The deferred THPs are split on memory pressure through shrinker
-> callback and splitting of THP during reclaim can fail for several
-> reasons like unable to lock the THP, under writeback or unexpected
-> number of pins on the THP. Such pages are put back on the deferred split
-> list for consideration later. However kernel does not update the
-> deferred queue size on putting back the pages whose split was failed.
-> This patch fixes that.
+> Hi Guo,
 >
-> Without this patch the split_queue_len can underflow. Shrinker will
-> always get that there are some THPs to split even if there are not and
-> waste some cpu to scan the empty list.
+> Am Dienstag, 23. November 2021, 02:57:14 CET schrieb guoren@kernel.org:
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > The firmware of riscv (such as opensbi) occupy 2MB(64bit) /
+> > 4MB(32bit) in Linux. It's very wasteful to small memory footprint
+> > soc chip such as Allwinner D1s/F133. The kernel parameter gives a
+> > chance to users to set the proper size of the firmware and get
+> > more than 1.5MB of memory.
 >
-> Fixes: 364c1eebe453 ("mm: thp: extract split_queue_* into a struct")
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> ---
-> Changes since v1:
-> - updated commit message
-> - incorporated Yang Shi's suggestion
+> is this kernel parameter approach a result of the T-Head Ice-SoC
+> currently loading its openSBI from inside the main u-boot via extfs-load,
+> directly before the kernel itself [0] ?
 
-Reviewed-by: Yang Shi <shy828301@gmail.com>
+Looking at the defconfig[1], it may be U-Boot SPL not U-Boot proper. I
+may be looking at the wrong config though.
+If U-Boot SPL is actually used, you don't even need to manually load
+OpenSBI "fw_jump" binary.
 
+As Heiko pointed, you should just follow how U-Boot SPL works on
+hifive unmatched (creating the FIT image)
+The standard U-Boot SPL uses with fw_dynamic which provides all the
+flexibility you want.
+
+[1] https://github.com/T-head-Semi/u-boot/blob/main/configs/ice_evb_c910_de=
+fconfig
 >
->  mm/huge_memory.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> Because that approach in general looks not ideal.
 >
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index e5483347291c..d393028681e2 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -2809,7 +2809,7 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
->         unsigned long flags;
->         LIST_HEAD(list), *pos, *next;
->         struct page *page;
-> -       int split = 0;
-> +       unsigned long split = 0;
+> Normally you want the main u-boot already running with less privileges
+> so firmware like openSBI should've been already loaded before that.
+> Even more true when you're employing methods to protect memory regions
+> from less privileged access.
 >
->  #ifdef CONFIG_MEMCG
->         if (sc->memcg)
-> @@ -2847,6 +2847,7 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
+> A lot of socs set u-boot as opensbi payload, but for the example the D1
+> mainline approach uses the Allwinner TOC1 image format to load both
+> opensbi and the main uboot into memory from its 1st stage loader.
 >
->         spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
->         list_splice_tail(&list, &ds_queue->split_queue);
-> +       ds_queue->split_queue_len -= split;
->         spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
 >
->         /*
-> --
-> 2.34.0.rc2.393.gf8c9666880-goog
+> Of course the best way would be to just mimic what a number of
+> arm64 and also riscv socs do and use already existing u-boot utilities.
 >
+> U-Boot can create a FIT image containing both main u-boot, dtb and
+> firmware images that all get loaded from SPL and placed at the correct
+> addresses before having the SPL jump into opensbi and from there
+> into u-boot [1] .
+>
+> And as Anup was writing, reserved-memory should then be the way
+> to go to tell the kernel what regions to omit.
+>
+> And mainline u-boot has already the means to even take the reserved-memor=
+y
+> from the devicetree used by opensbi and copy it to a new devicetree,
+> if the second one is different.
+>
+>
+> Heiko
+>
+>
+> [0] https://github.com/T-head-Semi/u-boot/blob/main/include/configs/ice-c=
+910.h#L46
+> [1] see spl_invoke_opensbi() in common/spl/spl_opensbi.c
+> [2] see riscv_board_reserved_mem_fixup() in arch/riscv/lib/fdt_fixup.c
+>
+> >
+> > Guo Ren (3):
+> >   riscv: Remove 2MB offset in the mm layout
+> >   riscv: Add early_param to decrease firmware region
+> >   riscv: Add riscv.fwsz kernel parameter
+> >
+> >  .../admin-guide/kernel-parameters.txt         |  3 +++
+> >  arch/riscv/include/asm/page.h                 |  8 +++++++
+> >  arch/riscv/kernel/head.S                      | 10 +++-----
+> >  arch/riscv/kernel/vmlinux.lds.S               |  5 ++--
+> >  arch/riscv/mm/init.c                          | 23 ++++++++++++++++---
+> >  5 files changed, 36 insertions(+), 13 deletions(-)
+> >
+> >
+>
+>
+>
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
+
+
+--=20
+Regards,
+Atish
