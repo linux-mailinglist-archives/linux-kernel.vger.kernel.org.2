@@ -2,120 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DF8F45A44A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:00:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5871945A44D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:00:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233318AbhKWODK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 09:03:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52372 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229808AbhKWODJ (ORCPT
+        id S234115AbhKWODx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 09:03:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229898AbhKWODw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 09:03:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637676000;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=J+U2ly5t8pjpukreZ+mwG58hWGw3qavINk7r30wyotQ=;
-        b=Fw6A0BVDSqbzjW8z2Y2MRf3ikM2c9VsMuB3GwEqxbORtme7XqGr5mnqDinoT/F2wp2J308
-        4Ga6TfYXz3GlfcpaJ4h7AcsQWBAXreiBJV9Vk7dy6TEys7YVYYemLvagenZ6VXj62N5rtM
-        l6DqTjZGHHVpZKhJ9lSFA3wxaVVVigk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-406-mp2Gm_tkMRyg_0jsb2KKiw-1; Tue, 23 Nov 2021 08:59:57 -0500
-X-MC-Unique: mp2Gm_tkMRyg_0jsb2KKiw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 87D5FEC1A2;
-        Tue, 23 Nov 2021 13:59:56 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.40.192.236])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6E69C5C1D5;
-        Tue, 23 Nov 2021 13:59:54 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] KVM: selftests: Make sure kvm_create_max_vcpus test won't hit RLIMIT_NOFILE
-Date:   Tue, 23 Nov 2021 14:59:53 +0100
-Message-Id: <20211123135953.667434-1-vkuznets@redhat.com>
+        Tue, 23 Nov 2021 09:03:52 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CEB9C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 06:00:44 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id b40so91455794lfv.10
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 06:00:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M5qj5wwgDDOjYxs26fOkrwGqoqUS/daI8VCa+zgPh2o=;
+        b=IM7a8kgtMvTyRtufIbIt7g+DOLQ50st+d8LZTnl3NaJZBq8aL026C3acFsQk5B49jQ
+         Knn1o7zc18/ZvrYwkqhesY1s5YGw/1aNOUgeiyA0NBBM2Ds3/Pyk70mhYPS1GweZM9AQ
+         nggBbwjyGcI3+Owva3hmR8YBGJrhP85/yj+KFSe48zdWSj3o6kVyyzPOHgCsbNVCIENs
+         1AvHmk3H6r5PnEKsEdwXS61GJVmK1kG4zyBqxhToujhANwCWq/91Arb1XJaaMg0pg1OA
+         YeozW+Ig1FxjN/8jbXA1+MHbwQvsa8EnPyUwSw9Q0AWeZCTxqWbJj7MsF/Km+EtrPoOj
+         kDQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M5qj5wwgDDOjYxs26fOkrwGqoqUS/daI8VCa+zgPh2o=;
+        b=xbL96+ogZZ6syu7OUcVhfeFP8TxqSa7dAdvnL459m4SlUM6TpERhrL3XosdV7auRuD
+         J/kMC5bqF6QS8h4RZmUlTqJ80tfJzj2KJL364Kh9ixNVTD9IWXPGRzSA5sDdYlzALNys
+         2gEW7wBmzBlN+ZxrDOuN6GNO369dqnlfiD6nJMTCbwJGpEu2jLcowGbSDcbCl9tpeqbL
+         Jmk26lyXTBV9UACZqhm9nGJ3aWA/xwWV7vEayhFpiY0a70nVwBNgR6ilKqRg1yB4NO/C
+         Nm8qm4VIQI2+/8P7gj9A745IZW38MVIXchkbuG3H3L1PAZkSVWak4/QfWnPCRWQWM0BD
+         Bu1g==
+X-Gm-Message-State: AOAM532/zY89+xDk916yfqAB8jEoHCL0Pc3Rqv2Enc8vmqBVzAqx4DY1
+        j4W36/E2MSNgkDOw7TKeQia4kQMJ/lEKxkpPCHw05A==
+X-Google-Smtp-Source: ABdhPJw3+BjoP79/Y1fE1CQYBaOTAtfhTURZ68IcYhBbZql//bpUU/iUeD1dgtOyMHfcDiXS+5EkEr2br4fcG5CDuKI=
+X-Received: by 2002:ac2:5607:: with SMTP id v7mr4972841lfd.71.1637676040864;
+ Tue, 23 Nov 2021 06:00:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20211115211533.6971-1-wbartczak@marvell.com> <20211115215426.1554-1-wbartczak@marvell.com>
+In-Reply-To: <20211115215426.1554-1-wbartczak@marvell.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 23 Nov 2021 15:00:04 +0100
+Message-ID: <CAPDyKFoe2MgGcsMXPKPsFNtiBwQ=u6ZNCy_59rYoyAWa2ip2cQ@mail.gmail.com>
+Subject: Re: [PATCH v2] mmc: cavium: Improve request handling by proper use of API
+To:     Wojciech Bartczak <wbartczak@marvell.com>
+Cc:     linux-mmc@vger.kernel.org, rric@kernel.org, beanhuo@micron.com,
+        tanxiaofei@huawei.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the elevated 'KVM_CAP_MAX_VCPUS' value kvm_create_max_vcpus test
-may hit RLIMIT_NOFILE limits:
+On Mon, 15 Nov 2021 at 22:54, Wojciech Bartczak <wbartczak@marvell.com> wrote:
+>
+> The driver for cavium/marvell platforms uses directly mrq->done() callback
+> to signalize the request completion. This method to finalize request
+> processing is not correct.
+>
+> Following fix introduces proper use of mmc_request_done() API for
+> all paths involved into handling MMC core requests.
+>
+> Changes v1 => v2:
+> - Added missing variable slot and functionality to retrive
+>   slot base on bus_id contained in response status register.
 
- # ./kvm_create_max_vcpus
- KVM_CAP_MAX_VCPU_ID: 4096
- KVM_CAP_MAX_VCPUS: 1024
- Testing creating 1024 vCPUs, with IDs 0...1023.
- /dev/kvm not available (errno: 24), skipping test
+Version history is great, but should come outside the actual commit
+message. See below.
 
-Adjust RLIMIT_NOFILE limits to make sure KVM_CAP_MAX_VCPUS fds can be
-opened. Note, raising hard limit ('rlim_max') requires CAP_SYS_RESOURCE
-capability which is generally not needed to run kvm selftests (but without
-raising the limit the test is doomed to fail anyway).
+>
+> Signed-off-by: Wojciech Bartczak <wbartczak@marvell.com>
+> ---
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Version history should come here along with other information. Then
+add the below three dashes to end the section.
+
 ---
-Changes since v1:
-- Drop 'NOFD' define replacing it with 'int nr_fds_wanted' [Sean]
-- Drop 'errno' printout as TEST_ASSERT() already does that.
----
- .../selftests/kvm/kvm_create_max_vcpus.c      | 22 +++++++++++++++++++
- 1 file changed, 22 insertions(+)
 
-diff --git a/tools/testing/selftests/kvm/kvm_create_max_vcpus.c b/tools/testing/selftests/kvm/kvm_create_max_vcpus.c
-index f968dfd4ee88..ca957fe3f903 100644
---- a/tools/testing/selftests/kvm/kvm_create_max_vcpus.c
-+++ b/tools/testing/selftests/kvm/kvm_create_max_vcpus.c
-@@ -12,6 +12,7 @@
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
-+#include <sys/resource.h>
- 
- #include "test_util.h"
- 
-@@ -40,10 +41,31 @@ int main(int argc, char *argv[])
- {
- 	int kvm_max_vcpu_id = kvm_check_cap(KVM_CAP_MAX_VCPU_ID);
- 	int kvm_max_vcpus = kvm_check_cap(KVM_CAP_MAX_VCPUS);
-+	/*
-+	 * Number of file descriptors reqired, KVM_CAP_MAX_VCPUS for vCPU fds +
-+	 * an arbitrary number for everything else.
-+	 */
-+	int nr_fds_wanted = kvm_max_vcpus + 100;
-+	struct rlimit rl;
- 
- 	pr_info("KVM_CAP_MAX_VCPU_ID: %d\n", kvm_max_vcpu_id);
- 	pr_info("KVM_CAP_MAX_VCPUS: %d\n", kvm_max_vcpus);
- 
-+	/*
-+	 * Check that we're allowed to open nr_fds_wanted file descriptors and
-+	 * try raising the limits if needed.
-+	 */
-+	TEST_ASSERT(!getrlimit(RLIMIT_NOFILE, &rl), "getrlimit() failed!");
-+
-+	if (rl.rlim_cur < nr_fds_wanted) {
-+		rl.rlim_cur = nr_fds_wanted;
-+
-+		if (rl.rlim_max <  nr_fds_wanted)
-+			rl.rlim_max = nr_fds_wanted;
-+
-+		TEST_ASSERT(!setrlimit(RLIMIT_NOFILE, &rl), "setrlimit() failed!");
-+	}
-+
- 	/*
- 	 * Upstream KVM prior to 4.8 does not support KVM_CAP_MAX_VCPU_ID.
- 	 * Userspace is supposed to use KVM_CAP_MAX_VCPUS as the maximum ID
--- 
-2.33.1
+>  drivers/mmc/host/cavium.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/mmc/host/cavium.c b/drivers/mmc/host/cavium.c
+> index 95a41983c6c0..674cfaf5d64e 100644
+> --- a/drivers/mmc/host/cavium.c
+> +++ b/drivers/mmc/host/cavium.c
+> @@ -435,8 +435,10 @@ static void cleanup_dma(struct cvm_mmc_host *host, u64 rsp_sts)
+>  irqreturn_t cvm_mmc_interrupt(int irq, void *dev_id)
+>  {
+>         struct cvm_mmc_host *host = dev_id;
+> +       struct cvm_mmc_slot *slot;
+>         struct mmc_request *req;
+>         u64 emm_int, rsp_sts;
+> +       int bus_id;
+>         bool host_done;
+>
+>         if (host->need_irq_handler_lock)
+> @@ -456,6 +458,8 @@ irqreturn_t cvm_mmc_interrupt(int irq, void *dev_id)
+>                 goto out;
+>
+>         rsp_sts = readq(host->base + MIO_EMM_RSP_STS(host));
+> +       bus_id = get_bus_id(rsp_sts);
+> +       slot = host->slot[bus_id];  /* bus_id is in a range 0..2 */
+>         /*
+>          * dma_val set means DMA is still in progress. Don't touch
+>          * the request and wait for the interrupt indicating that
+> @@ -493,8 +497,8 @@ irqreturn_t cvm_mmc_interrupt(int irq, void *dev_id)
+>             (rsp_sts & MIO_EMM_RSP_STS_DMA_PEND))
+>                 cleanup_dma(host, rsp_sts);
+>
 
+> +       mmc_request_done(slot->mmc, req);
+>         host->current_req = NULL;
+> -       req->done(req);
+
+Flipping the order doesn't really matter here, as cvm_mmc_request() is
+protected with the ->acquire_bus() lock.
+
+However, I think it's good practise from the mmc core point of view,
+to clear host->current_req prior to calling mmc_request_done(). Can
+you please change this.
+
+>
+>  no_req_done:
+>         if (host->dmar_fixup_done)
+> @@ -699,8 +703,7 @@ static void cvm_mmc_dma_request(struct mmc_host *mmc,
+>
+>  error:
+>         mrq->cmd->error = -EINVAL;
+> -       if (mrq->done)
+> -               mrq->done(mrq);
+> +       mmc_request_done(mmc, mrq);
+>         host->release_bus(host);
+>  }
+>
+
+Kind regards
+Uffe
