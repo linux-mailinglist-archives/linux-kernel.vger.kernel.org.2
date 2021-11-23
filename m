@@ -2,143 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8258A45A45C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:04:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E62245A465
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:07:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234213AbhKWOH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 09:07:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229895AbhKWOHZ (ORCPT
+        id S234213AbhKWOKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 09:10:40 -0500
+Received: from forward108o.mail.yandex.net ([37.140.190.206]:44272 "EHLO
+        forward108o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229895AbhKWOKi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 09:07:25 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C415C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 06:04:17 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id m192so17483287qke.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 06:04:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Pelz0/bmCMSCu6rWTgejbKvJkGPF4AA/IxYbeA6W6OU=;
-        b=AyvP3vCGOcJCMgThxmQeFTjsdWCRgkujCmtS2IhhQQTeg53nROIVmYCl5vEZZUrlQq
-         NorYEfdluFQHOEaE4XkncpKNTRXFlmyCE5z8+dr6GC20ylYvAdz5qrgac5dyrx9FYogJ
-         sGj5rTbcAuzFz1v5z4VV0g/eU+qUoounLPBs9NqoYnUH0Ox/tuzRj1kOisXNushN4Isb
-         /nWFICqmnaoh4zfg6cmB4vC4PeKYX5mkDvBAwb8suUZJpUJ+G4cXL/ayY2cHpPpZQmtr
-         ApEnUXwzot72ZLKblL4uAI7BZGXY6tqY1yVhYRq9ioOKUJmGQ67RRfN/viuZs6n3shvm
-         lWYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Pelz0/bmCMSCu6rWTgejbKvJkGPF4AA/IxYbeA6W6OU=;
-        b=6+eOdfPRRGtPF12m+dN8/c96ywTagNg3hnVujlS1uLxHeeJaEB3tDPqyUbLSM9+NiR
-         ueIMHti3Ibw9sJsCPJmUGfzy0Q2rqlMu1yxCTjmGAScGuqPH1wboagxmrd3Y1+X2H0kz
-         6ijsNhUw9rGInrrdnR6fcy8TBy/hzRTTn5nhiw8+TuIGcKC09fTKZoH+gi9u44wvcoF/
-         TTNezDj0IS8d1EtEsu4TtI2Vxnc8V8LPt2dkhiHXd+hd1vfJw0KZJDv2w2qBwJDW77S9
-         09gQzhGYmrbAc3+AVKseMbzSz9ucceOX5mPV9LwARQAVEePdP+ElguXofifVs0j0h61Y
-         5FOA==
-X-Gm-Message-State: AOAM533bbjW1N8dnSUXeWe09FTBjyjie79e8raS/5B/w0gRWAjLmEQcq
-        zSxoW5uGQXiTqWVE5lUhyWg=
-X-Google-Smtp-Source: ABdhPJwGPVNYT0gtW2vZvLW8xdcBh0/G3YYvjXKUVg2ET/EdVE6cHtaes/rFbu3Kl3YB+gmbQ3x2IQ==
-X-Received: by 2002:a37:6d3:: with SMTP id 202mr5073624qkg.16.1637676256225;
-        Tue, 23 Nov 2021 06:04:16 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id v16sm5895000qkj.93.2021.11.23.06.04.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 06:04:15 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: ran.xiaokai@zte.com.cn
-To:     bsingharora@gmail.com, akpm@linux-foundation.org, mingo@kernel.org,
-        sfr@canb.auug.org.au
-Cc:     linux-kernel@vger.kernel.org, Yang Yang <yang.yang29@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] delayacct: fix incomplete disable operation when switch enable to disable
-Date:   Tue, 23 Nov 2021 14:03:43 +0000
-Message-Id: <20211123140342.32962-1-ran.xiaokai@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Tue, 23 Nov 2021 09:10:38 -0500
+Received: from myt6-f96510cd1fe5.qloud-c.yandex.net (myt6-f96510cd1fe5.qloud-c.yandex.net [IPv6:2a02:6b8:c12:4e12:0:640:f965:10cd])
+        by forward108o.mail.yandex.net (Yandex) with ESMTP id 721B05DD3578;
+        Tue, 23 Nov 2021 17:07:25 +0300 (MSK)
+Received: from myt5-89cdf5c4a3a5.qloud-c.yandex.net (myt5-89cdf5c4a3a5.qloud-c.yandex.net [2a02:6b8:c12:289b:0:640:89cd:f5c4])
+        by myt6-f96510cd1fe5.qloud-c.yandex.net (mxback/Yandex) with ESMTP id EAARN659cs-7PCujBt4;
+        Tue, 23 Nov 2021 17:07:25 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1637676445;
+        bh=zukpakYo/v9A9p+z3C+BYBBdaGVg0clOkde3xk807jI=;
+        h=Date:Subject:To:From:Message-Id:Cc;
+        b=p2i+Fqpuuu2qmhjtrMphSS4mUBUejnAcgFfVWxge5wNE6Focxjzmx9rl1NmwKsLUU
+         F04d6bJux6Nf3ZOTZTPuuo2nNxd4qUHmCXNU2CmqrKYS87p0cHNR2Cgwj0CYkhSPg9
+         6fpRv4Kt49obpZcvrpbtEMznGbl4OCRDwg9sFiik=
+Authentication-Results: myt6-f96510cd1fe5.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
+Received: by myt5-89cdf5c4a3a5.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id LKuEaJWePI-7OwqACT4;
+        Tue, 23 Nov 2021 17:07:24 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+X-Yandex-Fwd: 2
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     David Abdurachmanov <david.abdurachmanov@sifive.com>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] rtc: da9063: add as wakeup source
+Date:   Tue, 23 Nov 2021 17:06:04 +0300
+Message-Id: <20211123140604.21655-1-nikita.shubin@maquefel.me>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yang <yang.yang29@zte.com.cn> 
+As da9063 driver refuses to load without irq, we simply add it as a wakeup
+source before registering rtc device.
 
-When a task is created after delayacct is enabled, kernel will do all the
-delay accountings for that task. The problems is if user disables delayacct
-by set /proc/sys/kernel/task_delayacct to zero, only blkio delay accounting
-is disabled.
-
-Now disable all the kinds of delay accountings when
-/proc/sys/kernel/task_delayacct sets to zero.
-
-Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
-Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
- include/linux/delayacct.h | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+v1->v2:
+Alexandre Belloni:
 
-diff --git a/include/linux/delayacct.h b/include/linux/delayacct.h
-index b96d68f310a2..c675cfb6437e 100644
---- a/include/linux/delayacct.h
-+++ b/include/linux/delayacct.h
-@@ -131,36 +131,54 @@ static inline __u64 delayacct_blkio_ticks(struct task_struct *tsk)
+Dropped everything except device_init_wakeup, as driver refuses to load
+without irq specified, we can always set it as a wakeup source, before
+calling devm_rtc_register_device.
+---
+ drivers/rtc/rtc-da9063.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/rtc/rtc-da9063.c b/drivers/rtc/rtc-da9063.c
+index d4b72a9fa2ba..b9a73356bace 100644
+--- a/drivers/rtc/rtc-da9063.c
++++ b/drivers/rtc/rtc-da9063.c
+@@ -494,6 +494,8 @@ static int da9063_rtc_probe(struct platform_device *pdev)
+ 		dev_err(&pdev->dev, "Failed to request ALARM IRQ %d: %d\n",
+ 			irq_alarm, ret);
  
- static inline void delayacct_freepages_start(void)
- {
-+	if (!static_branch_unlikely(&delayacct_key))
-+		return;
++	device_init_wakeup(&pdev->dev, true);
 +
- 	if (current->delays)
- 		__delayacct_freepages_start();
+ 	return devm_rtc_register_device(rtc->rtc_dev);
  }
  
- static inline void delayacct_freepages_end(void)
- {
-+	if (!static_branch_unlikely(&delayacct_key))
-+		return;
-+
- 	if (current->delays)
- 		__delayacct_freepages_end();
- }
- 
- static inline void delayacct_thrashing_start(void)
- {
-+	if (!static_branch_unlikely(&delayacct_key))
-+		return;
-+
- 	if (current->delays)
- 		__delayacct_thrashing_start();
- }
- 
- static inline void delayacct_thrashing_end(void)
- {
-+	if (!static_branch_unlikely(&delayacct_key))
-+		return;
-+
- 	if (current->delays)
- 		__delayacct_thrashing_end();
- }
- 
- static inline void delayacct_swapin_start(void)
- {
-+	if (!static_branch_unlikely(&delayacct_key))
-+		return;
-+
- 	if (current->delays)
- 		__delayacct_swapin_start();
- }
- 
- static inline void delayacct_swapin_end(void)
- {
-+	if (!static_branch_unlikely(&delayacct_key))
-+		return;
-+
- 	if (current->delays)
- 		__delayacct_swapin_end();
- }
 -- 
-2.25.1
+2.31.1
 
