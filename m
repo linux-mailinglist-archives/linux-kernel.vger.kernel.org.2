@@ -2,166 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6661745AD19
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:12:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D46C945AD1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:12:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238913AbhKWUPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 15:15:24 -0500
-Received: from mail-co1nam11on2071.outbound.protection.outlook.com ([40.107.220.71]:44277
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234794AbhKWUPU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 15:15:20 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LccqvzadKhQOaiDik7fysoTmtjlaI/ZZXccNUqME/FpAi+Lg0noAIAGhmcYnZSjA6Lm1buv9V+bm3SChouV5iu0+zYSgNJjrEOURaBK+VV7vlFciPAevsz+fFqiLNyTgkABFn735RW63UWIBRMnb83YPXffZ2Q7CMXPeVZK+0gPSIaESW3OPKHeK+oikAPHsmwapd54Jhum2VqJAAMHT9PKD/fxYrovmtAHTnV3w5BJ5RLhmi+oh3GN3XfKBMG/seWUqist9FylmrYu74vzZk+sUxe6pB7r+z7mSGJaOwIoPRsL8cs55tudd2GQAuHW2FTfQ9xK5WaEkhqkADlMqyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eJGzR5iZ94VtQEIAbNpGkU9dmGaLH/xBBvK0fYtwJ04=;
- b=ageEsISbIzZ2q0JKGlPSaYQECOGvW3tFUUqY/pOPyiUR8x+lU6IvFpTsBUvcOah/Q66D0GUMNfnUEoGNUW6wwx/G+Me7Ho8P6XvoDAomYh9ogg8SYxEqh72bkzmiUl4OCLJ4qqaLe6LQYJpGHEFF9bwxnMGsiaCWBgqVeBaL1sOiw09RoZOqWqTW579hCbjW5jb7TGrxW1yBW6JEty4ZxcJL3IjlWKBVVlPjdUibseiBLGFhT4/XTZ1v47lN/P1yloOLGsf/MyiXd+RXRd+YZlJ1AUsB8N5SiJ3UjroZPMYSspZWk84tMgHYvhkPH7fVsMFHnN6uupxAxRc92tPBKg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=sunsite.dk smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
+        id S236431AbhKWUPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 15:15:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhKWUPg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 15:15:36 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D537C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 12:12:27 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id w22so234807ioa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 12:12:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eJGzR5iZ94VtQEIAbNpGkU9dmGaLH/xBBvK0fYtwJ04=;
- b=D2gN/1D4S7IB0nWXXvfGUZI1Rc/qn3MNSt844bphJQG4IoCXRjdLsWWozsOjAwMW6IxgY+DhDlHQ/QwgNs/tOnxPKw2wRv25DipTowHJCY1Owt9sFfwswVfHUBAIZVZBFyWZFxPHDAkszHMd5u6DfIm4psNTKwCrztTMD6X4n9Q=
-Received: from BN9PR03CA0721.namprd03.prod.outlook.com (2603:10b6:408:110::6)
- by BN7PR02MB4018.namprd02.prod.outlook.com (2603:10b6:406:ff::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Tue, 23 Nov
- 2021 20:12:08 +0000
-Received: from BN1NAM02FT011.eop-nam02.prod.protection.outlook.com
- (2603:10b6:408:110:cafe::1a) by BN9PR03CA0721.outlook.office365.com
- (2603:10b6:408:110::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend
- Transport; Tue, 23 Nov 2021 20:12:08 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- BN1NAM02FT011.mail.protection.outlook.com (10.13.2.129) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4713.19 via Frontend Transport; Tue, 23 Nov 2021 20:12:07 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 23 Nov 2021 12:12:06 -0800
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Tue, 23 Nov 2021 12:12:06 -0800
-Envelope-to: jacmet@sunsite.dk,
- linux-serial@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- gregkh@linuxfoundation.org
-Received: from [10.17.2.60] (port=60786)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <lizhi.hou@xilinx.com>)
-        id 1mpc98-0004H8-8r; Tue, 23 Nov 2021 12:12:06 -0800
-Subject: Re: [PATCH 1/1] tty: serial: uartlite: allow 64 bit address
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Lizhi Hou <lizhi.hou@xilinx.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-serial@vger.kernel.org>,
-        <jacmet@sunsite.dk>
-References: <20211123184506.1184561-1-lizhi.hou@xilinx.com>
- <YZ05/73+BhIANNGF@kroah.com>
-From:   Lizhi Hou <lizhi.hou@xilinx.com>
-Message-ID: <0e212384-396b-f765-be28-f9319c64b5f7@xilinx.com>
-Date:   Tue, 23 Nov 2021 12:12:06 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y/zr9KXdL5IDn5jRo1Y7NkNHyOLRr6gdxgMls6qts44=;
+        b=l4DE0aM7QYVKgOXcgSYTJVMJwyB2akVm2kVe6Pun2KNJJnzE/9Uti2DAp7SAYV/Vmg
+         CMe0Q2jR0d5Lf5cmBxgMn6jYc5AuN8wfawVLniR3gc7cy7WChzlVu1y+fuBJvWakI1tK
+         tv7SX5tUvc55gL7lMr/P2j0ei4tnk+h0WzfE7tKhFTCHX6fq0rFQgOnnDiYfJyGiUAgR
+         A89/QZIdUtNk71l1P2WTrI11qTRAAZe/X07is8I2mZVUCISZ/2BeLpYK6XznK07SV2gh
+         TBpGySow0FO+EDgtBX2Ir1u3BQG1eD/a625p5CjBR7mnN2xPTpKA/pboS/a+zCbsYMl8
+         VPLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y/zr9KXdL5IDn5jRo1Y7NkNHyOLRr6gdxgMls6qts44=;
+        b=W3hZ65mBdHwRODNQMfUcFIVgHVR4/DhKvmUjOZ/cP4NAQ6vUGIKpJG8Z7SZ8LtsnYa
+         SoNOlxgTPJ5qcO+ToO4bDnlQzjVUKn7UIw7z2lhk3JI0Yh/RylewR1DlB5JM+CQMq9mI
+         CC/+nZcDZhMx7BnVdwgWRg4uYGoKkz4KPfWNHJkZyAGeNv40NIP4E9+WHdUoqxl3Scp0
+         DA2q+85K37/faxp6Pl3ubGA3GUfcBYEkUbBVVWV65WG0tQ1DhAJAN78cQ5b8RD9nJ1rr
+         OmqS6QBFhFlfS7cS/vthxB8+Wdx2FEAEwx6F7gZXbUYKHcILxhZ09ntLG5z3YWH94uxr
+         bNqg==
+X-Gm-Message-State: AOAM530zXuVlIj+3dI9Hu1xScXM81+ni8fmGCzvtMP1MlLzrcskRQCVD
+        h+epxIGQzM4SOOP/tDPO6lR9SubTd+TAQFkgVAK/Ig==
+X-Google-Smtp-Source: ABdhPJxMksFC76skny4IutTmROUuh0bgiA13aqaydsXsEKQtkKAHQJrLMs8xdTMkRw1MXJ1o/v5rQDWEzvyU7g1e0PY=
+X-Received: by 2002:a5d:9d92:: with SMTP id ay18mr9050917iob.130.1637698346795;
+ Tue, 23 Nov 2021 12:12:26 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YZ05/73+BhIANNGF@kroah.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b3d5f064-2cc5-4e3e-f92a-08d9aebd8620
-X-MS-TrafficTypeDiagnostic: BN7PR02MB4018:
-X-Microsoft-Antispam-PRVS: <BN7PR02MB4018E53881CEA772B2CAE28BA1609@BN7PR02MB4018.namprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1079;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6tURBWkQXnvjpIhvCdWNSGWrbja6xgdjBovPRMe6a5o+kyqKO8kLk3lAljq3AhTIc0jEXPY1iJvIdKr75ZRfMwXcyoyzz/72YR4Vr0Mg+ZmBdrTh6jmk673wOz5eE7sPqWA++8FoxITRamTNxZdN7Nkn3veZih9jrA9tJT3on5RzNDv9dUwjqWe9FmtOVCBDRdyP5FyUN/pjiKFJ3B0h/yM/0k8hoXFJBeTBqGACoejYfKN7HoDXWKDKA1kA6XEEMM03GMZh5rEgnOoM5C6vdCNGuL99uIGjiAsZd5cVxAHGXEG5vVAKpXz1bbtYqfkacRuaXjyUar45guMij27TOV1CZRRVgb2C6IDt+o5CyfyBnqxx2lb6QoXk0Hfba/jyhjcpI5KZb4qMSp2EnCZ27zeZW7C1oHVMaedHCiTi6lpyIEALIf4hQQI5etQ3i6RSp2Ukz4X2H4RAQkqZibW3a3ldjy24A4s9W54e9NM/hmAiYfP4EBiHg15DDuwZ2Xlr31t7Yeeg9jVMDjUnpXNVC0bLPpNaC8Mmnhpq+V9rv5poa8yL1Fx3vSROeFOkwL2I4VlErR5dv9G4CGAWe3TtqtbkkR61EMMse+Sp7cbFpeD0lbOaGifnGTN4rxHOrQ0BEtF+U48kPbLtAfUOi0f5Axe24B9wdnEtWyp+xzKLiJxXqXBpnjtis4XNcr/DO8CKAg94YC+GQpDe9a/878pmCjnuwmQ0lFBKLpCtrPBDuadn8+xgMhTp9400o4Nnwz1bQetU75/6swZrZaL8sZYY590PFaG1JjdJGLYfEfEXRgrnh3qv9vfdqOqUsRiL3US1TvbysLs49vT7wtn9t2hcFOW5ovmxOEa54NhV4CPDvu0=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(36840700001)(46966006)(44832011)(36860700001)(70586007)(26005)(2616005)(70206006)(356005)(83380400001)(47076005)(82310400004)(426003)(54906003)(9786002)(508600001)(8676002)(336012)(2906002)(53546011)(7636003)(5660300002)(4326008)(36756003)(966005)(8936002)(31696002)(31686004)(316002)(186003)(110136005)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2021 20:12:07.0666
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b3d5f064-2cc5-4e3e-f92a-08d9aebd8620
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN1NAM02FT011.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR02MB4018
+References: <20211120045046.3940942-1-seanjc@google.com> <20211120045046.3940942-29-seanjc@google.com>
+In-Reply-To: <20211120045046.3940942-29-seanjc@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Tue, 23 Nov 2021 12:12:15 -0800
+Message-ID: <CANgfPd-U3B+WG6LbVu26ncm=u=TVj60-6mNPEnFkYkSBmSm1Gw@mail.gmail.com>
+Subject: Re: [PATCH 28/28] KVM: x86/mmu: Defer TLB flush to caller when
+ freeing TDP MMU shadow pages
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Hou Wenlong <houwenlong93@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/23/21 10:59 AM, Greg KH wrote:
+On Fri, Nov 19, 2021 at 8:51 PM Sean Christopherson <seanjc@google.com> wrote:
 >
-> On Tue, Nov 23, 2021 at 10:45:06AM -0800, Lizhi Hou wrote:
->> Fix the uartlite probe failure when it is mapped to address above 4G.
-> Fix it how?
-
-Does this detail comment look ok to you?
-
-The base address of uartlite registers could be 64 bit address which is 
-from device resource. When ulite_probe() calls ulite_assign(), this 64 
-bit address is casted to 32-bit. The fix is to replace "u32" type with 
-"phys_addr_t" type for the base address in ulite_assign() argument list.
-
+> Defer TLB flushes to the caller when freeing TDP MMU shadow pages instead
+> of immediately flushing.  Because the shadow pages are freed in an RCU
+> callback, so long as at least one CPU holds RCU, all CPUs are protected.
+> For vCPUs running in the guest, i.e. consuming TLB entries, KVM only
+> needs to ensure the caller services the pending TLB flush before dropping
+> its RCU protections.  I.e. use the caller's RCU as a proxy for all vCPUs
+> running in the guest.
 >
->> Signed-off-by: Lizhi Hou <lizhi.hou@xilinx.com>
-> What commit caused this problem?  What commit does this fix?  Should it
-> go to stable kernels?
-
-I searched the history. This problem was introduced by 
-https://github.com/torvalds/linux/commit/8fa7b6100693e0b648ffd34564f6f41226502a19
-
-And yes, I agree this should go to stable kernels. I will add 
-stable@vger.kernel.org to cc list.
-
+> Deferring the flushes allows batching flushes, e.g. when installing a
+> 1gb hugepage and zapping a pile of SPs, and when zapping an entire root,
+> allows skipping the flush entirely (becaues flushes are not needed in
+> that case).
 >
->> ---
->>   drivers/tty/serial/uartlite.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/tty/serial/uartlite.c b/drivers/tty/serial/uartlite.c
->> index d3d9566e5dbd..e1fa52d31474 100644
->> --- a/drivers/tty/serial/uartlite.c
->> +++ b/drivers/tty/serial/uartlite.c
->> @@ -626,7 +626,7 @@ static struct uart_driver ulite_uart_driver = {
->>    *
->>    * Returns: 0 on success, <0 otherwise
->>    */
->> -static int ulite_assign(struct device *dev, int id, u32 base, int irq,
->> +static int ulite_assign(struct device *dev, int id, phys_addr_t base, int irq,
->>                        struct uartlite_data *pdata)
-> So you changed the variable type which does what exactly here?
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-ulite_probe()
+Reviewed-by: Ben Gardon <bgardon@google.com>
 
-    -> ulite_assign(&pdev->dev, id, res->start, irq, pdata)
-
-                                                        ^^^^^^ could be 
-64-bit address. Thus "u32 base" may lose the high 32-bit.
-
-Hopefully this makes sense to you. And I can re-submit an updated patch.
-
-Thanks,
-
-Lizhi
-
+> ---
+>  arch/x86/kvm/mmu/mmu.c      | 12 ++++++++++++
+>  arch/x86/kvm/mmu/tdp_iter.h |  7 +++----
+>  arch/x86/kvm/mmu/tdp_mmu.c  | 23 +++++++++++------------
+>  3 files changed, 26 insertions(+), 16 deletions(-)
 >
-> thanks,
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index ef689b8bab12..7aab9737dffa 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -6237,6 +6237,12 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
+>         rcu_idx = srcu_read_lock(&kvm->srcu);
+>         write_lock(&kvm->mmu_lock);
 >
-> greg k-h
+> +       /*
+> +        * Zapping TDP MMU shadow pages, including the remote TLB flush, must
+> +        * be done under RCU protection, the pages are freed via RCU callback.
+> +        */
+> +       rcu_read_lock();
+> +
+>         ratio = READ_ONCE(nx_huge_pages_recovery_ratio);
+>         to_zap = ratio ? DIV_ROUND_UP(nx_lpage_splits, ratio) : 0;
+>         for ( ; to_zap; --to_zap) {
+> @@ -6261,12 +6267,18 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
+>
+>                 if (need_resched() || rwlock_needbreak(&kvm->mmu_lock)) {
+>                         kvm_mmu_remote_flush_or_zap(kvm, &invalid_list, flush);
+> +                       rcu_read_unlock();
+> +
+>                         cond_resched_rwlock_write(&kvm->mmu_lock);
+>                         flush = false;
+> +
+> +                       rcu_read_lock();
+>                 }
+>         }
+>         kvm_mmu_remote_flush_or_zap(kvm, &invalid_list, flush);
+>
+> +       rcu_read_unlock();
+> +
+>         write_unlock(&kvm->mmu_lock);
+>         srcu_read_unlock(&kvm->srcu, rcu_idx);
+>  }
+> diff --git a/arch/x86/kvm/mmu/tdp_iter.h b/arch/x86/kvm/mmu/tdp_iter.h
+> index 0693f1fdb81e..0299703fc844 100644
+> --- a/arch/x86/kvm/mmu/tdp_iter.h
+> +++ b/arch/x86/kvm/mmu/tdp_iter.h
+> @@ -9,10 +9,9 @@
+>
+>  /*
+>   * TDP MMU SPTEs are RCU protected to allow paging structures (non-leaf SPTEs)
+> - * to be zapped while holding mmu_lock for read.  Holding RCU isn't required for
+> - * correctness if mmu_lock is held for write, but plumbing "struct kvm" down to
+> - * the lower* depths of the TDP MMU just to make lockdep happy is a nightmare,
+> - * so all* accesses to SPTEs are must be done under RCU protection.
+> + * to be zapped while holding mmu_lock for read, and to allow TLB flushes to be
+> + * batched without having to collect the list of zapped SPs.  Flows that can
+> + * remove SPs must service pending TLB flushes prior to dropping RCU protection.
+>   */
+>  static inline u64 kvm_tdp_mmu_read_spte(tdp_ptep_t sptep)
+>  {
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 55c16680b927..62cb357b1dff 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -433,9 +433,6 @@ static void handle_removed_tdp_mmu_page(struct kvm *kvm, tdp_ptep_t pt,
+>                                     shared);
+>         }
+>
+> -       kvm_flush_remote_tlbs_with_address(kvm, base_gfn,
+> -                                          KVM_PAGES_PER_HPAGE(level + 1));
+> -
+>         call_rcu(&sp->rcu_head, tdp_mmu_free_sp_rcu_callback);
+>  }
+>
+> @@ -815,21 +812,14 @@ static void tdp_mmu_zap_root(struct kvm *kvm, struct kvm_mmu_page *root,
+>
+>  bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
+>  {
+> -       u64 old_spte;
+> +       u64 old_spte = kvm_tdp_mmu_read_spte(sp->ptep);
+>
+> -       rcu_read_lock();
+> -
+> -       old_spte = kvm_tdp_mmu_read_spte(sp->ptep);
+> -       if (WARN_ON_ONCE(!is_shadow_present_pte(old_spte))) {
+> -               rcu_read_unlock();
+> +       if (WARN_ON_ONCE(!is_shadow_present_pte(old_spte)))
+>                 return false;
+> -       }
+>
+>         __tdp_mmu_set_spte(kvm, kvm_mmu_page_as_id(sp), sp->ptep, old_spte, 0,
+>                            sp->gfn, sp->role.level + 1, true, true);
+>
+> -       rcu_read_unlock();
+> -
+>         return true;
+>  }
+>
+> @@ -871,6 +861,11 @@ static bool tdp_mmu_zap_leafs(struct kvm *kvm, struct kvm_mmu_page *root,
+>         }
+>
+>         rcu_read_unlock();
+> +
+> +       /*
+> +        * Because this flows zaps _only_ leaf SPTEs, the caller doesn't need
+> +        * to provide RCU protection as no 'struct kvm_mmu_page' will be freed.
+> +        */
+>         return flush;
+>  }
+>
+> @@ -1011,6 +1006,10 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu,
+>                 ret = RET_PF_SPURIOUS;
+>         else if (!tdp_mmu_set_spte_atomic(vcpu->kvm, iter, new_spte))
+>                 return RET_PF_RETRY;
+> +       else if (is_shadow_present_pte(iter->old_spte) &&
+> +                !is_last_spte(iter->old_spte, iter->level))
+> +               kvm_flush_remote_tlbs_with_address(vcpu->kvm, sp->gfn,
+> +                                                  KVM_PAGES_PER_HPAGE(iter->level + 1));
+>
+>         /*
+>          * If the page fault was caused by a write but the page is write
+> --
+> 2.34.0.rc2.393.gf8c9666880-goog
+>
