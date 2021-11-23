@@ -2,164 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 869BF459F50
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 10:32:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FBB8459F58
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 10:33:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232024AbhKWJfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 04:35:44 -0500
-Received: from mail-0301.mail-europe.com ([188.165.51.139]:50054 "EHLO
-        mail-0301.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230236AbhKWJfn (ORCPT
+        id S233239AbhKWJhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 04:37:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229719AbhKWJhB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 04:35:43 -0500
-Date:   Tue, 23 Nov 2021 09:32:28 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
-        s=protonmail; t=1637659949;
-        bh=WaYv4Vo1ied5Can2vStLBRqq5qJ8vzsHC41nroVCbKU=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=mF2LsX4wZDisixKtW1bcOAJTHf0WjPG91SzlHISEtGuZGk1Cn8biO9ZokaN192Yz8
-         BzOP9TotglL3KB6ghzW169xRSIpHRdWqu4RtCay7x6PYP5SI2K3qFivh/bRVx5qGHv
-         /mBYvwXmxvkXueWSArOCQrcblEfT1hnRsuTk08NfJ8YqaXEE/RwMIqM5APRvvfsmHz
-         Rctozj430tUUIcsMyBcIOgeY2daYHpj9S7GV1zVdYPa0/Tqx8ydyhdZZEXDk3+gdj3
-         5f+BQCmZAUVfr/EtsUINCrt9+kkMZWWFG2J9UIjBWseWwcTz4YRxMInK4sb7XDjQuF
-         JQjv+Fr35uKEw==
-To:     Pekka Paalanen <ppaalanen@gmail.com>
-From:   Simon Ser <contact@emersion.fr>
-Cc:     jim.cromie@gmail.com, quic_saipraka@quicinc.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Will Deacon <will@kernel.org>, maz@kernel.org,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Arnd Bergmann <arnd@arndb.de>, linux-arm-msm@vger.kernel.org,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        intel-gvt-dev@lists.freedesktop.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Sean Paul <sean@poorly.run>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, quic_psodagud@quicinc.com,
-        mathieu.desnoyers@efficios.com
-Reply-To: Simon Ser <contact@emersion.fr>
-Subject: Re: [PATCH v10 08/10] dyndbg: add print-to-tracefs, selftest with it - RFC
-Message-ID: <-PHBNsA2s0YNaFjE_76_aCTSMbqUpcaqbttDKFOZv0n9VRShPsgC8NDHq_S8KCpNbE32E9LRrw7CHb3pgFzgg99jFb0DX59vpcPVODkYe4Y=@emersion.fr>
-In-Reply-To: <20211123104522.7a336773@eldfell>
-References: <20211111220206.121610-1-jim.cromie@gmail.com> <f3914fa9-8b22-d54e-3f77-d998e74094b9@akamai.com> <20211116104631.195cbd0b@eldfell> <f87b7076-47e6-89b1-aaf9-b67aa6713e01@akamai.com> <20211118172401.0b4d722e@eldfell> <41ea83b2-a707-cb6f-521e-070bb12502de@akamai.com> <20211122110208.528e1d80@eldfell> <CAJfuBxyFzA++2JUxLY-6yLqmrETbmsWpTiyJH5w1qKiAkMriNw@mail.gmail.com> <20211123104522.7a336773@eldfell>
+        Tue, 23 Nov 2021 04:37:01 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0BCAC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 01:33:53 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id h19-20020a9d3e53000000b0056547b797b2so32949208otg.4
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 01:33:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u1eFzhqZhKStQ6SAejbe5i9BeR0+rlVTE2OXKMpdriE=;
+        b=X/NuWj2aYCJ+2lcyvWwjUYPcjbJ5MQlDDkLmDtPEDST/3hWWBt7AHgGeaOCpl639ba
+         lWgROjeIfON09qqiyonuRHQwTWU0aHzcnx26GwXTt3uSZ3iRXDho8JIzoFM+kuwGvU72
+         DT0IcVmqxEoBVKQ5tAYMqjxrENYmxeLyCJCFHHeuFli6g3W0qJMVIUmTmtnHkkWmpbyx
+         1flQkBfYRtIEYxRCs/3I5v3xCmAjxEUz2dM2jOeRXYL3eLJCv260JYWxakVE1YaPx4ki
+         I0UQ+5JeVX8nAqMCy2wMFjM/WkcclAF4IP9vPWRZ4H13dvbmp0/F4b46wRXKuNvfe600
+         nSrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u1eFzhqZhKStQ6SAejbe5i9BeR0+rlVTE2OXKMpdriE=;
+        b=Q5nizk5rZLvejdOmX4oi975E0wr9ghjlpHOOhtG2DJ2G3z1xasHIK9Uag0qC6yygfd
+         fe4D8g0t0rQ34Ia13cFENYxk/S6qtroOI4ZbscOzLYCllsHItFOXxiuLvXAJv6NoZScz
+         /bml+M4Ri5wYJziecUXr0wyMApfNf068FNhZwsxZJhhXj0Kg5xtnQcaaTYUEnq2REKIQ
+         eX8yEaedTx06StVEvyg4ugOPWeK8xqsuTRtFyjhtnkRfn+GFpKOvTur97JUcoM+wPEum
+         N2jroJOSWQgDXvSbVuZzHxI1G6JPc/NgjGC6Nng621lkyxrWV/vspSBnqKF8Iuwp/Amb
+         YMVg==
+X-Gm-Message-State: AOAM531dlwYamYW/TzzfsAdBT0pPrNPDV7X+9qi0bcGcgypOkNTo9W44
+        jJfw5AzeBLPx1++x/Qlz8aChTMtlJEury7N/+uptpg==
+X-Google-Smtp-Source: ABdhPJwyGX6dc9JXTH/JGlfix7XL94vC6ykb+Wdz4x/qw9tS4QrZ+d6qdrdqC+PGECCkLP/FKULRqSUDyi3d6bq1G6M=
+X-Received: by 2002:a9d:7548:: with SMTP id b8mr2994949otl.92.1637660032976;
+ Tue, 23 Nov 2021 01:33:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <20211123074344.1877731-1-ying.huang@intel.com>
+In-Reply-To: <20211123074344.1877731-1-ying.huang@intel.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 23 Nov 2021 10:33:41 +0100
+Message-ID: <CANpmjNPGkQ2VWmHjt==yWVr5webCHuRQtXau95jvPjR4Z3gxDw@mail.gmail.com>
+Subject: Re: [PATCH] mm/rmap: fix potential batched TLB flush race
+To:     Huang Ying <ying.huang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+aa5bebed695edaccf0df@syzkaller.appspotmail.com,
+        Nadav Amit <namit@vmware.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-First off, let me reiterate that this feature would be invaluable as user-s=
-pace
-developers. It's often pretty difficult to figure out the cause of an EINVA=
-L,
-we have to ask users to follow complicated instructions [1] to grab DRM log=
-s.
-Then have to skim through several megabytes of logs to find the error.
-
-I have a hack [2] which just calls system("sudo dmesg") after a failed atom=
-ic
-commit, it's been pretty handy. But it's really just a hack, a proper solut=
-ion
-would be awesome.
-
-[1]: https://gitlab.freedesktop.org/wlroots/wlroots/-/wikis/DRM-Debugging
-[2]: https://gitlab.freedesktop.org/emersion/libliftoff/-/merge_requests/61
-
-> > > > Having a subsystem specific trace buffer would allow subsystem spec=
-ific
-> > > > trace log permissions depending on the sensitivity of the data. But
-> > > > doesn't drm output today go to the system log which is typically wo=
-rld
-> > > > readable today?
-
-dmesg isn't world-readable these days, it's been changed recently-ish (last
-year?) at least on my distribution (Arch). I need root to grab dmesg.
-
-(Maybe we can we just let the DRM master process grab the logs?)
-
-> > > Yes, and that is exactly the problem. The DRM debug output is so high
-> > > traffic it would make the system log both unusable due to cruft and
-> > > slow down the whole machine. The debug output is only useful when
-> > > something went wrong, and at that point it is too late to enable
-> > > debugging. That's why a flight recorder with an over-written circular
-> > > in-memory buffer is needed.
-> >
-> > Seans patch reuses enum drm_debug_category to split the tracing
-> > stream into 10 sub-streams
-> > - how much traffic from each ?
-> > - are some sub-streams more valuable for post-mortem ?
-> > - any value from further refinement of categories ?
-> > - drop irrelevant callsites individually to reduce clutter, extend
-> > buffer time/space ?
+On Tue, 23 Nov 2021 at 08:44, Huang Ying <ying.huang@intel.com> wrote:
 >
-> I think it's hard to predict which sub-streams you are going to need
-> before you have a bug to debug. Hence I would err on the side of
-> enabling too much. This also means that better or more refined
-> categorisation might not be that much of help - or if it is, then are
-> the excluded debug messages worth having in the kernel to begin with.
-> Well, we're probably not that interested in GPU debugs but just
-> everything related to the KMS side, which on the existing categories
-> is... everything except half of CORE and DRIVER, maybe? Not sure.
+> In theory, the following race is possible for batched TLB flushing.
+>
+> CPU0                               CPU1
+> ----                               ----
+> shrink_page_list()
+>                                    unmap
+>                                      zap_pte_range()
+>                                        flush_tlb_batched_pending()
+>                                          flush_tlb_mm()
+>   try_to_unmap()
+>     set_tlb_ubc_flush_pending()
+>       mm->tlb_flush_batched = true
+>                                          mm->tlb_flush_batched = false
+>
+> After the TLB is flushed on CPU1 via flush_tlb_mm() and before
+> mm->tlb_flush_batched is set to false, some PTE is unmapped on CPU0
+> and the TLB flushing is pended.  Then the pended TLB flushing will be
+> lost.  Although both set_tlb_ubc_flush_pending() and
+> flush_tlb_batched_pending() are called with PTL locked, different PTL
+> instances may be used.
+>
+> Because the race window is really small, and the lost TLB flushing
+> will cause problem only if a TLB entry is inserted before the
+> unmapping in the race window, the race is only theoretical.  But the
+> fix is simple and cheap too.
 
-We've been recommending drm.debug=3D0x19F so far (see wiki linked above).
-KMS + PRIME + ATOMIC + LEASE is definitely something we want in, and
-CORE + DRIVER contains other useful info. We definitely don't want VBL.
+Thanks for fixing this!
 
-> My feeling is that that could mean in the order of hundreds of log
-> events at framerate (e.g. 60 times per second) per each enabled output
-> individually. And per DRM device, of course. This is with the
-> uninteresting GPU debugs already excluded.
+> Syzbot has reported this too as follows,
+>
+> ==================================================================
+> BUG: KCSAN: data-race in flush_tlb_batched_pending / try_to_unmap_one
+[...]
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index c3a6e6209600..789778067db9 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -632,7 +632,7 @@ struct mm_struct {
+>                 atomic_t tlb_flush_pending;
+>  #ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
+>                 /* See flush_tlb_batched_pending() */
+> -               bool tlb_flush_batched;
+> +               atomic_t tlb_flush_batched;
+>  #endif
+>                 struct uprobes_state uprobes_state;
+>  #ifdef CONFIG_PREEMPT_RT
+> diff --git a/mm/rmap.c b/mm/rmap.c
+> index 163ac4e6bcee..60902c3cfb4a 100644
+> --- a/mm/rmap.c
+> +++ b/mm/rmap.c
+> @@ -633,7 +633,7 @@ static void set_tlb_ubc_flush_pending(struct mm_struct *mm, bool writable)
+>          * before the PTE is cleared.
+>          */
+>         barrier();
+> -       mm->tlb_flush_batched = true;
+> +       atomic_inc(&mm->tlb_flush_batched);
 
-Indeed, successful KMS atomic commits already generate a lot of noise. On m=
-y
-machine, setting drm.debug=3D0x19F and running the following command:
+The use of barrier() and atomic needs some clarification. Is there a
+requirement that the CPU also doesn't reorder anything after this
+atomic_inc() (which is unordered)? I.e. should this be
+atomic_inc_return_release() and remove barrier()?
 
-    sudo dmesg -w | pv >/dev/null
-
-I get 400KiB/s when idling, and 850KiB/s when wiggling the cursor.
-
-> Still, I don't think the flight recorder buffer would need to be
-> massive. I suspect it would be enough to hold a few frames' worth which
-> is just a split second under active operation. When something happens,
-> the userspace stack is likely going to stop on its tracks immediately
-> to collect the debug information, which means the flooding should pause
-> and the relevant messages don't get overwritten before we get them. In
-> a multi-seat system where each device is controlled by a separate
-> display server instance, per-device logs would help with this. OTOH,
-> multi-seat is not a very common use case I suppose.
-
-There's also the case of multi-GPU where GPU B's logs could clutter GPU A's=
-,
-making it harder to understand the cause of an atomic commit failure on GPU=
- A.
-So per-device logs would be useful, but not a hard requirement for me, havi=
-ng
-*anything* at all would already be a big win.
-
-In my experiments linked above [2], system("sudo dmesg") after atomic commi=
-t
-failure worked pretty well, and the bottom of the log contained the cause o=
-f
-the failure. It was pretty useful to system("sudo dmesg -C") before perform=
-ing
-an atomic commit, to be able to only collect the extract of the log relevan=
-t to
-the atomic commit.
-
-Having some kind of "marker" mechanism could be pretty cool. "Mark" the log
-stream before performing an atomic commit (ideally that'd just return e.g. =
-an
-uint64 offset), then on failure request the logs collected after that mark.
+>         /*
+>          * If the PTE was dirty then it's best to assume it's writable. The
+> @@ -680,15 +680,16 @@ static bool should_defer_flush(struct mm_struct *mm, enum ttu_flags flags)
+>   */
+>  void flush_tlb_batched_pending(struct mm_struct *mm)
+>  {
+> -       if (data_race(mm->tlb_flush_batched)) {
+> -               flush_tlb_mm(mm);
+> +       int batched = atomic_read(&mm->tlb_flush_batched);
+>
+> +       if (batched) {
+> +               flush_tlb_mm(mm);
+>                 /*
+> -                * Do not allow the compiler to re-order the clearing of
+> -                * tlb_flush_batched before the tlb is flushed.
+> +                * If the new TLB flushing is pended during flushing,
+> +                * leave mm->tlb_flush_batched as is, to avoid to lose
+> +                * flushing.
+>                  */
+> -               barrier();
+> -               mm->tlb_flush_batched = false;
+> +               atomic_cmpxchg(&mm->tlb_flush_batched, batched, 0);
+>         }
+>  }
+>  #else
+> --
+> 2.30.2
+>
