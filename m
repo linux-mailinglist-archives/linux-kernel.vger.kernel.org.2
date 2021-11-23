@@ -2,287 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E44A459AF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 05:14:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6DBF459AFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 05:15:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233050AbhKWERi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 23:17:38 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:37424 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232884AbhKWERd (ORCPT
+        id S232939AbhKWESi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 23:18:38 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:42064 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229947AbhKWESg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 23:17:33 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AN4E8VF105187;
-        Mon, 22 Nov 2021 22:14:08 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1637640848;
-        bh=yszyn6EHHsQScwXUlQS0fEUJz7kVrrMir8iXqBe1yYY=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=jb3toupamnRgYJmxeJSxbccFNP98Xu8UFTeAo5TEkoRbdKoVwShrZS2IpZTAAEKbb
-         R4hdoy13jt0BOzvVIXYmFPwsAS6jcWQsPqH+SgBrdf8KvMkcNoBY0/wVTpdvOOe4Ii
-         eIBO9LD9RuLhmFKOiZJxVlhVoQoRIYcKtddubvW0=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AN4E81V059620
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 22 Nov 2021 22:14:08 -0600
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 22
- Nov 2021 22:14:08 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 22 Nov 2021 22:14:08 -0600
-Received: from [10.250.232.185] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AN4E4mt069078;
-        Mon, 22 Nov 2021 22:14:05 -0600
-Subject: Re: [PATCH RFC v2 3/4] mux: Add support for reading mux enable state
- from DT
-To:     Peter Rosin <peda@axentia.se>
-CC:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-can@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>
-References: <20211122125624.6431-1-a-govindraju@ti.com>
- <20211122125624.6431-4-a-govindraju@ti.com>
- <69f73f64-6424-4e3f-9068-195e959b9762@axentia.se>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <4a506332-2374-b164-5159-5d097ce667a1@ti.com>
-Date:   Tue, 23 Nov 2021 09:44:03 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <69f73f64-6424-4e3f-9068-195e959b9762@axentia.se>
+        Mon, 22 Nov 2021 23:18:36 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 74FBF1FD5B;
+        Tue, 23 Nov 2021 04:15:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1637640927; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fVAxSK3grGRLBZLDcWUCQtUs50ZigAJrnl+sH8kL13s=;
+        b=LjPRnkeK4h/2o+Zox/L+1Zk/K6HB6bo8YQRXFvrdugcafq2rbFkGCQhNxbc7osbIi071KN
+        efA7JDzPIPtK5+AxcJxv7x7GTngqP8rVDYZmuugjICKFkxx5sdHzsEid9wnxvd4919f6UL
+        ujRz+9ePkM6xw9A4naI8TQNeMJW252I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1637640927;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fVAxSK3grGRLBZLDcWUCQtUs50ZigAJrnl+sH8kL13s=;
+        b=MMN/C2PHDiLhupMycjaNKhAJF62lOopMUHbjiI4KbJ7LQl4mNlIC4x+1Apu0+jJwaY1k1a
+        viKJcl/D9yGMn3Cg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7573713B58;
+        Tue, 23 Nov 2021 04:15:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id H6+rC91qnGHFJQAAMHmgww
+        (envelope-from <neilb@suse.de>); Tue, 23 Nov 2021 04:15:25 +0000
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Michal Hocko" <mhocko@suse.com>
+Cc:     "Matthew Wilcox" <willy@infradead.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Thierry Reding" <thierry.reding@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MM: discard __GFP_ATOMIC
+In-reply-to: <YZvLQyjIyBafYEPV@dhcp22.suse.cz>
+References: <163712397076.13692.4727608274002939094@noble.neil.brown.name>,
+ <YZUBIbALcSHn4Rub@casper.infradead.org>,
+ <163727727803.13692.15470049610672496362@noble.neil.brown.name>,
+ <YZewStgII83phKtA@casper.infradead.org>,
+ <163740548025.13692.6428652897557849182@noble.neil.brown.name>,
+ <YZvLQyjIyBafYEPV@dhcp22.suse.cz>
+Date:   Tue, 23 Nov 2021 15:15:20 +1100
+Message-id: <163764092051.7248.17895085691664185172@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On Tue, 23 Nov 2021, Michal Hocko wrote:
+> On Sat 20-11-21 21:51:20, Neil Brown wrote:
+> > On Sat, 20 Nov 2021, Matthew Wilcox wrote:
+> > > On Fri, Nov 19, 2021 at 10:14:38AM +1100, NeilBrown wrote:
+> > > > On Thu, 18 Nov 2021, Matthew Wilcox wrote:
+> > > > > Surely this should be gfpflags_allow_blocking() instead of poking a=
+bout
+> > > > > in the innards of gfp flags?
+> > > >=20
+> > > > Possibly.  Didn't know about gfpflags_allow_blocking().  From a quick
+> > > > grep in the kernel, a whole lot of other people don't know about it
+> > > > either, though clearly some do.
+> > > >=20
+> > > > Maybe we should reaname "__GFP_DIRECT_RECLAIM" to
+> > > > "__GFP_ALLOW_BLOCKING", because that is what most users seems to care
+> > > > about.
+> > >=20
+> > > I tend towards the school of thought that the __GFP flags should make
+> > > sense to the implementation and users should use either GFP_ or functio=
+ns.
+> > > When we see users adding or subtracting __GFP flags, that's a problem.
+> >=20
+> > Except __GFP_NOWARN of course, or __GFP_ZERO, or __GFP_NOFAIL.
+> > What about __GFP_HIGHMEM?  __GFP_DMA?  __GFP_HIGH?
+> >=20
+> > They all seem to be quite meaningful to the caller - explicitly
+> > specifying properties of the memory or properties of the service.
+> > (But maybe you would prefer __GFP_HIGH be spelled "__GFP_LOW_WATERMARK"
+> > so it would make more sense to the implementation).
+> >=20
+> > __GFP_DIRECTRECLAIM seems to me to be more the exception than the rule -
+> > specifying internal implementation details.
+>=20
+> I do not think it is viable to fix up gfp flags to be consistent :/
 
-On 23/11/21 12:29 am, Peter Rosin wrote:
-> Hi!
-> 
-> On 2021-11-22 13:56, Aswath Govindraju wrote:
->> In some cases, we might need to provide the state of the mux to be set for
->> the operation of a given peripheral. Therefore, pass this information using
->> the second argument of the mux-controls property.
->>
->> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
->> ---
->>
->> Notes:
->> - The function mux_control_get() always return the mux_control for a single
->>   line. So, control for mutiple lines cannot be represented in the
->>   mux-controls property.
->> - For representing multiple lines of control, multiple entries need to be
->>   used along with mux-names for reading them.
->> - If a device uses both the states of the mux line then #mux-control-cells
->>   can be set to 1 and enable_state will not be set in this case.
->>
->>  drivers/mux/core.c           | 20 ++++++++++++++++++--
->>  include/linux/mux/consumer.h |  1 +
->>  include/linux/mux/driver.h   |  1 +
->>  3 files changed, 20 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/mux/core.c b/drivers/mux/core.c
->> index 22f4709768d1..51140748d2d6 100644
->> --- a/drivers/mux/core.c
->> +++ b/drivers/mux/core.c
->> @@ -294,6 +294,18 @@ unsigned int mux_control_states(struct mux_control *mux)
->>  }
->>  EXPORT_SYMBOL_GPL(mux_control_states);
->>  
->> +/**
->> + * mux_control_enable_state() - Query for the enable state.
->> + * @mux: The mux-control to query.
->> + *
->> + * Return: State to be set in the mux to enable a given device
->> + */
->> +unsigned int mux_control_enable_state(struct mux_control *mux)
->> +{
->> +	return mux->enable_state;
->> +}
->> +EXPORT_SYMBOL_GPL(mux_control_enable_state);
->> +
->>  /*
->>   * The mux->lock must be down when calling this function.
->>   */
->> @@ -481,8 +493,7 @@ struct mux_control *mux_control_get(struct device *dev, const char *mux_name)
->>  	if (!mux_chip)
->>  		return ERR_PTR(-EPROBE_DEFER);
->>  
->> -	if (args.args_count > 1 ||
->> -	    (!args.args_count && (mux_chip->controllers > 1))) {
->> +	if (!args.args_count && mux_chip->controllers > 1) {
->>  		dev_err(dev, "%pOF: wrong #mux-control-cells for %pOF\n",
->>  			np, args.np);
->>  		put_device(&mux_chip->dev);
->> @@ -500,6 +511,11 @@ struct mux_control *mux_control_get(struct device *dev, const char *mux_name)
->>  		return ERR_PTR(-EINVAL);
->>  	}
->>  
->> +	if (args.args_count == 2) {
->> +		mux_chip->mux[controller].enable_state = args.args[1];
->> +		mux_chip->mux[controller].idle_state = !args.args[1];
-> 
-> Please leave the idle state alone. The idle state is a property of
-> the mux-control itself, and not the business of any particular
-> consumer. Consumers can only say what state the mux control should
-> have when they have selected the mux-control, and have no say about
-> what state the mux-control has when they do not have it selected.
-> There is no conflict with having the same idle state as the state the
-> mux would normally have. That could even be seen as an optimization,
-> since then there might be no need to operate the mux for most
-> accesses.
-> 
+You may be right :-)  Of course if we don't try - you'll definitely be right.
 
-Got it. Will not touch idle_state.
+> Both __GFP_DIRECT_RECLAIM and __GFP_KSWAPD_RECLAIM are way too lowlevel
+> but historically we've had requests to inhibit kswapd for a particular
+> requests because that has led to problems - fun reading caf491916b1c1.
 
->> +	}
->> +
->>  	return &mux_chip->mux[controller];
->>  }
->>  EXPORT_SYMBOL_GPL(mux_control_get);
->> diff --git a/include/linux/mux/consumer.h b/include/linux/mux/consumer.h
->> index 7a09b040ac39..cb861eab8aad 100644
->> --- a/include/linux/mux/consumer.h
->> +++ b/include/linux/mux/consumer.h
->> @@ -16,6 +16,7 @@ struct device;
->>  struct mux_control;
->>  
->>  unsigned int mux_control_states(struct mux_control *mux);
->> +unsigned int mux_control_enable_state(struct mux_control *mux);
->>  int __must_check mux_control_select_delay(struct mux_control *mux,
->>  					  unsigned int state,
->>  					  unsigned int delay_us);
->> diff --git a/include/linux/mux/driver.h b/include/linux/mux/driver.h
->> index 18824064f8c0..7db378dabdb2 100644
->> --- a/include/linux/mux/driver.h
->> +++ b/include/linux/mux/driver.h
->> @@ -48,6 +48,7 @@ struct mux_control {
->>  	int cached_state;
->>  
->>  	unsigned int states;
->> +	unsigned int enable_state;
-> 
-> This is the wrong place to store the state you need. The mux_control
-> is a shared resource and can have many consumers. Storing the needed
-> value for exactly one consumer in the mux control is therefore
-> broken. It would get overwritten when consumer #2 (and 3 etc etc)
-> wants to use some other state from the same shared mux control.
-> 
+Unfortunately that commit doesn't provide any reasoning, just an
+assertion.
+The best reasoning I could find was in caf491916b1c1 which was the initial
+revert.  There the primary reasoning was "there is a bug that we don't
+have time for a proper fix before the next release, so let's just use
+this quick fix".
+...  and maybe "the quick fix" was "the right fix", but I cannot tell from
+the commit logs :-(
 
-Sorry, forgot the distinction that multiple consumers can get the mux
-and only one can select the mux.
+> __GFP_ALLOW_BLOCKING would make a lot of sense but I am not sure it
+> would be a good match to __GFP_KSWAPD_RECLAIM.
 
-> Doing this properly means that you need a new struct tying together
-> a mux-control and a state. With an API looking something like this:
-> 
-> struct mux_state {
-> 	struct mux_control *mux;
-> 	unsigned int state;
-> };
-> 
-> struct mux_state *mux_state_get(struct device *dev, const char *mux_name)
-> {
-> 	struct mux_state *mux_state = kzalloc(sizeof(*mux_state), GFP_KERNEL);
-> 
-> 	if (!mux_state)
-> 		return ERR_PTR(-ENOMEM);
-> 
-> 	mux_state->mux = ...; /* mux_control_get(...) perhaps? */
-> 	/* error checking and recovery, etc etc etc */
-> 	mux_state->state = ...;
-> 
-> 	return mux_state;
-> }
-> 
-> void mux_state_put(struct mux_state *mux_state)
-> {
-> 	mux_control_put(mux_state->mux);
-> 	free(mux_state);
-> }
-> 
-> int mux_state_select_delay(struct mux_state *mux_state,
->  			   unsigned int delay_us)
-> {
-> 	return mux_control_select_delay(mux_state->mux, mux_state->state,
-> 					delay_us);
-> }
-> 
-> int mux_state_select(struct mux_state *mux_state)
-> {
-> 	return mux_state_select_delay(mux_state, 0);
-> }
-> 
-> int mux_state_try_select_delay(struct mux_state *mux_state)
-> 			       unsigned int delay_us);
-> {
-> 	return mux_control_try_select_delay(mux_state->mux, mux_state->state,
-> 					    delay_us);
-> }
-> 
-> int mux_state_try_select(struct mux_state *mux_state)
-> {
-> 	return mux_state_try_select_delay(mux_state, 0);
-> }
-> 
-> int mux_state_deselect(struct mux_control *mux)
-> {
-> 	return mux_control_deselect(mux_state->mux);
-> }
-> 
-> (written directly in the mail client, never compiled, here be dragons)
-> 
-> mux_state_get is obviously the difficult function to write, and
-> the above call to mux_control_get is not appropriate as-is. I
+So? __GFP_ALLOW_BLOCKING makes it clear what is, or is not, acceptable
+to the caller.  How much reclaim, or other activity, alloc_page()
+engages in is largely irrelevant to the caller as lock as it doesn't
+block if asked not to (and doesn't enter an FS if asked not to, etc).
 
-I am sorry but I did not understand why mux_control_get is not
-appropriate. We should be able to call the function and get the mux right?
+>=20
+> > Actually ... I take it back about __GFP_NOWARN.  That probably shouldn't
+> > exist at all.  Warnings should be based on how stressed the mm system is,
+> > not on whether the caller wants thinks failure is manageable.
+>=20
+> Unless we change the way when allocation warnings are triggered then we
+> really need this. There are many opportunistic allocations with a
+> fallback behavior which do not want to swamp kernel logs with failures
+> that are of no use. Think of a THP allocation that really want to be
+> just very quick and falls back to normal base pages otherwise. Deducing
+> context which is just fine to not report failures is quite tricky and it
+> can get wrong easily. Callers should know whether warning can be of any
+> use in many cases.
 
-> think mux_control_get perhaps needs to be refactored into a
-> flexible helper that takes a couple of extra arguments that
-> indicate if you want an optional get and/or a particular state.
-> And then mux_control_get can just be a wrapper around that helper.
-> Adding mux_control_get_optional would be a matter of adding a new
-> wrapper. And the mux_state->mux assignment above would need yet
-> another wrapper for the flexible helper, one that also make the
-> flexible helper return the requested state from the mux-control
-> property.
-> 
+"Unless" being the key work.
+It makes sense to warn when a __GFP_HIGH or __GFP_MEMALLOC allocation
+fails,  because they are clearly important.
+It makes sense to warning if direct reclaim and retrying were enabled,
+as then alloc_page() has tried really hard, but failed anyway.  Thought
+maybe if COSTLY_ORDER is exceeded, then the warning is unlikely to be
+interesting.
+But does it ever make sense to warn if either of
+__GFP_RETRY_MAYFAIL __GFP_NORETRY are present?
 
-The problem that I see with the optional apis as wrappers around
-mux_control_get is the following print in mux_control_get,
+If we always suppressed warning when those flags were present, then many
+(most?) uses for __GFP_NOWARN can be discarded.
 
-dev_err(dev, "%pOF: failed to get mux-control %s(%i)\n",
+I can see that some of the __GFP flags are designed to each perform a
+single well-defined function and internally to mm/ that makes sense.
+But exposing those flags to all users appears to be a recipe for
+trouble.  Hiding them all behind "__" doesn't stop people from using and
+misusing them.  Others are externally meaningful.  Making them visually
+similar to the ones we want to hide isn't helping anyone.
 
-This gets printed whenever it can't find mux-controls device tree property.
+When Willy wrote:
+  > When we see users adding or subtracting __GFP flags, that's a problem.
+the "problem" is not so much in the fact that they *do* but in the fact
+that they *can*.
 
+I would be greatly in favour of GFP flags which made sense to callers,
+and a mapping to ALLOC_ flags in mm/ which makes sense to allocators.
 
-Thank you providing your comments and reference implementation.
+I doubt anything outside mm/ cares about whether KSWAPD is woken or not.
+IT probably should be for small-order allocations, and not so much for
+large-order allocations.  but mm/khugepaged.c might make other decisions.
 
-Regards,
-Aswath
-
-> I realize that this might be a big piece to chew, but you want to
-> do something new here, and I think it is best to do it right from
-> the start instead of having weird code that only makes it harder
-> to do it right later. Ad it's not that complicated.
-> 
-> Cheers,
-> Peter
-> 
->>  	int idle_state;
->>  
->>  	ktime_t last_change;
->>
-
+Thanks,
+NeilBrown
