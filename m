@@ -2,139 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA77745A284
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:27:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4669C45A288
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:27:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235366AbhKWMak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 07:30:40 -0500
-Received: from sibelius.xs4all.nl ([83.163.83.176]:61539 "EHLO
-        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235078AbhKWMai (ORCPT
+        id S235777AbhKWMbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 07:31:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235134AbhKWMbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 07:30:38 -0500
-Received: from localhost (bloch.sibelius.xs4all.nl [local])
-        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id cd9ce2ae;
-        Tue, 23 Nov 2021 13:27:28 +0100 (CET)
-Date:   Tue, 23 Nov 2021 13:27:28 +0100 (CET)
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     luca@lucaceresoli.net, pali@kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, kernel-team@android.com,
-        alyssa@rosenzweig.io, lorenzo.pieralisi@arm.com,
-        bhelgaas@google.com
-In-Reply-To: <87sfvncl59.wl-maz@kernel.org> (message from Marc Zyngier on Tue,
-        23 Nov 2021 08:48:50 +0000)
-Subject: Re: [PATCH v2] PCI: apple: Follow the PCIe specifications when
- resetting the port
-References: <20211122104156.518063-1-maz@kernel.org>
- <20211122120347.6qyiycqqjkgqvtta@pali>
- <87zgpw5jza.wl-maz@kernel.org>
- <4fd0438e-b86b-2e1a-ea9a-2297d3580836@lucaceresoli.net> <87sfvncl59.wl-maz@kernel.org>
-Message-ID: <d3caf6da9ba0ee58@bloch.sibelius.xs4all.nl>
+        Tue, 23 Nov 2021 07:31:00 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0970EC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 04:27:52 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id o13so3776792wrs.12
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 04:27:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Yk4vffJNmhyLmpnjyEy+b/mnqWZOqNqp4/3VDhbng0o=;
+        b=deoRU4qND6iwkrymhQxWiRsIPJt6Q9YvUt6CpsR4Zy4EvDDgjJryYC2M004d31AS2f
+         JIsthUToxCI2gAsv22JGRGXE5CXCC7Q0fCtyPdJq2nCJ2YKDW+y/98vgvUK7YFDih0Ui
+         fncyP1xsjigRY2N8zEfAvD2p2twvXRNJW2KhOg3Zj4oANO53zAO47xo4z/Vz4fTlWVET
+         j1RwQ1Pk14TTKRS/R3nJKY29Hnp79PufxBhdhCkY3Rou1Qd0C7QfC62jk5XEc9cani6q
+         QmLWFrRqBQCcgtwlUWKNpqQ1CYllKPMTFgIcxex/CUuHBwL15TJZqnsiZHUnxVOq7a+W
+         46mA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Yk4vffJNmhyLmpnjyEy+b/mnqWZOqNqp4/3VDhbng0o=;
+        b=z3cW1HyhaE4Qw65Af1hxIaQRwHbIvwa7IvEQSYC68ioaxlfhY0iSswpOTo34gAx4Nc
+         3a02yLok8acjp0T0IoyfrL6GFC7vN3jcVqbmEtGwmzmhjk0Gv6C19QeXO5ZLWN8WLNHY
+         LZpyLWrcwtLJyjvbFChREJqVUiZ8EqEsbJoxq1gbKZ5vB9XGwoPWjRzFLLiHaElfLPEr
+         FTV9yx3yQV1aAj1Ja4RqQ+2pkSVS7RvxHbSgFxwPn1x3z5Ae9v4xe5SIg06PkyC3R8y5
+         8zGBsrMU3E2g9vGK0vkU8E4crHa0pSotV4RiNMb+AZxFU6hLXoQr2Kr/NnvFeFxgSqjz
+         1Dcg==
+X-Gm-Message-State: AOAM533rQ/doBozfxd2kqgs0UWIpivk+hprSPL++zHoYHTL6pEa5HsOv
+        k19kZs4eBNipAmj8k0PT003BWw==
+X-Google-Smtp-Source: ABdhPJyiqQlIw188u1zX7Z4eH7R9n2zOjpbZon5P3wHX349TMpXURB1VSqL0vDN5pxXS4OQS32YmOw==
+X-Received: by 2002:a05:6000:168e:: with SMTP id y14mr7169913wrd.178.1637670470556;
+        Tue, 23 Nov 2021 04:27:50 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id 21sm968731wmj.18.2021.11.23.04.27.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Nov 2021 04:27:50 -0800 (PST)
+Subject: Re: [PATCH v5 01/10] ASoC: qcom: Move lpass_pcm_data structure to
+ lpass header
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, swboyd@chromium.org,
+        judyhsiao@chromium.org
+Cc:     Venkata Prasad Potturu <potturu@codeaurora.org>
+References: <1637239714-11211-1-git-send-email-srivasam@codeaurora.org>
+ <1637239714-11211-2-git-send-email-srivasam@codeaurora.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <958bdcdc-2a33-1b19-a886-68d74d7d9480@linaro.org>
+Date:   Tue, 23 Nov 2021 12:27:48 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <1637239714-11211-2-git-send-email-srivasam@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Date: Tue, 23 Nov 2021 08:48:50 +0000
-> From: Marc Zyngier <maz@kernel.org>
-> 
-> Luca,
-> 
-> On Mon, 22 Nov 2021 21:32:15 +0000,
-> Luca Ceresoli <luca@lucaceresoli.net> wrote:
-> >
-> > >> Just one comment. PERST# (PCIe Reset) is active-low signal. De-asserting
-> > >> means to really set value to 1.
-> > >>
-> > >> But there was a discussion that de-asserting should be done by call:
-> > >>   gpiod_set_value(reset, 0);
-> > >>
-> > >> https://lore.kernel.org/linux-pci/51be082a-ff10-8a19-5648-f279aabcac51@lucaceresoli.net/
-> > >>
-> > >> Could we make this new pcie-apple.c driver to use gpiod_set_value(reset, 0)
-> > >> for de-asserting, like in other drivers?
-> > 
-> > I agree it should be done right from the beginning since this is a new
-> > driver. Fixing it later is a painful process.
-> 
-> No more painful than anything else. At this stage, using a positive or
-> negative polarity is immaterial, as there is no core infrastructure
-> making any use of this behaviour (every single driver must reinvent
-> its own square wheel). If such an infrastructure existed, that'd
-> indeed be a requirement. For now, this is merely a convention.
-> 
-> > > I guess it depends whether you care about the assertion or the signal
-> > > itself. I think we may have a bug in the way the GPIOs are handled at
-> > > the moment, as it makes no difference whether I register the GPIO are
-> > > active high or active low...
-> > >
-> > > I guess that will be yet another thing to debug, but in the meantime
-> > > we have a reliable reset.
-> > 
-> > Strange, in my case the "active low" pin polarity is correctly picked up
-> > from device tree by the gpiolib code, thus using gpio_set_value(gpiod,
-> > 1) asserts the pin as it should, resulting in an electrically low pin.
-> 
-> As I said, this looks like a bug, probably in the M1 DT. I'll try to
-> look into it when I get the time.
-
-So the diff below is what the changes look like for U-Boot.  The
-U-Boot Apple PCIe driver has not been submitted upstream yet, so
-making this change is no problem.
 
 
+On 18/11/2021 12:48, Srinivasa Rao Mandadapu wrote:
+> Declare lpass_pcm_data structure in lpass header file instead of
+> platform source file to make common use of it by other drivers
+> 
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
 
-diff --git a/arch/arm/dts/t8103-j274.dts b/arch/arm/dts/t8103-j274.dts
-index aef1ae29b6..3777337033 100644
---- a/arch/arm/dts/t8103-j274.dts
-+++ b/arch/arm/dts/t8103-j274.dts
-@@ -65,7 +65,7 @@
- 		device_type = "pci";
- 		reg = <0x0 0x0 0x0 0x0 0x0>;
- 		pwren-gpios = <&smc 13 0>;
--		reset-gpios = <&pinctrl_ap 152 0>;
-+		reset-gpios = <&pinctrl_ap 152 GPIO_ACTIVE_LOW>;
- 		max-link-speed = <2>;
- 
- 		#address-cells = <3>;
-@@ -76,7 +76,7 @@
- 	pci1: pci@1,0 {
- 		device_type = "pci";
- 		reg = <0x800 0x0 0x0 0x0 0x0>;
--		reset-gpios = <&pinctrl_ap 153 0>;
-+		reset-gpios = <&pinctrl_ap 153 GPIO_ACTIVE_LOW>;
- 		max-link-speed = <2>;
- 
- 		#address-cells = <3>;
-@@ -87,7 +87,7 @@
- 	pci2: pci@2,0 {
- 		device_type = "pci";
- 		reg = <0x1000 0x0 0x0 0x0 0x0>;
--		reset-gpios = <&pinctrl_ap 33 0>;
-+		reset-gpios = <&pinctrl_ap 33 GPIO_ACTIVE_LOW>;
- 		max-link-speed = <1>;
- 
- 		#address-cells = <3>;
-diff --git a/drivers/pci/pcie_apple.c b/drivers/pci/pcie_apple.c
-index bef6043adb..89eec70d81 100644
---- a/drivers/pci/pcie_apple.c
-+++ b/drivers/pci/pcie_apple.c
-@@ -210,7 +210,7 @@ static int apple_pcie_setup_port(struct apple_pcie_priv *pcie, unsigned idx)
- 		return 0;
- 
- 	dm_gpio_set_dir_flags(&pcie->perstn[idx], GPIOD_IS_OUT);
--	dm_gpio_set_value(&pcie->perstn[idx], 0);
-+	dm_gpio_set_value(&pcie->perstn[idx], 1);
- 
- 	rmwl(0, PORT_APPCLK_EN, pcie->base_port[idx] + PORT_APPCLK);
- 
-@@ -221,7 +221,7 @@ static int apple_pcie_setup_port(struct apple_pcie_priv *pcie, unsigned idx)
- 	apple_pcie_port_pwren(pcie, idx);
- 
- 	rmwl(0, PORT_PERST_OFF, pcie->base_port[idx] + PORT_PERST);
--	dm_gpio_set_value(&pcie->perstn[idx], 1);
-+	dm_gpio_set_value(&pcie->perstn[idx], 0);
- 
- 	res = readl_poll_timeout(pcie->base_port[idx] + PORT_STATUS, stat, (stat & PORT_STATUS_READY), 100, 250000);
- 	if (res < 0) {
+LGTM,
+
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+
+> ---
+>   sound/soc/qcom/lpass-platform.c | 5 -----
+>   sound/soc/qcom/lpass.h          | 5 +++++
+>   2 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+> index a59e9d2..a44162c 100644
+> --- a/sound/soc/qcom/lpass-platform.c
+> +++ b/sound/soc/qcom/lpass-platform.c
+> @@ -18,11 +18,6 @@
+>   
+>   #define DRV_NAME "lpass-platform"
+>   
+> -struct lpass_pcm_data {
+> -	int dma_ch;
+> -	int i2s_port;
+> -};
+> -
+>   #define LPASS_PLATFORM_BUFFER_SIZE	(24 *  2 * 1024)
+>   #define LPASS_PLATFORM_PERIODS		2
+>   
+> diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
+> index 67ef497..63aaa6f 100644
+> --- a/sound/soc/qcom/lpass.h
+> +++ b/sound/soc/qcom/lpass.h
+> @@ -256,6 +256,11 @@ struct lpass_variant {
+>   	int num_clks;
+>   };
+>   
+> +struct lpass_pcm_data {
+> +	int dma_ch;
+> +	int i2s_port;
+> +};
+> +
+>   /* register the platform driver from the CPU DAI driver */
+>   int asoc_qcom_lpass_platform_register(struct platform_device *);
+>   int asoc_qcom_lpass_cpu_platform_remove(struct platform_device *pdev);
+> 
