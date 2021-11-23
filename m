@@ -2,104 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D2A745A336
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:49:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7343E45A339
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:49:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237172AbhKWMwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 07:52:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28798 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237191AbhKWMwr (ORCPT
+        id S237477AbhKWMxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 07:53:01 -0500
+Received: from sibelius.xs4all.nl ([83.163.83.176]:63191 "EHLO
+        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236671AbhKWMwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 07:52:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637671779;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qq9RCNwYaWXQoI/gd2Bb1y62RmVls2Lwj4nIew3gKLU=;
-        b=Tqdr/SNSDMVIKGhFdSW736EUGfTvhl6ztXQPkMEM2BdAdgVwS6CaDxGzP/WAgg5HCKHJAt
-        KkCBW3Ga3W42fHZJM2ll/aktR8ycN7cknUc12SG0Gi7DrqrIcwK2cv1nxCzM6OW9+8SIc+
-        d9s/7bJdkVGmjbR/bGboSCOTmXg5X3w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-540-nsYRZ2KOM_2sPYaJknSsCg-1; Tue, 23 Nov 2021 07:49:33 -0500
-X-MC-Unique: nsYRZ2KOM_2sPYaJknSsCg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0F55A87953E;
-        Tue, 23 Nov 2021 12:49:32 +0000 (UTC)
-Received: from localhost (unknown [10.39.195.64])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C74FC5F4E0;
-        Tue, 23 Nov 2021 12:49:22 +0000 (UTC)
-Date:   Tue, 23 Nov 2021 12:49:21 +0000
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        f.hetzelt@tu-berlin.de, david.kaplan@amd.com,
-        konrad.wilk@oracle.com
-Subject: Re: [PATCH] vsock/virtio: suppress used length validation
-Message-ID: <YZzjUbM+LE0dwsIi@stefanha-x1.localdomain>
-References: <20211122093036.285952-1-mst@redhat.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="CQhna4TCfJN2pG2B"
-Content-Disposition: inline
-In-Reply-To: <20211122093036.285952-1-mst@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        Tue, 23 Nov 2021 07:52:43 -0500
+Received: from localhost (bloch.sibelius.xs4all.nl [local])
+        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 6fa1d3a8;
+        Tue, 23 Nov 2021 13:49:32 +0100 (CET)
+Date:   Tue, 23 Nov 2021 13:49:32 +0100 (CET)
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     pali@kernel.org, luca@lucaceresoli.net,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, kernel-team@android.com,
+        alyssa@rosenzweig.io, lorenzo.pieralisi@arm.com,
+        bhelgaas@google.com, joey.gouly@arm.com
+In-Reply-To: <87k0gzcb6d.wl-maz@kernel.org> (message from Marc Zyngier on Tue,
+        23 Nov 2021 12:24:10 +0000)
+Subject: Re: [PATCH v2] PCI: apple: Follow the PCIe specifications when
+ resetting the port
+References: <20211122104156.518063-1-maz@kernel.org>
+ <20211122120347.6qyiycqqjkgqvtta@pali>
+ <87zgpw5jza.wl-maz@kernel.org>
+ <d3caf39f58b0528b@bloch.sibelius.xs4all.nl> <87k0gzcb6d.wl-maz@kernel.org>
+MIME-version: 1.0
+Content-type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Message-ID: <d3caf70a8b098bdf@bloch.sibelius.xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> Date: Tue, 23 Nov 2021 12:24:10 +0000
+> From: Marc Zyngier <maz@kernel.org>
+> 
+> On Mon, 22 Nov 2021 21:50:48 +0000,
+> Mark Kettenis <mark.kettenis@xs4all.nl> wrote:
+> > 
+> > > Date: Mon, 22 Nov 2021 14:43:37 +0000
+> > > From: Marc Zyngier <maz@kernel.org>
+> > > 
+> > > On Mon, 22 Nov 2021 12:03:47 +0000,
+> > > Pali Rohár <pali@kernel.org> wrote:
+> > > > 
+> > > > On Monday 22 November 2021 10:41:56 Marc Zyngier wrote:
+> > > > > While the Apple PCIe driver works correctly when directly booted
+> > > > > from the firmware, it fails to initialise when the kernel is booted
+> > > > > from a bootloader using PCIe such as u-boot.
+> > > > > 
+> > > > > That's beacuse we're missing a proper reset of the port (we only
+> > > > > clear the reset, but never assert it).
+> > > > > 
+> > > > > The PCIe spec requirements are two-fold:
+> > > > > 
+> > > > > - #PERST must be asserted before setting up the clocks, and
+> > > > >   stay asserted for at least 100us (Tperst-clk).
+> > > > > 
+> > > > > - Once #PERST is deasserted, the OS must wait for at least 100ms
+> > > > >   "from the end of a Conventional Reset" before we can start talking
+> > > > >   to the devices
+> > > > > 
+> > > > > Implementing this results in a booting system.
+> > > > > 
+> > > > > Fixes: 1e33888fbe44 ("PCI: apple: Add initial hardware bring-up")
+> > > > > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> > > > > Cc: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+> > > > > Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> > > > > Cc: Bjorn Helgaas <bhelgaas@google.com>
+> > > > > Cc: Pali Rohár <pali@kernel.org>
+> > > > 
+> > > > Looks good, but see comment below.
+> > > > 
+> > > > Acked-by: Pali Rohár <pali@kernel.org>
+> > > 
+> > > Thanks for that.
+> > > 
+> > > > 
+> > > > > ---
+> > > > >  drivers/pci/controller/pcie-apple.c | 10 ++++++++++
+> > > > >  1 file changed, 10 insertions(+)
+> > > > > 
+> > > > > diff --git a/drivers/pci/controller/pcie-apple.c b/drivers/pci/controller/pcie-apple.c
+> > > > > index 1bf4d75b61be..957960a733c4 100644
+> > > > > --- a/drivers/pci/controller/pcie-apple.c
+> > > > > +++ b/drivers/pci/controller/pcie-apple.c
+> > > > > @@ -539,13 +539,23 @@ static int apple_pcie_setup_port(struct apple_pcie *pcie,
+> > > > >  
+> > > > >  	rmw_set(PORT_APPCLK_EN, port->base + PORT_APPCLK);
+> > > > >  
+> > > > > +	/* Engage #PERST before setting up the clock */
+> > > > > +	gpiod_set_value(reset, 0);
+> > > > > +
+> > > > >  	ret = apple_pcie_setup_refclk(pcie, port);
+> > > > >  	if (ret < 0)
+> > > > >  		return ret;
+> > > > >  
+> > > > > +	/* The minimal Tperst-clk value is 100us (PCIe CMS r2.0, 2.6.2) */
+> > > > > +	usleep_range(100, 200);
+> > > > > +
+> > > > > +	/* Deassert #PERST */
+> > > > >  	rmw_set(PORT_PERST_OFF, port->base + PORT_PERST);
+> > > > >  	gpiod_set_value(reset, 1);
+> > > > 
+> > > > + Luca
+> > > > 
+> > > > Just one comment. PERST# (PCIe Reset) is active-low signal. De-asserting
+> > > > means to really set value to 1.
+> > > > 
+> > > > But there was a discussion that de-asserting should be done by call:
+> > > >   gpiod_set_value(reset, 0);
+> > > > 
+> > > > https://lore.kernel.org/linux-pci/51be082a-ff10-8a19-5648-f279aabcac51@lucaceresoli.net/
+> > > > 
+> > > > Could we make this new pcie-apple.c driver to use gpiod_set_value(reset, 0)
+> > > > for de-asserting, like in other drivers?
+> > > 
+> > > I guess it depends whether you care about the assertion or the signal
+> > > itself. I think we may have a bug in the way the GPIOs are handled at
+> > > the moment, as it makes no difference whether I register the GPIO are
+> > > active high or active low...
+> > 
+> > That's unfortunate.  But maybe that's an opportunity to fix the
+> > devicetree to use GPIO_ACTIVE_LOW for these GPIOs?
+> 
+> Indeed. The following hack does the right thing, and I can then
+> reverse the polarity of the reset in the Linux driver. Of course, it
+> breaks u-boot at the same time (and I suspect OpenBSD would be equally
+> affected).
 
---CQhna4TCfJN2pG2B
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+As I said in my other reply (that clearly crossed this message) the
+U-Boot PCIe driver has not been upstreamed yet.  OpenBSD (and also
+NetBSD) rely on the configuration done by U-Boot and don't mess with
+the reset GPIO at this moment.
 
-On Mon, Nov 22, 2021 at 04:32:01AM -0500, Michael S. Tsirkin wrote:
-> It turns out that vhost vsock violates the virtio spec
-> by supplying the out buffer length in the used length
-> (should just be the in length).
-> As a result, attempts to validate the used length fail with:
-> vmw_vsock_virtio_transport virtio1: tx: used len 44 is larger than in buf=
-len 0
->=20
-> Since vsock driver does not use the length fox tx and
-> validates the length before use for rx, it is safe to
-> suppress the validation in virtio core for this driver.
->=20
-> Reported-by: Halil Pasic <pasic@linux.ibm.com>
-> Fixes: 939779f5152d ("virtio_ring: validate used buffer length")
-> Cc: "Jason Wang" <jasowang@redhat.com>
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> ---
->  net/vmw_vsock/virtio_transport.c | 1 +
->  1 file changed, 1 insertion(+)
+> So if we are going down that road, we may need a flag day where all
+> the moving parts change. I don't really mind not being able to boot
+> older kernels, but this goes beyond Linux at this point.
 
-Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
+So I don't think this is needed.  The earlier we fix this the better!
 
---CQhna4TCfJN2pG2B
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmGc41EACgkQnKSrs4Gr
-c8h1hgf/VSC+i/I53x1gWPlapZR23ESGCMVD+7wgM6NTPM5rT+nqyAaq5IPNn9AH
-08hZcOtgsKB2hi0yjlqQHhwFfOmsqF/OoEW/iQRkmNfXbNolhpdVojNOGGiKYPyF
-BJuI4BLniogr840wowG1cv0QYb2sfhOSRa+Lpm4YcC8+tvB2b8qgIPnAdj24e7Xc
-vuAUwNFrWcLImHqdDc/mhI5Tanz32oQn2WWFjJ4SdHK4f0KCnXZbs3dVqAI1BbEw
-Ryiy0Y8rBXeO1iOzk+HMiIw+msPkRxJbdqB+7bujClo15eNYZucU9NZuaM8j6ylJ
-4/7+vFLiTMW4FaM+59sh925HLVglUA==
-=NGnu
------END PGP SIGNATURE-----
-
---CQhna4TCfJN2pG2B--
-
+> diff --git a/arch/arm64/boot/dts/apple/t8103.dtsi b/arch/arm64/boot/dts/apple/t8103.dtsi
+> index d2e9afde3729..cad1ab920304 100644
+> --- a/arch/arm64/boot/dts/apple/t8103.dtsi
+> +++ b/arch/arm64/boot/dts/apple/t8103.dtsi
+> @@ -10,6 +10,7 @@
+>  #include <dt-bindings/interrupt-controller/apple-aic.h>
+>  #include <dt-bindings/interrupt-controller/irq.h>
+>  #include <dt-bindings/pinctrl/apple.h>
+> +#include <dt-bindings/gpio/gpio.h>
+>  
+>  / {
+>  	compatible = "apple,t8103", "apple,arm-platform";
+> @@ -293,7 +294,7 @@ pcie0: pcie@690000000 {
+>  			port00: pci@0,0 {
+>  				device_type = "pci";
+>  				reg = <0x0 0x0 0x0 0x0 0x0>;
+> -				reset-gpios = <&pinctrl_ap 152 0>;
+> +				reset-gpios = <&pinctrl_ap 152 GPIO_ACTIVE_LOW>;
+>  				max-link-speed = <2>;
+>  
+>  				#address-cells = <3>;
+> @@ -313,7 +314,7 @@ port00: pci@0,0 {
+>  			port01: pci@1,0 {
+>  				device_type = "pci";
+>  				reg = <0x800 0x0 0x0 0x0 0x0>;
+> -				reset-gpios = <&pinctrl_ap 153 0>;
+> +				reset-gpios = <&pinctrl_ap 153 GPIO_ACTIVE_LOW>;
+>  				max-link-speed = <2>;
+>  
+>  				#address-cells = <3>;
+> @@ -333,7 +334,7 @@ port01: pci@1,0 {
+>  			port02: pci@2,0 {
+>  				device_type = "pci";
+>  				reg = <0x1000 0x0 0x0 0x0 0x0>;
+> -				reset-gpios = <&pinctrl_ap 33 0>;
+> +				reset-gpios = <&pinctrl_ap 33 GPIO_ACTIVE_LOW>;
+>  				max-link-speed = <1>;
+>  
+>  				#address-cells = <3>;
+> 
+> -- 
+> Without deviation from the norm, progress is not possible.
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
