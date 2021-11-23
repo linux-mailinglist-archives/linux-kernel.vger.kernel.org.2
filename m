@@ -2,98 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 705614599F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 03:04:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D934599F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 03:05:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232730AbhKWCHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 21:07:33 -0500
-Received: from gandalf.ozlabs.org ([150.107.74.76]:39105 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbhKWCHa (ORCPT
+        id S232090AbhKWCIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 21:08:02 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:56400 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229562AbhKWCH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 21:07:30 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HynWT2rfFz4xbM;
-        Tue, 23 Nov 2021 13:04:20 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1637633061;
-        bh=Hw0gL8JU56hDalS7jteiqnWI/e5vyjdk2xfzjrQqwsA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ePGk5XLs8stTqNJ06pkHLnCIoj1VvUpzHd2nMAPMtDGJoBSe1HolxLa8d+BHWCucz
-         43iHz3umTs05aF+NL4AkIH4nd1EsAwKvyqKbhZ1sO/4tFbCL8Y4Hb/y8YCHpz7eHsM
-         Dlfq9Ci62PKsDxDNXq6Po48nuIgOyHl9Ud8JYej3Up14o7fUJFuyfKxy85+we8Ro34
-         ukw34/4LLZMp3ZAfY/kooSg8zMl3RFKFwunCpzGFCGJPl/rZ2WC1J2SrmwLyEGET62
-         pKDWimkBOly0RXeV84QqMNen7Z6gl3pApH7rPQbttO00AcwINecdejZj84RPIYfRRA
-         LB4KfsZ5a/23Q==
-Date:   Tue, 23 Nov 2021 13:04:18 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Rob Herring <robh@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the gpio-brgl tree
-Message-ID: <20211123130418.17878c41@canb.auug.org.au>
-In-Reply-To: <20211118112951.2b788952@canb.auug.org.au>
-References: <20211116105112.4c99853d@canb.auug.org.au>
-        <20211118112951.2b788952@canb.auug.org.au>
+        Mon, 22 Nov 2021 21:07:58 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AN24hNO049389;
+        Mon, 22 Nov 2021 20:04:43 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1637633083;
+        bh=ooYm6oRYPgkDWWdCeVD/rCmFIh2Q82jpU8+sV/v/phM=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=zRgbYvDLxAAMeoRS44z1I5lanja9TO32dPnqJZWAjo0Zi+B/jjk8AN21MXj18kUG0
+         6K2HC/vVVdnxhYBX2dp14TKul+j39P0lcZ0xlaXF8dkzVJnyGBH+yN1k6kKoHjqEJ6
+         1erbtQlYYV4o+qWiwCMkl2Lw3xCLfbUmeClEiEzM=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AN24hHE004946
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 22 Nov 2021 20:04:43 -0600
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 22
+ Nov 2021 20:04:42 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 22 Nov 2021 20:04:42 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AN24gwT075208;
+        Mon, 22 Nov 2021 20:04:42 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Jason Wang <wangborong@cdjrlc.com>, <kristo@kernel.org>
+CC:     Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <ssantosh@kernel.org>
+Subject: Re: [PATCH] firmware: ti_sci: rm: remove unneeded semicolon
+Date:   Mon, 22 Nov 2021 20:04:42 -0600
+Message-ID: <163763306723.31449.18400224300621746344.b4-ty@ti.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211114055333.217919-1-wangborong@cdjrlc.com>
+References: <20211114055333.217919-1-wangborong@cdjrlc.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/O=nYuC6ub8R8cm4SZopC1NX";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/O=nYuC6ub8R8cm4SZopC1NX
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Jason Wang,
 
-Hi all,
+On Sun, 14 Nov 2021 13:53:33 +0800, Jason Wang wrote:
+> The semicolon after `}' is unneeded. So, just remove it.
+> 
+> 
 
-On Thu, 18 Nov 2021 11:29:51 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> On Tue, 16 Nov 2021 10:51:12 +1100 Stephen Rothwell <sfr@canb.auug.org.au=
-> wrote:
-> >
-> > After merging the gpio-brgl tree, today's linux-next build (x86_64
-> > allmodconfig) failed like this:
-> >=20
-> > drivers/gpio/gpio-xlp.c:300:16: error: 'GPIO_VARIANT_VULCAN' undeclared=
- here (not in a function)
-> >   300 |  { "BRCM9006", GPIO_VARIANT_VULCAN },
-> >       |                ^~~~~~~~~~~~~~~~~~~
-> >=20
-> > Caused by commit
-> >=20
-> >   ea708ac5bf41 ("gpio: xlp: Remove Netlogic XLP variants")
-> >=20
-> > I have used the gpio-bgrl tree from next-20211115 for today. =20
->=20
-> I am still getting this failure :-(
+I have applied the following to branch ti-drivers-soc-next on [1].
+Thank you!
 
-And still :-( :-(
+[1/1] firmware: ti_sci: rm: remove unneeded semicolon
+      commit: 7c1c1d36e83073aab18d3dd596b735bcc6ea7984
 
---=20
-Cheers,
-Stephen Rothwell
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
---Sig_/O=nYuC6ub8R8cm4SZopC1NX
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGcTCIACgkQAVBC80lX
-0GxCNgf+Ku95eA6bBDWG1bL4oTMlyf/aEi5egrumE4aA8+eRVxl2GBN5zLeVNP4Q
-ByeK9LRmWRTL6lk28BUlS5T+XD8sM1V8dTk1y7phRyse/raHit1h7nHHxliEjkmw
-/W4iMYkwl/b2icxtvrBEyYE1hnaTEz7qW9I36anAN/rlCR8fa8YHdw2+DqT189Zb
-6JUaM/mLz/nFg98uw+iHa9Lz2c7b0xXtWbH1PvcagbLRqRTbrzVCU22VSP23VUvQ
-WLJnZVOQ774J3oyOBRfyLN3acKo+bjrMICOJJNLaeybSW+hsdpTqCq1Bhx9MlQHu
-uEpZ/Bhxp/yrTTWVuTYaiScpka94qg==
-=yC0S
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---Sig_/O=nYuC6ub8R8cm4SZopC1NX--
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
