@@ -2,146 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162F1459D28
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE95459D2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:51:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234422AbhKWHyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 02:54:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55100 "EHLO
+        id S234506AbhKWHyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 02:54:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234478AbhKWHyP (ORCPT
+        with ESMTP id S234478AbhKWHyi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 02:54:15 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B406CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 23:51:07 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id a23-20020a9d4717000000b0056c15d6d0caso32558929otf.12
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 23:51:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rR4B622+i9Ys9aZnitq1fCVmk8hfdVagcPZ0hfODFqc=;
-        b=owRjYh+4B/5zl9PKK737xyc1gi0E5KflM/Q4OkJCkuFOgFFkGPoNIc9Kw33wBYVcH2
-         0/i+lcshYxh3pXsR4NSF+nZENi7LaHPx46V+8TAuFbFdVsQkCVMqF7iCDc0+k48avC6N
-         iCzTJAKFZVHxXDp6spC5Xhv+I5EWjEsUIvkSPsEAsnPxQlkHTqrzYc9XsDQITaMr/zGf
-         pnhE4ScuQIdPtNxT9EC5uKW31SDwnTuRHh2M4Qtap7UxPgpu9JdxreHRcrXGxIrU38sT
-         Yv3QV5js2QwZQJOxLxTuJFEJMh8eqmjJq9FBydyn+oGbRatLC/+x1w3DzSS1XpoHAeNW
-         cruQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rR4B622+i9Ys9aZnitq1fCVmk8hfdVagcPZ0hfODFqc=;
-        b=qMOaJhl3DBuqxgPin1PoI/Tz2l6r0cTv57hzGCX6J8NL/xC4azX6aUjpwyj8Txp6Mf
-         notXFESsszIOB4ny06ZS3mn3LpjNjOy5DQxN1iy/Aw0Ft8j5ugdbnfAUF3vqCz/70OYU
-         +hhX/Li41xSPgoFXc1yTDY9CcN/0F66gJuZ0f/Zzd7Peeh3dp9YeJmwt0ZUWp/Knvnma
-         pU+UL20X5esuQEi8ktv7beA/7MG0ugXo3TxuJpaUMv5sHruyYhO9n9WZBlt6rml4wzX5
-         D8ElTXY8An9SxtwppfODRMBYUlzp/N5dYUPHAivmhIp77kzmvQdOL+eGVOZ5+Z3NuteW
-         KrhQ==
-X-Gm-Message-State: AOAM533KFOse5tWUXX2EcWXYlcz7gVcoN0RHxuelT69EWwHzKHQjwgA1
-        mbTyvqENFgLc4KrgXWUeYSX1j5RNmSuRxuQvhork3g==
-X-Google-Smtp-Source: ABdhPJwYYIBg4f36PR3CHkgvf63SbiJJ6fLqj/C6mSHj5dv4FTy7xpBnF0TwRN2GWlMG4pE2VDTasnzp3OXbCAI09FI=
-X-Received: by 2002:a05:6830:1356:: with SMTP id r22mr2498846otq.196.1637653866804;
- Mon, 22 Nov 2021 23:51:06 -0800 (PST)
+        Tue, 23 Nov 2021 02:54:38 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C17C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 23:51:30 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mpQaM-0000rd-Mn; Tue, 23 Nov 2021 08:51:26 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mpQaM-000aUe-Ey; Tue, 23 Nov 2021 08:51:25 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mpQaL-0007At-IJ; Tue, 23 Nov 2021 08:51:25 +0100
+Date:   Tue, 23 Nov 2021 08:51:22 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sherry Sun <sherry.sun@nxp.com>
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com
+Subject: Re: [PATCH] tty: serial: imx: disable UCR4_OREN in .stop_rx()
+Message-ID: <20211123075122.2cwhrdwrsyjgebnk@pengutronix.de>
+References: <20211123070437.20153-1-sherry.sun@nxp.com>
 MIME-Version: 1.0
-References: <20211123051658.3195589-1-pcc@google.com> <20211123051658.3195589-2-pcc@google.com>
-In-Reply-To: <20211123051658.3195589-2-pcc@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 23 Nov 2021 08:50:55 +0100
-Message-ID: <CACT4Y+bNA7NocP_wG+FKVPKEygWWbq4E0Zrw5bn47KvCwgQXAg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] fs: use raw_copy_from_user() to copy mount() data
-To:     Peter Collingbourne <pcc@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Colin Ian King <colin.king@canonical.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Ran Xiaokai <ran.xiaokai@zte.com.cn>,
-        David Hildenbrand <david@redhat.com>,
-        Xiaofeng Cao <caoxiaofeng@yulong.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Evgenii Stepanov <eugenis@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dfufdpmzqbray4ol"
+Content-Disposition: inline
+In-Reply-To: <20211123070437.20153-1-sherry.sun@nxp.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Nov 2021 at 06:17, Peter Collingbourne <pcc@google.com> wrote:
->
-> With uaccess logging the contract is that the kernel must not report
-> accessing more data than necessary, as this can lead to false positive
-> reports in downstream consumers. This generally works out of the box
-> when instrumenting copy_{from,to}_user(), but with the data argument
-> to mount() we use copy_from_user() to copy PAGE_SIZE bytes (or as
-> much as we can, if the PAGE_SIZE sized access failed) and figure out
-> later how much we actually need.
->
-> To prevent this from leading to a false positive report, use
-> raw_copy_from_user(), which will prevent the access from being logged.
-> Recall that it is valid for the kernel to report accessing less
-> data than it actually accessed, as uaccess logging is a best-effort
-> mechanism for reporting uaccesses.
->
-> Link: https://linux-review.googlesource.com/id/I5629b92a725c817acd9a861288338dd605cafee6
-> Signed-off-by: Peter Collingbourne <pcc@google.com>
+
+--dfufdpmzqbray4ol
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Nov 23, 2021 at 03:04:37PM +0800, Sherry Sun wrote:
+> From: Fugang Duan <fugang.duan@nxp.com>
+>=20
+> Disable UCR4_OREN bit in .stop_rx() to avoid endless
+> interrupt happen while tty port is closing.
+>=20
+> Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
+> Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
 > ---
->  fs/namespace.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/namespace.c b/fs/namespace.c
-> index 659a8f39c61a..695b30e391f0 100644
-> --- a/fs/namespace.c
-> +++ b/fs/namespace.c
-> @@ -3197,7 +3197,12 @@ static void *copy_mount_options(const void __user * data)
->         if (!copy)
->                 return ERR_PTR(-ENOMEM);
->
-> -       left = copy_from_user(copy, data, PAGE_SIZE);
-> +       /*
-> +        * Use raw_copy_from_user to avoid reporting overly large accesses in
-> +        * the uaccess buffer, as this can lead to false positive reports in
-> +        * downstream consumers.
-> +        */
-> +       left = raw_copy_from_user(copy, data, PAGE_SIZE);
+>  drivers/tty/serial/imx.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
+> index fb75e3e0d828..9ecaf051249d 100644
+> --- a/drivers/tty/serial/imx.c
+> +++ b/drivers/tty/serial/imx.c
+> @@ -486,18 +486,21 @@ static void imx_uart_stop_tx(struct uart_port *port)
+>  static void imx_uart_stop_rx(struct uart_port *port)
+>  {
+>  	struct imx_port *sport =3D (struct imx_port *)port;
+> -	u32 ucr1, ucr2;
+> +	u32 ucr1, ucr2, ucr4;
+> =20
+>  	ucr1 =3D imx_uart_readl(sport, UCR1);
+>  	ucr2 =3D imx_uart_readl(sport, UCR2);
+> +	ucr4 =3D imx_uart_readl(sport, UCR4);
+> =20
+>  	if (sport->dma_is_enabled) {
+>  		ucr1 &=3D ~(UCR1_RXDMAEN | UCR1_ATDMAEN);
+>  	} else {
+>  		ucr1 &=3D ~UCR1_RRDYEN;
+>  		ucr2 &=3D ~UCR2_ATEN;
+> +		ucr4 &=3D ~UCR4_OREN;
+>  	}
+>  	imx_uart_writel(sport, ucr1, UCR1);
+> +	imx_uart_writel(sport, ucr4, UCR4);
 
-This will skip KASAN/etc checks as well, right? I guess it is fine b/c
-this affects just this place and the code looks safe (famous last
-words :)) and we can refine it in future.
-But I wonder about false positives under KMSAN. However, we probably
-can add an explicit KMSAN annotation to mark it as initialised.
-Alex?
+I don't understand this yet, but I guess this is just a matter of
+improving the commit log. How does the endless irq happen?
 
->         /*
->          * Not all architectures have an exact copy_from_user(). Resort to
-> --
-> 2.34.0.rc2.393.gf8c9666880-goog
->
+=2E.. some time later after thinking and reading the driver source ...
+
+Hmm, when the OR event is triggered the handler does
+
+	imx_uart_writel(sport, USR2_ORE, USR2);
+
+and so clears the event. I would expect that this should be good enough
+to prevent an irq storm even if the receiver is disabled. Doesn't acking
+work with the receiver disabled?
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--dfufdpmzqbray4ol
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGcnXcACgkQwfwUeK3K
+7AnXKQf+Oxo2fSuleEXcVEnt9y39g5vWnIK9KzWpvdcMnoiFe9+fRMVjpTMTKcaI
+g2SGoArSUjxRY1Fl51Vfp+7t6fUneB6IebpZ4ZnQ59CGqkrLSKiOcMIVN19bWPZA
+mZWNhOZovC0m4l2gx2msfRyrzg4bPjoxUY19oYDUkh3FALMwhBOLlFonZwSMro72
+0LrYBHnBMGaKFQt1/b1kidFj3guZISPn63pW969YBXZa/w7S7LXRm/mvxDiYsmeS
+uhpP6WsrnFg1JFWpAxAPanpiYcHHBCv7D8rFfbpEbovKAW0Fi5crMlZCQnxJrVbh
+eqMHsORqldYHjD15a6IYDwkB1luinw==
+=fZth
+-----END PGP SIGNATURE-----
+
+--dfufdpmzqbray4ol--
