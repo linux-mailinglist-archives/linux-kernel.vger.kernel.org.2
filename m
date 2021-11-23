@@ -2,128 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7124599A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63DBD4599A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:22:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232335AbhKWBYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 20:24:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53780 "EHLO
+        id S230017AbhKWBZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 20:25:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230461AbhKWBYT (ORCPT
+        with ESMTP id S229484AbhKWBZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 20:24:19 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F58C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:21:12 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id i63so7684999lji.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:21:12 -0800 (PST)
+        Mon, 22 Nov 2021 20:25:39 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD8FBC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:22:31 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id z8so7645599ljz.9
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:22:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=PZNVY9+03dEFejIwzLUj2PbaiVC1vy5FYIvkJizW4dQ=;
-        b=CUvfp14TbL49LRiKzGVqTH2EYU63uY6IsAJcq5kvTwhdkLT5s1JIargoRqeM6fpkEm
-         LFMO5UIM+oAVs07AlSdrpr5zZIJmQHqSz8d0xEHXO/6QkDzo2z7WN70mjVjOSjDPrQzj
-         v3HALSn4twgfz2FdbNk6l4GBYfoaMWqi/YiSJ/Fu6tYQbVh5242dK3h+mJBxSnXlALUV
-         uJO/eIlyVe5K1AjcEK8oqYVhOKsxWw0R5zowd15VsE7pqg/H2BnP7l9Twy/g6NY9H9HM
-         TVNK7fFUbOP58/IGQeb+O9qHIHzn6fBXcmTk/GnDSf2zcFbrx8fsb+UEJrCrSF06DywY
-         hIOA==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=+v7bjTJ4Q3k72mUckY/vna9r5hdbnIr+w4bsRguwuxg=;
+        b=KHUf30VQn1ZVyxatiZMwksbGW4yx/73ZdX6kceDOUX09dkeDc+hltITGm3HGEX/kYH
+         QDFLQv7Zgazk2dWzsLqEfQZj/Y6elr+3GEvOHvn/CqzP67vX0rllsvVisrSyGRFejLK7
+         S9WxVJzYNwA5xteDU0VXhm+DBy7sVL5clj57kgXHPxTBhByxJIdEP52qZLkTLHkEawoj
+         QqNpZCGQjqD8hzelkja43WsHQl121Wu9+y7fucVktrsSgo4X7R5KVQTPuGIquS2qSSeW
+         xk/57o/GncRVbJdAas22IJhU+TcnhviOAtn6SfPywwSeDZG7lvWAzULdAO3cHuxbyuct
+         LA1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PZNVY9+03dEFejIwzLUj2PbaiVC1vy5FYIvkJizW4dQ=;
-        b=vE7GEbDIun4Nq57hQnEyYsSO2zB12f7//mUBrC03MuglO4YB76qjJVrJ6WwnmWbTty
-         lkrg5e73tN8/KJdLXElN+cImQhj8LMehF9czXZTOjezksNW0NcUQIslRXiv979pROYk1
-         ry0gy/ZLRqOYhsGdTXZ+B8t+DYPZ+YT3CMSzGlhXabcTvCmtijO/pc0KmIFt3QEyI0nm
-         BclToC7k9KH06ABDNL2SHeAIiHZNVOmVWdUmPeWQSb+ZjuhSRG7Hwj9au1//osqiJ0oU
-         SbuNRBiMmSXG9nzC/xFS6M0ZCOr5ucY7kvo8oBLABiFajDxEjLvv1DRuWrHVQ4sP0YoN
-         9IZg==
-X-Gm-Message-State: AOAM53092bdO/N/7ZOjxnZyZmo7vE9Ra4I1zkLzqMzjzH0qwMoh+PB47
-        haY4ibnh5MqF1zmH/90oyMnY0E7qkyBw/NuBDcxFIg==
-X-Google-Smtp-Source: ABdhPJzdBbddli4+dHgpML9E8V8zH8wRcIUvFDly89JkVjxpJyrwxoG82YtIxjNz4+uZvgEakw7l+ou6zPMFsmdliKM=
-X-Received: by 2002:a05:651c:545:: with SMTP id q5mr833343ljp.202.1637630470541;
- Mon, 22 Nov 2021 17:21:10 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=+v7bjTJ4Q3k72mUckY/vna9r5hdbnIr+w4bsRguwuxg=;
+        b=wP8LEPoyDMNrIT/g8MpUInbfn1kh3Qiz+i82NFST0qYzhmLDS4ZEOla2UQzh6MHZ5K
+         XJOBg4vIk19MaA46q4nMmphd5dwhknCSlFszn1iFFrM1nicGYtTvYa6PSx7kMy8CKrtM
+         aZe6upcut9AUeLjFsuiX4jPBWex4fT+F0IKGuhUMlppu88Hri1Jkzd/xAEruDjJQJDas
+         aNrK4s2qbllhebgnDri8ON7b/HopcBWLCH61OQIBkAzfjDDxS3xpI3LugV0j5FcCJ2Ku
+         XUfxFk2iPvbDFJTyfVm6II98JD6yUC3QXIsfoCsUKref3lNE1ieOgrX23W7vcSE/MuNQ
+         jj7g==
+X-Gm-Message-State: AOAM531kg5P+SxY8kq9XJM0PWdrfWlZF1T5h9FmIaKhGh5uu4/vMUul9
+        hJk/8psV8sdPaag536WcK1Y=
+X-Google-Smtp-Source: ABdhPJy6B/wNtgkmxeAVu3rYxbA96TanTzMNVgCaXBb1m4CM6hjj5DSswiuGk4kwjP9hbhRFMuYwug==
+X-Received: by 2002:a2e:9217:: with SMTP id k23mr800807ljg.267.1637630550152;
+        Mon, 22 Nov 2021 17:22:30 -0800 (PST)
+Received: from HyperiorArchMachine.bb.dnainternet.fi (dcx7x4yct-z7s--tg8y8t-3.rev.dnainternet.fi. [2001:14ba:14f7:3c00:50fd:36ff:fe05:e039])
+        by smtp.gmail.com with ESMTPSA id c15sm1304038lfb.40.2021.11.22.17.22.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Nov 2021 17:22:29 -0800 (PST)
+From:   Jarmo Tiitto <jarmo.tiitto@gmail.com>
+To:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Bill Wendling <wcw@google.com>, linux-kernel@vger.kernel.org
+Cc:     Jarmo Tiitto <jarmo.tiitto@gmail.com>,
+        Joe Perches <joe@perches.com>
+Subject: [RFC PATCH 1/2] pgo: Update .profraw file format to version 7
+Date:   Tue, 23 Nov 2021 03:21:36 +0200
+Message-Id: <20211123012138.160532-2-jarmo.tiitto@gmail.com>
+X-Mailer: git-send-email 2.34.0
+In-Reply-To: <20211123012138.160532-1-jarmo.tiitto@gmail.com>
+References: <20211123012138.160532-1-jarmo.tiitto@gmail.com>
 MIME-Version: 1.0
-References: <20211123001020.4083653-1-almasrymina@google.com>
-In-Reply-To: <20211123001020.4083653-1-almasrymina@google.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 22 Nov 2021 17:20:59 -0800
-Message-ID: <CALvZod6gy6HNq5zmjwpOfG2K5RwCDnyBEPBr1wK8H6nk77UM9A@mail.gmail.com>
-Subject: Re: [PATCH v8] hugetlb: Add hugetlb.*.numa_stat file
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Jue Wang <juew@google.com>, Yang Yao <ygyao@google.com>,
-        Joanna Li <joannali@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 4:10 PM Mina Almasry <almasrymina@google.com> wrote=
-:
->
-> For hugetlb backed jobs/VMs it's critical to understand the numa
-> information for the memory backing these jobs to deliver optimal
-> performance.
->
-> Currently this technically can be queried from /proc/self/numa_maps, but
-> there are significant issues with that. Namely:
-> 1. Memory can be mapped or unmapped.
-> 2. numa_maps are per process and need to be aggregated across all
->    processes in the cgroup. For shared memory this is more involved as
->    the userspace needs to make sure it doesn't double count shared
->    mappings.
-> 3. I believe querying numa_maps needs to hold the mmap_lock which adds
->    to the contention on this lock.
->
-> For these reasons I propose simply adding hugetlb.*.numa_stat file,
-> which shows the numa information of the cgroup similarly to
-> memory.numa_stat.
->
-> On cgroup-v2:
->    cat /sys/fs/cgroup/unified/test/hugetlb.2MB.numa_stat
->    total=3D2097152 N0=3D2097152 N1=3D0
->
-> On cgroup-v1:
->    cat /sys/fs/cgroup/hugetlb/test/hugetlb.2MB.numa_stat
->    total=3D2097152 N0=3D2097152 N1=3D0
->    hierarichal_total=3D2097152 N0=3D2097152 N1=3D0
->
-> This patch was tested manually by allocating hugetlb memory and querying
-> the hugetlb.*.numa_stat file of the cgroup and its parents.
-> =EF=BF=BC
-> Cc: Mike Kravetz <mike.kravetz@oracle.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Miaohe Lin <linmiaohe@huawei.com>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Muchun Song <songmuchun@bytedance.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Shakeel Butt <shakeelb@google.com>
-> Cc: Jue Wang <juew@google.com>
-> Cc: Yang Yao <ygyao@google.com>
-> Cc: Joanna Li <joannali@google.com>
-> Cc: Cannon Matthews <cannonmatthews@google.com>
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
->
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
->
+Recent LLVM-13 can't read the version 5 profile file any more
+so update the format to .profraw file version 7.
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+This version adds binary_ids_size entry to struct llvm_prf_header
+and it is output as zero.
+
+This is enough to fix processing the profile data on LLVM-13 tools.
+
+Signed-off-by: Jarmo Tiitto <jarmo.tiitto@gmail.com>
+---
+ kernel/pgo/fs.c  | 1 +
+ kernel/pgo/pgo.h | 4 +++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/pgo/fs.c b/kernel/pgo/fs.c
+index 3c5aa7c2a4ce..77d23f869503 100644
+--- a/kernel/pgo/fs.c
++++ b/kernel/pgo/fs.c
+@@ -62,6 +62,7 @@ static void prf_fill_header(void **buffer)
+ #endif
+ 	header->version = LLVM_VARIANT_MASK_IR_PROF | LLVM_INSTR_PROF_RAW_VERSION;
+ 	header->data_size = prf_data_count();
++	header->binary_ids_size = 0;
+ 	header->padding_bytes_before_counters = 0;
+ 	header->counters_size = prf_cnts_count();
+ 	header->padding_bytes_after_counters = 0;
+diff --git a/kernel/pgo/pgo.h b/kernel/pgo/pgo.h
+index 04fbf3bcde1e..45eeff9ab6c4 100644
+--- a/kernel/pgo/pgo.h
++++ b/kernel/pgo/pgo.h
+@@ -43,7 +43,7 @@
+ 		 (u64)'R' << 8  |	\
+ 		 (u64)129)
+ 
+-#define LLVM_INSTR_PROF_RAW_VERSION		5
++#define LLVM_INSTR_PROF_RAW_VERSION 7
+ #define LLVM_INSTR_PROF_DATA_ALIGNMENT		8
+ #define LLVM_INSTR_PROF_IPVK_FIRST		0
+ #define LLVM_INSTR_PROF_IPVK_LAST		1
+@@ -56,6 +56,7 @@
+  * struct llvm_prf_header - represents the raw profile header data structure.
+  * @magic: the magic token for the file format.
+  * @version: the version of the file format.
++ * @binary_ids_size: the number of binary ids. (since LLVM_INSTR_PROF_RAW_VERSION >= 7)
+  * @data_size: the number of entries in the profile data section.
+  * @padding_bytes_before_counters: the number of padding bytes before the
+  *   counters.
+@@ -72,6 +73,7 @@
+ struct llvm_prf_header {
+ 	u64 magic;
+ 	u64 version;
++	u64 binary_ids_size;
+ 	u64 data_size;
+ 	u64 padding_bytes_before_counters;
+ 	u64 counters_size;
+-- 
+2.34.0
+
