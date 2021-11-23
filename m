@@ -2,87 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44DD5459ABC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 04:49:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F186459ABF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 04:50:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233413AbhKWDwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 22:52:31 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:32096 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232724AbhKWDw0 (ORCPT
+        id S231785AbhKWDxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 22:53:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231137AbhKWDxP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 22:52:26 -0500
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AN1mGmM015381;
-        Tue, 23 Nov 2021 03:49:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2021-07-09;
- bh=71yF8cF8+NytRLvxni4D99sEMQZ/LyKM30Fk+C7roy4=;
- b=wZ8I1XFl4NyfRtQb/fZruI3rKQuDkRg+pQCnui4jEIPUsujE4Neaks4LTnx63fn4U20z
- 33iGbDpr2XMKZUWnS4BCbrXy0ew13GZ4+dI4605ZNUO3FfIO3EDlo/ErDhd6CcUToX8T
- fJEJmj9AEFb5+BmtbEpxzhv9ew3yhDb6XBH/UvU22zxl2STsaYxAFKx34pbnZlVdJO6c
- tKRNYiynoVG3vuvpKLqh8mTKUatmjUchOUSc3kGRhuJ9akUFg6DeFZ1OMoCyn8iSOMC8
- i7veWFCcSFDRNJ5dBTRSGY1wGbPKJBT4Y3Q0MZg4p/gfCnIyBHfDujhthQUFN8Jz7LH6 vw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3cg46f6sj4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Nov 2021 03:49:10 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AN3l03s162085;
-        Tue, 23 Nov 2021 03:49:09 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 3ceru4g6m8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Nov 2021 03:49:09 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1AN3l19q162141;
-        Tue, 23 Nov 2021 03:49:09 GMT
-Received: from ca-mkp.mkp.ca.oracle.com (ca-mkp.ca.oracle.com [10.156.108.201])
-        by aserp3020.oracle.com with ESMTP id 3ceru4g6hc-5;
-        Tue, 23 Nov 2021 03:49:09 +0000
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Avri Altman <avri.altman@wdc.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: ufs: Wrap Universal Flash Storage drivers in SCSI_UFSHCD
-Date:   Mon, 22 Nov 2021 22:49:03 -0500
-Message-Id: <163763931254.19362.13195258684777232140.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211106164650.1571068-1-geert@linux-m68k.org>
-References: <20211106164650.1571068-1-geert@linux-m68k.org>
+        Mon, 22 Nov 2021 22:53:15 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08DF7C061574;
+        Mon, 22 Nov 2021 19:50:08 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HyqsT4ty1z4xbP;
+        Tue, 23 Nov 2021 14:50:05 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1637639406;
+        bh=4MZ8Hj+ibHRUk22wTZAll78KyeVB//jBk9g/Gg7sU4A=;
+        h=Date:From:To:Cc:Subject:From;
+        b=cRIt3AmMcr/K84f6+4+TMAzD//kyf3sdjpC+Egc7SM4yydcf29Qtjkw71cc2bqAtX
+         rr23CFkcokbkfDbry7iEO+GHDAn85/f1kiNybyjzG7JDj1EGJN1NNHqZ0pU+z8e9Ps
+         89z2EmYjNUmv6CmNMI+4uqPslE1az+gFMOlKQ44Ft6NLi66hBnlSCHpA4qhTUfjz1w
+         ofKWZJJ/6RFi+fPWQ4Bf8K8USE7MLwpCLPsK5HkqcptJZCIblBDx5h02RxQmtZ/cuR
+         TGYN3z9jmZUz+bBU8XD8Q/B4HAdD+516V3vXLHNWFP9B4P+2fgOsheOGMl9uCViNjH
+         kf4xHbMQ1eERg==
+Date:   Tue, 23 Nov 2021 14:50:04 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Yury Norov <yury.norov@gmail.com>, Vinod Koul <vkoul@kernel.org>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the bitmap tree with the dmaengine tree
+Message-ID: <20211123145004.6018b7fe@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: M0uRRB7CRSdXRebIyLl8_jLJw_DMi5b5
-X-Proofpoint-ORIG-GUID: M0uRRB7CRSdXRebIyLl8_jLJw_DMi5b5
+Content-Type: multipart/signed; boundary="Sig_/FJODxGkuJX4VHs60z0yK249";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 6 Nov 2021 17:46:50 +0100, Geert Uytterhoeven wrote:
+--Sig_/FJODxGkuJX4VHs60z0yK249
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> The build only descends into drivers/scsi/ufs/ if SCSI_UFSHCD is
-> enabled.  Hence all later config symbols should depend on SCSI_UFSHCD,
-> to prevent asking the user about config symbols for driver code that
-> won't be build anyway.  Unfortunately not all symbols have that
-> dependency.
-> 
-> Fix this by wrapping them all into a big if/endif block.  Remove the now
-> superfluous explicit dependencies on SCSI_UFSHCD from all symbols that
-> already had it.
-> 
-> [...]
+Hi all,
 
-Applied to 5.17/scsi-queue, thanks!
+Today's linux-next merge of the bitmap tree got a conflict in:
 
-[1/1] scsi: ufs: Wrap Universal Flash Storage drivers in SCSI_UFSHCD
-      https://git.kernel.org/mkp/scsi/c/d28a78537d1d
+  drivers/dma/ti/edma.c
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+between commit:
+
+  365fceecd66e ("dmaengine: ti: edma: Use 'for_each_set_bit' when possible")
+
+from the dmaengine tree and commit:
+
+  523f4c8e86c3 ("all: replace find_next{,_zero}_bit with find_first{,_zero}=
+_bit where appropriate")
+
+from the bitmap tree.
+
+I fixed it up (I just used the former verion) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/FJODxGkuJX4VHs60z0yK249
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGcZOwACgkQAVBC80lX
+0GzZrgf/SLERbwc64h/+9pJtHL57zHOSwsVnvBU2Kif0/XtL8Ry7iNQImdetS6l0
+gClNecQkH+nMm4O+tMaLDKDVhxqEYb+S1Lnqe9mhlzxML/XehavUNJEqvcEnMHYs
+nQwOPYcBJmtULFzonlHCwR23WvVO3Eude6JcpzhNURWL9bQkOU8rP6w+UGm2rCle
+JNRViDzFuDSdUPRBaaDFrqu6EA4HEeNQEBRe4HlFCJsXeWuMo548EjJc9MBBec2b
+gw1n6Ds+5TxeioCKcy9c9Ssa4QTtQRPJHysiJz0GFU0j1SvZa9+JN54Ual52xjza
+bm1yIThdoho6uis1ie5aDLTfzZsYfw==
+=j2zw
+-----END PGP SIGNATURE-----
+
+--Sig_/FJODxGkuJX4VHs60z0yK249--
