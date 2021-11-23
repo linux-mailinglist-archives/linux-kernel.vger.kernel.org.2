@@ -2,105 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6534945A757
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:14:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A8945A766
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:17:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237859AbhKWQRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 11:17:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59362 "EHLO
+        id S238750AbhKWQUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 11:20:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234942AbhKWQRy (ORCPT
+        with ESMTP id S237830AbhKWQUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 11:17:54 -0500
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B21C06173E
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 08:14:46 -0800 (PST)
-Received: by mail-ot1-x330.google.com with SMTP id h16-20020a9d7990000000b0055c7ae44dd2so34487655otm.10
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 08:14:46 -0800 (PST)
+        Tue, 23 Nov 2021 11:20:22 -0500
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70768C061746
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 08:17:14 -0800 (PST)
+Received: by mail-ua1-x930.google.com with SMTP id a14so1337015uak.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 08:17:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eparqKgOL69KUNWYFvdHukdKFpCJnmDKYIk96v9YcXE=;
-        b=tFRIBCefavlG2hukUldYOdpVY0ySk2b03cy0H1I/a0B3rDkLqLGZu5drUNLmVZ/Xt+
-         lYUlri3zwdm5fjhSo8teSSntK8Z17MjDNG8juqmNE6Wk0tueqEHOZzpf55C8ovwzGDxI
-         kqmTZ/AGg6z1sI57XuA0/OFnj/RdAReUB4sT4fMFvn7DmaHwwBUO/wtfU+yiMnHGTcQ7
-         H9OrQAge7zXZ/7YL14pyRPRrDiSCOirT6k+cYI1z10kME+xPmwri7ten18Q/XBhEfYjv
-         4RigERj1Fjq40b38A/5LLConb32xV9AMcgJrd12NtCzzRsCw/ET0E4yIeZMlJPydpyPW
-         qLig==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n3xyaSgl/R2rfASy0hLkRgTLZYF9qqzspj1P/qGTw/A=;
+        b=oNdm32E82aeMR6zFfONUZcIkPdlDLw/vyd/R2pq1Yk6QkorOqZ/Jz/eRSWjxqifWxJ
+         +9WntL2kIVAEK5wJ+abLKm6XhvZn95IhKRM3JgDDRHj0njmfdk9sAf10kICAAgv4AOVH
+         /aUl8nqRzCwxsXTijOHQT5Sonkxf5TxzA1SJUWd4RKtQFVQHS6SEwWH2V3imNyXRAzh0
+         d1FnhUd/xW4najAc4PAmqJXB5fB4VdtRu4VISP50Owus4BR8hf2t94YR6gRXgnOxD2Xs
+         L6LsnXMZIe7yf+dhozrcw/YnzMsntI6ktmHAJaEqfjqUQNsM5Z7mBkyvxtoYoJkOOT2s
+         qaMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eparqKgOL69KUNWYFvdHukdKFpCJnmDKYIk96v9YcXE=;
-        b=MVTaQ2M0umMIfNNVUzktJPmpDk14Wp8jJERUnjaOic8Fmao+Ga18ofcSRORyHGZnkO
-         N7YEID1uDiY0YGlZIGsuxHZs0mjaFGBoWJOEscC6Kbhl+C2s12tAnpvdar/u1H8wvG/6
-         fJlvIreVl6DZh/53j6tUtgCbL1nS6conq7XNJeljh7iftCYJ9M5emk6L0n0DP04y6M4t
-         sHR0zAL03HXQe7sYlL8bpZ+I8V3lhJVJx0Onwu1HIGqvDfoCT1jUecZ8Ue8KjgYRw7lD
-         G9+3xdCaOfYeeRLb0SRu3bqGwbO2xpxc1gQsv5kZnzVXZmAwyANYZpZxNpQulX/A1cMZ
-         9AVQ==
-X-Gm-Message-State: AOAM531fNgJ4vrKauNWr6vN6FuLzVFWMZwlZqUF+u9E3FeTG2bWBwONr
-        TewZ5TgMLTJ9rVvazW2yxVSP9w==
-X-Google-Smtp-Source: ABdhPJxGLkyYOkYO1lCzvGQGFw0d7eU216flfUBjVWROPBv+YR7xjdIAxKHad7pxr7OtH24lLyZ3LA==
-X-Received: by 2002:a9d:22a4:: with SMTP id y33mr5409631ota.188.1637684085769;
-        Tue, 23 Nov 2021 08:14:45 -0800 (PST)
-Received: from ripper.. (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id q10sm2664338oiw.17.2021.11.23.08.14.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 08:14:45 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>, Vinod Koul <vkoul@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] clk: qcom: clk-alpha-pll: Don't reconfigure running Trion
-Date:   Tue, 23 Nov 2021 08:16:30 -0800
-Message-Id: <20211123161630.123222-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.33.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n3xyaSgl/R2rfASy0hLkRgTLZYF9qqzspj1P/qGTw/A=;
+        b=A7Oitxt8JaZMXNPOgDAynpkUn280LcmCoULQ2yUJ79cLEJGehsii8UZPmLoqqT8vxq
+         nbxcP9xJQc/H+hKs+JgJbvOyPGVVFdsYs5Nes3J3CZhchA86CsbEONJ4Buu13RILXo8D
+         8LRHunqXAYZQeK17vRoFjUmdIs3AkoW9agH2WSYHjJs0q91ZrjdYyDay0IzuWkRF8cFL
+         tlOBjxUUxp/f+Ljg0rvlLeiZwlV2A2OqmIHeLIYyhTSVh/b45TnYTU+9s6CymyLcdqtp
+         oP0o1bJyZCRtVhvGtBUO19WWaG1nP2q6dr78FCHCMJ2mWM6VnT6vnuK3VLWOXH5Ad9za
+         NbiA==
+X-Gm-Message-State: AOAM533QzwKC6T0fcRP/FGQonoTwx4EUv3TFKUH9slfqt8yPTgCT0npl
+        eU8xIPrFySqk6R2VdyvamfggZBoUiS6jrronjcuhLdbmMEcW6g==
+X-Google-Smtp-Source: ABdhPJzRJel79zkAH2Nq6bS6tK0ThDecQScTsE+/NjE9dR9ryBYLXHd0RvKYqHtW8CGBK34IBacQhZRfdrryobuRw2E=
+X-Received: by 2002:a9f:2431:: with SMTP id 46mr10233049uaq.114.1637684233073;
+ Tue, 23 Nov 2021 08:17:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211121165647.26706-1-semen.protsenko@linaro.org>
+ <20211121165647.26706-10-semen.protsenko@linaro.org> <20211123160623.GB2326185@roeck-us.net>
+In-Reply-To: <20211123160623.GB2326185@roeck-us.net>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Tue, 23 Nov 2021 18:17:01 +0200
+Message-ID: <CAPLW+4mwhH5C6zSxWDboNucZPvt2c=F7Qaa9V_XJHbJzbFNL3w@mail.gmail.com>
+Subject: Re: [PATCH v4 09/12] watchdog: s3c2410: Cleanup PMU related code
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the event that the bootloader has configured the Trion PLL as source
-for the display clocks, e.g. for the continuous splashscreen, then there
-will also be RCGs that are clocked by this instance.
+On Tue, 23 Nov 2021 at 18:06, Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On Sun, Nov 21, 2021 at 06:56:44PM +0200, Sam Protsenko wrote:
+> > Now that PMU enablement code was extended for new Exynos SoCs, it
+> > doesn't look very cohesive and consistent anymore. Do a bit of renaming,
+> > grouping and style changes, to make it look good again. While at it, add
+> > quirks documentation as well.
+> >
+> > No functional change, just a refactoring commit.
+> >
+> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> > Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> > ---
+> > Changes in v4:
+> >   - Added R-b tag by Guenter Roeck
+> >
+> > Changes in v3:
+> >   - Added quirks documentation
+> >   - Added R-b tag by Krzysztof Kozlowski
+> >
+> > Changes in v2:
+> >   - (none): it's a new patch
+> >
+> >  drivers/watchdog/s3c2410_wdt.c | 83 ++++++++++++++++++++++++----------
+> >  1 file changed, 58 insertions(+), 25 deletions(-)
+> >
+> > diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
+> > index ec341c876225..f211be8bf976 100644
+> > --- a/drivers/watchdog/s3c2410_wdt.c
+> > +++ b/drivers/watchdog/s3c2410_wdt.c
+> > @@ -56,17 +56,51 @@
+> >  #define EXYNOS5_RST_STAT_REG_OFFSET          0x0404
+> >  #define EXYNOS5_WDT_DISABLE_REG_OFFSET               0x0408
+> >  #define EXYNOS5_WDT_MASK_RESET_REG_OFFSET    0x040c
+> > -#define QUIRK_HAS_PMU_CONFIG                 (1 << 0)
+> > -#define QUIRK_HAS_RST_STAT                   (1 << 1)
+> > -#define QUIRK_HAS_WTCLRINT_REG                       (1 << 2)
+> > +
+> > +/**
+>
+> 0-day complains:
+>
+> drivers/watchdog/s3c2410_wdt.c:94: warning: expecting prototype for Quirk flags for different Samsung watchdog IP(). Prototype was for QUIRK_HAS_WTCLRINT_REG() instead
+>
+> It doesn't seem to like the idea of documented bit masks. Not really sure
+> what to do here. I am inclined to ignore it, but I don't want to get flooded
+> by 0-day complaints until I retire either. Any idea ?
+>
 
-Reconfiguring, and in particular disabling the output of, the PLL will
-cause issues for these downstream RCGs and has been shown to prevent
-them from being re-parented.
+Seems like 0-day thinks this kernel-doc comment is for the first
+define only, and thus the comment has wrong format, or something like
+that. I tried to follow the same style as GFP_KERNEL and others are
+documented.
 
-Follow downstream and skip configuration if it's determined that the PLL
-is already running.
+Anyway, if you don't like 0-day complaints, can you please just
+replace kernel-doc comment (/**) with regular comment (/*), by
+removing one asterisk in the patch? Or I can re-send the patch
+correspondingly -- then just let me know.
 
-Fixes: 59128c20a6a9 ("clk: qcom: clk-alpha-pll: Add support for controlling Lucid PLLs")
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- drivers/clk/qcom/clk-alpha-pll.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
-index eaedcceb766f..b04aa0a630e9 100644
---- a/drivers/clk/qcom/clk-alpha-pll.c
-+++ b/drivers/clk/qcom/clk-alpha-pll.c
-@@ -1429,6 +1429,15 @@ EXPORT_SYMBOL_GPL(clk_alpha_pll_postdiv_fabia_ops);
- void clk_trion_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
- 			     const struct alpha_pll_config *config)
- {
-+	/*
-+	 * If the bootloader left the PLL enabled it's likely that there are
-+	 * RCGs that will lock up if we disable the PLL below.
-+	 */
-+	if (trion_pll_is_enabled(pll, regmap)) {
-+		pr_dbg("Trion PLL is already enabled, skipping configuration\n");
-+		return;
-+	}
-+
- 	clk_alpha_pll_write_config(regmap, PLL_L_VAL(pll), config->l);
- 	regmap_write(regmap, PLL_CAL_L_VAL(pll), TRION_PLL_CAL_VAL);
- 	clk_alpha_pll_write_config(regmap, PLL_ALPHA_VAL(pll), config->alpha);
--- 
-2.33.1
-
+> Guenter
+>
+> > + * Quirk flags for different Samsung watchdog IP-cores.
+> > + *
+> > + * This driver supports multiple Samsung SoCs, each of which might have
+> > + * different set of registers and features supported. As watchdog block
+> > + * sometimes requires modifying PMU registers for proper functioning, register
+> > + * differences in both watchdog and PMU IP-cores should be accounted for. Quirk
+> > + * flags described below serve the purpose of telling the driver about mentioned
+> > + * SoC traits, and can be specified in driver data for each particular supported
+> > + * device.
+> > + *
+> > + * %QUIRK_HAS_WTCLRINT_REG: Watchdog block has WTCLRINT register. It's used to
+> > + * clear the interrupt once the interrupt service routine is complete. It's
+> > + * write-only, writing any values to this register clears the interrupt, but
+> > + * reading is not permitted.
+> > + *
+> > + * %QUIRK_HAS_PMU_MASK_RESET: PMU block has the register for disabling/enabling
+> > + * WDT reset request. On old SoCs it's usually called MASK_WDT_RESET_REQUEST,
+> > + * new SoCs have CLUSTERx_NONCPU_INT_EN register, which 'mask_bit' value is
+> > + * inverted compared to the former one.
+> > + *
+> > + * %QUIRK_HAS_PMU_RST_STAT: PMU block has RST_STAT (reset status) register,
+> > + * which contains bits indicating the reason for most recent CPU reset. If
+> > + * present, driver will use this register to check if previous reboot was due to
+> > + * watchdog timer reset.
+> > + *
+> > + * %QUIRK_HAS_PMU_AUTO_DISABLE: PMU block has AUTOMATIC_WDT_RESET_DISABLE
+> > + * register. If 'mask_bit' bit is set, PMU will disable WDT reset when
+> > + * corresponding processor is in reset state.
+> > + *
+> > + * %QUIRK_HAS_PMU_CNT_EN: PMU block has some register (e.g. CLUSTERx_NONCPU_OUT)
+> > + * with "watchdog counter enable" bit. That bit should be set to make watchdog
+> > + * counter running.
+> > + */
+> > +#define QUIRK_HAS_WTCLRINT_REG                       (1 << 0)
+> > +#define QUIRK_HAS_PMU_MASK_RESET             (1 << 1)
+> > +#define QUIRK_HAS_PMU_RST_STAT                       (1 << 2)
+> >  #define QUIRK_HAS_PMU_AUTO_DISABLE           (1 << 3)
+> >  #define QUIRK_HAS_PMU_CNT_EN                 (1 << 4)
+> >
+> >  /* These quirks require that we have a PMU register map */
+> > -#define QUIRKS_HAVE_PMUREG                   (QUIRK_HAS_PMU_CONFIG | \
+> > -                                              QUIRK_HAS_RST_STAT | \
+> > -                                              QUIRK_HAS_PMU_AUTO_DISABLE | \
+> > -                                              QUIRK_HAS_PMU_CNT_EN)
+> > +#define QUIRKS_HAVE_PMUREG \
+> > +     (QUIRK_HAS_PMU_MASK_RESET | QUIRK_HAS_PMU_RST_STAT | \
+> > +      QUIRK_HAS_PMU_AUTO_DISABLE | QUIRK_HAS_PMU_CNT_EN)
+> >
+> >  static bool nowayout = WATCHDOG_NOWAYOUT;
+> >  static int tmr_margin;
+> > @@ -146,8 +180,8 @@ static const struct s3c2410_wdt_variant drv_data_exynos5250  = {
+> >       .mask_bit = 20,
+> >       .rst_stat_reg = EXYNOS5_RST_STAT_REG_OFFSET,
+> >       .rst_stat_bit = 20,
+> > -     .quirks = QUIRK_HAS_PMU_CONFIG | QUIRK_HAS_RST_STAT \
+> > -               | QUIRK_HAS_WTCLRINT_REG | QUIRK_HAS_PMU_AUTO_DISABLE,
+> > +     .quirks = QUIRK_HAS_WTCLRINT_REG | QUIRK_HAS_PMU_MASK_RESET | \
+> > +               QUIRK_HAS_PMU_RST_STAT | QUIRK_HAS_PMU_AUTO_DISABLE,
+> >  };
+> >
+> >  static const struct s3c2410_wdt_variant drv_data_exynos5420 = {
+> > @@ -156,8 +190,8 @@ static const struct s3c2410_wdt_variant drv_data_exynos5420 = {
+> >       .mask_bit = 0,
+> >       .rst_stat_reg = EXYNOS5_RST_STAT_REG_OFFSET,
+> >       .rst_stat_bit = 9,
+> > -     .quirks = QUIRK_HAS_PMU_CONFIG | QUIRK_HAS_RST_STAT \
+> > -               | QUIRK_HAS_WTCLRINT_REG | QUIRK_HAS_PMU_AUTO_DISABLE,
+> > +     .quirks = QUIRK_HAS_WTCLRINT_REG | QUIRK_HAS_PMU_MASK_RESET | \
+> > +               QUIRK_HAS_PMU_RST_STAT | QUIRK_HAS_PMU_AUTO_DISABLE,
+> >  };
+> >
+> >  static const struct s3c2410_wdt_variant drv_data_exynos7 = {
+> > @@ -166,8 +200,8 @@ static const struct s3c2410_wdt_variant drv_data_exynos7 = {
+> >       .mask_bit = 23,
+> >       .rst_stat_reg = EXYNOS5_RST_STAT_REG_OFFSET,
+> >       .rst_stat_bit = 23,     /* A57 WDTRESET */
+> > -     .quirks = QUIRK_HAS_PMU_CONFIG | QUIRK_HAS_RST_STAT \
+> > -               | QUIRK_HAS_WTCLRINT_REG | QUIRK_HAS_PMU_AUTO_DISABLE,
+> > +     .quirks = QUIRK_HAS_WTCLRINT_REG | QUIRK_HAS_PMU_MASK_RESET | \
+> > +               QUIRK_HAS_PMU_RST_STAT | QUIRK_HAS_PMU_AUTO_DISABLE,
+> >  };
+> >
+> >  static const struct of_device_id s3c2410_wdt_match[] = {
+> > @@ -253,24 +287,24 @@ static int s3c2410wdt_enable_counter(struct s3c2410_wdt *wdt, bool en)
+> >       return ret;
+> >  }
+> >
+> > -static int s3c2410wdt_mask_and_disable_reset(struct s3c2410_wdt *wdt, bool mask)
+> > +static int s3c2410wdt_enable(struct s3c2410_wdt *wdt, bool en)
+> >  {
+> >       int ret;
+> >
+> >       if (wdt->drv_data->quirks & QUIRK_HAS_PMU_AUTO_DISABLE) {
+> > -             ret = s3c2410wdt_disable_wdt_reset(wdt, mask);
+> > +             ret = s3c2410wdt_disable_wdt_reset(wdt, !en);
+> >               if (ret < 0)
+> >                       return ret;
+> >       }
+> >
+> > -     if (wdt->drv_data->quirks & QUIRK_HAS_PMU_CONFIG) {
+> > -             ret = s3c2410wdt_mask_wdt_reset(wdt, mask);
+> > +     if (wdt->drv_data->quirks & QUIRK_HAS_PMU_MASK_RESET) {
+> > +             ret = s3c2410wdt_mask_wdt_reset(wdt, !en);
+> >               if (ret < 0)
+> >                       return ret;
+> >       }
+> >
+> >       if (wdt->drv_data->quirks & QUIRK_HAS_PMU_CNT_EN) {
+> > -             ret = s3c2410wdt_enable_counter(wdt, !mask);
+> > +             ret = s3c2410wdt_enable_counter(wdt, en);
+> >               if (ret < 0)
+> >                       return ret;
+> >       }
+> > @@ -531,7 +565,7 @@ static inline unsigned int s3c2410wdt_get_bootstatus(struct s3c2410_wdt *wdt)
+> >       unsigned int rst_stat;
+> >       int ret;
+> >
+> > -     if (!(wdt->drv_data->quirks & QUIRK_HAS_RST_STAT))
+> > +     if (!(wdt->drv_data->quirks & QUIRK_HAS_PMU_RST_STAT))
+> >               return 0;
+> >
+> >       ret = regmap_read(wdt->pmureg, wdt->drv_data->rst_stat_reg, &rst_stat);
+> > @@ -672,7 +706,7 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
+> >       if (ret)
+> >               goto err_cpufreq;
+> >
+> > -     ret = s3c2410wdt_mask_and_disable_reset(wdt, false);
+> > +     ret = s3c2410wdt_enable(wdt, true);
+> >       if (ret < 0)
+> >               goto err_unregister;
+> >
+> > @@ -707,7 +741,7 @@ static int s3c2410wdt_remove(struct platform_device *dev)
+> >       int ret;
+> >       struct s3c2410_wdt *wdt = platform_get_drvdata(dev);
+> >
+> > -     ret = s3c2410wdt_mask_and_disable_reset(wdt, true);
+> > +     ret = s3c2410wdt_enable(wdt, false);
+> >       if (ret < 0)
+> >               return ret;
+> >
+> > @@ -724,8 +758,7 @@ static void s3c2410wdt_shutdown(struct platform_device *dev)
+> >  {
+> >       struct s3c2410_wdt *wdt = platform_get_drvdata(dev);
+> >
+> > -     s3c2410wdt_mask_and_disable_reset(wdt, true);
+> > -
+> > +     s3c2410wdt_enable(wdt, false);
+> >       s3c2410wdt_stop(&wdt->wdt_device);
+> >  }
+> >
+> > @@ -740,7 +773,7 @@ static int s3c2410wdt_suspend(struct device *dev)
+> >       wdt->wtcon_save = readl(wdt->reg_base + S3C2410_WTCON);
+> >       wdt->wtdat_save = readl(wdt->reg_base + S3C2410_WTDAT);
+> >
+> > -     ret = s3c2410wdt_mask_and_disable_reset(wdt, true);
+> > +     ret = s3c2410wdt_enable(wdt, false);
+> >       if (ret < 0)
+> >               return ret;
+> >
+> > @@ -760,7 +793,7 @@ static int s3c2410wdt_resume(struct device *dev)
+> >       writel(wdt->wtdat_save, wdt->reg_base + S3C2410_WTCNT);/* Reset count */
+> >       writel(wdt->wtcon_save, wdt->reg_base + S3C2410_WTCON);
+> >
+> > -     ret = s3c2410wdt_mask_and_disable_reset(wdt, false);
+> > +     ret = s3c2410wdt_enable(wdt, true);
+> >       if (ret < 0)
+> >               return ret;
+> >
+> > --
+> > 2.30.2
+> >
