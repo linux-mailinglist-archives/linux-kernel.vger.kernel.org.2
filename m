@@ -2,130 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3970D459A12
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 03:25:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD844459A17
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 03:27:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231153AbhKWC2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 21:28:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24217 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229776AbhKWC2m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 21:28:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637634334;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DJKXXo5huA3qTYjotBCmHop1H83ADBgZQCZurCS2VDU=;
-        b=cg0lTPzm+mEC5eu38gi6bP9oqeeC2FBQvlDJW+HrsvaVZqfYpcH2id0bPSL2kZ/BzZ/Ys+
-        BIcSt7m5oktyTnM5J6p++74jUgFjTbhZORbK3qA5KCedDpOPZiB0fdUqJuY3Zr5imfai9P
-        eCwJRa73lghX1yAgyGWNAgIxw4abEP4=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-296-TvUTrP8FMCa_-swqrYNaEg-1; Mon, 22 Nov 2021 21:25:33 -0500
-X-MC-Unique: TvUTrP8FMCa_-swqrYNaEg-1
-Received: by mail-lf1-f72.google.com with SMTP id m1-20020ac24281000000b004162863a2fcso5270511lfh.14
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 18:25:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DJKXXo5huA3qTYjotBCmHop1H83ADBgZQCZurCS2VDU=;
-        b=zKS3ctW95KxG1qdnDE1qy0ekNDd2eRDgDCAZiIamTTDo7pZR2rGOKjhL12MwdH9wod
-         +0hhj8gujARBGMCRWKGOZ7F1asHQsq6eZ3tFuViZ7JmBbHrQWCzqHWEKjZHicL6RitSO
-         1HCqhdd9YOfVuUKlpPNzyfVaMTCbQFFIRmOsr9DVoQDdhXHnyayJQs3qtWDu0RpBZwAa
-         jJJQIeQ9nVTTRJXkgQm66lyYoRVJ3yZ6n1/T1Dc4bE8q1vLXNioQClPgPYFhkEDN8zNy
-         64puT5jPrSNUMBArFz5H3lOntaKIQyGl0m+roBMsWU69EyAtbgLX5ypOvt1t7NpRafll
-         4q5A==
-X-Gm-Message-State: AOAM533Ji+wlu787cho+AhUZIUCsanURViAfucP3rLFfxDY/Sp6CdAL0
-        wQ1MmWAMJoca3WrrZM61DzVcE6BAn96blnSefKIHKlJRndzrdx+CrhlGdIQyE+NyDi9Fn2PgJSu
-        2TCpmEoWFrQxNdDYwUGuG/jIpAwMFTqJ5oBcB/JQt
-X-Received: by 2002:a05:6512:2081:: with SMTP id t1mr1184066lfr.348.1637634331797;
-        Mon, 22 Nov 2021 18:25:31 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyhbzfSpkWV2xGy6ErJZl4ZYscE/G0X2n8DtA51zeavG44zfVZ65TNtG3E6AVCF6h+nqefVVGDXVmsuTXxrt4w=
-X-Received: by 2002:a05:6512:2081:: with SMTP id t1mr1184043lfr.348.1637634331603;
- Mon, 22 Nov 2021 18:25:31 -0800 (PST)
+        id S232138AbhKWCai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 21:30:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34850 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229678AbhKWCah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 21:30:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9AEA60FD7;
+        Tue, 23 Nov 2021 02:27:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637634450;
+        bh=pVAUlBxMspmGig7ibnf9L4M8onsP9ZIoqi1m/vBIerI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Pbo+njgtbDj4dogQt5o1N0PAsSo37zFuxzUuIifRSrVeUGFkJTMeO9/9GiMCaZL0/
+         QYKC2jOjQAZPcSen6/iDuWNf/iw+OAdGlARBHcVb54Hi1EEbJNRaVfNaAy+QLSz8Bc
+         jVKTLQsi2vXpr/rYYFUbPqfhZqzlcJ9ZMuiw18wAF3GdJ0ivhzgmqb3IfoUA6LLfwf
+         utUtccTCVpTkaa0H7Ftj8xBubLvR9pYMoBF7DedPXF0BnT2fNF7VWNOOj0aaCsw98W
+         917cKGW7zx+XoW9fQA2nZL2C3sOdV459ykU1Qt+BdBDwCa46m5mWlT44ZxWQf/tnG3
+         j8FtI3IDPrzlQ==
+Date:   Mon, 22 Nov 2021 18:27:28 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Aya Levin <ayal@mellanox.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>, drivers@pensando.io,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Michael Chan <michael.chan@broadcom.com>,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Simon Horman <simon.horman@corigine.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [PATCH net-next 5/6] devlink: Reshuffle resource registration
+ logic
+Message-ID: <20211122182728.370889f2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YZoHGKqLz6UBk2Sx@unreal>
+References: <cover.1637173517.git.leonro@nvidia.com>
+        <6176a137a4ded48501e8a06fda0e305f9cfc787c.1637173517.git.leonro@nvidia.com>
+        <20211117204956.6a36963b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YZYFvIK9mkP107tD@unreal>
+        <20211118174813.54c3731f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YZfFDSnnjOG+wSyK@unreal>
+        <20211119081017.6676843b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YZoHGKqLz6UBk2Sx@unreal>
 MIME-Version: 1.0
-References: <20211027022107.14357-1-jasowang@redhat.com> <20211027022107.14357-2-jasowang@redhat.com>
- <20211119160951.5f2294c8.pasic@linux.ibm.com> <CACGkMEtja2TPC=ujgMrpaPmdsy+zHowbBTvPj8k7nm_+zB8vig@mail.gmail.com>
- <20211122063518.37929c01.pasic@linux.ibm.com> <20211122064922.51b3678e.pasic@linux.ibm.com>
- <CACGkMEu+9FvMsghyi55Ee5BxetP-YK9wh2oaT8OgLiY5+tV0QQ@mail.gmail.com> <20211122212352.4a76232d.pasic@linux.ibm.com>
-In-Reply-To: <20211122212352.4a76232d.pasic@linux.ibm.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Tue, 23 Nov 2021 10:25:20 +0800
-Message-ID: <CACGkMEtmhwDEAvMuMhQEUB-b+=n713pVvjyct8QAqMUk1H-A-g@mail.gmail.com>
-Subject: Re: [PATCH V5 1/4] virtio_ring: validate used buffer length
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     mst <mst@redhat.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "kaplan, david" <david.kaplan@amd.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 4:24 AM Halil Pasic <pasic@linux.ibm.com> wrote:
->
-> On Mon, 22 Nov 2021 14:25:26 +0800
-> Jason Wang <jasowang@redhat.com> wrote:
->
-> > I think the fixes are:
-> >
-> > 1) fixing the vhost vsock
-> > 2) use suppress_used_validation=true to let vsock driver to validate
-> > the in buffer length
-> > 3) probably a new feature so the driver can only enable the validation
-> > when the feature is enabled.
->
-> I'm not sure, I would consider a F_DEV_Y_FIXED_BUG_X a perfectly good
-> feature. Frankly the set of such bugs is device implementation
-> specific and it makes little sense to specify a feature bit
-> that says the device implementation claims to adhere to some
-> aspect of the specification. Also what would be the semantic
-> of not negotiating F_DEV_Y_FIXED_BUG_X?
+On Sun, 21 Nov 2021 10:45:12 +0200 Leon Romanovsky wrote:
+> On Fri, Nov 19, 2021 at 08:10:17AM -0800, Jakub Kicinski wrote:
+> > On Fri, 19 Nov 2021 17:38:53 +0200 Leon Romanovsky wrote:  
+> > > My approach works, exactly like it works in other subsystems.
+> > > https://lore.kernel.org/netdev/cover.1636390483.git.leonro@nvidia.com/  
+> > 
+> > What "other subsystems"? I'm aware of the RFC version of these patches.  
+> 
+> Approach to have fine-grained locking scheme, instead of having one big lock.
+> This was done in MM for mmap_sem, we did it for RDMA too.
 
-Yes, I agree. Rethink of the feature bit, it seems unnecessary,
-especially considering the driver should not care about the used
-length for tx.
+You're breaking things up to avoid lock ordering issues. The user can
+still only run a single write command at a time.
 
->
-> On the other hand I see no other way to keep the validation
-> permanently enabled for fixed implementations, and get around the problem
-> with broken implementations. So we could have something like
-> VHOST_USED_LEN_STRICT.
+> > Breaking up the locks to to protect sub-objects only is fine for
+> > protecting internal lists but now you can't guarantee that the object
+> > exists when driver is called.  
+> 
+> I can only guess about which objects you are talking.
 
-It's more about a choice of the driver's knowledge. For vsock TX it
-should be fine. If we introduce a parameter and disable it by default,
-it won't be very useful.
+It obviously refers to the port splitting I mentioned below.
 
->
-> Maybe, we can also think of 'warn and don't alter behavior' instead of
-> 'warn' and alter behavior. Or maybe even not having such checks on in
-> production, but only when testing.
+> If you are talking about various devlink sub-objects (ports, traps,
+> e.t.c), they created by the drivers and as such should be managed by them.
+> Also they are connected to devlink which is guaranteed to exist. At the end,
+> they called to devlink_XXX->devlink pointer without any existence check.
+> 
+> If you are talking about devlink instance itself, we guarantee that it
+> exists between devlink_alloc() and devlink_free(). It seems to me pretty
+> reasonable request from drivers do not access devlink before devlink_alloc()
+> or after devlink_free(),
+> 
+> > I'm sure you'll utter your unprovable "in real drivers.." but the fact
+> > is my approach does not suffer from any such issues. Or depends on
+> > drivers registering devlink last.  
+> 
+> Registration of devlink doesn't do anything except opening it to the world.
+> The lifetime is controlled with alloc and free. My beloved sentence "in
+> real drivers ..." belongs to use of devlink_put and devlink_locks outside
+> of devlink.c and nothing more.
 
-I think there's an agreement that virtio drivers need more hardening,
-that's why a lot of patches were merged. Especially considering the
-new requirements came from confidential computing, smart NIC and
-VDUSE. For virtio drivers, enabling the validation may help to
+As soon as there is a inter-dependency between two subsystems "must 
+be last" breaks down.
 
-1) protect the driver from the buggy and malicious device
-2) uncover the bugs of the devices (as vsock did, and probably rpmsg)
-3) force the have a smart driver that can do the validation itself
-then we can finally remove the validation in the core
+> > I can start passing a pointer to a devlink_port to split/unsplit
+> > functions, which is a great improvement to the devlink driver API.  
+> 
+> You can do it with my approach too. We incremented reference counter
+> of devlink instance when devlink_nl_cmd_port_split_doit() was called,
+> and we can safely take devlink->port_list_lock lock before returning
+> from pre_doit.
 
-So I'd like to keep it enabled.
+Wait, I thought you'd hold devlink->lock around split/unsplit.
 
-Thanks
+Please look at the port splitting case, mlx5 doesn't implement it
+but it's an important feature.
 
->
-> Regards,
-> Halil
->
-
+Either way, IDK how ref count on devlink helps with lifetime of a
+subobject. You must assume the sub-objects can only be created outside
+of the time devlink instance is visible or under devlink->lock?
