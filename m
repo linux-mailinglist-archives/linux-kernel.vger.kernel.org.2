@@ -2,209 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5BE4599A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:18:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2764599A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:20:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232358AbhKWBVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 20:21:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53062 "EHLO
+        id S232107AbhKWBXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 20:23:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231176AbhKWBVJ (ORCPT
+        with ESMTP id S231174AbhKWBXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 20:21:09 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F794C061574;
-        Mon, 22 Nov 2021 17:18:02 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id b13so15656312plg.2;
-        Mon, 22 Nov 2021 17:18:02 -0800 (PST)
+        Mon, 22 Nov 2021 20:23:33 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A1AC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:20:26 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id z34so86734166lfu.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:20:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=KHR91PZFjoFttvxhIVxVMsutPsz8K1QRHL6iXzq/ohs=;
-        b=mhlpACSRsEfj/sgKl4lYHP3mkJjUENwKogV/8wVZSEtILhdYzNq0zl3mUH4vfB6Ej+
-         tCi49Pti4D+fdCImANd+Q/UWAc42gjUu0bHtqcyktSP0qBJSvOekStiKzh+G2sXIeMRW
-         3Tt4srC2n+440/92cT7PZ0E5r0amJKcvgbT14i6E1AytHfuAK29bJ5FoNmb+teWs3nNo
-         g1ugejpZ0DmBGvopS04T/zj8Gv2+rpOSdJRMKCc66S56ku0f81pyE/+NQ2u1eiQMQ9Lu
-         R4A3gZ9y3Y3OFf3PaCBO6Q7CR9Xs/H14qshdWWgPvS3c0s0D6JiJlGXm0CtS2+gfMBeo
-         GLyQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X8wfXbw5bjxz9JfJOdAOa5BfAiwRfYmne+uZZ/dKp/g=;
+        b=VlgBqVpm+Xam5cdvEkYMdeYYdYrjdjY76z5PLJOvzhTOi7qcGetldnK6rjO83qoiMo
+         JXHLnf3L1TwFLK/FXp1Jr/dVpWI/th20qgdkYNUC4LtK+JteNgYs9PvNT8htSUUWC9ED
+         0BMKty7OQ/AQPPva9pRQPdf6uagGzKw5/uQ5hGZ6oy7eF+2lQQs0hYh3ObrvDFTsMhcJ
+         rKAJxXlPURvEGYTDFYp+kp6wgIl6WTQ//KkCpkQIOiDrtLI49o4egZA0hc5sUAJI5wuh
+         pwyUbVvjzY6u8YsQPXexPskBaow8TLr3F7gR7l8QJfEZgogzT6DcFwYkuBV5XybUNC56
+         FpKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=KHR91PZFjoFttvxhIVxVMsutPsz8K1QRHL6iXzq/ohs=;
-        b=D4+xGWJs0KQ7tdb/zXFg+8WmwH1hzZrzdgTyn+U03QGGmlbsuUccNFm3W36yvVVRKI
-         sOacFOJAqvCO765Sf/wdnUNX1M5GYh15gBj/2Yp2pjMbGiO8cIzgzAfUlQDHWldJDEKH
-         WoIFPLqKGwrFUmYIzvwJw0gA8VDraEagfKLLjYf2h5EVYKdHnj5hOZj8s9a0n1WbmW47
-         lBf5wVD2VDG0cHApounqBAxtkMxm/i1nB5PBWyXlOUdeQimO+jya5U5rcWHrYDOSL40V
-         Xb+M3gE5ZY0G2gM8SvFlQNb4PoSji4ctE/nWuPXKRjaljeUhpLwRAArvN76I2nPA4uwx
-         8rpA==
-X-Gm-Message-State: AOAM533q56VNVx+s4ROT/1hQlsZ2ClxvH8ZvJR8/BqeIK/ULE7mgV82Z
-        V7Y/5g/IX3kI9M+w2+j/vU0=
-X-Google-Smtp-Source: ABdhPJzVhnAguTRhd0LsOA3bjXmgYYk+RsgDY0BAXXrRv7p995Un17Ri3Oeg7fJhHZ89c+htQeL27g==
-X-Received: by 2002:a17:902:8e87:b0:143:759c:6a2d with SMTP id bg7-20020a1709028e8700b00143759c6a2dmr1937989plb.59.1637630281208;
-        Mon, 22 Nov 2021 17:18:01 -0800 (PST)
-Received: from VM-0-3-centos.localdomain ([101.32.213.191])
-        by smtp.gmail.com with ESMTPSA id t7sm19971415pjs.45.2021.11.22.17.17.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 22 Nov 2021 17:18:00 -0800 (PST)
-From:   brookxu <brookxu.cn@gmail.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     jack@suse.cz, riteshh@linux.ibm.com, linux-ext4@vger.kernel.org,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X8wfXbw5bjxz9JfJOdAOa5BfAiwRfYmne+uZZ/dKp/g=;
+        b=NsvC2WpLIxRzvsxTYfN2SR0XgpoR/4U9t/AK8lmebWWoQDV1mRRDBLEuJzovMcX7di
+         sZm7cgBYtCbirAcgmTl9VHTK8mNNNW2/A91egFBTOal0mxdt/CaWeJo+LDuEDMbl26Hk
+         i9yPdQFSXBflWa5d8dsLmfRt8S5WPsLJhg3WEIkq3urtOqionS0jnnM6JMUWUShTsbIM
+         QB3dIs6BlBRQw2DW9fvUU5MyiO9b7AHbT/vz2rKfGE8fhrHoBXDdS5I+GpF6mfLyNdqa
+         mcmuQK8xEEyr/upi1qxCxhMe1oQYDXpjkICu9Ec5x8uuIYzgaKKI6UFovsqBKzFdYXgN
+         2TkQ==
+X-Gm-Message-State: AOAM533G0OWdxQ5CPHSwYcLxWiBSG4qool/I0ERRNM34OJJ0lPE5nn9n
+        bR4xe1G9lgUNjeypFbI2vRkopE/K4dLsKZT8j4biSg==
+X-Google-Smtp-Source: ABdhPJxfwYlKfdZacoYT9IM3uxvudeR9PeDB67TebeAtAn1rZiAl2xnuLQGARcc2+NBdCsqxFg9SFZHiFMHbw4MmQvY=
+X-Received: by 2002:a05:6512:1113:: with SMTP id l19mr854413lfg.184.1637630424415;
+ Mon, 22 Nov 2021 17:20:24 -0800 (PST)
+MIME-Version: 1.0
+References: <20211120201230.920082-1-shakeelb@google.com> <25b36a5c-5bbd-5423-0c67-05cd6c1432a7@redhat.com>
+ <CALvZod5L1C1DV_DVs9O3xZm6CJnriunAoj89YLDdCp7ef5yBxA@mail.gmail.com> <1b30d06d-f9c0-1737-13e6-2d1a7d7b8507@redhat.com>
+In-Reply-To: <1b30d06d-f9c0-1737-13e6-2d1a7d7b8507@redhat.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 22 Nov 2021 17:20:13 -0800
+Message-ID: <CALvZod5sFQbf3t_ZDW6ob+BqVtezn-c7i1UyOeev6Lwch96=7g@mail.gmail.com>
+Subject: Re: [PATCH] mm: split thp synchronously on MADV_DONTNEED
+To:     David Hildenbrand <david@redhat.com>
+Cc:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3] ext4: fix a possible ABBA deadlock dued to busy PA
-Date:   Tue, 23 Nov 2021 09:17:57 +0800
-Message-Id: <1637630277-23496-1-git-send-email-brookxu.cn@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunguang Xu <brookxu@tencent.com>
+On Mon, Nov 22, 2021 at 10:59 AM David Hildenbrand <david@redhat.com> wrote:
+>
+[...]
+>
+> Thanks for the details, that makes sense to me. It's essentially like
+> another kernel buffer charged to the process, only reclaimed on memory
+> reclaim.
+>
+> (can we add that to the patch description?)
+>
 
-We found on older kernel (3.10) that in the scenario of insufficient
-disk space, system may trigger an ABBA deadlock problem, it seems that
-this problem still exists in latest kernel, try to fix it here. The
-main process triggered by this problem is that task A occupies the PA
-and waits for the jbd2 transaction finish, the jbd2 transaction waits
-for the completion of task B's IO (plug_list), but task B waits for
-the release of PA by task A to finish discard, which indirectly forms
-an ABBA deadlock. The related calltrace is as follows:
+Sure.
 
-    Task A
-    vfs_write
-    ext4_mb_new_blocks()
-    ext4_mb_mark_diskspace_used()       JBD2
-    jbd2_journal_get_write_access()  -> jbd2_journal_commit_transaction()
-  ->schedule()                          filemap_fdatawait()
- |                                              |
- | Task B                                       |
- | do_unlinkat()                                |
- | ext4_evict_inode()                           |
- | jbd2_journal_begin_ordered_truncate()        |
- | filemap_fdatawrite_range()                   |
- | ext4_mb_new_blocks()                         |
-  -ext4_mb_discard_group_preallocations() <-----
+[...]
+> >
+> > I did a simple benchmark of madvise(MADV_DONTNEED) on 10000 THPs on
+> > x86 for both settings you suggested. I don't see any statistically
+> > significant difference with and without the patch. Let me know if you
+> > want me to try something else.
+>
+> Awesome, thanks for benchmarking. I did not check, but I assume on
+> re-access, we won't actually re-use pages from the underlying, partially
+> unmapped, THP, correct?
 
-Here, try to cancel ext4_mb_discard_group_preallocations() internal
-retry due to PA busy, and do a limited number of retries inside
-ext4_mb_discard_preallocations(), which can circumvent the above
-problems, but also has some advantages:
+Correct.
 
-1. Since the PA is in a busy state, if other groups have free PAs,
-   keeping the current PA may help to reduce fragmentation.
-2. Continue to traverse forward instead of waiting for the current
-   group PA to be released. In most scenarios, the PA discard time
-   can be reduced.
+> So after MADV_DONTNEED, the zapped sub-pages are
+> essentially lost until reclaimed by splitting the THP?
 
-However, in the case of smaller free space, if only a few groups have
-space, then due to multiple traversals of the group, it may increase
-CPU overhead. But in contrast, I feel that the overall benefit is
-better than the cost.
+Yes.
 
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
-Reported-by: kernel test robot <lkp@intel.com>
----
-v2: reset busy to zero before goto repeat.
-v3: fix a clang-analyzer warning report by kernel test robot.
+> If they could get
+> reused, there would be value in the deferred split when partially
+> unmapping a THP.
+>
+>
+> I do wonder which purpose the deferred split serves nowadays at all.
+> Fortunately, there is documentation: Documentation/vm/transhuge.rst:
+>
+> "
+> Unmapping part of THP (with munmap() or other way) is not going to free
+> memory immediately. Instead, we detect that a subpage of THP is not in
+> use in page_remove_rmap() and queue the THP for splitting if memory
+> pressure comes. Splitting will free up unused subpages.
+>
+> Splitting the page right away is not an option due to locking context in
+> the place where we can detect partial unmap. It also might be
+> counterproductive since in many cases partial unmap happens during
+> exit(2) if a THP crosses a VMA boundary.
+>
+> The function deferred_split_huge_page() is used to queue a page for
+> splitting. The splitting itself will happen when we get memory pressure
+> via shrinker interface.
+> "
+>
+> I do wonder which these locking contexts are exactly, and if we could
+> also do the same thing on ordinary munmap -- because I assume it can be
+> similarly problematic for some applications.
 
- fs/ext4/mballoc.c | 40 ++++++++++++++++++----------------------
- 1 file changed, 18 insertions(+), 22 deletions(-)
+This is a good question regarding munmap. One main difference is
+munmap takes mmap_lock in write mode and usually performance critical
+applications avoid such operations.
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 215b706..3dd9b9e 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -4814,7 +4814,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
-  */
- static noinline_for_stack int
- ext4_mb_discard_group_preallocations(struct super_block *sb,
--					ext4_group_t group, int needed)
-+				     ext4_group_t group, int *busy)
- {
- 	struct ext4_group_info *grp = ext4_get_group_info(sb, group);
- 	struct buffer_head *bitmap_bh = NULL;
-@@ -4822,8 +4822,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
- 	struct list_head list;
- 	struct ext4_buddy e4b;
- 	int err;
--	int busy = 0;
--	int free, free_total = 0;
-+	int free = 0;
- 
- 	mb_debug(sb, "discard preallocation for group %u\n", group);
- 	if (list_empty(&grp->bb_prealloc_list))
-@@ -4846,19 +4845,14 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
- 		goto out_dbg;
- 	}
- 
--	if (needed == 0)
--		needed = EXT4_CLUSTERS_PER_GROUP(sb) + 1;
--
- 	INIT_LIST_HEAD(&list);
--repeat:
--	free = 0;
- 	ext4_lock_group(sb, group);
- 	list_for_each_entry_safe(pa, tmp,
- 				&grp->bb_prealloc_list, pa_group_list) {
- 		spin_lock(&pa->pa_lock);
- 		if (atomic_read(&pa->pa_count)) {
- 			spin_unlock(&pa->pa_lock);
--			busy = 1;
-+			*busy = 1;
- 			continue;
- 		}
- 		if (pa->pa_deleted) {
-@@ -4898,22 +4892,13 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
- 		call_rcu(&(pa)->u.pa_rcu, ext4_mb_pa_callback);
- 	}
- 
--	free_total += free;
--
--	/* if we still need more blocks and some PAs were used, try again */
--	if (free_total < needed && busy) {
--		ext4_unlock_group(sb, group);
--		cond_resched();
--		busy = 0;
--		goto repeat;
--	}
- 	ext4_unlock_group(sb, group);
- 	ext4_mb_unload_buddy(&e4b);
- 	put_bh(bitmap_bh);
- out_dbg:
- 	mb_debug(sb, "discarded (%d) blocks preallocated for group %u bb_free (%d)\n",
--		 free_total, group, grp->bb_free);
--	return free_total;
-+		 free, group, grp->bb_free);
-+	return free;
- }
- 
- /*
-@@ -5455,13 +5440,24 @@ static int ext4_mb_discard_preallocations(struct super_block *sb, int needed)
- {
- 	ext4_group_t i, ngroups = ext4_get_groups_count(sb);
- 	int ret;
--	int freed = 0;
-+	int freed = 0, busy = 0;
-+	int retry = 0;
- 
- 	trace_ext4_mb_discard_preallocations(sb, needed);
-+
-+	if (needed == 0)
-+		needed = EXT4_CLUSTERS_PER_GROUP(sb) + 1;
-+ repeat:
- 	for (i = 0; i < ngroups && needed > 0; i++) {
--		ret = ext4_mb_discard_group_preallocations(sb, i, needed);
-+		ret = ext4_mb_discard_group_preallocations(sb, i, &busy);
- 		freed += ret;
- 		needed -= ret;
-+		cond_resched();
-+	}
-+
-+	if (needed > 0 && busy && ++retry < 3) {
-+		busy = 0;
-+		goto repeat;
- 	}
- 
- 	return freed;
--- 
-1.8.3.1
+> The "exit()" case might
+> indeed be interesting, but I really do wonder if this is even observable
+> in actual number: I'm not so sure about the "many cases" but I might be
+> wrong, of course.
 
+I am not worried about the exit(). The whole THP will get freed and be
+removed from the deferred list as well. Note that deferred list does
+not hold reference to the THP and has a hook in the THP destructor.
+
+thanks,
+Shakeel
