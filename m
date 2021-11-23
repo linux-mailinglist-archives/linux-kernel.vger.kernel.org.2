@@ -2,132 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01AFC4599FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 03:10:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDF64599FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 03:10:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231891AbhKWCNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 21:13:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42462 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231879AbhKWCNj (ORCPT
+        id S231773AbhKWCNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 21:13:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231470AbhKWCNa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 21:13:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637633431;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1sOzKcfc1mb/QfFCcqk6Ete8PuEFAKr8bz+8/GvBKxk=;
-        b=EC1coBgr2dFAPetxPu0EloOYJP0FPTYm3uMoLG2sbmN91vdOjm/w1jlheE632i4xHr9d5Y
-        r7m08wUtwAXPejqJVq7/Uh4mQkIuxcMXLOyMTCkZXcjIyXJgx0xg9yWxvww1eVmyIEIxjl
-        MKiLkLCw28AD8FYvKxAEg0hmr2s39/g=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-258-1dWPbN15Pu-xVW31QFqYBQ-1; Mon, 22 Nov 2021 21:10:30 -0500
-X-MC-Unique: 1dWPbN15Pu-xVW31QFqYBQ-1
-Received: by mail-lf1-f69.google.com with SMTP id h40-20020a0565123ca800b00402514d959fso13431457lfv.7
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 18:10:29 -0800 (PST)
+        Mon, 22 Nov 2021 21:13:30 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA862C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 18:10:23 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id o14so15710834plg.5
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 18:10:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uGXxGJzsa1casn0ONZd2/LBD5Y8XYuu5N3+HBaK0e7k=;
+        b=cxHw9Jh+E7IXyJnZoQVuOiUWoWbbfQKosLG6yMeHcoOtu9iTR+L2PG0EQUX2ahfYbK
+         vPYb/4lkIk+K50oH41WKkh0OVEAlW4ExnuHXLoo9Dj0k8GD63bmiPTh3i8ij4hmh6O//
+         MvyJi+w9S1bnAL/8+qzwJf8SQyRVaEs1giL3E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1sOzKcfc1mb/QfFCcqk6Ete8PuEFAKr8bz+8/GvBKxk=;
-        b=Qsaqm2g9LUe+zCk40BDbeByraUjipb05S63wuEyUvbCd0QzhM0p/X09DFzkO1HYZjV
-         RvnRjLfL4lphy2WU+XWjuE3EqMeDfVggQulFPTNoJm4kCOnePZW+v4MSglQub4mIgVvN
-         fTIolZMTvyx9nmZwJnnZLMipPXc8cHJz2OnvpvnFzcSorZDGZAS4Pvh9rz7hToMNVYlq
-         RzqUbZ51rYf87hqcu2lfw111wpE/dvY1viuDeNA/gMuVmNyU+oXU6+DoNdnsME8uvB7R
-         XQqwiObcVLZWYpCiaNfwDAWMzkOqdZDY1wf2rNWbxj5QTNZ9NU/qE2hVw1QGa+egJe4B
-         v4Pg==
-X-Gm-Message-State: AOAM533mnvCJc0j8n/ajE2NXXRtE/Nha4kYcahX6v5AxwGaiKN8ozzXl
-        ny8XHPGKt4eifygvQsBdVDCrQJi6D+VTyip9yzQaUq6TAWpJt5yP8nZurtk0ee6jIFj1PoFmVUa
-        2q6Q/Uft8dUqSEMruzePecg80KB96k8CGs0NKmIgs
-X-Received: by 2002:a2e:915a:: with SMTP id q26mr1082228ljg.277.1637633428631;
-        Mon, 22 Nov 2021 18:10:28 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyIxxkaUjeVw+D8UMGoyZ19ATnr7cJFS0YGB7JG9SltIKNzY6nQ7dCY65IYPG0XZgJFRYEMQQdmQj4SV8bnDbY=
-X-Received: by 2002:a2e:915a:: with SMTP id q26mr1082206ljg.277.1637633428448;
- Mon, 22 Nov 2021 18:10:28 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uGXxGJzsa1casn0ONZd2/LBD5Y8XYuu5N3+HBaK0e7k=;
+        b=objKAag6c2zCAKFdyNu6Si8/StFN/Njd5yD3IHRPYmIMPIeWqyNZ/FNs17SsRgnzsx
+         iKX3F7RwcMQKLEmYl/T9M9WZhGVpT5gzXBZ3BO7yn6g4cb88Ov/8R1fRDLPtk4mQSL5w
+         4oiYFrXkJ2AA76rTD8dfjJm3tN75vXTU4VF7F4dVzHq1GyWlFAsWz0wopxw2kwhgJt68
+         K1g6bwu+hcTHwgSadSYFyn9QYT4F/oiKmojlYrccuYSPVQ8wvop7ZXcTYtB5tUTa5jI5
+         iFcTQdCYqDz/BIhKLLua65+vTfPqsWwzn8BhGV6P0nz3u8Q4covIdCjLkocZH4+t3dmJ
+         EaXg==
+X-Gm-Message-State: AOAM532lMAXfPii7J91pKSARRwdLzXLZW7c+5GMFIXyR3hZtbaDnlT46
+        e/YQ5V+kvSIsOYjUA+PayTNlEw==
+X-Google-Smtp-Source: ABdhPJxDPgUeHT3ZEQVB0cTV4v8TeGfvYub1zY9sXeBOqQ7RqFO67viU7X/wGEheRz2svKzSyLZC1A==
+X-Received: by 2002:a17:90b:4ad0:: with SMTP id mh16mr1984400pjb.176.1637633423400;
+        Mon, 22 Nov 2021 18:10:23 -0800 (PST)
+Received: from google.com ([240f:75:7537:3187:6c1d:310c:ef60:f3c6])
+        by smtp.gmail.com with ESMTPSA id pj12sm21118464pjb.51.2021.11.22.18.10.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Nov 2021 18:10:22 -0800 (PST)
+Date:   Tue, 23 Nov 2021 11:10:18 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] printk/console: Split out code that enables default
+ console
+Message-ID: <YZxNiiK3PRZnsfPG@google.com>
+References: <20211122132649.12737-1-pmladek@suse.com>
+ <20211122132649.12737-2-pmladek@suse.com>
 MIME-Version: 1.0
-References: <20211122122221.56-1-longpeng2@huawei.com>
-In-Reply-To: <20211122122221.56-1-longpeng2@huawei.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Tue, 23 Nov 2021 10:10:17 +0800
-Message-ID: <CACGkMEsYEg06vaLJnYeCzcUXneTxWM7kR1Y-DqXicc4WG3z7ew@mail.gmail.com>
-Subject: Re: [PATCH] vdpa_sim: avoid putting an uninitialized iova_domain
-To:     "Longpeng(Mike)" <longpeng2@huawei.com>
-Cc:     mst <mst@redhat.com>, Stefano Garzarella <sgarzare@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Parav Pandit <parav@nvidia.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211122132649.12737-2-pmladek@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 8:22 PM Longpeng(Mike) <longpeng2@huawei.com> wrote:
->
-> From: Longpeng <longpeng2@huawei.com>
->
-> The system will crash if we put an uninitialized iova_domain, this
-> could happen when an error occurs before initializing the iova_domain
-> in vdpasim_create().
->
-> BUG: kernel NULL pointer dereference, address: 0000000000000000
-> ...
-> RIP: 0010:__cpuhp_state_remove_instance+0x96/0x1c0
-> ...
-> Call Trace:
->  <TASK>
->  put_iova_domain+0x29/0x220
->  vdpasim_free+0xd1/0x120 [vdpa_sim]
->  vdpa_release_dev+0x21/0x40 [vdpa]
->  device_release+0x33/0x90
->  kobject_release+0x63/0x160
->  vdpasim_create+0x127/0x2a0 [vdpa_sim]
->  vdpasim_net_dev_add+0x7d/0xfe [vdpa_sim_net]
->  vdpa_nl_cmd_dev_add_set_doit+0xe1/0x1a0 [vdpa]
->  genl_family_rcv_msg_doit+0x112/0x140
->  genl_rcv_msg+0xdf/0x1d0
->  ...
->
-> So we must make sure the iova_domain is already initialized before
-> put it.
->
-> In addition, we may get the following warning in this case:
-> WARNING: ... drivers/iommu/iova.c:344 iova_cache_put+0x58/0x70
->
-> So we must make sure the iova_cache_put() is invoked only if the
-> iova_cache_get() is already invoked. Let's fix it together.
->
-> Signed-off-by: Longpeng <longpeng2@huawei.com>
+On (21/11/22 14:26), Petr Mladek wrote:
+> Put the code enabling a console by default into a separate function
+> called try_enable_default_console().
+> 
+> Rename try_enable_new_console() to try_enable_preferred_console() to
+> make the purpose of the different variants more clear.
+> 
+> It is a code refactoring without any functional change.
+> 
+> Signed-off-by: Petr Mladek <pmladek@suse.com>
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 
-> ---
->  drivers/vdpa/vdpa_sim/vdpa_sim.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> index 5f484fff8dbe..41b0cd17fcba 100644
-> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> @@ -591,8 +591,11 @@ static void vdpasim_free(struct vdpa_device *vdpa)
->                 vringh_kiov_cleanup(&vdpasim->vqs[i].in_iov);
->         }
->
-> -       put_iova_domain(&vdpasim->iova);
-> -       iova_cache_put();
-> +       if (vdpa_get_dma_dev(vdpa)) {
-> +               put_iova_domain(&vdpasim->iova);
-> +               iova_cache_put();
-> +       }
+[..]
+> -static int try_enable_new_console(struct console *newcon, bool user_specified)
+> +static int try_enable_preferred_console(struct console *newcon,
+> +					bool user_specified)
+>  {
+>  	struct console_cmdline *c;
+>  	int i, err;
+> @@ -2909,6 +2910,23 @@ static int try_enable_new_console(struct console *newcon, bool user_specified)
+>  	return -ENOENT;
+>  }
+>  
+> +/* Try to enable the console unconditionally */
+> +static void try_enable_default_console(struct console *newcon)
+> +{
+> +	if (newcon->index < 0)
+> +		newcon->index = 0;
 > +
->         kvfree(vdpasim->buffer);
->         if (vdpasim->iommu)
->                 vhost_iotlb_free(vdpasim->iommu);
-> --
-> 2.27.0
->
+> +	if (newcon->setup && newcon->setup(newcon, NULL) != 0)
+> +		return;
+> +
+> +	newcon->flags |= CON_ENABLED;
+> +
+> +	if (newcon->device) {
+> +		newcon->flags |= CON_CONSDEV;
+> +		has_preferred_console = true;
+> +	}
+> +}
 
+try_enable_default_console() also sets preferred_console, as well as
+try_enable_preferred_console().
