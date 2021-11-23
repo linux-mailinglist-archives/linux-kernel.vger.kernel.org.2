@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B18459C50
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 07:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5516D459C47
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 07:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233939AbhKWGYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 01:24:30 -0500
-Received: from mail-dm6nam10on2079.outbound.protection.outlook.com ([40.107.93.79]:22657
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        id S233789AbhKWGYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 01:24:20 -0500
+Received: from mail-dm6nam12on2081.outbound.protection.outlook.com ([40.107.243.81]:42276
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233838AbhKWGYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 01:24:21 -0500
+        id S233650AbhKWGYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 01:24:06 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CTFLQB6J8X+lZ97oc+SmqOrFmmN2zIkO0PUc6A3/XJH1uNN68vjzvtX7rOA3LAsQX+j0/yudqdRCSNdlyvNMRI6lSThWPRXkzQlWvMx5/Tf0qfGQSOAB/QWG9MA6cRQgpy1Kvc8QJ01URRQ9daHkLLDXyPCVEtENDuoNjCNi/Lus8+iN+m6/POCCGz3dcvK6SjeivhYo7sFtJEqPXmQ/wXXIlXwEQfKpr82zaPQgsicX85Z3B8W4hAaAdiLiRdRdQBjtixLEjnGYeMD+SumOyuYbzDFN9DK9MxpW3m4M4pQG2KAa73COlQ/b1XUXGgsr9dyrgm4ZiHyQsWOh4Xv6fw==
+ b=fUzEMjfgzNYTHQtZLPE/nwMHPifrSVcXQzd/vYZwFws+vxGxuB8S2zG29Wrtk5aJ8rCN6aGEL5FWg56lmWYu5YtC6Fu7ysqc+EIUPfZjU35bb68OpuVIfpUg+bWmRwGIQAOowxl2WGZNY+rQ3kXiSUmVUQIIOdEtGQiMweQqzOGLLDxFKZOx9pP9qcy3d0kFLGOG4WPWsJ9TL46JQRLVcBVenndXZTyKIqKYjDWs9wR98JmOOEJxAei1ck7XFEK94cvGOYXpDigjD3yQCdN8+evpnh+BWJt1VvQO0DbNzJzBIqzQpS7yEwMcdfvl2gNCVM1RKvHXfRQKNG5VD3otmA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=REIex1Djjp6zXM3cMB1tK9TmK4fgUwgcCpRIy5EhstQ=;
- b=oAZLEfvQgoPb/qYwonegaVFkCFqALoe8E802/GrH89G2qubF2ObzMjVOrGZZmHw9cstUS6Tg+i25Jwu3qZyPyieqVzXGYikDovOxxFjm/jP1B/ioWeo+9zll9f61A8t1JL6pDmqIjZA4/2VEurdeo96r3TzR83gCcKqY8wmVOa2z47V5cH3DS80A71Y0K3q04z+O5aq09GHnZZ8ohyhZCrONUhkH0Rj2fQS5iclAt25lfAh1tXCbBFD9CtZpp0HCmx/FuS1EU9JKKZAB+RQYWvDA5pR0oWosLuuj3PYfGLpBTvXsvAkyph5X0WISlFTm/M9GkFOz2IwUL0VmMg9eZw==
+ bh=WwtMsotdU1adb1UNXyWOgIh5UNRAKrlqBFtglLEOu4E=;
+ b=VFuFOl5u2ogZ5H0W9CVFMD+NkBKR5cjzg9cvHEM6baPGY0/wyCQ5DyjikmUMw9XPuETeMHaTzkuXlaCKkiNMvnRdCjZMHr7XD3XcMbzLFmFlzqZRV4UnctilQQ1EKK1nUZAL4ABxZJIWkOCv8zIyx9AQzjwZECx6mQ+fSoGVJk1GLEPV6uQvVAiNvQErlB6Xh1gsSlQ76iAJrm2YwgsxIZuq5bodh0zWs3pXF+YJ23kA/EIRwgDVvgfXvE5BxV2onygg+S40rGVX7w4e3fbhbtZTi08uIukDK7ffaRQ/3ZhyH1wycVaecueVlPCnbCj4f2Shn3QDlhtW5smgy1zIxA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  149.199.62.198) smtp.rcpttodomain=linaro.org smtp.mailfrom=xilinx.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
@@ -26,18 +26,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=REIex1Djjp6zXM3cMB1tK9TmK4fgUwgcCpRIy5EhstQ=;
- b=hoNhp406xPj2yEW2i+BSqd7eWVplqVPwWYCromQbZkw/dUsuE7hY2/19Wa4HnGK4TrinhUzKFIdpds7GO4fVJT0V3BglOQ29VH0ezWIODlpDWPy5FB93ml8ilFNp2qFdB6Fl5TzJpgx5R5VM2I/T4+kJUm6t35hucEuebvVx+hQ=
-Received: from BN9PR03CA0519.namprd03.prod.outlook.com (2603:10b6:408:131::14)
- by SN1PR02MB3759.namprd02.prod.outlook.com (2603:10b6:802:2a::30) with
+ bh=WwtMsotdU1adb1UNXyWOgIh5UNRAKrlqBFtglLEOu4E=;
+ b=a7mt8jdWPuRYedKSn/4661o8UY/X0SSWSeLqccpGIGgQklqhA8Pxmz0m3xDDcB/jadWHtnPRF7/53hxtg28ba0u9RATNo0B2l+OoHfh2x2hqG+6NxPTPgQdEN0EZPgZN6oYlfBA/vDAkr7LayC5QWjjVnV42EIP5zYcpuaZz4L4=
+Received: from BN6PR11CA0005.namprd11.prod.outlook.com (2603:10b6:405:2::15)
+ by SN4PR0201MB3552.namprd02.prod.outlook.com (2603:10b6:803:45::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Tue, 23 Nov
- 2021 06:21:11 +0000
-Received: from BN1NAM02FT046.eop-nam02.prod.protection.outlook.com
- (2603:10b6:408:131:cafe::19) by BN9PR03CA0519.outlook.office365.com
- (2603:10b6:408:131::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend
- Transport; Tue, 23 Nov 2021 06:21:11 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Tue, 23 Nov
+ 2021 06:20:55 +0000
+Received: from BN1NAM02FT020.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:405:2:cafe::1) by BN6PR11CA0005.outlook.office365.com
+ (2603:10b6:405:2::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.25 via Frontend
+ Transport; Tue, 23 Nov 2021 06:20:55 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
  smtp.mailfrom=xilinx.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=xilinx.com;
@@ -45,9 +45,9 @@ Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
  149.199.62.198 as permitted sender) receiver=protection.outlook.com;
  client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
 Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- BN1NAM02FT046.mail.protection.outlook.com (10.13.3.181) with Microsoft SMTP
+ BN1NAM02FT020.mail.protection.outlook.com (10.13.2.135) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4713.19 via Frontend Transport; Tue, 23 Nov 2021 06:21:11 +0000
+ 15.20.4713.19 via Frontend Transport; Tue, 23 Nov 2021 06:20:55 +0000
 Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
  xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -67,7 +67,7 @@ Envelope-to: bjorn.andersson@linaro.org,
 Received: from [172.19.3.14] (port=33042 helo=xsjtanmays50.xilinx.com)
         by smtp.xilinx.com with esmtp (Exim 4.90)
         (envelope-from <tanmay.shah@xilinx.com>)
-        id 1mpPAj-0001Zw-Q0; Mon, 22 Nov 2021 22:20:53 -0800
+        id 1mpPAk-0001Zw-0l; Mon, 22 Nov 2021 22:20:54 -0800
 From:   Tanmay Shah <tanmay.shah@xilinx.com>
 To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
@@ -81,9 +81,9 @@ CC:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v2 2/6] arm64: dts: xilinx: zynqmp: Add RPU subsystem device node
-Date:   Mon, 22 Nov 2021 22:20:46 -0800
-Message-ID: <20211123062050.1442712-3-tanmay.shah@xilinx.com>
+Subject: [PATCH v2 3/6] firmware: xilinx: Add ZynqMP firmware ioctl enums for RPU configuration.
+Date:   Mon, 22 Nov 2021 22:20:47 -0800
+Message-ID: <20211123062050.1442712-4-tanmay.shah@xilinx.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211123062050.1442712-1-tanmay.shah@xilinx.com>
 References: <20211123062050.1442712-1-tanmay.shah@xilinx.com>
@@ -92,66 +92,78 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0aa1a08b-1399-4b9d-9ace-08d9ae4971c5
-X-MS-TrafficTypeDiagnostic: SN1PR02MB3759:
-X-Microsoft-Antispam-PRVS: <SN1PR02MB3759EA23F492F45A48ED257CCA609@SN1PR02MB3759.namprd02.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: dbeb69bc-90f3-4585-60d0-08d9ae496833
+X-MS-TrafficTypeDiagnostic: SN4PR0201MB3552:
+X-Microsoft-Antispam-PRVS: <SN4PR0201MB355243334EA718864F3199EDCA609@SN4PR0201MB3552.namprd02.prod.outlook.com>
 X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:1201;
+X-MS-Oob-TLC-OOBClassifiers: OLM:525;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Qobj0L11u5wudiWvXCIFDs37Uy3t83peVywx1BspLxlWyonwfChw+Q2Sh8E8AKzIkyIit0HAHDsr6lqJSbwsiEnNGFcScxKK6HrxPXi/wWgIZiqWr6/pAXtdBYF+5aCqKkcYFp56iWrEjfj9Ejity2TIbfYmqCWnwWhq4YPnT1objC1LKwjXUTOiR0NXVRh/atp0F9WZpQFrCwbaDt/mZiMfEOO6qD3Su3tnI/+3x4NaC6tvso7drG9YOOvdMFL4dlnY/kY6iQRAUp1XwWM9eCZXRS4ivnNyCBr2CgoWtF5ojHwhj5rUTEEtLiipHoj+hxaZ7ioAQKWgFTf1RX0iiCWMCfAzEd855eC0ur6hMGMflwdAmamk3+nsc7SSOkGzNbVQZpKUuvL9DovoNdDXR+PkJM6C8vsqj4pe2AhQrytpxMeAmdtTsdNJgNzhuAuCkXZ1MH3ymHv4OBwbkiYz3+F3ZfVVlNequE+roQYC0wj0etTTunblXYbhgNPRfFjsP+cR821Dk2D9HVZQczMOXYl6zgza5c7RaIVnk7e1prrUyf5liFBEvDqLvXg4Mji0S/c/eJfrRZZwbjR5q5bS4DSMR7xIfz7SB0i5LjZMJze7qn713kNO0E7+ztrByJmjq74gn3CtMatgZO2rtpWfyQ0AbjSpYYsEpo/1Ly6O/XQd2ogMoEqtXtb8PieDo7CrRsJbakARzBaEMg64f92o4plqaRv3nFUmAeJjTHTTZSs=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(36840700001)(46966006)(26005)(8676002)(110136005)(54906003)(2906002)(5660300002)(1076003)(9786002)(36906005)(8936002)(7696005)(316002)(36756003)(83380400001)(508600001)(6666004)(4326008)(82310400004)(7636003)(2616005)(6636002)(36860700001)(336012)(70586007)(426003)(44832011)(70206006)(47076005)(186003)(356005)(102446001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: Sy8FOokccGVn4wZN1PdZbQBoFuZ1LsJswKySQD7sS5ya8v9HVeG8Qh1F95faCby0BDrVFz1+rXR7txgYoEGbwnTer1jWLZu2363T9v5Pz+RjwNyWqhBCJTYiJVVosQhSlrx3NNpDhygWXfmCCzUQ1/SnUGez4HZlnwOq/ieuoTJLuQS6Q8gG9vBOqiLoRd+bqOfOQsfBr1811WtcC3e8cN6c6K9ZMDMO5eErTMR9c24Zxayl22mCgOBRpq3bLj0eRi1dOpmpRfVU5MYPHk0YG+Y0D80KWPUfzyG3Ru2n2CyqqtDmb7ihgZcVI0raLvdH4wLqDUXvbbK2vFzi9iCl+kjnCWyW/XZfojeqeCZOZexPUpxp3q4SDgoarOMNQKhWwvYhEgGuqk/eLqFMqy+wrK2lk58AdmtmgkYToIerKBLeJT/iDljcWH/9MMRhsUG2ohNBFmdoSL/gQuvURvRZ8kcUiEsl5VUAvx817YdC8AfV1gD7DRHS/KfZIFa6dkA2n0P/41r45PXrtvsfxnPAT9cE8Ax7BkbkMMYm5wqWyXb56zEVQIaasNRnQKSpHLAtXnOu62SBwYBlnUs/50aKlyaAIlXw+yHEXPeQRGTX/HfK5+aQlJvoRBG6kKbHEIDJJalotjDgZ+cQcAnYej1ulnI85eFLqfES1nGiVsSHvhP3c2YoWiioSx9/hsY/aBwiHQjGAff71PrkJ8ZnzMWLSbAY/fFcoKwAWjlcUJlInFc=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(36840700001)(46966006)(1076003)(83380400001)(36906005)(7696005)(5660300002)(6636002)(7636003)(316002)(36756003)(110136005)(426003)(8936002)(6666004)(82310400004)(44832011)(2906002)(54906003)(4326008)(356005)(9786002)(186003)(70206006)(8676002)(336012)(26005)(36860700001)(2616005)(47076005)(70586007)(508600001)(102446001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2021 06:21:11.2767
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2021 06:20:55.2189
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0aa1a08b-1399-4b9d-9ace-08d9ae4971c5
+X-MS-Exchange-CrossTenant-Network-Message-Id: dbeb69bc-90f3-4585-60d0-08d9ae496833
 X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN1NAM02FT046.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: BN1NAM02FT020.eop-nam02.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR02MB3759
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0201MB3552
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RPU subsystem can be configured in cluster-mode or split mode.
-Also each r5 core has separate power domains.
+From: Ben Levinsky <ben.levinsky@xilinx.com>
 
+Add ZynqMP firmware ioctl enums for RPU configuration and TCM Nodes for
+later use via request_node and release_node
+
+Signed-off-by: Ben Levinsky <ben.levinsky@xilinx.com>
 Signed-off-by: Tanmay Shah <tanmay.shah@xilinx.com>
 ---
- arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ include/linux/firmware/xlnx-zynqmp.h | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-index 28dccb891a53..f4fb98ccb1b5 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-@@ -654,6 +654,23 @@ qspi: spi@ff0f0000 {
- 			power-domains = <&zynqmp_firmware PD_QSPI>;
- 		};
+diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
+index 56b426fe020c..92bf3ae20524 100644
+--- a/include/linux/firmware/xlnx-zynqmp.h
++++ b/include/linux/firmware/xlnx-zynqmp.h
+@@ -111,6 +111,10 @@ enum pm_ret_status {
+ };
  
-+		r5fss: r5fss@ff9a0000 {
-+			compatible = "xlnx,zynqmp-r5fss";
-+			xlnx,cluster-mode = <1>;
+ enum pm_ioctl_id {
++	IOCTL_GET_RPU_OPER_MODE = 0,
++	IOCTL_SET_RPU_OPER_MODE = 1,
++	IOCTL_RPU_BOOT_ADDR_CONFIG = 2,
++	IOCTL_TCM_COMB_CONFIG = 3,
+ 	IOCTL_SD_DLL_RESET = 6,
+ 	IOCTL_SET_SD_TAPDELAY = 7,
+ 	IOCTL_SET_PLL_FRAC_MODE = 8,
+@@ -142,6 +146,21 @@ enum pm_query_id {
+ 	PM_QID_CLOCK_GET_MAX_DIVISOR = 13,
+ };
+ 
++enum rpu_oper_mode {
++	PM_RPU_MODE_LOCKSTEP = 0,
++	PM_RPU_MODE_SPLIT = 1,
++};
 +
-+                        reg = <0x0 0Xff9a0000 0x0 0x228>;
++enum rpu_boot_mem {
++	PM_RPU_BOOTMEM_LOVEC = 0,
++	PM_RPU_BOOTMEM_HIVEC = 1,
++};
 +
-+			r5f_core0: r5f-0 {
-+				compatible = "xlnx,zynqmp-r5f";
-+				power-domains = <&zynqmp_firmware PD_RPU_0>;
-+			};
++enum rpu_tcm_comb {
++	PM_RPU_TCM_SPLIT = 0,
++	PM_RPU_TCM_COMB = 1,
++};
 +
-+			r5f_core1: r5f-1 {
-+				compatible = "xlnx,zynqmp-r5f";
-+				power-domains = <&zynqmp_firmware PD_RPU_1>;
-+			};
-+		};
-+
- 		psgtr: phy@fd400000 {
- 			compatible = "xlnx,zynqmp-psgtr-v1.1";
- 			status = "disabled";
+ enum zynqmp_pm_reset_action {
+ 	PM_RESET_ACTION_RELEASE = 0,
+ 	PM_RESET_ACTION_ASSERT = 1,
 -- 
 2.25.1
 
