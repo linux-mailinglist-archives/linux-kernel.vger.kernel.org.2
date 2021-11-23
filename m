@@ -2,113 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA32E45AA40
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 130B045AA46
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:44:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239414AbhKWRpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 12:45:47 -0500
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:48760 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237881AbhKWRpp (ORCPT
+        id S239225AbhKWRrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 12:47:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233491AbhKWRrb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 12:45:45 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1ANHgAUF039109;
-        Tue, 23 Nov 2021 11:42:10 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1637689330;
-        bh=C3Bb1vDGAhm1AJp5UEueP9HcLsWC2LXhC5cUz5gg8gU=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=DLhOavivfCAuJi1YPYoZd+mLtxDocGG+nuHf3IxBW7ubaCyfCHqpvIDsbXZCfodFn
-         WnIrLV5VLzHId4SOZFFlsoBIIZDlqj/aXDiiK8gwBCksn24IKdo2P9lkRP4cbBqtf+
-         RIG5dJos+M7iwQqJRzDHjg2nSga9nNks4oFpBj3o=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1ANHgAen079491
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 23 Nov 2021 11:42:10 -0600
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 23
- Nov 2021 11:42:09 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 23 Nov 2021 11:42:09 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1ANHg8bo069940;
-        Tue, 23 Nov 2021 11:42:09 -0600
-Date:   Tue, 23 Nov 2021 23:12:08 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Alexander Sverdlin <alexander.sverdlin@nokia.com>
-CC:     Michael Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: mt25qu: Ignore 6th ID byte
-Message-ID: <20211123174206.bzh5yq2f7sgkqpmi@ti.com>
-References: <20211119080402.20262-1-alexander.sverdlin@nokia.com>
- <9a158e2ef6635212c1e353590e3b773b@walle.cc>
- <1e133bc6-5edb-c4ce-ad44-3de77048acf2@nokia.com>
- <e9589af968d7b9dafbce17325dbf8472@walle.cc>
- <85251c3b-13c1-8b24-0ce2-6793ea55e39a@nokia.com>
+        Tue, 23 Nov 2021 12:47:31 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C377C061714
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:44:23 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id e3so95433647edu.4
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:44:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vrY1zJ4n68tLP0TAn7XBsH+/OL/+n5K9MMhzClHSR88=;
+        b=NtaY1WjxJpV5MjxOKVpDj1uFrKbVrKpI6DVvdeX8Ht1XJUXZriIQ5DhhkgAdAgnldl
+         v7UmAi1e5Tmv0oYC3UlrR3T57eAuLPEEUSg4kLaH9r0v4gBSX4OvwFGbRsT16+cMc3u1
+         Ylcp39f/XlSsozadGkaxofs6OtqlOX8homjkunZk91MmZFztibTADvfQ1WhKBCAECE4S
+         AakzKFQkZbmzkOmR4lO0xJPOdo5QRm9R/mBXKsmlRuq19MVgGNlHf7vzIH2dd28HxR59
+         PnPdPvprPnnYtjafQDka/cvN5QOEsEOmcRhIrIHQYGX/Odgn6smtWVWvRU1OXiWMgmqq
+         db0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vrY1zJ4n68tLP0TAn7XBsH+/OL/+n5K9MMhzClHSR88=;
+        b=FCRQN9DfnP1QbgVD+5yqUcghaB0tME3mGmYevYBbHsWzaS9QaYXpopn/lf8Ej1se+J
+         pHK2tTOlG0Hi5jM5nTnkKL7S7zUin2Er+vLCnybshHCs6YhEpcRjC1HXkRPSYSAa/cRa
+         E6E6RcuhwTVzvge286wUYgCOLHsK+NjJ0FtGr+2iON7Ern0azSkjhDeLQu6bRST5+dH9
+         Z5alA/3El1idhqmduAyJVe3jlX3rzqrveUfViccWfeiD8bLjcnJHsc4zi0N846Qlbm4K
+         E8+ovJsokNlq+ODyUm+jBamP4hB8837kIj4YxBhhi8B5GlzeSANxtKU601VwUyu6NSo6
+         Negg==
+X-Gm-Message-State: AOAM53160RbJob/gB9vezTlpb54zUoMoniFEmEhrwMOSlRvPlyw4/o7r
+        rDxkUJpxLvkMM/I4bh2FMxmDBfB6OQQxCoO4hgHeLdIpQNCI1Q==
+X-Google-Smtp-Source: ABdhPJwDddXRJ/odEdDjW0g5a5Ipj9Bv+URAsRCGMS9nCn9jivqxCoNCrrOhZVDV5lH8UnS+BwmUJTFB7d5au1f5aWc=
+X-Received: by 2002:a17:906:58ce:: with SMTP id e14mr9672142ejs.525.1637689461995;
+ Tue, 23 Nov 2021 09:44:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <85251c3b-13c1-8b24-0ce2-6793ea55e39a@nokia.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20211013172042.10884-1-semen.protsenko@linaro.org>
+ <CAOMZO5CT+5=py=TBUMOZKRDsacNnGWV2TPBE7RtnZ3ocBBVReA@mail.gmail.com>
+ <CAPLW+4ne9xDxDW=RCzjXURujGCwbCU5mOrfPJ6bn2wY41jstiw@mail.gmail.com> <CAPLW+4kp6G8QeMUggEhMLyB6gfbNpiyp1hn_+O76C_iVoAj53g@mail.gmail.com>
+In-Reply-To: <CAPLW+4kp6G8QeMUggEhMLyB6gfbNpiyp1hn_+O76C_iVoAj53g@mail.gmail.com>
+From:   Michael Turquette <mturquette@baylibre.com>
+Date:   Tue, 23 Nov 2021 11:43:55 -0600
+Message-ID: <CAEG3pNCxuPNwqvRWnMuFNMmiV0nZRwC+1M69jVC=uMyS5Jie6Q@mail.gmail.com>
+Subject: Re: [PATCH v6] clk: Add write operation for clk_parent debugfs node
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Mike Tipton <mdtipton@codeaurora.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Fabio Estevam <festevam@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/11/21 01:13PM, Alexander Sverdlin wrote:
-> Dear maintainers!
-> 
-> On 22/11/2021 16:05, Michael Walle wrote:
-> > Thanks, so that's the SFDP data for the mt25qu256aba8e12-1sit part. and the
-> > jedec id is 20bb19104473, correct?
-> 
-> While we are at this part, I've encountered another issue:
-> 
-> The chip supports 1-1-1, 1-1-4 and 1-4-4 write OPs in extended SPI mode,
-> while only 1-1-0 erase. (as well as 4-4-4/4-4-0, but that's not the issue here,
-> I think).
-> 
-> Now the erase code (chip/sector) uses spi_nor_spimem_setup_op(nor, &op, nor->write_proto)
-> in both functions.
-> 
-> In my opinion, as I look into Micron or Macronix datasheets, write_proto has little to
-> do with erase_proto. (there is currently no separate erase_proto)
+On Mon, Nov 22, 2021 at 10:03 AM Sam Protsenko
+<semen.protsenko@linaro.org> wrote:
+>
+> On Tue, 19 Oct 2021 at 16:32, Sam Protsenko <semen.protsenko@linaro.org> wrote:
+> >
+> > On Wed, 13 Oct 2021 at 21:04, Fabio Estevam <festevam@gmail.com> wrote:
+> > >
+> > > Hi Sam,
+> > >
+> > > On Wed, Oct 13, 2021 at 2:20 PM Sam Protsenko
+> > > <semen.protsenko@linaro.org> wrote:
+> > > >
+> > > > Useful for testing mux clocks. One can write the index of the parent to
+> > > > be set into clk_parent node, starting from 0. Example
+> > > >
+> > > >     # cd /sys/kernel/debug/clk/mout_peri_bus
+> > > >     # cat clk_possible_parents
+> > > >       dout_shared0_div4 dout_shared1_div4
+> > > >     # cat clk_parent
+> > > >       dout_shared0_div4
+> > > >     # echo 1 > clk_parent
+> > > >     # cat clk_parent
+> > > >       dout_shared1_div4
+> > > >
+> > > > CLOCK_ALLOW_WRITE_DEBUGFS has to be defined in drivers/clk/clk.c in
+> > > > order to use this feature.
+> > > >
+> > > > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> > > > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > > > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > >
+> > > This is useful, thanks:
+> > >
+> > > Reviewed-by: Fabio Estevam <festevam@gmail.com>
+> >
+> > Hi Michael, Stephen,
+> >
+> > If there are no outstanding comments, can you please take this one?
+> >
+>
+> Bump.
 
-I think this just worked for most flashes since both writes and erases 
-generally use 1-bit mode. 4 or 8 bit modes are generally used for reads 
-only.
+Looks good to me.
 
-> 
-> Before I come up with a totally wrong patch, wanted to ask your opinion, how should
-> it be solved, what do you think?
-> 
-> I do not see any erase-related tables for this in JESD216C.
-> I also cannot come up with an example of a chip with erase != 1-1-0.
+Acked-by: Michael Turquette <mturquette@baylibre.com>
 
-See Micron MT35XU512ABA or Cypress S28HS512T (in spansion.c). Both have 
-erase in 8D-8D-8D mode.
+Stephen, can you take it into your tree?
 
-> 
-> Shall I hardcode 1-1-0 for erase?
-> Shall I introduce erase_proto? What would be the logic for its setting/discovery?
+Best,
+Mike
 
-I think introducing erase_proto would be the sensible thing. You would 
-have to see if we can discover erase protocol from SFDP. But my question 
-is: is that really worth it? Do you really need that little bit speed 
-boost you'd get by transmitting write data in 4 bit mode, since the 
-large portion of the time would be spent in the chip actually flashing 
-the data.
+>
+> > Thanks!
+
+
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Michael Turquette
+CEO - Los Angeles, CA
+http://baylibre.com/
