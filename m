@@ -2,124 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C2345AC8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C00C345AC91
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:35:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234894AbhKWTiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 14:38:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50738 "EHLO
+        id S236014AbhKWTit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 14:38:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234924AbhKWTiH (ORCPT
+        with ESMTP id S231314AbhKWTis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 14:38:07 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D30D4C061714
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:34:58 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id k23so393494lje.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:34:58 -0800 (PST)
+        Tue, 23 Nov 2021 14:38:48 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF7FC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:35:40 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id z26so31849iod.10
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:35:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=eAMWwENTmC7DzHcgX7E/tW+4+EEPwisOX8kGjUdddTY=;
-        b=YF6gOICxsFKSGsCKGEnlRdknU4T7rQ2D+vR7fhPq+flRWwgs8jYEWXZ3RrOY0m23cP
-         jyRrELQ4i1OwvAxclElGmeuj8dmIaPKHwE5LtTdTiwyc9qMwCn20KvjSMqG80b71Y/SO
-         hYUJ/gQaLNHZprcrlKRehj9zm5fE9Bye4W2yEKpuBQfRw2cMCMLYgjHE416JiwCWHr68
-         NJsIaObwr6s61lfkEnSurC9kEcuvAaOvgY2g7YE2CFk9SXI3zEi8ZdSWV3e4CNxIwz+c
-         +CVOrkFegJlJBfGlQq+4yScr0gMVdlTps0usPOWCov/Tnm7Ys0im+RYvR0mIGD3M35rM
-         6Npg==
+        bh=ucNIn3z++wzCwtlfmsvcWdlPYzoFbmTEmF2M6hyhBwI=;
+        b=tQMnoa4+qz/Z41aGmrjYClQCD8PCyRPzy1m/yn/nNwokdqmFLe/IrZvJCbXJfRiBqE
+         eLNWKs0BUE9eP6cpHfSQICVBQ6JZpExv02I70DyjsfWGRm1BHaOOAqlc0n86bkOs3z6v
+         HhS4++Y5Qz5T4jtC7PS39Q7k8FgeC7Lxh2B5uUDmX41J4XGfG1z+E0+uPDFkzCu3wcfD
+         nszKuyqDLcSnI07R4wGuUO3glVzTHEnV4VM2NNVkJAkWeIAEFJJJU7krQ49ORwzuzLzr
+         jmEKzmE0zSqnOUoj1K/WImOCvF5pnXvBdzy3lfMMkUqJR5Dd9pJaKTj9B2X92Z+8sH6V
+         psFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eAMWwENTmC7DzHcgX7E/tW+4+EEPwisOX8kGjUdddTY=;
-        b=vdcXrQ9P7h6RpvWR8fxtOVfb3u4i3qyRjAsRleB2qLjZmsaEcLnkyIDUIQW/Y5kalG
-         MUdECS0hEHw/8sYINVNXrLD8uzDHj839Ehw5GB9QDsrQERZGgzftxAOQ3gCpUx5kqgS8
-         KPKKPX9g4257Onmbvh5quR/9/D7CST1JMrZI5T5EmQcxA7s3t7kQJtVniwlEtYAjEX1K
-         gNgSapudNzFzhp+sGdyAbkoIHgNJBWXWc3JmsB/Scaj3MvyzDEKxf9vDBhpZGqJZVQfy
-         6K/MC3SK7m/Pc+/RP3dRIY61wB+6yzgc90aA279emBinuybi74xX5OLlIQFAFySNgY5e
-         8IeQ==
-X-Gm-Message-State: AOAM533fGiUfRnPcffQmq1f+1TI8vRr+uPp00/kB7VM5Im+tkzUKWVMN
-        LrEaUy29fXj+len3FBKvtAlgoWe+2kuUichy9M+fFQ==
-X-Google-Smtp-Source: ABdhPJwrjHz86W+VahcN/ogSmg3g2k2OHcHKcRD40FmzVFDWnMKV0fz6haEETY3J8bDF4QtQN9WFXdVoWSBwT7iGa6k=
-X-Received: by 2002:a2e:a5c8:: with SMTP id n8mr8391990ljp.367.1637696097076;
- Tue, 23 Nov 2021 11:34:57 -0800 (PST)
+        bh=ucNIn3z++wzCwtlfmsvcWdlPYzoFbmTEmF2M6hyhBwI=;
+        b=UuoZiXiZV2MkddQR/qHHMK0E2qBFH5VdQyvnGTYkkAWyNZmNsOsaH0slGWcupPzHOa
+         v9du2PVqAUobXJqSsEizP+4UTOEloXUTkVHIpfDeoPEsUe9s4c2Y3thGAFx1tk1fPHxI
+         1udWKhGIIirG9x+/zTyolPb1DHgaZTQDLM0EgIXOS57pM1FYYXFc/E5GzTtPzF2xB8T+
+         IQ9nRoGQVgRIc0omZ9T64UtVj/+vW/x0OJwc9T8uWsuiWuf0U2P1B3BGIusRF3xx/zCK
+         E0CKVu3C4KYEewjjF8YzQJj1jjtDIxxwkQBk2XvTY0gS8R5ySLeWXO4NLNlmskJCWbx5
+         YEng==
+X-Gm-Message-State: AOAM532QfWc1I9pvqV14imu653Mm6AQih0gGNscIZ4giPP3Z/XJpyZyd
+        ZYLeBDfOB+bH7jTvzkh1ZOov6P+m8/G0tRUl5ZyJ2w==
+X-Google-Smtp-Source: ABdhPJz1Q5be47A5QaEz2ud5Vd/DaXz1jSr4PV8Oat5SPte2Qr/URb8mmYQb+i9Xn23rPMixU/RtwZdGaRaE9QnluWc=
+X-Received: by 2002:a5d:8049:: with SMTP id b9mr8671820ior.41.1637696139607;
+ Tue, 23 Nov 2021 11:35:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20211116190244.1417591-1-john@metanate.com> <20211116190244.1417591-3-john@metanate.com>
-In-Reply-To: <20211116190244.1417591-3-john@metanate.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 23 Nov 2021 20:34:20 +0100
-Message-ID: <CAPDyKFp1zMBUfK7LteW0yEfTpqtU+P+EybLsJBFx_r54HwFdMg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mmc: dw_mmc: use standard "mmc" alias stem
-To:     John Keeping <john@metanate.com>
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jaehoon Chung <jh80.chung@samsung.com>
+References: <20211120045046.3940942-1-seanjc@google.com> <20211120045046.3940942-20-seanjc@google.com>
+ <CANgfPd83h4dXa-bFY96dkwHfJsdqu65BAzbqztgEhiRcHFquJw@mail.gmail.com> <YZxA1VAs5FNbjmH9@google.com>
+In-Reply-To: <YZxA1VAs5FNbjmH9@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Tue, 23 Nov 2021 11:35:28 -0800
+Message-ID: <CANgfPd9CdP-4aYkM7SCtCtV+v4T3HsyG6F8tLu=FCBz1nt=htg@mail.gmail.com>
+Subject: Re: [PATCH 19/28] KVM: x86/mmu: Zap only the target TDP MMU shadow
+ page in NX recovery
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Hou Wenlong <houwenlong93@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Nov 2021 at 20:02, John Keeping <john@metanate.com> wrote:
+On Mon, Nov 22, 2021 at 5:16 PM Sean Christopherson <seanjc@google.com> wrote:
 >
-> The standard stem for MMC aliases is "mmc" and this is used by the MMC
-> core to set the slot index.
+> On Mon, Nov 22, 2021, Ben Gardon wrote:
+> > On Fri, Nov 19, 2021 at 8:51 PM Sean Christopherson <seanjc@google.com> wrote:
+> > > @@ -755,6 +759,26 @@ static inline bool tdp_mmu_iter_cond_resched(struct kvm *kvm,
+> > >         return false;
+> > >  }
+> > >
+> > > +bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
+> > > +{
+> > > +       u64 old_spte;
+> > > +
+> > > +       rcu_read_lock();
+> > > +
+> > > +       old_spte = kvm_tdp_mmu_read_spte(sp->ptep);
+> > > +       if (WARN_ON_ONCE(!is_shadow_present_pte(old_spte))) {
+> > > +               rcu_read_unlock();
+> > > +               return false;
+> > > +       }
+> > > +
+> > > +       __tdp_mmu_set_spte(kvm, kvm_mmu_page_as_id(sp), sp->ptep, old_spte, 0,
+> > > +                          sp->gfn, sp->role.level + 1, true, true);
+> > > +
+> > > +       rcu_read_unlock();
+> > > +
+> > > +       return true;
+> > > +}
+> > > +
+> >
+> > Ooooh this makes me really nervous. There are a lot of gotchas to
+> > modifying SPTEs in a new context without traversing the paging
+> > structure like this. For example, we could modify an SPTE under an
+> > invalidated root here. I don't think that would be a problem since
+> > we're just clearing it, but it makes the code more fragile.
+>
+> Heh, it better not be a problem, because there are plently of flows in the TDP MMU
+> that can modify SPTEs under an invalidated root, e.g. fast_page_fault(),
+> tdp_mmu_zap_leafs(), kvm_age_gfn(), kvm_test_age_gfn(), etc...  And before the
+> patch that introduced is_page_fault_stale(), kvm_tdp_mmu_map() was even installing
+> SPTEs into an invalid root!  Anything that takes a reference to a root and yields
+> (or never takes mmu_lock) can potentially modify a SPTE under an invalid root.
 
-This isn't the correct description of the mmc aliases. The below text
-is copied from the DT doc:
+That's true, I don't think there's really a problem with this commit,
+just a different way of dealing with the PTs.
 
-"It is possible to assign a fixed index mmcN to an MMC host controller
-(and the corresponding mmcblkN devices) by defining an alias in the
-/aliases device tree node."
 
 >
-> Use this in preference to the non-standard "mshc" stem when setting the
-> controller ID to avoid needing two aliases for each MMC device in order
-> to cover both the core and dw_mmc-specific functionality.
+> Checking the paging structures for this flow wouldn't change anything.  Invalidating
+> a root doesn't immediately zap SPTEs, it just marks the root invalid.  The other
+> subtle gotcha is that kvm_reload_remote_mmus() doesn't actually gaurantee all vCPUs
+> will have dropped the invalid root or performed a TLB flush when mmu_lock is dropped,
+> those guarantees are only with respect to re-entering the guest!
 >
-> The old "mshc" lookup is kept for backwards compatibility.
+> All of the above is no small part of why I don't want to walk the page tables:
+> it's completely misleading as walking the page tables doesn't actually provide any
+> protection, it's holding RCU that guarantees KVM doesn't write memory it doesn't own.
 
-The mshc alias is really weird!
-
-It looks like some leftover from when the dw_mmc controller supported
-multiple slots. This support was dropped a long time ago, simply
-because it never really worked - and it was not worth trying to. Only
-one slot per controller is supported.
-
-Rather than re-using the mmc alias in the same weird way as the mshc
-alias, I suggest we try to remove parsing of the mshc aliases
-completely. By looking at the corresponding code and in combination
-with the DTS files, it certainly looks doable to me. Do you want to
-have a look at it?
-
-Additionally, there is no need to deprecate the mshc alias binding, as
-it seems like it has never been documented. :-)
-
-Kind regards
-Uffe
+That's a great point. I was thinking about the RCU protection being
+sort of passed down through the RCU dereferences from the root of the
+paging structure to whatever SPTE we modify, but since we protect the
+SPs with RCU too, dereferencing from them is just as good, I suppose.
 
 >
-> Signed-off-by: John Keeping <john@metanate.com>
-> ---
->  drivers/mmc/host/dw_mmc.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+> > Another approach to this would be to do in-place promotion / in-place
+> > splitting once the patch sets David and I just sent out are merged.  That
+> > would avoid causing extra page faults here to bring in the page after this
+> > zap, but it probably wouldn't be safe if we did it under an invalidated root.
 >
-> diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
-> index 37af1245304b..6ffaa354410a 100644
-> --- a/drivers/mmc/host/dw_mmc.c
-> +++ b/drivers/mmc/host/dw_mmc.c
-> @@ -112,7 +112,11 @@ int dw_mci_of_alias_get_id(struct dw_mci *host)
->         if (WARN_ON(!host->dev->of_node))
->                 return 0;
+> I agree that in-place promotion would be better, but if we do that, I think a logical
+> intermediate step would be to stop zapping unrelated roots and entries.  If there's
+> a bug that is exposed/introduced by not zapping other stuff, I would much rather it
+> show up when KVM stops zapping other stuff, not when KVM stops zapping other stuff
+> _and_ promotes in place.  Ditto for if in-place promotion introduces a bug.
+
+That makes sense. I think this is a good first step.
+
 >
-> -       ctrl_id = of_alias_get_id(host->dev->of_node, "mshc");
-> +       ctrl_id = of_alias_get_id(host->dev->of_node, "mmc");
-> +
-> +       /* Compatibility fallback for old device trees. */
-> +       if (ctrl_id < 0)
-> +               ctrl_id = of_alias_get_id(host->dev->of_node, "mshc");
+> > I'd rather avoid this extra complexity and just tolerate the worse
+> > performance on the iTLB multi hit mitigation at this point since new
+> > CPUs seem to be moving past that vulnerability.
 >
->         if (ctrl_id < 0)
->                 ctrl_id = 0;
-> --
-> 2.34.0
+> IMO, it reduces complexity, especially when looking at the series as a whole, which
+> I fully realize you haven't yet done :-)  Setting aside the complexities of each
+> chunk of code, what I find complex with the current TDP MMU zapping code is that
+> there are no precise rules for what needs to be done in each situation.  I'm not
+> criticizing how we got to this point, I absolutely think that hitting everything
+> with a big hammer to get the initial version stable was the right thing to do.
 >
+> But a side effect of the big hammer approach is that it makes reasoning about things
+> more difficult, e.g. "when is it safe to modify a SPTE versus when is it safe to insert
+> a SPTE into the paging structures?" or "what needs to be zapped when the mmu_notifier
+> unmaps a range?".
+>
+> And I also really want to avoid another snafu like the memslots with passthrough
+> GPUs bug, where using a big hammer (zap all) when a smaller hammer (zap SPTEs for
+> the memslot) _should_ work allows bugs to creep in unnoticed because they're hidden
+> by overzealous zapping.
+>
+> > If you think this is worth the complexity, it'd be nice to do a little
+> > benchmarking to make sure it's giving us a substantial improvement.
+>
+> Performance really isn't a motivating factor.  Per the changelog, the motivation
+> is mostly to allow later patches to simplify zap_gfn_range() by having it zap only
+> leaf SPTEs, and now that I've typed it up, also all of the above :-)
+
+That makes sense, and addresses all my concerns. Carry on.
+Thanks for writing all that up.
