@@ -2,103 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9321E459F0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 10:14:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED24B459F14
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 10:16:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234874AbhKWJRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 04:17:16 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:44294 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232178AbhKWJRP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 04:17:15 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5A969218B0;
-        Tue, 23 Nov 2021 09:14:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637658846; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=C0BsCI5au1OhVtEK7irGEN31UeiYvwLKt5QBWIYycWk=;
-        b=ufVVaWkIW15ubVYjVQXkUhru0CmIYw6COyO4RbUHN4g8bO/GDCzv37Oinm/BG7DLIhEa8+
-        iZblCe/qFyl4pRAPrvhAVJFGCNBpMDsXZZF2PZdZz8JpJ57O9OrBx2TZSPISokQ1tw0/3y
-        bHsRMkPI23ILl6I2Bt+E2fcgBytQGgM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637658846;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=C0BsCI5au1OhVtEK7irGEN31UeiYvwLKt5QBWIYycWk=;
-        b=d+9ikYoA/1XAAYQ2wBoAXvFWgv8FR8YhiJGkjXmT4fpLNozLVyDvfrlhXdekUbCHoASI59
-        Tyo0QALogRIS6lBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4874113DA3;
-        Tue, 23 Nov 2021 09:14:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id mwvtD96wnGHsDgAAMHmgww
-        (envelope-from <chrubis@suse.cz>); Tue, 23 Nov 2021 09:14:06 +0000
-Date:   Tue, 23 Nov 2021 10:15:12 +0100
-From:   Cyril Hrubis <chrubis@suse.cz>
-To:     Zack Weinberg <zack@owlfolio.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-api@vger.kernel.org, libc-alpha@sourceware.org,
-        ltp@lists.linux.it
-Subject: Re: [PATCH] uapi: Make __{u,s}64 match {u,}int64_t in userspace
-Message-ID: <YZyxIJ9LGiCx2N74@yuki>
-References: <YZvIlz7J6vOEY+Xu@yuki>
- <c5993ee9-1b5d-4469-9c0e-8d4e0fbd575a@www.fastmail.com>
+        id S235219AbhKWJTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 04:19:10 -0500
+Received: from mout02.posteo.de ([185.67.36.66]:42477 "EHLO mout02.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234666AbhKWJTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 04:19:09 -0500
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 8D235240105
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 10:15:59 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
+        t=1637658959; bh=Yr9tkx7XywJ1L3ABv15FR7x3R0tOikYobRlp42uOJ3w=;
+        h=Subject:From:To:Cc:Date:From;
+        b=NWgoedMNKEvHNCxMGG2P0kejK9kSsEaJHo8AO5YtF9i1Hsw9qsq1i8HAhgGSoL6dA
+         QTzSLOa9ovnHWDMicnCqdRD1IErku/Otx1hL1InIAbDP68RaUX+gDJDs892iUBQafH
+         b39N8b1WadsnqD135p3ZQRQS7jGZqSisT76orWSOHf8i52JJITYkgTr/s5MtIcxPMZ
+         RYv+O51VME0SFy0199EsmBJvgUHt2RAj4eJ0KE0IhC1Lcq3umj6zzJX+WutASOrivn
+         piLs4Qbg4Q+f+Lhe5/aTdhKYox/mKiDGTWeGnazKz+8pbxbop5Yn0ntI5wg7XtKhyw
+         PrL/DVGsytTEQ==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4Hyz5T4g0Qz9rxF;
+        Tue, 23 Nov 2021 10:15:57 +0100 (CET)
+Message-ID: <9b9fe3a5b04179870d6ca0ece754fee9abb306b4.camel@posteo.de>
+Subject: Re: [PATCH] arm64: dts: freescale: imx8mq: Disable noc dts node
+From:   Martin Kepplinger <martink@posteo.de>
+To:     Shawn Guo <shawnguo@kernel.org>, Abel Vesa <abel.vesa@nxp.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org
+Date:   Tue, 23 Nov 2021 09:15:57 +0000
+In-Reply-To: <20211123085841.GX31998@dragon>
+References: <1636629369-23988-1-git-send-email-abel.vesa@nxp.com>
+         <20211123085841.GX31998@dragon>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c5993ee9-1b5d-4469-9c0e-8d4e0fbd575a@www.fastmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-> I am all for matching __uN / __sN to uintN_t / intN_t in userspace, but may I suggest the technically simpler and guaranteed-to-be-accurate
+Am Dienstag, dem 23.11.2021 um 16:58 +0800 schrieb Shawn Guo:
+> On Thu, Nov 11, 2021 at 01:16:09PM +0200, Abel Vesa wrote:
+> > Adding interconnect properties to the consumer nodes creates
+> > a dependency on noc device. The imx-bus devfreq driver is not
+> > usable
+> > without the full interconnect support. The interconnect is not yet
+> > working on i.MX platforms. The devlink created on device_add makes
+> > the lcdif and other nodes that have the interconnect properties
+> > wait for the noc (imx-bus driver) to probe first.
+> > 
+> > To make sure the interconnect consumers (nodes that have
+> > interconnect
+> > properties already added) will still probe, lets disable the noc
+> > node
+> > for now. Once the interconnect on i.MX platforms is fully
+> > functional,
+> > the status of the noc node can be changed.
+> > 
+> > Fixes: ad1abc8a03fdbc05b ("arm64: dts: imx8mq: Add interconnect for
+> > lcdif")
 > 
->  /*
-> - * int-ll64 is used everywhere now.
-> + * int-ll64 is used everywhere in kernel now.
-> + * In user space match <stdint.h>.
->   */
-> +#ifdef __KERNEL__
->  # include <asm-generic/int-ll64.h>
-> +#elif __has_include (<bits/types.h>)
-> +# include <bits/types.h>
-> +typedef __int8_t __s8;
-> +typedef __uint8_t __u8;
-> +typedef __int16_t __s16;
-> +typedef __uint16_t __u16;
-> +typedef __int32_t __s32;
-> +typedef __uint32_t __u32;
-> +typedef __int64_t __s64;
-> +typedef __uint64_t __u64;
-> +#else
-> +# include <stdint.h>
-> +typedef int8_t __s8;
-> +typedef uint8_t __u8;
-> +typedef int16_t __s16;
-> +typedef uint16_t __u16;
-> +typedef int32_t __s32;
-> +typedef uint32_t __u32;
-> +typedef int64_t __s64;
-> +typedef uint64_t __u64;
-> +#endif
+> Martin,
 > 
-> The middle clause could be dropped if we are okay with all uapi headers potentially exposing the non-implementation-namespace names defined by <stdint.h>.  I do not know what the musl libc equivalent of <bits/types.h> is.
+> Do you have any comment?  So your commit added something untested?
+> 
+> Shawn
 
-If it's okay to depend on a header defined by a libc this is better
-solution.
+hi Shawn,
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+well, for imx8mq the only missing piece is the mxsfb icc bandwidth
+request. I posted a first version a year ago but that didn't make it
+in:
+https://lore.kernel.org/linux-arm-kernel/20201201103757.32165-1-martin.kepplinger@puri.sm/
+
+So this should create a working state until the real fix in mxsfb is
+there (although I'd revert commit ad1abc8a03fd ("arm64: dts: imx8mq:
+Add interconnect for lcdif") instead). I am indeed to blame for this
+and I'm sorry I haven't yet taken the time to work on mxsfb again.
+
+I can say I plan to do so soon, but without promise that I quickly find
+a solution that'll be merged...
+
+If you merge this (or revert ad1abc8a03fd), I'll remember to revert
+with said update.
+
+thanks,
+                        martin
+
+> 
+> > Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+> > ---
+> >  arch/arm64/boot/dts/freescale/imx8mq.dtsi | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> > b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> > index 972766b67a15..f3182878f596 100644
+> > --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> > @@ -1305,6 +1305,7 @@ noc: interconnect@32700000 {
+> >                         fsl,ddrc = <&ddrc>;
+> >                         #interconnect-cells = <1>;
+> >                         operating-points-v2 = <&noc_opp_table>;
+> > +                       status = "disabled";
+> >  
+> >                         noc_opp_table: opp-table {
+> >                                 compatible = "operating-points-v2";
+> > -- 
+> > 2.31.1
+> > 
+
+
