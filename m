@@ -2,68 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3B0459DA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:14:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E90EE459DB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232770AbhKWISA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 03:18:00 -0500
-Received: from msg-1.mailo.com ([213.182.54.11]:32846 "EHLO msg-1.mailo.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231158AbhKWIR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 03:17:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
-        t=1637655280; bh=1ik2lIfFWQwygKDFBz1wycmemRjU/mep6maZiu4NSAU=;
-        h=X-EA-Auth:From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:
-         References:MIME-Version:Content-Transfer-Encoding;
-        b=YmO1gcScKVg/BTHwIa5MUH5JH846VDcV/b6h/l99uHGlIOfdUiUzEfJvhfUKpoVAd
-         7LbkmddVoLUdJwTmP/a8RapIhsF9MsZSfRisH7Nd0nwIKjD7AHLYx0yeWLhkfrMmKt
-         rR0I4bO+qkM+2625+z1yyLiMJ8TyzDZ8RP90uxZg=
-Received: by b-4.in.mailobj.net [192.168.90.14] with ESMTP
-        via proxy.mailoo.org [213.182.55.207]
-        Tue, 23 Nov 2021 09:14:39 +0100 (CET)
-X-EA-Auth: 5x2kE+nod+nU2crg9xqb15IIOzLPW3JahqhomVKn7nqfdmvrGHev0sjKvK5VprcHN8+2xKdt25rN/BhBgAwm0HvuDVR0PSNBgcC5DqiE4fg=
-From:   Vincent Knecht <vincent.knecht@mailoo.org>
-To:     dmitry.torokhov@gmail.com, robh+dt@kernel.org, stephan@gerhold.net,
-        vincent.knecht@mailoo.org
-Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: [RESEND PATCH 4/5] dt-bindings: input: touchscreen: msg2638: Document keys support
-Date:   Tue, 23 Nov 2021 09:14:32 +0100
-Message-Id: <20211123081433.2797395-5-vincent.knecht@mailoo.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211123081433.2797395-1-vincent.knecht@mailoo.org>
-References: <20211123081433.2797395-1-vincent.knecht@mailoo.org>
+        id S231654AbhKWIVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 03:21:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229617AbhKWIVu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 03:21:50 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E5EC061574;
+        Tue, 23 Nov 2021 00:18:42 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id v23so15987911pjr.5;
+        Tue, 23 Nov 2021 00:18:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=zM3bW2Pr7xWb7m7mGViXuar4Xf1FuOAyNpmKVEYv2LA=;
+        b=DYy0Lv2BFenFI2/lwQjulVqCLOZIQ+ilw5KhORwu5MG7fMbv+fC8OCR3HuYlEI0kAr
+         QbDNKH9j5L+W+1UCym7utRg5nAgAVoJmNvLWnzfZjB6kiCOr6qYUBTQxvNHVvPLQbHtg
+         yVfthnVF3ncL8y2XUkLdgFcWbxgzY00YsXKxcWLtvRrU/ZHaGrGTLvY+H/GzfgmSSoE9
+         HKegLjzaXHMk2vOcLvyFnRnxoa7Bm1G+NtwH9qsFpExafxw/zmjuVjQy47UZ8cPNLt96
+         8KYNfUswdJJ0nn6TXTUjDUMW7c9nebT6EOBNLM9rK21B9LkdoZhLiTtvhbNZUW2GxlfO
+         syyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=zM3bW2Pr7xWb7m7mGViXuar4Xf1FuOAyNpmKVEYv2LA=;
+        b=eA2InHZ4M0K6AjLf9tXNd3G7QLD55Av9vYuHgiyjEDmlqnqvidYCvukFy2SUOpYSVK
+         DslaKAbV3cxsn8qi00SeXHxgLSh7bDDqnFHrvDF1CNkw7GROZr7LxW+Xr6J9r1IC/604
+         5VNF/PyjfLlgkU7d6dvwiiKOeBFEyETlFrVecAgDdAE7qPS9UI0VP11M8ZLGRnmSFdyX
+         UMK732e4ZtEHBFtE8Tf7rUJUsxS4P4GDnxqs8ObcXeeohVrnP3yEcf3Bf7P0PKM8ZiI6
+         XsgoBtLXz17/2HoGQrwCSdtWprCFuIfqua33uTAdPQgvcb1fZIpQsnWgJnaZFnXmyLD6
+         zJHw==
+X-Gm-Message-State: AOAM530OKdQGhktUxEFcE9SoLjGfcaWr13tTpKdf1IcwQTH15at4ID8i
+        i/1hwD8Vv7SQvsAO1F8xQnY=
+X-Google-Smtp-Source: ABdhPJym4WIvvqBdSxc3QdDoPrEZoQ+DdR1k0sDyFiSsvL3xfSowMr6drnWP8/hjU4+Puti0DlmP2A==
+X-Received: by 2002:a17:902:da85:b0:142:11b4:b5c0 with SMTP id j5-20020a170902da8500b0014211b4b5c0mr4660836plx.53.1637655522459;
+        Tue, 23 Nov 2021 00:18:42 -0800 (PST)
+Received: from localhost.localdomain ([43.128.78.144])
+        by smtp.gmail.com with ESMTPSA id g17sm11593029pfv.136.2021.11.23.00.18.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 00:18:42 -0800 (PST)
+Date:   Tue, 23 Nov 2021 16:18:34 +0800
+From:   Aili Yao <yaoaili126@gmail.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     pbonzini@redhat.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yaoaili@kingsoft.com
+Subject: Re: [PATCH] KVM: LAPIC: Per vCPU control over
+ kvm_can_post_timer_interrupt
+Message-ID: <20211123161834.30714698@gmail.com>
+In-Reply-To: <YZvrvmRnuDc1e+gi@google.com>
+References: <20211122095619.000060d2@gmail.com>
+        <YZvrvmRnuDc1e+gi@google.com>
+Organization: ksyun
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document optional linux,keycodes support.
+On Mon, 22 Nov 2021 19:13:02 +0000
+Sean Christopherson <seanjc@google.com> wrote:
 
-Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
----
- .../devicetree/bindings/input/touchscreen/mstar,msg2638.yaml  | 4 ++++
- 1 file changed, 4 insertions(+)
+> On Mon, Nov 22, 2021, Aili Yao wrote:
+> > From: Aili Yao <yaoaili@kingsoft.com>
+> > 
+> > When we isolate some pyhiscal cores, We may not use them for kvm
+> > guests, We may use them for other purposes like DPDK, or we can
+> > make some kvm guests isolated and some not, the global judgement
+> > pi_inject_timer is not enough; We may make wrong decisions:
+> > 
+> > In such a scenario, the guests without isolated cores will not be
+> > permitted to use vmx preemption timer, and tscdeadline fastpath
+> > also be disabled, both will lead to performance penalty.
+> > 
+> > So check whether the vcpu->cpu is isolated, if not, don't post timer
+> > interrupt.
+> > 
+> > Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
+> > ---
+> >  arch/x86/kvm/lapic.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+> > index 759952dd1222..72dde5532101 100644
+> > --- a/arch/x86/kvm/lapic.c
+> > +++ b/arch/x86/kvm/lapic.c
+> > @@ -34,6 +34,7 @@
+> >  #include <asm/delay.h>
+> >  #include <linux/atomic.h>
+> >  #include <linux/jump_label.h>
+> > +#include <linux/sched/isolation.h>
+> >  #include "kvm_cache_regs.h"
+> >  #include "irq.h"
+> >  #include "ioapic.h"
+> > @@ -113,7 +114,8 @@ static inline u32 kvm_x2apic_id(struct
+> > kvm_lapic *apic) 
+> >  static bool kvm_can_post_timer_interrupt(struct kvm_vcpu *vcpu)
+> >  {
+> > -	return pi_inject_timer && kvm_vcpu_apicv_active(vcpu);
+> > +	return pi_inject_timer && kvm_vcpu_apicv_active(vcpu) &&
+> > +		!housekeeping_cpu(vcpu->cpu, HK_FLAG_TIMER);  
+> 
+> I don't think this is safe, vcpu->cpu will be -1 if the vCPU isn't
+> scheduled in. 
 
-diff --git a/Documentation/devicetree/bindings/input/touchscreen/mstar,msg2638.yaml b/Documentation/devicetree/bindings/input/touchscreen/mstar,msg2638.yaml
-index 2fb7e01bb65a..af4f954de958 100644
---- a/Documentation/devicetree/bindings/input/touchscreen/mstar,msg2638.yaml
-+++ b/Documentation/devicetree/bindings/input/touchscreen/mstar,msg2638.yaml
-@@ -36,6 +36,10 @@ properties:
-   touchscreen-size-x: true
-   touchscreen-size-y: true
- 
-+  linux,keycodes:
-+    minItems: 1
-+    maxItems: 4
-+
- additionalProperties: false
- 
- required:
--- 
-2.31.1
+I checked this, It seems we will set vcpu->cpu to a valid value when we
+create vcpu( kvm_vm_ioctl_create_vcpu()), only after that we can
+configure lapic through vcpu fd and start the timer, this may not be one
+real problem.
 
+Currently, the patch seems work as expected in my test, maybe one
+possible candidate for the issue listed above.
 
+Thanks
+
+> This also doesn't play nice with the admin forcing
+> pi_inject_timer=1.  Not saying there's a reasonable use case for
+> doing that, but it's supported today and this would break that
+> behavior.  It would also lead to weird behavior if a vCPU were
+> migrated on/off a housekeeping vCPU.  Again, probably not a
+> reasonable use case, but I don't see anything that would outright
+> prevent that behavior.
+> 
+> The existing behavior also feels a bit unsafe as pi_inject_timer is
+> writable while KVM is running, though I supposed that's orthogonal to
+> this discussion.
+> 
+> Rather than check vcpu->cpu, is there an existing vCPU flag that can
+> be queried, e.g. KVM_HINTS_REALTIME?
+> 
+> >  }
+> >  
+> >  bool kvm_can_use_hv_timer(struct kvm_vcpu *vcpu)
+> > -- 
+> > 2.25.1
+> >   
 
