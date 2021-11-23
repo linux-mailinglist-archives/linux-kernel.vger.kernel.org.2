@@ -2,112 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93D445A358
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B909045A36C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:03:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236744AbhKWM5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 07:57:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:31601 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234548AbhKWM5g (ORCPT
+        id S236766AbhKWNGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 08:06:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232746AbhKWNG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 07:57:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637672067;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zSBeYlFZ9tIzOUFtiUDS2YmhqY7uIJxs/7Wl4E4qfNM=;
-        b=VoR9CQdACIloDI1jbuemrLwkOtSkL7ozwebVen9X8MFrYholFL67xb/4E0cJkptsEZQc5a
-        Ya5pDNnmxscgSi6lAeeUxk5MBok2+mS0dYwvoNAx/msx+c+Ir7nXnSY3zvIwm+r3PuNKvt
-        R2MhBI+y1sOH/QVzpiS0r/4QuDAr1G4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-41-i7zeWf8rOeyCoTdXX0-upw-1; Tue, 23 Nov 2021 07:54:26 -0500
-X-MC-Unique: i7zeWf8rOeyCoTdXX0-upw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2321787950C;
-        Tue, 23 Nov 2021 12:54:25 +0000 (UTC)
-Received: from localhost (unknown [10.39.195.64])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AAE125DF5E;
-        Tue, 23 Nov 2021 12:54:19 +0000 (UTC)
-Date:   Tue, 23 Nov 2021 12:54:18 +0000
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        netdev@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>,
-        kvm@vger.kernel.org, Asias He <asias@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Subject: Re: [PATCH 0/2] vhost/vsock: fix used length and cleanup in
- vhost_vsock_handle_tx_kick()
-Message-ID: <YZzketMjpZ+Pn9aA@stefanha-x1.localdomain>
-References: <20211122163525.294024-1-sgarzare@redhat.com>
+        Tue, 23 Nov 2021 08:06:29 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82376C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 05:03:21 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mpVS7-0007Kh-8T; Tue, 23 Nov 2021 14:03:15 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mpVS6-000bGh-Qm; Tue, 23 Nov 2021 14:03:14 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mpVS5-0008HJ-QC; Tue, 23 Nov 2021 14:03:13 +0100
+Date:   Tue, 23 Nov 2021 14:03:13 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sherry Sun <sherry.sun@nxp.com>
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com
+Subject: Re: [PATCH V2] tty: serial: imx: disable UCR4_OREN in .stop_rx()
+ instead of .shutdown()
+Message-ID: <20211123130313.gdxjfav6ides6mkg@pengutronix.de>
+References: <20211123105122.7913-1-sherry.sun@nxp.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="127DMsQtX8lXRxGZ"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wjbt3goy2mxbdjt6"
 Content-Disposition: inline
-In-Reply-To: <20211122163525.294024-1-sgarzare@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20211123105122.7913-1-sherry.sun@nxp.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---127DMsQtX8lXRxGZ
-Content-Type: text/plain; charset=us-ascii
+--wjbt3goy2mxbdjt6
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 22, 2021 at 05:35:23PM +0100, Stefano Garzarella wrote:
-> This is a follow-up to Micheal's patch [1] and the discussion with Halil =
-and
-> Jason [2].
+On Tue, Nov 23, 2021 at 06:51:22PM +0800, Sherry Sun wrote:
+> From: Fugang Duan <fugang.duan@nxp.com>
 >=20
-> I made two patches, one to fix the problem and one for cleanup. This shou=
-ld
-> simplify the backport of the fix because we've had the problem since
-> vhost-vsock was introduced (v4.8) and that part has been touched a bit
-> recently.
->=20
-> Thanks,
-> Stefano
->=20
-> [1] https://lore.kernel.org/virtualization/20211122105822.onarsa4sydzxqyn=
-u@steredhat/T/#t
-> [2] https://lore.kernel.org/virtualization/20211027022107.14357-1-jasowan=
-g@redhat.com/T/#t
->=20
-> Stefano Garzarella (2):
->   vhost/vsock: fix incorrect used length reported to the guest
->   vhost/vsock: cleanup removing `len` variable
->=20
->  drivers/vhost/vsock.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
->=20
-> --=20
-> 2.31.1
->=20
+> Disable the UCR4_OREN bit in .stop_rx() before the uart receiver is disab=
+led
+> maybe better than in the .shutdown() function.
 
-Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
+There should be a better incentive than "maybe it's better to do this".
+My expectation is that you verify there is indeed an issue and then fix
+that with a descriptive commit log that convinces this is indeed a fix.
 
---127DMsQtX8lXRxGZ
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--wjbt3goy2mxbdjt6
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmGc5HoACgkQnKSrs4Gr
-c8ifrQf/c6D901ykYKUMEDHveFY4zXcj69oxyDMaGCumQCFh/XD4Oaj7yRcBZW/y
-BdVkAHqsHa2rnkv5P4fWW0gk9JkZlk2eEmC/IaJsr2F1YdyF8VOMcpOPPGTDQQt1
-MRxMr7VFZWcZDyxnntmdzYSuej1eHhriTz9VpM/hC8hklvoLavhSmYR1ZcsplnFp
-KqO/RLiprEDWUDXXp1npmD8g+SIdBfMA/N6+2+ud/p94JRXk1+gfaB8kNnJOmsYc
-25ygN1s1JyzJMkq+HWMe2EcZtIoZ3v0X5wLg/bMU4QssS/DjmiQ0El9MJY1O/iQh
-jU9LGwY1MwTgrqVVZoNhYiepyT1ZFg==
-=YxZO
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGc5o4ACgkQwfwUeK3K
+7Anu4Qf9H4eu58akjZCWwLK0/sBZzzy+u9GRjlVRheYxRv6lNb/bzPYFLyyH+ZgR
+auP9WxWPM1hdk+MHiep/CFGdx9PBQqspRIC08Xldn9WeykRat+ECSCE+JTjp1Utb
+0fZO7mrzYH5QyZsXtP1knJ9ehjBhBR7fT16dxnnlexmwz3IVXFW16ZZ2vg0/ll38
+dNq+oVIR+mCO+eeHDyaHg3bIkwfcx/CB9QJI3QHMnphvYqS72hql3fKampLNsdj8
+WwXPBNfgW+xrcKgOjxqPpcbL/lzQkcn8PZAK1pDA3mppDOPApXAeTEda6Pp5+Aip
+cvpTHrI/CBM8NEqFmVHEmXoFZmv5jw==
+=pFUE
 -----END PGP SIGNATURE-----
 
---127DMsQtX8lXRxGZ--
-
+--wjbt3goy2mxbdjt6--
