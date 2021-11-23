@@ -2,59 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9306459CF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:42:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF77459CF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:42:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234292AbhKWHp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 02:45:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54820 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234063AbhKWHpZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 02:45:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D22560E94;
-        Tue, 23 Nov 2021 07:42:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637653338;
-        bh=TbYdLFnqcgIXjTzcGnFmxKgBN6m6L2wwXqicA4xY4V8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cJftIbTfBmKJXlMCLrNa00rm63AJmqdB8IvmcPWW+/Te7iAVxKHkknVEPkKJTWn8K
-         DpetsTa7h20T0OPgNiZnAe+1iAQEBGkPN9KyVSroto+fw/3vmtBiOIDFc8nb7o76Wo
-         caysg3jsgfAH/O0lUvLgDy4XxYFY6O6Kjst3VY4cuBKgUKR5Kxh0e8PjiQ12LNs8cq
-         SrVMdHQsPMiMwQ1aY5EQw7l4sF+78bJ6P7BedVKJ9rRj0vB6JKuy10FsU5K4I21Raw
-         +mofe7xTaNJ6AYVhu2P5Ts6RCtxTjukBk2L4AxIGp7mJ3t2hly7uS1COCnGVVGvy1P
-         rEjwwWfevSS/Q==
-Date:   Tue, 23 Nov 2021 13:12:14 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     rashmi.a@intel.com
-Cc:     michal.simek@xilinx.com, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kishon@ti.com,
-        andriy.shevchenko@linux.intel.com, linux-phy@lists.infradead.org,
-        mgross@linux.intel.com, kris.pan@linux.intel.com,
-        furong.zhou@intel.com, mallikarjunappa.sangannavar@intel.com,
-        adrian.hunter@intel.com, mahesh.r.vaidya@intel.com,
-        nandhini.srikandan@intel.com
-Subject: Re: [RESEND PATCH v2 4/4] phy: intel: Add Thunder Bay eMMC PHY
- support
-Message-ID: <YZybVkfMCI1durcN@matsya>
-References: <20211027115516.4475-1-rashmi.a@intel.com>
- <20211027115516.4475-5-rashmi.a@intel.com>
+        id S234334AbhKWHpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 02:45:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234316AbhKWHpg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 02:45:36 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B461EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 23:42:28 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mpQRc-0008Iv-8z; Tue, 23 Nov 2021 08:42:24 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mpQRc-000aTk-0B; Tue, 23 Nov 2021 08:42:23 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mpQRa-0006gu-T5; Tue, 23 Nov 2021 08:42:22 +0100
+Date:   Tue, 23 Nov 2021 08:42:19 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sherry Sun <sherry.sun@nxp.com>
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com
+Subject: Re: [PATCH] tty: serial: imx: clear RTSD status before suspend
+Message-ID: <20211123074219.wn5jfjr6ph7uutyo@pengutronix.de>
+References: <20211123070349.20099-1-sherry.sun@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4l4f62vkmjup6i2g"
 Content-Disposition: inline
-In-Reply-To: <20211027115516.4475-5-rashmi.a@intel.com>
+In-Reply-To: <20211123070349.20099-1-sherry.sun@nxp.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27-10-21, 17:25, rashmi.a@intel.com wrote:
-> From: Rashmi A <rashmi.a@intel.com>
-> 
-> Add support of eMMC PHY for Intel Thunder Bay SoC,
-> uses the Arasan eMMC phy
 
-Applied, thanks
+--4l4f62vkmjup6i2g
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-~Vinod
+On Tue, Nov 23, 2021 at 03:03:49PM +0800, Sherry Sun wrote:
+> From: Fugang Duan <fugang.duan@nxp.com>
+>=20
+> Clear RTSD status before suspend due to the port also
+> use RTS pin as wakeup source, need to clear the flag first.
+
+I'd write:
+
+	Clear RTSD status before enabling the irq event for RTSD.
+
+That this happens in the context of suspend isn't that important.
+
+> Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
+> Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
+> ---
+>  drivers/tty/serial/imx.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
+> index 90f82e6c54e4..fb75e3e0d828 100644
+> --- a/drivers/tty/serial/imx.c
+> +++ b/drivers/tty/serial/imx.c
+> @@ -2482,10 +2482,12 @@ static void imx_uart_enable_wakeup(struct imx_por=
+t *sport, bool on)
+> =20
+>  	if (sport->have_rtscts) {
+>  		u32 ucr1 =3D imx_uart_readl(sport, UCR1);
+> -		if (on)
+> +		if (on) {
+> +			imx_uart_writel(sport, USR1_RTSD, USR1);
+>  			ucr1 |=3D UCR1_RTSDEN;
+> -		else
+> +		} else {
+>  			ucr1 &=3D ~UCR1_RTSDEN;
+> +		}
+>  		imx_uart_writel(sport, ucr1, UCR1);
+>  	}
+
+The change looks fine.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--4l4f62vkmjup6i2g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGcm1gACgkQwfwUeK3K
+7AlRDggAm6qkIUGQGWyAX0QRPDZFfXjgeM9USm7yoTNbBfhib62Vt6ZGYjBAstYv
+nsPuiRgru0ZWgLsd+YFs6+77lzaOVWxTu/AUNsMhbdnQFodZpUKJLIsEe6ts8RD2
+OQp837KzMj9E6sl2EyfkF0XCHHQO1vgCkChEI9C4/MMYiecFRoOucr+QIa+Mrl9F
+apfJ/AeUlo/6dBP948Z+hVumBaQR8IpMwpl8+ZU4l2/r4JXtDUaY+Dh76gaRETo7
+Wc7/+VEo/omAHCs0OYbOK/hGVGui5u0Wvh/+4ezJIxQabEsv/Idgqe2qGMtq3ZAO
+K9nUWUdt+2XbC4cJjJ9KqwGmoUj5kg==
+=Q/Aq
+-----END PGP SIGNATURE-----
+
+--4l4f62vkmjup6i2g--
