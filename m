@@ -2,81 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD7DC459972
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 01:55:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC36245994F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 01:50:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhKWA6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 19:58:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229672AbhKWA6Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 19:58:16 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF23C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 16:55:09 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id b16so2306988ljf.12
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 16:55:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=zejIlZjGjvzTKDlE9IDzfKlgpBmC2NhrN3/klGVK4ZA=;
-        b=jw4g7UOAWkd2snKCLJKqEXQFGLEWCdfXx1sVgnB8nFno0y7wkqruQOTUVGTMcg+DZ4
-         vNi0OzWBjaujPTs1cDMRqkin69dJ/ngoJhTOi+rWjJ/EdWulGaGFYBJtQiGcYSV5ENOj
-         M19vZnQhW/DvHZikgVhb0z3OkPsIPxTnuLcs1btLkSiDqDeAW1qO4OgI2oymYt9ZrVnB
-         hkk/RAKPSVrsDv70eX49GBwasKGcwpUrkW1FRmCyH1wJyG3N7geHFGbw49GcSLms3mwD
-         /LhbNTleZqqNS+LKi5OMvuE6GnQ+QqLk5GELv96hpPA+/tmKtgOltqx38XU4k+a52AQe
-         6HmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=zejIlZjGjvzTKDlE9IDzfKlgpBmC2NhrN3/klGVK4ZA=;
-        b=RqHPHw2Cvq8oEF7jTsHNzJoFwvzhxNjxZ0e524qZuzdGDEbSuqQhaBbJclsFGOR+7g
-         TgEMX3/8cloVuXOkcPouq1ajUQ7zw366Qfpc4N0RyU8Kg/tXKNUfb1LoR4mh3wPg0v53
-         HNlWpY+lz9+wv9O6Iowt5qYIviTNq8Nw1sllREtaTkFLqsQYSSa0kQ2F4niRLmxqJRZF
-         i5+18QiRoRD4ldStAU9D1IFu9w8YL7VgTc0whtMICpOFfoaS921n6Jn7VLvvUgIlRlbV
-         1E2KJ1/s1adLmElsB0Ykr3OVLbnvkH0jR/sq5dP5EKtYxGl+UtfsETSlnoDInTWocs4H
-         P93g==
-X-Gm-Message-State: AOAM533fFq/Va9Vx1QoT2B5XzH6VgavNXAA1fo1XAa0aSi0YycYft2sm
-        Ic90mA51mJympIaYeE971tYqLL2oX4H18tSF++o=
-X-Google-Smtp-Source: ABdhPJxK9uYh3381UwmFWUAWhAi7Y2M/NH/DFKYWHvOAPImwE4ITRS/d/zAaenXqA4YwEeZDt+9WkwXfPp4qqZRazVY=
-X-Received: by 2002:a2e:9b17:: with SMTP id u23mr708729lji.258.1637628907482;
- Mon, 22 Nov 2021 16:55:07 -0800 (PST)
+        id S230387AbhKWAx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 19:53:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49778 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229802AbhKWAxZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 19:53:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C5CE60F5B;
+        Tue, 23 Nov 2021 00:50:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637628617;
+        bh=45juEyQkPWERTh6H5t1qHoiass56yxvwgz5yqgPgLJM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kJNOHUhscoaSdBDnicmBh4T0zeQU97vkXbXmXiLOwn9tRO3KgPC5lKc9aDmWWafPn
+         D/jq7XUebJq+Zs2f9gn0QSr9IAXXrXmiE814Vv7yGtM0zyPS6XpRjt9Yp5X1SYjQ8p
+         k96Z7w3fCWXDQwpIT5H3mE9ihxzBUZzBckQKdJAS5/ZQMt0S3mH6GJXN549KYNQPxE
+         fRXVvCvL28y0TewehLwDN+bNurqtzjuWk7pNoYgLB1fJJCqMPXjpfN5KJEb9SFCW3Q
+         2+F/rE9jAN8pIytvrcSbDZhXBHYqw9DSX6Aiv+1eFg09+6e7vTH9dneVUlI2fQOFv5
+         nev9pGO3/ATtA==
+Date:   Mon, 22 Nov 2021 18:55:28 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: Re: arch/mips/mm/tlbex.c:2243:3: warning: unannotated fall-through
+ between switch labels
+Message-ID: <20211123005528.GA550759@embeddedor>
+References: <202111230719.OZDUHU4z-lkp@intel.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6520:4084:b0:14d:ab54:2be2 with HTTP; Mon, 22 Nov 2021
- 16:55:06 -0800 (PST)
-Reply-To: rubenherbert789@gmail.com
-From:   Ruben Herbert <rubenherbert16@gmail.com>
-Date:   Tue, 23 Nov 2021 01:55:06 +0100
-Message-ID: <CADgtACBo+MTF0CGWoX9YzY05h_J-UVmzeTGnw7DUH4KR7Kf-JA@mail.gmail.com>
-Subject: ABANDONED FUND
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202111230719.OZDUHU4z-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Beneficiary,
+On Tue, Nov 23, 2021 at 07:51:33AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   136057256686de39cc3a07c2e39ef6bc43003ff6
+> commit: dee2b702bcf067d7b6b62c18bdd060ff0810a800 kconfig: Add support for -Wimplicit-fallthrough
+> date:   8 days ago
+> config: mips-randconfig-r016-20211116 (attached as .config)
+> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project fbe72e41b99dc7994daac300d208a955be3e4a0a)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install mips cross compiling tool for clang build
+>         # apt-get install binutils-mips-linux-gnu
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=dee2b702bcf067d7b6b62c18bdd060ff0810a800
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout dee2b702bcf067d7b6b62c18bdd060ff0810a800
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=mips 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+> >> arch/mips/mm/tlbex.c:2243:3: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+>                    case CPU_CAVIUM_OCTEON:
+>                    ^
+>    arch/mips/mm/tlbex.c:2243:3: note: insert 'break;' to avoid fall-through
+>                    case CPU_CAVIUM_OCTEON:
+>                    ^
+>                    break; 
 
-How are you today? I need the following answers from you immediately:
+I already have a patch for this here:
 
-Did you abandon your funds of US$35,000,000.00?
+https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/commit/?h=for-linus/kspp&id=cd3ed04e7fc365e4e581333c3ff69c8da6ca0e8b
 
-Did you authorize a lawyer to claim the fund on your behalf and that
-the funds should be sent to the below account details?;
-
-Canadian Imperial Bank of Commerce
-1120 Grant Ave Wpg Mb Canada R3M 2A6
-Usd Acct No: 01007-93-17899
-Swift Code: cibccatt
-Beneficiary Name: Fitzroy Joseph
-
-Kindly get back to me immediately to avoid paying the wrong person.
-
-I await your urgent response.
-
-Yours sincerely,,
-Dr. Ruben Herbert
-Head, Financial System Stability,
-Central Bank of Nigeria (CBN)
+Thanks
+--
+Gustavo
