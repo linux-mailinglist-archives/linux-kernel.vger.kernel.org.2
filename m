@@ -2,328 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D2E645A665
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 16:19:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C98145A66E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 16:20:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236528AbhKWPWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 10:22:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236303AbhKWPWK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 10:22:10 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB232C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 07:19:00 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id k4so17317402plx.8
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 07:19:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VFgEmk7S7Z/ZUnTUBIiTQ30LYmS30Vq9DSpz/kibFX4=;
-        b=lBLlVcZLYTSyfaYEASlZH+ImWPqI83p0cnkIVpPUgDkAbZRWO7xYQVRDIsj3XKuwkA
-         ji3M0zNjOIf/0BMnbrpamCSg1Bt4IOYozVRbmo1+pZKSlP58INk/yalNaJV5/4ASr1cl
-         p99ZHUkdDpj+Tz8vZvd6vRDsLFcBtNBiRTYlJH0b3MG1ghOyftUnlKzz0ZvjBMBjXLgu
-         ZzXHfa5P3TB3qbjfJxF3krdAdKj54Ae3noPE+IfLzcH++rxitkwZR3CE+e4urObEhbhZ
-         Pe6XqRqhdRSlxm80xe/HoUewCmoaMr2TEo2F2FzU+ngk6NPA3TlTNjDR8TZmnJKKTWJ6
-         Jx7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VFgEmk7S7Z/ZUnTUBIiTQ30LYmS30Vq9DSpz/kibFX4=;
-        b=Eq7kzXXLJ6RRhWA90i07A5+rLFntTlcF4lk6J1Nm9sQJ5Zl8CpIUpB1eHrQ7x8ez/b
-         YB7+/vgWrnwYXUeOO8qP9K9aWO7v5hxzGb1dfAg0Q5hXn0cbQ0eKq/DhxLivYAj0wLrP
-         Qe5S2YTrJGRRdPyeMHwfHCIQoqT8hz1rZG38dna+WgWyCgObuEJqpJT23Wh7Y9xQibyE
-         9M+m4SIdoRmHusw38Udpj5fQKFOtbAVyAh99llCaJMnntJd+bvmpgg9tzv5JQDa3Utqh
-         1v0CIaNvP/zm/88i1O53Hd3ZkOg7XC2+A1pOJbX7edCPdbOaNOXcsWgjlIgpeRW4IjEc
-         tIxQ==
-X-Gm-Message-State: AOAM530NwfpVwU+vA3wP7M9fbY7CsSTm/7erge7pZvQ4kKVhpCkF+qGS
-        SO6U/Q9B93oLri5485TVLPtCJFWyYdQtXSEdbMySjw==
-X-Google-Smtp-Source: ABdhPJyZ5W4CeYjb0k1S1Vi7nmrfTDxN0UqZdEFw66+WK3YBKH93iTF7zpYuHvZ47r8WmU9B60he9Yp+d0MAzhlUcOA=
-X-Received: by 2002:a17:90b:1bc4:: with SMTP id oa4mr3891850pjb.179.1637680740213;
- Tue, 23 Nov 2021 07:19:00 -0800 (PST)
+        id S238365AbhKWPXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 10:23:17 -0500
+Received: from mga04.intel.com ([192.55.52.120]:40674 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234906AbhKWPXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 10:23:15 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="233759768"
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="233759768"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 07:20:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="650089632"
+Received: from kuha.fi.intel.com ([10.237.72.166])
+  by fmsmga001.fm.intel.com with SMTP; 23 Nov 2021 07:20:01 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 23 Nov 2021 17:20:00 +0200
+Date:   Tue, 23 Nov 2021 17:20:00 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-omap@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH v2] extcon: fix extcon_get_extcon_dev() error handling
+Message-ID: <YZ0GoHn/v9ki5AGm@kuha.fi.intel.com>
+References: <20211123083925.GA3277@kili>
 MIME-Version: 1.0
-References: <20211116122831.278576-1-martyn.welch@collabora.com>
-In-Reply-To: <20211116122831.278576-1-martyn.welch@collabora.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 23 Nov 2021 16:18:49 +0100
-Message-ID: <CAG3jFytjX1_X1dzJAm_yqTx49CVpnKttRgH-dpUHEJK6GqqTuw@mail.gmail.com>
-Subject: Re: [PATCH] drm/bridge: megachips: Ensure both bridges are probed
- before registration
-To:     Martyn Welch <martyn.welch@collabora.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, Peter Senna Tschudin <peter.senna@gmail.com>,
-        Martin Donnelly <martin.donnelly@ge.com>,
-        Martyn Welch <martyn.welch@collabora.co.uk>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211123083925.GA3277@kili>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Martyn,
+On Tue, Nov 23, 2021 at 11:43:06AM +0300, Dan Carpenter wrote:
+> The extcon_get_extcon_dev() function returns error pointers on error,
+> NULL when it's a -EPROBE_DEFER defer situation, and ERR_PTR(-ENODEV)
+> when the CONFIG_EXTCON option is disabled.  This is very complicated for
+> the callers to handle and a number of them had bugs that would lead to
+> an Oops.
+> 
+> In real life, there are two things which prevented crashes.  First,
+> error pointers would only be returned if there was bug in the caller
+> where they passed a NULL "extcon_name" and none of them do that.
+> Second, only two out of the eight drivers will build when CONFIG_EXTCON
+> is disabled.
+> 
+> The normal way to write this would be to return -EPROBE_DEFER directly
+> when appropriate and return NULL when CONFIG_EXTCON is disabled.  Then
+> the error handling is simple and just looks like:
+> 
+> 	dev->edev = extcon_get_extcon_dev(acpi_dev_name(adev));
+> 	if (IS_ERR(dev->edev))
+> 		return PTR_ERR(dev->edev);
+> 
+> For the two drivers which can build with CONFIG_EXTCON disabled, then
+> extcon_get_extcon_dev() will now return NULL which is not treated as an
+> error and the probe will continue successfully.  Those two drivers are
+> "typec_fusb302" and "max8997-battery".  In the original code, the
+> typec_fusb302 driver had an 800ms hang in tcpm_get_current_limit() but
+> now that function is a no-op.  For the max8997-battery driver everything
+> should continue working as is.
+> 
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-On Tue, 16 Nov 2021 at 13:28, Martyn Welch <martyn.welch@collabora.com> wrote:
->
-> In the configuration used by the b850v3, the STDP2690 is used to read EDID
-> data whilst it's the STDP4028 which can detect when monitors are connected.
->
-> This can result in problems at boot with monitors connected when the
-> STDP4028 is probed first, a monitor is detected and an attempt is made to
-> read the EDID data before the STDP2690 has probed:
->
-> [    3.795721] Unable to handle kernel NULL pointer dereference at virtual address 00000018
-> [    3.803845] pgd = (ptrval)
-> [    3.806581] [00000018] *pgd=00000000
-> [    3.810180] Internal error: Oops: 5 [#1] SMP ARM
-> [    3.814813] Modules linked in:
-> [    3.817879] CPU: 0 PID: 64 Comm: kworker/u4:1 Not tainted 5.15.0 #1
-> [    3.824161] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
-> [    3.830705] Workqueue: events_unbound deferred_probe_work_func
-> [    3.836565] PC is at stdp2690_get_edid+0x44/0x19c
-> [    3.841286] LR is at ge_b850v3_lvds_get_modes+0x2c/0x5c
-> [    3.846526] pc : [<805eae10>]    lr : [<805eb138>]    psr: 80000013
-> [    3.852802] sp : 81c359d0  ip : 7dbb550b  fp : 81c35a1c
-> [    3.858037] r10: 81c73840  r9 : 81c73894  r8 : 816d9800
-> [    3.863270] r7 : 00000000  r6 : 81c34000  r5 : 00000000  r4 : 810c35f0
-> [    3.869808] r3 : 80e3e294  r2 : 00000080  r1 : 00000cc0  r0 : 81401180
-> [    3.876349] Flags: Nzcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
-> [    3.883499] Control: 10c5387d  Table: 1000404a  DAC: 00000051
-> [    3.889254] Register r0 information: slab kmem_cache start 81401180 pointer offset 0
-> [    3.897034] Register r1 information: non-paged memory
-> [    3.902097] Register r2 information: non-paged memory
-> [    3.907160] Register r3 information: non-slab/vmalloc memory
-> [    3.912832] Register r4 information: non-slab/vmalloc memory
-> [    3.918503] Register r5 information: NULL pointer
-> [    3.923217] Register r6 information: non-slab/vmalloc memory
-> [    3.928887] Register r7 information: NULL pointer
-> [    3.933601] Register r8 information: slab kmalloc-1k start 816d9800 pointer offset 0 size 1024
-> [    3.942244] Register r9 information: slab kmalloc-2k start 81c73800 pointer offset 148 size 2048
-> [    3.951058] Register r10 information: slab kmalloc-2k start 81c73800 pointer offset 64 size 2048
-> [    3.959873] Register r11 information: non-slab/vmalloc memory
-> [    3.965632] Register r12 information: non-paged memory
-> [    3.970781] Process kworker/u4:1 (pid: 64, stack limit = 0x(ptrval))
-> [    3.977148] Stack: (0x81c359d0 to 0x81c36000)
-> [    3.981517] 59c0:                                     80b2b668 80b2b5bc 000002e2 0000034e
-> [    3.989712] 59e0: 81c35a8c 816d98e8 81c35a14 7dbb550b 805bfcd0 810c35f0 81c73840 824addc0
-> [    3.997906] 5a00: 00001000 816d9800 81c73894 81c73840 81c35a34 81c35a20 805eb138 805eadd8
-> [    4.006099] 5a20: 810c35f0 00000045 81c35adc 81c35a38 80594188 805eb118 80d7c788 80dd1848
-> [    4.014292] 5a40: 00000000 81c35a50 80dca950 811194d3 80dca7c4 80dca944 80dca91c 816d9800
-> [    4.022485] 5a60: 81c34000 81c760a8 816d9800 80c58c98 810c35f0 816d98e8 00001000 00001000
-> [    4.030678] 5a80: 00000000 00000000 8017712c 81c60000 00000002 00000001 00000000 00000000
-> [    4.038870] 5aa0: 816d9900 816d9900 00000000 7dbb550b 805c700c 00000008 826282c8 826282c8
-> [    4.047062] 5ac0: 00001000 81e1ce40 00001000 00000002 81c35bf4 81c35ae0 805d9694 80593fc0
-> [    4.055255] 5ae0: 8017a970 80179ad8 00000179 00000000 81c35bcc 81c35b00 80177108 8017a950
-> [    4.063447] 5b00: 00000000 81c35b10 81c34000 00000000 81004fd8 81010a38 00000000 00000059
-> [    4.071639] 5b20: 816d98d4 81fbb718 00000013 826282c8 8017a940 81c35b40 81134448 00000400
-> [    4.079831] 5b40: 00000178 00000000 e063b9c1 00000000 c2000049 00000040 00000000 00000008
-> [    4.088024] 5b60: 82628300 82628380 00000000 00000000 81c34000 00000000 81fbb700 82628340
-> [    4.096216] 5b80: 826283c0 00001000 00000000 00000010 816d9800 826282c0 801766f8 00000000
-> [    4.104408] 5ba0: 00000000 81004fd8 00000049 00000000 00000000 00000001 80dcf940 80178de4
-> [    4.112601] 5bc0: 81c35c0c 7dbb550b 80178de4 81fbb700 00000010 00000010 810c35f4 81e1ce40
-> [    4.120793] 5be0: 81c40908 0000000c 81c35c64 81c35bf8 805a7f18 805d94a0 81c35c3c 816d9800
-> [    4.128985] 5c00: 00000010 81c34000 81c35c2c 81c35c18 8012fce0 805be90c 81c35c3c 81c35c28
-> [    4.137178] 5c20: 805be90c 80173210 81fbb600 81fbb6b4 81c35c5c 7dbb550b 81c35c64 81fbb700
-> [    4.145370] 5c40: 816d9800 00000010 810c35f4 81e1ce40 81c40908 0000000c 81c35c84 81c35c68
-> [    4.153565] 5c60: 805a8c78 805a7ed0 816d9800 81fbb700 00000010 00000000 81c35cac 81c35c88
-> [    4.161758] 5c80: 805a8dc4 805a8b68 816d9800 00000000 816d9800 00000000 8179f810 810c42d0
-> [    4.169950] 5ca0: 81c35ccc 81c35cb0 805e47b0 805a8d18 824aa240 81e1ea80 81c40908 81126b60
-> [    4.178144] 5cc0: 81c35d14 81c35cd0 8060db1c 805e46cc 81c35d14 81c35ce0 80dd90f8 810c4d58
-> [    4.186338] 5ce0: 80dd90dc 81fe9740 fffffffe 81fe9740 81e1ea80 00000000 810c4d6c 80c4b95c
-> [    4.194531] 5d00: 80dd9a3c 815c6810 81c35d34 81c35d18 8060dc9c 8060d8fc 8246b440 815c6800
-> [    4.202724] 5d20: 815c6810 eefd8e00 81c35d44 81c35d38 8060dd80 8060dbec 81c35d6c 81c35d48
-> [    4.210918] 5d40: 805e98a4 8060dd70 00000000 815c6810 810c45b0 81126e90 81126e90 80dd9a3c
-> [    4.219112] 5d60: 81c35d8c 81c35d70 80619574 805e9808 815c6810 00000000 810c45b0 81126e90
-> [    4.227305] 5d80: 81c35db4 81c35d90 806168dc 80619514 80625df0 80623c80 815c6810 810c45b0
-> [    4.235498] 5da0: 81c35e6c 815c6810 81c35dec 81c35db8 80616d04 80616800 81c35de4 81c35dc8
-> [    4.243691] 5dc0: 808382b0 80b2f444 8116e310 8116e314 81c35e6c 815c6810 00000003 80dd9a3c
-> [    4.251884] 5de0: 81c35e14 81c35df0 80616ec8 80616c60 00000001 810c45b0 81c35e6c 815c6810
-> [    4.260076] 5e00: 00000001 80dd9a3c 81c35e34 81c35e18 80617338 80616e90 00000000 81c35e6c
-> [    4.268269] 5e20: 80617284 81c34000 81c35e64 81c35e38 80614730 80617290 81c35e64 8171a06c
-> [    4.276461] 5e40: 81e220b8 7dbb550b 815c6810 81c34000 815c6854 81126e90 81c35e9c 81c35e68
-> [    4.284654] 5e60: 8061673c 806146a8 8060f5e0 815c6810 00000001 7dbb550b 00000000 810c5080
-> [    4.292847] 5e80: 810c5320 815c6810 81126e90 00000000 81c35eac 81c35ea0 80617554 80616650
-> [    4.301040] 5ea0: 81c35ecc 81c35eb0 80615694 80617544 810c5080 810c5080 810c5094 81126e90
-> [    4.309233] 5ec0: 81c35efc 81c35ed0 80615c6c 8061560c 80615bc0 810c50c0 817eeb00 81412800
-> [    4.317425] 5ee0: 814c3000 00000000 814c300d 81119a60 81c35f3c 81c35f00 80141488 80615bcc
-> [    4.325618] 5f00: 81c60000 81c34000 81c35f24 81c35f18 80143078 817eeb00 81412800 817eeb18
-> [    4.333811] 5f20: 81412818 81003d00 00000088 81412800 81c35f74 81c35f40 80141a48 80141298
-> [    4.342005] 5f40: 81c35f74 81c34000 801481ac 817efa40 817efc00 801417d8 817eeb00 00000000
-> [    4.350199] 5f60: 815a7e7c 81c34000 81c35fac 81c35f78 80149b1c 801417e4 817efc20 817efc20
-> [    4.358391] 5f80: ffffe000 817efa40 801499a8 00000000 00000000 00000000 00000000 00000000
-> [    4.366583] 5fa0: 00000000 81c35fb0 80100130 801499b4 00000000 00000000 00000000 00000000
-> [    4.374774] 5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> [    4.382966] 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
-> [    4.391155] Backtrace:
-> [    4.393613] [<805eadcc>] (stdp2690_get_edid) from [<805eb138>] (ge_b850v3_lvds_get_modes+0x2c/0x5c)
-> [    4.402691]  r10:81c73840 r9:81c73894 r8:816d9800 r7:00001000 r6:824addc0 r5:81c73840
-> [    4.410534]  r4:810c35f0
-> [    4.413073] [<805eb10c>] (ge_b850v3_lvds_get_modes) from [<80594188>] (drm_helper_probe_single_connector_modes+0x1d4/0x84c)
-> [    4.424240]  r5:00000045 r4:810c35f0
-> [    4.427822] [<80593fb4>] (drm_helper_probe_single_connector_modes) from [<805d9694>] (drm_client_modeset_probe+0x200/0x1384)
-> [    4.439074]  r10:00000002 r9:00001000 r8:81e1ce40 r7:00001000 r6:826282c8 r5:826282c8
-> [    4.446917]  r4:00000008
-> [    4.449455] [<805d9494>] (drm_client_modeset_probe) from [<805a7f18>] (__drm_fb_helper_initial_config_and_unlock+0x54/0x5b4)
-> [    4.460713]  r10:0000000c r9:81c40908 r8:81e1ce40 r7:810c35f4 r6:00000010 r5:00000010
-> [    4.468556]  r4:81fbb700
-> [    4.471095] [<805a7ec4>] (__drm_fb_helper_initial_config_and_unlock) from [<805a8c78>] (drm_fbdev_client_hotplug+0x11c/0x1b0)
-> [    4.482434]  r10:0000000c r9:81c40908 r8:81e1ce40 r7:810c35f4 r6:00000010 r5:816d9800
-> [    4.490276]  r4:81fbb700
-> [    4.492814] [<805a8b5c>] (drm_fbdev_client_hotplug) from [<805a8dc4>] (drm_fbdev_generic_setup+0xb8/0x1a4)
-> [    4.502494]  r7:00000000 r6:00000010 r5:81fbb700 r4:816d9800
-> [    4.508160] [<805a8d0c>] (drm_fbdev_generic_setup) from [<805e47b0>] (imx_drm_bind+0xf0/0x130)
-> [    4.516805]  r7:810c42d0 r6:8179f810 r5:00000000 r4:816d9800
-> [    4.522474] [<805e46c0>] (imx_drm_bind) from [<8060db1c>] (try_to_bring_up_master+0x22c/0x2f0)
-> [    4.531116]  r7:81126b60 r6:81c40908 r5:81e1ea80 r4:824aa240
-> [    4.536783] [<8060d8f0>] (try_to_bring_up_master) from [<8060dc9c>] (__component_add+0xbc/0x184)
-> [    4.545597]  r10:815c6810 r9:80dd9a3c r8:80c4b95c r7:810c4d6c r6:00000000 r5:81e1ea80
-> [    4.553440]  r4:81fe9740
-> [    4.555980] [<8060dbe0>] (__component_add) from [<8060dd80>] (component_add+0x1c/0x20)
-> [    4.563921]  r7:eefd8e00 r6:815c6810 r5:815c6800 r4:8246b440
-> [    4.569589] [<8060dd64>] (component_add) from [<805e98a4>] (dw_hdmi_imx_probe+0xa8/0xe8)
-> [    4.577702] [<805e97fc>] (dw_hdmi_imx_probe) from [<80619574>] (platform_probe+0x6c/0xc8)
-> [    4.585908]  r9:80dd9a3c r8:81126e90 r7:81126e90 r6:810c45b0 r5:815c6810 r4:00000000
-> [    4.593662] [<80619508>] (platform_probe) from [<806168dc>] (really_probe+0xe8/0x460)
-> [    4.601524]  r7:81126e90 r6:810c45b0 r5:00000000 r4:815c6810
-> [    4.607191] [<806167f4>] (really_probe) from [<80616d04>] (__driver_probe_device+0xb0/0x230)
-> [    4.615658]  r7:815c6810 r6:81c35e6c r5:810c45b0 r4:815c6810
-> [    4.621326] [<80616c54>] (__driver_probe_device) from [<80616ec8>] (driver_probe_device+0x44/0xe0)
-> [    4.630313]  r9:80dd9a3c r8:00000003 r7:815c6810 r6:81c35e6c r5:8116e314 r4:8116e310
-> [    4.638068] [<80616e84>] (driver_probe_device) from [<80617338>] (__device_attach_driver+0xb4/0x12c)
-> [    4.647227]  r9:80dd9a3c r8:00000001 r7:815c6810 r6:81c35e6c r5:810c45b0 r4:00000001
-> [    4.654981] [<80617284>] (__device_attach_driver) from [<80614730>] (bus_for_each_drv+0x94/0xd8)
-> [    4.663794]  r7:81c34000 r6:80617284 r5:81c35e6c r4:00000000
-> [    4.669461] [<8061469c>] (bus_for_each_drv) from [<8061673c>] (__device_attach+0xf8/0x190)
-> [    4.677753]  r7:81126e90 r6:815c6854 r5:81c34000 r4:815c6810
-> [    4.683419] [<80616644>] (__device_attach) from [<80617554>] (device_initial_probe+0x1c/0x20)
-> [    4.691971]  r8:00000000 r7:81126e90 r6:815c6810 r5:810c5320 r4:810c5080
-> [    4.698681] [<80617538>] (device_initial_probe) from [<80615694>] (bus_probe_device+0x94/0x9c)
-> [    4.707318] [<80615600>] (bus_probe_device) from [<80615c6c>] (deferred_probe_work_func+0xac/0xf0)
-> [    4.716305]  r7:81126e90 r6:810c5094 r5:810c5080 r4:810c5080
-> [    4.721973] [<80615bc0>] (deferred_probe_work_func) from [<80141488>] (process_one_work+0x1fc/0x54c)
-> [    4.731139]  r10:81119a60 r9:814c300d r8:00000000 r7:814c3000 r6:81412800 r5:817eeb00
-> [    4.738981]  r4:810c50c0 r3:80615bc0
-> [    4.742563] [<8014128c>] (process_one_work) from [<80141a48>] (worker_thread+0x270/0x570)
-> [    4.750765]  r10:81412800 r9:00000088 r8:81003d00 r7:81412818 r6:817eeb18 r5:81412800
-> [    4.758608]  r4:817eeb00
-> [    4.761147] [<801417d8>] (worker_thread) from [<80149b1c>] (kthread+0x174/0x190)
-> [    4.768574]  r10:81c34000 r9:815a7e7c r8:00000000 r7:817eeb00 r6:801417d8 r5:817efc00
-> [    4.776417]  r4:817efa40
-> [    4.778955] [<801499a8>] (kthread) from [<80100130>] (ret_from_fork+0x14/0x24)
-> [    4.786201] Exception stack(0x81c35fb0 to 0x81c35ff8)
-> [    4.791266] 5fa0:                                     00000000 00000000 00000000 00000000
-> [    4.799459] 5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> [    4.807651] 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-> [    4.814279]  r10:00000000 r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:801499a8
-> [    4.822120]  r4:817efa40
-> [    4.824664] Code: e3a02080 e593001c e3a01d33 e3a05000 (e5979018)
->
-> Split the registration from the STDP4028 probe routine and only perform
-> registration once both the STDP4028 and STDP2690 have probed.
->
-> Signed-off-by: Martyn Welch <martyn.welch@collabora.com>
-> CC: Peter Senna Tschudin <peter.senna@gmail.com>
-> CC: Martin Donnelly <martin.donnelly@ge.com>
-> CC: Martyn Welch <martyn.welch@collabora.co.uk>
-> CC: Andrzej Hajda <a.hajda@samsung.com>
-> CC: Neil Armstrong <narmstrong@baylibre.com>
-> CC: Robert Foss <robert.foss@linaro.org>
-> CC: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-> CC: Jonas Karlman <jonas@kwiboo.se>
-> CC: Jernej Skrabec <jernej.skrabec@gmail.com>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
 > ---
->  .../bridge/megachips-stdpxxxx-ge-b850v3-fw.c  | 40 +++++++++++++------
->  1 file changed, 28 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c b/drivers/gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c
-> index d2808c4a6fb1..72f134849822 100644
-> --- a/drivers/gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c
-> +++ b/drivers/gpu/drm/bridge/megachips-stdpxxxx-ge-b850v3-fw.c
-> @@ -306,19 +306,10 @@ static void ge_b850v3_lvds_remove(void)
->         mutex_unlock(&ge_b850v3_lvds_dev_mutex);
->  }
->
-> -static int stdp4028_ge_b850v3_fw_probe(struct i2c_client *stdp4028_i2c,
-> -                                      const struct i2c_device_id *id)
-> +static int ge_b850v3_register(void)
+> v2: return NULL when CONFIG_EXTCON is disabled
+> 
+> If we apply this patch, it might be a good idea to send it to -stable
+> so that backported code that relies on handling error pointers does
+> not break silently.
+> 
+>  drivers/extcon/extcon-axp288.c         |    4 ++--
+>  drivers/extcon/extcon.c                |    2 +-
+>  drivers/power/supply/axp288_charger.c  |   17 ++++++++++-------
+>  drivers/power/supply/charger-manager.c |    7 ++-----
+>  drivers/power/supply/max8997_charger.c |   10 +++++-----
+>  drivers/usb/dwc3/drd.c                 |    9 ++-------
+>  drivers/usb/phy/phy-omap-otg.c         |    4 ++--
+>  drivers/usb/typec/tcpm/fusb302.c       |    4 ++--
+>  include/linux/extcon.h                 |    2 +-
+>  9 files changed, 27 insertions(+), 32 deletions(-)
+> 
+> diff --git a/drivers/extcon/extcon.c b/drivers/extcon/extcon.c
+> index e7a9561a826d..a35e99928807 100644
+> --- a/drivers/extcon/extcon.c
+> +++ b/drivers/extcon/extcon.c
+> @@ -876,7 +876,7 @@ struct extcon_dev *extcon_get_extcon_dev(const char *extcon_name)
+>  		if (!strcmp(sd->name, extcon_name))
+>  			goto out;
+>  	}
+> -	sd = NULL;
+> +	sd = ERR_PTR(-EPROBE_DEFER);
+>  out:
+>  	mutex_unlock(&extcon_dev_list_lock);
+>  	return sd;
+> diff --git a/include/linux/extcon.h b/include/linux/extcon.h
+> index 0c19010da77f..685401d94d39 100644
+> --- a/include/linux/extcon.h
+> +++ b/include/linux/extcon.h
+> @@ -296,7 +296,7 @@ static inline void devm_extcon_unregister_notifier_all(struct device *dev,
+>  
+>  static inline struct extcon_dev *extcon_get_extcon_dev(const char *extcon_name)
 >  {
-> +       struct i2c_client *stdp4028_i2c = ge_b850v3_lvds_ptr->stdp4028_i2c;
->         struct device *dev = &stdp4028_i2c->dev;
-> -       int ret;
-> -
-> -       ret = ge_b850v3_lvds_init(dev);
-> -
-> -       if (ret)
-> -               return ret;
-> -
-> -       ge_b850v3_lvds_ptr->stdp4028_i2c = stdp4028_i2c;
-> -       i2c_set_clientdata(stdp4028_i2c, ge_b850v3_lvds_ptr);
->
->         /* drm bridge initialization */
->         ge_b850v3_lvds_ptr->bridge.funcs = &ge_b850v3_lvds_funcs;
-> @@ -343,6 +334,27 @@ static int stdp4028_ge_b850v3_fw_probe(struct i2c_client *stdp4028_i2c,
->                         "ge-b850v3-lvds-dp", ge_b850v3_lvds_ptr);
+> -	return ERR_PTR(-ENODEV);
+> +	return NULL;
 >  }
->
-> +static int stdp4028_ge_b850v3_fw_probe(struct i2c_client *stdp4028_i2c,
-> +                                      const struct i2c_device_id *id)
-> +{
-> +       struct device *dev = &stdp4028_i2c->dev;
-> +       int ret;
-> +
-> +       ret = ge_b850v3_lvds_init(dev);
-> +
-> +       if (ret)
-> +               return ret;
-> +
-> +       ge_b850v3_lvds_ptr->stdp4028_i2c = stdp4028_i2c;
-> +       i2c_set_clientdata(stdp4028_i2c, ge_b850v3_lvds_ptr);
-> +
-> +       /* Only register after both bridges are probed */
-> +       if (!(ge_b850v3_lvds_ptr->stdp2690_i2c && ge_b850v3_lvds_ptr->stdp4028_i2c))
+>  
+>  static inline struct extcon_dev *extcon_find_edev_by_node(struct device_node *node)
+> diff --git a/drivers/extcon/extcon-axp288.c b/drivers/extcon/extcon-axp288.c
+> index 7c6d5857ff25..180be768c215 100644
+> --- a/drivers/extcon/extcon-axp288.c
+> +++ b/drivers/extcon/extcon-axp288.c
+> @@ -394,8 +394,8 @@ static int axp288_extcon_probe(struct platform_device *pdev)
+>  		if (adev) {
+>  			info->id_extcon = extcon_get_extcon_dev(acpi_dev_name(adev));
+>  			put_device(&adev->dev);
+> -			if (!info->id_extcon)
+> -				return -EPROBE_DEFER;
+> +			if (IS_ERR(info->id_extcon))
+> +				return PTR_ERR(info->id_extcon);
+>  
+>  			dev_info(dev, "controlling USB role\n");
+>  		} else {
+> diff --git a/drivers/power/supply/axp288_charger.c b/drivers/power/supply/axp288_charger.c
+> index ec41f6cd3f93..4acfeb52a44e 100644
+> --- a/drivers/power/supply/axp288_charger.c
+> +++ b/drivers/power/supply/axp288_charger.c
+> @@ -848,17 +848,20 @@ static int axp288_charger_probe(struct platform_device *pdev)
+>  	info->regmap_irqc = axp20x->regmap_irqc;
+>  
+>  	info->cable.edev = extcon_get_extcon_dev(AXP288_EXTCON_DEV_NAME);
+> -	if (info->cable.edev == NULL) {
+> -		dev_dbg(dev, "%s is not ready, probe deferred\n",
+> -			AXP288_EXTCON_DEV_NAME);
+> -		return -EPROBE_DEFER;
+> +	if (IS_ERR(info->cable.edev)) {
+> +		dev_err_probe(dev, PTR_ERR(info->cable.edev),
+> +			      "extcon_get_extcon_dev(%s) failed\n",
+> +			      AXP288_EXTCON_DEV_NAME);
+> +		return PTR_ERR(info->cable.edev);
+>  	}
+>  
+>  	if (acpi_dev_present(USB_HOST_EXTCON_HID, NULL, -1)) {
+>  		info->otg.cable = extcon_get_extcon_dev(USB_HOST_EXTCON_NAME);
+> -		if (info->otg.cable == NULL) {
+> -			dev_dbg(dev, "EXTCON_USB_HOST is not ready, probe deferred\n");
+> -			return -EPROBE_DEFER;
+> +		if (IS_ERR(info->otg.cable)) {
+> +			dev_err_probe(dev, PTR_ERR(info->otg.cable),
+> +				      "extcon_get_extcon_dev(%s) failed\n",
+> +				      USB_HOST_EXTCON_NAME);
+> +			return PTR_ERR(info->otg.cable);
+>  		}
+>  		dev_info(dev, "Using " USB_HOST_EXTCON_HID " extcon for usb-id\n");
+>  	}
+> diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/supply/charger-manager.c
+> index d67edb760c94..92db79400a6a 100644
+> --- a/drivers/power/supply/charger-manager.c
+> +++ b/drivers/power/supply/charger-manager.c
+> @@ -985,13 +985,10 @@ static int charger_extcon_init(struct charger_manager *cm,
+>  	cable->nb.notifier_call = charger_extcon_notifier;
+>  
+>  	cable->extcon_dev = extcon_get_extcon_dev(cable->extcon_name);
+> -	if (IS_ERR_OR_NULL(cable->extcon_dev)) {
+> +	if (IS_ERR(cable->extcon_dev)) {
+>  		pr_err("Cannot find extcon_dev for %s (cable: %s)\n",
+>  			cable->extcon_name, cable->name);
+> -		if (cable->extcon_dev == NULL)
+> -			return -EPROBE_DEFER;
+> -		else
+> -			return PTR_ERR(cable->extcon_dev);
+> +		return PTR_ERR(cable->extcon_dev);
+>  	}
+>  
+>  	for (i = 0; i < ARRAY_SIZE(extcon_mapping); i++) {
+> diff --git a/drivers/power/supply/max8997_charger.c b/drivers/power/supply/max8997_charger.c
+> index 25207fe2aa68..634658adf313 100644
+> --- a/drivers/power/supply/max8997_charger.c
+> +++ b/drivers/power/supply/max8997_charger.c
+> @@ -248,13 +248,13 @@ static int max8997_battery_probe(struct platform_device *pdev)
+>  		dev_info(&pdev->dev, "couldn't get charger regulator\n");
+>  	}
+>  	charger->edev = extcon_get_extcon_dev("max8997-muic");
+> -	if (IS_ERR_OR_NULL(charger->edev)) {
+> -		if (!charger->edev)
+> -			return -EPROBE_DEFER;
+> -		dev_info(charger->dev, "couldn't get extcon device\n");
+> +	if (IS_ERR(charger->edev)) {
+> +		dev_err_probe(charger->dev, PTR_ERR(charger->edev),
+> +			      "couldn't get extcon device: max8997-muic\n");
+> +		return PTR_ERR(charger->edev);
+>  	}
+>  
+> -	if (!IS_ERR(charger->reg) && !IS_ERR_OR_NULL(charger->edev)) {
+> +	if (!IS_ERR(charger->reg)) {
+>  		INIT_WORK(&charger->extcon_work, max8997_battery_extcon_evt_worker);
+>  		ret = devm_add_action(&pdev->dev, max8997_battery_extcon_evt_stop_work, charger);
+>  		if (ret) {
+> diff --git a/drivers/usb/dwc3/drd.c b/drivers/usb/dwc3/drd.c
+> index d7f76835137f..a490f79131c1 100644
+> --- a/drivers/usb/dwc3/drd.c
+> +++ b/drivers/usb/dwc3/drd.c
+> @@ -454,13 +454,8 @@ static struct extcon_dev *dwc3_get_extcon(struct dwc3 *dwc)
+>  	 * This device property is for kernel internal use only and
+>  	 * is expected to be set by the glue code.
+>  	 */
+> -	if (device_property_read_string(dev, "linux,extcon-name", &name) == 0) {
+> -		edev = extcon_get_extcon_dev(name);
+> -		if (!edev)
+> -			return ERR_PTR(-EPROBE_DEFER);
+> -
+> -		return edev;
+> -	}
+> +	if (device_property_read_string(dev, "linux,extcon-name", &name) == 0)
+> +		return extcon_get_extcon_dev(name);
+>  
+>  	/*
+>  	 * Try to get an extcon device from the USB PHY controller's "port"
+> diff --git a/drivers/usb/phy/phy-omap-otg.c b/drivers/usb/phy/phy-omap-otg.c
+> index ee0863c6553e..6e6ef8c0bc7e 100644
+> --- a/drivers/usb/phy/phy-omap-otg.c
+> +++ b/drivers/usb/phy/phy-omap-otg.c
+> @@ -95,8 +95,8 @@ static int omap_otg_probe(struct platform_device *pdev)
+>  		return -ENODEV;
+>  
+>  	extcon = extcon_get_extcon_dev(config->extcon);
+> -	if (!extcon)
+> -		return -EPROBE_DEFER;
+> +	if (IS_ERR(extcon))
+> +		return PTR_ERR(extcon);
+>  
+>  	otg_dev = devm_kzalloc(&pdev->dev, sizeof(*otg_dev), GFP_KERNEL);
+>  	if (!otg_dev)
+> diff --git a/drivers/usb/typec/tcpm/fusb302.c b/drivers/usb/typec/tcpm/fusb302.c
+> index 72f9001b0792..96c55eaf3f80 100644
+> --- a/drivers/usb/typec/tcpm/fusb302.c
+> +++ b/drivers/usb/typec/tcpm/fusb302.c
+> @@ -1708,8 +1708,8 @@ static int fusb302_probe(struct i2c_client *client,
+>  	 */
+>  	if (device_property_read_string(dev, "linux,extcon-name", &name) == 0) {
+>  		chip->extcon = extcon_get_extcon_dev(name);
+> -		if (!chip->extcon)
+> -			return -EPROBE_DEFER;
+> +		if (IS_ERR(chip->extcon))
+> +			return PTR_ERR(chip->extcon);
+>  	}
+>  
+>  	chip->vbus = devm_regulator_get(chip->dev, "vbus");
 
-ge_b850v3_lvds_ptr->stdp4028_i2c was just assigned, is there any
-situation it wouldn't be assigned here?
-
-stdp2690_ge_b850v3_fw_probe() seems to contain an identical snippet,
-so I assume symmetry is why both stdp2690_i2c and stdp4028_i2c are
-checked in both locations. Unless you think otherwise, I would suggest
-removing the stdp4028_i2c check from stdp4028_ge_b850v3_fw_probe() and
-the stdp2690_i2c check from stdp2690_ge_b850v3_fw_probe().
-
-> +               return 0;
-
-My reading of this code is that stdp4028_ge_b850v3_fw_probe() and
-stdp2690_ge_b850v3_fw_probe() are racing, and the 2nd driver to probe
-will go ahead and call ge_b850v3_register(). Is there any reason why
-EPROBE_DEFER isn't used here?
-
-> +
-> +       return ge_b850v3_register();
-> +}
-> +
->  static int stdp4028_ge_b850v3_fw_remove(struct i2c_client *stdp4028_i2c)
->  {
->         ge_b850v3_lvds_remove();
-> @@ -386,7 +398,11 @@ static int stdp2690_ge_b850v3_fw_probe(struct i2c_client *stdp2690_i2c,
->         ge_b850v3_lvds_ptr->stdp2690_i2c = stdp2690_i2c;
->         i2c_set_clientdata(stdp2690_i2c, ge_b850v3_lvds_ptr);
->
-> -       return 0;
-> +       /* Only register after both bridges are probed */
-> +       if (!(ge_b850v3_lvds_ptr->stdp2690_i2c && ge_b850v3_lvds_ptr->stdp4028_i2c))
-> +               return 0;
-> +
-> +       return ge_b850v3_register();
->  }
->
->  static int stdp2690_ge_b850v3_fw_remove(struct i2c_client *stdp2690_i2c)
-> --
-> 2.33.0
->
+-- 
+heikki
