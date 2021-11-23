@@ -2,67 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DEC0459E2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:34:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A28A459DD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:23:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234750AbhKWIhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 03:37:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230428AbhKWIhf (ORCPT
+        id S234598AbhKWI00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 03:26:26 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:31898 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229899AbhKWI0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 03:37:35 -0500
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A97FC061714
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 00:34:27 -0800 (PST)
-Received: by mail-ua1-x942.google.com with SMTP id az37so42105067uab.13
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 00:34:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=4iLMYpmfb3z/2deYzUXPTLD8r7dOEl24VshhI2JWgLI=;
-        b=RnH2EtzzyR2NJG3ezR50QnDDZqW52+tqrnLWl7kazGDF4U+UUm7Yb3e1LMv+sItJVp
-         RozEODqyRyEe1OLyAcDkEeMRLaqLtJeAIF8KM0E3Km+5f3rDCOfDQiGVgwJDp+CFYaLw
-         MCQs9eb68nbfTQLEO3cIZDQcqrSw33dbXgbQmnssJh5v/FZuUru3VkK9nGm6dT69QY48
-         i3FItTKolDFE8mGASZzUxAIy/Z/byfQe1U8PVQTc7wup6qGJ5zZ4r0nOH6lVimk+OyiE
-         XoQp/upo4wye+bXJ8AhzDixMW7F06AA1b8Ohy2zjqB9i5ICcHwPAX/m75hhNkVTRfA/K
-         I7mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=4iLMYpmfb3z/2deYzUXPTLD8r7dOEl24VshhI2JWgLI=;
-        b=hQ58/LAaetoyRr4Tru+9cHNY+Sk0C4r3FKeQAba/bPfsEV8dmNOWLsieVTqCGR+7mZ
-         0sSE0Mnt9SQfce/nccRQ0rdDQTJ9W9eQ2OezXtIo0/h8oFmNNA14xeX2EuZpsTaeKhJy
-         83yxtcHRv04gKFR4/KtKFCh+EV6QQ3e9X5K1Il25Gm6ZPq55BlL112DU0D8F64kANRzi
-         OdQED9XPuz6iPPuN/TYm896y5kVzxUghMueOmRKupGBiibP5uGq+RS1MPsbqoeD9ZW0C
-         DtCweh28lg5utjxYG+PDfBf8kmUcEty7nB8VuD0vs8BJZO9cWqr7ikC79CzofQKrY49D
-         CTYQ==
-X-Gm-Message-State: AOAM530QPX8cmfJN/vTvXCDSD38h4H2tolz22BJN+2zQNsa5upbgMzbv
-        sy9QY2UZ0TzplhqNZgBicyMI/d2jNVVL+mBsiYY=
-X-Google-Smtp-Source: ABdhPJxEpAM+WJCEq+OV/MBvYV/BoGfRaHMBbQ3KZvpi/snUE1T2Eg06lHt+YDwzGsTDkHqMFw4Z1py0JbHMYxP+9po=
-X-Received: by 2002:a05:6102:2748:: with SMTP id p8mr6007399vsu.13.1637656466245;
- Tue, 23 Nov 2021 00:34:26 -0800 (PST)
+        Tue, 23 Nov 2021 03:26:20 -0500
+Received: from dggeml709-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hyxpp70wVzcb8k;
+        Tue, 23 Nov 2021 16:18:10 +0800 (CST)
+Received: from localhost.localdomain (10.175.102.38) by
+ dggeml709-chm.china.huawei.com (10.3.17.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.20; Tue, 23 Nov 2021 16:23:10 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     <weiyongjun1@huawei.com>,
+        Ioanna Alifieraki <ioanna-maria.alifieraki@canonical.com>,
+        Corey Minyard <minyard@acm.org>
+CC:     <openipmi-developer@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH -next] ipmi: msghandler: Make symbol 'remove_work_wq' static
+Date:   Tue, 23 Nov 2021 08:36:18 +0000
+Message-ID: <20211123083618.2366808-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:a05:612c:68d:b0:246:7282:f148 with HTTP; Tue, 23 Nov 2021
- 00:34:26 -0800 (PST)
-Reply-To: ninacoulibaly04@hotmail.com
-From:   nina coulibaly <ninacoulibaly334@gmail.com>
-Date:   Tue, 23 Nov 2021 09:34:26 +0100
-Message-ID: <CAOEtMPyh9ezzfOz8foe+AT4n4q5iBMDBkTrJQ2WpouETcYM=jQ@mail.gmail.com>
-Subject: from nina coulibaly
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.102.38]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeml709-chm.china.huawei.com (10.3.17.139)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear,
+The sparse tool complains as follows:
 
-Please grant me the permission to share important discussion with
-you.I am looking forward to hearing from you at your earliest
-convenience.
+drivers/char/ipmi/ipmi_msghandler.c:194:25: warning:
+ symbol 'remove_work_wq' was not declared. Should it be static?
 
-Best Regards.
+This symbol is not used outside of ipmi_msghandler.c, so
+marks it static.
 
-Mrs Nina Coulibaly
+Fixes: 1d49eb91e86e ("ipmi: Move remove_work to dedicated workqueue")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ drivers/char/ipmi/ipmi_msghandler.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
+index 1ade72bfae0f..a2ec0171363a 100644
+--- a/drivers/char/ipmi/ipmi_msghandler.c
++++ b/drivers/char/ipmi/ipmi_msghandler.c
+@@ -191,7 +191,7 @@ struct ipmi_user {
+ 	struct work_struct remove_work;
+ };
+ 
+-struct workqueue_struct *remove_work_wq;
++static struct workqueue_struct *remove_work_wq;
+ 
+ static struct ipmi_user *acquire_ipmi_user(struct ipmi_user *user, int *index)
+ 	__acquires(user->release_barrier)
+
