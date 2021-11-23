@@ -2,107 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC748459BBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 06:27:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C497459BC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 06:29:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232356AbhKWFaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 00:30:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51426 "EHLO
+        id S232386AbhKWFct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 00:32:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231974AbhKWFaU (ORCPT
+        with ESMTP id S229690AbhKWFcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 00:30:20 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7779C061714
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 21:27:12 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so1166809pjc.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 21:27:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=accesio-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=E7BbUIlesfkOhayyB12efR7YDMQTb0W3aniIiAUcvHM=;
-        b=SomYGoXSVxHg+hmlfO/ZiuiXrk5Dp9suJdRpTAEnRqg7qpYTKsa+fzYqz47VIf2CQc
-         vHQ6wV8n7qsH+GSYngpdje+dvMmcOWXeng0U8txg+8Ds5/64OLQQ/2se+20+msZ5X0+C
-         0E/WGSkWgATl8R3Hi1FPjq2uGLTrRAQPcKPUgC1ypNES2cf3jMAuv10l8KbP7JN9vv2D
-         z3xSo2ndgXECG+GIJoPJoowG2fhWEV5YhvVguwARWbfFa9SeTzV+8XIpBufrBYrgQlsy
-         7X8M3HLS++Ewt3E0tNkK0SSdmvrCLLGZte+9pY8b1Z85pt+rL6zgKEjvPF1Ll0swSBHJ
-         KVPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=E7BbUIlesfkOhayyB12efR7YDMQTb0W3aniIiAUcvHM=;
-        b=cclcHompzder0AZy37Qr3ty/h7MsArL/REaO+tVwn9bXvR1rkvpfHobrkqnFp2LfmG
-         RtyC2ZCS6BIUu7ripftxPbUGzQnIdr6+U9jg+0eT3Lu0uLTijE99W9uXfwR1O3Awm3Di
-         qIppq1VUdNLxCBiw8CnohMdQkwhnwcfY6id4vyok+CzyLjEy4PmD64Y2USRQjwkbsbzj
-         gm04oUaKlKXRQuJIIRK7ck5trbXYBoYElu7bZrR9hgtoO6vgtkwCZ4p0uT1sia/qbHA4
-         5FTpq8zfVkS4oR9TuBagX/Kx0ZcV1RJc1TXiT2nIT9G3lvHlvAvn32Ckpbh5qBMh/ZpE
-         MltQ==
-X-Gm-Message-State: AOAM532qS0qU+/DdVjtoyRUNI4QhuTEB0nYw1UAFIho5vqThtU/3ntdM
-        fHl+xywwjkBcqhzyK3GLT6dc
-X-Google-Smtp-Source: ABdhPJxWJepKH8ODF6LwA9EiM5IvxrnwXyb3CGSPxc6p/GHYEzkfZyrqnPdt6r0dJdMJ5Rv1RLhrkQ==
-X-Received: by 2002:a17:90a:e7d0:: with SMTP id kb16mr3417551pjb.22.1637645232221;
-        Mon, 22 Nov 2021 21:27:12 -0800 (PST)
-Received: from [172.16.8.241] ([98.149.220.160])
-        by smtp.gmail.com with ESMTPSA id e11sm9105899pjl.20.2021.11.22.21.27.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Nov 2021 21:27:11 -0800 (PST)
-Subject: Re: [PATCH v2 3/3] serial: 8250_pericom: Use serial_dl_write()
- instead of open coded
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Cc:     Jiri Slaby <jirislaby@kernel.org>
-References: <20211122133512.8947-1-andriy.shevchenko@linux.intel.com>
- <20211122133512.8947-4-andriy.shevchenko@linux.intel.com>
-From:   Jay Dolan <jay.dolan@accesio.com>
-Message-ID: <d7809017-f544-c60c-728b-4f9015fbad43@accesio.com>
-Date:   Mon, 22 Nov 2021 21:27:11 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 23 Nov 2021 00:32:47 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B647C061574;
+        Mon, 22 Nov 2021 21:29:40 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hyt4M0Nz0z4xbM;
+        Tue, 23 Nov 2021 16:29:38 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1637645379;
+        bh=WBoY4RYGq7mK2Slf8V4rUd3p51NgZNJpYOz9FVMyGnM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tJ37n0KBkt2oRIlTUEecCLcqE/W5Bdw6JAV68yojfCnbvPc+ZDpXFthwSIWbfCLpR
+         hKjo/wlVnrhZMxETqhHJ1Ji23u0R1kukttI8cX+W8xYltL4fi9MKhD/PS1exdHY41A
+         uamE26oZqQwMLroXV7PbOUPiPs+mviYfwY7zef6GkIlxsZ5mya4z8IX+nIXp3IOBjH
+         hv/BSy4ttUAlg+Z5KRd6fCAQysIteIH2ErKDcsh0UKj5phukReJdBiUzXbTGItnhIP
+         exRFJOVBmMKvDu7H7Nly60cmpoafc/jqNBfYaqzcmYTVHiXeHq+zs3mS+VvHYA0wAv
+         FuwZPM5OyK5Ow==
+Date:   Tue, 23 Nov 2021 16:29:38 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Evan Quan <evan.quan@amd.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of Linus' tree
+Message-ID: <20211123162938.2bfc30a7@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20211122133512.8947-4-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/RWZppyrw6HV143RvxsKG2E3";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/RWZppyrw6HV143RvxsKG2E3
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 11/22/21 5:35 AM, Andy Shevchenko wrote:
-> It's better to stick with standard API to write and read DL value
-> when the hardware is compatible with it. In case any quirks are
-> needed it may be easily added in one place rather than modifying
-> code here and there.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->   drivers/tty/serial/8250/8250_pericom.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_pericom.c b/drivers/tty/serial/8250/8250_pericom.c
-> index f0d026325f17..025b055363c3 100644
-> --- a/drivers/tty/serial/8250/8250_pericom.c
-> +++ b/drivers/tty/serial/8250/8250_pericom.c
-> @@ -70,11 +70,11 @@ static void pericom_do_set_divisor(struct uart_port *port, unsigned int baud,
->   		/* Update delta due to possible divisor change */
->   		delta = maxrate / divisor - baud;
->   		if (abs(delta) < baud / 50) {
-> +			struct uart_8250_port *up = up_to_u8250p(port);
->   			int lcr = serial_port_in(port, UART_LCR);
->   
->   			serial_port_out(port, UART_LCR, lcr | 0x80);
-> -			serial_port_out(port, UART_DLL, divisor & 0xff);
-> -			serial_port_out(port, UART_DLM, (divisor >> 8) & 0xff);
-> +			serial_dl_write(up, divisor);
->   			serial_port_out(port, 2, 16 - scr);
->   			serial_port_out(port, UART_LCR, lcr);
->   			return;
-> 
+Building Linus' tree, today's linux-next build (htmldocs) produced
+this warning:
 
-I tested this change with a few baud rates in my current tree, and I saw 
-the correct speeds coming out on the scope.
+drivers/gpu/drm/amd/include/amd_shared.h:103: warning: Enum value 'AMD_IP_B=
+LOCK_TYPE_NUM' not described in enum 'amd_ip_block_type'
+
+Introduced by commit
+
+  6ee27ee27ba8 ("drm/amd/pm: avoid duplicate powergate/ungate setting")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/RWZppyrw6HV143RvxsKG2E3
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGcfEIACgkQAVBC80lX
+0GxO1Af+IuDSxIIPFUcQmUNHGTMHKGR2lfBQib983fa2Ns3c99khVINUGNA3Bhw1
+dJX5W2FO03lx6hOJ3k97OABpDgme5W+kYPOtFnrG2liclWs8K25iqnusjmCV08Gx
+Rtuxok+sZsAgsLL6scstiPguX4/9VsN+Se1yTqijxxlmzpuZAfXFJWyBfAgU72JT
+ki3mFetebluyrUBnfFw0B70kyGtbhS+Q33Wy14lEKLuBtiXRpDWSZ62GKXviVOd6
+WONib9FtTi8ZwoAzPWWtwo0KipA/XWGh2g84UL6sOJUUdNB9ctcuyQy2KzzGLENY
+mQYIrs1D5G8W6WJl/5l1pkCp94WstQ==
+=/2sS
+-----END PGP SIGNATURE-----
+
+--Sig_/RWZppyrw6HV143RvxsKG2E3--
