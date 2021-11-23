@@ -2,127 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE8145A987
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B484A45A98C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:01:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238773AbhKWREI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 12:04:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42484 "EHLO
+        id S238897AbhKWREw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 12:04:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236804AbhKWREH (ORCPT
+        with ESMTP id S236804AbhKWREu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 12:04:07 -0500
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B5CC06173E
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:00:58 -0800 (PST)
-Received: by mail-qk1-x729.google.com with SMTP id p4so22557322qkm.7
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:00:58 -0800 (PST)
+        Tue, 23 Nov 2021 12:04:50 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3975CC061714;
+        Tue, 23 Nov 2021 09:01:42 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id d24so40183249wra.0;
+        Tue, 23 Nov 2021 09:01:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CFoLHMr/Z5LPCRYETT9tnpkqBCibUyTd4qK2BHV8DYk=;
-        b=nsTjfm6OvGB4aoB+P4zzFpoqRZc3fzSiLrwe7bKf9EdkEG0SLPsMrmMS6ZjUURyCs3
-         RxG6LDALb0mczy36TEMfAQizjbQjSmNM8TDLDrr2PHheidsM/LJ7jreKQ7FPQrSkIwd9
-         bQkQhZ8K8s4FOG9Wysbdf6aDQOohs78VY/ASSL/i5NoBuVVK4I5NGTSV/ap+e1DfZ++x
-         2zligQ2hDJMjp8KKaESDPSxfJqaM2DAj9xa0dXU4Ms59fPVMQhLcgT26gsWkwWKQk9Ve
-         xuU0hiF5d/iAnyCa6OrGGGGehHz9gSJLW1GdYm3YqlYvOEHwNIez3YoMJpI24eW2JjLG
-         w6tw==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YAopufrfMZ51IGtrg3jTbLpMge5spZgYt27uOrZnXBA=;
+        b=nKO46A64Nn9kSMXB1SEY4C49GXR5FBaHOG0W6j27DYcBsFT/YWWtkBApRX3vpIupGx
+         B5e/ro1ZWXln9QHkxTIBAbazIcHlLJfN2WKs+2PmfwVGAyN4qbYg7BDb0NspnbJfdUz0
+         4UGCPZCuaGaBNUebs3MRN8Mr1DPg5902DGzdR8+8DoNMI1ldmpsxJ2FrltYEBz/EMfVY
+         oAZhcou27Z8/yA4ImlANkG/bch0t1cz/LOzwqEud9sxhCcPv91HbOUBn7sxTNid1Cvoj
+         7kgj+TmvY7jhfdWEN01iCaUrH3qvgCoV7pzTQl8eGgQEYGinm8iMpv3tVWJc8CBogTgd
+         43zA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CFoLHMr/Z5LPCRYETT9tnpkqBCibUyTd4qK2BHV8DYk=;
-        b=Lb8/0zR76+cjF5inFHB6bFV/QO8Ei/XhMfH8H/h/NmMRu1GK2jYlUK4MOm+i1uKoqt
-         /L+iU+rC94MLdHHSwpSJNxgAM5vAD8lhj75w9JYhWi8n5PvD2F1ee1O96faA790g2Fgs
-         w2bnlXM1TGojhVq/E2q2BJCNa0f4+4QJeNHSpaOLD23jCjMXACQ6ABnVvgqKpKSXNkGl
-         4wh3Kq9bGxCvKUarrTlhy3lJ2tKjrDm87uc+s7M7suSjyoctZPhSV33Deu/yXetm/vo9
-         LR5fthh781TXZz4ylAHdMhM34LbAQmWjxTs8Zuio7svvGo4ROtZQ4VydiUwDAlRfm8p4
-         TImw==
-X-Gm-Message-State: AOAM5313/goGLlXhgFgiQ0SBer/kKoXCmua4pOI6f0rhodSatcWPjjRZ
-        l95jCT4nFb0pU96ejxMKr7rLZQ==
-X-Google-Smtp-Source: ABdhPJyCfsuzW9aNgeEoX01aT+J8AVygOW5MKRGQDmf+YbVxdYXAAzkQAco6yirK4ymbFWhPkmfgWg==
-X-Received: by 2002:a05:620a:288c:: with SMTP id j12mr6002351qkp.103.1637686858082;
-        Tue, 23 Nov 2021 09:00:58 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id q20sm6629100qkl.53.2021.11.23.09.00.57
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YAopufrfMZ51IGtrg3jTbLpMge5spZgYt27uOrZnXBA=;
+        b=uMEVk19djGlxt5rq/G1/gNaJUJhlIE3MesqlQiGb4Se4N9X3t84kBxwHiJtXstskDm
+         jppXHP2cqM2PvYBNn8LSyBgQ3kQD5EAmMF7ikBJk2/+qzlesbFqj5y6GOGbHdM3Pd/Sn
+         FJ+C6QQXrO6qqUSJHgnjcM7UsL7UX7NPrhtDu0FfaKILfZcaC+xy70SOEJwVdhrj6XRk
+         CcPM822RmYv1JQmHeO9M3qw8KlTJ4kv0ozjbfIUWfsI5VHB/VCFA9VdTF00DtoOW37Zi
+         UJjuSBZbV5EjZJ9GCnZxIi4auJ8Qq6ybgrhfur7eXgqMd5VEUBMVx1yeJDJRq47TQt4Z
+         e+lA==
+X-Gm-Message-State: AOAM533aPYiFZoCgmGLMuTyl44iPYs50MStrPbydxuEWAvpbEDlE9iLa
+        BtJxSy4XZeqmWUCCkfU1oDU=
+X-Google-Smtp-Source: ABdhPJyetI47JKwVIheOYqRKaeL4OcjedUkDWkJjuz1rRSB94ig0upCTfPO3LxIRnBqG2ICTzaw1NA==
+X-Received: by 2002:a5d:4b8a:: with SMTP id b10mr8858909wrt.413.1637686899505;
+        Tue, 23 Nov 2021 09:01:39 -0800 (PST)
+Received: from localhost.localdomain ([217.113.240.86])
+        by smtp.gmail.com with ESMTPSA id g13sm17380689wrd.57.2021.11.23.09.01.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 09:00:57 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mpZA8-000DRS-L5; Tue, 23 Nov 2021 13:00:56 -0400
-Date:   Tue, 23 Nov 2021 13:00:56 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Andrew Dona-Couch <andrew@donacou.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Drew DeVault <sir@cmpwn.com>,
-        Ammar Faizi <ammarfaizi2@gnuweeb.org>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        io_uring Mailing List <io-uring@vger.kernel.org>,
-        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
-Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
-Message-ID: <20211123170056.GC5112@ziepe.ca>
-References: <20211116133750.0f625f73a1e4843daf13b8f7@linux-foundation.org>
- <b84bc345-d4ea-96de-0076-12ff245c5e29@redhat.com>
- <8f219a64-a39f-45f0-a7ad-708a33888a3b@www.fastmail.com>
- <333cb52b-5b02-648e-af7a-090e23261801@redhat.com>
- <ca96bb88-295c-ccad-ed2f-abc585cb4904@kernel.dk>
- <5f998bb7-7b5d-9253-2337-b1d9ea59c796@redhat.com>
- <20211123132523.GA5112@ziepe.ca>
- <10ccf01b-f13a-d626-beba-cbee70770cf1@redhat.com>
- <20211123140709.GB5112@ziepe.ca>
- <e4d7d211-5d62-df89-8f94-e49385286f1f@redhat.com>
+        Tue, 23 Nov 2021 09:01:38 -0800 (PST)
+From:   =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
+To:     maarten.lankhorst@linux.intel.com
+Cc:     mripard@kernel.org, tzimmermann@suse.de, airlied@linux.ie,
+        daniel@ffwll.ch, corbet@lwn.net, dri-devel@lists.freedesktop.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
+Subject: [PATCH] drm/doc: Fix TTM acronym
+Date:   Tue, 23 Nov 2021 18:01:26 +0100
+Message-Id: <20211123170126.28446-1-jose.exposito89@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e4d7d211-5d62-df89-8f94-e49385286f1f@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 03:44:03PM +0100, David Hildenbrand wrote:
-> On 23.11.21 15:07, Jason Gunthorpe wrote:
-> > On Tue, Nov 23, 2021 at 02:39:19PM +0100, David Hildenbrand wrote:
-> >>>
-> >>>> 2) Could be provide a mmu variant to ordinary users that's just good
-> >>>> enough but maybe not as fast as what we have today? And limit
-> >>>> FOLL_LONGTERM to special, privileged users?
-> >>>
-> >>> rdma has never been privileged
-> >>
-> >> Feel free to correct me if I'm wrong: it requires special networking
-> >> hardware and the admin/kernel has to prepare the system in a way such
-> >> that it can be used.
-> > 
-> > Not really, plug in the right PCI card and it works
-> 
-> Naive me would have assumed that the right modules have to be loaded
-> (and not blacklisted), that there has to be an rdma service installed
-> and running, that the NIC has to be configured in some way, and that
-> there is some kind of access control which user can actually use which
-> NIC.
+The TTM acronym is defined for the first time in the documentation as
+"Translation Table Maps". Afterwards, "Translation Table Manager" is
+used as definition.
 
-Not really, we've worked hard that it works as well as any other HW
-device. Plug it in and it works.
+Fix the first definition to avoid confusion.
 
-There is no systemd service, or special mandatory configuration, for
-instance.
+Signed-off-by: José Expósito <jose.exposito89@gmail.com>
+---
+ Documentation/gpu/drm-mm.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> For example, I would have assume from inside a container it usually
-> wouldn't just work.
+diff --git a/Documentation/gpu/drm-mm.rst b/Documentation/gpu/drm-mm.rst
+index e0538083a2c0..198bcc1affa1 100644
+--- a/Documentation/gpu/drm-mm.rst
++++ b/Documentation/gpu/drm-mm.rst
+@@ -8,7 +8,7 @@ the very dynamic nature of many of that data, managing graphics memory
+ efficiently is thus crucial for the graphics stack and plays a central
+ role in the DRM infrastructure.
+ 
+-The DRM core includes two memory managers, namely Translation Table Maps
++The DRM core includes two memory managers, namely Translation Table Manager
+ (TTM) and Graphics Execution Manager (GEM). TTM was the first DRM memory
+ manager to be developed and tried to be a one-size-fits-them all
+ solution. It provides a single userspace API to accommodate the need of
+-- 
+2.25.1
 
-Nope, RDMA follows the net namespaces of its ethernet port, so it just
-works in containers too.
-
-> believe what you say and I trust your experience :) So could as well be
-> that on such a "special" (or not so special) systems there should be a
-> way to restrict it to privileged users only.
-
-At this point RDMA is about as "special" as people running large
-ZONE_MOVABLE systems, and the two are going to start colliding
-heavily. The RDMA VFIO migration driver should be merged soon which
-makes VMs using this stuff finally practical.
-
-Jason
