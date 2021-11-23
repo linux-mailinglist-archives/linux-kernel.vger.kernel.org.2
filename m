@@ -2,267 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 780D9459B81
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 06:18:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF57459B83
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 06:19:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233216AbhKWFV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 00:21:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49304 "EHLO
+        id S230291AbhKWFWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 00:22:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233410AbhKWFVO (ORCPT
+        with ESMTP id S229726AbhKWFWS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 00:21:14 -0500
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E712C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 21:18:06 -0800 (PST)
-Received: by mail-il1-x129.google.com with SMTP id h23so20464283ila.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 21:18:06 -0800 (PST)
+        Tue, 23 Nov 2021 00:22:18 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA29C061714
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 21:19:11 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id n85so18244659pfd.10
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 21:19:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xn3jFra4szqkLVg7Z0tfs5h8tb/RnJeZ4YQ9W3+nAww=;
-        b=dxSk9qdBO6rFImSzeqC5aLbH33bzaoRhs8BW8aRbXz6y8yGOnsqTDkjRM7EzVoQdMi
-         mfRXU7KDumUGPIyh8hov+rTU8eh/oAMS2DTbZerIn1wCX8tS1x+k9nAM0Z6f9j6rIEPF
-         h2780jeaNXVQagfob2LozyEgv8cGVdfCd8dj3VdlWNHUWS/asHc9dbS/v0ihGYFhNBi0
-         bs4bmhTxgl/FXvT05FUz5oZ7c6oq98mF68RDNDBTNDKtwmmW7aAnOeh0JVTqCwi9UiWn
-         eRIjIZjOlfFiBDC4fK66iZD4/+AFYCLJq7s2B+EX+1Z7kpWnOWOztoXI/EbTrL2RPLGt
-         kTew==
+        d=accesio-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vNZyp2NQ1twrNJ+vuo7dt/GkHiTpJ1nvwpWmCyyWEh4=;
+        b=J06BfGg5QuVkcG7zmvrRdBsHnMOrExC+lypYhNdLk3yCmQmzIJQPsDaVG1IxN/D2wZ
+         4TNo+jRwG74i8cpLpPNFX7kI40B+3O7lYe+21rv8HboJNX/5OajYqFRAaYbQw8EwrbiS
+         gzW2ABEujGiEN9dZ9+hWqkkRuMLecnKIEUY97jv9RWGMM9boo1h37nmrI+vLmWeBv/26
+         FrILhBkevnaZJGC49rGvUWtbCF07g3LQatjUprSGpdDNkLgJ7JW8Rsj8xBUybuKqoAYC
+         OG3w/b9mesMQLYHhT2jZRRq/Pc35DSQlx0t3BNdrqmCkDoa01h/rqotNUx8j8SHaI5c4
+         Nc0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xn3jFra4szqkLVg7Z0tfs5h8tb/RnJeZ4YQ9W3+nAww=;
-        b=Gop52I8kbyvRo6Nx2bn0SnOZKw3DPez8JQA96zQ+b+rvmnScupS2pPHd9t+CH3VDsy
-         P9LK/YjlEH3BI/IWLGR1IX34Tp68xA+ihYvvuWRDiMzvcTbt04GOdBrtawzkGT/zm0tl
-         XrD3ZY/XGizzS9DZADDsxDuSND7DvuuJATt6Ig9w46IqX9/pXQX/wq7SZ6p7KPj9O9Z/
-         MLl7R1C05WQ0hfNnFcvcr/n1rIOGgL12ou/yPM1Qb7aNZQWt8lLSPaofmoNQM/j3m4gn
-         EQw2qv8tC3PBHRKUP/uzDS/IxFEtpdY5wVSKn1KBflDmlX9+QkHZ7uy12oa+GpnuRwp3
-         H/wg==
-X-Gm-Message-State: AOAM531YGyY4XflI1aoOkeq91ofxrMWmQ3KSbf0tIQWlenKVbOf740Dq
-        WiarGSm0JDcK5n2EjSX6QltykEMGrA0s0V6XnyB2xw==
-X-Google-Smtp-Source: ABdhPJwtzSnHyO2YHc8y8g0l3gWdd8PL3it8tncw2xNu508x573uLWjCOh8pCusxOcnyOCFM9++ZsGBuUjOo1xe+IDk=
-X-Received: by 2002:a05:6e02:1bc3:: with SMTP id x3mr2644270ilv.39.1637644685327;
- Mon, 22 Nov 2021 21:18:05 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vNZyp2NQ1twrNJ+vuo7dt/GkHiTpJ1nvwpWmCyyWEh4=;
+        b=Kbx+Rvdra2yi40lPIN1ZiiduwfqS6/gEyjC7ygBR1nTDpANeA7oMm3k2XPk0o9dt7o
+         GG/8+b27/DXx31VIeRTMRGsWEdVEO+yFr0IJx59qVzD30MBQkviasK4ow1qjQ+MTNKuN
+         X/k5zORAlnmb2Tz8op00DsQU0sQI/SZfO8Tx84ajRIr+BFw+E1x4hqcefBT6J/l4dsJ3
+         JT2DRX8LYkIF450/KiRYfgKdh4ZBe5a1pekJGGDLdHYdHUUDvhThurp4utJ/oXLLuoTm
+         mMXV03daD2b5C/z9/0tRmrFsUUuLn9ygs/6lJy7SG8NYUVlM0gs1d++9Ld+R0pP6fRQx
+         1QbQ==
+X-Gm-Message-State: AOAM533hCE6igFq/1CCsw2TJYnK7SkUjoN2+G5yUpCeiwiH3dQzBiz0S
+        lE3Pz/3BYLM/f5WJp8lWw74H
+X-Google-Smtp-Source: ABdhPJwLRY/XIPlwmbmj71W47VxXsiYXwqBom9DO0ooaoBA+2m6YXD4BScpy7Vg1jlq4hoOtx1Ji7w==
+X-Received: by 2002:a65:50c6:: with SMTP id s6mr1867661pgp.352.1637644750670;
+        Mon, 22 Nov 2021 21:19:10 -0800 (PST)
+Received: from [172.16.8.241] ([98.149.220.160])
+        by smtp.gmail.com with ESMTPSA id nl16sm21370028pjb.13.2021.11.22.21.19.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Nov 2021 21:19:10 -0800 (PST)
+Subject: Re: [PATCH v1 0/2] serial: 8250_pci: Split Pericom driver
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Jiri Slaby <jirislaby@kernel.org>
+References: <20211117145750.43911-1-andriy.shevchenko@linux.intel.com>
+ <b99aabbe-add9-9c1e-ed4b-8850c69233de@accesio.com>
+ <YZuRV8ipjcly26HB@smile.fi.intel.com> <YZuRnSaZz04KJIDk@smile.fi.intel.com>
+From:   Jay Dolan <jay.dolan@accesio.com>
+Message-ID: <ede18fd7-266e-406d-0c9c-570d95ab3673@accesio.com>
+Date:   Mon, 22 Nov 2021 21:19:09 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210922061809.736124-1-pcc@google.com> <87k0j8zo35.fsf@disp2133>
- <202109220755.B0CFED9F5@keescook> <CAG48ez1wQZ2Jte_JRS92Njw89abpU5kGCk8KPyEdC93XX33NRA@mail.gmail.com>
- <CAMn1gO5_L-+Gjm2GGGPAa8JhZj+Xf-zZ4MDzHjb7xtANFG8c5A@mail.gmail.com> <202109251909.B7BB577BA@keescook>
-In-Reply-To: <202109251909.B7BB577BA@keescook>
-From:   Peter Collingbourne <pcc@google.com>
-Date:   Mon, 22 Nov 2021 21:17:54 -0800
-Message-ID: <CAMn1gO4mbxb8ukCb5Ne6FM4R4QDQQ+rMtO6TROfKpzFr9gsbTg@mail.gmail.com>
-Subject: Re: [PATCH] kernel: introduce prctl(PR_LOG_UACCESS)
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Jann Horn <jannh@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Colin Ian King <colin.king@canonical.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Ran Xiaokai <ran.xiaokai@zte.com.cn>,
-        David Hildenbrand <david@redhat.com>,
-        Xiaofeng Cao <caoxiaofeng@yulong.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Evgenii Stepanov <eugenis@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YZuRnSaZz04KJIDk@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 25, 2021 at 7:20 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Fri, Sep 24, 2021 at 02:50:04PM -0700, Peter Collingbourne wrote:
-> > On Wed, Sep 22, 2021 at 8:59 AM Jann Horn <jannh@google.com> wrote:
-> > >
-> > > On Wed, Sep 22, 2021 at 5:30 PM Kees Cook <keescook@chromium.org> wrote:
-> > > > On Wed, Sep 22, 2021 at 09:23:10AM -0500, Eric W. Biederman wrote:
-> > > > > Peter Collingbourne <pcc@google.com> writes:
-> > > > > > This patch introduces a kernel feature known as uaccess logging.
-> > > > > > [...]
-> > > > > [...]
-> > > > > How is logging the kernel's activity like this not a significant
-> > > > > information leak?  How is this safe for unprivileged users?
-> > > > [...]
-> > > > Regardless, this is a pretty useful tool for this kind of fuzzing.
-> > > > Perhaps the timing exposure could be mitigated by having the kernel
-> > > > collect the record in a separate kernel-allocated buffer and flush the
-> > > > results to userspace at syscall exit? (This would solve the
-> > > > copy_to_user() recursion issue too.)
-> >
-> > Seems reasonable. I suppose that in terms of timing information we're
-> > already (unavoidably) exposing how long the syscall took overall, and
-> > we probably shouldn't deliberately expose more than that.
->
-> Right -- I can't think of anything that can really use this today,
-> but it very much feels like the kind of information that could aid in
-> a timing race.
 
-Okay, this now goes via a kernel-allocated buffer.
 
-> > That being said, I'm wondering if that has security implications on
-> > its own if it's then possible for userspace to manipulate the kernel
-> > into allocating a large buffer (either at prctl() time or as a result
-> > of getting the kernel to do a large number of uaccesses). Perhaps it
-> > can be mitigated by limiting the size of the uaccess buffer provided
-> > at prctl() time.
->
-> There are a lot of exact-size allocation controls already (which I think
-> is an unavoidable but separate issue[1]), but perhaps this could be
-> mitigated by making the reserved buffer be PAGE_SIZE granular?
+On 11/22/21 4:48 AM, Andy Shevchenko wrote:
+> On Mon, Nov 22, 2021 at 02:47:20PM +0200, Andy Shevchenko wrote:
+>> On Thu, Nov 18, 2021 at 10:32:51PM -0800, Jay Dolan wrote:
+>>> On 11/17/21 6:57 AM, Andy Shevchenko wrote:
+>>>> Split Pericom driver to a separate module.
+>>>> While at it, re-enable high baud rates.
+>>>>
+>>>> Jay, can you, please, test this on as many hardware as you have?
+>>
+>> ...
+>>
+>>> * Add in pericom_do_startup() because the UPF_MAGIC_MULTIPLIER doesn't
+>>> stick.
+>>
+>> Can't find an evidence that this is the case. Can you recheck this (reading
+>> flags back via sysfs or so)? So, for v2 I'll leave my approach.
+> 
+> Otherwise how the other drivers which are using that flag survive? If it's
+> indeed an issue, it should be fixed on generic level.
+> 
 
-I was more thinking about userspace causing a kernel OOM or something
-by making the kernel allocate large buffers. I decided to mitigate it
-by putting an upper limit on the size of the kernel-side buffer.
+I modified pericom_do_startup to log when the UPF_MAGIC_MULTIPLIER flag 
+was present. Then tried to set the port to 3000000 a few times. The port
+stayed at 9600. It looks like pericom_do_startup() is getting called 
+twice per port on boot, and the flag is gone with the second one.
 
-Since it sounds like exact-size allocations are a pre-existing issue
-we probably don't need to do anything about them at this time.
+[    4.925577] [J4D] flag present
+[    4.926121] [J4D[ flag not present
+[    4.926843] [J4D] flag present
+[    4.927415] [J4D[ flag not present
+[    4.928106] [J4D] flag present
+[    4.928673] [J4D[ flag not present
+[    4.929419] [J4D] flag present
+[    4.930447] [J4D[ flag not present
 
-> > > One aspect that might benefit from some clarification on intended
-> > > behavior is: what should happen if there are BPF tracing programs
-> > > running (possibly as part of some kind of system-wide profiling or
-> > > such) that poke around in userspace memory with BPF's uaccess helpers
-> > > (especially "bpf_copy_from_user")?
-> >
-> > I think we should probably be ignoring those accesses, since we cannot
-> > know a priori whether the accesses are directly associated with the
-> > syscall or not, and this is after all a best-effort mechanism.
->
-> Perhaps the "don't log this uaccess" flag I suggested could be
-> repurposed by BPF too, as a general "make this access invisible to
-> PR_LOG_UACCESS" flag? i.e. this bit:
+[   49.528504] [J4D[ flag not present
+[   51.675240] [J4D[ flag not present
+[   59.617954] [J4D[ flag not present
 
-Since we ended up not needing this flag (because of the kernel-side
-buffer) I ended up just making BPF use raw_copy_from_user().
+Then I modified it to log when it was adding the flag in. The port was 
+set to 3000000. Also the flag only needed to be added in once. It sticks 
+after the first time.
 
-> > > > Instead of reimplementing copy_*_user() with a new wrapper that
-> > > > bypasses some checks and adds others and has to stay in sync, etc,
-> > > > how about just adding a "recursion" flag? Something like:
-> > > >
-> > > >     copy_from_user(...)
-> > > >         instrument_copy_from_user(...)
-> > > >             uaccess_buffer_log_read(...)
-> > > >                 if (current->uaccess_buffer.writing)
-> > > >                     return;
-> > > >                 uaccess_buffer_log(...)
-> > > >                     current->uaccess_buffer.writing = true;
-> > > >                     copy_to_user(...)
-> > > >                     current->uaccess_buffer.writing = false;
->
->
->
-> > > > This would likely only make sense for SECCOMP_RET_TRACE or _TRAP if the
-> > > > program wants to collect the results after every syscall. And maybe this
-> > > > won't make any sense across exec (losing the mm that was used during
-> > > > SECCOMP_SET_UACCESS_TRACE_BUFFER). Hmmm.
-> > >
-> > > And then I guess your plan would be that userspace would be expected
-> > > to use the userspace instruction pointer
-> > > (seccomp_data::instruction_pointer) to indicate instructions that
-> > > should be traced?
->
-> That could be one way -- but seccomp filters would allow a bunch of
-> ways.
->
-> > >
-> > > Or instead of seccomp, you could do it kinda like
-> > > https://www.kernel.org/doc/html/latest/admin-guide/syscall-user-dispatch.html
-> > > , with a prctl that specifies a specific instruction pointer?
-> >
-> > Given a choice between these two options, I would prefer the prctl()
-> > because userspace programs may already be using seccomp filters and
-> > sanitizers shouldn't interfere with it.
->
-> That's fair -- the "I wish we could make complex decisions about which
-> syscalls to act on" sounds like seccomp.
->
-> > However, in either the seccomp filter or prctl() case, you still have
-> > the problem of deciding where to log to. Keep in mind that you would
-> > need to prevent intervening async signals (that occur between when the
-> > syscall happens and when we read the log) from triggering additional
->
-> Could the sig handler also set the "make the uaccess invisible" flag?
-> (It would need to be a "depth" flag, most likely.)
+[    4.647546] [J4D] flag present
+[    4.648119] [J4D] flag not present(adding)
+[    4.648778] [J4D] flag present
+[    4.649330] [J4D] flag not present(adding)
+[    4.650001] [J4D] flag present
+[    4.650537] [J4D] flag not present(adding)
+[    4.651192] [J4D] flag present
+[    4.651718] [J4D] flag not present(adding)
 
-It's more complicated than that because you can longjmp() out of a
-signal handler and that won't necessarily call sigreturn(). The kernel
-doesn't really have a concept of "depth" as applied to signal
-handlers, it's all managed on the userspace stack.
+[   96.025668] [J4D] flag present
+[  100.130626] [J4D] flag present
+[  116.435436] [J4D] flag present
 
-I brainstormed this with Dmitry a bit out of band and we came up with
-a nice solution that avoids the two syscalls, is arch-generic and
-avoids the problem with asynchronous signal handlers. I'll paste a bit
-from the documentation that I wrote, but please see the full
-documentation in v2 patch 5/5 for more details.
+I mostly just guessed at do_startup() being the place to set the magic 
+multiplier flag after it didn't stick in quirk in 8250_pci.c.
 
-The feature may be used via the following prctl:
-
-.. code-block:: c
-
-  uint64_t addr = 0; /* Generally will be a TLS slot or equivalent */
-  prctl(PR_SET_UACCESS_DESCRIPTOR_ADDR_ADDR, &addr, 0, 0, 0);
-
-Supplying a non-zero address as the second argument to ``prctl``
-will cause the kernel to read an address from that address on each
-kernel entry (referred to as the *uaccess descriptor address*).
-
-When entering the kernel to handle a syscall with a non-zero uaccess
-descriptor address, the kernel will read a data structure of type
-``struct uaccess_descriptor`` from the uaccess descriptor address,
-which is defined as follows:
-
-.. code-block:: c
-
-  struct uaccess_descriptor {
-    uint64_t addr, size;
-  };
-
-This data structure contains the address and size (in array elements)
-of a *uaccess buffer*, which is an array of data structures of type
-``struct uaccess_buffer_entry``. Before returning to userspace, the
-kernel will log information about uaccesses to sequential entries
-in the uaccess buffer. It will also store ``NULL`` to the uaccess
-descriptor address, and store the address and size of the unused
-portion of the uaccess buffer to the uaccess descriptor.
-
-[...]
-
-When entering the kernel for a reason other than a syscall (for
-example, when IPI'd due to an incoming asynchronous signal) with
-a non-zero uaccess descriptor address, any signals other
-than ``SIGKILL`` and ``SIGSTOP`` are masked as if by calling
-``sigprocmask(SIG_SETMASK, set, NULL)`` where ``set`` has been
-initialized with ``sigfillset(set)``. This is to prevent incoming
-signals from interfering with uaccess logging.
-
-Peter
