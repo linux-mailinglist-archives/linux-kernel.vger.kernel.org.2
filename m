@@ -2,179 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776A145A0E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:07:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C10E45A0E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:07:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234300AbhKWLKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 06:10:05 -0500
-Received: from foss.arm.com ([217.140.110.172]:51058 "EHLO foss.arm.com"
+        id S234555AbhKWLKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 06:10:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233462AbhKWLKE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 06:10:04 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2C2721063;
-        Tue, 23 Nov 2021 03:06:56 -0800 (PST)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 08E943F5A1;
-        Tue, 23 Nov 2021 03:06:54 -0800 (PST)
-Date:   Tue, 23 Nov 2021 11:06:48 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     catalin.marinas@arm.com, dvyukov@google.com, peterz@infradead.org,
-        quic_qiancai@quicinc.com, valentin.schneider@arm.com,
-        will@kernel.org, woodylin@google.com
-Subject: Re: [PATCH v2] Reset task stack state in bringup_cpu()
-Message-ID: <20211123110648.GA37253@lakrids.cambridge.arm.com>
-References: <20211118102927.4854-1-mark.rutland@arm.com>
+        id S230188AbhKWLKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 06:10:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00BF060F6E;
+        Tue, 23 Nov 2021 11:07:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637665635;
+        bh=Y2aF8NehTeFLD0SRj7EQpJxU1Gt3tByySijjlwPJ1O8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=srbWZ8TZU5kBczOGVecdutu30YShnz+ySbarO2Am3Z8O8DNX+1+cEiPK+2mqcsJC+
+         LGlamASOKwrUJJsEWCfG5mY1GA01XJskd++YF4oYw7Cv8+ZIC262XS7L8pGFtyj3Lx
+         x2pu9J94AI/ZWC+7jUJzrgAUEF60Xg5kyhxYj5H0BLhR/hTmclDEkMgygjdcjTze2h
+         81ycMTTnxGeA3IxQ/fhu43gBWkDgiQVhcATS1dHe3uKM1yLPfGB/K9A7RpuMHbe2ry
+         FjI7Zfs5nH0vAtbGq1c8Ll1bS1pG4zxYkYCZ8cN6+WS/39eQtccPYjGLwOqOfT7aE+
+         X5/9fjPfjTP+A==
+Date:   Tue, 23 Nov 2021 19:07:10 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Martin Kepplinger <martink@posteo.de>
+Cc:     Abel Vesa <abel.vesa@nxp.com>, Rob Herring <robh@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: freescale: imx8mq: Disable noc dts node
+Message-ID: <20211123110709.GA31998@dragon>
+References: <1636629369-23988-1-git-send-email-abel.vesa@nxp.com>
+ <20211123085841.GX31998@dragon>
+ <9b9fe3a5b04179870d6ca0ece754fee9abb306b4.camel@posteo.de>
+ <20211123092430.GY31998@dragon>
+ <c139110dc0b2096a51d1b3c344c3d597cf24093b.camel@posteo.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20211118102927.4854-1-mark.rutland@arm.com>
-User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c139110dc0b2096a51d1b3c344c3d597cf24093b.camel@posteo.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 10:29:27AM +0000, Mark Rutland wrote:
-> To hot unplug a CPU, the idle task on that CPU calls a few layers of C
-> code before finally leaving the kernel. When KASAN is in use, poisoned
-> shadow is left around for each of the active stack frames, and when
-> shadow call stacks are in use. When shadow call stacks are in use the
-> task's saved SCS SP is left pointing at an arbitrary point within the
-> task's shadow call stack.
+On Tue, Nov 23, 2021 at 09:30:02AM +0000, Martin Kepplinger wrote:
+> Am Dienstag, dem 23.11.2021 um 17:24 +0800 schrieb Shawn Guo:
+> > On Tue, Nov 23, 2021 at 09:15:57AM +0000, Martin Kepplinger wrote:
+> > > Am Dienstag, dem 23.11.2021 um 16:58 +0800 schrieb Shawn Guo:
+> > > > On Thu, Nov 11, 2021 at 01:16:09PM +0200, Abel Vesa wrote:
+> > > > > Adding interconnect properties to the consumer nodes creates
+> > > > > a dependency on noc device. The imx-bus devfreq driver is not
+> > > > > usable
+> > > > > without the full interconnect support. The interconnect is not
+> > > > > yet
+> > > > > working on i.MX platforms. The devlink created on device_add
+> > > > > makes
+> > > > > the lcdif and other nodes that have the interconnect properties
+> > > > > wait for the noc (imx-bus driver) to probe first.
+> > > > > 
+> > > > > To make sure the interconnect consumers (nodes that have
+> > > > > interconnect
+> > > > > properties already added) will still probe, lets disable the
+> > > > > noc
+> > > > > node
+> > > > > for now. Once the interconnect on i.MX platforms is fully
+> > > > > functional,
+> > > > > the status of the noc node can be changed.
+> > > > > 
+> > > > > Fixes: ad1abc8a03fdbc05b ("arm64: dts: imx8mq: Add interconnect
+> > > > > for
+> > > > > lcdif")
+> > > > 
+> > > > Martin,
+> > > > 
+> > > > Do you have any comment?  So your commit added something
+> > > > untested?
+> > > > 
+> > > > Shawn
+> > > 
+> > > hi Shawn,
+> > > 
+> > > well, for imx8mq the only missing piece is the mxsfb icc bandwidth
+> > > request. I posted a first version a year ago but that didn't make
+> > > it
+> > > in:
+> > > https://lore.kernel.org/linux-arm-kernel/20201201103757.32165-1-martin.kepplinger@puri.sm/
+> > > 
+> > > So this should create a working state until the real fix in mxsfb
+> > > is
+> > > there (although I'd revert commit ad1abc8a03fd ("arm64: dts:
+> > > imx8mq:
+> > > Add interconnect for lcdif") instead).
+> > 
+> > Besides lcdif, the mipi-csi devices have interconnects property too. 
+> > Are
+> > they already working?  If so, it makes more sense to revert
+> > ad1abc8a03fd
+> > instead.
 > 
-> When a CPU is offlined than onlined back into the kernel, this stale
-> state can adversely affect execution. Stale KASAN shadow can alias new
-> stackframes and result in bogus KASAN warnings. A stale SCS SP is
-> effectively a memory leak, and prevents a portion of the shadow call
-> stack being used. Across a number of hotplug cycles the idle task's
-> entire shadow call stack can become unusable.
+> imx8mq-mipi-csi.c request the bandwidth, yes. we use that and the
+> preliminary mxsfb request above so that works.
 > 
-> We previously fixed the KASAN issue in commit:
-> 
->   e1b77c92981a5222 ("sched/kasan: remove stale KASAN poison after hotplug")
-> 
-> ... by removing any stale KASAN stack poison immediately prior to
-> onlining a CPU.
-> 
-> Subsequently in commit:
-> 
->   f1a0a376ca0c4ef1 ("sched/core: Initialize the idle task with preemption disabled")
-> 
-> ... the refactoring left the KASAN and SCS cleanup in one-time idle
-> thread initialization code rather than something invoked prior to each
-> CPU being onlined, breaking both as above.
-> 
-> We fixed SCS (but not KASAN) in commit:
-> 
->   63acd42c0d4942f7 ("sched/scs: Reset the shadow stack when idle_task_exit")
-> 
-> ... but as this runs in the context of the idle task being offlined it's
-> potentially fragile.
-> 
-> To fix these consistently and more robustly, reset the SCS SP and KASAN
-> shadow of a CPU's idle task immediately before we online that CPU in
-> bringup_cpu(). This ensures the idle task always has a consistent state
-> when it is running, and removes the need to so so when exiting an idle
-> task.
-> 
-> Whenever any thread is created, dup_task_struct() will give the task a
-> stack which is free of KASAN shadow, and initialize the task's SCS SP,
-> so there's no need to specially initialize either for idle thread within
-> init_idle(), as this was only necessary to handle hotplug cycles.
-> 
-> I've tested this with both GCC and clang, with relevant options enabled,
-> offlining and onlining CPUs with:
-> 
-> | while true; do
-> |   for C in /sys/devices/system/cpu/cpu*/online; do
-> |     echo 0 > $C;
-> |     echo 1 > $C;
-> |   done
-> | done
-> 
-> Link: https://lore.kernel.org/lkml/20211012083521.973587-1-woodylin@google.com/
-> Link: https://lore.kernel.org/linux-arm-kernel/YY9ECKyPtDbD9q8q@qian-HP-Z2-SFF-G5-Workstation/
-> Link: https://lore.kernel.org/lkml/20211115113310.35693-1-mark.rutland@arm.com/
-> Fixes: 1a0a376ca0c4ef1 ("sched/core: Initialize the idle task with preemption disabled")
+> do you want me to send the revert?
 
-Ugh, that should be f1a0a376ca0c4ef1 (with a leading 'f'), as in the
-body of the commit message.
+Yes, please.
 
-I can fix that up for v3, unless someone's happy to fix that up when
-picking this up.
-
-Thanks,
-Mark.
-
-> Reported-by: Qian Cai <quic_qiancai@quicinc.com>
-> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-> Tested-by: Qian Cai <quic_qiancai@quicinc.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Woody Lin <woodylin@google.com>
-> ---
->  kernel/cpu.c        | 7 +++++++
->  kernel/sched/core.c | 4 ----
->  2 files changed, 7 insertions(+), 4 deletions(-)
-> 
-> Since v1 [1]:
-> * Clarify commit message
-> * Fix typos
-> * Accumulate tags
-> 
-> [1] https://lore.kernel.org/lkml/20211115113310.35693-1-mark.rutland@arm.com/
-> 
-> diff --git a/kernel/cpu.c b/kernel/cpu.c
-> index 192e43a87407..407a2568f35e 100644
-> --- a/kernel/cpu.c
-> +++ b/kernel/cpu.c
-> @@ -31,6 +31,7 @@
->  #include <linux/smpboot.h>
->  #include <linux/relay.h>
->  #include <linux/slab.h>
-> +#include <linux/scs.h>
->  #include <linux/percpu-rwsem.h>
->  #include <linux/cpuset.h>
->  
-> @@ -588,6 +589,12 @@ static int bringup_cpu(unsigned int cpu)
->  	int ret;
->  
->  	/*
-> +	 * Reset stale stack state from the last time this CPU was online.
-> +	 */
-> +	scs_task_reset(idle);
-> +	kasan_unpoison_task_stack(idle);
-> +
-> +	/*
->  	 * Some architectures have to walk the irq descriptors to
->  	 * setup the vector space for the cpu which comes online.
->  	 * Prevent irq alloc/free across the bringup.
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 3c9b0fda64ac..76f9deeaa942 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -8619,9 +8619,6 @@ void __init init_idle(struct task_struct *idle, int cpu)
->  	idle->flags |= PF_IDLE | PF_KTHREAD | PF_NO_SETAFFINITY;
->  	kthread_set_per_cpu(idle, cpu);
->  
-> -	scs_task_reset(idle);
-> -	kasan_unpoison_task_stack(idle);
-> -
->  #ifdef CONFIG_SMP
->  	/*
->  	 * It's possible that init_idle() gets called multiple times on a task,
-> @@ -8777,7 +8774,6 @@ void idle_task_exit(void)
->  		finish_arch_post_lock_switch();
->  	}
->  
-> -	scs_task_reset(current);
->  	/* finish_cpu(), as ran on the BP, will clean up the active_mm state */
->  }
->  
-> -- 
-> 2.11.0
-> 
+Shawn
