@@ -2,172 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5EE459A4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 03:57:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A971459A53
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 03:59:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232939AbhKWDA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 22:00:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46808 "EHLO
+        id S231665AbhKWDCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 22:02:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbhKWDA5 (ORCPT
+        with ESMTP id S229628AbhKWDCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 22:00:57 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530E7C061574;
-        Mon, 22 Nov 2021 18:57:50 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id u74so41690774oie.8;
-        Mon, 22 Nov 2021 18:57:50 -0800 (PST)
+        Mon, 22 Nov 2021 22:02:38 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC1DC061574;
+        Mon, 22 Nov 2021 18:59:29 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id y13so85459274edd.13;
+        Mon, 22 Nov 2021 18:59:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+PfKM5+BXtpPxMwFFLQf7c1ReGeR+E33SLHVUAdsXro=;
-        b=HsgBuuFhMwWG5y0W7zpMNyVPm524nbiUnao0Ns/KspjMP0JkIkg0LaE6IZZOibFQvK
-         IRerg8RuCEbdcC3WvQK95mE+zyjeyfdlexO63jr+OzlSpJ7WiAByOdYMJvhxm0xIBx5K
-         xVYoVuNxJPhtWHv1XPYwGlVErJzk6H580f0RGnDv7SS1G5rVrl3y8CQ27gW21OQbitKP
-         KSB2MbMepd1+lzBdJb1C/kk31YKBmXcG1A5mVBJxopIvyEvqk0b0t9eSip/gxOOBenV0
-         PIypaazJvcEq/iArBwgQHLzswkYNJ5zJMmnURl6q7BW5QUzK+agMMICxMR8GJVQKuDMh
-         yQow==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3UcVmjOkaeq0kNvjI1cDnssGFTNyiUyhvOYLRToYdaE=;
+        b=owdpgktlSNW8nnzNdfLwurN3pQogxXisHj8TMBvuu2+kSSSpw1KzsxG4DuHlyCLbSp
+         rsGDbgCZA0Jxa0I0KauSV+1pTJ2eVnjIsasoBHw/Q9ZJ7DOP0cQPuD8pht7b0dFYRtNw
+         ofaD5YTNAjG/E1h/VjNZxU7Hz4GHOntdfjSZA7b2xwC1gWw/kf37SYuY7mCzYQasx394
+         JpIrh/JqKnsEYFyww2zldGKwdB1EiBxmDiBID/7GvXMfcv2ERHw5IQ1Ga87Zgg4oq6Y+
+         CY/imCPSXVBx1UjzwfE3PlPD1TDlP36zmzl1MyqNl2f08GZgB/hMEFsQEulajX2X1SkS
+         LXjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+PfKM5+BXtpPxMwFFLQf7c1ReGeR+E33SLHVUAdsXro=;
-        b=whB2ejKceP97JK2sYERkncpbZaAe8O1w4K8V78d2/xOApPX5gI9v0THSxHUOv+qa1U
-         VN7lAx7Z+euN5/Oh5EkfhvRaGd9Rz3HugPdAtDvP2QPrWrUuwttqDSCkPd2ZKjJpU5pP
-         AOEhy7x/+oXUuVDQbn5X8s5DHClbMhUUTu8Orim2K4rTPmRxQYsAizbXUzGoA9kAP3Jr
-         xWGCZr+1CtmW2nqdaH6mnpzn74Sj9svrFmpjLhy93ksjR3zZ/rWPyixrjfrSfWKlJiAl
-         XP4w8jJZirVWguAAF+a3aIbiCY8+Y+QY5G1H/QaYq9OK4FQ3STkBvyJ2GU6i8Wen7yBN
-         ewMA==
-X-Gm-Message-State: AOAM5305meXiUZcuS0YNpGGRHY+pLsfN3hB+FZVLdXdkZ39ByhEie5qJ
-        v4ErGtGwN6trZ++GMa68r+H0hd/IZJoUvn2Awjk=
-X-Google-Smtp-Source: ABdhPJyzJnmXDZeeINl57vI96DP1Mg/KDzKedP8P1UH7ZgqxWQWyg1wA1cTJLwWGplxKZKH3oHLsdgNo5OGs4knEqMQ=
-X-Received: by 2002:a05:6808:5c1:: with SMTP id d1mr27439882oij.141.1637636269627;
- Mon, 22 Nov 2021 18:57:49 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3UcVmjOkaeq0kNvjI1cDnssGFTNyiUyhvOYLRToYdaE=;
+        b=YXkrB1QrbnXAvRDB28A7dDTjZhQgzbrwH+HL2QYH6E9EzrbS6EWprC1q5OCLQe0Ya1
+         bs860SoUY2u/WvsZwUkT4GOg52XKuuDJk3Ad8CZ9+k1WTjMI2gUKCH2zE4iMFegPm3Jm
+         ijxurCvgXRY/5XlRz5GBrbc0hqPe8BzWSwoewcex/s3Jq04496Z6pPMt+Ydrj14uTE+M
+         RpSRZBck/gPH410YGkmktxpxASOjri5kyInGTFnbu5tayNDyDWPKV+NdKEx7zBJk/AH9
+         BAbE/L97Bg/9jABEuU4fFHcaTKJ7pG+XdqGDISw5e0nNLneYww9NHMq18Mkl0LeY4ifF
+         GbQA==
+X-Gm-Message-State: AOAM533Ywy0c/CKs6CTFziUIJlbCHDYhFKsHX4Lrky6b/wkCOXwd0dwa
+        SqMpDbRESJCfmcrm8erB1/M=
+X-Google-Smtp-Source: ABdhPJzJ4jdNGVsSRdBtQpJUfMqUvmt2jjvwFC+VL4EaHrnWwjc2nRQwvq+ygrmxZ8oBY2Sxz8RM6w==
+X-Received: by 2002:a17:907:7f0f:: with SMTP id qf15mr3189014ejc.560.1637636368048;
+        Mon, 22 Nov 2021 18:59:28 -0800 (PST)
+Received: from localhost.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
+        by smtp.googlemail.com with ESMTPSA id dy4sm4870718edb.92.2021.11.22.18.59.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Nov 2021 18:59:27 -0800 (PST)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>
+Subject: [net-next PATCH 0/2] Add mirror and LAG support to qca8k
+Date:   Tue, 23 Nov 2021 03:59:09 +0100
+Message-Id: <20211123025911.20987-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20211122095619.000060d2@gmail.com> <YZvrvmRnuDc1e+gi@google.com>
-In-Reply-To: <YZvrvmRnuDc1e+gi@google.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Tue, 23 Nov 2021 10:57:38 +0800
-Message-ID: <CANRm+Cx+bC8D7s1qzJYbrT+1rm46wxg6bAXD+kGYAHGnruZMXw@mail.gmail.com>
-Subject: Re: [PATCH] KVM: LAPIC: Per vCPU control over kvm_can_post_timer_interrupt
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Aili Yao <yaoaili126@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, yaoaili@kingsoft.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Nov 2021 at 03:14, Sean Christopherson <seanjc@google.com> wrote:
->
-> On Mon, Nov 22, 2021, Aili Yao wrote:
-> > From: Aili Yao <yaoaili@kingsoft.com>
-> >
-> > When we isolate some pyhiscal cores, We may not use them for kvm guests,
-> > We may use them for other purposes like DPDK, or we can make some kvm
-> > guests isolated and some not, the global judgement pi_inject_timer is
-> > not enough; We may make wrong decisions:
-> >
-> > In such a scenario, the guests without isolated cores will not be
-> > permitted to use vmx preemption timer, and tscdeadline fastpath also be
-> > disabled, both will lead to performance penalty.
-> >
-> > So check whether the vcpu->cpu is isolated, if not, don't post timer
-> > interrupt.
-> >
-> > Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
-> > ---
-> >  arch/x86/kvm/lapic.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> > index 759952dd1222..72dde5532101 100644
-> > --- a/arch/x86/kvm/lapic.c
-> > +++ b/arch/x86/kvm/lapic.c
-> > @@ -34,6 +34,7 @@
-> >  #include <asm/delay.h>
-> >  #include <linux/atomic.h>
-> >  #include <linux/jump_label.h>
-> > +#include <linux/sched/isolation.h>
-> >  #include "kvm_cache_regs.h"
-> >  #include "irq.h"
-> >  #include "ioapic.h"
-> > @@ -113,7 +114,8 @@ static inline u32 kvm_x2apic_id(struct kvm_lapic *apic)
-> >
-> >  static bool kvm_can_post_timer_interrupt(struct kvm_vcpu *vcpu)
-> >  {
-> > -     return pi_inject_timer && kvm_vcpu_apicv_active(vcpu);
-> > +     return pi_inject_timer && kvm_vcpu_apicv_active(vcpu) &&
-> > +             !housekeeping_cpu(vcpu->cpu, HK_FLAG_TIMER);
->
-> I don't think this is safe, vcpu->cpu will be -1 if the vCPU isn't scheduled in.
-> This also doesn't play nice with the admin forcing pi_inject_timer=1.  Not saying
-> there's a reasonable use case for doing that, but it's supported today and this
-> would break that behavior.  It would also lead to weird behavior if a vCPU were
-> migrated on/off a housekeeping vCPU.  Again, probably not a reasonable use case,
-> but I don't see anything that would outright prevent that behavior.
->
-> The existing behavior also feels a bit unsafe as pi_inject_timer is writable while
-> KVM is running, though I supposed that's orthogonal to this discussion.
->
-> Rather than check vcpu->cpu, is there an existing vCPU flag that can be queried,
-> e.g. KVM_HINTS_REALTIME?
+With the continue of adding 'Multiple feature to qca8k'
 
-How about something like below:
+The switch supports mirror mode and LAG.
+In mirror mode a port is set as mirror and other port are configured
+to both igress or egress mode. With no port configured for mirror,
+the mirror port is disabled and reverted to normal port.
 
-From 67f605120e212384cb3d5788ba8c83f15659503b Mon Sep 17 00:00:00 2001
-From: Wanpeng Li <wanpengli@tencent.com>
-Date: Tue, 23 Nov 2021 10:36:10 +0800
-Subject: [PATCH] KVM: LAPIC: To keep the vCPUs in non-root mode for timer-pi
+The switch supports max 4 LAG with 4 different member max.
+Current supported mode is Hash mode in both L2 or L2+3 mode.
+There is a problematic implementation for the hash mode where
+with multiple LAG configured, someone has to remove them to
+change the hash mode as it's global.
+When a member of the LAG is disconnected, the traffic is redirected
+to the other port.
 
-From: Wanpeng Li <wanpengli@tencent.com>
+Some warning are present from checkpatch but can't really be fixed
+as it would result in making the regs less readable.
+(They really did their best with the LAG reg logic and complexity)
 
-As commit 0c5f81dad46 (KVM: LAPIC: Inject timer interrupt via posted interrupt)
-mentioned that the host admin should well tune the guest setup, so that vCPUs
-are placed on isolated pCPUs, and with several pCPUs surplus for
-*busy* housekeeping.
-It is better to disable mwait/hlt/pause vmexits to keep the vCPUs in non-root
-mode. However, we may isolate pCPUs for other purpose like DPDK or we can make
-some guests isolated and others not, Let's add the checking kvm_mwait_in_guest()
-to kvm_can_post_timer_interrupt() since we can't benefit from timer
-posted-interrupt
-w/o keeping the vCPUs in non-root mode.
+Ansuel Smith (2):
+  net: dsa: qca8k: add support for mirror mode
+  net: dsa: qca8k: add LAG support
 
-Reported-by: Aili Yao <yaoaili@kingsoft.com>
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
----
- arch/x86/kvm/lapic.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/net/dsa/qca8k.c | 272 ++++++++++++++++++++++++++++++++++++++++
+ drivers/net/dsa/qca8k.h |  37 ++++++
+ 2 files changed, 309 insertions(+)
 
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index 759952dd1222..8257566d44c7 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -113,14 +113,13 @@ static inline u32 kvm_x2apic_id(struct kvm_lapic *apic)
+-- 
+2.32.0
 
- static bool kvm_can_post_timer_interrupt(struct kvm_vcpu *vcpu)
- {
--    return pi_inject_timer && kvm_vcpu_apicv_active(vcpu);
-+    return pi_inject_timer && kvm_mwait_in_guest(vcpu->kvm) &&
-kvm_vcpu_apicv_active(vcpu);
- }
-
- bool kvm_can_use_hv_timer(struct kvm_vcpu *vcpu)
- {
-     return kvm_x86_ops.set_hv_timer
--           && !(kvm_mwait_in_guest(vcpu->kvm) ||
--            kvm_can_post_timer_interrupt(vcpu));
-+           && !kvm_mwait_in_guest(vcpu->kvm);
- }
- EXPORT_SYMBOL_GPL(kvm_can_use_hv_timer);
