@@ -2,63 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD7A45992E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 01:33:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 214EA45992F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 01:37:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231743AbhKWAgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 19:36:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229672AbhKWAgq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 19:36:46 -0500
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05620C061574;
-        Mon, 22 Nov 2021 16:33:39 -0800 (PST)
-Received: by mail-qt1-x841.google.com with SMTP id m25so18244272qtq.13;
-        Mon, 22 Nov 2021 16:33:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gjKB0XtBMCJi2kvm0po9umzyxpWvimmoeXX+u/+E7nA=;
-        b=jXBLp2Y57GSy4RfvoPqEFHcDelQIVLHjK0yu8msxYKuTOaAwpRTKanbHfQHM+PZea1
-         Li7u2PS3PdhjZLGdjRLu4/T4kB8PVkSw0drk6EaFoJtK5fDLi7UFbSVH6JDW11Zk46eD
-         F7lToGDIXgxln01rjB7a0mUvDCudb6wzG5ySSW5NltGcdUPVfFEPXFrrzlwghA1ZtT3C
-         FztOloanZrsljTGHhAPIGDXeD9zFv/FpOsx40SPnKr8Hr5snDiQX5nr+a2D8wAL2FVTg
-         fmVqtmDrVKQy5jU9kHgSQHbZUrFMZ7OHAjTWA9zdexSSsMM7YFx0xfDPIb4TY7eqEZtS
-         2RNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gjKB0XtBMCJi2kvm0po9umzyxpWvimmoeXX+u/+E7nA=;
-        b=h1orgJvROGCFtX0kgVbJsrACe0LUvYg7RneGFoy7bhAeyR1dIhq0Jg2tmVPy8cBTfC
-         69IedxU3QxzRJunfzAXDZNBcGn53D6GcFWVX1RGnJtDYC5vhNGY+z2FbfLyKeAZ12QK0
-         02fPEFJr+aU6F8KYKnYqbxEesBlDQS9kgrp9I+BCyY1ZlFiduqQ3oNoRjz3rU8az08gd
-         CrS7LKXV2SShbRqxMoXu4e0d+h8vqZHIZtjVVFH24Acg4/uizJfxOEVb0bUl8a/nb9To
-         fL5k9sQPdGzIoWEQso85hBqxZrovwIrXknjif49NkI5kehqm0p24Z0bEZcDTFac3cZNL
-         pHfA==
-X-Gm-Message-State: AOAM531UYM1NJf6XNy6lilaWH6Y/irdCuzWag6EwCtaB+m3vxFNdubnV
-        qFVYqjHX+ZXkH0euhjYKl3uq2SMJDKIrzw==
-X-Google-Smtp-Source: ABdhPJykuwZU/rqdXrIZwxKA6GehgcBxGIk/xwtP6DP4niV+jeaMqqnv3ocXor+lcJTz9d8xELVQJg==
-X-Received: by 2002:ac8:6112:: with SMTP id a18mr1556649qtm.401.1637627617881;
-        Mon, 22 Nov 2021 16:33:37 -0800 (PST)
-Received: from lumia-dev.localdomain. (pool-96-225-98-253.nwrknj.fios.verizon.net. [96.225.98.253])
-        by smtp.googlemail.com with ESMTPSA id bs7sm5508908qkb.79.2021.11.22.16.33.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 16:33:37 -0800 (PST)
-From:   Jack Matthews <jm5112356@gmail.com>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     luca@z3ntu.xyz, bartosz.dudziak@snejp.pl,
-        Jack Matthews <jm5112356@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: dts: qcom: pm8226: Add vibration motor node
-Date:   Tue, 23 Nov 2021 00:32:55 +0000
-Message-Id: <20211123003256.2467776-1-jm5112356@gmail.com>
+        id S231917AbhKWAkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 19:40:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229672AbhKWAkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 19:40:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 93D2D60698;
+        Tue, 23 Nov 2021 00:37:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637627835;
+        bh=N9Z7TNvshj0BkfSYkih2cHP40EkWEtFVjH93cnUbBcs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PQVxqav/hMGnmVZyc83AW/rZctXJ2cTD1KIJ/0HAKFuwZ3E+ypgMr4ape3dv/xN4u
+         v51GF2b3rUa0p0Q/8QxcceXz/jpYgUidydJ/ha74ALGLXqFKQFKpgatgdQvmSmwd8I
+         TFkDNulyvxAarZgQBDcs+LjJ/zPWYqWcg5TYxNu5ILLeyMNG5tZ+IkvwBgWv2GALPe
+         xt3GzfAYXqqZ+7pcYTeuFyEn2HTrHxNRqfr4zEX/ALumEgx/5NfX5zPs7B9qRWSJLZ
+         JpSLqzBxehntvP7uvODgdPwKHtQTXPmkGtOXqHEl22DdpDL1cgQ99Ln/J5EuRyJ4ge
+         32AszOVW+Zv2w==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: [PATCH 0/6] rcu/nocb: Last prep work before cpuset interface v2
+Date:   Tue, 23 Nov 2021 01:37:02 +0100
+Message-Id: <20211123003708.468409-1-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -66,30 +42,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a node for pm8226's vibration motor driver.
-Keep it disabled by default, some devices don't make use of it.
+Changes since v1 after Paul's reviews:
 
-Signed-off-by: Jack Matthews <jm5112356@gmail.com>
+* Clarify why the DEL vs ADD possible race on rdp group list is ok [1/6]
+* Update kernel parameters documentation [5/6]
+* Only create rcuo[sp] kthreads for CPUs that have ever come online [4/6]
+* Consider nohz_full= on changelogs
+
+git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+	rcu/nocb
+
+HEAD: da51363e5ddf54d6ce9c2cfbab946f8914519290
+
+Thanks,
+	Frederic
 ---
- arch/arm/boot/dts/qcom-pm8226.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/arch/arm/boot/dts/qcom-pm8226.dtsi b/arch/arm/boot/dts/qcom-pm8226.dtsi
-index 63f3026c25bf..25780c8fa2e9 100644
---- a/arch/arm/boot/dts/qcom-pm8226.dtsi
-+++ b/arch/arm/boot/dts/qcom-pm8226.dtsi
-@@ -61,5 +61,11 @@ pm8226_1: pm8226@1 {
- 		reg = <0x1 SPMI_USID>;
- 		#address-cells = <1>;
- 		#size-cells = <0>;
-+
-+		pm8226_vib: vibrator@c000 {
-+			compatible = "qcom,pm8916-vib";
-+			reg = <0xc000>;
-+			status = "disabled";
-+		};
- 	};
- };
--- 
-2.25.1
+Frederic Weisbecker (6):
+      rcu/nocb: Remove rdp from nocb list when de-offloaded
+      rcu/nocb: Prepare nocb_cb_wait() to start with a non-offloaded rdp
+      rcu/nocb: Optimize kthreads and rdp initialization
+      rcu/nocb: Create kthreads on all CPUs if "rcu_nocb=" or "nohz_full=" are passed
+      rcu/nocb: Allow empty "rcu_nocbs" kernel parameter
+      rcu/nocb: Merge rcu_spawn_cpu_nocb_kthread() and rcu_spawn_one_nocb_kthread()
 
+
+ Documentation/admin-guide/kernel-parameters.txt |  28 ++++--
+ kernel/rcu/tree.h                               |   7 +-
+ kernel/rcu/tree_nocb.h                          | 119 +++++++++++++++---------
+ 3 files changed, 96 insertions(+), 58 deletions(-)
