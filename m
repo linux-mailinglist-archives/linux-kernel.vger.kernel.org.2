@@ -2,129 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D228459EAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:54:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CABF9459EB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:55:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233857AbhKWI5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 03:57:15 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:36884 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235091AbhKWI5H (ORCPT
+        id S234358AbhKWI6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 03:58:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235119AbhKWI6M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 03:57:07 -0500
-Date:   Tue, 23 Nov 2021 08:53:58 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637657638;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=86XwV19cLaTqgz/ogideYa3jgrtxwxVRZp/IC3UB2vc=;
-        b=lczDf3gXya9ujvB+VMHrM36Fna54kBINe7D8t9hitnpahNUK9KVd9X9wdnOyjU+EtuY9sY
-        s6C82/l4bN1ZtJF7iECkAZsyZwcKaptncxQ8MRl9VMxgiKTaRfk5BGL57prPsjS3hQ6Zrp
-        NivYN7rx3cmIeGL0LiNlBxWbjrhILqWoWw7WjnektuZCAqxN0fMmjfnt0EAEFuQXdKmzKT
-        1hc9LeWa7Dfr+NaGNKQfyBfUmjMSaB0TXT4A4w55EJqqXMdPE+AiFJwx4G8++DSw3ePr5R
-        32CtiVL5zSdYViaIfKtaMlOTTgoUJUmq7EACTnp/Sm2h0k9RwwG2p0UG0TmiQg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637657638;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=86XwV19cLaTqgz/ogideYa3jgrtxwxVRZp/IC3UB2vc=;
-        b=ZLooa74KJKjN08gniMbZuS/EYGhvzTE3aMGMQNTdV+OdwTh80rXXzkeKG7+dQWes8zw/jP
-        CFudoGG2rqNKUICA==
-From:   "tip-bot2 for Eric Dumazet" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] x86/csum: Fix compilation error for UM
-Cc:     kernel test robot <lkp@intel.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20211118175239.1525650-1-eric.dumazet@gmail.com>
-References: <20211118175239.1525650-1-eric.dumazet@gmail.com>
+        Tue, 23 Nov 2021 03:58:12 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1354FC061574;
+        Tue, 23 Nov 2021 00:55:05 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id a9so37601503wrr.8;
+        Tue, 23 Nov 2021 00:55:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=BqjTDota6qXyAvZTc5GkJOlaJlVWffG7A+eb5cGOB4I=;
+        b=hFdqHn9RNEZSqmlr5iDLMvf0Vh/+AoriBzrucJDGFvvIJzpz2aAWz7zCwMcTOr+R34
+         6j7hJ9fO5kHUgK7EB0/daaP7kC1zOgykiLKdxfc87gJDPQoyALSWcczHDm9U0BSYJokp
+         AYs2XlP5glYCiNr0o9z00QBu/ifYKPDURHskwgpc+6Gn6RND+kHujM/yXBMtesmOY/qw
+         xD+0iG3/gZa85Jdlli0QkI8k/btW15XtTW9xX1W3cJOR27cMXzr4GgO0atHXR5uypfHq
+         HS1mH2y+lrz1qzuP7LB1a47LCmEbc+GawVY+0evta3MLP0+p9x32ab6JPgNFuPo2gcKI
+         7omA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
+         :subject:content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=BqjTDota6qXyAvZTc5GkJOlaJlVWffG7A+eb5cGOB4I=;
+        b=6+djZ1F2uHQABLBHdPWOzINHxaf17aOX674rMs2BxDwUWiX8L36yQ04cEUJAINTbGv
+         9vYOI/umsMsvsBq2ZiV6fOlvTSpptZ2IQIg+YHLwsbgiNinkSgUbP5SKB92dkFw7SNRU
+         EmiR3z2fDkLFUSFF1zVQCrWY9jNSzk6D+22D5QPTy6ObdcK6qvQQIqF3qkiC8HiMg9n3
+         /kXDH6hPwWaC4AfUBcsS+eripWLhgIw3hN6Rbtvd+DnVsYIkTUncnclA6r7vCVtgKLBD
+         dEzmvHtcTTm+dX7xwGlKYOsyCK0Px3sxQMF0ejRQeew7SBXOlN4pKddFoEOu2sjc7NRm
+         kr7w==
+X-Gm-Message-State: AOAM533Qj13KmNfDEAG7cwyZrme864b9BYB33j0V7WIiOqcKgDAe43+E
+        X+iB8xz5cMP1NkQ5/1bvvNQ=
+X-Google-Smtp-Source: ABdhPJywg45Zdyiao5yHIoV/TWl9Lu4GeLuq7tkwSYZ5N0X3GzMOpvzt3xNpQ/xwFgF2+cvecBOasQ==
+X-Received: by 2002:adf:d84c:: with SMTP id k12mr5341362wrl.24.1637657703555;
+        Tue, 23 Nov 2021 00:55:03 -0800 (PST)
+Received: from ?IPV6:2001:b07:add:ec09:c399:bc87:7b6c:fb2a? ([2001:b07:add:ec09:c399:bc87:7b6c:fb2a])
+        by smtp.googlemail.com with ESMTPSA id n1sm502199wmq.6.2021.11.23.00.54.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Nov 2021 00:55:03 -0800 (PST)
+Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
+Message-ID: <5f6f43a1-bb4c-f498-2aba-4c93ab57fc98@gnu.org>
+Date:   Tue, 23 Nov 2021 09:54:52 +0100
 MIME-Version: 1.0
-Message-ID: <163765763802.11128.3296594000945475918.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [RFC v2 PATCH 01/13] mm/shmem: Introduce F_SEAL_GUEST
+Content-Language: en-US
+To:     Chao Peng <chao.p.peng@linux.intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, qemu-devel@nongnu.org
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J . Bruce Fields" <bfields@fieldses.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
+        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com,
+        david@redhat.com
+References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
+ <20211119134739.20218-2-chao.p.peng@linux.intel.com>
+From:   Paolo Bonzini <bonzini@gnu.org>
+In-Reply-To: <20211119134739.20218-2-chao.p.peng@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/core branch of tip:
+On 11/19/21 14:47, Chao Peng wrote:
+> +static void guest_invalidate_page(struct inode *inode,
+> +				  struct page *page, pgoff_t start, pgoff_t end)
+> +{
+> +	struct shmem_inode_info *info = SHMEM_I(inode);
+> +
+> +	if (!info->guest_ops || !info->guest_ops->invalidate_page_range)
+> +		return;
+> +
+> +	start = max(start, page->index);
+> +	end = min(end, page->index + thp_nr_pages(page)) - 1;
+> +
+> +	info->guest_ops->invalidate_page_range(inode, info->guest_owner,
+> +					       start, end);
+> +}
 
-Commit-ID:     6b2ecb61bb106d3688b315178831ff40d1008591
-Gitweb:        https://git.kernel.org/tip/6b2ecb61bb106d3688b315178831ff40d1008591
-Author:        Eric Dumazet <edumazet@google.com>
-AuthorDate:    Thu, 18 Nov 2021 09:52:39 -08:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 23 Nov 2021 09:45:32 +01:00
+The lack of protection makes the API quite awkward to use;
+the usual way to do this is with refcount_inc_not_zero (aka 
+kvm_get_kvm_safe).
 
-x86/csum: Fix compilation error for UM
+Can you use the shmem_inode_info spinlock to protect against this?  If 
+register/unregister take the spinlock, the invalidate and fallocate can 
+take a reference under the same spinlock, like this:
 
-load_unaligned_zeropad() is not yet universal.
+	if (!info->guest_ops)
+		return;
 
-ARCH=um SUBARCH=x86_64 builds do not have it.
+	spin_lock(&info->lock);
+	ops = info->guest_ops;
+	if (!ops) {
+		spin_unlock(&info->lock);
+		return;
+	}
 
-When CONFIG_DCACHE_WORD_ACCESS is not set, simply continue
-the bisection with 4, 2 and 1 byte steps.
+	/* Calls kvm_get_kvm_safe.  */
+	r = ops->get_guest_owner(info->guest_owner);
+	spin_unlock(&info->lock);
+	if (r < 0)
+		return;
 
-Fixes: df4554cebdaa ("x86/csum: Rewrite/optimize csum_partial()")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20211118175239.1525650-1-eric.dumazet@gmail.com
----
- arch/x86/lib/csum-partial_64.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+	start = max(start, page->index);
+	end = min(end, page->index + thp_nr_pages(page)) - 1;
 
-diff --git a/arch/x86/lib/csum-partial_64.c b/arch/x86/lib/csum-partial_64.c
-index 5ec3562..1eb8f2d 100644
---- a/arch/x86/lib/csum-partial_64.c
-+++ b/arch/x86/lib/csum-partial_64.c
-@@ -92,6 +92,7 @@ __wsum csum_partial(const void *buff, int len, __wsum sum)
- 		buff += 8;
- 	}
- 	if (len & 7) {
-+#ifdef CONFIG_DCACHE_WORD_ACCESS
- 		unsigned int shift = (8 - (len & 7)) * 8;
- 		unsigned long trail;
- 
-@@ -101,6 +102,31 @@ __wsum csum_partial(const void *buff, int len, __wsum sum)
- 		    "adcq $0,%[res]"
- 			: [res] "+r" (temp64)
- 			: [trail] "r" (trail));
-+#else
-+		if (len & 4) {
-+			asm("addq %[val],%[res]\n\t"
-+			    "adcq $0,%[res]"
-+				: [res] "+r" (temp64)
-+				: [val] "r" ((u64)*(u32 *)buff)
-+				: "memory");
-+			buff += 4;
-+		}
-+		if (len & 2) {
-+			asm("addq %[val],%[res]\n\t"
-+			    "adcq $0,%[res]"
-+				: [res] "+r" (temp64)
-+				: [val] "r" ((u64)*(u16 *)buff)
-+				: "memory");
-+			buff += 2;
-+		}
-+		if (len & 1) {
-+			asm("addq %[val],%[res]\n\t"
-+			    "adcq $0,%[res]"
-+				: [res] "+r" (temp64)
-+				: [val] "r" ((u64)*(u8 *)buff)
-+				: "memory");
-+		}
-+#endif
- 	}
- 	result = add32_with_carry(temp64 >> 32, temp64 & 0xffffffff);
- 	if (unlikely(odd)) { 
+	ops->invalidate_page_range(inode, info->guest_owner,
+					       start, end);
+	ops->put_guest_owner(info->guest_owner);
+
+Considering that you have to take a mutex anyway in patch 13, and that 
+the critical section here is very small, the extra indirect calls are 
+cheaper than walking the vm_list; and it makes the API clearer.
+
+Paolo
