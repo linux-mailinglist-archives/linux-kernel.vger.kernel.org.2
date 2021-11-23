@@ -2,75 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB4345A627
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 16:01:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ABE545A62D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 16:03:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238084AbhKWPEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 10:04:33 -0500
-Received: from mga05.intel.com ([192.55.52.43]:3048 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230510AbhKWPEc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 10:04:32 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="321266870"
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="321266870"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 07:01:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="509438278"
-Received: from chaop.bj.intel.com (HELO localhost) ([10.240.192.101])
-  by orsmga008.jf.intel.com with ESMTP; 23 Nov 2021 07:01:13 -0800
-Date:   Tue, 23 Nov 2021 23:00:28 +0800
-From:   Chao Peng <chao.p.peng@linux.intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Wanpeng Li <wanpengli@tencent.com>, jun.nakajima@intel.com,
-        kvm@vger.kernel.org, david@redhat.com, qemu-devel@nongnu.org,
-        "J . Bruce Fields" <bfields@fieldses.org>, dave.hansen@intel.com,
-        "H . Peter Anvin" <hpa@zytor.com>, ak@linux.intel.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
-        Hugh Dickins <hughd@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        luto@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jim Mattson <jmattson@google.com>, linux-mm@kvack.org,
-        Sean Christopherson <seanjc@google.com>, susie.li@intel.com,
-        Jeff Layton <jlayton@kernel.org>, linux-kernel@vger.kernel.org,
-        john.ji@intel.com, Yu Zhang <yu.c.zhang@linux.intel.com>,
-        linux-fsdevel@vger.kernel.org,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [RFC v2 PATCH 13/13] KVM: Enable memfd based page
- invalidation/fallocate
-Message-ID: <20211123150028.GE32088@chaop.bj.intel.com>
-Reply-To: Chao Peng <chao.p.peng@linux.intel.com>
-References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
- <20211119134739.20218-14-chao.p.peng@linux.intel.com>
- <20211122141647.3pcsywilrzcoqvbf@box.shutemov.name>
- <20211123010639.GA32088@chaop.bj.intel.com>
- <2f3e9d7e-ce15-e47b-54c6-3ca3d7195d70@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2f3e9d7e-ce15-e47b-54c6-3ca3d7195d70@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S238321AbhKWPGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 10:06:25 -0500
+Received: from mail-m971.mail.163.com ([123.126.97.1]:49798 "EHLO
+        mail-m971.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230510AbhKWPGY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 10:06:24 -0500
+X-Greylist: delayed 921 seconds by postgrey-1.27 at vger.kernel.org; Tue, 23 Nov 2021 10:06:23 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=TRdagmPh9g+F7jmGxl
+        CYV02jLr2Fp6hrvf/+IjRdrik=; b=E8ObMbcH9sStXprpkduX30aMI6ts6KwfZS
+        uGdlRWX1HhMNSUCIPukaiZlXmgbRZ2oqiYvmt1StRo2yreZKpK5P2TTFQnqmdG7R
+        1jauGPjJRMlLL+ZUCIaD1PpXutDmWOdRsi70OYFXoQsVma7hOLdjk4Z38DS9uHJs
+        tiPONrKQ8=
+Received: from localhost.localdomain.localdomain (unknown [114.242.206.180])
+        by smtp1 (Coremail) with SMTP id GdxpCgAHNe2z_pxh0A_zLw--.14826S2;
+        Tue, 23 Nov 2021 22:46:16 +0800 (CST)
+From:   Liu Peibao <liupeibao@163.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] sched/core: aplly TASK_RUNNING in state judgement
+Date:   Tue, 23 Nov 2021 22:46:11 +0800
+Message-Id: <1637678771-17525-1-git-send-email-liupeibao@163.com>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: GdxpCgAHNe2z_pxh0A_zLw--.14826S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrur45JF47Cw45Kr4rZFykGrg_yoW3XFX_Gw
+        1rXr18urn8JwnFvr43Aay8W340v3WjvF4Skr45AF4UA3y8tr90y398ZF95WrnxXFs7XFy7
+        AFnxWFsI9rnFkjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8-_-PUUUUU==
+X-Originating-IP: [114.242.206.180]
+X-CM-SenderInfo: xolx1vpled0qqrwthudrp/xtbBdQ1UbFaEBmiy-gAAsw
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 10:09:28AM +0100, Paolo Bonzini wrote:
-> On 11/23/21 02:06, Chao Peng wrote:
-> > > Maybe the kvm has to be tagged with a sequential id that incremented every
-> > > allocation. This id can be checked here.
-> > Sounds like a sequential id will be needed, no existing fields in struct
-> > kvm can work for this.
-> 
-> There's no need to new concepts when there's a perfectly usable reference
-> count. :)
+Looks more clearly.
 
-Indeed, thanks.
+Signed-off-by: Liu Peibao <liupeibao@163.com>
+---
+ kernel/sched/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> Paolo
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 3c9b0fd..abafd2e 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -6181,7 +6181,7 @@ static void __sched notrace __schedule(unsigned int sched_mode)
+ 	 *  - ptrace_{,un}freeze_traced() can change ->state underneath us.
+ 	 */
+ 	prev_state = READ_ONCE(prev->__state);
+-	if (!(sched_mode & SM_MASK_PREEMPT) && prev_state) {
++	if (!(sched_mode & SM_MASK_PREEMPT) && (prev_state != TASK_RUNNING)) {
+ 		if (signal_pending_state(prev_state, prev)) {
+ 			WRITE_ONCE(prev->__state, TASK_RUNNING);
+ 		} else {
+-- 
+1.8.3.1
+
