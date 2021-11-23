@@ -2,243 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0757545A812
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:35:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5AB845A817
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:36:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234890AbhKWQi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 11:38:56 -0500
-Received: from mail-bn1nam07on2053.outbound.protection.outlook.com ([40.107.212.53]:39502
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237532AbhKWQig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 11:38:36 -0500
+        id S234906AbhKWQja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 11:39:30 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:45208 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233389AbhKWQjW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 11:39:22 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1ANAMvtN005580;
+        Tue, 23 Nov 2021 08:35:55 -0800
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2176.outbound.protection.outlook.com [104.47.73.176])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3cgug529dk-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Nov 2021 08:35:55 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GR/XGmZbtTRcJuzI1l5cIV4/RvPzdBvuBhLCfiK5Ivik3UtX+uq9pc4l7JulwuxjSj2NJhDQ7zBd7yM7x3IVr5Y8cIZ++vMwW5z71kK6UiPjDSpykd3ustrRkNKs19EWjwByNylfOVoW7w8s9kp6YYa30EuK5u5O/72ePaWx7xYg6Ni0YaPbdv0ddk/I/OS27nlsbQgFeShsiG6eN7xCZPZO+8Eb9hlW9GO72GwqemmrTvEqU4NSfSOVuNRaDfnmbbypPy+67HIVmiTu/Tj7i1tlJLAmxloWcfze1VAbQ3fbgHxWju8ezOK/Bh7AIW9YfZN9PjPM1iszMRUQKhf5RA==
+ b=hE7MgM4rM85o4Btd4ZWw/+2eY41E4dgmG/G5vCKCfs0ZRoddXb2n4hiQOkUmPLTRDDwr4EnK89WAd9csMMHfmRtNLiITf/ig2LsYZrbgL+vBaKh3Os8DqL0J/bW6cmm5XtMNEzfs50badmIbNOhM2kDUn3+XOex3T9+24bFhh0abQ6O1remIqxFB5pVfXesKVGo8iimCLhkshreMhtaUPOCIR5L5BX3+hAN9GIeMwf8SQrKHOYKZveN7hbVaEkos9EcIfvIirA34a/mv8Vrnf3Ly8X3ynEN0nHiqrkI23x5K1QjHXnvxNhuqpGhf/cole57gVlxVVp8YqgWmza97GA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5VkxpS+R45tvUqMiajIypEFMpJpYKYIDtuvgx4qDQ94=;
- b=M2cL42uXYQX1QWOvlVzGQwrX1jhQUR0H1Ii7YcJeunxYCR1Eh9Ha0uMmH5k19dNWTXXLRmejeYA6UrnRU9cTCqTG1R8MwCSvP0P+QmDkm/9Fx26xmrTxey3zVhv2RdH+RxWajdgBYIH8calzGYbbTOdtW7J4XBgTjCRA6spDYztRyV/EhLC8gnNNEN0deKHRTENVubqdC3ZZypDl8rnEcI2agybpR2Rso+LjB66UDCWInRWHUKTn0Qqnfv2iFNK6Wa0IS4XTVq6bvcgnbzLNXwc4rS2LeOlI/8Z2ttBZEox60amMxu0UFnf3PSO2FgAzOoK7ap7k64d2aE4NgOBQRQ==
+ bh=4j9EK+RnwpGy5p90uICWTM1W5uQkfGFaCqtgaQzMO0A=;
+ b=Dz3Q+1O0aCJCGQHjWjshKaATI3FNaXQaZxbr3O7nNF2AFOsUSmmOdQ1xLOsQ+YhWWyR82WpjsGyj7xzrQ0rdllqzO0HUuiBdOrGuqhC9oLgt8VzWB7WmCjhuDTq3Z5zxOGCTn646i/uiUaj8K1zK8pPHNWkHKFCZCQjiY0s7HMAm3ig/zOoRDh5kSa3+qLqRxj8UW1Czr4EB87dy7isU8TcBtuBZ53F9SjT8T15gYu4SHKNC/AOocmQRUPceMXxYLF2I2DyYPw61mJsb98wHtyecJ+mv83r8ApttLJ1yAjuqF/n/iCJcTzsroJU80XwMEUbiIaR0vPWWi/CvieoXEw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5VkxpS+R45tvUqMiajIypEFMpJpYKYIDtuvgx4qDQ94=;
- b=ikmGsHc/KMZs4bDMAv4mmx2hFXLXydmBECY6oLlNPSgqvcsM9OUqyr7TuekSq/Zt8pS8RImjBN+n922r5rPKk5KnfDABkIe6nUD/XY8pDEUaIl4tZVuoDpt3Sh+R7ATQ0wtHnfu5CqoHzGRB7CpyZA8qjDJJ8a/E+ElQ3QFFJr7Sfr9hR9eNWEsNeG38VTPduZ3Z+vEjT9QsHE1Ra55qLzMKsE7baUP4ZxZZ9B0cpX2FumvI5ugcUOn8jHYkBrQVKL/1KpHZLPVT8WuDQvVwRe4oKpOIpJiU0zaLk6gH6kvCVqYrUQ1ZDR4Mtj9oF5wsILucWzM1YqFk6nTXzPiJ3g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB3823.namprd12.prod.outlook.com (2603:10b6:208:168::26)
- by BL0PR12MB2467.namprd12.prod.outlook.com (2603:10b6:207:4c::21) with
+ bh=4j9EK+RnwpGy5p90uICWTM1W5uQkfGFaCqtgaQzMO0A=;
+ b=BkKfQu3n6kZhNaqCsjGyk0FKnYC9DjnY+XK0lACukwEFSuo1OYlZ39+vIP/a/uDNGh2/42fgeQNzOIQKtWI9E+9dPHCBEQmoaCd9xV7gr7UXk7/pWwKL9mZE4PSRM91DBAWZz4W5T65LFxuILAn/RkrfhZ7CdOLVhjvqemBGMx4=
+Received: from SJ0PR18MB4009.namprd18.prod.outlook.com (2603:10b6:a03:2eb::24)
+ by BY5PR18MB3427.namprd18.prod.outlook.com (2603:10b6:a03:195::32) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Tue, 23 Nov
- 2021 16:35:27 +0000
-Received: from MN2PR12MB3823.namprd12.prod.outlook.com
- ([fe80::dc47:e67:877f:f19e]) by MN2PR12MB3823.namprd12.prod.outlook.com
- ([fe80::dc47:e67:877f:f19e%7]) with mapi id 15.20.4713.025; Tue, 23 Nov 2021
- 16:35:27 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org,
-        iommu@lists.linux-foundation.org
-Subject: Re: [RFC PATCH 0/3] Use pageblock_order for cma and alloc_contig_range alignment.
-Date:   Tue, 23 Nov 2021 11:35:06 -0500
-X-Mailer: MailMate (1.14r5846)
-Message-ID: <BF8FB68A-6E1D-4465-8A2B-884FC034660B@nvidia.com>
-In-Reply-To: <AEFF28CF-0ED8-450F-96A4-A6CD59CB1F3D@nvidia.com>
-References: <20211115193725.737539-1-zi.yan@sent.com>
- <3083463d-978b-fbe6-dadf-670d400ed437@suse.cz>
- <AEFF28CF-0ED8-450F-96A4-A6CD59CB1F3D@nvidia.com>
-Content-Type: multipart/signed;
- boundary="=_MailMate_B87A4FE1-FCD1-4BCD-A1E0-68BE0115A23A_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: MN2PR05CA0009.namprd05.prod.outlook.com
- (2603:10b6:208:c0::22) To MN2PR12MB3823.namprd12.prod.outlook.com
- (2603:10b6:208:168::26)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21; Tue, 23 Nov
+ 2021 16:35:51 +0000
+Received: from SJ0PR18MB4009.namprd18.prod.outlook.com
+ ([fe80::f5d7:4f64:40f1:2c31]) by SJ0PR18MB4009.namprd18.prod.outlook.com
+ ([fe80::f5d7:4f64:40f1:2c31%5]) with mapi id 15.20.4713.026; Tue, 23 Nov 2021
+ 16:35:51 +0000
+From:   "Volodymyr Mytnyk [C]" <vmytnyk@marvell.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Mickey Rachamim <mickeyr@marvell.com>,
+        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
+        Taras Chornyi <taras.chornyi@plvision.eu>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paul Blakey <paulb@mellanox.com>,
+        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
+        "coreteam@netfilter.org" <coreteam@netfilter.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net v2 RESEND] netfilter: fix conntrack flows stuck issue
+ on cleanup.
+Thread-Topic: [PATCH net v2 RESEND] netfilter: fix conntrack flows stuck issue
+ on cleanup.
+Thread-Index: AQHX4IgtTXkn6umzxUSR7vyg3u+6CA==
+Date:   Tue, 23 Nov 2021 16:35:51 +0000
+Message-ID: <SJ0PR18MB4009934E6C87505AD1A7349FB2609@SJ0PR18MB4009.namprd18.prod.outlook.com>
+References: <1635931896-27539-1-git-send-email-volodymyr.mytnyk@plvision.eu>
+ <YZbNFaKUHaCIYdRK@salvia>
+In-Reply-To: <YZbNFaKUHaCIYdRK@salvia>
+Accept-Language: en-GB, uk-UA, en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+suggested_attachment_session_id: 4f3cb7ec-2b60-b943-c6ff-3cbf7e1d4c39
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d8144871-6775-480b-e3f0-08d9ae9f5004
+x-ms-traffictypediagnostic: BY5PR18MB3427:
+x-ld-processed: 70e1fb47-1155-421d-87fc-2e58f638b6e0,ExtAddr
+x-microsoft-antispam-prvs: <BY5PR18MB342738F30C0739AE4B084B49B2609@BY5PR18MB3427.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wP2EwaGa56piSwYRawUZuod90cK7MnP5gEtGFuU45PpuxnBLhF3A2aAzBMLZNH+4lJYlsX16Kbht7AZGoJLQRV2TEZxeKG2zdNloJXxxGdCSNLhSg6lXylimxnpXKKOfNPLXzCETLQdPT/I3Lpg8/tSYyosNvvedsT2KsDCaabrplMJ8sabhgILZaGNhMVDsK7cPu1RGRGd7RX/l2IePYN68PIeQg4l1LvQTFhTyUg1rpwJBdZWpV9UP1u3aWc5uNC6kgc1umsgsvbYNMVORJeyubrA+oQonVcHOfQt7PQwfhd0n35Ql4jV+FJKsdGqQOxRXhelv1mBslTVmDDn6IyP8zktMPTvlipxNevXBbLDS+fZWETKQjmgz/v9RNVCBzg/nNisPjNeI4YamO4NLhZkEw4dRf6dSjL3SKBKoSLa76BySXi4KYFAgIUQoBje+dVjlWKYF6QDCXV1Sn/VF3Gt+6PJD+3+YlUrd4+QJ0+E1ZfGEC83nIIgew3x+YRsNYq+JUez93vCs0kgMtByoO0wy0ix2cb3kHUu4NGzsaKUi6JPDg6Hx790oJdEeqGdxHYvP6uoMSlmLYIUmdEmkZQEkfjwJoTo6nuU861bb+zrMOHTUBGmE/Bges8H6q7iDYqbCF5DJYXI6QuoSRoGMSXbsZK+F9ubs8MctrlArsJm88INItNKxkUCvyIZRHdjnGIa45A2dFw+GmIjCD3WKPg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR18MB4009.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(122000001)(38100700002)(8676002)(86362001)(33656002)(66446008)(6916009)(71200400001)(8936002)(55016003)(26005)(9686003)(4326008)(186003)(38070700005)(6506007)(7696005)(52536014)(5660300002)(316002)(508600001)(66946007)(66476007)(66556008)(64756008)(2906002)(54906003)(76116006)(83380400001)(7416002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?hyPOOC2xUv4T1FjLe0ySx9tdohuFfZ5Q4GVDitL0Kn6nmDe3vK7w8o78J0?=
+ =?iso-8859-1?Q?lz2kqZm5tDN//jtjYijhRBBuKtPTXfuFY7E6MGuPb2kfCH+P00YStEbreu?=
+ =?iso-8859-1?Q?curoi6hYgjZcOp63ojuEhuGii6saf8e6VTRMXUyQHMh3oxFprCWRvzDzt9?=
+ =?iso-8859-1?Q?fdGBHq3afvMByFA5Pugf+fHm/9Ue/VevWA8AmQYFtcti9NxzeBNWVuy5Nx?=
+ =?iso-8859-1?Q?T8DEYOTNLazi6g5T4JYyObOcZc0JlcsYBim8pVmBiQ7yGntcmQev/UUDf4?=
+ =?iso-8859-1?Q?xA2JxaLupyR40rIKUSMRImr1kWvzR3pFt3EUs/7mrdiHKTfMniMqErc21I?=
+ =?iso-8859-1?Q?apX7T51IZ0TCQkITnZjNC/njsSwd6tBoVyc/oERHkQLaHofx4Mze7XRGc6?=
+ =?iso-8859-1?Q?qNZHHcCMbWyKyv12bGGh9jVD1GesWu9s1cESpumEtxyV2NrZ69w+oqwEEG?=
+ =?iso-8859-1?Q?zDaEwnUm0V1yExpunPtX0q3w/FwYX8b99V49Uk2UB42ZMWZjkCElrFcvPa?=
+ =?iso-8859-1?Q?3WlgKSJyOScgDa42Wck0cVauRqvGDN/HduYZbfBjBfPetIUn8YepkoJtWk?=
+ =?iso-8859-1?Q?6Gude1JBxC5yk9GVIZZYehiehmIhlHY9iijOsVGBc6ECNAeaeM7xJdFx+B?=
+ =?iso-8859-1?Q?sgahnBK+X1kOJYnOBZk4G52mfm8ErsVEHWrztnqTDyMS7R85bxzfXq+u7h?=
+ =?iso-8859-1?Q?E+Z9N1aNOvph6LIXkC4dq1T6wkE9ruh7eYxc9N25DAq2ZBDVw5xe/y1OMT?=
+ =?iso-8859-1?Q?c9CUOYClQtkFSpHrteTeTtZR5mCie5cb5McXV7Ru/ugO5Xw0DIGbDeOvlH?=
+ =?iso-8859-1?Q?eiBbjL5/F0oC6BMnbFec2S0iGFqCY5pEI8C5lTCmMpodYYcMzAe3EiSLgR?=
+ =?iso-8859-1?Q?imaETEE4cndZxfOqdyKg/Ur0zcFrHIS35oBxc6BGT4AXEDqwKC5W03CKj2?=
+ =?iso-8859-1?Q?0UYXhsLi1MMblvxCjWrcdXIGP7xP5pd/R9xeZWSznm5RdywMVgn6WGr1fg?=
+ =?iso-8859-1?Q?tJs+5D75JjDG0B6KuG0Dy+rZeWlpCXVbNgmAT8hEsMPAjfDiwOb9vl1oQZ?=
+ =?iso-8859-1?Q?ecI2nxsXc/nyV/AFP1y3oUjm/RlXuH5tFfEqL7qd4pIRQ8hXi0MBJA/Td2?=
+ =?iso-8859-1?Q?qN07fVr//a6wmqoRIiooZ5zYAlcIOAGviCOqHKoNchhuu4r1dicM0wI3u+?=
+ =?iso-8859-1?Q?CW6bMPndsvmHXk29kJ3FHBHmj7HEYYkheRT0OKu944VMN/znD5NHW3QB5X?=
+ =?iso-8859-1?Q?i+FCKst2x62q6xRng/ie5g/CoWLKuaQE4lrh+almnB9mnXAzUTIGzmYNhb?=
+ =?iso-8859-1?Q?Wlph2t9wVwHmkeCpe/EtGyzmWmoA8Y6D8fRkfbgrH0BMYYClExbebt6g5P?=
+ =?iso-8859-1?Q?eAsWlR/FY32wD7lWxNM3Z6UOkcLQ0J6Pz0fy1eQmvLycWNZZ8hoVM144rB?=
+ =?iso-8859-1?Q?W53WF6d6q31uqhFHfLqbgNKPh5hajMnf1rdMjpxuH2ntWmv3a97UQ8h/U7?=
+ =?iso-8859-1?Q?9vTnx0nsQJthJq3weJguBzmpnBy+zmwDfcn5CVP1N82gDUhjn4dDpSCiEj?=
+ =?iso-8859-1?Q?jeJVO/ueKDLN7o8QPJ1MlZMtYOv8HIAtH/3mwKScRxIy0L0cHtW8znaAvv?=
+ =?iso-8859-1?Q?ZBDwJAC+ExqyUhz1U6iux8c1YSKioeXzA2+dh9CmTLUdkokpztrz2laQ?=
+ =?iso-8859-1?Q?=3D=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Received: from [10.2.49.230] (216.228.112.21) by MN2PR05CA0009.namprd05.prod.outlook.com (2603:10b6:208:c0::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.12 via Frontend Transport; Tue, 23 Nov 2021 16:35:24 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4ce3efd2-be26-45ce-f0db-08d9ae9f414e
-X-MS-TrafficTypeDiagnostic: BL0PR12MB2467:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB2467D5B05625C499A4D95070C2609@BL0PR12MB2467.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0knTszpPOCy4ojmuXc/T3U47kTr3+jHh79zkLKU3tjwqU36eKu6rH8UX+02IbsTwWdp2Z5USDSwsWvOiLEsBbDwial2AfHNH+408FKTsUE6Tzf6sEViSN5vtqFkL429LjXNCSCYSvcM/nL3htKdK7lhmuLM8PTg1mn+vW4LRq7KSY9w+qMqn2iViFwiYXzwVJqI7LM/KPtOdmh9mC+UzZv32kAPeSVAwZd8fATBSdiKzcKF9W/9/UKxgm+s/7F0KkngzFaH2SKdpi75qjNddBxCj8irGrDNfeuC0Xte8TUYUcJspYO4kN2wHXDwb5ZEjl0MtxN9Vu4WjXmYmP/BBQ3zXXZ9XwWzMBQqWeswUXK/nh0wOcbyQUYaeONX+kmnjRQkbs8bFoQxKU+UKrucBt2k1PHYwlNlLtirp0/LsVigPq/K/EeA9JRpaQ8i1TcFss8JMZEnHcKLeIhgkfqKw/9+Dw6xd4nym99Xqfp6JiksRlrDov9U/OkakipTqIMUCmP2o2hJWc0SQgKydZ+NJU8HKJ6KKKGA3WDamf5MXVXLrpTVjSKuTaR0lXDWd3MKSBVv41Fa5m1qEk9yrnFebsvoAYM4K4UFHg2eb+7KpEuL87eIRnvwmYNP9gn0x/llgW1HFYHd+Wc3qlyeQaiUZxo/Bdg+gXbZ+s8gbUHenm4T0wwdfS3vYAjwPGGAk+jkeqa6H6FsZkOOXCo/pJlT20RlPwLGAXKR0ncfDbzMj5jSBclIbKHwah/+1twClQ9jLtCTrsJbeFFYy5LH7ipLnaM2300V8dkidVCgty7h+g3tAEx8tlluq6OkgP3YyliuD
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3823.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6916009)(956004)(2906002)(966005)(8676002)(2616005)(508600001)(53546011)(316002)(8936002)(66946007)(235185007)(86362001)(7416002)(83380400001)(16576012)(54906003)(21480400003)(6486002)(66556008)(66476007)(5660300002)(36756003)(186003)(38100700002)(4326008)(33656002)(6666004)(26005)(72826004)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?n+Qv6q8RZs+aLHp3yKxVqmwK6cwr7vNywOQ5N1tmDayaehA0tQbcBy9xr7Kc?=
- =?us-ascii?Q?Psz6YYZzDpZLnDeyj7k4n4uV8wbieVYMmrIqbCxyeGSyYTW2TpbszwthAQNq?=
- =?us-ascii?Q?e99Zg4Ot5/z2sd8InRM7Ij18K7oLoelH0jm3iIW/JwJOpI7ect2eCvMJXfmx?=
- =?us-ascii?Q?ACaMLjNr8rgHIxj34BAP6ipdn/RRDdJA/rcINCcb6aSSeSw4wwUmLASf5L70?=
- =?us-ascii?Q?eI0gU0pLTFO7iKfmZdqT2Y7QZKLMk8IM+CrxXoluLNL5t/MJVAWcUkoU9//F?=
- =?us-ascii?Q?PUC3crsxyG30QoeUNJeaUA8aDl2xvvjA8TpJ4zQmZ31tNUPqS27fFH+4t0PF?=
- =?us-ascii?Q?dRtugNpKm3mbeq7Jz2uwgTSLXp2NqjfVUJTnOaoiq70AeHEPmaLbXmggoOLz?=
- =?us-ascii?Q?L+zDPT2L+aRbzsifm1abynJUlGaPla71zrZFxaO08SQLEoBWShPq3zr0XhzL?=
- =?us-ascii?Q?8P+wNXH7ute0svd+EP96sLz5HXH6m9e9GBGpRzUEFOaRL2r8/Wr2wW7qIF+h?=
- =?us-ascii?Q?zY/set1DFcyOnGEppFgDRnXSoTrvhMFChgKMFQlJCoaxS9WOrIPoWOwOd2u6?=
- =?us-ascii?Q?fO9vF1CRCNexZM+RmvD8Ce2q+AlX2ddTcL7nu616TdaS1789C6BN4JnOO6yk?=
- =?us-ascii?Q?McPX0Mq/Z1g4pw1if/KOxWA3twheHg4F1Zmcu6mnX0oWUmrt1S1qrpND3gWB?=
- =?us-ascii?Q?OfzdcHpqGjY6ofS/clcmcl67oKK1mZPvszFsRH+KWG5z4z0xCEoDm9miuQHy?=
- =?us-ascii?Q?S6PA6GOkrge+fQ4/jTr8NENb2/0QRsGFmEISzElXU3xuWOeR2xrO8njrP3H/?=
- =?us-ascii?Q?qnCtytfzLYbuE20CuGOg7MN7XeeJMM0TdZpiNs77QFnm3WxWpxFK+Pb6fjpa?=
- =?us-ascii?Q?9tQVr4LwSrqXfzQf9bEUeDpeUOv4t5ohOqcLA2BC0Fp5knVice75J8t+3JOM?=
- =?us-ascii?Q?m0CfVRIJrYbdxHUrLf/zdkhMx7wX+jcfrFEC0jL4KzzfTYNllyhj0eS77RRL?=
- =?us-ascii?Q?uLkE07qdlRuyn2ubUoyQI3OkxIjiDG5FseTafelCYgL36VQw9d9iHCVuXGdQ?=
- =?us-ascii?Q?PrnOyKwnbi82iyPlROLN8LWSxdL7h91/evD/BTeg/QvoUb0+TGK0aZzh6AMr?=
- =?us-ascii?Q?bzrRQNOfSKi1Gh4dSzUzttt0W86+GlyvYnMyHT66XkyaqOctvXZSg7ytMPS3?=
- =?us-ascii?Q?zbmKV6TbAEjpuXhpULnV2r9AsjGgVhEgeWmTERUw0SilaEeqp28QwCABD+RF?=
- =?us-ascii?Q?BJZos5H06hbrjxb+FmR9gN3h1bL8i60eFKIOxOXFCVKiZ35A2x7WYHIIo8tH?=
- =?us-ascii?Q?CdjVKpnDCsP0ii4cWBC1NgKxdcg/Y39GfaF0jU42nNCwlt2yAnXEx7blAITW?=
- =?us-ascii?Q?MLaB40EZ/ZDXJRqaXQEefTHl6kELFQTtLHfl7nDUW7rBmY4MgUtAnFoOX+V+?=
- =?us-ascii?Q?lFlI2voYKxyCcuShatfSQwKdmKuEy/fdEGsfJRMb4zJclzzp5h7Uv98WN5C1?=
- =?us-ascii?Q?OpKzY75YkbuDsuqpbirypG3ZRWzxhuTU5JJxXF7MSDXtlhGhOZc6EV7OtcEp?=
- =?us-ascii?Q?uZK62zVqMFBGHlHQEVQ=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ce3efd2-be26-45ce-f0db-08d9ae9f414e
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3823.namprd12.prod.outlook.com
+X-OriginatorOrg: marvell.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2021 16:35:26.9930
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR18MB4009.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8144871-6775-480b-e3f0-08d9ae9f5004
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2021 16:35:51.3175
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fbxLP30yXt6wT2uEguj1D2xag07Fs8CmiiNGYOpIPxkP/G7PfJOqTXvRQcxOyGj7
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2467
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9T47MF9fJ2am7eRmK3WyxVPZllxdOYBPAr2Kcaop39c4S46nMbL3PFi4trGl6yoI+iupbKtliM8q7N/0vdDKZQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3427
+X-Proofpoint-GUID: uSOm7euXi6T3FbsqRsbnIjvUlvvnLpJk
+X-Proofpoint-ORIG-GUID: uSOm7euXi6T3FbsqRsbnIjvUlvvnLpJk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-23_05,2021-11-23_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_B87A4FE1-FCD1-4BCD-A1E0-68BE0115A23A_=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-On 19 Nov 2021, at 10:15, Zi Yan wrote:
-
-> On 19 Nov 2021, at 7:33, Vlastimil Babka wrote:
->
->> On 11/15/21 20:37, Zi Yan wrote:
->>> From: Zi Yan <ziy@nvidia.com>
->>>
->>> Hi David,
->>>
->>> You suggested to make alloc_contig_range() deal with pageblock_order =
-instead of
->>> MAX_ORDER - 1 and get rid of MAX_ORDER - 1 dependency in virtio_mem[1=
-]. This
->>> patchset is my attempt to achieve that. Please take a look and let me=
- know if
->>> I am doing it correctly or not.
->>>
->>> From what my understanding, cma required alignment of
->>> max(MAX_ORDER - 1, pageblock_order), because when MIGRATE_CMA was int=
-roduced,
->>> __free_one_page() does not prevent merging two different pageblocks, =
-when
->>> MAX_ORDER - 1 > pageblock_order. But current __free_one_page() implem=
-entation
->>> does prevent that.
->>
->> But it does prevent that only for isolated pageblock, not CMA, and you=
-t
->> patchset doesn't seem to expand that to CMA? Or am I missing something=
-=2E
->
-> Yeah, you are right. Originally, I thought preventing merging isolated =
-pageblock
-> with other types of pageblocks is sufficient, since MIGRATE_CMA is alwa=
-ys
-> converted from MIGRATE_ISOLATE. But that is not true. I will rework the=
- code.
-> Thanks for pointing this out.
->
-
-I find that two pageblocks with different migratetypes, like MIGRATE_RECL=
-AIMABLE
-and MIGRATE_MOVABLE can be merged into a single free page after I checked=
-
-__free_one_page() in detail and printed pageblock information during budd=
-y page
-merging. I am not sure what consequence it will cause. Do you have any id=
-ea?
-
-I will fix it in the next version of this patchset.
-
->>
->>
->>> It should be OK to just align cma to pageblock_order.
->>> alloc_contig_range() relies on MIGRATE_CMA to get free pages, so it c=
-an use
->>> pageblock_order as alignment too.
->>>
->>> In terms of virtio_mem, if I understand correctly, it relies on
->>> alloc_contig_range() to obtain contiguous free pages and offlines the=
-m to reduce
->>> guest memory size. As the result of alloc_contig_range() alignment ch=
-ange,
->>> virtio_mem should be able to just align PFNs to pageblock_order.
->>>
->>> Thanks.
->>>
->>>
->>> [1] https://lore.kernel.org/linux-mm/28b57903-fae6-47ac-7e1b-a1dd4142=
-1349@redhat.com/
->>>
->>> Zi Yan (3):
->>>   mm: cma: alloc_contig_range: use pageblock_order as the single
->>>     alignment.
->>>   drivers: virtio_mem: use pageblock size as the minimum virtio_mem
->>>     size.
->>>   arch: powerpc: adjust fadump alignment to be pageblock aligned.
->>>
->>>  arch/powerpc/include/asm/fadump-internal.h |  4 +---
->>>  drivers/virtio/virtio_mem.c                |  6 ++----
->>>  include/linux/mmzone.h                     |  5 +----
->>>  kernel/dma/contiguous.c                    |  2 +-
->>>  mm/cma.c                                   |  6 ++----
->>>  mm/page_alloc.c                            | 12 +++++-------
->>>  6 files changed, 12 insertions(+), 23 deletions(-)
->>>
->
-> --
-> Best Regards,
-> Yan, Zi
-
-
---
-Best Regards,
-Yan, Zi
-
---=_MailMate_B87A4FE1-FCD1-4BCD-A1E0-68BE0115A23A_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAmGdGDoPHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqKdSwP/Rkpe5TY8bwBrv7k8zh0t8Vtjx0X6u5hZVLY
-rFGzwCpFOBaDE7hLwlsVbEUhiFpOG5QQCcgNz6nVw3N20v441mvtMeyC3X3wba+r
-3echfI5q32BsavoC8dyf2/zI6POVEbRfwzZhZAuNjYIe61Aj7zG9uMYsFxxfS7kC
-m63oNtUynZLQiPbAsxML8u5eWKUUflLEMcLTkMBhW5QFDiyKzt94hL93b9VF1cCP
-+YfV6TXEWAMXeIwBoN2UHvSv2DBgPXtJhxuYfLkvxl3E0Kl1e6B2d5WwumYn4p+4
-q7fOjS7ZIfZXkxYUjXFjxk3PLUPn3NdDzp4tPrOq/Dl6Gp3dCMtwlMhmqyFgRsws
-Src8Kh8tBxqR1xG0/Cw6NBlmaMCPdqQYebx0ZxwI6g1KbcYSkZMCg+twN8XSGY/6
-qVOSWC/GoXslq4xl161GfJoQ1t9jWkW339bKDxgEtPr3gOjuAqfCMtxYsHp6Jy52
-6l5zwh5r9X/IiN7cYWz2UOdTX8K+80/006ySxG/fL1EWzZylnNgPVVI6bn19ASL/
-5kAnxithROyYLG7ElrytbszVcHo5/0vAKrkm8dMR0zOyKolY0eDb94BMy00Mb9FP
-MmRY2ka53xPdQNtPqmLk+gtNYwUs9f1HsqecJ5C7CoruF/oveELOu6uFc1UQoGFd
-D0t0WTfG
-=1ffP
------END PGP SIGNATURE-----
-
---=_MailMate_B87A4FE1-FCD1-4BCD-A1E0-68BE0115A23A_=--
+> Hi,=0A=
+> =0A=
+> On Wed, Nov 03, 2021 at 11:31:36AM +0200, Volodymyr Mytnyk wrote:=0A=
+> > From: Volodymyr Mytnyk <vmytnyk@marvell.com>=0A=
+> > =0A=
+> > On busy system with big number (few thousands) of HW offloaded flows, i=
+t=0A=
+> > is possible to hit the situation, where some of the conntack flows are=
+=0A=
+> > stuck in conntrack table (as offloaded) and cannot be removed by user.=
+=0A=
+> > =0A=
+> > This behaviour happens if user has configured conntack using tc sub-sys=
+tem,=0A=
+> > offloaded those flows for HW and then deleted tc configuration from Lin=
+ux=0A=
+> > system by deleting the tc qdiscs.=0A=
+> > =0A=
+> > When qdiscs are removed, the nf_flow_table_free() is called to do the=
+=0A=
+> > cleanup of HW offloaded flows in conntrack table.=0A=
+> > =0A=
+> > ...=0A=
+> > process_one_work=0A=
+> >   tcf_ct_flow_table_cleanup_work()=0A=
+> >     nf_flow_table_free()=0A=
+> > =0A=
+> > The nf_flow_table_free() does the following things:=0A=
+> > =0A=
+> >   1. cancels gc workqueue=0A=
+> >   2. marks all flows as teardown=0A=
+> >   3. executes nf_flow_offload_gc_step() once for each flow to=0A=
+> >      trigger correct teardown flow procedure (e.g., allocate=0A=
+> >      work to delete the HW flow and marks the flow as "dying").=0A=
+> >   4. waits for all scheduled flow offload works to be finished.=0A=
+> >   5. executes nf_flow_offload_gc_step() once for each flow to=0A=
+> >      trigger the deleting of flows.=0A=
+> > =0A=
+> > Root cause:=0A=
+> > =0A=
+> > In step 3, nf_flow_offload_gc_step() expects to move flow to "dying"=0A=
+> > state by using nf_flow_offload_del() and deletes the flow in next=0A=
+> > nf_flow_offload_gc_step() iteration. But, if flow is in "pending" state=
+=0A=
+> > for some reason (e.g., reading HW stats), it will not be moved to=0A=
+> > "dying" state as expected by nf_flow_offload_gc_step() and will not=0A=
+> > be marked as "dead" for delition.=0A=
+> > =0A=
+> > In step 5, nf_flow_offload_gc_step() assumes that all flows marked=0A=
+> > as "dead" and will be deleted by this call, but this is not true since=
+=0A=
+> > the state was not set diring previous nf_flow_offload_gc_step()=0A=
+> > call.=0A=
+> > =0A=
+> > It issue causes some of the flows to get stuck in connection tracking=
+=0A=
+> > system or not release properly.=0A=
+> > =0A=
+> > To fix this problem, add nf_flow_table_offload_flush() call between 2 &=
+ 3=0A=
+> > step, to make sure no other flow offload works will be in "pending" sta=
+te=0A=
+> > during step 3.=0A=
+> =0A=
+> Thanks for the detailed report.=0A=
+> =0A=
+> I'm attaching two patches, the first one is a preparation patch. The=0A=
+> second patch flushes the pending work, then it sets the teardown flag=0A=
+> to all flows in the flowtable and it forces a garbage collector run to=0A=
+> queue work to remove the flows from hardware, then it flushes this new=0A=
+> pending work and (finally) it forces another garbage collector run to=0A=
+> remove the entry from the software flowtable. Compile-tested only.=0A=
+=0A=
+Hi Pablo,=0A=
+=0A=
+	Thanks for reviewing the changes and problem investigation.=0A=
+=0A=
+I will check the provided patches and will back to you.=0A=
+=0A=
+Regards,=0A=
+  Volodymyr=
