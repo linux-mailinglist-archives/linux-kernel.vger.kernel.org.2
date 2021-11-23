@@ -2,99 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B3B45A399
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:20:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB24A45A39D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:21:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230181AbhKWNXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 08:23:23 -0500
-Received: from mout.kundenserver.de ([212.227.126.135]:48117 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234825AbhKWNXW (ORCPT
+        id S235821AbhKWNYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 08:24:05 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:35284 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229853AbhKWNX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 08:23:22 -0500
-Received: from mail-wr1-f42.google.com ([209.85.221.42]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1M58zc-1moPmr0U2G-001B4f; Tue, 23 Nov 2021 14:20:13 +0100
-Received: by mail-wr1-f42.google.com with SMTP id b12so38929177wrh.4;
-        Tue, 23 Nov 2021 05:20:13 -0800 (PST)
-X-Gm-Message-State: AOAM531HmzQSFTWVqVgaWTzcaH0ukhr6FR3HGqHjJYKsC8Qi7WpQ/zUl
-        C0syFIzcVigBfglFBq4dHyWRhWPABUKnhx9Lppo=
-X-Google-Smtp-Source: ABdhPJwpT1iqgZ3/dEvpqaazlpfCJQIb+joipxiKMUpjkoh/lL7fOj6hF1e58ZtQ4eRqkzavbf1frnwH+VQGmHXqrGo=
-X-Received: by 2002:adf:f7c2:: with SMTP id a2mr7393084wrq.71.1637673612679;
- Tue, 23 Nov 2021 05:20:12 -0800 (PST)
+        Tue, 23 Nov 2021 08:23:59 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A120821940;
+        Tue, 23 Nov 2021 13:20:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637673650; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=7MFKZbNAVdl2EUgQeeUJA5/cSNPz9947JBoucY3tvZA=;
+        b=ldzEZ69g0Qwal/zZhhM52f60Z7cvvWSVyAQPpYuh4bnOgmRkEkBQMMgmvQpcCNp3uGWvuK
+        IV21m8dRP++wTEM9SyEP5tRDzQOY+uxBfjVpPueU9loJR9cb2w5WB9URqB/nOK1EOs5A0I
+        WS4DFXMVoH6UQuEFad+LbeUJ4ySoVjo=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6A6D213DE9;
+        Tue, 23 Nov 2021 13:20:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id fPTAGLLqnGH9CgAAMHmgww
+        (envelope-from <jgross@suse.com>); Tue, 23 Nov 2021 13:20:50 +0000
+From:   Juergen Gross <jgross@suse.com>
+To:     xen-devel@lists.xenproject.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v7 0/3] xen, usb: support pvUSB frontend driver
+Date:   Tue, 23 Nov 2021 14:20:45 +0100
+Message-Id: <20211123132048.5335-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <CA+G9fYtH2JR=L0cPoOEqsEGrZW_uOJgX6qLGMe_hbLpBtjVBwA@mail.gmail.com>
-In-Reply-To: <CA+G9fYtH2JR=L0cPoOEqsEGrZW_uOJgX6qLGMe_hbLpBtjVBwA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 23 Nov 2021 14:19:56 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1NhpNxWfj3gDnuf4bWK_fiE8cjcRyN7e8j95NmvOzbGw@mail.gmail.com>
-Message-ID: <CAK8P3a1NhpNxWfj3gDnuf4bWK_fiE8cjcRyN7e8j95NmvOzbGw@mail.gmail.com>
-Subject: Re: spinlock.c:306:9: error: implicit declaration of function '__raw_write_lock_nested'
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Galbraith <umgwanakikbuti@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:QFR7kDgsfDVE5/Y1R44YWOjmAmELgyRKIYn8qWLSlk62H3gjKF/
- sGvCLqNIgchzlvOg1pQC2GaRsKKBdwapxT7ozfAfZWaKwvpt+OfqoNrTRmDcQFpXB8elwsv
- cjvHGPhUnJdjSCI+NFtzDMd6Ytn8Py4wZLMdcvDd8WaukoO2ivObS//U+JMzwhq7Moa5Abl
- FSow+B0oIv9GgptWlV6ag==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:T3aMy9ahu+o=:QbmUyLL2o9tz0g05IFRDbj
- JJo1D8uHYqbAtA1/PLsn48FcGjyzFWe+GxCeRcyzC9st52G2JkPwUQgL6FiaY0CPYyUMAeZM5
- VedOWv+WbQ0glDwDKcWddcC3qMZuWGSDKmvSMUEMXjOaX//kRYJT0W7o7G8uSQUYCQH9c6WyK
- pcZEH+RJU9T/g/Kxd4ge722ZrlRLKqYmf4ccolf7914qjX97ZDkiG/h4Xphd3j9D8QMk8HO9H
- iDDHNQgSpuDIs8yObv2IRHY+B0sXTlYkNxkcSVmuimQhrcm5YBMwQPfG5MHzVWWcS280Z1O60
- p8cGXGcALT0AclhlHk05pYSWs3F8Q+j3Vpkx0oEiTfFcMWPcAtVhuZEri52/zj79WxQyPvEoZ
- eF70jmt0rtoK/qWILzVV4F3SB1n4Nm+RetmpQv8SA6rzIhg9WtBJovlk78AYj49VFNxlxV0Et
- uVLGrWQhQjrDH5sieLxvrckkzpAfSVgFV9ANi9+rO08ybW6uinblp6gkNlss8KUenY+UwSm0o
- vAxwtB8LcQ+MQFSFhybaZSwWrG3454G0Kig6JIRrcBotXDJw2JSXPGBwDAAFAZNOixS0AZ85o
- qK7pJEKAB7P+Spiqik6Qo5Jf2uupFxpbgy2cS/BXXlzSpSDuKY58WRzNr56K0Am+9dMq2oEPY
- ZURqkmoKb16m4UyhmnRUU5bh8Xnp0o5dykPKsTVQKxeYsvESsLFzxiHi9ajJaDI3K05E=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 12:38 PM Naresh Kamboju
-<naresh.kamboju@linaro.org> wrote:
->
-> While building Linux next 20211123 tag for sh with gcc-11
-> following warnings / errors noticed.
+This series adds XEN guest pvUSB support. With pvUSB it is possible to
+use physical USB devices from a XEN domain.
 
-Nothing in here looks like a recent regression from either the kernel
-or gcc-11.
+Since V4 a lot of time (several years) has passed. This is a revived
+attempt to get the frontend into the kernel.
 
-> make --silent --keep-going --jobs=8
-> O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=sh
-> CROSS_COMPILE=sh4-linux-gnu- 'CC=sccache sh4-linux-gnu-gcc'
-> 'HOSTCC=sccache gcc'
->   Generating include/generated/machtypes.h
-> <stdin>:1517:2: warning: #warning syscall clone3 not implemented [-Wcpp]
-> <stdin>:1559:2: warning: #warning syscall futex_waitv not implemented [-Wcpp]
+The support consists of a frontend in form of a virtual hcd driver in
+the unprivileged domU passing I/O-requests to the backend in a driver
+domain (usually Dom0). The backend is not part of this patch series,
+as it is supported via qemu.
 
-These happen with any compiler version, someone needs to write the correct
-entry code for clone3 and hook up futex_waitv().
+The code is taken (and adapted) from the original pvUSB implementation
+done for Linux 2.6 in 2008 by Fujitsu.
 
-> include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements
+Normal operation of USB devices by adding and removing them dynamically
+to/from a domain has been tested using various USB devices (USB 1.1,
+2.0 and 3.0) using the qemu based backend.
 
-These are old bugs, they show up in any kernel version with gcc-8 or higher.
+Changes in V7:
+- use SPDX header in usbif.h
 
-> fs/mpage.c:336:1: warning: the frame size of 1092 bytes is larger than
+Changes in V6:
+- add SPDX line to driver
 
-I see these going back to gcc-6, it looks like this is caused by
-CONFIG_PAGE_SIZE_64KB.
+Changes in V5:
+- added interface documentation to patch 1
+- frontend no longer trusts backend to return only sane values
 
-     Arnd
+Changes in V4:
+- remove sysfs file from frontend, as it violated the "one value per file"
+  rule and didn't serve any real purpose.
+
+Changes in V3:
+- move frontend to drivers/usb/host and rename it to xen-hcd.
+- changed name prefixes in patch 1 to "xenusb" as requested by Greg
+- use __u<n> types rather than uint<n>_t as requested by Greg
+
+Changes in V2:
+- removed backend, as it can be implemented in user land
+- added some access macros and definitions to the pvUSB interface
+  description to make it independant from linux kernel USB internals
+- adapted frontend to newer kernel version and use new pvUSB
+  interface macros
+- set port status in one chunk as suggested by Oliver Neukum
+
+Juergen Gross (3):
+  usb: Add Xen pvUSB protocol description
+  usb: Introduce Xen pvUSB frontend (xen hcd)
+  xen: add Xen pvUSB maintainer
+
+ MAINTAINERS                      |    8 +
+ drivers/usb/host/Kconfig         |   11 +
+ drivers/usb/host/Makefile        |    1 +
+ drivers/usb/host/xen-hcd.c       | 1606 ++++++++++++++++++++++++++++++
+ include/xen/interface/io/usbif.h |  405 ++++++++
+ 5 files changed, 2031 insertions(+)
+ create mode 100644 drivers/usb/host/xen-hcd.c
+ create mode 100644 include/xen/interface/io/usbif.h
+
+-- 
+2.26.2
+
