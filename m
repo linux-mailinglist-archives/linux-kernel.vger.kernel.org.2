@@ -2,80 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E62245A465
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:07:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A261E45A3C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:30:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234213AbhKWOKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 09:10:40 -0500
-Received: from forward108o.mail.yandex.net ([37.140.190.206]:44272 "EHLO
-        forward108o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229895AbhKWOKi (ORCPT
+        id S236073AbhKWNdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 08:33:32 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15856 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236091AbhKWNdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 09:10:38 -0500
-Received: from myt6-f96510cd1fe5.qloud-c.yandex.net (myt6-f96510cd1fe5.qloud-c.yandex.net [IPv6:2a02:6b8:c12:4e12:0:640:f965:10cd])
-        by forward108o.mail.yandex.net (Yandex) with ESMTP id 721B05DD3578;
-        Tue, 23 Nov 2021 17:07:25 +0300 (MSK)
-Received: from myt5-89cdf5c4a3a5.qloud-c.yandex.net (myt5-89cdf5c4a3a5.qloud-c.yandex.net [2a02:6b8:c12:289b:0:640:89cd:f5c4])
-        by myt6-f96510cd1fe5.qloud-c.yandex.net (mxback/Yandex) with ESMTP id EAARN659cs-7PCujBt4;
-        Tue, 23 Nov 2021 17:07:25 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1637676445;
-        bh=zukpakYo/v9A9p+z3C+BYBBdaGVg0clOkde3xk807jI=;
-        h=Date:Subject:To:From:Message-Id:Cc;
-        b=p2i+Fqpuuu2qmhjtrMphSS4mUBUejnAcgFfVWxge5wNE6Focxjzmx9rl1NmwKsLUU
-         F04d6bJux6Nf3ZOTZTPuuo2nNxd4qUHmCXNU2CmqrKYS87p0cHNR2Cgwj0CYkhSPg9
-         6fpRv4Kt49obpZcvrpbtEMznGbl4OCRDwg9sFiik=
-Authentication-Results: myt6-f96510cd1fe5.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
-Received: by myt5-89cdf5c4a3a5.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id LKuEaJWePI-7OwqACT4;
-        Tue, 23 Nov 2021 17:07:24 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-X-Yandex-Fwd: 2
-From:   Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     David Abdurachmanov <david.abdurachmanov@sifive.com>,
-        Nikita Shubin <nikita.shubin@maquefel.me>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] rtc: da9063: add as wakeup source
-Date:   Tue, 23 Nov 2021 17:06:04 +0300
-Message-Id: <20211123140604.21655-1-nikita.shubin@maquefel.me>
-X-Mailer: git-send-email 2.31.1
+        Tue, 23 Nov 2021 08:33:18 -0500
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hz4kF3Bvvz91G3;
+        Tue, 23 Nov 2021 21:29:41 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 23 Nov 2021 21:30:07 +0800
+Received: from huawei.com (10.175.113.32) by kwepemm600003.china.huawei.com
+ (7.193.23.202) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Tue, 23 Nov
+ 2021 21:30:06 +0800
+From:   Nanyong Sun <sunnanyong@huawei.com>
+To:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>
+CC:     <sunnanyong@huawei.com>, <palmerdabbelt@google.com>,
+        <wangkefeng.wang@huawei.com>, <anup@brainfault.org>,
+        <alex@ghiti.fr>, <jszhang@kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next 0/2] riscv/mm: Enable THP migration
+Date:   Tue, 23 Nov 2021 22:06:36 +0800
+Message-ID: <20211123140638.3852400-1-sunnanyong@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.32]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As da9063 driver refuses to load without irq, we simply add it as a wakeup
-source before registering rtc device.
+This series enables THP migration on riscv via ARCH_ENABLE_THP_MIGRATION.
+But first this adjusts PAGE_PROT_NONE to satisfy generic memory semantics
+like the behavior of pmd_present() and pmd_trans_huge() when in
+THP splitting or migration.
 
-Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
----
-v1->v2:
-Alexandre Belloni:
+This feature can reduce the time of THP migration by not splits THP
+before migration and can guarantee the pages after migration are still
+contiguous.[1]
 
-Dropped everything except device_init_wakeup, as driver refuses to load
-without irq specified, we can always set it as a wakeup source, before
-calling devm_rtc_register_device.
----
- drivers/rtc/rtc-da9063.c | 2 ++
- 1 file changed, 2 insertions(+)
+I have tested the below test case on qemu based on riscv after
+enabling this feature, the throughput of THP migration gains 13x
+performance improvement:
+https://github.com/x-y-z/thp-migration-bench
 
-diff --git a/drivers/rtc/rtc-da9063.c b/drivers/rtc/rtc-da9063.c
-index d4b72a9fa2ba..b9a73356bace 100644
---- a/drivers/rtc/rtc-da9063.c
-+++ b/drivers/rtc/rtc-da9063.c
-@@ -494,6 +494,8 @@ static int da9063_rtc_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev, "Failed to request ALARM IRQ %d: %d\n",
- 			irq_alarm, ret);
- 
-+	device_init_wakeup(&pdev->dev, true);
-+
- 	return devm_rtc_register_device(rtc->rtc_dev);
- }
- 
+I also have tested and passed the test cases under
+tools/testing/selftests/vm.
+
+[1]: https://lwn.net/Articles/723764/
+
+Nanyong Sun (2):
+  riscv/mm: Adjust PAGE_PROT_NONE to comply with THP semantics
+  riscv/mm: Enable THP migration
+
+ arch/riscv/Kconfig                    |  1 +
+ arch/riscv/include/asm/pgtable-bits.h |  2 +-
+ arch/riscv/include/asm/pgtable.h      | 16 +++++++++++-----
+ 3 files changed, 13 insertions(+), 6 deletions(-)
+
 -- 
-2.31.1
+2.25.1
 
