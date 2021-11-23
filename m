@@ -2,183 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0160145A104
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:09:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E4045A111
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:11:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235838AbhKWLM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 06:12:57 -0500
-Received: from foss.arm.com ([217.140.110.172]:51108 "EHLO foss.arm.com"
+        id S235263AbhKWLO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 06:14:29 -0500
+Received: from mga07.intel.com ([134.134.136.100]:33565 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234250AbhKWLMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 06:12:55 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D41ED1063;
-        Tue, 23 Nov 2021 03:09:47 -0800 (PST)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B87EF3F5A1;
-        Tue, 23 Nov 2021 03:09:46 -0800 (PST)
-Date:   Tue, 23 Nov 2021 11:09:44 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     catalin.marinas@arm.com, dvyukov@google.com, peterz@infradead.org,
-        quic_qiancai@quicinc.com, valentin.schneider@arm.com,
-        will@kernel.org, woodylin@google.com
-Subject: Re: [PATCH v2] Reset task stack state in bringup_cpu()
-Message-ID: <20211123110944.GB37253@lakrids.cambridge.arm.com>
-References: <20211118102927.4854-1-mark.rutland@arm.com>
- <20211123110648.GA37253@lakrids.cambridge.arm.com>
+        id S234292AbhKWLO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 06:14:28 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="298411915"
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="298411915"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 03:11:20 -0800
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="497249160"
+Received: from songallx-mobl.ccr.corp.intel.com (HELO [10.254.215.84]) ([10.254.215.84])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 03:11:18 -0800
+Message-ID: <016271ae-956e-23c1-8ff1-67fc108023b3@linux.intel.com>
+Date:   Tue, 23 Nov 2021 19:11:15 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211123110648.GA37253@lakrids.cambridge.arm.com>
-User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Cc:     baolu.lu@linux.intel.com, Will Deacon <will@kernel.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, Joerg Roedel <jroedel@suse.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 1/2] iommu/vt-d: Remove unused PASID_DISABLED
+Content-Language: en-US
+To:     Joerg Roedel <joro@8bytes.org>
+References: <20211123105507.7654-1-joro@8bytes.org>
+ <20211123105507.7654-2-joro@8bytes.org>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+In-Reply-To: <20211123105507.7654-2-joro@8bytes.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 11:06:48AM +0000, Mark Rutland wrote:
-> On Thu, Nov 18, 2021 at 10:29:27AM +0000, Mark Rutland wrote:
-> > To hot unplug a CPU, the idle task on that CPU calls a few layers of C
-> > code before finally leaving the kernel. When KASAN is in use, poisoned
-> > shadow is left around for each of the active stack frames, and when
-> > shadow call stacks are in use. When shadow call stacks are in use the
-> > task's saved SCS SP is left pointing at an arbitrary point within the
-> > task's shadow call stack.
-> > 
-> > When a CPU is offlined than onlined back into the kernel, this stale
-> > state can adversely affect execution. Stale KASAN shadow can alias new
-> > stackframes and result in bogus KASAN warnings. A stale SCS SP is
-> > effectively a memory leak, and prevents a portion of the shadow call
-> > stack being used. Across a number of hotplug cycles the idle task's
-> > entire shadow call stack can become unusable.
-> > 
-> > We previously fixed the KASAN issue in commit:
-> > 
-> >   e1b77c92981a5222 ("sched/kasan: remove stale KASAN poison after hotplug")
-> > 
-> > ... by removing any stale KASAN stack poison immediately prior to
-> > onlining a CPU.
-> > 
-> > Subsequently in commit:
-> > 
-> >   f1a0a376ca0c4ef1 ("sched/core: Initialize the idle task with preemption disabled")
-> > 
-> > ... the refactoring left the KASAN and SCS cleanup in one-time idle
-> > thread initialization code rather than something invoked prior to each
-> > CPU being onlined, breaking both as above.
-> > 
-> > We fixed SCS (but not KASAN) in commit:
-> > 
-> >   63acd42c0d4942f7 ("sched/scs: Reset the shadow stack when idle_task_exit")
-> > 
-> > ... but as this runs in the context of the idle task being offlined it's
-> > potentially fragile.
-> > 
-> > To fix these consistently and more robustly, reset the SCS SP and KASAN
-> > shadow of a CPU's idle task immediately before we online that CPU in
-> > bringup_cpu(). This ensures the idle task always has a consistent state
-> > when it is running, and removes the need to so so when exiting an idle
-> > task.
-> > 
-> > Whenever any thread is created, dup_task_struct() will give the task a
-> > stack which is free of KASAN shadow, and initialize the task's SCS SP,
-> > so there's no need to specially initialize either for idle thread within
-> > init_idle(), as this was only necessary to handle hotplug cycles.
-> > 
-> > I've tested this with both GCC and clang, with relevant options enabled,
-> > offlining and onlining CPUs with:
-> > 
-> > | while true; do
-> > |   for C in /sys/devices/system/cpu/cpu*/online; do
-> > |     echo 0 > $C;
-> > |     echo 1 > $C;
-> > |   done
-> > | done
-> > 
-> > Link: https://lore.kernel.org/lkml/20211012083521.973587-1-woodylin@google.com/
-> > Link: https://lore.kernel.org/linux-arm-kernel/YY9ECKyPtDbD9q8q@qian-HP-Z2-SFF-G5-Workstation/
-> > Link: https://lore.kernel.org/lkml/20211115113310.35693-1-mark.rutland@arm.com/
-> > Fixes: 1a0a376ca0c4ef1 ("sched/core: Initialize the idle task with preemption disabled")
+On 2021/11/23 18:55, Joerg Roedel wrote:
+> From: Joerg Roedel <jroedel@suse.de>
 > 
-> Ugh, that should be f1a0a376ca0c4ef1 (with a leading 'f'), as in the
-> body of the commit message.
+> The macro is unused after commit 00ecd5401349a so it can be removed.
 > 
-> I can fix that up for v3, unless someone's happy to fix that up when
-> picking this up.
+> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Fixes: 00ecd5401349a ("iommu/vt-d: Clean up unused PASID updating functions")
 
-I just realised I forgot to Cc Ingo, so I'll spin that as v3 and fix the
-Cc list.
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
 
-Mark.
+Best regards,
+baolu
 
-> > Reported-by: Qian Cai <quic_qiancai@quicinc.com>
-> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> > Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-> > Tested-by: Qian Cai <quic_qiancai@quicinc.com>
-> > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > Cc: Dmitry Vyukov <dvyukov@google.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Will Deacon <will@kernel.org>
-> > Cc: Woody Lin <woodylin@google.com>
-> > ---
-> >  kernel/cpu.c        | 7 +++++++
-> >  kernel/sched/core.c | 4 ----
-> >  2 files changed, 7 insertions(+), 4 deletions(-)
-> > 
-> > Since v1 [1]:
-> > * Clarify commit message
-> > * Fix typos
-> > * Accumulate tags
-> > 
-> > [1] https://lore.kernel.org/lkml/20211115113310.35693-1-mark.rutland@arm.com/
-> > 
-> > diff --git a/kernel/cpu.c b/kernel/cpu.c
-> > index 192e43a87407..407a2568f35e 100644
-> > --- a/kernel/cpu.c
-> > +++ b/kernel/cpu.c
-> > @@ -31,6 +31,7 @@
-> >  #include <linux/smpboot.h>
-> >  #include <linux/relay.h>
-> >  #include <linux/slab.h>
-> > +#include <linux/scs.h>
-> >  #include <linux/percpu-rwsem.h>
-> >  #include <linux/cpuset.h>
-> >  
-> > @@ -588,6 +589,12 @@ static int bringup_cpu(unsigned int cpu)
-> >  	int ret;
-> >  
-> >  	/*
-> > +	 * Reset stale stack state from the last time this CPU was online.
-> > +	 */
-> > +	scs_task_reset(idle);
-> > +	kasan_unpoison_task_stack(idle);
-> > +
-> > +	/*
-> >  	 * Some architectures have to walk the irq descriptors to
-> >  	 * setup the vector space for the cpu which comes online.
-> >  	 * Prevent irq alloc/free across the bringup.
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index 3c9b0fda64ac..76f9deeaa942 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -8619,9 +8619,6 @@ void __init init_idle(struct task_struct *idle, int cpu)
-> >  	idle->flags |= PF_IDLE | PF_KTHREAD | PF_NO_SETAFFINITY;
-> >  	kthread_set_per_cpu(idle, cpu);
-> >  
-> > -	scs_task_reset(idle);
-> > -	kasan_unpoison_task_stack(idle);
-> > -
-> >  #ifdef CONFIG_SMP
-> >  	/*
-> >  	 * It's possible that init_idle() gets called multiple times on a task,
-> > @@ -8777,7 +8774,6 @@ void idle_task_exit(void)
-> >  		finish_arch_post_lock_switch();
-> >  	}
-> >  
-> > -	scs_task_reset(current);
-> >  	/* finish_cpu(), as ran on the BP, will clean up the active_mm state */
-> >  }
-> >  
-> > -- 
-> > 2.11.0
-> > 
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+> ---
+>   arch/x86/include/asm/fpu/api.h | 6 ------
+>   1 file changed, 6 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/fpu/api.h b/arch/x86/include/asm/fpu/api.h
+> index 6053674f9132..c2767a6a387e 100644
+> --- a/arch/x86/include/asm/fpu/api.h
+> +++ b/arch/x86/include/asm/fpu/api.h
+> @@ -102,12 +102,6 @@ extern void switch_fpu_return(void);
+>    */
+>   extern int cpu_has_xfeatures(u64 xfeatures_mask, const char **feature_name);
+>   
+> -/*
+> - * Tasks that are not using SVA have mm->pasid set to zero to note that they
+> - * will not have the valid bit set in MSR_IA32_PASID while they are running.
+> - */
+> -#define PASID_DISABLED	0
+> -
+>   /* Trap handling */
+>   extern int  fpu__exception_code(struct fpu *fpu, int trap_nr);
+>   extern void fpu_sync_fpstate(struct fpu *fpu);
+> 
