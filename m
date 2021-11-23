@@ -2,128 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36BCA45ACB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:39:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2775645ACBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:41:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237137AbhKWTmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 14:42:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51746 "EHLO
+        id S237077AbhKWToH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 14:44:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234801AbhKWTmS (ORCPT
+        with ESMTP id S234047AbhKWToG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 14:42:18 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A63B0C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:39:09 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id b67so282346qkg.6
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:39:09 -0800 (PST)
+        Tue, 23 Nov 2021 14:44:06 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95BAC06173E
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:40:57 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id k37so846510lfv.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:40:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=Om+g4Uz2JjyBuvHdfGl4XTjXS4Di5g1zmNyuqruDMDc=;
-        b=fpKETfU+H9nCsr/emEcye4fztYexowbT6ApwFyHjIBI50Q6+FuVwVrL4XuF1PhJGwE
-         Xrln16g6s63oPEXKPak7a9q6zbN4t80xBz/oOn6Yl9FmsZUjsHkzILhvp1g+KBfm65q4
-         nJLz2KOy1DpQARp+xz/D1/NxOm/XtDqKpqukSSbtwgT/QNMw7pf6tqCT2Yeo/HTVr3u8
-         5gwGkC4iNnGqU9qw3Jz9NDq+OSKwYXJQr8EvJ7sggfUF+83LK/gG57hQMKG3pkOZT9qv
-         +FRlPt7Q4CSIsQOALUvDH2ZQYsSE6Er3V7swlS2mqYBXGWliur5j07f0w9PpPQtcPPyV
-         ZIfg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QKototm+ggjsnUIU+FMdClkd9TByERSoA+0AnaJd+Rs=;
+        b=r+0oR66fWwZZGCS12XCPkrDbW1OWMDO9LBoAUcBHkn3XFkoHGEfkJMjbXYDaQXygyb
+         v1ZVGxxD1QieCxmUZZhEUbQf/XCqNTHTYS/jhPz3eNDfA3hWyZRxO/ErigfrtSn36qNr
+         vMFCNtOcQ6E7JpMAb1HK2qLMdB1zBjbw4OzNJaTNktcSbSp97WnnulF0WUIlZvmuGywL
+         H9nH2w3yf9gP+fxjGlON7BYnX0qcSHCGXZqiw5GovTQHeKwBQxAXekiZ4oeYkDGCnxRA
+         Nn1jsk/8LLepU/MdD9mBjzXPyB8ZNtvy6ZITFxXte7O+pgq8nFqAPVqkwgSD/lHjo+mb
+         Jt7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=Om+g4Uz2JjyBuvHdfGl4XTjXS4Di5g1zmNyuqruDMDc=;
-        b=yZoSYDbbpImL2WxpMI3B3uIKcVif6vOUTL2jhhwiuTJbZdvLjpMtHr0YsRwovUPXXU
-         QapvCLKjqC7667QIow3PVBYsM8d/p6wPhtYPnBWyNNL4awra71+Btsz1NXlGyIPpjaBk
-         KMVso9yiGWsUKEWoT3red2zjy5xl20d96fmEW0tA3gqlsWAPvJgLUTsproYXmq+zBhsU
-         QK8AIlZiIMRlTm42FxFEE1pbhYBqBwZfws5Ug6GrUQMSczM2z39/KRkmRyi3M0C5s6aI
-         /8UzwXZaWI1EkqPnPWbBRu7li0YUlBmbw42dCjZ1eb1FNDY+ckwCK8gMp/ggItOBOByp
-         Oh4A==
-X-Gm-Message-State: AOAM531tTbOKQxkKk1pwRQxb3QEhuVspyRZx/t/EVQkQR8aHTnuHQ/HN
-        0DfWC/XbAG81i6hi1RGrv89HlA==
-X-Google-Smtp-Source: ABdhPJx1LXmah08Wco9CfLO9RABE+JD1pVOug1JHcDqvoXVWgrZxQ1pJzQ9DMaQNTN5GEAZhiIiitw==
-X-Received: by 2002:a37:a081:: with SMTP id j123mr7167214qke.503.1637696348305;
-        Tue, 23 Nov 2021 11:39:08 -0800 (PST)
-Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id y20sm6772061qkj.24.2021.11.23.11.39.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 11:39:07 -0800 (PST)
-Message-ID: <85e9830ff0c2ed5eb77ce52ec7fde82a08368a2a.camel@ndufresne.ca>
-Subject: Re: [PATCH] media: hantro: Hook up RK3399 JPEG encoder output
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Date:   Tue, 23 Nov 2021 14:39:06 -0500
-In-Reply-To: <CAGXv+5Gf-gsB7JXnLiZF_R=0RdxXS7CDZaFftyZ+aESXLXy1Ew@mail.gmail.com>
-References: <20211119074654.470729-1-wenst@chromium.org>
-         <5d23258a954eb0076cacf89d6c88b5e6ef13695f.camel@ndufresne.ca>
-         <CAGXv+5Gf-gsB7JXnLiZF_R=0RdxXS7CDZaFftyZ+aESXLXy1Ew@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QKototm+ggjsnUIU+FMdClkd9TByERSoA+0AnaJd+Rs=;
+        b=yzAKYnCkv9/Y4jffazKwUa1VTz2jRs6JwszbAHKIQ31+alvh4EULUg1abv5QrO6lRA
+         Bhrw4inzkucmhFtONVtvFrkVZxLp/alBchloG83nIhYIXPMpganhqiK/6OGYi1GF3tqk
+         eIRadUDlWSR9248JudYJmSk/z8oP6HYKbJkdTLAH12VXBhJgVi1XKlIDtEfeZ2nucVRT
+         UUsZKXPGnC06oCwEve0u+2UOmjCcyfMcOmU+d+z2SgygAPyaBVLe+/GlS20gbDDvJooS
+         +trcrvZsciiNZewuZHccLE03gZLEwrPCrQ1nh0BNGgVUguSow6P2CuF/MXO97O0H93DT
+         5gQA==
+X-Gm-Message-State: AOAM533NxnMuMORnpwKjWeZJdpdqHIDnuMkhATUKNpTG5Marib8SLea9
+        rNVAel8vdD2r7H+E8ih8c5fw4kgiUGzVUEn058r1pA==
+X-Google-Smtp-Source: ABdhPJxL4+9NfGeW1Em0Th9DeYYs3AFY6QNVvav2iJ6duv5bPeq45Y4JCbu2TGr4oOuoCwa6FCpUfQ+Ps4M4MiTSKew=
+X-Received: by 2002:a05:6512:3d07:: with SMTP id d7mr7640142lfv.233.1637696455966;
+ Tue, 23 Nov 2021 11:40:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211115113813.238044-1-jonathanh@nvidia.com>
+In-Reply-To: <20211115113813.238044-1-jonathanh@nvidia.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 23 Nov 2021 20:40:19 +0100
+Message-ID: <CAPDyKFor-vf00nc+beshcq-N+L7jPWSLaN754gCCsqNHSxYKzQ@mail.gmail.com>
+Subject: Re: [PATCH] mmc: spi: Add device-tree SPI IDs
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le lundi 22 novembre 2021 à 11:57 +0800, Chen-Yu Tsai a écrit :
-> On Sat, Nov 20, 2021 at 12:00 AM Nicolas Dufresne <nicolas@ndufresne.ca> wrote:
-> > 
-> > Le vendredi 19 novembre 2021 à 15:46 +0800, Chen-Yu Tsai a écrit :
-> > > The JPEG encoder found in the Hantro H1 encoder block only produces a
-> > > raw entropy-encoded scan. The driver is responsible for building a JPEG
-> > > compliant bitstream and placing the entropy-encoded scan in it. Right
-> > > now the driver uses a bounce buffer for the hardware to output the raw
-> > > scan to.
-> > > 
-> > > In commit e765dba11ec2 ("hantro: Move hantro_enc_buf_finish to JPEG
-> > > codec_ops.done"), the code that copies the raw scan from the bounce
-> > > buffer to the capture buffer was moved, but was only hooked up for the
-> > > Hantro H1 (then RK3288) variant. The RK3399 variant was broken,
-> > > producing a JPEG bitstream without the scan, and the capture buffer's
-> > > .bytesused field unset.
-> > > 
-> > > Fix this by duplicating the code that is executed when the JPEG encoder
-> > > finishes encoding a frame. As the encoded length is read back from
-> > > hardware, and the variants having different register layouts, the
-> > > code is duplicated rather than shared.
-> > > 
-> > > Fixes: e765dba11ec2 ("hantro: Move hantro_enc_buf_finish to JPEG codec_ops.done")
-> > > Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> > > ---
-> > > This was developed on the downstream ChromeOS 5.10 kernel (with a hack
-> > > for .data_offset) and tested with ChromeOS's jpeg_encode_accelerator_unittest
-> > > patched to accept non-JFIF JPEG streams (https://crrev.com/c/3291480).
-> > > 
-> > > This was then forward-ported to mainline (name and filename changes) and
-> > > compile tested only.
-> > 
-> > Tested with GStreamer on top of 5.16-rc1 from media_stage.git. Not perfect but
-> > at least the the output it valid. Test command was:
-> > 
-> >   gst-launch-1.0 videotestsrc num-buffers=2 ! v4l2jpegenc ! filesink
-> > location=test.jpg
-> > 
-> > Notice that I encode two frames, it seems like the draining flow is broken in
-> > this driver. GStreamer will queue the frame and issue CMD_START immediately, the
-> > driver will skip the encode, leaving me with an empty file.
-> 
-> The hantro driver doesn't implement ENC_CMD, which IIRC is used for the
-> draining flow. I guess that's something to fix, since the mem2mem stateful
-> encoder spec seems to require it. Or does that spec not apply to the JPEG
-> encoders?
+On Mon, 15 Nov 2021 at 12:38, Jon Hunter <jonathanh@nvidia.com> wrote:
+>
+> Commit 5fa6863ba692 ("spi: Check we have a spi_device_id for each DT
+> compatible") added a test to check that every SPI driver has a
+> spi_device_id for each DT compatiable string defined by the driver
+> and warns if the spi_device_id is missing. The spi_device_id is
+> missing for the MMC SPI driver and the following warning is now seen.
+>
+>  WARNING KERN SPI driver mmc_spi has no spi_device_id for mmc-spi-slot
+>
+> Fix this by adding the necessary spi_device_id.
+>
+> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
 
-I'm pretty sure its required. But this isn't a regression from this patch.
+Applied for fixes, thanks!
 
-> 
-> > Tested-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-> 
-> Thanks!
-> 
-> ChenYu
+Kind regards
+Uffe
 
+
+> ---
+>  drivers/mmc/host/mmc_spi.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/drivers/mmc/host/mmc_spi.c b/drivers/mmc/host/mmc_spi.c
+> index f4c8e1a61f53..b431cdd27353 100644
+> --- a/drivers/mmc/host/mmc_spi.c
+> +++ b/drivers/mmc/host/mmc_spi.c
+> @@ -1514,6 +1514,12 @@ static int mmc_spi_remove(struct spi_device *spi)
+>         return 0;
+>  }
+>
+> +static const struct spi_device_id mmc_spi_dev_ids[] = {
+> +       { "mmc-spi-slot"},
+> +       { },
+> +};
+> +MODULE_DEVICE_TABLE(spi, mmc_spi_dev_ids);
+> +
+>  static const struct of_device_id mmc_spi_of_match_table[] = {
+>         { .compatible = "mmc-spi-slot", },
+>         {},
+> @@ -1525,6 +1531,7 @@ static struct spi_driver mmc_spi_driver = {
+>                 .name =         "mmc_spi",
+>                 .of_match_table = mmc_spi_of_match_table,
+>         },
+> +       .id_table =     mmc_spi_dev_ids,
+>         .probe =        mmc_spi_probe,
+>         .remove =       mmc_spi_remove,
+>  };
+> --
+> 2.25.1
+>
