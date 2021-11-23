@@ -2,88 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F289E459CEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:41:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 115CF459CF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:42:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234204AbhKWHoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 02:44:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234063AbhKWHox (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 02:44:53 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1693C061574;
-        Mon, 22 Nov 2021 23:41:45 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hyx0l1Kcfz4xbC;
-        Tue, 23 Nov 2021 18:41:43 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1637653303;
-        bh=Ocy7eV4gtjzL1bRMCe/X7KRCYA2YFplfTlGvKoXE0vc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=TfqE6Of8KBWSGeL3g8bldYD6AmSLGHf/fkThOrDRgMuMSQq6NC5YBv3+Chkw4ndS7
-         iwxTsUj0tRJMpZPHNV2xG8nmpStmjte3QQ24fMduoedCYZKq6oaLSCbiwxwI+H73Cz
-         GWdltKmnpcFq6aE/LKsLuXx44F5VdfXhZs5cdn3WkQsRyz8vZEK+cCZ1GXLBGEG/kg
-         Nq4zfvo6IpsvZR9KOFDRQ2AW/8a3FsnG6yB9aa7dY9heM7v18PCVpkPwb6rBQxUR5A
-         kdkHk/r5fncGploFXkFYpXyiEaPxxavASogeSOEqTx57tOoz2PG+iLs8PZkZlVotOa
-         JxUtoq30ayWDg==
-Date:   Tue, 23 Nov 2021 18:41:42 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        <heiko.carstens@de.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the regulator tree
-Message-ID: <20211123184142.50ff56c3@canb.auug.org.au>
+        id S234274AbhKWHpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 02:45:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54744 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234063AbhKWHpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 02:45:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 164016008E;
+        Tue, 23 Nov 2021 07:42:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637653326;
+        bh=5YgIFjfpg5vULlmgcdxg7GkWRqrmKmms46EiNLgenCo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AaQQXBPvoqz7ayuyT/f+LTzFzcOy9HCyQ8qwJpBjYYayUlaSTnFNPMcf9OVsgiaHf
+         yrkZypTtm1wur2ta8jlOK2+JKKweaoEsFsxrz5SHcllS7DXLpoVWBpIS2Axs1ZsjX2
+         lCrHjkhV+xipMK15iSJPwZmdLpoube0n2patE4SAqZzUFMn/a/OYORSoCTZO7qz+V0
+         DyLAF+5LS/CTxxpDk5XCQv/NG7UapgD7eBaKtjszd99Y7mStqYvWV2RDTGs6hrHLm9
+         EwOv9ZbpF3Q7qYNJHKTAewzr/ibIXX5bF88qNL6ba8cuKZqoVLcCOJBxPUEd1aSQu2
+         VWgob7HadgfoQ==
+Date:   Tue, 23 Nov 2021 13:12:01 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     rashmi.a@intel.com
+Cc:     michal.simek@xilinx.com, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kishon@ti.com,
+        andriy.shevchenko@linux.intel.com, linux-phy@lists.infradead.org,
+        mgross@linux.intel.com, kris.pan@linux.intel.com,
+        furong.zhou@intel.com, mallikarjunappa.sangannavar@intel.com,
+        adrian.hunter@intel.com, mahesh.r.vaidya@intel.com,
+        nandhini.srikandan@intel.com
+Subject: Re: [RESEND PATCH v2 3/4] dt-bindings: phy: intel: Add Thunder Bay
+ eMMC PHY bindings
+Message-ID: <YZybSTsMRKkOyfC5@matsya>
+References: <20211027115516.4475-1-rashmi.a@intel.com>
+ <20211027115516.4475-4-rashmi.a@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/lz1Q7W8G6JaEtDANAvQFqr=";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211027115516.4475-4-rashmi.a@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/lz1Q7W8G6JaEtDANAvQFqr=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 27-10-21, 17:25, rashmi.a@intel.com wrote:
+> From: Rashmi A <rashmi.a@intel.com>
+> 
+> Binding description for Intel Thunder Bay eMMC PHY.
+> Added the newly introduced files into MAINTAINERS file-list
 
-Hi all,
+Applied, thanks
 
-After merging the regulator tree, today's linux-next build (s390
-allmodconfig) failed like this:
-
-include/linux/mfd/rohm-generic.h:93:12: error: 'rohm_regulator_set_voltage_=
-sel_restricted' defined but not used [-Werror=3Dunused-function]
-cc1: all warnings being treated as errors
-
-Caused by commit
-
-  8b6e88555971 ("regulator: rohm-regulator: add helper for restricted volta=
-ge setting")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/lz1Q7W8G6JaEtDANAvQFqr=
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGcmzYACgkQAVBC80lX
-0GzRXwgAkihzkBrCFKAcXr9YHlVXR9KZk0XD3FMQn6SlzU/n8Xi11JBE8d5OWVO9
-/JBk1dyv/BlK5CWISgdGmz9TGRewGYQ+BOZWYkBE/BPLI96AJJKdA7cMGt0OJllQ
-1gaxySRtRTcjta0al5Ru3/qWVLkZKZNAcZQbZrbnHk94G1TaQKdZFahwQaRAD6bo
-CFEVKWCnEaHo955cjYl3XXZVRTgyDNVoUBBtxt5xXvB6iAkwfbSd1ahNCoKliEgz
-5cRT2rqMQdYREp1Je/g+r8eUw9ygFmfjGVphbT59pLEkYpG3kB2aX3hpwMk0wn9t
-63NVFW0J/JgnkoO9Z9ADCIHiP156ug==
-=VitT
------END PGP SIGNATURE-----
-
---Sig_/lz1Q7W8G6JaEtDANAvQFqr=--
+-- 
+~Vinod
