@@ -2,119 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AA104599EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 03:03:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D734599F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 03:04:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232666AbhKWCG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 21:06:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231150AbhKWCGy (ORCPT
+        id S232768AbhKWCHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 21:07:34 -0500
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:49774 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232261AbhKWCHb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 21:06:54 -0500
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC844C061714
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 18:03:47 -0800 (PST)
-Received: by mail-pf1-x44a.google.com with SMTP id c6-20020aa781c6000000b004a4fcdf1d6dso1052524pfn.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 18:03:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=9bHMOu3pVxAcj8i0iDu0iZsIvZlw+K8b/2K5VjmoKFQ=;
-        b=cjrU4RfOO6IuOwzjgfYXWDz2sOUOVtUSAQsoqlcxE5JfVmnHtlNHRaS6C3WayROvB9
-         YYLHS8X9KLdLcSwUj8ffwf5hKSZWaS90yjgu4R77h5uQzejrq3ddWNltsJy2BKBOPHl8
-         mZCBxuIfglNOkPFL7Jt69qOFCWuuo54pOBBnhAtAFsEunxEaskab0VIWkMcggVi4bdAg
-         dg3m4gdu9nMVxUdL1UFsGwK5ugPf9vImP8/jkSFmGUfPLVByw8vdmm7j6WPqciIoujoL
-         x7W4qTSJmRiN8ziHM22GIn89Gu4SMthscEKvfMmZ02U2kRZlqjOMfVbo2xdTqAQQGBgm
-         WPCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=9bHMOu3pVxAcj8i0iDu0iZsIvZlw+K8b/2K5VjmoKFQ=;
-        b=ZorQATFZuY2Aolq5kBy+16mKBS6ZSup/87iIA6ckeT0re83hCDQXvXkeDN36J5gzfz
-         CmPjIgviCbZtFgWoNam6qoXQy/x+cBpocC6zo3cNCOgX788aBhtCj7ZVvNq9/Zz4CgIz
-         G2Y1ryoDVesI2b+GhanMVC7zNL3wYF4cz954a6buo1pMymwtYb2maKTNpCShjN+hN6Vh
-         u6JIBFiw7KJ3aWdEeBAVq+1zK5H0d970rHrkhXt4xsxKohc34LiXvs7vfZjyATCTJwCQ
-         BxV0dHwsYnPCuHA2OkQKgonnEmxv5ADZ9yPrk/wCBvNNiMbbRR+l/P/gJi8ENjdhVrO8
-         qNVg==
-X-Gm-Message-State: AOAM531zpehj5tEibJ3hGOH1CYRsdSWlm5XdJQWEnb0cI0xWkDLnXTcS
-        rS1h0sEYSiuIMsgXdrAyMcpZXoJth96S
-X-Google-Smtp-Source: ABdhPJycTRwXN9gmdLqW3irXaVYc+LF5thv+7Y2LWvSPRZm9GM3VG3I1NnlgwOqK9hhsZKFIErErJqO5aiNc
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:8e01:f22:909b:4ff])
- (user=irogers job=sendgmr) by 2002:a05:6a00:1883:b0:49f:a8be:af29 with SMTP
- id x3-20020a056a00188300b0049fa8beaf29mr1404124pfh.22.1637633027210; Mon, 22
- Nov 2021 18:03:47 -0800 (PST)
-Date:   Mon, 22 Nov 2021 18:03:41 -0800
-In-Reply-To: <20211123020341.3073673-1-irogers@google.com>
-Message-Id: <20211123020341.3073673-2-irogers@google.com>
-Mime-Version: 1.0
-References: <20211123020341.3073673-1-irogers@google.com>
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH 2/2] perf evsel: Improve error message for uncore events
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     eranian@google.com, Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 22 Nov 2021 21:07:31 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AN24Cs6005358;
+        Mon, 22 Nov 2021 20:04:12 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1637633052;
+        bh=ZtaP19s45n/k8sQWhrgK9O3eJF4KJgDsM3wfYMVoy40=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=kwzNHQ5LEO8S3jw4kao9RMnS1p5g6fhmrr4bYwHJs+4ihCx6/rLrje4LXR4lUA9UZ
+         HKj352W+gu9fuj2EWf/bx3mkXqnaGX8/RlL+QgBSRFHwaboViy5ci8uoiTYlbPVK/A
+         lIYleXsQ7P+v9rZvYNL5/k3X1CsGLtPnhN15U1Po=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AN24CPp037885
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 22 Nov 2021 20:04:12 -0600
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 22
+ Nov 2021 20:04:11 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 22 Nov 2021 20:04:11 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AN24BoV101668;
+        Mon, 22 Nov 2021 20:04:11 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+CC:     Nishanth Menon <nm@ti.com>
+Subject: Re: [PATCH] soc: ti: pruss: fix referenced node in error message
+Date:   Mon, 22 Nov 2021 20:04:10 -0600
+Message-ID: <163763303249.31252.7911231463957684515.b4-ty@ti.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <d6e24953-ea89-fd1c-6e16-7a0142118054@siemens.com>
+References: <d6e24953-ea89-fd1c-6e16-7a0142118054@siemens.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a group has multiple events and the leader fails it can yield
-errors like:
+Hi Jan Kiszka,
 
-$ perf stat -e '{uncore_imc/cas_count_read/},instructions' /bin/true
-Error:
-The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (uncore_imc/cas_count_read/).
-/bin/dmesg | grep -i perf may provide additional information.
+On Mon, 21 Jun 2021 20:08:28 +0200, Jan Kiszka wrote:
+> From: Jan Kiszka <jan.kiszka@siemens.com>
+> 
+> So far, "(null)" is reported for the node that is missing clocks.
+> 
+> 
 
-However, when not the group leader <not supported> is given:
+I have applied the following to branch ti-drivers-soc-next on [1].
+Thank you!
 
-$ perf stat -e '{instructions,uncore_imc/cas_count_read/}' /bin/true
-...
-         1,619,057      instructions
-   <not supported> MiB  uncore_imc/cas_count_read/
+[1/1] soc: ti: pruss: fix referenced node in error message
+      commit: 8aa35e0bb5eaa42bac415ad0847985daa7b4890c
 
-This is necessary because get_group_fd will fail if the leader fails and
-is the direct result of the check on line 750 of builtin-stat.c in
-stat_handle_error that returns COUNTER_SKIP for the latter case.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-This patch improves the error message to:
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-$ perf stat -e '{uncore_imc/cas_count_read/},instructions' /bin/true
-Error:
-Invalid event (uncore_imc/cas_count_read/) in per-thread mode, enable system wide with '-a'.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/evsel.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index a59fb2ecb84e..48696ff4bddb 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -2950,6 +2950,11 @@ int evsel__open_strerror(struct evsel *evsel, struct target *target,
- 			return scnprintf(msg, size, "wrong clockid (%d).", clockid);
- 		if (perf_missing_features.aux_output)
- 			return scnprintf(msg, size, "The 'aux_output' feature is not supported, update the kernel.");
-+		if ((evsel__leader(evsel) == evsel) &&
-+		    (evsel->core.leader->nr_members > 1))
-+			return scnprintf(msg, size,
-+	"Invalid event (%s) in per-thread mode, enable system wide with '-a'.",
-+					evsel__name(evsel));
- 		break;
- 	case ENODATA:
- 		return scnprintf(msg, size, "Cannot collect data source with the load latency event alone. "
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
 -- 
-2.34.0.rc2.393.gf8c9666880-goog
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
