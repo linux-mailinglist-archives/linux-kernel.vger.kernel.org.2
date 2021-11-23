@@ -2,200 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F2D245A22E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:05:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7DA245A231
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:06:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236864AbhKWMIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 07:08:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35204 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232545AbhKWMIO (ORCPT
+        id S236011AbhKWMJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 07:09:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232545AbhKWMJj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 07:08:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637669105;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=10C2btypfwcrFtuMmhHmEu5fFbIpPIsZeEBRh/iSG+U=;
-        b=csA8xBpolb+OXjWSjjTdT9+sApuTUSyliTLs1eFGlg4BcHYX2t9jPKAGV00nO7qA+KFBkl
-        PV+OhdOk2moESX0OUFYPYjUY3wz92y6u0us3NVnl/NSk7AE5Ql8Qs+RVeqWbcpBOodmow4
-        A8IhRouikT3rWq0LKRevqXCAUEITb08=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-154-0LfygGmTPBytcqT-25oAdQ-1; Tue, 23 Nov 2021 07:05:04 -0500
-X-MC-Unique: 0LfygGmTPBytcqT-25oAdQ-1
-Received: by mail-wm1-f72.google.com with SMTP id j193-20020a1c23ca000000b003306ae8bfb7so8332338wmj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 04:05:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=10C2btypfwcrFtuMmhHmEu5fFbIpPIsZeEBRh/iSG+U=;
-        b=OkhpChv2+WzXIpRd0lZpxu8q3KBb1htpjHoZmemBwsX0vmdfwXDMsJu8UD68Bzqqjf
-         fcEwkpmVAY4BAQfl4eaYrbfHDPl295cKG820xcYY3uf2wvHSxVu+m2h1tZVmg2ZKnfh+
-         5da4jUMyNEa/FOogaeBe+hvpF7FDoj9lAnYX91AtakUxqcz/kOheV+c+nADmbnvEc6l6
-         k4MxY5bmKaav8NIXaEhgu5RwiXMyeBcjsOWCky1xSFYxZyJQmbu07L5+AC2nJryaKsaT
-         KgCUeDlNI8B0njBM6kJzmxQuzK0Dbor/F+wEUPOxEv0Qh8tL6dcBYh74dtyR+t6vDwS1
-         W1wQ==
-X-Gm-Message-State: AOAM531qFHvI7uONd95W3Y7TpzOSZ3W5IX4KjoW5vkAg3OP8+dcaOTo8
-        m0dXOWUhwhQmoDNFFWUMp9gQSaT9U9HvofoQaZ1+SbGM/HBxlF731EksAQRGRJl1lrvpAmVSwCw
-        TSSwW7VDigwyrfA9JTF2Dhghy
-X-Received: by 2002:a1c:1c8:: with SMTP id 191mr2389663wmb.90.1637669103363;
-        Tue, 23 Nov 2021 04:05:03 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyLoxWe0qE+FnDLpNv40B8GIz11hsE9XFI/Y9fkJD69fhqkCoyVX155VmOBmNmz+cOprFl9Vg==
-X-Received: by 2002:a1c:1c8:: with SMTP id 191mr2389644wmb.90.1637669103184;
-        Tue, 23 Nov 2021 04:05:03 -0800 (PST)
-Received: from [192.168.3.132] (p5b0c6765.dip0.t-ipconnect.de. [91.12.103.101])
-        by smtp.gmail.com with ESMTPSA id o12sm16660715wrc.85.2021.11.23.04.05.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Nov 2021 04:05:02 -0800 (PST)
-Message-ID: <476868f6-8d32-b8d2-855e-4b19e8a54cc2@redhat.com>
-Date:   Tue, 23 Nov 2021 13:05:01 +0100
+        Tue, 23 Nov 2021 07:09:39 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 954E2C061574;
+        Tue, 23 Nov 2021 04:06:31 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: andrzej.p)
+        with ESMTPSA id 9A7541F4551B
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1637669190; bh=C30QZT7g6mF+exH+nnrqVrKIrIfAkNwM1ChWv8NwI1k=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=d37nIEMLGLQok8oMKwNGvYeDaDUB+v3jeg7cQYYkaT6QsTfK06HFU0z4zcepG0p6j
+         Zy1soHJBAIETQ2ouRVXGO63kniTsJDn42Dq/3hFhpz0hE6/vLGEe5dgOL61WEl0BDL
+         Jy6lwe7ASh32PyjdVjpzEpklIbiLcixe0pb0BRLucwdiqNFv9cC+N17Zpd6N5Fw3Fn
+         uJSJbJhwhagqfCQ9RLqymlMLt0UfjZPuzQ44igliPGJ9Fuwbh8++esHDTZvmpJv5Mb
+         RuKslWd5AkcogeO+LY65KT3Ppf+87c+1bik3KbSF7SbBgrV8NoN7SchEZgF45+BfBr
+         oB/Th0TJqP95A==
+Subject: Re: [PATCH 3/7] media: hantro: vp9: add support for legacy register
+ set
+To:     Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-media@vger.kernel.org
+Cc:     ezequiel@vanguardiasur.com.ar, nicolas.dufresne@collabora.com,
+        mchehab@kernel.org, robh+dt@kernel.org, mripard@kernel.org,
+        wens@csie.org, p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+References: <20211122184702.768341-1-jernej.skrabec@gmail.com>
+ <20211122184702.768341-4-jernej.skrabec@gmail.com>
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Message-ID: <506e6056-6806-cbb0-271f-66a6512429fb@collabora.com>
+Date:   Tue, 23 Nov 2021 13:06:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v7] mm: Add PM_THP_MAPPED to /proc/pid/pagemap
+In-Reply-To: <20211122184702.768341-4-jernej.skrabec@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Mina Almasry <almasrymina@google.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "Paul E . McKenney" <paulmckrcu@fb.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <florian.schmidt@nutanix.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-doc@vger.kernel.org
-References: <20211123000102.4052105-1-almasrymina@google.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20211123000102.4052105-1-almasrymina@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.11.21 01:01, Mina Almasry wrote:
-> Add PM_THP_MAPPED MAPPING to allow userspace to detect whether a given virt
-> address is currently mapped by a transparent huge page or not.  Example
-> use case is a process requesting THPs from the kernel (via a huge tmpfs
-> mount for example), for a performance critical region of memory.  The
-> userspace may want to query whether the kernel is actually backing this
-> memory by hugepages or not.
+Hi Jernej,
+
+W dniu 22.11.2021 o 19:46, Jernej Skrabec pisze:
+> Some older G2 cores uses slightly different register set for HEVC and
+> VP9. Since vast majority of registers and logic is the same, it doesn't
+> make sense to introduce another drivers.
 > 
-> PM_THP_MAPPED bit is set if the virt address is mapped at the PMD
-> level and the underlying page is a transparent huge page.
+> Add legacy_regs quirk and implement only VP9 changes for now. HEVC
+> changes will be introduced later, if needed.
 > 
-> A few options were considered:
-> 1. Add /proc/pid/pageflags that exports the same info as
->    /proc/kpageflags.  This is not appropriate because many kpageflags are
->    inappropriate to expose to userspace processes.
-> 2. Simply get this info from the existing /proc/pid/smaps interface.
->    There are a couple of issues with that:
->    1. /proc/pid/smaps output is human readable and unfriendly to
->       programatically parse.
->    2. /proc/pid/smaps is slow because it must read the whole memory range
->       rather than a small range we care about.  The cost of reading
->       /proc/pid/smaps into userspace buffers is about ~800us per call,
->       and this doesn't include parsing the output to get the information
->       you need. The cost of querying 1 virt address in /proc/pid/pagemaps
->       however is around 5-7us.
-> 
-> Tested manually by adding logging into transhuge-stress, and by
-> allocating THP and querying the PM_THP_MAPPED flag at those
-> virtual addresses.
-> 
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
-> 
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: David Rientjes rientjes@google.com
-> Cc: Paul E. McKenney <paulmckrcu@fb.com>
-> Cc: Yu Zhao <yuzhao@google.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Peter Xu <peterx@redhat.com>
-> Cc: Ivan Teterevkov <ivan.teterevkov@nutanix.com>
-> Cc: Florian Schmidt <florian.schmidt@nutanix.com>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-fsdevel@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> 
-> 
+> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 > ---
+>   drivers/staging/media/hantro/hantro.h         |  2 +
+>   drivers/staging/media/hantro/hantro_g2_regs.h | 19 +++++
+>   .../staging/media/hantro/hantro_g2_vp9_dec.c  | 74 ++++++++++++++-----
+>   3 files changed, 78 insertions(+), 17 deletions(-)
 > 
-> Changes in v7:
-> - Added clarification that smaps is only slow because it looks at the
->   whole address space.
-> 
-> Changes in v6:
-> - Renamed to PM_THP_MAPPED
-> - Removed changes to transhuge-stress
-> 
-> Changes in v5:
-> - Added justification for this interface in the commit message!
-> 
-> Changes in v4:
-> - Removed unnecessary moving of flags variable declaration
-> 
-> Changes in v3:
-> - Renamed PM_THP to PM_HUGE_THP_MAPPING
-> - Fixed checks to set PM_HUGE_THP_MAPPING
-> - Added PM_HUGE_THP_MAPPING docs
-> ---
->  Documentation/admin-guide/mm/pagemap.rst | 3 ++-
->  fs/proc/task_mmu.c                       | 3 +++
->  2 files changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin-guide/mm/pagemap.rst
-> index fdc19fbc10839..8a0f0064ff336 100644
-> --- a/Documentation/admin-guide/mm/pagemap.rst
-> +++ b/Documentation/admin-guide/mm/pagemap.rst
-> @@ -23,7 +23,8 @@ There are four components to pagemap:
->      * Bit  56    page exclusively mapped (since 4.2)
->      * Bit  57    pte is uffd-wp write-protected (since 5.13) (see
->        :ref:`Documentation/admin-guide/mm/userfaultfd.rst <userfaultfd>`)
-> -    * Bits 57-60 zero
-> +    * Bit  58    page is a huge (PMD size) THP mapping
-> +    * Bits 59-60 zero
->      * Bit  61    page is file-page or shared-anon (since 3.5)
->      * Bit  62    page swapped
->      * Bit  63    page present
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index ad667dbc96f5c..d784a97aa209a 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -1302,6 +1302,7 @@ struct pagemapread {
->  #define PM_SOFT_DIRTY		BIT_ULL(55)
->  #define PM_MMAP_EXCLUSIVE	BIT_ULL(56)
->  #define PM_UFFD_WP		BIT_ULL(57)
-> +#define PM_THP_MAPPED		BIT_ULL(58)
->  #define PM_FILE			BIT_ULL(61)
->  #define PM_SWAP			BIT_ULL(62)
->  #define PM_PRESENT		BIT_ULL(63)
-> @@ -1456,6 +1457,8 @@ static int pagemap_pmd_range(pmd_t *pmdp, unsigned long addr, unsigned long end,
->  
->  		if (page && page_mapcount(page) == 1)
->  			flags |= PM_MMAP_EXCLUSIVE;
-> +		if (page && is_transparent_hugepage(page))
-> +			flags |= PM_THP_MAPPED;
->  
->  		for (; addr != end; addr += PAGE_SIZE) {
->  			pagemap_entry_t pme = make_pme(frame, flags);
-> 
+> diff --git a/drivers/staging/media/hantro/hantro.h b/drivers/staging/media/hantro/hantro.h
+> index d03824fa3222..83ed25d9657b 100644
+> --- a/drivers/staging/media/hantro/hantro.h
+> +++ b/drivers/staging/media/hantro/hantro.h
+> @@ -74,6 +74,7 @@ struct hantro_irq {
+>    * @reg_names:			array of register range names
+>    * @num_regs:			number of register range names in the array
+>    * @double_buffer:		core needs double buffering
+> + * @legacy_regs:		core uses legacy register set
+>    */
+>   struct hantro_variant {
+>   	unsigned int enc_offset;
+> @@ -96,6 +97,7 @@ struct hantro_variant {
+>   	const char * const *reg_names;
+>   	int num_regs;
+>   	unsigned int double_buffer : 1;
+> +	unsigned int legacy_regs : 1;
+>   };
+>   
+>   /**
+> diff --git a/drivers/staging/media/hantro/hantro_g2_regs.h b/drivers/staging/media/hantro/hantro_g2_regs.h
+> index 15a391a4650e..d7c2ff05208e 100644
+> --- a/drivers/staging/media/hantro/hantro_g2_regs.h
+> +++ b/drivers/staging/media/hantro/hantro_g2_regs.h
+> @@ -37,6 +37,13 @@
+>   
+>   #define g2_strm_swap		G2_DEC_REG(2, 28, 0xf)
+>   #define g2_dirmv_swap		G2_DEC_REG(2, 20, 0xf)
+> +/* used on older variants */
+> +#define g2_strm_swap_old	G2_DEC_REG(2, 27, 0x1f)
+> +#define g2_pic_swap		G2_DEC_REG(2, 22, 0x1f)
+> +#define g2_dirmv_swap_old	G2_DEC_REG(2, 17, 0x1f)
+> +#define g2_tab0_swap		G2_DEC_REG(2, 12, 0x1f)
+> +#define g2_tab1_swap		G2_DEC_REG(2, 7, 0x1f)
+> +#define g2_tab2_swap		G2_DEC_REG(2, 2, 0x1f)\
 
-Thanks!
+Please rename g2_tab[0-2]_swap to g2_tab[0-2]_swap_old. Similar names
+exist in newer variants (even if not used at the moment).
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+It is rather difficult to come up with a consistent rule with regard
+to in what sequence to arrange these register definitions. It seems
+to me that you use a hybrid approach: if the definitions being added
+fall "out of order" then you annotate with a comment about older variants,
+and if they are "in order" then you simply fold them into their place.
 
--- 
-Thanks,
+I don't have a very strong opinion, but maybe they all should be
+just "in bitfield order" and without comments?
 
-David / dhildenb
+>   
+>   #define g2_mode			G2_DEC_REG(3, 27, 0x1f)
+>   #define g2_compress_swap	G2_DEC_REG(3, 20, 0xf)
+> @@ -45,6 +52,8 @@
+>   #define g2_out_dis		G2_DEC_REG(3, 15, 0x1)
+>   #define g2_out_filtering_dis	G2_DEC_REG(3, 14, 0x1)
+>   #define g2_write_mvs_e		G2_DEC_REG(3, 12, 0x1)
+> +#define g2_tab3_swap		G2_DEC_REG(3, 7, 0x1f)
+
+g2_tab3_swap_old
+
+With all the above addressed you can add my
+
+Reviewied-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+
+> +#define g2_rscan_swap		G2_DEC_REG(3, 2, 0x1f)
+>   
+>   #define g2_pic_width_in_cbs	G2_DEC_REG(4, 19, 0x1fff)
+>   #define g2_pic_height_in_cbs	G2_DEC_REG(4, 6,  0x1fff)
+> @@ -58,6 +67,7 @@
+>   #define g2_tempor_mvp_e		G2_DEC_REG(5, 11, 0x1)
+>   #define g2_max_cu_qpd_depth	G2_DEC_REG(5, 5,  0x3f)
+>   #define g2_cu_qpd_e		G2_DEC_REG(5, 4,  0x1)
+> +#define g2_pix_shift		G2_DEC_REG(5, 0,  0xf)
+>   
+>   #define g2_stream_len		G2_DEC_REG(6, 0,  0xffffffff)
+>   
+> @@ -80,6 +90,8 @@
+>   
+>   #define g2_const_intra_e	G2_DEC_REG(8, 31, 0x1)
+>   #define g2_filt_ctrl_pres	G2_DEC_REG(8, 30, 0x1)
+> +#define g2_bit_depth_y		G2_DEC_REG(8, 21, 0xf)
+> +#define g2_bit_depth_c		G2_DEC_REG(8, 17, 0xf)
+>   #define g2_idr_pic_e		G2_DEC_REG(8, 16, 0x1)
+>   #define g2_bit_depth_pcm_y	G2_DEC_REG(8, 12, 0xf)
+>   #define g2_bit_depth_pcm_c	G2_DEC_REG(8, 8,  0xf)
+> @@ -87,6 +99,9 @@
+>   #define g2_bit_depth_c_minus8	G2_DEC_REG(8, 4,  0x3)
+>   #define g2_output_8_bits	G2_DEC_REG(8, 3,  0x1)
+>   #define g2_output_format	G2_DEC_REG(8, 0,  0x7)
+> +/* used on older variants */
+> +#define g2_rs_out_bit_depth	G2_DEC_REG(8, 4,  0xf)
+> +#define g2_pp_pix_shift		G2_DEC_REG(8, 0,  0xf)
+>   
+>   #define g2_refidx1_active	G2_DEC_REG(9, 19, 0x1f)
+>   #define g2_refidx0_active	G2_DEC_REG(9, 14, 0x1f)
+> @@ -98,6 +113,10 @@
+>   #define g2_num_tile_rows	G2_DEC_REG(10, 14, 0x1f)
+>   #define g2_tile_e		G2_DEC_REG(10, 1,  0x1)
+>   #define g2_entropy_sync_e	G2_DEC_REG(10, 0,  0x1)
+> +/* used on older variants */
+> +#define g2_init_qp_old		G2_DEC_REG(10, 25, 0x3f)
+> +#define g2_num_tile_cols_old	G2_DEC_REG(10, 20, 0x1f)
+> +#define g2_num_tile_rows_old	G2_DEC_REG(10, 15, 0x1f)
+>   
+>   #define vp9_transform_mode	G2_DEC_REG(11, 27, 0x7)
+>   #define vp9_filt_sharpness	G2_DEC_REG(11, 21, 0x7)
+> diff --git a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c b/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
+> index d4fc649a4da1..5aac32700cd0 100644
+> --- a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
+> +++ b/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
+> @@ -150,7 +150,8 @@ static void config_output(struct hantro_ctx *ctx,
+>   	dma_addr_t luma_addr, chroma_addr, mv_addr;
+>   
+>   	hantro_reg_write(ctx->dev, &g2_out_dis, 0);
+> -	hantro_reg_write(ctx->dev, &g2_output_format, 0);
+> +	if (!ctx->dev->variant->legacy_regs)
+> +		hantro_reg_write(ctx->dev, &g2_output_format, 0);
+>   
+>   	luma_addr = hantro_get_dec_buf_addr(ctx, &dst->base.vb.vb2_buf);
+>   	hantro_write_addr(ctx->dev, G2_OUT_LUMA_ADDR, luma_addr);
+> @@ -327,6 +328,7 @@ config_tiles(struct hantro_ctx *ctx,
+>   	struct hantro_aux_buf *tile_edge = &vp9_ctx->tile_edge;
+>   	dma_addr_t addr;
+>   	unsigned short *tile_mem;
+> +	unsigned int rows, cols;
+>   
+>   	addr = misc->dma + vp9_ctx->tile_info_offset;
+>   	hantro_write_addr(ctx->dev, G2_TILE_SIZES_ADDR, addr);
+> @@ -344,17 +346,24 @@ config_tiles(struct hantro_ctx *ctx,
+>   
+>   		fill_tile_info(ctx, tile_r, tile_c, sbs_r, sbs_c, tile_mem);
+>   
+> +		cols = tile_c;
+> +		rows = tile_r;
+>   		hantro_reg_write(ctx->dev, &g2_tile_e, 1);
+> -		hantro_reg_write(ctx->dev, &g2_num_tile_cols, tile_c);
+> -		hantro_reg_write(ctx->dev, &g2_num_tile_rows, tile_r);
+> -
+>   	} else {
+>   		tile_mem[0] = hantro_vp9_num_sbs(dst->vp9.width);
+>   		tile_mem[1] = hantro_vp9_num_sbs(dst->vp9.height);
+>   
+> +		cols = 1;
+> +		rows = 1;
+>   		hantro_reg_write(ctx->dev, &g2_tile_e, 0);
+> -		hantro_reg_write(ctx->dev, &g2_num_tile_cols, 1);
+> -		hantro_reg_write(ctx->dev, &g2_num_tile_rows, 1);
+> +	}
+> +
+> +	if (ctx->dev->variant->legacy_regs) {
+> +		hantro_reg_write(ctx->dev, &g2_num_tile_cols_old, cols);
+> +		hantro_reg_write(ctx->dev, &g2_num_tile_rows_old, rows);
+> +	} else {
+> +		hantro_reg_write(ctx->dev, &g2_num_tile_cols, cols);
+> +		hantro_reg_write(ctx->dev, &g2_num_tile_rows, rows);
+>   	}
+>   
+>   	/* provide aux buffers even if no tiles are used */
+> @@ -505,8 +514,22 @@ static void config_picture_dimensions(struct hantro_ctx *ctx, struct hantro_deco
+>   static void
+>   config_bit_depth(struct hantro_ctx *ctx, const struct v4l2_ctrl_vp9_frame *dec_params)
+>   {
+> -	hantro_reg_write(ctx->dev, &g2_bit_depth_y_minus8, dec_params->bit_depth - 8);
+> -	hantro_reg_write(ctx->dev, &g2_bit_depth_c_minus8, dec_params->bit_depth - 8);
+> +	if (ctx->dev->variant->legacy_regs) {
+> +		u8 pp_shift = 0;
+> +
+> +		hantro_reg_write(ctx->dev, &g2_bit_depth_y, dec_params->bit_depth);
+> +		hantro_reg_write(ctx->dev, &g2_bit_depth_c, dec_params->bit_depth);
+> +		hantro_reg_write(ctx->dev, &g2_rs_out_bit_depth, dec_params->bit_depth);
+> +
+> +		if (dec_params->bit_depth > 8)
+> +			pp_shift = 16 - dec_params->bit_depth;
+> +
+> +		hantro_reg_write(ctx->dev, &g2_pp_pix_shift, pp_shift);
+> +		hantro_reg_write(ctx->dev, &g2_pix_shift, 0);
+> +	} else {
+> +		hantro_reg_write(ctx->dev, &g2_bit_depth_y_minus8, dec_params->bit_depth - 8);
+> +		hantro_reg_write(ctx->dev, &g2_bit_depth_c_minus8, dec_params->bit_depth - 8);
+> +	}
+>   }
+>   
+>   static inline bool is_lossless(const struct v4l2_vp9_quantization *quant)
+> @@ -784,9 +807,13 @@ config_source(struct hantro_ctx *ctx, const struct v4l2_ctrl_vp9_frame *dec_para
+>   		     + dec_params->compressed_header_size;
+>   
+>   	stream_base = vb2_dma_contig_plane_dma_addr(&vb2_src->vb2_buf, 0);
+> -	hantro_write_addr(ctx->dev, G2_STREAM_ADDR, stream_base);
+>   
+>   	tmp_addr = stream_base + headres_size;
+> +	if (ctx->dev->variant->legacy_regs)
+> +		hantro_write_addr(ctx->dev, G2_STREAM_ADDR, (tmp_addr & ~0xf));
+> +	else
+> +		hantro_write_addr(ctx->dev, G2_STREAM_ADDR, stream_base);
+> +
+>   	start_bit = (tmp_addr & 0xf) * 8;
+>   	hantro_reg_write(ctx->dev, &g2_start_bit, start_bit);
+>   
+> @@ -794,10 +821,12 @@ config_source(struct hantro_ctx *ctx, const struct v4l2_ctrl_vp9_frame *dec_para
+>   	src_len += start_bit / 8 - headres_size;
+>   	hantro_reg_write(ctx->dev, &g2_stream_len, src_len);
+>   
+> -	tmp_addr &= ~0xf;
+> -	hantro_reg_write(ctx->dev, &g2_strm_start_offset, tmp_addr - stream_base);
+> -	src_buf_len = vb2_plane_size(&vb2_src->vb2_buf, 0);
+> -	hantro_reg_write(ctx->dev, &g2_strm_buffer_len, src_buf_len);
+> +	if (!ctx->dev->variant->legacy_regs) {
+> +		tmp_addr &= ~0xf;
+> +		hantro_reg_write(ctx->dev, &g2_strm_start_offset, tmp_addr - stream_base);
+> +		src_buf_len = vb2_plane_size(&vb2_src->vb2_buf, 0);
+> +		hantro_reg_write(ctx->dev, &g2_strm_buffer_len, src_buf_len);
+> +	}
+>   }
+>   
+>   static void
+> @@ -837,13 +866,24 @@ config_registers(struct hantro_ctx *ctx, const struct v4l2_ctrl_vp9_frame *dec_p
+>   
+>   	/* configure basic registers */
+>   	hantro_reg_write(ctx->dev, &g2_mode, VP9_DEC_MODE);
+> -	hantro_reg_write(ctx->dev, &g2_strm_swap, 0xf);
+> -	hantro_reg_write(ctx->dev, &g2_dirmv_swap, 0xf);
+> -	hantro_reg_write(ctx->dev, &g2_compress_swap, 0xf);
+> +	if (!ctx->dev->variant->legacy_regs) {
+> +		hantro_reg_write(ctx->dev, &g2_strm_swap, 0xf);
+> +		hantro_reg_write(ctx->dev, &g2_dirmv_swap, 0xf);
+> +		hantro_reg_write(ctx->dev, &g2_compress_swap, 0xf);
+> +		hantro_reg_write(ctx->dev, &g2_ref_compress_bypass, 1);
+> +	} else {
+> +		hantro_reg_write(ctx->dev, &g2_strm_swap_old, 0x1f);
+> +		hantro_reg_write(ctx->dev, &g2_pic_swap, 0x10);
+> +		hantro_reg_write(ctx->dev, &g2_dirmv_swap_old, 0x10);
+> +		hantro_reg_write(ctx->dev, &g2_tab0_swap, 0x10);
+> +		hantro_reg_write(ctx->dev, &g2_tab1_swap, 0x10);
+> +		hantro_reg_write(ctx->dev, &g2_tab2_swap, 0x10);
+> +		hantro_reg_write(ctx->dev, &g2_tab3_swap, 0x10);
+> +		hantro_reg_write(ctx->dev, &g2_rscan_swap, 0x10);
+> +	}
+>   	hantro_reg_write(ctx->dev, &g2_buswidth, BUS_WIDTH_128);
+>   	hantro_reg_write(ctx->dev, &g2_max_burst, 16);
+>   	hantro_reg_write(ctx->dev, &g2_apf_threshold, 8);
+> -	hantro_reg_write(ctx->dev, &g2_ref_compress_bypass, 1);
+>   	hantro_reg_write(ctx->dev, &g2_clk_gate_e, 1);
+>   	hantro_reg_write(ctx->dev, &g2_max_cb_size, 6);
+>   	hantro_reg_write(ctx->dev, &g2_min_cb_size, 3);
+> 
 
