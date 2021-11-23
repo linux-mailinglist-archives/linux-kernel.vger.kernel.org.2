@@ -2,57 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7F6459BEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 06:48:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE753459BF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 06:49:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233179AbhKWFvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 00:51:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35028 "EHLO mail.kernel.org"
+        id S233194AbhKWFwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 00:52:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229471AbhKWFvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 00:51:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E28E60174;
-        Tue, 23 Nov 2021 05:48:02 +0000 (UTC)
+        id S230036AbhKWFwV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 00:52:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C82060174;
+        Tue, 23 Nov 2021 05:49:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637646484;
-        bh=s5g41jYrdtxlXA66zVRRQhw+GXrmib0rXuZHEcHaZWI=;
+        s=k20201202; t=1637646553;
+        bh=1pN+MGPYLaxOv215SX069r2aoliyKZqf2lL8USnoshA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uIDUW0ytL9AgGAD0JVqJu/WnY8a+CxtN/MO5tEZdwN65QEuvwdYUmq+Ute2eSv9oo
-         guOQtGiMEUutwnOA140LRGGcbdtuPrEyeSbTg4lZfDlCDGjUnHfAb2OxCINfYZwfva
-         1aD+GyVwOWBoBmgGNYBcoGHWFNHazz6AFKVVxOaHuPId5K1GdZjjbXsjEQVYUaxWuY
-         tgS1vqaN9IGMc+qS9yqsGML2ixVs6uZBHwOwVvgF7sozq0aRo+g7BlKtAfm4cDhRBT
-         1awQZcMEPMTj1eF4op3CX8QIUDO2oTtp8S55+oNkGXMefXqhwpEp/4/X6l/6hvmx57
-         zwtBiUlt7e44Q==
-Date:   Tue, 23 Nov 2021 11:17:59 +0530
+        b=oB6o+b7FcB51m3tNOvO3ouaG3Uo70zHal+wsEztKjQp64468JblEBComKh557HpwD
+         cQXoUz6Cam0cATTfoA40/rw2Z5rDGAEdA5vhWWIpfZ6ZeHUSl7evPLEv8C1ZAcVMkf
+         ZqelToFpTpEUo5zdPzBLEuew6DTK3wAuZhMbyT6H5hSINM9GLwPE9vAO9AwKnSjt8k
+         KBcLDgrd7fZeXwZkrDya75o86OzkV8Y6T66AYjPXsrxk0zkde6G1kOZ9enK61T2F4V
+         ZjXbYzjnWWGidfZcyJCiiO/KG1qttFJRXhRWHXduBOlwgckYe8tEtvtuipRQWmUAOx
+         ovXFpKqnc6s4w==
+Date:   Tue, 23 Nov 2021 11:19:08 +0530
 From:   Vinod Koul <vkoul@kernel.org>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        kishon@ti.com
-Subject: Re: [PATCH v3 0/2] phy: Add support for the HDMI TX PHY on
- Meson8/8b/8m2
-Message-ID: <YZyAj/Co1e0SLU4+@matsya>
-References: <20211020195107.1564533-1-martin.blumenstingl@googlemail.com>
+To:     David Heidelberg <david@ixit.cz>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        ~okias/devicetree@lists.sr.ht, Thierry Reding <treding@nvidia.com>,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: phy: Tegra194 P2U convert to YAML
+Message-ID: <YZyA1L/6/xMpYzwR@matsya>
+References: <20211031113236.29712-1-david@ixit.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211020195107.1564533-1-martin.blumenstingl@googlemail.com>
+In-Reply-To: <20211031113236.29712-1-david@ixit.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-10-21, 21:51, Martin Blumenstingl wrote:
-> Amlogic Meson8/8b/8m2 SoCs embed a HDMI TX PHY. Unfortunately there is
-> no (public) documentation for this hardware. The best thing we have is
-> the 3.10 vendor kernel, which unfortunately doesn't document most
-> register bits (only a few are named there, the rest is all magic
-> numbers).
-> It is possible that this is a TranSwitch HDMI TX PHY based core, but
-> this is pure speculation.
-> 
-> Adding a driver for the HDMI TX PHY gets us one step closer to video
-> output on these older SoCs.
+On 31-10-21, 12:32, David Heidelberg wrote:
+> Convert Tegra194 P2U binding to the YAML format.
 
 Applied, thanks
 
