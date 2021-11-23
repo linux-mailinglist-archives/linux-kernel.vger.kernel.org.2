@@ -2,132 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A76745A13D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:19:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E1EE45A141
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235353AbhKWLWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 06:22:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46766 "EHLO
+        id S235441AbhKWLYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 06:24:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234990AbhKWLW0 (ORCPT
+        with ESMTP id S233888AbhKWLYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 06:22:26 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346EEC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 03:19:18 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id e11so10319662ljo.13
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 03:19:18 -0800 (PST)
+        Tue, 23 Nov 2021 06:24:18 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D004EC061714
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 03:21:10 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id x7so16395495pjn.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 03:21:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w+ogjWxG1DbsOOSKAdBRBvdcSf1vlOMjAXY68aT/3+U=;
-        b=g2Y3CYQC1NcCLavzUvr4ErWMQvZ4fzsgBv6CCbmTOoZcOun8WjSds54sZrtzeYEA0U
-         N5KF7mJ3kl8nFIULnhlxeAUeFZAuCfq+uX5Urd7Y31Xp8cHxNzCxkkp6HS46EZb3D6jZ
-         c7TwybE0YdC9woGghm+c/KCOlK35CIfDZrYTO7zFljpZaTHjklc27An1TOol1n/1idvS
-         kCKfDejnDdUw+aN2JJNNmUQf32+SP4pOXJVkzxhNH+rbEkLFMLkjE8yfz5ElxThNneaF
-         SJXtBIs1DuxaYn0676eJKdryXGQlku5s0UQEwOdM0oGilYhXoK+2140z6YDVV15iHy6a
-         9PQw==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5/NUU473gHgJJWAHyz9icycAmdo+qfzcO9MMsTUYLCA=;
+        b=Ka+/WtPAVKmsC47ebx/EttMPimSyaFaQsXvSwohDRgg53jo8emMNbvUMSjBffFZJiF
+         6mmEV31XO/9nn98pDJV/kWkNmFi5luffIqiHkegaqh/MUKTubaMVlPLwa07SSu/o/XsD
+         8ngdYw/RZqDR/Hmx12cSy0gEWVZ3Gd2d3Mktk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w+ogjWxG1DbsOOSKAdBRBvdcSf1vlOMjAXY68aT/3+U=;
-        b=jgbZ24FfFzeZ8jhUojfX5z3jhwHOW018ovh6jhpldw79I/J8WNsZ/geE8kyTxkzuZ1
-         jtvJr8dZGpgQq8eHwyewP+KRsMbYUWHEJvWgmKSKYKWpPU1PSWfiDS3zET2pw7sNBpmR
-         EZ217r+eOSpIuIq/qUSdq1c8p/fy6BBYT4fZnF7Jkn21djF7uS6Px63+u817yjuvdQ+n
-         +jj2Y/dOaj5G8B5ldjVoab434gtlRZZm5cW/+ec1fQ/P6PsowlhS82rkvPdTlyDyHrCr
-         IC5S15gT7z6LkW9sWHMK2wb2qiORU3ju0YXXtsYqpeuCAVX2yghqpTdy535z3wNHsuTc
-         AQFQ==
-X-Gm-Message-State: AOAM530XsieAb+rfio6+0G4yTVMz4/CX9g62wR561QNIk2wA5Y4y+2Yo
-        VD20JgxbBGqX2taSAlkhFp5AGwWpHisAWXzE0rRm9Q==
-X-Google-Smtp-Source: ABdhPJxH+dIDF8nBsp8fxznpkoFe9y9Zmc/xUzjvp4Mfv2L5TNuCMH6djlHGcQ7ManpwMDd1PzQBcWJG8pF2EVa/HSY=
-X-Received: by 2002:a05:651c:1507:: with SMTP id e7mr4381662ljf.300.1637666356182;
- Tue, 23 Nov 2021 03:19:16 -0800 (PST)
-MIME-Version: 1.0
-References: <20211122222203.4103644-1-arnd@kernel.org> <20211122222203.4103644-5-arnd@kernel.org>
-In-Reply-To: <20211122222203.4103644-5-arnd@kernel.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 23 Nov 2021 12:18:40 +0100
-Message-ID: <CAPDyKFrCOoFWuM_6Renu+M5SHotyuzXeyH99WZb69G1PFQ1z5A@mail.gmail.com>
-Subject: Re: [PATCH v2 04/11] mmc: bcm2835: stop setting chan_config->slave_id
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andy Gross <agross@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Scott Branden <sbranden@broadcom.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        alsa-devel@alsa-project.org, bcm-kernel-feedback-list@broadcom.com,
-        dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5/NUU473gHgJJWAHyz9icycAmdo+qfzcO9MMsTUYLCA=;
+        b=lP22COOTLRFqc/dfIA9INgijXhUZfZaaRD1eqkeN6+WGWbp5dasIGJZ/AVcd77v2N1
+         nDXm904XsyuuvJB3n9vHRaG8P+YyP/aUJONK4JVIgw22X3RAWH2dLvOApTXVGebIOTQq
+         ZpT+Sgq9q9epiwbVZ0KEviWHQeQ5AZ4rkEB46LZZ9Fcgl1TiZdSwmwnXzdG0gEhefYcE
+         9ivXEgC5yeKMoLljE9tuOyKkLpA10E7deCeiiDAT7g4+oPXgYPrdDVRI9BdFAtXDXxLc
+         D+EWrZw5rSFe48UFMntlEp660owovoCNLgsPV7J/Pw5P3ic+sHL6/J2OnJIKEbxtZ5ZH
+         yVWQ==
+X-Gm-Message-State: AOAM533gVKKDgKzdL7JVPcd/6tjZxF/DvsUk/cb+USL+rLMR3Q9kepzn
+        /8se96Y4wOvT82eW1EJCINl+RA==
+X-Google-Smtp-Source: ABdhPJzZX7TeNDOF6tm1dgQN6UgDtm8Er0h77Xe7AqW6C2wdt/CMcVsKuhDG9eZ4EtpKo4xugVw3nw==
+X-Received: by 2002:a17:902:e5ce:b0:142:780:78db with SMTP id u14-20020a170902e5ce00b00142078078dbmr5853227plf.12.1637666470227;
+        Tue, 23 Nov 2021 03:21:10 -0800 (PST)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:d1ae:c331:ed2a:15e9])
+        by smtp.gmail.com with ESMTPSA id 63sm11093914pfz.119.2021.11.23.03.21.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 03:21:09 -0800 (PST)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        - <devicetree-spec@vger.kernel.org>, devicetree@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
         linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-tegra@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        linux-mediatek@lists.infradead.org, senozhatsky@chromium.org,
+        tfiga@chromium.org
+Subject: [PATCH 0/3] Allow restricted-dma-pool to customize IO_TLB_SEGSIZE
+Date:   Tue, 23 Nov 2021 19:21:01 +0800
+Message-Id: <20211123112104.3530135-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Nov 2021 at 23:23, Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The field is not interpreted by the DMA engine driver, as all the data
-> is passed from devicetree instead. Remove the assignment so the field
-> can eventually be deleted.
->
-> Reviewed-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Default IO_TLB_SEGSIZE (128) slabs may be not enough for some use cases.
+This series adds support to customize io_tlb_segsize for each
+restricted-dma-pool.
 
-I think I acked the previous version, but nevermind:
+Example use case:
 
-Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
+mtk-isp drivers[1] are controlled by mtk-scp[2] and allocate memory through
+mtk-scp. In order to use the noncontiguous DMA API[3], we need to use
+the swiotlb pool. mtk-scp needs to allocate memory with 2560 slabs.
+mtk-isp drivers also needs to allocate memory with 200+ slabs. Both are
+larger than the default IO_TLB_SEGSIZE (128) slabs.
 
-Kind regards
-Uffe
+[1] (not in upstream) https://patchwork.kernel.org/project/linux-media/cover/20190611035344.29814-1-jungo.lin@mediatek.com/
+[2] https://elixir.bootlin.com/linux/latest/source/drivers/remoteproc/mtk_scp.c
+[3] https://patchwork.kernel.org/project/linux-media/cover/20210909112430.61243-1-senozhatsky@chromium.org/
 
-> ---
->  drivers/mmc/host/bcm2835.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/drivers/mmc/host/bcm2835.c b/drivers/mmc/host/bcm2835.c
-> index 8c2361e66277..463b707d9e99 100644
-> --- a/drivers/mmc/host/bcm2835.c
-> +++ b/drivers/mmc/host/bcm2835.c
-> @@ -1293,14 +1293,12 @@ static int bcm2835_add_host(struct bcm2835_host *host)
->
->                 host->dma_cfg_tx.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
->                 host->dma_cfg_tx.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-> -               host->dma_cfg_tx.slave_id = 13;         /* DREQ channel */
->                 host->dma_cfg_tx.direction = DMA_MEM_TO_DEV;
->                 host->dma_cfg_tx.src_addr = 0;
->                 host->dma_cfg_tx.dst_addr = host->phys_addr + SDDATA;
->
->                 host->dma_cfg_rx.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
->                 host->dma_cfg_rx.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-> -               host->dma_cfg_rx.slave_id = 13;         /* DREQ channel */
->                 host->dma_cfg_rx.direction = DMA_DEV_TO_MEM;
->                 host->dma_cfg_rx.src_addr = host->phys_addr + SDDATA;
->                 host->dma_cfg_rx.dst_addr = 0;
-> --
-> 2.29.2
->
+Hsin-Yi Wang (3):
+  dma: swiotlb: Allow restricted-dma-pool to customize IO_TLB_SEGSIZE
+  dt-bindings: Add io-tlb-segsize property for restricted-dma-pool
+  arm64: dts: mt8183: use restricted swiotlb for scp mem
+
+ .../reserved-memory/shared-dma-pool.yaml      |  8 +++++
+ .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi |  4 +--
+ include/linux/swiotlb.h                       |  1 +
+ kernel/dma/swiotlb.c                          | 34 ++++++++++++++-----
+ 4 files changed, 37 insertions(+), 10 deletions(-)
+
+-- 
+2.34.0.rc2.393.gf8c9666880-goog
+
