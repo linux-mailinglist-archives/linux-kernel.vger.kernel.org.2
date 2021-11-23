@@ -2,183 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B159459D77
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBDAD459D79
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:07:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234598AbhKWIKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 03:10:05 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:65522 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234199AbhKWIKD (ORCPT
+        id S234667AbhKWIK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 03:10:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234199AbhKWIKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 03:10:03 -0500
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AN6Z4XS031836;
-        Tue, 23 Nov 2021 08:06:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=b3cwEePmPAptyyiFR2PyspCI/+7WkzSxiB1LJszw/XY=;
- b=fltPXathy2R92uPFtlUkRaMagvbZGAZtw2nM6IhTRV5PvB2PpSht1iteFCpoXz1oCD/I
- c+RXMkkF+gcKecoisd8XR9ZePQvbc61Wn4PZmA681zRAE2kTLxwOkgMMhAhJMPXvpLDD
- FGCtkshzhnVhN9gyrYDUhQlC9rTtIEcSsi2BHeULK8i+biUwSIi9wqkVNr319JOyoUNC
- 6ufAQwHKIyu6g0mfePNIK0ukSXlxNQ+scFY9AbsHkxVH3cH/uZ1TO7TxUlZg4p7ADEMT
- hxHGdrwOvbjfa7Elo4jY0hmXjnPnNE+IXWdenPh2Ow2j8PS0IPdZxjEbSHVlP6OxTLs3 tg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3cg461fg7x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Nov 2021 08:06:46 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AN80aWU134840;
-        Tue, 23 Nov 2021 08:06:45 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2171.outbound.protection.outlook.com [104.47.56.171])
-        by userp3030.oracle.com with ESMTP id 3cep4y0mqa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Nov 2021 08:06:45 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QjbLO9lo94UKko/QFrxEkJiIfGrN7WAfgYzNadgAiHuknkXJvmwpgXn3YD1Jal6TKiswlQYpdMu+lt8i+yEZimZm94LyFqjUHD9FLmlMqgtIdkvsyZ3DwZor/zNqLKLstxq0RPzfc+EvGPBi917o5F1trscL+t0xuyZfuZ2/TWAYePAQlhw78wQ+KzQXVLPvKLRfLiZMtJ0mG+afsiZeK56nb6/+wBNzzndeR55gm4CCN/rl0hZfJ4ddchGIGmvfkSNZryIT2GxYn6ZRkRZs0j22s/0A9QFc32bOuMScqDgNqdWyKRhyyi47GbxlOMeQWsO9SUk4iDAQbggEo0zzqQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=b3cwEePmPAptyyiFR2PyspCI/+7WkzSxiB1LJszw/XY=;
- b=BpvjcpY3bxnRBFWIFi8J3YutHoXUfpYcoCFC9JvT0y/ppb7YqAdN0r3/UMl21DuXxAnPGgo7Zm9EzG6YPGHLWgJ1c+CAHdNwyNBTa0rHgcJyPZcQuepkmE8M5jgiS6RJ88ym3duAKEByBOUyYtF5xETMr4LmICzB/XD6uyTK0KbAKaI1I010MAWt7RUZEJ1hgYrCDgVYNjKitIrDDv40bWUbzilof1dqiyaRMiuMi/nbfTvxavoz4OPCca5qp2HqgiIDBvidGYE5jGRTzLH5kn92L4jKxLeVaP7iTEnKfjG0+yVF435M3nImiWV3nt65qCvyGipVUGRyWkoCVCFDJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 23 Nov 2021 03:10:55 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FD1C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 00:07:48 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id g17so57192999ybe.13
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 00:07:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b3cwEePmPAptyyiFR2PyspCI/+7WkzSxiB1LJszw/XY=;
- b=vX6Br9ETwDS6ZrbRrZKnfc7LBRul6WK7MfOpkfMlqL330fpLpbFlLQ3oCfuwiA/LXkLZ+duX5OAIvRB1vPUYBG+2I3hJhHfayPb+NRIBtdWEdtGWCrZKV+idf5ew5hOEy/BRnkw7Zb5Jgs9Sl4IinE0ehNryvc7HM3S2/ygpHAE=
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by CO6PR10MB5553.namprd10.prod.outlook.com
- (2603:10b6:303:140::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21; Tue, 23 Nov
- 2021 08:06:43 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::495f:a05d:ba7a:682]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::495f:a05d:ba7a:682%6]) with mapi id 15.20.4713.026; Tue, 23 Nov 2021
- 08:06:43 +0000
-Date:   Tue, 23 Nov 2021 11:06:21 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Vihas Mak <makvihas@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, straube.linux@gmail.com,
-        martin@kaiser.cx, paskripkin@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: remove unnecessary NULL check
-Message-ID: <20211123080621.GC6514@kadam>
-References: <20211122195350.GA166134@makvihas>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211122195350.GA166134@makvihas>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JN2P275CA0034.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::22)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L7f/aUCx8NVGyPLAzQitqS+/TnPxMztetwJciVabBeY=;
+        b=6zYWJZpyiKoP/AjChWdk1Mr9Z+WI7uA/FCe9DJ4VdNTGfHUGW6kovw2NXoBFhpBuoX
+         dlpB/M+nkDCo/zUyd4459F4SRRQvlGSJuVTysZ2DaOizLM4EzXsiNoevCXU6PSUscy13
+         OWPWbbmTJ5NQZ9DSVUebf9g93zxFh8Ioj3Ec4/eE2+qDJ5pytC/DU5WMSgxgUrz0VrVJ
+         3O+PabJz3r7AI7YvtG+2K4CgxrUvvJsCZCvGI5RLFnDMyPTMlkbsWphicq2wyT5ZZcXH
+         XaqjDK4q8/oe6I9pXBzNTyaqTbTEIzv4E9exyDBbk+0FF7E0UDgMIGAT2WRaz0VHl1kj
+         dFuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L7f/aUCx8NVGyPLAzQitqS+/TnPxMztetwJciVabBeY=;
+        b=t0C7EjxagOhkrmH/ScJYTyZ0dso81C5qbymtUrPq0vHTkeXEdnZB1dWDZF8rYp8huA
+         xWsJv/GVwqViiHK8NXT+lCwzjygwyMIDbNCYp0hwHNiGzJvH/VSmOVXgdVcTx2J4riLp
+         IeC2lHYJq3seGkEGpH24vaQABycOHO/61kFuxQsawKI3fDclJMzm/XGE79+ueBcT1AR8
+         rJl8YmVNFPTr5w/+XsnqIp0/4UyGkdAlAru39E5kJFbhYtOdSeCqIo5TdB1Y+51JK8ak
+         t9lXa5T2+95xKW3F3s1YMK2nMpevH1mxEVvG/AZFaNjUUuX2pEreAwzITpKs6tqv0wEa
+         Jsmg==
+X-Gm-Message-State: AOAM533ZTd9jtGQZWWH/nChaXQEFQfsqrIMXQOTXatQhodQKGXJ0SZo2
+        YRtCKhaa5mu/T/1d/Vq6qJHBFAXRmrSQIrhkGO3BnW8ErhmrqjsD
+X-Google-Smtp-Source: ABdhPJy3xKrLsQ0i80CPUA2i00XnDJy+VKNkyTyS6MSn4PZJcxsnkeGO5hPSCe+BtbPNtMbMhCHrOuQSPHwUs6nKpuY=
+X-Received: by 2002:a25:38d6:: with SMTP id f205mr4321963yba.208.1637654867187;
+ Tue, 23 Nov 2021 00:07:47 -0800 (PST)
 MIME-Version: 1.0
-Received: from kadam (102.222.70.114) by JN2P275CA0034.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend Transport; Tue, 23 Nov 2021 08:06:36 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3bfb3ad7-0dae-43d5-24ca-08d9ae582f6d
-X-MS-TrafficTypeDiagnostic: CO6PR10MB5553:
-X-Microsoft-Antispam-PRVS: <CO6PR10MB5553579346164D811D542A958E609@CO6PR10MB5553.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fil94GZjvh5zqFHaToqsFJNkKOBAT9uozhX/divu7qQrh1FPfC/Xoh09SGQn8cHYdzOt5PlyyDjrhLM1cwYzuNeG5HRc/tcMAJW0+P6uZt4nhnIIlyfszsQgEN/59nxtkr456/KBQPoujnc2W7buZk1SaTXb0qw4iPpTXfXNcwylegPCxlrglUjnUZIKuETV7PyvSk/lyirMAxB1oZBuf+NBktPOS0RhMh9TmPsEa6MGC74wHy5+XDX6kfNSLC/grvxbo4GyKSWhve6kfgfvI4UmsiBlVTo97WAUvunN/vnn57eEk60J1H7sWAa/RRyGebb2+lU71RFuZeA+R2s56O5B7Qgz6x0t/MP4NIxqYRhc/mJaDPsmzEikV6+eS7k++nZTwNB7rFwte1ZT46Ar6RSDL7BgLEW/xue/9D1EMzLGvneJghV0iDGwDYaZK8Wcwhigk78fksC+lamwzoeKZALp2WiM2rNMGFhpaQrozqZJ2OyjNzD805ABatEftAdUE8CFBz8WWbYLayC+Fc7OhrnBW0hGg3H46JCC7IEUtikeE3scADWm4keevgqm94WDj+bZ6PdxJPh15uRgisphteNWIefIr8LJORSnN9KpK2t6EJMVK15HSwHuT38PPSGBYdgYGwvi6vXhXxWsproCGc8xChjgrKfkd/IMLhVoU79ltDO4caeuA2oYSFnoYcO8ePOkh0shG7nTRMl29KdJUQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(26005)(508600001)(33656002)(86362001)(38350700002)(38100700002)(1076003)(5660300002)(9576002)(83380400001)(66946007)(956004)(52116002)(4326008)(6666004)(316002)(6496006)(6916009)(66556008)(186003)(44832011)(8676002)(9686003)(33716001)(2906002)(66476007)(55016003)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Pbk17Qmwg+XOuY7zCZKXuzE9t7GSlZm5PPrSps4wdIBu33fh+g5V98KXPL5h?=
- =?us-ascii?Q?fYovxo2ZuUv9kS6a93+C/LPG9I9ifJizhuYDGPnHMQkdL2RdcawYdm5AbWAE?=
- =?us-ascii?Q?GvLKb4V2sw8CWHjLLqNA12UU8aV9WzlMNrKHYVfBRYR3CYYxbMJYqX4Y0TbB?=
- =?us-ascii?Q?ejBic3kMi81WlQmjGr9twKr9KXN+MOkjATFiBoLP38SzWfWAZe4GYPQI/p2Y?=
- =?us-ascii?Q?iHEUBxzJGUTnIuhZpvp7Xl6PF7hPGWhsJzrckZ+VJkS27ETQgUhcXGdsTBz+?=
- =?us-ascii?Q?dMlNetl02xq1ys246OcjkKHfHYWnUE/tVBtcQEPA9sto191P06isUCQTsOgn?=
- =?us-ascii?Q?8sk3dxyl6uNo3AALzf7V9VPI23yPSnd3+/XgnXvuKWYVuMx5cLpw7gAyCkag?=
- =?us-ascii?Q?7Q4uSh1L/IsbNmy5IzP4GcnIfWR38EifHnuzYVAaFElAyoBuZwZsnMVMJAUs?=
- =?us-ascii?Q?IE4iVOyYNsu3xh6lPpe1yXMo4omVm9cAlgSSakuPamybfaQJZWSMI4jBGsua?=
- =?us-ascii?Q?2kWVX0G22T1mOXIfxjJ2jC8g0LXNU6QHc7I4QLfX3lAFW5c6v4Y7/jbTSpzH?=
- =?us-ascii?Q?lXXsK5bYNwyWVSDjZmy9pOV9Fv/4OgcgV3VqtAFij8rpelPlFT5RkB1bf0dZ?=
- =?us-ascii?Q?fFHh8SeaUSXBgXbjW5kkShqWOzS/q9lx9kwnp21mbQXvJeU1mUl5f8FA5Vt/?=
- =?us-ascii?Q?Th7SrVyRLb5C5NujIp3Dy1tb1CZ287s4xdle06Bhk3XCB2fnZrpEF8eMd6j7?=
- =?us-ascii?Q?WbSYCfv9BcmuZh7rkr67nZSAD0iC4ONxMA9E2yrtjyyTLyOKU8oOR77udsGr?=
- =?us-ascii?Q?HfvxKoLtdSb4NpUC1YNWEciz/ItI+TrS5UOfgt7HkD0x9idtAEAH/RMQLKkv?=
- =?us-ascii?Q?DAZAHgP8xk0loQrC9SIljyX1Pnqdk6hhvRJWOfMEnMinFEwDWrWx4FpALRKQ?=
- =?us-ascii?Q?kk+xDy4YdNx2z1Wh4L1jX7EFeiO3SzhwIVY/kCYWI+FI7HIKZ3315wFhnW8K?=
- =?us-ascii?Q?vT0oQMNxa6qGB2y+S/zJTnTIdwnQ4YDLbK/Lfu6wOxy92ZI9PvSsJvfrKDby?=
- =?us-ascii?Q?6f3K3lTyOXxt4H5VeAkEcwUMUi/Do1OFn3vwtL8jDc5hZCynwP+zL/0pCChN?=
- =?us-ascii?Q?GXzHYes/MbvEJaBvhfaxilugU//xDi6roY3tPMF1oMKW6FPaxue7rlo4VFXN?=
- =?us-ascii?Q?t/U6kbv5n1Rg7lx1PtV+2oTC1tLtGf0LHFuDK8uc0UZ3t+LYPc4hQaRdH4Dv?=
- =?us-ascii?Q?adsni9gooYWe622UTks5yO8Jox6x2iZXNFG0YyovM8zUeOfhtzprFghQTABW?=
- =?us-ascii?Q?pnO4otb2Yh7Kx6w7nWehYXkjAg2orQthgaElOoaxHJp35kKpdGsuppB/2daK?=
- =?us-ascii?Q?t3J3Yi/x+Zf/7eojBTYUxtXNwCHDBDSNLY3YCRxsyfaZZVhK2qzYUxh33nDE?=
- =?us-ascii?Q?Tje6QXorFFnqofvxcRMzMizqS1rlJLN/mcW4wbPLqR5/QGjIRwVEWVaR1ecw?=
- =?us-ascii?Q?n5VauAaEWJgLyKTc4ZLDhR2QMagEOvKz+8qRoDqBYIMAwy4o0m+CrEfvoIEm?=
- =?us-ascii?Q?6tcJhbIBLP0gGgW/57cADPkpEGv8x8Ha0i/rEANqzkc+R1JdoMPdffHt/V36?=
- =?us-ascii?Q?tYpnagcjbZw14ac4NKYXM7kEB8stXplK+UDj8McTlBPTOH6JklmC5x6PNAXp?=
- =?us-ascii?Q?1HIGYGXNy7ShCWfHfP8oK2oy9Ms=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3bfb3ad7-0dae-43d5-24ca-08d9ae582f6d
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2021 08:06:43.1219
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GMoHl4RNgr80F3XVuBqiCh7A+/A7mi9T34a3MDsCoKrX4HssIqQnml02CxVfCUiP5dWGql22PwlyStu3cB3OwhHKwAmwCZI1w5UjLtp8ENc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR10MB5553
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10176 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
- mlxlogscore=999 bulkscore=0 mlxscore=0 suspectscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111230042
-X-Proofpoint-GUID: AgK8zNLX9DVWJ9kaGrofdeFWHmd2qk46
-X-Proofpoint-ORIG-GUID: AgK8zNLX9DVWJ9kaGrofdeFWHmd2qk46
+References: <20211122064126.76734-1-ligang.bdlg@bytedance.com>
+In-Reply-To: <20211122064126.76734-1-ligang.bdlg@bytedance.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 23 Nov 2021 16:07:08 +0800
+Message-ID: <CAMZfGtWmpynXNgjBqDzat5JQAQ95Ja1p55AxR6En8AkZ8iXjKQ@mail.gmail.com>
+Subject: Re: [PATCH v1] shmem: change shrinklist_lock form spinlock to mutex
+ and move iput into it
+To:     Gang Li <ligang.bdlg@bytedance.com>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 01:23:50AM +0530, Vihas Mak wrote:
-> remove unnecessary NULL check surrounding rtw_free_netdev(), as the check
-> is already performed inside rtw_free_netdev() in
-> drivers/staging/r8188eu/os_dep/osdep_service.c.
-> 
-> Signed-off-by: Vihas Mak <makvihas@gmail.com>
+On Mon, Nov 22, 2021 at 2:41 PM Gang Li <ligang.bdlg@bytedance.com> wrote:
+>
+> This patch fixes commit 779750d20b93 ("shmem: split huge pages
+> beyond i_size under memory pressure").
+>
+> iput out of sbinfo->shrinklist_lock will let shmem_evict_inode grab
+> and delete the inode, which will berak the consistency between
+> shrinklist_len and shrinklist. The simultaneous deletion of adjacent
+> elements in the local list "list" by shmem_unused_huge_shrink and
+> shmem_evict_inode will also break the list.
+>
+> iput must in lock or after lock, but shrinklist_lock is a spinlock
+> which can not sleep and iput may sleep.[1]
+>
+> Fix it by changing shrinklist_lock from spinlock to mutex and moving iput
+> into this lock.
+>
+> [1]. Link: http://lkml.kernel.org/r/20170131093141.GA15899@node.shutemov.name
+> Fixes: 779750d20b93 ("shmem: split huge pages beyond i_size under memory pressure")
+> Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
 > ---
->  drivers/staging/r8188eu/os_dep/usb_intf.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
-> index 5a35d9fe3fc9..392bd7868519 100644
-> --- a/drivers/staging/r8188eu/os_dep/usb_intf.c
-> +++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
-> @@ -466,8 +466,7 @@ static void rtw_usb_if1_deinit(struct adapter *if1)
->  		if1->hw_init_completed);
->  	rtw_handle_dualmac(if1, 0);
->  	rtw_free_drv_sw(if1);
-> -	if (pnetdev)
-> -		rtw_free_netdev(pnetdev);
-> +	rtw_free_netdev(pnetdev);
+>  include/linux/shmem_fs.h |  2 +-
+>  mm/shmem.c               | 16 +++++++---------
+>  2 files changed, 8 insertions(+), 10 deletions(-)
+>
+> diff --git a/include/linux/shmem_fs.h b/include/linux/shmem_fs.h
+> index 166158b6e917..65804fd264d0 100644
+> --- a/include/linux/shmem_fs.h
+> +++ b/include/linux/shmem_fs.h
+> @@ -41,7 +41,7 @@ struct shmem_sb_info {
+>         ino_t next_ino;             /* The next per-sb inode number to use */
+>         ino_t __percpu *ino_batch;  /* The next per-cpu inode number to use */
+>         struct mempolicy *mpol;     /* default memory policy for mappings */
+> -       spinlock_t shrinklist_lock;   /* Protects shrinklist */
+> +       struct mutex shrinklist_mutex;/* Protects shrinklist */
+>         struct list_head shrinklist;  /* List of shinkable inodes */
+>         unsigned long shrinklist_len; /* Length of shrinklist */
+>  };
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 18f93c2d68f1..2165a28631c5 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -559,7 +559,7 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+>         if (list_empty(&sbinfo->shrinklist))
+>                 return SHRINK_STOP;
+>
+> -       spin_lock(&sbinfo->shrinklist_lock);
+> +       mutex_lock(&sbinfo->shrinklist_mutex);
+>         list_for_each_safe(pos, next, &sbinfo->shrinklist) {
+>                 info = list_entry(pos, struct shmem_inode_info, shrinklist);
+>
+> @@ -586,7 +586,6 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+>                 if (!--batch)
+>                         break;
+>         }
+> -       spin_unlock(&sbinfo->shrinklist_lock);
+>
+>         list_for_each_safe(pos, next, &to_remove) {
+>                 info = list_entry(pos, struct shmem_inode_info, shrinklist);
+> @@ -643,10 +642,9 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+>                 iput(inode);
+
+It could lead to deadlock, since we could be the last user
+of @inode, then shmem_evict_inode() will be called and
+try to acquire the mutex lock. Notice that the mutex is already
+held here.
+
+Thanks.
+
+>         }
+>
+> -       spin_lock(&sbinfo->shrinklist_lock);
+>         list_splice_tail(&list, &sbinfo->shrinklist);
+>         sbinfo->shrinklist_len -= removed;
+> -       spin_unlock(&sbinfo->shrinklist_lock);
+> +       mutex_unlock(&sbinfo->shrinklist_mutex);
+>
+>         return split;
 >  }
-
-I'm not a huge fan of these sorts of patches.  They don't make the code
-more readable because they hide the complexity.
-
-Occasionally we will get a forest cobra in our yard and everyone is
-screaming and panicking.  I'm like, "Calm down.  Once you've spotted the
-snake, even a deadly snake, then the danger has passed."  You can just
-stay two or three meters away and you're fine.  Call a snake catcher.
-
-What you're doing here is you've got a potential NULL dereference which
-is the snake.  And this patch is saying, "Snakes are so messy!  Let's
-hide it in the bushes next to the sidewalk where no one can see it."
-
-Hash tag, folksy wisdom.  #snakes
-
-On the other hand, it might be worth checking if "pnetdev" can even be
-NULL at this point, and then deleting both of the NULL checks.  That
-would be a very good clean up.
-
-regards,
-dan carpenter
+> @@ -1137,12 +1135,12 @@ static void shmem_evict_inode(struct inode *inode)
+>                 inode->i_size = 0;
+>                 shmem_truncate_range(inode, 0, (loff_t)-1);
+>                 if (!list_empty(&info->shrinklist)) {
+> -                       spin_lock(&sbinfo->shrinklist_lock);
+> +                   mutex_lock(&sbinfo->shrinklist_mutex);
+>                         if (!list_empty(&info->shrinklist)) {
+>                                 list_del_init(&info->shrinklist);
+>                                 sbinfo->shrinklist_len--;
+>                         }
+> -                       spin_unlock(&sbinfo->shrinklist_lock);
+> +                   mutex_unlock(&sbinfo->shrinklist_mutex);
+>                 }
+>                 while (!list_empty(&info->swaplist)) {
+>                         /* Wait while shmem_unuse() is scanning this inode... */
+> @@ -1954,7 +1952,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+>                  * Part of the huge page is beyond i_size: subject
+>                  * to shrink under memory pressure.
+>                  */
+> -               spin_lock(&sbinfo->shrinklist_lock);
+> +               mutex_lock(&sbinfo->shrinklist_mutex);
+>                 /*
+>                  * _careful to defend against unlocked access to
+>                  * ->shrink_list in shmem_unused_huge_shrink()
+> @@ -1964,7 +1962,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+>                                       &sbinfo->shrinklist);
+>                         sbinfo->shrinklist_len++;
+>                 }
+> -               spin_unlock(&sbinfo->shrinklist_lock);
+> +               mutex_unlock(&sbinfo->shrinklist_mutex);
+>         }
+>
+>         /*
+> @@ -3652,7 +3650,7 @@ static int shmem_fill_super(struct super_block *sb, struct fs_context *fc)
+>         raw_spin_lock_init(&sbinfo->stat_lock);
+>         if (percpu_counter_init(&sbinfo->used_blocks, 0, GFP_KERNEL))
+>                 goto failed;
+> -       spin_lock_init(&sbinfo->shrinklist_lock);
+> +       mutex_init(&sbinfo->shrinklist_mutex);
+>         INIT_LIST_HEAD(&sbinfo->shrinklist);
+>
+>         sb->s_maxbytes = MAX_LFS_FILESIZE;
+> --
+> 2.20.1
+>
