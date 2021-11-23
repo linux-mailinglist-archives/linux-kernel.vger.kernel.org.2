@@ -2,114 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C10E45A0E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:07:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6757445A0EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:08:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234555AbhKWLKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 06:10:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53340 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230188AbhKWLKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 06:10:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00BF060F6E;
-        Tue, 23 Nov 2021 11:07:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637665635;
-        bh=Y2aF8NehTeFLD0SRj7EQpJxU1Gt3tByySijjlwPJ1O8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=srbWZ8TZU5kBczOGVecdutu30YShnz+ySbarO2Am3Z8O8DNX+1+cEiPK+2mqcsJC+
-         LGlamASOKwrUJJsEWCfG5mY1GA01XJskd++YF4oYw7Cv8+ZIC262XS7L8pGFtyj3Lx
-         x2pu9J94AI/ZWC+7jUJzrgAUEF60Xg5kyhxYj5H0BLhR/hTmclDEkMgygjdcjTze2h
-         81ycMTTnxGeA3IxQ/fhu43gBWkDgiQVhcATS1dHe3uKM1yLPfGB/K9A7RpuMHbe2ry
-         FjI7Zfs5nH0vAtbGq1c8Ll1bS1pG4zxYkYCZ8cN6+WS/39eQtccPYjGLwOqOfT7aE+
-         X5/9fjPfjTP+A==
-Date:   Tue, 23 Nov 2021 19:07:10 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Martin Kepplinger <martink@posteo.de>
-Cc:     Abel Vesa <abel.vesa@nxp.com>, Rob Herring <robh@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: freescale: imx8mq: Disable noc dts node
-Message-ID: <20211123110709.GA31998@dragon>
-References: <1636629369-23988-1-git-send-email-abel.vesa@nxp.com>
- <20211123085841.GX31998@dragon>
- <9b9fe3a5b04179870d6ca0ece754fee9abb306b4.camel@posteo.de>
- <20211123092430.GY31998@dragon>
- <c139110dc0b2096a51d1b3c344c3d597cf24093b.camel@posteo.de>
+        id S234806AbhKWLLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 06:11:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36124 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234587AbhKWLLF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 06:11:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637665677;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Dq8tkyF7e1BIoHYWJ4eMRxNL9buH6P7iaJgt9bYs6Ok=;
+        b=KD8ujFYB60ts7h1y78qe5zlL/iSYKIoIjuMgPAbwBClkBgURnoCF48gdAGjr9bBarcu++O
+        EgbQ1pHvE78/HWmOFwRwysy3NeQEU27a6QIoXbpdyrIbmogOQ1aFfd8yYOqsLU+OOfXNgV
+        qIrBxH5n4Jc7Pt6mFEGU6kwjJuiKpDY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-220-v80Nb0rBOPykJELYuJqx6g-1; Tue, 23 Nov 2021 06:07:54 -0500
+X-MC-Unique: v80Nb0rBOPykJELYuJqx6g-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7CD42102CB76;
+        Tue, 23 Nov 2021 11:07:53 +0000 (UTC)
+Received: from localhost (ovpn-13-79.pek2.redhat.com [10.72.13.79])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 734285B826;
+        Tue, 23 Nov 2021 11:07:45 +0000 (UTC)
+Date:   Tue, 23 Nov 2021 19:07:43 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Dave Young <dyoung@redhat.com>
+Cc:     kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        vgoyal@redhat.com, Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] MAINTAINERS: update kdump maintainers
+Message-ID: <20211123110743.GJ21646@MiWiFi-R3L-srv>
+References: <YZyKilzKFsWJYdgn@dhcp-128-65.nay.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c139110dc0b2096a51d1b3c344c3d597cf24093b.camel@posteo.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <YZyKilzKFsWJYdgn@dhcp-128-65.nay.redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 09:30:02AM +0000, Martin Kepplinger wrote:
-> Am Dienstag, dem 23.11.2021 um 17:24 +0800 schrieb Shawn Guo:
-> > On Tue, Nov 23, 2021 at 09:15:57AM +0000, Martin Kepplinger wrote:
-> > > Am Dienstag, dem 23.11.2021 um 16:58 +0800 schrieb Shawn Guo:
-> > > > On Thu, Nov 11, 2021 at 01:16:09PM +0200, Abel Vesa wrote:
-> > > > > Adding interconnect properties to the consumer nodes creates
-> > > > > a dependency on noc device. The imx-bus devfreq driver is not
-> > > > > usable
-> > > > > without the full interconnect support. The interconnect is not
-> > > > > yet
-> > > > > working on i.MX platforms. The devlink created on device_add
-> > > > > makes
-> > > > > the lcdif and other nodes that have the interconnect properties
-> > > > > wait for the noc (imx-bus driver) to probe first.
-> > > > > 
-> > > > > To make sure the interconnect consumers (nodes that have
-> > > > > interconnect
-> > > > > properties already added) will still probe, lets disable the
-> > > > > noc
-> > > > > node
-> > > > > for now. Once the interconnect on i.MX platforms is fully
-> > > > > functional,
-> > > > > the status of the noc node can be changed.
-> > > > > 
-> > > > > Fixes: ad1abc8a03fdbc05b ("arm64: dts: imx8mq: Add interconnect
-> > > > > for
-> > > > > lcdif")
-> > > > 
-> > > > Martin,
-> > > > 
-> > > > Do you have any comment?  So your commit added something
-> > > > untested?
-> > > > 
-> > > > Shawn
-> > > 
-> > > hi Shawn,
-> > > 
-> > > well, for imx8mq the only missing piece is the mxsfb icc bandwidth
-> > > request. I posted a first version a year ago but that didn't make
-> > > it
-> > > in:
-> > > https://lore.kernel.org/linux-arm-kernel/20201201103757.32165-1-martin.kepplinger@puri.sm/
-> > > 
-> > > So this should create a working state until the real fix in mxsfb
-> > > is
-> > > there (although I'd revert commit ad1abc8a03fd ("arm64: dts:
-> > > imx8mq:
-> > > Add interconnect for lcdif") instead).
-> > 
-> > Besides lcdif, the mipi-csi devices have interconnects property too. 
-> > Are
-> > they already working?  If so, it makes more sense to revert
-> > ad1abc8a03fd
-> > instead.
-> 
-> imx8mq-mipi-csi.c request the bandwidth, yes. we use that and the
-> preliminary mxsfb request above so that works.
-> 
-> do you want me to send the revert?
+Hi Dave,
 
-Yes, please.
+On 11/23/21 at 02:30pm, Dave Young wrote:
+> Remove myself from kdump maintainers as I have no enough time to
+> maintain it now. But I can review patches on demand though.
+> 
+> Signed-off-by: Dave Young <dyoung@redhat.com>
+> ---
+>  MAINTAINERS |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> Index: linux-x86/MAINTAINERS
+> ===================================================================
+> --- linux-x86.orig/MAINTAINERS
+> +++ linux-x86/MAINTAINERS
+> @@ -10122,9 +10122,9 @@ F:	lib/Kconfig.kcsan
+>  F:	scripts/Makefile.kcsan
+>  
+>  KDUMP
+> -M:	Dave Young <dyoung@redhat.com>
+>  M:	Baoquan He <bhe@redhat.com>
+>  R:	Vivek Goyal <vgoyal@redhat.com>
+> +R:	Dave Young <dyoung@redhat.com>
 
-Shawn
+Thanks for the great work on reviewing kexec/kdump related patches, bug
+fixing and improvement on kdump.
+
+Acked-by: Baoquan He <bhe@redhat.com>
+
+>  L:	kexec@lists.infradead.org
+>  S:	Maintained
+>  W:	http://lse.sourceforge.net/kdump/
+> 
+
