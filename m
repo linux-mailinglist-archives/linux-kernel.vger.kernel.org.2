@@ -2,192 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFAAC45B083
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:53:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC22A45B089
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 01:00:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240265AbhKWX47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 18:56:59 -0500
-Received: from mga05.intel.com ([192.55.52.43]:50219 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233264AbhKWX45 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 18:56:57 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="321397703"
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="321397703"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 15:53:48 -0800
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="509610560"
-Received: from pshinde-mobl.amr.corp.intel.com ([10.213.85.70])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 15:53:41 -0800
-Message-ID: <c5d1ee1f3b59bf18591a164c185650c77ec8aba7.camel@linux.intel.com>
-Subject: Re: [PATCH v2 12/63] thermal: intel: int340x_thermal: Use
- struct_group() for memcpy() region
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Zhang Rui <rui.zhang@intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        id S240377AbhKXADL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 19:03:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238787AbhKXADE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 19:03:04 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25229C06173E
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 15:59:56 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id m25so911216qtq.13
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 15:59:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JWwXPG24ltmWOflqT79hbe7WHAGSXzFDRpPzyqTCphM=;
+        b=SM7g2CC2T7HtEJAOomAVVeoee9cBvpCmPhxJgr3oGO8VH5HDRMkKwuNnBdd/tdtLra
+         ix57VCmhP/D7B7OeCzH8s3rrnpADi75OMdOMFwELa15V0MBJDAvel4bfDue625PHX6OG
+         hS6h6+fJuNRKIYJkla2s/iTwTYPHWRYYa0/1VdGXSQPkR5SOAWvSE54rNRYV4UTL/pyB
+         YKJ7Wzj0llu879N5OsWvxcLn+Em+r+KowY4iabzniDrrl1UmaTxLZD4jvwTpO97ItqwK
+         HI8tPMYfGiMInv0fc7x84iaO3eiMci7X4scAZRwoS8d5ff2O7cTzDrXSvh/sNXeg6f9H
+         8O4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JWwXPG24ltmWOflqT79hbe7WHAGSXzFDRpPzyqTCphM=;
+        b=JoSKeO2EKE6D5kS09jG09eUIJXoP7rcGVzAXsGQJuFatUQtSDYOv4ao2R3XKJsQVtV
+         /0R8JUhN045oPVOZBJtTDHvFgXBsIl9cOXyDVkCOUbCSbkBbSETDJMtkFbzf1f35rZmH
+         kl9X98rWBEX5bMBWfnkWhRhs9JuA+d/ZvkT/14pFOYBq2nWooSJieCJhlGkff60cZ/V3
+         LSfGrCCy8gJf2NC6EGScb4lZaKqrpH3Bl4Zzq3Z6Re4940KGd/9Am2VduaR5CwlraZxv
+         cjyc1kQWHWVGnEPZjIAtNbAYsJyW4OyzBcHYt/vwSHM3OVRtuP7cLoto+KDhHcorJsiB
+         m9Dg==
+X-Gm-Message-State: AOAM530QD7sCNfIeKfkBf+JndWgxkBiJhGwGiI41W6YGcPqSK2X3CsPA
+        70dqvOdI5UcNl7JhyuPwbJGrSg==
+X-Google-Smtp-Source: ABdhPJxUUgxbyWZyuW6Sl74vLoLYpS/heqCJSK/6Ktu0i9Jt6ejBXXhBIGBoXvKcqrkbxigSQu4NJg==
+X-Received: by 2002:a05:622a:1901:: with SMTP id w1mr1756372qtc.134.1637711995285;
+        Tue, 23 Nov 2021 15:59:55 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id f16sm6699243qkk.16.2021.11.23.15.59.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 15:59:54 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mpfhZ-000naV-I3; Tue, 23 Nov 2021 19:59:53 -0400
+Date:   Tue, 23 Nov 2021 19:59:53 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Hildenbrand <david@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Andrew Dona-Couch <andrew@donacou.ch>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "open list:NETWORKING DRIVERS (WIRELESS)" 
-        <linux-wireless@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-hardening@vger.kernel.org
-Date:   Tue, 23 Nov 2021 15:53:38 -0800
-In-Reply-To: <CAJZ5v0iS3qMgdab1S-NzGfeLLXV=S6p5Qx8AaqJ50rsUngS=LA@mail.gmail.com>
-References: <20210818060533.3569517-1-keescook@chromium.org>
-         <20210818060533.3569517-13-keescook@chromium.org>
-         <CAJZ5v0iS3qMgdab1S-NzGfeLLXV=S6p5Qx8AaqJ50rsUngS=LA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0-1 
+        Drew DeVault <sir@cmpwn.com>,
+        Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+Message-ID: <20211123235953.GF5112@ziepe.ca>
+References: <8f219a64-a39f-45f0-a7ad-708a33888a3b@www.fastmail.com>
+ <333cb52b-5b02-648e-af7a-090e23261801@redhat.com>
+ <ca96bb88-295c-ccad-ed2f-abc585cb4904@kernel.dk>
+ <5f998bb7-7b5d-9253-2337-b1d9ea59c796@redhat.com>
+ <20211123132523.GA5112@ziepe.ca>
+ <10ccf01b-f13a-d626-beba-cbee70770cf1@redhat.com>
+ <20211123140709.GB5112@ziepe.ca>
+ <e4d7d211-5d62-df89-8f94-e49385286f1f@redhat.com>
+ <20211123170056.GC5112@ziepe.ca>
+ <dd92a69a-6d09-93a1-4f50-5020f5cc59d0@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dd92a69a-6d09-93a1-4f50-5020f5cc59d0@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-11-23 at 14:19 +0100, Rafael J. Wysocki wrote:
-> On Wed, Aug 18, 2021 at 8:08 AM Kees Cook <keescook@chromium.org>
-> wrote:
+On Tue, Nov 23, 2021 at 11:04:04PM +0100, Vlastimil Babka wrote:
+> On 11/23/21 18:00, Jason Gunthorpe wrote:
 > > 
-> > In preparation for FORTIFY_SOURCE performing compile-time and run-
-> > time
-> > field bounds checking for memcpy(), avoid intentionally writing
-> > across
-> > neighboring fields.
+> >> believe what you say and I trust your experience :) So could as well be
+> >> that on such a "special" (or not so special) systems there should be a
+> >> way to restrict it to privileged users only.
 > > 
-> > Use struct_group() in struct art around members weight, and ac[0-
-> > 9]_max,
-> > so they can be referenced together. This will allow memcpy() and
-> > sizeof()
-> > to more easily reason about sizes, improve readability, and avoid
-> > future
-> > warnings about writing beyond the end of weight.
-> > 
-> > "pahole" shows no size nor member offset changes to struct art.
-> > "objdump -d" shows no meaningful object code changes (i.e. only
-> > source
-> > line number induced differences).
-> > 
-> > Cc: Zhang Rui <rui.zhang@intel.com>
-> > Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> > Cc: Amit Kucheria <amitk@kernel.org>
-> > Cc: linux-pm@vger.kernel.org
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > At this point RDMA is about as "special" as people running large
+> > ZONE_MOVABLE systems, and the two are going to start colliding
+> > heavily. The RDMA VFIO migration driver should be merged soon which
+> > makes VMs using this stuff finally practical.
 > 
-> Rui, Srinivas, any comments here?
-Looks good.
-Reviewed-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> How does that work, I see the word migration, so does it cause pages to
 
-Thanks,
-Srinivas
+Sorry I mean what is often called "VM live migration". Typically that
+cannot be done if a PCI device is assigned to the VM as suspending and
+the migrating a PCI device to another server is complicated. With
+forthcoming hardware mlx5 can do this and thus the entire RDMA stack
+becomes practically usable and performant within a VM.
 
-> 
-> > ---
-> >  .../intel/int340x_thermal/acpi_thermal_rel.c  |  5 +-
-> >  .../intel/int340x_thermal/acpi_thermal_rel.h  | 48 ++++++++++-------
-> > --
-> >  2 files changed, 29 insertions(+), 24 deletions(-)
-> > 
-> > diff --git a/drivers/thermal/intel/int340x_thermal/acpi_thermal_rel.c
-> > b/drivers/thermal/intel/int340x_thermal/acpi_thermal_rel.c
-> > index a478cff8162a..e90690a234c4 100644
-> > --- a/drivers/thermal/intel/int340x_thermal/acpi_thermal_rel.c
-> > +++ b/drivers/thermal/intel/int340x_thermal/acpi_thermal_rel.c
-> > @@ -250,8 +250,9 @@ static int fill_art(char __user *ubuf)
-> >                 get_single_name(arts[i].source,
-> > art_user[i].source_device);
-> >                 get_single_name(arts[i].target,
-> > art_user[i].target_device);
-> >                 /* copy the rest int data in addition to source and
-> > target */
-> > -               memcpy(&art_user[i].weight, &arts[i].weight,
-> > -                       sizeof(u64) * (ACPI_NR_ART_ELEMENTS - 2));
-> > +               BUILD_BUG_ON(sizeof(art_user[i].data) !=
-> > +                            sizeof(u64) * (ACPI_NR_ART_ELEMENTS -
-> > 2));
-> > +               memcpy(&art_user[i].data, &arts[i].data,
-> > sizeof(art_user[i].data));
-> >         }
-> > 
-> >         if (copy_to_user(ubuf, art_user, art_len))
-> > diff --git a/drivers/thermal/intel/int340x_thermal/acpi_thermal_rel.h
-> > b/drivers/thermal/intel/int340x_thermal/acpi_thermal_rel.h
-> > index 58822575fd54..78d942477035 100644
-> > --- a/drivers/thermal/intel/int340x_thermal/acpi_thermal_rel.h
-> > +++ b/drivers/thermal/intel/int340x_thermal/acpi_thermal_rel.h
-> > @@ -17,17 +17,19 @@
-> >  struct art {
-> >         acpi_handle source;
-> >         acpi_handle target;
-> > -       u64 weight;
-> > -       u64 ac0_max;
-> > -       u64 ac1_max;
-> > -       u64 ac2_max;
-> > -       u64 ac3_max;
-> > -       u64 ac4_max;
-> > -       u64 ac5_max;
-> > -       u64 ac6_max;
-> > -       u64 ac7_max;
-> > -       u64 ac8_max;
-> > -       u64 ac9_max;
-> > +       struct_group(data,
-> > +               u64 weight;
-> > +               u64 ac0_max;
-> > +               u64 ac1_max;
-> > +               u64 ac2_max;
-> > +               u64 ac3_max;
-> > +               u64 ac4_max;
-> > +               u64 ac5_max;
-> > +               u64 ac6_max;
-> > +               u64 ac7_max;
-> > +               u64 ac8_max;
-> > +               u64 ac9_max;
-> > +       );
-> >  } __packed;
-> > 
-> >  struct trt {
-> > @@ -47,17 +49,19 @@ union art_object {
-> >         struct {
-> >                 char source_device[8]; /* ACPI single name */
-> >                 char target_device[8]; /* ACPI single name */
-> > -               u64 weight;
-> > -               u64 ac0_max_level;
-> > -               u64 ac1_max_level;
-> > -               u64 ac2_max_level;
-> > -               u64 ac3_max_level;
-> > -               u64 ac4_max_level;
-> > -               u64 ac5_max_level;
-> > -               u64 ac6_max_level;
-> > -               u64 ac7_max_level;
-> > -               u64 ac8_max_level;
-> > -               u64 ac9_max_level;
-> > +               struct_group(data,
-> > +                       u64 weight;
-> > +                       u64 ac0_max_level;
-> > +                       u64 ac1_max_level;
-> > +                       u64 ac2_max_level;
-> > +                       u64 ac3_max_level;
-> > +                       u64 ac4_max_level;
-> > +                       u64 ac5_max_level;
-> > +                       u64 ac6_max_level;
-> > +                       u64 ac7_max_level;
-> > +                       u64 ac8_max_level;
-> > +                       u64 ac9_max_level;
-> > +               );
-> >         };
-> >         u64 __data[ACPI_NR_ART_ELEMENTS];
-> >  };
-> > --
-> > 2.30.2
-> > 
+> be migrated out of ZONE_MOVABLE before they are pinned?
 
+GUP already does this automatically for FOLL_LONGTERM.
 
+> Similarly for io-uring we could be migrating pages to be pinned so that
+> the end up consolidated close together, and prevent pathologic
+> situations like in David's reproducer. 
+
+It is an interesting idea to have GUP do some kind of THP preserving
+migration.
+
+Jason
