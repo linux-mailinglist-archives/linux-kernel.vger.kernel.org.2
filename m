@@ -2,119 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 401034599BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:29:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C82B4599D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:47:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232605AbhKWBc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 20:32:56 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:26349 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbhKWBcy (ORCPT
+        id S231516AbhKWBuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 20:50:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230314AbhKWBue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 20:32:54 -0500
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hymdn6X61zbhv7;
-        Tue, 23 Nov 2021 09:24:45 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Tue, 23 Nov
- 2021 09:29:44 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <damien.lemoal@opensource.wdc.com>, <axboe@kernel.dk>,
-        <tj@kernel.org>, <linux-ide@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <sergei.shtylyov@gmail.com>, <yebin10@huawei.com>,
-        <libaokun1@huawei.com>, <yukuai3@huawei.com>,
-        <stable@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next V4 2/2] sata_fsl: fix warning in remove_proc_entry when rmmod sata_fsl
-Date:   Tue, 23 Nov 2021 09:41:59 +0800
-Message-ID: <20211123014159.3442998-3-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211123014159.3442998-1-libaokun1@huawei.com>
-References: <20211123014159.3442998-1-libaokun1@huawei.com>
+        Mon, 22 Nov 2021 20:50:34 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D98CC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:47:27 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id v138so55096774ybb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:47:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iPJygyTVm3LaiTYDIf43ooZ8K/o9AhsrwBhV4qKQzSk=;
+        b=IkYsbKDEF+3U7qHV98R8IgRkeTR9j0jpUpn1csVzaW/2NuL9GlSJJRcuIfHL2+o+5E
+         dEo0tzmnq0a9B3cRgPuk3djQmmKaDtt3+epyWtpsoq3Jb9fvkVuugDDroEzLGkMF8b+x
+         coxNzN20o0RCTriOmdxRpQwI+voaYkHuUbhr9BGC23LAgApD+M2/5wavuTz48CS8szhi
+         xiNN9ImcXPiYIBA3LK1QRaeL8uYgWOJCx2VIgqv8MKIV9fceafgSixtIfsGewGwNEau1
+         Wv+J1PfwGHPi+y8y4vwh+xgIVWsKM1zSBevVULUj0C36lIYQKuZKQsRpKvv0qA4N1DxU
+         +D7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iPJygyTVm3LaiTYDIf43ooZ8K/o9AhsrwBhV4qKQzSk=;
+        b=PoHYG13Z8blI8uhyyiA9fffE9poLH7SwlsHAe8cQ7YSW6N7VndiKgEijFizxc2NMw+
+         SprMxsxYNP1kvp7IbUj0Y2VyEt2NXYrEs8GjJdnGJLVAkQKycrJW/9GkjGFNHI6Kowmd
+         piOTdX2B1Lo+V4LWsLkIXsgzQ+LnbxwvByImy61Sm4o0C+RNyWSQgjeeK4c5dn0tW9FX
+         wGHMY9DlzrNSRtF+u9lyOiOdB0k+hCpkdQM+O6bJLRbb6I3n/vDwOu562arc//kDuvWf
+         pVCvj+muckZ9eKvXzm2hzbb91+I9OYII60ztakGZDi/DroDRSJBX/uRAdRXRfXUwdFZr
+         RIVQ==
+X-Gm-Message-State: AOAM532gHuPsZ2AxD5SvrGXn+MCr8V+lu4GyxH0dJxLiiYB83mG+AK79
+        0ZZ0b+RpSd0/18U1VVTdGCH2VHmlBoNbuRSFxrMljg==
+X-Google-Smtp-Source: ABdhPJwHxFLwDJzjCt9YMqN1C1kz288fbcwTv20u44vVF/XxAZFtdLQISEavPFXFN3tXBb18su6J4APNqGl1rcG/6Ts=
+X-Received: by 2002:a25:a429:: with SMTP id f38mr1949614ybi.34.1637632046025;
+ Mon, 22 Nov 2021 17:47:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+References: <20211116215715.645231-1-surenb@google.com>
+In-Reply-To: <20211116215715.645231-1-surenb@google.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Mon, 22 Nov 2021 17:47:14 -0800
+Message-ID: <CAJuCfpGjr3a90896Vknw9ytBvz-d3whFQc=DDoVMxxcLGKpX2g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm: protect free_pgtables with mmap_lock write lock
+ in exit_mmap
+To:     akpm@linux-foundation.org
+Cc:     mhocko@kernel.org, mhocko@suse.com, rientjes@google.com,
+        willy@infradead.org, hannes@cmpxchg.org, guro@fb.com,
+        riel@surriel.com, minchan@kernel.org, kirill@shutemov.name,
+        aarcange@redhat.com, christian@brauner.io, hch@infradead.org,
+        oleg@redhat.com, david@redhat.com, jannh@google.com,
+        shakeelb@google.com, luto@kernel.org, christian.brauner@ubuntu.com,
+        fweimer@redhat.com, jengelh@inai.de, timmurray@google.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Trying to remove the fsl-sata module in the PPC64 GNU/Linux
-leads to the following warning:
- ------------[ cut here ]------------
- remove_proc_entry: removing non-empty directory 'irq/69',
-   leaking at least 'fsl-sata[ff0221000.sata]'
- WARNING: CPU: 3 PID: 1048 at fs/proc/generic.c:722
-   .remove_proc_entry+0x20c/0x220
- IRQMASK: 0
- NIP [c00000000033826c] .remove_proc_entry+0x20c/0x220
- LR [c000000000338268] .remove_proc_entry+0x208/0x220
- Call Trace:
-  .remove_proc_entry+0x208/0x220 (unreliable)
-  .unregister_irq_proc+0x104/0x140
-  .free_desc+0x44/0xb0
-  .irq_free_descs+0x9c/0xf0
-  .irq_dispose_mapping+0x64/0xa0
-  .sata_fsl_remove+0x58/0xa0 [sata_fsl]
-  .platform_drv_remove+0x40/0x90
-  .device_release_driver_internal+0x160/0x2c0
-  .driver_detach+0x64/0xd0
-  .bus_remove_driver+0x70/0xf0
-  .driver_unregister+0x38/0x80
-  .platform_driver_unregister+0x14/0x30
-  .fsl_sata_driver_exit+0x18/0xa20 [sata_fsl]
- ---[ end trace 0ea876d4076908f5 ]---
+On Tue, Nov 16, 2021 at 1:57 PM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> oom-reaper and process_mrelease system call should protect against
+> races with exit_mmap which can destroy page tables while they
+> walk the VMA tree. oom-reaper protects from that race by setting
+> MMF_OOM_VICTIM and by relying on exit_mmap to set MMF_OOM_SKIP
+> before taking and releasing mmap_write_lock. process_mrelease has
+> to elevate mm->mm_users to prevent such race. Both oom-reaper and
+> process_mrelease hold mmap_read_lock when walking the VMA tree.
+> The locking rules and mechanisms could be simpler if exit_mmap takes
+> mmap_write_lock while executing destructive operations such as
+> free_pgtables.
+> Change exit_mmap to hold the mmap_write_lock when calling
+> free_pgtables. Operations like unmap_vmas() and unlock_range() are not
+> destructive and could run under mmap_read_lock but for simplicity we
+> take one mmap_write_lock during almost the entire operation. Note
+> also that because oom-reaper checks VM_LOCKED flag, unlock_range()
+> should not be allowed to race with it.
+> In most cases this lock should be uncontended. Previously, Kirill
+> reported ~4% regression caused by a similar change [1]. We reran the
+> same test and although the individual results are quite noisy, the
+> percentiles show lower regression with 1.6% being the worst case [2].
+> The change allows oom-reaper and process_mrelease to execute safely
+> under mmap_read_lock without worries that exit_mmap might destroy page
+> tables from under them.
+>
+> [1] https://lore.kernel.org/all/20170725141723.ivukwhddk2voyhuc@node.shutemov.name/
+> [2] https://lore.kernel.org/all/CAJuCfpGC9-c9P40x7oy=jy5SphMcd0o0G_6U1-+JAziGKG6dGA@mail.gmail.com/
 
-The driver creates the mapping by calling irq_of_parse_and_map(),
-so it also has to dispose the mapping. But the easy way out is to
-simply use platform_get_irq() instead of irq_of_parse_map(). Also
-we should adapt return value checking and propagate error values.
+Friendly nudge.
+Michal, Matthew, from our discussion in
+https://lore.kernel.org/all/YXKhOKIIngIuJaYi@casper.infradead.org I
+was under the impression this change would be interesting for you. Any
+feedback?
 
-In this case the mapping is not managed by the device but by
-the of core, so the device has not to dispose the mapping.
-
-Fixes: faf0b2e5afe7 ("drivers/ata: add support to Freescale 3.0Gbps SATA Controller")
-Cc: stable@vger.kernel.org
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
-V1->V2:
-	Adapt return value checking and propagate error values.
-V2->V3:
-	Add fixed and CC stable.
-
- drivers/ata/sata_fsl.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/ata/sata_fsl.c b/drivers/ata/sata_fsl.c
-index 2eb216792695..8e7c49793f91 100644
---- a/drivers/ata/sata_fsl.c
-+++ b/drivers/ata/sata_fsl.c
-@@ -1490,8 +1490,9 @@ static int sata_fsl_probe(struct platform_device *ofdev)
- 	host_priv->ssr_base = ssr_base;
- 	host_priv->csr_base = csr_base;
- 
--	irq = irq_of_parse_and_map(ofdev->dev.of_node, 0);
--	if (!irq) {
-+	irq = platform_get_irq(ofdev, 0);
-+	if (irq < 0) {
-+		retval = irq;
- 		dev_err(&ofdev->dev, "invalid irq from platform\n");
- 		goto error_exit_with_cleanup;
- 	}
-@@ -1567,8 +1568,6 @@ static int sata_fsl_remove(struct platform_device *ofdev)
- 
- 	ata_host_detach(host);
- 
--	irq_dispose_mapping(host_priv->irq);
--
- 	return 0;
- }
- 
--- 
-2.31.1
-
+>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> ---
+>  mm/mmap.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+>
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index bfb0ea164a90..69b3036c6dee 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -3142,25 +3142,27 @@ void exit_mmap(struct mm_struct *mm)
+>                  * to mmu_notifier_release(mm) ensures mmu notifier callbacks in
+>                  * __oom_reap_task_mm() will not block.
+>                  *
+> -                * This needs to be done before calling munlock_vma_pages_all(),
+> +                * This needs to be done before calling unlock_range(),
+>                  * which clears VM_LOCKED, otherwise the oom reaper cannot
+>                  * reliably test it.
+>                  */
+>                 (void)__oom_reap_task_mm(mm);
+>
+>                 set_bit(MMF_OOM_SKIP, &mm->flags);
+> -               mmap_write_lock(mm);
+> -               mmap_write_unlock(mm);
+>         }
+>
+> +       mmap_write_lock(mm);
+>         if (mm->locked_vm)
+>                 unlock_range(mm->mmap, ULONG_MAX);
+>
+>         arch_exit_mmap(mm);
+>
+>         vma = mm->mmap;
+> -       if (!vma)       /* Can happen if dup_mmap() received an OOM */
+> +       if (!vma) {
+> +               /* Can happen if dup_mmap() received an OOM */
+> +               mmap_write_unlock(mm);
+>                 return;
+> +       }
+>
+>         lru_add_drain();
+>         flush_cache_mm(mm);
+> @@ -3170,6 +3172,7 @@ void exit_mmap(struct mm_struct *mm)
+>         unmap_vmas(&tlb, vma, 0, -1);
+>         free_pgtables(&tlb, vma, FIRST_USER_ADDRESS, USER_PGTABLES_CEILING);
+>         tlb_finish_mmu(&tlb);
+> +       mmap_write_unlock(mm);
+>
+>         /*
+>          * Walk the list again, actually closing and freeing it,
+> --
+> 2.34.0.rc1.387.gb447b232ab-goog
+>
