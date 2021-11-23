@@ -2,139 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61553459C95
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:07:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0111459C90
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:04:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233216AbhKWHKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 02:10:17 -0500
-Received: from mail-eopbgr30088.outbound.protection.outlook.com ([40.107.3.88]:27269
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229722AbhKWHKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 02:10:16 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DQbqBMNw1lv0FzBJjCZLGKovWqIy4jPqIzaj0baIADwAEU11VliI6SN1Umhc7w2u2QyzIJydeFTbolE8W47r5CRPjRxZX+QrozYdhRFnMBotp+fuE/eKgvJDriF8JRMDViIuJf9jJfaH1zdYwM756xaPsT+XO5uEVHa5PgMBs35R3yQqjPbYqE8X7SlCEUfddZys4Op5zL26XoTGHB+hcYvL0biHCx6Yap7mwtMlEDAXZqq/rjiibzKCXpCwXnNA7d4KH0o7LLWq6jYqI1kmOtMfsV0kFVwAGhK7CVnBINBlBosON6Z7F9Lu3ZF1mMc7eXLic+xfkxQSKVYqvBt+kw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=j36qv2cTkEheCCn7G3UPdEI6ycDbQ7u8N+VhoZ5rokE=;
- b=b/RT9+6LbhgzMeeAH5j366SYbqVPuRL9xzZOdy0IKjwUExmgf9NdzcwCCb2szk3YPo+XQ7i0NizvS/5Dag3/dixdSOw3zD3SYkbzedJl9z9+61KzVUF6hdquZVm89/C6oAwAMc0MftYxM36BJtFsLukGeU440Rx/mdEpUzakwKXd+brKfsX5jMyp5OPjMgwwO1x03rAsVUoGi2OmSu/EBGilkc7ZOTXK+BEKljXiZdKUq4PR9WWo/GkLd7rgRg5vmjpAGr0HjNvqM5QJawPlr1OBR5xeGvPX8GLvKdLB5/KyV6lf5H1W4VmvR3z9VZbK1wH5RDpkDX2Q+ayOpgLT5w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j36qv2cTkEheCCn7G3UPdEI6ycDbQ7u8N+VhoZ5rokE=;
- b=ZtZc2VvG/nWeVWtB/7dNDVr54veFtDME3Q3HtTc2kLi7wtejRDdj00AosReEbognjoIhaPgzGMWXdqUyUtbr7oriKps3HwsLHPhCRBSEpxD3seOeS/8oi1qMoky9M3o14gXa61145Qm4n2B2euDI4ZocQ7fuZTtIw9E46slRqJs=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AS8PR04MB8404.eurprd04.prod.outlook.com (2603:10a6:20b:3f8::7)
- by AM6PR0402MB3352.eurprd04.prod.outlook.com (2603:10a6:209:11::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Tue, 23 Nov
- 2021 07:07:06 +0000
-Received: from AS8PR04MB8404.eurprd04.prod.outlook.com
- ([fe80::c9fe:7982:c657:b423]) by AS8PR04MB8404.eurprd04.prod.outlook.com
- ([fe80::c9fe:7982:c657:b423%9]) with mapi id 15.20.4713.025; Tue, 23 Nov 2021
- 07:07:06 +0000
-From:   Sherry Sun <sherry.sun@nxp.com>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com
-Subject: [PATCH] tty: serial: imx: clear RTSD status before suspend
-Date:   Tue, 23 Nov 2021 15:03:49 +0800
-Message-Id: <20211123070349.20099-1-sherry.sun@nxp.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR01CA0116.apcprd01.prod.exchangelabs.com
- (2603:1096:4:40::20) To AS8PR04MB8404.eurprd04.prod.outlook.com
- (2603:10a6:20b:3f8::7)
+        id S232773AbhKWHH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 02:07:56 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:38182 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229722AbhKWHHr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 02:07:47 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7233B21910;
+        Tue, 23 Nov 2021 07:04:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1637651079; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zV+ycCXSvMAUGlG3uooDj5A3Hsy4w4owD3rkqp0rJXE=;
+        b=NtpqFEVF1mp0kWCwy+N5NNjoDy37FvhAx4yQ0onKXyVO6DwKddtUQyJfze7k2yLvG97rpG
+        /DNJdnbUP2RREBtmRAHgQmSJLzj0NVBcQj61c3DSugwDIm1Vs3+GuK67po81u+UDwQTBbI
+        wgDmjQzoOlCpV7Mbwgb5QoA2KMdqCBY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1637651079;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zV+ycCXSvMAUGlG3uooDj5A3Hsy4w4owD3rkqp0rJXE=;
+        b=4Tt92RtbKcnWLklRt2ktPwYcQ3Rx2IreYNR2g3v/drXFdvhrjgeZCMQeVsnFboQe7zvyoB
+        qUtu8xZ5LdQuQqAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 587C813CEF;
+        Tue, 23 Nov 2021 07:04:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id bZUzFYeSnGEiWAAAMHmgww
+        (envelope-from <bp@suse.de>); Tue, 23 Nov 2021 07:04:39 +0000
+Date:   Tue, 23 Nov 2021 08:04:34 +0100
+From:   Borislav Petkov <bp@suse.de>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warnings in Linus' tree
+Message-ID: <YZySgpmBcNNM2qca@zn.tnic>
+References: <20211123094419.08000327@canb.auug.org.au>
 MIME-Version: 1.0
-Received: from localhost.localdomain (119.31.174.71) by SG2PR01CA0116.apcprd01.prod.exchangelabs.com (2603:1096:4:40::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21 via Frontend Transport; Tue, 23 Nov 2021 07:07:04 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d9369cda-cd05-4d59-3b4b-08d9ae4fdb89
-X-MS-TrafficTypeDiagnostic: AM6PR0402MB3352:
-X-Microsoft-Antispam-PRVS: <AM6PR0402MB33525120D595277BEE077F6D92609@AM6PR0402MB3352.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JN0SXOTMUPgspjMV16FsywRFbIcbbqtikk4dc3VJdc1kLBWNslGrqFcqS4d7yDiAV/7SUo4Uy+iZPfPzhDktdcmeNMpCoHP1zY/dolg7b5qrP8tIL5nrpPkRPYp9eKlZ8idMupyE5TQSc7myl1TJI0+bIZy8l83iDwJxo8GONNV29ZUPDUnedtj/oVutQHrVj76XKhtWCYvp2SDyW3G7sOuBWlnFKjA4BbrMfR3opairDj4k0btzZyMqM2cp6YL3f2sXCtNVf06ejoscCarcwCiibneQuhrx7OE6xfPt6Awds+R8+gLAbaPiK5JwPa8Fh1S8WM0FQcNquhp/+hhGPf+fNvTLhMHGPefugzK9A+4c/G3bi+Z2vXG4W1t+HcdxTvg9NibtpkuDkBEHZMt3OZBxxFVi5NWGklw4Faeq7WPNnmNx7BhCJCnWAoXOkFI+qWhVB4wgWvcjrf+VhDKVOSXiLRthTaOeNoAA0R9Z9xyMnqLDY7Oao6V6eVb0u3Z9S/W0DDctEwi6mjucvmRVDjdjx/LyWH58qparw8VMXYWI5s6Qhfo3qiQc0BMz62vuxzvpwbm5WcuOBq66lHy8HESekMRRJp+AmWSXhV250T5dFc9tYg89xRCTsltXMu3EPZ8mf1WpX1fLAC3BfO5Adbl7mhd85GB6/tH0mI+HRiQkjkob8IJYejQS7gmIsGw13iO4pdszb2YlWRueQxanMg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8404.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(66476007)(66556008)(1076003)(86362001)(36756003)(6512007)(5660300002)(6666004)(316002)(6486002)(26005)(6506007)(956004)(83380400001)(186003)(4744005)(8676002)(44832011)(2616005)(38350700002)(2906002)(38100700002)(15650500001)(8936002)(52116002)(508600001)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pn/qbBlIw/Z3Rh5wQj5DZxStFpMtV2EbgKq2GjTeW/i4UBJwq3TtW4EKyVG7?=
- =?us-ascii?Q?szgGna3YOaUFzuyiWAsfL1+2fmiEElHnp0sfM5KG/XneGJPUatIVgmkABgwp?=
- =?us-ascii?Q?peHQDGC/gLPkbfdp7iJuGg5d00EI3JtXpQrkGEWQqXhHcHIr7mZrLFQo6B+D?=
- =?us-ascii?Q?9D4batVQ6PlM2g7W82stf4ELv2goBoY5k+ZR1UAk2pJFRvWlGlwnYwxfcnXx?=
- =?us-ascii?Q?8IJTFM8ui79BJ9s/GZ5ZMr2vaH7ob5fvFNMQMzfTcUI7tr/rUUsNd3X45jPN?=
- =?us-ascii?Q?V7+GVHAP8pprG7Ha71YPY2XC/wmxLQ6KjeTK1EhWytuJiLvnseJkRlF3Mm3f?=
- =?us-ascii?Q?8TofV3cYGhgOjqrtX9efD17Cq3fV0PCDA/mEQaHGbtnwOu+BhCoyk7w2P2hl?=
- =?us-ascii?Q?Q9BrwK4vWmlWaxY3fyjh/saY5doYfejQvA3WtReeoRE4LhP/cUXREm9Qyfkp?=
- =?us-ascii?Q?TIPatkiXkIDd0HgdTddGxZELrdTZmvaNTXHgIiValMdwa8CZIEEAfBEx5o03?=
- =?us-ascii?Q?PP5vhPG+AUTm3TArp/Dtd97yXTtNxtZgw9I7DARAWWhaXxCBrQVd6npDVb4w?=
- =?us-ascii?Q?5g7iJgnhpANzI2iGpn+78ABrWYuD4QE46ONykgWvjL9Eb2ez3h/Garf2niVD?=
- =?us-ascii?Q?a6Q5e2+8RvfblxdBJbj4ovbTrRbC+XtPJ84vY3HB+9ROVBqq5zuUuHxrczV4?=
- =?us-ascii?Q?FWdfKUrxOaEqCeEB1Vn39fkpHNGUOk9O3pMJ7t9FMNPMAGVe69T3OH9bGPfK?=
- =?us-ascii?Q?TL5siry/tjACv3k8YPeYNCZSj/2/sMJfYPvPgm1LlxMYNbAB3+09ow4UpIcO?=
- =?us-ascii?Q?w6uD+mrWKzw9Wz93K3vgaAFuibe4XTK1P1EYQUveOM148RHMfR/t6ETwI8yN?=
- =?us-ascii?Q?RQBbdq2Sem/umfPNVOmlyh6Q0Awijv6TFB8M18HKZ74KzASUEiqD5YW7iVVI?=
- =?us-ascii?Q?+756F5i3koE+8t4+6aUORyPgF2eqc8f8/nMqNq6E27z0eVYU7goicbbNc5aD?=
- =?us-ascii?Q?Du98xXNU3OYKLRTcJ2bAhCV6G9nn2BrCqSs2CI8xNRVawkjNtg1RqAiuvaHT?=
- =?us-ascii?Q?jDk/lP3LWujounQkKDQ6gcVkTsRwM4Qtl8UbWm0A1tWrUODVf58/NRIfZzKC?=
- =?us-ascii?Q?2ypuZFQvnQHTIauagTJLiAaJsj3uXM3/ENgS5AQ1q4eaD3AFSqvH6l0wbCUQ?=
- =?us-ascii?Q?gryZMx0IdoBGCyYiHtcnGt+k+J7ccGsnNzwjirXzxb+MVF6Xati8NfOtQIpv?=
- =?us-ascii?Q?6LqrPRkqnle/NOFmXpwQgei7KPCXW7TDgws32iYZ6RiaeTOeixrBiud2Ts3V?=
- =?us-ascii?Q?kUc/R0dfGDvYt1WKqg9nvW9Dt43DeFXfnFZggyHmQ/U2EYltVlVkJhdCzZQ6?=
- =?us-ascii?Q?4kqv06M2mbrnuDBcZeAbFELyRKN17tE2kbIC2K6cWUT3f+ZMrveKBqeZz51R?=
- =?us-ascii?Q?ZRDEYTNOIUAFZCK25LN3n9dvrYa4fiisMHIn9AYSVI5cAsjk6WXnqRxep5CX?=
- =?us-ascii?Q?cgnOeWMKkgyNyd0HYozg8TaebQ6Pj6BJkOn+YgvacN8t9CpapKDddgigRXoM?=
- =?us-ascii?Q?0Vw0RKLSxScpuwzDToeQ+IbMCqpPdXxe51VvoG8qB/Fwg5H8IdcU7D2irKQJ?=
- =?us-ascii?Q?OQ7OFiziT2tSU357Fs5nBqs=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d9369cda-cd05-4d59-3b4b-08d9ae4fdb89
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8404.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2021 07:07:06.2252
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DyrOvZZiA4AdWh9dn2fhRZCK/F+fcZDqyOVSrYVfouV8oePGEwGjmB/c6Km59TlPmovSzCzCgFsCkiorK9i8xA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR0402MB3352
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211123094419.08000327@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fugang Duan <fugang.duan@nxp.com>
+On Tue, Nov 23, 2021 at 09:44:19AM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Building Linus' tree, today's linux-next build (x86_64 allmodconfig)
+> produced these warnings:
+> 
+> WARNING: modpost: vmlinux.o(.text.unlikely+0x63df): Section mismatch in reference from the function prepare_command_line() to the variable .init.data:builtin_cmdline
+> The function prepare_command_line() references
+> the variable __initdata builtin_cmdline.
+> This is often because prepare_command_line lacks a __initdata 
+> annotation or the annotation of builtin_cmdline is wrong.
 
-Clear RTSD status before suspend due to the port also
-use RTS pin as wakeup source, need to clear the flag first.
+Doesn't trigger with my toolchain, because it simply inlines that
+function.
 
-Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
-Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
+Anyway, fix is trivial, thanks for reporting.
+
 ---
- drivers/tty/serial/imx.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+From 4f4226a7dce0c5b6d911574f7fa5870c4ee693ff Mon Sep 17 00:00:00 2001
+From: Borislav Petkov <bp@suse.de>
+Date: Tue, 23 Nov 2021 07:53:57 +0100
+Subject: [PATCH] x86/boot: Mark prepare_command_line() __init
 
-diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-index 90f82e6c54e4..fb75e3e0d828 100644
---- a/drivers/tty/serial/imx.c
-+++ b/drivers/tty/serial/imx.c
-@@ -2482,10 +2482,12 @@ static void imx_uart_enable_wakeup(struct imx_port *sport, bool on)
- 
- 	if (sport->have_rtscts) {
- 		u32 ucr1 = imx_uart_readl(sport, UCR1);
--		if (on)
-+		if (on) {
-+			imx_uart_writel(sport, USR1_RTSD, USR1);
- 			ucr1 |= UCR1_RTSDEN;
--		else
-+		} else {
- 			ucr1 &= ~UCR1_RTSDEN;
-+		}
- 		imx_uart_writel(sport, ucr1, UCR1);
- 	}
+Fix:
+
+  WARNING: modpost: vmlinux.o(.text.unlikely+0x64d0): Section mismatch in reference \
+   from the function prepare_command_line() to the variable .init.data:command_line
+  The function prepare_command_line() references
+  the variable __initdata command_line.
+  This is often because prepare_command_line lacks a __initdata
+  annotation or the annotation of command_line is wrong.
+
+Apparently some toolchains do different inlining decisions.
+
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lore.kernel.org/r/20211123094419.08000327@canb.auug.org.au
+---
+ arch/x86/kernel/setup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index c410be738ae7..6a190c7f4d71 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -742,7 +742,7 @@ dump_kernel_offset(struct notifier_block *self, unsigned long v, void *p)
+ 	return 0;
  }
+ 
+-static char *prepare_command_line(void)
++static char * __init prepare_command_line(void)
+ {
+ #ifdef CONFIG_CMDLINE_BOOL
+ #ifdef CONFIG_CMDLINE_OVERRIDE
 -- 
-2.17.1
+2.29.2
 
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Ivo Totev, HRB 36809, AG Nürnberg
