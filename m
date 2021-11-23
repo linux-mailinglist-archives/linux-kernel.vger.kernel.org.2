@@ -2,107 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED68459AAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 04:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6ED459AB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 04:46:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233254AbhKWDs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 22:48:27 -0500
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:17356 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232981AbhKWDsX (ORCPT
+        id S233294AbhKWDtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 22:49:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233033AbhKWDtS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 22:48:23 -0500
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AN2Pv1f024190;
-        Tue, 23 Nov 2021 03:45:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2021-07-09;
- bh=p140Ja0mqfvE6BdD5q4qq/4GgkMFr3LY0L6EzEUbeMg=;
- b=jS43kzDyQEcHiwTpQ6wGL/Ol8HCaTc2MFFUb1CnNlFa9kxNQ8yMnL+d+5hWCtDdEQ1PC
- SaAEn/qYwFRaTMuGpljhPyK9Mi3ULuVuTl6oDb7uFE8EQdEOx6/5TwjeCWNpIaInMSCz
- CqGcfuC0jlGByvprQ2z4GTa/IuMN9zo70HV9f241pD1igZmtswJA/WO8h24yo8pft7UW
- KTOg0FR1NKgcsAFVpOovo4Tng/1EeGjJvK58LbOZlzw+MuZjTPdaoP908S8rteXP+8+n
- 9vyYw5YDQGbwsrh+jvMH0zK9gzolUjSH5OXiK6W90ckdndQTCZ5yLQ62V3BVdKcrczye gw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3cg5gj69m8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Nov 2021 03:45:12 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AN3akN5044380;
-        Tue, 23 Nov 2021 03:45:11 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 3ceq2djd3c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Nov 2021 03:45:11 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1AN3jATp070854;
-        Tue, 23 Nov 2021 03:45:10 GMT
-Received: from ca-mkp.mkp.ca.oracle.com (ca-mkp.ca.oracle.com [10.156.108.201])
-        by aserp3030.oracle.com with ESMTP id 3ceq2djd2x-1;
-        Tue, 23 Nov 2021 03:45:10 +0000
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     gregkh@linuxfoundation.org, jejb@linux.ibm.com,
-        George Kennedy <george.kennedy@oracle.com>,
-        dgilbert@interlog.com
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: scsi_debug: sanity check block descriptor length in resp_mode_select
-Date:   Mon, 22 Nov 2021 22:45:07 -0500
-Message-Id: <163763907099.20472.9018819548553170425.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <1637262208-28850-1-git-send-email-george.kennedy@oracle.com>
-References: <1637262208-28850-1-git-send-email-george.kennedy@oracle.com>
+        Mon, 22 Nov 2021 22:49:18 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8843CC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 19:46:10 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id i12so17399208wmq.4
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 19:46:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bp7mEUVEt5QqG8xtFw9E/AxBIVfYeYYO56kVpuGbx0w=;
+        b=KyN9plmEYyF3x0xQCMBvv/ru9mWfjMMKqxC5jgl0lp/npQTuCiJHJwFP7tGG1y5TJd
+         viO7MgOcbUYXROE6Fdvaq95av8hNE8fIZB0y4/sEKguAibSAlzCbgZcjoRSbHOW5r2fr
+         jyO8qXc6/Ye0pzZXBQ8o0vAe01kTq+rN81c1H2rp5T3Vl00al1Lk18B1qoyjtvojBKNn
+         AIwNUdve229Uua8ERl9LLmtfTSEV0ud+DOu+8sjZYPUDL4fizeWm0DEur8ToXjkgehTE
+         Z1/mJWLWkC2ZLy5Dxyg7XGLih5qK93mqgrkdMZjgRoKy+ZbQ9d8RmBWEsVkrU/UHOeBq
+         ix0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bp7mEUVEt5QqG8xtFw9E/AxBIVfYeYYO56kVpuGbx0w=;
+        b=AY8mqobtOfLIf6kwtwUYULCR6erN5iq4KgWIfEIIPDa2L+pWOjdKrx27dRb8Glg1ib
+         fzdcNoTZYlythCvXJICokH3ThZqlIGSYERYbPMrVYwvj5md1Kk+0Wzy4myvarOC+J8z5
+         n7OCA1okl2ek3OnWKb6LIJVGviv0VsDZjFEXs6kE67Y7sX5PFpX9GZ32aDvH4ArgMb5K
+         3xpx/wsdJbWDDLwj8tn3WGgs1BvBaodWCTcZo1iM1Q2WpI3+/Cjw3pO76ykadKTwgaVi
+         KmkNURRjOhtffqLdUFUKfaedmEAs6vIKqMlWNBDVEbHp+RI2RSojN+2Y+4vdGm7SuOFN
+         TXOA==
+X-Gm-Message-State: AOAM532x7P90pNQ9wN30MCUp9FBQe6PegO6nLjlLQwqr4g1TigV5NgWj
+        NfX9Mtgo6eTf9sjSfy4D3Lm7lVSpSmvRxPC/HPysPg==
+X-Google-Smtp-Source: ABdhPJwF++wWUq50mUMTn31nsRbQkp7Q/pEnYoXUvcdHVH5A7NkAMXK0YWkEElOmdUQGxHy+cfheXIlQKhKS83s//+Q=
+X-Received: by 2002:a7b:c017:: with SMTP id c23mr3008380wmb.137.1637639168977;
+ Mon, 22 Nov 2021 19:46:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: 5STSdlRBFyEU0x8Eagxj2o_QRvJ2luvf
-X-Proofpoint-ORIG-GUID: 5STSdlRBFyEU0x8Eagxj2o_QRvJ2luvf
+References: <20211123015717.542631-1-guoren@kernel.org> <20211123015717.542631-4-guoren@kernel.org>
+In-Reply-To: <20211123015717.542631-4-guoren@kernel.org>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Tue, 23 Nov 2021 09:15:57 +0530
+Message-ID: <CAAhSdy3+hY1jwNAOrhE0kiCZPMRh4amY3+Mn-NR2TDFQ24orwQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/3] riscv: Add riscv.fwsz kernel parameter
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>, atishp@rivosinc.com,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Anup Patel <anup.patel@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Nov 2021 14:03:28 -0500, George Kennedy wrote:
+On Tue, Nov 23, 2021 at 7:27 AM <guoren@kernel.org> wrote:
+>
+> From: Guo Ren <guoren@linux.alibaba.com>
+>
+> The firmware of riscv (such as opensbi) occupy 2MB(64bit) /
+> 4MB(32bit) in Linux. It's very wasteful to small memory footprint
+> soc chip such as Allwinner D1s/F133. The kernel parameter gives a
+> chance to users to set the proper size of the firmware and get
+> more than 1.5MB of memory.
 
-> In resp_mode_select() sanity check the block descriptor len to avoid UAF.
-> 
-> BUG: KASAN: use-after-free in resp_mode_select+0xa4c/0xb40 drivers/scsi/scsi_debug.c:2509
-> Read of size 1 at addr ffff888026670f50 by task scsicmd/15032
-> 
-> CPU: 1 PID: 15032 Comm: scsicmd Not tainted 5.15.0-01d0625 #15
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> Call Trace:
->  <TASK>
->  dump_stack_lvl+0x89/0xb5 lib/dump_stack.c:107
->  print_address_description.constprop.9+0x28/0x160 mm/kasan/report.c:257
->  kasan_report.cold.14+0x7d/0x117 mm/kasan/report.c:443
->  __asan_report_load1_noabort+0x14/0x20 mm/kasan/report_generic.c:306
->  resp_mode_select+0xa4c/0xb40 drivers/scsi/scsi_debug.c:2509
->  schedule_resp+0x4af/0x1a10 drivers/scsi/scsi_debug.c:5483
->  scsi_debug_queuecommand+0x8c9/0x1e70 drivers/scsi/scsi_debug.c:7537
->  scsi_queue_rq+0x16b4/0x2d10 drivers/scsi/scsi_lib.c:1521
->  blk_mq_dispatch_rq_list+0xb9b/0x2700 block/blk-mq.c:1640
->  __blk_mq_sched_dispatch_requests+0x28f/0x590 block/blk-mq-sched.c:325
->  blk_mq_sched_dispatch_requests+0x105/0x190 block/blk-mq-sched.c:358
->  __blk_mq_run_hw_queue+0xe5/0x150 block/blk-mq.c:1762
->  __blk_mq_delay_run_hw_queue+0x4f8/0x5c0 block/blk-mq.c:1839
->  blk_mq_run_hw_queue+0x18d/0x350 block/blk-mq.c:1891
->  blk_mq_sched_insert_request+0x3db/0x4e0 block/blk-mq-sched.c:474
->  blk_execute_rq_nowait+0x16b/0x1c0 block/blk-exec.c:63
->  sg_common_write.isra.18+0xeb3/0x2000 drivers/scsi/sg.c:837
->  sg_new_write.isra.19+0x570/0x8c0 drivers/scsi/sg.c:775
->  sg_ioctl_common+0x14d6/0x2710 drivers/scsi/sg.c:941
->  sg_ioctl+0xa2/0x180 drivers/scsi/sg.c:1166
->  __x64_sys_ioctl+0x19d/0x220 fs/ioctl.c:52
->  do_syscall_64+0x3a/0x80 arch/x86/entry/common.c:50
->  entry_SYSCALL_64_after_hwframe+0x44/0xae arch/x86/entry/entry_64.S:113
-> 
-> [...]
+This kernel parameter is redundant see my comment on other patch.
 
-Applied to 5.16/scsi-fixes, thanks!
+regards,
+Anup
 
-[1/1] scsi: scsi_debug: sanity check block descriptor length in resp_mode_select
-      https://git.kernel.org/mkp/scsi/c/e0a2c28da11e
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+>
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Anup Patel <anup.patel@wdc.com>
+> Cc: Atish Patra <atishp@rivosinc.com>
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 9725c546a0d4..ee505743c8f4 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -4964,6 +4964,9 @@
+>                         [KNL] Disable ring 3 MONITOR/MWAIT feature on supported
+>                         CPUs.
+>
+> +       riscv.fwsz=nn[KMG]
+> +                       [RISC-V] Determine firmware size to save memory
+> +
+>         ro              [KNL] Mount root device read-only on boot
+>
+>         rodata=         [KNL]
+> --
+> 2.25.1
+>
