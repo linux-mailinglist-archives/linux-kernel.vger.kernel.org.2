@@ -2,152 +2,1760 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6468845A78F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:24:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 342D745A7AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhKWQ1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 11:27:25 -0500
-Received: from mx1.riseup.net ([198.252.153.129]:33322 "EHLO mx1.riseup.net"
+        id S232982AbhKWQ3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 11:29:44 -0500
+Received: from shark3.inbox.lv ([194.152.32.83]:37070 "EHLO shark3.inbox.lv"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229490AbhKWQ1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 11:27:21 -0500
-Received: from fews1.riseup.net (fews1-pn.riseup.net [10.0.1.83])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
-         client-signature RSA-PSS (2048 bits) client-digest SHA256)
-        (Client CN "mail.riseup.net", Issuer "R3" (not verified))
-        by mx1.riseup.net (Postfix) with ESMTPS id 4Hz8bc6CP6zF4hK;
-        Tue, 23 Nov 2021 08:24:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-        t=1637684652; bh=stNte7d26WnhnXC3ecSubp5EUl7aNu2uiNp1RYROnSI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ghaphtF57LSQFyViP4QhuVeq7ys2Usy+p9Bxo9TvJMfKgKLlxn0TDrGedLgXQbSWi
-         9++cKtQYhmCLeKvdNh5HrIl0y8q9KT5W56TMZLmFXEjd89zLVSmuJhlsfq2CBnSWzB
-         p3W8ZgtngLZGGJopxhhK9LdBR31baqIi1q+QVLfI=
-X-Riseup-User-ID: E0A67B4CE233D505C4916D06E1BFF3FB8359B951C0216D6436397217B9D33A9C
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by fews1.riseup.net (Postfix) with ESMTPSA id 4Hz8bZ4Ywjz5vLq;
-        Tue, 23 Nov 2021 08:24:10 -0800 (PST)
-From:   Dang Huynh <danct12@riseup.net>
-To:     Dang Huynh <danct12@riseup.net>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: dts: qcom: Drop input-name property
-Date:   Tue, 23 Nov 2021 23:19:22 +0700
-Message-Id: <20211123161919.1506755-1-danct12@riseup.net>
+        id S232840AbhKWQ3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 11:29:43 -0500
+X-Greylist: delayed 382 seconds by postgrey-1.27 at vger.kernel.org; Tue, 23 Nov 2021 11:29:42 EST
+Received: from shark3.inbox.lv (localhost [127.0.0.1])
+        by shark3-out.inbox.lv (Postfix) with ESMTP id 460F12801AD;
+        Tue, 23 Nov 2021 18:20:11 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.lv; s=30062014;
+        t=1637684411; bh=BH0HSvARCDaBlz1T8MUfw+AwzX2ZgcbTFOW7aq3nhMI=;
+        h=Date:From:To:Cc:Subject;
+        b=fvAJuECqLY2RjzaX0RLQNQPlfgQLLCqIIYvfqrdMzvy8QgGst6hkAhMrbwqgCcZDL
+         p/Mm+STaFrdb2hcWkFQGDBVycU+0p4tTjsX3lBKHrjDJ99z4THoOosMgFj/X9LuE0t
+         JxwCfCqHI8WLTbb5zA+jqYJgRKj2ATp0k/WRflTw=
+Received: from localhost (localhost [127.0.0.1])
+        by shark3-in.inbox.lv (Postfix) with ESMTP id 2B9D628017D;
+        Tue, 23 Nov 2021 18:20:11 +0200 (EET)
+Received: from shark3.inbox.lv ([127.0.0.1])
+        by localhost (shark3.inbox.lv [127.0.0.1]) (spamfilter, port 35)
+        with ESMTP id tU6nNCp-LW6R; Tue, 23 Nov 2021 18:20:07 +0200 (EET)
+Received: from mail.inbox.lv (pop1 [127.0.0.1])
+        by shark3-in.inbox.lv (Postfix) with ESMTP id 70B472800EC;
+        Tue, 23 Nov 2021 18:20:07 +0200 (EET)
+Received: from mail.inbox.lv (unknown [79.105.116.237])
+        (Authenticated sender: hakavlad@inbox.lv)
+        by mail.inbox.lv (Postfix) with ESMTPA id EE02A3E601BB;
+        Tue, 23 Nov 2021 18:20:01 +0200 (EET)
+Date:   Wed, 24 Nov 2021 01:19:54 +0900
+From:   Alexey Avramov <hakavlad@inbox.lv>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, mgorman@techsingularity.net,
+        mhocko@suse.com, vbabka@suse.cz, neilb@suse.de,
+        akpm@linux-foundation.org, corbet@lwn.net, riel@surriel.com,
+        hannes@cmpxchg.org, david@fromorbit.com, willy@infradead.org,
+        hdanton@sina.com, penguin-kernel@i-love.sakura.ne.jp,
+        oleksandr@natalenko.name, kernel@xanmod.org,
+        michael@michaellarabel.com, aros@gmx.com, hakavlad@inbox.lv,
+        hakavlad@gmail.com
+Subject: mm: 5.16 regression: reclaim_throttle leads to stall in near-OOM
+ conditions
+Message-ID: <20211124011954.7cab9bb4@mail.inbox.lv>
+X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: OK
+X-ESPOL: EZqEIBwB+w1Luca/KI1r7+Xnw8rRJVchvTuJsLBwtjJFz9PMtNdrcW+QBYXuHxy7cWTD
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This property doesn't seem to exist in the documentation nor
-in source code, but for some reason it is defined in a bunch
-of device trees.
+I found stalls in near-OOM conditions with Linux 5.16. This is not the
+hang-up that was reported by Artem S. Tashkinov in 2019 [1]. It's a *new* 
+regression. I will demonstrate this with one simple experiment, which I
+will reproduce with different kernels or settings.
 
-Signed-off-by: Dang Huynh <danct12@riseup.net>
----
-This patch is a split of this treewide patch [1] to ease the
-maintainers.
+With older versions of the kernel, running the `tail /dev/zero` command
+usually quickly leads to OOM condition.
 
-[1]: https://patchwork.kernel.org/patch/12633497/
+I will run the command `for i in {1...3}; do tail /dev/zero; done` and log
+PSI metrics (using psi2log script from nohang v0.2.0 [2]) and some values
+from `/proc/meminfo` (using mem2log v0.1.0 [3]) while this command is
+running. During the experiment a single tab browser will be kept opened in
+which some video will be playing.
 
- arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dts      | 1 -
- arch/arm/boot/dts/qcom-msm8974-fairphone-fp2.dts         | 1 -
- arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts | 1 -
- arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts          | 1 -
- arch/arm/boot/dts/qcom-msm8974-sony-xperia-amami.dts     | 1 -
- arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dts    | 1 -
- arch/arm/boot/dts/qcom-msm8974-sony-xperia-honami.dts    | 1 -
- 7 files changed, 7 deletions(-)
+The OS is Debian 9 x86_64 on HDD with ext4+LUKS, MemTotal: 11.5 GiB.
 
-diff --git a/arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dts b/arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dts
-index f8c97efc61fc..0cee62c7b8b0 100644
---- a/arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dts
-+++ b/arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dts
-@@ -19,7 +19,6 @@ chosen {
- 
- 	gpio-keys {
- 		compatible = "gpio-keys";
--		input-name = "gpio-keys";
- 
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&gpio_keys_pin_a>;
-diff --git a/arch/arm/boot/dts/qcom-msm8974-fairphone-fp2.dts b/arch/arm/boot/dts/qcom-msm8974-fairphone-fp2.dts
-index ea15b645b229..6d77e0f8ca4d 100644
---- a/arch/arm/boot/dts/qcom-msm8974-fairphone-fp2.dts
-+++ b/arch/arm/boot/dts/qcom-msm8974-fairphone-fp2.dts
-@@ -20,7 +20,6 @@ chosen {
- 
- 	gpio-keys {
- 		compatible = "gpio-keys";
--		input-name = "gpio-keys";
- 
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&gpio_keys_pin_a>;
-diff --git a/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts b/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts
-index 30ee913faae6..069136170198 100644
---- a/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts
-+++ b/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts
-@@ -450,7 +450,6 @@ bcrmf@1 {
- 
- 	gpio-keys {
- 		compatible = "gpio-keys";
--		input-name = "gpio-keys";
- 
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&gpio_keys_pin_a>;
-diff --git a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-index 003f0fa9c857..96e1c978b878 100644
---- a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-+++ b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-@@ -349,7 +349,6 @@ bluetooth {
- 
- 	gpio-keys {
- 		compatible = "gpio-keys";
--		input-name = "gpio-keys";
- 
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&gpio_keys_pin_a>;
-diff --git a/arch/arm/boot/dts/qcom-msm8974-sony-xperia-amami.dts b/arch/arm/boot/dts/qcom-msm8974-sony-xperia-amami.dts
-index 398a3eaf306b..79e2cfbbb1ba 100644
---- a/arch/arm/boot/dts/qcom-msm8974-sony-xperia-amami.dts
-+++ b/arch/arm/boot/dts/qcom-msm8974-sony-xperia-amami.dts
-@@ -20,7 +20,6 @@ chosen {
- 
- 	gpio-keys {
- 		compatible = "gpio-keys";
--		input-name = "gpio-keys";
- 
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&gpio_keys_pin_a>;
-diff --git a/arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dts b/arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dts
-index b4dd85bd4faf..e66937e3f7dd 100644
---- a/arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dts
-+++ b/arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dts
-@@ -20,7 +20,6 @@ chosen {
- 
- 	gpio-keys {
- 		compatible = "gpio-keys";
--		input-name = "gpio-keys";
- 
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&gpio_keys_pin_a>;
-diff --git a/arch/arm/boot/dts/qcom-msm8974-sony-xperia-honami.dts b/arch/arm/boot/dts/qcom-msm8974-sony-xperia-honami.dts
-index 9743beebd84d..a62e5c25b23c 100644
---- a/arch/arm/boot/dts/qcom-msm8974-sony-xperia-honami.dts
-+++ b/arch/arm/boot/dts/qcom-msm8974-sony-xperia-honami.dts
-@@ -20,7 +20,6 @@ chosen {
- 
- 	gpio-keys {
- 		compatible = "gpio-keys";
--		input-name = "gpio-keys";
- 
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&gpio_keys_pin_a>;
--- 
-2.34.0
 
+1. 5.15.0 and expected behavior
+===============================
+
+The expected behavior for a fast memory leak: when MemFree and
+Active(file)+Inactive(file) drop to the minimum, OOM is called and the
+available memory is kept at the minimum for only a short period of time,
+usually not more than 1 second. This happens with kernel 5.15 and earlier.
+
+This is mem2log log 
+(mem2log started as `mem2log --inerval 0.5 --log /tmpfs/n`):
+
+2021-11-21 23:10:42,923: Starting mem2log with interval 0.5s, mode: 1
+2021-11-21 23:10:42,923: Log file: /tmpfs/27
+2021-11-21 23:10:42,924: Process memory locked with MCL_CURRENT | MCL_FUTURE | MCL_ONFAULT
+2021-11-21 23:10:42,924: All values are in mebibytes
+2021-11-21 23:10:42,924: MemTotal: 11798.7, SwapTotal: 0.0
+2021-11-21 23:10:42,924: --
+2021-11-21 23:10:42,924: MA is MemAvailable, MF is MemFree, A is Anon
+2021-11-21 23:10:42,925: F is File, AF is Active(file), IF is Inactive(file)
+2021-11-21 23:10:42,925: D is Dirty, C is Clean file (File - Dirty)
+2021-11-21 23:10:42,925: SF is SwapFree, SU is SwapUsed (SwapTotal - SwapFree)
+2021-11-21 23:10:42,925: --
+2021-11-21 23:10:42,925: MA=10010=85% MF=9977 A=1226 F=251 AF=66 IF=185 D=0 C=251 SF=0 SU=0
+2021-11-21 23:10:43,426: MA=8942=76% MF=8910 A=2292 F=251 AF=66 IF=185 D=0 C=251 SF=0 SU=0
+2021-11-21 23:10:43,927: MA=7868=67% MF=7836 A=3363 F=251 AF=66 IF=185 D=0 C=251 SF=0 SU=0
+2021-11-21 23:10:44,428: MA=6802=58% MF=6770 A=4426 F=251 AF=66 IF=185 D=0 C=251 SF=0 SU=0
+2021-11-21 23:10:44,928: MA=5745=49% MF=5713 A=5481 F=251 AF=66 IF=185 D=0 C=251 SF=0 SU=0
+2021-11-21 23:10:45,429: MA=4688=40% MF=4656 A=6536 F=251 AF=66 IF=185 D=0 C=251 SF=0 SU=0
+2021-11-21 23:10:45,930: MA=3625=31% MF=3593 A=7597 F=251 AF=66 IF=185 D=0 C=251 SF=0 SU=0
+2021-11-21 23:10:46,431: MA=2563=22% MF=2531 A=8657 F=251 AF=66 IF=185 D=0 C=251 SF=0 SU=0
+2021-11-21 23:10:46,932: MA=1497=13% MF=1465 A=9719 F=251 AF=66 IF=185 D=0 C=251 SF=0 SU=0
+2021-11-21 23:10:47,433: MA=442=4% MF=410 A=10772 F=251 AF=66 IF=185 D=0 C=251 SF=0 SU=0
+2021-11-21 23:10:47,933: MA=0=0% MF=118 A=11373 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0  <----- OOM
+2021-11-21 23:10:48,434: MA=9699=82% MF=9835 A=1640 F=4 AF=0 IF=3 D=0 C=4 SF=0 SU=0
+2021-11-21 23:10:48,935: MA=10508=89% MF=10641 A=850 F=9 AF=0 IF=9 D=0 C=9 SF=0 SU=0
+2021-11-21 23:10:49,436: MA=10506=89% MF=10636 A=850 F=15 AF=0 IF=15 D=0 C=15 SF=0 SU=0
+2021-11-21 23:10:49,938: MA=10504=89% MF=10632 A=850 F=19 AF=0 IF=19 D=0 C=19 SF=0 SU=0
+2021-11-21 23:10:50,439: MA=10502=89% MF=10627 A=850 F=25 AF=0 IF=25 D=0 C=25 SF=0 SU=0
+2021-11-21 23:10:50,940: MA=10501=89% MF=10623 A=850 F=31 AF=1 IF=30 D=0 C=31 SF=0 SU=0
+2021-11-21 23:10:51,441: MA=10499=89% MF=10619 A=850 F=35 AF=1 IF=35 D=0 C=35 SF=0 SU=0
+2021-11-21 23:10:51,943: MA=10496=89% MF=10614 A=850 F=40 AF=1 IF=39 D=0 C=40 SF=0 SU=0
+2021-11-21 23:10:52,444: MA=10493=89% MF=10608 A=850 F=45 AF=1 IF=45 D=0 C=45 SF=0 SU=0
+2021-11-21 23:10:52,945: MA=10492=89% MF=10604 A=850 F=50 AF=1 IF=49 D=0 C=50 SF=0 SU=0
+2021-11-21 23:10:53,446: MA=10489=89% MF=10599 A=850 F=55 AF=2 IF=53 D=0 C=55 SF=0 SU=0
+2021-11-21 23:10:53,947: MA=10487=89% MF=10594 A=850 F=59 AF=2 IF=57 D=0 C=59 SF=0 SU=0
+2021-11-21 23:10:54,448: MA=9928=84% MF=10034 A=1405 F=64 AF=2 IF=61 D=0 C=64 SF=0 SU=0
+2021-11-21 23:10:54,949: MA=8901=75% MF=9004 A=2428 F=68 AF=3 IF=66 D=0 C=68 SF=0 SU=0
+2021-11-21 23:10:55,450: MA=7819=66% MF=7921 A=3507 F=72 AF=3 IF=69 D=0 C=72 SF=0 SU=0
+2021-11-21 23:10:55,951: MA=6749=57% MF=6848 A=4569 F=76 AF=3 IF=73 D=0 C=76 SF=0 SU=0
+2021-11-21 23:10:56,452: MA=5675=48% MF=5772 A=5639 F=82 AF=3 IF=78 D=0 C=82 SF=0 SU=0
+2021-11-21 23:10:56,953: MA=4595=39% MF=4689 A=6716 F=87 AF=3 IF=83 D=0 C=87 SF=0 SU=0
+2021-11-21 23:10:57,453: MA=3510=30% MF=3602 A=7797 F=92 AF=3 IF=88 D=0 C=92 SF=0 SU=0
+2021-11-21 23:10:57,954: MA=2432=21% MF=2522 A=8872 F=95 AF=4 IF=92 D=0 C=95 SF=0 SU=0
+2021-11-21 23:10:58,455: MA=1363=12% MF=1450 A=9935 F=100 AF=4 IF=97 D=0 C=100 SF=0 SU=0
+2021-11-21 23:10:58,956: MA=293=2% MF=378 A=10999 F=104 AF=4 IF=101 D=0 C=104 SF=0 SU=0
+2021-11-21 23:10:59,457: MA=4639=39% MF=4776 A=6711 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0  <----- OOM
+2021-11-21 23:10:59,957: MA=10524=89% MF=10659 A=845 F=6 AF=1 IF=5 D=0 C=6 SF=0 SU=0
+2021-11-21 23:11:00,459: MA=10522=89% MF=10654 A=845 F=11 AF=1 IF=11 D=0 C=11 SF=0 SU=0
+2021-11-21 23:11:00,960: MA=10520=89% MF=10649 A=845 F=18 AF=1 IF=17 D=0 C=18 SF=0 SU=0
+2021-11-21 23:11:01,461: MA=10516=89% MF=10643 A=845 F=23 AF=1 IF=22 D=0 C=23 SF=0 SU=0
+2021-11-21 23:11:01,962: MA=10514=89% MF=10638 A=845 F=27 AF=1 IF=26 D=0 C=27 SF=0 SU=0
+2021-11-21 23:11:02,464: MA=10512=89% MF=10633 A=845 F=32 AF=1 IF=31 D=0 C=32 SF=0 SU=0
+2021-11-21 23:11:02,965: MA=10509=89% MF=10628 A=845 F=36 AF=1 IF=35 D=0 C=36 SF=0 SU=0
+2021-11-21 23:11:03,466: MA=10506=89% MF=10623 A=845 F=43 AF=1 IF=41 D=0 C=43 SF=0 SU=0
+2021-11-21 23:11:03,967: MA=10503=89% MF=10617 A=845 F=49 AF=2 IF=47 D=0 C=49 SF=0 SU=0
+2021-11-21 23:11:04,469: MA=10500=89% MF=10610 A=845 F=55 AF=2 IF=53 D=0 C=55 SF=0 SU=0
+2021-11-21 23:11:04,969: MA=10479=89% MF=10587 A=865 F=59 AF=2 IF=57 D=0 C=59 SF=0 SU=0
+2021-11-21 23:11:05,470: MA=9479=80% MF=9584 A=1861 F=64 AF=2 IF=61 D=0 C=64 SF=0 SU=0
+2021-11-21 23:11:05,971: MA=8413=71% MF=8516 A=2921 F=70 AF=2 IF=67 D=0 C=70 SF=0 SU=0
+2021-11-21 23:11:06,472: MA=7340=62% MF=7441 A=3990 F=73 AF=2 IF=71 D=0 C=73 SF=0 SU=0
+2021-11-21 23:11:06,973: MA=6273=53% MF=6372 A=5053 F=77 AF=2 IF=75 D=0 C=77 SF=0 SU=0
+2021-11-21 23:11:07,474: MA=5207=44% MF=5303 A=6113 F=82 AF=2 IF=80 D=0 C=82 SF=0 SU=0
+2021-11-21 23:11:07,975: MA=4140=35% MF=4234 A=7175 F=87 AF=2 IF=85 D=0 C=87 SF=0 SU=0
+2021-11-21 23:11:08,476: MA=3074=26% MF=3166 A=8237 F=90 AF=2 IF=88 D=0 C=90 SF=0 SU=0
+2021-11-21 23:11:08,977: MA=2012=17% MF=2103 A=9294 F=93 AF=2 IF=91 D=1 C=92 SF=0 SU=0
+2021-11-21 23:11:09,477: MA=1002=8% MF=1091 A=10292 F=98 AF=2 IF=95 D=2 C=96 SF=0 SU=0
+2021-11-21 23:11:09,978: MA=20=0% MF=118 A=11301 F=78 AF=39 IF=39 D=0 C=78 SF=0 SU=0
+2021-11-21 23:11:10,479: MA=0=0% MF=118 A=11380 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0  <----- OOM
+2021-11-21 23:11:10,980: MA=5941=50% MF=6077 A=5410 F=4 AF=0 IF=3 D=0 C=4 SF=0 SU=0
+2021-11-21 23:11:11,481: MA=10532=89% MF=10665 A=843 F=9 AF=1 IF=9 D=0 C=9 SF=0 SU=0
+2021-11-21 23:11:11,983: MA=10530=89% MF=10660 A=843 F=15 AF=1 IF=14 D=0 C=15 SF=0 SU=0
+2021-11-21 23:11:12,484: MA=10527=89% MF=10655 A=843 F=20 AF=1 IF=19 D=0 C=20 SF=0 SU=0
+2021-11-21 23:11:12,985: MA=10526=89% MF=10651 A=843 F=24 AF=1 IF=24 D=0 C=24 SF=0 SU=0
+2021-11-21 23:11:13,486: MA=10524=89% MF=10647 A=843 F=29 AF=1 IF=29 D=0 C=29 SF=0 SU=0
+2021-11-21 23:11:13,988: MA=10521=89% MF=10642 A=843 F=34 AF=1 IF=34 D=0 C=34 SF=0 SU=0
+2021-11-21 23:11:14,489: MA=10519=89% MF=10637 A=843 F=40 AF=1 IF=39 D=0 C=40 SF=0 SU=0
+
+and PSI metrics at the same time
+(psi2log started as `psi2log --mode 2 --log /tmpfs/n`):
+
+2021-11-21 23:10:38,826: Starting psi2log, target: SYSTEM_WIDE, mode: 2, interval: 2 sec, log file: /tmpfs/1, suppress output: False
+2021-11-21 23:10:38,826: PSI source dir: /proc/pressure/, source files: cpu, io, memory
+2021-11-21 23:10:38,828: Process memory locked with MCL_CURRENT | MCL_FUTURE | MCL_ONFAULT
+2021-11-21 23:10:38,828: ======|=============|=============|
+2021-11-21 23:10:38,828:  cpu  |      io     |    memory   |
+2021-11-21 23:10:38,828: ----- | ----------- | ----------- |
+2021-11-21 23:10:38,828:  some |  some  full |  some  full | interval
+2021-11-21 23:10:38,828: ----- | ----- ----- | ----- ----- | --------
+2021-11-21 23:10:40,829:   1.4 |   0.0   0.0 |   0.0   0.0 | 2.001
+2021-11-21 23:10:42,832:   1.3 |   2.6   2.6 |   0.0   0.0 | 2.002
+2021-11-21 23:10:44,834:   0.3 |   0.2   0.2 |   0.0   0.0 | 2.002
+2021-11-21 23:10:46,836:   0.2 |   0.0   0.0 |   0.0   0.0 | 2.002
+2021-11-21 23:10:48,839:   2.6 |  38.0  33.2 |  14.6  14.5 | 2.003
+2021-11-21 23:10:50,842:   0.2 |  94.6  93.3 |   0.0   0.0 | 2.003
+2021-11-21 23:10:52,844:   1.1 |  93.1  88.6 |   0.0   0.0 | 2.003
+2021-11-21 23:10:54,845:   0.8 |  94.2  85.9 |   0.0   0.0 | 2.001
+2021-11-21 23:10:56,848:   0.5 |  75.6  69.0 |   0.0   0.0 | 2.002
+2021-11-21 23:10:58,849:   0.5 |  66.2  63.0 |   0.0   0.0 | 2.002
+2021-11-21 23:11:00,852:   2.3 |  86.8  78.6 |   7.8   7.6 | 2.003
+2021-11-21 23:11:02,855:   0.2 |  99.9  98.7 |   0.0   0.0 | 2.003
+2021-11-21 23:11:04,857:   0.4 |  97.7  95.7 |   0.0   0.0 | 2.003
+2021-11-21 23:11:06,860:   0.5 |  77.7  73.9 |   0.0   0.0 | 2.003
+2021-11-21 23:11:08,862:   0.6 |  60.1  57.4 |   0.0   0.0 | 2.002
+2021-11-21 23:11:10,864:   3.4 |  68.7  58.1 |  21.5  21.1 | 2.002
+2021-11-21 23:11:12,867:   0.2 |  97.0  94.4 |   0.0   0.0 | 2.003
+2021-11-21 23:11:14,869:   0.4 |  98.1  96.3 |   0.0   0.0 | 2.002
+2021-11-21 23:11:16,872:   1.2 |  87.9  83.8 |   0.0   0.0 | 2.003
+2021-11-21 23:11:18,873:   1.2 |  82.4  76.6 |   0.0   0.0 | 2.001
+2021-11-21 23:11:20,876:   1.1 |  83.8  79.6 |   0.0   0.0 | 2.003
+2021-11-21 23:11:22,877:   1.4 |  61.3  57.8 |   0.0   0.0 | 2.001
+2021-11-21 23:11:24,880:   1.5 |  54.4  50.4 |   0.0   0.0 | 2.003
+2021-11-21 23:11:26,881:   1.5 |  34.3  32.5 |   0.0   0.0 | 2.001
+2021-11-21 23:11:28,884:   1.3 |  39.8  38.1 |   0.0   0.0 | 2.003
+2021-11-21 23:11:30,887:   1.5 |  25.3  23.5 |   0.0   0.0 | 2.003
+2021-11-21 23:11:32,889:   1.6 |   1.3   1.2 |   0.0   0.0 | 2.003
+2021-11-21 23:11:34,892:   1.3 |   0.0   0.0 |   0.0   0.0 | 2.003
+
+In the mem2log log, we see OOM arrivals for less than 1 second:
+23:10:47,933, 23:10:59,457 and 23:11:10,479.
+At the same time, memory pressure metrics do not reach large values.
+
+
+2. Vanilla 5.16-rc1 and stall
+=============================
+
+Freezes occur for tens of seconds.
+
+2021-11-21 22:53:11,393: Starting mem2log with interval 0.5s, mode: 1
+2021-11-21 22:53:11,393: Log file: /tmpfs/27
+2021-11-21 22:53:11,395: Process memory locked with MCL_CURRENT | MCL_FUTURE | MCL_ONFAULT
+2021-11-21 22:53:11,395: All values are in mebibytes
+2021-11-21 22:53:11,395: MemTotal: 11798.5, SwapTotal: 0.0
+2021-11-21 22:53:11,395: --
+2021-11-21 22:53:11,395: MA is MemAvailable, MF is MemFree, A is Anon
+2021-11-21 22:53:11,395: F is File, AF is Active(file), IF is Inactive(file)
+2021-11-21 22:53:11,395: D is Dirty, C is Clean file (File - Dirty)
+2021-11-21 22:53:11,395: SF is SwapFree, SU is SwapUsed (SwapTotal - SwapFree)
+2021-11-21 22:53:11,395: --
+2021-11-21 22:53:11,395: MA=10309=87% MF=10307 A=914 F=218 AF=42 IF=176 D=0 C=218 SF=0 SU=0
+2021-11-21 22:53:11,896: MA=9434=80% MF=9432 A=1789 F=218 AF=42 IF=176 D=0 C=218 SF=0 SU=0
+2021-11-21 22:53:12,399: MA=8438=72% MF=8436 A=2783 F=218 AF=42 IF=176 D=0 C=218 SF=0 SU=0
+2021-11-21 22:53:12,900: MA=7431=63% MF=7428 A=3788 F=218 AF=42 IF=176 D=0 C=218 SF=0 SU=0
+2021-11-21 22:53:13,401: MA=6429=54% MF=6427 A=4779 F=218 AF=42 IF=176 D=0 C=218 SF=0 SU=0
+2021-11-21 22:53:13,902: MA=5453=46% MF=5450 A=5757 F=218 AF=42 IF=176 D=0 C=218 SF=0 SU=0
+2021-11-21 22:53:14,403: MA=4463=38% MF=4461 A=6754 F=218 AF=42 IF=176 D=0 C=218 SF=0 SU=0
+2021-11-21 22:53:14,904: MA=3458=29% MF=3456 A=7754 F=218 AF=42 IF=176 D=0 C=218 SF=0 SU=0
+2021-11-21 22:53:15,405: MA=2453=21% MF=2451 A=8755 F=218 AF=42 IF=176 D=0 C=218 SF=0 SU=0
+2021-11-21 22:53:15,906: MA=1444=12% MF=1442 A=9761 F=218 AF=43 IF=176 D=0 C=218 SF=0 SU=0
+2021-11-21 22:53:16,407: MA=428=4% MF=426 A=10773 F=218 AF=43 IF=176 D=0 C=218 SF=0 SU=0
+2021-11-21 22:53:16,908: MA=104=1% MF=140 A=11117 F=183 AF=103 IF=80 D=0 C=183 SF=0 SU=0
+2021-11-21 22:53:17,408: MA=0=0% MF=131 A=11346 F=2 AF=0 IF=1 D=0 C=2 SF=0 SU=0  <----- stall started
+2021-11-21 22:53:17,909: MA=0=0% MF=131 A=11346 F=2 AF=1 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:18,410: MA=0=0% MF=130 A=11346 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:18,911: MA=0=0% MF=131 A=11346 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:19,411: MA=0=0% MF=130 A=11346 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 22:53:19,912: MA=0=0% MF=131 A=11346 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 22:53:20,413: MA=0=0% MF=131 A=11346 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 22:53:20,914: MA=0=0% MF=131 A=11346 F=3 AF=1 IF=1 D=0 C=3 SF=0 SU=0
+2021-11-21 22:53:21,415: MA=0=0% MF=130 A=11346 F=4 AF=2 IF=2 D=0 C=4 SF=0 SU=0
+2021-11-21 22:53:21,915: MA=0=0% MF=130 A=11346 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 22:53:22,416: MA=0=0% MF=121 A=11355 F=2 AF=1 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:22,917: MA=0=0% MF=121 A=11355 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:23,418: MA=0=0% MF=121 A=11355 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 22:53:23,919: MA=0=0% MF=122 A=11355 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 22:53:24,419: MA=0=0% MF=122 A=11355 F=2 AF=1 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:24,920: MA=0=0% MF=122 A=11355 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:25,421: MA=0=0% MF=121 A=11355 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 22:53:25,922: MA=0=0% MF=119 A=11358 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:26,423: MA=0=0% MF=119 A=11358 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 22:53:26,923: MA=0=0% MF=121 A=11358 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:27,424: MA=0=0% MF=121 A=11358 F=3 AF=1 IF=3 D=0 C=3 SF=0 SU=0
+2021-11-21 22:53:27,925: MA=0=0% MF=119 A=11359 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 22:53:28,426: MA=0=0% MF=120 A=11359 F=2 AF=1 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:28,926: MA=0=0% MF=120 A=11359 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 22:53:29,427: MA=0=0% MF=120 A=11359 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 22:53:29,928: MA=0=0% MF=120 A=11359 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 22:53:30,429: MA=0=0% MF=119 A=11359 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 22:53:30,930: MA=0=0% MF=119 A=11359 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 22:53:31,431: MA=0=0% MF=119 A=11361 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:31,931: MA=0=0% MF=119 A=11361 F=2 AF=1 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:32,432: MA=0=0% MF=119 A=11361 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 22:53:32,933: MA=0=0% MF=119 A=11361 F=3 AF=1 IF=1 D=0 C=3 SF=0 SU=0
+2021-11-21 22:53:33,434: MA=0=0% MF=118 A=11361 F=2 AF=1 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:33,935: MA=0=0% MF=117 A=11362 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:34,435: MA=0=0% MF=118 A=11362 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:34,936: MA=0=0% MF=118 A=11362 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:35,437: MA=0=0% MF=119 A=11362 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:35,938: MA=0=0% MF=119 A=11362 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:36,439: MA=0=0% MF=118 A=11362 F=2 AF=0 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:36,939: MA=0=0% MF=119 A=11362 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:37,440: MA=0=0% MF=118 A=11362 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:37,941: MA=0=0% MF=119 A=11362 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:38,442: MA=0=0% MF=119 A=11362 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:38,943: MA=0=0% MF=118 A=11362 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:39,443: MA=0=0% MF=118 A=11362 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:39,944: MA=0=0% MF=118 A=11363 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:40,445: MA=0=0% MF=119 A=11363 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:40,946: MA=0=0% MF=118 A=11363 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:41,447: MA=0=0% MF=119 A=11363 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:41,947: MA=0=0% MF=118 A=11363 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:42,448: MA=0=0% MF=118 A=11364 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:42,949: MA=0=0% MF=118 A=11364 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:43,450: MA=0=0% MF=118 A=11364 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:43,951: MA=0=0% MF=118 A=11364 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:44,451: MA=0=0% MF=118 A=11364 F=2 AF=0 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:44,952: MA=0=0% MF=118 A=11364 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:45,453: MA=0=0% MF=118 A=11364 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:45,954: MA=0=0% MF=118 A=11364 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:46,455: MA=0=0% MF=118 A=11364 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:46,956: MA=0=0% MF=118 A=11364 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:47,456: MA=0=0% MF=118 A=11364 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:47,957: MA=0=0% MF=118 A=11364 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:48,458: MA=0=0% MF=118 A=11364 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:48,959: MA=0=0% MF=117 A=11364 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:49,459: MA=0=0% MF=118 A=11364 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:49,960: MA=0=0% MF=118 A=11364 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:50,461: MA=0=0% MF=118 A=11364 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:50,962: MA=0=0% MF=118 A=11364 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:51,463: MA=0=0% MF=118 A=11364 F=2 AF=0 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:51,964: MA=0=0% MF=119 A=11364 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:52,464: MA=0=0% MF=118 A=11364 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:52,965: MA=0=0% MF=118 A=11364 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:53,466: MA=0=0% MF=118 A=11365 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:53,968: MA=0=0% MF=118 A=11365 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:54,469: MA=0=0% MF=118 A=11365 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:54,970: MA=0=0% MF=119 A=11365 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:53:55,471: MA=0=0% MF=118 A=11365 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:55,972: MA=0=0% MF=119 A=11365 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:53:56,473: MA=0=0% MF=118 A=11365 F=2 AF=0 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:53:56,974: MA=0=0% MF=117 A=11365 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:53:57,475: MA=0=0% MF=117 A=11365 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:04,997: MA=0=0% MF=118 A=11365 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:05,498: MA=0=0% MF=117 A=11365 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:06,000: MA=0=0% MF=117 A=11365 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:06,501: MA=0=0% MF=118 A=11365 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:07,002: MA=0=0% MF=118 A=11365 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:07,503: MA=0=0% MF=119 A=11365 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:08,004: MA=0=0% MF=117 A=11365 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:08,505: MA=0=0% MF=117 A=11365 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:09,007: MA=0=0% MF=117 A=11365 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:09,508: MA=0=0% MF=118 A=11365 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:10,009: MA=0=0% MF=117 A=11365 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:10,510: MA=0=0% MF=118 A=11365 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:11,012: MA=0=0% MF=117 A=11365 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:11,513: MA=0=0% MF=118 A=11365 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:12,014: MA=0=0% MF=117 A=11365 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:12,516: MA=0=0% MF=118 A=11365 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:13,017: MA=0=0% MF=118 A=11365 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:13,518: MA=0=0% MF=118 A=11365 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:54:14,019: MA=0=0% MF=118 A=11365 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:54:14,520: MA=0=0% MF=118 A=11365 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:15,022: MA=0=0% MF=117 A=11365 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:15,523: MA=0=0% MF=118 A=11365 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:16,024: MA=0=0% MF=117 A=11365 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:16,525: MA=0=0% MF=118 A=11365 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:17,025: MA=0=0% MF=117 A=11365 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:17,527: MA=0=0% MF=118 A=11365 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:18,028: MA=0=0% MF=118 A=11365 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:18,529: MA=0=0% MF=118 A=11365 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:19,030: MA=0=0% MF=118 A=11366 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:19,531: MA=0=0% MF=118 A=11366 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:20,032: MA=0=0% MF=118 A=11366 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:20,533: MA=0=0% MF=117 A=11366 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:21,033: MA=0=0% MF=118 A=11366 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:21,535: MA=0=0% MF=118 A=11366 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:22,036: MA=0=0% MF=118 A=11366 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:22,537: MA=0=0% MF=118 A=11366 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:23,038: MA=0=0% MF=118 A=11366 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:23,540: MA=0=0% MF=118 A=11366 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:24,041: MA=0=0% MF=118 A=11366 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:24,542: MA=0=0% MF=118 A=11366 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:25,043: MA=0=0% MF=118 A=11366 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:25,545: MA=0=0% MF=117 A=11366 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:26,046: MA=0=0% MF=118 A=11366 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:54:26,547: MA=0=0% MF=118 A=11366 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:27,048: MA=0=0% MF=118 A=11366 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:27,549: MA=0=0% MF=117 A=11366 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:28,051: MA=0=0% MF=118 A=11366 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:28,552: MA=0=0% MF=117 A=11366 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:29,053: MA=0=0% MF=118 A=11366 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:29,555: MA=0=0% MF=117 A=11366 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:30,056: MA=0=0% MF=117 A=11366 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0   <----- 66s stall is over, OOM
+2021-11-21 22:54:37,893: MA=10536=89% MF=10669 A=814 F=9 AF=1 IF=8 D=0 C=9 SF=0 SU=0
+2021-11-21 22:54:38,395: MA=10535=89% MF=10664 A=814 F=15 AF=1 IF=14 D=0 C=15 SF=0 SU=0
+2021-11-21 22:54:38,896: MA=10532=89% MF=10659 A=814 F=22 AF=1 IF=21 D=0 C=22 SF=0 SU=0
+2021-11-21 22:54:39,397: MA=10531=89% MF=10654 A=814 F=27 AF=1 IF=26 D=0 C=27 SF=0 SU=0
+2021-11-21 22:54:39,898: MA=10528=89% MF=10649 A=814 F=32 AF=1 IF=31 D=0 C=32 SF=0 SU=0
+2021-11-21 22:54:40,400: MA=10526=89% MF=10644 A=814 F=38 AF=2 IF=36 D=0 C=38 SF=0 SU=0
+2021-11-21 22:54:40,901: MA=10523=89% MF=10639 A=814 F=43 AF=2 IF=41 D=0 C=43 SF=0 SU=0
+2021-11-21 22:54:41,402: MA=10522=89% MF=10636 A=814 F=46 AF=2 IF=44 D=0 C=46 SF=0 SU=0
+2021-11-21 22:54:41,903: MA=10519=89% MF=10632 A=814 F=50 AF=2 IF=48 D=0 C=50 SF=0 SU=0
+2021-11-21 22:54:42,404: MA=10516=89% MF=10625 A=814 F=56 AF=2 IF=54 D=0 C=56 SF=0 SU=0
+2021-11-21 22:54:42,905: MA=10514=89% MF=10621 A=812 F=61 AF=2 IF=59 D=0 C=61 SF=0 SU=0
+2021-11-21 22:54:43,406: MA=10512=89% MF=10616 A=804 F=67 AF=3 IF=64 D=0 C=67 SF=0 SU=0
+2021-11-21 22:54:43,908: MA=10511=89% MF=10612 A=804 F=71 AF=3 IF=69 D=0 C=71 SF=0 SU=0
+2021-11-21 22:54:44,409: MA=10508=89% MF=10607 A=804 F=77 AF=3 IF=74 D=0 C=77 SF=0 SU=0
+2021-11-21 22:54:44,910: MA=10504=89% MF=10600 A=807 F=82 AF=3 IF=80 D=0 C=82 SF=0 SU=0
+2021-11-21 22:54:45,411: MA=10503=89% MF=10597 A=804 F=86 AF=3 IF=83 D=0 C=86 SF=0 SU=0
+2021-11-21 22:54:45,912: MA=9578=81% MF=9670 A=1728 F=91 AF=3 IF=88 D=0 C=91 SF=0 SU=0
+2021-11-21 22:54:46,413: MA=8489=72% MF=8578 A=2814 F=96 AF=3 IF=94 D=0 C=96 SF=0 SU=0
+2021-11-21 22:54:46,914: MA=7399=63% MF=7486 A=3899 F=100 AF=3 IF=97 D=0 C=100 SF=0 SU=0
+2021-11-21 22:54:47,415: MA=6309=53% MF=6394 A=4988 F=104 AF=3 IF=101 D=0 C=104 SF=0 SU=0
+2021-11-21 22:54:47,915: MA=5229=44% MF=5313 A=6062 F=108 AF=3 IF=104 D=0 C=107 SF=0 SU=0
+2021-11-21 22:54:48,416: MA=4146=35% MF=4228 A=7144 F=111 AF=4 IF=107 D=1 C=110 SF=0 SU=0
+2021-11-21 22:54:48,917: MA=3065=26% MF=3145 A=8216 F=114 AF=4 IF=110 D=1 C=114 SF=0 SU=0
+2021-11-21 22:54:49,418: MA=1980=17% MF=2059 A=9273 F=118 AF=6 IF=112 D=1 C=117 SF=0 SU=0
+2021-11-21 22:54:49,919: MA=1001=8% MF=1078 A=10244 F=122 AF=7 IF=114 D=1 C=120 SF=0 SU=0
+2021-11-21 22:54:50,420: MA=42=0% MF=118 A=11235 F=122 AF=29 IF=93 D=1 C=120 SF=0 SU=0
+2021-11-21 22:54:50,921: MA=55=0% MF=150 A=11259 F=84 AF=33 IF=50 D=0 C=84 SF=0 SU=0
+2021-11-21 22:54:51,422: MA=0=0% MF=122 A=11366 F=3 AF=1 IF=1 D=0 C=3 SF=0 SU=0  <----- stall started
+2021-11-21 22:54:51,923: MA=0=0% MF=122 A=11366 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:54:52,423: MA=0=0% MF=123 A=11366 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:54:52,924: MA=0=0% MF=122 A=11366 F=2 AF=1 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 22:54:53,425: MA=0=0% MF=123 A=11366 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:53,926: MA=0=0% MF=122 A=11366 F=2 AF=0 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:54:54,427: MA=0=0% MF=121 A=11366 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 22:54:54,927: MA=0=0% MF=118 A=11372 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:55,428: MA=0=0% MF=118 A=11372 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:55,929: MA=0=0% MF=119 A=11372 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:56,430: MA=0=0% MF=118 A=11372 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:56,931: MA=0=0% MF=119 A=11372 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:54:57,432: MA=0=0% MF=119 A=11372 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:57,932: MA=0=0% MF=118 A=11372 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:58,433: MA=0=0% MF=118 A=11372 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:58,934: MA=0=0% MF=117 A=11372 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:54:59,435: MA=0=0% MF=119 A=11372 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:54:59,936: MA=0=0% MF=118 A=11372 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:00,436: MA=0=0% MF=118 A=11372 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:00,937: MA=0=0% MF=118 A=11372 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:01,438: MA=0=0% MF=120 A=11372 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:55:01,938: MA=0=0% MF=118 A=11372 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:55:02,439: MA=0=0% MF=119 A=11372 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:02,940: MA=0=0% MF=119 A=11373 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:03,441: MA=0=0% MF=118 A=11373 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:03,942: MA=0=0% MF=119 A=11373 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:04,443: MA=0=0% MF=118 A=11373 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:04,944: MA=0=0% MF=118 A=11373 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:55:05,445: MA=0=0% MF=118 A=11373 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:05,947: MA=0=0% MF=120 A=11373 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:06,448: MA=0=0% MF=118 A=11373 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:06,949: MA=0=0% MF=117 A=11373 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:07,450: MA=0=0% MF=118 A=11373 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:07,951: MA=0=0% MF=118 A=11373 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:08,452: MA=0=0% MF=118 A=11373 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:08,953: MA=0=0% MF=118 A=11373 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:09,454: MA=0=0% MF=118 A=11373 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:09,955: MA=0=0% MF=117 A=11373 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:10,455: MA=0=0% MF=119 A=11373 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:10,956: MA=0=0% MF=118 A=11373 F=2 AF=0 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:55:11,458: MA=0=0% MF=118 A=11373 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:11,959: MA=0=0% MF=118 A=11373 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:12,460: MA=0=0% MF=119 A=11373 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:12,961: MA=0=0% MF=118 A=11373 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:13,463: MA=0=0% MF=118 A=11373 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:13,964: MA=0=0% MF=119 A=11373 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:55:14,465: MA=0=0% MF=119 A=11373 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:14,967: MA=0=0% MF=118 A=11373 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:15,468: MA=0=0% MF=118 A=11373 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:15,969: MA=0=0% MF=118 A=11373 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:55:16,470: MA=0=0% MF=118 A=11373 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:16,970: MA=0=0% MF=118 A=11373 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:55:17,471: MA=0=0% MF=118 A=11373 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:17,972: MA=0=0% MF=119 A=11373 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:18,473: MA=0=0% MF=119 A=11373 F=2 AF=0 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 22:55:18,974: MA=0=0% MF=117 A=11373 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:19,475: MA=0=0% MF=118 A=11373 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:19,976: MA=0=0% MF=117 A=11373 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:20,477: MA=0=0% MF=118 A=11373 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:20,978: MA=0=0% MF=118 A=11373 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:21,479: MA=0=0% MF=118 A=11373 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:21,980: MA=0=0% MF=119 A=11373 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:22,481: MA=0=0% MF=118 A=11373 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:22,981: MA=0=0% MF=118 A=11373 F=2 AF=0 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:55:23,482: MA=0=0% MF=118 A=11373 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:23,984: MA=0=0% MF=118 A=11373 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:24,486: MA=0=0% MF=118 A=11373 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:24,987: MA=0=0% MF=118 A=11373 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:25,488: MA=0=0% MF=117 A=11373 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:25,989: MA=0=0% MF=118 A=11373 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:26,491: MA=0=0% MF=118 A=11373 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:26,992: MA=0=0% MF=117 A=11373 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:27,493: MA=0=0% MF=119 A=11373 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:27,995: MA=0=0% MF=120 A=11373 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:28,496: MA=0=0% MF=117 A=11374 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:28,997: MA=0=0% MF=117 A=11374 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:29,498: MA=0=0% MF=118 A=11374 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:29,999: MA=0=0% MF=118 A=11374 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:30,501: MA=0=0% MF=118 A=11374 F=2 AF=0 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:55:31,001: MA=0=0% MF=118 A=11374 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:31,503: MA=0=0% MF=118 A=11374 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:32,004: MA=0=0% MF=117 A=11375 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:32,505: MA=0=0% MF=118 A=11375 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:33,006: MA=0=0% MF=117 A=11375 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:55:33,507: MA=0=0% MF=117 A=11375 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:34,008: MA=0=0% MF=118 A=11375 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:34,509: MA=0=0% MF=117 A=11375 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:35,010: MA=0=0% MF=118 A=11375 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:55:35,511: MA=0=0% MF=117 A=11375 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:36,012: MA=0=0% MF=117 A=11375 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:36,514: MA=0=0% MF=117 A=11375 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:37,015: MA=0=0% MF=117 A=11375 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:37,516: MA=0=0% MF=117 A=11375 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:38,017: MA=0=0% MF=118 A=11375 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:38,518: MA=0=0% MF=118 A=11375 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:39,020: MA=0=0% MF=118 A=11375 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:39,521: MA=0=0% MF=118 A=11375 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:40,022: MA=0=0% MF=118 A=11375 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:40,523: MA=0=0% MF=118 A=11375 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:41,025: MA=0=0% MF=118 A=11375 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:41,526: MA=0=0% MF=118 A=11375 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:42,026: MA=0=0% MF=118 A=11375 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:42,528: MA=0=0% MF=119 A=11375 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:55:43,028: MA=0=0% MF=117 A=11375 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:55:43,530: MA=0=0% MF=119 A=11375 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:44,031: MA=0=0% MF=119 A=11375 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:55:44,532: MA=0=0% MF=117 A=11375 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0   <----- 53.5s stall is over, OOM
+2021-11-21 22:55:45,033: MA=2820=24% MF=2956 A=8534 F=3 AF=0 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 22:55:45,534: MA=10537=89% MF=10672 A=809 F=4 AF=0 IF=4 D=0 C=4 SF=0 SU=0
+2021-11-21 22:55:46,035: MA=10553=89% MF=10686 A=809 F=9 AF=2 IF=7 D=0 C=9 SF=0 SU=0
+2021-11-21 22:55:46,537: MA=10551=89% MF=10681 A=809 F=14 AF=2 IF=12 D=0 C=14 SF=0 SU=0
+2021-11-21 22:55:47,038: MA=10548=89% MF=10676 A=809 F=19 AF=2 IF=16 D=0 C=19 SF=0 SU=0
+2021-11-21 22:55:47,539: MA=10545=89% MF=10670 A=809 F=25 AF=2 IF=22 D=0 C=25 SF=0 SU=0
+2021-11-21 22:55:48,040: MA=10543=89% MF=10665 A=809 F=29 AF=2 IF=27 D=0 C=29 SF=0 SU=0
+2021-11-21 22:55:48,541: MA=10541=89% MF=10660 A=809 F=36 AF=3 IF=33 D=0 C=36 SF=0 SU=0
+2021-11-21 22:55:49,043: MA=10539=89% MF=10656 A=810 F=40 AF=3 IF=37 D=0 C=40 SF=0 SU=0
+2021-11-21 22:55:49,544: MA=10537=89% MF=10652 A=809 F=45 AF=3 IF=43 D=0 C=45 SF=0 SU=0
+2021-11-21 22:55:50,045: MA=10534=89% MF=10645 A=809 F=52 AF=3 IF=49 D=0 C=52 SF=0 SU=0
+2021-11-21 22:55:50,546: MA=10532=89% MF=10641 A=809 F=56 AF=3 IF=53 D=0 C=56 SF=0 SU=0
+2021-11-21 22:55:51,048: MA=10530=89% MF=10637 A=807 F=61 AF=3 IF=57 D=0 C=61 SF=0 SU=0
+2021-11-21 22:55:51,549: MA=10528=89% MF=10633 A=807 F=66 AF=3 IF=62 D=0 C=66 SF=0 SU=0
+2021-11-21 22:55:52,050: MA=10526=89% MF=10628 A=807 F=70 AF=3 IF=67 D=0 C=70 SF=0 SU=0
+2021-11-21 22:55:52,551: MA=10524=89% MF=10624 A=807 F=74 AF=4 IF=71 D=0 C=74 SF=0 SU=0
+2021-11-21 22:55:53,053: MA=10521=89% MF=10619 A=807 F=79 AF=4 IF=76 D=0 C=79 SF=0 SU=0
+2021-11-21 22:55:53,554: MA=10163=86% MF=10258 A=1163 F=84 AF=4 IF=80 D=0 C=84 SF=0 SU=0
+2021-11-21 22:55:54,055: MA=9078=77% MF=9172 A=2244 F=88 AF=4 IF=84 D=0 C=88 SF=0 SU=0
+2021-11-21 22:55:54,555: MA=7991=68% MF=8082 A=3327 F=92 AF=4 IF=88 D=0 C=92 SF=0 SU=0
+2021-11-21 22:55:55,056: MA=6901=58% MF=6990 A=4414 F=95 AF=4 IF=91 D=0 C=95 SF=0 SU=0
+2021-11-21 22:55:55,557: MA=5815=49% MF=5903 A=5495 F=98 AF=4 IF=94 D=1 C=98 SF=0 SU=0
+2021-11-21 22:55:56,058: MA=4734=40% MF=4821 A=6571 F=101 AF=5 IF=96 D=1 C=100 SF=0 SU=0
+2021-11-21 22:55:56,559: MA=3644=31% MF=3729 A=7638 F=105 AF=6 IF=99 D=1 C=104 SF=0 SU=0
+2021-11-21 22:55:57,060: MA=2645=22% MF=2728 A=8615 F=108 AF=7 IF=101 D=1 C=107 SF=0 SU=0
+2021-11-21 22:55:57,561: MA=1647=14% MF=1729 A=9606 F=110 AF=7 IF=103 D=1 C=109 SF=0 SU=0
+2021-11-21 22:55:58,062: MA=655=6% MF=736 A=10593 F=113 AF=8 IF=105 D=1 C=112 SF=0 SU=0
+2021-11-21 22:55:58,563: MA=0=0% MF=120 A=11365 F=14 AF=8 IF=6 D=0 C=14 SF=0 SU=0
+2021-11-21 22:55:59,063: MA=0=0% MF=127 A=11368 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0  <----- stall started
+2021-11-21 22:55:59,564: MA=0=0% MF=128 A=11368 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:56:00,065: MA=0=0% MF=128 A=11368 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:56:00,566: MA=0=0% MF=127 A=11368 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:56:01,067: MA=0=0% MF=126 A=11368 F=3 AF=1 IF=1 D=0 C=3 SF=0 SU=0
+2021-11-21 22:56:01,567: MA=0=0% MF=117 A=11376 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:56:02,068: MA=0=0% MF=119 A=11376 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:56:02,569: MA=0=0% MF=119 A=11376 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:56:03,070: MA=0=0% MF=119 A=11376 F=2 AF=1 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 22:56:03,571: MA=0=0% MF=119 A=11376 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:56:04,071: MA=0=0% MF=120 A=11376 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:56:04,572: MA=0=0% MF=119 A=11376 F=2 AF=0 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:56:05,073: MA=0=0% MF=119 A=11376 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:56:05,574: MA=0=0% MF=118 A=11378 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:06,074: MA=0=0% MF=119 A=11378 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:56:06,575: MA=0=0% MF=118 A=11378 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:56:07,076: MA=0=0% MF=118 A=11378 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:07,577: MA=0=0% MF=118 A=11378 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:08,078: MA=0=0% MF=118 A=11378 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:56:08,579: MA=0=0% MF=117 A=11379 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:56:09,080: MA=0=0% MF=119 A=11379 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:09,581: MA=0=0% MF=119 A=11379 F=2 AF=0 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:56:10,081: MA=0=0% MF=117 A=11379 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:10,582: MA=0=0% MF=118 A=11379 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:11,083: MA=0=0% MF=120 A=11379 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:11,584: MA=0=0% MF=118 A=11379 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:12,085: MA=0=0% MF=118 A=11379 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:12,585: MA=0=0% MF=118 A=11379 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:13,086: MA=0=0% MF=117 A=11379 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:13,587: MA=0=0% MF=117 A=11379 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:14,088: MA=0=0% MF=121 A=11379 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:56:14,589: MA=0=0% MF=120 A=11379 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:15,090: MA=0=0% MF=117 A=11379 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:15,590: MA=0=0% MF=119 A=11379 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:56:16,091: MA=0=0% MF=119 A=11379 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:16,594: MA=0=0% MF=118 A=11379 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:17,096: MA=0=0% MF=118 A=11379 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:17,597: MA=0=0% MF=117 A=11379 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:24,260: MA=0=0% MF=118 A=11380 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:24,761: MA=0=0% MF=121 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:25,262: MA=0=0% MF=119 A=11380 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:25,763: MA=0=0% MF=118 A=11380 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:56:26,264: MA=0=0% MF=117 A=11380 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:26,766: MA=0=0% MF=118 A=11380 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:56:27,267: MA=0=0% MF=117 A=11380 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:27,768: MA=0=0% MF=119 A=11380 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:28,269: MA=0=0% MF=117 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:28,770: MA=0=0% MF=120 A=11380 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:56:29,271: MA=0=0% MF=118 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:29,772: MA=0=0% MF=118 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:30,272: MA=0=0% MF=120 A=11380 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:30,773: MA=0=0% MF=118 A=11380 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:31,274: MA=0=0% MF=118 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:31,775: MA=0=0% MF=119 A=11380 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:32,276: MA=0=0% MF=118 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:32,777: MA=0=0% MF=118 A=11380 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:56:33,277: MA=0=0% MF=118 A=11380 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:33,778: MA=0=0% MF=117 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:34,279: MA=0=0% MF=118 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:34,780: MA=0=0% MF=118 A=11380 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:56:35,281: MA=0=0% MF=118 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:35,782: MA=0=0% MF=118 A=11380 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 22:56:36,283: MA=0=0% MF=117 A=11380 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:36,784: MA=0=0% MF=118 A=11380 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:37,285: MA=0=0% MF=118 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:37,786: MA=0=0% MF=120 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:38,287: MA=0=0% MF=119 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:38,788: MA=0=0% MF=120 A=11380 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:56:39,289: MA=0=0% MF=120 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:39,790: MA=0=0% MF=118 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:40,292: MA=0=0% MF=117 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:40,793: MA=0=0% MF=118 A=11380 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:56:41,294: MA=0=0% MF=118 A=11380 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:56:41,795: MA=0=0% MF=117 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:42,296: MA=0=0% MF=119 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:42,797: MA=0=0% MF=118 A=11380 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:43,298: MA=0=0% MF=118 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:43,799: MA=0=0% MF=118 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:44,300: MA=0=0% MF=119 A=11380 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:44,801: MA=0=0% MF=118 A=11380 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:56:45,302: MA=0=0% MF=120 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:45,803: MA=0=0% MF=118 A=11380 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:46,304: MA=0=0% MF=117 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:46,806: MA=0=0% MF=118 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:47,307: MA=0=0% MF=117 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:47,808: MA=0=0% MF=118 A=11381 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:48,309: MA=0=0% MF=118 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:48,811: MA=0=0% MF=117 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:49,312: MA=0=0% MF=119 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:49,813: MA=0=0% MF=118 A=11381 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:56:50,315: MA=0=0% MF=118 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:50,816: MA=0=0% MF=118 A=11381 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:56:51,317: MA=0=0% MF=118 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:51,818: MA=0=0% MF=117 A=11381 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:52,320: MA=0=0% MF=118 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:52,821: MA=0=0% MF=118 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:53,322: MA=0=0% MF=119 A=11381 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:53,824: MA=0=0% MF=117 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:54,325: MA=0=0% MF=117 A=11381 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:54,826: MA=0=0% MF=118 A=11381 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:55,327: MA=0=0% MF=117 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:55,829: MA=0=0% MF=117 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:56,330: MA=0=0% MF=118 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:56,831: MA=0=0% MF=118 A=11381 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:56:57,332: MA=0=0% MF=120 A=11381 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:56:57,834: MA=0=0% MF=118 A=11381 F=2 AF=0 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 22:56:58,335: MA=0=0% MF=118 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:58,836: MA=0=0% MF=118 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:59,337: MA=0=0% MF=116 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:56:59,839: MA=0=0% MF=117 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:57:00,340: MA=0=0% MF=119 A=11381 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:57:00,841: MA=0=0% MF=118 A=11381 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:57:01,342: MA=0=0% MF=117 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:57:01,843: MA=0=0% MF=117 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:57:02,344: MA=0=0% MF=118 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:57:02,845: MA=0=0% MF=118 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:57:03,345: MA=0=0% MF=117 A=11381 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:57:03,846: MA=0=0% MF=117 A=11381 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:57:04,347: MA=0=0% MF=117 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:57:04,848: MA=0=0% MF=118 A=11381 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:57:05,349: MA=0=0% MF=118 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:57:05,850: MA=0=0% MF=118 A=11381 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:57:06,351: MA=0=0% MF=118 A=11381 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 22:57:06,852: MA=0=0% MF=117 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:57:07,353: MA=0=0% MF=118 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:57:07,854: MA=0=0% MF=117 A=11381 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:57:08,355: MA=0=0% MF=118 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:57:08,856: MA=0=0% MF=118 A=11381 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 22:57:09,358: MA=0=0% MF=119 A=11381 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 22:57:09,859: MA=0=0% MF=117 A=11381 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0   <----- 65s stall is over, OOM
+2021-11-21 22:57:10,360: MA=9028=77% MF=9164 A=2328 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 22:57:10,861: MA=10561=90% MF=10695 A=809 F=5 AF=0 IF=5 D=0 C=5 SF=0 SU=0
+2021-11-21 22:57:11,362: MA=10559=89% MF=10693 A=808 F=8 AF=0 IF=8 D=0 C=8 SF=0 SU=0
+2021-11-21 22:57:11,863: MA=10558=89% MF=10689 A=808 F=12 AF=2 IF=11 D=0 C=12 SF=0 SU=0
+2021-11-21 22:57:12,365: MA=10556=89% MF=10685 A=808 F=18 AF=2 IF=16 D=0 C=18 SF=0 SU=0
+2021-11-21 22:57:12,866: MA=10556=89% MF=10681 A=808 F=24 AF=2 IF=21 D=0 C=24 SF=0 SU=0
+2021-11-21 22:57:13,367: MA=10553=89% MF=10676 A=808 F=30 AF=2 IF=27 D=0 C=30 SF=0 SU=0
+2021-11-21 22:57:13,868: MA=10552=89% MF=10671 A=808 F=35 AF=2 IF=33 D=0 C=35 SF=0 SU=0
+2021-11-21 22:57:14,369: MA=10549=89% MF=10666 A=808 F=40 AF=2 IF=38 D=0 C=40 SF=0 SU=0
+2021-11-21 22:57:14,871: MA=10546=89% MF=10661 A=808 F=45 AF=2 IF=43 D=0 C=45 SF=0 SU=0
+2021-11-21 22:57:15,372: MA=10544=89% MF=10656 A=803 F=51 AF=3 IF=48 D=0 C=51 SF=0 SU=0
+
+and PSI metrics at the same time:
+
+2021-11-21 22:53:08,298: Starting psi2log, target: SYSTEM_WIDE, mode: 2, interval: 2 sec, log file: /tmpfs/1, suppress output: False
+2021-11-21 22:53:08,298: PSI source dir: /proc/pressure/, source files: cpu, io, memory
+2021-11-21 22:53:08,300: Process memory locked with MCL_CURRENT | MCL_FUTURE | MCL_ONFAULT
+2021-11-21 22:53:08,300: ======|=============|=============|
+2021-11-21 22:53:08,300:  cpu  |      io     |    memory   |
+2021-11-21 22:53:08,300: ----- | ----------- | ----------- |
+2021-11-21 22:53:08,300:  some |  some  full |  some  full | interval
+2021-11-21 22:53:08,300: ----- | ----- ----- | ----- ----- | --------
+2021-11-21 22:53:10,303:   0.9 |   0.6   0.6 |   0.0   0.0 | 2.002
+2021-11-21 22:53:12,305:   0.8 |   2.9   2.6 |   0.0   0.0 | 2.003
+2021-11-21 22:53:14,307:   0.6 |   0.0   0.0 |   0.0   0.0 | 2.002
+2021-11-21 22:53:16,309:   0.4 |   0.3   0.2 |   0.0   0.0 | 2.001
+2021-11-21 22:53:18,311:   0.7 |  45.1  42.9 |  38.3  36.7 | 2.002
+2021-11-21 22:53:20,313:   0.1 |  91.7  86.9 |  43.4  43.3 | 2.002
+2021-11-21 22:53:22,315:   0.2 |  86.1  85.4 |  40.5  40.3 | 2.002
+2021-11-21 22:53:24,317:   0.1 |  87.3  86.7 |  39.0  38.9 | 2.002
+2021-11-21 22:53:26,320:   0.1 |  87.2  86.7 |  40.8  40.6 | 2.002
+2021-11-21 22:53:28,322:   0.1 |  87.5  87.0 |  42.9  42.8 | 2.002
+2021-11-21 22:53:30,324:   0.2 |  87.5  86.8 |  93.7  93.2 | 2.002
+2021-11-21 22:53:32,327:   0.2 |  89.3  86.5 |  66.9  66.5 | 2.002
+2021-11-21 22:53:34,329:   0.2 |  76.7  73.4 |  99.2  98.8 | 2.002
+2021-11-21 22:53:36,331:   0.4 |  75.4  74.6 | 100.0  99.4 | 2.002
+2021-11-21 22:53:38,333:   0.3 |  61.0  60.4 | 100.0  99.6 | 2.002
+2021-11-21 22:53:40,336:   0.5 |  55.3  54.6 | 100.0  99.5 | 2.002
+2021-11-21 22:53:42,338:   0.5 |  67.7  67.0 | 100.0  99.5 | 2.002
+2021-11-21 22:53:44,340:   0.4 |  50.9  50.5 | 100.0  99.6 | 2.002
+2021-11-21 22:53:46,343:   0.6 |  72.9  71.9 | 100.0  99.4 | 2.002
+2021-11-21 22:53:48,345:   0.3 |  51.8  51.4 |  99.5  99.1 | 2.002
+2021-11-21 22:53:50,347:   0.4 |  61.2  60.4 |  99.3  98.9 | 2.002
+2021-11-21 22:53:52,349:   0.8 |  34.9  33.6 |  98.8  98.5 | 2.002
+2021-11-21 22:53:54,352:   0.4 |  29.1  28.8 |  98.4  98.1 | 2.002
+2021-11-21 22:53:56,354:   0.7 |  33.1  31.6 | 100.0  99.8 | 2.002
+2021-11-21 22:53:58,357:   1.1 |  34.4  33.8 | 100.0  99.8 | 2.003
+2021-11-21 22:54:00,359:   0.4 |  29.4  28.8 | 100.0  99.8 | 2.002
+2021-11-21 22:54:02,362:   0.6 |  48.1  44.9 | 100.0  99.9 | 2.003
+2021-11-21 22:54:04,365:   0.7 |  68.4  62.3 |  99.0  98.8 | 2.003
+2021-11-21 22:54:06,368:   0.7 |  55.5  53.7 |  99.2  99.0 | 2.003
+2021-11-21 22:54:08,370:   1.3 |  22.1  19.5 |  96.9  96.7 | 2.003
+2021-11-21 22:54:10,373:   0.4 |   1.5   1.5 | 100.0  99.9 | 2.003
+2021-11-21 22:54:12,375:   0.5 |   4.3   3.3 | 100.0  99.8 | 2.003
+2021-11-21 22:54:14,378:   0.5 |   3.9   3.3 | 100.0  99.8 | 2.003
+2021-11-21 22:54:16,379:   0.6 |  11.8  11.5 |  98.4  98.3 | 2.001
+2021-11-21 22:54:18,381:   0.6 |  42.2  41.3 | 100.0  99.9 | 2.002
+2021-11-21 22:54:20,384:   0.7 |  51.2  48.7 |  98.3  98.2 | 2.003
+2021-11-21 22:54:22,386:   0.6 |  10.9  10.6 | 100.0  99.9 | 2.003
+2021-11-21 22:54:24,389:   0.7 |  25.1  21.5 | 100.0  99.9 | 2.003
+2021-11-21 22:54:26,392:   0.7 |  36.6  36.2 | 100.0  99.9 | 2.003
+2021-11-21 22:54:28,394:   0.5 |  73.8  73.2 | 100.0  99.9 | 2.003
+2021-11-21 22:54:30,397:   0.5 |  79.3  77.0 | 100.0  99.9 | 2.003
+2021-11-21 22:54:32,400:   0.7 |  16.4  16.2 | 100.0  99.9 | 2.003
+2021-11-21 22:54:34,403:   0.5 |   0.4   0.4 | 100.0  99.9 | 2.003
+2021-11-21 22:54:36,405:   0.7 |   8.5   8.0 |  99.8  96.4 | 2.003
+2021-11-21 22:54:38,407:   0.9 | 100.0  97.9 |  63.8  63.0 | 2.001
+2021-11-21 22:54:40,409:   0.2 |  97.2  96.1 |   0.2   0.2 | 2.003
+2021-11-21 22:54:42,412:   0.2 |  97.5  96.0 |   0.0   0.0 | 2.003
+2021-11-21 22:54:44,414:   0.9 |  94.9  90.5 |   0.0   0.0 | 2.003
+2021-11-21 22:54:46,417:   0.7 |  90.3  86.8 |   0.0   0.0 | 2.002
+2021-11-21 22:54:48,418:   0.6 |  68.2  65.5 |   0.0   0.0 | 2.002
+2021-11-21 22:54:50,421:   0.7 |  43.0  39.7 |   0.2   0.2 | 2.002
+2021-11-21 22:54:52,423:   0.6 |  64.7  62.0 |  51.3  50.2 | 2.002
+2021-11-21 22:54:54,426:   0.2 |  81.1  80.2 |  36.0  35.7 | 2.002
+2021-11-21 22:54:56,427:   0.4 |  41.9  41.4 |  88.1  87.4 | 2.001
+2021-11-21 22:54:58,429:   0.5 |  46.7  46.2 |  98.7  98.3 | 2.002
+2021-11-21 22:55:00,431:   0.3 |  52.2  45.2 |  98.3  98.0 | 2.002
+2021-11-21 22:55:02,433:   0.4 |  65.1  62.3 |  98.8  98.6 | 2.002
+2021-11-21 22:55:04,437:   0.5 |  57.3  50.7 |  99.2  99.0 | 2.001
+2021-11-21 22:55:06,440:   0.6 |  22.1  20.9 |  98.5  98.4 | 2.005
+2021-11-21 22:55:08,442:   0.8 |  15.2  14.3 |  99.8  99.5 | 2.003
+2021-11-21 22:55:10,443:   0.5 |  22.8  22.5 |  96.6  96.3 | 2.001
+2021-11-21 22:55:12,445:   0.7 |  18.2  15.6 |  98.6  98.4 | 2.002
+2021-11-21 22:55:14,448:   0.5 |   6.6   5.9 | 100.0  99.8 | 2.003
+2021-11-21 22:55:16,450:   0.5 |  15.2  14.8 |  97.9  97.6 | 2.003
+2021-11-21 22:55:18,453:   0.5 |  34.5  32.9 |  99.0  98.7 | 2.002
+2021-11-21 22:55:20,455:   0.6 |  42.6  40.4 | 100.0  99.8 | 2.003
+2021-11-21 22:55:22,458:   0.3 |  62.6  52.5 |  99.4  99.1 | 2.002
+2021-11-21 22:55:24,460:   0.4 |  11.3   9.8 |  98.5  98.3 | 2.002
+2021-11-21 22:55:26,463:   0.4 |   3.6   3.6 | 100.0  99.8 | 2.003
+2021-11-21 22:55:28,465:   0.7 |  18.9  18.1 | 100.0  99.8 | 2.003
+2021-11-21 22:55:30,468:   0.3 |  28.2  26.4 |  99.7  99.6 | 2.002
+2021-11-21 22:55:32,470:   0.5 |  13.0  12.4 |  97.6  97.4 | 2.003
+2021-11-21 22:55:34,473:   0.7 |   4.5   4.2 | 100.0  99.8 | 2.002
+2021-11-21 22:55:36,475:   0.7 |  13.9  11.8 | 100.0  99.8 | 2.002
+2021-11-21 22:55:38,477:   0.4 |   1.6   1.6 | 100.0  99.9 | 2.002
+2021-11-21 22:55:40,480:   0.4 |   0.0   0.0 | 100.0  99.9 | 2.003
+2021-11-21 22:55:42,483:   0.3 |   0.1   0.1 | 100.0  99.9 | 2.003
+2021-11-21 22:55:44,485:   0.6 |   4.1   4.0 | 100.0  99.9 | 2.003
+2021-11-21 22:55:46,487:   0.5 |  74.7  73.5 |  80.5  79.9 | 2.001
+2021-11-21 22:55:48,489:   0.2 |  97.4  96.3 |  31.4  31.1 | 2.003
+2021-11-21 22:55:50,492:   0.6 |  94.5  92.1 |   2.1   2.1 | 2.002
+2021-11-21 22:55:52,494:   0.9 |  87.5  83.3 |   2.9   2.8 | 2.003
+2021-11-21 22:55:54,497:   0.8 |  81.7  72.9 |   0.5   0.4 | 2.003
+2021-11-21 22:55:56,499:   0.6 |  62.4  60.2 |   0.0   0.0 | 2.002
+2021-11-21 22:55:58,501:   0.6 |  22.7  20.7 |   2.9   2.9 | 2.002
+2021-11-21 22:56:00,503:   0.1 |  78.8  78.4 |  41.4  41.2 | 2.002
+2021-11-21 22:56:02,506:   0.3 |  82.3  80.7 |  45.0  44.9 | 2.002
+2021-11-21 22:56:04,508:   0.1 |  87.5  86.9 |  61.4  61.0 | 2.002
+2021-11-21 22:56:06,510:   0.2 |  55.6  55.3 |  88.3  87.9 | 2.002
+2021-11-21 22:56:08,513:   0.5 |  41.4  39.3 |  98.7  98.4 | 2.002
+2021-11-21 22:56:10,515:   0.2 |  39.0  38.8 |  98.7  98.4 | 2.002
+2021-11-21 22:56:12,517:   0.3 |  27.3  27.0 |  99.3  99.1 | 2.002
+2021-11-21 22:56:14,520:   0.4 |  11.2  10.3 |  97.2  97.0 | 2.003
+2021-11-21 22:56:16,523:   0.6 |  32.0  31.4 |  98.2  97.8 | 2.003
+2021-11-21 22:56:18,525:   0.4 |  18.2  18.1 |  97.9  97.7 | 2.003
+2021-11-21 22:56:20,528:   0.3 |  17.9  16.0 |  99.2  98.9 | 2.002
+2021-11-21 22:56:22,530:   0.4 |  31.4  29.7 | 100.0  99.7 | 2.003
+2021-11-21 22:56:24,531:   0.2 |  14.1  14.0 |  97.9  97.8 | 2.001
+2021-11-21 22:56:26,533:   0.4 |  23.5  22.6 |  99.8  99.4 | 2.003
+2021-11-21 22:56:28,536:   0.4 |   7.2   7.0 | 100.0  99.7 | 2.003
+2021-11-21 22:56:30,538:   0.5 |  12.1  12.0 |  98.4  98.2 | 2.003
+2021-11-21 22:56:32,541:   0.5 |  18.4  18.0 | 100.0  99.8 | 2.002
+2021-11-21 22:56:34,543:   0.6 |  12.7  12.2 |  98.5  98.3 | 2.002
+2021-11-21 22:56:36,546:   0.7 |  30.2  29.1 |  99.4  99.0 | 2.003
+2021-11-21 22:56:38,549:   0.5 |  26.6  26.2 |  97.3  97.0 | 2.003
+2021-11-21 22:56:40,551:   0.3 |   6.4   5.5 |  98.4  98.2 | 2.003
+2021-11-21 22:56:42,553:   0.5 |  14.8  14.6 | 100.0  99.8 | 2.002
+2021-11-21 22:56:44,556:   0.3 |  48.8  48.2 |  98.4  98.1 | 2.002
+2021-11-21 22:56:46,558:   0.3 |  50.1  49.8 |  98.2  98.0 | 2.002
+2021-11-21 22:56:48,560:   0.4 |  14.1  13.8 | 100.0  99.8 | 2.002
+2021-11-21 22:56:50,563:   0.6 |   8.1   6.4 | 100.0  99.9 | 2.002
+2021-11-21 22:56:52,565:   0.6 |  15.0  14.8 |  97.6  97.5 | 2.002
+2021-11-21 22:56:54,568:   0.4 |  15.3  14.6 |  97.1  97.0 | 2.002
+2021-11-21 22:56:56,570:   0.8 |   9.5   8.3 |  98.8  98.7 | 2.003
+2021-11-21 22:56:58,573:   0.4 |   7.6   6.5 | 100.0  99.8 | 2.002
+2021-11-21 22:57:00,575:   0.5 |  13.7  13.5 | 100.0  99.9 | 2.003
+2021-11-21 22:57:02,578:   0.6 |  37.9  36.6 | 100.0  99.9 | 2.003
+2021-11-21 22:57:04,581:   0.5 |  32.6  30.8 | 100.0  99.8 | 2.003
+2021-11-21 22:57:06,583:   0.4 |  17.0  15.5 |  98.4  98.3 | 2.003
+2021-11-21 22:57:08,586:   0.5 |   4.4   3.8 | 100.0  99.9 | 2.003
+2021-11-21 22:57:10,589:   0.7 |  15.9  15.4 |  97.9  94.3 | 2.003
+2021-11-21 22:57:12,591:   0.6 |  99.5  97.5 |  36.8  36.4 | 2.003
+2021-11-21 22:57:14,594:   0.2 |  99.5  98.4 |   0.0   0.0 | 2.003
+2021-11-21 22:57:16,597:   0.6 |  96.1  93.3 |   0.0   0.0 | 2.003
+2021-11-21 22:57:18,599:   1.1 |  91.2  86.6 |   0.0   0.0 | 2.002
+2021-11-21 22:57:20,601:   1.2 |  77.3  73.1 |   0.0   0.0 | 2.003
+2021-11-21 22:57:22,603:   1.2 |  56.5  53.3 |   0.0   0.0 | 2.001
+2021-11-21 22:57:24,605:   1.1 |  40.4  37.8 |   0.0   0.0 | 2.003
+2021-11-21 22:57:26,607:   1.0 |  33.7  30.8 |   0.0   0.0 | 2.001
+2021-11-21 22:57:28,609:   1.2 |  30.6  27.9 |   0.0   0.0 | 2.003
+2021-11-21 22:57:30,611:   1.1 |  16.1  15.0 |   0.0   0.0 | 2.001
+2021-11-21 22:57:32,613:   0.8 |   0.2   0.2 |   0.0   0.0 | 2.002
+2021-11-21 22:57:34,615:   0.7 |   0.4   0.3 |   0.0   0.0 | 2.002
+2021-11-21 22:57:36,617:   0.9 |   0.0   0.0 |   0.0   0.0 | 2.002
+
+During the stalls, the memory pressure is kept at 99-100.
+
+
+3. 5.16-rc1, timeouts are set to 0
+==================================
+
+This is the modified kernel: timeout in reclaim_throttle() is set to 0.
+Code like this (in vmscan.c):
+```
+	switch(reason) {
+	case VMSCAN_THROTTLE_WRITEBACK:
+		timeout = HZ/10;
+
+		if (atomic_inc_return(&pgdat->nr_writeback_throttled) == 1) {
+			WRITE_ONCE(pgdat->nr_reclaim_start,
+				node_page_state(pgdat, NR_THROTTLED_WRITTEN));
+		}
+
+		break;
+	case VMSCAN_THROTTLE_NOPROGRESS:
+		timeout = HZ/2;
+		break;
+	case VMSCAN_THROTTLE_ISOLATED:
+		timeout = HZ/50;
+		break;
+	default:
+		WARN_ON_ONCE(1);
+		timeout = HZ;
+		break;
+	}
+
+	timeout = 0;
+```
+and the result of running `for i in {1...3}; do tail /dev/zero; done`:
+
+2021-11-21 23:36:44,448: Starting mem2log with interval 0.5s, mode: 1
+2021-11-21 23:36:44,449: Log file: /tmpfs/27
+2021-11-21 23:36:44,450: Process memory locked with MCL_CURRENT | MCL_FUTURE | MCL_ONFAULT
+2021-11-21 23:36:44,450: All values are in mebibytes
+2021-11-21 23:36:44,450: MemTotal: 11798.5, SwapTotal: 0.0
+2021-11-21 23:36:44,450: --
+2021-11-21 23:36:44,450: MA is MemAvailable, MF is MemFree, A is Anon
+2021-11-21 23:36:44,450: F is File, AF is Active(file), IF is Inactive(file)
+2021-11-21 23:36:44,450: D is Dirty, C is Clean file (File - Dirty)
+2021-11-21 23:36:44,450: SF is SwapFree, SU is SwapUsed (SwapTotal - SwapFree)
+2021-11-21 23:36:44,450: --
+2021-11-21 23:36:44,450: MA=10215=87% MF=10186 A=1012 F=244 AF=52 IF=193 D=0 C=244 SF=0 SU=0
+2021-11-21 23:36:44,951: MA=9153=78% MF=9125 A=2071 F=244 AF=52 IF=192 D=0 C=244 SF=0 SU=0
+2021-11-21 23:36:45,452: MA=8088=69% MF=8060 A=3131 F=244 AF=52 IF=192 D=0 C=244 SF=0 SU=0
+2021-11-21 23:36:45,953: MA=7018=59% MF=6990 A=4198 F=244 AF=52 IF=192 D=0 C=244 SF=0 SU=0
+2021-11-21 23:36:46,454: MA=5958=51% MF=5930 A=5256 F=244 AF=52 IF=192 D=0 C=244 SF=0 SU=0
+2021-11-21 23:36:46,954: MA=4895=41% MF=4867 A=6318 F=244 AF=52 IF=192 D=0 C=244 SF=0 SU=0
+2021-11-21 23:36:47,455: MA=3830=32% MF=3802 A=7380 F=244 AF=52 IF=192 D=0 C=244 SF=0 SU=0
+2021-11-21 23:36:47,956: MA=2768=23% MF=2739 A=8447 F=244 AF=52 IF=192 D=0 C=244 SF=0 SU=0
+2021-11-21 23:36:48,457: MA=1695=14% MF=1666 A=9518 F=244 AF=52 IF=192 D=0 C=244 SF=0 SU=0
+2021-11-21 23:36:48,958: MA=625=5% MF=597 A=10584 F=244 AF=52 IF=192 D=0 C=244 SF=0 SU=0
+2021-11-21 23:36:49,458: MA=0=0% MF=135 A=11350 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0  <----- stall started
+2021-11-21 23:36:49,959: MA=0=0% MF=118 A=11368 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 23:36:50,460: MA=0=0% MF=118 A=11369 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 23:36:50,961: MA=0=0% MF=117 A=11369 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 23:36:51,462: MA=0=0% MF=118 A=11369 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0   <----- 2.5s stall stall is over, OOM
+2021-11-21 23:36:51,963: MA=5222=44% MF=5357 A=6106 F=3 AF=0 IF=3 D=0 C=3 SF=0 SU=0
+2021-11-21 23:36:52,464: MA=10479=89% MF=10612 A=873 F=9 AF=1 IF=8 D=0 C=9 SF=0 SU=0
+2021-11-21 23:36:52,965: MA=10479=89% MF=10609 A=873 F=14 AF=1 IF=13 D=0 C=14 SF=0 SU=0
+2021-11-21 23:36:53,466: MA=10477=89% MF=10605 A=873 F=19 AF=1 IF=18 D=0 C=19 SF=0 SU=0
+2021-11-21 23:36:53,968: MA=10475=89% MF=10600 A=873 F=23 AF=1 IF=23 D=0 C=23 SF=0 SU=0
+2021-11-21 23:36:54,469: MA=10473=89% MF=10595 A=873 F=29 AF=1 IF=29 D=0 C=29 SF=0 SU=0
+2021-11-21 23:36:54,970: MA=10470=89% MF=10590 A=873 F=34 AF=1 IF=34 D=0 C=34 SF=0 SU=0
+2021-11-21 23:36:55,471: MA=10468=89% MF=10585 A=873 F=39 AF=1 IF=38 D=0 C=39 SF=0 SU=0
+2021-11-21 23:36:55,972: MA=10466=89% MF=10581 A=873 F=44 AF=1 IF=43 D=0 C=44 SF=0 SU=0
+2021-11-21 23:36:56,474: MA=10464=89% MF=10576 A=873 F=49 AF=1 IF=48 D=0 C=49 SF=0 SU=0
+2021-11-21 23:36:56,975: MA=10462=89% MF=10571 A=872 F=56 AF=1 IF=55 D=0 C=56 SF=0 SU=0
+2021-11-21 23:36:57,476: MA=10461=89% MF=10568 A=872 F=60 AF=1 IF=59 D=0 C=60 SF=0 SU=0
+2021-11-21 23:36:57,977: MA=9843=83% MF=9948 A=1488 F=65 AF=1 IF=64 D=0 C=65 SF=0 SU=0
+2021-11-21 23:36:58,478: MA=8758=74% MF=8861 A=2568 F=69 AF=1 IF=68 D=0 C=69 SF=0 SU=0
+2021-11-21 23:36:58,978: MA=7675=65% MF=7776 A=3647 F=73 AF=1 IF=71 D=0 C=73 SF=0 SU=0
+2021-11-21 23:36:59,479: MA=6589=56% MF=6687 A=4730 F=78 AF=1 IF=76 D=1 C=77 SF=0 SU=0
+2021-11-21 23:36:59,980: MA=5504=47% MF=5600 A=5812 F=83 AF=1 IF=81 D=1 C=82 SF=0 SU=0
+2021-11-21 23:37:00,481: MA=4430=38% MF=4524 A=6879 F=86 AF=2 IF=84 D=1 C=85 SF=0 SU=0
+2021-11-21 23:37:00,982: MA=3338=28% MF=3431 A=7968 F=88 AF=2 IF=86 D=1 C=87 SF=0 SU=0
+2021-11-21 23:37:01,483: MA=2252=19% MF=2345 A=9051 F=88 AF=2 IF=86 D=1 C=87 SF=0 SU=0
+2021-11-21 23:37:01,983: MA=1171=10% MF=1262 A=10131 F=91 AF=2 IF=88 D=1 C=90 SF=0 SU=0
+2021-11-21 23:37:02,484: MA=98=1% MF=188 A=11197 F=95 AF=2 IF=92 D=1 C=94 SF=0 SU=0
+2021-11-21 23:37:02,985: MA=0=0% MF=121 A=11376 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0  <----- stall started
+2021-11-21 23:37:03,486: MA=0=0% MF=119 A=11376 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:03,987: MA=0=0% MF=118 A=11377 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:04,553: MA=0=0% MF=117 A=11378 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:05,054: MA=0=0% MF=118 A=11378 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:05,555: MA=0=0% MF=118 A=11378 F=2 AF=0 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:06,056: MA=0=0% MF=117 A=11378 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:06,556: MA=0=0% MF=118 A=11378 F=3 AF=0 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 23:37:07,057: MA=0=0% MF=118 A=11379 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:07,558: MA=0=0% MF=118 A=11379 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 23:37:08,059: MA=0=0% MF=118 A=11379 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 23:37:08,560: MA=0=0% MF=117 A=11379 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 23:37:09,061: MA=0=0% MF=117 A=11379 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:09,562: MA=0=0% MF=118 A=11379 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 23:37:10,062: MA=0=0% MF=117 A=11379 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:10,563: MA=0=0% MF=118 A=11379 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:11,064: MA=0=0% MF=118 A=11379 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:11,565: MA=0=0% MF=118 A=11379 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:12,066: MA=0=0% MF=118 A=11379 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:12,567: MA=0=0% MF=118 A=11379 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 23:37:13,068: MA=0=0% MF=118 A=11379 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:13,569: MA=0=0% MF=118 A=11379 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:14,069: MA=0=0% MF=118 A=11379 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:14,570: MA=0=0% MF=118 A=11379 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:15,071: MA=0=0% MF=118 A=11380 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:15,572: MA=0=0% MF=118 A=11380 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:16,073: MA=0=0% MF=117 A=11380 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:16,769: MA=0=0% MF=118 A=11380 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:17,270: MA=0=0% MF=117 A=11380 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 23:37:17,771: MA=0=0% MF=117 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0   <----- 15s stall is over, OOM
+2021-11-21 23:37:18,271: MA=2205=19% MF=2341 A=9142 F=3 AF=0 IF=3 D=0 C=3 SF=0 SU=0
+2021-11-21 23:37:18,773: MA=10489=89% MF=10622 A=874 F=10 AF=0 IF=9 D=0 C=10 SF=0 SU=0
+2021-11-21 23:37:19,274: MA=10487=89% MF=10617 A=874 F=15 AF=0 IF=15 D=0 C=15 SF=0 SU=0
+2021-11-21 23:37:19,775: MA=10485=89% MF=10612 A=874 F=21 AF=0 IF=20 D=0 C=21 SF=0 SU=0
+2021-11-21 23:37:20,276: MA=10484=89% MF=10609 A=874 F=25 AF=0 IF=25 D=0 C=25 SF=0 SU=0
+2021-11-21 23:37:20,778: MA=10482=89% MF=10604 A=874 F=31 AF=1 IF=30 D=0 C=31 SF=0 SU=0
+2021-11-21 23:37:21,279: MA=10479=89% MF=10597 A=874 F=37 AF=1 IF=36 D=0 C=37 SF=0 SU=0
+2021-11-21 23:37:21,780: MA=10476=89% MF=10593 A=874 F=42 AF=1 IF=41 D=0 C=42 SF=0 SU=0
+2021-11-21 23:37:22,281: MA=10473=89% MF=10586 A=874 F=48 AF=1 IF=47 D=0 C=48 SF=0 SU=0
+2021-11-21 23:37:22,782: MA=10470=89% MF=10580 A=874 F=54 AF=1 IF=53 D=0 C=54 SF=0 SU=0
+2021-11-21 23:37:23,283: MA=10468=89% MF=10576 A=874 F=59 AF=1 IF=58 D=0 C=59 SF=0 SU=0
+2021-11-21 23:37:23,784: MA=10465=89% MF=10570 A=874 F=63 AF=1 IF=63 D=0 C=63 SF=0 SU=0
+2021-11-21 23:37:24,285: MA=10463=89% MF=10566 A=874 F=68 AF=1 IF=67 D=0 C=67 SF=0 SU=0
+2021-11-21 23:37:24,787: MA=10459=89% MF=10559 A=875 F=74 AF=1 IF=72 D=0 C=74 SF=0 SU=0
+2021-11-21 23:37:25,288: MA=10456=89% MF=10553 A=875 F=79 AF=2 IF=78 D=0 C=79 SF=0 SU=0
+2021-11-21 23:37:25,789: MA=10455=89% MF=10551 A=875 F=82 AF=2 IF=80 D=0 C=82 SF=0 SU=0
+2021-11-21 23:37:26,290: MA=9757=83% MF=9851 A=1570 F=85 AF=3 IF=82 D=0 C=85 SF=0 SU=0
+2021-11-21 23:37:26,791: MA=8684=74% MF=8778 A=2642 F=87 AF=3 IF=84 D=0 C=87 SF=0 SU=0
+2021-11-21 23:37:27,292: MA=7620=65% MF=7712 A=3703 F=91 AF=4 IF=87 D=0 C=90 SF=0 SU=0
+2021-11-21 23:37:27,792: MA=6545=55% MF=6635 A=4774 F=94 AF=4 IF=91 D=1 C=94 SF=0 SU=0
+2021-11-21 23:37:28,293: MA=5475=46% MF=5563 A=5839 F=99 AF=4 IF=95 D=1 C=98 SF=0 SU=0
+2021-11-21 23:37:28,794: MA=4407=37% MF=4493 A=6904 F=103 AF=4 IF=99 D=1 C=102 SF=0 SU=0
+2021-11-21 23:37:29,295: MA=3332=28% MF=3416 A=7973 F=106 AF=4 IF=102 D=1 C=105 SF=0 SU=0
+2021-11-21 23:37:29,796: MA=2270=19% MF=2353 A=9030 F=108 AF=4 IF=104 D=1 C=107 SF=0 SU=0
+2021-11-21 23:37:30,297: MA=1203=10% MF=1284 A=10093 F=112 AF=4 IF=108 D=1 C=111 SF=0 SU=0
+2021-11-21 23:37:30,798: MA=133=1% MF=212 A=11159 F=115 AF=4 IF=111 D=1 C=114 SF=0 SU=0
+2021-11-21 23:37:31,299: MA=0=0% MF=133 A=11360 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0  <----- stall started
+2021-11-21 23:37:31,800: MA=0=0% MF=118 A=11377 F=2 AF=0 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:32,301: MA=0=0% MF=118 A=11377 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:32,801: MA=0=0% MF=117 A=11377 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 23:37:33,302: MA=0=0% MF=118 A=11378 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 23:37:33,803: MA=0=0% MF=117 A=11379 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:34,304: MA=0=0% MF=118 A=11379 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:34,805: MA=0=0% MF=118 A=11379 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:35,306: MA=0=0% MF=117 A=11379 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:35,806: MA=0=0% MF=127 A=11370 F=2 AF=0 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:36,307: MA=0=0% MF=126 A=11369 F=4 AF=1 IF=3 D=0 C=4 SF=0 SU=0
+2021-11-21 23:37:36,808: MA=0=0% MF=127 A=11369 F=4 AF=1 IF=2 D=0 C=4 SF=0 SU=0
+2021-11-21 23:37:37,309: MA=0=0% MF=125 A=11369 F=3 AF=1 IF=3 D=0 C=3 SF=0 SU=0
+2021-11-21 23:37:37,810: MA=0=0% MF=118 A=11377 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 23:37:38,310: MA=0=0% MF=118 A=11378 F=4 AF=1 IF=3 D=0 C=4 SF=0 SU=0
+2021-11-21 23:37:38,811: MA=0=0% MF=118 A=11378 F=4 AF=1 IF=3 D=0 C=4 SF=0 SU=0
+2021-11-21 23:37:39,312: MA=0=0% MF=118 A=11379 F=3 AF=0 IF=3 D=0 C=3 SF=0 SU=0
+2021-11-21 23:37:39,813: MA=0=0% MF=117 A=11379 F=3 AF=0 IF=3 D=0 C=3 SF=0 SU=0
+2021-11-21 23:37:40,314: MA=0=0% MF=118 A=11379 F=3 AF=0 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 23:37:40,814: MA=0=0% MF=118 A=11379 F=3 AF=0 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 23:37:41,315: MA=0=0% MF=118 A=11380 F=2 AF=0 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:41,816: MA=0=0% MF=119 A=11380 F=2 AF=1 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:42,317: MA=0=0% MF=118 A=11380 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 23:37:42,817: MA=0=0% MF=117 A=11380 F=2 AF=0 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:43,318: MA=0=0% MF=118 A=11380 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:43,819: MA=0=0% MF=118 A=11380 F=3 AF=0 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 23:37:44,320: MA=0=0% MF=117 A=11380 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:44,821: MA=0=0% MF=117 A=11380 F=4 AF=1 IF=3 D=0 C=4 SF=0 SU=0
+2021-11-21 23:37:45,321: MA=0=0% MF=118 A=11380 F=2 AF=0 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:45,822: MA=0=0% MF=118 A=11380 F=2 AF=0 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:46,323: MA=0=0% MF=117 A=11380 F=2 AF=0 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:46,824: MA=0=0% MF=117 A=11380 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 23:37:47,325: MA=0=0% MF=118 A=11380 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 23:37:47,825: MA=0=0% MF=117 A=11380 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 23:37:48,326: MA=0=0% MF=118 A=11380 F=4 AF=1 IF=3 D=0 C=4 SF=0 SU=0
+2021-11-21 23:37:48,827: MA=0=0% MF=117 A=11380 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 23:37:49,328: MA=0=0% MF=118 A=11380 F=4 AF=1 IF=3 D=0 C=4 SF=0 SU=0
+2021-11-21 23:37:49,829: MA=0=0% MF=117 A=11380 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 23:37:50,329: MA=0=0% MF=118 A=11381 F=2 AF=0 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:50,830: MA=0=0% MF=118 A=11381 F=2 AF=0 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:51,331: MA=0=0% MF=118 A=11381 F=2 AF=0 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:51,832: MA=0=0% MF=117 A=11381 F=2 AF=0 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:52,333: MA=0=0% MF=117 A=11381 F=2 AF=0 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:52,833: MA=0=0% MF=118 A=11381 F=2 AF=0 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:53,334: MA=0=0% MF=117 A=11381 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 23:37:53,835: MA=0=0% MF=117 A=11381 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:54,336: MA=0=0% MF=118 A=11381 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:54,837: MA=0=0% MF=117 A=11382 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:55,338: MA=0=0% MF=117 A=11382 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:55,838: MA=0=0% MF=117 A=11382 F=2 AF=0 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:56,339: MA=0=0% MF=118 A=11382 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:56,840: MA=0=0% MF=119 A=11382 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 23:37:57,341: MA=0=0% MF=118 A=11382 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 23:37:57,842: MA=0=0% MF=118 A=11382 F=2 AF=0 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:58,342: MA=0=0% MF=117 A=11382 F=2 AF=0 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:58,843: MA=0=0% MF=118 A=11382 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-21 23:37:59,344: MA=0=0% MF=118 A=11382 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 23:37:59,845: MA=0=0% MF=118 A=11382 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 23:38:00,346: MA=0=0% MF=118 A=11382 F=2 AF=0 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 23:38:00,846: MA=0=0% MF=117 A=11382 F=2 AF=0 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 23:38:01,347: MA=0=0% MF=117 A=11382 F=2 AF=0 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 23:38:01,848: MA=0=0% MF=118 A=11382 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-21 23:38:02,349: MA=0=0% MF=118 A=11382 F=1 AF=1 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 23:38:02,850: MA=0=0% MF=117 A=11382 F=1 AF=1 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 23:38:03,351: MA=0=0% MF=118 A=11382 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 23:38:03,851: MA=0=0% MF=117 A=11383 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 23:38:04,352: MA=0=0% MF=117 A=11383 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 23:38:04,854: MA=0=0% MF=117 A=11383 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0
+2021-11-21 23:38:05,354: MA=0=0% MF=117 A=11383 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0
+2021-11-21 23:38:05,855: MA=0=0% MF=117 A=11383 F=1 AF=0 IF=0 D=0 C=1 SF=0 SU=0
+2021-11-21 23:38:06,773: MA=0=0% MF=119 A=11383 F=0 AF=0 IF=0 D=0 C=0 SF=0 SU=0   <----- 35.5s stall is over, OOM
+2021-11-21 23:38:07,274: MA=10504=89% MF=10639 A=869 F=6 AF=1 IF=6 D=0 C=6 SF=0 SU=0
+2021-11-21 23:38:07,775: MA=10501=89% MF=10632 A=869 F=13 AF=1 IF=12 D=0 C=13 SF=0 SU=0
+2021-11-21 23:38:08,276: MA=10499=89% MF=10627 A=869 F=18 AF=1 IF=17 D=0 C=18 SF=0 SU=0
+2021-11-21 23:38:08,777: MA=10496=89% MF=10623 A=869 F=22 AF=1 IF=21 D=0 C=22 SF=0 SU=0
+2021-11-21 23:38:09,278: MA=10493=89% MF=10616 A=869 F=28 AF=1 IF=27 D=0 C=28 SF=0 SU=0
+2021-11-21 23:38:09,779: MA=10491=89% MF=10612 A=869 F=33 AF=1 IF=32 D=0 C=33 SF=0 SU=0
+2021-11-21 23:38:10,281: MA=10488=89% MF=10605 A=869 F=40 AF=1 IF=39 D=0 C=40 SF=0 SU=0
+2021-11-21 23:38:10,782: MA=10486=89% MF=10601 A=869 F=44 AF=1 IF=43 D=0 C=44 SF=0 SU=0
+2021-11-21 23:38:11,283: MA=10482=89% MF=10594 A=869 F=50 AF=1 IF=49 D=0 C=50 SF=0 SU=0
+2021-11-21 23:38:11,784: MA=10484=89% MF=10593 A=859 F=56 AF=1 IF=55 D=0 C=56 SF=0 SU=0
+
+and PSI metrics at the same time:
+
+2021-11-21 23:36:40,262: Starting psi2log, target: SYSTEM_WIDE, mode: 2, interval: 2 sec, log file: /tmpfs/1, suppress output: False
+2021-11-21 23:36:40,263: PSI source dir: /proc/pressure/, source files: cpu, io, memory
+2021-11-21 23:36:40,266: Process memory locked with MCL_CURRENT | MCL_FUTURE | MCL_ONFAULT
+2021-11-21 23:36:40,266: ======|=============|=============|
+2021-11-21 23:36:40,266:  cpu  |      io     |    memory   |
+2021-11-21 23:36:40,267: ----- | ----------- | ----------- |
+2021-11-21 23:36:40,267:  some |  some  full |  some  full | interval
+2021-11-21 23:36:40,267: ----- | ----- ----- | ----- ----- | --------
+2021-11-21 23:36:42,269:   1.3 |   0.6   0.5 |   0.0   0.0 | 2.001
+2021-11-21 23:36:44,272:   1.3 |   0.2   0.2 |   0.0   0.0 | 2.003
+2021-11-21 23:36:46,273:   0.3 |   0.2   0.1 |   0.0   0.0 | 2.001
+2021-11-21 23:36:48,275:   0.2 |   0.2   0.1 |   0.0   0.0 | 2.002
+2021-11-21 23:36:50,277:   0.5 |  24.4  23.7 |  30.8  30.5 | 2.002
+2021-11-21 23:36:52,279:   1.6 |  42.4  38.3 |  72.1  71.6 | 2.003
+2021-11-21 23:36:54,282:   0.2 |  97.2  96.3 |   0.0   0.0 | 2.003
+2021-11-21 23:36:56,285:   0.3 |  95.4  94.1 |   0.0   0.0 | 2.003
+2021-11-21 23:36:58,287:   0.9 |  77.5  74.6 |   0.0   0.0 | 2.003
+2021-11-21 23:37:00,290:   0.6 |  48.5  46.6 |   0.0   0.0 | 2.002
+2021-11-21 23:37:02,292:   0.5 |  13.6  13.0 |   0.0   0.0 | 2.002
+2021-11-21 23:37:04,294:   0.5 |  66.8  65.2 |  47.5  47.3 | 2.002
+2021-11-21 23:37:06,297:   0.9 |  90.6  82.7 |  87.5  86.9 | 2.002
+2021-11-21 23:37:08,299:   3.6 |  49.7  44.7 |  95.6  94.7 | 2.002
+2021-11-21 23:37:10,301:   3.1 |  66.8  58.3 |  97.2  96.4 | 2.002
+2021-11-21 23:37:12,303:   3.4 |  59.5  51.5 |  95.2  94.5 | 2.002
+2021-11-21 23:37:14,305:   4.2 |  59.0  50.0 |  97.9  97.0 | 2.002
+2021-11-21 23:37:16,307:   4.4 |  60.0  53.6 |  99.3  98.5 | 2.002
+2021-11-21 23:37:18,309:   5.5 |  40.9  34.3 |  95.4  94.3 | 2.002
+2021-11-21 23:37:20,312:   0.2 | 100.0  96.4 |   0.0   0.0 | 2.002
+2021-11-21 23:37:22,315:   0.3 |  97.9  96.2 |   0.0   0.0 | 2.003
+2021-11-21 23:37:24,317:   1.2 |  89.7  84.3 |   0.0   0.0 | 2.002
+2021-11-21 23:37:26,319:   1.1 |  85.3  78.5 |   0.0   0.0 | 2.003
+2021-11-21 23:37:28,321:   0.6 |  76.5  61.4 |   0.0   0.0 | 2.001
+2021-11-21 23:37:30,323:   0.7 |  71.1  66.6 |   0.0   0.0 | 2.002
+2021-11-21 23:37:32,325:   0.6 |  83.2  72.8 |  46.5  46.1 | 2.002
+2021-11-21 23:37:34,327:   2.1 |  78.6  71.8 |  93.2  92.4 | 2.002
+2021-11-21 23:37:36,329:   2.5 |  68.7  62.7 |  89.5  88.8 | 2.002
+2021-11-21 23:37:38,331:   0.1 |  92.0  85.9 |  41.2  41.0 | 2.002
+2021-11-21 23:37:40,333:   1.0 |  90.5  84.4 |  77.1  76.7 | 2.001
+2021-11-21 23:37:42,335:   2.2 |  94.4  81.3 |  94.5  93.9 | 2.002
+2021-11-21 23:37:44,337:   2.6 |  89.2  78.6 |  95.4  94.8 | 2.002
+2021-11-21 23:37:46,339:   2.3 |  94.4  81.3 |  98.6  98.0 | 2.002
+2021-11-21 23:37:48,341:   1.6 |  93.4  82.3 |  80.9  80.5 | 2.002
+2021-11-21 23:37:50,343:   1.9 |  91.9  81.6 |  91.8  91.3 | 2.002
+2021-11-21 23:37:52,345:   2.9 |  92.8  80.8 |  96.0  95.4 | 2.002
+2021-11-21 23:37:54,347:   2.9 |  88.7  79.6 |  98.8  98.1 | 2.002
+2021-11-21 23:37:56,349:   3.9 |  82.7  74.9 |  98.7  98.0 | 2.002
+2021-11-21 23:37:58,351:   3.5 |  80.3  72.0 |  87.9  87.2 | 2.002
+2021-11-21 23:38:00,353:   3.8 |  83.1  74.4 |  97.4  96.7 | 2.002
+2021-11-21 23:38:02,355:   4.5 |  80.1  67.1 |  99.2  98.5 | 2.002
+2021-11-21 23:38:04,357:   6.0 |  47.9  42.7 |  99.8  98.9 | 2.002
+2021-11-21 23:38:06,359:   6.2 |  29.8  26.5 |  99.8  98.7 | 2.002
+2021-11-21 23:38:08,362:   2.6 |  78.5  72.5 |  36.4  35.6 | 2.002
+2021-11-21 23:38:10,364:   0.2 |  99.6  98.4 |   0.0   0.0 | 2.003
+2021-11-21 23:38:12,367:   0.3 |  98.6  97.2 |   0.0   0.0 | 2.003
+2021-11-21 23:38:14,370:   0.4 | 100.0  97.3 |   0.0   0.0 | 2.003
+2021-11-21 23:38:16,372:   0.8 |  96.9  92.5 |   0.0   0.0 | 2.003
+2021-11-21 23:38:18,373:   1.1 |  83.4  77.5 |   0.0   0.0 | 2.001
+2021-11-21 23:38:20,375:   1.3 |  63.4  58.6 |   0.0   0.0 | 2.003
+2021-11-21 23:38:22,377:   1.4 |  30.5  28.3 |   0.0   0.0 | 2.002
+2021-11-21 23:38:24,380:   1.5 |   0.2   0.2 |   0.0   0.0 | 2.003
+
+After the timeouts are set to 0, there is a decrease in freezing periods.
+During freezing, the memory pressure remains high.
+
+
+4. 5.16-rc1, reclaim_throttle() is disabled
+===========================================
+
+Code like this:
+```
+void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason)
+{
+	return;
+```
+The result:
+
+2021-11-21 23:41:17,252: Starting mem2log with interval 0.5s, mode: 1
+2021-11-21 23:41:17,252: Log file: /tmpfs/27
+2021-11-21 23:41:17,253: Process memory locked with MCL_CURRENT | MCL_FUTURE | MCL_ONFAULT
+2021-11-21 23:41:17,253: All values are in mebibytes
+2021-11-21 23:41:17,253: MemTotal: 11798.5, SwapTotal: 0.0
+2021-11-21 23:41:17,254: --
+2021-11-21 23:41:17,254: MA is MemAvailable, MF is MemFree, A is Anon
+2021-11-21 23:41:17,254: F is File, AF is Active(file), IF is Inactive(file)
+2021-11-21 23:41:17,254: D is Dirty, C is Clean file (File - Dirty)
+2021-11-21 23:41:17,254: SF is SwapFree, SU is SwapUsed (SwapTotal - SwapFree)
+2021-11-21 23:41:17,254: --
+2021-11-21 23:41:17,254: MA=10262=87% MF=10199 A=972 F=281 AF=107 IF=174 D=0 C=280 SF=0 SU=0
+2021-11-21 23:41:17,755: MA=9258=78% MF=9196 A=1974 F=281 AF=107 IF=174 D=0 C=280 SF=0 SU=0
+2021-11-21 23:41:18,256: MA=8251=70% MF=8188 A=2987 F=281 AF=107 IF=174 D=0 C=280 SF=0 SU=0
+2021-11-21 23:41:18,757: MA=7206=61% MF=7144 A=4030 F=281 AF=107 IF=174 D=0 C=280 SF=0 SU=0
+2021-11-21 23:41:19,258: MA=6206=53% MF=6143 A=5031 F=281 AF=107 IF=174 D=0 C=280 SF=0 SU=0
+2021-11-21 23:41:19,759: MA=5156=44% MF=5093 A=6078 F=281 AF=107 IF=174 D=0 C=280 SF=0 SU=0
+2021-11-21 23:41:20,260: MA=4119=35% MF=4056 A=7115 F=281 AF=107 IF=174 D=0 C=280 SF=0 SU=0
+2021-11-21 23:41:20,761: MA=3067=26% MF=3004 A=8165 F=281 AF=107 IF=174 D=0 C=280 SF=0 SU=0
+2021-11-21 23:41:21,262: MA=2093=18% MF=2030 A=9136 F=281 AF=107 IF=174 D=0 C=280 SF=0 SU=0
+2021-11-21 23:41:21,763: MA=1042=9% MF=980 A=10180 F=281 AF=107 IF=174 D=0 C=280 SF=0 SU=0
+2021-11-21 23:41:22,263: MA=110=1% MF=125 A=11153 F=207 AF=100 IF=107 D=0 C=207 SF=0 SU=0
+2021-11-21 23:41:22,764: MA=1789=15% MF=1924 A=9553 F=2 AF=0 IF=2 D=0 C=2 SF=0 SU=0  <----- OOM
+2021-11-21 23:41:23,265: MA=10503=89% MF=10636 A=855 F=7 AF=1 IF=7 D=0 C=7 SF=0 SU=0
+2021-11-21 23:41:23,767: MA=10501=89% MF=10631 A=855 F=13 AF=1 IF=12 D=0 C=13 SF=0 SU=0
+2021-11-21 23:41:24,268: MA=10499=89% MF=10627 A=855 F=17 AF=1 IF=16 D=0 C=17 SF=0 SU=0
+2021-11-21 23:41:24,769: MA=10497=89% MF=10623 A=855 F=21 AF=1 IF=21 D=0 C=21 SF=0 SU=0
+2021-11-21 23:41:25,270: MA=10496=89% MF=10619 A=855 F=26 AF=1 IF=26 D=0 C=26 SF=0 SU=0
+2021-11-21 23:41:25,772: MA=10493=89% MF=10614 A=855 F=32 AF=1 IF=31 D=0 C=32 SF=0 SU=0
+2021-11-21 23:41:26,273: MA=10490=89% MF=10607 A=855 F=38 AF=1 IF=37 D=0 C=38 SF=0 SU=0
+2021-11-21 23:41:26,774: MA=10488=89% MF=10602 A=855 F=43 AF=1 IF=42 D=0 C=43 SF=0 SU=0
+2021-11-21 23:41:27,275: MA=10483=89% MF=10594 A=856 F=50 AF=1 IF=49 D=0 C=50 SF=0 SU=0
+2021-11-21 23:41:27,776: MA=10468=89% MF=10577 A=853 F=54 AF=1 IF=53 D=0 C=54 SF=0 SU=0
+2021-11-21 23:41:28,278: MA=10462=89% MF=10570 A=858 F=57 AF=1 IF=56 D=0 C=57 SF=0 SU=0
+2021-11-21 23:41:28,779: MA=10456=89% MF=10562 A=864 F=62 AF=1 IF=60 D=0 C=62 SF=0 SU=0
+2021-11-21 23:41:29,280: MA=10375=88% MF=10478 A=945 F=66 AF=2 IF=65 D=0 C=66 SF=0 SU=0
+2021-11-21 23:41:29,781: MA=9336=79% MF=9437 A=1982 F=71 AF=2 IF=69 D=0 C=71 SF=0 SU=0
+2021-11-21 23:41:30,281: MA=8259=70% MF=8358 A=3055 F=76 AF=2 IF=74 D=0 C=76 SF=0 SU=0
+2021-11-21 23:41:30,782: MA=7192=61% MF=7288 A=4118 F=81 AF=2 IF=78 D=0 C=80 SF=0 SU=0
+2021-11-21 23:41:31,283: MA=6155=52% MF=6249 A=5153 F=84 AF=3 IF=81 D=0 C=84 SF=0 SU=0
+2021-11-21 23:41:31,784: MA=5096=43% MF=5188 A=6207 F=89 AF=3 IF=86 D=1 C=88 SF=0 SU=0
+2021-11-21 23:41:32,285: MA=4056=34% MF=4145 A=7243 F=94 AF=4 IF=90 D=1 C=93 SF=0 SU=0
+2021-11-21 23:41:32,786: MA=3061=26% MF=3147 A=8223 F=99 AF=4 IF=95 D=1 C=98 SF=0 SU=0
+2021-11-21 23:41:33,286: MA=2017=17% MF=2103 A=9261 F=102 AF=4 IF=97 D=1 C=100 SF=0 SU=0
+2021-11-21 23:41:33,787: MA=974=8% MF=1058 A=10300 F=105 AF=4 IF=101 D=1 C=104 SF=0 SU=0
+2021-11-21 23:41:34,288: MA=35=0% MF=119 A=11250 F=105 AF=37 IF=69 D=1 C=104 SF=0 SU=0
+2021-11-21 23:41:34,789: MA=0=0% MF=119 A=11376 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0  <----- OOM
+2021-11-21 23:41:35,290: MA=7250=61% MF=7384 A=4103 F=4 AF=1 IF=3 D=0 C=4 SF=0 SU=0
+2021-11-21 23:41:35,791: MA=10509=89% MF=10639 A=859 F=12 AF=1 IF=11 D=0 C=12 SF=0 SU=0
+2021-11-21 23:41:36,292: MA=10505=89% MF=10632 A=859 F=19 AF=0 IF=18 D=0 C=19 SF=0 SU=0
+2021-11-21 23:41:36,794: MA=10503=89% MF=10628 A=859 F=23 AF=0 IF=23 D=0 C=23 SF=0 SU=0
+2021-11-21 23:41:37,295: MA=10501=89% MF=10623 A=859 F=29 AF=0 IF=28 D=0 C=28 SF=0 SU=0
+2021-11-21 23:41:37,796: MA=10498=89% MF=10618 A=859 F=33 AF=0 IF=32 D=0 C=33 SF=0 SU=0
+2021-11-21 23:41:38,297: MA=10495=89% MF=10612 A=859 F=39 AF=1 IF=39 D=0 C=39 SF=0 SU=0
+2021-11-21 23:41:38,798: MA=10492=89% MF=10607 A=859 F=44 AF=1 IF=43 D=0 C=43 SF=0 SU=0
+2021-11-21 23:41:39,299: MA=10490=89% MF=10602 A=858 F=49 AF=1 IF=48 D=0 C=48 SF=0 SU=0
+2021-11-21 23:41:39,801: MA=10481=89% MF=10590 A=859 F=54 AF=1 IF=53 D=0 C=54 SF=0 SU=0
+2021-11-21 23:41:40,302: MA=10480=89% MF=10586 A=858 F=60 AF=1 IF=59 D=0 C=59 SF=0 SU=0
+2021-11-21 23:41:40,803: MA=10470=89% MF=10574 A=863 F=65 AF=1 IF=64 D=0 C=64 SF=0 SU=0
+2021-11-21 23:41:41,304: MA=9867=84% MF=9969 A=1461 F=69 AF=1 IF=68 D=0 C=69 SF=0 SU=0
+2021-11-21 23:41:41,805: MA=8795=75% MF=8894 A=2528 F=74 AF=1 IF=73 D=0 C=74 SF=0 SU=0
+2021-11-21 23:41:42,306: MA=7718=65% MF=7815 A=3604 F=79 AF=1 IF=78 D=1 C=78 SF=0 SU=0
+2021-11-21 23:41:42,807: MA=6651=56% MF=6744 A=4663 F=86 AF=1 IF=85 D=1 C=85 SF=0 SU=0
+2021-11-21 23:41:43,308: MA=5578=47% MF=5670 A=5731 F=90 AF=1 IF=89 D=1 C=89 SF=0 SU=0
+2021-11-21 23:41:43,808: MA=4507=38% MF=4597 A=6797 F=94 AF=1 IF=93 D=1 C=93 SF=0 SU=0
+2021-11-21 23:41:44,309: MA=3427=29% MF=3515 A=7872 F=98 AF=1 IF=97 D=1 C=97 SF=0 SU=0
+2021-11-21 23:41:44,810: MA=2363=20% MF=2448 A=8932 F=103 AF=1 IF=102 D=1 C=102 SF=0 SU=0
+2021-11-21 23:41:45,311: MA=1340=11% MF=1423 A=9939 F=107 AF=1 IF=106 D=1 C=106 SF=0 SU=0
+2021-11-21 23:41:45,812: MA=282=2% MF=363 A=10989 F=110 AF=1 IF=109 D=1 C=109 SF=0 SU=0
+2021-11-21 23:41:46,313: MA=0=0% MF=118 A=11377 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0  <----- OOM
+2021-11-21 23:41:46,814: MA=8614=73% MF=8747 A=2733 F=5 AF=1 IF=5 D=0 C=5 SF=0 SU=0
+2021-11-21 23:41:47,315: MA=10501=89% MF=10632 A=860 F=12 AF=1 IF=11 D=0 C=12 SF=0 SU=0
+2021-11-21 23:41:47,816: MA=10499=89% MF=10626 A=860 F=17 AF=1 IF=17 D=0 C=17 SF=0 SU=0
+2021-11-21 23:41:48,317: MA=10496=89% MF=10620 A=860 F=25 AF=1 IF=24 D=0 C=25 SF=0 SU=0
+2021-11-21 23:41:48,818: MA=10492=89% MF=10613 A=860 F=31 AF=1 IF=30 D=0 C=31 SF=0 SU=0
+2021-11-21 23:41:49,320: MA=10490=89% MF=10608 A=860 F=37 AF=1 IF=36 D=0 C=37 SF=0 SU=0
+
+and PSI metrics at the same time:
+
+2021-11-21 23:41:13,285: Starting psi2log, target: SYSTEM_WIDE, mode: 2, interval: 2 sec, log file: /tmpfs/1, suppress output: False
+2021-11-21 23:41:13,286: PSI source dir: /proc/pressure/, source files: cpu, io, memory
+2021-11-21 23:41:13,290: Process memory locked with MCL_CURRENT | MCL_FUTURE | MCL_ONFAULT
+2021-11-21 23:41:13,290: ======|=============|=============|
+2021-11-21 23:41:13,290:  cpu  |      io     |    memory   |
+2021-11-21 23:41:13,290: ----- | ----------- | ----------- |
+2021-11-21 23:41:13,290:  some |  some  full |  some  full | interval
+2021-11-21 23:41:13,290: ----- | ----- ----- | ----- ----- | --------
+2021-11-21 23:41:15,293:   1.6 |   0.0   0.0 |   0.0   0.0 | 2.002
+2021-11-21 23:41:17,295:   1.5 |   1.0   0.9 |   0.0   0.0 | 2.003
+2021-11-21 23:41:19,297:   0.4 |   0.0   0.0 |   0.0   0.0 | 2.001
+2021-11-21 23:41:21,299:   0.4 |   0.0   0.0 |   0.0   0.0 | 2.002
+2021-11-21 23:41:23,301:   0.6 |  33.8  29.4 |   8.7   8.6 | 2.002
+2021-11-21 23:41:25,304:   0.2 |  96.5  95.7 |   0.0   0.0 | 2.003
+2021-11-21 23:41:27,306:   0.6 |  94.5  91.5 |   0.0   0.0 | 2.003
+2021-11-21 23:41:29,309:   1.3 |  92.2  83.2 |   0.0   0.0 | 2.003
+2021-11-21 23:41:31,311:   0.6 |  80.2  68.9 |   0.0   0.0 | 2.002
+2021-11-21 23:41:33,313:   0.7 |  62.6  57.9 |   0.0   0.0 | 2.002
+2021-11-21 23:41:35,315:   3.8 |  56.7  50.7 |  16.2  15.9 | 2.002
+2021-11-21 23:41:37,317:   0.3 |  95.8  94.2 |   0.0   0.0 | 2.002
+2021-11-21 23:41:39,319:   0.6 |  98.8  96.1 |   0.0   0.0 | 2.003
+2021-11-21 23:41:41,321:   1.2 |  97.8  88.5 |   0.0   0.0 | 2.001
+2021-11-21 23:41:43,323:   0.5 |  75.7  69.2 |   0.0   0.0 | 2.002
+2021-11-21 23:41:45,325:   0.6 |  65.5  59.8 |   0.0   0.0 | 2.002
+2021-11-21 23:41:47,327:   1.0 |  72.7  67.1 |  14.3  13.8 | 2.002
+2021-11-21 23:41:49,330:   0.2 |  96.7  95.7 |   0.0   0.0 | 2.003
+2021-11-21 23:41:51,333:   0.4 |  96.8  94.8 |   0.0   0.0 | 2.003
+2021-11-21 23:41:53,335:   1.1 |  89.6  82.5 |   0.0   0.0 | 2.003
+2021-11-21 23:41:55,337:   1.3 |  76.8  70.9 |   0.0   0.0 | 2.002
+2021-11-21 23:41:57,340:   1.4 |  69.2  63.1 |   0.0   0.0 | 2.003
+2021-11-21 23:41:59,342:   1.5 |  35.5  31.3 |   0.0   0.0 | 2.003
+2021-11-21 23:42:01,345:   1.6 |   6.1   5.4 |   0.0   0.0 | 2.003
+
+After disabling the reclaim_throttle() function, the behavior is restored
+as in old kernels - there is no delay, the killer comes quickly. Memory
+pressure does not reach high values. 
+
+
+5. 5.16-rc1, MAX_RECLAIM_RETRIES=0, default timeouts
+====================================================
+
+Setting MAX_RECLAIM_RETRIES to 0 greatly reduces the stall intervals:
+
+2021-11-22 00:08:46,259: Starting mem2log with interval 0.5s, mode: 1
+2021-11-22 00:08:46,259: Log file: /tmpfs/27
+2021-11-22 00:08:46,260: Process memory locked with MCL_CURRENT | MCL_FUTURE | MCL_ONFAULT
+2021-11-22 00:08:46,260: All values are in mebibytes
+2021-11-22 00:08:46,260: MemTotal: 11798.5, SwapTotal: 0.0
+2021-11-22 00:08:46,260: --
+2021-11-22 00:08:46,260: MA is MemAvailable, MF is MemFree, A is Anon
+2021-11-22 00:08:46,260: F is File, AF is Active(file), IF is Inactive(file)
+2021-11-22 00:08:46,261: D is Dirty, C is Clean file (File - Dirty)
+2021-11-22 00:08:46,261: SF is SwapFree, SU is SwapUsed (SwapTotal - SwapFree)
+2021-11-22 00:08:46,261: --
+2021-11-22 00:08:46,261: MA=10239=87% MF=10198 A=911 F=353 AF=68 IF=285 D=0 C=353 SF=0 SU=0
+2021-11-22 00:08:46,762: MA=9207=78% MF=9166 A=1942 F=353 AF=68 IF=285 D=0 C=353 SF=0 SU=0
+2021-11-22 00:08:47,263: MA=8153=69% MF=8112 A=2992 F=354 AF=68 IF=286 D=0 C=354 SF=0 SU=0
+2021-11-22 00:08:47,764: MA=7092=60% MF=7051 A=4051 F=354 AF=68 IF=286 D=0 C=354 SF=0 SU=0
+2021-11-22 00:08:48,265: MA=6044=51% MF=6003 A=5096 F=354 AF=68 IF=286 D=0 C=354 SF=0 SU=0
+2021-11-22 00:08:48,766: MA=5013=42% MF=4972 A=6125 F=354 AF=68 IF=286 D=0 C=354 SF=0 SU=0
+2021-11-22 00:08:49,267: MA=4001=34% MF=3959 A=7136 F=354 AF=68 IF=286 D=0 C=354 SF=0 SU=0
+2021-11-22 00:08:49,768: MA=2934=25% MF=2893 A=8200 F=354 AF=68 IF=286 D=0 C=354 SF=0 SU=0
+2021-11-22 00:08:50,269: MA=1884=16% MF=1843 A=9247 F=354 AF=68 IF=286 D=0 C=354 SF=0 SU=0
+2021-11-22 00:08:50,770: MA=841=7% MF=799 A=10288 F=354 AF=68 IF=286 D=0 C=354 SF=0 SU=0
+2021-11-22 00:08:51,271: MA=220=2% MF=240 A=11014 F=230 AF=115 IF=115 D=0 C=230 SF=0 SU=0
+2021-11-22 00:08:51,772: MA=117=1% MF=240 A=11220 F=25 AF=13 IF=12 D=0 C=25 SF=0 SU=0
+2021-11-22 00:08:52,273: MA=115=1% MF=240 A=11221 F=21 AF=12 IF=9 D=0 C=21 SF=0 SU=0
+2021-11-22 00:08:52,774: MA=114=1% MF=242 A=11227 F=15 AF=8 IF=7 D=0 C=15 SF=0 SU=0
+2021-11-22 00:08:53,276: MA=109=1% MF=240 A=11235 F=10 AF=5 IF=5 D=0 C=10 SF=0 SU=0
+2021-11-22 00:08:53,777: MA=108=1% MF=240 A=11238 F=7 AF=4 IF=4 D=0 C=7 SF=0 SU=0  <----- stall started
+2021-11-22 00:08:54,278: MA=107=1% MF=240 A=11239 F=5 AF=3 IF=3 D=0 C=5 SF=0 SU=0
+2021-11-22 00:08:54,780: MA=108=1% MF=242 A=11239 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-22 00:08:55,281: MA=105=1% MF=239 A=11241 F=6 AF=1 IF=4 D=0 C=6 SF=0 SU=0
+2021-11-22 00:08:55,782: MA=106=1% MF=240 A=11241 F=4 AF=1 IF=3 D=0 C=4 SF=0 SU=0
+2021-11-22 00:08:56,283: MA=104=1% MF=239 A=11242 F=2 AF=0 IF=2 D=0 C=2 SF=0 SU=0   <----- 3s stall is over, OOM
+2021-11-22 00:08:56,784: MA=9696=82% MF=9829 A=1636 F=4 AF=1 IF=4 D=0 C=4 SF=0 SU=0
+2021-11-22 00:08:57,286: MA=10466=89% MF=10597 A=889 F=11 AF=1 IF=11 D=0 C=11 SF=0 SU=0
+2021-11-22 00:08:57,787: MA=10465=89% MF=10593 A=889 F=16 AF=1 IF=16 D=0 C=16 SF=0 SU=0
+2021-11-22 00:08:58,288: MA=10464=89% MF=10590 A=889 F=20 AF=1 IF=19 D=0 C=20 SF=0 SU=0
+2021-11-22 00:08:58,789: MA=10461=89% MF=10585 A=889 F=25 AF=1 IF=24 D=0 C=25 SF=0 SU=0
+2021-11-22 00:08:59,290: MA=10459=89% MF=10580 A=889 F=30 AF=1 IF=29 D=0 C=30 SF=0 SU=0
+2021-11-22 00:08:59,792: MA=10457=89% MF=10575 A=889 F=35 AF=1 IF=34 D=0 C=35 SF=0 SU=0
+2021-11-22 00:09:00,293: MA=10454=89% MF=10569 A=889 F=41 AF=1 IF=40 D=0 C=41 SF=0 SU=0
+2021-11-22 00:09:00,794: MA=10451=89% MF=10564 A=889 F=46 AF=1 IF=45 D=0 C=46 SF=0 SU=0
+2021-11-22 00:09:01,295: MA=10449=89% MF=10560 A=889 F=51 AF=1 IF=49 D=0 C=51 SF=0 SU=0
+2021-11-22 00:09:01,796: MA=10447=89% MF=10555 A=889 F=55 AF=1 IF=54 D=0 C=55 SF=0 SU=0
+2021-11-22 00:09:02,297: MA=10444=89% MF=10550 A=889 F=61 AF=2 IF=59 D=0 C=61 SF=0 SU=0
+2021-11-22 00:09:02,799: MA=10442=88% MF=10545 A=889 F=66 AF=2 IF=64 D=0 C=66 SF=0 SU=0
+2021-11-22 00:09:03,300: MA=10439=88% MF=10540 A=889 F=70 AF=2 IF=68 D=0 C=70 SF=0 SU=0
+2021-11-22 00:09:03,801: MA=10103=86% MF=10202 A=1223 F=74 AF=3 IF=71 D=0 C=74 SF=0 SU=0
+2021-11-22 00:09:04,301: MA=9029=77% MF=9126 A=2291 F=80 AF=3 IF=77 D=0 C=79 SF=0 SU=0
+2021-11-22 00:09:04,802: MA=7957=67% MF=8051 A=3360 F=83 AF=3 IF=79 D=0 C=83 SF=0 SU=0
+2021-11-22 00:09:05,303: MA=6882=58% MF=6975 A=4429 F=86 AF=4 IF=82 D=0 C=86 SF=0 SU=0
+2021-11-22 00:09:05,804: MA=5814=49% MF=5905 A=5493 F=89 AF=4 IF=85 D=0 C=89 SF=0 SU=0
+2021-11-22 00:09:06,305: MA=4742=40% MF=4832 A=6559 F=93 AF=4 IF=88 D=0 C=93 SF=0 SU=0
+2021-11-22 00:09:06,806: MA=3663=31% MF=3751 A=7633 F=96 AF=4 IF=91 D=0 C=95 SF=0 SU=0
+2021-11-22 00:09:07,307: MA=2587=22% MF=2674 A=8706 F=98 AF=5 IF=93 D=0 C=98 SF=0 SU=0
+2021-11-22 00:09:07,808: MA=1516=13% MF=1602 A=9770 F=102 AF=5 IF=96 D=0 C=101 SF=0 SU=0
+2021-11-22 00:09:08,308: MA=462=4% MF=545 A=10823 F=106 AF=5 IF=101 D=0 C=106 SF=0 SU=0
+2021-11-22 00:09:08,809: MA=154=1% MF=241 A=11156 F=98 AF=49 IF=49 D=0 C=98 SF=0 SU=0
+2021-11-22 00:09:09,311: MA=111=1% MF=240 A=11238 F=15 AF=7 IF=8 D=0 C=15 SF=0 SU=0
+2021-11-22 00:09:09,812: MA=111=1% MF=240 A=11241 F=13 AF=6 IF=7 D=0 C=13 SF=0 SU=0
+2021-11-22 00:09:10,313: MA=109=1% MF=240 A=11243 F=10 AF=5 IF=5 D=0 C=10 SF=0 SU=0
+2021-11-22 00:09:10,815: MA=108=1% MF=240 A=11246 F=8 AF=4 IF=4 D=0 C=8 SF=0 SU=0  <----- stall started
+2021-11-22 00:09:11,316: MA=107=1% MF=240 A=11248 F=6 AF=3 IF=3 D=0 C=6 SF=0 SU=0
+2021-11-22 00:09:11,817: MA=108=1% MF=242 A=11248 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-22 00:09:12,318: MA=106=1% MF=240 A=11250 F=4 AF=2 IF=2 D=0 C=4 SF=0 SU=0
+2021-11-22 00:09:12,820: MA=107=1% MF=242 A=11250 F=2 AF=0 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-22 00:09:13,321: MA=790=7% MF=925 A=10558 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0   <----- 3s stall is over, OOM
+2021-11-22 00:09:13,822: MA=10470=89% MF=10602 A=890 F=7 AF=2 IF=5 D=0 C=7 SF=0 SU=0
+2021-11-22 00:09:14,323: MA=10468=89% MF=10597 A=890 F=13 AF=2 IF=11 D=0 C=13 SF=0 SU=0
+2021-11-22 00:09:14,824: MA=10465=89% MF=10593 A=890 F=17 AF=2 IF=15 D=0 C=17 SF=0 SU=0
+2021-11-22 00:09:15,325: MA=10463=89% MF=10587 A=890 F=24 AF=3 IF=21 D=0 C=24 SF=0 SU=0
+2021-11-22 00:09:15,827: MA=10460=89% MF=10582 A=890 F=30 AF=3 IF=26 D=0 C=30 SF=0 SU=0
+2021-11-22 00:09:16,328: MA=10459=89% MF=10577 A=890 F=36 AF=3 IF=32 D=0 C=36 SF=0 SU=0
+2021-11-22 00:09:16,829: MA=10457=89% MF=10572 A=890 F=41 AF=3 IF=38 D=0 C=41 SF=0 SU=0
+2021-11-22 00:09:17,330: MA=10454=89% MF=10568 A=890 F=45 AF=3 IF=42 D=0 C=45 SF=0 SU=0
+2021-11-22 00:09:17,832: MA=10452=89% MF=10562 A=890 F=52 AF=3 IF=48 D=0 C=52 SF=0 SU=0
+2021-11-22 00:09:18,333: MA=10450=89% MF=10557 A=890 F=57 AF=3 IF=54 D=0 C=57 SF=0 SU=0
+2021-11-22 00:09:18,834: MA=10448=89% MF=10553 A=890 F=61 AF=4 IF=58 D=0 C=61 SF=0 SU=0
+2021-11-22 00:09:19,335: MA=10424=88% MF=10527 A=912 F=66 AF=4 IF=63 D=0 C=66 SF=0 SU=0
+2021-11-22 00:09:19,836: MA=9450=80% MF=9550 A=1883 F=72 AF=4 IF=68 D=0 C=72 SF=0 SU=0
+2021-11-22 00:09:20,337: MA=8477=72% MF=8574 A=2853 F=77 AF=4 IF=73 D=0 C=77 SF=0 SU=0
+2021-11-22 00:09:20,838: MA=7495=64% MF=7590 A=3830 F=82 AF=4 IF=78 D=0 C=82 SF=0 SU=0
+2021-11-22 00:09:21,339: MA=6480=55% MF=6573 A=4841 F=86 AF=4 IF=82 D=0 C=86 SF=0 SU=0
+2021-11-22 00:09:21,840: MA=5433=46% MF=5524 A=5883 F=91 AF=4 IF=86 D=0 C=91 SF=0 SU=0
+2021-11-22 00:09:22,340: MA=4382=37% MF=4470 A=6931 F=95 AF=4 IF=90 D=0 C=95 SF=0 SU=0
+2021-11-22 00:09:22,841: MA=3323=28% MF=3410 A=7983 F=100 AF=4 IF=95 D=0 C=100 SF=0 SU=0
+2021-11-22 00:09:23,342: MA=2272=19% MF=2355 A=9027 F=106 AF=4 IF=102 D=0 C=106 SF=0 SU=0
+2021-11-22 00:09:23,843: MA=1224=10% MF=1305 A=10072 F=110 AF=5 IF=106 D=0 C=110 SF=0 SU=0
+2021-11-22 00:09:24,344: MA=178=2% MF=258 A=11110 F=113 AF=5 IF=108 D=0 C=113 SF=0 SU=0
+2021-11-22 00:09:24,844: MA=135=1% MF=241 A=11194 F=61 AF=30 IF=30 D=0 C=61 SF=0 SU=0
+2021-11-22 00:09:25,346: MA=111=1% MF=240 A=11241 F=13 AF=6 IF=7 D=0 C=13 SF=0 SU=0
+2021-11-22 00:09:25,847: MA=110=1% MF=240 A=11244 F=11 AF=5 IF=5 D=0 C=11 SF=0 SU=0
+2021-11-22 00:09:26,348: MA=108=1% MF=240 A=11246 F=9 AF=5 IF=4 D=0 C=9 SF=0 SU=0  <----- stall started
+2021-11-22 00:09:26,849: MA=106=1% MF=239 A=11249 F=6 AF=2 IF=3 D=0 C=6 SF=0 SU=0
+2021-11-22 00:09:27,351: MA=106=1% MF=240 A=11250 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-22 00:09:27,852: MA=106=1% MF=240 A=11250 F=4 AF=1 IF=2 D=0 C=4 SF=0 SU=0
+2021-11-22 00:09:28,353: MA=106=1% MF=241 A=11251 F=2 AF=1 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-22 00:09:28,854: MA=105=1% MF=239 A=11251 F=4 AF=1 IF=4 D=0 C=4 SF=0 SU=0
+2021-11-22 00:09:29,454: MA=106=1% MF=242 A=11251 F=2 AF=0 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-22 00:09:29,955: MA=105=1% MF=240 A=11251 F=3 AF=0 IF=3 D=0 C=3 SF=0 SU=0
+2021-11-22 00:09:30,489: MA=105=1% MF=238 A=11251 F=5 AF=0 IF=4 D=0 C=5 SF=0 SU=0
+2021-11-22 00:09:30,991: MA=105=1% MF=239 A=11251 F=4 AF=1 IF=3 D=0 C=4 SF=0 SU=0
+2021-11-22 00:09:31,492: MA=106=1% MF=241 A=11252 F=2 AF=1 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-22 00:09:31,993: MA=104=1% MF=239 A=11253 F=4 AF=1 IF=3 D=0 C=4 SF=0 SU=0
+2021-11-22 00:09:32,494: MA=104=1% MF=239 A=11253 F=4 AF=0 IF=3 D=0 C=4 SF=0 SU=0
+2021-11-22 00:09:32,996: MA=105=1% MF=240 A=11253 F=3 AF=0 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-22 00:09:33,497: MA=105=1% MF=240 A=11253 F=3 AF=0 IF=2 D=0 C=3 SF=0 SU=0   <----- 7.5s stall is over, OOM
+2021-11-22 00:09:33,998: MA=3284=28% MF=3418 A=8065 F=5 AF=0 IF=5 D=0 C=5 SF=0 SU=0
+2021-11-22 00:09:34,499: MA=10468=89% MF=10600 A=892 F=8 AF=1 IF=7 D=0 C=8 SF=0 SU=0
+2021-11-22 00:09:35,000: MA=10466=89% MF=10596 A=892 F=13 AF=1 IF=12 D=0 C=13 SF=0 SU=0
+2021-11-22 00:09:35,501: MA=10458=89% MF=10585 A=894 F=20 AF=1 IF=18 D=0 C=20 SF=0 SU=0
+2021-11-22 00:09:36,003: MA=10458=89% MF=10582 A=894 F=24 AF=1 IF=23 D=0 C=24 SF=0 SU=0
+2021-11-22 00:09:36,504: MA=10456=89% MF=10578 A=894 F=28 AF=2 IF=26 D=0 C=28 SF=0 SU=0
+
+and PSI metrics at the same time:
+
+2021-11-22 00:08:43,631: Starting psi2log, target: SYSTEM_WIDE, mode: 2, interval: 2 sec, log file: /tmpfs/1, suppress output: False
+2021-11-22 00:08:43,631: PSI source dir: /proc/pressure/, source files: cpu, io, memory
+2021-11-22 00:08:43,633: Process memory locked with MCL_CURRENT | MCL_FUTURE | MCL_ONFAULT
+2021-11-22 00:08:43,633: ======|=============|=============|
+2021-11-22 00:08:43,633:  cpu  |      io     |    memory   |
+2021-11-22 00:08:43,633: ----- | ----------- | ----------- |
+2021-11-22 00:08:43,633:  some |  some  full |  some  full | interval
+2021-11-22 00:08:43,633: ----- | ----- ----- | ----- ----- | --------
+2021-11-22 00:08:45,636:   1.9 |   0.5   0.5 |   0.0   0.0 | 2.002
+2021-11-22 00:08:47,637:   1.1 |   0.8   0.7 |   0.0   0.0 | 2.002
+2021-11-22 00:08:49,640:   0.7 |   0.0   0.0 |   0.0   0.0 | 2.002
+2021-11-22 00:08:51,642:   1.1 |   1.3   1.2 |   8.3   8.2 | 2.002
+2021-11-22 00:08:53,645:   0.9 |  23.6  21.7 |  75.3  73.9 | 2.003
+2021-11-22 00:08:55,647:   1.0 |  42.8  40.9 |  74.5  74.1 | 2.003
+2021-11-22 00:08:57,650:   1.2 |  69.8  65.2 |  42.6  42.0 | 2.003
+2021-11-22 00:08:59,653:   0.2 |  97.4  96.3 |   0.0   0.0 | 2.003
+2021-11-22 00:09:01,656:   1.0 |  94.0  90.5 |   0.0   0.0 | 2.003
+2021-11-22 00:09:03,658:   1.3 |  90.0  84.1 |   0.0   0.0 | 2.003
+2021-11-22 00:09:05,660:   1.0 |  80.0  66.5 |   0.0   0.0 | 2.001
+2021-11-22 00:09:07,662:   0.9 |  76.1  69.4 |   0.0   0.0 | 2.002
+2021-11-22 00:09:09,665:   1.4 |  66.6  62.1 |  26.8  26.4 | 2.003
+2021-11-22 00:09:11,667:   1.0 |  25.0  23.9 |  86.7  86.4 | 2.003
+2021-11-22 00:09:13,670:   1.0 |  59.4  54.5 |  75.8  73.3 | 2.003
+2021-11-22 00:09:15,673:   0.2 |  93.9  92.7 |   6.3   6.2 | 2.003
+2021-11-22 00:09:17,676:   0.3 |  96.0  94.7 |   0.0   0.0 | 2.003
+2021-11-22 00:09:19,678:   1.3 |  86.0  81.4 |   0.0   0.0 | 2.003
+2021-11-22 00:09:21,681:   0.9 |  72.3  68.6 |   0.0   0.0 | 2.002
+2021-11-22 00:09:23,683:   0.9 |  70.6  63.2 |   0.0   0.0 | 2.002
+2021-11-22 00:09:25,684:   1.3 |  59.3  53.5 |  30.9  30.3 | 2.001
+2021-11-22 00:09:27,686:   1.1 |  50.9  48.3 |  81.9  81.4 | 2.002
+2021-11-22 00:09:29,689:   1.6 |  54.1  51.8 |  93.7  93.1 | 2.003
+2021-11-22 00:09:31,691:   2.5 |  58.9  55.8 |  96.0  95.3 | 2.003
+2021-11-22 00:09:33,694:   2.5 |  37.2  34.9 | 100.0  99.2 | 2.003
+2021-11-22 00:09:35,697:   1.1 |  94.1  89.8 |  51.7  51.2 | 2.003
+2021-11-22 00:09:37,700:   0.3 |  99.4  98.0 |  13.5  13.3 | 2.003
+2021-11-22 00:09:39,702:   1.2 |  94.4  89.9 |   3.4   3.2 | 2.003
+2021-11-22 00:09:41,705:   1.2 |  81.0  77.3 |   0.0   0.0 | 2.002
+2021-11-22 00:09:43,708:   1.2 |  78.4  73.4 |   0.0   0.0 | 2.003
+2021-11-22 00:09:45,710:   1.5 |  86.1  80.4 |   0.0   0.0 | 2.003
+2021-11-22 00:09:47,712:   1.6 |  80.0  73.2 |   0.0   0.0 | 2.001
+2021-11-22 00:09:49,713:   1.8 |  52.4  47.6 |   0.0   0.0 | 2.001
+2021-11-22 00:09:51,715:   2.0 |  50.0  46.3 |   0.0   0.0 | 2.003
+2021-11-22 00:09:53,718:   1.8 |  24.4  22.6 |   0.0   0.0 | 2.003
+2021-11-22 00:09:55,720:   1.7 |   0.4   0.4 |   0.0   0.0 | 2.002
+
+Zeroing the MAX_RECLAIM_RETRIES gives a better result than zeroing the
+timeouts.
+
+
+6. 5.16-rc1, MAX_RECLAIM_RETRIES=0, timeout=0
+=============================================
+
+Combination of MAX_RECLAIM_RETRIES=0 and timeout=0 gives almost
+satisfactory result:
+
+2021-11-22 00:42:21,651: Starting mem2log with interval 0.5s, mode: 1
+2021-11-22 00:42:21,651: Log file: /tmpfs/27
+2021-11-22 00:42:21,652: Process memory locked with MCL_CURRENT | MCL_FUTURE | MCL_ONFAULT
+2021-11-22 00:42:21,652: All values are in mebibytes
+2021-11-22 00:42:21,652: MemTotal: 11798.5, SwapTotal: 0.0
+2021-11-22 00:42:21,652: --
+2021-11-22 00:42:21,652: MA is MemAvailable, MF is MemFree, A is Anon
+2021-11-22 00:42:21,652: F is File, AF is Active(file), IF is Inactive(file)
+2021-11-22 00:42:21,652: D is Dirty, C is Clean file (File - Dirty)
+2021-11-22 00:42:21,652: SF is SwapFree, SU is SwapUsed (SwapTotal - SwapFree)
+2021-11-22 00:42:21,653: --
+2021-11-22 00:42:21,653: MA=10264=87% MF=10288 A=949 F=225 AF=40 IF=185 D=0 C=225 SF=0 SU=0
+2021-11-22 00:42:22,153: MA=9192=78% MF=9216 A=2021 F=225 AF=40 IF=184 D=0 C=224 SF=0 SU=0
+2021-11-22 00:42:22,654: MA=8121=69% MF=8145 A=3088 F=225 AF=40 IF=184 D=0 C=224 SF=0 SU=0
+2021-11-22 00:42:23,155: MA=7043=60% MF=7067 A=4164 F=225 AF=40 IF=184 D=0 C=224 SF=0 SU=0
+2021-11-22 00:42:23,656: MA=5961=51% MF=5984 A=5244 F=225 AF=40 IF=184 D=0 C=224 SF=0 SU=0
+2021-11-22 00:42:24,157: MA=4893=41% MF=4916 A=6303 F=225 AF=40 IF=184 D=0 C=224 SF=0 SU=0
+2021-11-22 00:42:24,658: MA=3811=32% MF=3835 A=7383 F=225 AF=40 IF=184 D=0 C=224 SF=0 SU=0
+2021-11-22 00:42:25,159: MA=2726=23% MF=2750 A=8466 F=225 AF=40 IF=184 D=0 C=224 SF=0 SU=0
+2021-11-22 00:42:25,660: MA=1659=14% MF=1682 A=9530 F=225 AF=40 IF=184 D=0 C=224 SF=0 SU=0
+2021-11-22 00:42:26,160: MA=587=5% MF=610 A=10600 F=225 AF=40 IF=184 D=0 C=224 SF=0 SU=0
+2021-11-22 00:42:26,661: MA=188=2% MF=241 A=11078 F=166 AF=83 IF=83 D=0 C=166 SF=0 SU=0
+2021-11-22 00:42:27,162: MA=107=1% MF=240 A=11239 F=6 AF=3 IF=3 D=0 C=6 SF=0 SU=0
+2021-11-22 00:42:27,663: MA=105=1% MF=240 A=11243 F=2 AF=1 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-22 00:42:28,164: MA=106=1% MF=241 A=11243 F=2 AF=0 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-22 00:42:28,666: MA=105=1% MF=240 A=11243 F=2 AF=0 IF=1 D=0 C=2 SF=0 SU=0
+2021-11-22 00:42:29,167: MA=105=1% MF=241 A=11243 F=2 AF=0 IF=1 D=0 C=2 SF=0 SU=0  <----- OOM
+2021-11-22 00:42:29,668: MA=2009=17% MF=2144 A=9321 F=2 AF=0 IF=2 D=0 C=2 SF=0 SU=0
+2021-11-22 00:42:30,169: MA=10476=89% MF=10608 A=876 F=9 AF=0 IF=9 D=0 C=9 SF=0 SU=0
+2021-11-22 00:42:30,670: MA=10474=89% MF=10602 A=876 F=15 AF=0 IF=15 D=0 C=15 SF=0 SU=0
+2021-11-22 00:42:31,171: MA=10472=89% MF=10599 A=876 F=19 AF=0 IF=18 D=0 C=19 SF=0 SU=0
+2021-11-22 00:42:31,672: MA=10469=89% MF=10592 A=876 F=27 AF=1 IF=26 D=0 C=26 SF=0 SU=0
+2021-11-22 00:42:32,174: MA=10467=89% MF=10587 A=876 F=32 AF=1 IF=32 D=0 C=32 SF=0 SU=0
+2021-11-22 00:42:32,675: MA=10464=89% MF=10582 A=876 F=37 AF=1 IF=37 D=0 C=37 SF=0 SU=0
+2021-11-22 00:42:33,176: MA=10461=89% MF=10576 A=876 F=42 AF=1 IF=41 D=0 C=42 SF=0 SU=0
+2021-11-22 00:42:33,677: MA=10459=89% MF=10572 A=876 F=46 AF=1 IF=45 D=0 C=46 SF=0 SU=0
+2021-11-22 00:42:34,179: MA=10457=89% MF=10567 A=876 F=51 AF=1 IF=50 D=0 C=51 SF=0 SU=0
+2021-11-22 00:42:34,680: MA=10454=89% MF=10563 A=876 F=56 AF=2 IF=54 D=0 C=56 SF=0 SU=0
+2021-11-22 00:42:35,181: MA=10363=88% MF=10469 A=966 F=60 AF=2 IF=58 D=0 C=60 SF=0 SU=0
+2021-11-22 00:42:35,682: MA=9366=79% MF=9470 A=1959 F=64 AF=2 IF=62 D=0 C=64 SF=0 SU=0
+2021-11-22 00:42:36,183: MA=8378=71% MF=8480 A=2942 F=69 AF=3 IF=66 D=0 C=69 SF=0 SU=0
+2021-11-22 00:42:36,684: MA=7386=63% MF=7486 A=3931 F=73 AF=3 IF=70 D=0 C=73 SF=0 SU=0
+2021-11-22 00:42:37,184: MA=6395=54% MF=6493 A=4916 F=77 AF=3 IF=74 D=0 C=77 SF=0 SU=0
+2021-11-22 00:42:37,685: MA=5317=45% MF=5413 A=5990 F=81 AF=3 IF=78 D=0 C=81 SF=0 SU=0
+2021-11-22 00:42:38,186: MA=4254=36% MF=4348 A=7046 F=85 AF=3 IF=82 D=0 C=85 SF=0 SU=0
+2021-11-22 00:42:38,687: MA=3174=27% MF=3265 A=8125 F=90 AF=3 IF=87 D=1 C=89 SF=0 SU=0
+2021-11-22 00:42:39,188: MA=2099=18% MF=2189 A=9193 F=94 AF=4 IF=90 D=1 C=93 SF=0 SU=0
+2021-11-22 00:42:39,689: MA=1022=9% MF=1110 A=10266 F=97 AF=5 IF=93 D=1 C=96 SF=0 SU=0
+2021-11-22 00:42:40,190: MA=146=1% MF=240 A=11170 F=84 AF=42 IF=42 D=0 C=84 SF=0 SU=0
+2021-11-22 00:42:40,691: MA=106=1% MF=240 A=11250 F=5 AF=3 IF=2 D=0 C=5 SF=0 SU=0
+2021-11-22 00:42:41,192: MA=105=1% MF=240 A=11253 F=2 AF=0 IF=1 D=0 C=2 SF=0 SU=0  <----- OOM
+2021-11-22 00:42:41,717: MA=6800=58% MF=6934 A=4550 F=5 AF=1 IF=5 D=0 C=5 SF=0 SU=0
+2021-11-22 00:42:42,219: MA=10485=89% MF=10615 A=876 F=12 AF=1 IF=11 D=0 C=12 SF=0 SU=0
+2021-11-22 00:42:42,720: MA=10482=89% MF=10611 A=876 F=16 AF=1 IF=16 D=0 C=16 SF=0 SU=0
+2021-11-22 00:42:43,221: MA=10479=89% MF=10604 A=876 F=23 AF=1 IF=22 D=0 C=23 SF=0 SU=0
+2021-11-22 00:42:43,722: MA=10476=89% MF=10599 A=876 F=27 AF=1 IF=26 D=0 C=27 SF=0 SU=0
+2021-11-22 00:42:44,224: MA=10473=89% MF=10593 A=876 F=33 AF=1 IF=32 D=0 C=33 SF=0 SU=0
+2021-11-22 00:42:44,724: MA=10471=89% MF=10588 A=876 F=38 AF=1 IF=38 D=0 C=38 SF=0 SU=0
+2021-11-22 00:42:45,226: MA=10468=89% MF=10582 A=876 F=44 AF=1 IF=43 D=0 C=44 SF=0 SU=0
+2021-11-22 00:42:45,727: MA=10466=89% MF=10578 A=876 F=49 AF=1 IF=48 D=0 C=49 SF=0 SU=0
+2021-11-22 00:42:46,228: MA=10463=89% MF=10573 A=876 F=54 AF=1 IF=54 D=0 C=54 SF=0 SU=0
+2021-11-22 00:42:46,729: MA=10462=89% MF=10569 A=876 F=59 AF=1 IF=58 D=0 C=59 SF=0 SU=0
+2021-11-22 00:42:47,230: MA=10460=89% MF=10565 A=876 F=63 AF=1 IF=62 D=0 C=63 SF=0 SU=0
+2021-11-22 00:42:47,732: MA=10458=89% MF=10561 A=877 F=68 AF=1 IF=68 D=0 C=68 SF=0 SU=0
+2021-11-22 00:42:48,232: MA=10455=89% MF=10555 A=877 F=74 AF=1 IF=73 D=0 C=74 SF=0 SU=0
+2021-11-22 00:42:48,734: MA=10454=89% MF=10552 A=877 F=77 AF=1 IF=76 D=0 C=77 SF=0 SU=0
+2021-11-22 00:42:49,235: MA=10450=89% MF=10545 A=877 F=84 AF=1 IF=83 D=0 C=84 SF=0 SU=0
+2021-11-22 00:42:49,736: MA=10450=89% MF=10543 A=868 F=89 AF=1 IF=88 D=0 C=89 SF=0 SU=0
+2021-11-22 00:42:50,237: MA=9653=82% MF=9742 A=1661 F=94 AF=1 IF=92 D=0 C=94 SF=0 SU=0
+2021-11-22 00:42:50,738: MA=8581=73% MF=8669 A=2724 F=98 AF=1 IF=97 D=0 C=98 SF=0 SU=0
+2021-11-22 00:42:51,239: MA=7544=64% MF=7629 A=3759 F=104 AF=2 IF=103 D=0 C=104 SF=0 SU=0
+2021-11-22 00:42:51,739: MA=6470=55% MF=6552 A=4831 F=109 AF=2 IF=107 D=0 C=109 SF=0 SU=0
+2021-11-22 00:42:52,240: MA=5395=46% MF=5476 A=5901 F=113 AF=2 IF=111 D=0 C=112 SF=0 SU=0
+2021-11-22 00:42:52,741: MA=4319=37% MF=4398 A=6973 F=116 AF=2 IF=114 D=1 C=115 SF=0 SU=0
+2021-11-22 00:42:53,242: MA=3247=28% MF=3324 A=8042 F=119 AF=2 IF=117 D=1 C=118 SF=0 SU=0
+2021-11-22 00:42:53,743: MA=2177=18% MF=2254 A=9106 F=120 AF=2 IF=118 D=1 C=118 SF=0 SU=0
+2021-11-22 00:42:54,244: MA=1121=10% MF=1198 A=10157 F=120 AF=2 IF=119 D=1 C=119 SF=0 SU=0
+2021-11-22 00:42:54,744: MA=163=1% MF=240 A=11138 F=119 AF=17 IF=102 D=1 C=118 SF=0 SU=0
+2021-11-22 00:42:55,245: MA=105=1% MF=240 A=11254 F=3 AF=1 IF=2 D=0 C=3 SF=0 SU=0
+2021-11-22 00:42:55,747: MA=105=1% MF=241 A=11255 F=1 AF=0 IF=1 D=0 C=1 SF=0 SU=0  <----- OOM
+2021-11-22 00:42:56,248: MA=9986=85% MF=10119 A=1353 F=5 AF=1 IF=5 D=0 C=5 SF=0 SU=0
+2021-11-22 00:42:56,749: MA=10523=89% MF=10653 A=843 F=13 AF=1 IF=12 D=0 C=13 SF=0 SU=0
+2021-11-22 00:42:57,250: MA=10521=89% MF=10648 A=843 F=19 AF=1 IF=19 D=0 C=19 SF=0 SU=0
+2021-11-22 00:42:57,751: MA=10519=89% MF=10644 A=843 F=23 AF=1 IF=23 D=0 C=23 SF=0 SU=0
+2021-11-22 00:42:58,253: MA=10516=89% MF=10638 A=842 F=29 AF=1 IF=28 D=0 C=29 SF=0 SU=0
+
+and PSI metrics at the same time:
+
+2021-11-22 00:42:20,020: Starting psi2log, target: SYSTEM_WIDE, mode: 2, interval: 2 sec, log file: /tmpfs/1, suppress output: False
+2021-11-22 00:42:20,020: PSI source dir: /proc/pressure/, source files: cpu, io, memory
+2021-11-22 00:42:20,024: Process memory locked with MCL_CURRENT | MCL_FUTURE | MCL_ONFAULT
+2021-11-22 00:42:20,024: ======|=============|=============|
+2021-11-22 00:42:20,024:  cpu  |      io     |    memory   |
+2021-11-22 00:42:20,024: ----- | ----------- | ----------- |
+2021-11-22 00:42:20,025:  some |  some  full |  some  full | interval
+2021-11-22 00:42:20,025: ----- | ----- ----- | ----- ----- | --------
+2021-11-22 00:42:22,027:   1.3 |   0.3   0.3 |   0.0   0.0 | 2.002
+2021-11-22 00:42:24,028:   0.3 |   0.0   0.0 |   0.0   0.0 | 2.001
+2021-11-22 00:42:26,031:   0.3 |   0.1   0.1 |   0.0   0.0 | 2.002
+2021-11-22 00:42:28,032:   1.1 |  45.5  40.1 |  29.5  29.1 | 2.002
+2021-11-22 00:42:30,035:   1.4 |  92.9  79.0 |  39.9  39.4 | 2.003
+2021-11-22 00:42:32,038:   0.2 |  99.0  98.0 |   0.0   0.0 | 2.003
+2021-11-22 00:42:34,040:   0.7 |  96.0  93.4 |   0.0   0.0 | 2.003
+2021-11-22 00:42:36,043:   0.9 |  81.9  75.7 |   0.0   0.0 | 2.003
+2021-11-22 00:42:38,044:   0.6 |  62.0  58.0 |   0.0   0.0 | 2.001
+2021-11-22 00:42:40,047:   0.5 |  38.3  35.0 |   0.0   0.0 | 2.002
+2021-11-22 00:42:42,048:   1.1 |  79.9  69.0 |  27.8  27.4 | 2.002
+2021-11-22 00:42:44,051:   0.2 |  94.9  94.2 |   0.0   0.0 | 2.003
+2021-11-22 00:42:46,054:   0.3 |  96.0  94.7 |   0.0   0.0 | 2.003
+2021-11-22 00:42:48,056:   1.0 |  89.9  84.7 |   0.0   0.0 | 2.003
+2021-11-22 00:42:50,058:   1.1 |  84.9  78.4 |   0.0   0.0 | 2.002
+2021-11-22 00:42:52,060:   0.6 |  70.0  65.6 |   0.0   0.0 | 2.002
+2021-11-22 00:42:54,063:   0.6 |  25.7  23.2 |   0.0   0.0 | 2.002
+2021-11-22 00:42:56,065:   1.5 |  43.3  37.1 |  31.2  30.6 | 2.002
+2021-11-22 00:42:58,068:   0.2 |  96.5  94.2 |   0.0   0.0 | 2.002
+2021-11-22 00:43:00,068:   0.8 |  95.6  92.7 |   0.0   0.0 | 2.001
+2021-11-22 00:43:02,071:   1.3 |  90.5  85.8 |   0.0   0.0 | 2.003
+2021-11-22 00:43:04,072:   1.2 |  88.2  82.2 |   0.0   0.0 | 2.001
+2021-11-22 00:43:06,075:   1.1 |  74.7  70.2 |   0.0   0.0 | 2.003
+2021-11-22 00:43:08,076:   1.3 |  75.3  69.6 |   0.0   0.0 | 2.001
+2021-11-22 00:43:10,078:   1.5 |  31.5  29.4 |   0.0   0.0 | 2.002
+2021-11-22 00:43:12,080:   1.3 |  14.4  13.7 |   0.0   0.0 | 2.002
+2021-11-22 00:43:14,083:   1.5 |   2.3   2.2 |   0.0   0.0 | 2.003
+
+
+7. 5.15.0, swappiness=0, swap on zram
+=====================================
+
+Just demo of expected behavior with swappiness=0 (running tail /dev/zero):
+
+2021-11-23 21:20:07,162: Starting mem2log with interval 0.5s, mode: 1
+2021-11-23 21:20:07,162: Log file: /tmpfs/1
+2021-11-23 21:20:07,163: Process memory locked with MCL_CURRENT | MCL_FUTURE | MCL_ONFAULT
+2021-11-23 21:20:07,164: All values are in mebibytes
+2021-11-23 21:20:07,164: MemTotal: 11798.7, SwapTotal: 11798.6
+2021-11-23 21:20:07,164: --
+2021-11-23 21:20:07,164: MA is MemAvailable, MF is MemFree, A is Anon
+2021-11-23 21:20:07,164: F is File, AF is Active(file), IF is Inactive(file)
+2021-11-23 21:20:07,164: D is Dirty, C is Clean file (File - Dirty)
+2021-11-23 21:20:07,164: SF is SwapFree, SU is SwapUsed (SwapTotal - SwapFree)
+2021-11-23 21:20:07,164: --
+2021-11-23 21:20:07,164: MA=10315=87% MF=10208 A=923 F=326 AF=171 IF=156 D=0 C=326 SF=11799 SU=0
+2021-11-23 21:20:07,665: MA=10314=87% MF=10207 A=923 F=326 AF=171 IF=156 D=0 C=326 SF=11799 SU=0
+2021-11-23 21:20:08,166: MA=10313=87% MF=10206 A=923 F=326 AF=171 IF=155 D=0 C=326 SF=11799 SU=0
+2021-11-23 21:20:08,667: MA=9363=79% MF=9256 A=1870 F=326 AF=171 IF=155 D=0 C=326 SF=11799 SU=0
+2021-11-23 21:20:09,168: MA=8289=70% MF=8182 A=2944 F=326 AF=171 IF=155 D=0 C=326 SF=11799 SU=0
+2021-11-23 21:20:09,669: MA=7191=61% MF=7084 A=4040 F=326 AF=171 IF=155 D=0 C=326 SF=11799 SU=0
+2021-11-23 21:20:10,170: MA=6099=52% MF=5991 A=5131 F=326 AF=171 IF=155 D=0 C=326 SF=11799 SU=0
+2021-11-23 21:20:10,671: MA=5000=42% MF=4893 A=6228 F=326 AF=171 IF=155 D=0 C=326 SF=11799 SU=0
+2021-11-23 21:20:11,172: MA=3908=33% MF=3801 A=7318 F=326 AF=171 IF=155 D=0 C=326 SF=11799 SU=0
+2021-11-23 21:20:11,673: MA=2821=24% MF=2713 A=8403 F=326 AF=171 IF=155 D=0 C=326 SF=11799 SU=0
+2021-11-23 21:20:12,174: MA=1757=15% MF=1650 A=9476 F=326 AF=171 IF=155 D=0 C=326 SF=11799 SU=0
+2021-11-23 21:20:12,674: MA=666=6% MF=559 A=10565 F=326 AF=171 IF=155 D=0 C=326 SF=11799 SU=0
+2021-11-23 21:20:13,175: MA=0=0% MF=118 A=11399 F=2 AF=1 IF=1 D=0 C=2 SF=11799 SU=0
+2021-11-23 21:20:13,676: MA=0=0% MF=119 A=11399 F=2 AF=0 IF=1 D=0 C=2 SF=11799 SU=0
+2021-11-23 21:20:14,177: MA=0=0% MF=119 A=11399 F=3 AF=1 IF=1 D=0 C=3 SF=11799 SU=0
+2021-11-23 21:20:14,678: MA=0=0% MF=117 A=11401 F=2 AF=1 IF=2 D=0 C=2 SF=11799 SU=0
+2021-11-23 21:20:15,179: MA=0=0% MF=118 A=11402 F=2 AF=1 IF=1 D=0 C=2 SF=11799 SU=0  <----- 2-2.5s stall, OOM
+2021-11-23 21:20:15,680: MA=9598=81% MF=9733 A=1757 F=6 AF=5 IF=1 D=0 C=6 SF=11799 SU=0
+2021-11-23 21:20:16,182: MA=10424=88% MF=10557 A=946 F=11 AF=10 IF=1 D=0 C=11 SF=11799 SU=0
+2021-11-23 21:20:16,683: MA=10423=88% MF=10554 A=946 F=16 AF=15 IF=1 D=0 C=16 SF=11799 SU=0
+2021-11-23 21:20:17,184: MA=10425=88% MF=10552 A=946 F=22 AF=21 IF=1 D=0 C=22 SF=11799 SU=0
+2021-11-23 21:20:17,686: MA=10425=88% MF=10549 A=946 F=28 AF=26 IF=1 D=0 C=27 SF=11799 SU=0
+2021-11-23 21:20:18,187: MA=10424=88% MF=10546 A=946 F=32 AF=30 IF=1 D=0 C=32 SF=11799 SU=0
+2021-11-23 21:20:18,688: MA=10422=88% MF=10543 A=946 F=35 AF=34 IF=2 D=0 C=35 SF=11799 SU=0
+2021-11-23 21:20:19,189: MA=10421=88% MF=10539 A=946 F=41 AF=38 IF=3 D=0 C=41 SF=11799 SU=0
+2021-11-23 21:20:19,690: MA=10418=88% MF=10533 A=946 F=46 AF=43 IF=3 D=0 C=46 SF=11799 SU=0
+
+and PSI metrics at the same time:
+
+2021-11-23 21:20:06,522: Starting psi2log, target: SYSTEM_WIDE, mode: 2, interval: 2.0 sec, log file: /tmpfs/2, suppress output: False
+2021-11-23 21:20:06,523: PSI source dir: /proc/pressure/, source files: cpu, io, memory
+2021-11-23 21:20:06,526: Process memory locked with MCL_CURRENT | MCL_FUTURE | MCL_ONFAULT
+2021-11-23 21:20:06,526: ======|=============|=============|
+2021-11-23 21:20:06,526:  cpu  |      io     |    memory   |
+2021-11-23 21:20:06,526: ----- | ----------- | ----------- |
+2021-11-23 21:20:06,526:  some |  some  full |  some  full | interval
+2021-11-23 21:20:06,526: ----- | ----- ----- | ----- ----- | --------
+2021-11-23 21:20:08,529:   1.3 |   0.4   0.4 |   0.2   0.2 | 2.002
+2021-11-23 21:20:10,530:   0.2 |   0.6   0.6 |   0.0   0.0 | 2.001
+2021-11-23 21:20:12,532:   0.2 |   0.0   0.0 |   0.0   0.0 | 2.002
+2021-11-23 21:20:14,534:   0.5 |  69.8  64.6 |  72.8  71.8 | 2.002
+2021-11-23 21:20:16,537:   3.1 |  95.6  82.2 |  97.6  92.4 | 2.002
+2021-11-23 21:20:18,538:   0.3 |  97.6  95.9 |  92.1  90.6 | 2.002
+2021-11-23 21:20:20,541:   1.1 |  91.8  87.7 |  80.5  76.7 | 2.003
+2021-11-23 21:20:22,544:   1.0 |  79.2  75.7 |  59.7  56.7 | 2.003
+2021-11-23 21:20:24,546:   1.2 |  78.1  73.9 |  60.4  56.9 | 2.002
+2021-11-23 21:20:26,549:   1.1 |  55.2  51.7 |  40.8  38.3 | 2.003
+2021-11-23 21:20:28,550:   1.3 |  63.8  59.3 |  35.7  33.4 | 2.001
+2021-11-23 21:20:30,553:   1.3 |  32.2  30.4 |  28.0  26.4 | 2.003
+2021-11-23 21:20:32,556:   1.2 |   5.2   5.0 |   0.0   0.0 | 2.003
+2021-11-23 21:20:34,558:   1.3 |   3.6   3.5 |   1.4   1.3 | 2.003
+
+There are no significant stalls. No progress leads to OOM.
+
+
+8. 5.16-rc2, swappiness=0, swap on zram
+=======================================
+
+Note that the scripts started with interval=5, and both scripts hang in
+this experience in spite mlockall().
+
+Running tail /dev/zero with 5.16-rc2 and swappiness=0:
+
+2021-11-22 21:23:07,259: Starting mem2log with interval 5.0s, mode: 1
+2021-11-22 21:23:07,259: Log file: /tmpfs/1
+2021-11-22 21:23:07,265: Process memory locked with MCL_CURRENT | MCL_FUTURE | MCL_ONFAULT
+2021-11-22 21:23:07,265: All values are in mebibytes
+2021-11-22 21:23:07,265: MemTotal: 11798.5, SwapTotal: 11798.4
+2021-11-22 21:23:07,266: --
+2021-11-22 21:23:07,266: MA is MemAvailable, MF is MemFree, A is Anon
+2021-11-22 21:23:07,266: F is File, AF is Active(file), IF is Inactive(file)
+2021-11-22 21:23:07,266: D is Dirty, C is Clean file (File - Dirty)
+2021-11-22 21:23:07,266: SF is SwapFree, SU is SwapUsed (SwapTotal - SwapFree)
+2021-11-22 21:23:07,267: --
+2021-11-22 21:23:07,267: MA=10205=86% MF=10245 A=1054 F=181 AF=42 IF=139 D=0 C=181 SF=11798 SU=0
+2021-11-22 21:23:12,272: MA=10201=86% MF=10241 A=1054 F=181 AF=43 IF=139 D=0 C=181 SF=11798 SU=0
+2021-11-22 21:23:17,277: MA=1539=13% MF=1578 A=9704 F=182 AF=43 IF=139 D=0 C=182 SF=11798 SU=0
+2021-11-22 21:23:22,282: MA=0=0% MF=120 A=11401 F=1 AF=0 IF=0 D=0 C=1 SF=11798 SU=0
+2021-11-22 21:23:27,288: MA=0=0% MF=118 A=11405 F=2 AF=0 IF=1 D=0 C=2 SF=11798 SU=0
+2021-11-22 21:23:32,294: MA=0=0% MF=118 A=11406 F=0 AF=0 IF=0 D=0 C=0 SF=11798 SU=0
+2021-11-22 21:23:37,300: MA=0=0% MF=118 A=11407 F=1 AF=0 IF=0 D=0 C=1 SF=11798 SU=0
+2021-11-22 21:23:42,306: MA=0=0% MF=119 A=11407 F=0 AF=0 IF=0 D=0 C=0 SF=11798 SU=0
+2021-11-22 21:23:47,311: MA=0=0% MF=118 A=11407 F=1 AF=0 IF=0 D=0 C=1 SF=11798 SU=0
+2021-11-22 21:23:52,317: MA=0=0% MF=118 A=11407 F=1 AF=1 IF=0 D=0 C=1 SF=11798 SU=0
+2021-11-22 21:23:57,323: MA=0=0% MF=119 A=11407 F=0 AF=0 IF=0 D=0 C=0 SF=11798 SU=0
+2021-11-22 21:24:02,329: MA=0=0% MF=117 A=11407 F=1 AF=1 IF=1 D=0 C=1 SF=11798 SU=0
+2021-11-22 21:24:07,334: MA=0=0% MF=119 A=11407 F=0 AF=0 IF=0 D=0 C=0 SF=11798 SU=0
+2021-11-22 21:24:13,807: MA=0=0% MF=118 A=11407 F=1 AF=0 IF=0 D=0 C=1 SF=11798 SU=0
+2021-11-22 21:24:18,812: MA=0=0% MF=118 A=11407 F=1 AF=0 IF=0 D=0 C=1 SF=11798 SU=0
+2021-11-22 21:24:46,511: MA=0=0% MF=118 A=11407 F=0 AF=0 IF=0 D=0 C=0 SF=11798 SU=0
+2021-11-22 21:24:51,513: MA=0=0% MF=118 A=11407 F=1 AF=1 IF=0 D=0 C=1 SF=11798 SU=0
+2021-11-22 21:24:56,519: MA=0=0% MF=117 A=11408 F=1 AF=0 IF=1 D=0 C=1 SF=11798 SU=0
+2021-11-22 21:25:01,525: MA=0=0% MF=118 A=11408 F=1 AF=0 IF=0 D=0 C=1 SF=11798 SU=0
+2021-11-22 21:25:06,530: MA=0=0% MF=118 A=11408 F=0 AF=0 IF=0 D=0 C=0 SF=11798 SU=0
+2021-11-22 21:25:11,533: MA=0=0% MF=118 A=11408 F=1 AF=0 IF=0 D=0 C=1 SF=11798 SU=0
+2021-11-22 21:25:16,539: MA=0=0% MF=118 A=11408 F=1 AF=0 IF=1 D=0 C=1 SF=11798 SU=0
+2021-11-22 21:25:21,545: MA=0=0% MF=118 A=11408 F=1 AF=0 IF=1 D=0 C=1 SF=11798 SU=0
+2021-11-22 21:25:26,550: MA=0=0% MF=118 A=11408 F=1 AF=0 IF=1 D=0 C=1 SF=11798 SU=0
+2021-11-22 21:25:31,556: MA=0=0% MF=118 A=11408 F=1 AF=0 IF=0 D=0 C=1 SF=11798 SU=0
+2021-11-22 21:25:36,562: MA=0=0% MF=118 A=11408 F=1 AF=1 IF=0 D=0 C=1 SF=11798 SU=0
+2021-11-22 21:25:41,565: MA=0=0% MF=118 A=11408 F=1 AF=0 IF=0 D=0 C=1 SF=11798 SU=0
+2021-11-22 21:25:46,571: MA=0=0% MF=118 A=11408 F=1 AF=0 IF=0 D=0 C=1 SF=11798 SU=0 <-- 3.5min mem2log stall before OOM
+2021-11-22 21:29:16,359: MA=10298=87% MF=10436 A=1075 F=2 AF=1 IF=1 D=0 C=2 SF=11798 SU=0
+2021-11-22 21:29:21,365: MA=10295=87% MF=10411 A=1074 F=46 AF=7 IF=39 D=0 C=46 SF=11798 SU=0
+2021-11-22 21:29:26,369: MA=10272=87% MF=10367 A=1075 F=88 AF=11 IF=77 D=0 C=88 SF=11798 SU=0
+2021-11-22 21:29:31,373: MA=10254=87% MF=10334 A=1071 F=119 AF=14 IF=105 D=0 C=119 SF=11798 SU=0
+
+and PSI metrics at the same time:
+
+2021-11-22 21:23:07,259: Starting psi2log, target: SYSTEM_WIDE, mode: 2, interval: 5.0 sec, log file: /tmpfs/2, suppress output: False
+2021-11-22 21:23:07,259: PSI source dir: /proc/pressure/, source files: cpu, io, memory
+2021-11-22 21:23:07,265: Process memory locked with MCL_CURRENT | MCL_FUTURE | MCL_ONFAULT
+2021-11-22 21:23:07,265: ======|=============|=============|
+2021-11-22 21:23:07,265:  cpu  |      io     |    memory   |
+2021-11-22 21:23:07,265: ----- | ----------- | ----------- |
+2021-11-22 21:23:07,265:  some |  some  full |  some  full | interval
+2021-11-22 21:23:07,265: ----- | ----- ----- | ----- ----- | --------
+2021-11-22 21:23:12,269:   1.4 |   1.3   1.3 |   0.0   0.0 | 5.003
+2021-11-22 21:23:17,273:   0.4 |   0.6   0.6 |   0.0   0.0 | 5.004
+2021-11-22 21:23:22,277:   0.4 |  17.8  17.6 |  67.5  66.8 | 5.004
+2021-11-22 21:23:27,281:   0.5 |  28.5  27.4 |  98.2  97.6 | 5.004
+2021-11-22 21:23:32,286:   0.5 |  12.1  11.4 |  99.6  99.2 | 5.005
+2021-11-22 21:23:37,289:   0.5 |   3.7   3.7 |  99.1  98.9 | 5.003
+2021-11-22 21:23:42,295:   0.3 |  21.7  21.4 |  99.8  99.7 | 5.006
+2021-11-22 21:23:47,301:   0.8 |  21.8  21.3 |  99.8  99.5 | 5.006
+2021-11-22 21:23:52,306:   0.7 |   9.2   8.9 |  99.7  99.4 | 5.006
+2021-11-22 21:23:57,312:   0.6 |   5.5   5.4 |  99.1  98.8 | 5.006
+2021-11-22 21:24:02,318:   0.2 |   0.8   0.8 |  99.2  99.1 | 5.006
+2021-11-22 21:24:07,321:   0.7 |   5.9   5.7 | 100.0  99.7 | 5.003
+2021-11-22 21:24:12,327:   0.7 |   7.2   6.6 |  99.6  99.2 | 5.006
+2021-11-22 21:24:17,332:   1.0 |  21.5  20.4 |  99.5  99.2 | 5.006
+2021-11-22 21:24:22,338:   1.4 |  10.9  10.2 |  99.5  99.0 | 5.006
+2021-11-22 21:24:27,344:   1.0 |  13.2  12.9 |  99.8  99.5 | 5.006
+2021-11-22 21:24:32,349:   0.6 |  32.5  32.2 |  99.8  99.6 | 5.006
+2021-11-22 21:24:37,355:   1.1 |  18.1  17.4 | 100.0  99.7 | 5.006
+2021-11-22 21:24:42,361:   1.2 |  16.0  15.2 |  99.6  99.3 | 5.006
+2021-11-22 21:24:47,365:   0.8 |   8.0   7.2 |  99.4  99.2 | 5.004
+2021-11-22 21:24:52,371:   0.6 |  16.4  16.2 | 100.0  99.8 | 5.006
+2021-11-22 21:24:57,376:   0.8 |  12.5  12.3 |  99.6  99.4 | 5.006
+2021-11-22 21:25:02,382:   0.4 |   4.3   4.3 |  99.0  98.8 | 5.006
+2021-11-22 21:25:07,388:   0.3 |  11.8  11.5 | 100.0  99.9 | 5.006
+2021-11-22 21:25:12,393:   0.5 |   0.9   0.9 |  99.8  99.6 | 5.005
+2021-11-22 21:25:17,399:   0.5 |  18.3  18.0 |  99.8  99.7 | 5.006
+2021-11-22 21:25:22,404:   0.3 |  25.1  23.2 | 100.0  99.9 | 5.006
+2021-11-22 21:25:27,410:   0.4 |   1.6   1.3 | 100.0  99.9 | 5.006
+2021-11-22 21:25:32,416:   0.6 |   1.2   1.2 |  99.8  99.6 | 5.006
+2021-11-22 21:25:37,422:   0.4 |   1.0   1.0 | 100.0  99.9 | 5.006
+2021-11-22 21:25:42,427:   0.8 |   1.4   1.4 | 100.0  99.8 | 5.006
+2021-11-22 21:25:47,433:   0.3 |   0.0   0.0 | 100.0  99.9 | 5.006
+2021-11-22 21:25:52,439:   0.5 |   0.9   0.9 |  99.6  99.4 | 5.006
+2021-11-22 21:25:57,444:   0.4 |   0.0   0.0 |  99.8  99.6 | 5.006
+2021-11-22 21:26:02,450:   0.4 |   1.0   1.0 | 100.0  99.8 | 5.006
+2021-11-22 21:26:07,456:   0.7 |   1.0   1.0 | 100.0  99.8 | 5.006
+2021-11-22 21:26:12,461:   0.6 |   0.8   0.8 | 100.0  99.9 | 5.006
+2021-11-22 21:26:17,467:   0.4 |   0.1   0.0 |  98.9  98.8 | 5.006
+2021-11-22 21:26:22,473:   0.4 |   0.1   0.1 | 100.0  99.9 | 5.006
+2021-11-22 21:26:27,478:   0.4 |   0.0   0.0 | 100.0  99.9 | 5.006
+2021-11-22 21:26:32,484:   0.4 |   0.1   0.1 | 100.0  99.9 | 5.006
+2021-11-22 21:26:37,490:   0.3 |   0.0   0.0 | 100.0  99.9 | 5.006
+2021-11-22 21:26:42,496:   0.3 |   0.0   0.0 | 100.0  99.9 | 5.006
+2021-11-22 21:26:47,501:   0.3 |   0.0   0.0 | 100.0  99.8 | 5.006
+2021-11-22 21:26:52,507:   0.3 |   0.0   0.0 | 100.0  99.9 | 5.006
+2021-11-22 21:26:57,513:   0.3 |   0.0   0.0 | 100.0  99.8 | 5.006
+2021-11-22 21:27:02,518:   0.3 |   0.0   0.0 | 100.0  99.8 | 5.006
+2021-11-22 21:27:07,524:   0.3 |   0.0   0.0 | 100.0  99.9 | 5.006
+2021-11-22 21:27:12,530:   0.4 |   0.0   0.0 | 100.0  99.9 | 5.006
+2021-11-22 21:27:17,535:   0.4 |   0.0   0.0 | 100.0  99.9 | 5.006
+2021-11-22 21:27:22,541:   0.4 |   0.0   0.0 | 100.0  99.9 | 5.006
+2021-11-22 21:27:27,547:   0.4 |   0.0   0.0 | 100.0  99.9 | 5.006
+2021-11-22 21:29:21,883: WARNING: abnormal interval (114.336 sec), metrics may be provided incorrect
+2021-11-22 21:29:21,883:   0.4 |   5.0   4.9 |  96.5  96.3 | 114.336
+2021-11-22 21:29:26,885:   1.1 |  88.6  82.5 |   2.1   1.7 | 5.002
+2021-11-22 21:29:31,891:   1.3 |  78.8  73.0 |   0.0   0.0 | 5.006
+2021-11-22 21:29:36,897:   1.4 |  77.3  71.4 |   0.1   0.1 | 5.006
+2021-11-22 21:29:41,901:   1.6 |  39.3  36.1 |   0.0   0.0 | 5.004
+2021-11-22 21:29:46,905:   1.4 |   1.6   1.5 |   0.0   0.0 | 5.004
+
+23:22 - 29:16: almost 6 min stall with extremely high memory pressure and
+with no progress (no progress for the userspace, of course).
+
+
+Resume
+======
+
+- It's easy to reproduce freezes in near-OOM conditions with 5.16-rc1/rc2,
+  and it's a new regression.
+- The easiest and most effective way to return the expected behavior is to
+  disable the reclaim_throttle() function completely. 
+- Setting timeout to 0 in reclaim_throttle() leads to reducing stall
+  intervals.
+- Setting MAX_RECLAIM_RETRIES to 0 reduces stall intervals even more
+  effective then setting timeouts to 0.
+
+
+Questions
+=========
+
+- Should a new knob like vm.reclaim_throttle_factor be added (perhaps a
+  single timeout value will not suit everyone)?
+- Is it time to new "mm, oom: rework oom detection"?
+
+
+Special thanks to Oleksandr Natalenko for suspecting [4] the regression and
+confirming [5] it. 
+
+
+[1] https://lore.kernel.org/lkml/d9802b6a-949b-b327-c4a6-3dbca485ec20@gmx.com/
+[2] https://github.com/hakavlad/nohang
+[3] https://github.com/hakavlad/mem2log
+[4] https://www.linux.org.ru/forum/general/16321096?cid=16648804
+[5] https://www.linux.org.ru/forum/general/16321096?cid=16650121
