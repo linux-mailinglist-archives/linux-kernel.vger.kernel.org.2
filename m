@@ -2,98 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F9E45A14B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C6745A152
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:22:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236052AbhKWLYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 06:24:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47238 "EHLO
+        id S236070AbhKWLZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 06:25:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236040AbhKWLY0 (ORCPT
+        with ESMTP id S236039AbhKWLZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 06:24:26 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6586EC06175A
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 03:21:18 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id cq22-20020a17090af99600b001a9550a17a5so1839170pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 03:21:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=mq8nc34v9wy9BHUcdNCchv5TcJtzwaMW4yDN1UOKTXs=;
-        b=JpDT/+FDBCbI5IBaWeaKfzyOwUUOyTt+Vw1ovqm0zuzKZZrjqWO3dJqGL1pzmsZRcz
-         WEzphSwzny6i8imySPh8owk0bZ7mV09ROF7m2cIZELwxwLD3zWFbiIveEf0Sy/YacdFK
-         n/sQubJ/NkmPIgp5pbeN1xtI08xQWQungcwqY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mq8nc34v9wy9BHUcdNCchv5TcJtzwaMW4yDN1UOKTXs=;
-        b=ysbtpZYcFb2q65adDslpV2//QR/INFg3hmI5cxO9bI6AwnEfeKTXRt5IDE9j2/tS+C
-         kYSgQeAO470kVmBEB87s2MtF86MetTFyh1v4jbausSl9A4TT9pUPD4a/KHTCMDx6gEZZ
-         K/LTicjmU3+AnC3BPmij+hwrIstmLewN4mew0uXXd7I2ANuemrq/+16AkbgG+5/MOI8J
-         aRsc0471owuJ0SNXftLyNn7IwJ6CZJCtX2jkS+VdRY23GCk2LtvfZTApwmiCqdOvAFJ8
-         QQGk1F9dVYC4an9IP7lpz0FwfmNNX0+psZXXvxZXxO997YS7s/THG4NSyapkpt/pArf5
-         Tb4A==
-X-Gm-Message-State: AOAM532mX95WbjgohFgwce3ukUbvqKR2+BGBEaF76Pz44Xs6R3TM1/tR
-        R+QZkG49u3a8To9tX6i3hkOHsg==
-X-Google-Smtp-Source: ABdhPJxp5J8vQC13ZWDo2EQlaskUNOPku9PaqV5etdp5QIpELJ9fUxb88Pk4hXN6hRe8tLOckb6fGg==
-X-Received: by 2002:a17:902:7d96:b0:142:87dc:7dd3 with SMTP id a22-20020a1709027d9600b0014287dc7dd3mr5260273plm.11.1637666477920;
-        Tue, 23 Nov 2021 03:21:17 -0800 (PST)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:d1ae:c331:ed2a:15e9])
-        by smtp.gmail.com with ESMTPSA id 63sm11093914pfz.119.2021.11.23.03.21.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 03:21:17 -0800 (PST)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        - <devicetree-spec@vger.kernel.org>, devicetree@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, senozhatsky@chromium.org,
-        tfiga@chromium.org
-Subject: [PATCH 3/3] arm64: dts: mt8183: use restricted swiotlb for scp mem
-Date:   Tue, 23 Nov 2021 19:21:04 +0800
-Message-Id: <20211123112104.3530135-4-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-In-Reply-To: <20211123112104.3530135-1-hsinyi@chromium.org>
-References: <20211123112104.3530135-1-hsinyi@chromium.org>
+        Tue, 23 Nov 2021 06:25:28 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 834DEC061574;
+        Tue, 23 Nov 2021 03:22:20 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: andrzej.p)
+        with ESMTPSA id 6067A1F4197A
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1637666539; bh=PBtrVueCq3tmvWtlDU2yVa4NxTm9tEbs7ezcIMVF6mU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ant/0iSEfOetB3rzdly/nH/Bl9Qamh7a33r5df/m71IQS825rZ+bGTsuaGPgBuSdt
+         b6nOBza61O2QqJSuhXL2hLlKMPfkXB9jNBAt0CDZKBcLKrVPWRbVS5ENPI9JOlB/ZL
+         j7VYxNJ1OoVSEm+S072GDpINrEVMCaLaoQ/TdKUA/lrQEEQu9XawdIe1dZi46bNRYK
+         0AwFMKvb3tAAW32AOveePty95p8xrSh+9VPktX20R+lKCo6/1MV9odRUPBrQkjrfgR
+         qisGchn8vytOlbsuymVe6SeJK4IReC1lZvsBqeWY+vgIC/Akx7UB0F2iOjLOCPc1JJ
+         hJUYGCQE3MHRw==
+Subject: Re: [PATCH 2/7] media: hantro: vp9: use double buffering if needed
+To:     Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-media@vger.kernel.org
+Cc:     ezequiel@vanguardiasur.com.ar, nicolas.dufresne@collabora.com,
+        mchehab@kernel.org, robh+dt@kernel.org, mripard@kernel.org,
+        wens@csie.org, p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+References: <20211122184702.768341-1-jernej.skrabec@gmail.com>
+ <20211122184702.768341-3-jernej.skrabec@gmail.com>
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Message-ID: <55bb35b0-b98b-9961-aa95-554f8af141f5@collabora.com>
+Date:   Tue, 23 Nov 2021 12:22:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <20211122184702.768341-3-jernej.skrabec@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use restricted-dma-pool for mtk_scp's reserved memory. And set the
-io-tlb-segsize to 4096 since the driver needs at least 2560 slabs to
-allocate memory.
+W dniu 22.11.2021 o 19:46, Jernej Skrabec pisze:
+> Some G2 variants need double buffering to be enabled in order to work
+> correctly, like that found in Allwinner H6 SoC.
+> 
+> Add platform quirk for that.
+> 
+> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
- arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Reviewed-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-index 94c13c45919445..de94b2fd7f33e7 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-@@ -109,9 +109,9 @@ reserved_memory: reserved-memory {
- 		ranges;
- 
- 		scp_mem_reserved: scp_mem_region {
--			compatible = "shared-dma-pool";
-+			compatible = "restricted-dma-pool";
- 			reg = <0 0x50000000 0 0x2900000>;
--			no-map;
-+			io-tlb-segsize = <4096>;
- 		};
- 	};
- 
--- 
-2.34.0.rc2.393.gf8c9666880-goog
+> ---
+>   drivers/staging/media/hantro/hantro.h            | 2 ++
+>   drivers/staging/media/hantro/hantro_g2_regs.h    | 1 +
+>   drivers/staging/media/hantro/hantro_g2_vp9_dec.c | 2 ++
+>   3 files changed, 5 insertions(+)
+> 
+> diff --git a/drivers/staging/media/hantro/hantro.h b/drivers/staging/media/hantro/hantro.h
+> index 33eb3e092cc1..d03824fa3222 100644
+> --- a/drivers/staging/media/hantro/hantro.h
+> +++ b/drivers/staging/media/hantro/hantro.h
+> @@ -73,6 +73,7 @@ struct hantro_irq {
+>    * @num_clocks:			number of clocks in the array
+>    * @reg_names:			array of register range names
+>    * @num_regs:			number of register range names in the array
+> + * @double_buffer:		core needs double buffering
+>    */
+>   struct hantro_variant {
+>   	unsigned int enc_offset;
+> @@ -94,6 +95,7 @@ struct hantro_variant {
+>   	int num_clocks;
+>   	const char * const *reg_names;
+>   	int num_regs;
+> +	unsigned int double_buffer : 1;
+>   };
+>   
+>   /**
+> diff --git a/drivers/staging/media/hantro/hantro_g2_regs.h b/drivers/staging/media/hantro/hantro_g2_regs.h
+> index 9c857dd1ad9b..15a391a4650e 100644
+> --- a/drivers/staging/media/hantro/hantro_g2_regs.h
+> +++ b/drivers/staging/media/hantro/hantro_g2_regs.h
+> @@ -270,6 +270,7 @@
+>   #define g2_apf_threshold	G2_DEC_REG(55, 0, 0xffff)
+>   
+>   #define g2_clk_gate_e		G2_DEC_REG(58, 16, 0x1)
+> +#define g2_double_buffer_e	G2_DEC_REG(58, 15, 0x1)
+>   #define g2_buswidth		G2_DEC_REG(58, 8,  0x7)
+>   #define g2_max_burst		G2_DEC_REG(58, 0,  0xff)
+>   
+> diff --git a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c b/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
+> index e04242d10fa2..d4fc649a4da1 100644
+> --- a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
+> +++ b/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
+> @@ -847,6 +847,8 @@ config_registers(struct hantro_ctx *ctx, const struct v4l2_ctrl_vp9_frame *dec_p
+>   	hantro_reg_write(ctx->dev, &g2_clk_gate_e, 1);
+>   	hantro_reg_write(ctx->dev, &g2_max_cb_size, 6);
+>   	hantro_reg_write(ctx->dev, &g2_min_cb_size, 3);
+> +	if (ctx->dev->variant->double_buffer)
+> +		hantro_reg_write(ctx->dev, &g2_double_buffer_e, 1);
+>   
+>   	config_output(ctx, dst, dec_params);
+>   
+> 
 
