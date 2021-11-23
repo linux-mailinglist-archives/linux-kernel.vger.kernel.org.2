@@ -2,107 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE9D45A40A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:43:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C317745A40F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:44:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236327AbhKWNqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 08:46:37 -0500
-Received: from mga11.intel.com ([192.55.52.93]:21270 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230197AbhKWNqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 08:46:35 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="232513571"
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="232513571"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 05:43:27 -0800
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="674470888"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 05:43:24 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mpW4u-009nAU-5G;
-        Tue, 23 Nov 2021 15:43:20 +0200
-Date:   Tue, 23 Nov 2021 15:43:19 +0200
-From:   'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "'Vaittinen, Matti'" <Matti.Vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/4] bitops: Add single_bit_set()
-Message-ID: <YZzv93tdAJ5V6MT2@smile.fi.intel.com>
-References: <cover.1637330431.git.matti.vaittinen@fi.rohmeurope.com>
- <73d5e4286282a47b614d1cc5631eb9ff2a7e2b44.1637330431.git.matti.vaittinen@fi.rohmeurope.com>
- <YZt+x2moR632x///@smile.fi.intel.com>
- <2c22b52f-9a1f-06f5-f008-d568096f5c4d@fi.rohmeurope.com>
- <YZuTt3+PPvyJsFQ/@smile.fi.intel.com>
- <e2675600-7b04-19b0-79ce-28a4e1d1f225@fi.rohmeurope.com>
- <874db8b91ff04001a8958f100a614ed8@AcuMS.aculab.com>
- <YZzGwubCr8RZtbFM@smile.fi.intel.com>
- <89f18bd93ce545feb7a02889ae49f079@AcuMS.aculab.com>
+        id S236744AbhKWNrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 08:47:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229808AbhKWNrs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 08:47:48 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04DB3C061574;
+        Tue, 23 Nov 2021 05:44:39 -0800 (PST)
+Received: from mwalle01.kontron.local. (unknown [IPv6:2a02:810c:c240:2017:fa59:71ff:fe9b:b851])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id C9A9E22175;
+        Tue, 23 Nov 2021 14:44:35 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1637675076;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=HtRvcht0aDcjR88YtM14Y1YaKjCCiIhS1+AggGgbTbc=;
+        b=l1whAx+l3jXwRBv+m0TjESqVF4qHK2K7vJId1I0fEbd5cv2fhq4uVeupbmh0uBObTT1LRI
+        iUHRknVgrEcTx4vYKjFU090vNPqwayJi4KMpzVbpZEj8EBYBPS00Y68iIb2O6oRhwJodHa
+        5H4jy/4o0q3MyeMjkG4zykCfFPEDAug=
+From:   Michael Walle <michael@walle.cc>
+To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Ansuel Smith <ansuelsmth@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, Michael Walle <michael@walle.cc>
+Subject: [RFC PATCH] dt-bindings: nvmem: add transformation support
+Date:   Tue, 23 Nov 2021 14:44:25 +0100
+Message-Id: <20211123134425.3875656-1-michael@walle.cc>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <89f18bd93ce545feb7a02889ae49f079@AcuMS.aculab.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 10:58:44AM +0000, David Laight wrote:
-> From: Andy Shevchenko
-> > On Tue, Nov 23, 2021 at 10:42:45AM +0000, David Laight wrote:
-> > > From: Vaittinen, Matti
-> > > > Sent: 22 November 2021 13:19
-> > > > On 11/22/21 14:57, Andy Shevchenko wrote:
-> > > > > On Mon, Nov 22, 2021 at 12:42:21PM +0000, Vaittinen, Matti wrote:
-> > > > >> On 11/22/21 13:28, Andy Shevchenko wrote:
-> > > > >>> On Mon, Nov 22, 2021 at 01:03:25PM +0200, Matti Vaittinen wrote:
-> > > > >
-> > > > > What do you mean by this?
-> > > > >
-> > > > > hweight() will return you the number of the non-zero elements in the set.
-> > > >
-> > > > Exactly. The function I added did only check if given set of bits had
-> > > > only one bit set.
-> > >
-> > > Checking for exactly one bit can use the (x & (x - 1)) check on
-> > > non-zero values - which may even be better on some cpus with a
-> > > popcnt instruction.
-> > 
-> > In the discussed case the value pretty much can be 0, meaning you have
-> > to add an additional test which I believe diminishes all efforts for
-> > the is_power_of_2() call.
-> 
-> I wouldn't have thought so.
-> Code would be:
-> 	if (!scan_for_non_zero())
-> 		return 0;
-> 	if (!is_power_of_2())
-> 		return 0;
-> 	return scan_for_non_zero() ? 0 : 1;
-> 
-> Hand-crafting asm you'd actually check for (x - 1) generating
-> carry in the initial scan.
+This is my second attempt to solve the use case where there is only the
+base MAC address stored in an EEPROM or similar storage provider. This
+is the case for the Kontron sl28 board and multiple openwrt supported
+boards.
 
-Have you done any benchmarks? Can we see them?
+The first proposal [1] didn't find much appreciation and there wasn't
+any reply to my question or new proposal [2]. So here we are with my new
+proposal, that is more flexible and doesn't fix the ethernet mac only.
+This is just an RFC for the device tree representation for now to see if
+this is the correct way to tackle this.
 
-> The latency of popcnt it worse than arithmetic on a lot of x86 cpu.
+I'm also aware of the latest post process hook support [3]. This doesn't
+fix the base mac address issue, but I think it also doesn't solve the
+case with swapped ethernet addresses in the general case. That hook will
+involve the driver to do the swapping, but how would the driver know
+if that swapping is actually required. Usually the interpretation of the
+content is opaque to the driver, after all it is the user/board
+manufacturer who does program the storage device. We might be lucky in
+the imx-ocotp case because the IMX reference manual actually states
+where and in which format the mac address is programmed.
 
-Ditto.
+Introduce a transformation property. This is intended to be just an
+enumeration of operations. If there will be a new operation, support for
+it has to be added to the nvmem core.
 
+A transformation might have multiple output values, like in the base mac
+address case. It reads the mac address from the nvmem storage and
+generates multiple individual addresses, i.e. on our board we reserve 8
+consecutive addresses. These addresses then can be assigned to different
+network interfaces. To make it possible to reference different values we
+need to introduce an argument to the phandle. This additional argument
+is then an index into a list of values.
 
+Example:
+  mac_addresses: base-mac-address@10 {
+    #nvmem-cell-cells = <1>;
+    reg = <10 6>;
+    transformation = <NVMEM_T_ETH_OFFSET 0 1 7>;
+  }
+
+  &eth0 {
+    nvmem-cells = <&mac_addresses 0>;
+    nvmem-cell-names = "mac-address";
+  };
+
+  &eth1 {
+    nvmem-cells = <&mac_addresses 2>;
+    nvmem-cell-names = "mac-address";
+  };
+
+The NVMEM_T_ETH_OFFSET transformation takes N additional (dt) cells and
+will generate N values. In this example BASE_MAC+0, BASE_MAC+1, BASE_MAC+7.
+An nvmem consumer can then reference the nvmem cell with an index. So eth0
+will get BASE_MAC+0 and eth1 will get BASE_MAC+7.
+
+This should be sufficient flexible for many different transformations
+without having to touch the bindings except for adding documentation and
+checks for new transformations.
+
+I do have one question regarding "#nvmem-cell-cells" (aside from the
+awkward naming): is it allowed to have that property optional if there
+is no additional argument to the phandle?
+
+[1] https://lore.kernel.org/all/20210414152657.12097-2-michael@walle.cc/
+[2] https://lore.kernel.org/linux-devicetree/362f1c6a8b0ec191b285ac6a604500da@walle.cc/
+[3] https://lore.kernel.org/lkml/20211013131957.30271-1-srinivas.kandagatla@linaro.org/
+
+Signed-off-by: Michael Walle <michael@walle.cc>
+---
+ .../devicetree/bindings/nvmem/nvmem.yaml      | 29 +++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/nvmem/nvmem.yaml b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
+index 456fb808100a..8893d045be77 100644
+--- a/Documentation/devicetree/bindings/nvmem/nvmem.yaml
++++ b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
+@@ -26,11 +26,34 @@ properties:
+   "#size-cells":
+     const: 1
+ 
++  '#nvmem-cell-cells':
++    enum: [0, 1]
++    description:
++      Must be 1 if the transformations has multiple output values.
++      The argument is then the index into the list of output values.
++      For example, if the nvmem cell only specify a base ethernet
++      address the transformation can then create different individual
++      ethernet addresses.
++
+   read-only:
+     $ref: /schemas/types.yaml#/definitions/flag
+     description:
+       Mark the provider as read only.
+ 
++  transformation:
++    description:
++      Transform the content of a NVMEM cell. Sometimes it is necessary
++      to preprocess the content of a cell so it is usable by the NVMEM
++      consumer. There are also cases where one NVMEM cell value can
++      generate a list of values.
++
++      Use one of the NVMEM_T_* prefixed definitions from the header
++      include/dt-bindings/nvmem/nvmem.h.
++
++      Some transformations might have additional arguments.
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++
+   wp-gpios:
+     description:
+       GPIO to which the write-protect pin of the chip is connected.
+@@ -98,6 +121,12 @@ examples:
+               reg = <0xc 0x1>;
+               bits = <2 3>;
+           };
++
++          ethernet_base_mac: base-mac-address@100 {
++              #nvmem-cell-cells = <1>;
++              reg = <0x100 0x6>;
++              transformation = <NVMEM_T_ETH_OFFSET 0 1 2 7>;
++          };
+       };
+ 
+ ...
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.30.2
 
