@@ -2,160 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F1545A0FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:09:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C4E45A0FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:09:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234829AbhKWLMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 06:12:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbhKWLMU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 06:12:20 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47CCEC061574;
-        Tue, 23 Nov 2021 03:09:12 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id 289601F454F9
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637665746; bh=NuYVgYcm/5QmTwPPl+jnnTdg3Amocx5TpmqHRzUvEcg=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=LSqSWvdz2ir1uJRRRP+MYhzzqSCvQZXUIBGUzi1rgAsuwV6O1MxSQ8YhOI51oH/dp
-         H6HzqaI4iRClnWmQhWz6yBILvWHnjD1XuG0EKeHg1L/go7KulSSW9x82lw6wv0PR5S
-         eDjKRYx8ohBfs2Q55Mr18weoiX70ePI50Ll/OGLSWQlV7LMzcwCsBEFiHpHDv4n8dr
-         gvfHlQ8ysV5xX0Nnxf7fp4FdFkmA3ftpCeqf2f+xhJGxdyGdDacAsL65jeVuuSqbE5
-         T2CzggMgSeNlZh9480EWQJbSyKQutbEpimE2LUk+2F0bnWe4bU7aldi3NXvPjDQ96D
-         pLUQPB/xWapxg==
-Subject: Re: [PATCH 1/7] media: hantro: add support for reset lines
-To:     Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-media@vger.kernel.org
-Cc:     ezequiel@vanguardiasur.com.ar, nicolas.dufresne@collabora.com,
-        mchehab@kernel.org, robh+dt@kernel.org, mripard@kernel.org,
-        wens@csie.org, p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-References: <20211122184702.768341-1-jernej.skrabec@gmail.com>
- <20211122184702.768341-2-jernej.skrabec@gmail.com>
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Message-ID: <08e80e9e-f646-72e4-e4d4-f8e6310228f1@collabora.com>
-Date:   Tue, 23 Nov 2021 12:09:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <20211122184702.768341-2-jernej.skrabec@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S234968AbhKWLMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 06:12:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53946 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235114AbhKWLM3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 06:12:29 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8987261059;
+        Tue, 23 Nov 2021 11:09:21 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mpTfr-007GDl-D2; Tue, 23 Nov 2021 11:09:19 +0000
+Date:   Tue, 23 Nov 2021 11:09:18 +0000
+Message-ID: <87lf1fcen5.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Cc:     linux-arm-kernel@lists.infradead.org, rostedt@goodmis.org,
+        james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
+        mingo@redhat.com, mtosatti@redhat.com, nilal@redhat.com
+Subject: Re: [RFC PATCH 2/2] KVM: arm64: export cntvoff in debugfs
+In-Reply-To: <0e948a211bd8d63ba05594fb8c03bf3a77a227a0.camel@redhat.com>
+References: <20211119102117.22304-1-nsaenzju@redhat.com>
+        <20211119102117.22304-3-nsaenzju@redhat.com>
+        <87fsrs732b.wl-maz@kernel.org>
+        <0e948a211bd8d63ba05594fb8c03bf3a77a227a0.camel@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: nsaenzju@redhat.com, linux-arm-kernel@lists.infradead.org, rostedt@goodmis.org, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu, mingo@redhat.com, mtosatti@redhat.com, nilal@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jernej,
-
-Thanks for the patch.
-
-W dniu 22.11.2021 o 19:46, Jernej Skrabec pisze:
-> Some SoCs like Allwinner H6 use reset lines for resetting Hantro G2. Add
-> support for them.
+On Mon, 22 Nov 2021 20:40:52 +0000,
+Nicolas Saenz Julienne <nsaenzju@redhat.com> wrote:
 > 
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-> ---
->   drivers/staging/media/hantro/hantro.h     |  3 +++
->   drivers/staging/media/hantro/hantro_drv.c | 15 ++++++++++++++-
->   2 files changed, 17 insertions(+), 1 deletion(-)
+> Hi Marc, thanks for the review.
 > 
-> diff --git a/drivers/staging/media/hantro/hantro.h b/drivers/staging/media/hantro/hantro.h
-> index 7da23f7f207a..33eb3e092cc1 100644
-> --- a/drivers/staging/media/hantro/hantro.h
-> +++ b/drivers/staging/media/hantro/hantro.h
-> @@ -16,6 +16,7 @@
->   #include <linux/videodev2.h>
->   #include <linux/wait.h>
->   #include <linux/clk.h>
-> +#include <linux/reset.h>
->   
->   #include <media/v4l2-ctrls.h>
->   #include <media/v4l2-device.h>
-> @@ -171,6 +172,7 @@ hantro_vdev_to_func(struct video_device *vdev)
->    * @dev:		Pointer to device for convenient logging using
->    *			dev_ macros.
->    * @clocks:		Array of clock handles.
-> + * @resets:		Array of reset handles.
->    * @reg_bases:		Mapped addresses of VPU registers.
->    * @enc_base:		Mapped address of VPU encoder register for convenience.
->    * @dec_base:		Mapped address of VPU decoder register for convenience.
-> @@ -190,6 +192,7 @@ struct hantro_dev {
->   	struct platform_device *pdev;
->   	struct device *dev;
->   	struct clk_bulk_data *clocks;
-> +	struct reset_control *resets;
->   	void __iomem **reg_bases;
->   	void __iomem *enc_base;
->   	void __iomem *dec_base;
-> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-> index ab2467998d29..8c3de31f51b3 100644
-> --- a/drivers/staging/media/hantro/hantro_drv.c
-> +++ b/drivers/staging/media/hantro/hantro_drv.c
-> @@ -905,6 +905,10 @@ static int hantro_probe(struct platform_device *pdev)
->   			return PTR_ERR(vpu->clocks[0].clk);
->   	}
->   
-> +	vpu->resets = devm_reset_control_array_get(&pdev->dev, false, true);
-> +	if (IS_ERR(vpu->resets))
-> +		return PTR_ERR(vpu->resets);
-> +
->   	num_bases = vpu->variant->num_regs ?: 1;
->   	vpu->reg_bases = devm_kcalloc(&pdev->dev, num_bases,
->   				      sizeof(*vpu->reg_bases), GFP_KERNEL);
-> @@ -978,10 +982,16 @@ static int hantro_probe(struct platform_device *pdev)
->   	pm_runtime_use_autosuspend(vpu->dev);
->   	pm_runtime_enable(vpu->dev);
->   
-> +	ret = reset_control_deassert(vpu->resets);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "Failed to deassert resets\n");
-> +		return ret;
-> +	}
-> +
->   	ret = clk_bulk_prepare(vpu->variant->num_clocks, vpu->clocks);
->   	if (ret) {
->   		dev_err(&pdev->dev, "Failed to prepare clocks\n");
-> -		return ret;
-> +		goto err_rst_assert;
-
-Before your patch is applied if clk_bulk_prepare() fails, we
-simply return on the spot. After the patch is applied not only
-do you...
-
->   	}
->   
->   	ret = v4l2_device_register(&pdev->dev, &vpu->v4l2_dev);
-> @@ -1037,6 +1047,8 @@ static int hantro_probe(struct platform_device *pdev)
->   	v4l2_device_unregister(&vpu->v4l2_dev);
->   err_clk_unprepare:
->   	clk_bulk_unprepare(vpu->variant->num_clocks, vpu->clocks);
-> +err_rst_assert:
-> +	reset_control_assert(vpu->resets);
-
-...revert the effect of reset_control_deassert(), you also...
-
->   	pm_runtime_dont_use_autosuspend(vpu->dev);
->   	pm_runtime_disable(vpu->dev);
-
-... do pm_*() stuff. Is there any reason why this is needed?
-
-Andrzej
-
->   	return ret;
-> @@ -1055,6 +1067,7 @@ static int hantro_remove(struct platform_device *pdev)
->   	v4l2_m2m_release(vpu->m2m_dev);
->   	v4l2_device_unregister(&vpu->v4l2_dev);
->   	clk_bulk_unprepare(vpu->variant->num_clocks, vpu->clocks);
-> +	reset_control_assert(vpu->resets);
->   	pm_runtime_dont_use_autosuspend(vpu->dev);
->   	pm_runtime_disable(vpu->dev);
->   	return 0;
+> On Fri, 2021-11-19 at 12:17 +0000, Marc Zyngier wrote:
+> > On Fri, 19 Nov 2021 10:21:18 +0000,
+> > Nicolas Saenz Julienne <nsaenzju@redhat.com> wrote:
+> > > 
+> > > While using cntvct as the raw clock for tracing, it's possible to
+> > > synchronize host/guest traces just by knowing the virtual offset applied
+> > > to the guest's virtual counter.
+> > > 
+> > > This is also the case on x86 when TSC is available. The offset is
+> > > exposed in debugfs as 'tsc-offset' on a per vcpu basis. So let's
+> > > implement the same for arm64.
+> > 
+> > How does this work with NV, where the guest hypervisor is in control
+> > of the virtual offset? 
 > 
+> TBH I handn't thought about NV. Looking at it from that angle, I now see my
+> approach doesn't work on hosts that use CNTVCT (regardless of NV). Upon
+> entering into a guest, we change CNTVOFF before the host is done with tracing,
+> so traces like 'kvm_entry' will have weird timestamps. I was just lucky that
+> the hosts I was testing with use CNTPCT.
 
+There are multiple things at play here:
+
+- if the system is a host, the kernel will use CNTPCT. Userspace will
+  still use CNTVCT, and the offset is guaranteed to be 0 *when running
+  userspace*.
+
+- if the system isn't a host (which doesn't necessarily means a
+  guest), CNTVCT is the only thing that is being used, and the offset
+  is unknown (Linux requires it to be constant across vcpus though).
+
+So I doubt you'd get a bad timestamp on the host. It is just that you
+have named your trace clock incorrectly (and Steven's idea of an
+indirected clock could help here).
+
+> I believe the solution would be to be able to force a 0 offset between
+> guest/host. With that in mind, is there a reason why kvm_timer_vcpu_init()
+> imposes a non-zero one by default? I checked out the commits that introduced
+> that code, but couldn't find a compelling reason. VMMs can always change it
+> through KVM_REG_ARM_TIMER_CNT afterwards.
+
+We want to minimise the chance for an observable rollover of the
+virtual counter, so time starts at 0 *in the guest*. The VMM can
+change the view of that time for the purpose of migration.
+
+If you want a 0 offset, set the counter to the physical value in the
+VMM (imprecise) or have a look at Oliver Upton's patches that were
+allowing an offset to be specified directly. But migration, by
+definition, breaks this.
+
+> 
+> > I also wonder why we need this when userspace already has direct access to
+> > that information without any extra kernel support (read the CNTVCT view of
+> > the vcpu using the ONEREG API, subtract it from the host view of the counter,
+> > job done).
+> 
+> Well IIUC, you're at the mercy of how long it takes to return from the ONEREG
+> ioctl. The results will be skewed. For some workloads, where low latency is
+> key, we really need high precision traces in the order of single digit us or
+> even 100s of ns. I'm not sure you'll be able to get there with that approach.
+
+The PTP clock does exactly that from the guest PoV, with a lot more
+overhead, and this results in single digit ns precision. Why isn't
+that possible from userspace?
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
