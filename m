@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F22CF45AAB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4982745AAB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 19:00:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239576AbhKWSCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 13:02:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbhKWSCd (ORCPT
+        id S239603AbhKWSDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 13:03:10 -0500
+Received: from smtprelay0111.hostedemail.com ([216.40.44.111]:36764 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233945AbhKWSDJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 13:02:33 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E352BC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:59:24 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id v15so12916521ljc.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:59:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kZIuag7FlfW637npwI/iZ5O3Is51C1h2XYEt7gwhu2A=;
-        b=Sj1jQbkuoPxjn7gutd7F17cEeO+GxHRH8PDVDtE09n/twk8V89GygKODfC7P0FVJdh
-         xbPalhUApa7osyimYXaI2yRlmxrMiebFWJC0yqadJN1xLQ6tL/31IFJTT3006p7yO2be
-         SYfoboBHLQKecVe9Xw8Goxe1PtPHMdw2C+RsbV7ajWbvb7QW1qxtTKqfLD1k3C7V6O6H
-         gqZpsOcWyywSjtoYksuLA37bOioU5b7WY0m/ZBXg+SMB5NlBYohU02kUoBD2+jtsGDPv
-         P4GFy9NxLI6PRlNDHuMIXLXDNEOCvju2Msqff7Od5i7ncneddLYjadA+ZUFUUs9ajPPB
-         dAkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kZIuag7FlfW637npwI/iZ5O3Is51C1h2XYEt7gwhu2A=;
-        b=aU7jcBjOJNyfv4U70jwetMS/GucKKxDYiNIJfaXarcT3TOYDagAzMvSJn4WxTqsQBS
-         FSkRDkQIKd+ATeZ05SgTEMZmgrej+yVYUpi4aw+chKEUz1EDsjg/qw1qOpXDxamAiRKo
-         eJI1fHk/zVdlGcYdq+R81JNH1O32VFq3szqtYJJQwkWtW3cQksRnG9oAMrbk2sn3YJcU
-         zUiAGg2hWu+XHgA72f0hjQL+dEvtsxzam0fIhrKt6Z6pnQNhG+sL0CBeQixh++Srn4Kk
-         z2x8EHJBnsbATSqv14yiopn6nejadBh3XNXC7HRc2j7ug66t7497rfGudnxp23GjxpC0
-         8qWA==
-X-Gm-Message-State: AOAM530XPOWrq1rhZd90Tr7LReK0JmyGkLdaUb8TMzteFzWmndFZCWe9
-        kRGy/iVeBTMQLr7P5aoCT2UiM3a7vlIJvgljJMH7aA==
-X-Google-Smtp-Source: ABdhPJxFAaFB+oZdm/wfRdcVzSUxvKp9cPNqY1LD8fy90cgI+qVrlWoNl9q1CthNkuAKDNHKcULvvUTUyOwCf6jMfgs=
-X-Received: by 2002:a05:651c:545:: with SMTP id q5mr7162702ljp.202.1637690363016;
- Tue, 23 Nov 2021 09:59:23 -0800 (PST)
+        Tue, 23 Nov 2021 13:03:09 -0500
+Received: from omf13.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id EDEAD18473E35;
+        Tue, 23 Nov 2021 18:00:00 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf13.hostedemail.com (Postfix) with ESMTPA id 68803200051E;
+        Tue, 23 Nov 2021 17:59:58 +0000 (UTC)
+Message-ID: <7b6e9af20d5e18315986c8e004a13c3840afb9ad.camel@perches.com>
+Subject: Re: arch/mips/mm/tlbex.c:2243:3: warning: unannotated fall-through
+ between switch labels
+From:   Joe Perches <joe@perches.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Date:   Tue, 23 Nov 2021 09:59:58 -0800
+In-Reply-To: <20211123175610.GA8713@embeddedor>
+References: <202111230719.OZDUHU4z-lkp@intel.com>
+         <20211123005528.GA550759@embeddedor>
+         <ea07a2f1e20503965c7c2eba7c0a7a4538457265.camel@perches.com>
+         <20211123165057.GA7382@embeddedor>
+         <b73d287a696c10279cd0c931840ce95b03876d58.camel@perches.com>
+         <20211123175610.GA8713@embeddedor>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-References: <20211123174658.1728753-1-shakeelb@google.com>
-In-Reply-To: <20211123174658.1728753-1-shakeelb@google.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 23 Nov 2021 09:59:11 -0800
-Message-ID: <CALvZod7NzOjQU+h4d39rebRVsR2kco_VTAxyHhZ=fEv6OqAbXw@mail.gmail.com>
-Subject: Re: [PATCH] mm: thp: update split_queue_len correctly
-To:     David Hildenbrand <david@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.87
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 68803200051E
+X-Stat-Signature: 5abhep5mpfpktxggxmmiw73fyko5caxd
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/3DYbCkrweiDXwhQT+VPuLXXf9uS+UqMU=
+X-HE-Tag: 1637690398-387024
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 9:47 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> The deferred THPs are split on memory pressure through shrinker
-> callback and splitting of THP during reclaim can fail for several
-> reasons like unable to lock the THP, under writeback or unexpected
-> number of pins on the THP. Such pages are put back on the deferred split
-> list for consideration later. However kernel does not update the
-> deferred queue size on putting back the pages whose split was failed.
-> This patch fixes that.
+On Tue, 2021-11-23 at 11:56 -0600, Gustavo A. R. Silva wrote:
+> On Tue, Nov 23, 2021 at 09:25:17AM -0800, Joe Perches wrote:
+> > On Tue, 2021-11-23 at 10:50 -0600, Gustavo A. R. Silva wrote:
+> > > On Tue, Nov 23, 2021 at 12:52:30AM -0800, Joe Perches wrote:
+> > > > 
+> > > > Perhaps this would be better:
+> > > 
+> > > Feel free to send a proper patch.
+> > 
+> > I commented on your proposed patch.
+> 
+> And I reply giving you an option if you want to proceed.
+> 
+> > And I'd prefer you actually look at and improve the code instead
+> > of merely silencing warnings.
+> 
+> If this is a matter of preference then I should express my preferences, too.
+> So, I prefer to give you the opportunity of improving the code and not being
+> pedantic at the same time. :)
 
-I forgot to add the user visible impact.
+It appears to be difficult to give you suggestions on how to improve
+what you do.
 
-"Without this patch the split_queue_len can underflow. Shrinker will
-always get that there are some THPs to split even if there are not and
-waste some cpu to scan the empty list."
+cheers, Joe
+
