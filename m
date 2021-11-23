@@ -2,84 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C497459BC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 06:29:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E314E459BC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 06:32:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232386AbhKWFct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 00:32:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbhKWFcr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 00:32:47 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B647C061574;
-        Mon, 22 Nov 2021 21:29:40 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hyt4M0Nz0z4xbM;
-        Tue, 23 Nov 2021 16:29:38 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1637645379;
-        bh=WBoY4RYGq7mK2Slf8V4rUd3p51NgZNJpYOz9FVMyGnM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=tJ37n0KBkt2oRIlTUEecCLcqE/W5Bdw6JAV68yojfCnbvPc+ZDpXFthwSIWbfCLpR
-         hKjo/wlVnrhZMxETqhHJ1Ji23u0R1kukttI8cX+W8xYltL4fi9MKhD/PS1exdHY41A
-         uamE26oZqQwMLroXV7PbOUPiPs+mviYfwY7zef6GkIlxsZ5mya4z8IX+nIXp3IOBjH
-         hv/BSy4ttUAlg+Z5KRd6fCAQysIteIH2ErKDcsh0UKj5phukReJdBiUzXbTGItnhIP
-         exRFJOVBmMKvDu7H7Nly60cmpoafc/jqNBfYaqzcmYTVHiXeHq+zs3mS+VvHYA0wAv
-         FuwZPM5OyK5Ow==
-Date:   Tue, 23 Nov 2021 16:29:38 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Evan Quan <evan.quan@amd.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of Linus' tree
-Message-ID: <20211123162938.2bfc30a7@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/RWZppyrw6HV143RvxsKG2E3";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S232715AbhKWFfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 00:35:53 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:47466 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229690AbhKWFfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 00:35:51 -0500
+Received: from localhost.localdomain.localdomain (unknown [10.2.5.46])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxZ+jqfJxh_n4AAA--.2870S2;
+        Tue, 23 Nov 2021 13:32:31 +0800 (CST)
+From:   Yinbo Zhu <zhuyinbo@loongson.cn>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Cc:     zhuyinbo@loongson.cn
+Subject: [PATCH v1 2/2] net: mdio: fixup ethernet phy module auto-load function
+Date:   Tue, 23 Nov 2021 13:32:23 +0800
+Message-Id: <1637645543-24618-1-git-send-email-zhuyinbo@loongson.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: AQAAf9AxZ+jqfJxh_n4AAA--.2870S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZF17uF4rZF47JrW7KF13CFg_yoW5Kr48pF
+        ZYk3WYkrW8JrsxWwn5Cw48CF1Ykw4Iy39rGFy0939Y9rs8XryvqFyfKFyY9r15uayruw1a
+        qay0vFyDZFykArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
+        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
+        8cxan2IY04v7MxkIecxEwVCm-wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF
+        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWI
+        evJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/RWZppyrw6HV143RvxsKG2E3
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+the phy_id is only phy identifier, that phy module auto-load function
+should according the phy_id event rather than other information, this
+patch is remove other unnecessary information and add phy_id event in
+mdio_uevent function and ethernet phy module auto-load function will
+work well.
 
-Hi all,
+Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
+---
+Hi Russell King,
 
-Building Linus' tree, today's linux-next build (htmldocs) produced
-this warning:
+I don't see that mail from you, but I have a look about your advice for my patch on netdev patchwork
 
-drivers/gpu/drm/amd/include/amd_shared.h:103: warning: Enum value 'AMD_IP_B=
-LOCK_TYPE_NUM' not described in enum 'amd_ip_block_type'
+> The MDIO bus contains more than just PHYs. This completely breaks
+> anything that isn't a PHY device - likely by performing an
+> out-of-bounds access.
+> 
+> This change also _totally_ breaks any MDIO devices that rely on
+> matching via the "of:" mechanism using the compatible specified in
+> DT. An example of that is the B53 DSA switch.
+>
+> Sorry, but we've already learnt this lesson from a similar case with
+> SPI. Once one particular way of dealing with MODALIAS has been
+> established for auto-loading modules for a subsystem, it is very
+> difficult to change it without causing regressions.
 
-Introduced by commit
+> We need a very clear description of the problem that these patches are
+> attempting to address, and then we need to see that effort has been
+> put in to verify that changing the auto-loading mechanism is safe to
+> do - such as auditing every single driver that use the MDIO subsystem.
 
-  6ee27ee27ba8 ("drm/amd/pm: avoid duplicate powergate/ungate setting")
+if mdio_uevent doesn't include my patch, you will see that mdio uevent is like 
+"MODALIAS= of:NphyTethernet-phyCmarvell,88E1512", "marvell,88E1512" is only a
+phy dts compatible, and that name can use any a string that in the same driver, 
+if phy driver not use dts, and this MODALIAS is NULL, it is not unique, and even
+thoug use that modalias, that do_mdio_entry doesn't get that compatibe 
+information, event though it can get compatible and it looks ugly, but that phy id 
+is unique if phy chip following 802.3 spec,
+whatever whether use dts, use phy id it will always okay that phy dev to match phy
+ driver, because phy it is getted by mdiobus_register
+and mdio device driver will call mdiobus_register whatever whether use dts.
 
---=20
-Cheers,
-Stephen Rothwell
+>  struct bus_type mdio_bus_type = {
+> -	.name		= "mdio_bus",
+> +	.name		= "mdio",
 
---Sig_/RWZppyrw6HV143RvxsKG2E3
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+> This looks like an unrelated user-interface breaking change. This
+> changes the path of all MDIO devices and drivers in /sys/bus/mdio_bus/*
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGcfEIACgkQAVBC80lX
-0GxO1Af+IuDSxIIPFUcQmUNHGTMHKGR2lfBQib983fa2Ns3c99khVINUGNA3Bhw1
-dJX5W2FO03lx6hOJ3k97OABpDgme5W+kYPOtFnrG2liclWs8K25iqnusjmCV08Gx
-Rtuxok+sZsAgsLL6scstiPguX4/9VsN+Se1yTqijxxlmzpuZAfXFJWyBfAgU72JT
-ki3mFetebluyrUBnfFw0B70kyGtbhS+Q33Wy14lEKLuBtiXRpDWSZ62GKXviVOd6
-WONib9FtTi8ZwoAzPWWtwo0KipA/XWGh2g84UL6sOJUUdNB9ctcuyQy2KzzGLENY
-mQYIrs1D5G8W6WJl/5l1pkCp94WstQ==
-=/2sS
------END PGP SIGNATURE-----
+I think mdio_bus is ugly, you can other bus, eg. usb,pci.  in addition, mdio bus name 
+should be Consistent with mdio alias configure, eg. MDIO_MODULE_PREFIX.
 
---Sig_/RWZppyrw6HV143RvxsKG2E3--
+BRs,
+Yinbo Zhu. 
+
+ drivers/net/phy/mdio_bus.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+index 6865d93..999f0d4 100644
+--- a/drivers/net/phy/mdio_bus.c
++++ b/drivers/net/phy/mdio_bus.c
+@@ -962,12 +962,12 @@ static int mdio_bus_match(struct device *dev, struct device_driver *drv)
+ 
+ static int mdio_uevent(struct device *dev, struct kobj_uevent_env *env)
+ {
+-	int rc;
++	struct phy_device *pdev;
+ 
+-	/* Some devices have extra OF data and an OF-style MODALIAS */
+-	rc = of_device_uevent_modalias(dev, env);
+-	if (rc != -ENODEV)
+-		return rc;
++	pdev = to_phy_device(dev);
++
++	if (add_uevent_var(env, "MODALIAS=mdio:p%08X", pdev->phy_id))
++		return -ENOMEM;
+ 
+ 	return 0;
+ }
+@@ -991,7 +991,7 @@ static int mdio_uevent(struct device *dev, struct kobj_uevent_env *env)
+ };
+ 
+ struct bus_type mdio_bus_type = {
+-	.name		= "mdio_bus",
++	.name		= "mdio",
+ 	.dev_groups	= mdio_bus_dev_groups,
+ 	.match		= mdio_bus_match,
+ 	.uevent		= mdio_uevent,
+-- 
+1.8.3.1
+
