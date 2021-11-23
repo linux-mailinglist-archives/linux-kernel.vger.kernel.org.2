@@ -2,234 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66FD9459EA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:53:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C5CD459EA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:53:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233715AbhKWI4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 03:56:54 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:36848 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233740AbhKWI4t (ORCPT
+        id S233815AbhKWI44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 03:56:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233966AbhKWI4v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 03:56:49 -0500
-Date:   Tue, 23 Nov 2021 08:53:39 -0000
+        Tue, 23 Nov 2021 03:56:51 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F96C06173E;
+        Tue, 23 Nov 2021 00:53:43 -0800 (PST)
+Date:   Tue, 23 Nov 2021 08:53:40 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637657620;
+        s=2020; t=1637657621;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Au49ldUitnUM+f2jQ7ljTDqy2dFxPGvzpG0IcL1lAVg=;
-        b=qi8bAzF0tnIofjI3rNyLexfdfi+lfSdmSHhnGaHjqjQsfaLYFhJbKE6a9YKGq1Q2KnLMc6
-        liyn58qFUWVlc+VmrqTCj0i6YkDgj9ticuLC6p3131wxFLN1asTKuBB00242eVH+/hSj0t
-        lUG3bUiC2rOc//mLgDhagHpZbu5+RAAVZKonFAe7NsOkl2LFuYjEKH33pGWO5+wG4qPHNg
-        qW1KWpXI3C/wvD1BAwdzCw+ZUBTKxWK+wrGod8Waq8BurhyR2mS9FFs3zPYd0cqwheMrIf
-        LVI1b2A8vP/orUbyFBI0xxiFq8QTEPW1bz8CLfYCfxHBljKRK2SD0q0IgrwaMw==
+        bh=c4E96g0nyz298wn9p6WYB+XBjEFy18cyOMUGEPhwMCA=;
+        b=gFFvEedGhqqbE8k7432hGJx4ov7YeTSB3SnFPuraO1w9OdN6weIw66hIojW/AHheyrFP5t
+        LjRjLmbG49IQcIa81YSw93OL7ASyLtrphlOI4M1LpSuf2mtnexLQyT0a8MhZR3qpUFETHL
+        7XhE6534OC1A/0+p47teYHtBWxwW2Dii4j5EGUzlEb0vEFIak4cMzAI+92Df8NjhvPDnh/
+        htDltVJ82twyfAnuUl/0Wf88/Fhh7WRQWO4jiSq84nWkdtwTAlEZATfmR3TToSUs4BKSN7
+        5+1rsmbWDEiQCXR2so9hdEEmYuSXG6azriUR0IxpmuJq2UmPpExgCdoNFGEnPg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637657620;
+        s=2020e; t=1637657621;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Au49ldUitnUM+f2jQ7ljTDqy2dFxPGvzpG0IcL1lAVg=;
-        b=PCgK3PkKyx9ESMDK3BjAJdKyBQUtpMezZ7yIA/9PmFPacS0TjE3aDRc3gK4O1vTH/KO6Xv
-        cUsYN8wqnIv12lCw==
-From:   "tip-bot2 for Muchun Song" <tip-bot2@linutronix.de>
+        bh=c4E96g0nyz298wn9p6WYB+XBjEFy18cyOMUGEPhwMCA=;
+        b=6JJr/vI5lpr/BonqJ7PZBaeVuxQLyZ+QHIRe0fgyBB6Wn80xo/IMb4nMKcCGlRFcCCID/n
+        0fy1ZYpwB8fOZODw==
+From:   "tip-bot2 for Marco Elver" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] locking/rwsem: Optimize down_read_trylock()
- under highly contended case
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Waiman Long <longman@redhat.com>, x86@kernel.org,
+Subject: [tip: perf/urgent] perf: Ignore sigtrap for tracepoints destined for
+ other tasks
+Cc:     syzbot+663359e32ce6f1a305ad@syzkaller.appspotmail.com,
+        Marco Elver <elver@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20211118094455.9068-1-songmuchun@bytedance.com>
-References: <20211118094455.9068-1-songmuchun@bytedance.com>
+In-Reply-To: <kJWfmI@elver.google.com>
+References: <kJWfmI@elver.google.com>
 MIME-Version: 1.0
-Message-ID: <163765761910.11128.6653114470418982159.tip-bot2@tip-bot2>
+Message-ID: <163765762058.11128.9441697043522251183.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/urgent branch of tip:
+The following commit has been merged into the perf/urgent branch of tip:
 
-Commit-ID:     14c24048841151548a3f4d9e218510c844c1b737
-Gitweb:        https://git.kernel.org/tip/14c24048841151548a3f4d9e218510c844c=
-1b737
-Author:        Muchun Song <songmuchun@bytedance.com>
-AuthorDate:    Thu, 18 Nov 2021 17:44:55 +08:00
+Commit-ID:     73743c3b092277febbf69b250ce8ebbca0525aa2
+Gitweb:        https://git.kernel.org/tip/73743c3b092277febbf69b250ce8ebbca0525aa2
+Author:        Marco Elver <elver@google.com>
+AuthorDate:    Tue, 09 Nov 2021 13:22:32 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 23 Nov 2021 09:45:36 +01:00
+CommitterDate: Tue, 23 Nov 2021 09:45:37 +01:00
 
-locking/rwsem: Optimize down_read_trylock() under highly contended case
+perf: Ignore sigtrap for tracepoints destined for other tasks
 
-We found that a process with 10 thousnads threads has been encountered
-a regression problem from Linux-v4.14 to Linux-v5.4. It is a kind of
-workload which will concurrently allocate lots of memory in different
-threads sometimes. In this case, we will see the down_read_trylock()
-with a high hotspot. Therefore, we suppose that rwsem has a regression
-at least since Linux-v5.4. In order to easily debug this problem, we
-write a simply benchmark to create the similar situation lile the
-following.
+syzbot reported that the warning in perf_sigtrap() fires, saying that
+the event's task does not match current:
 
-  ```c++
-  #include <sys/mman.h>
-  #include <sys/time.h>
-  #include <sys/resource.h>
-  #include <sched.h>
+ | WARNING: CPU: 0 PID: 9090 at kernel/events/core.c:6446 perf_pending_event+0x40d/0x4b0 kernel/events/core.c:6513
+ | Modules linked in:
+ | CPU: 0 PID: 9090 Comm: syz-executor.1 Not tainted 5.15.0-syzkaller #0
+ | Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+ | RIP: 0010:perf_sigtrap kernel/events/core.c:6446 [inline]
+ | RIP: 0010:perf_pending_event_disable kernel/events/core.c:6470 [inline]
+ | RIP: 0010:perf_pending_event+0x40d/0x4b0 kernel/events/core.c:6513
+ | ...
+ | Call Trace:
+ |  <IRQ>
+ |  irq_work_single+0x106/0x220 kernel/irq_work.c:211
+ |  irq_work_run_list+0x6a/0x90 kernel/irq_work.c:242
+ |  irq_work_run+0x4f/0xd0 kernel/irq_work.c:251
+ |  __sysvec_irq_work+0x95/0x3d0 arch/x86/kernel/irq_work.c:22
+ |  sysvec_irq_work+0x8e/0xc0 arch/x86/kernel/irq_work.c:17
+ |  </IRQ>
+ |  <TASK>
+ |  asm_sysvec_irq_work+0x12/0x20 arch/x86/include/asm/idtentry.h:664
+ | RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:152 [inline]
+ | RIP: 0010:_raw_spin_unlock_irqrestore+0x38/0x70 kernel/locking/spinlock.c:194
+ | ...
+ |  coredump_task_exit kernel/exit.c:371 [inline]
+ |  do_exit+0x1865/0x25c0 kernel/exit.c:771
+ |  do_group_exit+0xe7/0x290 kernel/exit.c:929
+ |  get_signal+0x3b0/0x1ce0 kernel/signal.c:2820
+ |  arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:868
+ |  handle_signal_work kernel/entry/common.c:148 [inline]
+ |  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+ |  exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:207
+ |  __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+ |  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+ |  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ |  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-  #include <cstdio>
-  #include <cassert>
-  #include <thread>
-  #include <vector>
-  #include <chrono>
+On x86 this shouldn't happen, which has arch_irq_work_raise().
 
-  volatile int mutex;
+The test program sets up a perf event with sigtrap set to fire on the
+'sched_wakeup' tracepoint, which fired in ttwu_do_wakeup().
 
-  void trigger(int cpu, char* ptr, std::size_t sz)
-  {
-  	cpu_set_t set;
-  	CPU_ZERO(&set);
-  	CPU_SET(cpu, &set);
-  	assert(pthread_setaffinity_np(pthread_self(), sizeof(set), &set) =3D=3D 0);
+This happened because the 'sched_wakeup' tracepoint also takes a task
+argument passed on to perf_tp_event(), which is used to deliver the
+event to that other task.
 
-  	while (mutex);
+Since we cannot deliver synchronous signals to other tasks, skip an event if
+perf_tp_event() is targeted at another task and perf_event_attr::sigtrap is
+set, which will avoid ever entering perf_sigtrap() for such events.
 
-  	for (std::size_t i =3D 0; i < sz; i +=3D 4096) {
-  		*ptr =3D '\0';
-  		ptr +=3D 4096;
-  	}
-  }
-
-  int main(int argc, char* argv[])
-  {
-  	std::size_t sz =3D 100;
-
-  	if (argc > 1)
-  		sz =3D atoi(argv[1]);
-
-  	auto nproc =3D std::thread::hardware_concurrency();
-  	std::vector<std::thread> thr;
-  	sz <<=3D 30;
-  	auto* ptr =3D mmap(nullptr, sz, PROT_READ | PROT_WRITE, MAP_ANON |
-			 MAP_PRIVATE, -1, 0);
-  	assert(ptr !=3D MAP_FAILED);
-  	char* cptr =3D static_cast<char*>(ptr);
-  	auto run =3D sz / nproc;
-  	run =3D (run >> 12) << 12;
-
-  	mutex =3D 1;
-
-  	for (auto i =3D 0U; i < nproc; ++i) {
-  		thr.emplace_back(std::thread([i, cptr, run]() { trigger(i, cptr, run); })=
-);
-  		cptr +=3D run;
-  	}
-
-  	rusage usage_start;
-  	getrusage(RUSAGE_SELF, &usage_start);
-  	auto start =3D std::chrono::system_clock::now();
-
-  	mutex =3D 0;
-
-  	for (auto& t : thr)
-  		t.join();
-
-  	rusage usage_end;
-  	getrusage(RUSAGE_SELF, &usage_end);
-  	auto end =3D std::chrono::system_clock::now();
-  	timeval utime;
-  	timeval stime;
-  	timersub(&usage_end.ru_utime, &usage_start.ru_utime, &utime);
-  	timersub(&usage_end.ru_stime, &usage_start.ru_stime, &stime);
-  	printf("usr: %ld.%06ld\n", utime.tv_sec, utime.tv_usec);
-  	printf("sys: %ld.%06ld\n", stime.tv_sec, stime.tv_usec);
-  	printf("real: %lu\n",
-  	       std::chrono::duration_cast<std::chrono::milliseconds>(end -
-  	       start).count());
-
-  	return 0;
-  }
-  ```
-
-The functionality of above program is simply which creates `nproc`
-threads and each of them are trying to touch memory (trigger page
-fault) on different CPU. Then we will see the similar profile by
-`perf top`.
-
-  25.55%  [kernel]                  [k] down_read_trylock
-  14.78%  [kernel]                  [k] handle_mm_fault
-  13.45%  [kernel]                  [k] up_read
-   8.61%  [kernel]                  [k] clear_page_erms
-   3.89%  [kernel]                  [k] __do_page_fault
-
-The highest hot instruction, which accounts for about 92%, in
-down_read_trylock() is cmpxchg like the following.
-
-  91.89 =E2=94=82      lock   cmpxchg %rdx,(%rdi)
-
-Sice the problem is found by migrating from Linux-v4.14 to Linux-v5.4,
-so we easily found that the commit ddb20d1d3aed ("locking/rwsem: Optimize
-down_read_trylock()") caused the regression. The reason is that the
-commit assumes the rwsem is not contended at all. But it is not always
-true for mmap lock which could be contended with thousands threads.
-So most threads almost need to run at least 2 times of "cmpxchg" to
-acquire the lock. The overhead of atomic operation is higher than
-non-atomic instructions, which caused the regression.
-
-By using the above benchmark, the real executing time on a x86-64 system
-before and after the patch were:
-
-                  Before Patch  After Patch
-   # of Threads      real          real     reduced by
-   ------------     ------        ------    ----------
-         1          65,373        65,206       ~0.0%
-         4          15,467        15,378       ~0.5%
-        40           6,214         5,528      ~11.0%
-
-For the uncontended case, the new down_read_trylock() is the same as
-before. For the contended cases, the new down_read_trylock() is faster
-than before. The more contended, the more fast.
-
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Fixes: 97ba62b27867 ("perf: Add support for SIGTRAP on perf events")
+Reported-by: syzbot+663359e32ce6f1a305ad@syzkaller.appspotmail.com
+Signed-off-by: Marco Elver <elver@google.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Waiman Long <longman@redhat.com>
-Link: https://lore.kernel.org/r/20211118094455.9068-1-songmuchun@bytedance.com
+Link: https://lkml.kernel.org/r/YYpoCOBmC/kJWfmI@elver.google.com
 ---
- kernel/locking/rwsem.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ kernel/events/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-index e039cf1..04a74d0 100644
---- a/kernel/locking/rwsem.c
-+++ b/kernel/locking/rwsem.c
-@@ -1248,17 +1248,14 @@ static inline int __down_read_trylock(struct rw_semap=
-hore *sem)
-=20
- 	DEBUG_RWSEMS_WARN_ON(sem->magic !=3D sem, sem);
-=20
--	/*
--	 * Optimize for the case when the rwsem is not locked at all.
--	 */
--	tmp =3D RWSEM_UNLOCKED_VALUE;
--	do {
-+	tmp =3D atomic_long_read(&sem->count);
-+	while (!(tmp & RWSEM_READ_FAILED_MASK)) {
- 		if (atomic_long_try_cmpxchg_acquire(&sem->count, &tmp,
--					tmp + RWSEM_READER_BIAS)) {
-+						    tmp + RWSEM_READER_BIAS)) {
- 			rwsem_set_reader_owned(sem);
- 			return 1;
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 523106a..30d94f6 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -9759,6 +9759,9 @@ void perf_tp_event(u16 event_type, u64 count, void *record, int entry_size,
+ 				continue;
+ 			if (event->attr.config != entry->type)
+ 				continue;
++			/* Cannot deliver synchronous signal to other task. */
++			if (event->attr.sigtrap)
++				continue;
+ 			if (perf_tp_event_match(event, &data, regs))
+ 				perf_swevent_event(event, count, &data, regs);
  		}
--	} while (!(tmp & RWSEM_READ_FAILED_MASK));
-+	}
- 	return 0;
- }
-=20
