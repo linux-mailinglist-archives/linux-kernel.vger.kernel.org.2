@@ -2,177 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985434598E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 01:01:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5022C4598EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 01:03:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232678AbhKWAEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 19:04:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35680 "EHLO
+        id S229853AbhKWAGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 19:06:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232837AbhKWAEN (ORCPT
+        with ESMTP id S229617AbhKWAG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 19:04:13 -0500
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88A38C0613DD
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 16:01:06 -0800 (PST)
-Received: by mail-pj1-x104a.google.com with SMTP id n6-20020a17090a670600b001a9647fd1aaso436776pjj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 16:01:06 -0800 (PST)
+        Mon, 22 Nov 2021 19:06:29 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A96C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 16:03:22 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id z18so25631960iof.5
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 16:03:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=c5/tpWSff4dFHh5q6xjJHceDD7GLZ6RDhs8W9YIAjtE=;
-        b=qhWa4Zhk7NchUhmumrVqvSAJuvqQCaRNgR3VhkJ1cgKkIgT3PnHJcxg50Bf/bvcBWt
-         B03yUWlvIhJT0+svy9+S95w02WodOrWOwkw5zEquFIWPBU1l2w1CU7Z6SunbYgyeaykD
-         s996BxASMp47tXiGEFsA9XFGGfjUhPiOjd5sWt5YfXx/RvgMTswVOyEFMuhEg2iC5Adx
-         6+ysqnul60O+2OJzTLAjf4CFIj4TQV0rDQNETBIJgTDohirT10IhjQPH532Pn59O1ID0
-         N50qA7HX83qIC2v7mwBK9B04GibyR4v/fffAzRRrTrmFPY3jEDG+KTy2R0ntAim9z/uJ
-         1fPg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=stWiZiGTSwVid2A/+7YAxsYrikFxsEbDB3/dzoejbFQ=;
+        b=qcKqjgkT4AGeJfHMYD5GQqfScLC2NbkBovmOvHm7Lot2171iQWFksNz2Kg+RrlgYHb
+         P/kki5ZFOeDf5xoEY7B+yJvShN99hNjQy5Lj9Umh279Ht1mQmJWl0EIXiQfdFhH3KBnE
+         01xFKmTfkAqTKJ7mOXXrnUzS8I+xBhw8h9i47dTdUuYjTtO0Ao5HdyONdxTgooTZXsAm
+         Qv6vXKA6/tZgQX6AoY/pMAKlJrXQYRVjqPHVDFjSc81qdCE4kVl3IIk8ddsUDCjkxama
+         nx24rmeV0N7WtRRJO5/8dKy/GyJ5uQ7oXVfufJ35u2gokQ4pccak7dgdNjQpArY9W10e
+         rwfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=c5/tpWSff4dFHh5q6xjJHceDD7GLZ6RDhs8W9YIAjtE=;
-        b=cDA7J/7AC2dfdUzmw3xlGiUGq8RyxXDdvUsoI7L295YPKeqnLih7axlmQpHN6AnMqb
-         brH0f5wa37G4mebl0RihQnGhB51hj5RaJu7KjhCvrP/NPaMf6CiP/Y7uR9A1mpGDcA76
-         eUi4ZPq64wVKhXaeWKKoeEyKbnYClWsQbNYiOZJs8oxMxhr0iCwgCiDu10x22o7KZ1bW
-         6+uL9ykPpe4wu8c3Vqis5uEhsMtwPhgSeG8r3/80/LH/egGJYbmgyDHfZ/2jcAIfm7Y8
-         qDLkTiUW9o462CUrfe7WhGNTiRRqOGQGjX4goygrV7GfUsMH+sSxcFV0xXDUJ1riQvoq
-         pcpg==
-X-Gm-Message-State: AOAM533VJyzRomyqeRzEbJMgnqT4JNPY1hQ9pqglbfb1Hz/ciY6FnYtT
-        esLx8w7JbfXLk0/I8VGd6vpV0BbnAz1jEHZ79w==
-X-Google-Smtp-Source: ABdhPJxCARKpo3QKn92oJKAmEFehwZ16v8foZGYajsmSBMeZsEGa8Zj7R770PBjkFSHsamA67kz2cPaXIlGU69lLmw==
-X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2cd:202:2c06:26c4:bf33:6d15])
- (user=almasrymina job=sendgmr) by 2002:a05:6a00:1705:b0:4a0:3492:16c with
- SMTP id h5-20020a056a00170500b004a03492016cmr928900pfc.3.1637625666001; Mon,
- 22 Nov 2021 16:01:06 -0800 (PST)
-Date:   Mon, 22 Nov 2021 16:01:02 -0800
-Message-Id: <20211123000102.4052105-1-almasrymina@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH v7] mm: Add PM_THP_MAPPED to /proc/pid/pagemap
-From:   Mina Almasry <almasrymina@google.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Mina Almasry <almasrymina@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Paul E . McKenney" <paulmckrcu@fb.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <florian.schmidt@nutanix.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-doc@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=stWiZiGTSwVid2A/+7YAxsYrikFxsEbDB3/dzoejbFQ=;
+        b=6NjUr5oAzQ4VrCtOrZ6SxbByc+m+9/DE0QtpiZhsFe1iqJBd9uQ/THx4Br7Tn4nVeh
+         ybQEjWs74zogNSBPa3h0ExXYjY3RM0q0Zq3pX/xQ4c63vpSR4RQvlenrLVjBbrSRxjAD
+         +xPn8NXUQFID3ZlvV/waJYENLibs9RAPifBeypt8GzF7xP3zzhxb44yjWZtTSOQgTmK3
+         WIYOTfwQVJek0VIsLc8Kv2f70r5JBcb0U9mKcCh0m9fvS8i9RG/iyoR2D7fwS8hABV2S
+         DtTOWPQwLM3uUFHs6Oz0Yb6Nbx+FHCeoUhfLqhhqF5TOZcK0I2Eu7Hd/0iwgkhzhyyeJ
+         N6VQ==
+X-Gm-Message-State: AOAM531z2/vnc1udZF7KviFz12n+jJYCABeDP3kH2ITv3l3r6yT+nx9L
+        f5LaQxwump9y7Q0EhEu8Rt5+JWGlljyTocwnuZGCyQ==
+X-Google-Smtp-Source: ABdhPJw1AijdwZkEvl/S8oatNZnkSQ8pCA1IN2sjD9iTcR1ADb99iHRm79ZAe/AtDCgKnIcoNfgJbPPjIDk5cg6nahk=
+X-Received: by 2002:a5d:9d92:: with SMTP id ay18mr1082492iob.130.1637625801802;
+ Mon, 22 Nov 2021 16:03:21 -0800 (PST)
+MIME-Version: 1.0
+References: <20211120045046.3940942-1-seanjc@google.com> <20211120045046.3940942-16-seanjc@google.com>
+ <CANgfPd8Kz41FpvooznGW2VLp8GZFei28FCjonr2+YEZoturi0A@mail.gmail.com> <YZwi+TzVLQi5YlIX@google.com>
+In-Reply-To: <YZwi+TzVLQi5YlIX@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Mon, 22 Nov 2021 16:03:10 -0800
+Message-ID: <CANgfPd8s=8SY2R_Cg+gytU6VU2PhOqkOwtq9fAdXCgp+GRpmQg@mail.gmail.com>
+Subject: Re: [PATCH 15/28] KVM: x86/mmu: Take TDP MMU roots off list when
+ invalidating all roots
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Hou Wenlong <houwenlong93@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add PM_THP_MAPPED MAPPING to allow userspace to detect whether a given virt
-address is currently mapped by a transparent huge page or not.  Example
-use case is a process requesting THPs from the kernel (via a huge tmpfs
-mount for example), for a performance critical region of memory.  The
-userspace may want to query whether the kernel is actually backing this
-memory by hugepages or not.
+On Mon, Nov 22, 2021 at 3:08 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Mon, Nov 22, 2021, Ben Gardon wrote:
+> > On Fri, Nov 19, 2021 at 8:51 PM Sean Christopherson <seanjc@google.com> wrote:
+> > >
+> > > Take TDP MMU roots off the list of roots when they're invalidated instead
+> > > of walking later on to find the roots that were just invalidated.  In
+> > > addition to making the flow more straightforward, this allows warning
+> > > if something attempts to elevate the refcount of an invalid root, which
+> > > should be unreachable (no longer on the list so can't be reached by MMU
+> > > notifier, and vCPUs must reload a new root before installing new SPTE).
+> > >
+> > > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> >
+> > There are a bunch of awesome little cleanups and unrelated fixes
+> > included in this commit that could be factored out.
+> >
+> > I'm skeptical of immediately moving the invalidated roots into another
+> > list as that seems like it has a lot of potential for introducing
+> > weird races.
+>
+> I disagree, the entire premise of fast invalidate is that there can't be races,
+> i.e. mmu_lock must be held for write.  IMO, it's actually the opposite, as the only
+> reason leaving roots on the per-VM list doesn't have weird races is because slots_lock
+> is held.  If slots_lock weren't required to do a fast zap, which is feasible for the
+> TDP MMU since it doesn't rely on the memslots generation, then it would be possible
+> for multiple calls to kvm_tdp_mmu_zap_invalidated_roots() to run in parallel.  And in
+> that case, leaving roots on the per-VM list would lead to a single instance of a
+> "fast zap" zapping roots it didn't invalidate.  That's wouldn't be problematic per se,
+> but I don't like not having a clear "owner" of the invalidated root.
 
-PM_THP_MAPPED bit is set if the virt address is mapped at the PMD
-level and the underlying page is a transparent huge page.
+That's a good point, the potential interleaving of zap_alls would be gross.
 
-A few options were considered:
-1. Add /proc/pid/pageflags that exports the same info as
-   /proc/kpageflags.  This is not appropriate because many kpageflags are
-   inappropriate to expose to userspace processes.
-2. Simply get this info from the existing /proc/pid/smaps interface.
-   There are a couple of issues with that:
-   1. /proc/pid/smaps output is human readable and unfriendly to
-      programatically parse.
-   2. /proc/pid/smaps is slow because it must read the whole memory range
-      rather than a small range we care about.  The cost of reading
-      /proc/pid/smaps into userspace buffers is about ~800us per call,
-      and this doesn't include parsing the output to get the information
-      you need. The cost of querying 1 virt address in /proc/pid/pagemaps
-      however is around 5-7us.
+My mental model for the invariant here was "roots that are still in
+use are on the roots list," but I can see how "the roots list contains
+all valid, in-use roots" could be a more useful invariant.
 
-Tested manually by adding logging into transhuge-stress, and by
-allocating THP and querying the PM_THP_MAPPED flag at those
-virtual addresses.
+>
+> > I'm not sure it actually solves a problem either. Part of
+> > the motive from the commit description "this allows warning if
+> > something attempts to elevate the refcount of an invalid root" can be
+> > achieved already without moving the roots into a separate list.
+>
+> Hmm, true in the sense that kvm_tdp_mmu_get_root() could be converted to a WARN,
+> but that would require tdp_mmu_next_root() to manually skip invalid roots.
+> kvm_tdp_mmu_get_vcpu_root_hpa() is naturally safe because page_role_for_level()
+> will never set the invalid flag.
+>
+> I don't care too much about adding a manual check in tdp_mmu_next_root(), what I don't
+> like is that a WARN in kvm_tdp_mmu_get_root() wouldn't be establishing an invariant
+> that invalidated roots are unreachable, it would simply be forcing callers to check
+> role.invalid.
 
-Signed-off-by: Mina Almasry <almasrymina@google.com>
+That makes sense.
 
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: David Rientjes rientjes@google.com
-Cc: Paul E. McKenney <paulmckrcu@fb.com>
-Cc: Yu Zhao <yuzhao@google.com>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Peter Xu <peterx@redhat.com>
-Cc: Ivan Teterevkov <ivan.teterevkov@nutanix.com>
-Cc: Florian Schmidt <florian.schmidt@nutanix.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-mm@kvack.org
+>
+> > Maybe this would seem more straightforward with some of the little
+> > cleanups factored out, but this feels more complicated to me.
+> > > @@ -124,6 +137,27 @@ static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
+> > >  {
+> > >         struct kvm_mmu_page *next_root;
+> > >
+> > > +       lockdep_assert_held(&kvm->mmu_lock);
+> > > +
+> > > +       /*
+> > > +        * Restart the walk if the previous root was invalidated, which can
+> > > +        * happen if the caller drops mmu_lock when yielding.  Restarting the
+> > > +        * walke is necessary because invalidating a root also removes it from
+> >
+> > Nit: *walk
+> >
+> > > +        * tdp_mmu_roots.  Restarting is safe and correct because invalidating
+> > > +        * a root is done if and only if _all_ roots are invalidated, i.e. any
+> > > +        * root on tdp_mmu_roots was added _after_ the invalidation event.
+> > > +        */
+> > > +       if (prev_root && prev_root->role.invalid) {
+> > > +               kvm_tdp_mmu_put_root(kvm, prev_root, shared);
+> > > +               prev_root = NULL;
+> > > +       }
+> > > +
+> > > +       /*
+> > > +        * Finding the next root must be done under RCU read lock.  Although
+> > > +        * @prev_root itself cannot be removed from tdp_mmu_roots because this
+> > > +        * task holds a reference, its next and prev pointers can be modified
+> > > +        * when freeing a different root.  Ditto for tdp_mmu_roots itself.
+> > > +        */
+> >
+> > I'm not sure this is correct with the rest of the changes in this
+> > patch. The new version of invalidate_roots removes roots from the list
+> > immediately, even if they have a non-zero ref-count.
+>
+> Roots don't have to be invalidated to be removed, e.g. if the last reference is
+> put due to kvm_mmu_reset_context().  Or did I misunderstand?
 
+Ah, sorry that was kind of a pedantic comment. I think the comment
+should say "@prev_root itself cannot be removed from tdp_mmu_roots
+because this task holds the MMU lock (in read or write mode)"
+With the other changes in the patch, holding a reference on a root
+provides protection against it being freed, but not against it being
+removed from the roots list.
 
----
+>
+> > >         rcu_read_lock();
+> > >
+> > >         if (prev_root)
+> > > @@ -230,10 +264,13 @@ hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
+> > >         root = alloc_tdp_mmu_page(vcpu, 0, vcpu->arch.mmu->shadow_root_level);
+> > >         refcount_set(&root->tdp_mmu_root_count, 1);
+> > >
+> > > -       spin_lock(&kvm->arch.tdp_mmu_pages_lock);
+> > > -       list_add_rcu(&root->link, &kvm->arch.tdp_mmu_roots);
+> > > -       spin_unlock(&kvm->arch.tdp_mmu_pages_lock);
+> > > -
+> > > +       /*
+> > > +        * Because mmu_lock must be held for write to ensure that KVM doesn't
+> > > +        * create multiple roots for a given role, this does not need to use
+> > > +        * an RCU-friendly variant as readers of tdp_mmu_roots must also hold
+> > > +        * mmu_lock in some capacity.
+> > > +        */
+> >
+> > I doubt we're doing it now, but in principle we could allocate new
+> > roots with mmu_lock in read + tdp_mmu_pages_lock. That might be better
+> > than depending on the write lock.
+>
+> We're not, this function does lockdep_assert_held_write(&kvm->mmu_lock) a few
+> lines above.  I don't have a preference between using mmu_lock.read+tdp_mmu_pages_lock
+> versus mmu_lock.write, but I do care that the current code doesn't incorrectly imply
+> that it's possible for something else to be walking the roots while this runs.
 
-Changes in v7:
-- Added clarification that smaps is only slow because it looks at the
-  whole address space.
+That makes sense. It seems like it'd be pretty easy to let this run
+under the read lock, but I'd be fine with either way. I agree both
+options are an improvement.
 
-Changes in v6:
-- Renamed to PM_THP_MAPPED
-- Removed changes to transhuge-stress
-
-Changes in v5:
-- Added justification for this interface in the commit message!
-
-Changes in v4:
-- Removed unnecessary moving of flags variable declaration
-
-Changes in v3:
-- Renamed PM_THP to PM_HUGE_THP_MAPPING
-- Fixed checks to set PM_HUGE_THP_MAPPING
-- Added PM_HUGE_THP_MAPPING docs
----
- Documentation/admin-guide/mm/pagemap.rst | 3 ++-
- fs/proc/task_mmu.c                       | 3 +++
- 2 files changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin-guide/mm/pagemap.rst
-index fdc19fbc10839..8a0f0064ff336 100644
---- a/Documentation/admin-guide/mm/pagemap.rst
-+++ b/Documentation/admin-guide/mm/pagemap.rst
-@@ -23,7 +23,8 @@ There are four components to pagemap:
-     * Bit  56    page exclusively mapped (since 4.2)
-     * Bit  57    pte is uffd-wp write-protected (since 5.13) (see
-       :ref:`Documentation/admin-guide/mm/userfaultfd.rst <userfaultfd>`)
--    * Bits 57-60 zero
-+    * Bit  58    page is a huge (PMD size) THP mapping
-+    * Bits 59-60 zero
-     * Bit  61    page is file-page or shared-anon (since 3.5)
-     * Bit  62    page swapped
-     * Bit  63    page present
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index ad667dbc96f5c..d784a97aa209a 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -1302,6 +1302,7 @@ struct pagemapread {
- #define PM_SOFT_DIRTY		BIT_ULL(55)
- #define PM_MMAP_EXCLUSIVE	BIT_ULL(56)
- #define PM_UFFD_WP		BIT_ULL(57)
-+#define PM_THP_MAPPED		BIT_ULL(58)
- #define PM_FILE			BIT_ULL(61)
- #define PM_SWAP			BIT_ULL(62)
- #define PM_PRESENT		BIT_ULL(63)
-@@ -1456,6 +1457,8 @@ static int pagemap_pmd_range(pmd_t *pmdp, unsigned long addr, unsigned long end,
- 
- 		if (page && page_mapcount(page) == 1)
- 			flags |= PM_MMAP_EXCLUSIVE;
-+		if (page && is_transparent_hugepage(page))
-+			flags |= PM_THP_MAPPED;
- 
- 		for (; addr != end; addr += PAGE_SIZE) {
- 			pagemap_entry_t pme = make_pme(frame, flags);
--- 
-2.34.0.rc2.393.gf8c9666880-goog
-
+>
+> Either way, this should definitely be a separate patch, pretty sure I just lost
+> track of it.
+>
+> > > +       list_add(&root->link, &kvm->arch.tdp_mmu_roots);
+> > >  out:
+> > >         return __pa(root->spt);
+> > >  }
