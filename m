@@ -2,122 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF1F45A012
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 11:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF5B45A019
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 11:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235208AbhKWK1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 05:27:10 -0500
-Received: from mga02.intel.com ([134.134.136.20]:51540 "EHLO mga02.intel.com"
+        id S235327AbhKWK3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 05:29:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231838AbhKWK1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 05:27:09 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="222218952"
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="222218952"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 02:24:01 -0800
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="571020561"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 02:23:58 -0800
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with ESMTP id 3A09A20762;
-        Tue, 23 Nov 2021 12:23:56 +0200 (EET)
-Date:   Tue, 23 Nov 2021 12:23:56 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Jammy Huang <jammy_huang@aspeedtech.com>
-Cc:     "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "laurent.pinchart@ideasonboard.com" 
-        <laurent.pinchart@ideasonboard.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 05/10] media: v4l: Add definition for the Aspeed JPEG
- format
-Message-ID: <YZzBPFHZ7MPwTWSm@paasikivi.fi.intel.com>
-References: <20211118074030.685-1-jammy_huang@aspeedtech.com>
- <20211118074030.685-6-jammy_huang@aspeedtech.com>
- <YZZIDNCLJXwrqY4W@paasikivi.fi.intel.com>
- <0bed6093-0af6-4fc4-716f-6cf8b1302320@aspeedtech.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0bed6093-0af6-4fc4-716f-6cf8b1302320@aspeedtech.com>
+        id S229847AbhKWK3V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 05:29:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C73FE60ED4;
+        Tue, 23 Nov 2021 10:26:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637663173;
+        bh=JbwEOHKUxn/pb5uIuV6jwaYtPfnercK1eHpRy9eRb9I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Idc6IvchMbBSs/jjo+A8yITIA/f3siQGg8JeK/IMDdUZq135HTCq3pg6ez9GOPE8N
+         gcWHTC1vlIROkGAO9ezuUMX2EMykI+rqM6N1YH1C2O9Q7XrPHo/ZAv0uCAOFCdJS3d
+         CT/Iq7S8GrRAU582Xk+7LvTEQa7ky8HFpqpXXDwMyz2KRRKrRYUH+L819WsUHorXYB
+         sNENjlnP8jE2nFlT/yNH5QgXEANbSxPUK/jmtAM0PmbPg8xkq8L1TsaYf8WDXGcwjg
+         GubAcBpupEoXLH6n+A9rPnMMwuXbvvVIyaB5QSRz+EysKTYIjQnJbkXQ3Zju+JcKEy
+         h9NYYe/nqoPCA==
+From:   Roger Quadros <rogerq@kernel.org>
+To:     krzysztof.kozlowski@canonical.com, tony@atomide.com
+Cc:     kishon@ti.com, nm@ti.com, vigneshr@ti.com,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Roger Quadros <rogerq@kernel.org>
+Subject: [PATCH 0/4] memory: omap-gpmc: Add AM64 SoC support
+Date:   Tue, 23 Nov 2021 12:26:01 +0200
+Message-Id: <20211123102607.13002-1-rogerq@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jammy,
+Hi,
 
-On Fri, Nov 19, 2021 at 10:02:40AM +0800, Jammy Huang wrote:
-> Hi Sakari,
-> 
-> On 2021/11/18 下午 08:33, Sakari Ailus wrote:
-> > Hi Jammy,
-> > 
-> > On Thu, Nov 18, 2021 at 03:40:26PM +0800, Jammy Huang wrote:
-> > > This introduces support for the Aspeed JPEG format, where the new frame
-> > > can refer to previous frame to reduce the amount of compressed data. The
-> > > concept is similar to I/P frame of video compression. I will compare the
-> > > new frame with previous one to decide which macroblock's data is
-> > > changed, and only the changed macroblocks will be compressed.
-> > > 
-> > > This Aspeed JPEG format is used by the video engine on Aspeed platforms,
-> > > which is generally adapted for remote KVM.
-> > > 
-> > > Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
-> > > ---
-> > > v5:
-> > >    - no update
-> > > v4:
-> > >    - new
-> > > ---
-> > >   Documentation/media/uapi/v4l/pixfmt-reserved.rst | 12 ++++++++++++
-> > >   drivers/media/v4l2-core/v4l2-ioctl.c             |  1 +
-> > >   include/uapi/linux/videodev2.h                   |  1 +
-> > >   3 files changed, 14 insertions(+)
-> > > 
-> > > diff --git a/Documentation/media/uapi/v4l/pixfmt-reserved.rst b/Documentation/media/uapi/v4l/pixfmt-reserved.rst
-> > > index b2cd155e691b..23c05063133d 100644
-> > > --- a/Documentation/media/uapi/v4l/pixfmt-reserved.rst
-> > > +++ b/Documentation/media/uapi/v4l/pixfmt-reserved.rst
-> > > @@ -264,6 +264,18 @@ please make a proposal on the linux-media mailing list.
-> > >   	of tiles, resulting in 32-aligned resolutions for the luminance plane
-> > >   	and 16-aligned resolutions for the chrominance plane (with 2x2
-> > >   	subsampling).
-> > > +    * .. _V4L2-PIX-FMT-AJPG:
-> > > +
-> > > +      - ``V4L2_PIX_FMT_AJPG``
-> > > +      - 'AJPG'
-> > > +      - ASPEED JPEG format used by the aspeed-video driver on Aspeed platforms,
-> > > +        which is generally adapted for remote KVM.
-> > > +        On each frame compression, I will compare the new frame with previous
-> > > +        one to decide which macroblock's data is changed, and only the changed
-> > > +        macroblocks will be compressed.
-> > > +
-> > > +        You could reference to chapter 36, Video Engine, of AST2600's datasheet
-> > > +        for more information.
-> > Is this datasheet publicly available? Do you have a URL?
-> 
-> Sorry, this datasheet is not publicly available.
-> Hans mentioned this as well in the discussion below:
-> 
-> https://lkml.org/lkml/2021/11/10/101
+TI's AM64 SoC contains one GPMC module. Add driver support for it.
 
-If the vendor documentation is not publicly available, you'll need to have
-the format documented here. Alternatively an open source implementation
-(e.g. LGPL) is presumably fine, too.
+cheers,
+-roger
+
+Roger Quadros (4):
+  dt-bindings: memory-controllers: ti,gpmc: Add compatible for AM64
+  memory: omap-gpmc: Fix menuconfig visibility
+  memory: omap-gpmc: Add support for GPMC on AM64 SoC
+  memory: omap-gpmc: check for nand node name instead of just
+    compatibility
+
+ .../bindings/memory-controllers/ti,gpmc.yaml  | 12 +++++-
+ drivers/memory/Kconfig                        |  4 +-
+ drivers/memory/omap-gpmc.c                    | 43 ++++++++++++++-----
+ 3 files changed, 45 insertions(+), 14 deletions(-)
 
 -- 
-Regards,
+2.17.1
 
-Sakari Ailus
