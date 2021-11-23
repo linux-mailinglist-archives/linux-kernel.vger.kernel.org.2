@@ -2,100 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFC0459CAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC24459CAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:18:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233925AbhKWHWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 02:22:42 -0500
-Received: from mga03.intel.com ([134.134.136.65]:12465 "EHLO mga03.intel.com"
+        id S233894AbhKWHVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 02:21:41 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:47558 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231896AbhKWHWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 02:22:40 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="234916757"
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="234916757"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 23:19:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="674362260"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 22 Nov 2021 23:19:30 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mpQ5R-0001a6-RW; Tue, 23 Nov 2021 07:19:29 +0000
-Date:   Tue, 23 Nov 2021 15:18:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: [tglx-devel:msi 18/91] drivers/pci/msi/legacy.c:54:5: warning: no
- previous prototype for function 'pci_msi_legacy_setup_msi_irqs'
-Message-ID: <202111231428.RmNJuNXe-lkp@intel.com>
+        id S233677AbhKWHVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 02:21:40 -0500
+Received: from zn.tnic (p200300ec2f0afc00fb97e1ddac48f93a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:fc00:fb97:e1dd:ac48:f93a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 74C2F1EC0503;
+        Tue, 23 Nov 2021 08:18:31 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1637651911;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=KqJTOgCp6HK0xHGH7GIW9dclHLRFLBvb7WQynOhv4Zo=;
+        b=J8LWB4M2a2e8olPCNC2yFwCVo2FyCyLjyNvF0yIltKhimu2h8lvvuDckvz0d43x38j5PXn
+        Fcci+px1bFHWiwV3UVCCecTqW5fzZ77yo4D9lYtDWn8TBi4ahZCKf/BZ6p4Jtvcn/2hdjS
+        OxWBvL/fpLbqF+YML+r3YW6GrqG9+To=
+Date:   Tue, 23 Nov 2021 08:18:31 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>,
+        Peter Gonda <pgonda@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
+ Hypervisor Support
+Message-ID: <YZyVx38L6gf689zq@zn.tnic>
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
+ <daf5066b-e89b-d377-ed8a-9338f1a04c0d@amd.com>
+ <d673f082-9023-dafb-e42e-eab32a3ddd0c@intel.com>
+ <f15597a0-e7e0-0a57-39fd-20715abddc7f@amd.com>
+ <5f3b3aab-9ec2-c489-eefd-9136874762ee@intel.com>
+ <d83e6668-bec4-8d1f-7f8a-085829146846@amd.com>
+ <38282b0c-7eb5-6a91-df19-2f4cfa8549ce@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <38282b0c-7eb5-6a91-df19-2f4cfa8549ce@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git msi
-head:   2d9ab27714e1576db18b1ee323eaae9886e16006
-commit: 5e32e214c6eeda4237b4fb01cd77c6c247465e0c [18/91] PCI/MSI: Split out irqdomain code
-config: mips-randconfig-r035-20211123 (https://download.01.org/0day-ci/archive/20211123/202111231428.RmNJuNXe-lkp@intel.com/config.gz)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project c133fb321f7ca6083ce15b6aa5bf89de6600e649)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install mips cross compiling tool for clang build
-        # apt-get install binutils-mips-linux-gnu
-        # https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git/commit/?id=5e32e214c6eeda4237b4fb01cd77c6c247465e0c
-        git remote add tglx-devel https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git
-        git fetch --no-tags tglx-devel msi
-        git checkout 5e32e214c6eeda4237b4fb01cd77c6c247465e0c
-        # save the attached .config to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=mips 
+On Mon, Nov 22, 2021 at 02:51:35PM -0800, Dave Hansen wrote:
+> By "supporting", do you mean doing something functional?  I don't really
+> care if ptrace() to guest private memory returns -EINVAL or whatever.
+> The most important thing is not crashing the host.
+> 
+> Also, as Sean mentioned, this isn't really about ptrace() itself.  It's
+> really about ensuring that no kernel or devices accesses to guest
+> private memory can induce bad behavior.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+I keep repeating this suggestion of mine that we should treat
+guest-private pages as hw-poisoned pages which have experienced a
+uncorrectable error in the past.
 
-All warnings (new ones prefixed by >>):
+mm already knows how to stay away from those.
 
-   In file included from drivers/pci/msi/legacy.c:7:
-   include/linux/msi.h:391:65: warning: declaration of 'struct cpumask' will not be visible outside of this function [-Wvisibility]
-   int msi_domain_set_affinity(struct irq_data *data, const struct cpumask *mask,
-                                                                   ^
-   drivers/pci/msi/legacy.c:48:20: error: use of undeclared identifier 'entry'
-                           for (i = 0; i < entry->nvec_used; i++)
-                                           ^
->> drivers/pci/msi/legacy.c:54:5: warning: no previous prototype for function 'pci_msi_legacy_setup_msi_irqs' [-Wmissing-prototypes]
-   int pci_msi_legacy_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
-       ^
-   drivers/pci/msi/legacy.c:54:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   int pci_msi_legacy_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
-   ^
-   static 
->> drivers/pci/msi/legacy.c:59:6: warning: no previous prototype for function 'pci_msi_legacy_teardown_msi_irqs' [-Wmissing-prototypes]
-   void pci_msi_legacy_teardown_msi_irqs(struct pci_dev *dev)
-        ^
-   drivers/pci/msi/legacy.c:59:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   void pci_msi_legacy_teardown_msi_irqs(struct pci_dev *dev)
-   ^
-   static 
-   3 warnings and 1 error generated.
+-- 
+Regards/Gruss,
+    Boris.
 
-
-vim +/pci_msi_legacy_setup_msi_irqs +54 drivers/pci/msi/legacy.c
-
-    53	
-  > 54	int pci_msi_legacy_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
-    55	{
-    56		return arch_setup_msi_irqs(dev, nvec, type);
-    57	}
-    58	
-  > 59	void pci_msi_legacy_teardown_msi_irqs(struct pci_dev *dev)
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+https://people.kernel.org/tglx/notes-about-netiquette
