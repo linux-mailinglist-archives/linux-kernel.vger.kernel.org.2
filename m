@@ -2,122 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4612645998B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:15:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2706F45998F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:16:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhKWBSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 20:18:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52430 "EHLO
+        id S232059AbhKWBTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 20:19:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbhKWBSb (ORCPT
+        with ESMTP id S231776AbhKWBTR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 20:18:31 -0500
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D4EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:15:24 -0800 (PST)
-Received: by mail-qv1-xf34.google.com with SMTP id s9so13742568qvk.12
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:15:24 -0800 (PST)
+        Mon, 22 Nov 2021 20:19:17 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F08C061714
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:16:10 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id v19so15618805plo.7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:16:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9il6o1C53lVI46Iic479A44GN6K/KwqDAEYzeZGyl6E=;
-        b=h3Ptld1YXyMbh0d00BmHeSrABj//RXZrl2K/vG614+n/M6mMDhbK5DOdeRM5DT4Igw
-         hzWiN7qDi9Zw8ojrmJoa9y1dxYQVm0+ue/i8QKDMN+zd6VIgnLeAcxpp8efaQgf7NOFs
-         BrAYqn4nZdhbv5V730BOS9+QpWp21xOiCdVFY=
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aOapSZPUp0g2vRLPFt2Pwlv4YJeJLNgFW5OzxeO2Az4=;
+        b=L7O8jFumaB7EmY5HtnwDKbxvXRB5S0200eENfBFBtzsOYZm0Xb0fZkzugBes9139gc
+         LtOpN74gDJingIlx2690zN4s3ahjPf41d0oh+7i5fxL9QxNlx04ZQztrDNs2fR+TBWrL
+         vKkkWxwTOM2ac5h2AKvi7Eti26GSgQJzzZ/8CLVEUmQGCqGLL6GdLYXzgO+oE0soWXar
+         gWPRAQi+IAhx0fk6JqIv4UUB4QTmtQetbKvGpNtxejn4YJPH/tFMpLGIU7+pEN3rji4R
+         4fqvN61jFMP4o95fuRjUpq3IyEfhHZ9DvtxsQ66iBoJpILhFAmVeGDa5Qnud/7kVKy2+
+         Qlfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9il6o1C53lVI46Iic479A44GN6K/KwqDAEYzeZGyl6E=;
-        b=GzyHRAVfubsBPayanDrVaeY3g9A+V4zk3CEQysvDk/tHloCEgw3LXKbygomZDZaQPR
-         yKL3ju/H2lDEchrMApjzNOn1lSmR7PW28iUcLjWzNP4+aXBQtIxvjHFvOey3Tfezyihj
-         b3VH1oIy6S8NO7g/eE7BOT7w8q/bjgE+pXue2G0q2cm+sSMf+WZJHyL9ukOD/bdnwbwS
-         R+GWnbyQE7E0Qu7sSl4yuTXz9LMcAtaaXnkBthrhKQEESzk+iUE+d9fGGEZ+nQQ4jTR4
-         +ETtXX1DWdlgi04h30feEn+qAO68GDJOZCxmNltCnRCXsNdk2KWJoUxmGuxWxqJYwjT7
-         hP7g==
-X-Gm-Message-State: AOAM530sbtIVH0ybYAEhmb+Xe+gfCyHDff4p8160EG3cJC17UUqcrGW8
-        /spCTzMI3837HaF8jdM6uz3ICckCTiUHj1ZYQJQ=
-X-Google-Smtp-Source: ABdhPJzN0B1NOsm0XToHPzjaSasN30ufTi7ucPNvru3KUZ6j4ILxKqYt7MyjAZFFFSG0phf6w9y1WmYgmSFZYoF/i7o=
-X-Received: by 2002:a05:6214:e41:: with SMTP id o1mr1637542qvc.43.1637630123057;
- Mon, 22 Nov 2021 17:15:23 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aOapSZPUp0g2vRLPFt2Pwlv4YJeJLNgFW5OzxeO2Az4=;
+        b=2AIxSS/1MRClKAXXbe8DiL3p++A4Fkhej5HEbXiChfK2EPOqUzPVKXohRlejR1kFKE
+         MSeaVFf8EudAfjU5Wbflb/C6ysMSbBDKLOoSuEQZCEs2WkNUZ6bB7YftKSuDo7vNuH2G
+         oXWVn/jT+TdvRi7rVo6Fbp7lAUJB6E0vXBHmiodAN2+0LAKJBxFob9i7JCx9sYtiJvQM
+         0qJ5r0RvbeYCXqRYPjy4iF/782lHvnKwOotLfu8gbQIWyUxW1jtFtwsUqfiHLDwDV7h4
+         RMeO2pbLEkTeDcLJa/WrqTZvhsdzH6ccuFjLJBSgYC5GfTNz25U66O1U4vMs6Cx1/TkE
+         IqPA==
+X-Gm-Message-State: AOAM532Mg8fwkdToBx/fOMFfAshJMY+XJ+DrYY83u410FoIg/kUFU1N6
+        IW3hl2SDBCqVF/o8b8I6MPzBWQ==
+X-Google-Smtp-Source: ABdhPJwy+1KiAnohFRJPtinqi0mLVPo2CYoFy6QQ+dNhNSAJSqwN1dFfxnZhk0fdbHcBKjJRAcLlNw==
+X-Received: by 2002:a17:902:c643:b0:141:cf6b:6999 with SMTP id s3-20020a170902c64300b00141cf6b6999mr2068159pls.80.1637630169419;
+        Mon, 22 Nov 2021 17:16:09 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id m6sm6829396pgc.17.2021.11.22.17.16.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Nov 2021 17:16:08 -0800 (PST)
+Date:   Tue, 23 Nov 2021 01:16:05 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Hou Wenlong <houwenlong93@linux.alibaba.com>
+Subject: Re: [PATCH 19/28] KVM: x86/mmu: Zap only the target TDP MMU shadow
+ page in NX recovery
+Message-ID: <YZxA1VAs5FNbjmH9@google.com>
+References: <20211120045046.3940942-1-seanjc@google.com>
+ <20211120045046.3940942-20-seanjc@google.com>
+ <CANgfPd83h4dXa-bFY96dkwHfJsdqu65BAzbqztgEhiRcHFquJw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211122230653.1779162-1-linux@roeck-us.net>
-In-Reply-To: <20211122230653.1779162-1-linux@roeck-us.net>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Tue, 23 Nov 2021 01:15:11 +0000
-Message-ID: <CACPK8XfM1e7b6m_QBhJFgXCXhqOajMKGUkWqRGxa5sCKyLxRQg@mail.gmail.com>
-Subject: Re: [PATCH v2] fs: ntfs: Disable NTFS_RW for PPC
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Anton Altaparmakov <anton@tuxera.com>,
-        linux-ntfs-dev@lists.sourceforge.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANgfPd83h4dXa-bFY96dkwHfJsdqu65BAzbqztgEhiRcHFquJw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Nov 2021 at 23:58, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> NTFS_RW code allocates page size dependent arrays on the stack. This
-> results in build failures if the page size is 64k, which is now the
-> default for PPC.
+On Mon, Nov 22, 2021, Ben Gardon wrote:
+> On Fri, Nov 19, 2021 at 8:51 PM Sean Christopherson <seanjc@google.com> wrote:
+> > @@ -755,6 +759,26 @@ static inline bool tdp_mmu_iter_cond_resched(struct kvm *kvm,
+> >         return false;
+> >  }
+> >
+> > +bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
+> > +{
+> > +       u64 old_spte;
+> > +
+> > +       rcu_read_lock();
+> > +
+> > +       old_spte = kvm_tdp_mmu_read_spte(sp->ptep);
+> > +       if (WARN_ON_ONCE(!is_shadow_present_pte(old_spte))) {
+> > +               rcu_read_unlock();
+> > +               return false;
+> > +       }
+> > +
+> > +       __tdp_mmu_set_spte(kvm, kvm_mmu_page_as_id(sp), sp->ptep, old_spte, 0,
+> > +                          sp->gfn, sp->role.level + 1, true, true);
+> > +
+> > +       rcu_read_unlock();
+> > +
+> > +       return true;
+> > +}
+> > +
+> 
+> Ooooh this makes me really nervous. There are a lot of gotchas to
+> modifying SPTEs in a new context without traversing the paging
+> structure like this. For example, we could modify an SPTE under an
+> invalidated root here. I don't think that would be a problem since
+> we're just clearing it, but it makes the code more fragile.
 
-It became the default for PPC_BOOK3S_64, which doesn't include all of
-PPC, in f22969a66041 ("powerpc/64s: Default to 64K pages for 64 bit
-book3s").
+Heh, it better not be a problem, because there are plently of flows in the TDP MMU
+that can modify SPTEs under an invalidated root, e.g. fast_page_fault(),
+tdp_mmu_zap_leafs(), kvm_age_gfn(), kvm_test_age_gfn(), etc...  And before the
+patch that introduced is_page_fault_stale(), kvm_tdp_mmu_map() was even installing
+SPTEs into an invalid root!  Anything that takes a reference to a root and yields
+(or never takes mmu_lock) can potentially modify a SPTE under an invalid root.
 
-You might want to add a mention of this commit in your commit message.
+Checking the paging structures for this flow wouldn't change anything.  Invalidating
+a root doesn't immediately zap SPTEs, it just marks the root invalid.  The other
+subtle gotcha is that kvm_reload_remote_mmus() doesn't actually gaurantee all vCPUs
+will have dropped the invalid root or performed a TLB flush when mmu_lock is dropped,
+those guarantees are only with respect to re-entering the guest!
 
->
-> fs/ntfs/aops.c: In function 'ntfs_write_mst_block':
-> fs/ntfs/aops.c:1311:1: error:
->         the frame size of 2240 bytes is larger than 2048 bytes
->
-> Increasing the maximum frame size for PPC just to silence this error does
-> not really help. It would have to be set to a really large value for 256k
-> pages. Such a large frame size could potentially result in stack overruns
-> in this code and elsewhere and is therefore not desirable. Disable NTFS_RW
-> for PPC instead.
->
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
-> v2: Introduce new configuration flag DISABLE_NTFS_RW and use it to disable NTFS_RW
->     for PPC
->
->  fs/ntfs/Kconfig | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/fs/ntfs/Kconfig b/fs/ntfs/Kconfig
-> index 1667a7e590d8..324224febb6a 100644
-> --- a/fs/ntfs/Kconfig
-> +++ b/fs/ntfs/Kconfig
-> @@ -49,8 +49,13 @@ config NTFS_DEBUG
->           When reporting bugs, please try to have available a full dump of
->           debugging messages while the misbehaviour was occurring.
->
-> +config DISABLE_NTFS_RW
-> +       bool
-> +       default y if PPC
+All of the above is no small part of why I don't want to walk the page tables:
+it's completely misleading as walking the page tables doesn't actually provide any
+protection, it's holding RCU that guarantees KVM doesn't write memory it doesn't own.
 
-PPC_64K_PAGES would be more accurate.
+> Another approach to this would be to do in-place promotion / in-place
+> splitting once the patch sets David and I just sent out are merged.  That
+> would avoid causing extra page faults here to bring in the page after this
+> zap, but it probably wouldn't be safe if we did it under an invalidated root.
 
-I think arm64 was seeing a similar build error, so you could include
-ARM64_64K_PAGES as well?
+I agree that in-place promotion would be better, but if we do that, I think a logical
+intermediate step would be to stop zapping unrelated roots and entries.  If there's
+a bug that is exposed/introduced by not zapping other stuff, I would much rather it
+show up when KVM stops zapping other stuff, not when KVM stops zapping other stuff
+_and_ promotes in place.  Ditto for if in-place promotion introduces a bug.
 
-> +
->  config NTFS_RW
->         bool "NTFS write support"
-> +       depends on !DISABLE_NTFS_RW
->         depends on NTFS_FS
->         help
->           This enables the partial, but safe, write support in the NTFS driver.
-> --
-> 2.33.0
->
+> I'd rather avoid this extra complexity and just tolerate the worse
+> performance on the iTLB multi hit mitigation at this point since new
+> CPUs seem to be moving past that vulnerability.
+
+IMO, it reduces complexity, especially when looking at the series as a whole, which
+I fully realize you haven't yet done :-)  Setting aside the complexities of each
+chunk of code, what I find complex with the current TDP MMU zapping code is that
+there are no precise rules for what needs to be done in each situation.  I'm not
+criticizing how we got to this point, I absolutely think that hitting everything
+with a big hammer to get the initial version stable was the right thing to do.
+
+But a side effect of the big hammer approach is that it makes reasoning about things
+more difficult, e.g. "when is it safe to modify a SPTE versus when is it safe to insert
+a SPTE into the paging structures?" or "what needs to be zapped when the mmu_notifier
+unmaps a range?".
+
+And I also really want to avoid another snafu like the memslots with passthrough
+GPUs bug, where using a big hammer (zap all) when a smaller hammer (zap SPTEs for
+the memslot) _should_ work allows bugs to creep in unnoticed because they're hidden
+by overzealous zapping.
+
+> If you think this is worth the complexity, it'd be nice to do a little
+> benchmarking to make sure it's giving us a substantial improvement.
+
+Performance really isn't a motivating factor.  Per the changelog, the motivation
+is mostly to allow later patches to simplify zap_gfn_range() by having it zap only
+leaf SPTEs, and now that I've typed it up, also all of the above :-)
