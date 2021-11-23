@@ -2,104 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C558D45A226
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:02:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BCF845A228
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:03:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236000AbhKWMFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 07:05:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235898AbhKWMFs (ORCPT
+        id S236000AbhKWMG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 07:06:56 -0500
+Received: from www62.your-server.de ([213.133.104.62]:39652 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234506AbhKWMGz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 07:05:48 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5191FC061574;
-        Tue, 23 Nov 2021 04:02:40 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id r5so18095814pgi.6;
-        Tue, 23 Nov 2021 04:02:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=PmcU1Ad5hGOKrtctKRq/pbfb3e4GptfnLdKFtOED7KE=;
-        b=fNrEBBUZjfAkxJ0xIyWUWIBF7KQmPCEMe9w7/Ln0+1eh0uQDkrzCvDWFEzAGFUIr/E
-         hbQQaAcruBJ43GIH2mal40NZTPUxAjf4EwXJtB5XjmrNaDxzKeBYCUJKi8LaXJvpfWtc
-         BAL9U8tkK183963DSlz54U5O28mYY1kYzT/38ZjOu7qDa+bbxPtyzEY+4yVyauRXYEJY
-         olBXOronmE6urUFTGxEQ8DN9QasFp9xa6RmwumJSlyPNjxXsWxze/sc6NTyPFk9mqHIT
-         FP4WwsZV7eCkiSVt1iKjx8uFI2h3oq/WuNpzNgG4Wtcup7QZQxEZhM1Y4QI6IbeBiCiJ
-         zX6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=PmcU1Ad5hGOKrtctKRq/pbfb3e4GptfnLdKFtOED7KE=;
-        b=veqdzWL5k/mVLSEoCDFkwLnQtNpZvJ2ygqOAYTxcZB2Wp2K9kDxZpLHw3pZw2y1+EG
-         X7HOHfOHR5NDHFGOEDekHPizpd9y79xYPzflW9cJmN8FL7ksTopsKA5TskxFAjwpKCY9
-         +gKW+wQOKukXXTkrwTBLWGLlr4jOzOgC/Ddo0MkXo61mT6ZXSvgiJXUOXj1jJE4ux+bx
-         JppMYYnxYj256fNenQEPV2KS1IzVrHD0cfEIy7QCWuWl3QMXMDNLnpQrNRYnddYVdLKz
-         G8lrQcnkGeSVTKwZmS6kXty9wQm+pnzxDC07gd4ModHtpGtXu3SR9LE7kxrFjNRy3e2O
-         67uA==
-X-Gm-Message-State: AOAM5309GS18iCiGm6ieP2AAjzCrkbADnAoBw7cM7H5K/u+1WIU+tVgG
-        TeybhcaqIWSDj6RZNXIx3us=
-X-Google-Smtp-Source: ABdhPJxYzrUOpnn0PyqsxgguDlujgVu/Qf/YMrlsxk9WuXBd8mzK7Qz1Gfoca+w8sswV9jZwB5hCKQ==
-X-Received: by 2002:aa7:93c4:0:b0:49f:a7f5:7f5a with SMTP id y4-20020aa793c4000000b0049fa7f57f5amr4743102pff.8.1637668959018;
-        Tue, 23 Nov 2021 04:02:39 -0800 (PST)
-Received: from [192.168.1.5] ([110.77.218.179])
-        by smtp.googlemail.com with ESMTPSA id m15sm12623825pfk.186.2021.11.23.04.02.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Nov 2021 04:02:38 -0800 (PST)
-Message-ID: <7c32898b-fc65-b624-ea33-c3cc02e15b63@gmail.com>
-Date:   Tue, 23 Nov 2021 19:02:34 +0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [PATCH v2] USB: serial: option: add Fibocom FM101-GL variants
-Content-Language: en-US
-To:     Mingjie Zhang <superzmj@fibocom.com>, johan@kernel.org
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        Tue, 23 Nov 2021 07:06:55 -0500
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mpUWX-0005MI-4M; Tue, 23 Nov 2021 13:03:45 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mpUWW-000C6f-M7; Tue, 23 Nov 2021 13:03:44 +0100
+Subject: Re: [PATCH v3] bpf: Remove config check to enable bpf support for
+ branch records
+To:     Kajol Jain <kjain@linux.ibm.com>, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20211123082634.21498-1-superzmj@fibocom.com>
-From:   Lars Melin <larsm17@gmail.com>
-In-Reply-To: <20211123082634.21498-1-superzmj@fibocom.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Cc:     acme@kernel.org, peterz@infradead.org, songliubraving@fb.com,
+        andrii@kernel.org, kafai@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, davem@davemloft.net, kpsingh@kernel.org,
+        hawk@kernel.org, kuba@kernel.org, maddy@linux.ibm.com,
+        atrajeev@linux.vnet.ibm.com, linux-perf-users@vger.kernel.org,
+        rnsastry@linux.ibm.com, andrii.nakryiko@gmail.com
+References: <20211123095104.54330-1-kjain@linux.ibm.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <d5436a4c-f4dc-7d6c-f521-505e35c57fb5@iogearbox.net>
+Date:   Tue, 23 Nov 2021 13:03:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20211123095104.54330-1-kjain@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26362/Tue Nov 23 10:18:04 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/23/2021 15:26, Mingjie Zhang wrote:
-> Update the USB serial option driver support for the Fibocom
-> FM101-GL Cat.6
-> LTE modules as there are actually several different variants.
-> - VID:PID 2cb7:01a4, FM101-GL for laptop debug M.2 cards(with
->    adb interfaces for /Linux/Chrome OS)
-> - VID:PID 2cb7:01a2, FM101-GL are laptop M.2 cards (with
->    MBIM interfaces for /Linux/Chrome OS)
+On 11/23/21 10:51 AM, Kajol Jain wrote:
+> Branch data available to bpf programs can be very useful to get
+> stack traces out of userspace application.
 > 
-> T:  Bus=02 Lev=01 Prnt=01 Port=03 Cnt=01 Dev#=  2 Spd=5000 MxCh= 0
-> D:  Ver= 3.20 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 9 #Cfgs=  1
-> P:  Vendor=2cb7 ProdID=01a2 Rev= 5.04
-> S:  Manufacturer=Fibocom Wireless Inc.
-> S:  Product=Fibocom FM101-GL Module
-> S:  SerialNumber=86bffe63
-> C:* #Ifs= 7 Cfg#= 1 Atr=a0 MxPwr=896mA
-> A:  FirstIf#= 0 IfCount= 2 Cls=02(comm.) Sub=0e Prot=00
-> I:* If#= 0 Alt= 0 #EPs= 1 Cls=02(comm.) Sub=0e Prot=00 Driver=cdc_mbim
-> I:* If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=(none)
-> I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=(none)
-> I:* If#= 4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=(none)
-> I:* If#= 5 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=(none)
+> Commit fff7b64355ea ("bpf: Add bpf_read_branch_records() helper")
+> added bpf support to capture branch records in x86. Enable this feature
+> for other architectures as well by removing check specific to x86.
 > 
-> 0x01a2: mbim, tty, tty, diag, gnss
+> Incase any architecture doesn't support branch records,
+> bpf_read_branch_records still have appropriate checks and it
+> will return error number -EINVAL in that scenario. But based on
+> documentation there in include/uapi/linux/bpf.h file, incase of
+> unsupported archs, this function should return -ENOENT. Hence update
+> the appropriate checks to return -ENOENT instead.
 > 
-The descriptor say 7 interfaces but you have only listed 6 in your v2, 
-there was 7 in your v1.
-I'm also quite sure that the interface with Prot=30 is the diag interface.
+> Selftest 'perf_branches' result on power9 machine which has branch stacks
+> support.
+> 
+> Before this patch changes:
+> [command]# ./test_progs -t perf_branches
+>   #88/1 perf_branches/perf_branches_hw:FAIL
+>   #88/2 perf_branches/perf_branches_no_hw:OK
+>   #88 perf_branches:FAIL
+> Summary: 0/1 PASSED, 0 SKIPPED, 1 FAILED
+> 
+> After this patch changes:
+> [command]# ./test_progs -t perf_branches
+>   #88/1 perf_branches/perf_branches_hw:OK
+>   #88/2 perf_branches/perf_branches_no_hw:OK
+>   #88 perf_branches:OK
+> Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+> 
+> Selftest 'perf_branches' result on power9 machine which doesn't
+> have branch stack report.
+> 
+> After this patch changes:
+> [command]# ./test_progs -t perf_branches
+>   #88/1 perf_branches/perf_branches_hw:SKIP
+>   #88/2 perf_branches/perf_branches_no_hw:OK
+>   #88 perf_branches:OK
+> Summary: 1/1 PASSED, 1 SKIPPED, 0 FAILED
+> 
+> Fixes: fff7b64355eac ("bpf: Add bpf_read_branch_records() helper")
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+> ---
+> 
+> Tested this patch changes on power9 machine using selftest
+> 'perf branches' which is added in commit 67306f84ca78 ("selftests/bpf:
+> Add bpf_read_branch_records()")
+> 
+> Changelog:
+> v2 -> v3
+> - Change the return error number for bpf_read_branch_records
+>    function from -EINVAL to -ENOENT for appropriate checks
+>    as suggested by Daniel Borkmann.
+> 
+> - Link to the v2 patch: https://lkml.org/lkml/2021/11/18/510
+> 
+> v1 -> v2
+> - Inorder to add bpf support to capture branch record in
+>    powerpc, rather then adding config for powerpc, entirely
+>    remove config check from bpf_read_branch_records function
+>    as suggested by Peter Zijlstra
+> 
+> - Link to the v1 patch: https://lkml.org/lkml/2021/11/14/434
+> 
+>   kernel/trace/bpf_trace.c | 8 ++------
+>   1 file changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 7396488793ff..b94a00f92759 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1402,18 +1402,15 @@ static const struct bpf_func_proto bpf_perf_prog_read_value_proto = {
+>   BPF_CALL_4(bpf_read_branch_records, struct bpf_perf_event_data_kern *, ctx,
+>   	   void *, buf, u32, size, u64, flags)
+>   {
+> -#ifndef CONFIG_X86
+> -	return -ENOENT;
+> -#else
+>   	static const u32 br_entry_size = sizeof(struct perf_branch_entry);
+>   	struct perf_branch_stack *br_stack = ctx->data->br_stack;
+>   	u32 to_copy;
+>   
+>   	if (unlikely(flags & ~BPF_F_GET_BRANCH_RECORDS_SIZE))
+> -		return -EINVAL;
+> +		return -ENOENT;
 
-rgds
-Lars
+What's the rationale for also changing the above? Invalid/unsupported flags should
+still return -EINVAL as they did before ...
 
+>   	if (unlikely(!br_stack))
+> -		return -EINVAL;
+> +		return -ENOENT;
 
+... meaning only this one here was necessary.
 
+>   	if (flags & BPF_F_GET_BRANCH_RECORDS_SIZE)
+>   		return br_stack->nr * br_entry_size;
+> @@ -1425,7 +1422,6 @@ BPF_CALL_4(bpf_read_branch_records, struct bpf_perf_event_data_kern *, ctx,
+>   	memcpy(buf, br_stack->entries, to_copy);
+>   
+>   	return to_copy;
+> -#endif
+>   }
+>   
+>   static const struct bpf_func_proto bpf_read_branch_records_proto = {
+> 
 
