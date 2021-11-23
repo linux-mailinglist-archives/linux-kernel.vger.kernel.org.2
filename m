@@ -2,197 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB83C45B041
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:34:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8708545B044
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:35:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235249AbhKWXiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 18:38:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39620 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230442AbhKWXiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 18:38:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9400B60FE6;
-        Tue, 23 Nov 2021 23:34:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637710492;
-        bh=47O5TjToz0WFowNe6yEwB8NggXB/1IyXNGQaOA02uJo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r+BMCa5F8mo86vQPn6+sf/yy3tOuK38qRNMkTK6ALN1CqbT1+QK1E5p2jOsNM0Inf
-         Z0eqURYWggQBUv9dGwwgDaXh6ddQ2KqVh5z+g7PmlQXS6mcHMQU17NlmjCtbQXrRi1
-         lUBEmeZJEhITfbG2CVrR3XC+j4ENEWDGVxFzjw7MpaCTG6BuGJrYqXkx5OP+gh6yXW
-         3p0+PGsg3EjRZDi6FfnG1QeHg9cVem7TNbxkmvAWzObqwkVewHFXnS9WX5aFiobyYM
-         rS5OcaPWbT48SEJfgUXCe0FDk1ppUvF8wVkmmxPhXZuhszrsmsjrBSZMOdFvHvMIVw
-         z7TWcuqmTqC2w==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 772A640002; Tue, 23 Nov 2021 20:34:49 -0300 (-03)
-Date:   Tue, 23 Nov 2021 20:34:49 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        eranian@google.com
-Subject: Re: [PATCH 2/3] perf tools: Fix SMT not detected with large core
- count
-Message-ID: <YZ16mRRu7HZzUlYe@kernel.org>
-References: <20211123224821.3258649-1-irogers@google.com>
- <20211123224821.3258649-2-irogers@google.com>
+        id S238377AbhKWXic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 18:38:32 -0500
+Received: from mail-yb1-f173.google.com ([209.85.219.173]:33445 "EHLO
+        mail-yb1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240585AbhKWXiY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 18:38:24 -0500
+Received: by mail-yb1-f173.google.com with SMTP id v7so2027930ybq.0;
+        Tue, 23 Nov 2021 15:35:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5HVBVN9+sTrLodgeig4D1EWIc9RQ5SNWBFmWu98vXL0=;
+        b=f6kvHWRyM1JdQRC8Kmh9zPO+ZORff5Td+7YonaI/Q7uHsGt8z7iJ6w6S/DTMTPv2bh
+         Mc5eidWUAlcvPoZcsH/W0pURMeBgWh9uZ8tO/CRsiP3UZX1QQRhMdlFeXSLpEhiD+FlI
+         9Jenj1j00ZMv4CI6Id3dr3129EwDWugT0XU1Sp+g+9kUAZqQ27vZboRYWd/+PZiLtCpM
+         iQ80AL+T0MRuvyK8DY/jW5g7DHn7yRypjWKeOM/1GZNDYjUrjl6kiaSD9zNzMfKwpKxz
+         a+Iu1fUX2nd5dD8/y4dPbYqRA0mSEajH1eiQKyKuYbd/LuItiPLDVfd4lHjd1RCqPwRF
+         h4dQ==
+X-Gm-Message-State: AOAM530N9fkHw9Qn+aHZkaELGCY/MICwcYWp+Arg6TeotNYyhkC8cdu+
+        bCn3j/CRho2BvkYw09bygcxHdN5xefV3Kch+CSU=
+X-Google-Smtp-Source: ABdhPJw/S8b+4DBi3I9No3zeqKoBNlDBHhzozk6T4jzYhC+n6oU4VdXxRo1GxJXjZxWTLDQlmooFebwqfimrYkzrznk=
+X-Received: by 2002:a25:d214:: with SMTP id j20mr10478211ybg.536.1637710515640;
+ Tue, 23 Nov 2021 15:35:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211123224821.3258649-2-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+References: <20211123115333.624335-1-mailhol.vincent@wanadoo.fr> <bc682dbe-c74e-cd8a-ab05-78a6b4079ebf@hartkopp.net>
+In-Reply-To: <bc682dbe-c74e-cd8a-ab05-78a6b4079ebf@hartkopp.net>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Wed, 24 Nov 2021 08:35:04 +0900
+Message-ID: <CAMZ6RqJ_Kj48Zuv=zzPawcQw4qkgxa=u9aHgH8Ggq9MQZosS_Q@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] fix statistics for CAN RTR and Error frames
+To:     Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Nov 23, 2021 at 02:48:20PM -0800, Ian Rogers escreveu:
-> sysfs__read_int returns 0 on success, and so the fast read path was
-> always failing.
+On Wed. 24 Nov. 2021 at 06:10, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
+> On 23.11.21 12:53, Vincent Mailhol wrote:
+> > There are two common errors which are made when reporting the CAN RX
+> > statistics:
+> >
+> >    1. Incrementing the "normal" RX stats when receiving an Error
+> >    frame. Error frames is an abstraction of Socket CAN and does not
+> >    exist on the wire.
+> >
+> >    2. Counting the length of the Remote Transmission Frames (RTR). The
+> >    length of an RTR frame is the length of the requested frame not the
+> >    actual payload. In reality the payload of an RTR frame is always 0
+> >    bytes long.
+> >
+> > This patch series fix those two issues for all CAN drivers.
+> >
+> > Vincent Mailhol (2):
+> >    can: do not increase rx statistics when receiving CAN error frames
+> >    can: do not increase rx_bytes statistics for RTR frames
+>
+> I would suggest to upstream this change without bringing it to older
+> (stable) trees.
+>
+> It doesn't fix any substantial flaw which needs to be backported IMHO.
 
-Please split this into two patches, the above part should be in one, and
-the strtoull in another.
+I fully agree. Bringing it to the stable trees would be a
+considerable effort and was not my intent either (thus the
+absence of "Fixes" tags).
 
-Also can't we just do as ./tools/perf/util/cputopo.c and use instead
-core_cpus_list?
+> Btw. can you please change 'error frames' to 'error message frames'?
+>
+> We had a discussion some years ago that the 'error frames' are used as
+> term inside the CAN protocol.
 
-On a 5950x:
+ACK. Thanks for the clarification on the vocabulary.
 
-⬢[acme@toolbox perf]$ cat /sys/devices/system/cpu/cpu31/topology/core_cpus
-80008000
-⬢[acme@toolbox perf]$ cat /sys/devices/system/cpu/cpu31/topology/core_cpus_list
-15,31
-⬢[acme@toolbox perf]$ cat /sys/devices/system/cpu/cpu0/topology/core_cpus
-00010001
-⬢[acme@toolbox perf]$ cat /sys/devices/system/cpu/cpu0/topology/core_cpus_list
-0,16
-⬢[acme@toolbox perf]$
-
-- Arnaldo
-
-> strtoull can only read a 64-bit bitmap. On an AMD EPYC core_cpus may look
-> like:
-> 00000000,00000000,00000000,00000001,00000000,00000000,00000000,00000001
-> and so the sibling wasn't spotted. Fix by writing a simple hweight string
-> parser.
-> 
-> Fixes: bb629484d924 (perf tools: Simplify checking if SMT is active.)
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/smt.c | 68 ++++++++++++++++++++++++++++++++++++-------
->  1 file changed, 58 insertions(+), 10 deletions(-)
-> 
-> diff --git a/tools/perf/util/smt.c b/tools/perf/util/smt.c
-> index 20bacd5972ad..2636be65305a 100644
-> --- a/tools/perf/util/smt.c
-> +++ b/tools/perf/util/smt.c
-> @@ -5,6 +5,56 @@
->  #include "api/fs/fs.h"
->  #include "smt.h"
->  
-> +/**
-> + * hweight_str - Returns the number of bits set in str. Stops at first non-hex
-> + *	       or ',' character.
-> + */
-> +static int hweight_str(char *str)
-> +{
-> +	int result = 0;
-> +
-> +	while (*str) {
-> +		switch (*str++) {
-> +		case '0':
-> +		case ',':
-> +			break;
-> +		case '1':
-> +		case '2':
-> +		case '4':
-> +		case '8':
-> +			result++;
-> +			break;
-> +		case '3':
-> +		case '5':
-> +		case '6':
-> +		case '9':
-> +		case 'a':
-> +		case 'A':
-> +		case 'c':
-> +		case 'C':
-> +			result += 2;
-> +			break;
-> +		case '7':
-> +		case 'b':
-> +		case 'B':
-> +		case 'd':
-> +		case 'D':
-> +		case 'e':
-> +		case 'E':
-> +			result += 3;
-> +			break;
-> +		case 'f':
-> +		case 'F':
-> +			result += 4;
-> +			break;
-> +		default:
-> +			goto done;
-> +		}
-> +	}
-> +done:
-> +	return result;
-> +}
-> +
->  int smt_on(void)
->  {
->  	static bool cached;
-> @@ -15,9 +65,12 @@ int smt_on(void)
->  	if (cached)
->  		return cached_result;
->  
-> -	if (sysfs__read_int("devices/system/cpu/smt/active", &cached_result) > 0)
-> -		goto done;
-> +	if (sysfs__read_int("devices/system/cpu/smt/active", &cached_result) >= 0) {
-> +		cached = true;
-> +		return cached_result;
-> +	}
->  
-> +	cached_result = 0;
->  	ncpu = sysconf(_SC_NPROCESSORS_CONF);
->  	for (cpu = 0; cpu < ncpu; cpu++) {
->  		unsigned long long siblings;
-> @@ -35,18 +88,13 @@ int smt_on(void)
->  				continue;
->  		}
->  		/* Entry is hex, but does not have 0x, so need custom parser */
-> -		siblings = strtoull(str, NULL, 16);
-> +		siblings = hweight_str(str);
->  		free(str);
-> -		if (hweight64(siblings) > 1) {
-> +		if (siblings > 1) {
->  			cached_result = 1;
-> -			cached = true;
->  			break;
->  		}
->  	}
-> -	if (!cached) {
-> -		cached_result = 0;
-> -done:
-> -		cached = true;
-> -	}
-> +	cached = true;
->  	return cached_result;
->  }
-> -- 
-> 2.34.0.rc2.393.gf8c9666880-goog
-
--- 
-
-- Arnaldo
+Yours sincerely,
+Vincent Mailhol
