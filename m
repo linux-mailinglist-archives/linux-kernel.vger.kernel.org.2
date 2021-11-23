@@ -2,84 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8B345A409
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:41:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE9D45A40A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236621AbhKWNoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 08:44:20 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:43120 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbhKWNoT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 08:44:19 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 437831FD5A;
-        Tue, 23 Nov 2021 13:41:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637674870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=w/LxEdXnM5Ugr13j6sYm/tVkCUBrZUC8yRTYLFMPAfc=;
-        b=I0eKvSzPZHROoiG9bnh1w9NrFYDJCOhL+lE9cecxv5nU5EfS6WN3JGCbwvNWuDJNlrKhzg
-        FX/MxsRsibCjJ3h7EaidOUeWjk8rUg6X5so3Wu3Mwa3ilpklT1P8RO4TkMnAPCpA9OIdJE
-        yHVO/y985HFSuqYgoSugYoWbngFNA1A=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 10EF1A3B81;
-        Tue, 23 Nov 2021 13:41:10 +0000 (UTC)
-Date:   Tue, 23 Nov 2021 14:41:06 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Mel Gorman <mgorman@suse.de>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] MM: discard __GFP_ATOMIC
-Message-ID: <YZzvcjRYTL+XEHHz@dhcp22.suse.cz>
-References: <163712397076.13692.4727608274002939094@noble.neil.brown.name>
- <YZvItUOgTgD11etC@dhcp22.suse.cz>
- <163764199967.7248.2528204111227925210@noble.neil.brown.name>
+        id S236327AbhKWNqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 08:46:37 -0500
+Received: from mga11.intel.com ([192.55.52.93]:21270 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230197AbhKWNqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 08:46:35 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="232513571"
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="232513571"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 05:43:27 -0800
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="674470888"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 05:43:24 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mpW4u-009nAU-5G;
+        Tue, 23 Nov 2021 15:43:20 +0200
+Date:   Tue, 23 Nov 2021 15:43:19 +0200
+From:   'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     "'Vaittinen, Matti'" <Matti.Vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/4] bitops: Add single_bit_set()
+Message-ID: <YZzv93tdAJ5V6MT2@smile.fi.intel.com>
+References: <cover.1637330431.git.matti.vaittinen@fi.rohmeurope.com>
+ <73d5e4286282a47b614d1cc5631eb9ff2a7e2b44.1637330431.git.matti.vaittinen@fi.rohmeurope.com>
+ <YZt+x2moR632x///@smile.fi.intel.com>
+ <2c22b52f-9a1f-06f5-f008-d568096f5c4d@fi.rohmeurope.com>
+ <YZuTt3+PPvyJsFQ/@smile.fi.intel.com>
+ <e2675600-7b04-19b0-79ce-28a4e1d1f225@fi.rohmeurope.com>
+ <874db8b91ff04001a8958f100a614ed8@AcuMS.aculab.com>
+ <YZzGwubCr8RZtbFM@smile.fi.intel.com>
+ <89f18bd93ce545feb7a02889ae49f079@AcuMS.aculab.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <163764199967.7248.2528204111227925210@noble.neil.brown.name>
+In-Reply-To: <89f18bd93ce545feb7a02889ae49f079@AcuMS.aculab.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 23-11-21 15:33:19, Neil Brown wrote:
-[...]
-> "ALLOC_HARDER" is a question of "can I justify imposing on other threads
-> by taking memory that they might want".  Again there may be different
-> reasons, but they will not always align with the first set.
+On Tue, Nov 23, 2021 at 10:58:44AM +0000, David Laight wrote:
+> From: Andy Shevchenko
+> > On Tue, Nov 23, 2021 at 10:42:45AM +0000, David Laight wrote:
+> > > From: Vaittinen, Matti
+> > > > Sent: 22 November 2021 13:19
+> > > > On 11/22/21 14:57, Andy Shevchenko wrote:
+> > > > > On Mon, Nov 22, 2021 at 12:42:21PM +0000, Vaittinen, Matti wrote:
+> > > > >> On 11/22/21 13:28, Andy Shevchenko wrote:
+> > > > >>> On Mon, Nov 22, 2021 at 01:03:25PM +0200, Matti Vaittinen wrote:
+> > > > >
+> > > > > What do you mean by this?
+> > > > >
+> > > > > hweight() will return you the number of the non-zero elements in the set.
+> > > >
+> > > > Exactly. The function I added did only check if given set of bits had
+> > > > only one bit set.
+> > >
+> > > Checking for exactly one bit can use the (x & (x - 1)) check on
+> > > non-zero values - which may even be better on some cpus with a
+> > > popcnt instruction.
+> > 
+> > In the discussed case the value pretty much can be 0, meaning you have
+> > to add an additional test which I believe diminishes all efforts for
+> > the is_power_of_2() call.
 > 
-> With my patch there is still a difference between ALLOC_HIGH and
-> ALLOC_HARDER, but not much.
-> __GFP_HIGH combined with __GFP_NOMEMALLOC - which could be seen as "high
-> priority, but not too high" delivers ALLOC_HIGH without ALLOC_HARDER.
-> It may not be a useful distinction, but it seems to preserve most of
-> what I didn't want to change.
+> I wouldn't have thought so.
+> Code would be:
+> 	if (!scan_for_non_zero())
+> 		return 0;
+> 	if (!is_power_of_2())
+> 		return 0;
+> 	return scan_for_non_zero() ? 0 : 1;
+> 
+> Hand-crafting asm you'd actually check for (x - 1) generating
+> carry in the initial scan.
 
-I am not sure this is really a helpful distinction. I would even say that
-an explicit use of __GFP_NOMEMALLOC | __GFP_HIGH is actively confusing
-as that would mean that you do not allow access to reserves while you
-want to dip into them anyway.
+Have you done any benchmarks? Can we see them?
 
-Anyway, I still think that ALLOC_HARDER should stay under control of the
-allocator as a heuristic rather being imprinted into gfp flags
-directly. Having two levels of memory reserves access is just too
-complicated for users and I wouldn't be surprised if most callers would
-just consider their usecase important enough to justify as much reserves
-as possible.
+> The latency of popcnt it worse than arithmetic on a lot of x86 cpu.
 
-Allocation from an interrupt context sounds like a good usecase for
-ALLOC_HARDER. I am not sure about rt_task one but that one can be
-reasoned about as well. All/most __GFP_HIGH allocations just look like
-an overuse and conflation of the two modes. Both these were the primary
-usecase for ALLOC_HARDER historically we just tried to find a way how to
-express the former by gfp flags.
+Ditto.
+
+
 -- 
-Michal Hocko
-SUSE Labs
+With Best Regards,
+Andy Shevchenko
+
+
