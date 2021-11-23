@@ -2,79 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83DD045A814
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:36:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB88245A805
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:35:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236264AbhKWQjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 11:39:12 -0500
-Received: from mail-io1-f53.google.com ([209.85.166.53]:41889 "EHLO
-        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239032AbhKWQiR (ORCPT
+        id S229814AbhKWQiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 11:38:07 -0500
+Received: from mail-il1-f173.google.com ([209.85.166.173]:37508 "EHLO
+        mail-il1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238265AbhKWQiF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 11:38:17 -0500
-Received: by mail-io1-f53.google.com with SMTP id y16so28665635ioc.8;
-        Tue, 23 Nov 2021 08:35:09 -0800 (PST)
+        Tue, 23 Nov 2021 11:38:05 -0500
+Received: by mail-il1-f173.google.com with SMTP id h23so22293494ila.4;
+        Tue, 23 Nov 2021 08:34:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=L+wT8ZVIvUW7LbdAd258WQWbKmsU54AD2qUyaW0yHWs=;
-        b=qWIBId1rS713btu5SINLfeWcFIuqmhWNxbOEUsiaGOQI91brenA5ATFYGzwTadblIs
-         DEOzJ1PKGUvo6ixp+G9wlPWFJ2yndZfVY3vcnuMig61xYZ5BP/L6cL5CJ9/fyj9+ooFq
-         8e0tA0OOjhAbiYFrDF8TI8PZRh7cEeUBWFY/vpXOi5U2fQ67zKLxH+4GeST0NlBvy8RX
-         0C5koYCOGepc8HWLMR6aLPgwrqbwS3J0sFDzL6IYwJ/tiorfYfXc8yfjyUnd14IIePY8
-         12yQEAsXYpdOYdGaaRU4/SNQKz8zaFF+KnD60lD7Ix+9YrNqkgtGQizHi1/dnRVzWJGi
-         LlIg==
-X-Gm-Message-State: AOAM530T37AGxaJ7BAk7UhRO5LqzndOUwG0h8MLeTc3061tYF34ZtfrD
-        S6Z8aFFDy78TH8On6jOGkA==
-X-Google-Smtp-Source: ABdhPJyQBPu5DjU807Y7rKr+WqMhNBwFzOESYmvnIx6qfZZBopTYE7H8kZ1Ck5Wqc55lHBOpRNlIJg==
-X-Received: by 2002:a05:6602:1513:: with SMTP id g19mr7141385iow.31.1637685309326;
-        Tue, 23 Nov 2021 08:35:09 -0800 (PST)
+        bh=QxKTz0uPcRgTU3M7Im7hWxB0L2741jFJDTYakDawPhk=;
+        b=eeCaQxFTR3cgrDKv6rDS1qA+parP0wpzvPwlVO3Y9wZ1ZOVd0+4MYaM+WoWyjp0qj8
+         0cWZqPMkDs+mtCaPoHYyrWOXeEUGE3Tq4OAtYA1F5qEwYaaOKPpHuwG3JeIGs4o2/JL4
+         JK+F4EtwWMGkIfd8AgFWWgTk5yUv7nnrsdqbMMi+2xfqI39CDiMUnndB2bfTUguyNifu
+         V0pkLPNTfoVg01Ed22svrSN5Zuiolw46feZ3r0yZ64QV6+uNidKYYPrWfBhYQWGVrr4P
+         bz5+fkS8a+gd3j8BREghU4qO263dZw//XlJpVao3GFbVg7vt4nKabHagxi+fzLknammi
+         qUYg==
+X-Gm-Message-State: AOAM53133LxgVytl0GGo9dT/AjaYNhAOl/oIMEsIgo1fAVoqov6i1HLE
+        2+CNJGJx6FYLm1SopRdYzQ==
+X-Google-Smtp-Source: ABdhPJx9muI2pfMbgouTcfdaSQmH5+KKltsBDuiSE/x+ATmUUXRUs/yotC4IR7EsxK53036o/hIICQ==
+X-Received: by 2002:a05:6e02:2166:: with SMTP id s6mr6446960ilv.170.1637685296438;
+        Tue, 23 Nov 2021 08:34:56 -0800 (PST)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id x15sm9270605ill.20.2021.11.23.08.35.07
+        by smtp.gmail.com with ESMTPSA id u12sm7558958ilm.1.2021.11.23.08.34.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 08:35:08 -0800 (PST)
-Received: (nullmailer pid 3442926 invoked by uid 1000);
+        Tue, 23 Nov 2021 08:34:55 -0800 (PST)
+Received: (nullmailer pid 3442914 invoked by uid 1000);
         Tue, 23 Nov 2021 16:34:29 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Olivier Moysan <olivier.moysan@foss.st.com>
-Cc:     fabrice.gasnier@foss.st.com, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        arnaud.pouliquen@foss.st.com,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-In-Reply-To: <20211119144551.7577-3-olivier.moysan@foss.st.com>
-References: <20211119144551.7577-1-olivier.moysan@foss.st.com> <20211119144551.7577-3-olivier.moysan@foss.st.com>
-Subject: Re: [PATCH 2/9] ASoC: dt-bindings: stm32: i2s: add audio-graph-card port
+To:     Adam Ward <Adam.Ward.opensource@diasemi.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+In-Reply-To: <49e5f47c79c0fc1d2b52ffdf7f5872f0adfa5ba5.1637669927.git.Adam.Ward.opensource@diasemi.com>
+References: <cover.1637669927.git.Adam.Ward.opensource@diasemi.com> <49e5f47c79c0fc1d2b52ffdf7f5872f0adfa5ba5.1637669927.git.Adam.Ward.opensource@diasemi.com>
+Subject: Re: [PATCH 1/2] DA9121: add DA914x binding info
 Date:   Tue, 23 Nov 2021 09:34:29 -0700
-Message-Id: <1637685269.721768.3442925.nullmailer@robh.at.kernel.org>
+Message-Id: <1637685269.668492.3442913.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Nov 2021 15:45:44 +0100, Olivier Moysan wrote:
-> The STM2 I2S DAI can be connected via the audio-graph-card.
-> Add port entry into the bindings.
-> 
-> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+On Tue, 23 Nov 2021 12:19:27 +0000, Adam Ward wrote:
+> Signed-off-by: Adam Ward <Adam.Ward.opensource@diasemi.com>
 > ---
->  Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
+>  .../bindings/regulator/dlg,da9121.yaml        | 85 ++++++++++++-------
+>  1 file changed, 53 insertions(+), 32 deletions(-)
 > 
 
-Running 'make dtbs_check' with the schema in this patch gives the
-following warnings. Consider if they are expected or the schema is
-incorrect. These may not be new warnings.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-This will change in the future.
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/regulator/dlg,da9121.yaml:103:46: [error] empty value in block mapping (empty-values)
+./Documentation/devicetree/bindings/regulator/dlg,da9121.yaml:106:23: [error] syntax error: mapping values are not allowed here (syntax)
 
-Full log is available here: https://patchwork.ozlabs.org/patch/1557189
+dtschema/dtc warnings/errors:
+./Documentation/devicetree/bindings/regulator/dlg,da9121.yaml:  mapping values are not allowed in this context
+  in "<unicode string>", line 106, column 23
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/regulator/dlg,da9121.example.dts'
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-extract-example", line 45, in <module>
+    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 119, in get_single_data
+    node = self.composer.get_single_node()
+  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
+  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 891, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
+ruamel.yaml.scanner.ScannerError: mapping values are not allowed in this context
+  in "<unicode string>", line 106, column 23
+make[1]: *** [Documentation/devicetree/bindings/Makefile:25: Documentation/devicetree/bindings/regulator/dlg,da9121.example.dts] Error 1
+make[1]: *** Waiting for unfinished jobs....
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/dlg,da9121.yaml: ignoring, error parsing file
+warning: no schema found in file: ./Documentation/devicetree/bindings/regulator/dlg,da9121.yaml
+make: *** [Makefile:1413: dt_binding_check] Error 2
 
+doc reference errors (make refcheckdocs):
 
-audio-controller@4000b000: 'port' does not match any of the regexes: '^port@[0-9]', 'pinctrl-[0-9]+'
-	arch/arm/boot/dts/stm32mp157a-dk1.dt.yaml
-	arch/arm/boot/dts/stm32mp157c-dk2.dt.yaml
+See https://patchwork.ozlabs.org/patch/1558524
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
