@@ -2,116 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C6745A152
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:22:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FC745A155
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236070AbhKWLZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 06:25:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47508 "EHLO
+        id S236082AbhKWLZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 06:25:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236039AbhKWLZ2 (ORCPT
+        with ESMTP id S234580AbhKWLZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 06:25:28 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 834DEC061574;
-        Tue, 23 Nov 2021 03:22:20 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id 6067A1F4197A
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637666539; bh=PBtrVueCq3tmvWtlDU2yVa4NxTm9tEbs7ezcIMVF6mU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ant/0iSEfOetB3rzdly/nH/Bl9Qamh7a33r5df/m71IQS825rZ+bGTsuaGPgBuSdt
-         b6nOBza61O2QqJSuhXL2hLlKMPfkXB9jNBAt0CDZKBcLKrVPWRbVS5ENPI9JOlB/ZL
-         j7VYxNJ1OoVSEm+S072GDpINrEVMCaLaoQ/TdKUA/lrQEEQu9XawdIe1dZi46bNRYK
-         0AwFMKvb3tAAW32AOveePty95p8xrSh+9VPktX20R+lKCo6/1MV9odRUPBrQkjrfgR
-         qisGchn8vytOlbsuymVe6SeJK4IReC1lZvsBqeWY+vgIC/Akx7UB0F2iOjLOCPc1JJ
-         hJUYGCQE3MHRw==
-Subject: Re: [PATCH 2/7] media: hantro: vp9: use double buffering if needed
-To:     Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-media@vger.kernel.org
-Cc:     ezequiel@vanguardiasur.com.ar, nicolas.dufresne@collabora.com,
-        mchehab@kernel.org, robh+dt@kernel.org, mripard@kernel.org,
-        wens@csie.org, p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-References: <20211122184702.768341-1-jernej.skrabec@gmail.com>
- <20211122184702.768341-3-jernej.skrabec@gmail.com>
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Message-ID: <55bb35b0-b98b-9961-aa95-554f8af141f5@collabora.com>
-Date:   Tue, 23 Nov 2021 12:22:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 23 Nov 2021 06:25:52 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667CDC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 03:22:44 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id fv9-20020a17090b0e8900b001a6a5ab1392so2627702pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 03:22:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vhPW0YtcaTnHaaY0ZoKEimkD5ekl0wlo2OX6rNbIzc8=;
+        b=cn5F/Saxtzf+dnF0Qm44lcxvOcSKLpORZGWgKq/BVCB4h62wqtd1R6r2neF8k3w0mc
+         z/2i4y6ebmwZvf9HYABC4nx0GMt/HsEj1kuUr5YwR60K1gh1bfSZmDgOwN/4FR6v18tj
+         GqR5k4kyzcv+xJ8L3dYUqdlc0FGIc5gsxO1Zqmsf4wE19j2tpUyD1CsiXMjBgnLzJAI+
+         mIuITt7BV4ENr85MNvWRvCjT+tTwvPGsDJtxWnbah11gis+dphJ1xkVzQRMQYc0Mq/ew
+         WpUIZ69ZIH1LSZodO51IOjK+LzHRlWh13XKsSokYPxAVoqp3lbP6I/JKSKS/2bjodsWw
+         Vb9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vhPW0YtcaTnHaaY0ZoKEimkD5ekl0wlo2OX6rNbIzc8=;
+        b=hyX79S2LrfU/2CpZvbZRsoptMG8+URTHZwAI6HGV1Ui+M+HSpld+LehwnXSj6eHg5D
+         5uw1OJiN+8Tj7YlykHW3+5mCoEs+Z8gZWhZm8DBR1QkYSKhjIfDDTRUr2bSSrtF+B94c
+         WRtZmyiqipZ4L6hwVguIrNo7KlmGVMbHGB/4e4zXvQj5UUjA+FZ15lmGKk886Xx7Tgvg
+         iCuHzBo0KOJVkOaHCOvzjTqrG6hIMuruWVxI9G97z3iZrWMB8oHtEmxKyrmAbLahZ1iZ
+         rx/6hOiYbzDeI6FPRBptRUDQnayBSbFHUMgG4qz6DkfDKDnvLosJZuk/KVnoCoPrunIq
+         i4iw==
+X-Gm-Message-State: AOAM533POHMRWZ/IAzt3YUTBz4iVYFGKzV2VL9s3evBCMJ2/ENASkme5
+        9CQVVdVe/hfxeCFFrYId30iqhI3a3VolIw==
+X-Google-Smtp-Source: ABdhPJzwxeIeTqHbhXp5R+eV6V6NZi/7KfZOHtNXp2kUMPF6lb2Om3MaG9OCLhDSRTVIIeY176KHOw==
+X-Received: by 2002:a17:90b:1c86:: with SMTP id oo6mr1872395pjb.165.1637666563981;
+        Tue, 23 Nov 2021 03:22:43 -0800 (PST)
+Received: from baohua-VirtualBox.localdomain (47-72-151-34.dsl.dyn.ihug.co.nz. [47.72.151.34])
+        by smtp.gmail.com with ESMTPSA id il7sm1098595pjb.54.2021.11.23.03.22.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 03:22:43 -0800 (PST)
+From:   Barry Song <21cnbao@gmail.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, rostedt@goodmis.org,
+        linux-kernel@vger.kernel.org
+Cc:     dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, Barry Song <song.bao.hua@hisilicon.com>
+Subject: [PATCH] sched/fair: Remove the cost of a redundant cpumask_next_wrap in select_idle_cpu
+Date:   Tue, 23 Nov 2021 19:22:29 +0800
+Message-Id: <20211123112229.7812-1-21cnbao@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20211122184702.768341-3-jernej.skrabec@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W dniu 22.11.2021 o 19:46, Jernej Skrabec pisze:
-> Some G2 variants need double buffering to be enabled in order to work
-> correctly, like that found in Allwinner H6 SoC.
-> 
-> Add platform quirk for that.
-> 
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+From: Barry Song <song.bao.hua@hisilicon.com>
 
-Reviewed-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+This patch keeps the same scanning amount, but drops a redundant loop
+of cpumask_next_wrap.
+The original code did for_each_cpu_wrap(cpu, cpus, target + 1), then
+checked --nr; this patch does --nr before doing the next loop, thus,
+it can remove a cpumask_next_wrap() which costs a little bit.
 
-> ---
->   drivers/staging/media/hantro/hantro.h            | 2 ++
->   drivers/staging/media/hantro/hantro_g2_regs.h    | 1 +
->   drivers/staging/media/hantro/hantro_g2_vp9_dec.c | 2 ++
->   3 files changed, 5 insertions(+)
-> 
-> diff --git a/drivers/staging/media/hantro/hantro.h b/drivers/staging/media/hantro/hantro.h
-> index 33eb3e092cc1..d03824fa3222 100644
-> --- a/drivers/staging/media/hantro/hantro.h
-> +++ b/drivers/staging/media/hantro/hantro.h
-> @@ -73,6 +73,7 @@ struct hantro_irq {
->    * @num_clocks:			number of clocks in the array
->    * @reg_names:			array of register range names
->    * @num_regs:			number of register range names in the array
-> + * @double_buffer:		core needs double buffering
->    */
->   struct hantro_variant {
->   	unsigned int enc_offset;
-> @@ -94,6 +95,7 @@ struct hantro_variant {
->   	int num_clocks;
->   	const char * const *reg_names;
->   	int num_regs;
-> +	unsigned int double_buffer : 1;
->   };
->   
->   /**
-> diff --git a/drivers/staging/media/hantro/hantro_g2_regs.h b/drivers/staging/media/hantro/hantro_g2_regs.h
-> index 9c857dd1ad9b..15a391a4650e 100644
-> --- a/drivers/staging/media/hantro/hantro_g2_regs.h
-> +++ b/drivers/staging/media/hantro/hantro_g2_regs.h
-> @@ -270,6 +270,7 @@
->   #define g2_apf_threshold	G2_DEC_REG(55, 0, 0xffff)
->   
->   #define g2_clk_gate_e		G2_DEC_REG(58, 16, 0x1)
-> +#define g2_double_buffer_e	G2_DEC_REG(58, 15, 0x1)
->   #define g2_buswidth		G2_DEC_REG(58, 8,  0x7)
->   #define g2_max_burst		G2_DEC_REG(58, 0,  0xff)
->   
-> diff --git a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c b/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
-> index e04242d10fa2..d4fc649a4da1 100644
-> --- a/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
-> +++ b/drivers/staging/media/hantro/hantro_g2_vp9_dec.c
-> @@ -847,6 +847,8 @@ config_registers(struct hantro_ctx *ctx, const struct v4l2_ctrl_vp9_frame *dec_p
->   	hantro_reg_write(ctx->dev, &g2_clk_gate_e, 1);
->   	hantro_reg_write(ctx->dev, &g2_max_cb_size, 6);
->   	hantro_reg_write(ctx->dev, &g2_min_cb_size, 3);
-> +	if (ctx->dev->variant->double_buffer)
-> +		hantro_reg_write(ctx->dev, &g2_double_buffer_e, 1);
->   
->   	config_output(ctx, dst, dec_params);
->   
-> 
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+---
+ kernel/sched/fair.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index ff69f24..e2fb3e0 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6298,9 +6298,9 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
+ 
+ 		span_avg = sd->span_weight * avg_idle;
+ 		if (span_avg > 4*avg_cost)
+-			nr = div_u64(span_avg, avg_cost);
++			nr = div_u64(span_avg, avg_cost) - 1;
+ 		else
+-			nr = 4;
++			nr = 3;
+ 
+ 		time = cpu_clock(this);
+ 	}
+@@ -6312,11 +6312,11 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
+ 				return i;
+ 
+ 		} else {
+-			if (!--nr)
+-				return -1;
+ 			idle_cpu = __select_idle_cpu(cpu, p);
+ 			if ((unsigned int)idle_cpu < nr_cpumask_bits)
+ 				break;
++			if (!--nr)
++				return -1;
+ 		}
+ 	}
+ 
+-- 
+1.8.3.1
 
