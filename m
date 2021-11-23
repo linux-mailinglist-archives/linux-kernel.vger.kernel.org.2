@@ -2,71 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF74945A26E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:20:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98FFB45A274
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:21:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237171AbhKWMX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 07:23:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48862 "EHLO mail.kernel.org"
+        id S235078AbhKWMYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 07:24:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237072AbhKWMXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 07:23:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 21E4761075;
-        Tue, 23 Nov 2021 12:20:12 +0000 (UTC)
+        id S231790AbhKWMX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 07:23:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36C9560F26;
+        Tue, 23 Nov 2021 12:20:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637670012;
-        bh=VBjIFxrGD9A7dcrlPZYa4W2JLZXpNX1g3hjYEmAlG9A=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=LrKCoqzjRdMtayXI0bvfLQ8Brb7RBw9pI/QNl/u/XQd2YEuSGvXoJiRb2SC6HbKyF
-         Q9EAIUnvZZMAxr6W+AW1cKLm6oHMJ3QQs/tRsz2NlpQ3h1ppazN2jB968pLCvTVwGY
-         lSUqeMfa9oJaeMc3fCM5nLpUI++CDC1KfZbtB3l4t1SMYXKALXbYnKf+zBHl3MQtit
-         lHbCiRwSHyeWYterEYRAfxmR+xIDT31psjrZ+/hBB4UH39zJU5NISXRZ1oexj24wmM
-         8IE+E1pJJnlDWOIgVwDhoXfZ3j2e6ufXZfC28ttOR9rmoTNI8cqbHDu6GcredWptHj
-         vbV2Iny02bJIA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 19A3B60A4E;
-        Tue, 23 Nov 2021 12:20:12 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1637670051;
+        bh=A1btUYxVBrGGIWB3bMOkUCLWjbNgGl95g6UPJKXRwxA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=coVIVyT7gBoihBcoyDJ34YlX4bb0ZBuR7HYyEeFiOwypnH8E3wZjanvSkh1+MZvne
+         FPwoy5122ZxlSi8MoLpp1W99sVHiLhNDEkCBrDLz3qYsYfjL7VL0WNTtKeV0YA4n6Q
+         y4veXjVpGu8dAwf2Ks32uHOwD1hSK52NEVwSbUvlLi/4MnfXPd8oB0kCW5j/qdvmHP
+         b1eDYZUibxBnTef5NRfzfw4wovUOJ0qqzfThMqo0D/+E1hMC+UTLpP9Q6ZXW2FFLjf
+         rdDEJlfFaBOmJbGFPG5DWq+lwgKKRoh9gJH7uIqrDpNPYDYD4rR2aoUZTelPu/rddo
+         E3SQNGmVx7Eag==
+Date:   Tue, 23 Nov 2021 20:20:45 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, tharvey@gateworks.com,
+        aford@beaconembedded.com, Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Peng Fan <peng.fan@nxp.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] soc: imx: gpcv2: keep i.MX8MM VPU-H1 bus clock active
+Message-ID: <20211123122044.GD4216@dragon>
+References: <20211120193916.1309236-1-aford173@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2] neigh: introduce neigh_confirm() helper function
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163767001210.10565.116108700872450172.git-patchwork-notify@kernel.org>
-Date:   Tue, 23 Nov 2021 12:20:12 +0000
-References: <20211123025430.22254-1-yajun.deng@linux.dev>
-In-Reply-To: <20211123025430.22254-1-yajun.deng@linux.dev>
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     davem@davemloft.net, kuba@kernel.org, eric.dumazet@gmail.com,
-        dsahern@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211120193916.1309236-1-aford173@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (master)
-by David S. Miller <davem@davemloft.net>:
-
-On Tue, 23 Nov 2021 10:54:30 +0800 you wrote:
-> Add neigh_confirm() for the confirmed member in struct neighbour,
-> it can be called as an independent unit by other functions.
+On Sat, Nov 20, 2021 at 01:39:16PM -0600, Adam Ford wrote:
+> Enable the vpu-h1 clock when the domain is active because reading
+> or writing to the VPU-H1 IP block cause the system to hang.
 > 
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> ---
->  include/net/arp.h       |  8 +-------
->  include/net/ndisc.h     | 16 ++--------------
->  include/net/neighbour.h | 11 +++++++++++
->  include/net/sock.h      |  5 +----
->  4 files changed, 15 insertions(+), 25 deletions(-)
+> Fixes: 656ade7aa42a ("soc: imx: gpcv2: keep i.MX8M* bus clocks enabled")
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-Here is the summary with links:
-  - [net-next,v2] neigh: introduce neigh_confirm() helper function
-    https://git.kernel.org/netdev/net-next/c/1e84dc6b7bbf
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Applied, thanks!
