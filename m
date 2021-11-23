@@ -2,151 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B50D459CCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F1C459CC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:33:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234119AbhKWHhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 02:37:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51230 "EHLO
+        id S234068AbhKWHg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 02:36:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233737AbhKWHhb (ORCPT
+        with ESMTP id S233737AbhKWHg5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 02:37:31 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F8A1C061574;
-        Mon, 22 Nov 2021 23:34:24 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id m24so16301334pls.10;
-        Mon, 22 Nov 2021 23:34:24 -0800 (PST)
+        Tue, 23 Nov 2021 02:36:57 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B54CC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 23:33:49 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id f20so19029763qtb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 23:33:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+mNOFlAZbq9k+Mu/JTHbCIh5dzjFIh42+nN9c/Feohs=;
-        b=l0JBdqgCRB1aHsIneMfPrpWXDEhQ4wIH3TEB86TGCpfTxpM/WJ2LUeWmGM8ZC3/mw5
-         nl1zVETIxotOP4EQsjM+XWJC+520/1SVXPCddeICLzT373fVkL/7Lofg6QV+TP8Xv3k2
-         9zII7uO7WZJMD5P89jL9FxHV/g0iLmBBfbMVfBmhuuXnaAQqQn+5XSZ6AnR7kjs6tfI2
-         aY74XaRl1oDjHZE9tNFrbZm/SYPhYH7rXF+fEVECRStNw1s+OdLpfh+jg1Ln5mykFEVO
-         DuZlf6K1BtF/XgdCHyOED6GM+3SnMl9Lei8OWIaKhJyz44jncGXP138U2hXRNb4Mr/cu
-         WNYw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LuChIw9xMWFBmqNMQjSpCC5rOutc4R3W8vDGlVokDCo=;
+        b=bH28N4Eoz+66UT3Vnsv4YfyVVKTTvYDiyzWvuqVjcsgoB/xKqrJ7wojknNFQYJDQhk
+         053yFMIlWMdS7Pf4W5J4X6g6bVqNkdOZ7rI2Yhzoo/p3JQYPvcbwz7JHnp6FAG6+8LHq
+         qKBK80hwRR9oclLqrQY81fHY9w7BLI/ikURIzuj57ENNoGGMbuhRoPxJRmkXxmCBLFuo
+         pq74rWRu8mwY/0FpyCGV1aV7siSN0FQafG8Nz9vZzElQkHOXUeJ31RHMDMfGw57Ba+PY
+         AxROIXrDdDMabaJ2n7dZFgVNMCUREM6A9hvpMpJYzzU82InNy1CeapJ2ivSeIMfmRRZM
+         3OgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+mNOFlAZbq9k+Mu/JTHbCIh5dzjFIh42+nN9c/Feohs=;
-        b=xfAclm147ku3c9b/1ewKodXw1FC8iP19Map7Tr4z9pPzKCnyhi4FtQ6tw6l65gpzI/
-         mz1RPhAF9agXX8WZPM52B1soEAg8LSriU11tJPT79E7F/7qCIyK7jXhLWjfIIg4a4PG5
-         Bw5/4KAV1bYPXyre+QHfUD9zqIX3e+Pep54ZNkANkya18H2wnU13aFBWOCvZIPrS2aaI
-         k1kg76zCI1lD/xA3PGwwSOLd2RgP5W2Xoj28avvjQFIZlGkd+KE46NY3QcbvivQkS0mK
-         FKdXfFRMGs+F9HSIp+/GcIqDxiDMD1ZbI/7MWCH1Li9vr8OXW+JA0YoChVhkkz8xJWJv
-         LAfg==
-X-Gm-Message-State: AOAM531TQ+J3P966hEwFVOnOaSF8Jsksi+3MF1a/Ic3mxyQCBl8pY1Jx
-        xfG4/C/UaQ2M8LfXr1bcVK8=
-X-Google-Smtp-Source: ABdhPJw5z4WJquUdWT1YiAZ4TL3ixYctETOA9h8mQB/W8qMyd0B3QBMfNjz9HLZi1D4oazMvtapCdg==
-X-Received: by 2002:a17:90b:3144:: with SMTP id ip4mr418708pjb.153.1637652864053;
-        Mon, 22 Nov 2021 23:34:24 -0800 (PST)
-Received: from nikka.usen.ad.jp (113x33x71x97.ap113.ftth.ucom.ne.jp. [113.33.71.97])
-        by smtp.googlemail.com with ESMTPSA id q10sm957627pjd.0.2021.11.22.23.34.22
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LuChIw9xMWFBmqNMQjSpCC5rOutc4R3W8vDGlVokDCo=;
+        b=z37bwAcr7F8iAOzXvGlqLWYYll+Q06lhkODruA/334Eyuacb0xB2DlXPBai7zeU4uH
+         hn4wwoLvGsabsXxmG9EykNmmzJtBLIXpW8va8Fvc7Z5PQPcKpA0nYlWmhCb8GCtvvSG/
+         Wzp5puV8sM0r853U5amMMIS3y7u/AkHihFSGIZnQkdVMNGY1wTKkcx9xstWquy+yN/PD
+         YrdskeyeXidBBvCw41UXUMaC6W694nzq4k+zCsTrF6NJbKMXFuNlkZq3X72ibTxjctaA
+         oCuJG1dIn/yTvwuufpWImM8kKzoCDVhq/Ot7jSQiW5ZPTaYUkJjhAS8WBrI1Su2GFof5
+         XnZA==
+X-Gm-Message-State: AOAM530f7zGjBOhUQiFRgr50uDJR0yvvW0tRu+f6uT1y697btR8s9NqJ
+        LAkKzVjwyrhRk7YVAkp33uw=
+X-Google-Smtp-Source: ABdhPJzdEVpbGAmKCEl8MWW+gPNaScEM8B1aKIVYZ1soywOtilqDVn2XZ6l4cdWyK22Xht3vpeT/uA==
+X-Received: by 2002:a05:622a:3d3:: with SMTP id k19mr3892721qtx.334.1637652828466;
+        Mon, 22 Nov 2021 23:33:48 -0800 (PST)
+Received: from localhost ([66.216.211.25])
+        by smtp.gmail.com with ESMTPSA id j20sm6495481qko.117.2021.11.22.23.33.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 23:34:23 -0800 (PST)
-From:   Akira Kawata <akirakawata1@gmail.com>
-To:     akpm@linux-foundation.org, adobriyan@gmail.com,
-        viro@zeniv.linux.org.uk, keescook@chromium.org,
-        linux-fsdevel@vger.kernel.org
-Cc:     akirakawata1@gmail.com, Eric Biederman <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] fs/binfmt_elf: Fix AT_PHDR for unusual ELF files
-Date:   Tue, 23 Nov 2021 16:31:59 +0900
-Message-Id: <20211123073157.198689-1-akirakawata1@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 22 Nov 2021 23:33:47 -0800 (PST)
+Date:   Mon, 22 Nov 2021 23:33:46 -0800
+From:   Yury Norov <yury.norov@gmail.com>
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/4] bitops: Add single_bit_set()
+Message-ID: <20211123073346.GA1628@lapt>
+References: <cover.1637330431.git.matti.vaittinen@fi.rohmeurope.com>
+ <73d5e4286282a47b614d1cc5631eb9ff2a7e2b44.1637330431.git.matti.vaittinen@fi.rohmeurope.com>
+ <YZt+x2moR632x///@smile.fi.intel.com>
+ <2c22b52f-9a1f-06f5-f008-d568096f5c4d@fi.rohmeurope.com>
+ <YZuTt3+PPvyJsFQ/@smile.fi.intel.com>
+ <20211122175414.GA1588@lapt>
+ <9b524543-e868-7b9d-aae7-97c47f41db52@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9b524543-e868-7b9d-aae7-97c47f41db52@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=197921
+On Tue, Nov 23, 2021 at 05:26:56AM +0000, Vaittinen, Matti wrote:
+> Morning <please apply local timezone> Yuru, & all,
+> 
+> On 11/22/21 19:54, Yury Norov wrote:
+> > On Mon, Nov 22, 2021 at 02:57:27PM +0200, Andy Shevchenko wrote:
+> >> On Mon, Nov 22, 2021 at 12:42:21PM +0000, Vaittinen, Matti wrote:
+> >>> On 11/22/21 13:28, Andy Shevchenko wrote:
+> >>>> On Mon, Nov 22, 2021 at 01:03:25PM +0200, Matti Vaittinen wrote:
+> >>>>> There are cases when it is useful to check a bit-mask has only one bit
+> >>>>> set. Add a generic helper for it instead of baking own one for each
+> >>>>> user.
+> >>
+> >>>> So, you decided to reinvent hamming weight...
+> >>>> Please, drop this patch and use corresponding hweight() call.
+> >>
+> >>> Thanks Andy.
+> >>>
+> >>> There are few differences to hamming weight here. We scan only given
+> >>> amount of bits - and we will end scanning immediately when we hit second
+> >>> set bit. Oh, and obviously we only return information whether there is
+> >>> exactly one bit set. So no, this is not hamming weight().
+> >>
+> >> What do you mean by this?
+> >>
+> >> hweight() will return you the number of the non-zero elements in the set.
+> >> In application to boolean based arrays it means the number of bits that
+> >> are set. Obviously, the condition `hweight() == 1` is what you are looking
+> >> for.
+> > 
+> > Hi Andy,
+> > 
+> > I think, Matti means earlier return when part of bitmap counts set
+> > bits to a greater nubmer, and we can skip the rest. Right, Matti?
+> 
+> Yes.
+> 
+> > But in general, it might be useful for long bitmaps.
+> > 
+> > The more complete way of doing this would be adding a new set of
+> > functions: bitmap_weight_{eq,neq,gt,le}
+> > 
+> > I'm looking at how bitmap_weight is used in the kernel and see
+> > quite a lot of places where this optimization may take place. For
+> > example otx2_remove_flow() in drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c:
+> > 
+> >          if (bitmap_weight(&flow_cfg->dmacflt_bmap,
+> >                            flow_cfg->dmacflt_max_flows) == 1)
+> >                  otx2_update_rem_pfmac(pfvf, DMAC_ADDR_DEL);
+> > 
+> > may be replaced with:
+> > 
+> >          if (bitmap_weight_eq(&flow_cfg->dmacflt_bmap, flow_cfg->dmacflt_max_flows, 1)
+> >                  otx2_update_rem_pfmac(pfvf, DMAC_ADDR_DEL);
+> > 
+> > Most of that places are in drivers however, and the length of bitmaps
+> > there is typically small, so that there's no chance to get any
+> > measurable performance improvement.
+> > 
+> > There is always a chance that we have opencoded bitmap_weight_eq()
+> > et all. If we add these API, it might help people wright better code.
+> > 
+> > What do you think?
+> 
+> My uneducated opinion (for what it matters :]) is thet the cost of 
+> adding such functions is negligible so I am all for adding them if there 
+> are even few users who can benefit from those.
 
-As pointed out in the discussion of buglink, we cannot calculate AT_PHDR
-as the sum of load_addr and exec->e_phoff. This is because exec->e_phoff
-is the offset of PHDRs in the file and the address of PHDRs in the
-memory may differ from it. This patch fixes the bug by calculating the
-address of program headers from PT_LOADs directly.
+I think I changed my opinion. We have enough examples of opencoded
+bitmap_weight_{eq,...} in core code which will definitely benefit
+from this optimization. For example, sched_cpu_activate:
 
-Signed-off-by: Akira Kawata <akirakawata1@gmail.com>
----
-Changes in v2:
-- Remove unused load_addr from create_elf_tables.
-- Improve the commit message.
+         if (cpumask_weight(cpu_smt_mask(cpu)) == 2)
+                 static_branch_inc_cpuslocked(&sched_smt_present);
 
- fs/binfmt_elf.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+Considering computers with thousands of CPUs, early return would save a
+lot. 
 
-diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index f8c7f26f1fbb..af8313e36665 100644
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -170,8 +170,8 @@ static int padzero(unsigned long elf_bss)
- 
- static int
- create_elf_tables(struct linux_binprm *bprm, const struct elfhdr *exec,
--		unsigned long load_addr, unsigned long interp_load_addr,
--		unsigned long e_entry)
-+		unsigned long interp_load_addr,
-+		unsigned long e_entry, unsigned long phdr_addr)
- {
- 	struct mm_struct *mm = current->mm;
- 	unsigned long p = bprm->p;
-@@ -257,7 +257,7 @@ create_elf_tables(struct linux_binprm *bprm, const struct elfhdr *exec,
- 	NEW_AUX_ENT(AT_HWCAP, ELF_HWCAP);
- 	NEW_AUX_ENT(AT_PAGESZ, ELF_EXEC_PAGESIZE);
- 	NEW_AUX_ENT(AT_CLKTCK, CLOCKS_PER_SEC);
--	NEW_AUX_ENT(AT_PHDR, load_addr + exec->e_phoff);
-+	NEW_AUX_ENT(AT_PHDR, phdr_addr);
- 	NEW_AUX_ENT(AT_PHENT, sizeof(struct elf_phdr));
- 	NEW_AUX_ENT(AT_PHNUM, exec->e_phnum);
- 	NEW_AUX_ENT(AT_BASE, interp_load_addr);
-@@ -823,7 +823,7 @@ static int parse_elf_properties(struct file *f, const struct elf_phdr *phdr,
- static int load_elf_binary(struct linux_binprm *bprm)
- {
- 	struct file *interpreter = NULL; /* to shut gcc up */
-- 	unsigned long load_addr = 0, load_bias = 0;
-+	unsigned long load_addr = 0, load_bias = 0, phdr_addr = 0;
- 	int load_addr_set = 0;
- 	unsigned long error;
- 	struct elf_phdr *elf_ppnt, *elf_phdata, *interp_elf_phdata = NULL;
-@@ -1169,6 +1169,13 @@ static int load_elf_binary(struct linux_binprm *bprm)
- 				reloc_func_desc = load_bias;
- 			}
- 		}
-+
-+		if (elf_ppnt->p_offset <= elf_ex->e_phoff &&
-+		    elf_ex->e_phoff < elf_ppnt->p_offset + elf_ppnt->p_filesz) {
-+			phdr_addr = elf_ex->e_phoff - elf_ppnt->p_offset +
-+				    elf_ppnt->p_vaddr;
-+		}
-+
- 		k = elf_ppnt->p_vaddr;
- 		if ((elf_ppnt->p_flags & PF_X) && k < start_code)
- 			start_code = k;
-@@ -1204,6 +1211,7 @@ static int load_elf_binary(struct linux_binprm *bprm)
- 	}
- 
- 	e_entry = elf_ex->e_entry + load_bias;
-+	phdr_addr += load_bias;
- 	elf_bss += load_bias;
- 	elf_brk += load_bias;
- 	start_code += load_bias;
-@@ -1267,8 +1275,8 @@ static int load_elf_binary(struct linux_binprm *bprm)
- 		goto out;
- #endif /* ARCH_HAS_SETUP_ADDITIONAL_PAGES */
- 
--	retval = create_elf_tables(bprm, elf_ex,
--			  load_addr, interp_load_addr, e_entry);
-+	retval = create_elf_tables(bprm, elf_ex, interp_load_addr,
-+				   e_entry, phdr_addr);
- 	if (retval < 0)
- 		goto out;
- 
--- 
-2.25.1
-
+I'll take a look on it at this weekend.
