@@ -2,119 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 890BB45A312
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:48:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2A745A336
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:49:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236621AbhKWMvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 07:51:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234968AbhKWMvh (ORCPT
+        id S237172AbhKWMwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 07:52:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28798 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237191AbhKWMwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 07:51:37 -0500
-Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [IPv6:2a01:4f8:150:2161:1:b009:f23e:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 891E9C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 04:48:29 -0800 (PST)
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
-        by bmailout3.hostsharing.net (Postfix) with ESMTPS id C491110176B2C;
-        Tue, 23 Nov 2021 13:48:27 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 9BD2530A8C7; Tue, 23 Nov 2021 13:48:27 +0100 (CET)
-Date:   Tue, 23 Nov 2021 13:48:27 +0100
-From:   Lukas Wunner <lukas@wunner.de>
-To:     "LH.Kuo" <lhjeff911@gmail.com>
-Cc:     p.zabel@pengutronix.de, broonie@kernel.org, robh+dt@kernel.org,
-        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dvorkin@tibbo.com,
-        qinjian@cqplus1.com, wells.lu@sunplus.com,
-        "LH.Kuo" <lh.kuo@sunplus.com>
-Subject: Re: [PATCH v3 1/2] SPI: Add SPI driver for Sunplus SP7021
-Message-ID: <20211123124827.GA22253@wunner.de>
-References: <cover.1637547799.git.lh.kuo@sunplus.com>
- <e5f2549224cf875d81306ef5f6e98db1cfd81c2e.1637547799.git.lh.kuo@sunplus.com>
+        Tue, 23 Nov 2021 07:52:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637671779;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qq9RCNwYaWXQoI/gd2Bb1y62RmVls2Lwj4nIew3gKLU=;
+        b=Tqdr/SNSDMVIKGhFdSW736EUGfTvhl6ztXQPkMEM2BdAdgVwS6CaDxGzP/WAgg5HCKHJAt
+        KkCBW3Ga3W42fHZJM2ll/aktR8ycN7cknUc12SG0Gi7DrqrIcwK2cv1nxCzM6OW9+8SIc+
+        d9s/7bJdkVGmjbR/bGboSCOTmXg5X3w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-540-nsYRZ2KOM_2sPYaJknSsCg-1; Tue, 23 Nov 2021 07:49:33 -0500
+X-MC-Unique: nsYRZ2KOM_2sPYaJknSsCg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0F55A87953E;
+        Tue, 23 Nov 2021 12:49:32 +0000 (UTC)
+Received: from localhost (unknown [10.39.195.64])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C74FC5F4E0;
+        Tue, 23 Nov 2021 12:49:22 +0000 (UTC)
+Date:   Tue, 23 Nov 2021 12:49:21 +0000
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        f.hetzelt@tu-berlin.de, david.kaplan@amd.com,
+        konrad.wilk@oracle.com
+Subject: Re: [PATCH] vsock/virtio: suppress used length validation
+Message-ID: <YZzjUbM+LE0dwsIi@stefanha-x1.localdomain>
+References: <20211122093036.285952-1-mst@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="CQhna4TCfJN2pG2B"
 Content-Disposition: inline
-In-Reply-To: <e5f2549224cf875d81306ef5f6e98db1cfd81c2e.1637547799.git.lh.kuo@sunplus.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211122093036.285952-1-mst@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 10:33:32AM +0800, LH.Kuo wrote:
-> +static int sp7021_spi_controller_probe(struct platform_device *pdev)
-> +{
-[...]
-> +	ret = devm_spi_register_controller(&pdev->dev, ctlr);
-> +	if (ret != 0) {
-> +		dev_err(&pdev->dev, "spi_register_master fail\n");
-> +		goto disable_runtime_pm;
-> +	}
 
-You need to use spi_register_controller() here (*not* the devm_ variant)
-because you're using spi_unregister_controller() in
-sp7021_spi_controller_remove().
+--CQhna4TCfJN2pG2B
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +
-> +	// clk
-> +	pspim->spi_clk = devm_clk_get(&pdev->dev, NULL);
-> +	if (IS_ERR(pspim->spi_clk)) {
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(pspim->spi_clk),
-> +				     "devm_clk_get fail\n");
-> +	}
-> +
-> +	// reset
-> +	pspim->rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
-> +	dev_dbg(&pdev->dev, "pspim->rstc : 0x%x\n", (unsigned int)pspim->rstc);
-> +	if (IS_ERR(pspim->rstc)) {
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(pspim->rstc),
-> +				     "devm_rst_get fail\n");
-> +	}
-> +
-> +	ret = clk_prepare_enable(pspim->spi_clk);
-> +	if (ret)
-> +		return dev_err_probe(&pdev->dev, ret,
-> +			"failed to enable clk\n");
-> +
-> +	ret = reset_control_deassert(pspim->rstc);
-> +	if (ret) {
-> +		dev_err_probe(&pdev->dev, ret,
-> +			"failed to deassert reset\n");
-> +		goto free_reset_assert;
-> +
-> +	}
+On Mon, Nov 22, 2021 at 04:32:01AM -0500, Michael S. Tsirkin wrote:
+> It turns out that vhost vsock violates the virtio spec
+> by supplying the out buffer length in the used length
+> (should just be the in length).
+> As a result, attempts to validate the used length fail with:
+> vmw_vsock_virtio_transport virtio1: tx: used len 44 is larger than in buf=
+len 0
+>=20
+> Since vsock driver does not use the length fox tx and
+> validates the length before use for rx, it is safe to
+> suppress the validation in virtio core for this driver.
+>=20
+> Reported-by: Halil Pasic <pasic@linux.ibm.com>
+> Fixes: 939779f5152d ("virtio_ring: validate used buffer length")
+> Cc: "Jason Wang" <jasowang@redhat.com>
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> ---
+>  net/vmw_vsock/virtio_transport.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-You need to move the above steps *before* the call to
-spi_register_controller().  Once spi_register_controller() returns,
-it must be able to perform SPI transactions.  So you have to enable
-all required clocks before calling it.  You also have to perform the
-reset step before registration to avoid interfering with an ongoing
-transaction.  The order of these steps must mirror the order in
-sp7021_spi_controller_remove():  There you're unregistering the
-controller *before* disabling the clock and asserting reset,
-so the order must be inverted here.
+Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
 
+--CQhna4TCfJN2pG2B
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +static int sp7021_spi_controller_remove(struct platform_device *pdev)
-> +{
-> +	struct spi_controller *ctlr = dev_get_drvdata(&pdev->dev);
-> +	struct sp7021_spi_ctlr *pspim = spi_master_get_devdata(ctlr);
-> +
-> +	pm_runtime_disable(&pdev->dev);
-> +	pm_runtime_set_suspended(&pdev->dev);
-> +
-> +	spi_unregister_controller(pspim->ctlr);
-> +	clk_disable_unprepare(pspim->spi_clk);
-> +	reset_control_assert(pspim->rstc);
-> +
-> +	return 0;
-> +}
+-----BEGIN PGP SIGNATURE-----
 
-I think the two calls to pm_runtime_* should be moved after
-spi_unregister_controller() but that's probably not critical.
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmGc41EACgkQnKSrs4Gr
+c8h1hgf/VSC+i/I53x1gWPlapZR23ESGCMVD+7wgM6NTPM5rT+nqyAaq5IPNn9AH
+08hZcOtgsKB2hi0yjlqQHhwFfOmsqF/OoEW/iQRkmNfXbNolhpdVojNOGGiKYPyF
+BJuI4BLniogr840wowG1cv0QYb2sfhOSRa+Lpm4YcC8+tvB2b8qgIPnAdj24e7Xc
+vuAUwNFrWcLImHqdDc/mhI5Tanz32oQn2WWFjJ4SdHK4f0KCnXZbs3dVqAI1BbEw
+Ryiy0Y8rBXeO1iOzk+HMiIw+msPkRxJbdqB+7bujClo15eNYZucU9NZuaM8j6ylJ
+4/7+vFLiTMW4FaM+59sh925HLVglUA==
+=NGnu
+-----END PGP SIGNATURE-----
 
-Thanks,
+--CQhna4TCfJN2pG2B--
 
-Lukas
