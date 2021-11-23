@@ -2,52 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F46645ABA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 19:50:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E4845AB5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 19:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240094AbhKWSwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 13:52:53 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:45368 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240024AbhKWSwi (ORCPT
+        id S239862AbhKWSjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 13:39:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:48333 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235305AbhKWSjI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 13:52:38 -0500
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.1)
- id b0b21daf269c6742; Tue, 23 Nov 2021 19:49:29 +0100
-Received: from kreacher.localnet (unknown [213.134.175.133])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 6DBD266AC5B;
-        Tue, 23 Nov 2021 19:49:28 +0100 (CET)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Subject: [PATCH 00/10] ACPI: EC: Two fixes and cleanups
-Date:   Tue, 23 Nov 2021 19:35:01 +0100
-Message-ID: <11887969.O9o76ZdvQC@kreacher>
+        Tue, 23 Nov 2021 13:39:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637692559;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z5k6zTG4KRWbGgN3rihRDKhTPbVU4ZF9XdZlS05EGq0=;
+        b=aQAZW5zA6OHiEl7dd6b9+G+ofroVUUWkmAcMse4gfC4U6hPzMPTPkTkM4F6muoPGiXkU9t
+        mHbzOZmyDtX4ZcnQg665GhrR/bu4sKs4gdCqvEtj4bD+IWKMlnZIYHvdVAMUfkGQ09DM6f
+        Cs3udlyOhuOfsaHPDZ3NJSEh6cerPPQ=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-161-_W4KxDrPO9KJRXpKSOMjmA-1; Tue, 23 Nov 2021 13:35:58 -0500
+X-MC-Unique: _W4KxDrPO9KJRXpKSOMjmA-1
+Received: by mail-ed1-f72.google.com with SMTP id p4-20020aa7d304000000b003e7ef120a37so18597641edq.16
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 10:35:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=Z5k6zTG4KRWbGgN3rihRDKhTPbVU4ZF9XdZlS05EGq0=;
+        b=dVGa64G/1eLeAGJ8rAm8y1PwGGLYGpLq13sE5oJOgGEMqlh6UpYrdeUaX9zoY0bDmy
+         Q3IVtV84WjIK2LV7dVE5mbWlNWtAk4FWzKLSGyV3Fp7+nuwWMwo56Zdu2R/nyBHRuFGX
+         Q9C94FAdS9ms8OixVDYpNs2MLqpAo9ciKOfUV4EMzqaCuPTJbtfb4uaOwjJKO6OY7rDT
+         N5dHH7FepAksnHGxRq8VDD1SxYI20vIJ5OPVyANEJDRx8tY3vbe3MOLyAgXWBAGYiRks
+         9jpexST4q+X3z3KTayTLENT7wOH4CxCMItW6+8yaHPGKby1tBJEOHuP2dLGmWADxY10l
+         uT5w==
+X-Gm-Message-State: AOAM533h7nnAphr4PinckwRNFgH4G1WYzV4Azdxy0P4uKZRs9otXhBC1
+        Apg2FUW3nw24NoXFHw2fhMcOLvJiFR1ECiyNeEjzvKyyon1s/JlwbeZiWCR1jTn6sSdZ9D1X9HK
+        apLxFAZPhXSbyqTpumgjnJNbl
+X-Received: by 2002:a50:c446:: with SMTP id w6mr12781936edf.137.1637692557237;
+        Tue, 23 Nov 2021 10:35:57 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxUEZ9mmoxlVEliHny2DZXCv4YHhMo0Z9nYbdF9XbP1qCPsXkZcVzsMr3MWrgS3oizeCWcDog==
+X-Received: by 2002:a50:c446:: with SMTP id w6mr12781899edf.137.1637692557030;
+        Tue, 23 Nov 2021 10:35:57 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id yd13sm5601817ejb.39.2021.11.23.10.35.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Nov 2021 10:35:56 -0800 (PST)
+Message-ID: <1605be8d-0913-4b52-32e2-8076fff01d30@redhat.com>
+Date:   Tue, 23 Nov 2021 19:35:55 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 213.134.175.133
-X-CLIENT-HOSTNAME: 213.134.175.133
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvuddrgeeigdduudejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpefhgedtffejheekgeeljeevvedtuefgffeiieejuddutdekgfejvdehueejjeetvdenucfkphepvddufedrudefgedrudejhedrudeffeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddujeehrddufeefpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH 11/11] ACPI / scan: Create platform device for CLSA0100
+ ACPI nodes
+Content-Language: en-US
+To:     Lucas tanure <tanureal@opensource.cirrus.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, Mark Gross <markgross@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Kailang Yang <kailang@realtek.com>,
+        Shuming Fan <shumingf@realtek.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Cc:     Jeremy Szu <jeremy.szu@canonical.com>,
+        Hui Wang <hui.wang@canonical.com>,
+        Werner Sembach <wse@tuxedocomputers.com>,
+        Chris Chiu <chris.chiu@canonical.com>,
+        Cameron Berkenpas <cam@neo-zeon.de>,
+        Sami Loone <sami@loone.fi>, Elia Devito <eliadevito@gmail.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Jack Yu <jack.yu@realtek.com>, Arnd Bergmann <arnd@arndb.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org,
+        patches@opensource.cirrus.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211123163149.1530535-1-tanureal@opensource.cirrus.com>
+ <20211123163149.1530535-12-tanureal@opensource.cirrus.com>
+ <87af37a2-dc02-2ae0-a621-b82c8601c16c@redhat.com>
+ <756f813c-cc3e-7ddf-e5db-cf6c874f907e@opensource.cirrus.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <756f813c-cc3e-7ddf-e5db-cf6c874f907e@opensource.cirrus.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+Hi,
 
-This series addresses two issues in the EC driver (patches [1-2/10] and cleans
-up the code in it on top of that.
+On 11/23/21 18:11, Lucas tanure wrote:
+> On 11/23/21 17:05, Hans de Goede wrote:
+>> Hi Lucas,
+>>
+>> On 11/23/21 17:31, Lucas Tanure wrote:
+>>> The ACPI device with CLSA0100 is a sound card with multiple
+>>> instances of CS35L41.
+>>>
+>>> We add an ID to the I2C multi instantiate list to enumerate
+>>> all I2C slaves correctly.
+>>>
+>>> Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+>>> ---
+>>>   drivers/acpi/scan.c                          | 1 +
+>>>   drivers/platform/x86/i2c-multi-instantiate.c | 7 +++++++
+>>>   2 files changed, 8 insertions(+)
+>>>
+>>> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+>>> index 2c80765670bc..16827a33e93b 100644
+>>> --- a/drivers/acpi/scan.c
+>>> +++ b/drivers/acpi/scan.c
+>>> @@ -1708,6 +1708,7 @@ static bool acpi_device_enumeration_by_parent(struct acpi_device *device)
+>>>           {"BSG2150", },
+>>>           {"INT33FE", },
+>>>           {"INT3515", },
+>>> +        {"CLSA0100", },
+>>>           {}
+>>>       };
+>>>   diff --git a/drivers/platform/x86/i2c-multi-instantiate.c b/drivers/platform/x86/i2c-multi-instantiate.c
+>>> index 4956a1df5b90..ed25a0adc656 100644
+>>> --- a/drivers/platform/x86/i2c-multi-instantiate.c
+>>> +++ b/drivers/platform/x86/i2c-multi-instantiate.c
+>>> @@ -147,6 +147,12 @@ static const struct i2c_inst_data int3515_data[]  = {
+>>>       {}
+>>>   };
+>>>   +static const struct i2c_inst_data clsa0100_data[]  = {
+>>> +    { "cs35l41-hda", IRQ_RESOURCE_GPIO, 0 },
+>>> +    { "cs35l41-hda", IRQ_RESOURCE_GPIO, 0 },
+>>
+>> This suggests that both amplifiers are using the same GPIO pin as shared
+>> IRQ, is that correct ? Can you share an acpidump of the laptop's DSDT tables ?
+>>
+>> Regards,
+>>
+>> Hans
+>>
+> 
+> DSDT attached.
+> Yes, both amps share the same IRQ gpio.
 
-Please see the patch changelogs for details.
+Thanks, this patch looks good to me:
 
-Thanks!
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
 
 
+
+
+> 
+>>
+>>
+>>
+>>> +    {}
+>>> +};
+>>> +
+>>>   /*
+>>>    * Note new device-ids must also be added to i2c_multi_instantiate_ids in
+>>>    * drivers/acpi/scan.c: acpi_device_enumeration_by_parent().
+>>> @@ -155,6 +161,7 @@ static const struct acpi_device_id i2c_multi_inst_acpi_ids[] = {
+>>>       { "BSG1160", (unsigned long)bsg1160_data },
+>>>       { "BSG2150", (unsigned long)bsg2150_data },
+>>>       { "INT3515", (unsigned long)int3515_data },
+>>> +    { "CLSA0100", (unsigned long)clsa0100_data },
+>>>       { }
+>>>   };
+>>>   MODULE_DEVICE_TABLE(acpi, i2c_multi_inst_acpi_ids);
+>>>
+>>
 
