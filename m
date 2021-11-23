@@ -2,155 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BADAD45A2DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:40:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DEBB45A2E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:41:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237118AbhKWMnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 07:43:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41648 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236595AbhKWMnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 07:43:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9B31561074;
-        Tue, 23 Nov 2021 12:40:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637671209;
-        bh=5qaqYXMB4Z2vfZKrEfV2VP4m4WZltpvKjDDUKOgKSBI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ZqqrSp6uKN5MXJ/1ex5fqNKjrnluA8e2YUUq7rHoJ6vIEo0RT0OGJXuVe2Ii+TBwx
-         XHD+rgjeFhETXE5+zyr8sg21Mhb26k0JqcQXCVlY86KiE70ESZONijoRIYRHLevA9t
-         Yr6IwScpvTEUA25xbftECmbTz7wgiGO3XjlFgbm9TbNOFF2cmTGujOIRmB6LrH3Q+5
-         IpSLZ4oLoEiJtpGbfUXirmCJ5lCOXRbg0g5QmaHCmT5UQ0KYmdALHrg990RBPm86db
-         jbNm/lXL7F+TyFrV9545F1ohaC6pxNIrLQsSWihv6+IbO5LGencYAJcndaJZ8Q+/ra
-         1C26C4dZTSQ+A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 894A460A22;
-        Tue, 23 Nov 2021 12:40:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
+        id S236469AbhKWMoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 07:44:07 -0500
+Received: from mail-am6eur05on2092.outbound.protection.outlook.com ([40.107.22.92]:53249
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233857AbhKWMoE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 07:44:04 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Afs5W6WVn3ro1vpMqCtus1NnNPyyZ872gCZIAbVq7qUl8tOEGzTxwqFRRXFNb1je5N5Yi5QgCCbVtZetWRynPBU90PcCCSlWsK4YvM6is0CwGehS2H0WLGe7TwOF0vr/jHzrD8eqSF/XLwh+fY/1JVOw4tk8+ckR7PNK92BMpmYiQAUs6cJUyK+gH1ymRy9e3NP8D4uRZzLFOyQmOoRNJbiug/YnI+GTui9r+URlwLDMpnrECHiwSqmVx4M3abzaFZH8PsKiNypgcF9YJ8MeSLLOJ/kKt4d6/ZmSrUbNiBsBH9SSaqB+GMMFSco/TvirHLc8b2W6Itvldmg67Dn8eg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VPV748cHChyxG0iJAQGd+nVKD3wj7suMjF3RM8sVtS0=;
+ b=VVXpeAwI3qExb324mB0jS2uwd8CSHR8DwbGVhQQ/cuG+kgotE03iHkGZzEw5bHsonXVThkHwz1JfpLvVJlnNAGwy+eCQok3jLYoMeDVUUzjcRZKaHXIZEE4RdTrSJT3fLZS1a0X0baVC9/GCKnPiBTWWdAd8vK/q5MW/wK+Y4PAF3cN9aDAqVlXj6g7b6llgiZYqV0hz43YU2zdhe7EbONgNTc8ADVDnJNhxdcqP3U5caSU0T9UjsxT0NkbFuLj9nvjMPRj222rBWwyR6Jc4Ods18Fdj3fUGxJsEAEYRcWQuf/KaYrrfiVcrKQ9dXjXbBGUIOoyY+IkwK8IM4q1N0w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
+ dkim=pass header.d=nokia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
+ s=selector1-nokia-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VPV748cHChyxG0iJAQGd+nVKD3wj7suMjF3RM8sVtS0=;
+ b=ZHRUoas/P0uAhBm2gIe/0EYs8tvW1Z72XZIcWXQrTHQBceXfHtTMfhIti4YAuz/X1vK7WuSm7xCddgLMWSoVOeBxNsQO4uHYWbbCEysGgo4+rckVUDOQ1r+vbLmNhYlo4DGlHgpKbpqTX43o8DH31i3Z1KqLIJZtVpKRKKI3uDE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nokia.com;
+Received: from AM0PR07MB4531.eurprd07.prod.outlook.com (2603:10a6:208:6e::15)
+ by AM4PR07MB3091.eurprd07.prod.outlook.com (2603:10a6:205:11::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.16; Tue, 23 Nov
+ 2021 12:40:49 +0000
+Received: from AM0PR07MB4531.eurprd07.prod.outlook.com
+ ([fe80::555c:9e12:7c:f52f]) by AM0PR07MB4531.eurprd07.prod.outlook.com
+ ([fe80::555c:9e12:7c:f52f%7]) with mapi id 15.20.4734.019; Tue, 23 Nov 2021
+ 12:40:49 +0000
+Message-ID: <46f438c2-6f5f-645e-23b4-95216ec23ca3@nokia.com>
+Date:   Tue, 23 Nov 2021 13:40:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH] mtd: spi-nor: mt25qu: Ignore 6th ID byte
+Content-Language: en-US
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-mtd@lists.infradead.org,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org
+References: <20211119080402.20262-1-alexander.sverdlin@nokia.com>
+ <9a158e2ef6635212c1e353590e3b773b@walle.cc>
+ <1e133bc6-5edb-c4ce-ad44-3de77048acf2@nokia.com>
+ <e9589af968d7b9dafbce17325dbf8472@walle.cc>
+ <2bf37a35-1ccf-f4fa-c999-42b9154a2914@nokia.com>
+ <88db136a146edf53801d86509b52d40f@walle.cc>
+From:   Alexander Sverdlin <alexander.sverdlin@nokia.com>
+In-Reply-To: <88db136a146edf53801d86509b52d40f@walle.cc>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: usb: Correct PHY handling of smsc95xx
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163767120955.19545.3650773979093266517.git-patchwork-notify@kernel.org>
-Date:   Tue, 23 Nov 2021 12:40:09 +0000
-References: <20211122184445.1159316-1-martyn.welch@collabora.com>
-In-Reply-To: <20211122184445.1159316-1-martyn.welch@collabora.com>
-To:     Martyn Welch <martyn.welch@collabora.com>
-Cc:     netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        steve.glendinning@shawell.net, UNGLinuxDriver@microchip.com,
-        davem@davemloft.net, kuba@kernel.org, stable@kernel.org
+X-ClientProxiedBy: HE1PR07CA0014.eurprd07.prod.outlook.com
+ (2603:10a6:7:67::24) To AM0PR07MB4531.eurprd07.prod.outlook.com
+ (2603:10a6:208:6e::15)
+MIME-Version: 1.0
+Received: from [0.0.0.0] (131.228.32.167) by HE1PR07CA0014.eurprd07.prod.outlook.com (2603:10a6:7:67::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.12 via Frontend Transport; Tue, 23 Nov 2021 12:40:48 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 76f8fe5b-3b60-4318-bdc5-08d9ae7e7a4d
+X-MS-TrafficTypeDiagnostic: AM4PR07MB3091:
+X-Microsoft-Antispam-PRVS: <AM4PR07MB309187CDA9CC0810C15865E288609@AM4PR07MB3091.eurprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Y4gMTUEbuJehYD7koCjdQ2KN4/8rNcSQ7hSLxwkliHpVE6riyHos4yQzk8Qtr8qRVrYAkWSrE9SfyK9m0wKwnyzKGA6q7fTlMw4SYoVKtHX4ULHHtNMlyJOfgIZ/7xOXth3AnapbMJ4HTi+4FwG4CdcitGW5AIuiSzt+8a1OSbMDfNB1wf52R/+1YNNEASNTBXYY0ePmqoF/xG4gbALaFp/bCZrmKr8Y2K3iTdrhGoGX7nb7lw2ss/fNDD2VwSM+KaLPWkNNyPA9h6yyi3cVQpsnn9xrToOOewx+u+4C6oLr0wPww8di2L9QeEY/GcxW+mLWIQdTmnLNBVOZLspAIwEZ6DCF44HhdKHmotDS+rTDHpkiC4p47VEh1EmQGhY2XD4UAkFYyZ62e0Jp11mg8l+wZ7GF9CJVuYUu3ETqVLwclTG6KpJGQlMIECRYSi6m8SJMvOxCLjAoAbaYM0VY0I9Ss7mnCB5y42c5blTv/tvXvhIgof4VzTLUISaK6xK3YqzqJdYRpTxW1hMWWQCu2F6HX7jXOkQbpQi4kfaH6NWVWoo5dmUR1mll84nWTJymJLZJUofrbffn6n+fonwXpa1FnAL+33So3Ow+hE5NqVVBYhzHQ6cST38NHu0n0TSqMW3wktr2YZct06jCd2yiym4v4ZtvqI1hQK1UJmnlpkoE/ej6Dp5w1w8QUer1hG1cou//GV15LK5yLYS4yfOX/3+gVF8ydL2zBM5LF6L/FzqneYUTklvUe/HrLvbFgV8Gd0JFRhmCLzy9In0jP/qJGnS6Pz3aKjWxkWL8WazLlJ8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR07MB4531.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(31696002)(956004)(52116002)(31686004)(38100700002)(66556008)(186003)(2906002)(82960400001)(5660300002)(83380400001)(66476007)(53546011)(508600001)(66946007)(36756003)(86362001)(38350700002)(2616005)(8676002)(6486002)(6666004)(8936002)(316002)(4326008)(16576012)(26005)(6916009)(44832011)(6706004)(54906003)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aW03dmREcWJGNmd0Q04rNlQ3d1hRcm5pVHM1SzRzUDk5bUNobGF5ekgxVDA2?=
+ =?utf-8?B?dDJnM1owZkpLK1RoeHdpRnMwWmplMXM4c1Q2NkNoQnMvMVE5Yk81VEkyOU5R?=
+ =?utf-8?B?U2xlVVI2a2VMMk9vTnh2RFplWGxPQURURjhZRGlTdlpXajA4NlhGR2ZtNEhB?=
+ =?utf-8?B?SmxsWmVieXdXSElTOTNuQklaV3J3Um1QQzN4OTlVRllUMVZDSFFwakcrUjVl?=
+ =?utf-8?B?YVhOaW5YMzFjRVI4bWRHcFJlMXc0R3IvMUtJZjZFTWpYSW5HNzlWSzVtV1Fr?=
+ =?utf-8?B?T1BMT0ZCaXVUUHN5a1VBeUhLR3BGOGVYMk5RMHhHSVkwclNpWmdLQkw1SzJn?=
+ =?utf-8?B?Q1g1Q1MwaS9kWHRNUUd3M21OZ3dUSUVYTThGclZGem1zTHpFSDQ0NzhmeUEz?=
+ =?utf-8?B?VmlYdFpoaVpKNVM4RVY0VllYR0NkUGZNZHdqUVNCTVpxTzV3VUNQdVJ0N0Jz?=
+ =?utf-8?B?N0tKSE9HVE9RTUVPSU9PeDFRK2ZUd2lLY3N3T3JGalhsSkdKc1J4VGEwbDhY?=
+ =?utf-8?B?WlRjQU01Q0ZWSml1b1MzL2NyQUkzbnVpQ01vOEo0RERkYS95WitWR1ByaFlw?=
+ =?utf-8?B?dWxpQllVVHhMNHVWUXZ6Rm9aTU8rc2lhMitFMm9SdXRaMTFuMis3WFJxNGlD?=
+ =?utf-8?B?bG5zN3hzZGNuMXZsc3dnQlJnazhwbWN2VWJJNUFFMUFzR1VYSkJGRzZjaWpJ?=
+ =?utf-8?B?NkdIRXppa0dCeVJhTTRSV3dDQU5TSTM5aHFPTGlmTU9hYzM1c0szY1JMM0NZ?=
+ =?utf-8?B?WDhOWVlEd2tBL2FLU1VUUkgrVXN5dWFEY0FNb082SnlnU3RvamtTMUFkQkFY?=
+ =?utf-8?B?TG15SHhNSUVnNnhkTXFyWUY4R1NDYWJ0aHlwbVZEZjIrZnhMRXJwTFpPOFEz?=
+ =?utf-8?B?bjg2cU5vTFRHd1dEdUsxTVg2NTJnbHVVdFJlcVhVNTArZXdIcys5a0VneTFm?=
+ =?utf-8?B?VWZuMHArWHErU3JyTXJJK0ZUc3E5dXlzTmRPRHZiOTFzMTI3TGU1eHdRTFVT?=
+ =?utf-8?B?VGZSSDl0TlkrQWR3akdMTEMzK3ByT0Y1ZjlRNUxpM1FrT2xaMHJJUUlDL2Zl?=
+ =?utf-8?B?QXdMVUcxQ2l1eTk3QnNkRkdkRFVickxPZWh5WG9SS2M5dDBxTUxYbTJxZzB2?=
+ =?utf-8?B?SUNHOWZYZWZWZGNFRjh2Tm4zRVBLU0V4UDBTeDNEVjI2Q2llZWlVN1dUYTRX?=
+ =?utf-8?B?SnB6M0UvaFpPc0huNjJVNWgwcG5WSkMvVTlHdnN6WmRmK0FEZ1h1bTliM2lK?=
+ =?utf-8?B?elVETXZtTUFoTzJtUjBiUzByRGw0cTZjUHIxcWM3dW0yZ2Y2Q25CSlVjOERo?=
+ =?utf-8?B?SUdTYTZZY3ZBQTBvcHR2T2JDbEtXaUdjVnZNZUZnVy9OMUZTVmE3bnVRSEZo?=
+ =?utf-8?B?eldNaHFlczFkS0QybHYzRnN3UVJrR0FUVWZnUmxhRTJEbjBEemcyQ2lhYW9k?=
+ =?utf-8?B?YUU3aUl6TGZWRXZ4Szg2dGorNzViNEs1bTd3RzAxaG5jWVpsSVJ4Mzd6RHZJ?=
+ =?utf-8?B?TUVaMnRlaElDZE5zM3luUWdtQ2NhR2c4VmNabjZpZk5aYU15NTFsNnlHUnZL?=
+ =?utf-8?B?eWNnQUx4SlRpajRBUU1UTWhLb1BOQTQ4NDIwWkpydDFwZ09EWWN6RVRGWGxS?=
+ =?utf-8?B?aDVuWmJ4eWFubEVnUE5HUk43aE90b2JqU3pNQ1ZNVWxLMUxLeVpTMXoyOHhh?=
+ =?utf-8?B?ZnJKdjU3dlpjcFRZb2lmWEZpd0NDMG9jYTNxTldFbm91aTNUWmlWZzJvMHZJ?=
+ =?utf-8?B?Y3psd3I5d0dTWHM2VlhoaVlvYkxEUHJ3dHhscXJxQ0tMdkJySmlUZkt3WmZL?=
+ =?utf-8?B?VnZpK0pabEVCd1ArcGk0eE1DZmxTVVdpNGw0dE01THhBckErTzAxbGkrdTJV?=
+ =?utf-8?B?T0RzazlhNFNZc0FxREhRN1R4aVRkclJKVW8wNG8xUXgrR25QZHprSlQwaDQz?=
+ =?utf-8?B?YTlrKysxN2FBN2hIdHFwRXQzcWt1aFJWV0FWUXhublZLWitycHljZlpOSk5V?=
+ =?utf-8?B?d1pYVTNyYTBCMy91OU9Oejh3eXlzb1FtWTFmRDgxdmdieFVua2hrUmtDdlRE?=
+ =?utf-8?B?TitIbVpXT0tENnJJL3BER3BmbmlFUnpSTlU1elY3WXJrSUovTEcrMEVmMDN0?=
+ =?utf-8?B?YkhMdnh0ekcwV05nOEZ2am40S2JoTG1EcmxwV2k5UjV4UHVLK2hZbFE4TlVY?=
+ =?utf-8?B?Z3JSVEtVM1Y0L0xLV1JZUGRkdDBpbW4xam5HeTBXL1gzRmFpU0dtSTByNUVy?=
+ =?utf-8?Q?I0AcAmEG5Wrkoia/ubptij2sKzrJ4ZU5aGUke6FLGI=3D?=
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 76f8fe5b-3b60-4318-bdc5-08d9ae7e7a4d
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR07MB4531.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2021 12:40:49.2652
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SNz2hTkEtCjGI828P1UHYCm1ml9c9MrkjxklGi6g0OLFfV5Jwto/5FoHtskijpumu1eFYtSPCn7WBw6krlDKlF/gY+SKr0wcTL4FGtMXYvY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR07MB3091
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi!
 
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
-
-On Mon, 22 Nov 2021 18:44:45 +0000 you wrote:
-> The smsc95xx driver is dropping phy speed settings and causing a stack
-> trace at device unbind:
+On 23/11/2021 09:14, Michael Walle wrote:
+>>
+>> Some people ask themselves why this table keeps growing if there is SFDP...
+>> I see the point in fixups, but maybe at some point we will be able to support
+>> some devices just out of the box?
 > 
-> [  536.379147] smsc95xx 2-1:1.0 eth1: unregister 'smsc95xx' usb-ci_hdrc.2-1, smsc95xx USB 2.0 Ethernet
-> [  536.425029] ------------[ cut here ]------------
-> [  536.429650] WARNING: CPU: 0 PID: 439 at fs/kernfs/dir.c:1535 kernfs_remove_by_name_ns+0xb8/0xc0
-> [  536.438416] kernfs: can not remove 'attached_dev', no directory
-> [  536.444363] Modules linked in: xts dm_crypt dm_mod atmel_mxt_ts smsc95xx usbnet
-> [  536.451748] CPU: 0 PID: 439 Comm: sh Tainted: G        W         5.15.0 #1
-> [  536.458636] Hardware name: Freescale i.MX53 (Device Tree Support)
-> [  536.464735] Backtrace:
-> [  536.467190] [<80b1c904>] (dump_backtrace) from [<80b1cb48>] (show_stack+0x20/0x24)
-> [  536.474787]  r7:000005ff r6:8035b294 r5:600f0013 r4:80d8af78
-> [  536.480449] [<80b1cb28>] (show_stack) from [<80b1f764>] (dump_stack_lvl+0x48/0x54)
-> [  536.488035] [<80b1f71c>] (dump_stack_lvl) from [<80b1f788>] (dump_stack+0x18/0x1c)
-> [  536.495620]  r5:00000009 r4:80d9b820
-> [  536.499198] [<80b1f770>] (dump_stack) from [<80124fac>] (__warn+0xfc/0x114)
-> [  536.506187] [<80124eb0>] (__warn) from [<80b1d21c>] (warn_slowpath_fmt+0xa8/0xdc)
-> [  536.513688]  r7:000005ff r6:80d9b820 r5:80d9b8e0 r4:83744000
-> [  536.519349] [<80b1d178>] (warn_slowpath_fmt) from [<8035b294>] (kernfs_remove_by_name_ns+0xb8/0xc0)
-> [  536.528416]  r9:00000001 r8:00000000 r7:824926dc r6:00000000 r5:80df6c2c r4:00000000
-> [  536.536162] [<8035b1dc>] (kernfs_remove_by_name_ns) from [<80b1f56c>] (sysfs_remove_link+0x4c/0x50)
-> [  536.545225]  r6:7f00f02c r5:80df6c2c r4:83306400
-> [  536.549845] [<80b1f520>] (sysfs_remove_link) from [<806f9c8c>] (phy_detach+0xfc/0x11c)
-> [  536.557780]  r5:82492000 r4:83306400
-> [  536.561359] [<806f9b90>] (phy_detach) from [<806f9cf8>] (phy_disconnect+0x4c/0x58)
-> [  536.568943]  r7:824926dc r6:7f00f02c r5:82492580 r4:83306400
-> [  536.574604] [<806f9cac>] (phy_disconnect) from [<7f00a310>] (smsc95xx_disconnect_phy+0x30/0x38 [smsc95xx])
-> [  536.584290]  r5:82492580 r4:82492580
-> [  536.587868] [<7f00a2e0>] (smsc95xx_disconnect_phy [smsc95xx]) from [<7f001570>] (usbnet_stop+0x70/0x1a0 [usbnet])
-> [  536.598161]  r5:82492580 r4:82492000
-> [  536.601740] [<7f001500>] (usbnet_stop [usbnet]) from [<808baa70>] (__dev_close_many+0xb4/0x12c)
-> [  536.610466]  r8:83744000 r7:00000000 r6:83744000 r5:83745b74 r4:82492000
-> [  536.617170] [<808ba9bc>] (__dev_close_many) from [<808bab78>] (dev_close_many+0x90/0x120)
-> [  536.625365]  r7:00000001 r6:83745b74 r5:83745b8c r4:82492000
-> [  536.631026] [<808baae8>] (dev_close_many) from [<808bf408>] (unregister_netdevice_many+0x15c/0x704)
-> [  536.640094]  r9:00000001 r8:81130b98 r7:83745b74 r6:83745bc4 r5:83745b8c r4:82492000
-> [  536.647840] [<808bf2ac>] (unregister_netdevice_many) from [<808bfa50>] (unregister_netdevice_queue+0xa0/0xe8)
-> [  536.657775]  r10:8112bcc0 r9:83306c00 r8:83306c80 r7:8291e420 r6:83744000 r5:00000000
-> [  536.665608]  r4:82492000
-> [  536.668143] [<808bf9b0>] (unregister_netdevice_queue) from [<808bfac0>] (unregister_netdev+0x28/0x30)
-> [  536.677381]  r6:7f01003c r5:82492000 r4:82492000
-> [  536.682000] [<808bfa98>] (unregister_netdev) from [<7f000b40>] (usbnet_disconnect+0x64/0xdc [usbnet])
-> [  536.691241]  r5:82492000 r4:82492580
-> [  536.694819] [<7f000adc>] (usbnet_disconnect [usbnet]) from [<8076b958>] (usb_unbind_interface+0x80/0x248)
-> [  536.704406]  r5:7f01003c r4:83306c80
-> [  536.707984] [<8076b8d8>] (usb_unbind_interface) from [<8061765c>] (device_release_driver_internal+0x1c4/0x1cc)
-> [  536.718005]  r10:8112bcc0 r9:80dff1dc r8:83306c80 r7:83744000 r6:7f01003c r5:00000000
-> [  536.725838]  r4:8291e420
-> [  536.728373] [<80617498>] (device_release_driver_internal) from [<80617684>] (device_release_driver+0x20/0x24)
-> [  536.738302]  r7:83744000 r6:810d4f4c r5:8291e420 r4:8176ae30
-> [  536.743963] [<80617664>] (device_release_driver) from [<806156cc>] (bus_remove_device+0xf0/0x148)
-> [  536.752858] [<806155dc>] (bus_remove_device) from [<80610018>] (device_del+0x198/0x41c)
-> [  536.760880]  r7:83744000 r6:8116e2e4 r5:8291e464 r4:8291e420
-> [  536.766542] [<8060fe80>] (device_del) from [<80768fe8>] (usb_disable_device+0xcc/0x1e0)
-> [  536.774576]  r10:8112bcc0 r9:80dff1dc r8:00000001 r7:8112bc48 r6:8291e400 r5:00000001
-> [  536.782410]  r4:83306c00
-> [  536.784945] [<80768f1c>] (usb_disable_device) from [<80769c30>] (usb_set_configuration+0x514/0x8dc)
-> [  536.794011]  r10:00000000 r9:00000000 r8:832c3600 r7:00000004 r6:810d5688 r5:00000000
-> [  536.801844]  r4:83306c00
-> [  536.804379] [<8076971c>] (usb_set_configuration) from [<80775fac>] (usb_generic_driver_disconnect+0x34/0x38)
-> [  536.814236]  r10:832c3610 r9:83745ef8 r8:832c3600 r7:00000004 r6:810d5688 r5:83306c00
-> [  536.822069]  r4:83306c00
-> [  536.824605] [<80775f78>] (usb_generic_driver_disconnect) from [<8076b850>] (usb_unbind_device+0x30/0x70)
-> [  536.834100]  r5:83306c00 r4:810d5688
-> [  536.837678] [<8076b820>] (usb_unbind_device) from [<8061765c>] (device_release_driver_internal+0x1c4/0x1cc)
-> [  536.847432]  r5:822fb480 r4:83306c80
-> [  536.851009] [<80617498>] (device_release_driver_internal) from [<806176a8>] (device_driver_detach+0x20/0x24)
-> [  536.860853]  r7:00000004 r6:810d4f4c r5:810d5688 r4:83306c80
-> [  536.866515] [<80617688>] (device_driver_detach) from [<80614d98>] (unbind_store+0x70/0xe4)
-> [  536.874793] [<80614d28>] (unbind_store) from [<80614118>] (drv_attr_store+0x30/0x3c)
-> [  536.882554]  r7:00000000 r6:00000000 r5:83739200 r4:80614d28
-> [  536.888217] [<806140e8>] (drv_attr_store) from [<8035cb68>] (sysfs_kf_write+0x48/0x54)
-> [  536.896154]  r5:83739200 r4:806140e8
-> [  536.899732] [<8035cb20>] (sysfs_kf_write) from [<8035be84>] (kernfs_fop_write_iter+0x11c/0x1d4)
-> [  536.908446]  r5:83739200 r4:00000004
-> [  536.912024] [<8035bd68>] (kernfs_fop_write_iter) from [<802b87fc>] (vfs_write+0x258/0x3e4)
-> [  536.920317]  r10:00000000 r9:83745f58 r8:83744000 r7:00000000 r6:00000004 r5:00000000
-> [  536.928151]  r4:82adacc0
-> [  536.930687] [<802b85a4>] (vfs_write) from [<802b8b0c>] (ksys_write+0x74/0xf4)
-> [  536.937842]  r10:00000004 r9:007767a0 r8:83744000 r7:00000000 r6:00000000 r5:82adacc0
-> [  536.945676]  r4:82adacc0
-> [  536.948213] [<802b8a98>] (ksys_write) from [<802b8ba4>] (sys_write+0x18/0x1c)
-> [  536.955367]  r10:00000004 r9:83744000 r8:80100244 r7:00000004 r6:76f47b58 r5:76fc0350
-> [  536.963200]  r4:00000004
-> [  536.965735] [<802b8b8c>] (sys_write) from [<80100060>] (ret_fast_syscall+0x0/0x48)
-> [  536.973320] Exception stack(0x83745fa8 to 0x83745ff0)
-> [  536.978383] 5fa0:                   00000004 76fc0350 00000001 007767a0 00000004 00000000
-> [  536.986569] 5fc0: 00000004 76fc0350 76f47b58 00000004 76f47c7c 76f48114 00000000 7e87991c
-> [  536.994753] 5fe0: 00000498 7e879908 76e6dce8 76eca2e8
-> [  536.999922] ---[ end trace 9b835d809816b435 ]---
-> 
-> [...]
+> Are these features detectable by SFDP? Without knowing anything, as you ignored
+> my former question, I'd say no.
 
-Here is the summary with links:
-  - net: usb: Correct PHY handling of smsc95xx
-    https://git.kernel.org/netdev/net/c/a049a30fc27c
+Well, I just had nothing to say on your question.
+It wasn't my intention to study security features of a chip, which I don't use.
+There is a background which I didn't tell you, which might even emphasize the
+importance of security version support even without security features:
+Micron might want to "streamline" the product palette and as security version
+is backwards compatible (except 6th byte, which is not an ID, actually), a
+buyer can get security version instead of normal one.
 
-You are awesome, thank you!
+And the reason for the above is, mainly, because there are real problems with
+this chip, even without new features, sector erase doesn't work properly
+(refer to my other email in this thread).
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Best regards,
+Alexander Sverdlin.
