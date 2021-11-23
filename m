@@ -2,147 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0EB545ACE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:57:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F365545ACEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:58:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238684AbhKWUBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 15:01:01 -0500
-Received: from mga04.intel.com ([192.55.52.120]:3558 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232735AbhKWUA7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 15:00:59 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="233838326"
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="233838326"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 11:57:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="497408405"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 23 Nov 2021 11:57:49 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mpbvI-0002EM-SV; Tue, 23 Nov 2021 19:57:48 +0000
-Date:   Wed, 24 Nov 2021 03:56:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: drivers/pci/controller/dwc/pcie-qcom.c:1305:30: sparse: sparse:
- incorrect type in initializer (different base types)
-Message-ID: <202111240329.0m3Z5QZm-lkp@intel.com>
+        id S240151AbhKWUBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 15:01:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232735AbhKWUBj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 15:01:39 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7570DC061714
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:58:31 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id z18so154580iof.5
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:58:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gzkHFWCeJ5B0HVtGojsjqbGpQYRfubbgVYpeWL+4Wf4=;
+        b=QcEWH5gQ3keGnFBHuTq11/AVEIGGI3PUY29+an7xWGSG0yhl4PFxoJ6e9Ybw2rFGbh
+         ak+7FM/GTuM9npHLorAY/fGa6GqVe4eURzonq4MRTJbBKA4kVmXCy/fxf0Kgwx7lsjN5
+         vh/swCRkJSHFmW9DRGlr9FcN33dviD3cXCfNXm4/aomy/yiW8vp6HUjhWZiLhj8/+Mm1
+         CX705eYfzgIrYvI0SDpG2Ib/sfMP4BMFfhldFznJBL3d0GcFxu0NyopyM6Rb75Dz5qMp
+         XsY8KALIxxSHv7/+5KmLsPi0GdEf71KDED4W+vI4n4NRunhlZvf1Yl/X29sPo/onA7GR
+         T0yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gzkHFWCeJ5B0HVtGojsjqbGpQYRfubbgVYpeWL+4Wf4=;
+        b=XAByxwBX4A9aW6Q75nxK5m5Wc/Wg66nlMDuhyqxPJAWh8MjUtZ077aeRn7BjdakrZG
+         XcF9B32EyX1RpAJqYqRxsJzwW0NrMGL6IoD3g8WYFpFwKmiZhFlk4RNJHD1t3B5njlQE
+         Io7VZavzr3jNQqHROpX6m+Q2GDCf//0OLPDWlNh3LdhOHvMV20o3XDnZd3fNSWwjBkD8
+         alHnQv2ytSwJRQgMFj/d7Pppq5Hn1sdolF0ecELZ2+tBn1Jzg0Ln95tKYJTkr9VzFDGu
+         R4K1SjAyACyTPu25ILnEOKuxd9ix3dK/mxfaKXV3T+o0p8G2cGCKJwuKylYVv9Yy7FGK
+         6kKg==
+X-Gm-Message-State: AOAM532qkUokmOhKItmwT/sbmB0bLOAVxr/b07Ei+FMkTxC89HvGn9t7
+        NTIYeXRmwL0VOJxZafVnK4BM87hfzuQa5T912gHN9g==
+X-Google-Smtp-Source: ABdhPJy5P0sr4ayilFNItLf0ekqsSE3fZ9eCTEk9wA1SVD8rSOpPakRE9oiR1+L8xMg/MZaIyota8Yu1T98NEinCbao=
+X-Received: by 2002:a5d:9493:: with SMTP id v19mr8150597ioj.34.1637697510750;
+ Tue, 23 Nov 2021 11:58:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211120045046.3940942-1-seanjc@google.com> <20211120045046.3940942-28-seanjc@google.com>
+In-Reply-To: <20211120045046.3940942-28-seanjc@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Tue, 23 Nov 2021 11:58:19 -0800
+Message-ID: <CANgfPd-MNnx0GVZCHcDYUyx5kqAQSr=s_QGr8zDyw8Wnz0devQ@mail.gmail.com>
+Subject: Re: [PATCH 27/28] KVM: x86/mmu: Do remote TLB flush before dropping
+ RCU in TDP MMU resched
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Hou Wenlong <houwenlong93@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   136057256686de39cc3a07c2e39ef6bc43003ff6
-commit: 4c9398822106c366d88c8c68ddf44bd371d39961 PCI: qcom: Add support for configuring BDF to SID mapping for SM8250
-date:   12 months ago
-config: alpha-randconfig-s032-20211117 (https://download.01.org/0day-ci/archive/20211124/202111240329.0m3Z5QZm-lkp@intel.com/config.gz)
-compiler: alpha-linux-gcc (GCC) 11.2.0
-reproduce:
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # apt-get install sparse
-        # sparse version: v0.6.4-dirty
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4c9398822106c366d88c8c68ddf44bd371d39961
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout 4c9398822106c366d88c8c68ddf44bd371d39961
-        # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=alpha 
+On Fri, Nov 19, 2021 at 8:51 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> When yielding in the TDP MMU iterator, service any pending TLB flush
+> before  dropping RCU protections in anticipation of using the callers RCU
+> "lock" as a proxy for vCPUs in the guest.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Reviewed-by: Ben Gardon <bgardon@google.com>
 
+> ---
+>  arch/x86/kvm/mmu/tdp_mmu.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 79a52717916c..55c16680b927 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -732,11 +732,11 @@ static inline bool tdp_mmu_iter_cond_resched(struct kvm *kvm,
+>                 return false;
+>
+>         if (need_resched() || rwlock_needbreak(&kvm->mmu_lock)) {
+> -               rcu_read_unlock();
+> -
+>                 if (flush)
+>                         kvm_flush_remote_tlbs(kvm);
+>
+> +               rcu_read_unlock();
+> +
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/pci/controller/dwc/pcie-qcom.c:1305:30: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned short [usertype] bdf_be @@     got restricted __be16 [usertype] @@
-   drivers/pci/controller/dwc/pcie-qcom.c:1305:30: sparse:     expected unsigned short [usertype] bdf_be
-   drivers/pci/controller/dwc/pcie-qcom.c:1305:30: sparse:     got restricted __be16 [usertype]
+Just to check my understanding:
+Theoretically PT memory could be freed as soon as we release the RCU
+lock, if this is the only thread in a read critical section. In order
+to ensure that we can use RCU as a proxy for TLB flushes we need to
+flush the TLBs while still holding the RCU read lock. Without this
+change (and with the next one) we could wind up in a situation where
+we drop the RCU read lock, then the RCU callback runs and frees the
+memory, and then the guest does a lookup through the paging structure
+caches and we get a use-after-free bug. By flushing in an RCU critical
+section, we ensure that the TLBs will have been flushed by the time
+the RCU callback runs to free the memory. Clever!
 
-vim +1305 drivers/pci/controller/dwc/pcie-qcom.c
-
-  1266	
-  1267	static int qcom_pcie_config_sid_sm8250(struct qcom_pcie *pcie)
-  1268	{
-  1269		/* iommu map structure */
-  1270		struct {
-  1271			u32 bdf;
-  1272			u32 phandle;
-  1273			u32 smmu_sid;
-  1274			u32 smmu_sid_len;
-  1275		} *map;
-  1276		void __iomem *bdf_to_sid_base = pcie->parf + PCIE20_PARF_BDF_TO_SID_TABLE_N;
-  1277		struct device *dev = pcie->pci->dev;
-  1278		u8 qcom_pcie_crc8_table[CRC8_TABLE_SIZE];
-  1279		int i, nr_map, size = 0;
-  1280		u32 smmu_sid_base;
-  1281	
-  1282		of_get_property(dev->of_node, "iommu-map", &size);
-  1283		if (!size)
-  1284			return 0;
-  1285	
-  1286		map = kzalloc(size, GFP_KERNEL);
-  1287		if (!map)
-  1288			return -ENOMEM;
-  1289	
-  1290		of_property_read_u32_array(dev->of_node,
-  1291			"iommu-map", (u32 *)map, size / sizeof(u32));
-  1292	
-  1293		nr_map = size / (sizeof(*map));
-  1294	
-  1295		crc8_populate_msb(qcom_pcie_crc8_table, QCOM_PCIE_CRC8_POLYNOMIAL);
-  1296	
-  1297		/* Registers need to be zero out first */
-  1298		memset_io(bdf_to_sid_base, 0, CRC8_TABLE_SIZE * sizeof(u32));
-  1299	
-  1300		/* Extract the SMMU SID base from the first entry of iommu-map */
-  1301		smmu_sid_base = map[0].smmu_sid;
-  1302	
-  1303		/* Look for an available entry to hold the mapping */
-  1304		for (i = 0; i < nr_map; i++) {
-> 1305			u16 bdf_be = cpu_to_be16(map[i].bdf);
-  1306			u32 val;
-  1307			u8 hash;
-  1308	
-  1309			hash = crc8(qcom_pcie_crc8_table, (u8 *)&bdf_be, sizeof(bdf_be),
-  1310				0);
-  1311	
-  1312			val = readl(bdf_to_sid_base + hash * sizeof(u32));
-  1313	
-  1314			/* If the register is already populated, look for next available entry */
-  1315			while (val) {
-  1316				u8 current_hash = hash++;
-  1317				u8 next_mask = 0xff;
-  1318	
-  1319				/* If NEXT field is NULL then update it with next hash */
-  1320				if (!(val & next_mask)) {
-  1321					val |= (u32)hash;
-  1322					writel(val, bdf_to_sid_base + current_hash * sizeof(u32));
-  1323				}
-  1324	
-  1325				val = readl(bdf_to_sid_base + hash * sizeof(u32));
-  1326			}
-  1327	
-  1328			/* BDF [31:16] | SID [15:8] | NEXT [7:0] */
-  1329			val = map[i].bdf << 16 | (map[i].smmu_sid - smmu_sid_base) << 8 | 0;
-  1330			writel(val, bdf_to_sid_base + hash * sizeof(u32));
-  1331		}
-  1332	
-  1333		kfree(map);
-  1334	
-  1335		return 0;
-  1336	}
-  1337	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>                 if (shared)
+>                         cond_resched_rwlock_read(&kvm->mmu_lock);
+>                 else
+> --
+> 2.34.0.rc2.393.gf8c9666880-goog
+>
