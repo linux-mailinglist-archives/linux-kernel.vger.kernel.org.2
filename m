@@ -2,327 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030AA45A680
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 16:24:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5674C45A686
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 16:28:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236687AbhKWP14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 10:27:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236502AbhKWP1z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 10:27:55 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21842C061714
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 07:24:47 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id 47-20020a9d0332000000b005798ac20d72so15794585otv.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 07:24:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JpD5WpIhxDUkbt7w6TL55id0u6co4l+62l9b76Ql6yE=;
-        b=NrvF4QqjjfGRaiXEftlCeh5hxtQmd/oBn8N6nYo5xZ61CYUhYy2sp8YjyvMYtf+6r4
-         AMA1D4ejWYPVAjO64DEhhEK/rzT8aAE5SHIZaUzrSOg3Q3xgvYPloH6zeAtO0BLpy7ut
-         AzzshMD452L//bSolQHlO9U3xa76E5tN6NLy+EfBPl1Nykcu+6FggNLRVjOZIN9iE4uu
-         vrhsQwoMyRUq/Bu4yjKl+TjDaM/mwAA66o/oL5cGHWzgDVEItwXjQ5028TCtHPMHMQ1v
-         H/Hra52DAt9DYh+GfPYI2Hg8VXegkaB+6LArISAiq4YClmERQJgXJ+YDJbLECmaocmmk
-         a7DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JpD5WpIhxDUkbt7w6TL55id0u6co4l+62l9b76Ql6yE=;
-        b=Z6+ANc4b6e92Ofp2pFkds6202igTWPBonXSsMNs+8hJuHqRVR2SgBlbLfbCD55bRop
-         /15KYmMNCDZWZudwfxoxvr0L6sgGK8x0Rl9h6D/BeFfKNYcMXgCXo5ub9MVtkXY1ClfQ
-         pMBLFVYRESvMq0fMksGintm11ooXG845a5CkMQyZ1z+80BmDATM9mMA2Ow/MopyK/2lO
-         vHGZqRKvYT8WThTkry8zU65QkQLX7SVVlZ/FqWvaXnMCsralckFYUkurwcGODtBCaN3j
-         De0GElRUk15hbzP0PxM68gEatQfg58470iV6ZVmT8I7lZPqigvnHOYMz1/0x+wFiKVOy
-         X8VQ==
-X-Gm-Message-State: AOAM532H2PkCkigrLhAjb+ZwxY4CZpCtFOxLLnMjKCMO1im0f3k3/lEn
-        g2dbherHK0bfYYBmDA/318QXxA==
-X-Google-Smtp-Source: ABdhPJxSqKyEA2wbIvfDs5E8BVg1B50eu94EXrlDS3SC+PEBF0OrHZ1r0uSnSUNP25yuwBMFrfZePg==
-X-Received: by 2002:a05:6830:4392:: with SMTP id s18mr5399396otv.168.1637681086407;
-        Tue, 23 Nov 2021 07:24:46 -0800 (PST)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id r3sm2191435oti.51.2021.11.23.07.24.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 07:24:45 -0800 (PST)
-Date:   Tue, 23 Nov 2021 07:26:28 -0800
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Dang Huynh <danct12@riseup.net>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] dts: treewide: Drop input-name property
-Message-ID: <YZ0IJGJwy6O9ATpW@ripper>
-References: <20211123065158.1383182-1-danct12@riseup.net>
+        id S238392AbhKWPbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 10:31:51 -0500
+Received: from mail-mw2nam10on2059.outbound.protection.outlook.com ([40.107.94.59]:18848
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236264AbhKWPbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 10:31:50 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fIifnvjaa/7xy3KlWuoqjib/JAdChrMrmJgd7DajhIvA5xvZYttf/+n77tmf2fK/L8/BSNukPQIBRlrqE49M6hunc+3+xh4hV/JrHZnvUDI/bXalS1mG0EhWHcPooxvTRhaEoy8vMqhvZs3lOijPAAM162dCwgywYBuNeid3HxKkgdeVW/1+HcIASLA5uMqE7FuJzw+/EIL7jOGSU056XEgrJ3El1dwkPAcGD0rstwP7Z3ToeyOv64Tu4TDgR/m+EeFtyCxhlM8KM9QO0cn1LBiUUJMc033edeZC+PzzsHgxj7kVuGwwIS9x2GLpKbw57gPJE/iJyaH083RWVYsSlg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CRZgSPFW5ObJNZqgFn0gSl7lxUASiQTIf9X5dmNqPM8=;
+ b=kNQSkIbCASiUIUy/xlYmSYajD1IWKojw/yjK8pXDUYHygPUgrxKOFA/x804K0+Afql4m14gNIH03qMPSiEqLTuG0wz4cO/vKnEwMhbRr46DL1/KuW6VG/pJ2gP3FTXRxwZ+ifRee5xUFWM7W2c45TIsrJ7BAXYvaHIwA4dFoUZknGToOcEtyaPq+PJ0tut7ZYhQVjUeS4UV7+VM+ej6XNpDHrclHiSSEH5eByBk8ICEiVe4gKEjqztxjF/VDLAQdMNjP7ElXsPJtHVLigIlSiNC6ga9e1h9YAsEHuc59/ZfxBfpxRzE9D6Ec4MTpPo6KRkKUrdAvcSnEFgXyKzjwyg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CRZgSPFW5ObJNZqgFn0gSl7lxUASiQTIf9X5dmNqPM8=;
+ b=hYj9D4cXQ7GwqlGHxe+/LtRb0JhYi6UDYrITGeYgsb2NJiaZKgGc7CBVquPxDTsn6y3p/n42t0e8io53cVzfVRVoq3tt1LJugRquhQPE9acJPF6Xv5bSOjBl284C65Kx8sP9sFA7pOtteO0Kz8s5ljbesUTuGHR7YJOx/qYoWhQ=
+Received: from BY3PR05MB8531.namprd05.prod.outlook.com (2603:10b6:a03:3ce::6)
+ by BYAPR05MB4552.namprd05.prod.outlook.com (2603:10b6:a02:fa::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.17; Tue, 23 Nov
+ 2021 15:28:37 +0000
+Received: from BY3PR05MB8531.namprd05.prod.outlook.com
+ ([fe80::4433:84b1:5fc1:50e9]) by BY3PR05MB8531.namprd05.prod.outlook.com
+ ([fe80::4433:84b1:5fc1:50e9%5]) with mapi id 15.20.4734.018; Tue, 23 Nov 2021
+ 15:28:37 +0000
+From:   Nadav Amit <namit@vmware.com>
+To:     Huang Ying <ying.huang@intel.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzbot <syzbot+aa5bebed695edaccf0df@syzkaller.appspotmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Marco Elver <elver@google.com>
+Subject: Re: [PATCH] mm/rmap: fix potential batched TLB flush race
+Thread-Topic: [PATCH] mm/rmap: fix potential batched TLB flush race
+Thread-Index: AQHX4D3rpcLHjogBUk26eVOAyIjPAqwRPRQA
+Date:   Tue, 23 Nov 2021 15:28:36 +0000
+Message-ID: <797F0409-0BF8-46E8-9165-9B6826365F2C@vmware.com>
+References: <20211123074344.1877731-1-ying.huang@intel.com>
+In-Reply-To: <20211123074344.1877731-1-ying.huang@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.120.0.1.13)
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vmware.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5087c8e8-51e2-4cd3-b5fd-08d9ae95eb47
+x-ms-traffictypediagnostic: BYAPR05MB4552:
+x-microsoft-antispam-prvs: <BYAPR05MB45525AD69DC529B03D1CF9CED0609@BYAPR05MB4552.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jEHQuYJR/6qoSTrDF1jzpIG5ZLp242dWXBUu81nQ6lSX8OPOVi6tfsutfBZo23xLvspPywD/Lo+99dC+xuVt4vbiQITtnHNHLGSTQlKqUl8KD4zJuBvQc2iefq5Uge6YV6z4HYMOze5hxfPnGsU8AalR+SUYAOtgwh9z4Xw8DKtc+/NPsl/HAu3l+sNZIIlhxJWGgeGzqKxM9uKbCz46eB4AR79Nhosj/B3vG9+Qd4idtLZHiTjU12kd0/9c9bQQ27EiFtW/eeLj+3F2rArzCLCqsV5hij+wD98QnCnEJm8oi8c2yWHfWEe7JNo2IqC1WXUeM4Zn4a4PaDv+E2Vu0tpGMzDt6v0AvwZnOtK7mMm59hACm41uhxXTPINy21Vf4jAxQ9He751KyZ3IHlM1QIps2d0tEcWIHNG3mO/k67qu/nv8UBLhH+h0YqoIA6ePeZ6ZWDmjyUyEqch6qLZiIjkTzNcMK86iLmrI+0bXp7MPiD6DtknZziiNY6i234HZYdnUF53Piv+YHwuMJ3fJQDLziuWpu7Rwr+vG6ZivSIPlMTj7O4kmB7Iak5YyeyRD/1MlP3wGDMtKXtWmZhTBr0f64kyWkiTnTcwhQ1WHPfK7nqPay41Fbwp76ke/O1Jub3SqexQivwTOj5bjvZdhYnmZerSCC2IshQvukgeEvqecjRZWLcWrFISjPqo1itwdDAJzwA6UkocpPUFuaZtW0pgEgFYBxtrXOVlmESa0GqeF4YkilJfDRBgSH4IzMCkE
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY3PR05MB8531.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(53546011)(36756003)(6506007)(71200400001)(26005)(8676002)(5660300002)(2906002)(86362001)(122000001)(38100700002)(8936002)(54906003)(2616005)(76116006)(66446008)(66556008)(64756008)(66476007)(66946007)(316002)(4326008)(6916009)(7416002)(33656002)(6512007)(508600001)(186003)(38070700005)(83380400001)(6486002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?akZQTUE4NXB0L21GbFY1b1RIVjk5V0plUXJIR0t2bDV2cTl3emhZaVZTc1FV?=
+ =?utf-8?B?dUNKdE5yUStCTm1TU2tIaTVReDZDeW9uSG4xaEJSU01QVjF3d29YMnA3Z2dv?=
+ =?utf-8?B?ek9GYktSbkVxSFlONDFXcHZEbmRvZFgwNFZieFZPU05ycVZ5bUVzcGRWM292?=
+ =?utf-8?B?RU9YWkp6MTFaMlR6QW8rRVdZY3p5TUZUNXo0bitkcUV3bjh0WWtrOFZNUERz?=
+ =?utf-8?B?Z3BJZVg0SFFkUk1xRU9FdEh1SnlPV1BZb1RRRUJBcHJscWxEek1Pd3RFbTJX?=
+ =?utf-8?B?UFY3SlJWQ0RUUjlEUk5LdnF4ZW0xcmoyUnRtMlV1VDJpREhYUWhRSFNlanJj?=
+ =?utf-8?B?WGNkQ0RtV2ZmNDlPY1d2ZUpoRG9GRGJsNVp5dnRTU1VpRUNibWJrbCtkbWM4?=
+ =?utf-8?B?dXJBa1B2WlQ4ZitqeThMdEtrc0dheXJDS01TdVNoU3UwZTBTY2JMQ29JZENq?=
+ =?utf-8?B?NTJESkRxT3owZTdSWWpYY0JQM2JrS2x6WDBXOHFzMUxNNTJPZDYrRFJ2YTlu?=
+ =?utf-8?B?S3crNVJyT3ppa0VYZmlLdFZBc2pNVzNtU3JWczZjRW5CQVBjMDJaK1F1Tmdx?=
+ =?utf-8?B?YTZ5cXl4eTJFb3h6Qm5Ndkk5ZHF0R3BBL1lGKzF2eVdMakVFbnV0bmN2ZEQy?=
+ =?utf-8?B?dnhpejdKK2MzaXFpK1Vsbm1uVzlaTlB2QTlCYUJXS3FHZUJRcG5yWGVRREhv?=
+ =?utf-8?B?MkdpdGdJQ0JNd0tmSTNmNW1GRHNqdTI4L3Q1dzNnakJhVk4zUnBHaTJEMHhL?=
+ =?utf-8?B?SkVvMTdaYlNDSHNlM21pdGxjaER6NEZZWHhqSmN6VVh1Q0tteTRlVU5lSHZx?=
+ =?utf-8?B?T2lzeHgxSkRQMFBaRWtlOTlBdjN1SXFDZkIrRVF0dWxaVzh2ZTNqVXFlMFo2?=
+ =?utf-8?B?WkptZnNiTEJyUXpwNVVBREdKOFNWVEFOSjN1dWowNVpRZzBiRHJnazhHQ2gr?=
+ =?utf-8?B?aDBYN2U1d1RNYnI2cGx1L0hRNitOR0x3WTdvTlY1dkY5Y2x0Nk5zWTIzbWJN?=
+ =?utf-8?B?a1haTmxzcVhhYmxtUHV6TmtoUTFod1JFZE9kLzREYTM0Skg4T2tnbUVmUEJK?=
+ =?utf-8?B?RVV3ejlRbTVHNkhzaVppdlJIY3pBOUZud0hTQ3psMEJicndGUEJIaVllODVv?=
+ =?utf-8?B?T25DNFVyNDdScm1zTStwZHpGZzBPeTFPZy93SEtpQUxudStZcHlFdE9UQysw?=
+ =?utf-8?B?V1YyVUlXSEFua25ZT0pEdFViRjM5cllkc0JpcWlWdG12S0lTZ21NcmVlcDlK?=
+ =?utf-8?B?UmZIR05TeVk0bVBieW4rdjFGcDUrYVl2ZVpOTUFhOFMwN1pQdE5wdjdCUk05?=
+ =?utf-8?B?c0V6SkRWdzVMOStzZzBzTzMyQkwxelJ6VVU1ZW1XM05xWU85MmRLaExJTFBr?=
+ =?utf-8?B?UVZBL2lsellERVdFTVBERExxUm10bUFtcC9kWEZneWh5YUEybmh2bkhwcDJC?=
+ =?utf-8?B?Vzc0c3d6QjIxaFRqMTZ0cXFmZld1RmhXWWlYWWcrNHl0RFN5cm1BY2tsRmli?=
+ =?utf-8?B?NW1taDFpY09GMGtIZloyenVtM2hLaGFjMUd5NCt6QTdvSUdjSzJTN3UyWHZ6?=
+ =?utf-8?B?YzUrbHhjbTk2VSs5MVlkMVYxQXR1Tk85bFJvSWpCWmFZYlprZDVadit4MVFu?=
+ =?utf-8?B?cFpaMFg4MW13SkpHL1VZdU5nVWt2R1NYbUJ5dW1jTTA1c0Nwc2xrUy90NjJo?=
+ =?utf-8?B?R1htSTYzYy9wNUhTUFNsWjlMVnFyL2RSUzh0Z2QzblhzSTZWc0YwVS91UUJZ?=
+ =?utf-8?B?NWZwTWpCa2hsamRpRkIrYWtoZlFpdVJzRGxwUUFqcml5MnhxbFFLbmFNME1Y?=
+ =?utf-8?B?UlZCc1dHdTFsK0dlelB2TVN0dFJna3liQlNMUXJ5eStiZmJldUl0RXVCSXVC?=
+ =?utf-8?B?VkZHdlN4dlNJOXRvRmFpWDE0RTR2R3N6blB3Wm1UT3FVYnBqREtnY3FRc0NW?=
+ =?utf-8?B?Y3FBWldOb0VGVVpGSk53Tm05V0JhaHBmSHFqeEpybnh5MHRoZFM3TklhaExk?=
+ =?utf-8?B?bUdCN1NvOC9CSUF2ZTFaSHZ1VWVMUUJKQy95NDBuQmNabzQvOW1IZVBrOWQ4?=
+ =?utf-8?B?UWYxRiszVmU0QnZLd3NNazJVQTZIdG94TXVyTTNDNXp5SlpLMnlwcm5ybFJR?=
+ =?utf-8?B?NDlOQkZzbDFzRzRRTEdzbGVBU0RnazF6Y0FwQkcrazhHMy9hbnowSEErNzJR?=
+ =?utf-8?Q?lQEUo0UyDdr7y8ixpSmDLlM=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <0F1AD5848C0298488461D3305F6DCD5A@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211123065158.1383182-1-danct12@riseup.net>
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY3PR05MB8531.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5087c8e8-51e2-4cd3-b5fd-08d9ae95eb47
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2021 15:28:36.9086
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wqkRSTns5ebwpsQ41PfVvPc3ETymL8C/IIZc4jpq5AMkF4L8ajrZ2TgVXmkL8JFVOU3p1BeGxJq3PPQinzJINw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB4552
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 22 Nov 22:51 PST 2021, Dang Huynh wrote:
-
-> This property doesn't seem to exist in the documentation nor
-> in source code, but for some reason it is defined in a bunch
-> of device trees.
-> 
-> Signed-off-by: Dang Huynh <danct12@riseup.net>
-
-Many thanks for the cleanup Dang. Unfortunately 32-bit Qcom, 64-bit
-Qcom, the Mediatek and the sun8i changes goes through different
-maintainer trees.
-
-So if you could split this in 3 different patches that would make it
-easier for us maintainers.
-
-Thanks,
-Bjorn
-
-> ---
->  arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dts          | 1 -
->  arch/arm/boot/dts/qcom-msm8974-fairphone-fp2.dts             | 1 -
->  arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts     | 1 -
->  arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts              | 1 -
->  arch/arm/boot/dts/qcom-msm8974-sony-xperia-amami.dts         | 1 -
->  arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dts        | 1 -
->  arch/arm/boot/dts/qcom-msm8974-sony-xperia-honami.dts        | 1 -
->  arch/arm/boot/dts/sun8i-h3-nanopi.dtsi                       | 1 -
->  arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi             | 1 -
->  arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts            | 1 -
->  arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi     | 1 -
->  arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi   | 1 -
->  arch/arm64/boot/dts/qcom/msm8998-fxtec-pro1.dts              | 3 ---
->  arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi    | 2 --
->  arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi        | 1 -
->  arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts | 1 -
->  16 files changed, 19 deletions(-)
-> 
-> diff --git a/arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dts b/arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dts
-> index f8c97efc61fc..0cee62c7b8b0 100644
-> --- a/arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dts
-> +++ b/arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dts
-> @@ -19,7 +19,6 @@ chosen {
->  
->  	gpio-keys {
->  		compatible = "gpio-keys";
-> -		input-name = "gpio-keys";
->  
->  		pinctrl-names = "default";
->  		pinctrl-0 = <&gpio_keys_pin_a>;
-> diff --git a/arch/arm/boot/dts/qcom-msm8974-fairphone-fp2.dts b/arch/arm/boot/dts/qcom-msm8974-fairphone-fp2.dts
-> index ea15b645b229..6d77e0f8ca4d 100644
-> --- a/arch/arm/boot/dts/qcom-msm8974-fairphone-fp2.dts
-> +++ b/arch/arm/boot/dts/qcom-msm8974-fairphone-fp2.dts
-> @@ -20,7 +20,6 @@ chosen {
->  
->  	gpio-keys {
->  		compatible = "gpio-keys";
-> -		input-name = "gpio-keys";
->  
->  		pinctrl-names = "default";
->  		pinctrl-0 = <&gpio_keys_pin_a>;
-> diff --git a/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts b/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts
-> index 30ee913faae6..069136170198 100644
-> --- a/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts
-> +++ b/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts
-> @@ -450,7 +450,6 @@ bcrmf@1 {
->  
->  	gpio-keys {
->  		compatible = "gpio-keys";
-> -		input-name = "gpio-keys";
->  
->  		pinctrl-names = "default";
->  		pinctrl-0 = <&gpio_keys_pin_a>;
-> diff --git a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-> index 003f0fa9c857..96e1c978b878 100644
-> --- a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-> +++ b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-> @@ -349,7 +349,6 @@ bluetooth {
->  
->  	gpio-keys {
->  		compatible = "gpio-keys";
-> -		input-name = "gpio-keys";
->  
->  		pinctrl-names = "default";
->  		pinctrl-0 = <&gpio_keys_pin_a>;
-> diff --git a/arch/arm/boot/dts/qcom-msm8974-sony-xperia-amami.dts b/arch/arm/boot/dts/qcom-msm8974-sony-xperia-amami.dts
-> index 398a3eaf306b..79e2cfbbb1ba 100644
-> --- a/arch/arm/boot/dts/qcom-msm8974-sony-xperia-amami.dts
-> +++ b/arch/arm/boot/dts/qcom-msm8974-sony-xperia-amami.dts
-> @@ -20,7 +20,6 @@ chosen {
->  
->  	gpio-keys {
->  		compatible = "gpio-keys";
-> -		input-name = "gpio-keys";
->  
->  		pinctrl-names = "default";
->  		pinctrl-0 = <&gpio_keys_pin_a>;
-> diff --git a/arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dts b/arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dts
-> index b4dd85bd4faf..e66937e3f7dd 100644
-> --- a/arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dts
-> +++ b/arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dts
-> @@ -20,7 +20,6 @@ chosen {
->  
->  	gpio-keys {
->  		compatible = "gpio-keys";
-> -		input-name = "gpio-keys";
->  
->  		pinctrl-names = "default";
->  		pinctrl-0 = <&gpio_keys_pin_a>;
-> diff --git a/arch/arm/boot/dts/qcom-msm8974-sony-xperia-honami.dts b/arch/arm/boot/dts/qcom-msm8974-sony-xperia-honami.dts
-> index 9743beebd84d..a62e5c25b23c 100644
-> --- a/arch/arm/boot/dts/qcom-msm8974-sony-xperia-honami.dts
-> +++ b/arch/arm/boot/dts/qcom-msm8974-sony-xperia-honami.dts
-> @@ -20,7 +20,6 @@ chosen {
->  
->  	gpio-keys {
->  		compatible = "gpio-keys";
-> -		input-name = "gpio-keys";
->  
->  		pinctrl-names = "default";
->  		pinctrl-0 = <&gpio_keys_pin_a>;
-> diff --git a/arch/arm/boot/dts/sun8i-h3-nanopi.dtsi b/arch/arm/boot/dts/sun8i-h3-nanopi.dtsi
-> index c7c3e7d8b3c8..1eabc69462d4 100644
-> --- a/arch/arm/boot/dts/sun8i-h3-nanopi.dtsi
-> +++ b/arch/arm/boot/dts/sun8i-h3-nanopi.dtsi
-> @@ -75,7 +75,6 @@ led-1 {
->  
->  	r_gpio_keys {
->  		compatible = "gpio-keys";
-> -		input-name = "k1";
->  
->  		k1 {
->  			label = "k1";
-> diff --git a/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi b/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi
-> index fcddec14738d..7a717f926929 100644
-> --- a/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi
-> @@ -25,7 +25,6 @@ optee: optee@4fd00000 {
->  
->  	gpio-keys {
->  		compatible = "gpio-keys";
-> -		input-name = "gpio-keys";
->  		pinctrl-names = "default";
->  		pinctrl-0 = <&gpio_keys_default>;
->  
-> diff --git a/arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts b/arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts
-> index 69fcb6b0398d..84558ab5fe86 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts
-> +++ b/arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts
-> @@ -42,7 +42,6 @@ framebuffer0: framebuffer@3404000 {
->  
->  	gpio_keys {
->  		compatible = "gpio-keys";
-> -		input-name = "gpio-keys";
->  		#address-cells = <1>;
->  		#size-cells = <0>;
->  		autorepeat;
-> diff --git a/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi b/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi
-> index 3a3790a52a2c..cc038f9b641f 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi
-> @@ -62,7 +62,6 @@ divclk4: divclk4 {
->  
->  	gpio-keys {
->  		compatible = "gpio-keys";
-> -		input-name = "gpio-keys";
->  		autorepeat;
->  
->  		volupkey {
-> diff --git a/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi b/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi
-> index 7cc564d8ca7c..dde7ed159c4d 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi
-> @@ -29,7 +29,6 @@ / {
->  
->  	gpio_keys {
->  		compatible = "gpio-keys";
-> -		input-name = "gpio-keys";
->  		#address-cells = <1>;
->  		#size-cells = <0>;
->  		autorepeat;
-> diff --git a/arch/arm64/boot/dts/qcom/msm8998-fxtec-pro1.dts b/arch/arm64/boot/dts/qcom/msm8998-fxtec-pro1.dts
-> index 3d495ce3f46a..dc5b9b274df3 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8998-fxtec-pro1.dts
-> +++ b/arch/arm64/boot/dts/qcom/msm8998-fxtec-pro1.dts
-> @@ -29,7 +29,6 @@ extcon_usb: extcon-usb {
->  
->  	gpio-hall-sensors {
->  		compatible = "gpio-keys";
-> -		input-name = "hall-sensors";
->  		label = "Hall sensors";
->  		pinctrl-names = "default";
->  		pinctrl-0 = <&hall_sensor1_default>;
-> @@ -46,7 +45,6 @@ hall-sensor1 {
->  
->  	gpio-kb-extra-keys {
->  		compatible = "gpio-keys";
-> -		input-name = "extra-kb-keys";
->  		label = "Keyboard extra keys";
->  		pinctrl-names = "default";
->  		pinctrl-0 = <&gpio_kb_pins_extra>;
-> @@ -102,7 +100,6 @@ alt {
->  
->  	gpio-keys {
->  		compatible = "gpio-keys";
-> -		input-name = "side-buttons";
->  		label = "Side buttons";
->  		#address-cells = <1>;
->  		#size-cells = <0>;
-> diff --git a/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
-> index 91e391282181..47488a1aecae 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
-> @@ -93,7 +93,6 @@ vph_pwr: vph-pwr-regulator {
->  
->  	gpio-keys {
->  		compatible = "gpio-keys";
-> -		input-name = "gpio-keys";
->  		label = "Side buttons";
->  		pinctrl-names = "default";
->  		pinctrl-0 = <&vol_down_pin_a>, <&cam_focus_pin_a>,
-> @@ -126,7 +125,6 @@ camera-focus {
->  
->  	gpio-hall-sensor {
->  		compatible = "gpio-keys";
-> -		input-name = "hall-sensors";
->  		label = "Hall sensors";
->  		pinctrl-names = "default";
->  		pinctrl-0 = <&hall_sensor0_default>;
-> diff --git a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
-> index e90c9ec84675..42af1fade461 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
-> @@ -90,7 +90,6 @@ cam_vana_rear_vreg: cam_vana_rear_vreg {
->  	gpio_keys {
->  		status = "okay";
->  		compatible = "gpio-keys";
-> -		input-name = "gpio-keys";
->  		#address-cells = <1>;
->  		#size-cells = <0>;
->  
-> diff --git a/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts b/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
-> index 45eab0235d66..871ccbba445b 100644
-> --- a/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
-> +++ b/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
-> @@ -42,7 +42,6 @@ extcon_usb: extcon-usb {
->  	gpio-keys {
->  		status = "okay";
->  		compatible = "gpio-keys";
-> -		input-name = "gpio-keys";
->  		#address-cells = <1>;
->  		#size-cells = <0>;
->  		autorepeat;
-> -- 
-> 2.34.0
-> 
+DQoNCj4gT24gTm92IDIyLCAyMDIxLCBhdCAxMTo0MyBQTSwgSHVhbmcgWWluZyA8eWluZy5odWFu
+Z0BpbnRlbC5jb20+IHdyb3RlOg0KPiANCj4gSW4gdGhlb3J5LCB0aGUgZm9sbG93aW5nIHJhY2Ug
+aXMgcG9zc2libGUgZm9yIGJhdGNoZWQgVExCIGZsdXNoaW5nLg0KPiANCj4gQ1BVMCAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBDUFUxDQo+IC0tLS0gICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgLS0tLQ0KPiBzaHJpbmtfcGFnZV9saXN0KCkNCj4gICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIHVubWFwDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIHphcF9wdGVfcmFuZ2UoKQ0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIGZsdXNoX3RsYl9iYXRjaGVkX3BlbmRpbmcoKQ0KPiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgZmx1c2hfdGxiX21tKCkNCj4gIHRyeV90b191bm1hcCgpDQo+ICAg
+IHNldF90bGJfdWJjX2ZsdXNoX3BlbmRpbmcoKQ0KPiAgICAgIG1tLT50bGJfZmx1c2hfYmF0Y2hl
+ZCA9IHRydWUNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG1tLT50
+bGJfZmx1c2hfYmF0Y2hlZCA9IGZhbHNlDQo+IA0KPiBBZnRlciB0aGUgVExCIGlzIGZsdXNoZWQg
+b24gQ1BVMSB2aWEgZmx1c2hfdGxiX21tKCkgYW5kIGJlZm9yZQ0KPiBtbS0+dGxiX2ZsdXNoX2Jh
+dGNoZWQgaXMgc2V0IHRvIGZhbHNlLCBzb21lIFBURSBpcyB1bm1hcHBlZCBvbiBDUFUwDQo+IGFu
+ZCB0aGUgVExCIGZsdXNoaW5nIGlzIHBlbmRlZC4gIFRoZW4gdGhlIHBlbmRlZCBUTEIgZmx1c2hp
+bmcgd2lsbCBiZQ0KPiBsb3N0LiAgQWx0aG91Z2ggYm90aCBzZXRfdGxiX3ViY19mbHVzaF9wZW5k
+aW5nKCkgYW5kDQo+IGZsdXNoX3RsYl9iYXRjaGVkX3BlbmRpbmcoKSBhcmUgY2FsbGVkIHdpdGgg
+UFRMIGxvY2tlZCwgZGlmZmVyZW50IFBUTA0KPiBpbnN0YW5jZXMgbWF5IGJlIHVzZWQuDQo+IA0K
+PiBCZWNhdXNlIHRoZSByYWNlIHdpbmRvdyBpcyByZWFsbHkgc21hbGwsIGFuZCB0aGUgbG9zdCBU
+TEIgZmx1c2hpbmcNCj4gd2lsbCBjYXVzZSBwcm9ibGVtIG9ubHkgaWYgYSBUTEIgZW50cnkgaXMg
+aW5zZXJ0ZWQgYmVmb3JlIHRoZQ0KPiB1bm1hcHBpbmcgaW4gdGhlIHJhY2Ugd2luZG93LCB0aGUg
+cmFjZSBpcyBvbmx5IHRoZW9yZXRpY2FsLiAgQnV0IHRoZQ0KPiBmaXggaXMgc2ltcGxlIGFuZCBj
+aGVhcCB0b28uDQo+IA0KPiBTeXpib3QgaGFzIHJlcG9ydGVkIHRoaXMgdG9vIGFzIGZvbGxvd3Ms
+DQo+IA0KPiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT0NCj4gQlVHOiBLQ1NBTjogZGF0YS1yYWNlIGluIGZsdXNoX3RsYl9i
+YXRjaGVkX3BlbmRpbmcgLyB0cnlfdG9fdW5tYXBfb25lDQo+IA0KPiB3cml0ZSB0byAweGZmZmY4
+ODgxMDcyY2ZiYmMgb2YgMSBieXRlcyBieSB0YXNrIDE3NDA2IG9uIGNwdSAxOg0KPiBmbHVzaF90
+bGJfYmF0Y2hlZF9wZW5kaW5nKzB4NWYvMHg4MCBtbS9ybWFwLmM6NjkxDQo+IG1hZHZpc2VfZnJl
+ZV9wdGVfcmFuZ2UrMHhlZS8weDdkMCBtbS9tYWR2aXNlLmM6NTk0DQo+IHdhbGtfcG1kX3Jhbmdl
+IG1tL3BhZ2V3YWxrLmM6MTI4IFtpbmxpbmVdDQo+IHdhbGtfcHVkX3JhbmdlIG1tL3BhZ2V3YWxr
+LmM6MjA1IFtpbmxpbmVdDQo+IHdhbGtfcDRkX3JhbmdlIG1tL3BhZ2V3YWxrLmM6MjQwIFtpbmxp
+bmVdDQo+IHdhbGtfcGdkX3JhbmdlIG1tL3BhZ2V3YWxrLmM6Mjc3IFtpbmxpbmVdDQo+IF9fd2Fs
+a19wYWdlX3JhbmdlKzB4OTgxLzB4MTE2MCBtbS9wYWdld2Fsay5jOjM3OQ0KPiB3YWxrX3BhZ2Vf
+cmFuZ2UrMHgxMzEvMHgzMDAgbW0vcGFnZXdhbGsuYzo0NzUNCj4gbWFkdmlzZV9mcmVlX3Npbmds
+ZV92bWEgbW0vbWFkdmlzZS5jOjczNCBbaW5saW5lXQ0KPiBtYWR2aXNlX2RvbnRuZWVkX2ZyZWUg
+bW0vbWFkdmlzZS5jOjgyMiBbaW5saW5lXQ0KPiBtYWR2aXNlX3ZtYSBtbS9tYWR2aXNlLmM6OTk2
+IFtpbmxpbmVdDQo+IGRvX21hZHZpc2UrMHhlNGEvMHgxMTQwIG1tL21hZHZpc2UuYzoxMjAyDQo+
+IF9fZG9fc3lzX21hZHZpc2UgbW0vbWFkdmlzZS5jOjEyMjggW2lubGluZV0NCj4gX19zZV9zeXNf
+bWFkdmlzZSBtbS9tYWR2aXNlLmM6MTIyNiBbaW5saW5lXQ0KPiBfX3g2NF9zeXNfbWFkdmlzZSsw
+eDVkLzB4NzAgbW0vbWFkdmlzZS5jOjEyMjYNCj4gZG9fc3lzY2FsbF94NjQgYXJjaC94ODYvZW50
+cnkvY29tbW9uLmM6NTAgW2lubGluZV0NCj4gZG9fc3lzY2FsbF82NCsweDQ0LzB4ZDAgYXJjaC94
+ODYvZW50cnkvY29tbW9uLmM6ODANCj4gZW50cnlfU1lTQ0FMTF82NF9hZnRlcl9od2ZyYW1lKzB4
+NDQvMHhhZQ0KPiANCj4gd3JpdGUgdG8gMHhmZmZmODg4MTA3MmNmYmJjIG9mIDEgYnl0ZXMgYnkg
+dGFzayA3MSBvbiBjcHUgMDoNCj4gc2V0X3RsYl91YmNfZmx1c2hfcGVuZGluZyBtbS9ybWFwLmM6
+NjM2IFtpbmxpbmVdDQo+IHRyeV90b191bm1hcF9vbmUrMHg2MGUvMHgxMjIwIG1tL3JtYXAuYzox
+NTE1DQo+IHJtYXBfd2Fsa19hbm9uKzB4MmZiLzB4NDcwIG1tL3JtYXAuYzoyMzAxDQo+IHRyeV90
+b191bm1hcCsweGVjLzB4MTEwDQo+IHNocmlua19wYWdlX2xpc3QrMHhlOTEvMHgyNjIwIG1tL3Zt
+c2Nhbi5jOjE3MTkNCj4gc2hyaW5rX2luYWN0aXZlX2xpc3QrMHgzZmIvMHg3MzAgbW0vdm1zY2Fu
+LmM6MjM5NA0KPiBzaHJpbmtfbGlzdCBtbS92bXNjYW4uYzoyNjIxIFtpbmxpbmVdDQo+IHNocmlu
+a19scnV2ZWMrMHgzYzkvMHg3MTAgbW0vdm1zY2FuLmM6Mjk0MA0KPiBzaHJpbmtfbm9kZV9tZW1j
+Z3MrMHgyM2UvMHg0MTAgbW0vdm1zY2FuLmM6MzEyOQ0KPiBzaHJpbmtfbm9kZSsweDhmNi8weDEx
+OTAgbW0vdm1zY2FuLmM6MzI1Mg0KPiBrc3dhcGRfc2hyaW5rX25vZGUgbW0vdm1zY2FuLmM6NDAy
+MiBbaW5saW5lXQ0KPiBiYWxhbmNlX3BnZGF0KzB4NzAyLzB4ZDMwIG1tL3Ztc2Nhbi5jOjQyMTMN
+Cj4ga3N3YXBkKzB4MjAwLzB4MzQwIG1tL3Ztc2Nhbi5jOjQ0NzMNCj4ga3RocmVhZCsweDJjNy8w
+eDJlMCBrZXJuZWwva3RocmVhZC5jOjMyNw0KPiByZXRfZnJvbV9mb3JrKzB4MWYvMHgzMA0KPiAN
+Cj4gdmFsdWUgY2hhbmdlZDogMHgwMSAtPiAweDAwDQo+IA0KPiBSZXBvcnRlZCBieSBLZXJuZWwg
+Q29uY3VycmVuY3kgU2FuaXRpemVyIG9uOg0KPiBDUFU6IDAgUElEOiA3MSBDb21tOiBrc3dhcGQw
+IE5vdCB0YWludGVkIDUuMTYuMC1yYzEtc3l6a2FsbGVyICMwDQo+IEhhcmR3YXJlIG5hbWU6IEdv
+b2dsZSBHb29nbGUgQ29tcHV0ZSBFbmdpbmUvR29vZ2xlIENvbXB1dGUgRW5naW5lLCBCSU9TIEdv
+b2dsZSAwMS8wMS8yMDExDQo+ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KPiANCj4gU2lnbmVkLW9mZi1ieTogIkh1YW5n
+LCBZaW5nIiA8eWluZy5odWFuZ0BpbnRlbC5jb20+DQo+IFJlcG9ydGVkLWJ5OiBzeXpib3QrYWE1
+YmViZWQ2OTVlZGFjY2YwZGZAc3l6a2FsbGVyLmFwcHNwb3RtYWlsLmNvbQ0KPiBDYzogTmFkYXYg
+QW1pdCA8bmFtaXRAdm13YXJlLmNvbT4NCj4gQ2M6IE1lbCBHb3JtYW4gPG1nb3JtYW5AdGVjaHNp
+bmd1bGFyaXR5Lm5ldD4NCj4gQ2M6IEFuZHJlYSBBcmNhbmdlbGkgPGFhcmNhbmdlQHJlZGhhdC5j
+b20+DQo+IENjOiBBbmR5IEx1dG9taXJza2kgPGx1dG9Aa2VybmVsLm9yZz4NCj4gQ2M6IERhdmUg
+SGFuc2VuIDxkYXZlLmhhbnNlbkBsaW51eC5pbnRlbC5jb20+DQo+IENjOiBXaWxsIERlYWNvbiA8
+d2lsbEBrZXJuZWwub3JnPg0KPiBDYzogWXUgWmhhbyA8eXV6aGFvQGdvb2dsZS5jb20+DQo+IENj
+OiBNYXJjbyBFbHZlciA8ZWx2ZXJAZ29vZ2xlLmNvbT4NCj4gLS0tDQo+IGluY2x1ZGUvbGludXgv
+bW1fdHlwZXMuaCB8ICAyICstDQo+IG1tL3JtYXAuYyAgICAgICAgICAgICAgICB8IDE1ICsrKysr
+KysrLS0tLS0tLQ0KPiAyIGZpbGVzIGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygrKSwgOCBkZWxldGlv
+bnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L21tX3R5cGVzLmggYi9pbmNs
+dWRlL2xpbnV4L21tX3R5cGVzLmgNCj4gaW5kZXggYzNhNmU2MjA5NjAwLi43ODk3NzgwNjdkYjkg
+MTAwNjQ0DQo+IC0tLSBhL2luY2x1ZGUvbGludXgvbW1fdHlwZXMuaA0KPiArKysgYi9pbmNsdWRl
+L2xpbnV4L21tX3R5cGVzLmgNCj4gQEAgLTYzMiw3ICs2MzIsNyBAQCBzdHJ1Y3QgbW1fc3RydWN0
+IHsNCj4gCQlhdG9taWNfdCB0bGJfZmx1c2hfcGVuZGluZzsNCj4gI2lmZGVmIENPTkZJR19BUkNI
+X1dBTlRfQkFUQ0hFRF9VTk1BUF9UTEJfRkxVU0gNCj4gCQkvKiBTZWUgZmx1c2hfdGxiX2JhdGNo
+ZWRfcGVuZGluZygpICovDQo+IC0JCWJvb2wgdGxiX2ZsdXNoX2JhdGNoZWQ7DQo+ICsJCWF0b21p
+Y190IHRsYl9mbHVzaF9iYXRjaGVkOw0KPiAjZW5kaWYNCj4gCQlzdHJ1Y3QgdXByb2Jlc19zdGF0
+ZSB1cHJvYmVzX3N0YXRlOw0KPiAjaWZkZWYgQ09ORklHX1BSRUVNUFRfUlQNCj4gZGlmZiAtLWdp
+dCBhL21tL3JtYXAuYyBiL21tL3JtYXAuYw0KPiBpbmRleCAxNjNhYzRlNmJjZWUuLjYwOTAyYzNj
+ZmI0YSAxMDA2NDQNCj4gLS0tIGEvbW0vcm1hcC5jDQo+ICsrKyBiL21tL3JtYXAuYw0KPiBAQCAt
+NjMzLDcgKzYzMyw3IEBAIHN0YXRpYyB2b2lkIHNldF90bGJfdWJjX2ZsdXNoX3BlbmRpbmcoc3Ry
+dWN0IG1tX3N0cnVjdCAqbW0sIGJvb2wgd3JpdGFibGUpDQo+IAkgKiBiZWZvcmUgdGhlIFBURSBp
+cyBjbGVhcmVkLg0KPiAJICovDQo+IAliYXJyaWVyKCk7DQo+IC0JbW0tPnRsYl9mbHVzaF9iYXRj
+aGVkID0gdHJ1ZTsNCj4gKwlhdG9taWNfaW5jKCZtbS0+dGxiX2ZsdXNoX2JhdGNoZWQpOw0KPiAN
+Cj4gCS8qDQo+IAkgKiBJZiB0aGUgUFRFIHdhcyBkaXJ0eSB0aGVuIGl0J3MgYmVzdCB0byBhc3N1
+bWUgaXQncyB3cml0YWJsZS4gVGhlDQo+IEBAIC02ODAsMTUgKzY4MCwxNiBAQCBzdGF0aWMgYm9v
+bCBzaG91bGRfZGVmZXJfZmx1c2goc3RydWN0IG1tX3N0cnVjdCAqbW0sIGVudW0gdHR1X2ZsYWdz
+IGZsYWdzKQ0KPiAgKi8NCj4gdm9pZCBmbHVzaF90bGJfYmF0Y2hlZF9wZW5kaW5nKHN0cnVjdCBt
+bV9zdHJ1Y3QgKm1tKQ0KPiB7DQo+IC0JaWYgKGRhdGFfcmFjZShtbS0+dGxiX2ZsdXNoX2JhdGNo
+ZWQpKSB7DQo+IC0JCWZsdXNoX3RsYl9tbShtbSk7DQo+ICsJaW50IGJhdGNoZWQgPSBhdG9taWNf
+cmVhZCgmbW0tPnRsYl9mbHVzaF9iYXRjaGVkKTsNCj4gDQo+ICsJaWYgKGJhdGNoZWQpIHsNCj4g
+KwkJZmx1c2hfdGxiX21tKG1tKTsNCj4gCQkvKg0KPiAtCQkgKiBEbyBub3QgYWxsb3cgdGhlIGNv
+bXBpbGVyIHRvIHJlLW9yZGVyIHRoZSBjbGVhcmluZyBvZg0KPiAtCQkgKiB0bGJfZmx1c2hfYmF0
+Y2hlZCBiZWZvcmUgdGhlIHRsYiBpcyBmbHVzaGVkLg0KPiArCQkgKiBJZiB0aGUgbmV3IFRMQiBm
+bHVzaGluZyBpcyBwZW5kZWQgZHVyaW5nIGZsdXNoaW5nLA0KPiArCQkgKiBsZWF2ZSBtbS0+dGxi
+X2ZsdXNoX2JhdGNoZWQgYXMgaXMsIHRvIGF2b2lkIHRvIGxvc2UNCj4gKwkJICogZmx1c2hpbmcu
+DQo+IAkJICovDQo+IC0JCWJhcnJpZXIoKTsNCj4gLQkJbW0tPnRsYl9mbHVzaF9iYXRjaGVkID0g
+ZmFsc2U7DQo+ICsJCWF0b21pY19jbXB4Y2hnKCZtbS0+dGxiX2ZsdXNoX2JhdGNoZWQsIGJhdGNo
+ZWQsIDApOw0KDQpUaGlzIGRvZXMgbm90IHNlZW0gdG8gcHJldmVudCBhIHJhY2UgY29tcGxldGVs
+eS4NCg0KICBDUFUwCQlDUFUxCQlDUFUyDQoNCiAgc2V0X3RsYl91YmNfZmx1c2hfcGVuZGluZygp
+DQogIFsgdGxiX2ZsdXNoX2JhdGNoZWQgPSAxIF0NCg0KCQkJCWZsdXNoX3RsYl9iYXRjaGVkX3Bl
+bmRpbmcoKQ0KCQkJCVsgYmF0Y2hlZCA9IDEgXQ0KCQkJCSBmbHVzaF90bGJfbW0oKQ0KCQkJCSAu
+Li4NCiAgZmx1c2hfdGxiX2JhdGNoZWRfcGVuZGluZygpDQogIFsgdGxiX2ZsdXNoX2JhdGNoZWQg
+PSAwIF0NCgkJCQkNCg0KCQlwdGVwX2dldF9hbmRfY2xlYXIoKQ0KCQlzZXRfdGxiX3ViY19mbHVz
+aF9wZW5kaW5nKCkNCgkJWyB0bGJfZmx1c2hfYmF0Y2hlZCA9IDEgXQ0KCQkJCQkNCgkJCQkJDQoJ
+CQkJIC4uLg0KCQkJCSBhdG9taWNfY21weGNoZygpDQoJCQkJIFsgc3VjY2VlZHMgXQ0KDQpBdCB0
+aGUgZW5kIG9mIHRoaXMgZmxvdyB0bGJfZmx1c2hfYmF0Y2hlZCBpcyAwIGFsdGhvdWdoDQp0aGUg
+VExCIGZsdXNoIG9mIENQVTHigJlzIG5ld2x5IGFkZGVkIFBURSB3YXMgbm90IGRvbmUuDQoNCklm
+IHlvdSBnbyB3aXRoIHlvdXIgYXBwcm9hY2ggeW91IG5lZWQgdG8gaGF2ZSB0d28gYXRvbWljDQpj
+b3VudGVycywgb25lIG9mIHRoZSBmbHVzaGVkIOKAnGdlbmVyYXRpb27igJ0gYW5kIG9uZSBvZiB0
+aGUNCnBlbmRpbmcg4oCcZ2VuZXJhdGlvbuKAnS4gDQoNCkFueWhvdywgSSBhbSBqdXN0IG1lbnRp
+b25pbmcgdGhhdCBJIHRoaW5rIGEgbW9yZSBmdW5kYW1lbnRhbA0Kc29sdXRpb24gaXMgYXBwcm9w
+cmlhdGUgdG8gdGFrZSBpbnRvIGFjY291bnQgb3RoZXIgZmx1c2hlcw0KdGhhdCBtaWdodCByZW5k
+ZXIgZmx1c2hfdGxiX2JhdGNoZWRfcGVuZGluZygpIGZsdXNoDQp1bm5lY2Vzc2FyeS4NCg0K
