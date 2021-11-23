@@ -2,74 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A515D45998D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:16:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4612645998B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:15:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231719AbhKWBTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 20:19:14 -0500
-Received: from mga05.intel.com ([192.55.52.43]:63681 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230366AbhKWBTN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 20:19:13 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="321155316"
-X-IronPort-AV: E=Sophos;i="5.87,256,1631602800"; 
-   d="scan'208";a="321155316"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 17:16:04 -0800
-X-IronPort-AV: E=Sophos;i="5.87,256,1631602800"; 
-   d="scan'208";a="509203594"
-Received: from chenyu-desktop.sh.intel.com (HELO chenyu-desktop) ([10.239.158.186])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 17:16:01 -0800
-Date:   Tue, 23 Nov 2021 09:15:06 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     linux-acpi@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Len Brown <lenb@kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
-        Robert Moore <robert.moore@intel.com>
-Subject: Re: [PATCH v11 4/4] tools: Introduce power/acpi/tools/pfru
-Message-ID: <20211123011506.GA994503@chenyu-desktop>
-References: <cover.1637505679.git.yu.c.chen@intel.com>
- <a1f688cd4ade1257e96d13c91eba72a1aeef5d59.1637505679.git.yu.c.chen@intel.com>
- <YZt+VPI2n/MED9O6@smile.fi.intel.com>
- <20211122154842.GA10345@chenyu5-mobl1>
- <YZvQ7iZMJ9nZgh2+@smile.fi.intel.com>
+        id S231176AbhKWBSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 20:18:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229484AbhKWBSb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 20:18:31 -0500
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D4EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:15:24 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id s9so13742568qvk.12
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:15:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9il6o1C53lVI46Iic479A44GN6K/KwqDAEYzeZGyl6E=;
+        b=h3Ptld1YXyMbh0d00BmHeSrABj//RXZrl2K/vG614+n/M6mMDhbK5DOdeRM5DT4Igw
+         hzWiN7qDi9Zw8ojrmJoa9y1dxYQVm0+ue/i8QKDMN+zd6VIgnLeAcxpp8efaQgf7NOFs
+         BrAYqn4nZdhbv5V730BOS9+QpWp21xOiCdVFY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9il6o1C53lVI46Iic479A44GN6K/KwqDAEYzeZGyl6E=;
+        b=GzyHRAVfubsBPayanDrVaeY3g9A+V4zk3CEQysvDk/tHloCEgw3LXKbygomZDZaQPR
+         yKL3ju/H2lDEchrMApjzNOn1lSmR7PW28iUcLjWzNP4+aXBQtIxvjHFvOey3Tfezyihj
+         b3VH1oIy6S8NO7g/eE7BOT7w8q/bjgE+pXue2G0q2cm+sSMf+WZJHyL9ukOD/bdnwbwS
+         R+GWnbyQE7E0Qu7sSl4yuTXz9LMcAtaaXnkBthrhKQEESzk+iUE+d9fGGEZ+nQQ4jTR4
+         +ETtXX1DWdlgi04h30feEn+qAO68GDJOZCxmNltCnRCXsNdk2KWJoUxmGuxWxqJYwjT7
+         hP7g==
+X-Gm-Message-State: AOAM530sbtIVH0ybYAEhmb+Xe+gfCyHDff4p8160EG3cJC17UUqcrGW8
+        /spCTzMI3837HaF8jdM6uz3ICckCTiUHj1ZYQJQ=
+X-Google-Smtp-Source: ABdhPJzN0B1NOsm0XToHPzjaSasN30ufTi7ucPNvru3KUZ6j4ILxKqYt7MyjAZFFFSG0phf6w9y1WmYgmSFZYoF/i7o=
+X-Received: by 2002:a05:6214:e41:: with SMTP id o1mr1637542qvc.43.1637630123057;
+ Mon, 22 Nov 2021 17:15:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZvQ7iZMJ9nZgh2+@smile.fi.intel.com>
+References: <20211122230653.1779162-1-linux@roeck-us.net>
+In-Reply-To: <20211122230653.1779162-1-linux@roeck-us.net>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 23 Nov 2021 01:15:11 +0000
+Message-ID: <CACPK8XfM1e7b6m_QBhJFgXCXhqOajMKGUkWqRGxa5sCKyLxRQg@mail.gmail.com>
+Subject: Re: [PATCH v2] fs: ntfs: Disable NTFS_RW for PPC
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Anton Altaparmakov <anton@tuxera.com>,
+        linux-ntfs-dev@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 07:18:38PM +0200, Andy Shevchenko wrote:
-> On Mon, Nov 22, 2021 at 11:48:42PM +0800, Chen Yu wrote:
-> > On Mon, Nov 22, 2021 at 01:26:12PM +0200, Andy Shevchenko wrote:
-> > > On Sun, Nov 21, 2021 at 11:17:29PM +0800, Chen Yu wrote:
-> > > > Introduce a user space tool to make use of the interface exposed by
-> > > > Platform Firmware Runtime Update and Telemetry drivers. The users
-> > > > can use this tool to do firmware code injection, driver update and
-> > > > to retrieve the telemetry data.
-> > > 
-> > > Have you tried to build tools with `make O=/my/tmp/folder/for/kernel/build ...`
-> > > which previously has been used for kernel builds?
-> > >
-> > I was not aware of that and just had a try. It seems that there is an issue in
-> > tools/power/acpi that, only with the following patch appiled, the make O=xxx
-> > would work:
-> 
-> Cool!
-> Care to send a separate fix for this, please?
+On Mon, 22 Nov 2021 at 23:58, Guenter Roeck <linux@roeck-us.net> wrote:
 >
-Ok, will do.
+> NTFS_RW code allocates page size dependent arrays on the stack. This
+> results in build failures if the page size is 64k, which is now the
+> default for PPC.
 
-thanks,
-Chenyu 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+It became the default for PPC_BOOK3S_64, which doesn't include all of
+PPC, in f22969a66041 ("powerpc/64s: Default to 64K pages for 64 bit
+book3s").
+
+You might want to add a mention of this commit in your commit message.
+
+>
+> fs/ntfs/aops.c: In function 'ntfs_write_mst_block':
+> fs/ntfs/aops.c:1311:1: error:
+>         the frame size of 2240 bytes is larger than 2048 bytes
+>
+> Increasing the maximum frame size for PPC just to silence this error does
+> not really help. It would have to be set to a really large value for 256k
+> pages. Such a large frame size could potentially result in stack overruns
+> in this code and elsewhere and is therefore not desirable. Disable NTFS_RW
+> for PPC instead.
+>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+> v2: Introduce new configuration flag DISABLE_NTFS_RW and use it to disable NTFS_RW
+>     for PPC
+>
+>  fs/ntfs/Kconfig | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/fs/ntfs/Kconfig b/fs/ntfs/Kconfig
+> index 1667a7e590d8..324224febb6a 100644
+> --- a/fs/ntfs/Kconfig
+> +++ b/fs/ntfs/Kconfig
+> @@ -49,8 +49,13 @@ config NTFS_DEBUG
+>           When reporting bugs, please try to have available a full dump of
+>           debugging messages while the misbehaviour was occurring.
+>
+> +config DISABLE_NTFS_RW
+> +       bool
+> +       default y if PPC
+
+PPC_64K_PAGES would be more accurate.
+
+I think arm64 was seeing a similar build error, so you could include
+ARM64_64K_PAGES as well?
+
+> +
+>  config NTFS_RW
+>         bool "NTFS write support"
+> +       depends on !DISABLE_NTFS_RW
+>         depends on NTFS_FS
+>         help
+>           This enables the partial, but safe, write support in the NTFS driver.
+> --
+> 2.33.0
+>
