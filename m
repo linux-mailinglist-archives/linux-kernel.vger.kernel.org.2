@@ -2,90 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685BC45A3C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:30:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB24345A46D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:08:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236043AbhKWNd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 08:33:28 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:27286 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236121AbhKWNdS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 08:33:18 -0500
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hz4kl6sFhzbj2d;
-        Tue, 23 Nov 2021 21:30:07 +0800 (CST)
-Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 23 Nov 2021 21:30:09 +0800
-Received: from huawei.com (10.175.113.32) by kwepemm600003.china.huawei.com
- (7.193.23.202) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Tue, 23 Nov
- 2021 21:30:08 +0800
-From:   Nanyong Sun <sunnanyong@huawei.com>
-To:     <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
-        <aou@eecs.berkeley.edu>
-CC:     <sunnanyong@huawei.com>, <palmerdabbelt@google.com>,
-        <wangkefeng.wang@huawei.com>, <anup@brainfault.org>,
-        <alex@ghiti.fr>, <jszhang@kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next 2/2] riscv/mm: Enable THP migration
-Date:   Tue, 23 Nov 2021 22:06:38 +0800
-Message-ID: <20211123140638.3852400-3-sunnanyong@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211123140638.3852400-1-sunnanyong@huawei.com>
-References: <20211123140638.3852400-1-sunnanyong@huawei.com>
+        id S235525AbhKWOLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 09:11:13 -0500
+Received: from mga12.intel.com ([192.55.52.136]:10959 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234982AbhKWOLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 09:11:12 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="215054979"
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="215054979"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 06:07:42 -0800
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="509422152"
+Received: from romanagn-mobl.ger.corp.intel.com (HELO localhost) ([10.249.144.24])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 06:07:30 -0800
+From:   Iwona Winiarska <iwona.winiarska@intel.com>
+To:     linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     devicetree@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Borislav Petkov <bp@alien8.de>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Zev Weiss <zweiss@equinix.com>,
+        David Muller <d.mueller@elsoft.ch>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Iwona Winiarska <iwona.winiarska@intel.com>
+Subject: [PATCH v4 00/13] Introduce PECI subsystem
+Date:   Tue, 23 Nov 2021 15:06:53 +0100
+Message-Id: <20211123140706.2945700-1-iwona.winiarska@intel.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.32]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add two THP helpers required to create PMD migration swap entries,
-and enable THP migration via ARCH_ENABLE_THP_MIGRATION. This can
-reduce time of THP migration without splitting and guarantee the
-migrated pages are still contiguous.
+The Platform Environment Control Interface (PECI) is a communication
+interface between Intel processors and management controllers (e.g.
+Baseboard Management Controller, BMC).
 
-Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
----
- arch/riscv/Kconfig               | 1 +
- arch/riscv/include/asm/pgtable.h | 5 +++++
- 2 files changed, 6 insertions(+)
+This series adds a PECI subsystem and introduces drivers which run in
+the Linux instance on the management controller (not the main Intel
+processor) and is intended to be used by the OpenBMC [1], a Linux
+distribution for BMC devices.
+The information exposed over PECI (like processor and DIMM
+temperature) refers to the Intel processor and can be consumed by
+daemons running on the BMC to, for example, display the processor
+temperature in its web interface.
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 821252b65f89..7cad1a8e71bf 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -75,6 +75,7 @@ config RISCV
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ARCH_TRACEHOOK
- 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE if 64BIT && MMU
-+	select ARCH_ENABLE_THP_MIGRATION if TRANSPARENT_HUGEPAGE
- 	select HAVE_ARCH_THREAD_STRUCT_WHITELIST
- 	select HAVE_ARCH_VMAP_STACK if MMU && 64BIT
- 	select HAVE_ASM_MODVERSIONS
-diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-index 8bb2010f9a25..b9bf51e31adc 100644
---- a/arch/riscv/include/asm/pgtable.h
-+++ b/arch/riscv/include/asm/pgtable.h
-@@ -649,6 +649,11 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
- #define __pte_to_swp_entry(pte)	((swp_entry_t) { pte_val(pte) })
- #define __swp_entry_to_pte(x)	((pte_t) { (x).val })
- 
-+#ifdef CONFIG_ARCH_ENABLE_THP_MIGRATION
-+#define __pmd_to_swp_entry(pmd) ((swp_entry_t) { pmd_val(pmd) })
-+#define __swp_entry_to_pmd(swp) __pmd((swp).val)
-+#endif /* CONFIG_ARCH_ENABLE_THP_MIGRATION */
-+
- /*
-  * In the RV64 Linux scheme, we give the user half of the virtual-address space
-  * and give the kernel the other (upper) half.
+The PECI bus is collection of code that provides interface support
+between PECI devices (that actually represent processors) and PECI
+controllers (such as the "peci-aspeed" controller) that allow to
+access physical PECI interface. PECI devices are bound to PECI
+drivers that provides access to PECI services. This series introduces
+a generic "peci-cpu" driver that exposes hardware monitoring "cputemp"
+and "dimmtemp" using the auxiliary bus.
+
+Exposing "raw" PECI to userspace, either to write userspace drivers or
+for debug/testing purpose was left out of this series to encourage
+writing kernel drivers instead, but may be pursued in the future.
+
+Introducing PECI to upstream Linux was already attempted before [2].
+Since it's been over a year since last revision, and the series
+changed quite a bit in the meantime, I've decided to start from v1.
+
+I would also like to give credit to everyone who helped me with
+different aspects of preliminary review:
+- Pierre-Louis Bossart,
+- Tony Luck, 
+- Andy Shevchenko,
+- Dave Hansen.
+
+[1] https://github.com/openbmc/openbmc
+[2] https://lore.kernel.org/openbmc/20191211194624.2872-1-jae.hyun.yoo@linux.intel.com/
+
+Changes v3 -> v4:
+* Fixed an issue where peci doesn't work after host shutdown (Zev)
+* Replaced kill_device() with peci_device_del_lock (Greg)
+* Fixed dts_valid() parameter type (Guenter)
+* Removed Jae from MAINTAINERS file (Jae)
+
+Changes v2 -> v3:
+
+* Dropped x86/cpu patches (Boris)
+* Dropped pr_fmt() for PECI module (Dan)
+* Fixed releasing peci controller device flow (Dan) 
+* Improved peci-aspeed commit-msg and Kconfig help (Dan)
+* Fixed aspeed_peci_xfer() to use the proper spin_lock function (Dan) 
+* Wrapped print_hex_dump_bytes() in CONFIG_DYNAMIC_DEBUG (Dan)
+* Removed debug status logs from aspeed_peci_irq_handler() (Dan)
+* Renamed functions using devres to start with "devm" (Dan)
+* Changed request to be allocated on stack in peci_detect (Dan)
+* Removed redundant WARN_ON on invalid PECI addr (Dan)
+* Changed peci_device_create() to use device_initialize() + device_add() pattern (Dan)
+* Fixed peci_device_destroy() to use kill_device() avoiding double-free (Dan)
+* Renamed functions that perform xfer using "peci_xfer_*" prefix (Dan) 
+* Renamed peci_request_data_dib(temp) -> peci_request_dib(temp)_read (Dan)
+* Fixed thermal margin readings for older Intel processors (Zev) 
+* Misc hwmon simplifications (Guenter)
+* Used BIT_PER_TYPE to verify macro value constrains (Guenter)
+* Improved WARN_ON message to print chan_rank_max and idx_dimm_max (Guenter)
+* Improved dimmtemp to not reattempt probe if no dimms are populated
+
+Changes v1 -> v2:
+
+Biggest changes when it comes to diffstat are locking in HWMON
+(I decided to clean things up a bit while adding it), switching to
+devres usage in more places and exposing sysfs interface in separate patch.
+
+* Moved extending X86 ARCHITECTURE MAINTAINERS earlier in series (Dan)
+* Removed "default n" for GENERIC_LIB_X86 (Dan)
+* Added vendor prefix for peci-aspeed specific properties (Rob)
+* Refactored PECI to use devres consistently (Dan)
+* Added missing sysfs documentation and excluded adding peci-sysfs to
+  separate patch (Dan)
+* Used module_init() instead of subsys_init() for peci module initialization (Dan)
+* Removed redundant struct peci_device member (Dan)
+* Improved PECI Kconfig help (Randy/Dan)
+* Fixed/removed log messages (Dan, Guenter)
+* Refactored peci-cputemp and peci-dimmtemp and added missing locks (Guenter)
+* Removed unused dev_set_drvdata() in peci-cputemp and peci-dimmtemp (Guenter)
+* Fixed used types, names, fixed broken and added additional comments
+  to peci-hwmon (Guenter, Zev)
+* Refactored peci-dimmtemp to not return -ETIMEDOUT (Guenter)
+* Added sanity check for min_peci_revision in peci-hwmon drivers (Zev)
+* Added assert for DIMM_NUMS_MAX and additional warning in peci-dimmtemp (Zev)
+* Fixed macro names in peci-aspeed (Zev)
+* Refactored peci-aspeed sanitizing properties to a single helper function (Zev)
+* Fixed peci_cpu_device_ids definition for Broadwell Xeon D (David)
+* Refactor peci_request to use a single allocation (Zev)
+* Used min_t() to improve code readability (Zev)
+* Added macro for PECI_RDENDPTCFG_MMIO_WR_LEN_BASE and fixed adev type
+  array name to more descriptive (Zev)
+* Fixed peci-hwmon commit-msg and documentation (Zev)
+
+Thanks
+-Iwona
+
+Iwona Winiarska (11):
+  dt-bindings: Add generic bindings for PECI
+  dt-bindings: Add bindings for peci-aspeed
+  ARM: dts: aspeed: Add PECI controller nodes
+  peci: Add core infrastructure
+  peci: Add device detection
+  peci: Add sysfs interface for PECI bus
+  peci: Add support for PECI device drivers
+  peci: Add peci-cpu driver
+  hwmon: peci: Add cputemp driver
+  hwmon: peci: Add dimmtemp driver
+  docs: Add PECI documentation
+
+Jae Hyun Yoo (2):
+  peci: Add peci-aspeed controller driver
+  docs: hwmon: Document PECI drivers
+
+ Documentation/ABI/testing/sysfs-bus-peci      |  16 +
+ .../devicetree/bindings/peci/peci-aspeed.yaml | 109 +++
+ .../bindings/peci/peci-controller.yaml        |  33 +
+ Documentation/hwmon/index.rst                 |   2 +
+ Documentation/hwmon/peci-cputemp.rst          |  90 +++
+ Documentation/hwmon/peci-dimmtemp.rst         |  57 ++
+ Documentation/index.rst                       |   1 +
+ Documentation/peci/index.rst                  |  16 +
+ Documentation/peci/peci.rst                   |  51 ++
+ MAINTAINERS                                   |  26 +
+ arch/arm/boot/dts/aspeed-g4.dtsi              |  14 +
+ arch/arm/boot/dts/aspeed-g5.dtsi              |  14 +
+ arch/arm/boot/dts/aspeed-g6.dtsi              |  14 +
+ drivers/Kconfig                               |   3 +
+ drivers/Makefile                              |   1 +
+ drivers/hwmon/Kconfig                         |   2 +
+ drivers/hwmon/Makefile                        |   1 +
+ drivers/hwmon/peci/Kconfig                    |  31 +
+ drivers/hwmon/peci/Makefile                   |   7 +
+ drivers/hwmon/peci/common.h                   |  58 ++
+ drivers/hwmon/peci/cputemp.c                  | 592 ++++++++++++++++
+ drivers/hwmon/peci/dimmtemp.c                 | 630 ++++++++++++++++++
+ drivers/peci/Kconfig                          |  36 +
+ drivers/peci/Makefile                         |  10 +
+ drivers/peci/controller/Kconfig               |  17 +
+ drivers/peci/controller/Makefile              |   3 +
+ drivers/peci/controller/peci-aspeed.c         | 429 ++++++++++++
+ drivers/peci/core.c                           | 236 +++++++
+ drivers/peci/cpu.c                            | 343 ++++++++++
+ drivers/peci/device.c                         | 252 +++++++
+ drivers/peci/internal.h                       | 136 ++++
+ drivers/peci/request.c                        | 482 ++++++++++++++
+ drivers/peci/sysfs.c                          |  82 +++
+ include/linux/peci-cpu.h                      |  40 ++
+ include/linux/peci.h                          | 112 ++++
+ 35 files changed, 3946 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-peci
+ create mode 100644 Documentation/devicetree/bindings/peci/peci-aspeed.yaml
+ create mode 100644 Documentation/devicetree/bindings/peci/peci-controller.yaml
+ create mode 100644 Documentation/hwmon/peci-cputemp.rst
+ create mode 100644 Documentation/hwmon/peci-dimmtemp.rst
+ create mode 100644 Documentation/peci/index.rst
+ create mode 100644 Documentation/peci/peci.rst
+ create mode 100644 drivers/hwmon/peci/Kconfig
+ create mode 100644 drivers/hwmon/peci/Makefile
+ create mode 100644 drivers/hwmon/peci/common.h
+ create mode 100644 drivers/hwmon/peci/cputemp.c
+ create mode 100644 drivers/hwmon/peci/dimmtemp.c
+ create mode 100644 drivers/peci/Kconfig
+ create mode 100644 drivers/peci/Makefile
+ create mode 100644 drivers/peci/controller/Kconfig
+ create mode 100644 drivers/peci/controller/Makefile
+ create mode 100644 drivers/peci/controller/peci-aspeed.c
+ create mode 100644 drivers/peci/core.c
+ create mode 100644 drivers/peci/cpu.c
+ create mode 100644 drivers/peci/device.c
+ create mode 100644 drivers/peci/internal.h
+ create mode 100644 drivers/peci/request.c
+ create mode 100644 drivers/peci/sysfs.c
+ create mode 100644 include/linux/peci-cpu.h
+ create mode 100644 include/linux/peci.h
+
 -- 
-2.25.1
+2.31.1
 
