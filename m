@@ -2,87 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6757445A0EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:08:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7811B45A0F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:08:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234806AbhKWLLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 06:11:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36124 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234587AbhKWLLF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 06:11:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637665677;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Dq8tkyF7e1BIoHYWJ4eMRxNL9buH6P7iaJgt9bYs6Ok=;
-        b=KD8ujFYB60ts7h1y78qe5zlL/iSYKIoIjuMgPAbwBClkBgURnoCF48gdAGjr9bBarcu++O
-        EgbQ1pHvE78/HWmOFwRwysy3NeQEU27a6QIoXbpdyrIbmogOQ1aFfd8yYOqsLU+OOfXNgV
-        qIrBxH5n4Jc7Pt6mFEGU6kwjJuiKpDY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-220-v80Nb0rBOPykJELYuJqx6g-1; Tue, 23 Nov 2021 06:07:54 -0500
-X-MC-Unique: v80Nb0rBOPykJELYuJqx6g-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7CD42102CB76;
-        Tue, 23 Nov 2021 11:07:53 +0000 (UTC)
-Received: from localhost (ovpn-13-79.pek2.redhat.com [10.72.13.79])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 734285B826;
-        Tue, 23 Nov 2021 11:07:45 +0000 (UTC)
-Date:   Tue, 23 Nov 2021 19:07:43 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Dave Young <dyoung@redhat.com>
-Cc:     kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        vgoyal@redhat.com, Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] MAINTAINERS: update kdump maintainers
-Message-ID: <20211123110743.GJ21646@MiWiFi-R3L-srv>
-References: <YZyKilzKFsWJYdgn@dhcp-128-65.nay.redhat.com>
+        id S234945AbhKWLLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 06:11:22 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:51856 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230471AbhKWLLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 06:11:20 -0500
+Received: from ip5f5b2004.dynamic.kabel-deutschland.de ([95.91.32.4] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mpTeV-00086y-0h; Tue, 23 Nov 2021 12:07:55 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        robh+dt@kernel.org, jassisinghbrar@gmail.com,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, a.zummo@towertech.it,
+        alexandre.belloni@bootlin.com, broonie@kernel.org,
+        gregkh@linuxfoundation.org, lewis.hanly@microchip.com,
+        conor.dooley@microchip.com, daire.mcnamara@microchip.com,
+        atish.patra@wdc.com, ivan.griffin@microchip.com,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Cc:     krzysztof.kozlowski@canonical.com, geert@linux-m68k.org,
+        bin.meng@windriver.com, conor.dooley@microchip.com
+Subject: Re: [PATCH 01/13] dt-bindings: interrupt-controller: create a header for RISC-V interrupts
+Date:   Tue, 23 Nov 2021 12:07:52 +0100
+Message-ID: <272946671.hFph3VMliC@diego>
+In-Reply-To: <20211108150554.4457-2-conor.dooley@microchip.com>
+References: <20211108150554.4457-1-conor.dooley@microchip.com> <20211108150554.4457-2-conor.dooley@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZyKilzKFsWJYdgn@dhcp-128-65.nay.redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
-
-On 11/23/21 at 02:30pm, Dave Young wrote:
-> Remove myself from kdump maintainers as I have no enough time to
-> maintain it now. But I can review patches on demand though.
+Am Montag, 8. November 2021, 16:05:42 CET schrieb conor.dooley@microchip.com:
+> From: Ivan Griffin <ivan.griffin@microchip.com>
 > 
-> Signed-off-by: Dave Young <dyoung@redhat.com>
+> Provide named identifiers for device tree for RISC-V interrupts.
+> 
+> Licensed under GPL and MIT, as this file may be useful to any OS that
+> uses device tree.
+> 
+> Signed-off-by: Ivan Griffin <ivan.griffin@microchip.com>
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 > ---
->  MAINTAINERS |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  .../interrupt-controller/riscv-hart.h         | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+>  create mode 100644 include/dt-bindings/interrupt-controller/riscv-hart.h
 > 
-> Index: linux-x86/MAINTAINERS
-> ===================================================================
-> --- linux-x86.orig/MAINTAINERS
-> +++ linux-x86/MAINTAINERS
-> @@ -10122,9 +10122,9 @@ F:	lib/Kconfig.kcsan
->  F:	scripts/Makefile.kcsan
->  
->  KDUMP
-> -M:	Dave Young <dyoung@redhat.com>
->  M:	Baoquan He <bhe@redhat.com>
->  R:	Vivek Goyal <vgoyal@redhat.com>
-> +R:	Dave Young <dyoung@redhat.com>
+> diff --git a/include/dt-bindings/interrupt-controller/riscv-hart.h b/include/dt-bindings/interrupt-controller/riscv-hart.h
+> new file mode 100644
+> index 000000000000..e1c32f6090ac
+> --- /dev/null
+> +++ b/include/dt-bindings/interrupt-controller/riscv-hart.h
+> @@ -0,0 +1,19 @@
+> +/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
+> +/*
+> + * Copyright (C) 2021 Microchip Technology Inc.  All rights reserved.
+> + */
+> +
+> +#ifndef _DT_BINDINGS_INTERRUPT_CONTROLLER_RISCV_HART_H
+> +#define _DT_BINDINGS_INTERRUPT_CONTROLLER_RISCV_HART_H
+> +
+> +#define HART_INT_U_SOFT   0
+> +#define HART_INT_S_SOFT   1
+> +#define HART_INT_M_SOFT   3
+> +#define HART_INT_U_TIMER  4
+> +#define HART_INT_S_TIMER  5
+> +#define HART_INT_M_TIMER  7
+> +#define HART_INT_U_EXT    8
+> +#define HART_INT_S_EXT    9
+> +#define HART_INT_M_EXT    11
 
-Thanks for the great work on reviewing kexec/kdump related patches, bug
-fixing and improvement on kdump.
+(1) From checking clic doc [0] I see an additional
+	12   CLIC software interrupt
+defined.
 
-Acked-by: Baoquan He <bhe@redhat.com>
+(2) The doc states that the ordering is a recommendation and
+	"not mandatory in all incarnations of the CLIC"
+Is that clarified somewhere else that this more than recommended?
 
->  L:	kexec@lists.infradead.org
->  S:	Maintained
->  W:	http://lse.sourceforge.net/kdump/
+Thanks
+Heiko
+
+
+[0] https://github.com/riscv/riscv-fast-interrupt/blob/master/clic.adoc
+
+> +
+> +#endif /* _DT_BINDINGS_INTERRUPT_CONTROLLER_RISCV_HART_H */
 > 
+
+
+
 
