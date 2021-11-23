@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16DB845A500
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74ABD45A4FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:13:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237899AbhKWOQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 09:16:29 -0500
-Received: from mga17.intel.com ([192.55.52.151]:24342 "EHLO mga17.intel.com"
+        id S237663AbhKWOQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 09:16:27 -0500
+Received: from mga05.intel.com ([192.55.52.43]:63719 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237611AbhKWOQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 09:16:26 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="215736985"
+        id S236057AbhKWOQZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 09:16:25 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="321259682"
 X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="215736985"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 06:13:04 -0800
+   d="scan'208";a="321259682"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 06:13:17 -0800
 X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="456704848"
+   d="scan'208";a="571075385"
 Received: from romanagn-mobl.ger.corp.intel.com (HELO localhost) ([10.249.144.24])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 06:12:53 -0800
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 06:13:09 -0800
 From:   Iwona Winiarska <iwona.winiarska@intel.com>
 To:     linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
@@ -41,11 +41,10 @@ Cc:     devicetree@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
         Zev Weiss <zweiss@equinix.com>,
         David Muller <d.mueller@elsoft.ch>,
         Dave Hansen <dave.hansen@intel.com>,
-        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
         Iwona Winiarska <iwona.winiarska@intel.com>
-Subject: [PATCH v4 12/13] docs: hwmon: Document PECI drivers
-Date:   Tue, 23 Nov 2021 15:07:05 +0100
-Message-Id: <20211123140706.2945700-13-iwona.winiarska@intel.com>
+Subject: [PATCH v4 13/13] docs: Add PECI documentation
+Date:   Tue, 23 Nov 2021 15:07:06 +0100
+Message-Id: <20211123140706.2945700-14-iwona.winiarska@intel.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211123140706.2945700-1-iwona.winiarska@intel.com>
 References: <20211123140706.2945700-1-iwona.winiarska@intel.com>
@@ -55,210 +54,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
+Add a brief overview of PECI and PECI wire interface.
+The documentation also contains kernel-doc for PECI subsystem internals
+and PECI CPU Driver API.
 
-Add documentation for peci-cputemp driver that provides DTS thermal
-readings for CPU packages and CPU cores, and peci-dimmtemp driver that
-provides Temperature Sensor on DIMM readings.
-
-Signed-off-by: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
-Co-developed-by: Iwona Winiarska <iwona.winiarska@intel.com>
 Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- Documentation/hwmon/index.rst         |  2 +
- Documentation/hwmon/peci-cputemp.rst  | 90 +++++++++++++++++++++++++++
- Documentation/hwmon/peci-dimmtemp.rst | 57 +++++++++++++++++
- MAINTAINERS                           |  2 +
- 4 files changed, 151 insertions(+)
- create mode 100644 Documentation/hwmon/peci-cputemp.rst
- create mode 100644 Documentation/hwmon/peci-dimmtemp.rst
+ Documentation/index.rst      |  1 +
+ Documentation/peci/index.rst | 16 +++++++++++
+ Documentation/peci/peci.rst  | 51 ++++++++++++++++++++++++++++++++++++
+ MAINTAINERS                  |  1 +
+ 4 files changed, 69 insertions(+)
+ create mode 100644 Documentation/peci/index.rst
+ create mode 100644 Documentation/peci/peci.rst
 
-diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-index 7046bf1870d9..6ebd73a55c26 100644
---- a/Documentation/hwmon/index.rst
-+++ b/Documentation/hwmon/index.rst
-@@ -156,6 +156,8 @@ Hardware Monitoring Kernel Drivers
-    pcf8591
-    pim4328
-    pm6764tr
-+   peci-cputemp
-+   peci-dimmtemp
-    pmbus
-    powr1220
-    pxe1610
-diff --git a/Documentation/hwmon/peci-cputemp.rst b/Documentation/hwmon/peci-cputemp.rst
+diff --git a/Documentation/index.rst b/Documentation/index.rst
+index 54ce34fd6fbd..7671f2cd474f 100644
+--- a/Documentation/index.rst
++++ b/Documentation/index.rst
+@@ -137,6 +137,7 @@ needed).
+    misc-devices/index
+    scheduler/index
+    mhi/index
++   peci/index
+ 
+ Architecture-agnostic documentation
+ -----------------------------------
+diff --git a/Documentation/peci/index.rst b/Documentation/peci/index.rst
 new file mode 100644
-index 000000000000..fe0422248dc5
+index 000000000000..989de10416e7
 --- /dev/null
-+++ b/Documentation/hwmon/peci-cputemp.rst
-@@ -0,0 +1,90 @@
++++ b/Documentation/peci/index.rst
+@@ -0,0 +1,16 @@
 +.. SPDX-License-Identifier: GPL-2.0-only
 +
-+Kernel driver peci-cputemp
-+==========================
++====================
++Linux PECI Subsystem
++====================
 +
-+Supported chips:
-+	One of Intel server CPUs listed below which is connected to a PECI bus.
-+		* Intel Xeon E5/E7 v3 server processors
-+			Intel Xeon E5-14xx v3 family
-+			Intel Xeon E5-24xx v3 family
-+			Intel Xeon E5-16xx v3 family
-+			Intel Xeon E5-26xx v3 family
-+			Intel Xeon E5-46xx v3 family
-+			Intel Xeon E7-48xx v3 family
-+			Intel Xeon E7-88xx v3 family
-+		* Intel Xeon E5/E7 v4 server processors
-+			Intel Xeon E5-16xx v4 family
-+			Intel Xeon E5-26xx v4 family
-+			Intel Xeon E5-46xx v4 family
-+			Intel Xeon E7-48xx v4 family
-+			Intel Xeon E7-88xx v4 family
-+		* Intel Xeon Scalable server processors
-+			Intel Xeon D family
-+			Intel Xeon Bronze family
-+			Intel Xeon Silver family
-+			Intel Xeon Gold family
-+			Intel Xeon Platinum family
++.. toctree::
 +
-+	Datasheet: Available from http://www.intel.com/design/literature.htm
++   peci
 +
-+Author: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
++.. only::  subproject and html
 +
-+Description
-+-----------
++   Indices
++   =======
 +
-+This driver implements a generic PECI hwmon feature which provides Digital
-+Thermal Sensor (DTS) thermal readings of the CPU package and CPU cores that are
-+accessible via the processor PECI interface.
-+
-+All temperature values are given in millidegree Celsius and will be measurable
-+only when the target CPU is powered on.
-+
-+Sysfs interface
-+-------------------
-+
-+======================= =======================================================
-+temp1_label		"Die"
-+temp1_input		Provides current die temperature of the CPU package.
-+temp1_max		Provides thermal control temperature of the CPU package
-+			which is also known as Tcontrol.
-+temp1_crit		Provides shutdown temperature of the CPU package which
-+			is also known as the maximum processor junction
-+			temperature, Tjmax or Tprochot.
-+temp1_crit_hyst		Provides the hysteresis value from Tcontrol to Tjmax of
-+			the CPU package.
-+
-+temp2_label		"DTS"
-+temp2_input		Provides current temperature of the CPU package scaled
-+			to match DTS thermal profile.
-+temp2_max		Provides thermal control temperature of the CPU package
-+			which is also known as Tcontrol.
-+temp2_crit		Provides shutdown temperature of the CPU package which
-+			is also known as the maximum processor junction
-+			temperature, Tjmax or Tprochot.
-+temp2_crit_hyst		Provides the hysteresis value from Tcontrol to Tjmax of
-+			the CPU package.
-+
-+temp3_label		"Tcontrol"
-+temp3_input		Provides current Tcontrol temperature of the CPU
-+			package which is also known as Fan Temperature target.
-+			Indicates the relative value from thermal monitor trip
-+			temperature at which fans should be engaged.
-+temp3_crit		Provides Tcontrol critical value of the CPU package
-+			which is same to Tjmax.
-+
-+temp4_label		"Tthrottle"
-+temp4_input		Provides current Tthrottle temperature of the CPU
-+			package. Used for throttling temperature. If this value
-+			is allowed and lower than Tjmax - the throttle will
-+			occur and reported at lower than Tjmax.
-+
-+temp5_label		"Tjmax"
-+temp5_input		Provides the maximum junction temperature, Tjmax of the
-+			CPU package.
-+
-+temp[6-N]_label		Provides string "Core X", where X is resolved core
-+			number.
-+temp[6-N]_input		Provides current temperature of each core.
-+
-+======================= =======================================================
-diff --git a/Documentation/hwmon/peci-dimmtemp.rst b/Documentation/hwmon/peci-dimmtemp.rst
++   * :ref:`genindex`
+diff --git a/Documentation/peci/peci.rst b/Documentation/peci/peci.rst
 new file mode 100644
-index 000000000000..e562aed620de
+index 000000000000..331b1ec00e22
 --- /dev/null
-+++ b/Documentation/hwmon/peci-dimmtemp.rst
-@@ -0,0 +1,57 @@
-+.. SPDX-License-Identifier: GPL-2.0
++++ b/Documentation/peci/peci.rst
+@@ -0,0 +1,51 @@
++.. SPDX-License-Identifier: GPL-2.0-only
 +
-+Kernel driver peci-dimmtemp
-+===========================
++========
++Overview
++========
 +
-+Supported chips:
-+	One of Intel server CPUs listed below which is connected to a PECI bus.
-+		* Intel Xeon E5/E7 v3 server processors
-+			Intel Xeon E5-14xx v3 family
-+			Intel Xeon E5-24xx v3 family
-+			Intel Xeon E5-16xx v3 family
-+			Intel Xeon E5-26xx v3 family
-+			Intel Xeon E5-46xx v3 family
-+			Intel Xeon E7-48xx v3 family
-+			Intel Xeon E7-88xx v3 family
-+		* Intel Xeon E5/E7 v4 server processors
-+			Intel Xeon E5-16xx v4 family
-+			Intel Xeon E5-26xx v4 family
-+			Intel Xeon E5-46xx v4 family
-+			Intel Xeon E7-48xx v4 family
-+			Intel Xeon E7-88xx v4 family
-+		* Intel Xeon Scalable server processors
-+			Intel Xeon D family
-+			Intel Xeon Bronze family
-+			Intel Xeon Silver family
-+			Intel Xeon Gold family
-+			Intel Xeon Platinum family
++The Platform Environment Control Interface (PECI) is a communication
++interface between Intel processor and management controllers
++(e.g. Baseboard Management Controller, BMC).
++PECI provides services that allow the management controller to
++configure, monitor and debug platform by accessing various registers.
++It defines a dedicated command protocol, where the management
++controller is acting as a PECI originator and the processor - as
++a PECI responder.
++PECI can be used in both single processor and multiple-processor based
++systems.
 +
-+	Datasheet: Available from http://www.intel.com/design/literature.htm
++NOTE:
++Intel PECI specification is not released as a dedicated document,
++instead it is a part of External Design Specification (EDS) for given
++Intel CPU. External Design Specifications are usually not publicly
++available.
 +
-+Author: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
++PECI Wire
++---------
 +
-+Description
-+-----------
++PECI Wire interface uses a single wire for self-clocking and data
++transfer. It does not require any additional control lines - the
++physical layer is a self-clocked one-wire bus signal that begins each
++bit with a driven, rising edge from an idle near zero volts. The
++duration of the signal driven high allows to determine whether the bit
++value is logic '0' or logic '1'. PECI Wire also includes variable data
++rate established with every message.
 +
-+This driver implements a generic PECI hwmon feature which provides
-+Temperature sensor on DIMM readings that are accessible via the processor PECI interface.
++For PECI Wire, each processor package will utilize unique, fixed
++addresses within a defined range and that address should
++have a fixed relationship with the processor socket ID - if one of the
++processors is removed, it does not affect addresses of remaining
++processors.
 +
-+All temperature values are given in millidegree Celsius and will be measurable
-+only when the target CPU is powered on.
++PECI subsystem internals
++------------------------
 +
-+Sysfs interface
++.. kernel-doc:: include/linux/peci.h
++.. kernel-doc:: drivers/peci/internal.h
++.. kernel-doc:: drivers/peci/core.c
++.. kernel-doc:: drivers/peci/request.c
++
++PECI CPU Driver API
 +-------------------
-+
-+======================= =======================================================
-+
-+temp[N]_label		Provides string "DIMM CI", where C is DIMM channel and
-+			I is DIMM index of the populated DIMM.
-+temp[N]_input		Provides current temperature of the populated DIMM.
-+temp[N]_max		Provides thermal control temperature of the DIMM.
-+temp[N]_crit		Provides shutdown temperature of the DIMM.
-+
-+======================= =======================================================
-+
-+Note:
-+	DIMM temperature attributes will appear when the client CPU's BIOS
-+	completes memory training and testing.
++.. kernel-doc:: drivers/peci/cpu.c
 diff --git a/MAINTAINERS b/MAINTAINERS
-index af226d613a2c..6266e996dca0 100644
+index 6266e996dca0..78af9c92f27a 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -14923,6 +14923,8 @@ PECI HARDWARE MONITORING DRIVERS
- M:	Iwona Winiarska <iwona.winiarska@intel.com>
- L:	linux-hwmon@vger.kernel.org
+@@ -14932,6 +14932,7 @@ M:	Iwona Winiarska <iwona.winiarska@intel.com>
+ L:	openbmc@lists.ozlabs.org (moderated for non-subscribers)
  S:	Supported
-+F:	Documentation/hwmon/peci-cputemp.rst
-+F:	Documentation/hwmon/peci-dimmtemp.rst
- F:	drivers/hwmon/peci/
- 
- PECI SUBSYSTEM
+ F:	Documentation/devicetree/bindings/peci/
++F:	Documentation/peci/
+ F:	drivers/peci/
+ F:	include/linux/peci-cpu.h
+ F:	include/linux/peci.h
 -- 
 2.31.1
 
