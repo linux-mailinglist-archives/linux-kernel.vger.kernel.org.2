@@ -2,98 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF7945A928
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:44:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA50D45A92B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:45:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233536AbhKWQrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 11:47:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37874 "EHLO
+        id S234801AbhKWQsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 11:48:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237376AbhKWQrd (ORCPT
+        with ESMTP id S239521AbhKWQsL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 11:47:33 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89647C06139E;
-        Tue, 23 Nov 2021 08:43:03 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id w1so94880762edc.6;
-        Tue, 23 Nov 2021 08:43:03 -0800 (PST)
+        Tue, 23 Nov 2021 11:48:11 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BCABC0619FB
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 08:43:30 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id r8so39953212wra.7
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 08:43:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=MC5epeKImcx3/KQhLYCZ1HLgX1y87eAw5+H5JNQv9sA=;
-        b=lFopLDuY6MPMp7pIgftj6vLLHx6gwKafB2NAA3QebNbR4G8rQoWE+xXn1ZNViGOqPE
-         LBILL9hVz83u8+PUceyxvc5xIeneoZ6NfOHgoHtjbeTfWDHnYy0Ug0gn+KsvcyVXY0Ci
-         GANzc7vFdpFCe+aCCwqtJSxkIZR+uT4nJYlXxzib+9RLLxPTTaBUYHwXNrwf1gwPKnEv
-         sl6oTBhgjLZghpGlIDd0Ztz0iEbRW8HwI7mfY2kcU5yfVWpd6OqqfEuHfYZdzzi7INrn
-         hnDJclq9jNI9Eo2FLSym6dpNL2/kUxi32FxPwjR80F6zFDCNuQcH84OZobb5M6ZFm89E
-         n50Q==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5neTUk/m2vB9IAM6ngUOM8n9WDJP9MLnMLArs9XbOJw=;
+        b=byZ3awxkiz9WIohcCKjZ1RnISSUcMbbjORpffVRhiL16M8lHM0gcLAtTQmRLqX06no
+         DdO12YWQgz1/76uIN5xl2nZHAAKYBJxJ6rvsCvqaaBZGzBleDfSiCs27ZB07x2b/VyOw
+         c9zAmfOhw/shuKl4ObBfeqlZQtsM4DL+NspZ0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MC5epeKImcx3/KQhLYCZ1HLgX1y87eAw5+H5JNQv9sA=;
-        b=n8YmLudPX+/1tMHSBYyNo08TpVGEcqjqw4qykQhSQczhJTW0Ai4TdEP/+EM/Mpp3SG
-         YfRuGekYh6gq2JfUChhRU6IWc8r8KdHGppCHwJZYGQBFpjwQsWqv2Lkx4yf7tk9RxqB/
-         aJ1cjmlrw3FhiLhFi+cFcD/Ar5HI9hkmsT3jDg06me34SoIslF/BIka4uQhtjR0uPen0
-         H82WOCcrluANtQoCUlg87Wj+UwWx0x87iekI30NMfhOHIekSYLwkidhG5MGVRcejPpzf
-         zQEr0QZHu5UVd5J4aCwOZvLmc42y9ZFCS12npduj4fd6zW8LswH6Q58xs5R/4uZrTBtt
-         dKqw==
-X-Gm-Message-State: AOAM530f/AF+WbgtuBcRY/3MBy5XMABLv9bwnCBsFArru/CJDGaJ+SG5
-        bymU5iddtgnv5KFmSpFIgNs=
-X-Google-Smtp-Source: ABdhPJw8TCJCwiaCGpqcYo8YHmkWjG3beYZVJAdIgmxdbcP1nkoBberCXFC9tmHu6n1fgwJ+WIwoqQ==
-X-Received: by 2002:a17:907:7850:: with SMTP id lb16mr9444354ejc.67.1637685782143;
-        Tue, 23 Nov 2021 08:43:02 -0800 (PST)
-Received: from kista.localnet (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
-        by smtp.gmail.com with ESMTPSA id d3sm6074046edx.79.2021.11.23.08.43.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 08:43:01 -0800 (PST)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     wens@csie.org, robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Michael Klein <michael@fossekall.de>
-Subject: Re: Re: [PATCH] ARM: dts: sun8i: Adjust power key nodes
-Date:   Tue, 23 Nov 2021 17:42:55 +0100
-Message-ID: <3138437.aeNJFYEL58@kista>
-In-Reply-To: <20211123103219.4y2pjywt2uxunc5s@gilmour>
-References: <20211122213637.922088-1-jernej.skrabec@gmail.com> <20211123103219.4y2pjywt2uxunc5s@gilmour>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5neTUk/m2vB9IAM6ngUOM8n9WDJP9MLnMLArs9XbOJw=;
+        b=WGfYO1gjBstqR1LiL0g5dQqAzURzxzt32tOgVCO3Fpk8OsP6D8QXaSgCLHjmYXpCdc
+         hiLpbnZVPx3mh2PhwRiLUJQD3FxUUvhDAsUeLtfrohaDJhOgIto7bKix4MDc//aeZ9/v
+         OZLrhxQSAatQK/nLXy9VMnxwRCAALmUMDYoLL5vWlsRDG3xtLyKWa0x9wVba0IuBws8P
+         TKSO9xFYJaSUxtItEXEkJzuG6eqncZGKoS5txPwriuqbvZSXhpgFcz7pkFoEfHfZKbm0
+         wAOJyCOHWFilWtlMe6t52oKgB7DmcMS5F1XvXwOlTrt8H6XgwcRs/cu2lJTo1m+NKFhz
+         LsPQ==
+X-Gm-Message-State: AOAM531ZNmawL3twQow1D0qrR5PfJdUiRPl8BxEnDnY3kDYb25RKjt9C
+        Tg+bU69rchbs7NwAR5stcxP+VGL26wH2c1vjYnjYFg==
+X-Google-Smtp-Source: ABdhPJwzTM7lcjHa6kT/XkIFqyUhLvbfIVKMMsj5u/hKr4G+sFpnC60Aiu1g1tWSlFVoSzSbrQwFPZ0Me/zJiV4Yybs=
+X-Received: by 2002:a5d:58fb:: with SMTP id f27mr9217095wrd.10.1637685808489;
+ Tue, 23 Nov 2021 08:43:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <CAOuPNLiXCmH+Ut8kf0DJe2Aonb11RJYeUmYQFsB=oSLbep+MdQ@mail.gmail.com>
+In-Reply-To: <CAOuPNLiXCmH+Ut8kf0DJe2Aonb11RJYeUmYQFsB=oSLbep+MdQ@mail.gmail.com>
+From:   Will Drewry <wad@chromium.org>
+Date:   Tue, 23 Nov 2021 10:43:15 -0600
+Message-ID: <CAAFS_9G_gQrBBJ2AWpwBWwZK41qiaFhBXy17XDeL7hOBxOvFeQ@mail.gmail.com>
+Subject: Re: dm-verity: How to exactly use the dm-mod.create with
+ verity-metadata append
+To:     Pintu Agarwal <pintu.ping@gmail.com>
+Cc:     dm-devel@redhat.com, helen.koike@collabora.com,
+        Kees Cook <keescook@chromium.org>,
+        enric.balletbo@collabora.com, snitzer@redhat.com, agk@redhat.com,
+        open list <linux-kernel@vger.kernel.org>,
+        Kernelnewbies <kernelnewbies@kernelnewbies.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-
-Dne torek, 23. november 2021 ob 11:32:19 CET je Maxime Ripard napisal(a):
+On Tue, Nov 23, 2021 at 4:36 AM Pintu Agarwal <pintu.ping@gmail.com> wrote:
+>
 > Hi,
-> 
-> On Mon, Nov 22, 2021 at 10:36:37PM +0100, Jernej Skrabec wrote:
-> > Several H3 and one H2+ board have power key nodes, which are slightly
-> > off. Some are missing wakeup-source property and some have BTN_0 code
-> > assigned instead of KEY_POWER.
-> > 
-> > Adjust them, so they can function as intended by designer.
-> > 
-> > Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-> > [BananaPi M2 Zero changes]
-> > Signed-off-by: Michael Klein <michael@fossekall.de>
-> 
-> This looks a bit weird. If Michael is the author, then his SoB should be
-> here first and mentioned either in From or Co-developed-by.
-> 
-> If you are, I'm not sure why he's mentioned?
+>
+> For rootfs dm-verity I am trying to pass dm-mod.create from our
+> bootloader but it seems not working for me.
+> So, I need some guidance on the parameters that we pass here.
+> The documentation also does not seem to help much.
+>
+> Kernel: 4.14 (with dm-init patch backported)
+> Target: Arm-32 / NAND / Simple Busybox / Bootloader (edk2)
+> Build: Ubuntu-18.04 / Yocto 2.6
+>
+> Steps I followed:
+> 1) First I am trying to generate the root hash for our rootfs using
+> the veritysetup command:
+> $ ls -l system.img
+> 64172032 ==> IMAGE_SIZE
+> $ veritysetup format system.img dm-init-verity.img
+> UUID:                   eca62b73-b66a-4249-834b-471e83fc382c
+> Hash type:              1
+> Data blocks:            15667
+> Data block size:        4096
+> Hash block size:        4096
+> Hash algorithm:         sha256
+> Salt:
+> 8b66f42c07f576429109cf4e5d12ec072b23d242a9e653ac3423e49647339f5b
+> Root hash:
+> 10d9036f6efdd48dd49f09c8ece016a36a2c4d9a01a1f77f01485c65cf0e78af
+>
+> 2) Then I am trying to append the verity with the system image itself:
+> $ cat dm-init-verity.img >> system.img
+>
+> 3) After that I am trying to pass dm-mod.create parameter like this:
+> dm-mod.create=\"system,,,ro, 0 IMAGE_SIZE/512 verity 1
+> /dev/ubiblock0_0 /dev/ubiblock0_0 4096 4096 DATA_BLOCKS 1 sha256
+> 10d9036f6efdd48dd49f09c8ece016a36a2c4d9a01a1f77f01485c65cf0e78af
+> 8b66f42c07f576429109cf4e5d12ec072b23d242a9e653ac3423e49647339f5b\"
+>
+> 4) The Kernel command line seems to be updated properly:
+> [    0.000000] Kernel command line:.. rootfstype=squashfs
+> ubi.mtd=40,0,30 ubi.block=0,0 root=/dev/ubiblock0_0
+> dm-mod.create="system,,,ro, 0 125336 verity 1 /dev/ubiblock0_0
+> /dev/ubiblock0_0 4096 4096 15667 1 sha256
+> 10d9036f6efdd48dd49f09c8ece016a36a2c4d9a01a1f77f01485c65cf0e78af
+> 8b66f42c07f576429109cf4e5d12ec072b23d242a9e653ac3423e49647339f5b" ....
+>
+> But it does not seem to work as expected.
+> It gives below errors:
+> ....
+> [    4.747708] block ubiblock0_0: created from ubi0:0(system)
+> [    4.752313] device-mapper: init: waiting for all devices to be
+> available before creating mapped devices
+> [    4.752313]
+> [    4.766061] device-mapper: verity: sha256 using implementation
+> "sha256-generic"
+> [    4.776178] device-mapper: ioctl: dm-0 (system) is ready
+> [    4.848886] md: Skipping autodetection of RAID arrays.
+> (raid=autodetect will force)
+> [    4.849288] VFS: Cannot open root device "ubiblock0_0" or
+> unknown-block(252,0): error -16
 
-I'm main author and Michael just adapted BananaPi M2 Zero DT based on my 
-changes. What is preferred way to mark him as co-author?
+I'd start with changing your root device to point to the device mapper
+one you've just created.  E.g., root=/dev/dm-0  Then see how it goes
+from there.
 
-Best regards,
-Jernej
+> ....
+>
+> I followed almost the same example from dm-init document:
+> "verity":
+>   dm-verity,,4,ro,
+>     0 1638400 verity 1 8:1 8:2 4096 4096 204800 1 sha256
+>     fb1a5a0f00deb908d8b53cb270858975e76cf64105d412ce764225d53b8f3cfd
+>     51934789604d1b92399c52e7cb149d1b3a1b74bbbcb103b2a0aaacbed5c08584
+>
+> But this seems only refer to system and verity on a different blocks.
+> I am not sure what parameter should be changed if my verity metadata
+> is part of system image itself.
+> Also, I don't know how 1638400;204800;1 is calculated here based on image size ?
 
-> 
-> Maxime
-> 
+It's the range of sectors covered by the device 0 to size_in_sectors:
+  (data_blocks * block_size)/sector_size
+  (15667 * 4096)/512
+  125336
+which you have in your entry already.
 
+> So, people who have made this working successfully, please share the
+> correct parameter to be used for the same block device.
 
+hth,
+will
