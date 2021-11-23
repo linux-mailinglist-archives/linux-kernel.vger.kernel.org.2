@@ -2,87 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E129C45B076
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:49:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E48C45B071
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:49:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239697AbhKWXwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 18:52:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239613AbhKWXwg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 18:52:36 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C81EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 15:49:27 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id x19-20020a9d7053000000b0055c8b39420bso1402437otj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 15:49:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vZ6pBwF1NuzbVzImJ7QGAdV4gsNd/T58S8MXtt6omVM=;
-        b=fTZoFX+cx6Va5ji4D3zVGwUKeZ7E43iQgDaAthrMbfJ/BnhQgQQezOW/3JzdS706xs
-         yJ4BS2xbfbXrjhLLyoLJ+e3HjWQDuAo3imKP7N/kJlY9nj3S3hVulW5NKlHgLK1pL3AW
-         Qi73arkCJGSEl3iaVZfWIYmFFKFu7tamViUAsQqZxGgsr+6fb5wzhgajXs/+Vw0V0Zvk
-         UT+MTYotGQtc/DMu4pTvkqLZjDvlak+qtBpNBY8Ly8W61azJ4n/+uDoBagGKTnZWgJP7
-         R07ebBr2j2XDbk7X7EGja1KiQqj2vHwOKNOsqTiALniuaTup2mxiXsigfxWo/K1IFXT/
-         Ps3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vZ6pBwF1NuzbVzImJ7QGAdV4gsNd/T58S8MXtt6omVM=;
-        b=Gk64B73ibraoaumjOgQr/lEDOJ/eCpJm1QxTrIyOvCOi2o8hr4Ziy3DdKObFQjpLbp
-         bmkb5gC6Gz1KpwJRu/T8tLOqWCz3XVEcd9dp6C+RMTFwvljDWqAUE9YOSCorlJg6U1KO
-         4Rn/rdDAjgRNGAaNYHKM83hF1gDvrKSwSmDppT3WeBanl5Gl9p4MY1oaK6nn0DjJZC9H
-         dBNqBh31F4Cf/yT1Kde1qsqkOxvcLnsl6wqTvyfgUB9yNyS6Lo0L1p7RIV6qKta6CyiJ
-         prOuKt6R+GTZ3s8+iR+e8UwFM9ubUrz3ueF3g5nv/jxDBTck1pkc6d7vHmg8fYkL9IE0
-         m1zw==
-X-Gm-Message-State: AOAM530soW2uccvw4OQnFKTZeS44/Z2tuiUV6ZQSBUUo6kV1xElZ1GyC
-        Pv0/glkki47j6aIYe2hqNgpQL+fbhn8I03yDbTIVO56bWDh8dDnj9uA=
-X-Google-Smtp-Source: ABdhPJzxS4DBIwjcle3VRvJgjdsTQlL8lgfqIB5O/DV/uuvWrOs3nV3ub0rGc64u01tfzkD5jS0UyX8oBFWgH69kgjU=
-X-Received: by 2002:a05:6830:2646:: with SMTP id f6mr8631680otu.182.1637711366923;
- Tue, 23 Nov 2021 15:49:26 -0800 (PST)
+        id S239516AbhKWXwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 18:52:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43150 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229674AbhKWXwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 18:52:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBAD760F41;
+        Tue, 23 Nov 2021 23:49:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637711364;
+        bh=IW4qN8u05oVacusnPMH1cuKnY7vyge2dygNZ0jyMnfs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bMkLLetQudL1AnjDLBkGz2KJV65XFDNAI+qMERM3p2htB/mPltEFDc0SoR5SG7cTn
+         yUvjgLX4fj3iycoMCeZbceNqv8VJp4xXmhJ5j4daJdQUx70dPPE1ZSDF3I8EJ3CrBl
+         FL9EHxBPJYKnvkt5L2363w5f8MTJ/hI+N0EksRg4Tqq2ECyAP9r+yfiU6OtA4c1HNW
+         sJDJxZC66+IkfqVqHU0aoaIJ7PQLiQE76d+ztRn4+dA/AYxJtUD+/ZrA56NgYcGb99
+         3NhcCdyp7MdhPQ2MlzMSxitFt7xyg2kF02pUQFCNG1ojXEWE+DZkeLhKg7BQKKAgjZ
+         pglhaeH4khWUA==
+Date:   Tue, 23 Nov 2021 15:49:22 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Paul Walmsley <paul@pwsan.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Benoit Parrot <bparrot@ti.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Keerthy <j-keerthy@ti.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH 01/17] bitfield: Add non-constant field_{prep,get}()
+ helpers
+Message-ID: <20211123154922.600fd3b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <637a4183861a1f2cdab52b7652bfa7ed33fbcdd2.camel@sipsolutions.net>
+References: <cover.1637592133.git.geert+renesas@glider.be>
+        <3a54a6703879d10f08cf0275a2a69297ebd2b1d4.1637592133.git.geert+renesas@glider.be>
+        <01b44b38c087c151171f8d45a2090474c2559306.camel@sipsolutions.net>
+        <20211122171739.03848154@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAMuHMdWAAGrQUZN18cnDTDUUhuPNTZTFkRMe2Sbf+s7CedPSxA@mail.gmail.com>
+        <637a4183861a1f2cdab52b7652bfa7ed33fbcdd2.camel@sipsolutions.net>
 MIME-Version: 1.0
-References: <20211122195350.GA166134@makvihas> <52ad7e4f-7164-e868-ca49-2f0fecda3395@gmail.com>
-In-Reply-To: <52ad7e4f-7164-e868-ca49-2f0fecda3395@gmail.com>
-From:   Vihas Mak <makvihas@gmail.com>
-Date:   Wed, 24 Nov 2021 05:19:15 +0530
-Message-ID: <CAH1kMwQz3=1uf5cR2sgNrWq6f+6x9icCYXXZLO4V41kS_mTr+w@mail.gmail.com>
-Subject: Re: [PATCH] staging: r8188eu: remove unnecessary NULL check
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, Phillip Potter <phil@philpotter.co.uk>,
-        Greg KH <gregkh@linuxfoundation.org>, straube.linux@gmail.com,
-        martin@kaiser.cx, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> BTW, same can be done in rtw_usb_if1_init().
+On Tue, 23 Nov 2021 17:24:15 +0100 Johannes Berg wrote:
+> > (*_replace_bits() seems to be useful, though)  
+> 
+> Indeed.
+> 
+> Also as I said in my other mail, the le32/be32/... variants are
+> tremendously useful, and they fundamentally cannot be expressed with the
+> FIELD_GET() or field_get() macros. IMHO this is a clear advantage to the
 
-Yea, I noticed that too. But the NULL check  in rtw_usb_if1_init() has
-a follow up "else if", so I didn't change it.
+Can you elaborate?
 
-Thanks,
-Vihas
+> typed versions, and if you ask me we should get rid of the FIELD_GETand
+> FIELD_PREP entirely - difficult now, but at least let's not propagate
+> that?
 
-On Tue, Nov 23, 2021 at 2:52 AM Pavel Skripkin <paskripkin@gmail.com> wrote:
->
-> On 11/22/21 22:53, Vihas Mak wrote:
-> > remove unnecessary NULL check surrounding rtw_free_netdev(), as the check
-> > is already performed inside rtw_free_netdev() in
-> > drivers/staging/r8188eu/os_dep/osdep_service.c.
-> >
-> > Signed-off-by: Vihas Mak <makvihas@gmail.com>
->
-> Reviewed-by: Pavel Skripkin <paskripkin@gmail.com>
->
-> BTW, same can be done in rtw_usb_if1_init().
->
->
->
-> With regards,
-> Pavel Skripkin
+I don't see why.
