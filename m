@@ -2,93 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00ED45AC0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:09:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5391F45AC11
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:13:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238065AbhKWTMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 14:12:51 -0500
-Received: from mga17.intel.com ([192.55.52.151]:53975 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235934AbhKWTMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 14:12:50 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="215817155"
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="215817155"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 11:09:42 -0800
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="497395793"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 11:09:40 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1mpbAf-009sJq-4D;
-        Tue, 23 Nov 2021 21:09:37 +0200
-Date:   Tue, 23 Nov 2021 21:09:36 +0200
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [PATCH v1 1/1] i2c: designware: Fix the kernel doc description
- for struct dw_i2c_dev
-Message-ID: <YZ08cAbJ7MYuPq8h@smile.fi.intel.com>
-References: <20211112123459.73538-1-andriy.shevchenko@linux.intel.com>
- <e62bf878-03df-1b93-2177-7b8a3be293c4@infradead.org>
- <CAHp75Vd71WPosA8Sy999Mb5ZiGEGg-y3vxYsYz3st5Ng2PJ98A@mail.gmail.com>
- <07932f56-ec2d-46a5-7c8e-3f4aab7afd35@infradead.org>
- <767f36e9-e043-06dd-f847-7405524b432e@infradead.org>
+        id S239848AbhKWTQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 14:16:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235161AbhKWTPx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 14:15:53 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50605C061574;
+        Tue, 23 Nov 2021 11:12:44 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id c6-20020a05600c0ac600b0033c3aedd30aso27570wmr.5;
+        Tue, 23 Nov 2021 11:12:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xss5SnKgkPp02wd6AdAAL9ymcU61G/FhRa1CNPWUDyA=;
+        b=jG/MFOnUgGW0y4hNUy1Q/1R2833GAaNQDWVQ942N8PycS1Q105SBeNretlz63bygZU
+         KHkolfNovyz45jBYBarKq71COsOdC8HpwCBAlLq7B2K1RWAPNHNK9f3p/fX6GNloRXTd
+         LBSuEpPqiAeB1oY79FdDs8G+E6r7mdD54knQJyGEiVJLlxh14zqMTKN5+E5MUad5sDhL
+         5mmUuOUeddGxodlTSFQAWZGrxXvlOJ6vfc9juiADkkcdy1E16RwDDgwJ+4QNm0Oe26EP
+         XjATQWoN81Y1v1Qtj8GvCj1f6ulH3t9MAzbuOAssclymqO8DkguQfH/tdFqw39NvYU3Z
+         WUXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xss5SnKgkPp02wd6AdAAL9ymcU61G/FhRa1CNPWUDyA=;
+        b=rMGK4R2k/haSYNj4xdxqVzrUcg/GAeh4Mz6GRXdBgMTAYfZKH+dCcI5HE044VLdsnG
+         jkoJJjJ7ZM1UdMQQfnf3W22t73L9MMtGIbxzPrXYf0Y0o48RqWQBkGHvvGnWsrslWuDn
+         hmpTtr/UOttYWm/tx3J8g78gE8BIQYjgYIVrTCsgh+CabkVW6t+YSklkCIt0fJm3Y/Zg
+         ROYModUCnEPsWMlImUg2fZyqnrs+o+bn9DP5mrVempTMi8wNySOPpLR8v7NjUJfk4fbv
+         3qrEgsPyUnPkGIFYa1pZ9blTJN57fqRftmJhJ6igN8/27uQsZmUTfIm58mvVk9XiWa0j
+         gxCg==
+X-Gm-Message-State: AOAM532GDvzBAxoV97sr76gfDFAnEA13TDXyq17oWrTAAfWv2VAq/uSt
+        deoZlW785Mgbui7IhSYX5tY=
+X-Google-Smtp-Source: ABdhPJxKyG+7D3DPw0a510IGP4zadQmNd5kBFQ/DMFXMt5tt6Ye5DjbUDdbBI9uYKzeXDfOnllTb7g==
+X-Received: by 2002:a7b:c1c5:: with SMTP id a5mr6056537wmj.149.1637694762579;
+        Tue, 23 Nov 2021 11:12:42 -0800 (PST)
+Received: from localhost.localdomain ([217.113.240.86])
+        by smtp.gmail.com with ESMTPSA id r11sm3088081wrw.5.2021.11.23.11.12.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 11:12:42 -0800 (PST)
+From:   =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
+To:     jikos@kernel.org
+Cc:     benjamin.tissoires@redhat.com, peter.hutterer@who-t.net,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
+Subject: [PATCH 0/1] Do not map BTN_RIGHT/MIDDLE on buttonpads
+Date:   Tue, 23 Nov 2021 20:12:37 +0100
+Message-Id: <20211123191238.12472-1-jose.exposito89@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <767f36e9-e043-06dd-f847-7405524b432e@infradead.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 07:46:42AM -0800, Randy Dunlap wrote:
-> On 11/12/21 8:43 AM, Randy Dunlap wrote:
-> > On 11/12/21 8:26 AM, Andy Shevchenko wrote:
-> > > On Fri, Nov 12, 2021 at 6:01 PM Randy Dunlap <rdunlap@infradead.org> wrote:
-> > > > On 11/12/21 4:34 AM, Andy Shevchenko wrote:
-> > > 
-> > > ...
-> > > 
-> > > > > + * @rinfo: I≤C GPIO recovery information
-> > > > 
-> > > > Preferably:†† "I2C"
-> > > 
-> > > Why?
-> > 
-> > See below vvvvvvvvvvvvvvvvv:
-> > > > like it is in thousands of places in the kernel source tree.
-> > 
-> > 
-> > > UTF-8 has been established for more than a decade. I prefer to use the
-> > > proper form of the abbreviation (*).
-> > > 
-> > > *) Check UM10204.pdf.
-> 
-> 
-> > > Yes, I am aware of what is in the spec.
-> > 
-> > Wolfram, what do you prefer?
-> 
-> > I prefer I2C. But it is more a reading habit. I would neither enforce
-> > I2C nor I≤C.
-> 
-> OK, let's leave it as Andy sent it then.
-> 
-> Acked-by: Randy Dunlap <rdunla@infradead.org>
+Hi all,
 
-Thanks!
-Wolfram, can it be applied now or should I resend?
+Historically, libinput has relayed on the INPUT_PROP_BUTTONPAD property
+to detect buttonpads.
+
+Since buttonpads are expected to have only one button (BTN_LEFT),
+recently we added a new rule to detect buttonpads: Where a touchpad
+maps the BTN_RIGHT bit, libinput assumes it is NOT a buttonpad.
+
+However, this change leaded to several false possitives, so we ended up
+reverting it. For more context:
+https://gitlab.freedesktop.org/libinput/libinput/-/issues/704
+
+And for a full list of affected hardware, HID reports and bug reports
+please see:
+https://gitlab.freedesktop.org/libinput/libinput/-/merge_requests/726
+
+My understanding is that buttonpads should not map BTN_RIGHT and/or
+BTN_MIDDLE and to avoid it I would like to fix the required drivers.
+
+One option to fix it (this patch) is to clear the bits that might have
+been added because of the HID descriptor on every driver.
+However, since this code will be common to all drivers, I would like to
+ask if you consider it worth it to add a function to handle adding
+properties.
+
+A function similar to input_set_capability but for props could be added
+in input.h/c:
+
+    /**
+     * input_set_property - add a property to the device
+     * @dev: device to add the property to
+     * @property: type of the property (INPUT_PROP_POINTER, INPUT_PROP_DIRECT...)
+     *
+     * In addition to setting up corresponding bit in dev->propbit the function
+     * might add or remove related capabilities.
+     */
+    void input_set_property(struct input_dev *dev, unsigned int property)
+    {
+            switch (property) {
+            case INPUT_PROP_POINTER:
+            case INPUT_PROP_DIRECT:
+            case INPUT_PROP_SEMI_MT:
+            case INPUT_PROP_TOPBUTTONPAD:
+            case INPUT_PROP_POINTING_STICK:
+            case INPUT_PROP_ACCELEROMETER:
+                    break;
+
+            case INPUT_PROP_BUTTONPAD:
+                    input_set_capability(dev, EV_KEY, BTN_LEFT);
+                    __clear_bit(BTN_RIGHT, dev->keybit);
+                    __clear_bit(BTN_MIDDLE, dev->keybit);
+                    break;
+
+            default:
+                    pr_err("%s: unknown property %u\n", __func__, property);
+                    dump_stack();
+                    return;
+            }
+
+            __set_bit(property, dev->propbit);
+    }
+    EXPORT_SYMBOL(input_set_property);
+
+
+Which approach do you think is the best?
+
+Thank you very much in advance,
+Jose
+
+
+Jos√© Exp√≥sito (1):
+  HID: multitouch: only map BTN_LEFT on buttonpads
+
+ drivers/hid/hid-multitouch.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
