@@ -2,126 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7870545ADAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:56:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D8245ADA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:54:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232745AbhKWU7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 15:59:41 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:16486 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232112AbhKWU7k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 15:59:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637700809;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=Q+DkUziyd5A/+y6V3V4Ix0YFQ8f32VgpRK5LfdXkPlw=;
-    b=HJPMP05mf22uELtFTqWUquQdwMlYZ8Wowlqc0KRigW2RPX78CMdWEXb5LuGazDfLKL
-    aNNBoYIFalbJvJIQjEEdtylQ1cwwq6tNmu0Gwr9b3ob0KVdIDyPaF6Xch66o9Cy/DMnU
-    WtTcMlHMGzUzqkkOb59AcP0rg5hrbYKQ9Nra9Lr81/oLHxGQnfoM2fUDjT2KpPxZycEm
-    rIfVVaC244WOoyAYUawkWww/S4yKGR58ZeTMduKbJp8t4AVRgK2aWEOd4aZRgKQV3J9z
-    4glBiXiJCItB2X8UQ1Ks53cnHq02qpf4Ip2AekRJY4zu+VuoiQ3xzM3jwHcV0eQuIhVO
-    sagA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusx3hdd0DIgVuBOfXW6v7w=="
-X-RZG-CLASS-ID: mo00
-Received: from [IPv6:2a00:6020:1cfa:f900::b82]
-    by smtp.strato.de (RZmta 47.34.6 AUTH)
-    with ESMTPSA id a04d59xANKrT6ZV
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 23 Nov 2021 21:53:29 +0100 (CET)
-Subject: Re: [PATCH] can: bittiming: replace CAN units with the SI metric
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jimmy Assarsson <extja@kvaser.com>
-References: <20211119161850.202094-1-mailhol.vincent@wanadoo.fr>
- <38544770-9e5f-1b1b-1f0a-a7ff1719327d@hartkopp.net>
- <CAMZ6RqJobmUnAMUjnaqYh0jsOPw7-PwiF+bF79hy6h+8SCuuDg@mail.gmail.com>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Message-ID: <73c3b9cb-3b46-1523-d926-4bdf86de3fb8@hartkopp.net>
-Date:   Tue, 23 Nov 2021 21:53:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <CAMZ6RqJobmUnAMUjnaqYh0jsOPw7-PwiF+bF79hy6h+8SCuuDg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S239134AbhKWU5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 15:57:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232689AbhKWU5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 15:57:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E82A60FBF;
+        Tue, 23 Nov 2021 20:53:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637700839;
+        bh=MFdbRlCK68ZN3DYMTpZPI0jDdpdkpo1V/Loq2M5bVeQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gRwwE0CIu+/cIEzPvR8o7GgVayqgW7LmD8fNn7tNKBO7AlZ4m+aiAoCvnRWuebdS2
+         rW6PfKvW90qDaPJRQ9zVh3rMYCPpUcqI5ckizTacx+h/LdbrNUCuh/KjCNXsjBWWjx
+         sMOrwbbTk6hAvhv4MFjHASwnyEPQQA9ptetJ1m7EufLr5IbIn+pFMWYHvGnh8DzPFO
+         w+UA0UfSabA42lMc36ba2ARFMt691oGM9JuS4qGGLfomMur4zaYbtYNCGUCc+h0SV/
+         uDm8twtOZQ9qZvMifeFSnP7xDSq1iOG9zGpD6Ee85fRHD/CqIohxmRQXL9+wBUqc07
+         NfdU6WDGDaBzw==
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     rostedt@goodmis.org
+Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] tracing: Add and use event_command parsing func helpers
+Date:   Tue, 23 Nov 2021 14:53:52 -0600
+Message-Id: <cover.1637700535.git.zanussi@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vincent,
+With more event commands being implemented, it's been pointed out that
+it would make sense to clean up the existing ones and make it easier
+to implement new ones without copying a lot of boilerplate.  The main
+culprit here is the event_command.func() callback - the rest of the
+event_command infrastructure has default implementations that work for
+most implementations.  The func() callback is a little different in
+that every new command needs to customize parsing to some extent.
 
-On 22.11.21 03:22, Vincent MAILHOL wrote:
-> Le lun. 22 nov. 2021 à 03:27, Oliver Hartkopp <socketcan@hartkopp.net> a écrit :
+This patchset attempts to help clean that up and make it easier for
+new users to deal with.
 
+v3: broke up event_trigger_check() into smaller functions instead of
+    parameterizing it, and added function documentation.
 
->>>    #include <linux/kernel.h>
->>> +#include <linux/units.h>
->>>    #include <asm/unaligned.h>
->>>
->>>    #include "es58x_core.h"
->>> @@ -469,8 +470,8 @@ const struct es58x_parameters es581_4_param = {
->>>        .bittiming_const = &es581_4_bittiming_const,
->>>        .data_bittiming_const = NULL,
->>>        .tdc_const = NULL,
->>> -     .bitrate_max = 1 * CAN_MBPS,
->>> -     .clock = {.freq = 50 * CAN_MHZ},
->>> +     .bitrate_max = 1 * MEGA,
->>> +     .clock = {.freq = 50 * MEGA},
->>
->> IMO we are losing information here.
->>
->> It feels you suggest to replace MHz with M.
-> 
-> When I introduced the CAN_{K,M}BPS and CAN_MHZ macros, my primary
-> intent was to avoid having to write more than five zeros in a
-> row (because the human brain is bad at counting those). And the
-> KILO/MEGA prefixes perfectly cover that intent.
-> 
-> You are correct to say that the information of the unit is
-> lost. But I assume this information to be implicit (frequencies
-> are in Hz, baudrate are in bits/second). So yes, I suggest
-> replacing MHz with M.
-> 
-> Do you really think that people will be confused by this change?
+v2: removed unused event_trigger_remove(). No change in functionality.
 
-It is not about confusing people but about the quality of documentation 
-and readability.
+The following changes since commit 67d4f6e3bf5dddced226fbf19704cdbbb0c98847:
 
-> 
-> I am not strongly opposed to keeping it either (hey, I was the
-> one who introduced it in the first place). I just think that
-> using linux/units.h is sufficient.
-> 
->> So where is the Hz information then?
-> 
-> It is in the comment of can_clock:freq :)
-> 
-> https://elixir.bootlin.com/linux/v5.15/source/include/uapi/linux/can/netlink.h#L63
+  ftrace/samples: Add missing prototype for my_direct_func (2021-11-01 20:56:51 -0400)
 
-Haha, you are funny ;-)
+are available in the Git repository at:
 
-But the fact that you provide this URL shows that the information is not 
-found or easily accessible when someone reads the code here.
+  git://git.kernel.org/pub/scm/linux/kernel/git/zanussi/linux-trace.git ftrace/cleanup-hist-func-v3
 
->>> -     .bitrate_max = 8 * CAN_MBPS,
->>> -     .clock = {.freq = 80 * CAN_MHZ},
->>> +     .bitrate_max = 8 * MEGA,
->>> +     .clock = {.freq = 80 * MEGA},
+Tom Zanussi (2):
+  tracing: Add helper functions to simplify event_command callback
+    handling
+  tracing: Have existing event_command implementations use helpers
 
-What about
+ kernel/trace/trace.h                |  23 ++
+ kernel/trace/trace_events_hist.c    |  51 +---
+ kernel/trace/trace_events_trigger.c | 439 ++++++++++++++++++++--------
+ 3 files changed, 361 insertions(+), 152 deletions(-)
 
-+     .bitrate_max = 8 * MEGA, /* bits per second */
-+     .clock = {.freq = 80 * MEGA}, /* Hz */
-
-which uses the SI constants but maintains the unit?
-
-Best regards,
-Oliver
+-- 
+2.17.1
 
