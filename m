@@ -2,460 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2502A45A982
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:00:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE8145A987
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:01:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238658AbhKWRDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 12:03:53 -0500
-Received: from mga04.intel.com ([192.55.52.120]:50938 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230510AbhKWRDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 12:03:47 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="233783141"
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="233783141"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 09:00:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="591257203"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by FMSMGA003.fm.intel.com with ESMTP; 23 Nov 2021 09:00:33 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 411732CC; Tue, 23 Nov 2021 19:00:37 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v3 3/3] spi: Fix multi-line comment style
-Date:   Tue, 23 Nov 2021 19:00:34 +0200
-Message-Id: <20211123170034.41253-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211123170034.41253-1-andriy.shevchenko@linux.intel.com>
-References: <20211123170034.41253-1-andriy.shevchenko@linux.intel.com>
+        id S238773AbhKWREI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 12:04:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236804AbhKWREH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 12:04:07 -0500
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B5CC06173E
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:00:58 -0800 (PST)
+Received: by mail-qk1-x729.google.com with SMTP id p4so22557322qkm.7
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:00:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CFoLHMr/Z5LPCRYETT9tnpkqBCibUyTd4qK2BHV8DYk=;
+        b=nsTjfm6OvGB4aoB+P4zzFpoqRZc3fzSiLrwe7bKf9EdkEG0SLPsMrmMS6ZjUURyCs3
+         RxG6LDALb0mczy36TEMfAQizjbQjSmNM8TDLDrr2PHheidsM/LJ7jreKQ7FPQrSkIwd9
+         bQkQhZ8K8s4FOG9Wysbdf6aDQOohs78VY/ASSL/i5NoBuVVK4I5NGTSV/ap+e1DfZ++x
+         2zligQ2hDJMjp8KKaESDPSxfJqaM2DAj9xa0dXU4Ms59fPVMQhLcgT26gsWkwWKQk9Ve
+         xuU0hiF5d/iAnyCa6OrGGGGehHz9gSJLW1GdYm3YqlYvOEHwNIez3YoMJpI24eW2JjLG
+         w6tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CFoLHMr/Z5LPCRYETT9tnpkqBCibUyTd4qK2BHV8DYk=;
+        b=Lb8/0zR76+cjF5inFHB6bFV/QO8Ei/XhMfH8H/h/NmMRu1GK2jYlUK4MOm+i1uKoqt
+         /L+iU+rC94MLdHHSwpSJNxgAM5vAD8lhj75w9JYhWi8n5PvD2F1ee1O96faA790g2Fgs
+         w2bnlXM1TGojhVq/E2q2BJCNa0f4+4QJeNHSpaOLD23jCjMXACQ6ABnVvgqKpKSXNkGl
+         4wh3Kq9bGxCvKUarrTlhy3lJ2tKjrDm87uc+s7M7suSjyoctZPhSV33Deu/yXetm/vo9
+         LR5fthh781TXZz4ylAHdMhM34LbAQmWjxTs8Zuio7svvGo4ROtZQ4VydiUwDAlRfm8p4
+         TImw==
+X-Gm-Message-State: AOAM5313/goGLlXhgFgiQ0SBer/kKoXCmua4pOI6f0rhodSatcWPjjRZ
+        l95jCT4nFb0pU96ejxMKr7rLZQ==
+X-Google-Smtp-Source: ABdhPJyCfsuzW9aNgeEoX01aT+J8AVygOW5MKRGQDmf+YbVxdYXAAzkQAco6yirK4ymbFWhPkmfgWg==
+X-Received: by 2002:a05:620a:288c:: with SMTP id j12mr6002351qkp.103.1637686858082;
+        Tue, 23 Nov 2021 09:00:58 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id q20sm6629100qkl.53.2021.11.23.09.00.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 09:00:57 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mpZA8-000DRS-L5; Tue, 23 Nov 2021 13:00:56 -0400
+Date:   Tue, 23 Nov 2021 13:00:56 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Andrew Dona-Couch <andrew@donacou.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Drew DeVault <sir@cmpwn.com>,
+        Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+Message-ID: <20211123170056.GC5112@ziepe.ca>
+References: <20211116133750.0f625f73a1e4843daf13b8f7@linux-foundation.org>
+ <b84bc345-d4ea-96de-0076-12ff245c5e29@redhat.com>
+ <8f219a64-a39f-45f0-a7ad-708a33888a3b@www.fastmail.com>
+ <333cb52b-5b02-648e-af7a-090e23261801@redhat.com>
+ <ca96bb88-295c-ccad-ed2f-abc585cb4904@kernel.dk>
+ <5f998bb7-7b5d-9253-2337-b1d9ea59c796@redhat.com>
+ <20211123132523.GA5112@ziepe.ca>
+ <10ccf01b-f13a-d626-beba-cbee70770cf1@redhat.com>
+ <20211123140709.GB5112@ziepe.ca>
+ <e4d7d211-5d62-df89-8f94-e49385286f1f@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e4d7d211-5d62-df89-8f94-e49385286f1f@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  /*
-   * Fix multi-line comment style as in this short example. Pay attention
-   * to the capitalization, period and starting line of the text.
-   */
+On Tue, Nov 23, 2021 at 03:44:03PM +0100, David Hildenbrand wrote:
+> On 23.11.21 15:07, Jason Gunthorpe wrote:
+> > On Tue, Nov 23, 2021 at 02:39:19PM +0100, David Hildenbrand wrote:
+> >>>
+> >>>> 2) Could be provide a mmu variant to ordinary users that's just good
+> >>>> enough but maybe not as fast as what we have today? And limit
+> >>>> FOLL_LONGTERM to special, privileged users?
+> >>>
+> >>> rdma has never been privileged
+> >>
+> >> Feel free to correct me if I'm wrong: it requires special networking
+> >> hardware and the admin/kernel has to prepare the system in a way such
+> >> that it can be used.
+> > 
+> > Not really, plug in the right PCI card and it works
+> 
+> Naive me would have assumed that the right modules have to be loaded
+> (and not blacklisted), that there has to be an rdma service installed
+> and running, that the NIC has to be configured in some way, and that
+> there is some kind of access control which user can actually use which
+> NIC.
 
-While at it, split the (supposedly short) description of couple of functions
-to summary (short description) and (long) description.
+Not really, we've worked hard that it works as well as any other HW
+device. Plug it in and it works.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v3: no changes
- drivers/spi/spi.c | 160 ++++++++++++++++++++++++++--------------------
- 1 file changed, 89 insertions(+), 71 deletions(-)
+There is no systemd service, or special mandatory configuration, for
+instance.
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 2e6e4b3ca96e..8726309b3eaf 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -311,10 +311,10 @@ static void spi_statistics_add_transfer_stats(struct spi_statistics *stats,
- 	spin_unlock_irqrestore(&stats->lock, flags);
- }
- 
--/* modalias support makes "modprobe $MODALIAS" new-style hotplug work,
-+/*
-+ * modalias support makes "modprobe $MODALIAS" new-style hotplug work,
-  * and the sysfs version makes coldplug work too.
-  */
--
- static const struct spi_device_id *spi_match_id(const struct spi_device_id *id, const char *name)
- {
- 	while (id->name[0]) {
-@@ -492,7 +492,8 @@ EXPORT_SYMBOL_GPL(__spi_register_driver);
- 
- /*-------------------------------------------------------------------------*/
- 
--/* SPI devices should normally not be created by SPI device drivers; that
-+/*
-+ * SPI devices should normally not be created by SPI device drivers; that
-  * would make them board-specific.  Similarly with SPI controller drivers.
-  * Device registration normally goes into like arch/.../mach.../board-YYY.c
-  * with other readonly (flashable) information about mainboard devices.
-@@ -508,8 +509,8 @@ static LIST_HEAD(spi_controller_list);
- 
- /*
-  * Used to protect add/del operation for board_info list and
-- * spi_controller list, and their matching process
-- * also used to protect object of type struct idr
-+ * spi_controller list, and their matching process also used
-+ * to protect object of type struct idr.
-  */
- static DEFINE_MUTEX(board_lock);
- 
-@@ -616,7 +617,8 @@ static int __spi_add_device(struct spi_device *spi)
- 	else if (ctlr->cs_gpios)
- 		spi->cs_gpio = ctlr->cs_gpios[spi->chip_select];
- 
--	/* Drivers may modify this initial i/o setup, but will
-+	/*
-+	 * Drivers may modify this initial i/o setup, but will
- 	 * normally rely on the device being setup.  Devices
- 	 * using SPI_CS_HIGH can't coexist well otherwise...
- 	 */
-@@ -710,7 +712,8 @@ struct spi_device *spi_new_device(struct spi_controller *ctlr,
- 	struct spi_device	*proxy;
- 	int			status;
- 
--	/* NOTE:  caller did any chip->bus_num checks necessary.
-+	/*
-+	 * NOTE:  caller did any chip->bus_num checks necessary.
- 	 *
- 	 * Also, unless we change the return value convention to use
- 	 * error-or-pointer (not NULL-or-pointer), troubleshootability
-@@ -878,7 +881,6 @@ static void *spi_res_alloc(struct spi_device *spi, spi_res_release_t release,
- /**
-  * spi_res_free - free an spi resource
-  * @res: pointer to the custom data of a resource
-- *
-  */
- static void spi_res_free(void *res)
- {
-@@ -973,7 +975,7 @@ static void spi_set_cs(struct spi_device *spi, bool enable, bool force)
- 					gpiod_set_value_cansleep(spi->cs_gpiod, activate);
- 			} else {
- 				/*
--				 * invert the enable line, as active low is
-+				 * Invert the enable line, as active low is
- 				 * default for SPI.
- 				 */
- 				gpio_set_value_cansleep(spi->cs_gpio, !enable);
-@@ -1711,16 +1713,7 @@ static void spi_pump_messages(struct kthread_work *work)
- }
- 
- /**
-- * spi_take_timestamp_pre - helper for drivers to collect the beginning of the
-- *			    TX timestamp for the requested byte from the SPI
-- *			    transfer. The frequency with which this function
-- *			    must be called (once per word, once for the whole
-- *			    transfer, once per batch of words etc) is arbitrary
-- *			    as long as the @tx buffer offset is greater than or
-- *			    equal to the requested byte at the time of the
-- *			    call. The timestamp is only taken once, at the
-- *			    first such call. It is assumed that the driver
-- *			    advances its @tx buffer pointer monotonically.
-+ * spi_take_timestamp_pre - helper to collect the beginning of the TX timestamp
-  * @ctlr: Pointer to the spi_controller structure of the driver
-  * @xfer: Pointer to the transfer being timestamped
-  * @progress: How many words (not bytes) have been transferred so far
-@@ -1730,6 +1723,14 @@ static void spi_pump_messages(struct kthread_work *work)
-  *	      spi_take_timestamp_post or otherwise system will crash.
-  *	      WARNING: for fully predictable results, the CPU frequency must
-  *	      also be under control (governor).
-+ *
-+ * This is a helper for drivers to collect the beginning of the TX timestamp
-+ * for the requested byte from the SPI transfer. The frequency with which this
-+ * function must be called (once per word, once for the whole transfer, once
-+ * per batch of words etc) is arbitrary as long as the @tx buffer offset is
-+ * greater than or equal to the requested byte at the time of the call. The
-+ * timestamp is only taken once, at the first such call. It is assumed that
-+ * the driver advances its @tx buffer pointer monotonically.
-  */
- void spi_take_timestamp_pre(struct spi_controller *ctlr,
- 			    struct spi_transfer *xfer,
-@@ -1757,16 +1758,16 @@ void spi_take_timestamp_pre(struct spi_controller *ctlr,
- EXPORT_SYMBOL_GPL(spi_take_timestamp_pre);
- 
- /**
-- * spi_take_timestamp_post - helper for drivers to collect the end of the
-- *			     TX timestamp for the requested byte from the SPI
-- *			     transfer. Can be called with an arbitrary
-- *			     frequency: only the first call where @tx exceeds
-- *			     or is equal to the requested word will be
-- *			     timestamped.
-+ * spi_take_timestamp_post - helper to collect the end of the TX timestamp
-  * @ctlr: Pointer to the spi_controller structure of the driver
-  * @xfer: Pointer to the transfer being timestamped
-  * @progress: How many words (not bytes) have been transferred so far
-  * @irqs_off: If true, will re-enable IRQs and preemption for the local CPU.
-+ *
-+ * This is a helper for drivers to collect the end of the TX timestamp for
-+ * the requested byte from the SPI transfer. Can be called with an arbitrary
-+ * frequency: only the first call where @tx exceeds or is equal to the
-+ * requested word will be timestamped.
-  */
- void spi_take_timestamp_post(struct spi_controller *ctlr,
- 			     struct spi_transfer *xfer,
-@@ -1899,10 +1900,12 @@ void spi_finalize_current_message(struct spi_controller *ctlr)
- 
- 	spi_unmap_msg(ctlr, mesg);
- 
--	/* In the prepare_messages callback the spi bus has the opportunity to
--	 * split a transfer to smaller chunks.
--	 * Release splited transfers here since spi_map_msg is done on the
--	 * splited transfers.
-+	/*
-+	 * In the prepare_messages callback the SPI bus has the opportunity
-+	 * to split a transfer to smaller chunks.
-+	 *
-+	 * Release the split transfers here since spi_map_msg() is done on
-+	 * the split transfers.
- 	 */
- 	spi_res_release(ctlr, mesg);
- 
-@@ -2944,8 +2947,9 @@ int spi_register_controller(struct spi_controller *ctlr)
- 	if (!ctlr->max_dma_len)
- 		ctlr->max_dma_len = INT_MAX;
- 
--	/* register the device, then userspace will see it.
--	 * registration fails if the bus ID is in use.
-+	/*
-+	 * Register the device, then userspace will see it.
-+	 * Registration fails if the bus ID is in use.
- 	 */
- 	dev_set_name(&ctlr->dev, "spi%u", ctlr->bus_num);
- 
-@@ -3211,16 +3215,18 @@ static struct spi_replaced_transfers *spi_replace_transfers(
- 	/* init the replaced_transfers list */
- 	INIT_LIST_HEAD(&rxfer->replaced_transfers);
- 
--	/* assign the list_entry after which we should reinsert
-+	/*
-+	 * Assign the list_entry after which we should reinsert
- 	 * the @replaced_transfers - it may be spi_message.messages!
- 	 */
- 	rxfer->replaced_after = xfer_first->transfer_list.prev;
- 
- 	/* remove the requested number of transfers */
- 	for (i = 0; i < remove; i++) {
--		/* if the entry after replaced_after it is msg->transfers
-+		/*
-+		 * If the entry after replaced_after it is msg->transfers
- 		 * then we have been requested to remove more transfers
--		 * than are in the list
-+		 * than are in the list.
- 		 */
- 		if (rxfer->replaced_after->next == &msg->transfers) {
- 			dev_err(&msg->spi->dev,
-@@ -3236,15 +3242,17 @@ static struct spi_replaced_transfers *spi_replace_transfers(
- 			return ERR_PTR(-EINVAL);
- 		}
- 
--		/* remove the entry after replaced_after from list of
--		 * transfers and add it to list of replaced_transfers
-+		/*
-+		 * Remove the entry after replaced_after from list of
-+		 * transfers and add it to list of replaced_transfers.
- 		 */
- 		list_move_tail(rxfer->replaced_after->next,
- 			       &rxfer->replaced_transfers);
- 	}
- 
--	/* create copy of the given xfer with identical settings
--	 * based on the first transfer to get removed
-+	/*
-+	 * Create copy of the given xfer with identical settings
-+	 * based on the first transfer to get removed.
- 	 */
- 	for (i = 0; i < insert; i++) {
- 		/* we need to run in reverse order */
-@@ -3292,18 +3300,20 @@ static int __spi_split_transfer_maxsize(struct spi_controller *ctlr,
- 		return PTR_ERR(srt);
- 	xfers = srt->inserted_transfers;
- 
--	/* now handle each of those newly inserted spi_transfers
--	 * note that the replacements spi_transfers all are preset
-+	/*
-+	 * Now handle each of those newly inserted spi_transfers.
-+	 * Note that the replacements spi_transfers all are preset
- 	 * to the same values as *xferp, so tx_buf, rx_buf and len
- 	 * are all identical (as well as most others)
- 	 * so we just have to fix up len and the pointers.
- 	 *
--	 * this also includes support for the depreciated
--	 * spi_message.is_dma_mapped interface
-+	 * This also includes support for the depreciated
-+	 * spi_message.is_dma_mapped interface.
- 	 */
- 
--	/* the first transfer just needs the length modified, so we
--	 * run it outside the loop
-+	/*
-+	 * The first transfer just needs the length modified, so we
-+	 * run it outside the loop.
- 	 */
- 	xfers[0].len = min_t(size_t, maxsize, xfer[0].len);
- 
-@@ -3323,8 +3333,9 @@ static int __spi_split_transfer_maxsize(struct spi_controller *ctlr,
- 		xfers[i].len = min(maxsize, xfers[i].len - offset);
- 	}
- 
--	/* we set up xferp to the last entry we have inserted,
--	 * so that we skip those already split transfers
-+	/*
-+	 * We set up xferp to the last entry we have inserted,
-+	 * so that we skip those already split transfers.
- 	 */
- 	*xferp = &xfers[count - 1];
- 
-@@ -3356,11 +3367,12 @@ int spi_split_transfers_maxsize(struct spi_controller *ctlr,
- 	struct spi_transfer *xfer;
- 	int ret;
- 
--	/* iterate over the transfer_list,
-+	/*
-+	 * Iterate over the transfer_list,
- 	 * but note that xfer is advanced to the last transfer inserted
- 	 * to avoid checking sizes again unnecessarily (also xfer does
--	 * potentiall belong to a different list by the time the
--	 * replacement has happened
-+	 * potentially belong to a different list by the time the
-+	 * replacement has happened).
- 	 */
- 	list_for_each_entry(xfer, &msg->transfers, transfer_list) {
- 		if (xfer->len > maxsize) {
-@@ -3421,8 +3433,8 @@ int spi_setup(struct spi_device *spi)
- 	int		status;
- 
- 	/*
--	 * check mode to prevent that any two of DUAL, QUAD and NO_MOSI/MISO
--	 * are set at the same time
-+	 * Check mode to prevent that any two of DUAL, QUAD and NO_MOSI/MISO
-+	 * are set at the same time.
- 	 */
- 	if ((hweight_long(spi->mode &
- 		(SPI_TX_DUAL | SPI_TX_QUAD | SPI_NO_TX)) > 1) ||
-@@ -3432,20 +3444,21 @@ int spi_setup(struct spi_device *spi)
- 		"setup: can not select any two of dual, quad and no-rx/tx at the same time\n");
- 		return -EINVAL;
- 	}
--	/* if it is SPI_3WIRE mode, DUAL and QUAD should be forbidden
--	 */
-+	/* If it is SPI_3WIRE mode, DUAL and QUAD should be forbidden */
- 	if ((spi->mode & SPI_3WIRE) && (spi->mode &
- 		(SPI_TX_DUAL | SPI_TX_QUAD | SPI_TX_OCTAL |
- 		 SPI_RX_DUAL | SPI_RX_QUAD | SPI_RX_OCTAL)))
- 		return -EINVAL;
--	/* help drivers fail *cleanly* when they need options
--	 * that aren't supported with their current controller
-+	/*
-+	 * Help drivers fail *cleanly* when they need options
-+	 * that aren't supported with their current controller.
- 	 * SPI_CS_WORD has a fallback software implementation,
- 	 * so it is ignored here.
- 	 */
- 	bad_bits = spi->mode & ~(spi->controller->mode_bits | SPI_CS_WORD |
- 				 SPI_NO_TX | SPI_NO_RX);
--	/* nothing prevents from working with active-high CS in case if it
-+	/*
-+	 * Nothing prevents from working with active-high CS in case if it
- 	 * is driven by GPIO.
- 	 */
- 	if (gpio_is_valid(spi->cs_gpio))
-@@ -3567,7 +3580,8 @@ static int __spi_validate(struct spi_device *spi, struct spi_message *message)
- 	if (list_empty(&message->transfers))
- 		return -EINVAL;
- 
--	/* If an SPI controller does not support toggling the CS line on each
-+	/*
-+	 * If an SPI controller does not support toggling the CS line on each
- 	 * transfer (indicated by the SPI_CS_WORD flag) or we are using a GPIO
- 	 * for the CS line, we can emulate the CS-per-word hardware function by
- 	 * splitting transfers into one-word transfers and ensuring that
-@@ -3597,7 +3611,8 @@ static int __spi_validate(struct spi_device *spi, struct spi_message *message)
- 		}
- 	}
- 
--	/* Half-duplex links include original MicroWire, and ones with
-+	/*
-+	 * Half-duplex links include original MicroWire, and ones with
- 	 * only one data pin like SPI_3WIRE (switches direction) or where
- 	 * either MOSI or MISO is missing.  They can also be caused by
- 	 * software limitations.
-@@ -3616,7 +3631,7 @@ static int __spi_validate(struct spi_device *spi, struct spi_message *message)
- 		}
- 	}
- 
--	/**
-+	/*
- 	 * Set transfer bits_per_word and max speed as spi device default if
- 	 * it is not set for this transfer.
- 	 * Set transfer tx_nbits and rx_nbits as single transfer default
-@@ -3642,7 +3657,7 @@ static int __spi_validate(struct spi_device *spi, struct spi_message *message)
- 
- 		/*
- 		 * SPI transfer length should be multiple of SPI word size
--		 * where SPI word size should be power-of-two multiple
-+		 * where SPI word size should be power-of-two multiple.
- 		 */
- 		if (xfer->bits_per_word <= 8)
- 			w_size = 1;
-@@ -3663,7 +3678,8 @@ static int __spi_validate(struct spi_device *spi, struct spi_message *message)
- 			xfer->tx_nbits = SPI_NBITS_SINGLE;
- 		if (xfer->rx_buf && !xfer->rx_nbits)
- 			xfer->rx_nbits = SPI_NBITS_SINGLE;
--		/* check transfer tx/rx_nbits:
-+		/*
-+		 * Check transfer tx/rx_nbits:
- 		 * 1. check the value matches one of single, dual and quad
- 		 * 2. check tx/rx_nbits match the mode in spi_device
- 		 */
-@@ -3842,7 +3858,8 @@ static int spi_async_locked(struct spi_device *spi, struct spi_message *message)
- 
- /*-------------------------------------------------------------------------*/
- 
--/* Utility methods for SPI protocol drivers, layered on
-+/*
-+ * Utility methods for SPI protocol drivers, layered on
-  * top of the core.  Some other utility methods are defined as
-  * inline functions.
-  */
-@@ -3870,7 +3887,8 @@ static int __spi_sync(struct spi_device *spi, struct spi_message *message)
- 	SPI_STATISTICS_INCREMENT_FIELD(&ctlr->statistics, spi_sync);
- 	SPI_STATISTICS_INCREMENT_FIELD(&spi->statistics, spi_sync);
- 
--	/* If we're not using the legacy transfer method then we will
-+	/*
-+	 * If we're not using the legacy transfer method then we will
- 	 * try to transfer in the calling context so special case.
- 	 * This code would be less tricky if we could remove the
- 	 * support for driver implemented message queues.
-@@ -3888,9 +3906,7 @@ static int __spi_sync(struct spi_device *spi, struct spi_message *message)
- 	}
- 
- 	if (status == 0) {
--		/* Push out the messages in the calling context if we
--		 * can.
--		 */
-+		/* Push out the messages in the calling context if we can */
- 		if (ctlr->transfer == spi_queued_transfer) {
- 			SPI_STATISTICS_INCREMENT_FIELD(&ctlr->statistics,
- 						       spi_sync_immediate);
-@@ -4051,7 +4067,8 @@ int spi_write_then_read(struct spi_device *spi,
- 	struct spi_transfer	x[2];
- 	u8			*local_buf;
- 
--	/* Use preallocated DMA-safe buffer if we can.  We can't avoid
-+	/*
-+	 * Use preallocated DMA-safe buffer if we can. We can't avoid
- 	 * copying here, (as a pure convenience thing), but we can
- 	 * keep heap costs out of the hot path unless someone else is
- 	 * using the pre-allocated buffer or the transfer is too large.
-@@ -4287,11 +4304,12 @@ static int __init spi_init(void)
- 	return status;
- }
- 
--/* board_info is normally registered in arch_initcall(),
-- * but even essential drivers wait till later
-+/*
-+ * A board_info is normally registered in arch_initcall(),
-+ * but even essential drivers wait till later.
-  *
-- * REVISIT only boardinfo really needs static linking. the rest (device and
-- * driver registration) _could_ be dynamically linked (modular) ... costs
-+ * REVISIT only boardinfo really needs static linking. The rest (device and
-+ * driver registration) _could_ be dynamically linked (modular) ... Costs
-  * include needing to have boardinfo data structures be much more public.
-  */
- postcore_initcall(spi_init);
--- 
-2.33.0
+> For example, I would have assume from inside a container it usually
+> wouldn't just work.
 
+Nope, RDMA follows the net namespaces of its ethernet port, so it just
+works in containers too.
+
+> believe what you say and I trust your experience :) So could as well be
+> that on such a "special" (or not so special) systems there should be a
+> way to restrict it to privileged users only.
+
+At this point RDMA is about as "special" as people running large
+ZONE_MOVABLE systems, and the two are going to start colliding
+heavily. The RDMA VFIO migration driver should be merged soon which
+makes VMs using this stuff finally practical.
+
+Jason
