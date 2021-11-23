@@ -2,84 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C2E45A978
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:59:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE3D45A981
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237964AbhKWRDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 12:03:03 -0500
-Received: from mga02.intel.com ([134.134.136.20]:21909 "EHLO mga02.intel.com"
+        id S237881AbhKWRDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 12:03:49 -0500
+Received: from mga04.intel.com ([192.55.52.120]:50938 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237505AbhKWRDA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 12:03:00 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="222286257"
+        id S237871AbhKWRDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 12:03:46 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="233783122"
 X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="222286257"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 08:59:51 -0800
+   d="scan'208";a="233783122"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 09:00:35 -0800
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="497343295"
-Received: from markmu6x-mobl.amr.corp.intel.com (HELO [10.213.168.54]) ([10.213.168.54])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 08:59:48 -0800
-Subject: Re: [PATCH 10/11] hda: cs35l41: Add support for CS35L41 in HDA
- systems
-To:     Lucas Tanure <tanureal@opensource.cirrus.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Kailang Yang <kailang@realtek.com>,
-        Shuming Fan <shumingf@realtek.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-Cc:     Jeremy Szu <jeremy.szu@canonical.com>,
-        Hui Wang <hui.wang@canonical.com>,
-        Werner Sembach <wse@tuxedocomputers.com>,
-        Chris Chiu <chris.chiu@canonical.com>,
-        Cameron Berkenpas <cam@neo-zeon.de>,
-        Sami Loone <sami@loone.fi>, Elia Devito <eliadevito@gmail.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Jack Yu <jack.yu@realtek.com>, Arnd Bergmann <arnd@arndb.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org,
-        patches@opensource.cirrus.com, platform-driver-x86@vger.kernel.org,
+   d="scan'208";a="591257201"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by FMSMGA003.fm.intel.com with ESMTP; 23 Nov 2021 09:00:33 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 301331AD; Tue, 23 Nov 2021 19:00:36 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20211123163149.1530535-1-tanureal@opensource.cirrus.com>
- <20211123163149.1530535-11-tanureal@opensource.cirrus.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <d8fe13f2-ac84-51b6-8eb5-095176a65c39@linux.intel.com>
-Date:   Tue, 23 Nov 2021 10:59:45 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jon Hunter <jonathanh@nvidia.com>
+Subject: [PATCH v3 1/3] spi: Fix condition in the __spi_register_driver()
+Date:   Tue, 23 Nov 2021 19:00:32 +0200
+Message-Id: <20211123170034.41253-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20211123163149.1530535-11-tanureal@opensource.cirrus.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The recent commit 3f07657506df ("spi: deduplicate spi_match_id()
+in __spi_register_driver()") inadvertently inverted a condition
+that provokes a (harmless) warning:
 
-> +#ifdef CONFIG_ACPI
-> +static const struct acpi_device_id cs35l41_acpi_hda_match[] = {
-> +	{"CLSA0100", 0 },
+  WARNING KERN SPI driver mtd_dataflash has no spi_device_id for atmel,at45
 
-I could be wrong but this doesn't look like a legit ACPI _HID?
+Restore logic to avoid such warning to be issued.
 
-Cirrus Logic can use 'CIR', "CLI", or 'CSC' PNP ID, or an PCI ID.
+Fixes: 3f07657506df ("spi: deduplicate spi_match_id() in __spi_register_driver()")
+Reported-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v3: a fix-patch instead of previously applied one (Jon)
+ drivers/spi/spi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-in the past you used
-
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id cs35l41_acpi_match[] = {
-+	{ "CSC3541", 0 }, /* Cirrus Logic PnP ID + part ID */
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, cs35l41_acpi_match);
-+#endif
-
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 9d19d9bae253..15688acc952c 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -474,7 +474,7 @@ int __spi_register_driver(struct module *owner, struct spi_driver *sdrv)
+ 				const struct spi_device_id *spi_id;
+ 
+ 				spi_id = spi_match_id(sdrv->id_table, of_name);
+-				if (!spi_id)
++				if (spi_id)
+ 					continue;
+ 			} else {
+ 				if (strcmp(sdrv->driver.name, of_name) == 0)
+-- 
+2.33.0
 
