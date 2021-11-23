@@ -2,159 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FBB8459F58
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 10:33:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A82E0459F5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 10:34:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233239AbhKWJhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 04:37:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbhKWJhB (ORCPT
+        id S233970AbhKWJhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 04:37:47 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:46518 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230286AbhKWJhq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 04:37:01 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0BCAC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 01:33:53 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id h19-20020a9d3e53000000b0056547b797b2so32949208otg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 01:33:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u1eFzhqZhKStQ6SAejbe5i9BeR0+rlVTE2OXKMpdriE=;
-        b=X/NuWj2aYCJ+2lcyvWwjUYPcjbJ5MQlDDkLmDtPEDST/3hWWBt7AHgGeaOCpl639ba
-         lWgROjeIfON09qqiyonuRHQwTWU0aHzcnx26GwXTt3uSZ3iRXDho8JIzoFM+kuwGvU72
-         DT0IcVmqxEoBVKQ5tAYMqjxrENYmxeLyCJCFHHeuFli6g3W0qJMVIUmTmtnHkkWmpbyx
-         1flQkBfYRtIEYxRCs/3I5v3xCmAjxEUz2dM2jOeRXYL3eLJCv260JYWxakVE1YaPx4ki
-         I0UQ+5JeVX8nAqMCy2wMFjM/WkcclAF4IP9vPWRZ4H13dvbmp0/F4b46wRXKuNvfe600
-         nSrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u1eFzhqZhKStQ6SAejbe5i9BeR0+rlVTE2OXKMpdriE=;
-        b=Q5nizk5rZLvejdOmX4oi975E0wr9ghjlpHOOhtG2DJ2G3z1xasHIK9Uag0qC6yygfd
-         fe4D8g0t0rQ34Ia13cFENYxk/S6qtroOI4ZbscOzLYCllsHItFOXxiuLvXAJv6NoZScz
-         /bml+M4Ri5wYJziecUXr0wyMApfNf068FNhZwsxZJhhXj0Kg5xtnQcaaTYUEnq2REKIQ
-         eX8yEaedTx06StVEvyg4ugOPWeK8xqsuTRtFyjhtnkRfn+GFpKOvTur97JUcoM+wPEum
-         N2jroJOSWQgDXvSbVuZzHxI1G6JPc/NgjGC6Nng621lkyxrWV/vspSBnqKF8Iuwp/Amb
-         YMVg==
-X-Gm-Message-State: AOAM531dlwYamYW/TzzfsAdBT0pPrNPDV7X+9qi0bcGcgypOkNTo9W44
-        jJfw5AzeBLPx1++x/Qlz8aChTMtlJEury7N/+uptpg==
-X-Google-Smtp-Source: ABdhPJwyGX6dc9JXTH/JGlfix7XL94vC6ykb+Wdz4x/qw9tS4QrZ+d6qdrdqC+PGECCkLP/FKULRqSUDyi3d6bq1G6M=
-X-Received: by 2002:a9d:7548:: with SMTP id b8mr2994949otl.92.1637660032976;
- Tue, 23 Nov 2021 01:33:52 -0800 (PST)
+        Tue, 23 Nov 2021 04:37:46 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R791e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0UxueP3J_1637660074;
+Received: from 30.22.113.103(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0UxueP3J_1637660074)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 23 Nov 2021 17:34:35 +0800
+Message-ID: <31a86235-dd24-5215-907b-c05e356dee38@linux.alibaba.com>
+Date:   Tue, 23 Nov 2021 17:34:34 +0800
 MIME-Version: 1.0
-References: <20211123074344.1877731-1-ying.huang@intel.com>
-In-Reply-To: <20211123074344.1877731-1-ying.huang@intel.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 23 Nov 2021 10:33:41 +0100
-Message-ID: <CANpmjNPGkQ2VWmHjt==yWVr5webCHuRQtXau95jvPjR4Z3gxDw@mail.gmail.com>
-Subject: Re: [PATCH] mm/rmap: fix potential batched TLB flush race
-To:     Huang Ying <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+aa5bebed695edaccf0df@syzkaller.appspotmail.com,
-        Nadav Amit <namit@vmware.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH 17/15] KVM: X86: Ensure pae_root to be reconstructed for
+ shadow paging if the guest PDPTEs is changed
+Content-Language: en-US
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+References: <20211108124407.12187-1-jiangshanlai@gmail.com>
+ <20211111144634.88972-1-jiangshanlai@gmail.com>
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+In-Reply-To: <20211111144634.88972-1-jiangshanlai@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Nov 2021 at 08:44, Huang Ying <ying.huang@intel.com> wrote:
->
-> In theory, the following race is possible for batched TLB flushing.
->
-> CPU0                               CPU1
-> ----                               ----
-> shrink_page_list()
->                                    unmap
->                                      zap_pte_range()
->                                        flush_tlb_batched_pending()
->                                          flush_tlb_mm()
->   try_to_unmap()
->     set_tlb_ubc_flush_pending()
->       mm->tlb_flush_batched = true
->                                          mm->tlb_flush_batched = false
->
-> After the TLB is flushed on CPU1 via flush_tlb_mm() and before
-> mm->tlb_flush_batched is set to false, some PTE is unmapped on CPU0
-> and the TLB flushing is pended.  Then the pended TLB flushing will be
-> lost.  Although both set_tlb_ubc_flush_pending() and
-> flush_tlb_batched_pending() are called with PTL locked, different PTL
-> instances may be used.
->
-> Because the race window is really small, and the lost TLB flushing
-> will cause problem only if a TLB entry is inserted before the
-> unmapping in the race window, the race is only theoretical.  But the
-> fix is simple and cheap too.
 
-Thanks for fixing this!
+Hello, Paolo
 
-> Syzbot has reported this too as follows,
->
-> ==================================================================
-> BUG: KCSAN: data-race in flush_tlb_batched_pending / try_to_unmap_one
-[...]
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index c3a6e6209600..789778067db9 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -632,7 +632,7 @@ struct mm_struct {
->                 atomic_t tlb_flush_pending;
->  #ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
->                 /* See flush_tlb_batched_pending() */
-> -               bool tlb_flush_batched;
-> +               atomic_t tlb_flush_batched;
->  #endif
->                 struct uprobes_state uprobes_state;
->  #ifdef CONFIG_PREEMPT_RT
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index 163ac4e6bcee..60902c3cfb4a 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -633,7 +633,7 @@ static void set_tlb_ubc_flush_pending(struct mm_struct *mm, bool writable)
->          * before the PTE is cleared.
->          */
->         barrier();
-> -       mm->tlb_flush_batched = true;
-> +       atomic_inc(&mm->tlb_flush_batched);
+any thought/concern about this one?
 
-The use of barrier() and atomic needs some clarification. Is there a
-requirement that the CPU also doesn't reorder anything after this
-atomic_inc() (which is unordered)? I.e. should this be
-atomic_inc_return_release() and remove barrier()?
+Thanks
+Lai
 
->         /*
->          * If the PTE was dirty then it's best to assume it's writable. The
-> @@ -680,15 +680,16 @@ static bool should_defer_flush(struct mm_struct *mm, enum ttu_flags flags)
->   */
->  void flush_tlb_batched_pending(struct mm_struct *mm)
->  {
-> -       if (data_race(mm->tlb_flush_batched)) {
-> -               flush_tlb_mm(mm);
-> +       int batched = atomic_read(&mm->tlb_flush_batched);
->
-> +       if (batched) {
-> +               flush_tlb_mm(mm);
->                 /*
-> -                * Do not allow the compiler to re-order the clearing of
-> -                * tlb_flush_batched before the tlb is flushed.
-> +                * If the new TLB flushing is pended during flushing,
-> +                * leave mm->tlb_flush_batched as is, to avoid to lose
-> +                * flushing.
->                  */
-> -               barrier();
-> -               mm->tlb_flush_batched = false;
-> +               atomic_cmpxchg(&mm->tlb_flush_batched, batched, 0);
->         }
->  }
->  #else
-> --
-> 2.30.2
->
+
+On 2021/11/11 22:46, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
+> 
+> For shadow paging, the pae_root needs to be reconstructed before the
+> coming VMENTER if the guest PDPTEs is changed.
+> 
+> But not all paths that call load_pdptrs() will cause the pae_root to be
+> reconstructed. Normally, kvm_mmu_reset_context() and kvm_mmu_free_roots()
+> are used to launch later reconstruction.
+> 
+> The commit d81135a57aa6("KVM: x86: do not reset mmu if CR0.CD and
+> CR0.NW are changed") skips kvm_mmu_reset_context() after load_pdptrs()
+> when changing CR0.CD and CR0.NW.
+> 
+> The commit 21823fbda552("KVM: x86: Invalidate all PGDs for the current
+> PCID on MOV CR3 w/ flush") skips kvm_mmu_free_roots() after
+> load_pdptrs() when rewriting the CR3 with the same value.
+> 
+> The commit a91a7c709600("KVM: X86: Don't reset mmu context when
+> toggling X86_CR4_PGE") skips kvm_mmu_reset_context() after
+> load_pdptrs() when changing CR4.PGE.
+> 
+> Normally, the guest doesn't change the PDPTEs before doing only the
+> above operation without touching other bits that can force pae_root to
+> be reconstructed.  Guests like linux would keep the PDPTEs unchaged
+> for every instance of pagetable.
+> 
+> Fixes: d81135a57aa6("KVM: x86: do not reset mmu if CR0.CD and CR0.NW are changed")
+> Fixes: 21823fbda552("KVM: x86: Invalidate all PGDs for the current PCID on MOV CR3 w/ flush")
+> Fixes: a91a7c709600("KVM: X86: Don't reset mmu context when toggling X86_CR4_PGE")
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> ---
+>   arch/x86/kvm/x86.c | 10 ++++++++--
+>   1 file changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 0176eaa86a35..cfba337e46ab 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -832,8 +832,14 @@ int load_pdptrs(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu, unsigned long cr3)
+>   	if (memcmp(mmu->pdptrs, pdpte, sizeof(mmu->pdptrs))) {
+>   		memcpy(mmu->pdptrs, pdpte, sizeof(mmu->pdptrs));
+>   		kvm_register_mark_dirty(vcpu, VCPU_EXREG_PDPTR);
+> -		/* Ensure the dirty PDPTEs to be loaded. */
+> -		kvm_make_request(KVM_REQ_LOAD_MMU_PGD, vcpu);
+> +		/*
+> +		 * Ensure the dirty PDPTEs to be loaded for VMX with EPT
+> +		 * enabled or pae_root to be reconstructed for shadow paging.
+> +		 */
+> +		if (tdp_enabled)
+> +			kvm_make_request(KVM_REQ_LOAD_MMU_PGD, vcpu);
+> +		else
+> +			kvm_mmu_free_roots(vcpu, vcpu->arch.mmu, KVM_MMU_ROOT_CURRENT);
+>   	}
+>   	vcpu->arch.pdptrs_from_userspace = false;
+>   
+> 
