@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1629945A6EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 16:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BA345A6EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 16:56:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235049AbhKWP7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 10:59:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55034 "EHLO
+        id S236345AbhKWP7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 10:59:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230026AbhKWP7q (ORCPT
+        with ESMTP id S230026AbhKWP7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 10:59:46 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A1AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 07:56:38 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id r8so39707205wra.7
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 07:56:38 -0800 (PST)
+        Tue, 23 Nov 2021 10:59:48 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC2BAC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 07:56:39 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id a18so3211731wrn.6
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 07:56:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2h9+eOusicYcP8DCFAdl+7wpFRmfX7bffRGLqx4D/2Q=;
-        b=FxlITfJ6MxJai1qOMwtzZY1Mwr0qrN2jCa8ZGdbpEEgJ98AYpdKbApJl6Go9hfgqcE
-         8YCA6vjP0mfMhtcMfQl95tUkxhKMNEAzTPFDzr6K/zvKHiSzPS+D5pOa1UKhqXtYKewN
-         H+a/GM55YSlJ1L+PaDc33vw9yxogKe8+INGI9DqIDELEyBxd+XAQ4w+y9kl+cF2InX6Q
-         lOuKRqFJPA6ONElBqRiD7xFGouZ1+uwKQqRnzqzbBHMw/G8C2E4Jt8bEZohWa+OMEIUH
-         hx5qNERj9+3fm8uMfMC+d5Hmy0CLcNq9QluVI+wx3ev7HDrK26FawZQGUjA6UPhxE99+
-         LsKg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=rh/v7U68tKyXyQ6b3jj07z0WH7Y+IG2IvCQMWCW7whk=;
+        b=OWJhcdUegx2avyXwMP3MIkRdjcVNtiP8PgBrguw2/NCr+VtjzKfv7g8GAav9ZgRhE6
+         hKKpKPhMfuaY4lk61j/OGm5E5n6zlvFjdoGnSjr1CC14jxukFm3U71ud9uVSM9cdYljo
+         5mtxVVa0KxYQp4NMVLG9dq6AeM8FaNUVc/bOiPa2IXSsGLXyE7dtXdK13gUl75Y+Ojqf
+         Yv21GwUjp36Ed7ZzaQySv2nBH1vBvKFJeW5+87GB4eiAneJTk4t3H9EayQ0d/ymqtC3B
+         wramIJtFvEBI92p2bdZP+xXzJwh0qLSgjuWs4oJJKOu/LSGFkpyzl1eKygpkuyVY2bbw
+         2kkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2h9+eOusicYcP8DCFAdl+7wpFRmfX7bffRGLqx4D/2Q=;
-        b=tpSW4h2YbWPX9zx0/GDQ9zcHBANtDaCkqw8zqXXgcYD2rBcMAoFlGXN6v4UPobA0UU
-         zAFpMChrCg6iIKX9HbE0WNiwL79aGfqYZBxz5H77o6ZNO366eRIzzUuOFQz07Y3IYaEJ
-         jlGkXjYti0qW5Ut65o1lGevZ2ORX2rUkvSivQxA8P/et5Sq4Fp3W2KF702FSgYh3K8ct
-         INgs5zQkLC8t41anI5X/PuCRXAKoatEFuw1wiXLeNbK4Gohok1WMpAZUf1246X9HYO8h
-         ktUFPgw21hpE61TnzL3Wb0/q1rFa/cYRR8OgR5mTGj/sGfXMZKmdS0E3NTeYf6WOyVph
-         3wFw==
-X-Gm-Message-State: AOAM532NnnJOD35Mf/mxm+H+L6o3dA9Q9J9titVyf4GA91NehsjlvMaK
-        pwFvFzw1f6w9fnpsg0y7UABEeQ==
-X-Google-Smtp-Source: ABdhPJxE/ueRhpKmoEAe0x7ByieCf1bstJi80kJ8JOsohjcAgrt5vQZPfOlTM4IpVq/jmmdrlS7A9g==
-X-Received: by 2002:a05:6000:15c6:: with SMTP id y6mr8371349wry.422.1637682997211;
-        Tue, 23 Nov 2021 07:56:37 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=rh/v7U68tKyXyQ6b3jj07z0WH7Y+IG2IvCQMWCW7whk=;
+        b=wqRij4i5niZDjLwlG1ideYQYuTh3XCc9ALa2IR+7utvuwwUr608WZRj6S/c8qxShJz
+         cprjoEo1wnaZguvuL6wO01cqEV7h9zLZc3qc7rkUCgAktnidEMXYWKD0dOrVGk2jIpgh
+         PFycJMLlUPQ9VQjK5Zj0UipNtlna5+FwMlcey4lBKka+3yDmphW4xwL5igr/QwC+wwHU
+         i1HYp/y/NTgS+WnVnLnrkju+77eFbmveJhYSRCkFk8rtaPsbmJyVA9+C2HZ+RprK1GFv
+         Gc6poDEP5muNqVZBSl0DwYd9mbmcpLNo7TWXAqZFpGIKXF+Hw9WkUrV8JerzxylA/AGd
+         a7Gw==
+X-Gm-Message-State: AOAM533W/TaMi0cIsKm/CS+1JYdPFvtziDRQNhWEQJzHMHJQBiPtC0ud
+        MOEndEUnV5U5t0DlAW3XXkdUUw==
+X-Google-Smtp-Source: ABdhPJyt669Qyl5fKNeC+DkjJd6fHbpPgxmbo2SgviMWvuorCu2JK0a7+FItJ+LvEAVdNOREgKXjZQ==
+X-Received: by 2002:adf:f990:: with SMTP id f16mr8473053wrr.128.1637682998253;
+        Tue, 23 Nov 2021 07:56:38 -0800 (PST)
 Received: from localhost.localdomain (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
-        by smtp.gmail.com with ESMTPSA id r15sm1532572wmh.13.2021.11.23.07.56.36
+        by smtp.gmail.com with ESMTPSA id r15sm1532572wmh.13.2021.11.23.07.56.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 07:56:36 -0800 (PST)
+        Tue, 23 Nov 2021 07:56:37 -0800 (PST)
 From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
 To:     joro@8bytes.org, will@kernel.org, mst@redhat.com,
         jasowang@redhat.com
@@ -56,47 +56,64 @@ Cc:     virtualization@lists.linux-foundation.org,
         eric.auger@redhat.com, sebastien.boeuf@intel.com,
         kevin.tian@intel.com, pasic@linux.ibm.com,
         Jean-Philippe Brucker <jean-philippe@linaro.org>
-Subject: [PATCH v2 0/5] iommu/virtio: Add identity domains
-Date:   Tue, 23 Nov 2021 15:52:57 +0000
-Message-Id: <20211123155301.1047943-1-jean-philippe@linaro.org>
+Subject: [PATCH v2 1/5] iommu/virtio: Add definitions for VIRTIO_IOMMU_F_BYPASS_CONFIG
+Date:   Tue, 23 Nov 2021 15:52:58 +0000
+Message-Id: <20211123155301.1047943-2-jean-philippe@linaro.org>
 X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211123155301.1047943-1-jean-philippe@linaro.org>
+References: <20211123155301.1047943-1-jean-philippe@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support identity domains, allowing to only enable IOMMU protection for a
-subset of endpoints (those assigned to userspace, for example). Users
-may enable identity domains at compile time
-(CONFIG_IOMMU_DEFAULT_PASSTHROUGH), boot time (iommu.passthrough=1) or
-runtime (/sys/kernel/iommu_groups/*/type = identity).
+Add definitions for the VIRTIO_IOMMU_F_BYPASS_CONFIG, which supersedes
+VIRTIO_IOMMU_F_BYPASS.
 
-Since v1 [1] I rebased onto v5.16-rc and added Kevin's review tag.
-The specification update for the new feature has now been accepted [2].
+Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+---
+ include/uapi/linux/virtio_iommu.h | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-Patches 1-2 support identity domains using the optional
-VIRTIO_IOMMU_F_BYPASS_CONFIG feature, and patches 3-5 add a fallback to
-identity mappings, when the feature is not supported.
-
-QEMU patches are on my virtio-iommu/bypass branch [3], and depend on the
-UAPI update.
-
-[1] https://lore.kernel.org/linux-iommu/20211013121052.518113-1-jean-philippe@linaro.org/
-[2] https://github.com/oasis-tcs/virtio-spec/issues/119
-[3] https://jpbrucker.net/git/qemu/log/?h=virtio-iommu/bypass
-
-Jean-Philippe Brucker (5):
-  iommu/virtio: Add definitions for VIRTIO_IOMMU_F_BYPASS_CONFIG
-  iommu/virtio: Support bypass domains
-  iommu/virtio: Sort reserved regions
-  iommu/virtio: Pass end address to viommu_add_mapping()
-  iommu/virtio: Support identity-mapped domains
-
- include/uapi/linux/virtio_iommu.h |   8 ++-
- drivers/iommu/virtio-iommu.c      | 113 +++++++++++++++++++++++++-----
- 2 files changed, 101 insertions(+), 20 deletions(-)
-
+diff --git a/include/uapi/linux/virtio_iommu.h b/include/uapi/linux/virtio_iommu.h
+index 237e36a280cb..cafd8cf7febf 100644
+--- a/include/uapi/linux/virtio_iommu.h
++++ b/include/uapi/linux/virtio_iommu.h
+@@ -16,6 +16,7 @@
+ #define VIRTIO_IOMMU_F_BYPASS			3
+ #define VIRTIO_IOMMU_F_PROBE			4
+ #define VIRTIO_IOMMU_F_MMIO			5
++#define VIRTIO_IOMMU_F_BYPASS_CONFIG		6
+ 
+ struct virtio_iommu_range_64 {
+ 	__le64					start;
+@@ -36,6 +37,8 @@ struct virtio_iommu_config {
+ 	struct virtio_iommu_range_32		domain_range;
+ 	/* Probe buffer size */
+ 	__le32					probe_size;
++	__u8					bypass;
++	__u8					reserved[7];
+ };
+ 
+ /* Request types */
+@@ -66,11 +69,14 @@ struct virtio_iommu_req_tail {
+ 	__u8					reserved[3];
+ };
+ 
++#define VIRTIO_IOMMU_ATTACH_F_BYPASS		(1 << 0)
++
+ struct virtio_iommu_req_attach {
+ 	struct virtio_iommu_req_head		head;
+ 	__le32					domain;
+ 	__le32					endpoint;
+-	__u8					reserved[8];
++	__le32					flags;
++	__u8					reserved[4];
+ 	struct virtio_iommu_req_tail		tail;
+ };
+ 
 -- 
 2.33.1
 
