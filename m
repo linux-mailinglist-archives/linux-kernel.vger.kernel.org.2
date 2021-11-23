@@ -2,85 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E8A45A0B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 11:55:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46BD045A0C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 11:57:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235547AbhKWK6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 05:58:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51442 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235715AbhKWK6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 05:58:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 951CC60C4A;
-        Tue, 23 Nov 2021 10:55:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637664933;
-        bh=epXNXCSHR16BQf4WBgeJBD8d2zKMDdY0hplRa0Rzgqw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IfWtv8dh/AxAXKTcffPx69DbYl9+zXLza17EE6Wchy8871C83Wy2d+wg0RHVTHoXk
-         FNuWX4G/1lNs3LfdCvlB/KVp0i9bp+Bm1kEtkwTHVHqo7vVD0Py/TuUc7GSQcworIL
-         5r7/YYYldPJJUbHKVNMWswlpJkTEuEF2CB/aEBcI3kCFa4EhbY0miU5zJHMmRloG8V
-         e5JAqZJRp12rPv1UZuFdfKwYh8/FzBYlzXlDOWHROhE07ZB56YxSXWLjBevO+tb9PQ
-         yjSwRIstnp/bi5x05rBDTulGi6r6iiE138Tp6spLGzIPB9Kdhbk6jXYje4bKeJjbj8
-         mEDEaq0mabIbg==
-Date:   Tue, 23 Nov 2021 11:55:30 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Evan Green <evgreen@chromium.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Korsgaard <peter.korsgaard@barco.com>,
-        Peter Rosin <peda@axentia.se>
-Subject: Re: [PATCH v1 3/3] i2c: mux: gpio: Use array_size() helper
-Message-ID: <YZzIoneNgoADf9Ok@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Evan Green <evgreen@chromium.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Korsgaard <peter.korsgaard@barco.com>,
-        Peter Rosin <peda@axentia.se>
-References: <20211115154201.46579-1-andriy.shevchenko@linux.intel.com>
- <20211115154201.46579-3-andriy.shevchenko@linux.intel.com>
+        id S235703AbhKWLAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 06:00:20 -0500
+Received: from mail-lj1-f172.google.com ([209.85.208.172]:45900 "EHLO
+        mail-lj1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235398AbhKWLAT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 06:00:19 -0500
+Received: by mail-lj1-f172.google.com with SMTP id b16so5037270ljf.12;
+        Tue, 23 Nov 2021 02:57:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=wDBfIxPCunChiakkAlZ8A5wU6FVeySkRCkCo/ttzO8w=;
+        b=xIXSOlUbIUm/pzorcPH46y0WuQzRdNJDpAfvx1ex0EUC/54EW4zSI3/z9NuOhQ4hYn
+         nIx94OXPUHKoSTXBso69BiFMUJfKBrRVf8nrWYVE0Ck0zrsrCpFuXsU+BpwzNlP55Gy0
+         aPandCmKSbSazh1P7jvheXNMS4XWPtzpgWyTrY+dc85ovc6qHgNbrpwC3hSq5PC+wwKi
+         bhb60wpUUG7Yr9DNuUiCg220K6MgDM1aEf5+kh9KqPhHBSUZCnzYJ22YdPchApylJgxh
+         IsvS5mCZxa3sJ1Se4XylEAJB0AJMyMqLMSnQaJd561mqN5WCemetmLFsUEnGFo3Q8HBG
+         rVpA==
+X-Gm-Message-State: AOAM531/UZS9KFQR46M1EjoBelNivkUKjLvykQhtXUW9jlmdg4YPh4ai
+        MKQ6ekmrRv6sPUVZ615GeYQ=
+X-Google-Smtp-Source: ABdhPJxmojs50ANN3mnFQ+HdGDYf1ne60Toba3fOenQWvDNIrsSVuH9Stw+lYDkqqJAAhgDjbFMIbg==
+X-Received: by 2002:a2e:96c2:: with SMTP id d2mr4094593ljj.46.1637665030487;
+        Tue, 23 Nov 2021 02:57:10 -0800 (PST)
+Received: from fedora (dc73szyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16ee:fa00::4])
+        by smtp.gmail.com with ESMTPSA id n7sm492543lfu.116.2021.11.23.02.57.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 02:57:09 -0800 (PST)
+Date:   Tue, 23 Nov 2021 12:57:02 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mfd: bd957x: Fix Kconfig dependency
+Message-ID: <YZzI/gNDRdvdK0nv@fedora>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5BLKk/XWK7YWwAEr"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="50bHO1pf7QlL+9ro"
 Content-Disposition: inline
-In-Reply-To: <20211115154201.46579-3-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---5BLKk/XWK7YWwAEr
+--50bHO1pf7QlL+9ro
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 15, 2021 at 05:42:01PM +0200, Andy Shevchenko wrote:
-> Use array_size() helper to aid in 2-factor allocation instances.
->=20
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+The bd957x driver uses regmap-IRQ but does not SELECT ot depend on it.
+This can cause build failure.
 
-Applied to for-next, thanks!
+SELECT the regmap-IRQ for BD957X from Kconfig.
+
+Fixes: 0e9692607f94 ("mfd: bd9576: Add IRQ support")
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+---
+ drivers/mfd/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index 3fb480818599..47bacded4a51 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -1983,6 +1983,7 @@ config MFD_ROHM_BD957XMUF
+ 	depends on I2C=3Dy
+ 	depends on OF
+ 	select REGMAP_I2C
++	select REGMAP_IRQ
+ 	select MFD_CORE
+ 	help
+ 	  Select this option to get support for the ROHM BD9576MUF and
+--=20
+2.31.1
 
 
---5BLKk/XWK7YWwAEr
+--=20
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =3D]=20
+
+--50bHO1pf7QlL+9ro
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmGcyKIACgkQFA3kzBSg
-KbYhYQ//U84V4+ux4DePprp6CnbTIDFVeSTniYdRijWArK4O91uwE2BtZiC08aSN
-sburnTB7TyAzxuk8Be7yJRFcM9LNf+OHOaTD/p3RF1XkxDLZZxbVXS/D9hYXMgzp
-E6R7S2oUZsTbc8tz1PdRDTrFM+91N3MBw8QB1/wMvzrBpQHARq8iTGwHIy46O/X1
-GJ82CufA4F04ODDjgM/KXE8GoD8ffHMu43+i4g3Rm4XJzz1/kdT2g8ev+JXV3mpm
-eu8XeWvRn2INhQSV+jat2yLgCfCHozToSk8djfv3YUd136o6ViXXUJbWmIc+/ekW
-3VhNWds2QWtlihGA3y0lHpgoSrrmPP54L0Sycx4AbKLppsKNwUOoof3y4+Nc/rCo
-OKD+RqxQoBkny/ca5akdJB5vvcuYJiF4UiaqjlOnPJOplQXLinhfCWHI1NKshMT1
-5Zoq41AChNwPJXZi/XsSBvl5NT6RYldfyJYI9hj/dQbCbCNu4/6XkO5Oq+0xKOJR
-QFykjANIGxFteYCL7opTNZUs+JDVJl8wo9K5OHdP5+klOgQKeh1kyk4SqSB4nyU+
-JX/EDmpuOJxdIVS5eO4UVpQV2ss1GTYBxeDECOTL7OwASBr+2aIt5r4PzRFps2Ca
-wid3jEub/In3C1hWuNLOZKUsr/hbUlXk9vAUe8R7/d+EARn7HBs=
-=8dMr
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmGcyPEACgkQeFA3/03a
+ocX1lAf/TL1fhu37dph2+ahSDBES6DkRbUIVSrIWf8MXZSindAGPeOWijTY/QXVi
+eKxbunpKrh3tuTmuBFybnaK9GzNMuNXg0zgB3TxJhNvA4sP3ymkXSi1SK6W27nxD
+H4IwYtwmfxGNY7FBEqeUE1oKueGpdLzBL8ZoRk8pZHS4mGdhbtGW/qb3Z2aXDcLB
+4OKx9ShaBKP2eCJx3QewlgKqkgH6qg2HvPNSSEtCkx0FDzRLhap8DzCmhtTkMbmm
+sdrSQHZW02srCgP6yVnf55cB+t5Fa58dKOz2Uq1lCT2y6J5ceNW4tlxbBIkLLHBV
+eqKB8BKfeWpsS3I5X9C+nr0EeygFCQ==
+=Qj6a
 -----END PGP SIGNATURE-----
 
---5BLKk/XWK7YWwAEr--
+--50bHO1pf7QlL+9ro--
