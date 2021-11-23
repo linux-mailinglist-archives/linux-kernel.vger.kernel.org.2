@@ -2,119 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A023C45A98A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:01:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1630D45A993
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:03:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238826AbhKWREr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 12:04:47 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:39342 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236804AbhKWREq (ORCPT
+        id S238012AbhKWRGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 12:06:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235249AbhKWRGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 12:04:46 -0500
-Date:   Tue, 23 Nov 2021 18:01:34 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637686896;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5jFMme/04un1MC+akjG19ft3gjyZIh6NNG67wIsGBMo=;
-        b=DWS4D674L2kcCxpVr2gQnGTSt089zQTRUODvs710sbsaPBVwWxmkwNuKrbOy4wEJK0FWXr
-        viw6gpMlbmrxzNVhr93KpKqgAvWb8TX1jnwVSG1DvDw+aesfYj/H+PY/PmHS04sttfAb7R
-        /pVrAtYs5SX5tJxLDjYlft9xh4yE5RzAdIJUJ7uNZg2l4A1Ku8YSHmTImfr4ZstCAWq551
-        3hHZH54+sfMEERCJRTLCS2u7YgK6YlUrxSU70yDE/iWEGvguh2OEJDXwxor5KulIF9X3/V
-        v/tHoKbLPgJyYH1eT+tnSRW2155Wdz1aLrRPJ8NIfylnH/5XZD0IXOP4mOVP5Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637686896;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5jFMme/04un1MC+akjG19ft3gjyZIh6NNG67wIsGBMo=;
-        b=5NQ/WwFssLtEYCocJv/AX/sNqGciWZW0BXPldn61pNctmEPKDPC4pRCTVR21gg89alilv0
-        ZVHPUVGpYAMa7bBg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Mike Galbraith <umgwanakikbuti@gmail.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, lkft-triage@lists.linaro.org
-Subject: [PATCH v2] locking: Fixup write_lock_nested() implementation.
-Message-ID: <20211123170134.y6xb7pmpgdn4m3bn@linutronix.de>
-References: <CA+G9fYtH2JR=L0cPoOEqsEGrZW_uOJgX6qLGMe_hbLpBtjVBwA@mail.gmail.com>
- <CAK8P3a1NhpNxWfj3gDnuf4bWK_fiE8cjcRyN7e8j95NmvOzbGw@mail.gmail.com>
- <CAMuHMdVuoUAM-6H2BXYtUH++4yXhRCGLAdbzx2GqAJk64FYO=A@mail.gmail.com>
- <20211123145006.bon3usz4ilhw6ymg@linutronix.de>
- <20211123160712.fssioyabln5erx2u@linutronix.de>
+        Tue, 23 Nov 2021 12:06:19 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F71C061574;
+        Tue, 23 Nov 2021 09:03:11 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id r11so94992197edd.9;
+        Tue, 23 Nov 2021 09:03:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U6jALudFHQvyvJHEV0b2RMHJqiK60umjau+aze/FElM=;
+        b=kc+WqHAK67dwN3O+m1BR1r0+WGPP0QsNKe797r0yVF2GUNB/FyMgHmdBVG7Et0rh09
+         bWC/LRCBItuOJ+XfsUMPSLze9d+R6QRBWOfi7wddIix77cv4IK9mxtlZJx+Z9pGWN1Fg
+         iEdPrtrgWr8VXHvZbhaXRHRmqDjaRCIi0ZJHMuG/GqMCb3QiY53ACxOOk9095cBqwHrV
+         jEo4ai6q/hFANDYvYW9l26gwgvcI8Ns5G6y6Fc1g8iQL5zchrTI3Z3uHhl3WidtTKneU
+         vsfKzgc0kPu4HN4bMgeLmk+6r0vsOv2BsscX56fbP7ecmYaZDE/kxyCEmCzSjJtJt6qi
+         c20A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U6jALudFHQvyvJHEV0b2RMHJqiK60umjau+aze/FElM=;
+        b=QpsqvlYlUsYGvMfwEJDRXGfa28eEvQOyj3aU3FEKd6lsNQMZshik2U/RXfmBcqFRhY
+         uFtvxqSy8WBROXlvvPcxvUes5562kpR3ZWJf6GBdlSPm4bP07y7Q+iaF9EDBq6QQQKXR
+         E9WVgOBvlcj1Ji9+1zuUzM629io2dXXNMqbpJ0pG0EhclY8HE96AoGYisP3czhIgbJ1P
+         U1l+XuBKPbQa9bEPbDiW5zT62UVwMOU2nAoa0dzshjWCrcjfFC6ZPB7+BPmjw8PNol1D
+         Z0AX+8QK1zp7Q1Fkwq7NHUtyT3/+Y3E5CO34ok9xg4KuOQK5rFikVDGlBbYWRJOd1vml
+         ilfQ==
+X-Gm-Message-State: AOAM533UNKktfo+vA2q6fx6jjJruPv4rjqBR7C59FfpdNDKCk2N0OVrt
+        vXsHzyfYAr23rikFaLAt5hgBEzDEAB2ejAzndv8=
+X-Google-Smtp-Source: ABdhPJwNKn59/g2sFNpa9NbXm5Wemahhna2OVadG1km53xcWONc0ZwEYVfZi+8VRJTbJ5xtRpAbdW+H8GAZ8ulW7RTk=
+X-Received: by 2002:a17:906:489b:: with SMTP id v27mr9336960ejq.567.1637686989831;
+ Tue, 23 Nov 2021 09:03:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20211123160712.fssioyabln5erx2u@linutronix.de>
+References: <20211123170034.41253-1-andriy.shevchenko@linux.intel.com> <20211123170034.41253-3-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20211123170034.41253-3-andriy.shevchenko@linux.intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 23 Nov 2021 19:02:32 +0200
+Message-ID: <CAHp75Vf6HhvYb_H71E17vuCsbN_feUVNv9NO2Ns32MKJKOmeVg@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] spi: Fix multi-line comment style
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew, please merge it into:
-  locking/rwlocks: introduce write_lock_nested
-  locking-rwlocks-introduce-write_lock_nested.patch
+On Tue, Nov 23, 2021 at 7:01 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+>   /*
+>    * Fix multi-line comment style as in this short example. Pay attention
+>    * to the capitalization, period and starting line of the text.
+>    */
+>
+> While at it, split the (supposedly short) description of couple of functions
+> to summary (short description) and (long) description.
 
-And if someone could test it, I get sh4 defconfig built with and without
-lockdep. x86 seems still to build, too. So it can't be that bad.
+This one is already applied, seconds before I have sent it.
 
-v1=E2=80=A6v2: I noticed a typo in _raw_write_lock_nested() and decided tha=
-t it
-is no needed so now it is removed for !CONFIG_INLINE_WRITE_LOCK.
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- include/linux/rwlock_api_smp.h | 1 -
- kernel/locking/spinlock.c      | 4 ++++
- 2 files changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/rwlock_api_smp.h b/include/linux/rwlock_api_smp.h
-index f0c535ec4e654..dceb0a59b6927 100644
---- a/include/linux/rwlock_api_smp.h
-+++ b/include/linux/rwlock_api_smp.h
-@@ -47,7 +47,6 @@ _raw_write_unlock_irqrestore(rwlock_t *lock, unsigned lon=
-g flags)
-=20
- #ifdef CONFIG_INLINE_WRITE_LOCK
- #define _raw_write_lock(lock) __raw_write_lock(lock)
--#define _raw_write_lock_nested(lock, subclass) __raw_write_lock_nested(loc=
-k, subclass)
- #endif
-=20
- #ifdef CONFIG_INLINE_READ_LOCK_BH
-diff --git a/kernel/locking/spinlock.c b/kernel/locking/spinlock.c
-index 996811efa6d6e..7f49baaa49793 100644
---- a/kernel/locking/spinlock.c
-+++ b/kernel/locking/spinlock.c
-@@ -301,6 +301,10 @@ void __lockfunc _raw_write_lock(rwlock_t *lock)
- }
- EXPORT_SYMBOL(_raw_write_lock);
-=20
-+#ifndef CONFIG_DEBUG_LOCK_ALLOC
-+#define __raw_write_lock_nested(lock, subclass)	__raw_write_lock(((void)(s=
-ubclass), (lock)))
-+#endif
-+
- void __lockfunc _raw_write_lock_nested(rwlock_t *lock, int subclass)
- {
- 	__raw_write_lock_nested(lock, subclass);
---=20
-2.34.0
-
+-- 
+With Best Regards,
+Andy Shevchenko
