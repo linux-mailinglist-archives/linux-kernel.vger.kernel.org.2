@@ -2,60 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F67845AA0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:25:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F8845AA0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:25:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239226AbhKWR23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 12:28:29 -0500
-Received: from smtprelay0089.hostedemail.com ([216.40.44.89]:59004 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234416AbhKWR22 (ORCPT
+        id S239351AbhKWR2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 12:28:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33589 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234416AbhKWR2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 12:28:28 -0500
-Received: from omf09.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 0F0D618225E09;
-        Tue, 23 Nov 2021 17:25:20 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id 6D904E000354;
-        Tue, 23 Nov 2021 17:25:17 +0000 (UTC)
-Message-ID: <b73d287a696c10279cd0c931840ce95b03876d58.camel@perches.com>
-Subject: Re: arch/mips/mm/tlbex.c:2243:3: warning: unannotated fall-through
- between switch labels
-From:   Joe Perches <joe@perches.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>
-Date:   Tue, 23 Nov 2021 09:25:17 -0800
-In-Reply-To: <20211123165057.GA7382@embeddedor>
-References: <202111230719.OZDUHU4z-lkp@intel.com>
-         <20211123005528.GA550759@embeddedor>
-         <ea07a2f1e20503965c7c2eba7c0a7a4538457265.camel@perches.com>
-         <20211123165057.GA7382@embeddedor>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
+        Tue, 23 Nov 2021 12:28:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637688340;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ygX9stNObBwTwa4yUUs6NE8vyjejsSHuXhBtzRR0RVw=;
+        b=IFoM3vTOdVYGSVH5bwQWT4b+JFQhBfZlAbEgUtBK2R4DTz9A8ASzIoPCf8EDoCtSvkoScw
+        mvAqelllmx3dMWGiwCOY+sdrhpouFUn5BPA1Hu/ORUNe1I8Qi3cZuNRGy4Mn/VIDEp3vcH
+        mhRuNXU4Fj7mHzVdnZKmjJ3B3ZngEPk=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-494-OZHL6TVyM2mo0EgTzaP-YQ-1; Tue, 23 Nov 2021 12:25:39 -0500
+X-MC-Unique: OZHL6TVyM2mo0EgTzaP-YQ-1
+Received: by mail-wm1-f72.google.com with SMTP id l6-20020a05600c4f0600b0033321934a39so1873403wmq.9
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:25:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ygX9stNObBwTwa4yUUs6NE8vyjejsSHuXhBtzRR0RVw=;
+        b=gQYDZZ28SIxHks8h+jqLH4bDI8k1fNptDCkk9ydDnW/HrXl3AvMqqV0JR6jnMdnf1U
+         XmFrhVoN/dBqg3To/g7c/tWTsc8bklG8S76bMG944KPL8ZH+73SnYSOiEfy4SfayUl6d
+         sRS30pZq0u/niH2aWNoj5EfH0amm4Mi9GPQYXIweZR1MWBgYMQaMzJtG+XOO9IUv5FkY
+         ecU4WsyMQYUD0CopvGNxQH3eanphdpG6wZMk6eYfV3MyC+RO0NWTZu4d69q8QPZfCOFs
+         dBjPW/iFytLnylezxLdqxH5exnLasISM1rLjRm+QQv0Zh3V649IhlyFM6gBV1sEtGyjd
+         iSjw==
+X-Gm-Message-State: AOAM531vFm9I/rKKnzzJOxZt32HUGItcE4XaLuQIvTPrX0EHpSd7wU4Z
+        nPhmLZgAoAkGhnEcUveNUMhJTvte0V+y3c5Ro3gZCNXd78vXsid2SqV+vp5KYtamslQCCdvoZGf
+        sgtz/eQ7ibb7ZuGNmqOlHAiJU
+X-Received: by 2002:adf:f708:: with SMTP id r8mr9172767wrp.198.1637688337088;
+        Tue, 23 Nov 2021 09:25:37 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJysPEMbhEoCEjBU+0lOVwkGDJAd1JCc2Oie62LzmXyvWxSm0wdinZHG7f/zAbM739fUr3LvyA==
+X-Received: by 2002:adf:f708:: with SMTP id r8mr9172716wrp.198.1637688336836;
+        Tue, 23 Nov 2021 09:25:36 -0800 (PST)
+Received: from localhost.localdomain ([2a00:23c6:4a17:4f01:3a16:ae0:112c:ba92])
+        by smtp.gmail.com with ESMTPSA id h3sm11524486wrv.69.2021.11.23.09.25.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 09:25:36 -0800 (PST)
+Date:   Tue, 23 Nov 2021 17:25:34 +0000
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 0/6] rcu/nocb: Last prep work before cpuset interface v2
+Message-ID: <20211123172534.iaaagfa4eygfsjew@localhost.localdomain>
+References: <20211123003708.468409-1-frederic@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: b7d1gcsizzptxunoomxpxxup7dmzqm44
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: 6D904E000354
-X-Spam-Status: No, score=-2.18
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+jMFOfgZkymPvJY5ZOxOiWXjv9rAWCmrQ=
-X-HE-Tag: 1637688317-268891
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211123003708.468409-1-frederic@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-11-23 at 10:50 -0600, Gustavo A. R. Silva wrote:
-> On Tue, Nov 23, 2021 at 12:52:30AM -0800, Joe Perches wrote:
-> > 
-> > Perhaps this would be better:
+Hi,
+
+On 23/11/21 01:37, Frederic Weisbecker wrote:
+> Changes since v1 after Paul's reviews:
 > 
-> Feel free to send a proper patch.
+> * Clarify why the DEL vs ADD possible race on rdp group list is ok [1/6]
+> * Update kernel parameters documentation [5/6]
+> * Only create rcuo[sp] kthreads for CPUs that have ever come online [4/6]
+> * Consider nohz_full= on changelogs
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+> 	rcu/nocb
+> 
+> HEAD: da51363e5ddf54d6ce9c2cfbab946f8914519290
 
-I commented on your proposed patch.
+I run this on RT. It survived rcutorture on different kernel cmdline
+configurations and creation of rcuox/N kthreads seemed sane. :)
 
-And I'd prefer you actually look at and improve the code instead
-of merely silencing warnings.
+FWIW, feel free to add
+
+Tested-by: Juri Lelli <juri.lelli@redhat.com>
+
+Thanks for working on this!
+
+Best,
+Juri
 
