@@ -2,209 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D46C945AD1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:12:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 492B845AD20
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236431AbhKWUPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 15:15:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhKWUPg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 15:15:36 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D537C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 12:12:27 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id w22so234807ioa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 12:12:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y/zr9KXdL5IDn5jRo1Y7NkNHyOLRr6gdxgMls6qts44=;
-        b=l4DE0aM7QYVKgOXcgSYTJVMJwyB2akVm2kVe6Pun2KNJJnzE/9Uti2DAp7SAYV/Vmg
-         CMe0Q2jR0d5Lf5cmBxgMn6jYc5AuN8wfawVLniR3gc7cy7WChzlVu1y+fuBJvWakI1tK
-         tv7SX5tUvc55gL7lMr/P2j0ei4tnk+h0WzfE7tKhFTCHX6fq0rFQgOnnDiYfJyGiUAgR
-         A89/QZIdUtNk71l1P2WTrI11qTRAAZe/X07is8I2mZVUCISZ/2BeLpYK6XznK07SV2gh
-         TBpGySow0FO+EDgtBX2Ir1u3BQG1eD/a625p5CjBR7mnN2xPTpKA/pboS/a+zCbsYMl8
-         VPLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y/zr9KXdL5IDn5jRo1Y7NkNHyOLRr6gdxgMls6qts44=;
-        b=W3hZ65mBdHwRODNQMfUcFIVgHVR4/DhKvmUjOZ/cP4NAQ6vUGIKpJG8Z7SZ8LtsnYa
-         SoNOlxgTPJ5qcO+ToO4bDnlQzjVUKn7UIw7z2lhk3JI0Yh/RylewR1DlB5JM+CQMq9mI
-         CC/+nZcDZhMx7BnVdwgWRg4uYGoKkz4KPfWNHJkZyAGeNv40NIP4E9+WHdUoqxl3Scp0
-         DA2q+85K37/faxp6Pl3ubGA3GUfcBYEkUbBVVWV65WG0tQ1DhAJAN78cQ5b8RD9nJ1rr
-         OmqS6QBFhFlfS7cS/vthxB8+Wdx2FEAEwx6F7gZXbUYKHcILxhZ09ntLG5z3YWH94uxr
-         bNqg==
-X-Gm-Message-State: AOAM530zXuVlIj+3dI9Hu1xScXM81+ni8fmGCzvtMP1MlLzrcskRQCVD
-        h+epxIGQzM4SOOP/tDPO6lR9SubTd+TAQFkgVAK/Ig==
-X-Google-Smtp-Source: ABdhPJxMksFC76skny4IutTmROUuh0bgiA13aqaydsXsEKQtkKAHQJrLMs8xdTMkRw1MXJ1o/v5rQDWEzvyU7g1e0PY=
-X-Received: by 2002:a5d:9d92:: with SMTP id ay18mr9050917iob.130.1637698346795;
- Tue, 23 Nov 2021 12:12:26 -0800 (PST)
+        id S238010AbhKWUPv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 23 Nov 2021 15:15:51 -0500
+Received: from aposti.net ([89.234.176.197]:38310 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236464AbhKWUPs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 15:15:48 -0500
+Date:   Tue, 23 Nov 2021 20:12:19 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v8 0/8] MIPS: JZ4780 and CI20 HDMI
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org
+Message-Id: <J4K13R.CGVJ0IY95LC51@crapouillou.net>
+In-Reply-To: <cover.1637691240.git.hns@goldelico.com>
+References: <cover.1637691240.git.hns@goldelico.com>
 MIME-Version: 1.0
-References: <20211120045046.3940942-1-seanjc@google.com> <20211120045046.3940942-29-seanjc@google.com>
-In-Reply-To: <20211120045046.3940942-29-seanjc@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Tue, 23 Nov 2021 12:12:15 -0800
-Message-ID: <CANgfPd-U3B+WG6LbVu26ncm=u=TVj60-6mNPEnFkYkSBmSm1Gw@mail.gmail.com>
-Subject: Re: [PATCH 28/28] KVM: x86/mmu: Defer TLB flush to caller when
- freeing TDP MMU shadow pages
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Hou Wenlong <houwenlong93@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 8:51 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> Defer TLB flushes to the caller when freeing TDP MMU shadow pages instead
-> of immediately flushing.  Because the shadow pages are freed in an RCU
-> callback, so long as at least one CPU holds RCU, all CPUs are protected.
-> For vCPUs running in the guest, i.e. consuming TLB entries, KVM only
-> needs to ensure the caller services the pending TLB flush before dropping
-> its RCU protections.  I.e. use the caller's RCU as a proxy for all vCPUs
-> running in the guest.
->
-> Deferring the flushes allows batching flushes, e.g. when installing a
-> 1gb hugepage and zapping a pile of SPs, and when zapping an entire root,
-> allows skipping the flush entirely (becaues flushes are not needed in
-> that case).
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+Hi Nikolaus,
 
-Reviewed-by: Ben Gardon <bgardon@google.com>
+I think if you can fix the last few things I commented on, and I get an 
+ACK from Rob for the Device Tree related patches, then it will be ready 
+to merge.
 
-> ---
->  arch/x86/kvm/mmu/mmu.c      | 12 ++++++++++++
->  arch/x86/kvm/mmu/tdp_iter.h |  7 +++----
->  arch/x86/kvm/mmu/tdp_mmu.c  | 23 +++++++++++------------
->  3 files changed, 26 insertions(+), 16 deletions(-)
->
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index ef689b8bab12..7aab9737dffa 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -6237,6 +6237,12 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
->         rcu_idx = srcu_read_lock(&kvm->srcu);
->         write_lock(&kvm->mmu_lock);
->
-> +       /*
-> +        * Zapping TDP MMU shadow pages, including the remote TLB flush, must
-> +        * be done under RCU protection, the pages are freed via RCU callback.
-> +        */
-> +       rcu_read_lock();
-> +
->         ratio = READ_ONCE(nx_huge_pages_recovery_ratio);
->         to_zap = ratio ? DIV_ROUND_UP(nx_lpage_splits, ratio) : 0;
->         for ( ; to_zap; --to_zap) {
-> @@ -6261,12 +6267,18 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
->
->                 if (need_resched() || rwlock_needbreak(&kvm->mmu_lock)) {
->                         kvm_mmu_remote_flush_or_zap(kvm, &invalid_list, flush);
-> +                       rcu_read_unlock();
-> +
->                         cond_resched_rwlock_write(&kvm->mmu_lock);
->                         flush = false;
-> +
-> +                       rcu_read_lock();
->                 }
->         }
->         kvm_mmu_remote_flush_or_zap(kvm, &invalid_list, flush);
->
-> +       rcu_read_unlock();
-> +
->         write_unlock(&kvm->mmu_lock);
->         srcu_read_unlock(&kvm->srcu, rcu_idx);
->  }
-> diff --git a/arch/x86/kvm/mmu/tdp_iter.h b/arch/x86/kvm/mmu/tdp_iter.h
-> index 0693f1fdb81e..0299703fc844 100644
-> --- a/arch/x86/kvm/mmu/tdp_iter.h
-> +++ b/arch/x86/kvm/mmu/tdp_iter.h
-> @@ -9,10 +9,9 @@
->
->  /*
->   * TDP MMU SPTEs are RCU protected to allow paging structures (non-leaf SPTEs)
-> - * to be zapped while holding mmu_lock for read.  Holding RCU isn't required for
-> - * correctness if mmu_lock is held for write, but plumbing "struct kvm" down to
-> - * the lower* depths of the TDP MMU just to make lockdep happy is a nightmare,
-> - * so all* accesses to SPTEs are must be done under RCU protection.
-> + * to be zapped while holding mmu_lock for read, and to allow TLB flushes to be
-> + * batched without having to collect the list of zapped SPs.  Flows that can
-> + * remove SPs must service pending TLB flushes prior to dropping RCU protection.
->   */
->  static inline u64 kvm_tdp_mmu_read_spte(tdp_ptep_t sptep)
->  {
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 55c16680b927..62cb357b1dff 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -433,9 +433,6 @@ static void handle_removed_tdp_mmu_page(struct kvm *kvm, tdp_ptep_t pt,
->                                     shared);
->         }
->
-> -       kvm_flush_remote_tlbs_with_address(kvm, base_gfn,
-> -                                          KVM_PAGES_PER_HPAGE(level + 1));
-> -
->         call_rcu(&sp->rcu_head, tdp_mmu_free_sp_rcu_callback);
->  }
->
-> @@ -815,21 +812,14 @@ static void tdp_mmu_zap_root(struct kvm *kvm, struct kvm_mmu_page *root,
->
->  bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
->  {
-> -       u64 old_spte;
-> +       u64 old_spte = kvm_tdp_mmu_read_spte(sp->ptep);
->
-> -       rcu_read_lock();
-> -
-> -       old_spte = kvm_tdp_mmu_read_spte(sp->ptep);
-> -       if (WARN_ON_ONCE(!is_shadow_present_pte(old_spte))) {
-> -               rcu_read_unlock();
-> +       if (WARN_ON_ONCE(!is_shadow_present_pte(old_spte)))
->                 return false;
-> -       }
->
->         __tdp_mmu_set_spte(kvm, kvm_mmu_page_as_id(sp), sp->ptep, old_spte, 0,
->                            sp->gfn, sp->role.level + 1, true, true);
->
-> -       rcu_read_unlock();
-> -
->         return true;
->  }
->
-> @@ -871,6 +861,11 @@ static bool tdp_mmu_zap_leafs(struct kvm *kvm, struct kvm_mmu_page *root,
->         }
->
->         rcu_read_unlock();
-> +
-> +       /*
-> +        * Because this flows zaps _only_ leaf SPTEs, the caller doesn't need
-> +        * to provide RCU protection as no 'struct kvm_mmu_page' will be freed.
-> +        */
->         return flush;
->  }
->
-> @@ -1011,6 +1006,10 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu,
->                 ret = RET_PF_SPURIOUS;
->         else if (!tdp_mmu_set_spte_atomic(vcpu->kvm, iter, new_spte))
->                 return RET_PF_RETRY;
-> +       else if (is_shadow_present_pte(iter->old_spte) &&
-> +                !is_last_spte(iter->old_spte, iter->level))
-> +               kvm_flush_remote_tlbs_with_address(vcpu->kvm, sp->gfn,
-> +                                                  KVM_PAGES_PER_HPAGE(iter->level + 1));
->
->         /*
->          * If the page fault was caused by a write but the page is write
+Cheers,
+-Paul
+
+
+Le mar., nov. 23 2021 at 19:13:53 +0100, H. Nikolaus Schaller 
+<hns@goldelico.com> a écrit :
+> PATCH V8 2021-11-23 19:14:00:
+> - fix a bad editing result from patch 2/8 (found by 
+> paul@crapouillou.net)
+> 
+> PATCH V7 2021-11-23 18:46:23:
+> - changed gpio polarity of hdmi_power to 0 (suggested by 
+> paul@crapouillou.net)
+> - fixed LCD1 irq number (bug found by paul@crapouillou.net)
+> - removed "- 4" for calculating max_register (suggested by 
+> paul@crapouillou.net)
+> - use unevaluatedPropertes instead of additionalProperties (suggested 
+> by robh@kernel.org)
+> - moved and renamed ingenic,jz4780-hdmi.yaml (suggested by 
+> robh@kernel.org)
+> - adjusted assigned-clocks changes to upstream which added some for 
+> SSI (by hns@goldelico.com)
+> - rebased and tested with v5.16-rc2 + patch set drm/ingenic by 
+> paul@crapouillou.net (by hns@goldelico.com)
+> 
+> PATCH V6 2021-11-10 20:43:33:
+> - changed CONFIG_DRM_INGENIC_DW_HDMI to "m" (by hns@goldelico.com)
+> - made ingenic-dw-hdmi an independent platform driver which can be 
+> compiled as module
+>   and removed error patch fixes for IPU (suggested by 
+> paul@crapouillou.net)
+> - moved assigned-clocks from jz4780.dtsi to ci20.dts (suggested by 
+> paul@crapouillou.net)
+> - fixed reg property in jz4780.dtsi to cover all registers incl. 
+> gamma and vee (by hns@goldelico.com)
+> - added a base patch to calculate regmap size from DTS reg property 
+> (requested by paul@crapouillou.net)
+> - restored resetting all bits except one in LCDOSDC (requested by 
+> paul@crapouillou.net)
+> - clarified setting of cpos (suggested by paul@crapouillou.net)
+> - moved bindings definition for ddc-i2c-bus (suggested by 
+> paul@crapouillou.net)
+> - simplified mask definitions for JZ_LCD_DESSIZE (requested by 
+> paul@crapouillou.net)
+> - removed setting alpha premultiplication (suggested by 
+> paul@crapouillou.net)
+> - removed some comments (suggested by paul@crapouillou.net)
+> 
+> PATCH V5 2021-10-05 14:28:44:
+> - dropped mode_fixup and timings support in dw-hdmi as it is no 
+> longer needed in this V5 (by hns@goldelico.com)
+> - dropped "drm/ingenic: add some jz4780 specific features" 
+> (stimulated by paul@crapouillou.net)
+> - fixed typo in commit subject: "synopsis" -> "synopsys" (by 
+> hns@goldelico.com)
+> - swapped clocks in jz4780.dtsi to match synopsys,dw-hdmi.yaml (by 
+> hns@goldelico.com)
+> - improved, simplified, fixed, dtbschecked ingenic-jz4780-hdmi.yaml 
+> and made dependent of bridge/synopsys,dw-hdmi.yaml (based on 
+> suggestions by maxime@cerno.tech)
+> - fixed binding vs. driver&DTS use of hdmi-5v regulator (suggested by 
+> maxime@cerno.tech)
+> - dropped "drm/bridge: synopsis: Fix to properly handle HPD" - was a 
+> no longer needed workaround for a previous version
+>   (suggested by maxime@cerno.tech)
+> 
+> PATCH V4 2021-09-27 18:44:38:
+> - fix setting output_port = 1 (issue found by paul@crapouillou.net)
+> - ci20.dts: convert to use hdmi-connector (by hns@goldelico.com)
+> - add a hdmi-regulator to control +5V power (by hns@goldelico.com)
+> - added a fix to dw-hdmi to call drm_kms_helper_hotplug_event on 
+> plugin event detection (by hns@goldelico.com)
+> - always allocate extended descriptor but initialize only for jz4780 
+> (by hns@goldelico.com)
+> - updated to work on top of "[PATCH v3 0/6] drm/ingenic: Various 
+> improvements v3" (by paul@crapouillou.net)
+> - rebased to v5.13-rc3
+> 
+> PATCH V3 2021-08-08 07:10:50:
+> This series adds HDMI support for JZ4780 and CI20 board (and fixes 
+> one IPU related issue in registration error path)
+> - [patch 1/8] switched from mode_fixup to atomic_check (suggested by 
+> robert.foss@linaro.org)
+>   - the call to the dw-hdmi specialization is still called mode_fixup
+> - [patch 3/8] diverse fixes for ingenic-drm-drv (suggested by 
+> paul@crapouillou.net)
+>   - factor out some non-HDMI features of the jz4780 into a separate 
+> patch
+>   - multiple fixes around max height
+>   - do not change regmap config but a copy on stack
+>   - define some constants
+>   - factor out fixing of drm_init error path for IPU into separate 
+> patch
+>   - use FIELD_PREP()
+> - [patch 8/8] conversion to component framework dropped (suggested by 
+> Laurent.pinchart@ideasonboard.com and paul@crapouillou.net)
+> 
+> PATCH V2 2021-08-05 16:08:05:
+> - code and commit messages revisited for checkpatch warnings
+> - rebased on v5.14-rc4
+> - include (failed, hence RFC 8/8) attempt to convert to component 
+> framework
+>   (was suggested by Paul Cercueil <paul@crapouillou.net> a while ago)
+> 
+> This series adds HDMI support for JZ4780 and CI20 board
+> 
+> 
+> 
+> H. Nikolaus Schaller (3):
+>   drm/ingenic: prepare ingenic drm for later addition of JZ4780
+>   MIPS: defconfig: CI20: configure for DRM_DW_HDMI_JZ4780
+>   [RFC] MIPS: DTS: Ingenic: adjust register size to available 
+> registers
+> 
+> Paul Boddie (4):
+>   drm/ingenic: Add support for JZ4780 and HDMI output
+>   drm/ingenic: Add dw-hdmi driver for jz4780
+>   MIPS: DTS: jz4780: Account for Synopsys HDMI driver and LCD
+>     controllers
+>   MIPS: DTS: CI20: Add DT nodes for HDMI setup
+> 
+> Sam Ravnborg (1):
+>   dt-bindings: display: Add ingenic,jz4780-dw-hdmi DT Schema
+> 
+>  .../display/bridge/ingenic,jz4780-hdmi.yaml   |  76 +++++++++++
+>  .../display/bridge/synopsys,dw-hdmi.yaml      |   3 +
+>  arch/mips/boot/dts/ingenic/ci20.dts           |  83 ++++++++++-
+>  arch/mips/boot/dts/ingenic/jz4725b.dtsi       |   2 +-
+>  arch/mips/boot/dts/ingenic/jz4740.dtsi        |   2 +-
+>  arch/mips/boot/dts/ingenic/jz4770.dtsi        |   2 +-
+>  arch/mips/boot/dts/ingenic/jz4780.dtsi        |  40 ++++++
+>  arch/mips/configs/ci20_defconfig              |   6 +
+>  drivers/gpu/drm/ingenic/Kconfig               |   9 ++
+>  drivers/gpu/drm/ingenic/Makefile              |   1 +
+>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c     |  62 ++++++++-
+>  drivers/gpu/drm/ingenic/ingenic-drm.h         |  38 ++++++
+>  drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c     | 129 
+> ++++++++++++++++++
+>  13 files changed, 444 insertions(+), 9 deletions(-)
+>  create mode 100644 
+> Documentation/devicetree/bindings/display/bridge/ingenic,jz4780-hdmi.yaml
+>  create mode 100644 drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
+> 
 > --
-> 2.34.0.rc2.393.gf8c9666880-goog
->
+> 2.33.0
+> 
+
+
