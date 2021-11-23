@@ -2,62 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1927459EC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 10:01:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 526BC459EC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 10:01:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235112AbhKWJEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 04:04:34 -0500
-Received: from mga18.intel.com ([134.134.136.126]:53263 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236329AbhKWJEK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 04:04:10 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="221865653"
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="221865653"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 01:00:34 -0800
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="509333818"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 01:00:33 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mpRfB-009j2x-1U;
-        Tue, 23 Nov 2021 11:00:29 +0200
-Date:   Tue, 23 Nov 2021 11:00:28 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jay Dolan <jay.dolan@accesio.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH v2 3/3] serial: 8250_pericom: Use serial_dl_write()
- instead of open coded
-Message-ID: <YZytrLuhBxn8OGna@smile.fi.intel.com>
-References: <20211122133512.8947-1-andriy.shevchenko@linux.intel.com>
- <20211122133512.8947-4-andriy.shevchenko@linux.intel.com>
- <d7809017-f544-c60c-728b-4f9015fbad43@accesio.com>
+        id S235133AbhKWJEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 04:04:36 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:27282 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236384AbhKWJEN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 04:04:13 -0500
+Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HyyfW5hs6zcfV6;
+        Tue, 23 Nov 2021 16:56:03 +0800 (CST)
+Received: from [10.174.179.200] (10.174.179.200) by
+ dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.20; Tue, 23 Nov 2021 17:01:03 +0800
+Subject: Re: [PATCH net v2] net: vlan: fix a UAF in vlan_dev_real_dev()
+To:     Petr Machata <petrm@nvidia.com>
+CC:     Jakub Kicinski <kuba@kernel.org>, <davem@davemloft.net>,
+        <jgg@nvidia.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20211102021218.955277-1-william.xuanziyang@huawei.com>
+ <87k0h9bb9x.fsf@nvidia.com>
+ <20211115094940.138d86dc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <87a6i3t2zg.fsf@nvidia.com> <7f7cbbec-8c4e-a2dc-787b-570d1049a6b4@huawei.com>
+ <20211118061735.5357f739@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <c240e0e0-256c-698b-4a98-47490869faa3@huawei.com> <8735nstq62.fsf@nvidia.com>
+From:   "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
+Message-ID: <daae2fe3-997c-a390-afae-15ff33ba3d1c@huawei.com>
+Date:   Tue, 23 Nov 2021 17:01:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d7809017-f544-c60c-728b-4f9015fbad43@accesio.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <8735nstq62.fsf@nvidia.com>
+Content-Type: text/plain; charset="gbk"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.200]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeml757-chm.china.huawei.com (10.1.199.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 09:27:11PM -0800, Jay Dolan wrote:
-> On 11/22/21 5:35 AM, Andy Shevchenko wrote:
+> 
+> Ziyang Xuan (William) <william.xuanziyang@huawei.com> writes:
+> 
+>> I need some time to test my some ideas. And anyone has good ideas, please
+>> do not be stingy.
+> 
+> Jakub Kicinski <kuba@kernel.org> writes:
+> 
+>> I think we should move the dev_hold() to ndo_init(), otherwise it's
+>> hard to reason if destructor was invoked or not if
+>> register_netdevice() errors out.
+> 
+> That makes sense to me. We always put real_dev in the destructor, so we
+> should always hold it in the constructor...
 
-> I tested this change with a few baud rates in my current tree, and I saw the
-> correct speeds coming out on the scope.
+Inject error before dev_hold(real_dev) in register_vlan_dev(), and execute
+the following testcase:
 
-Thank you! Can you next time use Tested-by tag as explained in Submitting
-Patches [1] documentation?
+ip link add dev dummy1 type dummy
+ip link add name dummy1.100 link dummy1 type vlan id 100 // failed for error injection
+ip link del dev dummy1
 
-[1]: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes
+Make the problem repro. The problem is solved using the following fix
+according to the Jakub's suggestion:
 
--- 
-With Best Regards,
-Andy Shevchenko
+diff --git a/net/8021q/vlan.c b/net/8021q/vlan.c
+index a3a0a5e994f5..abaa5d96ded2 100644
+--- a/net/8021q/vlan.c
++++ b/net/8021q/vlan.c
+@@ -184,9 +184,6 @@ int register_vlan_dev(struct net_device *dev, struct netlink_ext_ack *extack)
+        if (err)
+                goto out_unregister_netdev;
+
+-       /* Account for reference in struct vlan_dev_priv */
+-       dev_hold(real_dev);
+-
+        vlan_stacked_transfer_operstate(real_dev, dev, vlan);
+        linkwatch_fire_event(dev); /* _MUST_ call rfc2863_policy() */
+
+diff --git a/net/8021q/vlan_dev.c b/net/8021q/vlan_dev.c
+index ab6dee28536d..a54535cbcf4c 100644
+--- a/net/8021q/vlan_dev.c
++++ b/net/8021q/vlan_dev.c
+@@ -615,6 +615,9 @@ static int vlan_dev_init(struct net_device *dev)
+        if (!vlan->vlan_pcpu_stats)
+                return -ENOMEM;
+
++       /* Get vlan's reference to real_dev */
++       dev_hold(real_dev);
 
 
+If there is not any other idea and objection, I will send the fix patch later.
+
+Thank you!
