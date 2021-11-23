@@ -2,115 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3949645AE0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 22:07:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E80C945AE1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 22:13:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239878AbhKWVLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 16:11:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40564 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235483AbhKWVLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 16:11:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6925D6023D;
-        Tue, 23 Nov 2021 21:07:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637701671;
-        bh=fmNL3u7OnTxHOXgiEAfETI2VUP4gGL2FJ5fr15s9qbA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Rxsf9g172XeXrnTMElnISWoUxpvJaJP4/7s1u7MpinNCISK6oeUbHJW/lpgH8JGsB
-         puD4+oFyzmduElLopaiyTeolLisu1Xf48UOOd4Un7crdq7xpFMv57i1F0JviSNa/cZ
-         jcXfA0lzTIp+uyHcrihkikmb99s425RVXRl7DVQhONTi4A8d606fnVMK1Xr1srsjUQ
-         24+5RmfZXbOsHUaWs7Wi/yKoWYF0eePtcIGng1H8cU3Hgm+STQZLefqQwQUOisJ3Ro
-         PVh6ejIW8QkefCdwF19gP37QgiNPsfHFGc7TIbjDvT5LESWy4QMWr6vgzF/whZ+9pK
-         xlFCgZB5syF1Q==
-From:   Stefano Stabellini <sstabellini@kernel.org>
-To:     jgross@suse.com
-Cc:     boris.ostrovsky@oracle.com, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org, sstabellini@kernel.org,
-        jbeulich@suse.com,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>,
-        stable@vger.kernel.org
-Subject: [PATCH v4] xen: detect uninitialized xenbus in xenbus_init
-Date:   Tue, 23 Nov 2021 13:07:48 -0800
-Message-Id: <20211123210748.1910236-1-sstabellini@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S235924AbhKWVQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 16:16:23 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:15410 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231215AbhKWVQW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 16:16:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637701809;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=3oNYpWlA+i2uiKkkfogiuDtNFkcFf0oANh+xeOwrb4Q=;
+    b=qpPptg68PmQcJGTTHkFIHzJ68m5ujWrGdwfHP2Te4J9IseNiAcuLvGm2SPLfnKnWaz
+    0pBoIaXS6aOE9yfa9litHXm5r+uWv7MJBL9oM/DGAnNI0lrT9w4NieY+bNyI4AQF8Qc2
+    DuOVjed5SZz3tgnT8Eup9nIEEitfRFSOp9JLV9KxtSQ72Co0JwCPtEuQdOX7gFtRmZqu
+    m9BpDDfzEhIXFZKtMDiRVeUbdas+zYbo0yVImQ9k5qSQs0Nqdhc/6U4c+DBt6EfvKPp5
+    w01tyAA2MR3bU17UGYcKrn8G+lIAa459tlQE6/v18sPNS5/UhRjWXRqd07oa049At1/Q
+    +E8w==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusx3hdd0DIgVuBOfXW6v7w=="
+X-RZG-CLASS-ID: mo00
+Received: from [IPv6:2a00:6020:1cfa:f900::b82]
+    by smtp.strato.de (RZmta 47.34.6 AUTH)
+    with ESMTPSA id a04d59xANLA86ap
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 23 Nov 2021 22:10:08 +0100 (CET)
+Subject: Re: [PATCH v1 0/2] fix statistics for CAN RTR and Error frames
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can@vger.kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
+References: <20211123115333.624335-1-mailhol.vincent@wanadoo.fr>
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+Message-ID: <bc682dbe-c74e-cd8a-ab05-78a6b4079ebf@hartkopp.net>
+Date:   Tue, 23 Nov 2021 22:10:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211123115333.624335-1-mailhol.vincent@wanadoo.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefano Stabellini <stefano.stabellini@xilinx.com>
 
-If the xenstore page hasn't been allocated properly, reading the value
-of the related hvm_param (HVM_PARAM_STORE_PFN) won't actually return
-error. Instead, it will succeed and return zero. Instead of attempting
-to xen_remap a bad guest physical address, detect this condition and
-return early.
 
-Note that although a guest physical address of zero for
-HVM_PARAM_STORE_PFN is theoretically possible, it is not a good choice
-and zero has never been validly used in that capacity.
+On 23.11.21 12:53, Vincent Mailhol wrote:
+> There are two common errors which are made when reporting the CAN RX
+> statistics:
+> 
+>    1. Incrementing the "normal" RX stats when receiving an Error
+>    frame. Error frames is an abstraction of Socket CAN and does not
+>    exist on the wire.
+> 
+>    2. Counting the length of the Remote Transmission Frames (RTR). The
+>    length of an RTR frame is the length of the requested frame not the
+>    actual payload. In reality the payload of an RTR frame is always 0
+>    bytes long.
+> 
+> This patch series fix those two issues for all CAN drivers.
+> 
+> Vincent Mailhol (2):
+>    can: do not increase rx statistics when receiving CAN error frames
+>    can: do not increase rx_bytes statistics for RTR frames
 
-Also recognize all bits set as an invalid value.
+I would suggest to upstream this change without bringing it to older 
+(stable) trees.
 
-For 32-bit Linux, any pfn above ULONG_MAX would get truncated. Pfns
-above ULONG_MAX should never be passed by the Xen tools to HVM guests
-anyway, so check for this condition and return early.
+It doesn't fix any substantial flaw which needs to be backported IMHO.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
----
-Changes in v4:
-- say "all bits set" instead of INVALID_PFN
-- improve check
+Btw. can you please change 'error frames' to 'error message frames'?
 
-Changes in v3:
-- improve in-code comment
-- improve check
+We had a discussion some years ago that the 'error frames' are used as 
+term inside the CAN protocol.
 
-Changes in v2:
-- add check for ULLONG_MAX (unitialized)
-- add check for ULONG_MAX #if BITS_PER_LONG == 32 (actual error)
-- add pr_err error message
+Thanks,
+Oliver
 
- drivers/xen/xenbus/xenbus_probe.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
 
-diff --git a/drivers/xen/xenbus/xenbus_probe.c b/drivers/xen/xenbus/xenbus_probe.c
-index 94405bb3829e..251b26439733 100644
---- a/drivers/xen/xenbus/xenbus_probe.c
-+++ b/drivers/xen/xenbus/xenbus_probe.c
-@@ -951,6 +951,29 @@ static int __init xenbus_init(void)
- 		err = hvm_get_parameter(HVM_PARAM_STORE_PFN, &v);
- 		if (err)
- 			goto out_error;
-+		/*
-+		 * Uninitialized hvm_params are zero and return no error.
-+		 * Although it is theoretically possible to have
-+		 * HVM_PARAM_STORE_PFN set to zero on purpose, in reality it is
-+		 * not zero when valid. If zero, it means that Xenstore hasn't
-+		 * been properly initialized. Instead of attempting to map a
-+		 * wrong guest physical address return error.
-+		 *
-+		 * Also recognize all bits set as an invalid value.
-+		 */
-+		if (!v || !~v) {
-+			err = -ENOENT;
-+			goto out_error;
-+		}
-+		/* Avoid truncation on 32-bit. */
-+#if BITS_PER_LONG == 32
-+		if (v > ULONG_MAX) {
-+			pr_err("%s: cannot handle HVM_PARAM_STORE_PFN=%llx > ULONG_MAX\n",
-+			       __func__, v);
-+			err = -EINVAL;
-+			goto out_error;
-+		}
-+#endif
- 		xen_store_gfn = (unsigned long)v;
- 		xen_store_interface =
- 			xen_remap(xen_store_gfn << XEN_PAGE_SHIFT,
--- 
-2.25.1
-
+> 
+>   drivers/net/can/at91_can.c                      |  9 ++-------
+>   drivers/net/can/c_can/c_can_main.c              |  8 ++------
+>   drivers/net/can/cc770/cc770.c                   |  6 ++----
+>   drivers/net/can/dev/dev.c                       |  4 ----
+>   drivers/net/can/dev/rx-offload.c                |  7 +++++--
+>   drivers/net/can/grcan.c                         |  3 ++-
+>   drivers/net/can/ifi_canfd/ifi_canfd.c           |  8 ++------
+>   drivers/net/can/janz-ican3.c                    |  3 ++-
+>   drivers/net/can/kvaser_pciefd.c                 |  8 ++------
+>   drivers/net/can/m_can/m_can.c                   | 10 ++--------
+>   drivers/net/can/mscan/mscan.c                   | 10 ++++++----
+>   drivers/net/can/pch_can.c                       |  6 ++----
+>   drivers/net/can/peak_canfd/peak_canfd.c         |  7 ++-----
+>   drivers/net/can/rcar/rcar_can.c                 |  9 +++------
+>   drivers/net/can/rcar/rcar_canfd.c               |  7 ++-----
+>   drivers/net/can/sja1000/sja1000.c               |  5 ++---
+>   drivers/net/can/slcan.c                         |  3 ++-
+>   drivers/net/can/spi/hi311x.c                    |  3 ++-
+>   drivers/net/can/spi/mcp251x.c                   |  3 ++-
+>   drivers/net/can/sun4i_can.c                     | 10 ++++------
+>   drivers/net/can/usb/ems_usb.c                   |  5 ++---
+>   drivers/net/can/usb/esd_usb2.c                  |  5 ++---
+>   drivers/net/can/usb/etas_es58x/es58x_core.c     |  7 -------
+>   .../net/can/usb/kvaser_usb/kvaser_usb_core.c    |  2 --
+>   .../net/can/usb/kvaser_usb/kvaser_usb_hydra.c   | 14 ++++----------
+>   .../net/can/usb/kvaser_usb/kvaser_usb_leaf.c    |  7 ++-----
+>   drivers/net/can/usb/mcba_usb.c                  |  3 ++-
+>   drivers/net/can/usb/peak_usb/pcan_usb.c         |  5 ++---
+>   drivers/net/can/usb/peak_usb/pcan_usb_fd.c      | 11 ++++-------
+>   drivers/net/can/usb/peak_usb/pcan_usb_pro.c     | 11 +++++------
+>   drivers/net/can/usb/ucan.c                      |  7 +++++--
+>   drivers/net/can/usb/usb_8dev.c                  | 10 ++++------
+>   drivers/net/can/xilinx_can.c                    | 17 ++++++-----------
+>   33 files changed, 86 insertions(+), 147 deletions(-)
+> 
