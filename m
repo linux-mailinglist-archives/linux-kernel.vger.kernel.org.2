@@ -2,174 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C00C345AC91
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:35:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5A045AC9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:36:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236014AbhKWTit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 14:38:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231314AbhKWTis (ORCPT
+        id S236460AbhKWTjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 14:39:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:20865 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236048AbhKWTjK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 14:38:48 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF7FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:35:40 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id z26so31849iod.10
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:35:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ucNIn3z++wzCwtlfmsvcWdlPYzoFbmTEmF2M6hyhBwI=;
-        b=tQMnoa4+qz/Z41aGmrjYClQCD8PCyRPzy1m/yn/nNwokdqmFLe/IrZvJCbXJfRiBqE
-         eLNWKs0BUE9eP6cpHfSQICVBQ6JZpExv02I70DyjsfWGRm1BHaOOAqlc0n86bkOs3z6v
-         HhS4++Y5Qz5T4jtC7PS39Q7k8FgeC7Lxh2B5uUDmX41J4XGfG1z+E0+uPDFkzCu3wcfD
-         nszKuyqDLcSnI07R4wGuUO3glVzTHEnV4VM2NNVkJAkWeIAEFJJJU7krQ49ORwzuzLzr
-         jmEKzmE0zSqnOUoj1K/WImOCvF5pnXvBdzy3lfMMkUqJR5Dd9pJaKTj9B2X92Z+8sH6V
-         psFA==
+        Tue, 23 Nov 2021 14:39:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637696160;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rZfv1IAB1L4OKPDv7Z7zl3z7pjV3ugHQdTctCyaDB7o=;
+        b=QwryxxP27AkmZ0u8hNazhVijs7Y63O7OG8tElYLU8XTZBFYMx5ELvNWL551TsgQWw2kuTP
+        ouGUG89dNVp5+6cjOxGACj3JjDODWHkh9fGvWJ1A9XAg6vV3r+TLlO3a1qeMbdNiwhQ1QL
+        E756sjRykyPSsCX2vtStEQ7yFNgOcrc=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-209-N-SW8vLBPxuLqfrHEeaLZA-1; Tue, 23 Nov 2021 14:35:58 -0500
+X-MC-Unique: N-SW8vLBPxuLqfrHEeaLZA-1
+Received: by mail-qk1-f198.google.com with SMTP id o19-20020a05620a22d300b0046754380e8aso168268qki.13
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:35:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ucNIn3z++wzCwtlfmsvcWdlPYzoFbmTEmF2M6hyhBwI=;
-        b=UuoZiXiZV2MkddQR/qHHMK0E2qBFH5VdQyvnGTYkkAWyNZmNsOsaH0slGWcupPzHOa
-         v9du2PVqAUobXJqSsEizP+4UTOEloXUTkVHIpfDeoPEsUe9s4c2Y3thGAFx1tk1fPHxI
-         1udWKhGIIirG9x+/zTyolPb1DHgaZTQDLM0EgIXOS57pM1FYYXFc/E5GzTtPzF2xB8T+
-         IQ9nRoGQVgRIc0omZ9T64UtVj/+vW/x0OJwc9T8uWsuiWuf0U2P1B3BGIusRF3xx/zCK
-         E0CKVu3C4KYEewjjF8YzQJj1jjtDIxxwkQBk2XvTY0gS8R5ySLeWXO4NLNlmskJCWbx5
-         YEng==
-X-Gm-Message-State: AOAM532QfWc1I9pvqV14imu653Mm6AQih0gGNscIZ4giPP3Z/XJpyZyd
-        ZYLeBDfOB+bH7jTvzkh1ZOov6P+m8/G0tRUl5ZyJ2w==
-X-Google-Smtp-Source: ABdhPJz1Q5be47A5QaEz2ud5Vd/DaXz1jSr4PV8Oat5SPte2Qr/URb8mmYQb+i9Xn23rPMixU/RtwZdGaRaE9QnluWc=
-X-Received: by 2002:a5d:8049:: with SMTP id b9mr8671820ior.41.1637696139607;
- Tue, 23 Nov 2021 11:35:39 -0800 (PST)
-MIME-Version: 1.0
-References: <20211120045046.3940942-1-seanjc@google.com> <20211120045046.3940942-20-seanjc@google.com>
- <CANgfPd83h4dXa-bFY96dkwHfJsdqu65BAzbqztgEhiRcHFquJw@mail.gmail.com> <YZxA1VAs5FNbjmH9@google.com>
-In-Reply-To: <YZxA1VAs5FNbjmH9@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Tue, 23 Nov 2021 11:35:28 -0800
-Message-ID: <CANgfPd9CdP-4aYkM7SCtCtV+v4T3HsyG6F8tLu=FCBz1nt=htg@mail.gmail.com>
-Subject: Re: [PATCH 19/28] KVM: x86/mmu: Zap only the target TDP MMU shadow
- page in NX recovery
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Hou Wenlong <houwenlong93@linux.alibaba.com>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=rZfv1IAB1L4OKPDv7Z7zl3z7pjV3ugHQdTctCyaDB7o=;
+        b=iQILq2xBL+W9Qx//tGoBToWHMVAvTJsibCSlC75F5rcYOI/sYeT7JYd7Fl6LhsGhMC
+         bduxaAZXvRQgY2eediE2JYgLtdCw9m59TjhhJVD/nu/HkbzdcDEu3gzHrbcve7M1SLzm
+         yzfSbclkjmZieOsfxZ0Zw2VNz62Z1ZrPt0tfMzfnM/o3k2bk+Cp2FDIcZbUG8wPwIkYR
+         lkH+c5PL4PbjDgtUR4l16d2H2tCC92TEFdJ/Wc1bXTdm4nJgGJIvDSF40v5gkCt+in4J
+         9yVI/VrTJCeH8M5QekALMzpYAVERug/9AJ12UIWSCAocwGUzZedWuZWcZmH8arjQFZRt
+         cfnA==
+X-Gm-Message-State: AOAM533/+QNGZTgWQvmhw1GkUGauZ4KIBqz1cd/Ff8ISfMQzNAmchAoQ
+        i080xyys+jmz+9Dbwi6V9t6Tlc6iVtxSznIppKvvd6ds8F6R1/aSlIhA8vXdAgfwYtFp4JhAGqR
+        Wp5aBXk5Ds3PM26YLzGsw3NQP
+X-Received: by 2002:a05:622a:13c9:: with SMTP id p9mr9530978qtk.47.1637696158308;
+        Tue, 23 Nov 2021 11:35:58 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwd9aJm8SZb+wfUFsxDgSU42rVqDIpUUlYw//me57YbMeMFl74fEpjtGIzlLmPaOts6c7+/Mg==
+X-Received: by 2002:a05:622a:13c9:: with SMTP id p9mr9530939qtk.47.1637696158082;
+        Tue, 23 Nov 2021 11:35:58 -0800 (PST)
+Received: from [192.168.8.138] (pool-96-230-249-157.bstnma.fios.verizon.net. [96.230.249.157])
+        by smtp.gmail.com with ESMTPSA id m15sm6726097qkp.76.2021.11.23.11.35.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 11:35:57 -0800 (PST)
+Message-ID: <4dd933d333194ff8a676fcafdd5c9ef19f002c92.camel@redhat.com>
+Subject: Re: [PATCH] drm/nouveau/acr: fix a couple NULL vs IS_ERR() checks
+From:   Lyude Paul <lyude@redhat.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Ben Skeggs <bskeggs@redhat.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Date:   Tue, 23 Nov 2021 14:35:55 -0500
+In-Reply-To: <20211118111314.GB1147@kili>
+References: <20211118111314.GB1147@kili>
+Organization: Red Hat Inc.
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 5:16 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Mon, Nov 22, 2021, Ben Gardon wrote:
-> > On Fri, Nov 19, 2021 at 8:51 PM Sean Christopherson <seanjc@google.com> wrote:
-> > > @@ -755,6 +759,26 @@ static inline bool tdp_mmu_iter_cond_resched(struct kvm *kvm,
-> > >         return false;
-> > >  }
-> > >
-> > > +bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
-> > > +{
-> > > +       u64 old_spte;
-> > > +
-> > > +       rcu_read_lock();
-> > > +
-> > > +       old_spte = kvm_tdp_mmu_read_spte(sp->ptep);
-> > > +       if (WARN_ON_ONCE(!is_shadow_present_pte(old_spte))) {
-> > > +               rcu_read_unlock();
-> > > +               return false;
-> > > +       }
-> > > +
-> > > +       __tdp_mmu_set_spte(kvm, kvm_mmu_page_as_id(sp), sp->ptep, old_spte, 0,
-> > > +                          sp->gfn, sp->role.level + 1, true, true);
-> > > +
-> > > +       rcu_read_unlock();
-> > > +
-> > > +       return true;
-> > > +}
-> > > +
-> >
-> > Ooooh this makes me really nervous. There are a lot of gotchas to
-> > modifying SPTEs in a new context without traversing the paging
-> > structure like this. For example, we could modify an SPTE under an
-> > invalidated root here. I don't think that would be a problem since
-> > we're just clearing it, but it makes the code more fragile.
->
-> Heh, it better not be a problem, because there are plently of flows in the TDP MMU
-> that can modify SPTEs under an invalidated root, e.g. fast_page_fault(),
-> tdp_mmu_zap_leafs(), kvm_age_gfn(), kvm_test_age_gfn(), etc...  And before the
-> patch that introduced is_page_fault_stale(), kvm_tdp_mmu_map() was even installing
-> SPTEs into an invalid root!  Anything that takes a reference to a root and yields
-> (or never takes mmu_lock) can potentially modify a SPTE under an invalid root.
+Reviewed-by: Lyude Paul <lyude@redhat.com>
 
-That's true, I don't think there's really a problem with this commit,
-just a different way of dealing with the PTs.
+Will push this to drm-misc in a bit
 
+On Thu, 2021-11-18 at 14:13 +0300, Dan Carpenter wrote:
+> The nvkm_acr_lsfw_add() function never returns NULL.  It returns error
+> pointers on error.
+> 
+> Fixes: 22dcda45a3d1 ("drm/nouveau/acr: implement new subdev to replace
+> "secure boot"")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>  drivers/gpu/drm/nouveau/nvkm/subdev/acr/gm200.c | 6 ++++--
+>  drivers/gpu/drm/nouveau/nvkm/subdev/acr/gp102.c | 6 ++++--
+>  2 files changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/acr/gm200.c
+> b/drivers/gpu/drm/nouveau/nvkm/subdev/acr/gm200.c
+> index cdb1ead26d84..82b4c8e1457c 100644
+> --- a/drivers/gpu/drm/nouveau/nvkm/subdev/acr/gm200.c
+> +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/acr/gm200.c
+> @@ -207,11 +207,13 @@ int
+>  gm200_acr_wpr_parse(struct nvkm_acr *acr)
+>  {
+>         const struct wpr_header *hdr = (void *)acr->wpr_fw->data;
+> +       struct nvkm_acr_lsfw *lsfw;
+>  
+>         while (hdr->falcon_id != WPR_HEADER_V0_FALCON_ID_INVALID) {
+>                 wpr_header_dump(&acr->subdev, hdr);
+> -               if (!nvkm_acr_lsfw_add(NULL, acr, NULL, (hdr++)->falcon_id))
+> -                       return -ENOMEM;
+> +               lsfw = nvkm_acr_lsfw_add(NULL, acr, NULL, (hdr++)-
+> >falcon_id);
+> +               if (IS_ERR(lsfw))
+> +                       return PTR_ERR(lsfw);
+>         }
+>  
+>         return 0;
+> diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/acr/gp102.c
+> b/drivers/gpu/drm/nouveau/nvkm/subdev/acr/gp102.c
+> index fb9132a39bb1..fd97a935a380 100644
+> --- a/drivers/gpu/drm/nouveau/nvkm/subdev/acr/gp102.c
+> +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/acr/gp102.c
+> @@ -161,11 +161,13 @@ int
+>  gp102_acr_wpr_parse(struct nvkm_acr *acr)
+>  {
+>         const struct wpr_header_v1 *hdr = (void *)acr->wpr_fw->data;
+> +       struct nvkm_acr_lsfw *lsfw;
+>  
+>         while (hdr->falcon_id != WPR_HEADER_V1_FALCON_ID_INVALID) {
+>                 wpr_header_v1_dump(&acr->subdev, hdr);
+> -               if (!nvkm_acr_lsfw_add(NULL, acr, NULL, (hdr++)->falcon_id))
+> -                       return -ENOMEM;
+> +               lsfw = nvkm_acr_lsfw_add(NULL, acr, NULL, (hdr++)-
+> >falcon_id);
+> +               if (IS_ERR(lsfw))
+> +                       return PTR_ERR(lsfw);
+>         }
+>  
+>         return 0;
 
->
-> Checking the paging structures for this flow wouldn't change anything.  Invalidating
-> a root doesn't immediately zap SPTEs, it just marks the root invalid.  The other
-> subtle gotcha is that kvm_reload_remote_mmus() doesn't actually gaurantee all vCPUs
-> will have dropped the invalid root or performed a TLB flush when mmu_lock is dropped,
-> those guarantees are only with respect to re-entering the guest!
->
-> All of the above is no small part of why I don't want to walk the page tables:
-> it's completely misleading as walking the page tables doesn't actually provide any
-> protection, it's holding RCU that guarantees KVM doesn't write memory it doesn't own.
+-- 
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
 
-That's a great point. I was thinking about the RCU protection being
-sort of passed down through the RCU dereferences from the root of the
-paging structure to whatever SPTE we modify, but since we protect the
-SPs with RCU too, dereferencing from them is just as good, I suppose.
-
->
-> > Another approach to this would be to do in-place promotion / in-place
-> > splitting once the patch sets David and I just sent out are merged.  That
-> > would avoid causing extra page faults here to bring in the page after this
-> > zap, but it probably wouldn't be safe if we did it under an invalidated root.
->
-> I agree that in-place promotion would be better, but if we do that, I think a logical
-> intermediate step would be to stop zapping unrelated roots and entries.  If there's
-> a bug that is exposed/introduced by not zapping other stuff, I would much rather it
-> show up when KVM stops zapping other stuff, not when KVM stops zapping other stuff
-> _and_ promotes in place.  Ditto for if in-place promotion introduces a bug.
-
-That makes sense. I think this is a good first step.
-
->
-> > I'd rather avoid this extra complexity and just tolerate the worse
-> > performance on the iTLB multi hit mitigation at this point since new
-> > CPUs seem to be moving past that vulnerability.
->
-> IMO, it reduces complexity, especially when looking at the series as a whole, which
-> I fully realize you haven't yet done :-)  Setting aside the complexities of each
-> chunk of code, what I find complex with the current TDP MMU zapping code is that
-> there are no precise rules for what needs to be done in each situation.  I'm not
-> criticizing how we got to this point, I absolutely think that hitting everything
-> with a big hammer to get the initial version stable was the right thing to do.
->
-> But a side effect of the big hammer approach is that it makes reasoning about things
-> more difficult, e.g. "when is it safe to modify a SPTE versus when is it safe to insert
-> a SPTE into the paging structures?" or "what needs to be zapped when the mmu_notifier
-> unmaps a range?".
->
-> And I also really want to avoid another snafu like the memslots with passthrough
-> GPUs bug, where using a big hammer (zap all) when a smaller hammer (zap SPTEs for
-> the memslot) _should_ work allows bugs to creep in unnoticed because they're hidden
-> by overzealous zapping.
->
-> > If you think this is worth the complexity, it'd be nice to do a little
-> > benchmarking to make sure it's giving us a substantial improvement.
->
-> Performance really isn't a motivating factor.  Per the changelog, the motivation
-> is mostly to allow later patches to simplify zap_gfn_range() by having it zap only
-> leaf SPTEs, and now that I've typed it up, also all of the above :-)
-
-That makes sense, and addresses all my concerns. Carry on.
-Thanks for writing all that up.
