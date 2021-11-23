@@ -2,107 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6416645AA7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:47:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B26A45AA91
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:53:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239628AbhKWRuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 12:50:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239690AbhKWRuM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 12:50:12 -0500
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D5AC06175D
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:47:02 -0800 (PST)
-Received: by mail-pj1-x1049.google.com with SMTP id x1-20020a17090a294100b001a6e7ba6b4eso1707953pjf.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:47:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=087vQaZWUKxRpGonVzwMVh0M7VkYLkSnxisBZd5obmA=;
-        b=tCDZYtDjA+pqhy7EApb9w2YUe6thqQz8V9NYf8eIZXyF6AeYq3rWG2LRFBcFCsTQiR
-         kneeeh4myslIyFGROJFluwIntriat5jZ2FTqFTKKTlC8BO0VCZNEJpFrT2d53G6fcq+M
-         CFklWxtwSQMwS6ZAhddWeOpW2iPsP/u1yWs1Q5UONrn9RlxZUZIkrvEGpKphszkdUjYQ
-         JLCbL7JC2OII02WEOG9fo1MHmtHnCCJ5m9CdTEQwUtBwS5Kc6UpXOegyHFKzKmSCWg0X
-         pLVpqN70jYM1mpkkFeUMNNtHejmGKZpcPl2IymdGZy5hQ0PAMOi6+3knDRJAmsNYP6wE
-         GSPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=087vQaZWUKxRpGonVzwMVh0M7VkYLkSnxisBZd5obmA=;
-        b=Mu6+Ewzrmg+FVCC+6wF/y2CdGwbo4WI2I+9nn0KVK+QeAZ6CNkP4zj+dAlh0A0XRYo
-         j2YZpXqmG1Ee1NFwqsqYZhcDbeWVYvE4nmoiaC05myTQeqeAdK0J012vvAEV5yQ4EKqk
-         ADe2n/GN4SMYHJlVNWlwtPKlfGXF7eB2fn5PFz8+tF99qelkzsf2zbyjD43fXp4WA+iT
-         W0KbyzeGYayvn/nTm4vwqYrrWWyZsC7g2BY4KjHeGHqG+GIlazxdpCeJBA7vxDuss7R6
-         KZZaeGfRU5RPqlLkhIXTo0LHdcjH9pk3w3UJWehsRZ4Yad8Rwo8+kIxtjulB8bd9vOX4
-         mlUA==
-X-Gm-Message-State: AOAM532Iwsw7Z2n+iBfsTmEbEfE74/7FGGyBLjpd0t+f+7RGKaDZerPR
-        wAsQ8ED/3Vou6qylE8ThSgcHK7nE6F4uzA==
-X-Google-Smtp-Source: ABdhPJwwKdrF+f/Ep44GPc4Dd3kMsoZXb+lKE1IEUG8p4nTJN1mOX8PuRqG+EzEyn8M5gOBj3prjDolC99pwHA==
-X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:bda6:1a8e:6bfd:ec0c])
- (user=shakeelb job=sendgmr) by 2002:a17:90b:1812:: with SMTP id
- lw18mr5227173pjb.196.1637689621682; Tue, 23 Nov 2021 09:47:01 -0800 (PST)
-Date:   Tue, 23 Nov 2021 09:46:58 -0800
-Message-Id: <20211123174658.1728753-1-shakeelb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH] mm: thp: update split_queue_len correctly
-From:   Shakeel Butt <shakeelb@google.com>
-To:     David Hildenbrand <david@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S239194AbhKWR4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 12:56:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235026AbhKWR4X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 12:56:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A3AA60F42;
+        Tue, 23 Nov 2021 17:53:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637689994;
+        bh=yN5v/ksH+/i7Kc2NikgDUOw2ePKQ2SBTXHTlo8gWoxA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Nnw3WWluGs1MwQ8YensIJzFnsFs9naMNTTXEf73dRJHQ2dkyx80IURcsycHoUC1k4
+         9qVkRQ7x/w+ng7cQ0/CZ7C1BWtICIkNEmQOOm8TMZiOgCuXJOpbKkGlP67NBBfIcZj
+         I8gfkcdeejgAxnP2z0NCKgwmrolY1SfYEVWPRdHme50fAVSRukmheYWZi4B0U3OjwW
+         52x5AtrcYwjmY1BUPuJNkU1ONLD+JpQERButoiXiBsiLNWFP9OfkNek16SurXnHUud
+         V05BMiT8CUZRc2HUSADQZmjeWyKtKir1Kuw01FIa3ozECn349WDceKZV8CxeVlk4cL
+         vHbT+Zcpard3w==
+Date:   Tue, 23 Nov 2021 17:53:06 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Lucas Tanure <tanureal@opensource.cirrus.com>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kailang Yang <kailang@realtek.com>,
+        Shuming Fan <shumingf@realtek.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
+        Jeremy Szu <jeremy.szu@canonical.com>,
+        Hui Wang <hui.wang@canonical.com>,
+        Werner Sembach <wse@tuxedocomputers.com>,
+        Chris Chiu <chris.chiu@canonical.com>,
+        Cameron Berkenpas <cam@neo-zeon.de>,
+        Sami Loone <sami@loone.fi>, Elia Devito <eliadevito@gmail.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Jack Yu <jack.yu@realtek.com>, Arnd Bergmann <arnd@arndb.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org,
+        patches@opensource.cirrus.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/11] ASoC: cs35l41: Convert tables to shared source code
+Message-ID: <YZ0qgjJnoljpmc9s@sirena.org.uk>
+References: <20211123163149.1530535-1-tanureal@opensource.cirrus.com>
+ <20211123163149.1530535-3-tanureal@opensource.cirrus.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kBarSnr2m61LE+g9"
+Content-Disposition: inline
+In-Reply-To: <20211123163149.1530535-3-tanureal@opensource.cirrus.com>
+X-Cookie: A closed mouth gathers no foot.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The deferred THPs are split on memory pressure through shrinker
-callback and splitting of THP during reclaim can fail for several
-reasons like unable to lock the THP, under writeback or unexpected
-number of pins on the THP. Such pages are put back on the deferred split
-list for consideration later. However kernel does not update the
-deferred queue size on putting back the pages whose split was failed.
-This patch fixes that.
 
-Fixes: 364c1eebe453 ("mm: thp: extract split_queue_* into a struct")
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
----
- mm/huge_memory.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+--kBarSnr2m61LE+g9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index e5483347291c..4fff9584815b 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2809,7 +2809,7 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
- 	unsigned long flags;
- 	LIST_HEAD(list), *pos, *next;
- 	struct page *page;
--	int split = 0;
-+	unsigned long split = 0, num = 0;
- 
- #ifdef CONFIG_MEMCG
- 	if (sc->memcg)
-@@ -2823,6 +2823,7 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
- 		page = compound_head(page);
- 		if (get_page_unless_zero(page)) {
- 			list_move(page_deferred_list(page), &list);
-+			num++;
- 		} else {
- 			/* We lost race with put_compound_page() */
- 			list_del_init(page_deferred_list(page));
-@@ -2847,6 +2848,7 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
- 
- 	spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
- 	list_splice_tail(&list, &ds_queue->split_queue);
-+	ds_queue->split_queue_len += (num - split);
- 	spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
- 
- 	/*
--- 
-2.34.0.rc2.393.gf8c9666880-goog
+On Tue, Nov 23, 2021 at 04:31:40PM +0000, Lucas Tanure wrote:
 
+> --- a/sound/soc/codecs/Makefile
+> +++ b/sound/soc/codecs/Makefile
+> @@ -54,8 +54,8 @@ snd-soc-cs35l33-objs := cs35l33.o
+>  snd-soc-cs35l34-objs := cs35l34.o
+>  snd-soc-cs35l35-objs := cs35l35.o
+>  snd-soc-cs35l36-objs := cs35l36.o
+> -snd-soc-cs35l41-spi-objs := cs35l41-spi.o cs35l41.o cs35l41-tables.o
+> -snd-soc-cs35l41-i2c-objs := cs35l41-i2c.o cs35l41.o cs35l41-tables.o
+> +snd-soc-cs35l41-spi-objs := cs35l41-spi.o cs35l41.o cs35l41-lib.o
+> +snd-soc-cs35l41-i2c-objs := cs35l41-i2c.o cs35l41.o cs35l41-lib.o
+>  snd-soc-cs42l42-objs := cs42l42.o
+>  snd-soc-cs42l51-objs := cs42l51.o
+>  snd-soc-cs42l51-i2c-objs := cs42l51-i2c.o
+
+As was already called out on the HDA part of this patch I was expecting
+this to be more like how we handle sharing the PXA2xx driver code
+between the ASoC and AC'97 implementations - making it a library rather
+than linking the object files directly into both drivers.  I'm not sure
+that the current approach would DTRT if one or both of the drivers is
+built in.
+
+--kBarSnr2m61LE+g9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGdKoEACgkQJNaLcl1U
+h9Cr4gf+LNGWPCz+MX/96IXsUS+wPozdceAjKSn80yGpnRSItYewxSIzu2F97cvm
+dnB0JfE7YXIR1bYMLulAWnpYyGWoJzI+uTiJJnxXdIfUSpPEMm1t7s7fZqrqhFGz
+2ABLlyV0gWZcj6ZGq1X1msELcdJuFgdQUpQZcnCXA/d/dhfadc7DGlBkuKQGpWos
+xardpAPBRITGzwQ6ool8+uCrCNcDAiUUMM6m9mzKXCzJ3gGb/hTjpgLymN0Twn/r
+oYqINRYJGZCpMPXY3mnDZZjAluSVQ15MT7MfQZx1vjQxTEMZm6crjbTQf1O5Xnd2
+WBukoE/U9Mfa1d9uYmqOjP4S9ZPgMA==
+=vneV
+-----END PGP SIGNATURE-----
+
+--kBarSnr2m61LE+g9--
