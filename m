@@ -2,83 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD90945A385
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:16:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 597FC45A38B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237101AbhKWNTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 08:19:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50278 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235664AbhKWNTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 08:19:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E178860FE7;
-        Tue, 23 Nov 2021 13:16:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637673373;
-        bh=q5aZR96jnTB2l0bMhRdAixmuwxPR6NrPz6OV1iqoeDA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sqqby0l8iIJ+KPPE3VrACpPiqzWJyc0lB6JH6e6q2w4jA4tWOalQL2Ifm6u2+oNCl
-         NU2HXpPxAhK95CoEmUSkPCm2VO9LLk4UBXLNV0BDn/BO17WxXe7NdukUwAdCCMZky+
-         y5EOyGiMYctY53lznnjuNtKUrfDSkqv724qI6jiDIjJ9pBjEBj4Yz0U7YrpNnGy5ld
-         Z69DmzwbOOx3yYvIrDY/k5oprxgFrrbPRbCt5n2ZD4QeklQ3WtDZUKu0CHJ+3KOlZ9
-         ce50fuzQId+WbOHlsFNZh4y6wpmwvOjQnpEj6M/JaGNciqNMmBh5HdQswkafbqp1ik
-         w01qBqasCnReA==
-Date:   Tue, 23 Nov 2021 13:16:08 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Adam Ward <Adam.Ward.opensource@diasemi.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Support Opensource <Support.Opensource@diasemi.com>
-Subject: Re: [PATCH 1/2] DA9121: add DA914x binding info
-Message-ID: <YZzpmPfnZ/I2ZdZk@sirena.org.uk>
-References: <cover.1637669927.git.Adam.Ward.opensource@diasemi.com>
- <49e5f47c79c0fc1d2b52ffdf7f5872f0adfa5ba5.1637669927.git.Adam.Ward.opensource@diasemi.com>
- <YZze1uynsB+d1YWx@sirena.org.uk>
- <VI1PR10MB316716A5C73693A95EE120F3EC609@VI1PR10MB3167.EURPRD10.PROD.OUTLOOK.COM>
+        id S235664AbhKWNVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 08:21:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235327AbhKWNVP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 08:21:15 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD91C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 05:18:07 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id g14so92099990edb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 05:18:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mAk8tA976gVRgEzEWN8fO9UK+O6cafDP3k8VmtTgX5w=;
+        b=ZlcHuPsPs5XqPHlHybDOmOGrNh0qiyNBwmBCG5MB4Lqj+7XTkXVFtXN/1Bp2RyIIXu
+         i48fr4vDpQ+vIVqE+c6N1UQ40mM0uWHN2ittBrl0AoO5M/goOw4ZJ2QQfUvWRym9OxqX
+         AKgjmMyVwPBmlb2jbdkmaoP7EHV0XWlYMbVjWdFVA/CZthyt7zN5TU+hfgELnOz8dsyp
+         IIxWtVWrwZleqvQeHWT8hJtWtBAasQS3BBvucCsFC5tOvMzCQWyAvpPAD/2+EEYYEQ2H
+         GQ7HF8LIupcY1AtE9yZlvnbMKnS59JlhYiF166pcE9BpDVE0rTgRUla0v89TUv2MF+9J
+         J1aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mAk8tA976gVRgEzEWN8fO9UK+O6cafDP3k8VmtTgX5w=;
+        b=fU1iwsmM6tYeIkuLjAFHQ94xJPXkELPrDH+5XHudbc6nmzbDb+fkA9RFo0zov23wer
+         XZrjFtaf+amCLkbNmqb8jSFFmGpf3xRkxdPzZ3pJuXFr+wwHF/SOjypcTg/T6OciBSB6
+         ofAYckrX9LP7JV09NKNN40iYFlIsYakgzqKBhSY2LGMlan9E4NMlw3FdzUw44VpjMo4/
+         w4mz3x9mlGqiGvEuGAYqN22zq9l3Nd5dShDtqG3PziT+34eromdsgD9edfE7szn06fcp
+         QuVCvetERN57dHr8aGUPd6VfBoRQ5WqlP22vvKNH0lql9Cn210jpR4FADoU4budoOTBn
+         PJVg==
+X-Gm-Message-State: AOAM533zUPkORAoYpD775ItiDq7LfgIL1YsNFfrc3z33nVR0V3IoxFHT
+        l2/r5fKZghZGZuRkz2BBS/kSPDJSQGSHn7zSOLKijQ==
+X-Google-Smtp-Source: ABdhPJx1jOOevAIf0UJxx8KjkdMLGW0E1fCsmiuRs/MXcyhAf3Xb3fawyNskFiVUpVxMyEiX4ns31HM0wPPcYLGnFQs=
+X-Received: by 2002:a17:906:1b1b:: with SMTP id o27mr7495723ejg.279.1637673485902;
+ Tue, 23 Nov 2021 05:18:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="8lYysKkgiV4LEiCQ"
-Content-Disposition: inline
-In-Reply-To: <VI1PR10MB316716A5C73693A95EE120F3EC609@VI1PR10MB3167.EURPRD10.PROD.OUTLOOK.COM>
-X-Cookie: A closed mouth gathers no foot.
+References: <20211123083620.2366860-1-weiyongjun1@huawei.com>
+In-Reply-To: <20211123083620.2366860-1-weiyongjun1@huawei.com>
+From:   Etienne Carriere <etienne.carriere@linaro.org>
+Date:   Tue, 23 Nov 2021 14:17:54 +0100
+Message-ID: <CAN5uoS8_55fCRoUa67LQzWEtLgkf017fESPydht4QV4o_G800A@mail.gmail.com>
+Subject: Re: [PATCH -next] firmware: arm_scmi: optee: Fix missing mutex_init()
+To:     Wei Yongjun <weiyongjun1@huawei.com>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 23 Nov 2021 at 09:23, Wei Yongjun <weiyongjun1@huawei.com> wrote:
+>
+> The driver allocates the mutex but not initialize it.
+> Use mutex_init() on it to initialize it correctly.
+>
+> Fixes: 5f90f189a052 ("firmware: arm_scmi: Add optee transport")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> ---
+>  drivers/firmware/arm_scmi/optee.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/firmware/arm_scmi/optee.c b/drivers/firmware/arm_scmi/optee.c
+> index d9819b0197ec..901737c9f5f8 100644
+> --- a/drivers/firmware/arm_scmi/optee.c
+> +++ b/drivers/firmware/arm_scmi/optee.c
+> @@ -506,6 +506,7 @@ static int scmi_optee_service_probe(struct device *dev)
+>         agent->dev = dev;
+>         agent->tee_ctx = tee_ctx;
+>         INIT_LIST_HEAD(&agent->channel_list);
+> +       mutex_init(&agent->mu);
+>
+>         ret = get_capabilities(agent);
+>         if (ret)
+>
 
---8lYysKkgiV4LEiCQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+`Reviewed-by: Etienne Carriere <etienne.carriere@linaro.org>`
 
-On Tue, Nov 23, 2021 at 01:06:23PM +0000, Adam Ward wrote:
-> > On Tue, Nov 23, 2021 at 12:30PM +0000, Mark Brown wrote:
-
-> > This is removing the existing DA9140 compatible?
-
-> No. It's never been recognised in the driver itself and shouldn't have been there.
-> Detritus from an obsolete test.
-
-So by "no" you mean "yes" then?  In any case you shouldn't be putting a
-change like this in the middle of an unrelated commit without mentioning
-it in the commit log, if you feel the need to remove this compatible you
-should make a commit doing so.  Please see submitting-patches.rst for
-details on splitting changes up.
-
---8lYysKkgiV4LEiCQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGc6ZcACgkQJNaLcl1U
-h9CDXwf/Qy02pcVJe5qcNOHJPPhiIYoYythiM6O3Z7eu/5tH2Ln5hraZabNbVq6w
-JndWc9OsYSg3k3W5evxxIUfxRxAt/c978i9HOh+5JfCTtZ9BkPuJKgDSZzFS7zFO
-XBsuLcSfcnkR7Pf/9PdT8TjNxq2j3nDYGRpyO9flp3xd+cjhG1hJ4DJZPGgqnDoI
-4LvxmL1esoxgNLmWvQH3lbqZ44vEEJ0tBWBkfy48f4m9G49YSHjGWrjY+RhyGSsU
-RTmItMtDN8N7HoXvd3c2S5P0EeIOFEXL8cBaaNAOPHeIfF1axE3ZxHsBZn97EpWo
-qaKko1Vwc3Q17mjRHjSVt/tm7UJzIg==
-=AArH
------END PGP SIGNATURE-----
-
---8lYysKkgiV4LEiCQ--
+Indeed. Thanks for the fix.
+Etienne
