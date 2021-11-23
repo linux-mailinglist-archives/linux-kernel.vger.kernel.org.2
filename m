@@ -2,120 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF77459CF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:42:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B000459CFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:44:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234334AbhKWHpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 02:45:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234316AbhKWHpg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 02:45:36 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B461EC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 23:42:28 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mpQRc-0008Iv-8z; Tue, 23 Nov 2021 08:42:24 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mpQRc-000aTk-0B; Tue, 23 Nov 2021 08:42:23 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mpQRa-0006gu-T5; Tue, 23 Nov 2021 08:42:22 +0100
-Date:   Tue, 23 Nov 2021 08:42:19 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sherry Sun <sherry.sun@nxp.com>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com
-Subject: Re: [PATCH] tty: serial: imx: clear RTSD status before suspend
-Message-ID: <20211123074219.wn5jfjr6ph7uutyo@pengutronix.de>
-References: <20211123070349.20099-1-sherry.sun@nxp.com>
+        id S234306AbhKWHrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 02:47:18 -0500
+Received: from mga12.intel.com ([192.55.52.136]:47599 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234157AbhKWHrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 02:47:17 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="214999852"
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="214999852"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 23:44:10 -0800
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="509307910"
+Received: from yhuang6-desk2.sh.intel.com ([10.239.159.101])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 23:44:06 -0800
+From:   Huang Ying <ying.huang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        syzbot+aa5bebed695edaccf0df@syzkaller.appspotmail.com,
+        Nadav Amit <namit@vmware.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Marco Elver <elver@google.com>
+Subject: [PATCH] mm/rmap: fix potential batched TLB flush race
+Date:   Tue, 23 Nov 2021 15:43:44 +0800
+Message-Id: <20211123074344.1877731-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4l4f62vkmjup6i2g"
-Content-Disposition: inline
-In-Reply-To: <20211123070349.20099-1-sherry.sun@nxp.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In theory, the following race is possible for batched TLB flushing.
 
---4l4f62vkmjup6i2g
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+CPU0                               CPU1
+----                               ----
+shrink_page_list()
+                                   unmap
+                                     zap_pte_range()
+                                       flush_tlb_batched_pending()
+                                         flush_tlb_mm()
+  try_to_unmap()
+    set_tlb_ubc_flush_pending()
+      mm->tlb_flush_batched = true
+                                         mm->tlb_flush_batched = false
 
-On Tue, Nov 23, 2021 at 03:03:49PM +0800, Sherry Sun wrote:
-> From: Fugang Duan <fugang.duan@nxp.com>
->=20
-> Clear RTSD status before suspend due to the port also
-> use RTS pin as wakeup source, need to clear the flag first.
+After the TLB is flushed on CPU1 via flush_tlb_mm() and before
+mm->tlb_flush_batched is set to false, some PTE is unmapped on CPU0
+and the TLB flushing is pended.  Then the pended TLB flushing will be
+lost.  Although both set_tlb_ubc_flush_pending() and
+flush_tlb_batched_pending() are called with PTL locked, different PTL
+instances may be used.
 
-I'd write:
+Because the race window is really small, and the lost TLB flushing
+will cause problem only if a TLB entry is inserted before the
+unmapping in the race window, the race is only theoretical.  But the
+fix is simple and cheap too.
 
-	Clear RTSD status before enabling the irq event for RTSD.
+Syzbot has reported this too as follows,
 
-That this happens in the context of suspend isn't that important.
+==================================================================
+BUG: KCSAN: data-race in flush_tlb_batched_pending / try_to_unmap_one
 
-> Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
-> Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
-> ---
->  drivers/tty/serial/imx.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-> index 90f82e6c54e4..fb75e3e0d828 100644
-> --- a/drivers/tty/serial/imx.c
-> +++ b/drivers/tty/serial/imx.c
-> @@ -2482,10 +2482,12 @@ static void imx_uart_enable_wakeup(struct imx_por=
-t *sport, bool on)
-> =20
->  	if (sport->have_rtscts) {
->  		u32 ucr1 =3D imx_uart_readl(sport, UCR1);
-> -		if (on)
-> +		if (on) {
-> +			imx_uart_writel(sport, USR1_RTSD, USR1);
->  			ucr1 |=3D UCR1_RTSDEN;
-> -		else
-> +		} else {
->  			ucr1 &=3D ~UCR1_RTSDEN;
-> +		}
->  		imx_uart_writel(sport, ucr1, UCR1);
->  	}
+write to 0xffff8881072cfbbc of 1 bytes by task 17406 on cpu 1:
+ flush_tlb_batched_pending+0x5f/0x80 mm/rmap.c:691
+ madvise_free_pte_range+0xee/0x7d0 mm/madvise.c:594
+ walk_pmd_range mm/pagewalk.c:128 [inline]
+ walk_pud_range mm/pagewalk.c:205 [inline]
+ walk_p4d_range mm/pagewalk.c:240 [inline]
+ walk_pgd_range mm/pagewalk.c:277 [inline]
+ __walk_page_range+0x981/0x1160 mm/pagewalk.c:379
+ walk_page_range+0x131/0x300 mm/pagewalk.c:475
+ madvise_free_single_vma mm/madvise.c:734 [inline]
+ madvise_dontneed_free mm/madvise.c:822 [inline]
+ madvise_vma mm/madvise.c:996 [inline]
+ do_madvise+0xe4a/0x1140 mm/madvise.c:1202
+ __do_sys_madvise mm/madvise.c:1228 [inline]
+ __se_sys_madvise mm/madvise.c:1226 [inline]
+ __x64_sys_madvise+0x5d/0x70 mm/madvise.c:1226
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-The change looks fine.
+write to 0xffff8881072cfbbc of 1 bytes by task 71 on cpu 0:
+ set_tlb_ubc_flush_pending mm/rmap.c:636 [inline]
+ try_to_unmap_one+0x60e/0x1220 mm/rmap.c:1515
+ rmap_walk_anon+0x2fb/0x470 mm/rmap.c:2301
+ try_to_unmap+0xec/0x110
+ shrink_page_list+0xe91/0x2620 mm/vmscan.c:1719
+ shrink_inactive_list+0x3fb/0x730 mm/vmscan.c:2394
+ shrink_list mm/vmscan.c:2621 [inline]
+ shrink_lruvec+0x3c9/0x710 mm/vmscan.c:2940
+ shrink_node_memcgs+0x23e/0x410 mm/vmscan.c:3129
+ shrink_node+0x8f6/0x1190 mm/vmscan.c:3252
+ kswapd_shrink_node mm/vmscan.c:4022 [inline]
+ balance_pgdat+0x702/0xd30 mm/vmscan.c:4213
+ kswapd+0x200/0x340 mm/vmscan.c:4473
+ kthread+0x2c7/0x2e0 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30
 
-Best regards
-Uwe
+value changed: 0x01 -> 0x00
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 0 PID: 71 Comm: kswapd0 Not tainted 5.16.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+==================================================================
 
---4l4f62vkmjup6i2g
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Reported-by: syzbot+aa5bebed695edaccf0df@syzkaller.appspotmail.com
+Cc: Nadav Amit <namit@vmware.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
+Cc: Marco Elver <elver@google.com>
+---
+ include/linux/mm_types.h |  2 +-
+ mm/rmap.c                | 15 ++++++++-------
+ 2 files changed, 9 insertions(+), 8 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index c3a6e6209600..789778067db9 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -632,7 +632,7 @@ struct mm_struct {
+ 		atomic_t tlb_flush_pending;
+ #ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
+ 		/* See flush_tlb_batched_pending() */
+-		bool tlb_flush_batched;
++		atomic_t tlb_flush_batched;
+ #endif
+ 		struct uprobes_state uprobes_state;
+ #ifdef CONFIG_PREEMPT_RT
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 163ac4e6bcee..60902c3cfb4a 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -633,7 +633,7 @@ static void set_tlb_ubc_flush_pending(struct mm_struct *mm, bool writable)
+ 	 * before the PTE is cleared.
+ 	 */
+ 	barrier();
+-	mm->tlb_flush_batched = true;
++	atomic_inc(&mm->tlb_flush_batched);
+ 
+ 	/*
+ 	 * If the PTE was dirty then it's best to assume it's writable. The
+@@ -680,15 +680,16 @@ static bool should_defer_flush(struct mm_struct *mm, enum ttu_flags flags)
+  */
+ void flush_tlb_batched_pending(struct mm_struct *mm)
+ {
+-	if (data_race(mm->tlb_flush_batched)) {
+-		flush_tlb_mm(mm);
++	int batched = atomic_read(&mm->tlb_flush_batched);
+ 
++	if (batched) {
++		flush_tlb_mm(mm);
+ 		/*
+-		 * Do not allow the compiler to re-order the clearing of
+-		 * tlb_flush_batched before the tlb is flushed.
++		 * If the new TLB flushing is pended during flushing,
++		 * leave mm->tlb_flush_batched as is, to avoid to lose
++		 * flushing.
+ 		 */
+-		barrier();
+-		mm->tlb_flush_batched = false;
++		atomic_cmpxchg(&mm->tlb_flush_batched, batched, 0);
+ 	}
+ }
+ #else
+-- 
+2.30.2
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGcm1gACgkQwfwUeK3K
-7AlRDggAm6qkIUGQGWyAX0QRPDZFfXjgeM9USm7yoTNbBfhib62Vt6ZGYjBAstYv
-nsPuiRgru0ZWgLsd+YFs6+77lzaOVWxTu/AUNsMhbdnQFodZpUKJLIsEe6ts8RD2
-OQp837KzMj9E6sl2EyfkF0XCHHQO1vgCkChEI9C4/MMYiecFRoOucr+QIa+Mrl9F
-apfJ/AeUlo/6dBP948Z+hVumBaQR8IpMwpl8+ZU4l2/r4JXtDUaY+Dh76gaRETo7
-Wc7/+VEo/omAHCs0OYbOK/hGVGui5u0Wvh/+4ezJIxQabEsv/Idgqe2qGMtq3ZAO
-K9nUWUdt+2XbC4cJjJ9KqwGmoUj5kg==
-=Q/Aq
------END PGP SIGNATURE-----
-
---4l4f62vkmjup6i2g--
