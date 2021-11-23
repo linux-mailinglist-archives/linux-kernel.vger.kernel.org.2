@@ -2,69 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99DF245A777
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:20:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A174C45A77B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238814AbhKWQXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 11:23:48 -0500
-Received: from mga12.intel.com ([192.55.52.136]:24423 "EHLO mga12.intel.com"
+        id S238844AbhKWQYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 11:24:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235988AbhKWQXr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 11:23:47 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="215081455"
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="215081455"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 08:20:38 -0800
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="538304991"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 08:20:34 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1mpYX0-009pkf-JQ;
-        Tue, 23 Nov 2021 18:20:30 +0200
-Date:   Tue, 23 Nov 2021 18:20:30 +0200
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Denis Pauk <pauk.denis@gmail.com>,
-        Eugene Shalygin <eugene.shalygin@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        thomas@weissschuh.net, Ed Brindley <kernel@maidavale.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v12 0/2] Update ASUS WMI supported boards
-Message-ID: <YZ0UziuWdEnaUGrm@smile.fi.intel.com>
-References: <20211116205744.381790-1-pauk.denis@gmail.com>
- <f0bf01fa-ccd8-3a6a-8fd2-4c785fa212ef@roeck-us.net>
- <CAHp75Vfbh+O39C_k9zQqSqsoSro7_gv6QmsxgmdO=woA32Q0HQ@mail.gmail.com>
- <20211123155040.GA2184678@roeck-us.net>
+        id S235718AbhKWQYU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 11:24:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F289E60F45;
+        Tue, 23 Nov 2021 16:21:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637684472;
+        bh=bJYjfg3uF8xpjDJDnVOnd9oh4bBoBvzobz3Nkp3BsQ0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L2ik+NS/T8/u/VUDLTMx8c3Xi2fWxkrsX4zTLF+0abK/WRFhogX2KFZ0yJ1diguJz
+         Z5ZTHYsSXb3VYOdg/WROi0NNLhtyhJFcLPMXVWxbrPHn+wEIleMnzQWpIL4+oDr2T5
+         wtOUM/rN/rivWBscFjOfCTqUQZLjhjCraLXp9TeTlG6VKCxtj2DZusOxIJUi+OerHe
+         tjsdPhbkUrubDnvXqi348bGpH1BTjhjXSMT1ZYMk64xNaW471DkdPadvGUpsLP+lA5
+         /f+KC7Z+LAkNcu9o3Kogn5CcMJ0Kwc3r+NaARwoWfB1RYwJ9vwpTWnO0ME14+Mhljb
+         /L4R+UaLGRMww==
+Date:   Tue, 23 Nov 2021 16:21:07 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Adam Ward <Adam.Ward.opensource@diasemi.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Support Opensource <support.opensource@diasemi.com>
+Subject: Re: [PATCH V2 3/3] DA9121: add DA914x support
+Message-ID: <YZ0U81fNDD8DyNTS@sirena.org.uk>
+References: <cover.1637679551.git.Adam.Ward.opensource@diasemi.com>
+ <c633042a3bac4e8a6e522222c4b9eeced961c184.1637679551.git.Adam.Ward.opensource@diasemi.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dPSfVzQQljMNqUpw"
 Content-Disposition: inline
-In-Reply-To: <20211123155040.GA2184678@roeck-us.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <c633042a3bac4e8a6e522222c4b9eeced961c184.1637679551.git.Adam.Ward.opensource@diasemi.com>
+X-Cookie: A closed mouth gathers no foot.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 07:50:40AM -0800, Guenter Roeck wrote:
-> On Tue, Nov 23, 2021 at 12:22:46PM +0200, Andy Shevchenko wrote:
-> > >
-> > > Series applied to hwmon-next.
-> > 
-> > What is the repository it has been applied to? I don't see it in
-> > neither Linux Next nor [1]. It might be that I am missing the
-> > workflow.
-> 
-> I had not pushed the branch out. Done now.
 
-I can see it now, thanks!
+--dPSfVzQQljMNqUpw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-With Best Regards,
-Andy Shevchenko
+On Tue, Nov 23, 2021 at 03:09:26PM +0000, Adam Ward wrote:
+> Signed-off-by: Adam Ward <Adam.Ward.opensource@diasemi.com>
 
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
+--dPSfVzQQljMNqUpw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGdFPMACgkQJNaLcl1U
+h9BGDgf+KyKasZpbEU1/GRgqZfPoF9TBE/1Io24xqXt4d2+S/PU6qpSdn1/9cGqK
+NXMUMuxNMXrxHie/Lc8Zl5ionB8OOpSkDEBhyDgaXrfn+dXTSJjcH45dHbmSoEl7
+L51znnhZq5Eda3rJcw3lzU/Hd8svCYxKuH4TQzEvF1waaSUjFGRLN3Dh9Z8MFMOp
+b+YWtVWSEMCBNmg+sLVSpCoF8CQ7sThLRQeTUrUFY0cOkmRYuDspGDSD+Oqfbvcs
+HGeUvjKLy6+c5o1bhBS4rQqWoYDnr2sK7kUEmNfMpjL9nkjjGlqjx3VZeXyzGc7O
+zTq2OkZue5G9DFNT/29fLJldGYwEZg==
+=YUaT
+-----END PGP SIGNATURE-----
+
+--dPSfVzQQljMNqUpw--
