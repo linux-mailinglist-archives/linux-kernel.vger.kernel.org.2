@@ -2,108 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3EA745A006
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 11:21:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D6D45A00F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 11:23:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234386AbhKWKY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 05:24:26 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:56952 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231425AbhKWKYZ (ORCPT
+        id S235146AbhKWK0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 05:26:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229847AbhKWK0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 05:24:25 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 97D501FD58;
-        Tue, 23 Nov 2021 10:21:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637662876; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LT9/4SIjmaFXbf7+8x1j5ukFsUhfPd3v12li2rTpDt4=;
-        b=jQxaC+kAW9UEaBDBfbIdR+mYrOZwdP2yEueG6usjhRNIDapuYK05XtJ83jfqLxshPzEy5u
-        NG5iBNbGuIsz79AhMfM0C/JZkxnu08LtTBNil8elOQUyPd/jgo04WIiztr6Eb26U3gpeM4
-        zYJJJR4ZgDYuSgW2eexHzObAByuyUE0=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 4587BA3B89;
-        Tue, 23 Nov 2021 10:21:16 +0000 (UTC)
-Date:   Tue, 23 Nov 2021 11:21:12 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] printk/console: Split out code that enables default
- console
-Message-ID: <YZzAmNUHOsrHh8su@alley>
-References: <20211122132649.12737-1-pmladek@suse.com>
- <20211122132649.12737-2-pmladek@suse.com>
- <YZxNiiK3PRZnsfPG@google.com>
+        Tue, 23 Nov 2021 05:26:32 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B58C061574;
+        Tue, 23 Nov 2021 02:23:24 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id y12so89903162eda.12;
+        Tue, 23 Nov 2021 02:23:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BLa9DhjAB06zjOMfSgJjIOKy1OBWmGUyMeBeCrxhDPM=;
+        b=Yjc2DZtoWkfYgFYqWkVHfSCSLMHFkcfkm7+pw8sL6XLkHwLuwvO8ggrni6VWY0ZRxD
+         WCWtESQLIpI0YeHSQgB62gWiNSjIggf/NCE47SX0nrpyN1eRCMmdedRqu3ksj6sGV54A
+         N84Qcm+vkmmJtyfpNQv13U9QdHT5HYpuAjR9/6Ou9R1zER9lh/yQ55un9Ea2izoRk9mr
+         E30YQaUGwdC4QSdhZNIgz3ot3jcFwtYgv15WPrhOvTmAFX4nnSJ2QIbw+N2CbGekkcXN
+         MBQtNkPcCMi09ZBiCwwEV0qCi+PC8/IRi4g8GbOgf7hJijHg01L1f6AFZ9jdeM93S+UI
+         mfew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BLa9DhjAB06zjOMfSgJjIOKy1OBWmGUyMeBeCrxhDPM=;
+        b=Tk8gJH87Yl31MSn3lrMuBJ55zlAyMuNsXzUeg/fp02cGrA/xh0cwhpYnFEUL3PfJQ9
+         ZQ5JO9mnzf24oD+8i3Sd5SuA8lXtsNyFMKOfi0M1gkQtlkROrmUbl3XkRcU1nWBvJur/
+         Oe5CckAnBqpt3accEl26DIgNKnE6eh/fJU6UdPlefQ/J8Gpk49l4QvmcYgzrIg2U58Mk
+         orF/BaNOeP3JVQrX87k0JWZg7Y4VrNhZOcucwKo9NHY13dSRoWVlSp20Gww68bGPAqcB
+         QiSj25I3ZJUsef/+yCPffXztLo6SAGCR6QiXSCAg2KDyfCVv3YBapTounD8pysP4zEmW
+         A3Og==
+X-Gm-Message-State: AOAM532PRorjCLDnr+3YvdIkmifYRe2R+zRdUkxdSq0tDetR54SjqwxI
+        8/dsjJPLyosp/4elmwC36+GYkAkQFYvnfOrdBDg=
+X-Google-Smtp-Source: ABdhPJxNzJxqvc8wlpj9WXfx7m31SDwbXPR2ckwtQG9sccF7mwI3Y+q6UybbKU4+If9J90VeQTLvwZXeRSqiKpIxUMM=
+X-Received: by 2002:a17:906:489b:: with SMTP id v27mr5964462ejq.567.1637663003409;
+ Tue, 23 Nov 2021 02:23:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZxNiiK3PRZnsfPG@google.com>
+References: <20211116205744.381790-1-pauk.denis@gmail.com> <f0bf01fa-ccd8-3a6a-8fd2-4c785fa212ef@roeck-us.net>
+In-Reply-To: <f0bf01fa-ccd8-3a6a-8fd2-4c785fa212ef@roeck-us.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 23 Nov 2021 12:22:46 +0200
+Message-ID: <CAHp75Vfbh+O39C_k9zQqSqsoSro7_gv6QmsxgmdO=woA32Q0HQ@mail.gmail.com>
+Subject: Re: [PATCH v12 0/2] Update ASUS WMI supported boards
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Denis Pauk <pauk.denis@gmail.com>,
+        Eugene Shalygin <eugene.shalygin@gmail.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        thomas@weissschuh.net, Ed Brindley <kernel@maidavale.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-11-23 11:10:18, Sergey Senozhatsky wrote:
-> On (21/11/22 14:26), Petr Mladek wrote:
-> > Put the code enabling a console by default into a separate function
-> > called try_enable_default_console().
-> > 
-> > Rename try_enable_new_console() to try_enable_preferred_console() to
-> > make the purpose of the different variants more clear.
-> > 
-> > It is a code refactoring without any functional change.
-> > 
-> > Signed-off-by: Petr Mladek <pmladek@suse.com>
-> 
-> Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> 
-> [..]
-> > -static int try_enable_new_console(struct console *newcon, bool user_specified)
-> > +static int try_enable_preferred_console(struct console *newcon,
-> > +					bool user_specified)
-> >  {
-> >  	struct console_cmdline *c;
-> >  	int i, err;
-> > @@ -2909,6 +2910,23 @@ static int try_enable_new_console(struct console *newcon, bool user_specified)
-> >  	return -ENOENT;
-> >  }
-> >  
-> > +/* Try to enable the console unconditionally */
-> > +static void try_enable_default_console(struct console *newcon)
-> > +{
-> > +	if (newcon->index < 0)
-> > +		newcon->index = 0;
-> > +
-> > +	if (newcon->setup && newcon->setup(newcon, NULL) != 0)
-> > +		return;
-> > +
-> > +	newcon->flags |= CON_ENABLED;
-> > +
-> > +	if (newcon->device) {
-> > +		newcon->flags |= CON_CONSDEV;
-> > +		has_preferred_console = true;
-> > +	}
-> > +}
-> 
-> try_enable_default_console() also sets preferred_console, as well as
-> try_enable_preferred_console().
+On Fri, Nov 19, 2021 at 1:36 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On 11/16/21 12:57 PM, Denis Pauk wrote:
+> > Add support by WMI interface provided by Asus for B550/X570 boards:
+> > * PRIME X570-PRO,
+> > * ROG CROSSHAIR VIII HERO
+> > * ROG CROSSHAIR VIII DARK HERO
+> > * ROG CROSSHAIR VIII FORMULA
+> > * ROG STRIX X570-E GAMING
+> > * ROG STRIX B550-I GAMING
+> > * ROG STRIX B550-E GAMING
+> >
+> > Add support by WMI interface provided by Asus for X370/X470/
+> > B450/X399 boards:
+> > * ROG CROSSHAIR VI HERO,
+> > * PRIME X399-A,
+> > * PRIME X470-PRO,
+> > * ROG CROSSHAIR VI EXTREME,
+> > * ROG CROSSHAIR VI HERO (WI-FI AC),
+> > * ROG CROSSHAIR VII HERO,
+> > * ROG CROSSHAIR VII HERO (WI-FI),
+> > * ROG STRIX B450-E GAMING,
+> > * ROG STRIX B450-F GAMING,
+> > * ROG STRIX B450-I GAMING,
+> > * ROG STRIX X399-E GAMING,
+> > * ROG STRIX X470-F GAMING,
+> > * ROG STRIX X470-I GAMING,
+> > * ROG ZENITH EXTREME,
+> > * ROG ZENITH EXTREME ALPHA.
+> >
+> > I have removed "ROG STRIX Z390-F GAMING" from list of supported boards in
+> > asus_wmi_sensors that I have added by mistake. I had misunderstood a
+> > comment in the [1] issue.
+> >
+> > I have added separate records for each of modules in MAINTAINERS file.
+> > Before it was one shared recors for both of modules.
+> >
+> > Could you please review?
+> >
+>
+> Series applied to hwmon-next.
 
-Yes, this is one of the confusing things that this patchset is trying to solve.
+What is the repository it has been applied to? I don't see it in
+neither Linux Next nor [1]. It might be that I am missing the
+workflow.
 
-The result of this patchset is that preferred_console will be used
-only for consoles that are explicitely preferred via the command line,
-device tree, or SPCR.
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git/log/?h=hwmon-next
 
-The variable @has_preferred_console is renamed to @need_default_console
-in 2nd patch and completely removed in 4th patch.
-
-Anyway, thanks for review.
-
-Best Regards,
-Petr
+-- 
+With Best Regards,
+Andy Shevchenko
