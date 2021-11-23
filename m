@@ -2,107 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AEBD4599D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:50:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 702664599E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231950AbhKWBxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 20:53:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60260 "EHLO
+        id S232504AbhKWB4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 20:56:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231719AbhKWBxy (ORCPT
+        with ESMTP id S232261AbhKWBz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 20:53:54 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24DD5C061714
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:50:47 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id nh10-20020a17090b364a00b001a69adad5ebso1492015pjb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:50:47 -0800 (PST)
+        Mon, 22 Nov 2021 20:55:56 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB34C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:52:48 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id z18so25890719iof.5
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:52:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=HTzCF6jo65htyBDPrBpILeuvBdfXuhBAIKFNppjW8x0=;
-        b=S6zMZEH+VmGFF/xsCr6aCbyNpxx1pxYIOJuVyfkhQNaxEH5T5BMG3mtU+HtkGq0ZNf
-         MX8Fmo5U4MBHtVBCyO2WsuhFQYLk1zI3fbwn2Kn2KDKNHWA5Eifl/6ZRfDkJ1RxeWViV
-         XY/3aPlZMKgcNtF0rISzPQCt1I4M63iRdN4SxFACjhKvXWwIgXK7oKGs91ePkwJ24Pw8
-         YnKl2pDB16dO9oPqjbvqCgFUA4akW8Q5jpbD12C/Z4cf0matfKmmtSeSqF+wtf+kw8Ex
-         CcTrwDptzTTBK2GdJ/WMckd65hFkOQlnl7i0Nf2EvhRnoe+oJV1qfEwL+pHyGjf62Roj
-         /zlg==
+        d=ieee.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=7Oi7YYe6mXZ9qFhiItC3cT+zBCj+1FGQIOXFSu9z5Og=;
+        b=EMJHfp61byAPVM0d+YSPglX9cQhq+7ayPyr9zRTzuSPcvvgnxyLMG1ltK8vjfaD0FU
+         tlPYxbO7NtBZeDgMPNcJJoHVx+Je8+bWQnN+DVWW1NrLrqmC5gQjAph9/LWH4uiuxcYY
+         wd41pmLNfefVdVvVpoPO9twaon39sVO4IspOU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=HTzCF6jo65htyBDPrBpILeuvBdfXuhBAIKFNppjW8x0=;
-        b=I81+h8omgKr8bWz3so/lxgNi29xdrwQeQvjYv17FfJ1TBSJxS+mpdfogTyIwrO4bXc
-         fZobkYSrDqAT3VvOwRSBcgSaFjS1resTaNUFtUWWCn64SjAUwr5EKeHvRpqDzROFRaA9
-         w22lKSUETeISuF9ldLy9dJ6AeB6V67hApji6u+XTRQJjg1n7RUn0Kc4RI3WkN1WY/aL2
-         3z5VsTqZtmCjVw3UfXBP34qZUnsuc1NkU00KlnbFa500EVWR4fJycowbKb12rsKozt5H
-         FHFpK/qFE+GkHFlNH0Lejh/FCUR8YGU2dOwZCR3jcB+v8iSHt7Rr5aGzgkpUeBf9ijUL
-         gv6g==
-X-Gm-Message-State: AOAM5320xhLPKaDlHGOPn9UAytQ+gNVt+18D8gKEW3wEFJ/v2Yl5Gi0s
-        XFYVnlbcWCg8WItvqq3f+pSJMw==
-X-Google-Smtp-Source: ABdhPJxQ/8pqCEDnIj+5QGwd3pdxrE9t/GxEAizWH0isuFT+ppdRZmYdF7x41Z64MCWW5JOlqy1cHw==
-X-Received: by 2002:a17:90a:17ef:: with SMTP id q102mr1899751pja.116.1637632246379;
-        Mon, 22 Nov 2021 17:50:46 -0800 (PST)
-Received: from [2620:15c:17:3:c755:32e5:ce22:b7a8] ([2620:15c:17:3:c755:32e5:ce22:b7a8])
-        by smtp.gmail.com with ESMTPSA id t4sm10307601pfj.13.2021.11.22.17.50.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 17:50:45 -0800 (PST)
-Date:   Mon, 22 Nov 2021 17:50:44 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     Mina Almasry <almasrymina@google.com>
-cc:     Jonathan Corbet <corbet@lwn.net>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Paul E . McKenney" <paulmckrcu@fb.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <florian.schmidt@nutanix.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v7] mm: Add PM_THP_MAPPED to /proc/pid/pagemap
-In-Reply-To: <20211123000102.4052105-1-almasrymina@google.com>
-Message-ID: <b34e16a-f520-ec7b-7811-6adc2e645a5@google.com>
-References: <20211123000102.4052105-1-almasrymina@google.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=7Oi7YYe6mXZ9qFhiItC3cT+zBCj+1FGQIOXFSu9z5Og=;
+        b=wvi0FDwDTaCYAzYhbj4iqMoIanPK6kO+DSFqRXzB+zZ8U6Nvmbd+9yfQ8Fy/62Tlnr
+         OQxkm/4jQkLKK0RLwpAgO+tlTnwmldUP0WaOodmG08oJAZOrzGim3pt/24A2HpErhPxd
+         FcW0JvLfnAGotYq9168YzzXXIFa/YuUdSyi+YCiJaLFafElvjsGx6pqRoh2BuN/0Ahu1
+         9a2fsdfwZifFBeTgc5pLgkr9QnwKTDsj0LWwe9dd1uFhR07egzS8HFik8oFFn5OG8PmH
+         eHqZcFC3kfLdsFoPMzByv/6+ADoXJO+gmbQV5kSKPrHd8avctkWhKk0EYwOHtNFk4nFw
+         e3bQ==
+X-Gm-Message-State: AOAM530VIf7cYUKK+m3cCT3hkAPpO0gFmEs1IrKKWBYn+y4Qv5s4obzZ
+        rzDKCyMa0t4jjH+HRXWKgfsFpg==
+X-Google-Smtp-Source: ABdhPJwFYEXqq9O3YpMuHp49czIlbhiXDJHljcLoM+vErOaDm/O2cJ+JlOI+DmxoJkJ4K5f7Ve5+nA==
+X-Received: by 2002:a05:6638:14ca:: with SMTP id l10mr1120728jak.107.1637632367373;
+        Mon, 22 Nov 2021 17:52:47 -0800 (PST)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id d137sm6102931iof.16.2021.11.22.17.52.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Nov 2021 17:52:47 -0800 (PST)
+Message-ID: <5936f811-fa48-33e9-2a1a-66c68f74aa5e@ieee.org>
+Date:   Mon, 22 Nov 2021 19:52:43 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH 01/17] bitfield: Add non-constant field_{prep,get}()
+ helpers
+Content-Language: en-US
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Paul Walmsley <paul@pwsan.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Benoit Parrot <bparrot@ti.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Keerthy <j-keerthy@ti.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
+        alsa-devel@alsa-project.org
+References: <cover.1637592133.git.geert+renesas@glider.be>
+ <3a54a6703879d10f08cf0275a2a69297ebd2b1d4.1637592133.git.geert+renesas@glider.be>
+ <01b44b38c087c151171f8d45a2090474c2559306.camel@sipsolutions.net>
+From:   Alex Elder <elder@ieee.org>
+In-Reply-To: <01b44b38c087c151171f8d45a2090474c2559306.camel@sipsolutions.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Nov 2021, Mina Almasry wrote:
+On 11/22/21 10:32 AM, Johannes Berg wrote:
+> On Mon, 2021-11-22 at 16:53 +0100, Geert Uytterhoeven wrote:
+>> The existing FIELD_{GET,PREP}() macros are limited to compile-time
+>> constants.  However, it is very common to prepare or extract bitfield
+>> elements where the bitfield mask is not a compile-time constant.
+>>
+> 
+> I'm not sure it's really a good idea to add a third API here?
+> 
+> We have the upper-case (constant) versions, and already
+> {u32,...}_get_bits()/etc.
 
-> Add PM_THP_MAPPED MAPPING to allow userspace to detect whether a given virt
-> address is currently mapped by a transparent huge page or not.  Example
-> use case is a process requesting THPs from the kernel (via a huge tmpfs
-> mount for example), for a performance critical region of memory.  The
-> userspace may want to query whether the kernel is actually backing this
-> memory by hugepages or not.
-> 
-> PM_THP_MAPPED bit is set if the virt address is mapped at the PMD
-> level and the underlying page is a transparent huge page.
-> 
-> A few options were considered:
-> 1. Add /proc/pid/pageflags that exports the same info as
->    /proc/kpageflags.  This is not appropriate because many kpageflags are
->    inappropriate to expose to userspace processes.
-> 2. Simply get this info from the existing /proc/pid/smaps interface.
->    There are a couple of issues with that:
->    1. /proc/pid/smaps output is human readable and unfriendly to
->       programatically parse.
->    2. /proc/pid/smaps is slow because it must read the whole memory range
->       rather than a small range we care about.  The cost of reading
->       /proc/pid/smaps into userspace buffers is about ~800us per call,
->       and this doesn't include parsing the output to get the information
->       you need. The cost of querying 1 virt address in /proc/pid/pagemaps
->       however is around 5-7us.
-> 
-> Tested manually by adding logging into transhuge-stress, and by
-> allocating THP and querying the PM_THP_MAPPED flag at those
-> virtual addresses.
-> 
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
+I've used these a lot (and personally prefer the lower-case ones).
 
-Acked-by: David Rientjes <rientjes@google.com>
+Your new macros don't do anything to ensure the field mask is
+of the right form, which is basically:  (2 ^ width - 1) << shift
+
+I really like the property that the field mask must be constant.
+
+That being said, I've had to use some strange coding patterns
+in order to adhere to the "const only" rule in a few cases.
+So if you can come up with a satisfactory naming scheme I'm
+all for it.
+
+					-Alex
+
+
+
+> Also, you're using __ffs(), which doesn't work for 64-bit on 32-bit
+> architectures (afaict), so that seems a bit awkward.
+> 
+> Maybe we can make {u32,...}_get_bits() be doing compile-time only checks
+> if it is indeed a constant? The __field_overflow() usage is already only
+> done if __builtin_constant_p(v), so I guess we can do the same with
+> __bad_mask()?
+> 
+> johannes
+> 
+
