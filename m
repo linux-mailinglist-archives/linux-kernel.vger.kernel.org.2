@@ -2,82 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD56945A0A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 11:52:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE70B45A0AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 11:54:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235547AbhKWKzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 05:55:44 -0500
-Received: from sauhun.de ([88.99.104.3]:48678 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234186AbhKWKzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 05:55:42 -0500
-Received: from localhost (p5486ca86.dip0.t-ipconnect.de [84.134.202.134])
-        by pokefinder.org (Postfix) with ESMTPSA id A128F2C009E;
-        Tue, 23 Nov 2021 11:52:33 +0100 (CET)
-Date:   Tue, 23 Nov 2021 11:52:33 +0100
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Peter Rosin <peda@axentia.se>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Evan Green <evgreen@chromium.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Korsgaard <peter.korsgaard@barco.com>
-Subject: Re: [PATCH v1 1/3] i2c: mux: gpio: Replace custom
- acpi_get_local_address()
-Message-ID: <YZzH8fSk6B1n9WX9@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
-        Peter Rosin <peda@axentia.se>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Evan Green <evgreen@chromium.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Korsgaard <peter.korsgaard@barco.com>
-References: <20211115154201.46579-1-andriy.shevchenko@linux.intel.com>
- <304efdfe-db6e-051e-b61d-e73a8dfa1c53@axentia.se>
- <CAHp75VcF1TZ5hH42-D+0sRkYkN-A1r797LdHGMT93UO4Sp3wLQ@mail.gmail.com>
- <fecc80b0-e24b-409d-5f60-82b899f0bdba@axentia.se>
+        id S235451AbhKWK5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 05:57:16 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:37501 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229924AbhKWK5Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 05:57:16 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R331e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=yinan@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UxvDTNN_1637664845;
+Received: from localhost.localdomain(mailfrom:yinan@linux.alibaba.com fp:SMTPD_---0UxvDTNN_1637664845)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 23 Nov 2021 18:54:06 +0800
+From:   Yinan Liu <yinan@linux.alibaba.com>
+To:     rostedt@goodmis.org, peterz@infradead.org
+Cc:     mark-pk.tsai@mediatek.com, mingo@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] ftrace sorting optimization changelog
+Date:   Tue, 23 Nov 2021 18:54:03 +0800
+Message-Id: <20211123105404.22166-1-yinan@linux.alibaba.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+In-Reply-To: <20210911135043.16014-1-yinan@linux.alibaba.com>
+References: <20210911135043.16014-1-yinan@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="meIjsH7BA1Ore7SF"
-Content-Disposition: inline
-In-Reply-To: <fecc80b0-e24b-409d-5f60-82b899f0bdba@axentia.se>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---meIjsH7BA1Ore7SF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I found a code alignment problem in patch v3 and 
+modified it in patch v4. You can look directly at 
+patch v4, cover-letter introduces the changes 
+starting from patch v2.
 
-> @Wolfram: You're finding this series in patchwork and will be picking it
-> up as usual, right? Thanks!
+v2 link:https://lore.kernel.org/all/20211116024942.60644-2-yinan@linux.alibaba.com/
 
-Right, will do so now.
+v2--->v3(alignment problem)--->v4
 
+Modified the code style issue of if() {} raised by Peter.
 
---meIjsH7BA1Ore7SF
-Content-Type: application/pgp-signature; name="signature.asc"
+Fix the compilation error by changing the position of 
+the relevant compilation options of pthread, which is 
+reported by the robot.
 
------BEGIN PGP SIGNATURE-----
+The two tabs show differences in vim and git diff. 
+In patch v3, the display in the patch is directly 
+adjusted, resulting in misalignment of the format 
+in the code. 
+In patch v4, the alignment in the code is maintained, 
+but the display in the patch looks very awkward, but 
+this is just the display problem.Both are two tabs. 
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmGcx/EACgkQFA3kzBSg
-KbaXAQ/+N13bGsQOkSjn4Phfs1jQzubQo8FR08/SzxDTuD5WJoKPI6EkqOLpUHzq
-ot44+RajN2QoAqYtFM7UNGOsz2D8A3wGnB7QjvTpJlnpX7bFMJ0j0wdzVy5Qq07x
-dU4RZRjJr1hNGQGTAuTTky2JLbQeOYgEyM7yiuzMnrOLWi9/2tRBedW7nMmZo5Fy
-aT58BjSvcC2YvitDqfs2XHHelYJZpRk1dPq+VKfsJiAP+gYOkH8TCwpcxGPFbnP8
-HlSqjsQNaWfIpMA5teavozeey0z+86W5QZk5p3L5432CkzpiZV2XZTL05cpl44Yp
-PWkRsfQXn+SZYmKzA2xzin9gUTmuBchTn4mSOIt+nvbs89T1JLpZRlrDCDzA5kfM
-fT2mhEFr96MUtIN5WCyPt1HX2JUo3mve+ZCnGLoRz5tv0Py1TrJIlByWQIJxaIBu
-ffHAQNSQQzIf97NV0AIQ5VPeF6XqBKP6xRXcOuOYRDecn5wdbf7i1nAW9ajt7Pqu
-NQMldlnZCxWFtis3lP5NzPDGZxMP0JyI0Hns8pf2Ls6nhRPm/NnsC0d5DJ2d9NsX
-7NXE5jrKYEiYy41ip0m+K86+sj3cy1l5AjMds7l/LK79dTYof2/db3Vv+/A6GfR1
-hdzy3L/CLyDC5k82TZw+Qn2e6MX6QlREkENIbb5VTiX1Zyqf+y8=
-=ARCc
------END PGP SIGNATURE-----
+Best regards!
+-- Yinan Liu 
 
---meIjsH7BA1Ore7SF--
+Yinan Liu (1):
+  scripts: ftrace - move the sort-processing in ftrace_init to compile
+    time
+
+ kernel/trace/ftrace.c   |   6 ++-
+ scripts/Makefile        |   2 +-
+ scripts/link-vmlinux.sh |   6 +--
+ scripts/sorttable.c     |   2 +
+ scripts/sorttable.h     | 113 ++++++++++++++++++++++++++++++++++++++++++++++--
+ 5 files changed, 119 insertions(+), 10 deletions(-)
+
+-- 
+1.8.3.1
+
