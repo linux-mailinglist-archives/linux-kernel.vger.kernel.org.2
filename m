@@ -2,174 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B879E459929
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 01:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E12B45992A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 01:31:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231426AbhKWAc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 19:32:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:36352 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230411AbhKWAc5 (ORCPT
+        id S231585AbhKWAev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 19:34:51 -0500
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:48546 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230411AbhKWAeu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 19:32:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637627389;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jhcOB8BH8KnNqvuiAnlE7QM1O3rOBhzq7Gqgyf6Q30M=;
-        b=THsCUFTBBdhiXIIeCGBFebADFKARsrux0zUHFLn4uo9sjgVGq0CoPM/3wO1KE6d1aCJF46
-        WY4LJBnzTXvrDGEX3JCA8UcvaiOMnZLi7NLqRmjQlHxpIz0mX5ecCG/w2RaBQBkbzaD2OT
-        /nnTd/hflAPq+PbLYxkI0DgjFgFcZMc=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-7-IAZX5zLZPKyfTtdu8ErZAA-1; Mon, 22 Nov 2021 19:29:48 -0500
-X-MC-Unique: IAZX5zLZPKyfTtdu8ErZAA-1
-Received: by mail-pg1-f197.google.com with SMTP id s8-20020a63af48000000b002e6c10ac245so7004511pgo.21
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 16:29:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jhcOB8BH8KnNqvuiAnlE7QM1O3rOBhzq7Gqgyf6Q30M=;
-        b=6dOXG9Bc/ilc/zGpfoBYxqmJOt4hsftZNq2J4RbgUEPIqEU5yWbc2+71cPtS2pDqHg
-         seO6vF01pJ3Ho/9rJ2jLBhxRztbMVoSuQFyzVBnH/0T06zGR6/cu/lJjFdov4JYb4TKQ
-         8w4x5ievFvmDY230i/0aDnqmNnTEEnedaU02y1DXircrtGnlPMlQ2VHj7I789v0bLjxb
-         7E7Ib++tQYj/tEgktR0HpUIPg3+X43i9KjGfLfK3hqx7VYrqTo/atLh5mwBFGsN8M/n6
-         HK0zUfhZdnSOM6PbW5e2dhoAMfUgNUgh2sdN1ZbqQPdDGkLgrRUFK6gRY7J+FaZglCHn
-         5h7w==
-X-Gm-Message-State: AOAM5306Hy1JQbvLTSRwTtld49jpoixrHlrT3ez+fGktiVmx6R5QePUl
-        lDqQSb9NDrpIvdXZ7wxn13iD1d0ZD1TyphPBELp9I8vANeOEzzG7dmnqXyUCMyVFg5DnNtCDI2r
-        XMfqEsE8ykPd+tMA+nN3xZ/KL
-X-Received: by 2002:a17:902:d2cd:b0:141:fbe2:b658 with SMTP id n13-20020a170902d2cd00b00141fbe2b658mr1640060plc.49.1637627387235;
-        Mon, 22 Nov 2021 16:29:47 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxpmetXUOw/FjelCYN18jFCDbKx5Mx0EYWYDFcq013NXXWYI7dgU9YbVVZp1nzeyUp9MIPV2Q==
-X-Received: by 2002:a17:902:d2cd:b0:141:fbe2:b658 with SMTP id n13-20020a170902d2cd00b00141fbe2b658mr1640015plc.49.1637627386936;
-        Mon, 22 Nov 2021 16:29:46 -0800 (PST)
-Received: from xz-m1.local ([191.101.132.71])
-        by smtp.gmail.com with ESMTPSA id e18sm7083261pgl.50.2021.11.22.16.29.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 16:29:46 -0800 (PST)
-Date:   Tue, 23 Nov 2021 08:29:38 +0800
-From:   Peter Xu <peterx@redhat.com>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Paul E . McKenney" <paulmckrcu@fb.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <florian.schmidt@nutanix.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v6] mm: Add PM_THP_MAPPED to /proc/pid/pagemap
-Message-ID: <YZw18r7w4GRAmFwV@xz-m1.local>
-References: <20211117194855.398455-1-almasrymina@google.com>
- <YZWfhsMtH8KUaEqO@xz-m1.local>
- <CAHS8izPKm3jFjpwtGwcF=UVnxYhZFkJ-NZKOyV+gjPDvzi5reQ@mail.gmail.com>
+        Mon, 22 Nov 2021 19:34:50 -0500
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AMNtUXq015340;
+        Tue, 23 Nov 2021 00:31:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=b0q1dbKWdt69qRaF9o03k9L6nO+yx7S73+mGJS8+v8g=;
+ b=Cz5e+wEUp8E4R3/VKlZCv2mqSOVI0vZthy+Z9OacYdReUj39zBPTK0YyidMDosifbQ6T
+ +szBnrR7Edi+7r5waZGUUqwwaA9CsOBEkhS73RfqJ8pKJx3FLnNbl6EB5wnXMqRqlukl
+ Tkdq58eMbgfMdBS2slMH1ff74BoxyZ/Yj6cMoKwIgSXD0yjoven8sTqY+jkkMDL6DtVX
+ 61iY2DZMzKywTtrU4oE0sigr5WWHEkSyRX5C/mcrj7rK8XmQou+fyrEyK8cPMUzl31WP
+ 7jUOcQmIHOvJRc3qkU8WfNfPp2E3bYJSdmFiCuyFwP/1ws3BYm1qfP+pJwrG3pa3B9rb KQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3cg46f63pq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Nov 2021 00:31:30 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AN0Kad4124536;
+        Tue, 23 Nov 2021 00:31:29 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
+        by userp3030.oracle.com with ESMTP id 3cep4xhmdf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Nov 2021 00:31:29 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CRmQt4moQ1UjuNLC+agkIEw1rqiZbC75NtNjlJCxBKMXo+8iuMLWZld3RMspdHwG6SlX/DCffLulyaetMmPgEMPo2CUwnotDEtpV8qrZgJummMoG+UraTLTdGO1jbc/ssvsYWEXPrZ17b9XyKZxmPrAUo9kmmUSGo21t8hV0mert3I63OHRuEPU/uxjLG0wGH3w9C0EGZ4MXK0UUc9wzOEY2srABWWw30kEfpECi/OOF60DjO9XCFZAp9088DUGf0ZZq1sSETY7CLTLceKen3Iz1pyVRhxLmf0ekqCumTIpTdYxCjHcE6AyqKrczQxYHCWKsZYFKow0+7r8z2JPa8g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=b0q1dbKWdt69qRaF9o03k9L6nO+yx7S73+mGJS8+v8g=;
+ b=TULV1HvkcDnvSfQ6hWdkjfG6l4YsyfUVnlag3qUTsMDos+FjMzApes8YCVM2F2Sm1ym7OiaQ/bNnShnUHJjWz5jOyxvsFWiZQKF5qd62Y9w68PMOrXTqFAip0Ea0WQHQE04J1/K5vzKdUcsthr6E6gnoRZDIP0dBKW3NT6wPryc90FXUrPg7e6VcXWgr/S9LTEjymAYUrO8h9FnLKd1TfegybmdUjK2ecN+ibn2opqs1PC9Hq5NWsofKEIji4xJTOrhXtdKu9izCqoPe0CnyvRq9A4t2bc6GajaAV4achdTahpESmtld0KUQ1iSUE5blKZv4QMnk43bjR9nwFUt4kw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=b0q1dbKWdt69qRaF9o03k9L6nO+yx7S73+mGJS8+v8g=;
+ b=k2d9Bq65LzAfNr90R0t0oGDO9Yeeg1iayrhW45tc1FTXEJSyGvnmyPCtDl8/kB5WtqQPyS4iLDjh0KgmLntsyf/dkrYxStGGSWdpubFZiN0xnzHaMTAaGutJgZpj6I3q8Pj0IbPqLdEyvk8C2bZEp8bEa9do5w/44+xpqfUPLwk=
+Received: from BYAPR10MB3270.namprd10.prod.outlook.com (2603:10b6:a03:159::25)
+ by BYAPR10MB3512.namprd10.prod.outlook.com (2603:10b6:a03:11b::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.27; Tue, 23 Nov
+ 2021 00:31:27 +0000
+Received: from BYAPR10MB3270.namprd10.prod.outlook.com
+ ([fe80::715c:4853:52ce:dd7e]) by BYAPR10MB3270.namprd10.prod.outlook.com
+ ([fe80::715c:4853:52ce:dd7e%5]) with mapi id 15.20.4713.025; Tue, 23 Nov 2021
+ 00:31:27 +0000
+From:   Santosh Shilimkar <santosh.shilimkar@oracle.com>
+To:     Nishanth Menon <nm@ti.com>
+CC:     ARM SoC Team <arm@kernel.org>, SoC Team <soc@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        "tony@atomide.com" <tony@atomide.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] MAINTAINERS: Update maintainer entry for keystone
+ platforms
+Thread-Topic: [PATCH] MAINTAINERS: Update maintainer entry for keystone
+ platforms
+Thread-Index: AQHX4AFzhNhH1vxe/kWrhzOFD+fm3w==
+Date:   Tue, 23 Nov 2021 00:31:26 +0000
+Message-ID: <4008B83B-9D2A-4004-99D8-2B1CC131EFC7@oracle.com>
+References: <20211123001725.21422-1-nm@ti.com>
+In-Reply-To: <20211123001725.21422-1-nm@ti.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.4)
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f18092c2-0048-4320-95e9-08d9ae189628
+x-ms-traffictypediagnostic: BYAPR10MB3512:
+x-microsoft-antispam-prvs: <BYAPR10MB3512882C22D712D565ED06AF93609@BYAPR10MB3512.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Tsg4fRgg2jiQMa+8ft9vB2iKOoo5Ny7+i3Xur8tZ03XPTJwqzNtCQRj9y5+Ldt0vJe7llTVPcLv1KDzDCh2SvLXvQElZkwchStFjqvVPXrVJW5YSTu+q1Jk/0p0KgkCNAE0fNrPCMWAbyg0jQMCg+dVGvLj8pUjpJW489CHYdaFHiTlsiivqy5jXzFtooj+nPxtCM8pZoStp/bKtrI3PIgyrONw+IJKOTfr5eJzxYeMYa/yDgtpG8ifGZqvZtGzdaMWxRptZyJXVWsETEiwKaeSZ/roWLBb8MifqPMQgWD2bie3Qj0d76ju4WmF+8diyJ/LXAGHfyIcb1tRTtTmhhfaOc+rxlEfXFsC5QXasoO10T6weSHFYGO45HS6evQskQ0B5r7hF3hKEqfnRY3aNi3d0auVaY8MGKJj4+6Jx/q/SlnB9I5tjYQ8FDOxaN8f/y49JeCcbE7VV4UHDb7kYAyBIZdWLL2aCxuteynU4wekUDFr+b2WqJTxokY1imwWHpqR65qPNipN7C8Wrwv8djo4aH3VJXVI4q+AmsSU5hLNFxGJNcssQ8Qdk3t4JkFu7SBYkvcY+aTcWwJZ1cNxMp5XBnEkmPl0BBNofE/0r3jZPYKyjGNua1QsVq6rB5CiCLxM2NL/EZ+PswWsJmp2isVYU17gOQxNoCrnau6ZAhcvAtrtSPPP87AjZiZI6TdpOwIT4wOf9kPHiMHqyYtZps3XqBaYPJvYWlwPFUVIdr0w9jx/lmh4fxd1tcAWRUj6M
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3270.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(54906003)(38100700002)(26005)(122000001)(6506007)(66946007)(71200400001)(66476007)(66446008)(5660300002)(64756008)(66556008)(91956017)(76116006)(33656002)(38070700005)(6916009)(36756003)(2906002)(186003)(53546011)(316002)(8676002)(86362001)(2616005)(558084003)(44832011)(6512007)(8936002)(508600001)(6486002)(4326008)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ekxuTHU0bjZicnNaS1lKUUhYN0JvMWUzbkU0Q0lvdmlERTNYSmhDaGdqd293?=
+ =?utf-8?B?bFlXR0ZKVGMwSldDUWR1K1VvdHZSd0Fib1l4SjE5ODRIRE9nN21FQVBaTGgv?=
+ =?utf-8?B?bHhVYjhwUHZhYmdUbzVOOEx3YUVrQ2ZwN25MaDhFdjBrcnJBOG8zRlB5OVVt?=
+ =?utf-8?B?MFRodldNbTlhVUo0ODV1Vjhua2ZhaEFFQ0ErL0Q3dy90U3VZUkRFWmlkSUt3?=
+ =?utf-8?B?OTRXeENlZmhhZGY1UnVCQmhiZmE4QWYzRlQwR3A2ZEwrOWdNVk5kblVFSklV?=
+ =?utf-8?B?bTVpb0hmeUtkSGpQZENCSWw1Nk9XWXRCc2FXNHVxdm1nL250MjV6aHJ4SmZY?=
+ =?utf-8?B?TitHNHg2TE1jZ01YSDMwbjNsNnRjdHV0dGN4UzZIeEtJN3pjQ0xHYUNNSTYv?=
+ =?utf-8?B?d2QwaitRM1hFcTYrMDM1TjNibXo0NnRpRVlUTXhESG1VdjUrc0JDM09VTkpC?=
+ =?utf-8?B?NlltcUxMTTA2aFJJU25aclhQL0c2US80eXZCVXY5VHdaQi9JZ1N5UWFxWWp6?=
+ =?utf-8?B?UlVwdmJMNVkwMXBubHkxMDRwQi82c0R5bjA4RVF3Zm9WUzFZUzRvNy81NDJP?=
+ =?utf-8?B?YzltTlZpZ1EvL0VsQnY2aWZVUlRMTEVOSExmRUFIejdKeUZ5elVrQVg3WUIx?=
+ =?utf-8?B?T1U2Mm92ek1ydWEzN0laYzVzVFJQWDV0TGtQOXdkZHpVOHZIakNwNmE2dVU0?=
+ =?utf-8?B?TXpaSktyNXQ2R0MvQ3g1akpWNkpHQ2tuL2huUjlES0Vwa2tZd0lvWDFyRDlu?=
+ =?utf-8?B?dnczUDhWM253OEpsTW9nUDN5aFZBcndnVFhQTWs5R3BwNTdiclNLNFJTa3lF?=
+ =?utf-8?B?UjNzMFBjYlhjbGRJc0RBVkNudmNtZ3NOM2R4L2lmV29ka0E3SG1XbGZGSlNZ?=
+ =?utf-8?B?S0F0aXhDSFhuMm9UUklvQllMQk5iemVDb2g5eDVod2UwUFlEYTY4QnBTc1F1?=
+ =?utf-8?B?c2JzMTVWb2xxOU1GUlZSaFgyR3E1RG5hdzdyWFRJb09WMGc2RDQ3b1RDNytS?=
+ =?utf-8?B?d1VPNFJXU3Z3RGRWNnlvUWZKRHE5a2hRUWdQKzlQK3pYRE93K0dmRTJxZE5v?=
+ =?utf-8?B?bjRvT0ZXRHVJMC9rZzVpVGlacTVTRFpFa2paK21JWnJ6Zkova2JXQmw0RmVy?=
+ =?utf-8?B?ZzMrdHgvZFAvbVp5R0lJQjBxby9pQzIvYzlncUM1TDcwWG84djd3V0FCeHlm?=
+ =?utf-8?B?N3pucmFmVGdjMmxIOXAzMDJRaFR0aU9FYXpmSjFmMVBaaEI2R241Mk1EN2p3?=
+ =?utf-8?B?Z1dMVXN0OWpvVEJQRjNKcG1pUHVEQW5odWJmOTVJZlQ5RTBQYW5hSVFiY0hV?=
+ =?utf-8?B?ZzU0dWVHdVJMaXVmR2FNQzNjK3NSdVYwdGlrWXl1azI3Y3hBSm1zWGNCd0VQ?=
+ =?utf-8?B?d1MvTzR5MWhrclhCWnFjSERhRHFwRXFVTmcwQTlBSldqRHhDYm9LK0pSTW9B?=
+ =?utf-8?B?ZzJmemFrbjVQNytNQko4eW1PZ01vMlV0RTN6WDkyMzQySmFEdGtWVks4SXJT?=
+ =?utf-8?B?bXJ0dGxtNlNaS2ZESm9aQmdFWlRQeCtuUm9qdm1qNG9od3lCTzNOUjVjUEVy?=
+ =?utf-8?B?eVhJWHNHWDZNaTh6YVBMcEgyRUY0V21LUWFHU1F4cE9uMklXWmRUdmtsMk5p?=
+ =?utf-8?B?T0NNWWJoZUJpZ3p2YUgrZzk2bGZmWlJZS2I3djQyQno5Vlk1cGt6T1pwejdW?=
+ =?utf-8?B?ajdITTVvMklXNCtIU1dkS0V2bERSVU5LVWJRdFhyQ3NueFdBQ2JCYkZNUDNy?=
+ =?utf-8?B?dFBsRUtzZGRWdC9sZmE1ZFNkL0ZXbzRGYzZMdElWalBWbGNuYVI4RGxzVXYz?=
+ =?utf-8?B?UFpCZmQ5MURrTTY3ckJFclNabVdzcVNKVUx0VDhaK0hsL2dIWWRpdWR1ZDBp?=
+ =?utf-8?B?RTFKL2dWd1JpN3UvdXdMdG92N3ppbkdwbUxoSnJHbitUUGR0NVZwWkU5aVpp?=
+ =?utf-8?B?cmJ2MnpYR09oYVNuZG5kb2ZibFRSUHVMK0orYytPSkZOSTBobnpCeXV4OWd3?=
+ =?utf-8?B?ZGJBdFFWN1hXUkF3U1ZPOGJ6b2pxbHNtQ3pnbVJXblEweTQzM1B3NCtOeHY1?=
+ =?utf-8?B?Wm9sNEs3UXBBVk1FYWErV01RK3htRFk2QmU4eFVQbTFzczh0TUxnZHhPZ0hh?=
+ =?utf-8?B?NFN4QXFtdm92ckVjU3dPVXY4S29SSk5JaXUzaC8rcVhsR0JNVVBza1dncDJz?=
+ =?utf-8?B?ZFFpZVRLWjEzVHM5ZHZVMXhuTHpRdlJ4eUFJNTNYYVk2MmM5ZVVHTnozWFZx?=
+ =?utf-8?Q?1PQa2+MXnNKcjsDrV2bP38QSjUtmVByeJnjeZbju6Q=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E16C665050604F4DBD30A44B876E7F7C@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHS8izPKm3jFjpwtGwcF=UVnxYhZFkJ-NZKOyV+gjPDvzi5reQ@mail.gmail.com>
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3270.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f18092c2-0048-4320-95e9-08d9ae189628
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2021 00:31:26.9956
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Xva9B8N+GguafvGX4lpQAhSoqj5+wrk5Ol9D9daAhNmFnSSEcYmz/6IIsAvqf244j0AlVTeVetNQdzk2ntMnvV8sptYsPfUw8f3qeDUeJOc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3512
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10176 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
+ mlxlogscore=965 bulkscore=0 mlxscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111230000
+X-Proofpoint-GUID: DBYnubh5eYFPGW7d_3rHN_qVV2doTFXN
+X-Proofpoint-ORIG-GUID: DBYnubh5eYFPGW7d_3rHN_qVV2doTFXN
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 04:00:19PM -0800, Mina Almasry wrote:
-> On Wed, Nov 17, 2021 at 4:34 PM Peter Xu <peterx@redhat.com> wrote:
-> >
-> > Hi, Mina,
-> >
-> > On Wed, Nov 17, 2021 at 11:48:54AM -0800, Mina Almasry wrote:
-> > > Add PM_THP_MAPPED MAPPING to allow userspace to detect whether a given virt
-> > > address is currently mapped by a transparent huge page or not.  Example
-> > > use case is a process requesting THPs from the kernel (via a huge tmpfs
-> > > mount for example), for a performance critical region of memory.  The
-> > > userspace may want to query whether the kernel is actually backing this
-> > > memory by hugepages or not.
-> > >
-> > > PM_THP_MAPPED bit is set if the virt address is mapped at the PMD
-> > > level and the underlying page is a transparent huge page.
-> > >
-> > > A few options were considered:
-> > > 1. Add /proc/pid/pageflags that exports the same info as
-> > >    /proc/kpageflags.  This is not appropriate because many kpageflags are
-> > >    inappropriate to expose to userspace processes.
-> > > 2. Simply get this info from the existing /proc/pid/smaps interface.
-> > >    There are a couple of issues with that:
-> > >    1. /proc/pid/smaps output is human readable and unfriendly to
-> > >       programatically parse.
-> > >    2. /proc/pid/smaps is slow.  The cost of reading /proc/pid/smaps into
-> > >       userspace buffers is about ~800us per call, and this doesn't
-> > >       include parsing the output to get the information you need. The
-> > >       cost of querying 1 virt address in /proc/pid/pagemaps however is
-> > >       around 5-7us.
-> >
-> > This does not seem to be fair...  Should the "800us" value relevant to the
-> > process memory size being mapped?  As smaps requires walking the whole memory
-> > range and provides all stat info including THP accountings.
-> >
-> > While querying 1 virt address can only account 1 single THP at most.
-> >
-> > It means if we want to do all THP accounting for the whole range from pagemap
-> > we need multiple read()s, right?  The fair comparison should compare the sum of
-> > all the read()s on the virt addr we care to a single smap call.
-> >
-> > And it's hard to be fair too, IMHO, because all these depend on size of mm.
-> >
-> > Smaps is, logically, faster because of two things:
-> >
-> >   - Smaps needs only one syscall for whatever memory range (so one
-> >     user->kernel->user switch).
-> >
-> >     Comparing to pagemap use case of yours, you'll need to read 1 virt address
-> >     for each PMD, so when the PMD mapped size is huge, it could turn out that
-> >     smaps is faster even counting in the parsing time of smaps output.
-> >
-> >   - Smaps knows how to handle things in PMD level without looping into PTEs:
-> >     see smaps_pmd_entry().
-> >
-> >     Smaps will not duplicate the PMD entry into 512 PTE entries, because smaps
-> >     is doing statistic (and that's exaxtly what your use case wants!), while
-> >     pagemap is defined in 4K page size even for huge mappings because the
-> >     structure is defined upon the offset of the pagemap fd; that's why it needs
-> >     to duplicate the 2M entry into 512 same ones; even if they're not really so
-> >     meaningful.
-> >
-> > That's also why I tried to propose the interface of smaps to allow querying
-> > partial of the memory range, because IMHO it solves the exact problem you're
-> > describing and it'll also be in the most efficient way, meanwhile I think it
-> > expose all the rest smaps data too besides THP accountings so it could help
-> > more than thp accountings.
-> >
-> > So again, no objection on this simple and working patch, but perhaps rephrasing
-> > the 2nd bullet as: "smaps is slow because it must read the whole memory range
-> > rather than a small range we care"?
-> >
-> 
-> Sure thing, added in v7.
-> 
-> If I'm coming across as resisting a range-based smaps, I don't mean
-> to. I think it addresses my use case. I'm just warning/pointing out
-> that:
-> 1. It'll be a large(r than 2 line) patch and probably an added kernel
-> interface, and I'm not sure my use case is an acceptable justification
-> to do that given the problem can be equally addressed very simply like
-> I'm adding here, but if it is an acceptable justification then I'm
-> fine with a range-based smaps.
-> 2. I'm not 100% sure what the performance would be like. But I can
-> protype it and let you know if I have any issues with the performance.
-> I just need to know what interface you're envisioning for this.
-
-Not sure whether an ioctl upon the smaps procfs file can work.
-
-> 
-> I'll upload a v7 with the commit message change, and let me know what you think!
-
-Yeah that's the only thing I'm asking for now, and sorry to be picky.  Thanks.
-
--- 
-Peter Xu
-
+DQo+IE9uIE5vdiAyMiwgMjAyMSwgYXQgNDoxNyBQTSwgTmlzaGFudGggTWVub24gPG5tQHRpLmNv
+bT4gd3JvdGU6DQo+IA0KPiBTd2l0Y2ggdGhlIGtlcm5lbCB0cmVlIGZvciBrZXlzdG9uZSB0byB0
+aGUgY29uc29saWRhdGVkIHRpIHRyZWUgYW5kIGFkZA0KPiBteXNlbGYgYXMgcHJpbWFyeSBtYWlu
+dGFpbmVyIGZvciBrZXlzdG9uZSBwbGF0Zm9ybXMgdG8gb2Zmc2V0IFNhbnRvc2gncw0KPiB3b3Jr
+bG9hZC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IE5pc2hhbnRoIE1lbm9uIDxubUB0aS5jb20+DQo+
+IOKAlA0KDQpUaGFua3MgTmlzaGFudCAhIQ0KDQpBY2tlZC1ieTogU2FudG9zaCBTaGlsaW1rYXIg
+PHNzYW50b3NoQGtlcm5lbC5vcmc+DQoNCg==
