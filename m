@@ -2,79 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 777FA45AA27
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B21E845AA2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:40:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237964AbhKWRmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 12:42:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46326 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233491AbhKWRmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 12:42:03 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EAD5E604E9;
-        Tue, 23 Nov 2021 17:38:53 +0000 (UTC)
-Date:   Tue, 23 Nov 2021 12:38:52 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Aili Yao <yaoaili126@gmail.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, linux-kernel@vger.kernel.org,
-        yaoaili@kingsoft.com
-Subject: Re: [PATCH] sched/isolation: delete redundant
- housekeeping_overridden check
-Message-ID: <20211123123852.11a84a9e@gandalf.local.home>
-In-Reply-To: <20211123154535.48be4399@gmail.com>
-References: <20211123154535.48be4399@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S239024AbhKWRny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 12:43:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233491AbhKWRnw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 12:43:52 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99CB0C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:40:44 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id 8so6174pfo.4
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:40:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CdO3e2pDhMNJ+/pMA6Znc3yR1BY8F0IUwXILZu7t3/g=;
+        b=oVFTPn/YH2jTuPO2rvZ+bni4tcXtnBMXdNR2m3bx8ldO3dZEs97CiwZT15EpcQdIw5
+         CHJxX2qEi+3nJ9dj5kISe86jLAzHVWGVOLGAPvE4npPJghtMEOv3rDU70yEexawgs7WX
+         xnspRZEUUXaxP7YACnmStBcyCsl17/gyQCLF4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CdO3e2pDhMNJ+/pMA6Znc3yR1BY8F0IUwXILZu7t3/g=;
+        b=IHpoeYyBqnhmgTmBah7Qgt2QABHZckja1jicNUXAR5nf0HzgZcby0eCzuY1ayxvQPe
+         AEnZ6Urgc7RtTFOx46mOyAUKtchnJ8BlS4lyU8mq5rx4VGUdimgdBCi/kBGJ9Jg8JQbd
+         OkyeoPFU21+yDvJ/0WC0pc9plwiMrkorLMgoKbj65xLiLJ/AG4YwPe2Qft8Mjv8AeCCU
+         4hns4ejVbt/oIX4ywmIT02Uxe9PZMrq+zzjfIDWBx5PzgtD7aOG6Img436WGFTmePVty
+         huqh9ChMyJzpl73OMuR2b1+RtNH0NSmoeq+ZHp1r8Co3vCtarw5wntFyG8R04c9gOkeb
+         qIkA==
+X-Gm-Message-State: AOAM531rZoWoufcVIr2Pw0TRq/8MFxIPJYZmTM0tnOsFvfa5dBE9IrL1
+        NM+xblmnmyxvvjyLZWF9DgLadA==
+X-Google-Smtp-Source: ABdhPJyHfEZlhram/t4364Twny6+kpl7aix7nHDqV8ZCLTjEJS/craA9npwH1mwvP0JxjD3EK7lt2Q==
+X-Received: by 2002:a63:414:: with SMTP id 20mr5067331pge.178.1637689244184;
+        Tue, 23 Nov 2021 09:40:44 -0800 (PST)
+Received: from localhost ([2620:15c:202:201:5fa5:d920:9d68:9c16])
+        by smtp.gmail.com with UTF8SMTPSA id i2sm13864246pfg.90.2021.11.23.09.40.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Nov 2021 09:40:43 -0800 (PST)
+Date:   Tue, 23 Nov 2021 09:40:42 -0800
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sboyd@codeaurora.org,
+        dianders@chromium.org, kgodara@codeaurora.org
+Subject: Re: [PATCH 3/4] arm64: dts: qcom: sc7280: Define EC and H1 nodes
+Message-ID: <YZ0nmrGHwIMdN2v6@google.com>
+References: <1637650813-16654-1-git-send-email-rnayak@codeaurora.org>
+ <1637650813-16654-4-git-send-email-rnayak@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1637650813-16654-4-git-send-email-rnayak@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Nov 2021 15:45:35 +0800
-Aili Yao <yaoaili126@gmail.com> wrote:
+On Tue, Nov 23, 2021 at 12:30:12PM +0530, Rajendra Nayak wrote:
 
-> From: Aili Yao <yaoaili@kingsoft.com>
+> Subject: arm64: dts: qcom: sc7280: Define EC and H1 nodes
+
+that seems to suggest that EC and H1 nodes are something generic of the
+sc7280, however these two chips are only present on systems that target
+Chrome OS, and the specific nodes are added are only used by the QCA
+sc7280 IDP and CRD, not other sc7280 boards using Chrome OS, like
+herobrine. I suggest to change it to "arm64: dts: qcom: sc7280: Define
+EC and H1 nodes for IDP/CRD".
+
+> From: Kshitiz Godara <kgodara@codeaurora.org>
 > 
-> housekeeping_test_cpu is only called by housekeeping_cpu(),
-> and in housekeeping_cpu(), there is already one same check;
+> The IDP2 and CRD boards share the EC and H1 parts, so define
+> all related device nodes into a common file and include them
+> in the idp2 and crd dts files to avoid duplication.
 > 
-> So delete the redundant check.
-> 
-> Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
+> Signed-off-by: Kshitiz Godara <kgodara@codeaurora.org>
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
 > ---
->  kernel/sched/isolation.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+>  arch/arm64/boot/dts/qcom/sc7280-crd.dts    |   1 +
+>  arch/arm64/boot/dts/qcom/sc7280-ec-h1.dtsi | 110 +++++++++++++++++++++++++++++
+>  arch/arm64/boot/dts/qcom/sc7280-idp2.dts   |   1 +
+>  3 files changed, 112 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/sc7280-ec-h1.dtsi
 > 
-> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-> index 7f06eaf..5c4d533 100644
-> --- a/kernel/sched/isolation.c
-> +++ b/kernel/sched/isolation.c
-> @@ -56,9 +56,8 @@ void housekeeping_affine(struct task_struct *t, enum
-> hk_flags flags) 
->  bool housekeeping_test_cpu(int cpu, enum hk_flags flags)
->  {
-> -	if (static_branch_unlikely(&housekeeping_overridden))
-> -		if (housekeeping_flags & flags)
-> -			return cpumask_test_cpu(cpu,
-> housekeeping_mask);
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-crd.dts b/arch/arm64/boot/dts/qcom/sc7280-crd.dts
+> index 09d02c2..8c2aee6 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-crd.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-crd.dts
+> @@ -8,6 +8,7 @@
+>  /dts-v1/;
+>  
+>  #include "sc7280-idp.dtsi"
+> +#include "sc7280-ec-h1.dtsi"
+>  
+>  / {
+>  	model = "Qualcomm Technologies, Inc. sc7280 CRD platform";
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-ec-h1.dtsi b/arch/arm64/boot/dts/qcom/sc7280-ec-h1.dtsi
+> new file mode 100644
+> index 0000000..78fb5eb
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-ec-h1.dtsi
 
-Not only is your email client broken, you don't seem to understand what
-static_branch_unlikely() is.
+Similar comment as for the subject, the file name seems to imply
+that the include could be useful for any board with an EC and H1,
+however it will be only used by the IDP and CRD. Maybe name it
+'sc7280-idp-ec-h1.dtsi', from the CRD DT file it is alreay clear
+that it is related with the IDP, so it shouldn't be too confusing
+that the file name only says IDP.
 
-NACK.
+Also a birdie told me that the EC and H1 configuration is going to
+change in future revisions of the CRD, which is another reason for
+being more specific with the file name (a sc7280-crd-ec-h1.dtsi
+might be needed at that point, or the new not-any-longer-shared
+config goes directly into the sc7280-crd-revN.dts.
 
--- Steve
+> @@ -0,0 +1,110 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +/*
+> + * sc7280 EC/H1 over SPI (common between IDP2 and CRD)
+> + *
+> + * Copyright (c) 2021, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +ap_ec_spi: &spi10 {
+> +	status = "okay";
+> +
+> +	pinctrl-0 = <&qup_spi10_cs_gpio_init_high>, <&qup_spi10_cs_gpio>;
 
+Shouldn't this also have <&qup_spi10_data_clk>?
 
-> +	if (housekeeping_flags & flags)
-> +		return cpumask_test_cpu(cpu, housekeeping_mask);
->  	return true;
->  }
->  EXPORT_SYMBOL_GPL(housekeeping_test_cpu);
+> +	cs-gpios = <&tlmm 43 GPIO_ACTIVE_LOW>;
+> +
+> +	cros_ec: ec@0 {
+> +		compatible = "google,cros-ec-spi";
+> +		reg = <0>;
+> +		interrupt-parent = <&tlmm>;
+> +		interrupts = <18 IRQ_TYPE_LEVEL_LOW>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&ap_ec_int_l>;
+> +		spi-max-frequency = <3000000>;
+> +
+> +		cros_ec_pwm: ec-pwm {
+> +			compatible = "google,cros-ec-pwm";
+> +			#pwm-cells = <1>;
+> +		};
+> +
+> +		i2c_tunnel: i2c-tunnel {
+> +			compatible = "google,cros-ec-i2c-tunnel";
+> +			google,remote-bus = <0>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +		};
+> +
+> +		typec {
+> +			compatible = "google,cros-ec-typec";
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			usb_c0: connector@0 {
+> +				compatible = "usb-c-connector";
+> +				reg = <0>;
+> +				label = "left";
+> +				power-role = "dual";
+> +				data-role = "host";
+> +				try-power-role = "source";
+> +			};
+> +
+> +			usb_c1: connector@1 {
+> +				compatible = "usb-c-connector";
+> +				reg = <1>;
+> +				label = "right";
+> +				power-role = "dual";
+> +				data-role = "host";
+> +				try-power-role = "source";
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +#include <arm/cros-ec-keyboard.dtsi>
+> +#include <arm/cros-ec-sbs.dtsi>
+> +
+> +ap_h1_spi: &spi14 {
+> +	status = "okay";
+> +
+> +	pinctrl-0 = <&qup_spi14_cs_gpio_init_high>, <&qup_spi14_cs_gpio>;
 
+<&qup_spi14_data_clk> missing?
+
+> +	cs-gpios = <&tlmm 59 GPIO_ACTIVE_LOW>;
+> +
+> +	cr50: tpm@0 {
+> +		compatible = "google,cr50";
+> +		reg = <0>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&h1_ap_int_odl>;
+> +		spi-max-frequency = <800000>;
+> +		interrupt-parent = <&tlmm>;
+> +		interrupts = <104 IRQ_TYPE_EDGE_RISING>;
+> +	};
+> +};
+> +
+> +&tlmm {
+> +	ap_ec_int_l: ap-ec-int-l {
+> +		pins = "gpio18";
+> +		function = "gpio";
+> +		input-enable;
+> +		bias-pull-up;
+> +		drive-strength = <2>;
+
+Is the explicit drive-strength setting actually needed?
+
+Documentation/devicetree/bindings/pinctrl/qcom,sc7280-pinctrl.yaml:
+
+  drive-strength:
+    enum: [2, 4, 6, 8, 10, 12, 14, 16]
+    default: 2 <=
+    description:
+      Selects the drive strength for the specified pins, in mA.
+
+The default is 2, hence it shouldn't be necessary it set it explicitly.
+
+> +	};
+> +
+> +	h1_ap_int_odl: h1-ap-int-odl {
+> +		pins = "gpio104";
+> +		function = "gpio";
+> +		input-enable;
+> +		bias-pull-up;
+> +		drive-strength = <2>;
+
+see above
+
+> +	};
+> +
+> +	qup_spi10_cs_gpio_init_high: qup-spi10-cs-gpio-init-high {
+> +		pins = "gpio43";
+> +		output-high;
+> +		drive-strength = <2>;
+
+see above
+
+> +	};
+> +
+> +	qup_spi14_cs_gpio_init_high: qup-spi14-cs-gpio-init-high {
+> +		pins = "gpio59";
+> +		output-high;
+> +		drive-strength = <2>;
+
+see above
+
+> +	};
+> +};
+> +
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
+> index 3ae9969..208ca69 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
+> @@ -8,6 +8,7 @@
+>  /dts-v1/;
+>  
+>  #include "sc7280-idp.dtsi"
+> +#include "sc7280-ec-h1.dtsi"
+>  
+>  / {
+>  	model = "Qualcomm Technologies, Inc. sc7280 IDP SKU2 platform";
