@@ -2,149 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702664599E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:52:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A14AA4599E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:57:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232504AbhKWB4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 20:56:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232261AbhKWBz4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 20:55:56 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB34C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:52:48 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id z18so25890719iof.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:52:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=7Oi7YYe6mXZ9qFhiItC3cT+zBCj+1FGQIOXFSu9z5Og=;
-        b=EMJHfp61byAPVM0d+YSPglX9cQhq+7ayPyr9zRTzuSPcvvgnxyLMG1ltK8vjfaD0FU
-         tlPYxbO7NtBZeDgMPNcJJoHVx+Je8+bWQnN+DVWW1NrLrqmC5gQjAph9/LWH4uiuxcYY
-         wd41pmLNfefVdVvVpoPO9twaon39sVO4IspOU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=7Oi7YYe6mXZ9qFhiItC3cT+zBCj+1FGQIOXFSu9z5Og=;
-        b=wvi0FDwDTaCYAzYhbj4iqMoIanPK6kO+DSFqRXzB+zZ8U6Nvmbd+9yfQ8Fy/62Tlnr
-         OQxkm/4jQkLKK0RLwpAgO+tlTnwmldUP0WaOodmG08oJAZOrzGim3pt/24A2HpErhPxd
-         FcW0JvLfnAGotYq9168YzzXXIFa/YuUdSyi+YCiJaLFafElvjsGx6pqRoh2BuN/0Ahu1
-         9a2fsdfwZifFBeTgc5pLgkr9QnwKTDsj0LWwe9dd1uFhR07egzS8HFik8oFFn5OG8PmH
-         eHqZcFC3kfLdsFoPMzByv/6+ADoXJO+gmbQV5kSKPrHd8avctkWhKk0EYwOHtNFk4nFw
-         e3bQ==
-X-Gm-Message-State: AOAM530VIf7cYUKK+m3cCT3hkAPpO0gFmEs1IrKKWBYn+y4Qv5s4obzZ
-        rzDKCyMa0t4jjH+HRXWKgfsFpg==
-X-Google-Smtp-Source: ABdhPJwFYEXqq9O3YpMuHp49czIlbhiXDJHljcLoM+vErOaDm/O2cJ+JlOI+DmxoJkJ4K5f7Ve5+nA==
-X-Received: by 2002:a05:6638:14ca:: with SMTP id l10mr1120728jak.107.1637632367373;
-        Mon, 22 Nov 2021 17:52:47 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id d137sm6102931iof.16.2021.11.22.17.52.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Nov 2021 17:52:47 -0800 (PST)
-Message-ID: <5936f811-fa48-33e9-2a1a-66c68f74aa5e@ieee.org>
-Date:   Mon, 22 Nov 2021 19:52:43 -0600
+        id S232261AbhKWCAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 21:00:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59526 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230482AbhKWCAk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 21:00:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 899AF60F70;
+        Tue, 23 Nov 2021 01:57:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637632653;
+        bh=DiRZ07Mz/LWCX1YgwTR0bxKJ+0HA3rQ0vFZS0plyMeQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=JjyhIRa4CRbPyeqxAFKMYepicgB1u4mNGFAtvPh6M56DylmdkG5nJ1HVAIq7Tez06
+         X8RIrW5MOYPI/HNAWyVfzs0Y9pv0S7O43inZCdwzGn5zPA2rdiEFqlX1DEuLKb17oX
+         S08/2GMgJkD1exeSQbRpiSDppmFiGtGEviL5Dbb4qHRCDZpOM5gS8EipaKGjdENEhS
+         4dhrUKAr/xw3UlRMLc/h55Y7SvFM9pBSM1LtNrGOq1Qi9mBJUhZK4OIn9WPVKJDuSi
+         nEXvMTU2at9EI2VSQ2uFzpZEsKDjp/lBF++mfPdXMsVgQGyiymXPl7+4d9TKNu5htx
+         dWiLDSWbLvsFg==
+From:   guoren@kernel.org
+To:     guoren@kernel.org, anup@brainfault.org, palmer@dabbelt.com,
+        atishp@rivosinc.com
+Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-doc@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
+Subject: [RFC PATCH 0/3] riscv: Add riscv.fwsz kernel parameter to save memory
+Date:   Tue, 23 Nov 2021 09:57:14 +0800
+Message-Id: <20211123015717.542631-1-guoren@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH 01/17] bitfield: Add non-constant field_{prep,get}()
- helpers
-Content-Language: en-US
-To:     Johannes Berg <johannes@sipsolutions.net>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Tony Lindgren <tony@atomide.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Paul Walmsley <paul@pwsan.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Benoit Parrot <bparrot@ti.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Keerthy <j-keerthy@ti.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
-        alsa-devel@alsa-project.org
-References: <cover.1637592133.git.geert+renesas@glider.be>
- <3a54a6703879d10f08cf0275a2a69297ebd2b1d4.1637592133.git.geert+renesas@glider.be>
- <01b44b38c087c151171f8d45a2090474c2559306.camel@sipsolutions.net>
-From:   Alex Elder <elder@ieee.org>
-In-Reply-To: <01b44b38c087c151171f8d45a2090474c2559306.camel@sipsolutions.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/22/21 10:32 AM, Johannes Berg wrote:
-> On Mon, 2021-11-22 at 16:53 +0100, Geert Uytterhoeven wrote:
->> The existing FIELD_{GET,PREP}() macros are limited to compile-time
->> constants.  However, it is very common to prepare or extract bitfield
->> elements where the bitfield mask is not a compile-time constant.
->>
-> 
-> I'm not sure it's really a good idea to add a third API here?
-> 
-> We have the upper-case (constant) versions, and already
-> {u32,...}_get_bits()/etc.
+From: Guo Ren <guoren@linux.alibaba.com>
 
-I've used these a lot (and personally prefer the lower-case ones).
+The firmware of riscv (such as opensbi) occupy 2MB(64bit) /
+4MB(32bit) in Linux. It's very wasteful to small memory footprint
+soc chip such as Allwinner D1s/F133. The kernel parameter gives a
+chance to users to set the proper size of the firmware and get
+more than 1.5MB of memory.
 
-Your new macros don't do anything to ensure the field mask is
-of the right form, which is basically:  (2 ^ width - 1) << shift
+Guo Ren (3):
+  riscv: Remove 2MB offset in the mm layout
+  riscv: Add early_param to decrease firmware region
+  riscv: Add riscv.fwsz kernel parameter
 
-I really like the property that the field mask must be constant.
+ .../admin-guide/kernel-parameters.txt         |  3 +++
+ arch/riscv/include/asm/page.h                 |  8 +++++++
+ arch/riscv/kernel/head.S                      | 10 +++-----
+ arch/riscv/kernel/vmlinux.lds.S               |  5 ++--
+ arch/riscv/mm/init.c                          | 23 ++++++++++++++++---
+ 5 files changed, 36 insertions(+), 13 deletions(-)
 
-That being said, I've had to use some strange coding patterns
-in order to adhere to the "const only" rule in a few cases.
-So if you can come up with a satisfactory naming scheme I'm
-all for it.
-
-					-Alex
-
-
-
-> Also, you're using __ffs(), which doesn't work for 64-bit on 32-bit
-> architectures (afaict), so that seems a bit awkward.
-> 
-> Maybe we can make {u32,...}_get_bits() be doing compile-time only checks
-> if it is indeed a constant? The __field_overflow() usage is already only
-> done if __builtin_constant_p(v), so I guess we can do the same with
-> __bad_mask()?
-> 
-> johannes
-> 
+-- 
+2.25.1
 
