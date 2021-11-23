@@ -2,137 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB35C45A23F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:11:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF1C45A243
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:12:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236906AbhKWMOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 07:14:52 -0500
-Received: from foss.arm.com ([217.140.110.172]:51794 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234548AbhKWMOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 07:14:48 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6C07147A;
-        Tue, 23 Nov 2021 04:11:40 -0800 (PST)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 161A43F5A1;
-        Tue, 23 Nov 2021 04:11:38 -0800 (PST)
-Date:   Tue, 23 Nov 2021 12:11:36 +0000
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
-        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Igor Skalkin <igor.skalkin@opensynergy.com>,
-        Peter Hilber <peter.hilber@opensynergy.com>,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v6 14/16] firmware: arm_scmi: Add atomic mode support to
- virtio transport
-Message-ID: <20211123121136.GD56473@e120937-lin>
-References: <20211122230640.1345-1-cristian.marussi@arm.com>
- <20211122230640.1345-15-cristian.marussi@arm.com>
+        id S236938AbhKWMPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 07:15:20 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:42590 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232715AbhKWMPQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 07:15:16 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: andrzej.p)
+        with ESMTPSA id 7417D1F44A0C
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1637669527; bh=Or79jjqBJNUaiCRZxQgJN0tuqh1QPWbrzNTllPwYxK0=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=eOE8eITmaFRDfFbJ9YCUOMGM8nQNHNBRlrqI5pjrhIONU3l8YUKGECP6xfhbP98cC
+         MBM/AyzocnoJ054c5kt39t9hbugIxUENfvLFlHVcboHZ7kb/FwzA1Sbdalb4RvVdNP
+         w1VGhHgQg/B7QFS+5bnTcJqWlDjHsZ4nYUETZ/GScV7fg6AGJt9sU5OFwKgdHZpX77
+         QG7NFZ+BLxBc9Vjhl1+nSOHce8j02LtST6EpqKbuanUKKJaOBdn+YGIUWJXL+JpQJ4
+         5lFlTaBFSU1pMEupZgrI8/LhyDo99CcbJjVXW3QeAHQJNjyilPqFGi+KfTdzGoSS7x
+         MOHqwVD9QacQQ==
+Subject: Re: [PATCH 4/7] media: hantro: move postproc enablement for old cores
+To:     Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-media@vger.kernel.org
+Cc:     ezequiel@vanguardiasur.com.ar, nicolas.dufresne@collabora.com,
+        mchehab@kernel.org, robh+dt@kernel.org, mripard@kernel.org,
+        wens@csie.org, p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+References: <20211122184702.768341-1-jernej.skrabec@gmail.com>
+ <20211122184702.768341-5-jernej.skrabec@gmail.com>
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Message-ID: <df868233-552f-ecc3-29e1-4a3a4761cf31@collabora.com>
+Date:   Tue, 23 Nov 2021 13:12:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211122230640.1345-15-cristian.marussi@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20211122184702.768341-5-jernej.skrabec@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 11:06:38PM +0000, Cristian Marussi wrote:
-> Add support for .mark_txdone and .poll_done transport operations to SCMI
-> VirtIO transport as pre-requisites to enable atomic operations.
+Hi Jernej,
+
+W dniu 22.11.2021 o 19:46, Jernej Skrabec pisze:
+> Older G2 cores, like that in Allwinner H6, seem to have issue with
+> latching postproc register values if this is first thing done in job.
+> Moving that to the end solves the issue.
 > 
-> Add a Kernel configuration option to enable SCMI VirtIO transport polling
-> and atomic mode for selected SCMI transactions while leaving it default
-> disabled.
-> 
-> Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> Cc: Igor Skalkin <igor.skalkin@opensynergy.com>
-> Cc: Peter Hilber <peter.hilber@opensynergy.com>
-> Cc: virtualization@lists.linux-foundation.org
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-
-
-Hi,
-
+> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 > ---
->  drivers/firmware/arm_scmi/Kconfig  |  15 ++
->  drivers/firmware/arm_scmi/virtio.c | 212 +++++++++++++++++++++++++++--
->  2 files changed, 214 insertions(+), 13 deletions(-)
+>   drivers/staging/media/hantro/hantro_drv.c | 9 ++++++++-
+>   1 file changed, 8 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
-> index d429326433d1..7794bd41eaa0 100644
-> --- a/drivers/firmware/arm_scmi/Kconfig
-> +++ b/drivers/firmware/arm_scmi/Kconfig
-> @@ -118,6 +118,21 @@ config ARM_SCMI_TRANSPORT_VIRTIO_VERSION1_COMPLIANCE
->  	  the ones implemented by kvmtool) and let the core Kernel VirtIO layer
->  	  take care of the needed conversions, say N.
->  
-> +config ARM_SCMI_TRANSPORT_VIRTIO_ATOMIC_ENABLE
-> +	bool "Enable atomic mode for SCMI VirtIO transport"
-> +	depends on ARM_SCMI_TRANSPORT_VIRTIO
-> +	help
-> +	  Enable support of atomic operation for SCMI VirtIO based transport.
+> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
+> index 8c3de31f51b3..530994ab3024 100644
+> --- a/drivers/staging/media/hantro/hantro_drv.c
+> +++ b/drivers/staging/media/hantro/hantro_drv.c
+> @@ -130,7 +130,7 @@ void hantro_start_prepare_run(struct hantro_ctx *ctx)
+>   	v4l2_ctrl_request_setup(src_buf->vb2_buf.req_obj.req,
+>   				&ctx->ctrl_handler);
+>   
+> -	if (!ctx->is_encoder) {
+> +	if (!ctx->is_encoder && !ctx->dev->variant->legacy_regs) {
+>   		if (hantro_needs_postproc(ctx, ctx->vpu_dst_fmt))
+>   			hantro_postproc_enable(ctx);
+>   		else
+> @@ -142,6 +142,13 @@ void hantro_end_prepare_run(struct hantro_ctx *ctx)
+>   {
+>   	struct vb2_v4l2_buffer *src_buf;
+>   
+> +	if (ctx->dev->variant->legacy_regs && !ctx->is_encoder) {
+
+My personal preference would be to alter the order to match what is
+in hantro_start_prepare_run(), and add a comment:
+
++       /*
++        * Older G2 cores, like that in Allwinner H6, seem to have issue with
++	 * latching postproc register values if this is first thing done in job.
++	 * Moving that to the end solves the issue.
++	 */
++	if (!ctx->is_encoder && ctx->dev->variant->legacy_regs) {
+
+With that changed,
+
+Reviewed-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+
+> +		if (hantro_needs_postproc(ctx, ctx->vpu_dst_fmt))
+> +			hantro_postproc_enable(ctx);
+> +		else
+> +			hantro_postproc_disable(ctx);
+> +	}
 > +
-> +	  If you want the SCMI VirtIO based transport to operate in atomic
-> +	  mode, avoiding any kind of sleeping behaviour for selected
-> +	  transactions on the TX path, answer Y.
-> +
-> +	  Enabling atomic mode operations allows any SCMI driver using this
-> +	  transport to optionally ask for atomic SCMI transactions and operate
-> +	  in atomic context too, at the price of using a number of busy-waiting
-> +	  primitives all over instead. If unsure say N.
-> +
->  endif #ARM_SCMI_PROTOCOL
->  
+>   	src_buf = hantro_get_src_buf(ctx);
+>   	v4l2_ctrl_request_complete(src_buf->vb2_buf.req_obj.req,
+>   				   &ctx->ctrl_handler);
+> 
 
-[snip]
-
->  static void scmi_vio_complete_cb(struct virtqueue *vqueue)
-> @@ -138,12 +157,29 @@ static void scmi_vio_complete_cb(struct virtqueue *vqueue)
->  			goto unlock_ready_out;
->  		}
->  
-> +#ifdef CONFIG_ARM_SCMI_TRANSPORT_VIRTIO_ATOMIC_ENABLE
-> +		/* At first loop on pending_cmd_list of buffered msg if any */
-> +		if (!vioch->is_rx) {
-> +			struct scmi_vio_msg *tmp;
-> +
-> +			list_for_each_entry_safe(msg, tmp,
-> +						 &vioch->pending_cmds_list,
-> +						 list) {
-> +				scmi_rx_callback(vioch->cinfo,
-> +						 msg_read_header(msg->input),
-> +						 msg);
-> +				scmi_vio_feed_vq_tx(vioch, msg);
-> +			}
-> +		}
-> +#endif
-> +
-
-doing further testing I spotted a trivial bug on the limit condition
-where polling and non-polling requests are interleaved on the cmd
-vqueue. (hard to reproduce ... but it's there and it's broken)
-
-This one-liner fixes the issue with the above snippet:
-
-diff --git a/drivers/firmware/arm_scmi/virtio.c b/drivers/firmware/arm_scmi/virtio.c
-index 3101024751b0..cf247093ef48 100644
---- a/drivers/firmware/arm_scmi/virtio.c
-+++ b/drivers/firmware/arm_scmi/virtio.c
-@@ -168,6 +168,7 @@ static void scmi_vio_complete_cb(struct virtqueue *vqueue)
-                                scmi_rx_callback(vioch->cinfo,
-                                                 msg_read_header(msg->input),
-                                                 msg);
-+                               list_del(&msg->list);
-                                scmi_vio_feed_vq_tx(vioch, msg);
-                        }
-                }
-
-It seems there will be a V7 ...
-
-Thanks,
-Cristian
