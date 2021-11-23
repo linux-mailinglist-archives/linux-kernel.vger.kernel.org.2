@@ -2,209 +2,383 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8848E459E7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:45:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87304459E82
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:45:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235049AbhKWIsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 03:48:05 -0500
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:55402 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229617AbhKWIsE (ORCPT
+        id S235072AbhKWIso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 03:48:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229617AbhKWIsm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 03:48:04 -0500
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AN7pUYr024186;
-        Tue, 23 Nov 2021 08:44:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : content-type : mime-version; s=corp-2021-07-09;
- bh=ygAaCeU0RcPgWBDA3d5SaHoqMzHDeD2esaXq+S+V+X8=;
- b=dIY/xqI5ZVAwgsjLqAmTo1rKiQNXIkO9BJHa0suP73KNO9P/M46/FlkkVuhDeyDV5krx
- lCd+bbKyiEU40iDS/V9udHjVB61kEPQnfDE5mStHKel6RoGJyhjhcmLf5r9+SJCzjvz8
- BxKGmjE3d/GgLVRiO1eiGILqTn6v2a/vN10+dZaT+7mL3R98IwDqyDSaaAyzkYxPZ8X3
- m6qaI1Uo42v2L8jDeRSUdOVjs9tuajJJS/h4EMRjcvbq8x7nvoKNLUyUZhu8zSPzeA7F
- T5XVik3tJ3/0USprcK3l5n+88wfUlerGVzX2epPaXjLXOYXEaeAheHC/yP5GGKmv1J1o YA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3cg5gj7p9e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Nov 2021 08:44:54 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AN8ZPP9070457;
-        Tue, 23 Nov 2021 08:44:53 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2172.outbound.protection.outlook.com [104.47.55.172])
-        by userp3020.oracle.com with ESMTP id 3cfass23fk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Nov 2021 08:44:52 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Yy5Xzb+i8P8FpeUY+FcINW3hMRhPiVofUWTzxDKufKdPfazAdMf34OUphHwWVhM3vqNZ6SEc6ux57Qa9u/Lbv6Tdv4XXTq3FbQdDB+I1Do3U4h8tm9AjApYs2Yil9WpmlwK7TJ2PonR5lp/SfffJUywaDrwU7Me7TaqxnPDxJHTWbP1S/p6lc1tcupSEQ4jAr8U+sfExK6nx1pOb4Le9DGY8IQkqc9CzMFI7r6PomTm5ppxPYrHrNPMjpPSRQcKa58JH255AbiG6CgF+WUxAJB7oq3Zk40ewyZb+JrnVgWn7TgYlBOX8j+0Nbr+C1tSnKWiIH2byIFBtUyf/kEgnmA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ygAaCeU0RcPgWBDA3d5SaHoqMzHDeD2esaXq+S+V+X8=;
- b=Or3f9KtdRVu4+lsOpWc47ewVNcsjmdq0XGJ2/SQyQXvD785m0JKB4ETXYFE5UIZTiTZsRgnst/arNQxgrP/cQMgiTNHm6ue5+4KiTe0TrYqKCIaVlk4PACAXH98rk/K9Scx7yOcw3OuyO6LU2JHwPeOkxSVu1QdxDwhrhIT+usqkXVBPsRzgztO5DZXZOtMwWZBPi1vgWMwr6AWlY/Fs0aROnJNInv0GjVYvJQ/JI/Xnx7gcN5j6+eM6DpwsPAfklS9SA9cMJ14TG7ZN4lrh3Yr73XqRJ9qokG9e/HzW+Hnb6Nftj4XvFQ4scOTztuHQUfs4lfUmSfteDLQ4XyGdEQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 23 Nov 2021 03:48:42 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B53CBC061574;
+        Tue, 23 Nov 2021 00:45:34 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id l9so4337572ljq.5;
+        Tue, 23 Nov 2021 00:45:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ygAaCeU0RcPgWBDA3d5SaHoqMzHDeD2esaXq+S+V+X8=;
- b=ct4Tkb/+aEFVIKLRI2at4pUccJuwhe1XZOJ7Cwt8xe34IEbIqN/EKa36E/gTSGVdUYe+TY1hE3Nye3PNM7xqnyJDk+vu47u1XjKV8mZUZZmQ/BArkpjSjOiRdjH0tgsFtb7Vqy9UWkpXsPTGMCYASlr4FvZV1oHfqdI2ychMdT4=
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MW4PR10MB5680.namprd10.prod.outlook.com
- (2603:10b6:303:18e::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Tue, 23 Nov
- 2021 08:44:50 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::495f:a05d:ba7a:682]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::495f:a05d:ba7a:682%6]) with mapi id 15.20.4713.026; Tue, 23 Nov 2021
- 08:44:50 +0000
-Date:   Tue, 23 Nov 2021 11:44:32 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org, Andy Lutomirski <luto@kernel.org>
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: [luto:sched/lazymm 13/16] kernel/sched/core.c:4982
- __change_current_mm() error: uninitialized symbol 'old_active_mm'.
-Message-ID: <202111230549.U0WrDxKK-lkp@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNAP275CA0034.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::11)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=pFkWXRQLp2a0JXFEH49pnNMiPhMmJWIqjtYLx7Q5kGA=;
+        b=dF4UyjpdB+iP41WpCUCrsF3UGY/KQCvb3oZrc7Ej7HMg1GoRifBwlslRRA42Rq43xN
+         BQ7jyu72TpWea0lQr33qusYVAPohx4QE1TDof8nmwfct3eXmGB0Es+vUDvhYfGP+g84h
+         dFK979uDCDfgw7TwB63X85BKdulXxCQzDvqC3IYhbDxBlxr7r6DBw1zCKL74ititeTup
+         BJO1VelsnMhfnz1AJWOX3mmBiUa9g/ktHEc5UDxXn8d9A1o5XvxhewFV7DlTpF7gtXPs
+         O0kyVD7Uja7fIhZIdHMIBsmIt5FvBpqM7w+Rei1i+CYI5HNN8ReGujAScZBdW9S3z67z
+         bz6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=pFkWXRQLp2a0JXFEH49pnNMiPhMmJWIqjtYLx7Q5kGA=;
+        b=BznYfUJFfqi2GkQdXYVd0/m7aDIYHuwhOqWkZkXWWJqVQyKx+adh7Zt1zbTd08FKWl
+         /qEDQV9wvJMU4x84NlrNmDugB/x4gOb5Vw0cYsJ6LDrgC4WKIRuyACRBVdNIMX8LwnBt
+         QXU9SR6zGHBBsCS4xGDJYvMCKhIZ3rVoKC9de3vOHw0tiwWP/1IAyoAumbTIC3zn8RSg
+         AcgSG7AtXQDw1XHzcrbXILqnCvZ4QjjaimE7KTGVZOtRXfPGjtOHXToxqr8hG17i1MKj
+         w8Nm2SknvsjEOSpwmMyyi1/00/wZvnAwFiQfgimj27uKofeDovY4+yjk8xAB09Knym6r
+         x9BA==
+X-Gm-Message-State: AOAM533Th1a1lGF4y9y79IxWk/++1CDJopYqh5uoadD8z1g/UfZefaHa
+        2aWirGu4roJ0A4x2AFU1oDk=
+X-Google-Smtp-Source: ABdhPJyEOqSJ0LhmELDrpw4I2/N1YyxLqNhCZOrEjPb43q6Cz1GF37urc88ZaxhIEJYQonG3pltBnQ==
+X-Received: by 2002:a2e:6e0b:: with SMTP id j11mr3273521ljc.80.1637657132900;
+        Tue, 23 Nov 2021 00:45:32 -0800 (PST)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id o20sm1080045lfc.276.2021.11.23.00.45.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 00:45:32 -0800 (PST)
+Date:   Tue, 23 Nov 2021 10:45:22 +0200
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     jim.cromie@gmail.com
+Cc:     Jason Baron <jbaron@akamai.com>, Sean Paul <seanpaul@chromium.org>,
+        Sean Paul <sean@poorly.run>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        quic_saipraka@quicinc.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Will Deacon <will@kernel.org>, maz@kernel.org,
+        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Arnd Bergmann <arnd@arndb.de>, linux-arm-msm@vger.kernel.org,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        intel-gvt-dev@lists.freedesktop.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, quic_psodagud@quicinc.com,
+        mathieu.desnoyers@efficios.com
+Subject: Re: [PATCH v10 08/10] dyndbg: add print-to-tracefs, selftest with
+ it - RFC
+Message-ID: <20211123104522.7a336773@eldfell>
+In-Reply-To: <CAJfuBxyFzA++2JUxLY-6yLqmrETbmsWpTiyJH5w1qKiAkMriNw@mail.gmail.com>
+References: <20211111220206.121610-1-jim.cromie@gmail.com>
+        <20211111220206.121610-9-jim.cromie@gmail.com>
+        <20211112114953.GA1381@axis.com>
+        <f3914fa9-8b22-d54e-3f77-d998e74094b9@akamai.com>
+        <20211116104631.195cbd0b@eldfell>
+        <f87b7076-47e6-89b1-aaf9-b67aa6713e01@akamai.com>
+        <20211118172401.0b4d722e@eldfell>
+        <41ea83b2-a707-cb6f-521e-070bb12502de@akamai.com>
+        <20211122110208.528e1d80@eldfell>
+        <CAJfuBxyFzA++2JUxLY-6yLqmrETbmsWpTiyJH5w1qKiAkMriNw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Received: from kadam (102.222.70.114) by JNAP275CA0034.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend Transport; Tue, 23 Nov 2021 08:44:46 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c1c249b9-ba44-4ab0-545b-08d9ae5d8341
-X-MS-TrafficTypeDiagnostic: MW4PR10MB5680:
-X-Microsoft-Antispam-PRVS: <MW4PR10MB5680A7430CD25CEB1BBD49D58E609@MW4PR10MB5680.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:108;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LB0i/ajlA1BMU7HHyEOCAkh7HeYf+ZAZyMck2tgSgOSpwC7LRXvtrymzVDBwHMGUKS9cKroaSFhx+OBI62imRHZU5cTFmDNV4anm7hJxoAIokuQGyCmiAyMpBRpt3vhI1COJRC78KgjzVJucSOHNx3YltWiUQBKjyPO5vosSgzSFS6r0COHbKyN2MMjeWaiKWC7JaQFZwiEA+BvPIu/bIa7pbFhrGZi2/jVxClFF3D8ooEGaPEMLgQnmYAI0l3XWgo7WifnxHFRg/oxYk0W3x0n5ayyEgrm+9zVxb0/hILn/g5gTOLatYKLTZ6aRmpiuo5RtjbE+eOFGT9AgY7aV+hf4c6tzBoB9Kh8qkTeolAoKilT1IHUg/eYDnVmP1frloJZ81ZcaZtvMg9chz9ywT8Q80Atz8j6wM8kwGQOj6DBFEg3O8ZJNc7R1C6OBiYxUTKA2NSDTOt0R0Z6Z2OyKBp3PrYfEHak/Jdiseyrj8urOr7kreKtZUBUxIJV+BQZfkPy/Afr5fN6w5XTIZtsiqa9dJK3RLem7bIyf9mqSxenxpopDcWEjfMWe62zr8cz9yNLbwCx0o2/qcNzl2lvn9WylQFx5ptXPaI16s/GrzjBcsHKTUq9dR3Tkjy+FXYnbt6j6OD+HZFD6cTWvQFYJcI4Fjrw2AP9q+gD9ir07FDoMXCyh/qPDYazivtXDUxUbpEQzLjcw4wIJA/yOHnd4R8apxYFO0u9Hk4QJGB9RrbjJp+WjRDGdxh/IXfd6N7P2AW1e0yXKM3o87eZM2WvBg3Yl9ws1MOVbBlX4mHKtdrQ1GEkxF10cefuAzFGlkWmgZzwmAoTEye+XlDF4gggYjA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(4326008)(1076003)(8936002)(86362001)(5660300002)(6486002)(316002)(186003)(44832011)(9686003)(966005)(6916009)(508600001)(66556008)(26005)(38350700002)(6666004)(66946007)(52116002)(956004)(6496006)(38100700002)(2906002)(66476007)(83380400001)(8676002)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?999rR/o04bV9xFta3EKYDNKApge5RRfb/qvdqH7Bk/8XAYsmgZXAvDREmEHZ?=
- =?us-ascii?Q?+mLYAHeLs/gWX/HI32lOGLd2oVa46D3h0fJsv/5U74cK6RKU7z/JwQkbCar3?=
- =?us-ascii?Q?7XKCfna3InPzUY2+YbtHd3By2UUOmkyss/KPk7hbpKK8LXSEqu/yfZnuCDjS?=
- =?us-ascii?Q?UyKlC/ywfntrH/OWLBjTaY9Zo7qSbueNG457E8HGdoOlz6BSh8QJauzOw/0n?=
- =?us-ascii?Q?wRwUXZbs34pJktHFTsm2fPryaHIg4F+3YSIS97VwuIrbP52RZxQxau6oP0yT?=
- =?us-ascii?Q?lY1U2kwxJ4dxxSLpiv1E5/zbZxD4X49TAkUlBMjrRWdYYn50XlFZH3tp+fZS?=
- =?us-ascii?Q?IZrWAI0TkkW4gqQhajyktUW11eYMRAp6M9+/6u7kKpByr/6usyjGgCz1T3dY?=
- =?us-ascii?Q?iYJtzh/oGGoy4IPGtUg1YpvkP6TzqmziKWNTAHb0krAC2tP2jxFvb2W3KsXa?=
- =?us-ascii?Q?wop26+aXVK94vXUHQtRy795S0GP+KQSr7bBP6CotupJVG8t6O+mEbqV7VyVp?=
- =?us-ascii?Q?wAl6ffnjJZiWs54TL0yQj30zEtF7ZHg76Gqrj73OKasPzCNAQlcrlRQbmy83?=
- =?us-ascii?Q?b7Eu2BXDN0DdmTlHI/Mm9zvIIH3g4gnncwZSVqe87BuidBP6Z/5G6m9TU53c?=
- =?us-ascii?Q?fwsV7hTJyYGncZLXaQz452cIYDxRHUY+ZU55S7vkZ7b/BUduMN/KvWtAjSsc?=
- =?us-ascii?Q?YVU1LdZVwRtBVUggY9TaZc0stHMbfe6gMCA4Aq+dlqDPpObXqm2EpIT5ZrWs?=
- =?us-ascii?Q?67GPBxygiDnvKHVMu6b8fWfFXnPz+l/4m4i5zGzMYMknArn7b7+JERoBA4N4?=
- =?us-ascii?Q?EGq5wrlPZWydhnJRR7gp/AV7XQjXJWTVwvc10UOD5DLbeTBJlKPYAJFQfXBX?=
- =?us-ascii?Q?+DjhHSYV0FWfBwjTnLgVXl9rah58/vGhkd1kTfNzFVw/27fq2soa4cZcSDIf?=
- =?us-ascii?Q?NcGrlO/Q4RJZBTH0L+YNqKQLeDmdPm2Wq/Q3Rj9RUMFJ93NU+GEz5HJDGxeb?=
- =?us-ascii?Q?bYSib8VKa6FjlPk1A91ByVO42KaWe4CkdAxVjGIW+DBAtDK9AtsUJNTciwhS?=
- =?us-ascii?Q?3NxedaqFVbUI42oU6WBvYfN+hgjgcRQLxwZ6zlrnITZeqZfAS0c44nCbYPf0?=
- =?us-ascii?Q?OvfoozNrpBIp7M7kvHh4lKAzKCMDlLiCb3ZLAxFy+ZLFkGBHL7e7CfgmIO+5?=
- =?us-ascii?Q?PLjGGFGuoa5t8EfNQ/iEadwPSCh9UKcogk1/56cZciKSCgWDMF4oO56d9QFQ?=
- =?us-ascii?Q?+Ffl1/+1Y2dsdSLRAVtDddbmSF14c2wyCRhCQN8HztBBdNjqlV1S7Gj1TVPR?=
- =?us-ascii?Q?UR0ZNtB6v4mBqZlLCJ8siZyCMM1p9YxTtJCvwbwJ0J7nPqUSm6bAFlYNLB3H?=
- =?us-ascii?Q?z92MXaIB79royG7PgsnN4cWr5le5LtHnN6syflkcjzLmVFnO3qjTfTWn+ptT?=
- =?us-ascii?Q?8KEYxwcUTDnAVB1BpE03rFWAqeNdq8pdA/h14rPFstPXvDNHn82+jRUopkvM?=
- =?us-ascii?Q?hdJAS8XFc4PB/F1tMviSai6txrU/r4XWr0iPenQTQ32OdRfNsaoN7scJPnia?=
- =?us-ascii?Q?d3m2fuC8Qi192htE6YE5JHqRy50rk4lB33E0mG4TM3C/DAOiB9s/WBeoaNYC?=
- =?us-ascii?Q?oa/YWbU6AlAV+0jmKYIiFOfHI/QwngWsVPuHltZB9wJnHZ0HM2uyYeux5+jk?=
- =?us-ascii?Q?Ky0zaqE5DDaA4Idw31WnJl+4nPA=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c1c249b9-ba44-4ab0-545b-08d9ae5d8341
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2021 08:44:50.8153
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IFyYGsCFWLj3BdD2y38OjmU4ydDXxC2RBCcVITpkT83gFkx8zqWr1aApH3Lpsc+QQ0kVdTLWv3cc2vjhmdxgwP4Bz9qZV+xEE3ex2bhqwhQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR10MB5680
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10176 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 phishscore=0
- bulkscore=0 suspectscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111230045
-X-Proofpoint-GUID: wsXVM9y3RDT3mWD88dHMBPQVT8okAo_w
-X-Proofpoint-ORIG-GUID: wsXVM9y3RDT3mWD88dHMBPQVT8okAo_w
+Content-Type: multipart/signed; boundary="Sig_/SxG3EvWI4147tD=7h0CnB9L";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git sched/lazymm
-head:   c0d03d4f2778fd0a7c16e69cdfb3f111296129b5
-commit: 4863118ffa6fe6af7cfb18c4d4ee6434537b0c8b [13/16] sched, exec: Factor current mm changes out from exec
-config: x86_64-randconfig-m001-20211118 (attached as .config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+--Sig_/SxG3EvWI4147tD=7h0CnB9L
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+On Mon, 22 Nov 2021 15:42:38 -0700
+jim.cromie@gmail.com wrote:
 
-smatch warnings:
-kernel/sched/core.c:4982 __change_current_mm() error: uninitialized symbol 'old_active_mm'.
+> On Mon, Nov 22, 2021 at 2:02 AM Pekka Paalanen <ppaalanen@gmail.com> wrot=
+e:
+> >
+> > On Fri, 19 Nov 2021 11:21:36 -0500
+> > Jason Baron <jbaron@akamai.com> wrote:
+> > =20
+> > > On 11/18/21 10:24 AM, Pekka Paalanen wrote: =20
+> > > > On Thu, 18 Nov 2021 09:29:27 -0500
+> > > > Jason Baron <jbaron@akamai.com> wrote:
+> > > > =20
+> > > >> On 11/16/21 3:46 AM, Pekka Paalanen wrote: =20
+> > > >>> On Fri, 12 Nov 2021 10:08:41 -0500
+> > > >>> Jason Baron <jbaron@akamai.com> wrote:
+> > > >>> =20
+> > > >>>> On 11/12/21 6:49 AM, Vincent Whitchurch wrote: =20
+> > > >>>>> On Thu, Nov 11, 2021 at 03:02:04PM -0700, Jim Cromie wrote: =20
+> > > >>>>>> Sean Paul proposed, in:
+> > > >>>>>> https://urldefense.com/v3/__https://patchwork.freedesktop.org/=
+series/78133/__;!!GjvTz_vk!HcKnMRByYkIdyF1apqQjlN5aBIomzJR1an3YWXM6KXs0EftV=
+MQdrewRA8Dki4A$
+> > > >>>>>> drm/trace: Mirror DRM debug logs to tracefs
+> > > >>>>>>
+> > > >>>>>> His patchset's objective is to be able to independently steer =
+some of
+> > > >>>>>> the drm.debug stream to an alternate tracing destination, by s=
+plitting
+> > > >>>>>> drm_debug_enabled() into syslog & trace flavors, and enabling =
+them
+> > > >>>>>> separately.  2 advantages were identified:
+> > > >>>>>>
+> > > >>>>>> 1- syslog is heavyweight, tracefs is much lighter
+> > > >>>>>> 2- separate selection of enabled categories means less traffic
+> > > >>>>>>
+> > > >>>>>> Dynamic-Debug can do 2nd exceedingly well:
+> > > >>>>>>
+> > > >>>>>> A- all work is behind jump-label's NOOP, zero off cost.
+> > > >>>>>> B- exact site selectivity, precisely the useful traffic.
+> > > >>>>>>    can tailor enabled set interactively, at shell.
+> > > >>>>>>
+> > > >>>>>> Since the tracefs interface is effective for drm (the threads =
+suggest
+> > > >>>>>> so), adding that interface to dynamic-debug has real potential=
+ for
+> > > >>>>>> everyone including drm.
+> > > >>>>>>
+> > > >>>>>> if CONFIG_TRACING:
+> > > >>>>>>
+> > > >>>>>> Grab Sean's trace_init/cleanup code, use it to provide tracefs
+> > > >>>>>> available by default to all pr_debugs.  This will likely need =
+some
+> > > >>>>>> further per-module treatment; perhaps something reflecting hie=
+rarchy
+> > > >>>>>> of module,file,function,line, maybe with a tuned flattening.
+> > > >>>>>>
+> > > >>>>>> endif CONFIG_TRACING
+> > > >>>>>>
+> > > >>>>>> Add a new +T flag to enable tracing, independent of +p, and ad=
+d and
+> > > >>>>>> use 3 macros: dyndbg_site_is_enabled/logging/tracing(), to enc=
+apsulate
+> > > >>>>>> the flag checks.  Existing code treats T like other flags. =20
+> > > >>>>>
+> > > >>>>> I posted a patchset a while ago to do something very similar, b=
+ut that
+> > > >>>>> got stalled for some reason and I unfortunately didn't follow i=
+t up:
+> > > >>>>>
+> > > >>>>>  https://urldefense.com/v3/__https://lore.kernel.org/lkml/20200=
+825153338.17061-1-vincent.whitchurch@axis.com/__;!!GjvTz_vk!HcKnMRByYkIdyF1=
+apqQjlN5aBIomzJR1an3YWXM6KXs0EftVMQdrewRGytKHPg$
+> > > >>>>>
+> > > >>>>> A key difference between that patchset and this patch (besides =
+that
+> > > >>>>> small fact that I used +x instead of +T) was that my patchset a=
+llowed
+> > > >>>>> the dyndbg trace to be emitted to the main buffer and did not f=
+orce them
+> > > >>>>> to be in an instance-specific buffer. =20
+> > > >>>>
+> > > >>>> Yes, I agree I'd prefer that we print here to the 'main' buffer =
+- it
+> > > >>>> seems to keep things simpler and easier to combine the output fr=
+om
+> > > >>>> different sources as you mentioned. =20
+> > > >>>
+> > > >>> Hi,
+> > > >>>
+> > > >>> I'm not quite sure I understand this discussion, but I would like=
+ to
+> > > >>> remind you all of what Sean's original work is about:
+> > > >>>
+> > > >>> Userspace configures DRM tracing into a flight recorder buffer (I=
+ guess
+> > > >>> this is what you refer to "instance-specific buffer").
+> > > >>>
+> > > >>> Userspace runs happily for months, and then hits a problem: a fai=
+lure
+> > > >>> in the DRM sub-system most likely, e.g. an ioctl that should never
+> > > >>> fail, failed. Userspace handles that failure by dumping the flight
+> > > >>> recorder buffer into a file and saving or sending a bug report. T=
+he
+> > > >>> flight recorder contents give a log of all relevant DRM in-kernel
+> > > >>> actions leading to the unexpected failure to help developers debu=
+g it.
+> > > >>>
+> > > >>> I don't mind if one can additionally send the flight recorder str=
+eam to
+> > > >>> the main buffer, but I do want the separate flight recorder buffe=
+r to
+> > > >>> be an option so that a) unrelated things cannot flood the interes=
+ting
+> > > >>> bits out of it, and b) the scope of collected information is rele=
+vant.
+> > > >>>
+> > > >>> The very reason for this work is problems that are very difficult=
+ to
+> > > >>> reproduce in practice, either because the problem itself is trigg=
+ered
+> > > >>> very rarely and randomly, or because the end users of the system =
+have
+> > > >>> either no knowledge or no access to reconfigure debug logging and=
+ then
+> > > >>> reproduce the problem with good debug logs.
+> > > >>>
+> > > >>> Thank you very much for pushing this work forward!
+> > > >>>
+> > > >>> =20
+> > > >>
+> > > >> So I think Vincent (earlier in the thread) was saying that he find=
+s it
+> > > >> very helpful have dynamic debug output go to the 'main' trace buff=
+er,
+> > > >> while you seem to be saying you'd prefer it just go to dynamic deb=
+ug
+> > > >> specific trace buffer. =20
+> > > >
+> > > > Seems like we have different use cases: traditional debugging, and
+> > > > in-production flight recorder for problem reporting. I'm not surpri=
+sed
+> > > > if they need different treatment.
+> > > > =20
+> > > >> So we certainly can have dynamic output potentially go to both pla=
+ces -
+> > > >> although I think this would mean two tracepoints? But I really won=
+der
+> > > >> if we really need a separate tracing buffer for dynamic debug when
+> > > >> what goes to the 'main' buffer can be controlled and filtered to a=
+void
+> > > >> your concern around a 'flood'? =20
+> > > >
+> > > > If the DRM tracing goes into the main buffer, then systems in
+> > > > production cannot have any other sub-system traced in a similar
+> > > > fashion. To me it would feel very arrogant to say that to make use =
+of
+> > > > DRM flight recording, you cannot trace much or anything else.
+> > > >
+> > > > The very purpose of the flight recorder is run in production all the
+> > > > time, not in a special debugging session.
+> > > >
+> > > > There is also the question of access and contents of the trace buff=
+er.
+> > > > Ultimately, if automatic bug reports are enabled in a system, the
+> > > > contents of the trace buffer would be sent as-is to some bug tracki=
+ng
+> > > > system. If there is a chance to put non-DRM stuff in the trace buff=
+er,
+> > > > that could be a security problem.
+> > > >
+> > > > My use case is Weston. When Weston encounters an unexpected problem=
+ in
+> > > > production, something should automatically capture the DRM flight
+> > > > recorder contents and save it alongside the Weston log. Would be re=
+ally
+> > > > nice if Weston itself could do that, but I suspect it is going to n=
+eed
+> > > > root privileges so it needs some helper daemon.
+> > > >
+> > > > Maybe Sean can reiterate their use case more?
+> > > >
+> > > >
+> > > > Thanks,
+> > > > pq
+> > > > =20
+> > >
+> > > Ok, so in this current thread the proposal was to create a "dyndbg-tr=
+acefs"
+> > > buffer to put the dynamic debug output (including drm output from dyn=
+amic
+> > > debug) into. And I was saying let's just put in the 'main' trace buff=
+er
+> > > (predicated on a dynamic debug specific tracepoint), since there seems
+> > > to be a a use-case for that and it keeps things simpler.
+> > >
+> > > But I went back to Sean's original patch, and it creates a drm specif=
+ic
+> > > trace buffer "drm" (via trace_array_get_by_name("drm")). Here:
+> > > https://patchwork.freedesktop.org/patch/445549/?series=3D78133&rev=3D5
+> > >
+> > > So I think that may be some of the confusion here? The current thread/
+> > > proposal is not for a drm specific trace buffer... =20
+> >
+> > Hi Jason,
+> >
+> > I may very well have confused things, sorry about that. If this series
+> > is not superseding the idea of the DRM flight recorder, then don't mind
+> > me. It just sounded very similar and I also haven't seen new revisions
+> > of the flight recorder in a long time. =20
+>=20
+> IMO this series has clarified the requirement for a flight-recorder mode,
+> which seems to fit ideally in a separate instance.
+>=20
+> > > Having a subsystem specific trace buffer would allow subsystem specif=
+ic
+> > > trace log permissions depending on the sensitivity of the data. But
+> > > doesn't drm output today go to the system log which is typically world
+> > > readable today? =20
+> >
+> > Yes, and that is exactly the problem. The DRM debug output is so high
+> > traffic it would make the system log both unusable due to cruft and
+> > slow down the whole machine. The debug output is only useful when
+> > something went wrong, and at that point it is too late to enable
+> > debugging. That's why a flight recorder with an over-written circular
+> > in-memory buffer is needed. =20
+>=20
+> Seans patch reuses enum drm_debug_category to split the tracing
+> stream into 10 sub-streams
+> - how much traffic from each ?
+> - are some sub-streams more valuable for post-mortem ?
+> - any value from further refinement of categories ?
+> - drop irrelevant callsites individually to reduce clutter, extend
+> buffer time/space ?
 
-vim +/old_active_mm +4982 kernel/sched/core.c
+I think it's hard to predict which sub-streams you are going to need
+before you have a bug to debug. Hence I would err on the side of
+enabling too much. This also means that better or more refined
+categorisation might not be that much of help - or if it is, then are
+the excluded debug messages worth having in the kernel to begin with.
+Well, we're probably not that interested in GPU debugs but just
+everything related to the KMS side, which on the existing categories
+is... everything except half of CORE and DRIVER, maybe? Not sure.
 
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4938  void __change_current_mm(struct mm_struct *mm, bool mm_is_brand_new)
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4939  {
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4940  	struct task_struct *tsk = current;
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4941  	struct mm_struct *old_active_mm, *mm_to_drop = NULL;
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4942  
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4943  	BUG_ON(!mm);	/* likely to cause corruption if we continue */
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4944  
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4945  	/*
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4946  	 * We do not want to schedule, nor should procfs peek at current->mm
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4947  	 * while we're modifying it.  task_lock() disables preemption and
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4948  	 * locks against procfs.
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4949  	 */
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4950  	task_lock(tsk);
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4951  	/*
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4952  	 * membarrier() requires a full barrier before switching mm.
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4953  	 */
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4954  	smp_mb__after_spinlock();
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4955  
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4956  	local_irq_disable();
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4957  
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4958  	if (tsk->mm) {
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4959  		/* We're detaching from an old mm.  Sync stats. */
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4960  		sync_mm_rss(tsk->mm);
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4961  	} else {
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4962  		/*
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4963  		 * Switching from kernel mm to user.  Drop the old lazy
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4964  		 * mm reference.
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4965  		 */
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4966  		mm_to_drop = tsk->active_mm;
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4967  	}
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4968  
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4969  	tsk->active_mm = mm;
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4970  	WRITE_ONCE(tsk->mm, mm);  /* membarrier reads this without locks */
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4971  	membarrier_update_current_mm(mm);
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4972  
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4973  	if (mm_is_brand_new) {
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4974  		/*
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4975  		 * For historical reasons, some architectures want IRQs on
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4976  		 * when activate_mm() is called.  If we're going to call
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4977  		 * activate_mm(), turn on IRQs but leave preemption
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4978  		 * disabled.
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4979  		 */
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4980  		if (!IS_ENABLED(CONFIG_ARCH_WANT_IRQS_OFF_ACTIVATE_MM))
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4981  			local_irq_enable();
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03 @4982  		activate_mm(old_active_mm, mm);
+Maybe Sean has a better idea.
 
-"old_active_mm" is never initialized.
+My feeling is that that could mean in the order of hundreds of log
+events at framerate (e.g. 60 times per second) per each enabled output
+individually. And per DRM device, of course. This is with the
+uninteresting GPU debugs already excluded.
 
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4983  		if (IS_ENABLED(CONFIG_ARCH_WANT_IRQS_OFF_ACTIVATE_MM))
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4984  			local_irq_enable();
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4985  	} else {
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4986  		switch_mm_irqs_off(old_active_mm, mm, tsk);
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4987  		local_irq_enable();
-4863118ffa6fe6 kernel/sched/core.c Andy Lutomirski  2021-09-03  4988  	}
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Still, I don't think the flight recorder buffer would need to be
+massive. I suspect it would be enough to hold a few frames' worth which
+is just a split second under active operation. When something happens,
+the userspace stack is likely going to stop on its tracks immediately
+to collect the debug information, which means the flooding should pause
+and the relevant messages don't get overwritten before we get them. In
+a multi-seat system where each device is controlled by a separate
+display server instance, per-device logs would help with this. OTOH,
+multi-seat is not a very common use case I suppose.
 
+
+Thanks,
+pq
+
+--Sig_/SxG3EvWI4147tD=7h0CnB9L
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmGcqiIACgkQI1/ltBGq
+qqez3RAAkXUMG4UuD6XSePo0AVaVuwMwx+7cQa9DRYYvNf4WRXNCc/JSJb0DTHlj
+rQw52jZo8zPsCIFKJOUgr1PundY7y/FKu3TVQiObz11oiy8lS94RPa0FmLaX8Hr9
+zf2YXqQmY31vvOLPj9zzmzfCUMcT9AFZUtydqXpxhx7qF/Z/+39fJ0a6JMpT6nLP
+FEZwlIYFs43DdEnb0X2+uoLU34fgw4FXO9NOK94fP1tfWfWwAJsVpuKcnfDj56aG
+CIcTv24D8ew0lChcchyWfMf88L7f+tiZqirTL8KxmDdzdWEZY1GzNfQGg7346wo7
+2FwtD5PqY+WtvimUB8uQeI04q651SXPqPqYk7g95GZkRy62kwa4x0U5wCPLr9apj
+TWcZsoGFoIqJ4Hv/dV0c/9CxOGS+eOthYalvgKgHo1mBuIj1aYk1oSfwedZoqyCr
+ZTFzKh6CjrqInz5OsR5P7wldWX6R/JvetZTK0eacsUrQaYwAB2UWUCvd7L/tdodK
+ReJ3OY7Fs5ATgs7CEK78sEx5edWY4fCxmxapw4XzMLvX97vFMrGwkMpOa6VSc1VX
+1D8K4ydltSmzUDKzaWe6JnzRY0dJadrhLPRkuyVLQTACu7EpmIoEz6jOf7jfoiyM
+fecd46WNdBI5+J49C4Ld7h59Qo4OMcsoOmen/xMWDAcsNRRcEhA=
+=xgJy
+-----END PGP SIGNATURE-----
+
+--Sig_/SxG3EvWI4147tD=7h0CnB9L--
