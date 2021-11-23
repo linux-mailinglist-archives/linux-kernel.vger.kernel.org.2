@@ -2,86 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ACFE45A09D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 11:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F26B45A0A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 11:51:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232844AbhKWKur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 05:50:47 -0500
-Received: from mga14.intel.com ([192.55.52.115]:10134 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229924AbhKWKuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 05:50:46 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="235234935"
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="235234935"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 02:47:38 -0800
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="456659436"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 02:47:35 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mpTKk-009kiM-OV;
-        Tue, 23 Nov 2021 12:47:30 +0200
-Date:   Tue, 23 Nov 2021 12:47:30 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "'Vaittinen, Matti'" <Matti.Vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/4] bitops: Add single_bit_set()
-Message-ID: <YZzGwubCr8RZtbFM@smile.fi.intel.com>
-References: <cover.1637330431.git.matti.vaittinen@fi.rohmeurope.com>
- <73d5e4286282a47b614d1cc5631eb9ff2a7e2b44.1637330431.git.matti.vaittinen@fi.rohmeurope.com>
- <YZt+x2moR632x///@smile.fi.intel.com>
- <2c22b52f-9a1f-06f5-f008-d568096f5c4d@fi.rohmeurope.com>
- <YZuTt3+PPvyJsFQ/@smile.fi.intel.com>
- <e2675600-7b04-19b0-79ce-28a4e1d1f225@fi.rohmeurope.com>
- <874db8b91ff04001a8958f100a614ed8@AcuMS.aculab.com>
+        id S234923AbhKWKyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 05:54:24 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:52518 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234186AbhKWKyV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 05:54:21 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id DC4E1218D9;
+        Tue, 23 Nov 2021 10:51:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637664672; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y9hV+kmum2huS7kuxDdT68UPA1vs5IyqKLLDFISWpdU=;
+        b=ADxpI42PwLghvNr9l5A90zLun2pLSZiETyho7xdVE/6pso2IUVbZYzTnXaM+qm94NZldnI
+        JkVNMu3/4CkbXOnB9vFJ2ktbferjpnsgsCvYqr/JdeUXfE/40lKrf9J2H2W0Ce58nHV9pO
+        gkwigVOgMmhXdHPrtS2aify7wkHwgrE=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id A3E2EA3B83;
+        Tue, 23 Nov 2021 10:51:12 +0000 (UTC)
+Date:   Tue, 23 Nov 2021 11:51:12 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/5] printk/console: Rename has_preferred_console to
+ need_default_console
+Message-ID: <YZzHoKLznX95p23v@alley>
+References: <20211122132649.12737-1-pmladek@suse.com>
+ <20211122132649.12737-3-pmladek@suse.com>
+ <YZxO2I7D8uFQWKTF@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <874db8b91ff04001a8958f100a614ed8@AcuMS.aculab.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <YZxO2I7D8uFQWKTF@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 10:42:45AM +0000, David Laight wrote:
-> From: Vaittinen, Matti
-> > Sent: 22 November 2021 13:19
+On Tue 2021-11-23 11:15:52, Sergey Senozhatsky wrote:
+> On (21/11/22 14:26), Petr Mladek wrote:
+> > The logic around the variable @has_preferred_console made my head
+> > spin many times. Part of the problem is the ambiguous name.
 > > 
-> > On 11/22/21 14:57, Andy Shevchenko wrote:
-> > > On Mon, Nov 22, 2021 at 12:42:21PM +0000, Vaittinen, Matti wrote:
-> > >> On 11/22/21 13:28, Andy Shevchenko wrote:
-> > >>> On Mon, Nov 22, 2021 at 01:03:25PM +0200, Matti Vaittinen wrote:
-> > >
-> > > What do you mean by this?
-> > >
-> > > hweight() will return you the number of the non-zero elements in the set.
+> > There is the variable @preferred_console. It points to the last
+> > non-braille console in @console_cmdline array. This array contains
+> > consoles preferred via the command line, device tree, or SPCR.
 > > 
-> > Exactly. The function I added did only check if given set of bits had
-> > only one bit set.
+> > Then there is the variable @has_preferred_console. It is set to
+> > "true" when @preferred_console is enabled or when a console with
+> > tty binding gets enabled by default.
+> > 
+> > It might get reset back by the magic condition:
+> > 
+> > 	if (!has_preferred_console || bcon || !console_drivers)
+> > 		has_preferred_console = preferred_console >= 0;
+> > 
+> > It is a puzzle. Dumb explanation is that it gets re-evaluated
+> > when:
+> > 
+> > 	+ it was not set before (see above when it gets set)
+> > 	+ there is still an early console enabled (bcon)
+> > 	+ there is no console enabled (!console_drivers)
+> > 
+> > This is still a puzzle.
+> > 
+> > It gets more clear when we see where the value is checked. The only
+> > meaning of the variable is to decide whether we should try to enable
+> > the new console by default.
 > 
-> Checking for exactly one bit can use the (x & (x - 1)) check on
-> non-zero values - which may even be better on some cpus with a
-> popcnt instruction.
+> A nit: by "new console" you probably mean preferred_console. It sort
+> of suggests that try_enable_new_console() was not such a bad name,
+> may be, since we still refer to such consoles as "new" not "preferred".
 
-In the discussed case the value pretty much can be 0, meaning you have
-to add an additional test which I believe diminishes all efforts for
-the is_power_of_2() call.
+By "new console" I mean the console that is passed being registered.
+It is the console passed by @newcon parameter.
 
--- 
-With Best Regards,
-Andy Shevchenko
+In compare, @preferred_console is only one. It is the last non-braille
+consoles added by __add_preferred_console().
 
+Outlook:
 
+I have a followup patch set that renames @console_cmdline[] to
+@preferred_consoles[]. The array includes consoles that are preferred
+also by the device tree or SPCR. It is not only by the command line.
+
+The patch also renames @preferred_console to @last_preferred_console.
+It helps to distinguish it from the array name. Anyway, the last
+console is just one of the preferred consoles. It is special only
+because it should get associated with /dev/console.
+
+The renaming causes a lot of noise. I am not sure if it is worth it.
+It is currently done as the very last step (23rd patch) after
+the rest of the logic is cleaned. But if you like it. I could
+do it earlier.
+
+Thanks for review.
+
+Best Regards,
+Petr
