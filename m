@@ -2,161 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2706F45998F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE16459992
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232059AbhKWBTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 20:19:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52614 "EHLO
+        id S232117AbhKWBTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 20:19:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231776AbhKWBTR (ORCPT
+        with ESMTP id S232051AbhKWBTx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 20:19:17 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F08C061714
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:16:10 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id v19so15618805plo.7
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:16:10 -0800 (PST)
+        Mon, 22 Nov 2021 20:19:53 -0500
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D757FC061746
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:16:45 -0800 (PST)
+Received: by mail-il1-x132.google.com with SMTP id x9so19983494ilu.6
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:16:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aOapSZPUp0g2vRLPFt2Pwlv4YJeJLNgFW5OzxeO2Az4=;
-        b=L7O8jFumaB7EmY5HtnwDKbxvXRB5S0200eENfBFBtzsOYZm0Xb0fZkzugBes9139gc
-         LtOpN74gDJingIlx2690zN4s3ahjPf41d0oh+7i5fxL9QxNlx04ZQztrDNs2fR+TBWrL
-         vKkkWxwTOM2ac5h2AKvi7Eti26GSgQJzzZ/8CLVEUmQGCqGLL6GdLYXzgO+oE0soWXar
-         gWPRAQi+IAhx0fk6JqIv4UUB4QTmtQetbKvGpNtxejn4YJPH/tFMpLGIU7+pEN3rji4R
-         4fqvN61jFMP4o95fuRjUpq3IyEfhHZ9DvtxsQ66iBoJpILhFAmVeGDa5Qnud/7kVKy2+
-         Qlfg==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OWGNEvMSJrz9gx0ocpfCOrjY/4kPGHl937GrD3qaOEs=;
+        b=wuvsvAY2e4NToRbegyHp2Im6GDEau+HqX/NTdgt1a7V5K+QXKas/WpHZVb3dzlzdtC
+         UCcw028tlC/kZZGF7PBVRyvR7RLHCVmglfeH7x7SWa2qkx6tk5bF4aeZcOCCQryS/R8B
+         o3oeEYT+5eYnHapjYkiTx/wWJN1/28WVcT0H4rZZcbIEu3sr8vw8pCZyZE65SNuN8JOg
+         Xr8+xL2pqsUdbI15BrjmUOn5wJIyDoZLBW4edb8OcJEFmp43HR1vF5zcldwhCAboVk0C
+         KWahQ57zn7Ux0nYK4CIobqdgj8fvnPFN0+Wcp3mTnveMRuJTe/QsZZVVWGsyMOMKAM7s
+         84/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aOapSZPUp0g2vRLPFt2Pwlv4YJeJLNgFW5OzxeO2Az4=;
-        b=2AIxSS/1MRClKAXXbe8DiL3p++A4Fkhej5HEbXiChfK2EPOqUzPVKXohRlejR1kFKE
-         MSeaVFf8EudAfjU5Wbflb/C6ysMSbBDKLOoSuEQZCEs2WkNUZ6bB7YftKSuDo7vNuH2G
-         oXWVn/jT+TdvRi7rVo6Fbp7lAUJB6E0vXBHmiodAN2+0LAKJBxFob9i7JCx9sYtiJvQM
-         0qJ5r0RvbeYCXqRYPjy4iF/782lHvnKwOotLfu8gbQIWyUxW1jtFtwsUqfiHLDwDV7h4
-         RMeO2pbLEkTeDcLJa/WrqTZvhsdzH6ccuFjLJBSgYC5GfTNz25U66O1U4vMs6Cx1/TkE
-         IqPA==
-X-Gm-Message-State: AOAM532Mg8fwkdToBx/fOMFfAshJMY+XJ+DrYY83u410FoIg/kUFU1N6
-        IW3hl2SDBCqVF/o8b8I6MPzBWQ==
-X-Google-Smtp-Source: ABdhPJwy+1KiAnohFRJPtinqi0mLVPo2CYoFy6QQ+dNhNSAJSqwN1dFfxnZhk0fdbHcBKjJRAcLlNw==
-X-Received: by 2002:a17:902:c643:b0:141:cf6b:6999 with SMTP id s3-20020a170902c64300b00141cf6b6999mr2068159pls.80.1637630169419;
-        Mon, 22 Nov 2021 17:16:09 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id m6sm6829396pgc.17.2021.11.22.17.16.08
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OWGNEvMSJrz9gx0ocpfCOrjY/4kPGHl937GrD3qaOEs=;
+        b=t4LxTigXFr5TteA/ezZnJFFhbfOY5kNyGFyMeRKJ8s1LFLQLiIXmrwxsb9OXcanzxe
+         6NW10Jw6qfnbyzlAWPSMfl6Idz981+kPbZ3TLEIJOw1iQ/tYaAjOa4dUMmU5x+6ZHdDu
+         pyxK8zWC/VzdcyNJabZLLS9lorcQXJco7ymQxGXqrTMSDoMvn53npUBBg5LKxC3V7vTX
+         /nB7Z1LJ1+BZnbErAtNJc3eSBTjcoFo+VjfJ6iW1B+lg7uaEibYigcLqP63INfKcxRQH
+         CQVIguTdLq7xZGUGkziIcqEpT90GyfDRprE17b7ajWd3NMV7LMcWdWUd8hD8sQ1Vxy1u
+         c0Ag==
+X-Gm-Message-State: AOAM5326OuHtNw+CyMncxxFUVF9V6gLkGAwJEg8gawOmxbWdHO4+ewAD
+        pUUgitkOZrNg0xz43uKE0S8SDQ==
+X-Google-Smtp-Source: ABdhPJzLCPeVZOxvyv8iSjcbhzruCpCgY1B7HMkL+iV82dFYamoEBB+pzoa8sWqq0Jr4YY7mvlzQOA==
+X-Received: by 2002:a05:6e02:1a2c:: with SMTP id g12mr1728279ile.22.1637630205150;
+        Mon, 22 Nov 2021 17:16:45 -0800 (PST)
+Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id k7sm3909788iov.40.2021.11.22.17.16.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 17:16:08 -0800 (PST)
-Date:   Tue, 23 Nov 2021 01:16:05 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Hou Wenlong <houwenlong93@linux.alibaba.com>
-Subject: Re: [PATCH 19/28] KVM: x86/mmu: Zap only the target TDP MMU shadow
- page in NX recovery
-Message-ID: <YZxA1VAs5FNbjmH9@google.com>
-References: <20211120045046.3940942-1-seanjc@google.com>
- <20211120045046.3940942-20-seanjc@google.com>
- <CANgfPd83h4dXa-bFY96dkwHfJsdqu65BAzbqztgEhiRcHFquJw@mail.gmail.com>
+        Mon, 22 Nov 2021 17:16:44 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     pkurapat@codeaurora.org, avuyyuru@codeaurora.org,
+        bjorn.andersson@linaro.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, evgreen@chromium.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net] net: ipa: kill ipa_cmd_pipeline_clear()
+Date:   Mon, 22 Nov 2021 19:16:40 -0600
+Message-Id: <20211123011640.528936-1-elder@linaro.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANgfPd83h4dXa-bFY96dkwHfJsdqu65BAzbqztgEhiRcHFquJw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021, Ben Gardon wrote:
-> On Fri, Nov 19, 2021 at 8:51 PM Sean Christopherson <seanjc@google.com> wrote:
-> > @@ -755,6 +759,26 @@ static inline bool tdp_mmu_iter_cond_resched(struct kvm *kvm,
-> >         return false;
-> >  }
-> >
-> > +bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
-> > +{
-> > +       u64 old_spte;
-> > +
-> > +       rcu_read_lock();
-> > +
-> > +       old_spte = kvm_tdp_mmu_read_spte(sp->ptep);
-> > +       if (WARN_ON_ONCE(!is_shadow_present_pte(old_spte))) {
-> > +               rcu_read_unlock();
-> > +               return false;
-> > +       }
-> > +
-> > +       __tdp_mmu_set_spte(kvm, kvm_mmu_page_as_id(sp), sp->ptep, old_spte, 0,
-> > +                          sp->gfn, sp->role.level + 1, true, true);
-> > +
-> > +       rcu_read_unlock();
-> > +
-> > +       return true;
-> > +}
-> > +
-> 
-> Ooooh this makes me really nervous. There are a lot of gotchas to
-> modifying SPTEs in a new context without traversing the paging
-> structure like this. For example, we could modify an SPTE under an
-> invalidated root here. I don't think that would be a problem since
-> we're just clearing it, but it makes the code more fragile.
+Calling ipa_cmd_pipeline_clear() after stopping the channel
+underlying the AP<-modem RX endpoint can lead to a deadlock.
 
-Heh, it better not be a problem, because there are plently of flows in the TDP MMU
-that can modify SPTEs under an invalidated root, e.g. fast_page_fault(),
-tdp_mmu_zap_leafs(), kvm_age_gfn(), kvm_test_age_gfn(), etc...  And before the
-patch that introduced is_page_fault_stale(), kvm_tdp_mmu_map() was even installing
-SPTEs into an invalid root!  Anything that takes a reference to a root and yields
-(or never takes mmu_lock) can potentially modify a SPTE under an invalid root.
+This occurs in the ->runtime_suspend device power operation for the
+IPA driver.  While this callback is in progress, any other requests
+for power will block until the callback returns.
 
-Checking the paging structures for this flow wouldn't change anything.  Invalidating
-a root doesn't immediately zap SPTEs, it just marks the root invalid.  The other
-subtle gotcha is that kvm_reload_remote_mmus() doesn't actually gaurantee all vCPUs
-will have dropped the invalid root or performed a TLB flush when mmu_lock is dropped,
-those guarantees are only with respect to re-entering the guest!
+Stopping the AP<-modem RX channel does not prevent the modem from
+sending another packet to this endpoint.  If a packet arrives for an
+RX channel when the channel is stopped, an SUSPEND IPA interrupt
+condition will be pending.  Handling an IPA interrupt requires
+power, so ipa_isr_thread() calls pm_runtime_get_sync() first thing.
 
-All of the above is no small part of why I don't want to walk the page tables:
-it's completely misleading as walking the page tables doesn't actually provide any
-protection, it's holding RCU that guarantees KVM doesn't write memory it doesn't own.
+The problem occurs because a "pipeline clear" command will not
+complete while such a SUSPEND interrupt condition exists.  So the
+SUSPEND IPA interrupt handler won't proceed until it gets power;
+that won't happen until the ->runtime_suspend callback (and its
+"pipeline clear" command) completes; and that can't happen while
+the SUSPEND interrupt condition exists.
 
-> Another approach to this would be to do in-place promotion / in-place
-> splitting once the patch sets David and I just sent out are merged.  That
-> would avoid causing extra page faults here to bring in the page after this
-> zap, but it probably wouldn't be safe if we did it under an invalidated root.
+It turns out that in this case there is no need to use the "pipeline
+clear" command.  There are scenarios in which clearing the pipeline
+is required while suspending, but those are not (yet) supported
+upstream.  So a simple fix, avoiding the potential deadlock, is to
+stop calling ipa_cmd_pipeline_clear() in ipa_endpoint_suspend().
+This removes the only user of ipa_cmd_pipeline_clear(), so get rid
+of that function.  It can be restored again whenever it's needed.
 
-I agree that in-place promotion would be better, but if we do that, I think a logical
-intermediate step would be to stop zapping unrelated roots and entries.  If there's
-a bug that is exposed/introduced by not zapping other stuff, I would much rather it
-show up when KVM stops zapping other stuff, not when KVM stops zapping other stuff
-_and_ promotes in place.  Ditto for if in-place promotion introduces a bug.
+This is basically a manual revert along with an explanation for
+commit 6cb63ea6a39ea ("net: ipa: introduce ipa_cmd_tag_process()").
 
-> I'd rather avoid this extra complexity and just tolerate the worse
-> performance on the iTLB multi hit mitigation at this point since new
-> CPUs seem to be moving past that vulnerability.
+Fixes: 6cb63ea6a39ea ("net: ipa: introduce ipa_cmd_tag_process()")
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ drivers/net/ipa/ipa_cmd.c      | 16 ----------------
+ drivers/net/ipa/ipa_cmd.h      |  6 ------
+ drivers/net/ipa/ipa_endpoint.c |  2 --
+ 3 files changed, 24 deletions(-)
 
-IMO, it reduces complexity, especially when looking at the series as a whole, which
-I fully realize you haven't yet done :-)  Setting aside the complexities of each
-chunk of code, what I find complex with the current TDP MMU zapping code is that
-there are no precise rules for what needs to be done in each situation.  I'm not
-criticizing how we got to this point, I absolutely think that hitting everything
-with a big hammer to get the initial version stable was the right thing to do.
+diff --git a/drivers/net/ipa/ipa_cmd.c b/drivers/net/ipa/ipa_cmd.c
+index cff51731195aa..d57472ea077f2 100644
+--- a/drivers/net/ipa/ipa_cmd.c
++++ b/drivers/net/ipa/ipa_cmd.c
+@@ -661,22 +661,6 @@ void ipa_cmd_pipeline_clear_wait(struct ipa *ipa)
+ 	wait_for_completion(&ipa->completion);
+ }
+ 
+-void ipa_cmd_pipeline_clear(struct ipa *ipa)
+-{
+-	u32 count = ipa_cmd_pipeline_clear_count();
+-	struct gsi_trans *trans;
+-
+-	trans = ipa_cmd_trans_alloc(ipa, count);
+-	if (trans) {
+-		ipa_cmd_pipeline_clear_add(trans);
+-		gsi_trans_commit_wait(trans);
+-		ipa_cmd_pipeline_clear_wait(ipa);
+-	} else {
+-		dev_err(&ipa->pdev->dev,
+-			"error allocating %u entry tag transaction\n", count);
+-	}
+-}
+-
+ static struct ipa_cmd_info *
+ ipa_cmd_info_alloc(struct ipa_endpoint *endpoint, u32 tre_count)
+ {
+diff --git a/drivers/net/ipa/ipa_cmd.h b/drivers/net/ipa/ipa_cmd.h
+index 69cd085d427db..05ed7e42e1842 100644
+--- a/drivers/net/ipa/ipa_cmd.h
++++ b/drivers/net/ipa/ipa_cmd.h
+@@ -163,12 +163,6 @@ u32 ipa_cmd_pipeline_clear_count(void);
+  */
+ void ipa_cmd_pipeline_clear_wait(struct ipa *ipa);
+ 
+-/**
+- * ipa_cmd_pipeline_clear() - Clear the hardware pipeline
+- * @ipa:	- IPA pointer
+- */
+-void ipa_cmd_pipeline_clear(struct ipa *ipa);
+-
+ /**
+  * ipa_cmd_trans_alloc() - Allocate a transaction for the command TX endpoint
+  * @ipa:	IPA pointer
+diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
+index ef790fd0ab56a..03a1709934208 100644
+--- a/drivers/net/ipa/ipa_endpoint.c
++++ b/drivers/net/ipa/ipa_endpoint.c
+@@ -1636,8 +1636,6 @@ void ipa_endpoint_suspend(struct ipa *ipa)
+ 	if (ipa->modem_netdev)
+ 		ipa_modem_suspend(ipa->modem_netdev);
+ 
+-	ipa_cmd_pipeline_clear(ipa);
+-
+ 	ipa_endpoint_suspend_one(ipa->name_map[IPA_ENDPOINT_AP_LAN_RX]);
+ 	ipa_endpoint_suspend_one(ipa->name_map[IPA_ENDPOINT_AP_COMMAND_TX]);
+ }
+-- 
+2.32.0
 
-But a side effect of the big hammer approach is that it makes reasoning about things
-more difficult, e.g. "when is it safe to modify a SPTE versus when is it safe to insert
-a SPTE into the paging structures?" or "what needs to be zapped when the mmu_notifier
-unmaps a range?".
-
-And I also really want to avoid another snafu like the memslots with passthrough
-GPUs bug, where using a big hammer (zap all) when a smaller hammer (zap SPTEs for
-the memslot) _should_ work allows bugs to creep in unnoticed because they're hidden
-by overzealous zapping.
-
-> If you think this is worth the complexity, it'd be nice to do a little
-> benchmarking to make sure it's giving us a substantial improvement.
-
-Performance really isn't a motivating factor.  Per the changelog, the motivation
-is mostly to allow later patches to simplify zap_gfn_range() by having it zap only
-leaf SPTEs, and now that I've typed it up, also all of the above :-)
