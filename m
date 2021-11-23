@@ -2,68 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD97345AC00
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:06:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43EF345AC06
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238846AbhKWTKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 14:10:02 -0500
-Received: from mga01.intel.com ([192.55.52.88]:35824 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237126AbhKWTJ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 14:09:59 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="258983437"
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="258983437"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 11:06:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="457181296"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 23 Nov 2021 11:06:48 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mpb7v-0002By-Jq; Tue, 23 Nov 2021 19:06:47 +0000
-Date:   Wed, 24 Nov 2021 03:06:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Andi Kleen <ak@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: [intel-tdx:guest-upstream 15/38] arch/x86/kernel/process.o: warning:
- objtool: .altinstr_replacement+0x5: call without frame pointer save/setup
-Message-ID: <202111240211.wdrjK2u4-lkp@intel.com>
+        id S237339AbhKWTK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 14:10:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235934AbhKWTK5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 14:10:57 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66182C061714;
+        Tue, 23 Nov 2021 11:07:49 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id g18so218206pfk.5;
+        Tue, 23 Nov 2021 11:07:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UvbPdUMKD8CTuv9S60ws2yBM73A71Bgq/3okLSu4+nk=;
+        b=l+LmivlR+K9IqwQK9J7arDIbo8UH5rjVuZMlPacJZCvrV+t0isI2wftH4C1nkFvPOB
+         vescVJgbZQatlAI8alSvD8M9CriczazLeG0MRwdQMmncE/THqMwzw8z5WkWDdOa1YQXM
+         /RhhDkkirnc+MYFtK2B+hDi8f8hSbtsBFbSNgypgWduRZoCOgcd24tsmxsg51GpFNXeH
+         2u/io/HQ+lJT5Nm8w/Otc58V1eEvbnMc0OkksPbVQqVA9t6D72+u9mlH//KIxsnxuuZR
+         FkSuRwljxF5yvhZuj5KdgflgK/Xnx2CXTiBULTBFr9dUKYRbhnjptg0WreqTW+KUQjFj
+         FBOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UvbPdUMKD8CTuv9S60ws2yBM73A71Bgq/3okLSu4+nk=;
+        b=B7agHYHhzLFe51NdcNG89bK65k719hGp+54EQmufFvPyWuDFzKMbwLbVr1K5uA06LJ
+         S5KQPGYlimkev35Ua5/Okh3+DPTP9WLY1Ay77AM2YME7nC2jsGik2BAjru0xcOmlHPSA
+         xrL4ILNs7TrexxHQKQp8/OG9+RUyjaYQ57Q2Pc00oye9d4f4tHwxB8rc4CbXxejyqcGE
+         gOHzp37/olCANv385hW6vhCD/gNjuN5IBNikmSIsNXvn1KdocnnMganWW50imqa3Ct7D
+         dLEx+R8iNvyw9su6pdFpeUiykE9j1Eml4UKgMm9UrXyEdbBMDDApWRuHjnaEIN3n+PVQ
+         sZcw==
+X-Gm-Message-State: AOAM531/pggi2vOr+7CyCM3C6pdKbFdD0C/bsscYq1KGb9JebKZc8Feu
+        Ukr+Q1iYe538roSos2svy/VnfZPaxL4=
+X-Google-Smtp-Source: ABdhPJz3e+H7RJHCzPLVX7oe38urHquxkNzFGSPjh2hOyyaYVVBsFNIi/OC7sCLHsCsQJyC1aSPVaA==
+X-Received: by 2002:a63:de48:: with SMTP id y8mr5380299pgi.255.1637694468999;
+        Tue, 23 Nov 2021 11:07:48 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id ep15sm2779936pjb.3.2021.11.23.11.07.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Nov 2021 11:07:48 -0800 (PST)
+Subject: Re: [net-next PATCH] net: dsa: qca8k: fix warning in LAG feature
+To:     Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel test robot <lkp@intel.com>
+References: <20211123154446.31019-1-ansuelsmth@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <f1b12353-907f-a7fd-7b1d-d3ed90df3a8e@gmail.com>
+Date:   Tue, 23 Nov 2021 11:07:46 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211123154446.31019-1-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://github.com/intel/tdx.git guest-upstream
-head:   6de233e56ad1ba06ef0bbe20a9377c47f49e6366
-commit: e565a4318c87e3d1243bb31b89c53aff081472c5 [15/38] x86/tdx: Add HLT support for TDX guests
-config: x86_64-randconfig-a001-20211123 (https://download.01.org/0day-ci/archive/20211124/202111240211.wdrjK2u4-lkp@intel.com/config.gz)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel/tdx/commit/e565a4318c87e3d1243bb31b89c53aff081472c5
-        git remote add intel-tdx https://github.com/intel/tdx.git
-        git fetch --no-tags intel-tdx guest-upstream
-        git checkout e565a4318c87e3d1243bb31b89c53aff081472c5
-        # save the config file to linux build tree
-        mkdir build_dir
-        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash arch/x86/
+On 11/23/21 7:44 AM, Ansuel Smith wrote:
+> Fix warning reported by bot.
+> Make sure hash is init to 0 and fix wrong logic for hash_type in
+> qca8k_lag_can_offload.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
->> arch/x86/kernel/process.o: warning: objtool: .altinstr_replacement+0x5: call without frame pointer save/setup
-   arch/x86/kernel/process.o: warning: objtool: .altinstr_replacement+0x0: call without frame pointer save/setup
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Fixes: def975307c01 ("net: dsa: qca8k: add LAG support")
+-- 
+Florian
