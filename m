@@ -2,268 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C98145A66E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 16:20:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA9F45A66F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 16:20:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238365AbhKWPXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 10:23:17 -0500
-Received: from mga04.intel.com ([192.55.52.120]:40674 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234906AbhKWPXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238392AbhKWPXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 10:23:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:23603 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236303AbhKWPXP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 23 Nov 2021 10:23:15 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="233759768"
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="233759768"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 07:20:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="650089632"
-Received: from kuha.fi.intel.com ([10.237.72.166])
-  by fmsmga001.fm.intel.com with SMTP; 23 Nov 2021 07:20:01 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 23 Nov 2021 17:20:00 +0200
-Date:   Tue, 23 Nov 2021 17:20:00 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-omap@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH v2] extcon: fix extcon_get_extcon_dev() error handling
-Message-ID: <YZ0GoHn/v9ki5AGm@kuha.fi.intel.com>
-References: <20211123083925.GA3277@kili>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637680807;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nzZw5UfSegXbw18CEt/o6FXd1pUErV1MvwcNtl5mpBU=;
+        b=PXbNt34wqhDZV3S3ho8nfqy6XLHaVcf3TDjhn+sjF1uYo8ccNHr2a7pt5mjOSvnL1QLkm+
+        4j/VF6uD1TCizJWv/WagQ5/SFQngWX4BZJFKzVYsIgr2vM5niN2dIwvQG7XimNOkeuXDps
+        LJK53mWx6zoLoj2/7zHrxQUo6eYmi1U=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-547-zcms5gAYNdqdEx1SaxKdjg-1; Tue, 23 Nov 2021 10:20:05 -0500
+X-MC-Unique: zcms5gAYNdqdEx1SaxKdjg-1
+Received: by mail-wr1-f72.google.com with SMTP id r2-20020adfe682000000b00198af042b0dso313910wrm.23
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 07:20:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=nzZw5UfSegXbw18CEt/o6FXd1pUErV1MvwcNtl5mpBU=;
+        b=m5K3slStoYKTeQ1itVurDv6tMtJCc/l0lgqx2F7KwypIyH9XP7GFsQBxgbLTLmSGNv
+         g2l0phEbl+/qq+WvZOXvSSrrb+uLu5szk7WiHxmKQMjMRbaqDenqOZJIkEYu7GZsGOFO
+         joxqufDWBdH4MJPrzVzYUzF1uWhyXTkY5sFty13OWDG1Cy1pX+xY+X4iPQntMelLDsM+
+         o75t4JqqZCWVODb8fjbZMKDcNzJiISE7KTFBgmFkdeSaofjUwQVjxYTv9O23av9EkzGE
+         boQcTBRqAJZ55yYKuhqeo0Y6CfyWDzyP0mx5Ws3mjYQc1TpZ/KfOCXe+d81v6IMEtJa4
+         S7Mw==
+X-Gm-Message-State: AOAM5305WJHV3DT/SlcbOgWyclGyJGmmPWOuU9t+S5uVip0yCnwyvyIC
+        2ojpy38EbWhYm8kNaq2u9qg1WP4R34erTUgVY0UOhkblGZqIZqqf85tsRWY+oObc0xEoErhmgqO
+        AoF81CnGtyFpOJ+U+Ms90/qm3
+X-Received: by 2002:a05:6000:1681:: with SMTP id y1mr8183330wrd.52.1637680804543;
+        Tue, 23 Nov 2021 07:20:04 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxUoSoPvPvLO49H6NY+gHF+4FNFe07RzaW7WxEc5sbe1D39sGgbrgj8rSNIcLf3gIFDDlAziw==
+X-Received: by 2002:a05:6000:1681:: with SMTP id y1mr8183284wrd.52.1637680804298;
+        Tue, 23 Nov 2021 07:20:04 -0800 (PST)
+Received: from [192.168.3.132] (p5b0c6765.dip0.t-ipconnect.de. [91.12.103.101])
+        by smtp.gmail.com with ESMTPSA id n15sm1632169wmq.38.2021.11.23.07.20.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Nov 2021 07:20:03 -0800 (PST)
+Message-ID: <ebe07977-8840-ebe2-57ce-9126a4081bb4@redhat.com>
+Date:   Tue, 23 Nov 2021 16:20:02 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211123083925.GA3277@kili>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [RFC v2 PATCH 01/13] mm/shmem: Introduce F_SEAL_GUEST
+Content-Language: en-US
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Chao Peng <chao.p.peng@linux.intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        qemu-devel@nongnu.org, Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J . Bruce Fields" <bfields@fieldses.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
+        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com
+References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
+ <20211119134739.20218-2-chao.p.peng@linux.intel.com>
+ <20211119151943.GH876299@ziepe.ca>
+ <df11d753-6242-8f7c-cb04-c095f68b41fa@redhat.com>
+ <6de78894-8269-ea3a-b4ee-a5cc4dad827e@redhat.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <6de78894-8269-ea3a-b4ee-a5cc4dad827e@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 11:43:06AM +0300, Dan Carpenter wrote:
-> The extcon_get_extcon_dev() function returns error pointers on error,
-> NULL when it's a -EPROBE_DEFER defer situation, and ERR_PTR(-ENODEV)
-> when the CONFIG_EXTCON option is disabled.  This is very complicated for
-> the callers to handle and a number of them had bugs that would lead to
-> an Oops.
+On 23.11.21 10:06, Paolo Bonzini wrote:
+> On 11/19/21 16:39, David Hildenbrand wrote:
+>>> If qmeu can put all the guest memory in a memfd and not map it, then
+>>> I'd also like to see that the IOMMU can use this interface too so we
+>>> can have VFIO working in this configuration.
+>>
+>> In QEMU we usually want to (and must) be able to access guest memory
+>> from user space, with the current design we wouldn't even be able to
+>> temporarily mmap it -- which makes sense for encrypted memory only. The
+>> corner case really is encrypted memory. So I don't think we'll see a
+>> broad use of this feature outside of encrypted VMs in QEMU. I might be
+>> wrong, most probably I am:)
 > 
-> In real life, there are two things which prevented crashes.  First,
-> error pointers would only be returned if there was bug in the caller
-> where they passed a NULL "extcon_name" and none of them do that.
-> Second, only two out of the eight drivers will build when CONFIG_EXTCON
-> is disabled.
-> 
-> The normal way to write this would be to return -EPROBE_DEFER directly
-> when appropriate and return NULL when CONFIG_EXTCON is disabled.  Then
-> the error handling is simple and just looks like:
-> 
-> 	dev->edev = extcon_get_extcon_dev(acpi_dev_name(adev));
-> 	if (IS_ERR(dev->edev))
-> 		return PTR_ERR(dev->edev);
-> 
-> For the two drivers which can build with CONFIG_EXTCON disabled, then
-> extcon_get_extcon_dev() will now return NULL which is not treated as an
-> error and the probe will continue successfully.  Those two drivers are
-> "typec_fusb302" and "max8997-battery".  In the original code, the
-> typec_fusb302 driver had an 800ms hang in tcpm_get_current_limit() but
-> now that function is a no-op.  For the max8997-battery driver everything
-> should continue working as is.
-> 
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> It's not _that_ crazy an idea, but it's going to be some work to teach 
+> KVM that it has to kmap/kunmap around all memory accesses.
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
-> ---
-> v2: return NULL when CONFIG_EXTCON is disabled
-> 
-> If we apply this patch, it might be a good idea to send it to -stable
-> so that backported code that relies on handling error pointers does
-> not break silently.
-> 
->  drivers/extcon/extcon-axp288.c         |    4 ++--
->  drivers/extcon/extcon.c                |    2 +-
->  drivers/power/supply/axp288_charger.c  |   17 ++++++++++-------
->  drivers/power/supply/charger-manager.c |    7 ++-----
->  drivers/power/supply/max8997_charger.c |   10 +++++-----
->  drivers/usb/dwc3/drd.c                 |    9 ++-------
->  drivers/usb/phy/phy-omap-otg.c         |    4 ++--
->  drivers/usb/typec/tcpm/fusb302.c       |    4 ++--
->  include/linux/extcon.h                 |    2 +-
->  9 files changed, 27 insertions(+), 32 deletions(-)
-> 
-> diff --git a/drivers/extcon/extcon.c b/drivers/extcon/extcon.c
-> index e7a9561a826d..a35e99928807 100644
-> --- a/drivers/extcon/extcon.c
-> +++ b/drivers/extcon/extcon.c
-> @@ -876,7 +876,7 @@ struct extcon_dev *extcon_get_extcon_dev(const char *extcon_name)
->  		if (!strcmp(sd->name, extcon_name))
->  			goto out;
->  	}
-> -	sd = NULL;
-> +	sd = ERR_PTR(-EPROBE_DEFER);
->  out:
->  	mutex_unlock(&extcon_dev_list_lock);
->  	return sd;
-> diff --git a/include/linux/extcon.h b/include/linux/extcon.h
-> index 0c19010da77f..685401d94d39 100644
-> --- a/include/linux/extcon.h
-> +++ b/include/linux/extcon.h
-> @@ -296,7 +296,7 @@ static inline void devm_extcon_unregister_notifier_all(struct device *dev,
->  
->  static inline struct extcon_dev *extcon_get_extcon_dev(const char *extcon_name)
->  {
-> -	return ERR_PTR(-ENODEV);
-> +	return NULL;
->  }
->  
->  static inline struct extcon_dev *extcon_find_edev_by_node(struct device_node *node)
-> diff --git a/drivers/extcon/extcon-axp288.c b/drivers/extcon/extcon-axp288.c
-> index 7c6d5857ff25..180be768c215 100644
-> --- a/drivers/extcon/extcon-axp288.c
-> +++ b/drivers/extcon/extcon-axp288.c
-> @@ -394,8 +394,8 @@ static int axp288_extcon_probe(struct platform_device *pdev)
->  		if (adev) {
->  			info->id_extcon = extcon_get_extcon_dev(acpi_dev_name(adev));
->  			put_device(&adev->dev);
-> -			if (!info->id_extcon)
-> -				return -EPROBE_DEFER;
-> +			if (IS_ERR(info->id_extcon))
-> +				return PTR_ERR(info->id_extcon);
->  
->  			dev_info(dev, "controlling USB role\n");
->  		} else {
-> diff --git a/drivers/power/supply/axp288_charger.c b/drivers/power/supply/axp288_charger.c
-> index ec41f6cd3f93..4acfeb52a44e 100644
-> --- a/drivers/power/supply/axp288_charger.c
-> +++ b/drivers/power/supply/axp288_charger.c
-> @@ -848,17 +848,20 @@ static int axp288_charger_probe(struct platform_device *pdev)
->  	info->regmap_irqc = axp20x->regmap_irqc;
->  
->  	info->cable.edev = extcon_get_extcon_dev(AXP288_EXTCON_DEV_NAME);
-> -	if (info->cable.edev == NULL) {
-> -		dev_dbg(dev, "%s is not ready, probe deferred\n",
-> -			AXP288_EXTCON_DEV_NAME);
-> -		return -EPROBE_DEFER;
-> +	if (IS_ERR(info->cable.edev)) {
-> +		dev_err_probe(dev, PTR_ERR(info->cable.edev),
-> +			      "extcon_get_extcon_dev(%s) failed\n",
-> +			      AXP288_EXTCON_DEV_NAME);
-> +		return PTR_ERR(info->cable.edev);
->  	}
->  
->  	if (acpi_dev_present(USB_HOST_EXTCON_HID, NULL, -1)) {
->  		info->otg.cable = extcon_get_extcon_dev(USB_HOST_EXTCON_NAME);
-> -		if (info->otg.cable == NULL) {
-> -			dev_dbg(dev, "EXTCON_USB_HOST is not ready, probe deferred\n");
-> -			return -EPROBE_DEFER;
-> +		if (IS_ERR(info->otg.cable)) {
-> +			dev_err_probe(dev, PTR_ERR(info->otg.cable),
-> +				      "extcon_get_extcon_dev(%s) failed\n",
-> +				      USB_HOST_EXTCON_NAME);
-> +			return PTR_ERR(info->otg.cable);
->  		}
->  		dev_info(dev, "Using " USB_HOST_EXTCON_HID " extcon for usb-id\n");
->  	}
-> diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/supply/charger-manager.c
-> index d67edb760c94..92db79400a6a 100644
-> --- a/drivers/power/supply/charger-manager.c
-> +++ b/drivers/power/supply/charger-manager.c
-> @@ -985,13 +985,10 @@ static int charger_extcon_init(struct charger_manager *cm,
->  	cable->nb.notifier_call = charger_extcon_notifier;
->  
->  	cable->extcon_dev = extcon_get_extcon_dev(cable->extcon_name);
-> -	if (IS_ERR_OR_NULL(cable->extcon_dev)) {
-> +	if (IS_ERR(cable->extcon_dev)) {
->  		pr_err("Cannot find extcon_dev for %s (cable: %s)\n",
->  			cable->extcon_name, cable->name);
-> -		if (cable->extcon_dev == NULL)
-> -			return -EPROBE_DEFER;
-> -		else
-> -			return PTR_ERR(cable->extcon_dev);
-> +		return PTR_ERR(cable->extcon_dev);
->  	}
->  
->  	for (i = 0; i < ARRAY_SIZE(extcon_mapping); i++) {
-> diff --git a/drivers/power/supply/max8997_charger.c b/drivers/power/supply/max8997_charger.c
-> index 25207fe2aa68..634658adf313 100644
-> --- a/drivers/power/supply/max8997_charger.c
-> +++ b/drivers/power/supply/max8997_charger.c
-> @@ -248,13 +248,13 @@ static int max8997_battery_probe(struct platform_device *pdev)
->  		dev_info(&pdev->dev, "couldn't get charger regulator\n");
->  	}
->  	charger->edev = extcon_get_extcon_dev("max8997-muic");
-> -	if (IS_ERR_OR_NULL(charger->edev)) {
-> -		if (!charger->edev)
-> -			return -EPROBE_DEFER;
-> -		dev_info(charger->dev, "couldn't get extcon device\n");
-> +	if (IS_ERR(charger->edev)) {
-> +		dev_err_probe(charger->dev, PTR_ERR(charger->edev),
-> +			      "couldn't get extcon device: max8997-muic\n");
-> +		return PTR_ERR(charger->edev);
->  	}
->  
-> -	if (!IS_ERR(charger->reg) && !IS_ERR_OR_NULL(charger->edev)) {
-> +	if (!IS_ERR(charger->reg)) {
->  		INIT_WORK(&charger->extcon_work, max8997_battery_extcon_evt_worker);
->  		ret = devm_add_action(&pdev->dev, max8997_battery_extcon_evt_stop_work, charger);
->  		if (ret) {
-> diff --git a/drivers/usb/dwc3/drd.c b/drivers/usb/dwc3/drd.c
-> index d7f76835137f..a490f79131c1 100644
-> --- a/drivers/usb/dwc3/drd.c
-> +++ b/drivers/usb/dwc3/drd.c
-> @@ -454,13 +454,8 @@ static struct extcon_dev *dwc3_get_extcon(struct dwc3 *dwc)
->  	 * This device property is for kernel internal use only and
->  	 * is expected to be set by the glue code.
->  	 */
-> -	if (device_property_read_string(dev, "linux,extcon-name", &name) == 0) {
-> -		edev = extcon_get_extcon_dev(name);
-> -		if (!edev)
-> -			return ERR_PTR(-EPROBE_DEFER);
-> -
-> -		return edev;
-> -	}
-> +	if (device_property_read_string(dev, "linux,extcon-name", &name) == 0)
-> +		return extcon_get_extcon_dev(name);
->  
->  	/*
->  	 * Try to get an extcon device from the USB PHY controller's "port"
-> diff --git a/drivers/usb/phy/phy-omap-otg.c b/drivers/usb/phy/phy-omap-otg.c
-> index ee0863c6553e..6e6ef8c0bc7e 100644
-> --- a/drivers/usb/phy/phy-omap-otg.c
-> +++ b/drivers/usb/phy/phy-omap-otg.c
-> @@ -95,8 +95,8 @@ static int omap_otg_probe(struct platform_device *pdev)
->  		return -ENODEV;
->  
->  	extcon = extcon_get_extcon_dev(config->extcon);
-> -	if (!extcon)
-> -		return -EPROBE_DEFER;
-> +	if (IS_ERR(extcon))
-> +		return PTR_ERR(extcon);
->  
->  	otg_dev = devm_kzalloc(&pdev->dev, sizeof(*otg_dev), GFP_KERNEL);
->  	if (!otg_dev)
-> diff --git a/drivers/usb/typec/tcpm/fusb302.c b/drivers/usb/typec/tcpm/fusb302.c
-> index 72f9001b0792..96c55eaf3f80 100644
-> --- a/drivers/usb/typec/tcpm/fusb302.c
-> +++ b/drivers/usb/typec/tcpm/fusb302.c
-> @@ -1708,8 +1708,8 @@ static int fusb302_probe(struct i2c_client *client,
->  	 */
->  	if (device_property_read_string(dev, "linux,extcon-name", &name) == 0) {
->  		chip->extcon = extcon_get_extcon_dev(name);
-> -		if (!chip->extcon)
-> -			return -EPROBE_DEFER;
-> +		if (IS_ERR(chip->extcon))
-> +			return PTR_ERR(chip->extcon);
->  	}
->  
->  	chip->vbus = devm_regulator_get(chip->dev, "vbus");
+I'm also concerned about userspace access. But you sound like you have a
+plan :)
 
 -- 
-heikki
+Thanks,
+
+David / dhildenb
+
