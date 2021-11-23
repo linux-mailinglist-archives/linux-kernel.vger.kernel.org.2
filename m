@@ -2,102 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D53AB459F21
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 10:24:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C40B9459F23
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 10:26:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234917AbhKWJ1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 04:27:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57194 "EHLO mail.kernel.org"
+        id S234944AbhKWJ3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 04:29:09 -0500
+Received: from mga12.intel.com ([192.55.52.136]:55499 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233911AbhKWJ1o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 04:27:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 256F560F5A;
-        Tue, 23 Nov 2021 09:24:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637659476;
-        bh=TcOX3OpXAltrDaStpPDLgGZ/tKmhAa1u2KV6VU8kNP8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lA08b4BHKsIPCZkzF9STBxjVvMGSS7AZ9KIkfda2+ZFGGq3XDoJ5I31zhO3b+2BB3
-         L58TSGZ6k0u1FKGJq1t1t8ZWChkMSsZ8daVytaY6guv0BwybHiXGWkYjKfHhGUBAy2
-         A1YDdHSAdjMCvW+/nIYHDwZnL+zT0fKYf1Fo6O7tknS/uzbQlPwquiq7hLyGCtEJjT
-         9gM3jV7gxCKOUzjY3zF8lWV7U6HNzvV2ZY8bhHH79qtj1Wg6JqqoQW/GoqiDyS/Ojw
-         9zJL6seY7RE/3uHg5laFWH032/oOrCls5go5xZZ42ryY7QQRmtEq662LC/Wb9n9JKQ
-         U6FrlWyWCNamA==
-Date:   Tue, 23 Nov 2021 17:24:31 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Martin Kepplinger <martink@posteo.de>
-Cc:     Abel Vesa <abel.vesa@nxp.com>, Rob Herring <robh@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: freescale: imx8mq: Disable noc dts node
-Message-ID: <20211123092430.GY31998@dragon>
-References: <1636629369-23988-1-git-send-email-abel.vesa@nxp.com>
- <20211123085841.GX31998@dragon>
- <9b9fe3a5b04179870d6ca0ece754fee9abb306b4.camel@posteo.de>
+        id S233911AbhKWJ3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 04:29:08 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="215016639"
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="215016639"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 01:26:00 -0800
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="508929417"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 01:25:56 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mpS3f-009jMP-NQ;
+        Tue, 23 Nov 2021 11:25:47 +0200
+Date:   Tue, 23 Nov 2021 11:25:47 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jay Dolan <jay.dolan@accesio.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH v1 0/2] serial: 8250_pci: Split Pericom driver
+Message-ID: <YZyzmzjVH35U05Wj@smile.fi.intel.com>
+References: <20211117145750.43911-1-andriy.shevchenko@linux.intel.com>
+ <b99aabbe-add9-9c1e-ed4b-8850c69233de@accesio.com>
+ <YZuRV8ipjcly26HB@smile.fi.intel.com>
+ <YZuRnSaZz04KJIDk@smile.fi.intel.com>
+ <ede18fd7-266e-406d-0c9c-570d95ab3673@accesio.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9b9fe3a5b04179870d6ca0ece754fee9abb306b4.camel@posteo.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <ede18fd7-266e-406d-0c9c-570d95ab3673@accesio.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 09:15:57AM +0000, Martin Kepplinger wrote:
-> Am Dienstag, dem 23.11.2021 um 16:58 +0800 schrieb Shawn Guo:
-> > On Thu, Nov 11, 2021 at 01:16:09PM +0200, Abel Vesa wrote:
-> > > Adding interconnect properties to the consumer nodes creates
-> > > a dependency on noc device. The imx-bus devfreq driver is not
-> > > usable
-> > > without the full interconnect support. The interconnect is not yet
-> > > working on i.MX platforms. The devlink created on device_add makes
-> > > the lcdif and other nodes that have the interconnect properties
-> > > wait for the noc (imx-bus driver) to probe first.
+On Mon, Nov 22, 2021 at 09:19:09PM -0800, Jay Dolan wrote:
+> On 11/22/21 4:48 AM, Andy Shevchenko wrote:
+> > On Mon, Nov 22, 2021 at 02:47:20PM +0200, Andy Shevchenko wrote:
+> > > On Thu, Nov 18, 2021 at 10:32:51PM -0800, Jay Dolan wrote:
+> > > > On 11/17/21 6:57 AM, Andy Shevchenko wrote:
+> > > > > Split Pericom driver to a separate module.
+> > > > > While at it, re-enable high baud rates.
+> > > > > 
+> > > > > Jay, can you, please, test this on as many hardware as you have?
 > > > 
-> > > To make sure the interconnect consumers (nodes that have
-> > > interconnect
-> > > properties already added) will still probe, lets disable the noc
-> > > node
-> > > for now. Once the interconnect on i.MX platforms is fully
-> > > functional,
-> > > the status of the noc node can be changed.
+> > > ...
 > > > 
-> > > Fixes: ad1abc8a03fdbc05b ("arm64: dts: imx8mq: Add interconnect for
-> > > lcdif")
+> > > > * Add in pericom_do_startup() because the UPF_MAGIC_MULTIPLIER doesn't
+> > > > stick.
+> > > 
+> > > Can't find an evidence that this is the case. Can you recheck this (reading
+> > > flags back via sysfs or so)? So, for v2 I'll leave my approach.
 > > 
-> > Martin,
+> > Otherwise how the other drivers which are using that flag survive? If it's
+> > indeed an issue, it should be fixed on generic level.
 > > 
-> > Do you have any comment?  So your commit added something untested?
-> > 
-> > Shawn
 > 
-> hi Shawn,
+> I modified pericom_do_startup to log when the UPF_MAGIC_MULTIPLIER flag was
+> present. Then tried to set the port to 3000000 a few times. The port
+> stayed at 9600. It looks like pericom_do_startup() is getting called twice
+> per port on boot, and the flag is gone with the second one.
 > 
-> well, for imx8mq the only missing piece is the mxsfb icc bandwidth
-> request. I posted a first version a year ago but that didn't make it
-> in:
-> https://lore.kernel.org/linux-arm-kernel/20201201103757.32165-1-martin.kepplinger@puri.sm/
+> [    4.925577] [J4D] flag present
+> [    4.926121] [J4D[ flag not present
+> [    4.926843] [J4D] flag present
+> [    4.927415] [J4D[ flag not present
+> [    4.928106] [J4D] flag present
+> [    4.928673] [J4D[ flag not present
+> [    4.929419] [J4D] flag present
+> [    4.930447] [J4D[ flag not present
 > 
-> So this should create a working state until the real fix in mxsfb is
-> there (although I'd revert commit ad1abc8a03fd ("arm64: dts: imx8mq:
-> Add interconnect for lcdif") instead).
+> [   49.528504] [J4D[ flag not present
+> [   51.675240] [J4D[ flag not present
+> [   59.617954] [J4D[ flag not present
+> 
+> Then I modified it to log when it was adding the flag in. The port was set
+> to 3000000. Also the flag only needed to be added in once. It sticks after
+> the first time.
+> 
+> [    4.647546] [J4D] flag present
+> [    4.648119] [J4D] flag not present(adding)
+> [    4.648778] [J4D] flag present
+> [    4.649330] [J4D] flag not present(adding)
+> [    4.650001] [J4D] flag present
+> [    4.650537] [J4D] flag not present(adding)
+> [    4.651192] [J4D] flag present
+> [    4.651718] [J4D] flag not present(adding)
+> 
+> [   96.025668] [J4D] flag present
+> [  100.130626] [J4D] flag present
+> [  116.435436] [J4D] flag present
+> 
+> I mostly just guessed at do_startup() being the place to set the magic
+> multiplier flag after it didn't stick in quirk in 8250_pci.c.
 
-Besides lcdif, the mipi-csi devices have interconnects property too.  Are
-they already working?  If so, it makes more sense to revert ad1abc8a03fd
-instead.
+Can you share `dmesg` and output of `lspci -nk -vv` on the machine with the
+kernel with patches applied and running?
 
-Shawn
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> I am indeed to blame for this
-> and I'm sorry I haven't yet taken the time to work on mxsfb again.
-> 
-> I can say I plan to do so soon, but without promise that I quickly find
-> a solution that'll be merged...
-> 
-> If you merge this (or revert ad1abc8a03fd), I'll remember to revert
-> with said update.
+
