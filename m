@@ -2,169 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5253459D02
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:46:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B75B459D03
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:46:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234373AbhKWHtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 02:49:04 -0500
-Received: from mail-eopbgr60132.outbound.protection.outlook.com ([40.107.6.132]:53429
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234136AbhKWHtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 02:49:03 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CcwaRruPBVnlsyrmKr3u5c+RamwQ8ag4NdTUSHZ4nPKsOvEF1zDYRlNkwfZXp3oWYstybcZPjKMk2AB1u/4NFKlVUbuVfbf3fn/Oc0Whg4MqHZ1y9WNyo1pRlznS50imfgzQxwZ5vgHKaCgBqiQC6Mh1euxRNLfXuTEeoAVpYdTck1l4PtgabmdZKR8M2o65aHO3BRcjb/tfjLzSPlD5GpRBCvz67xnRL4KH1v5hrnR2798hRKQzjojXE04RDPf8mJeQUlPVnP1rOLdu8YgKuAUTsDUv+2MFm0yM5w8C5bIZTIMRjTRyd4yghQiJ6wOmKMJ1FvDxR2/nGwdRxHzdWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3hIJzt+o9/+eZp0It8gp8hTsCXGtedC4rnSIkMVlJi4=;
- b=NMBzvr0+1ectWdg8eGpqop0mMb1lUalgheZ6QjNvXY919+01RetLiQl7QZgQ/OdqBaLBQS7naGwKkbGCjiVX+RDZtApfNLFbnIPIbVBgE1sAZ0pgZ4dcCcDlR4Phjl4Y3JFcW/H8QWZtN8YEsPUAXO9FhDM+AtLw7J+pUXDjamCfTjeEVed/WESoISmSwoq2HOJNx4ryvOi0OwyNUbep0Abb/LG6dxoxbSFoSZx6XAIjHZ0vdoK62iroA2U0+WeMQJJPQY5hZfUme4IRgEttAihqarfSKvSzlVOIumQeN7tdBcJyrx/AaN5J/+q1cdeu8LTShtMvV1CvWZwPV+wJ1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3hIJzt+o9/+eZp0It8gp8hTsCXGtedC4rnSIkMVlJi4=;
- b=roNrzhh8dXUW/uNpFGam78M+mE/wucHUNzXWtHNzmYqdOMc713+zikcRqEOuUWnpwjeSPXJSn0FmPCbi9KmSC1BmVYMlVmugRTW+4TBrDbN1iCfpdROZy/ZxrSNBcK94QmfaTHlOidGsDSRguMlKGznl1vBa9ufE6VWwZrVT/+A=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nokia.com;
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com (2603:10a6:208:6e::15)
- by AM4PR0701MB2212.eurprd07.prod.outlook.com (2603:10a6:200:46::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.16; Tue, 23 Nov
- 2021 07:45:54 +0000
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::555c:9e12:7c:f52f]) by AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::555c:9e12:7c:f52f%7]) with mapi id 15.20.4734.019; Tue, 23 Nov 2021
- 07:45:54 +0000
-Message-ID: <2bf37a35-1ccf-f4fa-c999-42b9154a2914@nokia.com>
-Date:   Tue, 23 Nov 2021 08:45:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] mtd: spi-nor: mt25qu: Ignore 6th ID byte
-Content-Language: en-US
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-mtd@lists.infradead.org,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
-References: <20211119080402.20262-1-alexander.sverdlin@nokia.com>
- <9a158e2ef6635212c1e353590e3b773b@walle.cc>
- <1e133bc6-5edb-c4ce-ad44-3de77048acf2@nokia.com>
- <e9589af968d7b9dafbce17325dbf8472@walle.cc>
-From:   Alexander Sverdlin <alexander.sverdlin@nokia.com>
-In-Reply-To: <e9589af968d7b9dafbce17325dbf8472@walle.cc>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: HE1P189CA0029.EURP189.PROD.OUTLOOK.COM (2603:10a6:7:53::42)
- To AM0PR07MB4531.eurprd07.prod.outlook.com (2603:10a6:208:6e::15)
+        id S234386AbhKWHtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 02:49:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234186AbhKWHtm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 02:49:42 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD63C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 23:46:35 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id 7so42951018oip.12
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 23:46:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oJeDHnOTISIAuTkGsj0VPRfgZZGppNwzUM2PH1GDywI=;
+        b=kbq3ToI5k/FWZcVgJa67/GbN7rk+iCYrOygBdHmcM+JF700RRPw2DoVqo1GZOp0F8I
+         VuH917uLUpeHi+ZpfSyTs7YhiI1YLb1eaKvcZnohqMfD0HEtMHm+w7za1NE5JRQDVQob
+         WIfipmdL56gYbADjb/hm41ikROm9AIw42xDts4Xoy4t3xInkLWZiclSE592DsQP9HNEk
+         kuVmxdprM9WRsjOZi79o6y5Vu2aDhdogn4Gt4pN8xuA5eH1ZVTHkNZk45+CLu78JBZGa
+         msmmfovx3a3c7L516zcpKbztHnJtjLPvmvsR0z8flwLY1h9tPSOu1ELS7hAXedsuZiiX
+         WvRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oJeDHnOTISIAuTkGsj0VPRfgZZGppNwzUM2PH1GDywI=;
+        b=KR4QCknktderxjZA4JxDxpi89CPSbtktKlvS3a6IdCDpZ63+aqmknMtbawNVgPB0ze
+         TBZWmAm0iZRt4Lp3fDiL14KFJRmzkYAY4d3x8Izo1JwEUdJO6LUkatC8UMkdonsYKGXB
+         igLbLwYvYqtwJAaA28cGTF/zjfglhh4arWOfH0dO7twVZRt+FKGRU65gRXvdljr4DytO
+         UlH930SZTK2uU5OdrNwsEWLDMA9yLeWpBwJWUg0WRK0ieT1CFiBFsCISWGxE9BJG0uhq
+         xcUtOl6ydlSkSb8IyKBVijoxluTk953/2eY5Lz+97iInPcHpMXNHrsSetSbQa1ynUOsm
+         EzcA==
+X-Gm-Message-State: AOAM532yaZl560ScayRvNveOG6Sr2WJOm/bot3Yox65Imm7haH1XPWVY
+        DKVnevCql8nUffMqUYQ32G5X5tiGjA5C7t4Pdab/dg==
+X-Google-Smtp-Source: ABdhPJyD5mFIM1jfe/J8WDfZuI4pxpYfY21m06DvA/gvGhpIpT+7toPZA8kL3HOQGByL8/yUp3pb0S6Ur3EL8wHDZCk=
+X-Received: by 2002:a05:6808:ec9:: with SMTP id q9mr363627oiv.160.1637653594318;
+ Mon, 22 Nov 2021 23:46:34 -0800 (PST)
 MIME-Version: 1.0
-Received: from [0.0.0.0] (131.228.32.166) by HE1P189CA0029.EURP189.PROD.OUTLOOK.COM (2603:10a6:7:53::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend Transport; Tue, 23 Nov 2021 07:45:52 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b310a148-a753-450d-bbde-08d9ae554703
-X-MS-TrafficTypeDiagnostic: AM4PR0701MB2212:
-X-Microsoft-Antispam-PRVS: <AM4PR0701MB2212F5D6D8EF42EBFFDFC7EE88609@AM4PR0701MB2212.eurprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: L1jRdEkbzA8AYk9Ia2Q5mY9wOUVG3ZvrRpkqse8/pqMHbMZ40KOv/uI0UxYL8NL3uYnytMH5SIuwS+AHheUt7HpUF3Roat0nGTNC4GPIewQuZt/SkbVcaPqQBICcNsIKjoSRSerJQCKYjjBTBlBaF7PGeMjGRAtjPz6pas4p/G77yLX1ePD63PuDfiXIvdGTRED8JQ74J33/CMzhf9T3RgC5xMu6FxOuZykOcBjeOhDJ7lOuDfEHYO4QtwBs9nGsflLcD8KjWOrj5TiyjtcaDJRH5BRaaUMLUZW+HnUTgyt2Mb8mUC/DipZ7ZsIm6FkN1B5fr/UUIoSBKOU1MqgZ4DKEyr028qqJYMwB4xLri1/7cWoqyr5M/WBh04RZJwd/j/6HBwVOv1NDVMAq+Fuqvwdf0yzU9RuhFe9whupFw9Q5NaOcf8HYjPf1qEmzCoObO3Z2rdmwr7AvXnpGQ1iFhK4MVRA1OG4zEqi26yiLITZ13nsTrzBs/F8bdpk0dOsJDfOqrKOwioHjKc3TTOyT1BEtlZ12ehmmrAMR4RyYDKX9ksaaEzH5NU7SD3EX/BapnBSEZlzVzAGzzcfWp1ualN3Mh8T53euhQfc2RsIfRiDEY30IwiBUW9KXIhEZYv+hCemqzKxNCvP7ebeeNENRmA8IZxs6ohQ9V79616xrwfVB6JskrXoS6/dbJnTKk4jrBQZBR8/W31gnUUth9se3Obd/c1k1cCCxPrIND8nkpd5WXf5Ze3R6upnxLMGM0yq+M8GOjCol+Gj2oJTnkeVNRXXRWEBYg+eNs1g5iZWhXi9l240lQX1Ku3qAFMmhHRlPY8qHVxIwBeTGKUdSta0gHXiTLQr/tIiyaDViKVCbTkM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR07MB4531.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6916009)(6706004)(52116002)(508600001)(186003)(31696002)(54906003)(36756003)(26005)(31686004)(5660300002)(2906002)(2616005)(6666004)(66946007)(83380400001)(4326008)(8936002)(8676002)(956004)(38350700002)(38100700002)(53546011)(66556008)(6486002)(66476007)(44832011)(86362001)(16576012)(82960400001)(316002)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TW93K2ZVbzZSMFc1VnhIclZOTVZPYzVLZ2VNVGZjbDcrYlZQbnQvSEJxUkRT?=
- =?utf-8?B?QVJ0aUk0TjUrK2NVTUVpTExPTiszNE00TFNjblJnbXpOK0QxdUhKKzZJS2Jn?=
- =?utf-8?B?MXd6RDVRVFNoZlA1UjRJWFNOeVNHWVNmcWZuTkwveXVyR0tMN0tJZEp4VjQv?=
- =?utf-8?B?clNpTEhmdjMzWjVMNlhRSFVhcElEdEV6UXBPaG93ZWpEOWdXVkZtN2xKVkJJ?=
- =?utf-8?B?ZmdrZkZTZFdEOS9TR2RGS1RSUlViMGFTdlVzTHErc1U2di9aVEU4ampINndj?=
- =?utf-8?B?ZGx3aHZsQllOUWpxWEJKV3ZZOSsyakpXNVRrTHFmb2pnNlNWejlXOU0zMmJq?=
- =?utf-8?B?TVNPU1FKd0xjRVN5UHlLNEhRV1d1QlVZZVpPeEZ6M0Z3YTA5VTh2TkJIV09v?=
- =?utf-8?B?endNUDdhN0VmTU5ML3ZpQ2k4Y3ZBT084d3YydmIrVkdKQ25WMWgvWHBnRFBK?=
- =?utf-8?B?anJGTlZYWVNZTFlvRDZtcWJxQk1DODdEMEZGR205MXpPZTNzcHo3a3ZvSjFz?=
- =?utf-8?B?QkVrTXZLRmhKQ1pxK1A4YTV5VDFIVTdEWWFqNkJ4bGVqRmR5YWtraStxU2JK?=
- =?utf-8?B?MmJiZjQvRWwrdkhEQVR5RnI2Y0pVTEJhRXRoZVRoUjc3aUlPL0tqTUhGWDFm?=
- =?utf-8?B?SkRtZFhmMk1lQ2gyWnBWQ1NaeDh4aFhKN1BnZmN6eEFESG9PQXg4Rk9mR0Js?=
- =?utf-8?B?T2dBYSt3Y2J6QmdGMHdDMGlTeno0cjg1aDh0NkhoTXBjTFpOV1BCN0psOGtN?=
- =?utf-8?B?dzhwK0pOZkNvNHFrZGpKR2MxRFZHQ3hRc21XeFFGMDVXcTNLZmtNMUhwd2M2?=
- =?utf-8?B?RjZtOTlZdDZOOGllSWhLZEl0aVIvTG5SaHdWOU1JcmRPdnFNNWV0Q2R3T2tV?=
- =?utf-8?B?a0o5YktoNkxObzd6Q0tiWEJ2a2Z3UzBDQ2N3WmI4SHZqajZJSzJSNnJTSWs4?=
- =?utf-8?B?MHZtSjdWRW9WNHpRM0ZSMXBXV1BWZzhXNTV3SnFhV0hSbjR4V0N3ZEVwbkh1?=
- =?utf-8?B?T1FXS0RnZnJIdm5iekJvTTVlYkNadExwMDBpY0dpZ0h3K0ZIMEhLTzg2ZFF1?=
- =?utf-8?B?MC9OUTlJcFhYejFmeFplTVR4KzhqbTNsekZZVzdQRytYMmtCK0x2dTExKzhS?=
- =?utf-8?B?WHRGVGNTSnNZRmNISW00K3dlSDdTZTg2VE9vbi93K2h4Y2g5SGJyZzBoaFZH?=
- =?utf-8?B?b0JBaEJ5Nmd2YUcrNjlwREpRNEEzQk4vN0Z1KzVEcjEvYUNtUUJwVVNFN1pC?=
- =?utf-8?B?WWZRSzdPUE1heWtodE0zSlhyMnozOFVYY1NNMHlzWm5EOGxLL3h4Z3dLTXds?=
- =?utf-8?B?U05QOTliNW1CM29ESVp5RVNDMjViR1lNNUc2NGZRaUFiRHRSeW9tcXpDMnVw?=
- =?utf-8?B?elJ6bVJ1VTVwZWVYYkR3dHczVFRKekY4Y0pwTStOaTZ2TW1jUWFnY0JGdTkx?=
- =?utf-8?B?QXl3V04xQUZCRGJHK2h5YlgyT1lVZHJvWERVU2JyUTA1dG8waXNhMmxVK1FL?=
- =?utf-8?B?Y3NlWG95aG0vMFMvNW5WaXkzQTlPOVdSbTdqU243cnFTS1VVY2ZlUTYwUmZE?=
- =?utf-8?B?YWVxazY2V2pXZmlpUjRpdENCY3B1TytxUy9qcmNCaGJwdFlDL1cwNFFlQ0l2?=
- =?utf-8?B?QlFwaW54Mk1uSUZVbklHR3Z3RUh4V2ZuREtnZG5sL0JIWG9SQ2l1cFZNUmpX?=
- =?utf-8?B?VG0zZkpBbnhnanVkZGVmdi9aQ1U1K25sN0x1QnltRXdWWUZMTDNUay9KeExD?=
- =?utf-8?B?bXpjc2RHbkhBWkRjQUFWcS9OUGN5OURIVjVFR1FvcmRxeFloTk9IUkhZWHdj?=
- =?utf-8?B?eTBacDhLWjhla0NrdkFWMXFTUDd4VkU5VC9xUHpuNGI2SjdxMHNMejZjUXVI?=
- =?utf-8?B?WmJnUWxtVUp0eWxLQTNLbnFFRytzbTJxcTBXaU9TM3NsbTlPdHRCM1dNNHdJ?=
- =?utf-8?B?QzY3dndzWUUramtiRmpNSzNxWGg3dklqZ1dNNmR1NUhEN3FhT2ZTY3BDdnNU?=
- =?utf-8?B?ZjUyckJ2ZVNSWGtqUzFyVVBnM0U0QjgydWprMVlFb0ZiNURnYWc3VEd3aVZp?=
- =?utf-8?B?UWFSSjRiYmFTMW1XdytsR1lmN3puVzdZQ0hLSmg1aGgraUdyeWpQQmp4MmZY?=
- =?utf-8?B?M1IrUEZldXVpNWVPeDlQZUtEaVR1dldVOVUzQUF0MEF1ZXVPQzJteS91L3p2?=
- =?utf-8?B?NkdieWExVXVLRnIwZlpteVpLSVJIYWhQWHlnZS9seksya1NNdFpSNTk4cGNW?=
- =?utf-8?Q?pFnNBvKDN9yy2KqGgr2aaDBBMEBfdbaz0uBm2xsdEo=3D?=
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b310a148-a753-450d-bbde-08d9ae554703
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR07MB4531.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2021 07:45:53.9524
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7IuPv+jTZYcsnfUKt0Z6TEjZKJxM1FTwg3SBz2rsFJ75WJlfV6XG/0B0So35/R1wcyHd8GmC7EmVU5F40Z9NcgekYgTZvoKwQyHILmNBNRA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR0701MB2212
+References: <20211123051658.3195589-1-pcc@google.com> <20211123051658.3195589-6-pcc@google.com>
+In-Reply-To: <20211123051658.3195589-6-pcc@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 23 Nov 2021 08:46:22 +0100
+Message-ID: <CACT4Y+YTEeuhus8py=nDbs2XxmpPU5Ak4mhjydrBPRv+L2dH4A@mail.gmail.com>
+Subject: Re: [PATCH v2 5/5] Documentation: document uaccess logging
+To:     Peter Collingbourne <pcc@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Colin Ian King <colin.king@canonical.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Ran Xiaokai <ran.xiaokai@zte.com.cn>,
+        David Hildenbrand <david@redhat.com>,
+        Xiaofeng Cao <caoxiaofeng@yulong.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Evgenii Stepanov <eugenis@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Tue, 23 Nov 2021 at 06:17, Peter Collingbourne <pcc@google.com> wrote:
+>
+> Add documentation for the uaccess logging feature.
+>
+> Link: https://linux-review.googlesource.com/id/Ia626c0ca91bc0a3d8067d7f28406aa40693b65a2
+> Signed-off-by: Peter Collingbourne <pcc@google.com>
+> ---
+>  Documentation/admin-guide/index.rst           |   1 +
+>  Documentation/admin-guide/uaccess-logging.rst | 149 ++++++++++++++++++
+>  2 files changed, 150 insertions(+)
+>  create mode 100644 Documentation/admin-guide/uaccess-logging.rst
+>
+> diff --git a/Documentation/admin-guide/index.rst b/Documentation/admin-guide/index.rst
+> index 1bedab498104..4f6ee447ab2f 100644
+> --- a/Documentation/admin-guide/index.rst
+> +++ b/Documentation/admin-guide/index.rst
+> @@ -54,6 +54,7 @@ ABI will be found here.
+>     :maxdepth: 1
+>
+>     sysfs-rules
+> +   uaccess-logging
+>
+>  The rest of this manual consists of various unordered guides on how to
+>  configure specific aspects of kernel behavior to your liking.
+> diff --git a/Documentation/admin-guide/uaccess-logging.rst b/Documentation/admin-guide/uaccess-logging.rst
+> new file mode 100644
+> index 000000000000..4b2b297afc00
+> --- /dev/null
+> +++ b/Documentation/admin-guide/uaccess-logging.rst
+> @@ -0,0 +1,149 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +===============
+> +Uaccess Logging
+> +===============
+> +
+> +Background
+> +----------
+> +
+> +Userspace tools such as sanitizers (ASan, MSan, HWASan) and tools
+> +making use of the ARM Memory Tagging Extension (MTE) need to
+> +monitor all memory accesses in a program so that they can detect
+> +memory errors. Furthermore, fuzzing tools such as syzkaller need to
+> +monitor all memory accesses so that they know which parts of memory
+> +to fuzz. For accesses made purely in userspace, this is achieved
+> +via compiler instrumentation, or for MTE, via direct hardware
+> +support. However, accesses made by the kernel on behalf of the user
+> +program via syscalls (i.e. uaccesses) are normally invisible to
+> +these tools.
+> +
+> +Traditionally, the sanitizers have handled this by interposing the libc
+> +syscall stubs with a wrapper that checks the memory based on what we
+> +believe the uaccesses will be. However, this creates a maintenance
+> +burden: each syscall must be annotated with its uaccesses in order
+> +to be recognized by the sanitizer, and these annotations must be
+> +continuously updated as the kernel changes.
+> +
+> +The kernel's uaccess logging feature provides userspace tools with
+> +the address and size of each userspace access, thereby allowing these
+> +tools to report memory errors involving these accesses without needing
+> +annotations for every syscall.
+> +
+> +By relying on the kernel's actual uaccesses, rather than a
+> +reimplementation of them, the userspace memory safety tools may
+> +play a dual role of verifying the validity of kernel accesses. Even
+> +a sanitizer whose syscall wrappers have complete knowledge of the
+> +kernel's intended API may vary from the kernel's actual uaccesses due
+> +to kernel bugs. A sanitizer with knowledge of the kernel's actual
+> +uaccesses may produce more accurate error reports that reveal such
+> +bugs. For example, a kernel that accesses more memory than expected
+> +by the userspace program could indicate that either userspace or the
+> +kernel has the wrong idea about which kernel functionality is being
+> +requested -- either way, there is a bug.
+> +
+> +Interface
+> +---------
+> +
+> +The feature may be used via the following prctl:
+> +
+> +.. code-block:: c
+> +
+> +  uint64_t addr = 0; /* Generally will be a TLS slot or equivalent */
+> +  prctl(PR_SET_UACCESS_DESCRIPTOR_ADDR_ADDR, &addr, 0, 0, 0);
+> +
+> +Supplying a non-zero address as the second argument to ``prctl``
 
-On 22/11/2021 16:05, Michael Walle wrote:
->>>> Ignore 6th ID byte, secure version of mt25qu256a has 0x73 as 6th byte.
+Is it possible to unregister it? Is it what happens when 0 is passed
+as addr? If so, please describe.
+It may be handy to do one-off tracing with the address on stack.
 
-...
+> +will cause the kernel to read an address (referred to as the *uaccess
+> +descriptor address*) from that address on each kernel entry.
+> +
+> +When entering the kernel with a non-zero uaccess descriptor address
+> +to handle a syscall, the kernel will read a data structure of type
+> +``struct uaccess_descriptor`` from the uaccess descriptor address,
+> +which is defined as follows:
+> +
+> +.. code-block:: c
+> +
+> +  struct uaccess_descriptor {
+> +    uint64_t addr, size;
+> +  };
 
-> Thanks, so that's the SFDP data for the mt25qu256aba8e12-1sit part. and the
-> jedec id is 20bb19104473, correct?
+Want to double check the extension story. If we ever want flags in
+uaccess_descriptor, we can add a flag to prctl that would say that
+address must point to uaccess_descriptor_v2 that contains flags,
+right?
+And similarly we can extend uaccess_buffer_entry, right?
 
-Yes!
+> +This data structure contains the address and size (in array elements)
+> +of a *uaccess buffer*, which is an array of data structures of type
+> +``struct uaccess_buffer_entry``. Before returning to userspace, the
+> +kernel will log information about uaccesses to sequential entries
+> +in the uaccess buffer. It will also store ``NULL`` to the uaccess
+> +descriptor address, and store the address and size of the unused
+> +portion of the uaccess buffer to the uaccess descriptor.
+> +
+> +The format of a uaccess buffer entry is defined as follows:
+> +
+> +.. code-block:: c
+> +
+> +  struct uaccess_buffer_entry {
+> +    uint64_t addr, size, flags;
+> +  };
+> +
+> +The meaning of ``addr`` and ``size`` should be obvious. On arm64,
 
-> You don't have the non-security part by chance?
+I would say explicitly "addr and size contain address and size of the
+user memory access".
 
-Unfortunately no. And this is exactly the trigger for this patch:
-one can get "secure" parts from Micron even though these "features" are not
-required.
+> +tag bits are preserved in the ``addr`` field. There is currently
+> +one flag bit assignment for the ``flags`` field:
+> +
+> +.. code-block:: c
+> +
+> +  #define UACCESS_BUFFER_FLAG_WRITE 1
+> +
+> +This flag is set if the access was a write, or clear if it was a
+> +read. The meaning of all other flag bits is reserved.
+> +
+> +When entering the kernel with a non-zero uaccess descriptor
+> +address for a reason other than a syscall (for example, when
+> +IPI'd due to an incoming asynchronous signal), any signals other
+> +than ``SIGKILL`` and ``SIGSTOP`` are masked as if by calling
+> +``sigprocmask(SIG_SETMASK, set, NULL)`` where ``set`` has been
+> +initialized with ``sigfillset(set)``. This is to prevent incoming
+> +signals from interfering with uaccess logging.
+> +
+> +Example
+> +-------
+> +
+> +Here is an example of a code snippet that will enumerate the accesses
+> +performed by a ``uname(2)`` syscall:
+> +
+> +.. code-block:: c
+> +
+> +  struct uaccess_buffer_entry entries[64];
+> +  struct uaccess_descriptor desc;
+> +  uint64_t desc_addr = 0;
+> +  prctl(PR_SET_UACCESS_DESCRIPTOR_ADDR_ADDR, &desc_addr, 0, 0, 0);
+> +
+> +  desc.addr = (uint64_t)&entries;
+> +  desc.size = 64;
+> +  desc_addr = (uint64_t)&desc;
 
-> Mh, I'm undecided whether we should just duplicate the entry or if we
-> should ignore the last byte ("Device configuration information", where 00h
-> is standard). The commit which introduced the flash was 7f412111e276b.
-> Vingesh?
+We don't need any additional compiler barriers here, right?
+It seems that we only need to prevent re-ordering of these writes with
+the next and previous syscalls, which the compiler should do already.
 
-Some people ask themselves why this table keeps growing if there is SFDP...
-I see the point in fixups, but maybe at some point we will be able to support
-some devices just out of the box?
-
-> Can you elaborate on the 0x73? Is that a bitmask? If it was an enumeration,
-> I'd assumed it would be 01h (or some smaller value).
-
-This "security addendum" where one need NDA just says "73h = Secure".
-There is no explanation for it and no other variants.
-
-I'd really suggest to try to autodetect whatever features are going to be
-supported from this chip and only duplicate the entry if this auto-detection
-fails.
-
--- 
-Best regards,
-Alexander Sverdlin.
+> +  struct utsname un;
+> +  uname(&un);
+> +
+> +  struct uaccess_buffer_entry* entries_end = (struct uaccess_buffer_entry*)desc.addr;
+> +  for (struct uaccess_buffer_entry* entry = entries; entry != entries_end; ++entry) {
+> +    printf("%s at 0x%lx size 0x%lx\n", entry->flags & UACCESS_BUFFER_FLAG_WRITE ? "WRITE" : "READ",
+> +           (unsigned long)entry->addr, (unsigned long)entry->size);
+> +  }
+> +
+> +Limitations
+> +-----------
+> +
+> +This feature is currently only supported on the arm64, s390 and x86
+> +architectures.
+> +
+> +Uaccess buffers are a "best-effort" mechanism for logging uaccesses. Of
+> +course, not all of the accesses may fit in the buffer, but aside from
+> +that, not all internal kernel APIs that access userspace memory are
+> +covered. Therefore, userspace programs should tolerate unreported
+> +accesses.
+> +
+> +On the other hand, the kernel guarantees that it will not
+> +(intentionally) report accessing more data than it is specified
+> +to read. For example, if the kernel implements a syscall that is
+> +specified to read a data structure of size ``N`` bytes by first
+> +reading a page's worth of data and then only using the first ``N``
+> +bytes from it, the kernel will either report reading ``N`` bytes or
+> +not report the access at all.
+> --
+> 2.34.0.rc2.393.gf8c9666880-goog
+>
