@@ -2,148 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E1445AF72
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 23:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 250EE45AF98
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 23:57:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240095AbhKWWze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 17:55:34 -0500
-Received: from gandalf.ozlabs.org ([150.107.74.76]:46377 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhKWWzd (ORCPT
+        id S231467AbhKWXAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 18:00:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230274AbhKWXAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 17:55:33 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HzKCS0FC6z4xR9;
-        Wed, 24 Nov 2021 09:52:19 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1637707942;
-        bh=nJ3v47D44xi4bEAxxkbK0bqu4F1ye/w5S9LdQhDunn4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lO6/hCKdQwbOUH0oetFG7UsGnAgEIqnJOQapPnQBGFzu8nlcwbpSTESmOzrme/9m3
-         0hl8HHecNnVoZvfQx6LtrT5wOrpPUmsmBVk8TDExdJIN5N0Im3QvkVjli6yGgCvEWW
-         tIiaAVYIJJQXTB07OD/S+Mq+An0KshvUC1nIWBIXo/mLc7h88IML8yzXu34DQW9oZu
-         GaYxGuHSBM/VawRO2vBrH/tRmrwo4sMo+yMmYV7aZWdx9/6k6v9mT9bLaXrgnczRYW
-         4CltoMs7jzL4q/0Z5OrX+JZcACdXY5I0Aic+K3zBKS1VkS6KTtQ2mVJwLq+rOfW4j9
-         bSV6sMZdpBLGQ==
-Date:   Wed, 24 Nov 2021 09:52:18 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Mike Galbraith <umgwanakikbuti@gmail.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, lkft-triage@lists.linaro.org
-Subject: Re: [PATCH v2] locking: Fixup write_lock_nested() implementation.
-Message-ID: <20211124095218.4a83f39e@canb.auug.org.au>
-In-Reply-To: <20211123170134.y6xb7pmpgdn4m3bn@linutronix.de>
-References: <CA+G9fYtH2JR=L0cPoOEqsEGrZW_uOJgX6qLGMe_hbLpBtjVBwA@mail.gmail.com>
-        <CAK8P3a1NhpNxWfj3gDnuf4bWK_fiE8cjcRyN7e8j95NmvOzbGw@mail.gmail.com>
-        <CAMuHMdVuoUAM-6H2BXYtUH++4yXhRCGLAdbzx2GqAJk64FYO=A@mail.gmail.com>
-        <20211123145006.bon3usz4ilhw6ymg@linutronix.de>
-        <20211123160712.fssioyabln5erx2u@linutronix.de>
-        <20211123170134.y6xb7pmpgdn4m3bn@linutronix.de>
+        Tue, 23 Nov 2021 18:00:39 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399DCC061714
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 14:57:31 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id p18-20020a17090ad31200b001a78bb52876so3344627pju.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 14:57:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/3PsIIKK7UoXMhoYSuG4fvr/lTXeq13xrdfjceY/U20=;
+        b=dtlu+klG5+0eE56joTScLTFS0JKqRY1qUK83ZNHRODbLl/CT3pQnRAGH6ROJjczVxN
+         d32ckPMVWA1PSRElvtNyblzfoMIbF4OiOwHv3eYtPMRTo5KabhJAODttErtDUWsBPbre
+         D/a1qbP8r1lelXP7GQNTLRGOqnvipSZg3ZEF6WuHgB6owneovMRJRXBvbi6vv5QheX6b
+         XamsFiYskSdAwFLdDYQJzUAbtbwER9pmJgTIhPirA13Y9AUOyYLRm2J6qO/iqqzQqLQY
+         e8luiBv4rFNp+D0pIWymCqf5veDQmlmgKmGWwiTNM1+VCPT1EHPr4ZAjViACHKwaBhrf
+         W27w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/3PsIIKK7UoXMhoYSuG4fvr/lTXeq13xrdfjceY/U20=;
+        b=P0pxXO98D1+2UxhwPsvqiyY4YgSyBtb7AfPtEA2sAwgZhu/TB91Sl89Ik0kiTb+AJc
+         cr2TKRIjJPYMtUYToff6+1dp2lJJWt8iw1qhAASzcKAHQEIDe9KS52SRhwzkWqGc9rjG
+         0D8bXEhbVthAuyCof4oSlCTFBMiUGIclC2dCDVIZ77/kGEGu4rSeywmfqZOy8fOxdctu
+         908Qb88eh+GJ0tGUhQM0O6YXAwQyo48DpwzfCGQtK2WZjgVPuvC46DF/QXmwU+x9ZstX
+         t5xI84VT3aABrzcInUj6kTP+Oumam5xecp5BiUvQmsIpLorLiYHgcOCRaGoy0f5zSNpU
+         J0PQ==
+X-Gm-Message-State: AOAM530pcc9kZk8idk1OsORToBoe7sCqwwm4BB2FllZzEALeaqwZi1se
+        VoVZxhYXIlQQG5d5cfMsKKoaAg==
+X-Google-Smtp-Source: ABdhPJxPaDIt3yKaBtJIdD96b2KWT9mxXupw/eFVJsP85GTdAWt5WT+9BQSTMsd+2alGMcadDPMJwA==
+X-Received: by 2002:a17:902:a509:b0:143:7eb6:c953 with SMTP id s9-20020a170902a50900b001437eb6c953mr12050752plq.4.1637708250462;
+        Tue, 23 Nov 2021 14:57:30 -0800 (PST)
+Received: from google.com ([2620:15c:2ce:200:13b4:5c2f:e0e6:ecaf])
+        by smtp.gmail.com with ESMTPSA id a18sm12161329pfn.185.2021.11.23.14.57.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 14:57:30 -0800 (PST)
+Date:   Tue, 23 Nov 2021 14:57:26 -0800
+From:   Peter Collingbourne <pcc@google.com>
+To:     Tadeusz Struk <tadeusz.struk@linaro.org>
+Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] media: venus: Synchronize probe() between venus_core
+ and enc/dec
+Message-ID: <YZ1xP2bKqpzG+mYo@google.com>
+References: <20211029214833.2615274-1-tadeusz.struk@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/w9K6C0uM4PeS2VBEioL/GRL";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211029214833.2615274-1-tadeusz.struk@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/w9K6C0uM4PeS2VBEioL/GRL
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Fri, Oct 29, 2021 at 02:48:33PM -0700, Tadeusz Struk wrote:
+> Venus video encode/decode hardware driver consists of three modules.
+> The parent module venus-core, and two sub modules venus-enc and venus-dec.
+> The venus-core module allocates a common structure that is used by the
+> enc/dec modules, loads the firmware, and performs some common hardware
+> initialization. Since the three modules are loaded one after the other,
+> and their probe functions can run in parallel it is possible that
+> the venc_probe and vdec_probe functions can finish before the core
+> venus_probe function, which then can fail when, for example it
+> fails to load the firmware. In this case the subsequent call to venc_open
+> causes an Oops as it tries to dereference already uninitialized structures
+> through dev->parent and the system crashes in __pm_runtime_resume() as in
+> the trace below:
+> 
+> [   26.064835][  T485] Internal error: Oops: 96000006 [#1] PREEMPT SMP
+> [   26.270914][  T485] Hardware name: Thundercomm Dragonboard 845c (DT)
+> [   26.285019][  T485] pc : __pm_runtime_resume+0x34/0x178
+> [   26.286374][  T213] lt9611 10-003b: hdmi cable connected
+> [   26.290285][  T485] lr : venc_open+0xc0/0x278 [venus_enc]
+> [   26.290326][  T485] Call trace:
+> [   26.290328][  T485]  __pm_runtime_resume+0x34/0x178
+> [   26.290330][  T485]  venc_open+0xc0/0x278 [venus_enc]
+> [   26.290335][  T485]  v4l2_open+0x184/0x294
+> [   26.290340][  T485]  chrdev_open+0x468/0x5c8
+> [   26.290344][  T485]  do_dentry_open+0x260/0x54c
+> [   26.290349][  T485]  path_openat+0xbe8/0xd5c
+> [   26.290352][  T485]  do_filp_open+0xb8/0x168
+> [   26.290354][  T485]  do_sys_openat2+0xa4/0x1e8
+> [   26.290357][  T485]  __arm64_compat_sys_openat+0x70/0x9c
+> [   26.290359][  T485]  invoke_syscall+0x60/0x170
+> [   26.290363][  T485]  el0_svc_common+0xb8/0xf8
+> [   26.290365][  T485]  do_el0_svc_compat+0x20/0x30
+> [   26.290367][  T485]  el0_svc_compat+0x24/0x84
+> [   26.290372][  T485]  el0t_32_sync_handler+0x7c/0xbc
+> [   26.290374][  T485]  el0t_32_sync+0x1b8/0x1bc
+> [   26.290381][  T485] ---[ end trace 04ca7c088b4c1a9c ]---
+> [   26.290383][  T485] Kernel panic - not syncing: Oops: Fatal exception
+> 
+> This can be fixed by synchronizing the three probe functions and
+> only allowing the venc_probe() and vdec_probe() to pass when venus_probe()
+> returns success.
+> 
+> Changes in v2:
+> - Change locking from mutex_lock to mutex_trylock
+>   in venc_probe and vdec_probe to avoid potential deadlock.
+> 
+> Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
 
-Hi all,
+I've had this patched in, no crashes so far after several reboots.
 
-On Tue, 23 Nov 2021 18:01:34 +0100 Sebastian Andrzej Siewior <bigeasy@linut=
-ronix.de> wrote:
->
-> Andrew, please merge it into:
->   locking/rwlocks: introduce write_lock_nested
->   locking-rwlocks-introduce-write_lock_nested.patch
->=20
-> And if someone could test it, I get sh4 defconfig built with and without
-> lockdep. x86 seems still to build, too. So it can't be that bad.
->=20
-> v1=E2=80=A6v2: I noticed a typo in _raw_write_lock_nested() and decided t=
-hat it
-> is no needed so now it is removed for !CONFIG_INLINE_WRITE_LOCK.
->=20
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Tested-by: Peter Collingbourne <pcc@google.com>
+
+Peter
+
 > ---
->  include/linux/rwlock_api_smp.h | 1 -
->  kernel/locking/spinlock.c      | 4 ++++
->  2 files changed, 4 insertions(+), 1 deletion(-)
->=20
-> diff --git a/include/linux/rwlock_api_smp.h b/include/linux/rwlock_api_sm=
-p.h
-> index f0c535ec4e654..dceb0a59b6927 100644
-> --- a/include/linux/rwlock_api_smp.h
-> +++ b/include/linux/rwlock_api_smp.h
-> @@ -47,7 +47,6 @@ _raw_write_unlock_irqrestore(rwlock_t *lock, unsigned l=
-ong flags)
-> =20
->  #ifdef CONFIG_INLINE_WRITE_LOCK
->  #define _raw_write_lock(lock) __raw_write_lock(lock)
-> -#define _raw_write_lock_nested(lock, subclass) __raw_write_lock_nested(l=
-ock, subclass)
->  #endif
-> =20
->  #ifdef CONFIG_INLINE_READ_LOCK_BH
-> diff --git a/kernel/locking/spinlock.c b/kernel/locking/spinlock.c
-> index 996811efa6d6e..7f49baaa49793 100644
-> --- a/kernel/locking/spinlock.c
-> +++ b/kernel/locking/spinlock.c
-> @@ -301,6 +301,10 @@ void __lockfunc _raw_write_lock(rwlock_t *lock)
->  }
->  EXPORT_SYMBOL(_raw_write_lock);
-> =20
-> +#ifndef CONFIG_DEBUG_LOCK_ALLOC
-> +#define __raw_write_lock_nested(lock, subclass)	__raw_write_lock(((void)=
-(subclass), (lock)))
-> +#endif
+>  drivers/media/platform/qcom/venus/core.c |  6 ++++++
+>  drivers/media/platform/qcom/venus/core.h |  2 ++
+>  drivers/media/platform/qcom/venus/vdec.c | 24 +++++++++++++++++++++---
+>  drivers/media/platform/qcom/venus/venc.c | 24 +++++++++++++++++++++---
+>  4 files changed, 50 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+> index 91b15842c555..18f3e3a9823f 100644
+> --- a/drivers/media/platform/qcom/venus/core.c
+> +++ b/drivers/media/platform/qcom/venus/core.c
+> @@ -317,6 +317,7 @@ static int venus_probe(struct platform_device *pdev)
+>  
+>  	INIT_LIST_HEAD(&core->instances);
+>  	mutex_init(&core->lock);
+> +	mutex_init(&core->sync_lock);
+>  	INIT_DELAYED_WORK(&core->work, venus_sys_error_handler);
+>  
+>  	ret = devm_request_threaded_irq(dev, core->irq, hfi_isr, hfi_isr_thread,
+> @@ -331,6 +332,8 @@ static int venus_probe(struct platform_device *pdev)
+>  
+>  	venus_assign_register_offsets(core);
+>  
+> +	mutex_lock(&core->sync_lock);
 > +
->  void __lockfunc _raw_write_lock_nested(rwlock_t *lock, int subclass)
->  {
->  	__raw_write_lock_nested(lock, subclass);
-> --=20
-> 2.34.0
->=20
-
-I have added that patch to iinux-next today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/w9K6C0uM4PeS2VBEioL/GRL
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGdcKIACgkQAVBC80lX
-0GxcKwf8DSXSQ4vFx8KZgCNUsRDvQY9k0L1Anncmc+YDBzHVLsGNp1y16KV8RnFG
-EH3z7YUHfQXJw+IuwV+zVx4sScskhe0rsnYeevnobC9sYlBR1FWNczzXVL9l2Cy5
-VT3OOvp3pP9voolA0ESmtt2jvROTpjX0jzIbDPE/kfkAwbzeypsp7oNPKRnc/19E
-h3oVYUIRteF/Z/ix3b5WEXhByTlVyHsTtvhnifDaIMY8GwERfpsVg86s159FTpgc
-DxpjChCd5a82fz/Xu8/4FgU97YAoJi8xchXIv+xwQU3Np6Z891N4dK8blRsk4ZSJ
-4TE4qakICK1UDliAhxUa6Ec4DWnokg==
-=TnkZ
------END PGP SIGNATURE-----
-
---Sig_/w9K6C0uM4PeS2VBEioL/GRL--
+>  	ret = v4l2_device_register(dev, &core->v4l2_dev);
+>  	if (ret)
+>  		goto err_core_deinit;
+> @@ -377,6 +380,7 @@ static int venus_probe(struct platform_device *pdev)
+>  		goto err_dev_unregister;
+>  	}
+>  
+> +	mutex_unlock(&core->sync_lock);
+>  	venus_dbgfs_init(core);
+>  
+>  	return 0;
+> @@ -392,6 +396,7 @@ static int venus_probe(struct platform_device *pdev)
+>  	hfi_destroy(core);
+>  err_core_deinit:
+>  	hfi_core_deinit(core, false);
+> +	mutex_unlock(&core->sync_lock);
+>  err_core_put:
+>  	if (core->pm_ops->core_put)
+>  		core->pm_ops->core_put(core);
+> @@ -428,6 +433,7 @@ static int venus_remove(struct platform_device *pdev)
+>  
+>  	mutex_destroy(&core->pm_lock);
+>  	mutex_destroy(&core->lock);
+> +	mutex_destroy(&core->sync_lock);
+>  	venus_dbgfs_deinit(core);
+>  
+>  	return ret;
+> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+> index 5ec851115eca..3f80dc26febb 100644
+> --- a/drivers/media/platform/qcom/venus/core.h
+> +++ b/drivers/media/platform/qcom/venus/core.h
+> @@ -119,6 +119,7 @@ struct venus_format {
+>   * @use_tz:	a flag that suggests presence of trustzone
+>   * @fw:		structure of firmware parameters
+>   * @lock:	a lock for this strucure
+> + * @sync_lock	a lock for probe sync between venus_core and venus_enc/dec
+>   * @instances:	a list_head of all instances
+>   * @insts_count:	num of instances
+>   * @state:	the state of the venus core
+> @@ -176,6 +177,7 @@ struct venus_core {
+>  		size_t mem_size;
+>  	} fw;
+>  	struct mutex lock;
+> +	struct mutex sync_lock;
+>  	struct list_head instances;
+>  	atomic_t insts_count;
+>  	unsigned int state;
+> diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+> index 198e47eb63f4..959e43bb6c00 100644
+> --- a/drivers/media/platform/qcom/venus/vdec.c
+> +++ b/drivers/media/platform/qcom/venus/vdec.c
+> @@ -1659,17 +1659,32 @@ static int vdec_probe(struct platform_device *pdev)
+>  	if (!core)
+>  		return -EPROBE_DEFER;
+>  
+> +	/* Sync and wait on the venus core to initialize first.
+> +	 * If we manage to acquire the sync_lock here it means
+> +	 * that the venus_probe() finished running */
+> +	ret = mutex_trylock(&core->sync_lock);
+> +	if (!ret) {
+> +		return -EPROBE_DEFER;
+> +	} else {
+> +		if (core->state != CORE_INIT) {
+> +			ret = -ENODEV;
+> +			goto err_core_unlock;
+> +		}
+> +	}
+> +
+>  	platform_set_drvdata(pdev, core);
+>  
+>  	if (core->pm_ops->vdec_get) {
+>  		ret = core->pm_ops->vdec_get(dev);
+>  		if (ret)
+> -			return ret;
+> +			goto err_core_unlock;
+>  	}
+>  
+>  	vdev = video_device_alloc();
+> -	if (!vdev)
+> -		return -ENOMEM;
+> +	if (!vdev) {
+> +		ret = -ENOMEM;
+> +		goto err_core_unlock;
+> +	}
+>  
+>  	strscpy(vdev->name, "qcom-venus-decoder", sizeof(vdev->name));
+>  	vdev->release = video_device_release;
+> @@ -1690,11 +1705,14 @@ static int vdec_probe(struct platform_device *pdev)
+>  	pm_runtime_set_autosuspend_delay(dev, 2000);
+>  	pm_runtime_use_autosuspend(dev);
+>  	pm_runtime_enable(dev);
+> +	mutex_unlock(&core->sync_lock);
+>  
+>  	return 0;
+>  
+>  err_vdev_release:
+>  	video_device_release(vdev);
+> +err_core_unlock:
+> +	mutex_unlock(&core->sync_lock);
+>  	return ret;
+>  }
+>  
+> diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
+> index bc1c42dd53c0..11ec7bff5e3f 100644
+> --- a/drivers/media/platform/qcom/venus/venc.c
+> +++ b/drivers/media/platform/qcom/venus/venc.c
+> @@ -1338,17 +1338,32 @@ static int venc_probe(struct platform_device *pdev)
+>  	if (!core)
+>  		return -EPROBE_DEFER;
+>  
+> +	/* Sync and wait on the venus core to initialize first.
+> +	 * If we manage to acquire the sync_lock here it means
+> +	 * that the venus_probe() finished running */
+> +	ret = mutex_trylock(&core->sync_lock);
+> +	if (!ret) {
+> +		return -EPROBE_DEFER;
+> +	} else {
+> +		if (core->state != CORE_INIT) {
+> +			ret = -ENODEV;
+> +			goto err_core_unlock;
+> +		}
+> +	}
+> +
+>  	platform_set_drvdata(pdev, core);
+>  
+>  	if (core->pm_ops->venc_get) {
+>  		ret = core->pm_ops->venc_get(dev);
+>  		if (ret)
+> -			return ret;
+> +			goto err_core_unlock;
+>  	}
+>  
+>  	vdev = video_device_alloc();
+> -	if (!vdev)
+> -		return -ENOMEM;
+> +	if (!vdev) {
+> +		ret = -ENOMEM;
+> +		goto err_core_unlock;
+> +	}
+>  
+>  	strscpy(vdev->name, "qcom-venus-encoder", sizeof(vdev->name));
+>  	vdev->release = video_device_release;
+> @@ -1367,11 +1382,14 @@ static int venc_probe(struct platform_device *pdev)
+>  
+>  	video_set_drvdata(vdev, core);
+>  	pm_runtime_enable(dev);
+> +	mutex_unlock(&core->sync_lock);
+>  
+>  	return 0;
+>  
+>  err_vdev_release:
+>  	video_device_release(vdev);
+> +err_core_unlock:
+> +	mutex_unlock(&core->sync_lock);
+>  	return ret;
+>  }
+>  
+> -- 
+> 2.31.1
+> 
