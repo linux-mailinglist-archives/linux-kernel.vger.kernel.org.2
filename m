@@ -2,145 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E314E459BC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 06:32:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 279F6459BC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 06:33:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232715AbhKWFfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 00:35:53 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:47466 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229690AbhKWFfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 00:35:51 -0500
-Received: from localhost.localdomain.localdomain (unknown [10.2.5.46])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxZ+jqfJxh_n4AAA--.2870S2;
-        Tue, 23 Nov 2021 13:32:31 +0800 (CST)
-From:   Yinbo Zhu <zhuyinbo@loongson.cn>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Cc:     zhuyinbo@loongson.cn
-Subject: [PATCH v1 2/2] net: mdio: fixup ethernet phy module auto-load function
-Date:   Tue, 23 Nov 2021 13:32:23 +0800
-Message-Id: <1637645543-24618-1-git-send-email-zhuyinbo@loongson.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AQAAf9AxZ+jqfJxh_n4AAA--.2870S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZF17uF4rZF47JrW7KF13CFg_yoW5Kr48pF
-        ZYk3WYkrW8JrsxWwn5Cw48CF1Ykw4Iy39rGFy0939Y9rs8XryvqFyfKFyY9r15uayruw1a
-        qay0vFyDZFykArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
-        8cxan2IY04v7MxkIecxEwVCm-wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF
-        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWI
-        evJa73UjIFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
+        id S232835AbhKWFgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 00:36:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232775AbhKWFgG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 00:36:06 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5532BC061574;
+        Mon, 22 Nov 2021 21:32:58 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id y26so87780958lfa.11;
+        Mon, 22 Nov 2021 21:32:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RTPYim6P0NhgC+Gnow4uqgkTn1zcac3+SOJ9CSgZULI=;
+        b=MjQLcGYkCVHU+lu8PI8OvJEXpVkLsuR0Vyv+JW6Yr5eICchovppqK1RDUZ3aFNNSYm
+         rpcvJiyZnop2bgEiYZm0d5QSD9X6ovRLED25pUihpFKam7rIEQJtJV9tETVEH5MGjbTs
+         802qAi8JJwUSR2FQAtKxiGRjGKoppxwjTGfeKlybzv0P+rrOtwkri03xXRY/1c6ErIUH
+         X3sUDTxv8l+mkpED3WLp182sU2Ch3QgJGrQAFti5hfLEzxyN2PmWrf6UmRz5Gh5RnYiB
+         Eu2l4SbqE/lO+L4mhh+toKYg0ynrkIlqGEKkQkgKDPbn0CABPnEWlutc3QiD4cELAI/A
+         BMAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RTPYim6P0NhgC+Gnow4uqgkTn1zcac3+SOJ9CSgZULI=;
+        b=jJ/aw3BGR81GHSiIccSSkhwATVPug0e7ij9u2uPIace6EKdr238+5HPunaHx8jEeP6
+         0F44do8D8EGUciHm9Nvp2UnAd7/Fb0q5DZYLRQrVBotN2gotxDf3+k3N9pc82q7Da9fy
+         DwPf0fgQ+sIFZWEkm+P38UubOzBLgsAgWO1xjIav9lC1MqE1LwQQS4AkGmQz4ig/hE+S
+         OZ3EnNPGiq9b9GX9I5fwqnEu8Fatz8AoxePcPC+VoE8rfGijfnM75K+JVGyAEhFVqfUL
+         CpQ6a6BmBLtmIekxpE/BQqjCT46E9dBQQHVUf7mPDmGizdxqB9gIvJkFgg/PfqWG7kJp
+         sHSw==
+X-Gm-Message-State: AOAM532/gQNiBUBOI3M4FmePmJhG1rwyaDs2DeNVQBNpwzxj5oCB1WAD
+        jvKyZk4iA/XNPOxJu1kz25T+1nAipTnW48cnYVY2VQ8c+Es=
+X-Google-Smtp-Source: ABdhPJybAHd7boiQOLkT0ZFUfqm/bGtyU/6Esk/krGD9uX6gVaKmW3FI5ariOaV1NumaV0uq98ro5x2AQ0HdRfDIjd8=
+X-Received: by 2002:a05:6512:a81:: with SMTP id m1mr2011631lfu.306.1637645576194;
+ Mon, 22 Nov 2021 21:32:56 -0800 (PST)
+MIME-Version: 1.0
+References: <CAHhAz+h2OgBMP8Mm+dNPuNEq=DhWdc7Y+dJEvrXz9kAUD7O2GQ@mail.gmail.com>
+ <CAH8yC8nEhcAs5hE=utcUEKZ8kohOx2TWhUsbue1sdZo23uiBHw@mail.gmail.com>
+In-Reply-To: <CAH8yC8nEhcAs5hE=utcUEKZ8kohOx2TWhUsbue1sdZo23uiBHw@mail.gmail.com>
+From:   Muni Sekhar <munisekharrms@gmail.com>
+Date:   Tue, 23 Nov 2021 11:02:45 +0530
+Message-ID: <CAHhAz+hopmWpr6Whe_=92UrdrrANaQKFmVZjcx6p+=2tWouFuw@mail.gmail.com>
+Subject: Re: x86, nmi: IOCK error
+To:     noloader@gmail.com
+Cc:     linux-x86_64@vger.kernel.org,
+        kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-the phy_id is only phy identifier, that phy module auto-load function
-should according the phy_id event rather than other information, this
-patch is remove other unnecessary information and add phy_id event in
-mdio_uevent function and ethernet phy module auto-load function will
-work well.
-
-Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
----
-Hi Russell King,
-
-I don't see that mail from you, but I have a look about your advice for my patch on netdev patchwork
-
-> The MDIO bus contains more than just PHYs. This completely breaks
-> anything that isn't a PHY device - likely by performing an
-> out-of-bounds access.
-> 
-> This change also _totally_ breaks any MDIO devices that rely on
-> matching via the "of:" mechanism using the compatible specified in
-> DT. An example of that is the B53 DSA switch.
+On Tue, Nov 23, 2021 at 10:44 AM Jeffrey Walton <noloader@gmail.com> wrote:
 >
-> Sorry, but we've already learnt this lesson from a similar case with
-> SPI. Once one particular way of dealing with MODALIAS has been
-> established for auto-loading modules for a subsystem, it is very
-> difficult to change it without causing regressions.
+> On Mon, Nov 22, 2021 at 11:03 PM Muni Sekhar <munisekharrms@gmail.com> wrote:
+> >
+> > The following message is seen on the console "NMI: IOCK error (debug
+> > interrupt?) for reason 60 on CPU 0.", what does it mean?
+>
+> Red Hat has a good article on the subject at
+> https://access.redhat.com/solutions/42261.
+NMI: IOCK error (debug interrupt?) for reason 60 on CPU 0.
+NMI: IOCK error (debug interrupt?) for reason 70 on CPU 0.
+What's the difference between reason 60 & reason 70? I was not able to
+find it in the above mentioned link.
 
-> We need a very clear description of the problem that these patches are
-> attempting to address, and then we need to see that effort has been
-> put in to verify that changing the auto-loading mechanism is safe to
-> do - such as auditing every single driver that use the MDIO subsystem.
-
-if mdio_uevent doesn't include my patch, you will see that mdio uevent is like 
-"MODALIAS= of:NphyTethernet-phyCmarvell,88E1512", "marvell,88E1512" is only a
-phy dts compatible, and that name can use any a string that in the same driver, 
-if phy driver not use dts, and this MODALIAS is NULL, it is not unique, and even
-thoug use that modalias, that do_mdio_entry doesn't get that compatibe 
-information, event though it can get compatible and it looks ugly, but that phy id 
-is unique if phy chip following 802.3 spec,
-whatever whether use dts, use phy id it will always okay that phy dev to match phy
- driver, because phy it is getted by mdiobus_register
-and mdio device driver will call mdiobus_register whatever whether use dts.
-
->  struct bus_type mdio_bus_type = {
-> -	.name		= "mdio_bus",
-> +	.name		= "mdio",
-
-> This looks like an unrelated user-interface breaking change. This
-> changes the path of all MDIO devices and drivers in /sys/bus/mdio_bus/*
+>
+> Jeff
 
 
-I think mdio_bus is ugly, you can other bus, eg. usb,pci.  in addition, mdio bus name 
-should be Consistent with mdio alias configure, eg. MDIO_MODULE_PREFIX.
 
-BRs,
-Yinbo Zhu. 
-
- drivers/net/phy/mdio_bus.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
-index 6865d93..999f0d4 100644
---- a/drivers/net/phy/mdio_bus.c
-+++ b/drivers/net/phy/mdio_bus.c
-@@ -962,12 +962,12 @@ static int mdio_bus_match(struct device *dev, struct device_driver *drv)
- 
- static int mdio_uevent(struct device *dev, struct kobj_uevent_env *env)
- {
--	int rc;
-+	struct phy_device *pdev;
- 
--	/* Some devices have extra OF data and an OF-style MODALIAS */
--	rc = of_device_uevent_modalias(dev, env);
--	if (rc != -ENODEV)
--		return rc;
-+	pdev = to_phy_device(dev);
-+
-+	if (add_uevent_var(env, "MODALIAS=mdio:p%08X", pdev->phy_id))
-+		return -ENOMEM;
- 
- 	return 0;
- }
-@@ -991,7 +991,7 @@ static int mdio_uevent(struct device *dev, struct kobj_uevent_env *env)
- };
- 
- struct bus_type mdio_bus_type = {
--	.name		= "mdio_bus",
-+	.name		= "mdio",
- 	.dev_groups	= mdio_bus_dev_groups,
- 	.match		= mdio_bus_match,
- 	.uevent		= mdio_uevent,
 -- 
-1.8.3.1
-
+Thanks,
+Sekhar
