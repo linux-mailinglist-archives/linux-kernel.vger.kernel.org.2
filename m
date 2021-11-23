@@ -2,143 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D78459D72
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:05:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D9D459D75
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234763AbhKWIIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 03:08:45 -0500
-Received: from mail-eopbgr70072.outbound.protection.outlook.com ([40.107.7.72]:23110
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234630AbhKWIIi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 03:08:38 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PWCrl3AT6nLrv339EIhvwBn+G/6KAKAiPnlyFcm8gQT+LlHqzBwZojjR7xQSQlnW/MQ0gv7LpXOE3fOT+JveJbfiHplwenOlwRdQw6V2uC8rv6YKnsANVMzpb2A7tu6Bq68Z/ry9VTGaJJbHBDFA1jmESyfpiAuBk6u2sg/d5zgXGIJhG5XbaOigZ0GmPRdwRGpDBammqqdTL2X4wLdBBPWbi5f5cBq4+U/1PxQ1eOJU8DXgQVZ3KyEpSnq5/OGqltLW7RuZgQx1rzFGeN0WoGhe9SHqnr2luScV7F6Lr/hsEd/HCD7YX8DAI6+UxkZjyFZx0YbmdWJnCFXwPEoMRA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TWkB4aZj6/Qz6CbUAqJen2VRfDEUOQ2EgDt0V72inWA=;
- b=jinuVc51MW008ow7PmuMWi2O0QNJo+BklASMXOO7Kdm7s0ztwTt/6aFOYpyN48UDzNSLPgyXnSHLGZZybUUMAFYBKDXvZL3NSLINmOAX0f51HpEYUD1KRAU5rcvKLjQF/81IS1XZ6GKPv1ZHzYPLgkNWA2Z5y3Ar2NuD46JH9Abndvt9YuqCdUZjmKzgvupCybTrZmueuvkXciLvdaTM40EuvUwpA+JD3aaywVRz9LnGg/PtwRM5St2TB21uDLZsYKRXJe1txLxSlQF/dDTPakGoyOC2yuPQdA7loi41pIcxQxBT2R38ENaWaWR9wDrLEBfHQZxsI2ca8oKGtBH39w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TWkB4aZj6/Qz6CbUAqJen2VRfDEUOQ2EgDt0V72inWA=;
- b=Q8DhxM0V6tJTN0nQbegaj+Nb47Ar4FF6spqhAG7FjpufmrRztJ/tocASVGqNqZhqU5cIsvzJFK9M1AOPMZlLUBWVRYny+QudeThvkE1gtPUOeAgCeUKZaDEduOI8giY38lNj3Ip3MjIDlj/Is44E2z6oUy9QzDZi4hpvMQ4LOb0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DB8PR04MB6971.eurprd04.prod.outlook.com (2603:10a6:10:113::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Tue, 23 Nov
- 2021 08:05:26 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::c005:8cdc:9d35:4079]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::c005:8cdc:9d35:4079%5]) with mapi id 15.20.4713.026; Tue, 23 Nov 2021
- 08:05:26 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 7/7] arm64: dts: imx8mp: add mac address for EQOS
-Date:   Tue, 23 Nov 2021 16:05:06 +0800
-Message-Id: <20211123080506.21424-8-qiangqing.zhang@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211123080506.21424-1-qiangqing.zhang@nxp.com>
-References: <20211123080506.21424-1-qiangqing.zhang@nxp.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SI2PR02CA0045.apcprd02.prod.outlook.com
- (2603:1096:4:196::21) To DB8PR04MB6795.eurprd04.prod.outlook.com
- (2603:10a6:10:fa::15)
+        id S234575AbhKWIJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 03:09:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234199AbhKWIJg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 03:09:36 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C54C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 00:06:28 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id u18so37416745wrg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 00:06:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9Dc9IyqXO7Wm3+bDtKtLtx9+DbBZ47LkjAeuYVgRscE=;
+        b=uyE143lDDpEzHULTmTWN3E6pSz0XnoCTz9jlrWpHMlE6TbfSeOBjEgvIM9577xSgXj
+         BBxJ0zrcoG5tqvWdYwTXWCO29y0BUU7yvmo35N2IaN9UaKoj8HQFcImmcUSTmURsGlFf
+         5gygDqK3dkkC05wLYASGKJyOX7LLOmYDK/P+hGqZsq95cuzLi6xbVTvafUq1PCqqcBU7
+         vVdZupRVVNvlF21oKydJsqvF/1K0NaWazGmdwvwj3dYbXh0Bj+VG5pXt8NsBQLK+l2ij
+         FPhQJKHGkPytqV1mIuEqsA28nV332n2VHVkXtDC+dK3axYh7V+JwA/u8N35m7QeDpJok
+         hKqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9Dc9IyqXO7Wm3+bDtKtLtx9+DbBZ47LkjAeuYVgRscE=;
+        b=3ZsgJHyiO3pRGj09WytsW2n0wOPVbxESMhorQESACCr2eB225sLHFL+GneVvOLhWWJ
+         5Q2/N33tXlEftJqvprZse2bvz7ajNOzqLnd4bNurP6Fvsmo0UfwvwytyQejAFu9m0HOe
+         anyWs+ZQ8m4fb3Z1Z/rEFOzSUZglPoMbbkdVd2Mbfoz6/QsNs+2huFCy9ft+rIKak6zT
+         imUvilWE+3kyDMkUdnf4aJHf54X8u7wt77IrbaafRdgqekU/RjxqMWrkKhb5yRUDZOqE
+         myCzJx19H9Kn9Nn2D3isTw2qDvImcggeLSngV51aJc9d3in5GKYxaMvr2CR2/wgsBKYY
+         3OSg==
+X-Gm-Message-State: AOAM5315dBJ0tOo/vUNnm8WzMWrO9uWu1AAEa5or3SCokFl7cAHDsLxO
+        ZCNhpHJjvcKION81h9+aCcUsgRD77YYVJO6JWiz1sDqJsXsGZA==
+X-Google-Smtp-Source: ABdhPJw/0TlGByNPXLRpWckwAfeK5n1U/QSPywu8h+JqZ5aS4wDj0Pv0sWPe4vPMhb02puhJ/NUfbfRfX4m2azGkTRk=
+X-Received: by 2002:adf:8165:: with SMTP id 92mr5106482wrm.199.1637654787221;
+ Tue, 23 Nov 2021 00:06:27 -0800 (PST)
 MIME-Version: 1.0
-Received: from localhost.localdomain (119.31.174.71) by SI2PR02CA0045.apcprd02.prod.outlook.com (2603:1096:4:196::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21 via Frontend Transport; Tue, 23 Nov 2021 08:05:23 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cba6ce2b-ea6f-4191-9fbf-08d9ae5801e4
-X-MS-TrafficTypeDiagnostic: DB8PR04MB6971:
-X-Microsoft-Antispam-PRVS: <DB8PR04MB6971D5187CC478E97053D68DE6609@DB8PR04MB6971.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ngOhGOqD6j6hUMk+qcD7Uw+iDto8Xg9cK7C3R+ZOL63Be+vEDggNBfdlxQN5Lrxb5dtY0FmIfzOOEOnYWVd1QdSxTFDKRXJZpjXCztmencNVSs7wVu8lypmbbTJclewYHCgRpu0/vXpW9cZCmuyTjdjtR91xyODLIh7p3npbz97b/HTg6hQIr0Nksk9T6XLgJujQAizQFsS9I/GxdvmsKdHXnnbTeCWje/zGYur8uq1eJH5DJ80MJFvyDo9Xhk40DhEv6W56zChUTIi9nQGtir3LgkDP91F8FiO7fS2ovky4oBDneJf2AaUzW/BSHofUuJZETn6MneeFXE4P4wxIJEnCam80By+mbyNn57E2bayM2iRsqRbDuuqBzljv1Zaa+pprb8RqYS/o7yShyeEjx9GAeufotY4JX8WKfoepSnKhnArllf/1SB35Ml4Fq2Nu8VkkZkMGU6Qje5kSXMR4nLz4NZyGTwp5iIo9TnQxToNfvPUCJgj5ouT4WKrsIHK/zVl1UGp6lZXRROGarq9oYrdy2gd47DQXe1dHqMgHlRTx+PuvK73xsohSduFdKafT6iNMCh/rBvCrRRjPKAWVtTIsiW3vcf6zNMbeAZf0qQyTtrvfrUURgIohd4CIiudd5WtBjquhdgCWcyOnnuDx92qzS3+ftlHZr2QcOjYtQ5jBS7D6LjsZPpauk0gdvdNCADEwtSgJDjRjmDlnN0HdIxlHdvDj4YtbBxC51SkvNNI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(8676002)(508600001)(2906002)(316002)(1076003)(66476007)(4744005)(6666004)(36756003)(66556008)(6512007)(956004)(2616005)(6486002)(66946007)(38100700002)(186003)(26005)(86362001)(83380400001)(38350700002)(6506007)(4326008)(52116002)(8936002)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?or31Y/JntqyOEtlrkb9Y4B8RPPB02FYopkqWuQzYQ2xWItymWkjdO6zj/WTP?=
- =?us-ascii?Q?14uItm4ZHSBPVlk7rjBESTBMvCdKzJeKvzTCDYAlr6wKimdpldZK20zxdp1y?=
- =?us-ascii?Q?RnpYcWjceQN5Oki8gST5x0cy2gJ/6RDpvpxkB/MzJVLWeh2YrVKdT3PaT3WB?=
- =?us-ascii?Q?4jPrFJ4GEWHcqiB7r/0EsQTqkVX2Elj4WMTxaFmFkalxL6Rj6h3g4EC5yFKk?=
- =?us-ascii?Q?EXOyemGiycLT5KgfRq7BYg2Zwt4pEyS6Cg+pdMekcfS9mfJVcxED/AulK4AW?=
- =?us-ascii?Q?BQJ/JxTtCFhJC/XRk44Y/h1yEIteHqwM1mM1+OjKr8e6/iURrDxyHcQkI85Q?=
- =?us-ascii?Q?kvi1BsHq5TmFt4ElYOKMletpmrir/BpZ6Wwp2eYnucobKUvmaxSfCOgO6Q6B?=
- =?us-ascii?Q?Ra9wpablxe05BkI2CdptRVn48ty+uG2qjc0YwTqTn2Llt0Nku45y2l558CC1?=
- =?us-ascii?Q?vyaphOZ7ahMulTUaIsTUBusVDvWG4yOXBRJIZbnEbmSreLOCfxcBrcT5a2gF?=
- =?us-ascii?Q?TtXg4gh/O30CqvA4E2stSmWViatlrke/s6aHBtrmAwVu9Jd75wH/5mnhHIqr?=
- =?us-ascii?Q?wcmlW5FBlWyk/F9y8pzDPvPLP/uTcEBkvFOwlcb5f6/xLSVt0I3m0m0Ez8J2?=
- =?us-ascii?Q?dUD86yDPpM3EqML6SU7KXkvlbZ7SxFyZiKc0VdoAkNInMdce1DvaADwgAotH?=
- =?us-ascii?Q?8NEaxMLrIDER8U8MiGQD8lV9OxeemM5G1srOsGa2duwDwZKuv+dDL6c1qEJE?=
- =?us-ascii?Q?/82q0Hu+23mVfH04wSGzrqtwZGrB1/lvXxPHIhqlnTyJCvu/Oc4qp2tE4Vcs?=
- =?us-ascii?Q?W3hFbZgg7VhoR2wFTGEBQ3cjR0S0JSKcgtRra969NnorlEEBSIsydigSl8PJ?=
- =?us-ascii?Q?6YVRzTAcwU5NpN0zWLOQKIMw7lZeX5SnXC5S0HK1Af3IgcZoOkXlO72MV3iq?=
- =?us-ascii?Q?/Fse7MwbHJn3V0ZVyFvSNRtkZH9aFrK6Mm5w0G2MA4TySo2/+SAFXo6qXxfs?=
- =?us-ascii?Q?GtihWeyv4FrSgXtQYUiiI5L6V2m4VMvKxdKmPH4PNaxMEBtY5dys+Bo3OLfj?=
- =?us-ascii?Q?OXHegIQ+XorJGsjdKfcRcuy4brDnCxsb3uoYW/VLv/o1iAqDRBTbUIhxxbE7?=
- =?us-ascii?Q?wcw18VjUrBCkoRkWnMfWFYsVmONcuVOTDK54ULiFPruZKEVu3EDT+OecPP8y?=
- =?us-ascii?Q?m9v2opHvS5cKQN5lZ5Xo7Ay6u7vmM1gWgvWY5reH8JCc4+46CxvnN4klose2?=
- =?us-ascii?Q?Qm5HXfTJZgUcnR3dhDYkISOLWhFNDAqyoXvozV6wKr0Qwub2lD8UiY/f9Kjc?=
- =?us-ascii?Q?RtDUyxVbyFTk3uWmuadIk14yVUcGYIYUygLnLidhY7Iye0cX77NhCWAoGqr8?=
- =?us-ascii?Q?y7efP8zmXOyx+5K7GqUPcbwfnKsmSdNCPbrbJmxD9yMtZKjdei+MkXjTmSDQ?=
- =?us-ascii?Q?mWo4RQ8EKh08rxl1z8j+ZKv1zrGEH4b+MLdOeTcP7I1tOIwjhYi0ar7qJci0?=
- =?us-ascii?Q?OtSh2jY4ll0ym8mZOC4AqAxSrS444JaRzg1mztZLG0Gvbv22WZJzthS8otUr?=
- =?us-ascii?Q?+0P/yS94sTSbYfGEzZ16AY0VJ5YWiCKfehNGtstBrnfaVQDVj1xnzbLGNg0z?=
- =?us-ascii?Q?sEOBo4brFvNIvQn9zwiQ+8Q=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cba6ce2b-ea6f-4191-9fbf-08d9ae5801e4
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2021 08:05:26.4618
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9mXPRphxEw0xFRGn2HK1LVNo5JeysyqL/vqdZHZ4GWEuP1DS6BUI4C2uM/xcNQTa1XCuXiHqmAqUKjWamoHZyg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6971
+References: <20211118083912.981995-1-atishp@rivosinc.com> <20211118083912.981995-6-atishp@rivosinc.com>
+In-Reply-To: <20211118083912.981995-6-atishp@rivosinc.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Tue, 23 Nov 2021 13:36:16 +0530
+Message-ID: <CAAhSdy1V6cUYBmpTz8tT0gMg7=ZP1hQ25_zVdPg56TtnegLriw@mail.gmail.com>
+Subject: Re: [PATCH v5 5/5] RISC-V: KVM: Add SBI HSM extension in KVM
+To:     Atish Patra <atishp@rivosinc.com>
+Cc:     "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        kvm-riscv@lists.infradead.org, KVM General <kvm@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add mac address in efuse, so that EQOS driver can parse it from nvmem
-cell.
+On Thu, Nov 18, 2021 at 2:10 PM Atish Patra <atishp@rivosinc.com> wrote:
+>
+> From: Atish Patra <atish.patra@wdc.com>
+>
+> SBI HSM extension allows OS to start/stop harts any time. It also allows
+> ordered booting of harts instead of random booting.
+>
+> Implement SBI HSM exntesion and designate the vcpu 0 as the boot vcpu id.
+> All other non-zero non-booting vcpus should be brought up by the OS
+> implementing HSM extension. If the guest OS doesn't implement HSM
+> extension, only single vcpu will be available to OS.
+>
+> Reviewed-by: Anup Patel <anup.patel@wdc.com>
+> Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> Signed-off-by: Atish Patra <atishp@rivosinc.com>
 
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
----
- arch/arm64/boot/dts/freescale/imx8mp.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
+I have queued this for 5.17
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-index ec178c5fa99c..cc8a063d856d 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-@@ -369,6 +369,10 @@
- 				eth_mac1: mac-address@90 {
- 					reg = <0x90 6>;
- 				};
-+
-+				eth_mac2: mac-address@96 {
-+					reg = <0x96 6>;
-+				};
- 			};
- 
- 			anatop: anatop@30360000 {
-@@ -853,6 +857,8 @@
- 							 <&clk IMX8MP_SYS_PLL2_100M>,
- 							 <&clk IMX8MP_SYS_PLL2_125M>;
- 				assigned-clock-rates = <0>, <100000000>, <125000000>;
-+				nvmem-cells = <&eth_mac2>;
-+				nvmem-cell-names = "mac-address";
- 				intf_mode = <&gpr 0x4>;
- 				status = "disabled";
- 			};
--- 
-2.17.1
+Thanks,
+Anup
 
+> ---
+>  arch/riscv/include/asm/sbi.h  |   1 +
+>  arch/riscv/kvm/Makefile       |   1 +
+>  arch/riscv/kvm/vcpu.c         |  23 ++++++++
+>  arch/riscv/kvm/vcpu_sbi.c     |   4 ++
+>  arch/riscv/kvm/vcpu_sbi_hsm.c | 105 ++++++++++++++++++++++++++++++++++
+>  5 files changed, 134 insertions(+)
+>  create mode 100644 arch/riscv/kvm/vcpu_sbi_hsm.c
+>
+> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
+> index 4f9370b6032e..79af25c45c8d 100644
+> --- a/arch/riscv/include/asm/sbi.h
+> +++ b/arch/riscv/include/asm/sbi.h
+> @@ -90,6 +90,7 @@ enum sbi_hsm_hart_status {
+>  #define SBI_ERR_INVALID_PARAM  -3
+>  #define SBI_ERR_DENIED         -4
+>  #define SBI_ERR_INVALID_ADDRESS        -5
+> +#define SBI_ERR_ALREADY_AVAILABLE -6
+>
+>  extern unsigned long sbi_spec_version;
+>  struct sbiret {
+> diff --git a/arch/riscv/kvm/Makefile b/arch/riscv/kvm/Makefile
+> index 4757ae158bf3..aaf181a3d74b 100644
+> --- a/arch/riscv/kvm/Makefile
+> +++ b/arch/riscv/kvm/Makefile
+> @@ -26,4 +26,5 @@ kvm-y += vcpu_sbi.o
+>  kvm-$(CONFIG_RISCV_SBI_V01) += vcpu_sbi_v01.o
+>  kvm-y += vcpu_sbi_base.o
+>  kvm-y += vcpu_sbi_replace.o
+> +kvm-y += vcpu_sbi_hsm.o
+>  kvm-y += vcpu_timer.o
+> diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
+> index e3d3aed46184..50158867406d 100644
+> --- a/arch/riscv/kvm/vcpu.c
+> +++ b/arch/riscv/kvm/vcpu.c
+> @@ -53,6 +53,17 @@ static void kvm_riscv_reset_vcpu(struct kvm_vcpu *vcpu)
+>         struct kvm_vcpu_csr *reset_csr = &vcpu->arch.guest_reset_csr;
+>         struct kvm_cpu_context *cntx = &vcpu->arch.guest_context;
+>         struct kvm_cpu_context *reset_cntx = &vcpu->arch.guest_reset_context;
+> +       bool loaded;
+> +
+> +       /**
+> +        * The preemption should be disabled here because it races with
+> +        * kvm_sched_out/kvm_sched_in(called from preempt notifiers) which
+> +        * also calls vcpu_load/put.
+> +        */
+> +       get_cpu();
+> +       loaded = (vcpu->cpu != -1);
+> +       if (loaded)
+> +               kvm_arch_vcpu_put(vcpu);
+>
+>         memcpy(csr, reset_csr, sizeof(*csr));
+>
+> @@ -64,6 +75,11 @@ static void kvm_riscv_reset_vcpu(struct kvm_vcpu *vcpu)
+>
+>         WRITE_ONCE(vcpu->arch.irqs_pending, 0);
+>         WRITE_ONCE(vcpu->arch.irqs_pending_mask, 0);
+> +
+> +       /* Reset the guest CSRs for hotplug usecase */
+> +       if (loaded)
+> +               kvm_arch_vcpu_load(vcpu, smp_processor_id());
+> +       put_cpu();
+>  }
+>
+>  int kvm_arch_vcpu_precreate(struct kvm *kvm, unsigned int id)
+> @@ -100,6 +116,13 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
+>
+>  void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu)
+>  {
+> +       /**
+> +        * vcpu with id 0 is the designated boot cpu.
+> +        * Keep all vcpus with non-zero cpu id in power-off state so that they
+> +        * can brought to online using SBI HSM extension.
+> +        */
+> +       if (vcpu->vcpu_idx != 0)
+> +               kvm_riscv_vcpu_power_off(vcpu);
+>  }
+>
+>  void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
+> diff --git a/arch/riscv/kvm/vcpu_sbi.c b/arch/riscv/kvm/vcpu_sbi.c
+> index cf284e080f3e..f62d25bc9733 100644
+> --- a/arch/riscv/kvm/vcpu_sbi.c
+> +++ b/arch/riscv/kvm/vcpu_sbi.c
+> @@ -25,6 +25,8 @@ static int kvm_linux_err_map_sbi(int err)
+>                 return SBI_ERR_INVALID_ADDRESS;
+>         case -EOPNOTSUPP:
+>                 return SBI_ERR_NOT_SUPPORTED;
+> +       case -EALREADY:
+> +               return SBI_ERR_ALREADY_AVAILABLE;
+>         default:
+>                 return SBI_ERR_FAILURE;
+>         };
+> @@ -43,6 +45,7 @@ extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_base;
+>  extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_time;
+>  extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_ipi;
+>  extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_rfence;
+> +extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_hsm;
+>
+>  static const struct kvm_vcpu_sbi_extension *sbi_ext[] = {
+>         &vcpu_sbi_ext_v01,
+> @@ -50,6 +53,7 @@ static const struct kvm_vcpu_sbi_extension *sbi_ext[] = {
+>         &vcpu_sbi_ext_time,
+>         &vcpu_sbi_ext_ipi,
+>         &vcpu_sbi_ext_rfence,
+> +       &vcpu_sbi_ext_hsm,
+>  };
+>
+>  void kvm_riscv_vcpu_sbi_forward(struct kvm_vcpu *vcpu, struct kvm_run *run)
+> diff --git a/arch/riscv/kvm/vcpu_sbi_hsm.c b/arch/riscv/kvm/vcpu_sbi_hsm.c
+> new file mode 100644
+> index 000000000000..2e383687fa48
+> --- /dev/null
+> +++ b/arch/riscv/kvm/vcpu_sbi_hsm.c
+> @@ -0,0 +1,105 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2021 Western Digital Corporation or its affiliates.
+> + *
+> + * Authors:
+> + *     Atish Patra <atish.patra@wdc.com>
+> + */
+> +
+> +#include <linux/errno.h>
+> +#include <linux/err.h>
+> +#include <linux/kvm_host.h>
+> +#include <asm/csr.h>
+> +#include <asm/sbi.h>
+> +#include <asm/kvm_vcpu_sbi.h>
+> +
+> +static int kvm_sbi_hsm_vcpu_start(struct kvm_vcpu *vcpu)
+> +{
+> +       struct kvm_cpu_context *reset_cntx;
+> +       struct kvm_cpu_context *cp = &vcpu->arch.guest_context;
+> +       struct kvm_vcpu *target_vcpu;
+> +       unsigned long target_vcpuid = cp->a0;
+> +
+> +       target_vcpu = kvm_get_vcpu_by_id(vcpu->kvm, target_vcpuid);
+> +       if (!target_vcpu)
+> +               return -EINVAL;
+> +       if (!target_vcpu->arch.power_off)
+> +               return -EALREADY;
+> +
+> +       reset_cntx = &target_vcpu->arch.guest_reset_context;
+> +       /* start address */
+> +       reset_cntx->sepc = cp->a1;
+> +       /* target vcpu id to start */
+> +       reset_cntx->a0 = target_vcpuid;
+> +       /* private data passed from kernel */
+> +       reset_cntx->a1 = cp->a2;
+> +       kvm_make_request(KVM_REQ_VCPU_RESET, target_vcpu);
+> +
+> +       kvm_riscv_vcpu_power_on(target_vcpu);
+> +
+> +       return 0;
+> +}
+> +
+> +static int kvm_sbi_hsm_vcpu_stop(struct kvm_vcpu *vcpu)
+> +{
+> +       if (vcpu->arch.power_off)
+> +               return -EINVAL;
+> +
+> +       kvm_riscv_vcpu_power_off(vcpu);
+> +
+> +       return 0;
+> +}
+> +
+> +static int kvm_sbi_hsm_vcpu_get_status(struct kvm_vcpu *vcpu)
+> +{
+> +       struct kvm_cpu_context *cp = &vcpu->arch.guest_context;
+> +       unsigned long target_vcpuid = cp->a0;
+> +       struct kvm_vcpu *target_vcpu;
+> +
+> +       target_vcpu = kvm_get_vcpu_by_id(vcpu->kvm, target_vcpuid);
+> +       if (!target_vcpu)
+> +               return -EINVAL;
+> +       if (!target_vcpu->arch.power_off)
+> +               return SBI_HSM_HART_STATUS_STARTED;
+> +       else
+> +               return SBI_HSM_HART_STATUS_STOPPED;
+> +}
+> +
+> +static int kvm_sbi_ext_hsm_handler(struct kvm_vcpu *vcpu, struct kvm_run *run,
+> +                                  unsigned long *out_val,
+> +                                  struct kvm_cpu_trap *utrap,
+> +                                  bool *exit)
+> +{
+> +       int ret = 0;
+> +       struct kvm_cpu_context *cp = &vcpu->arch.guest_context;
+> +       struct kvm *kvm = vcpu->kvm;
+> +       unsigned long funcid = cp->a6;
+> +
+> +       switch (funcid) {
+> +       case SBI_EXT_HSM_HART_START:
+> +               mutex_lock(&kvm->lock);
+> +               ret = kvm_sbi_hsm_vcpu_start(vcpu);
+> +               mutex_unlock(&kvm->lock);
+> +               break;
+> +       case SBI_EXT_HSM_HART_STOP:
+> +               ret = kvm_sbi_hsm_vcpu_stop(vcpu);
+> +               break;
+> +       case SBI_EXT_HSM_HART_STATUS:
+> +               ret = kvm_sbi_hsm_vcpu_get_status(vcpu);
+> +               if (ret >= 0) {
+> +                       *out_val = ret;
+> +                       ret = 0;
+> +               }
+> +               break;
+> +       default:
+> +               ret = -EOPNOTSUPP;
+> +       }
+> +
+> +       return ret;
+> +}
+> +
+> +const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_hsm = {
+> +       .extid_start = SBI_EXT_HSM,
+> +       .extid_end = SBI_EXT_HSM,
+> +       .handler = kvm_sbi_ext_hsm_handler,
+> +};
+> --
+> 2.33.1
+>
+>
+> --
+> kvm-riscv mailing list
+> kvm-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/kvm-riscv
