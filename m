@@ -2,79 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03FAC45A934
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B992F45A93A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233715AbhKWQur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 11:50:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56710 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232465AbhKWQuq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 11:50:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637686058;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eGWhtGhPtpq/ZiEd6igWpm4/71FIAUKG5LmWLh1yu0w=;
-        b=WCBSKo0WhpleKe4jx1Kzd4qc7B5S1SVwClYML0DP9mMz+lAPkgw2KDt/f4tREppO4Zf0/d
-        MmbSIiTYtalzdN/cPwR85/f4Wml8XxZBKaR+MWCzwgZcn2MXZ1vnxpdvmiTCTz9AEKBcaH
-        orHVJyZI+LkZKE88y+P1d5W+iujWrWA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-258-66xCcqg-MdGoCOG_LgKrhA-1; Tue, 23 Nov 2021 11:47:36 -0500
-X-MC-Unique: 66xCcqg-MdGoCOG_LgKrhA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 500BA80668B;
-        Tue, 23 Nov 2021 16:47:35 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B473360C7F;
-        Tue, 23 Nov 2021 16:47:33 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <YZvIlz7J6vOEY+Xu@yuki>
-References: <YZvIlz7J6vOEY+Xu@yuki>
-To:     Cyril Hrubis <chrubis@suse.cz>
-Cc:     dhowells@redhat.com, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, ltp@lists.linux.it,
-        libc-alpha@sourceware.org, linux-arch@vger.kernel.org,
-        arnd@arndb.de
-Subject: Re: [PATCH] uapi: Make __{u,s}64 match {u,}int64_t in userspace
+        id S236152AbhKWQwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 11:52:20 -0500
+Received: from www.zeus03.de ([194.117.254.33]:58946 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231844AbhKWQwS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 11:52:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=k1; bh=S4+2usPTIuL0LPfu++kpe1/JFhM
+        /8ayY3pPeYrbNGxk=; b=d/zK2Syfpvs74N3+dEYMWV5MKDN/kRFifMTmGdNQMan
+        4/8QXnXBvTZKz+9wXEobEwWwlTQtW7kN1/ACDgGvEZO4Z5dpUXt95IPdazJHx3vW
+        8p/xUIDLNdlDA8rPF0d752NbxvORX4LKqbRMNaAa1PHMmfIuD52OjTYygo8iTs3g
+        =
+Received: (qmail 1315803 invoked from network); 23 Nov 2021 17:49:08 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 23 Nov 2021 17:49:08 +0100
+X-UD-Smtp-Session: l3s3148p1@o6rphHfRwKAgAQnoAFmOARJ9+DDMIx2D
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-gpio@vger.kernel.org
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>
+Subject: [PATCH v5 0/1] gpio: add simple logic analyzer using polling
+Date:   Tue, 23 Nov 2021 17:49:01 +0100
+Message-Id: <20211123164902.35370-1-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1618288.1637686052.1@warthog.procyon.org.uk>
-Date:   Tue, 23 Nov 2021 16:47:32 +0000
-Message-ID: <1618289.1637686052@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cyril Hrubis <chrubis@suse.cz> wrote:
+The bravery continues with the next update of the in-kernel logic
+analyzer based on GPIO polling with local irqs disabled. It has been
+tested locally and remotely. It provided satisfactory results. Besides
+the driver, there is also a script which isolates a CPU to achieve the
+best possible result. I am aware of the latency limitations. However,
+the intention is for debugging only, not mass production. Especially for
+remote debugging and to get a first impression, this has already been
+useful. Documentation is within the patch, to get a better idea what
+this is all about.
 
-> This changes the __u64 and __s64 in userspace on 64bit platforms from
-> long long (unsigned) int to just long (unsigned) int in order to match
-> the uint64_t and int64_t size in userspace.
+A branch is here:
+git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git renesas/gpio-logic-analyzer-v5
 
-Can you guarantee this won't break anything in userspace?  Granted the types
-*ought* to be the same size, but anyone who's written code on the basis that
-these are "(unsigned) long long int" may suddenly get a bunch of warnings
-where they didn't before from the C compiler.  Anyone using C++, say, may find
-their code no longer compiles because overloaded function matching no longer
-finds a correct match.
+And an eLinux-wiki page with a picture of a result is here:
+https://elinux.org/Kernel_GPIO_Logic_analyzer
 
-Also, whilst your point about PRIu64 and PRId64 modifiers in printf() is a
-good one, it doesn't help someone whose compiler doesn't support that (I don't
-know if anyone's likely to encounter such these days).  At the moment, I think
-a user can assume that %llu will work correctly both on 32-bit and 64-bit on
-all arches, but you're definitely breaking that assumption.
+Changes since last version:
+* increased version number to 5 to match internal and external numbering
+* added "SLOPPY" to the Kconfig symbol as well
+* addressed Geert's comments (typos and more 'unsigned int' usage).
+  Thanks!
+* addressed Andy's comments (updated comment, use dev_err_probe, use
+  '... || fail' pattern in script consequently). Thanks!
 
-David
+I've used the analyzer in a few more scenarios and on another SoC
+(Renesas R-Car M3-W) and was happy with the outcome. Looking forward to
+other tests and comments. From my side this is good to go.
+
+Happy hacking,
+
+   Wolfram
+
+
+Wolfram Sang (1):
+  gpio: add sloppy logic analyzer using polling
+
+ .../dev-tools/gpio-sloppy-logic-analyzer.rst  |  71 ++++
+ Documentation/dev-tools/index.rst             |   1 +
+ drivers/gpio/Kconfig                          |  17 +
+ drivers/gpio/Makefile                         |   1 +
+ drivers/gpio/gpio-sloppy-logic-analyzer.c     | 340 ++++++++++++++++++
+ tools/gpio/gpio-sloppy-logic-analyzer         | 222 ++++++++++++
+ 6 files changed, 652 insertions(+)
+ create mode 100644 Documentation/dev-tools/gpio-sloppy-logic-analyzer.rst
+ create mode 100644 drivers/gpio/gpio-sloppy-logic-analyzer.c
+ create mode 100755 tools/gpio/gpio-sloppy-logic-analyzer
+
+-- 
+2.30.2
 
