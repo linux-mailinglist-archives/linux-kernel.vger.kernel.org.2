@@ -2,131 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB1345A3F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:39:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE4B45A3F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:39:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236797AbhKWNme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 08:42:34 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:53070 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236433AbhKWNma (ORCPT
+        id S236091AbhKWNmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 08:42:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:49064 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236624AbhKWNmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 08:42:30 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1ANArOFH009162;
-        Tue, 23 Nov 2021 08:39:21 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3cg6mm0kww-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Nov 2021 08:39:21 -0500
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 1ANDdK57007030
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 23 Nov 2021 08:39:20 -0500
-Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
- ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
- Tue, 23 Nov 2021 08:39:19 -0500
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
- ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
- Tue, 23 Nov 2021 08:39:19 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.858.5 via Frontend Transport;
- Tue, 23 Nov 2021 08:39:19 -0500
-Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.181])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 1ANDdETA000435;
-        Tue, 23 Nov 2021 08:39:18 -0500
-From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
-To:     <jic23@kernel.org>, <robh+dt@kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Subject: [PATCH v2 4/4] iio:filter:admv8818: Add sysfs ABI documentation
-Date:   Tue, 23 Nov 2021 15:39:00 +0200
-Message-ID: <20211123133900.133027-4-antoniu.miclaus@analog.com>
-X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211123133900.133027-1-antoniu.miclaus@analog.com>
-References: <20211123133900.133027-1-antoniu.miclaus@analog.com>
+        Tue, 23 Nov 2021 08:42:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637674763;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+jh8FTAWWG20K+UA82402ba7LKfonIbuvjtOQUuW19c=;
+        b=GYWWa0+JpIjt8sbExUi+TfLb8lTNgAQQufEpM4pemEgYNiNUSKWMogo1C9K2v5lSpVeu9A
+        buAuiHSD4Rjtg/k39vcuCdvQ9CRRgKq0mM6dhwRuIxl8r8VrMCSNnjs00W90vHZqalMEW3
+        Z+2SdJ2JzniGIrrvW6Jvr3h/hWPYXQ0=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-441-S5JEthN4NGa0jJzmM9inDw-1; Tue, 23 Nov 2021 08:39:22 -0500
+X-MC-Unique: S5JEthN4NGa0jJzmM9inDw-1
+Received: by mail-wm1-f71.google.com with SMTP id v62-20020a1cac41000000b0033719a1a714so8462099wme.6
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 05:39:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=+jh8FTAWWG20K+UA82402ba7LKfonIbuvjtOQUuW19c=;
+        b=JV786wzMuzIIH27nn6TCvNiYcsyvNmCsKaZJy3rAZlWUUUpNV+6PMW/rMvDrQOAUfw
+         iSFDMDibjRtDrPF+KMuuAMtu1yGSINfADx9XkkST0vAayB5wiUNyl+CjVo9Z5fqhQRO+
+         RE4TMHUlDeUvpD+H8R6QECb8LZJtSGeGunbywHIgNVRGZg13wyTo0/o4Qqj17Myfkzzd
+         eWMQRTiKp1Ke55dSWqn3gMbZdVrBAlI+gmhOhUnpWvgk1trL8dAwHejTeen3U0cILSlk
+         asqGPbjefUWjn3S4ZtMaijwq7fdKnsVo5yySyRB7js1LWrdRLcd4h1Lkh0XT+GYAmPMV
+         QKtw==
+X-Gm-Message-State: AOAM532tQKCbTi9S5jFTPC1BKhS5TYN+9TMLpWRtBOs8/CrmHaQr3v3R
+        6zEx4sXol8iAvxBAAj/tXe1ewaDi8QawUsR6F2UHITWPmq0wJ8AL8dF2SMpgVYCrqvXvlDYwAwy
+        Kob1VrvWmh2FazLakFLbR/51Y
+X-Received: by 2002:adf:f5ce:: with SMTP id k14mr7219873wrp.100.1637674761161;
+        Tue, 23 Nov 2021 05:39:21 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzD7sb1IiFmX+xh4eNwq0pLdsNnZ6eK+UsBEy9hQfqP/PgF8XkS6qu6y8mJps6VYrFnZ4fKEQ==
+X-Received: by 2002:adf:f5ce:: with SMTP id k14mr7219846wrp.100.1637674760974;
+        Tue, 23 Nov 2021 05:39:20 -0800 (PST)
+Received: from [192.168.3.132] (p5b0c6765.dip0.t-ipconnect.de. [91.12.103.101])
+        by smtp.gmail.com with ESMTPSA id d6sm1456582wrn.53.2021.11.23.05.39.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Nov 2021 05:39:20 -0800 (PST)
+Message-ID: <10ccf01b-f13a-d626-beba-cbee70770cf1@redhat.com>
+Date:   Tue, 23 Nov 2021 14:39:19 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: kgfb73q7j9_P-d2qsvthYt3TU2aDdlgW
-X-Proofpoint-ORIG-GUID: kgfb73q7j9_P-d2qsvthYt3TU2aDdlgW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-23_04,2021-11-23_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1015 mlxlogscore=999 impostorscore=0 mlxscore=0 spamscore=0
- bulkscore=0 suspectscore=0 adultscore=0 malwarescore=0 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111230076
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Andrew Dona-Couch <andrew@donacou.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Drew DeVault <sir@cmpwn.com>,
+        Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+References: <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
+ <CFQZSHV700KV.18Y62SACP8KOO@taiga>
+ <20211116114727.601021d0763be1f1efe2a6f9@linux-foundation.org>
+ <CFRGQ58D9IFX.PEH1JI9FGHV4@taiga>
+ <20211116133750.0f625f73a1e4843daf13b8f7@linux-foundation.org>
+ <b84bc345-d4ea-96de-0076-12ff245c5e29@redhat.com>
+ <8f219a64-a39f-45f0-a7ad-708a33888a3b@www.fastmail.com>
+ <333cb52b-5b02-648e-af7a-090e23261801@redhat.com>
+ <ca96bb88-295c-ccad-ed2f-abc585cb4904@kernel.dk>
+ <5f998bb7-7b5d-9253-2337-b1d9ea59c796@redhat.com>
+ <20211123132523.GA5112@ziepe.ca>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20211123132523.GA5112@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial ABI documentation for admv8818 filter sysfs interfaces.
+> 
+>> 2) Could be provide a mmu variant to ordinary users that's just good
+>> enough but maybe not as fast as what we have today? And limit
+>> FOLL_LONGTERM to special, privileged users?
+> 
+> rdma has never been privileged
 
-Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
----
-changes in v2:
- - remove bandwidth/center frequency related custom device attributes
- - remove bypass filter mode
- .../ABI/testing/sysfs-bus-iio-filter-admv8818 | 44 +++++++++++++++++++
- 1 file changed, 44 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-filter-admv8818
+Feel free to correct me if I'm wrong: it requires special networking
+hardware and the admin/kernel has to prepare the system in a way such
+that it can be used.
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-iio-filter-admv8818 b/Documentation/ABI/testing/sysfs-bus-iio-filter-admv8818
-new file mode 100644
-index 000000000000..7211b5d0daa0
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-bus-iio-filter-admv8818
-@@ -0,0 +1,44 @@
-+What:		/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_filter_high_pass_3db_frequency
-+KernelVersion:
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		The cut-off frequency of the ADMV8818 high pass filter. The value is scaled using
-+		the `out_altvoltageY_scale` attribute so that GHz frequencies are valid inputs,
-+		The accepted range of values for the frequencies is between 1.75GHz and 19.9GHz.
-+
-+		The default value for the scale is 1000000, therefore MHz frequency values are
-+		passed as input.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_filter_low_pass_3db_frequency
-+KernelVersion:
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		The cut-off frequency of the ADMV8818 low pass filter. The value is scaled using
-+		the `out_altvoltageY_scale` attribute so that GHz frequencies are valid inputs,
-+		The accepted range of values for the frequencies is between 2.05GHz and 18.85GHz.
-+
-+		The default value for the scale is 1000000, therefore MHz frequency values are
-+		passed as input.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/out_altvoltageY_scale
-+KernelVersion:
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Scale high pass and lowpass filter frequency values to Hz.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/filter_mode_available
-+KernelVersion:
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Reading this returns the valid values that can be written to the
-+		on_altvoltage0_mode attribute:
-+
-+		- auto -> Adjust bandpass filter to track changes in input clock rate.
-+		- manual -> disable/unregister the clock rate notifier / input clock tracking.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/filter_mode
-+KernelVersion:
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		This attribute configures the filter mode.
-+		Reading returns the actual mode.
 -- 
-2.34.0
+Thanks,
+
+David / dhildenb
 
