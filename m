@@ -2,139 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9F845A20F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:55:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE10245A200
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:53:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236813AbhKWL6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 06:58:05 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:29322 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236690AbhKWL54 (ORCPT
+        id S236446AbhKWL5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 06:57:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236469AbhKWL47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 06:57:56 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1ANAQJFo009170;
-        Tue, 23 Nov 2021 06:54:48 -0500
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3cg6mm02wg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Nov 2021 06:54:47 -0500
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 1ANBskPB035315
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 23 Nov 2021 06:54:46 -0500
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Tue, 23 Nov 2021
- 06:54:45 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.858.5 via Frontend Transport;
- Tue, 23 Nov 2021 06:54:45 -0500
-Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.181])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 1ANBsf0i026107;
-        Tue, 23 Nov 2021 06:54:44 -0500
-From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
-To:     <jic23@kernel.org>, <robh+dt@kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Subject: [PATCH v5 3/3] Documentation:ABI:testing:admv1013: add ABI docs
-Date:   Tue, 23 Nov 2021 13:53:36 +0200
-Message-ID: <20211123115336.65827-3-antoniu.miclaus@analog.com>
-X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211123115336.65827-1-antoniu.miclaus@analog.com>
-References: <20211123115336.65827-1-antoniu.miclaus@analog.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: ynV-WJZ81v6bKh2guvOpsRd31cExjisy
-X-Proofpoint-ORIG-GUID: ynV-WJZ81v6bKh2guvOpsRd31cExjisy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-23_04,2021-11-23_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1015 mlxlogscore=999 impostorscore=0 mlxscore=0 spamscore=0
- bulkscore=0 suspectscore=0 adultscore=0 malwarescore=0 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111230066
+        Tue, 23 Nov 2021 06:56:59 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F6DC06173E
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 03:53:50 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id i8-20020a7bc948000000b0030db7b70b6bso1992137wml.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 03:53:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jrtc27.com; s=gmail.jrtc27.user;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=7HCsn3LauvYlw254i5JEp6W9ePQ2LHc/IwCYYFyUPzE=;
+        b=TNu6s/w6vt+7IaJeXayLbrq/RXSMlbuqU8t6TjBqQqZkNPDA4qjccqKSdKXMH54Kso
+         E7eQwiSGUSG2CHSa31AcKRX4NnBkkmNT0PfEaxVSE+/ETEwcrpogoQeXH1esnxonox8N
+         wlYAkcWix/a/Jr4vru+C+4rH46GsjV7b4uvULoxT7pyuzrJ2iJU6s2ryT6T4is6yxaJm
+         +hXu5KBeK0yPB5T8IG5WdbBTD7ComXerL+DFtEurTdrcTNd+6mpv4VWxrFXX0wfWLEDN
+         sxSgFQjaoI7LmvZiKdLvDI/vK1OmpvF6CCWtKrMRzM4aCHg+EY6llXVXsuzGkiGgLsCF
+         QoWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=7HCsn3LauvYlw254i5JEp6W9ePQ2LHc/IwCYYFyUPzE=;
+        b=AM52fuESNgSdye5s8MqiXAHccLKDaNmjpjuQe4d6G7FnDBJM8wobEQf0m/5yFhVgjs
+         mFKiUYH/2cNPZ4mQiksIpWfKdfSjh9xgJp6IdenhEmr9lAOR7zqkiNihDzCHf57Qqz7y
+         NdwuxflW1sSSQtijRG2XQ0WrtcAhgPZjv+JEWlrN4RB/bwTdPD7xMfPSaFbeEGftVA9r
+         Nb8XrJehgLZIwE/VruhQsdDVj/SADQHsOdPvjK0a51kLOGYdobZDVrhvdfKzrVazLawT
+         WLWN7u6pSHy341yobRm3LZDEs3dp8aOl9sNu8A6ohq/pLhtpfcgOB8lciz1ViWuKYUHw
+         OEow==
+X-Gm-Message-State: AOAM531kgtmbEnZ05VfQ3ErrEwbBvVsy1TiiDtplcknOIN6bvM6P7df7
+        fzn58yzG6YEtPY3UKXuZxFoq5g==
+X-Google-Smtp-Source: ABdhPJwUJgOXWF/109whZMvPubj9tHLlQt7cpbmmCDcfE/tpcF9iYKuPT590KGCJoe/xH4JtcjO65A==
+X-Received: by 2002:a05:600c:22d0:: with SMTP id 16mr2343747wmg.37.1637668429367;
+        Tue, 23 Nov 2021 03:53:49 -0800 (PST)
+Received: from smtpclient.apple (global-5-141.nat-2.net.cam.ac.uk. [131.111.5.141])
+        by smtp.gmail.com with ESMTPSA id d9sm11550737wre.52.2021.11.23.03.53.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 23 Nov 2021 03:53:49 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Subject: Re: [RFC PATCH 2/3] riscv: Add early_param to decrease firmware
+ region
+From:   Jessica Clarke <jrtc27@jrtc27.com>
+In-Reply-To: <CAAhSdy0LLu4o6uOB8t_Wv6jsOrrrSMx0pv1E1B5F679gan3i6g@mail.gmail.com>
+Date:   Tue, 23 Nov 2021 11:53:48 +0000
+Cc:     Guo Ren <guoren@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+        atishp@rivosinc.com,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Alexandre Ghiti <alexandre.ghiti@canonical.com>,
+        Alexandre Ghiti <alex@ghiti.fr>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <07AD2CEA-3C9B-48FA-8E67-3B60448A08F0@jrtc27.com>
+References: <20211123015717.542631-1-guoren@kernel.org>
+ <20211123015717.542631-3-guoren@kernel.org>
+ <CAAhSdy0LLu4o6uOB8t_Wv6jsOrrrSMx0pv1E1B5F679gan3i6g@mail.gmail.com>
+To:     Anup Patel <anup@brainfault.org>
+X-Mailer: Apple Mail (2.3654.120.0.1.13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation for the use of the Local Oscillator Feedthrough Offset
-calibration.
+On 23 Nov 2021, at 03:44, Anup Patel <anup@brainfault.org> wrote:
+>=20
+> +Alex
+>=20
+> On Tue, Nov 23, 2021 at 7:27 AM <guoren@kernel.org> wrote:
+>>=20
+>> From: Guo Ren <guoren@linux.alibaba.com>
+>>=20
+>> Using riscv.fw_size in cmdline to tell the kernel what the
+>> firmware (opensbi) size is. Then reserve the proper size of
+>> firmware to save memory instead of the whole 2MB. It's helpful
+>> to satisfy a small memory system (D1s/F133 from Allwinner).
+>>=20
+>> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+>> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+>> Cc: Anup Patel <anup.patel@wdc.com>
+>> Cc: Atish Patra <atishp@rivosinc.com>
+>> ---
+>> arch/riscv/mm/init.c | 14 +++++++++++++-
+>> 1 file changed, 13 insertions(+), 1 deletion(-)
+>>=20
+>> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+>> index 920e78f8c3e4..f7db6d40213d 100644
+>> --- a/arch/riscv/mm/init.c
+>> +++ b/arch/riscv/mm/init.c
+>> @@ -159,6 +159,15 @@ static int __init early_mem(char *p)
+>> }
+>> early_param("mem", early_mem);
+>>=20
+>> +static phys_addr_t firmware_size __initdata;
+>> +static int __init early_get_firmware_size(char *arg)
+>> +{
+>> +       firmware_size =3D memparse(arg, &arg);
+>> +
+>> +       return 0;
+>> +}
+>> +early_param("riscv.fwsz", early_get_firmware_size);
+>> +
+>=20
+> We have avoided any RISC-V specific kernel parameter till now
+> and I don't think adding "riscv.fwsz" is the right approach.
+>=20
+> OpenSBI adds a reserved memory node (mmode_resv@8000000)
+> to mark the memory where it is running as reserved. In fact, all
+> M-mode runtime firmware should be adding a reserved memory
+> node just like OpenSBI.
 
-Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
----
-changes in v5:
- - rework the custom device attributes based on the feedback received in v4
- - add frequency translation modes custom attributes.
- .../testing/sysfs-bus-iio-frequency-admv1013  | 55 +++++++++++++++++++
- 1 file changed, 55 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-frequency-admv1013
+BBL does not do this and, even if it=E2=80=99s modified today, older =
+versions
+will still need to be supported for quite a while longer.
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-iio-frequency-admv1013 b/Documentation/ABI/testing/sysfs-bus-iio-frequency-admv1013
-new file mode 100644
-index 000000000000..3ff80909f007
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-bus-iio-frequency-admv1013
-@@ -0,0 +1,55 @@
-+What:		/sys/bus/iio/devices/iio:deviceX/in_altvoltage0-1_phase_i
-+KernelVersion:
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Read/write raw value for the Local Oscillatior path quadrature I phase shift.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/in_altvoltage0-1_phase_q
-+KernelVersion:
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Read/write raw value for the Local Oscillatior path quadrature Q phase shift.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/in_altvoltage0_calibbias_i
-+KernelVersion:
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Read/write raw value for the Local Oscillatior Feedthrough Offset Calibration I Positive
-+		side.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/in_altvoltage0_calibbias_q
-+KernelVersion:
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Read/write raw value for the Local Oscillatior Feedthrough Offset Calibration Q Positive
-+		side.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/in_altvoltage1_calibbias_i
-+KernelVersion:
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Read/write raw value for the Local Oscillatior Feedthrough Offset Calibration I Negative
-+		side.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/in_altvoltage1_calibbias_q
-+KernelVersion:
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Read/write raw value for the Local Oscillatior Feedthrough Offset Calibration Q Negative
-+		side.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/freq_mode_available
-+KernelVersion:
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		Reading this returns the valid values that can be written to the freq_mode attribute.
-+
-+		- if -> Intermediate Frequency
-+		- iq -> Quadrature I/Q mode.
-+
-+What:		/sys/bus/iio/devices/iio:deviceX/freq_mode
-+KernelVersion:
-+Contact:	linux-iio@vger.kernel.org
-+Description:
-+		This attribute configures the frequency mode.
-+		Reading returns the actual mode.
--- 
-2.34.0
+In FreeBSD[1] we only reserve the first 2 MiB of DRAM (we don=E2=80=99t =
+care
+about RV32) if there is no reserved memory node covering the DRAM base
+address, which avoids this issue. The only downside with that approach
+is that if firmware occupies a different region than the beginning of
+DRAM (or there is no firmware resident in the supervisor=E2=80=99s =
+physical
+address space, as is the case for a virtualised guest) then it
+unnecessarily reserves that first 2 MiB, but that=E2=80=99s not a huge =
+deal,
+and can=E2=80=99t be avoided so long as BBL continues to exist (well, I =
+guess
+you could probe the SBI implementation ID if you really cared about
+that, but I=E2=80=99ve yet to hear of a platform where the SBI =
+implementation,
+if it exists, isn=E2=80=99t at the start of DRAM, and if you=E2=80=99re =
+virtualising
+then you probably have enough DRAM that you don=E2=80=99t notice 2 MiB =
+going
+missing).
+
+Jess
+
+[1] =
+https://github.com/freebsd/freebsd-src/blob/main/sys/riscv/riscv/machdep.c=
+#L554-L568
 
