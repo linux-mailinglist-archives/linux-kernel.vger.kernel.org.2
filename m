@@ -2,129 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 032E945A0E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 776A145A0E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:07:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233564AbhKWLJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 06:09:33 -0500
-Received: from mout.gmx.net ([212.227.15.15]:60757 "EHLO mout.gmx.net"
+        id S234300AbhKWLKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 06:10:05 -0500
+Received: from foss.arm.com ([217.140.110.172]:51058 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233462AbhKWLJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 06:09:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1637665580;
-        bh=iHMBuiS6NA57Im1nsN6hxnDvT25qjhF1O/kXlthv3+0=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=kB6KEt1tfgYibUyjL/EKUiAD4W/qZfamF2ghaauLBiDS6YyJ/5qJqJvFsD8+N+VAb
-         5rzYiXVnWA3rIjvhK2l/AvVjM+e+hHlaAICVgYXD5YZGY5XhlDoGe4gn2/q4KqKqxk
-         j1aDPhGZmfh5RI99cMmLrkAzDzQ0SWvu0WijOOIQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.148.50]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MrhQ6-1mJUvH3pjQ-00njgI; Tue, 23
- Nov 2021 12:06:19 +0100
-Message-ID: <56b8e72693d5a0247beb95482bdfacf1a158a859.camel@gmx.de>
-Subject: Re: mm: LTP/memcg testcase regression induced by
- 8cd7c588decf..66ce520bb7c2 series
-From:   Mike Galbraith <efault@gmx.de>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     lkml <linux-kernel@vger.kernel.org>
-Date:   Tue, 23 Nov 2021 12:06:19 +0100
-In-Reply-To: <20211123091304.GC3366@techsingularity.net>
-References: <99e779783d6c7fce96448a3402061b9dc1b3b602.camel@gmx.de>
-         <20211123091304.GC3366@techsingularity.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 
+        id S233462AbhKWLKE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 06:10:04 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2C2721063;
+        Tue, 23 Nov 2021 03:06:56 -0800 (PST)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 08E943F5A1;
+        Tue, 23 Nov 2021 03:06:54 -0800 (PST)
+Date:   Tue, 23 Nov 2021 11:06:48 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     catalin.marinas@arm.com, dvyukov@google.com, peterz@infradead.org,
+        quic_qiancai@quicinc.com, valentin.schneider@arm.com,
+        will@kernel.org, woodylin@google.com
+Subject: Re: [PATCH v2] Reset task stack state in bringup_cpu()
+Message-ID: <20211123110648.GA37253@lakrids.cambridge.arm.com>
+References: <20211118102927.4854-1-mark.rutland@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:UW7zPsWz7laCjBdOEtep7m0xMCMksrn46s/yL7I7FzkfYJipKFC
- AWvXNBgP6Py5QDKRkPvy3H4ysFz4WmlVtJuvTrbdvNAbE30sulz0N799duw8uET3Ll1CzOK
- lXX6zKyZPJARNXsLYQGqkDHqrxh8fqga2APdh1ogPD5moDv60rQd09FZHmhaP8F+7U0yc2U
- ELpaKLJjAEUZbS0vALv3g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:erfRfKJAyy8=:Te38DExQX1W2/T2FkS594n
- o9aV6WDu65qX+hOOIpnr+k5qNeQV9caxIIxEkM18fTa8kxg7e6vmzCTZKhws1hN4XP16LebT6
- AuQimSIqNOL7QK4nPyw71Usa7uc6lovGxBscrluU2XBOSY/YYNNzrkcAIsl64Kc+jhXYQQdGG
- ZR42xl5+9mUxN0MsqkzejdeHDZgKlC3c4FSOXboHGqBJzDw9hJFoxcU8zhl5s75xO/mqd74sf
- CpKaR29S0gpMUMYDuJbQpww75z4T2HZfRc+5HupMQJQo4+/9mUP/h41rYZV1fGK9N6+Ow2n4L
- FmMW4E0Rz7I7KsK7XG1vKmrRNv8vnkuFwVWWvoFPPj+0jl9C0/BJ1p7P0pbx85KtZTIbWfY4I
- PLJvwC7hJfSPSaIATl/SrOZiAY1QK7aMqdeeGxyYxEI+AhZMCmswQQdJMBGThEoPCyDBcYDtn
- iinm0CzXQFh4f8F9JQNdvA2Gbq2R5UYYe+veA2bIMnrLuA1n1NS335zkBJSLVuLvOkAbPCyTA
- WDy5wcbjjRR5opdJUpm4kgagJ2Uf2KAQRUnKCaKEKf/IFI+9vpRD0PICBHQfmswaeqaTmQ1KS
- 5igMHC9B7SLTtns4hyC5UhVbvmSpGvOsrSiAb23pcCzZ7B1aEO5fvDnvxPTkv9xgcCQB+woxF
- Z4a7w56e7UK5jeds1Y1wHwfzI86zQt+70rYdS/FPRNhNG94BhHDVlKaG3N4UDU+xNALzqyxfu
- FP7Icn8oScvja0c83lJ6JkOyOo628nUF0jGYclM4ULmVtzmaCXgBSYv3vwjB7FMcP2766XLEW
- z5bbTe7YIo5KbS4WVwUzCxvK72yWo6XSYFo+OEiaQjwitukt4q9+0rTrJpNwO48QmJAT8Zxvw
- vBK33KLybs68qYRfbNtP4S2I6S2jvn//jR1ZdlvqMFsZuhPXhapoI3INohVPpxKxdKd3Aa7Hi
- BpDThrcbyPmkmbkSPE/SBY0DAKt/qO+D8QwBZTb20VMgScJbNx5SmO8xHg3ye4RGDEZldQNgE
- HvAIEUdopZTTFqNUFQdrnAslj31wc1tJQxfGcGBMmnqXc+Ot2rnrG2dM/RXQ2CktClqzntoNa
- Nc7vAJ/8gNdt3o=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211118102927.4854-1-mark.rutland@arm.com>
+User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-11-23 at 09:13 +0000, Mel Gorman wrote:
-> On Sun, Nov 21, 2021 at 11:57:20AM +0100, Mike Galbraith wrote:
-> > Greetings,
-> >
-> > FYI, something in this series causes LTP controllers::memcg_regression
-> > testcase to hang forever.=C2=A0 Verified via brute force revert of the=
- lot.
-> >
-> > After letting box moan for 4.5 hours, I poked ^C repeatedly, but runlt=
-p
-> > didn't exit/recover gracefully, and ps hung, so I nuked the box.=C2=A0=
- All
-> > memcg_test_1 instances were stuck in reclaim_throttle().
-> >
->
-> I'll see can I reproduce this but do you know offhand what the test is
-> doing and what the expected outcome is? A possibility is that this is a
-> test that is driving the machine near OOM (or at least memcg OOM) and
-> getting throttled instead of getting killed.
+On Thu, Nov 18, 2021 at 10:29:27AM +0000, Mark Rutland wrote:
+> To hot unplug a CPU, the idle task on that CPU calls a few layers of C
+> code before finally leaving the kernel. When KASAN is in use, poisoned
+> shadow is left around for each of the active stack frames, and when
+> shadow call stacks are in use. When shadow call stacks are in use the
+> task's saved SCS SP is left pointing at an arbitrary point within the
+> task's shadow call stack.
+> 
+> When a CPU is offlined than onlined back into the kernel, this stale
+> state can adversely affect execution. Stale KASAN shadow can alias new
+> stackframes and result in bogus KASAN warnings. A stale SCS SP is
+> effectively a memory leak, and prevents a portion of the shadow call
+> stack being used. Across a number of hotplug cycles the idle task's
+> entire shadow call stack can become unusable.
+> 
+> We previously fixed the KASAN issue in commit:
+> 
+>   e1b77c92981a5222 ("sched/kasan: remove stale KASAN poison after hotplug")
+> 
+> ... by removing any stale KASAN stack poison immediately prior to
+> onlining a CPU.
+> 
+> Subsequently in commit:
+> 
+>   f1a0a376ca0c4ef1 ("sched/core: Initialize the idle task with preemption disabled")
+> 
+> ... the refactoring left the KASAN and SCS cleanup in one-time idle
+> thread initialization code rather than something invoked prior to each
+> CPU being onlined, breaking both as above.
+> 
+> We fixed SCS (but not KASAN) in commit:
+> 
+>   63acd42c0d4942f7 ("sched/scs: Reset the shadow stack when idle_task_exit")
+> 
+> ... but as this runs in the context of the idle task being offlined it's
+> potentially fragile.
+> 
+> To fix these consistently and more robustly, reset the SCS SP and KASAN
+> shadow of a CPU's idle task immediately before we online that CPU in
+> bringup_cpu(). This ensures the idle task always has a consistent state
+> when it is running, and removes the need to so so when exiting an idle
+> task.
+> 
+> Whenever any thread is created, dup_task_struct() will give the task a
+> stack which is free of KASAN shadow, and initialize the task's SCS SP,
+> so there's no need to specially initialize either for idle thread within
+> init_idle(), as this was only necessary to handle hotplug cycles.
+> 
+> I've tested this with both GCC and clang, with relevant options enabled,
+> offlining and onlining CPUs with:
+> 
+> | while true; do
+> |   for C in /sys/devices/system/cpu/cpu*/online; do
+> |     echo 0 > $C;
+> |     echo 1 > $C;
+> |   done
+> | done
+> 
+> Link: https://lore.kernel.org/lkml/20211012083521.973587-1-woodylin@google.com/
+> Link: https://lore.kernel.org/linux-arm-kernel/YY9ECKyPtDbD9q8q@qian-HP-Z2-SFF-G5-Workstation/
+> Link: https://lore.kernel.org/lkml/20211115113310.35693-1-mark.rutland@arm.com/
+> Fixes: 1a0a376ca0c4ef1 ("sched/core: Initialize the idle task with preemption disabled")
 
-Here's the hanging test 4.
+Ugh, that should be f1a0a376ca0c4ef1 (with a leading 'f'), as in the
+body of the commit message.
 
-testcases/bin/memcg_regression_test.sh:
-test_4()
-{
-        ./memcg_test_4.sh
+I can fix that up for v3, unless someone's happy to fix that up when
+picking this up.
 
-        check_kernel_bug
-        if [ $? -eq 1 ]; then
-                tst_resm TPASS "no kernel bug was found"
-        fi
+Thanks,
+Mark.
 
-        # test_4.sh might be killed by oom, so do clean up here
-        killall -9 memcg_test_4 2> /dev/null
-        killall -9 memcg_test_4.sh 2> /dev/null
-
-        # if test_4.sh gets killed, it won't clean cgroup it created
-        rmdir memcg/0 2> /dev/null
-
-        swapon -a
-}
-
-testcases/bin/memcg_test_4.sh:
-# attach current task to memcg/0/
-mkdir memcg/0
-echo $$ > memcg/0/tasks
-
-./memcg_test_4 &
-pid=3D$!
-sleep 1
-
-# let $pid allocate 100M memory
-/bin/kill -SIGUSR1 $pid
-sleep 1
-
-# shrink memory, and then 80M will be swapped
-echo 40M > memcg/0/memory.limit_in_bytes
-
-# turn off swap, and swapoff will be killed
-swapoff -a
-sleep 1
-echo $pid > memcg/tasks 2> /dev/null
-echo $$ > memcg/tasks 2> /dev/null
-
-# now remove the cgroup
-rmdir memcg/0
+> Reported-by: Qian Cai <quic_qiancai@quicinc.com>
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+> Tested-by: Qian Cai <quic_qiancai@quicinc.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Woody Lin <woodylin@google.com>
+> ---
+>  kernel/cpu.c        | 7 +++++++
+>  kernel/sched/core.c | 4 ----
+>  2 files changed, 7 insertions(+), 4 deletions(-)
+> 
+> Since v1 [1]:
+> * Clarify commit message
+> * Fix typos
+> * Accumulate tags
+> 
+> [1] https://lore.kernel.org/lkml/20211115113310.35693-1-mark.rutland@arm.com/
+> 
+> diff --git a/kernel/cpu.c b/kernel/cpu.c
+> index 192e43a87407..407a2568f35e 100644
+> --- a/kernel/cpu.c
+> +++ b/kernel/cpu.c
+> @@ -31,6 +31,7 @@
+>  #include <linux/smpboot.h>
+>  #include <linux/relay.h>
+>  #include <linux/slab.h>
+> +#include <linux/scs.h>
+>  #include <linux/percpu-rwsem.h>
+>  #include <linux/cpuset.h>
+>  
+> @@ -588,6 +589,12 @@ static int bringup_cpu(unsigned int cpu)
+>  	int ret;
+>  
+>  	/*
+> +	 * Reset stale stack state from the last time this CPU was online.
+> +	 */
+> +	scs_task_reset(idle);
+> +	kasan_unpoison_task_stack(idle);
+> +
+> +	/*
+>  	 * Some architectures have to walk the irq descriptors to
+>  	 * setup the vector space for the cpu which comes online.
+>  	 * Prevent irq alloc/free across the bringup.
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 3c9b0fda64ac..76f9deeaa942 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -8619,9 +8619,6 @@ void __init init_idle(struct task_struct *idle, int cpu)
+>  	idle->flags |= PF_IDLE | PF_KTHREAD | PF_NO_SETAFFINITY;
+>  	kthread_set_per_cpu(idle, cpu);
+>  
+> -	scs_task_reset(idle);
+> -	kasan_unpoison_task_stack(idle);
+> -
+>  #ifdef CONFIG_SMP
+>  	/*
+>  	 * It's possible that init_idle() gets called multiple times on a task,
+> @@ -8777,7 +8774,6 @@ void idle_task_exit(void)
+>  		finish_arch_post_lock_switch();
+>  	}
+>  
+> -	scs_task_reset(current);
+>  	/* finish_cpu(), as ran on the BP, will clean up the active_mm state */
+>  }
+>  
+> -- 
+> 2.11.0
+> 
