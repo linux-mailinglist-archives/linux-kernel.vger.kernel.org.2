@@ -2,106 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE4B45A3F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BCE045A404
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:40:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236091AbhKWNmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 08:42:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:49064 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236624AbhKWNmc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 08:42:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637674763;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+jh8FTAWWG20K+UA82402ba7LKfonIbuvjtOQUuW19c=;
-        b=GYWWa0+JpIjt8sbExUi+TfLb8lTNgAQQufEpM4pemEgYNiNUSKWMogo1C9K2v5lSpVeu9A
-        buAuiHSD4Rjtg/k39vcuCdvQ9CRRgKq0mM6dhwRuIxl8r8VrMCSNnjs00W90vHZqalMEW3
-        Z+2SdJ2JzniGIrrvW6Jvr3h/hWPYXQ0=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-441-S5JEthN4NGa0jJzmM9inDw-1; Tue, 23 Nov 2021 08:39:22 -0500
-X-MC-Unique: S5JEthN4NGa0jJzmM9inDw-1
-Received: by mail-wm1-f71.google.com with SMTP id v62-20020a1cac41000000b0033719a1a714so8462099wme.6
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 05:39:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=+jh8FTAWWG20K+UA82402ba7LKfonIbuvjtOQUuW19c=;
-        b=JV786wzMuzIIH27nn6TCvNiYcsyvNmCsKaZJy3rAZlWUUUpNV+6PMW/rMvDrQOAUfw
-         iSFDMDibjRtDrPF+KMuuAMtu1yGSINfADx9XkkST0vAayB5wiUNyl+CjVo9Z5fqhQRO+
-         RE4TMHUlDeUvpD+H8R6QECb8LZJtSGeGunbywHIgNVRGZg13wyTo0/o4Qqj17Myfkzzd
-         eWMQRTiKp1Ke55dSWqn3gMbZdVrBAlI+gmhOhUnpWvgk1trL8dAwHejTeen3U0cILSlk
-         asqGPbjefUWjn3S4ZtMaijwq7fdKnsVo5yySyRB7js1LWrdRLcd4h1Lkh0XT+GYAmPMV
-         QKtw==
-X-Gm-Message-State: AOAM532tQKCbTi9S5jFTPC1BKhS5TYN+9TMLpWRtBOs8/CrmHaQr3v3R
-        6zEx4sXol8iAvxBAAj/tXe1ewaDi8QawUsR6F2UHITWPmq0wJ8AL8dF2SMpgVYCrqvXvlDYwAwy
-        Kob1VrvWmh2FazLakFLbR/51Y
-X-Received: by 2002:adf:f5ce:: with SMTP id k14mr7219873wrp.100.1637674761161;
-        Tue, 23 Nov 2021 05:39:21 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzD7sb1IiFmX+xh4eNwq0pLdsNnZ6eK+UsBEy9hQfqP/PgF8XkS6qu6y8mJps6VYrFnZ4fKEQ==
-X-Received: by 2002:adf:f5ce:: with SMTP id k14mr7219846wrp.100.1637674760974;
-        Tue, 23 Nov 2021 05:39:20 -0800 (PST)
-Received: from [192.168.3.132] (p5b0c6765.dip0.t-ipconnect.de. [91.12.103.101])
-        by smtp.gmail.com with ESMTPSA id d6sm1456582wrn.53.2021.11.23.05.39.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Nov 2021 05:39:20 -0800 (PST)
-Message-ID: <10ccf01b-f13a-d626-beba-cbee70770cf1@redhat.com>
-Date:   Tue, 23 Nov 2021 14:39:19 +0100
+        id S236327AbhKWNnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 08:43:50 -0500
+Received: from mga05.intel.com ([192.55.52.43]:60467 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230197AbhKWNnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 08:43:49 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="321253708"
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="321253708"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 05:40:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="456696564"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 23 Nov 2021 05:40:39 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mpW2I-0001tx-M1; Tue, 23 Nov 2021 13:40:38 +0000
+Date:   Tue, 23 Nov 2021 21:40:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: include/asm-generic/io.h:291:22: sparse: sparse: incorrect type in
+ argument 1 (different base types)
+Message-ID: <202111232102.j4IfMUMj-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Andrew Dona-Couch <andrew@donacou.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Drew DeVault <sir@cmpwn.com>,
-        Ammar Faizi <ammarfaizi2@gnuweeb.org>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        io_uring Mailing List <io-uring@vger.kernel.org>,
-        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
-References: <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
- <CFQZSHV700KV.18Y62SACP8KOO@taiga>
- <20211116114727.601021d0763be1f1efe2a6f9@linux-foundation.org>
- <CFRGQ58D9IFX.PEH1JI9FGHV4@taiga>
- <20211116133750.0f625f73a1e4843daf13b8f7@linux-foundation.org>
- <b84bc345-d4ea-96de-0076-12ff245c5e29@redhat.com>
- <8f219a64-a39f-45f0-a7ad-708a33888a3b@www.fastmail.com>
- <333cb52b-5b02-648e-af7a-090e23261801@redhat.com>
- <ca96bb88-295c-ccad-ed2f-abc585cb4904@kernel.dk>
- <5f998bb7-7b5d-9253-2337-b1d9ea59c796@redhat.com>
- <20211123132523.GA5112@ziepe.ca>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20211123132523.GA5112@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> 
->> 2) Could be provide a mmu variant to ordinary users that's just good
->> enough but maybe not as fast as what we have today? And limit
->> FOLL_LONGTERM to special, privileged users?
-> 
-> rdma has never been privileged
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   136057256686de39cc3a07c2e39ef6bc43003ff6
+commit: 6e1e90ec027509a7e8d4efbd77a65b32b5a8b3ec regmap: mmio: add config option to allow relaxed MMIO accesses
+date:   1 year, 1 month ago
+config: h8300-randconfig-s031-20211117 (https://download.01.org/0day-ci/archive/20211123/202111232102.j4IfMUMj-lkp@intel.com/config.gz)
+compiler: h8300-linux-gcc (GCC) 11.2.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.4-dirty
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6e1e90ec027509a7e8d4efbd77a65b32b5a8b3ec
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout 6e1e90ec027509a7e8d4efbd77a65b32b5a8b3ec
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=h8300 
 
-Feel free to correct me if I'm wrong: it requires special networking
-hardware and the admin/kernel has to prepare the system in a way such
-that it can be used.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
--- 
-Thanks,
 
-David / dhildenb
+sparse warnings: (new ones prefixed by >>)
+   drivers/base/regmap/regmap-mmio.c: note: in included file (through include/linux/io.h):
+   arch/h8300/include/asm/io.h:32:11: sparse: sparse: cast removes address space '__iomem' of expression
+   arch/h8300/include/asm/io.h:32:11: sparse: sparse: cast removes address space '__iomem' of expression
+   arch/h8300/include/asm/io.h:38:11: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/base/regmap/regmap-mmio.c: note: in included file (through arch/h8300/include/asm/io.h, include/linux/io.h):
+>> include/asm-generic/io.h:291:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned short [usertype] b @@     got restricted __le16 [usertype] @@
+   include/asm-generic/io.h:291:22: sparse:     expected unsigned short [usertype] b
+   include/asm-generic/io.h:291:22: sparse:     got restricted __le16 [usertype]
+   drivers/base/regmap/regmap-mmio.c: note: in included file (through include/linux/io.h):
+   arch/h8300/include/asm/io.h:38:11: sparse: sparse: cast removes address space '__iomem' of expression
+   arch/h8300/include/asm/io.h:38:11: sparse: sparse: cast removes address space '__iomem' of expression
+   arch/h8300/include/asm/io.h:44:11: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/base/regmap/regmap-mmio.c: note: in included file (through arch/h8300/include/asm/io.h, include/linux/io.h):
+   include/asm-generic/io.h:299:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] b @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:299:22: sparse:     expected unsigned int [usertype] b
+   include/asm-generic/io.h:299:22: sparse:     got restricted __le32 [usertype]
+   drivers/base/regmap/regmap-mmio.c: note: in included file (through include/linux/io.h):
+   arch/h8300/include/asm/io.h:44:11: sparse: sparse: cast removes address space '__iomem' of expression
+   arch/h8300/include/asm/io.h:44:11: sparse: sparse: cast removes address space '__iomem' of expression
+   arch/h8300/include/asm/io.h:14:18: sparse: sparse: cast removes address space '__iomem' of expression
+   arch/h8300/include/asm/io.h:14:18: sparse: sparse: cast removes address space '__iomem' of expression
+   arch/h8300/include/asm/io.h:20:18: sparse: sparse: cast removes address space '__iomem' of expression
+   arch/h8300/include/asm/io.h:20:18: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/base/regmap/regmap-mmio.c: note: in included file (through arch/h8300/include/asm/io.h, include/linux/io.h):
+   include/asm-generic/io.h:259:16: sparse: sparse: cast to restricted __le16
+   include/asm-generic/io.h:259:16: sparse: sparse: cast to restricted __le16
+   include/asm-generic/io.h:259:16: sparse: sparse: cast to restricted __le16
+   include/asm-generic/io.h:259:16: sparse: sparse: cast to restricted __le16
+   drivers/base/regmap/regmap-mmio.c: note: in included file (through include/linux/io.h):
+   arch/h8300/include/asm/io.h:20:18: sparse: sparse: cast removes address space '__iomem' of expression
+   arch/h8300/include/asm/io.h:20:18: sparse: sparse: cast removes address space '__iomem' of expression
+   arch/h8300/include/asm/io.h:20:18: sparse: sparse: cast removes address space '__iomem' of expression
+   arch/h8300/include/asm/io.h:20:18: sparse: sparse: cast removes address space '__iomem' of expression
+   arch/h8300/include/asm/io.h:20:18: sparse: sparse: cast removes address space '__iomem' of expression
+   arch/h8300/include/asm/io.h:20:18: sparse: sparse: cast removes address space '__iomem' of expression
+   arch/h8300/include/asm/io.h:26:18: sparse: sparse: cast removes address space '__iomem' of expression
+   arch/h8300/include/asm/io.h:26:18: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/base/regmap/regmap-mmio.c: note: in included file (through arch/h8300/include/asm/io.h, include/linux/io.h):
+   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:267:16: sparse: sparse: cast to restricted __le32
+   drivers/base/regmap/regmap-mmio.c: note: in included file (through include/linux/io.h):
+   arch/h8300/include/asm/io.h:26:18: sparse: sparse: cast removes address space '__iomem' of expression
+   arch/h8300/include/asm/io.h:26:18: sparse: sparse: cast removes address space '__iomem' of expression
+   arch/h8300/include/asm/io.h:26:18: sparse: sparse: cast removes address space '__iomem' of expression
+   arch/h8300/include/asm/io.h:26:18: sparse: sparse: cast removes address space '__iomem' of expression
+   arch/h8300/include/asm/io.h:26:18: sparse: sparse: cast removes address space '__iomem' of expression
+   arch/h8300/include/asm/io.h:26:18: sparse: sparse: cast removes address space '__iomem' of expression
 
+vim +291 include/asm-generic/io.h
+
+9439eb3ab9d1ec Will Deacon 2013-09-03  286  
+9439eb3ab9d1ec Will Deacon 2013-09-03  287  #ifndef writew_relaxed
+a71e7c44ffb7ba Sinan Kaya  2018-04-06  288  #define writew_relaxed writew_relaxed
+a71e7c44ffb7ba Sinan Kaya  2018-04-06  289  static inline void writew_relaxed(u16 value, volatile void __iomem *addr)
+a71e7c44ffb7ba Sinan Kaya  2018-04-06  290  {
+a71e7c44ffb7ba Sinan Kaya  2018-04-06 @291  	__raw_writew(cpu_to_le16(value), addr);
+a71e7c44ffb7ba Sinan Kaya  2018-04-06  292  }
+9439eb3ab9d1ec Will Deacon 2013-09-03  293  #endif
+9439eb3ab9d1ec Will Deacon 2013-09-03  294  
+
+:::::: The code at line 291 was first introduced by commit
+:::::: a71e7c44ffb7baea0c0795824afc34cc0bc1a301 io: change writeX_relaxed() to remove barriers
+
+:::::: TO: Sinan Kaya <okaya@codeaurora.org>
+:::::: CC: Arnd Bergmann <arnd@arndb.de>
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
