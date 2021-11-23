@@ -2,84 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 279F6459BC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 06:33:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97334459BD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 06:39:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232835AbhKWFgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 00:36:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232775AbhKWFgG (ORCPT
+        id S231470AbhKWFm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 00:42:58 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.170]:9334 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229569AbhKWFm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 00:36:06 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5532BC061574;
-        Mon, 22 Nov 2021 21:32:58 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id y26so87780958lfa.11;
-        Mon, 22 Nov 2021 21:32:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RTPYim6P0NhgC+Gnow4uqgkTn1zcac3+SOJ9CSgZULI=;
-        b=MjQLcGYkCVHU+lu8PI8OvJEXpVkLsuR0Vyv+JW6Yr5eICchovppqK1RDUZ3aFNNSYm
-         rpcvJiyZnop2bgEiYZm0d5QSD9X6ovRLED25pUihpFKam7rIEQJtJV9tETVEH5MGjbTs
-         802qAi8JJwUSR2FQAtKxiGRjGKoppxwjTGfeKlybzv0P+rrOtwkri03xXRY/1c6ErIUH
-         X3sUDTxv8l+mkpED3WLp182sU2Ch3QgJGrQAFti5hfLEzxyN2PmWrf6UmRz5Gh5RnYiB
-         Eu2l4SbqE/lO+L4mhh+toKYg0ynrkIlqGEKkQkgKDPbn0CABPnEWlutc3QiD4cELAI/A
-         BMAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RTPYim6P0NhgC+Gnow4uqgkTn1zcac3+SOJ9CSgZULI=;
-        b=jJ/aw3BGR81GHSiIccSSkhwATVPug0e7ij9u2uPIace6EKdr238+5HPunaHx8jEeP6
-         0F44do8D8EGUciHm9Nvp2UnAd7/Fb0q5DZYLRQrVBotN2gotxDf3+k3N9pc82q7Da9fy
-         DwPf0fgQ+sIFZWEkm+P38UubOzBLgsAgWO1xjIav9lC1MqE1LwQQS4AkGmQz4ig/hE+S
-         OZ3EnNPGiq9b9GX9I5fwqnEu8Fatz8AoxePcPC+VoE8rfGijfnM75K+JVGyAEhFVqfUL
-         CpQ6a6BmBLtmIekxpE/BQqjCT46E9dBQQHVUf7mPDmGizdxqB9gIvJkFgg/PfqWG7kJp
-         sHSw==
-X-Gm-Message-State: AOAM532/gQNiBUBOI3M4FmePmJhG1rwyaDs2DeNVQBNpwzxj5oCB1WAD
-        jvKyZk4iA/XNPOxJu1kz25T+1nAipTnW48cnYVY2VQ8c+Es=
-X-Google-Smtp-Source: ABdhPJybAHd7boiQOLkT0ZFUfqm/bGtyU/6Esk/krGD9uX6gVaKmW3FI5ariOaV1NumaV0uq98ro5x2AQ0HdRfDIjd8=
-X-Received: by 2002:a05:6512:a81:: with SMTP id m1mr2011631lfu.306.1637645576194;
- Mon, 22 Nov 2021 21:32:56 -0800 (PST)
+        Tue, 23 Nov 2021 00:42:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637645911;
+    s=strato-dkim-0002; d=chronox.de;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=5XQcVk/mWF9utsBmrG26dD7whuFkkMxCgJx6KnvZ8gw=;
+    b=NTgp4RNBJTVvzSXCQbYuwVcA/UGK3k91bt6GRF59BdzNYolUxBgfekfXYAcNnpXo7G
+    zheyy5p4IGLBCDCqAOUWK0H3n/qIsK0uT/CC/X9t45ob8uZDNufFM2ELiuK3QJhecH2O
+    POJ5BSJtfF78+n7y+QhqNh/yirRdWt4JDotZsxcgRbsMAEkyLEsbZXDUXHrc57V/sY5H
+    FZ3FHa1UTrTT2/4REpHLB0VMGcobX23ZMAKIpDdGmfhUtDz170HSwS5cWt5r5VsumIOQ
+    kqWy1LzULqQoFa4T8LWQopeMHUBp1x4Yrmspzt4xhDSfDr5LH2CpT8BQHeRtka0AIMo2
+    xj2Q==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPbIvScLTm3"
+X-RZG-CLASS-ID: mo00
+Received: from tauon.chronox.de
+    by smtp.strato.de (RZmta 47.34.6 DYNA|AUTH)
+    with ESMTPSA id y09e43xAN5cT4VK
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 23 Nov 2021 06:38:29 +0100 (CET)
+From:   Stephan Mueller <smueller@chronox.de>
+To:     Simo Sorce <simo@redhat.com>, noloader@gmail.com
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, Tso Ted <tytso@mit.edu>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Willy Tarreau <w@1wt.eu>, Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andy Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Petr Tesarik <ptesarik@suse.cz>,
+        John Haxby <john.haxby@oracle.com>,
+        Alexander Lobakin <alobakin@mailbox.org>,
+        Jirka Hladky <jhladky@redhat.com>
+Subject: Re: [PATCH v43 01/15] Linux Random Number Generator
+Date:   Tue, 23 Nov 2021 06:38:29 +0100
+Message-ID: <5873227.WSGUhziGkc@tauon.chronox.de>
+In-Reply-To: <CAH8yC8niN=q-pD4B3OU9zj84GN-vfi=T_aLq9V3sLTZ-mRP_GQ@mail.gmail.com>
+References: <2036923.9o76ZdvQCi@positron.chronox.de> <afdf9c4a4005f6aeaded9e976c48160933f3c447.camel@redhat.com> <CAH8yC8niN=q-pD4B3OU9zj84GN-vfi=T_aLq9V3sLTZ-mRP_GQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAHhAz+h2OgBMP8Mm+dNPuNEq=DhWdc7Y+dJEvrXz9kAUD7O2GQ@mail.gmail.com>
- <CAH8yC8nEhcAs5hE=utcUEKZ8kohOx2TWhUsbue1sdZo23uiBHw@mail.gmail.com>
-In-Reply-To: <CAH8yC8nEhcAs5hE=utcUEKZ8kohOx2TWhUsbue1sdZo23uiBHw@mail.gmail.com>
-From:   Muni Sekhar <munisekharrms@gmail.com>
-Date:   Tue, 23 Nov 2021 11:02:45 +0530
-Message-ID: <CAHhAz+hopmWpr6Whe_=92UrdrrANaQKFmVZjcx6p+=2tWouFuw@mail.gmail.com>
-Subject: Re: x86, nmi: IOCK error
-To:     noloader@gmail.com
-Cc:     linux-x86_64@vger.kernel.org,
-        kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 10:44 AM Jeffrey Walton <noloader@gmail.com> wrote:
->
-> On Mon, Nov 22, 2021 at 11:03 PM Muni Sekhar <munisekharrms@gmail.com> wrote:
-> >
-> > The following message is seen on the console "NMI: IOCK error (debug
-> > interrupt?) for reason 60 on CPU 0.", what does it mean?
->
-> Red Hat has a good article on the subject at
-> https://access.redhat.com/solutions/42261.
-NMI: IOCK error (debug interrupt?) for reason 60 on CPU 0.
-NMI: IOCK error (debug interrupt?) for reason 70 on CPU 0.
-What's the difference between reason 60 & reason 70? I was not able to
-find it in the above mentioned link.
+Am Montag, 22. November 2021, 22:06:55 CET schrieb Jeffrey Walton:
 
->
+Hi Jeffrey,
+
+> On Mon, Nov 22, 2021 at 10:10 AM Simo Sorce <simo@redhat.com> wrote:
+> > On Mon, 2021-11-22 at 07:55 +0100, Greg Kroah-Hartman wrote:
+> > > On Mon, Nov 22, 2021 at 07:42:02AM +0100, Stephan Mueller wrote:
+> > > > ...
+> > > > I will leave the representatives from the distros to chime in and
+> > > > point to
+> > > > these patches.
+> > > 
+> > > Then why not work with the distros to get these changes merged into the
+> > > kernel tree?  They know that keeping things out-of-the-tree costs them
+> > > time and money, so why are they keeping them there?
+> > 
+> > I can speak for my distro.
+> > We have not proposed them because they are hacks, we know they are
+> > hacks, and we know they are not the long term solution.
+> > Yet we have no better way (in our products, today) so far to deal with
+> > these issues because what is needed is an effort like LRNG (does not
+> > have to be this specific implementation), because hacks will not cut it
+> > in the long term.
+> 
+> Kernel support for FIPS validated crypto would be very useful, IMHO.
+> 
+> Currently most folks I know and consult with use CentOS because CentOS
+> is free and includes the FIPS canister for OpenSSL. Several folks I
+> know and consult with don't have a solution because they use Debian
+> derivatives, like Ubuntu. They use Ubuntu because Ubuntu offers the
+> image processing packages they need out of the box.
+> 
+> Moving the validated crypto into the kernel would be useful since all
+> distros can provide it without the need for one-off patches.
+> 
+> What I am less clear about.... NIST is only one standard body, and not
+> everyone trusts the US. There are other bodies that should probably be
+> represented, like KISA. So the big question becomes, how does the
+> kernel offer "approved" crypto for different consumers? (where
+> "approved" means blessed by some agency like NIST or KISA).
+
+IMHO that is where the flexibility of the LRNG comes in. I am currently in 
+discussion with the German BSI on their requirements and these requirements 
+can be covered by a few extra lines since it only affects a different initial 
+seeding of the DRNG.
+
+In any case, the LRNG supports other approaches by:
+
+- select one or more entropy sources (or provide one from external) that are 
+considered appropriate
+
+- if needed, adjust the initial seeding operation
+
+- if needed, adjust the crypto primitives that are in use.
+
+Ciao
+Stephan
+> 
 > Jeff
 
 
+Ciao
+Stephan
 
--- 
-Thanks,
-Sekhar
+
