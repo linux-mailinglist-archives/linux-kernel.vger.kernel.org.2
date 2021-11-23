@@ -2,80 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B111459B12
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 05:28:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD954459B1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 05:30:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233179AbhKWEbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 23:31:04 -0500
-Received: from marcansoft.com ([212.63.210.85]:42774 "EHLO mail.marcansoft.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229947AbhKWEbD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 23:31:03 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S233424AbhKWEdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 23:33:33 -0500
+Received: from so254-9.mailgun.net ([198.61.254.9]:63372 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233318AbhKWEd2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 23:33:28 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1637641820; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=whmtLXvAQB0fIWyD4MRnrzokarPNCNaLn2AAiLNwSWc=; b=KLpZCTqCcCoQOIFf6qq8yNBpkLrSc795CfYfas+rm1Kv/EPouyLyDptcIeeqqBi8CHOiGXNe
+ rQs/yjtwdEk5AHcAzXGq+6b7THhARvZPdzciz5Pm3z3UFliiYD8A4ZYjbaa5aaySD9aHi9v4
+ XuafNmGdIgeDMipW4LN0wdEKSyA=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 619c6e5bdf12ba53c4f4b1ca (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Nov 2021 04:30:19
+ GMT
+Sender: schowdhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0458BC4361A; Tue, 23 Nov 2021 04:30:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-525.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 2BE98423AD;
-        Tue, 23 Nov 2021 04:27:50 +0000 (UTC)
-Subject: Re: [PATCH v2 0/3] Apple Arm patform device tree and bindings fixes
-To:     Janne Grunau <j@jannau.net>, Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Kettenis <kettenis@openbsd.org>,
-        Olof Johansson <olof@lixom.net>, Wolfram Sang <wsa@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211122222440.21177-1-j@jannau.net>
-From:   Hector Martin <marcan@marcan.st>
-Message-ID: <7fbd7380-3738-e270-30d7-2d235a80fa8a@marcan.st>
-Date:   Tue, 23 Nov 2021 13:27:48 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20211122222440.21177-1-j@jannau.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 7bit
+        (Authenticated sender: schowdhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 22DCDC4360C;
+        Tue, 23 Nov 2021 04:30:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 22DCDC4360C
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Souradeep Chowdhury <schowdhu@codeaurora.org>
+To:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, pure.logic@nexus-software.ie,
+        bjorn.andersson@linaro.org, greg@kroah.com
+Cc:     linux-kernel@vger.kernel.org, tsoni@codeaurora.org,
+        psodagud@codeaurora.org, satyap@codeaurora.org,
+        pheragu@codeaurora.org, rnayak@codeaurora.org,
+        sibis@codeaurora.org, saiprakash.ranjan@codeaurora.org,
+        quic_schowdhu@quicinc.com,
+        Souradeep Chowdhury <schowdhu@codeaurora.org>
+Subject: [PATCH V1 0/8] Add Embedded USB Debugger (EUD) driver
+Date:   Tue, 23 Nov 2021 09:58:18 +0530
+Message-Id: <cover.1637639009.git.schowdhu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/11/2021 07.24, Janne Grunau wrote:
-> Hej All,
-> 
-> this series fixes small issues in the device tree bindings and files
-> for the Apple Arm platform in v5.16-rc1. The fixes are non-critical
-> but make things easier moving forward.
-> 
-> Changes since v1:
->   - replaced single value enum in apple,i2c.yaml with const
->   - added Sven Peter's Reviewed-by tags to Patch 2 and 3
-> 
-> thanks
-> Janne
-> 
-> The series is available as branch at
-> https://github.com/jannau/linux/tree/apple_m1/dt-fixes-for-5.16_v2
-> 
-> Janne Grunau (3):
->    arm64: dts: apple: change ethernet0 device type to ethernet
->    dt-bindings: i2c: apple,i2c: allow multiple compatibles
->    arm64: dts: apple: add #interrupt-cells property to pinctrl nodes
-> 
->   Documentation/devicetree/bindings/i2c/apple,i2c.yaml | 8 ++++----
->   arch/arm64/boot/dts/apple/t8103-j274.dts             | 2 +-
->   arch/arm64/boot/dts/apple/t8103.dtsi                 | 4 ++++
->   3 files changed, 9 insertions(+), 5 deletions(-)
-> 
+This is a series of patches that implements a driver for the control
+peripheral, EUD (Embedded USB Debugger). The EUD is a mini-USB hub
+implemented on chip to support the USB-based debug and trace capabilities.
+Apart from debug capabilities, EUD has a control peripheral. Control
+Peripheral is on when EUD is on and gets signals like USB attach, pet
+EUD etc. EUD driver listens to events like USB attach or detach and then
+informs the USB about these events via ROLE-SWITCH. At regular intervals,
+the EUD driver receives an interrupt to pet the driver indicating that
+the software is functional.
 
-Acked-by: Hector Martin <marcan@marcan.st>
+Changes in V1
 
-Thanks! I'll apply this to asahi-soc once Rob acks the binding change.
+* EUD has now been mapped as a separate DT node as it is an independent QCOM IP.
 
--- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+* EUD is attached to the connector child of dwc3 via port end point since EUD
+  driver needs the connector for role-switching,
+
+* EUD driver has been moved now to drivers/soc/qcom/qcom_eud.c.
+
+* All the comments from version 0 of the patch has been implemented.
+
+Souradeep Chowdhury (8):
+  dt-bindings: Add the yaml bindings for EUD
+  dt-bindings: connector: Add property for EUD type-C connector
+  bindings: usb: dwc3: Update dwc3 properties for EUD connector
+  usb: dwc3: drd: Register the eud connector child node for dwc3
+  soc: qcom: eud: Add driver support for Embedded USB Debugger(EUD)
+  arm64: dts: qcom: sc7280: Add EUD dt node and dwc3 connector
+  arm64: dts: qcom: sc7280: Set the default dr_mode for usb2
+  MAINTAINERS: Add maintainer entry for EUD
+
+ Documentation/ABI/testing/sysfs-driver-eud         |   9 +
+ .../bindings/connector/usb-connector.yaml          |   4 +
+ .../devicetree/bindings/soc/qcom/qcom,eud.yaml     |  52 ++++
+ .../devicetree/bindings/usb/snps,dwc3.yaml         |   6 +
+ MAINTAINERS                                        |   8 +
+ arch/arm64/boot/dts/qcom/sc7280-idp.dts            |   4 +
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               |  25 ++
+ drivers/soc/qcom/Kconfig                           |  10 +
+ drivers/soc/qcom/Makefile                          |   1 +
+ drivers/soc/qcom/qcom_eud.c                        | 268 +++++++++++++++++++++
+ drivers/usb/dwc3/drd.c                             |  26 ++
+ 11 files changed, 413 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-eud
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,eud.yaml
+ create mode 100644 drivers/soc/qcom/qcom_eud.c
+
+--
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
