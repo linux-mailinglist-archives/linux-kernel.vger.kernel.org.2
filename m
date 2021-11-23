@@ -2,54 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E42D45A92C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:45:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C003945A946
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239334AbhKWQs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 11:48:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50564 "EHLO mail.kernel.org"
+        id S233044AbhKWQzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 11:55:14 -0500
+Received: from mga01.intel.com ([192.55.52.88]:21246 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236001AbhKWQsx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 11:48:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DCEA60C4A;
-        Tue, 23 Nov 2021 16:45:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637685945;
-        bh=3KEImncoqMLthsMarKv21aRN6/5hNWPKDMzLQKihgKY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=koRSe/9rQ/dfUInsksU7RXviAdkKjVU+u7VVZh8IRsU5d6ULNKTT74BGLEKjeXSvm
-         06lE1xMJQryO8mIoioqNC5O0bMdl+GXnb/i+yeWVinLanMG/1ZT+A1x6AbYo5wr8sr
-         B3MlnESy9Ie2IxGOPlJjLX3ljwPVbYkR7eQ0oYv+NRMUqYDKg9q0bCaB0jDaWXrmOn
-         PbahKRlYyGf3YmaXx6Rh6RppbfvEVnUso+WDOEeyqBPKK+/PcaiqumzS14AFsnM3MT
-         4tQIsCLZYXWNS5yBUIvb80PVip13LjlaANQ1eTkd7bH6N3MonIaqB9TGV7gOubJw1M
-         o5HntmeVruUtg==
-Date:   Tue, 23 Nov 2021 10:50:57 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: Re: arch/mips/mm/tlbex.c:2243:3: warning: unannotated fall-through
- between switch labels
-Message-ID: <20211123165057.GA7382@embeddedor>
-References: <202111230719.OZDUHU4z-lkp@intel.com>
- <20211123005528.GA550759@embeddedor>
- <ea07a2f1e20503965c7c2eba7c0a7a4538457265.camel@perches.com>
+        id S230510AbhKWQzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 11:55:12 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="258933897"
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="258933897"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 08:51:59 -0800
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="456750297"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 08:51:57 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mpZ1O-009qLj-6M;
+        Tue, 23 Nov 2021 18:51:54 +0200
+Date:   Tue, 23 Nov 2021 18:51:53 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH v1 1/2] spi: deduplicate spi_match_id() in
+ __spi_register_driver()
+Message-ID: <YZ0cKQiMS/E8z7Jh@smile.fi.intel.com>
+References: <20211119173718.52938-1-andriy.shevchenko@linux.intel.com>
+ <1572a2ff-dcfb-422f-c4c3-5a454a36d31d@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ea07a2f1e20503965c7c2eba7c0a7a4538457265.camel@perches.com>
+In-Reply-To: <1572a2ff-dcfb-422f-c4c3-5a454a36d31d@nvidia.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 12:52:30AM -0800, Joe Perches wrote:
+On Tue, Nov 23, 2021 at 03:22:38PM +0000, Jon Hunter wrote:
+> On 19/11/2021 17:37, Andy Shevchenko wrote:
+
+> Following this change I am seeing the following warnings again although most
+> of these have now been fixed ...
 > 
-> Perhaps this would be better:
+>  WARNING KERN SPI driver mtd_dataflash has no spi_device_id for atmel,at45
+>  WARNING KERN SPI driver mtd_dataflash has no spi_device_id for
+> atmel,dataflash
+>  WARNING KERN SPI driver spi-nor has no spi_device_id for jedec,spi-nor
+>  WARNING KERN SPI driver mmc_spi has no spi_device_id for mmc-spi-slot
+>  WARNING KERN SPI driver cros-ec-spi has no spi_device_id for
+> google,cros-ec-spi
 
-Feel free to send a proper patch.
+> I have not looked any further yet, but this appears to cause the SPI ID
+> match to fail.
 
-Thanks for the feedback.
---
-Gustavo
+Looking into the code it should be harmless warning. I.o.w. it shouldn't
+prevent driver registration. In any case I'm about to send a fix, thanks
+for the report!
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
