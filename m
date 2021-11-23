@@ -2,84 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B79F145A450
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:01:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9103845A45A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:03:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234867AbhKWOEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 09:04:21 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:47671 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234163AbhKWOET (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 09:04:19 -0500
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 45A4E22175;
-        Tue, 23 Nov 2021 15:01:10 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1637676070;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xsVVJ9IgbGCSjuveXkfALvgXLimlp1wqns8vX3ov7SE=;
-        b=iJjECdFeGoMNs4OTlEDhnquq+u55uGZuorKXxXe01rg8RKmu9eceZmnKxQkGuvQT6uPerZ
-        dzTNJ4l9gu5W/OHBLkpDVZnjSROH2vVyRzBS+WJPlQVaeMg8DVz8OgPcaORZycb99AtkbI
-        danKd/aeuxgyRub0PiCo3yAHGHFe5xk=
+        id S232823AbhKWOGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 09:06:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229895AbhKWOGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 09:06:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16B456044F;
+        Tue, 23 Nov 2021 14:03:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637676197;
+        bh=MfdpF27zth5o06hamPdUUAzizLvQgUV6lxyD7kDC6Y8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EWjmlxvqKcThteULWCaKQIS6t4YAQptGvIBydpqsXecyF5eQ+3B1KKnaHHPmq5LvI
+         B759/Xy2avRqkJlprkCdb43RzjQ5xWDdfIOsDEcJE5UupDMXyHTafW07lGL9Zrwf+r
+         JwY6sEaVtcx+fTHzyrLPaMGqxIczf+I70oN6uo6ICPf+Yb487PiA7h0CHMO7yX7mzr
+         /XO2QQtbp3wxoFd5E6RDEgy/jD7E3nzk/u4/VXaTdYuhRl22DWHbkawFXqYwI+b5gC
+         yISEU42VQKjA21RSj+eqqYtpcskTN3hjUDzY9ckjPsnFpnsEdjIi7M6R8zlZW5JSSW
+         M2/pXVNnbo4rg==
+Date:   Tue, 23 Nov 2021 14:03:11 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "LH.Kuo" <lhjeff911@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dvorkin@tibbo.com, qinjian@cqplus1.com, wells.lu@sunplus.com,
+        "LH.Kuo" <lh.kuo@sunplus.com>
+Subject: Re: [PATCH v3 1/2] SPI: Add SPI driver for Sunplus SP7021
+Message-ID: <YZz0n6Mpjl3tKmMe@sirena.org.uk>
+References: <1635747525-31243-1-git-send-email-lh.kuo@sunplus.com>
+ <cover.1637547799.git.lh.kuo@sunplus.com>
+ <e5f2549224cf875d81306ef5f6e98db1cfd81c2e.1637547799.git.lh.kuo@sunplus.com>
+ <CAHp75Vd2=OHbrpGtsU8AMXdtNfvSPhpc7vhzkWnahaV48XbfUQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 23 Nov 2021 15:01:10 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Cc:     linux-mtd@lists.infradead.org,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: spi-nor: mt25qu: Ignore 6th ID byte
-In-Reply-To: <46f438c2-6f5f-645e-23b4-95216ec23ca3@nokia.com>
-References: <20211119080402.20262-1-alexander.sverdlin@nokia.com>
- <9a158e2ef6635212c1e353590e3b773b@walle.cc>
- <1e133bc6-5edb-c4ce-ad44-3de77048acf2@nokia.com>
- <e9589af968d7b9dafbce17325dbf8472@walle.cc>
- <2bf37a35-1ccf-f4fa-c999-42b9154a2914@nokia.com>
- <88db136a146edf53801d86509b52d40f@walle.cc>
- <46f438c2-6f5f-645e-23b4-95216ec23ca3@nokia.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <06ce3d8eabd689f8755021d7ce08c3e0@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="EbBiJSwwSpqu59hm"
+Content-Disposition: inline
+In-Reply-To: <CAHp75Vd2=OHbrpGtsU8AMXdtNfvSPhpc7vhzkWnahaV48XbfUQ@mail.gmail.com>
+X-Cookie: A closed mouth gathers no foot.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-Am 2021-11-23 13:40, schrieb Alexander Sverdlin:
-> On 23/11/2021 09:14, Michael Walle wrote:
->>> 
->>> Some people ask themselves why this table keeps growing if there is 
->>> SFDP...
->>> I see the point in fixups, but maybe at some point we will be able to 
->>> support
->>> some devices just out of the box?
->> 
->> Are these features detectable by SFDP? Without knowing anything, as 
->> you ignored
->> my former question, I'd say no.
-> 
-> Well, I just had nothing to say on your question.
-> It wasn't my intention to study security features of a chip, which I 
-> don't use.
+--EbBiJSwwSpqu59hm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Like I said, without that information its hard for me do decide if we 
-can just
-ignore that last byte. (And yes I've already tried to get that NDA PDF 
-via $WORK,
-but I don't have high hopes with that).
+On Tue, Nov 23, 2021 at 12:09:54AM +0200, Andy Shevchenko wrote:
+> On Mon, Nov 22, 2021 at 4:34 AM LH.Kuo <lhjeff911@gmail.com> wrote:
 
--michael
+> > +// slave only. usually called on driver remove
+
+> Why is it so?
+> Also find use of proper English grammar (capitalization, periods, etc.
+> Ditto for all your comments.
+
+Please don't go overboard on changes you're requesting, the important
+thing with comments is that they're intelligible.  People have different
+levels of skill with English and that's totally fine, it's much better
+that people feel able to write comments than that they stop doing so
+because they are concerned about issues with their foreign language
+skills. =20
+
+> > +       unsigned long flags;
+> > +       struct sp7021_spi_ctlr *pspim =3D dev;
+> > +       u32 fd_status =3D 0;
+> > +       unsigned int tx_len, rx_cnt, tx_cnt, total_len;
+> > +       bool isrdone =3D false;
+
+> Reversed xmas tree order here and everywhere else.
+
+Again, please don't go overboard - this isn't a general requirement for
+kernel code, some parts of the kernel do want it but outside of those
+areas it's not something that we should be asking for (and TBH even when
+it is required you should explain what it is, it's not as easy to search
+for as it could be).  I certainly don't care.
+
+> > +               if (of_property_read_bool(pdev->dev.of_node, "spi-slave=
+"))
+> > +                       mode =3D SP7021_SLAVE_MODE;
+
+> There is no need to check of_node for this call.
+
+OTOH if we are checking it anyway it doesn't hurt to have all the
+property reads in the check for of_node.  Either way it doesn't
+fundamentally matter.
+
+--EbBiJSwwSpqu59hm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGc9J4ACgkQJNaLcl1U
+h9CTQwf/eALQf94u4Kg1BbFvFp/ZDVojKfNjqUMKWJ+CVkLhAeflFrq+zZ2Occc0
+iOGhInsfekve/ASSNzdyplZcWmSy8uPyU41ho1khO68e/rrjsXI7SAJpXVVylMaf
+ns+VWjoUHBHaA0PLz3/HKa7Ehj4C3Nyjo+9ZLDXP3WP+4jVSjx9FjX7sLU5wDkvj
+ZjVGbcsJx7A5H4SmlcB1UjeUhrJH0hQaMYXi0mAgm+vILBAeBDiLbXPWcrHdEb/i
+KKhyBY4EK4HE1l2UER7OQJvD2okd3jXiSo+iZdENqxdmWU606+U/vJsbKXPARRh1
+U5Nlfv2V26Z/3a2B5ygRFCi3RaMejg==
+=mj2D
+-----END PGP SIGNATURE-----
+
+--EbBiJSwwSpqu59hm--
