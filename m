@@ -2,487 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D0A45AC1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E6645AC27
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232310AbhKWTVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 14:21:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232128AbhKWTU7 (ORCPT
+        id S232144AbhKWTZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 14:25:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:32797 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231330AbhKWTZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 14:20:59 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455B1C061714
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:17:51 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id v18-20020a170902e8d200b00141df2da949so9473846plg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:17:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=h6a8aHtmkUJYmuWJluyLt+BM7ZWlx66k12Es0pJA0Gk=;
-        b=jU1STX8A3bbqW20HNEPIjFyJpFtUXIDAIjpXhNwfaWzeL1B4K9SkhSWLMzRxgD8Jkc
-         tuljT5DxGUoCap0f/u7sWdk3bMmFxxvZvySFo586L+yB6RBXs2lM9qiB4h0GLB64q2b2
-         /ElVhlRWfKj6oHaZv/JVKPLpwWdy6UZAM81To2W6f4ysiKVRSndVAcmidP+CBGBMfLj+
-         61lGgPkw+RVOXdwF1icXaDIefXt188HXLrWv+mD7SyVUTxQC5U5WHqjxwjLWG4OVZc1l
-         2j9Bjn3EONq+jp8bCYQ5oQIj9fbNI0r37iw7zcHUTPvigkZEHJVG0Rp3HyUTemQu7qqZ
-         ROKA==
+        Tue, 23 Nov 2021 14:25:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637695365;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7wgF/mQBHoxMqYXMPNOTmc+l3v46kd1T3TVNqFPYV5M=;
+        b=Ql84W54z9gmMhJa8MbmQIxUaaOp7a3bHAxZMcrWYUbzUDA0+Bc5JfOdTvYEjp80L8pN+nN
+        HIULYCHvm0bdaxAAwFlWoK9s6d4z+AhlNgoVTYj9V4jBMqMbFruSXOaKo17b3gNid2Cl5I
+        yPDpu1ZKdUfx7MWxSwqcDsW6UM5B4+g=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-265-SVvgyhdUM5yNEWalmF3zGw-1; Tue, 23 Nov 2021 14:22:43 -0500
+X-MC-Unique: SVvgyhdUM5yNEWalmF3zGw-1
+Received: by mail-qv1-f69.google.com with SMTP id n4-20020a0ce944000000b003bdcabf4cdfso19803993qvo.16
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:22:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=h6a8aHtmkUJYmuWJluyLt+BM7ZWlx66k12Es0pJA0Gk=;
-        b=Tsj1CkF1ga23iA0SIluIEFkoHO4WcjHwEFo/PVEUv6XwiICWV1a4XvJr1hRFyXLl8b
-         2ISWvyqMcXHaTCm1fCR84G2pfB4S/LWmKs8L81fPLuTDbTesBy0fQMHiFnuhc6nPhHzT
-         yKesUG2WjFsOionff0rfW1saMLXQO9yaeRWj4P0kZSD1z7tDcSE0W6vWi9KKgO4gVKxf
-         0pFCob5rEL04xawPlnjLtNMWffQD0a1qfurxbWumVkP6eqs6Qy3DgdU02+fmf8V02Roz
-         Ynn2zxdKefaAo1DCZsR75z/q77mGR13522o1cB3tuJbReC/RM3F+afTpz1IaN0B1zLup
-         WPsQ==
-X-Gm-Message-State: AOAM532G5w5T3A4b4f/n8jlD2KH2nOihej07Ij6WQn3V6FgMnft0flQS
-        7BfpbRVzrPLmmoDtJaVkgtWr/4mqPg==
-X-Google-Smtp-Source: ABdhPJwwYr/nKJbNYlzRB1v9RrttuU3wwiLuN6IpbbBiQ3apwsmO82CvE9J8r5ENAWwWCYghksO2Wppu7w==
-X-Received: from tkjos-desktop.mtv.corp.google.com ([2620:15c:211:200:ac67:ee23:d7c5:aa3b])
- (user=tkjos job=sendgmr) by 2002:a17:90b:1c87:: with SMTP id
- oo7mr5872042pjb.159.1637695070767; Tue, 23 Nov 2021 11:17:50 -0800 (PST)
-Date:   Tue, 23 Nov 2021 11:17:37 -0800
-In-Reply-To: <20211123191737.1296541-1-tkjos@google.com>
-Message-Id: <20211123191737.1296541-4-tkjos@google.com>
-Mime-Version: 1.0
-References: <20211123191737.1296541-1-tkjos@google.com>
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH 3/3] binder: defer copies of pre-patched txn data
-From:   Todd Kjos <tkjos@google.com>
-To:     tkjos@google.com, gregkh@linuxfoundation.org, christian@brauner.io,
-        arve@android.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, maco@google.com
-Cc:     joel@joelfernandes.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7wgF/mQBHoxMqYXMPNOTmc+l3v46kd1T3TVNqFPYV5M=;
+        b=0LygzcK/YSpAYnkPmkAB82GrP4HHqyhj0b7rUraddhssh+Ww654S7KKQHZ24okZ/ho
+         2a6dlCL3Qd5ZDnIsnR8ZqkeyEWh3rn9lzZTiHpMEepI5O1ZGUTY5mfWWB8Mz8FxznZ/3
+         a7SDJRjWakJe5L5azsyPWGl2qidXVdGVs6YDVyl8qlkUAALPYKAHghEOEgYxtljXuSEQ
+         0Z1G4VoKOQtVNnA/2bG2JNz68fjtiG810xd5BE76DRUZAURZjIO7bqnZzjx3VEwiRd41
+         9xVOoiGtX6avd2CeB7d0AmZI9KkKVHkZWj6BdkSqENjVtj0sauhkQW5j275hccy3R/CO
+         ehtg==
+X-Gm-Message-State: AOAM530ED6dX8mXnwL1DVmJ13Z61fxVvhTxsmS/uEPZ+CjQqC/R+ZT7Y
+        vC1NUGsUN/JpmsI+nJs2Ny7HL6Gf349I5i+Xkt15FmG1zUxZsnh4EoC0sEGIBdGYhn3TBcdPTVX
+        avwk8IYgQ63I2GkFe7S6KsuUoH7dJ9L+owfgN+vLg
+X-Received: by 2002:a05:622a:349:: with SMTP id r9mr9079432qtw.213.1637695363135;
+        Tue, 23 Nov 2021 11:22:43 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzIePFGvkD3N5zhD8lHSC06LJ7Uqf/s5pzdPHj7+tWYNMEidne25IPJMN9Ce8Sxvjigjxl7Uu8f1GPm2N6HDaU=
+X-Received: by 2002:a05:622a:349:: with SMTP id r9mr9079403qtw.213.1637695362921;
+ Tue, 23 Nov 2021 11:22:42 -0800 (PST)
+MIME-Version: 1.0
+References: <20211115165428.722074685@linuxfoundation.org> <20211115165430.669780058@linuxfoundation.org>
+ <CAFxkdAqahwaN0u6u34d4CrMW7rYL=6TpWk1CcOn+uGQdEgkuTQ@mail.gmail.com>
+In-Reply-To: <CAFxkdAqahwaN0u6u34d4CrMW7rYL=6TpWk1CcOn+uGQdEgkuTQ@mail.gmail.com>
+From:   Miklos Szeredi <mszeredi@redhat.com>
+Date:   Tue, 23 Nov 2021 20:22:32 +0100
+Message-ID: <CAOssrKd4gHrKNNttZZey9orZ=F+msx4Axa6Mi_XgZw-9M39h-Q@mail.gmail.com>
+Subject: Re: [PATCH 5.15 056/917] fuse: fix page stealing
+To:     Justin Forbes <jmforbes@linuxtx.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>,
+        Frank Dinoff <fdinoff@google.com>
+Content-Type: multipart/mixed; boundary="0000000000005bb3d405d179aabc"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BINDER_TYPE_PTR objects point to memory areas in the
-source process to be copied into the target buffer
-as part of a transaction. This implements a scatter-
-gather model where non-contiguous memory in a source
-process is "gathered" into a contiguous region in
-the target buffer.
+--0000000000005bb3d405d179aabc
+Content-Type: text/plain; charset="UTF-8"
 
-The data can include pointers that must be fixed up
-to correctly point to the copied data. To avoid making
-source process pointers visible to the target process,
-this patch defers the copy until the fixups are known
-and then copies and fixeups are done together.
+On Tue, Nov 23, 2021 at 7:29 PM Justin Forbes <jmforbes@linuxtx.org> wrote:
+>
+> On Mon, Nov 15, 2021 at 7:04 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > From: Miklos Szeredi <mszeredi@redhat.com>
+> >
+> > commit 712a951025c0667ff00b25afc360f74e639dfabe upstream.
+> >
+> > It is possible to trigger a crash by splicing anon pipe bufs to the fuse
+> > device.
+> >
+> > The reason for this is that anon_pipe_buf_release() will reuse buf->page if
+> > the refcount is 1, but that page might have already been stolen and its
+> > flags modified (e.g. PG_lru added).
+> >
+> > This happens in the unlikely case of fuse_dev_splice_write() getting around
+> > to calling pipe_buf_release() after a page has been stolen, added to the
+> > page cache and removed from the page cache.
+> >
+> > Fix by calling pipe_buf_release() right after the page was inserted into
+> > the page cache.  In this case the page has an elevated refcount so any
+> > release function will know that the page isn't reusable.
+> >
+> > Reported-by: Frank Dinoff <fdinoff@google.com>
+> > Link: https://lore.kernel.org/r/CAAmZXrsGg2xsP1CK+cbuEMumtrqdvD-NKnWzhNcvn71RV3c1yw@mail.gmail.com/
+> > Fixes: dd3bb14f44a6 ("fuse: support splice() writing to fuse device")
+> > Cc: <stable@vger.kernel.org> # v2.6.35
+> > Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>
+> It appears this patch causes a rather serious regression in flatpacks
+> using portals to access files.  Reverting this patch restores expected
+> behavior. I have asked users in the Fedora bug to test with 5.16-rc2
+> to see if we are just missing a dependent patch in stable, or if this
+> is broken there as well, but no response yet.:
+>
+> https://bugzilla.redhat.com/show_bug.cgi?id=2025285
+> https://github.com/flatpak/flatpak/issues/4595
 
-There is a special case of BINDER_TYPE_FDA which applies
-the fixup later in the target process context. In this
-case the user data is skipped (so no untranslated fds
-become visible to the target).
+Hi,
 
-Signed-off-by: Todd Kjos <tkjos@google.com>
----
- drivers/android/binder.c | 311 +++++++++++++++++++++++++++++++++++----
- 1 file changed, 286 insertions(+), 25 deletions(-)
+Thanks for the report.  Can someone with the reproducer try the attached patch?
 
-diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-index 2300fa8e09d5..56dc814b8dde 100644
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -2233,7 +2233,258 @@ static int binder_translate_fd(u32 fd, binder_size_t fd_offset,
- 	return ret;
- }
- 
--static int binder_translate_fd_array(struct binder_fd_array_object *fda,
-+/**
-+ * struct binder_ptr_fixup - data to be fixed-up in target buffer
-+ * @offset	offset in target buffer to fixup
-+ * @skip_size	bytes to skip in copy (fixup will be written later)
-+ * @fixup_data	data to write at fixup offset
-+ * @node	list node
-+ *
-+ * This is used for the pointer fixup list (pf) which is created and consumed
-+ * during binder_transaction() and is only accessed locally. No
-+ * locking is necessary.
-+ *
-+ * The list is ordered by @offset.
-+ */
-+struct binder_ptr_fixup {
-+	binder_size_t offset;
-+	size_t skip_size;
-+	binder_uintptr_t fixup_data;
-+	struct list_head node;
-+};
-+
-+/**
-+ * struct binder_sg_copy - scatter-gather data to be copied
-+ * @offset	offset in target buffer
-+ * @uaddr	user address in source buffer
-+ * @length	bytes to copy
-+ * @node	list node
-+ *
-+ * This is used for the sg copy list (sgc) which is created and consumed
-+ * during binder_transaction() and is only accessed locally. No
-+ * locking is necessary.
-+ *
-+ * The list is ordered by @offset.
-+ */
-+struct binder_sg_copy {
-+	binder_size_t offset;
-+	const void __user *uaddr;
-+	size_t length;
-+	struct list_head node;
-+};
-+
-+/**
-+ * binder_do_deferred_txn_copies() - copy and fixup scatter-gather data
-+ * @alloc:	binder_alloc associated with @buffer
-+ * @buffer:	binder buffer in target process
-+ * @sgc_head:	list_head of scatter-gather copy list
-+ * @pf_head:	list_head of pointer fixup list
-+ *
-+ * Processes all elements of @sgc_head, applying fixups from @pf_head
-+ * and copying the scatter-gather data from the source process' user
-+ * buffer to the target's buffer. It is expected that the list creation
-+ * and processing all occurs during binder_transaction() so these lists
-+ * are only accessed in local context.
-+ *
-+ * Return: 0=success, else -errno
-+ */
-+static int binder_do_deferred_txn_copies(struct binder_alloc *alloc,
-+					 struct binder_buffer *buffer,
-+					 struct list_head *sgc_head,
-+					 struct list_head *pf_head)
-+{
-+	int ret = 0;
-+	struct list_head *entry, *tmp;
-+	struct binder_ptr_fixup *pf =
-+		list_first_entry_or_null(pf_head, struct binder_ptr_fixup,
-+					 node);
-+
-+	list_for_each_safe(entry, tmp, sgc_head) {
-+		size_t bytes_copied = 0;
-+		struct binder_sg_copy *sgc =
-+			container_of(entry, struct binder_sg_copy, node);
-+
-+		while (bytes_copied < sgc->length) {
-+			size_t copy_size;
-+			size_t bytes_left = sgc->length - bytes_copied;
-+			size_t offset = sgc->offset + bytes_copied;
-+
-+			/*
-+			 * We copy up to the fixup (pointed to by pf)
-+			 */
-+			copy_size = pf ? min(bytes_left, (size_t)pf->offset - offset)
-+				       : bytes_left;
-+			if (!ret && copy_size)
-+				ret = binder_alloc_copy_user_to_buffer(
-+						alloc, buffer,
-+						offset,
-+						sgc->uaddr + bytes_copied,
-+						copy_size);
-+			bytes_copied += copy_size;
-+			if (copy_size != bytes_left) {
-+				BUG_ON(!pf);
-+				/* we stopped at a fixup offset */
-+				if (pf->skip_size) {
-+					/*
-+					 * we are just skipping. This is for
-+					 * BINDER_TYPE_FDA where the translated
-+					 * fds will be fixed up when we get
-+					 * to target context.
-+					 */
-+					bytes_copied += pf->skip_size;
-+				} else {
-+					/* apply the fixup indicated by pf */
-+					if (!ret)
-+						ret = binder_alloc_copy_to_buffer(
-+							alloc, buffer,
-+							pf->offset,
-+							&pf->fixup_data,
-+							sizeof(pf->fixup_data));
-+					bytes_copied += sizeof(pf->fixup_data);
-+				}
-+				list_del(&pf->node);
-+				kfree(pf);
-+				pf = list_first_entry_or_null(pf_head,
-+						struct binder_ptr_fixup, node);
-+			}
-+		}
-+		list_del(&sgc->node);
-+		kfree(sgc);
-+	}
-+	BUG_ON(!list_empty(pf_head));
-+	BUG_ON(!list_empty(sgc_head));
-+
-+	return ret;
-+}
-+
-+/**
-+ * binder_cleanup_deferred_txn_lists() - free specified lists
-+ * @sgc_head:	list_head of scatter-gather copy list
-+ * @pf_head:	list_head of pointer fixup list
-+ *
-+ * Called to clean up @sgc_head and @pf_head if there is an
-+ * error.
-+ */
-+static void binder_cleanup_deferred_txn_lists(struct list_head *sgc_head,
-+					      struct list_head *pf_head)
-+{
-+	struct list_head *entry, *tmp;
-+
-+	list_for_each_safe(entry, tmp, sgc_head) {
-+		struct binder_sg_copy *sgc =
-+			container_of(entry, struct binder_sg_copy, node);
-+		list_del(&sgc->node);
-+		kfree(sgc);
-+	}
-+	list_for_each_safe(entry, tmp, pf_head) {
-+		struct binder_ptr_fixup *pf =
-+			container_of(entry, struct binder_ptr_fixup, node);
-+		list_del(&pf->node);
-+		kfree(pf);
-+	}
-+}
-+
-+/**
-+ * binder_defer_copy() - queue a scatter-gather buffer for copy
-+ * @sgc_head:	list_head of scatter-gather copy list
-+ * @offset:	binder buffer offset in target process
-+ * @uaddr:	user address in source process
-+ * @length:	bytes to copy
-+ *
-+ * Specify a scatter-gather block to be copied. The actual copy must
-+ * be deferred until all the needed fixups are identified and queued.
-+ * Then the copy and fixups are done together so un-translated values
-+ * from the source are never visible in the target buffer.
-+ *
-+ * We are guaranteed that repeated calls to this function will have
-+ * monotonically increasing @offset values so the list will naturally
-+ * be ordered.
-+ *
-+ * Return: 0=success, else -errno
-+ */
-+static int binder_defer_copy(struct list_head *sgc_head, binder_size_t offset,
-+			     const void __user *uaddr, size_t length)
-+{
-+	struct binder_sg_copy *bc = kzalloc(sizeof(*bc), GFP_KERNEL);
-+
-+	if (!bc)
-+		return -ENOMEM;
-+
-+	bc->offset = offset;
-+	bc->uaddr = uaddr;
-+	bc->length = length;
-+	INIT_LIST_HEAD(&bc->node);
-+
-+	/*
-+	 * We are guaranteed that the deferred copies are in-order
-+	 * so just add to the tail.
-+	 */
-+	list_add_tail(&bc->node, sgc_head);
-+
-+	return 0;
-+}
-+
-+/**
-+ * binder_add_fixup() - queue a fixup to be applied to sg copy
-+ * @pf_head:	list_head of binder ptr fixup list
-+ * @offset:	binder buffer offset in target process
-+ * @fixup:	bytes to be copied for fixup
-+ * @skip_size:	bytes to skip when copying (fixup will be applied later)
-+ *
-+ * Add the specified fixup to a list ordered by @offset. When copying
-+ * the scatter-gather buffers, the fixup will be copied instead of
-+ * data from the source buffer. For BINDER_TYPE_FDA fixups, the fixup
-+ * will be applied later (in target process context), so we just skip
-+ * the bytes specified by @skip_size. If @skip_size is 0, we copy the
-+ * value in @fixup.
-+ *
-+ * This function is called *mostly* in @offset order, but there are
-+ * exceptions. Since out-of-order inserts are relatively uncommon,
-+ * we insert the new element by searching backward from the tail of
-+ * the list.
-+ *
-+ * Return: 0=success, else -errno
-+ */
-+static int binder_add_fixup(struct list_head *pf_head, binder_size_t offset,
-+			    binder_uintptr_t fixup, size_t skip_size)
-+{
-+	struct binder_ptr_fixup *pf = kzalloc(sizeof(*pf), GFP_KERNEL);
-+	struct list_head *tmp;
-+
-+	if (!pf)
-+		return -ENOMEM;
-+
-+	pf->offset = offset;
-+	pf->fixup_data = fixup;
-+	pf->skip_size = skip_size;
-+	INIT_LIST_HEAD(&pf->node);
-+
-+	/* Fixups are *mostly* added in-order, but there are some
-+	 * exceptions. Look backwards through list for insertion point.
-+	 */
-+	if (!list_empty(pf_head)) {
-+		list_for_each_prev(tmp, pf_head) {
-+			struct binder_ptr_fixup *tmppf =
-+				list_entry(tmp, struct binder_ptr_fixup, node);
-+
-+			if (tmppf->offset < pf->offset) {
-+				list_add(&pf->node, tmp);
-+				return 0;
-+			}
-+		}
-+		/*
-+		 * if we get here, then the new offset is the lowest so
-+		 * insert at the head
-+		 */
-+		list_add(&pf->node, pf_head);
-+		return 0;
-+	}
-+	list_add_tail(&pf->node, pf_head);
-+	return 0;
-+}
-+
-+static int binder_translate_fd_array(struct list_head *pf_head,
-+				     struct binder_fd_array_object *fda,
- 				     const void __user *u,
- 				     struct binder_buffer_object *parent,
- 				     struct binder_buffer_object *uparent,
-@@ -2245,6 +2496,7 @@ static int binder_translate_fd_array(struct binder_fd_array_object *fda,
- 	binder_size_t fda_offset;
- 	const void __user *ufda_base;
- 	struct binder_proc *proc = thread->proc;
-+	int ret;
- 
- 	fd_buf_size = sizeof(u32) * fda->num_fds;
- 	if (fda->num_fds >= SIZE_MAX / sizeof(u32)) {
-@@ -2276,9 +2528,12 @@ static int binder_translate_fd_array(struct binder_fd_array_object *fda,
- 				  proc->pid, thread->pid);
- 		return -EINVAL;
- 	}
-+	ret = binder_add_fixup(pf_head, fda_offset, 0, fda->num_fds * sizeof(u32));
-+	if (ret)
-+		return ret;
-+
- 	for (fdi = 0; fdi < fda->num_fds; fdi++) {
- 		u32 fd;
--		int ret;
- 		binder_size_t offset = fda_offset + fdi * sizeof(fd);
- 		binder_size_t uoffset = fdi * sizeof(fd);
- 
-@@ -2292,7 +2547,8 @@ static int binder_translate_fd_array(struct binder_fd_array_object *fda,
- 	return 0;
- }
- 
--static int binder_fixup_parent(struct binder_transaction *t,
-+static int binder_fixup_parent(struct list_head *pf_head,
-+			       struct binder_transaction *t,
- 			       struct binder_thread *thread,
- 			       struct binder_buffer_object *bp,
- 			       binder_size_t off_start_offset,
-@@ -2338,14 +2594,7 @@ static int binder_fixup_parent(struct binder_transaction *t,
- 	}
- 	buffer_offset = bp->parent_offset +
- 			(uintptr_t)parent->buffer - (uintptr_t)b->user_data;
--	if (binder_alloc_copy_to_buffer(&target_proc->alloc, b, buffer_offset,
--					&bp->buffer, sizeof(bp->buffer))) {
--		binder_user_error("%d:%d got transaction with invalid parent offset\n",
--				  proc->pid, thread->pid);
--		return -EINVAL;
--	}
--
--	return 0;
-+	return binder_add_fixup(pf_head, buffer_offset, bp->buffer, 0);
- }
- 
- /**
-@@ -2487,8 +2736,12 @@ static void binder_transaction(struct binder_proc *proc,
- 	int t_debug_id = atomic_inc_return(&binder_last_id);
- 	char *secctx = NULL;
- 	u32 secctx_sz = 0;
-+	struct list_head sgc_head;
-+	struct list_head pf_head;
- 	const void __user *user_buffer = (const void __user *)
- 				(uintptr_t)tr->data.ptr.buffer;
-+	INIT_LIST_HEAD(&sgc_head);
-+	INIT_LIST_HEAD(&pf_head);
- 
- 	e = binder_transaction_log_add(&binder_transaction_log);
- 	e->debug_id = t_debug_id;
-@@ -3006,8 +3259,8 @@ static void binder_transaction(struct binder_proc *proc,
- 				return_error_line = __LINE__;
- 				goto err_bad_parent;
- 			}
--			ret = binder_translate_fd_array(fda, user_buffer,
--							parent,
-+			ret = binder_translate_fd_array(&pf_head, fda,
-+							user_buffer, parent,
- 							&user_object.bbo, t,
- 							thread, in_reply_to);
- 			if (ret < 0 ||
-@@ -3038,19 +3291,14 @@ static void binder_transaction(struct binder_proc *proc,
- 				return_error_line = __LINE__;
- 				goto err_bad_offset;
- 			}
--			if (binder_alloc_copy_user_to_buffer(
--						&target_proc->alloc,
--						t->buffer,
--						sg_buf_offset,
--						(const void __user *)
--							(uintptr_t)bp->buffer,
--						bp->length)) {
--				binder_user_error("%d:%d got transaction with invalid offsets ptr\n",
--						  proc->pid, thread->pid);
--				return_error_param = -EFAULT;
-+			ret = binder_defer_copy(&sgc_head, sg_buf_offset,
-+				(const void __user *)(uintptr_t)bp->buffer,
-+				bp->length);
-+			if (ret) {
- 				return_error = BR_FAILED_REPLY;
-+				return_error_param = ret;
- 				return_error_line = __LINE__;
--				goto err_copy_data_failed;
-+				goto err_translate_failed;
- 			}
- 			/* Fixup buffer pointer to target proc address space */
- 			bp->buffer = (uintptr_t)
-@@ -3059,7 +3307,8 @@ static void binder_transaction(struct binder_proc *proc,
- 
- 			num_valid = (buffer_offset - off_start_offset) /
- 					sizeof(binder_size_t);
--			ret = binder_fixup_parent(t, thread, bp,
-+			ret = binder_fixup_parent(&pf_head, t,
-+						  thread, bp,
- 						  off_start_offset,
- 						  num_valid,
- 						  last_fixup_obj_off,
-@@ -3099,6 +3348,17 @@ static void binder_transaction(struct binder_proc *proc,
- 		return_error_line = __LINE__;
- 		goto err_copy_data_failed;
- 	}
-+
-+	ret = binder_do_deferred_txn_copies(&target_proc->alloc, t->buffer,
-+					    &sgc_head, &pf_head);
-+	if (ret) {
-+		binder_user_error("%d:%d got transaction with invalid offsets ptr\n",
-+				  proc->pid, thread->pid);
-+		return_error = BR_FAILED_REPLY;
-+		return_error_param = ret;
-+		return_error_line = __LINE__;
-+		goto err_copy_data_failed;
-+	}
- 	if (t->buffer->oneway_spam_suspect)
- 		tcomplete->type = BINDER_WORK_TRANSACTION_ONEWAY_SPAM_SUSPECT;
- 	else
-@@ -3172,6 +3432,7 @@ static void binder_transaction(struct binder_proc *proc,
- err_bad_offset:
- err_bad_parent:
- err_copy_data_failed:
-+	binder_cleanup_deferred_txn_lists(&sgc_head, &pf_head);
- 	binder_free_txn_fixups(t);
- 	trace_binder_transaction_failed_buffer_release(t->buffer);
- 	binder_transaction_buffer_release(target_proc, NULL, t->buffer,
--- 
-2.34.0.rc2.393.gf8c9666880-goog
+I think the race there is unlikely but possible.
+
+Thanks,
+Miklos
+
+--0000000000005bb3d405d179aabc
+Content-Type: text/x-patch; charset="US-ASCII"; name="fuse-refcount-fix.patch"
+Content-Disposition: attachment; filename="fuse-refcount-fix.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kwchikl50>
+X-Attachment-Id: f_kwchikl50
+
+ZGlmZiAtLWdpdCBhL2ZzL2Z1c2UvZGV2LmMgYi9mcy9mdXNlL2Rldi5jCmluZGV4IDc5ZjdlZGE0
+OWUwNi4uOTU5ZDJiN2Y5ZTlkIDEwMDY0NAotLS0gYS9mcy9mdXNlL2Rldi5jCisrKyBiL2ZzL2Z1
+c2UvZGV2LmMKQEAgLTg0NywxNCArODQ3LDE0IEBAIHN0YXRpYyBpbnQgZnVzZV90cnlfbW92ZV9w
+YWdlKHN0cnVjdCBmdXNlX2NvcHlfc3RhdGUgKmNzLCBzdHJ1Y3QgcGFnZSAqKnBhZ2VwKQogCiAJ
+cmVwbGFjZV9wYWdlX2NhY2hlX3BhZ2Uob2xkcGFnZSwgbmV3cGFnZSk7CiAKKwlnZXRfcGFnZShu
+ZXdwYWdlKTsKKwogCS8qCiAJICogUmVsZWFzZSB3aGlsZSB3ZSBoYXZlIGV4dHJhIHJlZiBvbiBz
+dG9sZW4gcGFnZS4gIE90aGVyd2lzZQogCSAqIGFub25fcGlwZV9idWZfcmVsZWFzZSgpIG1pZ2h0
+IHRoaW5rIHRoZSBwYWdlIGNhbiBiZSByZXVzZWQuCiAJICovCiAJcGlwZV9idWZfcmVsZWFzZShj
+cy0+cGlwZSwgYnVmKTsKIAotCWdldF9wYWdlKG5ld3BhZ2UpOwotCiAJaWYgKCEoYnVmLT5mbGFn
+cyAmIFBJUEVfQlVGX0ZMQUdfTFJVKSkKIAkJbHJ1X2NhY2hlX2FkZChuZXdwYWdlKTsKIAo=
+--0000000000005bb3d405d179aabc--
 
