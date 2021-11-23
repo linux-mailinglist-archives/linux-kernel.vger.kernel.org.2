@@ -2,154 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C9945AE8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 22:40:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 608A345AE9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 22:47:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237269AbhKWVnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 16:43:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
+        id S238207AbhKWVuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 16:50:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhKWVnd (ORCPT
+        with ESMTP id S237764AbhKWVux (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 16:43:33 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA7DC061574;
-        Tue, 23 Nov 2021 13:40:24 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id r26so945741oiw.5;
-        Tue, 23 Nov 2021 13:40:24 -0800 (PST)
+        Tue, 23 Nov 2021 16:50:53 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E8BC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 13:47:45 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id w22so553760ioa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 13:47:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=biwLPQARcTwGOiP1bWND5yac2R/WEsvRTGTIxaW0R5o=;
-        b=E03DDfM2ovJPVhEYYvbE8os0VIK33P41RiuCqN6IPssFl77BrW0GrpKHPpQeKDJybq
-         8A59+dce/e6uNb+ezFmNKoDVOeuDB3B3lloDolMYedF6R38M3uiDUV5TUGPxblnK/yVi
-         KP4MXG5hZHdykDG0WVujsT//iDUAj2aCDAMODLIShJYje56O/8nILMgjqsSyziFrKpj8
-         MotZYaVwg7mMbbE2j5JxCllVounW0Udf0TKWeIkGa9ITSKOSaaDzJNDfXdyonOKwensG
-         Vb7O39Rm+zZbJoQ4Kqd0xQK+yO0ZwhwfK0/6IDYpnpcv83yNzF6Csh3ucro1WNzxXlvJ
-         05uw==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sUEg3QUrs08YDU9iOTMIC5pKNmifc7FDR8i4cnVmNs0=;
+        b=Kqk5rqIHb4VmUjsfbj+vrwZJKE7Qq/16jkHloGZBr1jHYNXR0RQmEujqCodkmvGEGY
+         AHDXxe/tMVE6D2KiYbytml65hQvnKYqqxw5NTCd0TqeExkdH0owqk2J22cO/9pslJvzG
+         8gm53ZVBv8NQ1C2zxdNc+Vh3d5bEPmJYsBXidkNXSIQEE1cB70m1r6y5RPiVdkRMl57w
+         t1zFJibeGrSt+MlMaboYTcYXDrWcwma4z9LkNK8KsWfRAqc1iPDH44h2WkGwqPezoYFQ
+         W1ChPSI19vCnFWAe+JpExzD5SjlWle75UDVd8R0Rmg6elfFfsHHrVpa9hHGlKpd5fftO
+         XbLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=biwLPQARcTwGOiP1bWND5yac2R/WEsvRTGTIxaW0R5o=;
-        b=gk2qHdy897jiKj8bnvOG/WiBHSS6MDKI7zNLDKOjJHYnQnbQc+iWN9ar/jiKrBGrXW
-         Kos7oEQBRvF4Zc3ploHKgqIhflMAaYtKRSfkim+9Ifx4pRS/GQ/y/TZZBT92Jko1SkBg
-         fhPLApUKp8/DRXgv3PesUAobdQPICMpLo1QRBYzj9Oc1fiFRhqCIKo7/vGmkM2/mEoGg
-         /Yff/ngVjAt9NGCWqa8agEa+3hFbGgsE12YBuJxCS+PV7InPPBcplnOH8VaoKhaA1YMO
-         X0LD8bUtWbu3Aj3DE5TTYBDV4GLbvEYy4EX6AkYHHBhvAL/U38oIg5ESVlb5kNymzBbJ
-         92DA==
-X-Gm-Message-State: AOAM533S2+l8LJiaJ3BWi9dtvqbQC1NSMorauvBCeuA2K0+cOhpCpndi
-        9xPzCYm04qeCL53dym6N4YzwJLRJ8kc=
-X-Google-Smtp-Source: ABdhPJwjDe6Em99xskCCIg7du/dckVMb4T2T9s5LwySFjpOnvrPT4kf2WhiJYPMZws9GZpypYPDuXQ==
-X-Received: by 2002:a05:6808:118c:: with SMTP id j12mr444141oil.65.1637703623842;
-        Tue, 23 Nov 2021 13:40:23 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s13sm2489629otv.34.2021.11.23.13.40.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Nov 2021 13:40:23 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 1/2] hwmon: (k10temp) Move the CCD limit info inside
- k10temp_data structure
-To:     Babu Moger <babu.moger@amd.com>, clemens@ladisch.de,
-        jdelvare@suse.com
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <163770216907.777059.6947726637265961161.stgit@bmoger-ubuntu>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <937b305c-c61d-e754-c86f-7019b57dd737@roeck-us.net>
-Date:   Tue, 23 Nov 2021 13:40:21 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sUEg3QUrs08YDU9iOTMIC5pKNmifc7FDR8i4cnVmNs0=;
+        b=s/mWAvaUYQTW4F0hlopUrfqoSB2Ta3rzsTCRkbbBOzg+CsYC048CRxguzp7RUALTOB
+         rr5xSyI1nmyzKkCQ7KRBs1PzjJui26AWbOgIjJ4ClvR+c1lhJsQny8myWBf2qZrHbSkU
+         5aE3oXZw5D6FVRDOWF0eFeD5A0V0xkj42xGuyocsI8Zt2DUzlkhoOTFlmrExWq06aaDV
+         p6Ljid0Cjd9Byn0GDCH10qm+du9ECTRf0LI55ceUuSMFwwNncGWWb7ho5oXuPIdnwle4
+         Zz0Hq8Vm7WQRuShy7n9RGiZkbj8KM7GpeOhtGRHa9kqELbdpnXsgBHoX9wKXZMXPnBab
+         TQeA==
+X-Gm-Message-State: AOAM532r5PM6G2J8W1xVvCyVnpd3SXA4p0z87rmCNAf+z7hPDjUA6seF
+        qYCobrklIM00iHudAdmT24k6d/5EBYdQnjLbZf8scA==
+X-Google-Smtp-Source: ABdhPJw+V82TF1qaBVXuuWYkWY+rm9HiymOEqRm4BrdYNvCzBYJJ7rbPIH8GxSbo8QMjXkLN06+9zP0krMBu6nE5ecA=
+X-Received: by 2002:a5e:cb0d:: with SMTP id p13mr8904638iom.71.1637704064568;
+ Tue, 23 Nov 2021 13:47:44 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <163770216907.777059.6947726637265961161.stgit@bmoger-ubuntu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211123000102.4052105-1-almasrymina@google.com>
+ <YZ1USY+zB1PP24Z1@casper.infradead.org> <CAHS8izOhi45RqCACGGXYyB8UAmMo-85TyuNX8Myzdh81xOkBTA@mail.gmail.com>
+ <YZ1ddl3FA43NijmX@casper.infradead.org>
+In-Reply-To: <YZ1ddl3FA43NijmX@casper.infradead.org>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Tue, 23 Nov 2021 13:47:33 -0800
+Message-ID: <CAHS8izMmcbXQ0xCDVYx8JW54sbbLXwNnK6pHgf9Ztn=XPFEsWA@mail.gmail.com>
+Subject: Re: [PATCH v7] mm: Add PM_THP_MAPPED to /proc/pid/pagemap
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        David Hildenbrand <david@redhat.com>,
+        "Paul E . McKenney" <paulmckrcu@fb.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>,
+        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
+        Florian Schmidt <florian.schmidt@nutanix.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/23/21 1:16 PM, Babu Moger wrote:
-> It seems appropriate to move the CCD specific information inside the
-> k10temp_data structure.
-> 
+On Tue, Nov 23, 2021 at 1:30 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Tue, Nov 23, 2021 at 01:10:37PM -0800, Mina Almasry wrote:
+> > On Tue, Nov 23, 2021 at 12:51 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > >
+> > > On Mon, Nov 22, 2021 at 04:01:02PM -0800, Mina Almasry wrote:
+> > > > Add PM_THP_MAPPED MAPPING to allow userspace to detect whether a given virt
+> > > > address is currently mapped by a transparent huge page or not.  Example
+> > > > use case is a process requesting THPs from the kernel (via a huge tmpfs
+> > > > mount for example), for a performance critical region of memory.  The
+> > > > userspace may want to query whether the kernel is actually backing this
+> > > > memory by hugepages or not.
+> > >
+> > > So you want this bit to be clear if the memory is backed by a hugetlb
+> > > page?
+> > >
+> >
+> > Yes I believe so. I do not see value in telling the userspace that the
+> > virt address is backed by a hugetlb page, since if the memory is
+> > mapped by MAP_HUGETLB or is backed by a hugetlb file then the memory
+> > is backed by hugetlb pages and there is no vagueness from the kernel
+> > here.
+> >
+> > Additionally hugetlb interfaces are more size based rather than PMD or
+> > not. arm64 for example supports 64K, 2MB, 32MB and 1G 'huge' pages and
+> > it's an implementation detail that those sizes are mapped CONTIG PTE,
+> > PMD, CONITG PMD, and PUD respectively, and the specific mapping
+> > mechanism is typically not exposed to the userspace and might not be
+> > stable. Assuming pagemap_hugetlb_range() == PMD_MAPPED would not
+> > technically be correct.
+>
+> What I've been trying to communicate over the N reviews of this
+> patch series is that *the same thing is about to happen to THPs*.
+> Only more so.  THPs are going to be of arbitrary power-of-two size, not
+> necessarily sizes supported by the hardware.  That means that we need to
+> be extremely precise about what we mean by "is this a THP?"  Do we just
+> mean "This is a compound page?"  Do we mean "this is mapped by a PMD?"
+> Or do we mean something else?  And I feel like I haven't been able to
+> get that information out of you.
+>
 
-Why ? I don't see it used outside k10temp_get_ccd_support().
+Yes, I'm very sorry for the trouble, but I'm also confused what the
+disconnect is. To allocate hugepages I can do like so:
 
-Guenter
+mount -t tmpfs -o huge=always tmpfs /mnt/mytmpfs
 
-> Signed-off-by: Babu Moger <babu.moger@amd.com>
-> ---
-> Note: Generated the patch on top of hwmon-next.
-> 
->   drivers/hwmon/k10temp.c |   17 +++++++++++------
->   1 file changed, 11 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/hwmon/k10temp.c b/drivers/hwmon/k10temp.c
-> index 880990fa4795..bd436b380a02 100644
-> --- a/drivers/hwmon/k10temp.c
-> +++ b/drivers/hwmon/k10temp.c
-> @@ -85,6 +85,7 @@ struct k10temp_data {
->   	u32 show_temp;
->   	bool is_zen;
->   	u32 ccd_offset;
-> +	u32 ccd_limit;
->   };
->   
->   #define TCTL_BIT	0
-> @@ -357,12 +358,12 @@ static const struct hwmon_chip_info k10temp_chip_info = {
->   };
->   
->   static void k10temp_get_ccd_support(struct pci_dev *pdev,
-> -				    struct k10temp_data *data, int limit)
-> +				    struct k10temp_data *data)
->   {
->   	u32 regval;
->   	int i;
->   
-> -	for (i = 0; i < limit; i++) {
-> +	for (i = 0; i < data->ccd_limit; i++) {
->   		amd_smn_read(amd_pci_dev_to_node_id(pdev),
->   			     ZEN_CCD_TEMP(data->ccd_offset, i), &regval);
->   		if (regval & ZEN_CCD_TEMP_VALID)
-> @@ -411,14 +412,16 @@ static int k10temp_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->   		case 0x11:	/* Zen APU */
->   		case 0x18:	/* Zen+ APU */
->   			data->ccd_offset = 0x154;
-> -			k10temp_get_ccd_support(pdev, data, 4);
-> +			data->ccd_limit = 4;
-> +			k10temp_get_ccd_support(pdev, data);
->   			break;
->   		case 0x31:	/* Zen2 Threadripper */
->   		case 0x60:	/* Renoir */
->   		case 0x68:	/* Lucienne */
->   		case 0x71:	/* Zen2 */
->   			data->ccd_offset = 0x154;
-> -			k10temp_get_ccd_support(pdev, data, 8);
-> +			data->ccd_limit = 8;
-> +			k10temp_get_ccd_support(pdev, data);
->   			break;
->   		}
->   	} else if (boot_cpu_data.x86 == 0x19) {
-> @@ -431,13 +434,15 @@ static int k10temp_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->   		case 0x21:		/* Zen3 Ryzen Desktop */
->   		case 0x50 ... 0x5f:	/* Green Sardine */
->   			data->ccd_offset = 0x154;
-> -			k10temp_get_ccd_support(pdev, data, 8);
-> +			data->ccd_limit = 8;
-> +			k10temp_get_ccd_support(pdev, data);
->   			break;
->   		case 0x10 ... 0x1f:
->   		case 0x40 ... 0x4f:	/* Yellow Carp */
->   		case 0xa0 ... 0xaf:
->   			data->ccd_offset = 0x300;
-> -			k10temp_get_ccd_support(pdev, data, 8);
-> +			data->ccd_limit = 8;
-> +			k10temp_get_ccd_support(pdev, data);
->   			break;
->   		}
->   	} else {
-> 
-> 
+or
 
+madvise(..., MADV_HUGEPAGE)
+
+Note I don't ask the kernel for a specific size, or a specific mapping
+mechanism (PMD/contig PTE/contig PMD/PUD), I just ask the kernel for
+'huge' pages. I would like to know whether the kernel was successful
+in allocating a hugepage or not. Today a THP hugepage AFAICT is PMD
+mapped + is_transparent_hugepage(), which is the check I have here. In
+the future, THP may become an arbitrary power of two size, and I think
+I'll need to update this querying interface once/if that gets merged
+to the kernel. I.e, if in the future I allocate pages by using:
+
+mount -t tmpfs -o huge=2MB tmpfs /mnt/mytmpfs
+
+I need the kernel to tell me whether the mapping is 2MB size or not.
+
+If I allocate pages by using:
+
+mount -t tmpfs -o huge=pmd tmpfs /mnt/mytmps,
+
+Then I need the kernel to tell me whether the pages are PMD mapped or
+not, as I'm doing here.
+
+The current implementation is based on what the current THP
+implementation is in the kernel, and depending on future changes to
+THP I may need to update it in the future. Does that make sense?
