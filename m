@@ -2,65 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245C045A395
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:19:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B3B45A399
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237130AbhKWNW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 08:22:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233234AbhKWNW5 (ORCPT
+        id S230181AbhKWNXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 08:23:23 -0500
+Received: from mout.kundenserver.de ([212.227.126.135]:48117 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234825AbhKWNXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 08:22:57 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6EC7C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 05:19:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=r8Lcq3ciu3667/Au2jyAismeBvkNUg7x0FQx5wyUwZU=; b=D0kvGtgoq1mzIow25vCHqjNTzR
-        rlcpRav/4ALzGsUNMgD4ji4Xpq9njQEmbx58zzVxlcb8aNiF3yN6v/cv2niKpYnn5Z1vvcrkmp0gm
-        a/1WusN7LOg2JkVCwzINcKuWzmOGBkmPToF9oleSyWcRo/zLF3lJvkmN2gduo+I5lmnlO95X8RjND
-        +lcwHzwZeD3C6Pan57egRd8EnmtRg5dpLYP3pQBulohByzT7zQfhUthRRV2yu7ljN+umwgpMwwruB
-        wgY+t/WKXKeUJa43hrOi7AnoKN87UbEcbYNOORxZv+qngwijtyL1+WM3//ovWsKHqvpV1Qj6ZRjKP
-        UXyNFQVg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mpVhn-00EumM-GD; Tue, 23 Nov 2021 13:19:27 +0000
-Date:   Tue, 23 Nov 2021 13:19:27 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     akpm@linux-foundation.org, mhocko@kernel.org, mhocko@suse.com,
-        rientjes@google.com, hannes@cmpxchg.org, guro@fb.com,
-        riel@surriel.com, minchan@kernel.org, kirill@shutemov.name,
-        aarcange@redhat.com, christian@brauner.io, hch@infradead.org,
-        oleg@redhat.com, david@redhat.com, jannh@google.com,
-        shakeelb@google.com, luto@kernel.org, christian.brauner@ubuntu.com,
-        fweimer@redhat.com, jengelh@inai.de, timmurray@google.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH 1/2] mm: protect free_pgtables with mmap_lock write lock
- in exit_mmap
-Message-ID: <YZzqX0PjxNmhJSvm@casper.infradead.org>
-References: <20211116215715.645231-1-surenb@google.com>
+        Tue, 23 Nov 2021 08:23:22 -0500
+Received: from mail-wr1-f42.google.com ([209.85.221.42]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1M58zc-1moPmr0U2G-001B4f; Tue, 23 Nov 2021 14:20:13 +0100
+Received: by mail-wr1-f42.google.com with SMTP id b12so38929177wrh.4;
+        Tue, 23 Nov 2021 05:20:13 -0800 (PST)
+X-Gm-Message-State: AOAM531HmzQSFTWVqVgaWTzcaH0ukhr6FR3HGqHjJYKsC8Qi7WpQ/zUl
+        C0syFIzcVigBfglFBq4dHyWRhWPABUKnhx9Lppo=
+X-Google-Smtp-Source: ABdhPJwpT1iqgZ3/dEvpqaazlpfCJQIb+joipxiKMUpjkoh/lL7fOj6hF1e58ZtQ4eRqkzavbf1frnwH+VQGmHXqrGo=
+X-Received: by 2002:adf:f7c2:: with SMTP id a2mr7393084wrq.71.1637673612679;
+ Tue, 23 Nov 2021 05:20:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211116215715.645231-1-surenb@google.com>
+References: <CA+G9fYtH2JR=L0cPoOEqsEGrZW_uOJgX6qLGMe_hbLpBtjVBwA@mail.gmail.com>
+In-Reply-To: <CA+G9fYtH2JR=L0cPoOEqsEGrZW_uOJgX6qLGMe_hbLpBtjVBwA@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 23 Nov 2021 14:19:56 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1NhpNxWfj3gDnuf4bWK_fiE8cjcRyN7e8j95NmvOzbGw@mail.gmail.com>
+Message-ID: <CAK8P3a1NhpNxWfj3gDnuf4bWK_fiE8cjcRyN7e8j95NmvOzbGw@mail.gmail.com>
+Subject: Re: spinlock.c:306:9: error: implicit declaration of function '__raw_write_lock_nested'
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Galbraith <umgwanakikbuti@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:QFR7kDgsfDVE5/Y1R44YWOjmAmELgyRKIYn8qWLSlk62H3gjKF/
+ sGvCLqNIgchzlvOg1pQC2GaRsKKBdwapxT7ozfAfZWaKwvpt+OfqoNrTRmDcQFpXB8elwsv
+ cjvHGPhUnJdjSCI+NFtzDMd6Ytn8Py4wZLMdcvDd8WaukoO2ivObS//U+JMzwhq7Moa5Abl
+ FSow+B0oIv9GgptWlV6ag==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:T3aMy9ahu+o=:QbmUyLL2o9tz0g05IFRDbj
+ JJo1D8uHYqbAtA1/PLsn48FcGjyzFWe+GxCeRcyzC9st52G2JkPwUQgL6FiaY0CPYyUMAeZM5
+ VedOWv+WbQ0glDwDKcWddcC3qMZuWGSDKmvSMUEMXjOaX//kRYJT0W7o7G8uSQUYCQH9c6WyK
+ pcZEH+RJU9T/g/Kxd4ge722ZrlRLKqYmf4ccolf7914qjX97ZDkiG/h4Xphd3j9D8QMk8HO9H
+ iDDHNQgSpuDIs8yObv2IRHY+B0sXTlYkNxkcSVmuimQhrcm5YBMwQPfG5MHzVWWcS280Z1O60
+ p8cGXGcALT0AclhlHk05pYSWs3F8Q+j3Vpkx0oEiTfFcMWPcAtVhuZEri52/zj79WxQyPvEoZ
+ eF70jmt0rtoK/qWILzVV4F3SB1n4Nm+RetmpQv8SA6rzIhg9WtBJovlk78AYj49VFNxlxV0Et
+ uVLGrWQhQjrDH5sieLxvrckkzpAfSVgFV9ANi9+rO08ybW6uinblp6gkNlss8KUenY+UwSm0o
+ vAxwtB8LcQ+MQFSFhybaZSwWrG3454G0Kig6JIRrcBotXDJw2JSXPGBwDAAFAZNOixS0AZ85o
+ qK7pJEKAB7P+Spiqik6Qo5Jf2uupFxpbgy2cS/BXXlzSpSDuKY58WRzNr56K0Am+9dMq2oEPY
+ ZURqkmoKb16m4UyhmnRUU5bh8Xnp0o5dykPKsTVQKxeYsvESsLFzxiHi9ajJaDI3K05E=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 01:57:14PM -0800, Suren Baghdasaryan wrote:
-> @@ -3170,6 +3172,7 @@ void exit_mmap(struct mm_struct *mm)
->  	unmap_vmas(&tlb, vma, 0, -1);
->  	free_pgtables(&tlb, vma, FIRST_USER_ADDRESS, USER_PGTABLES_CEILING);
->  	tlb_finish_mmu(&tlb);
-> +	mmap_write_unlock(mm);
->  
->  	/*
->  	 * Walk the list again, actually closing and freeing it,
+On Tue, Nov 23, 2021 at 12:38 PM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
+>
+> While building Linux next 20211123 tag for sh with gcc-11
+> following warnings / errors noticed.
 
-Is there a reason to unlock here instead of after the remove_vma loop?
-We'll need the mmap sem held during that loop when VMAs are stored in
-the maple tree.
+Nothing in here looks like a recent regression from either the kernel
+or gcc-11.
+
+> make --silent --keep-going --jobs=8
+> O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=sh
+> CROSS_COMPILE=sh4-linux-gnu- 'CC=sccache sh4-linux-gnu-gcc'
+> 'HOSTCC=sccache gcc'
+>   Generating include/generated/machtypes.h
+> <stdin>:1517:2: warning: #warning syscall clone3 not implemented [-Wcpp]
+> <stdin>:1559:2: warning: #warning syscall futex_waitv not implemented [-Wcpp]
+
+These happen with any compiler version, someone needs to write the correct
+entry code for clone3 and hook up futex_waitv().
+
+> include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements
+
+These are old bugs, they show up in any kernel version with gcc-8 or higher.
+
+> fs/mpage.c:336:1: warning: the frame size of 1092 bytes is larger than
+
+I see these going back to gcc-6, it looks like this is caused by
+CONFIG_PAGE_SIZE_64KB.
+
+     Arnd
