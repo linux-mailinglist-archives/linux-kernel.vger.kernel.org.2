@@ -2,159 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0F145ACF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:58:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4F545ACF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240216AbhKWUB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 15:01:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56154 "EHLO
+        id S238621AbhKWUDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 15:03:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240234AbhKWUBu (ORCPT
+        with ESMTP id S231366AbhKWUDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 15:01:50 -0500
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE4EC06173E
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:58:41 -0800 (PST)
-Received: by mail-il1-x129.google.com with SMTP id t8so230829ilu.8
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:58:41 -0800 (PST)
+        Tue, 23 Nov 2021 15:03:42 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 866A9C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 12:00:33 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id r25so60041547edq.7
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 12:00:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FaX0MNa28ktDMFJ703YUr1snjJaPsMvJN89bnC0T+OA=;
-        b=XjLNCiDLH+OR/sFFIfmbrvuQtg1+myUNeQMVevDRVkyXKNp1f5bK5ZRBG/GlV7RFaD
-         bfU3sFNzaEEtIZngzr1WMaLMfmmhOAI3t1BGL1L3plPXsbz2LJiGFjdS93TI3yhovTl0
-         UoaIP/lwgCXxyxTUgz93nRdAh0lXH9TdGzxwbZpDY0YCh2UuXuGdTe47SLZhlzNP6NNY
-         kxLD6wYPfCId/EMz3rK3AjIbCszbS7OzhNEgDDO+uClyKf0RQd0FvSO0tLYURp8Vl3BU
-         MjwXY3czZxtS2AfnWIX6TIk+TZkOX3TY/pASxhnw1+0Benfrr+ya82kTdksxemJnWo3r
-         IXEA==
+        bh=OLIu6dOhjs4vufgSpnksyOeHKMHxKx4U/q0KpSn1TzQ=;
+        b=LbeTL942XWZEuXwaE+lfkR5hT8RLhRTix2/UbYTfTJQ7M7lWyzt/ZXwGiumtoCUW+e
+         1hOIXOn9jK0zUrXfyma9qVp0XHZFTrNoJBwajRiR8XrXu9GWaWtzy2DPRWyeLd2xnX94
+         oAFICe7pBHzAcZBKtRMbay0jvUEPt1Xh/ZsSTACgntbCA/C3OtsQTxKJ/kPS6+iE4yaa
+         pSwiKRZYOnvtxOAjWom+25QCH6eslPvTTENHLz04dvU7W7lN2v10ffFlugNv87l6jAGh
+         q+KEmX28RFSS8ZS6mZGUyWPBrLVpt8HdoRekmpU8ymomMCcpi7csSIT4Aj0svE7GOOkF
+         aTFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FaX0MNa28ktDMFJ703YUr1snjJaPsMvJN89bnC0T+OA=;
-        b=kfIwVr0jU2Eyms9OVxpCaDGeuirjwOr2j0gDzZDhWTc/32I/sc/+mLhHMvxk8TTEWj
-         LvuHTVpwqusYttzU5eHau25EkeULagtttDA0ic/QQax37lM+skrKe2rRPsqRkvC1f07M
-         8N/Bqr3L16HpztVxObPrIQh76v3rGmb9o09XHmn2vApV+gguefrh/gIRbGOq1CauuuUc
-         C90yBhnVvKwlwyTcmeVajDUqSDarJhSRyLtD75R0qqEleVZmpHFF8gXoHRpILFITe9vQ
-         TJAg3YGNCSmlo75NbDSXYFH5bX23R26zFvKzxwNFn99OTihB2xfKxXIU9WIkfXpj2/b6
-         T8nw==
-X-Gm-Message-State: AOAM530V602eGx+Dq7Id4QlVZ/y48qmVrdGf28D7j0FN152kefUvlQNH
-        rWy4kz7PGTnYcG8Y/rI7QSjfP1+tbypHTnKriz9mcA==
-X-Google-Smtp-Source: ABdhPJxtHRLnxuXgs8zcOvR5NCKIU2rYbV2sGPqOvTbIHGiP/5UdPTctE15YYZSZgYakGfLgxIM+x+avcLdf8vwtWcI=
-X-Received: by 2002:a05:6e02:52d:: with SMTP id h13mr7398380ils.274.1637697521193;
- Tue, 23 Nov 2021 11:58:41 -0800 (PST)
+        bh=OLIu6dOhjs4vufgSpnksyOeHKMHxKx4U/q0KpSn1TzQ=;
+        b=Vm1GFdnVd/jjTVwgIg/Xz8DzvSWFeDL3sTDhESsGDX0pU53OJ71rw9t4r3VeffLSGT
+         LZdLZ0zmw1j9yRQhEX0L0Xja4JCNnM53gW1ga28WkCt3Nqwx0tgABQxZgdDDQTP2DQEU
+         zW4ZVMccniDfuplUgu9teK/KFGjEyDEKNO1lqB6gL7jKJ/knLW3sPg5lvBs+GUuUmUwA
+         MhThZ8pkeSxHJlXBb6S13CyeiwPVl/hzLeydDsfFqJPGqJ7dirgllXrwvt12aojpI5Tc
+         XhhRntKDu5lSm8X7UvTMrPA3UQDtnPQ2dyH2ar709xinDu1y1lgLK7LEkfCG91Xtt0lq
+         12AQ==
+X-Gm-Message-State: AOAM532xzKngzUrfuUVQkOxR/UtkX2L2UoCUUY1B4R3qFVrIr7RG5hh7
+        Bbncw5GhMNZqu4es6Z/muUeYBOBKA/mICaouQls=
+X-Google-Smtp-Source: ABdhPJxGYJqFC7AvC31S9S38mojNSaXY0eQIavmTz6Qa3fAIaf5JamesroypEO91N4hGDq2TSg0wVUgrgR9d0SrR8PU=
+X-Received: by 2002:a50:a6ca:: with SMTP id f10mr13427258edc.81.1637697631969;
+ Tue, 23 Nov 2021 12:00:31 -0800 (PST)
 MIME-Version: 1.0
-References: <20211120045046.3940942-1-seanjc@google.com> <20211120045046.3940942-26-seanjc@google.com>
-In-Reply-To: <20211120045046.3940942-26-seanjc@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Tue, 23 Nov 2021 11:58:30 -0800
-Message-ID: <CANgfPd8EmhE3wWCp9cYat-GQ_uB83TTyLXyMj0tBXhnZ1yVwig@mail.gmail.com>
-Subject: Re: [PATCH 25/28] KVM: x86/mmu: Require mmu_lock be held for write to
- zap TDP MMU range
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Hou Wenlong <houwenlong93@linux.alibaba.com>
+References: <20211123190916.1738458-1-shakeelb@google.com>
+In-Reply-To: <20211123190916.1738458-1-shakeelb@google.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 23 Nov 2021 12:00:19 -0800
+Message-ID: <CAHbLzkp7RVGrwrCL3+joEZbKxRQkC=-madvdKwL=xgwR8dhLhA@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: thp: update split_queue_len correctly
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Zi Yan <ziy@nvidia.com>, Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 8:51 PM Sean Christopherson <seanjc@google.com> wrote:
+On Tue, Nov 23, 2021 at 11:09 AM Shakeel Butt <shakeelb@google.com> wrote:
 >
-> Now that all callers of zap_gfn_range() hold mmu_lock for write, drop
-> support for zapping with mmu_lock held for read.  That all callers hold
-> mmu_lock for write isn't a random coincedence; now that the paths that
-> need to zap _everything_ have their own path, the only callers left are
-> those that need to zap for functional correctness.  And when zapping is
-> required for functional correctness, mmu_lock must be held for write,
-> otherwise the caller has no guarantees about the state of the TDP MMU
-> page tables after it has run, e.g. the SPTE(s) it zapped can be
-> immediately replaced by a vCPU faulting in a page.
+> The deferred THPs are split on memory pressure through shrinker
+> callback and splitting of THP during reclaim can fail for several
+> reasons like unable to lock the THP, under writeback or unexpected
+> number of pins on the THP. Such pages are put back on the deferred split
+> list for consideration later. However kernel does not update the
+> deferred queue size on putting back the pages whose split was failed.
+> This patch fixes that.
 >
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-
-Reviewed-by: Ben Gardon <bgardon@google.com>
-
-
+> Without this patch the split_queue_len can underflow. Shrinker will
+> always get that there are some THPs to split even if there are not and
+> waste some cpu to scan the empty list.
+>
+> Fixes: 364c1eebe453 ("mm: thp: extract split_queue_* into a struct")
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
 > ---
->  arch/x86/kvm/mmu/tdp_mmu.c | 29 ++++++-----------------------
->  1 file changed, 6 insertions(+), 23 deletions(-)
+> Changes since v1:
+> - updated commit message
+> - incorporated Yang Shi's suggestion
+
+Reviewed-by: Yang Shi <shy828301@gmail.com>
+
 >
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 0e5a0d40e54a..926e92473e92 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -844,15 +844,9 @@ bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
->   * function cannot yield, it will not release the MMU lock or reschedule and
->   * the caller must ensure it does not supply too large a GFN range, or the
->   * operation can cause a soft lockup.
-> - *
-> - * If shared is true, this thread holds the MMU lock in read mode and must
-> - * account for the possibility that other threads are modifying the paging
-> - * structures concurrently. If shared is false, this thread should hold the
-> - * MMU lock in write mode.
->   */
->  static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
-> -                         gfn_t start, gfn_t end, bool can_yield, bool flush,
-> -                         bool shared)
-> +                         gfn_t start, gfn_t end, bool can_yield, bool flush)
->  {
->         bool zap_all = (start == 0 && end >= tdp_mmu_max_gfn_host());
->         struct tdp_iter iter;
-> @@ -865,15 +859,14 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+>  mm/huge_memory.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
->         end = min(end, tdp_mmu_max_gfn_host());
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index e5483347291c..d393028681e2 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2809,7 +2809,7 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
+>         unsigned long flags;
+>         LIST_HEAD(list), *pos, *next;
+>         struct page *page;
+> -       int split = 0;
+> +       unsigned long split = 0;
 >
-> -       kvm_lockdep_assert_mmu_lock_held(kvm, shared);
-> +       lockdep_assert_held_write(&kvm->mmu_lock);
+>  #ifdef CONFIG_MEMCG
+>         if (sc->memcg)
+> @@ -2847,6 +2847,7 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
 >
->         rcu_read_lock();
+>         spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+>         list_splice_tail(&list, &ds_queue->split_queue);
+> +       ds_queue->split_queue_len -= split;
+>         spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
 >
->         for_each_tdp_pte_min_level(iter, root->spt, root->role.level,
->                                    min_level, start, end) {
-> -retry:
->                 if (can_yield &&
-> -                   tdp_mmu_iter_cond_resched(kvm, &iter, flush, shared)) {
-> +                   tdp_mmu_iter_cond_resched(kvm, &iter, flush, false)) {
->                         flush = false;
->                         continue;
->                 }
-> @@ -892,17 +885,8 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
->                     !is_last_spte(iter.old_spte, iter.level))
->                         continue;
->
-> -               if (!shared) {
-> -                       tdp_mmu_set_spte(kvm, &iter, 0);
-> -                       flush = true;
-> -               } else if (!tdp_mmu_zap_spte_atomic(kvm, &iter)) {
-> -                       /*
-> -                        * The iter must explicitly re-read the SPTE because
-> -                        * the atomic cmpxchg failed.
-> -                        */
-> -                       iter.old_spte = kvm_tdp_mmu_read_spte(iter.sptep);
-> -                       goto retry;
-> -               }
-> +               tdp_mmu_set_spte(kvm, &iter, 0);
-> +               flush = true;
->         }
->
->         rcu_read_unlock();
-> @@ -921,8 +905,7 @@ bool __kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, int as_id, gfn_t start,
->         struct kvm_mmu_page *root;
->
->         for_each_tdp_mmu_root_yield_safe(kvm, root, as_id, false)
-> -               flush = zap_gfn_range(kvm, root, start, end, can_yield, flush,
-> -                                     false);
-> +               flush = zap_gfn_range(kvm, root, start, end, can_yield, flush);
->
->         return flush;
->  }
+>         /*
 > --
 > 2.34.0.rc2.393.gf8c9666880-goog
 >
