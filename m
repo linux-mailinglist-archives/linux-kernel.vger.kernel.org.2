@@ -2,113 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56746459E86
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:47:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7FEF459E8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:49:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235085AbhKWIuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 03:50:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbhKWIuD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 03:50:03 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B0CC061574;
-        Tue, 23 Nov 2021 00:46:55 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id x6so76681195edr.5;
-        Tue, 23 Nov 2021 00:46:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=7HA05XhYlCzTp4qvhhSBcSuSKybJ0PulYKdWBwG+DL8=;
-        b=eRxUC+sJSCTIGOoVdTOOhCcUZfnZdG7DdFIkTVEmTD9NGwphMQiid3xEfITu5XW/Fm
-         OPcyu0o0RT6S6BanewL3NWZY6xVwmP0C439+0yWwFxG7UfkAXRzQPZpRKz3tzk18JnVw
-         HtjSX+daGQP8TGpv1J7Hr4rpLkhRhWOvo2U6K+oZWNz38u91Wa2/oojHfKIIW/fP8O/2
-         ahzoMGXbn8rp25gMWGp0CrvgXNrpYwO9AUUeMsfLXR/CR8EAjxMYcttXW0FO+AjATfG+
-         AGb2k3JRmpq499iNZ+yWcjQK0WwJ6RmYDNO89V0hqqHW4QFAC87ThcSmDD7gnTTsYtlu
-         0MVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
-         :subject:content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=7HA05XhYlCzTp4qvhhSBcSuSKybJ0PulYKdWBwG+DL8=;
-        b=CXpaZKQRZ3xOnVgoN+yqI7/g4N0YVnZpKFGGdpXNSWqSRmJb74ATOhZK4e/gphgeZi
-         85KKcxOUacY1vkaziEr+jsTuLF1Fiy8fnGW/fdYVbMuugMgXDS2usP2OWqUi8VIciGw2
-         N9BsbZSkZTmxfW/ZlYZF/V4JphA8Om72OM/Dh+DmtTvsAk6N8wUGY7Ga7bdTQ2zLYLzZ
-         HJHnP/eg81d8J762TS4nJ8kZjeSVlFt/DnPu8m4nzre3VUIdbPHPSto6SqhytNVppcft
-         Sc0YyqR3g8pMQlqatzulAzlVUon5mUeYcYswiW4ectcWCntpXIGawNpAlN/BW9/QxwYn
-         PPxA==
-X-Gm-Message-State: AOAM531Oq+aIkppVYpqO6+t4+QJyibOaDRbaHHFyFNwwt2fClE+Yttnt
-        TaT3Lq7kZ9fuixZtpG7BVZY=
-X-Google-Smtp-Source: ABdhPJygultcXZ5O6UR+Ra3FMuRkjBlnywYkj/YSuUzgBBN4t/ktdv6OEJaf5N8LyoDiF4gs7MeeKQ==
-X-Received: by 2002:a17:906:974c:: with SMTP id o12mr2362914ejy.229.1637657214203;
-        Tue, 23 Nov 2021 00:46:54 -0800 (PST)
-Received: from ?IPV6:2001:b07:add:ec09:c399:bc87:7b6c:fb2a? ([2001:b07:add:ec09:c399:bc87:7b6c:fb2a])
-        by smtp.googlemail.com with ESMTPSA id cs12sm5074681ejc.15.2021.11.23.00.46.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Nov 2021 00:46:53 -0800 (PST)
-Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
-Message-ID: <4041d98a-23df-e9ed-b245-5edd7151fec5@redhat.com>
-Date:   Tue, 23 Nov 2021 09:46:34 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [RFC v2 PATCH 09/13] KVM: Introduce kvm_memfd_invalidate_range
-Content-Language: en-US
-To:     Chao Peng <chao.p.peng@linux.intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, qemu-devel@nongnu.org
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        "J . Bruce Fields" <bfields@fieldses.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
-        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com,
-        david@redhat.com
-References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
- <20211119134739.20218-10-chao.p.peng@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211119134739.20218-10-chao.p.peng@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        id S235095AbhKWIwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 03:52:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52092 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232775AbhKWIwB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 03:52:01 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C3A0960E73;
+        Tue, 23 Nov 2021 08:48:52 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mpRTu-007ERv-JB; Tue, 23 Nov 2021 08:48:50 +0000
+Date:   Tue, 23 Nov 2021 08:48:50 +0000
+Message-ID: <87sfvncl59.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, kernel-team@android.com,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v2] PCI: apple: Follow the PCIe specifications when resetting the port
+In-Reply-To: <4fd0438e-b86b-2e1a-ea9a-2297d3580836@lucaceresoli.net>
+References: <20211122104156.518063-1-maz@kernel.org>
+        <20211122120347.6qyiycqqjkgqvtta@pali>
+        <87zgpw5jza.wl-maz@kernel.org>
+        <4fd0438e-b86b-2e1a-ea9a-2297d3580836@lucaceresoli.net>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: luca@lucaceresoli.net, pali@kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org, kernel-team@android.com, alyssa@rosenzweig.io, lorenzo.pieralisi@arm.com, bhelgaas@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/19/21 14:47, Chao Peng wrote:
-> +
-> +	/* Prevent memslot modification */
-> +	spin_lock(&kvm->mn_invalidate_lock);
-> +	kvm->mn_active_invalidate_count++;
-> +	spin_unlock(&kvm->mn_invalidate_lock);
-> +
-> +	ret = __kvm_handle_useraddr_range(kvm, &useraddr_range);
-> +
-> +	spin_lock(&kvm->mn_invalidate_lock);
-> +	kvm->mn_active_invalidate_count--;
-> +	spin_unlock(&kvm->mn_invalidate_lock);
-> +
+Luca,
 
+On Mon, 22 Nov 2021 21:32:15 +0000,
+Luca Ceresoli <luca@lucaceresoli.net> wrote:
+>
+> >> Just one comment. PERST# (PCIe Reset) is active-low signal. De-asserting
+> >> means to really set value to 1.
+> >>
+> >> But there was a discussion that de-asserting should be done by call:
+> >>   gpiod_set_value(reset, 0);
+> >>
+> >> https://lore.kernel.org/linux-pci/51be082a-ff10-8a19-5648-f279aabcac51@lucaceresoli.net/
+> >>
+> >> Could we make this new pcie-apple.c driver to use gpiod_set_value(reset, 0)
+> >> for de-asserting, like in other drivers?
+> 
+> I agree it should be done right from the beginning since this is a new
+> driver. Fixing it later is a painful process.
 
-You need to follow this with a rcuwait_wake_up as in 
-kvm_mmu_notifier_invalidate_range_end.
+No more painful than anything else. At this stage, using a positive or
+negative polarity is immaterial, as there is no core infrastructure
+making any use of this behaviour (every single driver must reinvent
+its own square wheel). If such an infrastructure existed, that'd
+indeed be a requirement. For now, this is merely a convention.
 
-It's probably best if you move the manipulations of 
-mn_active_invalidate_count from kvm_mmu_notifier_invalidate_range_* to 
-two separate functions.
+> > I guess it depends whether you care about the assertion or the signal
+> > itself. I think we may have a bug in the way the GPIOs are handled at
+> > the moment, as it makes no difference whether I register the GPIO are
+> > active high or active low...
+> >
+> > I guess that will be yet another thing to debug, but in the meantime
+> > we have a reliable reset.
+> 
+> Strange, in my case the "active low" pin polarity is correctly picked up
+> from device tree by the gpiolib code, thus using gpio_set_value(gpiod,
+> 1) asserts the pin as it should, resulting in an electrically low pin.
 
-Paolo
+As I said, this looks like a bug, probably in the M1 DT. I'll try to
+look into it when I get the time.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
