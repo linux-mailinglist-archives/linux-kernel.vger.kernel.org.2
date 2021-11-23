@@ -2,195 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7343E45A339
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:49:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D32D545A346
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:50:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237477AbhKWMxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 07:53:01 -0500
-Received: from sibelius.xs4all.nl ([83.163.83.176]:63191 "EHLO
-        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236671AbhKWMwn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 07:52:43 -0500
-Received: from localhost (bloch.sibelius.xs4all.nl [local])
-        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 6fa1d3a8;
-        Tue, 23 Nov 2021 13:49:32 +0100 (CET)
-Date:   Tue, 23 Nov 2021 13:49:32 +0100 (CET)
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     pali@kernel.org, luca@lucaceresoli.net,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, kernel-team@android.com,
-        alyssa@rosenzweig.io, lorenzo.pieralisi@arm.com,
-        bhelgaas@google.com, joey.gouly@arm.com
-In-Reply-To: <87k0gzcb6d.wl-maz@kernel.org> (message from Marc Zyngier on Tue,
-        23 Nov 2021 12:24:10 +0000)
-Subject: Re: [PATCH v2] PCI: apple: Follow the PCIe specifications when
- resetting the port
-References: <20211122104156.518063-1-maz@kernel.org>
- <20211122120347.6qyiycqqjkgqvtta@pali>
- <87zgpw5jza.wl-maz@kernel.org>
- <d3caf39f58b0528b@bloch.sibelius.xs4all.nl> <87k0gzcb6d.wl-maz@kernel.org>
-MIME-version: 1.0
-Content-type: text/plain; charset=utf-8
+        id S237071AbhKWMxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 07:53:37 -0500
+Received: from first.geanix.com ([116.203.34.67]:37668 "EHLO first.geanix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237135AbhKWMxZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 07:53:25 -0500
+Received: from skn-laptop (_gateway [172.25.0.1])
+        by first.geanix.com (Postfix) with ESMTPSA id 32EBAE1C24;
+        Tue, 23 Nov 2021 12:50:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+        t=1637671814; bh=4tmbN6eLrnaQYFaDckhRieSB7/+V2AgHnKlniPtk7/Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=OZoAyGrbeK1/0zWqoIs2K0MVQKI73w+Rw3ggiz+NAEe+NVPAunma2GQBPpxr5TDwc
+         /GvwIiJiQ3UNaCdWLbHKl23ZXoRM9PCQKLKN4D9jN6RY+H5Ui+qXHSXr4TiccoGvSq
+         EcBiXdNaKCAeTqB0p47B69Nwc3aH+BBSqOjMQm7wgFa00fj4dJ2XWBSp+UODQHXM1q
+         EmtO19gfu+6UalPEwxyOc2V7+dl52XCi5Bn3vDxfjw37rMba0Q+0YfWiVYf6qpbNll
+         t2hQ6gy70FAuOeQaFvvNXrhRjjKqhhsRnfw59nlSDcNKCB0P2YoYuSYHHoXklhl8mA
+         Hii3s4oselSYw==
+Date:   Tue, 23 Nov 2021 13:50:12 +0100
+From:   Sean Nyekjaer <sean@geanix.com>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Boris Brezillon <boris.brezillon@collabora.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 3/4] mtd: core: protect access to MTD devices while in
+ suspend
+Message-ID: <20211123125012.ibzqu44ixmykbhkt@skn-laptop>
+References: <20211102110204.3334609-1-sean@geanix.com>
+ <20211102110204.3334609-4-sean@geanix.com>
+ <CGME20211123120353eucas1p2fb2561b7cfddd8d6e7decaef8b504f4c@eucas1p2.samsung.com>
+ <21092c0f-e11b-ac16-ab96-2a0556c0e30a@samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Message-ID: <d3caf70a8b098bdf@bloch.sibelius.xs4all.nl>
+In-Reply-To: <21092c0f-e11b-ac16-ab96-2a0556c0e30a@samsung.com>
+X-Spam-Status: No, score=-0.4 required=4.0 tests=ALL_TRUSTED,BAYES_50,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
+        autolearn=disabled version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on 13e2a5895688
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Date: Tue, 23 Nov 2021 12:24:10 +0000
-> From: Marc Zyngier <maz@kernel.org>
+On Tue, Nov 23, 2021 at 01:03:52PM +0100, Marek Szyprowski wrote:
+> Hi,
 > 
-> On Mon, 22 Nov 2021 21:50:48 +0000,
-> Mark Kettenis <mark.kettenis@xs4all.nl> wrote:
-> > 
-> > > Date: Mon, 22 Nov 2021 14:43:37 +0000
-> > > From: Marc Zyngier <maz@kernel.org>
-> > > 
-> > > On Mon, 22 Nov 2021 12:03:47 +0000,
-> > > Pali Rohár <pali@kernel.org> wrote:
-> > > > 
-> > > > On Monday 22 November 2021 10:41:56 Marc Zyngier wrote:
-> > > > > While the Apple PCIe driver works correctly when directly booted
-> > > > > from the firmware, it fails to initialise when the kernel is booted
-> > > > > from a bootloader using PCIe such as u-boot.
-> > > > > 
-> > > > > That's beacuse we're missing a proper reset of the port (we only
-> > > > > clear the reset, but never assert it).
-> > > > > 
-> > > > > The PCIe spec requirements are two-fold:
-> > > > > 
-> > > > > - #PERST must be asserted before setting up the clocks, and
-> > > > >   stay asserted for at least 100us (Tperst-clk).
-> > > > > 
-> > > > > - Once #PERST is deasserted, the OS must wait for at least 100ms
-> > > > >   "from the end of a Conventional Reset" before we can start talking
-> > > > >   to the devices
-> > > > > 
-> > > > > Implementing this results in a booting system.
-> > > > > 
-> > > > > Fixes: 1e33888fbe44 ("PCI: apple: Add initial hardware bring-up")
-> > > > > Signed-off-by: Marc Zyngier <maz@kernel.org>
-> > > > > Cc: Alyssa Rosenzweig <alyssa@rosenzweig.io>
-> > > > > Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> > > > > Cc: Bjorn Helgaas <bhelgaas@google.com>
-> > > > > Cc: Pali Rohár <pali@kernel.org>
-> > > > 
-> > > > Looks good, but see comment below.
-> > > > 
-> > > > Acked-by: Pali Rohár <pali@kernel.org>
-> > > 
-> > > Thanks for that.
-> > > 
-> > > > 
-> > > > > ---
-> > > > >  drivers/pci/controller/pcie-apple.c | 10 ++++++++++
-> > > > >  1 file changed, 10 insertions(+)
-> > > > > 
-> > > > > diff --git a/drivers/pci/controller/pcie-apple.c b/drivers/pci/controller/pcie-apple.c
-> > > > > index 1bf4d75b61be..957960a733c4 100644
-> > > > > --- a/drivers/pci/controller/pcie-apple.c
-> > > > > +++ b/drivers/pci/controller/pcie-apple.c
-> > > > > @@ -539,13 +539,23 @@ static int apple_pcie_setup_port(struct apple_pcie *pcie,
-> > > > >  
-> > > > >  	rmw_set(PORT_APPCLK_EN, port->base + PORT_APPCLK);
-> > > > >  
-> > > > > +	/* Engage #PERST before setting up the clock */
-> > > > > +	gpiod_set_value(reset, 0);
-> > > > > +
-> > > > >  	ret = apple_pcie_setup_refclk(pcie, port);
-> > > > >  	if (ret < 0)
-> > > > >  		return ret;
-> > > > >  
-> > > > > +	/* The minimal Tperst-clk value is 100us (PCIe CMS r2.0, 2.6.2) */
-> > > > > +	usleep_range(100, 200);
-> > > > > +
-> > > > > +	/* Deassert #PERST */
-> > > > >  	rmw_set(PORT_PERST_OFF, port->base + PORT_PERST);
-> > > > >  	gpiod_set_value(reset, 1);
-> > > > 
-> > > > + Luca
-> > > > 
-> > > > Just one comment. PERST# (PCIe Reset) is active-low signal. De-asserting
-> > > > means to really set value to 1.
-> > > > 
-> > > > But there was a discussion that de-asserting should be done by call:
-> > > >   gpiod_set_value(reset, 0);
-> > > > 
-> > > > https://lore.kernel.org/linux-pci/51be082a-ff10-8a19-5648-f279aabcac51@lucaceresoli.net/
-> > > > 
-> > > > Could we make this new pcie-apple.c driver to use gpiod_set_value(reset, 0)
-> > > > for de-asserting, like in other drivers?
-> > > 
-> > > I guess it depends whether you care about the assertion or the signal
-> > > itself. I think we may have a bug in the way the GPIOs are handled at
-> > > the moment, as it makes no difference whether I register the GPIO are
-> > > active high or active low...
-> > 
-> > That's unfortunate.  But maybe that's an opportunity to fix the
-> > devicetree to use GPIO_ACTIVE_LOW for these GPIOs?
+> On 02.11.2021 12:02, Sean Nyekjaer wrote:
+> > Prevent MTD access while in a suspended state. Also
+> > prevent suspending a device which is still currently in use.
+> >
+> > Commit 013e6292aaf5 ("mtd: rawnand: Simplify the locking") allows the
+> > rawnand layer to return errors rather than waiting in a blocking wait.
+> >
+> > Tested on a iMX6ULL.
+> >
+> > Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
+> > Signed-off-by: Sean Nyekjaer <sean@geanix.com>
 > 
-> Indeed. The following hack does the right thing, and I can then
-> reverse the polarity of the reset in the Linux driver. Of course, it
-> breaks u-boot at the same time (and I suspect OpenBSD would be equally
-> affected).
-
-As I said in my other reply (that clearly crossed this message) the
-U-Boot PCIe driver has not been upstreamed yet.  OpenBSD (and also
-NetBSD) rely on the configuration done by U-Boot and don't mess with
-the reset GPIO at this moment.
-
-> So if we are going down that road, we may need a flag day where all
-> the moving parts change. I don't really mind not being able to boot
-> older kernels, but this goes beyond Linux at this point.
-
-So I don't think this is needed.  The earlier we fix this the better!
-
-> diff --git a/arch/arm64/boot/dts/apple/t8103.dtsi b/arch/arm64/boot/dts/apple/t8103.dtsi
-> index d2e9afde3729..cad1ab920304 100644
-> --- a/arch/arm64/boot/dts/apple/t8103.dtsi
-> +++ b/arch/arm64/boot/dts/apple/t8103.dtsi
-> @@ -10,6 +10,7 @@
->  #include <dt-bindings/interrupt-controller/apple-aic.h>
->  #include <dt-bindings/interrupt-controller/irq.h>
->  #include <dt-bindings/pinctrl/apple.h>
-> +#include <dt-bindings/gpio/gpio.h>
->  
->  / {
->  	compatible = "apple,t8103", "apple,arm-platform";
-> @@ -293,7 +294,7 @@ pcie0: pcie@690000000 {
->  			port00: pci@0,0 {
->  				device_type = "pci";
->  				reg = <0x0 0x0 0x0 0x0 0x0>;
-> -				reset-gpios = <&pinctrl_ap 152 0>;
-> +				reset-gpios = <&pinctrl_ap 152 GPIO_ACTIVE_LOW>;
->  				max-link-speed = <2>;
->  
->  				#address-cells = <3>;
-> @@ -313,7 +314,7 @@ port00: pci@0,0 {
->  			port01: pci@1,0 {
->  				device_type = "pci";
->  				reg = <0x800 0x0 0x0 0x0 0x0>;
-> -				reset-gpios = <&pinctrl_ap 153 0>;
-> +				reset-gpios = <&pinctrl_ap 153 GPIO_ACTIVE_LOW>;
->  				max-link-speed = <2>;
->  
->  				#address-cells = <3>;
-> @@ -333,7 +334,7 @@ port01: pci@1,0 {
->  			port02: pci@2,0 {
->  				device_type = "pci";
->  				reg = <0x1000 0x0 0x0 0x0 0x0>;
-> -				reset-gpios = <&pinctrl_ap 33 0>;
-> +				reset-gpios = <&pinctrl_ap 33 GPIO_ACTIVE_LOW>;
->  				max-link-speed = <1>;
->  
->  				#address-cells = <3>;
+> This patch landed recently in linux-next as commit 9d6abd489e70 ("mtd: 
+> core: protect access to MTD devices while in suspend"). I found that it 
+> triggers the following warning on my test systems:
 > 
-> -- 
-> Without deviation from the norm, progress is not possible.
+> INFO: trying to register non-static key.
+> The code is fine but needs lockdep annotation, or maybe
+> you didn't initialize this object before use?
+> turning off the locking correctness validator.
+> CPU: 1 PID: 1606 Comm: reboot Not tainted 5.16.0-rc1+ #4165
+> Hardware name: linux,dummy-virt (DT)
+> Call trace:
+>   dump_backtrace+0x0/0x1ac
+>   show_stack+0x18/0x24
+>   dump_stack_lvl+0x8c/0xb8
+>   dump_stack+0x18/0x34
+>   register_lock_class+0x4a0/0x4cc
+>   __lock_acquire+0x78/0x20cc
+>   lock_acquire.part.0+0xe0/0x230
+>   lock_acquire+0x68/0x84
+>   down_write+0x64/0xe0
+>   physmap_flash_shutdown+0x60/0x140
+>   platform_shutdown+0x28/0x40
+>   device_shutdown+0x160/0x340
+>   __do_sys_reboot+0x1f8/0x2a0
+>   __arm64_sys_reboot+0x28/0x34
+>   invoke_syscall+0x48/0x114
+>   el0_svc_common.constprop.0+0x60/0x11c
+>   do_el0_svc_compat+0x1c/0x50
+>   el0_svc_compat+0x4c/0x100
+>   el0t_32_sync_handler+0x90/0x140
+>   el0t_32_sync+0x1a4/0x1a8
+> Flash device refused suspend due to active operation (state 20)
+> ------------[ cut here ]------------
+> DEBUG_RWSEMS_WARN_ON(sem->magic != sem): count = 0x1, magic = 0x0, owner 
+> = 0xffff588b4547c740, curr 0xffff588b4547c740, list not empty
+> WARNING: CPU: 1 PID: 1606 at kernel/locking/rwsem.c:1322 
+> up_write+0x144/0x1a0
+> Modules linked in: bluetooth ecdh_generic ecc rfkill ipv6
+> CPU: 1 PID: 1606 Comm: reboot Not tainted 5.16.0-rc1+ #4165
+> Hardware name: linux,dummy-virt (DT)
+> pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> pc : up_write+0x144/0x1a0
+> lr : up_write+0x144/0x1a0
+> sp : ffff8000109ebbd0
+> x29: ffff8000109ebbd0 x28: ffff588b4547c740 x27: 0000000000000000
+> x26: ffffce0238d56470 x25: 0000000000000008 x24: ffffce0239bba030
+> x23: ffff588b451938b0 x22: 0000000000000000 x21: ffff588b44046c80
+> x20: ffffce02397a2000 x19: ffff588b451938b0 x18: 0000000000000030
+> x17: 0000000000000000 x16: 0000000000000000 x15: ffffffffffffffff
+> x14: 0000000000000005 x13: ffffce02397c5198 x12: 0000000000000390
+> x11: 0000000000000130 x10: ffffce023981d198 x9 : 00000000fffff000
+> x8 : ffffce02397c5198 x7 : ffffce023981d198 x6 : 0000000000000000
+> x5 : 000000000000bff4 x4 : 0000000000000000 x3 : 0000000000000000
+> x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff588b4547c740
+> Call trace:
+>   up_write+0x144/0x1a0
+>   physmap_flash_shutdown+0x13c/0x140
+>   platform_shutdown+0x28/0x40
+>   device_shutdown+0x160/0x340
+>   __do_sys_reboot+0x1f8/0x2a0
+>   __arm64_sys_reboot+0x28/0x34
+>   invoke_syscall+0x48/0x114
+>   el0_svc_common.constprop.0+0x60/0x11c
+>   do_el0_svc_compat+0x1c/0x50
+>   el0_svc_compat+0x4c/0x100
+>   el0t_32_sync_handler+0x90/0x140
+>   el0t_32_sync+0x1a4/0x1a8
+> irq event stamp: 2541
+> hardirqs last  enabled at (2541): [<ffffce02382d94c8>] 
+> _raw_spin_unlock_irq+0x44/0x90
+> hardirqs last disabled at (2540): [<ffffce02382d98cc>] 
+> _raw_spin_lock_irq+0xac/0xb0
+> softirqs last  enabled at (2278): [<ffffce0237210470>] _stext+0x470/0x5e8
+> softirqs last disabled at (2273): [<ffffce023729d904>] 
+> __irq_exit_rcu+0x180/0x1ac
+> ---[ end trace d06160a193b668c2 ]---
+> Flash device refused suspend due to active operation (state 20)
 > 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
+> Reverting $subject patch on top of linux-next hides the warning. The 
+> above log has been gathered on QEMU/arm64 'virt' machine, during the 
+> reboot operation. If you need more information how to reproduce it, let 
+> me know.
+> 
+>
+
+Hi,
+
+Thanks Marek :)
+
+@Boris do we need to do something similar here to what we did with the
+mtdconcat stuff?
+
+/Sean
