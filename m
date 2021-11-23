@@ -2,298 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF0A45A637
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 16:05:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5152145A640
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 16:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235073AbhKWPIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 10:08:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230005AbhKWPIt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 10:08:49 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F9AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 07:05:41 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id u18so39530302wrg.5
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 07:05:41 -0800 (PST)
+        id S234492AbhKWPMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 10:12:49 -0500
+Received: from mail-eopbgr40057.outbound.protection.outlook.com ([40.107.4.57]:7045
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229606AbhKWPMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 10:12:47 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Uen8YbnsoQDSf7OgT1UubwOhk620RGEoeoVJagkmf+47EdlTFj18lxIG8paHCCoX3lZ4GVmkGzeOY0ZT0ftvdiV8WhP8HGeOHo9l5JVkuHA/2+weDRjSLSk4nrMz5Pj6IvWQCg6iGp7DjFERfllx82L1JKWgqE9uaI1QPwFJfLYkU/3GLdV0MzGiyIKexEpLshMQDc98EUt0F1WVcAxCDnvRgRywzUMZU5or8pngo+xv8VUgGNt+P199KMzSJcz6qrxHGgY2tz+3orHELp9lHJ/OBQBiqeF9tz+chfrKQ5OvwutqH/vaFIXBOy73h7FGAbfAxpXsXkQLzCqcfS+BoQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eICFyi9HUrhWSG54HRcqIfP28JZP5ewbc+OvTdHCy4E=;
+ b=iVB7ouNDHWUDmbYs1KngBsIcUlr+7ECuw1MhEns9q/CXnRoFhLXS5r54/4tGXpSrdpqbl13VyB/x8RHpmyxn1UHCIa/osHOQRj5Wmy9xyW61zkHJ0w1NbwnCgDH84hzL3+b1BIVujuozfPs5cc8DwgPUGAaER2o85l9qS/0qQpJV8oeZOYdYVqCc2MgfOJGDtkgKjwYswwcDRzHOjTh6rbESmmx94dmSpGsWmyxItbqKeioNioYcpKFd4EO6vJlzowTYoGJr1TMbFaMRLQETJeID9ZHPbOWAGdz8RMbYKEKX2MnQ3tAPon99OsmyLQ82IZoqhJL8uy7govxCshi30A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
+ is 193.240.239.45) smtp.rcpttodomain=gmail.com smtp.mailfrom=diasemi.com;
+ dmarc=none action=none header.from=diasemi.com; dkim=none (message not
+ signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=aOxYoPKgl1loQBK48sy5QOwMdBraS7ydDT8tFLOfn9k=;
-        b=RMrFlWNBitfPi8hEVTqyc3PS6rA3BktxD78wpNjAWD3k/mCc/oruCFj1ByVvFOlfFz
-         w8bp2yQ2OWPf/q0eybBl8UwnurjiTI4rhuR1okiNSGkhlu3u1Mc3lLxUP3/wMZWSkXbA
-         54lPozEVN3dO9rjVVeYcSvTNdWU0AkdscqyuedQ8GhkbA/Doj9ohtiTauaKJFCK3W/oW
-         xXPGnHGuRYlULelSup4KJ471Lr3JVjSqHE0K+50LQTjUujcPuDPgkOkF8cq7wAD6Ek82
-         ps0AnBTvjsOTsGvENXzf6dTQRcCsVAkb9wEnrbPM65T2ylhbK8WSJDlPShkfPGFz+WOD
-         JAkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=aOxYoPKgl1loQBK48sy5QOwMdBraS7ydDT8tFLOfn9k=;
-        b=u04nvGAWcm6x2AcyaFhZyrOkXPw3s2/aJqnbickZ+zz+0R+OoVP+WuigD9A/8tKq3Z
-         iGJvtUHH0bebjRzhTSvJA5248xEM4tWG7xPNeDtfp34OYTdiT1v4tFOloCx6E1svM2fp
-         QwOtT0YK3OWBwPItQP6uTzzn85EoccpxDZoLRjh3mAT5z03585R95TfDW8AIuhZk+PPV
-         M6mCBiDXaA7A9YLq/IKHrdjmauK3LY4QsA+/0hR3vHiOCGMavKK3FPzm7MT3q+RLcjky
-         0E8nNLQpj+XmswBPKccTl3/9SRb+AN6QVxlRs7VDST+2W4P6pVVwCs4IaWemxAMahNYg
-         UIuw==
-X-Gm-Message-State: AOAM531G10UwEpjrzsFYvfH8XwDp49LMp59mdikYAvJ6EIOfcPGvkSqi
-        /F3Z1XhiYmyzrJOb2HFy3BF6tw==
-X-Google-Smtp-Source: ABdhPJyOTPph2KxSJtLK/IVnc4aVU6ndkmVTKcQDS2HZgCiB0mrGSaJXSyYOyOK7c+4gs6kNp0+dqA==
-X-Received: by 2002:a05:6000:82:: with SMTP id m2mr8032743wrx.202.1637679940200;
-        Tue, 23 Nov 2021 07:05:40 -0800 (PST)
-Received: from n124-129-120.byted.org (ec2-3-10-73-122.eu-west-2.compute.amazonaws.com. [3.10.73.122])
-        by smtp.gmail.com with ESMTPSA id z14sm12715153wrp.70.2021.11.23.07.05.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Nov 2021 07:05:39 -0800 (PST)
-From:   Usama Arif <usama.arif@bytedance.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org, vgoyal@redhat.com,
-        tglx@linutronix.de
-Cc:     fam.zheng@bytedance.com, Usama Arif <usama.arif@bytedance.com>
-Subject: [PATCH] x86/purgatory: provide config to disable purgatory
-Date:   Tue, 23 Nov 2021 15:05:08 +0000
-Message-Id: <20211123150508.3397898-1-usama.arif@bytedance.com>
-X-Mailer: git-send-email 2.11.0
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eICFyi9HUrhWSG54HRcqIfP28JZP5ewbc+OvTdHCy4E=;
+ b=xm2GCfYAmKsrMyXQ/Dd6jCrmUoaGAMdBH3znygpN2hbQsNcngSlghXTiiU2nEPeqVIOKaos+bLhi5AjZLhBHv5pgI8MJ+H0vuf94v+HhBRl2hayQ1ZiL1Vo2gr76zd3Z9cF8WjUHliZ/a4z0LAAheWv20oYz33bcHGU5ioFwwz4=
+Received: from AM6P193CA0128.EURP193.PROD.OUTLOOK.COM (2603:10a6:209:85::33)
+ by DB9PR10MB4877.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:2c5::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Tue, 23 Nov
+ 2021 15:09:36 +0000
+Received: from VE1EUR02FT013.eop-EUR02.prod.protection.outlook.com
+ (2603:10a6:209:85:cafe::e4) by AM6P193CA0128.outlook.office365.com
+ (2603:10a6:209:85::33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.20 via Frontend
+ Transport; Tue, 23 Nov 2021 15:09:36 +0000
+X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
+ 193.240.239.45) smtp.mailfrom=diasemi.com; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=diasemi.com;
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ diasemi.com discourages use of 193.240.239.45 as permitted sender)
+Received: from mailrelay1.diasemi.com (193.240.239.45) by
+ VE1EUR02FT013.mail.protection.outlook.com (10.152.12.142) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4713.23 via Frontend Transport; Tue, 23 Nov 2021 15:09:36 +0000
+Received: from nbsrvex-01v.diasemi.com (10.1.17.243) by
+ nbsrvex-01v.diasemi.com (10.1.17.243) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 23 Nov 2021 16:09:23 +0100
+Received: from slsrvapps-01.diasemi.com (10.24.28.40) by
+ nbsrvex-01v.diasemi.com (10.1.17.243) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Tue, 23 Nov 2021 16:09:23 +0100
+Received: by slsrvapps-01.diasemi.com (Postfix, from userid 23378)
+        id 141F480007F; Tue, 23 Nov 2021 15:09:23 +0000 (UTC)
+Message-ID: <cover.1637679551.git.Adam.Ward.opensource@diasemi.com>
+From:   Adam Ward <Adam.Ward.opensource@diasemi.com>
+Date:   Tue, 23 Nov 2021 15:09:23 +0000
+Subject: [PATCH V2 0/3] regulator: da9121: add DA914x support
+To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>
+CC:     Liam Girdwood <lgirdwood@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Support Opensource <support.opensource@diasemi.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 285cde40-beef-4729-157d-08d9ae934349
+X-MS-TrafficTypeDiagnostic: DB9PR10MB4877:
+X-Microsoft-Antispam-PRVS: <DB9PR10MB4877E285A14164B4BDD58A88CB609@DB9PR10MB4877.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MnC4Lm2fmhICZKLlC5Srt8Ue3SWHGDzSD3cPWZCMBpX00l1VTyFNa1CMPWRvnVcl3+8SMi6Z5RVJaiHiI1T6D5liq//JlTMMTOzi9jdN+/PU3x+fKxvhwASrel1oFxJ9LLbY7Lc/fEMgv9JmXBYYZ5wMA9N+elwotdyMyze1/jljwj+OeIpWb14gWUBSyApDV+Qtq0hS29FsYliCuGJPGOotOFmyxN0BN4vHNO95eS/ncs7uE+kKOTWqhSPzhAa+cg6hYUZal+gAyEfE7E1oa8V0hiFnvMBmrSDG2CrUDjt5Kpj/yp0yxt86HZHZU+wNRoTZbr/RlznCyMM8WCukdUrL4wctN3PPAPAjGFH+HgVGKtWI0vqo4ButRAhTZ2s+LudLa0/gk5AAjhGQy2pQ7kq3om2DmBHMHjjAn4msbm8M12V+FXnJo01ybOR7SbuPXmy8aLFulDAYbOOqMEanLxmofjFPETl6UF5hIGyyVDwan+TPhbwvZdBY8v3RN2JpCdoIwcPTSePEjZNqT4HOxdKqd0AudjD8Z7/7Kp8W4t31DL/LPwqCeVrUDxs1t1hekOlQDaIbR7Upn/TQc4QJuB/+5/0FkOORyV0muan6gj3t0/aRzgK23twLbH9JL3r/9/EuaC9UDv2TucL1XZ/E7pgrUugJvIo7xy1LdqQP6eMKrO9ge6NgKKym/Rjt3B1Ifa5H15PpgMT3+omVHLV8xQ2NFBqGdz1M6RmhkGtgOP8=
+X-Forefront-Antispam-Report: CIP:193.240.239.45;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mailrelay1.diasemi.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(36756003)(8936002)(70206006)(8676002)(54906003)(26005)(6266002)(86362001)(70586007)(47076005)(83380400001)(508600001)(186003)(5660300002)(336012)(42186006)(316002)(110136005)(356005)(426003)(4326008)(107886003)(81166007)(36860700001)(2906002)(82310400004)(2616005)(4744005)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2021 15:09:36.1280
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 285cde40-beef-4729-157d-08d9ae934349
+X-MS-Exchange-CrossTenant-Id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=511e3c0e-ee96-486e-a2ec-e272ffa37b7c;Ip=[193.240.239.45];Helo=[mailrelay1.diasemi.com]
+X-MS-Exchange-CrossTenant-AuthSource: VE1EUR02FT013.eop-EUR02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR10MB4877
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This can help in reducing boot time if purgatory is not needed
-as the sha256 digest of kexec segments is no longer calculated
-or verified if the config is disabled.
+This series extends the DA9121 driver to add support for related products:
 
-Signed-off-by: Usama Arif <usama.arif@bytedance.com>
-Reviewed-by: Fam Zheng <fam.zheng@bytedance.com>
----
- arch/powerpc/Kbuild               |  2 +-
- arch/powerpc/Kconfig              |  2 +-
- arch/s390/Kbuild                  |  2 +-
- arch/s390/Kconfig                 |  2 +-
- arch/s390/purgatory/Makefile      |  2 +-
- arch/x86/Kbuild                   |  2 +-
- arch/x86/Kconfig                  |  6 ++--
- arch/x86/kernel/kexec-bzimage64.c | 59 +++++++++++++++++++++------------------
- arch/x86/purgatory/Makefile       |  2 +-
- kernel/kexec_file.c               |  6 ++--
- 10 files changed, 46 insertions(+), 39 deletions(-)
+  DA9141, 40A, Quad-Phase
+  DA9142, 20A, Dual-Phase
 
-diff --git a/arch/powerpc/Kbuild b/arch/powerpc/Kbuild
-index 22cd0d55a892..072e62d7898e 100644
---- a/arch/powerpc/Kbuild
-+++ b/arch/powerpc/Kbuild
-@@ -15,7 +15,7 @@ obj-$(CONFIG_KVM)  += kvm/
- 
- obj-$(CONFIG_PERF_EVENTS) += perf/
- obj-$(CONFIG_KEXEC_CORE)  += kexec/
--obj-$(CONFIG_KEXEC_FILE)  += purgatory/
-+obj-$(CONFIG_KEXEC_PURGATORY)  += purgatory/
- 
- # for cleaning
- subdir- += boot
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index dea74d7717c0..58bdfd1abb44 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -557,7 +557,7 @@ config KEXEC_FILE
- 	  for kernel and initramfs as opposed to a list of segments as is the
- 	  case for the older kexec call.
- 
--config ARCH_HAS_KEXEC_PURGATORY
-+config KEXEC_PURGATORY
- 	def_bool KEXEC_FILE
- 
- config RELOCATABLE
-diff --git a/arch/s390/Kbuild b/arch/s390/Kbuild
-index 76e362277179..2ed4ee5cdf59 100644
---- a/arch/s390/Kbuild
-+++ b/arch/s390/Kbuild
-@@ -7,7 +7,7 @@ obj-$(CONFIG_S390_HYPFS_FS)	+= hypfs/
- obj-$(CONFIG_APPLDATA_BASE)	+= appldata/
- obj-y				+= net/
- obj-$(CONFIG_PCI)		+= pci/
--obj-$(CONFIG_ARCH_HAS_KEXEC_PURGATORY) += purgatory/
-+obj-$(CONFIG_KEXEC_PURGATORY) += purgatory/
- 
- # for cleaning
- subdir- += boot tools
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 2a5bb4f29cfe..d15bdaa0e198 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -538,7 +538,7 @@ config KEXEC_FILE
- 	  kexec system call this system call takes file descriptors for the
- 	  kernel and initramfs as arguments.
- 
--config ARCH_HAS_KEXEC_PURGATORY
-+config KEXEC_PURGATORY
- 	def_bool y
- 	depends on KEXEC_FILE
- 
-diff --git a/arch/s390/purgatory/Makefile b/arch/s390/purgatory/Makefile
-index 360ada80d20c..03cac6d7310a 100644
---- a/arch/s390/purgatory/Makefile
-+++ b/arch/s390/purgatory/Makefile
-@@ -51,4 +51,4 @@ $(obj)/purgatory.ro: $(obj)/purgatory $(obj)/purgatory.chk FORCE
- $(obj)/kexec-purgatory.o: $(obj)/kexec-purgatory.S $(obj)/purgatory.ro FORCE
- 	$(call if_changed_rule,as_o_S)
- 
--obj-$(CONFIG_ARCH_HAS_KEXEC_PURGATORY) += kexec-purgatory.o
-+obj-$(CONFIG_KEXEC_PURGATORY) += kexec-purgatory.o
-diff --git a/arch/x86/Kbuild b/arch/x86/Kbuild
-index f384cb1a4f7a..9089438ed6d8 100644
---- a/arch/x86/Kbuild
-+++ b/arch/x86/Kbuild
-@@ -24,7 +24,7 @@ obj-$(CONFIG_IA32_EMULATION) += ia32/
- obj-y += platform/
- obj-y += net/
- 
--obj-$(CONFIG_KEXEC_FILE) += purgatory/
-+obj-$(CONFIG_KEXEC_PURGATORY) += purgatory/
- 
- # for cleaning
- subdir- += boot tools
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 7399327d1eff..7efe6dbfdc67 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2000,8 +2000,10 @@ config KEXEC_FILE
- 	  for kernel and initramfs as opposed to list of segments as
- 	  accepted by previous system call.
- 
--config ARCH_HAS_KEXEC_PURGATORY
--	def_bool KEXEC_FILE
-+config KEXEC_PURGATORY
-+	bool "A standalone relocatable object run between the 2 kernels during kexec"
-+	depends on KEXEC_FILE
-+	default y
- 
- config KEXEC_SIG
- 	bool "Verify kernel signature during kexec_file_load() syscall"
-diff --git a/arch/x86/kernel/kexec-bzimage64.c b/arch/x86/kernel/kexec-bzimage64.c
-index 170d0fd68b1f..bf37a2c4ab8b 100644
---- a/arch/x86/kernel/kexec-bzimage64.c
-+++ b/arch/x86/kernel/kexec-bzimage64.c
-@@ -374,18 +374,19 @@ static void *bzImage64_load(struct kimage *image, char *kernel,
- 			return ERR_PTR(ret);
- 	}
- 
--	/*
--	 * Load purgatory. For 64bit entry point, purgatory  code can be
--	 * anywhere.
--	 */
--	ret = kexec_load_purgatory(image, &pbuf);
--	if (ret) {
--		pr_err("Loading purgatory failed\n");
--		return ERR_PTR(ret);
--	}
--
--	pr_debug("Loaded purgatory at 0x%lx\n", pbuf.mem);
-+	if (IS_ENABLED(CONFIG_KEXEC_PURGATORY)) {
-+		/*
-+		 * Load purgatory. For 64bit entry point, purgatory  code can be
-+		 * anywhere.
-+		 */
-+		ret = kexec_load_purgatory(image, &pbuf);
-+		if (ret) {
-+			pr_err("Loading purgatory failed\n");
-+			return ERR_PTR(ret);
-+		}
- 
-+		pr_debug("Loaded purgatory at 0x%lx\n", pbuf.mem);
-+	}
- 
- 	/*
- 	 * Load Bootparams and cmdline and space for efi stuff.
-@@ -466,28 +467,32 @@ static void *bzImage64_load(struct kimage *image, char *kernel,
- 	params->hdr.type_of_loader = 0x0D << 4;
- 	params->hdr.loadflags = 0;
- 
--	/* Setup purgatory regs for entry */
--	ret = kexec_purgatory_get_set_symbol(image, "entry64_regs", &regs64,
--					     sizeof(regs64), 1);
--	if (ret)
--		goto out_free_params;
-+	if (IS_ENABLED(CONFIG_KEXEC_PURGATORY)) {
-+		/* Setup purgatory regs for entry */
-+		ret = kexec_purgatory_get_set_symbol(image, "entry64_regs", &regs64,
-+							sizeof(regs64), 1);
-+		if (ret)
-+			goto out_free_params;
-+	}
- 
- 	regs64.rbx = 0; /* Bootstrap Processor */
- 	regs64.rsi = bootparam_load_addr;
- 	regs64.rip = kernel_load_addr + 0x200;
--	stack = kexec_purgatory_get_symbol_addr(image, "stack_end");
--	if (IS_ERR(stack)) {
--		pr_err("Could not find address of symbol stack_end\n");
--		ret = -EINVAL;
--		goto out_free_params;
--	}
- 
--	regs64.rsp = (unsigned long)stack;
--	ret = kexec_purgatory_get_set_symbol(image, "entry64_regs", &regs64,
--					     sizeof(regs64), 0);
--	if (ret)
--		goto out_free_params;
-+	if (IS_ENABLED(CONFIG_KEXEC_PURGATORY)) {
-+		stack = kexec_purgatory_get_symbol_addr(image, "stack_end");
-+		if (IS_ERR(stack)) {
-+			pr_err("Could not find address of symbol stack_end\n");
-+			ret = -EINVAL;
-+			goto out_free_params;
-+		}
- 
-+		regs64.rsp = (unsigned long)stack;
-+		ret = kexec_purgatory_get_set_symbol(image, "entry64_regs", &regs64,
-+							sizeof(regs64), 0);
-+		if (ret)
-+			goto out_free_params;
-+	}
- 	ret = setup_boot_parameters(image, params, bootparam_load_addr,
- 				    efi_map_offset, efi_map_sz,
- 				    efi_setup_data_offset);
-diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
-index 95ea17a9d20c..688b3f21be8f 100644
---- a/arch/x86/purgatory/Makefile
-+++ b/arch/x86/purgatory/Makefile
-@@ -81,4 +81,4 @@ quiet_cmd_bin2c = BIN2C   $@
- $(obj)/kexec-purgatory.c: $(obj)/purgatory.ro $(obj)/purgatory.chk FORCE
- 	$(call if_changed,bin2c)
- 
--obj-$(CONFIG_KEXEC_FILE)	+= kexec-purgatory.o
-+obj-$(CONFIG_KEXEC_PURGATORY)	+= kexec-purgatory.o
-diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
-index 8347fc158d2b..e5f4c2d27249 100644
---- a/kernel/kexec_file.c
-+++ b/kernel/kexec_file.c
-@@ -724,7 +724,7 @@ static int kexec_calculate_store_digests(struct kimage *image)
- 	struct kexec_sha_region *sha_regions;
- 	struct purgatory_info *pi = &image->purgatory_info;
- 
--	if (!IS_ENABLED(CONFIG_ARCH_HAS_KEXEC_PURGATORY))
-+	if (!IS_ENABLED(CONFIG_KEXEC_PURGATORY))
- 		return 0;
- 
- 	zero_buf = __va(page_to_pfn(ZERO_PAGE(0)) << PAGE_SHIFT);
-@@ -829,7 +829,7 @@ static int kexec_calculate_store_digests(struct kimage *image)
- 	return ret;
- }
- 
--#ifdef CONFIG_ARCH_HAS_KEXEC_PURGATORY
-+#ifdef CONFIG_KEXEC_PURGATORY
- /*
-  * kexec_purgatory_setup_kbuf - prepare buffer to load purgatory.
-  * @pi:		Purgatory to be loaded.
-@@ -1176,7 +1176,7 @@ int kexec_purgatory_get_set_symbol(struct kimage *image, const char *name,
- 
- 	return 0;
- }
--#endif /* CONFIG_ARCH_HAS_KEXEC_PURGATORY */
-+#endif /* CONFIG_KEXEC_PURGATORY */
- 
- int crash_exclude_mem_range(struct crash_mem *mem,
- 			    unsigned long long mstart, unsigned long long mend)
+The changing of current limit when active is now prohibited, for the range,
+due to possibility of undefined behaviour during transition
+
+V2:
+
+ - Separate removal of obsolete/unused test compatible from binding
+
+
+Adam Ward (3):
+  DA9121: remove erroneous compatible from binding
+  DA9121: add DA914x binding info
+  DA9121: add DA914x support
+
+ .../bindings/regulator/dlg,da9121.yaml        |  85 ++++++++-----
+ drivers/regulator/da9121-regulator.c          | 113 +++++++++++++++++-
+ drivers/regulator/da9121-regulator.h          |  21 +++-
+ 3 files changed, 182 insertions(+), 37 deletions(-)
+
 -- 
-2.11.0
+2.25.1
 
