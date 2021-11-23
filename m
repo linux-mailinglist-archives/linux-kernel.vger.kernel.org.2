@@ -2,114 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE60459C34
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 07:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81ADA459C3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 07:18:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233600AbhKWGTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 01:19:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40192 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233564AbhKWGTH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 01:19:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637648159;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4zwLXwj6k9S2mIEl8JoRh6JXMNKqR5tGWTY9Pd3RcY4=;
-        b=ErEx38P69NJZcrFE5I7LwTBtdzTSnJzdHj2sXvGFXLGVqkG5vdL7NvslugWgfGAqEbZ9dH
-        6eFclFeUjKBQEvjqiaQJLRsdESAQY15zYiX+wFdZN/yoa7akve9Rse76Ef72vw3Znwk9xJ
-        sBCZforC23H3b+LC3C0aETqtQXaUfj4=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-390--8VdEw87Nmqoy7eGvq-jHw-1; Tue, 23 Nov 2021 01:15:57 -0500
-X-MC-Unique: -8VdEw87Nmqoy7eGvq-jHw-1
-Received: by mail-wm1-f70.google.com with SMTP id 205-20020a1c00d6000000b003335d1384f1so689794wma.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 22:15:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4zwLXwj6k9S2mIEl8JoRh6JXMNKqR5tGWTY9Pd3RcY4=;
-        b=sz3UwzUF8nsJPplMCxe/Ymw7aqIuPr3fxfMhBiqod/f92Tx15p+CmEheTrfQvbUixI
-         1ZeFl+fwRFQOb9k2Zt0GocWaVE0bNXjazv2XpbUmHwbqDMGlm1Gp0ysELwFg2uAT1JNB
-         JCSsdN2SzYBUVfOjY4UYBQnYo3tzJiEymlbfRcWZVWBAsIhg6bx6R033h+ek+iT3nLdL
-         Uh5JrFPD0NKbJYrBYodRhQAxVsPLmZQ9/NLb+f+s+mVBrGCvlDWLLElNbb5BPCdLIKhk
-         qHvcXrok4xkT3Wlllj+oOgxCnP9SVMwKwsZS693wXEWDCbu+cAHzKHNqlamP2Xibm1YI
-         pilA==
-X-Gm-Message-State: AOAM531RvdUmM7kxknFdno5n5rqsWMUeX/oBKAuSn6fMTw6B8ISc+hRH
-        ODr1jCUDIsy+FkkruKHnVd9kfbcMr4i1AGKj98euPpRUXV47dBbnH2T7VcTGpn6+5LzqzBUzpUb
-        lGakbF9TKNfnBeEp0wAHPvvRZ
-X-Received: by 2002:adf:ef4f:: with SMTP id c15mr4390039wrp.226.1637648156131;
-        Mon, 22 Nov 2021 22:15:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwCd6t13EbSY0ZWFB7yE27RLkDqYVVYmKx7kd9hky7A7ody0jIp7kwGr4IDGX9vk1Uty1OSnQ==
-X-Received: by 2002:adf:ef4f:: with SMTP id c15mr4390015wrp.226.1637648155984;
-        Mon, 22 Nov 2021 22:15:55 -0800 (PST)
-Received: from redhat.com ([45.15.19.36])
-        by smtp.gmail.com with ESMTPSA id a10sm24151127wmq.27.2021.11.22.22.15.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 22:15:55 -0800 (PST)
-Date:   Tue, 23 Nov 2021 01:15:51 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Jason Wang <jasowang@redhat.com>
-Subject: Re: [PATCH] rpmsg: virtio: don't let virtio core to validate used
- length
-Message-ID: <20211123011340-mutt-send-email-mst@kernel.org>
-References: <20211122160812.25125-1-arnaud.pouliquen@foss.st.com>
+        id S233640AbhKWGVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 01:21:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42456 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230234AbhKWGVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 01:21:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0873F60FC2;
+        Tue, 23 Nov 2021 06:18:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637648315;
+        bh=9q5PZmYIUfd5uvRnDykQ983UxaDrFCzj6jD1Sb39JZU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gL4vlg1ZUU1waStVc3W5mTM5QuovyX7Imb9HG29o+WQnY4CFRmrqX+dc/KAxspfbu
+         Vq6CmXkNVCtiOshmodsHTr3Si7R1RoiNGxQNkZNfeGMaHamyMKRIo8I9ty1LVzvpHE
+         I0yUJED0tka8P1QGcTkCulsqTYJzNqvr0rupg6CG10ik8lXZTUyFudb8GCM9GEbT2H
+         ADSaJKLJu7C0rxoENVI0BwIOL0Mr6allKQ5SjTBdPQ+gTC/Y2989lDY/Gu9X//Ug9k
+         JdFfnkjyUJEvD9qrsVlrthBhyGJXDiilQCulLW3Qy7HV+oKAGPpa3kwg6JkqAEhpKu
+         I38lLULc5+udw==
+Received: by mail-ua1-f52.google.com with SMTP id x14so979913uao.0;
+        Mon, 22 Nov 2021 22:18:34 -0800 (PST)
+X-Gm-Message-State: AOAM530q5YcajUvsW/o2I7sZXAfS+TMj3pNAp+B9sv3LgZUa7Xv9TdGj
+        8D9o6hpgLp+lDLBmJSE5zkffS2jcHJu0PZ4syjQ=
+X-Google-Smtp-Source: ABdhPJyacyctRuRWpwxoo6qsjZpYyyLDBa+6mAN4sNblEFUBReDr/56cV/o4cDlvDGuw9EqQgIGpApkx9inD6uye9ZQ=
+X-Received: by 2002:ab0:5b59:: with SMTP id v25mr4688469uae.57.1637648314117;
+ Mon, 22 Nov 2021 22:18:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211122160812.25125-1-arnaud.pouliquen@foss.st.com>
+References: <20211123015717.542631-1-guoren@kernel.org> <20211123015717.542631-2-guoren@kernel.org>
+ <CAAhSdy0LWyhgXetiXikCosSX4xasgROyua6XMd92dV8TiWp62w@mail.gmail.com>
+In-Reply-To: <CAAhSdy0LWyhgXetiXikCosSX4xasgROyua6XMd92dV8TiWp62w@mail.gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Tue, 23 Nov 2021 14:18:23 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTRMBoCi--4V5+bgPopkLOF8+y7QBHjjENZDSr4cm5PNfw@mail.gmail.com>
+Message-ID: <CAJF2gTRMBoCi--4V5+bgPopkLOF8+y7QBHjjENZDSr4cm5PNfw@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/3] riscv: Remove 2MB offset in the mm layout
+To:     Anup Patel <anup@brainfault.org>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>, atishp@rivosinc.com,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Alexandre Ghiti <alex@ghiti.fr>,
+        Alexandre Ghiti <alexandre.ghiti@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 05:08:12PM +0100, Arnaud Pouliquen wrote:
-> For RX virtqueue, the used length is validated in all the three paths
-> (big, small and mergeable). For control vq, we never tries to use used
-> length. So this patch forbids the core to validate the used length.
+On Tue, Nov 23, 2021 at 11:56 AM Anup Patel <anup@brainfault.org> wrote:
+>
+> +Alex
+>
+> On Tue, Nov 23, 2021 at 7:27 AM <guoren@kernel.org> wrote:
+> >
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > The current RISC-V's mm layout is based on a 2MB offset and wasting
+> > memory. Remove 2MB offset and map PAGE_OFFSET at start_of_DRAM.
+> > Then we could reduce the memory reserved for opensbi in the next
+> > patch.
+>
+> The real problem is that the generic kernel marks memory before
+> __pa(PAGE_OFFSET) as reserved which is evident from the boot
+> print "OF: fdt: Ignoring memory range 0x80000000 - 0x80200000".
+>
+> One simple way to re-claim the first 2MB of memory is by:
+> 1) Not placing OpenSBI firmware at start of RAM and rather
+> place it towards end/middle or RAM away from kernel and initrd
+> 2) Load kernel at start of the RAM
+>
+> The point#1 is already supported by OpenSBI firmwares using
+> position independent compilation. In fact, U-Boot SPL does
+> not load OpenSBI firmware at the start of RAM.
+This deviates from the original intention of this patch. Some users
+have been used to 2MB/4MB LOAD_OFFSET and we also should save the
+memory of opensbi for them.
 
-Jason commented on this. This is copy paste from virtio net
-where the change was merely an optimization.
+>
+> I would suggest Allwinner D1 to follow U-Boot SPL and have
+> the booting stage before OpenSBI to load OpenSBI firmware
+>
+> Regards,
+> Anup
+>
+> >
+> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> > Cc: Anup Patel <anup.patel@wdc.com>
+> > Cc: Atish Patra <atishp@rivosinc.com>
+> > ---
+> >  arch/riscv/include/asm/page.h   |  8 ++++++++
+> >  arch/riscv/kernel/head.S        | 10 +++-------
+> >  arch/riscv/kernel/vmlinux.lds.S |  5 ++---
+> >  arch/riscv/mm/init.c            | 11 ++++++++---
+> >  4 files changed, 21 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
+> > index b3e5ff0125fe..299147c78b4a 100644
+> > --- a/arch/riscv/include/asm/page.h
+> > +++ b/arch/riscv/include/asm/page.h
+> > @@ -16,6 +16,14 @@
+> >  #define PAGE_SIZE      (_AC(1, UL) << PAGE_SHIFT)
+> >  #define PAGE_MASK      (~(PAGE_SIZE - 1))
+> >
+> > +#if __riscv_xlen == 64
+> > +/* Image load offset(2MB) from start of RAM */
+> > +#define LOAD_OFFSET    0x200000
+> > +#else
+> > +/* Image load offset(4MB) from start of RAM */
+> > +#define LOAD_OFFSET    0x400000
+> > +#endif
+> > +
+> >  #ifdef CONFIG_64BIT
+> >  #define HUGE_MAX_HSTATE                2
+> >  #else
+> > diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
+> > index f52f01ecbeea..a6ac892d2ccf 100644
+> > --- a/arch/riscv/kernel/head.S
+> > +++ b/arch/riscv/kernel/head.S
+> > @@ -61,13 +61,7 @@ ENTRY(_start)
+> >         /* Image load offset (0MB) from start of RAM for M-mode */
+> >         .dword 0
+> >  #else
+> > -#if __riscv_xlen == 64
+> > -       /* Image load offset(2MB) from start of RAM */
+> > -       .dword 0x200000
+> > -#else
+> > -       /* Image load offset(4MB) from start of RAM */
+> > -       .dword 0x400000
+> > -#endif
+> > +       .dword LOAD_OFFSET
+> >  #endif
+> >         /* Effective size of kernel image */
+> >         .dword _end - _start
+> > @@ -94,6 +88,8 @@ relocate:
+> >         la a1, kernel_map
+> >         XIP_FIXUP_OFFSET a1
+> >         REG_L a1, KERNEL_MAP_VIRT_ADDR(a1)
+> > +       li a2, LOAD_OFFSET
+> > +       add a1, a1, a2
+> >         la a2, _start
+> >         sub a1, a1, a2
+> >         add ra, ra, a1
+> > diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
+> > index 5104f3a871e3..75b7c72cd4bd 100644
+> > --- a/arch/riscv/kernel/vmlinux.lds.S
+> > +++ b/arch/riscv/kernel/vmlinux.lds.S
+> > @@ -11,10 +11,9 @@
+> >  #else
+> >
+> >  #include <asm/pgtable.h>
+> > -#define LOAD_OFFSET KERNEL_LINK_ADDR
+> >
+> > -#include <asm/vmlinux.lds.h>
+> >  #include <asm/page.h>
+> > +#include <asm/vmlinux.lds.h>
+> >  #include <asm/cache.h>
+> >  #include <asm/thread_info.h>
+> >  #include <asm/set_memory.h>
+> > @@ -32,7 +31,7 @@ PECOFF_FILE_ALIGNMENT = 0x200;
+> >  SECTIONS
+> >  {
+> >         /* Beginning of code and text segment */
+> > -       . = LOAD_OFFSET;
+> > +       . = LOAD_OFFSET + KERNEL_LINK_ADDR;
+> >         _start = .;
+> >         HEAD_TEXT_SECTION
+> >         . = ALIGN(PAGE_SIZE);
+> > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> > index 24b2b8044602..920e78f8c3e4 100644
+> > --- a/arch/riscv/mm/init.c
+> > +++ b/arch/riscv/mm/init.c
+> > @@ -221,6 +221,11 @@ static void __init setup_bootmem(void)
+> >         if (!IS_ENABLED(CONFIG_BUILTIN_DTB))
+> >                 memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
+> >
+> > +       /*
+> > +        * Reserve OpenSBI region and depends on PMP to deny accesses.
+> > +        */
+> > +       memblock_reserve(__pa(PAGE_OFFSET), LOAD_OFFSET);
+> > +
+> >         early_init_fdt_scan_reserved_mem();
+> >         dma_contiguous_reserve(dma32_phys_limit);
+> >         if (IS_ENABLED(CONFIG_64BIT))
+> > @@ -604,7 +609,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+> >
+> >         kernel_map.va_kernel_xip_pa_offset = kernel_map.virt_addr - kernel_map.xiprom;
+> >  #else
+> > -       kernel_map.phys_addr = (uintptr_t)(&_start);
+> > +       kernel_map.phys_addr = (uintptr_t)(&_start) - LOAD_OFFSET;
+> >         kernel_map.size = (uintptr_t)(&_end) - kernel_map.phys_addr;
+> >  #endif
+> >         kernel_map.va_pa_offset = PAGE_OFFSET - kernel_map.phys_addr;
+> > @@ -645,8 +650,8 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+> >         create_pmd_mapping(trampoline_pmd, kernel_map.virt_addr,
+> >                            kernel_map.xiprom, PMD_SIZE, PAGE_KERNEL_EXEC);
+> >  #else
+> > -       create_pmd_mapping(trampoline_pmd, kernel_map.virt_addr,
+> > -                          kernel_map.phys_addr, PMD_SIZE, PAGE_KERNEL_EXEC);
+> > +       create_pmd_mapping(trampoline_pmd, kernel_map.virt_addr + LOAD_OFFSET,
+> > +                          kernel_map.phys_addr + LOAD_OFFSET, PMD_SIZE, PAGE_KERNEL_EXEC);
+> >  #endif
+> >  #else
+> >         /* Setup trampoline PGD */
+> > --
+> > 2.25.1
+> >
 
-> Without patch the rpmsg client sample does not work.
 
-Hmm that's not enough of a description. Could you please
-provide more detail? Does rpmsg device set used length to a
-value > dma read buffer size? what kind of error message
-do you get? what are the plans to fix the device?
 
-> Fixes: 939779f5152d ("virtio_ring: validate used buffer length")
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> Cc: Jason Wang <jasowang@redhat.com>
-> Cc: Michael S. Tsirkin <mst@redhat.com>
-> ---
-> base-commit: fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf
-> ---
->  drivers/rpmsg/virtio_rpmsg_bus.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
-> index 9c112aa65040..5f73f19c2c38 100644
-> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
-> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
-> @@ -1054,6 +1054,7 @@ static struct virtio_driver virtio_ipc_driver = {
->  	.feature_table_size = ARRAY_SIZE(features),
->  	.driver.name	= KBUILD_MODNAME,
->  	.driver.owner	= THIS_MODULE,
-> +	.suppress_used_validation = true,
->  	.id_table	= id_table,
->  	.probe		= rpmsg_probe,
->  	.remove		= rpmsg_remove,
-> -- 
-> 2.17.1
+-- 
+Best Regards
+ Guo Ren
 
+ML: https://lore.kernel.org/linux-csky/
