@@ -2,226 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28ABC45A48A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:08:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5A645A4A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:10:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237508AbhKWOLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 09:11:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235699AbhKWOLh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 09:11:37 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A3CC061756;
-        Tue, 23 Nov 2021 06:08:22 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id y12so92671753eda.12;
-        Tue, 23 Nov 2021 06:08:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ELRlKX2HUWgYuYg/Jcbq3/MZpwBPI4t8HvTlRe5jtdE=;
-        b=Gmkju60ArLDDQtuQxokbDuyrjI8xmCYtzRyha/+NZyU+P0ZxPnlYXr/+6PmYVo17V5
-         3bKL5NnCxYAX6qZj8maxoFo7iz7odNR47mz0u+FniKQI8Aw3Z6UYsOau1XPye03tLtv9
-         avdwshfAZHNm1Z1wMFmkVqpW2LTD0zQ85yCozM1A79IMQ5RsWKT4rays9sEshTas2Zu+
-         u3UW160JmLbDUsZacKseWuKSwWeXPRmkpXnvqw8ADhM1Hv/ZhsOEqDvVpFTaomUKq902
-         3MbYWKZxFNBtIEs+/FeIYfMU1xRo7fPRcgNr60ZnmU8VaKy3po7DySSD2iMtt54SEYwG
-         q3rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ELRlKX2HUWgYuYg/Jcbq3/MZpwBPI4t8HvTlRe5jtdE=;
-        b=ct2uF5KcCmo5oDA7TX4Yc/QRaGcTKQFFPddN9/8UoZ3rQn4CBle8AS8McjVqdGEw6I
-         0Gqvt0f6+RFTkyfQqcfVwkMxAcTxEUk8FT3FE1/3niJQ7v4NQimwXz++DDmVduoBrgtN
-         A40zPkYAOL6g4rk145TuDMMBwQY4Q3rBSxRzm8IhYGvVsOV18V+fgSLLtE3ZEEe4sngz
-         J5goD9NvyS/oVnL9V8Kx2XkNmNHz1JaXAqgQ561v17J9nL4pzCt6Zd0JvkGGnEWjJ5wX
-         XPyI0eei9ADWz+GSfFnNgB4Ps8doDohkM7IHH6zFgUmCz3HFZ9YHtGBt9JoelfOVcPpi
-         OA2Q==
-X-Gm-Message-State: AOAM5332MP+bvHaGvEmXCkrk6dtXh8081Iv1u1lymYphd7p27dQoc9Hs
-        vPSZMmzxo8dxZLopWYky3ThehtGQj+O5VgyHgsw=
-X-Google-Smtp-Source: ABdhPJwyKs5zRM6K3bkXBhbW3hA67WWEJXaq1tY/aKipG/gYn1zxEXHHL3zN2sMY83WPwZyTLYOfl5t9VNcJM0ZTwIo=
-X-Received: by 2002:a17:907:75f0:: with SMTP id jz16mr8117568ejc.77.1637676500469;
- Tue, 23 Nov 2021 06:08:20 -0800 (PST)
+        id S237523AbhKWONE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 09:13:04 -0500
+Received: from mga17.intel.com ([192.55.52.151]:23872 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237778AbhKWOMy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 09:12:54 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="215736345"
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="215736345"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 06:09:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="509422684"
+Received: from nntpat99-84.inn.intel.com ([10.125.99.84])
+  by orsmga008.jf.intel.com with ESMTP; 23 Nov 2021 06:09:26 -0800
+From:   Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Riccardo Mancini <rickyman7@gmail.com>
+Subject: [PATCH v12 14/16] perf record: Implement compatibility checks
+Date:   Tue, 23 Nov 2021 17:08:10 +0300
+Message-Id: <616a1ead48dcc44f71711511fbb1e375b29f4c2f.1637675515.git.alexey.v.bayduraev@linux.intel.com>
+X-Mailer: git-send-email 2.19.0
+In-Reply-To: <cover.1637675515.git.alexey.v.bayduraev@linux.intel.com>
+References: <cover.1637675515.git.alexey.v.bayduraev@linux.intel.com>
 MIME-Version: 1.0
-References: <20211104161804.587250-1-aford173@gmail.com> <CAJ+vNU2jcWyCm3UyiOnvknS0t+mSdpaB+CgGWYO3jxXTa3LhRA@mail.gmail.com>
- <CAHCN7xJrnZMQgXVMJg7MZdFMWyesf6Ph7HnfMH7-9bm1qODHFw@mail.gmail.com>
- <CAJ+vNU32GXtbKWGQXoE7pkXU8FcKh+HQJJduwRbRJ0tC-d6GoA@mail.gmail.com>
- <CAHCN7xLAm21zUJQ8s4s--+ygmeVY0qyo0WSLp7ZM9bT9R3sjxw@mail.gmail.com>
- <CAOMZO5Am4P17mOXWrPs0ns9AwOXM_ZpBdzbYTYJfv_48Ea=BHg@mail.gmail.com>
- <CAHCN7xLzR5LqqydC7uydsXQPFVn=nyqKD8ZEH3EjcPuwQky5WA@mail.gmail.com>
- <CAOMZO5AnXDV3jdR6hP_+uqyss4KftzjahcrGq1XA37nGsfQedw@mail.gmail.com>
- <CAHCN7xKJBHY1o94VDkBaXXFjMUm=5WoshddT4DVWD04aiPV8MA@mail.gmail.com>
- <CAHCN7xKpjVWiTvXpYH11kaHX=0Figh=ALQS4qnUroGCu-q3NNA@mail.gmail.com>
- <CAJ+vNU37=qPuuNaSsvRntKU5wbVZoOtS_tAx7En6EMGfKN=QLg@mail.gmail.com>
- <82c5da8862abaa430ee52b57e15d29a67106d61f.camel@pengutronix.de> <CAJ+vNU0ce1TTAHzT-ZE303ikmmwghutyObSQMJeHN8D0R8Gcdw@mail.gmail.com>
-In-Reply-To: <CAJ+vNU0ce1TTAHzT-ZE303ikmmwghutyObSQMJeHN8D0R8Gcdw@mail.gmail.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Tue, 23 Nov 2021 08:08:09 -0600
-Message-ID: <CAHCN7x+k=C=fxFZYJK6qpUFNDSddVGvfYPPLZ_LNOvhW6RNxmg@mail.gmail.com>
-Subject: Re: [PATCH V3 0/9] arm64: imx8mn: Enable more imx8m Nano functions
-To:     Tim Harvey <tharvey@gateworks.com>
-Cc:     Lucas Stach <l.stach@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        "Ariel D'Alessandro" <ariel.dalessandro@collabora.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Device Tree Mailing List <devicetree@vger.kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 3:52 PM Tim Harvey <tharvey@gateworks.com> wrote:
->
-> On Mon, Nov 22, 2021 at 10:20 AM Lucas Stach <l.stach@pengutronix.de> wrote:
-> >
-> > Am Montag, dem 22.11.2021 um 09:59 -0800 schrieb Tim Harvey:
-> > > On Sun, Nov 21, 2021 at 7:25 AM Adam Ford <aford173@gmail.com> wrote:
-> > > >
-> > > > On Sun, Nov 21, 2021 at 8:34 AM Adam Ford <aford173@gmail.com> wrote:
-> > > > >
-> > > > > On Sun, Nov 21, 2021 at 8:21 AM Fabio Estevam <festevam@gmail.com> wrote:
-> > > > > >
-> > > > > > Hi Adam,
-> > > > > >
-> > > > > > On Sun, Nov 21, 2021 at 11:17 AM Adam Ford <aford173@gmail.com> wrote:
-> > > > > >
-> > > > > > > I am using https://source.codeaurora.org/external/imx/imx-atf/log/?h=lf_v2.4
-> > > > > > >
-> > > > > > > Since the driver sending SMCC commands to ATF isn't doing that, I
-> > > > > > > assume it's safe to use the linux power-domain drivers with the ATF
-> > > > > > > from NXP's kernel.
-> > > > > > >
-> > > > > > > If you can point me to the repo you think I should be using, I'll give it a try.
-> > > > > >
-> > > > > > Do you know if the mainline TF-A repo v2.5 works too?
-> > > > > > https://github.com/ARM-software/arm-trusted-firmware/tree/v2.5
-> > > > >
-> > > > > That's good to know.
-> > > > >
-> > > > > I just built it into U-Boot:
-> > > > >
-> > > > > NOTICE:  BL31: v2.5(release):v2.5
-> > > > > NOTICE:  BL31: Built : 08:24:13, Nov 21 2021
-> > > > >
-> > > > > The Etnaviv driver is still loading without hanging
-> > > > >
-> > > > > root@beacon-imx8mn-kit:~# dmesg |grep -i etna
-> > > > > [   12.393936] etnaviv etnaviv: bound 38000000.gpu (ops gpu_ops [etnaviv])
-> > > > > [   12.400676] etnaviv-gpu 38000000.gpu: model: GC7000, revision: 6203
-> > > > > [   12.641297] [drm] Initialized etnaviv 1.3.0 20151214 for etnaviv on minor 0
-> > > > >
-> > > > >
-> > > >
-> > > > Tim,
-> > > >
-> > > > Which version of Nano do you have?  Not all Nano SoC's have a GPU from
-> > > > looking at the datasheet [1] .  I am using MIMX8MN2CVTIZAA (Nano Solo)
-> > > >
-> > > > [1] - https://www.nxp.com/docs/en/data-sheet/IMX8MNIEC.pdf
-> > > >
-> > >
-> > > Adam,
-> > >
-> > > The board I have here has MIMX8MN5CVTIZAA so i.MX 8M Nano QuadLite
-> > > with 'No GPU' as you expected.
-> > >
-> > > So I have to add the following to keep my board from hanging after your series:
-> > > diff --git a/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
-> > > b/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
-> > > index 236f425e1570..0d256a607b7c 100644
-> > > --- a/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
-> > > +++ b/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
-> > > @@ -251,6 +251,10 @@
-> > >         };
-> > >  };
-> > >
-> > > +&gpu {
-> > > +       status = "disabled";
-> > > +};
-> > > +
-> > >  &i2c1 {
-> > >         clock-frequency = <100000>;
-> > >         pinctrl-names = "default";
-> > >
-> > > This situation is similar to the one I encountered with the
-> > > imx8mm-venice-gw7901 where adding the GPC node caused my board (which
-> > > did not power the GPU) to hang until I added disables to the
-> > > device-tree with commit 7973009235e2 ("arm64: dts:
-> > > imx8mm-venice-gw7901.dts: disable pgc_gpumix"). It feels painful to
-> > > have to add patches to keep things from hanging after additional
-> > > functionality is added to dt but perhaps that is more common than I
-> > > think esp for SoC's like IMX8M which have a lot of lingering support
-> > > still coming in.
-> > >
-> > Yea, it's unfortunate that those patches break your board, but I guess
-> > we need to accept this, while there is still a lot of feature work
-> > going on.
+Implement compatibility checks for other modes and related command line
+options: asynchronous (--aio) trace streaming and affinity (--affinity)
+modes, pipe mode, AUX area tracing --snapshot and --aux-sample options,
+--switch-output, --switch-output-event, --switch-max-files and
+--timestamp-filename options. Parallel data streaming is compatible with
+Zstd compression (--compression-level) and external control commands
+(--control).  Cpu mask provided via -C option filters --threads
+specification masks.
 
-There are a significant number of peripherals which are defined and
-marked as 'disabled' by default, so I don't think it's unreasonable to
-do that here.
-I'd like to propose we keep the default disabled and people who
-need/want the GPU enabled can turn it on.  Why waste the power if it's
-not needed?
+Acked-by: Namhyung Kim <namhyung@gmail.com>
+Reviewed-by: Riccardo Mancini <rickyman7@gmail.com>
+Tested-by: Riccardo Mancini <rickyman7@gmail.com>
+Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+---
+ tools/perf/builtin-record.c | 49 ++++++++++++++++++++++++++++++++++---
+ 1 file changed, 46 insertions(+), 3 deletions(-)
 
-> >
-> > > I don't mind at all submitting the above patch to fix my board after
-> > > your series is accepted as I think that having an IMX8MN with 'no gpu'
-> > > is perhaps less likely than having one with a GPU and thus we probably
-> > > shouldn't mark the node as disabled and force everyone that has a GPU
-> > > to go and enable it.
-> > >
-> > > I wonder however if we should think about adding something to etnaviv
-> > > to check the capability so that the same dt could be used with both
-> > > CPU variants?
-> >
-> > etnaviv or really the kernel at all is not the place to handle this.
-> > The DT is supposed to describe the hardware and the kernel should be
-> > able to trust this description.
-> >
-> > If there is some way to read the chip capabilities and avoid having too
-> > much DT variants in the kernel, the right place to handle this is the
-> > software running before the kernel is started, i.e. your bootloader.
-> > Barebox for example reads the SCU fuses on i.MX6 and removes the DT
-> > nodes for the fused off CPU cores on i.MX6S and i.MX6D.
-> >
->
-> Lucas,
->
-> I agree - the boot firmware is an appropriate place for this. I
-> believe the correct course of action in the case of the IMX8M Nano
-> would be to do the following for no GPU:
-> - disable disp_blk_ctrl node
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 9299502823f6..c0650c092d2e 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -802,6 +802,12 @@ static int record__auxtrace_init(struct record *rec)
+ {
+ 	int err;
+ 
++	if ((rec->opts.auxtrace_snapshot_opts || rec->opts.auxtrace_sample_opts)
++	    && record__threads_enabled(rec)) {
++		pr_err("AUX area tracing options are not available in parallel streaming mode.\n");
++		return -EINVAL;
++	}
++
+ 	if (!rec->itr) {
+ 		rec->itr = auxtrace_record__init(rec->evlist, &err);
+ 		if (err)
+@@ -2197,6 +2203,17 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 		return PTR_ERR(session);
+ 	}
+ 
++	if (record__threads_enabled(rec)) {
++		if (perf_data__is_pipe(&rec->data)) {
++			pr_err("Parallel trace streaming is not available in pipe mode.\n");
++			return -1;
++		}
++		if (rec->opts.full_auxtrace) {
++			pr_err("Parallel trace streaming is not available in AUX area tracing mode.\n");
++			return -1;
++		}
++	}
++
+ 	fd = perf_data__fd(data);
+ 	rec->session = session;
+ 
+@@ -2965,12 +2982,22 @@ static int switch_output_setup(struct record *rec)
+ 	 * --switch-output=signal, as we'll send a SIGUSR2 from the side band
+ 	 *  thread to its parent.
+ 	 */
+-	if (rec->switch_output_event_set)
++	if (rec->switch_output_event_set) {
++		if (record__threads_enabled(rec)) {
++			pr_warning("WARNING: --switch-output-event option is not available in parallel streaming mode.\n");
++			return 0;
++		}
+ 		goto do_signal;
++	}
+ 
+ 	if (!s->set)
+ 		return 0;
+ 
++	if (record__threads_enabled(rec)) {
++		pr_warning("WARNING: --switch-output option is not available in parallel streaming mode.\n");
++		return 0;
++	}
++
+ 	if (!strcmp(s->str, "signal")) {
+ do_signal:
+ 		s->signal = true;
+@@ -3289,8 +3316,8 @@ static struct option __record_options[] = {
+ 		     "Set affinity mask of trace reading thread to NUMA node cpu mask or cpu of processed mmap buffer",
+ 		     record__parse_affinity),
+ #ifdef HAVE_ZSTD_SUPPORT
+-	OPT_CALLBACK_OPTARG('z', "compression-level", &record.opts, &comp_level_default,
+-			    "n", "Compressed records using specified level (default: 1 - fastest compression, 22 - greatest compression)",
++	OPT_CALLBACK_OPTARG('z', "compression-level", &record.opts, &comp_level_default, "n",
++			    "Compress records using specified level (default: 1 - fastest compression, 22 - greatest compression)",
+ 			    record__parse_comp_level),
+ #endif
+ 	OPT_CALLBACK(0, "max-size", &record.output_max_size,
+@@ -3735,6 +3762,17 @@ int cmd_record(int argc, const char **argv)
+ 	if (rec->opts.kcore || record__threads_enabled(rec))
+ 		rec->data.is_dir = true;
+ 
++	if (record__threads_enabled(rec)) {
++		if (rec->opts.affinity != PERF_AFFINITY_SYS) {
++			pr_err("--affinity option is mutually exclusive to parallel streaming mode.\n");
++			goto out_opts;
++		}
++		if (record__aio_enabled(rec)) {
++			pr_err("Asynchronous streaming mode (--aio) is mutually exclusive to parallel streaming mode.\n");
++			goto out_opts;
++		}
++	}
++
+ 	if (rec->opts.comp_level != 0) {
+ 		pr_debug("Compression enabled, disabling build id collection at the end of the session.\n");
+ 		rec->no_buildid = true;
+@@ -3768,6 +3806,11 @@ int cmd_record(int argc, const char **argv)
+ 		}
+ 	}
+ 
++	if (rec->timestamp_filename && record__threads_enabled(rec)) {
++		rec->timestamp_filename = false;
++		pr_warning("WARNING: --timestamp-filename option is not available in parallel streaming mode.\n");
++	}
++
+ 	/*
+ 	 * Allow aliases to facilitate the lookup of symbols for address
+ 	 * filters. Refer to auxtrace_parse_filters().
+-- 
+2.19.0
 
-I don't think it's necessary to remove the disp_blk_ctrl node or
-change it.  The GPU doesn't directly interact with it.  LCD, CSI, and
-DSI do, but I don't think they are removed.  The gpu only interacts
-with the pgc_gpumix and neither the gpu nor gpumix currently interact
-with the disp_blk_ctrl.
-
-adam
-
-
-
-> - disable gpu node
-> - disable pgc_gpumix node
->
-> What would you propose to do for detection of this in boot firmware?
-> The DIGPROG register is currently used in U-Boot to determine IMX8M
-> variants including Nano
-> Qad/Dual/Solo/QaudLite/DualLite/SoloLite/UltraLite Quad/UltraLite
-> Dual/UltraLite Solo. It would appear all the 'Lite' and 'UltraLite'
-> variants have no GPU.
->
-> Best regards,
->
-> Tim
