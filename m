@@ -2,72 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D91945A374
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:07:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A395A45A377
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:09:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234855AbhKWNKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 08:10:33 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:43344 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234816AbhKWNK3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 08:10:29 -0500
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        id S235049AbhKWNMN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 23 Nov 2021 08:12:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49128 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233911AbhKWNMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 08:12:12 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id DA17C1F45329;
-        Tue, 23 Nov 2021 13:07:19 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637672840; bh=aY5f0ZE6mRocfP077BfQ+DyVCFKvaNgVw0KqMYW9Oac=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SoWhcM/JM/MqGIt7YwcUG1aTR4lV8NcUNpHNd1tavD7rvzO2x0gjEKupPs1b+YzBt
-         vPw0I+0zkNnYbx6A8kSyh3+3Nekn/rmpcINVmlUPyZdd6BTyJfjOsCqq3AHA59y4q8
-         rGTD0h7Z3L29Ry3+IaC/6LNe6WQC4NNlMxn3w/9GUaW+zeWK4Mzypx6WsrqkWNjGs9
-         1k+Lvc2gs11mnyD9k4ZU+nh5pHowjCrwAc5O7/cpxokvrFS8RjCklQE7ptesL3gRMt
-         aATPBprqsyaSPNpulU6Fbw2nAIJxDIi/q1RVe+26YdITCHfTD2DR5nuumb9jgPeFen
-         xMAU1FYo/Qrkg==
-Date:   Tue, 23 Nov 2021 14:07:15 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Sean Nyekjaer <sean@geanix.com>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 3/4] mtd: core: protect access to MTD devices while
- in suspend
-Message-ID: <20211123140715.280b2f70@collabora.com>
-In-Reply-To: <20211123125012.ibzqu44ixmykbhkt@skn-laptop>
-References: <20211102110204.3334609-1-sean@geanix.com>
-        <20211102110204.3334609-4-sean@geanix.com>
-        <CGME20211123120353eucas1p2fb2561b7cfddd8d6e7decaef8b504f4c@eucas1p2.samsung.com>
-        <21092c0f-e11b-ac16-ab96-2a0556c0e30a@samsung.com>
-        <20211123125012.ibzqu44ixmykbhkt@skn-laptop>
-Organization: Collabora
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        by mail.kernel.org (Postfix) with ESMTPSA id D8FDC60F24;
+        Tue, 23 Nov 2021 13:09:04 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mpVXi-007HjP-Ke; Tue, 23 Nov 2021 13:09:02 +0000
+Date:   Tue, 23 Nov 2021 13:09:02 +0000
+Message-ID: <87ilwjc93l.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
+Cc:     Mark Kettenis <mark.kettenis@xs4all.nl>, luca@lucaceresoli.net,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, kernel-team@android.com,
+        alyssa@rosenzweig.io, lorenzo.pieralisi@arm.com,
+        bhelgaas@google.com, joey.gouly@arm.com
+Subject: Re: [PATCH v2] PCI: apple: Follow the PCIe specifications when resetting the port
+In-Reply-To: <20211123122719.lput7rmn7qr5wkrj@pali>
+References: <20211122104156.518063-1-maz@kernel.org>
+        <20211122120347.6qyiycqqjkgqvtta@pali>
+        <87zgpw5jza.wl-maz@kernel.org>
+        <d3caf39f58b0528b@bloch.sibelius.xs4all.nl>
+        <87k0gzcb6d.wl-maz@kernel.org>
+        <20211123122719.lput7rmn7qr5wkrj@pali>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: pali@kernel.org, mark.kettenis@xs4all.nl, luca@lucaceresoli.net, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org, kernel-team@android.com, alyssa@rosenzweig.io, lorenzo.pieralisi@arm.com, bhelgaas@google.com, joey.gouly@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Nov 2021 13:50:12 +0100
-Sean Nyekjaer <sean@geanix.com> wrote:
+On Tue, 23 Nov 2021 12:27:19 +0000,
+Pali Rohár <pali@kernel.org> wrote:
+> 
+> U-Boot has its own copy of DTS files, right? So it can be fixed in
+> U-Boot driver together with U-Boot DTS file at the same time.
 
-> @Boris do we need to do something similar here to what we did with the
-> mtdconcat stuff?
+No, there is only a single DTS, solely provided by either u-boot or
+the earlier firmware. The version in the kernel tree is purely for
+documentation purposes.
 
-Absolutely, physmasp subdevices are never initialized/registered, so
-you can't call any of the mtd helpers taking the suspend lock on those.
-I guess it'd be better to call mtd_suspend/resume() on the concat device
-in though:
+	M.
 
-static void physmap_flash_shutdown(struct platform_device *dev)
-{
-	struct physmap_flash_info *info = platform_get_drvdata(dev);
-
-	mtd_suspend(info->cmtd);
-}
+-- 
+Without deviation from the norm, progress is not possible.
