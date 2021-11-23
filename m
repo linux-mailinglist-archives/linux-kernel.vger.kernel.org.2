@@ -2,173 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE0A45A690
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 16:33:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C0845A695
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 16:36:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238429AbhKWPgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 10:36:55 -0500
-Received: from mga03.intel.com ([134.134.136.65]:47983 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231209AbhKWPgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 10:36:54 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="234989855"
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="234989855"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 07:33:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="553339142"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 23 Nov 2021 07:33:42 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mpXnh-00021O-Hw; Tue, 23 Nov 2021 15:33:41 +0000
-Date:   Tue, 23 Nov 2021 23:33:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        netdev@vger.kernel.org, Ansuel Smith <ansuelsmth@gmail.com>
-Subject: Re: [net-next PATCH 2/2] net: dsa: qca8k: add LAG support
-Message-ID: <202111232352.6wBDdqCJ-lkp@intel.com>
-References: <20211123025911.20987-3-ansuelsmth@gmail.com>
+        id S238466AbhKWPjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 10:39:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238429AbhKWPjs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 10:39:48 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EBF2C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 07:36:40 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id n8so17392845plf.4
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 07:36:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5VVg5sF/i5gU/ki52+bDwZvmQKpTX8HJeSrAf6kcWFQ=;
+        b=U6HSgDxCZz53CGLYrJ7O5A0XNm09HecVxGKIpmb1gkV3apRWZ25N2jA23Ttyp2MYKZ
+         K7PCL8IziOVl3IGVvcEKWxmZ7N5WFdDKaeFnFWDdTQL8q+kbkqylzTzEvEGM/qub8VsW
+         0kNCx9MqyC2snH1QR5CdErs3MA8OmHVtnhGLtP4QLDC7rwwGeLp30owwNo0TxBfgzp/4
+         z9A4yJ5wtwLQDky0itThd+HFGg3KslkVzZMf+De/ppvd/GGnqEzg8bvzIdr3jjCW1Wdw
+         esOXbQYxDR8uPmd7RrzvIegmxMJgPyMy2od9otejx7jL7aU+uOEan4lmnuCo0jVl028f
+         on6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5VVg5sF/i5gU/ki52+bDwZvmQKpTX8HJeSrAf6kcWFQ=;
+        b=IjPX5quDyQLHEoaqKZnH7d0FyBJSlOIOm3xMSpctX+uZuRwaiiwfUXR+o8d/Dee0GU
+         hGmrdbMKTEEDrTjR5HWC4sydIcT/BwJldtgzUn+QfyRwOwzlAlP6CdGqOwRXwpaYr6t2
+         ZtiCR5hil/Pu2ag/fq2XeL8qtuNWFw3SC2lItIggFSL1nbFfH50e/mDoYiqhFrGaiMFS
+         gojJV7YkTlaEo/ui4769lCM2umhcaUZy4Ta4miQhRrRCfr0afBVFYMizaSL0mKL6UFOb
+         AcB9JFLqo8jp/xoOhx8nGpsrByi7y+msi6qteWLHSQVi4gt212pPHkE6GU/EAi/LfOlH
+         QxcA==
+X-Gm-Message-State: AOAM530alywZT7hWTZTMP2hD+BzxwgEf2R/FO+CIbPLNI37PvNXitz35
+        k1Goac0BD0UNV+7tpkMGca6TIA==
+X-Google-Smtp-Source: ABdhPJzN3VZxkHeunJB6N/YPoYEM/c03A9bU/hzxt4O7jM4g9pvIKKtkf8VdyZ1rwnxZzh/blb4dBw==
+X-Received: by 2002:a17:902:c78a:b0:142:1b7a:930 with SMTP id w10-20020a170902c78a00b001421b7a0930mr7959825pla.8.1637681799124;
+        Tue, 23 Nov 2021 07:36:39 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id k14sm9384097pga.65.2021.11.23.07.36.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 07:36:38 -0800 (PST)
+Date:   Tue, 23 Nov 2021 15:36:35 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Peter Gonda <pgonda@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
+ Hypervisor Support
+Message-ID: <YZ0KgymKvLC2HcIk@google.com>
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
+ <daf5066b-e89b-d377-ed8a-9338f1a04c0d@amd.com>
+ <d673f082-9023-dafb-e42e-eab32a3ddd0c@intel.com>
+ <f15597a0-e7e0-0a57-39fd-20715abddc7f@amd.com>
+ <5f3b3aab-9ec2-c489-eefd-9136874762ee@intel.com>
+ <d83e6668-bec4-8d1f-7f8a-085829146846@amd.com>
+ <38282b0c-7eb5-6a91-df19-2f4cfa8549ce@intel.com>
+ <YZyVx38L6gf689zq@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211123025911.20987-3-ansuelsmth@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YZyVx38L6gf689zq@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ansuel,
+On Tue, Nov 23, 2021, Borislav Petkov wrote:
+> On Mon, Nov 22, 2021 at 02:51:35PM -0800, Dave Hansen wrote:
+> > By "supporting", do you mean doing something functional?  I don't really
+> > care if ptrace() to guest private memory returns -EINVAL or whatever.
+> > The most important thing is not crashing the host.
+> > 
+> > Also, as Sean mentioned, this isn't really about ptrace() itself.  It's
+> > really about ensuring that no kernel or devices accesses to guest
+> > private memory can induce bad behavior.
+> 
+> I keep repeating this suggestion of mine that we should treat
+> guest-private pages as hw-poisoned pages which have experienced a
+> uncorrectable error in the past.
+> 
+> mm already knows how to stay away from those.
 
-Thank you for the patch! Perhaps something to improve:
+Kirill posted a few RFCs that did exactly that.  It's definitely a viable approach,
+but it's a bit of a dead end, e.g. doesn't help solve page migration, is limited to
+struct page, doesn't capture which KVM guest owns the memory, etc...
 
-[auto build test WARNING on net-next/master]
-
-url:    https://github.com/0day-ci/linux/commits/Ansuel-Smith/Add-mirror-and-LAG-support-to-qca8k/20211123-110018
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git 3b0e04140bc30f9f5c254a68013a901e5390b0a8
-config: i386-randconfig-a012-20211123 (https://download.01.org/0day-ci/archive/20211123/202111232352.6wBDdqCJ-lkp@intel.com/config.gz)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 49e3838145dff1ec91c2e67a2cb562775c8d2a08)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/8fe5def54ec185d13c952a5f4da988ee7757ad78
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Ansuel-Smith/Add-mirror-and-LAG-support-to-qca8k/20211123-110018
-        git checkout 8fe5def54ec185d13c952a5f4da988ee7757ad78
-        # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=i386 
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
->> drivers/net/dsa/qca8k.c:2231:44: warning: overlapping comparisons always evaluate to true [-Wtautological-overlap-compare]
-           if (info->hash_type != NETDEV_LAG_HASH_L2 ||
-               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
->> drivers/net/dsa/qca8k.c:2252:3: warning: variable 'hash' is uninitialized when used here [-Wuninitialized]
-                   hash |= QCA8K_TRUNK_HASH_SIP_EN;
-                   ^~~~
-   drivers/net/dsa/qca8k.c:2246:10: note: initialize the variable 'hash' to silence this warning
-           u32 hash;
-                   ^
-                    = 0
-   2 warnings generated.
-
-
-vim +2231 drivers/net/dsa/qca8k.c
-
-  2208	
-  2209	static bool
-  2210	qca8k_lag_can_offload(struct dsa_switch *ds,
-  2211			      struct net_device *lag,
-  2212			      struct netdev_lag_upper_info *info)
-  2213	{
-  2214		struct dsa_port *dp;
-  2215		int id, members = 0;
-  2216	
-  2217		id = dsa_lag_id(ds->dst, lag);
-  2218		if (id < 0 || id >= ds->num_lag_ids)
-  2219			return false;
-  2220	
-  2221		dsa_lag_foreach_port(dp, ds->dst, lag)
-  2222			/* Includes the port joining the LAG */
-  2223			members++;
-  2224	
-  2225		if (members > QCA8K_NUM_PORTS_FOR_LAG)
-  2226			return false;
-  2227	
-  2228		if (info->tx_type != NETDEV_LAG_TX_TYPE_HASH)
-  2229			return false;
-  2230	
-> 2231		if (info->hash_type != NETDEV_LAG_HASH_L2 ||
-  2232		    info->hash_type != NETDEV_LAG_HASH_L23)
-  2233			return false;
-  2234	
-  2235		return true;
-  2236	}
-  2237	
-  2238	static int
-  2239	qca8k_lag_setup_hash(struct dsa_switch *ds,
-  2240			     struct net_device *lag,
-  2241			     struct netdev_lag_upper_info *info)
-  2242	{
-  2243		struct qca8k_priv *priv = ds->priv;
-  2244		bool unique_lag = true;
-  2245		int i, id;
-  2246		u32 hash;
-  2247	
-  2248		id = dsa_lag_id(ds->dst, lag);
-  2249	
-  2250		switch (info->hash_type) {
-  2251		case NETDEV_LAG_HASH_L23:
-> 2252			hash |= QCA8K_TRUNK_HASH_SIP_EN;
-  2253			hash |= QCA8K_TRUNK_HASH_DIP_EN;
-  2254			fallthrough;
-  2255		case NETDEV_LAG_HASH_L2:
-  2256			hash |= QCA8K_TRUNK_HASH_SA_EN;
-  2257			hash |= QCA8K_TRUNK_HASH_DA_EN;
-  2258			break;
-  2259		default: /* We should NEVER reach this */
-  2260			return -EOPNOTSUPP;
-  2261		}
-  2262	
-  2263		/* Check if we are the unique configured LAG */
-  2264		dsa_lags_foreach_id(i, ds->dst)
-  2265			if (i != id && dsa_lag_dev(ds->dst, i)) {
-  2266				unique_lag = false;
-  2267				break;
-  2268			}
-  2269	
-  2270		/* Hash Mode is global. Make sure the same Hash Mode
-  2271		 * is set to all the 4 possible lag.
-  2272		 * If we are the unique LAG we can set whatever hash
-  2273		 * mode we want.
-  2274		 * To change hash mode it's needed to remove all LAG
-  2275		 * and change the mode with the latest.
-  2276		 */
-  2277		if (unique_lag) {
-  2278			priv->lag_hash_mode = hash;
-  2279		} else if (priv->lag_hash_mode != hash) {
-  2280			netdev_err(lag, "Error: Mismateched Hash Mode across different lag is not supported\n");
-  2281			return -EOPNOTSUPP;
-  2282		}
-  2283	
-  2284		return regmap_update_bits(priv->regmap, QCA8K_TRUNK_HASH_EN_CTRL,
-  2285					  QCA8K_TRUNK_HASH_MASK, hash);
-  2286	}
-  2287	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+https://lore.kernel.org/kvm/20210416154106.23721-1-kirill.shutemov@linux.intel.com/
