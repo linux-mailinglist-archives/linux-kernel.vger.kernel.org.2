@@ -2,189 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B339B459BD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 06:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F34459BDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 06:42:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232841AbhKWFov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 00:44:51 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:13087 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbhKWFot (ORCPT
+        id S232922AbhKWFpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 00:45:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhKWFpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 00:44:49 -0500
+        Tue, 23 Nov 2021 00:45:12 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D13FFC061574;
+        Mon, 22 Nov 2021 21:42:04 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id de30so20771534qkb.0;
+        Mon, 22 Nov 2021 21:42:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637646102; x=1669182102;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=do2mX1IYLdhTF85SRnI3fSCwd5EsDMDOd+Ow9oL3y1k=;
-  b=twXjnC5IHFM6hf5YItopIbbFoQFfHTuBebdD1oIrdfibzfiJ+SOjKIW+
-   dr1G9MvF4Dsrhk9WxV89vSD2jMm/nz5poUJH9yue89K2sfKW+5mIUS3x0
-   XrN8TSQognQJhZezGlpgeGHIrYu2uty7Dj1J7MYf3UJoYmdQeDwUx/P7f
-   g=;
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 22 Nov 2021 21:41:41 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 21:41:40 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Mon, 22 Nov 2021 21:41:39 -0800
-Received: from [10.216.52.57] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Mon, 22 Nov
- 2021 21:41:30 -0800
-Subject: Re: [PATCH V2 3/3] thermal: qcom: add support for PMIC5 Gen2 ADCTM
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        <agross@kernel.org>, <bjorn.andersson@linaro.org>,
-        <devicetree@vger.kernel.org>, <mka@chromium.org>,
-        <robh+dt@kernel.org>, <knaack.h@gmx.de>, <lars@metafoo.de>,
-        <pmeerw@pmeerw.net>, <manivannan.sadhasivam@linaro.org>,
-        <linus.walleij@linaro.org>, <quic_kgunda@quicinc.com>,
-        <quic_aghayal@quicinc.com>, <daniel.lezcano@linaro.org>,
-        <rui.zhang@intel.com>, <quic_subbaram@quicinc.com>,
-        <jic23@kernel.org>, <Jonathan.Cameron@huawei.com>,
-        <amitk@kernel.org>, Thara Gopinath <thara.gopinath@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <linux-arm-msm-owner@vger.kernel.org>, <linux-iio@vger.kernel.org>
-References: <1635264275-12530-1-git-send-email-quic_jprakash@quicinc.com>
- <1635264275-12530-4-git-send-email-quic_jprakash@quicinc.com>
- <e4099135-d453-3f16-5330-1925d38617aa@linaro.org>
-From:   Jishnu Prakash <quic_jprakash@quicinc.com>
-Message-ID: <67505d1d-7058-820b-d08e-48795306e044@quicinc.com>
-Date:   Tue, 23 Nov 2021 11:11:24 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=T6Ehd/Lfx371MUNw04rBhKN/sG8reZR2bebigA/LxqQ=;
+        b=ROMltAut/hpf7NQpyZFqkDyceq2F3m3BN58uYQiIavaOB0lxFZENPgxHc58ytovpKw
+         6gt+pnnspwNk2E3QGwjS3Y9NZKMkEyR8KdScBQUHzBwjwP0DgahUJpYokwovWuDYIMWu
+         8XCraQnSHhHug6Pe3O8KctKvyQ5alpsDu8L2v9Iuy8H+bFa2PSImWNblg9lY9TCdruQK
+         kwi/UikeSy9EUY4X0fXVg5l24bTsYSnOjR0Z29UQ+I5vBpRpJ5OopP7cEjR2aH7EmetK
+         xgR29QJLWQpqXsTwCwftWXmNsQ+YRWjfe42RPXzp5JDcYHLXKVurEwNp+HxQBZZAmy53
+         FN9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=T6Ehd/Lfx371MUNw04rBhKN/sG8reZR2bebigA/LxqQ=;
+        b=UD/rcNn2H4ximtiVzuMf8n1tX3eeFByVVC+uC1bkzkeIlZ4CFWpAOvpPn4Y0ijXAjh
+         OXiiHrl3wlojyzlU0l1FR2pN2p/wYkRIm37iOx+x3ci6mE8Zqt+C4zd0WmOLYdwY1nYk
+         g4hn0PuSow49lNMFI1sP0FM6k1GSMLSQXP0Str8nmNWz9myeyfIZqwOf5DuDe3lvC/Jj
+         UP8qkm9b8yg47OVAbesSdgTJA3yKajE9Fl4XFAJ90k10YWrvpACNcCcjoT4hYJkzn1gz
+         5SbyRF3LfLJMYEABNZyMcK9ITluxUenPOyrWwblEkpmo6WzgL/ERA/Sq6zEYSC572oDf
+         R5/w==
+X-Gm-Message-State: AOAM532OHrj/7t4LTrxkdnaoqjPihptwpaMQq82v9CjW1rnpz7JwQTka
+        U2WyzUoW/Pe11KefCny6a1k=
+X-Google-Smtp-Source: ABdhPJxnL1mYYM4u0vjnSKKAyL+GqXM2yAvZy6ORYVxEamnwXpGl3hXazMm30JT8kUBF41f2mM4bew==
+X-Received: by 2002:a37:644f:: with SMTP id y76mr2265214qkb.244.1637646124059;
+        Mon, 22 Nov 2021 21:42:04 -0800 (PST)
+Received: from [192.168.43.249] (mobile-166-172-187-125.mycingular.net. [166.172.187.125])
+        by smtp.gmail.com with ESMTPSA id f21sm5795389qte.52.2021.11.22.21.42.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Nov 2021 21:42:03 -0800 (PST)
+Subject: Re: [PATCH v2] of: base: Skip CPU nodes with "fail"/"fail-..." status
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211122114536.2981-1-matthias.schiffer@ew.tq-group.com>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <151232b7-6f82-c4df-1fa9-da673e3bae0e@gmail.com>
+Date:   Tue, 23 Nov 2021 00:42:02 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <e4099135-d453-3f16-5330-1925d38617aa@linaro.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211122114536.2981-1-matthias.schiffer@ew.tq-group.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+On 11/22/21 6:45 AM, Matthias Schiffer wrote:
+> Allow fully disabling CPU nodes using status = "fail".
+> 
+> This allows a bootloader to change the number of available CPUs (for
+> example when a common DTS is used for SoC variants with different numbers
+> of cores) without deleting the nodes altogether, which could require
+> additional fixups to avoid dangling phandle references.
+> 
+> Unknown status values (everything that is not "okay"/"ok", "disabled" or
+> "fail"/"fail-...") will continue to be interpreted like "disabled",
+> meaning that the CPU can be enabled during boot.
+> 
 
-On 10/27/2021 8:04 AM, Dmitry Baryshkov wrote:
-> On 26/10/2021 19:04, Jishnu Prakash wrote:
->> Add support for PMIC5 Gen2 ADC_TM, used on PMIC7 chips. It is a
->> close counterpart of PMIC7 ADC and has the same functionality as
->> PMIC5 ADC_TM, for threshold monitoring and interrupt generation.
->> It is present on PMK8350 alone, like PMIC7 ADC and can be used
->> to monitor up to 8 ADC channels, from any of the PMIC7 PMICs
->> having ADC on a target, through PBS(Programmable Boot Sequence).
->>
->> Signed-off-by: Jishnu Prakash <quic_jprakash@quicinc.com>
->> ---
->>   drivers/thermal/qcom/qcom-spmi-adc-tm5.c | 418 
->> +++++++++++++++++++++++++++++--
->>   1 file changed, 399 insertions(+), 19 deletions(-)
->>
->>       unsigned int        hw_settle_time;
->> +    unsigned int        decimation;    /* For Gen2 ADC_TM */
->> +    unsigned int        avg_samples;    /* For Gen2 ADC_TM */
->> +    bool            high_thr_en;        /* For Gen2 ADC_TM */
->> +    bool            low_thr_en;        /* For Gen2 ADC_TM */
->> +    bool            meas_en;        /* For Gen2 ADC_TM */
->>       struct iio_channel    *iio;
->>       struct adc_tm5_chip    *chip;
->>       struct thermal_zone_device *tzd;
->> @@ -123,9 +201,12 @@ struct adc_tm5_channel {
->>    * @channels: array of ADC TM channel data.
->>    * @nchannels: amount of channels defined/allocated
->>    * @decimation: sampling rate supported for the channel.
->> + *      Applies to all channels, used only on Gen1 ADC_TM.
->>    * @avg_samples: ability to provide single result from the ADC
->> - *    that is an average of multiple measurements.
->> + *      that is an average of multiple measurements. Applies to all
->> + *      channels, used only on Gen1 ADC_TM.
->>    * @base: base address of TM registers.
->> + * @adc_mutex_lock: ADC_TM mutex lock.
->
-> Please specify that it is used only for gen2 and that it keeps written 
-> and cached channel setup in sync (feel free to correct this 
-> description according to your understanding, I might be wrong here).
+Thank you for including all the references!  I find them helpful.
 
+> References:
+> - https://www.lkml.org/lkml/2020/8/26/1237
 
-I'll add to the description in the next post.
+That reference should be:
+  https://lore.kernel.org/all/CAL_Jsq+1LsTBdVaODVfmB0eme2jMpNL4VgKk-OM7rQWyyF0Jbw@mail.gmail.com/
 
+Rob might be willing to fix that himself without a new patch version.
 
->>    */
->>   struct adc_tm5_chip {
->>       struct regmap        *regmap;
->> @@ -136,14 +217,15 @@ struct adc_tm5_chip {
->>       unsigned int        decimation;
->>       unsigned int        avg_samples;
->>       u16            base;
->> +    struct mutex        adc_mutex_lock;
->>   };
->>   -static const struct adc_tm5_data adc_tm5_data_pmic = {
->> -    .full_scale_code_volt = 0x70e4,
->> -    .decimation = (unsigned int []) { 250, 420, 840 },
->> -    .hw_settle = (unsigned int []) { 15, 100, 200, 300, 400, 500, 
->> 600, 700,
->> -                     1000, 2000, 4000, 8000, 16000, 32000,
->> -                     64000, 128000 },
->> +enum adc_tm_gen2_time_select {
->> +    MEAS_INT_50MS = 0,
->> +    MEAS_INT_100MS,
->> +    MEAS_INT_1S,
->> +    MEAS_INT_SET,
->> +    MEAS_INT_NONE,
->>   };
->
-> Move this enum to the top, closer to the rest of definitions.
+> - https://www.spinics.net/lists/devicetree-spec/msg01007.html
 
+The following reference is the pull request for the devicetree specification
+change that is provided in the previous reference.  I wouldn't include this
+in the commit, but maybe Rob will.
 
-Will move it in the next post
+> - https://github.com/devicetree-org/dt-schema/pull/61
+> 
+> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> ---
+> 
+> v2: Treat unknown status values like "disabled", not like "fail"
+> 
+> 
+>  drivers/of/base.c | 27 +++++++++++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+> 
+> diff --git a/drivers/of/base.c b/drivers/of/base.c
+> index 61de453b885c..5b907600f5b0 100644
+> --- a/drivers/of/base.c
+> +++ b/drivers/of/base.c
+> @@ -650,6 +650,28 @@ bool of_device_is_available(const struct device_node *device)
+>  }
+>  EXPORT_SYMBOL(of_device_is_available);
+>  
+> +/**
+> + *  __of_device_is_fail - check if a device has status "fail" or "fail-..."
+> + *
+> + *  @device: Node to check status for, with locks already held
+> + *
+> + *  Return: True if the status property is set to "fail" or "fail-..." (for any
+> + *  error code suffix), false otherwise
+> + */
+> +static bool __of_device_is_fail(const struct device_node *device)
+> +{
+> +	const char *status;
+> +
+> +	if (!device)
+> +		return false;
+> +
+> +	status = __of_get_property(device, "status", NULL);
+> +	if (status == NULL)
+> +		return false;
+> +
+> +	return !strcmp(status, "fail") || !strncmp(status, "fail-", 5);
+> +}
+> +
+>  /**
+>   *  of_device_is_big_endian - check if a device has BE registers
+>   *
+> @@ -796,6 +818,9 @@ EXPORT_SYMBOL(of_get_next_available_child);
+>   * of_get_next_cpu_node - Iterate on cpu nodes
+>   * @prev:	previous child of the /cpus node, or NULL to get first
+>   *
+> + * Unusable CPUs (those with the status property set to "fail" or "fail-...")
+> + * will be skipped.
+> + *
+>   * Return: A cpu node pointer with refcount incremented, use of_node_put()
+>   * on it when done. Returns NULL when prev is the last child. Decrements
+>   * the refcount of prev.
+> @@ -817,6 +842,8 @@ struct device_node *of_get_next_cpu_node(struct device_node *prev)
+>  		of_node_put(node);
+>  	}
 
+This comment is being really picky.  I would put the check for status value
+of fail after the check of node name.  If Rob is willing to accept this
+version I am ok with it.
 
->
->>     static int adc_tm5_read(struct adc_tm5_chip *adc_tm, u16 offset, 
->> u8 *data, int len)
->> @@ -210,6 +292,61 @@ static irqreturn_t adc_tm5_isr(int irq, void *data)
->>       return IRQ_HANDLED;
->>   }
->>   +static irqreturn_t adc_tm5_gen2_isr(int irq, void *data)
->> +{
->>           tzd = devm_thermal_zone_of_sensor_register(adc_tm->dev,
->>                                  adc_tm->channels[i].channel,
->>                                  &adc_tm->channels[i],
->> -                               &adc_tm5_ops);
->> +                               &adc_tm5_thermal_ops);
->>           if (IS_ERR(tzd)) {
->>               if (PTR_ERR(tzd) == -ENODEV) {
->>                   dev_warn(adc_tm->dev, "thermal sensor on channel %d 
->> is not used\n",
->> @@ -395,6 +710,11 @@ static int adc_tm5_init(struct adc_tm5_chip *chip)
->>           }
->>       }
->>   +    if (chip-->data->gen == ADC_TM5_GEN2) {
->> +        mutex_init(&chip->adc_mutex_lock);
->> +        return ret;
->> +    }
->> +
->
-> Just init the mutex always, there is no need to be so picky in the 
-> init code.
-Will fix it in the next post.
->
->>       buf[0] = chip->decimation;
->>       buf[1] = chip->avg_samples | ADC_TM5_FAST_AVG_EN;
->>       buf[2] = ADC_TM5_TIMER1;
->> @@ -415,7 +735,7 @@ static int adc_tm5_get_dt_channel_data(struct 
->> adc_tm5_chip *adc_tm,
->>                          struct device_node *node)
->>       { }
->>   };
->>   MODULE_DEVICE_TABLE(of, adc_tm5_match_table);
->>
-Thanks,
-Jishnu
+>  	for (; next; next = next->sibling) {
+> +		if (__of_device_is_fail(next))
+> +			continue;
+>  		if (!(of_node_name_eq(next, "cpu") ||
+>  		      __of_node_is_type(next, "cpu")))
+>  			continue;
+> 
+
+Reviewed-by: Frank Rowand <frank.rowand@sony.com>
