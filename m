@@ -2,293 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 350F2459C6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 07:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B60DB459C71
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 07:52:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232835AbhKWGvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 01:51:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230270AbhKWGvt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 01:51:49 -0500
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8C7CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 22:48:41 -0800 (PST)
-Received: by mail-qv1-xf2f.google.com with SMTP id gu12so14256313qvb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 22:48:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OmfO/uu5/6jUzRmPTrVGzKdDi2hxnXJ0mNJLCQlYijY=;
-        b=NU7d4bMXEaEX7q6eGQWOV9wEPvgOlIduIMSEiYTuatzIHrtOD85kI31MoR195UiJiH
-         KSLbjgtpsZivGPBxePewA8jE85RHef1gMu0WuRYocKZHPvQP+Upe5xzObrgqROaJZqJ8
-         zltKZZrPCOu0jG84fFl6cJQegcEv2kMXLbQ8B3oADQotKSvZMujQWOL/l0amqmHsbJqA
-         pJ5C9Ea0N/96ZFXl89rOwptblPe1JJucYE5N8SGaL1aVxoml+0OVNsvY7WJQq1sKUmuZ
-         HbV9lsPQmsoeOcL1nmGKjUOLPtTooqFq2GeKYnzYmlpR3ES40eWVNKBCRZtBor6Tt7IL
-         1Fhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OmfO/uu5/6jUzRmPTrVGzKdDi2hxnXJ0mNJLCQlYijY=;
-        b=oBvfNrnqZ1B0fj8w/Bn4CZoqyTEn3xY3Sp8XWHd4TPNuAatPRmEL082SaK2+QHEvGt
-         nV8HNg6Vrv8KmBAgM31olPWAVM96eV1a6OI5TFIZ5ro8G+jZGn8Dk3siSHhRJuVlCDvR
-         8B+QvF558Au9KaLfMIu9G7qYgdEZgpcAzq+nApOvoWot1SeZIssKYxopl/vW9Of/XDQS
-         5EclcMRGJB7RIKMtdqic3erF2AifCCC/OB1xOmdYTMeTApZ1TZnYT5SAFrTHR4iaVO/N
-         v7R5dxRFpZvmnHu5DFWEl/4pwJzobsxwgFC4BGMXf5gyfN11WQ/g+cwh5B8EZ+TE2Tt+
-         YC6w==
-X-Gm-Message-State: AOAM533VXZZqtK1sS2/6qtnkcAPCEu2sGYZycPo5TwnEBfDbM6s2rBK5
-        MLls/KKBfbfwJNvyZd3pOs2ALeKqFQBUcEHVuC8=
-X-Google-Smtp-Source: ABdhPJxArIPfwJKaFtF8Lh61+JTLD7qwwREUm79kMaQYEiIaIQKijatFzi0DbRuVFEGAsQLMSXUhydR7dYK91R5nwTg=
-X-Received: by 2002:ad4:4e49:: with SMTP id eb9mr3147098qvb.22.1637650121119;
- Mon, 22 Nov 2021 22:48:41 -0800 (PST)
+        id S232316AbhKWGzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 01:55:51 -0500
+Received: from mx1.riseup.net ([198.252.153.129]:33602 "EHLO mx1.riseup.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229728AbhKWGzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 01:55:50 -0500
+Received: from fews1.riseup.net (fews1-pn.riseup.net [10.0.1.83])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
+         client-signature RSA-PSS (2048 bits) client-digest SHA256)
+        (Client CN "mail.riseup.net", Issuer "R3" (not verified))
+        by mx1.riseup.net (Postfix) with ESMTPS id 4HyvwB34LrzDv2X;
+        Mon, 22 Nov 2021 22:52:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+        t=1637650362; bh=2crRhYBlklLB+/OAkE79DuwqwJdO0OVKUmuw9Rbx/s0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=a3ZcqkLIwwPx12xnNt+1HVT/uXYXrdX+fUUOhyaC/zqsYGYaWQ8rBS/tuNXSVV7NR
+         Codl/V0ndNaKzOcafwvJH1/4gNTqmQjJ8YU7GLqwHJM1gYyBdRhFKtBRHa5BvyBlF0
+         0f3wE383rvsKBXPyOJsizuDJHOZiqgEp9PCZsETg=
+X-Riseup-User-ID: 8F6499043B028B14909275667E193D2CE092DEEBFD8526408BBAAD791A8AF191
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by fews1.riseup.net (Postfix) with ESMTPSA id 4Hyvw62NdVz5vcc;
+        Mon, 22 Nov 2021 22:52:38 -0800 (PST)
+From:   Dang Huynh <danct12@riseup.net>
+To:     Dang Huynh <danct12@riseup.net>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-mediatek@lists.infradead.org
+Subject: [PATCH] dts: treewide: Drop input-name property
+Date:   Tue, 23 Nov 2021 13:51:58 +0700
+Message-Id: <20211123065158.1383182-1-danct12@riseup.net>
 MIME-Version: 1.0
-References: <1637558929-22971-1-git-send-email-huangzhaoyang@gmail.com>
- <CAMj1kXGvVkMtZrKYpr8SP8YSvUuWnyQ2i67riHBdQgfDy_0e1A@mail.gmail.com>
- <CAGWkznHA_y1YmjOFc9UnxtW_TN3PiCP2bbuqgn+-mz6LjSXFAQ@mail.gmail.com>
- <CAMj1kXGzz8HsDs0zsMVGC3Jb3aT9vs9fHGHJzFS1mM0ZhpK1Jw@mail.gmail.com>
- <CAGWkznHK0pDQQOOg-zPnr42EB__X84MF0AHU=b8VL_yuhPOBbA@mail.gmail.com>
- <CAMj1kXEt0iOMwFGow-vbatmfzmEhe0kq6KDAfup_GtKXaZAjmg@mail.gmail.com>
- <CAGWkznFLNw=RBU=uGHXQLq6_dJQRqA0FKqN+SdvKszVhzCrNfA@mail.gmail.com> <CAMj1kXHBBE0U7Td8r+AyxXJXo6ciNa79CF8zwVDvH5d5h3DAJQ@mail.gmail.com>
-In-Reply-To: <CAMj1kXHBBE0U7Td8r+AyxXJXo6ciNa79CF8zwVDvH5d5h3DAJQ@mail.gmail.com>
-From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date:   Tue, 23 Nov 2021 14:48:20 +0800
-Message-ID: <CAGWkznECKd0QZOF2SO__+9N8Tbe=WC2A-5_8Lxb31M6EXaoAGg@mail.gmail.com>
-Subject: Re: [RFC PATCH] arch: arm64: introduce RODATA_FULL_USE_PTE_CONT
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ok. Could the following change be helpful? I think it is safe as
-nobody else but the allocator be aware of this memory block and will
-keep the attributes integrated while keeping the pages.
+This property doesn't seem to exist in the documentation nor
+in source code, but for some reason it is defined in a bunch
+of device trees.
 
-diff --git a/arch/arm64/mm/pageattr.c b/arch/arm64/mm/pageattr.c
-index c50664b5b72c..0a9da8295d53 100644
---- a/arch/arm64/mm/pageattr.c
-+++ b/arch/arm64/mm/pageattr.c
-@@ -236,3 +236,45 @@ bool kernel_page_present(struct page *page)
-        ptep = pte_offset_kernel(pmdp, addr);
-        return pte_valid(READ_ONCE(*ptep));
- }
-+
-+void arch_alloc_page(struct page *page, int order)
-+{
-+       unsigned long addr;
-+       unsigned long cont_pte_low_bound;
-+
-+       if (!rodata_full)
-+               return;
-+       addr = (u64)page_address(page);
-+       if ((order >= 4) && (addr & ~CONT_PTE_MASK) == 0) {
-+               order -= 4;
-+               do {
-+                       cont_pte_low_bound = addr & CONT_PTE_MASK;
-+                       __change_memory_common(cont_pte_low_bound,
-+                                       (~CONT_PTE_MASK + 1),
-__pgprot(PTE_CONT), __pgprot(0));
-+                       addr = (u64)page_address(page);
-+                       page += 4;
-+                       order--;
-+               }while (order >= 0);
-+       }
-+}
-+
-+void arch_free_page(struct page *page, int order)
-+{
-+       unsigned long addr;
-+       unsigned long cont_pte_low_bound;
-+
-+       if (!rodata_full)
-+               return;
-+       addr = (u64)page_address(page);
-+       if ((order >= 4) && (addr & ~CONT_PTE_MASK) == 0) {
-+               order -= 4;
-+               do {
-+                       cont_pte_low_bound = addr & CONT_PTE_MASK;
-+                       __change_memory_common(cont_pte_low_bound,
-+                                       (~CONT_PTE_MASK + 1),
-__pgprot(0), __pgprot(PTE_CONT));
-+                       addr = (u64)page_address(page);
-+                       page += 4;
-+                       order--;
-+               }while (order >= 0);
-+       }
-+}
+Signed-off-by: Dang Huynh <danct12@riseup.net>
+---
+ arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dts          | 1 -
+ arch/arm/boot/dts/qcom-msm8974-fairphone-fp2.dts             | 1 -
+ arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts     | 1 -
+ arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts              | 1 -
+ arch/arm/boot/dts/qcom-msm8974-sony-xperia-amami.dts         | 1 -
+ arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dts        | 1 -
+ arch/arm/boot/dts/qcom-msm8974-sony-xperia-honami.dts        | 1 -
+ arch/arm/boot/dts/sun8i-h3-nanopi.dtsi                       | 1 -
+ arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi             | 1 -
+ arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts            | 1 -
+ arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi     | 1 -
+ arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi   | 1 -
+ arch/arm64/boot/dts/qcom/msm8998-fxtec-pro1.dts              | 3 ---
+ arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi    | 2 --
+ arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi        | 1 -
+ arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts | 1 -
+ 16 files changed, 19 deletions(-)
 
-On Tue, Nov 23, 2021 at 2:16 AM Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Mon, 22 Nov 2021 at 12:25, Zhaoyang Huang <huangzhaoyang@gmail.com> wrote:
-> >
-> > On Mon, Nov 22, 2021 at 5:23 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > >
-> > > On Mon, 22 Nov 2021 at 10:17, Zhaoyang Huang <huangzhaoyang@gmail.com> wrote:
-> > > >
-> > > > On Mon, Nov 22, 2021 at 5:04 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > > > >
-> > > > > On Mon, 22 Nov 2021 at 10:00, Zhaoyang Huang <huangzhaoyang@gmail.com> wrote:
-> > > > > >
-> > > > > > On Mon, Nov 22, 2021 at 4:52 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > > > > > >
-> > > > > > > On Mon, 22 Nov 2021 at 06:29, Huangzhaoyang <huangzhaoyang@gmail.com> wrote:
-> > > > > > > >
-> > > > > > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > > > > > > >
-> > > > > > > > Kernel linear mapping will be split to the smallest granularity when
-> > > > > > > > RODATA_FULL applied, which could lead to TLB pressure. Introduce a method
-> > > > > > > > to apply PTE_CONT on pte.
-> > > > > > > >
-> > > > > > > > Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > > > > > >
-> > > > > > > How would this lead to TLB pressure, and how does the use of
-> > > > > > > contiguous mappings mitigate that? The linear mapping of the kernel is
-> > > > > > > rarely used, as all normal accesses to it go via the vmalloc region,
-> > > > > > > so in which case would TLB entries be allocated for this region in a
-> > > > > > > way that could cause a measurable performance impact?
-> > > > > > In fact, the patch is about to use PTE_CONT *OUT OF* the range of
-> > > > > > kernel text.
-> > > > >
-> > > > > OK, I had missed that, apologies.
-> > > > >
-> > > > > > Would you please have a look at the code. It apply
-> > > > > > PTE_CONT during map_mem and then clear it when load_module change the
-> > > > > > corresponding linear mapping to the area it use in vmalloc area.
-> > > > >
-> > > > > You cannot change the PTE_CONT attribute on live mappings.
-> > > > Is it an inner constraint from ASIC perspective? PTE_CONT is different
-> > > > to other attributes?
-> > >
-> > > The PTE_CONT attributes on live translation entries must always be in
-> > > sync in all entries covering the same contiguous group, or you might
-> > > cause TLB conflict aborts.
-> > >
-> > > > >
-> > > > > > >
-> > > > > > >
-> > > > > > > > ---
-> > > > > > > >  arch/arm64/Kconfig       |  9 +++++++++
-> > > > > > > >  arch/arm64/mm/mmu.c      | 10 ++++++++--
-> > > > > > > >  arch/arm64/mm/pageattr.c |  9 +++++++++
-> > > > > > > >  3 files changed, 26 insertions(+), 2 deletions(-)
-> > > > > > > >
-> > > > > > > > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> > > > > > > > index fee914c..3f8fbf0 100644
-> > > > > > > > --- a/arch/arm64/Kconfig
-> > > > > > > > +++ b/arch/arm64/Kconfig
-> > > > > > > > @@ -1198,6 +1198,15 @@ config RODATA_FULL_DEFAULT_ENABLED
-> > > > > > > >           This requires the linear region to be mapped down to pages,
-> > > > > > > >           which may adversely affect performance in some cases.
-> > > > > > > >
-> > > > > > > > +config RODATA_FULL_USE_PTE_CONT
-> > > > > > > > +       bool "Apply PTE_CONT when RODATA_FULL_DEFAULT_ENABLED enabled"
-> > > > > > > > +       depends on RODATA_FULL_DEFAULT_ENABLED
-> > > > > > > > +       default y
-> > > > > > > > +       help
-> > > > > > > > +         Apply PTE_CONT on linear mapping as much as we can when
-> > > > > > > > +         RODATA_FULL_DEFAULT_ENABLED enabled which could decrease the
-> > > > > > > > +         impaction on performance by small pte granularity.
-> > > > > > > > +
-> > > > > > > >  config ARM64_SW_TTBR0_PAN
-> > > > > > > >         bool "Emulate Privileged Access Never using TTBR0_EL1 switching"
-> > > > > > > >         help
-> > > > > > > > diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> > > > > > > > index cfd9deb..8017b17 100644
-> > > > > > > > --- a/arch/arm64/mm/mmu.c
-> > > > > > > > +++ b/arch/arm64/mm/mmu.c
-> > > > > > > > @@ -124,15 +124,21 @@ static bool pgattr_change_is_safe(u64 old, u64 new)
-> > > > > > > >          * The following mapping attributes may be updated in live
-> > > > > > > >          * kernel mappings without the need for break-before-make.
-> > > > > > > >          */
-> > > > > > > > +#ifndef CONFIG_RODATA_FULL_USE_PTE_CONT
-> > > > > > > >         pteval_t mask = PTE_PXN | PTE_RDONLY | PTE_WRITE | PTE_NG;
-> > > > > > > > +#else
-> > > > > > > > +       pteval_t mask = PTE_PXN | PTE_RDONLY | PTE_WRITE | PTE_NG | PTE_CONT;
-> > > > > > > > +#endif
-> > > > >
-> > > > > What justifies this change? Why is it ok in certain cases to update
-> > > > > the PTE_CONT attribute without BBM?
-> > > > BBM?
-> > > > I am not sure if it is ok here, but I just find nobody else change
-> > > > PTE_CONT so far other than this commit.
-> > >
-> > > No it is not ok. BBM == break before make, which means you need to
-> > > install invalid entries for the entire contiguous group before you can
-> > > change the PTE_CONT attributes. As other CPUs may be accessing the
-> > > same region, there is no safe way to do this, which is why we don't
-> > > permit PTE_CONT to be changed at all.
-> > ok, got it. But from practical scenario perspective, could we assume
-> > that the corresponding linear map of the vmalloc area would NOT be
-> > accessed at all.
-> > If it does so, could we just clear PTE_VALID on the
-> > linear pte and leave PTE_CONT on the others' pte within the same
-> > region. The linear mapping could be reestablished when vmalloc_free.
->
-> No. Such an invalid entry would conflict with the other PTE_CONT ones
-> in the same contiguous group.
->
->
-> > >
-> > >
-> > > > >
-> > > > > > > >
-> > > > > > > >         /* creating or taking down mappings is always safe */
-> > > > > > > >         if (old == 0 || new == 0)
-> > > > > > > >                 return true;
-> > > > > > > >
-> > > > > > > >         /* live contiguous mappings may not be manipulated at all */
-> > > > > > > > -       if ((old | new) & PTE_CONT)
-> > > > > > > > +#ifndef CONFIG_RODATA_FULL_USE_PTE_CONT
-> > > > > > > > +       if ((old | new) & PTE_CONT)
-> > > > > > > >                 return false;
-> > > > > > > > +#endif
-> > > > > > > >
-> > > > > > > >         /* Transitioning from Non-Global to Global is unsafe */
-> > > > > > > >         if (old & ~new & PTE_NG)
-> > > > > > > > @@ -206,7 +212,7 @@ static void alloc_init_cont_pte(pmd_t *pmdp, unsigned long addr,
-> > > > > > > >
-> > > > > > > >                 /* use a contiguous mapping if the range is suitably aligned */
-> > > > > > > >                 if ((((addr | next | phys) & ~CONT_PTE_MASK) == 0) &&
-> > > > > > > > -                   (flags & NO_CONT_MAPPINGS) == 0)
-> > > > > > > > +                   (IS_ENABLED(CONFIG_RODATA_FULL_USE_PTE_CONT) || (flags & NO_CONT_MAPPINGS) == 0))
-> > > > > > > >                         __prot = __pgprot(pgprot_val(prot) | PTE_CONT);
-> > > > > > > >
-> > > > > > > >                 init_pte(pmdp, addr, next, phys, __prot);
-> > > > > > > > diff --git a/arch/arm64/mm/pageattr.c b/arch/arm64/mm/pageattr.c
-> > > > > > > > index a3bacd7..88a87eb 100644
-> > > > > > > > --- a/arch/arm64/mm/pageattr.c
-> > > > > > > > +++ b/arch/arm64/mm/pageattr.c
-> > > > > > > > @@ -99,6 +99,15 @@ static int change_memory_common(unsigned long addr, int numpages,
-> > > > > > > >         if (rodata_full && (pgprot_val(set_mask) == PTE_RDONLY ||
-> > > > > > > >                             pgprot_val(clear_mask) == PTE_RDONLY)) {
-> > > > > > > >                 for (i = 0; i < area->nr_pages; i++) {
-> > > > > > > > +#ifdef CONFIG_RODATA_FULL_USE_PTE_CONT
-> > > > > > > > +                       unsigned long cont_pte_low_bound;
-> > > > > > > > +                       unsigned long addr;
-> > > > > > > > +
-> > > > > > > > +                       addr = (u64)page_address(area->pages[i]);
-> > > > > > > > +                       cont_pte_low_bound = addr & CONT_PTE_MASK;
-> > > > > > > > +                       __change_memory_common(cont_pte_low_bound,
-> > > > > > > > +                                              (~CONT_PTE_MASK + 1), __pgprot(0) , __pgprot(PTE_CONT));
-> > > > > > > > +#endif
-> > > > > > > >                         __change_memory_common((u64)page_address(area->pages[i]),
-> > > > > > > >                                                PAGE_SIZE, set_mask, clear_mask);
-> > > > > > > >                 }
-> > > > > > > > --
-> > > > > > > > 1.9.1
-> > > > > > > >
+diff --git a/arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dts b/arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dts
+index f8c97efc61fc..0cee62c7b8b0 100644
+--- a/arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dts
++++ b/arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dts
+@@ -19,7 +19,6 @@ chosen {
+ 
+ 	gpio-keys {
+ 		compatible = "gpio-keys";
+-		input-name = "gpio-keys";
+ 
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&gpio_keys_pin_a>;
+diff --git a/arch/arm/boot/dts/qcom-msm8974-fairphone-fp2.dts b/arch/arm/boot/dts/qcom-msm8974-fairphone-fp2.dts
+index ea15b645b229..6d77e0f8ca4d 100644
+--- a/arch/arm/boot/dts/qcom-msm8974-fairphone-fp2.dts
++++ b/arch/arm/boot/dts/qcom-msm8974-fairphone-fp2.dts
+@@ -20,7 +20,6 @@ chosen {
+ 
+ 	gpio-keys {
+ 		compatible = "gpio-keys";
+-		input-name = "gpio-keys";
+ 
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&gpio_keys_pin_a>;
+diff --git a/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts b/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts
+index 30ee913faae6..069136170198 100644
+--- a/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts
++++ b/arch/arm/boot/dts/qcom-msm8974-lge-nexus5-hammerhead.dts
+@@ -450,7 +450,6 @@ bcrmf@1 {
+ 
+ 	gpio-keys {
+ 		compatible = "gpio-keys";
+-		input-name = "gpio-keys";
+ 
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&gpio_keys_pin_a>;
+diff --git a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
+index 003f0fa9c857..96e1c978b878 100644
+--- a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
++++ b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
+@@ -349,7 +349,6 @@ bluetooth {
+ 
+ 	gpio-keys {
+ 		compatible = "gpio-keys";
+-		input-name = "gpio-keys";
+ 
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&gpio_keys_pin_a>;
+diff --git a/arch/arm/boot/dts/qcom-msm8974-sony-xperia-amami.dts b/arch/arm/boot/dts/qcom-msm8974-sony-xperia-amami.dts
+index 398a3eaf306b..79e2cfbbb1ba 100644
+--- a/arch/arm/boot/dts/qcom-msm8974-sony-xperia-amami.dts
++++ b/arch/arm/boot/dts/qcom-msm8974-sony-xperia-amami.dts
+@@ -20,7 +20,6 @@ chosen {
+ 
+ 	gpio-keys {
+ 		compatible = "gpio-keys";
+-		input-name = "gpio-keys";
+ 
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&gpio_keys_pin_a>;
+diff --git a/arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dts b/arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dts
+index b4dd85bd4faf..e66937e3f7dd 100644
+--- a/arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dts
++++ b/arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dts
+@@ -20,7 +20,6 @@ chosen {
+ 
+ 	gpio-keys {
+ 		compatible = "gpio-keys";
+-		input-name = "gpio-keys";
+ 
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&gpio_keys_pin_a>;
+diff --git a/arch/arm/boot/dts/qcom-msm8974-sony-xperia-honami.dts b/arch/arm/boot/dts/qcom-msm8974-sony-xperia-honami.dts
+index 9743beebd84d..a62e5c25b23c 100644
+--- a/arch/arm/boot/dts/qcom-msm8974-sony-xperia-honami.dts
++++ b/arch/arm/boot/dts/qcom-msm8974-sony-xperia-honami.dts
+@@ -20,7 +20,6 @@ chosen {
+ 
+ 	gpio-keys {
+ 		compatible = "gpio-keys";
+-		input-name = "gpio-keys";
+ 
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&gpio_keys_pin_a>;
+diff --git a/arch/arm/boot/dts/sun8i-h3-nanopi.dtsi b/arch/arm/boot/dts/sun8i-h3-nanopi.dtsi
+index c7c3e7d8b3c8..1eabc69462d4 100644
+--- a/arch/arm/boot/dts/sun8i-h3-nanopi.dtsi
++++ b/arch/arm/boot/dts/sun8i-h3-nanopi.dtsi
+@@ -75,7 +75,6 @@ led-1 {
+ 
+ 	r_gpio_keys {
+ 		compatible = "gpio-keys";
+-		input-name = "k1";
+ 
+ 		k1 {
+ 			label = "k1";
+diff --git a/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi b/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi
+index fcddec14738d..7a717f926929 100644
+--- a/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi
++++ b/arch/arm64/boot/dts/mediatek/pumpkin-common.dtsi
+@@ -25,7 +25,6 @@ optee: optee@4fd00000 {
+ 
+ 	gpio-keys {
+ 		compatible = "gpio-keys";
+-		input-name = "gpio-keys";
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&gpio_keys_default>;
+ 
+diff --git a/arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts b/arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts
+index 69fcb6b0398d..84558ab5fe86 100644
+--- a/arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts
++++ b/arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts
+@@ -42,7 +42,6 @@ framebuffer0: framebuffer@3404000 {
+ 
+ 	gpio_keys {
+ 		compatible = "gpio-keys";
+-		input-name = "gpio-keys";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 		autorepeat;
+diff --git a/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi b/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi
+index 3a3790a52a2c..cc038f9b641f 100644
+--- a/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi
+@@ -62,7 +62,6 @@ divclk4: divclk4 {
+ 
+ 	gpio-keys {
+ 		compatible = "gpio-keys";
+-		input-name = "gpio-keys";
+ 		autorepeat;
+ 
+ 		volupkey {
+diff --git a/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi b/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi
+index 7cc564d8ca7c..dde7ed159c4d 100644
+--- a/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi
+@@ -29,7 +29,6 @@ / {
+ 
+ 	gpio_keys {
+ 		compatible = "gpio-keys";
+-		input-name = "gpio-keys";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 		autorepeat;
+diff --git a/arch/arm64/boot/dts/qcom/msm8998-fxtec-pro1.dts b/arch/arm64/boot/dts/qcom/msm8998-fxtec-pro1.dts
+index 3d495ce3f46a..dc5b9b274df3 100644
+--- a/arch/arm64/boot/dts/qcom/msm8998-fxtec-pro1.dts
++++ b/arch/arm64/boot/dts/qcom/msm8998-fxtec-pro1.dts
+@@ -29,7 +29,6 @@ extcon_usb: extcon-usb {
+ 
+ 	gpio-hall-sensors {
+ 		compatible = "gpio-keys";
+-		input-name = "hall-sensors";
+ 		label = "Hall sensors";
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&hall_sensor1_default>;
+@@ -46,7 +45,6 @@ hall-sensor1 {
+ 
+ 	gpio-kb-extra-keys {
+ 		compatible = "gpio-keys";
+-		input-name = "extra-kb-keys";
+ 		label = "Keyboard extra keys";
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&gpio_kb_pins_extra>;
+@@ -102,7 +100,6 @@ alt {
+ 
+ 	gpio-keys {
+ 		compatible = "gpio-keys";
+-		input-name = "side-buttons";
+ 		label = "Side buttons";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+diff --git a/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
+index 91e391282181..47488a1aecae 100644
+--- a/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
+@@ -93,7 +93,6 @@ vph_pwr: vph-pwr-regulator {
+ 
+ 	gpio-keys {
+ 		compatible = "gpio-keys";
+-		input-name = "gpio-keys";
+ 		label = "Side buttons";
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&vol_down_pin_a>, <&cam_focus_pin_a>,
+@@ -126,7 +125,6 @@ camera-focus {
+ 
+ 	gpio-hall-sensor {
+ 		compatible = "gpio-keys";
+-		input-name = "hall-sensors";
+ 		label = "Hall sensors";
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&hall_sensor0_default>;
+diff --git a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
+index e90c9ec84675..42af1fade461 100644
+--- a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
+@@ -90,7 +90,6 @@ cam_vana_rear_vreg: cam_vana_rear_vreg {
+ 	gpio_keys {
+ 		status = "okay";
+ 		compatible = "gpio-keys";
+-		input-name = "gpio-keys";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 
+diff --git a/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts b/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
+index 45eab0235d66..871ccbba445b 100644
+--- a/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
++++ b/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
+@@ -42,7 +42,6 @@ extcon_usb: extcon-usb {
+ 	gpio-keys {
+ 		status = "okay";
+ 		compatible = "gpio-keys";
+-		input-name = "gpio-keys";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 		autorepeat;
+-- 
+2.34.0
+
