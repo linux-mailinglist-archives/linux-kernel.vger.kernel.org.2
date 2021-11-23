@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9907845A963
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:57:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5402E45A966
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236008AbhKWRAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 12:00:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52584 "EHLO mail.kernel.org"
+        id S236778AbhKWRA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 12:00:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233536AbhKWRAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 12:00:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A0E560F6B;
-        Tue, 23 Nov 2021 16:57:42 +0000 (UTC)
+        id S236212AbhKWRAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 12:00:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 704EA60FF2;
+        Tue, 23 Nov 2021 16:57:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637686663;
-        bh=MnkGe4UrT/ksLihVXxBCh7RZKPUAr5U2Cl+/95LiJUg=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=bniQWLBLthyEi53MqDu0xIFE5C1snyTZJSSKfZkuGpQpldwDFwxNa4oPnHokOob5r
-         DN4fspOkhybCzlgc+O98WnqR8FQ6HFl+iLQSXJMCxJBtF8o6VCDorYUQ0H3scUeJa7
-         dNUBhheZHuHgLDxXYah4ph3E+fsSW0VSxMzBvRHf7ChUdXvLRyDZVPnJxteyK2jgpD
-         fWoXHHoeHWxK6NsRYjW5LXxTWT8Vj9W2y0kTwKydAR30x5c/Q123o1CUrg0yHpEChW
-         Oj8+c2sSL9POSZDzcxxI2rYcnQ5URPDJDLDIYE6rFQOGwNt2J2q83rJ7a12rKPt/Ng
-         ChnoDyIM8hGqg==
+        s=k20201202; t=1637686667;
+        bh=xfL2L7E562FF3x3+N2H7tyXnKr6qVxl9+6ayKn54S50=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=ElpECrGV629wUJ1TguarRHdDlDnVP8iX0Wp1qpV2DxEyqP3azKfuzQNVzDKhFTvH/
+         +GLP55j0lH+0WkPNJJzCGWs7RLBEH3lV5glMVvIAnle3ZeAJcsiD+KIlagzuzB22oj
+         aWC+PN6bBB7/GWofsdXXrm79elZm53Wo7F7JcTWwWwfcrFgKYnEf7dPQZA1VVH7EuU
+         jD+mPgfAF/7KGzlGEJ1P1/cw6GEaOLnEfWZqsVYqtN1toDWPNv5OI2pyMHja9+BfSw
+         WYH1/D1yrlp+19J2OSkmBqbwx8PMFdRjy9JFVsn3F88/o3MbHT8M3m/ElWSLm7Et7d
+         tdieiBL6DRknw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        heiko.carstens@de.ibm.com
-In-Reply-To: <YZzEP3S7U15bTDAI@fedora>
-References: <YZzEP3S7U15bTDAI@fedora>
-Subject: Re: [PATCH] regulator: rohm-generic: iniline stub function
-Message-Id: <163768666190.1388445.5938847019088932907.b4-ty@kernel.org>
-Date:   Tue, 23 Nov 2021 16:57:41 +0000
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20211122171721.61553-1-andriy.shevchenko@linux.intel.com>
+References: <20211122171721.61553-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v2 1/3] spi: Deduplicate spi_match_id() in __spi_register_driver()
+Message-Id: <163768666616.1388476.14364872187119342177.b4-ty@kernel.org>
+Date:   Tue, 23 Nov 2021 16:57:46 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,25 +38,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Nov 2021 12:36:47 +0200, Matti Vaittinen wrote:
-> The function rohm_regulator_set_voltage_sel_restricted() has a stub
-> implementation. Linux-next testing spot following:
+On Mon, 22 Nov 2021 19:17:19 +0200, Andy Shevchenko wrote:
+> The same logic is used in spi_match_id() and in the __spi_register_driver().
+> By switching the former from taking struct spi_device * to const char * as
+> the second parameter we may deduplicate the code.
 > 
-> include/linux/mfd/rohm-generic.h:93:12: error:
-> 'rohm_regulator_set_voltage_sel_restricted' defined but not used
 > 
-> Fix this by inlining the stub.
-> 
-> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] regulator: rohm-generic: iniline stub function
-      commit: cff6f593251cdf5398dc3c57f7032b8e9dcb633e
+[1/3] spi: Deduplicate spi_match_id() in __spi_register_driver()
+      (no commit info)
+[2/3] spi: Replace memset() with __GFP_ZERO
+      commit: b00bab9d48bbb6446a5cf366f5f8e501a16031a1
+[3/3] spi: Fix multi-line comment style
+      commit: 350de7ce26caba5c7ec0dd4ef1802c9a50a5d85d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
