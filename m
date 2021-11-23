@@ -2,105 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E845945A3B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:25:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 352F745A3B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:26:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234867AbhKWN2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 08:28:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233318AbhKWN2f (ORCPT
+        id S235008AbhKWN3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 08:29:34 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:40960 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232333AbhKWN3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 08:28:35 -0500
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A33C061714
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 05:25:27 -0800 (PST)
-Received: by mail-qv1-xf2f.google.com with SMTP id i13so14919773qvm.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 05:25:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=f6bH75B5uISe754dD7QVxSQqAX2xbC77T+3hEu0cg7s=;
-        b=ZAIcvL7QYRTkyqM+UDLXRaCX+Pmpvh5KGYJtlJ/8CtTMaajohDKyBjLo+LXPQsQ8Yw
-         XJc5afxG/RkwB16aWB8+I6/k0XUX2B/wj17o9z6XmNpyTEaJXlMb5L+LByJJ6UmseguW
-         Ov+d4K4llr4KbsOc4yNahw4VUaa0J/UPstNjoW7aBSVvDLkG7J98XrFQn5eqLhT6y944
-         lOF8fXpAFO4n/SjRKOZQ3F9nKAhVWibTWB41gsH8TKX+2XumUIPwcmEZNpRGEhINzKmB
-         iHzWXuUr3Cl5dq8DO8NsvFO+gy7mHuUAE9kXTyJqqdpr7Mb0Ur5NVMTJS+j87RGmZH5G
-         r55g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=f6bH75B5uISe754dD7QVxSQqAX2xbC77T+3hEu0cg7s=;
-        b=CSEwo8wt7kBs6XESxfz8Invp/UUYnVpNo/sDaDp/pZ0kXb6UqmVugpR1OCsoq5Qn5B
-         mN2toJl0fxMLcyT5ALUnTihhJC2udjLvURgoWTHkUDu75fkQfGWKCVxsN1UBQ9tGFR1G
-         5cNywAzdaJ6NcfrKq2QtEXV8BvEAznws1e7sv2Pp/vQbWycMfW8/uArnGUFv26U1Oqs4
-         1jUfy/N7iWBc3Q36kY5CeESjePpwj8rj7pG+txKRjS6O0uFff81L1hxj1HBlWtUbcmMj
-         wZQcpcpajkjSkxbRsdEt+wi+0qgchVNegT514JECi8swQG3YI70kTE6+XcN5DbiTodNN
-         16nw==
-X-Gm-Message-State: AOAM530XyL9fbWb+REKDlOiT6ePDr0CmI72eCmebhPYj3jssZDcZ6BaU
-        w5e/8gxR8/uynAt0XBdotd0c+Q==
-X-Google-Smtp-Source: ABdhPJwB201iiHpk5+3QL8eVGM7clp0AERsAw7H4ideQyhyMRSxukGJYxwk3RyMAbG2TOvmekK3D4g==
-X-Received: by 2002:a05:6214:2505:: with SMTP id gf5mr5909823qvb.55.1637673925554;
-        Tue, 23 Nov 2021 05:25:25 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id b2sm5837535qtg.88.2021.11.23.05.25.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 05:25:24 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mpVnX-0001kU-Up; Tue, 23 Nov 2021 09:25:23 -0400
-Date:   Tue, 23 Nov 2021 09:25:23 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Andrew Dona-Couch <andrew@donacou.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Drew DeVault <sir@cmpwn.com>,
-        Ammar Faizi <ammarfaizi2@gnuweeb.org>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        io_uring Mailing List <io-uring@vger.kernel.org>,
-        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
-Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
-Message-ID: <20211123132523.GA5112@ziepe.ca>
-References: <20211115203530.62ff33fdae14927b48ef6e5f@linux-foundation.org>
- <CFQZSHV700KV.18Y62SACP8KOO@taiga>
- <20211116114727.601021d0763be1f1efe2a6f9@linux-foundation.org>
- <CFRGQ58D9IFX.PEH1JI9FGHV4@taiga>
- <20211116133750.0f625f73a1e4843daf13b8f7@linux-foundation.org>
- <b84bc345-d4ea-96de-0076-12ff245c5e29@redhat.com>
- <8f219a64-a39f-45f0-a7ad-708a33888a3b@www.fastmail.com>
- <333cb52b-5b02-648e-af7a-090e23261801@redhat.com>
- <ca96bb88-295c-ccad-ed2f-abc585cb4904@kernel.dk>
- <5f998bb7-7b5d-9253-2337-b1d9ea59c796@redhat.com>
+        Tue, 23 Nov 2021 08:29:33 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R891e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UxzwxjE_1637673981;
+Received: from 30.32.124.111(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UxzwxjE_1637673981)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 23 Nov 2021 21:26:22 +0800
+Message-ID: <31367b55-d3a4-3b2b-8d5d-86b8dfce7383@linux.alibaba.com>
+Date:   Tue, 23 Nov 2021 21:27:10 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5f998bb7-7b5d-9253-2337-b1d9ea59c796@redhat.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [RFC PATCH] mm: Promote slow memory in advance to improve
+ performance
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     akpm@linux-foundation.org, dave.hansen@linux.intel.com,
+        ziy@nvidia.com, shy828301@gmail.com,
+        zhongjiang-ali@linux.alibaba.com, xlpang@linux.alibaba.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Mel Gorman <mgorman@techsingularity.net>
+References: <fc80ea7998a98274447cb3be84d5ef705438a3dc.1637571100.git.baolin.wang@linux.alibaba.com>
+ <87ilwjbn1j.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <87ilwjbn1j.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 09:08:47PM +0100, David Hildenbrand wrote:
 
-> > You can't use mmu notifiers without impacting the fast path. This isn't
-> > just about io_uring, there are other users of memlock right now (like
-> > bpf) which just makes it even worse.
+
+On 2021/11/23 10:53, Huang, Ying wrote:
+> Baolin Wang <baolin.wang@linux.alibaba.com> writes:
 > 
-> 1) Do we have a performance evaluation? Did someone try and come up with
-> a conclusion how bad it would be?
+>> Some workloads access a set of data entities will follow the data locality,
+>> also known as locality of reference, which means the probability of accessing
+>> some data soon after some nearby data has been accessed.
+>>
+>> On some systems with different memory types, which will rely on the numa
+>> balancing to promote slow hot memory to fast memory to improve performance.
+>> So we can promote several sequential pages on slow memory at one time
+>> according to the data locality for some workloads to improve the performance.
+>>
+>> Testing with mysql can show about 5% performance improved as below.
+>>
+>> Machine: 16 CPUs, 64G DRAM, 256G AEP
+>>
+>> sysbench /usr/share/sysbench/tests/include/oltp_legacy/oltp.lua
+>> --mysql-user=root --mysql-password=root --oltp-test-mode=complex
+>> --oltp-tables-count=65 --oltp-table-size=5000000 --threads=20 --time=600
+>> --report-interval=10
+>>
+>> No proactive promotion:
+>> transactions
+>> 2259245 (3765.37 per sec.)
+>> 2312605 (3854.31 per sec.)
+>> 2325907 (3876.47 per sec.)
+>>
+>> Proactive promotion bytes=16384:
+>> transactions
+>> 2419023 (4031.66 per sec.)
+>> 2451903 (4086.47 per sec.)
+>> 2441941 (4068.68 per sec.)
+> 
+> This is kind of readahead to promote the page before we know it's hot.
+> It can definitely benefit the performance if we predict correctly, but
+> may hurt if we predict wrongly.
 
-It needs additional locking between page readers and the mmu notifier.
+Right.
 
-One of the virtio things does this thing and they used rcu on the page
-readers and a synchronize rcu in a mmu notifier - which I think is
-pretty bad.
+> 
+> Is it possible for us to add some self-adaptive algorithm like that in
+> readahead to determine whether to adjust the fault around window
+> dynamically?  A system level knob may be not sufficient to fit all
+> workloads run in system?
 
-> 2) Could be provide a mmu variant to ordinary users that's just good
-> enough but maybe not as fast as what we have today? And limit
-> FOLL_LONGTERM to special, privileged users?
-
-rdma has never been privileged
-
-Jason
+That's a good point, and I also thought about it, but only implemented a 
+simple approach now. OK, I will try to implement one flexible approach 
+to adjust the fault around window dynamically and measure the 
+performance. Thanks for your input.
