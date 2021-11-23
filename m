@@ -2,77 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1630D45A993
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:03:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCDA745A991
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:02:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238012AbhKWRGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 12:06:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43056 "EHLO
+        id S237806AbhKWRGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 12:06:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235249AbhKWRGT (ORCPT
+        with ESMTP id S235873AbhKWRGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 12:06:19 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F71C061574;
-        Tue, 23 Nov 2021 09:03:11 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id r11so94992197edd.9;
-        Tue, 23 Nov 2021 09:03:11 -0800 (PST)
+        Tue, 23 Nov 2021 12:06:04 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293E6C06173E
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:02:56 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id j6-20020a17090a588600b001a78a5ce46aso2630250pji.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:02:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=U6jALudFHQvyvJHEV0b2RMHJqiK60umjau+aze/FElM=;
-        b=kc+WqHAK67dwN3O+m1BR1r0+WGPP0QsNKe797r0yVF2GUNB/FyMgHmdBVG7Et0rh09
-         bWC/LRCBItuOJ+XfsUMPSLze9d+R6QRBWOfi7wddIix77cv4IK9mxtlZJx+Z9pGWN1Fg
-         iEdPrtrgWr8VXHvZbhaXRHRmqDjaRCIi0ZJHMuG/GqMCb3QiY53ACxOOk9095cBqwHrV
-         jEo4ai6q/hFANDYvYW9l26gwgvcI8Ns5G6y6Fc1g8iQL5zchrTI3Z3uHhl3WidtTKneU
-         vsfKzgc0kPu4HN4bMgeLmk+6r0vsOv2BsscX56fbP7ecmYaZDE/kxyCEmCzSjJtJt6qi
-         c20A==
+        bh=6owNqcDoaPPSgoDjdbesWq57uvbLFPnsWIEPdW/px0Y=;
+        b=c9d8xUe/qOtuuioWpxS12A7KI9r3l4VMIXBgcGzpznWs0Z7OcN0I4loL/PTCu/UxS5
+         ddHAgBFAiLNy4HVFTUJfJgFawfhKcZMV4IqUQlX8hHmx8imjpHkXB/05UCzUTd9hZ+cM
+         H5R+4ROxvg+Y9eIXumRe0zLb1crOVseNnB+eGU5IwaVnf3HSCX4I+/rRHUNp7JXgRpON
+         gke3LRwzPRPRZzNa9aTuyIjo7iWhATMnE8BViCFYEdFkVI5rHv83SfK7c93u3qx80tPJ
+         j4N+tjk8bGBvDSGc2JaSzL/6Nwe6p8Bysk9bmwZbNnahGEYiZe4GPCESO79yevFbhZRY
+         qZtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=U6jALudFHQvyvJHEV0b2RMHJqiK60umjau+aze/FElM=;
-        b=QpsqvlYlUsYGvMfwEJDRXGfa28eEvQOyj3aU3FEKd6lsNQMZshik2U/RXfmBcqFRhY
-         uFtvxqSy8WBROXlvvPcxvUes5562kpR3ZWJf6GBdlSPm4bP07y7Q+iaF9EDBq6QQQKXR
-         E9WVgOBvlcj1Ji9+1zuUzM629io2dXXNMqbpJ0pG0EhclY8HE96AoGYisP3czhIgbJ1P
-         U1l+XuBKPbQa9bEPbDiW5zT62UVwMOU2nAoa0dzshjWCrcjfFC6ZPB7+BPmjw8PNol1D
-         Z0AX+8QK1zp7Q1Fkwq7NHUtyT3/+Y3E5CO34ok9xg4KuOQK5rFikVDGlBbYWRJOd1vml
-         ilfQ==
-X-Gm-Message-State: AOAM533UNKktfo+vA2q6fx6jjJruPv4rjqBR7C59FfpdNDKCk2N0OVrt
-        vXsHzyfYAr23rikFaLAt5hgBEzDEAB2ejAzndv8=
-X-Google-Smtp-Source: ABdhPJwNKn59/g2sFNpa9NbXm5Wemahhna2OVadG1km53xcWONc0ZwEYVfZi+8VRJTbJ5xtRpAbdW+H8GAZ8ulW7RTk=
-X-Received: by 2002:a17:906:489b:: with SMTP id v27mr9336960ejq.567.1637686989831;
- Tue, 23 Nov 2021 09:03:09 -0800 (PST)
+        bh=6owNqcDoaPPSgoDjdbesWq57uvbLFPnsWIEPdW/px0Y=;
+        b=ZNeJgF2NPFk/odwAtgVXijG1J+hYUIeJvlrwbaWwflreXoVcMycXgkTS2lhE5E6kNN
+         cO+S0/bny44p+KLLgYJSKoQng42iye0t+2DrtnGqJSdMH/371sUZyKsiGZskAS6GPtmz
+         oyZ+bPA43gY8J3motbevP64JSmb8RDbrWyVdxOQoUj06SzuuczqMgPXWHba3+4rn7GUt
+         iC8CZcLuWCO3uvp3jCqkugTAKC27YqM0gTuZSgF54e9wAtT8z497CvXy+pCyD99PdnyK
+         nzBy98syU15oVQv8K75TWsImqB82+6NqMEa9iY2KIieoBQc20kWHTn2u7ry5Bd9EpnDI
+         jkkA==
+X-Gm-Message-State: AOAM532NfktBuOcRtSdWXGDllU6mG24lC1mtbR7xx1OceV5C4f6NH5Oo
+        P0la1+f0Al7Z4vK+BKiiuKDt2HYPtjyTVHqYJBxBLQ==
+X-Google-Smtp-Source: ABdhPJwtC9yJlhnYSPMNvmxu7MqpYmoigPcHG8h5MiPYBe/ro3thUy9VrOdP/Yt2YsoF0GVD49p0yUtPiYGvL0ZSwMA=
+X-Received: by 2002:a17:90b:3e8c:: with SMTP id rj12mr4745975pjb.152.1637686975331;
+ Tue, 23 Nov 2021 09:02:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20211123170034.41253-1-andriy.shevchenko@linux.intel.com> <20211123170034.41253-3-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20211123170034.41253-3-andriy.shevchenko@linux.intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 23 Nov 2021 19:02:32 +0200
-Message-ID: <CAHp75Vf6HhvYb_H71E17vuCsbN_feUVNv9NO2Ns32MKJKOmeVg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] spi: Fix multi-line comment style
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211123161630.123222-1-bjorn.andersson@linaro.org> <20211123162508.153711-1-bjorn.andersson@linaro.org>
+In-Reply-To: <20211123162508.153711-1-bjorn.andersson@linaro.org>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Tue, 23 Nov 2021 18:02:44 +0100
+Message-ID: <CAG3jFyv4uhEN9zO0Kt9QU+0i93YoT7ccpSN-amncQM=zM9r6JQ@mail.gmail.com>
+Subject: Re: [PATCH v2] clk: qcom: clk-alpha-pll: Don't reconfigure running Trion
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 7:01 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
->   /*
->    * Fix multi-line comment style as in this short example. Pay attention
->    * to the capitalization, period and starting line of the text.
->    */
->
-> While at it, split the (supposedly short) description of couple of functions
-> to summary (short description) and (long) description.
+Hey Bjorn,
 
-This one is already applied, seconds before I have sent it.
+On Tue, 23 Nov 2021 at 17:23, Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> In the event that the bootloader has configured the Trion PLL as source
+> for the display clocks, e.g. for the continuous splashscreen, then there
+> will also be RCGs that are clocked by this instance.
+>
+> Reconfiguring, and in particular disabling the output of, the PLL will
+> cause issues for these downstream RCGs and has been shown to prevent
+> them from being re-parented.
+>
+> Follow downstream and skip configuration if it's determined that the PLL
+> is already running.
+>
+> Fixes: 59128c20a6a9 ("clk: qcom: clk-alpha-pll: Add support for controlling Lucid PLLs")
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>
+> Changes since v1:
+> - Forgot to commit the last minute s/pr_dbg/pr_debug/
+>
+>  drivers/clk/qcom/clk-alpha-pll.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
+> index eaedcceb766f..8f65b9bdafce 100644
+> --- a/drivers/clk/qcom/clk-alpha-pll.c
+> +++ b/drivers/clk/qcom/clk-alpha-pll.c
+> @@ -1429,6 +1429,15 @@ EXPORT_SYMBOL_GPL(clk_alpha_pll_postdiv_fabia_ops);
+>  void clk_trion_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
+>                              const struct alpha_pll_config *config)
+>  {
+> +       /*
+> +        * If the bootloader left the PLL enabled it's likely that there are
+> +        * RCGs that will lock up if we disable the PLL below.
+> +        */
+> +       if (trion_pll_is_enabled(pll, regmap)) {
+> +               pr_debug("Trion PLL is already enabled, skipping configuration\n");
+> +               return;
+> +       }
+> +
+>         clk_alpha_pll_write_config(regmap, PLL_L_VAL(pll), config->l);
+>         regmap_write(regmap, PLL_CAL_L_VAL(pll), TRION_PLL_CAL_VAL);
+>         clk_alpha_pll_write_config(regmap, PLL_ALPHA_VAL(pll), config->alpha);
+> --
+> 2.33.1
 
--- 
-With Best Regards,
-Andy Shevchenko
+This resolves an issue I was seeing related to clocks not being able
+to get updated.
+
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
