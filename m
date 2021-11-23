@@ -2,74 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30EEB45AD92
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:47:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D82245AD96
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:48:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238937AbhKWUuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 15:50:12 -0500
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:60776 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239101AbhKWUuK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 15:50:10 -0500
-Received: from pop-os.home ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id pcgtmIyUjBazopcgumCFhk; Tue, 23 Nov 2021 21:47:00 +0100
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Tue, 23 Nov 2021 21:47:00 +0100
-X-ME-IP: 86.243.171.122
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Felix.Kuehling@amd.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@linux.ie,
-        daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH v2 2/2] drm/amdkfd: Slighly optimize 'init_doorbell_bitmap()'
-Date:   Tue, 23 Nov 2021 21:46:58 +0100
-Message-Id: <72ac7967f07e0794a8a06793407cf03f6a34e9fa.1637700315.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cebaed4e892db804eece363e07a3ddd04af0f7be.1637700315.git.christophe.jaillet@wanadoo.fr>
-References: <cebaed4e892db804eece363e07a3ddd04af0f7be.1637700315.git.christophe.jaillet@wanadoo.fr>
+        id S236471AbhKWUwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 15:52:02 -0500
+Received: from mga02.intel.com ([134.134.136.20]:44182 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232689AbhKWUwB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 15:52:01 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="222351224"
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="222351224"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 12:48:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="674623681"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 23 Nov 2021 12:48:51 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mpcig-0002HU-Km; Tue, 23 Nov 2021 20:48:50 +0000
+Date:   Wed, 24 Nov 2021 04:48:10 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Subject: [tip:perf/core 12/17] arch/arm64/kvm/arm.c:499:15: warning: no
+ previous prototype for 'kvm_arch_vcpu_get_ip'
+Message-ID: <202111240411.iKbDg3oU-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'doorbell_bitmap' bitmap has just been allocated. So we can use the
-non-atomic '__set_bit()' function to save a few cycles as no concurrent
-access can happen.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/core
+head:   a9f4a6e92b3b319296fb078da2615f618f6cd80c
+commit: e1bfc24577cc65c95dc519d7621a9c985b97e567 [12/17] KVM: Move x86's perf guest info callbacks to generic KVM
+config: arm64-randconfig-r035-20211123 (https://download.01.org/0day-ci/archive/20211124/202111240411.iKbDg3oU-lkp@intel.com/config.gz)
+compiler: aarch64-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=e1bfc24577cc65c95dc519d7621a9c985b97e567
+        git remote add tip https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
+        git fetch --no-tags tip perf/core
+        git checkout e1bfc24577cc65c95dc519d7621a9c985b97e567
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=arm64 
 
-Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+>> arch/arm64/kvm/arm.c:499:15: warning: no previous prototype for 'kvm_arch_vcpu_get_ip' [-Wmissing-prototypes]
+     499 | unsigned long kvm_arch_vcpu_get_ip(struct kvm_vcpu *vcpu)
+         |               ^~~~~~~~~~~~~~~~~~~~
+
+
+vim +/kvm_arch_vcpu_get_ip +499 arch/arm64/kvm/arm.c
+
+   498	
+ > 499	unsigned long kvm_arch_vcpu_get_ip(struct kvm_vcpu *vcpu)
+   500	{
+   501		return *vcpu_pc(vcpu);
+   502	}
+   503	
+
 ---
-bitmap_set() could certainly also be use, but range checking would be
-tricky.
-
-v1 --> v2: No change
----
- drivers/gpu/drm/amd/amdkfd/kfd_process.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process.c b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-index 67bb1654becc..9158f9754a24 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
-@@ -1446,9 +1446,9 @@ static int init_doorbell_bitmap(struct qcm_process_device *qpd,
- 
- 	for (i = 0; i < KFD_MAX_NUM_OF_QUEUES_PER_PROCESS / 2; i++) {
- 		if (i >= range_start && i <= range_end) {
--			set_bit(i, qpd->doorbell_bitmap);
--			set_bit(i + KFD_QUEUE_DOORBELL_MIRROR_OFFSET,
--				qpd->doorbell_bitmap);
-+			__set_bit(i, qpd->doorbell_bitmap);
-+			__set_bit(i + KFD_QUEUE_DOORBELL_MIRROR_OFFSET,
-+				  qpd->doorbell_bitmap);
- 		}
- 	}
- 
--- 
-2.30.2
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
