@@ -2,149 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA52459D84
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:13:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C47459D91
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:13:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232073AbhKWIQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 03:16:13 -0500
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:35096 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbhKWIQJ (ORCPT
+        id S234644AbhKWIQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 03:16:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:45470 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234513AbhKWIQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 03:16:09 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AN8Cm5C095619;
-        Tue, 23 Nov 2021 02:12:48 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1637655168;
-        bh=sTEvQ1er5plxIGdGGZR1lqxkF4CWVe/9/U+j0wI+RZc=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=tVpT6338lr56oldmrxQNN+QotXyK5+oUVXFPTAMHdohoDLeWxybQejxriJXnprPMq
-         tIb/tzZKljaqLdt+CR+LKMIB5Iv3pOBKMvVqTaEN7zETI/+yxp1PgFb29OPQ/Y046Z
-         CWygWUc/eMRGHGzll68PSdvp0GV2G7XNltJeu7Ng=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AN8CmqV010533
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 23 Nov 2021 02:12:48 -0600
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 23
- Nov 2021 02:12:48 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 23 Nov 2021 02:12:48 -0600
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AN8CNe2101399;
-        Tue, 23 Nov 2021 02:12:44 -0600
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Peter Rosin <peda@axentia.se>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-can@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>
-Subject: [PATCH RFC v3 4/4] phy: phy-can-transceiver: Add support for setting mux
-Date:   Tue, 23 Nov 2021 13:42:21 +0530
-Message-ID: <20211123081222.27979-5-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211123081222.27979-1-a-govindraju@ti.com>
-References: <20211123081222.27979-1-a-govindraju@ti.com>
+        Tue, 23 Nov 2021 03:16:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637655217;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=O3Btiz5nwMWKzC0W/eHifXll2VpJykh1k99oSwAlKTw=;
+        b=aqYQbMS3GJ/Gh+deHaqyR6p+f5MByk/ZBPiUuyQdRb95piOb3HuecU9DUFYhlfTKIrOnAb
+        M2pelviDuGeWnJGUzrViapHVN5xgYw6gCXCoqgWi7tWRpCgywEfq1uTRhWcSvkif/mG16W
+        HKJR1eks6RSERDIhDBY5NEtnxEnMMgk=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-581-zFiSaI27N3m1SfRctT344w-1; Tue, 23 Nov 2021 03:13:33 -0500
+X-MC-Unique: zFiSaI27N3m1SfRctT344w-1
+Received: by mail-pf1-f197.google.com with SMTP id a23-20020a62bd17000000b004a3f6892612so7159893pff.22
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 00:13:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=O3Btiz5nwMWKzC0W/eHifXll2VpJykh1k99oSwAlKTw=;
+        b=ZDmvJPxNYvHaKSa2i8csF9lWGQa8wr8trGZR2L9GNG2/YHZyfx8t0UWhlVSTB5sOUi
+         nod1DlgEzRURYK1xI+RwcdDsZ5xrmDHHLubba7pFrrteqJXicjEB71/tSGCYDJjCl6QU
+         8ZOjfdVxIoKjVn8wvMWgmda7WQPF9Nu3BuP8EN6VgOxBea7G35LKKdmC9aod2oQf4073
+         UpKivrV1wnFjqbhjyU4Pft2HfghMj5XnZbY3rl382N4CAWm/gkaMD7zBKJnUU6S9SPm1
+         FzNYYVWx4CITSPZrawCbSt3CvBQpnc4rkPYPwsZg97JuRuGQKOFAD6UvMyfpNjXtDbhY
+         RuwA==
+X-Gm-Message-State: AOAM531916HZPddlea+J6/HUoxZTFqGR5TKHUAS4aJ/lXWmITyLsvH3W
+        r0poI/V+wBbhMhJ+6fi3upNMlsK6QAHBmhj/R1vSi1S2zEsUgP4Ix4XwoXXLgPH7wj5kCxhdTyV
+        +Fet9B7ZFQzbmZigp7q/GBBPs0QljRDIaIGbM9GlA
+X-Received: by 2002:a17:902:7797:b0:143:88c3:7ff1 with SMTP id o23-20020a170902779700b0014388c37ff1mr4598429pll.22.1637655212432;
+        Tue, 23 Nov 2021 00:13:32 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzp1wBdneu0emdkOY1J3COTZHl45URmatSlfOmb+lu2/bMIFBrPujjaaeKFXgb43G7YzJiJ3bucNsc9n8IUXCo=
+X-Received: by 2002:a17:902:7797:b0:143:88c3:7ff1 with SMTP id
+ o23-20020a170902779700b0014388c37ff1mr4598401pll.22.1637655212162; Tue, 23
+ Nov 2021 00:13:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+References: <20211122191752.1308953-1-stefanb@linux.ibm.com> <20211122191752.1308953-2-stefanb@linux.ibm.com>
+In-Reply-To: <20211122191752.1308953-2-stefanb@linux.ibm.com>
+From:   =?UTF-8?B?TWFyYy1BbmRyw6kgTHVyZWF1?= <marcandre.lureau@redhat.com>
+Date:   Tue, 23 Nov 2021 12:13:21 +0400
+Message-ID: <CAMxuvay+TJ8fs50GoZXUkX5NUsq20+xQBY3W5OSxMMvVGhJNow@mail.gmail.com>
+Subject: Re: [PATCH 1/2] selftests: tpm: Probe for available PCR bank
+To:     Stefan Berger <stefanb@linux.ibm.com>
+Cc:     jarkko@kernel.org, linux-integrity@vger.kernel.org,
+        peterhuewe@gmx.de,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On some boards, for routing CAN signals from controller to transceiver,
-muxes might need to be set. Therefore, add support for setting the mux by
-reading the mux-controls property from the device tree node.
+On Mon, Nov 22, 2021 at 11:18 PM Stefan Berger <stefanb@linux.ibm.com> wrot=
+e:
+>
+> Probe for an available PCR bank to accommodate devices that do not have a
+> SHA-1 PCR bank or whose SHA-1 bank is deactivated.
+>
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
 
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
----
- drivers/phy/Kconfig               |  1 +
- drivers/phy/phy-can-transceiver.c | 22 ++++++++++++++++++++++
- 2 files changed, 23 insertions(+)
+Tested-by: Marc-Andr=C3=A9 Lureau <marcandre.lureau@redhat.com>
 
-diff --git a/drivers/phy/Kconfig b/drivers/phy/Kconfig
-index 82b63e60c5a2..300b0f2b5f84 100644
---- a/drivers/phy/Kconfig
-+++ b/drivers/phy/Kconfig
-@@ -64,6 +64,7 @@ config USB_LGM_PHY
- config PHY_CAN_TRANSCEIVER
- 	tristate "CAN transceiver PHY"
- 	select GENERIC_PHY
-+	select MULTIPLEXER
- 	help
- 	  This option enables support for CAN transceivers as a PHY. This
- 	  driver provides function for putting the transceivers in various
-diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-transceiver.c
-index 6f3fe37dee0e..6c94e3846410 100644
---- a/drivers/phy/phy-can-transceiver.c
-+++ b/drivers/phy/phy-can-transceiver.c
-@@ -10,6 +10,7 @@
- #include<linux/module.h>
- #include<linux/gpio.h>
- #include<linux/gpio/consumer.h>
-+#include <linux/mux/consumer.h>
- 
- struct can_transceiver_data {
- 	u32 flags;
-@@ -21,13 +22,22 @@ struct can_transceiver_phy {
- 	struct phy *generic_phy;
- 	struct gpio_desc *standby_gpio;
- 	struct gpio_desc *enable_gpio;
-+	struct mux_state *mux_state;
- };
- 
- /* Power on function */
- static int can_transceiver_phy_power_on(struct phy *phy)
- {
-+	int ret;
- 	struct can_transceiver_phy *can_transceiver_phy = phy_get_drvdata(phy);
- 
-+	if (can_transceiver_phy->mux_state) {
-+		ret = mux_state_select(can_transceiver_phy->mux_state);
-+		if (ret) {
-+			dev_err(&phy->dev, "Failed to select CAN mux: %d\n", ret);
-+			return ret;
-+		}
-+	}
- 	if (can_transceiver_phy->standby_gpio)
- 		gpiod_set_value_cansleep(can_transceiver_phy->standby_gpio, 0);
- 	if (can_transceiver_phy->enable_gpio)
-@@ -45,6 +55,8 @@ static int can_transceiver_phy_power_off(struct phy *phy)
- 		gpiod_set_value_cansleep(can_transceiver_phy->standby_gpio, 1);
- 	if (can_transceiver_phy->enable_gpio)
- 		gpiod_set_value_cansleep(can_transceiver_phy->enable_gpio, 0);
-+	if (can_transceiver_phy->mux_state)
-+		mux_state_deselect(can_transceiver_phy->mux_state);
- 
- 	return 0;
- }
-@@ -95,6 +107,16 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
- 	match = of_match_node(can_transceiver_phy_ids, pdev->dev.of_node);
- 	drvdata = match->data;
- 
-+	if (of_property_read_bool(dev->of_node, "mux-controls")) {
-+		struct mux_state *mux_state;
-+
-+		mux_state = devm_mux_state_get(dev, NULL);
-+		if (IS_ERR(mux_state))
-+			return dev_err_probe(&pdev->dev, PTR_ERR(mux_state),
-+					     "failed to get mux\n");
-+		can_transceiver_phy->mux_state = mux_state;
-+	}
-+
- 	phy = devm_phy_create(dev, dev->of_node,
- 			      &can_transceiver_phy_ops);
- 	if (IS_ERR(phy)) {
--- 
-2.17.1
+> ---
+>  tools/testing/selftests/tpm2/tpm2_tests.py | 31 ++++++++++++++++------
+>  1 file changed, 23 insertions(+), 8 deletions(-)
+>
+> diff --git a/tools/testing/selftests/tpm2/tpm2_tests.py b/tools/testing/s=
+elftests/tpm2/tpm2_tests.py
+> index 9d764306887b..a569c8d0db08 100644
+> --- a/tools/testing/selftests/tpm2/tpm2_tests.py
+> +++ b/tools/testing/selftests/tpm2/tpm2_tests.py
+> @@ -27,7 +27,21 @@ class SmokeTest(unittest.TestCase):
+>          result =3D self.client.unseal(self.root_key, blob, auth, None)
+>          self.assertEqual(data, result)
+>
+> +    def determine_bank_alg(self):
+> +        # Probe for available PCR bank
+> +        for bank_alg in [tpm2.TPM2_ALG_SHA1, tpm2.TPM2_ALG_SHA256]:
+> +            try:
+> +                handle =3D self.client.start_auth_session(tpm2.TPM2_SE_T=
+RIAL)
+> +                self.client.policy_pcr(handle, [17], bank_alg=3Dbank_alg=
+)
+> +                break
+> +            except tpm2.UnknownPCRBankError:
+> +                pass
+> +            finally:
+> +                self.client.flush_context(handle)
+> +        return bank_alg
+> +
+>      def test_seal_with_policy(self):
+> +        bank_alg =3D self.determine_bank_alg()
+>          handle =3D self.client.start_auth_session(tpm2.TPM2_SE_TRIAL)
+>
+>          data =3D ('X' * 64).encode()
+> @@ -35,7 +49,7 @@ class SmokeTest(unittest.TestCase):
+>          pcrs =3D [16]
+>
+>          try:
+> -            self.client.policy_pcr(handle, pcrs)
+> +            self.client.policy_pcr(handle, pcrs, bank_alg=3Dbank_alg)
+>              self.client.policy_password(handle)
+>
+>              policy_dig =3D self.client.get_policy_digest(handle)
+> @@ -47,7 +61,7 @@ class SmokeTest(unittest.TestCase):
+>          handle =3D self.client.start_auth_session(tpm2.TPM2_SE_POLICY)
+>
+>          try:
+> -            self.client.policy_pcr(handle, pcrs)
+> +            self.client.policy_pcr(handle, pcrs, bank_alg=3Dbank_alg)
+>              self.client.policy_password(handle)
+>
+>              result =3D self.client.unseal(self.root_key, blob, auth, han=
+dle)
+> @@ -72,6 +86,7 @@ class SmokeTest(unittest.TestCase):
+>          self.assertEqual(rc, tpm2.TPM2_RC_AUTH_FAIL)
+>
+>      def test_unseal_with_wrong_policy(self):
+> +        bank_alg =3D self.determine_bank_alg()
+>          handle =3D self.client.start_auth_session(tpm2.TPM2_SE_TRIAL)
+>
+>          data =3D ('X' * 64).encode()
+> @@ -79,7 +94,7 @@ class SmokeTest(unittest.TestCase):
+>          pcrs =3D [16]
+>
+>          try:
+> -            self.client.policy_pcr(handle, pcrs)
+> +            self.client.policy_pcr(handle, pcrs, bank_alg=3Dbank_alg)
+>              self.client.policy_password(handle)
+>
+>              policy_dig =3D self.client.get_policy_digest(handle)
+> @@ -91,13 +106,13 @@ class SmokeTest(unittest.TestCase):
+>          # Extend first a PCR that is not part of the policy and try to u=
+nseal.
+>          # This should succeed.
+>
+> -        ds =3D tpm2.get_digest_size(tpm2.TPM2_ALG_SHA1)
+> -        self.client.extend_pcr(1, ('X' * ds).encode())
+> +        ds =3D tpm2.get_digest_size(bank_alg)
+> +        self.client.extend_pcr(1, ('X' * ds).encode(), bank_alg=3Dbank_a=
+lg)
+>
+>          handle =3D self.client.start_auth_session(tpm2.TPM2_SE_POLICY)
+>
+>          try:
+> -            self.client.policy_pcr(handle, pcrs)
+> +            self.client.policy_pcr(handle, pcrs, bank_alg=3Dbank_alg)
+>              self.client.policy_password(handle)
+>
+>              result =3D self.client.unseal(self.root_key, blob, auth, han=
+dle)
+> @@ -109,14 +124,14 @@ class SmokeTest(unittest.TestCase):
+>
+>          # Then, extend a PCR that is part of the policy and try to unsea=
+l.
+>          # This should fail.
+> -        self.client.extend_pcr(16, ('X' * ds).encode())
+> +        self.client.extend_pcr(16, ('X' * ds).encode(), bank_alg=3Dbank_=
+alg)
+>
+>          handle =3D self.client.start_auth_session(tpm2.TPM2_SE_POLICY)
+>
+>          rc =3D 0
+>
+>          try:
+> -            self.client.policy_pcr(handle, pcrs)
+> +            self.client.policy_pcr(handle, pcrs, bank_alg=3Dbank_alg)
+>              self.client.policy_password(handle)
+>
+>              result =3D self.client.unseal(self.root_key, blob, auth, han=
+dle)
+> --
+> 2.31.1
+>
 
