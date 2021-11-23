@@ -2,131 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DDE545A6D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 16:50:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80E1B45A6D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 16:50:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237209AbhKWPx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 10:53:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53690 "EHLO
+        id S236345AbhKWPxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 10:53:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238494AbhKWPx5 (ORCPT
+        with ESMTP id S232147AbhKWPxv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 10:53:57 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1A0C06173E
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 07:50:48 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id q16so3009774pgq.10
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 07:50:48 -0800 (PST)
+        Tue, 23 Nov 2021 10:53:51 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46BDAC061574;
+        Tue, 23 Nov 2021 07:50:43 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id x19-20020a9d7053000000b0055c8b39420bso34428004otj.1;
+        Tue, 23 Nov 2021 07:50:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p5/dnjXoJ8teDVOSqiNUzGVK+QNLdlAM4nDDCgZROWw=;
-        b=SZkGjoNNQtoublRXDZq9kgD0trOc0Q3U7nJiv1jg/3HrkIypSCJMhDm2r8+yI4mlNk
-         wFndxsoxTZh4EX9CjzlM8JK1ivzYhc7Sib4z0ff7ifSmOdO23HtUVAM2g1V+TL1QhNDq
-         p5q8jjV7FynYOzQdmJcOyaP1OyvIqyI2wNEf9+YGWW6VwpAHNjHnURtVWJuIzu6sr+qF
-         mUn7Aqm/BHrSARXaf6omS1Xina4ZDNToYiAsaS3znXEVPkbyhoRiKxOVT5NTA2/CmrCp
-         Z3TuNp85RgwLUhTTvyeaJBqKu2iMIweqZRtjp7IFx6uZW2CHflreaDUWP707y/lYeuY6
-         stjA==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4hIzh/yH7twyHCgqG/Qpcvvbzjw8p7UTAPXaSEcQbuY=;
+        b=BYsFLg4ZuSznGm+fVSngbOtutw4wt2pIMFeNqOcJnDQQ+kyk+htspNcsyLAMymOS/T
+         tScYg7OyC7qgBPEJ32zIKNNkvsVg8/hDdL3i7om6o5W8+SqG8eyHZAKPHhlBs/Ff0vec
+         mPUOmT8M+x2YQGSgK5vPj+qwyKLkHMMpJjxny9pds3HVk48YmNGMVGiq1GLidz6MSZUa
+         Bu0iGwS9H5FMnNa2PAxunIfdFb0SadkuxMxyvusOCcw3hNe10wbFe6FKHfbdaxN1s7k6
+         HNHbHJ8vMJBB1iqaZ82173FJhiGj20HDCn2z35gFV3fxG3g2PIpObi0dgdrfdIjDgKdD
+         kD9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p5/dnjXoJ8teDVOSqiNUzGVK+QNLdlAM4nDDCgZROWw=;
-        b=mfb162NDPNLVDurdpYitpCguYXBf3vL+95Zgfvhy9D4PWOyrX/M7L6HsdJeZmiu/N7
-         BWecP17h+SiyI02cxWqq+TdkO4iJRj6sLIRuzpQVgdAAmqzWvukLRQG6VrFrt9rEnmyL
-         RRnPpqPc/98/qsbXs66IrPmEi/9ZmIKlT8ypXVWGNWFekKZUXHxj2rcL40Iy8+dT5pYS
-         TKympklFYSEYoiZALyHcnhMxLRRZEpsqg3t+VynJsKTzANHGaNreRLKOgfnA/Oe838xT
-         aRV8+PqLiabF0cLV+PYSlsROlJMVuohlPIG1xP76ZiaE1jeS93gcdmeRgLX4tq8/VnIw
-         /kxQ==
-X-Gm-Message-State: AOAM5325omqg6gXAtUKeq+eN6c8eJ9TFDdIEwrvwBkHIklXo2oUsyMdG
-        HthebbKCd7fE8pAWd6Gz+GS19EKaZm8AhFyyspTHrg==
-X-Google-Smtp-Source: ABdhPJx911N+Fj7qf+H5dcOu/OnmfyUkA1zkkaVVKqEAufjOTT1k6nEfn/NtxZ2mTj/uwQ0jK+uc0rkOnN6MIwSWgRU=
-X-Received: by 2002:aa7:9903:0:b0:49f:e368:4fc3 with SMTP id
- z3-20020aa79903000000b0049fe3684fc3mr6070106pff.1.1637682647615; Tue, 23 Nov
- 2021 07:50:47 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=4hIzh/yH7twyHCgqG/Qpcvvbzjw8p7UTAPXaSEcQbuY=;
+        b=OS38JH/7yLQ49zltYJMV/b5zfrmY868Y7SAcC4R1HPV6kGZMqRs/+maxV9wCHLmC0D
+         GQegdkWgFO61m0/WXKTHC1ErZLIVarJOy/6V8OCnIV4454K7yZCnfMQT3aPV8kdDw9X+
+         jVHjyAYSQM11HOKL6Lhnj1XSCYpdUIEP/gh4ttVu1fB+o2GNZNWdElrufB9g5A1TDqnG
+         H8LaVINdiEA2lE8BS1U/nmzTrjsYEoDdfohv5kYtsOOzSR0XqzSywcmI0crCiyppwofe
+         CazHvrA1xqh9gSIcF5jD5tZE7EBMC8pAcfdmbKyCKvZuAuIBlz6Ean6CHLGL3yXWsyVK
+         kcxw==
+X-Gm-Message-State: AOAM532VTjcSF/JRq1cu9k0DwOupd9Q8XR0/g4okWvhomiteMSgbPkRl
+        NHoo/sKFhOZy0DeqP4XjFAk=
+X-Google-Smtp-Source: ABdhPJxKZp/qWH8tknhZHGj0FM76Yb4ZXcCbSD8Bm3uQZFpzGA2/8oUDhNGLOaJueTuscmZ2u35Qtg==
+X-Received: by 2002:a05:6830:264d:: with SMTP id f13mr5415353otu.43.1637682642641;
+        Tue, 23 Nov 2021 07:50:42 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w17sm550237oth.17.2021.11.23.07.50.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 07:50:42 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 23 Nov 2021 07:50:40 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Denis Pauk <pauk.denis@gmail.com>,
+        Eugene Shalygin <eugene.shalygin@gmail.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        thomas@weissschuh.net, Ed Brindley <kernel@maidavale.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v12 0/2] Update ASUS WMI supported boards
+Message-ID: <20211123155040.GA2184678@roeck-us.net>
+References: <20211116205744.381790-1-pauk.denis@gmail.com>
+ <f0bf01fa-ccd8-3a6a-8fd2-4c785fa212ef@roeck-us.net>
+ <CAHp75Vfbh+O39C_k9zQqSqsoSro7_gv6QmsxgmdO=woA32Q0HQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211123154050.40984-1-bjorn.andersson@linaro.org>
-In-Reply-To: <20211123154050.40984-1-bjorn.andersson@linaro.org>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 23 Nov 2021 16:50:34 +0100
-Message-ID: <CAG3jFytT1Bvagn8hQnVvE48X-jR+pyNuQtjcgJAYmBC97=BL7g@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/dpu: Add more of the INTF interrupt regions
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75Vfbh+O39C_k9zQqSqsoSro7_gv6QmsxgmdO=woA32Q0HQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Nov 2021 at 16:39, Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> In addition to the other 7xxx INTF interrupt regions, SM8350 has
-> additional INTF regions at 0x0ae37000, 0x0ae38000 and 0x0ae39000, define
-> these. The 7xxx naming scheme of the bits are kept for consistency.
->
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->  .../gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c  | 18 ++++++++++++++++++
->  .../gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h  |  3 +++
->  2 files changed, 21 insertions(+)
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
-> index d2b6dca487e3..a77a5eaa78ad 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c
-> @@ -30,6 +30,9 @@
->  #define MDP_AD4_INTR_STATUS_OFF                0x420
->  #define MDP_INTF_0_OFF_REV_7xxx             0x34000
->  #define MDP_INTF_1_OFF_REV_7xxx             0x35000
-> +#define MDP_INTF_2_OFF_REV_7xxx             0x36000
-> +#define MDP_INTF_3_OFF_REV_7xxx             0x37000
-> +#define MDP_INTF_4_OFF_REV_7xxx             0x38000
->  #define MDP_INTF_5_OFF_REV_7xxx             0x39000
->
->  /**
-> @@ -110,6 +113,21 @@ static const struct dpu_intr_reg dpu_intr_set[] = {
->                 MDP_INTF_1_OFF_REV_7xxx+INTF_INTR_EN,
->                 MDP_INTF_1_OFF_REV_7xxx+INTF_INTR_STATUS
->         },
-> +       {
-> +               MDP_INTF_2_OFF_REV_7xxx+INTF_INTR_CLEAR,
-> +               MDP_INTF_2_OFF_REV_7xxx+INTF_INTR_EN,
-> +               MDP_INTF_2_OFF_REV_7xxx+INTF_INTR_STATUS
-> +       },
-> +       {
-> +               MDP_INTF_3_OFF_REV_7xxx+INTF_INTR_CLEAR,
-> +               MDP_INTF_3_OFF_REV_7xxx+INTF_INTR_EN,
-> +               MDP_INTF_3_OFF_REV_7xxx+INTF_INTR_STATUS
-> +       },
-> +       {
-> +               MDP_INTF_4_OFF_REV_7xxx+INTF_INTR_CLEAR,
-> +               MDP_INTF_4_OFF_REV_7xxx+INTF_INTR_EN,
-> +               MDP_INTF_4_OFF_REV_7xxx+INTF_INTR_STATUS
-> +       },
->         {
->                 MDP_INTF_5_OFF_REV_7xxx+INTF_INTR_CLEAR,
->                 MDP_INTF_5_OFF_REV_7xxx+INTF_INTR_EN,
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h
-> index d50e78c9f148..1ab75cccd145 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.h
-> @@ -26,6 +26,9 @@ enum dpu_hw_intr_reg {
->         MDP_AD4_1_INTR,
->         MDP_INTF0_7xxx_INTR,
->         MDP_INTF1_7xxx_INTR,
-> +       MDP_INTF2_7xxx_INTR,
-> +       MDP_INTF3_7xxx_INTR,
-> +       MDP_INTF4_7xxx_INTR,
->         MDP_INTF5_7xxx_INTR,
->         MDP_INTR_MAX,
->  };
+On Tue, Nov 23, 2021 at 12:22:46PM +0200, Andy Shevchenko wrote:
+> >
+> > Series applied to hwmon-next.
+> 
+> What is the repository it has been applied to? I don't see it in
+> neither Linux Next nor [1]. It might be that I am missing the
+> workflow.
+> 
 
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
+I had not pushed the branch out. Done now.
+
+Guenter
