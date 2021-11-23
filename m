@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE12459953
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 01:50:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1DD945995F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 01:51:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232181AbhKWAxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 19:53:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:48657 "EHLO
+        id S233318AbhKWAyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 19:54:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22871 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229802AbhKWAxq (ORCPT
+        by vger.kernel.org with ESMTP id S231879AbhKWAxt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 19:53:46 -0500
+        Mon, 22 Nov 2021 19:53:49 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637628639;
+        s=mimecast20190719; t=1637628641;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=L2sSiLDkmJxVB+ui1aI1RCwbyrOWH4l2YwJAsXeXaMY=;
-        b=eJJgkWqPeTCpgpig2I1a+QYuia/TuzcVwr99qWDq5WzJteIFJH/UBk+yK7ZHWg5gc/O22j
-        Ktn7F8EejSPbG3rQuqvhvlvkuGNM/5gfIeeEv0y7wb4tXD0iPIkk52BLJBld1QNk+uDl2V
-        gSRUM7Q7kTvYf7WDnZOuVLHS+tAKfJI=
+        bh=GYWpc8wIF+vbiXR1aT/+mXBapry/w/2RCjPepM+0J2A=;
+        b=R9yteLU+Kw3hK6UVGChI7gkLpqIRGsuHt1we6b6/loytCoMzi3EHuNYeqT7avwiviY0a6t
+        TLKpIRpuW7oEG1j9RsrN8f6lBT7vAjxFMOFmLYiKlVH7Crhombn2rGBi4UFH7TQKWL9Ah0
+        Lpuc/RG5N5vQ9ad553Paw1w+VXN8DcE=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-173-v0QVHJ0NO_eRCq4RmChAew-1; Mon, 22 Nov 2021 19:50:38 -0500
-X-MC-Unique: v0QVHJ0NO_eRCq4RmChAew-1
+ us-mta-126-0TyAnASaPXeFCxqzfirTTA-1; Mon, 22 Nov 2021 19:50:38 -0500
+X-MC-Unique: 0TyAnASaPXeFCxqzfirTTA-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 158F61023F4E;
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8C706879500;
         Tue, 23 Nov 2021 00:50:37 +0000 (UTC)
 Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BA58C5C1C5;
-        Tue, 23 Nov 2021 00:50:36 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2F26D5C1C5;
+        Tue, 23 Nov 2021 00:50:37 +0000 (UTC)
 From:   Paolo Bonzini <pbonzini@redhat.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     pgonda@google.com
-Subject: [PATCH 01/12] selftests: fix check for circular KVM_CAP_VM_MOVE_ENC_CONTEXT_FROM
-Date:   Mon, 22 Nov 2021 19:50:25 -0500
-Message-Id: <20211123005036.2954379-2-pbonzini@redhat.com>
+Cc:     pgonda@google.com, Sean Christopherson <seanjc@google.com>
+Subject: [PATCH 02/12] selftests: sev_migrate_tests: free all VMs
+Date:   Mon, 22 Nov 2021 19:50:26 -0500
+Message-Id: <20211123005036.2954379-3-pbonzini@redhat.com>
 In-Reply-To: <20211123005036.2954379-1-pbonzini@redhat.com>
 References: <20211123005036.2954379-1-pbonzini@redhat.com>
 MIME-Version: 1.0
@@ -50,40 +50,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KVM_CAP_VM_MOVE_ENC_CONTEXT_FROM leaves the source VM in a dead state,
-so migrating back to the original source VM fails the ioctl.  Adjust
-the test.
+Ensure that the ASID are freed promptly, which becomes more important
+when more tests are added to this file.
 
+Cc: Peter Gonda <pgonda@google.com>
+Cc: Sean Christopherson <seanjc@google.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- tools/testing/selftests/kvm/x86_64/sev_migrate_tests.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ tools/testing/selftests/kvm/x86_64/sev_migrate_tests.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/tools/testing/selftests/kvm/x86_64/sev_migrate_tests.c b/tools/testing/selftests/kvm/x86_64/sev_migrate_tests.c
-index 5ba325cd64bf..a66b9be30239 100644
+index a66b9be30239..0cd7e2eaa895 100644
 --- a/tools/testing/selftests/kvm/x86_64/sev_migrate_tests.c
 +++ b/tools/testing/selftests/kvm/x86_64/sev_migrate_tests.c
-@@ -89,7 +89,7 @@ static void test_sev_migrate_from(bool es)
- {
- 	struct kvm_vm *src_vm;
- 	struct kvm_vm *dst_vms[NR_MIGRATE_TEST_VMS];
--	int i;
-+	int i, ret;
+@@ -149,6 +149,8 @@ static void test_sev_migrate_locking(void)
  
- 	src_vm = sev_vm_create(es);
- 	for (i = 0; i < NR_MIGRATE_TEST_VMS; ++i)
-@@ -102,7 +102,10 @@ static void test_sev_migrate_from(bool es)
- 		sev_migrate_from(dst_vms[i]->fd, dst_vms[i - 1]->fd);
+ 	for (i = 0; i < NR_LOCK_TESTING_THREADS; ++i)
+ 		pthread_join(pt[i], NULL);
++	for (i = 0; i < NR_LOCK_TESTING_THREADS; ++i)
++		kvm_vm_free(input[i].vm);
+ }
  
- 	/* Migrate the guest back to the original VM. */
--	sev_migrate_from(src_vm->fd, dst_vms[NR_MIGRATE_TEST_VMS - 1]->fd);
-+	ret = __sev_migrate_from(src_vm->fd, dst_vms[NR_MIGRATE_TEST_VMS - 1]->fd);
-+	TEST_ASSERT(ret == -1 && errno == EIO,
-+		    "VM that was migrated from should be dead. ret %d, errno: %d\n", ret,
-+		    errno);
+ static void test_sev_migrate_parameters(void)
+@@ -165,7 +167,6 @@ static void test_sev_migrate_parameters(void)
+ 	sev_ioctl(sev_es_vm_no_vmsa->fd, KVM_SEV_ES_INIT, NULL);
+ 	vm_vcpu_add(sev_es_vm_no_vmsa, 1);
  
- 	kvm_vm_free(src_vm);
- 	for (i = 0; i < NR_MIGRATE_TEST_VMS; ++i)
+-
+ 	ret = __sev_migrate_from(sev_vm->fd, sev_es_vm->fd);
+ 	TEST_ASSERT(
+ 		ret == -1 && errno == EINVAL,
+@@ -194,6 +195,12 @@ static void test_sev_migrate_parameters(void)
+ 	TEST_ASSERT(ret == -1 && errno == EINVAL,
+ 		    "Migrations require SEV enabled. ret %d, errno: %d\n", ret,
+ 		    errno);
++
++	kvm_vm_free(sev_vm);
++	kvm_vm_free(sev_es_vm);
++	kvm_vm_free(sev_es_vm_no_vmsa);
++	kvm_vm_free(vm_no_vcpu);
++	kvm_vm_free(vm_no_sev);
+ }
+ 
+ int main(int argc, char *argv[])
 -- 
 2.27.0
 
