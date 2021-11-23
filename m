@@ -2,103 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA6945AC12
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:13:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC0445AC17
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:16:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239924AbhKWTQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 14:16:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235934AbhKWTPx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 14:15:53 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C826BC061714;
-        Tue, 23 Nov 2021 11:12:44 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id i8-20020a7bc948000000b0030db7b70b6bso3241784wml.1;
-        Tue, 23 Nov 2021 11:12:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xDqZRHmjUMP1gBRX+GmHMf3kW8bNST0jfrLIGxm98KQ=;
-        b=TZHXFYz/64YoQhHXJ1XH/Lj0ard4iYCXGZPvnn8w83RorlQwTGdMvCuDrzeJqquW5z
-         RfQNQdBvhRIBVdi+fJdxSwRqz0EFQAtJwANoHUU7/gswh2mzH/cydIyOelHnUJwFn7n1
-         hVrLn9Dasl8bjvj+0YU51CH5mlKySJwUKxwHw6d7OihBMxUuPcWf1JsHdOwDTVfrtgec
-         J8sqXnHcjooM5aoMcMeJcQyb6zcwUmtbIKQLxp5768T/1YC/dHNApQZcM52c6PYXHtp7
-         2Y4jSLLKda5ZzxkG9sge7r+XEI6osjmXoAyAqjUsjxhGfEzAxKJyQ7MbO10QQv/nJTwN
-         Z/mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xDqZRHmjUMP1gBRX+GmHMf3kW8bNST0jfrLIGxm98KQ=;
-        b=u1cZXD2CVPp0jBZGJKcxxHaXLwK2+bXLTtQNiUoWPj+LUxKtMzOnfoxSjbllgcAur7
-         vMJI4RDC30tOQ0kEMUESz4I3bNLI+dPLcB1EX4GPQhKml+hi+zrYhztLgYsn++QkVnxe
-         V7N+LauCmnwdZN8XeVeghK8QIc2Q50X/SCOBwxK9uURQCDWVA9KtiEEPUDA+2v/MOerg
-         vgyyd0Z/xxoKijJ7r7b5F0p7xxkbMqSLE6oZjSDVbYT2Vq6uHmxU36sEHCBe+vPJ+MdC
-         A6ljHWzyXLhVrkMnRRTkGlLCif5BPWbxoMn4kNcwtXiNyEXymHdIAUFM9M07MdwLGgKw
-         Eelw==
-X-Gm-Message-State: AOAM532b0cb80WcJLrX8xRa9A9KQAoXb7UsE1HCZVV4UAsKRSvtsH2TM
-        pOH4/shmCLyfZ09m/BJRyAU=
-X-Google-Smtp-Source: ABdhPJwrPGK6FXF/YgZsdGLHmnN4q2vt8WdLExsGFnQeyuIsVUAfq1UgJjaiN6LsKVmF/+Nkhz2eVA==
-X-Received: by 2002:a05:600c:3b27:: with SMTP id m39mr6544213wms.132.1637694763313;
-        Tue, 23 Nov 2021 11:12:43 -0800 (PST)
-Received: from localhost.localdomain ([217.113.240.86])
-        by smtp.gmail.com with ESMTPSA id r11sm3088081wrw.5.2021.11.23.11.12.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 11:12:43 -0800 (PST)
-From:   =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
-To:     jikos@kernel.org
-Cc:     benjamin.tissoires@redhat.com, peter.hutterer@who-t.net,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
-Subject: [PATCH 1/1] HID: multitouch: only map BTN_LEFT on buttonpads
-Date:   Tue, 23 Nov 2021 20:12:38 +0100
-Message-Id: <20211123191238.12472-2-jose.exposito89@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211123191238.12472-1-jose.exposito89@gmail.com>
-References: <20211123191238.12472-1-jose.exposito89@gmail.com>
+        id S230013AbhKWTTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 14:19:16 -0500
+Received: from mga07.intel.com ([134.134.136.100]:12739 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229549AbhKWTTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 14:19:09 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="298517948"
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="298517948"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 11:15:45 -0800
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="456800981"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 11:15:43 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1mpbGV-009sOf-AB;
+        Tue, 23 Nov 2021 21:15:39 +0200
+Date:   Tue, 23 Nov 2021 21:15:39 +0200
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Kent Gibson <warthog618@gmail.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Suresh Balakrishnan <suresh.balakrishnan@intel.com>
+Subject: Re: [PATCH v1 1/2] gpiolib: Never return internal error codes to
+ user space
+Message-ID: <YZ0928wfsYIBJYcQ@smile.fi.intel.com>
+References: <20210518155013.45622-1-andriy.shevchenko@linux.intel.com>
+ <20210518232451.GA7362@sol>
+ <YKTCDNcyUlrgE0Y4@smile.fi.intel.com>
+ <20210519080434.GA22854@sol>
+ <YKTMninSSY3MK6Hf@smile.fi.intel.com>
+ <CAMpxmJVJBx2J87bS0CUYPyJkHKt=nvFw65y_+iG-5JbVekuaqw@mail.gmail.com>
+ <CAHp75VdZ3aws3G=4_r82LMfuMNmNdLoBpqRsfF_ogZ7c=vyTsQ@mail.gmail.com>
+ <CAMpxmJVy12at1+37iPiqTXe6mvodUpjDKCkFQO02Cu=u5_sp_A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMpxmJVy12at1+37iPiqTXe6mvodUpjDKCkFQO02Cu=u5_sp_A@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In addition to map the INPUT_PROP_BUTTONPAD property, make sure that
-the BTN_RIGHT and BTN_MIDDLE key bits are not mapped.
+On Thu, May 20, 2021 at 04:39:50PM +0200, Bartosz Golaszewski wrote:
+> On Thu, May 20, 2021 at 3:15 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> >
+> > On Thu, May 20, 2021 at 4:08 PM Bartosz Golaszewski
+> > <bgolaszewski@baylibre.com> wrote:
+> > > On Wed, May 19, 2021 at 10:30 AM Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > On Wed, May 19, 2021 at 04:04:34PM +0800, Kent Gibson wrote:
+> > > > > On Wed, May 19, 2021 at 10:45:16AM +0300, Andy Shevchenko wrote:
+> > > > > > On Wed, May 19, 2021 at 07:24:51AM +0800, Kent Gibson wrote:
+> > > > > > > On Tue, May 18, 2021 at 06:50:12PM +0300, Andy Shevchenko wrote:
+> >
+> > ...
+> >
+> > > > > > > > Fixes: d7c51b47ac11 ("gpio: userspace ABI for reading/writing GPIO lines")
+> > > > > > > > Fixes: 61f922db7221 ("gpio: userspace ABI for reading GPIO line events")
+> > > > > > > > Fixes: 3c0d9c635ae2 ("gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL and GPIO_V2_LINE_GET_VALUES_IOCTL")
+> >
+> > ...
+> >
+> > > > > > > You immediately revert this patch in patch 2.
+> > > > > > > My understanding is that is not allowed within a patch set.
+> > > > > >
+> > > > > > > Why split the patches instead of going direct to the new helper?
+> > > > > >
+> > > > > > It's for backporting to make it easier. (I deliberately left the context above)
+> > > > > >
+> > > > > > I can fold them if maintainers think it's okay to do.
+> > > > > >
+> > > > >
+> > > > > Not sure what the constraints are on backporting, but wouldn't it be
+> > > > > simpler and cleaner to backport the new helper?
+> > > >
+> > > > Logically (and ideally) it would be three different patches:
+> > > >  1) introduce helper
+> > > >  2) use helper
+> > > >  3) fix places where it's needed to be done
+> > > >
+> > > > But the above scheme doesn't fit backporting idea (we don't backport new
+> > > > features and APIs without really necessity). So, the options left are:
+> > > >
+> > > > Option a: One patch (feels a bit like above)
+> > > > Option b: Two patches like in this series (yes, you are correct about
+> > > >           disadvantages)
+> > > >
+> > > > > But, as you say, it is the maintainers' call.
+> >
+> > > Third option is to backport this patch but apply the helper
+> > > immediately to master.
+> >
+> > If I got you correctly, you want to have two patches, one for
+> > backporting and one for current, correct? But how can we backport
+> > something which has never been upstreamed?
+> >
+> 
+> Well we would not technically backport anything - there would be one
+> patch for mainline and a separate fix for stable.
 
-Mapping more than one button on buttonpads is a bug plus avoids issues
-with some touchpads on user space. For more information, check these
-bug reports:
+So, what should I do here?
 
- - https://gitlab.freedesktop.org/libinput/libinput/-/issues/674
- - https://gitlab.freedesktop.org/libinput/libinput/-/issues/689
- - https://gitlab.freedesktop.org/libinput/libinput/-/issues/629
-
-Signed-off-by: José Expósito <jose.exposito89@gmail.com>
----
- drivers/hid/hid-multitouch.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
-index e1afddb7b33d..37697ebe27f9 100644
---- a/drivers/hid/hid-multitouch.c
-+++ b/drivers/hid/hid-multitouch.c
-@@ -1286,8 +1286,11 @@ static int mt_touch_input_configured(struct hid_device *hdev,
- 	    (app->buttons_count == 1))
- 		td->is_buttonpad = true;
- 
--	if (td->is_buttonpad)
-+	if (td->is_buttonpad) {
- 		__set_bit(INPUT_PROP_BUTTONPAD, input->propbit);
-+		__clear_bit(BTN_RIGHT, dev->keybit);
-+		__clear_bit(BTN_MIDDLE, dev->keybit);
-+	}
- 
- 	app->pending_palm_slots = devm_kcalloc(&hi->input->dev,
- 					       BITS_TO_LONGS(td->maxcontacts),
 -- 
-2.25.1
+With Best Regards,
+Andy Shevchenko
+
 
