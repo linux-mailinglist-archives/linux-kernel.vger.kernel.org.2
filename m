@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7093E459B77
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 06:17:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E17B3459B79
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 06:17:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232835AbhKWFUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 00:20:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49146 "EHLO
+        id S233139AbhKWFUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 00:20:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231950AbhKWFUU (ORCPT
+        with ESMTP id S232655AbhKWFUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 00:20:20 -0500
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F16E6C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 21:17:12 -0800 (PST)
-Received: by mail-pf1-x44a.google.com with SMTP id x14-20020a627c0e000000b0049473df362dso11101892pfc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 21:17:12 -0800 (PST)
+        Tue, 23 Nov 2021 00:20:22 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F563C061714
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 21:17:15 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id x9-20020a056a00188900b0049fd22b9a27so11090043pfh.18
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 21:17:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=8YikxNtJWprMq/CBpWme0BytzCpItwTnBs0JI4g7h9M=;
-        b=lr6jU+zyqsyUdEReZStYl3G49ZtLUI4FRjCCI6LwgfA4iWEF/hAOiHguW2mLPV1Jtb
-         biEpdOkX+tP/eucrb3hTSTUeEZAA8IsY+FefkgpQdDEGEyBdG88kn1vOx1Hd751cdqgq
-         RLanQtSikpeJXqg6AAuW28D/m0PfuXZK4I3yzqPhN9RlTWTcekgjkOvF6Vsxi5lwEeNy
-         4wfRl9Z9bjQSpxQaX89JGaOgKUnGpJjW2R81rbPp9qxmxlZ8OBNbEJVP3Maxvx6n4LeI
-         PP+461MV/ampBKAJSBy4cJER48/666Tg+Hr3u6I8bSlmmHSp8KueiAApUUGR5RSamMw5
-         uFUA==
+        bh=Gty7Zd/Q5CRamg0gViS3X7VJ+4Eadmw90vku2OpMNR0=;
+        b=i/FXNGYOe6PsaAxbsnm5RGEXWjnL3mlA0e019XvhMTOJ5jD4eah5o10OrcCelr/+Kl
+         ZCM2ArN5xFg4uUGA14TEzzB9T6xMiVV8vnTqfAgIA8oDmPxZX9uO0g4m7cJz9wDoE60I
+         8PaUFXRlW0g5PbblIX6ZjKKdA3R5nPolWGTC0LJY/1HADB+JZ2PXA/qgv2/Vd6DLk0x1
+         ACkLigqPuw73RSKSoes5ibDH1aSgWsx5znBsEbKJQ9O9Du1eZTpBTNjVVNtCXH1cLSxM
+         UUhv9tSV/ymEW9G/ux+VJtX/iMdy7Ce7KVAUyVi8CHOlReV4hJ1wZRr6H01xEcm3nU4K
+         I2CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=8YikxNtJWprMq/CBpWme0BytzCpItwTnBs0JI4g7h9M=;
-        b=QYNF1D2FzaxJ8rYECdEYk3q8yt/v67E8PqntEPjHbgwuEGcLrReHHLnmoNs4vkK63Q
-         hgPMG7wzf4am3Ydb3L/keekXqJ0oZkQkryQGlw5KwNGx+jCW/IsAsq8CTnNgmueO2fmD
-         q0pAr/1N4o+bWifB0lFYVJMHg2i4Io8VK0X+f8TWFrt5ZxXRYTcrvTeWkK8xI2kHXJ4W
-         IFOO5GUVWxsOeQw9Uugdkc7uuN3e3ZYMKAfvc/i8mvFNDC3uCoqZUtWxoUoogIX4KHGt
-         gAWuQ2P0onLTsotIBUiibO0Vpd4+frs9zZBOPFCy9AYCviUAQQ7YedoN/0KY1veDB+lu
-         d4PQ==
-X-Gm-Message-State: AOAM5313nhwraBHSBHqqHRjtuY4NmVe+IJuUr5TtB9HKYMSSEgou8GQp
-        6NwktbcMYA8nPg06k3qRCnoZkKQ=
-X-Google-Smtp-Source: ABdhPJwFUF+MOVa4cKF7Nt3P3AYhZy5krLbbXlzRU0jE0MJn5GpfDjdnS4lCLzffhUcQ+vx5zPvE5Jk=
+        bh=Gty7Zd/Q5CRamg0gViS3X7VJ+4Eadmw90vku2OpMNR0=;
+        b=1jJH85uf0aQsfrGD+tt7ilVAfoYLq89teYXHa5dGnHDH5psg7+WDQSnrfWeSZFdSV7
+         i5VS+72idqsKjucah8+ET5C7A/+Ns2JgX2HKDFhnx1bQGJQQLOfYXSFszWfp0hBB1tnt
+         PBiF+5v3/T7xSw7bCHxFDKqox8O3xHmY7EsCz23W6ZqhlLVAh9USCHl3dDtrzyWaxEb0
+         EV2O4LRfdhhWBYrbIFbWsLF5F0thqEI7Je+fqU9waeyXmfU4pJDMWDETtW37UQKCC8lh
+         OttS0iABN5CJh1pbvhBkEvyV1qdF+geaEa/a7/BlmGOEJsQ8frCn35IFgJXxihbxzHsY
+         X4mg==
+X-Gm-Message-State: AOAM532QUTA3FddqMCMZAzksHqmvFGcIN0Efv3FJBitA0fcJtxTMEnFl
+        oGf3W2ORMWExpdzxhBn1tdXsXJo=
+X-Google-Smtp-Source: ABdhPJziBKpM/iqN33lOv4N3gylj/M4b6xWwzkHJc9LwUilKQIHPk1Gw7F/oNFYL6WWGZcDAEEVvryk=
 X-Received: from pcc-desktop.svl.corp.google.com ([2620:15c:2ce:200:a876:2e6a:b5f:3d90])
- (user=pcc job=sendgmr) by 2002:a17:90a:a396:: with SMTP id
- x22mr3308358pjp.14.1637644632438; Mon, 22 Nov 2021 21:17:12 -0800 (PST)
-Date:   Mon, 22 Nov 2021 21:16:56 -0800
+ (user=pcc job=sendgmr) by 2002:a05:6a00:b4c:b0:481:2a:f374 with SMTP id
+ p12-20020a056a000b4c00b00481002af374mr2413056pfo.60.1637644634614; Mon, 22
+ Nov 2021 21:17:14 -0800 (PST)
+Date:   Mon, 22 Nov 2021 21:16:57 -0800
 In-Reply-To: <20211123051658.3195589-1-pcc@google.com>
-Message-Id: <20211123051658.3195589-4-pcc@google.com>
+Message-Id: <20211123051658.3195589-5-pcc@google.com>
 Mime-Version: 1.0
 References: <20211123051658.3195589-1-pcc@google.com>
 X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH v2 3/5] uaccess-buffer: add CONFIG_GENERIC_ENTRY support
+Subject: [PATCH v2 4/5] arm64: add support for uaccess logging
 From:   Peter Collingbourne <pcc@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
@@ -98,75 +99,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add uaccess logging support on architectures that use
-CONFIG_GENERIC_ENTRY (currently only s390 and x86).
+arm64 does not use CONFIG_GENERIC_ENTRY, so add the support for
+uaccess logging directly to the architecture.
 
-Link: https://linux-review.googlesource.com/id/I3c5eb19a7e4a1dbe6095f6971f7826c4b0663f7d
+Link: https://linux-review.googlesource.com/id/I88de539fb9c4a9d27fa8cccbe201a6e4382faf89
 Signed-off-by: Peter Collingbourne <pcc@google.com>
 ---
- arch/Kconfig          | 1 +
- kernel/entry/common.c | 7 +++++++
- 2 files changed, 8 insertions(+)
+ arch/arm64/Kconfig          | 1 +
+ arch/arm64/kernel/signal.c  | 5 +++++
+ arch/arm64/kernel/syscall.c | 3 +++
+ 3 files changed, 9 insertions(+)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 6030298a7e9a..bc9cdbfdb57e 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -31,6 +31,7 @@ config HOTPLUG_SMT
- 	bool
- 
- config GENERIC_ENTRY
-+       select HAVE_ARCH_UACCESS_BUFFER
-        bool
- 
- config KPROBES
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index d5a61d565ad5..e06f88f77a70 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -6,6 +6,7 @@
- #include <linux/livepatch.h>
- #include <linux/audit.h>
- #include <linux/tick.h>
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index c4207cf9bb17..6023946abe4a 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -161,6 +161,7 @@ config ARM64
+ 	select HAVE_ARCH_THREAD_STRUCT_WHITELIST
+ 	select HAVE_ARCH_TRACEHOOK
+ 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE
++	select HAVE_ARCH_UACCESS_BUFFER
+ 	select HAVE_ARCH_VMAP_STACK
+ 	select HAVE_ARM_SMCCC
+ 	select HAVE_ASM_MODVERSIONS
+diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
+index 8f6372b44b65..5bbd98e5c257 100644
+--- a/arch/arm64/kernel/signal.c
++++ b/arch/arm64/kernel/signal.c
+@@ -20,6 +20,7 @@
+ #include <linux/tracehook.h>
+ #include <linux/ratelimit.h>
+ #include <linux/syscalls.h>
 +#include <linux/uaccess-buffer.h>
  
- #include "common.h"
+ #include <asm/daifflags.h>
+ #include <asm/debug-monitors.h>
+@@ -919,6 +920,8 @@ static void do_signal(struct pt_regs *regs)
  
-@@ -89,6 +90,8 @@ __syscall_enter_from_user_work(struct pt_regs *regs, long syscall)
- 	if (work & SYSCALL_WORK_ENTER)
- 		syscall = syscall_trace_enter(regs, syscall, work);
- 
-+	uaccess_buffer_syscall_entry();
+ void do_notify_resume(struct pt_regs *regs, unsigned long thread_flags)
+ {
++	bool uaccess_buffer_pending = uaccess_buffer_pre_exit_loop();
 +
- 	return syscall;
+ 	do {
+ 		if (thread_flags & _TIF_NEED_RESCHED) {
+ 			/* Unmask Debug and SError for the next task */
+@@ -950,6 +953,8 @@ void do_notify_resume(struct pt_regs *regs, unsigned long thread_flags)
+ 		local_daif_mask();
+ 		thread_flags = READ_ONCE(current_thread_info()->flags);
+ 	} while (thread_flags & _TIF_WORK_MASK);
++
++	uaccess_buffer_post_exit_loop(uaccess_buffer_pending);
  }
  
-@@ -197,14 +200,17 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
- static void exit_to_user_mode_prepare(struct pt_regs *regs)
- {
- 	unsigned long ti_work = READ_ONCE(current_thread_info()->flags);
-+	bool uaccess_buffer_pending;
+ unsigned long __ro_after_init signal_minsigstksz;
+diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
+index 50a0f1a38e84..6de801c1af05 100644
+--- a/arch/arm64/kernel/syscall.c
++++ b/arch/arm64/kernel/syscall.c
+@@ -7,6 +7,7 @@
+ #include <linux/ptrace.h>
+ #include <linux/randomize_kstack.h>
+ #include <linux/syscalls.h>
++#include <linux/uaccess-buffer.h>
  
- 	lockdep_assert_irqs_disabled();
- 
- 	/* Flush pending rcuog wakeup before the last need_resched() check */
- 	tick_nohz_user_enter_prepare();
- 
-+	uaccess_buffer_pending = uaccess_buffer_pre_exit_loop();
- 	if (unlikely(ti_work & EXIT_TO_USER_MODE_WORK))
- 		ti_work = exit_to_user_mode_loop(regs, ti_work);
-+	uaccess_buffer_post_exit_loop(uaccess_buffer_pending);
- 
- 	arch_exit_to_user_mode_prepare(regs, ti_work);
- 
-@@ -271,6 +277,7 @@ static void syscall_exit_to_user_mode_prepare(struct pt_regs *regs)
- 			local_irq_enable();
+ #include <asm/daifflags.h>
+ #include <asm/debug-monitors.h>
+@@ -139,7 +140,9 @@ static void el0_svc_common(struct pt_regs *regs, int scno, int sc_nr,
+ 			goto trace_exit;
  	}
  
++	uaccess_buffer_syscall_entry();
+ 	invoke_syscall(regs, scno, sc_nr, syscall_table);
 +	uaccess_buffer_syscall_exit();
- 	rseq_syscall(regs);
  
  	/*
+ 	 * The tracing status may have changed under our feet, so we have to
 -- 
 2.34.0.rc2.393.gf8c9666880-goog
 
