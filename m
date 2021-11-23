@@ -2,212 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A11A459CFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:44:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 308C7459CFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234348AbhKWHrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 02:47:52 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45262 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234323AbhKWHrr (ORCPT
+        id S234338AbhKWHrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 02:47:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234212AbhKWHrn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 02:47:47 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AN4NmBY022251;
-        Tue, 23 Nov 2021 07:44:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=7Izikt7bjG0cERrkxtMGGYIUF55KdaFWdipbuzLRGmM=;
- b=bOAot3E6AnxIcv9A94dzcHKMqUnoa625+oMLbt38nIypt2ITZZgfmLp7AfDOK6fYjL8f
- 0lvnpwkFLiMiA/CeHAGg39pz8B9qLmir/mXIX2q0P/3upOSoVaY/Q5+cCoOk+r5hZifr
- gV2Bcnqyk1RrhsJyhVuAIsCGEGDvKSJhHvFSll6EzpZllhO2t0WrfOoMIcIhV3M2EFFe
- wKLMyeoAz3OiRApaR551NU2dGYP5ZDmiDF/Q84KYRjDiR14U2iRA9OPpJE9asMR6h4IK
- jd25Sm3osEVSWT8NITC/Au6UyDZXnEQynhNMt1jkz08CyazF8QGi4inE2hiUvDW5UUPl hQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cgs7tb00q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Nov 2021 07:44:18 +0000
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AN7YoVA006748;
-        Tue, 23 Nov 2021 07:44:18 GMT
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cgs7tb002-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Nov 2021 07:44:17 +0000
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AN7gGd8029841;
-        Tue, 23 Nov 2021 07:44:15 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma05fra.de.ibm.com with ESMTP id 3cern9m0cn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Nov 2021 07:44:15 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AN7b3BK62783776
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Nov 2021 07:37:03 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E0172A405C;
-        Tue, 23 Nov 2021 07:44:11 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8203BA4054;
-        Tue, 23 Nov 2021 07:44:05 +0000 (GMT)
-Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com (unknown [9.43.21.81])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 23 Nov 2021 07:44:05 +0000 (GMT)
-Subject: Re: [PATCH v2] bpf: Remove config check to enable bpf support for
- branch records
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        KP Singh <kpsingh@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, maddy@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        rnsastry@linux.ibm.com
-References: <20211118130507.170154-1-kjain@linux.ibm.com>
- <CAEf4BzbDgCVLj0r=3iponPp81aVAGokhGti8WLfWKhHuTLdA8w@mail.gmail.com>
- <ce150f51-ef50-de85-fc52-0f2ee3a3000f@linux.ibm.com>
- <859f8b57-7ae2-3c68-5642-93bec7a59a20@iogearbox.net>
- <CAEf4BzbP0hAJYr-dahNZqKe9wyYL6hD9FayS-qdQV+Lmyi_VTQ@mail.gmail.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <814c0e79-b8fd-38f1-bf17-cbf0993479bf@linux.ibm.com>
-Date:   Tue, 23 Nov 2021 13:14:04 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 23 Nov 2021 02:47:43 -0500
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8CAC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 23:44:35 -0800 (PST)
+Received: by mail-lj1-x244.google.com with SMTP id b16so4036636ljf.12
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 23:44:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kvaser.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OFni7OMG0YDoHf8+SVSQQtBeUkvcBzsEi+4TKKd7G1I=;
+        b=OcZR1d2SpMTDbJaWfkBN1hJ40OYDUx2AaZKYuwiAyFTSaRbV8MbCtjAnXo7Rm2DTYP
+         /z1B2Ahc+dRZVgCwpngyw3Hh/QkFn1DgzUNMqLXBd6C7hukq1/+6NPc+ixXw3o2sL7ao
+         iUiut6q0OSiqNCG1mKb4AmQdw/8a0sVWsycs8BCthTPIHGef6Iukdl3OzF49Ln/ljoT0
+         xxwhn+5VTMEBLLkilBV/AO8RcwkONyjFX4NNPvvYuVp/Tap85jXMC27W36rpJ/CiMudA
+         OqrubRHDUHonEf/sCY+FS29pkbmciuNAY1VkcPgBssr5/EsTSAUwZvO/aTvbL+i7KVQP
+         2Fpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OFni7OMG0YDoHf8+SVSQQtBeUkvcBzsEi+4TKKd7G1I=;
+        b=2GvZH14kCV8t+uK5DMAEIVMFMyr/25xr2d8gBPHBzGuCPogZSlpjg+0b/YLbcEda6m
+         I38L+HqDXANVOWZY3F7a0ZS9puSz2jC3SipcsxPbR8rvTY36wgBaU2c8BU+bDMff5Omp
+         1WFKjaxG0vdkXxEySuFTcIXGpvnGukOoehc59rcRpg+xeQQjn+E+pl4rrkrOdzyPRNa1
+         jWeYwfxmVY+O5xU4giqywCcPyeDfwE9lv22akV3a/ZLQWfZQPWIoSCTY9UDiTmUfyVm/
+         yGM9FVVeBgjM0ClPi9GO4bnUXzafKpEWCQBxyW3ZouqyOCL8rrbhEpKY58AaoYZFVK/h
+         KeKg==
+X-Gm-Message-State: AOAM530xgp0oU4l6ZqHiNK9a41m18NqnbXgnulqRR7huVzOBVRWuauoa
+        fkWiiraQp6Wkw+aqtpJRwAkV6cQjSt2lxcIQ
+X-Google-Smtp-Source: ABdhPJwd3aQlA4lgavu0f7MvLhBPfptaaXJOH6mA3nCT2ykbcFdj7Ilc01WLJCJIn8W7F1T0Et1F7w==
+X-Received: by 2002:a2e:890d:: with SMTP id d13mr2881763lji.396.1637653473587;
+        Mon, 22 Nov 2021 23:44:33 -0800 (PST)
+Received: from [10.0.6.3] (rota.kvaser.com. [195.22.86.90])
+        by smtp.gmail.com with ESMTPSA id u3sm1201270lfs.256.2021.11.22.23.44.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Nov 2021 23:44:33 -0800 (PST)
+Subject: Re: [PATCH] can: bittiming: replace CAN units with the SI metric
+To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
+        Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211119161850.202094-1-mailhol.vincent@wanadoo.fr>
+ <38544770-9e5f-1b1b-1f0a-a7ff1719327d@hartkopp.net>
+ <CAMZ6RqJobmUnAMUjnaqYh0jsOPw7-PwiF+bF79hy6h+8SCuuDg@mail.gmail.com>
+From:   Jimmy Assarsson <extja@kvaser.com>
+Message-ID: <9fabde2b-b0ec-bc7c-30fa-d7556ed3c89d@kvaser.com>
+Date:   Tue, 23 Nov 2021 08:44:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzbP0hAJYr-dahNZqKe9wyYL6hD9FayS-qdQV+Lmyi_VTQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAMZ6RqJobmUnAMUjnaqYh0jsOPw7-PwiF+bF79hy6h+8SCuuDg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: v7ir4QnkF6C65nsvbPFNGOpgqbtQ1UTr
-X-Proofpoint-ORIG-GUID: zuk4d111fp2t7655P5cJAQxqKC5sido5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-23_02,2021-11-22_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 clxscore=1015 phishscore=0 suspectscore=0 adultscore=0
- spamscore=0 priorityscore=1501 mlxlogscore=999 malwarescore=0
- impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111230038
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/20/21 4:15 AM, Andrii Nakryiko wrote:
-> On Fri, Nov 19, 2021 at 8:08 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+On 2021-11-22 03:22, Vincent MAILHOL wrote:
+> Le lun. 22 nov. 2021 à 03:27, Oliver Hartkopp <socketcan@hartkopp.net> a écrit :
+>> On 19.11.21 17:18, Vincent Mailhol wrote:
+>>> In [1], we introduced a set of units in linux/can/bittiming.h. Since
+>>> then, generic SI prefix were added to linux/units.h in [2]. Those new
+>>> prefix can perfectly replace the CAN specific units.
+>>>
+>>> This patch replaces all occurrences of the CAN units with their
+>>> corresponding prefix according to below table.
+>>>
+>>>    CAN units   SI metric prefix
+>>>    -------------------------------
+>>>    CAN_KBPS    KILO
+>>>    CAN_MBPS    MEGA
+>>>    CAM_MHZ     MEGA
+>>>
+>>> The macro declarations are then removed from linux/can/bittiming.h
+>>>
+>>> [1] commit 1d7750760b70 ("can: bittiming: add CAN_KBPS, CAN_MBPS and
+>>> CAN_MHZ macros")
+>>>
+>>> [2] commit 26471d4a6cf8 ("units: Add SI metric prefix definitions")
+>>>
+>>> Suggested-by: Jimmy Assarsson <extja@kvaser.com>
+>>> Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+>>> ---
+>>>    drivers/net/can/dev/bittiming.c           | 5 +++--
+>>>    drivers/net/can/usb/etas_es58x/es581_4.c  | 5 +++--
+>>>    drivers/net/can/usb/etas_es58x/es58x_fd.c | 5 +++--
+>>>    include/linux/can/bittiming.h             | 7 -------
+>>>    4 files changed, 9 insertions(+), 13 deletions(-)
+>>>
+>>> diff --git a/drivers/net/can/dev/bittiming.c b/drivers/net/can/dev/bittiming.c
+>>> index 0509625c3082..a5c9f973802a 100644
+>>> --- a/drivers/net/can/dev/bittiming.c
+>>> +++ b/drivers/net/can/dev/bittiming.c
+>>> @@ -4,6 +4,7 @@
+>>>     * Copyright (C) 2008-2009 Wolfgang Grandegger <wg@grandegger.com>
+>>>     */
+>>>
+>>> +#include <linux/units.h>
+>>>    #include <linux/can/dev.h>
+>>>
+>>>    #ifdef CONFIG_CAN_CALC_BITTIMING
+>>> @@ -81,9 +82,9 @@ int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
+>>>        if (bt->sample_point) {
+>>>                sample_point_nominal = bt->sample_point;
+>>>        } else {
+>>> -             if (bt->bitrate > 800 * CAN_KBPS)
+>>> +             if (bt->bitrate > 800 * KILO)
+>>>                        sample_point_nominal = 750;
+>>> -             else if (bt->bitrate > 500 * CAN_KBPS)
+>>> +             else if (bt->bitrate > 500 * KILO)
+>>>                        sample_point_nominal = 800;
+>>>                else
+>>>                        sample_point_nominal = 875;
+>>> diff --git a/drivers/net/can/usb/etas_es58x/es581_4.c b/drivers/net/can/usb/etas_es58x/es581_4.c
+>>> index 14e360c9f2c9..ed340141c712 100644
+>>> --- a/drivers/net/can/usb/etas_es58x/es581_4.c
+>>> +++ b/drivers/net/can/usb/etas_es58x/es581_4.c
+>>> @@ -10,6 +10,7 @@
+>>>     */
+>>>
+>>>    #include <linux/kernel.h>
+>>> +#include <linux/units.h>
+>>>    #include <asm/unaligned.h>
+>>>
+>>>    #include "es58x_core.h"
+>>> @@ -469,8 +470,8 @@ const struct es58x_parameters es581_4_param = {
+>>>        .bittiming_const = &es581_4_bittiming_const,
+>>>        .data_bittiming_const = NULL,
+>>>        .tdc_const = NULL,
+>>> -     .bitrate_max = 1 * CAN_MBPS,
+>>> -     .clock = {.freq = 50 * CAN_MHZ},
+>>> +     .bitrate_max = 1 * MEGA,
+>>> +     .clock = {.freq = 50 * MEGA},
 >>
->> On 11/19/21 10:35 AM, kajoljain wrote:
->>> On 11/19/21 4:18 AM, Andrii Nakryiko wrote:
->>>> On Thu, Nov 18, 2021 at 5:10 AM Kajol Jain <kjain@linux.ibm.com> wrote:
->>>>>
->>>>> Branch data available to bpf programs can be very useful to get
->>>>> stack traces out of userspace application.
->>>>>
->>>>> Commit fff7b64355ea ("bpf: Add bpf_read_branch_records() helper")
->>>>> added bpf support to capture branch records in x86. Enable this feature
->>>>> for other architectures as well by removing check specific to x86.
->>>>> Incase any platform didn't support branch stack, it will return with
->>>>> -EINVAL.
->>>>>
->>>>> Selftest 'perf_branches' result on power9 machine with branch stacks
->>>>> support.
->>>>>
->>>>> Before this patch changes:
->>>>> [command]# ./test_progs -t perf_branches
->>>>>   #88/1 perf_branches/perf_branches_hw:FAIL
->>>>>   #88/2 perf_branches/perf_branches_no_hw:OK
->>>>>   #88 perf_branches:FAIL
->>>>> Summary: 0/1 PASSED, 0 SKIPPED, 1 FAILED
->>>>>
->>>>> After this patch changes:
->>>>> [command]# ./test_progs -t perf_branches
->>>>>   #88/1 perf_branches/perf_branches_hw:OK
->>>>>   #88/2 perf_branches/perf_branches_no_hw:OK
->>>>>   #88 perf_branches:OK
->>>>> Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
->>>>>
->>>>> Selftest 'perf_branches' result on power9 machine which doesn't
->>>>> support branch stack
->>>>>
->>>>> After this patch changes:
->>>>> [command]# ./test_progs -t perf_branches
->>>>>   #88/1 perf_branches/perf_branches_hw:SKIP
->>>>>   #88/2 perf_branches/perf_branches_no_hw:OK
->>>>>   #88 perf_branches:OK
->>>>> Summary: 1/1 PASSED, 1 SKIPPED, 0 FAILED
->>>>>
->>>>> Fixes: fff7b64355eac ("bpf: Add bpf_read_branch_records() helper")
->>>>> Suggested-by: Peter Zijlstra <peterz@infradead.org>
->>>>> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
->>>>> ---
->>>>>
->>>>> Tested this patch changes on power9 machine using selftest
->>>>> 'perf branches' which is added in commit 67306f84ca78 ("selftests/bpf:
->>>>> Add bpf_read_branch_records()")
->>>>>
->>>>> Changelog:
->>>>> v1 -> v2
->>>>> - Inorder to add bpf support to capture branch record in
->>>>>    powerpc, rather then adding config for powerpc, entirely
->>>>>    remove config check from bpf_read_branch_records function
->>>>>    as suggested by Peter Zijlstra
->>>>
->>>> what will be returned for architectures that don't support branch
->>>> records? Will it be zero instead of -ENOENT?
->>>
->>> Hi Andrii,
->>>       Incase any architecture doesn't support branch records and if it
->>> tries to do branch sampling with sample type as
->>> PERF_SAMPLE_BRANCH_STACK, perf_event_open itself will fail.
->>>
->>> And even if, perf_event_open succeeds  we have appropriate checks in
->>> bpf_read_branch_records function, which will return -EINVAL for those
->>> architectures.
->>>
->>> Reference from linux/kernel/trace/bpf_trace.c
->>>
->>> Here, br_stack will be empty, for unsupported architectures.
->>>
->>> BPF_CALL_4(bpf_read_branch_records, struct bpf_perf_event_data_kern *, ctx,
->>>          void *, buf, u32, size, u64, flags)
->>> {
->>> .....
->>>       if (unlikely(flags & ~BPF_F_GET_BRANCH_RECORDS_SIZE))
->>>               return -EINVAL;
->>>
->>>       if (unlikely(!br_stack))
->>>               return -EINVAL;
+>> IMO we are losing information here.
 >>
->> In that case for unsupported archs we should probably bail out with -ENOENT here
->> as helper doc says '**-ENOENT** if architecture does not support branch records'
->> (see bpf_read_branch_records() doc in include/uapi/linux/bpf.h).
+>> It feels you suggest to replace MHz with M.
 > 
-> Yep, I think so too.
+> When I introduced the CAN_{K,M}BPS and CAN_MHZ macros, my primary
+> intent was to avoid having to write more than five zeros in a
+> row (because the human brain is bad at counting those). And the
+> KILO/MEGA prefixes perfectly cover that intent.
 > 
+> You are correct to say that the information of the unit is
+> lost. But I assume this information to be implicit (frequencies
+> are in Hz, baudrate are in bits/second). So yes, I suggest
+> replacing MHz with M.
+> 
+> Do you really think that people will be confused by this change?
+> 
+> I am not strongly opposed to keeping it either (hey, I was the
+> one who introduced it in the first place). I just think that
+> using linux/units.h is sufficient.
 
-Hi Andrii/Daniel,
-     I agree, changing return type to -ENOENT make sense, I will update
-in next version of this patch.
+Came across linux/units.h when looking at a different driver, and thought
+that it was also possible to utilize them in the CAN drivers.
 
-Thanks,
-Kajol Jain
+I've no strong opinion about any of the suggested solutions.
+I'm fine with keeping it as it is, just wanted to raise the question :)
 
->>
->>> ....
->>> }
+Best regards,
+jimmy
+
+>> So where is the Hz information then?
+> 
+> It is in the comment of can_clock:freq :)
+> 
+> https://elixir.bootlin.com/linux/v5.15/source/include/uapi/linux/can/netlink.h#L63
+> 
+>>>        .ctrlmode_supported = CAN_CTRLMODE_CC_LEN8_DLC,
+>>>        .tx_start_of_frame = 0xAFAF,
+>>>        .rx_start_of_frame = 0xFAFA,
+>>> diff --git a/drivers/net/can/usb/etas_es58x/es58x_fd.c b/drivers/net/can/usb/etas_es58x/es58x_fd.c
+>>> index 4f0cae29f4d8..aec299bed6dc 100644
+>>> --- a/drivers/net/can/usb/etas_es58x/es58x_fd.c
+>>> +++ b/drivers/net/can/usb/etas_es58x/es58x_fd.c
+>>> @@ -12,6 +12,7 @@
+>>>     */
 >>>
->>> Thanks,
->>> Kajol Jain
+>>>    #include <linux/kernel.h>
+>>> +#include <linux/units.h>
+>>>    #include <asm/unaligned.h>
+>>>
+>>>    #include "es58x_core.h"
+>>> @@ -522,8 +523,8 @@ const struct es58x_parameters es58x_fd_param = {
+>>>         * Mbps work in an optimal environment but are not recommended
+>>>         * for production environment.
+>>>         */
+>>> -     .bitrate_max = 8 * CAN_MBPS,
+>>> -     .clock = {.freq = 80 * CAN_MHZ},
+>>> +     .bitrate_max = 8 * MEGA,
+>>> +     .clock = {.freq = 80 * MEGA},
+>>>        .ctrlmode_supported = CAN_CTRLMODE_LOOPBACK | CAN_CTRLMODE_LISTENONLY |
+>>>            CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_FD | CAN_CTRLMODE_FD_NON_ISO |
+>>>            CAN_CTRLMODE_CC_LEN8_DLC | CAN_CTRLMODE_TDC_AUTO,
+>>> diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
+>>> index 20b50baf3a02..a81652d1c6f3 100644
+>>> --- a/include/linux/can/bittiming.h
+>>> +++ b/include/linux/can/bittiming.h
+>>> @@ -12,13 +12,6 @@
+>>>    #define CAN_SYNC_SEG 1
+>>>
+>>>
+>>> -/* Kilobits and Megabits per second */
+>>> -#define CAN_KBPS 1000UL
+>>> -#define CAN_MBPS 1000000UL
+>>> -
+>>> -/* Megahertz */
+>>> -#define CAN_MHZ 1000000UL
+>>
+>> So what about
+>>
+>> #define CAN_KBPS KILO /* kilo bits per second */
+>> #define CAN_MBPS MEGA /* mega bits per second */
+>>
+>> #define CAN_MHZ MEGA /* mega hertz */
+>>
+>>
+>> ??
+>>
+>> Regards,
+>> Oliver
