@@ -2,88 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E94FA45A5B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:31:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A161345A5D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:37:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238208AbhKWOef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 09:34:35 -0500
-Received: from mga01.intel.com ([192.55.52.88]:5996 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234867AbhKWOee (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 09:34:34 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="258899965"
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="258899965"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 06:31:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="509429128"
-Received: from chaop.bj.intel.com (HELO localhost) ([10.240.192.101])
-  by orsmga008.jf.intel.com with ESMTP; 23 Nov 2021 06:31:17 -0800
-Date:   Tue, 23 Nov 2021 22:30:31 +0800
-From:   Chao Peng <chao.p.peng@linux.intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        qemu-devel@nongnu.org, Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        "J . Bruce Fields" <bfields@fieldses.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
-        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com,
-        david@redhat.com
-Subject: Re: [RFC v2 PATCH 04/13] KVM: Add fd-based memslot data structure
- and utils
-Message-ID: <20211123143031.GC32088@chaop.bj.intel.com>
-Reply-To: Chao Peng <chao.p.peng@linux.intel.com>
-References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
- <20211119134739.20218-5-chao.p.peng@linux.intel.com>
- <d54d58a4-3cd0-5fa3-3a81-b4bb27a7f511@redhat.com>
+        id S238258AbhKWOkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 09:40:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238223AbhKWOkD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 09:40:03 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6534C061574;
+        Tue, 23 Nov 2021 06:36:55 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so2242106pjc.4;
+        Tue, 23 Nov 2021 06:36:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ZLZVOIJvkNfO78QMd8KmGxzLi6165uI7/yB2dxT/Ykk=;
+        b=gqnaX3y9BYxnolIAz6ohPiMx1+uWA+HB/7pfL/hta47mhZY1SESuVh6AyO6OrBvHl4
+         /npGN7awBKNSRQFcgIEBAnGQLe1TLQvX5fWEjykeGyOCPelkp+IbfbQTIgCNlY5OeAD+
+         eVdYJFoj6/DSB36poZtkhDU8kI/BioBEeklOVgEjpy6HVmrGKC3iurU9Am5/L4pKcVQo
+         9HwmXweKaCVV+o0dnMKeqaMyEJBq/18jyvil0UQJaUHJwzq84trc9n7cG5YlBsDNaByO
+         nmFEsY5HrfMbnqBJoHTKUUSzYWMoT5zH1nz7N3YVt/hbwdgqDBDxMpSC2gh1veDdQaDJ
+         hKnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ZLZVOIJvkNfO78QMd8KmGxzLi6165uI7/yB2dxT/Ykk=;
+        b=Ei1D0SuIzVrejV7J2f0r6h0Me42gQtNuXnFEczi0w0aPivhPWWjbfJmOsZn2nZhB13
+         HLzegQxC11zttW8kv8lsfBfp89nwssBF4R0XUeTm3LZR/vlLkn8MrCUyGvWNf4gyzTgx
+         Pmm0vAeX/f89l1eN+h8pBwAIWygzezynI22dILcq4X2RJOTpj1qSy2IC1lu6maOF7WFo
+         SleLVne6Zo8madbT3V5eGP7ys3SEVmGClbe+Alg7QPgXJIChM4VGd2c9zGTK8YFdft+4
+         ARad5UotE5XcoUfRR3VQ3vwQ2dVSI5vRKLSGFj8dqcPX/bEZFGaRQXmCFbrESf9tZWgh
+         EpJg==
+X-Gm-Message-State: AOAM532Ig1GRk6UchO2TEusClO53zwAEHpirylsaRf6gQDxI8bpvStWa
+        bAntZdMER4VEaclJ7AJXxNk=
+X-Google-Smtp-Source: ABdhPJw6FmBtePaEKtdoENI4y3Ha3Tjj5xx6DbA0cDTOhxNZa7Gb4JErBed6/HhU6blkX6qlJforYg==
+X-Received: by 2002:a17:90b:4d92:: with SMTP id oj18mr3481484pjb.188.1637678215409;
+        Tue, 23 Nov 2021 06:36:55 -0800 (PST)
+Received: from ubuntu-Virtual-Machine.corp.microsoft.com ([2001:4898:80e8:1:af65:c3d4:6df:5a8b])
+        by smtp.gmail.com with ESMTPSA id j13sm11926127pfc.151.2021.11.23.06.36.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 06:36:54 -0800 (PST)
+From:   Tianyu Lan <ltykernel@gmail.com>
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        luto@kernel.org, peterz@infradead.org, jgross@suse.com,
+        sstabellini@kernel.org, boris.ostrovsky@oracle.com,
+        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, joro@8bytes.org,
+        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, hch@lst.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        Tianyu.Lan@microsoft.com, thomas.lendacky@amd.com,
+        xen-devel@lists.xenproject.org, michael.h.kelley@microsoft.com
+Cc:     iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        netdev@vger.kernel.org, vkuznets@redhat.com, brijesh.singh@amd.com,
+        konrad.wilk@oracle.com, parri.andrea@gmail.com,
+        dave.hansen@intel.com
+Subject: [PATCH V2 1/6] Swiotlb: Add Swiotlb bounce buffer remap function for HV IVM
+Date:   Tue, 23 Nov 2021 09:30:32 -0500
+Message-Id: <20211123143039.331929-2-ltykernel@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211123143039.331929-1-ltykernel@gmail.com>
+References: <20211123143039.331929-1-ltykernel@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d54d58a4-3cd0-5fa3-3a81-b4bb27a7f511@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 09:41:34AM +0100, Paolo Bonzini wrote:
-> On 11/19/21 14:47, Chao Peng wrote:
-> > For fd-based memslot store the file references for shared fd and the
-> > private fd (if any) in the memslot structure. Since there is no 'hva'
-> > concept we cannot call hva_to_pfn() to get a pfn, instead kvm_memfd_ops
-> > is added to get_pfn/put_pfn from the memory backing stores that provide
-> > these fds.
-> > 
-> > Signed-off-by: Yu Zhang<yu.c.zhang@linux.intel.com>
-> > Signed-off-by: Chao Peng<chao.p.peng@linux.intel.com>
-> > ---
-> 
-> What about kvm_read/write_guest? 
+From: Tianyu Lan <Tianyu.Lan@microsoft.com>
 
-Hmm, that would be another area KVM needs to change. Not totally
-undoable.
+In Isolation VM with AMD SEV, bounce buffer needs to be accessed via
+extra address space which is above shared_gpa_boundary (E.G 39 bit
+address line) reported by Hyper-V CPUID ISOLATION_CONFIG. The access
+physical address will be original physical address + shared_gpa_boundary.
+The shared_gpa_boundary in the AMD SEV SNP spec is called virtual top of
+memory(vTOM). Memory addresses below vTOM are automatically treated as
+private while memory above vTOM is treated as shared.
 
-> Maybe the proposal which kept
-> userspace_addr for the shared fd is more doable (it would be great to
-> ultimately remove the mandatory userspace mapping for the shared fd, but I
-> think KVM is not quite ready for that).
+Expose swiotlb_unencrypted_base for platforms to set unencrypted
+memory base offset and platform calls swiotlb_update_mem_attributes()
+to remap swiotlb mem to unencrypted address space. memremap() can
+not be called in the early stage and so put remapping code into
+swiotlb_update_mem_attributes(). Store remap address and use it to copy
+data from/to swiotlb bounce buffer.
 
-Agree for short term keeping shared part unchanged would be making work
-easy:) Let me try that to see if any blocker.
+Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
+---
+Change since v1:
+	* Rework comment in the swiotlb_init_io_tlb_mem()
+	* Make swiotlb_init_io_tlb_mem() back to return void.
+---
+ include/linux/swiotlb.h |  6 +++++
+ kernel/dma/swiotlb.c    | 53 +++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 54 insertions(+), 5 deletions(-)
 
-> 
-> Paolo
+diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+index 569272871375..f6c3638255d5 100644
+--- a/include/linux/swiotlb.h
++++ b/include/linux/swiotlb.h
+@@ -73,6 +73,9 @@ extern enum swiotlb_force swiotlb_force;
+  * @end:	The end address of the swiotlb memory pool. Used to do a quick
+  *		range check to see if the memory was in fact allocated by this
+  *		API.
++ * @vaddr:	The vaddr of the swiotlb memory pool. The swiotlb memory pool
++ *		may be remapped in the memory encrypted case and store virtual
++ *		address for bounce buffer operation.
+  * @nslabs:	The number of IO TLB blocks (in groups of 64) between @start and
+  *		@end. For default swiotlb, this is command line adjustable via
+  *		setup_io_tlb_npages.
+@@ -92,6 +95,7 @@ extern enum swiotlb_force swiotlb_force;
+ struct io_tlb_mem {
+ 	phys_addr_t start;
+ 	phys_addr_t end;
++	void *vaddr;
+ 	unsigned long nslabs;
+ 	unsigned long used;
+ 	unsigned int index;
+@@ -186,4 +190,6 @@ static inline bool is_swiotlb_for_alloc(struct device *dev)
+ }
+ #endif /* CONFIG_DMA_RESTRICTED_POOL */
+ 
++extern phys_addr_t swiotlb_unencrypted_base;
++
+ #endif /* __LINUX_SWIOTLB_H */
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 8e840fbbed7c..c303fdeba82f 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -50,6 +50,7 @@
+ #include <asm/io.h>
+ #include <asm/dma.h>
+ 
++#include <linux/io.h>
+ #include <linux/init.h>
+ #include <linux/memblock.h>
+ #include <linux/iommu-helper.h>
+@@ -72,6 +73,8 @@ enum swiotlb_force swiotlb_force;
+ 
+ struct io_tlb_mem io_tlb_default_mem;
+ 
++phys_addr_t swiotlb_unencrypted_base;
++
+ /*
+  * Max segment that we can provide which (if pages are contingous) will
+  * not be bounced (unless SWIOTLB_FORCE is set).
+@@ -155,6 +158,31 @@ static inline unsigned long nr_slots(u64 val)
+ 	return DIV_ROUND_UP(val, IO_TLB_SIZE);
+ }
+ 
++/*
++ * Remap swioltb memory in the unencrypted physical address space
++ * when swiotlb_unencrypted_base is set. (e.g. for Hyper-V AMD SEV-SNP
++ * Isolation VMs).
++ */
++void *swiotlb_mem_remap(struct io_tlb_mem *mem, unsigned long bytes)
++{
++	void *vaddr;
++
++	if (swiotlb_unencrypted_base) {
++		phys_addr_t paddr = mem->start + swiotlb_unencrypted_base;
++
++		vaddr = memremap(paddr, bytes, MEMREMAP_WB);
++		if (!vaddr) {
++			pr_err("Failed to map the unencrypted memory %llx size %lx.\n",
++			       paddr, bytes);
++			return NULL;
++		}
++
++		return vaddr;
++	}
++
++	return phys_to_virt(mem->start);
++}
++
+ /*
+  * Early SWIOTLB allocation may be too early to allow an architecture to
+  * perform the desired operations.  This function allows the architecture to
+@@ -172,7 +200,14 @@ void __init swiotlb_update_mem_attributes(void)
+ 	vaddr = phys_to_virt(mem->start);
+ 	bytes = PAGE_ALIGN(mem->nslabs << IO_TLB_SHIFT);
+ 	set_memory_decrypted((unsigned long)vaddr, bytes >> PAGE_SHIFT);
+-	memset(vaddr, 0, bytes);
++
++	mem->vaddr = swiotlb_mem_remap(mem, bytes);
++	if (!mem->vaddr) {
++		pr_err("Fail to remap swiotlb mem.\n");
++		return;
++	}
++
++	memset(mem->vaddr, 0, bytes);
+ }
+ 
+ static void swiotlb_init_io_tlb_mem(struct io_tlb_mem *mem, phys_addr_t start,
+@@ -196,7 +231,18 @@ static void swiotlb_init_io_tlb_mem(struct io_tlb_mem *mem, phys_addr_t start,
+ 		mem->slots[i].orig_addr = INVALID_PHYS_ADDR;
+ 		mem->slots[i].alloc_size = 0;
+ 	}
++
++	/*
++	 * If swiotlb_unencrypted_base is set, the bounce buffer memory will
++	 * be remapped and cleared in swiotlb_update_mem_attributes.
++	 */
++	if (swiotlb_unencrypted_base)
++		return;
++
++	set_memory_decrypted((unsigned long)vaddr, bytes >> PAGE_SHIFT);
+ 	memset(vaddr, 0, bytes);
++	mem->vaddr = vaddr;
++	return;
+ }
+ 
+ int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
+@@ -318,7 +364,6 @@ swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs)
+ 	if (!mem->slots)
+ 		return -ENOMEM;
+ 
+-	set_memory_decrypted((unsigned long)tlb, bytes >> PAGE_SHIFT);
+ 	swiotlb_init_io_tlb_mem(mem, virt_to_phys(tlb), nslabs, true);
+ 
+ 	swiotlb_print_info();
+@@ -371,7 +416,7 @@ static void swiotlb_bounce(struct device *dev, phys_addr_t tlb_addr, size_t size
+ 	phys_addr_t orig_addr = mem->slots[index].orig_addr;
+ 	size_t alloc_size = mem->slots[index].alloc_size;
+ 	unsigned long pfn = PFN_DOWN(orig_addr);
+-	unsigned char *vaddr = phys_to_virt(tlb_addr);
++	unsigned char *vaddr = mem->vaddr + tlb_addr - mem->start;
+ 	unsigned int tlb_offset, orig_addr_offset;
+ 
+ 	if (orig_addr == INVALID_PHYS_ADDR)
+@@ -806,8 +851,6 @@ static int rmem_swiotlb_device_init(struct reserved_mem *rmem,
+ 			return -ENOMEM;
+ 		}
+ 
+-		set_memory_decrypted((unsigned long)phys_to_virt(rmem->base),
+-				     rmem->size >> PAGE_SHIFT);
+ 		swiotlb_init_io_tlb_mem(mem, rmem->base, nslabs, false);
+ 		mem->force_bounce = true;
+ 		mem->for_alloc = true;
+-- 
+2.25.1
+
