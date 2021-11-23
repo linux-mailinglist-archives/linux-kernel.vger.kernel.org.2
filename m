@@ -2,109 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985D345A600
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:44:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E238545A60E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:48:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238161AbhKWOsB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 23 Nov 2021 09:48:01 -0500
-Received: from mail-ua1-f53.google.com ([209.85.222.53]:36709 "EHLO
-        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234844AbhKWOr7 (ORCPT
+        id S238261AbhKWOv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 09:51:59 -0500
+Received: from mail-ua1-f41.google.com ([209.85.222.41]:40840 "EHLO
+        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238191AbhKWOv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 09:47:59 -0500
-Received: by mail-ua1-f53.google.com with SMTP id r15so44287459uao.3;
-        Tue, 23 Nov 2021 06:44:51 -0800 (PST)
+        Tue, 23 Nov 2021 09:51:56 -0500
+Received: by mail-ua1-f41.google.com with SMTP id y5so44229220ual.7;
+        Tue, 23 Nov 2021 06:48:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TA8xlkjkBTwOrtSVFopYo1RZrjhebZ+Gv93fs+HGNgE=;
-        b=74N/iFLNAnRH2k3ltAKMUDzG+HmDGkQs7xjFYmP6OpVYYT9SVPaGbbVQv7bd64S0rQ
-         mM9uDwF7TNkZEJ897mBCUR0ZLp6tXewUcByqDRbcU+yLgdXqKe+AwIPI1wnoLMj53qja
-         RXCUSnovF5vX0ZCATVTSFz2O4g/bf0ANurJPVzhDrjGMdHnBVWJismyJIE3Q3MuS3Lha
-         OB2yC9fjGeDK7HhHaf51+sQ//NTTBGoSmet3cdTcQvpG03hmwN3aqN8erAIEQqzzZglp
-         XlWF87nAvds4RKzFmWEUNwBLo3r8XKl8FoGFiG5n1ZdtkNSnneiNg06DIYXQ59nxIpdC
-         dKMg==
-X-Gm-Message-State: AOAM530ZNIy7Vt7k20uGx/bo8e2AeAJydJtug9TN3rHFdL1tdUWXmKfM
-        xBqjllJCaaCwwv7Y5+20AMLm/ZBLs/OHPg==
-X-Google-Smtp-Source: ABdhPJw2b9xla90+hQLalkzNqW5vXJ9isHCd/LX+JDMLUFf+hFCt2wDDgtQSOpSyA+FxpryQ/fvQBg==
-X-Received: by 2002:ab0:6f0a:: with SMTP id r10mr9903107uah.106.1637678690523;
-        Tue, 23 Nov 2021 06:44:50 -0800 (PST)
-Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com. [209.85.222.42])
-        by smtp.gmail.com with ESMTPSA id l28sm6402399vkn.45.2021.11.23.06.44.49
+         :message-id:subject:to:cc;
+        bh=0Fbef1Cr65IM390r0xwl+UzRI+j+QyCypi+gIUcKWUM=;
+        b=HtzboajwH/TqNiwt/QAZ1KYwWW/QnrUgQ9xg/a9SaYQBPl+1rvDQkJZnmlTRxSLZO2
+         kNY7Nx0GijqdxNjen3gqkq9o98ire3QAiVq/dpqEoWj4IHUFmZxfpcaEpY+9eLuPeFHa
+         bo2yZvWVzl01/F8EWmamCUwNkJ/W205YOa1cotAVJyy3XYLemLO8WtK0V5+3zX3NqB7R
+         nencB4qi2UR99e55wY/BH3JpiwNuSt3BtHmXWdH3IHAlQoweoSXiXLiILGrkItwAHUan
+         vDT/oYsBa0p9G/E0XotxMm6VEk2PI9vJqkjT1NmvcRXN0I0KTulRARU5RTpSWz7KLGxB
+         2qHg==
+X-Gm-Message-State: AOAM531O8SM9v0TVut681XscXbHt7svYKQeRC6BiBmBuhaQ8nB9ndml2
+        FtavBGYBcJflaPWU4avGF/Jyem9VKjB8dw==
+X-Google-Smtp-Source: ABdhPJyS6XkSxGVgbrswvmZXDhDhyzXGUKewNbBjZQB5L9F2eYoOWVi1DbK07SxhaTaFByhCaXn8ag==
+X-Received: by 2002:a67:db0b:: with SMTP id z11mr9183327vsj.59.1637678927188;
+        Tue, 23 Nov 2021 06:48:47 -0800 (PST)
+Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com. [209.85.222.44])
+        by smtp.gmail.com with ESMTPSA id s22sm6378792vkm.28.2021.11.23.06.48.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Nov 2021 06:44:50 -0800 (PST)
-Received: by mail-ua1-f42.google.com with SMTP id o1so44250613uap.4;
-        Tue, 23 Nov 2021 06:44:49 -0800 (PST)
-X-Received: by 2002:a9f:2431:: with SMTP id 46mr9496496uaq.114.1637678689612;
- Tue, 23 Nov 2021 06:44:49 -0800 (PST)
+        Tue, 23 Nov 2021 06:48:46 -0800 (PST)
+Received: by mail-ua1-f44.google.com with SMTP id w23so44224346uao.5;
+        Tue, 23 Nov 2021 06:48:45 -0800 (PST)
+X-Received: by 2002:a05:6102:e82:: with SMTP id l2mr10294794vst.37.1637678925680;
+ Tue, 23 Nov 2021 06:48:45 -0800 (PST)
 MIME-Version: 1.0
-References: <20211121235808.10167-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20211121235808.10167-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <CA+G9fYtH2JR=L0cPoOEqsEGrZW_uOJgX6qLGMe_hbLpBtjVBwA@mail.gmail.com>
+ <CAK8P3a1NhpNxWfj3gDnuf4bWK_fiE8cjcRyN7e8j95NmvOzbGw@mail.gmail.com>
+In-Reply-To: <CAK8P3a1NhpNxWfj3gDnuf4bWK_fiE8cjcRyN7e8j95NmvOzbGw@mail.gmail.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 23 Nov 2021 15:44:38 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXvehNc5yRxO4cS=n_ZaDWCKq2iaKhs+b3uj2beYsdWVg@mail.gmail.com>
-Message-ID: <CAMuHMdXvehNc5yRxO4cS=n_ZaDWCKq2iaKhs+b3uj2beYsdWVg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: hihope-rzg2-ex-lvds: Add power-supply and
- enable-gpios to backlight node
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
+Date:   Tue, 23 Nov 2021 15:48:34 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVuoUAM-6H2BXYtUH++4yXhRCGLAdbzx2GqAJk64FYO=A@mail.gmail.com>
+Message-ID: <CAMuHMdVuoUAM-6H2BXYtUH++4yXhRCGLAdbzx2GqAJk64FYO=A@mail.gmail.com>
+Subject: Re: spinlock.c:306:9: error: implicit declaration of function '__raw_write_lock_nested'
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Galbraith <umgwanakikbuti@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, lkft-triage@lists.linaro.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+Hi Arnd,
 
-On Mon, Nov 22, 2021 at 12:58 AM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> This patch adds missing power-supply and enable-gpios property to
-> backlight node. This fixes the warning "pwm-backlight backlight:
-> backlight supply power not found, using dummy regulator".
+On Tue, Nov 23, 2021 at 2:50 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> On Tue, Nov 23, 2021 at 12:38 PM Naresh Kamboju
+> <naresh.kamboju@linaro.org> wrote:
+> >
+> > While building Linux next 20211123 tag for sh with gcc-11
+> > following warnings / errors noticed.
 >
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Nothing in here looks like a recent regression from either the kernel
+> or gcc-11.
 
-Thanks for your patch!
+Except for:
 
-> --- a/arch/arm64/boot/dts/renesas/hihope-rzg2-ex-lvds.dtsi
-> +++ b/arch/arm64/boot/dts/renesas/hihope-rzg2-ex-lvds.dtsi
-> @@ -12,6 +12,17 @@
->
->                 brightness-levels = <0 2 8 16 32 64 128 255>;
->                 default-brightness-level = <6>;
-> +               power-supply = <&reg_12v>;
-> +               enable-gpios = <&gpio6 7 GPIO_ACTIVE_HIGH>;
+    kernel/locking/spinlock.c:306:9: error: implicit declaration of
+    function '__raw_write_lock_nested'; did you mean
+    '_raw_write_lock_nested'? [-Werror=implicit-function-declaration]
+      306 |         __raw_write_lock_nested(lock, subclass);
+          |         ^~~~~~~~~~~~~~~~~~~~~~~
+          |         _raw_write_lock_nested
 
-According to the schematics (up to Rev. 4.00), GP6_07 is not connected?
-
-> +       };
-> +
-> +       reg_12v: regulator2 {
-
-Using "regulatorN" as a node name is error-prone, and may lead to
-accidental clashes. Please use a more appropriate name.
-
-> +               compatible = "regulator-fixed";
-> +               regulator-name = "fixed-12V";
-> +               regulator-min-microvolt = <12000000>;
-> +               regulator-max-microvolt = <12000000>;
-
-Hmm, the AT1316A is a constant-current source, not a constant-voltage
-source? The -02 variant has a 0.2V Low Reference Voltage. Combined
-with the 1.1Ω resistor, that should give 181818 microamp.
-
-> +               regulator-boot-on;
-> +               regulator-always-on;
->         };
->  };
+Which was also reported for other architectures:
+https://lore.kernel.org/all/202111201111.c2ApGeHR-lkp@intel.com/
 
 Gr{oetje,eeting}s,
 
