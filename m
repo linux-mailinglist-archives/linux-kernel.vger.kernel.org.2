@@ -2,106 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07272459966
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 01:51:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7DC459972
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 01:55:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233088AbhKWAyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 19:54:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57757 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232597AbhKWAxw (ORCPT
+        id S230076AbhKWA6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 19:58:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229672AbhKWA6Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 19:53:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637628644;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nu+6S5YnfxWC0/SRUjRUVc13IurCt0G9rMWN4/Et7NY=;
-        b=H+cPb1YhRnyRNpMDd2JkEZU0gsnbsTonb5aZuyBiJ6BK6ii/NZ/9PpkyNmypSVplO8fJ9r
-        dws3ookQRud9guw799s0T/zaWqUqYtMro8sGK77DqEHdNJ61qA/Snp0IQPPcH4toG6ZkqV
-        I+bs/WRHVR2mptqwjWkrtdrH6lMi658=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-506-dxm3XyURPRibvZF_EtCEqg-1; Mon, 22 Nov 2021 19:50:43 -0500
-X-MC-Unique: dxm3XyURPRibvZF_EtCEqg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8D2651DDF2;
-        Tue, 23 Nov 2021 00:50:42 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3EAC460C13;
-        Tue, 23 Nov 2021 00:50:42 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     pgonda@google.com
-Subject: [PATCH 12/12] KVM: SEV: accept signals in sev_lock_two_vms
-Date:   Mon, 22 Nov 2021 19:50:36 -0500
-Message-Id: <20211123005036.2954379-13-pbonzini@redhat.com>
-In-Reply-To: <20211123005036.2954379-1-pbonzini@redhat.com>
-References: <20211123005036.2954379-1-pbonzini@redhat.com>
+        Mon, 22 Nov 2021 19:58:16 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF23C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 16:55:09 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id b16so2306988ljf.12
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 16:55:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=zejIlZjGjvzTKDlE9IDzfKlgpBmC2NhrN3/klGVK4ZA=;
+        b=jw4g7UOAWkd2snKCLJKqEXQFGLEWCdfXx1sVgnB8nFno0y7wkqruQOTUVGTMcg+DZ4
+         vNi0OzWBjaujPTs1cDMRqkin69dJ/ngoJhTOi+rWjJ/EdWulGaGFYBJtQiGcYSV5ENOj
+         M19vZnQhW/DvHZikgVhb0z3OkPsIPxTnuLcs1btLkSiDqDeAW1qO4OgI2oymYt9ZrVnB
+         hkk/RAKPSVrsDv70eX49GBwasKGcwpUrkW1FRmCyH1wJyG3N7geHFGbw49GcSLms3mwD
+         /LhbNTleZqqNS+LKi5OMvuE6GnQ+QqLk5GELv96hpPA+/tmKtgOltqx38XU4k+a52AQe
+         6HmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=zejIlZjGjvzTKDlE9IDzfKlgpBmC2NhrN3/klGVK4ZA=;
+        b=RqHPHw2Cvq8oEF7jTsHNzJoFwvzhxNjxZ0e524qZuzdGDEbSuqQhaBbJclsFGOR+7g
+         TgEMX3/8cloVuXOkcPouq1ajUQ7zw366Qfpc4N0RyU8Kg/tXKNUfb1LoR4mh3wPg0v53
+         HNlWpY+lz9+wv9O6Iowt5qYIviTNq8Nw1sllREtaTkFLqsQYSSa0kQ2F4niRLmxqJRZF
+         i5+18QiRoRD4ldStAU9D1IFu9w8YL7VgTc0whtMICpOFfoaS921n6Jn7VLvvUgIlRlbV
+         1E2KJ1/s1adLmElsB0Ykr3OVLbnvkH0jR/sq5dP5EKtYxGl+UtfsETSlnoDInTWocs4H
+         P93g==
+X-Gm-Message-State: AOAM533fFq/Va9Vx1QoT2B5XzH6VgavNXAA1fo1XAa0aSi0YycYft2sm
+        Ic90mA51mJympIaYeE971tYqLL2oX4H18tSF++o=
+X-Google-Smtp-Source: ABdhPJxK9uYh3381UwmFWUAWhAi7Y2M/NH/DFKYWHvOAPImwE4ITRS/d/zAaenXqA4YwEeZDt+9WkwXfPp4qqZRazVY=
+X-Received: by 2002:a2e:9b17:: with SMTP id u23mr708729lji.258.1637628907482;
+ Mon, 22 Nov 2021 16:55:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Received: by 2002:a05:6520:4084:b0:14d:ab54:2be2 with HTTP; Mon, 22 Nov 2021
+ 16:55:06 -0800 (PST)
+Reply-To: rubenherbert789@gmail.com
+From:   Ruben Herbert <rubenherbert16@gmail.com>
+Date:   Tue, 23 Nov 2021 01:55:06 +0100
+Message-ID: <CADgtACBo+MTF0CGWoX9YzY05h_J-UVmzeTGnw7DUH4KR7Kf-JA@mail.gmail.com>
+Subject: ABANDONED FUND
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Generally, kvm->lock is not taken for a long time, but
-sev_lock_two_vms is different: it takes vCPU locks
-inside, so userspace can hold it back just by calling
-a vCPU ioctl.  Play it safe and use mutex_lock_killable.
+Dear Beneficiary,
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/svm/sev.c | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+How are you today? I need the following answers from you immediately:
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index bbbf980c7e40..59727a966f90 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -1547,6 +1547,7 @@ static int sev_lock_two_vms(struct kvm *dst_kvm, struct kvm *src_kvm)
- {
- 	struct kvm_sev_info *dst_sev = &to_kvm_svm(dst_kvm)->sev_info;
- 	struct kvm_sev_info *src_sev = &to_kvm_svm(src_kvm)->sev_info;
-+	int r = -EBUSY;
- 
- 	if (dst_kvm == src_kvm)
- 		return -EINVAL;
-@@ -1558,14 +1559,23 @@ static int sev_lock_two_vms(struct kvm *dst_kvm, struct kvm *src_kvm)
- 	if (atomic_cmpxchg_acquire(&dst_sev->migration_in_progress, 0, 1))
- 		return -EBUSY;
- 
--	if (atomic_cmpxchg_acquire(&src_sev->migration_in_progress, 0, 1)) {
--		atomic_set_release(&dst_sev->migration_in_progress, 0);
--		return -EBUSY;
--	}
-+	if (atomic_cmpxchg_acquire(&src_sev->migration_in_progress, 0, 1))
-+		goto release_dst;
- 
--	mutex_lock(&dst_kvm->lock);
--	mutex_lock(&src_kvm->lock);
-+	r = -EINTR;
-+	if (mutex_lock_killable(&dst_kvm->lock))
-+		goto release_src;
-+	if (mutex_lock_killable(&src_kvm->lock))
-+		goto unlock_dst;
- 	return 0;
-+
-+unlock_dst:
-+	mutex_unlock(&dst_kvm->lock);
-+release_src:
-+	atomic_set_release(&src_sev->migration_in_progress, 0);
-+release_dst:
-+	atomic_set_release(&dst_sev->migration_in_progress, 0);
-+	return r;
- }
- 
- static void sev_unlock_two_vms(struct kvm *dst_kvm, struct kvm *src_kvm)
--- 
-2.27.0
+Did you abandon your funds of US$35,000,000.00?
 
+Did you authorize a lawyer to claim the fund on your behalf and that
+the funds should be sent to the below account details?;
+
+Canadian Imperial Bank of Commerce
+1120 Grant Ave Wpg Mb Canada R3M 2A6
+Usd Acct No: 01007-93-17899
+Swift Code: cibccatt
+Beneficiary Name: Fitzroy Joseph
+
+Kindly get back to me immediately to avoid paying the wrong person.
+
+I await your urgent response.
+
+Yours sincerely,,
+Dr. Ruben Herbert
+Head, Financial System Stability,
+Central Bank of Nigeria (CBN)
