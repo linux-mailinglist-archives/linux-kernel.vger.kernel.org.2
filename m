@@ -2,100 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E89C3459EEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 10:11:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA557459EEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 10:11:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234103AbhKWJOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 04:14:11 -0500
-Received: from mail-ua1-f43.google.com ([209.85.222.43]:41870 "EHLO
-        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232166AbhKWJOH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 04:14:07 -0500
-Received: by mail-ua1-f43.google.com with SMTP id p37so42270552uae.8
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 01:10:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v1m+V4iz0zscyHDEe2kjIVDF61K1AEveOhgU9Y4zjfE=;
-        b=sg+9kXrVfcgDJpZYGa9+J5TgpHsoOXtiFmoJ71NRVKtn1UHXy5xEeYwpCjpjKe4/rA
-         uhaBgS9TBCJcsaOYZg54lCZvAdTZurUwDFt55xO07d0XN7nWCsTBkvCck4zqmcxHAXqm
-         yqfLDEiaFZZD8aXw4XroZFOBZ90CB4cmH6/dYGjEiTx3CQeIPrxVidkhz1IeDhMXi1cj
-         rBDx66h/ivND8YwCDI+Ihz673mG5M2Hyb9qNcWkCadbgJaVwgoSNPvs2prTSGGO7c8U2
-         w9/TLa/EbqD7v0sipGU4K/na+1xzbPevQJ5IaAQO+yBtK5029auzcQPpQSSQrxrHks9a
-         89Lg==
-X-Gm-Message-State: AOAM530zRLarKwUEpkz+H2d/YDsplBJ6qhKZbOqiAZToS2ym3IYGXRQO
-        UI6eKLc0f5KYkIunZmO1KJIE2D+eVYt/GQ==
-X-Google-Smtp-Source: ABdhPJxeMVYVm/T1sEwmJv62/JPcmzwLwL4BJTA+q3EUCrwKPQdOmsbGrEz2osuRnUTPuKCmsWmh/A==
-X-Received: by 2002:ab0:35d2:: with SMTP id x18mr6381402uat.32.1637658659097;
-        Tue, 23 Nov 2021 01:10:59 -0800 (PST)
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
-        by smtp.gmail.com with ESMTPSA id bk3sm5819009vkb.33.2021.11.23.01.10.57
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Nov 2021 01:10:58 -0800 (PST)
-Received: by mail-ua1-f48.google.com with SMTP id t13so42251170uad.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 01:10:57 -0800 (PST)
-X-Received: by 2002:a05:6102:1354:: with SMTP id j20mr5889703vsl.41.1637658657537;
- Tue, 23 Nov 2021 01:10:57 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1637330431.git.matti.vaittinen@fi.rohmeurope.com>
- <73d5e4286282a47b614d1cc5631eb9ff2a7e2b44.1637330431.git.matti.vaittinen@fi.rohmeurope.com>
- <YZt+x2moR632x///@smile.fi.intel.com> <2c22b52f-9a1f-06f5-f008-d568096f5c4d@fi.rohmeurope.com>
- <YZuTt3+PPvyJsFQ/@smile.fi.intel.com> <20211122175414.GA1588@lapt>
- <9b524543-e868-7b9d-aae7-97c47f41db52@fi.rohmeurope.com> <20211123073346.GA1628@lapt>
- <YZyubUvWW98ThOPe@smile.fi.intel.com>
-In-Reply-To: <YZyubUvWW98ThOPe@smile.fi.intel.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 23 Nov 2021 10:10:46 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXHVxY+BGct2fC+jZ--jOXP0w7yabJOwYED-_1RANM0JA@mail.gmail.com>
-Message-ID: <CAMuHMdXHVxY+BGct2fC+jZ--jOXP0w7yabJOwYED-_1RANM0JA@mail.gmail.com>
-Subject: Re: [PATCH 1/4] bitops: Add single_bit_set()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Yury Norov <yury.norov@gmail.com>,
-        "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S234250AbhKWJOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 04:14:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55456 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234149AbhKWJOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 04:14:21 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 32C5A60FD7;
+        Tue, 23 Nov 2021 09:11:14 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mpRpY-007Ei9-2p; Tue, 23 Nov 2021 09:11:12 +0000
+Date:   Tue, 23 Nov 2021 09:11:11 +0000
+Message-ID: <87r1b7ck40.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        kernel-team@android.com, Rob Herring <robh@kernel.org>,
+        John Crispin <john@phrozen.org>, Biwen Li <biwen.li@nxp.com>,
+        Chris Brandt <chris.brandt@renesas.com>,
+        linux-renesas-soc@vger.kernel.org,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH] of/irq: Add a quirk for controllers with their own definition of interrupt-map
+In-Reply-To: <CAMuHMdWGb2xik+94RVwtq8E6+9eN=HfQLX3a4sTjKQXR96Udkw@mail.gmail.com>
+References: <20211122103032.517923-1-maz@kernel.org>
+        <CAMuHMdX2ZRvDYA3idmw3nBcP6CO=2od6ZU-UeJo9vYsuB=fQNQ@mail.gmail.com>
+        <8735no70tt.wl-maz@kernel.org>
+        <CAMuHMdVS67BLP2XEdD6ZvVBVE2x11gKnQa1TqG659HXPM5scqQ@mail.gmail.com>
+        <CAMuHMdWJhnXabKGpW7k944dzQHtwQtxw-yb2bRBsoaMw6N6nuA@mail.gmail.com>
+        <87tug3clvc.wl-maz@kernel.org>
+        <CAMuHMdWGb2xik+94RVwtq8E6+9eN=HfQLX3a4sTjKQXR96Udkw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: geert@linux-m68k.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, kernel-team@android.com, robh@kernel.org, john@phrozen.org, biwen.li@nxp.com, chris.brandt@renesas.com, linux-renesas-soc@vger.kernel.org, prabhakar.mahadev-lad.rj@bp.renesas.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Tue, 23 Nov 2021 08:44:19 +0000,
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> 
+> Hi Marc,
+> 
+> On Tue, Nov 23, 2021 at 9:33 AM Marc Zyngier <maz@kernel.org> wrote:
+> > On Tue, 23 Nov 2021 07:57:48 +0000,
+> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > Summarized:
+> > >   - Before the bad commit, and after your fix, irqc-rza1 is invoked,
+> > >     and the number of interrupts seen is correct, but input events
+> > >     are doubled.
+> > >   - After the bad commit, irqc-rza1 is not invoked, and there is an
+> > >     interrupt storm, but input events are OK.
+> >
+> > OK, that's reassuring, even if the "twice the events" stuff isn't what
+> > you'd expect. We at least know this is a separate issue, and that this
+> > patch on top of -rc1 brings you back to the 5.15 behaviour.
+> >
+> > I'd expect it to be the case for the other platforms as well.
+> 
+> OK.
+> 
+> BTW, what would have been the correct way to do this for irqc-rza1?
+> I think we're about to make the same mistake with RZ/G2L IRQC
+> support[1]?
 
-On Tue, Nov 23, 2021 at 10:04 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> Be sure you get better assembly in these cases. As I have told already,
-> hweight() is a single assembly instruction, I'm not sure open coded variant
+Indeed, and I was about to look into it.
 
-... on a select set of architectures.
+There are multiple ways to skin this cat, including renaming
+'interrupt-map' to 'my-own-private-interrupt-map'. Or use something
+akin the new 'msi-range' (which we could call interrupt-range), and
+replace:
 
-Do we need CONFIG_HAVE_FAST_HWEIGHT?
+  interrupt-map = <0 0 &gic GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
+                  <1 0 &gic GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
+                  <2 0 &gic GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
+                  <3 0 &gic GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
+                  <4 0 &gic GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
+                  <5 0 &gic GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>,
+                  <6 0 &gic GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>,
+                  <7 0 &gic GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
 
-> may be better even for long bitmaps. That said, assembly comparison and
-> some performance tests would be nice to have.
+with:
 
-> As an API per se it might make sense to have such, but you know that we don't
-> add it without users.
+  interrupt-range = <&gic GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH 0 8>;
 
-Indeed. And code for unused APIs increase kernel size, too
-(without LTO).
+which reads as "base interrupt spec", "start pin", "count".  This
+gives you almost the same level of information, and doesn't interfere
+with the rest of the DT properties. Parsing it is also much simpler.
+But that's up to you, really.
 
-Gr{oetje,eeting}s,
+	M.
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Without deviation from the norm, progress is not possible.
