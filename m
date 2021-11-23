@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 365FD45AAED
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 19:08:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 253E945AAFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 19:11:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239667AbhKWSL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 13:11:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239498AbhKWSL4 (ORCPT
+        id S239711AbhKWSOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 13:14:11 -0500
+Received: from mail-yb1-f170.google.com ([209.85.219.170]:39797 "EHLO
+        mail-yb1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239628AbhKWSOK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 13:11:56 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E252C061574;
-        Tue, 23 Nov 2021 10:08:48 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id e11so12756639ljo.13;
-        Tue, 23 Nov 2021 10:08:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=56dyo2B5WxLSRjH8dLU5dNlhfoG71/Hfm6ftni52IYk=;
-        b=CR7mbvgSr/cJkFxHEQ+ms+toHQcxH851XqAFwpfJzz543FrfgIc8MQpdwUhXzzYFKl
-         pXCW3vi6SXprCzAHzHVeXJN+yOs7hkyZOPNDX99021nhSF61L6Twl4ck/S3kVGT+bEHU
-         GF/NbWcjnyKmGnVoD0zzGEi8OO8t6Bm95pHTmTCYznQ5E7tKCCRtS0lNjZTyk0x66ulK
-         PybjJTn7CSRs+exbZihltyyqAP+vsIHYIhfhiFeJBGMfM4HxGSYvp1MHuUSz6wulADJq
-         zwS6HgizVuyYE6Cs7ifNG1N5GaGW9viZpcd6ZTHtdKyTf2+D4vN4O+NXz+QD2YT8k6q+
-         Dv2Q==
+        Tue, 23 Nov 2021 13:14:10 -0500
+Received: by mail-yb1-f170.google.com with SMTP id v203so25366522ybe.6;
+        Tue, 23 Nov 2021 10:11:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=56dyo2B5WxLSRjH8dLU5dNlhfoG71/Hfm6ftni52IYk=;
-        b=u4lkkB17NaTjUxkr0a8f03v6n651Q95PagGe+RmpXTThNTPHy+rD+6W/RTJmcrdaub
-         2VMl8pljUeMNck9n60hireMbPqxxldUgBaUNV65Am1bgUbyuawEgJQTRLK2i8Ff4EDsq
-         WVN4nm1IMP8CxoJHV2H48vJSZfyCLnnITkLx+dsAT/VPuwlm4j2VaKFlFMVvmDGh9R2D
-         kX1sCHtJhVEXl/BVvv3h4wzq6ZlYWMkQyqO3YFnfTtPomb8UNeg2Imu0RbA98etCG5Bo
-         ypfMl/Gbfswv/wK8w5wUooZEkgFx2IIJj8TD4mtDyb8YGYBQBTyXeQoKgv3j6VisWi67
-         INvA==
-X-Gm-Message-State: AOAM533rrkdyDVmlK23r4MPBKVTaoMl4av9GcOaIxTkMLWi/Q7U9ehEG
-        K05nJCfGblq2A5IEE6DdE7M=
-X-Google-Smtp-Source: ABdhPJzSLfpSBsiDXgtGymQV5xPGQ2oxpL3HVL4A7epVul9quMnngyVM0xyR9B/ohIxO24hH2VUneg==
-X-Received: by 2002:a2e:a483:: with SMTP id h3mr7641944lji.106.1637690926436;
-        Tue, 23 Nov 2021 10:08:46 -0800 (PST)
-Received: from localhost.localdomain (public-gprs375115.centertel.pl. [37.47.96.140])
-        by smtp.googlemail.com with ESMTPSA id q1sm874981lfh.234.2021.11.23.10.08.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 10:08:46 -0800 (PST)
-From:   Dominik Kobinski <dominikkobinski314@gmail.com>
-To:     agross@kernel.org
-Cc:     bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Dominik Kobinski <dominikkobinski314@gmail.com>,
-        Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
-Subject: [PATCH 3/4] dt-bindings: regulator: qcom: spmi-regulator: Document pm8226 compatible
-Date:   Tue, 23 Nov 2021 19:08:16 +0100
-Message-Id: <20211123180816.2835-1-dominikkobinski314@gmail.com>
-X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211123174127.2261-1-dominikkobinski314@gmail.com>
-References: <20211123174127.2261-1-dominikkobinski314@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MUbZEn/3SdS1wqqgUfSx8CmvXfjoSF7ouvMsnJiO5NA=;
+        b=XGTeW++CZ0fCg14ZEvS6Knj1uLSHQ5dp2OBdlzyIhRNgrZJH80uEyY4DzdqAF1aZBt
+         mk2rbPg8l2SMlDxlgpqAms4rAPVYJi+rNcwVZrJA94x2d72XLNzaJx3SbgBbDffOBZ9g
+         5tcHwBft3tjaNfv6bxnUkurCO/isQ9ELbIoPi/u/pwYHM65OEfIkxP0XEJmDe+CadtW/
+         hxBa36Qgwuw8+2BdyZRVsmCug3IuMphXaUN5EkHDImPnaN+WfaqJDRIiJsRCMqoAcTQh
+         zohzEFRASxDMQu+PzI8bCZM55gnjd+6Lc2iMAjDHX4cF0Qodn14UVeSAX5VsJ/4o8a3b
+         M4TA==
+X-Gm-Message-State: AOAM530hGDhujVdpVwRTouMlOKen+6sgmczTGuGKnH8/v51/ZGZDhh+3
+        7jLVGOUqMn7+zJYzYw6x1zVK6uhOi3WnUwAghhQ=
+X-Google-Smtp-Source: ABdhPJxRFhK5k5paqCyxrIeq+pgrATdTva88twcto4HVEG4JbbIHmOdJnz3Ra/cinSMh+cljZYv0Hji1HsxZMD9JErw=
+X-Received: by 2002:a25:ba0f:: with SMTP id t15mr8897642ybg.62.1637691061954;
+ Tue, 23 Nov 2021 10:11:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211123115333.624335-1-mailhol.vincent@wanadoo.fr> <20211123115333.624335-3-mailhol.vincent@wanadoo.fr>
+In-Reply-To: <20211123115333.624335-3-mailhol.vincent@wanadoo.fr>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Wed, 24 Nov 2021 03:10:50 +0900
+Message-ID: <CAMZ6RqJEFvn9f8quYWyfPL+A7hjLJG67tQenTsearuF-5hcEsQ@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] can: do not increase rx_bytes statistics for RTR frames
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        Jimmy Assarsson <extja@kvaser.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Yasushi SHOJI <yashi@spacecubics.com>,
+        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
+        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Stephane Grosjean <s.grosjean@peak-system.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Suggested-by: Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
-Signed-off-by: Dominik Kobinski <dominikkobinski314@gmail.com>
----
- .../devicetree/bindings/regulator/qcom,spmi-regulator.txt        | 1 +
- 1 file changed, 1 insertion(+)
+On Tue. 23 Nov. 2021 at 20:53, Vincent Mailhol
+<mailhol.vincent@wanadoo.fr> wrote:
+> The actual payload length of the CAN Remote Transmission Request (RTR)
+> frames is always 0, i.e. nothing is transmitted on the wire. However,
+> those RTR frames still uses the DLC to indicate the length of the
+> requested frame.
+>
+> As such, net_device_stats:rx_bytes should not be increased for the RTR
+> frames.
+>
+> This patch fixes all the CAN drivers.
 
-diff --git a/Documentation/devicetree/bindings/regulator/qcom,spmi-regulator.txt b/Documentation/devicetree/bindings/regulator/qcom,spmi-regulator.txt
-index 2b544059e029..c2a39b121b1b 100644
---- a/Documentation/devicetree/bindings/regulator/qcom,spmi-regulator.txt
-+++ b/Documentation/devicetree/bindings/regulator/qcom,spmi-regulator.txt
-@@ -6,6 +6,7 @@ Qualcomm SPMI Regulators
- 	Definition: must be one of:
- 			"qcom,pm8004-regulators"
- 			"qcom,pm8005-regulators"
-+			"qcom,pm8226-regulators"
- 			"qcom,pm8841-regulators"
- 			"qcom,pm8916-regulators"
- 			"qcom,pm8941-regulators"
--- 
-2.34.0
+Actually, I just realized that we also need to fix the tx path.
 
+Since [1], can_get_echo_skb() returns the correct length (even
+for RTR frames). So as long as the drivers use this function,
+everything should be fine. But the fact is that the majority do
+not (probably for historical reasons).  Long story short, I will
+send a v2 in which there will be an additional third patch to
+address the tx_bytes statistics of the RTR frames in the tx
+path.
+
+[1] commit 59d24425c93d ("can: dev: replace can_priv::ctrlmode_static
+by can_get_static_ctrlmode()")
+https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/commit/?h=testing&id=ed3320cec279407a86bc4c72edc4a39eb49165ec
+
+Yours sincerely,
+Vincent Mailhol
