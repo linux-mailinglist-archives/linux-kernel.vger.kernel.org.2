@@ -2,224 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA90E45AFB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:02:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57FFD45AFC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:06:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232978AbhKWXFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 18:05:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40790 "EHLO
+        id S233684AbhKWXJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 18:09:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232351AbhKWXFW (ORCPT
+        with ESMTP id S231683AbhKWXJt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 18:05:22 -0500
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08785C061714
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 15:02:14 -0800 (PST)
-Received: by mail-oi1-x236.google.com with SMTP id be32so1228302oib.11
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 15:02:14 -0800 (PST)
+        Tue, 23 Nov 2021 18:09:49 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B92C061574;
+        Tue, 23 Nov 2021 15:06:41 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id gx15-20020a17090b124f00b001a695f3734aso736206pjb.0;
+        Tue, 23 Nov 2021 15:06:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=U/YfcKuWu9IBkxXAjQ9Eru9NWliiwRlAFXbf84u64iw=;
-        b=Qxx/ct/QAteIczIt6u1z/ZW2GAaejZjWOiZpUGS0Yz14806PSoc0ypAeotDWKBdgB5
-         iSZU6eDDsfKo6Xv9k+NJ+UZeNUhCOzSVTPBeaT01bVwgfzXUnDacnVTBxrp8kqmlwJAX
-         JsfYlrhqmJJar4p39sslfer/C/XeAqD/vxcoZF7v83XdNPeSx4ugo97leYM0YHLUUQBs
-         FCG+RjnM2V0FydRVSUCNRCysVR1eboOi6owXfSQxeK9dpRIto2xOS+KKE3Lkax3DmjFm
-         mK2G7X+Jn0wqTuQ9H+2DRkzsHFfKbanuY+RfLuPUbZpoIq3jUGB5IwbJismA+voJbqX4
-         3Izg==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DJfk8BcmICotrkto9QK0fhNW+LePmR911sFhN5fSxj0=;
+        b=SX2sKm1mQRcJMBZbVdhFqWjULJaNNJASVq+7B8dyl5socBw1O/ZZu8SRKVmTsFqX32
+         +bbfKQSFUvGlTVzq8HoDuozhqu9Iw9Ishc0F/Iv4UcPWfvj9/1T4ALER20rj7cqgx032
+         3WFBAm1REBDiP56AK4B1F42DWAiDvy5PKb8+3wjyzDA1e2JiklgcN5o8Hjca10YHiSd4
+         lcV5+i0pt1axNiElu/R0ArmYZq24SwYzatw1JkmCYL2br66zs5wvdhd1ZDQauMql6sTV
+         hlY2RRh+SdSu2FYRE1uorhU6CjU5vKglsbNQaPh8gZTme4iBWYIZESnIujM8KmY67jKU
+         YsuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U/YfcKuWu9IBkxXAjQ9Eru9NWliiwRlAFXbf84u64iw=;
-        b=eFe6bxwFH2oSYcmqvcS9YOZs3clbfwQKm/jP4TatXBN4vCGR0oyUYgsk2N5p5R4LEr
-         i6EG5seHyw14CY7/5il7utNbxt+mA7EPGelOOkBFkbfzuUSxRN2sJgI1LkTK+UGHJWaP
-         9vrB+2PxWwf5FWmGjvxhEny6Y+R/oJERGmDQwmnG3Z8C2kFYN6+mdT1qPd5nWNv30PgM
-         WYbcZB2nLiqA02kZ/yKVmB7Sgpo8qHa7qxr62hTHUlXVktswfSMXllIDxAVWqKns/8SW
-         wG2yaYoWtJJc3PWAPBIZQ7u5kJ/mN5AyI9lIiMUl7duMc0KUarFAov1VAv3wz7L//5GI
-         ju3g==
-X-Gm-Message-State: AOAM530s3lZnLAATIFSUAAyGh46BkAcNhZh10eJE6suahFVY/QsoYhcJ
-        UNOK1Qnt4YscSWT5CX/WBpJraQ==
-X-Google-Smtp-Source: ABdhPJzWaRUeQLHSrascFf1GNb0zer8lw+90WeJZXU4FLvAUr8grUNKxROvP8CF72Rh4EzXkv9Bn4w==
-X-Received: by 2002:a05:6808:55:: with SMTP id v21mr1056533oic.174.1637708533242;
-        Tue, 23 Nov 2021 15:02:13 -0800 (PST)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id v12sm2450822ote.9.2021.11.23.15.02.12
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DJfk8BcmICotrkto9QK0fhNW+LePmR911sFhN5fSxj0=;
+        b=eEX71d0NfaaggowTZaXvxpovmSfgUDnYOnzApRNlh/t9VGbhIlCYZfee3Kl2aFngeS
+         Pdsru0k30gHoAM5M+z9htkWUsRDORsKdmzETCmx+BIoHHHxwsLQoDAhZ9KIe6b8k89Wv
+         9CRJkY3xJJJ6mNcxS2F1zyS8Bf+hkOt8Hzz5gq275Buu6nfoiLX7tBLLRbj2Rr7jP0kE
+         u0LlufwsZ2oAiCc5ZVE8LUAKgUIAhi29y/46TWTX2kQX8JwWzA0n7Ad6V+zzQO2FTHnq
+         NyVRTO34iVbblX3/0sqFiafd83qTNeNqVqfCkeSoPkFDMf1pJJZUa3kCi6kbIo53Koi0
+         c5Ew==
+X-Gm-Message-State: AOAM530OhuIoGIB8SmTPFdusqjBbblgWtUvdrlbRhK0UT7R5VbaB8a0U
+        VTeFu7EiPrXRXbf8nGXAtUg=
+X-Google-Smtp-Source: ABdhPJybuomYRfd7QdEflkII9GI4dj/tolMPXuytg1Xezhm8N02yuw7m1SYTiWBebOB6nhnq9X2fEw==
+X-Received: by 2002:a17:902:e74a:b0:142:114c:1f1e with SMTP id p10-20020a170902e74a00b00142114c1f1emr11878437plf.78.1637708800434;
+        Tue, 23 Nov 2021 15:06:40 -0800 (PST)
+Received: from athina.mtv.corp.google.com ([2620:15c:211:200:cd70:5ac2:9066:1bb8])
+        by smtp.gmail.com with ESMTPSA id g11sm9646673pgn.41.2021.11.23.15.06.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 15:02:12 -0800 (PST)
-Date:   Tue, 23 Nov 2021 15:03:55 -0800
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Akhil P Oommen <akhilpo@codeaurora.org>
-Cc:     freedreno <freedreno@lists.freedesktop.org>,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Rob Clark <robdclark@gmail.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linux Patches Robot 
-        <linux-patches-robot@chromeos-missing-patches.google.com.iam.gserviceaccount.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sean Paul <sean@poorly.run>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        St?phane Marchesin <marcheu@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/6] drm/msm/a6xx: Capture gmu log in devcoredump
-Message-ID: <YZ1zW/9lsJNrVfqJ@ripper>
-References: <20211124024436.v2.1.I2ed37cd8ad45a5a94d9de53330f973a62bd1fb29@changeid>
- <20211124024436.v2.4.Ibb71b3c64d6f98d586131a143c27fbdb233260a1@changeid>
+        Tue, 23 Nov 2021 15:06:39 -0800 (PST)
+From:   =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <zenczykowski@gmail.com>
+To:     =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Lorenzo Colitti <lorenzo@google.com>
+Subject: [PATCH bpf-next] net-bpf: bpf_skb_change_proto() - add support for ipv6 fragments
+Date:   Tue, 23 Nov 2021 15:06:32 -0800
+Message-Id: <20211123230632.1503854-1-zenczykowski@gmail.com>
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211124024436.v2.4.Ibb71b3c64d6f98d586131a143c27fbdb233260a1@changeid>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 23 Nov 13:17 PST 2021, Akhil P Oommen wrote:
+From: Maciej Żenczykowski <maze@google.com>
 
-> Capture gmu log in coredump to enhance debugging.
-> 
-> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
-> ---
-> 
-> Changes in v2:
-> - Fix kernel test robot's warning about size_t's format specifier
-> 
->  drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c | 41 +++++++++++++++++++++++++++++
->  drivers/gpu/drm/msm/adreno/adreno_gpu.c     |  2 +-
->  drivers/gpu/drm/msm/adreno/adreno_gpu.h     |  2 ++
->  3 files changed, 44 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
-> index e8f65cd..e6f5571 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
-> @@ -42,6 +42,8 @@ struct a6xx_gpu_state {
->  	struct a6xx_gpu_state_obj *cx_debugbus;
->  	int nr_cx_debugbus;
->  
-> +	struct msm_gpu_state_bo *gmu_log;
-> +
->  	struct list_head objs;
->  };
->  
-> @@ -800,6 +802,30 @@ static void a6xx_get_gmu_registers(struct msm_gpu *gpu,
->  		&a6xx_state->gmu_registers[2], false);
->  }
->  
-> +static void a6xx_get_gmu_log(struct msm_gpu *gpu,
-> +		struct a6xx_gpu_state *a6xx_state)
-> +{
-> +	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
-> +	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
-> +	struct a6xx_gmu *gmu = &a6xx_gpu->gmu;
-> +	struct msm_gpu_state_bo *gmu_log;
-> +
-> +	gmu_log = state_kcalloc(a6xx_state,
-> +		1, sizeof(*a6xx_state->gmu_log));
+IPv4 fragments (20 byte IPv4 header) need to be translated to/from
+IPv6 fragments (40 byte IPv6 header with additional 8 byte IPv6
+fragmentation header).
 
-This line isn't even 80 chars long, so I see no reason to wrap it and if
-you ran checkpatch --strict on this patch it would complain about how
-you indent that second line as well.
+This allows this to be done by adding an extra flag BPF_F_IPV6_FRAGMENT
+to bpf_skb_change_proto().
 
-It would also look better with sizeof(*gmu_log), even though they should
-have the same size today...
+I think this is already technically achievable via the use of
+bpf_skb_adjust_room() which was added in v4.12 commit 2be7e212d541,
+but this is far easier to use and eliminates the need to call two
+helper functions, so it's also faster.
 
-> +	if (!gmu_log)
-> +		return;
-> +
-> +	gmu_log->iova = gmu->log.iova;
-> +	gmu_log->size = gmu->log.size;
-> +	gmu_log->data = kvzalloc(gmu_log->size, GFP_KERNEL);
-> +	if (!gmu_log->data)
-> +		return;
-> +
-> +	memcpy(gmu_log->data, gmu->log.virt, gmu->log.size);
-> +
-> +	a6xx_state->gmu_log = gmu_log;
-> +}
-> +
->  #define A6XX_GBIF_REGLIST_SIZE   1
->  static void a6xx_get_registers(struct msm_gpu *gpu,
->  		struct a6xx_gpu_state *a6xx_state,
-> @@ -937,6 +963,8 @@ struct msm_gpu_state *a6xx_gpu_state_get(struct msm_gpu *gpu)
->  
->  	a6xx_get_gmu_registers(gpu, a6xx_state);
->  
-> +	a6xx_get_gmu_log(gpu, a6xx_state);
-> +
->  	/* If GX isn't on the rest of the data isn't going to be accessible */
->  	if (!a6xx_gmu_gx_is_on(&a6xx_gpu->gmu))
->  		return &a6xx_state->base;
-> @@ -978,6 +1006,9 @@ static void a6xx_gpu_state_destroy(struct kref *kref)
->  	struct a6xx_gpu_state *a6xx_state = container_of(state,
->  			struct a6xx_gpu_state, base);
->  
-> +	if (a6xx_state->gmu_log && a6xx_state->gmu_log->data)
-> +		kvfree(a6xx_state->gmu_log->data);
-> +
->  	list_for_each_entry_safe(obj, tmp, &a6xx_state->objs, node)
->  		kfree(obj);
->  
-> @@ -1191,6 +1222,16 @@ void a6xx_show(struct msm_gpu *gpu, struct msm_gpu_state *state,
->  
->  	adreno_show(gpu, state, p);
->  
-> +	drm_puts(p, "gmu-log:\n");
-> +	if (a6xx_state->gmu_log) {
-> +		struct msm_gpu_state_bo *gmu_log = a6xx_state->gmu_log;
-> +
-> +		drm_printf(p, "    iova: 0x%016llx\n", gmu_log->iova);
-> +		drm_printf(p, "    size: %zu\n", gmu_log->size);
-> +		adreno_show_object(p, &gmu_log->data, gmu_log->size,
-> +				&gmu_log->encoded);
-> +	}
-> +
->  	drm_puts(p, "registers:\n");
->  	for (i = 0; i < a6xx_state->nr_registers; i++) {
->  		struct a6xx_gpu_state_obj *obj = &a6xx_state->registers[i];
-> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> index 1539b8e..b43346e 100644
-> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> @@ -638,7 +638,7 @@ static char *adreno_gpu_ascii85_encode(u32 *src, size_t len)
->  }
->  
->  /* len is expected to be in bytes */
-> -static void adreno_show_object(struct drm_printer *p, void **ptr, int len,
-> +void adreno_show_object(struct drm_printer *p, void **ptr, int len,
->  		bool *encoded)
+Cc: Lorenzo Colitti <lorenzo@google.com>
+Signed-off-by: Maciej Żenczykowski <maze@google.com>
+---
+ include/uapi/linux/bpf.h | 24 ++++++++++++++++++++++--
+ net/core/filter.c        | 19 ++++++++++---------
+ 2 files changed, 32 insertions(+), 11 deletions(-)
 
-Please indent your broken lines by the ( on the line before.
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index ba5af15e25f5..0187c2f0a4bc 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -2188,8 +2188,10 @@ union bpf_attr {
+  * 		checked and segments are recalculated by the GSO/GRO engine.
+  * 		The size for GSO target is adapted as well.
+  *
+- * 		All values for *flags* are reserved for future usage, and must
+- * 		be left at zero.
++ * 		*flags* may be set to **BPF_F_IPV6_FRAGMENT** to treat ipv6 as
++ * 		a 48 byte header instead of the normal 40 (this leaves 8 bytes
++ * 		of space for the IPv6 Fragmentation Header). All other bits in
++ * 		*flags* are reserved for future usage, and must be left at zero.
+  *
+  * 		A call to this helper is susceptible to change the underlying
+  * 		packet buffer. Therefore, at load time, all checks on pointers
+@@ -5164,6 +5166,24 @@ enum {
+ 	BPF_F_TUNINFO_IPV6		= (1ULL << 0),
+ };
+ 
++/* BPF_FUNC_skb_change_proto flags. */
++enum {
++	/* Bits 0-15 are reserved for possible future expansion into
++	 * a potential signed 8 bit field, which allows for corrections
++	 * to account for ipv4 options and/or additional ipv6 expansion headers,
++	 * but for now we support *only* the 8 byte ipv6 frag header.
++	 *
++	 * This is most useful, because ipv4 without options supports fragments,
++	 * while ipv6 does not, so the 20 byte ipv4-frag <-> 48 byte ipv6
++	 * conversion is not a terribly rare case (UDP DNS queries for example).
++	 *
++	 * Only use bits <16 for other purposes if we run out of >15 bits first.
++	 *
++	 * 1ULL << 3 is equal to +8 and is the ipv6 frag header size.
++	 */
++	BPF_F_IPV6_FRAGMENT		= (1ULL << 3),
++};
++
+ /* flags for both BPF_FUNC_get_stackid and BPF_FUNC_get_stack. */
+ enum {
+ 	BPF_F_SKIP_FIELD_MASK		= 0xffULL,
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 6102f093d59a..13020368fb4a 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -3219,9 +3219,8 @@ static int bpf_skb_net_hdr_pop(struct sk_buff *skb, u32 off, u32 len)
+ 	return ret;
+ }
+ 
+-static int bpf_skb_proto_4_to_6(struct sk_buff *skb)
++static int bpf_skb_proto_4_to_6(struct sk_buff *skb, u32 len_diff)
+ {
+-	const u32 len_diff = sizeof(struct ipv6hdr) - sizeof(struct iphdr);
+ 	u32 off = skb_mac_header_len(skb);
+ 	int ret;
+ 
+@@ -3249,9 +3248,8 @@ static int bpf_skb_proto_4_to_6(struct sk_buff *skb)
+ 	return 0;
+ }
+ 
+-static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
++static int bpf_skb_proto_6_to_4(struct sk_buff *skb, u32 len_diff)
+ {
+-	const u32 len_diff = sizeof(struct ipv6hdr) - sizeof(struct iphdr);
+ 	u32 off = skb_mac_header_len(skb);
+ 	int ret;
+ 
+@@ -3279,17 +3277,17 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
+ 	return 0;
+ }
+ 
+-static int bpf_skb_proto_xlat(struct sk_buff *skb, __be16 to_proto)
++static int bpf_skb_proto_xlat(struct sk_buff *skb, __be16 to_proto, u32 len_diff)
+ {
+ 	__be16 from_proto = skb->protocol;
+ 
+ 	if (from_proto == htons(ETH_P_IP) &&
+ 	      to_proto == htons(ETH_P_IPV6))
+-		return bpf_skb_proto_4_to_6(skb);
++		return bpf_skb_proto_4_to_6(skb, len_diff);
+ 
+ 	if (from_proto == htons(ETH_P_IPV6) &&
+ 	      to_proto == htons(ETH_P_IP))
+-		return bpf_skb_proto_6_to_4(skb);
++		return bpf_skb_proto_6_to_4(skb, len_diff);
+ 
+ 	return -ENOTSUPP;
+ }
+@@ -3297,9 +3295,10 @@ static int bpf_skb_proto_xlat(struct sk_buff *skb, __be16 to_proto)
+ BPF_CALL_3(bpf_skb_change_proto, struct sk_buff *, skb, __be16, proto,
+ 	   u64, flags)
+ {
++	u32 len_diff;
+ 	int ret;
+ 
+-	if (unlikely(flags))
++	if (unlikely(flags & ~(BPF_F_IPV6_FRAGMENT)))
+ 		return -EINVAL;
+ 
+ 	/* General idea is that this helper does the basic groundwork
+@@ -3319,7 +3318,9 @@ BPF_CALL_3(bpf_skb_change_proto, struct sk_buff *, skb, __be16, proto,
+ 	 * that. For offloads, we mark packet as dodgy, so that headers
+ 	 * need to be verified first.
+ 	 */
+-	ret = bpf_skb_proto_xlat(skb, proto);
++	len_diff = sizeof(struct ipv6hdr) - sizeof(struct iphdr)
++		   + ((flags & BPF_F_IPV6_FRAGMENT) ? sizeof(struct frag_hdr) : 0);
++	ret = bpf_skb_proto_xlat(skb, proto, len_diff);
+ 	bpf_compute_data_pointers(skb);
+ 	return ret;
+ }
+-- 
+2.34.0.rc2.393.gf8c9666880-goog
 
-Regards,
-Bjorn
-
->  {
->  	if (!*ptr || !len)
-> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-> index 225c277..6762308 100644
-> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-> @@ -306,6 +306,8 @@ void adreno_gpu_state_destroy(struct msm_gpu_state *state);
->  
->  int adreno_gpu_state_get(struct msm_gpu *gpu, struct msm_gpu_state *state);
->  int adreno_gpu_state_put(struct msm_gpu_state *state);
-> +void adreno_show_object(struct drm_printer *p, void **ptr, int len,
-> +		bool *encoded);
->  
->  /*
->   * Common helper function to initialize the default address space for arm-smmu
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation.
-> 
