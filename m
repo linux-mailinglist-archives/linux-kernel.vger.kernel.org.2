@@ -2,77 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D01459C67
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 07:44:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44736459C69
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 07:45:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232090AbhKWGr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 01:47:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46954 "EHLO mail.kernel.org"
+        id S232563AbhKWGsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 01:48:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230270AbhKWGr4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 01:47:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 582B060FE7;
-        Tue, 23 Nov 2021 06:44:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637649888;
-        bh=LdsPqBZuTyvpRRc+gvPluX5K1lWkm5aEpueyQs4EQTQ=;
+        id S230270AbhKWGs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 01:48:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DE3760F45;
+        Tue, 23 Nov 2021 06:45:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637649920;
+        bh=peZWcZ5QzAiCu4/DFD2OrH+VwPz/oUU+/hf9z8zwbo4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N/A1crIrAN3le+gq+caSfyWWwxm5wTUJX0BWdnasf/p6xUddP3TvMWYg3QDG+KMyL
-         fBe/PmR5JnfS4Sm5vON9bIkEn6u9+mrbbxoV9l2FbvBhvfl0X73zZ3yEg5plx3vhXA
-         E3EKqmTIM6TynqDbibRNYndiak6pSNiWjrfYHplg=
-Date:   Tue, 23 Nov 2021 07:44:45 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] kernfs: switch global kernfs_rwsem lock to per-fs lock
-Message-ID: <YZyN3Tr7bPhimaq9@kroah.com>
-References: <20211118230008.2679780-1-minchan@kernel.org>
- <YZbbxK1F7jY/RBFF@slm.duckdns.org>
- <YZvV0ESA+zHHqHBU@google.com>
+        b=CeW0zFmLnXzu1wS3gRdj3/PzvQG9Lm3F2fta/BIXqluVtNzX+cDJT5axm00T7B7VV
+         wCMxhrJr7hMJU/hDfH47LRRnm/0qiyz7jYUkYNJf5kChoHmCSqDGSxP3xX72+1prUR
+         6j8hVfxqfZLjsAP3Zzw3h+P7j0AR1eeB+G+Jn7G8OpYcsyeAF3EY+WcOR+AX8itufF
+         s6+oViumAD6lPzeRgTwtMUwhLKHetHy3EWC7QYyPGet/fcRW0xzUsM6iOwsWdesmu4
+         WlSY0EJnxAyWwmio13YoYFP2PI2L4nYgSBzLntFR+shOUE8ch/xTL4P4+k+IDoFpu4
+         PZ8th2JFsF7yA==
+Date:   Tue, 23 Nov 2021 12:15:15 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     Nishanth Menon <nm@ti.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-can@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] phy: phy-can-transceiver: Make devm_gpiod_get optional
+Message-ID: <YZyN+3e717rJ8Ktu@matsya>
+References: <20211102112120.23637-1-a-govindraju@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YZvV0ESA+zHHqHBU@google.com>
+In-Reply-To: <20211102112120.23637-1-a-govindraju@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 09:39:28AM -0800, Minchan Kim wrote:
-> On Thu, Nov 18, 2021 at 01:03:32PM -1000, Tejun Heo wrote:
-> > On Thu, Nov 18, 2021 at 03:00:08PM -0800, Minchan Kim wrote:
-> > > The kernfs implementation has big lock granularity(kernfs_rwsem) so
-> > > every kernfs-based(e.g., sysfs, cgroup) fs are able to compete the
-> > > lock. It makes trouble for some cases to wait the global lock
-> > > for a long time even though they are totally independent contexts
-> > > each other.
-> > > 
-> > > A general example is process A goes under direct reclaim with holding
-> > > the lock when it accessed the file in sysfs and process B is waiting
-> > > the lock with exclusive mode and then process C is waiting the lock
-> > > until process B could finish the job after it gets the lock from
-> > > process A.
-> > > 
-> > > This patch switches the global kernfs_rwsem to per-fs lock, which
-> > > put the rwsem into kernfs_root.
-> > > 
-> > > Suggested-by: Tejun Heo <tj@kernel.org>
-> > > Signed-off-by: Minchan Kim <minchan@kernel.org>
-> > 
-> > Acked-by: Tejun Heo <tj@kernel.org>
-> > 
-> > Greg, I think this is the right thing to do even if there is no concrete
-> > performance argument (not saying there isn't). It's just weird to entangle
-> > these completely unrelated users in a single rwsem.
-> > 
-> > Thanks.
-> 
-> Greg, Do you mind picking this patch?
+On 02-11-21, 16:51, Aswath Govindraju wrote:
+> In some cases the standby/enable gpio can be pulled low/high and would not
+> be connected to a gpio. The current driver implementation will return an
+> error in these cases. Therefore, make devm_gpiod_get optional.
 
-$ mdfrm -c ~/mail/todo/
-1872 messages in /home/gregkh/mail/todo/
+Applied, thanks
 
-Give me a chance to catch up...
-
-thanks,
-
-greg k-h
+-- 
+~Vinod
