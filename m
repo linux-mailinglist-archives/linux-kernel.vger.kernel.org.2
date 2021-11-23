@@ -2,73 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528C645A234
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:07:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D9B45A23C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:11:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236101AbhKWMKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 07:10:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44322 "EHLO mail.kernel.org"
+        id S236135AbhKWMOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 07:14:09 -0500
+Received: from foss.arm.com ([217.140.110.172]:51770 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236031AbhKWMKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 07:10:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AEAEE61002;
-        Tue, 23 Nov 2021 12:07:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637669242;
-        bh=YTmYyIIpXkeZWWGAVllylKecB/+EQhhfNcfw77Pr1l8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fZ7xu4dFGOgIdkee+vukNk50UdfsqgKj3ovFF1kF2qBND++A8fdotJiRkHLt1bu9v
-         VoGGdZzcY3As6qVJryMe0G2gnfUaMG/SxAL0ZOV4pAtfrWplEiLaT4b5gqRMQaUXfx
-         oGqJSmHe9t2g6mbMaC7vdaVgly60TPlKmD8wAmd3M8aDt24+BCttzA8rONEH9+fGa9
-         neQQaLzoFXiVwA5LqoZcjOak6RsB92C43d+4v7gJKZ4XeyS7wtuQvwhO60K0BVnWht
-         bRN+YFeqThq4RGKLzOvKsOuEDCUYDszj/38fJbTyWUkvOeVnOqPYMQ918IIXpVcMys
-         VyAuNJ3pmFrKg==
-Date:   Tue, 23 Nov 2021 21:07:18 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Beau Belgrave <beaub@linux.microsoft.com>,
-        linux-kernel@vger.kernel.org, Namhyung Kim <namhyung@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>
-Subject: Re: [PATCH 4/5] libtraceevent: Add __rel_loc relative location
- attribute support
-Message-Id: <20211123210718.73b83f64d6e50a038731cbe6@kernel.org>
-In-Reply-To: <20211122112520.5de93c47@gandalf.local.home>
-References: <163697159970.131454.2661507704362599471.stgit@devnote2>
-        <163697163637.131454.1385316505107139633.stgit@devnote2>
-        <20211116172332.655bae77@gandalf.local.home>
-        <20211122140538.a981ac0bdaa1b375f9545433@kernel.org>
-        <20211122112520.5de93c47@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S234548AbhKWMOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 07:14:07 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E824147A;
+        Tue, 23 Nov 2021 04:10:59 -0800 (PST)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 04F373F5A1;
+        Tue, 23 Nov 2021 04:10:57 -0800 (PST)
+Date:   Tue, 23 Nov 2021 12:10:55 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        chinwen.chang@mediatek.com, nicholas.tang@mediatek.com,
+        james.hsu@mediatek.com, linux-arm-kernel@lists.infradead.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] arm64: update compiler option for PAC
+Message-ID: <20211123121055.GD37253@lakrids.cambridge.arm.com>
+References: <20211115031810.29701-1-Kuan-Ying.Lee@mediatek.com>
+ <20211116101147.GB9851@willie-the-truck>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211116101147.GB9851@willie-the-truck>
+User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Nov 2021 11:25:20 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> On Mon, 22 Nov 2021 14:05:38 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On Tue, Nov 16, 2021 at 10:11:47AM +0000, Will Deacon wrote:
+> On Mon, Nov 15, 2021 at 11:18:08AM +0800, Kuan-Ying Lee wrote:
+> > We pass -mbranch-protection=pac-ret+leaf to support PAC
+> > when we use GCC 9 or later.
+> > 
+> > Before GCC 9, we pass -msign-return-address=all to support
+> > PAC.
+> > 
+> > Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+> > ---
+> >  Documentation/arm64/pointer-authentication.rst | 6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/Documentation/arm64/pointer-authentication.rst b/Documentation/arm64/pointer-authentication.rst
+> > index f127666ea3a8..055d08b0d42d 100644
+> > --- a/Documentation/arm64/pointer-authentication.rst
+> > +++ b/Documentation/arm64/pointer-authentication.rst
+> > @@ -54,8 +54,10 @@ virtual address size configured by the kernel. For example, with a
+> >  virtual address size of 48, the PAC is 7 bits wide.
+> >  
+> >  Recent versions of GCC can compile code with APIAKey-based return
+> > -address protection when passed the -msign-return-address option. This
+> > -uses instructions in the HINT space (unless -march=armv8.3-a or higher
+> > +address protection when passed compiler option as following.
+> > +Pass -msign-return-address when we use GCC 7, 8.
+> > +Pass -mbranch-protection when we use GCC 9 or later.
+> > +This uses instructions in the HINT space (unless -march=armv8.3-a or higher
+> >  is also passed), and such code can run on systems without the pointer
+> >  authentication extension.
 > 
-> > So it seems that the in-kernel libtraceevent source and header are
-> > still in use.
-> 
-> I believe it's still used if it's not found in the system.
-> 
-> I'll include this patch to the code as well.
+> I think I'd be more inclined to delete this paragraph altogether. It doesn't
+> really document anything to do with the kernel, and trying to document the
+> behaviour of "recent" versions of GCC is futile.
 
-Thanks! I sent v2 which fixes some bugs and covers bitmask too.
-So please pick v2 up.
+Agreed. I think the only thing we might want to mention is that we rely
+on the compiler to use the HINT space instructions (PACIASP and AUTIASP)
+so that a kernel built with pointer authentication support works on HW
+without the feature.
 
-Thank you,
+So replacing that paragraph with something like:
 
-> 
-> Thanks!
-> 
-> -- Steve
+| When ARM64_PTR_AUTH_KERNEL is selected the kernel will be compiled
+| with HINT space pointer authentication instructions protecting
+| function returns. Kernels built with this option will work on
+| hardware with or without pointer authentication support.
 
+... would make sense to me.
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Thanks,
+Mark.
