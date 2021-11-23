@@ -2,119 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC0445AC17
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:16:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 539C545AC19
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:17:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbhKWTTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 14:19:16 -0500
-Received: from mga07.intel.com ([134.134.136.100]:12739 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229549AbhKWTTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 14:19:09 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="298517948"
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="298517948"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 11:15:45 -0800
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="456800981"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 11:15:43 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1mpbGV-009sOf-AB;
-        Tue, 23 Nov 2021 21:15:39 +0200
-Date:   Tue, 23 Nov 2021 21:15:39 +0200
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Kent Gibson <warthog618@gmail.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Suresh Balakrishnan <suresh.balakrishnan@intel.com>
-Subject: Re: [PATCH v1 1/2] gpiolib: Never return internal error codes to
- user space
-Message-ID: <YZ0928wfsYIBJYcQ@smile.fi.intel.com>
-References: <20210518155013.45622-1-andriy.shevchenko@linux.intel.com>
- <20210518232451.GA7362@sol>
- <YKTCDNcyUlrgE0Y4@smile.fi.intel.com>
- <20210519080434.GA22854@sol>
- <YKTMninSSY3MK6Hf@smile.fi.intel.com>
- <CAMpxmJVJBx2J87bS0CUYPyJkHKt=nvFw65y_+iG-5JbVekuaqw@mail.gmail.com>
- <CAHp75VdZ3aws3G=4_r82LMfuMNmNdLoBpqRsfF_ogZ7c=vyTsQ@mail.gmail.com>
- <CAMpxmJVy12at1+37iPiqTXe6mvodUpjDKCkFQO02Cu=u5_sp_A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMpxmJVy12at1+37iPiqTXe6mvodUpjDKCkFQO02Cu=u5_sp_A@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S231330AbhKWTUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 14:20:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229549AbhKWTUx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 14:20:53 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F1BC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:17:45 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id w5-20020a25ac05000000b005c55592df4dso176324ybi.12
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:17:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=zzQE2/0f+XLR2kGU4qt01xqekYzdAVEvEi8bWEw/fiU=;
+        b=U9VLJSGPNG+7rafa41zjmw9wu9ecJ3vdtXeEjSNnIQ+f7rJqnguvCqrk9LzwOMRlev
+         w2wxZQmjJ6ioEn1e5XM+amdD2K+Qa/dk4TvGWbLJbC86kw8DADsYoDM+QmAbUdVICFXT
+         Lt1E0e8eBzvZLvUoiWT44NlttEks4eC/wpkOui7kKHCKp62zLCX8LZm4M0TxEuHf9FLd
+         OBKYq3xhWNu8b2mTKPdbte7ETq/d/rViTBAPaj2RrRsfn6PiMtccVuqSedC8Jwny0bUo
+         jDEEe8YrtyR+l4HH6SS5SIHiZzhxpN8GKQnHoVvPZBt2BvMw3L44VJW1/zksBafvr/sA
+         DfNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=zzQE2/0f+XLR2kGU4qt01xqekYzdAVEvEi8bWEw/fiU=;
+        b=yJmExGX3+GszYXM3eBxCLJmUnQ0/6/zAoq4Mby+Cw8DHWiI4OsBnFp1Oe+iGQk9VHK
+         KOR78Yj30i//ox4VALZuKWMitVer0sbSFZqZsP7aeBJNkoNte+5TWxS8OVUdhPg52RUn
+         4r5pdyi97rmBPOtsb+JsR9lWWa6QHhbJfmUc/oP5IAoEiH2L18C/xCMMx0ClyY1YaK+u
+         TaQ9GmYLa85BMxHW6U8QWg/NNaVxOYUMI7tfY6GavNwGt8zpa12p9/JrTRpzI2RU73Ug
+         cMOniu+AymftLydHAFEFcYCGq/WceSlrioT4ncg83n/JCHIJExwZboa49MrIRmdS74GU
+         3e/w==
+X-Gm-Message-State: AOAM531T5b1CqwQYEzWYu3czuyascFQHpRfwctg6h85syBGsU33vbS1X
+        ULuo+Jm1X7Rmkq3QjJtRrHimzgT99Q==
+X-Google-Smtp-Source: ABdhPJy+cyU6Dc+6JXrCnEQqfJlJt3b9RxYJKK6SdKqPNw613+/4UybKEHZ9OyPwV25x0syYrUtZuA7S7A==
+X-Received: from tkjos-desktop.mtv.corp.google.com ([2620:15c:211:200:ac67:ee23:d7c5:aa3b])
+ (user=tkjos job=sendgmr) by 2002:a25:ada5:: with SMTP id z37mr8996151ybi.93.1637695064659;
+ Tue, 23 Nov 2021 11:17:44 -0800 (PST)
+Date:   Tue, 23 Nov 2021 11:17:34 -0800
+Message-Id: <20211123191737.1296541-1-tkjos@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+Subject: [PATCH 0/3] binder: Prevent untranslated sender data from being
+ copied to target
+From:   Todd Kjos <tkjos@google.com>
+To:     tkjos@google.com, gregkh@linuxfoundation.org, christian@brauner.io,
+        arve@android.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, maco@google.com
+Cc:     joel@joelfernandes.org, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 04:39:50PM +0200, Bartosz Golaszewski wrote:
-> On Thu, May 20, 2021 at 3:15 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> >
-> > On Thu, May 20, 2021 at 4:08 PM Bartosz Golaszewski
-> > <bgolaszewski@baylibre.com> wrote:
-> > > On Wed, May 19, 2021 at 10:30 AM Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > On Wed, May 19, 2021 at 04:04:34PM +0800, Kent Gibson wrote:
-> > > > > On Wed, May 19, 2021 at 10:45:16AM +0300, Andy Shevchenko wrote:
-> > > > > > On Wed, May 19, 2021 at 07:24:51AM +0800, Kent Gibson wrote:
-> > > > > > > On Tue, May 18, 2021 at 06:50:12PM +0300, Andy Shevchenko wrote:
-> >
-> > ...
-> >
-> > > > > > > > Fixes: d7c51b47ac11 ("gpio: userspace ABI for reading/writing GPIO lines")
-> > > > > > > > Fixes: 61f922db7221 ("gpio: userspace ABI for reading GPIO line events")
-> > > > > > > > Fixes: 3c0d9c635ae2 ("gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL and GPIO_V2_LINE_GET_VALUES_IOCTL")
-> >
-> > ...
-> >
-> > > > > > > You immediately revert this patch in patch 2.
-> > > > > > > My understanding is that is not allowed within a patch set.
-> > > > > >
-> > > > > > > Why split the patches instead of going direct to the new helper?
-> > > > > >
-> > > > > > It's for backporting to make it easier. (I deliberately left the context above)
-> > > > > >
-> > > > > > I can fold them if maintainers think it's okay to do.
-> > > > > >
-> > > > >
-> > > > > Not sure what the constraints are on backporting, but wouldn't it be
-> > > > > simpler and cleaner to backport the new helper?
-> > > >
-> > > > Logically (and ideally) it would be three different patches:
-> > > >  1) introduce helper
-> > > >  2) use helper
-> > > >  3) fix places where it's needed to be done
-> > > >
-> > > > But the above scheme doesn't fit backporting idea (we don't backport new
-> > > > features and APIs without really necessity). So, the options left are:
-> > > >
-> > > > Option a: One patch (feels a bit like above)
-> > > > Option b: Two patches like in this series (yes, you are correct about
-> > > >           disadvantages)
-> > > >
-> > > > > But, as you say, it is the maintainers' call.
-> >
-> > > Third option is to backport this patch but apply the helper
-> > > immediately to master.
-> >
-> > If I got you correctly, you want to have two patches, one for
-> > backporting and one for current, correct? But how can we backport
-> > something which has never been upstreamed?
-> >
-> 
-> Well we would not technically backport anything - there would be one
-> patch for mainline and a separate fix for stable.
+Binder copies transactions directly from the sender buffer
+to the target buffer and then fixes up BINDER_TYPE_PTR and
+BINDER_TYPE_FDA objects. This means there is a brief time
+when sender pointers and fds are visible to the target
+process.
 
-So, what should I do here?
+This series reworks the the sender to target copy to
+avoid leaking any untranslated sender data from being
+visible in the target.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Todd Kjos (3):
+  binder: defer copies of pre-patched txn data
+  binder: read pre-translated fds from sender buffer
+  binder: avoid potential data leakage when copying txn
 
-
+ drivers/android/binder.c | 442 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 387 insertions(+), 55 deletions(-)
