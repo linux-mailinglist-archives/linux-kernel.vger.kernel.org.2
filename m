@@ -2,107 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF1345A0D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:02:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2662545A0DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:02:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235839AbhKWLFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 06:05:14 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:37462 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235673AbhKWLFH (ORCPT
+        id S235848AbhKWLF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 06:05:56 -0500
+Received: from mail-vk1-f173.google.com ([209.85.221.173]:40858 "EHLO
+        mail-vk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234813AbhKWLFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 06:05:07 -0500
-Date:   Tue, 23 Nov 2021 11:01:57 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637665318;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y+oX2OITdqipqOQE08AxFDVOuJoEEjjNBJJ3k5+eZcI=;
-        b=YlbHiluUitdiJdlCu5LZ3Wa6eF7EUMeaMSUjyyOcbja8iVOF4H4UFOBQXLxpzcf/R0zfHa
-        SGthxTiYZ3w18y48Bw8JTloisiBdJohUrQpEdU4T6TCTcZQMjexs5+52PUMoIO2ckvk3jL
-        XHt2t6GZz+ONZTr/TytayCCina9ay76L9WoczdUhvWo/MLi7b74Y63S5jYd4RH3YpJUeHk
-        9Q3pk9LZo49yz1nFizAfxJKCOKY7hdqHP8jylYGOdv2eQNjeE87QjYfmGYa1VtKy2cN/Od
-        HnXOxex9qWSghzGulwKEm535nmNKDZtdn/Oh0aGBBNE6tWVMmPl5FcPCWVS8dg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637665318;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y+oX2OITdqipqOQE08AxFDVOuJoEEjjNBJJ3k5+eZcI=;
-        b=COZu4klu0TDSZoxQN5YeiKQZtE0u5+uHvPvH96bXF37h8gaWC5FYeowYTamQLs0GgvoWsO
-        Ru6epnNh05CucyBg==
-From:   "tip-bot2 for Andrey Ryabinin" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] cputime, cpuacct: Include guest time in user time
- in cpuacct.stat
-Cc:     Andrey Ryabinin <arbn@yandex-team.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Tejun Heo <tj@kernel.org>, <stable@vger.kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20211115164607.23784-1-arbn@yandex-team.com>
-References: <20211115164607.23784-1-arbn@yandex-team.com>
+        Tue, 23 Nov 2021 06:05:49 -0500
+Received: by mail-vk1-f173.google.com with SMTP id 70so3729365vkx.7;
+        Tue, 23 Nov 2021 03:02:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3vpTNg4M2uZL1VyLDRhqbPlkPZMl8jY+kogUQeT7PgU=;
+        b=zjV9ODhHo3Y4F2aslt1Q2qJj7opAjGVFQecuczgdYxzHvGXV2N/uoErnAgqhnxVHre
+         9JhLB3QdwxmImsrLIIdMY76jTeQr8f8hYF47kBSpmh+Zhf8HwNNHfkDIcsXPkH4Fi07g
+         NxjANoi3oA3jgv55mE9TFTrMWCya1BIfMszhrEc1uMy/lb8ycjW2th9sO1BvGeM7cCAB
+         JOMMf6SoFd+CDqJuTzxRrrYKGkP4muCQT26U36NLv7J122p57LiBAaQXOLmlwSIK/0xC
+         k+UP3SNWBpOA7Wq+KS7npw2wUv1WaZ3doMSvrZluNkgEshaDi3YcjScCMoMa6N6NZOxt
+         pjBw==
+X-Gm-Message-State: AOAM531phVI+ExKQ+gO63Agr84PxG1DIJcdInR/RTMJeaoMnAqyG2lv1
+        yfp858fjYvKCdyjcNpZKc+mxPuC+cZh6pA==
+X-Google-Smtp-Source: ABdhPJy1vuskKRcukoPoAA08HXDc+XZdYeizyUzEiU34uEeruYcSvP5Pi4dlsh4d0i5oMVEOpzhIqA==
+X-Received: by 2002:a05:6122:889:: with SMTP id 9mr8263126vkf.21.1637665360958;
+        Tue, 23 Nov 2021 03:02:40 -0800 (PST)
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com. [209.85.222.49])
+        by smtp.gmail.com with ESMTPSA id i1sm5958199vkn.55.2021.11.23.03.02.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Nov 2021 03:02:40 -0800 (PST)
+Received: by mail-ua1-f49.google.com with SMTP id x14so2289718uao.0;
+        Tue, 23 Nov 2021 03:02:40 -0800 (PST)
+X-Received: by 2002:a05:6102:e82:: with SMTP id l2mr7938046vst.37.1637665360432;
+ Tue, 23 Nov 2021 03:02:40 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <163766531756.11128.2497713509765772870.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20211122103032.517923-1-maz@kernel.org> <CAMuHMdX2ZRvDYA3idmw3nBcP6CO=2od6ZU-UeJo9vYsuB=fQNQ@mail.gmail.com>
+ <8735no70tt.wl-maz@kernel.org> <CAMuHMdVS67BLP2XEdD6ZvVBVE2x11gKnQa1TqG659HXPM5scqQ@mail.gmail.com>
+ <CAMuHMdWJhnXabKGpW7k944dzQHtwQtxw-yb2bRBsoaMw6N6nuA@mail.gmail.com> <87tug3clvc.wl-maz@kernel.org>
+In-Reply-To: <87tug3clvc.wl-maz@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 23 Nov 2021 12:02:29 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdU5UAYONbT26e2Ttd7FmoXR8SxCO86bfLLmX9VDeQ2UVg@mail.gmail.com>
+Message-ID: <CAMuHMdU5UAYONbT26e2Ttd7FmoXR8SxCO86bfLLmX9VDeQ2UVg@mail.gmail.com>
+Subject: Re: [PATCH] of/irq: Add a quirk for controllers with their own
+ definition of interrupt-map
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Rob Herring <robh@kernel.org>, John Crispin <john@phrozen.org>,
+        Biwen Li <biwen.li@nxp.com>,
+        Chris Brandt <chris.brandt@renesas.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+Hi Marc,
 
-Commit-ID:     9731698ecb9c851f353ce2496292ff9fcea39dff
-Gitweb:        https://git.kernel.org/tip/9731698ecb9c851f353ce2496292ff9fcea39dff
-Author:        Andrey Ryabinin <arbn@yandex-team.com>
-AuthorDate:    Mon, 15 Nov 2021 19:46:04 +03:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 23 Nov 2021 09:55:22 +01:00
+On Tue, Nov 23, 2021 at 9:33 AM Marc Zyngier <maz@kernel.org> wrote:
+> On Tue, 23 Nov 2021 07:57:48 +0000,
+> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > Summarized:
+> >   - Before the bad commit, and after your fix, irqc-rza1 is invoked,
+> >     and the number of interrupts seen is correct, but input events
+> >     are doubled.
+> >   - After the bad commit, irqc-rza1 is not invoked, and there is an
+> >     interrupt storm, but input events are OK.
+>
+> OK, that's reassuring, even if the "twice the events" stuff isn't what
+> you'd expect. We at least know this is a separate issue, and that this
+> patch on top of -rc1 brings you back to the 5.15 behaviour.
 
-cputime, cpuacct: Include guest time in user time in cpuacct.stat
+So the "twice the events" stuff did happen before, and is caused by
+gpio-keys always fabricating timer-based auto-"up" events when using
+"interrupts" instead of "gpios".
 
-cpuacct.stat in no-root cgroups shows user time without guest time
-included int it. This doesn't match with user time shown in root
-cpuacct.stat and /proc/<pid>/stat. This also affects cgroup2's cpu.stat
-in the same way.
+arch/arm/boot/dts/r7s72100-rskrza1.dts has IRQ_TYPE_EDGE_BOTH to
+detect the real "up", which becomes a second set of "down"/"up" events.
+Using IRQ_TYPE_EDGE_FALLING gets rid of the dupe by only detecting
+the real "down" event.  Similar for IRQ_TYPE_LEVEL_LOW, but then
+there's a temporary interrupt storm until the key is released.
 
-Make account_guest_time() to add user time to cgroup's cpustat to
-fix this.
+Seems like gpio-keys needs to be fixed for IRQ_TYPE_EDGE_BOTH.
+When using "gpios" instead of "interrupts", it does pass
+IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING, and handles that case
+correctly.
 
-Fixes: ef12fefabf94 ("cpuacct: add per-cgroup utime/stime statistics")
-Signed-off-by: Andrey Ryabinin <arbn@yandex-team.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20211115164607.23784-1-arbn@yandex-team.com
----
- kernel/sched/cputime.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Gr{oetje,eeting}s,
 
-diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
-index 872e481..042a6db 100644
---- a/kernel/sched/cputime.c
-+++ b/kernel/sched/cputime.c
-@@ -148,10 +148,10 @@ void account_guest_time(struct task_struct *p, u64 cputime)
- 
- 	/* Add guest time to cpustat. */
- 	if (task_nice(p) > 0) {
--		cpustat[CPUTIME_NICE] += cputime;
-+		task_group_account_field(p, CPUTIME_NICE, cputime);
- 		cpustat[CPUTIME_GUEST_NICE] += cputime;
- 	} else {
--		cpustat[CPUTIME_USER] += cputime;
-+		task_group_account_field(p, CPUTIME_USER, cputime);
- 		cpustat[CPUTIME_GUEST] += cputime;
- 	}
- }
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
