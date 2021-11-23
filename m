@@ -2,289 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F20045AAD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 19:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEBC545AAD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 19:06:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239718AbhKWSJ6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 23 Nov 2021 13:09:58 -0500
-Received: from aposti.net ([89.234.176.197]:51664 "EHLO aposti.net"
+        id S239679AbhKWSJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 13:09:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239687AbhKWSJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 13:09:56 -0500
-Date:   Tue, 23 Nov 2021 18:06:30 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v7 2/8] drm/ingenic: Add support for JZ4780 and HDMI
- output
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Message-Id: <UAE13R.KF1V28VAUAXS3@crapouillou.net>
-In-Reply-To: <af92a37f6c652aedac1782efcf442ad56e38f3ab.1637689583.git.hns@goldelico.com>
-References: <cover.1637689583.git.hns@goldelico.com>
-        <af92a37f6c652aedac1782efcf442ad56e38f3ab.1637689583.git.hns@goldelico.com>
+        id S229674AbhKWSJu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 13:09:50 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5795C60F9D;
+        Tue, 23 Nov 2021 18:06:42 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mpaBk-007LjH-0m; Tue, 23 Nov 2021 18:06:40 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org
+Cc:     =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Luca Ceresoli <luca@lucaceresoli.net>, kernel-team@android.com
+Subject: [PATCH v3 0/3] PCI: apple: Assorted #PERST fixes
+Date:   Tue, 23 Nov 2021 18:06:33 +0000
+Message-Id: <20211123180636.80558-1-maz@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org, pali@kernel.org, alyssa@rosenzweig.io, lorenzo.pieralisi@arm.com, bhelgaas@google.com, mark.kettenis@xs4all.nl, luca@lucaceresoli.net, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nikolaus,
+Apologies for the rapid fire (I tend to be much more conservative when
+resending series), but given that this series has a direct impact on
+other projects (such as u-boot), I'm trying to converge as quickly as
+possible.
 
-Le mar., nov. 23 2021 at 18:46:17 +0100, H. Nikolaus Schaller 
-<hns@goldelico.com> a écrit :
-> From: Paul Boddie <paul@boddie.org.uk>
-> 
-> Add support for the LCD controller present on JZ4780 SoCs.
-> This SoC uses 8-byte descriptors which extend the current
-> 4-byte descriptors used for other Ingenic SoCs.
-> 
-> Tested on MIPS Creator CI20 board.
-> 
-> Signed-off-by: Paul Boddie <paul@boddie.org.uk>
-> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
-> ---
->  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 55 
-> ++++++++++++++++++++++-
->  drivers/gpu/drm/ingenic/ingenic-drm.h     | 38 ++++++++++++++++
->  2 files changed, 92 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c 
-> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> index 0bb590c3910d9..5ff97a4bbcfe5 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> @@ -6,6 +6,7 @@
-> 
->  #include "ingenic-drm.h"
-> 
-> +#include <linux/bitfield.h>
->  #include <linux/component.h>
->  #include <linux/clk.h>
->  #include <linux/dma-mapping.h>
-> @@ -49,6 +50,11 @@ struct ingenic_dma_hwdesc {
->  	u32 addr;
->  	u32 id;
->  	u32 cmd;
-> +	/* extended hw descriptor for jz4780 */
-> +	u32 offsize;
-> +	u32 pagewidth;
-> +	u32 cpos;
-> +	u32 dessize;
->  } __aligned(16);
-> 
->  struct ingenic_dma_hwdescs {
-> @@ -60,6 +66,7 @@ struct jz_soc_info {
->  	bool needs_dev_clk;
->  	bool has_osd;
->  	bool map_noncoherent;
-> +	bool use_extended_hwdesc;
->  	unsigned int max_width, max_height;
->  	const u32 *formats_f0, *formats_f1;
->  	unsigned int num_formats_f0, num_formats_f1;
-> @@ -446,6 +453,9 @@ static int ingenic_drm_plane_atomic_check(struct 
-> drm_plane *plane,
->  	if (!crtc)
->  		return 0;
-> 
-> +	if (plane == &priv->f0)
-> +		return -EINVAL;
-> +
->  	crtc_state = drm_atomic_get_existing_crtc_state(state,
->  							crtc);
->  	if (WARN_ON(!crtc_state))
-> @@ -662,6 +672,33 @@ static void 
-> ingenic_drm_plane_atomic_update(struct drm_plane *plane,
->  		hwdesc->cmd = JZ_LCD_CMD_EOF_IRQ | (width * height * cpp / 4);
->  		hwdesc->next = dma_hwdesc_addr(priv, next_id);
-> 
-> +		if (priv->soc_info->use_extended_hwdesc) {
-> +			hwdesc->cmd |= JZ_LCD_CMD_FRM_ENABLE;
-> +
-> +			/* Extended 8-byte descriptor */
-> +			hwdesc->cpos = 0;
-> +			hwdesc->offsize = 0;
-> +			hwdesc->pagewidth = 0;
-> +
-> +			switch (newstate->fb->format->format) {
-> +			case DRM_FORMAT_XRGB1555:
-> +				hwdesc->cpos |= JZ_LCD_CPOS_RGB555;
-> +				fallthrough;
-> +			case DRM_FORMAT_RGB565:
-> +				hwdesc->cpos |= JZ_LCD_CPOS_BPP_15_16;
-> +				break;
-> +			case DRM_FORMAT_XRGB8888:
-> +				hwdesc->cpos |= JZ_LCD_CPOS_BPP_18_24;
-> +				break;
-> +			}
-> +			hwdesc->cpos |= (JZ_LCD_CPOS_COEFFICIENT_1 <<
-> +					 JZ_LCD_CPOS_COEFFICIENT_OFFSET);
-> +			hwdesc->dessize =
-> +				(0xff << JZ_LCD_DESSIZE_ALPHA_OFFSET) |
-> +				FIELD_PREP(JZ_LCD_DESSIZE_HEIGHT_MASK, height - 1) |
-> +				FIELD_PREP(JZ_LCD_DESSIZE_WIDTH_MASK, width - 1);
-> +		}
-> +
->  		if (drm_atomic_crtc_needs_modeset(crtc_state)) {
->  			fourcc = newstate->fb->format->format;
-> 
-> @@ -693,6 +730,9 @@ static void 
-> ingenic_drm_encoder_atomic_mode_set(struct drm_encoder *encoder,
->  		    | JZ_LCD_CFG_SPL_DISABLE | JZ_LCD_CFG_REV_DISABLE;
->  	}
-> 
-> +	if (priv->soc_info->use_extended_hwdesc)
-> +		cfg |= JZ_LCD_CFG_DESCRIPTOR_8;
-> +
->  	if (mode->flags & DRM_MODE_FLAG_NHSYNC)
->  		cfg |= JZ_LCD_CFG_HSYNC_ACTIVE_LOW;
->  	if (mode->flags & DRM_MODE_FLAG_NVSYNC)
-> @@ -1064,7 +1104,7 @@ static int ingenic_drm_bind(struct device *dev, 
-> bool has_components)
->  	}
-> 
->  	regmap_config = ingenic_drm_regmap_config;
-> -	regmap_config.max_register = res->end - res->start;
-> +	regmap_config.max_register = res->end - res->start - 4;
+This series aims at fixing a number of issues for the recently merged
+Apple PCIe driver, all revolving around the mishandling of #PERST:
 
-I think this is wrong :)
+- we didn't properly drive #PERST, and we didn't follow the specified
+  timings
+  
+- the DT had the wrong polarity, which has impacts on the driver
+  itself
 
-Cheers,
--Paul
+Hopefully, this should address all the issues reported so far.
 
->  	priv->map = devm_regmap_init_mmio(dev, base,
->  					  &regmap_config);
->  	if (IS_ERR(priv->map)) {
-> @@ -1468,10 +1508,23 @@ static const struct jz_soc_info 
-> jz4770_soc_info = {
->  	.num_formats_f0 = ARRAY_SIZE(jz4770_formats_f0),
->  };
-> 
-> +static const struct jz_soc_info jz4780_soc_info = {
-> +	.needs_dev_clk = true,
-> +	.has_osd = true,
-> +	.use_extended_hwdesc = true,
-> +	.max_width = 4096,
-> +	.max_height = 2048,
-> +	.formats_f1 = jz4770_formats_f1,
-> +	.num_formats_f1 = ARRAY_SIZE(jz4770_formats_f1),
-> +	.formats_f0 = jz4770_formats_f0,
-> +	.num_formats_f0 = ARRAY_SIZE(jz4770_formats_f0),
-> +};
-> +
->  static const struct of_device_id ingenic_drm_of_match[] = {
->  	{ .compatible = "ingenic,jz4740-lcd", .data = &jz4740_soc_info },
->  	{ .compatible = "ingenic,jz4725b-lcd", .data = &jz4725b_soc_info },
->  	{ .compatible = "ingenic,jz4770-lcd", .data = &jz4770_soc_info },
-> +	{ .compatible = "ingenic,jz4780-lcd", .data = &jz4780_soc_info },
->  	{ /* sentinel */ },
->  };
->  MODULE_DEVICE_TABLE(of, ingenic_drm_of_match);
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm.h 
-> b/drivers/gpu/drm/ingenic/ingenic-drm.h
-> index 22654ac1dde1c..cb1d09b625881 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm.h
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm.h
-> @@ -44,8 +44,11 @@
->  #define JZ_REG_LCD_XYP1				0x124
->  #define JZ_REG_LCD_SIZE0			0x128
->  #define JZ_REG_LCD_SIZE1			0x12c
-> +#define JZ_REG_LCD_PCFG				0x2c0
-> 
->  #define JZ_LCD_CFG_SLCD				BIT(31)
-> +#define JZ_LCD_CFG_DESCRIPTOR_8			BIT(28)
-> +#define JZ_LCD_CFG_RECOVER_FIFO_UNDERRUN	BIT(25)
->  #define JZ_LCD_CFG_PS_DISABLE			BIT(23)
->  #define JZ_LCD_CFG_CLS_DISABLE			BIT(22)
->  #define JZ_LCD_CFG_SPL_DISABLE			BIT(21)
-> @@ -63,6 +66,7 @@
->  #define JZ_LCD_CFG_DE_ACTIVE_LOW		BIT(9)
->  #define JZ_LCD_CFG_VSYNC_ACTIVE_LOW		BIT(8)
->  #define JZ_LCD_CFG_18_BIT			BIT(7)
-> +#define JZ_LCD_CFG_24_BIT			BIT(6)
->  #define JZ_LCD_CFG_PDW				(BIT(5) | BIT(4))
-> 
->  #define JZ_LCD_CFG_MODE_GENERIC_16BIT		0
-> @@ -132,6 +136,7 @@
->  #define JZ_LCD_CMD_SOF_IRQ			BIT(31)
->  #define JZ_LCD_CMD_EOF_IRQ			BIT(30)
->  #define JZ_LCD_CMD_ENABLE_PAL			BIT(28)
-> +#define JZ_LCD_CMD_FRM_ENABLE			BIT(26)
-> 
->  #define JZ_LCD_SYNC_MASK			0x3ff
-> 
-> @@ -153,6 +158,7 @@
->  #define JZ_LCD_RGBC_EVEN_BGR			(0x5 << 0)
-> 
->  #define JZ_LCD_OSDC_OSDEN			BIT(0)
-> +#define JZ_LCD_OSDC_ALPHAEN			BIT(2)
->  #define JZ_LCD_OSDC_F0EN			BIT(3)
->  #define JZ_LCD_OSDC_F1EN			BIT(4)
-> 
-> @@ -176,6 +182,38 @@
->  #define JZ_LCD_SIZE01_WIDTH_LSB			0
->  #define JZ_LCD_SIZE01_HEIGHT_LSB		16
-> 
-> +#define JZ_LCD_DESSIZE_ALPHA_OFFSET		24
-> +#define JZ_LCD_DESSIZE_HEIGHT_MASK		GENMASK(23, 12)
-> +#define JZ_LCD_DESSIZE_WIDTH_MASK		GENMASK(11, 0)
-> +
-> +#define JZ_LCD_CPOS_BPP_15_16			(4 << 27)
-> +#define JZ_LCD_CPOS_BPP_18_24			(5 << 27)
-> +#define JZ_LCD_CPOS_BPP_30			(7 << 27)
-> +#define JZ_LCD_CPOS_RGB555			BIT(30)
-> +#define JZ_LCD_CPOS_PREMULTIPLY_LCD		BIT(26)
-> +#define JZ_LCD_CPOS_COEFFICIENT_OFFSET		24
-> +#define JZ_LCD_CPOS_COEFFICIENT_0		0
-> +#define JZ_LCD_CPOS_COEFFICIENT_1		1
-> +#define JZ_LCD_CPOS_COEFFICIENT_ALPHA1		2
-> +#define JZ_LCD_CPOS_COEFFICIENT_1_ALPHA1	3
-> +
-> +#define JZ_LCD_RGBC_RGB_PADDING			BIT(15)
-> +#define JZ_LCD_RGBC_RGB_PADDING_FIRST		BIT(14)
-> +#define JZ_LCD_RGBC_422				BIT(8)
-> +#define JZ_LCD_RGBC_RGB_FORMAT_ENABLE		BIT(7)
-> +
-> +#define JZ_LCD_PCFG_PRI_MODE			BIT(31)
-> +#define JZ_LCD_PCFG_HP_BST_4			(0 << 28)
-> +#define JZ_LCD_PCFG_HP_BST_8			(1 << 28)
-> +#define JZ_LCD_PCFG_HP_BST_16			(2 << 28)
-> +#define JZ_LCD_PCFG_HP_BST_32			(3 << 28)
-> +#define JZ_LCD_PCFG_HP_BST_64			(4 << 28)
-> +#define JZ_LCD_PCFG_HP_BST_16_CONT		(5 << 28)
-> +#define JZ_LCD_PCFG_HP_BST_DISABLE		(7 << 28)
-> +#define JZ_LCD_PCFG_THRESHOLD2_OFFSET		18
-> +#define JZ_LCD_PCFG_THRESHOLD1_OFFSET		9
-> +#define JZ_LCD_PCFG_THRESHOLD0_OFFSET		0
-> +
->  struct device;
->  struct drm_plane;
->  struct drm_plane_state;
-> --
-> 2.33.0
-> 
+* From v2:
+  - Fixed DT
+  - Fixed #PERST polarity in the driver
+  - Collected Pali's ack on patch #1
 
+[1] https://lore.kernel.org/r/20211122104156.518063-1-maz@kernel.org
+
+Marc Zyngier (3):
+  PCI: apple: Follow the PCIe specifications when resetting the port
+  arm64: dts: apple: t8103: Fix PCIe #PERST polarity
+  PCI: apple: Fix #PERST polarity
+
+ arch/arm64/boot/dts/apple/t8103.dtsi |  7 ++++---
+ drivers/pci/controller/pcie-apple.c  | 12 +++++++++++-
+ 2 files changed, 15 insertions(+), 4 deletions(-)
+
+-- 
+2.30.2
 
