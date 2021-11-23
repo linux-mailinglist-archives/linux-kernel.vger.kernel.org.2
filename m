@@ -2,243 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 661B545A24F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:14:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F1E45A253
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236950AbhKWMRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 07:17:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233037AbhKWMRw (ORCPT
+        id S236330AbhKWMUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 07:20:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:45290 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229939AbhKWMUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 07:17:52 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 184D5C061574;
-        Tue, 23 Nov 2021 04:14:45 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id j21so15902009ila.5;
-        Tue, 23 Nov 2021 04:14:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f9GFnRwWoXBmF4GPMU/rzKtvEAldcHlqSbusbFwUFqY=;
-        b=kAiQZnjFCNDdgBwpOztH/CvVmZYXCBl/D7sHJ3yPz8+rgdyavhtsFH/Ib0Q0094Nde
-         Vglw4BrfnMDiiCxXJi0vO/TBeab/PBQeQBq29NMgLU7ndJHIoXEeFPDaJzVTfMHhFh6Y
-         YilASjAv1TzlWksfAaU5hskYljxzA7JJ/DaUoZtzeaPXdr8T1mQ6yvNdFmke12bJ8LCZ
-         aqkB5gp5Ji2JRoE6E94t3IgRhikhtaJ3SKvNOARKDErc9AJqv0dNFGSfOttoCg4MqVql
-         y2rbCCabtBg7EHPQ+ODZmN35SlyR2jW2Q9XVMGgElxcLKKEIXqAVjvKZmcIuKMbSUGui
-         k+PQ==
+        Tue, 23 Nov 2021 07:20:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637669833;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JBT66qvlU87c9lSFd4UZabgUG0N5vFPa+fiSliYRAuw=;
+        b=fG+z5jlaGZyEwsRS1tdAPsIvsxJAt4B2rRTWCJ4RElRHGe2HNLoFj28h4sg8wH8KBJsKdU
+        CNltRUdwAMIArEKJrEnIFK0WRD7eZml73b+fsyyjx1xailzRp6JmgnKDVosJ4PdewB9G6k
+        O2XCylYVJYT4ZQmoIsV/x5pdb704JW0=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-37-mQYuHqnXPDGMh4JgcaWJ_Q-1; Tue, 23 Nov 2021 07:17:12 -0500
+X-MC-Unique: mQYuHqnXPDGMh4JgcaWJ_Q-1
+Received: by mail-ed1-f69.google.com with SMTP id r16-20020a056402019000b003e6cbb77ed2so17636111edv.10
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 04:17:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f9GFnRwWoXBmF4GPMU/rzKtvEAldcHlqSbusbFwUFqY=;
-        b=jR+lAWBOh2z6QDytReuH0iUy/17BhgvpM79UelqLuKiDsKIntO+5agD0UFT0MaboDJ
-         0SysBisvxQ15vrWc6hgcfAf1FDDdhvN2SfSaKFzBmN8QaXeknf26ZaJpyIuFmPSgmmYt
-         EZh0FIVKFI/2MkuCcn3X3jKgI+yo9pr2RFKcsQg5skMmUhm0URHdL/qHiT2Cyzr98wiW
-         aiSOh0yz9N7sM7gtjbkbzuXfOhcWUmPVaaUBDRuuKMxx4O7ybxnkaTIgk7Y/pGjrYgkf
-         LZCYl99XkvPcO3Vn2od6DE8w591Qdiu+25YzLVrBuBYzdiIM9rdvr/IDwtmbsspHpAe2
-         RDBA==
-X-Gm-Message-State: AOAM533dv2Ta+quZcp1mUKxnSuULcBf5llK24sOylq4F/lXxe40lQGkE
-        67nf7/xntwgsZPcP6yxLzFw4Tk585P5vNesVT+c=
-X-Google-Smtp-Source: ABdhPJx9TQeKsP1u1QKlJCOgX7KT/SYyb/hAXIeZLaKSrVvgSCVbY0urc8cCUPV27gN0Gkdbmsq6LFMM5G9/hfkuAH8=
-X-Received: by 2002:a05:6e02:1b08:: with SMTP id i8mr4125997ilv.74.1637669684337;
- Tue, 23 Nov 2021 04:14:44 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JBT66qvlU87c9lSFd4UZabgUG0N5vFPa+fiSliYRAuw=;
+        b=TKqe1pallYgLQBJiuSV9puytKEuPzfMTRkOKZQpHvRkSNqOMRjlJ//KghzmPt7L8Hj
+         S3DRg0eACtgRJftAo+cs0baYV7V4d8mKOdRrogZtGi7hTqp9xL5G9QGYvZUGkAQ4/bMc
+         twVD4gZQNO/OiDs9kdLqSOFKmD3LHVg1eo0SjO2kj963DH9ByYfeZF6z3LyS0EPxqukV
+         VFtnF6A20BE6MERbxBfsI9EjO9fro62YjUgxJak2aoviMoqfN6YTzKYq0CE25Z0tpC+Q
+         8U78XdKivJAfTWvQgTHWUVKW1WgA6nvfXpVEZHeiN2PguDRjKQ43Q9pJHMorn/NDShNH
+         c86Q==
+X-Gm-Message-State: AOAM530A9pjHefCWZv+d5BZOFJCCcnAuUoxmGWTayMJuJJpelKwWiLgy
+        IC2yHoTpharFziswiEpPw0U7/95y3qQO500nnrmkXjwM+jhMpSVy6CRQcZFIjOMYMTqICi5WW2c
+        sftmWA03lZYqkbr+n1SPcE2vu
+X-Received: by 2002:a17:906:1396:: with SMTP id f22mr7167476ejc.228.1637669830897;
+        Tue, 23 Nov 2021 04:17:10 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzqOjquxUZFkVVBX1/K2n0e6XHS/pI/6jStmXjTavqRtuOPkqZofm+qd6I0XW+tAJ9pCyFJdA==
+X-Received: by 2002:a17:906:1396:: with SMTP id f22mr7167446ejc.228.1637669830687;
+        Tue, 23 Nov 2021 04:17:10 -0800 (PST)
+Received: from redhat.com ([45.15.16.143])
+        by smtp.gmail.com with ESMTPSA id m25sm5651510edj.80.2021.11.23.04.17.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 04:17:09 -0800 (PST)
+Date:   Tue, 23 Nov 2021 07:17:05 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "kaplan, david" <david.kaplan@amd.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>
+Subject: Re: [PATCH V5 1/4] virtio_ring: validate used buffer length
+Message-ID: <20211123071340-mutt-send-email-mst@kernel.org>
+References: <20211027022107.14357-1-jasowang@redhat.com>
+ <20211027022107.14357-2-jasowang@redhat.com>
+ <20211119160951.5f2294c8.pasic@linux.ibm.com>
+ <CACGkMEtja2TPC=ujgMrpaPmdsy+zHowbBTvPj8k7nm_+zB8vig@mail.gmail.com>
+ <20211122063518.37929c01.pasic@linux.ibm.com>
+ <20211122064922.51b3678e.pasic@linux.ibm.com>
+ <CACGkMEu+9FvMsghyi55Ee5BxetP-YK9wh2oaT8OgLiY5+tV0QQ@mail.gmail.com>
+ <20211122145003.3e127a03.pasic@linux.ibm.com>
 MIME-Version: 1.0
-References: <20211110122948.188683-1-alistair@alistair23.me>
- <20211110122948.188683-4-alistair@alistair23.me> <20211116000634.767dcdc0@aktux>
-In-Reply-To: <20211116000634.767dcdc0@aktux>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Tue, 23 Nov 2021 22:14:18 +1000
-Message-ID: <CAKmqyKPFOqWD7t6tC1Act97CVcY+yazrhwMLLr3j_wOyH50GTA@mail.gmail.com>
-Subject: Re: [PATCH v15 3/8] mfd: simple-mfd-i2c: Enable support for the silergy,sy7636a
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     Alistair Francis <alistair@alistair23.me>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>, lgirdwood@gmail.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        rui.zhang@intel.com, devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-hwmon@vger.kernel.org, amitk@kernel.org,
-        linux-pm@vger.kernel.org, dl-linux-imx <linux-imx@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211122145003.3e127a03.pasic@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 9:10 AM Andreas Kemnade <andreas@kemnade.info> wrote:
->
-> Hi,
->
-> this all creates a lot of question marks...
-> One of my main question is whether sy7636a = sy7636 (at least the
-> driver in the kobo vendor kernels does not have the "A" at the end,
-> whic does not necessarily mean a difference).
->
-> https://www.silergy.com/products/panel_pmic
-> lists only a SY7636ARMC, so chances are good that the letters were just
-> stripped away by the driver developers. Printing on chip package is
-> cryptic so it is not that helpful. It is just "BWNBDA"
+On Mon, Nov 22, 2021 at 02:50:03PM +0100, Halil Pasic wrote:
+> On Mon, 22 Nov 2021 14:25:26 +0800
+> Jason Wang <jasowang@redhat.com> wrote:
+> 
+> > On Mon, Nov 22, 2021 at 1:49 PM Halil Pasic <pasic@linux.ibm.com> wrote:
+> > >
+> > > On Mon, 22 Nov 2021 06:35:18 +0100
+> > > Halil Pasic <pasic@linux.ibm.com> wrote:
+> > >  
+> > > > > I think it should be a common issue, looking at
+> > > > > vhost_vsock_handle_tx_kick(), it did:
+> > > > >
+> > > > > len += sizeof(pkt->hdr);
+> > > > > vhost_add_used(vq, head, len);
+> > > > >
+> > > > > which looks like a violation of the spec since it's TX.  
+> > > >
+> > > > I'm not sure the lines above look like a violation of the spec. If you
+> > > > examine vhost_vsock_alloc_pkt() I believe that you will agree that:
+> > > > len == pkt->len == pkt->hdr.len
+> > > > which makes sense since according to the spec both tx and rx messages
+> > > > are hdr+payload. And I believe hdr.len is the size of the payload,
+> > > > although that does not seem to be properly documented by the spec.  
+> > 
+> > Sorry for being unclear, what I meant is that we probably should use
+> > zero here. TX doesn't use in buffer actually.
+> > 
+> > According to the spec, 0 should be the used length:
+> > 
+> > "and len the total of bytes written into the buffer."
+> 
+> Right, I was wrong. I somehow assumed this is the total length and not
+> just the number of bytes written.
+> 
+> > 
+> > > >
+> > > > On the other hand tx messages are stated to be device read-only (in the
+> > > > spec) so if the device writes stuff, that is certainly wrong.
+> > > >  
+> > 
+> > Yes.
+> > 
+> > > > If that is what happens.
+> > > >
+> > > > Looking at virtqueue_get_buf_ctx_split() I'm not sure that is what
+> > > > happens. My hypothesis is that we just a last descriptor is an 'in'
+> > > > type descriptor (i.e. a device writable one). For tx that assumption
+> > > > would be wrong.
+> > > >
+> > > > I will have another look at this today and send a fix patch if my
+> > > > suspicion is confirmed.
+> 
+> Yeah, I didn't remember the semantic of
+> vq->split.vring.used->ring[last_used].len
+> correctly, and in fact also how exactly the rings work. So your objection
+> is correct. 
+> 
+> Maybe updating some stuff would make it easier to not make this mistake.
+> 
+> For example the spec and also the linux header says:
+> 
+> /* le32 is used here for ids for padding reasons. */ 
+> struct virtq_used_elem { 
+>         /* Index of start of used descriptor chain. */ 
+>         le32 id; 
+>         /* Total length of the descriptor chain which was used (written to) */ 
+>         le32 len; 
+> };
+> 
+> I think that comment isn't as clear as it could be. I would prefer:
+> /* The number of bytes written into the device writable portion of the
+> buffer described by the descriptor chain. */
+> 
+> I believe "the descriptor chain which was used" includes both the
+> descriptors that map the device read only and the device write
+> only portions of the buffer described by the descriptor chain. And the
+> total length of that descriptor chain may be defined either as a number
+> of the descriptors that form the chain, or the length of the buffer.
+> 
+> One has to use the descriptor chain even if the whole buffer is device
+> read only. So "used" == "written to" does not make any sense to me.
 
-I don't have a definite answer for you. But I think it's sy7636a
+The virtio spec actually says
 
-The page you linked to above lists SY7636ARMC as well as SY7627RMC,
-SY7570RMC. That makes me think that the RMC is a generic suffix and
-this actual IC is the SY7636A.
+Total length of the descriptor chain which was written to
 
->
->  On Wed, 10 Nov 2021 22:29:43 +1000
-> Alistair Francis <alistair@alistair23.me> wrote:
->
-> [...]
-> > diff --git a/include/linux/mfd/sy7636a.h b/include/linux/mfd/sy7636a.h
-> > new file mode 100644
-> > index 000000000000..2797c22dabc2
-> > --- /dev/null
-> > +++ b/include/linux/mfd/sy7636a.h
-> > @@ -0,0 +1,36 @@
-> > +/* SPDX-License-Identifier: GPL-2.0-only */
-> > +/*
-> > + * Functions to access SY3686A power management chip.
->
-> Typo? or is it really a SY3686A? So what we are talking about?
+without the "used" part.
 
-I think it's SY7636A
+> Also something like
+> int vhost_add_used(struct vhost_virtqueue *vq, unsigned int head, int bytes_written)
+> instead of
+> int vhost_add_used(struct vhost_virtqueue *vq, unsigned int head, int len)
+> would make it easier to read the code correctly.
 
->
-> > + *
-> > + * Copyright (C) 2021 reMarkable AS - http://www.remarkable.com/
-> > + */
-> > +
-> > +#ifndef __MFD_SY7636A_H
-> > +#define __MFD_SY7636A_H
-> > +
-> > +#define SY7636A_REG_OPERATION_MODE_CRL               0x00
-> > +#define SY7636A_OPERATION_MODE_CRL_VCOMCTL   BIT(6)
->
-> hmm, this thing is called VCOM_MANUAL in the 4.1.15-based driver for the
-> Kobos and in the 3.0.35 kernel for the Tolinos it is:
->
-> // 1:controll the vcom by external VCOM_EN pin
-> #define SY7636_REG_OPM_VCOM_EXT_mask    0x1 //
-> #define SY7636_REG_OPM_VCOM_EXT_lsb             6 //
->
-> In both kernels, it is set if a gpio is used to control the regulator.
-> That does not necessarily conflict with your usage. The gpio might just
-> be hardwired to something in your device. Maybe just a comment about
-> that issue.
+I think we agree here. Patches?
 
-Ok, I'll add a comment.
-
->
-> > +#define SY7636A_OPERATION_MODE_CRL_ONOFF     BIT(7)
-> > +#define SY7636A_REG_VCOM_ADJUST_CTRL_L               0x01
-> > +#define SY7636A_REG_VCOM_ADJUST_CTRL_H               0x02
-> > +#define SY7636A_REG_VCOM_ADJUST_CTRL_MASK    0x01ff
-> > +#define SY7636A_REG_VLDO_VOLTAGE_ADJULST_CTRL        0x03
-> > +#define SY7636A_REG_POWER_ON_DELAY_TIME              0x06
-> > +#define SY7636A_REG_FAULT_FLAG                       0x07
-> > +#define SY7636A_FAULT_FLAG_PG                        BIT(0)
-> > +#define SY7636A_REG_TERMISTOR_READOUT                0x08
-> > +
-> > +#define SY7636A_REG_MAX                              0x08
-> > +
-> > +#define VCOM_MIN             0
-> > +#define VCOM_MAX             5000
->
-> hmm, what does that maximum mean? What you can set without something
-> freaking out just by setting it? Or the limit where the driver works
-> reliably?
-
-Good question. This is unused so I have just removed it.
-
-> > +
-> > +#define VCOM_ADJUST_CTRL_MASK        0x1ff
-> > +// Used to shift the high byte
-> > +#define VCOM_ADJUST_CTRL_SHIFT       8
-> > +// Used to scale from VCOM_ADJUST_CTRL to mv
-> > +#define VCOM_ADJUST_CTRL_SCAL        10000
-> > +
-> > +#define FAULT_FLAG_SHIFT     1
-> > +
-> > +#endif /* __LINUX_MFD_SY7636A_H */
->
-> Hmm, are that all defines you know about? I am fine with not including
-> unused things now, but I am curious.
-
-Yep, this is all that I currently have information on.
-
-> For comparison, here is my "scratchpad" of all the information I could
-> squeeze out of the sy7636 driver until now:
->
-> OPMODE 0
->   RAILS_ON 7
->   VCOM_MANUAL 6
->   LIGHTNESS 5
->
->   VDDH_DISABLE 4
->   VEE_DISABLE 3
->   VPOS_DISABLE 2
->   VNEG_DISABLE 1
->   VCOM_DISABLE 0
->
->   -> combined as RAILS_DISABLE in code
->
->   VCOM: 10000 uV per step, accepts up to 2.75V (that is a bit contradictory)
-> VCOM_ADJ1 1
->
-> VCOM_ADJ2 2
->   VCOM2_B8 7
->   VDDH_EXT 0..4
->
-> VLDO_ADJ 3
->   VLDO_ADJ = 5..7
->   VPDD_ADJ = 0..4
->
-> VPDD_LEN 4
->   VPPD_LEN 0..4
->
-> VEE_VP_EXT 5
->   VP_EXT 5..6
->   VEE_EXT 0..4
->
-> PWRON_DLY = 6
->   TDLY4 = 6..7
->   TDLY3 = 4..5
->   TDLY2 = 2..3
->   TDLY1 = 0..1
->
-> FAULTFLAGS 7
->   FAULS 1..4: to be read out after interrupt and cleared
->       0  no faults
->       1  UVP at VB rail
->       2  UVP at VN rail
->       3  UVP at VPOS rail
->       4  UVP at VNEG rail
->       5  UVP at VDDH rail
->       6  UVP at VEE rail
->       7  SCP at VB rail
->       8  SCP at VN rail
->       9  SCP at VPOS rail
->       A  SCP at VNEG rail
->       B  SCP at VDDH rail
->       C  SCP at VEE rail
->       D  SCP at VCOM rail
->       E  UVLO
->       F  Thermal shutdown
->
->   PG 0
->
-> THERM 8
-
-Cool!
-
-Alistair
-
->
+> > >
+> > > If my suspicion is right something like:
+> > >
+> > > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> > > index 00f64f2f8b72..efb57898920b 100644
+> > > --- a/drivers/virtio/virtio_ring.c
+> > > +++ b/drivers/virtio/virtio_ring.c
+> > > @@ -764,6 +764,7 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
+> > >         struct vring_virtqueue *vq = to_vvq(_vq);
+> > >         void *ret;
+> > >         unsigned int i;
+> > > +       bool has_in;
+> > >         u16 last_used;
+> > >
+> > >         START_USE(vq);
+> > > @@ -787,6 +788,9 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
+> > >                         vq->split.vring.used->ring[last_used].id);
+> > >         *len = virtio32_to_cpu(_vq->vdev,
+> > >                         vq->split.vring.used->ring[last_used].len);
+> > > +       has_in = virtio16_to_cpu(_vq->vdev,
+> > > +                       vq->split.vring.used->ring[last_used].flags)
+> > > +                               & VRING_DESC_F_WRITE;  
+> > 
+> > Did you mean vring.desc actually? If yes, it's better not depend on
+> > the descriptor ring which can be modified by the device. We've stored
+> > the flags in desc_extra[].
+> > 
+> > >
+> > >         if (unlikely(i >= vq->split.vring.num)) {
+> > >                 BAD_RING(vq, "id %u out of range\n", i);
+> > > @@ -796,7 +800,7 @@ static void *virtqueue_get_buf_ctx_split(struct virtqueue *_vq,
+> > >                 BAD_RING(vq, "id %u is not a head!\n", i);
+> > >                 return NULL;
+> > >         }
+> > > -       if (vq->buflen && unlikely(*len > vq->buflen[i])) {
+> > > +       if (has_in && q->buflen && unlikely(*len > vq->buflen[i])) {
+> > >                 BAD_RING(vq, "used len %d is larger than in buflen %u\n",
+> > >                         *len, vq->buflen[i]);
+> > >                 return NULL;
+> > >
+> > > would fix the problem for split. I will try that out and let you know
+> > > later.  
+> > 
+> > I'm not sure I get this, in virtqueue_add_split, the buflen[i] only
+> > contains the in buffer length.
+> 
+> Sorry my diff is indeed silly.
+> 
+> > 
+> > I think the fixes are:
+> > 
+> > 1) fixing the vhost vsock
+> > 2) use suppress_used_validation=true to let vsock driver to validate
+> > the in buffer length
+> > 3) probably a new feature so the driver can only enable the validation
+> > when the feature is enabled.
+> > 
+> 
+> Makes sense!
+> 
 > Regards,
-> Andreas
+> Halil
+
