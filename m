@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A9E945AF60
+	by mail.lfdr.de (Postfix) with ESMTP id D018445AF61
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 23:48:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233276AbhKWWvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 17:51:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37606 "EHLO
+        id S239798AbhKWWvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 17:51:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbhKWWve (ORCPT
+        with ESMTP id S235246AbhKWWvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 17:51:34 -0500
+        Tue, 23 Nov 2021 17:51:36 -0500
 Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC210C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 14:48:25 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id h134-20020a25d08c000000b005f5cd3befbbso1043191ybg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 14:48:25 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD85C061714
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 14:48:28 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id x16-20020a25b910000000b005b6b7f2f91cso1119437ybj.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 14:48:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=r7AhAqgjV2rKTWwkAzKHbn6CM2swTuumTBUvYfOAdxA=;
-        b=ZgVd9XTPz7nDwBpf1v6JnKCnSivUNdHsi3cr1pyS4WrhRUVI/pLBE5topWef+eIVbr
-         DPOLJ1UvI8lGcbK9qqB2MSpXpYI9DuEg8dUopYbpaQn8e4z1MiQnwsC3kDgeCR2VfMLf
-         /rBPx/HeWInbOyOJGuJFJye6RUbm0Al0Nc/DLSUSSVumWVuL05EpTaD7CrnbucRfJdT8
-         p322GXCEQSY4AEt9GoUOIXKc5FhFgXHHvtBaOI8b73iDwLkEJ7jMlafGHDQVKr8A6cX8
-         qvDZrbZGuU6v/bytURBO3RGhglKLmpxYduq2ObzhqAsxrJq7GWBK4vw8GYaCcdDZcmuL
-         FTJQ==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=BE9W5dYXRuteSIzxFKw6y4qrDKv5SGXcrKZqAacKRNs=;
+        b=NZNcHbKhOUKQa/aMDyQ7fSvzj/L4di4hDVgLsqBULy9ZUgBQfI5nu9Q737c3x3SdVO
+         7P+eF4hYR4WDgTXxZ98G+9hyZAPBtlkDC/yUVVG3locC1T+V0c7Wjr9nFp9jG2N2J9GE
+         c+D1HHiEHgJ1QQA8Rual5/uoaDtvh0oEg2CASHbviseqqf6yvJY6QTQnyZ88vO7NiU7S
+         YLE39CI2IgPTYx2DlEDZ/X2YGnMJeWXWEKeJD+S/x3Lkjo4Pica7QzD762k65MVS5DVM
+         QRqMBcLr0l0pNU6s0BGha15Yei+wKmwhKYPHJ3HxhhRpVDOgkCmUyHcMr0R3hfNW3ntd
+         YmKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=r7AhAqgjV2rKTWwkAzKHbn6CM2swTuumTBUvYfOAdxA=;
-        b=DPkL1xAWijTOMR/vliknp1l+9TLn2hncXPWHOSzjP+UnEJlPRkOg5ppicr7IBByeIv
-         RyRBhPets3Huj0E8Tr/EnbLCMDw9QawL0XCePw9VYMehSwlVCzGiBwiL9hiRZW3qkfAS
-         GBWC5mUq8TnwD03lCuhliNOYEY7xzibEHrE5/pYXFGfONzlAPr8Of6HggNvzNsnwdCwO
-         YKKL3AJkQkXH7he/wreIv8XNumHn7NHMPKmxf2x2xMWPuzaMGwLxH4bTcRE/yMDF9i1P
-         GinXDiTsP/J9YVSRltXDYIP7F3VNQJw8fFnHHWRS740SASC4azkbpF/2iREoceKY7Tyt
-         Eb+Q==
-X-Gm-Message-State: AOAM531aKFSJ2b1OFtePLm4WB341RxLitdbfc/QAqgvuquGwFNTAg3Z/
-        mKwLgPQ+U3UNbF6PXY874gVwj12cQxAw
-X-Google-Smtp-Source: ABdhPJxam15LwRrevFaVgC2Lj9OBCN3w/yYA4YqlDr3OMiYJWOAxiwp2EwqoBGkORLzaDhtuFVUlnV4FfWbW
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=BE9W5dYXRuteSIzxFKw6y4qrDKv5SGXcrKZqAacKRNs=;
+        b=26kB7/30tihvn+8qQW9T+suY1T2B1dgoQpBhOmI4HfhtBtH7q1/dkmuN1nVpi4lpip
+         QLU9q/smYrE9+siNKGHm1hmaIepuXpiON5zg/J+B+MQlq97VBcgBzzPwA5gujUXD1G8R
+         RQFcLSGMz9PSQc2IAjBUTbXypsimUWV9X3F2SCgrcTWpOZxk/qP0HeyIKE3QNK1SdGkI
+         09f1xi6uPn18JG+R2oslKDO2ZdpRMHsYYnHuiuUj4ttaNAGxAwxZSHu/+sS4OSKVJvkR
+         SjsfTrS6b2Dxd9sE7/bvXwwMf1o1JwwfIsX0fmdp76gNtpRMwbNJpd+GysHVwrC9yHVf
+         wBkw==
+X-Gm-Message-State: AOAM533MRdUnmacVIEKPMiRsaX2nwtxul+qcwMq5kDXh1gIih3oFrfUx
+        wtg/wm5/wx2pd46eI9Q17JdKGfxBgVxx
+X-Google-Smtp-Source: ABdhPJxVD4jOrOL/6lULybhJrF9vv4Aaf751br6ibmeq0qdzyk1Xaw6PeijOaTcYKgzCWCX1oHPLfN9mi7rj
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:dbab:a6fe:1e3a:91fa])
- (user=irogers job=sendgmr) by 2002:a25:bacd:: with SMTP id
- a13mr11424123ybk.216.1637707705207; Tue, 23 Nov 2021 14:48:25 -0800 (PST)
-Date:   Tue, 23 Nov 2021 14:48:19 -0800
-Message-Id: <20211123224821.3258649-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a25:25d2:: with SMTP id
+ l201mr10472217ybl.136.1637707707386; Tue, 23 Nov 2021 14:48:27 -0800 (PST)
+Date:   Tue, 23 Nov 2021 14:48:20 -0800
+In-Reply-To: <20211123224821.3258649-1-irogers@google.com>
+Message-Id: <20211123224821.3258649-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20211123224821.3258649-1-irogers@google.com>
 X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH 1/3] perf expr: Add debug logging for literals
+Subject: [PATCH 2/3] perf tools: Fix SMT not detected with large core count
 From:   Ian Rogers <irogers@google.com>
 To:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
@@ -68,67 +72,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Useful for diagnosing problems with metrics.
+sysfs__read_int returns 0 on success, and so the fast read path was
+always failing.
+strtoull can only read a 64-bit bitmap. On an AMD EPYC core_cpus may look
+like:
+00000000,00000000,00000000,00000001,00000000,00000000,00000000,00000001
+and so the sibling wasn't spotted. Fix by writing a simple hweight string
+parser.
 
+Fixes: bb629484d924 (perf tools: Simplify checking if SMT is active.)
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/expr.c | 35 ++++++++++++++++++++++++-----------
- 1 file changed, 24 insertions(+), 11 deletions(-)
+ tools/perf/util/smt.c | 68 ++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 58 insertions(+), 10 deletions(-)
 
-diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
-index 1d532b9fed29..cdbab4f959fe 100644
---- a/tools/perf/util/expr.c
-+++ b/tools/perf/util/expr.c
-@@ -395,12 +395,17 @@ double expr_id_data__source_count(const struct expr_id_data *data)
- double expr__get_literal(const char *literal)
+diff --git a/tools/perf/util/smt.c b/tools/perf/util/smt.c
+index 20bacd5972ad..2636be65305a 100644
+--- a/tools/perf/util/smt.c
++++ b/tools/perf/util/smt.c
+@@ -5,6 +5,56 @@
+ #include "api/fs/fs.h"
+ #include "smt.h"
+ 
++/**
++ * hweight_str - Returns the number of bits set in str. Stops at first non-hex
++ *	       or ',' character.
++ */
++static int hweight_str(char *str)
++{
++	int result = 0;
++
++	while (*str) {
++		switch (*str++) {
++		case '0':
++		case ',':
++			break;
++		case '1':
++		case '2':
++		case '4':
++		case '8':
++			result++;
++			break;
++		case '3':
++		case '5':
++		case '6':
++		case '9':
++		case 'a':
++		case 'A':
++		case 'c':
++		case 'C':
++			result += 2;
++			break;
++		case '7':
++		case 'b':
++		case 'B':
++		case 'd':
++		case 'D':
++		case 'e':
++		case 'E':
++			result += 3;
++			break;
++		case 'f':
++		case 'F':
++			result += 4;
++			break;
++		default:
++			goto done;
++		}
++	}
++done:
++	return result;
++}
++
+ int smt_on(void)
  {
- 	static struct cpu_topology *topology;
-+	double result = NAN;
+ 	static bool cached;
+@@ -15,9 +65,12 @@ int smt_on(void)
+ 	if (cached)
+ 		return cached_result;
  
--	if (!strcmp("#smt_on", literal))
--		return smt_on() > 0 ? 1.0 : 0.0;
-+	if (!strcmp("#smt_on", literal)) {
-+		result =  smt_on() > 0 ? 1.0 : 0.0;
-+		goto out;
+-	if (sysfs__read_int("devices/system/cpu/smt/active", &cached_result) > 0)
+-		goto done;
++	if (sysfs__read_int("devices/system/cpu/smt/active", &cached_result) >= 0) {
++		cached = true;
++		return cached_result;
 +	}
  
--	if (!strcmp("#num_cpus", literal))
--		return cpu__max_present_cpu();
-+	if (!strcmp("#num_cpus", literal)) {
-+		result = cpu__max_present_cpu();
-+		goto out;
-+	}
- 
- 	/*
- 	 * Assume that topology strings are consistent, such as CPUs "0-1"
-@@ -415,13 +420,21 @@ double expr__get_literal(const char *literal)
- 			return NAN;
++	cached_result = 0;
+ 	ncpu = sysconf(_SC_NPROCESSORS_CONF);
+ 	for (cpu = 0; cpu < ncpu; cpu++) {
+ 		unsigned long long siblings;
+@@ -35,18 +88,13 @@ int smt_on(void)
+ 				continue;
+ 		}
+ 		/* Entry is hex, but does not have 0x, so need custom parser */
+-		siblings = strtoull(str, NULL, 16);
++		siblings = hweight_str(str);
+ 		free(str);
+-		if (hweight64(siblings) > 1) {
++		if (siblings > 1) {
+ 			cached_result = 1;
+-			cached = true;
+ 			break;
  		}
  	}
--	if (!strcmp("#num_packages", literal))
--		return topology->package_cpus_lists;
--	if (!strcmp("#num_dies", literal))
--		return topology->die_cpus_lists;
--	if (!strcmp("#num_cores", literal))
--		return topology->core_cpus_lists;
-+	if (!strcmp("#num_packages", literal)) {
-+		result = topology->package_cpus_lists;
-+		goto out;
-+	}
-+	if (!strcmp("#num_dies", literal)) {
-+		result = topology->die_cpus_lists;
-+		goto out;
-+	}
-+	if (!strcmp("#num_cores", literal)) {
-+		result = topology->core_cpus_lists;
-+		goto out;
-+	}
- 
- 	pr_err("Unrecognized literal '%s'", literal);
--	return NAN;
-+out:
-+	pr_debug2("literal: %s = %f\n", literal, result);
-+	return result;
+-	if (!cached) {
+-		cached_result = 0;
+-done:
+-		cached = true;
+-	}
++	cached = true;
+ 	return cached_result;
  }
 -- 
 2.34.0.rc2.393.gf8c9666880-goog
