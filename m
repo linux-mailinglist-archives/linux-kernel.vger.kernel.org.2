@@ -2,142 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515E945A52A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C79145A554
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:21:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237532AbhKWOXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 09:23:00 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:45388 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhKWOW7 (ORCPT
+        id S237998AbhKWOZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 09:25:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233318AbhKWOZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 09:22:59 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Tue, 23 Nov 2021 09:25:02 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E6FC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 06:21:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=H855k1wCbzRICiENraM5pUrKiA5noa4KQuq/7wUngYs=; b=lJ5ZhcH5D+wUW+ZJcwQaFCq8uZ
+        UcHLSg4YMC+dKiT3CPWHwlqmDfMKVuomyd/lY2W7RX7MFp4qdWjvRHAL1rEAYRzHjsoxZT6EAEfkQ
+        nOBPjSvER3/Q/v7O2njDZyvVo4e6UrN3y5KqR/jH+CftwW6+JaVkJr+k1ECu+Zes7deOCO0Xtv98e
+        BBnKMqCeeOe0+lO039scj6Erx5yUFqaSWY2s3gYAQK4pL3tChC2Dx1+T+c2hoTIMDIHcQvL9OCF/G
+        xK2AMMLcV50k35nbnUfBeGZCjBYLvVchRA0YcPDXYsEj+xM5uRk0G9jTULm2r9U6wfy7J+jEHMnWL
+        VLn/BaRw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mpWg1-0005Rb-Fr; Tue, 23 Nov 2021 14:21:42 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 536B11FD5A;
-        Tue, 23 Nov 2021 14:19:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637677190; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kT7jdM+og8nQEQoacDI77ABxFW0VRbd3Wzpd4VwME0M=;
-        b=EnRMQ/Ec1yNfADLNtI/e6Y3z3IxcXg0IlLoT78VavXjKHvLn908XX8AFy5qTPFIpYYOAHS
-        RT0y2lqkykSpRleP51OOjh6gFXjBFFp30ptphkNjJ4q6jwSEC5PDWU367WgqUdAScKU9YY
-        dCweo+WpfhRghtfceXsIVuE99T9VmkM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637677190;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kT7jdM+og8nQEQoacDI77ABxFW0VRbd3Wzpd4VwME0M=;
-        b=m3gdUeGt6diN9yaVg7VrHFdgwYl5CzpHxIotjSTv+00nrq+ERL5J41gZpNlicLF4E98OiC
-        1fSzqpuC7lwXUZDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 35DE613E11;
-        Tue, 23 Nov 2021 14:19:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id P9x4DIb4nGF7KAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Tue, 23 Nov 2021 14:19:50 +0000
-Message-ID: <a081d544-41f0-29ab-6d46-1afa382af8be@suse.cz>
-Date:   Tue, 23 Nov 2021 15:19:49 +0100
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 95FAF30008D;
+        Tue, 23 Nov 2021 15:21:40 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5A05A2CF5A62C; Tue, 23 Nov 2021 15:21:40 +0100 (CET)
+Date:   Tue, 23 Nov 2021 15:21:40 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     x86@kernel.org, joao@overdrivepizza.com, hjl.tools@gmail.com,
+        jpoimboe@redhat.com, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, ndesaulniers@google.com,
+        keescook@chromium.org, samitolvanen@google.com, broonie@kernel.org
+Subject: Re: [RFC][PATCH 5/6] x86: Sprinkle ENDBR dust
+Message-ID: <YZz49M/QLmMJgJA7@hirez.programming.kicks-ass.net>
+References: <20211122170301.764232470@infradead.org>
+ <20211122170805.273377350@infradead.org>
+ <20211123140052.GF37253@lakrids.cambridge.arm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Content-Language: en-US
-To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Cc:     Faiyaz Mohammed <faiyazm@codeaurora.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20211117193932.4049412-1-gerald.schaefer@linux.ibm.com>
- <20211117193932.4049412-2-gerald.schaefer@linux.ibm.com>
- <9a4367c0-8141-f03c-e5a1-13483794d3e8@suse.cz>
- <20211119205943.1ee5da0d@thinkpad>
- <b513bbcf-f1ea-cfa6-763a-003a60e51da5@suse.cz>
- <20211122211400.41bf64cf@thinkpad> <20211122213330.66b7893e@thinkpad>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [RFC PATCH 1/1] mm/slub: fix endless "No data" printing for
- alloc/free_traces attribute
-In-Reply-To: <20211122213330.66b7893e@thinkpad>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211123140052.GF37253@lakrids.cambridge.arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/22/21 21:33, Gerald Schaefer wrote:
-> On Mon, 22 Nov 2021 21:14:00 +0100
-> Gerald Schaefer <gerald.schaefer@linux.ibm.com> wrote:
+On Tue, Nov 23, 2021 at 02:00:53PM +0000, Mark Rutland wrote:
+> On Mon, Nov 22, 2021 at 06:03:06PM +0100, Peter Zijlstra wrote:
+> > Kernel entry points should be having ENDBR on for IBT configs.
+> > 
+> > The SYSCALL entry points are found through taking their respective
+> > address in order to program them in the MSRs, while the exception
+> > entry points are found through UNWIND_HINT_IRET_REGS.
+> > 
+> > *Except* that latter hint is also used on exit code to denote when
+> > we're down to an IRET frame. As such add an additional 'entry'
+> > argument to the macro and have it default to '1' such that objtool
+> > will assume it's an entry and WARN about it.
+> > 
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 > 
-> [...]
->> 
->> Thanks. While testing this properly, yet another bug showed up. The idx
->> in op->show remains 0 in all iterations, so I always see the same line
->> printed t->count times (or infinitely, ATM). Not sure if this only shows
->> on s390 due to endianness, but the reason is this:
->> 
->>   unsigned int idx = *(unsigned int *)v;
-
-Uh, good catch. I was actually looking suspiciously at how we cast signed to
-unsigned, but didn't occur to me that shortening together with endiannes is
-the problem.
-
->> 
->> IIUC, void *v is always the same as loff_t *ppos, and therefore idx also
->> should be *ppos. De-referencing the loff_t * with an unsigned int * only
->> gives the upper 32 bit half of the 64 bit value, which remains 0.
->> 
->> This would be fixed e.g. with
->> 
->>   unsigned int idx = (unsigned int) *(loff_t *) v;
-
-With all this experience I'm now inclined to rather follow more the example
-in Documentation/filesystems/seq_file.rst and don't pass around the pointer
-that we got as ppos in slab_debugfs_start(), and that seq_file.c points to
-m->index.
-
-In that example an own value is kmalloced:
-
-loff_t *spos = kmalloc(sizeof(loff_t), GFP_KERNEL);
-
-while we could just make this a field of loc_track?
-
-
->> With this fixed, my original patch actually also works for t->count > 0,
->> because then op->show would return w/o printing anything when idx reaches
->> t->count. For t->count > 0, it would even work w/o any extra checks in
->> op->start because of that, only "No data" would be printed infinitely.
+> On arm64 we also added BTI (analagous to ENDBR) in our SYMC_FUNC_START()
+> so what we don't miss a necessary landing pad for any assembly functions
+> that can be indirectly branched to.
 > 
-> Oh, no, that would actually also fix the "No data" part, as op->show
-> will then also return w/o printing in the next iteration, so that op->next
-> would correctly end it all.
+> See commits:
 > 
-> This could also explain why it might all have worked fine on x86 (haven't
-> verified), and really only showed on big-endian s390.
+>   714a8d02ca4da147 ("arm64: asm: Override SYM_FUNC_START when building the kernel with BTI")
+>   2d21889f8b5c50f6 ("arm64: Don't insert a BTI instruction at inner labels")
 > 
-> Hmm, now I'm not so sure anymore if we really want the additional
-> checks and return NULL in op->start, just to make it "double safe".
+> ... do you need something similar? Or do you never indirectly branch to
+> an assembly function?
 
-I guess we don't.
+With the big caveat that I've only looked at x86_64-defconfig so far, we
+don't seem to be doing that.
 
->> 
->> It probably still makes sense to make this explicit in op->start, by
->> checking separately for !*ppos && !t->count, and returning NULL for
->> *ppos >= t->count, as you suggested.
->> 
->> I think I will also make idx an unsigned long again, like it was before
->> commit 64dd68497be7, and similar to t->count. Not sure if it needs to
->> be, and with proper casting unsigned int is also possible, but why
->> change it?
-> 
+We also have the big benefit of having a larger immediate doesn't give
+us those 'spurious' indirect branches you suffer from.
 
+Hence also that --ibt-seal option that removes as many ENDBR
+instructions as possible. Minimizing ENDBR is a feasible option for us,
+where I don't think it is on ARM64.
