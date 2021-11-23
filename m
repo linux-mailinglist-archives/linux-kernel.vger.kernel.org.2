@@ -2,256 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5676459C8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:04:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61553459C95
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:07:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232006AbhKWHHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 02:07:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbhKWHHX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 02:07:23 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37891C061574;
-        Mon, 22 Nov 2021 23:04:16 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so1341268pjc.4;
-        Mon, 22 Nov 2021 23:04:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=tKd2LXgwcQ5xNP29ps7tF+q/XBToi67NLNIQEM3kIhQ=;
-        b=PA3kJyiO9ior0JsiqUNZscApubHqocMm5To9U9sgI7J8SdAXjNq1PYXu6+UqhwaHLJ
-         DtKsujvNBTHyyFRFg0uX3eu+F8kKNgyJb+kNSK+j82mhqJlPuQmA6M9QTz075L/4ZEvF
-         jmyWiN2FcdE0fe7z3ywo+QB7xo16Ewm3QiLndAwF6WdjlZn1GBeGaS0/S1IrgiFSIYep
-         rZizFAUkit+2S/Zhj5Hz97YEHgoGitsMnZMew0P16A7Wcpy+A0t2cmJOw82jl5YlGUJM
-         AfzVDoimrFE6C0bAPf8VOyc9G2ggVXBg3ExJiRuRE3HMhsgBjkerhrthz9EbDhcroDB9
-         mkAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=tKd2LXgwcQ5xNP29ps7tF+q/XBToi67NLNIQEM3kIhQ=;
-        b=TmtPom8mORrviqOI1eBkKPAqZnDSIC7BbQtN1/kWduJEM9wyzv8IousgM0i8xw80Wq
-         9sMEDAz+wULzxUqIuZEP3euIIWhoJAnhtZYh2k/du5BLzrSuTercuIxSye597KTEYKlx
-         QJjDanM+0TZkUPxicUiV48e8dKi/TU/VETOUFQdMtmMqOvFKJThMPNVygsHftxgIfuly
-         NZfyb/XjuFkEk3gLoQeHR5Xua+kUcMowHQnY5JeKUkPdFSuzc+mAg3Ko21xvAiTr2WxL
-         CXPakurvmZ0GyxqFyWqTT+UVG/OWE6OJ7qDFKRh5sKzGTtinVfV6mZWwYcYOHHmcGmjW
-         TtoA==
-X-Gm-Message-State: AOAM530f2QoFQnhluq2GuFA/DPFVJDyzewMQs32Zz63bc1AXdhre+j1V
-        +YLx7vORfrggDiLyfkUm7sI=
-X-Google-Smtp-Source: ABdhPJwiQAL0Vq/04SRkqjhOYwkbZKw62B3J0t5AtjbaFy1AG8wKc+3O9Y7juVYO4c2/1HqJM4WkZQ==
-X-Received: by 2002:a17:902:7e48:b0:142:728b:e475 with SMTP id a8-20020a1709027e4800b00142728be475mr4336159pln.15.1637651055715;
-        Mon, 22 Nov 2021 23:04:15 -0800 (PST)
-Received: from localhost.localdomain ([43.128.78.144])
-        by smtp.gmail.com with ESMTPSA id i185sm11146185pfg.80.2021.11.22.23.04.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 23:04:15 -0800 (PST)
-Date:   Tue, 23 Nov 2021 15:02:19 +0800
-From:   Aili Yao <yaoaili126@gmail.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     "yaoaili =?UTF-8?B?W+S5iOeIseWIqV0=?=" <yaoaili@kingsoft.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] KVM: LAPIC: Per vCPU control over
- kvm_can_post_timer_interrupt
-Message-ID: <20211123145713.76a7d5b8@gmail.com>
-In-Reply-To: <CANRm+CxAM-h1F3CTNUY6wc-LAgRPDbwFrTPKXS_aoOBx9mveCQ@mail.gmail.com>
-References: <20211122095619.000060d2@gmail.com>
- <YZvrvmRnuDc1e+gi@google.com>
- <CANRm+Cx+bC8D7s1qzJYbrT+1rm46wxg6bAXD+kGYAHGnruZMXw@mail.gmail.com>
- <3204a646aa9d43d0b9af8da1c5ddf79f@kingsoft.com>
- <CANRm+CxAM-h1F3CTNUY6wc-LAgRPDbwFrTPKXS_aoOBx9mveCQ@mail.gmail.com>
-Organization: ksyun
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S233216AbhKWHKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 02:10:17 -0500
+Received: from mail-eopbgr30088.outbound.protection.outlook.com ([40.107.3.88]:27269
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229722AbhKWHKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 02:10:16 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DQbqBMNw1lv0FzBJjCZLGKovWqIy4jPqIzaj0baIADwAEU11VliI6SN1Umhc7w2u2QyzIJydeFTbolE8W47r5CRPjRxZX+QrozYdhRFnMBotp+fuE/eKgvJDriF8JRMDViIuJf9jJfaH1zdYwM756xaPsT+XO5uEVHa5PgMBs35R3yQqjPbYqE8X7SlCEUfddZys4Op5zL26XoTGHB+hcYvL0biHCx6Yap7mwtMlEDAXZqq/rjiibzKCXpCwXnNA7d4KH0o7LLWq6jYqI1kmOtMfsV0kFVwAGhK7CVnBINBlBosON6Z7F9Lu3ZF1mMc7eXLic+xfkxQSKVYqvBt+kw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=j36qv2cTkEheCCn7G3UPdEI6ycDbQ7u8N+VhoZ5rokE=;
+ b=b/RT9+6LbhgzMeeAH5j366SYbqVPuRL9xzZOdy0IKjwUExmgf9NdzcwCCb2szk3YPo+XQ7i0NizvS/5Dag3/dixdSOw3zD3SYkbzedJl9z9+61KzVUF6hdquZVm89/C6oAwAMc0MftYxM36BJtFsLukGeU440Rx/mdEpUzakwKXd+brKfsX5jMyp5OPjMgwwO1x03rAsVUoGi2OmSu/EBGilkc7ZOTXK+BEKljXiZdKUq4PR9WWo/GkLd7rgRg5vmjpAGr0HjNvqM5QJawPlr1OBR5xeGvPX8GLvKdLB5/KyV6lf5H1W4VmvR3z9VZbK1wH5RDpkDX2Q+ayOpgLT5w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j36qv2cTkEheCCn7G3UPdEI6ycDbQ7u8N+VhoZ5rokE=;
+ b=ZtZc2VvG/nWeVWtB/7dNDVr54veFtDME3Q3HtTc2kLi7wtejRDdj00AosReEbognjoIhaPgzGMWXdqUyUtbr7oriKps3HwsLHPhCRBSEpxD3seOeS/8oi1qMoky9M3o14gXa61145Qm4n2B2euDI4ZocQ7fuZTtIw9E46slRqJs=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AS8PR04MB8404.eurprd04.prod.outlook.com (2603:10a6:20b:3f8::7)
+ by AM6PR0402MB3352.eurprd04.prod.outlook.com (2603:10a6:209:11::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Tue, 23 Nov
+ 2021 07:07:06 +0000
+Received: from AS8PR04MB8404.eurprd04.prod.outlook.com
+ ([fe80::c9fe:7982:c657:b423]) by AS8PR04MB8404.eurprd04.prod.outlook.com
+ ([fe80::c9fe:7982:c657:b423%9]) with mapi id 15.20.4713.025; Tue, 23 Nov 2021
+ 07:07:06 +0000
+From:   Sherry Sun <sherry.sun@nxp.com>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com
+Subject: [PATCH] tty: serial: imx: clear RTSD status before suspend
+Date:   Tue, 23 Nov 2021 15:03:49 +0800
+Message-Id: <20211123070349.20099-1-sherry.sun@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR01CA0116.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:40::20) To AS8PR04MB8404.eurprd04.prod.outlook.com
+ (2603:10a6:20b:3f8::7)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from localhost.localdomain (119.31.174.71) by SG2PR01CA0116.apcprd01.prod.exchangelabs.com (2603:1096:4:40::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21 via Frontend Transport; Tue, 23 Nov 2021 07:07:04 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d9369cda-cd05-4d59-3b4b-08d9ae4fdb89
+X-MS-TrafficTypeDiagnostic: AM6PR0402MB3352:
+X-Microsoft-Antispam-PRVS: <AM6PR0402MB33525120D595277BEE077F6D92609@AM6PR0402MB3352.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JN0SXOTMUPgspjMV16FsywRFbIcbbqtikk4dc3VJdc1kLBWNslGrqFcqS4d7yDiAV/7SUo4Uy+iZPfPzhDktdcmeNMpCoHP1zY/dolg7b5qrP8tIL5nrpPkRPYp9eKlZ8idMupyE5TQSc7myl1TJI0+bIZy8l83iDwJxo8GONNV29ZUPDUnedtj/oVutQHrVj76XKhtWCYvp2SDyW3G7sOuBWlnFKjA4BbrMfR3opairDj4k0btzZyMqM2cp6YL3f2sXCtNVf06ejoscCarcwCiibneQuhrx7OE6xfPt6Awds+R8+gLAbaPiK5JwPa8Fh1S8WM0FQcNquhp/+hhGPf+fNvTLhMHGPefugzK9A+4c/G3bi+Z2vXG4W1t+HcdxTvg9NibtpkuDkBEHZMt3OZBxxFVi5NWGklw4Faeq7WPNnmNx7BhCJCnWAoXOkFI+qWhVB4wgWvcjrf+VhDKVOSXiLRthTaOeNoAA0R9Z9xyMnqLDY7Oao6V6eVb0u3Z9S/W0DDctEwi6mjucvmRVDjdjx/LyWH58qparw8VMXYWI5s6Qhfo3qiQc0BMz62vuxzvpwbm5WcuOBq66lHy8HESekMRRJp+AmWSXhV250T5dFc9tYg89xRCTsltXMu3EPZ8mf1WpX1fLAC3BfO5Adbl7mhd85GB6/tH0mI+HRiQkjkob8IJYejQS7gmIsGw13iO4pdszb2YlWRueQxanMg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8404.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(66476007)(66556008)(1076003)(86362001)(36756003)(6512007)(5660300002)(6666004)(316002)(6486002)(26005)(6506007)(956004)(83380400001)(186003)(4744005)(8676002)(44832011)(2616005)(38350700002)(2906002)(38100700002)(15650500001)(8936002)(52116002)(508600001)(4326008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pn/qbBlIw/Z3Rh5wQj5DZxStFpMtV2EbgKq2GjTeW/i4UBJwq3TtW4EKyVG7?=
+ =?us-ascii?Q?szgGna3YOaUFzuyiWAsfL1+2fmiEElHnp0sfM5KG/XneGJPUatIVgmkABgwp?=
+ =?us-ascii?Q?peHQDGC/gLPkbfdp7iJuGg5d00EI3JtXpQrkGEWQqXhHcHIr7mZrLFQo6B+D?=
+ =?us-ascii?Q?9D4batVQ6PlM2g7W82stf4ELv2goBoY5k+ZR1UAk2pJFRvWlGlwnYwxfcnXx?=
+ =?us-ascii?Q?8IJTFM8ui79BJ9s/GZ5ZMr2vaH7ob5fvFNMQMzfTcUI7tr/rUUsNd3X45jPN?=
+ =?us-ascii?Q?V7+GVHAP8pprG7Ha71YPY2XC/wmxLQ6KjeTK1EhWytuJiLvnseJkRlF3Mm3f?=
+ =?us-ascii?Q?8TofV3cYGhgOjqrtX9efD17Cq3fV0PCDA/mEQaHGbtnwOu+BhCoyk7w2P2hl?=
+ =?us-ascii?Q?Q9BrwK4vWmlWaxY3fyjh/saY5doYfejQvA3WtReeoRE4LhP/cUXREm9Qyfkp?=
+ =?us-ascii?Q?TIPatkiXkIDd0HgdTddGxZELrdTZmvaNTXHgIiValMdwa8CZIEEAfBEx5o03?=
+ =?us-ascii?Q?PP5vhPG+AUTm3TArp/Dtd97yXTtNxtZgw9I7DARAWWhaXxCBrQVd6npDVb4w?=
+ =?us-ascii?Q?5g7iJgnhpANzI2iGpn+78ABrWYuD4QE46ONykgWvjL9Eb2ez3h/Garf2niVD?=
+ =?us-ascii?Q?a6Q5e2+8RvfblxdBJbj4ovbTrRbC+XtPJ84vY3HB+9ROVBqq5zuUuHxrczV4?=
+ =?us-ascii?Q?FWdfKUrxOaEqCeEB1Vn39fkpHNGUOk9O3pMJ7t9FMNPMAGVe69T3OH9bGPfK?=
+ =?us-ascii?Q?TL5siry/tjACv3k8YPeYNCZSj/2/sMJfYPvPgm1LlxMYNbAB3+09ow4UpIcO?=
+ =?us-ascii?Q?w6uD+mrWKzw9Wz93K3vgaAFuibe4XTK1P1EYQUveOM148RHMfR/t6ETwI8yN?=
+ =?us-ascii?Q?RQBbdq2Sem/umfPNVOmlyh6Q0Awijv6TFB8M18HKZ74KzASUEiqD5YW7iVVI?=
+ =?us-ascii?Q?+756F5i3koE+8t4+6aUORyPgF2eqc8f8/nMqNq6E27z0eVYU7goicbbNc5aD?=
+ =?us-ascii?Q?Du98xXNU3OYKLRTcJ2bAhCV6G9nn2BrCqSs2CI8xNRVawkjNtg1RqAiuvaHT?=
+ =?us-ascii?Q?jDk/lP3LWujounQkKDQ6gcVkTsRwM4Qtl8UbWm0A1tWrUODVf58/NRIfZzKC?=
+ =?us-ascii?Q?2ypuZFQvnQHTIauagTJLiAaJsj3uXM3/ENgS5AQ1q4eaD3AFSqvH6l0wbCUQ?=
+ =?us-ascii?Q?gryZMx0IdoBGCyYiHtcnGt+k+J7ccGsnNzwjirXzxb+MVF6Xati8NfOtQIpv?=
+ =?us-ascii?Q?6LqrPRkqnle/NOFmXpwQgei7KPCXW7TDgws32iYZ6RiaeTOeixrBiud2Ts3V?=
+ =?us-ascii?Q?kUc/R0dfGDvYt1WKqg9nvW9Dt43DeFXfnFZggyHmQ/U2EYltVlVkJhdCzZQ6?=
+ =?us-ascii?Q?4kqv06M2mbrnuDBcZeAbFELyRKN17tE2kbIC2K6cWUT3f+ZMrveKBqeZz51R?=
+ =?us-ascii?Q?ZRDEYTNOIUAFZCK25LN3n9dvrYa4fiisMHIn9AYSVI5cAsjk6WXnqRxep5CX?=
+ =?us-ascii?Q?cgnOeWMKkgyNyd0HYozg8TaebQ6Pj6BJkOn+YgvacN8t9CpapKDddgigRXoM?=
+ =?us-ascii?Q?0Vw0RKLSxScpuwzDToeQ+IbMCqpPdXxe51VvoG8qB/Fwg5H8IdcU7D2irKQJ?=
+ =?us-ascii?Q?OQ7OFiziT2tSU357Fs5nBqs=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d9369cda-cd05-4d59-3b4b-08d9ae4fdb89
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8404.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2021 07:07:06.2252
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DyrOvZZiA4AdWh9dn2fhRZCK/F+fcZDqyOVSrYVfouV8oePGEwGjmB/c6Km59TlPmovSzCzCgFsCkiorK9i8xA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR0402MB3352
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Nov 2021 14:24:19 +0800
-Wanpeng Li <kernellwp@gmail.com> wrote:
+From: Fugang Duan <fugang.duan@nxp.com>
 
-> On Tue, 23 Nov 2021 at 12:11, yaoaili [=E4=B9=88=E7=88=B1=E5=88=A9] <yaoa=
-ili@kingsoft.com>
-> wrote:
-> > =20
-> > > On Tue, 23 Nov 2021 at 03:14, Sean Christopherson
-> > > <seanjc@google.com> wrote: =20
-> > > >
-> > > > On Mon, Nov 22, 2021, Aili Yao wrote: =20
-> > > > > From: Aili Yao <yaoaili@kingsoft.com>
-> > > > >
-> > > > > When we isolate some pyhiscal cores, We may not use them for
-> > > > > kvm guests, We may use them for other purposes like DPDK, or
-> > > > > we can make some kvm guests isolated and some not, the global
-> > > > > judgement pi_inject_timer is not enough; We may make wrong
-> > > > > decisions:
-> > > > >
-> > > > > In such a scenario, the guests without isolated cores will
-> > > > > not be permitted to use vmx preemption timer, and tscdeadline
-> > > > > fastpath also be disabled, both will lead to performance
-> > > > > penalty.
-> > > > >
-> > > > > So check whether the vcpu->cpu is isolated, if not, don't
-> > > > > post timer interrupt.
-> > > > >
-> > > > > Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
-> > > > > ---
-> > > > >  arch/x86/kvm/lapic.c | 4 +++-
-> > > > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c index
-> > > > > 759952dd1222..72dde5532101 100644
-> > > > > --- a/arch/x86/kvm/lapic.c
-> > > > > +++ b/arch/x86/kvm/lapic.c
-> > > > > @@ -34,6 +34,7 @@
-> > > > >  #include <asm/delay.h>
-> > > > >  #include <linux/atomic.h>
-> > > > >  #include <linux/jump_label.h>
-> > > > > +#include <linux/sched/isolation.h>
-> > > > >  #include "kvm_cache_regs.h"
-> > > > >  #include "irq.h"
-> > > > >  #include "ioapic.h"
-> > > > > @@ -113,7 +114,8 @@ static inline u32 kvm_x2apic_id(struct
-> > > > > kvm_lapic *apic)
-> > > > >
-> > > > >  static bool kvm_can_post_timer_interrupt(struct kvm_vcpu
-> > > > > *vcpu)  {
-> > > > > -     return pi_inject_timer && kvm_vcpu_apicv_active(vcpu);
-> > > > > +     return pi_inject_timer && kvm_vcpu_apicv_active(vcpu) &&
-> > > > > +             !housekeeping_cpu(vcpu->cpu, HK_FLAG_TIMER); =20
-> > > >
-> > > > I don't think this is safe, vcpu->cpu will be -1 if the vCPU
-> > > > isn't scheduled in. =20
-> >
-> > Yes, vcpu->cpu is  -1 before vcpu create, but in my environments,
-> > it didn't trigger this issue. I need to dig more, Thanks!
-> > Maybe I need one valid check here.
-> > =20
-> > > > This also doesn't play nice with the admin forcing
-> > > > pi_inject_timer=3D1. Not saying there's a reasonable use case for
-> > > > doing that, but it's supported today and this would break that
-> > > > behavior.  It would also lead to weird behavior if a vCPU were
-> > > > migrated on/off a housekeeping vCPU.  Again, probably not a
-> > > > reasonable use case, but I don't see anything =20
-> > > that would outright prevent that behavior. =20
-> >
-> > Yes,  this is not one common operation,  But I did do test some
-> > scenarios: 1. isolated cpu --> housekeeping cpu;
-> >     isolated guest timer is in housekeeping CPU, for migration,
-> > kvm_can_post_timer_interrupt will return false, so the timer may be
-> > migrated to vcpu->cpu; This seems works in my test;
-> > 2. isolated --> isolated
-> >     Isolated guest timer is in housekeeping cpu, for
-> > migration,kvm_can_post_timer_interrupt return true, timer is not
-> > migrated 3. housekeeping CPU --> isolated CPU
-> >     non-isolated CPU timer is usually in vcpu->cpu, for migration
-> > to isolated, kvm_can_post_timer_interrupt will be true,  the timer
-> > remain on the same CPU; This seems works in my test;
-> > 4. housekeeping CPU --> housekeeping CPU
-> >      timer migrated;
-> > It seems this is not an affecting problem;
-> > =20
-> > > >
-> > > > The existing behavior also feels a bit unsafe as
-> > > > pi_inject_timer is writable while KVM is running, though I
-> > > > supposed that's orthogonal to this =20
-> > > discussion. =20
-> > > >
-> > > > Rather than check vcpu->cpu, is there an existing vCPU flag
-> > > > that can be queried, e.g. KVM_HINTS_REALTIME? =20
-> > >
-> > > How about something like below:
-> > >
-> > > From 67f605120e212384cb3d5788ba8c83f15659503b Mon Sep 17 00:00:00
-> > > 2001
-> > > From: Wanpeng Li <wanpengli@tencent.com>
-> > > Date: Tue, 23 Nov 2021 10:36:10 +0800
-> > > Subject: [PATCH] KVM: LAPIC: To keep the vCPUs in non-root mode
-> > > for timer- pi
-> > >
-> > > From: Wanpeng Li <wanpengli@tencent.com>
-> > >
-> > > As commit 0c5f81dad46 (KVM: LAPIC: Inject timer interrupt via
-> > > posted interrupt) mentioned that the host admin should well tune
-> > > the guest setup, so that vCPUs are placed on isolated pCPUs, and
-> > > with several pCPUs surplus for
-> > > *busy* housekeeping.
-> > > It is better to disable mwait/hlt/pause vmexits to keep the vCPUs
-> > > in non-root mode. However, we may isolate pCPUs for other purpose
-> > > like DPDK or we can make some guests isolated and others not,
-> > > Let's add the checking kvm_mwait_in_guest() to
-> > > kvm_can_post_timer_interrupt() since we can't benefit from timer
-> > > posted-interrupt w/o keeping the vCPUs in non-root mode.
-> > >
-> > > Reported-by: Aili Yao <yaoaili@kingsoft.com>
-> > > Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> > > ---
-> > >  arch/x86/kvm/lapic.c | 5 ++---
-> > >  1 file changed, 2 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c index
-> > > 759952dd1222..8257566d44c7 100644
-> > > --- a/arch/x86/kvm/lapic.c
-> > > +++ b/arch/x86/kvm/lapic.c
-> > > @@ -113,14 +113,13 @@ static inline u32 kvm_x2apic_id(struct
-> > > kvm_lapic *apic)
-> > >
-> > >  static bool kvm_can_post_timer_interrupt(struct kvm_vcpu *vcpu)
-> > > {
-> > > -    return pi_inject_timer && kvm_vcpu_apicv_active(vcpu);
-> > > +    return pi_inject_timer && kvm_mwait_in_guest(vcpu->kvm) &&
-> > > kvm_vcpu_apicv_active(vcpu);
-> > >  }
-> > >
-> > >  bool kvm_can_use_hv_timer(struct kvm_vcpu *vcpu)  {
-> > >      return kvm_x86_ops.set_hv_timer
-> > > -           && !(kvm_mwait_in_guest(vcpu->kvm) ||
-> > > -            kvm_can_post_timer_interrupt(vcpu));
-> > > +           && !kvm_mwait_in_guest(vcpu->kvm);
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(kvm_can_use_hv_timer); =20
-> >
-> > This method seems more quick and safe, but I have one question:
-> > Does this kvm_mwait_in_guest can guarantee the CPU isolated,  in
-> > some production environments and usually,  MWAIT feature is
-> > disabled in host and even guests with isolated CPUs.  And also we
-> > can set guests kvm_mwait_in_guest true with CPUs just pinned, not
-> > isolated. =20
->=20
-> You won't benefit from timer posted-interrupt if mwait is not exposed
-> to the guest since you can't keep CPU in non-root mode.
-> kvm_mwait_in_guest() will not guarantee the CPU is isolated, but
-> what's still bothering?
+Clear RTSD status before suspend due to the port also
+use RTS pin as wakeup source, need to clear the flag first.
 
-Sorry, Did I miss some thing?
+Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
+Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
+---
+ drivers/tty/serial/imx.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-What in my mind: MWait may be disabled in bios, so host will use halt
-instruction as one replacement for idle operation, in such a
-configuration, Mwait in guest will also be disabled even if you try to
-set kvm_mwait_in_guest true; As a result, halt,pause may not exit the
-guest, so the post interrupt still counts?
-
-For current code, We can migrate guest between isolated and
-housekeeping or we can change the cpu pinning on the fly, we allow this
-even the operation is not usually used, right?
-
-Thanks!
-Aili Yao
-
-
+diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
+index 90f82e6c54e4..fb75e3e0d828 100644
+--- a/drivers/tty/serial/imx.c
++++ b/drivers/tty/serial/imx.c
+@@ -2482,10 +2482,12 @@ static void imx_uart_enable_wakeup(struct imx_port *sport, bool on)
+ 
+ 	if (sport->have_rtscts) {
+ 		u32 ucr1 = imx_uart_readl(sport, UCR1);
+-		if (on)
++		if (on) {
++			imx_uart_writel(sport, USR1_RTSD, USR1);
+ 			ucr1 |= UCR1_RTSDEN;
+-		else
++		} else {
+ 			ucr1 &= ~UCR1_RTSDEN;
++		}
+ 		imx_uart_writel(sport, ucr1, UCR1);
+ 	}
+ }
+-- 
+2.17.1
 
