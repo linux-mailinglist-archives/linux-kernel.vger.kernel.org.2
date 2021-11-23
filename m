@@ -2,113 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8001345A421
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:53:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7380745A423
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235702AbhKWN41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 08:56:27 -0500
-Received: from mga17.intel.com ([192.55.52.151]:22420 "EHLO mga17.intel.com"
+        id S236954AbhKWN5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 08:57:01 -0500
+Received: from foss.arm.com ([217.140.110.172]:52886 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231603AbhKWN4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 08:56:25 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="215733332"
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="215733332"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 05:53:16 -0800
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="457058410"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 05:53:11 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mpWEN-009nIY-Fw;
-        Tue, 23 Nov 2021 15:53:07 +0200
-Date:   Tue, 23 Nov 2021 15:53:07 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     linux-acpi@vger.kernel.org, Robert Moore <robert.moore@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>, devel@acpica.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tools/power/acpi: Fix the compile error when output
- directory is specified
-Message-ID: <YZzyQ2FD2meImsHD@smile.fi.intel.com>
-References: <20211123132330.1008671-1-yu.c.chen@intel.com>
+        id S231603AbhKWN5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 08:57:00 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9ACC11042;
+        Tue, 23 Nov 2021 05:53:52 -0800 (PST)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4855D3F66F;
+        Tue, 23 Nov 2021 05:53:51 -0800 (PST)
+Date:   Tue, 23 Nov 2021 13:53:49 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, joao@overdrivepizza.com, hjl.tools@gmail.com,
+        jpoimboe@redhat.com, andrew.cooper3@citrix.com,
+        linux-kernel@vger.kernel.org, ndesaulniers@google.com,
+        keescook@chromium.org, samitolvanen@google.com
+Subject: Re: [RFC][PATCH 1/6] x86: Annotate _THIS_IP_
+Message-ID: <20211123135348.GE37253@lakrids.cambridge.arm.com>
+References: <20211122170301.764232470@infradead.org>
+ <20211122170805.025419814@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211123132330.1008671-1-yu.c.chen@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20211122170805.025419814@infradead.org>
+User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 09:23:30PM +0800, Chen Yu wrote:
-> Compiling the tool when output directory parameter is specified would
-> trigger the following error:
-> 
-> make O=/data/test/tmp/ -C tools/power/acpi/
-> 
-> make: Entering directory '/data/src/kernel/linux/tools/power/acpi'
->   DESCEND tools/acpidbg
-> make[1]: Entering directory '/data/src/kernel/linux/tools/power/acpi/tools/acpidbg'
->   MKDIR    include
->   CP       include
->   CC       tools/acpidbg/acpidbg.o
-> Assembler messages:
-> Fatal error: can't create /data/test/tmp/tools/power/acpi/tools/acpidbg/acpidbg.o: No such file or directory
-> make[1]: *** [../../Makefile.rules:24: /data/test/tmp/tools/power/acpi/tools/acpidbg/acpidbg.o] Error 1
-> make[1]: Leaving directory '/data/src/kernel/linux/tools/power/acpi/tools/acpidbg'
-> make: *** [Makefile:18: acpidbg] Error 2
-> make: Leaving directory '/data/src/kernel/linux/tools/power/acpi'
-> 
-> This is because the output directory has not been created yet. Fix this issue by
-> creating the output directory before compiling.
+On Mon, Nov 22, 2021 at 06:03:02PM +0100, Peter Zijlstra wrote:
+> In order to find _THIS_IP_ code references in objtool, annotate them.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Thanks!
+Just to check my understanding, IIUC this is because in later patches
+you'll look at text relocations to spot missing ENDBRs, and when doing
+so you need to filter out _THIS_IP_ instances, since those don't need an
+ENDBR. Is that right?
 
-> Reported-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+Just checking I haven't missed some other concern that might apply to
+arm64's BTI (Branch Target Identifier), which are analagous to ENDBR.
+
+Thanks,
+Mark.
+
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 > ---
->  tools/power/acpi/Makefile.config | 1 +
->  tools/power/acpi/Makefile.rules  | 1 +
->  2 files changed, 2 insertions(+)
+>  arch/x86/include/asm/linkage.h      |   11 +++++++++++
+>  include/linux/instruction_pointer.h |    5 +++++
+>  2 files changed, 16 insertions(+)
 > 
-> diff --git a/tools/power/acpi/Makefile.config b/tools/power/acpi/Makefile.config
-> index 331f6d30f472..cd7106876a5f 100644
-> --- a/tools/power/acpi/Makefile.config
-> +++ b/tools/power/acpi/Makefile.config
-> @@ -69,6 +69,7 @@ KERNEL_INCLUDE := $(OUTPUT)include
->  ACPICA_INCLUDE := $(srctree)/../../../drivers/acpi/acpica
->  CFLAGS += -D_LINUX -I$(KERNEL_INCLUDE) -I$(ACPICA_INCLUDE)
->  CFLAGS += $(WARNINGS)
-> +MKDIR = mkdir
+> --- a/arch/x86/include/asm/linkage.h
+> +++ b/arch/x86/include/asm/linkage.h
+> @@ -3,10 +3,21 @@
+>  #define _ASM_X86_LINKAGE_H
 >  
->  ifeq ($(strip $(V)),false)
->  	QUIET=@
-> diff --git a/tools/power/acpi/Makefile.rules b/tools/power/acpi/Makefile.rules
-> index 2a6c170b57cd..1d7616f5d0ae 100644
-> --- a/tools/power/acpi/Makefile.rules
-> +++ b/tools/power/acpi/Makefile.rules
-> @@ -21,6 +21,7 @@ $(KERNEL_INCLUDE):
+>  #include <linux/stringify.h>
+> +#include <asm/asm.h>
 >  
->  $(objdir)%.o: %.c $(KERNEL_INCLUDE)
->  	$(ECHO) "  CC      " $(subst $(OUTPUT),,$@)
-> +	$(QUIET) $(MKDIR) -p $(objdir) 2>/dev/null
-
-Not sure we need the `2>/dev/null` part.
-
->  	$(QUIET) $(CC) -c $(CFLAGS) -o $@ $<
+>  #undef notrace
+>  #define notrace __attribute__((no_instrument_function))
 >  
->  all: $(OUTPUT)$(TOOL)
-> -- 
-> 2.25.1
+> +#define _THIS_IP_						\
+> +	({	__label__ __here;				\
+> +		__here:						\
+> +		asm_volatile_goto (				\
+> +		    ".pushsection .discard.this_ip\n\t"		\
+> +		    _ASM_PTR " %l[__here]\n\t"			\
+> +		    ".popsection\n\t"				\
+> +		    : : : : __here);				\
+> +		(unsigned long)&&__here; })
+> +
+>  #ifdef CONFIG_X86_32
+>  #define asmlinkage CPP_ASMLINKAGE __attribute__((regparm(0)))
+>  #endif /* CONFIG_X86_32 */
+> --- a/include/linux/instruction_pointer.h
+> +++ b/include/linux/instruction_pointer.h
+> @@ -2,7 +2,12 @@
+>  #ifndef _LINUX_INSTRUCTION_POINTER_H
+>  #define _LINUX_INSTRUCTION_POINTER_H
+>  
+> +#include <asm/linkage.h>
+> +
+>  #define _RET_IP_		(unsigned long)__builtin_return_address(0)
+> +
+> +#ifndef _THIS_IP_
+>  #define _THIS_IP_  ({ __label__ __here; __here: (unsigned long)&&__here; })
+> +#endif
+>  
+>  #endif /* _LINUX_INSTRUCTION_POINTER_H */
 > 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> 
