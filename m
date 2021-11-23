@@ -2,143 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B734A45ACCF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:48:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E481945ACD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:50:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236366AbhKWTvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 14:51:11 -0500
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:34760
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232144AbhKWTvJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 14:51:09 -0500
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 464573F225
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 19:48:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1637696880;
-        bh=awbGKqFJMvM06q00ru2W6cjtSUOX907qfBZEpTNwf+o=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=tbd6PVVj0ehRwALQ/yYF4ALFQ/uWeCvT1xT0vn/wQQ38womLnGG0PFsWd6kTWjagH
-         VN0Ci/HbujoMLwqZvMwKFWwMRxlD7rS2g+Asd8hH4QiRJu+MVQb9SQgUUkJb8qiUW/
-         H3eBz9GF3eGkeV8Ew1ZALyCIvtUZky2nJ8tgBGO3iC4qBsB46CmFg+VlKAR/RxQkWl
-         aQbi2Nfy53StxQDAeLyJhygKftyy84TfEyyTJGnLFWLoVmkpOnQ7s0FyqCC1pcf+jx
-         3kRp0Lu91xQQJzi6yfOkZP98aFQHMNm+fJu6nyRsxbj4gAcnQgNfnolYUAfO5QwjMZ
-         k5GPvB/UVb2eg==
-Received: by mail-lf1-f71.google.com with SMTP id q26-20020ac2515a000000b0040adfeb8132so144581lfd.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:48:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=awbGKqFJMvM06q00ru2W6cjtSUOX907qfBZEpTNwf+o=;
-        b=SpHffk5OMGLYykOrAWVNe5M4rkgAKz6s14KzVOREAlzQh3AvCkkFJZojC9xBOW3okU
-         aoh0RY5jXLZFYkjzb+IhnaDtZw0BeM/MR3T1felN3SkIjujnf1iCndhvNNquxQ42l0Xb
-         ADRt0JxqQiJnMoJO23bjy0z8tpiUHrh5edCS1dQ90yIPlituSwncAtg6tIcWuEd+KElO
-         J7FbwapdGylCITk4qexwwjRhn7osTHb1/50PDcj8PeF9NxFtd2daggk41sdnsn22t2Cf
-         gmDWrmHOGbaVYlKR47DtzB0dVAboa4y5gaTaG9H2nxtAIQ5lU4d9x4RIZK37M26YNi3K
-         1qOg==
-X-Gm-Message-State: AOAM531pcFmuY8d5wfF/ZZou7uBciuOQc08d4T7v/7bDH6yLY4v8NCtn
-        0EHeyxKh3sD6zY+BwAVRuQtg5emwACWvExFRb9AMTlX+ZdEcl2MeqvreUSNuWf2hCRu5rtfENE5
-        HGVmIeJ5TWxGUd9uP8/eQ4NzfGvxb337FRRo1pP2LSQ==
-X-Received: by 2002:a2e:9acf:: with SMTP id p15mr8706075ljj.213.1637696879212;
-        Tue, 23 Nov 2021 11:47:59 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw5DSe7GPue3q18G0oImIITmr9qz4TwOJH/oHfODp8pgS8jydQV278sOB6lv9XS+71ur7RsjA==
-X-Received: by 2002:a2e:9acf:: with SMTP id p15mr8706051ljj.213.1637696879047;
-        Tue, 23 Nov 2021 11:47:59 -0800 (PST)
-Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id z14sm362478lfg.173.2021.11.23.11.47.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Nov 2021 11:47:58 -0800 (PST)
-Message-ID: <a28532b1-bfa0-031b-91cc-070cad557599@canonical.com>
-Date:   Tue, 23 Nov 2021 20:47:57 +0100
+        id S240042AbhKWTxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 14:53:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36472 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232735AbhKWTxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 14:53:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2A3C60F45;
+        Tue, 23 Nov 2021 19:49:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637696996;
+        bh=ssffmWy9JtYFUpADiyNa7TiRUR5UVxOfPmHgUAdzls4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aCT77HuqUzfHVld/Yd0cAYpR2SD36MlJx4N3z1uMi0wkPk4yzfwtdRos7SImlfk1/
+         sGol0jpKWMYvw+wtyC4a2Y89it7BkAKs1L+zYV82wQQ46olqUsArNgL1sDLHqgk3rJ
+         gAPdBOLrl6w2bAd9IE3wK56drx/GlXXt7ZUFu9XBzNuRiSBrcgmj8OX1jKAGkm07CR
+         nYp1atrG2K8paaDz5T+ApUWS1LiKePBECViLT0VivGZJ21ecMozFQ1rF7ExgMDcu8j
+         Xi/yDnDOBeEdoC4Mdc+JnTzbzA9L3wiNEtfQdLkbgJF5jhcc+qBkXWon9qRaLjvMW0
+         PQAhbIHk82HOQ==
+Date:   Tue, 23 Nov 2021 11:49:54 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Benjamin LaHaise <bcrl@kvack.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Ramji Jiyani <ramjiyani@google.com>, arnd@arndb.de, hch@lst.de,
+        kernel-team@android.com, linux-aio@kvack.org,
+        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, oleg@redhat.com,
+        Jeff Moyer <jmoyer@redhat.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v5] aio: Add support for the POLLFREE
+Message-ID: <YZ1F4qmBJ42VpZp3@gmail.com>
+References: <20211027011834.2497484-1-ramjiyani@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH 1/4] dt-bindings: memory-controllers: ti,gpmc: Add
- compatible for AM64
-Content-Language: en-US
-To:     Roger Quadros <rogerq@kernel.org>, tony@atomide.com
-Cc:     kishon@ti.com, nm@ti.com, vigneshr@ti.com,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-References: <20211123102607.13002-1-rogerq@kernel.org>
- <20211123102607.13002-2-rogerq@kernel.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20211123102607.13002-2-rogerq@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211027011834.2497484-1-ramjiyani@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/11/2021 11:26, Roger Quadros wrote:
-> AM64 SoC contains the GPMC module. Add compatible for it.
+On Wed, Oct 27, 2021 at 01:18:34AM +0000, Ramji Jiyani wrote:
+> Add support for the POLLFREE flag to force complete iocb inline in
+> aio_poll_wake(). A thread may use it to signal it's exit and/or request
+> to cleanup while pending poll request. In this case, aio_poll_wake()
+> needs to make sure it doesn't keep any reference to the queue entry
+> before returning from wake to avoid possible use after free via
+> poll_cancel() path.
 > 
-> Newer SoCs don't necessarily map GPMC data region at the same place
-> as legacy SoCs. Add reg-names "data", to provide this information to
-> the device driver.
+> UAF issue was found during binder and aio interactions in certain
+> sequence of events [1].
 > 
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> The POLLFREE flag is no more exclusive to the epoll and is being
+> shared with the aio. Remove comment from poll.h to avoid confusion.
+> 
+> [1] https://lore.kernel.org/r/CAKUd0B_TCXRY4h1hTztfwWbNSFQqsudDLn2S_28csgWZmZAG3Q@mail.gmail.com/
+> 
+> Fixes: af5c72b1fc7a ("Fix aio_poll() races")
+> Signed-off-by: Ramji Jiyani <ramjiyani@google.com>
+> Reviewed-by: Jeff Moyer <jmoyer@redhat.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Cc: stable@vger.kernel.org # 4.19+
 > ---
->  .../bindings/memory-controllers/ti,gpmc.yaml         | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml b/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
-> index 25b42d68f9b3..1869cc6f949b 100644
-> --- a/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
-> +++ b/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
-> @@ -23,13 +23,20 @@ properties:
->      items:
->        - enum:
->            - ti,am3352-gpmc
-> +          - ti,am64-gpmc
->            - ti,omap2420-gpmc
->            - ti,omap2430-gpmc
->            - ti,omap3430-gpmc
->            - ti,omap4430-gpmc
->  
->    reg:
-> -    maxItems: 1
-> +    minItems: 1
-> +    maxItems: 2
-> +
-> +  reg-names:
-> +    items:
-> +      - const: cfg
-> +      - const: data
 
-I see your driver handles cases with only one reg item, but I have other
-question - is it correct to have older (ARMv7) platform with two reg
-items? Or can am64-gpmc come with only one reg?
-IOW, I am surprised there is no if-else case precising this minItems
-requirement for different SocS.
+Looks good, feel free to add:
 
->  
->    interrupts:
->      maxItems: 1
-> @@ -44,6 +51,9 @@ properties:
->      items:
->        - const: fck
->  
-> +  power-domains:
-> +    maxItems: 1
+	Reviewed-by: Eric Biggers <ebiggers@google.com>
 
-Similar, but looks like a weaker requirement - could an older SoC define
-power-domain?
+I'm still not 100% happy with the commit message, but it's good enough.
+The actual code looks correct.
 
-> +
->    dmas:
->      items:
->        - description: DMA channel for GPMC NAND prefetch
-> 
+Who is going to take this patch?  This is an important fix; it shouldn't be
+sitting ignored for months.  get_maintainer.pl shows:
 
+$ ./scripts/get_maintainer.pl fs/aio.c
+Benjamin LaHaise <bcrl@kvack.org> (supporter:AIO)
+Alexander Viro <viro@zeniv.linux.org.uk> (maintainer:FILESYSTEMS (VFS and infrastructure))
+linux-aio@kvack.org (open list:AIO)
+linux-fsdevel@vger.kernel.org (open list:FILESYSTEMS (VFS and infrastructure))
+linux-kernel@vger.kernel.org (open list)
 
-Best regards,
-Krzysztof
+- Eric
