@@ -2,126 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3DD45AFBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA90E45AFB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:02:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233299AbhKWXFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 18:05:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40920 "EHLO
+        id S232978AbhKWXFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 18:05:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231688AbhKWXFz (ORCPT
+        with ESMTP id S232351AbhKWXFW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 18:05:55 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF32C061714
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 15:02:46 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id 131so1714607ybc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 15:02:46 -0800 (PST)
+        Tue, 23 Nov 2021 18:05:22 -0500
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08785C061714
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 15:02:14 -0800 (PST)
+Received: by mail-oi1-x236.google.com with SMTP id be32so1228302oib.11
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 15:02:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=jYNvJR/ZMO4AsNQEoxXlpBNonI3w0BCt0LHy2BJIfwc=;
-        b=EoadG8zh/DDKPiytCwQ9f9n/iKi3JlBtjUUY6Tzhf3RQQe0jFTJUjuxhgmlgRDHKZt
-         +8WL7g5CVtZuajl02UsPbmUMEI4GJn4mvWXDcL1iZb716t6eSg/3EbpepmZLfNUtJxyG
-         01tU3w0mpaw4GKLjWU3ae/HqfcYH0XttKAHhcewfFCQ+0ElGjffeDlgtOrcYqo2vpoMA
-         KajYEgqsshIfqfwx5ITwzfbbBvr8wGsyB7W6tLRGNhxIDJn7KEmfLOFqK4U/KgxCWhSI
-         oLQ+taY2NbIARDeGidXtgfHLcW7oeZuJEc+827Rn2FTcmCzjpnxAGIyA2mzi+41IoPi5
-         9LFQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=U/YfcKuWu9IBkxXAjQ9Eru9NWliiwRlAFXbf84u64iw=;
+        b=Qxx/ct/QAteIczIt6u1z/ZW2GAaejZjWOiZpUGS0Yz14806PSoc0ypAeotDWKBdgB5
+         iSZU6eDDsfKo6Xv9k+NJ+UZeNUhCOzSVTPBeaT01bVwgfzXUnDacnVTBxrp8kqmlwJAX
+         JsfYlrhqmJJar4p39sslfer/C/XeAqD/vxcoZF7v83XdNPeSx4ugo97leYM0YHLUUQBs
+         FCG+RjnM2V0FydRVSUCNRCysVR1eboOi6owXfSQxeK9dpRIto2xOS+KKE3Lkax3DmjFm
+         mK2G7X+Jn0wqTuQ9H+2DRkzsHFfKbanuY+RfLuPUbZpoIq3jUGB5IwbJismA+voJbqX4
+         3Izg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=jYNvJR/ZMO4AsNQEoxXlpBNonI3w0BCt0LHy2BJIfwc=;
-        b=pV7hv3e9HLh77VVI4pcITFljBO/XOPJYjA+61wr5dXA0la2vVnzsYQJ2+Lt+TNzfXF
-         E5J9hSer2lqBWdT9MBVJwsB83fW0rK7DDuTtr8znVUIP+foTIw5biyThjGBWY/e1zIp4
-         NIP1r8iv0roAYqy1RfU20BeCbIg78Fks2ZMMHvnFYjABsQU/cmo3NghPgJTYraFoLSXI
-         YFxSsjW/fsc+ifSgIBFvAFNAlyTVadxZPziC/3Vvh4ceoM3Vyqx6Jjj+peU+hu4WA0sM
-         4sFGUGOcxgvGHxs7kI7rp1HL2UWxeH+ariG692VcA5Nq3GnCYNFirDFhsRRQz8hrUW+5
-         N4Ig==
-X-Gm-Message-State: AOAM530OmkkEm43WpP09NC/6DCZhvQvnbbzD1gLY7cf92wAYxwF5pooU
-        zGltLFQ173W9oB29Qvs1JTnUYBBAvP0UdySGDG7zTw==
-X-Google-Smtp-Source: ABdhPJxUExcw/sUIewzH2m2aJqB1DQz8JVV+JSuEPsSeWafHZDN27gbuARPQ5eq8Yz1eR6uYAta8VxaEU38mODyFhtE=
-X-Received: by 2002:a25:cecd:: with SMTP id x196mr10749762ybe.63.1637708565519;
- Tue, 23 Nov 2021 15:02:45 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=U/YfcKuWu9IBkxXAjQ9Eru9NWliiwRlAFXbf84u64iw=;
+        b=eFe6bxwFH2oSYcmqvcS9YOZs3clbfwQKm/jP4TatXBN4vCGR0oyUYgsk2N5p5R4LEr
+         i6EG5seHyw14CY7/5il7utNbxt+mA7EPGelOOkBFkbfzuUSxRN2sJgI1LkTK+UGHJWaP
+         9vrB+2PxWwf5FWmGjvxhEny6Y+R/oJERGmDQwmnG3Z8C2kFYN6+mdT1qPd5nWNv30PgM
+         WYbcZB2nLiqA02kZ/yKVmB7Sgpo8qHa7qxr62hTHUlXVktswfSMXllIDxAVWqKns/8SW
+         wG2yaYoWtJJc3PWAPBIZQ7u5kJ/mN5AyI9lIiMUl7duMc0KUarFAov1VAv3wz7L//5GI
+         ju3g==
+X-Gm-Message-State: AOAM530s3lZnLAATIFSUAAyGh46BkAcNhZh10eJE6suahFVY/QsoYhcJ
+        UNOK1Qnt4YscSWT5CX/WBpJraQ==
+X-Google-Smtp-Source: ABdhPJzWaRUeQLHSrascFf1GNb0zer8lw+90WeJZXU4FLvAUr8grUNKxROvP8CF72Rh4EzXkv9Bn4w==
+X-Received: by 2002:a05:6808:55:: with SMTP id v21mr1056533oic.174.1637708533242;
+        Tue, 23 Nov 2021 15:02:13 -0800 (PST)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id v12sm2450822ote.9.2021.11.23.15.02.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 15:02:12 -0800 (PST)
+Date:   Tue, 23 Nov 2021 15:03:55 -0800
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Akhil P Oommen <akhilpo@codeaurora.org>
+Cc:     freedreno <freedreno@lists.freedesktop.org>,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Rob Clark <robdclark@gmail.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux Patches Robot 
+        <linux-patches-robot@chromeos-missing-patches.google.com.iam.gserviceaccount.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        St?phane Marchesin <marcheu@chromium.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/6] drm/msm/a6xx: Capture gmu log in devcoredump
+Message-ID: <YZ1zW/9lsJNrVfqJ@ripper>
+References: <20211124024436.v2.1.I2ed37cd8ad45a5a94d9de53330f973a62bd1fb29@changeid>
+ <20211124024436.v2.4.Ibb71b3c64d6f98d586131a143c27fbdb233260a1@changeid>
 MIME-Version: 1.0
-References: <20211123205607.452497-1-zenczykowski@gmail.com>
-In-Reply-To: <20211123205607.452497-1-zenczykowski@gmail.com>
-From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date:   Tue, 23 Nov 2021 15:02:33 -0800
-Message-ID: <CANP3RGdZq6x0NB2wKn5YG2Va=j0YHKd5DcM7_dyaKWhdyUrzOw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: allow readonly direct path access for skfilter
-To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Linux Network Development Mailing List <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124024436.v2.4.Ibb71b3c64d6f98d586131a143c27fbdb233260a1@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Note: this is more of an RFC... question in patch format... is this
-even a good idea?
+On Tue 23 Nov 13:17 PST 2021, Akhil P Oommen wrote:
 
-On Tue, Nov 23, 2021 at 12:56 PM Maciej =C5=BBenczykowski
-<zenczykowski@gmail.com> wrote:
->
-> From: Maciej =C5=BBenczykowski <maze@google.com>
->
-> skfilter bpf programs can read the packet directly via llvm.bpf.load.byte=
-/
-> /half/word which are 8/16/32-bit primitive bpf instructions and thus
-> behave basically as well as DPA reads.  But there is no 64-bit equivalent=
-,
-> due to the support for the equivalent 64-bit bpf opcode never having been
-> added (unclear why, there was a patch posted).
-> DPA uses a slightly different mechanism, so doesn't suffer this limitatio=
-n.
->
-> Using 64-bit reads, 128-bit ipv6 address comparisons can be done in just
-> 2 steps, instead of the 4 steps needed with llvm.bpf.word.
->
-> This should hopefully allow simpler (less instructions, and possibly less
-> logic and maybe even less jumps) programs.  Less jumps may also mean vast=
-ly
-> faster bpf verifier times (it can be exponential in the number of jumps..=
-.).
->
-> This can be particularly important when trying to do something like scan
-> a netlink message for a pattern (2000 iteration loop) to decide whether
-> a message should be dropped, or delivered to userspace (thus waking it up=
-).
->
-> I'm requiring CAP_NET_ADMIN because I'm not sure of the security
-> implications...
->
-> Tested: only build tested
-> Signed-off-by: Maciej =C5=BBenczykowski <maze@google.com>
+> Capture gmu log in coredump to enhance debugging.
+> 
+> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
 > ---
->  kernel/bpf/verifier.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 331b170d9fcc..0c2e25fb9844 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -3258,6 +3258,11 @@ static bool may_access_direct_pkt_data(struct bpf_=
-verifier_env *env,
->         enum bpf_prog_type prog_type =3D resolve_prog_type(env->prog);
->
->         switch (prog_type) {
-> +       case BPF_PROG_TYPE_SOCKET_FILTER:
-> +               if (meta || !capable(CAP_NET_ADMIN))
-> +                       return false;
-> +               fallthrough;
+> 
+> Changes in v2:
+> - Fix kernel test robot's warning about size_t's format specifier
+> 
+>  drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c | 41 +++++++++++++++++++++++++++++
+>  drivers/gpu/drm/msm/adreno/adreno_gpu.c     |  2 +-
+>  drivers/gpu/drm/msm/adreno/adreno_gpu.h     |  2 ++
+>  3 files changed, 44 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+> index e8f65cd..e6f5571 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+> @@ -42,6 +42,8 @@ struct a6xx_gpu_state {
+>  	struct a6xx_gpu_state_obj *cx_debugbus;
+>  	int nr_cx_debugbus;
+>  
+> +	struct msm_gpu_state_bo *gmu_log;
 > +
->         /* Program types only with direct read access go here! */
->         case BPF_PROG_TYPE_LWT_IN:
->         case BPF_PROG_TYPE_LWT_OUT:
-> --
-> 2.34.0.rc2.393.gf8c9666880-goog
->
+>  	struct list_head objs;
+>  };
+>  
+> @@ -800,6 +802,30 @@ static void a6xx_get_gmu_registers(struct msm_gpu *gpu,
+>  		&a6xx_state->gmu_registers[2], false);
+>  }
+>  
+> +static void a6xx_get_gmu_log(struct msm_gpu *gpu,
+> +		struct a6xx_gpu_state *a6xx_state)
+> +{
+> +	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+> +	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
+> +	struct a6xx_gmu *gmu = &a6xx_gpu->gmu;
+> +	struct msm_gpu_state_bo *gmu_log;
+> +
+> +	gmu_log = state_kcalloc(a6xx_state,
+> +		1, sizeof(*a6xx_state->gmu_log));
+
+This line isn't even 80 chars long, so I see no reason to wrap it and if
+you ran checkpatch --strict on this patch it would complain about how
+you indent that second line as well.
+
+It would also look better with sizeof(*gmu_log), even though they should
+have the same size today...
+
+> +	if (!gmu_log)
+> +		return;
+> +
+> +	gmu_log->iova = gmu->log.iova;
+> +	gmu_log->size = gmu->log.size;
+> +	gmu_log->data = kvzalloc(gmu_log->size, GFP_KERNEL);
+> +	if (!gmu_log->data)
+> +		return;
+> +
+> +	memcpy(gmu_log->data, gmu->log.virt, gmu->log.size);
+> +
+> +	a6xx_state->gmu_log = gmu_log;
+> +}
+> +
+>  #define A6XX_GBIF_REGLIST_SIZE   1
+>  static void a6xx_get_registers(struct msm_gpu *gpu,
+>  		struct a6xx_gpu_state *a6xx_state,
+> @@ -937,6 +963,8 @@ struct msm_gpu_state *a6xx_gpu_state_get(struct msm_gpu *gpu)
+>  
+>  	a6xx_get_gmu_registers(gpu, a6xx_state);
+>  
+> +	a6xx_get_gmu_log(gpu, a6xx_state);
+> +
+>  	/* If GX isn't on the rest of the data isn't going to be accessible */
+>  	if (!a6xx_gmu_gx_is_on(&a6xx_gpu->gmu))
+>  		return &a6xx_state->base;
+> @@ -978,6 +1006,9 @@ static void a6xx_gpu_state_destroy(struct kref *kref)
+>  	struct a6xx_gpu_state *a6xx_state = container_of(state,
+>  			struct a6xx_gpu_state, base);
+>  
+> +	if (a6xx_state->gmu_log && a6xx_state->gmu_log->data)
+> +		kvfree(a6xx_state->gmu_log->data);
+> +
+>  	list_for_each_entry_safe(obj, tmp, &a6xx_state->objs, node)
+>  		kfree(obj);
+>  
+> @@ -1191,6 +1222,16 @@ void a6xx_show(struct msm_gpu *gpu, struct msm_gpu_state *state,
+>  
+>  	adreno_show(gpu, state, p);
+>  
+> +	drm_puts(p, "gmu-log:\n");
+> +	if (a6xx_state->gmu_log) {
+> +		struct msm_gpu_state_bo *gmu_log = a6xx_state->gmu_log;
+> +
+> +		drm_printf(p, "    iova: 0x%016llx\n", gmu_log->iova);
+> +		drm_printf(p, "    size: %zu\n", gmu_log->size);
+> +		adreno_show_object(p, &gmu_log->data, gmu_log->size,
+> +				&gmu_log->encoded);
+> +	}
+> +
+>  	drm_puts(p, "registers:\n");
+>  	for (i = 0; i < a6xx_state->nr_registers; i++) {
+>  		struct a6xx_gpu_state_obj *obj = &a6xx_state->registers[i];
+> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> index 1539b8e..b43346e 100644
+> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> @@ -638,7 +638,7 @@ static char *adreno_gpu_ascii85_encode(u32 *src, size_t len)
+>  }
+>  
+>  /* len is expected to be in bytes */
+> -static void adreno_show_object(struct drm_printer *p, void **ptr, int len,
+> +void adreno_show_object(struct drm_printer *p, void **ptr, int len,
+>  		bool *encoded)
+
+Please indent your broken lines by the ( on the line before.
+
+Regards,
+Bjorn
+
+>  {
+>  	if (!*ptr || !len)
+> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> index 225c277..6762308 100644
+> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> @@ -306,6 +306,8 @@ void adreno_gpu_state_destroy(struct msm_gpu_state *state);
+>  
+>  int adreno_gpu_state_get(struct msm_gpu *gpu, struct msm_gpu_state *state);
+>  int adreno_gpu_state_put(struct msm_gpu_state *state);
+> +void adreno_show_object(struct drm_printer *p, void **ptr, int len,
+> +		bool *encoded);
+>  
+>  /*
+>   * Common helper function to initialize the default address space for arm-smmu
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation.
+> 
