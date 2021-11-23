@@ -2,73 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4862B45AFA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:01:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C243645AFB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232082AbhKWXEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 18:04:16 -0500
-Received: from mga11.intel.com ([192.55.52.93]:7536 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229642AbhKWXEH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 18:04:07 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="232647725"
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="232647725"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 15:00:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="474926135"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 23 Nov 2021 15:00:55 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mpemU-0002PO-SX; Tue, 23 Nov 2021 23:00:54 +0000
-Date:   Wed, 24 Nov 2021 07:00:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: [bvanassche:ufs-2021-11-19 2/20] ERROR: modpost:
- "scsi_track_queue_full" [drivers/scsi/bfa/bfa.ko] undefined!
-Message-ID: <202111240614.Kk9kfcQK-lkp@intel.com>
+        id S232282AbhKWXFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 18:05:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229642AbhKWXFI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 18:05:08 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 110EAC061574;
+        Tue, 23 Nov 2021 15:01:59 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id g14so1615458edb.8;
+        Tue, 23 Nov 2021 15:01:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ht9E1p/DyzTpsAqMy6QR1zhTTEv9RdTNX9jIQ90EKf0=;
+        b=qGLwsyoG1Pcf+l323FrU7zfkNsFBiEzV5p5s/wM7Hesk9nWnHJt0R1pIC6iiRlBomj
+         NIf011wRJHUCAZWgYCsyh8UriNs3HfQjBFpDSXeoC/Cg21V2Yz5UOsuUK47O207wyekj
+         +Qejdg9mnrlOc55iDAViSd0Iu/yIUcWRdvDbNskawt0WKFT0NcaMRLUHgG7TR6h2kpUw
+         tOvVadWKaMapJYV7LYcfVTXwrorDKh/VKELoFAFbzKlNi1D8W90hZEziIj5B94Rga1f+
+         iX4JVBap0gLwiltixQTrP9/YoYobHKAzMIaHZadLqsIabt6riHb9XERx98H/MucVrXHh
+         PUHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ht9E1p/DyzTpsAqMy6QR1zhTTEv9RdTNX9jIQ90EKf0=;
+        b=sEwCMuoBAKwemv4VGmf0ap8++9i0Cdnk/0IPMqhzLNd0ZM77C3i6UWLZomf82jdmms
+         VbTnrlafhjjR7338FsGOoygyQBbsE1s/7A2QbwD1Cj6OmjcIIj0fyH7i5XifcjVWhyEL
+         9RIlSMrftGgddT5sE9aUVY31Ecd0W1iWSfikQRJI2zn3MoudZm6j//XifRX3X+PVbT+1
+         QPBRU/25yE0eQyARcyPGFR4XQEYhbBVPSBuv5XoOw2uhQLakQchIfANIWA9jyUnooUOq
+         3IldL7wq/VjNbHmSHNdlPZv/G5ev0Bj2/d4RuDR/9ZmLlIKHdxRz2Tymw5I33wxtJaBC
+         vSqg==
+X-Gm-Message-State: AOAM53032+ZmkPo380Fxs7djAaXROpKSxtt3VhGBFTHB0vj+ccepa454
+        vK2gkXYocNylyujNMiN5kGxxVZatqEeciurF/gQ=
+X-Google-Smtp-Source: ABdhPJyGkjWgdJNmrGbvK5UhP73uvpIxjmfUItuL6e+QCzmzGC5HR6vmcZUBZndWYGeq7YneJzPMHREKrcnGnGuWkB8=
+X-Received: by 2002:a17:906:6a0a:: with SMTP id qw10mr13399358ejc.141.1637708517524;
+ Tue, 23 Nov 2021 15:01:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211123163149.1530535-1-tanureal@opensource.cirrus.com>
+ <20211123163149.1530535-12-tanureal@opensource.cirrus.com>
+ <87af37a2-dc02-2ae0-a621-b82c8601c16c@redhat.com> <756f813c-cc3e-7ddf-e5db-cf6c874f907e@opensource.cirrus.com>
+ <1605be8d-0913-4b52-32e2-8076fff01d30@redhat.com>
+In-Reply-To: <1605be8d-0913-4b52-32e2-8076fff01d30@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 24 Nov 2021 01:01:21 +0200
+Message-ID: <CAHp75VcanaEU89LXCs_CaBC5WvhotyuTeeS2FSxqhZntbz5FFg@mail.gmail.com>
+Subject: Re: [PATCH 11/11] ACPI / scan: Create platform device for CLSA0100
+ ACPI nodes
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Lucas tanure <tanureal@opensource.cirrus.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, Mark Gross <markgross@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Kailang Yang <kailang@realtek.com>,
+        Shuming Fan <shumingf@realtek.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
+        Jeremy Szu <jeremy.szu@canonical.com>,
+        Hui Wang <hui.wang@canonical.com>,
+        Werner Sembach <wse@tuxedocomputers.com>,
+        Chris Chiu <chris.chiu@canonical.com>,
+        Cameron Berkenpas <cam@neo-zeon.de>,
+        Sami Loone <sami@loone.fi>, Elia Devito <eliadevito@gmail.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Jack Yu <jack.yu@realtek.com>, Arnd Bergmann <arnd@arndb.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        patches@opensource.cirrus.com,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://github.com/bvanassche/linux ufs-2021-11-19
-head:   833ecbf340f5b323aea907ead44c623753ec8aef
-commit: b7ee0146fa715887ce78a2cf87b3e7cf8fb36894 [2/20] scsi: core: Unexport scsi_track_queue_full()
-config: mips-allmodconfig (https://download.01.org/0day-ci/archive/20211124/202111240614.Kk9kfcQK-lkp@intel.com/config.gz)
-compiler: mips-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/bvanassche/linux/commit/b7ee0146fa715887ce78a2cf87b3e7cf8fb36894
-        git remote add bvanassche https://github.com/bvanassche/linux
-        git fetch --no-tags bvanassche ufs-2021-11-19
-        git checkout b7ee0146fa715887ce78a2cf87b3e7cf8fb36894
-        # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=mips 
+On Tue, Nov 23, 2021 at 8:36 PM Hans de Goede <hdegoede@redhat.com> wrote:
+> On 11/23/21 18:11, Lucas tanure wrote:
+> > On 11/23/21 17:05, Hans de Goede wrote:
+> >> On 11/23/21 17:31, Lucas Tanure wrote:
+> >>> The ACPI device with CLSA0100 is a sound card with multiple
+> >>> instances of CS35L41.
+> >>>
+> >>> We add an ID to the I2C multi instantiate list to enumerate
+> >>> all I2C slaves correctly.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+...
 
-All errors (new ones prefixed by >>, old ones prefixed by <<):
+> >>> @@ -1708,6 +1708,7 @@ static bool acpi_device_enumeration_by_parent(struct acpi_device *device)
+> >>>           {"BSG2150", },
+> >>>           {"INT33FE", },
+> >>>           {"INT3515", },
 
-ERROR: modpost: missing MODULE_LICENSE() in drivers/pci/controller/pcie-mt7621.o
-ERROR: modpost: "scsi_track_queue_full" [drivers/message/fusion/mptsas.ko] undefined!
-ERROR: modpost: "scsi_track_queue_full" [drivers/scsi/esp_scsi.ko] undefined!
->> ERROR: modpost: "scsi_track_queue_full" [drivers/scsi/bfa/bfa.ko] undefined!
-ERROR: modpost: "mips_cm_unlock_other" [drivers/pci/controller/pcie-mt7621.ko] undefined!
-ERROR: modpost: "mips_cpc_base" [drivers/pci/controller/pcie-mt7621.ko] undefined!
-ERROR: modpost: "mips_cm_lock_other" [drivers/pci/controller/pcie-mt7621.ko] undefined!
-ERROR: modpost: "mips_cm_is64" [drivers/pci/controller/pcie-mt7621.ko] undefined!
-ERROR: modpost: "mips_gcr_base" [drivers/pci/controller/pcie-mt7621.ko] undefined!
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> >>> +        {"CLSA0100", },
+
+Can we keep it sorted, please?
+Ditto for the other driver.
+
+> >>>           {}
+
+-- 
+With Best Regards,
+Andy Shevchenko
