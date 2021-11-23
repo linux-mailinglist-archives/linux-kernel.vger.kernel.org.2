@@ -2,258 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B157A45B07B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:51:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3599B45B079
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239920AbhKWXyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 18:54:07 -0500
-Received: from mga07.intel.com ([134.134.136.100]:32704 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232735AbhKWXyG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 18:54:06 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="298570180"
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="298570180"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 15:50:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="674668095"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 23 Nov 2021 15:50:56 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mpfYt-0002TH-St; Tue, 23 Nov 2021 23:50:55 +0000
-Date:   Wed, 24 Nov 2021 07:49:52 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- 8c92606ab81086db00cbb73347d124b4eb169b7e
-Message-ID: <619d7e20.iblIsvuXb13ffoVN%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S239711AbhKWXxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 18:53:49 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15858 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232735AbhKWXxs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 18:53:48 -0500
+Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HzLVD0D1Sz9159;
+        Wed, 24 Nov 2021 07:50:12 +0800 (CST)
+Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
+ dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Wed, 24 Nov 2021 07:50:38 +0800
+Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
+ dggpemm500007.china.huawei.com (7.185.36.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Wed, 24 Nov 2021 07:50:38 +0800
+Received: from dggpeml100016.china.huawei.com ([7.185.36.216]) by
+ dggpeml100016.china.huawei.com ([7.185.36.216]) with mapi id 15.01.2308.020;
+ Wed, 24 Nov 2021 07:50:38 +0800
+From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
+        <longpeng2@huawei.com>
+To:     Dongli Zhang <dongli.zhang@oracle.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Gonglei (Arei)" <arei.gonglei@huawei.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Valentin Schneider" <valentin.schneider@arm.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        "Stefano Stabellini" <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: RE: [PATCH] cpu/hotplug: Allow the CPU in CPU_UP_PREPARE state to be
+ brought up again.
+Thread-Topic: [PATCH] cpu/hotplug: Allow the CPU in CPU_UP_PREPARE state to be
+ brought up again.
+Thread-Index: AQHX37hRU5zyn85RmkiAPYCSmtUPkawRGrIAgACu5kA=
+Date:   Tue, 23 Nov 2021 23:50:37 +0000
+Message-ID: <46f7dbb8c0cb42228ed028ed89af1282@huawei.com>
+References: <20211122154714.xaoxok3fpk5bgznz@linutronix.de>
+ <d5f43af4-f91f-ef9f-9c33-8d349f59b23c@oracle.com>
+In-Reply-To: <d5f43af4-f91f-ef9f-9c33-8d349f59b23c@oracle.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.148.223]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-branch HEAD: 8c92606ab81086db00cbb73347d124b4eb169b7e  sched/cpuacct: Make user/system times in cpuacct.stat more precise
-
-elapsed time: 723m
-
-configs tested: 198
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20211123
-sh                      rts7751r2d1_defconfig
-sh                        apsh4ad0a_defconfig
-arm                         vf610m4_defconfig
-powerpc                     mpc83xx_defconfig
-mips                         rt305x_defconfig
-arm                         at91_dt_defconfig
-arm                        mvebu_v5_defconfig
-riscv                    nommu_virt_defconfig
-powerpc                       eiger_defconfig
-sh                           se7722_defconfig
-mips                      fuloong2e_defconfig
-powerpc                      bamboo_defconfig
-mips                          ath25_defconfig
-sh                             shx3_defconfig
-powerpc                 mpc836x_mds_defconfig
-sh                           se7705_defconfig
-powerpc                    adder875_defconfig
-mips                        maltaup_defconfig
-sparc                       sparc64_defconfig
-sparc64                          alldefconfig
-mips                           gcw0_defconfig
-arm                          pxa3xx_defconfig
-powerpc                 linkstation_defconfig
-arm                        magician_defconfig
-sh                           se7343_defconfig
-ia64                             alldefconfig
-arm                           stm32_defconfig
-xtensa                       common_defconfig
-sh                         ecovec24_defconfig
-m68k                        stmark2_defconfig
-powerpc                     pq2fads_defconfig
-powerpc                      pasemi_defconfig
-mips                            ar7_defconfig
-sh                          lboxre2_defconfig
-h8300                     edosk2674_defconfig
-arm                         hackkit_defconfig
-m68k                            q40_defconfig
-arc                            hsdk_defconfig
-mips                       capcella_defconfig
-mips                     cu1830-neo_defconfig
-nios2                         3c120_defconfig
-m68k                       m5249evb_defconfig
-xtensa                    smp_lx200_defconfig
-powerpc                     tqm8555_defconfig
-arm                          badge4_defconfig
-nds32                            alldefconfig
-powerpc                      pcm030_defconfig
-m68k                       m5475evb_defconfig
-m68k                       bvme6000_defconfig
-riscv             nommu_k210_sdcard_defconfig
-powerpc                       ebony_defconfig
-openrisc                            defconfig
-arc                        nsim_700_defconfig
-powerpc                      acadia_defconfig
-arm                         orion5x_defconfig
-sh                          rsk7264_defconfig
-mips                          rm200_defconfig
-mips                           xway_defconfig
-parisc                generic-32bit_defconfig
-powerpc                     kmeter1_defconfig
-powerpc                      walnut_defconfig
-powerpc64                           defconfig
-ia64                            zx1_defconfig
-sh                              ul2_defconfig
-mips                     decstation_defconfig
-mips                      pic32mzda_defconfig
-powerpc                      arches_defconfig
-arm                         s3c2410_defconfig
-powerpc                     kilauea_defconfig
-arm                         cm_x300_defconfig
-powerpc                      chrp32_defconfig
-mips                     loongson2k_defconfig
-powerpc                   lite5200b_defconfig
-arm                          pcm027_defconfig
-arm                           h5000_defconfig
-powerpc                    ge_imp3a_defconfig
-ia64                          tiger_defconfig
-mips                       rbtx49xx_defconfig
-arm                  colibri_pxa270_defconfig
-powerpc                 mpc8540_ads_defconfig
-powerpc                      ppc64e_defconfig
-openrisc                 simple_smp_defconfig
-arm                         axm55xx_defconfig
-powerpc                 mpc832x_mds_defconfig
-powerpc                     pseries_defconfig
-arm                        oxnas_v6_defconfig
-arm                       mainstone_defconfig
-powerpc                        warp_defconfig
-powerpc                mpc7448_hpc2_defconfig
-arm                          pxa168_defconfig
-sh                          r7785rp_defconfig
-ia64                        generic_defconfig
-powerpc                   currituck_defconfig
-riscv                          rv32_defconfig
-sh                           se7750_defconfig
-arm                        realview_defconfig
-powerpc                     stx_gp3_defconfig
-um                                  defconfig
-sh                   rts7751r2dplus_defconfig
-arc                        vdk_hs38_defconfig
-powerpc                     redwood_defconfig
-sh                         apsh4a3a_defconfig
-arm                       cns3420vb_defconfig
-powerpc                          g5_defconfig
-s390                       zfcpdump_defconfig
-mips                           mtx1_defconfig
-arm                            xcep_defconfig
-mips                       bmips_be_defconfig
-mips                           ip32_defconfig
-arc                     nsimosci_hs_defconfig
-mips                      maltaaprp_defconfig
-arm                              alldefconfig
-arm                  randconfig-c002-20211123
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a001-20211123
-x86_64               randconfig-a003-20211123
-x86_64               randconfig-a006-20211123
-x86_64               randconfig-a004-20211123
-x86_64               randconfig-a005-20211123
-x86_64               randconfig-a002-20211123
-i386                 randconfig-a001-20211123
-i386                 randconfig-a002-20211123
-i386                 randconfig-a005-20211123
-i386                 randconfig-a006-20211123
-i386                 randconfig-a004-20211123
-i386                 randconfig-a003-20211123
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-
-clang tested configs:
-s390                 randconfig-c005-20211123
-i386                 randconfig-c001-20211123
-powerpc              randconfig-c003-20211123
-arm                  randconfig-c002-20211123
-riscv                randconfig-c006-20211123
-x86_64               randconfig-c007-20211123
-mips                 randconfig-c004-20211123
-x86_64               randconfig-a014-20211123
-x86_64               randconfig-a011-20211123
-x86_64               randconfig-a012-20211123
-x86_64               randconfig-a016-20211123
-x86_64               randconfig-a013-20211123
-x86_64               randconfig-a015-20211123
-i386                 randconfig-a016-20211123
-i386                 randconfig-a015-20211123
-i386                 randconfig-a012-20211123
-i386                 randconfig-a013-20211123
-i386                 randconfig-a014-20211123
-i386                 randconfig-a011-20211123
-hexagon              randconfig-r045-20211123
-s390                 randconfig-r044-20211123
-hexagon              randconfig-r041-20211123
-riscv                randconfig-r042-20211123
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRG9uZ2xpIFpoYW5nIFtt
+YWlsdG86ZG9uZ2xpLnpoYW5nQG9yYWNsZS5jb21dDQo+IFNlbnQ6IFdlZG5lc2RheSwgTm92ZW1i
+ZXIgMjQsIDIwMjEgNToyMiBBTQ0KPiBUbzogU2ViYXN0aWFuIEFuZHJ6ZWogU2lld2lvciA8Ymln
+ZWFzeUBsaW51dHJvbml4LmRlPjsgTG9uZ3BlbmcgKE1pa2UsIENsb3VkDQo+IEluZnJhc3RydWN0
+dXJlIFNlcnZpY2UgUHJvZHVjdCBEZXB0LikgPGxvbmdwZW5nMkBodWF3ZWkuY29tPg0KPiBDYzog
+bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgR29uZ2xlaSAoQXJlaSkgPGFyZWkuZ29uZ2xl
+aUBodWF3ZWkuY29tPjsNCj4geDg2QGtlcm5lbC5vcmc7IHhlbi1kZXZlbEBsaXN0cy54ZW5wcm9q
+ZWN0Lm9yZzsgUGV0ZXIgWmlqbHN0cmENCj4gPHBldGVyekBpbmZyYWRlYWQub3JnPjsgSW5nbyBN
+b2xuYXIgPG1pbmdvQGtlcm5lbC5vcmc+OyBWYWxlbnRpbiBTY2huZWlkZXINCj4gPHZhbGVudGlu
+LnNjaG5laWRlckBhcm0uY29tPjsgQm9yaXMgT3N0cm92c2t5IDxib3Jpcy5vc3Ryb3Zza3lAb3Jh
+Y2xlLmNvbT47DQo+IEp1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT47IFN0ZWZhbm8gU3Rh
+YmVsbGluaSA8c3N0YWJlbGxpbmlAa2VybmVsLm9yZz47DQo+IFRob21hcyBHbGVpeG5lciA8dGds
+eEBsaW51dHJvbml4LmRlPjsgSW5nbyBNb2xuYXIgPG1pbmdvQHJlZGhhdC5jb20+OyBCb3Jpc2xh
+dg0KPiBQZXRrb3YgPGJwQGFsaWVuOC5kZT47IERhdmUgSGFuc2VuIDxkYXZlLmhhbnNlbkBsaW51
+eC5pbnRlbC5jb20+OyBILiBQZXRlcg0KPiBBbnZpbiA8aHBhQHp5dG9yLmNvbT4NCj4gU3ViamVj
+dDogUmU6IFtQQVRDSF0gY3B1L2hvdHBsdWc6IEFsbG93IHRoZSBDUFUgaW4gQ1BVX1VQX1BSRVBB
+UkUgc3RhdGUgdG8gYmUNCj4gYnJvdWdodCB1cCBhZ2Fpbi4NCj4gDQo+IFRlc3RlZC1ieTogRG9u
+Z2xpIFpoYW5nIDxkb25nbGkuemhhbmdAb3JhY2xlLmNvbT4NCj4gDQo+IA0KPiBUaGUgYnVnIGZp
+eGVkIGJ5IGNvbW1pdCA1M2ZhZmRiYjhiMjEgKCJLVk06IHg4Njogc3dpdGNoIEtWTUNMT0NLIGJh
+c2UgdG8NCj4gbW9ub3RvbmljIHJhdyBjbG9jayIpIG1heSBsZWF2ZSB0aGUgY3B1X2hvdHBsdWdf
+c3RhdGUgYXQgQ1BVX1VQX1BSRVBBUkUuIEFzIGENCj4gcmVzdWx0LCB0byBvbmxpbmUgdGhpcyBD
+UFUgYWdhaW4gKGV2ZW4gYWZ0ZXIgcmVtb3ZhbCkgaXMgYWx3YXlzIGZhaWxlZC4NCj4gDQo+IEkg
+aGF2ZSB0ZXN0ZWQgdGhhdCB0aGlzIHBhdGNoIHdvcmtzIHdlbGwgdG8gd29ya2Fyb3VuZCB0aGUg
+aXNzdWUsIGJ5IGludHJvZHVjaW5nDQo+IGVpdGhlciBhIG1kZWxleSgxMTAwMCkgb3Igd2hpbGUo
+MSk7IHRvIHN0YXJ0X3NlY29uZGFyeSgpLiBUaGF0IGlzLCB0byBvbmxpbmUNCj4gdGhlDQo+IHNh
+bWUgQ1BVIGFnYWluIGlzIHN1Y2Nlc3NmdWwgZXZlbiBhZnRlciBpbml0aWFsIGRvX2Jvb3RfY3B1
+KCkgZmFpbHVyZS4NCj4gDQo+IDEuIGFkZCBtZGVsYXkoMTEwMDApIG9yIHdoaWxlKDEpOyB0byB0
+aGUgc3RhcnRfc2Vjb25kYXJ5KCkuDQo+IA0KPiAyLiB0byBvbmxpbmUgQ1BVIGlzIGZhaWxlZCBh
+dCBkb19ib290X2NwdSgpLg0KPiANCg0KVGhhbmtzIGZvciB5b3VyIHRlc3RpbmcgOikNCg0KRG9l
+cyB0aGUgY3B1NCBzcGluIGluIHdhaXRfZm9yX21hc3Rlcl9jcHUoKSBpbiB5b3VyIGNhc2UgPw0K
+DQo+IDMuIHRvIG9ubGluZSBDUFUgYWdhaW4gaXMgZmFpbGVkIHdpdGhvdXQgdGhpcyBwYXRjaC4N
+Cj4gDQo+ICMgZWNobyAxID4gL3N5cy9kZXZpY2VzL3N5c3RlbS9jcHUvY3B1NC9vbmxpbmUNCj4g
+LXN1OiBlY2hvOiB3cml0ZSBlcnJvcjogSW5wdXQvb3V0cHV0IGVycm9yDQo+IA0KPiA0LiB0byBv
+bmxpbmUgQ1BVIGFnYWluIGlzIHN1Y2Nlc3NmdWwgd2l0aCB0aGlzIHBhdGNoLg0KPiANCj4gVGhh
+bmsgeW91IHZlcnkgbXVjaCENCj4gDQo+IERvbmdsaSBaaGFuZw0KPiANCj4gT24gMTEvMjIvMjEg
+Nzo0NyBBTSwgU2ViYXN0aWFuIEFuZHJ6ZWogU2lld2lvciB3cm90ZToNCj4gPiBGcm9tOiAiTG9u
+Z3BlbmcoTWlrZSkiIDxsb25ncGVuZzJAaHVhd2VpLmNvbT4NCj4gPg0KPiA+IEEgQ1BVIHdpbGwg
+bm90IHNob3cgdXAgaW4gdmlydHVhbGl6ZWQgZW52aXJvbm1lbnQgd2hpY2ggaW5jbHVkZXMgYW4N
+Cj4gPiBFbmNsYXZlLiBUaGUgVk0gc3BsaXRzIGl0cyByZXNvdXJjZXMgaW50byBhIHByaW1hcnkg
+Vk0gYW5kIGEgRW5jbGF2ZQ0KPiA+IFZNLiBXaGlsZSB0aGUgRW5jbGF2ZSBpcyBhY3RpdmUsIHRo
+ZSBoeXBlcnZpc29yIHdpbGwgaWdub3JlIGFsbCByZXF1ZXN0cw0KPiA+IHRvIGJyaW5nIHVwIGEg
+Q1BVIGFuZCB0aGlzIENQVSB3aWxsIHJlbWFpbiBpbiBDUFVfVVBfUFJFUEFSRSBzdGF0ZS4NCj4g
+PiBUaGUga2VybmVsIHdpbGwgd2FpdCB1cCB0byB0ZW4gc2Vjb25kcyBmb3IgQ1BVIHRvIHNob3cg
+dXANCj4gPiAoZG9fYm9vdF9jcHUoKSkgYW5kIHRoZW4gcm9sbGJhY2sgdGhlIGhvdHBsdWcgc3Rh
+dGUgYmFjayB0bw0KPiA+IENQVUhQX09GRkxJTkUgbGVhdmluZyB0aGUgQ1BVIHN0YXRlIGluIENQ
+VV9VUF9QUkVQQVJFLiBUaGUgQ1BVIHN0YXRlIGlzDQo+ID4gc2V0IGJhY2sgdG8gQ1BVSFBfVEVB
+UkRPV05fQ1BVIGR1cmluZyB0aGUgQ1BVX1BPU1RfREVBRCBzdGFnZS4NCj4gPg0KPiA+IEFmdGVy
+IHRoZSBFbmNsYXZlIFZNIHRlcm1pbmF0ZXMsIHRoZSBwcmltYXJ5IFZNIGNhbiBicmluZyB1cCB0
+aGUgQ1BVDQo+ID4gYWdhaW4uDQo+ID4NCj4gPiBBbGxvdyB0byBicmluZyB1cCB0aGUgQ1BVIGlm
+IGl0IGlzIGluIHRoZSBDUFVfVVBfUFJFUEFSRSBzdGF0ZS4NCj4gPg0KPiA+IFtiaWdlYXN5OiBS
+ZXdyaXRlIGNvbW1pdCBkZXNjcmlwdGlvbi5dDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBMb25n
+cGVuZyhNaWtlKSA8bG9uZ3BlbmcyQGh1YXdlaS5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogU2Vi
+YXN0aWFuIEFuZHJ6ZWogU2lld2lvciA8YmlnZWFzeUBsaW51dHJvbml4LmRlPg0KPiA+IExpbms6
+DQo+IGh0dHBzOi8vdXJsZGVmZW5zZS5jb20vdjMvX19odHRwczovL2xvcmUua2VybmVsLm9yZy9y
+LzIwMjEwOTAxMDUxMTQzLjI3NTItMQ0KPiAtbG9uZ3BlbmcyQGh1YXdlaS5jb21fXzshIUFDV1Y1
+TjlNMlJWOTloUSFkNHNDQ1hNUVY3ZWtGd3BkMjF2bzFfOUstbTVoNFZaLWcNCj4gRThaNjJQTEw1
+OERUNFZKNlN0SDU3VFJfS3BCZGJ3aEJFMCQNCj4gPiAtLS0NCj4gPg0KPiA+IEZvciBYRU46IHRo
+aXMgY2hhbmdlcyB0aGUgYmVoYXZpb3VyIGFzIGl0IGFsbG93cyB0byBpbnZva2UNCj4gPiBjcHVf
+aW5pdGlhbGl6ZV9jb250ZXh0KCkgYWdhaW4gc2hvdWxkIGl0IGhhdmUgaGF2ZSBlYXJsaWVyLiBJ
+ICp0aGluayoNCj4gPiB0aGlzIGlzIG9rYXkgYW5kIHdvdWxkIHRvIGJyaW5nIHVwIHRoZSBDUFUg
+YWdhaW4gc2hvdWxkIHRoZSBtZW1vcnkNCj4gPiBhbGxvY2F0aW9uIGluIGNwdV9pbml0aWFsaXpl
+X2NvbnRleHQoKSBmYWlsLg0KPiA+DQo+ID4gIGtlcm5lbC9zbXBib290LmMgfCA3ICsrKysrKysN
+Cj4gPiAgMSBmaWxlIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKQ0KPiA+DQo+ID4gZGlmZiAtLWdp
+dCBhL2tlcm5lbC9zbXBib290LmMgYi9rZXJuZWwvc21wYm9vdC5jDQo+ID4gaW5kZXggZjZiYzBi
+YzhhMmFhYi4uMzQ5NThkN2ZlMmMxYyAxMDA2NDQNCj4gPiAtLS0gYS9rZXJuZWwvc21wYm9vdC5j
+DQo+ID4gKysrIGIva2VybmVsL3NtcGJvb3QuYw0KPiA+IEBAIC0zOTIsNiArMzkyLDEzIEBAIGlu
+dCBjcHVfY2hlY2tfdXBfcHJlcGFyZShpbnQgY3B1KQ0KPiA+ICAJCSAqLw0KPiA+ICAJCXJldHVy
+biAtRUFHQUlOOw0KPiA+DQo+ID4gKwljYXNlIENQVV9VUF9QUkVQQVJFOg0KPiA+ICsJCS8qDQo+
+ID4gKwkJICogVGltZW91dCB3aGlsZSB3YWl0aW5nIGZvciB0aGUgQ1BVIHRvIHNob3cgdXAuIEFs
+bG93IHRvIHRyeQ0KPiA+ICsJCSAqIGFnYWluIGxhdGVyLg0KPiA+ICsJCSAqLw0KPiA+ICsJCXJl
+dHVybiAwOw0KPiA+ICsNCj4gPiAgCWRlZmF1bHQ6DQo+ID4NCj4gPiAgCQkvKiBTaG91bGQgbm90
+IGhhcHBlbi4gIEZhbW91cyBsYXN0IHdvcmRzLiAqLw0KPiA+DQo=
