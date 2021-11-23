@@ -2,140 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA00445A3C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:30:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E1945A3B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:29:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235902AbhKWNdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 08:33:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236277AbhKWNdA (ORCPT
+        id S235993AbhKWNcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 08:32:43 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:35706 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235867AbhKWNch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 08:33:00 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3512C061756;
-        Tue, 23 Nov 2021 05:29:52 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id x6so6163855iol.13;
-        Tue, 23 Nov 2021 05:29:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1mzzQH4LR8E9en0oLHeEKt75OwAJ6GPgE1N3vKIF5Ws=;
-        b=EIo2zpjMsvO81Q+EI8R8OfQZEXUoQwQClX2UVj0GR1MrfeNV9a2+iuM6IKMbfJesVu
-         5W++R+mfnHKAUBjb2m6wPb6Sfqmep6qhLW5scVdDgAqj3KvBsvWJ9c5XPr6tFEgvtpQV
-         e6nwS00xARewgIe5CpUn3IH9LWwEJ05wjGn8v7yaoRz9h8inoXZiIiq84LNAITBaJQpV
-         7K3P5Jp7/mXCjZuHeuaujwziT+pycwl9fWiyw5X8zWIxxcE8QOQHQujCuZwBbnVWt64V
-         7jXjBqcQATkgPpUKl/jNmU4MZRgd1ahChBNZ+dhDBnV44dn8DOUvmWaeGA68tZpWYOuP
-         LgYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1mzzQH4LR8E9en0oLHeEKt75OwAJ6GPgE1N3vKIF5Ws=;
-        b=r/tOiNxk5OdO67wrjgknl05LpEZs0nU3sF7A6MogsdEPq6eEgSn1dlvObQFLfkzZm/
-         G+cgjc+cApi2nqmm16OUcepfYo1iQ4H9BwY4ikCQdoaneds+ON5yqJXc6u7F33H3OLNI
-         huKj1NSlTrW2B6iPj5LGG04/khP5rg08ts2j7rHh7Uf1iGGUZOgA4yF5Rrc94L+lGTqW
-         MyO2tYAGjVOhyfvOnihOCZH0EIFguCSQLySMfAqLhLEO4Kw3D7usmc4TZEaUZiMQ/puq
-         lEknIJSZ++ygo17BKw4ooNYxG3RHdHUgcTXP+KDb+o0mI+JfVsJ9mwOUZh6+aTWunnKw
-         uLqg==
-X-Gm-Message-State: AOAM532bYFn0hJ+mmi7O7ddoMaF4QhIyUlmH08UBxXdi39ixOjkdtGwR
-        PpcIKSWwtHRFIT5jJABHi6NF8eVLfWFBHpOZnO8=
-X-Google-Smtp-Source: ABdhPJwMXgvkb/4JorRGYlbB9RBc9fTrr+yiBWVTdyS2Dguc9dZBlAvAFOrg/Q3ogahTOw2JtEq0LxkF6gaQvD7d6os=
-X-Received: by 2002:a6b:ea0a:: with SMTP id m10mr5581825ioc.91.1637674192312;
- Tue, 23 Nov 2021 05:29:52 -0800 (PST)
-MIME-Version: 1.0
-References: <20211110122948.188683-1-alistair@alistair23.me>
- <20211110122948.188683-2-alistair@alistair23.me> <20211117223950.3a7eaf7a@aktux>
-In-Reply-To: <20211117223950.3a7eaf7a@aktux>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Tue, 23 Nov 2021 23:29:26 +1000
-Message-ID: <CAKmqyKP_gQ1qSADMPwmyf-V0TqGOYf2GitzpDXsmBUO6_iqK7Q@mail.gmail.com>
-Subject: Re: [PATCH v15 1/8] dt-bindings: mfd: Initial commit of silergy,sy7636a.yaml
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     Alistair Francis <alistair@alistair23.me>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>, lgirdwood@gmail.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        rui.zhang@intel.com, devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-hwmon@vger.kernel.org, amitk@kernel.org,
-        linux-pm@vger.kernel.org, dl-linux-imx <linux-imx@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 23 Nov 2021 08:32:37 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 03AD921940;
+        Tue, 23 Nov 2021 13:29:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1637674169; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=wOItPvNca0yFCnsfGsno5MG1v7I09q6U8YrIa3vLLSc=;
+        b=BLBQpfRpPzZMly9YvGQnzlz6GKdEqOdOwWeAZ4Fbv/RhjGTOXzFnQDtqfRxCiBs4LvXzq+
+        Ebkx8dbX7syQ4RVGx3alW8IhpnJq5tloidteOg/1xVidmyJVEX5pU3BJc89TryDyZGyAq5
+        vSHvX89cFSXr4Nd+UtGnuXl6SOPbOSE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1637674169;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=wOItPvNca0yFCnsfGsno5MG1v7I09q6U8YrIa3vLLSc=;
+        b=NQmFnfPvTQV0Ei66APtH6WYOcaIoKPbUdtmMuD7Se9vY2EDAPJVZUERbqjTyJg6Mv2hVjC
+        IB+TEjqAZLjC3yBw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id F392CA3B87;
+        Tue, 23 Nov 2021 13:29:28 +0000 (UTC)
+Date:   Tue, 23 Nov 2021 14:29:28 +0100
+Message-ID: <s5hfsrn9f0n.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] sound fixes for 5.16-rc3
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 7:40 AM Andreas Kemnade <andreas@kemnade.info> wrote:
->
-> On Wed, 10 Nov 2021 22:29:41 +1000
-> Alistair Francis <alistair@alistair23.me> wrote:
->
-> > Initial support for the Silergy SY7636A Power Management chip
-> > and regulator.
-> >
-> > Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> > Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  .../bindings/mfd/silergy,sy7636a.yaml         | 79 +++++++++++++++++++
-> >  1 file changed, 79 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml b/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
-> > new file mode 100644
-> > index 000000000000..0566f9498e2f
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
-> [...]
-> > +  regulators:
-> > +    type: object
-> > +
-> > +    properties:
-> > +      compatible:
-> > +        const: silergy,sy7636a-regulator
-> > +
-> > +      vcom:
-> > +        type: object
-> > +        $ref: /schemas/regulator/regulator.yaml#
-> > +        properties:
-> > +          regulator-name:
-> > +            const: vcom
-> > +
-> hmm, this is what? If I understand it correctly, vcom means some
-> voltage for compensation. On other comparable pmics (e.g. TPS65185
-> which has also a sane public datasheet, MAX17135) I have seen some
-> methods to measure a voltage while the display is doing something
-> defined and then program this voltage non-volatile for compensation
-> during manufacturing.
->
-> If I understand the code correctly all the bunch of voltages are
-> powered up if this one is enabled.
-> So at least a description should be suitable.
->
-> The other comparable PMICs have at least regulators named VCOM, DISPLAY
-> (controls several regulators, started with delays configured via
-> registers) and V3P3. MAX17135 source can be found in NXP kernels,
-> TPS65185 in Kobo vendor kernels.
->
-> So I would expect to see something similar here and a description or at
-> least not such a misleading name as vcom if it is for some reason not
-> feasible to separate the regulators.
+Linus,
 
-This is a vcom in the sense of voltage for compensation. We just
-currently don't support setting the vcom.
+please pull sound fixes for v5.16-rc3 from:
 
-I had a look at the Kobo code and this is similar to
-https://github.com/akemnade/linux/blob/kobo/epdc-pmic-5.15/drivers/regulator/sy7636-regulator.c#L614
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.16-rc3
 
-So I think that vcom is still the appropriate name for this.
+The topmost commit is fa9730b4f28b7bd183d28a0bf636ab7108de35d7
 
-Alistair
+----------------------------------------------------------------
 
->
-> Regards,
-> Andreas
+sound fixes for 5.16-rc3
+
+A lot of small changes at this time.  There are many ASoC fixes,
+and the majority of them are new machine quirks for Intel
+platforms, as well as the device-specific fixes for Mediatek and
+Qualcomm.  In addition, a regression fix for USB-audio and a few
+more HD- and USB-audio quirks are found here.
+
+----------------------------------------------------------------
+
+AngeloGioacchino Del Regno (2):
+      ASoC: mediatek: mt8173-rt5650: Rename Speaker control to Ext Spk
+      ASoC: mediatek: mt8173: Fix debugfs registration for components
+
+Arnd Bergmann (1):
+      ASoC: SOF: build compression interface into snd_sof.ko
+
+Charles Keepax (1):
+      ASoC: cs35l41: Change monitor widgets to siggens
+
+ChiYuan Huang (3):
+      ASoC: rt9120: Update internal ocp level to the correct value
+      ASoC: rt9120: Fix clock auto sync issue when fs is the multiple of 48
+      ASoC: rt9120: Add the compatibility with rt9120s
+
+Derek Fang (2):
+      ASoC: rt5682: Avoid the unexpected IRQ event during going to suspend
+      ASoC: rt5682: Re-detect the combo jack after resuming
+
+Gongjun Song (9):
+      ASoC: Intel: sof_sdw: Add support for SKU 0AF3 product
+      ASoC: Intel: soc-acpi: add SKU 0AF3 SoundWire configuration
+      ASoC: Intel: sof_sdw: Add support for SKU 0B00 and 0B01 products
+      ASoC: Intel: sof_sdw: Add support for SKU 0B11 product
+      ASoC: Intel: sof_sdw: Add support for SKU 0B13 product
+      ASoC: Intel: soc-acpi: add SKU 0B13 SoundWire configuration
+      ASoC: Intel: sof_sdw: Add support for SKU 0B29 product
+      ASoC: Intel: soc-acpi: add SKU 0B29 SoundWire configuration
+      ASoC: Intel: sof_sdw: Add support for SKU 0B12 product
+
+Jack Yu (1):
+      ASoC: rt1011: revert 'I2S Reference' to SOC_ENUM_EXT
+
+Kai Vehmanen (1):
+      ASoC: SOF: Intel: hda: fix hotplug when only codec is suspended
+
+Kuninori Morimoto (1):
+      ASoC: rsnd: fixup DMAEngine API
+
+Olivier Moysan (1):
+      ASoC: stm32: i2s: fix 32 bits channel length without mclk
+
+Peter Ujfalusi (1):
+      ASoC: SOF:control: Fix variable type in snd_sof_refresh_control()
+
+Pierre-Louis Bossart (1):
+      ALSA: intel-dsp-config: add quirk for JSL devices based on ES8336 codec
+
+Simon Trimmer (1):
+      ASoC: wm_adsp: wm_adsp_control_add() error: uninitialized symbol 'ret'
+
+Srinivas Kandagatla (8):
+      ASoC: qdsp6: qdsp6: q6prm: handle clk disable correctly
+      ASoC: qdsp6: q6routing: Conditionally reset FrontEnd Mixer
+      ASoC: qdsp6: q6asm: fix q6asm_dai_prepare error handling
+      ASoC: qdsp6: q6adm: improve error reporting
+      ASoC: qdsp6: q6routing: validate port id before setting up route
+      ASoC: codecs: wcd938x: fix volatile register range
+      ASoC: codecs: wcd934x: return error code correctly from hw_params
+      ASoC: codecs: lpass-rx-macro: fix HPHR setting CLSH mask
+
+Takashi Iwai (7):
+      ASoC: DAPM: Cover regression by kctl change notification fix
+      ALSA: cmipci: Drop stale variable assignment
+      ASoC: topology: Add missing rwsem around snd_ctl_remove() calls
+      ALSA: hda/realtek: Fix LED on HP ProBook 435 G7
+      ALSA: ctxfi: Fix out-of-range access
+      ALSA: usb-audio: Switch back to non-latency mode at a later point
+      ALSA: usb-audio: Don't start stream for capture at prepare
+
+Werner Sembach (1):
+      ALSA: hda/realtek: Add quirk for ASRock NUC Box 1100
+
+---
+ sound/hda/intel-dsp-config.c                      |   9 ++
+ sound/pci/cmipci.c                                |   4 +-
+ sound/pci/ctxfi/ctamixer.c                        |  14 ++-
+ sound/pci/ctxfi/ctdaio.c                          |  16 ++--
+ sound/pci/ctxfi/ctresource.c                      |   7 +-
+ sound/pci/ctxfi/ctresource.h                      |   4 +-
+ sound/pci/ctxfi/ctsrc.c                           |   7 +-
+ sound/pci/hda/patch_realtek.c                     |  28 ++++++
+ sound/soc/codecs/cs35l41.c                        |  14 +--
+ sound/soc/codecs/lpass-rx-macro.c                 |   2 +-
+ sound/soc/codecs/rt1011.c                         |  55 ++++++++++--
+ sound/soc/codecs/rt1011.h                         |   7 ++
+ sound/soc/codecs/rt5682-i2c.c                     |   1 +
+ sound/soc/codecs/rt5682.c                         |  38 ++++++--
+ sound/soc/codecs/rt5682.h                         |   1 +
+ sound/soc/codecs/rt9120.c                         |  58 +++++++++---
+ sound/soc/codecs/wcd934x.c                        |   3 +-
+ sound/soc/codecs/wcd938x.c                        |   3 +
+ sound/soc/codecs/wm_adsp.c                        |   5 +-
+ sound/soc/intel/boards/sof_sdw.c                  |  69 ++++++++++++++
+ sound/soc/intel/common/soc-acpi-intel-adl-match.c | 105 ++++++++++++++++++++++
+ sound/soc/mediatek/mt8173/mt8173-afe-pcm.c        |  51 +++++++++--
+ sound/soc/mediatek/mt8173/mt8173-rt5650.c         |   8 +-
+ sound/soc/qcom/qdsp6/audioreach.h                 |   4 +
+ sound/soc/qcom/qdsp6/q6adm.c                      |   4 +-
+ sound/soc/qcom/qdsp6/q6asm-dai.c                  |  19 ++--
+ sound/soc/qcom/qdsp6/q6prm.c                      |  53 ++++++++++-
+ sound/soc/qcom/qdsp6/q6routing.c                  |  12 ++-
+ sound/soc/sh/rcar/dma.c                           |   2 +-
+ sound/soc/soc-dapm.c                              |  29 ++++--
+ sound/soc/soc-topology.c                          |   3 +
+ sound/soc/sof/Kconfig                             |   2 +-
+ sound/soc/sof/control.c                           |   8 +-
+ sound/soc/sof/intel/hda-bus.c                     |  17 ++++
+ sound/soc/sof/intel/hda-dsp.c                     |   3 +-
+ sound/soc/sof/intel/hda.c                         |  16 ++++
+ sound/soc/stm/stm32_i2s.c                         |   2 +-
+ sound/usb/pcm.c                                   |  14 ++-
+ 38 files changed, 590 insertions(+), 107 deletions(-)
+
