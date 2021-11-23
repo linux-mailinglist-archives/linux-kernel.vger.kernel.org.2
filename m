@@ -2,246 +2,1351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5674C45A686
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 16:28:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C712445A689
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 16:31:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238392AbhKWPbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 10:31:51 -0500
-Received: from mail-mw2nam10on2059.outbound.protection.outlook.com ([40.107.94.59]:18848
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236264AbhKWPbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 10:31:50 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fIifnvjaa/7xy3KlWuoqjib/JAdChrMrmJgd7DajhIvA5xvZYttf/+n77tmf2fK/L8/BSNukPQIBRlrqE49M6hunc+3+xh4hV/JrHZnvUDI/bXalS1mG0EhWHcPooxvTRhaEoy8vMqhvZs3lOijPAAM162dCwgywYBuNeid3HxKkgdeVW/1+HcIASLA5uMqE7FuJzw+/EIL7jOGSU056XEgrJ3El1dwkPAcGD0rstwP7Z3ToeyOv64Tu4TDgR/m+EeFtyCxhlM8KM9QO0cn1LBiUUJMc033edeZC+PzzsHgxj7kVuGwwIS9x2GLpKbw57gPJE/iJyaH083RWVYsSlg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CRZgSPFW5ObJNZqgFn0gSl7lxUASiQTIf9X5dmNqPM8=;
- b=kNQSkIbCASiUIUy/xlYmSYajD1IWKojw/yjK8pXDUYHygPUgrxKOFA/x804K0+Afql4m14gNIH03qMPSiEqLTuG0wz4cO/vKnEwMhbRr46DL1/KuW6VG/pJ2gP3FTXRxwZ+ifRee5xUFWM7W2c45TIsrJ7BAXYvaHIwA4dFoUZknGToOcEtyaPq+PJ0tut7ZYhQVjUeS4UV7+VM+ej6XNpDHrclHiSSEH5eByBk8ICEiVe4gKEjqztxjF/VDLAQdMNjP7ElXsPJtHVLigIlSiNC6ga9e1h9YAsEHuc59/ZfxBfpxRzE9D6Ec4MTpPo6KRkKUrdAvcSnEFgXyKzjwyg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CRZgSPFW5ObJNZqgFn0gSl7lxUASiQTIf9X5dmNqPM8=;
- b=hYj9D4cXQ7GwqlGHxe+/LtRb0JhYi6UDYrITGeYgsb2NJiaZKgGc7CBVquPxDTsn6y3p/n42t0e8io53cVzfVRVoq3tt1LJugRquhQPE9acJPF6Xv5bSOjBl284C65Kx8sP9sFA7pOtteO0Kz8s5ljbesUTuGHR7YJOx/qYoWhQ=
-Received: from BY3PR05MB8531.namprd05.prod.outlook.com (2603:10b6:a03:3ce::6)
- by BYAPR05MB4552.namprd05.prod.outlook.com (2603:10b6:a02:fa::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.17; Tue, 23 Nov
- 2021 15:28:37 +0000
-Received: from BY3PR05MB8531.namprd05.prod.outlook.com
- ([fe80::4433:84b1:5fc1:50e9]) by BY3PR05MB8531.namprd05.prod.outlook.com
- ([fe80::4433:84b1:5fc1:50e9%5]) with mapi id 15.20.4734.018; Tue, 23 Nov 2021
- 15:28:37 +0000
-From:   Nadav Amit <namit@vmware.com>
-To:     Huang Ying <ying.huang@intel.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzbot <syzbot+aa5bebed695edaccf0df@syzkaller.appspotmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Marco Elver <elver@google.com>
-Subject: Re: [PATCH] mm/rmap: fix potential batched TLB flush race
-Thread-Topic: [PATCH] mm/rmap: fix potential batched TLB flush race
-Thread-Index: AQHX4D3rpcLHjogBUk26eVOAyIjPAqwRPRQA
-Date:   Tue, 23 Nov 2021 15:28:36 +0000
-Message-ID: <797F0409-0BF8-46E8-9165-9B6826365F2C@vmware.com>
-References: <20211123074344.1877731-1-ying.huang@intel.com>
-In-Reply-To: <20211123074344.1877731-1-ying.huang@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.120.0.1.13)
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vmware.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5087c8e8-51e2-4cd3-b5fd-08d9ae95eb47
-x-ms-traffictypediagnostic: BYAPR05MB4552:
-x-microsoft-antispam-prvs: <BYAPR05MB45525AD69DC529B03D1CF9CED0609@BYAPR05MB4552.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jEHQuYJR/6qoSTrDF1jzpIG5ZLp242dWXBUu81nQ6lSX8OPOVi6tfsutfBZo23xLvspPywD/Lo+99dC+xuVt4vbiQITtnHNHLGSTQlKqUl8KD4zJuBvQc2iefq5Uge6YV6z4HYMOze5hxfPnGsU8AalR+SUYAOtgwh9z4Xw8DKtc+/NPsl/HAu3l+sNZIIlhxJWGgeGzqKxM9uKbCz46eB4AR79Nhosj/B3vG9+Qd4idtLZHiTjU12kd0/9c9bQQ27EiFtW/eeLj+3F2rArzCLCqsV5hij+wD98QnCnEJm8oi8c2yWHfWEe7JNo2IqC1WXUeM4Zn4a4PaDv+E2Vu0tpGMzDt6v0AvwZnOtK7mMm59hACm41uhxXTPINy21Vf4jAxQ9He751KyZ3IHlM1QIps2d0tEcWIHNG3mO/k67qu/nv8UBLhH+h0YqoIA6ePeZ6ZWDmjyUyEqch6qLZiIjkTzNcMK86iLmrI+0bXp7MPiD6DtknZziiNY6i234HZYdnUF53Piv+YHwuMJ3fJQDLziuWpu7Rwr+vG6ZivSIPlMTj7O4kmB7Iak5YyeyRD/1MlP3wGDMtKXtWmZhTBr0f64kyWkiTnTcwhQ1WHPfK7nqPay41Fbwp76ke/O1Jub3SqexQivwTOj5bjvZdhYnmZerSCC2IshQvukgeEvqecjRZWLcWrFISjPqo1itwdDAJzwA6UkocpPUFuaZtW0pgEgFYBxtrXOVlmESa0GqeF4YkilJfDRBgSH4IzMCkE
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY3PR05MB8531.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(53546011)(36756003)(6506007)(71200400001)(26005)(8676002)(5660300002)(2906002)(86362001)(122000001)(38100700002)(8936002)(54906003)(2616005)(76116006)(66446008)(66556008)(64756008)(66476007)(66946007)(316002)(4326008)(6916009)(7416002)(33656002)(6512007)(508600001)(186003)(38070700005)(83380400001)(6486002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?akZQTUE4NXB0L21GbFY1b1RIVjk5V0plUXJIR0t2bDV2cTl3emhZaVZTc1FV?=
- =?utf-8?B?dUNKdE5yUStCTm1TU2tIaTVReDZDeW9uSG4xaEJSU01QVjF3d29YMnA3Z2dv?=
- =?utf-8?B?ek9GYktSbkVxSFlONDFXcHZEbmRvZFgwNFZieFZPU05ycVZ5bUVzcGRWM292?=
- =?utf-8?B?RU9YWkp6MTFaMlR6QW8rRVdZY3p5TUZUNXo0bitkcUV3bjh0WWtrOFZNUERz?=
- =?utf-8?B?Z3BJZVg0SFFkUk1xRU9FdEh1SnlPV1BZb1RRRUJBcHJscWxEek1Pd3RFbTJX?=
- =?utf-8?B?UFY3SlJWQ0RUUjlEUk5LdnF4ZW0xcmoyUnRtMlV1VDJpREhYUWhRSFNlanJj?=
- =?utf-8?B?WGNkQ0RtV2ZmNDlPY1d2ZUpoRG9GRGJsNVp5dnRTU1VpRUNibWJrbCtkbWM4?=
- =?utf-8?B?dXJBa1B2WlQ4ZitqeThMdEtrc0dheXJDS01TdVNoU3UwZTBTY2JMQ29JZENq?=
- =?utf-8?B?NTJESkRxT3owZTdSWWpYY0JQM2JrS2x6WDBXOHFzMUxNNTJPZDYrRFJ2YTlu?=
- =?utf-8?B?S3crNVJyT3ppa0VYZmlLdFZBc2pNVzNtU3JWczZjRW5CQVBjMDJaK1F1Tmdx?=
- =?utf-8?B?YTZ5cXl4eTJFb3h6Qm5Ndkk5ZHF0R3BBL1lGKzF2eVdMakVFbnV0bmN2ZEQy?=
- =?utf-8?B?dnhpejdKK2MzaXFpK1Vsbm1uVzlaTlB2QTlCYUJXS3FHZUJRcG5yWGVRREhv?=
- =?utf-8?B?MkdpdGdJQ0JNd0tmSTNmNW1GRHNqdTI4L3Q1dzNnakJhVk4zUnBHaTJEMHhL?=
- =?utf-8?B?SkVvMTdaYlNDSHNlM21pdGxjaER6NEZZWHhqSmN6VVh1Q0tteTRlVU5lSHZx?=
- =?utf-8?B?T2lzeHgxSkRQMFBaRWtlOTlBdjN1SXFDZkIrRVF0dWxaVzh2ZTNqVXFlMFo2?=
- =?utf-8?B?WkptZnNiTEJyUXpwNVVBREdKOFNWVEFOSjN1dWowNVpRZzBiRHJnazhHQ2gr?=
- =?utf-8?B?aDBYN2U1d1RNYnI2cGx1L0hRNitOR0x3WTdvTlY1dkY5Y2x0Nk5zWTIzbWJN?=
- =?utf-8?B?a1haTmxzcVhhYmxtUHV6TmtoUTFod1JFZE9kLzREYTM0Skg4T2tnbUVmUEJK?=
- =?utf-8?B?RVV3ejlRbTVHNkhzaVppdlJIY3pBOUZud0hTQ3psMEJicndGUEJIaVllODVv?=
- =?utf-8?B?T25DNFVyNDdScm1zTStwZHpGZzBPeTFPZy93SEtpQUxudStZcHlFdE9UQysw?=
- =?utf-8?B?V1YyVUlXSEFua25ZT0pEdFViRjM5cllkc0JpcWlWdG12S0lTZ21NcmVlcDlK?=
- =?utf-8?B?UmZIR05TeVk0bVBieW4rdjFGcDUrYVl2ZVpOTUFhOFMwN1pQdE5wdjdCUk05?=
- =?utf-8?B?c0V6SkRWdzVMOStzZzBzTzMyQkwxelJ6VVU1ZW1XM05xWU85MmRLaExJTFBr?=
- =?utf-8?B?UVZBL2lsellERVdFTVBERExxUm10bUFtcC9kWEZneWh5YUEybmh2bkhwcDJC?=
- =?utf-8?B?Vzc0c3d6QjIxaFRqMTZ0cXFmZld1RmhXWWlYWWcrNHl0RFN5cm1BY2tsRmli?=
- =?utf-8?B?NW1taDFpY09GMGtIZloyenVtM2hLaGFjMUd5NCt6QTdvSUdjSzJTN3UyWHZ6?=
- =?utf-8?B?YzUrbHhjbTk2VSs5MVlkMVYxQXR1Tk85bFJvSWpCWmFZYlprZDVadit4MVFu?=
- =?utf-8?B?cFpaMFg4MW13SkpHL1VZdU5nVWt2R1NYbUJ5dW1jTTA1c0Nwc2xrUy90NjJo?=
- =?utf-8?B?R1htSTYzYy9wNUhTUFNsWjlMVnFyL2RSUzh0Z2QzblhzSTZWc0YwVS91UUJZ?=
- =?utf-8?B?NWZwTWpCa2hsamRpRkIrYWtoZlFpdVJzRGxwUUFqcml5MnhxbFFLbmFNME1Y?=
- =?utf-8?B?UlZCc1dHdTFsK0dlelB2TVN0dFJna3liQlNMUXJ5eStiZmJldUl0RXVCSXVC?=
- =?utf-8?B?VkZHdlN4dlNJOXRvRmFpWDE0RTR2R3N6blB3Wm1UT3FVYnBqREtnY3FRc0NW?=
- =?utf-8?B?Y3FBWldOb0VGVVpGSk53Tm05V0JhaHBmSHFqeEpybnh5MHRoZFM3TklhaExk?=
- =?utf-8?B?bUdCN1NvOC9CSUF2ZTFaSHZ1VWVMUUJKQy95NDBuQmNabzQvOW1IZVBrOWQ4?=
- =?utf-8?B?UWYxRiszVmU0QnZLd3NNazJVQTZIdG94TXVyTTNDNXp5SlpLMnlwcm5ybFJR?=
- =?utf-8?B?NDlOQkZzbDFzRzRRTEdzbGVBU0RnazF6Y0FwQkcrazhHMy9hbnowSEErNzJR?=
- =?utf-8?Q?lQEUo0UyDdr7y8ixpSmDLlM=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0F1AD5848C0298488461D3305F6DCD5A@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S238423AbhKWPee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 10:34:34 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:48816 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234837AbhKWPed (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 10:34:33 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 2BA741FD5A;
+        Tue, 23 Nov 2021 15:31:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1637681484; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K9EexUMFqb7hvmcojgyc6c4UVFd9MkkKrKnRv6hEkSA=;
+        b=dCqPCysywAhvjGjThmybn+CjJ/UMvLAoCejudOLdWTfNuo9IMArQCrC0JL342+Buc1V/Ai
+        JBdNqnZVkWX3EcJ3EGY+gzImpgASVa96GkVR3VT4QuaWqOWOzOc//UoPO+Iur3ECsgN9Sj
+        3WiyFBOB+58fuzuQ1PZoLSLgYKxsk/I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1637681484;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K9EexUMFqb7hvmcojgyc6c4UVFd9MkkKrKnRv6hEkSA=;
+        b=ZjygpohGO8AzhR8whSoB/M+nQzJjW5MK5XoS0fj0f1y3UO/cqy72rXlpTVoycaKa7pBdB1
+        H1ye5Kkgb4UUP7Aw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3945A13E11;
+        Tue, 23 Nov 2021 15:31:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id FePGCksJnWFCSwAAMHmgww
+        (envelope-from <dkirjanov@suse.de>); Tue, 23 Nov 2021 15:31:23 +0000
+Subject: Re: [PATCH net-next v2 2/6] net: lan966x: add the basic lan966x
+ driver
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>, davem@davemloft.net,
+        kuba@kernel.org, robh+dt@kernel.org, UNGLinuxDriver@microchip.com,
+        p.zabel@pengutronix.de, linux@armlinux.org.uk,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211123135517.4037557-1-horatiu.vultur@microchip.com>
+ <20211123135517.4037557-3-horatiu.vultur@microchip.com>
+From:   Denis Kirjanov <dkirjanov@suse.de>
+Message-ID: <16727fc4-4cc7-41de-910d-80b3bca70ef1@suse.de>
+Date:   Tue, 23 Nov 2021 18:31:22 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY3PR05MB8531.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5087c8e8-51e2-4cd3-b5fd-08d9ae95eb47
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2021 15:28:36.9086
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wqkRSTns5ebwpsQ41PfVvPc3ETymL8C/IIZc4jpq5AMkF4L8ajrZ2TgVXmkL8JFVOU3p1BeGxJq3PPQinzJINw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB4552
+In-Reply-To: <20211123135517.4037557-3-horatiu.vultur@microchip.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: ru
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gT24gTm92IDIyLCAyMDIxLCBhdCAxMTo0MyBQTSwgSHVhbmcgWWluZyA8eWluZy5odWFu
-Z0BpbnRlbC5jb20+IHdyb3RlOg0KPiANCj4gSW4gdGhlb3J5LCB0aGUgZm9sbG93aW5nIHJhY2Ug
-aXMgcG9zc2libGUgZm9yIGJhdGNoZWQgVExCIGZsdXNoaW5nLg0KPiANCj4gQ1BVMCAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICBDUFUxDQo+IC0tLS0gICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgLS0tLQ0KPiBzaHJpbmtfcGFnZV9saXN0KCkNCj4gICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIHVubWFwDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHphcF9wdGVfcmFuZ2UoKQ0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIGZsdXNoX3RsYl9iYXRjaGVkX3BlbmRpbmcoKQ0KPiAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgZmx1c2hfdGxiX21tKCkNCj4gIHRyeV90b191bm1hcCgpDQo+ICAg
-IHNldF90bGJfdWJjX2ZsdXNoX3BlbmRpbmcoKQ0KPiAgICAgIG1tLT50bGJfZmx1c2hfYmF0Y2hl
-ZCA9IHRydWUNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG1tLT50
-bGJfZmx1c2hfYmF0Y2hlZCA9IGZhbHNlDQo+IA0KPiBBZnRlciB0aGUgVExCIGlzIGZsdXNoZWQg
-b24gQ1BVMSB2aWEgZmx1c2hfdGxiX21tKCkgYW5kIGJlZm9yZQ0KPiBtbS0+dGxiX2ZsdXNoX2Jh
-dGNoZWQgaXMgc2V0IHRvIGZhbHNlLCBzb21lIFBURSBpcyB1bm1hcHBlZCBvbiBDUFUwDQo+IGFu
-ZCB0aGUgVExCIGZsdXNoaW5nIGlzIHBlbmRlZC4gIFRoZW4gdGhlIHBlbmRlZCBUTEIgZmx1c2hp
-bmcgd2lsbCBiZQ0KPiBsb3N0LiAgQWx0aG91Z2ggYm90aCBzZXRfdGxiX3ViY19mbHVzaF9wZW5k
-aW5nKCkgYW5kDQo+IGZsdXNoX3RsYl9iYXRjaGVkX3BlbmRpbmcoKSBhcmUgY2FsbGVkIHdpdGgg
-UFRMIGxvY2tlZCwgZGlmZmVyZW50IFBUTA0KPiBpbnN0YW5jZXMgbWF5IGJlIHVzZWQuDQo+IA0K
-PiBCZWNhdXNlIHRoZSByYWNlIHdpbmRvdyBpcyByZWFsbHkgc21hbGwsIGFuZCB0aGUgbG9zdCBU
-TEIgZmx1c2hpbmcNCj4gd2lsbCBjYXVzZSBwcm9ibGVtIG9ubHkgaWYgYSBUTEIgZW50cnkgaXMg
-aW5zZXJ0ZWQgYmVmb3JlIHRoZQ0KPiB1bm1hcHBpbmcgaW4gdGhlIHJhY2Ugd2luZG93LCB0aGUg
-cmFjZSBpcyBvbmx5IHRoZW9yZXRpY2FsLiAgQnV0IHRoZQ0KPiBmaXggaXMgc2ltcGxlIGFuZCBj
-aGVhcCB0b28uDQo+IA0KPiBTeXpib3QgaGFzIHJlcG9ydGVkIHRoaXMgdG9vIGFzIGZvbGxvd3Ms
-DQo+IA0KPiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT0NCj4gQlVHOiBLQ1NBTjogZGF0YS1yYWNlIGluIGZsdXNoX3RsYl9i
-YXRjaGVkX3BlbmRpbmcgLyB0cnlfdG9fdW5tYXBfb25lDQo+IA0KPiB3cml0ZSB0byAweGZmZmY4
-ODgxMDcyY2ZiYmMgb2YgMSBieXRlcyBieSB0YXNrIDE3NDA2IG9uIGNwdSAxOg0KPiBmbHVzaF90
-bGJfYmF0Y2hlZF9wZW5kaW5nKzB4NWYvMHg4MCBtbS9ybWFwLmM6NjkxDQo+IG1hZHZpc2VfZnJl
-ZV9wdGVfcmFuZ2UrMHhlZS8weDdkMCBtbS9tYWR2aXNlLmM6NTk0DQo+IHdhbGtfcG1kX3Jhbmdl
-IG1tL3BhZ2V3YWxrLmM6MTI4IFtpbmxpbmVdDQo+IHdhbGtfcHVkX3JhbmdlIG1tL3BhZ2V3YWxr
-LmM6MjA1IFtpbmxpbmVdDQo+IHdhbGtfcDRkX3JhbmdlIG1tL3BhZ2V3YWxrLmM6MjQwIFtpbmxp
-bmVdDQo+IHdhbGtfcGdkX3JhbmdlIG1tL3BhZ2V3YWxrLmM6Mjc3IFtpbmxpbmVdDQo+IF9fd2Fs
-a19wYWdlX3JhbmdlKzB4OTgxLzB4MTE2MCBtbS9wYWdld2Fsay5jOjM3OQ0KPiB3YWxrX3BhZ2Vf
-cmFuZ2UrMHgxMzEvMHgzMDAgbW0vcGFnZXdhbGsuYzo0NzUNCj4gbWFkdmlzZV9mcmVlX3Npbmds
-ZV92bWEgbW0vbWFkdmlzZS5jOjczNCBbaW5saW5lXQ0KPiBtYWR2aXNlX2RvbnRuZWVkX2ZyZWUg
-bW0vbWFkdmlzZS5jOjgyMiBbaW5saW5lXQ0KPiBtYWR2aXNlX3ZtYSBtbS9tYWR2aXNlLmM6OTk2
-IFtpbmxpbmVdDQo+IGRvX21hZHZpc2UrMHhlNGEvMHgxMTQwIG1tL21hZHZpc2UuYzoxMjAyDQo+
-IF9fZG9fc3lzX21hZHZpc2UgbW0vbWFkdmlzZS5jOjEyMjggW2lubGluZV0NCj4gX19zZV9zeXNf
-bWFkdmlzZSBtbS9tYWR2aXNlLmM6MTIyNiBbaW5saW5lXQ0KPiBfX3g2NF9zeXNfbWFkdmlzZSsw
-eDVkLzB4NzAgbW0vbWFkdmlzZS5jOjEyMjYNCj4gZG9fc3lzY2FsbF94NjQgYXJjaC94ODYvZW50
-cnkvY29tbW9uLmM6NTAgW2lubGluZV0NCj4gZG9fc3lzY2FsbF82NCsweDQ0LzB4ZDAgYXJjaC94
-ODYvZW50cnkvY29tbW9uLmM6ODANCj4gZW50cnlfU1lTQ0FMTF82NF9hZnRlcl9od2ZyYW1lKzB4
-NDQvMHhhZQ0KPiANCj4gd3JpdGUgdG8gMHhmZmZmODg4MTA3MmNmYmJjIG9mIDEgYnl0ZXMgYnkg
-dGFzayA3MSBvbiBjcHUgMDoNCj4gc2V0X3RsYl91YmNfZmx1c2hfcGVuZGluZyBtbS9ybWFwLmM6
-NjM2IFtpbmxpbmVdDQo+IHRyeV90b191bm1hcF9vbmUrMHg2MGUvMHgxMjIwIG1tL3JtYXAuYzox
-NTE1DQo+IHJtYXBfd2Fsa19hbm9uKzB4MmZiLzB4NDcwIG1tL3JtYXAuYzoyMzAxDQo+IHRyeV90
-b191bm1hcCsweGVjLzB4MTEwDQo+IHNocmlua19wYWdlX2xpc3QrMHhlOTEvMHgyNjIwIG1tL3Zt
-c2Nhbi5jOjE3MTkNCj4gc2hyaW5rX2luYWN0aXZlX2xpc3QrMHgzZmIvMHg3MzAgbW0vdm1zY2Fu
-LmM6MjM5NA0KPiBzaHJpbmtfbGlzdCBtbS92bXNjYW4uYzoyNjIxIFtpbmxpbmVdDQo+IHNocmlu
-a19scnV2ZWMrMHgzYzkvMHg3MTAgbW0vdm1zY2FuLmM6Mjk0MA0KPiBzaHJpbmtfbm9kZV9tZW1j
-Z3MrMHgyM2UvMHg0MTAgbW0vdm1zY2FuLmM6MzEyOQ0KPiBzaHJpbmtfbm9kZSsweDhmNi8weDEx
-OTAgbW0vdm1zY2FuLmM6MzI1Mg0KPiBrc3dhcGRfc2hyaW5rX25vZGUgbW0vdm1zY2FuLmM6NDAy
-MiBbaW5saW5lXQ0KPiBiYWxhbmNlX3BnZGF0KzB4NzAyLzB4ZDMwIG1tL3Ztc2Nhbi5jOjQyMTMN
-Cj4ga3N3YXBkKzB4MjAwLzB4MzQwIG1tL3Ztc2Nhbi5jOjQ0NzMNCj4ga3RocmVhZCsweDJjNy8w
-eDJlMCBrZXJuZWwva3RocmVhZC5jOjMyNw0KPiByZXRfZnJvbV9mb3JrKzB4MWYvMHgzMA0KPiAN
-Cj4gdmFsdWUgY2hhbmdlZDogMHgwMSAtPiAweDAwDQo+IA0KPiBSZXBvcnRlZCBieSBLZXJuZWwg
-Q29uY3VycmVuY3kgU2FuaXRpemVyIG9uOg0KPiBDUFU6IDAgUElEOiA3MSBDb21tOiBrc3dhcGQw
-IE5vdCB0YWludGVkIDUuMTYuMC1yYzEtc3l6a2FsbGVyICMwDQo+IEhhcmR3YXJlIG5hbWU6IEdv
-b2dsZSBHb29nbGUgQ29tcHV0ZSBFbmdpbmUvR29vZ2xlIENvbXB1dGUgRW5naW5lLCBCSU9TIEdv
-b2dsZSAwMS8wMS8yMDExDQo+ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KPiANCj4gU2lnbmVkLW9mZi1ieTogIkh1YW5n
-LCBZaW5nIiA8eWluZy5odWFuZ0BpbnRlbC5jb20+DQo+IFJlcG9ydGVkLWJ5OiBzeXpib3QrYWE1
-YmViZWQ2OTVlZGFjY2YwZGZAc3l6a2FsbGVyLmFwcHNwb3RtYWlsLmNvbQ0KPiBDYzogTmFkYXYg
-QW1pdCA8bmFtaXRAdm13YXJlLmNvbT4NCj4gQ2M6IE1lbCBHb3JtYW4gPG1nb3JtYW5AdGVjaHNp
-bmd1bGFyaXR5Lm5ldD4NCj4gQ2M6IEFuZHJlYSBBcmNhbmdlbGkgPGFhcmNhbmdlQHJlZGhhdC5j
-b20+DQo+IENjOiBBbmR5IEx1dG9taXJza2kgPGx1dG9Aa2VybmVsLm9yZz4NCj4gQ2M6IERhdmUg
-SGFuc2VuIDxkYXZlLmhhbnNlbkBsaW51eC5pbnRlbC5jb20+DQo+IENjOiBXaWxsIERlYWNvbiA8
-d2lsbEBrZXJuZWwub3JnPg0KPiBDYzogWXUgWmhhbyA8eXV6aGFvQGdvb2dsZS5jb20+DQo+IENj
-OiBNYXJjbyBFbHZlciA8ZWx2ZXJAZ29vZ2xlLmNvbT4NCj4gLS0tDQo+IGluY2x1ZGUvbGludXgv
-bW1fdHlwZXMuaCB8ICAyICstDQo+IG1tL3JtYXAuYyAgICAgICAgICAgICAgICB8IDE1ICsrKysr
-KysrLS0tLS0tLQ0KPiAyIGZpbGVzIGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygrKSwgOCBkZWxldGlv
-bnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L21tX3R5cGVzLmggYi9pbmNs
-dWRlL2xpbnV4L21tX3R5cGVzLmgNCj4gaW5kZXggYzNhNmU2MjA5NjAwLi43ODk3NzgwNjdkYjkg
-MTAwNjQ0DQo+IC0tLSBhL2luY2x1ZGUvbGludXgvbW1fdHlwZXMuaA0KPiArKysgYi9pbmNsdWRl
-L2xpbnV4L21tX3R5cGVzLmgNCj4gQEAgLTYzMiw3ICs2MzIsNyBAQCBzdHJ1Y3QgbW1fc3RydWN0
-IHsNCj4gCQlhdG9taWNfdCB0bGJfZmx1c2hfcGVuZGluZzsNCj4gI2lmZGVmIENPTkZJR19BUkNI
-X1dBTlRfQkFUQ0hFRF9VTk1BUF9UTEJfRkxVU0gNCj4gCQkvKiBTZWUgZmx1c2hfdGxiX2JhdGNo
-ZWRfcGVuZGluZygpICovDQo+IC0JCWJvb2wgdGxiX2ZsdXNoX2JhdGNoZWQ7DQo+ICsJCWF0b21p
-Y190IHRsYl9mbHVzaF9iYXRjaGVkOw0KPiAjZW5kaWYNCj4gCQlzdHJ1Y3QgdXByb2Jlc19zdGF0
-ZSB1cHJvYmVzX3N0YXRlOw0KPiAjaWZkZWYgQ09ORklHX1BSRUVNUFRfUlQNCj4gZGlmZiAtLWdp
-dCBhL21tL3JtYXAuYyBiL21tL3JtYXAuYw0KPiBpbmRleCAxNjNhYzRlNmJjZWUuLjYwOTAyYzNj
-ZmI0YSAxMDA2NDQNCj4gLS0tIGEvbW0vcm1hcC5jDQo+ICsrKyBiL21tL3JtYXAuYw0KPiBAQCAt
-NjMzLDcgKzYzMyw3IEBAIHN0YXRpYyB2b2lkIHNldF90bGJfdWJjX2ZsdXNoX3BlbmRpbmcoc3Ry
-dWN0IG1tX3N0cnVjdCAqbW0sIGJvb2wgd3JpdGFibGUpDQo+IAkgKiBiZWZvcmUgdGhlIFBURSBp
-cyBjbGVhcmVkLg0KPiAJICovDQo+IAliYXJyaWVyKCk7DQo+IC0JbW0tPnRsYl9mbHVzaF9iYXRj
-aGVkID0gdHJ1ZTsNCj4gKwlhdG9taWNfaW5jKCZtbS0+dGxiX2ZsdXNoX2JhdGNoZWQpOw0KPiAN
-Cj4gCS8qDQo+IAkgKiBJZiB0aGUgUFRFIHdhcyBkaXJ0eSB0aGVuIGl0J3MgYmVzdCB0byBhc3N1
-bWUgaXQncyB3cml0YWJsZS4gVGhlDQo+IEBAIC02ODAsMTUgKzY4MCwxNiBAQCBzdGF0aWMgYm9v
-bCBzaG91bGRfZGVmZXJfZmx1c2goc3RydWN0IG1tX3N0cnVjdCAqbW0sIGVudW0gdHR1X2ZsYWdz
-IGZsYWdzKQ0KPiAgKi8NCj4gdm9pZCBmbHVzaF90bGJfYmF0Y2hlZF9wZW5kaW5nKHN0cnVjdCBt
-bV9zdHJ1Y3QgKm1tKQ0KPiB7DQo+IC0JaWYgKGRhdGFfcmFjZShtbS0+dGxiX2ZsdXNoX2JhdGNo
-ZWQpKSB7DQo+IC0JCWZsdXNoX3RsYl9tbShtbSk7DQo+ICsJaW50IGJhdGNoZWQgPSBhdG9taWNf
-cmVhZCgmbW0tPnRsYl9mbHVzaF9iYXRjaGVkKTsNCj4gDQo+ICsJaWYgKGJhdGNoZWQpIHsNCj4g
-KwkJZmx1c2hfdGxiX21tKG1tKTsNCj4gCQkvKg0KPiAtCQkgKiBEbyBub3QgYWxsb3cgdGhlIGNv
-bXBpbGVyIHRvIHJlLW9yZGVyIHRoZSBjbGVhcmluZyBvZg0KPiAtCQkgKiB0bGJfZmx1c2hfYmF0
-Y2hlZCBiZWZvcmUgdGhlIHRsYiBpcyBmbHVzaGVkLg0KPiArCQkgKiBJZiB0aGUgbmV3IFRMQiBm
-bHVzaGluZyBpcyBwZW5kZWQgZHVyaW5nIGZsdXNoaW5nLA0KPiArCQkgKiBsZWF2ZSBtbS0+dGxi
-X2ZsdXNoX2JhdGNoZWQgYXMgaXMsIHRvIGF2b2lkIHRvIGxvc2UNCj4gKwkJICogZmx1c2hpbmcu
-DQo+IAkJICovDQo+IC0JCWJhcnJpZXIoKTsNCj4gLQkJbW0tPnRsYl9mbHVzaF9iYXRjaGVkID0g
-ZmFsc2U7DQo+ICsJCWF0b21pY19jbXB4Y2hnKCZtbS0+dGxiX2ZsdXNoX2JhdGNoZWQsIGJhdGNo
-ZWQsIDApOw0KDQpUaGlzIGRvZXMgbm90IHNlZW0gdG8gcHJldmVudCBhIHJhY2UgY29tcGxldGVs
-eS4NCg0KICBDUFUwCQlDUFUxCQlDUFUyDQoNCiAgc2V0X3RsYl91YmNfZmx1c2hfcGVuZGluZygp
-DQogIFsgdGxiX2ZsdXNoX2JhdGNoZWQgPSAxIF0NCg0KCQkJCWZsdXNoX3RsYl9iYXRjaGVkX3Bl
-bmRpbmcoKQ0KCQkJCVsgYmF0Y2hlZCA9IDEgXQ0KCQkJCSBmbHVzaF90bGJfbW0oKQ0KCQkJCSAu
-Li4NCiAgZmx1c2hfdGxiX2JhdGNoZWRfcGVuZGluZygpDQogIFsgdGxiX2ZsdXNoX2JhdGNoZWQg
-PSAwIF0NCgkJCQkNCg0KCQlwdGVwX2dldF9hbmRfY2xlYXIoKQ0KCQlzZXRfdGxiX3ViY19mbHVz
-aF9wZW5kaW5nKCkNCgkJWyB0bGJfZmx1c2hfYmF0Y2hlZCA9IDEgXQ0KCQkJCQkNCgkJCQkJDQoJ
-CQkJIC4uLg0KCQkJCSBhdG9taWNfY21weGNoZygpDQoJCQkJIFsgc3VjY2VlZHMgXQ0KDQpBdCB0
-aGUgZW5kIG9mIHRoaXMgZmxvdyB0bGJfZmx1c2hfYmF0Y2hlZCBpcyAwIGFsdGhvdWdoDQp0aGUg
-VExCIGZsdXNoIG9mIENQVTHigJlzIG5ld2x5IGFkZGVkIFBURSB3YXMgbm90IGRvbmUuDQoNCklm
-IHlvdSBnbyB3aXRoIHlvdXIgYXBwcm9hY2ggeW91IG5lZWQgdG8gaGF2ZSB0d28gYXRvbWljDQpj
-b3VudGVycywgb25lIG9mIHRoZSBmbHVzaGVkIOKAnGdlbmVyYXRpb27igJ0gYW5kIG9uZSBvZiB0
-aGUNCnBlbmRpbmcg4oCcZ2VuZXJhdGlvbuKAnS4gDQoNCkFueWhvdywgSSBhbSBqdXN0IG1lbnRp
-b25pbmcgdGhhdCBJIHRoaW5rIGEgbW9yZSBmdW5kYW1lbnRhbA0Kc29sdXRpb24gaXMgYXBwcm9w
-cmlhdGUgdG8gdGFrZSBpbnRvIGFjY291bnQgb3RoZXIgZmx1c2hlcw0KdGhhdCBtaWdodCByZW5k
-ZXIgZmx1c2hfdGxiX2JhdGNoZWRfcGVuZGluZygpIGZsdXNoDQp1bm5lY2Vzc2FyeS4NCg0K
+
+
+11/23/21 4:55 PM, Horatiu Vultur пишет:
+> This patch adds basic SwitchDev driver framework for lan966x. It
+> includes only the IO range mapping and probing of the switch.
+> 
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> ---
+>   drivers/net/ethernet/microchip/Kconfig        |   1 +
+>   drivers/net/ethernet/microchip/Makefile       |   1 +
+>   .../net/ethernet/microchip/lan966x/Kconfig    |   7 +
+>   .../net/ethernet/microchip/lan966x/Makefile   |   8 +
+>   .../ethernet/microchip/lan966x/lan966x_main.c | 356 +++++++++
+>   .../ethernet/microchip/lan966x/lan966x_main.h | 103 +++
+>   .../ethernet/microchip/lan966x/lan966x_regs.h | 730 ++++++++++++++++++
+>   7 files changed, 1206 insertions(+)
+>   create mode 100644 drivers/net/ethernet/microchip/lan966x/Kconfig
+>   create mode 100644 drivers/net/ethernet/microchip/lan966x/Makefile
+>   create mode 100644 drivers/net/ethernet/microchip/lan966x/lan966x_main.c
+>   create mode 100644 drivers/net/ethernet/microchip/lan966x/lan966x_main.h
+>   create mode 100644 drivers/net/ethernet/microchip/lan966x/lan966x_regs.h
+> 
+> diff --git a/drivers/net/ethernet/microchip/Kconfig b/drivers/net/ethernet/microchip/Kconfig
+> index 735eea1dacf1..ed7a35c3ceac 100644
+> --- a/drivers/net/ethernet/microchip/Kconfig
+> +++ b/drivers/net/ethernet/microchip/Kconfig
+> @@ -55,6 +55,7 @@ config LAN743X
+>   	  To compile this driver as a module, choose M here. The module will be
+>   	  called lan743x.
+>   
+> +source "drivers/net/ethernet/microchip/lan966x/Kconfig"
+>   source "drivers/net/ethernet/microchip/sparx5/Kconfig"
+>   
+>   endif # NET_VENDOR_MICROCHIP
+> diff --git a/drivers/net/ethernet/microchip/Makefile b/drivers/net/ethernet/microchip/Makefile
+> index c77dc0379bfd..9faa41436198 100644
+> --- a/drivers/net/ethernet/microchip/Makefile
+> +++ b/drivers/net/ethernet/microchip/Makefile
+> @@ -9,4 +9,5 @@ obj-$(CONFIG_LAN743X) += lan743x.o
+>   
+>   lan743x-objs := lan743x_main.o lan743x_ethtool.o lan743x_ptp.o
+>   
+> +obj-$(CONFIG_LAN966X_SWITCH) += lan966x/
+>   obj-$(CONFIG_SPARX5_SWITCH) += sparx5/
+> diff --git a/drivers/net/ethernet/microchip/lan966x/Kconfig b/drivers/net/ethernet/microchip/lan966x/Kconfig
+> new file mode 100644
+> index 000000000000..83ac4266b417
+> --- /dev/null
+> +++ b/drivers/net/ethernet/microchip/lan966x/Kconfig
+> @@ -0,0 +1,7 @@
+> +config LAN966X_SWITCH
+> +	tristate "Lan966x switch driver"
+> +	depends on HAS_IOMEM
+> +	depends on OF
+> +	select PHYLINK
+> +	help
+> +	  This driver supports the Lan966x network switch device.
+> diff --git a/drivers/net/ethernet/microchip/lan966x/Makefile b/drivers/net/ethernet/microchip/lan966x/Makefile
+> new file mode 100644
+> index 000000000000..7ea90410a0b2
+> --- /dev/null
+> +++ b/drivers/net/ethernet/microchip/lan966x/Makefile
+> @@ -0,0 +1,8 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +#
+> +# Makefile for the Microchip Lan966x network device drivers.
+> +#
+> +
+> +obj-$(CONFIG_LAN966X_SWITCH) += lan966x-switch.o
+> +
+> +lan966x-switch-objs  := lan966x_main.o
+> diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.c b/drivers/net/ethernet/microchip/lan966x/lan966x_main.c
+> new file mode 100644
+> index 000000000000..c6bdbb065f07
+> --- /dev/null
+> +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.c
+> @@ -0,0 +1,356 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +
+> +#include <asm/memory.h>
+> +#include <linux/module.h>
+> +#include <linux/if_bridge.h>
+> +#include <linux/iopoll.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/of_net.h>
+> +#include <linux/reset.h>
+> +
+> +#include "lan966x_main.h"
+> +
+> +#define READL_SLEEP_US			10
+> +#define READL_TIMEOUT_US		100000000
+> +
+> +#define IO_RANGES 2
+> +
+> +static const struct of_device_id lan966x_match[] = {
+> +	{ .compatible = "microchip,lan966x-switch" },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, mchp_lan966x_match);
+> +
+> +struct lan966x_main_io_resource {
+> +	enum lan966x_target id;
+> +	phys_addr_t offset;
+> +	int range;
+> +};
+> +
+> +static const struct lan966x_main_io_resource lan966x_main_iomap[] =  {
+> +	{ TARGET_CPU,                   0xc0000, 0 }, /* 0xe00c0000 */
+> +	{ TARGET_ORG,                         0, 1 }, /* 0xe2000000 */
+> +	{ TARGET_GCB,                    0x4000, 1 }, /* 0xe2004000 */
+> +	{ TARGET_QS,                     0x8000, 1 }, /* 0xe2008000 */
+> +	{ TARGET_CHIP_TOP,              0x10000, 1 }, /* 0xe2010000 */
+> +	{ TARGET_REW,                   0x14000, 1 }, /* 0xe2014000 */
+> +	{ TARGET_SYS,                   0x28000, 1 }, /* 0xe2028000 */
+> +	{ TARGET_DEV,                   0x34000, 1 }, /* 0xe2034000 */
+> +	{ TARGET_DEV +  1,              0x38000, 1 }, /* 0xe2038000 */
+> +	{ TARGET_DEV +  2,              0x3c000, 1 }, /* 0xe203c000 */
+> +	{ TARGET_DEV +  3,              0x40000, 1 }, /* 0xe2040000 */
+> +	{ TARGET_DEV +  4,              0x44000, 1 }, /* 0xe2044000 */
+> +	{ TARGET_DEV +  5,              0x48000, 1 }, /* 0xe2048000 */
+> +	{ TARGET_DEV +  6,              0x4c000, 1 }, /* 0xe204c000 */
+> +	{ TARGET_DEV +  7,              0x50000, 1 }, /* 0xe2050000 */
+> +	{ TARGET_QSYS,                 0x100000, 1 }, /* 0xe2100000 */
+> +	{ TARGET_AFI,                  0x120000, 1 }, /* 0xe2120000 */
+> +	{ TARGET_ANA,                  0x140000, 1 }, /* 0xe2140000 */
+> +};
+> +
+> +static int lan966x_create_targets(struct platform_device *pdev,
+> +				  struct lan966x *lan966x)
+> +{
+> +	struct resource *iores[IO_RANGES];
+> +	void __iomem *begin[IO_RANGES];
+> +	int idx;
+> +
+> +	/* Initially map the entire range and after that update each target to
+> +	 * point inside the region at the correct offset. It is possible that
+> +	 * other devices access the same region so don't add any checks about
+> +	 * this.
+> +	 */
+> +	for (idx = 0; idx < IO_RANGES; idx++) {
+> +		iores[idx] = platform_get_resource(pdev, IORESOURCE_MEM,
+> +						   idx);
+> +		if (!iores[idx]) {
+> +			dev_err(&pdev->dev, "Invalid resource\n");
+> +			return -EINVAL;
+> +		}
+> +
+> +		begin[idx] = devm_ioremap(&pdev->dev,
+> +					  iores[idx]->start,
+> +					  resource_size(iores[idx]));
+> +		if (IS_ERR(begin[idx])) {
+> +			dev_err(&pdev->dev, "Unable to get registers: %s\n",
+> +				iores[idx]->name);
+> +			return PTR_ERR(begin[idx]);
+> +		}
+> +	}
+> +
+> +	for (idx = 0; idx < ARRAY_SIZE(lan966x_main_iomap); idx++) {
+> +		const struct lan966x_main_io_resource *iomap =
+> +			&lan966x_main_iomap[idx];
+> +
+> +		lan966x->regs[iomap->id] = begin[iomap->range] + iomap->offset;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int lan966x_probe_port(struct lan966x *lan966x, u32 p,
+> +			      phy_interface_t phy_mode)
+> +{
+> +	struct lan966x_port *port;
+> +
+> +	if (p >= lan966x->num_phys_ports)
+> +		return -EINVAL;
+> +
+> +	port = devm_kzalloc(lan966x->dev, sizeof(*port), GFP_KERNEL);
+ENOMEM?
+> +
+> +	port->lan966x = lan966x;
+> +	port->chip_port = p;
+> +	port->pvid = PORT_PVID;
+> +	lan966x->ports[p] = port;
+> +
+> +	return 0;
+> +}
+> +
+> +static void lan966x_init(struct lan966x *lan966x)
+> +{
+> +	u32 p, i;
+> +
+> +	/* Flush queues */
+> +	lan_wr(lan_rd(lan966x, QS_XTR_FLUSH) |
+> +	       GENMASK(1, 0),
+> +	       lan966x, QS_XTR_FLUSH);
+> +
+> +	/* Allow to drain */
+> +	mdelay(1);
+> +
+> +	/* All Queues normal */
+> +	lan_wr(lan_rd(lan966x, QS_XTR_FLUSH) &
+> +	       ~(GENMASK(1, 0)),
+> +	       lan966x, QS_XTR_FLUSH);
+> +
+> +	/* Set MAC age time to default value, the entry is aged after
+> +	 * 2 * AGE_PERIOD
+> +	 */
+> +	lan_wr(ANA_AUTOAGE_AGE_PERIOD_SET(BR_DEFAULT_AGEING_TIME / 2 / HZ),
+> +	       lan966x, ANA_AUTOAGE);
+> +
+> +	/* Disable learning for frames discarded by VLAN ingress filtering */
+> +	lan_rmw(ANA_ADVLEARN_VLAN_CHK_SET(1),
+> +		ANA_ADVLEARN_VLAN_CHK,
+> +		lan966x, ANA_ADVLEARN);
+> +
+> +	/* Setup frame ageing - "2 sec" - The unit is 6.5 us on lan966x */
+> +	lan_wr(SYS_FRM_AGING_AGE_TX_ENA_SET(1) |
+> +	       (20000000 / 65),
+> +	       lan966x,  SYS_FRM_AGING);
+> +
+> +	/* Map the 8 CPU extraction queues to CPU port */
+> +	lan_wr(0, lan966x, QSYS_CPU_GROUP_MAP);
+> +
+> +	/* Do byte-swap and expect status after last data word
+> +	 * Extraction: Mode: manual extraction) | Byte_swap
+> +	 */
+> +	lan_wr(QS_XTR_GRP_CFG_MODE_SET(1) |
+> +	       QS_XTR_GRP_CFG_BYTE_SWAP_SET(1),
+> +	       lan966x, QS_XTR_GRP_CFG(0));
+> +
+> +	/* Injection: Mode: manual injection | Byte_swap */
+> +	lan_wr(QS_INJ_GRP_CFG_MODE_SET(1) |
+> +	       QS_INJ_GRP_CFG_BYTE_SWAP_SET(1),
+> +	       lan966x, QS_INJ_GRP_CFG(0));
+> +
+> +	lan_rmw(QS_INJ_CTRL_GAP_SIZE_SET(0),
+> +		QS_INJ_CTRL_GAP_SIZE,
+> +		lan966x, QS_INJ_CTRL(0));
+> +
+> +	/* Enable IFH insertion/parsing on CPU ports */
+> +	lan_wr(SYS_PORT_MODE_INCL_INJ_HDR_SET(1) |
+> +	       SYS_PORT_MODE_INCL_XTR_HDR_SET(1),
+> +	       lan966x, SYS_PORT_MODE(CPU_PORT));
+> +
+> +	/* Setup flooding PGIDs */
+> +	lan_wr(ANA_FLOODING_IPMC_FLD_MC4_DATA_SET(PGID_MCIPV4) |
+> +	       ANA_FLOODING_IPMC_FLD_MC4_CTRL_SET(PGID_MC) |
+> +	       ANA_FLOODING_IPMC_FLD_MC6_DATA_SET(PGID_MC) |
+> +	       ANA_FLOODING_IPMC_FLD_MC6_CTRL_SET(PGID_MC),
+> +	       lan966x, ANA_FLOODING_IPMC);
+> +
+> +	/* There are 8 priorities */
+> +	for (i = 0; i < 8; ++i)
+> +		lan_rmw(ANA_FLOODING_FLD_MULTICAST_SET(PGID_MC) |
+> +			ANA_FLOODING_FLD_BROADCAST_SET(PGID_BC),
+> +			ANA_FLOODING_FLD_MULTICAST |
+> +			ANA_FLOODING_FLD_BROADCAST,
+> +			lan966x, ANA_FLOODING(i));
+> +
+> +	for (i = 0; i < PGID_ENTRIES; ++i)
+> +		/* Set all the entries to obey VLAN_VLAN */
+> +		lan_rmw(ANA_PGID_CFG_OBEY_VLAN_SET(1),
+> +			ANA_PGID_CFG_OBEY_VLAN,
+> +			lan966x, ANA_PGID_CFG(i));
+> +
+> +	for (p = 0; p < lan966x->num_phys_ports; p++) {
+> +		/* Disable bridging by default */
+> +		lan_rmw(ANA_PGID_PGID_SET(0x0),
+> +			ANA_PGID_PGID,
+> +			lan966x, ANA_PGID(p + PGID_SRC));
+> +
+> +		/* Do not forward BPDU frames to the front ports and copy them
+> +		 * to CPU
+> +		 */
+> +		lan_wr(0xffff, lan966x, ANA_CPU_FWD_BPDU_CFG(p));
+> +	}
+> +
+> +	/* Set source buffer size for each priority and each port to 1500 bytes */
+> +	for (i = 0; i <= QSYS_Q_RSRV; ++i) {
+> +		lan_wr(1500 / 64, lan966x, QSYS_RES_CFG(i));
+> +		lan_wr(1500 / 64, lan966x, QSYS_RES_CFG(512 + i));
+> +	}
+> +
+> +	/* Enable switching to/from cpu port */
+> +	lan_wr(QSYS_SW_PORT_MODE_PORT_ENA_SET(1) |
+> +	       QSYS_SW_PORT_MODE_SCH_NEXT_CFG_SET(1) |
+> +	       QSYS_SW_PORT_MODE_INGRESS_DROP_MODE_SET(1),
+> +	       lan966x,  QSYS_SW_PORT_MODE(CPU_PORT));
+> +
+> +	/* Configure and enable the CPU port */
+> +	lan_rmw(ANA_PGID_PGID_SET(0),
+> +		ANA_PGID_PGID,
+> +		lan966x, ANA_PGID(CPU_PORT));
+> +	lan_rmw(ANA_PGID_PGID_SET(BIT(CPU_PORT)),
+> +		ANA_PGID_PGID,
+> +		lan966x, ANA_PGID(PGID_CPU));
+> +
+> +	/* Multicast to all other ports */
+> +	lan_rmw(GENMASK(lan966x->num_phys_ports - 1, 0),
+> +		ANA_PGID_PGID,
+> +		lan966x, ANA_PGID(PGID_MC));
+> +
+> +	/* This will be controlled by mrouter ports */
+> +	lan_rmw(GENMASK(lan966x->num_phys_ports - 1, 0),
+> +		ANA_PGID_PGID,
+> +		lan966x, ANA_PGID(PGID_MCIPV4));
+> +
+> +	/* Broadcast to the CPU port and to other ports */
+> +	lan_rmw(ANA_PGID_PGID_SET(BIT(CPU_PORT) | GENMASK(lan966x->num_phys_ports - 1, 0)),
+> +		ANA_PGID_PGID,
+> +		lan966x, ANA_PGID(PGID_BC));
+> +
+> +	lan_wr(REW_PORT_CFG_NO_REWRITE_SET(1),
+> +	       lan966x, REW_PORT_CFG(CPU_PORT));
+> +
+> +	lan_rmw(ANA_ANAINTR_INTR_ENA_SET(1),
+> +		ANA_ANAINTR_INTR_ENA,
+> +		lan966x, ANA_ANAINTR);
+> +}
+> +
+> +static int lan966x_ram_init(struct lan966x *lan966x)
+> +{
+> +	return lan_rd(lan966x, SYS_RAM_INIT);
+> +}
+> +
+> +static int lan966x_reset_switch(struct lan966x *lan966x)
+> +{
+> +	struct reset_control *reset;
+> +	int val = 0;
+> +	int ret;
+> +
+> +	reset = devm_reset_control_get_shared(lan966x->dev, "switch");
+> +	if (IS_ERR(reset))
+> +		return dev_err_probe(lan966x->dev, PTR_ERR(reset),
+> +				     "Could not obtain switch reset");
+> +	reset_control_reset(reset);
+> +
+> +	reset = devm_reset_control_get_shared(lan966x->dev, "phy");
+> +	if (IS_ERR(reset))
+> +		return dev_err_probe(lan966x->dev, PTR_ERR(reset),
+> +				     "Could not obtain phy reset\n");
+> +	reset_control_reset(reset);
+> +
+> +	lan_wr(SYS_RESET_CFG_CORE_ENA_SET(0), lan966x, SYS_RESET_CFG);
+> +	lan_wr(SYS_RAM_INIT_RAM_INIT_SET(1), lan966x, SYS_RAM_INIT);
+> +	ret = readx_poll_timeout(lan966x_ram_init, lan966x,
+> +				 val, (val & BIT(1)) == 0, READL_SLEEP_US,
+> +				 READL_TIMEOUT_US);
+> +	if (ret)
+> +		return ret;
+> +
+> +	lan_wr(SYS_RESET_CFG_CORE_ENA_SET(1), lan966x, SYS_RESET_CFG);
+> +
+> +	return 0;
+> +}
+> +
+> +static int lan966x_probe(struct platform_device *pdev)
+> +{
+> +	struct fwnode_handle *ports, *portnp;
+> +	struct lan966x *lan966x;
+> +	int err, i;
+> +
+> +	lan966x = devm_kzalloc(&pdev->dev, sizeof(*lan966x), GFP_KERNEL);
+> +	if (!lan966x)
+> +		return -ENOMEM;
+> +
+> +	platform_set_drvdata(pdev, lan966x);
+> +	lan966x->dev = &pdev->dev;
+> +
+> +	ports = device_get_named_child_node(&pdev->dev, "ethernet-ports");
+> +	if (!ports)
+> +		return dev_err_probe(&pdev->dev, -ENODEV,
+> +				     "no ethernet-ports child found\n");
+> +
+> +	err = lan966x_create_targets(pdev, lan966x);
+> +	if (err)
+> +		return dev_err_probe(&pdev->dev, err,
+> +				     "Failed to create targets");
+> +
+> +	err = lan966x_reset_switch(lan966x);
+> +	if (err)
+> +		return dev_err_probe(&pdev->dev, err, "Reset failed");
+> +
+> +	i = 0;
+> +	fwnode_for_each_available_child_node(ports, portnp)
+> +		++i;
+> +
+> +	lan966x->num_phys_ports = i;
+> +	lan966x->ports = devm_kcalloc(&pdev->dev, lan966x->num_phys_ports,
+> +				      sizeof(struct lan966x_port *),
+> +				      GFP_KERNEL);
+> +	if (!lan966x->ports)
+> +		return -ENOMEM;
+> +
+> +	/* There QS system has 32KB of memory */
+> +	lan966x->shared_queue_sz = LAN966X_BUFFER_MEMORY;
+> +
+> +	/* init switch */
+> +	lan966x_init(lan966x);
+> +
+> +	/* go over the child nodes */
+> +	fwnode_for_each_available_child_node(ports, portnp) {
+> +		phy_interface_t phy_mode;
+> +		u32 p;
+> +
+> +		if (fwnode_property_read_u32(portnp, "reg", &p))
+> +			continue;
+> +
+> +		phy_mode = fwnode_get_phy_mode(portnp);
+> +		err = lan966x_probe_port(lan966x, p, phy_mode);
+> +		if (err)
+> +			return err;
+> +	}
+> +
+> +	return 0;
+You have to properly free allocated resource in the error case
+> +}
+> +
+> +static int lan966x_remove(struct platform_device *pdev)
+> +{
+> +	return 0;
+> +}
+> +
+> +static struct platform_driver lan966x_driver = {
+> +	.probe = lan966x_probe,
+> +	.remove = lan966x_remove,
+> +	.driver = {
+> +		.name = "lan966x-switch",
+> +		.of_match_table = lan966x_match,
+> +	},
+> +};
+> +module_platform_driver(lan966x_driver);
+> +
+> +MODULE_DESCRIPTION("Microchip LAN966X switch driver");
+> +MODULE_AUTHOR("Horatiu Vultur <horatiu.vultur@microchip.com>");
+> +MODULE_LICENSE("Dual MIT/GPL");
+> diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
+> new file mode 100644
+> index 000000000000..7a1ff9d19fbf
+> --- /dev/null
+> +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
+> @@ -0,0 +1,103 @@
+> +/* SPDX-License-Identifier: GPL-2.0+ */
+> +
+> +#ifndef __LAN966X_MAIN_H__
+> +#define __LAN966X_MAIN_H__
+> +
+> +#include "lan966x_regs.h"
+> +
+> +#define LAN966X_BUFFER_CELL_SZ		64
+> +#define LAN966X_BUFFER_MEMORY		(160 * 1024)
+> +#define LAN966X_BUFFER_MIN_SZ		60
+> +
+> +#define PGID_AGGR			64
+> +#define PGID_SRC			80
+> +#define PGID_ENTRIES			89
+> +
+> +#define PORT_PVID			0
+> +
+> +/* Reserved amount for (SRC, PRIO) at index 8*SRC + PRIO */
+> +#define QSYS_Q_RSRV			95
+> +
+> +/* Reserved PGIDs */
+> +#define PGID_CPU			(PGID_AGGR - 6)
+> +#define PGID_UC				(PGID_AGGR - 5)
+> +#define PGID_BC				(PGID_AGGR - 4)
+> +#define PGID_MC				(PGID_AGGR - 3)
+> +#define PGID_MCIPV4			(PGID_AGGR - 2)
+> +#define PGID_MCIPV6			(PGID_AGGR - 1)
+> +
+> +#define LAN966X_SPEED_NONE		0
+> +#define LAN966X_SPEED_1000		1
+> +#define LAN966X_SPEED_100		2
+> +#define LAN966X_SPEED_10		3
+> +
+> +#define CPU_PORT			8
+> +
+> +struct lan966x_port;
+> +
+> +struct lan966x {
+> +	struct device *dev;
+> +
+> +	u8 num_phys_ports;
+> +	struct lan966x_port **ports;
+> +
+> +	void __iomem *regs[NUM_TARGETS];
+> +
+> +	int shared_queue_sz;
+> +};
+> +
+> +struct lan966x_port {
+> +	struct lan966x *lan966x;
+> +
+> +	u8 chip_port;
+> +	u16 pvid;
+> +};
+> +
+> +static inline void __iomem *lan_addr(void __iomem *base[],
+> +				     int id, int tinst, int tcnt,
+> +				     int gbase, int ginst,
+> +				     int gcnt, int gwidth,
+> +				     int raddr, int rinst,
+> +				     int rcnt, int rwidth)
+> +{
+> +	WARN_ON((tinst) >= tcnt);
+> +	WARN_ON((ginst) >= gcnt);
+> +	WARN_ON((rinst) >= rcnt);
+> +	return base[id + (tinst)] +
+> +		gbase + ((ginst) * gwidth) +
+> +		raddr + ((rinst) * rwidth);
+> +}
+> +
+> +static inline u32 lan_rd(struct lan966x *lan966x, int id, int tinst, int tcnt,
+> +			 int gbase, int ginst, int gcnt, int gwidth,
+> +			 int raddr, int rinst, int rcnt, int rwidth)
+> +{
+> +	return readl(lan_addr(lan966x->regs, id, tinst, tcnt, gbase, ginst,
+> +			      gcnt, gwidth, raddr, rinst, rcnt, rwidth));
+> +}
+> +
+> +static inline void lan_wr(u32 val, struct lan966x *lan966x,
+> +			  int id, int tinst, int tcnt,
+> +			  int gbase, int ginst, int gcnt, int gwidth,
+> +			  int raddr, int rinst, int rcnt, int rwidth)
+> +{
+> +	writel(val, lan_addr(lan966x->regs, id, tinst, tcnt,
+> +			     gbase, ginst, gcnt, gwidth,
+> +			     raddr, rinst, rcnt, rwidth));
+> +}
+> +
+> +static inline void lan_rmw(u32 val, u32 mask, struct lan966x *lan966x,
+> +			   int id, int tinst, int tcnt,
+> +			   int gbase, int ginst, int gcnt, int gwidth,
+> +			   int raddr, int rinst, int rcnt, int rwidth)
+> +{
+> +	u32 nval;
+> +
+> +	nval = readl(lan_addr(lan966x->regs, id, tinst, tcnt, gbase, ginst,
+> +			      gcnt, gwidth, raddr, rinst, rcnt, rwidth));
+> +	nval = (nval & ~mask) | (val & mask);
+> +	writel(nval, lan_addr(lan966x->regs, id, tinst, tcnt, gbase, ginst,
+> +			      gcnt, gwidth, raddr, rinst, rcnt, rwidth));
+> +}
+> +
+> +#endif /* __LAN966X_MAIN_H__ */
+> diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_regs.h b/drivers/net/ethernet/microchip/lan966x/lan966x_regs.h
+> new file mode 100644
+> index 000000000000..879dcd807dec
+> --- /dev/null
+> +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_regs.h
+> @@ -0,0 +1,730 @@
+> +/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
+> +
+> +/* This file is autogenerated by cml-utils 2021-10-10 13:25:08 +0200.
+> + * Commit ID: 26db2002924973d36a30b369c94f025a678fe9ea (dirty)
+> + */
+> +
+> +#ifndef _LAN966X_REGS_H_
+> +#define _LAN966X_REGS_H_
+> +
+> +#include <linux/bitfield.h>
+> +#include <linux/types.h>
+> +#include <linux/bug.h>
+> +
+> +enum lan966x_target {
+> +	TARGET_AFI = 2,
+> +	TARGET_ANA = 3,
+> +	TARGET_CHIP_TOP = 5,
+> +	TARGET_CPU = 6,
+> +	TARGET_DEV = 13,
+> +	TARGET_GCB = 27,
+> +	TARGET_ORG = 36,
+> +	TARGET_QS = 42,
+> +	TARGET_QSYS = 46,
+> +	TARGET_REW = 47,
+> +	TARGET_SYS = 52,
+> +	NUM_TARGETS = 66
+> +};
+> +
+> +#define __REG(...)    __VA_ARGS__
+> +
+> +/*      AFI:PORT_TBL:PORT_FRM_OUT */
+> +#define AFI_PORT_FRM_OUT(g)       __REG(TARGET_AFI, 0, 1, 98816, g, 10, 8, 0, 0, 1, 4)
+> +
+> +#define AFI_PORT_FRM_OUT_FRM_OUT_CNT             GENMASK(26, 16)
+> +#define AFI_PORT_FRM_OUT_FRM_OUT_CNT_SET(x)\
+> +	FIELD_PREP(AFI_PORT_FRM_OUT_FRM_OUT_CNT, x)
+> +#define AFI_PORT_FRM_OUT_FRM_OUT_CNT_GET(x)\
+> +	FIELD_GET(AFI_PORT_FRM_OUT_FRM_OUT_CNT, x)
+> +
+> +/*      AFI:PORT_TBL:PORT_CFG */
+> +#define AFI_PORT_CFG(g)           __REG(TARGET_AFI, 0, 1, 98816, g, 10, 8, 4, 0, 1, 4)
+> +
+> +#define AFI_PORT_CFG_FC_SKIP_TTI_INJ             BIT(16)
+> +#define AFI_PORT_CFG_FC_SKIP_TTI_INJ_SET(x)\
+> +	FIELD_PREP(AFI_PORT_CFG_FC_SKIP_TTI_INJ, x)
+> +#define AFI_PORT_CFG_FC_SKIP_TTI_INJ_GET(x)\
+> +	FIELD_GET(AFI_PORT_CFG_FC_SKIP_TTI_INJ, x)
+> +
+> +#define AFI_PORT_CFG_FRM_OUT_MAX                 GENMASK(9, 0)
+> +#define AFI_PORT_CFG_FRM_OUT_MAX_SET(x)\
+> +	FIELD_PREP(AFI_PORT_CFG_FRM_OUT_MAX, x)
+> +#define AFI_PORT_CFG_FRM_OUT_MAX_GET(x)\
+> +	FIELD_GET(AFI_PORT_CFG_FRM_OUT_MAX, x)
+> +
+> +/*      ANA:ANA:ADVLEARN */
+> +#define ANA_ADVLEARN              __REG(TARGET_ANA, 0, 1, 29824, 0, 1, 244, 0, 0, 1, 4)
+> +
+> +#define ANA_ADVLEARN_VLAN_CHK                    BIT(0)
+> +#define ANA_ADVLEARN_VLAN_CHK_SET(x)\
+> +	FIELD_PREP(ANA_ADVLEARN_VLAN_CHK, x)
+> +#define ANA_ADVLEARN_VLAN_CHK_GET(x)\
+> +	FIELD_GET(ANA_ADVLEARN_VLAN_CHK, x)
+> +
+> +/*      ANA:ANA:ANAINTR */
+> +#define ANA_ANAINTR               __REG(TARGET_ANA, 0, 1, 29824, 0, 1, 244, 16, 0, 1, 4)
+> +
+> +#define ANA_ANAINTR_INTR                         BIT(1)
+> +#define ANA_ANAINTR_INTR_SET(x)\
+> +	FIELD_PREP(ANA_ANAINTR_INTR, x)
+> +#define ANA_ANAINTR_INTR_GET(x)\
+> +	FIELD_GET(ANA_ANAINTR_INTR, x)
+> +
+> +#define ANA_ANAINTR_INTR_ENA                     BIT(0)
+> +#define ANA_ANAINTR_INTR_ENA_SET(x)\
+> +	FIELD_PREP(ANA_ANAINTR_INTR_ENA, x)
+> +#define ANA_ANAINTR_INTR_ENA_GET(x)\
+> +	FIELD_GET(ANA_ANAINTR_INTR_ENA, x)
+> +
+> +/*      ANA:ANA:AUTOAGE */
+> +#define ANA_AUTOAGE               __REG(TARGET_ANA, 0, 1, 29824, 0, 1, 244, 44, 0, 1, 4)
+> +
+> +#define ANA_AUTOAGE_AGE_PERIOD                   GENMASK(20, 1)
+> +#define ANA_AUTOAGE_AGE_PERIOD_SET(x)\
+> +	FIELD_PREP(ANA_AUTOAGE_AGE_PERIOD, x)
+> +#define ANA_AUTOAGE_AGE_PERIOD_GET(x)\
+> +	FIELD_GET(ANA_AUTOAGE_AGE_PERIOD, x)
+> +
+> +/*      ANA:ANA:FLOODING */
+> +#define ANA_FLOODING(r)           __REG(TARGET_ANA, 0, 1, 29824, 0, 1, 244, 68, r, 8, 4)
+> +
+> +#define ANA_FLOODING_FLD_BROADCAST               GENMASK(11, 6)
+> +#define ANA_FLOODING_FLD_BROADCAST_SET(x)\
+> +	FIELD_PREP(ANA_FLOODING_FLD_BROADCAST, x)
+> +#define ANA_FLOODING_FLD_BROADCAST_GET(x)\
+> +	FIELD_GET(ANA_FLOODING_FLD_BROADCAST, x)
+> +
+> +#define ANA_FLOODING_FLD_MULTICAST               GENMASK(5, 0)
+> +#define ANA_FLOODING_FLD_MULTICAST_SET(x)\
+> +	FIELD_PREP(ANA_FLOODING_FLD_MULTICAST, x)
+> +#define ANA_FLOODING_FLD_MULTICAST_GET(x)\
+> +	FIELD_GET(ANA_FLOODING_FLD_MULTICAST, x)
+> +
+> +/*      ANA:ANA:FLOODING_IPMC */
+> +#define ANA_FLOODING_IPMC         __REG(TARGET_ANA, 0, 1, 29824, 0, 1, 244, 100, 0, 1, 4)
+> +
+> +#define ANA_FLOODING_IPMC_FLD_MC4_CTRL           GENMASK(23, 18)
+> +#define ANA_FLOODING_IPMC_FLD_MC4_CTRL_SET(x)\
+> +	FIELD_PREP(ANA_FLOODING_IPMC_FLD_MC4_CTRL, x)
+> +#define ANA_FLOODING_IPMC_FLD_MC4_CTRL_GET(x)\
+> +	FIELD_GET(ANA_FLOODING_IPMC_FLD_MC4_CTRL, x)
+> +
+> +#define ANA_FLOODING_IPMC_FLD_MC4_DATA           GENMASK(17, 12)
+> +#define ANA_FLOODING_IPMC_FLD_MC4_DATA_SET(x)\
+> +	FIELD_PREP(ANA_FLOODING_IPMC_FLD_MC4_DATA, x)
+> +#define ANA_FLOODING_IPMC_FLD_MC4_DATA_GET(x)\
+> +	FIELD_GET(ANA_FLOODING_IPMC_FLD_MC4_DATA, x)
+> +
+> +#define ANA_FLOODING_IPMC_FLD_MC6_CTRL           GENMASK(11, 6)
+> +#define ANA_FLOODING_IPMC_FLD_MC6_CTRL_SET(x)\
+> +	FIELD_PREP(ANA_FLOODING_IPMC_FLD_MC6_CTRL, x)
+> +#define ANA_FLOODING_IPMC_FLD_MC6_CTRL_GET(x)\
+> +	FIELD_GET(ANA_FLOODING_IPMC_FLD_MC6_CTRL, x)
+> +
+> +#define ANA_FLOODING_IPMC_FLD_MC6_DATA           GENMASK(5, 0)
+> +#define ANA_FLOODING_IPMC_FLD_MC6_DATA_SET(x)\
+> +	FIELD_PREP(ANA_FLOODING_IPMC_FLD_MC6_DATA, x)
+> +#define ANA_FLOODING_IPMC_FLD_MC6_DATA_GET(x)\
+> +	FIELD_GET(ANA_FLOODING_IPMC_FLD_MC6_DATA, x)
+> +
+> +/*      ANA:PGID:PGID */
+> +#define ANA_PGID(g)               __REG(TARGET_ANA, 0, 1, 27648, g, 89, 8, 0, 0, 1, 4)
+> +
+> +#define ANA_PGID_PGID                            GENMASK(8, 0)
+> +#define ANA_PGID_PGID_SET(x)\
+> +	FIELD_PREP(ANA_PGID_PGID, x)
+> +#define ANA_PGID_PGID_GET(x)\
+> +	FIELD_GET(ANA_PGID_PGID, x)
+> +
+> +/*      ANA:PGID:PGID_CFG */
+> +#define ANA_PGID_CFG(g)           __REG(TARGET_ANA, 0, 1, 27648, g, 89, 8, 4, 0, 1, 4)
+> +
+> +#define ANA_PGID_CFG_OBEY_VLAN                   BIT(0)
+> +#define ANA_PGID_CFG_OBEY_VLAN_SET(x)\
+> +	FIELD_PREP(ANA_PGID_CFG_OBEY_VLAN, x)
+> +#define ANA_PGID_CFG_OBEY_VLAN_GET(x)\
+> +	FIELD_GET(ANA_PGID_CFG_OBEY_VLAN, x)
+> +
+> +/*      ANA:ANA_TABLES:MACHDATA */
+> +#define ANA_MACHDATA              __REG(TARGET_ANA, 0, 1, 27520, 0, 1, 128, 40, 0, 1, 4)
+> +
+> +/*      ANA:ANA_TABLES:MACLDATA */
+> +#define ANA_MACLDATA              __REG(TARGET_ANA, 0, 1, 27520, 0, 1, 128, 44, 0, 1, 4)
+> +
+> +/*      ANA:ANA_TABLES:MACACCESS */
+> +#define ANA_MACACCESS             __REG(TARGET_ANA, 0, 1, 27520, 0, 1, 128, 48, 0, 1, 4)
+> +
+> +#define ANA_MACACCESS_CHANGE2SW                  BIT(17)
+> +#define ANA_MACACCESS_CHANGE2SW_SET(x)\
+> +	FIELD_PREP(ANA_MACACCESS_CHANGE2SW, x)
+> +#define ANA_MACACCESS_CHANGE2SW_GET(x)\
+> +	FIELD_GET(ANA_MACACCESS_CHANGE2SW, x)
+> +
+> +#define ANA_MACACCESS_VALID                      BIT(12)
+> +#define ANA_MACACCESS_VALID_SET(x)\
+> +	FIELD_PREP(ANA_MACACCESS_VALID, x)
+> +#define ANA_MACACCESS_VALID_GET(x)\
+> +	FIELD_GET(ANA_MACACCESS_VALID, x)
+> +
+> +#define ANA_MACACCESS_ENTRYTYPE                  GENMASK(11, 10)
+> +#define ANA_MACACCESS_ENTRYTYPE_SET(x)\
+> +	FIELD_PREP(ANA_MACACCESS_ENTRYTYPE, x)
+> +#define ANA_MACACCESS_ENTRYTYPE_GET(x)\
+> +	FIELD_GET(ANA_MACACCESS_ENTRYTYPE, x)
+> +
+> +#define ANA_MACACCESS_DEST_IDX                   GENMASK(9, 4)
+> +#define ANA_MACACCESS_DEST_IDX_SET(x)\
+> +	FIELD_PREP(ANA_MACACCESS_DEST_IDX, x)
+> +#define ANA_MACACCESS_DEST_IDX_GET(x)\
+> +	FIELD_GET(ANA_MACACCESS_DEST_IDX, x)
+> +
+> +#define ANA_MACACCESS_MAC_TABLE_CMD              GENMASK(3, 0)
+> +#define ANA_MACACCESS_MAC_TABLE_CMD_SET(x)\
+> +	FIELD_PREP(ANA_MACACCESS_MAC_TABLE_CMD, x)
+> +#define ANA_MACACCESS_MAC_TABLE_CMD_GET(x)\
+> +	FIELD_GET(ANA_MACACCESS_MAC_TABLE_CMD, x)
+> +
+> +/*      ANA:PORT:CPU_FWD_CFG */
+> +#define ANA_CPU_FWD_CFG(g)        __REG(TARGET_ANA, 0, 1, 28672, g, 9, 128, 96, 0, 1, 4)
+> +
+> +#define ANA_CPU_FWD_CFG_SRC_COPY_ENA             BIT(3)
+> +#define ANA_CPU_FWD_CFG_SRC_COPY_ENA_SET(x)\
+> +	FIELD_PREP(ANA_CPU_FWD_CFG_SRC_COPY_ENA, x)
+> +#define ANA_CPU_FWD_CFG_SRC_COPY_ENA_GET(x)\
+> +	FIELD_GET(ANA_CPU_FWD_CFG_SRC_COPY_ENA, x)
+> +
+> +/*      ANA:PORT:CPU_FWD_BPDU_CFG */
+> +#define ANA_CPU_FWD_BPDU_CFG(g)   __REG(TARGET_ANA, 0, 1, 28672, g, 9, 128, 100, 0, 1, 4)
+> +
+> +/*      ANA:PORT:PORT_CFG */
+> +#define ANA_PORT_CFG(g)           __REG(TARGET_ANA, 0, 1, 28672, g, 9, 128, 112, 0, 1, 4)
+> +
+> +#define ANA_PORT_CFG_LEARNAUTO                   BIT(6)
+> +#define ANA_PORT_CFG_LEARNAUTO_SET(x)\
+> +	FIELD_PREP(ANA_PORT_CFG_LEARNAUTO, x)
+> +#define ANA_PORT_CFG_LEARNAUTO_GET(x)\
+> +	FIELD_GET(ANA_PORT_CFG_LEARNAUTO, x)
+> +
+> +#define ANA_PORT_CFG_LEARN_ENA                   BIT(5)
+> +#define ANA_PORT_CFG_LEARN_ENA_SET(x)\
+> +	FIELD_PREP(ANA_PORT_CFG_LEARN_ENA, x)
+> +#define ANA_PORT_CFG_LEARN_ENA_GET(x)\
+> +	FIELD_GET(ANA_PORT_CFG_LEARN_ENA, x)
+> +
+> +#define ANA_PORT_CFG_RECV_ENA                    BIT(4)
+> +#define ANA_PORT_CFG_RECV_ENA_SET(x)\
+> +	FIELD_PREP(ANA_PORT_CFG_RECV_ENA, x)
+> +#define ANA_PORT_CFG_RECV_ENA_GET(x)\
+> +	FIELD_GET(ANA_PORT_CFG_RECV_ENA, x)
+> +
+> +#define ANA_PORT_CFG_PORTID_VAL                  GENMASK(3, 0)
+> +#define ANA_PORT_CFG_PORTID_VAL_SET(x)\
+> +	FIELD_PREP(ANA_PORT_CFG_PORTID_VAL, x)
+> +#define ANA_PORT_CFG_PORTID_VAL_GET(x)\
+> +	FIELD_GET(ANA_PORT_CFG_PORTID_VAL, x)
+> +
+> +/*      ANA:PFC:PFC_CFG */
+> +#define ANA_PFC_CFG(g)            __REG(TARGET_ANA, 0, 1, 30720, g, 8, 64, 0, 0, 1, 4)
+> +
+> +#define ANA_PFC_CFG_FC_LINK_SPEED                GENMASK(1, 0)
+> +#define ANA_PFC_CFG_FC_LINK_SPEED_SET(x)\
+> +	FIELD_PREP(ANA_PFC_CFG_FC_LINK_SPEED, x)
+> +#define ANA_PFC_CFG_FC_LINK_SPEED_GET(x)\
+> +	FIELD_GET(ANA_PFC_CFG_FC_LINK_SPEED, x)
+> +
+> +/*      CHIP_TOP:CUPHY_CFG:CUPHY_PORT_CFG */
+> +#define CHIP_TOP_CUPHY_PORT_CFG(r) __REG(TARGET_CHIP_TOP, 0, 1, 16, 0, 1, 20, 8, r, 2, 4)
+> +
+> +#define CHIP_TOP_CUPHY_PORT_CFG_GTX_CLK_ENA      BIT(0)
+> +#define CHIP_TOP_CUPHY_PORT_CFG_GTX_CLK_ENA_SET(x)\
+> +	FIELD_PREP(CHIP_TOP_CUPHY_PORT_CFG_GTX_CLK_ENA, x)
+> +#define CHIP_TOP_CUPHY_PORT_CFG_GTX_CLK_ENA_GET(x)\
+> +	FIELD_GET(CHIP_TOP_CUPHY_PORT_CFG_GTX_CLK_ENA, x)
+> +
+> +/*      DEV:PORT_MODE:CLOCK_CFG */
+> +#define DEV_CLOCK_CFG(t)          __REG(TARGET_DEV, t, 8, 0, 0, 1, 28, 0, 0, 1, 4)
+> +
+> +#define DEV_CLOCK_CFG_MAC_TX_RST                 BIT(7)
+> +#define DEV_CLOCK_CFG_MAC_TX_RST_SET(x)\
+> +	FIELD_PREP(DEV_CLOCK_CFG_MAC_TX_RST, x)
+> +#define DEV_CLOCK_CFG_MAC_TX_RST_GET(x)\
+> +	FIELD_GET(DEV_CLOCK_CFG_MAC_TX_RST, x)
+> +
+> +#define DEV_CLOCK_CFG_MAC_RX_RST                 BIT(6)
+> +#define DEV_CLOCK_CFG_MAC_RX_RST_SET(x)\
+> +	FIELD_PREP(DEV_CLOCK_CFG_MAC_RX_RST, x)
+> +#define DEV_CLOCK_CFG_MAC_RX_RST_GET(x)\
+> +	FIELD_GET(DEV_CLOCK_CFG_MAC_RX_RST, x)
+> +
+> +#define DEV_CLOCK_CFG_PCS_TX_RST                 BIT(5)
+> +#define DEV_CLOCK_CFG_PCS_TX_RST_SET(x)\
+> +	FIELD_PREP(DEV_CLOCK_CFG_PCS_TX_RST, x)
+> +#define DEV_CLOCK_CFG_PCS_TX_RST_GET(x)\
+> +	FIELD_GET(DEV_CLOCK_CFG_PCS_TX_RST, x)
+> +
+> +#define DEV_CLOCK_CFG_PCS_RX_RST                 BIT(4)
+> +#define DEV_CLOCK_CFG_PCS_RX_RST_SET(x)\
+> +	FIELD_PREP(DEV_CLOCK_CFG_PCS_RX_RST, x)
+> +#define DEV_CLOCK_CFG_PCS_RX_RST_GET(x)\
+> +	FIELD_GET(DEV_CLOCK_CFG_PCS_RX_RST, x)
+> +
+> +#define DEV_CLOCK_CFG_PORT_RST                   BIT(3)
+> +#define DEV_CLOCK_CFG_PORT_RST_SET(x)\
+> +	FIELD_PREP(DEV_CLOCK_CFG_PORT_RST, x)
+> +#define DEV_CLOCK_CFG_PORT_RST_GET(x)\
+> +	FIELD_GET(DEV_CLOCK_CFG_PORT_RST, x)
+> +
+> +#define DEV_CLOCK_CFG_LINK_SPEED                 GENMASK(1, 0)
+> +#define DEV_CLOCK_CFG_LINK_SPEED_SET(x)\
+> +	FIELD_PREP(DEV_CLOCK_CFG_LINK_SPEED, x)
+> +#define DEV_CLOCK_CFG_LINK_SPEED_GET(x)\
+> +	FIELD_GET(DEV_CLOCK_CFG_LINK_SPEED, x)
+> +
+> +/*      DEV:MAC_CFG_STATUS:MAC_ENA_CFG */
+> +#define DEV_MAC_ENA_CFG(t)        __REG(TARGET_DEV, t, 8, 28, 0, 1, 44, 0, 0, 1, 4)
+> +
+> +#define DEV_MAC_ENA_CFG_RX_ENA                   BIT(4)
+> +#define DEV_MAC_ENA_CFG_RX_ENA_SET(x)\
+> +	FIELD_PREP(DEV_MAC_ENA_CFG_RX_ENA, x)
+> +#define DEV_MAC_ENA_CFG_RX_ENA_GET(x)\
+> +	FIELD_GET(DEV_MAC_ENA_CFG_RX_ENA, x)
+> +
+> +#define DEV_MAC_ENA_CFG_TX_ENA                   BIT(0)
+> +#define DEV_MAC_ENA_CFG_TX_ENA_SET(x)\
+> +	FIELD_PREP(DEV_MAC_ENA_CFG_TX_ENA, x)
+> +#define DEV_MAC_ENA_CFG_TX_ENA_GET(x)\
+> +	FIELD_GET(DEV_MAC_ENA_CFG_TX_ENA, x)
+> +
+> +/*      DEV:MAC_CFG_STATUS:MAC_MODE_CFG */
+> +#define DEV_MAC_MODE_CFG(t)       __REG(TARGET_DEV, t, 8, 28, 0, 1, 44, 4, 0, 1, 4)
+> +
+> +#define DEV_MAC_MODE_CFG_GIGA_MODE_ENA           BIT(4)
+> +#define DEV_MAC_MODE_CFG_GIGA_MODE_ENA_SET(x)\
+> +	FIELD_PREP(DEV_MAC_MODE_CFG_GIGA_MODE_ENA, x)
+> +#define DEV_MAC_MODE_CFG_GIGA_MODE_ENA_GET(x)\
+> +	FIELD_GET(DEV_MAC_MODE_CFG_GIGA_MODE_ENA, x)
+> +
+> +/*      DEV:MAC_CFG_STATUS:MAC_MAXLEN_CFG */
+> +#define DEV_MAC_MAXLEN_CFG(t)     __REG(TARGET_DEV, t, 8, 28, 0, 1, 44, 8, 0, 1, 4)
+> +
+> +#define DEV_MAC_MAXLEN_CFG_MAX_LEN               GENMASK(15, 0)
+> +#define DEV_MAC_MAXLEN_CFG_MAX_LEN_SET(x)\
+> +	FIELD_PREP(DEV_MAC_MAXLEN_CFG_MAX_LEN, x)
+> +#define DEV_MAC_MAXLEN_CFG_MAX_LEN_GET(x)\
+> +	FIELD_GET(DEV_MAC_MAXLEN_CFG_MAX_LEN, x)
+> +
+> +/*      DEV:MAC_CFG_STATUS:MAC_IFG_CFG */
+> +#define DEV_MAC_IFG_CFG(t)        __REG(TARGET_DEV, t, 8, 28, 0, 1, 44, 20, 0, 1, 4)
+> +
+> +#define DEV_MAC_IFG_CFG_TX_IFG                   GENMASK(12, 8)
+> +#define DEV_MAC_IFG_CFG_TX_IFG_SET(x)\
+> +	FIELD_PREP(DEV_MAC_IFG_CFG_TX_IFG, x)
+> +#define DEV_MAC_IFG_CFG_TX_IFG_GET(x)\
+> +	FIELD_GET(DEV_MAC_IFG_CFG_TX_IFG, x)
+> +
+> +#define DEV_MAC_IFG_CFG_RX_IFG2                  GENMASK(7, 4)
+> +#define DEV_MAC_IFG_CFG_RX_IFG2_SET(x)\
+> +	FIELD_PREP(DEV_MAC_IFG_CFG_RX_IFG2, x)
+> +#define DEV_MAC_IFG_CFG_RX_IFG2_GET(x)\
+> +	FIELD_GET(DEV_MAC_IFG_CFG_RX_IFG2, x)
+> +
+> +#define DEV_MAC_IFG_CFG_RX_IFG1                  GENMASK(3, 0)
+> +#define DEV_MAC_IFG_CFG_RX_IFG1_SET(x)\
+> +	FIELD_PREP(DEV_MAC_IFG_CFG_RX_IFG1, x)
+> +#define DEV_MAC_IFG_CFG_RX_IFG1_GET(x)\
+> +	FIELD_GET(DEV_MAC_IFG_CFG_RX_IFG1, x)
+> +
+> +/*      DEV:MAC_CFG_STATUS:MAC_HDX_CFG */
+> +#define DEV_MAC_HDX_CFG(t)        __REG(TARGET_DEV, t, 8, 28, 0, 1, 44, 24, 0, 1, 4)
+> +
+> +#define DEV_MAC_HDX_CFG_SEED                     GENMASK(23, 16)
+> +#define DEV_MAC_HDX_CFG_SEED_SET(x)\
+> +	FIELD_PREP(DEV_MAC_HDX_CFG_SEED, x)
+> +#define DEV_MAC_HDX_CFG_SEED_GET(x)\
+> +	FIELD_GET(DEV_MAC_HDX_CFG_SEED, x)
+> +
+> +#define DEV_MAC_HDX_CFG_SEED_LOAD                BIT(12)
+> +#define DEV_MAC_HDX_CFG_SEED_LOAD_SET(x)\
+> +	FIELD_PREP(DEV_MAC_HDX_CFG_SEED_LOAD, x)
+> +#define DEV_MAC_HDX_CFG_SEED_LOAD_GET(x)\
+> +	FIELD_GET(DEV_MAC_HDX_CFG_SEED_LOAD, x)
+> +
+> +/*      DEV:MAC_CFG_STATUS:MAC_FC_MAC_LOW_CFG */
+> +#define DEV_FC_MAC_LOW_CFG(t)     __REG(TARGET_DEV, t, 8, 28, 0, 1, 44, 32, 0, 1, 4)
+> +
+> +/*      DEV:MAC_CFG_STATUS:MAC_FC_MAC_HIGH_CFG */
+> +#define DEV_FC_MAC_HIGH_CFG(t)    __REG(TARGET_DEV, t, 8, 28, 0, 1, 44, 36, 0, 1, 4)
+> +
+> +/*      DEV:PCS1G_CFG_STATUS:PCS1G_CFG */
+> +#define DEV_PCS1G_CFG(t)          __REG(TARGET_DEV, t, 8, 72, 0, 1, 68, 0, 0, 1, 4)
+> +
+> +#define DEV_PCS1G_CFG_PCS_ENA                    BIT(0)
+> +#define DEV_PCS1G_CFG_PCS_ENA_SET(x)\
+> +	FIELD_PREP(DEV_PCS1G_CFG_PCS_ENA, x)
+> +#define DEV_PCS1G_CFG_PCS_ENA_GET(x)\
+> +	FIELD_GET(DEV_PCS1G_CFG_PCS_ENA, x)
+> +
+> +/*      DEV:PCS1G_CFG_STATUS:PCS1G_MODE_CFG */
+> +#define DEV_PCS1G_MODE_CFG(t)     __REG(TARGET_DEV, t, 8, 72, 0, 1, 68, 4, 0, 1, 4)
+> +
+> +#define DEV_PCS1G_MODE_CFG_SGMII_MODE_ENA        BIT(0)
+> +#define DEV_PCS1G_MODE_CFG_SGMII_MODE_ENA_SET(x)\
+> +	FIELD_PREP(DEV_PCS1G_MODE_CFG_SGMII_MODE_ENA, x)
+> +#define DEV_PCS1G_MODE_CFG_SGMII_MODE_ENA_GET(x)\
+> +	FIELD_GET(DEV_PCS1G_MODE_CFG_SGMII_MODE_ENA, x)
+> +
+> +/*      DEV:PCS1G_CFG_STATUS:PCS1G_SD_CFG */
+> +#define DEV_PCS1G_SD_CFG(t)       __REG(TARGET_DEV, t, 8, 72, 0, 1, 68, 8, 0, 1, 4)
+> +
+> +#define DEV_PCS1G_SD_CFG_SD_ENA                  BIT(0)
+> +#define DEV_PCS1G_SD_CFG_SD_ENA_SET(x)\
+> +	FIELD_PREP(DEV_PCS1G_SD_CFG_SD_ENA, x)
+> +#define DEV_PCS1G_SD_CFG_SD_ENA_GET(x)\
+> +	FIELD_GET(DEV_PCS1G_SD_CFG_SD_ENA, x)
+> +
+> +/*      DEV:PCS1G_CFG_STATUS:PCS1G_ANEG_CFG */
+> +#define DEV_PCS1G_ANEG_CFG(t)     __REG(TARGET_DEV, t, 8, 72, 0, 1, 68, 12, 0, 1, 4)
+> +
+> +#define DEV_PCS1G_ANEG_CFG_ADV_ABILITY           GENMASK(31, 16)
+> +#define DEV_PCS1G_ANEG_CFG_ADV_ABILITY_SET(x)\
+> +	FIELD_PREP(DEV_PCS1G_ANEG_CFG_ADV_ABILITY, x)
+> +#define DEV_PCS1G_ANEG_CFG_ADV_ABILITY_GET(x)\
+> +	FIELD_GET(DEV_PCS1G_ANEG_CFG_ADV_ABILITY, x)
+> +
+> +#define DEV_PCS1G_ANEG_CFG_SW_RESOLVE_ENA        BIT(8)
+> +#define DEV_PCS1G_ANEG_CFG_SW_RESOLVE_ENA_SET(x)\
+> +	FIELD_PREP(DEV_PCS1G_ANEG_CFG_SW_RESOLVE_ENA, x)
+> +#define DEV_PCS1G_ANEG_CFG_SW_RESOLVE_ENA_GET(x)\
+> +	FIELD_GET(DEV_PCS1G_ANEG_CFG_SW_RESOLVE_ENA, x)
+> +
+> +#define DEV_PCS1G_ANEG_CFG_RESTART_ONE_SHOT      BIT(1)
+> +#define DEV_PCS1G_ANEG_CFG_RESTART_ONE_SHOT_SET(x)\
+> +	FIELD_PREP(DEV_PCS1G_ANEG_CFG_RESTART_ONE_SHOT, x)
+> +#define DEV_PCS1G_ANEG_CFG_RESTART_ONE_SHOT_GET(x)\
+> +	FIELD_GET(DEV_PCS1G_ANEG_CFG_RESTART_ONE_SHOT, x)
+> +
+> +#define DEV_PCS1G_ANEG_CFG_ENA                   BIT(0)
+> +#define DEV_PCS1G_ANEG_CFG_ENA_SET(x)\
+> +	FIELD_PREP(DEV_PCS1G_ANEG_CFG_ENA, x)
+> +#define DEV_PCS1G_ANEG_CFG_ENA_GET(x)\
+> +	FIELD_GET(DEV_PCS1G_ANEG_CFG_ENA, x)
+> +
+> +/*      DEV:PCS1G_CFG_STATUS:PCS1G_ANEG_STATUS */
+> +#define DEV_PCS1G_ANEG_STATUS(t)  __REG(TARGET_DEV, t, 8, 72, 0, 1, 68, 32, 0, 1, 4)
+> +
+> +#define DEV_PCS1G_ANEG_STATUS_LP_ADV             GENMASK(31, 16)
+> +#define DEV_PCS1G_ANEG_STATUS_LP_ADV_SET(x)\
+> +	FIELD_PREP(DEV_PCS1G_ANEG_STATUS_LP_ADV, x)
+> +#define DEV_PCS1G_ANEG_STATUS_LP_ADV_GET(x)\
+> +	FIELD_GET(DEV_PCS1G_ANEG_STATUS_LP_ADV, x)
+> +
+> +#define DEV_PCS1G_ANEG_STATUS_ANEG_COMPLETE      BIT(0)
+> +#define DEV_PCS1G_ANEG_STATUS_ANEG_COMPLETE_SET(x)\
+> +	FIELD_PREP(DEV_PCS1G_ANEG_STATUS_ANEG_COMPLETE, x)
+> +#define DEV_PCS1G_ANEG_STATUS_ANEG_COMPLETE_GET(x)\
+> +	FIELD_GET(DEV_PCS1G_ANEG_STATUS_ANEG_COMPLETE, x)
+> +
+> +/*      DEV:PCS1G_CFG_STATUS:PCS1G_LINK_STATUS */
+> +#define DEV_PCS1G_LINK_STATUS(t)  __REG(TARGET_DEV, t, 8, 72, 0, 1, 68, 40, 0, 1, 4)
+> +
+> +#define DEV_PCS1G_LINK_STATUS_LINK_STATUS        BIT(4)
+> +#define DEV_PCS1G_LINK_STATUS_LINK_STATUS_SET(x)\
+> +	FIELD_PREP(DEV_PCS1G_LINK_STATUS_LINK_STATUS, x)
+> +#define DEV_PCS1G_LINK_STATUS_LINK_STATUS_GET(x)\
+> +	FIELD_GET(DEV_PCS1G_LINK_STATUS_LINK_STATUS, x)
+> +
+> +#define DEV_PCS1G_LINK_STATUS_SYNC_STATUS        BIT(0)
+> +#define DEV_PCS1G_LINK_STATUS_SYNC_STATUS_SET(x)\
+> +	FIELD_PREP(DEV_PCS1G_LINK_STATUS_SYNC_STATUS, x)
+> +#define DEV_PCS1G_LINK_STATUS_SYNC_STATUS_GET(x)\
+> +	FIELD_GET(DEV_PCS1G_LINK_STATUS_SYNC_STATUS, x)
+> +
+> +/*      DEV:PCS1G_CFG_STATUS:PCS1G_STICKY */
+> +#define DEV_PCS1G_STICKY(t)       __REG(TARGET_DEV, t, 8, 72, 0, 1, 68, 48, 0, 1, 4)
+> +
+> +#define DEV_PCS1G_STICKY_LINK_DOWN_STICKY        BIT(4)
+> +#define DEV_PCS1G_STICKY_LINK_DOWN_STICKY_SET(x)\
+> +	FIELD_PREP(DEV_PCS1G_STICKY_LINK_DOWN_STICKY, x)
+> +#define DEV_PCS1G_STICKY_LINK_DOWN_STICKY_GET(x)\
+> +	FIELD_GET(DEV_PCS1G_STICKY_LINK_DOWN_STICKY, x)
+> +
+> +/*      DEVCPU_QS:XTR:XTR_GRP_CFG */
+> +#define QS_XTR_GRP_CFG(r)         __REG(TARGET_QS, 0, 1, 0, 0, 1, 36, 0, r, 2, 4)
+> +
+> +#define QS_XTR_GRP_CFG_MODE                      GENMASK(3, 2)
+> +#define QS_XTR_GRP_CFG_MODE_SET(x)\
+> +	FIELD_PREP(QS_XTR_GRP_CFG_MODE, x)
+> +#define QS_XTR_GRP_CFG_MODE_GET(x)\
+> +	FIELD_GET(QS_XTR_GRP_CFG_MODE, x)
+> +
+> +#define QS_XTR_GRP_CFG_BYTE_SWAP                 BIT(0)
+> +#define QS_XTR_GRP_CFG_BYTE_SWAP_SET(x)\
+> +	FIELD_PREP(QS_XTR_GRP_CFG_BYTE_SWAP, x)
+> +#define QS_XTR_GRP_CFG_BYTE_SWAP_GET(x)\
+> +	FIELD_GET(QS_XTR_GRP_CFG_BYTE_SWAP, x)
+> +
+> +/*      DEVCPU_QS:XTR:XTR_RD */
+> +#define QS_XTR_RD(r)              __REG(TARGET_QS, 0, 1, 0, 0, 1, 36, 8, r, 2, 4)
+> +
+> +/*      DEVCPU_QS:XTR:XTR_FLUSH */
+> +#define QS_XTR_FLUSH              __REG(TARGET_QS, 0, 1, 0, 0, 1, 36, 24, 0, 1, 4)
+> +
+> +/*      DEVCPU_QS:XTR:XTR_DATA_PRESENT */
+> +#define QS_XTR_DATA_PRESENT       __REG(TARGET_QS, 0, 1, 0, 0, 1, 36, 28, 0, 1, 4)
+> +
+> +/*      DEVCPU_QS:INJ:INJ_GRP_CFG */
+> +#define QS_INJ_GRP_CFG(r)         __REG(TARGET_QS, 0, 1, 36, 0, 1, 40, 0, r, 2, 4)
+> +
+> +#define QS_INJ_GRP_CFG_MODE                      GENMASK(3, 2)
+> +#define QS_INJ_GRP_CFG_MODE_SET(x)\
+> +	FIELD_PREP(QS_INJ_GRP_CFG_MODE, x)
+> +#define QS_INJ_GRP_CFG_MODE_GET(x)\
+> +	FIELD_GET(QS_INJ_GRP_CFG_MODE, x)
+> +
+> +#define QS_INJ_GRP_CFG_BYTE_SWAP                 BIT(0)
+> +#define QS_INJ_GRP_CFG_BYTE_SWAP_SET(x)\
+> +	FIELD_PREP(QS_INJ_GRP_CFG_BYTE_SWAP, x)
+> +#define QS_INJ_GRP_CFG_BYTE_SWAP_GET(x)\
+> +	FIELD_GET(QS_INJ_GRP_CFG_BYTE_SWAP, x)
+> +
+> +/*      DEVCPU_QS:INJ:INJ_WR */
+> +#define QS_INJ_WR(r)              __REG(TARGET_QS, 0, 1, 36, 0, 1, 40, 8, r, 2, 4)
+> +
+> +/*      DEVCPU_QS:INJ:INJ_CTRL */
+> +#define QS_INJ_CTRL(r)            __REG(TARGET_QS, 0, 1, 36, 0, 1, 40, 16, r, 2, 4)
+> +
+> +#define QS_INJ_CTRL_GAP_SIZE                     GENMASK(24, 21)
+> +#define QS_INJ_CTRL_GAP_SIZE_SET(x)\
+> +	FIELD_PREP(QS_INJ_CTRL_GAP_SIZE, x)
+> +#define QS_INJ_CTRL_GAP_SIZE_GET(x)\
+> +	FIELD_GET(QS_INJ_CTRL_GAP_SIZE, x)
+> +
+> +#define QS_INJ_CTRL_EOF                          BIT(19)
+> +#define QS_INJ_CTRL_EOF_SET(x)\
+> +	FIELD_PREP(QS_INJ_CTRL_EOF, x)
+> +#define QS_INJ_CTRL_EOF_GET(x)\
+> +	FIELD_GET(QS_INJ_CTRL_EOF, x)
+> +
+> +#define QS_INJ_CTRL_SOF                          BIT(18)
+> +#define QS_INJ_CTRL_SOF_SET(x)\
+> +	FIELD_PREP(QS_INJ_CTRL_SOF, x)
+> +#define QS_INJ_CTRL_SOF_GET(x)\
+> +	FIELD_GET(QS_INJ_CTRL_SOF, x)
+> +
+> +#define QS_INJ_CTRL_VLD_BYTES                    GENMASK(17, 16)
+> +#define QS_INJ_CTRL_VLD_BYTES_SET(x)\
+> +	FIELD_PREP(QS_INJ_CTRL_VLD_BYTES, x)
+> +#define QS_INJ_CTRL_VLD_BYTES_GET(x)\
+> +	FIELD_GET(QS_INJ_CTRL_VLD_BYTES, x)
+> +
+> +/*      DEVCPU_QS:INJ:INJ_STATUS */
+> +#define QS_INJ_STATUS             __REG(TARGET_QS, 0, 1, 36, 0, 1, 40, 24, 0, 1, 4)
+> +
+> +#define QS_INJ_STATUS_WMARK_REACHED              GENMASK(5, 4)
+> +#define QS_INJ_STATUS_WMARK_REACHED_SET(x)\
+> +	FIELD_PREP(QS_INJ_STATUS_WMARK_REACHED, x)
+> +#define QS_INJ_STATUS_WMARK_REACHED_GET(x)\
+> +	FIELD_GET(QS_INJ_STATUS_WMARK_REACHED, x)
+> +
+> +#define QS_INJ_STATUS_FIFO_RDY                   GENMASK(3, 2)
+> +#define QS_INJ_STATUS_FIFO_RDY_SET(x)\
+> +	FIELD_PREP(QS_INJ_STATUS_FIFO_RDY, x)
+> +#define QS_INJ_STATUS_FIFO_RDY_GET(x)\
+> +	FIELD_GET(QS_INJ_STATUS_FIFO_RDY, x)
+> +
+> +/*      QSYS:SYSTEM:PORT_MODE */
+> +#define QSYS_PORT_MODE(r)         __REG(TARGET_QSYS, 0, 1, 28008, 0, 1, 216, 0, r, 10, 4)
+> +
+> +#define QSYS_PORT_MODE_DEQUEUE_DIS               BIT(1)
+> +#define QSYS_PORT_MODE_DEQUEUE_DIS_SET(x)\
+> +	FIELD_PREP(QSYS_PORT_MODE_DEQUEUE_DIS, x)
+> +#define QSYS_PORT_MODE_DEQUEUE_DIS_GET(x)\
+> +	FIELD_GET(QSYS_PORT_MODE_DEQUEUE_DIS, x)
+> +
+> +/*      QSYS:SYSTEM:SWITCH_PORT_MODE */
+> +#define QSYS_SW_PORT_MODE(r)      __REG(TARGET_QSYS, 0, 1, 28008, 0, 1, 216, 80, r, 9, 4)
+> +
+> +#define QSYS_SW_PORT_MODE_PORT_ENA               BIT(18)
+> +#define QSYS_SW_PORT_MODE_PORT_ENA_SET(x)\
+> +	FIELD_PREP(QSYS_SW_PORT_MODE_PORT_ENA, x)
+> +#define QSYS_SW_PORT_MODE_PORT_ENA_GET(x)\
+> +	FIELD_GET(QSYS_SW_PORT_MODE_PORT_ENA, x)
+> +
+> +#define QSYS_SW_PORT_MODE_SCH_NEXT_CFG           GENMASK(16, 14)
+> +#define QSYS_SW_PORT_MODE_SCH_NEXT_CFG_SET(x)\
+> +	FIELD_PREP(QSYS_SW_PORT_MODE_SCH_NEXT_CFG, x)
+> +#define QSYS_SW_PORT_MODE_SCH_NEXT_CFG_GET(x)\
+> +	FIELD_GET(QSYS_SW_PORT_MODE_SCH_NEXT_CFG, x)
+> +
+> +#define QSYS_SW_PORT_MODE_INGRESS_DROP_MODE      BIT(12)
+> +#define QSYS_SW_PORT_MODE_INGRESS_DROP_MODE_SET(x)\
+> +	FIELD_PREP(QSYS_SW_PORT_MODE_INGRESS_DROP_MODE, x)
+> +#define QSYS_SW_PORT_MODE_INGRESS_DROP_MODE_GET(x)\
+> +	FIELD_GET(QSYS_SW_PORT_MODE_INGRESS_DROP_MODE, x)
+> +
+> +#define QSYS_SW_PORT_MODE_TX_PFC_ENA             GENMASK(11, 4)
+> +#define QSYS_SW_PORT_MODE_TX_PFC_ENA_SET(x)\
+> +	FIELD_PREP(QSYS_SW_PORT_MODE_TX_PFC_ENA, x)
+> +#define QSYS_SW_PORT_MODE_TX_PFC_ENA_GET(x)\
+> +	FIELD_GET(QSYS_SW_PORT_MODE_TX_PFC_ENA, x)
+> +
+> +#define QSYS_SW_PORT_MODE_AGING_MODE             GENMASK(1, 0)
+> +#define QSYS_SW_PORT_MODE_AGING_MODE_SET(x)\
+> +	FIELD_PREP(QSYS_SW_PORT_MODE_AGING_MODE, x)
+> +#define QSYS_SW_PORT_MODE_AGING_MODE_GET(x)\
+> +	FIELD_GET(QSYS_SW_PORT_MODE_AGING_MODE, x)
+> +
+> +/*      QSYS:SYSTEM:SW_STATUS */
+> +#define QSYS_SW_STATUS(r)         __REG(TARGET_QSYS, 0, 1, 28008, 0, 1, 216, 164, r, 9, 4)
+> +
+> +#define QSYS_SW_STATUS_EQ_AVAIL                  GENMASK(7, 0)
+> +#define QSYS_SW_STATUS_EQ_AVAIL_SET(x)\
+> +	FIELD_PREP(QSYS_SW_STATUS_EQ_AVAIL, x)
+> +#define QSYS_SW_STATUS_EQ_AVAIL_GET(x)\
+> +	FIELD_GET(QSYS_SW_STATUS_EQ_AVAIL, x)
+> +
+> +/*      QSYS:SYSTEM:CPU_GROUP_MAP */
+> +#define QSYS_CPU_GROUP_MAP        __REG(TARGET_QSYS, 0, 1, 28008, 0, 1, 216, 204, 0, 1, 4)
+> +
+> +/*      QSYS:RES_CTRL:RES_CFG */
+> +#define QSYS_RES_CFG(g)           __REG(TARGET_QSYS, 0, 1, 32768, g, 1024, 8, 0, 0, 1, 4)
+> +
+> +/*      REW:PORT:PORT_CFG */
+> +#define REW_PORT_CFG(g)           __REG(TARGET_REW, 0, 1, 0, g, 10, 128, 8, 0, 1, 4)
+> +
+> +#define REW_PORT_CFG_NO_REWRITE                  BIT(0)
+> +#define REW_PORT_CFG_NO_REWRITE_SET(x)\
+> +	FIELD_PREP(REW_PORT_CFG_NO_REWRITE, x)
+> +#define REW_PORT_CFG_NO_REWRITE_GET(x)\
+> +	FIELD_GET(REW_PORT_CFG_NO_REWRITE, x)
+> +
+> +/*      SYS:SYSTEM:RESET_CFG */
+> +#define SYS_RESET_CFG             __REG(TARGET_SYS, 0, 1, 4128, 0, 1, 168, 0, 0, 1, 4)
+> +
+> +#define SYS_RESET_CFG_CORE_ENA                   BIT(0)
+> +#define SYS_RESET_CFG_CORE_ENA_SET(x)\
+> +	FIELD_PREP(SYS_RESET_CFG_CORE_ENA, x)
+> +#define SYS_RESET_CFG_CORE_ENA_GET(x)\
+> +	FIELD_GET(SYS_RESET_CFG_CORE_ENA, x)
+> +
+> +/*      SYS:SYSTEM:PORT_MODE */
+> +#define SYS_PORT_MODE(r)          __REG(TARGET_SYS, 0, 1, 4128, 0, 1, 168, 44, r, 10, 4)
+> +
+> +#define SYS_PORT_MODE_INCL_INJ_HDR               GENMASK(5, 4)
+> +#define SYS_PORT_MODE_INCL_INJ_HDR_SET(x)\
+> +	FIELD_PREP(SYS_PORT_MODE_INCL_INJ_HDR, x)
+> +#define SYS_PORT_MODE_INCL_INJ_HDR_GET(x)\
+> +	FIELD_GET(SYS_PORT_MODE_INCL_INJ_HDR, x)
+> +
+> +#define SYS_PORT_MODE_INCL_XTR_HDR               GENMASK(3, 2)
+> +#define SYS_PORT_MODE_INCL_XTR_HDR_SET(x)\
+> +	FIELD_PREP(SYS_PORT_MODE_INCL_XTR_HDR, x)
+> +#define SYS_PORT_MODE_INCL_XTR_HDR_GET(x)\
+> +	FIELD_GET(SYS_PORT_MODE_INCL_XTR_HDR, x)
+> +
+> +/*      SYS:SYSTEM:FRONT_PORT_MODE */
+> +#define SYS_FRONT_PORT_MODE(r)    __REG(TARGET_SYS, 0, 1, 4128, 0, 1, 168, 84, r, 8, 4)
+> +
+> +#define SYS_FRONT_PORT_MODE_HDX_MODE             BIT(1)
+> +#define SYS_FRONT_PORT_MODE_HDX_MODE_SET(x)\
+> +	FIELD_PREP(SYS_FRONT_PORT_MODE_HDX_MODE, x)
+> +#define SYS_FRONT_PORT_MODE_HDX_MODE_GET(x)\
+> +	FIELD_GET(SYS_FRONT_PORT_MODE_HDX_MODE, x)
+> +
+> +/*      SYS:SYSTEM:FRM_AGING */
+> +#define SYS_FRM_AGING             __REG(TARGET_SYS, 0, 1, 4128, 0, 1, 168, 116, 0, 1, 4)
+> +
+> +#define SYS_FRM_AGING_AGE_TX_ENA                 BIT(20)
+> +#define SYS_FRM_AGING_AGE_TX_ENA_SET(x)\
+> +	FIELD_PREP(SYS_FRM_AGING_AGE_TX_ENA, x)
+> +#define SYS_FRM_AGING_AGE_TX_ENA_GET(x)\
+> +	FIELD_GET(SYS_FRM_AGING_AGE_TX_ENA, x)
+> +
+> +/*      SYS:SYSTEM:STAT_CFG */
+> +#define SYS_STAT_CFG              __REG(TARGET_SYS, 0, 1, 4128, 0, 1, 168, 120, 0, 1, 4)
+> +
+> +#define SYS_STAT_CFG_STAT_VIEW                   GENMASK(9, 0)
+> +#define SYS_STAT_CFG_STAT_VIEW_SET(x)\
+> +	FIELD_PREP(SYS_STAT_CFG_STAT_VIEW, x)
+> +#define SYS_STAT_CFG_STAT_VIEW_GET(x)\
+> +	FIELD_GET(SYS_STAT_CFG_STAT_VIEW, x)
+> +
+> +/*      SYS:PAUSE_CFG:PAUSE_CFG */
+> +#define SYS_PAUSE_CFG(r)          __REG(TARGET_SYS, 0, 1, 4296, 0, 1, 112, 0, r, 9, 4)
+> +
+> +#define SYS_PAUSE_CFG_PAUSE_START                GENMASK(18, 10)
+> +#define SYS_PAUSE_CFG_PAUSE_START_SET(x)\
+> +	FIELD_PREP(SYS_PAUSE_CFG_PAUSE_START, x)
+> +#define SYS_PAUSE_CFG_PAUSE_START_GET(x)\
+> +	FIELD_GET(SYS_PAUSE_CFG_PAUSE_START, x)
+> +
+> +#define SYS_PAUSE_CFG_PAUSE_STOP                 GENMASK(9, 1)
+> +#define SYS_PAUSE_CFG_PAUSE_STOP_SET(x)\
+> +	FIELD_PREP(SYS_PAUSE_CFG_PAUSE_STOP, x)
+> +#define SYS_PAUSE_CFG_PAUSE_STOP_GET(x)\
+> +	FIELD_GET(SYS_PAUSE_CFG_PAUSE_STOP, x)
+> +
+> +#define SYS_PAUSE_CFG_PAUSE_ENA                  BIT(0)
+> +#define SYS_PAUSE_CFG_PAUSE_ENA_SET(x)\
+> +	FIELD_PREP(SYS_PAUSE_CFG_PAUSE_ENA, x)
+> +#define SYS_PAUSE_CFG_PAUSE_ENA_GET(x)\
+> +	FIELD_GET(SYS_PAUSE_CFG_PAUSE_ENA, x)
+> +
+> +/*      SYS:PAUSE_CFG:ATOP */
+> +#define SYS_ATOP(r)               __REG(TARGET_SYS, 0, 1, 4296, 0, 1, 112, 40, r, 9, 4)
+> +
+> +/*      SYS:PAUSE_CFG:ATOP_TOT_CFG */
+> +#define SYS_ATOP_TOT_CFG          __REG(TARGET_SYS, 0, 1, 4296, 0, 1, 112, 76, 0, 1, 4)
+> +
+> +/*      SYS:PAUSE_CFG:MAC_FC_CFG */
+> +#define SYS_MAC_FC_CFG(r)         __REG(TARGET_SYS, 0, 1, 4296, 0, 1, 112, 80, r, 8, 4)
+> +
+> +#define SYS_MAC_FC_CFG_FC_LINK_SPEED             GENMASK(27, 26)
+> +#define SYS_MAC_FC_CFG_FC_LINK_SPEED_SET(x)\
+> +	FIELD_PREP(SYS_MAC_FC_CFG_FC_LINK_SPEED, x)
+> +#define SYS_MAC_FC_CFG_FC_LINK_SPEED_GET(x)\
+> +	FIELD_GET(SYS_MAC_FC_CFG_FC_LINK_SPEED, x)
+> +
+> +#define SYS_MAC_FC_CFG_FC_LATENCY_CFG            GENMASK(25, 20)
+> +#define SYS_MAC_FC_CFG_FC_LATENCY_CFG_SET(x)\
+> +	FIELD_PREP(SYS_MAC_FC_CFG_FC_LATENCY_CFG, x)
+> +#define SYS_MAC_FC_CFG_FC_LATENCY_CFG_GET(x)\
+> +	FIELD_GET(SYS_MAC_FC_CFG_FC_LATENCY_CFG, x)
+> +
+> +#define SYS_MAC_FC_CFG_ZERO_PAUSE_ENA            BIT(18)
+> +#define SYS_MAC_FC_CFG_ZERO_PAUSE_ENA_SET(x)\
+> +	FIELD_PREP(SYS_MAC_FC_CFG_ZERO_PAUSE_ENA, x)
+> +#define SYS_MAC_FC_CFG_ZERO_PAUSE_ENA_GET(x)\
+> +	FIELD_GET(SYS_MAC_FC_CFG_ZERO_PAUSE_ENA, x)
+> +
+> +#define SYS_MAC_FC_CFG_TX_FC_ENA                 BIT(17)
+> +#define SYS_MAC_FC_CFG_TX_FC_ENA_SET(x)\
+> +	FIELD_PREP(SYS_MAC_FC_CFG_TX_FC_ENA, x)
+> +#define SYS_MAC_FC_CFG_TX_FC_ENA_GET(x)\
+> +	FIELD_GET(SYS_MAC_FC_CFG_TX_FC_ENA, x)
+> +
+> +#define SYS_MAC_FC_CFG_RX_FC_ENA                 BIT(16)
+> +#define SYS_MAC_FC_CFG_RX_FC_ENA_SET(x)\
+> +	FIELD_PREP(SYS_MAC_FC_CFG_RX_FC_ENA, x)
+> +#define SYS_MAC_FC_CFG_RX_FC_ENA_GET(x)\
+> +	FIELD_GET(SYS_MAC_FC_CFG_RX_FC_ENA, x)
+> +
+> +#define SYS_MAC_FC_CFG_PAUSE_VAL_CFG             GENMASK(15, 0)
+> +#define SYS_MAC_FC_CFG_PAUSE_VAL_CFG_SET(x)\
+> +	FIELD_PREP(SYS_MAC_FC_CFG_PAUSE_VAL_CFG, x)
+> +#define SYS_MAC_FC_CFG_PAUSE_VAL_CFG_GET(x)\
+> +	FIELD_GET(SYS_MAC_FC_CFG_PAUSE_VAL_CFG, x)
+> +
+> +/*      SYS:STAT:CNT */
+> +#define SYS_CNT(g)                __REG(TARGET_SYS, 0, 1, 0, g, 896, 4, 0, 0, 1, 4)
+> +
+> +/*      SYS:RAM_CTRL:RAM_INIT */
+> +#define SYS_RAM_INIT              __REG(TARGET_SYS, 0, 1, 4432, 0, 1, 4, 0, 0, 1, 4)
+> +
+> +#define SYS_RAM_INIT_RAM_INIT                    BIT(1)
+> +#define SYS_RAM_INIT_RAM_INIT_SET(x)\
+> +	FIELD_PREP(SYS_RAM_INIT_RAM_INIT, x)
+> +#define SYS_RAM_INIT_RAM_INIT_GET(x)\
+> +	FIELD_GET(SYS_RAM_INIT_RAM_INIT, x)
+> +
+> +#endif /* _LAN966X_REGS_H_ */
+> 
