@@ -2,133 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D154599AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:22:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE954599AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:26:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232059AbhKWBZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 20:25:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54102 "EHLO
+        id S232265AbhKWB3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 20:29:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231940AbhKWBZp (ORCPT
+        with ESMTP id S230017AbhKWB3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 20:25:45 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10CFAC061714
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:22:38 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id m27so86340542lfj.12
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:22:37 -0800 (PST)
+        Mon, 22 Nov 2021 20:29:33 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 943FBC061574;
+        Mon, 22 Nov 2021 17:26:26 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id n15-20020a17090a160f00b001a75089daa3so743099pja.1;
+        Mon, 22 Nov 2021 17:26:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=w8ragH9mrm78TEDc0slgjQMbYNAP4RfkPoqdokFyY0M=;
-        b=gfBDsWIanJ4lntlpU0kRxpVEtGJaAoE8tLJZOqujLHDpncY1+KCBbXa5xSZVMPBXSF
-         +wrIbQ5lHISJMpRz3GRVtKQCvS2q4ISxgMdW42j9pqz8TUlC3YgSFcmM6rC+VbFwgDBw
-         7+Ds3rNvr83cgCk1RW8Ycm4Y0P9MgqB7wkCWu3zwAvcd7vUu3AU8FmcgcvdV0MPRjLKl
-         D96MBYhrEy8YxkqBESOKaB11jXWv45LUZgpsS6X7qUDeHCxBZ3nhgfufJQvd3S27qJTU
-         3a9AmBn+toS6g1EL1AEoWlFmL5smibo7eGvup3uIJlMhxTseJgHrfh+8+KJHlKcIz3wA
-         pqGw==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=ogZcX9DyHGwTuGU2oZ3wvnMYWm3iqT2k7b9HUDBtOag=;
+        b=IruyqwJXagJNpBY3L2mKXfhOTI6Fvw3/KM2dGIVCGCuaZOgUb9P2VRfHfwFx2fncVB
+         UgVdKY0+eSSWi28fHt0mb5G4+HgsZqfqggnCMYBuC2wOWX1lTOsguGAOnxV8zLvE5N66
+         5TArCKTIXy3k9EkGVh8scTzX4OGpTqGIVmrl9vOPT0T0OCipAITcuqzKDdHr4iiQR07r
+         42yIt2or5YhGcWt+yxgM1gW5y7+ehF0tmj5ti+ahHCZAZCNAdfQSD/ljUs+Hdwv/W4gA
+         BtUI3blwxedn6J5P7mM5EDm7FUT5Fbx+di95dQqhOG/sunlRTuZxmag9ATOeRCQ9D/vD
+         JKMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=w8ragH9mrm78TEDc0slgjQMbYNAP4RfkPoqdokFyY0M=;
-        b=WuqUu00s00SLJhj0ageRC8ITdau90vcT4jOt1MGsEftcCup+RxoQuMYwGkDJwBT43s
-         b2FxTtTSbG7BoqJA5ZKptk+jKLXswp+01SA/41x+hGB8NTH3G8gktDa37NmIuHbn5wk0
-         KHOc3Bdm1jfE8a0L4FYvnT7tQH6GqctuzXlu3wXSEi0JJx+qXaYWdKr0sQ7O96OaNvT8
-         JRiYI0bSsXjmBwoxk7gxuVAGjo0UHf1F84MKGifK7Mce5pCYYYppwzXCWJZ5e7uAZcNB
-         0Edbji2ziihO032hzZ9IhZzRfa2hH2owq9QZ9Bkf/JvU4xz+2CDPGgGo5wWuTd/q7vv+
-         os9g==
-X-Gm-Message-State: AOAM533Km83yfAWnmegT13eWJZ+agrg5HS4bvhUvT+pA8PcSpZbo2NQ2
-        rKOMPdU5JYgH0jSbKs1yyFU=
-X-Google-Smtp-Source: ABdhPJx0Y12MI9ulk8sLJ4yflVREAsPfIxaw+Yr5tbSFwPQfshDmCtKusvpnWyTbwe6SEQVOFrL8IQ==
-X-Received: by 2002:a05:6512:33c9:: with SMTP id d9mr745890lfg.615.1637630556379;
-        Mon, 22 Nov 2021 17:22:36 -0800 (PST)
-Received: from HyperiorArchMachine.bb.dnainternet.fi (dcx7x4yct-z7s--tg8y8t-3.rev.dnainternet.fi. [2001:14ba:14f7:3c00:50fd:36ff:fe05:e039])
-        by smtp.gmail.com with ESMTPSA id c15sm1304038lfb.40.2021.11.22.17.22.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 17:22:36 -0800 (PST)
-From:   Jarmo Tiitto <jarmo.tiitto@gmail.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, Jessica Yu <jeyu@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Jarmo Tiitto <jarmo.tiitto@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Bill Wendling <wcw@google.com>, Joe Perches <joe@perches.com>
-Subject: [RFC PATCH 2/2] pgo: Make module.lds.S linker script to merge __llvm_prf_ sections.
-Date:   Tue, 23 Nov 2021 03:21:37 +0200
-Message-Id: <20211123012138.160532-3-jarmo.tiitto@gmail.com>
-X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211123012138.160532-1-jarmo.tiitto@gmail.com>
-References: <20211123012138.160532-1-jarmo.tiitto@gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=ogZcX9DyHGwTuGU2oZ3wvnMYWm3iqT2k7b9HUDBtOag=;
+        b=S+izNNaG3EW4pIUwNztcwC8asPIqcd1qjwzFkg0hoOiESTEOB7qB/lGLlEuYAuTat3
+         nlftyioQ8dCOVB3X9xehuq6qkurBi8+zMnu+n8ccEdyvdgJgAE7wiXMIx35Z/H0euI9A
+         f2qBk5AEqicNuhVf+5XTblktHIAbu7CfPJYdqawkUaLt22VCieHp8pNQO0/YmYXXXIXp
+         WIMXNzIT/+D9auPZ6bDf0OTilKOOzusQmUy15jzUossk2Qc8iCLFdIZmPQcyNjycmiRV
+         s9h41LrDf3TSl3fjvoMoArx9BgFpmjMH2+TqhUH1h5Bl4GOigdUGu4HqdV+ZpV/q3UGq
+         8yQw==
+X-Gm-Message-State: AOAM530pnJ3ptt4KR22sLlCyl4roXEzdFeZz/R4xjXw2vOrX7JBKA1xy
+        z425OdWNJ3Rn0mSOsoEOfZU=
+X-Google-Smtp-Source: ABdhPJzJ2SY9oZ/udDxPho1eL0AIAEdo7G1ZL7CRmuFft0+gs24A5ZldF3gr2QgUDhln3cSyfcwpug==
+X-Received: by 2002:a17:90b:1648:: with SMTP id il8mr37082677pjb.246.1637630786106;
+        Mon, 22 Nov 2021 17:26:26 -0800 (PST)
+Received: from [192.168.255.10] ([203.205.141.117])
+        by smtp.gmail.com with ESMTPSA id m15sm19594461pjc.35.2021.11.22.17.26.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Nov 2021 17:26:25 -0800 (PST)
+Message-ID: <39879e76-085e-1556-12b2-322eb44ace09@gmail.com>
+Date:   Tue, 23 Nov 2021 09:26:23 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH v2] ext4: fix a possible ABBA deadlock dued to busy PA
+Content-Language: en-US
+To:     Jan Kara <jack@suse.cz>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+References: <1632877945-18526-1-git-send-email-brookxu.cn@gmail.com>
+ <20211122175017.GB32119@quack2.suse.cz>
+From:   brookxu <brookxu.cn@gmail.com>
+In-Reply-To: <20211122175017.GB32119@quack2.suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The compiler leaves many duplicate instances of __llvm_prf_* sections
-in final module objects and they confuse the kernel module loader.
-Fix this by providing module.lds.S linker script that merges the split
-sections like vmlinux.lds.S currently does.
+Hi Jan & riteshh:
 
-Signed-off-by: Jarmo Tiitto <jarmo.tiitto@gmail.com>
----
-I'm not sure the linker script is entirely correct and
-it propably needs more work.
----
- scripts/module.lds.S | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+Thanks for your time to review this patch. But kernel test robot has
+reported an warning for the v2 version. I have fixed it and submitted
+the v3 version, maybe we should goto v3 version, thanks all.
 
-diff --git a/scripts/module.lds.S b/scripts/module.lds.S
-index 04c5685c25cf..83ca5825c0c3 100644
---- a/scripts/module.lds.S
-+++ b/scripts/module.lds.S
-@@ -60,6 +60,39 @@ SECTIONS {
- 		*(.text .text.[0-9a-zA-Z_]* .text..L.cfi*)
- 	}
- #endif
-+#ifdef CONFIG_PGO_CLANG
-+	/*
-+	 * With CONFIG_PGO_CLANG the compiler may split __llvm_prf_xxx
-+	 * objects into multiple sections. Merge them in final .ko object.
-+	 * However leave .rela__llvm_prf_data sections as-is
-+	 * since they are needed by the module loader.
-+	 */
-+	__llvm_prf_data : AT(ADDR(__llvm_prf_data)) {
-+		__llvm_prf_data_start = .;
-+		KEEP(*(SORT(__llvm_prf_data)))
-+		__llvm_prf_data_end = .;
-+	}
-+	__llvm_prf_cnts : AT(ADDR(__llvm_prf_cnts)) {
-+		__llvm_prf_cnts_start = .;
-+		KEEP(*(SORT(__llvm_prf_cnts)))
-+		__llvm_prf_cnts_end = .;
-+	}
-+	__llvm_prf_names : AT(ADDR(__llvm_prf_names)) {
-+		__llvm_prf_names_start = .;
-+		KEEP(*(SORT(__llvm_prf_names)))
-+		__llvm_prf_names_end = .;
-+	}
-+	__llvm_prf_vals : AT(ADDR(__llvm_prf_vals)) {
-+		__llvm_prf_vals_start = .;
-+		KEEP(*(SORT(__llvm_prf_vals)))
-+		__llvm_prf_vals_end = .;
-+	}
-+	__llvm_prf_vnds : AT(ADDR(__llvm_prf_vnds)) {
-+		__llvm_prf_vnds_start = .;
-+		KEEP(*(SORT(__llvm_prf_vnds)))
-+		__llvm_prf_vnds_end = .;
-+	}
-+#endif
- }
- 
- /* bring in arch-specific sections */
--- 
-2.34.0
-
+Jan Kara wrote on 2021/11/23 1:50:
+> Hello,
+> 
+> it seems this patch has fallen through the cracks.
+> 
+> On Wed 29-09-21 09:12:25, brookxu wrote:
+>> From: Chunguang Xu <brookxu@tencent.com>
+>>
+>> We found on older kernel (3.10) that in the scenario of insufficient
+>> disk space, system may trigger an ABBA deadlock problem, it seems that
+>> this problem still exists in latest kernel, try to fix it here. The
+>> main process triggered by this problem is that task A occupies the PA
+>> and waits for the jbd2 transaction finish, the jbd2 transaction waits
+>> for the completion of task B's IO (plug_list), but task B waits for
+>> the release of PA by task A to finish discard, which indirectly forms
+>> an ABBA deadlock. The related calltrace is as follows:
+>>
+>>     Task A
+>>     vfs_write
+>>     ext4_mb_new_blocks()
+>>     ext4_mb_mark_diskspace_used()       JBD2
+>>     jbd2_journal_get_write_access()  -> jbd2_journal_commit_transaction()
+>>   ->schedule()                          filemap_fdatawait()
+>>  |                                              |
+>>  | Task B                                       |
+>>  | do_unlinkat()                                |
+>>  | ext4_evict_inode()                           |
+>>  | jbd2_journal_begin_ordered_truncate()        |
+>>  | filemap_fdatawrite_range()                   |
+>>  | ext4_mb_new_blocks()                         |
+>>   -ext4_mb_discard_group_preallocations() <-----
+>>
+>> Here, try to cancel ext4_mb_discard_group_preallocations() internal
+>> retry due to PA busy, and do a limited number of retries inside
+>> ext4_mb_discard_preallocations(), which can circumvent the above
+>> problems, but also has some advantages:
+>>
+>> 1. Since the PA is in a busy state, if other groups have free PAs,
+>>    keeping the current PA may help to reduce fragmentation.
+>> 2. Continue to traverse forward instead of waiting for the current
+>>    group PA to be released. In most scenarios, the PA discard time
+>>    can be reduced.
+>>
+>> However, in the case of smaller free space, if only a few groups have
+>> space, then due to multiple traversals of the group, it may increase
+>> CPU overhead. But in contrast, I feel that the overall benefit is
+>> better than the cost.
+>>
+>> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+> 
+> Thanks for the patch! I guess this is a reasonable middle-ground so feel
+> free to add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> 
+> I think Ritesh was last touching this logic so let's check he doesn't see
+> anything wrong with this change. Ritesh?
+> 
+> 								Honza
+> 
+> 
+>> ---
+>> v2: reset busy to zero before goto repeat.
+>>
+>>  fs/ext4/mballoc.c | 35 ++++++++++++++++-------------------
+>>  1 file changed, 16 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>> index 72bfac2..72de6c1 100644
+>> --- a/fs/ext4/mballoc.c
+>> +++ b/fs/ext4/mballoc.c
+>> @@ -4814,7 +4814,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+>>   */
+>>  static noinline_for_stack int
+>>  ext4_mb_discard_group_preallocations(struct super_block *sb,
+>> -					ext4_group_t group, int needed)
+>> +				     ext4_group_t group, int needed, int *busy)
+>>  {
+>>  	struct ext4_group_info *grp = ext4_get_group_info(sb, group);
+>>  	struct buffer_head *bitmap_bh = NULL;
+>> @@ -4822,8 +4822,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+>>  	struct list_head list;
+>>  	struct ext4_buddy e4b;
+>>  	int err;
+>> -	int busy = 0;
+>> -	int free, free_total = 0;
+>> +	int free = 0;
+>>  
+>>  	mb_debug(sb, "discard preallocation for group %u\n", group);
+>>  	if (list_empty(&grp->bb_prealloc_list))
+>> @@ -4850,15 +4849,13 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+>>  		needed = EXT4_CLUSTERS_PER_GROUP(sb) + 1;
+>>  
+>>  	INIT_LIST_HEAD(&list);
+>> -repeat:
+>> -	free = 0;
+>>  	ext4_lock_group(sb, group);
+>>  	list_for_each_entry_safe(pa, tmp,
+>>  				&grp->bb_prealloc_list, pa_group_list) {
+>>  		spin_lock(&pa->pa_lock);
+>>  		if (atomic_read(&pa->pa_count)) {
+>>  			spin_unlock(&pa->pa_lock);
+>> -			busy = 1;
+>> +			*busy = 1;
+>>  			continue;
+>>  		}
+>>  		if (pa->pa_deleted) {
+>> @@ -4898,22 +4895,13 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
+>>  		call_rcu(&(pa)->u.pa_rcu, ext4_mb_pa_callback);
+>>  	}
+>>  
+>> -	free_total += free;
+>> -
+>> -	/* if we still need more blocks and some PAs were used, try again */
+>> -	if (free_total < needed && busy) {
+>> -		ext4_unlock_group(sb, group);
+>> -		cond_resched();
+>> -		busy = 0;
+>> -		goto repeat;
+>> -	}
+>>  	ext4_unlock_group(sb, group);
+>>  	ext4_mb_unload_buddy(&e4b);
+>>  	put_bh(bitmap_bh);
+>>  out_dbg:
+>>  	mb_debug(sb, "discarded (%d) blocks preallocated for group %u bb_free (%d)\n",
+>> -		 free_total, group, grp->bb_free);
+>> -	return free_total;
+>> +		 free, group, grp->bb_free);
+>> +	return free;
+>>  }
+>>  
+>>  /*
+>> @@ -5455,13 +5443,22 @@ static int ext4_mb_discard_preallocations(struct super_block *sb, int needed)
+>>  {
+>>  	ext4_group_t i, ngroups = ext4_get_groups_count(sb);
+>>  	int ret;
+>> -	int freed = 0;
+>> +	int freed = 0, busy = 0;
+>> +	int retry = 0;
+>>  
+>>  	trace_ext4_mb_discard_preallocations(sb, needed);
+>> + repeat:
+>> +	retry++;
+>>  	for (i = 0; i < ngroups && needed > 0; i++) {
+>> -		ret = ext4_mb_discard_group_preallocations(sb, i, needed);
+>> +		ret = ext4_mb_discard_group_preallocations(sb, i, needed, &busy);
+>>  		freed += ret;
+>>  		needed -= ret;
+>> +		cond_resched();
+>> +	}
+>> +
+>> +	if (needed > 0 && busy && retry < 3) {
+>> +		busy = 0;
+>> +		goto repeat;
+>>  	}
+>>  
+>>  	return freed;
+>> -- 
+>> 1.8.3.1
+>>
