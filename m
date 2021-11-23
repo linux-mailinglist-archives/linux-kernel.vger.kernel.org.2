@@ -2,124 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DAAE45B011
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:26:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0267845B014
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:27:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbhKWXaA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 23 Nov 2021 18:30:00 -0500
-Received: from mail-yb1-f176.google.com ([209.85.219.176]:39864 "EHLO
-        mail-yb1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbhKWX35 (ORCPT
+        id S240309AbhKWXaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 18:30:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229959AbhKWXaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 18:29:57 -0500
-Received: by mail-yb1-f176.google.com with SMTP id v203so1848138ybe.6;
-        Tue, 23 Nov 2021 15:26:48 -0800 (PST)
+        Tue, 23 Nov 2021 18:30:17 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20EFCC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 15:27:09 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id 47-20020a9d0332000000b005798ac20d72so1271602otv.9
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 15:27:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fwR7w/M4Q8qtIzCDcAQVXEmcuIC9wJDRftO6EL4gBoo=;
+        b=mSaZ2VU5+HDgoa/iDnfBfMpzjYzjog8eQcqJClYoBoCNX6T3kcHgQn5eO5nEtySDS0
+         c49yFdabzc8RhTCQOQHvoxPfsWehvF/AWyZKZGq7I27B2fh9n9qrMGwqDSA/VPtlMzcw
+         xK9z/EK716wVZf2WEk4/RsD5T0Yd6qRAErS1PdD7wwRYbGmgwTXun4FcO4nq4HoHGPF9
+         rGXbNjNEIUdRUWPZnYn3cRVhAEOZSDyn06tntY0R9aPNHCtUhwsP04WXsx3BOzwU1+QZ
+         qSFgar3kmDD/UyeTQtnqnpndS3VOAcUV+OMlh2k47TSfxYyfavFl8O3RN/OXZwYxsMKQ
+         AR8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MGa8R8PmTZ9AIUNlXC04NS72g29Wm45DV8iml8HYRbA=;
-        b=4I6NlNVulS9Ozd2HgVIjC8VZ3GY5nS1nbpYoxkPyK++n0ELrrOfIRzQuTXzwLN6mPo
-         vDOPSxbecUDWVE4JnFDCcP1hrDkzWE2o/pZVo1hBAlbeJ2u0WGOMsdhNFnaR2jTBjhQu
-         01J12YEePvpwyBuYrL+rJXpR1PSB2bRUoU4As4N1wrNPsvec1poY15F+OJfmzeSIVqb+
-         CucYvcKNsURvMXFOCVSDC+9bV8aKpsb30Ld3hzqbWXZV/6gUEqK4FmTpQ8HoLKPfmZRY
-         AFJhQMsoFX4AZlTJmw5xI1zcKvtkhwDlU2nCOfiY7JwzZ4W5EjVGX974ylZVKCKCI6ee
-         80PQ==
-X-Gm-Message-State: AOAM533haSZ4vf/sj2D6Wof4rK+6PsFEyZinaUcndH6m381jnnbWmfrF
-        7jm69YdkuUAqk8amNfMAhRnq0c6YefW3JbRvwqajZl5whsU=
-X-Google-Smtp-Source: ABdhPJxRKWRo7oLdXDrow4b4fFm2faOVEKoLcb3Qp7VSqWqi7Tc0iYe6CUYAU7gvwP3x4nCmeGms+iDChov2Slw7MRE=
-X-Received: by 2002:a25:ba0f:: with SMTP id t15mr11523358ybg.62.1637710008392;
- Tue, 23 Nov 2021 15:26:48 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=fwR7w/M4Q8qtIzCDcAQVXEmcuIC9wJDRftO6EL4gBoo=;
+        b=X6qsee90OzdxdUGInHHMHP7F7xlISuO0sfodv1ygTxKqZj9AoJ6Dpd3lwowY5V0MZB
+         1iXGkLe1w1O/1xE13NlyZEDJYhGs8kjsxn0FoaeNrVcv0old433g4CN8bwS2djQnaepg
+         UCHQSYv9UMo7IJZORyAuO6LZY4hPWbrG4N02TWRwSG0fVXXtMXq0CSPrVSe7xhi8U2iJ
+         kkD3lEhF5+YoT0ZHgcRgemRk1Oh5/JrVyFZ8R//tF+ZMNbNgTH9apCS5l4sinwV1Kvgg
+         lfTAy+2Zq6vTBOHsBYDp4rXwee9GBRJgC89nD/CBEj5l6heLUNhv4nLZaGQGDvVccfNP
+         5tRA==
+X-Gm-Message-State: AOAM531ZGHC1WRO5bUaEa241DyujdVx7+XVvZKoT/28cmCcNfHoWo5bU
+        G3iFXe/ixdBqJjqnH3iIm7g3XKlTRmOhoJUSt72tmQ==
+X-Google-Smtp-Source: ABdhPJyXt8C2HSDSOfsA/RV/93m93YeKUVlAgbSNT20jk3LS6BL0w2h0DLsVZx3fAj2o0+Zx4oRJueGUwfUtiPFyBd4=
+X-Received: by 2002:a9d:a42:: with SMTP id 60mr8593599otg.179.1637710028501;
+ Tue, 23 Nov 2021 15:27:08 -0800 (PST)
 MIME-Version: 1.0
-References: <20211119161850.202094-1-mailhol.vincent@wanadoo.fr>
- <38544770-9e5f-1b1b-1f0a-a7ff1719327d@hartkopp.net> <CAMZ6RqJobmUnAMUjnaqYh0jsOPw7-PwiF+bF79hy6h+8SCuuDg@mail.gmail.com>
- <73c3b9cb-3b46-1523-d926-4bdf86de3fb8@hartkopp.net>
-In-Reply-To: <73c3b9cb-3b46-1523-d926-4bdf86de3fb8@hartkopp.net>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Wed, 24 Nov 2021 08:26:37 +0900
-Message-ID: <CAMZ6RqKiy0FXa0RLhAeG+=R37WhFAmLamXCJM_T1f7TaSrs-gw@mail.gmail.com>
-Subject: Re: [PATCH] can: bittiming: replace CAN units with the SI metric
-To:     Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jimmy Assarsson <extja@kvaser.com>
+References: <20211122225807.8105-1-j@jannau.net> <20211122225807.8105-4-j@jannau.net>
+ <5f16c962-72a1-21ec-9651-744053f74365@marcan.st> <d48d2e85-42f1-570a-bd8f-e3834147c8b8@marcan.st>
+In-Reply-To: <d48d2e85-42f1-570a-bd8f-e3834147c8b8@marcan.st>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 24 Nov 2021 00:26:56 +0100
+Message-ID: <CACRpkdZghfRvox4aY4ROXYwFqiV6mnXZgw+42ZWYisXXgQ5+jQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] arm64: dts: apple: t8103: Add i2c nodes
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Janne Grunau <j@jannau.net>, Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed. 24 Nov. 2021 à 05:53, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
-> Hi Vincent,
-> On 22.11.21 03:22, Vincent MAILHOL wrote:
-> > Le lun. 22 nov. 2021 à 03:27, Oliver Hartkopp <socketcan@hartkopp.net> a écrit :
->
->
-> >>>    #include <linux/kernel.h>
-> >>> +#include <linux/units.h>
-> >>>    #include <asm/unaligned.h>
-> >>>
-> >>>    #include "es58x_core.h"
-> >>> @@ -469,8 +470,8 @@ const struct es58x_parameters es581_4_param = {
-> >>>        .bittiming_const = &es581_4_bittiming_const,
-> >>>        .data_bittiming_const = NULL,
-> >>>        .tdc_const = NULL,
-> >>> -     .bitrate_max = 1 * CAN_MBPS,
-> >>> -     .clock = {.freq = 50 * CAN_MHZ},
-> >>> +     .bitrate_max = 1 * MEGA,
-> >>> +     .clock = {.freq = 50 * MEGA},
-> >>
-> >> IMO we are losing information here.
-> >>
-> >> It feels you suggest to replace MHz with M.
-> >
-> > When I introduced the CAN_{K,M}BPS and CAN_MHZ macros, my primary
-> > intent was to avoid having to write more than five zeros in a
-> > row (because the human brain is bad at counting those). And the
-> > KILO/MEGA prefixes perfectly cover that intent.
-> >
-> > You are correct to say that the information of the unit is
-> > lost. But I assume this information to be implicit (frequencies
-> > are in Hz, baudrate are in bits/second). So yes, I suggest
-> > replacing MHz with M.
-> >
-> > Do you really think that people will be confused by this change?
->
-> It is not about confusing people but about the quality of documentation
-> and readability.
->
-> >
-> > I am not strongly opposed to keeping it either (hey, I was the
-> > one who introduced it in the first place). I just think that
-> > using linux/units.h is sufficient.
-> >
-> >> So where is the Hz information then?
-> >
-> > It is in the comment of can_clock:freq :)
-> >
-> > https://elixir.bootlin.com/linux/v5.15/source/include/uapi/linux/can/netlink.h#L63
->
-> Haha, you are funny ;-)
->
-> But the fact that you provide this URL shows that the information is not
-> found or easily accessible when someone reads the code here.
->
-> >>> -     .bitrate_max = 8 * CAN_MBPS,
-> >>> -     .clock = {.freq = 80 * CAN_MHZ},
-> >>> +     .bitrate_max = 8 * MEGA,
-> >>> +     .clock = {.freq = 80 * MEGA},
->
-> What about
->
-> +     .bitrate_max = 8 * MEGA, /* bits per second */
-> +     .clock = {.freq = 80 * MEGA}, /* Hz */
->
-> which uses the SI constants but maintains the unit?
+On Tue, Nov 23, 2021 at 3:43 PM Hector Martin <marcan@marcan.st> wrote:
 
-This works with. Actually, I also hesitated to add such comments
-when writing this patch. For the sake of the quality of the
-documentation, I will prepare a v2.
+> For those following along in the list: the reason why i2c3 was getting
+> stuck is because it seems the unused bus is weakly pulled low on these
+> machines, which jams it.
 
+That looks like some power saving attempt.
 
-Yours sincerely,
-Vincent Mailhol
+I suppose that means that even i2c buses that are in use
+could be weakly pulled low when suspending the system
+and maybe even inbetween transactions to save some
+leak current.
+
+Yours,
+Linus Walleij
