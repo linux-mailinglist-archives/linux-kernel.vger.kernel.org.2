@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4689945ADA2
+	by mail.lfdr.de (Postfix) with ESMTP id 9016E45ADA3
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:54:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239236AbhKWU5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 15:57:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36948 "EHLO mail.kernel.org"
+        id S240373AbhKWU5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 15:57:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238022AbhKWU5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 15:57:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B678A60FC3;
-        Tue, 23 Nov 2021 20:54:00 +0000 (UTC)
+        id S239058AbhKWU5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 15:57:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 114D260FC1;
+        Tue, 23 Nov 2021 20:54:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637700841;
-        bh=/JQsIYXZrLMZfbQ1aqZcjnoAv8+Kk2Mm5Z+bv2Jy0pQ=;
+        s=k20201202; t=1637700842;
+        bh=WRiVZ3M3vWtxpGXfYCMeBxNQv0KeU7EyCdHPQ3hA3FY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
          References:From;
-        b=RBT1Yje+AyXtkLmyg5HiUWPDK7YvQPEzmRkZUlgN+l+mhDoDJs88r5LV0vHD6cDi2
-         dlyF1h8P6/ZwwhOXdI9KlTcsaq+H7tozKvAhDqoodBR7/fT3Csb8+2GeBYDItk1vkS
-         loLZfle3Ka6gleqAm8WV41GKPmFHtb+5xBSdf/aCmR6cnv0WE9DzzYyyUgtgK2YaRf
-         8zT3DuS4sJyHkQJ/6aCigDZ8nxf8HJjSSCwsQb5P3Kz0PxsYBgXyHcbrkQw66rCrit
-         5/VB1ftF27xdcN6hBG7YXA9+NoED2xoi2f0guId1M1atEP72B6EYWRZ3Bv2msmGv+1
-         a57e68CR3fxrA==
+        b=WxD3+sreOn4tOZJUYuLLAgSRg/MwwPli3LtiMK0ry2YdoiE+3Lp0TwuUYwh5UAHyb
+         sHdfuemC5xIMhxeisRazRu5PTifCjL3SMjptpgKUxKvpps+iQJB7aoXktbL99DUalY
+         hwvHAYN/+MT8DcyqWeXGgBWGZeoKg2oTcl+I6s5mM7BeDXmZmAZnZ1EzcbBr6PIG98
+         bxC/vo/H4mV8/QpY2zv05fauDVlq67dJZBS15MgcsdNmVFKy7q8nmAoPGgZZH1OUKD
+         Us/yEiFTnjQ8p7mCs4nBdnQibdVhJmX3aVaZC+5V6qW2qiJ+eZY4Hyyag0wCexORiP
+         ccWVUb+ZxxIpQ==
 From:   Tom Zanussi <zanussi@kernel.org>
 To:     rostedt@goodmis.org
 Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/2] tracing: Add helper functions to simplify event_command callback handling
-Date:   Tue, 23 Nov 2021 14:53:53 -0600
-Message-Id: <73a337f341f89c7d56a8958ee09d6c2a738393e3.1637700535.git.zanussi@kernel.org>
+Subject: [PATCH v3 2/2] tracing: Have existing event_command implementations use helpers
+Date:   Tue, 23 Nov 2021 14:53:54 -0600
+Message-Id: <2b451d62e0b1a12fc99391dfdda9be2d8e9ca499.1637700535.git.zanussi@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1637700535.git.zanussi@kernel.org>
 References: <cover.1637700535.git.zanussi@kernel.org>
@@ -39,353 +39,370 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The event_command.func() callback is responsible for parsing and
-registering triggers.  The existing command implementions for this
-callback duplicate a lot of the same code, so to clean up and
-consolidate those implementations, introduce a handful of helper
-functions for implementors to use.
-
-This also makes it easier for new commands to be implemented and
-allows them to focus more on the customizations they provide rather
-than obscuring and complicating it with boilerplate code.
+Simplify the existing event_command implementations by making use of
+the helper functions previously introduced.
 
 Signed-off-by: Tom Zanussi <zanussi@kernel.org>
 ---
- kernel/trace/trace.h                |  23 +++
- kernel/trace/trace_events_trigger.c | 286 ++++++++++++++++++++++++++++
- 2 files changed, 309 insertions(+)
+ kernel/trace/trace_events_hist.c    |  51 +++------
+ kernel/trace/trace_events_trigger.c | 159 +++++++---------------------
+ 2 files changed, 55 insertions(+), 155 deletions(-)
 
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 6b60ab9475ed..66cc32aca2e8 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -1594,6 +1594,29 @@ get_named_trigger_data(struct event_trigger_data *data);
- extern int register_event_command(struct event_command *cmd);
- extern int unregister_event_command(struct event_command *cmd);
- extern int register_trigger_hist_enable_disable_cmds(void);
-+extern bool event_trigger_check_remove(char *cmd);
-+extern bool event_trigger_empty_param(char *param);
-+extern int event_trigger_separate_filter(char **trigger, char **param, bool param_required);
-+extern struct event_trigger_data *
-+event_trigger_alloc(struct event_command *cmd_ops,
-+		    char *cmd,
-+		    char *param,
-+		    void *private_data);
-+extern int event_trigger_parse_num(char *trigger,
-+				   struct event_trigger_data *trigger_data);
-+extern int event_trigger_set_filter(struct event_command *cmd_ops,
-+				    struct trace_event_file *file,
-+				    char *param,
-+				    struct event_trigger_data *trigger_data);
-+extern void event_trigger_reset_filter(struct event_command *cmd_ops,
-+				       struct event_trigger_data *trigger_data);
-+extern int event_trigger_register(struct event_command *cmd_ops,
-+				  struct trace_event_file *file,
-+				  char *glob,
-+				  char *cmd,
-+				  char *trigger,
-+				  struct event_trigger_data *trigger_data,
-+				  int *n_registered);
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index 8ff572a31fd3..b7dbbafbe8c7 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -6128,10 +6128,11 @@ static int event_hist_trigger_func(struct event_command *cmd_ops,
+ 	struct hist_trigger_attrs *attrs;
+ 	struct event_trigger_ops *trigger_ops;
+ 	struct hist_trigger_data *hist_data;
++	char *trigger, *p, *start;
+ 	struct synth_event *se;
+ 	const char *se_name;
+-	bool remove = false;
+-	char *trigger, *p, *start;
++	int n_registered;
++	bool remove;
+ 	int ret = 0;
  
- /**
-  * struct event_trigger_ops - callbacks for trace event triggers
+ 	lockdep_assert_held(&event_mutex);
+@@ -6141,11 +6142,10 @@ static int event_hist_trigger_func(struct event_command *cmd_ops,
+ 		last_cmd_set(file, param);
+ 	}
+ 
+-	if (!param)
+-		return -EINVAL;
++	remove = event_trigger_check_remove(glob);
+ 
+-	if (glob[0] == '!')
+-		remove = true;
++	if (event_trigger_empty_param(param))
++		return -EINVAL;
+ 
+ 	/*
+ 	 * separate the trigger from the filter (k:v [if filter])
+@@ -6202,29 +6202,15 @@ static int event_hist_trigger_func(struct event_command *cmd_ops,
+ 		return PTR_ERR(hist_data);
+ 	}
+ 
+-	trigger_ops = cmd_ops->get_trigger_ops(cmd, trigger);
+-
+-	trigger_data = kzalloc(sizeof(*trigger_data), GFP_KERNEL);
++	trigger_data = event_trigger_alloc(cmd_ops, cmd, trigger, hist_data);
+ 	if (!trigger_data) {
+ 		ret = -ENOMEM;
+ 		goto out_free;
+ 	}
+ 
+-	trigger_data->count = -1;
+-	trigger_data->ops = trigger_ops;
+-	trigger_data->cmd_ops = cmd_ops;
+-
+-	INIT_LIST_HEAD(&trigger_data->list);
+-	RCU_INIT_POINTER(trigger_data->filter, NULL);
+-
+-	trigger_data->private_data = hist_data;
+-
+-	/* if param is non-empty, it's supposed to be a filter */
+-	if (param && cmd_ops->set_filter) {
+-		ret = cmd_ops->set_filter(param, trigger_data, file);
+-		if (ret < 0)
+-			goto out_free;
+-	}
++	ret = event_trigger_set_filter(cmd_ops, file, param, trigger_data);
++	if (ret < 0)
++		goto out_free;
+ 
+ 	if (remove) {
+ 		if (!have_hist_trigger_match(trigger_data, file))
+@@ -6244,18 +6230,14 @@ static int event_hist_trigger_func(struct event_command *cmd_ops,
+ 		goto out_free;
+ 	}
+ 
+-	ret = cmd_ops->reg(glob, trigger_ops, trigger_data, file);
+-	/*
+-	 * The above returns on success the # of triggers registered,
+-	 * but if it didn't register any it returns zero.  Consider no
+-	 * triggers registered a failure too.
+-	 */
+-	if (!ret) {
++	ret = event_trigger_register(cmd_ops, file, glob, cmd, trigger, trigger_data, &n_registered);
++	if (ret)
++		goto out_free;
++	if ((ret == 0) && (n_registered == 0)) {
+ 		if (!(attrs->pause || attrs->cont || attrs->clear))
+ 			ret = -ENOENT;
+ 		goto out_free;
+-	} else if (ret < 0)
+-		goto out_free;
++	}
+ 
+ 	if (get_named_trigger_data(trigger_data))
+ 		goto enable;
+@@ -6289,8 +6271,7 @@ static int event_hist_trigger_func(struct event_command *cmd_ops,
+  out_unreg:
+ 	cmd_ops->unreg(glob+1, trigger_ops, trigger_data, file);
+  out_free:
+-	if (cmd_ops->set_filter)
+-		cmd_ops->set_filter(NULL, trigger_data, NULL);
++	event_trigger_reset_filter(cmd_ops, trigger_data);
+ 
+ 	remove_hist_vars(hist_data);
+ 
 diff --git a/kernel/trace/trace_events_trigger.c b/kernel/trace/trace_events_trigger.c
-index 3d5c07239a2a..a873f4e8be04 100644
+index a873f4e8be04..1d1716d5bee2 100644
 --- a/kernel/trace/trace_events_trigger.c
 +++ b/kernel/trace/trace_events_trigger.c
-@@ -621,6 +621,292 @@ static void unregister_trigger(char *glob, struct event_trigger_ops *ops,
- 		data->ops->free(data->ops, data);
- }
+@@ -931,89 +931,47 @@ event_trigger_callback(struct event_command *cmd_ops,
+ 	struct event_trigger_data *trigger_data;
+ 	struct event_trigger_ops *trigger_ops;
+ 	char *trigger = NULL;
+-	char *number;
++	bool remove;
+ 	int ret;
  
-+/*
-+ * Event trigger parsing helper functions.
-+ *
-+ * These functions help make it easier to write an event trigger
-+ * parsing function i.e. the struct event_command.func() callback
-+ * function responsible for parsing and registering a trigger command
-+ * written to the 'trigger' file.
-+ *
-+ * There are a few different categories of event trigger covered by
-+ * these helpers:
-+ *
-+ *  - triggers that don't require a parameter e.g. traceon
-+ *  - triggers that do require a parameter e.g. enable_event and hist
-+ *  - triggers that though they may not require a param may support an
-+ *    optional 'n' param (n = number of times the trigger should fire)
-+ *    e.g.: traceon:5 or enable_event:sys:event:n
-+ *  - triggers that do not support an 'n' param e.g. hist
-+ *
-+ * These functions can be used or ignored as necessary - it all
-+ * depends on the complexity of the trigger, and the granularity of
-+ * the functions supported reflects the fact that some implementations
-+ * may need to customize certain aspects of their implementations and
-+ * won't need certain functions.  For instance, the hist trigger
-+ * implementation doesn't use event_trigger_separate_filter() because
-+ * it has special requirements for handling the filter.
-+ */
+-	/* separate the trigger from the filter (t:n [if filter]) */
+-	if (param && isdigit(param[0])) {
+-		trigger = strsep(&param, " \t");
+-		if (param) {
+-			param = skip_spaces(param);
+-			if (!*param)
+-				param = NULL;
+-		}
+-	}
++	remove = event_trigger_check_remove(glob);
+ 
+-	trigger_ops = cmd_ops->get_trigger_ops(cmd, trigger);
++	ret = event_trigger_separate_filter(&trigger, &param, false);
++	if (ret)
++		return ret;
+ 
+ 	ret = -ENOMEM;
+-	trigger_data = kzalloc(sizeof(*trigger_data), GFP_KERNEL);
++	trigger_data = event_trigger_alloc(cmd_ops, cmd, trigger, file);
+ 	if (!trigger_data)
+ 		goto out;
+ 
+-	trigger_data->count = -1;
+-	trigger_data->ops = trigger_ops;
+-	trigger_data->cmd_ops = cmd_ops;
+-	trigger_data->private_data = file;
+-	INIT_LIST_HEAD(&trigger_data->list);
+-	INIT_LIST_HEAD(&trigger_data->named_list);
+-
+-	if (glob[0] == '!') {
++	if (remove) {
+ 		cmd_ops->unreg(glob+1, trigger_ops, trigger_data, file);
+-		kfree(trigger_data);
+ 		ret = 0;
+ 		goto out;
+ 	}
+ 
+-	if (trigger) {
+-		number = strsep(&trigger, ":");
+-
+-		ret = -EINVAL;
+-		if (!strlen(number))
+-			goto out_free;
+-
+-		/*
+-		 * We use the callback data field (which is a pointer)
+-		 * as our counter.
+-		 */
+-		ret = kstrtoul(number, 0, &trigger_data->count);
+-		if (ret)
+-			goto out_free;
+-	}
+-
+-	if (!param) /* if param is non-empty, it's supposed to be a filter */
+-		goto out_reg;
+-
+-	if (!cmd_ops->set_filter)
+-		goto out_reg;
++	ret = event_trigger_parse_num(trigger, trigger_data);
++	if (ret)
++		goto out_free;
+ 
+-	ret = cmd_ops->set_filter(param, trigger_data, file);
++	ret = event_trigger_set_filter(cmd_ops, file, param, trigger_data);
+ 	if (ret < 0)
+ 		goto out_free;
+ 
+- out_reg:
+ 	/* Up the trigger_data count to make sure reg doesn't free it on failure */
+ 	event_trigger_init(trigger_ops, trigger_data);
+-	ret = cmd_ops->reg(glob, trigger_ops, trigger_data, file);
+-	/*
+-	 * The above returns on success the # of functions enabled,
+-	 * but if it didn't find any functions it returns zero.
+-	 * Consider no functions a failure too.
+-	 */
+-	if (!ret) {
+-		cmd_ops->unreg(glob, trigger_ops, trigger_data, file);
+-		ret = -ENOENT;
+-	} else if (ret > 0)
+-		ret = 0;
 +
-+/**
-+ * event_trigger_check_remove - check whether an event trigger specifies remove
-+ * @glob: The trigger command string, with optional remove(!) operator
-+ *
-+ * The event trigger callback implementations pass in 'glob' as a
-+ * parameter.  This is the command name either with or without a
-+ * remove(!)  operator.  This function simply parses the glob and
-+ * determines whether the command corresponds to a trigger removal or
-+ * a trigger addition.
-+ *
-+ * Return: true if this is a remove command, false otherwise
-+ */
-+bool event_trigger_check_remove(char *glob)
-+{
-+	return (glob && glob[0] == '!') ? true : false;
-+}
++	ret = event_trigger_register(cmd_ops, file, glob, cmd, trigger, trigger_data, NULL);
++	if (ret)
++		goto out_free;
+ 
+ 	/* Down the counter of trigger_data or free it if not used anymore */
+ 	event_trigger_free(trigger_ops, trigger_data);
+  out:
+ 	return ret;
+-
+  out_free:
+-	if (cmd_ops->set_filter)
+-		cmd_ops->set_filter(NULL, trigger_data, NULL);
++	event_trigger_reset_filter(cmd_ops, trigger_data);
+ 	kfree(trigger_data);
+ 	goto out;
+ }
+@@ -1675,26 +1633,21 @@ int event_enable_trigger_func(struct event_command *cmd_ops,
+ 	struct event_trigger_data *trigger_data;
+ 	struct event_trigger_ops *trigger_ops;
+ 	struct trace_array *tr = file->tr;
++	bool enable, remove;
+ 	const char *system;
+ 	const char *event;
+ 	bool hist = false;
+ 	char *trigger;
+-	char *number;
+-	bool enable;
+ 	int ret;
+ 
+-	if (!param)
+-		return -EINVAL;
++	remove = event_trigger_check_remove(glob);
+ 
+-	/* separate the trigger from the filter (s:e:n [if filter]) */
+-	trigger = strsep(&param, " \t");
+-	if (!trigger)
++	if (event_trigger_empty_param(param))
+ 		return -EINVAL;
+-	if (param) {
+-		param = skip_spaces(param);
+-		if (!*param)
+-			param = NULL;
+-	}
 +
-+/**
-+ * event_trigger_empty_param - check whether the param is empty
-+ * @param: The trigger param string
-+ *
-+ * The event trigger callback implementations pass in 'param' as a
-+ * parameter.  This corresponds to the string following the command
-+ * name minus the command name.  This function can be called by a
-+ * callback implementation for any command that requires a param; a
-+ * callback that doesn't require a param can ignore it.
-+ *
-+ * Return: true if this is an empty param, false otherwise
-+ */
-+bool event_trigger_empty_param(char *param)
-+{
-+	return !param;
-+}
-+
-+/**
-+ * event_trigger_separate_filter - separate an event trigger from a filter
-+ * @trigger: outparam, will be filled with a pointer to the trigger
-+ * @param: The param string, will contain the filter after this is called
-+ * @param_required: Specifies whether or not the param string is required
-+ *
-+ * Given a param string of the form '[trigger] [if filter]', this
-+ * function separates the filter from the trigger and returns the
-+ * trigger in *trigger and the filter in *param.  Either the *trigger
-+ * or the *param may be set to NULL by this function - if not set to
-+ * NULL, they will contain strings corresponding to the trigger and
-+ * filter.
-+ *
-+ * There are two cases that need to be handled with respect to the
-+ * passed-in param: either the param is required, or it is not
-+ * required.  If @param_required is set, and there's no param, it will
-+ * return -EINVAL.  If @param_required is not set and there's a param
-+ * that starts with a number, that corresponds to the case of a
-+ * trigger with :n (n = number of times the trigger should fire) and
-+ * the parsing continues normally; otherwise the function just returns
-+ * and assumes param just contains a filter and there's nothing else
-+ * to do.
-+ *
-+ * Return: 0 on success, errno otherwise
-+ */
-+int event_trigger_separate_filter(char **trigger, char **param, bool param_required)
-+{
-+	int ret = 0;
-+
-+	*trigger = NULL;
-+
-+	if (!*param) {
-+		if (param_required)
-+			ret = -EINVAL;
++	ret = event_trigger_separate_filter(&trigger, &param, true);
++	if (ret)
++		return ret;
+ 
+ 	system = strsep(&trigger, ":");
+ 	if (!trigger)
+@@ -1719,28 +1672,23 @@ int event_enable_trigger_func(struct event_command *cmd_ops,
+ 	trigger_ops = cmd_ops->get_trigger_ops(cmd, trigger);
+ 
+ 	ret = -ENOMEM;
+-	trigger_data = kzalloc(sizeof(*trigger_data), GFP_KERNEL);
+-	if (!trigger_data)
+-		goto out;
+-
+ 	enable_data = kzalloc(sizeof(*enable_data), GFP_KERNEL);
+ 	if (!enable_data) {
+ 		kfree(trigger_data);
+ 		goto out;
+ 	}
+ 
+-	trigger_data->count = -1;
+-	trigger_data->ops = trigger_ops;
+-	trigger_data->cmd_ops = cmd_ops;
+-	INIT_LIST_HEAD(&trigger_data->list);
+-	RCU_INIT_POINTER(trigger_data->filter, NULL);
+-
+ 	enable_data->hist = hist;
+ 	enable_data->enable = enable;
+ 	enable_data->file = event_enable_file;
+-	trigger_data->private_data = enable_data;
+ 
+-	if (glob[0] == '!') {
++	trigger_data = event_trigger_alloc(cmd_ops, cmd, trigger, enable_data);
++	if (!trigger_data) {
++		kfree(enable_data);
 +		goto out;
 +	}
 +
-+	/* the only legal optional param is :n */
-+	if (!param_required && *param && !isdigit(*param[0]))
-+		goto out;
++	if (remove) {
+ 		cmd_ops->unreg(glob+1, trigger_ops, trigger_data, file);
+ 		kfree(trigger_data);
+ 		kfree(enable_data);
+@@ -1751,33 +1699,14 @@ int event_enable_trigger_func(struct event_command *cmd_ops,
+ 	/* Up the trigger_data count to make sure nothing frees it on failure */
+ 	event_trigger_init(trigger_ops, trigger_data);
+ 
+-	if (trigger) {
+-		number = strsep(&trigger, ":");
+-
+-		ret = -EINVAL;
+-		if (!strlen(number))
+-			goto out_free;
+-
+-		/*
+-		 * We use the callback data field (which is a pointer)
+-		 * as our counter.
+-		 */
+-		ret = kstrtoul(number, 0, &trigger_data->count);
+-		if (ret)
+-			goto out_free;
+-	}
+-
+-	if (!param) /* if param is non-empty, it's supposed to be a filter */
+-		goto out_reg;
+-
+-	if (!cmd_ops->set_filter)
+-		goto out_reg;
++	ret = event_trigger_parse_num(trigger, trigger_data);
++	if (ret)
++		goto out_free;
+ 
+-	ret = cmd_ops->set_filter(param, trigger_data, file);
++	ret = event_trigger_set_filter(cmd_ops, file, param, trigger_data);
+ 	if (ret < 0)
+ 		goto out_free;
+ 
+- out_reg:
+ 	/* Don't let event modules unload while probe registered */
+ 	ret = trace_event_try_get_ref(event_enable_file->event_call);
+ 	if (!ret) {
+@@ -1788,30 +1717,20 @@ int event_enable_trigger_func(struct event_command *cmd_ops,
+ 	ret = trace_event_enable_disable(event_enable_file, 1, 1);
+ 	if (ret < 0)
+ 		goto out_put;
+-	ret = cmd_ops->reg(glob, trigger_ops, trigger_data, file);
+-	/*
+-	 * The above returns on success the # of functions enabled,
+-	 * but if it didn't find any functions it returns zero.
+-	 * Consider no functions a failure too.
+-	 */
+-	if (!ret) {
+-		ret = -ENOENT;
+-		goto out_disable;
+-	} else if (ret < 0)
 +
-+	/* separate the trigger from the filter (trigger [if filter]) */
-+	*trigger = strsep(param, " \t");
-+	if (!*trigger) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
++	ret = event_trigger_register(cmd_ops, file, glob, cmd, trigger, trigger_data, NULL);
++	if (ret)
+ 		goto out_disable;
+-	/* Just return zero, not the number of enabled functions */
+-	ret = 0;
 +
-+	if (*param) {
-+		*param = skip_spaces(*param);
-+		if (!**param)
-+			*param = NULL;
-+	}
-+out:
-+	return ret;
-+}
-+
-+/**
-+ * event_trigger_alloc - allocate and init event_trigger_data for a trigger
-+ * @cmd_ops: The event_command operations for the trigger
-+ * @cmd: The cmd string
-+ * @param: The param string
-+ * @private_data: User data to associate with the event trigger
-+ *
-+ * Allocate an event_trigger_data instance and initialize it.  The
-+ * @cmd_ops are used along with the @cmd and @param to get the
-+ * trigger_ops to assign to the event_trigger_data.  @private_data can
-+ * also be passed in and associated with the event_trigger_data.
-+ *
-+ * Use event_trigger_free() to free an event_trigger_data object.
-+ *
-+ * Return: The trigger_data object success, NULL otherwise
-+ */
-+struct event_trigger_data *event_trigger_alloc(struct event_command *cmd_ops,
-+					       char *cmd,
-+					       char *param,
-+					       void *private_data)
-+{
-+	struct event_trigger_data *trigger_data;
-+	struct event_trigger_ops *trigger_ops;
-+
-+	trigger_ops = cmd_ops->get_trigger_ops(cmd, param);
-+
-+	trigger_data = kzalloc(sizeof(*trigger_data), GFP_KERNEL);
-+	if (!trigger_data)
-+		return NULL;
-+
-+	trigger_data->count = -1;
-+	trigger_data->ops = trigger_ops;
-+	trigger_data->cmd_ops = cmd_ops;
-+	trigger_data->private_data = private_data;
-+
-+	INIT_LIST_HEAD(&trigger_data->list);
-+	INIT_LIST_HEAD(&trigger_data->named_list);
-+	RCU_INIT_POINTER(trigger_data->filter, NULL);
-+
-+	return trigger_data;
-+}
-+
-+/**
-+ * event_trigger_parse_num - parse and return the number param for a trigger
-+ * @trigger: The trigger string
-+ * @trigger_data: The trigger_data for the trigger
-+ *
-+ * Parse the :n (n = number of times the trigger should fire) param
-+ * and set the count variable in the trigger_data to the parsed count.
-+ *
-+ * Return: 0 on success, errno otherwise
-+ */
-+int event_trigger_parse_num(char *trigger,
-+			    struct event_trigger_data *trigger_data)
-+{
-+	char *number;
-+	int ret = 0;
-+
-+	if (trigger) {
-+		number = strsep(&trigger, ":");
-+
-+		if (!strlen(number))
-+			return -EINVAL;
-+
-+		/*
-+		 * We use the callback data field (which is a pointer)
-+		 * as our counter.
-+		 */
-+		ret = kstrtoul(number, 0, &trigger_data->count);
-+	}
-+
-+	return ret;
-+}
-+
-+/**
-+ * event_trigger_set_filter - set an event trigger's filter
-+ * @cmd_ops: The event_command operations for the trigger
-+ * @file: The event file for the trigger's event
-+ * @param: The string containing the filter
-+ * @trigger_data: The trigger_data for the trigger
-+ *
-+ * Set the filter for the trigger.  If the filter is NULL, just return
-+ * without error.
-+ *
-+ * Return: 0 on success, errno otherwise
-+ */
-+int event_trigger_set_filter(struct event_command *cmd_ops,
-+			     struct trace_event_file *file,
-+			     char *param,
-+			     struct event_trigger_data *trigger_data)
-+{
-+	if (param && cmd_ops->set_filter)
-+		return cmd_ops->set_filter(param, trigger_data, file);
-+
-+	return 0;
-+}
-+
-+/**
-+ * event_trigger_reset_filter - reset an event trigger's filter
-+ * @cmd_ops: The event_command operations for the trigger
-+ * @trigger_data: The trigger_data for the trigger
-+ *
-+ * Reset the filter for the trigger to no filter.
-+ */
-+void event_trigger_reset_filter(struct event_command *cmd_ops,
-+				struct event_trigger_data *trigger_data)
-+{
-+	if (cmd_ops->set_filter)
-+		cmd_ops->set_filter(NULL, trigger_data, NULL);
-+}
-+
-+/**
-+ * event_trigger_register - register an event trigger
-+ * @cmd_ops: The event_command operations for the trigger
-+ * @file: The event file for the trigger's event
-+ * @glob: The trigger command string, with optional remove(!) operator
-+ * @cmd: The cmd string
-+ * @param: The param string
-+ * @trigger_data: The trigger_data for the trigger
-+ * @n_registered: optional outparam, the number of triggers registered
-+ *
-+ * Register and event trigger.  The @cmd_ops are used along with the
-+ * @cmd and @param to get the trigger_ops to pass to the
-+ * cmd_ops->reg() function which actually does the registration. The
-+ * cmd_ops->reg() function returns the number of triggers registered,
-+ * which is assigned to n_registered, if n_registered is non-NULL.
-+ *
-+ * Return: 0 on success, errno otherwise
-+ */
-+int event_trigger_register(struct event_command *cmd_ops,
-+			   struct trace_event_file *file,
-+			   char *glob,
-+			   char *cmd,
-+			   char *param,
-+			   struct event_trigger_data *trigger_data,
-+			   int *n_registered)
-+{
-+	struct event_trigger_ops *trigger_ops;
-+	int ret;
-+
-+	if (n_registered)
-+		*n_registered = 0;
-+
-+	trigger_ops = cmd_ops->get_trigger_ops(cmd, param);
-+
-+	ret = cmd_ops->reg(glob, trigger_ops, trigger_data, file);
-+	/*
-+	 * The above returns on success the # of functions enabled,
-+	 * but if it didn't find any functions it returns zero.
-+	 * Consider no functions a failure too.
-+	 */
-+	if (!ret) {
-+		cmd_ops->unreg(glob, trigger_ops, trigger_data, file);
-+		ret = -ENOENT;
-+	} else if (ret > 0) {
-+		if (n_registered)
-+			*n_registered = ret;
-+		/* Just return zero, not the number of enabled functions */
-+		ret = 0;
-+	}
-+
-+	return ret;
-+}
-+
-+/*
-+ * End event trigger parsing helper functions.
-+ */
-+
- /**
-  * event_trigger_callback - Generic event_command @func implementation
-  * @cmd_ops: The command ops, used for trigger registration
+ 	event_trigger_free(trigger_ops, trigger_data);
+  out:
+ 	return ret;
+-
+  out_disable:
+ 	trace_event_enable_disable(event_enable_file, 0, 1);
+  out_put:
+ 	trace_event_put_ref(event_enable_file->event_call);
+  out_free:
+-	if (cmd_ops->set_filter)
+-		cmd_ops->set_filter(NULL, trigger_data, NULL);
++	event_trigger_reset_filter(cmd_ops, trigger_data);
+ 	event_trigger_free(trigger_ops, trigger_data);
+ 	kfree(enable_data);
+ 	goto out;
 -- 
 2.17.1
 
