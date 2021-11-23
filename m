@@ -2,122 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6542F45A79F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC6045A7A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:25:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231989AbhKWQ2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 11:28:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbhKWQ2A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 11:28:00 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4713AC061574;
-        Tue, 23 Nov 2021 08:24:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=YDWHeWKgv4r/9Wehkw2ZJglZ0nE6CAjALsQ8jZXrdcM=;
-        t=1637684692; x=1638894292; b=QuKynbq9kdH8NbuNaJiTsHXovNX8mUYubfwZlvWWk/x1mUE
-        ZRX9xyo0wdm9lnd6xshW0lGP+hFW8Iey28NjmNJv9IOAtLYLt0S1V7U2nKBaDNI8jbEznDDDsMd4h
-        qitZNKMu/Jx92KYNQNqwVeXigGzf/hexUOwEIVA4PifclIHOnvR8MEzQA0H29KNgA5EYPnkzBT2I3
-        b4r9RgmbiWoG8qOgAywUd5eqLUQ9TcpEe0xBkw57fyIidqhlV79WBSPPUrCl4LPAsbyyVVIjcswtk
-        CekrQQ7tsD8bfRxIfBRUEZ+4/Gl5VPxU43t0ba0JsWoh2yACk+ETopzUqeRPTHtw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.95)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1mpYaf-001olr-5U;
-        Tue, 23 Nov 2021 17:24:17 +0100
-Message-ID: <637a4183861a1f2cdab52b7652bfa7ed33fbcdd2.camel@sipsolutions.net>
-Subject: Re: [PATCH 01/17] bitfield: Add non-constant field_{prep,get}()
- helpers
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Paul Walmsley <paul@pwsan.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Benoit Parrot <bparrot@ti.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Keerthy <j-keerthy@ti.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Date:   Tue, 23 Nov 2021 17:24:15 +0100
-In-Reply-To: <CAMuHMdWAAGrQUZN18cnDTDUUhuPNTZTFkRMe2Sbf+s7CedPSxA@mail.gmail.com>
-References: <cover.1637592133.git.geert+renesas@glider.be>
-         <3a54a6703879d10f08cf0275a2a69297ebd2b1d4.1637592133.git.geert+renesas@glider.be>
-         <01b44b38c087c151171f8d45a2090474c2559306.camel@sipsolutions.net>
-         <20211122171739.03848154@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-         <CAMuHMdWAAGrQUZN18cnDTDUUhuPNTZTFkRMe2Sbf+s7CedPSxA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
+        id S229490AbhKWQ2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 11:28:19 -0500
+Received: from mx1.riseup.net ([198.252.153.129]:51210 "EHLO mx1.riseup.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231216AbhKWQ2S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 11:28:18 -0500
+Received: from fews1.riseup.net (fews1-pn.riseup.net [10.0.1.83])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
+         client-signature RSA-PSS (2048 bits) client-digest SHA256)
+        (Client CN "mail.riseup.net", Issuer "R3" (not verified))
+        by mx1.riseup.net (Postfix) with ESMTPS id 4Hz8ck1mDDzF4hK;
+        Tue, 23 Nov 2021 08:25:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+        t=1637684710; bh=XXHHfy3PIsnPkeTFzRP46/bHk0xpdkwwxYrG490tGrU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mxWmBnkQ1fSJqmqqCDelaG+Fh6pQ8CBzCkDNM7kFmXymE6NWyYjp2hhCcegqSic9X
+         ki+cP+4Rx+eAgvRPGJ+2RoW3/8ATVZeNOVDIt7i3QhLc2qy3ZLhXF35QMGTOPBYACV
+         pB25cg7HQEN3xdtPABwgforA7vXlTiKXCyvo6FU0=
+X-Riseup-User-ID: F7D6CDABEBB6CDF0966A8AD74D892355AD8F4081111D8A41F833EF70850E1741
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by fews1.riseup.net (Postfix) with ESMTPSA id 4Hz8ch0WZHz5vLq;
+        Tue, 23 Nov 2021 08:25:07 -0800 (PST)
+From:   Dang Huynh <danct12@riseup.net>
+To:     Dang Huynh <danct12@riseup.net>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: qcom: Drop input-name property
+Date:   Tue, 23 Nov 2021 23:24:37 +0700
+Message-Id: <20211123162436.1507341-1-danct12@riseup.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-11-23 at 09:36 +0100, Geert Uytterhoeven wrote:
+This property doesn't seem to exist in the documentation nor
+in source code, but for some reason it is defined in a bunch
+of device trees.
 
+Signed-off-by: Dang Huynh <danct12@riseup.net>
+---
+This patch is a split of this treewide patch [1] to ease the 
+maintainers. 
 
-Ah, here's your comment wrt. which one is nicer :)
+[1]: https://patchwork.kernel.org/patch/12633497/
 
-> > > We have the upper-case (constant) versions, and already
-> > > {u32,...}_get_bits()/etc.
-> 
-> TBH, I don't like the *_get_bits() API: in general, u32_get_bits() does
-> the same as FIELD_GET(), but the order of the parameters is different?
+ arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts            | 1 -
+ arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi     | 1 -
+ arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi   | 1 -
+ arch/arm64/boot/dts/qcom/msm8998-fxtec-pro1.dts              | 3 ---
+ arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi    | 2 --
+ arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi        | 1 -
+ arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts | 1 -
+ 7 files changed, 10 deletions(-)
 
-I don't really see how "the order of parameters is different" is a
-downside? Yeah it means if you're used to FIELD_GET() then you'll
-retrain, but ...?
+diff --git a/arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts b/arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts
+index 69fcb6b0398d..84558ab5fe86 100644
+--- a/arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts
++++ b/arch/arm64/boot/dts/qcom/msm8992-xiaomi-libra.dts
+@@ -42,7 +42,6 @@ framebuffer0: framebuffer@3404000 {
+ 
+ 	gpio_keys {
+ 		compatible = "gpio-keys";
+-		input-name = "gpio-keys";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 		autorepeat;
+diff --git a/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi b/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi
+index 3a3790a52a2c..cc038f9b641f 100644
+--- a/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi
+@@ -62,7 +62,6 @@ divclk4: divclk4 {
+ 
+ 	gpio-keys {
+ 		compatible = "gpio-keys";
+-		input-name = "gpio-keys";
+ 		autorepeat;
+ 
+ 		volupkey {
+diff --git a/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi b/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi
+index 7cc564d8ca7c..dde7ed159c4d 100644
+--- a/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi
+@@ -29,7 +29,6 @@ / {
+ 
+ 	gpio_keys {
+ 		compatible = "gpio-keys";
+-		input-name = "gpio-keys";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 		autorepeat;
+diff --git a/arch/arm64/boot/dts/qcom/msm8998-fxtec-pro1.dts b/arch/arm64/boot/dts/qcom/msm8998-fxtec-pro1.dts
+index 3d495ce3f46a..dc5b9b274df3 100644
+--- a/arch/arm64/boot/dts/qcom/msm8998-fxtec-pro1.dts
++++ b/arch/arm64/boot/dts/qcom/msm8998-fxtec-pro1.dts
+@@ -29,7 +29,6 @@ extcon_usb: extcon-usb {
+ 
+ 	gpio-hall-sensors {
+ 		compatible = "gpio-keys";
+-		input-name = "hall-sensors";
+ 		label = "Hall sensors";
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&hall_sensor1_default>;
+@@ -46,7 +45,6 @@ hall-sensor1 {
+ 
+ 	gpio-kb-extra-keys {
+ 		compatible = "gpio-keys";
+-		input-name = "extra-kb-keys";
+ 		label = "Keyboard extra keys";
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&gpio_kb_pins_extra>;
+@@ -102,7 +100,6 @@ alt {
+ 
+ 	gpio-keys {
+ 		compatible = "gpio-keys";
+-		input-name = "side-buttons";
+ 		label = "Side buttons";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+diff --git a/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
+index 91e391282181..47488a1aecae 100644
+--- a/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
+@@ -93,7 +93,6 @@ vph_pwr: vph-pwr-regulator {
+ 
+ 	gpio-keys {
+ 		compatible = "gpio-keys";
+-		input-name = "gpio-keys";
+ 		label = "Side buttons";
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&vol_down_pin_a>, <&cam_focus_pin_a>,
+@@ -126,7 +125,6 @@ camera-focus {
+ 
+ 	gpio-hall-sensor {
+ 		compatible = "gpio-keys";
+-		input-name = "hall-sensors";
+ 		label = "Hall sensors";
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&hall_sensor0_default>;
+diff --git a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
+index e90c9ec84675..42af1fade461 100644
+--- a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
+@@ -90,7 +90,6 @@ cam_vana_rear_vreg: cam_vana_rear_vreg {
+ 	gpio_keys {
+ 		status = "okay";
+ 		compatible = "gpio-keys";
+-		input-name = "gpio-keys";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 
+diff --git a/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts b/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
+index 45eab0235d66..871ccbba445b 100644
+--- a/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
++++ b/arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dts
+@@ -42,7 +42,6 @@ extcon_usb: extcon-usb {
+ 	gpio-keys {
+ 		status = "okay";
+ 		compatible = "gpio-keys";
+-		input-name = "gpio-keys";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 		autorepeat;
+-- 
+2.34.0
 
-> (*_replace_bits() seems to be useful, though)
-
-Indeed.
-
-Also as I said in my other mail, the le32/be32/... variants are
-tremendously useful, and they fundamentally cannot be expressed with the
-FIELD_GET() or field_get() macros. IMHO this is a clear advantage to the
-typed versions, and if you ask me we should get rid of the FIELD_GETand
-FIELD_PREP entirely - difficult now, but at least let's not propagate
-that?
-
-johannes
