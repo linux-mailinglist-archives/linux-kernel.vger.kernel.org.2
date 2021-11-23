@@ -2,201 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1933345A449
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 14:59:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF8F45A44A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:00:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232333AbhKWODA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 09:03:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbhKWOC7 (ORCPT
+        id S233318AbhKWODK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 09:03:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52372 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229808AbhKWODJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 09:02:59 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAFC2C061574;
-        Tue, 23 Nov 2021 05:59:50 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id r25so55636502edq.7;
-        Tue, 23 Nov 2021 05:59:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zBJ46VCZftKYaX4m/MsR0nlZ09nGnHLIIi/Y8boq1S4=;
-        b=ml3xIPBlr60dBMCYl5SLkJ93OBEOai8j9KgKFEUeiaF3Qn+KW4CfKf2QfuGjsAtz8P
-         EXhcTwVOwqB61XeWlDGa1PKI3HTKllXmvMlueySF5hxgeT5Uo3fGXXm+44cuEmGA2c4i
-         Bn2efWPt8bAqAt2mBdX+jchCQ1Sb+gRrpQRZpJzjxSi+b0LeqNbi8oCNdGBB2ahCenwB
-         bqzTAfHHqHObfP48ju/EC+jfL7e+TsDQ8jo1ARpjI+m/4jA1zcXrp2FCyk+S7VdjAkk4
-         hp9evIWnjIch1SGV5dOKM1kD1S7L4+7u9/UYMsTvl1jsTgutPTABf/aSZsZfsf45z5ZC
-         aZGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zBJ46VCZftKYaX4m/MsR0nlZ09nGnHLIIi/Y8boq1S4=;
-        b=yOm6gtUYssTrz1WyPTrpSADHStGJxvLg16gk70lFe5vEjnqCLZu/Jas9gWEOWE9tw6
-         KxFNrbYaQCI8bMVtJO0pFoll8MyFRUAKK0OXHuIhqFfVbSvnTLZoQDkxfRkR95AYuDkg
-         GJ15cM3lGMSUTDlbTuuPk5Z0fADsdzrlnx+I8YmgIlPbUKpgT5AVE1OLBzdwkQKm6AC8
-         lMCCSJRPya0VKUj0bYI1NnuRp8wqjPdy/l4T5vGQUYGcwJBGEfFUEQ0afMSuIvWVJ9oz
-         oNcnhc/MUQQSdeWqUco2UgcWyuoYjmMQZMovWaAb2q/9ejL+/WPClczAun7h40mpK3rq
-         z9Bw==
-X-Gm-Message-State: AOAM530TXD5BBej4835vEz0Liiiyo8OIPtS6EwzD9cc5sgyp0zbzEb/9
-        0Qpt4vLctdpA0WjYQ69/K3tq+O+Sb0kmu5nwD88=
-X-Google-Smtp-Source: ABdhPJxlyDwl5cBif++Ea2x8vpPPUcK2k0klOLHoDwvnP/g5WHAWxK4LzO+Lhk3pJjlqvBtQFRzdaEAqB4H2pgpO0CU=
-X-Received: by 2002:a05:6402:510b:: with SMTP id m11mr9682609edd.165.1637675987562;
- Tue, 23 Nov 2021 05:59:47 -0800 (PST)
+        Tue, 23 Nov 2021 09:03:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637676000;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=J+U2ly5t8pjpukreZ+mwG58hWGw3qavINk7r30wyotQ=;
+        b=Fw6A0BVDSqbzjW8z2Y2MRf3ikM2c9VsMuB3GwEqxbORtme7XqGr5mnqDinoT/F2wp2J308
+        4Ga6TfYXz3GlfcpaJ4h7AcsQWBAXreiBJV9Vk7dy6TEys7YVYYemLvagenZ6VXj62N5rtM
+        l6DqTjZGHHVpZKhJ9lSFA3wxaVVVigk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-406-mp2Gm_tkMRyg_0jsb2KKiw-1; Tue, 23 Nov 2021 08:59:57 -0500
+X-MC-Unique: mp2Gm_tkMRyg_0jsb2KKiw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 87D5FEC1A2;
+        Tue, 23 Nov 2021 13:59:56 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.40.192.236])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6E69C5C1D5;
+        Tue, 23 Nov 2021 13:59:54 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] KVM: selftests: Make sure kvm_create_max_vcpus test won't hit RLIMIT_NOFILE
+Date:   Tue, 23 Nov 2021 14:59:53 +0100
+Message-Id: <20211123135953.667434-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-References: <20211106155427.753197-1-aford173@gmail.com> <YZrHWkbYkrILP9oo@pendragon.ideasonboard.com>
-In-Reply-To: <YZrHWkbYkrILP9oo@pendragon.ideasonboard.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Tue, 23 Nov 2021 07:59:36 -0600
-Message-ID: <CAHCN7xLwYcS55N7SNT4k3NqF=Lgdjfe92nJHSVMKkhCuSAPaYw@mail.gmail.com>
-Subject: Re: [PATCH V2 1/5] soc: imx: imx8m-blk-ctrl: Fix imx8mm mipi reset
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Schrempf Frieder <frieder.schrempf@kontron.de>,
-        linux-media <linux-media@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        cstevens@beaconembedded.com,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peng Fan <peng.fan@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 21, 2021 at 4:25 PM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Adam,
->
-> On Sat, Nov 06, 2021 at 10:54:23AM -0500, Adam Ford wrote:
-> > Most of the blk-ctrl reset bits are found in one register, however
-> > there are two bits in offset 8 for pulling the MIPI DPHY out of reset
-> > and these need to be set when IMX8MM_DISPBLK_PD_MIPI_CSI is brought
-> > out of reset or the MIPI_CSI hangs.
-> >
-> > Fixes: 926e57c065df ("soc: imx: imx8m-blk-ctrl: add DISP blk-ctrl")
-> > Signed-off-by: Adam Ford <aford173@gmail.com>
-> > ---
-> >
-> > V2:  Make a note that the extra register is only for Mini/Nano DISPLAY_BLK_CTRL
-> >      Rename the new register to mipi_phy_rst_mask
-> >      Encapsulate the edits to this register with an if-statement
-> >
-> >  drivers/soc/imx/imx8m-blk-ctrl.c | 18 ++++++++++++++++++
-> >  1 file changed, 18 insertions(+)
-> >
-> > diff --git a/drivers/soc/imx/imx8m-blk-ctrl.c b/drivers/soc/imx/imx8m-blk-ctrl.c
-> > index 519b3651d1d9..581eb4bc7f7d 100644
-> > --- a/drivers/soc/imx/imx8m-blk-ctrl.c
-> > +++ b/drivers/soc/imx/imx8m-blk-ctrl.c
-> > @@ -17,6 +17,7 @@
-> >
-> >  #define BLK_SFT_RSTN 0x0
-> >  #define BLK_CLK_EN   0x4
-> > +#define BLK_MIPI_RESET_DIV   0x8 /* Mini/Nano DISPLAY_BLK_CTRL only */
-> >
-> >  struct imx8m_blk_ctrl_domain;
-> >
-> > @@ -36,6 +37,15 @@ struct imx8m_blk_ctrl_domain_data {
-> >       const char *gpc_name;
-> >       u32 rst_mask;
-> >       u32 clk_mask;
-> > +
-> > +     /*
-> > +      * i.MX8M Mini and Nano have a third DISPLAY_BLK_CTRL register
-> > +      * which is used to control the reset for the MIPI Phy.
-> > +      * Since it's only present in certain circumstances,
-> > +      * an if-statement should be used before setting and clearing this
-> > +      * register.
-> > +      */
-> > +     u32 mipi_phy_rst_mask;
-> >  };
-> >
-> >  #define DOMAIN_MAX_CLKS 3
-> > @@ -78,6 +88,8 @@ static int imx8m_blk_ctrl_power_on(struct generic_pm_domain *genpd)
-> >
-> >       /* put devices into reset */
-> >       regmap_clear_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
-> > +     if (data->mipi_phy_rst_mask)
-> > +             regmap_clear_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
-> >
-> >       /* enable upstream and blk-ctrl clocks to allow reset to propagate */
-> >       ret = clk_bulk_prepare_enable(data->num_clks, domain->clks);
-> > @@ -99,6 +111,8 @@ static int imx8m_blk_ctrl_power_on(struct generic_pm_domain *genpd)
-> >
-> >       /* release reset */
-> >       regmap_set_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
-> > +     if (data->mipi_phy_rst_mask)
-> > +             regmap_set_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
-> >
-> >       /* disable upstream clocks */
-> >       clk_bulk_disable_unprepare(data->num_clks, domain->clks);
-> > @@ -120,6 +134,9 @@ static int imx8m_blk_ctrl_power_off(struct generic_pm_domain *genpd)
-> >       struct imx8m_blk_ctrl *bc = domain->bc;
-> >
-> >       /* put devices into reset and disable clocks */
-> > +     if (data->mipi_phy_rst_mask)
-> > +             regmap_clear_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
-> > +
->
-> Is it the best option to enable/disable both the master and slave MIPI
-> DPHY, regardless of whether they're used or not ? Or would it be better
-> to implement a reset controller to expose the two resets independently,
-> and acquire them from the corresponding display and camera drivers ?
+With the elevated 'KVM_CAP_MAX_VCPUS' value kvm_create_max_vcpus test
+may hit RLIMIT_NOFILE limits:
 
-In some early attempts to implement the blk-ctrl driver, there was an
-attempt to enable a reset controller, but it caused some hanging and
-issues with suspend-resume due to chicken-egg issues where some items
-were coming up in the wrong order.  I think the decision was made to
-make the resets part of the power domain so it's very clear that the
-order of operations.  Lucas might be able to elaborate more on this.
+ # ./kvm_create_max_vcpus
+ KVM_CAP_MAX_VCPU_ID: 4096
+ KVM_CAP_MAX_VCPUS: 1024
+ Testing creating 1024 vCPUs, with IDs 0...1023.
+ /dev/kvm not available (errno: 24), skipping test
 
-If bits 16 and 17 can act independently and bit 16 only impacts the
-CSI  and doesn't require bit 17, it seems reasonable to me to have the
-power-domain part of  the CSI, since this would only be enabled when
-the CSI is active.  The power domain is idled when the CSI is idled
-which would effectively place the phy in and out of reset only
-depending on the state of the CSI.  I am guessing this reset bit
-should be assigned to DISPBLK_PD_MIPI_CSI and not
-DISPBLK_PD_CSI_BRIDGE, but I can run some more tests.
+Adjust RLIMIT_NOFILE limits to make sure KVM_CAP_MAX_VCPUS fds can be
+opened. Note, raising hard limit ('rlim_max') requires CAP_SYS_RESOURCE
+capability which is generally not needed to run kvm selftests (but without
+raising the limit the test is doomed to fail anyway).
 
-AFAIK, there is no phy driver for the CSI like there is the DSI, so
-adding that would require additional work to the CSI driver to work
-around this quirk.  We don't have an acceptable DSI driver yet, so I'd
-like to push a V3 with just the corresponding bit enabled for MIPI_CSI
-after some testing.  FWICT, NXP set both bits 16 and 17 in their ATF
-gpc code, and it never gets cleared, so I think having the bit set and
-cleared on demand is an improvement.
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+Changes since v1:
+- Drop 'NOFD' define replacing it with 'int nr_fds_wanted' [Sean]
+- Drop 'errno' printout as TEST_ASSERT() already does that.
+---
+ .../selftests/kvm/kvm_create_max_vcpus.c      | 22 +++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
->
-> >       regmap_clear_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
-> >       regmap_clear_bits(bc->regmap, BLK_CLK_EN, data->clk_mask);
-> >
-> > @@ -488,6 +505,7 @@ static const struct imx8m_blk_ctrl_domain_data imx8mm_disp_blk_ctl_domain_data[]
-> >               .gpc_name = "mipi-csi",
-> >               .rst_mask = BIT(3) | BIT(4),
-> >               .clk_mask = BIT(10) | BIT(11),
-> > +             .mipi_phy_rst_mask = BIT(16) | BIT(17),
-> >       },
-> >  };
-> >
+diff --git a/tools/testing/selftests/kvm/kvm_create_max_vcpus.c b/tools/testing/selftests/kvm/kvm_create_max_vcpus.c
+index f968dfd4ee88..ca957fe3f903 100644
+--- a/tools/testing/selftests/kvm/kvm_create_max_vcpus.c
++++ b/tools/testing/selftests/kvm/kvm_create_max_vcpus.c
+@@ -12,6 +12,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <sys/resource.h>
+ 
+ #include "test_util.h"
+ 
+@@ -40,10 +41,31 @@ int main(int argc, char *argv[])
+ {
+ 	int kvm_max_vcpu_id = kvm_check_cap(KVM_CAP_MAX_VCPU_ID);
+ 	int kvm_max_vcpus = kvm_check_cap(KVM_CAP_MAX_VCPUS);
++	/*
++	 * Number of file descriptors reqired, KVM_CAP_MAX_VCPUS for vCPU fds +
++	 * an arbitrary number for everything else.
++	 */
++	int nr_fds_wanted = kvm_max_vcpus + 100;
++	struct rlimit rl;
+ 
+ 	pr_info("KVM_CAP_MAX_VCPU_ID: %d\n", kvm_max_vcpu_id);
+ 	pr_info("KVM_CAP_MAX_VCPUS: %d\n", kvm_max_vcpus);
+ 
++	/*
++	 * Check that we're allowed to open nr_fds_wanted file descriptors and
++	 * try raising the limits if needed.
++	 */
++	TEST_ASSERT(!getrlimit(RLIMIT_NOFILE, &rl), "getrlimit() failed!");
++
++	if (rl.rlim_cur < nr_fds_wanted) {
++		rl.rlim_cur = nr_fds_wanted;
++
++		if (rl.rlim_max <  nr_fds_wanted)
++			rl.rlim_max = nr_fds_wanted;
++
++		TEST_ASSERT(!setrlimit(RLIMIT_NOFILE, &rl), "setrlimit() failed!");
++	}
++
+ 	/*
+ 	 * Upstream KVM prior to 4.8 does not support KVM_CAP_MAX_VCPU_ID.
+ 	 * Userspace is supposed to use KVM_CAP_MAX_VCPUS as the maximum ID
+-- 
+2.33.1
 
-adam
-
->
-> --
-> Regards,
->
-> Laurent Pinchart
