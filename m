@@ -2,89 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A92459EC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 10:01:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1927459EC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 10:01:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234157AbhKWJEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 04:04:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53718 "EHLO mail.kernel.org"
+        id S235112AbhKWJEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 04:04:34 -0500
+Received: from mga18.intel.com ([134.134.136.126]:53263 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235743AbhKWJBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 04:01:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50F0960187;
-        Tue, 23 Nov 2021 08:58:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637657928;
-        bh=J7kwUKVNN/3CJzDlKIPH1Apy8xKg2S6cz4ypVO1LfSI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y6ThtLd6By+yo0589CRi3GyKLYS/z3CcFbZrVqf6f4qZDTbt4t+NGdM/WE9pyEZBP
-         Oe+nsJaHFTuQnJCOhe1Vwtrm1nq1bdcK3ciiRZhlVWn/6qQ48OFSK9GCCHqM2Hu5ku
-         hDlPys25WtcZ4DVjrztqSgP48LZqFVF6tSzPeSbQr3obgFB/KzEVz4eBhX8Ucki6I3
-         FGaC04z3XHYQat5e2KOJEB6daWCZpj7245EqmKdHwafAyveGhUlpQ++5QvBfsopSEf
-         Mm1RjmdzbFMcRe83j+U/mwqAejkv+TX1h12a5kkrXZ3DWo1Ba+SNqtlqxDRNSq5BRB
-         HuhnwZ5ZyadAw==
-Date:   Tue, 23 Nov 2021 16:58:42 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Abel Vesa <abel.vesa@nxp.com>,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     Martin Kepplinger <martink@posteo.de>,
-        Rob Herring <robh@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: freescale: imx8mq: Disable noc dts node
-Message-ID: <20211123085841.GX31998@dragon>
-References: <1636629369-23988-1-git-send-email-abel.vesa@nxp.com>
+        id S236329AbhKWJEK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 04:04:10 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="221865653"
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="221865653"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 01:00:34 -0800
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="509333818"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 01:00:33 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mpRfB-009j2x-1U;
+        Tue, 23 Nov 2021 11:00:29 +0200
+Date:   Tue, 23 Nov 2021 11:00:28 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jay Dolan <jay.dolan@accesio.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH v2 3/3] serial: 8250_pericom: Use serial_dl_write()
+ instead of open coded
+Message-ID: <YZytrLuhBxn8OGna@smile.fi.intel.com>
+References: <20211122133512.8947-1-andriy.shevchenko@linux.intel.com>
+ <20211122133512.8947-4-andriy.shevchenko@linux.intel.com>
+ <d7809017-f544-c60c-728b-4f9015fbad43@accesio.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1636629369-23988-1-git-send-email-abel.vesa@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <d7809017-f544-c60c-728b-4f9015fbad43@accesio.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 01:16:09PM +0200, Abel Vesa wrote:
-> Adding interconnect properties to the consumer nodes creates
-> a dependency on noc device. The imx-bus devfreq driver is not usable
-> without the full interconnect support. The interconnect is not yet
-> working on i.MX platforms. The devlink created on device_add makes
-> the lcdif and other nodes that have the interconnect properties
-> wait for the noc (imx-bus driver) to probe first.
-> 
-> To make sure the interconnect consumers (nodes that have interconnect
-> properties already added) will still probe, lets disable the noc node
-> for now. Once the interconnect on i.MX platforms is fully functional,
-> the status of the noc node can be changed.
-> 
-> Fixes: ad1abc8a03fdbc05b ("arm64: dts: imx8mq: Add interconnect for lcdif")
+On Mon, Nov 22, 2021 at 09:27:11PM -0800, Jay Dolan wrote:
+> On 11/22/21 5:35 AM, Andy Shevchenko wrote:
 
-Martin,
+> I tested this change with a few baud rates in my current tree, and I saw the
+> correct speeds coming out on the scope.
 
-Do you have any comment?  So your commit added something untested?
+Thank you! Can you next time use Tested-by tag as explained in Submitting
+Patches [1] documentation?
 
-Shawn
+[1]: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes
 
-> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
-> ---
->  arch/arm64/boot/dts/freescale/imx8mq.dtsi | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> index 972766b67a15..f3182878f596 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> @@ -1305,6 +1305,7 @@ noc: interconnect@32700000 {
->  			fsl,ddrc = <&ddrc>;
->  			#interconnect-cells = <1>;
->  			operating-points-v2 = <&noc_opp_table>;
-> +			status = "disabled";
->  
->  			noc_opp_table: opp-table {
->  				compatible = "operating-points-v2";
-> -- 
-> 2.31.1
-> 
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
