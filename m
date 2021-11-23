@@ -2,113 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46BD045A0C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 11:57:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4B445A0C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 11:58:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235703AbhKWLAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 06:00:20 -0500
-Received: from mail-lj1-f172.google.com ([209.85.208.172]:45900 "EHLO
-        mail-lj1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235398AbhKWLAT (ORCPT
+        id S235673AbhKWLB4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 23 Nov 2021 06:01:56 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:44821 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234392AbhKWLBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 06:00:19 -0500
-Received: by mail-lj1-f172.google.com with SMTP id b16so5037270ljf.12;
-        Tue, 23 Nov 2021 02:57:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=wDBfIxPCunChiakkAlZ8A5wU6FVeySkRCkCo/ttzO8w=;
-        b=xIXSOlUbIUm/pzorcPH46y0WuQzRdNJDpAfvx1ex0EUC/54EW4zSI3/z9NuOhQ4hYn
-         nIx94OXPUHKoSTXBso69BiFMUJfKBrRVf8nrWYVE0Ck0zrsrCpFuXsU+BpwzNlP55Gy0
-         aPandCmKSbSazh1P7jvheXNMS4XWPtzpgWyTrY+dc85ovc6qHgNbrpwC3hSq5PC+wwKi
-         bhb60wpUUG7Yr9DNuUiCg220K6MgDM1aEf5+kh9KqPhHBSUZCnzYJ22YdPchApylJgxh
-         IsvS5mCZxa3sJ1Se4XylEAJB0AJMyMqLMSnQaJd561mqN5WCemetmLFsUEnGFo3Q8HBG
-         rVpA==
-X-Gm-Message-State: AOAM531/UZS9KFQR46M1EjoBelNivkUKjLvykQhtXUW9jlmdg4YPh4ai
-        MKQ6ekmrRv6sPUVZ615GeYQ=
-X-Google-Smtp-Source: ABdhPJxmojs50ANN3mnFQ+HdGDYf1ne60Toba3fOenQWvDNIrsSVuH9Stw+lYDkqqJAAhgDjbFMIbg==
-X-Received: by 2002:a2e:96c2:: with SMTP id d2mr4094593ljj.46.1637665030487;
-        Tue, 23 Nov 2021 02:57:10 -0800 (PST)
-Received: from fedora (dc73szyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16ee:fa00::4])
-        by smtp.gmail.com with ESMTPSA id n7sm492543lfu.116.2021.11.23.02.57.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 02:57:09 -0800 (PST)
-Date:   Tue, 23 Nov 2021 12:57:02 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mfd: bd957x: Fix Kconfig dependency
-Message-ID: <YZzI/gNDRdvdK0nv@fedora>
+        Tue, 23 Nov 2021 06:01:55 -0500
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-216-XlLQYH2JOpGrDdyJLmGKag-1; Tue, 23 Nov 2021 10:58:45 +0000
+X-MC-Unique: XlLQYH2JOpGrDdyJLmGKag-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.26; Tue, 23 Nov 2021 10:58:44 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.026; Tue, 23 Nov 2021 10:58:44 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>
+CC:     "'Vaittinen, Matti'" <Matti.Vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        "Kumar Kartikeya Dwivedi" <memxor@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/4] bitops: Add single_bit_set()
+Thread-Topic: [PATCH 1/4] bitops: Add single_bit_set()
+Thread-Index: AQHX35CZ2t64bA8wLE2j/heX74SAnqwPaOmAgAAUvoCAAAQ4gIAABfAAgAFlEYCAAAMFAIAAAGHg
+Date:   Tue, 23 Nov 2021 10:58:44 +0000
+Message-ID: <89f18bd93ce545feb7a02889ae49f079@AcuMS.aculab.com>
+References: <cover.1637330431.git.matti.vaittinen@fi.rohmeurope.com>
+ <73d5e4286282a47b614d1cc5631eb9ff2a7e2b44.1637330431.git.matti.vaittinen@fi.rohmeurope.com>
+ <YZt+x2moR632x///@smile.fi.intel.com>
+ <2c22b52f-9a1f-06f5-f008-d568096f5c4d@fi.rohmeurope.com>
+ <YZuTt3+PPvyJsFQ/@smile.fi.intel.com>
+ <e2675600-7b04-19b0-79ce-28a4e1d1f225@fi.rohmeurope.com>
+ <874db8b91ff04001a8958f100a614ed8@AcuMS.aculab.com>
+ <YZzGwubCr8RZtbFM@smile.fi.intel.com>
+In-Reply-To: <YZzGwubCr8RZtbFM@smile.fi.intel.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="50bHO1pf7QlL+9ro"
-Content-Disposition: inline
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Andy Shevchenko
+> Sent: 23 November 2021 10:48
+> 
+> On Tue, Nov 23, 2021 at 10:42:45AM +0000, David Laight wrote:
+> > From: Vaittinen, Matti
+> > > Sent: 22 November 2021 13:19
+> > >
+> > > On 11/22/21 14:57, Andy Shevchenko wrote:
+> > > > On Mon, Nov 22, 2021 at 12:42:21PM +0000, Vaittinen, Matti wrote:
+> > > >> On 11/22/21 13:28, Andy Shevchenko wrote:
+> > > >>> On Mon, Nov 22, 2021 at 01:03:25PM +0200, Matti Vaittinen wrote:
+> > > >
+> > > > What do you mean by this?
+> > > >
+> > > > hweight() will return you the number of the non-zero elements in the set.
+> > >
+> > > Exactly. The function I added did only check if given set of bits had
+> > > only one bit set.
+> >
+> > Checking for exactly one bit can use the (x & (x - 1)) check on
+> > non-zero values - which may even be better on some cpus with a
+> > popcnt instruction.
+> 
+> In the discussed case the value pretty much can be 0, meaning you have
+> to add an additional test which I believe diminishes all efforts for
+> the is_power_of_2() call.
 
---50bHO1pf7QlL+9ro
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I wouldn't have thought so.
+Code would be:
+	if (!scan_for_non_zero())
+		return 0;
+	if (!is_power_of_2())
+		return 0;
+	return scan_for_non_zero() ? 0 : 1;
 
-The bd957x driver uses regmap-IRQ but does not SELECT ot depend on it.
-This can cause build failure.
+Hand-crafting asm you'd actually check for (x - 1) generating
+carry in the initial scan.
 
-SELECT the regmap-IRQ for BD957X from Kconfig.
+The latency of popcnt it worse than arithmetic on a lot of x86 cpu.
 
-Fixes: 0e9692607f94 ("mfd: bd9576: Add IRQ support")
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
- drivers/mfd/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+	David
 
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 3fb480818599..47bacded4a51 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -1983,6 +1983,7 @@ config MFD_ROHM_BD957XMUF
- 	depends on I2C=3Dy
- 	depends on OF
- 	select REGMAP_I2C
-+	select REGMAP_IRQ
- 	select MFD_CORE
- 	help
- 	  Select this option to get support for the ROHM BD9576MUF and
---=20
-2.31.1
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-
---=20
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =3D]=20
-
---50bHO1pf7QlL+9ro
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmGcyPEACgkQeFA3/03a
-ocX1lAf/TL1fhu37dph2+ahSDBES6DkRbUIVSrIWf8MXZSindAGPeOWijTY/QXVi
-eKxbunpKrh3tuTmuBFybnaK9GzNMuNXg0zgB3TxJhNvA4sP3ymkXSi1SK6W27nxD
-H4IwYtwmfxGNY7FBEqeUE1oKueGpdLzBL8ZoRk8pZHS4mGdhbtGW/qb3Z2aXDcLB
-4OKx9ShaBKP2eCJx3QewlgKqkgH6qg2HvPNSSEtCkx0FDzRLhap8DzCmhtTkMbmm
-sdrSQHZW02srCgP6yVnf55cB+t5Fa58dKOz2Uq1lCT2y6J5ceNW4tlxbBIkLLHBV
-eqKB8BKfeWpsS3I5X9C+nr0EeygFCQ==
-=Qj6a
------END PGP SIGNATURE-----
-
---50bHO1pf7QlL+9ro--
