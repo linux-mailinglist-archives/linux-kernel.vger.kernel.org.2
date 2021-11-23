@@ -2,87 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 253E945AAFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 19:11:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C484145AB01
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 19:13:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239711AbhKWSOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 13:14:11 -0500
-Received: from mail-yb1-f170.google.com ([209.85.219.170]:39797 "EHLO
-        mail-yb1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239628AbhKWSOK (ORCPT
+        id S239764AbhKWSQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 13:16:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234236AbhKWSQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 13:14:10 -0500
-Received: by mail-yb1-f170.google.com with SMTP id v203so25366522ybe.6;
-        Tue, 23 Nov 2021 10:11:02 -0800 (PST)
+        Tue, 23 Nov 2021 13:16:54 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50927C06173E;
+        Tue, 23 Nov 2021 10:13:46 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id r26so230150lfn.8;
+        Tue, 23 Nov 2021 10:13:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=R1lbh8ML36PgHeRnKDif3BwxyPuxLNdG8GTZu7LkVeA=;
+        b=KotJzgbsynvTermYNoEMjjHIGET9jkXyB3eCLYnPXPQRo9jt6x9lsNUqVfhyIyBGCm
+         zXURN8Y+pVZqvTEkp4B4skI1YRS/QubtLPIj0wuPRHXDyvlmRWZf/jJSwjWhSvfD7Nh0
+         FuYFwxAoM5+S9Fb/LuFxQSlJh+5yNuwLrBGVwI0VjjAwSXdRBN+RHiK8T/DgiUaTocl4
+         0enW/BeSWQsaNts6Qyu7K0wf111+kD7kOoSBZnkRLddzlH0eCrApyFtL9sMW9pznLbl3
+         DUk9wXRBA1dzSdpR2haPCEvvvSomC6b93ICsU+gLiPTTPuK0Xd35T3cA9XLSgAT6tJxc
+         gROQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MUbZEn/3SdS1wqqgUfSx8CmvXfjoSF7ouvMsnJiO5NA=;
-        b=XGTeW++CZ0fCg14ZEvS6Knj1uLSHQ5dp2OBdlzyIhRNgrZJH80uEyY4DzdqAF1aZBt
-         mk2rbPg8l2SMlDxlgpqAms4rAPVYJi+rNcwVZrJA94x2d72XLNzaJx3SbgBbDffOBZ9g
-         5tcHwBft3tjaNfv6bxnUkurCO/isQ9ELbIoPi/u/pwYHM65OEfIkxP0XEJmDe+CadtW/
-         hxBa36Qgwuw8+2BdyZRVsmCug3IuMphXaUN5EkHDImPnaN+WfaqJDRIiJsRCMqoAcTQh
-         zohzEFRASxDMQu+PzI8bCZM55gnjd+6Lc2iMAjDHX4cF0Qodn14UVeSAX5VsJ/4o8a3b
-         M4TA==
-X-Gm-Message-State: AOAM530hGDhujVdpVwRTouMlOKen+6sgmczTGuGKnH8/v51/ZGZDhh+3
-        7jLVGOUqMn7+zJYzYw6x1zVK6uhOi3WnUwAghhQ=
-X-Google-Smtp-Source: ABdhPJxRFhK5k5paqCyxrIeq+pgrATdTva88twcto4HVEG4JbbIHmOdJnz3Ra/cinSMh+cljZYv0Hji1HsxZMD9JErw=
-X-Received: by 2002:a25:ba0f:: with SMTP id t15mr8897642ybg.62.1637691061954;
- Tue, 23 Nov 2021 10:11:01 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=R1lbh8ML36PgHeRnKDif3BwxyPuxLNdG8GTZu7LkVeA=;
+        b=o9XlP/A8gLpVq6XJfRv1ksX3Kd4eGoee70EPYKIkV0LHTuVi9jhKCOOYFpRURZSTyl
+         4Bz+kmsOvvl9GsYIjGjSryMAWKY6PyvrlsnT6M+s7BtsGjv9kitAs7oXt7USjG+S3K3I
+         zTq/mynI0RnJtQu3vNWlB2jR++yBTXFW/RNhM0rLCwz5Q2zM2BKn4QRt/qkQza0G4GHm
+         Q+LvNDaVbytGC68kbsXDTQjaeBnzfVKc3PibodAFjianxTlBUIWbWAkPBTwS32/UdG1J
+         k0mE0tcwIJQPcqSwcRhQuLWFuXF+x1JqUGcAaZ+gfnhplrqb52UEwDv+f/5tT6dxV1PA
+         FJTg==
+X-Gm-Message-State: AOAM533wByUNBnB19ERdKta4BY2x6aSoFvg91oyToyBo22eJ85pNWf4q
+        +ZV6SlbRdOdqab13ZIyjVso=
+X-Google-Smtp-Source: ABdhPJyISSExpQ0FjzL5Bgs+xMN/c6GKyOxriIc2gCgUlYE5aIozMsnXIYIvj5wQtHQc3pFfw400Vw==
+X-Received: by 2002:a05:6512:3f96:: with SMTP id x22mr6968408lfa.389.1637691223076;
+        Tue, 23 Nov 2021 10:13:43 -0800 (PST)
+Received: from localhost.localdomain (public-gprs375115.centertel.pl. [37.47.96.140])
+        by smtp.googlemail.com with ESMTPSA id 138sm1335777ljf.89.2021.11.23.10.13.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 10:13:42 -0800 (PST)
+From:   Dominik Kobinski <dominikkobinski314@gmail.com>
+To:     agross@kernel.org
+Cc:     bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dominik Kobinski <dominikkobinski314@gmail.com>,
+        Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
+Subject: [PATCH 4/4] regulator: qcom_spmi: Add pm8226 regulators
+Date:   Tue, 23 Nov 2021 19:11:19 +0100
+Message-Id: <20211123181119.2897-1-dominikkobinski314@gmail.com>
+X-Mailer: git-send-email 2.34.0
+In-Reply-To: <20211123174127.2261-1-dominikkobinski314@gmail.com>
+References: <20211123174127.2261-1-dominikkobinski314@gmail.com>
 MIME-Version: 1.0
-References: <20211123115333.624335-1-mailhol.vincent@wanadoo.fr> <20211123115333.624335-3-mailhol.vincent@wanadoo.fr>
-In-Reply-To: <20211123115333.624335-3-mailhol.vincent@wanadoo.fr>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Wed, 24 Nov 2021 03:10:50 +0900
-Message-ID: <CAMZ6RqJEFvn9f8quYWyfPL+A7hjLJG67tQenTsearuF-5hcEsQ@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] can: do not increase rx_bytes statistics for RTR frames
-To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        Jimmy Assarsson <extja@kvaser.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Yasushi SHOJI <yashi@spacecubics.com>,
-        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
-        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Stephane Grosjean <s.grosjean@peak-system.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue. 23 Nov. 2021 at 20:53, Vincent Mailhol
-<mailhol.vincent@wanadoo.fr> wrote:
-> The actual payload length of the CAN Remote Transmission Request (RTR)
-> frames is always 0, i.e. nothing is transmitted on the wire. However,
-> those RTR frames still uses the DLC to indicate the length of the
-> requested frame.
->
-> As such, net_device_stats:rx_bytes should not be increased for the RTR
-> frames.
->
-> This patch fixes all the CAN drivers.
+The PM8226 PMIC is very often seen on
+MSM8x26 boards.
 
-Actually, I just realized that we also need to fix the tx path.
+Suggested-by: Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
+Signed-off-by: Dominik Kobinski <dominikkobinski314@gmail.com>
+---
+ drivers/regulator/qcom_spmi-regulator.c | 39 +++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
-Since [1], can_get_echo_skb() returns the correct length (even
-for RTR frames). So as long as the drivers use this function,
-everything should be fine. But the fact is that the majority do
-not (probably for historical reasons).  Long story short, I will
-send a v2 in which there will be an additional third patch to
-address the tx_bytes statistics of the RTR frames in the tx
-path.
+diff --git a/drivers/regulator/qcom_spmi-regulator.c b/drivers/regulator/qcom_spmi-regulator.c
+index 41424a3366d0..02bfce981150 100644
+--- a/drivers/regulator/qcom_spmi-regulator.c
++++ b/drivers/regulator/qcom_spmi-regulator.c
+@@ -1895,6 +1895,44 @@ static const struct spmi_regulator_data pm8941_regulators[] = {
+ 	{ }
+ };
+ 
++static const struct spmi_regulator_data pm8226_regulators[] = {
++	{ "s1", 0x1400, "vdd_s1", },
++	{ "s2", 0x1700, "vdd_s2", },
++	{ "s3", 0x1a00, "vdd_s3", },
++	{ "s4", 0x1d00, "vdd_s4", },
++	{ "s5", 0x2000, "vdd_s5", },
++	{ "l1", 0x4000, "vdd_l1_l2_l4_l5", },
++	{ "l2", 0x4100, "vdd_l1_l2_l4_l5", },
++	{ "l3", 0x4200, "vdd_l3_l24_l26", },
++	{ "l4", 0x4300, "vdd_l1_l2_l4_l5", },
++	{ "l5", 0x4400, "vdd_l1_l2_l4_l5", },
++	{ "l6", 0x4500, "vdd_l6_l7_l8_l9_l27", },
++	{ "l7", 0x4600, "vdd_l6_l7_l8_l9_l27", },
++	{ "l8", 0x4700, "vdd_l6_l7_l8_l9_l27", },
++	{ "l9", 0x4800, "vdd_l6_l7_l8_l9_l27", },
++	{ "l10", 0x4900, "vdd_l10_l11_l13", },
++	{ "l11", 0x4a00, "vdd_l10_l11_l13", },
++	{ "l12", 0x4b00, "vdd_l12_l14", },
++	{ "l13", 0x4c00, "vdd_l10_l11_l13", },
++	{ "l14", 0x4d00, "vdd_l12_l14", },
++	{ "l15", 0x4e00, "vdd_l15_l16_l17_l18", },
++	{ "l16", 0x4f00, "vdd_l15_l16_l17_l18", },
++	{ "l17", 0x5000, "vdd_l15_l16_l17_l18", },
++	{ "l18", 0x5100, "vdd_l15_l16_l17_l18", },
++	{ "l19", 0x5200, "vdd_l19_l20_l21_l22_l23_l28", },
++	{ "l20", 0x5300, "vdd_l19_l20_l21_l22_l23_l28", },
++	{ "l21", 0x5400, "vdd_l19_l20_l21_l22_l23_l28", },
++	{ "l22", 0x5500, "vdd_l19_l20_l21_l22_l23_l28", },
++	{ "l23", 0x5600, "vdd_l19_l20_l21_l22_l23_l28", },
++	{ "l24", 0x5700, "vdd_l3_l24_l26", },
++	{ "l25", 0x5800, "vdd_l25", },
++	{ "l26", 0x5900, "vdd_l3_l24_l26", },
++	{ "l27", 0x5a00, "vdd_l6_l7_l8_l9_l27", },
++	{ "l28", 0x5b00, "vdd_l19_l20_l21_l22_l23_l28", },
++	{ "lvs1", 0x8000, "vdd_lvs1", },
++	{ }
++};
++
+ static const struct spmi_regulator_data pm8841_regulators[] = {
+ 	{ "s1", 0x1400, "vdd_s1", },
+ 	{ "s2", 0x1700, "vdd_s2", NULL, 0x1c08 },
+@@ -2095,6 +2133,7 @@ static const struct spmi_regulator_data pms405_regulators[] = {
+ static const struct of_device_id qcom_spmi_regulator_match[] = {
+ 	{ .compatible = "qcom,pm8004-regulators", .data = &pm8004_regulators },
+ 	{ .compatible = "qcom,pm8005-regulators", .data = &pm8005_regulators },
++	{ .compatible = "qcom,pm8226-regulators", .data = &pm8226_regulators },
+ 	{ .compatible = "qcom,pm8841-regulators", .data = &pm8841_regulators },
+ 	{ .compatible = "qcom,pm8916-regulators", .data = &pm8916_regulators },
+ 	{ .compatible = "qcom,pm8941-regulators", .data = &pm8941_regulators },
+-- 
+2.34.0
 
-[1] commit 59d24425c93d ("can: dev: replace can_priv::ctrlmode_static
-by can_get_static_ctrlmode()")
-https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/commit/?h=testing&id=ed3320cec279407a86bc4c72edc4a39eb49165ec
-
-Yours sincerely,
-Vincent Mailhol
