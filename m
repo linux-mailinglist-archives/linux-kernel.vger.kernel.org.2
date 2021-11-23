@@ -2,130 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF449459FCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 11:11:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07771459FE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 11:16:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235337AbhKWKOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 05:14:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
+        id S235385AbhKWKT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 05:19:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231838AbhKWKOP (ORCPT
+        with ESMTP id S235337AbhKWKT3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 05:14:15 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2059DC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 02:11:08 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id z6so15452515plk.6
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 02:11:08 -0800 (PST)
+        Tue, 23 Nov 2021 05:19:29 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A0EC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 02:16:21 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id j3so302574wrp.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 02:16:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=BYTCB0J2pYZOOT9xnTXHPIjDed48AnjZ+6z/s4awgP8=;
-        b=BgwpP+KrwARr7qkbPpgwQgwZhLHt2ZtYSS/Mic73FvftvEELDRzyGfJZUnoEGKvSp6
-         IJUgg7VS0bvKeTz3QesNLB0zNm/sIrNf17GXJuNSj1Mk4meFmV3HO2HU4z6TYD8a04MQ
-         b+AHi77FyCpBa7kRdQRDZCKsDz7FTeqpxACMjAYbxrs0bDW51AUf8q0zkJ9OzYaOuVIc
-         r5Xfr+xNPDa0VmwiqxB0w3m2BAmOSFvuwjsDzNuP4bg1OobAyZB30GqaXCj0NfSgb0Fd
-         P69eJbEafoiB7fYGIzFpu6xoz0JA2u/DR3l59Ka9Cja02xYODpW/FwJM+1UDspmSoEu6
-         07GQ==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DZJ0pxIjHebOIgHJhAjt85uASRoyNqvHRW8sK2dJsck=;
+        b=bzqyFoJbju0H64NRMsrmMZPfpjr6ROaZo8mf5XCxAiGcJuX4YJOG31hfSbdILuooPS
+         U5geXhNTfP1fwUpGVfOXKvLgtt/l1Y66uautoDjwxrwLgfzzvcHrWVoAZQe49anNSmnf
+         aPulz+ANJc60ImWLf+pXusZJMViYjzYeKiaoNTk0u2Vyq+aaqa0Ce4RKxOEENp6AD6nx
+         ZeKT4bu959EfWnu+GcqjslmsECg72A//xZht1ScKMhUO0ymw1o+KwFbGPGC4jnNkPH19
+         gjUCFMkBdkgKu63HsoY/Xa9udovlA/QqAm4m0fbaCk/KdvMrzhGymh7F8L+Ty6Ts+SZa
+         krEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=BYTCB0J2pYZOOT9xnTXHPIjDed48AnjZ+6z/s4awgP8=;
-        b=aUioNJOz+3EBTZdKczV6pYnsCab/psJgILPx5ECHu0HD9VvxT6iDrhUXoasA0yd9q0
-         MuZrNwbipeeed1PeCnCihFVSEVtX8sMWHhu71fX2mvdWtDs2Ssynkj8872HeSj9ttc3D
-         5CHaYNy7wfDJNcDzQBgA4RpeRngOYcSp74hoGpajn/xTp77LL3c8unzkDMZHjyAh3SNh
-         ssxgoonHDkOSDMD6Or7P3o8XTobuZBm4hN7SQqEQiyRiZlK/GOqrMsolxQpYSnHanXkE
-         BB/7bHhLfBgmj3PQinp/6sM2fepuY5Om1AK6y2laBRXfu7/6ZYDQ5Tiqb1b74XP65Wxl
-         zQkw==
-X-Gm-Message-State: AOAM530KJx5iL9PfVDmzrSHJc281qShaEos4az/Ddl2KOlYXKZ2s5EWA
-        eCZt4ZNS+1BYOXdy/DL+VheXs7mQ81M=
-X-Google-Smtp-Source: ABdhPJzFA79YwV1GqinsiCdLvuyo87KVVX79ald5kbunDzF8QV2MobJ4xPv76Rzk9uUez/yvvBeffQ==
-X-Received: by 2002:a17:90a:6a82:: with SMTP id u2mr1385918pjj.105.1637662267485;
-        Tue, 23 Nov 2021 02:11:07 -0800 (PST)
-Received: from localhost.localdomain ([117.254.32.196])
-        by smtp.googlemail.com with ESMTPSA id y8sm12421689pfi.56.2021.11.23.02.11.04
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DZJ0pxIjHebOIgHJhAjt85uASRoyNqvHRW8sK2dJsck=;
+        b=r/4aa5cFyB4DWoBxFLboWl4Fa7cvFd9fqQUZfnyhQjy4YEpPWuUABIfWgPtRhyNVNC
+         mkToQyMfONdO7+9TN6XXfg/WANASB1AaJN5/3i2KqL+Sn/3hoRQ5xVUgyP05vWp6J5C8
+         RERliwVsUsNIKoLnUhILG67rNTXqP2CkopQJxX7YcdJDTNsKKvh7oGS9Q9yhhIRnImOZ
+         bda8njgoukcewRgWsh6Czd4TVTSMLaWiXQ3EbVncNeBnbAkygf+ZrYm4z8jGOkUmBpjQ
+         nZzhZNRf00UR70ff4D++jI2MTaP0/WB21AxyVPAtitV7ASiTn1CUdiVz7EV0O7oWVUND
+         jgtA==
+X-Gm-Message-State: AOAM53395FTtkEDBqH5xXX1QdEoK3/+mdQqD1OfBsQtW2ti/5+cbTi6X
+        WB9NaqJcnaLqqLqkx2iKXV06bwj3Gq3igA==
+X-Google-Smtp-Source: ABdhPJzqtQ0HmeHz2vTPiJcVo06FjcO174hKk/G8QqiqKsfPzWuVOiWRWIKAxLuj0ZtHtYrjs5mPGQ==
+X-Received: by 2002:adf:fed0:: with SMTP id q16mr6033330wrs.276.1637662579661;
+        Tue, 23 Nov 2021 02:16:19 -0800 (PST)
+Received: from localhost.localdomain ([2a01:e34:ed2f:f020:3c04:dd20:bbdc:7a85])
+        by smtp.gmail.com with ESMTPSA id v8sm11492662wrd.84.2021.11.23.02.16.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 02:11:07 -0800 (PST)
-From:   Ajith P V <ajithpv.linux@gmail.com>
-To:     gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
-        maco@android.com, joel@joelfernandes.org, christian@brauner.io,
-        hridya@google.com, surenb@google.com
-Cc:     linux-kernel@vger.kernel.org, Ajith P V <ajithpv.linux@gmail.com>
-Subject: [PATCH] binder: remove all warning messages
-Date:   Tue, 23 Nov 2021 15:39:34 +0530
-Message-Id: <20211123100934.13189-1-ajithpv.linux@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 23 Nov 2021 02:16:19 -0800 (PST)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     daniel.lezcano@linaro.org, rafael@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@kernel.org>
+Subject: [PATCH 1/2] powercap/drivers/dtpm: Remove unused function definition
+Date:   Tue, 23 Nov 2021 11:16:00 +0100
+Message-Id: <20211123101601.2433340-1-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove all warning messages found by checkpatch.pl script
+The dtpm.h header file is exporting a function which is not
+implemented neither needed. Remove it.
 
-Signed-off-by: Ajith P V <ajithpv.linux@gmail.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 ---
- drivers/android/binder.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ include/linux/dtpm.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-index 49fb74196d02..a58cfd39f3ea 100644
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -1933,7 +1933,7 @@ static void binder_transaction_buffer_release(struct binder_proc *proc,
- 		case BINDER_TYPE_FD: {
- 			/*
- 			 * No need to close the file here since user-space
--			 * closes it for for successfully delivered
-+			 * closes it for successfully delivered
- 			 * transactions. For transactions that weren't
- 			 * delivered, the new fd was never allocated so
- 			 * there is no need to close and the fput on the
-@@ -4424,10 +4424,12 @@ static int binder_thread_release(struct binder_proc *proc,
- 	/*
- 	 * If this thread used poll, make sure we remove the waitqueue
- 	 * from any epoll data structures holding it with POLLFREE.
--	 * waitqueue_active() is safe to use here because we're holding
--	 * the inner lock.
- 	 */
- 	if ((thread->looper & BINDER_LOOPER_STATE_POLL) &&
-+	    /*
-+	     * waitqueue_active() is safe to use here because we're holding
-+	     * the inner lock.
-+	     */
- 	    waitqueue_active(&thread->wait)) {
- 		wake_up_poll(&thread->wait, EPOLLHUP | POLLFREE);
- 	}
-@@ -4436,7 +4438,7 @@ static int binder_thread_release(struct binder_proc *proc,
+diff --git a/include/linux/dtpm.h b/include/linux/dtpm.h
+index 2890f6370eb9..d37e5d06a357 100644
+--- a/include/linux/dtpm.h
++++ b/include/linux/dtpm.h
+@@ -70,6 +70,4 @@ void dtpm_unregister(struct dtpm *dtpm);
  
- 	/*
- 	 * This is needed to avoid races between wake_up_poll() above and
--	 * and ep_remove_waitqueue() called for other reasons (eg the epoll file
-+	 * ep_remove_waitqueue() called for other reasons (eg the epoll file
- 	 * descriptor being closed); ep_remove_waitqueue() holds an RCU read
- 	 * lock, so we can be sure it's done after calling synchronize_rcu().
- 	 */
-@@ -4752,8 +4754,9 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 	unsigned int size = _IOC_SIZE(cmd);
- 	void __user *ubuf = (void __user *)arg;
+ int dtpm_register(const char *name, struct dtpm *dtpm, struct dtpm *parent);
  
--	/*pr_info("binder_ioctl: %d:%d %x %lx\n",
--			proc->pid, current->pid, cmd, arg);*/
-+	/* pr_info("binder_ioctl: %d:%d %x %lx\n",
-+	 *		proc->pid, current->pid, cmd, arg);
-+	 */
- 
- 	binder_selftest_alloc(&proc->alloc);
- 
-@@ -5982,8 +5985,8 @@ static int __init binder_init(void)
- 	if (!IS_ENABLED(CONFIG_ANDROID_BINDERFS) &&
- 	    strcmp(binder_devices_param, "") != 0) {
- 		/*
--		* Copy the module_parameter string, because we don't want to
--		* tokenize it in-place.
-+		 * Copy the module_parameter string, because we don't want to
-+		 * tokenize it in-place.
- 		 */
- 		device_names = kstrdup(binder_devices_param, GFP_KERNEL);
- 		if (!device_names) {
+-int dtpm_register_cpu(struct dtpm *parent);
+-
+ #endif
 -- 
-2.17.1
+2.25.1
 
