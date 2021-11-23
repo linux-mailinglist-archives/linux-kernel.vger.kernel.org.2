@@ -2,156 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90CCE45AD44
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:24:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA90445AD63
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:27:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240357AbhKWU1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 15:27:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbhKWU11 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 15:27:27 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9777C061746;
-        Tue, 23 Nov 2021 12:24:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-        Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=fvJ1zNviSpEWvNzghsQMTjAajeym6K/XNsF9qk9FX3s=; b=r+bJv+AybA6J9+KN5G2Fdx7c/o
-        DN5G/GVrPl+gVzXjyDe10QrKuuQwSzm0Qz5EwvWwJL4P4FtcPgGEMNbtsQVdSC+5C22Tmch5uoQvF
-        du039YaFmBsbPYqvWchB4z8Iv3X7cgLAtLFTeF6SEjoXCa6KJTjYxv6SgWZ0qdfaVM7mBmrz1nRHl
-        zdVxZqwx7mB0Pvya4l5qSitdXjBFJ66OS8Ity0BDyekAatyBSD+VOuFW5Y7c1J5CdASfBuexNIfCn
-        0eQQpA0zqmWJwKrhlaFi6Zyob+8StEXBO2LziGFXmli5LKR12rs8JhMzQvTu39uKCJdxYLP8YH5Oo
-        fcDdJVJg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mpcKS-003Qr8-DW; Tue, 23 Nov 2021 20:23:48 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     akpm@linux-foundation.org, keescook@chromium.org,
-        yzaikin@google.com, nixiaoming@huawei.com, ebiederm@xmission.com,
-        peterz@infradead.org, gregkh@linuxfoundation.org, pjt@google.com,
-        liu.hailong6@zte.com.cn, andriy.shevchenko@linux.intel.com,
-        sre@kernel.org, penguin-kernel@i-love.sakura.ne.jp,
-        pmladek@suse.com, senozhatsky@chromium.org, wangqing@vivo.com,
-        bcrl@kvack.org, viro@zeniv.linux.org.uk, jack@suse.cz,
-        amir73il@gmail.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v2 9/9] dnotify: move dnotify sysctl to dnotify.c
-Date:   Tue, 23 Nov 2021 12:23:47 -0800
-Message-Id: <20211123202347.818157-10-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211123202347.818157-1-mcgrof@kernel.org>
-References: <20211123202347.818157-1-mcgrof@kernel.org>
+        id S231185AbhKWUbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 15:31:02 -0500
+Received: from mga11.intel.com ([192.55.52.93]:60826 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229825AbhKWUbB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 15:31:01 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="232618871"
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="232618871"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 12:27:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="456816721"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 23 Nov 2021 12:27:50 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mpcOM-0002G1-0O; Tue, 23 Nov 2021 20:27:50 +0000
+Date:   Wed, 24 Nov 2021 04:27:33 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: drivers/net/usb/lan78xx.c:2963:27: sparse: sparse: incorrect type in
+ assignment (different base types)
+Message-ID: <202111240417.62gcvdWw-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaoming Ni <nixiaoming@huawei.com>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   136057256686de39cc3a07c2e39ef6bc43003ff6
+commit: d991bb1c8da842a2a0b9dc83b1005e655783f861 include/linux/compiler-gcc.h: sparse can do constant folding of __builtin_bswap*()
+date:   7 months ago
+config: i386-randconfig-s002-20211123 (https://download.01.org/0day-ci/archive/20211124/202111240417.62gcvdWw-lkp@intel.com/config.gz)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.4-dirty
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d991bb1c8da842a2a0b9dc83b1005e655783f861
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout d991bb1c8da842a2a0b9dc83b1005e655783f861
+        # save the config file to linux build tree
+        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=i386 
 
-The kernel/sysctl.c is a kitchen sink where everyone leaves
-their dirty dishes, this makes it very difficult to maintain.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-To help with this maintenance let's start by moving sysctls to
-places where they actually belong. The proc sysctl maintainers
-do not want to know what sysctl knobs you wish to add for your own
-piece of code, we just care about the core logic.
 
-So move dnotify sysctls to dnotify.c and use the new
-register_sysctl_init() to register the sysctl interface.
+sparse warnings: (new ones prefixed by >>)
+   drivers/net/usb/lan78xx.c:2963:29: sparse: sparse: cast to restricted __be16
+>> drivers/net/usb/lan78xx.c:2963:27: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __wsum [usertype] csum @@     got unsigned short [usertype] @@
+   drivers/net/usb/lan78xx.c:2963:27: sparse:     expected restricted __wsum [usertype] csum
+   drivers/net/usb/lan78xx.c:2963:27: sparse:     got unsigned short [usertype]
 
-Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
-[mcgrof: adjust the commit log to justify the move]
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+vim +2963 drivers/net/usb/lan78xx.c
+
+55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2949  
+55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2950  static void lan78xx_rx_csum_offload(struct lan78xx_net *dev,
+55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2951  				    struct sk_buff *skb,
+55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2952  				    u32 rx_cmd_a, u32 rx_cmd_b)
+55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2953  {
+9343ac87f2a4e0 Dave Stevenson            2018-06-25  2954  	/* HW Checksum offload appears to be flawed if used when not stripping
+9343ac87f2a4e0 Dave Stevenson            2018-06-25  2955  	 * VLAN headers. Drop back to S/W checksums under these conditions.
+9343ac87f2a4e0 Dave Stevenson            2018-06-25  2956  	 */
+55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2957  	if (!(dev->net->features & NETIF_F_RXCSUM) ||
+9343ac87f2a4e0 Dave Stevenson            2018-06-25  2958  	    unlikely(rx_cmd_a & RX_CMD_A_ICSM_) ||
+9343ac87f2a4e0 Dave Stevenson            2018-06-25  2959  	    ((rx_cmd_a & RX_CMD_A_FVTG_) &&
+9343ac87f2a4e0 Dave Stevenson            2018-06-25  2960  	     !(dev->net->features & NETIF_F_HW_VLAN_CTAG_RX))) {
+55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2961  		skb->ip_summed = CHECKSUM_NONE;
+55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2962  	} else {
+55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30 @2963  		skb->csum = ntohs((u16)(rx_cmd_b >> RX_CMD_B_CSUM_SHIFT_));
+55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2964  		skb->ip_summed = CHECKSUM_COMPLETE;
+55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2965  	}
+55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2966  }
+55d7de9de6c30a Woojung.Huh@microchip.com 2015-07-30  2967  
+
+:::::: The code at line 2963 was first introduced by commit
+:::::: 55d7de9de6c30adce8d675c7ce513e283829c2ff Microchip's LAN7800 family USB 2/3 to 10/100/1000 Ethernet device driver
+
+:::::: TO: Woojung.Huh@microchip.com <Woojung.Huh@microchip.com>
+:::::: CC: David S. Miller <davem@davemloft.net>
+
 ---
- fs/notify/dnotify/dnotify.c | 21 ++++++++++++++++++++-
- include/linux/dnotify.h     |  1 -
- kernel/sysctl.c             | 10 ----------
- 3 files changed, 20 insertions(+), 12 deletions(-)
-
-diff --git a/fs/notify/dnotify/dnotify.c b/fs/notify/dnotify/dnotify.c
-index e85e13c50d6d..2b04e2296fb6 100644
---- a/fs/notify/dnotify/dnotify.c
-+++ b/fs/notify/dnotify/dnotify.c
-@@ -19,7 +19,25 @@
- #include <linux/fdtable.h>
- #include <linux/fsnotify_backend.h>
- 
--int dir_notify_enable __read_mostly = 1;
-+static int dir_notify_enable __read_mostly = 1;
-+#ifdef CONFIG_SYSCTL
-+static struct ctl_table dnotify_sysctls[] = {
-+	{
-+		.procname	= "dir-notify-enable",
-+		.data		= &dir_notify_enable,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec,
-+	},
-+	{}
-+};
-+static void __init dnotify_sysctl_init(void)
-+{
-+	register_sysctl_init("fs", dnotify_sysctls);
-+}
-+#else
-+#define dnotify_sysctl_init() do { } while (0)
-+#endif
- 
- static struct kmem_cache *dnotify_struct_cache __read_mostly;
- static struct kmem_cache *dnotify_mark_cache __read_mostly;
-@@ -386,6 +404,7 @@ static int __init dnotify_init(void)
- 	dnotify_group = fsnotify_alloc_group(&dnotify_fsnotify_ops);
- 	if (IS_ERR(dnotify_group))
- 		panic("unable to allocate fsnotify group for dnotify\n");
-+	dnotify_sysctl_init();
- 	return 0;
- }
- 
-diff --git a/include/linux/dnotify.h b/include/linux/dnotify.h
-index 0aad774beaec..4f3b25d47436 100644
---- a/include/linux/dnotify.h
-+++ b/include/linux/dnotify.h
-@@ -29,7 +29,6 @@ struct dnotify_struct {
- 			    FS_CREATE | FS_DN_RENAME |\
- 			    FS_MOVED_FROM | FS_MOVED_TO)
- 
--extern int dir_notify_enable;
- extern void dnotify_flush(struct file *, fl_owner_t);
- extern int fcntl_dirnotify(int, struct file *, unsigned long);
- 
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 20326d67b814..7a90a12b9ea4 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -48,7 +48,6 @@
- #include <linux/times.h>
- #include <linux/limits.h>
- #include <linux/dcache.h>
--#include <linux/dnotify.h>
- #include <linux/syscalls.h>
- #include <linux/vmstat.h>
- #include <linux/nfs_fs.h>
-@@ -3090,15 +3089,6 @@ static struct ctl_table fs_table[] = {
- 		.proc_handler	= proc_dointvec,
- 	},
- #endif
--#ifdef CONFIG_DNOTIFY
--	{
--		.procname	= "dir-notify-enable",
--		.data		= &dir_notify_enable,
--		.maxlen		= sizeof(int),
--		.mode		= 0644,
--		.proc_handler	= proc_dointvec,
--	},
--#endif
- #ifdef CONFIG_MMU
- #ifdef CONFIG_FILE_LOCKING
- 	{
--- 
-2.33.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
