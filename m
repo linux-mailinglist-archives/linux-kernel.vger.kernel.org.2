@@ -2,146 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB22745B039
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C67645B03E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:33:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233255AbhKWXdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 18:33:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231322AbhKWXdo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 18:33:44 -0500
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 043A3C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 15:30:36 -0800 (PST)
-Received: by mail-ua1-x92c.google.com with SMTP id t13so1203448uad.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 15:30:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3uH2JEgWqlojJT+gIT9qwTADRtilTdk+WNcpN0oAZvQ=;
-        b=TbsN1JEoVY3coBHtA1QUvJt29+ocfTE4puD82o8SA8CpuYfpew5eojbhBQF0udbQos
-         Ycw5YJSOSkhuDBvAra8mhEJyNReY33YhLiETQEfGpk/VGlDX6FG9jcgI6d9uhqyMdU6j
-         eAM0mbcFOyFgBfLUOWE9V8f/vpQ2NrEU+iwSRaWzUSV9Af6jZ7393a768iA4pPyXiAFJ
-         wi9KRy9lj63AhPHgksco4Qnhm/SConqZrP55CAxZ8vyBYeB0bNaOcCjN90SgWnHzQSFX
-         FuEt2erenHe+XJOziuPoMAlmIZFNFNt8RuDpb5qYpZpTuSANmV2jDRaGEus/VY7aOLIA
-         FmhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3uH2JEgWqlojJT+gIT9qwTADRtilTdk+WNcpN0oAZvQ=;
-        b=PUF8ghQHPFfbKaRkcMSoZontnYPpZliQSFNrme40x8aGBET4w3Z6HF+Ie4LyOYHlbj
-         e8R8ueMFoaDLVTlVUmjj21w0/mJ1FwZ+vcM+z9LxvJ3Q2Qh5BJ2yI26pE5U0Y2F21rj8
-         MmvP+L53F96Ya+RdijNA2tegHGFzHWuzMkQv5zZoMwsZ7VvA4xc6A96uYosu2Gp8sv2s
-         +bH3WxHH1owjFZc214gFlfmOuk5z31zPy6WgKSEZ26POpPcu5qfk1xd2N17rHX09Xst8
-         2dyjAMIQERgpwnJ+HBkvPn3xY8QIlFh0WOhWUG5UwMnJoDYhli1UsPQ7aNj5Ymcd0KMC
-         fe2Q==
-X-Gm-Message-State: AOAM532OmdTYyxpaZeu3JmAej143cv0EIb2/jKw1n7pBPNpoe9L7J8hE
-        Shnx0zDkM4B8RwYN9nJxQuQ8ru72sg4/1MkQjLr4UQsFTO8rqVMC
-X-Google-Smtp-Source: ABdhPJz1klqwCzocaTGDtjBLzJU441KZakT44KfwMrLKAtO8PAfpBMoKjJIcO/CPGTx2WiiCI5gOBsKRA8/VomglBtQ=
-X-Received: by 2002:a9f:2431:: with SMTP id 46mr2194379uaq.114.1637710234844;
- Tue, 23 Nov 2021 15:30:34 -0800 (PST)
+        id S233860AbhKWXgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 18:36:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231322AbhKWXgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 18:36:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D28A60FE6;
+        Tue, 23 Nov 2021 23:33:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637710394;
+        bh=kG8n/02UM0CjGGDvJB4iPJ9K02MPrvmSl94Egqf9ZVw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=skemYkfAQOvf20rppso/nQxkkV8H9HKEwDnPlnSg7RXovNYceEX070AP68QuXeQXh
+         TroMsQx4Yy0W6E70/bLP+A9lTLUV6B4P0dOXaGPm4YHd6mVEG4uU224vrSVRt69cAv
+         T4LFsKq3gVS+q5y/9Dyx4Rl5Ld9UQ5OKWd3dv3ykbiRsHL0t/cxivq0y2F+Pve7j3c
+         /AHQ6h5bAKduQdEc86h0mfsWjnJ2MS5FVFeO41QelqcU5KPcju8TObPSX4b5SIxJjD
+         3CpXbRF3C4AAs+iGZW5PnfzSEtWu/lfgQgI7Tik01HbUbS+1/1ZbF9Kltnhiy59VEW
+         PR1hVF3CO9Ngg==
+Date:   Tue, 23 Nov 2021 15:33:12 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Aya Levin <ayal@mellanox.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>, drivers@pensando.io,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Michael Chan <michael.chan@broadcom.com>,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Simon Horman <simon.horman@corigine.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [PATCH net-next 5/6] devlink: Reshuffle resource registration
+ logic
+Message-ID: <20211123153312.4eecb490@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YZynSa6s8kBKtSYB@unreal>
+References: <cover.1637173517.git.leonro@nvidia.com>
+        <6176a137a4ded48501e8a06fda0e305f9cfc787c.1637173517.git.leonro@nvidia.com>
+        <20211117204956.6a36963b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YZYFvIK9mkP107tD@unreal>
+        <20211118174813.54c3731f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YZfFDSnnjOG+wSyK@unreal>
+        <20211119081017.6676843b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YZoHGKqLz6UBk2Sx@unreal>
+        <20211122182728.370889f2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YZynSa6s8kBKtSYB@unreal>
 MIME-Version: 1.0
-References: <20211121165647.26706-1-semen.protsenko@linaro.org>
- <20211121165647.26706-10-semen.protsenko@linaro.org> <20211123160623.GB2326185@roeck-us.net>
- <CAPLW+4mwhH5C6zSxWDboNucZPvt2c=F7Qaa9V_XJHbJzbFNL3w@mail.gmail.com> <c16afd75-f54c-6c2b-7f61-1f1c7a4b3c46@roeck-us.net>
-In-Reply-To: <c16afd75-f54c-6c2b-7f61-1f1c7a4b3c46@roeck-us.net>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Wed, 24 Nov 2021 01:30:23 +0200
-Message-ID: <CAPLW+4kmUqg=2vYOiWfMhQFqFw1sh0Eo6Yqv8nPEbV_0MObn5A@mail.gmail.com>
-Subject: Re: [PATCH v4 09/12] watchdog: s3c2410: Cleanup PMU related code
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 at 00:33, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 11/23/21 8:17 AM, Sam Protsenko wrote:
-> > On Tue, 23 Nov 2021 at 18:06, Guenter Roeck <linux@roeck-us.net> wrote:
-> >>
-> >> On Sun, Nov 21, 2021 at 06:56:44PM +0200, Sam Protsenko wrote:
-> >>> Now that PMU enablement code was extended for new Exynos SoCs, it
-> >>> doesn't look very cohesive and consistent anymore. Do a bit of renaming,
-> >>> grouping and style changes, to make it look good again. While at it, add
-> >>> quirks documentation as well.
-> >>>
-> >>> No functional change, just a refactoring commit.
-> >>>
-> >>> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> >>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> >>> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-> >>> ---
-> >>> Changes in v4:
-> >>>    - Added R-b tag by Guenter Roeck
-> >>>
-> >>> Changes in v3:
-> >>>    - Added quirks documentation
-> >>>    - Added R-b tag by Krzysztof Kozlowski
-> >>>
-> >>> Changes in v2:
-> >>>    - (none): it's a new patch
-> >>>
-> >>>   drivers/watchdog/s3c2410_wdt.c | 83 ++++++++++++++++++++++++----------
-> >>>   1 file changed, 58 insertions(+), 25 deletions(-)
-> >>>
-> >>> diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
-> >>> index ec341c876225..f211be8bf976 100644
-> >>> --- a/drivers/watchdog/s3c2410_wdt.c
-> >>> +++ b/drivers/watchdog/s3c2410_wdt.c
-> >>> @@ -56,17 +56,51 @@
-> >>>   #define EXYNOS5_RST_STAT_REG_OFFSET          0x0404
-> >>>   #define EXYNOS5_WDT_DISABLE_REG_OFFSET               0x0408
-> >>>   #define EXYNOS5_WDT_MASK_RESET_REG_OFFSET    0x040c
-> >>> -#define QUIRK_HAS_PMU_CONFIG                 (1 << 0)
-> >>> -#define QUIRK_HAS_RST_STAT                   (1 << 1)
-> >>> -#define QUIRK_HAS_WTCLRINT_REG                       (1 << 2)
-> >>> +
-> >>> +/**
-> >>
-> >> 0-day complains:
-> >>
-> >> drivers/watchdog/s3c2410_wdt.c:94: warning: expecting prototype for Quirk flags for different Samsung watchdog IP(). Prototype was for QUIRK_HAS_WTCLRINT_REG() instead
-> >>
-> >> It doesn't seem to like the idea of documented bit masks. Not really sure
-> >> what to do here. I am inclined to ignore it, but I don't want to get flooded
-> >> by 0-day complaints until I retire either. Any idea ?
-> >>
-> >
-> > Seems like 0-day thinks this kernel-doc comment is for the first
-> > define only, and thus the comment has wrong format, or something like
-> > that. I tried to follow the same style as GFP_KERNEL and others are
-> > documented.
-> >
-> > Anyway, if you don't like 0-day complaints, can you please just
-> > replace kernel-doc comment (/**) with regular comment (/*), by
-> > removing one asterisk in the patch? Or I can re-send the patch
-> > correspondingly -- then just let me know.
-> >
->
-> Oh, never mind. Let's just hope that 0-day stops complaining at some point.
->
+On Tue, 23 Nov 2021 10:33:13 +0200 Leon Romanovsky wrote:
+> > > You can do it with my approach too. We incremented reference counter
+> > > of devlink instance when devlink_nl_cmd_port_split_doit() was called,
+> > > and we can safely take devlink->port_list_lock lock before returning
+> > > from pre_doit.  
+> > 
+> > Wait, I thought you'd hold devlink->lock around split/unsplit.  
+> 
+> I'm holding.
+> 
+>     519 static int devlink_nl_pre_doit(const struct genl_ops *ops,
+>     520                                struct sk_buff *skb, struct genl_info *info)
+>     521 {
+>     ...
+>     529
+>     530         mutex_lock(&devlink->lock);
 
-Just sent v5 for this patch, fixing that 0-day warning properly. Found
-info about it here: [1]. So to check that warning, apparently it's
-enough to run "make W=n" build, or dry-run for kernel-doc script like
-this:
+Then I'm confused why you said you need to hold a ref count on devlink.
+Is it devlink_unregister() that's not taking devlink->lock?
 
-    $ scripts/kernel-doc -v -none drivers/watchdog/s3c2410_wdt.c
+> > Please look at the port splitting case, mlx5 doesn't implement it
+> > but it's an important feature.  
+> 
+> I'll, but please don't forget that it was RFC, just to present that
+> devlink can be changed internally without exposing internals.
+> 
+> > Either way, IDK how ref count on devlink helps with lifetime of a
+> > subobject. You must assume the sub-objects can only be created outside
+> > of the time devlink instance is visible or under devlink->lock?  
+> 
+> The devlink lifetime is:
+> stages:        I                   II                   III   
+>  devlink_alloc -> devlink_register -> devlink_unregister -> devlink_free.
+> 
+> All sub-objects should be created between devlink_alloc and devlink_free.
+> It will ensure that ->devlink pointer is always valid.
+> 
+> Stage I:
+>  * There is no need to hold any devlink locks or increase reference counter.
+>    If driver doesn't do anything crazy during its init, nothing in devlink
+>    land will run in parallel. 
+> Stage II:
+>  * There is a need to hold devlink->lock and/or play with reference counter
+>    and/or use fine-grained locks. Users can issue "devlink ..." commands.
 
-Anyway, please take v4 series + v5 for this patch. Hope that'll be all
-for 0-day swearing :)
-
-[1] https://github.com/torvalds/linux/blob/master/Documentation/doc-guide/kernel-doc.rst
-
-> Guenter
+So sub-objects can (dis)appear only in I/III or under devlink->lock.
+Why did you add the per-sub object list locks, then?
