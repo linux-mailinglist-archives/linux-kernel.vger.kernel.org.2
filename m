@@ -2,99 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43840459C31
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 07:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE60459C34
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 07:16:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233528AbhKWGPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 01:15:31 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:31897 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233414AbhKWGP0 (ORCPT
+        id S233600AbhKWGTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 01:19:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40192 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233564AbhKWGTH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 01:15:26 -0500
-Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hytvn5vKyzcbWn;
-        Tue, 23 Nov 2021 14:07:17 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 23 Nov 2021 14:12:17 +0800
-Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 23 Nov 2021 14:12:17 +0800
-Received: from dggpeml100016.china.huawei.com ([7.185.36.216]) by
- dggpeml100016.china.huawei.com ([7.185.36.216]) with mapi id 15.01.2308.020;
- Tue, 23 Nov 2021 14:12:17 +0800
-From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>
-To:     Jason Wang <jasowang@redhat.com>, Parav Pandit <parav@nvidia.com>
-CC:     "mst@redhat.com" <mst@redhat.com>,
-        "sgarzare@redhat.com" <sgarzare@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>
-Subject: RE: [PATCH] vdpa_sim: avoid putting an uninitialized iova_domain
-Thread-Topic: [PATCH] vdpa_sim: avoid putting an uninitialized iova_domain
-Thread-Index: AQHX35uc/oNnB2exRE+LoZU0FVNECKwP6pSAgAAQ2YCAAKUEoA==
-Date:   Tue, 23 Nov 2021 06:12:17 +0000
-Message-ID: <690da6f45a364dbbaea38d393762c6fc@huawei.com>
-References: <20211122122221.56-1-longpeng2@huawei.com>
- <PH0PR12MB54811F4CC671312DFB2FACCDDC609@PH0PR12MB5481.namprd12.prod.outlook.com>
- <CACGkMEsDmqwWdw51NKftjhcGr6z9ynP8dcqDiaQY=soTXTSBDg@mail.gmail.com>
-In-Reply-To: <CACGkMEsDmqwWdw51NKftjhcGr6z9ynP8dcqDiaQY=soTXTSBDg@mail.gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.148.223]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 23 Nov 2021 01:19:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637648159;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4zwLXwj6k9S2mIEl8JoRh6JXMNKqR5tGWTY9Pd3RcY4=;
+        b=ErEx38P69NJZcrFE5I7LwTBtdzTSnJzdHj2sXvGFXLGVqkG5vdL7NvslugWgfGAqEbZ9dH
+        6eFclFeUjKBQEvjqiaQJLRsdESAQY15zYiX+wFdZN/yoa7akve9Rse76Ef72vw3Znwk9xJ
+        sBCZforC23H3b+LC3C0aETqtQXaUfj4=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-390--8VdEw87Nmqoy7eGvq-jHw-1; Tue, 23 Nov 2021 01:15:57 -0500
+X-MC-Unique: -8VdEw87Nmqoy7eGvq-jHw-1
+Received: by mail-wm1-f70.google.com with SMTP id 205-20020a1c00d6000000b003335d1384f1so689794wma.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 22:15:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4zwLXwj6k9S2mIEl8JoRh6JXMNKqR5tGWTY9Pd3RcY4=;
+        b=sz3UwzUF8nsJPplMCxe/Ymw7aqIuPr3fxfMhBiqod/f92Tx15p+CmEheTrfQvbUixI
+         1ZeFl+fwRFQOb9k2Zt0GocWaVE0bNXjazv2XpbUmHwbqDMGlm1Gp0ysELwFg2uAT1JNB
+         JCSsdN2SzYBUVfOjY4UYBQnYo3tzJiEymlbfRcWZVWBAsIhg6bx6R033h+ek+iT3nLdL
+         Uh5JrFPD0NKbJYrBYodRhQAxVsPLmZQ9/NLb+f+s+mVBrGCvlDWLLElNbb5BPCdLIKhk
+         qHvcXrok4xkT3Wlllj+oOgxCnP9SVMwKwsZS693wXEWDCbu+cAHzKHNqlamP2Xibm1YI
+         pilA==
+X-Gm-Message-State: AOAM531RvdUmM7kxknFdno5n5rqsWMUeX/oBKAuSn6fMTw6B8ISc+hRH
+        ODr1jCUDIsy+FkkruKHnVd9kfbcMr4i1AGKj98euPpRUXV47dBbnH2T7VcTGpn6+5LzqzBUzpUb
+        lGakbF9TKNfnBeEp0wAHPvvRZ
+X-Received: by 2002:adf:ef4f:: with SMTP id c15mr4390039wrp.226.1637648156131;
+        Mon, 22 Nov 2021 22:15:56 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwCd6t13EbSY0ZWFB7yE27RLkDqYVVYmKx7kd9hky7A7ody0jIp7kwGr4IDGX9vk1Uty1OSnQ==
+X-Received: by 2002:adf:ef4f:: with SMTP id c15mr4390015wrp.226.1637648155984;
+        Mon, 22 Nov 2021 22:15:55 -0800 (PST)
+Received: from redhat.com ([45.15.19.36])
+        by smtp.gmail.com with ESMTPSA id a10sm24151127wmq.27.2021.11.22.22.15.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Nov 2021 22:15:55 -0800 (PST)
+Date:   Tue, 23 Nov 2021 01:15:51 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Jason Wang <jasowang@redhat.com>
+Subject: Re: [PATCH] rpmsg: virtio: don't let virtio core to validate used
+ length
+Message-ID: <20211123011340-mutt-send-email-mst@kernel.org>
+References: <20211122160812.25125-1-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211122160812.25125-1-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSmFzb24gV2FuZyBbbWFp
-bHRvOmphc293YW5nQHJlZGhhdC5jb21dDQo+IFNlbnQ6IFR1ZXNkYXksIE5vdmVtYmVyIDIzLCAy
-MDIxIDEyOjEzIFBNDQo+IFRvOiBQYXJhdiBQYW5kaXQgPHBhcmF2QG52aWRpYS5jb20+DQo+IENj
-OiBMb25ncGVuZyAoTWlrZSwgQ2xvdWQgSW5mcmFzdHJ1Y3R1cmUgU2VydmljZSBQcm9kdWN0IERl
-cHQuKQ0KPiA8bG9uZ3BlbmcyQGh1YXdlaS5jb20+OyBtc3RAcmVkaGF0LmNvbTsgc2dhcnphcmVA
-cmVkaGF0LmNvbTsgTWF4IEd1cnRvdm95DQo+IDxtZ3VydG92b3lAbnZpZGlhLmNvbT47IHZpcnR1
-YWxpemF0aW9uQGxpc3RzLmxpbnV4LWZvdW5kYXRpb24ub3JnOw0KPiBsaW51eC1rZXJuZWxAdmdl
-ci5rZXJuZWwub3JnOyBHb25nbGVpIChBcmVpKSA8YXJlaS5nb25nbGVpQGh1YXdlaS5jb20+DQo+
-IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIHZkcGFfc2ltOiBhdm9pZCBwdXR0aW5nIGFuIHVuaW5pdGlh
-bGl6ZWQgaW92YV9kb21haW4NCj4gDQo+IE9uIFR1ZSwgTm92IDIzLCAyMDIxIGF0IDExOjEyIEFN
-IFBhcmF2IFBhbmRpdCA8cGFyYXZAbnZpZGlhLmNvbT4gd3JvdGU6DQo+ID4NCj4gPg0KPiA+DQo+
-ID4gPiBGcm9tOiBMb25ncGVuZyhNaWtlKSA8bG9uZ3BlbmcyQGh1YXdlaS5jb20+DQo+ID4gPiBT
-ZW50OiBNb25kYXksIE5vdmVtYmVyIDIyLCAyMDIxIDU6NTIgUE0NCj4gPiA+DQo+ID4gPiBGcm9t
-OiBMb25ncGVuZyA8bG9uZ3BlbmcyQGh1YXdlaS5jb20+DQo+ID4gPg0KPiA+ID4gVGhlIHN5c3Rl
-bSB3aWxsIGNyYXNoIGlmIHdlIHB1dCBhbiB1bmluaXRpYWxpemVkIGlvdmFfZG9tYWluLCB0aGlz
-IGNvdWxkDQo+ID4gPiBoYXBwZW4gd2hlbiBhbiBlcnJvciBvY2N1cnMgYmVmb3JlIGluaXRpYWxp
-emluZyB0aGUgaW92YV9kb21haW4gaW4NCj4gPiA+IHZkcGFzaW1fY3JlYXRlKCkuDQo+ID4gPg0K
-PiA+ID4gQlVHOiBrZXJuZWwgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlLCBhZGRyZXNzOiAwMDAw
-MDAwMDAwMDAwMDAwIC4uLg0KPiA+ID4gUklQOiAwMDEwOl9fY3B1aHBfc3RhdGVfcmVtb3ZlX2lu
-c3RhbmNlKzB4OTYvMHgxYzANCj4gPiA+IC4uLg0KPiA+ID4gQ2FsbCBUcmFjZToNCj4gPiA+ICA8
-VEFTSz4NCj4gPiA+ICBwdXRfaW92YV9kb21haW4rMHgyOS8weDIyMA0KPiA+ID4gIHZkcGFzaW1f
-ZnJlZSsweGQxLzB4MTIwIFt2ZHBhX3NpbV0NCj4gPiA+ICB2ZHBhX3JlbGVhc2VfZGV2KzB4MjEv
-MHg0MCBbdmRwYV0NCj4gPiA+ICBkZXZpY2VfcmVsZWFzZSsweDMzLzB4OTANCj4gPiA+ICBrb2Jq
-ZWN0X3JlbGVhc2UrMHg2My8weDE2MA0KPiA+ID4gIHZkcGFzaW1fY3JlYXRlKzB4MTI3LzB4MmEw
-IFt2ZHBhX3NpbV0NCj4gPiA+ICB2ZHBhc2ltX25ldF9kZXZfYWRkKzB4N2QvMHhmZSBbdmRwYV9z
-aW1fbmV0XQ0KPiA+ID4gIHZkcGFfbmxfY21kX2Rldl9hZGRfc2V0X2RvaXQrMHhlMS8weDFhMCBb
-dmRwYV0NCj4gPiA+ICBnZW5sX2ZhbWlseV9yY3ZfbXNnX2RvaXQrMHgxMTIvMHgxNDANCj4gPiA+
-ICBnZW5sX3Jjdl9tc2crMHhkZi8weDFkMA0KPiA+ID4gIC4uLg0KPiA+ID4NCj4gPiA+IFNvIHdl
-IG11c3QgbWFrZSBzdXJlIHRoZSBpb3ZhX2RvbWFpbiBpcyBhbHJlYWR5IGluaXRpYWxpemVkIGJl
-Zm9yZSBwdXQgaXQuDQo+ID4gPg0KPiA+ID4gSW4gYWRkaXRpb24sIHdlIG1heSBnZXQgdGhlIGZv
-bGxvd2luZyB3YXJuaW5nIGluIHRoaXMgY2FzZToNCj4gPiA+IFdBUk5JTkc6IC4uLiBkcml2ZXJz
-L2lvbW11L2lvdmEuYzozNDQgaW92YV9jYWNoZV9wdXQrMHg1OC8weDcwDQo+ID4gPg0KPiA+ID4g
-U28gd2UgbXVzdCBtYWtlIHN1cmUgdGhlIGlvdmFfY2FjaGVfcHV0KCkgaXMgaW52b2tlZCBvbmx5
-IGlmIHRoZQ0KPiA+ID4gaW92YV9jYWNoZV9nZXQoKSBpcyBhbHJlYWR5IGludm9rZWQuIExldCdz
-IGZpeCBpdCB0b2dldGhlci4NCj4gPiA+DQo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBMb25ncGVuZyA8
-bG9uZ3BlbmcyQGh1YXdlaS5jb20+DQo+ID4NCj4gPiBDYW4geW91IHBsZWFzZSBhZGQgdGhlIGZp
-eGVzIHRhZyBoZXJlIHNvIHRoYXQgb2xkZXIga2VybmVscyBjYW4gdGFrZSB0aGlzIGZpeD8NCj4g
-Pg0KPiANCj4gSSBndWVzcyBpdCdzIDQwODBmYzEwNjc1MCAoInZkcGFfc2ltOiB1c2UgaW92YSBt
-b2R1bGUgdG8gYWxsb2NhdGUgSU9WQQ0KPiBhZGRyZXNzZXMiKQ0KPiANCg0KSSB0aGluayBzby4g
-SSdsbCBhZGQgdGhlIGZpeGVzIHRhZyBpbiBWMiwgdGhhbmtzLg0KDQo+IFRoYW5rcw0KDQo=
+On Mon, Nov 22, 2021 at 05:08:12PM +0100, Arnaud Pouliquen wrote:
+> For RX virtqueue, the used length is validated in all the three paths
+> (big, small and mergeable). For control vq, we never tries to use used
+> length. So this patch forbids the core to validate the used length.
+
+Jason commented on this. This is copy paste from virtio net
+where the change was merely an optimization.
+
+> Without patch the rpmsg client sample does not work.
+
+Hmm that's not enough of a description. Could you please
+provide more detail? Does rpmsg device set used length to a
+value > dma read buffer size? what kind of error message
+do you get? what are the plans to fix the device?
+
+> Fixes: 939779f5152d ("virtio_ring: validate used buffer length")
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: Michael S. Tsirkin <mst@redhat.com>
+> ---
+> base-commit: fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf
+> ---
+>  drivers/rpmsg/virtio_rpmsg_bus.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+> index 9c112aa65040..5f73f19c2c38 100644
+> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
+> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+> @@ -1054,6 +1054,7 @@ static struct virtio_driver virtio_ipc_driver = {
+>  	.feature_table_size = ARRAY_SIZE(features),
+>  	.driver.name	= KBUILD_MODNAME,
+>  	.driver.owner	= THIS_MODULE,
+> +	.suppress_used_validation = true,
+>  	.id_table	= id_table,
+>  	.probe		= rpmsg_probe,
+>  	.remove		= rpmsg_remove,
+> -- 
+> 2.17.1
+
