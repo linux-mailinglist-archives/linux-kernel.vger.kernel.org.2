@@ -2,131 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E7145A16F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:25:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F1B45A160
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:24:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236142AbhKWL2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 06:28:53 -0500
-Received: from mga01.intel.com ([192.55.52.88]:56519 "EHLO mga01.intel.com"
+        id S236095AbhKWL1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 06:27:31 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:52222 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236111AbhKWL2t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 06:28:49 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="258870769"
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="258870769"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 03:23:28 -0800
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="571038146"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 03:23:26 -0800
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 04EF0201E1;
-        Tue, 23 Nov 2021 13:23:24 +0200 (EET)
-Date:   Tue, 23 Nov 2021 13:23:24 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Eugen Hristev <eugen.hristev@microchip.com>
-Cc:     leonl@leopardimaging.com, linux-media@vger.kernel.org,
-        skomatineni@nvidia.com, luca@lucaceresoli.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] media: i2c: imx274: implement fwnode parsing
-Message-ID: <YZzPLOv2RBuj+zoS@paasikivi.fi.intel.com>
-References: <20211123111521.593863-1-eugen.hristev@microchip.com>
- <20211123111521.593863-2-eugen.hristev@microchip.com>
+        id S234496AbhKWL1a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 06:27:30 -0500
+Received: from ip5f5b2004.dynamic.kabel-deutschland.de ([95.91.32.4] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mpTuB-0008Cw-Pk; Tue, 23 Nov 2021 12:24:07 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Conor Dooley <Conor.Dooley@microchip.com>,
+        linux-riscv@lists.infradead.org
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Lewis Hanly <Lewis.Hanly@microchip.com>,
+        Daire.McNamara@microchip.com, Atish Patra <atish.patra@wdc.com>,
+        Ivan.Griffin@microchip.com,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-rtc@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bin Meng <bin.meng@windriver.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 04/13] dt-bindings: riscv: update microchip polarfire binds
+Date:   Tue, 23 Nov 2021 12:24:06 +0100
+Message-ID: <2736394.7QafvNDC63@diego>
+In-Reply-To: <CAMuHMdUs7UnADr2SfHBD4sGs3_giR0cmXnz=6qa4iAP1reDtgA@mail.gmail.com>
+References: <20211108150554.4457-1-conor.dooley@microchip.com> <198eaf69-8f85-50a7-192e-5900776d044b@microchip.com> <CAMuHMdUs7UnADr2SfHBD4sGs3_giR0cmXnz=6qa4iAP1reDtgA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211123111521.593863-2-eugen.hristev@microchip.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eugen,
-
-On Tue, Nov 23, 2021 at 01:15:21PM +0200, Eugen Hristev wrote:
-> Implement fwnode parsing at probe time.
-> Check if the bus and number of lanes are supported.
+Am Dienstag, 9. November 2021, 14:04:45 CET schrieb Geert Uytterhoeven:
+> Hi Conor,
 > 
-> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-> ---
->  drivers/media/i2c/imx274.c | 40 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 40 insertions(+)
+> On Tue, Nov 9, 2021 at 1:08 PM <Conor.Dooley@microchip.com> wrote:
+> > On 09/11/2021 08:34, Geert Uytterhoeven wrote:
+> > > On Mon, Nov 8, 2021 at 4:06 PM <conor.dooley@microchip.com> wrote:
+> > >> From: Conor Dooley <conor.dooley@microchip.com>
+> > >>
+> > >> Add mpfs-soc to clear undocumented binding warning
+> > >>
+> > >> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 > 
-> diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
-> index e31f006b10d9..774912f44efe 100644
-> --- a/drivers/media/i2c/imx274.c
-> +++ b/drivers/media/i2c/imx274.c
-> @@ -27,6 +27,7 @@
->  
->  #include <media/v4l2-ctrls.h>
->  #include <media/v4l2-device.h>
-> +#include <media/v4l2-fwnode.h>
->  #include <media/v4l2-subdev.h>
->  
->  /*
-> @@ -1957,6 +1958,41 @@ static const struct i2c_device_id imx274_id[] = {
->  };
->  MODULE_DEVICE_TABLE(i2c, imx274_id);
->  
-> +static int imx274_fwnode_parse(struct device *dev)
-> +{
-> +	struct fwnode_handle *endpoint;
-> +	/* Only CSI2 is supported */
-> +	struct v4l2_fwnode_endpoint ep = {
-> +		.bus_type = V4L2_MBUS_CSI2_DPHY
-> +	};
-> +	int ret;
-> +
-> +	endpoint = fwnode_graph_get_next_endpoint(dev_fwnode(dev), NULL);
-> +	if (!endpoint) {
-> +		dev_err(dev, "Endpoint node not found\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = v4l2_fwnode_endpoint_alloc_parse(endpoint, &ep);
+> > >> --- a/Documentation/devicetree/bindings/riscv/microchip.yaml
+> > >> +++ b/Documentation/devicetree/bindings/riscv/microchip.yaml
+> > >> @@ -21,6 +21,7 @@ properties:
+> > >>         - enum:
+> > >>             - microchip,mpfs-icicle-kit
+> > >>         - const: microchip,mpfs
+> > >> +      - const: microchip,mpfs-soc
+> > >
+> > > Doesn't the "s" in "mpfs" already stand for "soc"?
+> > not wrong, but using mpf-soc would be confusing since "mpf" is the part
+> > name for the non soc fpga. is it fine to just reuse "mpfs" for the dtsi
+> > overall compatible and for the soc subsection?
+> 
+> I really meant: what is the difference between "microchip,mpfs" and
+> "microchip,mpfs-soc"? Can't you just use the former?
 
-This allocates memory for the link frequencies. It needs to be released at
-some point.
+definitly agreed :-)
 
-You could also use v4l1_fwnode_endpoint_parse() as the driver doesn't seem
-to use link frequencies (albeit it probably should, but that's another
-discussion).
+Having the board named as
+	compatible = "microchip,mpfs-icicle-kit", "microchip,mpfs"
+sounds the most sensible.
 
-> +	fwnode_handle_put(endpoint);
-> +	if (ret == -ENXIO) {
-> +		dev_err(dev, "Unsupported bus type, should be CSI2\n");
-> +		return ret;
-> +	} else if (ret) {
-> +		dev_err(dev, "Parsing endpoint node failed %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	/* Check number of data lanes, only 4 lanes supported */
-> +	if (ep.bus.mipi_csi2.num_data_lanes != 4) {
-> +		dev_err(dev, "Invalid data lanes: %d\n",
-> +			ep.bus.mipi_csi2.num_data_lanes);
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int imx274_probe(struct i2c_client *client)
->  {
->  	struct v4l2_subdev *sd;
-> @@ -1971,6 +2007,10 @@ static int imx274_probe(struct i2c_client *client)
->  
->  	mutex_init(&imx274->lock);
->  
-> +	ret = imx274_fwnode_parse(dev);
-> +	if (ret)
-> +		return ret;
-> +
->  	imx274->inck = devm_clk_get_optional(dev, "inck");
->  	if (IS_ERR(imx274->inck))
->  		return PTR_ERR(imx274->inck);
+As Conor wrote, "mpfs" is the name of the soc itself - with mpf being
+the fpga part, so that would follow what boards in other parts of the
+kernel do.
 
--- 
-Kind regards,
+Heiko
 
-Sakari Ailus
+
