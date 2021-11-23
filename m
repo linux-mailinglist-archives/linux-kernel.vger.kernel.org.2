@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD5A645A4A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:10:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8FEF45A4A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:10:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237523AbhKWONE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 09:13:04 -0500
-Received: from mga17.intel.com ([192.55.52.151]:23872 "EHLO mga17.intel.com"
+        id S234586AbhKWONK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 09:13:10 -0500
+Received: from mga04.intel.com ([192.55.52.120]:34895 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237778AbhKWOMy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 09:12:54 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="215736345"
+        id S235246AbhKWOM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 09:12:58 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="233748051"
 X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="215736345"
+   d="scan'208";a="233748051"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 06:09:38 -0800
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 06:09:49 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="509422684"
+   d="scan'208";a="509422720"
 Received: from nntpat99-84.inn.intel.com ([10.125.99.84])
-  by orsmga008.jf.intel.com with ESMTP; 23 Nov 2021 06:09:26 -0800
+  by orsmga008.jf.intel.com with ESMTP; 23 Nov 2021 06:09:35 -0800
 From:   Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
@@ -33,9 +33,9 @@ Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
         Alexander Antonov <alexander.antonov@linux.intel.com>,
         Alexei Budankov <abudankov@huawei.com>,
         Riccardo Mancini <rickyman7@gmail.com>
-Subject: [PATCH v12 14/16] perf record: Implement compatibility checks
-Date:   Tue, 23 Nov 2021 17:08:10 +0300
-Message-Id: <616a1ead48dcc44f71711511fbb1e375b29f4c2f.1637675515.git.alexey.v.bayduraev@linux.intel.com>
+Subject: [PATCH v12 15/16] perf session: Load data directory files for analysis
+Date:   Tue, 23 Nov 2021 17:08:11 +0300
+Message-Id: <1b1f393888121ce10f064f06c662b92c99d5d1f0.1637675515.git.alexey.v.bayduraev@linux.intel.com>
 X-Mailer: git-send-email 2.19.0
 In-Reply-To: <cover.1637675515.git.alexey.v.bayduraev@linux.intel.com>
 References: <cover.1637675515.git.alexey.v.bayduraev@linux.intel.com>
@@ -45,123 +45,191 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement compatibility checks for other modes and related command line
-options: asynchronous (--aio) trace streaming and affinity (--affinity)
-modes, pipe mode, AUX area tracing --snapshot and --aux-sample options,
---switch-output, --switch-output-event, --switch-max-files and
---timestamp-filename options. Parallel data streaming is compatible with
-Zstd compression (--compression-level) and external control commands
-(--control).  Cpu mask provided via -C option filters --threads
-specification masks.
+Load data directory files and provide basic raw dump and aggregated
+analysis support of data directories in report mode, still with no
+memory consumption optimizations.
 
+READER_MAX_SIZE is chosen based on the results of measurements on
+different machines on perf.data directory sizes >1GB. On machines
+with big core count (192 cores) the difference between 1MB and 2MB
+is about 4%. Other sizes (>2MB) are quite equal to 2MB.
+On machines with small core count (4-24) there is no differences
+between 1-16 MB sizes. So this constant is 2MB.
+
+Suggested-by: Jiri Olsa <jolsa@kernel.org>
 Acked-by: Namhyung Kim <namhyung@gmail.com>
 Reviewed-by: Riccardo Mancini <rickyman7@gmail.com>
 Tested-by: Riccardo Mancini <rickyman7@gmail.com>
 Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 ---
- tools/perf/builtin-record.c | 49 ++++++++++++++++++++++++++++++++++---
- 1 file changed, 46 insertions(+), 3 deletions(-)
+ tools/perf/util/session.c | 133 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 133 insertions(+)
 
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 9299502823f6..c0650c092d2e 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -802,6 +802,12 @@ static int record__auxtrace_init(struct record *rec)
+diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+index d8857d1b6d7c..1a8e3f106e95 100644
+--- a/tools/perf/util/session.c
++++ b/tools/perf/util/session.c
+@@ -2184,6 +2184,8 @@ struct reader {
+ 	u64		 file_pos;
+ 	u64		 file_offset;
+ 	u64		 head;
++	u64		 size;
++	bool		 done;
+ 	struct zstd_data   zstd_data;
+ 	struct decomp_data decomp_data;
+ };
+@@ -2301,6 +2303,7 @@ reader__read_event(struct reader *rd, struct perf_session *session,
+ 	if (skip)
+ 		size += skip;
+ 
++	rd->size += size;
+ 	rd->head += size;
+ 	rd->file_pos += size;
+ 
+@@ -2409,6 +2412,133 @@ static int __perf_session__process_events(struct perf_session *session)
+ 	return err;
+ }
+ 
++/*
++ * Processing 2 MB of data from each reader in sequence,
++ * because that's the way the ordered events sorting works
++ * most efficiently.
++ */
++#define READER_MAX_SIZE (2 * 1024 * 1024)
++
++/*
++ * This function reads, merge and process directory data.
++ * It assumens the version 1 of directory data, where each
++ * data file holds per-cpu data, already sorted by kernel.
++ */
++static int __perf_session__process_dir_events(struct perf_session *session)
++{
++	struct perf_data *data = session->data;
++	struct perf_tool *tool = session->tool;
++	int i, ret, readers, nr_readers;
++	struct ui_progress prog;
++	u64 total_size = perf_data__size(session->data);
++	struct reader *rd;
++
++	perf_tool__fill_defaults(tool);
++
++	ui_progress__init_size(&prog, total_size, "Sorting events...");
++
++	nr_readers = 1;
++	for (i = 0; i < data->dir.nr; i++) {
++		if (data->dir.files[i].size)
++			nr_readers++;
++	}
++
++	rd = zalloc(nr_readers * sizeof(struct reader));
++	if (!rd)
++		return -ENOMEM;
++
++	rd[0] = (struct reader) {
++		.fd		 = perf_data__fd(session->data),
++		.data_size	 = session->header.data_size,
++		.data_offset	 = session->header.data_offset,
++		.process	 = process_simple,
++		.in_place_update = session->data->in_place_update,
++	};
++	ret = reader__init(&rd[0], NULL);
++	if (ret)
++		goto out_err;
++	ret = reader__mmap(&rd[0], session);
++	if (ret)
++		goto out_err;
++	readers = 1;
++
++	for (i = 0; i < data->dir.nr; i++) {
++		if (!data->dir.files[i].size)
++			continue;
++		rd[readers] = (struct reader) {
++			.fd		 = data->dir.files[i].fd,
++			.data_size	 = data->dir.files[i].size,
++			.data_offset	 = 0,
++			.process	 = process_simple,
++			.in_place_update = session->data->in_place_update,
++		};
++		ret = reader__init(&rd[readers], NULL);
++		if (ret)
++			goto out_err;
++		ret = reader__mmap(&rd[readers], session);
++		if (ret)
++			goto out_err;
++		readers++;
++	}
++
++	i = 0;
++	while (readers) {
++		if (session_done())
++			break;
++
++		if (rd[i].done) {
++			i = (i + 1) % nr_readers;
++			continue;
++		}
++		if (reader__eof(&rd[i])) {
++			rd[i].done = true;
++			readers--;
++			continue;
++		}
++
++		session->active_decomp = &rd[i].decomp_data;
++		ret = reader__read_event(&rd[i], session, &prog);
++		if (ret < 0) {
++			goto out_err;
++		} else if (ret == READER_NODATA) {
++			ret = reader__mmap(&rd[i], session);
++			if (ret)
++				goto out_err;
++		}
++
++		if (rd[i].size >= READER_MAX_SIZE) {
++			rd[i].size = 0;
++			i = (i + 1) % nr_readers;
++		}
++	}
++
++	ret = ordered_events__flush(&session->ordered_events, OE_FLUSH__FINAL);
++	if (ret)
++		goto out_err;
++
++	ret = perf_session__flush_thread_stacks(session);
++out_err:
++	ui_progress__finish();
++
++	if (!tool->no_warn)
++		perf_session__warn_about_errors(session);
++
++	/*
++	 * We may switching perf.data output, make ordered_events
++	 * reusable.
++	 */
++	ordered_events__reinit(&session->ordered_events);
++
++	session->one_mmap = false;
++
++	session->active_decomp = &session->decomp_data;
++	for (i = 0; i < nr_readers; i++)
++		reader__release_decomp(&rd[i]);
++	zfree(&rd);
++
++	return ret;
++}
++
+ int perf_session__process_events(struct perf_session *session)
  {
- 	int err;
+ 	if (perf_session__register_idle_thread(session) < 0)
+@@ -2417,6 +2547,9 @@ int perf_session__process_events(struct perf_session *session)
+ 	if (perf_data__is_pipe(session->data))
+ 		return __perf_session__process_pipe_events(session);
  
-+	if ((rec->opts.auxtrace_snapshot_opts || rec->opts.auxtrace_sample_opts)
-+	    && record__threads_enabled(rec)) {
-+		pr_err("AUX area tracing options are not available in parallel streaming mode.\n");
-+		return -EINVAL;
-+	}
++	if (perf_data__is_dir(session->data))
++		return __perf_session__process_dir_events(session);
 +
- 	if (!rec->itr) {
- 		rec->itr = auxtrace_record__init(rec->evlist, &err);
- 		if (err)
-@@ -2197,6 +2203,17 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 		return PTR_ERR(session);
- 	}
+ 	return __perf_session__process_events(session);
+ }
  
-+	if (record__threads_enabled(rec)) {
-+		if (perf_data__is_pipe(&rec->data)) {
-+			pr_err("Parallel trace streaming is not available in pipe mode.\n");
-+			return -1;
-+		}
-+		if (rec->opts.full_auxtrace) {
-+			pr_err("Parallel trace streaming is not available in AUX area tracing mode.\n");
-+			return -1;
-+		}
-+	}
-+
- 	fd = perf_data__fd(data);
- 	rec->session = session;
- 
-@@ -2965,12 +2982,22 @@ static int switch_output_setup(struct record *rec)
- 	 * --switch-output=signal, as we'll send a SIGUSR2 from the side band
- 	 *  thread to its parent.
- 	 */
--	if (rec->switch_output_event_set)
-+	if (rec->switch_output_event_set) {
-+		if (record__threads_enabled(rec)) {
-+			pr_warning("WARNING: --switch-output-event option is not available in parallel streaming mode.\n");
-+			return 0;
-+		}
- 		goto do_signal;
-+	}
- 
- 	if (!s->set)
- 		return 0;
- 
-+	if (record__threads_enabled(rec)) {
-+		pr_warning("WARNING: --switch-output option is not available in parallel streaming mode.\n");
-+		return 0;
-+	}
-+
- 	if (!strcmp(s->str, "signal")) {
- do_signal:
- 		s->signal = true;
-@@ -3289,8 +3316,8 @@ static struct option __record_options[] = {
- 		     "Set affinity mask of trace reading thread to NUMA node cpu mask or cpu of processed mmap buffer",
- 		     record__parse_affinity),
- #ifdef HAVE_ZSTD_SUPPORT
--	OPT_CALLBACK_OPTARG('z', "compression-level", &record.opts, &comp_level_default,
--			    "n", "Compressed records using specified level (default: 1 - fastest compression, 22 - greatest compression)",
-+	OPT_CALLBACK_OPTARG('z', "compression-level", &record.opts, &comp_level_default, "n",
-+			    "Compress records using specified level (default: 1 - fastest compression, 22 - greatest compression)",
- 			    record__parse_comp_level),
- #endif
- 	OPT_CALLBACK(0, "max-size", &record.output_max_size,
-@@ -3735,6 +3762,17 @@ int cmd_record(int argc, const char **argv)
- 	if (rec->opts.kcore || record__threads_enabled(rec))
- 		rec->data.is_dir = true;
- 
-+	if (record__threads_enabled(rec)) {
-+		if (rec->opts.affinity != PERF_AFFINITY_SYS) {
-+			pr_err("--affinity option is mutually exclusive to parallel streaming mode.\n");
-+			goto out_opts;
-+		}
-+		if (record__aio_enabled(rec)) {
-+			pr_err("Asynchronous streaming mode (--aio) is mutually exclusive to parallel streaming mode.\n");
-+			goto out_opts;
-+		}
-+	}
-+
- 	if (rec->opts.comp_level != 0) {
- 		pr_debug("Compression enabled, disabling build id collection at the end of the session.\n");
- 		rec->no_buildid = true;
-@@ -3768,6 +3806,11 @@ int cmd_record(int argc, const char **argv)
- 		}
- 	}
- 
-+	if (rec->timestamp_filename && record__threads_enabled(rec)) {
-+		rec->timestamp_filename = false;
-+		pr_warning("WARNING: --timestamp-filename option is not available in parallel streaming mode.\n");
-+	}
-+
- 	/*
- 	 * Allow aliases to facilitate the lookup of symbols for address
- 	 * filters. Refer to auxtrace_parse_filters().
 -- 
 2.19.0
 
