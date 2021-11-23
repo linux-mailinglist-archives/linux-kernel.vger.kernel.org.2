@@ -2,153 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4082A459CCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:34:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6589F459CD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 08:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234130AbhKWHht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 02:37:49 -0500
-Received: from mga01.intel.com ([192.55.52.88]:37701 "EHLO mga01.intel.com"
+        id S234137AbhKWHmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 02:42:00 -0500
+Received: from mx1.tq-group.com ([93.104.207.81]:23356 "EHLO mx1.tq-group.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233737AbhKWHhs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 02:37:48 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="258818224"
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="258818224"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 23:34:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="456606013"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 22 Nov 2021 23:34:31 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mpQJy-0001at-2l; Tue, 23 Nov 2021 07:34:30 +0000
-Date:   Tue, 23 Nov 2021 15:34:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Maxime Ripard <maxime@cerno.tech>
-Subject: [sunxi:sunxi/clk-for-5.17 4/10]
- drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c:532:46: error: 'pdev' undeclared
-Message-ID: <202111231442.Mg1z9HFF-lkp@intel.com>
+        id S233737AbhKWHl6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 02:41:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1637653131; x=1669189131;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=67Q79M0k75Uc1aChwsH0Q0MmAmLjc1DAcg0vbLXQPLM=;
+  b=LZmXWiPmJvWdeuKgoTgZkixoFUTM3bOXb23nBf4FW+n52P0yIjKlRUtM
+   ecP96LHiX7COAlfkYbi7Q+uBWEkLjd20Divb7ST04nRlJt6CdOn02r63u
+   9z64PUOYEkjUZCC1hzu2ge0BgJQGaT0FkoYIG1eP9vmygKJttZfDc9pnm
+   ylCmWWc/4Zd8tRxhefWp9L8VcFVzgUkMgIYhZDbp0V34JkCCU0d46nakL
+   yKpANV2Gs7fFcENGZ0wnvX6LiaESo2NOavUZji+pSVJal0HrdqdVXRG14
+   Eqv7OzGko1+5IWGqChjINaa+PURB4+pDaFVKRpOKpZcfJ+nRbpV8BTvCl
+   g==;
+X-IronPort-AV: E=Sophos;i="5.87,257,1631570400"; 
+   d="scan'208";a="20611422"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 23 Nov 2021 08:38:49 +0100
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Tue, 23 Nov 2021 08:38:50 +0100
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Tue, 23 Nov 2021 08:38:50 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1637653129; x=1669189129;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=67Q79M0k75Uc1aChwsH0Q0MmAmLjc1DAcg0vbLXQPLM=;
+  b=XHnFguosv4nZ0vw79S3ySjeK/BQsF4g4CAnqD1lSh1Rspk72oycRdGKn
+   Qk0E2l/GP3J7M7cLJE/2UAIEnu51q5zT5Lc6CzumuBfi8VV5pkY+U5fY7
+   LuXFEinKfGpVwrNJtjVMLAeESZskzi0XReJ/CI4Z6AMfKUYw4OrQGZ8Og
+   /XmcRsqfMBPJlGL1XZlyuuth7u21Afa5NVFYLoNBLQnw+cCMGalJsDqF8
+   hrsiGbTnhw1VCFem7SwUqMhfK+4XOtlRbgZHil4txjI2NEprRu8NyD2/A
+   UEl6smJtrophVG2J2iWpJEIudfYu5cxtotJ5bMbV+ZJ1FPPO8p0wIi8+M
+   w==;
+X-IronPort-AV: E=Sophos;i="5.87,257,1631570400"; 
+   d="scan'208";a="20611421"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 23 Nov 2021 08:38:49 +0100
+Received: from steina-w (unknown [10.123.49.12])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 7A9C2280065;
+        Tue, 23 Nov 2021 08:38:49 +0100 (CET)
+Message-ID: <0c3b4cdd075919ca5cc27c56e792f510e3b76cd7.camel@ew.tq-group.com>
+Subject: Re: (EXT) Re: [PATCH V2 4/5] arm64: dts: imx8mm-beacon: Enable
+ OV5640 Camera
+From:   Alexander Stein <alexander.stein@ew.tq-group.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Adam Ford <aford173@gmail.com>
+Cc:     arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Schrempf Frieder <frieder.schrempf@kontron.de>,
+        linux-media <linux-media@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        cstevens@beaconembedded.com,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Peng Fan <peng.fan@nxp.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Tue, 23 Nov 2021 08:38:47 +0100
+In-Reply-To: <YZwyhWPJVlC0JmpK@pendragon.ideasonboard.com>
+References: <20211106155427.753197-1-aford173@gmail.com>
+         <20211106155427.753197-4-aford173@gmail.com>
+         <YZrTyVJR8VN6dQAf@pendragon.ideasonboard.com>
+         <CAHCN7xK=SNgiC2kRzX4gftjkZX4Ms8PVbL69n7+eR-EAe68xag@mail.gmail.com>
+         <YZwyhWPJVlC0JmpK@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/sunxi/linux.git sunxi/clk-for-5.17
-head:   c81821db64a8957e8ff4ebd4cdda60243ab5c949
-commit: 72928074833fef3290e89f00dc471c037bcebc0c [4/10] clk: sunxi-ng: Allow the CCU core to be built as a module
-config: parisc-buildonly-randconfig-r005-20211123 (https://download.01.org/0day-ci/archive/20211123/202111231442.Mg1z9HFF-lkp@intel.com/config.gz)
-compiler: hppa-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/sunxi/linux.git/commit/?id=72928074833fef3290e89f00dc471c037bcebc0c
-        git remote add sunxi https://git.kernel.org/pub/scm/linux/kernel/git/sunxi/linux.git
-        git fetch --no-tags sunxi sunxi/clk-for-5.17
-        git checkout 72928074833fef3290e89f00dc471c037bcebc0c
-        # save the attached .config to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=parisc SHELL=/bin/bash drivers/clk/sunxi-ng/
+Am Dienstag, dem 23.11.2021 um 02:15 +0200 schrieb Laurent Pinchart:
+> Hi Adam,
+> 
+> On Sun, Nov 21, 2021 at 09:07:26PM -0600, Adam Ford wrote:
+> > On Sun, Nov 21, 2021 at 5:18 PM Laurent Pinchart wrote:
+> > > On Sat, Nov 06, 2021 at 10:54:26AM -0500, Adam Ford wrote:
+> > > > The baseboard has support for a TDNext 5640 Camera which
+> > > > uses an OV5640 connected to a 2-lane CSI2 interface.
+> > > > 
+> > > > With the CSI and mipi_csi2 drivers pointing to an OV5640
+> > > > camera, the media
+> > > > pipeline can be configured with the following:
+> > > > 
+> > > >     media-ctl --links "'ov5640 1-003c':0->'imx7-mipi-
+> > > > csis.0':0[1]"
+> > > > 
+> > > > The camera and various nodes in the pipeline can be configured
+> > > > for UYVY:
+> > > >     media-ctl -v -V "'ov5640 1-003c':0 [fmt:UYVY8_1X16/640x480
+> > > > field:none]"
+> > > >     media-ctl -v -V "'csi':0 [fmt:UYVY8_1X16/640x480
+> > > > field:none]"
+> > > > 
+> > > > Signed-off-by: Adam Ford <
+> > > > aford173@gmail.com
+> > > > >
+> > > 
+> > > As the ov5640 is on an add-on module, would a DT overlay be
+> > > better ?
+> > 
+> > At least for the Beacon / LogicPD boards, I would prefer to avoid
+> > the
+> > overlays.  We have an i.M6Q and an OMAP3 board with cameras enabled
+> > in
+> > our development kit device trees.  If the cameras are not
+> > connected,
+> > they just display a message that the cameras are not communicating
+> > and
+> > move on.  I'm OK with that.
+> 
+> You know the board better than I do, so I won't push against this,
+> but I
+> still think it may not lead to the best user experience, especially
+> if a
+> user wanted to connect a different sensor to the development board.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+I see the advantages of overlays compared to "stacked" .dts files. But
+is there any general supported interface how to actually apply an
+overlay?
+Documentation/devicetree/overlay-notes.rst
+states of_overlay_fdt_apply() but there is only exactly one user in-
+kernel (rcar-du). Is it expected that the bootloader like u-boot shall
+apply the .dtbo files?
 
-All errors (new ones prefixed by >>):
+Best regards,
+Alexander
 
-   drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c: In function 'suniv_f1c100s_ccu_setup':
->> drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c:532:46: error: 'pdev' undeclared (first use in this function)
-     532 |         reg = devm_platform_ioremap_resource(pdev, 0);
-         |                                              ^~~~
-   drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c:532:46: note: each undeclared identifier is reported only once for each function it appears in
-   drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c:534:24: error: 'return' with a value, in function returning void [-Werror=return-type]
-     534 |                 return PTR_ERR(reg);
-         |                        ^~~~~~~~~~~~
-   drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c:526:20: note: declared here
-     526 | static void __init suniv_f1c100s_ccu_setup(struct device_node *node)
-         |                    ^~~~~~~~~~~~~~~~~~~~~~~
-   drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c:543:24: error: 'return' with a value, in function returning void [-Werror=return-type]
-     543 |                 return ret;
-         |                        ^~~
-   drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c:526:20: note: declared here
-     526 | static void __init suniv_f1c100s_ccu_setup(struct device_node *node)
-         |                    ^~~~~~~~~~~~~~~~~~~~~~~
-   drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c:552:16: error: 'return' with a value, in function returning void [-Werror=return-type]
-     552 |         return 0;
-         |                ^
-   drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c:526:20: note: declared here
-     526 | static void __init suniv_f1c100s_ccu_setup(struct device_node *node)
-         |                    ^~~~~~~~~~~~~~~~~~~~~~~
-   drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c: At top level:
->> drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c:561:19: error: 'suniv_f1c100s_ccu_probe' undeclared here (not in a function); did you mean 'suniv_f1c100s_ccu_driver'?
-     561 |         .probe  = suniv_f1c100s_ccu_probe,
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~
-         |                   suniv_f1c100s_ccu_driver
-   drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c:526:20: warning: 'suniv_f1c100s_ccu_setup' defined but not used [-Wunused-function]
-     526 | static void __init suniv_f1c100s_ccu_setup(struct device_node *node)
-         |                    ^~~~~~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
-
-
-vim +/pdev +532 drivers/clk/sunxi-ng/ccu-suniv-f1c100s.c
-
-0380126eb9afc4 Mesih Kilinc   2018-12-02  525  
-0380126eb9afc4 Mesih Kilinc   2018-12-02  526  static void __init suniv_f1c100s_ccu_setup(struct device_node *node)
-0380126eb9afc4 Mesih Kilinc   2018-12-02  527  {
-0380126eb9afc4 Mesih Kilinc   2018-12-02  528  	void __iomem *reg;
-72dc8e122383fc Samuel Holland 2021-11-18  529  	int ret;
-0380126eb9afc4 Mesih Kilinc   2018-12-02  530  	u32 val;
-0380126eb9afc4 Mesih Kilinc   2018-12-02  531  
-72dc8e122383fc Samuel Holland 2021-11-18 @532  	reg = devm_platform_ioremap_resource(pdev, 0);
-72dc8e122383fc Samuel Holland 2021-11-18  533  	if (IS_ERR(reg))
-72dc8e122383fc Samuel Holland 2021-11-18  534  		return PTR_ERR(reg);
-0380126eb9afc4 Mesih Kilinc   2018-12-02  535  
-0380126eb9afc4 Mesih Kilinc   2018-12-02  536  	/* Force the PLL-Audio-1x divider to 4 */
-0380126eb9afc4 Mesih Kilinc   2018-12-02  537  	val = readl(reg + SUNIV_PLL_AUDIO_REG);
-0380126eb9afc4 Mesih Kilinc   2018-12-02  538  	val &= ~GENMASK(19, 16);
-0380126eb9afc4 Mesih Kilinc   2018-12-02  539  	writel(val | (3 << 16), reg + SUNIV_PLL_AUDIO_REG);
-0380126eb9afc4 Mesih Kilinc   2018-12-02  540  
-72dc8e122383fc Samuel Holland 2021-11-18  541  	ret = devm_sunxi_ccu_probe(&pdev->dev, reg, &suniv_ccu_desc);
-72dc8e122383fc Samuel Holland 2021-11-18  542  	if (ret)
-72dc8e122383fc Samuel Holland 2021-11-18  543  		return ret;
-0380126eb9afc4 Mesih Kilinc   2018-12-02  544  
-0380126eb9afc4 Mesih Kilinc   2018-12-02  545  	/* Gate then ungate PLL CPU after any rate changes */
-0380126eb9afc4 Mesih Kilinc   2018-12-02  546  	ccu_pll_notifier_register(&suniv_pll_cpu_nb);
-0380126eb9afc4 Mesih Kilinc   2018-12-02  547  
-0380126eb9afc4 Mesih Kilinc   2018-12-02  548  	/* Reparent CPU during PLL CPU rate changes */
-0380126eb9afc4 Mesih Kilinc   2018-12-02  549  	ccu_mux_notifier_register(pll_cpu_clk.common.hw.clk,
-0380126eb9afc4 Mesih Kilinc   2018-12-02  550  				  &suniv_cpu_nb);
-72dc8e122383fc Samuel Holland 2021-11-18  551  
-72dc8e122383fc Samuel Holland 2021-11-18 @552  	return 0;
-0380126eb9afc4 Mesih Kilinc   2018-12-02  553  }
-72dc8e122383fc Samuel Holland 2021-11-18  554  
-72dc8e122383fc Samuel Holland 2021-11-18  555  static const struct of_device_id suniv_f1c100s_ccu_ids[] = {
-72dc8e122383fc Samuel Holland 2021-11-18  556  	{ .compatible = "allwinner,suniv-f1c100s-ccu" },
-72dc8e122383fc Samuel Holland 2021-11-18  557  	{ }
-72dc8e122383fc Samuel Holland 2021-11-18  558  };
-72dc8e122383fc Samuel Holland 2021-11-18  559  
-72dc8e122383fc Samuel Holland 2021-11-18  560  static struct platform_driver suniv_f1c100s_ccu_driver = {
-72dc8e122383fc Samuel Holland 2021-11-18 @561  	.probe	= suniv_f1c100s_ccu_probe,
-72dc8e122383fc Samuel Holland 2021-11-18  562  	.driver	= {
-72dc8e122383fc Samuel Holland 2021-11-18  563  		.name			= "suniv-f1c100s-ccu",
-72dc8e122383fc Samuel Holland 2021-11-18  564  		.suppress_bind_attrs	= true,
-72dc8e122383fc Samuel Holland 2021-11-18  565  		.of_match_table		= suniv_f1c100s_ccu_ids,
-72dc8e122383fc Samuel Holland 2021-11-18  566  	},
-72dc8e122383fc Samuel Holland 2021-11-18  567  };
-72dc8e122383fc Samuel Holland 2021-11-18  568  module_platform_driver(suniv_f1c100s_ccu_driver);
-72dc8e122383fc Samuel Holland 2021-11-18  569  
-
-:::::: The code at line 532 was first introduced by commit
-:::::: 72dc8e122383fcce2ef6d32e351ec0609bd7ca49 clk: sunxi-ng: Convert early providers to platform drivers
-
-:::::: TO: Samuel Holland <samuel@sholland.org>
-:::::: CC: Maxime Ripard <maxime@cerno.tech>
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
