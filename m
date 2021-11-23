@@ -2,117 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C67645B03E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:33:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB83C45B041
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:34:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233860AbhKWXgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 18:36:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39040 "EHLO mail.kernel.org"
+        id S235249AbhKWXiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 18:38:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231322AbhKWXgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 18:36:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D28A60FE6;
-        Tue, 23 Nov 2021 23:33:13 +0000 (UTC)
+        id S230442AbhKWXiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 18:38:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9400B60FE6;
+        Tue, 23 Nov 2021 23:34:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637710394;
-        bh=kG8n/02UM0CjGGDvJB4iPJ9K02MPrvmSl94Egqf9ZVw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=skemYkfAQOvf20rppso/nQxkkV8H9HKEwDnPlnSg7RXovNYceEX070AP68QuXeQXh
-         TroMsQx4Yy0W6E70/bLP+A9lTLUV6B4P0dOXaGPm4YHd6mVEG4uU224vrSVRt69cAv
-         T4LFsKq3gVS+q5y/9Dyx4Rl5Ld9UQ5OKWd3dv3ykbiRsHL0t/cxivq0y2F+Pve7j3c
-         /AHQ6h5bAKduQdEc86h0mfsWjnJ2MS5FVFeO41QelqcU5KPcju8TObPSX4b5SIxJjD
-         3CpXbRF3C4AAs+iGZW5PnfzSEtWu/lfgQgI7Tik01HbUbS+1/1ZbF9Kltnhiy59VEW
-         PR1hVF3CO9Ngg==
-Date:   Tue, 23 Nov 2021 15:33:12 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Aya Levin <ayal@mellanox.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>, drivers@pensando.io,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org,
-        Michael Chan <michael.chan@broadcom.com>,
-        netdev@vger.kernel.org, oss-drivers@corigine.com,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Simon Horman <simon.horman@corigine.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: Re: [PATCH net-next 5/6] devlink: Reshuffle resource registration
- logic
-Message-ID: <20211123153312.4eecb490@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <YZynSa6s8kBKtSYB@unreal>
-References: <cover.1637173517.git.leonro@nvidia.com>
-        <6176a137a4ded48501e8a06fda0e305f9cfc787c.1637173517.git.leonro@nvidia.com>
-        <20211117204956.6a36963b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YZYFvIK9mkP107tD@unreal>
-        <20211118174813.54c3731f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YZfFDSnnjOG+wSyK@unreal>
-        <20211119081017.6676843b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YZoHGKqLz6UBk2Sx@unreal>
-        <20211122182728.370889f2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YZynSa6s8kBKtSYB@unreal>
+        s=k20201202; t=1637710492;
+        bh=47O5TjToz0WFowNe6yEwB8NggXB/1IyXNGQaOA02uJo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r+BMCa5F8mo86vQPn6+sf/yy3tOuK38qRNMkTK6ALN1CqbT1+QK1E5p2jOsNM0Inf
+         Z0eqURYWggQBUv9dGwwgDaXh6ddQ2KqVh5z+g7PmlQXS6mcHMQU17NlmjCtbQXrRi1
+         lUBEmeZJEhITfbG2CVrR3XC+j4ENEWDGVxFzjw7MpaCTG6BuGJrYqXkx5OP+gh6yXW
+         3p0+PGsg3EjRZDi6FfnG1QeHg9cVem7TNbxkmvAWzObqwkVewHFXnS9WX5aFiobyYM
+         rS5OcaPWbT48SEJfgUXCe0FDk1ppUvF8wVkmmxPhXZuhszrsmsjrBSZMOdFvHvMIVw
+         z7TWcuqmTqC2w==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 772A640002; Tue, 23 Nov 2021 20:34:49 -0300 (-03)
+Date:   Tue, 23 Nov 2021 20:34:49 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Konstantin Khlebnikov <koct9i@gmail.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        eranian@google.com
+Subject: Re: [PATCH 2/3] perf tools: Fix SMT not detected with large core
+ count
+Message-ID: <YZ16mRRu7HZzUlYe@kernel.org>
+References: <20211123224821.3258649-1-irogers@google.com>
+ <20211123224821.3258649-2-irogers@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211123224821.3258649-2-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Nov 2021 10:33:13 +0200 Leon Romanovsky wrote:
-> > > You can do it with my approach too. We incremented reference counter
-> > > of devlink instance when devlink_nl_cmd_port_split_doit() was called,
-> > > and we can safely take devlink->port_list_lock lock before returning
-> > > from pre_doit.  
-> > 
-> > Wait, I thought you'd hold devlink->lock around split/unsplit.  
-> 
-> I'm holding.
-> 
->     519 static int devlink_nl_pre_doit(const struct genl_ops *ops,
->     520                                struct sk_buff *skb, struct genl_info *info)
->     521 {
->     ...
->     529
->     530         mutex_lock(&devlink->lock);
+Em Tue, Nov 23, 2021 at 02:48:20PM -0800, Ian Rogers escreveu:
+> sysfs__read_int returns 0 on success, and so the fast read path was
+> always failing.
 
-Then I'm confused why you said you need to hold a ref count on devlink.
-Is it devlink_unregister() that's not taking devlink->lock?
+Please split this into two patches, the above part should be in one, and
+the strtoull in another.
 
-> > Please look at the port splitting case, mlx5 doesn't implement it
-> > but it's an important feature.  
-> 
-> I'll, but please don't forget that it was RFC, just to present that
-> devlink can be changed internally without exposing internals.
-> 
-> > Either way, IDK how ref count on devlink helps with lifetime of a
-> > subobject. You must assume the sub-objects can only be created outside
-> > of the time devlink instance is visible or under devlink->lock?  
-> 
-> The devlink lifetime is:
-> stages:        I                   II                   III   
->  devlink_alloc -> devlink_register -> devlink_unregister -> devlink_free.
-> 
-> All sub-objects should be created between devlink_alloc and devlink_free.
-> It will ensure that ->devlink pointer is always valid.
-> 
-> Stage I:
->  * There is no need to hold any devlink locks or increase reference counter.
->    If driver doesn't do anything crazy during its init, nothing in devlink
->    land will run in parallel. 
-> Stage II:
->  * There is a need to hold devlink->lock and/or play with reference counter
->    and/or use fine-grained locks. Users can issue "devlink ..." commands.
+Also can't we just do as ./tools/perf/util/cputopo.c and use instead
+core_cpus_list?
 
-So sub-objects can (dis)appear only in I/III or under devlink->lock.
-Why did you add the per-sub object list locks, then?
+On a 5950x:
+
+⬢[acme@toolbox perf]$ cat /sys/devices/system/cpu/cpu31/topology/core_cpus
+80008000
+⬢[acme@toolbox perf]$ cat /sys/devices/system/cpu/cpu31/topology/core_cpus_list
+15,31
+⬢[acme@toolbox perf]$ cat /sys/devices/system/cpu/cpu0/topology/core_cpus
+00010001
+⬢[acme@toolbox perf]$ cat /sys/devices/system/cpu/cpu0/topology/core_cpus_list
+0,16
+⬢[acme@toolbox perf]$
+
+- Arnaldo
+
+> strtoull can only read a 64-bit bitmap. On an AMD EPYC core_cpus may look
+> like:
+> 00000000,00000000,00000000,00000001,00000000,00000000,00000000,00000001
+> and so the sibling wasn't spotted. Fix by writing a simple hweight string
+> parser.
+> 
+> Fixes: bb629484d924 (perf tools: Simplify checking if SMT is active.)
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/smt.c | 68 ++++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 58 insertions(+), 10 deletions(-)
+> 
+> diff --git a/tools/perf/util/smt.c b/tools/perf/util/smt.c
+> index 20bacd5972ad..2636be65305a 100644
+> --- a/tools/perf/util/smt.c
+> +++ b/tools/perf/util/smt.c
+> @@ -5,6 +5,56 @@
+>  #include "api/fs/fs.h"
+>  #include "smt.h"
+>  
+> +/**
+> + * hweight_str - Returns the number of bits set in str. Stops at first non-hex
+> + *	       or ',' character.
+> + */
+> +static int hweight_str(char *str)
+> +{
+> +	int result = 0;
+> +
+> +	while (*str) {
+> +		switch (*str++) {
+> +		case '0':
+> +		case ',':
+> +			break;
+> +		case '1':
+> +		case '2':
+> +		case '4':
+> +		case '8':
+> +			result++;
+> +			break;
+> +		case '3':
+> +		case '5':
+> +		case '6':
+> +		case '9':
+> +		case 'a':
+> +		case 'A':
+> +		case 'c':
+> +		case 'C':
+> +			result += 2;
+> +			break;
+> +		case '7':
+> +		case 'b':
+> +		case 'B':
+> +		case 'd':
+> +		case 'D':
+> +		case 'e':
+> +		case 'E':
+> +			result += 3;
+> +			break;
+> +		case 'f':
+> +		case 'F':
+> +			result += 4;
+> +			break;
+> +		default:
+> +			goto done;
+> +		}
+> +	}
+> +done:
+> +	return result;
+> +}
+> +
+>  int smt_on(void)
+>  {
+>  	static bool cached;
+> @@ -15,9 +65,12 @@ int smt_on(void)
+>  	if (cached)
+>  		return cached_result;
+>  
+> -	if (sysfs__read_int("devices/system/cpu/smt/active", &cached_result) > 0)
+> -		goto done;
+> +	if (sysfs__read_int("devices/system/cpu/smt/active", &cached_result) >= 0) {
+> +		cached = true;
+> +		return cached_result;
+> +	}
+>  
+> +	cached_result = 0;
+>  	ncpu = sysconf(_SC_NPROCESSORS_CONF);
+>  	for (cpu = 0; cpu < ncpu; cpu++) {
+>  		unsigned long long siblings;
+> @@ -35,18 +88,13 @@ int smt_on(void)
+>  				continue;
+>  		}
+>  		/* Entry is hex, but does not have 0x, so need custom parser */
+> -		siblings = strtoull(str, NULL, 16);
+> +		siblings = hweight_str(str);
+>  		free(str);
+> -		if (hweight64(siblings) > 1) {
+> +		if (siblings > 1) {
+>  			cached_result = 1;
+> -			cached = true;
+>  			break;
+>  		}
+>  	}
+> -	if (!cached) {
+> -		cached_result = 0;
+> -done:
+> -		cached = true;
+> -	}
+> +	cached = true;
+>  	return cached_result;
+>  }
+> -- 
+> 2.34.0.rc2.393.gf8c9666880-goog
+
+-- 
+
+- Arnaldo
