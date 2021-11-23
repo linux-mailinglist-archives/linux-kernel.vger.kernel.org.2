@@ -2,167 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A637459FA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 10:58:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE61E459FA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 10:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235126AbhKWKBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 05:01:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36046 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231221AbhKWKBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 05:01:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59EC361078
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:58:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637661482;
-        bh=c2af4cD82ZvlTLcEtFj3WN6w9IAHd0AVMeQM3gBpzWY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KhB9zgBoY3dmtZR935W/ITrcH9pIB5gJwopsE2S7wAw73csvtucfJKOaKi8nEfqRA
-         uR6WkaUYKWgCU0TtkYWiVJUhSyA+lOJiIWuIQBrh9Tz79Dk5NAgFGtL/ULwxJVHNuz
-         f8ig5ftJp9Mapie97yPIcRg99MaJwmAgd5u695ByLrUJ3vjEWasQYwjaZ99cl5L5UU
-         /OZ5T75ZXpcTSY8gMZQViqEUIvYJWVNFN8AtI1cZxUpk/cLf4Pz+B1yyxgLKSpC2rb
-         IuIAYheemRZuCGiUyAFe2x5rPMxGwR96xOYa7f/zunzW0gcbQBHI83tyQF8zK5Z/Po
-         zUB2eNxf0eH1A==
-Received: by mail-ot1-f50.google.com with SMTP id 47-20020a9d0332000000b005798ac20d72so14530306otv.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 01:58:02 -0800 (PST)
-X-Gm-Message-State: AOAM5322DvLbnc4s7vD2RcxZXn6MkeEGvOJcT0UqxLhdz91pvtlyb8pl
-        eMfuldAH3RYy3VaS6laRfjZtGgqi9G7WsWODKM4=
-X-Google-Smtp-Source: ABdhPJx/bR0UUrC75aFHTkOtBjjnustA215aKRj+dEMm+J+VaQwZu36SrrjAOxDGbtWuBoOU8cT/kuqaPS1nnmMm+/s=
-X-Received: by 2002:a05:6830:1514:: with SMTP id k20mr3024125otp.147.1637661481511;
- Tue, 23 Nov 2021 01:58:01 -0800 (PST)
+        id S235134AbhKWKCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 05:02:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26580 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229847AbhKWKCv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 05:02:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637661581;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Z4SVdriUsPLrl4wZFTKmXBFzP4Q4i5HhaOV+C11ofG8=;
+        b=jWinhcHgKjTlV4FpbnnVXnFvwUTkElroCzJcGOV9unex8iAZGCvaoH3L9Myp37CnYK4Hfj
+        0bh1HUTM0Qvz1DW+yNyrGxEJ4IVhz1BPyMWM3XdLbP6WMfOUR22pXoFQo0diHTvvQ2394H
+        ymCIJJTBVWuboeBX673oVGro+Vnu0bQ=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-420-PaYYzc32OiecQr5wgMZxaw-1; Tue, 23 Nov 2021 04:59:38 -0500
+X-MC-Unique: PaYYzc32OiecQr5wgMZxaw-1
+Received: by mail-wr1-f70.google.com with SMTP id h13-20020adfa4cd000000b001883fd029e8so3625072wrb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 01:59:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z4SVdriUsPLrl4wZFTKmXBFzP4Q4i5HhaOV+C11ofG8=;
+        b=eRs17QgsT14o9/4rpgwGVV66I7rufr24d6pRcktresvkfP9Pe6Iy+mlvj0qZAmeDkt
+         HWU+fwIaqtI+ClupHUjjGX4rQgC+26m82tTfjBAcTsDOTSlmyRs1sOZvUMfMqv36frAi
+         DkgcJ5Ff+sZ1fMQnCp8vY1UbSsj0mAzGJGegYPdVu/Ly7nap3BxT6gjH53Z1LnfcNsq5
+         cNOt30JFsXr3u0Qeub0zDgRkaFejAOXC+WDFXSOyT7IYVRPZXlsrMyS6hSxA0Hd+lFWI
+         G9PTUtzQBK1wygc0p1V1HeVZm5PDXgqI/6SwNYsOBYh7Js6Xr80gJ1rcRjrV8ESjy+BJ
+         h1GQ==
+X-Gm-Message-State: AOAM5330SEFwKBqTiImg9EZgV5ZHJFxmhYa49R9dEwNiRg7tcqxdzPQD
+        VL4XM7qprLc8AI69IQUpmrZgcJ3DJlWI1eLIJPh1b/77t/5lBuODq+zf5NzW24oYTSKo2d0mcKZ
+        0QAYfy8utCybjq52fsqCJSExJ
+X-Received: by 2002:a5d:59af:: with SMTP id p15mr5500302wrr.314.1637661575003;
+        Tue, 23 Nov 2021 01:59:35 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwWOu0SWv8Jr5Pwq4WJKrbjdn4sATqjzvbSSS5Cj48IhMI88GC2pqQ7BCmzHUQyaOhiFVTe5g==
+X-Received: by 2002:a5d:59af:: with SMTP id p15mr5500274wrr.314.1637661574780;
+        Tue, 23 Nov 2021 01:59:34 -0800 (PST)
+Received: from vian.redhat.com ([2a0c:5a80:3c10:3400:3c70:6643:6e71:7eae])
+        by smtp.gmail.com with ESMTPSA id bd18sm538888wmb.43.2021.11.23.01.59.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 01:59:34 -0800 (PST)
+From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
+To:     bigeasy@linutronix.de, linux-rt-users@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        mtosatti@redhat.com, juri.lelli@redhat.com,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Subject: [PATCH RT] arm64: Allow selecting KVM and PREEMPT_RT
+Date:   Tue, 23 Nov 2021 10:59:28 +0100
+Message-Id: <20211123095928.21525-1-nsaenzju@redhat.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-References: <1637658760-5813-1-git-send-email-huangzhaoyang@gmail.com>
-In-Reply-To: <1637658760-5813-1-git-send-email-huangzhaoyang@gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 23 Nov 2021 10:57:50 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGLRr8bnhLPseW=gSj6kA1TKqAC0Bs0Loj8gkpgaMB8MA@mail.gmail.com>
-Message-ID: <CAMj1kXGLRr8bnhLPseW=gSj6kA1TKqAC0Bs0Loj8gkpgaMB8MA@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm: introduce alloc hook to apply PTE_CONT
-To:     Huangzhaoyang <huangzhaoyang@gmail.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Nov 2021 at 10:13, Huangzhaoyang <huangzhaoyang@gmail.com> wrote:
->
-> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
->
-> Since there is no PTE_CONT when rodata_full in ARM64, introducing a
-> hook function to apply PTE_CONT on the proper page blocks.
->
+With 6caa5812e2d1 ("KVM: arm64: Use generic KVM xfer to guest work
+function") all arm64 exit paths are properly equipped to handle the
+POSIX timers' task work.
 
-Given the discussion around your previous patch, I would expect a
-meticulous explanation here why it is guaranteed to be safe to
-manipulate the PTE_CONT attribute like this, and how the proposed
-logic is correct for all supported page sizes.
+And with a68773bd32d9 ("arm64: Select POSIX_CPU_TIMERS_TASK_WORK") we
+now handle the timers in thread context.
 
-Without using an intermediate invalid mapping for the entire range,
-this is never going to work reliably (this is the break-before-make
-requirement). And given that marking the entire block invalid will
-create intermediate states that are not permitted (a valid PTE_CONT
-mapping and an invalid ~PTE_CONT mapping covering the same VA), the
-only way to apply changes like these is to temporarily switch all CPUs
-to a different translation via TTBR1. And this is not going to happen.
+This allows for KVM and PREEMPT_RT to coexist, so update Kconfig to
+reflect that.
 
-Also, you never replied to my question regarding the use case and the
-performance gain.
+Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+---
 
-In summary, NAK to this patch or any of the previous ones regarding
-PTE_CONT. If you do insist on pursuing this further, please provide an
-elaborate and rock solid explanation why your approach is 100% valid
-and correct (for all page sizes). And make sure you include an
-explanation how your changes comply with the architectural
-break-before-make requirements around PTE_CONT attributes.
+I guess this could be squashed into 19614b91cc83 ("ARM64: Allow to
+enable RT")
 
+Note: I did test this on an Ampere Mt. Jade based machine.
 
+ arch/arm64/Kconfig | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> ---
->  arch/arm64/include/asm/page.h |  5 +++++
->  arch/arm64/mm/pageattr.c      | 45 +++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 50 insertions(+)
->
-> diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
-> index f98c91b..53cdd09 100644
-> --- a/arch/arm64/include/asm/page.h
-> +++ b/arch/arm64/include/asm/page.h
-> @@ -46,6 +46,11 @@ struct page *alloc_zeroed_user_highpage_movable(struct vm_area_struct *vma,
->
->  #include <asm/memory.h>
->
-> +#define HAVE_ARCH_ALLOC_PAGE
-> +#define HAVE_ARCH_FREE_PAGE
-> +
-> +extern void arch_alloc_page(struct page *page, int order);
-> +extern void arch_free_page(struct page *page, int order);
->  #endif /* !__ASSEMBLY__ */
->
->  #define VM_DATA_DEFAULT_FLAGS  (VM_DATA_FLAGS_TSK_EXEC | VM_MTE_ALLOWED)
-> diff --git a/arch/arm64/mm/pageattr.c b/arch/arm64/mm/pageattr.c
-> index a3bacd7..815a06d 100644
-> --- a/arch/arm64/mm/pageattr.c
-> +++ b/arch/arm64/mm/pageattr.c
-> @@ -239,3 +239,48 @@ bool kernel_page_present(struct page *page)
->         ptep = pte_offset_kernel(pmdp, addr);
->         return pte_valid(READ_ONCE(*ptep));
->  }
-> +
-> +void arch_alloc_page(struct page *page, int order)
-> +{
-> +       unsigned long addr;
-> +       unsigned long cont_pte_low_bound;
-> +
-> +       if (!rodata_full)
-> +               return;
-> +
-> +       addr = (u64)page_address(page);
-> +       if ((order >= 4) && (addr & ~CONT_PTE_MASK) == 0) {
-> +               order -= 4;
-> +               do {
-> +                       cont_pte_low_bound = addr & CONT_PTE_MASK;
-> +                       __change_memory_common(cont_pte_low_bound,
-> +                                       (~CONT_PTE_MASK + 1), __pgprot(PTE_CONT), __pgprot(0));
-> +                       addr = (u64)page_address(page);
-> +                       page += 4;
-> +                       order--;
-> +               }while (order >= 0);
-> +       }
-> +}
-> +
-> +void arch_free_page(struct page *page, int order)
-> +{
-> +       unsigned long addr;
-> +       unsigned long cont_pte_low_bound;
-> +
-> +       if (!rodata_full)
-> +               return;
-> +
-> +       addr = (u64)page_address(page);
-> +       if ((order >= 4) && (addr & ~CONT_PTE_MASK) == 0) {
-> +               order -= 4;
-> +               do {
-> +                       cont_pte_low_bound = addr & CONT_PTE_MASK;
-> +                       __change_memory_common(cont_pte_low_bound,
-> +                                       (~CONT_PTE_MASK + 1), __pgprot(0), __pgprot(PTE_CONT));
-> +                       addr = (u64)page_address(page);
-> +                       page += 4;
-> +                       order--;
-> +               }while (order >= 0);
-> +       }
-> +}
-> +
-> --
-> 1.9.1
->
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 6bd4acc2be02..260866cf53c9 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -89,7 +89,7 @@ config ARM64
+ 	select ARCH_SUPPORTS_ATOMIC_RMW
+ 	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128
+ 	select ARCH_SUPPORTS_NUMA_BALANCING
+-	select ARCH_SUPPORTS_RT if HAVE_POSIX_CPU_TIMERS_TASK_WORK
++	select ARCH_SUPPORTS_RT
+ 	select ARCH_WANT_COMPAT_IPC_PARSE_VERSION if COMPAT
+ 	select ARCH_WANT_DEFAULT_BPF_JIT
+ 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
+@@ -216,7 +216,6 @@ config ARM64
+ 	select PCI_DOMAINS_GENERIC if PCI
+ 	select PCI_ECAM if (ACPI && PCI)
+ 	select PCI_SYSCALL if PCI
+-	select HAVE_POSIX_CPU_TIMERS_TASK_WORK if !KVM
+ 	select POWER_RESET
+ 	select POWER_SUPPLY
+ 	select SPARSE_IRQ
+-- 
+2.33.1
+
