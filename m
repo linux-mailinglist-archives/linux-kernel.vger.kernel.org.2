@@ -2,224 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB1645ACB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:38:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36BCA45ACB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 20:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240179AbhKWTlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 14:41:02 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:41940 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238915AbhKWTkr (ORCPT
+        id S237137AbhKWTmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 14:42:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234801AbhKWTmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 14:40:47 -0500
-Received: from x64host.home (unknown [47.187.212.181])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 16CF920D4D3A;
-        Tue, 23 Nov 2021 11:37:38 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 16CF920D4D3A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1637696258;
-        bh=OQhzBj7Wen/J06yxGIiml0JSLgVuUwO6DOPVaGxCJ8I=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=q3ZqBQyyj4vXUauF/3jjrSnxqBpki3Mp5EpUGFvk0xo5keTmx+XEcKmEwssmidcc+
-         2a3SQOpNcC54SkbhFe1CoeeS/etKkPBDo8F7v9Iq12deNyIkxsy5KhItvzU0KS7TPE
-         9RFBUwoxv5CvSNmg3NXoKdl7k8Si0oSAQLiqyOmc=
-From:   madvenka@linux.microsoft.com
-To:     mark.rutland@arm.com, broonie@kernel.org, jpoimboe@redhat.com,
-        ardb@kernel.org, nobuta.keiya@fujitsu.com,
-        sjitindarsingh@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        jmorris@namei.org, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        madvenka@linux.microsoft.com
-Subject: [PATCH v11 5/5] arm64: Create a list of SYM_CODE functions, check return PC against list
-Date:   Tue, 23 Nov 2021 13:37:23 -0600
-Message-Id: <20211123193723.12112-6-madvenka@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211123193723.12112-1-madvenka@linux.microsoft.com>
-References: <8b861784d85a21a9bf08598938c11aff1b1249b9>
- <20211123193723.12112-1-madvenka@linux.microsoft.com>
+        Tue, 23 Nov 2021 14:42:18 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A63B0C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:39:09 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id b67so282346qkg.6
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 11:39:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=Om+g4Uz2JjyBuvHdfGl4XTjXS4Di5g1zmNyuqruDMDc=;
+        b=fpKETfU+H9nCsr/emEcye4fztYexowbT6ApwFyHjIBI50Q6+FuVwVrL4XuF1PhJGwE
+         Xrln16g6s63oPEXKPak7a9q6zbN4t80xBz/oOn6Yl9FmsZUjsHkzILhvp1g+KBfm65q4
+         nJLz2KOy1DpQARp+xz/D1/NxOm/XtDqKpqukSSbtwgT/QNMw7pf6tqCT2Yeo/HTVr3u8
+         5gwGkC4iNnGqU9qw3Jz9NDq+OSKwYXJQr8EvJ7sggfUF+83LK/gG57hQMKG3pkOZT9qv
+         +FRlPt7Q4CSIsQOALUvDH2ZQYsSE6Er3V7swlS2mqYBXGWliur5j07f0w9PpPQtcPPyV
+         ZIfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=Om+g4Uz2JjyBuvHdfGl4XTjXS4Di5g1zmNyuqruDMDc=;
+        b=yZoSYDbbpImL2WxpMI3B3uIKcVif6vOUTL2jhhwiuTJbZdvLjpMtHr0YsRwovUPXXU
+         QapvCLKjqC7667QIow3PVBYsM8d/p6wPhtYPnBWyNNL4awra71+Btsz1NXlGyIPpjaBk
+         KMVso9yiGWsUKEWoT3red2zjy5xl20d96fmEW0tA3gqlsWAPvJgLUTsproYXmq+zBhsU
+         QK8AIlZiIMRlTm42FxFEE1pbhYBqBwZfws5Ug6GrUQMSczM2z39/KRkmRyi3M0C5s6aI
+         /8UzwXZaWI1EkqPnPWbBRu7li0YUlBmbw42dCjZ1eb1FNDY+ckwCK8gMp/ggItOBOByp
+         Oh4A==
+X-Gm-Message-State: AOAM531tTbOKQxkKk1pwRQxb3QEhuVspyRZx/t/EVQkQR8aHTnuHQ/HN
+        0DfWC/XbAG81i6hi1RGrv89HlA==
+X-Google-Smtp-Source: ABdhPJx1LXmah08Wco9CfLO9RABE+JD1pVOug1JHcDqvoXVWgrZxQ1pJzQ9DMaQNTN5GEAZhiIiitw==
+X-Received: by 2002:a37:a081:: with SMTP id j123mr7167214qke.503.1637696348305;
+        Tue, 23 Nov 2021 11:39:08 -0800 (PST)
+Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
+        by smtp.gmail.com with ESMTPSA id y20sm6772061qkj.24.2021.11.23.11.39.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 11:39:07 -0800 (PST)
+Message-ID: <85e9830ff0c2ed5eb77ce52ec7fde82a08368a2a.camel@ndufresne.ca>
+Subject: Re: [PATCH] media: hantro: Hook up RK3399 JPEG encoder output
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Date:   Tue, 23 Nov 2021 14:39:06 -0500
+In-Reply-To: <CAGXv+5Gf-gsB7JXnLiZF_R=0RdxXS7CDZaFftyZ+aESXLXy1Ew@mail.gmail.com>
+References: <20211119074654.470729-1-wenst@chromium.org>
+         <5d23258a954eb0076cacf89d6c88b5e6ef13695f.camel@ndufresne.ca>
+         <CAGXv+5Gf-gsB7JXnLiZF_R=0RdxXS7CDZaFftyZ+aESXLXy1Ew@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Le lundi 22 novembre 2021 à 11:57 +0800, Chen-Yu Tsai a écrit :
+> On Sat, Nov 20, 2021 at 12:00 AM Nicolas Dufresne <nicolas@ndufresne.ca> wrote:
+> > 
+> > Le vendredi 19 novembre 2021 à 15:46 +0800, Chen-Yu Tsai a écrit :
+> > > The JPEG encoder found in the Hantro H1 encoder block only produces a
+> > > raw entropy-encoded scan. The driver is responsible for building a JPEG
+> > > compliant bitstream and placing the entropy-encoded scan in it. Right
+> > > now the driver uses a bounce buffer for the hardware to output the raw
+> > > scan to.
+> > > 
+> > > In commit e765dba11ec2 ("hantro: Move hantro_enc_buf_finish to JPEG
+> > > codec_ops.done"), the code that copies the raw scan from the bounce
+> > > buffer to the capture buffer was moved, but was only hooked up for the
+> > > Hantro H1 (then RK3288) variant. The RK3399 variant was broken,
+> > > producing a JPEG bitstream without the scan, and the capture buffer's
+> > > .bytesused field unset.
+> > > 
+> > > Fix this by duplicating the code that is executed when the JPEG encoder
+> > > finishes encoding a frame. As the encoded length is read back from
+> > > hardware, and the variants having different register layouts, the
+> > > code is duplicated rather than shared.
+> > > 
+> > > Fixes: e765dba11ec2 ("hantro: Move hantro_enc_buf_finish to JPEG codec_ops.done")
+> > > Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+> > > ---
+> > > This was developed on the downstream ChromeOS 5.10 kernel (with a hack
+> > > for .data_offset) and tested with ChromeOS's jpeg_encode_accelerator_unittest
+> > > patched to accept non-JFIF JPEG streams (https://crrev.com/c/3291480).
+> > > 
+> > > This was then forward-ported to mainline (name and filename changes) and
+> > > compile tested only.
+> > 
+> > Tested with GStreamer on top of 5.16-rc1 from media_stage.git. Not perfect but
+> > at least the the output it valid. Test command was:
+> > 
+> >   gst-launch-1.0 videotestsrc num-buffers=2 ! v4l2jpegenc ! filesink
+> > location=test.jpg
+> > 
+> > Notice that I encode two frames, it seems like the draining flow is broken in
+> > this driver. GStreamer will queue the frame and issue CMD_START immediately, the
+> > driver will skip the encode, leaving me with an empty file.
+> 
+> The hantro driver doesn't implement ENC_CMD, which IIRC is used for the
+> draining flow. I guess that's something to fix, since the mem2mem stateful
+> encoder spec seems to require it. Or does that spec not apply to the JPEG
+> encoders?
 
-SYM_CODE functions don't follow the usual calling conventions. Check if the
-return PC in a stack frame falls in any of these. If it does, consider the
-stack trace unreliable.
+I'm pretty sure its required. But this isn't a regression from this patch.
 
-Define a special section for unreliable functions
-=================================================
-
-Define a SYM_CODE_END() macro for arm64 that adds the function address
-range to a new section called "sym_code_functions".
-
-Linker file
-===========
-
-Include the "sym_code_functions" section under read-only data in
-vmlinux.lds.S.
-
-Initialization
-==============
-
-Define an early_initcall() to create a sym_code_functions[] array from
-the linker data.
-
-Unwinder check
-==============
-
-Add a reliability check in unwind_is_reliable() that compares a return
-PC with sym_code_functions[]. If there is a match, then return failure.
-
-Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
----
- arch/arm64/include/asm/linkage.h  | 12 +++++++
- arch/arm64/include/asm/sections.h |  1 +
- arch/arm64/kernel/stacktrace.c    | 55 +++++++++++++++++++++++++++++++
- arch/arm64/kernel/vmlinux.lds.S   | 10 ++++++
- 4 files changed, 78 insertions(+)
-
-diff --git a/arch/arm64/include/asm/linkage.h b/arch/arm64/include/asm/linkage.h
-index 9906541a6861..616bad74e297 100644
---- a/arch/arm64/include/asm/linkage.h
-+++ b/arch/arm64/include/asm/linkage.h
-@@ -68,4 +68,16 @@
- 		SYM_FUNC_END_ALIAS(x);		\
- 		SYM_FUNC_END_ALIAS(__pi_##x)
- 
-+/*
-+ * Record the address range of each SYM_CODE function in a struct code_range
-+ * in a special section.
-+ */
-+#define SYM_CODE_END(name)				\
-+	SYM_END(name, SYM_T_NONE)			;\
-+	99:						;\
-+	.pushsection "sym_code_functions", "aw"		;\
-+	.quad	name					;\
-+	.quad	99b					;\
-+	.popsection
-+
- #endif
-diff --git a/arch/arm64/include/asm/sections.h b/arch/arm64/include/asm/sections.h
-index 152cb35bf9df..ac01189668c5 100644
---- a/arch/arm64/include/asm/sections.h
-+++ b/arch/arm64/include/asm/sections.h
-@@ -22,5 +22,6 @@ extern char __irqentry_text_start[], __irqentry_text_end[];
- extern char __mmuoff_data_start[], __mmuoff_data_end[];
- extern char __entry_tramp_text_start[], __entry_tramp_text_end[];
- extern char __relocate_new_kernel_start[], __relocate_new_kernel_end[];
-+extern char __sym_code_functions_start[], __sym_code_functions_end[];
- 
- #endif /* __ASM_SECTIONS_H */
-diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-index 77eb00e45558..e47f852ad12a 100644
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -18,12 +18,41 @@
- #include <asm/stack_pointer.h>
- #include <asm/stacktrace.h>
- 
-+struct code_range {
-+	unsigned long	start;
-+	unsigned long	end;
-+};
-+
-+static struct code_range	*sym_code_functions;
-+static int			num_sym_code_functions;
-+
-+int __init init_sym_code_functions(void)
-+{
-+	size_t size = (unsigned long)__sym_code_functions_end -
-+		      (unsigned long)__sym_code_functions_start;
-+
-+	sym_code_functions = (struct code_range *)__sym_code_functions_start;
-+	/*
-+	 * Order it so that sym_code_functions is not visible before
-+	 * num_sym_code_functions.
-+	 */
-+	smp_mb();
-+	num_sym_code_functions = size / sizeof(struct code_range);
-+
-+	return 0;
-+}
-+early_initcall(init_sym_code_functions);
-+
- /*
-  * Check the stack frame for conditions that make further unwinding unreliable.
-  */
- static void unwind_check_reliability(struct task_struct *task,
- 				     struct stackframe *frame)
- {
-+	const struct code_range *range;
-+	unsigned long pc;
-+	int i;
-+
- 	if (frame->fp == (unsigned long)task_pt_regs(task)->stackframe) {
- 		/* Final frame; no more unwind, no need to check reliability */
- 		return;
-@@ -36,6 +65,32 @@ static void unwind_check_reliability(struct task_struct *task,
- 	 */
- 	if (!__kernel_text_address(frame->pc))
- 		frame->reliable = false;
-+
-+	/*
-+	 * Check the return PC against sym_code_functions[]. If there is a
-+	 * match, then the consider the stack frame unreliable.
-+	 *
-+	 * As SYM_CODE functions don't follow the usual calling conventions,
-+	 * we assume by default that any SYM_CODE function cannot be unwound
-+	 * reliably.
-+	 *
-+	 * Note that this includes:
-+	 *
-+	 * - Exception handlers and entry assembly
-+	 * - Trampoline assembly (e.g., ftrace, kprobes)
-+	 * - Hypervisor-related assembly
-+	 * - Hibernation-related assembly
-+	 * - CPU start-stop, suspend-resume assembly
-+	 * - Kernel relocation assembly
-+	 */
-+	pc = frame->pc;
-+	for (i = 0; i < num_sym_code_functions; i++) {
-+		range = &sym_code_functions[i];
-+		if (pc >= range->start && pc < range->end) {
-+			frame->reliable = false;
-+			return;
-+		}
-+	}
- }
- 
- /*
-diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-index 50bab186c49b..6381e75e566e 100644
---- a/arch/arm64/kernel/vmlinux.lds.S
-+++ b/arch/arm64/kernel/vmlinux.lds.S
-@@ -122,6 +122,14 @@ jiffies = jiffies_64;
- #define TRAMP_TEXT
- #endif
- 
-+#define SYM_CODE_FUNCTIONS				\
-+	. = ALIGN(16);					\
-+	.symcode : AT(ADDR(.symcode) - LOAD_OFFSET) {	\
-+		__sym_code_functions_start = .;		\
-+		KEEP(*(sym_code_functions))		\
-+		__sym_code_functions_end = .;		\
-+	}
-+
- /*
-  * The size of the PE/COFF section that covers the kernel image, which
-  * runs from _stext to _edata, must be a round multiple of the PE/COFF
-@@ -209,6 +217,8 @@ SECTIONS
- 	swapper_pg_dir = .;
- 	. += PAGE_SIZE;
- 
-+	SYM_CODE_FUNCTIONS
-+
- 	. = ALIGN(SEGMENT_ALIGN);
- 	__init_begin = .;
- 	__inittext_begin = .;
--- 
-2.25.1
+> 
+> > Tested-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+> 
+> Thanks!
+> 
+> ChenYu
 
