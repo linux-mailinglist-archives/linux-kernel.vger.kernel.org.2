@@ -2,107 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 720AC45A9D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:17:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9171445AA07
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:25:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233885AbhKWRUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 12:20:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232900AbhKWRUd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 12:20:33 -0500
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE99BC061714
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:17:25 -0800 (PST)
-Received: by mail-qv1-xf2e.google.com with SMTP id v2so15418342qve.11
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:17:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dC7uVzt5MrM2Gpk9LsKlRUHiHwvI+5kbQiNrhRQEF6A=;
-        b=HM1ELBL6+qrvalddZKiZw/V6FXnHcMyFZLZfs67w7amsPIslJxelFU4TMjYnUqS5mW
-         8NGMFJ7vfDrM/iIXSd6jsaSLlTg0VQj+QMdCvE41WvkoCQBAGaDgpZRmoNmqkXvsB1cJ
-         QgaGAk/Av+gjr7UM7Zq7HZnZkL2lyALAZbInsSeNoJir4dw7UbP1UIjcPig45faa/64/
-         jvC+pTThM3ceUYvLfwJ1+QSyuWBdAknmdurKpKyDdLKAg+5N3alo4Ec3Wbpm2S8/Uv2w
-         AYnn8nIrJjy1LY7CJh3Z1dDw4IS8yETG0cN3IlthsDTwSlINDkSJBQLctYDFC3FUmN8E
-         3+mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dC7uVzt5MrM2Gpk9LsKlRUHiHwvI+5kbQiNrhRQEF6A=;
-        b=gQ6s8wZobXHN3by9xOi24IpgQYUdO+yVSWLBIVqIwzsDorfO0DrENVBRyJF7QxGDMQ
-         Os2DpwxVEHg6l5TG8TYgCMmWbMu/FI/ai8CmRDDGQxBofs0gvkXwz5UPFWEQx2Gjob1y
-         izbh4Vari0IzBm/zAueQ9bY7YxIBap6bpLVDWM9Q9HzSBz7BWIFLL8mKSaCP7jVvbbfh
-         ryU9w23BkfZoGdRGVdVT2rePFkWl+HkE4RRg/EkwHimwzkWjPkdIE3Aqh2jQgylyvx5E
-         2a3qicGPCi5kGGDGPjghgoz0pAeqV7Stuc7aG3+bbcRD8JwzI7EzNTicNU0fAfXJGoWG
-         UuPQ==
-X-Gm-Message-State: AOAM5313liR6qcX9Ybu9gEGBemRzRFHxWN2lYMJehOu9Ed6GKzYBngRD
-        MiFHyHZZ2wxUWNxu44DkKyZDZA==
-X-Google-Smtp-Source: ABdhPJxtD1ArRYMjSPPd0YoD13PmNVq/BXBvjflzk5qi5Q9ez9zBHlK3Jkepb5uP7WHDg9Rr2wTk4Q==
-X-Received: by 2002:a05:6214:246e:: with SMTP id im14mr8350503qvb.14.1637687844906;
-        Tue, 23 Nov 2021 09:17:24 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id x21sm6354233qkf.77.2021.11.23.09.17.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 09:17:23 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mpZQ3-000Dij-2a; Tue, 23 Nov 2021 13:17:23 -0400
-Date:   Tue, 23 Nov 2021 13:17:23 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, qemu-devel@nongnu.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        "J . Bruce Fields" <bfields@fieldses.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
-        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com
-Subject: Re: [RFC v2 PATCH 01/13] mm/shmem: Introduce F_SEAL_GUEST
-Message-ID: <20211123171723.GD5112@ziepe.ca>
-References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
- <20211119134739.20218-2-chao.p.peng@linux.intel.com>
- <20211119151943.GH876299@ziepe.ca>
- <df11d753-6242-8f7c-cb04-c095f68b41fa@redhat.com>
- <6de78894-8269-ea3a-b4ee-a5cc4dad827e@redhat.com>
+        id S239354AbhKWR17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 12:27:59 -0500
+Received: from mga14.intel.com ([192.55.52.115]:2272 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239224AbhKWR1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 12:27:54 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="235306877"
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="235306877"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 09:20:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="606890295"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by orsmga004.jf.intel.com with ESMTP; 23 Nov 2021 09:20:11 -0800
+Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 1ANHK9Qe024401;
+        Tue, 23 Nov 2021 17:20:09 GMT
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     intel-wired-lan@lists.osuosl.org
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/9] intel: switch to napi_build_skb()
+Date:   Tue, 23 Nov 2021 18:18:31 +0100
+Message-Id: <20211123171840.157471-1-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6de78894-8269-ea3a-b4ee-a5cc4dad827e@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 10:06:02AM +0100, Paolo Bonzini wrote:
+napi_build_skb() I introduced earlier this year ([0]) aims
+to decrease MM pressure and the overhead from in-place
+kmem_cache_alloc() on each Rx entry processing by decaching
+skbuff_heads from NAPI per-cpu cache filled prior to that by
+napi_consume_skb() (so it is sort of a direct shortcut for
+free -> mm -> alloc cycle).
+Currently, no in-tree drivers use it. Switch all Intel Ethernet
+drivers to it to get slight-to-medium perf boosts depending on
+the frame size.
 
-> I think it's great that memfd hooks are usable by more than one subsystem,
-> OTOH it's fair that whoever needs it does the work---and VFIO does not need
-> it for confidential VMs, yet, so it should be fine for now to have a single
-> user.
+ice driver, 50 Gbps link, pktgen + XDP_PASS (local in) sample:
 
-I think adding a new interface to a core kernel subsystem should come
-with a greater requirement to work out something generally useful and
-not be overly wedded to a single use case (eg F_SEAL_GUEST)
+frame_size/nthreads  64/42  128/20  256/8  512/4  1024/2  1532/1
 
-Especially if something like 'single user' is not just a small
-implementation artifact but a key design tennant of the whole eventual
-solution.
+net-next (Kpps)      46062  34654   18248  9830   5343    2714
+series               47438  34708   18330  9875   5435    2777
+increase             2.9%   0.15%   0.45%  0.46%  1.72%   2.32%
 
-Jason
+Additionally, e1000's been switched to napi_consume_skb() as it's
+safe and works fine there, and there's no point in napi_build_skb()
+without paired NAPI cache feeding point.
+
+[0] https://lore.kernel.org/all/20210213141021.87840-1-alobakin@pm.me
+
+Alexander Lobakin (9):
+  e1000: switch to napi_consume_skb()
+  e1000: switch to napi_build_skb()
+  i40e: switch to napi_build_skb()
+  iavf: switch to napi_build_skb()
+  ice: switch to napi_build_skb()
+  igb: switch to napi_build_skb()
+  igc: switch to napi_build_skb()
+  ixgbe: switch to napi_build_skb()
+  ixgbevf: switch to napi_build_skb()
+
+ drivers/net/ethernet/intel/e1000/e1000_main.c     | 14 ++++++++------
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c       |  2 +-
+ drivers/net/ethernet/intel/iavf/iavf_txrx.c       |  2 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.c         |  2 +-
+ drivers/net/ethernet/intel/igb/igb_main.c         |  2 +-
+ drivers/net/ethernet/intel/igc/igc_main.c         |  2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c     |  2 +-
+ drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c |  2 +-
+ 8 files changed, 15 insertions(+), 13 deletions(-)
+
+--
+2.33.1
+
