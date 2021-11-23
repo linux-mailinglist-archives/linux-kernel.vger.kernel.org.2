@@ -2,93 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B484A45A98C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:01:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A023C45A98A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:01:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238897AbhKWREw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 12:04:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236804AbhKWREu (ORCPT
+        id S238826AbhKWREr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 12:04:47 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:39342 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236804AbhKWREq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 12:04:50 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3975CC061714;
-        Tue, 23 Nov 2021 09:01:42 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id d24so40183249wra.0;
-        Tue, 23 Nov 2021 09:01:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YAopufrfMZ51IGtrg3jTbLpMge5spZgYt27uOrZnXBA=;
-        b=nKO46A64Nn9kSMXB1SEY4C49GXR5FBaHOG0W6j27DYcBsFT/YWWtkBApRX3vpIupGx
-         B5e/ro1ZWXln9QHkxTIBAbazIcHlLJfN2WKs+2PmfwVGAyN4qbYg7BDb0NspnbJfdUz0
-         4UGCPZCuaGaBNUebs3MRN8Mr1DPg5902DGzdR8+8DoNMI1ldmpsxJ2FrltYEBz/EMfVY
-         oAZhcou27Z8/yA4ImlANkG/bch0t1cz/LOzwqEud9sxhCcPv91HbOUBn7sxTNid1Cvoj
-         7kgj+TmvY7jhfdWEN01iCaUrH3qvgCoV7pzTQl8eGgQEYGinm8iMpv3tVWJc8CBogTgd
-         43zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YAopufrfMZ51IGtrg3jTbLpMge5spZgYt27uOrZnXBA=;
-        b=uMEVk19djGlxt5rq/G1/gNaJUJhlIE3MesqlQiGb4Se4N9X3t84kBxwHiJtXstskDm
-         jppXHP2cqM2PvYBNn8LSyBgQ3kQD5EAmMF7ikBJk2/+qzlesbFqj5y6GOGbHdM3Pd/Sn
-         FJ+C6QQXrO6qqUSJHgnjcM7UsL7UX7NPrhtDu0FfaKILfZcaC+xy70SOEJwVdhrj6XRk
-         CcPM822RmYv1JQmHeO9M3qw8KlTJ4kv0ozjbfIUWfsI5VHB/VCFA9VdTF00DtoOW37Zi
-         UJjuSBZbV5EjZJ9GCnZxIi4auJ8Qq6ybgrhfur7eXgqMd5VEUBMVx1yeJDJRq47TQt4Z
-         e+lA==
-X-Gm-Message-State: AOAM533aPYiFZoCgmGLMuTyl44iPYs50MStrPbydxuEWAvpbEDlE9iLa
-        BtJxSy4XZeqmWUCCkfU1oDU=
-X-Google-Smtp-Source: ABdhPJyetI47JKwVIheOYqRKaeL4OcjedUkDWkJjuz1rRSB94ig0upCTfPO3LxIRnBqG2ICTzaw1NA==
-X-Received: by 2002:a5d:4b8a:: with SMTP id b10mr8858909wrt.413.1637686899505;
-        Tue, 23 Nov 2021 09:01:39 -0800 (PST)
-Received: from localhost.localdomain ([217.113.240.86])
-        by smtp.gmail.com with ESMTPSA id g13sm17380689wrd.57.2021.11.23.09.01.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 09:01:38 -0800 (PST)
-From:   =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
-To:     maarten.lankhorst@linux.intel.com
-Cc:     mripard@kernel.org, tzimmermann@suse.de, airlied@linux.ie,
-        daniel@ffwll.ch, corbet@lwn.net, dri-devel@lists.freedesktop.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
-Subject: [PATCH] drm/doc: Fix TTM acronym
-Date:   Tue, 23 Nov 2021 18:01:26 +0100
-Message-Id: <20211123170126.28446-1-jose.exposito89@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 23 Nov 2021 12:04:46 -0500
+Date:   Tue, 23 Nov 2021 18:01:34 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637686896;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5jFMme/04un1MC+akjG19ft3gjyZIh6NNG67wIsGBMo=;
+        b=DWS4D674L2kcCxpVr2gQnGTSt089zQTRUODvs710sbsaPBVwWxmkwNuKrbOy4wEJK0FWXr
+        viw6gpMlbmrxzNVhr93KpKqgAvWb8TX1jnwVSG1DvDw+aesfYj/H+PY/PmHS04sttfAb7R
+        /pVrAtYs5SX5tJxLDjYlft9xh4yE5RzAdIJUJ7uNZg2l4A1Ku8YSHmTImfr4ZstCAWq551
+        3hHZH54+sfMEERCJRTLCS2u7YgK6YlUrxSU70yDE/iWEGvguh2OEJDXwxor5KulIF9X3/V
+        v/tHoKbLPgJyYH1eT+tnSRW2155Wdz1aLrRPJ8NIfylnH/5XZD0IXOP4mOVP5Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637686896;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5jFMme/04un1MC+akjG19ft3gjyZIh6NNG67wIsGBMo=;
+        b=5NQ/WwFssLtEYCocJv/AX/sNqGciWZW0BXPldn61pNctmEPKDPC4pRCTVR21gg89alilv0
+        ZVHPUVGpYAMa7bBg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Mike Galbraith <umgwanakikbuti@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, lkft-triage@lists.linaro.org
+Subject: [PATCH v2] locking: Fixup write_lock_nested() implementation.
+Message-ID: <20211123170134.y6xb7pmpgdn4m3bn@linutronix.de>
+References: <CA+G9fYtH2JR=L0cPoOEqsEGrZW_uOJgX6qLGMe_hbLpBtjVBwA@mail.gmail.com>
+ <CAK8P3a1NhpNxWfj3gDnuf4bWK_fiE8cjcRyN7e8j95NmvOzbGw@mail.gmail.com>
+ <CAMuHMdVuoUAM-6H2BXYtUH++4yXhRCGLAdbzx2GqAJk64FYO=A@mail.gmail.com>
+ <20211123145006.bon3usz4ilhw6ymg@linutronix.de>
+ <20211123160712.fssioyabln5erx2u@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20211123160712.fssioyabln5erx2u@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The TTM acronym is defined for the first time in the documentation as
-"Translation Table Maps". Afterwards, "Translation Table Manager" is
-used as definition.
+Andrew, please merge it into:
+  locking/rwlocks: introduce write_lock_nested
+  locking-rwlocks-introduce-write_lock_nested.patch
 
-Fix the first definition to avoid confusion.
+And if someone could test it, I get sh4 defconfig built with and without
+lockdep. x86 seems still to build, too. So it can't be that bad.
 
-Signed-off-by: José Expósito <jose.exposito89@gmail.com>
+v1=E2=80=A6v2: I noticed a typo in _raw_write_lock_nested() and decided tha=
+t it
+is no needed so now it is removed for !CONFIG_INLINE_WRITE_LOCK.
+
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- Documentation/gpu/drm-mm.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/rwlock_api_smp.h | 1 -
+ kernel/locking/spinlock.c      | 4 ++++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/gpu/drm-mm.rst b/Documentation/gpu/drm-mm.rst
-index e0538083a2c0..198bcc1affa1 100644
---- a/Documentation/gpu/drm-mm.rst
-+++ b/Documentation/gpu/drm-mm.rst
-@@ -8,7 +8,7 @@ the very dynamic nature of many of that data, managing graphics memory
- efficiently is thus crucial for the graphics stack and plays a central
- role in the DRM infrastructure.
- 
--The DRM core includes two memory managers, namely Translation Table Maps
-+The DRM core includes two memory managers, namely Translation Table Manager
- (TTM) and Graphics Execution Manager (GEM). TTM was the first DRM memory
- manager to be developed and tried to be a one-size-fits-them all
- solution. It provides a single userspace API to accommodate the need of
--- 
-2.25.1
+diff --git a/include/linux/rwlock_api_smp.h b/include/linux/rwlock_api_smp.h
+index f0c535ec4e654..dceb0a59b6927 100644
+--- a/include/linux/rwlock_api_smp.h
++++ b/include/linux/rwlock_api_smp.h
+@@ -47,7 +47,6 @@ _raw_write_unlock_irqrestore(rwlock_t *lock, unsigned lon=
+g flags)
+=20
+ #ifdef CONFIG_INLINE_WRITE_LOCK
+ #define _raw_write_lock(lock) __raw_write_lock(lock)
+-#define _raw_write_lock_nested(lock, subclass) __raw_write_lock_nested(loc=
+k, subclass)
+ #endif
+=20
+ #ifdef CONFIG_INLINE_READ_LOCK_BH
+diff --git a/kernel/locking/spinlock.c b/kernel/locking/spinlock.c
+index 996811efa6d6e..7f49baaa49793 100644
+--- a/kernel/locking/spinlock.c
++++ b/kernel/locking/spinlock.c
+@@ -301,6 +301,10 @@ void __lockfunc _raw_write_lock(rwlock_t *lock)
+ }
+ EXPORT_SYMBOL(_raw_write_lock);
+=20
++#ifndef CONFIG_DEBUG_LOCK_ALLOC
++#define __raw_write_lock_nested(lock, subclass)	__raw_write_lock(((void)(s=
+ubclass), (lock)))
++#endif
++
+ void __lockfunc _raw_write_lock_nested(rwlock_t *lock, int subclass)
+ {
+ 	__raw_write_lock_nested(lock, subclass);
+--=20
+2.34.0
 
