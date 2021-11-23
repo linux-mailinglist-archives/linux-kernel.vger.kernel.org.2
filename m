@@ -2,95 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C3D45A5A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9CD845A5A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:28:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238161AbhKWObP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 09:31:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24216 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238149AbhKWObO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 09:31:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637677685;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=OkMbDX9GTboIaSHWV4LPSGeMWqDixN9bchoMZuhZ4DI=;
-        b=aUNikzzdnUJYLdHQr0BUtMa5MERM58MlXGX1gUUnMciGJVS6pa6PHlV6JF28PwlbobyzBu
-        Uvp0qPNEFPxFdTE/qSZT4cYFv00tK/YpvBLZOow/rfrgRt+ssL8j2stRzqpztAIUXdDed8
-        l5GzIkecbHvU6n2dMSIOpf/b0DCWvJ8=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-64-f-UXGBYgPFS1J7S7b8-Wfw-1; Tue, 23 Nov 2021 09:28:04 -0500
-X-MC-Unique: f-UXGBYgPFS1J7S7b8-Wfw-1
-Received: by mail-wm1-f72.google.com with SMTP id m18-20020a05600c3b1200b0033283ea5facso761248wms.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 06:28:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OkMbDX9GTboIaSHWV4LPSGeMWqDixN9bchoMZuhZ4DI=;
-        b=QtMfqaY/wcPjWwgLp0Sv/k6OqXmgHg1JVzafQLZb5S3RYZRekUYkbZbUkoMI3MKUm+
-         gTRTfBafur2Qre59uasKtAk8zOLBFuWwbJQOtYG1Q31Q0u8503CdcthsX4egflCYtHh2
-         xPSUZg8qCq0gFsQ9CUqXdzKV7nbhPgLf9D8/aMxA/7SVmJj5aa7GTOK5i2oe0snVSeXy
-         7s4NxzTtC5+8qIsuaNxyadow04hvNRnP74kOMWDoiuAk80hUsGxobHLIAcd5TUN4HMlm
-         mQlTbeIcuKWdHc7ZIQPsxp7zKICgkkJ4GhRMz0YsIH8UaCX2Lza2c3RnQjwKW/KAjoQg
-         Hhfw==
-X-Gm-Message-State: AOAM5337ELsWRPXbIRXEyhedesajSTyWdbxo11aF7xRNSVsSC0IwYHVv
-        vN51NjlkIwQoq3zJdBHqwtrKvkZTfoCJYdZayMKgcFB1PRWCj5iEFmgSGrCf0NpqXRPKZHXFyjf
-        HJLJ6fFCzQZS+RseDWCuaHQfN
-X-Received: by 2002:a05:600c:378b:: with SMTP id o11mr3644877wmr.157.1637677683196;
-        Tue, 23 Nov 2021 06:28:03 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzsQus4sLThzJcZoOngd706opPmVC9MmRrFgtMwe3zaHvulHBduoYt1l6B3Ux2uK/yowd3E0w==
-X-Received: by 2002:a05:600c:378b:: with SMTP id o11mr3644847wmr.157.1637677683048;
-        Tue, 23 Nov 2021 06:28:03 -0800 (PST)
-Received: from krava.redhat.com (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id c11sm2513122wmq.27.2021.11.23.06.28.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 06:28:02 -0800 (PST)
-From:   Jiri Olsa <jolsa@redhat.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH] tracing/uprobe: Fix uprobe_perf_open probes iteration
-Date:   Tue, 23 Nov 2021 15:28:01 +0100
-Message-Id: <20211123142801.182530-1-jolsa@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S237792AbhKWObw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 09:31:52 -0500
+Received: from mout.gmx.net ([212.227.17.22]:52635 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238116AbhKWObu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 09:31:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1637677721;
+        bh=0t29Om9r/3mHJ6xqk8ert1AIeVa7sPaveonn0gHt0VE=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=ErS0ctqk/0vIw1MX1sLKJO1ElTBQCUQXp/6f4YBesMgNwTrxGTRg8s5TdabNLD/Yp
+         EV3nVx1M5Lh9BbCsfNa7+48aYFCOwrbZP6StKkIczfH4yyOEFzbHZE9h4gf92RTyXJ
+         jGueZfqp3atK6COv/6jFH5Dk4o4ojoMBtDE8a0Q4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.148.50]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M5QJJ-1mohyP3BrR-001VaL; Tue, 23
+ Nov 2021 15:28:40 +0100
+Message-ID: <606dec7f03feaeb1ed519a8d79516dd5648ef1a5.camel@gmx.de>
+Subject: Re: mm: LTP/memcg testcase regression induced by
+ 8cd7c588decf..66ce520bb7c2 series
+From:   Mike Galbraith <efault@gmx.de>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     lkml <linux-kernel@vger.kernel.org>
+Date:   Tue, 23 Nov 2021 15:28:40 +0100
+In-Reply-To: <904392102aee146723ebd442c6289db10f85f421.camel@gmx.de>
+References: <99e779783d6c7fce96448a3402061b9dc1b3b602.camel@gmx.de>
+         <20211123091304.GC3366@techsingularity.net>
+         <21c3489c7ce8342d392c08547a3222a9c289e9fc.camel@gmx.de>
+         <904392102aee146723ebd442c6289db10f85f421.camel@gmx.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:2ANJ0ESxxhuderbrKIidPBzzyPekYSZ1NBVJ0dgovBIaDunxKJm
+ xbrv1t2wllJxZgm3tfDr5KGpOB6me09b6pqk4E19qXr7nhFqFk390kSgkLL+N+TM+Ejg+9J
+ 7EnS/IEASM4RIDJ4CfF40NYMtmIXipQMP8CZkOpgMPUE7ojONpp3NPNrZ+jSI+397o4SXzw
+ RI51YGE84VSkzyN2Dq6HA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:NaGSgrSW6yc=:ZbR7gGE17i2AaEXhF4BVzB
+ +c6HtiCUiiHLd8za2SVSP7eF7f010HgmIJojBy2qAb0J4aRtukduHt48ANg929LF3qGBbfEkJ
+ gg8c2kYydYlkar1tib0jWf7EcFPCLF5Z6GZOUeZSGEcDLXHnuFI2d+U9y/S4cRyxOr55K/SwQ
+ O9lB3zO2KthqJAUjLEEkAhv7KJyLvtAKXDaSg9sSnLC4ZOMSvZgJtpD5CvxROZJqNTlsAavvF
+ epB8Ksq1Rso3yOIMmab00QNAQr07y988Ccnn3CM93BMi4VYr1ZkwJSViWnCwk3bLJ3+c+TtYB
+ RnPaIT+eOvE6OJZV9h8kyqeNX8zodqwFIoBjc3z9TWhSZcJTFSMOh5RJHXUsuAhs2pWpzW0YH
+ jrz504kxs/YxXoRg7EZ3QwxaaXqWfzD5lJeyvHeA3ceXhH4fY3lFlxA2r5X+bfQlmL6uDdnDN
+ YyZp7aZdACRoJau/1uqwICnUe2XldKPR726HVtfNEPAfmeNnbFq8iZfz4I4V/t+7XF9hPNHYu
+ gfqqVK3FMK2xjdtKcM/NlfnWLSjuqFrIiCNF9NWK28Z+i0OtFAb51IDM13W4+IPaOq5Y7hw9b
+ 8oABOp4EiYV8KdKETljHpAIL8ZMq7vHyuPvFn3E8Gef0OXg8u9yqr8a+MXYblW7ao4JcuXNuT
+ G6KycaA2Uk39EPfCxS0iz7Z9kIb36+ynEZSdS8iVij0CqgFtzpdmAlI5HYW+QjM4PJ2bXJ7wd
+ 8fUFDJtUf3JyKip4hqTEaibixkIX3frK4dSgrwSB20EJzrdxfzMuK/Y8jipkl0fWabW14KiWX
+ GvFur9RL2fbHwBi0OGFfNKyDz7BpzrKbFHvbijlVH5eqfTcmj6P5UNGlxURAL/ly/H9q/ADPR
+ HcgWVzYLlAdhRD8VczFjB5+v29f1Uq/bw0eAW5hPkqzntEGwhDtku7bOs7GB9uvicYUjmsWEr
+ 7mCt93NECwNs9fWa5jZJbIbvb84BAiQfJmLMnDRBhQoOycYFVqVdL8n+TmpILYsdraa2fSZIu
+ Rv9pCEtrD5CamEXp6bEVG+UHkOQ5mJKFidDOXBU5ZaH54c+5NClbkgTkrdGQMc6s62b53wATF
+ qRbvPn4GzpvNmo=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing 'tu' variable initialization in the probes loop,
-otherwise the head 'tu' is used instead of added probes.
+On Tue, 2021-11-23 at 14:12 +0100, Mike Galbraith wrote:
+>
+> ...I bet if I were reeeeeally patient, I might see the test pass.
+>
+> LOL, and as I write this, it just did :)
 
-Fixes: 99c9a923e97a ("tracing/uprobe: Fix double perf_event linking on multiprobe uprobe")
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- kernel/trace/trace_uprobe.c | 1 +
- 1 file changed, 1 insertion(+)
+real    30m27.524s
+user    0m0.206s
+sys     0m0.162s
 
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index 0a5c0db3137e..f5f0039d31e5 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -1313,6 +1313,7 @@ static int uprobe_perf_open(struct trace_event_call *call,
- 		return 0;
- 
- 	list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
-+		tu = container_of(pos, struct trace_uprobe, tp);
- 		err = uprobe_apply(tu->inode, tu->offset, &tu->consumer, true);
- 		if (err) {
- 			uprobe_perf_close(call, event);
--- 
-2.32.0
 
+Hohum, this one looks like there is a genuine buglet in in there
+somewhere, as oom-kill _and_ penalty box surely wasn't intended.
+
+	-Mike
