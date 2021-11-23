@@ -2,110 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B26A45AA91
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:53:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8182E45AA97
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:54:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239194AbhKWR4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 12:56:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52632 "EHLO mail.kernel.org"
+        id S239302AbhKWR53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 12:57:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235026AbhKWR4X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 12:56:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A3AA60F42;
-        Tue, 23 Nov 2021 17:53:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637689994;
-        bh=yN5v/ksH+/i7Kc2NikgDUOw2ePKQ2SBTXHTlo8gWoxA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Nnw3WWluGs1MwQ8YensIJzFnsFs9naMNTTXEf73dRJHQ2dkyx80IURcsycHoUC1k4
-         9qVkRQ7x/w+ng7cQ0/CZ7C1BWtICIkNEmQOOm8TMZiOgCuXJOpbKkGlP67NBBfIcZj
-         I8gfkcdeejgAxnP2z0NCKgwmrolY1SfYEVWPRdHme50fAVSRukmheYWZi4B0U3OjwW
-         52x5AtrcYwjmY1BUPuJNkU1ONLD+JpQERButoiXiBsiLNWFP9OfkNek16SurXnHUud
-         V05BMiT8CUZRc2HUSADQZmjeWyKtKir1Kuw01FIa3ozECn349WDceKZV8CxeVlk4cL
-         vHbT+Zcpard3w==
-Date:   Tue, 23 Nov 2021 17:53:06 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Lucas Tanure <tanureal@opensource.cirrus.com>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kailang Yang <kailang@realtek.com>,
-        Shuming Fan <shumingf@realtek.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
-        Jeremy Szu <jeremy.szu@canonical.com>,
-        Hui Wang <hui.wang@canonical.com>,
-        Werner Sembach <wse@tuxedocomputers.com>,
-        Chris Chiu <chris.chiu@canonical.com>,
-        Cameron Berkenpas <cam@neo-zeon.de>,
-        Sami Loone <sami@loone.fi>, Elia Devito <eliadevito@gmail.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Jack Yu <jack.yu@realtek.com>, Arnd Bergmann <arnd@arndb.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        alsa-devel@alsa-project.org, linux-acpi@vger.kernel.org,
-        patches@opensource.cirrus.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/11] ASoC: cs35l41: Convert tables to shared source code
-Message-ID: <YZ0qgjJnoljpmc9s@sirena.org.uk>
-References: <20211123163149.1530535-1-tanureal@opensource.cirrus.com>
- <20211123163149.1530535-3-tanureal@opensource.cirrus.com>
+        id S235026AbhKWR52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 12:57:28 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98DEE60E08;
+        Tue, 23 Nov 2021 17:54:20 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mpZzm-007LZW-7l; Tue, 23 Nov 2021 17:54:18 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org
+Cc:     =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Luca Ceresoli <luca@lucaceresoli.net>, kernel-team@android.com
+Subject: [PATCH v3 0/3] PCI: apple: Assorted #PERST fixes
+Date:   Tue, 23 Nov 2021 17:54:13 +0000
+Message-Id: <20211123175413.79722-1-maz@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kBarSnr2m61LE+g9"
-Content-Disposition: inline
-In-Reply-To: <20211123163149.1530535-3-tanureal@opensource.cirrus.com>
-X-Cookie: A closed mouth gathers no foot.
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org, pali@kernel.org, alyssa@rosenzweig.io, lorenzo.pieralisi@arm.com, bhelgaas@google.com, mark.kettenis@xs4all.nl, luca@lucaceresoli.net, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Apologies for the rapid fire (I tend to be much more conservative when
+resending series), but given that this series has a direct impact on
+other projects (such as u-boot), I'm trying to converge as quickly as
+possible.
 
---kBarSnr2m61LE+g9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This series aims at fixing a number of issues for the recently merged
+Apple PCIe driver, all revolving around the mishandling of #PERST:
 
-On Tue, Nov 23, 2021 at 04:31:40PM +0000, Lucas Tanure wrote:
+- we didn't properly drive #PERST, and we didn't follow the specified
+  timings
+  
+- the DT had the wrong polarity, which has impacts on the driver
+  itself
 
-> --- a/sound/soc/codecs/Makefile
-> +++ b/sound/soc/codecs/Makefile
-> @@ -54,8 +54,8 @@ snd-soc-cs35l33-objs := cs35l33.o
->  snd-soc-cs35l34-objs := cs35l34.o
->  snd-soc-cs35l35-objs := cs35l35.o
->  snd-soc-cs35l36-objs := cs35l36.o
-> -snd-soc-cs35l41-spi-objs := cs35l41-spi.o cs35l41.o cs35l41-tables.o
-> -snd-soc-cs35l41-i2c-objs := cs35l41-i2c.o cs35l41.o cs35l41-tables.o
-> +snd-soc-cs35l41-spi-objs := cs35l41-spi.o cs35l41.o cs35l41-lib.o
-> +snd-soc-cs35l41-i2c-objs := cs35l41-i2c.o cs35l41.o cs35l41-lib.o
->  snd-soc-cs42l42-objs := cs42l42.o
->  snd-soc-cs42l51-objs := cs42l51.o
->  snd-soc-cs42l51-i2c-objs := cs42l51-i2c.o
+Hopefully, this should address all the issues reported so far.
 
-As was already called out on the HDA part of this patch I was expecting
-this to be more like how we handle sharing the PXA2xx driver code
-between the ASoC and AC'97 implementations - making it a library rather
-than linking the object files directly into both drivers.  I'm not sure
-that the current approach would DTRT if one or both of the drivers is
-built in.
+* From v2:
+  - Fixed DT
+  - Fixed #PERST polarity in the driver
+  - Collected Pali's ack on patch #1
 
---kBarSnr2m61LE+g9
-Content-Type: application/pgp-signature; name="signature.asc"
+[1] https://lore.kernel.org/r/20211122104156.518063-1-maz@kernel.org
 
------BEGIN PGP SIGNATURE-----
+Marc Zyngier (3):
+  PCI: apple: Follow the PCIe specifications when resetting the port
+  arm64: dts: apple: t8103: Fix PCIe #PERST polarity
+  PCI: apple: Fix #PERST polarity
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGdKoEACgkQJNaLcl1U
-h9Cr4gf+LNGWPCz+MX/96IXsUS+wPozdceAjKSn80yGpnRSItYewxSIzu2F97cvm
-dnB0JfE7YXIR1bYMLulAWnpYyGWoJzI+uTiJJnxXdIfUSpPEMm1t7s7fZqrqhFGz
-2ABLlyV0gWZcj6ZGq1X1msELcdJuFgdQUpQZcnCXA/d/dhfadc7DGlBkuKQGpWos
-xardpAPBRITGzwQ6ool8+uCrCNcDAiUUMM6m9mzKXCzJ3gGb/hTjpgLymN0Twn/r
-oYqINRYJGZCpMPXY3mnDZZjAluSVQ15MT7MfQZx1vjQxTEMZm6crjbTQf1O5Xnd2
-WBukoE/U9Mfa1d9uYmqOjP4S9ZPgMA==
-=vneV
------END PGP SIGNATURE-----
+ arch/arm64/boot/dts/apple/t8103.dtsi |  7 ++++---
+ drivers/pci/controller/pcie-apple.c  | 12 +++++++++++-
+ 2 files changed, 15 insertions(+), 4 deletions(-)
 
---kBarSnr2m61LE+g9--
+-- 
+2.30.2
+
