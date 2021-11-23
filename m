@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D82245AD96
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:48:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 379B645AD9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:51:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236471AbhKWUwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 15:52:02 -0500
-Received: from mga02.intel.com ([134.134.136.20]:44182 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232689AbhKWUwB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 15:52:01 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="222351224"
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="222351224"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 12:48:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="674623681"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 23 Nov 2021 12:48:51 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mpcig-0002HU-Km; Tue, 23 Nov 2021 20:48:50 +0000
-Date:   Wed, 24 Nov 2021 04:48:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Subject: [tip:perf/core 12/17] arch/arm64/kvm/arm.c:499:15: warning: no
- previous prototype for 'kvm_arch_vcpu_get_ip'
-Message-ID: <202111240411.iKbDg3oU-lkp@intel.com>
+        id S238937AbhKWUyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 15:54:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232689AbhKWUyn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 15:54:43 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2F4C061574;
+        Tue, 23 Nov 2021 12:51:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4VkUJFZfBikgHkbvPCTgubczW3p/ZjTIGcBnmCIkGFE=; b=td9GgBH3w0ndjVdL3WgxOIVa+5
+        NfglRythKi8YXAcNoDmURi3YmyUPYMS1I6SrvyElzur5JY50fe418qj0xPSpXt/gFXINy3+Y+OMxL
+        bBc1yEmoTrRrN4jRdiO35d6pCMEGlT1j9fs5H60jYEqUj/zkk+MRuIFQRyK0TZNWxorcNtzFYl3Z9
+        jBBwBgpNtTOBxgfLV+j5SVpWUB1Hl8qnu9o2pDehmnA1hqW1i8isGWdsdlqPaBdQ5VVdOa/7hBFmR
+        txqSv1CGZ/4yRKXxxRaU3zZpezR2TyZdOiv577qeuVaRzZ6Cp1odPe/K4sryaZPZ/1gRnknYuIyMV
+        ZndgfYSQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mpcl7-00GMub-Hh; Tue, 23 Nov 2021 20:51:21 +0000
+Date:   Tue, 23 Nov 2021 20:51:21 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        David Hildenbrand <david@redhat.com>,
+        "Paul E . McKenney" <paulmckrcu@fb.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>,
+        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
+        Florian Schmidt <florian.schmidt@nutanix.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v7] mm: Add PM_THP_MAPPED to /proc/pid/pagemap
+Message-ID: <YZ1USY+zB1PP24Z1@casper.infradead.org>
+References: <20211123000102.4052105-1-almasrymina@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211123000102.4052105-1-almasrymina@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/core
-head:   a9f4a6e92b3b319296fb078da2615f618f6cd80c
-commit: e1bfc24577cc65c95dc519d7621a9c985b97e567 [12/17] KVM: Move x86's perf guest info callbacks to generic KVM
-config: arm64-randconfig-r035-20211123 (https://download.01.org/0day-ci/archive/20211124/202111240411.iKbDg3oU-lkp@intel.com/config.gz)
-compiler: aarch64-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=e1bfc24577cc65c95dc519d7621a9c985b97e567
-        git remote add tip https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
-        git fetch --no-tags tip perf/core
-        git checkout e1bfc24577cc65c95dc519d7621a9c985b97e567
-        # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=arm64 
+On Mon, Nov 22, 2021 at 04:01:02PM -0800, Mina Almasry wrote:
+> Add PM_THP_MAPPED MAPPING to allow userspace to detect whether a given virt
+> address is currently mapped by a transparent huge page or not.  Example
+> use case is a process requesting THPs from the kernel (via a huge tmpfs
+> mount for example), for a performance critical region of memory.  The
+> userspace may want to query whether the kernel is actually backing this
+> memory by hugepages or not.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+So you want this bit to be clear if the memory is backed by a hugetlb
+page?
 
-All warnings (new ones prefixed by >>):
+>  		if (page && page_mapcount(page) == 1)
+>  			flags |= PM_MMAP_EXCLUSIVE;
+> +		if (page && is_transparent_hugepage(page))
+> +			flags |= PM_THP_MAPPED;
 
->> arch/arm64/kvm/arm.c:499:15: warning: no previous prototype for 'kvm_arch_vcpu_get_ip' [-Wmissing-prototypes]
-     499 | unsigned long kvm_arch_vcpu_get_ip(struct kvm_vcpu *vcpu)
-         |               ^~~~~~~~~~~~~~~~~~~~
+because honestly i'd expect it to be more useful to mean "This memory
+is mapped by a PMD entry" and then the code would look like:
 
+		if (page)
+			flags |= PM_PMD_MAPPED;
 
-vim +/kvm_arch_vcpu_get_ip +499 arch/arm64/kvm/arm.c
-
-   498	
- > 499	unsigned long kvm_arch_vcpu_get_ip(struct kvm_vcpu *vcpu)
-   500	{
-   501		return *vcpu_pc(vcpu);
-   502	}
-   503	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+(and put a corresponding change in pagemap_hugetlb_range)
