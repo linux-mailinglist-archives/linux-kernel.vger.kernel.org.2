@@ -2,228 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D37745AD88
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:44:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFBBF45AD8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:46:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235790AbhKWUre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 15:47:34 -0500
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.81]:11095 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231317AbhKWUrd (ORCPT
+        id S237851AbhKWUt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 15:49:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230429AbhKWUt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 15:47:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637700250;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=lx2cJbI8GrOX2KSveTwWrflXhk1U0xk/ZzWu+iZs7Ak=;
-    b=PjW1E4lbGzoW6qeYk56MrIQ0PpOEOGMHjrbKJYHUGWu+DlyLcK737iHE1lo8lEIdhD
-    VeOiyhOnrpPxyaOhMDFVH+/orjnkoXmkg5wq49Qz05ZjYWA2v1ek+kPE/42zYOyaUhC2
-    fXcbj4YaRs97LQys/LKPxsDLwBhYB3A6R0qW4vzRzbOA5yyGg45JpaN7pHWRB9W9Ohm7
-    Vp79ba+a8doCEXiAvwBRGe3j8yQFAtyTJJ9i2ZuLLtWuK6dKQitQ/CMGx9IMdl+TuO9N
-    y3X4eF2hpkrxsQ9SCDh5+ubraDN3agE5WprNjf/9/czCav/IDAhAu9aLhgqSvcTdmXR/
-    6Vxw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHWElw43u3mM="
-X-RZG-CLASS-ID: mo00
-Received: from mbp-13-nikolaus.fritz.box
-    by smtp.strato.de (RZmta 47.34.6 DYNA|AUTH)
-    with ESMTPSA id g09b5fxANKi885e
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Tue, 23 Nov 2021 21:44:08 +0100 (CET)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [PATCH v8 0/8] MIPS: JZ4780 and CI20 HDMI
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <J4K13R.CGVJ0IY95LC51@crapouillou.net>
-Date:   Tue, 23 Nov 2021 21:44:07 +0100
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <B6B358E8-4395-442F-A353-396D8DC54C66@goldelico.com>
-References: <cover.1637691240.git.hns@goldelico.com>
- <J4K13R.CGVJ0IY95LC51@crapouillou.net>
-To:     Paul Cercueil <paul@crapouillou.net>
-X-Mailer: Apple Mail (2.3445.104.21)
+        Tue, 23 Nov 2021 15:49:56 -0500
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA4E2C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 12:46:47 -0800 (PST)
+Received: by mail-pj1-x1049.google.com with SMTP id mn13-20020a17090b188d00b001a64f277c1eso2017993pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 12:46:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=UhzMC3gbpAhepjgGNXDGMQ9GMejl51H6Lr8A14dJ5WE=;
+        b=A7Kq8VbNSvNKQE0EZ9WZyxUdcgsFAVwWgZbwDSqpOLFFET3/Q7BZ8cLiG1wFxadg0W
+         ueej/38HwlGhbYGNBTuoLGi+5DGb+YanH6H1YXuou3OyfA9mTyRzK+K1K6h4Gi3IZqpA
+         ZOheDpT/zyvOzIo2gKXo93/nPLpWB36WqBFqDuyAMzQUmwpqF4ZmurQ70oZ6eLpnSAJ7
+         9Nkt9vmaedplWbz7IrDOJuNXT41bmk506mhzG3Pmx0f5myqN/MOTL2BslJ1pNY/1yEo1
+         QC6pGUME+FRUx9iBDGFDPED7FdvUaOAgricu807+2Tn/kcaJYMk0qbfPyhISJVQiwfm7
+         yfVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=UhzMC3gbpAhepjgGNXDGMQ9GMejl51H6Lr8A14dJ5WE=;
+        b=TyiSElDIg0hjUqWbb559H4agJgApLQ68NuZKxajovbknZNKjxzVKtn+fNhaVPWn7ok
+         h8ECpzyj76wnhM4lLyEKW5L9NoJzzrPgeCUa316NrbjjCY7/gHXzthTVNoR9scSP5qZD
+         Ec3xzlONOSBZhZ+strby+eQPRsDh9KoohkhOjZLEe49rGrB0r0vs7tvaSdb6EL7g0Ds5
+         u7zVwYLT9FNmiFASQEXKLdSlMfPltrM3l9dDoeIo5U0OpEwj0aOAx8uvpkuVF2VxAqIN
+         v+XMr7dgYjdhqJOxfnDOOJETdxChgAz7jsuYQTpybzSjPw61Os6Qeo5nDWWpiPq0eHtU
+         +7dg==
+X-Gm-Message-State: AOAM530bNmr3bqT1EoVCW9Cy8j8uF0qR3Juu9AkkNUlH1HSmfkz6dwYR
+        4M280Ao4mqKUB8h7Z3BUivpZuXTO4T66JwVo
+X-Google-Smtp-Source: ABdhPJzB5qfoeMNXtsmN+t/EQtIL+awdoz0JM1gizNNZ15PIzzNjopwIwclnBVASYK+9+0A9FmUuHSa007j3Z+GI
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
+ (user=yosryahmed job=sendgmr) by 2002:a17:903:1247:b0:143:b9b9:52a2 with SMTP
+ id u7-20020a170903124700b00143b9b952a2mr10645431plh.35.1637700407314; Tue, 23
+ Nov 2021 12:46:47 -0800 (PST)
+Date:   Tue, 23 Nov 2021 20:46:44 +0000
+Message-Id: <20211123204644.3458700-1-yosryahmed@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+Subject: [PATCH] mm, hugepages: fix size in hugetlb mremap() test
+From:   Yosry Ahmed <yosryahmed@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mina Almasry <almasrymina@google.com>,
+        Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+The hugetlb vma mremap() test mentions in the header comment that it
+uses 10MB worth of huge pages, when it actually uses 1GB. This causes
+the test to fail on devices with smaller memories.
 
-> Am 23.11.2021 um 21:12 schrieb Paul Cercueil <paul@crapouillou.net>:
->=20
-> Hi Nikolaus,
->=20
-> I think if you can fix the last few things I commented on, and I get =
-an ACK from Rob for the Device Tree related patches, then it will be =
-ready to merge.
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+---
+ tools/testing/selftests/vm/hugepage-mremap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Fine! Especially for finding the NULL regulator risk.
-
-Will do in the next days.
-For the unwedge pinmux I have to check if we need it at all.
-
-BR and thanks,
-Nikolaus
-
->=20
-> Cheers,
-> -Paul
->=20
->=20
-> Le mar., nov. 23 2021 at 19:13:53 +0100, H. Nikolaus Schaller =
-<hns@goldelico.com> a =C3=A9crit :
->> PATCH V8 2021-11-23 19:14:00:
->> - fix a bad editing result from patch 2/8 (found by =
-paul@crapouillou.net)
->> PATCH V7 2021-11-23 18:46:23:
->> - changed gpio polarity of hdmi_power to 0 (suggested by =
-paul@crapouillou.net)
->> - fixed LCD1 irq number (bug found by paul@crapouillou.net)
->> - removed "- 4" for calculating max_register (suggested by =
-paul@crapouillou.net)
->> - use unevaluatedPropertes instead of additionalProperties (suggested =
-by robh@kernel.org)
->> - moved and renamed ingenic,jz4780-hdmi.yaml (suggested by =
-robh@kernel.org)
->> - adjusted assigned-clocks changes to upstream which added some for =
-SSI (by hns@goldelico.com)
->> - rebased and tested with v5.16-rc2 + patch set drm/ingenic by =
-paul@crapouillou.net (by hns@goldelico.com)
->> PATCH V6 2021-11-10 20:43:33:
->> - changed CONFIG_DRM_INGENIC_DW_HDMI to "m" (by hns@goldelico.com)
->> - made ingenic-dw-hdmi an independent platform driver which can be =
-compiled as module
->>  and removed error patch fixes for IPU (suggested by =
-paul@crapouillou.net)
->> - moved assigned-clocks from jz4780.dtsi to ci20.dts (suggested by =
-paul@crapouillou.net)
->> - fixed reg property in jz4780.dtsi to cover all registers incl. =
-gamma and vee (by hns@goldelico.com)
->> - added a base patch to calculate regmap size from DTS reg property =
-(requested by paul@crapouillou.net)
->> - restored resetting all bits except one in LCDOSDC (requested by =
-paul@crapouillou.net)
->> - clarified setting of cpos (suggested by paul@crapouillou.net)
->> - moved bindings definition for ddc-i2c-bus (suggested by =
-paul@crapouillou.net)
->> - simplified mask definitions for JZ_LCD_DESSIZE (requested by =
-paul@crapouillou.net)
->> - removed setting alpha premultiplication (suggested by =
-paul@crapouillou.net)
->> - removed some comments (suggested by paul@crapouillou.net)
->> PATCH V5 2021-10-05 14:28:44:
->> - dropped mode_fixup and timings support in dw-hdmi as it is no =
-longer needed in this V5 (by hns@goldelico.com)
->> - dropped "drm/ingenic: add some jz4780 specific features" =
-(stimulated by paul@crapouillou.net)
->> - fixed typo in commit subject: "synopsis" -> "synopsys" (by =
-hns@goldelico.com)
->> - swapped clocks in jz4780.dtsi to match synopsys,dw-hdmi.yaml (by =
-hns@goldelico.com)
->> - improved, simplified, fixed, dtbschecked ingenic-jz4780-hdmi.yaml =
-and made dependent of bridge/synopsys,dw-hdmi.yaml (based on suggestions =
-by maxime@cerno.tech)
->> - fixed binding vs. driver&DTS use of hdmi-5v regulator (suggested by =
-maxime@cerno.tech)
->> - dropped "drm/bridge: synopsis: Fix to properly handle HPD" - was a =
-no longer needed workaround for a previous version
->>  (suggested by maxime@cerno.tech)
->> PATCH V4 2021-09-27 18:44:38:
->> - fix setting output_port =3D 1 (issue found by paul@crapouillou.net)
->> - ci20.dts: convert to use hdmi-connector (by hns@goldelico.com)
->> - add a hdmi-regulator to control +5V power (by hns@goldelico.com)
->> - added a fix to dw-hdmi to call drm_kms_helper_hotplug_event on =
-plugin event detection (by hns@goldelico.com)
->> - always allocate extended descriptor but initialize only for jz4780 =
-(by hns@goldelico.com)
->> - updated to work on top of "[PATCH v3 0/6] drm/ingenic: Various =
-improvements v3" (by paul@crapouillou.net)
->> - rebased to v5.13-rc3
->> PATCH V3 2021-08-08 07:10:50:
->> This series adds HDMI support for JZ4780 and CI20 board (and fixes =
-one IPU related issue in registration error path)
->> - [patch 1/8] switched from mode_fixup to atomic_check (suggested by =
-robert.foss@linaro.org)
->>  - the call to the dw-hdmi specialization is still called mode_fixup
->> - [patch 3/8] diverse fixes for ingenic-drm-drv (suggested by =
-paul@crapouillou.net)
->>  - factor out some non-HDMI features of the jz4780 into a separate =
-patch
->>  - multiple fixes around max height
->>  - do not change regmap config but a copy on stack
->>  - define some constants
->>  - factor out fixing of drm_init error path for IPU into separate =
-patch
->>  - use FIELD_PREP()
->> - [patch 8/8] conversion to component framework dropped (suggested by =
-Laurent.pinchart@ideasonboard.com and paul@crapouillou.net)
->> PATCH V2 2021-08-05 16:08:05:
->> - code and commit messages revisited for checkpatch warnings
->> - rebased on v5.14-rc4
->> - include (failed, hence RFC 8/8) attempt to convert to component =
-framework
->>  (was suggested by Paul Cercueil <paul@crapouillou.net> a while ago)
->> This series adds HDMI support for JZ4780 and CI20 board
->> H. Nikolaus Schaller (3):
->>  drm/ingenic: prepare ingenic drm for later addition of JZ4780
->>  MIPS: defconfig: CI20: configure for DRM_DW_HDMI_JZ4780
->>  [RFC] MIPS: DTS: Ingenic: adjust register size to available =
-registers
->> Paul Boddie (4):
->>  drm/ingenic: Add support for JZ4780 and HDMI output
->>  drm/ingenic: Add dw-hdmi driver for jz4780
->>  MIPS: DTS: jz4780: Account for Synopsys HDMI driver and LCD
->>    controllers
->>  MIPS: DTS: CI20: Add DT nodes for HDMI setup
->> Sam Ravnborg (1):
->>  dt-bindings: display: Add ingenic,jz4780-dw-hdmi DT Schema
->> .../display/bridge/ingenic,jz4780-hdmi.yaml   |  76 +++++++++++
->> .../display/bridge/synopsys,dw-hdmi.yaml      |   3 +
->> arch/mips/boot/dts/ingenic/ci20.dts           |  83 ++++++++++-
->> arch/mips/boot/dts/ingenic/jz4725b.dtsi       |   2 +-
->> arch/mips/boot/dts/ingenic/jz4740.dtsi        |   2 +-
->> arch/mips/boot/dts/ingenic/jz4770.dtsi        |   2 +-
->> arch/mips/boot/dts/ingenic/jz4780.dtsi        |  40 ++++++
->> arch/mips/configs/ci20_defconfig              |   6 +
->> drivers/gpu/drm/ingenic/Kconfig               |   9 ++
->> drivers/gpu/drm/ingenic/Makefile              |   1 +
->> drivers/gpu/drm/ingenic/ingenic-drm-drv.c     |  62 ++++++++-
->> drivers/gpu/drm/ingenic/ingenic-drm.h         |  38 ++++++
->> drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c     | 129 =
-++++++++++++++++++
->> 13 files changed, 444 insertions(+), 9 deletions(-)
->> create mode 100644 =
-Documentation/devicetree/bindings/display/bridge/ingenic,jz4780-hdmi.yaml
->> create mode 100644 drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
->> --
->> 2.33.0
->=20
->=20
+diff --git a/tools/testing/selftests/vm/hugepage-mremap.c b/tools/testing/selftests/vm/hugepage-mremap.c
+index 257df94697a5..551e68f97926 100644
+--- a/tools/testing/selftests/vm/hugepage-mremap.c
++++ b/tools/testing/selftests/vm/hugepage-mremap.c
+@@ -18,7 +18,7 @@
+ #include <linux/userfaultfd.h>
+ #include <sys/ioctl.h>
+ 
+-#define LENGTH (1UL * 1024 * 1024 * 1024)
++#define LENGTH (10UL * 1024 * 1024)
+ 
+ #define PROTECTION (PROT_READ | PROT_WRITE | PROT_EXEC)
+ #define FLAGS (MAP_SHARED | MAP_ANONYMOUS)
+-- 
+2.34.0.rc2.393.gf8c9666880-goog
 
