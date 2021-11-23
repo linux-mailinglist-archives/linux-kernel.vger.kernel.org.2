@@ -2,83 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B35945A9D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:17:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 720AC45A9D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237806AbhKWRUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 12:20:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46512 "EHLO
+        id S233885AbhKWRUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 12:20:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238814AbhKWRUi (ORCPT
+        with ESMTP id S232900AbhKWRUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 12:20:38 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1563C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:17:29 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id b40so92944655lfv.10
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:17:29 -0800 (PST)
+        Tue, 23 Nov 2021 12:20:33 -0500
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE99BC061714
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:17:25 -0800 (PST)
+Received: by mail-qv1-xf2e.google.com with SMTP id v2so15418342qve.11
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:17:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iRJYbAOMl4yq+oKHujSPycwNua95Irf6sHCjaFIgmNs=;
-        b=DLxZDsA2cqPy9/18+P1387n4BSb4+l8Kz1+wHrEyjGk4+2ZcGt6Ihue86vMzQohzCH
-         4FAfzMdQGVi/6T8Go3oFMGK+4i3b/Z+tV2agG89gXC07jPoqbecYnVEdLPvfyG+Y1V4a
-         alUDeEU4vUsn9IpsK1VuHVvUliV7Oq3McWIiO5msC8idRqmk4v91vglGUqSzkO3e5BIa
-         +3u1gN7gt/656oZb5/bgH/fYkcQTytanrcDNFm1vRNIDJpX5i0XhPiUqjO6VYsrlRPko
-         +1+N9Crdc6RQ9E2A07jJdMoi7xVhKjWp1NowhQVuXaOIyxQ6wWn2bWqKhttaaQZigNju
-         yz2Q==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dC7uVzt5MrM2Gpk9LsKlRUHiHwvI+5kbQiNrhRQEF6A=;
+        b=HM1ELBL6+qrvalddZKiZw/V6FXnHcMyFZLZfs67w7amsPIslJxelFU4TMjYnUqS5mW
+         8NGMFJ7vfDrM/iIXSd6jsaSLlTg0VQj+QMdCvE41WvkoCQBAGaDgpZRmoNmqkXvsB1cJ
+         QgaGAk/Av+gjr7UM7Zq7HZnZkL2lyALAZbInsSeNoJir4dw7UbP1UIjcPig45faa/64/
+         jvC+pTThM3ceUYvLfwJ1+QSyuWBdAknmdurKpKyDdLKAg+5N3alo4Ec3Wbpm2S8/Uv2w
+         AYnn8nIrJjy1LY7CJh3Z1dDw4IS8yETG0cN3IlthsDTwSlINDkSJBQLctYDFC3FUmN8E
+         3+mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iRJYbAOMl4yq+oKHujSPycwNua95Irf6sHCjaFIgmNs=;
-        b=VwI/wfibZ8ysLa45oLW0Po3hB/v7GewHvCMvdW4UIRW2jtZ9K2lborTjdlRAkdcgN6
-         eEh8BepyVQD3mzdE1lVu2UfihB4P82VVFS9H9NUlw+RSYb1tH7r1qiAvWVMGnn/Nkact
-         oWVMONBAJqoP4DFst47DbdXFkCI4GKL05dV05UAwsWSfLVE3iEwCG8TmR2W8RGCbMhal
-         QimOMlSg/ILHYBH1H5yy8sLireAPj4deGnW94FEJ7yoI0/jGJMKULpprZjaF1T2ITfxu
-         fqsqfq7ovO7t9zWmgv8UqS/QPI3V2oXbnIuMY5FvwubTi6peuMwCWjaZg9A/Bje+OykB
-         xQLA==
-X-Gm-Message-State: AOAM531v/USAOXXyJi3YnQRizhJAOJJP+xZqUa21n+c2aQKLqENVKRYk
-        YrgRpiC8buWFeUQ4yk94ibM2wwJYy0NYv09Sy23caw==
-X-Google-Smtp-Source: ABdhPJxDJDfdaWIdd6LYTEnc768rpM1TuoJj9qR8hKwwqHz1F8twoMwoRI4lCmNRU3mLrA/QhjUAfftSh1LFA1abbU4=
-X-Received: by 2002:ac2:4e02:: with SMTP id e2mr6753456lfr.264.1637687847964;
- Tue, 23 Nov 2021 09:17:27 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dC7uVzt5MrM2Gpk9LsKlRUHiHwvI+5kbQiNrhRQEF6A=;
+        b=gQ6s8wZobXHN3by9xOi24IpgQYUdO+yVSWLBIVqIwzsDorfO0DrENVBRyJF7QxGDMQ
+         Os2DpwxVEHg6l5TG8TYgCMmWbMu/FI/ai8CmRDDGQxBofs0gvkXwz5UPFWEQx2Gjob1y
+         izbh4Vari0IzBm/zAueQ9bY7YxIBap6bpLVDWM9Q9HzSBz7BWIFLL8mKSaCP7jVvbbfh
+         ryU9w23BkfZoGdRGVdVT2rePFkWl+HkE4RRg/EkwHimwzkWjPkdIE3Aqh2jQgylyvx5E
+         2a3qicGPCi5kGGDGPjghgoz0pAeqV7Stuc7aG3+bbcRD8JwzI7EzNTicNU0fAfXJGoWG
+         UuPQ==
+X-Gm-Message-State: AOAM5313liR6qcX9Ybu9gEGBemRzRFHxWN2lYMJehOu9Ed6GKzYBngRD
+        MiFHyHZZ2wxUWNxu44DkKyZDZA==
+X-Google-Smtp-Source: ABdhPJxtD1ArRYMjSPPd0YoD13PmNVq/BXBvjflzk5qi5Q9ez9zBHlK3Jkepb5uP7WHDg9Rr2wTk4Q==
+X-Received: by 2002:a05:6214:246e:: with SMTP id im14mr8350503qvb.14.1637687844906;
+        Tue, 23 Nov 2021 09:17:24 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id x21sm6354233qkf.77.2021.11.23.09.17.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 09:17:23 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mpZQ3-000Dij-2a; Tue, 23 Nov 2021 13:17:23 -0400
+Date:   Tue, 23 Nov 2021 13:17:23 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, qemu-devel@nongnu.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J . Bruce Fields" <bfields@fieldses.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
+        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com
+Subject: Re: [RFC v2 PATCH 01/13] mm/shmem: Introduce F_SEAL_GUEST
+Message-ID: <20211123171723.GD5112@ziepe.ca>
+References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
+ <20211119134739.20218-2-chao.p.peng@linux.intel.com>
+ <20211119151943.GH876299@ziepe.ca>
+ <df11d753-6242-8f7c-cb04-c095f68b41fa@redhat.com>
+ <6de78894-8269-ea3a-b4ee-a5cc4dad827e@redhat.com>
 MIME-Version: 1.0
-References: <20211120201230.920082-1-shakeelb@google.com> <25b36a5c-5bbd-5423-0c67-05cd6c1432a7@redhat.com>
- <CALvZod5L1C1DV_DVs9O3xZm6CJnriunAoj89YLDdCp7ef5yBxA@mail.gmail.com>
- <1b30d06d-f9c0-1737-13e6-2d1a7d7b8507@redhat.com> <CALvZod5sFQbf3t_ZDW6ob+BqVtezn-c7i1UyOeev6Lwch96=7g@mail.gmail.com>
- <92fe0c31-b083-28c4-d306-da8a3cd891a3@redhat.com>
-In-Reply-To: <92fe0c31-b083-28c4-d306-da8a3cd891a3@redhat.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 23 Nov 2021 09:17:16 -0800
-Message-ID: <CALvZod4C1V6Gk96oMCMguaqChjggH0KH3KKcU1QOmjRG+QEAbQ@mail.gmail.com>
-Subject: Re: [PATCH] mm: split thp synchronously on MADV_DONTNEED
-To:     David Hildenbrand <david@redhat.com>
-Cc:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6de78894-8269-ea3a-b4ee-a5cc4dad827e@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 8:57 AM David Hildenbrand <david@redhat.com> wrote:
->
-[...]
-> >>
-> >> I do wonder which these locking contexts are exactly, and if we could
-> >> also do the same thing on ordinary munmap -- because I assume it can be
-> >> similarly problematic for some applications.
-> >
-> > This is a good question regarding munmap. One main difference is
-> > munmap takes mmap_lock in write mode and usually performance critical
-> > applications avoid such operations.
->
-> Maybe we can extend it too most page zapping, if that makes things simpler.
->
+On Tue, Nov 23, 2021 at 10:06:02AM +0100, Paolo Bonzini wrote:
 
-Do you mean doing sync THP split for most of page zapping functions
-(but only if that makes things simpler)?
+> I think it's great that memfd hooks are usable by more than one subsystem,
+> OTOH it's fair that whoever needs it does the work---and VFIO does not need
+> it for confidential VMs, yet, so it should be fine for now to have a single
+> user.
+
+I think adding a new interface to a core kernel subsystem should come
+with a greater requirement to work out something generally useful and
+not be overly wedded to a single use case (eg F_SEAL_GUEST)
+
+Especially if something like 'single user' is not just a small
+implementation artifact but a key design tennant of the whole eventual
+solution.
+
+Jason
