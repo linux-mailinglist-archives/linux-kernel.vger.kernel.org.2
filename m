@@ -2,77 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7DB4459B65
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 06:11:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58190459B67
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 06:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbhKWFOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 00:14:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229468AbhKWFOx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 00:14:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE1E960187;
-        Tue, 23 Nov 2021 05:11:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637644305;
-        bh=pwCsV32PddfqKxDNCQ85J0Dw/5UwXakf4JnoU0OOMUY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PcyE1h4jBIU+Tp4uxwSpOmM48ssx6zW869/ImXd6Il/y9d8BZBBZMSGvE9yJSvekv
-         ZtOHq+cFwi2UNNuuvOm4aFP++h3KtT99rZOZSs/Ch8yOngOgcg4bwtsaWcemBqk3Lg
-         qQ3yZDqrB6+v2ERFCcZAdMm9UJovxPfeMr27AgBBKxyBMYO4EfJW5QIutn8G/NOr89
-         T7agXKRIXin+zee459rS70hovvj3PysssCP3jSrLHAd41/6kDQvOTzPdsFaNBcmH1B
-         3s4Mou4EAPrkr6W2bGfzJ/J7bTwgzmRedPkr9WYU9d+3QzXS/pTNckoZRM0IY6dhUt
-         Viar+uD2q9edA==
-Date:   Tue, 23 Nov 2021 10:41:41 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Liam Beguin <liambeguin@gmail.com>
-Cc:     Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Liam Beguin <lvb@xiphos.com>, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/1] dt-bindings: phy: zynqmp-psgtr: fix USB phy name
-Message-ID: <YZx4DfXl+OBxwKKD@matsya>
-References: <20211117003841.2030813-1-lvb@xiphos.com>
+        id S231812AbhKWFRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 00:17:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231532AbhKWFRi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 00:17:38 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B56C061574;
+        Mon, 22 Nov 2021 21:14:30 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id n26so18258228pff.3;
+        Mon, 22 Nov 2021 21:14:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=LTrEwlV4tO0CKDuPJnxs0wjii8wYlBP1Dzck83uF+lE=;
+        b=e/ZGpxUY/7geZY95TewDu55eM9+/gM/Rl/9uelqyBdB0oXYucfo+GnLE6T5IcCtLeZ
+         dwlwejCmU7LYtdGnaipXPdQhW9jjh6rnuUQqf+0229JY4LIglZxcnOZ/n77TjEytGfk9
+         TaANMFJm55OlAbbwCfQU7AU7oc6VHfSAHM49YtAwGfr4hE8edFvNLUjnE/paYz94vceq
+         Dw7XnIqpLRrU+oeMu5mdnhO06z4iVhUf3CGkgvDpkgvwf8CFE9r8U5JIK9DLZgZeaDVL
+         PFaeJt4Roxlxq0/W/cKZHYK4k1LhHnjmiV9e3Op0bYd8Q2iYR21p7g4/nTEV+0qmE6Pv
+         43ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=LTrEwlV4tO0CKDuPJnxs0wjii8wYlBP1Dzck83uF+lE=;
+        b=dtx+kgV+tDz/nXDP5U9jHtws6de2LlWMbjXSsSv3vlwKDd92DDgjXU2nH8kafn+4ft
+         N7UE2HudVw+dSixC2ivyEexPd3Oa1hqO7cW79tFLC+qz4IbuY2tIq3OwzzqNx8uZF0o5
+         zmTTiosI9vwmfagZeRAwC/Zd3ZpZ95v8d8XEbVGmL4zr/asywY9jWKJv4ccl3n99ylxs
+         ww6TKXv1mlNCSU7an6rxS27q+rNz76GXWKmZtkG8leCYuweNp106wLLRLM2HNnbaxcZk
+         Ibk5NzK/chCB5EuyTAZXUs+ZYs9nTuZ2LoIn4MlgAzXNSpACd8xN4mrLKYdIPfScfRhd
+         OmQQ==
+X-Gm-Message-State: AOAM531B/VY+NxNI9W+PcOGyQTkmIQVlvLtfAeeYX9xdogCEH3QsQxEu
+        kiyfvI2u9XH1/IVSmI6F4mrwa+gbD5kjDiP+zJA0R5OlU/oO0w==
+X-Google-Smtp-Source: ABdhPJwPa/oQ1LunR+h1in0HvjPxTo85GkcSZ6PvtKN+g8QYZqj8y/O5tbCdoy5RrWXbfEzYKifjheH3IqKs35dVmOI=
+X-Received: by 2002:a05:6a00:1312:b0:4a4:e341:213a with SMTP id
+ j18-20020a056a00131200b004a4e341213amr2294078pfu.57.1637644470038; Mon, 22
+ Nov 2021 21:14:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211117003841.2030813-1-lvb@xiphos.com>
+References: <CAHhAz+h2OgBMP8Mm+dNPuNEq=DhWdc7Y+dJEvrXz9kAUD7O2GQ@mail.gmail.com>
+In-Reply-To: <CAHhAz+h2OgBMP8Mm+dNPuNEq=DhWdc7Y+dJEvrXz9kAUD7O2GQ@mail.gmail.com>
+Reply-To: noloader@gmail.com
+From:   Jeffrey Walton <noloader@gmail.com>
+Date:   Tue, 23 Nov 2021 00:13:20 -0500
+Message-ID: <CAH8yC8nEhcAs5hE=utcUEKZ8kohOx2TWhUsbue1sdZo23uiBHw@mail.gmail.com>
+Subject: Re: x86, nmi: IOCK error
+To:     Muni Sekhar <munisekharrms@gmail.com>
+Cc:     linux-x86_64@vger.kernel.org,
+        kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-11-21, 19:38, Liam Beguin wrote:
-> PHY_TYPE_USB is undefined and was added as PHY_TYPE_USB2 and
-> PHY_TYPE_USB3 in 2fbbc96d1600 (phy: Add PHY header file for DT x Driver
-> defines, 2014-11-04). Fix documentation to avoid misleading users.
+On Mon, Nov 22, 2021 at 11:03 PM Muni Sekhar <munisekharrms@gmail.com> wrote:
+>
+> The following message is seen on the console "NMI: IOCK error (debug
+> interrupt?) for reason 60 on CPU 0.", what does it mean?
 
-Applied, thanks
+Red Hat has a good article on the subject at
+https://access.redhat.com/solutions/42261.
 
-> 
-> Signed-off-by: Liam Beguin <lvb@xiphos.com>
-> ---
->  Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml b/Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml
-> index 04d5654efb38..79906519c652 100644
-> --- a/Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml
-> +++ b/Documentation/devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml
-> @@ -29,7 +29,7 @@ properties:
->            - PHY_TYPE_PCIE
->            - PHY_TYPE_SATA
->            - PHY_TYPE_SGMII
-> -          - PHY_TYPE_USB
-> +          - PHY_TYPE_USB3
->        - description: The PHY instance
->          minimum: 0
->          maximum: 1 # for DP, SATA or USB
-> -- 
-> 2.34.0
-
--- 
-~Vinod
+Jeff
