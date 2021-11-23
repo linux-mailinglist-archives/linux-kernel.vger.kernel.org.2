@@ -2,103 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6282545A131
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:18:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63E9145A12D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:18:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235985AbhKWLVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 06:21:19 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:42946 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234044AbhKWLVN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 06:21:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637666286; x=1669202286;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=HB5qI31vucZBGIsfGDW0ofLzI2/3qx6sfULeQp33/J0=;
-  b=HV60vp68cVWaSIVopmqbfImwHWlnbl1LI3Uk3solgHOw5wdUsqXHQmhf
-   txP+j50dgOWdl00prpJlEtkJwrDF/E+sWSByLBNNmYv02dGN1cSlkvOsD
-   HErNCfPG2zpMAVsSXaDv0pSawnqVqckxrC1olaoTL8E7ubNTsiMUtD5NO
-   M=;
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 23 Nov 2021 03:18:05 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 03:18:05 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Tue, 23 Nov 2021 03:18:04 -0800
-Received: from [10.216.40.170] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Tue, 23 Nov
- 2021 03:17:59 -0800
-Subject: Re: [PATCH v2 1/3] dt-bindings: usb: usb-xhci: Add bindings for
- usb-skip-phy-init property
-To:     Pavan Kondeti <quic_pkondeti@quicinc.com>
-CC:     Rob Herring <robh@kernel.org>, Andy Gross <agross@kernel.org>,
-        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        "Matthias Kaehlcke" <mka@chromium.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_ppratap@quicinc.com>
-References: <1636353710-25582-1-git-send-email-quic_c_sanm@quicinc.com>
- <1636353710-25582-2-git-send-email-quic_c_sanm@quicinc.com>
- <YY7vAzxj9aR/zBSB@robh.at.kernel.org>
- <3e02ae12-660b-8cf5-d6f8-3a8d1a2abc4e@quicinc.com>
- <20211117052703.GA6511@hu-pkondeti-hyd.qualcomm.com>
-From:   Sandeep Maheswaram <quic_c_sanm@quicinc.com>
-Message-ID: <d24178ca-ef62-6cbd-601f-1c9565e10a70@quicinc.com>
-Date:   Tue, 23 Nov 2021 16:47:55 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S235860AbhKWLVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 06:21:14 -0500
+Received: from mout.gmx.net ([212.227.15.19]:50475 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233044AbhKWLVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 06:21:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1637666282;
+        bh=v9fmtfqFpWLetVfHAsYxm3tN/nAhvKj8KsPNVmOQsgU=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=Txk3DquhW4wDaJLyYYY19AQSKjW74RgzDralL+1ZpBaJXJ6kbqevYBHApnfwrGJzq
+         3949gHNDClGj72XV5Uc+Gb0DemhdvGwoqrVnUPESleytYJVGJ2uMVF0PmhEWP/k4Id
+         oJNl5EJzNTuldgyOC1o6gph/QG89bSj67g7be7R8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.148.50]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N4QwW-1mfxIi1wne-011R5t; Tue, 23
+ Nov 2021 12:18:02 +0100
+Message-ID: <21c3489c7ce8342d392c08547a3222a9c289e9fc.camel@gmx.de>
+Subject: Re: mm: LTP/memcg testcase regression induced by
+ 8cd7c588decf..66ce520bb7c2 series
+From:   Mike Galbraith <efault@gmx.de>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     lkml <linux-kernel@vger.kernel.org>
+Date:   Tue, 23 Nov 2021 12:18:01 +0100
+In-Reply-To: <20211123091304.GC3366@techsingularity.net>
+References: <99e779783d6c7fce96448a3402061b9dc1b3b602.camel@gmx.de>
+         <20211123091304.GC3366@techsingularity.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.1 
 MIME-Version: 1.0
-In-Reply-To: <20211117052703.GA6511@hu-pkondeti-hyd.qualcomm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:XEFHFalrCVVntruBRqabWZ5cRGFKq4jgTybfHRi0bXDLoSBExSp
+ bXowfG7wbd8KEdAmCEic5pQLV/5TmFSSuBbFN5HBCUudoHOH5rEiO1OO3PY+/n21EYDxLBH
+ IJhqs+9rtHC8YPmy5eV4kbbnPoXAYHaXC5/dckmQM2Re9JUgxAAcwrhJBM/GKhe2pY39PLw
+ UiA7UTUc1YaHRKbUegsYA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ZFfoiAEVQ+8=:Wz8gVMksgdJeoZIO5k7Ubj
+ qq7r57a1XpetdjsvYFJMVh9SS2whbahRnhV3jojxHTgQynFjlkWqa1roHl5M3DqAUWHcyeOvq
+ 8ZXPXN1hw4TTWS8pWz7P+/3VvKOFGcT1CxDMarcHR48AQQ9BfvjwavklUrf/DAEJw9eLqDF4f
+ Qr/+7arkF+RBH+0biLUJOkn/j/h1Ey7y6IcA8wyk3pViITfIc47krXZucVoSRkwPVKirR2DOm
+ Mp32hHtxXc6GmafQbLz30DnlYR+PAAboBzSvtcp9nNaQaZv+3vItc0d8o2v75DVwp6Risxe0T
+ sZ3cmV6EkMEf1I3knd1VOiEKAZHjeacNZqjO0xj+otq/eu+5xg4PuskqRdfABhWdhV0LASBG1
+ riPjqYzEvSoU/1cHWkhiAyJHj3CtTv3/VIzvPQi709fMdOKJynWizus/1jVrnnZ+eB2t8N2BL
+ F9oWcFBvebsfPhZSX75imYQACOcoZ0PYBrfq0acr+8iu1eLrKln5cpuIRLo5xzWGBYXx/hs88
+ OJ0JEi2s6TjMGo7arL6prby7FtDZKLRfkGiQ7d5DWL1fCR6t2M/ipNDFwzSPn374jygMGhUHJ
+ 4naNz81PyvHdTKPwQXqhdoJBuE0Oqlb+Xjif5o84pn9xjOSa/P5ApKJX1Zgt3kvgwL3cVoJiP
+ CeZzingzc/pI0R/zlbDYlj1cHNLYG2YwfRSFZ2SyLIh7pKmc+xkdTBPsJ4+9f1UF/1FmhHKiX
+ a/jHhVd6MFTGWt18LZfEcevWeL/PSyT7rW47d1CnoI3CNi0Rk4+EXfbJuOnx00ioGM738tVBG
+ bCxZtNHpVRXfuaVh6N3REv44epaV+lzBWK12fP46dUeMioolT0CqaMYTmynGyp0A8+Cc9iqCP
+ VH30NSwqq4Q6TjlLY7EXmKwxBQ36XR4rRQ8AkMBEectpKQpIoliW8RVUPV2mx3ADZjc4AueM9
+ XshtTLYyZUxpClSApdbtm0SUoadqja+Bb+jZ6rNOKunRrLwtTsBcZGj1E0ZcpWh5ZhfuoPeun
+ oh9tkI3A5rrwKNifH/Jnrm0zdQw1nutFhUXZAhSZmryrmSVY/ak10+aquND6dIpSWIBWe0tPF
+ yznJ2heGF6BMfQ=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavan,
+On Tue, 2021-11-23 at 09:13 +0000, Mel Gorman wrote:
+>
+> I'll see can I reproduce this...
 
-On 11/17/2021 10:57 AM, Pavan Kondeti wrote:
-> Hi Sandeep,
->
-> On Tue, Nov 16, 2021 at 04:11:30PM +0530, Sandeep Maheswaram wrote:
->> On 11/13/2021 4:17 AM, Rob Herring wrote:
->>> On Mon, Nov 08, 2021 at 12:11:48PM +0530, Sandeep Maheswaram wrote:
->>>> Adding bindings for usb-skip-phy-init property.
->>>> Runtime suspend of phy drivers was failing from DWC3 driver as
->>>> runtime usage value is 2 because the phy is initialized from
->>>> DWC3 core and HCD core.
->>>> Some controllers like DWC3 and CDNS3 manage phy in their core drivers.
->>>> This property can be set to avoid phy initialization in HCD core.
->>> You already know if you have a DWC3 and CDNS3 controller, so you don't
->>> need more data in DT.
->> We don't have a device tree node for xhci platform device and create xhci
->> platform device from dwc3/host.c
->>
->> So we want to pass this property to check in xhci-plat.c and skip phy
->> initialization.
->>
-> Would not the below condition from your other patch [1] work here too?
->
-> if (of_device_is_compatible(dev->parent->of_node, "snps,dwc3"))
->
-> [1] https://lore.kernel.org/linux-usb/1635753224-23975-2-git-send-email-quic_c_sanm@quicinc.com/
->
-> Thanks,
-> Pavan
-Yes. This condition is working. Will send the new version with this change.
+You likely already know this, but just in case, just plunk the below
+into $LTPROOT/runtest/foo, and $LTPROOT/runltp -f foo.
+
+#DESCRIPTION:Resource Management testing
+memcg_regression        memcg_regression_test.sh
+
+	-Mike
