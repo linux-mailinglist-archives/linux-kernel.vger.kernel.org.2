@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2660245AFF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:23:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D1345AFFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:23:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236037AbhKWX0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 18:26:07 -0500
-Received: from mga01.intel.com ([192.55.52.88]:56239 "EHLO mga01.intel.com"
+        id S236515AbhKWX0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 18:26:11 -0500
+Received: from mga04.intel.com ([192.55.52.120]:19097 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231216AbhKWX0G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231693AbhKWX0G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 23 Nov 2021 18:26:06 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="259038306"
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="233879849"
 X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="259038306"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 15:22:57 -0800
+   d="scan'208";a="233879849"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 15:22:58 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="509230185"
+   d="scan'208";a="591387274"
 Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 23 Nov 2021 15:22:56 -0800
+  by FMSMGA003.fm.intel.com with ESMTP; 23 Nov 2021 15:22:56 -0800
 Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mpf7n-0002RT-C3; Tue, 23 Nov 2021 23:22:55 +0000
-Date:   Wed, 24 Nov 2021 07:22:07 +0800
+        id 1mpf7n-0002RN-AP; Tue, 23 Nov 2021 23:22:55 +0000
+Date:   Wed, 24 Nov 2021 07:22:09 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Dave Chinner <david@fromorbit.com>
+To:     Arnd Bergmann <arnd@arndb.de>
 Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: fs/xfs/xfs_trans.c:559:8: warning: variable 'error' set but not used
-Message-ID: <202111240723.ALWlwQXv-lkp@intel.com>
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Robert Richter <rric@kernel.org>
+Subject: drivers/pci/controller/dwc/pcie-hisi.c:61:37: sparse: sparse:
+ incorrect type in initializer (different address spaces)
+Message-ID: <202111240751.80Rfb1Es-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -42,123 +43,122 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   136057256686de39cc3a07c2e39ef6bc43003ff6
-commit: dc3ffbb14060c943469d5e12900db3a60bc3fa64 xfs: gut error handling in xfs_trans_unreserve_and_mod_sb()
-date:   1 year, 6 months ago
-config: x86_64-randconfig-a015-20211118 (https://download.01.org/0day-ci/archive/20211124/202111240723.ALWlwQXv-lkp@intel.com/config.gz)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build):
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=dc3ffbb14060c943469d5e12900db3a60bc3fa64
+commit: 6e5a1fff9096ecd259dedcbbdc812aa90986a40e PCI: Avoid building empty drivers
+date:   9 months ago
+config: alpha-randconfig-s032-20211117 (https://download.01.org/0day-ci/archive/20211124/202111240751.80Rfb1Es-lkp@intel.com/config.gz)
+compiler: alpha-linux-gcc (GCC) 11.2.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.4-dirty
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6e5a1fff9096ecd259dedcbbdc812aa90986a40e
         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
         git fetch --no-tags linus master
-        git checkout dc3ffbb14060c943469d5e12900db3a60bc3fa64
+        git checkout 6e5a1fff9096ecd259dedcbbdc812aa90986a40e
         # save the config file to linux build tree
-        make W=1 ARCH=x86_64 
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=alpha 
 
 If you fix the issue, kindly add following tag as appropriate
 Reported-by: kernel test robot <lkp@intel.com>
 
-All warnings (new ones prefixed by >>):
 
-   fs/xfs/xfs_trans.c: In function 'xfs_trans_unreserve_and_mod_sb':
->> fs/xfs/xfs_trans.c:559:8: warning: variable 'error' set but not used [-Wunused-but-set-variable]
-     559 |  int   error;
-         |        ^~~~~
+sparse warnings: (new ones prefixed by >>)
+>> drivers/pci/controller/dwc/pcie-hisi.c:61:37: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void [noderef] __iomem *reg_base @@     got void *priv @@
+   drivers/pci/controller/dwc/pcie-hisi.c:61:37: sparse:     expected void [noderef] __iomem *reg_base
+   drivers/pci/controller/dwc/pcie-hisi.c:61:37: sparse:     got void *priv
+>> drivers/pci/controller/dwc/pcie-hisi.c:132:19: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *priv @@     got void [noderef] __iomem *[assigned] reg_base @@
+   drivers/pci/controller/dwc/pcie-hisi.c:132:19: sparse:     expected void *priv
+   drivers/pci/controller/dwc/pcie-hisi.c:132:19: sparse:     got void [noderef] __iomem *[assigned] reg_base
 
+vim +61 drivers/pci/controller/dwc/pcie-hisi.c
 
-vim +/error +559 fs/xfs/xfs_trans.c
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   56  
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   57  static void __iomem *hisi_pcie_map_bus(struct pci_bus *bus, unsigned int devfn,
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   58  				       int where)
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   59  {
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   60  	struct pci_config_window *cfg = bus->sysdata;
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  @61  	void __iomem *reg_base = cfg->priv;
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   62  
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   63  	if (bus->number == cfg->busr.start)
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   64  		return reg_base + where;
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   65  	else
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   66  		return pci_ecam_map_bus(bus, devfn, where);
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   67  }
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   68  
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06   69  #if defined(CONFIG_ACPI) && defined(CONFIG_PCI_QUIRKS)
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06   70  
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   71  static int hisi_pcie_init(struct pci_config_window *cfg)
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   72  {
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   73  	struct device *dev = cfg->parent;
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   74  	struct acpi_device *adev = to_acpi_device(dev);
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   75  	struct acpi_pci_root *root = acpi_driver_data(adev);
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   76  	struct resource *res;
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   77  	void __iomem *reg_base;
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   78  	int ret;
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   79  
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   80  	/*
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   81  	 * Retrieve RC base and size from a HISI0081 device with _UID
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   82  	 * matching our segment.
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   83  	 */
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   84  	res = devm_kzalloc(dev, sizeof(*res), GFP_KERNEL);
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   85  	if (!res)
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   86  		return -ENOMEM;
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   87  
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   88  	ret = acpi_get_rc_resources(dev, "HISI0081", root->segment, res);
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   89  	if (ret) {
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   90  		dev_err(dev, "can't get rc base address\n");
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   91  		return -ENOMEM;
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   92  	}
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   93  
+e313a447e73527 drivers/pci/dwc/pcie-hisi.c            Lorenzo Pieralisi 2017-04-19   94  	reg_base = devm_pci_remap_cfgspace(dev, res->start, resource_size(res));
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   95  	if (!reg_base)
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   96  		return -ENOMEM;
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   97  
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   98  	cfg->priv = reg_base;
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   99  	return 0;
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  100  }
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  101  
+0b104773b4f72c drivers/pci/controller/dwc/pcie-hisi.c Rob Herring       2020-04-09  102  const struct pci_ecam_ops hisi_pcie_ops = {
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  103  	.init         =  hisi_pcie_init,
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  104  	.pci_ops      = {
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  105  		.map_bus    = hisi_pcie_map_bus,
+4788316f743539 drivers/pci/host/pcie-hisi.c           Bjorn Helgaas     2017-02-07  106  		.read       = hisi_pcie_rd_conf,
+4788316f743539 drivers/pci/host/pcie-hisi.c           Bjorn Helgaas     2017-02-07  107  		.write      = hisi_pcie_wr_conf,
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  108  	}
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  109  };
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  110  
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  111  #endif
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  112  
+5f00f1a0178cf5 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  113  #ifdef CONFIG_PCI_HISI
+500a1d9a43e0a1 drivers/pci/host/pcie-hisi.c           Zhou Wang         2015-10-29  114  
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  115  static int hisi_pcie_platform_init(struct pci_config_window *cfg)
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  116  {
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  117  	struct device *dev = cfg->parent;
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  118  	struct platform_device *pdev = to_platform_device(dev);
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  119  	struct resource *res;
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  120  	void __iomem *reg_base;
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  121  
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  122  	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  123  	if (!res) {
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  124  		dev_err(dev, "missing \"reg[1]\"property\n");
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  125  		return -EINVAL;
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  126  	}
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  127  
+e313a447e73527 drivers/pci/dwc/pcie-hisi.c            Lorenzo Pieralisi 2017-04-19  128  	reg_base = devm_pci_remap_cfgspace(dev, res->start, resource_size(res));
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  129  	if (!reg_base)
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  130  		return -ENOMEM;
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  131  
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06 @132  	cfg->priv = reg_base;
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  133  	return 0;
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  134  }
+a2ec1996098c7d drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  135  
 
-^1da177e4c3f41 Linus Torvalds    2005-04-16  536  
-^1da177e4c3f41 Linus Torvalds    2005-04-16  537  /*
-dc3ffbb14060c9 Dave Chinner      2020-05-20  538   * xfs_trans_unreserve_and_mod_sb() is called to release unused reservations and
-dc3ffbb14060c9 Dave Chinner      2020-05-20  539   * apply superblock counter changes to the in-core superblock.  The
-45c34141126a89 David Chinner     2007-06-18  540   * t_res_fdblocks_delta and t_res_frextents_delta fields are explicitly NOT
-45c34141126a89 David Chinner     2007-06-18  541   * applied to the in-core superblock.  The idea is that that has already been
-45c34141126a89 David Chinner     2007-06-18  542   * done.
-^1da177e4c3f41 Linus Torvalds    2005-04-16  543   *
-45c34141126a89 David Chinner     2007-06-18  544   * If we are not logging superblock counters, then the inode allocated/free and
-45c34141126a89 David Chinner     2007-06-18  545   * used block counts are not updated in the on disk superblock. In this case,
-45c34141126a89 David Chinner     2007-06-18  546   * XFS_TRANS_SB_DIRTY will not be set when the transaction is updated but we
-45c34141126a89 David Chinner     2007-06-18  547   * still need to update the incore superblock with the changes.
-^1da177e4c3f41 Linus Torvalds    2005-04-16  548   */
-71e330b593905e Dave Chinner      2010-05-21  549  void
-^1da177e4c3f41 Linus Torvalds    2005-04-16  550  xfs_trans_unreserve_and_mod_sb(
-0bd5ddedccca44 Dave Chinner      2015-02-23  551  	struct xfs_trans	*tp)
-^1da177e4c3f41 Linus Torvalds    2005-04-16  552  {
-0bd5ddedccca44 Dave Chinner      2015-02-23  553  	struct xfs_mount	*mp = tp->t_mountp;
-0d485ada404b36 Dave Chinner      2015-02-23  554  	bool			rsvd = (tp->t_flags & XFS_TRANS_RESERVE) != 0;
-45c34141126a89 David Chinner     2007-06-18  555  	int64_t			blkdelta = 0;
-45c34141126a89 David Chinner     2007-06-18  556  	int64_t			rtxdelta = 0;
-1b0407125f9a5b Christoph Hellwig 2010-09-30  557  	int64_t			idelta = 0;
-1b0407125f9a5b Christoph Hellwig 2010-09-30  558  	int64_t			ifreedelta = 0;
-0bd5ddedccca44 Dave Chinner      2015-02-23 @559  	int			error;
-^1da177e4c3f41 Linus Torvalds    2005-04-16  560  
-1b0407125f9a5b Christoph Hellwig 2010-09-30  561  	/* calculate deltas */
-45c34141126a89 David Chinner     2007-06-18  562  	if (tp->t_blk_res > 0)
-45c34141126a89 David Chinner     2007-06-18  563  		blkdelta = tp->t_blk_res;
-45c34141126a89 David Chinner     2007-06-18  564  	if ((tp->t_fdblocks_delta != 0) &&
-45c34141126a89 David Chinner     2007-06-18  565  	    (xfs_sb_version_haslazysbcount(&mp->m_sb) ||
-45c34141126a89 David Chinner     2007-06-18  566  	     (tp->t_flags & XFS_TRANS_SB_DIRTY)))
-45c34141126a89 David Chinner     2007-06-18  567  	        blkdelta += tp->t_fdblocks_delta;
-45c34141126a89 David Chinner     2007-06-18  568  
-45c34141126a89 David Chinner     2007-06-18  569  	if (tp->t_rtx_res > 0)
-45c34141126a89 David Chinner     2007-06-18  570  		rtxdelta = tp->t_rtx_res;
-45c34141126a89 David Chinner     2007-06-18  571  	if ((tp->t_frextents_delta != 0) &&
-45c34141126a89 David Chinner     2007-06-18  572  	    (tp->t_flags & XFS_TRANS_SB_DIRTY))
-45c34141126a89 David Chinner     2007-06-18  573  		rtxdelta += tp->t_frextents_delta;
-45c34141126a89 David Chinner     2007-06-18  574  
-1b0407125f9a5b Christoph Hellwig 2010-09-30  575  	if (xfs_sb_version_haslazysbcount(&mp->m_sb) ||
-1b0407125f9a5b Christoph Hellwig 2010-09-30  576  	     (tp->t_flags & XFS_TRANS_SB_DIRTY)) {
-1b0407125f9a5b Christoph Hellwig 2010-09-30  577  		idelta = tp->t_icount_delta;
-1b0407125f9a5b Christoph Hellwig 2010-09-30  578  		ifreedelta = tp->t_ifree_delta;
-^1da177e4c3f41 Linus Torvalds    2005-04-16  579  	}
-^1da177e4c3f41 Linus Torvalds    2005-04-16  580  
-1b0407125f9a5b Christoph Hellwig 2010-09-30  581  	/* apply the per-cpu counters */
-1b0407125f9a5b Christoph Hellwig 2010-09-30  582  	if (blkdelta) {
-0d485ada404b36 Dave Chinner      2015-02-23  583  		error = xfs_mod_fdblocks(mp, blkdelta, rsvd);
-dc3ffbb14060c9 Dave Chinner      2020-05-20  584  		ASSERT(!error);
-1b0407125f9a5b Christoph Hellwig 2010-09-30  585  	}
-45c34141126a89 David Chinner     2007-06-18  586  
-1b0407125f9a5b Christoph Hellwig 2010-09-30  587  	if (idelta) {
-501ab323875339 Dave Chinner      2015-02-23  588  		error = xfs_mod_icount(mp, idelta);
-dc3ffbb14060c9 Dave Chinner      2020-05-20  589  		ASSERT(!error);
-^1da177e4c3f41 Linus Torvalds    2005-04-16  590  	}
-1b0407125f9a5b Christoph Hellwig 2010-09-30  591  
-1b0407125f9a5b Christoph Hellwig 2010-09-30  592  	if (ifreedelta) {
-e88b64ea1f3da6 Dave Chinner      2015-02-23  593  		error = xfs_mod_ifree(mp, ifreedelta);
-dc3ffbb14060c9 Dave Chinner      2020-05-20  594  		ASSERT(!error);
-^1da177e4c3f41 Linus Torvalds    2005-04-16  595  	}
-1b0407125f9a5b Christoph Hellwig 2010-09-30  596  
-0bd5ddedccca44 Dave Chinner      2015-02-23  597  	if (rtxdelta == 0 && !(tp->t_flags & XFS_TRANS_SB_DIRTY))
-0bd5ddedccca44 Dave Chinner      2015-02-23  598  		return;
-0bd5ddedccca44 Dave Chinner      2015-02-23  599  
-1b0407125f9a5b Christoph Hellwig 2010-09-30  600  	/* apply remaining deltas */
-0bd5ddedccca44 Dave Chinner      2015-02-23  601  	spin_lock(&mp->m_sb_lock);
-dc3ffbb14060c9 Dave Chinner      2020-05-20  602  	mp->m_sb.sb_frextents += rtxdelta;
-dc3ffbb14060c9 Dave Chinner      2020-05-20  603  	mp->m_sb.sb_dblocks += tp->t_dblocks_delta;
-dc3ffbb14060c9 Dave Chinner      2020-05-20  604  	mp->m_sb.sb_agcount += tp->t_agcount_delta;
-dc3ffbb14060c9 Dave Chinner      2020-05-20  605  	mp->m_sb.sb_imax_pct += tp->t_imaxpct_delta;
-dc3ffbb14060c9 Dave Chinner      2020-05-20  606  	mp->m_sb.sb_rextsize += tp->t_rextsize_delta;
-dc3ffbb14060c9 Dave Chinner      2020-05-20  607  	mp->m_sb.sb_rbmblocks += tp->t_rbmblocks_delta;
-dc3ffbb14060c9 Dave Chinner      2020-05-20  608  	mp->m_sb.sb_rblocks += tp->t_rblocks_delta;
-dc3ffbb14060c9 Dave Chinner      2020-05-20  609  	mp->m_sb.sb_rextents += tp->t_rextents_delta;
-dc3ffbb14060c9 Dave Chinner      2020-05-20  610  	mp->m_sb.sb_rextslog += tp->t_rextslog_delta;
-0bd5ddedccca44 Dave Chinner      2015-02-23  611  	spin_unlock(&mp->m_sb_lock);
-1b0407125f9a5b Christoph Hellwig 2010-09-30  612  
-dc3ffbb14060c9 Dave Chinner      2020-05-20  613  	/*
-dc3ffbb14060c9 Dave Chinner      2020-05-20  614  	 * Debug checks outside of the spinlock so they don't lock up the
-dc3ffbb14060c9 Dave Chinner      2020-05-20  615  	 * machine if they fail.
-dc3ffbb14060c9 Dave Chinner      2020-05-20  616  	 */
-dc3ffbb14060c9 Dave Chinner      2020-05-20  617  	ASSERT(mp->m_sb.sb_imax_pct >= 0);
-dc3ffbb14060c9 Dave Chinner      2020-05-20  618  	ASSERT(mp->m_sb.sb_rextslog >= 0);
-1b0407125f9a5b Christoph Hellwig 2010-09-30  619  	return;
-^1da177e4c3f41 Linus Torvalds    2005-04-16  620  }
-^1da177e4c3f41 Linus Torvalds    2005-04-16  621  
+:::::: The code at line 61 was first introduced by commit
+:::::: 5f00f1a0178cf52928366a5e1f376a65f1f3f389 PCI: Add MCFG quirks for HiSilicon Hip05/06/07 host controllers
 
-:::::: The code at line 559 was first introduced by commit
-:::::: 0bd5ddedccca4451ac2390d1155b4ab74b990eff xfs: replace xfs_mod_incore_sb_batched
-
-:::::: TO: Dave Chinner <dchinner@redhat.com>
-:::::: CC: Dave Chinner <david@fromorbit.com>
+:::::: TO: Dongdong Liu <liudongdong3@huawei.com>
+:::::: CC: Bjorn Helgaas <helgaas@kernel.org>
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
