@@ -2,100 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74FCD459935
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 01:38:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 528AD459941
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 01:43:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbhKWAlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 19:41:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232246AbhKWAkh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 19:40:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 253D061004;
-        Tue, 23 Nov 2021 00:37:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637627850;
-        bh=mprxUPw1okFhCPvyzxUdk3HOfO4zy+Y+8hUvrOqq7Nc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bnjltHdlSI5h2X15zjWt+RBusX3u9j3vEGACZSLwa/JMd6gnxd2acgEI/kmmBBRq2
-         HAB+RKYxkX1omloi/3Vcr/MqinbT182uUe+czvSaHpiUxQ4qeEIM/J/G584RQuvD8w
-         50Njuur+oIXSHHoX3Dpt45rjyddK8scXR5eHaA77BEh+DODHoHlefvPdrxVU3DQC99
-         U80WF/pVTVzokr4Bz31BDa1qWDFfrzCLGPJcJi4viEKVoHqAJmuIAF0qjMehaSMtT1
-         PqgsifgDJiTn+DvNouOilppoUuIj9J3h8RKht28s+v7GF7fpSlJEYliULoMq1FHw4J
-         YObBcOLn0w+Ew==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: [PATCH 6/6] rcu/nocb: Merge rcu_spawn_cpu_nocb_kthread() and rcu_spawn_one_nocb_kthread()
-Date:   Tue, 23 Nov 2021 01:37:08 +0100
-Message-Id: <20211123003708.468409-7-frederic@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211123003708.468409-1-frederic@kernel.org>
-References: <20211123003708.468409-1-frederic@kernel.org>
+        id S231905AbhKWAqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 19:46:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56610 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229998AbhKWAqX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 19:46:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637628196;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=AVxr2xCL/l1MkBneMfhrO2vUcrrfpsi5NQH6MFNTUzo=;
+        b=iRnxxP7oRa2FqbMt7JWZTKpjcJ66tXa3uMXroRwLYgAc3sXOCKfCPtgUVVJiOMJ5jZzfej
+        aRNN+0+uLT2ZPbWqjhVmKZbZIgfPqZk9d9bBc1NHP5S+Y3jJw+vuow7dD6mCxLE8OT++ys
+        n9Owx9Ohldgqjy3p2COJ5AuX1OZDWys=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-526-VV5k1cRKNVKKzTJ_SserJQ-1; Mon, 22 Nov 2021 19:43:12 -0500
+X-MC-Unique: VV5k1cRKNVKKzTJ_SserJQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B568A0CAB;
+        Tue, 23 Nov 2021 00:43:12 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8AE3B56A93;
+        Tue, 23 Nov 2021 00:43:11 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     seanjc@google.com
+Subject: [PATCH 0/4] KVM: VMX: process posted interrupts on APICv-disable vCPUs
+Date:   Mon, 22 Nov 2021 19:43:07 -0500
+Message-Id: <20211123004311.2954158-1-pbonzini@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-rcu_spawn_one_nocb_kthread() is only called by
-rcu_spawn_cpu_nocb_kthread(). Don't bother with two separate functions
-and merge them.
+The fixed version of the patches from last week.  To sum up, the issue
+is the following.
 
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Uladzislau Rezki <urezki@gmail.com>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Joel Fernandes <joel@joelfernandes.org>
----
- kernel/rcu/tree_nocb.h | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+Now that APICv can be disabled per-CPU (depending on whether it has some
+setup that is incompatible) we need to deal with guests having a mix of
+vCPUs with enabled/disabled posted interrupts.  For assigned devices,
+their posted interrupt configuration must be the same across the whole
+VM, so handle posted interrupts by hand on vCPUs with disabled posted
+interrupts.
 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index d915780d40c8..7e8da346127a 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -1225,12 +1225,15 @@ static void __init rcu_boot_init_nocb_percpu_data(struct rcu_data *rdp)
-  * rcuo CB kthread, spawn it.  Additionally, if the rcuo GP kthread
-  * for this CPU's group has not yet been created, spawn it as well.
-  */
--static void rcu_spawn_one_nocb_kthread(int cpu)
-+static void rcu_spawn_cpu_nocb_kthread(int cpu)
- {
- 	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
- 	struct rcu_data *rdp_gp;
- 	struct task_struct *t;
- 
-+	if (!rcu_scheduler_fully_active || !rcu_nocb_is_setup)
-+		return;
-+
- 	/* If it already has an rcuo kthread, then nothing to do. */
- 	if (rdp->nocb_cb_kthread)
- 		return;
-@@ -1254,16 +1257,6 @@ static void rcu_spawn_one_nocb_kthread(int cpu)
- 	WRITE_ONCE(rdp->nocb_gp_kthread, rdp_gp->nocb_gp_kthread);
- }
- 
--/*
-- * If the specified CPU is a no-CBs CPU that does not already have its
-- * rcuo kthread, spawn it.
-- */
--static void rcu_spawn_cpu_nocb_kthread(int cpu)
--{
--	if (rcu_scheduler_fully_active && rcu_nocb_is_setup)
--		rcu_spawn_one_nocb_kthread(cpu);
--}
--
- /*
-  * Once the scheduler is running, spawn rcuo kthreads for all online
-  * no-CBs CPUs.  This assumes that the early_initcall()s happen before
+Patches 1-3 handle the regular posted interrupt vector, while patch 4
+handles the wakeup vector.
+
+Paolo Bonzini (4):
+  KVM: x86: ignore APICv if LAPIC is not enabled
+  KVM: VMX: prepare sync_pir_to_irr for running with APICv disabled
+  KVM: x86: check PIR even for vCPUs with disabled APICv
+  KVM: x86: Use a stable condition around all VT-d PI paths
+
+ arch/x86/kvm/lapic.c           |  2 +-
+ arch/x86/kvm/svm/svm.c         |  1 -
+ arch/x86/kvm/vmx/posted_intr.c | 20 ++++++++++---------
+ arch/x86/kvm/vmx/vmx.c         | 35 ++++++++++++++++++++++------------
+ arch/x86/kvm/x86.c             | 18 ++++++++---------
+ 5 files changed, 44 insertions(+), 32 deletions(-)
+
 -- 
-2.25.1
+2.27.0
 
