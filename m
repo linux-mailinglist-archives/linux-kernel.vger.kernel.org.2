@@ -2,229 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B2E45A1A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:38:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C95145A1AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:40:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236262AbhKWLmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 06:42:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230306AbhKWLmA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 06:42:00 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2318C061714
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 03:38:51 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id y13so90658349edd.13
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 03:38:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=k7G4wbjHzsKzXccXTCEbiJCCEpjCW1QL0hIAj1UZJ0k=;
-        b=sFyTJnfESXSjl/1vk4O7utsPKg4g6/BoGHBmkPmI4u4Xq2N082NtFXM/TP2ENuTFDM
-         rFCjaCZ/GKMockSfnLAf7LgyRp4kvApsbnVHGZDKIq7ZF8+BZ8EnnAyN1ikn1Gu4S9C6
-         TqMZ/UtlRO9GuAFtP/sioemENjjoQ3U3L6ZrPPn7PgNM2vDmjfKHsyRuYGxpbpZJlRje
-         Z3J6wZeCxOKntih4I0XwWvgXOapAduQPY8WFC3fam8RsAcFvk4hnpfg3BZWZ1AX86UYM
-         5qQVRTPXwM4bRFCuU8qa6lEkIfXk+D8Y7zR8LDalDZ3S2lFKK/gqUYH5uUzCtG4r1B80
-         NZOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=k7G4wbjHzsKzXccXTCEbiJCCEpjCW1QL0hIAj1UZJ0k=;
-        b=IWbqlwWUzaTnpH4NJJ+rV6MvJHfDryyKUnLxItclpF8mHXdIZ5NH3on/r6YSX7FeS2
-         lh3J25AvrZ0HZmQES9H7VYOCun8G6XNHBrccYPadxjgWmUPmdlchK/lA1ee69Hys3adB
-         jiS5FgzC5GEfzSZeO5IzNQUBP4SL7HuCfzP5ekni63NfYaNZaKuA8sTMg96mu1dwTb8B
-         f0ZiP+RrKE+Txd3VilZ05xlOmhaTQC97kQGEJH0PjblD7gFRDdzY9Lz9V3JuULn2MPQW
-         iaFcfGB8oiZKWSVpORj4A9uCfMvlPoDMRmOI/mxrzEtJnTE142pl9D5DoUPFu59tdUhW
-         Ol1w==
-X-Gm-Message-State: AOAM531b2NcUxfVUngY6UBZNRMSGdqe0eQPP2LjiOJgVddJ1Gq6UUH3n
-        1zFIDmv4YJM0BKesfyC/JfhQzsgJjasSdaLqhfCafg==
-X-Google-Smtp-Source: ABdhPJxYO+0qKUdkZFowci003RczNBtBqsX8ALyrTjhYPGiZRF1q0mIDJqf8mJbKEdrE4DiQJcMz/9zUG1XEqG2M3ts=
-X-Received: by 2002:a17:906:4791:: with SMTP id cw17mr6693188ejc.493.1637667530137;
- Tue, 23 Nov 2021 03:38:50 -0800 (PST)
-MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 23 Nov 2021 17:08:39 +0530
-Message-ID: <CA+G9fYtH2JR=L0cPoOEqsEGrZW_uOJgX6qLGMe_hbLpBtjVBwA@mail.gmail.com>
-Subject: spinlock.c:306:9: error: implicit declaration of function '__raw_write_lock_nested'
-To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Galbraith <umgwanakikbuti@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
+        id S236278AbhKWLoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 06:44:01 -0500
+Received: from foss.arm.com ([217.140.110.172]:51406 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233037AbhKWLoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 06:44:00 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9C95E1063;
+        Tue, 23 Nov 2021 03:40:52 -0800 (PST)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 480FE3F5A1;
+        Tue, 23 Nov 2021 03:40:51 -0800 (PST)
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     catalin.marinas@arm.com, dvyukov@google.com, mark.rutland@arm.com,
+        quic_qiancai@quicinc.com, valentin.schneider@arm.com,
+        will@kernel.org, woodylin@google.com
+Subject: [PATCH v3] Reset task stack state in bringup_cpu()
+Date:   Tue, 23 Nov 2021 11:40:47 +0000
+Message-Id: <20211123114047.45918-1-mark.rutland@arm.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While building Linux next 20211123 tag for sh with gcc-11
-following warnings / errors noticed.
+To hot unplug a CPU, the idle task on that CPU calls a few layers of C
+code before finally leaving the kernel. When KASAN is in use, poisoned
+shadow is left around for each of the active stack frames, and when
+shadow call stacks are in use. When shadow call stacks (SCS) are in use
+the task's saved SCS SP is left pointing at an arbitrary point within
+the task's shadow call stack.
 
-make --silent --keep-going --jobs=8
-O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=sh
-CROSS_COMPILE=sh4-linux-gnu- 'CC=sccache sh4-linux-gnu-gcc'
-'HOSTCC=sccache gcc'
-  Generating include/generated/machtypes.h
-<stdin>:1517:2: warning: #warning syscall clone3 not implemented [-Wcpp]
-<stdin>:1559:2: warning: #warning syscall futex_waitv not implemented [-Wcpp]
-In file included from arch/sh/include/asm/hw_irq.h:6,
-                 from include/linux/irq.h:594,
-                 from include/asm-generic/hardirq.h:17,
-                 from arch/sh/include/asm/hardirq.h:9,
-                 from include/linux/hardirq.h:11,
-                 from include/linux/interrupt.h:11,
-                 from include/linux/serial_core.h:13,
-                 from include/linux/serial_sci.h:6,
-                 from arch/sh/kernel/cpu/sh4a/setup-shx3.c:10:
-include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) /
-sizeof (void)' does not compute the number of array elements
-[-Wsizeof-pointer-div]
-  100 | #define _INTC_ARRAY(a) a, __same_type(a, NULL) ? 0 :
-sizeof(a)/sizeof(*a)
-      |                                                               ^
-include/linux/sh_intc.h:107:9: note: in expansion of macro '_INTC_ARRAY'
-  107 |         _INTC_ARRAY(sense_regs), _INTC_ARRAY(ack_regs), \
-      |         ^~~~~~~~~~~
-include/linux/sh_intc.h:124:15: note: in expansion of macro 'INTC_HW_DESC'
-  124 |         .hw = INTC_HW_DESC(vectors, groups, mask_regs,
-         \
-      |               ^~~~~~~~~~~~
-arch/sh/kernel/cpu/sh4a/setup-shx3.c:309:8: note: in expansion of
-macro 'DECLARE_INTC_DESC'
-  309 | static DECLARE_INTC_DESC(intc_desc, "shx3", vectors, groups,
-      |        ^~~~~~~~~~~~~~~~~
-include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) /
-sizeof (void)' does not compute the number of array elements
-[-Wsizeof-pointer-div]
-  100 | #define _INTC_ARRAY(a) a, __same_type(a, NULL) ? 0 :
-sizeof(a)/sizeof(*a)
-      |                                                               ^
-include/linux/sh_intc.h:107:34: note: in expansion of macro '_INTC_ARRAY'
-  107 |         _INTC_ARRAY(sense_regs), _INTC_ARRAY(ack_regs), \
-      |                                  ^~~~~~~~~~~
-include/linux/sh_intc.h:124:15: note: in expansion of macro 'INTC_HW_DESC'
-  124 |         .hw = INTC_HW_DESC(vectors, groups, mask_regs,
-         \
-      |               ^~~~~~~~~~~~
-arch/sh/kernel/cpu/sh4a/setup-shx3.c:309:8: note: in expansion of
-macro 'DECLARE_INTC_DESC'
-  309 | static DECLARE_INTC_DESC(intc_desc, "shx3", vectors, groups,
-      |        ^~~~~~~~~~~~~~~~~
-include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) /
-sizeof (void)' does not compute the number of array elements
-[-Wsizeof-pointer-div]
-  100 | #define _INTC_ARRAY(a) a, __same_type(a, NULL) ? 0 :
-sizeof(a)/sizeof(*a)
-      |                                                               ^
-include/linux/sh_intc.h:107:34: note: in expansion of macro '_INTC_ARRAY'
-  107 |         _INTC_ARRAY(sense_regs), _INTC_ARRAY(ack_regs), \
-      |                                  ^~~~~~~~~~~
-include/linux/sh_intc.h:124:15: note: in expansion of macro 'INTC_HW_DESC'
-  124 |         .hw = INTC_HW_DESC(vectors, groups, mask_regs,
-         \
-      |               ^~~~~~~~~~~~
-arch/sh/kernel/cpu/sh4a/setup-shx3.c:322:8: note: in expansion of
-macro 'DECLARE_INTC_DESC'
-  322 | static DECLARE_INTC_DESC(intc_desc_irq, "shx3-irq", vectors_irq, groups,
-      |        ^~~~~~~~~~~~~~~~~
-include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) /
-sizeof (void)' does not compute the number of array elements
-[-Wsizeof-pointer-div]
-  100 | #define _INTC_ARRAY(a) a, __same_type(a, NULL) ? 0 :
-sizeof(a)/sizeof(*a)
-      |                                                               ^
-include/linux/sh_intc.h:107:9: note: in expansion of macro '_INTC_ARRAY'
-  107 |         _INTC_ARRAY(sense_regs), _INTC_ARRAY(ack_regs), \
-      |         ^~~~~~~~~~~
-include/linux/sh_intc.h:124:15: note: in expansion of macro 'INTC_HW_DESC'
-  124 |         .hw = INTC_HW_DESC(vectors, groups, mask_regs,
-         \
-      |               ^~~~~~~~~~~~
-arch/sh/kernel/cpu/sh4a/setup-shx3.c:337:8: note: in expansion of
-macro 'DECLARE_INTC_DESC'
-  337 | static DECLARE_INTC_DESC(intc_desc_irl, "shx3-irl", vectors_irl, groups,
-      |        ^~~~~~~~~~~~~~~~~
-include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) /
-sizeof (void)' does not compute the number of array elements
-[-Wsizeof-pointer-div]
-  100 | #define _INTC_ARRAY(a) a, __same_type(a, NULL) ? 0 :
-sizeof(a)/sizeof(*a)
-      |                                                               ^
-include/linux/sh_intc.h:107:34: note: in expansion of macro '_INTC_ARRAY'
-  107 |         _INTC_ARRAY(sense_regs), _INTC_ARRAY(ack_regs), \
-      |                                  ^~~~~~~~~~~
-include/linux/sh_intc.h:124:15: note: in expansion of macro 'INTC_HW_DESC'
-  124 |         .hw = INTC_HW_DESC(vectors, groups, mask_regs,
-         \
-      |               ^~~~~~~~~~~~
-arch/sh/kernel/cpu/sh4a/setup-shx3.c:337:8: note: in expansion of
-macro 'DECLARE_INTC_DESC'
-  337 | static DECLARE_INTC_DESC(intc_desc_irl, "shx3-irl", vectors_irl, groups,
-      |        ^~~~~~~~~~~~~~~~~
-kernel/locking/spinlock.c: In function '_raw_write_lock_nested':
-kernel/locking/spinlock.c:306:9: error: implicit declaration of
-function '__raw_write_lock_nested'; did you mean
-'_raw_write_lock_nested'? [-Werror=implicit-function-declaration]
-  306 |         __raw_write_lock_nested(lock, subclass);
-      |         ^~~~~~~~~~~~~~~~~~~~~~~
-      |         _raw_write_lock_nested
-cc1: some warnings being treated as errors
-make[3]: *** [scripts/Makefile.build:288: kernel/locking/spinlock.o] Error 1
-make[3]: Target '__build' not remade because of errors.
-make[2]: *** [scripts/Makefile.build:571: kernel/locking] Error 2
-fs/ext4/readpage.c: In function 'ext4_mpage_readpages':
-fs/ext4/readpage.c:413:1: warning: the frame size of 1140 bytes is
-larger than 1024 bytes [-Wframe-larger-than=]
-  413 | }
-      | ^
-make[2]: Target '__build' not remade because of errors.
-make[1]: *** [Makefile:1989: kernel] Error 2
-fs/mpage.c: In function '__mpage_writepage':
-fs/mpage.c:672:1: warning: the frame size of 1156 bytes is larger than
-1024 bytes [-Wframe-larger-than=]
-  672 | }
-      | ^
-fs/mpage.c: In function 'do_mpage_readpage':
-fs/mpage.c:336:1: warning: the frame size of 1092 bytes is larger than
-1024 bytes [-Wframe-larger-than=]
-  336 | }
-      | ^
-make[1]: Target '__all' not remade because of errors.
-make: *** [Makefile:226: __sub-make] Error 2
-make: Target '__all' not remade because of errors.
+When a CPU is offlined than onlined back into the kernel, this stale
+state can adversely affect execution. Stale KASAN shadow can alias new
+stackframes and result in bogus KASAN warnings. A stale SCS SP is
+effectively a memory leak, and prevents a portion of the shadow call
+stack being used. Across a number of hotplug cycles the idle task's
+entire shadow call stack can become unusable.
 
+We previously fixed the KASAN issue in commit:
 
-Build config:
-https://builds.tuxbuild.com/21J9mb3wsbGi616UxQbxP3DSTGv/config
+  e1b77c92981a5222 ("sched/kasan: remove stale KASAN poison after hotplug")
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+... by removing any stale KASAN stack poison immediately prior to
+onlining a CPU.
 
-meta data:
------------
-    git describe: next-20211123
-    git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-    git_sha: aacdecce8147c20b01f865b4e214bb8dbe8c4af1
-    git_short_log: aacdecce8147 (\"Add linux-next specific files for 20211123\")
-    target_arch: sh
-    toolchain: gcc-11
+Subsequently in commit:
 
-steps to reproduce:
-tuxmake --runtime podman --target-arch sh --toolchain gcc-11 --kconfig
-shx3_defconfig
+  f1a0a376ca0c4ef1 ("sched/core: Initialize the idle task with preemption disabled")
 
-https://builds.tuxbuild.com/21J9mb3wsbGi616UxQbxP3DSTGv/tuxmake_reproducer.sh
+... the refactoring left the KASAN and SCS cleanup in one-time idle
+thread initialization code rather than something invoked prior to each
+CPU being onlined, breaking both as above.
 
---
-Linaro LKFT
-https://lkft.linaro.org
+We fixed SCS (but not KASAN) in commit:
+
+  63acd42c0d4942f7 ("sched/scs: Reset the shadow stack when idle_task_exit")
+
+... but as this runs in the context of the idle task being offlined it's
+potentially fragile.
+
+To fix these consistently and more robustly, reset the SCS SP and KASAN
+shadow of a CPU's idle task immediately before we online that CPU in
+bringup_cpu(). This ensures the idle task always has a consistent state
+when it is running, and removes the need to so so when exiting an idle
+task.
+
+Whenever any thread is created, dup_task_struct() will give the task a
+stack which is free of KASAN shadow, and initialize the task's SCS SP,
+so there's no need to specially initialize either for idle thread within
+init_idle(), as this was only necessary to handle hotplug cycles.
+
+I've tested this on arm64 with:
+
+* gcc 11.1.0, defconfig +KASAN_INLINE, KASAN_STACK
+* clang 12.0.0, defconfig +KASAN_INLINE, KASAN_STACK, SHADOW_CALL_STACK
+
+... offlining and onlining CPUS with:
+
+| while true; do
+|   for C in /sys/devices/system/cpu/cpu*/online; do
+|     echo 0 > $C;
+|     echo 1 > $C;
+|   done
+| done
+
+Link: https://lore.kernel.org/lkml/20211012083521.973587-1-woodylin@google.com/
+Link: https://lore.kernel.org/linux-arm-kernel/YY9ECKyPtDbD9q8q@qian-HP-Z2-SFF-G5-Workstation/
+Link: https://lore.kernel.org/lkml/20211115113310.35693-1-mark.rutland@arm.com/
+Fixes: f1a0a376ca0c4ef1 ("sched/core: Initialize the idle task with preemption disabled")
+Reported-by: Qian Cai <quic_qiancai@quicinc.com>
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+Tested-by: Qian Cai <quic_qiancai@quicinc.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Woody Lin <woodylin@google.com>
+---
+ kernel/cpu.c        | 7 +++++++
+ kernel/sched/core.c | 4 ----
+ 2 files changed, 7 insertions(+), 4 deletions(-)
+
+Since v1 [1]:
+* Clarify commit message
+* Fix typos
+* Accumulate tags
+
+Since v2 [2]:
+* Correct commit ID in Fixes tag
+* Clarify usage of 'SCS'
+* Expand testing details
+* Expand Cc list
+
+[1] https://lore.kernel.org/lkml/20211115113310.35693-1-mark.rutland@arm.com/
+[2] https://lore.kernel.org/lkml/20211118102927.4854-1-mark.rutland@arm.com/
+
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 192e43a87407..407a2568f35e 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -31,6 +31,7 @@
+ #include <linux/smpboot.h>
+ #include <linux/relay.h>
+ #include <linux/slab.h>
++#include <linux/scs.h>
+ #include <linux/percpu-rwsem.h>
+ #include <linux/cpuset.h>
+ 
+@@ -588,6 +589,12 @@ static int bringup_cpu(unsigned int cpu)
+ 	int ret;
+ 
+ 	/*
++	 * Reset stale stack state from the last time this CPU was online.
++	 */
++	scs_task_reset(idle);
++	kasan_unpoison_task_stack(idle);
++
++	/*
+ 	 * Some architectures have to walk the irq descriptors to
+ 	 * setup the vector space for the cpu which comes online.
+ 	 * Prevent irq alloc/free across the bringup.
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 3c9b0fda64ac..76f9deeaa942 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -8619,9 +8619,6 @@ void __init init_idle(struct task_struct *idle, int cpu)
+ 	idle->flags |= PF_IDLE | PF_KTHREAD | PF_NO_SETAFFINITY;
+ 	kthread_set_per_cpu(idle, cpu);
+ 
+-	scs_task_reset(idle);
+-	kasan_unpoison_task_stack(idle);
+-
+ #ifdef CONFIG_SMP
+ 	/*
+ 	 * It's possible that init_idle() gets called multiple times on a task,
+@@ -8777,7 +8774,6 @@ void idle_task_exit(void)
+ 		finish_arch_post_lock_switch();
+ 	}
+ 
+-	scs_task_reset(current);
+ 	/* finish_cpu(), as ran on the BP, will clean up the active_mm state */
+ }
+ 
+-- 
+2.11.0
+
