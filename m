@@ -2,79 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0267845B014
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:27:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1306945B021
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 00:27:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240309AbhKWXaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S240558AbhKWXaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 18:30:35 -0500
+Received: from todd.t-8ch.de ([159.69.126.157]:34209 "EHLO todd.t-8ch.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229987AbhKWXaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 23 Nov 2021 18:30:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbhKWXaR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 18:30:17 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20EFCC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 15:27:09 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id 47-20020a9d0332000000b005798ac20d72so1271602otv.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 15:27:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fwR7w/M4Q8qtIzCDcAQVXEmcuIC9wJDRftO6EL4gBoo=;
-        b=mSaZ2VU5+HDgoa/iDnfBfMpzjYzjog8eQcqJClYoBoCNX6T3kcHgQn5eO5nEtySDS0
-         c49yFdabzc8RhTCQOQHvoxPfsWehvF/AWyZKZGq7I27B2fh9n9qrMGwqDSA/VPtlMzcw
-         xK9z/EK716wVZf2WEk4/RsD5T0Yd6qRAErS1PdD7wwRYbGmgwTXun4FcO4nq4HoHGPF9
-         rGXbNjNEIUdRUWPZnYn3cRVhAEOZSDyn06tntY0R9aPNHCtUhwsP04WXsx3BOzwU1+QZ
-         qSFgar3kmDD/UyeTQtnqnpndS3VOAcUV+OMlh2k47TSfxYyfavFl8O3RN/OXZwYxsMKQ
-         AR8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fwR7w/M4Q8qtIzCDcAQVXEmcuIC9wJDRftO6EL4gBoo=;
-        b=X6qsee90OzdxdUGInHHMHP7F7xlISuO0sfodv1ygTxKqZj9AoJ6Dpd3lwowY5V0MZB
-         1iXGkLe1w1O/1xE13NlyZEDJYhGs8kjsxn0FoaeNrVcv0old433g4CN8bwS2djQnaepg
-         UCHQSYv9UMo7IJZORyAuO6LZY4hPWbrG4N02TWRwSG0fVXXtMXq0CSPrVSe7xhi8U2iJ
-         kkD3lEhF5+YoT0ZHgcRgemRk1Oh5/JrVyFZ8R//tF+ZMNbNgTH9apCS5l4sinwV1Kvgg
-         lfTAy+2Zq6vTBOHsBYDp4rXwee9GBRJgC89nD/CBEj5l6heLUNhv4nLZaGQGDvVccfNP
-         5tRA==
-X-Gm-Message-State: AOAM531ZGHC1WRO5bUaEa241DyujdVx7+XVvZKoT/28cmCcNfHoWo5bU
-        G3iFXe/ixdBqJjqnH3iIm7g3XKlTRmOhoJUSt72tmQ==
-X-Google-Smtp-Source: ABdhPJyXt8C2HSDSOfsA/RV/93m93YeKUVlAgbSNT20jk3LS6BL0w2h0DLsVZx3fAj2o0+Zx4oRJueGUwfUtiPFyBd4=
-X-Received: by 2002:a9d:a42:: with SMTP id 60mr8593599otg.179.1637710028501;
- Tue, 23 Nov 2021 15:27:08 -0800 (PST)
+From:   =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1637710028;
+        bh=DXEan1BVutJvaFtIQ8/QKBvVBNA5i6qL83xM1aiBSJ0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jEjFm9tfc6OX9MZ1mN0piWumgMyq4J1bCA6o7SiqRqVhbJPku5LCf0q9exz53x8EF
+         syQN4MYVysCQhaTrw1Z2O0Zp/7q++FtyF8qlpeV6GnF507NesmK1jHbvNVc99qm+IR
+         2AzpvorKO4STE/MEfOeP/8YhT1ETROIaUek/QU8g=
+To:     linux-pm@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org,
+        Mark Gross <markgross@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        linux-kernel@vger.kernel.org, linrunner@gmx.net, bberg@redhat.com,
+        hadess@hadess.net, markpearson@lenovo.com,
+        nicolopiazzalunga@gmail.com, njoshi1@lenovo.com, smclt30p@gmail.com
+Subject: [PATCH 0/4] power: supply: add charge_behaviour property (force-discharge, inhibit-charge)
+Date:   Wed, 24 Nov 2021 00:27:00 +0100
+Message-Id: <20211123232704.25394-1-linux@weissschuh.net>
+X-Mailer: git-send-email 2.34.0
 MIME-Version: 1.0
-References: <20211122225807.8105-1-j@jannau.net> <20211122225807.8105-4-j@jannau.net>
- <5f16c962-72a1-21ec-9651-744053f74365@marcan.st> <d48d2e85-42f1-570a-bd8f-e3834147c8b8@marcan.st>
-In-Reply-To: <d48d2e85-42f1-570a-bd8f-e3834147c8b8@marcan.st>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 24 Nov 2021 00:26:56 +0100
-Message-ID: <CACRpkdZghfRvox4aY4ROXYwFqiV6mnXZgw+42ZWYisXXgQ5+jQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] arm64: dts: apple: t8103: Add i2c nodes
-To:     Hector Martin <marcan@marcan.st>
-Cc:     Janne Grunau <j@jannau.net>, Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1637710019; l=2660; s=20211113; h=from:subject; bh=DXEan1BVutJvaFtIQ8/QKBvVBNA5i6qL83xM1aiBSJ0=; b=0LmThycKxhwYcG1jpf56ePTNBUnZn6vWy+bqkDvUJ/sE06MDjs6fx5MzROh7AxXBWy/q+P7SbI9D cjSXZMRzAGE3vOpcHaZovI4GS2vtuOZNtbjQt4l34WYopNyXbXeK
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519; pk=9LP6KM4vD/8CwHW7nouRBhWLyQLcK1MkP6aTZbzUlj4=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 3:43 PM Hector Martin <marcan@marcan.st> wrote:
+Hi,
 
-> For those following along in the list: the reason why i2c3 was getting
-> stuck is because it seems the unused bus is weakly pulled low on these
-> machines, which jams it.
+this series adds support for the charge_behaviour property to the power
+subsystem and thinkpad_acpi driver.
 
-That looks like some power saving attempt.
+As thinkpad_acpi has to use the 'struct power_supply' created by the generic
+ACPI driver it has to rely on custom sysfs attributes instead of proper
+power_supply properties to implement this property.
 
-I suppose that means that even i2c buses that are in use
-could be weakly pulled low when suspending the system
-and maybe even inbetween transactions to save some
-leak current.
+Patch 1: Adds the power_supply documentation and basic public API
+Patch 2: Adds helpers to power_supply core to help drivers implement the
+  charge_behaviour attribute
+Patch 3: Adds support for force-discharge to thinkpad_acpi.
+Patch 4: Adds support for inhibit-discharge to thinkpad_acpi.
 
-Yours,
-Linus Walleij
+Patch 3 and 4 are largely taken from other patches and adapted to the new API.
+(Links are in the patch trailer)
+
+Ognjen Galic:
+
+Your S-o-b is on the original inhibit_charge and force_discharge patches.
+I would like to add you as Co-developed-by but to do that it will also require
+your S-o-b. Could you give your sign-offs for the new patches, so you can be
+properly attributed?
+
+Sebastian Reichel:
+
+Currently the series does not actually support the property as a proper
+powersupply property handled fully by power_supply_sysfs.c because there would
+be no user for this property.
+
+Previous discussions about the API:
+
+https://lore.kernel.org/platform-driver-x86/20211108192852.357473-1-linux@weissschuh.net/
+https://lore.kernel.org/platform-driver-x86/21569a89-8303-8573-05fb-c2fec29983d1@gmail.com/
+
+v1: https://lore.kernel.org/lkml/20211113104225.141333-1-linux@weissschuh.net/
+v1 -> v2:
+
+* Use sysfs_emit-APIs instead of plain sprintf
+* More cecks for actual feature availability
+* Validation of the written values
+* Read inhibit-charge via BICG instead of PSSG (peak shift state)
+* Don't mangle error numbers in charge_behaviour_store()
+
+Open points:
+
+Thomas Koch has observed that on a T450s with two batteries
+inhibit-charge on BAT0 will affect both batteries and for BAT1 it is ignored
+entirely, this seems to be a bug in the EC.
+On my T460s with two batteries it works correctly.
+
+Thomas Weißschuh (4):
+  power: supply: add charge_behaviour attributes
+  power: supply: add helpers for charge_behaviour sysfs
+  platform/x86: thinkpad_acpi: support force-discharge
+  platform/x86: thinkpad_acpi: support inhibit-charge
+
+ Documentation/ABI/testing/sysfs-class-power |  14 ++
+ drivers/platform/x86/thinkpad_acpi.c        | 191 +++++++++++++++++++-
+ drivers/power/supply/power_supply_sysfs.c   |  51 ++++++
+ include/linux/power_supply.h                |  16 ++
+ 4 files changed, 268 insertions(+), 4 deletions(-)
+
+
+base-commit: 66f4beaa6c1d28161f534471484b2daa2de1dce0
+-- 
+2.34.0
+
