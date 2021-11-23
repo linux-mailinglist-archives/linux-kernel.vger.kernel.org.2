@@ -2,290 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E84459E62
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:41:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0452459E64
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:41:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234935AbhKWIoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 03:44:23 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44702 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233911AbhKWIoW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 03:44:22 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AN6Gns8028323;
-        Tue, 23 Nov 2021 08:41:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=MeQboweeNUheoUVo5xUsdCc1WYoGzzBJH6hVFYrK75s=;
- b=e/1QnsWNxjCtk8V/5BiCNfxbxol1t+u6mB1ySNNVoi2euPD4O2f3Q0pmeKjsfBRTco/l
- elj/KRzD6EQCRckQae5PRcy5oCJBaAxX/p/c1s1GdjpquDGOnYeTWHdov7LqYOXdvmJ8
- ygBIvqwYQwbgb/W7U2HPJoQjDdRPkqbEk83FDkppfVACXBfNUcgk3Xrz++otcf0a+ZgN
- rA78RYOn3wAxQPCqJqlpOrvDiCG7daZVtf7+TIUqOxgwTs6gIqc37NCw/u5bS/h2k43h
- L+P3b88qJDym9reYvcNAGWHRK1jKdbs4ktBJghbSr96Vt52+1N/R+XJlVJqKb/T/L7bb HQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cgtw32agd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Nov 2021 08:41:05 +0000
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AN8TgLl025108;
-        Tue, 23 Nov 2021 08:41:05 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cgtw32afe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Nov 2021 08:41:05 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AN8atW4011315;
-        Tue, 23 Nov 2021 08:41:02 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 3cern9wfgj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Nov 2021 08:41:02 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AN8XnUY63242520
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Nov 2021 08:33:49 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 89CA7A405C;
-        Tue, 23 Nov 2021 08:41:00 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 08FBCA405F;
-        Tue, 23 Nov 2021 08:40:55 +0000 (GMT)
-Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com (unknown [9.43.21.81])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 23 Nov 2021 08:40:54 +0000 (GMT)
-Subject: Re: [PATCH 2/2] perf tools: Improve IBS error handling
-To:     Kim Phillips <kim.phillips@amd.com>, Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Robert Richter <robert.richter@amd.com>,
-        Stephane Eranian <eranian@google.com>
-References: <20211004214114.188477-1-kim.phillips@amd.com>
- <20211004214114.188477-2-kim.phillips@amd.com> <YV8uQVnMnnMd1Led@krava>
- <8a8583dc-5a5d-f107-8ef0-6be96e2f9095@amd.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <fdcfec83-01c6-5e25-5b99-dac05287fdae@linux.ibm.com>
-Date:   Tue, 23 Nov 2021 14:10:53 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <8a8583dc-5a5d-f107-8ef0-6be96e2f9095@amd.com>
-Content-Type: text/plain; charset=utf-8
+        id S234948AbhKWIoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 03:44:30 -0500
+Received: from mail-eopbgr00065.outbound.protection.outlook.com ([40.107.0.65]:9093
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233911AbhKWIo2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 03:44:28 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Gv/wINgNDTxRBlwzIC9tczjkklbTmG2utjJuz19SE8FewlbToJhRd1DISSPa8aKmBaQ5kduL/Guoy3R/Z6UD7Vov4MPU/4IPBfVOqpnD+tR5+UhPIZUILHsXVC+jpuookDta4Dx2Ek2bT42jU+wdkHevdnfW9a52B6JchB2Hg4QYowWlcMCWvZDU4wwzt3AA/gejZek6Z6W6FWQIGc4iE8ZpBPsYgggOvmW1tVtq8JMk5kqq8QDu2xL2jperlgLDJcrCHvK4mKN0ZiGQy5Va63cvhest9rkT/HW2L3Ysn2iewhIdkHs6HMj2Ir1IuXTPyEZAf+QCH63LmXRrjf/QcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nHURb7XGk7QW6qMwbh5za5BcybAi0gOkwQqvvSHgNCo=;
+ b=P7BibolIkBVsa0Zso4FwG0624acskudpAs8Fn+BF9ePIHb9pwR4IixX64oak3uysTrJrkYOUw1ffK0X+mgeb/Y4iNnrZWhfphDuBMzWTvSZKjlOLTf1MyHlBPragAVaGyQcK0tuL4Yq2ybJA3/ohhfVv82yRpK3fT05vBYGorgX075rRIIcAW6O66Yp41/PwpmlnXqOJpEiqJCEniyue5CinmgZDIgBNc/Nq4O24703z0du2tbq9wSqWR6+5EzmyfwISFxttShSDNPEWq7DE/m69uonfpqmzbKKexL+LqjgELhu6JbF+LIQzFs9hV+Q1d8j1efLmQgrU2lpFOqYd1A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nHURb7XGk7QW6qMwbh5za5BcybAi0gOkwQqvvSHgNCo=;
+ b=M0wgOJbctvF6tFtlmFECHXQS9HdRLo8fQHXra+ksWIsnrh7fU5gfg+1GYgGaRASfeAVz3BVHQIg61ZVjTjql1ZPcrtTB+KSMADS+P0RbJwDJqfVuqVNAfbTdgGp1JWkghB5YHMicywtkpU3K7x4dS+/xZ6BgLQIA/5nyEv6UCow=
+Received: from AS8PR04MB8404.eurprd04.prod.outlook.com (2603:10a6:20b:3f8::7)
+ by AM6PR0402MB3687.eurprd04.prod.outlook.com (2603:10a6:209:19::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.24; Tue, 23 Nov
+ 2021 08:41:18 +0000
+Received: from AS8PR04MB8404.eurprd04.prod.outlook.com
+ ([fe80::c9fe:7982:c657:b423]) by AS8PR04MB8404.eurprd04.prod.outlook.com
+ ([fe80::c9fe:7982:c657:b423%9]) with mapi id 15.20.4713.025; Tue, 23 Nov 2021
+ 08:41:18 +0000
+From:   Sherry Sun <sherry.sun@nxp.com>
+To:     =?utf-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= 
+        <u.kleine-koenig@pengutronix.de>
+CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "jirislaby@kernel.org" <jirislaby@kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: RE: [PATCH] tty: serial: imx: clear RTSD status before suspend
+Thread-Topic: [PATCH] tty: serial: imx: clear RTSD status before suspend
+Thread-Index: AQHX4Di5uwn240l5kk6yGHp0V2/UCKwQuteAgAAOOFA=
+Date:   Tue, 23 Nov 2021 08:41:18 +0000
+Message-ID: <AS8PR04MB84047408AEC087EB16B6981F92609@AS8PR04MB8404.eurprd04.prod.outlook.com>
+References: <20211123070349.20099-1-sherry.sun@nxp.com>
+ <20211123074219.wn5jfjr6ph7uutyo@pengutronix.de>
+In-Reply-To: <20211123074219.wn5jfjr6ph7uutyo@pengutronix.de>
+Accept-Language: zh-CN, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 0-N56oZramO-N8aeoMfxUYulu64rAE-7
-X-Proofpoint-GUID: gRj-FzQnfUpxJfyi4ery2nWZF02C6Isb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-23_02,2021-11-22_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- phishscore=0 mlxlogscore=999 adultscore=0 spamscore=0 lowpriorityscore=0
- mlxscore=0 impostorscore=0 priorityscore=1501 clxscore=1015 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111230044
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b2fbd679-8e86-4d56-0a80-08d9ae5d04d3
+x-ms-traffictypediagnostic: AM6PR0402MB3687:
+x-microsoft-antispam-prvs: <AM6PR0402MB3687F7E42DEF38FE930088CE92609@AM6PR0402MB3687.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: tdr+t60wn1ppT89QV5UntxyHAe3OAPomnKq5CcTCzRsjVblCAPf8wyDC0cJgTTdcYq+kErCrHHPEzqVbigiDYV77wPDgmTbFh2jhQkE+cTdHQ3lXjdrGfp4YeurDDgPeA1+NIZnKEHievIuHuSpqnb23oGehBdr6q3RGxhf3MUWRkRL8rplGuRorGkZibrrBMrTM9k4wcHxRh7zjahC09LbR65MEBeW9OcdfWk5CRQoOVoh3tVhqXwesXDVGclgb6D7T54Bo/JBspmYc1Gk5hYoKyWf+Si5h3gGDon1zZC6DRe2mMk2R8s6V1HGq0siKZgQ6xQKuSyau80Y3UoZvTflzCkfVM6Oal/+DDsk8Uap5yQ3fC4PUpGFLDdkjDqOumrauuPR2pw96TX9zn7yNOf1stM5Ua0RUAPueNL8jHS2zDQs7y5e1nO0ukX5huxm4GYDgHnr8ePXc94xve2ajQsqcrnmMza3cTrkfdQsnwxrQZNm68cJRTam5wgTneJIE/XUQGyPUdxdIHTL14GZ1COGMsMsjWegX6C8IaXBpawelVgATVc1w98kt9sWt8rCkUQJPf1GUnA612+/8U5iQI+sbUouIxg0+nFpprOXPVJdnuiiAOxO7gbFtTYGcV6BURUMuI6t+EwV4J2by3CgjR49FUO0hf3vCJcxvOOKcR1dKZL0BP8h/ddlKXcacHonyXvFadGTmQy8h037Q7tpkm71pbA1ZpNZD1cj6jG7qlQNtl0dOPCcZESICiUMs3idXizKUtSYccyIfPLKtHh1jHVe2bsrzDiJz7Xi1/0ZdllsoM7UFA7SFUk0aAqsEMxVZW+KkQv2EWqxMSpHxu4E6Rg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8404.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(5660300002)(38100700002)(7696005)(66446008)(26005)(9686003)(76116006)(86362001)(122000001)(66946007)(15650500001)(38070700005)(66574015)(2906002)(83380400001)(55016003)(71200400001)(33656002)(6916009)(966005)(54906003)(508600001)(44832011)(8936002)(316002)(6506007)(52536014)(4326008)(64756008)(66556008)(186003)(66476007)(53546011);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MzNUbmpmck8xcTNTMFppeEI2VkhwbkxVam1mTHpCRTBtL2RDMnNVRWVlQnha?=
+ =?utf-8?B?T2FNckp6ai9wZUNTa0NNWUdteFozQ1I1SVNFRVpQalFJREhUb2xQUHl4MTdo?=
+ =?utf-8?B?U0N6SkFCRDE4TkxwWkJJUlluVkZybFc4SitJM2pWQUNoUkg3Y2VZdXNabDFQ?=
+ =?utf-8?B?L0hnMXc2UDB6MEdNKzEvOUkzekQ3b3JUWStXbkpsK3UrUW1uR1oxMzFvVE9p?=
+ =?utf-8?B?YlVVNUhicjlQTDBlVlhjRFh6a0twc2x4Y1VHcUJlZUt3SGtEOVVwMFBHeDU2?=
+ =?utf-8?B?TDEzYTNFMUc4TW9GSHhNcUpkVjZpcWtldUxpcERwSWJOWG1OWjFwMnhiSmVU?=
+ =?utf-8?B?Y3M3bUVXZFpPcWFzL0QxRVN6cTBwYzBFWStEMU1TQytVRHJTaXFpTWV1Mzkw?=
+ =?utf-8?B?bFRBRUFYYlBuVkV3c1BUK3c1Qi9NUHZ3aHVHTForQzBKREt5WlBFOS9wY0ly?=
+ =?utf-8?B?VGc0dldEWmV5ZTN2V3lZK3RMYlZKd2lsYzNEOW5Gcms3cUdIN3RTSUJzU3gr?=
+ =?utf-8?B?c3kxQjEyR0xBOTBId0tFUnc4UFlORnpvQS85algwNW5WbTljWGZ0MzZiSEFs?=
+ =?utf-8?B?aUUxdzFRVjJhQk03TWtiM0dOeTE3TnpjNWErT2RSNU11SGFxNWR3bE95dkVy?=
+ =?utf-8?B?YzZmVEpvQ0JIcG9YVlkrcFoxR2pDeHBWLzdQSExZalFFalBRTGE1Z2ZoNWNX?=
+ =?utf-8?B?Zy92RTRLNE1ocVkvOFFUVWtqQ1Y4RDRHTThad3hmQWhFTGl1RGg4WjJLOWhY?=
+ =?utf-8?B?WHJDQ1VRaWkxNnZzbnkwVloyY1Z0Ynh1SEFPOWNVRkd1WFBPNmtjWWIzOFZx?=
+ =?utf-8?B?OTdWeXNoV3ZNaDV3TTBrYmV6WFJkRS9LaG1RbFNQS1R4SVN2clpybnNrRnNN?=
+ =?utf-8?B?dE5IUzBnMmVvUjZNTVI5bm5KMTJWM3ZYZVpqNU4vWlJmbDJTanBMbDRaWmsw?=
+ =?utf-8?B?T1U1dHRVdlRFNDRWZUpNZkpCUnRYSThFdmdnQUVya0JsNVN5WXRXTU5rRXRu?=
+ =?utf-8?B?a0xBeWJ5dWhDTEM0Zmh0aHM3Z3FpbHYvdG1taUl5akdwUWFLbHFiOHFwbDVL?=
+ =?utf-8?B?UERUUVJ1S2owenBXZndPR0hheEwydHQxcWNlZXVUQUpUZHVxYzZKbitHdG8x?=
+ =?utf-8?B?MUE5OEJzVWdFMnFPaWwwcnZ4OGR5SHZJelgxYng2cm1ZSzhESUxrTEtqSDhz?=
+ =?utf-8?B?d0ZacmlCZVBzMTJJc3ZZNVhSUzd0Q0ZrdVdmaW1DY2NyWFlnV1dqaW1tSTlo?=
+ =?utf-8?B?VURCOStTS1k2MURHUEFQRVNHMS9CVWIrUDdVSUF2TDEvdGh1c0YrRGZqME4z?=
+ =?utf-8?B?UXdtVkNGWno4RFVtL0x4N2c5eGNwbW56TG5qalpuUXBSWTFRbnA2ODFURkh2?=
+ =?utf-8?B?R3U2NXJ3REptV1BZRExtNlBWWHZQOE8rRXJTdzVGNE5JRU5vTjBvdzd4eXI3?=
+ =?utf-8?B?a1RVc1k5d0k0YWdKbTdrdW9tWDBqcWtRK2ZCOVdaNmdnd2xQcVI5dkZ6YVVy?=
+ =?utf-8?B?YUVBOWNpMFdmc042SXUrdlJPdGVOcUVMV3BCU1N4RURtL0FYMk02ajlQdkM5?=
+ =?utf-8?B?M0tiWm1IZXRNTkxPYi8yM1V4Vlczbkd3b09DcG41TzZNalpVaXdROXRNQU5S?=
+ =?utf-8?B?S3ZMZHI3U1lwcTJ1T1dINTB3c1dGSWVDN3FPZHRvUVJLS25teEtxUG81YWlD?=
+ =?utf-8?B?MFBKYkowMWw3YTg2REUvc1FYMW5lZUVZUzZmT1lvYWhISncyUmYzSy9oenVj?=
+ =?utf-8?B?b25NekVOMG5FUStDdVVuRVRmclBtZG9adWhnSFQzYi9DelRMWmphL0RlUHVD?=
+ =?utf-8?B?ZHNhVzBKSnFOenVzMjUrcGZ2S3kxcE5pRXh4bUp1dEhtem1qemcxUENEK2M3?=
+ =?utf-8?B?a0Y3Z01hRXQyTHZmUTZHUlprSmhsbCtENEx2MCtMV2ltR1BRbC92QXhhczAw?=
+ =?utf-8?B?ei9VRHFjSGQyUUtDd3FoMUk5TmpHN3VKWm1kNUFvU1BKcVZ3U3RQcngxVmtq?=
+ =?utf-8?B?cld1YXpXeFpqa3dNbmxjK3dFTFh2Yk5HU0lxZ0VRNHpwVUpYUTgvS0tsNHB2?=
+ =?utf-8?B?dDNNQVVoc1BUTGVhdFBWUVFYNlZMUzNSMmFEdWl4RmVkY29EQUl5VEszaUtS?=
+ =?utf-8?B?aVU4V0pZVXp3dDFNbDl4WHdrOVNaV3docHU0NGFUYWN3QnZRVUZ2Nktib01T?=
+ =?utf-8?B?bFE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8404.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b2fbd679-8e86-4d56-0a80-08d9ae5d04d3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2021 08:41:18.4104
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kYEnQNbpYyUI+PsbJ1zoLX0UJa3s6hyXLWb/Rl1RmRtcmr6Z0BTyeaTqoKPtpK4YC5HEh91hfADjoFKHPeTycg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR0402MB3687
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/8/21 12:47 AM, Kim Phillips wrote:
-> On 10/7/21 12:28 PM, Jiri Olsa wrote:
->> On Mon, Oct 04, 2021 at 04:41:14PM -0500, Kim Phillips wrote:
->>> ---
->>>   tools/perf/util/evsel.c | 24 ++++++++++++++++++++++++
->>>   1 file changed, 24 insertions(+)
->>>
->>> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
->>> index b915840690d4..f8a9cbd99314 100644
->>> --- a/tools/perf/util/evsel.c
->>> +++ b/tools/perf/util/evsel.c
->>> @@ -2743,9 +2743,22 @@ static bool find_process(const char *name)
->>>       return ret ? false : true;
->>>   }
->>>   +static bool is_amd(const char *arch, const char *cpuid)
->>> +{
->>> +    return arch && !strcmp("x86", arch) && cpuid && strstarts(cpuid,
->>> "AuthenticAMD");
->>> +}
->>> +
->>> +static bool is_amd_ibs(struct evsel *evsel)
->>> +{
->>> +    return evsel->core.attr.precise_ip || !strncmp(evsel->pmu_name,
->>> "ibs", 3);
->>> +}
->>> +
->>>   int evsel__open_strerror(struct evsel *evsel, struct target *target,
->>>                int err, char *msg, size_t size)
->>>   {
->>> +    struct perf_env *env = evsel__env(evsel);
->>> +    const char *arch = perf_env__arch(env);
->>> +    const char *cpuid = perf_env__cpuid(env);
->>>       char sbuf[STRERR_BUFSIZE];
->>>       int printed = 0, enforced = 0;
->>>   @@ -2841,6 +2854,17 @@ int evsel__open_strerror(struct evsel
->>> *evsel, struct target *target,
->>>               return scnprintf(msg, size, "wrong clockid (%d).",
->>> clockid);
->>>           if (perf_missing_features.aux_output)
->>>               return scnprintf(msg, size, "The 'aux_output' feature
->>> is not supported, update the kernel.");
->>> +        if (is_amd(arch, cpuid)) {
->>> +            if (is_amd_ibs(evsel)) {
->>
->> would single 'is_amd_ibs' call be better? checking on both amd and ibs
-> 
-> Good suggestion. If you look at the later patch in the
-> BRS series, I have rewritten it to add the new
-> AMD PMU like so:
-> 
->  if (is_amd()) {
->      if (is_amd_ibs()) {
->          if (evsel->this)
->              return
->          if (evsel->that)
->              return
->      }
-> +    if (is_amd_brs()) {
-> +        if (evsel->this)
-> +            return
-> +        if (evsel->that)
-> +            return
-> +    }
->  }
-
-Hi Kim,
-     From my point of view, it won't be a good idea of adding so many
-checks in common function definition itself.
-
-Can you just create a check to see if its amd machine and then add a
-function call which will handle all four conditions together?
-
-which is basically for:
-
-+		if (is_amd(arch, cpuid)) {
-+			if (is_amd_ibs(evsel)) {
-+				if (evsel->core.attr.exclude_kernel)
-+					return scnprintf(msg, size,
-+	"AMD IBS can't exclude kernel events.  Try running at a higher
-privilege level.");
-+				if (!evsel->core.system_wide)
-+					return scnprintf(msg, size,
-+	"AMD IBS may only be available in system-wide/per-cpu mode.  Try using
--a, or -C and workload affinity");
-+			}
-
-and this:
-
-+            if (is_amd_brs(evsel)) {
-+                if (evsel->core.attr.freq)
-+                    return scnprintf(msg, size,
-+    "AMD Branch Sampling does not support frequency mode sampling, must
-pass a fixed sampling period via -c option or
-cpu/branch-brs,period=xxxx/.");
-+                /* another reason is that the period is too small */
-+                return scnprintf(msg, size,
-+    "AMD Branch Sampling does not support sampling period smaller than
-what is reported in /sys/devices/cpu/caps/branches.");
-+            }
-
-So, incase we are in amd machine,  common function evsel__open_strerror
-will call function may be something like amd_evesel_open_strerror_check
-which will look for both ibs and brs conditions and return corresponding
-error statement.
-
-Thanks,
-Kajol Jain
-
-> 
-> Below is the full proposed replacement patch for patch 12
-> of 13 of the BRS series.
-> 
-> Another option is to have the is_amd_{ibs,brs} functions
-> call is_amd() themselves, so the if (evsel->) code could be
-> unindented by one tab, would that be better?
-> 
-> Thanks,
-> 
-> Kim
-> 
-> From a4cbab762719b30bddec2e278cf8b8eb82e83865 Mon Sep 17 00:00:00 2001
-> From: Stephane Eranian <eranian@google.com>
-> Date: Thu, 9 Sep 2021 00:56:59 -0700
-> Subject: [PATCH] perf tools: Improve error handling of AMD Branch Sampling
-> 
-> This patch improves the error message printed by perf when
-> perf_event_open() fails on AMD Zen3 when using the branch sampling
-> feature. In the case of EINVAL, there are two main reasons: frequency
-> mode or period is smaller than the depth of the branch sampling
-> buffer (16). The patch checks the parameters of the call and tries
-> to print a relevant message to explain the error:
-> 
-> $ perf record -b -e cpu/branch-brs/ -c 10 ls
-> Error:
-> AMD Branch Sampling does not support sampling period smaller than what
-> is reported in /sys/devices/cpu/caps/branches.
-> 
-> $ perf record -b -e cpu/branch-brs/ ls
-> Error:
-> AMD Branch Sampling does not support frequency mode sampling, must pass
-> a fixed sampling period via -c option or cpu/branch-brs,period=xxxx/.
-> 
-> Signed-off-by: Stephane Eranian <eranian@google.com>
-> [Rebased on commit 9fe8895a27a84 ("perf env: Add perf_env__cpuid,
-> perf_env__{nr_}pmu_mappings")]
-> Signed-off-by: Kim Phillips <kim.phillips@amd.com>
-> ---
->  tools/perf/util/evsel.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index f8a9cbd99314..e1f5eff07355 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -2753,6 +2753,12 @@ static bool is_amd_ibs(struct evsel *evsel)
->      return evsel->core.attr.precise_ip || !strncmp(evsel->pmu_name,
-> "ibs", 3);
->  }
-> 
-> +static bool is_amd_brs(struct evsel *evsel)
-> +{
-> +    return ((evsel->core.attr.config & 0xff) == 0xc4) &&
-> +           (evsel->core.attr.sample_type & PERF_SAMPLE_BRANCH_STACK);
-> +}
-> +
->  int evsel__open_strerror(struct evsel *evsel, struct target *target,
->               int err, char *msg, size_t size)
->  {
-> @@ -2863,6 +2869,14 @@ int evsel__open_strerror(struct evsel *evsel,
-> struct target *target,
->                      return scnprintf(msg, size,
->      "AMD IBS may only be available in system-wide/per-cpu mode.  Try
-> using -a, or -C and workload affinity");
->              }
-> +            if (is_amd_brs(evsel)) {
-> +                if (evsel->core.attr.freq)
-> +                    return scnprintf(msg, size,
-> +    "AMD Branch Sampling does not support frequency mode sampling, must
-> pass a fixed sampling period via -c option or
-> cpu/branch-brs,period=xxxx/.");
-> +                /* another reason is that the period is too small */
-> +                return scnprintf(msg, size,
-> +    "AMD Branch Sampling does not support sampling period smaller than
-> what is reported in /sys/devices/cpu/caps/branches.");
-> +            }
->          }
-> 
->          break;
+SGkgVXdlLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFV3ZSBLbGVp
+bmUtS8O2bmlnIDx1LmtsZWluZS1rb2VuaWdAcGVuZ3V0cm9uaXguZGU+DQo+IFNlbnQ6IDIwMjHl
+ubQxMeaciDIz5pelIDE1OjQyDQo+IFRvOiBTaGVycnkgU3VuIDxzaGVycnkuc3VuQG54cC5jb20+
+DQo+IENjOiBncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZzsgamlyaXNsYWJ5QGtlcm5lbC5vcmc7
+IGxpbnV4LQ0KPiBzZXJpYWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJu
+ZWwub3JnOyBkbC1saW51eC1pbXggPGxpbnV4LQ0KPiBpbXhAbnhwLmNvbT4NCj4gU3ViamVjdDog
+UmU6IFtQQVRDSF0gdHR5OiBzZXJpYWw6IGlteDogY2xlYXIgUlRTRCBzdGF0dXMgYmVmb3JlIHN1
+c3BlbmQNCj4gDQo+IE9uIFR1ZSwgTm92IDIzLCAyMDIxIGF0IDAzOjAzOjQ5UE0gKzA4MDAsIFNo
+ZXJyeSBTdW4gd3JvdGU6DQo+ID4gRnJvbTogRnVnYW5nIER1YW4gPGZ1Z2FuZy5kdWFuQG54cC5j
+b20+DQo+ID4NCj4gPiBDbGVhciBSVFNEIHN0YXR1cyBiZWZvcmUgc3VzcGVuZCBkdWUgdG8gdGhl
+IHBvcnQgYWxzbyB1c2UgUlRTIHBpbiBhcw0KPiA+IHdha2V1cCBzb3VyY2UsIG5lZWQgdG8gY2xl
+YXIgdGhlIGZsYWcgZmlyc3QuDQo+IA0KPiBJJ2Qgd3JpdGU6DQo+IA0KPiAJQ2xlYXIgUlRTRCBz
+dGF0dXMgYmVmb3JlIGVuYWJsaW5nIHRoZSBpcnEgZXZlbnQgZm9yIFJUU0QuDQoNClRoYW5rcyBm
+b3IgdGhlIHN1Z2dlc3Rpb24sIEkgd2lsbCByZW9yZ2FuaXplIHRoZSBjb21taXQgbWVzc2FnZSBh
+bmQgc2VuZCBWMi4NCg0KPiANCj4gVGhhdCB0aGlzIGhhcHBlbnMgaW4gdGhlIGNvbnRleHQgb2Yg
+c3VzcGVuZCBpc24ndCB0aGF0IGltcG9ydGFudC4NCg0KU29ycnkgSSBkaWRuJ3QgZ2V0IHRoZSBw
+b2ludCBoZXJlLCBjYW4geW91IHBsZWFzZSBleHBsYWluIG1vcmU/DQpQZXIgbXkgdW5kZXJzdGFu
+ZGluZywgdGhlIHdha2V1cCBzb3VyY2UgaW50ZXJydXB0IGlzIGhhbmRsZWQgaW4gdGhlIHN1c3Bl
+bmQgY29udGV4dCwgc28gY2xlYXIgdGhlIGZsYWcgaW4gdGhlIHN1c3BlbmQgY29udGV4dCBpcyBh
+bHNvIG5lY2Vzc2FyeS4NCg0KQmVzdCByZWdhcmRzDQpTaGVycnkNCg0KPiANCj4gPiBTaWduZWQt
+b2ZmLWJ5OiBGdWdhbmcgRHVhbiA8ZnVnYW5nLmR1YW5AbnhwLmNvbT4NCj4gPiBTaWduZWQtb2Zm
+LWJ5OiBTaGVycnkgU3VuIDxzaGVycnkuc3VuQG54cC5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZl
+cnMvdHR5L3NlcmlhbC9pbXguYyB8IDYgKysrKy0tDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCA0IGlu
+c2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
+cy90dHkvc2VyaWFsL2lteC5jIGIvZHJpdmVycy90dHkvc2VyaWFsL2lteC5jIGluZGV4DQo+ID4g
+OTBmODJlNmM1NGU0Li5mYjc1ZTNlMGQ4MjggMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy90dHkv
+c2VyaWFsL2lteC5jDQo+ID4gKysrIGIvZHJpdmVycy90dHkvc2VyaWFsL2lteC5jDQo+ID4gQEAg
+LTI0ODIsMTAgKzI0ODIsMTIgQEAgc3RhdGljIHZvaWQgaW14X3VhcnRfZW5hYmxlX3dha2V1cChz
+dHJ1Y3QNCj4gPiBpbXhfcG9ydCAqc3BvcnQsIGJvb2wgb24pDQo+ID4NCj4gPiAgCWlmIChzcG9y
+dC0+aGF2ZV9ydHNjdHMpIHsNCj4gPiAgCQl1MzIgdWNyMSA9IGlteF91YXJ0X3JlYWRsKHNwb3J0
+LCBVQ1IxKTsNCj4gPiAtCQlpZiAob24pDQo+ID4gKwkJaWYgKG9uKSB7DQo+ID4gKwkJCWlteF91
+YXJ0X3dyaXRlbChzcG9ydCwgVVNSMV9SVFNELCBVU1IxKTsNCj4gPiAgCQkJdWNyMSB8PSBVQ1Ix
+X1JUU0RFTjsNCj4gPiAtCQllbHNlDQo+ID4gKwkJfSBlbHNlIHsNCj4gPiAgCQkJdWNyMSAmPSB+
+VUNSMV9SVFNERU47DQo+ID4gKwkJfQ0KPiA+ICAJCWlteF91YXJ0X3dyaXRlbChzcG9ydCwgdWNy
+MSwgVUNSMSk7DQo+ID4gIAl9DQo+IA0KPiBUaGUgY2hhbmdlIGxvb2tzIGZpbmUuDQo+IA0KPiBC
+ZXN0IHJlZ2FyZHMNCj4gVXdlDQo+IA0KPiAtLQ0KPiBQZW5ndXRyb25peCBlLksuICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgfCBVd2UgS2xlaW5lLUvDtm5pZyAgICAgICAgICAgIHwNCj4gSW5k
+dXN0cmlhbCBMaW51eCBTb2x1dGlvbnMgICAgICAgICAgICAgICAgIHwgaHR0cHM6Ly93d3cucGVu
+Z3V0cm9uaXguZGUvIHwNCg==
