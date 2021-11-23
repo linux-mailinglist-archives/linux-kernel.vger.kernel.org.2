@@ -2,129 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B6445AA12
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:26:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A225645AA15
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:28:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239302AbhKWR3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 12:29:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239250AbhKWR3m (ORCPT
+        id S239202AbhKWRb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 12:31:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60764 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230359AbhKWRb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 12:29:42 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1FC4C061714
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:26:33 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id u17so17654713plg.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:26:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KPed58hFTpRLwDYqt33WLynTmRa2Y0w9rmJh+0dHScs=;
-        b=NsQtJWQHb0i7N75jRXDo1GAfh8tCOwnNO/CY1LBHQ3+k1q+QvHJ8lxNXxFur5/TfxX
-         lKMf6ziPucsto3HP6SMT+fkTlcbNPlDtf+o3rmjOWTHFqZSbXSIwSTu4cCYY3sciqQW/
-         R7uDNf+91nRyHkASh0xFxgYlen0yUmoYQT8rxaQE/mVEsKDDE2ku7aPAALunA65sPwxg
-         CNm651hMUnAEkAoSXU+RlTvItFP/doDb338O5wKv3fkW2xLNkyQgbZvzWBZRqoy3xl0X
-         reLXNosQq9q6WY4J50b/HJOcCH5Q6p5wV5OJCvEGjp5dRJuG6eVc6wHSGVdbUDcJmLEq
-         07oQ==
+        Tue, 23 Nov 2021 12:31:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637688498;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rbwewLFsABuwwFA7Yf68+QvHaRv0OksbhJ5ANLDADx0=;
+        b=Wpks/hwTHm/CoCcSAyoGaQFE3rccuYo5uG8vJyyGYvPj1g59OMvNO6TksOWS0Cj70D86OK
+        hOUIynMutej5wBKigOa4pSbeOBYYyjfO/GaXSf/N8xCEkzlLgBCPhBnX1U/rLLUUGhD7Ki
+        k3IBfwRvtRCXqJEJY4yYbgod0b8fc54=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-8-nswE7KRkN3Czf507jAtJ5w-1; Tue, 23 Nov 2021 12:28:17 -0500
+X-MC-Unique: nswE7KRkN3Czf507jAtJ5w-1
+Received: by mail-wm1-f72.google.com with SMTP id a64-20020a1c7f43000000b003335e5dc26bso3200843wmd.8
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:28:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KPed58hFTpRLwDYqt33WLynTmRa2Y0w9rmJh+0dHScs=;
-        b=lpXBM+x0TTMWWHDOzLGkQIGO0IcYmSFJJt8+uKubG8O//ZACUu3bKPqCehJYIqVPgf
-         jIE7tseXuPn1lQB7I7blvDdjtVBNXgvNgMs4rj+FB8TVOZyTF8rTzBlObqP7jiVw7no1
-         FzOOLME5f49oXKzcXzCqDt0pELMPKABjh5m1wxKzSxSmC9V6sunduTrrYYfgwBJW/hrO
-         T2Rt5H3stxqCY1BKoWKYbJLC7cuGWjqu8cLPtApsttWFC/8gjPXKGXdSDqqUlnkZR0NH
-         bLe7TPx6c/NhJHpU3QInbDJdm1g095XrPcIEosqw+hQGiR8/uMA3JSZNOSSRk1dDtv5O
-         uSXQ==
-X-Gm-Message-State: AOAM5311LODkhUoz/Uhie4e8lxyXHhu7lPTMK3OlW/eWh1NE5ScZOguz
-        UYhSmAXUJEht1P1EAQjUwMjDjTQSn3r8lFS+q9DAlQ==
-X-Google-Smtp-Source: ABdhPJw2jpYc2Lwn/EShV3vG24WLglTCIqgSsDmx5UNLkhvp9W8mUJfbLxP8eGkFhr9vraOm6G/vBX3gZPAZn9uZNGI=
-X-Received: by 2002:a17:90b:4a05:: with SMTP id kk5mr4925971pjb.142.1637688393387;
- Tue, 23 Nov 2021 09:26:33 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rbwewLFsABuwwFA7Yf68+QvHaRv0OksbhJ5ANLDADx0=;
+        b=Ergw4tY31y8JnprcNGz7PmPH4RrXXWMSpzDv+5Zikw+55u+7HU3KZ8qCn9nyKTwoz8
+         W4bjPHxppE9B17oUmDzSCSDpr+5MZjSOP1xTcduaqZKVEGQIwLtojHtqXacbr6BFwKUh
+         KERDmz3tEVHJ31Wxugf4xubqCJ1ndzHiCzMbw0uwNCvbMA+JPZlqlYirS1cyJ07SQjVf
+         KyL4G0cmF90y8KVLaLzEIcFHcEC0b6HH0bNGb238JonjvHhvfpnJqRiiMZl7mN2sHb2/
+         18MIrfYk/PJJzerNJdKhQshO51TrfQQCazLRRNuuNiRd+xLb2ZGMPLteCLiTKpE7SfhC
+         Z/5w==
+X-Gm-Message-State: AOAM5331GEMSGFv9s7xEASVkMO24pg61vLtJjc5NvfsoOrG4mi51Eo7i
+        YO/iXhCz9vqOq+7XQ/FWp8WFShxr31wj0C4WdLVZu3/NBQ8IwP0biVaEUs1ihCQC3hycuGlOrnz
+        CLN1HJjjim7gjadBA6qJiPv1X
+X-Received: by 2002:a05:600c:4e94:: with SMTP id f20mr4980351wmq.77.1637688496426;
+        Tue, 23 Nov 2021 09:28:16 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzkGcSDFJfJ/eExQMmeWAJzI8oQYUpvN8NFnVUgfIHLPXSuqBAOg/ZJ3gCDo+Vofun2YxFzkA==
+X-Received: by 2002:a05:600c:4e94:: with SMTP id f20mr4980310wmq.77.1637688496191;
+        Tue, 23 Nov 2021 09:28:16 -0800 (PST)
+Received: from localhost.localdomain ([2a00:23c6:4a17:4f01:3a16:ae0:112c:ba92])
+        by smtp.gmail.com with ESMTPSA id p62sm1827353wmp.10.2021.11.23.09.28.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 09:28:15 -0800 (PST)
+Date:   Tue, 23 Nov 2021 17:28:14 +0000
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 4/6] rcu/nocb: Create kthreads on all CPUs if "rcu_nocb="
+ or "nohz_full=" are passed
+Message-ID: <20211123172814.4rev7z45onxvjmy4@localhost.localdomain>
+References: <20211123003708.468409-1-frederic@kernel.org>
+ <20211123003708.468409-5-frederic@kernel.org>
 MIME-Version: 1.0
-References: <20210921071807.30978-1-narmstrong@baylibre.com>
- <20210921071807.30978-2-narmstrong@baylibre.com> <YV1UdSVOrZ3B9pq/@atomide.com>
- <CAMSo37UN78k=WE0CwRyNNV3P9kau+JzVZ7mHOMMvh5Bn=+=jAQ@mail.gmail.com> <78b51650-0e32-e81f-0191-2222580e7343@baylibre.com>
-In-Reply-To: <78b51650-0e32-e81f-0191-2222580e7343@baylibre.com>
-From:   Yongqin Liu <yongqin.liu@linaro.org>
-Date:   Wed, 24 Nov 2021 01:26:21 +0800
-Message-ID: <CAMSo37X1BA1cYYxwjWBo_dhjpGYuYD2KK00+3ZWAwNeJq8UfxQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] ARM: dts: dra7: add entry for bb2d module
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Gowtham Tammana <g-tammana@ti.com>, Jyri Sarha <jsarha@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211123003708.468409-5-frederic@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Neil
+Hi,
 
-On Tue, 23 Nov 2021 at 20:47, Neil Armstrong <narmstrong@baylibre.com> wrote:
->
-> Hi,
->
-> On 23/11/2021 13:17, Yongqin Liu wrote:
-> > Hi, Neil, Tony
-> >
-> > # sorry for the confusion if you have received the mail which I sent
-> > before, which is not in plain text mode.
-> >
-> > We have one out of tree change to enable the SGX544 gpu for the
-> > beagleboard-X15 Android build,
-> >     https://android-review.linaro.org/c/kernel/common/+/20521/11/arch/arm/boot/dts/dra7.dtsi
-> >
-> > and that seems to conflict with this BB2D enabling change,
-> > Could you please help give some suggestions on how we should update our patch
-> > to make it work with BB2D, without the revert of this change?
->
-> This BB2D patch alters the target-module@59000000 while your SGX
-> change alters the target-module@56000000.
->
-> Please rebase your patches.
-I am sorry if the "conflict" I used previously caused the confusion.
-What I meant with the "conflict" word is the feature conflict, not the
-patch merge conflict.
+On 23/11/21 01:37, Frederic Weisbecker wrote:
+> In order to be able to (de-)offload any CPU using cpuset in the future,
+> create a NOCB kthread for all possible CPUs. For now this is done only
+> as long as the "rcu_nocb=" or "nohz_full=" kernel parameters are passed
 
-I could merge my SGX change with the BB2D change there, but then my
-build could not boot successfully to the homescreen,
-I need to revert the BB2D change to have it boot to the homescreen successfully.
+Super nitpick! In subject and above sentence, "rcu_nocb=" is actually
+"rcu_nocbs=", isn't it?
 
-Here are the serial console output in case you want to check:
-https://pastebin.com/RY472b96  work with the BB2D change reverted
-https://pastebin.com/aP97r7rJ    does not work with the BB2D change.
+Feel free to ignore the noise, of course. :)
 
-Not sure if you have any idea about the problem.
-Please help give some suggestions on what I could try.
+Best,
+Juri
 
-Thanks,
-Yongqin
->
-> >
-> > On Wed, 6 Oct 2021 at 15:47, Tony Lindgren <tony@atomide.com> wrote:
-> >>
-> >> * Neil Armstrong <narmstrong@baylibre.com> [210921 10:18]:
-> >>> From: Gowtham Tammana <g-tammana@ti.com>
-> >>>
-> >>> BB2D is a Vivante GC 2D Accelerator.
-> >>> This adds the node to the dts file within a target module node.
-> >>> Crossbar index number is used for interrupt mapping.
-> >>
-> >> Thanks applying into omap-for-v5.16/dt.
-> >>
-> >> Tony
-> >
->
-
-
--- 
-Best Regards,
-Yongqin Liu
----------------------------------------------------------------
-#mailing list
-linaro-android@lists.linaro.org
-http://lists.linaro.org/mailman/listinfo/linaro-android
