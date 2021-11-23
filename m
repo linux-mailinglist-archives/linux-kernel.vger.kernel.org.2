@@ -2,118 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D6D45A00F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 11:23:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF1F45A012
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 11:24:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235146AbhKWK0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 05:26:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbhKWK0c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 05:26:32 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B58C061574;
-        Tue, 23 Nov 2021 02:23:24 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id y12so89903162eda.12;
-        Tue, 23 Nov 2021 02:23:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BLa9DhjAB06zjOMfSgJjIOKy1OBWmGUyMeBeCrxhDPM=;
-        b=Yjc2DZtoWkfYgFYqWkVHfSCSLMHFkcfkm7+pw8sL6XLkHwLuwvO8ggrni6VWY0ZRxD
-         WCWtESQLIpI0YeHSQgB62gWiNSjIggf/NCE47SX0nrpyN1eRCMmdedRqu3ksj6sGV54A
-         N84Qcm+vkmmJtyfpNQv13U9QdHT5HYpuAjR9/6Ou9R1zER9lh/yQ55un9Ea2izoRk9mr
-         E30YQaUGwdC4QSdhZNIgz3ot3jcFwtYgv15WPrhOvTmAFX4nnSJ2QIbw+N2CbGekkcXN
-         MBQtNkPcCMi09ZBiCwwEV0qCi+PC8/IRi4g8GbOgf7hJijHg01L1f6AFZ9jdeM93S+UI
-         mfew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BLa9DhjAB06zjOMfSgJjIOKy1OBWmGUyMeBeCrxhDPM=;
-        b=Tk8gJH87Yl31MSn3lrMuBJ55zlAyMuNsXzUeg/fp02cGrA/xh0cwhpYnFEUL3PfJQ9
-         ZQ5JO9mnzf24oD+8i3Sd5SuA8lXtsNyFMKOfi0M1gkQtlkROrmUbl3XkRcU1nWBvJur/
-         Oe5CckAnBqpt3accEl26DIgNKnE6eh/fJU6UdPlefQ/J8Gpk49l4QvmcYgzrIg2U58Mk
-         orF/BaNOeP3JVQrX87k0JWZg7Y4VrNhZOcucwKo9NHY13dSRoWVlSp20Gww68bGPAqcB
-         QiSj25I3ZJUsef/+yCPffXztLo6SAGCR6QiXSCAg2KDyfCVv3YBapTounD8pysP4zEmW
-         A3Og==
-X-Gm-Message-State: AOAM532PRorjCLDnr+3YvdIkmifYRe2R+zRdUkxdSq0tDetR54SjqwxI
-        8/dsjJPLyosp/4elmwC36+GYkAkQFYvnfOrdBDg=
-X-Google-Smtp-Source: ABdhPJxNzJxqvc8wlpj9WXfx7m31SDwbXPR2ckwtQG9sccF7mwI3Y+q6UybbKU4+If9J90VeQTLvwZXeRSqiKpIxUMM=
-X-Received: by 2002:a17:906:489b:: with SMTP id v27mr5964462ejq.567.1637663003409;
- Tue, 23 Nov 2021 02:23:23 -0800 (PST)
+        id S235208AbhKWK1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 05:27:10 -0500
+Received: from mga02.intel.com ([134.134.136.20]:51540 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231838AbhKWK1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 05:27:09 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="222218952"
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="222218952"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 02:24:01 -0800
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="571020561"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 02:23:58 -0800
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with ESMTP id 3A09A20762;
+        Tue, 23 Nov 2021 12:23:56 +0200 (EET)
+Date:   Tue, 23 Nov 2021 12:23:56 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Jammy Huang <jammy_huang@aspeedtech.com>
+Cc:     "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "laurent.pinchart@ideasonboard.com" 
+        <laurent.pinchart@ideasonboard.com>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 05/10] media: v4l: Add definition for the Aspeed JPEG
+ format
+Message-ID: <YZzBPFHZ7MPwTWSm@paasikivi.fi.intel.com>
+References: <20211118074030.685-1-jammy_huang@aspeedtech.com>
+ <20211118074030.685-6-jammy_huang@aspeedtech.com>
+ <YZZIDNCLJXwrqY4W@paasikivi.fi.intel.com>
+ <0bed6093-0af6-4fc4-716f-6cf8b1302320@aspeedtech.com>
 MIME-Version: 1.0
-References: <20211116205744.381790-1-pauk.denis@gmail.com> <f0bf01fa-ccd8-3a6a-8fd2-4c785fa212ef@roeck-us.net>
-In-Reply-To: <f0bf01fa-ccd8-3a6a-8fd2-4c785fa212ef@roeck-us.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 23 Nov 2021 12:22:46 +0200
-Message-ID: <CAHp75Vfbh+O39C_k9zQqSqsoSro7_gv6QmsxgmdO=woA32Q0HQ@mail.gmail.com>
-Subject: Re: [PATCH v12 0/2] Update ASUS WMI supported boards
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Denis Pauk <pauk.denis@gmail.com>,
-        Eugene Shalygin <eugene.shalygin@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        thomas@weissschuh.net, Ed Brindley <kernel@maidavale.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0bed6093-0af6-4fc4-716f-6cf8b1302320@aspeedtech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 1:36 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 11/16/21 12:57 PM, Denis Pauk wrote:
-> > Add support by WMI interface provided by Asus for B550/X570 boards:
-> > * PRIME X570-PRO,
-> > * ROG CROSSHAIR VIII HERO
-> > * ROG CROSSHAIR VIII DARK HERO
-> > * ROG CROSSHAIR VIII FORMULA
-> > * ROG STRIX X570-E GAMING
-> > * ROG STRIX B550-I GAMING
-> > * ROG STRIX B550-E GAMING
-> >
-> > Add support by WMI interface provided by Asus for X370/X470/
-> > B450/X399 boards:
-> > * ROG CROSSHAIR VI HERO,
-> > * PRIME X399-A,
-> > * PRIME X470-PRO,
-> > * ROG CROSSHAIR VI EXTREME,
-> > * ROG CROSSHAIR VI HERO (WI-FI AC),
-> > * ROG CROSSHAIR VII HERO,
-> > * ROG CROSSHAIR VII HERO (WI-FI),
-> > * ROG STRIX B450-E GAMING,
-> > * ROG STRIX B450-F GAMING,
-> > * ROG STRIX B450-I GAMING,
-> > * ROG STRIX X399-E GAMING,
-> > * ROG STRIX X470-F GAMING,
-> > * ROG STRIX X470-I GAMING,
-> > * ROG ZENITH EXTREME,
-> > * ROG ZENITH EXTREME ALPHA.
-> >
-> > I have removed "ROG STRIX Z390-F GAMING" from list of supported boards in
-> > asus_wmi_sensors that I have added by mistake. I had misunderstood a
-> > comment in the [1] issue.
-> >
-> > I have added separate records for each of modules in MAINTAINERS file.
-> > Before it was one shared recors for both of modules.
-> >
-> > Could you please review?
-> >
->
-> Series applied to hwmon-next.
+Hi Jammy,
 
-What is the repository it has been applied to? I don't see it in
-neither Linux Next nor [1]. It might be that I am missing the
-workflow.
+On Fri, Nov 19, 2021 at 10:02:40AM +0800, Jammy Huang wrote:
+> Hi Sakari,
+> 
+> On 2021/11/18 下午 08:33, Sakari Ailus wrote:
+> > Hi Jammy,
+> > 
+> > On Thu, Nov 18, 2021 at 03:40:26PM +0800, Jammy Huang wrote:
+> > > This introduces support for the Aspeed JPEG format, where the new frame
+> > > can refer to previous frame to reduce the amount of compressed data. The
+> > > concept is similar to I/P frame of video compression. I will compare the
+> > > new frame with previous one to decide which macroblock's data is
+> > > changed, and only the changed macroblocks will be compressed.
+> > > 
+> > > This Aspeed JPEG format is used by the video engine on Aspeed platforms,
+> > > which is generally adapted for remote KVM.
+> > > 
+> > > Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+> > > ---
+> > > v5:
+> > >    - no update
+> > > v4:
+> > >    - new
+> > > ---
+> > >   Documentation/media/uapi/v4l/pixfmt-reserved.rst | 12 ++++++++++++
+> > >   drivers/media/v4l2-core/v4l2-ioctl.c             |  1 +
+> > >   include/uapi/linux/videodev2.h                   |  1 +
+> > >   3 files changed, 14 insertions(+)
+> > > 
+> > > diff --git a/Documentation/media/uapi/v4l/pixfmt-reserved.rst b/Documentation/media/uapi/v4l/pixfmt-reserved.rst
+> > > index b2cd155e691b..23c05063133d 100644
+> > > --- a/Documentation/media/uapi/v4l/pixfmt-reserved.rst
+> > > +++ b/Documentation/media/uapi/v4l/pixfmt-reserved.rst
+> > > @@ -264,6 +264,18 @@ please make a proposal on the linux-media mailing list.
+> > >   	of tiles, resulting in 32-aligned resolutions for the luminance plane
+> > >   	and 16-aligned resolutions for the chrominance plane (with 2x2
+> > >   	subsampling).
+> > > +    * .. _V4L2-PIX-FMT-AJPG:
+> > > +
+> > > +      - ``V4L2_PIX_FMT_AJPG``
+> > > +      - 'AJPG'
+> > > +      - ASPEED JPEG format used by the aspeed-video driver on Aspeed platforms,
+> > > +        which is generally adapted for remote KVM.
+> > > +        On each frame compression, I will compare the new frame with previous
+> > > +        one to decide which macroblock's data is changed, and only the changed
+> > > +        macroblocks will be compressed.
+> > > +
+> > > +        You could reference to chapter 36, Video Engine, of AST2600's datasheet
+> > > +        for more information.
+> > Is this datasheet publicly available? Do you have a URL?
+> 
+> Sorry, this datasheet is not publicly available.
+> Hans mentioned this as well in the discussion below:
+> 
+> https://lkml.org/lkml/2021/11/10/101
 
-[1]: https://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git/log/?h=hwmon-next
+If the vendor documentation is not publicly available, you'll need to have
+the format documented here. Alternatively an open source implementation
+(e.g. LGPL) is presumably fine, too.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards,
+
+Sakari Ailus
