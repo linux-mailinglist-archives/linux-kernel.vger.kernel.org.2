@@ -2,105 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3DB545A6C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 16:45:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE53645A6C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 16:47:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237155AbhKWPs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 10:48:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236257AbhKWPs0 (ORCPT
+        id S236257AbhKWPuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 10:50:40 -0500
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:59496 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232147AbhKWPuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 10:48:26 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8035C061574;
-        Tue, 23 Nov 2021 07:45:17 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id y13so93826947edd.13;
-        Tue, 23 Nov 2021 07:45:17 -0800 (PST)
+        Tue, 23 Nov 2021 10:50:39 -0500
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 48C861D6E;
+        Tue, 23 Nov 2021 18:47:29 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ij04fNOkXgioJw97U+iulLRX+rqwFDSnPQZPSWJRbPc=;
-        b=nTY3sn6sQcSOZnVnMySRStBq+xZIx9+RGPnjX/mcu46Ix3cpdB6c08K3xlBrHsrSJ7
-         DYe1KR2N0XMQLGnElDOEOUobmS8Dye5IRN46ItKDkHB3AAd4Z/TltDv/oEeQVsOzhtN3
-         ewdLfF2hlC6mtjhGptu8qLPq/kYq8mi58J7UUzP7bGIF/SoAtmqKHupQX/Xc57xhZCvw
-         93oLvuj9RZTC+fS0YolRE3Sy4uCKz0t6oFCCdhheLYs0xZGdKexyZu8Tqt3pYNO/e1bQ
-         Ctxwcb/6pBTdcRKZpM7bTsVHeTibs1JxIBKwsMAtLoLonumnvkhGaHu81knfiQ+HoBig
-         EShA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ij04fNOkXgioJw97U+iulLRX+rqwFDSnPQZPSWJRbPc=;
-        b=2GoE4EOsj8rzF+/4cNxW6ujoTYjE/T9YAW+KBRPtmhOi0K/J0hDMbusY7h434swEhO
-         Vc53gL+eoK70e+/upCp8qYIsVuFTSiiDUPkwK+0iILJVi7jnj/93P9zJ92N9FwbKuQq+
-         aJ36PgStCBXpIkoitiVk8q2kGdOABSgwi0cHYqJ9/QFzBqDqXS/oLxRGfozH4gJAetx8
-         XJye8FqY7PBqTC/I++w3X1bdm6k9AchnLmmw/xz5smQyZimSPzRGjLU/AUT0vtdUGSVl
-         yaz/wgXpZZT1JuOxURZpbZLZ6035mXCdKdyhPHr1gnJAwZnRbQvjRJKJZlYajn3o/rfG
-         ORyA==
-X-Gm-Message-State: AOAM530YVXSpknXZsyIsRvskoY2FhoKLc6lwNBLgkT+9TzD0GnaN9Eks
-        mWKRa7XwNPyduNWZybQdTmQ=
-X-Google-Smtp-Source: ABdhPJy26UECaALCGkv0TFvScMeWIZT0+XZ/+vMqzTb5n1UOX5LE0v26nV7aDVe+n1RWUN/DU6qQHA==
-X-Received: by 2002:a05:6402:124e:: with SMTP id l14mr10736119edw.74.1637682316188;
-        Tue, 23 Nov 2021 07:45:16 -0800 (PST)
-Received: from localhost.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.googlemail.com with ESMTPSA id hr11sm5633254ejc.108.2021.11.23.07.45.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 07:45:15 -0800 (PST)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [net-next PATCH] net: dsa: qca8k: fix warning in LAG feature
-Date:   Tue, 23 Nov 2021 16:44:46 +0100
-Message-Id: <20211123154446.31019-1-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        d=paragon-software.com; s=mail; t=1637682449;
+        bh=QOqRFVptfs1cQfkqyxylbZmta/oLcPwVd88JVhuyUZw=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=T6IzT5hl833cFx+WVTuAXGSLcSJ22gsRQOsVx3toCHCmdz2tXqCRgZiFgIjmDpeX/
+         3Cwe0IAhXQSW4jCmd1e0pzk0IB2FGFecg15R0+o/mda36Xn3TOMngAP2fEQAqeVxVg
+         xybmAuWwDLQlmUJ3XmRMo0FRaPsHFQk5n0m6gM8w=
+Received: from [192.168.211.16] (192.168.211.16) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Tue, 23 Nov 2021 18:47:28 +0300
+Message-ID: <8fe8f1fd-b6ca-a8be-b899-b93d855e7748@paragon-software.com>
+Date:   Tue, 23 Nov 2021 18:47:28 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH] fs/ntfs3: Fix some memory leaks in an error handling path
+ of 'log_replay()'
+Content-Language: en-US
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+CC:     <ntfs3@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>
+References: <a2244abd11dc5f5ee8a0dcec97da33b75923facb.1636616693.git.christophe.jaillet@wanadoo.fr>
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+In-Reply-To: <a2244abd11dc5f5ee8a0dcec97da33b75923facb.1636616693.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.16]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix warning reported by bot.
-Make sure hash is init to 0 and fix wrong logic for hash_type in
-qca8k_lag_can_offload.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- drivers/net/dsa/qca8k.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-index 6516df08a5d5..d04b25eca250 100644
---- a/drivers/net/dsa/qca8k.c
-+++ b/drivers/net/dsa/qca8k.c
-@@ -2228,7 +2228,7 @@ qca8k_lag_can_offload(struct dsa_switch *ds,
- 	if (info->tx_type != NETDEV_LAG_TX_TYPE_HASH)
- 		return false;
- 
--	if (info->hash_type != NETDEV_LAG_HASH_L2 ||
-+	if (info->hash_type != NETDEV_LAG_HASH_L2 &&
- 	    info->hash_type != NETDEV_LAG_HASH_L23)
- 		return false;
- 
-@@ -2242,8 +2242,8 @@ qca8k_lag_setup_hash(struct dsa_switch *ds,
- {
- 	struct qca8k_priv *priv = ds->priv;
- 	bool unique_lag = true;
-+	u32 hash = 0;
- 	int i, id;
--	u32 hash;
- 
- 	id = dsa_lag_id(ds->dst, lag);
- 
--- 
-2.32.0
+On 11.11.2021 10:45, Christophe JAILLET wrote:
+> All error handling paths lead to 'out' where many resources are freed.
+> 
+> Do it as well here instead of a direct return, otherwise 'log', 'ra' and
+> 'log->one_page_buf' (at least) will leak.
+> 
+> Fixes: b46acd6a6a62 ("fs/ntfs3: Add NTFS journal")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  fs/ntfs3/fslog.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/ntfs3/fslog.c b/fs/ntfs3/fslog.c
+> index 06492f088d60..915f42cf07bc 100644
+> --- a/fs/ntfs3/fslog.c
+> +++ b/fs/ntfs3/fslog.c
+> @@ -4085,8 +4085,10 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
+>  		if (client == LFS_NO_CLIENT_LE) {
+>  			/* Insert "NTFS" client LogFile. */
+>  			client = ra->client_idx[0];
+> -			if (client == LFS_NO_CLIENT_LE)
+> -				return -EINVAL;
+> +			if (client == LFS_NO_CLIENT_LE) {
+> +				err = -EINVAL;
+> +				goto out;
+> +			}
+>  
+>  			t16 = le16_to_cpu(client);
+>  			cr = ca + t16;
+> 
 
+
+Thanks for patch, applied!
