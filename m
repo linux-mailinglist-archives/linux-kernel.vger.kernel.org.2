@@ -2,102 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 530DF459E98
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80E44459E99
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:52:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232328AbhKWIzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 03:55:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52520 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229721AbhKWIzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 03:55:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 588C460FC3;
-        Tue, 23 Nov 2021 08:52:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637657546;
-        bh=T1Wu1HaiPk9IdEr03zo3RO4DOreDPwvBeTvHQ1EkLBo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r2rd/M1ezUu0nUITmFLDdiVBweV+4CLPWrG+R6f6KVdNM+zJ94Ok0OBuun0sltQzl
-         AG49PR1Y/Xk6XLHT15Mq8HALSXsxWv7AUW4XHN6L3bxWXfWcUQYGmXU71V9T7+efh/
-         8J7FCF64xGmZQe2mxd4/IKt6l9mxjEGL/sCTPG3imWfcTluOaOKH4BFf2UHenS1CYv
-         MV7t3txxcAQiSAoNi/sQnX+5Vc++ttUkLtMjU+tKSRUrqtYse5jjx1ItrH2IIk7pQM
-         AgPVM/2TwBpXSgeJITGCojzo//QUrsJfOtw1TuPeVkUZ/A+yPSfqR/LbAejJWcO0EI
-         yB9PEDhKN+Hhw==
-Date:   Tue, 23 Nov 2021 09:52:22 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     Rob Herring <robh@kernel.org>, Dong Aisheng <aisheng.dong@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 01/12] dt-bindings: i2c: imx-lpi2c: Fix i.MX 8QM
- compatible matching
-Message-ID: <YZyrxvzRUk3jPMnn@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Abel Vesa <abel.vesa@nxp.com>, Rob Herring <robh@kernel.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-References: <1636566415-22750-1-git-send-email-abel.vesa@nxp.com>
- <1636566415-22750-2-git-send-email-abel.vesa@nxp.com>
+        id S232696AbhKWIzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 03:55:42 -0500
+Received: from smtprelay0157.hostedemail.com ([216.40.44.157]:45418 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232385AbhKWIzk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 03:55:40 -0500
+Received: from omf13.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 6ED59180FA623;
+        Tue, 23 Nov 2021 08:52:32 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf13.hostedemail.com (Postfix) with ESMTPA id 4EDB62000513;
+        Tue, 23 Nov 2021 08:52:30 +0000 (UTC)
+Message-ID: <ea07a2f1e20503965c7c2eba7c0a7a4538457265.camel@perches.com>
+Subject: Re: arch/mips/mm/tlbex.c:2243:3: warning: unannotated fall-through
+ between switch labels
+From:   Joe Perches <joe@perches.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        kernel test robot <lkp@intel.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Date:   Tue, 23 Nov 2021 00:52:30 -0800
+In-Reply-To: <20211123005528.GA550759@embeddedor>
+References: <202111230719.OZDUHU4z-lkp@intel.com>
+         <20211123005528.GA550759@embeddedor>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="BTP02E+ulndgBnjX"
-Content-Disposition: inline
-In-Reply-To: <1636566415-22750-2-git-send-email-abel.vesa@nxp.com>
+Content-Transfer-Encoding: 7bit
+X-Stat-Signature: 496o9wecre354eosxah9tteecrm9b7yc
+X-Rspamd-Server: rspamout01
+X-Rspamd-Queue-Id: 4EDB62000513
+X-Spam-Status: No, score=-1.87
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/XIT3tSsM1oxrqIB4tZmnKcw99lz8EyrU=
+X-HE-Tag: 1637657550-671117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2021-11-22 at 18:55 -0600, Gustavo A. R. Silva wrote:
+> On Tue, Nov 23, 2021 at 07:51:33AM +0800, kernel test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   136057256686de39cc3a07c2e39ef6bc43003ff6
+> > commit: dee2b702bcf067d7b6b62c18bdd060ff0810a800 kconfig: Add support for -Wimplicit-fallthrough
+> > date:   8 days ago
+> > config: mips-randconfig-r016-20211116 (attached as .config)
+> > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project fbe72e41b99dc7994daac300d208a955be3e4a0a)
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # install mips cross compiling tool for clang build
+> >         # apt-get install binutils-mips-linux-gnu
+> >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=dee2b702bcf067d7b6b62c18bdd060ff0810a800
+> >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> >         git fetch --no-tags linus master
+> >         git checkout dee2b702bcf067d7b6b62c18bdd060ff0810a800
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=mips 
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > 
+> > All warnings (new ones prefixed by >>):
+> > 
+> > > > arch/mips/mm/tlbex.c:2243:3: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> >                    case CPU_CAVIUM_OCTEON:
+> >                    ^
+> >    arch/mips/mm/tlbex.c:2243:3: note: insert 'break;' to avoid fall-through
+> >                    case CPU_CAVIUM_OCTEON:
+> >                    ^
+> >                    break; 
+> 
+> I already have a patch for this here:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/commit/?h=for-linus/kspp&id=cd3ed04e7fc365e4e581333c3ff69c8da6ca0e8b
 
---BTP02E+ulndgBnjX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I think that's very odd looking code because of the braces.
+And the fallthrough that you propose is odd as well.
 
-On Wed, Nov 10, 2021 at 07:46:44PM +0200, Abel Vesa wrote:
-> The i.MX 8QM DTS files use two compatibles, so update the binding to fix
-> dtbs_check warnings like:
->=20
->   arch/arm64/boot/dts/freescale/imx8qm-mek.dt.yaml: i2c@5a800000:
->     compatible: ['fsl,imx8qm-lpi2c', 'fsl,imx7ulp-lpi2c'] is too long
->=20
-> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+Perhaps this would be better:
+---
+ arch/mips/mm/tlbex.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-Applied to for-next, thanks!
+diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
+index b131e6a773832..a873e343d3dc9 100644
+--- a/arch/mips/mm/tlbex.c
++++ b/arch/mips/mm/tlbex.c
+@@ -2236,15 +2236,14 @@ static void build_r4000_tlb_load_handler(void)
+ 		uasm_i_tlbr(&p);
+ 
+ 		switch (current_cpu_type()) {
+-		default:
+-			if (cpu_has_mips_r2_exec_hazard) {
+-				uasm_i_ehb(&p);
+-
+ 		case CPU_CAVIUM_OCTEON:
+ 		case CPU_CAVIUM_OCTEON_PLUS:
+ 		case CPU_CAVIUM_OCTEON2:
+-				break;
+-			}
++			break;
++		default:
++			if (cpu_has_mips_r2_exec_hazard)
++				uasm_i_ehb(&p);
++			break;
+ 		}
+ 
+ 		/* Examine  entrylo 0 or 1 based on ptr. */
 
-
---BTP02E+ulndgBnjX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmGcq8YACgkQFA3kzBSg
-KbZvFg/9ExrQHMe1OfU+rbUE7wWiNgJzLodPu1nWHSWQbWkWgaCFDcqFhUDbsXkK
-bGxb7f9/Z8jbJHzlYrlP0tWBwF6LlUkR5XLYmYKvP5WoWp+jufmnZvgYy8ELXMTF
-AbN7gStiC3bS/0lHOgykW3i9uZy7Arpl3lhG4AHBUBp1tw0I3uO9QXLUb7x5Xza7
-cvprVyewQyfddKJprv0bg4LE3XnhyHzPZsYXBtSVYb4QgH38C56xyLD8vKCSbWBA
-ZrS0Mhvfve1r18zZzo8XY/A8nKxzUFiex1UbkmBxI/c39xHz84VWv47b5ocx/6Ws
-n+iWKFJZlVOfjDnBNe+4v1a8QahhlUE5piIahrF1xJyB6rcNtxsQ2BA30VBXYNs0
-A0rs6niUK0RhoSzqjS/TLJ7AK5lOypZg+4rCbEB6hPjIKj49ZF+2UcVDR9/RkD9u
-5EbcB3Zr9i0GOuU9eyrOWaSkntD2lZA8NhjhFAx1BeAAExUFDbudpIEAlLipdiLE
-Npy5tShxgUKFk4Imz1KAuCpot3+U+Iee9Mq1vcg1IoQgcuOEO3vD3HQ1YFjHgN3C
-8hFX4t37r/sHlBHV8UUmOh31NufimYvi0gtOv2JHbUiOZeUWGygAxGu3RyEEsT3s
-+V4isn9hx4x/7HKu9l4lO6HnSBS3B5mGAZxf7Tm5oRKg07HIHgs=
-=EjAu
------END PGP SIGNATURE-----
-
---BTP02E+ulndgBnjX--
