@@ -2,125 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0822945AB6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 19:45:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0CD345AB74
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 19:47:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236955AbhKWStB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 13:49:01 -0500
-Received: from mail-bn1nam07on2079.outbound.protection.outlook.com ([40.107.212.79]:43607
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234139AbhKWSs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 13:48:59 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ccNBicHlmftY5l6MHG2jIf/5sg2eFHMPzY2srHF4Ra7w+zsLSnykoC6fJt9h1fnJH2UYKOS07dF4NwlgpKaVknO3+/hCf6QkmQGF5abq6fKLyppZOcJT1wRYuPxX2bhLNiaheejZxJI3Y/A3LC8udxGwHLCdGQcS8CSL79OuDp2SysRoR5RRlGF19y8DGnMzeSQWv21p4iBF3SL5ssr4xWFPNRBifJDaTFsahoBhUMlax2XoZu+jYYFjjePKeZ2KsvU5VyOinArRt5o9QFq2DvP614Zy3vkftSOoX6VjXl0ZrRLBY9mg+dEK1FsJQVMUN4bl7DtAOmF8CUxHAUVgqw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0fJvpXFNcOf/7SFtieQ68f2Uy2BxSvBVju2YztXWboM=;
- b=LrCenmXN5GwTPrvxL3Rmw5+ky34UuYW14J1Y0oeuOh2eObiDoE9GyfMmmIC01jXB4g69bfV9kKfKlG0mBzsdB6B1rqJkFwvwT7pWdDfB70VzlEgQg3IfB6buFxc2+54v4k4BreDMDJLLhO+Gt6w/VQQHCxw6BsHzBy94dCnK4op+vDFRA25N4TVTz6TA2DkXtRXVV2KgK/l49L73SI/Bj80trXQnVi6h5t5FIdie3JWr1WmxOJ3zNhQ4uIve5kWS2fWV9AxHIkgLNycdBeH5MCa1DYJbh/Zj1vYcW8Tubw6Ki3JMK5EWQShMsqND5ebMvD8B/+R/tbA/uYDDXXXkFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=xilinx.com; dmarc=pass (p=none sp=none pct=100) action=none
- header.from=xilinx.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0fJvpXFNcOf/7SFtieQ68f2Uy2BxSvBVju2YztXWboM=;
- b=Z1kpi0E6jsaj7tJNtbMcow6CdtT3Yx48BYjWcZHexUZiFwaT1khGgZMGI9Sa82djdJ68j3ItLj6TMJpS33i7jZ0C4IO/BbYxInoMkocdg6+nYxzbLq0ael12QOqXcvBxMK/fqNSYTQ74WZU5eRByIdRiauXXw4xDIpjC3KqcOts=
-Received: from DM6PR06CA0092.namprd06.prod.outlook.com (2603:10b6:5:336::25)
- by BYAPR02MB4982.namprd02.prod.outlook.com (2603:10b6:a03:72::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Tue, 23 Nov
- 2021 18:45:48 +0000
-Received: from DM3NAM02FT054.eop-nam02.prod.protection.outlook.com
- (2603:10b6:5:336:cafe::b4) by DM6PR06CA0092.outlook.office365.com
- (2603:10b6:5:336::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.20 via Frontend
- Transport; Tue, 23 Nov 2021 18:45:48 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- DM3NAM02FT054.mail.protection.outlook.com (10.13.5.135) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4713.19 via Frontend Transport; Tue, 23 Nov 2021 18:45:48 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 23 Nov 2021 10:45:47 -0800
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Tue, 23 Nov 2021 10:45:47 -0800
-Envelope-to: gregkh@linuxfoundation.org,
- jacmet@sunsite.dk,
- linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org
-Received: from [172.19.72.93] (port=43548 helo=xsj-xw9400.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <lizhi.hou@xilinx.com>)
-        id 1mpanb-000B2V-Ha; Tue, 23 Nov 2021 10:45:47 -0800
-Received: by xsj-xw9400.xilinx.com (Postfix, from userid 21952)
-        id 732E660010B; Tue, 23 Nov 2021 10:45:47 -0800 (PST)
-From:   Lizhi Hou <lizhi.hou@xilinx.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-serial@vger.kernel.org>,
-        <gregkh@linuxfoundation.org>, <jacmet@sunsite.dk>
-CC:     Lizhi Hou <lizhi.hou@xilinx.com>
-Subject: [PATCH 1/1] tty: serial: uartlite: allow 64 bit address
-Date:   Tue, 23 Nov 2021 10:45:06 -0800
-Message-ID: <20211123184506.1184561-1-lizhi.hou@xilinx.com>
-X-Mailer: git-send-email 2.25.1
+        id S237667AbhKWSu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 13:50:29 -0500
+Received: from mga01.intel.com ([192.55.52.88]:33936 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234139AbhKWSu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 13:50:28 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="258977198"
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="258977198"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 10:46:01 -0800
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="674590629"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 10:45:58 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mpanj-009s1P-3i;
+        Tue, 23 Nov 2021 20:45:55 +0200
+Date:   Tue, 23 Nov 2021 20:45:54 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-gpio@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v5 1/1] gpio: add sloppy logic analyzer using polling
+Message-ID: <YZ024q/r7Hc3TpMt@smile.fi.intel.com>
+References: <20211123164902.35370-1-wsa+renesas@sang-engineering.com>
+ <20211123164902.35370-2-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 696c8b5c-6762-48cb-a75a-08d9aeb1774a
-X-MS-TrafficTypeDiagnostic: BYAPR02MB4982:
-X-Microsoft-Antispam-PRVS: <BYAPR02MB4982C52A086DAA2BE639036EA1609@BYAPR02MB4982.namprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:972;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Lqi3+XXkYb+ayvF8fmFUGixwYGkW7PLBsi+kFHKcn0gzgSMTht4cyBC0sUH0DMkxDY5XCqB3aFi5eaHRZsAP0+Q2KAgRSkGq1uom6/OE35q2ouwWfWD6y3ltFqKSmqT+84OcNuGxlKKygQa21brSZtuiFwVNp5bIDcGQMzvL0dvIar7wGZHANZFxyJ1UZQZC1Ieg+yhIaTv6QfP7j5muj89B4HTBKJJsyOL3UqlCvUzojJkX8TNA6E4zYUv1gENIWevR6MkS/eCTJvOOxFsADu60hAV5rUpk3mvRbHCZ7OysE2hyE0LrNuiiR5EfJ3xCWsBG/kQUEkJ11quJVhqR78Qo2iNvR8G95J30BDKFFgVxcDRZSUt48LncWM2L8oBp9jQULU4f/Tz4L2DXBuaTCZDmRg08PA/xzAaUN6QKntL+ci4VncrP7WaP1oLnsPXVfG8qux9O2OOvVmcclHc1td1P9xh+yRTiBKUotJR2FCOgYp2lkC14/SaC3iLtoARmMDyDrV64RHAOeXgx/MkOFLPSSDgQ+3+7Gei2oGHXfNI75anZ3PiaKZBlT4LtXbQYTYWDEpynpvXfKt72JmyGPTVgdLLYdSUOM0EUtEo8QFf3PmUXPRRxaUz1V9C5QmBsZSLMFzjUZ1qFIUhlBw1dWFpmxL0PC7fGI4DIjxHCOGN8Unt0cxna3hG97MqgjqJX1KQkaM4Tmb9Z/gRMnGVqtg==
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(46966006)(36840700001)(8676002)(1076003)(356005)(2616005)(5660300002)(6266002)(4744005)(186003)(426003)(70586007)(44832011)(2906002)(83380400001)(8936002)(7636003)(110136005)(42186006)(36756003)(107886003)(336012)(36860700001)(4326008)(508600001)(6666004)(70206006)(26005)(47076005)(316002)(82310400004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2021 18:45:48.2541
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 696c8b5c-6762-48cb-a75a-08d9aeb1774a
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT054.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB4982
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211123164902.35370-2-wsa+renesas@sang-engineering.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the uartlite probe failure when it is mapped to address above 4G.
+On Tue, Nov 23, 2021 at 05:49:02PM +0100, Wolfram Sang wrote:
+> This is a sloppy logic analyzer using GPIOs. It comes with a script to
+> isolate a CPU for polling. While this is definitely not a production
+> level analyzer, it can be a helpful first view when remote debugging.
+> Read the documentation for details.
 
-Signed-off-by: Lizhi Hou <lizhi.hou@xilinx.com>
----
- drivers/tty/serial/uartlite.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+...
 
-diff --git a/drivers/tty/serial/uartlite.c b/drivers/tty/serial/uartlite.c
-index d3d9566e5dbd..e1fa52d31474 100644
---- a/drivers/tty/serial/uartlite.c
-+++ b/drivers/tty/serial/uartlite.c
-@@ -626,7 +626,7 @@ static struct uart_driver ulite_uart_driver = {
-  *
-  * Returns: 0 on success, <0 otherwise
-  */
--static int ulite_assign(struct device *dev, int id, u32 base, int irq,
-+static int ulite_assign(struct device *dev, int id, phys_addr_t base, int irq,
- 			struct uartlite_data *pdata)
- {
- 	struct uart_port *port;
+> +Result is a .sr file to be consumed with PulseView or sigrok-cli from the free
+> +`sigrok`_ project. It is a zip file which also contains the binary sample data
+> +which may be consumed by other software. The filename is the logic analyzer
+> +instance name plus a since-epoch timestamp.
+> +
+> +.. _sigrok: https://sigrok.org/
+
+Alas, yet another tool required... (Sad thoughts since recently has installed
+PicoScope software).
+
+...
+
+>     kgdb
+>     kselftest
+>     kunit/index
+
+> +   gpio-sloppy-logic-analyzer
+
+Above looks like ordered, do we need some groups here or so?
+
+...
+
+> +	mutex_lock(&priv->lock);
+
+> +	if (priv->blob_dent) {
+
+Redundant (i.e. duplicate).
+
+> +		debugfs_remove(priv->blob_dent);
+> +		priv->blob_dent = NULL;
+> +	}
+
+...
+
+> +gpio_err:
+
+A bit confusing name. What about
+
+enable_irq_and_free_data:
+
+?
+
+> +	preempt_enable_notrace();
+> +	local_irq_enable();
+> +	if (ret)
+> +		dev_err(priv->dev, "couldn't read GPIOs: %d\n", ret);
+> +
+> +	kfree(priv->trig_data);
+> +	priv->trig_data = NULL;
+> +	priv->trig_len = 0;
+
+...
+
+> +static int gpio_la_poll_probe(struct platform_device *pdev)
+> +{
+> +	struct gpio_la_poll_priv *priv;
+> +	struct device *dev = &pdev->dev;
+> +	const char *devname = dev_name(dev);
+> +	const char *gpio_names[GPIO_LA_MAX_PROBES];
+
+> +	char *meta = NULL;
+> +	unsigned int i, meta_len = 0;
+> +	int ret;
+
+Perhaps
+
+	unsigned int i, meta_len = 0;
+	char *meta = NULL;
+	int ret;
+
+
+...
+
+> +	ret = device_property_read_string_array(dev, "probe-names", gpio_names,
+> +						priv->descs->ndescs);
+> +	if (ret >= 0 && ret != priv->descs->ndescs)
+
+> +		ret = -ENODATA;
+
+Don't remember if we already discussed this error code, but data is there,
+it's not correct. EBADSLT? EBADR? ECHRNG?
+
+> +	if (ret < 0)
+> +		return dev_err_probe(dev, ret, "error naming the GPIOs");
+
+...
+
+> +	for (i = 0; i < priv->descs->ndescs; i++) {
+> +		unsigned int add_len;
+> +		char *new_meta, *consumer_name;
+> +
+> +		if (gpiod_cansleep(priv->descs->desc[i]))
+> +			return -EREMOTE;
+> +
+> +		consumer_name = kasprintf(GFP_KERNEL, "%s: %s", devname, gpio_names[i]);
+> +		if (!consumer_name)
+> +			return -ENOMEM;
+> +		gpiod_set_consumer_name(priv->descs->desc[i], consumer_name);
+> +		kfree(consumer_name);
+> +
+> +		/* '10' is length of 'probe00=\n\0' */
+> +		add_len = strlen(gpio_names[i]) + 10;
+> +
+> +		new_meta = devm_krealloc(dev, meta, meta_len + add_len, GFP_KERNEL);
+> +		if (!new_meta)
+> +			return -ENOMEM;
+> +
+> +		meta = new_meta;
+> +		meta_len += snprintf(meta + meta_len, add_len, "probe%02u=%s\n",
+> +				     i + 1, gpio_names[i]);
+
+Do we really need the 'probe%02u=' part? It's redundant since it may be derived
+from the line number of the output (and it always in [1..ndescs+1]).
+
+> +	}
+
+...
+
+> +	dev_info(dev, "initialized");
+
+Is it useful?
+
+...
+
+> +print_help()
+> +{
+> +	cat <<EOF
+
+	cat << EOF
+
+is slightly easier to read.
+
+> +EOF
+> +}
+
+...
+
+> +set_newmask()
+> +{
+> +	for f in $(find "$1" -iname "$2"); do echo "$newmask" > "$f" 2>/dev/null || true; done
+
+While here it's okay, the rule of thumb is never use `for` or `while` against
+the list of filenames.
+
+> +}
+
+...
+
+> +init_cpu()
+> +{
+> +	isol_cpu="$1"
+
+> +	[ -d $cpusetdir ] || mkdir $cpusetdir
+
+`mkdir -p` and drop needless test.
+
+> +	mount | grep -q $cpusetdir || mount -t cpuset cpuset $cpusetdir
+
+> +	[ -d "$lacpusetdir" ] || mkdir "$lacpusetdir"
+
+`mkdir -p` and drop needless test.
+
+> +	cur_cpu="$(cat "$lacpusetdir"/cpus)"
+> +	[ "$cur_cpu" = "$isol_cpu" ] && return
+> +	[ -z "$cur_cpu" ] || fail "CPU$isol_cpu requested but CPU$cur_cpu already isolated"
+> +
+> +	echo "$isol_cpu" > "$lacpusetdir"/cpus || fail "Could not isolate CPU$isol_cpu. Does it exist?"
+> +	echo 1 > "$lacpusetdir"/cpu_exclusive
+> +	echo 0 > "$lacpusetdir"/mems
+> +
+> +	oldmask=$(cat /proc/irq/default_smp_affinity)
+
+> +	val=$((0x$oldmask & ~(1 << isol_cpu)))
+> +	newmask=$(printf "%x" $val)
+
+Can be on one line (in a single expression).
+
+> +	set_newmask '/proc/irq' '*smp_affinity'
+> +	set_newmask '/sys/devices/virtual/workqueue/' 'cpumask'
+> +
+> +	# Move tasks away from isolated CPU
+> +	for p in $(ps -o pid | tail -n +2); do
+> +		mask=$(taskset -p "$p") || continue
+> +		# Ignore tasks with a custom mask, i.e. not equal $oldmask
+> +		[ "${mask##*: }" = "$oldmask" ] || continue
+> +		taskset -p "$newmask" "$p" || continue
+> +	done 2>/dev/null >/dev/null
+
+`> /dev/null 2>&1` is idiomatic. And I think there is actually a subtle
+difference between two.
+
+> +	echo 1 > /sys/module/rcupdate/parameters/rcu_cpu_stall_suppress
+> +
+> +	cpufreqgov="/sys/devices/system/cpu/cpu$isol_cpu/cpufreq/scaling_governor"
+> +	[ -w "$cpufreqgov" ] && echo 'performance' > "$cpufreqgov" || true
+> +}
+
+...
+
+> +parse_triggerdat()
+> +{
+> +	oldifs="$IFS"
+> +	IFS=','; for trig in $1; do
+> +		mask=0; val1=0; val2=0
+> +		IFS='+'; for elem in $trig; do
+> +			chan=${elem%[lhfrLHFR]}
+> +			mode=${elem#$chan}
+> +			# Check if we could parse something and the channel number fits
+
+> +			[ "$chan" != "$elem" ] && [ "$chan" -le $max_chans ] || fail "Trigger syntax error: $elem"
+
+No need to execute `test` twice:
+
+			[ "$chan" != "$elem" -a "$chan" -le $max_chans ] || fail "Trigger syntax error: $elem"
+
+> +			bit=$((1 << (chan - 1)))
+> +			mask=$((mask | bit))
+> +			case $mode in
+> +				[hH]) val1=$((val1 | bit)); val2=$((val2 | bit));;
+> +				[fF]) val1=$((val1 | bit));;
+> +				[rR]) val2=$((val2 | bit));;
+> +			esac
+> +		done
+
+> +		trigger_bindat="$trigger_bindat$(printf '\\%o\\%o' $mask $val1)"
+> +		[ $val1 -ne $val2 ] && trigger_bindat="$trigger_bindat$(printf '\\%o\\%o' $mask $val2)"
+
+`printf` with arguments may be split to a separate helper function.
+
+> +	done
+> +	IFS="$oldifs"
+> +}
+> +
+> +do_capture()
+> +{
+> +	taskset "$1" echo 1 > "$lasysfsdir"/capture || fail "Capture error! Check kernel log"
+
+Shouldn't this function setup signal TRAPs?
+
+> +	srtmp=$(mktemp -d)
+> +	echo 1 > "$srtmp"/version
+> +	cp "$lasysfsdir"/sample_data "$srtmp"/logic-1-1
+> +	cat > "$srtmp"/metadata <<EOF
+
+	cat > "$srtmp"/metadata << EOF
+
+> +[global]
+> +sigrok version=0.2.0
+> +
+> +[device 1]
+> +capturefile=logic-1
+> +total probes=$(wc -l < "$lasysfsdir"/meta_data)
+> +samplerate=${samplefreq}Hz
+> +unitsize=1
+> +EOF
+> +	cat "$lasysfsdir"/meta_data >> "$srtmp"/metadata
+> +
+> +	zipname="$outputdir/${lasysfsdir##*/}-$(date +%s).sr"
+> +	zip -jq "$zipname" "$srtmp"/*
+> +	rm -rf "$srtmp"
+> +	delay_ack=$(cat "$lasysfsdir"/delay_ns_acquisition)
+> +	[ "$delay_ack" -eq 0 ] && delay_ack=1
+> +	echo "Logic analyzer done. Saved '$zipname'"
+> +	echo "Max sample frequency this time: $((1000000000 / delay_ack))Hz."
+> +}
+> +
+> +rep=$(getopt -a -l cpu:,duration-us:,help,instance:,kernel-debug-dir:,num_samples:,output-dir:,sample_freq:,trigger: -o c:d:hi:k:n:o:s:t: -- "$@") || exit 1
+> +eval set -- "$rep"
+> +while true; do
+> +	case "$1" in
+> +	-c|--cpu) initcpu="$2"; shift;;
+> +	-d|--duration-us) duration="$2"; shift;;
+> +	-h|--help) print_help; exit 0;;
+> +	-i|--instance) lainstance="$2"; shift;;
+> +	-k|--kernel-debug-dir) debugdir="$2"; shift;;
+> +	-n|--num_samples) numsamples="$2"; shift;;
+> +	-o|--output-dir) outputdir="$2"; shift;;
+> +	-s|--sample_freq) samplefreq="$2"; shift;;
+> +	-t|--trigger) triggerdat="$2"; shift;;
+> +	--) break;;
+
+> +	*) fail "error parsing command line: $*";;
+
+$@ is better, actually one should never use $*.
+
+> +	esac
+> +	shift
+> +done
+
+...
+
+Wondering, shouldn't be a simple validator before start that we have commands
+present, such as zip?
+
 -- 
-2.27.0
+With Best Regards,
+Andy Shevchenko
+
 
