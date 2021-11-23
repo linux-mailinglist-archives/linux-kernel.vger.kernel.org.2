@@ -2,156 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C82B4599D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:47:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AEBD4599D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:50:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231516AbhKWBuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 20:50:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59540 "EHLO
+        id S231950AbhKWBxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 20:53:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230314AbhKWBue (ORCPT
+        with ESMTP id S231719AbhKWBxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 20:50:34 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D98CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:47:27 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id v138so55096774ybb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:47:27 -0800 (PST)
+        Mon, 22 Nov 2021 20:53:54 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24DD5C061714
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:50:47 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id nh10-20020a17090b364a00b001a69adad5ebso1492015pjb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:50:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iPJygyTVm3LaiTYDIf43ooZ8K/o9AhsrwBhV4qKQzSk=;
-        b=IkYsbKDEF+3U7qHV98R8IgRkeTR9j0jpUpn1csVzaW/2NuL9GlSJJRcuIfHL2+o+5E
-         dEo0tzmnq0a9B3cRgPuk3djQmmKaDtt3+epyWtpsoq3Jb9fvkVuugDDroEzLGkMF8b+x
-         coxNzN20o0RCTriOmdxRpQwI+voaYkHuUbhr9BGC23LAgApD+M2/5wavuTz48CS8szhi
-         xiNN9ImcXPiYIBA3LK1QRaeL8uYgWOJCx2VIgqv8MKIV9fceafgSixtIfsGewGwNEau1
-         Wv+J1PfwGHPi+y8y4vwh+xgIVWsKM1zSBevVULUj0C36lIYQKuZKQsRpKvv0qA4N1DxU
-         +D7g==
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=HTzCF6jo65htyBDPrBpILeuvBdfXuhBAIKFNppjW8x0=;
+        b=S6zMZEH+VmGFF/xsCr6aCbyNpxx1pxYIOJuVyfkhQNaxEH5T5BMG3mtU+HtkGq0ZNf
+         MX8Fmo5U4MBHtVBCyO2WsuhFQYLk1zI3fbwn2Kn2KDKNHWA5Eifl/6ZRfDkJ1RxeWViV
+         XY/3aPlZMKgcNtF0rISzPQCt1I4M63iRdN4SxFACjhKvXWwIgXK7oKGs91ePkwJ24Pw8
+         YnKl2pDB16dO9oPqjbvqCgFUA4akW8Q5jpbD12C/Z4cf0matfKmmtSeSqF+wtf+kw8Ex
+         CcTrwDptzTTBK2GdJ/WMckd65hFkOQlnl7i0Nf2EvhRnoe+oJV1qfEwL+pHyGjf62Roj
+         /zlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iPJygyTVm3LaiTYDIf43ooZ8K/o9AhsrwBhV4qKQzSk=;
-        b=PoHYG13Z8blI8uhyyiA9fffE9poLH7SwlsHAe8cQ7YSW6N7VndiKgEijFizxc2NMw+
-         SprMxsxYNP1kvp7IbUj0Y2VyEt2NXYrEs8GjJdnGJLVAkQKycrJW/9GkjGFNHI6Kowmd
-         piOTdX2B1Lo+V4LWsLkIXsgzQ+LnbxwvByImy61Sm4o0C+RNyWSQgjeeK4c5dn0tW9FX
-         wGHMY9DlzrNSRtF+u9lyOiOdB0k+hCpkdQM+O6bJLRbb6I3n/vDwOu562arc//kDuvWf
-         pVCvj+muckZ9eKvXzm2hzbb91+I9OYII60ztakGZDi/DroDRSJBX/uRAdRXRfXUwdFZr
-         RIVQ==
-X-Gm-Message-State: AOAM532gHuPsZ2AxD5SvrGXn+MCr8V+lu4GyxH0dJxLiiYB83mG+AK79
-        0ZZ0b+RpSd0/18U1VVTdGCH2VHmlBoNbuRSFxrMljg==
-X-Google-Smtp-Source: ABdhPJwHxFLwDJzjCt9YMqN1C1kz288fbcwTv20u44vVF/XxAZFtdLQISEavPFXFN3tXBb18su6J4APNqGl1rcG/6Ts=
-X-Received: by 2002:a25:a429:: with SMTP id f38mr1949614ybi.34.1637632046025;
- Mon, 22 Nov 2021 17:47:26 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=HTzCF6jo65htyBDPrBpILeuvBdfXuhBAIKFNppjW8x0=;
+        b=I81+h8omgKr8bWz3so/lxgNi29xdrwQeQvjYv17FfJ1TBSJxS+mpdfogTyIwrO4bXc
+         fZobkYSrDqAT3VvOwRSBcgSaFjS1resTaNUFtUWWCn64SjAUwr5EKeHvRpqDzROFRaA9
+         w22lKSUETeISuF9ldLy9dJ6AeB6V67hApji6u+XTRQJjg1n7RUn0Kc4RI3WkN1WY/aL2
+         3z5VsTqZtmCjVw3UfXBP34qZUnsuc1NkU00KlnbFa500EVWR4fJycowbKb12rsKozt5H
+         FHFpK/qFE+GkHFlNH0Lejh/FCUR8YGU2dOwZCR3jcB+v8iSHt7Rr5aGzgkpUeBf9ijUL
+         gv6g==
+X-Gm-Message-State: AOAM5320xhLPKaDlHGOPn9UAytQ+gNVt+18D8gKEW3wEFJ/v2Yl5Gi0s
+        XFYVnlbcWCg8WItvqq3f+pSJMw==
+X-Google-Smtp-Source: ABdhPJxQ/8pqCEDnIj+5QGwd3pdxrE9t/GxEAizWH0isuFT+ppdRZmYdF7x41Z64MCWW5JOlqy1cHw==
+X-Received: by 2002:a17:90a:17ef:: with SMTP id q102mr1899751pja.116.1637632246379;
+        Mon, 22 Nov 2021 17:50:46 -0800 (PST)
+Received: from [2620:15c:17:3:c755:32e5:ce22:b7a8] ([2620:15c:17:3:c755:32e5:ce22:b7a8])
+        by smtp.gmail.com with ESMTPSA id t4sm10307601pfj.13.2021.11.22.17.50.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Nov 2021 17:50:45 -0800 (PST)
+Date:   Mon, 22 Nov 2021 17:50:44 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Mina Almasry <almasrymina@google.com>
+cc:     Jonathan Corbet <corbet@lwn.net>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Paul E . McKenney" <paulmckrcu@fb.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>,
+        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
+        Florian Schmidt <florian.schmidt@nutanix.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v7] mm: Add PM_THP_MAPPED to /proc/pid/pagemap
+In-Reply-To: <20211123000102.4052105-1-almasrymina@google.com>
+Message-ID: <b34e16a-f520-ec7b-7811-6adc2e645a5@google.com>
+References: <20211123000102.4052105-1-almasrymina@google.com>
 MIME-Version: 1.0
-References: <20211116215715.645231-1-surenb@google.com>
-In-Reply-To: <20211116215715.645231-1-surenb@google.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 22 Nov 2021 17:47:14 -0800
-Message-ID: <CAJuCfpGjr3a90896Vknw9ytBvz-d3whFQc=DDoVMxxcLGKpX2g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm: protect free_pgtables with mmap_lock write lock
- in exit_mmap
-To:     akpm@linux-foundation.org
-Cc:     mhocko@kernel.org, mhocko@suse.com, rientjes@google.com,
-        willy@infradead.org, hannes@cmpxchg.org, guro@fb.com,
-        riel@surriel.com, minchan@kernel.org, kirill@shutemov.name,
-        aarcange@redhat.com, christian@brauner.io, hch@infradead.org,
-        oleg@redhat.com, david@redhat.com, jannh@google.com,
-        shakeelb@google.com, luto@kernel.org, christian.brauner@ubuntu.com,
-        fweimer@redhat.com, jengelh@inai.de, timmurray@google.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 1:57 PM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> oom-reaper and process_mrelease system call should protect against
-> races with exit_mmap which can destroy page tables while they
-> walk the VMA tree. oom-reaper protects from that race by setting
-> MMF_OOM_VICTIM and by relying on exit_mmap to set MMF_OOM_SKIP
-> before taking and releasing mmap_write_lock. process_mrelease has
-> to elevate mm->mm_users to prevent such race. Both oom-reaper and
-> process_mrelease hold mmap_read_lock when walking the VMA tree.
-> The locking rules and mechanisms could be simpler if exit_mmap takes
-> mmap_write_lock while executing destructive operations such as
-> free_pgtables.
-> Change exit_mmap to hold the mmap_write_lock when calling
-> free_pgtables. Operations like unmap_vmas() and unlock_range() are not
-> destructive and could run under mmap_read_lock but for simplicity we
-> take one mmap_write_lock during almost the entire operation. Note
-> also that because oom-reaper checks VM_LOCKED flag, unlock_range()
-> should not be allowed to race with it.
-> In most cases this lock should be uncontended. Previously, Kirill
-> reported ~4% regression caused by a similar change [1]. We reran the
-> same test and although the individual results are quite noisy, the
-> percentiles show lower regression with 1.6% being the worst case [2].
-> The change allows oom-reaper and process_mrelease to execute safely
-> under mmap_read_lock without worries that exit_mmap might destroy page
-> tables from under them.
->
-> [1] https://lore.kernel.org/all/20170725141723.ivukwhddk2voyhuc@node.shutemov.name/
-> [2] https://lore.kernel.org/all/CAJuCfpGC9-c9P40x7oy=jy5SphMcd0o0G_6U1-+JAziGKG6dGA@mail.gmail.com/
+On Mon, 22 Nov 2021, Mina Almasry wrote:
 
-Friendly nudge.
-Michal, Matthew, from our discussion in
-https://lore.kernel.org/all/YXKhOKIIngIuJaYi@casper.infradead.org I
-was under the impression this change would be interesting for you. Any
-feedback?
+> Add PM_THP_MAPPED MAPPING to allow userspace to detect whether a given virt
+> address is currently mapped by a transparent huge page or not.  Example
+> use case is a process requesting THPs from the kernel (via a huge tmpfs
+> mount for example), for a performance critical region of memory.  The
+> userspace may want to query whether the kernel is actually backing this
+> memory by hugepages or not.
+> 
+> PM_THP_MAPPED bit is set if the virt address is mapped at the PMD
+> level and the underlying page is a transparent huge page.
+> 
+> A few options were considered:
+> 1. Add /proc/pid/pageflags that exports the same info as
+>    /proc/kpageflags.  This is not appropriate because many kpageflags are
+>    inappropriate to expose to userspace processes.
+> 2. Simply get this info from the existing /proc/pid/smaps interface.
+>    There are a couple of issues with that:
+>    1. /proc/pid/smaps output is human readable and unfriendly to
+>       programatically parse.
+>    2. /proc/pid/smaps is slow because it must read the whole memory range
+>       rather than a small range we care about.  The cost of reading
+>       /proc/pid/smaps into userspace buffers is about ~800us per call,
+>       and this doesn't include parsing the output to get the information
+>       you need. The cost of querying 1 virt address in /proc/pid/pagemaps
+>       however is around 5-7us.
+> 
+> Tested manually by adding logging into transhuge-stress, and by
+> allocating THP and querying the PM_THP_MAPPED flag at those
+> virtual addresses.
+> 
+> Signed-off-by: Mina Almasry <almasrymina@google.com>
 
->
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> ---
->  mm/mmap.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
->
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index bfb0ea164a90..69b3036c6dee 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -3142,25 +3142,27 @@ void exit_mmap(struct mm_struct *mm)
->                  * to mmu_notifier_release(mm) ensures mmu notifier callbacks in
->                  * __oom_reap_task_mm() will not block.
->                  *
-> -                * This needs to be done before calling munlock_vma_pages_all(),
-> +                * This needs to be done before calling unlock_range(),
->                  * which clears VM_LOCKED, otherwise the oom reaper cannot
->                  * reliably test it.
->                  */
->                 (void)__oom_reap_task_mm(mm);
->
->                 set_bit(MMF_OOM_SKIP, &mm->flags);
-> -               mmap_write_lock(mm);
-> -               mmap_write_unlock(mm);
->         }
->
-> +       mmap_write_lock(mm);
->         if (mm->locked_vm)
->                 unlock_range(mm->mmap, ULONG_MAX);
->
->         arch_exit_mmap(mm);
->
->         vma = mm->mmap;
-> -       if (!vma)       /* Can happen if dup_mmap() received an OOM */
-> +       if (!vma) {
-> +               /* Can happen if dup_mmap() received an OOM */
-> +               mmap_write_unlock(mm);
->                 return;
-> +       }
->
->         lru_add_drain();
->         flush_cache_mm(mm);
-> @@ -3170,6 +3172,7 @@ void exit_mmap(struct mm_struct *mm)
->         unmap_vmas(&tlb, vma, 0, -1);
->         free_pgtables(&tlb, vma, FIRST_USER_ADDRESS, USER_PGTABLES_CEILING);
->         tlb_finish_mmu(&tlb);
-> +       mmap_write_unlock(mm);
->
->         /*
->          * Walk the list again, actually closing and freeing it,
-> --
-> 2.34.0.rc1.387.gb447b232ab-goog
->
+Acked-by: David Rientjes <rientjes@google.com>
