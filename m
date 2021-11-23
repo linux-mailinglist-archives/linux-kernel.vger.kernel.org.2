@@ -2,84 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 887C845AAD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 19:06:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D0745AAE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 19:07:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239704AbhKWSJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 13:09:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239633AbhKWSJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 13:09:51 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA94860FD8;
-        Tue, 23 Nov 2021 18:06:42 +0000 (UTC)
-Received: from sofa.misterjones.org ([185.219.108.64] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mpaBk-007LjH-Ts; Tue, 23 Nov 2021 18:06:40 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org
-Cc:     =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Luca Ceresoli <luca@lucaceresoli.net>, kernel-team@android.com
-Subject: [PATCH v3 3/3] PCI: apple: Fix #PERST polarity
-Date:   Tue, 23 Nov 2021 18:06:36 +0000
-Message-Id: <20211123180636.80558-4-maz@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211123180636.80558-1-maz@kernel.org>
-References: <20211123180636.80558-1-maz@kernel.org>
+        id S239750AbhKWSKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 13:10:41 -0500
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:46028 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239586AbhKWSK1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 13:10:27 -0500
+Received: by mail-ot1-f53.google.com with SMTP id a23-20020a9d4717000000b0056c15d6d0caso89088otf.12;
+        Tue, 23 Nov 2021 10:07:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zISZonE+jfcuqih+VqZkba/z0VBN8Lm0GEq4vywk61c=;
+        b=vHMCPzGfzwcCgAHfRHw5HW54Wbuc/3zyOLTpw7yn2rh4aVJG4jUmJA4ajguSKHMQoG
+         cykj/JzNLOI0AvVvH/bJQe9iujg3MZsSXL0M2N16ga/8uT/Dt8447iJH7cEXVFq+1D9A
+         Vy833nVuON+mY+KURdtgYjjmWSwo/IGgYlb/6f8LYDPIkFf1oHgIfHPHCmesmlM+JS26
+         Xm81MJlNCDFsbbbVgdV/Hw4IOzHWuM5oZl94tUSlfjaxoE6LeD+MWYuWb5SWg1rRkdrv
+         LroaCq6vL1C8O48dyhqJUp0gtvHPd1JZoOy8ZkoMByVi3zY3rin9P4eEHl8DHC3O15j5
+         qzJQ==
+X-Gm-Message-State: AOAM532ue9hS1FUHyR8VykxCESrMxaT2rvtRrhM5Q8wBdEMsvZklJdyL
+        9EJDM0ec+Y3gQMWNSlHNo3Wnx6sf6U0T1vO0XUw=
+X-Google-Smtp-Source: ABdhPJwF2ep52rxDLG6UpRp3xdWO1LK2aeGUp8ki3Y6ep8Od1B4KnhnGqvqMfV3sQKXaxIByEQB9U2fm2A3fPfoMQds=
+X-Received: by 2002:a05:6830:1e57:: with SMTP id e23mr6327907otj.16.1637690838752;
+ Tue, 23 Nov 2021 10:07:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org, pali@kernel.org, alyssa@rosenzweig.io, lorenzo.pieralisi@arm.com, bhelgaas@google.com, mark.kettenis@xs4all.nl, luca@lucaceresoli.net, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20211119113644.1600-1-alx.manpages@gmail.com> <20211119113644.1600-3-alx.manpages@gmail.com>
+In-Reply-To: <20211119113644.1600-3-alx.manpages@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 23 Nov 2021 19:07:07 +0100
+Message-ID: <CAJZ5v0jGgxgTWQ-DLehRE_GPoRMz2TnT469uNE8k6TX7NxQdEA@mail.gmail.com>
+Subject: Re: [PATCH 02/17] Use memberof(T, m) instead of explicit NULL dereference
+To:     Alejandro Colomar <alx.manpages@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ajit Khaparde <ajit.khaparde@broadcom.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Borislav Petkov <bp@suse.de>,
+        Corey Minyard <cminyard@mvista.com>, Chris Mason <clm@fb.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        David Sterba <dsterba@suse.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "John S . Gruber" <JohnSGruber@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Kees Cook <keescook@chromium.org>,
+        Ketan Mukadam <ketan.mukadam@broadcom.com>,
+        Len Brown <lenb@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-btrfs@vger.kernel.org,
+        "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that #PERST is properly defined as active-low in the device tree,
-fix the driver to correctly drive the line indemendently of the
-implied polarity.
+On Fri, Nov 19, 2021 at 12:37 PM Alejandro Colomar
+<alx.manpages@gmail.com> wrote:
+>
+> Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
+> Cc: Ajit Khaparde <ajit.khaparde@broadcom.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: Corey Minyard <cminyard@mvista.com>
+> Cc: Chris Mason <clm@fb.com>
+> Cc: Christian Brauner <christian.brauner@ubuntu.com>
+> Cc: David Sterba <dsterba@suse.com>
+> Cc: Jani Nikula <jani.nikula@linux.intel.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: Jitendra Bhivare <jitendra.bhivare@broadcom.com>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: John S. Gruber <JohnSGruber@gmail.com>
+> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+> Cc: Josef Bacik <josef@toxicpanda.com>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Ketan Mukadam <ketan.mukadam@broadcom.com>
+> Cc: Len Brown <lenb@kernel.org>
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: Miguel Ojeda <ojeda@kernel.org>
+> Cc: Mike Rapoport <rppt@linux.ibm.com>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Somnath Kotur <somnath.kotur@broadcom.com>
+> Cc: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+> Cc: Subbu Seetharaman <subbu.seetharaman@broadcom.com>
+> Cc: <intel-gfx@lists.freedesktop.org>
+> Cc: <linux-acpi@vger.kernel.org>
+> Cc: <linux-arm-kernel@lists.infradead.org>
+> Cc: <linux-btrfs@vger.kernel.org>
+> Cc: <linux-scsi@vger.kernel.org>
+> Cc: <netdev@vger.kernel.org>
+> Cc: <virtualization@lists.linux-foundation.org>
+> ---
+>  arch/x86/include/asm/bootparam_utils.h  |  3 ++-
+>  arch/x86/kernel/signal_compat.c         |  5 +++--
+>  drivers/gpu/drm/i915/i915_utils.h       |  5 ++---
+>  drivers/gpu/drm/i915/intel_runtime_pm.h |  2 +-
+>  drivers/net/ethernet/emulex/benet/be.h  |  7 ++++---
+>  drivers/net/ethernet/i825xx/ether1.c    |  7 +++++--
+>  drivers/scsi/be2iscsi/be.h              |  7 ++++---
+>  drivers/scsi/be2iscsi/be_cmds.h         |  5 ++++-
+>  fs/btrfs/ctree.h                        |  5 +++--
+>  include/acpi/actypes.h                  |  4 +++-
 
-Fixes: 1e33888fbe44 ("PCI: apple: Add initial hardware bring-up")
-Suggested-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- drivers/pci/controller/pcie-apple.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The change in actypes.h would need to be submitted to the upstream
+ACPICA project via https://github.com/acpica/acpica/
 
-diff --git a/drivers/pci/controller/pcie-apple.c b/drivers/pci/controller/pcie-apple.c
-index 957960a733c4..03bc56f39be5 100644
---- a/drivers/pci/controller/pcie-apple.c
-+++ b/drivers/pci/controller/pcie-apple.c
-@@ -540,7 +540,7 @@ static int apple_pcie_setup_port(struct apple_pcie *pcie,
- 	rmw_set(PORT_APPCLK_EN, port->base + PORT_APPCLK);
- 
- 	/* Engage #PERST before setting up the clock */
--	gpiod_set_value(reset, 0);
-+	gpiod_set_value(reset, 1);
- 
- 	ret = apple_pcie_setup_refclk(pcie, port);
- 	if (ret < 0)
-@@ -551,7 +551,7 @@ static int apple_pcie_setup_port(struct apple_pcie *pcie,
- 
- 	/* Deassert #PERST */
- 	rmw_set(PORT_PERST_OFF, port->base + PORT_PERST);
--	gpiod_set_value(reset, 1);
-+	gpiod_set_value(reset, 0);
- 
- 	/* Wait for 100ms after #PERST deassertion (PCIe r2.0, 6.6.1) */
- 	msleep(100);
--- 
-2.30.2
+Thanks!
 
+>  include/linux/container_of.h            |  6 +++---
+>  include/linux/virtio_config.h           | 14 +++++++-------
+>  12 files changed, 41 insertions(+), 29 deletions(-)
