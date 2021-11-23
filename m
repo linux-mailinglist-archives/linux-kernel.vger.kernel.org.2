@@ -2,90 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE3C45AB2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 19:16:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7785B45AAFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 19:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239776AbhKWST4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 13:19:56 -0500
-Received: from sibelius.xs4all.nl ([83.163.83.176]:65042 "EHLO
-        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234712AbhKWSTz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 13:19:55 -0500
-Received: from localhost (bloch.sibelius.xs4all.nl [local])
-        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 97695463;
-        Tue, 23 Nov 2021 19:16:45 +0100 (CET)
-Date:   Tue, 23 Nov 2021 19:16:45 +0100 (CET)
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, pali@kernel.org, alyssa@rosenzweig.io,
-        lorenzo.pieralisi@arm.com, bhelgaas@google.com,
-        luca@lucaceresoli.net, kernel-team@android.com
-In-Reply-To: <20211123180636.80558-3-maz@kernel.org> (message from Marc
-        Zyngier on Tue, 23 Nov 2021 18:06:35 +0000)
-Subject: Re: [PATCH v3 2/3] arm64: dts: apple: t8103: Fix PCIe #PERST polarity
-References: <20211123180636.80558-1-maz@kernel.org> <20211123180636.80558-3-maz@kernel.org>
-Message-ID: <d3caf90f3d319cdf@bloch.sibelius.xs4all.nl>
+        id S239761AbhKWSOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 13:14:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239365AbhKWSOo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 13:14:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CFEF60C4A;
+        Tue, 23 Nov 2021 18:11:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637691096;
+        bh=mkOOAhuKzpN8AI9CMyUMguhJC0UuaaY0M4GaWM3pB3I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ffVr8t9+q8MtImkg+qJZtLI+OvJT3YLPB9FZ2pM0OzUGF4ti6KEhZDyvpUDGakjiu
+         xeFwlgrpa3tnIhqesEyiHCqoyBzqSy537uXpEH0fZGlTBVEFlsT2oarYLsrFmxv7p/
+         0VHkvJ38KkM5t3ig5J2qAvEnJ7j38drIw+RfPqimAB9u1BVICozC/1mJm8gnvuBA1t
+         BUhc0IOpa6zIjdH7mOayQv/r2smMrdTp8PmTWmGjecQ/Fk+Jl6egDhqnZ0Ok5gysSI
+         P+cL4Xz/Org02xBoV5Mnq9ORElc3EGFrdXkfJA0r/Z3232C2jOFsUKJ3hQkBYJwMEQ
+         Qo1q9oHU1vYtw==
+Date:   Tue, 23 Nov 2021 12:16:48 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: Re: arch/mips/mm/tlbex.c:2243:3: warning: unannotated fall-through
+ between switch labels
+Message-ID: <20211123181648.GA9405@embeddedor>
+References: <202111230719.OZDUHU4z-lkp@intel.com>
+ <20211123005528.GA550759@embeddedor>
+ <ea07a2f1e20503965c7c2eba7c0a7a4538457265.camel@perches.com>
+ <20211123165057.GA7382@embeddedor>
+ <b73d287a696c10279cd0c931840ce95b03876d58.camel@perches.com>
+ <20211123175610.GA8713@embeddedor>
+ <7b6e9af20d5e18315986c8e004a13c3840afb9ad.camel@perches.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7b6e9af20d5e18315986c8e004a13c3840afb9ad.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Marc Zyngier <maz@kernel.org>
-> Date: Tue, 23 Nov 2021 18:06:35 +0000
+On Tue, Nov 23, 2021 at 09:59:58AM -0800, Joe Perches wrote:
+> On Tue, 2021-11-23 at 11:56 -0600, Gustavo A. R. Silva wrote:
+> > On Tue, Nov 23, 2021 at 09:25:17AM -0800, Joe Perches wrote:
+> > > On Tue, 2021-11-23 at 10:50 -0600, Gustavo A. R. Silva wrote:
+> > > > On Tue, Nov 23, 2021 at 12:52:30AM -0800, Joe Perches wrote:
+> > > > > 
+> > > > > Perhaps this would be better:
+> > > > 
+> > > > Feel free to send a proper patch.
+> > > 
+> > > I commented on your proposed patch.
+> > 
+> > And I reply giving you an option if you want to proceed.
+> > 
+> > > And I'd prefer you actually look at and improve the code instead
+> > > of merely silencing warnings.
+> > 
+> > If this is a matter of preference then I should express my preferences, too.
+> > So, I prefer to give you the opportunity of improving the code and not being
+> > pedantic at the same time. :)
 > 
-> As the name indicates, #PERST is active low. So fix the DT description
-> to match the HW behaviour.
-> 
-> Fixes: ff2a8d91d80c ("arm64: apple: Add PCIe node")
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> It appears to be difficult to give you suggestions on how to improve
+> what you do.
 
-Reviewed-by: Mark Kettenis <kettenis@openbsd.org>
+No; that's appreciated.
+What I suggest you to improve is how you communicate it, and to take
+into account a "Feel free to send a proper patch."
 
-> ---
->  arch/arm64/boot/dts/apple/t8103.dtsi | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/apple/t8103.dtsi b/arch/arm64/boot/dts/apple/t8103.dtsi
-> index fc8b2bb06ffe..e22c9433d5e0 100644
-> --- a/arch/arm64/boot/dts/apple/t8103.dtsi
-> +++ b/arch/arm64/boot/dts/apple/t8103.dtsi
-> @@ -7,6 +7,7 @@
->   * Copyright The Asahi Linux Contributors
->   */
->  
-> +#include <dt-bindings/gpio/gpio.h>
->  #include <dt-bindings/interrupt-controller/apple-aic.h>
->  #include <dt-bindings/interrupt-controller/irq.h>
->  #include <dt-bindings/pinctrl/apple.h>
-> @@ -281,7 +282,7 @@ pcie0: pcie@690000000 {
->  			port00: pci@0,0 {
->  				device_type = "pci";
->  				reg = <0x0 0x0 0x0 0x0 0x0>;
-> -				reset-gpios = <&pinctrl_ap 152 0>;
-> +				reset-gpios = <&pinctrl_ap 152 GPIO_ACTIVE_LOW>;
->  				max-link-speed = <2>;
->  
->  				#address-cells = <3>;
-> @@ -301,7 +302,7 @@ port00: pci@0,0 {
->  			port01: pci@1,0 {
->  				device_type = "pci";
->  				reg = <0x800 0x0 0x0 0x0 0x0>;
-> -				reset-gpios = <&pinctrl_ap 153 0>;
-> +				reset-gpios = <&pinctrl_ap 153 GPIO_ACTIVE_LOW>;
->  				max-link-speed = <2>;
->  
->  				#address-cells = <3>;
-> @@ -321,7 +322,7 @@ port01: pci@1,0 {
->  			port02: pci@2,0 {
->  				device_type = "pci";
->  				reg = <0x1000 0x0 0x0 0x0 0x0>;
-> -				reset-gpios = <&pinctrl_ap 33 0>;
-> +				reset-gpios = <&pinctrl_ap 33 GPIO_ACTIVE_LOW>;
->  				max-link-speed = <1>;
->  
->  				#address-cells = <3>;
-> -- 
-> 2.30.2
-> 
-> 
+Thanks
+--
+Gustavo
