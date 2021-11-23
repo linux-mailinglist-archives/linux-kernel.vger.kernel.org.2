@@ -2,80 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99DD7459ABB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 04:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0739E459AB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 04:49:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232867AbhKWDw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 22:52:29 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:30650 "EHLO
+        id S231292AbhKWDwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 22:52:23 -0500
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:28286 "EHLO
         mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230394AbhKWDwY (ORCPT
+        by vger.kernel.org with ESMTP id S231819AbhKWDwW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 22:52:24 -0500
+        Mon, 22 Nov 2021 22:52:22 -0500
 Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AN1pi0C013538;
-        Tue, 23 Nov 2021 03:49:07 GMT
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AN1unHj013598;
+        Tue, 23 Nov 2021 03:49:09 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type : content-transfer-encoding; s=corp-2021-07-09;
- bh=quKsRRNdG/VelInrk9ByLZtYF2XTPwTqibt9UedN5C8=;
- b=RxVb+62r/jw3VFE51JA6yJQfW/GfSQc/LXTNriWfJjy77zffDjL6H7E9OTCJnJobODsq
- 8DuWDEG6cFvLUrTGtoywddk2VIlj4dY4xboMZ3/0AO09hHAO2SCK5kbA+ydkBc6Nxi37
- 6jlGOWUJzRj1TL94/aS22bgMVD0NfGNVe723oq8lIdNTFFZYjNBD++V5le3LbVx5mb90
- RA155rki/wwVR9z2kzjCc7/7sAGZqpuCWpC/b0Gbuvinz24WGUEh2bNMrY1AiVn+2k/G
- AoFGz1Rrcqv2fK2EBESrsYXyXkQKJ2GsV0g6wdPZs2RmpEToJA5pgVuke6itgqWrTZfY BA== 
+ bh=BgHrdj1DiKSY/8OAHoPvNY6ppS7Ql/1Xxe5wlW/6JJU=;
+ b=ZPyylL1zMgpBxnu4/2GiwMqxg3ZacYd7uQ2KzN3lEH1ZtjBZZ8JO808sNASYRxtuT0FC
+ 9YTZFsvl2aW4ydOR7eDo2bHXpr/xsf0fL585tSYs9KinFPbPkbAC+xgolu/6TLJH3v+q
+ GQiE508pPub1cF12MpbDJ9dXYt5EJbVFbz6IRUkdZMGu/uTAG0SAzCn2ecmAMuAXDewH
+ ql562TnB90ZVzxMNr8qC5ksRsqi8ZVDRSRK91I/7sZXdCF13SRYDWgTvAkBuBPboi/OL
+ 7c1JyYH/oi1P2wNDnZ32d/2HXulWZoRHCcOi0Y0IMbNyb50f1Z/olGynBgnBZW83CyBM yA== 
 Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3cg69medte-1
+        by mx0b-00069f02.pphosted.com with ESMTP id 3cg69medtk-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Nov 2021 03:49:07 +0000
+        Tue, 23 Nov 2021 03:49:09 +0000
 Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AN3l1Ff162212;
-        Tue, 23 Nov 2021 03:49:06 GMT
+        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AN3l2GR162355;
+        Tue, 23 Nov 2021 03:49:08 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 3ceru4g6hs-1
+        by aserp3020.oracle.com with ESMTP id 3ceru4g6kb-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Nov 2021 03:49:06 +0000
+        Tue, 23 Nov 2021 03:49:08 +0000
 Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1AN3l19i162141;
-        Tue, 23 Nov 2021 03:49:05 GMT
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1AN3l19o162141;
+        Tue, 23 Nov 2021 03:49:08 GMT
 Received: from ca-mkp.mkp.ca.oracle.com (ca-mkp.ca.oracle.com [10.156.108.201])
-        by aserp3020.oracle.com with ESMTP id 3ceru4g6hc-1;
-        Tue, 23 Nov 2021 03:49:05 +0000
+        by aserp3020.oracle.com with ESMTP id 3ceru4g6hc-4;
+        Tue, 23 Nov 2021 03:49:08 +0000
 From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     brookxu <brookxu.cn@gmail.com>, jejb@linux.ibm.com
+To:     Avri Altman <avri.altman@wdc.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>
 Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hch@infradead.org
-Subject: Re: [PATCH v2] scsi: core: use eh_timeout to timeout start_unit command
-Date:   Mon, 22 Nov 2021 22:48:59 -0500
-Message-Id: <163763931255.19362.9120379663212825862.b4-ty@oracle.com>
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: ufs: Fix double space in SCSI_UFS_HWMON description
+Date:   Mon, 22 Nov 2021 22:49:02 -0500
+Message-Id: <163763931254.19362.542551491549735127.b4-ty@oracle.com>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <1636507412-21678-1-git-send-email-brookxu.cn@gmail.com>
-References: <1636507412-21678-1-git-send-email-brookxu.cn@gmail.com>
+In-Reply-To: <20211106164741.1571206-1-geert@linux-m68k.org>
+References: <20211106164741.1571206-1-geert@linux-m68k.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: ADKebL6QDNrzX5zNXgUCmVgh__MN05to
-X-Proofpoint-ORIG-GUID: ADKebL6QDNrzX5zNXgUCmVgh__MN05to
+X-Proofpoint-GUID: m3-9AipTTyhMMxaMJJ1BBgFK7gPfJQa8
+X-Proofpoint-ORIG-GUID: m3-9AipTTyhMMxaMJJ1BBgFK7gPfJQa8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Nov 2021 09:23:32 +0800, brookxu wrote:
+On Sat, 6 Nov 2021 17:47:41 +0100, Geert Uytterhoeven wrote:
 
-> From: Chunguang Xu <brookxu@tencent.com>
+> There's no reason to have a double space between "UFS" and
+> "Temperature", hence drop it.
 > 
-> In some abnormal scenarios, STU may timeout. The recovery
-> time of 30 seconds is relatively large. Now we need to modify
-> rq_timeout to adjust STU timeout value, but it will affect the
-> actual IO.
 > 
-> [...]
 
 Applied to 5.17/scsi-queue, thanks!
 
-[1/1] scsi: core: use eh_timeout to timeout start_unit command
-      https://git.kernel.org/mkp/scsi/c/adcc796b4f55
+[1/1] scsi: ufs: Fix double space in SCSI_UFS_HWMON description
+      https://git.kernel.org/mkp/scsi/c/659109a45c6c
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
