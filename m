@@ -2,272 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6C445AD04
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:06:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7411645AD09
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 21:07:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbhKWUJS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 23 Nov 2021 15:09:18 -0500
-Received: from aposti.net ([89.234.176.197]:36522 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229959AbhKWUJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 15:09:17 -0500
-Date:   Tue, 23 Nov 2021 20:05:40 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v8 4/8] drm/ingenic: Add dw-hdmi driver for jz4780
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Message-Id: <GTJ13R.RSQAWZX83DUZ2@crapouillou.net>
-In-Reply-To: <64c6ab288d4d7159f633c860f1b23b3395491ae1.1637691240.git.hns@goldelico.com>
-References: <cover.1637691240.git.hns@goldelico.com>
-        <64c6ab288d4d7159f633c860f1b23b3395491ae1.1637691240.git.hns@goldelico.com>
+        id S238842AbhKWUKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 15:10:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236505AbhKWUKm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 15:10:42 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017B3C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 12:07:34 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id l8so430219qtk.6
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 12:07:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=JN33S+gnrGGaeyzc707FbiM/WbC7L0hoQXfwJUTT+5w=;
+        b=WR33CPHEsU1KO3PYKbN+EZg36GQksh+9O6B3OmuZsQg1LmOcHIRQ4E/0SeSwo5t4tY
+         lODROOG+A1t6Mc5FRFuiA3QYKfvSeTX7ZtPYbIG07oWPHEJY/b6R4fYiZAp94pBu34sL
+         Phu9Oul2n6XA9FNUk/Z0E6BHBuedal/dI3mKS8tZ+yn87sZKZSlTIcT5Jd0xzD+jwGW/
+         CRkHVhMHBhY8m/n+EiV2Hjl9m5X6+dkBSHLROSXz1QNTx/+kPtK2hvF5XfoTIOC4/sMZ
+         WP6HQS6SmCd21rCHJ+q/BSW7Ww5vWi4KftWH+TG7FyOEiYepw7bbZOvJ1VowQT0RjiO1
+         mf3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=JN33S+gnrGGaeyzc707FbiM/WbC7L0hoQXfwJUTT+5w=;
+        b=RCBoGegxS2h9Zvm/7UN3P2OUybHJB70oM6hqtyxgAYYqpLj93fNTmOnZsNTvnVDWw1
+         H17TpsAV6+pSujBql2hrie7z/FVMTyFW2NgjMJmAusUpWeCpkNRN9ikSMe9eeuZzGYZU
+         ntUnbr7ely4hSE4vWmj+XoHX56JeQ+4/U+P56sRJmCxA94yE/ufPpqgMMGPNKDaWlDlA
+         1hZ9+ZvPC+TszkseVzEEykRBQGSIsXs3M2ri+U2pM90w4Xd4Btl4wo/QvwUv2SjS5L/U
+         sSVmXILFVJtWw6br76Epf+IZFZQP6ZgzuXn1cKexiM27iUDuniIpXwg4nL5wHkHQpnKs
+         01eQ==
+X-Gm-Message-State: AOAM5320nsnYwRtDp0tFKrrlo9zG924OHOuoWkSFbpXuxwT20x72bD/C
+        B6ukdYPRz5o4Bfjk2mtamFmxBQ==
+X-Google-Smtp-Source: ABdhPJx2SqAynu5GbaP2wJOL0bZQ+VwSSDT4QHtC8LnlrCD58r29zOr4wE3LQbUGOaZPjoqVt9okLw==
+X-Received: by 2002:a05:622a:1306:: with SMTP id v6mr25905qtk.115.1637698053077;
+        Tue, 23 Nov 2021 12:07:33 -0800 (PST)
+Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
+        by smtp.gmail.com with ESMTPSA id t18sm6557898qtw.64.2021.11.23.12.07.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 12:07:32 -0800 (PST)
+Message-ID: <fed6c2fd7cf4971062c417ce41ed1e3812b900e0.camel@ndufresne.ca>
+Subject: Re: [RFC 0/5] arm64: imx8mm: Enable Hantro VPUs
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Tim Harvey <tharvey@gateworks.com>, Adam Ford <aford173@gmail.com>
+Cc:     linux-media <linux-media@vger.kernel.org>,
+        Schrempf Frieder <frieder.schrempf@kontron.de>,
+        Marek Vasut <marek.vasut@gmail.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        cstevens@beaconembedded.com,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Alice Guo <alice.guo@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        "open list:HANTRO VPU CODEC DRIVER" 
+        <linux-rockchip@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>
+Date:   Tue, 23 Nov 2021 15:07:28 -0500
+In-Reply-To: <CAJ+vNU3zFd=6k_Emc5aafxKkGwCPp4crgOFezQ-E_MbWsn1_EA@mail.gmail.com>
+References: <20211106183802.893285-1-aford173@gmail.com>
+         <718f7f6d6cd564d031c1963f1590c62d549ae725.camel@ndufresne.ca>
+         <CAHCN7xKM9RUE7z-+ug1on+D=nDoEm589R4m03ofys92Aq75ZVQ@mail.gmail.com>
+         <8db00a4b6faa99c940d9bc86e17161eb0db5efe3.camel@ndufresne.ca>
+         <CAJ+vNU28UJffFv9jQ2KryJMudqYxvCaoVOVcU5dPqRA209iN6A@mail.gmail.com>
+         <d91532c2c0772f9aa708ead36b2a97203727a7ea.camel@ndufresne.ca>
+         <CAJ+vNU3H-V+bPoZ3qKead45h=W7AhQK6Lhjrx5ssdF4c_qfe=A@mail.gmail.com>
+         <CAHCN7x+0LwwU_rEST+TZxGquswGKL19gnTy9WLofsXtGAtWqdw@mail.gmail.com>
+         <7f94eaacfddb8c5434c17f1e069ea87a17657ce9.camel@ndufresne.ca>
+         <CAHCN7xKRzxMBmPbDobWTuvNNSpTXk5XENvfBnfkhRY3eZKhn6w@mail.gmail.com>
+         <CAHCN7xJFLNi_g+HX8PCy1Rkgf0jnWpO5QGYVz8nH19xrJkwHrA@mail.gmail.com>
+         <CAJ+vNU3zFd=6k_Emc5aafxKkGwCPp4crgOFezQ-E_MbWsn1_EA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nikolaus,
-
-I keep seeing a few things, sorry.
-
-
-Le mar., nov. 23 2021 at 19:13:57 +0100, H. Nikolaus Schaller 
-<hns@goldelico.com> a �crit :
-> From: Paul Boddie <paul@boddie.org.uk>
+Le lundi 22 novembre 2021 à 09:25 -0800, Tim Harvey a écrit :
+> On Sat, Nov 20, 2021 at 7:36 AM Adam Ford <aford173@gmail.com> wrote:
+> > 
+> > On Fri, Nov 19, 2021 at 5:37 PM Adam Ford <aford173@gmail.com> wrote:
+> > > 
+> > > On Fri, Nov 19, 2021 at 10:29 AM Nicolas Dufresne <nicolas@ndufresne.ca> wrote:
+> > > > 
+> > > > Hi Adam, Tim,
+> > > > 
+> > > > [...]
+> > > > > > > > Nicolas and Adam,
+> > > > > > > > 
+> > > > > > > > For the H1 patches in this series: I've been able to test the IMX8MM
+> > > > > > > > H1 JPEG encode using GStreamer 1.18.5:
+> > > > > > > > $ gst-inspect-1.0 | grep -e "v4l2.*enc"
+> > > > > > > > video4linux2:  v4l2jpegenc: V4L2 JPEG Encoder
+> > > > > > > > $ gst-launch-1.0 videotestsrc ! jpegenc ! rtpjpegpay ! udpsink
+> > > > > > >                                   ^ v4l2jpegenc
+> > > > > > > 
+> > > > > > > This is just a transcript error ?
+> > > > > > 
+> > > > > > Nicolas,
+> > > > > > 
+> > > > > > No! Thanks for catching my mistake. I was testing with software encode... ooops!
+> > > > > > 
+> > > > > > 'gst-launch-1.0 videotestsrc ! v4l2jpegenc ! fakesink' actually hangs
+> > > > > > the board so likely a power-domain issue there?
+> > > > > 
+> > > > > The v4l2-compliance tests fail on the h1 decoder with a hang, but I
+> > > > > think we're writing to registers which are not documented in the Mini
+> > > > > TRM.  The Mini TRM doesn't explicitly show the JPEG encoding as a
+> > > > > feature, but some of the registers state JPEG, but because some of the
+> > > > > registers written for the H1 are not documented in the TRM.  If those
+> > > > > registers are restricted or not in this SoC, I am concerned that it
+> > > > > might be related.  I'll try to run some more tests this weekend to
+> > > > > check on the status of the power-domain stuff.
+> > > > 
+> > > > To verify if the HW support JPEG encoding you can read SWREG63 bit 25. This is
+> > > > in the TRM, just not labelled properly. To mimic the decoding side, would be "HW
+> > > > synthesis config register X" with the bit labelled SW_ENC_JPEG_PROF (but
+> > > > PROF/profile is on or off). If your board hang while reading this, you likely
+> > > > didn't get the power bit right.
+> > > > 
+> > > > IMX8 has an undocumented control block thing that we have been fighting with in
+> > > > imx8q,  perhaps that's your issue. Few driver was proposed, we are still pending
+> > > > on NXP solution to be submitted (they asked us to wait, still waiting =)).
+> > > 
+> > > Nicolas,
+> > > 
+> > > Thanks for the suggestion to read offset FC.  There was an attempt
+> > > made by Lucas Stach to develop a VPU blk-ctrl driver to coordinate the
+> > > power-domains with the GPC driver. Unfortunately, it does appear to
+> > > hang, so it might not be operating correctly.
+> > > 
+> > > Lucas,
+> > > 
+> > > Do you have any idea of stuff I can try to see if the power domain is
+> > > coming online correctly?
+> > > 
+> > > [   10.434727] imx-pgc imx-pgc-domain.6: request the vpumix domain to power up
+> > > [   10.463647] imx-pgc imx-pgc-domain.6: request the vpumix ADB400 to power up
+> > > [   10.517155] imx-pgc imx-pgc-domain.6: genpd vpumix success
+> > > [   10.728927] vpu: set fuse bits to enable
+> > > [   10.825500] imx8m-blk-ctrl 38330000.blk-ctrl: power vpublk-g1 GPC domain
+> > > [   10.878986] imx-pgc imx-pgc-domain.7: request the vpu-g1 domain to power up
+> > > [   10.932429] imx-pgc imx-pgc-domain.7: genpd vpu-g1 success
+> > > [   10.971988] imx8m-blk-ctrl 38330000.blk-ctrl: genpd vpublk-g1 success
+> > > [   11.004726] hantro-vpu 38300000.video-codec: registered
+> > > nxp,imx8mm-vpu-dec as /dev/video0
+> > > [   11.040760] imx8m-blk-ctrl 38330000.blk-ctrl: power vpublk-g2 GPC domain
+> > > [   11.066181] imx-pgc imx-pgc-domain.8: request the vpu-g2 domain to power up
+> > > [   11.087887] imx-pgc imx-pgc-domain.8: genpd vpu-g2 success
+> > > [   11.113808] imx8m-blk-ctrl 38330000.blk-ctrl: genpd vpublk-g2 success
+> > > [   11.139634] hantro-vpu 38310000.video-codec: registered
+> > > nxp,imx8mm-vpu-g2-dec as /dev/video1
+> > > [   11.156463] imx8m-blk-ctrl 38330000.blk-ctrl: power vpublk-h1 GPC domain
+> > > [   11.170817] imx-pgc imx-pgc-domain.9: request the vpu-h1 domain to power up
+> > > [   11.232990] imx-pgc imx-pgc-domain.9: genpd vpu-h1 success
+> > > [   11.252546] imx8m-blk-ctrl 38330000.blk-ctrl: genpd vpublk-h1 success
+> > > [   11.266152] hantro-vpu 38320000.video-codec: Checking vpu->enc_base + 0xfc
+> > > 
+> > > <hang>
+> > > 
+> > > adam
+> > > 
+> > 
+> > Nicolas, Tim, and Lucas,
+> > 
+> > I think I have the hanging resolved in the power domains, and I'll be
+> > pushing the fix to the GPCv2.
+> > 
+> > For the H1 Encoder, I added some debugging code to read the offset
+> > 0xfc and print some data based on the findings of that VPU-h1 offset.
+> > I basically check the various bits per the TRM to see if they are set
+> > and print some splat to indicate whether or not the function is
+> > supported.
+> > 
+> > [    8.861865] hantro-vpu 38320000.video-codec: Checking vpu->enc_base + 0xfc
+> > [    8.870594] hantro-vpu 38320000.video-codec: Stabilization supported by HW
+> > [    8.889341] hantro-vpu 38320000.video-codec: VP8 encoding supported by HW
+> > [    8.899386] hantro-vpu 38320000.video-codec: H.264 encoding supported by HW
+> > [    8.918171] hantro-vpu 38320000.video-codec: RGB to YUV conversion
+> > supported by HW
+> > [    8.934067] hantro-vpu 38320000.video-codec: registered
+> > nxp,imx8mm-vpu-h1-enc as /dev/video2
+> > 
+> > Unfortunately, JPEG is not listed as supported.  :-(
 > 
-> A specialisation of the generic Synopsys HDMI driver is employed for
-> JZ4780 HDMI support. This requires a new driver, plus device tree and
-> configuration modifications.
+> Adam,
 > 
-> Here we add Kconfig DRM_INGENIC_DW_HDMI, Makefile and driver code.
+> Well not having JPEG encode support is unfortunate, and unexpected. Do
+> we not have hantro support yet for VP8/H264 encode?
+
+There is no mainline support yet. You can derive from RK3288 support using Google ChromeOS method (a v4l2 plugins that simulate in userspace a stateful encoder):
+
+- libv4l plugins / https://chromium.googlesource.com/chromiumos/third_party/libv4lplugins/+/refs/heads/master
+- Kernel Driver / https://chromium.googlesource.com/chromiumos/third_party/kernel/+/chromeos-4.4/drivers/media/platform/rockchip-vpu/
+
 > 
-> Signed-off-by: Paul Boddie <paul@boddie.org.uk>
-> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
-> ---
->  drivers/gpu/drm/ingenic/Kconfig           |   9 ++
->  drivers/gpu/drm/ingenic/Makefile          |   1 +
->  drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c | 129 
-> ++++++++++++++++++++++
->  3 files changed, 139 insertions(+)
->  create mode 100644 drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
+> I haven't quite figured out how to build a modern mono-repo gstreamer
+> on the ubuntu 20.04 rootfs I'm using so I haven't been able to test
+> VPU encode/decode properly. I'll keep working on it when I'm back in
+> the office the following week.
+
+Did a quick test to make sure there isn't any ubuntu specific blockers, here's a
+dirty script that produce a minimal GStreamer, there was really nothing special
+compare to other meson projects. Note that I use --wrap-mode=nofallback to avoid
+letting GStreamer complete it's feature-set by downloading the planet. This
+already build quite a lot and could likely be made smaller by avoid plugins-good
+build-dep call, but then you need to check for v4l2odecs and video4linux devs
+(mostly gudev a glib udev binding).
+
+# Install ubuntu
+podman run -it --rm ubuntu:20.04
+sed -i "s/# deb-src/deb-src/" /etc/apt/sources.list
+apt update
+apt build-dep gstreamer1.0-plugins-good
+apt install git python3-pip flex bison
+
+# Need a newer meson
+pip3 install --user meson
+export PATH=$PATH:~/.local/bin
+
+# Build GStreamer
+git clone https://gitlab.freedesktop.org/gstreamer/gstreamer.git
+cd gstreamer
+meson setup build --wrap-mode=nofallback
+ninja -C build
+
+# Run in-place
+./gst-env.py
+gst-inspect-1.0 v4l2codecs
+gst-inspect 1.0 video4linux2
+
 > 
-> diff --git a/drivers/gpu/drm/ingenic/Kconfig 
-> b/drivers/gpu/drm/ingenic/Kconfig
-> index 3b57f8be007c4..4efc709d77b0a 100644
-> --- a/drivers/gpu/drm/ingenic/Kconfig
-> +++ b/drivers/gpu/drm/ingenic/Kconfig
-> @@ -25,4 +25,13 @@ config DRM_INGENIC_IPU
+> Best regards,
 > 
->  	  The Image Processing Unit (IPU) will appear as a second primary 
-> plane.
+> Tim
 > 
-> +config DRM_INGENIC_DW_HDMI
-> +	tristate "Ingenic specific support for Synopsys DW HDMI"
-> +	depends on MACH_JZ4780
-> +	select DRM_DW_HDMI
-> +	help
-> +	  Choose this option to enable Synopsys DesignWare HDMI based 
-> driver.
-> +	  If you want to enable HDMI on Ingenic JZ4780 based SoC, you should
-> +	  select this option..
-> +
->  endif
-> diff --git a/drivers/gpu/drm/ingenic/Makefile 
-> b/drivers/gpu/drm/ingenic/Makefile
-> index d313326bdddbb..f10cc1c5a5f22 100644
-> --- a/drivers/gpu/drm/ingenic/Makefile
-> +++ b/drivers/gpu/drm/ingenic/Makefile
-> @@ -1,3 +1,4 @@
->  obj-$(CONFIG_DRM_INGENIC) += ingenic-drm.o
->  ingenic-drm-y = ingenic-drm-drv.o
->  ingenic-drm-$(CONFIG_DRM_INGENIC_IPU) += ingenic-ipu.o
-> +obj-$(CONFIG_DRM_INGENIC_DW_HDMI) += ingenic-dw-hdmi.o
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c 
-> b/drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
-> new file mode 100644
-> index 0000000000000..c14890d6b9826
-> --- /dev/null
-> +++ b/drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
-> @@ -0,0 +1,129 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (C) 2011-2013 Freescale Semiconductor, Inc.
-> + * Copyright (C) 2019, 2020 Paul Boddie <paul@boddie.org.uk>
-> + *
-> + * Derived from dw_hdmi-imx.c with i.MX portions removed.
-> + * Probe and remove operations derived from rcar_dw_hdmi.c.
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +
-> +#include <drm/bridge/dw_hdmi.h>
-> +#include <drm/drm_of.h>
-> +#include <drm/drm_print.h>
-> +
-> +static const struct dw_hdmi_mpll_config ingenic_mpll_cfg[] = {
-> +	{ 45250000,  { { 0x01e0, 0x0000 }, { 0x21e1, 0x0000 }, { 0x41e2, 
-> 0x0000 } } },
-> +	{ 92500000,  { { 0x0140, 0x0005 }, { 0x2141, 0x0005 }, { 0x4142, 
-> 0x0005 } } },
-> +	{ 148500000, { { 0x00a0, 0x000a }, { 0x20a1, 0x000a }, { 0x40a2, 
-> 0x000a } } },
-> +	{ 216000000, { { 0x00a0, 0x000a }, { 0x2001, 0x000f }, { 0x4002, 
-> 0x000f } } },
-> +	{ ~0UL,      { { 0x0000, 0x0000 }, { 0x0000, 0x0000 }, { 0x0000, 
-> 0x0000 } } }
-> +};
-> +
-> +static const struct dw_hdmi_curr_ctrl ingenic_cur_ctr[] = {
-> +	/*pixelclk     bpp8    bpp10   bpp12 */
-> +	{ 54000000,  { 0x091c, 0x091c, 0x06dc } },
-> +	{ 58400000,  { 0x091c, 0x06dc, 0x06dc } },
-> +	{ 72000000,  { 0x06dc, 0x06dc, 0x091c } },
-> +	{ 74250000,  { 0x06dc, 0x0b5c, 0x091c } },
-> +	{ 118800000, { 0x091c, 0x091c, 0x06dc } },
-> +	{ 216000000, { 0x06dc, 0x0b5c, 0x091c } },
-> +	{ ~0UL,      { 0x0000, 0x0000, 0x0000 } },
-> +};
-> +
-> +/*
-> + * Resistance term 133Ohm Cfg
-> + * PREEMP config 0.00
-> + * TX/CK level 10
-> + */
-> +static const struct dw_hdmi_phy_config ingenic_phy_config[] = {
-> +	/*pixelclk   symbol   term   vlev */
-> +	{ 216000000, 0x800d, 0x0005, 0x01ad},
-> +	{ ~0UL,      0x0000, 0x0000, 0x0000}
-> +};
-> +
-> +static enum drm_mode_status
-> +ingenic_dw_hdmi_mode_valid(struct dw_hdmi *hdmi, void *data,
-> +			   const struct drm_display_info *info,
-> +			   const struct drm_display_mode *mode)
-> +{
-> +	if (mode->clock < 13500)
-> +		return MODE_CLOCK_LOW;
-> +	/* FIXME: Hardware is capable of 270MHz, but setup data is missing. 
-> */
-> +	if (mode->clock > 216000)
-> +		return MODE_CLOCK_HIGH;
-> +
-> +	return MODE_OK;
-> +}
-> +
-> +static struct dw_hdmi_plat_data ingenic_dw_hdmi_plat_data = {
-> +	.mpll_cfg   = ingenic_mpll_cfg,
-> +	.cur_ctr    = ingenic_cur_ctr,
-> +	.phy_config = ingenic_phy_config,
-> +	.mode_valid = ingenic_dw_hdmi_mode_valid,
-> +	.output_port	= 1,
-> +};
-> +
-> +static const struct of_device_id ingenic_dw_hdmi_dt_ids[] = {
-> +	{ .compatible = "ingenic,jz4780-dw-hdmi" },
-> +	{ /* Sentinel */ },
-> +};
-> +MODULE_DEVICE_TABLE(of, ingenic_dw_hdmi_dt_ids);
-> +
-> +static int ingenic_dw_hdmi_probe(struct platform_device *pdev)
-> +{
-> +	struct dw_hdmi *hdmi;
-> +	struct regulator *regulator;
-> +	int ret;
-> +
-> +	hdmi = dw_hdmi_probe(pdev, &ingenic_dw_hdmi_plat_data);
-> +	if (IS_ERR(hdmi))
-> +		return PTR_ERR(hdmi);
-> +
-> +	platform_set_drvdata(pdev, hdmi);
-> +
-> +	regulator = devm_regulator_get_optional(&pdev->dev, "hdmi-5v");
-> +
-
-Nit - you can remove this blank line.
-
-> +	if (IS_ERR(regulator)) {
-> +		ret = PTR_ERR(regulator);
-> +
-> +		DRM_DEV_ERROR(&pdev->dev, "failed to get hpd regulator: %s (%d)\n",
-> +			      "hdmi-5v", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = regulator_enable(regulator);
-
-You used devm_regulator_get_optional(), so you are not guaranteed to 
-obtain anything; your "regulator" variable might be a NULL pointer, so 
-you can't just call regulator_enable() without checking it first.
-
-> +	if (ret) {
-> +		DRM_DEV_ERROR(&pdev->dev, "Failed to enable hpd regulator: %d\n",
-> +			      ret);
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int ingenic_dw_hdmi_remove(struct platform_device *pdev)
-> +{
-> +	struct dw_hdmi *hdmi = platform_get_drvdata(pdev);
-> +
-> +	dw_hdmi_remove(hdmi);
-
-You probably should disable the regulator (if not NULL) here.
-
-> +
-> +	return 0;
-> +}
-> +
-> +static struct platform_driver ingenic_dw_hdmi_driver = {
-> +	.probe  = ingenic_dw_hdmi_probe,
-> +	.remove = ingenic_dw_hdmi_remove,
-> +	.driver = {
-> +		.name = "dw-hdmi-ingenic",
-> +		.of_match_table = ingenic_dw_hdmi_dt_ids,
-> +	},
-> +};
-> +
-
-Nit - remove this blank line too.
-
-Cheers,
--Paul
-
-> +module_platform_driver(ingenic_dw_hdmi_driver);
-> +
-> +MODULE_DESCRIPTION("JZ4780 Specific DW-HDMI Driver Extension");
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_ALIAS("platform:dwhdmi-ingenic");
-> --
-> 2.33.0
-> 
-
+> > 
+> > However, the hanging stops occurring, so I'll be posting a patch to
+> > update the GPCv2 code.  I can reduce sone device tree duplication, and
+> > the G2 throws some splat, but that will be a separate discussion.
+> > 
+> > I can also run v4l2-compliance on the H1 node, and it responds without hanging.
+> > 
+> > root@beacon-imx8mm-kit:~# v4l2-compliance -d2
+> > v4l2-compliance SHA: not available
+> > , 64 bits, 64-bit time_t
+> > 
+> > Compliance test for hantro-vpu device /dev/video2:
+> > 
+> > Driver Info:
+> > Driver name      : hantro-vpu
+> > Card type        : nxp,imx8mm-vpu-h1-enc
+> > Bus info         : platform: hantro-vpu
+> > Driver version   : 5.16.0
+> > Capabilities     : 0x84204000
+> > Video Memory-to-Memory Multiplanar
+> > Streaming
+> > Extended Pix Format
+> > Device Capabilities
+> > Device Caps      : 0x04204000
+> > Video Memory-to-Memory Multiplanar
+> > 
+> > < snip>
+> > 
+> > Total for hantro-vpu device /dev/video2: 46, Succeeded: 46, Failed: 0,
+> > Warnings: 0
+> > 
+> > I'll do an RFCv2 on the Hantro G1 and G2 with the H1 removed based on
+> > the updated GPCv2 code I'll be pushing shortly, but at least the
+> > system doesn't hang, so I'm fairly confident the power domains are
+> > working better now even if we cannot support the JPEG.
+> > 
+> > adam
+> > 
+> > > > 
+> > > > > > 
+> > > > > > > 
+> > > > > > > > host=192.168.1.146 port=5000
+> > > > > > > > viewed on client@192.168.1.146 via:
+> > > > > > > > $ gst-launch-1.0 udpsrc port=5000 ! application/x-rtp,payload=96 !
+> > > > > > > > rtpjpegdepay ! jpegdec ! autovideosink
+> > > > > > > > 
+> > > > > > > > For the G1/G2 patches in the series I don't see any Gstreamer
+> > > > > > > > 'v4l2.*dec' elements. Perhaps I need a newer version of Gstreamer.
+> > > > > > > 
+> > > > > > > Most likely yes, I suggest building gstreamer/ branch "main", GStreamer has now
+> > > > > > > a single repository. We are very close to 1.20, which will include stable API
+> > > > > > > support of H264, MPEG2 and VP8 decoding.
+> > > > > > > 
+> > > > > > 
+> > > > > > Ok, let me see if I can navigate through the build process and I'll
+> > > > > > get back to you.
+> > > > > > 
+> > > > > > Thanks,
+> > > > > > 
+> > > > > > Tim
+> > > > > > 
+> > > > > > > > 
+> > > > > > > > I have CSI capture and DSI display currently working on
+> > > > > > > > imx8mm-venice-gw73xx-0x that I can play with. The CSI sensor only
+> > > > > > > > supports RAW8/RAW10 (and gstreamer currently only supports RAW8) and I
+> > > > > > > > can't efficiently convert to something the JPEG encoder likes without
+> > > > > > > > bayer2rgbneon (a libneon version).
+> > > > > > > > 
+> > > > > > > > I see from the IMX8MMRM that the 2D GPU supports scaling etc with a
+> > > > > > > > wide range of data formats but I'm not sure how to tap into this as
+> > > > > > > > that hardware is managed by the vivante driver. On the IMX6QDL there
+> > > > > > > > is a separate IPU block that Philipp Zabel wrote a nice mem2mem
+> > > > > > > > csc/scaler driver for but I don't see any equivalent currently for
+> > > > > > > > IMX8MM.
+> > > > > > > > 
+> > > > > > > > Best regards,
+> > > > > > > > 
+> > > > > > > > Tim
+> > > > > > > 
+> > > > 
 
