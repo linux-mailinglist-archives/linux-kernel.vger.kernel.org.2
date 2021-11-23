@@ -2,109 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B573D459EA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:53:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F92459EA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbhKWI4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 03:56:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231180AbhKWI4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 03:56:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7422760231;
-        Tue, 23 Nov 2021 08:53:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637657598;
-        bh=DzcMqbBiB5HTVk6xDoobtMz1OiIR8VRKJKmEiMEeEAU=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=F9Cok9x34uEr0GDnsGeC2OQvWfwCKAgvSS9C+IUdcJU6KSZNiBGqFzQg4x7cRZu7J
-         Z5o5UV695z/ibCQ0oI1tEqwwhWK5ELBeMjHaoV6X75vedHgCoYPJ5kkdByBHKQzpl7
-         fGFs2Mg7FGXhKwxkkwNULoSqLHCYdUrQ5y4xUagsi54A+vRHWCSYcXhEa4CMlwgBj4
-         qfsyeFoUIAaRX2fMVV4M1g1w2+2+hafPYYtXCHyY/WWUgFBDnRR1MptCRLBW6To3xJ
-         IcpVF4pl8AR4cOyXM9DljJwadGLzpAQ+ydPY8K1huavvOKZ+tajd1MTWZrrsfYWIo2
-         02Wlq4hWuuuAg==
-Date:   Tue, 23 Nov 2021 09:53:14 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Abel Vesa <abel.vesa@nxp.com>, Rob Herring <robh@kernel.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 01/12] dt-bindings: i2c: imx-lpi2c: Fix i.MX 8QM
- compatible matching
-Message-ID: <YZyr+pXtjVPwSJyL@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Abel Vesa <abel.vesa@nxp.com>, Rob Herring <robh@kernel.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-References: <1636566415-22750-1-git-send-email-abel.vesa@nxp.com>
- <1636566415-22750-2-git-send-email-abel.vesa@nxp.com>
- <YZyrxvzRUk3jPMnn@kunai>
+        id S233600AbhKWI4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 03:56:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231180AbhKWI4q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 03:56:46 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB05EC061714;
+        Tue, 23 Nov 2021 00:53:38 -0800 (PST)
+Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1mpRYV-0004bX-6r; Tue, 23 Nov 2021 09:53:35 +0100
+Message-ID: <56d7b2d8-1c35-0365-5e85-e40d242c15f5@leemhuis.info>
+Date:   Tue, 23 Nov 2021 09:53:33 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ai2j28B/WYaqQFoB"
-Content-Disposition: inline
-In-Reply-To: <YZyrxvzRUk3jPMnn@kunai>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Content-Language: en-BS
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     workflows@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>
+References: <cover.1637566224.git.linux@leemhuis.info>
+ <6b760115ecdd3687d4b82680b284f55a04f3ad90.1637566224.git.linux@leemhuis.info>
+ <20211122112916.498810bb@gandalf.local.home>
+ <aa158444-4319-a019-1031-095a69105447@leemhuis.info>
+ <20211122152426.7c2b3ab4@gandalf.local.home>
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Subject: Re: [RFC PATCH v1 1/1] docs: add the new commit-msg tags 'Reported:'
+ and 'Reviewed:'
+In-Reply-To: <20211122152426.7c2b3ab4@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1637657618;ada75402;
+X-HE-SMSGID: 1mpRYV-0004bX-6r
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---ai2j28B/WYaqQFoB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 23, 2021 at 09:52:22AM +0100, Wolfram Sang wrote:
-> On Wed, Nov 10, 2021 at 07:46:44PM +0200, Abel Vesa wrote:
-> > The i.MX 8QM DTS files use two compatibles, so update the binding to fix
-> > dtbs_check warnings like:
-> >=20
-> >   arch/arm64/boot/dts/freescale/imx8qm-mek.dt.yaml: i2c@5a800000:
-> >     compatible: ['fsl,imx8qm-lpi2c', 'fsl,imx7ulp-lpi2c'] is too long
-> >=20
-> > Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
->=20
-> Applied to for-next, thanks!
+On 22.11.21 21:24, Steven Rostedt wrote:
+> On Mon, 22 Nov 2021 19:50:35 +0100
+> Thorsten Leemhuis <linux@leemhuis.info> wrote:
+> 
+>>> That said, I would like a way to have versions show a link to the last
+>>> version that was reviewed.
+>>>
+>>> v1: has no tags
+>>>
+>>> v2: has a Reviewed: tag to v1.
+>>>
+>>> v3: has a Reviewed: tag to v2
+>>>
+>>> [...]
+>>>
+>>> Then the final commit could have a "Link" or "Reviewed" tag to v3, even
+>>> though there may not be any reviews to v3, but v3 has the link to v2, and
+>>> v2 has the link to v1, etc.  
+>>
+>> Is that really worth it? Isn't it sufficient if the commit links to the
+>> last public review posting, as that already should link to all earlier
+>> review postings. Sure, not everybody is doing this right now, but maybe
+>> just educating people to do so is better than creating something new.
+> 
+> Isn't "as that already should link to all earlier review postings" what I'm
+> suggesting above? I haven't seen many people do that yet.
 
-Sorry, I meant:
+Yeah, you are right, sorry, my perception was wrong.
 
-Applied to for-current, thanks!
+Any maybe I got your suggestion wrong, but what you suggested sounded to
+me like "each patch should link to the previous submission of the
+patch". I just wonder if it's way easier and sufficient if just the
+cover letter links to the previous or all earlier submissions of the
+series in its revision history (sorry, I didn't should have made this
+more obvious in my earlier mail); for patches without a cover letter
+this obligation obviously would shift to the patch.
 
+IOW: I have something in mind like in this submission:
+https://lore.kernel.org/lkml/cover.1637252610.git.sander@svanheule.net/
 
+Only the cover letter links to the earlier version, not the individual
+patches.
 
---ai2j28B/WYaqQFoB
-Content-Type: application/pgp-signature; name="signature.asc"
+But I have no strong feeling here, I don't care much about this.
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmGcq/oACgkQFA3kzBSg
-KbaAshAApPthEVHYUaFUOKk69OzgO5mHmqXphIQWp44fhw39SRRl8B980bcT/HTi
-E4FmUcnAU2kC5CoCVrY2ylkddNxgjjXAuoYQM+Adm9/mnizJOD2ovySuBnMlNdcQ
-7aVMz3kfjjjjupqbRlHuFSGgy90RBFpnZog/cpTdBpHhMqho13M9YOTVxOqKu/gm
-1h0BQ+VaMSmmpWEcrvByGUkcry7OQEyXYhOt67Z11QRDgcGHocc4T3QxzM7UeR0t
-+B7ybtAqRMDI2HsGOe3zLvO2FYnOIY3KO5tX/I7QVYu2qx90xzlqjj+s4zrWWqs8
-uBo84hQXKU9uncwkbolx2dgcjE/aJqMi2MRRIjelpQAeZ2wHTFgYMvp803dtu7V+
-u7Zk9KIHvCSuQmshdiXlw5SMbts4dHI+nBkOmLt5OKudzj303sbc+WIS2I7u4Psk
-dH77wN9VgGMuAoAGZeueb1BAgB3Uo3BUTYR2BGNQSv7y4N/sedS41KcoOE+73Pvc
-7oqcq0dte+JGeXoVpONxl0z8GmPeQhInb6q3+mdf7Yx3P5e46yFUHITa1mM8I4cJ
-PZamtfkfOUA1moZn2ynMyt6CUCxS/FLOIPr2ou3Puyb4AP0UoIGiqAzQJA+rhRCz
-CHAHUq2Wfz3ZGVR3u1T5Gbe4Ne6Xq4eEGVHHym/5Ret9SCY8vPo=
-=7NgS
------END PGP SIGNATURE-----
-
---ai2j28B/WYaqQFoB--
+Ciao, Thorsten
