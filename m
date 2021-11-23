@@ -2,158 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0FD459B44
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 05:33:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0EF459B4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 05:48:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232196AbhKWEge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 23:36:34 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:34336 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhKWEgd (ORCPT
+        id S231181AbhKWEvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 23:51:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229553AbhKWEvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 23:36:33 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Mon, 22 Nov 2021 23:51:03 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5883AC061574;
+        Mon, 22 Nov 2021 20:47:56 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 59A1121910;
-        Tue, 23 Nov 2021 04:33:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1637642005; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dNhro/fY/bHRbePhmc84FJKb9ZECaq8qjIDmklZKfc4=;
-        b=16K3rMJGAtPhVyNf+ZvZHuScKNDVPuTASppchF5lsQ4LfiYLir6awDZS37UQvkXsW7WCHB
-        2cqsonrY0uE6mes+zhiAU3ALR1Onh+QLnHjFFrmv8Yz6DAvDihNkzzw3Lue8EGYexN4j/X
-        4zshssnJjqrXwvKMzfNzesw8US/QuFs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1637642005;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dNhro/fY/bHRbePhmc84FJKb9ZECaq8qjIDmklZKfc4=;
-        b=OztC3REAmg1hzgcwLtUcXxYRZr2Ri/rgQx+uDUf36KHixxA6CGgEEzIVHiZKdPrVXB7c7Y
-        PrNK3yRVgXmm7qAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C574F134CE;
-        Tue, 23 Nov 2021 04:33:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ZdeGHxJvnGHzKgAAMHmgww
-        (envelope-from <neilb@suse.de>); Tue, 23 Nov 2021 04:33:22 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 3568D423AD;
+        Tue, 23 Nov 2021 04:47:51 +0000 (UTC)
+Subject: Re: [PATCH v3 3/4] arm64: dts: apple: t8103: Add i2c nodes
+To:     Janne Grunau <j@jannau.net>, Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211122225807.8105-1-j@jannau.net>
+ <20211122225807.8105-4-j@jannau.net>
+From:   Hector Martin <marcan@marcan.st>
+Message-ID: <c0acaf72-cd86-4e92-63e5-3f903c025943@marcan.st>
+Date:   Tue, 23 Nov 2021 13:47:50 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Michal Hocko" <mhocko@suse.com>
-Cc:     "Andrew Morton" <akpm@linux-foundation.org>,
-        "Thierry Reding" <thierry.reding@gmail.com>,
-        "Matthew Wilcox" <willy@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, "Mel Gorman" <mgorman@suse.de>,
-        "Vlastimil Babka" <vbabka@suse.cz>
-Subject: Re: [PATCH] MM: discard __GFP_ATOMIC
-In-reply-to: <YZvItUOgTgD11etC@dhcp22.suse.cz>
-References: <163712397076.13692.4727608274002939094@noble.neil.brown.name>,
- <YZvItUOgTgD11etC@dhcp22.suse.cz>
-Date:   Tue, 23 Nov 2021 15:33:19 +1100
-Message-id: <163764199967.7248.2528204111227925210@noble.neil.brown.name>
+In-Reply-To: <20211122225807.8105-4-j@jannau.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Nov 2021, Michal Hocko wrote:
-> On Wed 17-11-21 15:39:30, Neil Brown wrote:
-> > 
-> > __GFP_ATOMIC serves little purpose.
-> > It's main effect is to set ALLOC_HARDER which adds a few little boosts to
-> > increase the chance of an allocation succeeding, one of which is to
-> > lower the water-mark at which it will succeed.
-> > 
-> > It is *always* paired with __GFP_HIGH which sets ALLOC_HIGH which also
-> > adjusts this watermark.  It is probable that other users of __GFP_HIGH
-> > should benefit from the other little bonuses that __GFP_ATOMIC gets.
+On 23/11/2021 07.58, Janne Grunau wrote:
+> Apple M1 has at least 5 i2c controllers. i2c0, i2c1 and i2c3 are used
+> on all M1 Mac devices. The 2020 Mac Mini uses i2c2 and the 13-inch
+> MacBook Pro uses i2c2 and i2c4.
 > 
-> While I like to see __GFP_ATOMIC going away I am not really sure about
-> this particular part. We have 3 ways to get to memory reserves. One of
-> thme is directly controlable by __GFP_HIGH and two are internal to the
-> allocator to handle different situations - ALLOC_OOM is to help the oom
-> victim to make a fwd progress and ALLOC_HARDER should be for contexts
-> which cannot rely on the memory reclaim to continue.
-
-ALLOC_OOM certainly makes sense.
-
+> Signed-off-by: Janne Grunau <j@jannau.net>
+> ---
+>   arch/arm64/boot/dts/apple/t8103-j274.dts |  4 ++
+>   arch/arm64/boot/dts/apple/t8103-j293.dts |  8 +++
+>   arch/arm64/boot/dts/apple/t8103.dtsi     | 92 ++++++++++++++++++++++++
+>   3 files changed, 104 insertions(+)
 > 
-> What is the point of having ALLOC_HIGH and ALLOC_HARDER if you just
-> add both of them for __GFP_HIGH? I think you should be instead really
-> get back to pre d0164adc89f6b and allow ALLOC_HARDER for requests which
-> have neither of the reclaim allowed. That would require tweaking
-> GFP_ATOMIC as well I suspect and drop __GFP_KSWAPD_RECLAIM. Or do
-> something else.
 
-NONONONO.  Tying ALLOC_HARDER to "no reclaim" is a mistake.  From the
-caller's perspective they are very different statements, which might
-sometimes go together (and GFP_ATOMIC is exactly where they go
-together).
+> diff --git a/arch/arm64/boot/dts/apple/t8103.dtsi b/arch/arm64/boot/dts/apple/t8103.dtsi
+> index c320c8baeb41..15fec48f943a 100644
+> --- a/arch/arm64/boot/dts/apple/t8103.dtsi
+> +++ b/arch/arm64/boot/dts/apple/t8103.dtsi
+> @@ -126,6 +126,73 @@ serial0: serial@235200000 {
+>   			status = "disabled";
+>   		};
+>   
+> +		i2c0: i2c@235010000 {
+> +			compatible = "apple,t8103-i2c", "apple,i2c";
+> +			reg = <0x2 0x35010000 0x0 0x4000>;
+> +			clocks = <&clk24>;
+[...]
 
-"no reclaim" is a question "am I willing to pay the price of performing
-reclaim", and there might be various different reasons for choosing not
-to.
+Please put these before serial0; I want to keep the nodes sorted by address.
 
-"ALLOC_HARDER" is a question of "can I justify imposing on other threads
-by taking memory that they might want".  Again there may be different
-reasons, but they will not always align with the first set.
+With that fixed:
 
-With my patch there is still a difference between ALLOC_HIGH and
-ALLOC_HARDER, but not much.
-__GFP_HIGH combined with __GFP_NOMEMALLOC - which could be seen as "high
-priority, but not too high" delivers ALLOC_HIGH without ALLOC_HARDER.
-It may not be a useful distinction, but it seems to preserve most of
-what I didn't want to change.
+Acked-by: Hector Martin <marcan@marcan.st>
 
->  
-> > __GFP_ATOMIC also gives a warning if used with __GFP_DIRECT_RECLAIM.
-> > There is little point to this.  We already get a might_sleep() warning
-> > if __GFP_DIRECT_RECLAIM is set.
-> 
-> I believe the point of the warning was to stop any abuse of an
-> additional memory reserves for context which can reclaim and to spare
-> those to interrupt handlers - which usually use GFP_ATOMIC. A lack of
-> any reports suggests this hasn't happened and the warning can be
-> dropped. Would be worth a patch on its own with this explanation.
->  
-> > __GFP_ATOMIC allows the "watermark_boost" to be side-stepped.  It is
-> > probable that testing ALLOC_HARDER is a better fit here.
-> 
-> This has been introduced by f80b08fc44536 but I have to say that I
-> haven't understood why this couldn't check for __GFP_DIRECT_RECLAIM
-> or one ALLOC_$FOO boosters rather than __GFP_ATOMIC. Again something for
-> a separate patch.
-
-Yes - the commit description contrasts "atomic" with "sleepable"
-allocations.  Given that, __GFP_DIRECT_RECLAIM would make make sense.
-
->  
-> > __GFP_ATOMIC is used by tegra-smmu.c to check if the allocation might
-> > sleep.  This should test __GFP_DIRECT_RECLAIM instead.
-> 
-> Willy has already proposed a better alternative.
-
-I'm happy to resend the patch with this change (despite it seeming like
-a bandaid on a blowhole).
-
-Thanks for the thorough review!!
-
-NeilBrown
-
-> 
-> Thanks!
-> -- 
-> Michal Hocko
-> SUSE Labs
-> 
-> 
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
