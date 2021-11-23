@@ -2,113 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B8B459988
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:10:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4501945998A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 02:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231906AbhKWBN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 20:13:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:26537 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230201AbhKWBN6 (ORCPT
+        id S231952AbhKWBPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 20:15:04 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:31896 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229982AbhKWBPC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 20:13:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637629851;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jSNsXUxZeHRu0Q3CAyM4RATVnGjbqHemvgQDThYQQv4=;
-        b=MNaq5YQ26iZCCSh5LAtShkvSKot1HrUkqMHoxzS+v+o92qNaOrIfpuR3VXRBI9/GfRVBUE
-        j0BW8BTtRF1FFMTZQ6b/yAWh3uGqlTRz9xe2fpoc4eKEq1CrFwAJVNH8S3rSQfMIF7bjYY
-        osXEUiYBI3YZ4fRV+eug44qb1vIVEVA=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-387-ioY1_n94OxWwMsEnW3FLOQ-1; Mon, 22 Nov 2021 20:10:50 -0500
-X-MC-Unique: ioY1_n94OxWwMsEnW3FLOQ-1
-Received: by mail-pf1-f197.google.com with SMTP id c21-20020a62e815000000b004a29ebf0aa7so10798411pfi.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 17:10:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jSNsXUxZeHRu0Q3CAyM4RATVnGjbqHemvgQDThYQQv4=;
-        b=j/6QOmbn9E23ve7N7AQ4yoVYxJiSQ10vOdrhNqB/kwgHrFP9O5h+cJHVcq7l7JKOht
-         4L/Bqzm2Abfo/alcqiJjyEOkF6bDVbX/0c+q8fYGVXMcFqbjsXij3t92nX1yZ0TeIFGg
-         SZgRQUYrdNvAbKVg0rTF7bSdSwahCD1Bh4VOiTXaEVyQHwgJXZPx13n9Fvu8Gk2ag4Oo
-         dzdHhBJwTQcY4n75Ykx1ZWqZYnrSy7IHKkfvUojMtFrrcvWdtTmRKXi0NdJ3r2rlLJJ4
-         A9LaBXM8mEigD8jG717DsuTJD6OJD4MRSW+tWqHG0cXxSRm4xF4JqAEgJYt1uEKuuArA
-         rVeA==
-X-Gm-Message-State: AOAM533d/qCP2CDKvw2PpuO/AkOECDEtNqVIIR7AGpqUFcOOhauWKhk+
-        EDvbSQ4DCBCwHVc6ztn68uV6/ATJtKWojjdcPHKVpwdHtO/8AHMznzzMw1Moyzh+inhNVK9eq86
-        egzJim46T2hV5kuI+dlcqii/K
-X-Received: by 2002:a05:6a00:24cd:b0:49f:bf3f:c42c with SMTP id d13-20020a056a0024cd00b0049fbf3fc42cmr1258154pfv.54.1637629848929;
-        Mon, 22 Nov 2021 17:10:48 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyr+K6p+Ta9LDXXKzVi141QLJFFFwRJJs9XYA9zCFJq4acwgirIvACPF1I3gsGqa7J5/Al6vg==
-X-Received: by 2002:a05:6a00:24cd:b0:49f:bf3f:c42c with SMTP id d13-20020a056a0024cd00b0049fbf3fc42cmr1258124pfv.54.1637629848607;
-        Mon, 22 Nov 2021 17:10:48 -0800 (PST)
-Received: from xz-m1.local ([191.101.132.71])
-        by smtp.gmail.com with ESMTPSA id n1sm9671176pfj.193.2021.11.22.17.10.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 17:10:48 -0800 (PST)
-Date:   Tue, 23 Nov 2021 09:10:40 +0800
-From:   Peter Xu <peterx@redhat.com>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Paul E . McKenney" <paulmckrcu@fb.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Florian Schmidt <florian.schmidt@nutanix.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v7] mm: Add PM_THP_MAPPED to /proc/pid/pagemap
-Message-ID: <YZw/kIl0XYdlcIUR@xz-m1.local>
-References: <20211123000102.4052105-1-almasrymina@google.com>
+        Mon, 22 Nov 2021 20:15:02 -0500
+Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HymF93hfpzcbRR;
+        Tue, 23 Nov 2021 09:06:53 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 23 Nov 2021 09:11:52 +0800
+Subject: Re: [PATCH -next V2 1/2] sata_fsl: fix UAF in sata_fsl_port_stop when
+ rmmod sata_fsl
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        <damien.lemoal@opensource.wdc.com>, <axboe@kernel.dk>,
+        <tj@kernel.org>, <linux-ide@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <yebin10@huawei.com>, <yukuai3@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>
+References: <20211120033420.3762681-1-libaokun1@huawei.com>
+ <20211120033420.3762681-2-libaokun1@huawei.com>
+ <4216b1e4-5649-071a-84fc-2440aba9d5a0@gmail.com>
+ <4d2712d3-00a1-6220-0a86-8580b2f89d03@huawei.com>
+ <e9d66318-3b5d-f737-ec7a-d819c4aa5b6b@gmail.com>
+From:   "libaokun (A)" <libaokun1@huawei.com>
+Message-ID: <7d7bf674-5268-98bc-ba70-be97cce396d5@huawei.com>
+Date:   Tue, 23 Nov 2021 09:11:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211123000102.4052105-1-almasrymina@google.com>
+In-Reply-To: <e9d66318-3b5d-f737-ec7a-d819c4aa5b6b@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 04:01:02PM -0800, Mina Almasry wrote:
-> Add PM_THP_MAPPED MAPPING to allow userspace to detect whether a given virt
-> address is currently mapped by a transparent huge page or not.  Example
-> use case is a process requesting THPs from the kernel (via a huge tmpfs
-> mount for example), for a performance critical region of memory.  The
-> userspace may want to query whether the kernel is actually backing this
-> memory by hugepages or not.
-> 
-> PM_THP_MAPPED bit is set if the virt address is mapped at the PMD
-> level and the underlying page is a transparent huge page.
-> 
-> A few options were considered:
-> 1. Add /proc/pid/pageflags that exports the same info as
->    /proc/kpageflags.  This is not appropriate because many kpageflags are
->    inappropriate to expose to userspace processes.
-> 2. Simply get this info from the existing /proc/pid/smaps interface.
->    There are a couple of issues with that:
->    1. /proc/pid/smaps output is human readable and unfriendly to
->       programatically parse.
->    2. /proc/pid/smaps is slow because it must read the whole memory range
->       rather than a small range we care about.  The cost of reading
->       /proc/pid/smaps into userspace buffers is about ~800us per call,
->       and this doesn't include parsing the output to get the information
->       you need. The cost of querying 1 virt address in /proc/pid/pagemaps
->       however is around 5-7us.
-> 
-> Tested manually by adding logging into transhuge-stress, and by
-> allocating THP and querying the PM_THP_MAPPED flag at those
-> virtual addresses.
-> 
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
+在 2021/11/23 2:58, Sergei Shtylyov 写道:
+> Hello!
+>
+> On 22.11.2021 5:03, libaokun (A) wrote:
+>
+>>>> When the `rmmod sata_fsl.ko` command is executed in the PPC64 
+>>>> GNU/Linux,
+>>>> a bug is reported:
+>>>> ==================================================================
+>>>>   BUG: Unable to handle kernel data access on read at 
+>>>> 0x80000800805b502c
+>>>>   Oops: Kernel access of bad area, sig: 11 [#1]
+>>>>   NIP [c0000000000388a4] .ioread32+0x4/0x20
+>>>>   LR [80000000000c6034] .sata_fsl_port_stop+0x44/0xe0 [sata_fsl]
+>>>>   Call Trace:
+>>>>    .free_irq+0x1c/0x4e0 (unreliable)
+>>>>    .ata_host_stop+0x74/0xd0 [libata]
+>>>>    .release_nodes+0x330/0x3f0
+>>>>    .device_release_driver_internal+0x178/0x2c0
+>>>>    .driver_detach+0x64/0xd0
+>>>>    .bus_remove_driver+0x70/0xf0
+>>>>    .driver_unregister+0x38/0x80
+>>>>    .platform_driver_unregister+0x14/0x30
+>>>>    .fsl_sata_driver_exit+0x18/0xa20 [sata_fsl]
+>>>>    .__se_sys_delete_module+0x1ec/0x2d0
+>>>>    .system_call_exception+0xfc/0x1f0
+>>>>    system_call_common+0xf8/0x200
+>>>> ==================================================================
+>>>>
+>>>> The triggering of the BUG is shown in the following stack:
+>>>>
+>>>> driver_detach
+>>>>    device_release_driver_internal
+>>>>      __device_release_driver
+>>>>        drv->remove(dev) --> platform_drv_remove/platform_remove
+>>>>          drv->remove(dev) --> sata_fsl_remove
+>>>>            iounmap(host_priv->hcr_base); <---- unmap
+>>>>            kfree(host_priv); <---- free
+>>>>        devres_release_all
+>>>>          release_nodes
+>>>>            dr->node.release(dev, dr->data) --> ata_host_stop
+>>>>              ap->ops->port_stop(ap) --> sata_fsl_port_stop
+>>>>                  ioread32(hcr_base + HCONTROL) <---- UAF
+>>>>              host->ops->host_stop(host)
+>>>>
+>>>> The iounmap(host_priv->hcr_base) and kfree(host_priv) commands should
+>>>
+>>>   s/commands/functions/?
+>>
+>> OK! I'm going to modify this in V3.
+>>
+>>>
+>>>> not be executed in drv->remove. These commands should be executed in
+>>>> host_stop after port_stop. Therefore, we move these commands to the
+>>>> new function sata_fsl_host_stop and bind the new function to host_stop
+>>>> by referring to achi.
+>>>
+>>>   You mean AHCI? I don't see where you reference ahci (or achi)...
+>>
+>> Yes, it's AHCI, I'm sorry for a spelling error here..
+>>
+>> ahci_platform_ops in drivers/ata/libahci_platform.c
+>
+>  You should have (at least) written "the AHCI platform driver"...
+>
+> [...]
+>>>> diff --git a/drivers/ata/sata_fsl.c b/drivers/ata/sata_fsl.c
+>>>> index e5838b23c9e0..30759fd1c3a2 100644
+>>>> --- a/drivers/ata/sata_fsl.c
+>>>> +++ b/drivers/ata/sata_fsl.c
+>>>> @@ -1430,12 +1430,25 @@ static struct ata_port_operations 
+>>>> sata_fsl_ops = {
+>>>>       .pmp_detach = sata_fsl_pmp_detach,
+>>>>   };
+>>>>   +static void sata_fsl_host_stop(struct ata_host *host)
+>>>> +{
+>>>> +    struct sata_fsl_host_priv *host_priv = host->private_data;
+>>>> +
+>>>> +    iounmap(host_priv->hcr_base);
+>>>> +    kfree(host_priv);
+>>>> +}
+>>>> +
+>>>> +static struct ata_port_operations sata_fsl_platform_ops = {
+>>>> +    .inherits       = &sata_fsl_ops,
+>>>> +    .host_stop      = sata_fsl_host_stop,
+>>>
+>>>   Why not just add it to the initializer for sata_fsl_ops?
+>>
+>> This is the AHCI of the reference.
+>>
+>> Most ATA drivers add host_stop to to the  initializer for 
+>> xxx_platform_ops,
+>
+>   Most? Even if so, I guess they add it this way because they're in 
+> the separate modules with the ops they inherit -- in this case it's 
+> not so.
+>
+>> such as ahci_platform_ops, ahci_brcm_platform_ops, and ahci_imx_ops.
+>
+>   Note that these are all AHCI drivers, not just (more general) ATA.
+>
+>> It feels like this separates the port operation from the host operation,
+>
+>   Why separate them? The 'struct ata_port_operations' embraces many 
+> different aspects of ATA, the arguments do not always include a 
+> 'struct *ata_port' (I don't quite like that part in libata).
+>
+>> making the hierarchy of the code clearer.
+>
+>   Clear as mud. In your case, there's no separate modules in play, so 
+> blindly parroting what the AHCI platform drivers do gives you nothing 
+> but memory waste... :-(
+>
+>>> [...]
+>>>
+>>> MBR, Sergei
+>>> .
+>>
+>>
+>> Thank you very much for your advice.
+>
+>   You're welcome. :-)
+>
+>> If there's nothing else to modify, I'll send a patch V3.
+>
+>   Please use a single structure, it's already large enough to have 2 
+> of them in the same module for no good reason.
+>
+>> -- 
+>> With Best Regards,
+>> Baokun Li
+>
+> MBR, Sergei
+> .
 
-Acked-by: Peter Xu <peterx@redhat.com>
+
+Thank you very much for your advice.
+
+I'm about to send a patch V4 with the changes suggested by you.
 
 -- 
-Peter Xu
+With Best Regards,
+Baokun Li
 
