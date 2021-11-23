@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A480D45A1F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E637D45A1FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:53:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236580AbhKWLzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 06:55:02 -0500
-Received: from mga02.intel.com ([134.134.136.20]:59530 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229955AbhKWLzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 06:55:00 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="222230036"
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="222230036"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 03:51:51 -0800
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="650044232"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 03:51:49 -0800
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 80827201E1;
-        Tue, 23 Nov 2021 13:51:47 +0200 (EET)
-Date:   Tue, 23 Nov 2021 13:51:47 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Eugen.Hristev@microchip.com
-Cc:     leonl@leopardimaging.com, linux-media@vger.kernel.org,
-        skomatineni@nvidia.com, luca@lucaceresoli.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] media: i2c: imx274: simplify probe function by
- adding local variable dev
-Message-ID: <YZzV00rh/IX7fW5s@paasikivi.fi.intel.com>
-References: <20211123111521.593863-1-eugen.hristev@microchip.com>
- <YZzPj4ILWyp4Ouz9@paasikivi.fi.intel.com>
- <4ca5590d-b872-3720-d8f8-ec95a090c689@microchip.com>
+        id S236296AbhKWL4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 06:56:54 -0500
+Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:61048 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235333AbhKWL4x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 06:56:53 -0500
+Received: from tomoyo.flets-east.jp ([114.149.34.46])
+        by smtp.orange.fr with ESMTPA
+        id pUMhmyepO2lVYpUMnmei4h; Tue, 23 Nov 2021 12:53:44 +0100
+X-ME-Helo: tomoyo.flets-east.jp
+X-ME-Auth: MDU0YmViZGZmMDIzYiBlMiM2NTczNTRjNWZkZTMwOGRiOGQ4ODf3NWI1ZTMyMzdiODlhOQ==
+X-ME-Date: Tue, 23 Nov 2021 12:53:44 +0100
+X-ME-IP: 114.149.34.46
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v1 0/2] fix statistics for CAN RTR and Error frames
+Date:   Tue, 23 Nov 2021 20:53:31 +0900
+Message-Id: <20211123115333.624335-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4ca5590d-b872-3720-d8f8-ec95a090c689@microchip.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 11:35:33AM +0000, Eugen.Hristev@microchip.com wrote:
-> On 11/23/21 1:25 PM, Sakari Ailus wrote:
-> 
-> > Hi Eugen,
-> > 
-> > On Tue, Nov 23, 2021 at 01:15:20PM +0200, Eugen Hristev wrote:
-> >> Simplify probe function by adding a local variable dev instead of using
-> >> &client->dev all the time.
-> >>
-> >> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-> > 
-> > It's not really wrong to do this, but is it useful?
-> > 
-> > You can't even unwrap a single line, the lines are just made a little bit
-> > shorter.
-> 
-> Hi,
-> 
-> I think there are a few (18 +, 21 -) ... but the idea was to make the 
+There are two common errors which are made when reporting the CAN RX
+statistics:
 
-Indeed you're right.
+  1. Incrementing the "normal" RX stats when receiving an Error
+  frame. Error frames is an abstraction of Socket CAN and does not
+  exist on the wire.
 
-> probe function a little bit more easy to read.
-> Up to you if you want to take this patch.
+  2. Counting the length of the Remote Transmission Frames (RTR). The
+  length of an RTR frame is the length of the requested frame not the
+  actual payload. In reality the payload of an RTR frame is always 0
+  bytes long.
 
-I'll take it.
+This patch series fix those two issues for all CAN drivers.
+
+Vincent Mailhol (2):
+  can: do not increase rx statistics when receiving CAN error frames
+  can: do not increase rx_bytes statistics for RTR frames
+
+ drivers/net/can/at91_can.c                      |  9 ++-------
+ drivers/net/can/c_can/c_can_main.c              |  8 ++------
+ drivers/net/can/cc770/cc770.c                   |  6 ++----
+ drivers/net/can/dev/dev.c                       |  4 ----
+ drivers/net/can/dev/rx-offload.c                |  7 +++++--
+ drivers/net/can/grcan.c                         |  3 ++-
+ drivers/net/can/ifi_canfd/ifi_canfd.c           |  8 ++------
+ drivers/net/can/janz-ican3.c                    |  3 ++-
+ drivers/net/can/kvaser_pciefd.c                 |  8 ++------
+ drivers/net/can/m_can/m_can.c                   | 10 ++--------
+ drivers/net/can/mscan/mscan.c                   | 10 ++++++----
+ drivers/net/can/pch_can.c                       |  6 ++----
+ drivers/net/can/peak_canfd/peak_canfd.c         |  7 ++-----
+ drivers/net/can/rcar/rcar_can.c                 |  9 +++------
+ drivers/net/can/rcar/rcar_canfd.c               |  7 ++-----
+ drivers/net/can/sja1000/sja1000.c               |  5 ++---
+ drivers/net/can/slcan.c                         |  3 ++-
+ drivers/net/can/spi/hi311x.c                    |  3 ++-
+ drivers/net/can/spi/mcp251x.c                   |  3 ++-
+ drivers/net/can/sun4i_can.c                     | 10 ++++------
+ drivers/net/can/usb/ems_usb.c                   |  5 ++---
+ drivers/net/can/usb/esd_usb2.c                  |  5 ++---
+ drivers/net/can/usb/etas_es58x/es58x_core.c     |  7 -------
+ .../net/can/usb/kvaser_usb/kvaser_usb_core.c    |  2 --
+ .../net/can/usb/kvaser_usb/kvaser_usb_hydra.c   | 14 ++++----------
+ .../net/can/usb/kvaser_usb/kvaser_usb_leaf.c    |  7 ++-----
+ drivers/net/can/usb/mcba_usb.c                  |  3 ++-
+ drivers/net/can/usb/peak_usb/pcan_usb.c         |  5 ++---
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c      | 11 ++++-------
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.c     | 11 +++++------
+ drivers/net/can/usb/ucan.c                      |  7 +++++--
+ drivers/net/can/usb/usb_8dev.c                  | 10 ++++------
+ drivers/net/can/xilinx_can.c                    | 17 ++++++-----------
+ 33 files changed, 86 insertions(+), 147 deletions(-)
 
 -- 
-Sakari Ailus
+2.32.0
+
