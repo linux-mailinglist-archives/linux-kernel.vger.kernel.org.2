@@ -2,93 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F39245A1F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:52:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C116045A1EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhKWLzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 06:55:16 -0500
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:37470 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236587AbhKWLxS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 06:53:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637668210; x=1669204210;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=7/gMbCtAXli/isQMOGRh4m5xxrb/6LKlexYvHRPVb0Q=;
-  b=E+B5c9WRLKkmgQB9gG32Wg7S5QoELUpSnFW5Sz7Z/yWTAlIZ1FaSGqEh
-   wG+e5V9T/VXybe/A9J8XaRyGRdoeFpU9T31eah5Sjtc7/ZnepxI6WPDOG
-   u5fDt9Ay2k4pEgRwRgjvP8Jhe2rgJbdf8v54sEKouj17jPT5WiENVuRT4
-   Y=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 23 Nov 2021 03:50:10 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 03:50:10 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Tue, 23 Nov 2021 03:50:10 -0800
-Received: from c-skakit-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Tue, 23 Nov 2021 03:50:06 -0800
-From:   Satya Priya <quic_c_skakit@quicinc.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        David Collins <collinsd@codeaurora.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <swboyd@chromium.org>,
-        <mka@chromium.org>, Satya Priya <quic_c_skakit@quicinc.com>
-Subject: [PATCH 3/3] arm64: dts: qcom: sc7280: Add pmg1110 regulators for sc7280-crd
-Date:   Tue, 23 Nov 2021 17:19:27 +0530
-Message-ID: <1637668167-31325-4-git-send-email-quic_c_skakit@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1637668167-31325-1-git-send-email-quic_c_skakit@quicinc.com>
-References: <1637668167-31325-1-git-send-email-quic_c_skakit@quicinc.com>
+        id S236527AbhKWLxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 06:53:50 -0500
+Received: from mga11.intel.com ([192.55.52.93]:13301 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234482AbhKWLxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 06:53:48 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="232498109"
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="232498109"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 03:50:40 -0800
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="474739003"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 03:50:38 -0800
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 1E415201E1;
+        Tue, 23 Nov 2021 13:50:36 +0200 (EET)
+Date:   Tue, 23 Nov 2021 13:50:36 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     Eugen Hristev <eugen.hristev@microchip.com>,
+        leonl@leopardimaging.com, linux-media@vger.kernel.org,
+        skomatineni@nvidia.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] media: i2c: imx274: simplify probe function by
+ adding local variable dev
+Message-ID: <YZzVjNVI3hySmC3o@paasikivi.fi.intel.com>
+References: <20211123111521.593863-1-eugen.hristev@microchip.com>
+ <YZzPj4ILWyp4Ouz9@paasikivi.fi.intel.com>
+ <4be771a0-9e77-64fd-031c-242dd4598996@lucaceresoli.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4be771a0-9e77-64fd-031c-242dd4598996@lucaceresoli.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pmg1110 pmic regulators support.
+Hi Luca,
 
-Signed-off-by: Satya Priya <quic_c_skakit@quicinc.com>
----
- arch/arm64/boot/dts/qcom/sc7280-crd.dts | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+On Tue, Nov 23, 2021 at 12:35:42PM +0100, Luca Ceresoli wrote:
+> Hi,
+> 
+> On 23/11/21 12:25, Sakari Ailus wrote:
+> > Hi Eugen,
+> > 
+> > On Tue, Nov 23, 2021 at 01:15:20PM +0200, Eugen Hristev wrote:
+> >> Simplify probe function by adding a local variable dev instead of using
+> >> &client->dev all the time.
+> >>
+> >> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+> > 
+> > It's not really wrong to do this, but is it useful?
+> It is of course a matter of personal taste, but I also prefer a short
+> name in cases such as this where the same member is accessed a lot of
+> times. To me it makes code simpler to read and even to write.
+> 
+> > You can't even unwrap a single line, the lines are just made a little bit
+> > shorter.
+> 
+> Let's be fair, he did unwrap 4. :)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-crd.dts b/arch/arm64/boot/dts/qcom/sc7280-crd.dts
-index bef3037..cb0aaf8 100644
---- a/arch/arm64/boot/dts/qcom/sc7280-crd.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7280-crd.dts
-@@ -23,6 +23,18 @@
- 	};
- };
- 
-+&apps_rsc {
-+	pmg1110-regulators {
-+		compatible = "qcom,pmg1110-rpmh-regulators";
-+		qcom,pmic-id = "k";
-+
-+		vreg_s1k_1p0: smps1 {
-+			regulator-min-microvolt = <1010000>;
-+			regulator-max-microvolt = <1170000>;
-+		};
-+	};
-+};
-+
- ap_tp_i2c: &i2c0 {
- 	status = "okay";
- 	clock-frequency = <400000>;
+Ah, yes, you're right.
+
+But at least one could have been wrapped without the change. :-)
+
+> 
+> As said, it is a matter of taste so I'll be OK it this patch is dropped.
+> But since I like it and it looks correct:
+> 
+> Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
+
 -- 
-2.7.4
-
+Sakari Ailus
