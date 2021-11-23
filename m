@@ -2,129 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DBC145A808
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:35:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5989F45A803
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:35:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238991AbhKWQiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 11:38:14 -0500
-Received: from mail-io1-f45.google.com ([209.85.166.45]:39909 "EHLO
-        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238281AbhKWQiI (ORCPT
+        id S238133AbhKWQiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 11:38:04 -0500
+Received: from mail-io1-f43.google.com ([209.85.166.43]:43922 "EHLO
+        mail-io1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234894AbhKWQiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 11:38:08 -0500
-Received: by mail-io1-f45.google.com with SMTP id c3so28780920iob.6;
-        Tue, 23 Nov 2021 08:35:00 -0800 (PST)
+        Tue, 23 Nov 2021 11:38:02 -0500
+Received: by mail-io1-f43.google.com with SMTP id z26so28656739iod.10;
+        Tue, 23 Nov 2021 08:34:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=yYYt+ix5GvwhmluknOGd0aBPI6f93zM1qLdWjhXIntY=;
-        b=0mOzVlwBgGg5S0Ee7t0j8ElImOynp3dxscLCkYbbo2nte3vK4193gixH8ATLPH1tSL
-         SJ+Si0ZuyfLetGA859wCQP6ww+IobZV2fmqPU/IDcHUfp1MBfXP9Iyn6nHbzy3JP3Efm
-         CCboaWFT9gYTD0CDzamjGJMNs+ROdONNjySOD82/9+sRINMIBs58qOCjAeKpcO3JKNUB
-         CuE40/YVbr5m4hoOjL1+Mm+WVHybtqLCyZic3za/DsiAGXJB8f86fBJR3WTWXqhdoYjA
-         aK6m7lFJVoOe9XRuUabe2swl2/Bv/DI8Y3i3BTOuxCJf3xx+sKeJT11NZJLyc9PN3LQi
-         boOA==
-X-Gm-Message-State: AOAM5305LT956OkAdLMB2Wtb3jxCSEvWZrT7QFyju7xCO5qRqz/DTPev
-        VFstg3RkcFo1MIEx0ZKpWw==
-X-Google-Smtp-Source: ABdhPJxqMjr96NKnejyHd4tiNPOz0rfN4GaOlVHtNeEYUn525+gahVmalu8W9G5viA/1mp1bE0/S+w==
-X-Received: by 2002:a05:6638:1311:: with SMTP id r17mr7758029jad.69.1637685299874;
-        Tue, 23 Nov 2021 08:34:59 -0800 (PST)
+        bh=tTDqJqEpn3lJVr9hvHIdnLnM0QZTa6cWxZTxlXqyveI=;
+        b=k7LHsX6aQ2eCWCZZfFAgueDjw/g6pwpeBHA0RRogSlpBJYnjXpGZlU1we7qdN3PQ5+
+         MBm5TLreto7pzWemVA8GD6F31MGI6RKGLZo6qkg163Fp7mOrG5CxmLiKpvoRvFBMq9tE
+         zb+ODZGOV0zyLIAXTCNdiqyLibXZjIAfva1WSGL2k+FD+kWg3qelwdhRBEv7xG9/3Afu
+         rcHit2zaxdyDK0/7anSww/ug+ThmCuhqDL47cP7BcBWR12SsTa22nfKZ+azSsA7e9Hc7
+         PHL8JBtUz8ZbHyIcCaqkGwNwqwot/I/IfzjMfoDCqH4YWJ6lbM0XVjz45XnPBT/c677C
+         nh3A==
+X-Gm-Message-State: AOAM530/0jkfJZxj9uS44+dDy5L0j6nEVrrDy8haCJjp8sdX8gXhZScT
+        KdCLA8o1sYW7KFU01giRkA==
+X-Google-Smtp-Source: ABdhPJzpKxUJnoCa0cAVi7P8tqEKN9cFnfuz6QPVzyOgjxBNvvRZQNUJPZWW6WEKX50SRbXuuf9lzg==
+X-Received: by 2002:a02:cc29:: with SMTP id o9mr7751315jap.116.1637685293477;
+        Tue, 23 Nov 2021 08:34:53 -0800 (PST)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id z6sm9764623ioq.35.2021.11.23.08.34.57
+        by smtp.gmail.com with ESMTPSA id o22sm8929890iow.52.2021.11.23.08.34.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 08:34:58 -0800 (PST)
-Received: (nullmailer pid 3442916 invoked by uid 1000);
+        Tue, 23 Nov 2021 08:34:52 -0800 (PST)
+Received: (nullmailer pid 3442912 invoked by uid 1000);
         Tue, 23 Nov 2021 16:34:29 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>
-In-Reply-To: <20211123134425.3875656-1-michael@walle.cc>
-References: <20211123134425.3875656-1-michael@walle.cc>
-Subject: Re: [RFC PATCH] dt-bindings: nvmem: add transformation support
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     tfiga@chromium.org, - <devicetree-spec@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Maxime Ripard <maxime@cerno.tech>,
+        Rob Herring <robh+dt@kernel.org>, senozhatsky@chromium.org,
+        iommu@lists.linux-foundation.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+In-Reply-To: <20211123112104.3530135-3-hsinyi@chromium.org>
+References: <20211123112104.3530135-1-hsinyi@chromium.org> <20211123112104.3530135-3-hsinyi@chromium.org>
+Subject: Re: [PATCH 2/3] dt-bindings: Add io-tlb-segsize property for restricted-dma-pool
 Date:   Tue, 23 Nov 2021 09:34:29 -0700
-Message-Id: <1637685269.676888.3442915.nullmailer@robh.at.kernel.org>
+Message-Id: <1637685269.659918.3442911.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Nov 2021 14:44:25 +0100, Michael Walle wrote:
-> This is my second attempt to solve the use case where there is only the
-> base MAC address stored in an EEPROM or similar storage provider. This
-> is the case for the Kontron sl28 board and multiple openwrt supported
-> boards.
+On Tue, 23 Nov 2021 19:21:03 +0800, Hsin-Yi Wang wrote:
+> Add a io-tlb-segsize property that each restricted-dma-pool can set its
+> own io_tlb_segsize since some use cases require slabs larger than default
+> value (128).
 > 
-> The first proposal [1] didn't find much appreciation and there wasn't
-> any reply to my question or new proposal [2]. So here we are with my new
-> proposal, that is more flexible and doesn't fix the ethernet mac only.
-> This is just an RFC for the device tree representation for now to see if
-> this is the correct way to tackle this.
-> 
-> I'm also aware of the latest post process hook support [3]. This doesn't
-> fix the base mac address issue, but I think it also doesn't solve the
-> case with swapped ethernet addresses in the general case. That hook will
-> involve the driver to do the swapping, but how would the driver know
-> if that swapping is actually required. Usually the interpretation of the
-> content is opaque to the driver, after all it is the user/board
-> manufacturer who does program the storage device. We might be lucky in
-> the imx-ocotp case because the IMX reference manual actually states
-> where and in which format the mac address is programmed.
-> 
-> Introduce a transformation property. This is intended to be just an
-> enumeration of operations. If there will be a new operation, support for
-> it has to be added to the nvmem core.
-> 
-> A transformation might have multiple output values, like in the base mac
-> address case. It reads the mac address from the nvmem storage and
-> generates multiple individual addresses, i.e. on our board we reserve 8
-> consecutive addresses. These addresses then can be assigned to different
-> network interfaces. To make it possible to reference different values we
-> need to introduce an argument to the phandle. This additional argument
-> is then an index into a list of values.
-> 
-> Example:
->   mac_addresses: base-mac-address@10 {
->     #nvmem-cell-cells = <1>;
->     reg = <10 6>;
->     transformation = <NVMEM_T_ETH_OFFSET 0 1 7>;
->   }
-> 
->   &eth0 {
->     nvmem-cells = <&mac_addresses 0>;
->     nvmem-cell-names = "mac-address";
->   };
-> 
->   &eth1 {
->     nvmem-cells = <&mac_addresses 2>;
->     nvmem-cell-names = "mac-address";
->   };
-> 
-> The NVMEM_T_ETH_OFFSET transformation takes N additional (dt) cells and
-> will generate N values. In this example BASE_MAC+0, BASE_MAC+1, BASE_MAC+7.
-> An nvmem consumer can then reference the nvmem cell with an index. So eth0
-> will get BASE_MAC+0 and eth1 will get BASE_MAC+7.
-> 
-> This should be sufficient flexible for many different transformations
-> without having to touch the bindings except for adding documentation and
-> checks for new transformations.
-> 
-> I do have one question regarding "#nvmem-cell-cells" (aside from the
-> awkward naming): is it allowed to have that property optional if there
-> is no additional argument to the phandle?
-> 
-> [1] https://lore.kernel.org/all/20210414152657.12097-2-michael@walle.cc/
-> [2] https://lore.kernel.org/linux-devicetree/362f1c6a8b0ec191b285ac6a604500da@walle.cc/
-> [3] https://lore.kernel.org/lkml/20211013131957.30271-1-srinivas.kandagatla@linaro.org/
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 > ---
->  .../devicetree/bindings/nvmem/nvmem.yaml      | 29 +++++++++++++++++++
->  1 file changed, 29 insertions(+)
+>  .../bindings/reserved-memory/shared-dma-pool.yaml         | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -133,15 +75,26 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/nvmem/nvmem.example.dts:53.35-36 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:373: Documentation/devicetree/bindings/nvmem/nvmem.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1413: dt_binding_check] Error 2
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/reserved-memory/shared-dma-pool.yaml: properties:io-tlb-segsize:type: 'anyOf' conditional failed, one must be fixed:
+	'u32' is not one of ['array', 'boolean', 'integer', 'null', 'number', 'object', 'string']
+	'u32' is not of type 'array'
+	from schema $id: http://json-schema.org/draft-07/schema#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/reserved-memory/shared-dma-pool.yaml: properties:io-tlb-segsize:type: 'u32' is not one of ['boolean', 'object']
+	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/reserved-memory/shared-dma-pool.yaml: ignoring, error in schema: properties: io-tlb-segsize: type
+warning: no schema found in file: ./Documentation/devicetree/bindings/reserved-memory/shared-dma-pool.yaml
+Documentation/devicetree/bindings/display/msm/gpu.example.dt.yaml:0:0: /example-1/reserved-memory/gpu@8f200000: failed to match any schema with compatible: ['shared-dma-pool']
+Documentation/devicetree/bindings/reserved-memory/shared-dma-pool.example.dt.yaml:0:0: /example-0/reserved-memory/linux,cma: failed to match any schema with compatible: ['shared-dma-pool']
+Documentation/devicetree/bindings/reserved-memory/shared-dma-pool.example.dt.yaml:0:0: /example-0/reserved-memory/restricted-dma-pool@50000000: failed to match any schema with compatible: ['restricted-dma-pool']
+Documentation/devicetree/bindings/dsp/fsl,dsp.example.dt.yaml:0:0: /example-1/vdev0buffer@94300000: failed to match any schema with compatible: ['shared-dma-pool']
+Documentation/devicetree/bindings/remoteproc/ti,omap-remoteproc.example.dt.yaml:0:0: /example-0/reserved-memory/dsp-memory@98000000: failed to match any schema with compatible: ['shared-dma-pool']
+Documentation/devicetree/bindings/remoteproc/ti,omap-remoteproc.example.dt.yaml:0:0: /example-1/reserved-memory/ipu-memory@95800000: failed to match any schema with compatible: ['shared-dma-pool']
+Documentation/devicetree/bindings/remoteproc/ti,omap-remoteproc.example.dt.yaml:0:0: /example-2/reserved-memory/dsp1-memory@99000000: failed to match any schema with compatible: ['shared-dma-pool']
+Documentation/devicetree/bindings/sound/google,cros-ec-codec.example.dt.yaml:0:0: /example-0/reserved-mem@52800000: failed to match any schema with compatible: ['shared-dma-pool']
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1558545
+See https://patchwork.ozlabs.org/patch/1558503
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
