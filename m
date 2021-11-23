@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3D245A4D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:11:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6D8345A4DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237823AbhKWOOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 09:14:18 -0500
-Received: from foss.arm.com ([217.140.110.172]:53566 "EHLO foss.arm.com"
+        id S237943AbhKWOOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 09:14:24 -0500
+Received: from foss.arm.com ([217.140.110.172]:53586 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236715AbhKWOOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 09:14:07 -0500
+        id S229898AbhKWOOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 09:14:11 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 03E26150C;
-        Tue, 23 Nov 2021 06:10:59 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 50E8F1042;
+        Tue, 23 Nov 2021 06:11:02 -0800 (PST)
 Received: from e121345-lin.cambridge.arm.com (e121345-lin.cambridge.arm.com [10.1.196.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DC4C63F66F;
-        Tue, 23 Nov 2021 06:10:57 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 36C483F66F;
+        Tue, 23 Nov 2021 06:11:01 -0800 (PST)
 From:   Robin Murphy <robin.murphy@arm.com>
 To:     joro@8bytes.org, will@kernel.org
 Cc:     iommu@lists.linux-foundation.org, suravee.suthikulpanit@amd.com,
         baolu.lu@linux.intel.com, willy@infradead.org,
         linux-kernel@vger.kernel.org, john.garry@huawei.com
-Subject: [PATCH 4/9] iommu/amd: Simplify pagetable freeing
-Date:   Tue, 23 Nov 2021 14:10:39 +0000
-Message-Id: <0a98d76325d6899808afb1118629c22427629c7c.1637671820.git.robin.murphy@arm.com>
+Subject: [PATCH 5/9] iommu/amd: Use put_pages_list
+Date:   Tue, 23 Nov 2021 14:10:40 +0000
+Message-Id: <9d7302362620fce339013948b87b43c762219d94.1637671820.git.robin.murphy@arm.com>
 X-Mailer: git-send-email 2.28.0.dirty
 In-Reply-To: <cover.1637671820.git.robin.murphy@arm.com>
 References: <cover.1637671820.git.robin.murphy@arm.com>
@@ -34,156 +34,166 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For reasons unclear, pagetable freeing is an effectively recursive
-method implemented via an elaborate system of templated functions that
-turns out to account for 25% of the object file size. Implementing it
-using regular straightforward recursion makes the code simpler, and
-seems like a good thing to do before we work on it further. As part of
-that, also fix the types to avoid all the needless casting back and
-forth which just gets in the way.
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
+page->freelist is for the use of slab.  We already have the ability
+to free a list of pages in the core mm, but it requires the use of a
+list_head and for the pages to be chained together through page->lru.
+Switch the AMD IOMMU code over to using free_pages_list().
+
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+[rm: split from original patch, cosmetic tweaks]
 Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 ---
- drivers/iommu/amd/io_pgtable.c | 78 +++++++++++++---------------------
- 1 file changed, 30 insertions(+), 48 deletions(-)
+ drivers/iommu/amd/io_pgtable.c | 50 ++++++++++++----------------------
+ 1 file changed, 18 insertions(+), 32 deletions(-)
 
 diff --git a/drivers/iommu/amd/io_pgtable.c b/drivers/iommu/amd/io_pgtable.c
-index 182c93a43efd..f92ecb3e21d7 100644
+index f92ecb3e21d7..be2eba61b4d3 100644
 --- a/drivers/iommu/amd/io_pgtable.c
 +++ b/drivers/iommu/amd/io_pgtable.c
-@@ -84,49 +84,41 @@ static void free_page_list(struct page *freelist)
- 	}
- }
+@@ -74,26 +74,14 @@ static u64 *first_pte_l7(u64 *pte, unsigned long *page_size,
+  *
+  ****************************************************************************/
  
--static struct page *free_pt_page(unsigned long pt, struct page *freelist)
-+static struct page *free_pt_page(u64 *pt, struct page *freelist)
- {
--	struct page *p = virt_to_page((void *)pt);
-+	struct page *p = virt_to_page(pt);
- 
- 	p->freelist = freelist;
- 
- 	return p;
- }
- 
--#define DEFINE_FREE_PT_FN(LVL, FN)						\
--static struct page *free_pt_##LVL (unsigned long __pt, struct page *freelist)	\
--{										\
--	unsigned long p;							\
--	u64 *pt;								\
--	int i;									\
--										\
--	pt = (u64 *)__pt;							\
--										\
--	for (i = 0; i < 512; ++i) {						\
--		/* PTE present? */						\
--		if (!IOMMU_PTE_PRESENT(pt[i]))					\
--			continue;						\
--										\
--		/* Large PTE? */						\
--		if (PM_PTE_LEVEL(pt[i]) == 0 ||					\
--		    PM_PTE_LEVEL(pt[i]) == 7)					\
--			continue;						\
--										\
--		p = (unsigned long)IOMMU_PTE_PAGE(pt[i]);			\
--		freelist = FN(p, freelist);					\
--	}									\
--										\
--	return free_pt_page((unsigned long)pt, freelist);			\
-+static struct page *free_pt_lvl(u64 *pt, struct page *freelist, int lvl)
-+{
-+	u64 *p;
-+	int i;
-+
-+	for (i = 0; i < 512; ++i) {
-+		/* PTE present? */
-+		if (!IOMMU_PTE_PRESENT(pt[i]))
-+			continue;
-+
-+		/* Large PTE? */
-+		if (PM_PTE_LEVEL(pt[i]) == 0 ||
-+		    PM_PTE_LEVEL(pt[i]) == 7)
-+			continue;
-+
-+		p = IOMMU_PTE_PAGE(pt[i]);
-+		if (lvl > 2)
-+			freelist = free_pt_lvl(p, freelist, lvl - 1);
-+		else
-+			freelist = free_pt_page(p, freelist);
-+	}
-+
-+	return free_pt_page(pt, freelist);
- }
- 
--DEFINE_FREE_PT_FN(l2, free_pt_page)
--DEFINE_FREE_PT_FN(l3, free_pt_l2)
--DEFINE_FREE_PT_FN(l4, free_pt_l3)
--DEFINE_FREE_PT_FN(l5, free_pt_l4)
--DEFINE_FREE_PT_FN(l6, free_pt_l5)
+-static void free_page_list(struct page *freelist)
+-{
+-	while (freelist != NULL) {
+-		unsigned long p = (unsigned long)page_address(freelist);
 -
--static struct page *free_sub_pt(unsigned long root, int mode,
--				struct page *freelist)
-+static struct page *free_sub_pt(u64 *root, int mode, struct page *freelist)
+-		freelist = freelist->freelist;
+-		free_page(p);
+-	}
+-}
+-
+-static struct page *free_pt_page(u64 *pt, struct page *freelist)
++static void free_pt_page(u64 *pt, struct list_head *freelist)
+ {
+ 	struct page *p = virt_to_page(pt);
+ 
+-	p->freelist = freelist;
+-
+-	return p;
++	list_add_tail(&p->lru, freelist);
+ }
+ 
+-static struct page *free_pt_lvl(u64 *pt, struct page *freelist, int lvl)
++static void free_pt_lvl(u64 *pt, struct list_head *freelist, int lvl)
+ {
+ 	u64 *p;
+ 	int i;
+@@ -110,22 +98,22 @@ static struct page *free_pt_lvl(u64 *pt, struct page *freelist, int lvl)
+ 
+ 		p = IOMMU_PTE_PAGE(pt[i]);
+ 		if (lvl > 2)
+-			freelist = free_pt_lvl(p, freelist, lvl - 1);
++			free_pt_lvl(p, freelist, lvl - 1);
+ 		else
+-			freelist = free_pt_page(p, freelist);
++			free_pt_page(p, freelist);
+ 	}
+ 
+-	return free_pt_page(pt, freelist);
++	free_pt_page(pt, freelist);
+ }
+ 
+-static struct page *free_sub_pt(u64 *root, int mode, struct page *freelist)
++static void free_sub_pt(u64 *root, int mode, struct list_head *freelist)
  {
  	switch (mode) {
  	case PAGE_MODE_NONE:
-@@ -136,19 +128,11 @@ static struct page *free_sub_pt(unsigned long root, int mode,
- 		freelist = free_pt_page(root, freelist);
+ 	case PAGE_MODE_7_LEVEL:
+ 		break;
+ 	case PAGE_MODE_1_LEVEL:
+-		freelist = free_pt_page(root, freelist);
++		free_pt_page(root, freelist);
  		break;
  	case PAGE_MODE_2_LEVEL:
--		freelist = free_pt_l2(root, freelist);
--		break;
  	case PAGE_MODE_3_LEVEL:
--		freelist = free_pt_l3(root, freelist);
--		break;
- 	case PAGE_MODE_4_LEVEL:
--		freelist = free_pt_l4(root, freelist);
--		break;
- 	case PAGE_MODE_5_LEVEL:
--		freelist = free_pt_l5(root, freelist);
--		break;
- 	case PAGE_MODE_6_LEVEL:
--		freelist = free_pt_l6(root, freelist);
-+		free_pt_lvl(root, freelist, mode);
- 		break;
+@@ -137,8 +125,6 @@ static struct page *free_sub_pt(u64 *root, int mode, struct page *freelist)
  	default:
  		BUG();
-@@ -364,7 +348,7 @@ static u64 *fetch_pte(struct amd_io_pgtable *pgtable,
+ 	}
+-
+-	return freelist;
+ }
  
- static struct page *free_clear_pte(u64 *pte, u64 pteval, struct page *freelist)
+ void amd_iommu_domain_set_pgtable(struct protection_domain *domain,
+@@ -346,7 +332,7 @@ static u64 *fetch_pte(struct amd_io_pgtable *pgtable,
+ 	return pte;
+ }
+ 
+-static struct page *free_clear_pte(u64 *pte, u64 pteval, struct page *freelist)
++static void free_clear_pte(u64 *pte, u64 pteval, struct list_head *freelist)
  {
--	unsigned long pt;
-+	u64 *pt;
+ 	u64 *pt;
  	int mode;
+@@ -357,12 +343,12 @@ static struct page *free_clear_pte(u64 *pte, u64 pteval, struct page *freelist)
+ 	}
  
- 	while (cmpxchg64(pte, pteval, 0) != pteval) {
-@@ -375,7 +359,7 @@ static struct page *free_clear_pte(u64 *pte, u64 pteval, struct page *freelist)
  	if (!IOMMU_PTE_PRESENT(pteval))
- 		return freelist;
+-		return freelist;
++		return;
  
--	pt   = (unsigned long)IOMMU_PTE_PAGE(pteval);
-+	pt   = IOMMU_PTE_PAGE(pteval);
+ 	pt   = IOMMU_PTE_PAGE(pteval);
  	mode = IOMMU_PTE_MODE(pteval);
  
- 	return free_sub_pt(pt, mode, freelist);
-@@ -512,7 +496,6 @@ static void v1_free_pgtable(struct io_pgtable *iop)
+-	return free_sub_pt(pt, mode, freelist);
++	free_sub_pt(pt, mode, freelist);
+ }
+ 
+ /*
+@@ -376,7 +362,7 @@ static int iommu_v1_map_page(struct io_pgtable_ops *ops, unsigned long iova,
+ 			  phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
+ {
+ 	struct protection_domain *dom = io_pgtable_ops_to_domain(ops);
+-	struct page *freelist = NULL;
++	LIST_HEAD(freelist);
+ 	bool updated = false;
+ 	u64 __pte, *pte;
+ 	int ret, i, count;
+@@ -396,9 +382,9 @@ static int iommu_v1_map_page(struct io_pgtable_ops *ops, unsigned long iova,
+ 		goto out;
+ 
+ 	for (i = 0; i < count; ++i)
+-		freelist = free_clear_pte(&pte[i], pte[i], freelist);
++		free_clear_pte(&pte[i], pte[i], &freelist);
+ 
+-	if (freelist != NULL)
++	if (!list_empty(&freelist))
+ 		updated = true;
+ 
+ 	if (count > 1) {
+@@ -433,7 +419,7 @@ static int iommu_v1_map_page(struct io_pgtable_ops *ops, unsigned long iova,
+ 	}
+ 
+ 	/* Everything flushed out, free pages now */
+-	free_page_list(freelist);
++	put_pages_list(&freelist);
+ 
+ 	return ret;
+ }
+@@ -495,7 +481,7 @@ static void v1_free_pgtable(struct io_pgtable *iop)
+ {
  	struct amd_io_pgtable *pgtable = container_of(iop, struct amd_io_pgtable, iop);
  	struct protection_domain *dom;
- 	struct page *freelist = NULL;
--	unsigned long root;
+-	struct page *freelist = NULL;
++	LIST_HEAD(freelist);
  
  	if (pgtable->mode == PAGE_MODE_NONE)
  		return;
-@@ -529,8 +512,7 @@ static void v1_free_pgtable(struct io_pgtable *iop)
+@@ -512,9 +498,9 @@ static void v1_free_pgtable(struct io_pgtable *iop)
  	BUG_ON(pgtable->mode < PAGE_MODE_NONE ||
  	       pgtable->mode > PAGE_MODE_6_LEVEL);
  
--	root = (unsigned long)pgtable->root;
--	freelist = free_sub_pt(root, pgtable->mode, freelist);
-+	freelist = free_sub_pt(pgtable->root, pgtable->mode, freelist);
+-	freelist = free_sub_pt(pgtable->root, pgtable->mode, freelist);
++	free_sub_pt(pgtable->root, pgtable->mode, &freelist);
  
- 	free_page_list(freelist);
+-	free_page_list(freelist);
++	put_pages_list(&freelist);
  }
+ 
+ static struct io_pgtable *v1_alloc_pgtable(struct io_pgtable_cfg *cfg, void *cookie)
 -- 
 2.28.0.dirty
 
