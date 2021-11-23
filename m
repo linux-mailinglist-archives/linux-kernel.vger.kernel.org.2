@@ -2,124 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A3A459EDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 10:06:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B928F459EE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 10:07:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234082AbhKWJJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 04:09:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44456 "EHLO
+        id S234512AbhKWJK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 04:10:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231623AbhKWJJT (ORCPT
+        with ESMTP id S234242AbhKWJK1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 04:09:19 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94749C061574;
-        Tue, 23 Nov 2021 01:06:11 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id x15so88608126edv.1;
-        Tue, 23 Nov 2021 01:06:11 -0800 (PST)
+        Tue, 23 Nov 2021 04:10:27 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1ADC061574;
+        Tue, 23 Nov 2021 01:07:19 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id 71so2310304pgb.4;
+        Tue, 23 Nov 2021 01:07:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:message-id:date:mime-version:user-agent:content-language:to
-         :cc:references:from:subject:in-reply-to:content-transfer-encoding;
-        bh=F1MNEC3Zm1/pIEcv2UTnLR98/iLdaUYqO7rHMG7hrdo=;
-        b=Jm9x7hgSTNjPI95TZAUBpStM6prfp4omw3ghFep8880iRmSAlHCDncfrvx0ZulBI0k
-         uRF5cVosy0ZAOkN7k7DHR8RMikef0GsMjGQBfRTJwdkQbBMHTKC+8dQN1jtIFPu/LodB
-         90BcipA2sMj4E5xYeVoMPvPdNt35Ov3ieONi6ofL5eaMrC06b5r69wta703vt/dp6HKl
-         mOKyc1FX3+WeBazndttgraQfRx7Eyezb5K7ZBECIUI7je7n+CMTvD9S4yOGS7EgohGY2
-         O5wumNy0wpF7upaxJWi4BEBUaXuKcq7lsh8+oCARlwW6EDQwTmq4rNCfdtxR2Wi17h0r
-         PFYQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IUHBLf5vNSlEiUHIVpm7uW2Kv1mivoocEqGi35UzJDo=;
+        b=E9Njrw0uX2NtO/86NxIMhkIFZpYymPmae0/0ncowoV1DigjBKTp8KE7VrlXbUgVbMb
+         p655JEdYujbN610Z7gb2rNJyDLX6V3rvbFf45fC4wfvZIxYEyOTiNvTdmyePw9SDpECY
+         c0suK9yqIdEhNZl+XLPPbv4vX4rF/JEi7x815O0F+MncTwrSRe7A35dZzGf0lKNuQHOF
+         JZ55u5SCzAcPTFKX1bcX03u3EemINfdIq1OXWlsbF1io0pjAtzI2+kXSVxWxs0zJb8WN
+         RYl9Op0olCnDsjdEHvsDf4dWJVqUVcIi7Akj0NET42ytdlvqNsHDIOpp1qNZYT4CvjzO
+         KhSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:subject:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=F1MNEC3Zm1/pIEcv2UTnLR98/iLdaUYqO7rHMG7hrdo=;
-        b=MGIR+4t+XHauazvp012J4faYkdty2b4DLUni458oB858zOIOgUkI8whiCtTQZmbZfG
-         P1tK4Keh8eErZkOcxOhfIENxgAnu/KO6lvbTCQ95aTMedFdU3suPiXIfzbymOA5yekoH
-         7hAYXtxzHaO2Dbh1bN8Vn8ZUbQoYpCGxUBleBvGkNWR28q4NuHWstzRNHu4Zb9AXYcSG
-         BG26k8a+94fYZVmhbxkAAq68xzjHhyuurfwEpb4Ufp2nNAyv9ZdBHrCXUCRqu67tPLUk
-         48TGISt5tQnQMYRkTRIQzvfcqnCRU6q1VIPgBZpu5JqbpleV8i1DWsQZqxeeJQPT9mUT
-         tbhA==
-X-Gm-Message-State: AOAM530JLg1Ovpb4ZTJzNSpQh6F4785NaIUxIJEEuwz+Wai5GquG4MaJ
-        G/7VDof2zsKQmNNt0Bni5mc=
-X-Google-Smtp-Source: ABdhPJzIThjxkju4L1CcQt8+JnyuJ4ximXnhRtdaj22BULFxN4ENlWBQUkSzm8vAQr99AxeWyw2Nkw==
-X-Received: by 2002:a17:907:1b06:: with SMTP id mp6mr5448342ejc.275.1637658369748;
-        Tue, 23 Nov 2021 01:06:09 -0800 (PST)
-Received: from ?IPV6:2001:b07:add:ec09:c399:bc87:7b6c:fb2a? ([2001:b07:add:ec09:c399:bc87:7b6c:fb2a])
-        by smtp.googlemail.com with ESMTPSA id mc3sm4956388ejb.24.2021.11.23.01.06.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Nov 2021 01:06:09 -0800 (PST)
-Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
-Message-ID: <6de78894-8269-ea3a-b4ee-a5cc4dad827e@redhat.com>
-Date:   Tue, 23 Nov 2021 10:06:02 +0100
+        bh=IUHBLf5vNSlEiUHIVpm7uW2Kv1mivoocEqGi35UzJDo=;
+        b=zf7VKTBv3iE+ztYzDLjb6wId5bGobDwjvXbnSBPOkchAlN4mfmSujFrUVGtXjpX90A
+         y3nE2xGNvhQdefMagFbBuNVTAhra6h0oQiU8Nl7uueKaWXaz6oj+e3SpOTzVgBjeY4K0
+         tJ9KCOIH71ivZqMl3SPvA8xhfd8WHyh9FbBf67olUMyrXBQlSQMPIxW6d5GyrZ1ARwgD
+         /CHcFP/WPtqV8M4VDRHQYmC1pX4rwf4XH7KAEpB0+7Na4azWmLPnAGe6tzVmw8ZAs2S5
+         mGvn19p+iHos0oLyhmJjPH1mgQnnhMPuAb3u36Tg5ImlVpi4mzUi4CEQsBAWhCzO3hZ9
+         SenA==
+X-Gm-Message-State: AOAM531fv/+Gagmgck62RC94l0Q8/ZiJL/aaq/8sDHjOPmDEC/dEZQcs
+        /lSlZifqFyR48g5acHcH+go=
+X-Google-Smtp-Source: ABdhPJyzeM1ZaQ0CZXGAIYfYbVQfDPp5pR8xK+fJZr7hkv5S6N/IyRP9kjmT3yrvPx7/bI9pBnW+gA==
+X-Received: by 2002:a05:6a00:1945:b0:44c:a955:35ea with SMTP id s5-20020a056a00194500b0044ca95535eamr3849851pfk.85.1637658439294;
+        Tue, 23 Nov 2021 01:07:19 -0800 (PST)
+Received: from localhost.localdomain ([103.99.179.247])
+        by smtp.gmail.com with ESMTPSA id u13sm8751242pgp.27.2021.11.23.01.07.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 01:07:19 -0800 (PST)
+From:   Calvin Zhang <calvinzhang.cool@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Calvin Zhang <calvinzhang.cool@gmail.com>
+Subject: [PATCH] mm: kmemleak: alloc gray object for reserved region with direct map.
+Date:   Tue, 23 Nov 2021 17:06:41 +0800
+Message-Id: <20211123090641.3654006-1-calvinzhang.cool@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To:     David Hildenbrand <david@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Chao Peng <chao.p.peng@linux.intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        qemu-devel@nongnu.org, Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        "J . Bruce Fields" <bfields@fieldses.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
-        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com
-References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
- <20211119134739.20218-2-chao.p.peng@linux.intel.com>
- <20211119151943.GH876299@ziepe.ca>
- <df11d753-6242-8f7c-cb04-c095f68b41fa@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [RFC v2 PATCH 01/13] mm/shmem: Introduce F_SEAL_GUEST
-In-Reply-To: <df11d753-6242-8f7c-cb04-c095f68b41fa@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/19/21 16:39, David Hildenbrand wrote:
->> If qmeu can put all the guest memory in a memfd and not map it, then
->> I'd also like to see that the IOMMU can use this interface too so we
->> can have VFIO working in this configuration.
-> 
-> In QEMU we usually want to (and must) be able to access guest memory
-> from user space, with the current design we wouldn't even be able to
-> temporarily mmap it -- which makes sense for encrypted memory only. The
-> corner case really is encrypted memory. So I don't think we'll see a
-> broad use of this feature outside of encrypted VMs in QEMU. I might be
-> wrong, most probably I am:)
+Reserved regions with direct mapping may contain references to other
+regions. CMA region with fixed location is reserved without creating
+kmemleak_object for it.
 
-It's not _that_ crazy an idea, but it's going to be some work to teach 
-KVM that it has to kmap/kunmap around all memory accesses.
+So add them as gray kmemleak objects.
 
-I think it's great that memfd hooks are usable by more than one 
-subsystem, OTOH it's fair that whoever needs it does the work---and VFIO 
-does not need it for confidential VMs, yet, so it should be fine for now 
-to have a single user.
+Signed-off-by: Calvin Zhang <calvinzhang.cool@gmail.com>
+---
+ drivers/of/fdt.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-On the other hand, as I commented already, the lack of locking in the 
-register/unregister functions has to be fixed even with a single user. 
-Another thing we can do already is change the guest_ops/guest_mem_ops to 
-something like memfd_falloc_notifier_ops/memfd_pfn_ops, and the 
-register/unregister functions to memfd_register/unregister_falloc_notifier.
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index bdca35284ceb..116c582fea7a 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -26,6 +26,7 @@
+ #include <linux/serial_core.h>
+ #include <linux/sysfs.h>
+ #include <linux/random.h>
++#include <linux/kmemleak.h>
+ 
+ #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
+ #include <asm/page.h>
+@@ -522,9 +523,12 @@ static int __init __reserved_mem_reserve_reg(unsigned long node,
+ 		size = dt_mem_next_cell(dt_root_size_cells, &prop);
+ 
+ 		if (size &&
+-		    early_init_dt_reserve_memory_arch(base, size, nomap) == 0)
++		    early_init_dt_reserve_memory_arch(base, size, nomap) == 0) {
+ 			pr_debug("Reserved memory: reserved region for node '%s': base %pa, size %lu MiB\n",
+ 				uname, &base, (unsigned long)(size / SZ_1M));
++			if (!nomap)
++				kmemleak_alloc_phys(base, size, 0, 0);
++		}
+ 		else
+ 			pr_info("Reserved memory: failed to reserve memory for node '%s': base %pa, size %lu MiB\n",
+ 				uname, &base, (unsigned long)(size / SZ_1M));
+-- 
+2.30.2
 
-Chao, can you also put this under a new CONFIG such as "bool MEMFD_OPS", 
-and select it from KVM?
-
-Thanks,
-
-Paolo
