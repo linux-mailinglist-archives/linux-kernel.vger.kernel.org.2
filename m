@@ -2,158 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2D0459A5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 04:12:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE72A459A5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 04:12:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232764AbhKWDPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Nov 2021 22:15:43 -0500
-Received: from mail-bn8nam12on2064.outbound.protection.outlook.com ([40.107.237.64]:45004
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231665AbhKWDPk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Nov 2021 22:15:40 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YWR7y8OXrBdu0h8KmOcFkVczYl/ro9dKFSl+lt7eW0aupUS0EilN19YruSR/h4Ls91Q62LKjIrAOp6XdECGVXGCFeibpl81SnpghoTF1GpUqMmYn13o/COevxpvSCTSqaCaGH0a65fi3qtePRvgbqmSrC88XWPmBX+C89oq/QtckDX+IQ36ZB2H8Vz+53uuBnj5Za6Mc5OUrtZjnsUYlwM+iQYrPmndlZe2UelB9YFoV0dHB7iyxp+KRveE1EJNS0ADcKU6q12hGP66PZNZsLJxIWgn8XrEEG/S4vNxwZrCcWuiSp4FdDoh3yiizOzutlMJbazCYEETtcKYujbfk8w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ev4b1rZDM538EpSxPVek0grVPe2pqPCaKLWZTq726zY=;
- b=LvGcZk4TVmslD391v5BLMBe2UE/55BrFIxcru3EPmEKAc8qYm4QfJNedFb7JzikJSDDS844nRMOSqA87AVOIvvRVC53FzNahMjQwrpfjJrF7ZUR/LbyvFu3GzilaVuIqhdBuO0EAHPLWrWpKMV2iZPcvurR7WjCt8Zzp8tvKA0p0SxJkFmOKP1+h+8Wy9Jh/nq/VLeCAWEOFVvTf/1/Y69VfWSQSCdcsX5mly5N1XFSCo8/HO3kuST0gtay7xm0ggShpR6E6GF1G/wZHHxUJIEyW5OuAba1Rs+1wcwOhIqDWWz8c9cSBLNZWAqhPFxql6plVxLsdF2TFMFSZTVlX+Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ev4b1rZDM538EpSxPVek0grVPe2pqPCaKLWZTq726zY=;
- b=qYosKzFQVvRTqVCUGbafdQbYX1xLSEf7aLoqLwejREQtEOFDCp1zdovhmNBQow3SxLF+HBAEzN7vJ+Qr5CianvUq/ozMUy0GsGPkWOA/rN9S9q82CrJ81IU3zNqqdgKe/pamfI9ab8xt/kHMaad4CZtHr03m7NIRvWidx6eU+J7W4ev3O877csqG+beTjqkS3wETH8py3R4+PmNunV8rL4zPxr56qjkXUiB0shJom0OMszSsevHkVNc0HirZYKxUb9lwd8Qb8L3GvG/B/w69w9ax4WI6429Ec+SPp+Zfi/nF/B7jKXtzveIGhBdbcwNPAJbwDFbrnyATNUhRnaS2iQ==
-Received: from PH0PR12MB5481.namprd12.prod.outlook.com (2603:10b6:510:d4::15)
- by PH0PR12MB5482.namprd12.prod.outlook.com (2603:10b6:510:ea::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Tue, 23 Nov
- 2021 03:12:31 +0000
-Received: from PH0PR12MB5481.namprd12.prod.outlook.com
- ([fe80::5515:f45e:56f5:b35a]) by PH0PR12MB5481.namprd12.prod.outlook.com
- ([fe80::5515:f45e:56f5:b35a%3]) with mapi id 15.20.4713.022; Tue, 23 Nov 2021
- 03:12:31 +0000
-From:   Parav Pandit <parav@nvidia.com>
-To:     "Longpeng(Mike)" <longpeng2@huawei.com>,
-        "mst@redhat.com" <mst@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>
-CC:     "sgarzare@redhat.com" <sgarzare@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "arei.gonglei@huawei.com" <arei.gonglei@huawei.com>
-Subject: RE: [PATCH] vdpa_sim: avoid putting an uninitialized iova_domain
-Thread-Topic: [PATCH] vdpa_sim: avoid putting an uninitialized iova_domain
-Thread-Index: AQHX35ueaWYQw4IqXUGs9TH2rQN8bawQcIOA
-Date:   Tue, 23 Nov 2021 03:12:31 +0000
-Message-ID: <PH0PR12MB54811F4CC671312DFB2FACCDDC609@PH0PR12MB5481.namprd12.prod.outlook.com>
-References: <20211122122221.56-1-longpeng2@huawei.com>
-In-Reply-To: <20211122122221.56-1-longpeng2@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 823045e2-9453-4d13-c315-08d9ae2f16b1
-x-ms-traffictypediagnostic: PH0PR12MB5482:
-x-microsoft-antispam-prvs: <PH0PR12MB54824A4F201C23F033F082C5DC609@PH0PR12MB5482.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: gMSnNee4px6WUdh1gagYC762gQ3nTeN1i39orhFJ1P8feMemAe8m7GLTAQpAoMt4/OOoxCOSapkMxo9ijz2kkJ1R3om1U5BZkpbxV2BC3LlFnmepM+k1aHGIsjcy8ANlPEnhqmmLnCztKM3XKTGRtLRpWa6a3/FmJbCxCe752eJhAJiwl3ablIobQSktbowCfDfxgJmM31tycSvVtpnhHdt07CfBrOzohPiglzfe0yycb1UnA3Pr/+PiH86K3XhoQNOU+3cacsgalP5og1r9RXNUoVydVNYwNGoKdLzSWZ8tgEUzeN//0ERH6sts5aZfVVNaQOKJxWQgP3ayJi4Eu0wPBH/Oty8yznsjHSqXQIQYL2QbisAooOVljjyvSUP/DovAan0qj/xBskKqUYrXLxY4JD7ITGTN0WrIvQ+xdEEcSMJCA948IbckyqZqlnQBjGsoZOJOmfxLw34o0ZpJpQ31liUd6/qhg3FPYBb5sN5mQB2Daj3GZDPAQ/NLpTGHc23t1wVaAclTtdyf2CpdryaCFMPutGvijLCD26pMkr0SbPELTFriAY9rnzpQNy6Y9ddLBWBk35/n/MNEPOprVPDjEy755q6D6WfAtDPwH9B352G4Qlz+Tu7CIoD3lahk2GOEFls86x4JfZTLmy6jhTw02vUfU5X/HY7y3zS+e6hsY42ksH6syqaa+s/HnJ6Di3MT0XWIMXqaznXTOy4JpA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR12MB5481.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(6506007)(66446008)(8936002)(52536014)(5660300002)(86362001)(64756008)(4326008)(38100700002)(9686003)(2906002)(26005)(54906003)(110136005)(316002)(38070700005)(7696005)(508600001)(186003)(66476007)(122000001)(76116006)(83380400001)(33656002)(66556008)(71200400001)(8676002)(55236004)(55016003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?0xgIg9TYiG0uMNeQEHIK52P+sJuAHuzxv8N1UN5Cu2daKoHoqg7e4Uer3K9k?=
- =?us-ascii?Q?pJLglyHYl8+rQFW3WSVGU9hEB+kcvrhpJ0dxn0JE/9g+0e2y4HA2inhRRNNm?=
- =?us-ascii?Q?QxzdYZSum61C2Nb1Rh7v/t4HzR64j9rLSnhhRwMZYYrRqTfaR7LukufGJDbL?=
- =?us-ascii?Q?+UCRdIcs0zVzT6cymVkeoYazeT9erROxqLRmZKW1eJrRGj52MeNmhKLCblN5?=
- =?us-ascii?Q?mfLldJXuxGrDlq51DcTZPzmlKjnRcbeO/L7I0WQ1fNOGhpSzBsGR4Y8of8Cl?=
- =?us-ascii?Q?HuhTcS7fk+R91T5FfuCzJDio49p+uKEmLYHXcQRCXoz3BhTTcoDNQSiKDqWu?=
- =?us-ascii?Q?yyvXvGyEQBpt8WMyQ1agQ3LFcieJJudaLM6RH5DWqkDzSftTB0XGzImEhZBs?=
- =?us-ascii?Q?MF3TP8tBG57wDZg68kaClChp1kwpO2gSzlZvnIWot9HyT1eGtLPnHndIQrv7?=
- =?us-ascii?Q?jVkm3lkeRzoY7NhTJYQz3G3cT61kmOBnlK6zGcLntwXKS3gqKdk1Ph/qKeAn?=
- =?us-ascii?Q?ww+HI1CK9cZ2KvtyExN7d5Wrj9UDK4bvtk+MbA5Rj6D4FSVkpsOwCX/H3j5z?=
- =?us-ascii?Q?xZC9W39p2qMyqsRh3vYLH+Ad20UtlW1GhICaVxFS+e0ApK1MoYS6OdgZmIqp?=
- =?us-ascii?Q?pmHHD/rOeLubIG2v3BxoEYVBbtPts1ys3wwTlQo+QrvT1RJKAltd0dUAQFjt?=
- =?us-ascii?Q?sLDSA8HwZgKtfEL6WHziuyOAFvBjC7WR7tk3NmPKKzL8XH+ZX2oy+e9Fq9aK?=
- =?us-ascii?Q?aDgckYOwx4zZtyWEoyj0NTopE8pkJKjFRee7NXID6PHDWcZeipFFanBAf0Ev?=
- =?us-ascii?Q?xJkC4B14spc3E9jVvMvflE+rOf7ah8yzF3uFyoAKF90admgh6Q9Hfo2j4z/w?=
- =?us-ascii?Q?Kx34AQSHRyOv2CN3QefEi1FU57CE12jw+BItxr11t4maWyqsf6GarEfLyL1c?=
- =?us-ascii?Q?lvkJ0ptw9oj3LrDHZnDSv6TuOx7N/CwjeNUAEFf7VNIPIdTOTiGVrL4O2R9W?=
- =?us-ascii?Q?5oXcVf1P4NbbAk5F0Jjm21CA3l9mPVWDyHLoAdLmyYM6bh0RkI05DWGCS0Ql?=
- =?us-ascii?Q?eHPymVfX27AT6w1LgXz+A9+tWpVxItPThQqUiCeGZXLt82jvtTafsmECOUxB?=
- =?us-ascii?Q?Hznx5rUJpBil2VpHqZPH2x/2gMeG4IMrLaYPkDukURql9y4W+quTSL9/3/2w?=
- =?us-ascii?Q?GVuCTpM97cjNpqHtrpqzziYg2gIcv0gTlZTNdLkujdzlTra+uLTFSGs+d+Ta?=
- =?us-ascii?Q?pNHMZkQsAe+Q9tOojtkWZ+QlXBPqmP0i1RWxA2MHmVAskJopwwUzAPgNa18L?=
- =?us-ascii?Q?JZmpsY8zK4xiTQvGpC9iQdj49MG3k1LQUDhnDQ+Ou59KjbYumua/y1mvu1qc?=
- =?us-ascii?Q?SpZNpyWN1EkOoIP4r11uE6jAJkHJ6q5kjQfhKzW6pltgDG46uRNfZyihxjDY?=
- =?us-ascii?Q?PkWVzl/Wj6+vWY3lxzSjoPHAaRTHfyNPRjshq8rqiCnEetkqKhHKFqcmJ+2E?=
- =?us-ascii?Q?oldAlFcvVA1MUp4CIz0SH6dr1PcvMTOyrXwJQXTVdy0kCK/plOpqnLFHK6Bd?=
- =?us-ascii?Q?GDkTq18Gt9o8HwaR2D+RXV5Qd+RYSYc/da5ar+YzNwX7E4Lz8Ut3cwKyuQEJ?=
- =?us-ascii?Q?Snxosd+KMsh8vOYzqPXXsf4=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232991AbhKWDP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Nov 2021 22:15:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231665AbhKWDP5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Nov 2021 22:15:57 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B31DC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 19:12:50 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id o4so17955970pfp.13
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 19:12:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x2hw3oGQCKQYUHt6V/jeij7qOnZntnAL24E56nojTHg=;
+        b=gIujpSdtAknKwM2DSCD5wuUpkhhrH097yVr1sWa5jsFkkwO6U/TMS7VEQfHoKjLGL6
+         PtpPhqkX1Z7hbVNjcxu5DJd9GOmfEfVT6Y9r2uZvBxgEZPk7Hn1NmP/l+gM3W3dOBQ3x
+         6vZ6SxFMdjJew9B39sgKA6TfPpnGdtqBqCme6ZdYPXOImU4zYFMu5EXhfTihw7hujNeo
+         9yOb2ntl1hkTeiwd+VvHEFxRw5ul7ni5R36VPr5MjQDIDYi3ZHd6CNHZbM0+juKYrnj8
+         BofEsJR2zzFmZGqrLL9fU3Fh8Bj/P/pFWHNsUpcISaU861PnqmjmVI5Y5+yWM0SqbgAW
+         Sj1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x2hw3oGQCKQYUHt6V/jeij7qOnZntnAL24E56nojTHg=;
+        b=YtxW5m62HigTNZPkVcFfRbPndFNqqeTBz9/MYki61fCt1FXyIL7EBeufcZoKT7WevH
+         lDZ2y/D9PIFCI07Y06rmKXM+kMwhHA/74AwuLNUnz5DjkIitPyrVQfwk87H/gKAMDzjI
+         ahWQ96ybVftYzrJn0HUD/bIkzgF453oOYYIB0PGaYYsF64igtqkRESRmBKcVSwT8wpV9
+         ysRK+k7oJOL3WsV1o2q8X4MCOk2+zHUo2jWGW0l0zuteLINmx0+I65l7zGqDL9JeCfu+
+         AZ1J9js5h9q0/pcIixY1hy4fCw5TIayCJbhlvA8I5d7dsThfqs2onFELd7p4Ok0J+Uzf
+         L9dQ==
+X-Gm-Message-State: AOAM532flifO5B4Ul7yrdoMpYbcmxD+qbCA+fNcmGS/XFuGz2C1Ggjz8
+        bjnVeD4aCGn22ItFD/284JRVM+YzX6EiJdgylZ11sA==
+X-Google-Smtp-Source: ABdhPJwMXvJBc/Q+TZQf5i18d92jX/IrYo7Qd/Ip5lemBkmdtvpN1+Uh02bMi2Upj+gk5gH0ickdapbkQ+WCbMkkrCM=
+X-Received: by 2002:a05:6a00:84c:b0:494:6d40:ed76 with SMTP id
+ q12-20020a056a00084c00b004946d40ed76mr1974231pfk.65.1637637169565; Mon, 22
+ Nov 2021 19:12:49 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR12MB5481.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 823045e2-9453-4d13-c315-08d9ae2f16b1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2021 03:12:31.5805
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: JY80v87WKSrqPGQcH6LEu2QkrwG3HAyUqpHIQdiBgclVm8f6tArHmwAVsKmadvvPZCT+6WNjn83brxXoKGprpQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB5482
+References: <20211122164644.19442-1-jiaxin.yu@mediatek.com> <20211122164644.19442-2-jiaxin.yu@mediatek.com>
+In-Reply-To: <20211122164644.19442-2-jiaxin.yu@mediatek.com>
+From:   Tzung-Bi Shih <tzungbi@google.com>
+Date:   Tue, 23 Nov 2021 11:12:38 +0800
+Message-ID: <CA+Px+wWeV=9DF7wdSyjaZKS=XCJjri1Dmpf-kfNVZOqm5fV33w@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: mt8192: remove unnecessary CONFIG_PM
+To:     Jiaxin Yu <Jiaxin.Yu@mediatek.com>
+Cc:     broonie@kernel.org, matthias.bgg@gmail.com,
+        alsa-devel@alsa-project.org, kernel test robot <lkp@intel.com>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 23, 2021 at 12:48 AM Jiaxin Yu <jiaxin.yu@mediatek.com> wrote:
+> Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+Acked-by: Tzung-Bi Shih <tzungbi@google.com>
 
+Could you also submit another series for the cleanup?
 
-> From: Longpeng(Mike) <longpeng2@huawei.com>
-> Sent: Monday, November 22, 2021 5:52 PM
->=20
-> From: Longpeng <longpeng2@huawei.com>
->=20
-> The system will crash if we put an uninitialized iova_domain, this could
-> happen when an error occurs before initializing the iova_domain in
-> vdpasim_create().
->=20
-> BUG: kernel NULL pointer dereference, address: 0000000000000000 ...
-> RIP: 0010:__cpuhp_state_remove_instance+0x96/0x1c0
-> ...
-> Call Trace:
->  <TASK>
->  put_iova_domain+0x29/0x220
->  vdpasim_free+0xd1/0x120 [vdpa_sim]
->  vdpa_release_dev+0x21/0x40 [vdpa]
->  device_release+0x33/0x90
->  kobject_release+0x63/0x160
->  vdpasim_create+0x127/0x2a0 [vdpa_sim]
->  vdpasim_net_dev_add+0x7d/0xfe [vdpa_sim_net]
->  vdpa_nl_cmd_dev_add_set_doit+0xe1/0x1a0 [vdpa]
->  genl_family_rcv_msg_doit+0x112/0x140
->  genl_rcv_msg+0xdf/0x1d0
->  ...
->=20
-> So we must make sure the iova_domain is already initialized before put it=
-.
->=20
-> In addition, we may get the following warning in this case:
-> WARNING: ... drivers/iommu/iova.c:344 iova_cache_put+0x58/0x70
->=20
-> So we must make sure the iova_cache_put() is invoked only if the
-> iova_cache_get() is already invoked. Let's fix it together.
->=20
-> Signed-off-by: Longpeng <longpeng2@huawei.com>
-
-Can you please add the fixes tag here so that older kernels can take this f=
-ix?
+At least for sound/soc/mediatek/:
+$ rg --files-with-matches CONFIG_PM sound/soc/mediatek/
+sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
+sound/soc/mediatek/mt8173/mt8173-rt5650.c
+sound/soc/mediatek/mt8173/mt8173-max98090.c
+sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
+sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
+sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+sound/soc/mediatek/mt8192/mt8192-afe-pcm.c
+sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
