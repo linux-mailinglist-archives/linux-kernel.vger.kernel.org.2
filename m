@@ -2,211 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 287F145A5B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:31:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E872B45A52C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:21:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238184AbhKWOeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 09:34:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237964AbhKWOeK (ORCPT
+        id S237614AbhKWOYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 09:24:20 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15857 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229786AbhKWOYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 09:34:10 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F53C061574;
-        Tue, 23 Nov 2021 06:31:02 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id e3so92950947edu.4;
-        Tue, 23 Nov 2021 06:31:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=//l1LUXCh3L79CgRUnueVTDppas02c3huxdsDhLLifA=;
-        b=T15xAre4jIFB3U4IVeTooq7H+YdPwnaWfB3BNzoyFz/keHLFQ5vkBDnTutv6tbatV+
-         L66H1fyD/O1kAhKootlAKhntL9Gw1QyJX0WOsQxy9s2dI2hRRfJcQUYdkaJs5U78xvKP
-         jzu+hLkJTXoig0uIhtNXKAsFE7jN4A/HrbQJru5aEOxdpxKkWzyHNwym2LBv5Mfb2cOQ
-         JtDaxwk8uJVdFR816kmjk1lrHxJ46S/BWe7m9YWLRfHCe+q0YqWjXxMAgD4iOZkKCrE+
-         s3OeQ6CL2/BqKr4lbamObk4i+gdw4qcyu0rHMaDcxS1MGO0viyWsobSSR6dBTtVrFIQ6
-         5oqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=//l1LUXCh3L79CgRUnueVTDppas02c3huxdsDhLLifA=;
-        b=Y0ji8PUxprtOiXVXlZjjl0WlUUnU11ESW7yGCOBKBUGRP+EPxdDlF4wzTPl+IPC8cv
-         xgZnSvf7BvgSHM7S9oFJlnx1n5iJaXPGzA83jaE1a2QWEwkaW0YKeUfM/nP7wZ/H4lIf
-         aF9lEszczmdDhzyv9D2uFj6/f/Vjk3N/4eqRCId1upkPZYJAbGkDOyQOkDzmBsqRej0U
-         tUxNh+HfxibY4736qg/fETEBvEM/LsyZ4FHb1yw43lx/sn9EAilZK+AtJxOlSDLWt2zb
-         DFpLfQNfBp90KnmlOOg3txwti5hTcpqVTOZHBjPpivqcKzrHXuvQjCBYGw3EKLf/N6eG
-         +OYA==
-X-Gm-Message-State: AOAM530xgmqj/cR4mpJIZ6GXznc49JWDTDSvJBNFbEFDe2k51LYf1PL0
-        IbrutUKw6yLUXhqpx0Az5qfJzP7QAW9TJKYLQk4=
-X-Google-Smtp-Source: ABdhPJzC/1N8se4FPNP9Y5+FSeWzRJdkD5hvVeDNCCJEzLv+I4Lel88R5WODTobQZTglCDcOaNS6Wg5RP1ONQ3xrsw0=
-X-Received: by 2002:a17:907:94c2:: with SMTP id dn2mr8088560ejc.325.1637677860221;
- Tue, 23 Nov 2021 06:31:00 -0800 (PST)
+        Tue, 23 Nov 2021 09:24:18 -0500
+Received: from dggpemm500020.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hz5s651Lhz90r9;
+        Tue, 23 Nov 2021 22:20:42 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 23 Nov 2021 22:21:08 +0800
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 23 Nov 2021 22:21:07 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-s390@vger.kernel.org>,
+        <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Alexander Potapenko <glider@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Yongqiang Liu <liuyongqiang13@huawei.com>
+Subject: [PATCH v2] mm: Delay kmemleak object creation of module_alloc()
+Date:   Tue, 23 Nov 2021 22:32:20 +0800
+Message-ID: <20211123143220.134361-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20211104161804.587250-1-aford173@gmail.com> <CAJ+vNU2jcWyCm3UyiOnvknS0t+mSdpaB+CgGWYO3jxXTa3LhRA@mail.gmail.com>
- <CAHCN7xJrnZMQgXVMJg7MZdFMWyesf6Ph7HnfMH7-9bm1qODHFw@mail.gmail.com>
- <CAJ+vNU32GXtbKWGQXoE7pkXU8FcKh+HQJJduwRbRJ0tC-d6GoA@mail.gmail.com>
- <CAHCN7xLAm21zUJQ8s4s--+ygmeVY0qyo0WSLp7ZM9bT9R3sjxw@mail.gmail.com>
- <CAOMZO5Am4P17mOXWrPs0ns9AwOXM_ZpBdzbYTYJfv_48Ea=BHg@mail.gmail.com>
- <CAHCN7xLzR5LqqydC7uydsXQPFVn=nyqKD8ZEH3EjcPuwQky5WA@mail.gmail.com>
- <CAOMZO5AnXDV3jdR6hP_+uqyss4KftzjahcrGq1XA37nGsfQedw@mail.gmail.com>
- <CAHCN7xKJBHY1o94VDkBaXXFjMUm=5WoshddT4DVWD04aiPV8MA@mail.gmail.com>
- <CAHCN7xKpjVWiTvXpYH11kaHX=0Figh=ALQS4qnUroGCu-q3NNA@mail.gmail.com>
- <CAJ+vNU37=qPuuNaSsvRntKU5wbVZoOtS_tAx7En6EMGfKN=QLg@mail.gmail.com>
- <82c5da8862abaa430ee52b57e15d29a67106d61f.camel@pengutronix.de>
- <CAJ+vNU0ce1TTAHzT-ZE303ikmmwghutyObSQMJeHN8D0R8Gcdw@mail.gmail.com>
- <CAHCN7x+k=C=fxFZYJK6qpUFNDSddVGvfYPPLZ_LNOvhW6RNxmg@mail.gmail.com> <129460de1d6b02ad16fdac16a1437c5b2cbb3975.camel@pengutronix.de>
-In-Reply-To: <129460de1d6b02ad16fdac16a1437c5b2cbb3975.camel@pengutronix.de>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Tue, 23 Nov 2021 08:30:49 -0600
-Message-ID: <CAHCN7x+yt_-mQ14A+xw1-Qd2ucSniUqT_wPyp-0OedwUp8UDjA@mail.gmail.com>
-Subject: Re: [PATCH V3 0/9] arm64: imx8mn: Enable more imx8m Nano functions
-To:     Lucas Stach <l.stach@pengutronix.de>
-Cc:     Tim Harvey <tharvey@gateworks.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        "Ariel D'Alessandro" <ariel.dalessandro@collabora.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Device Tree Mailing List <devicetree@vger.kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 8:24 AM Lucas Stach <l.stach@pengutronix.de> wrote:
->
-> Am Dienstag, dem 23.11.2021 um 08:08 -0600 schrieb Adam Ford:
-> > On Mon, Nov 22, 2021 at 3:52 PM Tim Harvey <tharvey@gateworks.com> wrote:
-> > >
-> > > On Mon, Nov 22, 2021 at 10:20 AM Lucas Stach <l.stach@pengutronix.de> wrote:
-> > > >
-> > > > Am Montag, dem 22.11.2021 um 09:59 -0800 schrieb Tim Harvey:
-> > > > > On Sun, Nov 21, 2021 at 7:25 AM Adam Ford <aford173@gmail.com> wrote:
-> > > > > >
-> > > > > > On Sun, Nov 21, 2021 at 8:34 AM Adam Ford <aford173@gmail.com> wrote:
-> > > > > > >
-> > > > > > > On Sun, Nov 21, 2021 at 8:21 AM Fabio Estevam <festevam@gmail.com> wrote:
-> > > > > > > >
-> > > > > > > > Hi Adam,
-> > > > > > > >
-> > > > > > > > On Sun, Nov 21, 2021 at 11:17 AM Adam Ford <aford173@gmail.com> wrote:
-> > > > > > > >
-> > > > > > > > > I am using https://source.codeaurora.org/external/imx/imx-atf/log/?h=lf_v2.4
-> > > > > > > > >
-> > > > > > > > > Since the driver sending SMCC commands to ATF isn't doing that, I
-> > > > > > > > > assume it's safe to use the linux power-domain drivers with the ATF
-> > > > > > > > > from NXP's kernel.
-> > > > > > > > >
-> > > > > > > > > If you can point me to the repo you think I should be using, I'll give it a try.
-> > > > > > > >
-> > > > > > > > Do you know if the mainline TF-A repo v2.5 works too?
-> > > > > > > > https://github.com/ARM-software/arm-trusted-firmware/tree/v2.5
-> > > > > > >
-> > > > > > > That's good to know.
-> > > > > > >
-> > > > > > > I just built it into U-Boot:
-> > > > > > >
-> > > > > > > NOTICE:  BL31: v2.5(release):v2.5
-> > > > > > > NOTICE:  BL31: Built : 08:24:13, Nov 21 2021
-> > > > > > >
-> > > > > > > The Etnaviv driver is still loading without hanging
-> > > > > > >
-> > > > > > > root@beacon-imx8mn-kit:~# dmesg |grep -i etna
-> > > > > > > [   12.393936] etnaviv etnaviv: bound 38000000.gpu (ops gpu_ops [etnaviv])
-> > > > > > > [   12.400676] etnaviv-gpu 38000000.gpu: model: GC7000, revision: 6203
-> > > > > > > [   12.641297] [drm] Initialized etnaviv 1.3.0 20151214 for etnaviv on minor 0
-> > > > > > >
-> > > > > > >
-> > > > > >
-> > > > > > Tim,
-> > > > > >
-> > > > > > Which version of Nano do you have?  Not all Nano SoC's have a GPU from
-> > > > > > looking at the datasheet [1] .  I am using MIMX8MN2CVTIZAA (Nano Solo)
-> > > > > >
-> > > > > > [1] - https://www.nxp.com/docs/en/data-sheet/IMX8MNIEC.pdf
-> > > > > >
-> > > > >
-> > > > > Adam,
-> > > > >
-> > > > > The board I have here has MIMX8MN5CVTIZAA so i.MX 8M Nano QuadLite
-> > > > > with 'No GPU' as you expected.
-> > > > >
-> > > > > So I have to add the following to keep my board from hanging after your series:
-> > > > > diff --git a/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
-> > > > > b/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
-> > > > > index 236f425e1570..0d256a607b7c 100644
-> > > > > --- a/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
-> > > > > +++ b/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
-> > > > > @@ -251,6 +251,10 @@
-> > > > >         };
-> > > > >  };
-> > > > >
-> > > > > +&gpu {
-> > > > > +       status = "disabled";
-> > > > > +};
-> > > > > +
-> > > > >  &i2c1 {
-> > > > >         clock-frequency = <100000>;
-> > > > >         pinctrl-names = "default";
-> > > > >
-> > > > > This situation is similar to the one I encountered with the
-> > > > > imx8mm-venice-gw7901 where adding the GPC node caused my board (which
-> > > > > did not power the GPU) to hang until I added disables to the
-> > > > > device-tree with commit 7973009235e2 ("arm64: dts:
-> > > > > imx8mm-venice-gw7901.dts: disable pgc_gpumix"). It feels painful to
-> > > > > have to add patches to keep things from hanging after additional
-> > > > > functionality is added to dt but perhaps that is more common than I
-> > > > > think esp for SoC's like IMX8M which have a lot of lingering support
-> > > > > still coming in.
-> > > > >
-> > > > Yea, it's unfortunate that those patches break your board, but I guess
-> > > > we need to accept this, while there is still a lot of feature work
-> > > > going on.
-> >
-> > There are a significant number of peripherals which are defined and
-> > marked as 'disabled' by default, so I don't think it's unreasonable to
-> > do that here.
-> > I'd like to propose we keep the default disabled and people who
-> > need/want the GPU enabled can turn it on.  Why waste the power if it's
-> > not needed?
-> >
-> Sure, if a significant number of chips has the GPU disabled, we might
-> want to keep it disabled in the base dtsi. With those variants it's
-> always a tradeoff, for example there are SKUs of the i.MX6 that had the
-> VPU disabled, but very few of those were in the field, so the VPUs are
-> enabled in the SoC base dtsi and only users of those special SKUs would
-> need to disable them in the board DT.
->
-> The power argument isn't valid, as the kernel driver will suspend the
-> device when not needed, so there is no wasted power (aside from the
-> sort moment while the driver probes) with the GPU enabled.
->
-> The rule of thumb for when a device is default enabled in the SoC dsti
-> has always been (at least for i.MX) that the peripheral must not have a
-> board level dependency. While a i2c controller obviously needs a i2c
-> bus connected on the board to fulfill its purpose, a GPU can be used as
-> color space converter or something like that with no board level
-> interaction. Now the line is a bit blurred by having multiple power
-> rails into the SoC, so one could argue that the GPUs and VPUs now have
-> some board level dependency on the i.MX8M*.
+Yongqiang reports a kmemleak panic when module insmod/rmmod with KASAN
+enabled on x86[1].
 
-That makes sense.
+When the module allocates memory, it's kmemleak_object is created successfully,
+but the KASAN shadow memory of module allocation is not ready, so when kmemleak
+scan the module's pointer, it will panic due to no shadow memory with KASAN.
 
-Do we defer to Shawn as the final arbiter as to whether or not it's
-enabled/disabled?  It would be nice to get Nano caught up in
-functionality as much as possible.
+module_alloc
+  __vmalloc_node_range
+    kmemleak_vmalloc
+				kmemleak_scan
+				  update_checksum
+  kasan_module_alloc
+    kmemleak_ignore
 
-adam
+The bug should exist on ARM64/S390 too, add a VM_DELAY_KMEMLEAK flags, delay
+vmalloc'ed object register of kmemleak in module_alloc().
 
->
-> Regards,
-> Lucas
->
+[1] https://lore.kernel.org/all/6d41e2b9-4692-5ec4-b1cd-cbe29ae89739@huawei.com/
+Reported-by: Yongqiang Liu <liuyongqiang13@huawei.com>
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+---
+v2:
+- fix type error on changelog and kasan_module_alloc()
+
+ arch/arm64/kernel/module.c | 4 ++--
+ arch/s390/kernel/module.c  | 5 +++--
+ arch/x86/kernel/module.c   | 7 ++++---
+ include/linux/kasan.h      | 4 ++--
+ include/linux/vmalloc.h    | 7 +++++++
+ mm/kasan/shadow.c          | 9 +++++++--
+ mm/vmalloc.c               | 3 ++-
+ 7 files changed, 27 insertions(+), 12 deletions(-)
+
+diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
+index b5ec010c481f..e6da010716d0 100644
+--- a/arch/arm64/kernel/module.c
++++ b/arch/arm64/kernel/module.c
+@@ -36,7 +36,7 @@ void *module_alloc(unsigned long size)
+ 		module_alloc_end = MODULES_END;
+ 
+ 	p = __vmalloc_node_range(size, MODULE_ALIGN, module_alloc_base,
+-				module_alloc_end, gfp_mask, PAGE_KERNEL, 0,
++				module_alloc_end, gfp_mask, PAGE_KERNEL, VM_DELAY_KMEMLEAK,
+ 				NUMA_NO_NODE, __builtin_return_address(0));
+ 
+ 	if (!p && IS_ENABLED(CONFIG_ARM64_MODULE_PLTS) &&
+@@ -58,7 +58,7 @@ void *module_alloc(unsigned long size)
+ 				PAGE_KERNEL, 0, NUMA_NO_NODE,
+ 				__builtin_return_address(0));
+ 
+-	if (p && (kasan_module_alloc(p, size) < 0)) {
++	if (p && (kasan_module_alloc(p, size, gfp_mask) < 0)) {
+ 		vfree(p);
+ 		return NULL;
+ 	}
+diff --git a/arch/s390/kernel/module.c b/arch/s390/kernel/module.c
+index b01ba460b7ca..8d66a93562ca 100644
+--- a/arch/s390/kernel/module.c
++++ b/arch/s390/kernel/module.c
+@@ -37,14 +37,15 @@
+ 
+ void *module_alloc(unsigned long size)
+ {
++	gfp_t gfp_mask = GFP_KERNEL;
+ 	void *p;
+ 
+ 	if (PAGE_ALIGN(size) > MODULES_LEN)
+ 		return NULL;
+ 	p = __vmalloc_node_range(size, MODULE_ALIGN, MODULES_VADDR, MODULES_END,
+-				 GFP_KERNEL, PAGE_KERNEL_EXEC, 0, NUMA_NO_NODE,
++				 gfp_mask, PAGE_KERNEL_EXEC, VM_DELAY_KMEMLEAK, NUMA_NO_NODE,
+ 				 __builtin_return_address(0));
+-	if (p && (kasan_module_alloc(p, size) < 0)) {
++	if (p && (kasan_module_alloc(p, size, gfp_mask) < 0)) {
+ 		vfree(p);
+ 		return NULL;
+ 	}
+diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
+index 169fb6f4cd2e..ff134d0f1ca1 100644
+--- a/arch/x86/kernel/module.c
++++ b/arch/x86/kernel/module.c
+@@ -67,6 +67,7 @@ static unsigned long int get_module_load_offset(void)
+ 
+ void *module_alloc(unsigned long size)
+ {
++	gfp_t gfp_mask = GFP_KERNEL;
+ 	void *p;
+ 
+ 	if (PAGE_ALIGN(size) > MODULES_LEN)
+@@ -74,10 +75,10 @@ void *module_alloc(unsigned long size)
+ 
+ 	p = __vmalloc_node_range(size, MODULE_ALIGN,
+ 				    MODULES_VADDR + get_module_load_offset(),
+-				    MODULES_END, GFP_KERNEL,
+-				    PAGE_KERNEL, 0, NUMA_NO_NODE,
++				    MODULES_END, gfp_mask,
++				    PAGE_KERNEL, VM_DELAY_KMEMLEAK, NUMA_NO_NODE,
+ 				    __builtin_return_address(0));
+-	if (p && (kasan_module_alloc(p, size) < 0)) {
++	if (p && (kasan_module_alloc(p, size, gfp_mask) < 0)) {
+ 		vfree(p);
+ 		return NULL;
+ 	}
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index d8783b682669..89c99e5e67de 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -474,12 +474,12 @@ static inline void kasan_populate_early_vm_area_shadow(void *start,
+  * allocations with real shadow memory. With KASAN vmalloc, the special
+  * case is unnecessary, as the work is handled in the generic case.
+  */
+-int kasan_module_alloc(void *addr, size_t size);
++int kasan_module_alloc(void *addr, size_t size, gfp_t gfp_mask);
+ void kasan_free_shadow(const struct vm_struct *vm);
+ 
+ #else /* (CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS) && !CONFIG_KASAN_VMALLOC */
+ 
+-static inline int kasan_module_alloc(void *addr, size_t size) { return 0; }
++static inline int kasan_module_alloc(void *addr, size_t size, gfp_t gfp_mask) { return 0; }
+ static inline void kasan_free_shadow(const struct vm_struct *vm) {}
+ 
+ #endif /* (CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS) && !CONFIG_KASAN_VMALLOC */
+diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+index 6e022cc712e6..56d2b7828b31 100644
+--- a/include/linux/vmalloc.h
++++ b/include/linux/vmalloc.h
+@@ -28,6 +28,13 @@ struct notifier_block;		/* in notifier.h */
+ #define VM_MAP_PUT_PAGES	0x00000200	/* put pages and free array in vfree */
+ #define VM_NO_HUGE_VMAP		0x00000400	/* force PAGE_SIZE pte mapping */
+ 
++#if defined(CONFIG_KASAN) && (defined(CONFIG_KASAN_GENERIC) || \
++	defined(CONFIG_KASAN_SW_TAGS)) && !defined(CONFIG_KASAN_VMALLOC)
++#define VM_DELAY_KMEMLEAK	0x00000800	/* delay kmemleak object create */
++#else
++#define VM_DELAY_KMEMLEAK	0
++#endif
++
+ /*
+  * VM_KASAN is used slightly differently depending on CONFIG_KASAN_VMALLOC.
+  *
+diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
+index 4a4929b29a23..2ade2f484562 100644
+--- a/mm/kasan/shadow.c
++++ b/mm/kasan/shadow.c
+@@ -498,7 +498,7 @@ void kasan_release_vmalloc(unsigned long start, unsigned long end,
+ 
+ #else /* CONFIG_KASAN_VMALLOC */
+ 
+-int kasan_module_alloc(void *addr, size_t size)
++int kasan_module_alloc(void *addr, size_t size, gfp_t gfp_mask)
+ {
+ 	void *ret;
+ 	size_t scaled_size;
+@@ -520,9 +520,14 @@ int kasan_module_alloc(void *addr, size_t size)
+ 			__builtin_return_address(0));
+ 
+ 	if (ret) {
++		struct vm_struct *vm = find_vm_area(addr);
+ 		__memset(ret, KASAN_SHADOW_INIT, shadow_size);
+-		find_vm_area(addr)->flags |= VM_KASAN;
++		vm->flags |= VM_KASAN;
+ 		kmemleak_ignore(ret);
++
++		if (vm->flags & VM_DELAY_KMEMLEAK)
++			kmemleak_vmalloc(vm, size, gfp_mask);
++
+ 		return 0;
+ 	}
+ 
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index d2a00ad4e1dd..23c595b15839 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -3074,7 +3074,8 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
+ 	clear_vm_uninitialized_flag(area);
+ 
+ 	size = PAGE_ALIGN(size);
+-	kmemleak_vmalloc(area, size, gfp_mask);
++	if (!(vm_flags & VM_DELAY_KMEMLEAK))
++		kmemleak_vmalloc(area, size, gfp_mask);
+ 
+ 	return addr;
+ 
+-- 
+2.27.0
+
