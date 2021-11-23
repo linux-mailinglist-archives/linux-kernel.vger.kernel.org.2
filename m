@@ -2,316 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D9D459D75
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:06:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B159459D77
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234575AbhKWIJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 03:09:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234199AbhKWIJg (ORCPT
+        id S234598AbhKWIKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 03:10:05 -0500
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:65522 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234199AbhKWIKD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 03:09:36 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C54C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 00:06:28 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id u18so37416745wrg.5
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 00:06:28 -0800 (PST)
+        Tue, 23 Nov 2021 03:10:03 -0500
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AN6Z4XS031836;
+        Tue, 23 Nov 2021 08:06:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=b3cwEePmPAptyyiFR2PyspCI/+7WkzSxiB1LJszw/XY=;
+ b=fltPXathy2R92uPFtlUkRaMagvbZGAZtw2nM6IhTRV5PvB2PpSht1iteFCpoXz1oCD/I
+ c+RXMkkF+gcKecoisd8XR9ZePQvbc61Wn4PZmA681zRAE2kTLxwOkgMMhAhJMPXvpLDD
+ FGCtkshzhnVhN9gyrYDUhQlC9rTtIEcSsi2BHeULK8i+biUwSIi9wqkVNr319JOyoUNC
+ 6ufAQwHKIyu6g0mfePNIK0ukSXlxNQ+scFY9AbsHkxVH3cH/uZ1TO7TxUlZg4p7ADEMT
+ hxHGdrwOvbjfa7Elo4jY0hmXjnPnNE+IXWdenPh2Ow2j8PS0IPdZxjEbSHVlP6OxTLs3 tg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3cg461fg7x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Nov 2021 08:06:46 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AN80aWU134840;
+        Tue, 23 Nov 2021 08:06:45 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2171.outbound.protection.outlook.com [104.47.56.171])
+        by userp3030.oracle.com with ESMTP id 3cep4y0mqa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Nov 2021 08:06:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QjbLO9lo94UKko/QFrxEkJiIfGrN7WAfgYzNadgAiHuknkXJvmwpgXn3YD1Jal6TKiswlQYpdMu+lt8i+yEZimZm94LyFqjUHD9FLmlMqgtIdkvsyZ3DwZor/zNqLKLstxq0RPzfc+EvGPBi917o5F1trscL+t0xuyZfuZ2/TWAYePAQlhw78wQ+KzQXVLPvKLRfLiZMtJ0mG+afsiZeK56nb6/+wBNzzndeR55gm4CCN/rl0hZfJ4ddchGIGmvfkSNZryIT2GxYn6ZRkRZs0j22s/0A9QFc32bOuMScqDgNqdWyKRhyyi47GbxlOMeQWsO9SUk4iDAQbggEo0zzqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=b3cwEePmPAptyyiFR2PyspCI/+7WkzSxiB1LJszw/XY=;
+ b=BpvjcpY3bxnRBFWIFi8J3YutHoXUfpYcoCFC9JvT0y/ppb7YqAdN0r3/UMl21DuXxAnPGgo7Zm9EzG6YPGHLWgJ1c+CAHdNwyNBTa0rHgcJyPZcQuepkmE8M5jgiS6RJ88ym3duAKEByBOUyYtF5xETMr4LmICzB/XD6uyTK0KbAKaI1I010MAWt7RUZEJ1hgYrCDgVYNjKitIrDDv40bWUbzilof1dqiyaRMiuMi/nbfTvxavoz4OPCca5qp2HqgiIDBvidGYE5jGRTzLH5kn92L4jKxLeVaP7iTEnKfjG0+yVF435M3nImiWV3nt65qCvyGipVUGRyWkoCVCFDJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9Dc9IyqXO7Wm3+bDtKtLtx9+DbBZ47LkjAeuYVgRscE=;
-        b=uyE143lDDpEzHULTmTWN3E6pSz0XnoCTz9jlrWpHMlE6TbfSeOBjEgvIM9577xSgXj
-         BBxJ0zrcoG5tqvWdYwTXWCO29y0BUU7yvmo35N2IaN9UaKoj8HQFcImmcUSTmURsGlFf
-         5gygDqK3dkkC05wLYASGKJyOX7LLOmYDK/P+hGqZsq95cuzLi6xbVTvafUq1PCqqcBU7
-         vVdZupRVVNvlF21oKydJsqvF/1K0NaWazGmdwvwj3dYbXh0Bj+VG5pXt8NsBQLK+l2ij
-         FPhQJKHGkPytqV1mIuEqsA28nV332n2VHVkXtDC+dK3axYh7V+JwA/u8N35m7QeDpJok
-         hKqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9Dc9IyqXO7Wm3+bDtKtLtx9+DbBZ47LkjAeuYVgRscE=;
-        b=3ZsgJHyiO3pRGj09WytsW2n0wOPVbxESMhorQESACCr2eB225sLHFL+GneVvOLhWWJ
-         5Q2/N33tXlEftJqvprZse2bvz7ajNOzqLnd4bNurP6Fvsmo0UfwvwytyQejAFu9m0HOe
-         anyWs+ZQ8m4fb3Z1Z/rEFOzSUZglPoMbbkdVd2Mbfoz6/QsNs+2huFCy9ft+rIKak6zT
-         imUvilWE+3kyDMkUdnf4aJHf54X8u7wt77IrbaafRdgqekU/RjxqMWrkKhb5yRUDZOqE
-         myCzJx19H9Kn9Nn2D3isTw2qDvImcggeLSngV51aJc9d3in5GKYxaMvr2CR2/wgsBKYY
-         3OSg==
-X-Gm-Message-State: AOAM5315dBJ0tOo/vUNnm8WzMWrO9uWu1AAEa5or3SCokFl7cAHDsLxO
-        ZCNhpHJjvcKION81h9+aCcUsgRD77YYVJO6JWiz1sDqJsXsGZA==
-X-Google-Smtp-Source: ABdhPJw/0TlGByNPXLRpWckwAfeK5n1U/QSPywu8h+JqZ5aS4wDj0Pv0sWPe4vPMhb02puhJ/NUfbfRfX4m2azGkTRk=
-X-Received: by 2002:adf:8165:: with SMTP id 92mr5106482wrm.199.1637654787221;
- Tue, 23 Nov 2021 00:06:27 -0800 (PST)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=b3cwEePmPAptyyiFR2PyspCI/+7WkzSxiB1LJszw/XY=;
+ b=vX6Br9ETwDS6ZrbRrZKnfc7LBRul6WK7MfOpkfMlqL330fpLpbFlLQ3oCfuwiA/LXkLZ+duX5OAIvRB1vPUYBG+2I3hJhHfayPb+NRIBtdWEdtGWCrZKV+idf5ew5hOEy/BRnkw7Zb5Jgs9Sl4IinE0ehNryvc7HM3S2/ygpHAE=
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by CO6PR10MB5553.namprd10.prod.outlook.com
+ (2603:10b6:303:140::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.21; Tue, 23 Nov
+ 2021 08:06:43 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::495f:a05d:ba7a:682]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::495f:a05d:ba7a:682%6]) with mapi id 15.20.4713.026; Tue, 23 Nov 2021
+ 08:06:43 +0000
+Date:   Tue, 23 Nov 2021 11:06:21 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Vihas Mak <makvihas@gmail.com>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        martin@kaiser.cx, paskripkin@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: r8188eu: remove unnecessary NULL check
+Message-ID: <20211123080621.GC6514@kadam>
+References: <20211122195350.GA166134@makvihas>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211122195350.GA166134@makvihas>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JN2P275CA0034.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::22)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-References: <20211118083912.981995-1-atishp@rivosinc.com> <20211118083912.981995-6-atishp@rivosinc.com>
-In-Reply-To: <20211118083912.981995-6-atishp@rivosinc.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Tue, 23 Nov 2021 13:36:16 +0530
-Message-ID: <CAAhSdy1V6cUYBmpTz8tT0gMg7=ZP1hQ25_zVdPg56TtnegLriw@mail.gmail.com>
-Subject: Re: [PATCH v5 5/5] RISC-V: KVM: Add SBI HSM extension in KVM
-To:     Atish Patra <atishp@rivosinc.com>
-Cc:     "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        kvm-riscv@lists.infradead.org, KVM General <kvm@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>
-Content-Type: text/plain; charset="UTF-8"
+Received: from kadam (102.222.70.114) by JN2P275CA0034.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend Transport; Tue, 23 Nov 2021 08:06:36 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3bfb3ad7-0dae-43d5-24ca-08d9ae582f6d
+X-MS-TrafficTypeDiagnostic: CO6PR10MB5553:
+X-Microsoft-Antispam-PRVS: <CO6PR10MB5553579346164D811D542A958E609@CO6PR10MB5553.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fil94GZjvh5zqFHaToqsFJNkKOBAT9uozhX/divu7qQrh1FPfC/Xoh09SGQn8cHYdzOt5PlyyDjrhLM1cwYzuNeG5HRc/tcMAJW0+P6uZt4nhnIIlyfszsQgEN/59nxtkr456/KBQPoujnc2W7buZk1SaTXb0qw4iPpTXfXNcwylegPCxlrglUjnUZIKuETV7PyvSk/lyirMAxB1oZBuf+NBktPOS0RhMh9TmPsEa6MGC74wHy5+XDX6kfNSLC/grvxbo4GyKSWhve6kfgfvI4UmsiBlVTo97WAUvunN/vnn57eEk60J1H7sWAa/RRyGebb2+lU71RFuZeA+R2s56O5B7Qgz6x0t/MP4NIxqYRhc/mJaDPsmzEikV6+eS7k++nZTwNB7rFwte1ZT46Ar6RSDL7BgLEW/xue/9D1EMzLGvneJghV0iDGwDYaZK8Wcwhigk78fksC+lamwzoeKZALp2WiM2rNMGFhpaQrozqZJ2OyjNzD805ABatEftAdUE8CFBz8WWbYLayC+Fc7OhrnBW0hGg3H46JCC7IEUtikeE3scADWm4keevgqm94WDj+bZ6PdxJPh15uRgisphteNWIefIr8LJORSnN9KpK2t6EJMVK15HSwHuT38PPSGBYdgYGwvi6vXhXxWsproCGc8xChjgrKfkd/IMLhVoU79ltDO4caeuA2oYSFnoYcO8ePOkh0shG7nTRMl29KdJUQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(26005)(508600001)(33656002)(86362001)(38350700002)(38100700002)(1076003)(5660300002)(9576002)(83380400001)(66946007)(956004)(52116002)(4326008)(6666004)(316002)(6496006)(6916009)(66556008)(186003)(44832011)(8676002)(9686003)(33716001)(2906002)(66476007)(55016003)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Pbk17Qmwg+XOuY7zCZKXuzE9t7GSlZm5PPrSps4wdIBu33fh+g5V98KXPL5h?=
+ =?us-ascii?Q?fYovxo2ZuUv9kS6a93+C/LPG9I9ifJizhuYDGPnHMQkdL2RdcawYdm5AbWAE?=
+ =?us-ascii?Q?GvLKb4V2sw8CWHjLLqNA12UU8aV9WzlMNrKHYVfBRYR3CYYxbMJYqX4Y0TbB?=
+ =?us-ascii?Q?ejBic3kMi81WlQmjGr9twKr9KXN+MOkjATFiBoLP38SzWfWAZe4GYPQI/p2Y?=
+ =?us-ascii?Q?iHEUBxzJGUTnIuhZpvp7Xl6PF7hPGWhsJzrckZ+VJkS27ETQgUhcXGdsTBz+?=
+ =?us-ascii?Q?dMlNetl02xq1ys246OcjkKHfHYWnUE/tVBtcQEPA9sto191P06isUCQTsOgn?=
+ =?us-ascii?Q?8sk3dxyl6uNo3AALzf7V9VPI23yPSnd3+/XgnXvuKWYVuMx5cLpw7gAyCkag?=
+ =?us-ascii?Q?7Q4uSh1L/IsbNmy5IzP4GcnIfWR38EifHnuzYVAaFElAyoBuZwZsnMVMJAUs?=
+ =?us-ascii?Q?IE4iVOyYNsu3xh6lPpe1yXMo4omVm9cAlgSSakuPamybfaQJZWSMI4jBGsua?=
+ =?us-ascii?Q?2kWVX0G22T1mOXIfxjJ2jC8g0LXNU6QHc7I4QLfX3lAFW5c6v4Y7/jbTSpzH?=
+ =?us-ascii?Q?lXXsK5bYNwyWVSDjZmy9pOV9Fv/4OgcgV3VqtAFij8rpelPlFT5RkB1bf0dZ?=
+ =?us-ascii?Q?fFHh8SeaUSXBgXbjW5kkShqWOzS/q9lx9kwnp21mbQXvJeU1mUl5f8FA5Vt/?=
+ =?us-ascii?Q?Th7SrVyRLb5C5NujIp3Dy1tb1CZ287s4xdle06Bhk3XCB2fnZrpEF8eMd6j7?=
+ =?us-ascii?Q?WbSYCfv9BcmuZh7rkr67nZSAD0iC4ONxMA9E2yrtjyyTLyOKU8oOR77udsGr?=
+ =?us-ascii?Q?HfvxKoLtdSb4NpUC1YNWEciz/ItI+TrS5UOfgt7HkD0x9idtAEAH/RMQLKkv?=
+ =?us-ascii?Q?DAZAHgP8xk0loQrC9SIljyX1Pnqdk6hhvRJWOfMEnMinFEwDWrWx4FpALRKQ?=
+ =?us-ascii?Q?kk+xDy4YdNx2z1Wh4L1jX7EFeiO3SzhwIVY/kCYWI+FI7HIKZ3315wFhnW8K?=
+ =?us-ascii?Q?vT0oQMNxa6qGB2y+S/zJTnTIdwnQ4YDLbK/Lfu6wOxy92ZI9PvSsJvfrKDby?=
+ =?us-ascii?Q?6f3K3lTyOXxt4H5VeAkEcwUMUi/Do1OFn3vwtL8jDc5hZCynwP+zL/0pCChN?=
+ =?us-ascii?Q?GXzHYes/MbvEJaBvhfaxilugU//xDi6roY3tPMF1oMKW6FPaxue7rlo4VFXN?=
+ =?us-ascii?Q?t/U6kbv5n1Rg7lx1PtV+2oTC1tLtGf0LHFuDK8uc0UZ3t+LYPc4hQaRdH4Dv?=
+ =?us-ascii?Q?adsni9gooYWe622UTks5yO8Jox6x2iZXNFG0YyovM8zUeOfhtzprFghQTABW?=
+ =?us-ascii?Q?pnO4otb2Yh7Kx6w7nWehYXkjAg2orQthgaElOoaxHJp35kKpdGsuppB/2daK?=
+ =?us-ascii?Q?t3J3Yi/x+Zf/7eojBTYUxtXNwCHDBDSNLY3YCRxsyfaZZVhK2qzYUxh33nDE?=
+ =?us-ascii?Q?Tje6QXorFFnqofvxcRMzMizqS1rlJLN/mcW4wbPLqR5/QGjIRwVEWVaR1ecw?=
+ =?us-ascii?Q?n5VauAaEWJgLyKTc4ZLDhR2QMagEOvKz+8qRoDqBYIMAwy4o0m+CrEfvoIEm?=
+ =?us-ascii?Q?6tcJhbIBLP0gGgW/57cADPkpEGv8x8Ha0i/rEANqzkc+R1JdoMPdffHt/V36?=
+ =?us-ascii?Q?tYpnagcjbZw14ac4NKYXM7kEB8stXplK+UDj8McTlBPTOH6JklmC5x6PNAXp?=
+ =?us-ascii?Q?1HIGYGXNy7ShCWfHfP8oK2oy9Ms=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3bfb3ad7-0dae-43d5-24ca-08d9ae582f6d
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2021 08:06:43.1219
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GMoHl4RNgr80F3XVuBqiCh7A+/A7mi9T34a3MDsCoKrX4HssIqQnml02CxVfCUiP5dWGql22PwlyStu3cB3OwhHKwAmwCZI1w5UjLtp8ENc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR10MB5553
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10176 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
+ mlxlogscore=999 bulkscore=0 mlxscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111230042
+X-Proofpoint-GUID: AgK8zNLX9DVWJ9kaGrofdeFWHmd2qk46
+X-Proofpoint-ORIG-GUID: AgK8zNLX9DVWJ9kaGrofdeFWHmd2qk46
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 2:10 PM Atish Patra <atishp@rivosinc.com> wrote:
->
-> From: Atish Patra <atish.patra@wdc.com>
->
-> SBI HSM extension allows OS to start/stop harts any time. It also allows
-> ordered booting of harts instead of random booting.
->
-> Implement SBI HSM exntesion and designate the vcpu 0 as the boot vcpu id.
-> All other non-zero non-booting vcpus should be brought up by the OS
-> implementing HSM extension. If the guest OS doesn't implement HSM
-> extension, only single vcpu will be available to OS.
->
-> Reviewed-by: Anup Patel <anup.patel@wdc.com>
-> Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> Signed-off-by: Atish Patra <atishp@rivosinc.com>
-
-I have queued this for 5.17
-
-Thanks,
-Anup
-
+On Tue, Nov 23, 2021 at 01:23:50AM +0530, Vihas Mak wrote:
+> remove unnecessary NULL check surrounding rtw_free_netdev(), as the check
+> is already performed inside rtw_free_netdev() in
+> drivers/staging/r8188eu/os_dep/osdep_service.c.
+> 
+> Signed-off-by: Vihas Mak <makvihas@gmail.com>
 > ---
->  arch/riscv/include/asm/sbi.h  |   1 +
->  arch/riscv/kvm/Makefile       |   1 +
->  arch/riscv/kvm/vcpu.c         |  23 ++++++++
->  arch/riscv/kvm/vcpu_sbi.c     |   4 ++
->  arch/riscv/kvm/vcpu_sbi_hsm.c | 105 ++++++++++++++++++++++++++++++++++
->  5 files changed, 134 insertions(+)
->  create mode 100644 arch/riscv/kvm/vcpu_sbi_hsm.c
->
-> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-> index 4f9370b6032e..79af25c45c8d 100644
-> --- a/arch/riscv/include/asm/sbi.h
-> +++ b/arch/riscv/include/asm/sbi.h
-> @@ -90,6 +90,7 @@ enum sbi_hsm_hart_status {
->  #define SBI_ERR_INVALID_PARAM  -3
->  #define SBI_ERR_DENIED         -4
->  #define SBI_ERR_INVALID_ADDRESS        -5
-> +#define SBI_ERR_ALREADY_AVAILABLE -6
->
->  extern unsigned long sbi_spec_version;
->  struct sbiret {
-> diff --git a/arch/riscv/kvm/Makefile b/arch/riscv/kvm/Makefile
-> index 4757ae158bf3..aaf181a3d74b 100644
-> --- a/arch/riscv/kvm/Makefile
-> +++ b/arch/riscv/kvm/Makefile
-> @@ -26,4 +26,5 @@ kvm-y += vcpu_sbi.o
->  kvm-$(CONFIG_RISCV_SBI_V01) += vcpu_sbi_v01.o
->  kvm-y += vcpu_sbi_base.o
->  kvm-y += vcpu_sbi_replace.o
-> +kvm-y += vcpu_sbi_hsm.o
->  kvm-y += vcpu_timer.o
-> diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
-> index e3d3aed46184..50158867406d 100644
-> --- a/arch/riscv/kvm/vcpu.c
-> +++ b/arch/riscv/kvm/vcpu.c
-> @@ -53,6 +53,17 @@ static void kvm_riscv_reset_vcpu(struct kvm_vcpu *vcpu)
->         struct kvm_vcpu_csr *reset_csr = &vcpu->arch.guest_reset_csr;
->         struct kvm_cpu_context *cntx = &vcpu->arch.guest_context;
->         struct kvm_cpu_context *reset_cntx = &vcpu->arch.guest_reset_context;
-> +       bool loaded;
-> +
-> +       /**
-> +        * The preemption should be disabled here because it races with
-> +        * kvm_sched_out/kvm_sched_in(called from preempt notifiers) which
-> +        * also calls vcpu_load/put.
-> +        */
-> +       get_cpu();
-> +       loaded = (vcpu->cpu != -1);
-> +       if (loaded)
-> +               kvm_arch_vcpu_put(vcpu);
->
->         memcpy(csr, reset_csr, sizeof(*csr));
->
-> @@ -64,6 +75,11 @@ static void kvm_riscv_reset_vcpu(struct kvm_vcpu *vcpu)
->
->         WRITE_ONCE(vcpu->arch.irqs_pending, 0);
->         WRITE_ONCE(vcpu->arch.irqs_pending_mask, 0);
-> +
-> +       /* Reset the guest CSRs for hotplug usecase */
-> +       if (loaded)
-> +               kvm_arch_vcpu_load(vcpu, smp_processor_id());
-> +       put_cpu();
+>  drivers/staging/r8188eu/os_dep/usb_intf.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
+> index 5a35d9fe3fc9..392bd7868519 100644
+> --- a/drivers/staging/r8188eu/os_dep/usb_intf.c
+> +++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
+> @@ -466,8 +466,7 @@ static void rtw_usb_if1_deinit(struct adapter *if1)
+>  		if1->hw_init_completed);
+>  	rtw_handle_dualmac(if1, 0);
+>  	rtw_free_drv_sw(if1);
+> -	if (pnetdev)
+> -		rtw_free_netdev(pnetdev);
+> +	rtw_free_netdev(pnetdev);
 >  }
->
->  int kvm_arch_vcpu_precreate(struct kvm *kvm, unsigned int id)
-> @@ -100,6 +116,13 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
->
->  void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu)
->  {
-> +       /**
-> +        * vcpu with id 0 is the designated boot cpu.
-> +        * Keep all vcpus with non-zero cpu id in power-off state so that they
-> +        * can brought to online using SBI HSM extension.
-> +        */
-> +       if (vcpu->vcpu_idx != 0)
-> +               kvm_riscv_vcpu_power_off(vcpu);
->  }
->
->  void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
-> diff --git a/arch/riscv/kvm/vcpu_sbi.c b/arch/riscv/kvm/vcpu_sbi.c
-> index cf284e080f3e..f62d25bc9733 100644
-> --- a/arch/riscv/kvm/vcpu_sbi.c
-> +++ b/arch/riscv/kvm/vcpu_sbi.c
-> @@ -25,6 +25,8 @@ static int kvm_linux_err_map_sbi(int err)
->                 return SBI_ERR_INVALID_ADDRESS;
->         case -EOPNOTSUPP:
->                 return SBI_ERR_NOT_SUPPORTED;
-> +       case -EALREADY:
-> +               return SBI_ERR_ALREADY_AVAILABLE;
->         default:
->                 return SBI_ERR_FAILURE;
->         };
-> @@ -43,6 +45,7 @@ extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_base;
->  extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_time;
->  extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_ipi;
->  extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_rfence;
-> +extern const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_hsm;
->
->  static const struct kvm_vcpu_sbi_extension *sbi_ext[] = {
->         &vcpu_sbi_ext_v01,
-> @@ -50,6 +53,7 @@ static const struct kvm_vcpu_sbi_extension *sbi_ext[] = {
->         &vcpu_sbi_ext_time,
->         &vcpu_sbi_ext_ipi,
->         &vcpu_sbi_ext_rfence,
-> +       &vcpu_sbi_ext_hsm,
->  };
->
->  void kvm_riscv_vcpu_sbi_forward(struct kvm_vcpu *vcpu, struct kvm_run *run)
-> diff --git a/arch/riscv/kvm/vcpu_sbi_hsm.c b/arch/riscv/kvm/vcpu_sbi_hsm.c
-> new file mode 100644
-> index 000000000000..2e383687fa48
-> --- /dev/null
-> +++ b/arch/riscv/kvm/vcpu_sbi_hsm.c
-> @@ -0,0 +1,105 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2021 Western Digital Corporation or its affiliates.
-> + *
-> + * Authors:
-> + *     Atish Patra <atish.patra@wdc.com>
-> + */
-> +
-> +#include <linux/errno.h>
-> +#include <linux/err.h>
-> +#include <linux/kvm_host.h>
-> +#include <asm/csr.h>
-> +#include <asm/sbi.h>
-> +#include <asm/kvm_vcpu_sbi.h>
-> +
-> +static int kvm_sbi_hsm_vcpu_start(struct kvm_vcpu *vcpu)
-> +{
-> +       struct kvm_cpu_context *reset_cntx;
-> +       struct kvm_cpu_context *cp = &vcpu->arch.guest_context;
-> +       struct kvm_vcpu *target_vcpu;
-> +       unsigned long target_vcpuid = cp->a0;
-> +
-> +       target_vcpu = kvm_get_vcpu_by_id(vcpu->kvm, target_vcpuid);
-> +       if (!target_vcpu)
-> +               return -EINVAL;
-> +       if (!target_vcpu->arch.power_off)
-> +               return -EALREADY;
-> +
-> +       reset_cntx = &target_vcpu->arch.guest_reset_context;
-> +       /* start address */
-> +       reset_cntx->sepc = cp->a1;
-> +       /* target vcpu id to start */
-> +       reset_cntx->a0 = target_vcpuid;
-> +       /* private data passed from kernel */
-> +       reset_cntx->a1 = cp->a2;
-> +       kvm_make_request(KVM_REQ_VCPU_RESET, target_vcpu);
-> +
-> +       kvm_riscv_vcpu_power_on(target_vcpu);
-> +
-> +       return 0;
-> +}
-> +
-> +static int kvm_sbi_hsm_vcpu_stop(struct kvm_vcpu *vcpu)
-> +{
-> +       if (vcpu->arch.power_off)
-> +               return -EINVAL;
-> +
-> +       kvm_riscv_vcpu_power_off(vcpu);
-> +
-> +       return 0;
-> +}
-> +
-> +static int kvm_sbi_hsm_vcpu_get_status(struct kvm_vcpu *vcpu)
-> +{
-> +       struct kvm_cpu_context *cp = &vcpu->arch.guest_context;
-> +       unsigned long target_vcpuid = cp->a0;
-> +       struct kvm_vcpu *target_vcpu;
-> +
-> +       target_vcpu = kvm_get_vcpu_by_id(vcpu->kvm, target_vcpuid);
-> +       if (!target_vcpu)
-> +               return -EINVAL;
-> +       if (!target_vcpu->arch.power_off)
-> +               return SBI_HSM_HART_STATUS_STARTED;
-> +       else
-> +               return SBI_HSM_HART_STATUS_STOPPED;
-> +}
-> +
-> +static int kvm_sbi_ext_hsm_handler(struct kvm_vcpu *vcpu, struct kvm_run *run,
-> +                                  unsigned long *out_val,
-> +                                  struct kvm_cpu_trap *utrap,
-> +                                  bool *exit)
-> +{
-> +       int ret = 0;
-> +       struct kvm_cpu_context *cp = &vcpu->arch.guest_context;
-> +       struct kvm *kvm = vcpu->kvm;
-> +       unsigned long funcid = cp->a6;
-> +
-> +       switch (funcid) {
-> +       case SBI_EXT_HSM_HART_START:
-> +               mutex_lock(&kvm->lock);
-> +               ret = kvm_sbi_hsm_vcpu_start(vcpu);
-> +               mutex_unlock(&kvm->lock);
-> +               break;
-> +       case SBI_EXT_HSM_HART_STOP:
-> +               ret = kvm_sbi_hsm_vcpu_stop(vcpu);
-> +               break;
-> +       case SBI_EXT_HSM_HART_STATUS:
-> +               ret = kvm_sbi_hsm_vcpu_get_status(vcpu);
-> +               if (ret >= 0) {
-> +                       *out_val = ret;
-> +                       ret = 0;
-> +               }
-> +               break;
-> +       default:
-> +               ret = -EOPNOTSUPP;
-> +       }
-> +
-> +       return ret;
-> +}
-> +
-> +const struct kvm_vcpu_sbi_extension vcpu_sbi_ext_hsm = {
-> +       .extid_start = SBI_EXT_HSM,
-> +       .extid_end = SBI_EXT_HSM,
-> +       .handler = kvm_sbi_ext_hsm_handler,
-> +};
-> --
-> 2.33.1
->
->
-> --
-> kvm-riscv mailing list
-> kvm-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/kvm-riscv
+
+I'm not a huge fan of these sorts of patches.  They don't make the code
+more readable because they hide the complexity.
+
+Occasionally we will get a forest cobra in our yard and everyone is
+screaming and panicking.  I'm like, "Calm down.  Once you've spotted the
+snake, even a deadly snake, then the danger has passed."  You can just
+stay two or three meters away and you're fine.  Call a snake catcher.
+
+What you're doing here is you've got a potential NULL dereference which
+is the snake.  And this patch is saying, "Snakes are so messy!  Let's
+hide it in the bushes next to the sidewalk where no one can see it."
+
+Hash tag, folksy wisdom.  #snakes
+
+On the other hand, it might be worth checking if "pnetdev" can even be
+NULL at this point, and then deleting both of the NULL checks.  That
+would be a very good clean up.
+
+regards,
+dan carpenter
