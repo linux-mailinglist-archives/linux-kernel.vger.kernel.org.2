@@ -2,207 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D153745A5E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 287F145A5B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:31:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238319AbhKWOkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 09:40:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36774 "EHLO
+        id S238184AbhKWOeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 09:34:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238276AbhKWOkK (ORCPT
+        with ESMTP id S237964AbhKWOeK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 09:40:10 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE7DC061714;
-        Tue, 23 Nov 2021 06:37:02 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id m24so17219075pls.10;
-        Tue, 23 Nov 2021 06:37:02 -0800 (PST)
+        Tue, 23 Nov 2021 09:34:10 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F53C061574;
+        Tue, 23 Nov 2021 06:31:02 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id e3so92950947edu.4;
+        Tue, 23 Nov 2021 06:31:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Ak926pCUpNKs+47FmVVMlYhwNY9vAunl0LxYrKNKSNw=;
-        b=QxxMavfWDAJAz7jNhCS3lNTNa0flyv5hNihdQPccb5eNCjHF55hQpWrnsEQkCVJghc
-         7GPdcT9HSD5QViryH0UX4Aun2WA+mGBa3Amr3ad9iSXIuSGQC24/bMpDjGgiFb4k/a9a
-         ZAYNXQoeZmxJm3HiW7hj+JkREkiGe8NUYb/+S8lBQGh4bi3TU+N+GfremM9Ba5JS8SPD
-         8wNuTIzD34QP1Pzt5TU42nLmCmWJm3r5yxYzZS/tIc11jyeaKntaaRsqcB2DjiSxqBe2
-         zqVd2p6oiNp4mOxg/CZiswjoXfCt/DOMgeHrMN9AL4KvPtBfL8X+QWcwzsFyPSdJLLkC
-         5TOA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=//l1LUXCh3L79CgRUnueVTDppas02c3huxdsDhLLifA=;
+        b=T15xAre4jIFB3U4IVeTooq7H+YdPwnaWfB3BNzoyFz/keHLFQ5vkBDnTutv6tbatV+
+         L66H1fyD/O1kAhKootlAKhntL9Gw1QyJX0WOsQxy9s2dI2hRRfJcQUYdkaJs5U78xvKP
+         jzu+hLkJTXoig0uIhtNXKAsFE7jN4A/HrbQJru5aEOxdpxKkWzyHNwym2LBv5Mfb2cOQ
+         JtDaxwk8uJVdFR816kmjk1lrHxJ46S/BWe7m9YWLRfHCe+q0YqWjXxMAgD4iOZkKCrE+
+         s3OeQ6CL2/BqKr4lbamObk4i+gdw4qcyu0rHMaDcxS1MGO0viyWsobSSR6dBTtVrFIQ6
+         5oqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Ak926pCUpNKs+47FmVVMlYhwNY9vAunl0LxYrKNKSNw=;
-        b=sFGAdlQagtppb99w3GQ3jVDZn4EV/42BsWKCrOTDl4OwcSj0fJnyHhxmoV8kkr1V1f
-         ZxYasktru//6wTMRQVxSJOWysEz+HaPS2hkrYDzyIVwTkGxZrG4pb4Ul8kc8ZN9FON5k
-         9kAx3bqQF3aO46XBeyPq1friz0WGtf0cji/hVsDpn4vJcxVP1yepgDAWTEkBbzlxPoA5
-         BU63d44I+wSBjh+/cwMJ4YGpc7BW6B+z9kQegYvhQo8XKa+rhn1gF80vfY161Bo/StBp
-         9WqtfXNzESqUE/RtDECfTopFzWMGDMWGEehaZD6sr09VEt/hsIotc1VmVsjIEACFDMZk
-         Kv+Q==
-X-Gm-Message-State: AOAM531wCnDjFbpOU/QH3qkNgfiAYDTfNqr/tx7KZHj79hNsW0UUdDJ+
-        mTDyayJjY4gRJBbTSDbUh54=
-X-Google-Smtp-Source: ABdhPJxTU1w0vUGn7mvy7jQu/10DsjPZwfyCqNOGRf+62qAFrRBW+AJvObLD7wd2mtZecQ+9K9O66g==
-X-Received: by 2002:a17:90b:1e4e:: with SMTP id pi14mr3462656pjb.161.1637678221896;
-        Tue, 23 Nov 2021 06:37:01 -0800 (PST)
-Received: from ubuntu-Virtual-Machine.corp.microsoft.com ([2001:4898:80e8:1:af65:c3d4:6df:5a8b])
-        by smtp.gmail.com with ESMTPSA id j13sm11926127pfc.151.2021.11.23.06.37.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 06:37:01 -0800 (PST)
-From:   Tianyu Lan <ltykernel@gmail.com>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        luto@kernel.org, peterz@infradead.org, jgross@suse.com,
-        sstabellini@kernel.org, boris.ostrovsky@oracle.com,
-        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, joro@8bytes.org,
-        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        Tianyu.Lan@microsoft.com, thomas.lendacky@amd.com,
-        xen-devel@lists.xenproject.org, michael.h.kelley@microsoft.com
-Cc:     iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, vkuznets@redhat.com, brijesh.singh@amd.com,
-        konrad.wilk@oracle.com, parri.andrea@gmail.com,
-        dave.hansen@intel.com
-Subject: [PATCH V2 6/6] scsi: storvsc: Add Isolation VM support for storvsc driver
-Date:   Tue, 23 Nov 2021 09:30:37 -0500
-Message-Id: <20211123143039.331929-7-ltykernel@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211123143039.331929-1-ltykernel@gmail.com>
-References: <20211123143039.331929-1-ltykernel@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=//l1LUXCh3L79CgRUnueVTDppas02c3huxdsDhLLifA=;
+        b=Y0ji8PUxprtOiXVXlZjjl0WlUUnU11ESW7yGCOBKBUGRP+EPxdDlF4wzTPl+IPC8cv
+         xgZnSvf7BvgSHM7S9oFJlnx1n5iJaXPGzA83jaE1a2QWEwkaW0YKeUfM/nP7wZ/H4lIf
+         aF9lEszczmdDhzyv9D2uFj6/f/Vjk3N/4eqRCId1upkPZYJAbGkDOyQOkDzmBsqRej0U
+         tUxNh+HfxibY4736qg/fETEBvEM/LsyZ4FHb1yw43lx/sn9EAilZK+AtJxOlSDLWt2zb
+         DFpLfQNfBp90KnmlOOg3txwti5hTcpqVTOZHBjPpivqcKzrHXuvQjCBYGw3EKLf/N6eG
+         +OYA==
+X-Gm-Message-State: AOAM530xgmqj/cR4mpJIZ6GXznc49JWDTDSvJBNFbEFDe2k51LYf1PL0
+        IbrutUKw6yLUXhqpx0Az5qfJzP7QAW9TJKYLQk4=
+X-Google-Smtp-Source: ABdhPJzC/1N8se4FPNP9Y5+FSeWzRJdkD5hvVeDNCCJEzLv+I4Lel88R5WODTobQZTglCDcOaNS6Wg5RP1ONQ3xrsw0=
+X-Received: by 2002:a17:907:94c2:: with SMTP id dn2mr8088560ejc.325.1637677860221;
+ Tue, 23 Nov 2021 06:31:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211104161804.587250-1-aford173@gmail.com> <CAJ+vNU2jcWyCm3UyiOnvknS0t+mSdpaB+CgGWYO3jxXTa3LhRA@mail.gmail.com>
+ <CAHCN7xJrnZMQgXVMJg7MZdFMWyesf6Ph7HnfMH7-9bm1qODHFw@mail.gmail.com>
+ <CAJ+vNU32GXtbKWGQXoE7pkXU8FcKh+HQJJduwRbRJ0tC-d6GoA@mail.gmail.com>
+ <CAHCN7xLAm21zUJQ8s4s--+ygmeVY0qyo0WSLp7ZM9bT9R3sjxw@mail.gmail.com>
+ <CAOMZO5Am4P17mOXWrPs0ns9AwOXM_ZpBdzbYTYJfv_48Ea=BHg@mail.gmail.com>
+ <CAHCN7xLzR5LqqydC7uydsXQPFVn=nyqKD8ZEH3EjcPuwQky5WA@mail.gmail.com>
+ <CAOMZO5AnXDV3jdR6hP_+uqyss4KftzjahcrGq1XA37nGsfQedw@mail.gmail.com>
+ <CAHCN7xKJBHY1o94VDkBaXXFjMUm=5WoshddT4DVWD04aiPV8MA@mail.gmail.com>
+ <CAHCN7xKpjVWiTvXpYH11kaHX=0Figh=ALQS4qnUroGCu-q3NNA@mail.gmail.com>
+ <CAJ+vNU37=qPuuNaSsvRntKU5wbVZoOtS_tAx7En6EMGfKN=QLg@mail.gmail.com>
+ <82c5da8862abaa430ee52b57e15d29a67106d61f.camel@pengutronix.de>
+ <CAJ+vNU0ce1TTAHzT-ZE303ikmmwghutyObSQMJeHN8D0R8Gcdw@mail.gmail.com>
+ <CAHCN7x+k=C=fxFZYJK6qpUFNDSddVGvfYPPLZ_LNOvhW6RNxmg@mail.gmail.com> <129460de1d6b02ad16fdac16a1437c5b2cbb3975.camel@pengutronix.de>
+In-Reply-To: <129460de1d6b02ad16fdac16a1437c5b2cbb3975.camel@pengutronix.de>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Tue, 23 Nov 2021 08:30:49 -0600
+Message-ID: <CAHCN7x+yt_-mQ14A+xw1-Qd2ucSniUqT_wPyp-0OedwUp8UDjA@mail.gmail.com>
+Subject: Re: [PATCH V3 0/9] arm64: imx8mn: Enable more imx8m Nano functions
+To:     Lucas Stach <l.stach@pengutronix.de>
+Cc:     Tim Harvey <tharvey@gateworks.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        "Ariel D'Alessandro" <ariel.dalessandro@collabora.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Device Tree Mailing List <devicetree@vger.kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianyu Lan <Tianyu.Lan@microsoft.com>
+On Tue, Nov 23, 2021 at 8:24 AM Lucas Stach <l.stach@pengutronix.de> wrote:
+>
+> Am Dienstag, dem 23.11.2021 um 08:08 -0600 schrieb Adam Ford:
+> > On Mon, Nov 22, 2021 at 3:52 PM Tim Harvey <tharvey@gateworks.com> wrote:
+> > >
+> > > On Mon, Nov 22, 2021 at 10:20 AM Lucas Stach <l.stach@pengutronix.de> wrote:
+> > > >
+> > > > Am Montag, dem 22.11.2021 um 09:59 -0800 schrieb Tim Harvey:
+> > > > > On Sun, Nov 21, 2021 at 7:25 AM Adam Ford <aford173@gmail.com> wrote:
+> > > > > >
+> > > > > > On Sun, Nov 21, 2021 at 8:34 AM Adam Ford <aford173@gmail.com> wrote:
+> > > > > > >
+> > > > > > > On Sun, Nov 21, 2021 at 8:21 AM Fabio Estevam <festevam@gmail.com> wrote:
+> > > > > > > >
+> > > > > > > > Hi Adam,
+> > > > > > > >
+> > > > > > > > On Sun, Nov 21, 2021 at 11:17 AM Adam Ford <aford173@gmail.com> wrote:
+> > > > > > > >
+> > > > > > > > > I am using https://source.codeaurora.org/external/imx/imx-atf/log/?h=lf_v2.4
+> > > > > > > > >
+> > > > > > > > > Since the driver sending SMCC commands to ATF isn't doing that, I
+> > > > > > > > > assume it's safe to use the linux power-domain drivers with the ATF
+> > > > > > > > > from NXP's kernel.
+> > > > > > > > >
+> > > > > > > > > If you can point me to the repo you think I should be using, I'll give it a try.
+> > > > > > > >
+> > > > > > > > Do you know if the mainline TF-A repo v2.5 works too?
+> > > > > > > > https://github.com/ARM-software/arm-trusted-firmware/tree/v2.5
+> > > > > > >
+> > > > > > > That's good to know.
+> > > > > > >
+> > > > > > > I just built it into U-Boot:
+> > > > > > >
+> > > > > > > NOTICE:  BL31: v2.5(release):v2.5
+> > > > > > > NOTICE:  BL31: Built : 08:24:13, Nov 21 2021
+> > > > > > >
+> > > > > > > The Etnaviv driver is still loading without hanging
+> > > > > > >
+> > > > > > > root@beacon-imx8mn-kit:~# dmesg |grep -i etna
+> > > > > > > [   12.393936] etnaviv etnaviv: bound 38000000.gpu (ops gpu_ops [etnaviv])
+> > > > > > > [   12.400676] etnaviv-gpu 38000000.gpu: model: GC7000, revision: 6203
+> > > > > > > [   12.641297] [drm] Initialized etnaviv 1.3.0 20151214 for etnaviv on minor 0
+> > > > > > >
+> > > > > > >
+> > > > > >
+> > > > > > Tim,
+> > > > > >
+> > > > > > Which version of Nano do you have?  Not all Nano SoC's have a GPU from
+> > > > > > looking at the datasheet [1] .  I am using MIMX8MN2CVTIZAA (Nano Solo)
+> > > > > >
+> > > > > > [1] - https://www.nxp.com/docs/en/data-sheet/IMX8MNIEC.pdf
+> > > > > >
+> > > > >
+> > > > > Adam,
+> > > > >
+> > > > > The board I have here has MIMX8MN5CVTIZAA so i.MX 8M Nano QuadLite
+> > > > > with 'No GPU' as you expected.
+> > > > >
+> > > > > So I have to add the following to keep my board from hanging after your series:
+> > > > > diff --git a/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
+> > > > > b/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
+> > > > > index 236f425e1570..0d256a607b7c 100644
+> > > > > --- a/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
+> > > > > +++ b/arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dts
+> > > > > @@ -251,6 +251,10 @@
+> > > > >         };
+> > > > >  };
+> > > > >
+> > > > > +&gpu {
+> > > > > +       status = "disabled";
+> > > > > +};
+> > > > > +
+> > > > >  &i2c1 {
+> > > > >         clock-frequency = <100000>;
+> > > > >         pinctrl-names = "default";
+> > > > >
+> > > > > This situation is similar to the one I encountered with the
+> > > > > imx8mm-venice-gw7901 where adding the GPC node caused my board (which
+> > > > > did not power the GPU) to hang until I added disables to the
+> > > > > device-tree with commit 7973009235e2 ("arm64: dts:
+> > > > > imx8mm-venice-gw7901.dts: disable pgc_gpumix"). It feels painful to
+> > > > > have to add patches to keep things from hanging after additional
+> > > > > functionality is added to dt but perhaps that is more common than I
+> > > > > think esp for SoC's like IMX8M which have a lot of lingering support
+> > > > > still coming in.
+> > > > >
+> > > > Yea, it's unfortunate that those patches break your board, but I guess
+> > > > we need to accept this, while there is still a lot of feature work
+> > > > going on.
+> >
+> > There are a significant number of peripherals which are defined and
+> > marked as 'disabled' by default, so I don't think it's unreasonable to
+> > do that here.
+> > I'd like to propose we keep the default disabled and people who
+> > need/want the GPU enabled can turn it on.  Why waste the power if it's
+> > not needed?
+> >
+> Sure, if a significant number of chips has the GPU disabled, we might
+> want to keep it disabled in the base dtsi. With those variants it's
+> always a tradeoff, for example there are SKUs of the i.MX6 that had the
+> VPU disabled, but very few of those were in the field, so the VPUs are
+> enabled in the SoC base dtsi and only users of those special SKUs would
+> need to disable them in the board DT.
+>
+> The power argument isn't valid, as the kernel driver will suspend the
+> device when not needed, so there is no wasted power (aside from the
+> sort moment while the driver probes) with the GPU enabled.
+>
+> The rule of thumb for when a device is default enabled in the SoC dsti
+> has always been (at least for i.MX) that the peripheral must not have a
+> board level dependency. While a i2c controller obviously needs a i2c
+> bus connected on the board to fulfill its purpose, a GPU can be used as
+> color space converter or something like that with no board level
+> interaction. Now the line is a bit blurred by having multiple power
+> rails into the SoC, so one could argue that the GPUs and VPUs now have
+> some board level dependency on the i.MX8M*.
 
-In Isolation VM, all shared memory with host needs to mark visible
-to host via hvcall. vmbus_establish_gpadl() has already done it for
-storvsc rx/tx ring buffer. The page buffer used by vmbus_sendpacket_
-mpb_desc() still needs to be handled. Use DMA API(scsi_dma_map/unmap)
-to map these memory during sending/receiving packet and return swiotlb
-bounce buffer dma address. In Isolation VM, swiotlb  bounce buffer is
-marked to be visible to host and the swiotlb force mode is enabled.
+That makes sense.
 
-Set device's dma min align mask to HV_HYP_PAGE_SIZE - 1 in order to
-keep the original data offset in the bounce buffer.
+Do we defer to Shawn as the final arbiter as to whether or not it's
+enabled/disabled?  It would be nice to get Nano caught up in
+functionality as much as possible.
 
-Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
----
- drivers/scsi/storvsc_drv.c | 37 +++++++++++++++++++++----------------
- include/linux/hyperv.h     |  1 +
- 2 files changed, 22 insertions(+), 16 deletions(-)
+adam
 
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index 20595c0ba0ae..ae293600d799 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -21,6 +21,8 @@
- #include <linux/device.h>
- #include <linux/hyperv.h>
- #include <linux/blkdev.h>
-+#include <linux/dma-mapping.h>
-+
- #include <scsi/scsi.h>
- #include <scsi/scsi_cmnd.h>
- #include <scsi/scsi_host.h>
-@@ -1336,6 +1338,7 @@ static void storvsc_on_channel_callback(void *context)
- 					continue;
- 				}
- 				request = (struct storvsc_cmd_request *)scsi_cmd_priv(scmnd);
-+				scsi_dma_unmap(scmnd);
- 			}
- 
- 			storvsc_on_receive(stor_device, packet, request);
-@@ -1749,7 +1752,6 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
- 	struct hv_host_device *host_dev = shost_priv(host);
- 	struct hv_device *dev = host_dev->dev;
- 	struct storvsc_cmd_request *cmd_request = scsi_cmd_priv(scmnd);
--	int i;
- 	struct scatterlist *sgl;
- 	unsigned int sg_count;
- 	struct vmscsi_request *vm_srb;
-@@ -1831,10 +1833,11 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
- 	payload_sz = sizeof(cmd_request->mpb);
- 
- 	if (sg_count) {
--		unsigned int hvpgoff, hvpfns_to_add;
- 		unsigned long offset_in_hvpg = offset_in_hvpage(sgl->offset);
- 		unsigned int hvpg_count = HVPFN_UP(offset_in_hvpg + length);
--		u64 hvpfn;
-+		struct scatterlist *sg;
-+		unsigned long hvpfn, hvpfns_to_add;
-+		int j, i = 0;
- 
- 		if (hvpg_count > MAX_PAGE_BUFFER_COUNT) {
- 
-@@ -1848,21 +1851,22 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
- 		payload->range.len = length;
- 		payload->range.offset = offset_in_hvpg;
- 
-+		sg_count = scsi_dma_map(scmnd);
-+		if (sg_count < 0)
-+			return SCSI_MLQUEUE_DEVICE_BUSY;
- 
--		for (i = 0; sgl != NULL; sgl = sg_next(sgl)) {
-+		for_each_sg(sgl, sg, sg_count, j) {
- 			/*
--			 * Init values for the current sgl entry. hvpgoff
--			 * and hvpfns_to_add are in units of Hyper-V size
--			 * pages. Handling the PAGE_SIZE != HV_HYP_PAGE_SIZE
--			 * case also handles values of sgl->offset that are
--			 * larger than PAGE_SIZE. Such offsets are handled
--			 * even on other than the first sgl entry, provided
--			 * they are a multiple of PAGE_SIZE.
-+			 * Init values for the current sgl entry. hvpfns_to_add
-+			 * is in units of Hyper-V size pages. Handling the
-+			 * PAGE_SIZE != HV_HYP_PAGE_SIZE case also handles
-+			 * values of sgl->offset that are larger than PAGE_SIZE.
-+			 * Such offsets are handled even on other than the first
-+			 * sgl entry, provided they are a multiple of PAGE_SIZE.
- 			 */
--			hvpgoff = HVPFN_DOWN(sgl->offset);
--			hvpfn = page_to_hvpfn(sg_page(sgl)) + hvpgoff;
--			hvpfns_to_add =	HVPFN_UP(sgl->offset + sgl->length) -
--						hvpgoff;
-+			hvpfn = HVPFN_DOWN(sg_dma_address(sg));
-+			hvpfns_to_add = HVPFN_UP(sg_dma_address(sg) +
-+						 sg_dma_len(sg)) - hvpfn;
- 
- 			/*
- 			 * Fill the next portion of the PFN array with
-@@ -1872,7 +1876,7 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
- 			 * the PFN array is filled.
- 			 */
- 			while (hvpfns_to_add--)
--				payload->range.pfn_array[i++] =	hvpfn++;
-+				payload->range.pfn_array[i++] = hvpfn++;
- 		}
- 	}
- 
-@@ -2016,6 +2020,7 @@ static int storvsc_probe(struct hv_device *device,
- 	stor_device->vmscsi_size_delta = sizeof(struct vmscsi_win8_extension);
- 	spin_lock_init(&stor_device->lock);
- 	hv_set_drvdata(device, stor_device);
-+	dma_set_min_align_mask(&device->device, HV_HYP_PAGE_SIZE - 1);
- 
- 	stor_device->port_number = host->host_no;
- 	ret = storvsc_connect_to_vsp(device, storvsc_ringbuffer_size, is_fc);
-diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
-index 8882e46d1070..2840e51ee5c5 100644
---- a/include/linux/hyperv.h
-+++ b/include/linux/hyperv.h
-@@ -1262,6 +1262,7 @@ struct hv_device {
- 
- 	struct vmbus_channel *channel;
- 	struct kset	     *channels_kset;
-+	struct device_dma_parameters dma_parms;
- 
- 	/* place holder to keep track of the dir for hv device in debugfs */
- 	struct dentry *debug_dir;
--- 
-2.25.1
-
+>
+> Regards,
+> Lucas
+>
