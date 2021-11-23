@@ -2,117 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 020F445A5B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:33:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0448745A5BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:34:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237847AbhKWOgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 09:36:16 -0500
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:36460
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234867AbhKWOgP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 09:36:15 -0500
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com [209.85.208.200])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 1FA533F1C0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 14:33:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1637677986;
-        bh=326lX9wKN3/1y9kKpgPOdcQdOWe03RNWKQRp4t2W+xU=;
-        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-         In-Reply-To:Content-Type;
-        b=bLqPT386flnbW3ygo+RnVDIAXxx088yzyxx6dfBlc1Dl2kJq1166oxhZPRojxYRdC
-         gcA8QD/3wKlciEo8K/5Bycwa3PL3J9kaLIAR9uqk2Ef7ZxYUaKs7DgfEwevdSQH5VS
-         +o6Qr5fOkCGVYh80VP+jcZ6nuJZz6NkC2493UQODKj8ocM5w1jI46/S3bZyR0b5+4J
-         Sx8Lglu9cntyCuNRWHXeFCHtEzy1No6B7yqUlaqCrNUDtAWv4WHAu8roFK+WwT1kk+
-         r0fPs95YcNg4pWvgSVYvkzcLubinqWett2u3qU2YShULba3tWi68RRZai98uhM7Ae1
-         Jjp2giMiZkbNg==
-Received: by mail-lj1-f200.google.com with SMTP id u28-20020a2ea17c000000b0021126b5cca2so1261166ljl.19
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 06:33:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=326lX9wKN3/1y9kKpgPOdcQdOWe03RNWKQRp4t2W+xU=;
-        b=16HNCtxpb1QeRIZgnWxXOOho5Jc1UyQ0RALuKw4RfWz8EiCyHqE+sla73ZPDWB10zp
-         v+hSS0wZORkU+RY4vs79eQ76d/BIsMi5D0OkphSuAyEwNrycvE9He+NEIlzhrwl/2Z31
-         DP8XXiUv5j3GcpjpORJr/1WLh7EKUIy4Kt0tBmV+TcHxPl7xqpbdEKoi9wSI5a8LsA7u
-         p533wHaCUVV7aWi/s42SMtqjClFczGK5PRJncxgzmCW+qVM1sl1ksQbMzjyPzmr5x6ff
-         r20ZImatdQn2LtLjHU9LhIwMkECYSbDaWyv59eqVPwAgm1zwXj1EyUaNwm+ImBZe23o3
-         NlFA==
-X-Gm-Message-State: AOAM533G+bOwqeKmJIZ20xg9tlN0Ob/kGlkACo/C5UNlFFMZn3Xln/Mk
-        +Y1Cjk96JEeze9dPQJIqpMdauclhh44WVSWMjiiRJ1c5D/HQ6xZag11veIB00mmboYtfchEHiyh
-        LxBfI8VEDJHpmkVJgADnsDOALmrXVlhj0Rut/l2Bzag==
-X-Received: by 2002:a05:6512:b14:: with SMTP id w20mr5251221lfu.164.1637677985523;
-        Tue, 23 Nov 2021 06:33:05 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxAoLYTYv1mA1Qx4opkloKhYUlBeDO3gycqIznTJnAjclz2I4jG06bG8BDKv9AWk0WH0TnkUQ==
-X-Received: by 2002:a05:6512:b14:: with SMTP id w20mr5251166lfu.164.1637677985240;
-        Tue, 23 Nov 2021 06:33:05 -0800 (PST)
-Received: from [192.168.3.67] (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
-        by smtp.gmail.com with ESMTPSA id b27sm1294737ljf.52.2021.11.23.06.33.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Nov 2021 06:33:04 -0800 (PST)
-Message-ID: <72275adf-7c45-bd3c-7e2c-57dafa7af4de@canonical.com>
-Date:   Tue, 23 Nov 2021 15:33:03 +0100
+        id S238191AbhKWOh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 09:37:58 -0500
+Received: from mga17.intel.com ([192.55.52.151]:26207 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233318AbhKWOh4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 09:37:56 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="215740373"
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="215740373"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 06:34:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
+   d="scan'208";a="509430316"
+Received: from chaop.bj.intel.com (HELO localhost) ([10.240.192.101])
+  by orsmga008.jf.intel.com with ESMTP; 23 Nov 2021 06:34:39 -0800
+Date:   Tue, 23 Nov 2021 22:33:53 +0800
+From:   Chao Peng <chao.p.peng@linux.intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, qemu-devel@nongnu.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J . Bruce Fields" <bfields@fieldses.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        luto@kernel.org, john.ji@intel.com, susie.li@intel.com,
+        jun.nakajima@intel.com, dave.hansen@intel.com, ak@linux.intel.com
+Subject: Re: [RFC v2 PATCH 01/13] mm/shmem: Introduce F_SEAL_GUEST
+Message-ID: <20211123143353.GD32088@chaop.bj.intel.com>
+Reply-To: Chao Peng <chao.p.peng@linux.intel.com>
+References: <20211119134739.20218-1-chao.p.peng@linux.intel.com>
+ <20211119134739.20218-2-chao.p.peng@linux.intel.com>
+ <20211119151943.GH876299@ziepe.ca>
+ <df11d753-6242-8f7c-cb04-c095f68b41fa@redhat.com>
+ <6de78894-8269-ea3a-b4ee-a5cc4dad827e@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: (subset) [PATCH 2/2] arm64: platform: Enable Exynos Multi-Core
- Timer driver
-Content-Language: en-US
-To:     Sam Protsenko <semen.protsenko@linaro.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211101193531.15078-1-semen.protsenko@linaro.org>
- <20211101193531.15078-3-semen.protsenko@linaro.org>
- <163705825120.25687.5616659207045424814.b4-ty@canonical.com>
- <CAPLW+4kYza+oKy5qj8H+_ojdLDrvU6VSEYfQ5K8TkidhC5omrg@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-In-Reply-To: <CAPLW+4kYza+oKy5qj8H+_ojdLDrvU6VSEYfQ5K8TkidhC5omrg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6de78894-8269-ea3a-b4ee-a5cc4dad827e@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/11/2021 14:32, Sam Protsenko wrote:
-> On Tue, 16 Nov 2021 at 12:24, Krzysztof Kozlowski
-> <krzysztof.kozlowski@canonical.com> wrote:
->>
->> On Mon, 1 Nov 2021 21:35:31 +0200, Sam Protsenko wrote:
->>> From: Marek Szyprowski <m.szyprowski@samsung.com>
->>>
->>> Some ARM64 Exynos SoCs have MCT timer block, e.g. Exynos850 and
->>> Exynos5433. CLKSRC_EXYNOS_MCT option is not visible unless COMPILE_TEST
->>> is enabled. Select CLKSRC_EXYNOS_MCT option for ARM64 ARCH_EXYNOS like
->>> it's done in arch/arm/mach-exynos/Kconfig, to enable MCT timer support
->>> for ARM64 Exynos SoCs.
->>>
->>> [...]
->>
->> Applied, thanks!
->>
->> [2/2] arm64: platform: Enable Exynos Multi-Core Timer driver
->>       commit: ddb0fc6f055d12518b724fd1ee00669e07f03b96
->>
+On Tue, Nov 23, 2021 at 10:06:02AM +0100, Paolo Bonzini wrote:
+> On 11/19/21 16:39, David Hildenbrand wrote:
+> > > If qmeu can put all the guest memory in a memfd and not map it, then
+> > > I'd also like to see that the IOMMU can use this interface too so we
+> > > can have VFIO working in this configuration.
+> > 
+> > In QEMU we usually want to (and must) be able to access guest memory
+> > from user space, with the current design we wouldn't even be able to
+> > temporarily mmap it -- which makes sense for encrypted memory only. The
+> > corner case really is encrypted memory. So I don't think we'll see a
+> > broad use of this feature outside of encrypted VMs in QEMU. I might be
+> > wrong, most probably I am:)
 > 
-> Hi Krzysztof,
+> It's not _that_ crazy an idea, but it's going to be some work to teach KVM
+> that it has to kmap/kunmap around all memory accesses.
 > 
-> Can you please let me know where exactly this one is applied? I've
-> checked your tree and linux-next, but wasn't able to find it.
+> I think it's great that memfd hooks are usable by more than one subsystem,
+> OTOH it's fair that whoever needs it does the work---and VFIO does not need
+> it for confidential VMs, yet, so it should be fine for now to have a single
+> user.
 > 
+> On the other hand, as I commented already, the lack of locking in the
+> register/unregister functions has to be fixed even with a single user.
+> Another thing we can do already is change the guest_ops/guest_mem_ops to
+> something like memfd_falloc_notifier_ops/memfd_pfn_ops, and the
+> register/unregister functions to memfd_register/unregister_falloc_notifier.
 
+I'm satisified with this naming ;)
 
-It's in my tree. It should be also in linux-next since it was applied a
-week ago. Commit msg seems valid.
+> 
+> Chao, can you also put this under a new CONFIG such as "bool MEMFD_OPS", and
+> select it from KVM?
 
-Best regards,
-Krzysztof
+Yes, reasonable.
+
+> 
+> Thanks,
+> 
+> Paolo
