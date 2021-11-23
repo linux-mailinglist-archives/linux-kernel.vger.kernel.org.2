@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 862C5459B74
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 06:17:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C361459B75
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 06:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232342AbhKWFUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 00:20:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49128 "EHLO
+        id S232660AbhKWFUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 00:20:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbhKWFUR (ORCPT
+        with ESMTP id S229722AbhKWFUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 23 Nov 2021 00:20:17 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3754EC061574
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E67C061714
         for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 21:17:08 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id b15-20020a25ae8f000000b005c20f367790so31720966ybj.2
+Received: by mail-pf1-x44a.google.com with SMTP id y124-20020a623282000000b0047a09271e49so11086036pfy.16
         for <linux-kernel@vger.kernel.org>; Mon, 22 Nov 2021 21:17:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=WnbN2WHJuwFnL4IOV+xjdSYZIdIftm6M1MM6VwFhDyU=;
-        b=absSZZ6H1oUiIpJEEvRJIHiXodcyzXJspzMXOUPAB1YYEDvycWnw2y/mxAzkOYvm2/
-         pFoAASiK6i4of+P7y+8+Z1yDoXc/phZVj5BnNegabIwA0iF6pvSTvz8xZpxRrbSPRXFt
-         xSkPOweumCKXcPMNDaNqsAnEsbQ6mZ8aDWlPccGhellTn0MaPwdo+0bk7IW7rC582Fqz
-         DRlab0Hp3edgegjeRQqVlwSM6QECZcB4QDe5ew2P/sMrpqyFYo7nE8yb9N7UT+5L1XQu
-         UHdsILzRYX/LU6Qo22rTAY2m+t5Z2hujeiYChUZ1FQRCLIZMKVjftT22NQuFBvJH8WIW
-         OTLQ==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=NFXAGR/xc49oqhNC41J0AQLDYJfxO7+Jxraub53Emyc=;
+        b=ey7cdPuXo53FwDLmzr6OCkG/WgkXsyr7tpMu5mUd6CjU6Aiu5BGVyYKwf7ZRGqKNkW
+         XCJvfuxbdEtqOUBqhjgOJkeGLjrf0FWukN82g40hpufMkzHuIrh/LLe/cILZp2xvU/mQ
+         +oZZ0IzOAPAnSQVm6xLuBThCj3bV7b9Zt9T1Ldv9PpZUW15NXdxa4hMIKKEjMXqbNGxQ
+         lpE+m1hXxc8ppyMpxBughfEowTTd2+zEdQnJAO+07UCh1VU52n2qC2xY4DQioiMtX6GX
+         WJSeeIvpchw+UeeV8z87iFesRr5KFS+mO+4c6V6WVidi0rxrBjBucNuBqEv+8l7+yBb9
+         iJ5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=WnbN2WHJuwFnL4IOV+xjdSYZIdIftm6M1MM6VwFhDyU=;
-        b=dwy9wungOEfK5CgVLZZG3P5nAN9qGdYJJLoGGXr1v28wNGhfOVPWUMOvM2wLCakMkE
-         NPQayU4FIa9xw/8MkKaJO68+YuXd8DuYwVVB2Jq21Bpjo0OOrutWsgvs50gIMulyngGq
-         1S681CeCOpow2od+mjWeVfhDGngQ8oMcTdfbh5ePX9r6MtTYNZmVWtaseFTSgIRpXdq0
-         wZx4fJ/lhrUYGEuBs8lK3KOzqII6I7ZFzqrGwUpx0s+xjwsdWe+txryA+5KLAQffcjc4
-         mP5SXKYb+ak3tFfT51zl5A5kr6BZyK7ja28v1am0z0Zwa6hmp9DI26D1HJDKqrSmX3k/
-         Te6A==
-X-Gm-Message-State: AOAM53303bZXZRubayWjCJB2xBvBaXCJSstelUjmS7Dl34yBJTLJGwgY
-        GBYndT1dRvZnQcmZ7a9HiPvIHrE=
-X-Google-Smtp-Source: ABdhPJwhNxj+zpR+Fx+rIu5+4mS6nvMpxvIxFmtF8I7aqbb9NNs54TXo5a9+XtoXb7vf/VGGHZee4ys=
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=NFXAGR/xc49oqhNC41J0AQLDYJfxO7+Jxraub53Emyc=;
+        b=KqFYwcEaeG2fcyCaKF/54FnNpaOzBXsYtgBA1SwPdWc0ECkiFfQ4OTaecA4MgWn5+y
+         YO9slQRvfkofQ0RfqAYbGaaOzk2kNRNEs81nP+11gJ1kisoq3nnipgy+lZsCJdcgbj5m
+         dUAlEPaVoHWVluo6zp57gaZVG/c1ZTyAG2KEx2V7FEegpjt/rMxDe1826gBhiNJZd0nQ
+         J8KZ+PQy1aYHDT+5+Qb+7JF58W0Y64JDTWusLY/ie8WYv3UyBxicZG8x9Dvpj70vw5E/
+         2FAOb8YgA00mWZS0xoRrcLUbJ73KrFxkUfjTdtYKT+6h6IpVSvk/aGZ4X9U+SUbzX4Hq
+         Z+wg==
+X-Gm-Message-State: AOAM531pDsphvnViphga33d+eZnKmLEIoDRceT7wIVf1NgDoOGy1z5eo
+        vkZ6AKqRTCwb8MeuByeFrReuQME=
+X-Google-Smtp-Source: ABdhPJzxQakGABdjIJCQjLa7F4VRbS3dyTefpbTS5bC19PmFmcSwZH41uUXPqwC9QBE4HVmcOu0sevE=
 X-Received: from pcc-desktop.svl.corp.google.com ([2620:15c:2ce:200:a876:2e6a:b5f:3d90])
- (user=pcc job=sendgmr) by 2002:a25:b31c:: with SMTP id l28mr3184719ybj.9.1637644626102;
- Mon, 22 Nov 2021 21:17:06 -0800 (PST)
-Date:   Mon, 22 Nov 2021 21:16:53 -0800
-Message-Id: <20211123051658.3195589-1-pcc@google.com>
+ (user=pcc job=sendgmr) by 2002:a63:1d13:: with SMTP id d19mr1879264pgd.383.1637644628236;
+ Mon, 22 Nov 2021 21:17:08 -0800 (PST)
+Date:   Mon, 22 Nov 2021 21:16:54 -0800
+In-Reply-To: <20211123051658.3195589-1-pcc@google.com>
+Message-Id: <20211123051658.3195589-2-pcc@google.com>
 Mime-Version: 1.0
+References: <20211123051658.3195589-1-pcc@google.com>
 X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH v2 0/5] kernel: introduce uaccess logging
+Subject: [PATCH v2 1/5] fs: use raw_copy_from_user() to copy mount() data
 From:   Peter Collingbourne <pcc@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
@@ -94,112 +98,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series introduces a kernel feature known as uaccess
-logging, which allows userspace programs to be made aware of the
-address and size of uaccesses performed by the kernel during
-the servicing of a syscall. More details on the motivation
-for and interface to this feature are available in the file
-Documentation/admin-guide/uaccess-logging.rst added by the final
-patch in the series.
+With uaccess logging the contract is that the kernel must not report
+accessing more data than necessary, as this can lead to false positive
+reports in downstream consumers. This generally works out of the box
+when instrumenting copy_{from,to}_user(), but with the data argument
+to mount() we use copy_from_user() to copy PAGE_SIZE bytes (or as
+much as we can, if the PAGE_SIZE sized access failed) and figure out
+later how much we actually need.
 
-Because we don't have a common kernel entry/exit code path that is used
-on all architectures, uaccess logging is only implemented for arm64
-and architectures that use CONFIG_GENERIC_ENTRY, i.e. x86 and s390.
+To prevent this from leading to a false positive report, use
+raw_copy_from_user(), which will prevent the access from being logged.
+Recall that it is valid for the kernel to report accessing less
+data than it actually accessed, as uaccess logging is a best-effort
+mechanism for reporting uaccesses.
 
-The proposed interface is the result of numerous iterations and
-prototyping and is based on a proposal by Dmitry Vyukov. The interface
-preserves the correspondence between uaccess log identity and syscall
-identity while tolerating incoming asynchronous signals in the interval
-between setting up the logging and the actual syscall. We considered
-a number of alternative designs but rejected them for various reasons:
+Link: https://linux-review.googlesource.com/id/I5629b92a725c817acd9a861288338dd605cafee6
+Signed-off-by: Peter Collingbourne <pcc@google.com>
+---
+ fs/namespace.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-- The design from v1 of this patch [1] proposed notifying the kernel
-  of the address and size of the uaccess buffer via a prctl that
-  would also automatically mask and unmask asynchronous signals as
-  needed, but this would require multiple syscalls per "real" syscall,
-  harming performance.
-
-- We considered extending the syscall calling convention to
-  designate currently-unused registers to be used to pass the
-  location of the uaccess buffer, but this was rejected for being
-  architecture-specific.
-
-- One idea that we considered involved using the stack pointer address
-  as a unique identifier for the syscall, but this currently would
-  need to be arch-specific as we currently do not appear to have an
-  arch-generic way of retrieving the stack pointer; the userspace
-  side would also need some arch-specific code for this to work. It's
-  also possible that a longjmp() past the signal handler would make
-  the stack pointer address not unique enough for this purpose.
-
-We also evaluated implementing this on top of the existing tracepoint
-facility, but concluded that it is not suitable for this purpose:
-
-- Tracepoints have a per-task granularity at best, whereas we really want
-  to trace per-syscall. This is so that we can exclude syscalls that
-  should not be traced, such as syscalls that make up part of the
-  sanitizer implementation (to avoid infinite recursion when e.g. printing
-  an error report).
-
-- Tracing would need to be synchronous in order to produce useful
-  stack traces. For example this could be achieved using the new SIGTRAP
-  on perf events mechanism. However, this would require logging each
-  access to the stack (in the form of a sigcontext) and this is more
-  likely to overflow the stack due to being much larger than a uaccess
-  buffer entry as well as being unbounded, in contrast to the bounded
-  buffer size passed to prctl(). An approach based on signal handlers is
-  also likely to fall foul of the asynchronous signal issues mentioned
-  previously, together with needing sigreturn to be handled specially
-  (because it copies a sigcontext from userspace) otherwise we could
-  never return from the signal handler. Furthermore, arguments to the
-  trace events are not available to SIGTRAP. (This on its own wouldn't
-  be insurmountable though -- we could add the arguments as fields
-  to siginfo.)
-
-- The API in https://www.kernel.org/doc/Documentation/trace/ftrace.txt
-  -- e.g. trace_pipe_raw gives access to the internal ring buffer, but
-  I don't think it's usable because it's per-CPU and not per-task.
-
-- Tracepoints can be used by eBPF programs, but eBPF programs may
-  only be loaded as root, among other potential headaches.
-
-[1] https://lore.kernel.org/all/20210922061809.736124-1-pcc@google.com/
-
-Peter Collingbourne (5):
-  fs: use raw_copy_from_user() to copy mount() data
-  uaccess-buffer: add core code
-  uaccess-buffer: add CONFIG_GENERIC_ENTRY support
-  arm64: add support for uaccess logging
-  Documentation: document uaccess logging
-
- Documentation/admin-guide/index.rst           |   1 +
- Documentation/admin-guide/uaccess-logging.rst | 149 ++++++++++++++++++
- arch/Kconfig                                  |   6 +
- arch/arm64/Kconfig                            |   1 +
- arch/arm64/kernel/signal.c                    |   5 +
- arch/arm64/kernel/syscall.c                   |   3 +
- fs/exec.c                                     |   2 +
- fs/namespace.c                                |   7 +-
- include/linux/instrumented.h                  |   5 +-
- include/linux/sched.h                         |   4 +
- include/linux/uaccess-buffer-log-hooks.h      |  59 +++++++
- include/linux/uaccess-buffer.h                |  79 ++++++++++
- include/uapi/linux/prctl.h                    |   3 +
- include/uapi/linux/uaccess-buffer.h           |  25 +++
- kernel/Makefile                               |   1 +
- kernel/bpf/helpers.c                          |   6 +-
- kernel/entry/common.c                         |   7 +
- kernel/fork.c                                 |   3 +
- kernel/signal.c                               |   4 +-
- kernel/sys.c                                  |   6 +
- kernel/uaccess-buffer.c                       | 125 +++++++++++++++
- 21 files changed, 497 insertions(+), 4 deletions(-)
- create mode 100644 Documentation/admin-guide/uaccess-logging.rst
- create mode 100644 include/linux/uaccess-buffer-log-hooks.h
- create mode 100644 include/linux/uaccess-buffer.h
- create mode 100644 include/uapi/linux/uaccess-buffer.h
- create mode 100644 kernel/uaccess-buffer.c
-
+diff --git a/fs/namespace.c b/fs/namespace.c
+index 659a8f39c61a..695b30e391f0 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -3197,7 +3197,12 @@ static void *copy_mount_options(const void __user * data)
+ 	if (!copy)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	left = copy_from_user(copy, data, PAGE_SIZE);
++	/*
++	 * Use raw_copy_from_user to avoid reporting overly large accesses in
++	 * the uaccess buffer, as this can lead to false positive reports in
++	 * downstream consumers.
++	 */
++	left = raw_copy_from_user(copy, data, PAGE_SIZE);
+ 
+ 	/*
+ 	 * Not all architectures have an exact copy_from_user(). Resort to
 -- 
 2.34.0.rc2.393.gf8c9666880-goog
 
