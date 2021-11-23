@@ -2,114 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0CAF45A311
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:47:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 890BB45A312
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 13:48:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236713AbhKWMu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 07:50:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39326 "EHLO
+        id S236621AbhKWMvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 07:51:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235080AbhKWMu6 (ORCPT
+        with ESMTP id S234968AbhKWMvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 07:50:58 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46791C06173E
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 04:47:50 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id p27-20020a05600c1d9b00b0033bf8532855so1876707wms.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 04:47:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DPKVXrNzYgoC2uUoh98bh1nz52kdWi1et/X5YOSDFR0=;
-        b=M5FlyGfjXy9+OX326j20Q4mvrjdeDsQP4V3g7zOdGnmRtJPdYwFo0KEOJbr/471hcc
-         I2OHgcSYf5nwp5qUh7ktXgF/HxLgOwy8FTrb/KvBDdyKpTQmERn0nXC6fEGXeeP+gBfC
-         NqUwMEPtKKeCmMbJK0Xev5pYcJVPAhoLP7WAhopmFHNGE+OjEAcCBL9+NU53+corZZ//
-         IF3S5+X2eYroGwxnfkLyNj4m+umeAbbHoK6XrEBMXvegjW0m0SdEHMURCE9E3dG6WfGv
-         /rDqUcyMjkB2U8/wIauIOQnXGlimkytFfesLieKq7rOdGlPgIT5KC7lbJ3EX7aTiRDFC
-         oHvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=DPKVXrNzYgoC2uUoh98bh1nz52kdWi1et/X5YOSDFR0=;
-        b=eEmkwiRj7+XlmFPSE8hETX0SYFLOCYW3/gc939a7ZuXxCpCTri12ULszSTAtbFFnfo
-         5NjBEyop3vywaTGzE/557DEbt+hwzi7aEMHosQjekyBrM4QOlnuhYnKiqeNweSktAxJB
-         ZttcntxAU1Zi54/L0GqDZP6uhVDPMS0r5VihuydNij3THH+M0pPJ5I2h+0eCluGH5ncl
-         /V0ivESfpD/yjF24wvAwrDDSwAy4W1UDbU1IWZ3MMDJLxoUqqH8c02+tzNp0R9M9TpOg
-         kKMM8drHvmmeNk2xswro4IWqoqQnkIUQy9Qmga6stmjrtLdO97k7WaAQmPp1zO0e0Qvn
-         Jqpg==
-X-Gm-Message-State: AOAM532JRc5xflfj4TSglwolISH/TCTeGm5CHeTQtOGK3Nzvn1pGnt+q
-        5gdkNc2L9qVqlvZ1leD+nFMqEQ==
-X-Google-Smtp-Source: ABdhPJzQpbHrFm1utephBQ6K5SDC+8s8G+Ss4Ug6gsmSHFZu+z10jpesHg8TLDzbFid/APB/mcCyCQ==
-X-Received: by 2002:a05:600c:4fcd:: with SMTP id o13mr2697797wmq.175.1637671668496;
-        Tue, 23 Nov 2021 04:47:48 -0800 (PST)
-Received: from ?IPv6:2001:861:44c0:66c0:5732:d3c2:58d8:3499? ([2001:861:44c0:66c0:5732:d3c2:58d8:3499])
-        by smtp.gmail.com with ESMTPSA id g5sm17562891wri.45.2021.11.23.04.47.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Nov 2021 04:47:47 -0800 (PST)
-Subject: Re: [PATCH v2 1/1] ARM: dts: dra7: add entry for bb2d module
-To:     Yongqin Liu <yongqin.liu@linaro.org>,
-        Tony Lindgren <tony@atomide.com>
-Cc:     linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Gowtham Tammana <g-tammana@ti.com>,
-        Jyri Sarha <jsarha@ti.com>
-References: <20210921071807.30978-1-narmstrong@baylibre.com>
- <20210921071807.30978-2-narmstrong@baylibre.com>
- <YV1UdSVOrZ3B9pq/@atomide.com>
- <CAMSo37UN78k=WE0CwRyNNV3P9kau+JzVZ7mHOMMvh5Bn=+=jAQ@mail.gmail.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <78b51650-0e32-e81f-0191-2222580e7343@baylibre.com>
-Date:   Tue, 23 Nov 2021 13:47:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 23 Nov 2021 07:51:37 -0500
+Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [IPv6:2a01:4f8:150:2161:1:b009:f23e:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 891E9C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 04:48:29 -0800 (PST)
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
+        by bmailout3.hostsharing.net (Postfix) with ESMTPS id C491110176B2C;
+        Tue, 23 Nov 2021 13:48:27 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 9BD2530A8C7; Tue, 23 Nov 2021 13:48:27 +0100 (CET)
+Date:   Tue, 23 Nov 2021 13:48:27 +0100
+From:   Lukas Wunner <lukas@wunner.de>
+To:     "LH.Kuo" <lhjeff911@gmail.com>
+Cc:     p.zabel@pengutronix.de, broonie@kernel.org, robh+dt@kernel.org,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dvorkin@tibbo.com,
+        qinjian@cqplus1.com, wells.lu@sunplus.com,
+        "LH.Kuo" <lh.kuo@sunplus.com>
+Subject: Re: [PATCH v3 1/2] SPI: Add SPI driver for Sunplus SP7021
+Message-ID: <20211123124827.GA22253@wunner.de>
+References: <cover.1637547799.git.lh.kuo@sunplus.com>
+ <e5f2549224cf875d81306ef5f6e98db1cfd81c2e.1637547799.git.lh.kuo@sunplus.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMSo37UN78k=WE0CwRyNNV3P9kau+JzVZ7mHOMMvh5Bn=+=jAQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e5f2549224cf875d81306ef5f6e98db1cfd81c2e.1637547799.git.lh.kuo@sunplus.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Nov 22, 2021 at 10:33:32AM +0800, LH.Kuo wrote:
+> +static int sp7021_spi_controller_probe(struct platform_device *pdev)
+> +{
+[...]
+> +	ret = devm_spi_register_controller(&pdev->dev, ctlr);
+> +	if (ret != 0) {
+> +		dev_err(&pdev->dev, "spi_register_master fail\n");
+> +		goto disable_runtime_pm;
+> +	}
 
-On 23/11/2021 13:17, Yongqin Liu wrote:
-> Hi, Neil, Tony
-> 
-> # sorry for the confusion if you have received the mail which I sent
-> before, which is not in plain text mode.
-> 
-> We have one out of tree change to enable the SGX544 gpu for the
-> beagleboard-X15 Android build,
->     https://android-review.linaro.org/c/kernel/common/+/20521/11/arch/arm/boot/dts/dra7.dtsi
-> 
-> and that seems to conflict with this BB2D enabling change,
-> Could you please help give some suggestions on how we should update our patch
-> to make it work with BB2D, without the revert of this change?
+You need to use spi_register_controller() here (*not* the devm_ variant)
+because you're using spi_unregister_controller() in
+sp7021_spi_controller_remove().
 
-This BB2D patch alters the target-module@59000000 while your SGX
-change alters the target-module@56000000.
+> +
+> +	// clk
+> +	pspim->spi_clk = devm_clk_get(&pdev->dev, NULL);
+> +	if (IS_ERR(pspim->spi_clk)) {
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(pspim->spi_clk),
+> +				     "devm_clk_get fail\n");
+> +	}
+> +
+> +	// reset
+> +	pspim->rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+> +	dev_dbg(&pdev->dev, "pspim->rstc : 0x%x\n", (unsigned int)pspim->rstc);
+> +	if (IS_ERR(pspim->rstc)) {
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(pspim->rstc),
+> +				     "devm_rst_get fail\n");
+> +	}
+> +
+> +	ret = clk_prepare_enable(pspim->spi_clk);
+> +	if (ret)
+> +		return dev_err_probe(&pdev->dev, ret,
+> +			"failed to enable clk\n");
+> +
+> +	ret = reset_control_deassert(pspim->rstc);
+> +	if (ret) {
+> +		dev_err_probe(&pdev->dev, ret,
+> +			"failed to deassert reset\n");
+> +		goto free_reset_assert;
+> +
+> +	}
 
-Please rebase your patches.
+You need to move the above steps *before* the call to
+spi_register_controller().  Once spi_register_controller() returns,
+it must be able to perform SPI transactions.  So you have to enable
+all required clocks before calling it.  You also have to perform the
+reset step before registration to avoid interfering with an ongoing
+transaction.  The order of these steps must mirror the order in
+sp7021_spi_controller_remove():  There you're unregistering the
+controller *before* disabling the clock and asserting reset,
+so the order must be inverted here.
 
-Neil
 
-> 
-> On Wed, 6 Oct 2021 at 15:47, Tony Lindgren <tony@atomide.com> wrote:
->>
->> * Neil Armstrong <narmstrong@baylibre.com> [210921 10:18]:
->>> From: Gowtham Tammana <g-tammana@ti.com>
->>>
->>> BB2D is a Vivante GC 2D Accelerator.
->>> This adds the node to the dts file within a target module node.
->>> Crossbar index number is used for interrupt mapping.
->>
->> Thanks applying into omap-for-v5.16/dt.
->>
->> Tony
-> 
+> +static int sp7021_spi_controller_remove(struct platform_device *pdev)
+> +{
+> +	struct spi_controller *ctlr = dev_get_drvdata(&pdev->dev);
+> +	struct sp7021_spi_ctlr *pspim = spi_master_get_devdata(ctlr);
+> +
+> +	pm_runtime_disable(&pdev->dev);
+> +	pm_runtime_set_suspended(&pdev->dev);
+> +
+> +	spi_unregister_controller(pspim->ctlr);
+> +	clk_disable_unprepare(pspim->spi_clk);
+> +	reset_control_assert(pspim->rstc);
+> +
+> +	return 0;
+> +}
 
+I think the two calls to pm_runtime_* should be moved after
+spi_unregister_controller() but that's probably not critical.
+
+Thanks,
+
+Lukas
