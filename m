@@ -2,69 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D86145A801
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:35:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83DD045A814
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:36:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbhKWQiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 11:38:02 -0500
-Received: from mail-il1-f179.google.com ([209.85.166.179]:36621 "EHLO
-        mail-il1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234126AbhKWQh7 (ORCPT
+        id S236264AbhKWQjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 11:39:12 -0500
+Received: from mail-io1-f53.google.com ([209.85.166.53]:41889 "EHLO
+        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239032AbhKWQiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 11:37:59 -0500
-Received: by mail-il1-f179.google.com with SMTP id l8so22338750ilv.3;
-        Tue, 23 Nov 2021 08:34:51 -0800 (PST)
+        Tue, 23 Nov 2021 11:38:17 -0500
+Received: by mail-io1-f53.google.com with SMTP id y16so28665635ioc.8;
+        Tue, 23 Nov 2021 08:35:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=0QKOHJ1OnKbL2a6U5UE9Sczj0KIVJUirLPHUpzoIxpE=;
-        b=MvLgR1UL8n4xRGABtD9fpVDoy7W9zBLTJ3m4pLwW20e2/NMMap2HHAdNA5KK7PH3EK
-         M3w7zaP06DbPiYczgisssPSA35X6l4Zt46Dvh9IeUvGirBGAxBkjZGSbiCPQBajx+HOb
-         vWn1uHjMUgLTyuVHus8BguwIt1IZRZNttCNBIBTwdwIsuiBMgJHY/XqmVII8un71Cpsx
-         ptSeS728cTvcjEp5J5+5jn6WVln1pCvvRNm0/jYVyVtLleXfLSnsSJPqG8MXbYEfean0
-         4uaQm6ySv3wTR7c7p3UvVzO/UZ/fNR7hkKQnRKjXgb6tyjFHphlVZAwq5Qkgo1lF4UA5
-         RA2A==
-X-Gm-Message-State: AOAM53236VJNBJNjnQm9iOlEOZ4/FEcCqoAm301keeSV5p+QSold1tMn
-        EMmw5ffwpxEtqyHuhfR83Q==
-X-Google-Smtp-Source: ABdhPJwQbkkEsFEy5w9HCPyrvpKMWIAbN2aSLLV6mqx3Fn4hAA6t624FH30/QNlmaqLWwBm4sVG8Ow==
-X-Received: by 2002:a92:c5ad:: with SMTP id r13mr2636828ilt.53.1637685290562;
-        Tue, 23 Nov 2021 08:34:50 -0800 (PST)
+        bh=L+wT8ZVIvUW7LbdAd258WQWbKmsU54AD2qUyaW0yHWs=;
+        b=qWIBId1rS713btu5SINLfeWcFIuqmhWNxbOEUsiaGOQI91brenA5ATFYGzwTadblIs
+         DEOzJ1PKGUvo6ixp+G9wlPWFJ2yndZfVY3vcnuMig61xYZ5BP/L6cL5CJ9/fyj9+ooFq
+         8e0tA0OOjhAbiYFrDF8TI8PZRh7cEeUBWFY/vpXOi5U2fQ67zKLxH+4GeST0NlBvy8RX
+         0C5koYCOGepc8HWLMR6aLPgwrqbwS3J0sFDzL6IYwJ/tiorfYfXc8yfjyUnd14IIePY8
+         12yQEAsXYpdOYdGaaRU4/SNQKz8zaFF+KnD60lD7Ix+9YrNqkgtGQizHi1/dnRVzWJGi
+         LlIg==
+X-Gm-Message-State: AOAM530T37AGxaJ7BAk7UhRO5LqzndOUwG0h8MLeTc3061tYF34ZtfrD
+        S6Z8aFFDy78TH8On6jOGkA==
+X-Google-Smtp-Source: ABdhPJyQBPu5DjU807Y7rKr+WqMhNBwFzOESYmvnIx6qfZZBopTYE7H8kZ1Ck5Wqc55lHBOpRNlIJg==
+X-Received: by 2002:a05:6602:1513:: with SMTP id g19mr7141385iow.31.1637685309326;
+        Tue, 23 Nov 2021 08:35:09 -0800 (PST)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id t6sm3992225ios.13.2021.11.23.08.34.48
+        by smtp.gmail.com with ESMTPSA id x15sm9270605ill.20.2021.11.23.08.35.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 08:34:49 -0800 (PST)
-Received: (nullmailer pid 3442924 invoked by uid 1000);
+        Tue, 23 Nov 2021 08:35:08 -0800 (PST)
+Received: (nullmailer pid 3442926 invoked by uid 1000);
         Tue, 23 Nov 2021 16:34:29 -0000
 From:   Rob Herring <robh@kernel.org>
 To:     Olivier Moysan <olivier.moysan@foss.st.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        fabrice.gasnier@foss.st.com, devicetree@vger.kernel.org,
-        arnaud.pouliquen@foss.st.com, Rob Herring <robh+dt@kernel.org>,
+Cc:     fabrice.gasnier@foss.st.com, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-In-Reply-To: <20211119144551.7577-2-olivier.moysan@foss.st.com>
-References: <20211119144551.7577-1-olivier.moysan@foss.st.com> <20211119144551.7577-2-olivier.moysan@foss.st.com>
-Subject: Re: [PATCH 1/9] ASoC: dt-bindings: stm32: i2s: update example
+        linux-stm32@st-md-mailman.stormreply.com,
+        arnaud.pouliquen@foss.st.com,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+In-Reply-To: <20211119144551.7577-3-olivier.moysan@foss.st.com>
+References: <20211119144551.7577-1-olivier.moysan@foss.st.com> <20211119144551.7577-3-olivier.moysan@foss.st.com>
+Subject: Re: [PATCH 2/9] ASoC: dt-bindings: stm32: i2s: add audio-graph-card port
 Date:   Tue, 23 Nov 2021 09:34:29 -0700
-Message-Id: <1637685269.713393.3442923.nullmailer@robh.at.kernel.org>
+Message-Id: <1637685269.721768.3442925.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Nov 2021 15:45:43 +0100, Olivier Moysan wrote:
-> Some STM32 SPI peripheral instances support I2S for audio.
-> SPI and I2S features were initially described through two separated
-> nodes in the SoC Device Tree. In the next SoC Device Trees
-> a single node is used to describe SPI peripheral, leading
-> to a change in node name for I2S.
-> Change example in STM32 DT binding example to match this change.
+On Fri, 19 Nov 2021 15:45:44 +0100, Olivier Moysan wrote:
+> The STM2 I2S DAI can be connected via the audio-graph-card.
+> Add port entry into the bindings.
 > 
 > Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
 > ---
->  Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
 
 Running 'make dtbs_check' with the schema in this patch gives the
@@ -74,10 +71,10 @@ incorrect. These may not be new warnings.
 Note that it is not yet a requirement to have 0 warnings for dtbs_check.
 This will change in the future.
 
-Full log is available here: https://patchwork.ozlabs.org/patch/1557188
+Full log is available here: https://patchwork.ozlabs.org/patch/1557189
 
 
-audio-controller@4000b000: 'port' does not match any of the regexes: 'pinctrl-[0-9]+'
+audio-controller@4000b000: 'port' does not match any of the regexes: '^port@[0-9]', 'pinctrl-[0-9]+'
 	arch/arm/boot/dts/stm32mp157a-dk1.dt.yaml
 	arch/arm/boot/dts/stm32mp157c-dk2.dt.yaml
 
