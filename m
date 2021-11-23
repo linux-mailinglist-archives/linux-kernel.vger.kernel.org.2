@@ -2,178 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A99459E24
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86470459E28
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:33:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234798AbhKWIg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 03:36:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49034 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234757AbhKWIgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 03:36:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB6C1608FB;
-        Tue, 23 Nov 2021 08:33:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637656396;
-        bh=DShymrwjT8suOFERzKZ8RSxp06h7hl6MKSGRjFp0dLg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q59DBGYSmDaBwa7sPPUjvRJjpQG1eJKGUt7sLDriH3yrdEXyDpjqkA9IvTlTlVTZ/
-         ewrz2G8bQlhYVwM5HL2QbJJ4gxwb3ODIgoiNDo1A5pLJFUms4+zvWQPjFpntswlZfS
-         CBbmEV6/a7YS+Azy6/Is/4wFsOXRd97C0Cpwx/PLjyTB6F5+mIwTFPrs8ERdU8Oif2
-         5yesb4yX7yYi/Fm/QVlSeqd0V1C+PrbZ6IuVl2tDCJgJz5VznKLWizENLhrfQVeS2O
-         /H6yIXtDXIeDsA3Wg2dCeXt46nJfjTE6FZXeZT8gtGJj64ySaj6m0KfyNhDT/X/K09
-         sPIVP0r6tdEjA==
-Date:   Tue, 23 Nov 2021 10:33:13 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Aya Levin <ayal@mellanox.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>, drivers@pensando.io,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org,
-        Michael Chan <michael.chan@broadcom.com>,
-        netdev@vger.kernel.org, oss-drivers@corigine.com,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Simon Horman <simon.horman@corigine.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: Re: [PATCH net-next 5/6] devlink: Reshuffle resource registration
- logic
-Message-ID: <YZynSa6s8kBKtSYB@unreal>
-References: <cover.1637173517.git.leonro@nvidia.com>
- <6176a137a4ded48501e8a06fda0e305f9cfc787c.1637173517.git.leonro@nvidia.com>
- <20211117204956.6a36963b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YZYFvIK9mkP107tD@unreal>
- <20211118174813.54c3731f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YZfFDSnnjOG+wSyK@unreal>
- <20211119081017.6676843b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YZoHGKqLz6UBk2Sx@unreal>
- <20211122182728.370889f2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S233789AbhKWIgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 03:36:55 -0500
+Received: from mail-eopbgr10071.outbound.protection.outlook.com ([40.107.1.71]:1540
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230428AbhKWIgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 03:36:54 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Bx1D81VlnpYcre/3b3XStweR02AFygDZMljBzRUugMdt6qac4bjkedPqBJE3D8XA0sSh9HHmc8wi/5r7qJwceuFmrGzwk4/57cDZRX8UaLmUC8oC5ihfCY9e24l3vAEyiQ7ZZSJ317eAWQ+OWrxzZAvZJh825av8EvjLFhX65LE7t6HdbQKY9qhZQ+Qdk0Uh8cNKhqJQDwfrFXEyMUptuValBtGNPGbjqId8UsGrhf9P7JfuT4yGxD/ZcNwuZpIfHOPMj354KCKEaIPwd2vwbGdIIvWRkHlESjVMBRViYnfzjAVJDONOSUJwO2rq/HEwiE/vPs7OtAK2Sp2hXCm7aA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0R2rvJFqZvrwgr1LuUlJulYAiOYY/H6ogg3xvjL4Fl4=;
+ b=M197L866gnxYlW9//MfdqzNFjG+WaCoe9PS6/Z3Md0FzIAZcw9V/AEAyaaAXn0CjDsoO2dDJpm/Sujf6vPBjabGYkXIlHBiBOAzPJYfAJopnhMc6NfweW1c2rAsi+/jOrLNo+xdm/FzFoTUGzz1iyZT40bZSf2EJQknM5u7oe5Pg9Hzwfg1Atcyrp+KwrQ+KTMd6cXgZ8zCFltLHr1IzlE5BQjllLWoKUfc/YOX2CGG4GA9feP6qayNhZGiiqR+RXPK1qxyLYqpVH2mltv5L6rFwynRanwDGAEySp6BKL+gTPP9B4l50Ae1crwIuCQKcIM8q614hAPycjyVZiQq3Yw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fi.rohmeurope.com; dmarc=pass action=none
+ header.from=fi.rohmeurope.com; dkim=pass header.d=fi.rohmeurope.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rohmsemiconductoreurope.onmicrosoft.com;
+ s=selector1-rohmsemiconductoreurope-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0R2rvJFqZvrwgr1LuUlJulYAiOYY/H6ogg3xvjL4Fl4=;
+ b=d1l9UuPACJxANfUyIxEq/Q6cT83ANbVq/p3vr+nCymglPyGAo0G+lyvLW341VTBf6G+wTAZ4GgqoiV5CKvPkCGzehpleZEPZU+w8Im+fDiWlDkNNFPN2LY+53509OK3AZawsYXcbjxJ9k+/VV6pWhvUoqtrhhCiDY4CHeCzpJfI=
+Received: from HE1PR03MB3162.eurprd03.prod.outlook.com (2603:10a6:7:55::20) by
+ HE1PR03MB3067.eurprd03.prod.outlook.com (2603:10a6:7:5e::20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4713.24; Tue, 23 Nov 2021 08:33:45 +0000
+Received: from HE1PR03MB3162.eurprd03.prod.outlook.com
+ ([fe80::544e:754:6241:aa7f]) by HE1PR03MB3162.eurprd03.prod.outlook.com
+ ([fe80::544e:754:6241:aa7f%6]) with mapi id 15.20.4713.026; Tue, 23 Nov 2021
+ 08:33:44 +0000
+From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+CC:     "heiko.carstens@de.ibm.com" <heiko.carstens@de.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the regulator tree
+Thread-Topic: linux-next: build failure after merge of the regulator tree
+Thread-Index: AQHX4D2USFB6fNyejkmXjnndrEACuqwQySsA
+Date:   Tue, 23 Nov 2021 08:33:44 +0000
+Message-ID: <aaa19a07-f4fe-e2e0-ff56-d75c334a9af1@fi.rohmeurope.com>
+References: <20211123184142.50ff56c3@canb.auug.org.au>
+In-Reply-To: <20211123184142.50ff56c3@canb.auug.org.au>
+Accept-Language: fi-FI, en-US
+Content-Language: fi-FI
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fi.rohmeurope.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 856adf23-a1c7-42a7-c9f4-08d9ae5bf66b
+x-ms-traffictypediagnostic: HE1PR03MB3067:
+x-microsoft-antispam-prvs: <HE1PR03MB3067DD5441BF32ED7001C7B2AD609@HE1PR03MB3067.eurprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: fxap2mukVOkgqBh13NrQ8MJB298PO53YCZlRhSDU3haQCd08AMspgwRRb8rufU6SVBFJYN70c2RiNcIsMbpc/QDqRfF3oAxwa+0l+JEtj7qqnZnKjYklARmx1Bux4Ir3LEcEoTrREHuEpZI/cvLchXXtJjqg+OGvyhRikD1nvs6nzDNxRyG2uyJ0aHBKRWakBmaI+1FiCkkZmGC5md/V9eGCs1SYOJ3m65Xq4c1jxospRvVgvwOokP/VFgbGcaUGaRUL1GM6LXzCveoED90TGAuSFuJry+YIDV8/R8x8+qYbii4j+mPj5NKU/f5C9vEMS+YUnd8vmcX7m9UkbUSxsddAePQYiwjwZ1zTlvW9lhh9IjFs8sSSkuzznW7Kvjdgy1dexBt5Db/d0nRpn4l8WkWrkNcc2OAx91OCdpEllELb3YwqQw6FD5XozJItHCkodtbJYnrhhxpvrbMW0RYLF3brqZEJhb2WqTLP7FgLgerS64FcxeBasHxelqffNts8ZGuV274967uU8m+FtEKHV5ie7MSa5meYTTK8QWRY7Vpd8UVXyhZdaMpw7UNblU7nfQSWtw6HwaAFIODSypvzyVF20/h7fkZOFoQGpLr+VGaB4ykooWed4vRttMLsJ6posry+a3VtDH0W8SKPI+eQVZg04Wpl2j20KADqs2DVWmADwFr7heEFL9qy/PAK3qw1JDWKO9Rq3ttmIWjdKN1hUR0LqFDqc6CGCALlPiNpwdg7jzZigiXS6gAJVQrobP0Iob9y7V6zBU/vsOWS5b3B1g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR03MB3162.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(64756008)(4326008)(8676002)(26005)(316002)(110136005)(76116006)(66446008)(54906003)(4744005)(6486002)(6512007)(38070700005)(186003)(5660300002)(38100700002)(66946007)(2906002)(122000001)(31686004)(53546011)(66476007)(66556008)(83380400001)(2616005)(71200400001)(86362001)(6506007)(8936002)(508600001)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dmEvOTlQRjdFeFdIcWN6VXB4RmU1TGNpcitRa3dSVkYrWmI2N3pUK2xaNi9X?=
+ =?utf-8?B?cFF3Z1RIZ3lXU1Q1MS93QlExUEo0YU5MVnI2N3hDZXRnNUVVbDBUOXFNT29s?=
+ =?utf-8?B?by8wZ05RZ1M4elZuQ1dxS0hxQjh4T0FoZnRRYm1wQnlYZlVrRlBocnQ4V0Ev?=
+ =?utf-8?B?VXh1NmU5ODdmR0M3NXBOMGFiYUJtTDM0dEtQSDVxajJ3T1BXL3pleWkxUmpU?=
+ =?utf-8?B?ZEt0cmhjdk5FZGxMaUpXNEY1OGVMK2RpcE56QXdGM1hyU0dlTEpuR3BxdS9W?=
+ =?utf-8?B?djZtVGxUbkZmbWJjTUtyNWpyZjNWcE1vUFpsUGlldUpadGY4aE15QWFyaDg0?=
+ =?utf-8?B?WVBhazlEL21IV1RYVTJtUDV5d3dSQTloK1pTYjJXQnlBaDR3YzEvYzVvYXp2?=
+ =?utf-8?B?U1JOU2ptUTV5VmZkRUU4ZGk0dnExZnRTZTlBcEVRUzg4emF5SkxjMUxLcnlh?=
+ =?utf-8?B?WW1FKzE5Y0FtZnZpZDBhSEU5OUFReXdXaTAzOVd6NmdEdGNIQnFadUQ5MDhy?=
+ =?utf-8?B?STR6ODA0N3JzNFlwTEFCcDAwaXhiWmNTU2FMM05xOCtONExJYW12d08zVCsv?=
+ =?utf-8?B?c2dlYjlldThRS3ZnVjhYYkk2ZGswMTk3MGNRaGxpRzhDRGFXRjNDME9YZU40?=
+ =?utf-8?B?Wk5nZ01aenc5Z3VSZ2V2YWZGMG5aQ2owZlVwMXA4V0E2YXZkZ2dvUm5ZS0V3?=
+ =?utf-8?B?OFVmdlJMUkdJWjdjZi9IN3FIOTZ6TEpva2NVZGFZMytXOUM5NVhHS2h2QWJB?=
+ =?utf-8?B?bkordjlDZnVuRTlHckgyMTNVY3lQa3l5ekZRNUtrVktmM3pNcjhiMjhUZ1Rw?=
+ =?utf-8?B?YVRVSnEzaWtjMjV5VmZOSVRKOE1CZnNuNWJHSTE0eHBPT2gxaHB2VFBvb0hi?=
+ =?utf-8?B?TEtlQmVJUzFBc2xiNnFuNXZTc2QyMkdLWmZXYmF2OWIzcHBzWEFDMmZPeDlj?=
+ =?utf-8?B?L2N5K212Zm8rNjJDa0Y4TTlaMnFxRHRsd1VOMjYxaHNyd0c0TGRpN1kyUnl6?=
+ =?utf-8?B?b29KS09OU0lRcEJzWUJaWVNsNkp5QWFjTlhabXRpR3RLMWRINmJRYzV1Y2Iz?=
+ =?utf-8?B?VGRtblZVN3hSV0l3S1VjMXNCZzZWVi92dEJrKytjMC9sS21TdEp3UitZSDVz?=
+ =?utf-8?B?U29QR2NzK0QxcG01UGJIVmJRN0xyWDNIM0d5QmUrN0RIT3Y3RWdrT3QxUDI0?=
+ =?utf-8?B?bXZRMTFsNjBraGRBL1EwUENTMXBKMUFpK0VUV09iL01QNVNSWTlZWGhqTWhp?=
+ =?utf-8?B?WHE5KzJESlQ5NCtqNjJReUxaMU5JdnQ1aWVYKzRQTGZJOEs5bTdYbTZLSGpi?=
+ =?utf-8?B?bUlLZnlHYld6amdnZFdCeFF3SzB0M0krb1JUaUN4MkdEZmdOZ09odTljZzc0?=
+ =?utf-8?B?RXdqUjN3RUFpZVRHNVo5OEQvOURDOGUyMGpoK0Q0SnJBTjE5QU1BTUJvVWN0?=
+ =?utf-8?B?bEVYWnVreVV6cU1MRUEzNWR4RGZoYUEyM25iZllFS2kxbktldXpScnFrY1lu?=
+ =?utf-8?B?NDgyb1RBZGJvM3RGdlV0WXQyK3MwV2FVZHNuUCtLUXJ3eGFlcEVTU0lDeXFG?=
+ =?utf-8?B?NEQ4c21FNFFBKy9DQkU4NTdtNmdDWUwvdGdSN2pOcGNzS1orOUdud1h6QnhU?=
+ =?utf-8?B?a1FTalZ2WldTdVVFSHI0K3kvM3pqZGFEYnQ5cUlJOXJJSFFzWGVFdUh3SFpi?=
+ =?utf-8?B?VVNQQWVWVnFqNFJNU3F5d3NmZkhGeEtubVFLNEJjR3J4U2ZZS2RybFlvQm1N?=
+ =?utf-8?B?ZnQwdTkvUHhNZ2EyL2NNbFgyZDJITUZEWi9abE5BZTg1OUhSb1BNQU10dy9J?=
+ =?utf-8?B?Y0tab2F6QUxIdGg4RHBiNURyMkhNcmxkbHIxME5KQkVzWXpET2dGUFZkQzhH?=
+ =?utf-8?B?MlhOcGlZUUV1V3R3OWF6QkhMNW1Pa1lzdjJIRW9CMTdTU21uc2FnOFVtUXZk?=
+ =?utf-8?B?ZjFDVDBORUlMYzhudnZRVS8xVWdYTHlWYWtRZ1dUS0RlQm14RWg5a2VmU1Qr?=
+ =?utf-8?B?YTg0bm9oWjBhOHpWL3dQc2FrZ2dMRWFqU0F2eUFFTHpEVUg2NWxRdXV4NnBK?=
+ =?utf-8?B?cGdPdjlzckpzMnQ4U1BrRkdjR0NCMktZSlJXUjYyWU96akpyRW1NN1FPaTJ5?=
+ =?utf-8?B?cnRHYjllWUlsME8rNStBR1puNnR4dnlQWmtBYStyTHJBNVNxUUd6ZXNpU0E3?=
+ =?utf-8?B?Rm9RWitxN1d2d0NSaXdLd3hLS2t1am5SMVpEeEpFR2IybGF2SFd3amlVZ05T?=
+ =?utf-8?B?YXBpdm43WnF0QWZ2ZTQyMFFycE9USzZXTkF5c0liVG5mTGxCbXczUUFNdkNX?=
+ =?utf-8?Q?8Psad8XA+zGypoB5o/?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4E40013FB5E9CE4F8F54D5A14FBAB06F@eurprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211122182728.370889f2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+X-OriginatorOrg: fi.rohmeurope.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR03MB3162.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 856adf23-a1c7-42a7-c9f4-08d9ae5bf66b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2021 08:33:44.8332
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 94f2c475-a538-4112-b5dd-63f17273d67a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7gSVU6kUx8zfI/ZarEu0VyRTadwFXoA+H98V6Q0J0nhpDuVMD21H8AuQ8+CuZlIhxyG3koO7o4keA6IHyvhex5wCPeipB+WJ8XLTFwj7uBCHpqofsHAseqXnCn6e52rY
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR03MB3067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 06:27:28PM -0800, Jakub Kicinski wrote:
-> On Sun, 21 Nov 2021 10:45:12 +0200 Leon Romanovsky wrote:
-> > On Fri, Nov 19, 2021 at 08:10:17AM -0800, Jakub Kicinski wrote:
-> > > On Fri, 19 Nov 2021 17:38:53 +0200 Leon Romanovsky wrote:  
-> > > > My approach works, exactly like it works in other subsystems.
-> > > > https://lore.kernel.org/netdev/cover.1636390483.git.leonro@nvidia.com/  
-> > > 
-> > > What "other subsystems"? I'm aware of the RFC version of these patches.  
-> > 
-> > Approach to have fine-grained locking scheme, instead of having one big lock.
-> > This was done in MM for mmap_sem, we did it for RDMA too.
-> 
-> You're breaking things up to avoid lock ordering issues. The user can
-> still only run a single write command at a time.
-> 
-> > > Breaking up the locks to to protect sub-objects only is fine for
-> > > protecting internal lists but now you can't guarantee that the object
-> > > exists when driver is called.  
-> > 
-> > I can only guess about which objects you are talking.
-> 
-> It obviously refers to the port splitting I mentioned below.
-> 
-> > If you are talking about various devlink sub-objects (ports, traps,
-> > e.t.c), they created by the drivers and as such should be managed by them.
-> > Also they are connected to devlink which is guaranteed to exist. At the end,
-> > they called to devlink_XXX->devlink pointer without any existence check.
-> > 
-> > If you are talking about devlink instance itself, we guarantee that it
-> > exists between devlink_alloc() and devlink_free(). It seems to me pretty
-> > reasonable request from drivers do not access devlink before devlink_alloc()
-> > or after devlink_free(),
-> > 
-> > > I'm sure you'll utter your unprovable "in real drivers.." but the fact
-> > > is my approach does not suffer from any such issues. Or depends on
-> > > drivers registering devlink last.  
-> > 
-> > Registration of devlink doesn't do anything except opening it to the world.
-> > The lifetime is controlled with alloc and free. My beloved sentence "in
-> > real drivers ..." belongs to use of devlink_put and devlink_locks outside
-> > of devlink.c and nothing more.
-> 
-> As soon as there is a inter-dependency between two subsystems "must 
-> be last" breaks down.
-
-"Must be last" is better to be changed "when the device is ready".
-
------------------------------------------------------------------
-> The real question is whether you now require devlink_register()
-> to go last in general? 
-
-No, it is not requirement, but my suggestion. You need to be aware that
-after call to devlink_register(), the device will be fully open for devlink
-netlink access. So it is strongly advised to put devlink_register to be the
-last command in PCI initialization sequence.
-
-https://lore.kernel.org/netdev/YXhVd16heaHCegL1@unreal/
---------------------------------------------------------------------
-
-> 
-> > > I can start passing a pointer to a devlink_port to split/unsplit
-> > > functions, which is a great improvement to the devlink driver API.  
-> > 
-> > You can do it with my approach too. We incremented reference counter
-> > of devlink instance when devlink_nl_cmd_port_split_doit() was called,
-> > and we can safely take devlink->port_list_lock lock before returning
-> > from pre_doit.
-> 
-> Wait, I thought you'd hold devlink->lock around split/unsplit.
-
-I'm holding.
-
-    519 static int devlink_nl_pre_doit(const struct genl_ops *ops,
-    520                                struct sk_buff *skb, struct genl_info *info)
-    521 {
-    ...
-    529
-    530         mutex_lock(&devlink->lock);
-
-
-> 
-> Please look at the port splitting case, mlx5 doesn't implement it
-> but it's an important feature.
-
-I'll, but please don't forget that it was RFC, just to present that
-devlink can be changed internally without exposing internals.
-
-> 
-> Either way, IDK how ref count on devlink helps with lifetime of a
-> subobject. You must assume the sub-objects can only be created outside
-> of the time devlink instance is visible or under devlink->lock?
-
-The devlink lifetime is:
-stages:        I                   II                   III   
- devlink_alloc -> devlink_register -> devlink_unregister -> devlink_free.
-
-All sub-objects should be created between devlink_alloc and devlink_free.
-It will ensure that ->devlink pointer is always valid.
-
-Stage I:
- * There is no need to hold any devlink locks or increase reference counter.
-   If driver doesn't do anything crazy during its init, nothing in devlink
-   land will run in parallel. 
-Stage II:
- * There is a need to hold devlink->lock and/or play with reference counter
-   and/or use fine-grained locks. Users can issue "devlink ..." commands.
-Stage III:
-
-Thanks
+SGkgZGVlIEhvIHBlZXBzLA0KDQpPbiAxMS8yMy8yMSAwOTo0MSwgU3RlcGhlbiBSb3Rod2VsbCB3
+cm90ZToNCj4gSGkgYWxsLA0KPiANCj4gQWZ0ZXIgbWVyZ2luZyB0aGUgcmVndWxhdG9yIHRyZWUs
+IHRvZGF5J3MgbGludXgtbmV4dCBidWlsZCAoczM5MA0KPiBhbGxtb2Rjb25maWcpIGZhaWxlZCBs
+aWtlIHRoaXM6DQo+IA0KPiBpbmNsdWRlL0xpbnV4L21mZC9yb2htLWdlbmVyaWMuaDo5MzoxMjog
+ZXJyb3I6ICdyb2htX3JlZ3VsYXRvcl9zZXRfdm9sdGFnZV9zZWxfcmVzdHJpY3RlZCcgZGVmaW5l
+ZCBidXQgbm90IHVzZWQgWy1XZXJyb3I9dW51c2VkLWZ1bmN0aW9uXQ0KPiBjYzE6IGFsbCB3YXJu
+aW5ncyBiZWluZyB0cmVhdGVkIGFzIGVycm9ycw0KPiANCj4gQ2F1c2VkIGJ5IGNvbW1pdA0KPiAN
+Cj4gICAgOGI2ZTg4NTU1OTcxICgicmVndWxhdG9yOiByb2htLXJlZ3VsYXRvcjogYWRkIGhlbHBl
+ciBmb3IgcmVzdHJpY3RlZCB2b2x0YWdlIHNldHRpbmciKQ0KDQoNCk91Y2guIFRoZSBzdHViIGlu
+IGhlYWRlciBzaG91bGQgYmUgaW5saW5lZC4gU29ycnkgZm9yIHRoYXQuIEknbGwgc2VuZCANCmlu
+Y3JlbWVudGFsIHBhdGNoIHRvIE1hcmsgLSBwbGVhc2UgbGV0IG1lIGtub3cgaWYgdGhhdCdzIG5v
+dCBzdWZmaWNpZW50Pw0KDQpCZXN0IFJlZ2FyZHMNCgktLSBNYXR0aSBWYWl0dGluZW4NCg0KLS0g
+DQpUaGUgTGludXggS2VybmVsIGd1eSBhdCBST0hNIFNlbWljb25kdWN0b3JzDQoNCk1hdHRpIFZh
+aXR0aW5lbiwgTGludXggZGV2aWNlIGRyaXZlcnMNClJPSE0gU2VtaWNvbmR1Y3RvcnMsIEZpbmxh
+bmQgU1dEQw0KS2l2aWhhcmp1bmxlbmtraSAxRQ0KOTAyMjAgT1VMVQ0KRklOTEFORA0KDQp+fiB0
+aGlzIHllYXIgaXMgdGhlIHllYXIgb2YgYSBzaWduYXR1cmUgd3JpdGVycyBibG9jayB+fg0K
