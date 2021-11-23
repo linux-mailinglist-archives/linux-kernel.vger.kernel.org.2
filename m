@@ -2,112 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B47DA45A78C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:23:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CFBC45A7A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:26:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231597AbhKWQ0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 11:26:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33136 "EHLO
+        id S232716AbhKWQ33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 11:29:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbhKWQ0b (ORCPT
+        with ESMTP id S231643AbhKWQ32 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 11:26:31 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF47C06173E
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 08:23:23 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id x19-20020a9d7053000000b0055c8b39420bso34580731otj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 08:23:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zBuLmrD4RVS18Xj6yhG9KuDHzFKukaIEFbOkTKeiw1I=;
-        b=i/R6iuKAymapTKSGTomdwKbvBqToNTT/C28vCvn11DiBlVhMVKCNWZd8m5iIJws870
-         5i6M+Uromko5JASpYlf64cnDXfeiRhcXxeMc7SlPTrBT7ppkXhw4RzDn5aDBfyisz5xp
-         3BNIDYR0ZR6Vot9zl0CQj/Ff9yxpT+hKjvayZSdQdudMHDnDcLHd9ZHYAnC6ZCob96jL
-         sRnXshNLrv7V7KfCjp3REl/ctFWWFYenJLYMNwPzrSjECJ9f8Sz33ozK/nnCjkDQyvRy
-         qzFjFRwt+lkK0DQVHKukNwQxKY9Xi19siLuoD9ZUKJr52Y/QZKQAj0UrFMuXtmWCHvmK
-         FgJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zBuLmrD4RVS18Xj6yhG9KuDHzFKukaIEFbOkTKeiw1I=;
-        b=2X9BczgEMWKfxaq2VDkhzbbrevWI4IkNQXdtqDyNs6USGZg4db62C6z1+ERe1juuo4
-         6Rpu46RD2e9ahmzWfJABemI7JxxrGWBmrVyow6xIaufr1k6sBSJ4OBhlVH4a69pUfpeP
-         YBioaTLohZCCd1v7ssoQwbGhTdmskENkl73cCqn2bUJ96RZ3fV3ugtK0zcYKZzFmzVLv
-         QNWVmevy8sDH2/cAa/rPAUXRgKu7kWh8I5B6cDY30BHh5gumLoi+skjvyfO+0bEQBwSS
-         z0m5aqK9CZ9aL7vjCoSc4LPtlEwumYKZggYtxXc0nRmAXFurlMcTmTQSn6XMeE3DxL77
-         7UbQ==
-X-Gm-Message-State: AOAM532UteNuyo+SYIgqTZ2TotGQ/eeFTIGt/5QuY8xfXEcNwuI+RULX
-        vnvNNy7oOxJ7x8tO8ocW9Wv1eQ==
-X-Google-Smtp-Source: ABdhPJySUDxBc7WKKVZIoc6Yq1tAhOgCYQWNcF8/sGQlcJ5We9CtbA2F63QQnIzKYPDYtxwknNF4oA==
-X-Received: by 2002:a05:6830:232e:: with SMTP id q14mr5709355otg.133.1637684602631;
-        Tue, 23 Nov 2021 08:23:22 -0800 (PST)
-Received: from ripper.. (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 111sm2264314otu.55.2021.11.23.08.23.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 08:23:22 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>, Vinod Koul <vkoul@kernel.org>
-Cc:     Robert Foss <robert.foss@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] clk: qcom: clk-alpha-pll: Don't reconfigure running Trion
-Date:   Tue, 23 Nov 2021 08:25:08 -0800
-Message-Id: <20211123162508.153711-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211123161630.123222-1-bjorn.andersson@linaro.org>
-References: 
+        Tue, 23 Nov 2021 11:29:28 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31BE3C061574;
+        Tue, 23 Nov 2021 08:26:20 -0800 (PST)
+Received: from zn.tnic (p200300ec2f14d20006ffc72651f84cb2.dip0.t-ipconnect.de [IPv6:2003:ec:2f14:d200:6ff:c726:51f8:4cb2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 614E01EC0423;
+        Tue, 23 Nov 2021 17:26:18 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1637684778;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Bavt564BU2rM1WOQe9eoYfojylE1mxii7g1TihHieiE=;
+        b=rHANThsDYg+AtenNwwpzB3LiACcYb8e6zoyxmOCqJ/8+j2mFwep7JYl3IsSfyTFjLD5jQ4
+        4IeKtnSUYa+6YgNd2S2Ka1/xx4E4hGxkNGghT+ALLZaFotMrVBxysVVL9eSZnVFsSuAdr3
+        B0CcC2oRh3yPxvinKattnTh8ngdmwOw=
+Date:   Tue, 23 Nov 2021 17:26:14 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Peter Gonda <pgonda@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
+ Hypervisor Support
+Message-ID: <YZ0WJlv9rxpQ+GVG@zn.tnic>
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
+ <daf5066b-e89b-d377-ed8a-9338f1a04c0d@amd.com>
+ <d673f082-9023-dafb-e42e-eab32a3ddd0c@intel.com>
+ <f15597a0-e7e0-0a57-39fd-20715abddc7f@amd.com>
+ <5f3b3aab-9ec2-c489-eefd-9136874762ee@intel.com>
+ <d83e6668-bec4-8d1f-7f8a-085829146846@amd.com>
+ <38282b0c-7eb5-6a91-df19-2f4cfa8549ce@intel.com>
+ <YZyVx38L6gf689zq@zn.tnic>
+ <YZ0KgymKvLC2HcIk@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YZ0KgymKvLC2HcIk@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the event that the bootloader has configured the Trion PLL as source
-for the display clocks, e.g. for the continuous splashscreen, then there
-will also be RCGs that are clocked by this instance.
+On Tue, Nov 23, 2021 at 03:36:35PM +0000, Sean Christopherson wrote:
+> Kirill posted a few RFCs that did exactly that.  It's definitely a viable approach,
+> but it's a bit of a dead end,
 
-Reconfiguring, and in particular disabling the output of, the PLL will
-cause issues for these downstream RCGs and has been shown to prevent
-them from being re-parented.
+One thing at a time...
 
-Follow downstream and skip configuration if it's determined that the PLL
-is already running.
+> e.g. doesn't help solve page migration,
 
-Fixes: 59128c20a6a9 ("clk: qcom: clk-alpha-pll: Add support for controlling Lucid PLLs")
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
+AFAICR, that needs a whole explicit and concerted effort with the
+migration helper - that was one of the approaches, at least, guest's
+explicit involvement, remote attestation and a bunch of other things...
 
-Changes since v1:
-- Forgot to commit the last minute s/pr_dbg/pr_debug/
+> is limited to struct page
 
- drivers/clk/qcom/clk-alpha-pll.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+I'm no mm guy so maybe you can elaborate further.
 
-diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
-index eaedcceb766f..8f65b9bdafce 100644
---- a/drivers/clk/qcom/clk-alpha-pll.c
-+++ b/drivers/clk/qcom/clk-alpha-pll.c
-@@ -1429,6 +1429,15 @@ EXPORT_SYMBOL_GPL(clk_alpha_pll_postdiv_fabia_ops);
- void clk_trion_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
- 			     const struct alpha_pll_config *config)
- {
-+	/*
-+	 * If the bootloader left the PLL enabled it's likely that there are
-+	 * RCGs that will lock up if we disable the PLL below.
-+	 */
-+	if (trion_pll_is_enabled(pll, regmap)) {
-+		pr_debug("Trion PLL is already enabled, skipping configuration\n");
-+		return;
-+	}
-+
- 	clk_alpha_pll_write_config(regmap, PLL_L_VAL(pll), config->l);
- 	regmap_write(regmap, PLL_CAL_L_VAL(pll), TRION_PLL_CAL_VAL);
- 	clk_alpha_pll_write_config(regmap, PLL_ALPHA_VAL(pll), config->alpha);
+> doesn't capture which KVM guest owns the memory, etc...
+
+So I don't think we need this for the problem at hand. But from the
+sound of it, it probably is a good idea to be able to map the guest
+owner to the memory anyway.
+
+> https://lore.kernel.org/kvm/20210416154106.23721-1-kirill.shutemov@linux.intel.com/
+
+Right, there it is in the last patch.
+
+Hmmkay, so we need some generic machinery which unmaps memory from
+the host kernel's pagetables so that it doesn't do any stray/unwanted
+accesses to it. I'd look in the direction of mm folks for what to do
+exactly, though.
+
+Thx.
+
 -- 
-2.33.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
