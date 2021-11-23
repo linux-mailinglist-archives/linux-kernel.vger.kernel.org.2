@@ -2,241 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAFD045A9B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:10:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D11645A99B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 18:04:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238975AbhKWRNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 12:13:52 -0500
-Received: from mga17.intel.com ([192.55.52.151]:42420 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231177AbhKWRNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 12:13:51 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="215775048"
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="215775048"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 09:04:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="509482651"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 23 Nov 2021 09:04:46 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mpZDp-00025w-Cf; Tue, 23 Nov 2021 17:04:45 +0000
-Date:   Wed, 24 Nov 2021 01:04:07 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Akhil R <akhilrajeev@nvidia.com>, andy.shevchenko@gmail.com,
-        christian.koenig@amd.com, digetx@gmail.com,
-        dri-devel@lists.freedesktop.org, jonathanh@nvidia.com,
-        ldewangan@nvidia.com, linaro-mm-sig@lists.linaro.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org
-Subject: Re: [PATCH v2] i2c: tegra: Add ACPI support
-Message-ID: <202111240017.bYyZ7knz-lkp@intel.com>
-References: <1637651753-5067-1-git-send-email-akhilrajeev@nvidia.com>
+        id S238814AbhKWRHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 12:07:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28494 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237500AbhKWRHa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 12:07:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637687061;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7kByPH5nF0InwM69v4kGnfWv6NJm9wrS3dWWDwL74Lw=;
+        b=ZYSS2FgD8AR3k803S9/nmpdN8bAbcrApxvY+fZPev90nUTs/iwt1gqoBCQk6jo2fUhw81y
+        hjfvkY24xBUUcrnY303WQcOh64rEkeT3BZnGlgiNyLgXEQRnCvT4juSnLJ802oUaB/ckU7
+        w1wlUTNw5nB2x2o+8SgzizrdkGfo2DA=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-526-xH7aRp0XOkCadYpN1v4Hmg-1; Tue, 23 Nov 2021 12:04:20 -0500
+X-MC-Unique: xH7aRp0XOkCadYpN1v4Hmg-1
+Received: by mail-wr1-f71.google.com with SMTP id d18-20020adfe852000000b001985d36817cso473181wrn.13
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 09:04:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=7kByPH5nF0InwM69v4kGnfWv6NJm9wrS3dWWDwL74Lw=;
+        b=y2pYqCT5LpRT7T5VxWUlgBfZrzo7UdeRAPLjsJM4epxHaXpTYCbTHyW3SuQk3DPo8q
+         6moOnO4sJwsQqUO89qwI0paQBclaSZeS1v7warMFxIif1i6ke1tBxJettRm0Oc7OE3uj
+         3rGF3HUAOi3D6yvxm/VDbVceqExzeBTzi39ilD+S3eHbr5YGjEnfackjcPmXFX1aceFb
+         jci1fzXzrxoo+C+dRvNPx0ltQDd3Rdzl9Dqz5wB2js1RHkkhQW4/LgnIQtKmp4BIQbLf
+         cOO48C8KlRg7fviPR1edW7o756StXj+2pW2hMwBj7pmwx2SRRLXRd6Eu8SW3KVmFyEEk
+         R+7w==
+X-Gm-Message-State: AOAM530xCrw4vRMWq5V5R4l0pmoUsZxzU51ktgoloFAQhPKCVybdGARd
+        azdeSyKUMwCIPzLhz6u7lIkbDzJgkQeq4hFDzFVkHRLJXKjHfBi1p35InWTJqy0Ps9hndLRC+hX
+        IDKagsl2Z+fiIyjKC/UZ8a6a9
+X-Received: by 2002:adf:ec45:: with SMTP id w5mr8994346wrn.183.1637687058960;
+        Tue, 23 Nov 2021 09:04:18 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJykyScG+fmWu1ZxlpPcTdQ5mn0yh6fhIHez7GTidDv3h8Ip176ypu5cz+undY5/dGCL1kztVw==
+X-Received: by 2002:adf:ec45:: with SMTP id w5mr8994305wrn.183.1637687058753;
+        Tue, 23 Nov 2021 09:04:18 -0800 (PST)
+Received: from [192.168.3.132] (p5b0c6765.dip0.t-ipconnect.de. [91.12.103.101])
+        by smtp.gmail.com with ESMTPSA id 38sm13027369wrc.1.2021.11.23.09.04.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Nov 2021 09:04:18 -0800 (PST)
+Message-ID: <98470479-7ba9-9f05-e597-e5afeb3464a3@redhat.com>
+Date:   Tue, 23 Nov 2021 18:04:16 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1637651753-5067-1-git-send-email-akhilrajeev@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Andrew Dona-Couch <andrew@donacou.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Drew DeVault <sir@cmpwn.com>,
+        Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+References: <20211116133750.0f625f73a1e4843daf13b8f7@linux-foundation.org>
+ <b84bc345-d4ea-96de-0076-12ff245c5e29@redhat.com>
+ <8f219a64-a39f-45f0-a7ad-708a33888a3b@www.fastmail.com>
+ <333cb52b-5b02-648e-af7a-090e23261801@redhat.com>
+ <ca96bb88-295c-ccad-ed2f-abc585cb4904@kernel.dk>
+ <5f998bb7-7b5d-9253-2337-b1d9ea59c796@redhat.com>
+ <20211123132523.GA5112@ziepe.ca>
+ <10ccf01b-f13a-d626-beba-cbee70770cf1@redhat.com>
+ <20211123140709.GB5112@ziepe.ca>
+ <e4d7d211-5d62-df89-8f94-e49385286f1f@redhat.com>
+ <20211123170056.GC5112@ziepe.ca>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20211123170056.GC5112@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Akhil,
+On 23.11.21 18:00, Jason Gunthorpe wrote:
+> On Tue, Nov 23, 2021 at 03:44:03PM +0100, David Hildenbrand wrote:
+>> On 23.11.21 15:07, Jason Gunthorpe wrote:
+>>> On Tue, Nov 23, 2021 at 02:39:19PM +0100, David Hildenbrand wrote:
+>>>>>
+>>>>>> 2) Could be provide a mmu variant to ordinary users that's just good
+>>>>>> enough but maybe not as fast as what we have today? And limit
+>>>>>> FOLL_LONGTERM to special, privileged users?
+>>>>>
+>>>>> rdma has never been privileged
+>>>>
+>>>> Feel free to correct me if I'm wrong: it requires special networking
+>>>> hardware and the admin/kernel has to prepare the system in a way such
+>>>> that it can be used.
+>>>
+>>> Not really, plug in the right PCI card and it works
+>>
+>> Naive me would have assumed that the right modules have to be loaded
+>> (and not blacklisted), that there has to be an rdma service installed
+>> and running, that the NIC has to be configured in some way, and that
+>> there is some kind of access control which user can actually use which
+>> NIC.
+> 
+> Not really, we've worked hard that it works as well as any other HW
+> device. Plug it in and it works.
+> 
+> There is no systemd service, or special mandatory configuration, for
+> instance.
+> 
+>> For example, I would have assume from inside a container it usually
+>> wouldn't just work.
+> 
+> Nope, RDMA follows the net namespaces of its ethernet port, so it just
+> works in containers too.
+> 
+>> believe what you say and I trust your experience :) So could as well be
+>> that on such a "special" (or not so special) systems there should be a
+>> way to restrict it to privileged users only.
+> 
+> At this point RDMA is about as "special" as people running large
+> ZONE_MOVABLE systems, and the two are going to start colliding
+> heavily. The RDMA VFIO migration driver should be merged soon which
+> makes VMs using this stuff finally practical.
 
-Thank you for the patch! Yet something to improve:
+Sounds like fun. At least we documented it already ;)
 
-[auto build test ERROR on tegra/for-next]
-[also build test ERROR on v5.16-rc2 next-20211123]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+https://www.kernel.org/doc/html/latest/admin-guide/mm/memory-hotplug.html#zone-movable-sizing-considerations
 
-url:    https://github.com/0day-ci/linux/commits/Akhil-R/i2c-tegra-Add-ACPI-support/20211123-151636
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git for-next
-config: riscv-buildonly-randconfig-r005-20211123 (https://download.01.org/0day-ci/archive/20211124/202111240017.bYyZ7knz-lkp@intel.com/config.gz)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 49e3838145dff1ec91c2e67a2cb562775c8d2a08)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install riscv cross compiling tool for clang build
-        # apt-get install binutils-riscv64-linux-gnu
-        # https://github.com/0day-ci/linux/commit/dec174be801f41a9e42f4381c59c2357c25e40fb
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Akhil-R/i2c-tegra-Add-ACPI-support/20211123-151636
-        git checkout dec174be801f41a9e42f4381c59c2357c25e40fb
-        # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=riscv 
+-- 
+Thanks,
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+David / dhildenb
 
-All errors (new ones prefixed by >>):
-
-   In file included from drivers/i2c/busses/i2c-tegra.c:13:
-   In file included from include/linux/dmaengine.h:12:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/riscv/include/asm/io.h:136:
-   include/asm-generic/io.h:464:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __raw_readb(PCI_IOBASE + addr);
-                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:477:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:36:51: note: expanded from macro '__le16_to_cpu'
-   #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-                                                     ^
-   In file included from drivers/i2c/busses/i2c-tegra.c:13:
-   In file included from include/linux/dmaengine.h:12:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/riscv/include/asm/io.h:136:
-   include/asm-generic/io.h:490:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:34:51: note: expanded from macro '__le32_to_cpu'
-   #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-                                                     ^
-   In file included from drivers/i2c/busses/i2c-tegra.c:13:
-   In file included from include/linux/dmaengine.h:12:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/riscv/include/asm/io.h:136:
-   include/asm-generic/io.h:501:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writeb(value, PCI_IOBASE + addr);
-                               ~~~~~~~~~~ ^
-   include/asm-generic/io.h:511:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   include/asm-generic/io.h:521:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   include/asm-generic/io.h:1024:55: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           return (port > MMIO_UPPER_LIMIT) ? NULL : PCI_IOBASE + port;
-                                                     ~~~~~~~~~~ ^
->> drivers/i2c/busses/i2c-tegra.c:623:16: error: implicit declaration of function 'acpi_has_method' [-Werror,-Wimplicit-function-declaration]
-           if (handle && acpi_has_method(handle, "_RST"))
-                         ^
-   drivers/i2c/busses/i2c-tegra.c:623:16: note: did you mean 'acpi_has_watchdog'?
-   include/linux/acpi.h:1321:20: note: 'acpi_has_watchdog' declared here
-   static inline bool acpi_has_watchdog(void) { return false; }
-                      ^
-   7 warnings and 1 error generated.
-
-
-vim +/acpi_has_method +623 drivers/i2c/busses/i2c-tegra.c
-
-   608	
-   609	static int tegra_i2c_init(struct tegra_i2c_dev *i2c_dev)
-   610	{
-   611		u32 val, clk_divisor, clk_multiplier, tsu_thd, tlow, thigh, non_hs_mode;
-   612		acpi_handle handle = ACPI_HANDLE(i2c_dev->dev);
-   613		int err;
-   614	
-   615		/*
-   616		 * The reset shouldn't ever fail in practice. The failure will be a
-   617		 * sign of a severe problem that needs to be resolved. Still we don't
-   618		 * want to fail the initialization completely because this may break
-   619		 * kernel boot up since voltage regulators use I2C. Hence, we will
-   620		 * emit a noisy warning on error, which won't stay unnoticed and
-   621		 * won't hose machine entirely.
-   622		 */
- > 623		if (handle && acpi_has_method(handle, "_RST"))
-   624			err = (acpi_evaluate_object(handle, "_RST", NULL, NULL));
-   625		else
-   626			err = reset_control_reset(i2c_dev->rst);
-   627	
-   628		WARN_ON_ONCE(err);
-   629	
-   630		if (i2c_dev->is_dvc)
-   631			tegra_dvc_init(i2c_dev);
-   632	
-   633		val = I2C_CNFG_NEW_MASTER_FSM | I2C_CNFG_PACKET_MODE_EN |
-   634		      FIELD_PREP(I2C_CNFG_DEBOUNCE_CNT, 2);
-   635	
-   636		if (i2c_dev->hw->has_multi_master_mode)
-   637			val |= I2C_CNFG_MULTI_MASTER_MODE;
-   638	
-   639		i2c_writel(i2c_dev, val, I2C_CNFG);
-   640		i2c_writel(i2c_dev, 0, I2C_INT_MASK);
-   641	
-   642		if (i2c_dev->is_vi)
-   643			tegra_i2c_vi_init(i2c_dev);
-   644	
-   645		switch (i2c_dev->bus_clk_rate) {
-   646		case I2C_MAX_STANDARD_MODE_FREQ + 1 ... I2C_MAX_FAST_MODE_PLUS_FREQ:
-   647		default:
-   648			tlow = i2c_dev->hw->tlow_fast_fastplus_mode;
-   649			thigh = i2c_dev->hw->thigh_fast_fastplus_mode;
-   650			tsu_thd = i2c_dev->hw->setup_hold_time_fast_fast_plus_mode;
-   651	
-   652			if (i2c_dev->bus_clk_rate > I2C_MAX_FAST_MODE_FREQ)
-   653				non_hs_mode = i2c_dev->hw->clk_divisor_fast_plus_mode;
-   654			else
-   655				non_hs_mode = i2c_dev->hw->clk_divisor_fast_mode;
-   656			break;
-   657	
-   658		case 0 ... I2C_MAX_STANDARD_MODE_FREQ:
-   659			tlow = i2c_dev->hw->tlow_std_mode;
-   660			thigh = i2c_dev->hw->thigh_std_mode;
-   661			tsu_thd = i2c_dev->hw->setup_hold_time_std_mode;
-   662			non_hs_mode = i2c_dev->hw->clk_divisor_std_mode;
-   663			break;
-   664		}
-   665	
-   666		/* make sure clock divisor programmed correctly */
-   667		clk_divisor = FIELD_PREP(I2C_CLK_DIVISOR_HSMODE,
-   668					 i2c_dev->hw->clk_divisor_hs_mode) |
-   669			      FIELD_PREP(I2C_CLK_DIVISOR_STD_FAST_MODE, non_hs_mode);
-   670		i2c_writel(i2c_dev, clk_divisor, I2C_CLK_DIVISOR);
-   671	
-   672		if (i2c_dev->hw->has_interface_timing_reg) {
-   673			val = FIELD_PREP(I2C_INTERFACE_TIMING_THIGH, thigh) |
-   674			      FIELD_PREP(I2C_INTERFACE_TIMING_TLOW, tlow);
-   675			i2c_writel(i2c_dev, val, I2C_INTERFACE_TIMING_0);
-   676		}
-   677	
-   678		/*
-   679		 * Configure setup and hold times only when tsu_thd is non-zero.
-   680		 * Otherwise, preserve the chip default values.
-   681		 */
-   682		if (i2c_dev->hw->has_interface_timing_reg && tsu_thd)
-   683			i2c_writel(i2c_dev, tsu_thd, I2C_INTERFACE_TIMING_1);
-   684	
-   685		clk_multiplier = (tlow + thigh + 2) * (non_hs_mode + 1);
-   686	
-   687		err = clk_set_rate(i2c_dev->div_clk,
-   688				   i2c_dev->bus_clk_rate * clk_multiplier);
-   689		if (err) {
-   690			dev_err(i2c_dev->dev, "failed to set div-clk rate: %d\n", err);
-   691			return err;
-   692		}
-   693	
-   694		if (!i2c_dev->is_dvc && !i2c_dev->is_vi) {
-   695			u32 sl_cfg = i2c_readl(i2c_dev, I2C_SL_CNFG);
-   696	
-   697			sl_cfg |= I2C_SL_CNFG_NACK | I2C_SL_CNFG_NEWSL;
-   698			i2c_writel(i2c_dev, sl_cfg, I2C_SL_CNFG);
-   699			i2c_writel(i2c_dev, 0xfc, I2C_SL_ADDR1);
-   700			i2c_writel(i2c_dev, 0x00, I2C_SL_ADDR2);
-   701		}
-   702	
-   703		err = tegra_i2c_flush_fifos(i2c_dev);
-   704		if (err)
-   705			return err;
-   706	
-   707		if (i2c_dev->multimaster_mode && i2c_dev->hw->has_slcg_override_reg)
-   708			i2c_writel(i2c_dev, I2C_MST_CORE_CLKEN_OVR, I2C_CLKEN_OVERRIDE);
-   709	
-   710		err = tegra_i2c_wait_for_config_load(i2c_dev);
-   711		if (err)
-   712			return err;
-   713	
-   714		return 0;
-   715	}
-   716	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
