@@ -2,164 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8BB45AE78
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 22:29:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CAAF45AE7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 22:30:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231967AbhKWVdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 16:33:04 -0500
-Received: from mga18.intel.com ([134.134.136.126]:52935 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229586AbhKWVdD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 16:33:03 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="222014488"
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="222014488"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 13:29:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="538402817"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 23 Nov 2021 13:29:52 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mpdMN-0002KF-R9; Tue, 23 Nov 2021 21:29:51 +0000
-Date:   Wed, 24 Nov 2021 05:28:49 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>
-Subject: drivers/ata/pata_falcon.c:58:41: sparse: sparse: cast removes
- address space '__iomem' of expression
-Message-ID: <202111240519.TR4XadIt-lkp@intel.com>
+        id S235906AbhKWVd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 16:33:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhKWVdw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 16:33:52 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0427C061574;
+        Tue, 23 Nov 2021 13:30:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=iO3HnBWsJ/NLxaA52RztLHbEXc3qbezCQwSQjG1Zx/M=; b=qsGcdrrxcb86GaRuvr7c46R+V0
+        Hc5/2hIoSps0xhhYrfmKeFMhNzRqW7Ge8YfRF5IukxnfV44DLP0fHjKE+CeOV3q2OvGJ2vnpAUKYY
+        kHH4rL8+6ecd9BzzhNnmu5pr3P9lOsXeu/1JufgGtIVGK+AYtu82BYq5I1s4kXB6LRmwSN14SGChX
+        InHnHV4Nm/vBl6Yca6+UGx1xM8K2hmYlCRopgX9PKQah0rZbDg5WlmVue67SJEu9qNaDlAZQHw9Xg
+        uJmRkr8vb7Qtu3szPc48E3Gbz0KFwcdLQSj/LrxgwA5ZuOj6etsXlwkJEMhZ7yETeZSMN7XTkChOY
+        tY+cwS5g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mpdN0-00GUOj-7Q; Tue, 23 Nov 2021 21:30:30 +0000
+Date:   Tue, 23 Nov 2021 21:30:30 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        David Hildenbrand <david@redhat.com>,
+        "Paul E . McKenney" <paulmckrcu@fb.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>,
+        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
+        Florian Schmidt <florian.schmidt@nutanix.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v7] mm: Add PM_THP_MAPPED to /proc/pid/pagemap
+Message-ID: <YZ1ddl3FA43NijmX@casper.infradead.org>
+References: <20211123000102.4052105-1-almasrymina@google.com>
+ <YZ1USY+zB1PP24Z1@casper.infradead.org>
+ <CAHS8izOhi45RqCACGGXYyB8UAmMo-85TyuNX8Myzdh81xOkBTA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAHS8izOhi45RqCACGGXYyB8UAmMo-85TyuNX8Myzdh81xOkBTA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   136057256686de39cc3a07c2e39ef6bc43003ff6
-commit: 44b1fbc0f5f30e66a56d29575349f0b1ebe2b0ee m68k/q40: Replace q40ide driver with pata_falcon and falconide
-date:   6 months ago
-config: m68k-randconfig-s031-20211123 (https://download.01.org/0day-ci/archive/20211124/202111240519.TR4XadIt-lkp@intel.com/config.gz)
-compiler: m68k-linux-gcc (GCC) 11.2.0
-reproduce:
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # apt-get install sparse
-        # sparse version: v0.6.4-dirty
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=44b1fbc0f5f30e66a56d29575349f0b1ebe2b0ee
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout 44b1fbc0f5f30e66a56d29575349f0b1ebe2b0ee
-        # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=m68k SHELL=/bin/bash drivers/ata/
+On Tue, Nov 23, 2021 at 01:10:37PM -0800, Mina Almasry wrote:
+> On Tue, Nov 23, 2021 at 12:51 PM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Mon, Nov 22, 2021 at 04:01:02PM -0800, Mina Almasry wrote:
+> > > Add PM_THP_MAPPED MAPPING to allow userspace to detect whether a given virt
+> > > address is currently mapped by a transparent huge page or not.  Example
+> > > use case is a process requesting THPs from the kernel (via a huge tmpfs
+> > > mount for example), for a performance critical region of memory.  The
+> > > userspace may want to query whether the kernel is actually backing this
+> > > memory by hugepages or not.
+> >
+> > So you want this bit to be clear if the memory is backed by a hugetlb
+> > page?
+> >
+> 
+> Yes I believe so. I do not see value in telling the userspace that the
+> virt address is backed by a hugetlb page, since if the memory is
+> mapped by MAP_HUGETLB or is backed by a hugetlb file then the memory
+> is backed by hugetlb pages and there is no vagueness from the kernel
+> here.
+> 
+> Additionally hugetlb interfaces are more size based rather than PMD or
+> not. arm64 for example supports 64K, 2MB, 32MB and 1G 'huge' pages and
+> it's an implementation detail that those sizes are mapped CONTIG PTE,
+> PMD, CONITG PMD, and PUD respectively, and the specific mapping
+> mechanism is typically not exposed to the userspace and might not be
+> stable. Assuming pagemap_hugetlb_range() == PMD_MAPPED would not
+> technically be correct.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+What I've been trying to communicate over the N reviews of this
+patch series is that *the same thing is about to happen to THPs*.
+Only more so.  THPs are going to be of arbitrary power-of-two size, not
+necessarily sizes supported by the hardware.  That means that we need to
+be extremely precise about what we mean by "is this a THP?"  Do we just
+mean "This is a compound page?"  Do we mean "this is mapped by a PMD?"
+Or do we mean something else?  And I feel like I haven't been able to
+get that information out of you.
 
-
-sparse warnings: (new ones prefixed by >>)
->> drivers/ata/pata_falcon.c:58:41: sparse: sparse: cast removes address space '__iomem' of expression
->> drivers/ata/pata_falcon.c:58:41: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned short volatile [noderef] [usertype] __iomem *port @@     got unsigned short [usertype] * @@
-   drivers/ata/pata_falcon.c:58:41: sparse:     expected unsigned short volatile [noderef] [usertype] __iomem *port
-   drivers/ata/pata_falcon.c:58:41: sparse:     got unsigned short [usertype] *
-   drivers/ata/pata_falcon.c:60:35: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/ata/pata_falcon.c:60:35: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned short volatile [noderef] [usertype] __iomem *port @@     got unsigned short [usertype] * @@
-   drivers/ata/pata_falcon.c:60:35: sparse:     expected unsigned short volatile [noderef] [usertype] __iomem *port
-   drivers/ata/pata_falcon.c:60:35: sparse:     got unsigned short [usertype] *
-   drivers/ata/pata_falcon.c:63:42: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/ata/pata_falcon.c:63:42: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned short volatile [noderef] [usertype] __iomem *port @@     got unsigned short [usertype] * @@
-   drivers/ata/pata_falcon.c:63:42: sparse:     expected unsigned short volatile [noderef] [usertype] __iomem *port
-   drivers/ata/pata_falcon.c:63:42: sparse:     got unsigned short [usertype] *
-   drivers/ata/pata_falcon.c:65:36: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/ata/pata_falcon.c:65:36: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned short volatile [noderef] [usertype] __iomem *port @@     got unsigned short [usertype] * @@
-   drivers/ata/pata_falcon.c:65:36: sparse:     expected unsigned short volatile [noderef] [usertype] __iomem *port
-   drivers/ata/pata_falcon.c:65:36: sparse:     got unsigned short [usertype] *
-   drivers/ata/pata_falcon.c:77:49: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/ata/pata_falcon.c:77:49: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned short volatile [noderef] [usertype] __iomem *port @@     got unsigned short [usertype] * @@
-   drivers/ata/pata_falcon.c:77:49: sparse:     expected unsigned short volatile [noderef] [usertype] __iomem *port
-   drivers/ata/pata_falcon.c:77:49: sparse:     got unsigned short [usertype] *
-   drivers/ata/pata_falcon.c:79:43: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/ata/pata_falcon.c:79:43: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned short volatile [noderef] [usertype] __iomem *port @@     got unsigned short [usertype] * @@
-   drivers/ata/pata_falcon.c:79:43: sparse:     expected unsigned short volatile [noderef] [usertype] __iomem *port
-   drivers/ata/pata_falcon.c:79:43: sparse:     got unsigned short [usertype] *
-   drivers/ata/pata_falcon.c:84:50: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/ata/pata_falcon.c:84:50: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned short volatile [noderef] [usertype] __iomem *port @@     got unsigned short [usertype] * @@
-   drivers/ata/pata_falcon.c:84:50: sparse:     expected unsigned short volatile [noderef] [usertype] __iomem *port
-   drivers/ata/pata_falcon.c:84:50: sparse:     got unsigned short [usertype] *
-   drivers/ata/pata_falcon.c:86:44: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/ata/pata_falcon.c:86:44: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned short volatile [noderef] [usertype] __iomem *port @@     got unsigned short [usertype] * @@
-   drivers/ata/pata_falcon.c:86:44: sparse:     expected unsigned short volatile [noderef] [usertype] __iomem *port
-   drivers/ata/pata_falcon.c:86:44: sparse:     got unsigned short [usertype] *
-
-vim +/__iomem +58 drivers/ata/pata_falcon.c
-
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  39  
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  40  static unsigned int pata_falcon_data_xfer(struct ata_queued_cmd *qc,
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  41  					  unsigned char *buf,
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  42  					  unsigned int buflen, int rw)
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  43  {
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  44  	struct ata_device *dev = qc->dev;
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  45  	struct ata_port *ap = dev->link->ap;
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  46  	void __iomem *data_addr = ap->ioaddr.data_addr;
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  47  	unsigned int words = buflen >> 1;
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  48  	struct scsi_cmnd *cmd = qc->scsicmd;
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  49  	bool swap = 1;
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  50  
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  51  	if (dev->class == ATA_DEV_ATA && cmd && cmd->request &&
-79f4d1d5c0d7d1 Linus Torvalds            2017-02-21  52  	    !blk_rq_is_passthrough(cmd->request))
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  53  		swap = 0;
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  54  
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  55  	/* Transfer multiple of 2 bytes */
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  56  	if (rw == READ) {
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  57  		if (swap)
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30 @58  			raw_insw_swapw((u16 *)data_addr, (u16 *)buf, words);
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  59  		else
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  60  			raw_insw((u16 *)data_addr, (u16 *)buf, words);
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  61  	} else {
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  62  		if (swap)
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  63  			raw_outsw_swapw((u16 *)data_addr, (u16 *)buf, words);
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  64  		else
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  65  			raw_outsw((u16 *)data_addr, (u16 *)buf, words);
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  66  	}
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  67  
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  68  	/* Transfer trailing byte, if any. */
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  69  	if (unlikely(buflen & 0x01)) {
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  70  		unsigned char pad[2] = { };
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  71  
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  72  		/* Point buf to the tail of buffer */
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  73  		buf += buflen - 1;
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  74  
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  75  		if (rw == READ) {
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  76  			if (swap)
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  77  				raw_insw_swapw((u16 *)data_addr, (u16 *)pad, 1);
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  78  			else
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  79  				raw_insw((u16 *)data_addr, (u16 *)pad, 1);
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  80  			*buf = pad[0];
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  81  		} else {
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  82  			pad[0] = *buf;
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  83  			if (swap)
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  84  				raw_outsw_swapw((u16 *)data_addr, (u16 *)pad, 1);
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  85  			else
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  86  				raw_outsw((u16 *)data_addr, (u16 *)pad, 1);
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  87  		}
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  88  		words++;
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  89  	}
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  90  
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  91  	return words << 1;
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  92  }
-7e11aabd48eb00 Bartlomiej Zolnierkiewicz 2016-12-30  93  
-
-:::::: The code at line 58 was first introduced by commit
-:::::: 7e11aabd48eb00240b280bf927cba9198664dcf6 ata: add Atari Falcon PATA controller driver
-
-:::::: TO: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-:::::: CC: Tejun Heo <tj@kernel.org>
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
