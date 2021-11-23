@@ -2,287 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E9145AB89
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 19:49:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0822945AB6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 19:45:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239924AbhKWSw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 13:52:26 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:42160 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237269AbhKWSwY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 13:52:24 -0500
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.1)
- id 4b155b4bf842dcfc; Tue, 23 Nov 2021 19:49:15 +0100
-Received: from kreacher.localnet (unknown [213.134.175.133])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 6127866AC5A;
-        Tue, 23 Nov 2021 19:49:14 +0100 (CET)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Subject: [PATCH 09/10] ACPI: EC: Make the event work state machine visible
-Date:   Tue, 23 Nov 2021 19:44:46 +0100
-Message-ID: <7331762.EvYhyI6sBW@kreacher>
-In-Reply-To: <11887969.O9o76ZdvQC@kreacher>
-References: <11887969.O9o76ZdvQC@kreacher>
+        id S236955AbhKWStB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 13:49:01 -0500
+Received: from mail-bn1nam07on2079.outbound.protection.outlook.com ([40.107.212.79]:43607
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234139AbhKWSs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 13:48:59 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ccNBicHlmftY5l6MHG2jIf/5sg2eFHMPzY2srHF4Ra7w+zsLSnykoC6fJt9h1fnJH2UYKOS07dF4NwlgpKaVknO3+/hCf6QkmQGF5abq6fKLyppZOcJT1wRYuPxX2bhLNiaheejZxJI3Y/A3LC8udxGwHLCdGQcS8CSL79OuDp2SysRoR5RRlGF19y8DGnMzeSQWv21p4iBF3SL5ssr4xWFPNRBifJDaTFsahoBhUMlax2XoZu+jYYFjjePKeZ2KsvU5VyOinArRt5o9QFq2DvP614Zy3vkftSOoX6VjXl0ZrRLBY9mg+dEK1FsJQVMUN4bl7DtAOmF8CUxHAUVgqw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0fJvpXFNcOf/7SFtieQ68f2Uy2BxSvBVju2YztXWboM=;
+ b=LrCenmXN5GwTPrvxL3Rmw5+ky34UuYW14J1Y0oeuOh2eObiDoE9GyfMmmIC01jXB4g69bfV9kKfKlG0mBzsdB6B1rqJkFwvwT7pWdDfB70VzlEgQg3IfB6buFxc2+54v4k4BreDMDJLLhO+Gt6w/VQQHCxw6BsHzBy94dCnK4op+vDFRA25N4TVTz6TA2DkXtRXVV2KgK/l49L73SI/Bj80trXQnVi6h5t5FIdie3JWr1WmxOJ3zNhQ4uIve5kWS2fWV9AxHIkgLNycdBeH5MCa1DYJbh/Zj1vYcW8Tubw6Ki3JMK5EWQShMsqND5ebMvD8B/+R/tbA/uYDDXXXkFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=linuxfoundation.org
+ smtp.mailfrom=xilinx.com; dmarc=pass (p=none sp=none pct=100) action=none
+ header.from=xilinx.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0fJvpXFNcOf/7SFtieQ68f2Uy2BxSvBVju2YztXWboM=;
+ b=Z1kpi0E6jsaj7tJNtbMcow6CdtT3Yx48BYjWcZHexUZiFwaT1khGgZMGI9Sa82djdJ68j3ItLj6TMJpS33i7jZ0C4IO/BbYxInoMkocdg6+nYxzbLq0ael12QOqXcvBxMK/fqNSYTQ74WZU5eRByIdRiauXXw4xDIpjC3KqcOts=
+Received: from DM6PR06CA0092.namprd06.prod.outlook.com (2603:10b6:5:336::25)
+ by BYAPR02MB4982.namprd02.prod.outlook.com (2603:10b6:a03:72::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Tue, 23 Nov
+ 2021 18:45:48 +0000
+Received: from DM3NAM02FT054.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:5:336:cafe::b4) by DM6PR06CA0092.outlook.office365.com
+ (2603:10b6:5:336::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.20 via Frontend
+ Transport; Tue, 23 Nov 2021 18:45:48 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ DM3NAM02FT054.mail.protection.outlook.com (10.13.5.135) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4713.19 via Frontend Transport; Tue, 23 Nov 2021 18:45:48 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Tue, 23 Nov 2021 10:45:47 -0800
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Tue, 23 Nov 2021 10:45:47 -0800
+Envelope-to: gregkh@linuxfoundation.org,
+ jacmet@sunsite.dk,
+ linux-kernel@vger.kernel.org,
+ linux-serial@vger.kernel.org
+Received: from [172.19.72.93] (port=43548 helo=xsj-xw9400.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <lizhi.hou@xilinx.com>)
+        id 1mpanb-000B2V-Ha; Tue, 23 Nov 2021 10:45:47 -0800
+Received: by xsj-xw9400.xilinx.com (Postfix, from userid 21952)
+        id 732E660010B; Tue, 23 Nov 2021 10:45:47 -0800 (PST)
+From:   Lizhi Hou <lizhi.hou@xilinx.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-serial@vger.kernel.org>,
+        <gregkh@linuxfoundation.org>, <jacmet@sunsite.dk>
+CC:     Lizhi Hou <lizhi.hou@xilinx.com>
+Subject: [PATCH 1/1] tty: serial: uartlite: allow 64 bit address
+Date:   Tue, 23 Nov 2021 10:45:06 -0800
+Message-ID: <20211123184506.1184561-1-lizhi.hou@xilinx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 213.134.175.133
-X-CLIENT-HOSTNAME: 213.134.175.133
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvuddrgeeigdduudejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvjeelgffhiedukedtleekkedvudfggefhgfegjefgueekjeelvefggfdvledutdenucfkphepvddufedrudefgedrudejhedrudeffeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddujeehrddufeefpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 696c8b5c-6762-48cb-a75a-08d9aeb1774a
+X-MS-TrafficTypeDiagnostic: BYAPR02MB4982:
+X-Microsoft-Antispam-PRVS: <BYAPR02MB4982C52A086DAA2BE639036EA1609@BYAPR02MB4982.namprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:972;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Lqi3+XXkYb+ayvF8fmFUGixwYGkW7PLBsi+kFHKcn0gzgSMTht4cyBC0sUH0DMkxDY5XCqB3aFi5eaHRZsAP0+Q2KAgRSkGq1uom6/OE35q2ouwWfWD6y3ltFqKSmqT+84OcNuGxlKKygQa21brSZtuiFwVNp5bIDcGQMzvL0dvIar7wGZHANZFxyJ1UZQZC1Ieg+yhIaTv6QfP7j5muj89B4HTBKJJsyOL3UqlCvUzojJkX8TNA6E4zYUv1gENIWevR6MkS/eCTJvOOxFsADu60hAV5rUpk3mvRbHCZ7OysE2hyE0LrNuiiR5EfJ3xCWsBG/kQUEkJ11quJVhqR78Qo2iNvR8G95J30BDKFFgVxcDRZSUt48LncWM2L8oBp9jQULU4f/Tz4L2DXBuaTCZDmRg08PA/xzAaUN6QKntL+ci4VncrP7WaP1oLnsPXVfG8qux9O2OOvVmcclHc1td1P9xh+yRTiBKUotJR2FCOgYp2lkC14/SaC3iLtoARmMDyDrV64RHAOeXgx/MkOFLPSSDgQ+3+7Gei2oGHXfNI75anZ3PiaKZBlT4LtXbQYTYWDEpynpvXfKt72JmyGPTVgdLLYdSUOM0EUtEo8QFf3PmUXPRRxaUz1V9C5QmBsZSLMFzjUZ1qFIUhlBw1dWFpmxL0PC7fGI4DIjxHCOGN8Unt0cxna3hG97MqgjqJX1KQkaM4Tmb9Z/gRMnGVqtg==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(46966006)(36840700001)(8676002)(1076003)(356005)(2616005)(5660300002)(6266002)(4744005)(186003)(426003)(70586007)(44832011)(2906002)(83380400001)(8936002)(7636003)(110136005)(42186006)(36756003)(107886003)(336012)(36860700001)(4326008)(508600001)(6666004)(70206006)(26005)(47076005)(316002)(82310400004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Nov 2021 18:45:48.2541
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 696c8b5c-6762-48cb-a75a-08d9aeb1774a
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT054.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB4982
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fix the uartlite probe failure when it is mapped to address above 4G.
 
-The EC driver uses a relatively simple state machine for the event
-work handling, but it is not really straightforward to figure out.
-
-The states are as follows:
-
- "Ready": The event handling work can be submitted.
-
-  In this state, the EC_FLAGS_QUERY_PENDING flag is clear.
- 
- "In progress": The event handling work is pending or is being
-                processed.  It cannot be submitted again.
-
-  In ths state, the EC_FLAGS_QUERY_PENDING flag is set and both the
-  events_to_process count is nonzero and the EC_FLAGS_QUERY_GUARDING
-  flag is clear.
-
- "Complete": The event handling work has been completed, but it still
-             cannot be submitted again.
-
-  In ths state, the EC_FLAGS_QUERY_PENDING flag is set and the
-  events_to_process count is zero or the EC_FLAGS_QUERY_GUARDING
-  flag is set.
-
-The state changes from "Ready" to "In progress" when new event is
-detected by advance_transaction() and acpi_ec_submit_event() is
-called by it.
-
-Next, the state can change from "In progress" directly to "Ready" in
-the following situations:
-
- * ec_event_clearing is ACPI_EC_EVT_TIMING_STATUS and the state of
-   an ACPI_EC_COMMAND_QUERY transaction becomes ACPI_EC_COMMAND_POLL.
-
- * ec_event_clearing is ACPI_EC_EVT_TIMING_QUERY and the state of
-   an ACPI_EC_COMMAND_QUERY transaction becomes
-   ACPI_EC_COMMAND_COMPLETE.
-
- * ec_event_clearing is either ACPI_EC_EVT_TIMING_STATUS or
-   ACPI_EC_EVT_TIMING_QUERY and there are no more events to
-   process (ie. ec->events_to_process becomes 0).
-
-If ec_event_clearing is ACPI_EC_EVT_TIMING_EVENT, however, the
-state must change from "In progress" to "Complete" before it
-can change to "Ready".  The changes from "In progress" to
-"Complete" in that case occur in the following situations:
-
- * The state of an ACPI_EC_COMMAND_QUERY transaction becomes
-   ACPI_EC_COMMAND_COMPLETE.
-
- * There are no more events to process (ie. ec->events_to_process
-   becomes 0).
-
-Finally, the state changes from "Complete" to "Ready" when
-advance_transaction() is invoked when the state is "Complete" and
-the state of the current transaction is not ACPI_EC_COMMAND_POLL.
-
-To make this state machine visible in the code, add a new
-event_state field to struct acpi_ec and modify the code to use
-it istead the EC_FLAGS_QUERY_PENDING and EC_FLAGS_QUERY_GUARDING
-flags.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Lizhi Hou <lizhi.hou@xilinx.com>
 ---
- drivers/acpi/ec.c       |   75 ++++++++++++++++++++++++++++--------------------
- drivers/acpi/internal.h |    8 +++++
- 2 files changed, 52 insertions(+), 31 deletions(-)
+ drivers/tty/serial/uartlite.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Index: linux-pm/drivers/acpi/ec.c
-===================================================================
---- linux-pm.orig/drivers/acpi/ec.c
-+++ linux-pm/drivers/acpi/ec.c
-@@ -92,8 +92,6 @@ enum ec_command {
- 
- enum {
- 	EC_FLAGS_QUERY_ENABLED,		/* Query is enabled */
--	EC_FLAGS_QUERY_PENDING,		/* Query is pending */
--	EC_FLAGS_QUERY_GUARDING,	/* Guard for SCI_EVT check */
- 	EC_FLAGS_EVENT_HANDLER_INSTALLED,	/* Event handler installed */
- 	EC_FLAGS_EC_HANDLER_INSTALLED,	/* OpReg handler installed */
- 	EC_FLAGS_QUERY_METHODS_INSTALLED, /* _Qxx handlers installed */
-@@ -450,9 +448,11 @@ static bool acpi_ec_submit_event(struct
- 	if (!acpi_ec_event_enabled(ec))
- 		return false;
- 
--	if (!test_and_set_bit(EC_FLAGS_QUERY_PENDING, &ec->flags)) {
-+	if (ec->event_state == EC_EVENT_READY) {
- 		ec_dbg_evt("Command(%s) submitted/blocked",
- 			   acpi_ec_cmd_string(ACPI_EC_COMMAND_QUERY));
-+
-+		ec->event_state = EC_EVENT_IN_PROGRESS;
- 		/*
- 		 * If events_to_process is greqter than 0 at this point, the
- 		 * while () loop in acpi_ec_event_handler() is still running
-@@ -474,11 +474,19 @@ static bool acpi_ec_submit_event(struct
- 	return true;
- }
- 
-+static void acpi_ec_complete_event(struct acpi_ec *ec)
-+{
-+	if (ec->event_state == EC_EVENT_IN_PROGRESS)
-+		ec->event_state = EC_EVENT_COMPLETE;
-+}
-+
- static void acpi_ec_close_event(struct acpi_ec *ec)
+diff --git a/drivers/tty/serial/uartlite.c b/drivers/tty/serial/uartlite.c
+index d3d9566e5dbd..e1fa52d31474 100644
+--- a/drivers/tty/serial/uartlite.c
++++ b/drivers/tty/serial/uartlite.c
+@@ -626,7 +626,7 @@ static struct uart_driver ulite_uart_driver = {
+  *
+  * Returns: 0 on success, <0 otherwise
+  */
+-static int ulite_assign(struct device *dev, int id, u32 base, int irq,
++static int ulite_assign(struct device *dev, int id, phys_addr_t base, int irq,
+ 			struct uartlite_data *pdata)
  {
--	if (test_and_clear_bit(EC_FLAGS_QUERY_PENDING, &ec->flags))
-+	if (ec->event_state != EC_EVENT_READY)
- 		ec_dbg_evt("Command(%s) unblocked",
- 			   acpi_ec_cmd_string(ACPI_EC_COMMAND_QUERY));
-+
-+	ec->event_state = EC_EVENT_READY;
- 	acpi_ec_unmask_events(ec);
- }
- 
-@@ -565,8 +573,8 @@ void acpi_ec_flush_work(void)
- 
- static bool acpi_ec_guard_event(struct acpi_ec *ec)
- {
--	bool guarded = true;
- 	unsigned long flags;
-+	bool guarded;
- 
- 	spin_lock_irqsave(&ec->lock, flags);
- 	/*
-@@ -575,19 +583,15 @@ static bool acpi_ec_guard_event(struct a
- 	 * evaluating _Qxx, so we need to re-check SCI_EVT after waiting an
- 	 * acceptable period.
- 	 *
--	 * The guarding period begins when EC_FLAGS_QUERY_PENDING is
--	 * flagged, which means SCI_EVT check has just been performed.
--	 * But if the current transaction is ACPI_EC_COMMAND_QUERY, the
--	 * guarding should have already been performed (via
--	 * EC_FLAGS_QUERY_GUARDING) and should not be applied so that the
--	 * ACPI_EC_COMMAND_QUERY transaction can be transitioned into
--	 * ACPI_EC_COMMAND_POLL state immediately.
-+	 * The guarding period is applicable if the event state is not
-+	 * EC_EVENT_READY, but otherwise if the current transaction is of the
-+	 * ACPI_EC_COMMAND_QUERY type, the guarding should have elapsed already
-+	 * and it should not be applied to let the transaction transition into
-+	 * the ACPI_EC_COMMAND_POLL state immediately.
- 	 */
--	if (ec_event_clearing == ACPI_EC_EVT_TIMING_STATUS ||
--	    ec_event_clearing == ACPI_EC_EVT_TIMING_QUERY ||
--	    !test_bit(EC_FLAGS_QUERY_PENDING, &ec->flags) ||
--	    (ec->curr && ec->curr->command == ACPI_EC_COMMAND_QUERY))
--		guarded = false;
-+	guarded = ec_event_clearing == ACPI_EC_EVT_TIMING_EVENT &&
-+		ec->event_state != EC_EVENT_READY &&
-+		(!ec->curr || ec->curr->command != ACPI_EC_COMMAND_QUERY);
- 	spin_unlock_irqrestore(&ec->lock, flags);
- 	return guarded;
- }
-@@ -619,16 +623,26 @@ static int ec_transaction_completed(stru
- static inline void ec_transaction_transition(struct acpi_ec *ec, unsigned long flag)
- {
- 	ec->curr->flags |= flag;
--	if (ec->curr->command == ACPI_EC_COMMAND_QUERY) {
--		if (ec_event_clearing == ACPI_EC_EVT_TIMING_STATUS &&
--		    flag == ACPI_EC_COMMAND_POLL)
-+
-+	if (ec->curr->command != ACPI_EC_COMMAND_QUERY)
-+		return;
-+
-+	switch (ec_event_clearing) {
-+	case ACPI_EC_EVT_TIMING_STATUS:
-+		if (flag == ACPI_EC_COMMAND_POLL)
- 			acpi_ec_close_event(ec);
--		if (ec_event_clearing == ACPI_EC_EVT_TIMING_QUERY &&
--		    flag == ACPI_EC_COMMAND_COMPLETE)
-+
-+		return;
-+
-+	case ACPI_EC_EVT_TIMING_QUERY:
-+		if (flag == ACPI_EC_COMMAND_COMPLETE)
- 			acpi_ec_close_event(ec);
--		if (ec_event_clearing == ACPI_EC_EVT_TIMING_EVENT &&
--		    flag == ACPI_EC_COMMAND_COMPLETE)
--			set_bit(EC_FLAGS_QUERY_GUARDING, &ec->flags);
-+
-+		return;
-+
-+	case ACPI_EC_EVT_TIMING_EVENT:
-+		if (flag == ACPI_EC_COMMAND_COMPLETE)
-+			acpi_ec_complete_event(ec);
- 	}
- }
- 
-@@ -674,11 +688,9 @@ static bool advance_transaction(struct a
- 	 */
- 	if (!t || !(t->flags & ACPI_EC_COMMAND_POLL)) {
- 		if (ec_event_clearing == ACPI_EC_EVT_TIMING_EVENT &&
--		    (!ec->events_to_process ||
--		     test_bit(EC_FLAGS_QUERY_GUARDING, &ec->flags))) {
--			clear_bit(EC_FLAGS_QUERY_GUARDING, &ec->flags);
-+		    ec->event_state == EC_EVENT_COMPLETE)
- 			acpi_ec_close_event(ec);
--		}
-+
- 		if (!t)
- 			goto out;
- 	}
-@@ -1246,8 +1258,9 @@ static void acpi_ec_event_handler(struct
- 	 * event handling work again regardless of whether or not the query
- 	 * queued up above is processed successfully.
- 	 */
--	if (ec_event_clearing == ACPI_EC_EVT_TIMING_STATUS ||
--	    ec_event_clearing == ACPI_EC_EVT_TIMING_QUERY)
-+	if (ec_event_clearing == ACPI_EC_EVT_TIMING_EVENT)
-+		acpi_ec_complete_event(ec);
-+	else
- 		acpi_ec_close_event(ec);
- 
- 	spin_unlock_irq(&ec->lock);
-Index: linux-pm/drivers/acpi/internal.h
-===================================================================
---- linux-pm.orig/drivers/acpi/internal.h
-+++ linux-pm/drivers/acpi/internal.h
-@@ -167,6 +167,13 @@ static inline void acpi_early_processor_
- /* --------------------------------------------------------------------------
-                                   Embedded Controller
-    -------------------------------------------------------------------------- */
-+
-+enum acpi_ec_event_state {
-+	EC_EVENT_READY = 0,	/* Event work can be submitted */
-+	EC_EVENT_IN_PROGRESS,	/* Event work is pending or being processed */
-+	EC_EVENT_COMPLETE,	/* Event work processing has completed */
-+};
-+
- struct acpi_ec {
- 	acpi_handle handle;
- 	int gpe;
-@@ -183,6 +190,7 @@ struct acpi_ec {
- 	spinlock_t lock;
- 	struct work_struct work;
- 	unsigned long timestamp;
-+	enum acpi_ec_event_state event_state;
- 	unsigned int events_to_process;
- 	unsigned int events_in_progress;
- 	unsigned int queries_in_progress;
-
-
+ 	struct uart_port *port;
+-- 
+2.27.0
 
