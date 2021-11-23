@@ -2,176 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74ABD45A4FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:13:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0D145A463
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:07:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237663AbhKWOQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 09:16:27 -0500
-Received: from mga05.intel.com ([192.55.52.43]:63719 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236057AbhKWOQZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 09:16:25 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="321259682"
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="321259682"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 06:13:17 -0800
-X-IronPort-AV: E=Sophos;i="5.87,257,1631602800"; 
-   d="scan'208";a="571075385"
-Received: from romanagn-mobl.ger.corp.intel.com (HELO localhost) ([10.249.144.24])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 06:13:09 -0800
-From:   Iwona Winiarska <iwona.winiarska@intel.com>
-To:     linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devicetree@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Borislav Petkov <bp@alien8.de>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Zev Weiss <zweiss@equinix.com>,
-        David Muller <d.mueller@elsoft.ch>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Iwona Winiarska <iwona.winiarska@intel.com>
-Subject: [PATCH v4 13/13] docs: Add PECI documentation
-Date:   Tue, 23 Nov 2021 15:07:06 +0100
-Message-Id: <20211123140706.2945700-14-iwona.winiarska@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211123140706.2945700-1-iwona.winiarska@intel.com>
-References: <20211123140706.2945700-1-iwona.winiarska@intel.com>
+        id S231683AbhKWOKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 09:10:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229895AbhKWOKU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 09:10:20 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B99CAC06173E
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 06:07:12 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id z9so19854074qtj.9
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 06:07:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1B+wsbZ88hl5UgUalYciMdsusbfEhIih8FbzaStZm40=;
+        b=IzeKHci6gF3mobwFwKv1NX/I1NyoxlO2bMeYdaH4G9o6BJr4jOO/pBzkp7IuO4Fk9C
+         hkEKAA3PbYrH9zGGxLiY0X4EICGZEhTOzN7sLv7XYN/E0IohlR/A5ZLHgGK3Ri8r4UR8
+         potxB9X/8HtUoWr6OhpR9BKARS/+I3jhhA4RogoI24Mg0MtaPiAMi1nlTEGdiioOH8AN
+         +cVLMAajLihca7m7Eo8D0Y7B7hDEX4OHsR96G+mZTvqtIc6DnY6p9U9FXAar/t0VgZxj
+         J3rdGhcjR7/ebBkoqhGuUW9qd4iVO0MvYk8hWzB+YP4VTpt4kCiqWGZolndHV3hfv0Dz
+         sBTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1B+wsbZ88hl5UgUalYciMdsusbfEhIih8FbzaStZm40=;
+        b=7yuAHUiM7iTRTI+twD6yo4viG93xZTf4LO4uFo259k0KXt2Etf+eN2p4ASaJZKeXs5
+         CeRMnmIKOOrppsIr43u8QzQT74rtUP8inHoCNfYA+EISHEsVWHFNScLC+m7uWMG9ytYo
+         P3bu3ckdQH0+EOW3xbPWawN/SP+lRmLr4sAhSVXZmDDdKJGXzocLtTTxIP9eAvyD9NTT
+         in1zaSo6YFOuIoORTcEgsz5wUJayXJ0RcFWvb0OG7zi24UF5V1SZqKH5swW2+eRHKi9q
+         kNG7bdT2P+qFPfG+VH1H6AP+3izgVCBpyjPJGLk/4WljkXSZCcgRp05eK8KjCcywkc8Z
+         /SWQ==
+X-Gm-Message-State: AOAM530m8BITZSFodXwqQa26jr9rjsW5sqyirVVvT3Iu68On172cDZAZ
+        pGvVjO2N7pfBixooV8BPSWT1gQ==
+X-Google-Smtp-Source: ABdhPJyYjMxOOBpH9i7fCBP2AlMxvvkQbKWd4gm91pcvwoSnMC1ssx3hbE+zkZc6xu0EZxoKnzsH1g==
+X-Received: by 2002:a05:622a:18e:: with SMTP id s14mr6882801qtw.203.1637676431388;
+        Tue, 23 Nov 2021 06:07:11 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id s2sm6142705qtw.22.2021.11.23.06.07.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 06:07:10 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mpWRx-000B12-PB; Tue, 23 Nov 2021 10:07:09 -0400
+Date:   Tue, 23 Nov 2021 10:07:09 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Andrew Dona-Couch <andrew@donacou.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Drew DeVault <sir@cmpwn.com>,
+        Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+Message-ID: <20211123140709.GB5112@ziepe.ca>
+References: <20211116114727.601021d0763be1f1efe2a6f9@linux-foundation.org>
+ <CFRGQ58D9IFX.PEH1JI9FGHV4@taiga>
+ <20211116133750.0f625f73a1e4843daf13b8f7@linux-foundation.org>
+ <b84bc345-d4ea-96de-0076-12ff245c5e29@redhat.com>
+ <8f219a64-a39f-45f0-a7ad-708a33888a3b@www.fastmail.com>
+ <333cb52b-5b02-648e-af7a-090e23261801@redhat.com>
+ <ca96bb88-295c-ccad-ed2f-abc585cb4904@kernel.dk>
+ <5f998bb7-7b5d-9253-2337-b1d9ea59c796@redhat.com>
+ <20211123132523.GA5112@ziepe.ca>
+ <10ccf01b-f13a-d626-beba-cbee70770cf1@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <10ccf01b-f13a-d626-beba-cbee70770cf1@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a brief overview of PECI and PECI wire interface.
-The documentation also contains kernel-doc for PECI subsystem internals
-and PECI CPU Driver API.
+On Tue, Nov 23, 2021 at 02:39:19PM +0100, David Hildenbrand wrote:
+> > 
+> >> 2) Could be provide a mmu variant to ordinary users that's just good
+> >> enough but maybe not as fast as what we have today? And limit
+> >> FOLL_LONGTERM to special, privileged users?
+> > 
+> > rdma has never been privileged
+> 
+> Feel free to correct me if I'm wrong: it requires special networking
+> hardware and the admin/kernel has to prepare the system in a way such
+> that it can be used.
 
-Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- Documentation/index.rst      |  1 +
- Documentation/peci/index.rst | 16 +++++++++++
- Documentation/peci/peci.rst  | 51 ++++++++++++++++++++++++++++++++++++
- MAINTAINERS                  |  1 +
- 4 files changed, 69 insertions(+)
- create mode 100644 Documentation/peci/index.rst
- create mode 100644 Documentation/peci/peci.rst
+Not really, plug in the right PCI card and it works
 
-diff --git a/Documentation/index.rst b/Documentation/index.rst
-index 54ce34fd6fbd..7671f2cd474f 100644
---- a/Documentation/index.rst
-+++ b/Documentation/index.rst
-@@ -137,6 +137,7 @@ needed).
-    misc-devices/index
-    scheduler/index
-    mhi/index
-+   peci/index
- 
- Architecture-agnostic documentation
- -----------------------------------
-diff --git a/Documentation/peci/index.rst b/Documentation/peci/index.rst
-new file mode 100644
-index 000000000000..989de10416e7
---- /dev/null
-+++ b/Documentation/peci/index.rst
-@@ -0,0 +1,16 @@
-+.. SPDX-License-Identifier: GPL-2.0-only
-+
-+====================
-+Linux PECI Subsystem
-+====================
-+
-+.. toctree::
-+
-+   peci
-+
-+.. only::  subproject and html
-+
-+   Indices
-+   =======
-+
-+   * :ref:`genindex`
-diff --git a/Documentation/peci/peci.rst b/Documentation/peci/peci.rst
-new file mode 100644
-index 000000000000..331b1ec00e22
---- /dev/null
-+++ b/Documentation/peci/peci.rst
-@@ -0,0 +1,51 @@
-+.. SPDX-License-Identifier: GPL-2.0-only
-+
-+========
-+Overview
-+========
-+
-+The Platform Environment Control Interface (PECI) is a communication
-+interface between Intel processor and management controllers
-+(e.g. Baseboard Management Controller, BMC).
-+PECI provides services that allow the management controller to
-+configure, monitor and debug platform by accessing various registers.
-+It defines a dedicated command protocol, where the management
-+controller is acting as a PECI originator and the processor - as
-+a PECI responder.
-+PECI can be used in both single processor and multiple-processor based
-+systems.
-+
-+NOTE:
-+Intel PECI specification is not released as a dedicated document,
-+instead it is a part of External Design Specification (EDS) for given
-+Intel CPU. External Design Specifications are usually not publicly
-+available.
-+
-+PECI Wire
-+---------
-+
-+PECI Wire interface uses a single wire for self-clocking and data
-+transfer. It does not require any additional control lines - the
-+physical layer is a self-clocked one-wire bus signal that begins each
-+bit with a driven, rising edge from an idle near zero volts. The
-+duration of the signal driven high allows to determine whether the bit
-+value is logic '0' or logic '1'. PECI Wire also includes variable data
-+rate established with every message.
-+
-+For PECI Wire, each processor package will utilize unique, fixed
-+addresses within a defined range and that address should
-+have a fixed relationship with the processor socket ID - if one of the
-+processors is removed, it does not affect addresses of remaining
-+processors.
-+
-+PECI subsystem internals
-+------------------------
-+
-+.. kernel-doc:: include/linux/peci.h
-+.. kernel-doc:: drivers/peci/internal.h
-+.. kernel-doc:: drivers/peci/core.c
-+.. kernel-doc:: drivers/peci/request.c
-+
-+PECI CPU Driver API
-+-------------------
-+.. kernel-doc:: drivers/peci/cpu.c
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 6266e996dca0..78af9c92f27a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14932,6 +14932,7 @@ M:	Iwona Winiarska <iwona.winiarska@intel.com>
- L:	openbmc@lists.ozlabs.org (moderated for non-subscribers)
- S:	Supported
- F:	Documentation/devicetree/bindings/peci/
-+F:	Documentation/peci/
- F:	drivers/peci/
- F:	include/linux/peci-cpu.h
- F:	include/linux/peci.h
--- 
-2.31.1
+"special" is a bit of a reach since almost every NIC sold in the > 100GB
+segment supports some RDMA.
 
+Jason
