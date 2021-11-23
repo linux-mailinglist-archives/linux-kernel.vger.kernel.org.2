@@ -2,146 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D0745AAE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 19:07:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B528F45AAE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 19:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239750AbhKWSKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 13:10:41 -0500
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:46028 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239586AbhKWSK1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 13:10:27 -0500
-Received: by mail-ot1-f53.google.com with SMTP id a23-20020a9d4717000000b0056c15d6d0caso89088otf.12;
-        Tue, 23 Nov 2021 10:07:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zISZonE+jfcuqih+VqZkba/z0VBN8Lm0GEq4vywk61c=;
-        b=vHMCPzGfzwcCgAHfRHw5HW54Wbuc/3zyOLTpw7yn2rh4aVJG4jUmJA4ajguSKHMQoG
-         cykj/JzNLOI0AvVvH/bJQe9iujg3MZsSXL0M2N16ga/8uT/Dt8447iJH7cEXVFq+1D9A
-         Vy833nVuON+mY+KURdtgYjjmWSwo/IGgYlb/6f8LYDPIkFf1oHgIfHPHCmesmlM+JS26
-         Xm81MJlNCDFsbbbVgdV/Hw4IOzHWuM5oZl94tUSlfjaxoE6LeD+MWYuWb5SWg1rRkdrv
-         LroaCq6vL1C8O48dyhqJUp0gtvHPd1JZoOy8ZkoMByVi3zY3rin9P4eEHl8DHC3O15j5
-         qzJQ==
-X-Gm-Message-State: AOAM532ue9hS1FUHyR8VykxCESrMxaT2rvtRrhM5Q8wBdEMsvZklJdyL
-        9EJDM0ec+Y3gQMWNSlHNo3Wnx6sf6U0T1vO0XUw=
-X-Google-Smtp-Source: ABdhPJwF2ep52rxDLG6UpRp3xdWO1LK2aeGUp8ki3Y6ep8Od1B4KnhnGqvqMfV3sQKXaxIByEQB9U2fm2A3fPfoMQds=
-X-Received: by 2002:a05:6830:1e57:: with SMTP id e23mr6327907otj.16.1637690838752;
- Tue, 23 Nov 2021 10:07:18 -0800 (PST)
+        id S239746AbhKWSLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 13:11:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57242 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239755AbhKWSKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 13:10:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2421060FA0;
+        Tue, 23 Nov 2021 18:07:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637690865;
+        bh=5fOp51f3GuVaADIJ83POiVG628dJ9s8X9MCPd0FZy44=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kwaZgn85HJJbGt4MR+5XXxTUm4YDptrShy+YjH7Xuw2gs37m2TwjcrwZXivEWCKdD
+         ntM/UtUjkeI6B/pTSPTKz3WVPjCnqsg6FDAlrSXqfKjD+pqOg+SW43Q7iU1D55hYgD
+         ZJ9lwJGaqAwM5E1sCIGvZXL6DCBzkGqs+cD0mrJI=
+Date:   Tue, 23 Nov 2021 19:07:42 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, stable-commits@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: Patch "tracing: Add length protection to histogram string
+ copies" has been added to the 5.4-stable tree
+Message-ID: <YZ0t7neMJJVrVBE/@kroah.com>
+References: <20211121231943.88009-1-sashal@kernel.org>
+ <YZzaazoMzw8eANyR@kroah.com>
+ <20211123113304.19da789b@gandalf.local.home>
 MIME-Version: 1.0
-References: <20211119113644.1600-1-alx.manpages@gmail.com> <20211119113644.1600-3-alx.manpages@gmail.com>
-In-Reply-To: <20211119113644.1600-3-alx.manpages@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 23 Nov 2021 19:07:07 +0100
-Message-ID: <CAJZ5v0jGgxgTWQ-DLehRE_GPoRMz2TnT469uNE8k6TX7NxQdEA@mail.gmail.com>
-Subject: Re: [PATCH 02/17] Use memberof(T, m) instead of explicit NULL dereference
-To:     Alejandro Colomar <alx.manpages@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ajit Khaparde <ajit.khaparde@broadcom.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Borislav Petkov <bp@suse.de>,
-        Corey Minyard <cminyard@mvista.com>, Chris Mason <clm@fb.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        David Sterba <dsterba@suse.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "John S . Gruber" <JohnSGruber@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ketan Mukadam <ketan.mukadam@broadcom.com>,
-        Len Brown <lenb@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-btrfs@vger.kernel.org,
-        "open list:TARGET SUBSYSTEM" <linux-scsi@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211123113304.19da789b@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 12:37 PM Alejandro Colomar
-<alx.manpages@gmail.com> wrote:
->
-> Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
-> Cc: Ajit Khaparde <ajit.khaparde@broadcom.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Borislav Petkov <bp@suse.de>
-> Cc: Corey Minyard <cminyard@mvista.com>
-> Cc: Chris Mason <clm@fb.com>
-> Cc: Christian Brauner <christian.brauner@ubuntu.com>
-> Cc: David Sterba <dsterba@suse.com>
-> Cc: Jani Nikula <jani.nikula@linux.intel.com>
-> Cc: Jason Wang <jasowang@redhat.com>
-> Cc: Jitendra Bhivare <jitendra.bhivare@broadcom.com>
-> Cc: John Hubbard <jhubbard@nvidia.com>
-> Cc: John S. Gruber <JohnSGruber@gmail.com>
-> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-> Cc: Josef Bacik <josef@toxicpanda.com>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Ketan Mukadam <ketan.mukadam@broadcom.com>
-> Cc: Len Brown <lenb@kernel.org>
-> Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> Cc: Miguel Ojeda <ojeda@kernel.org>
-> Cc: Mike Rapoport <rppt@linux.ibm.com>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Somnath Kotur <somnath.kotur@broadcom.com>
-> Cc: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-> Cc: Subbu Seetharaman <subbu.seetharaman@broadcom.com>
-> Cc: <intel-gfx@lists.freedesktop.org>
-> Cc: <linux-acpi@vger.kernel.org>
-> Cc: <linux-arm-kernel@lists.infradead.org>
-> Cc: <linux-btrfs@vger.kernel.org>
-> Cc: <linux-scsi@vger.kernel.org>
-> Cc: <netdev@vger.kernel.org>
-> Cc: <virtualization@lists.linux-foundation.org>
-> ---
->  arch/x86/include/asm/bootparam_utils.h  |  3 ++-
->  arch/x86/kernel/signal_compat.c         |  5 +++--
->  drivers/gpu/drm/i915/i915_utils.h       |  5 ++---
->  drivers/gpu/drm/i915/intel_runtime_pm.h |  2 +-
->  drivers/net/ethernet/emulex/benet/be.h  |  7 ++++---
->  drivers/net/ethernet/i825xx/ether1.c    |  7 +++++--
->  drivers/scsi/be2iscsi/be.h              |  7 ++++---
->  drivers/scsi/be2iscsi/be_cmds.h         |  5 ++++-
->  fs/btrfs/ctree.h                        |  5 +++--
->  include/acpi/actypes.h                  |  4 +++-
+On Tue, Nov 23, 2021 at 11:33:04AM -0500, Steven Rostedt wrote:
+> On Tue, 23 Nov 2021 13:11:23 +0100
+> Greg KH <greg@kroah.com> wrote:
+> 
+> > On Sun, Nov 21, 2021 at 06:19:42PM -0500, Sasha Levin wrote:
+> > > This is a note to let you know that I've just added the patch titled
+> > > 
+> > >     tracing: Add length protection to histogram string copies
+> > > 
+> > > to the 5.4-stable tree which can be found at:
+> > >     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+> > > 
+> > > The filename of the patch is:
+> > >      tracing-add-length-protection-to-histogram-string-co.patch
+> > > and it can be found in the queue-5.4 subdirectory.
+> > > 
+> > > If you, or anyone else, feels it should not be added to the stable tree,
+> > > please let <stable@vger.kernel.org> know about it.
+> > > 
+> > > 
+> > > 
+> > > commit 0a0e233a0c25593f817b6d9ed48fb2d2fd080870
+> > > Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > > Date:   Sun Nov 14 13:28:34 2021 -0500
+> > > 
+> > >     tracing: Add length protection to histogram string copies
+> > >     
+> > >     [ Upstream commit 938aa33f14657c9ed9deea348b7d6f14b6d69cb7 ]
+> > >     
+> > >     The string copies to the histogram storage has a max size of 256 bytes
+> > >     (defined by MAX_FILTER_STR_VAL). Only the string size of the event field
+> > >     needs to be copied to the event storage, but no more than what is in the
+> > >     event storage. Although nothing should be bigger than 256 bytes, there's
+> > >     no protection against overwriting of the storage if one day there is.
+> > >     
+> > >     Copy no more than the destination size, and enforce it.
+> > >     
+> > >     Also had to turn MAX_FILTER_STR_VAL into an unsigned int, to keep the
+> > >     min() comparison of the string sizes of comparable types.
+> > >     
+> > >     Link: https://lore.kernel.org/all/CAHk-=wjREUihCGrtRBwfX47y_KrLCGjiq3t6QtoNJpmVrAEb1w@mail.gmail.com/
+> > >     Link: https://lkml.kernel.org/r/20211114132834.183429a4@rorschach.local.home
+> > >     
+> > >     Cc: Ingo Molnar <mingo@kernel.org>
+> > >     Cc: Andrew Morton <akpm@linux-foundation.org>
+> > >     Cc: Tom Zanussi <zanussi@kernel.org>
+> > >     Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > >     Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > >     Fixes: 63f84ae6b82b ("tracing/histogram: Do not copy the fixed-size char array field over the field size")
+> > >     Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > >     Signed-off-by: Sasha Levin <sashal@kernel.org>  
+> > 
+> > This commit causes a bunch of build warnings, so odds are the backport
+> > is incorrect.
+> > 
+> > I'll drop it from the 5.4.y queue now.
+> 
+> Well, the above doesn't apply for me to 5.4, but the following appears to
+> work:
+> 
+> commit 0a0e233a0c25593f817b6d9ed48fb2d2fd080870
+> Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Date:   Sun Nov 14 13:28:34 2021 -0500
+> 
+>     tracing: Add length protection to histogram string copies
+>     
+>     [ Upstream commit 938aa33f14657c9ed9deea348b7d6f14b6d69cb7 ]
+>     
+>     The string copies to the histogram storage has a max size of 256 bytes
+>     (defined by MAX_FILTER_STR_VAL). Only the string size of the event field
+>     needs to be copied to the event storage, but no more than what is in the
+>     event storage. Although nothing should be bigger than 256 bytes, there's
+>     no protection against overwriting of the storage if one day there is.
+>     
+>     Copy no more than the destination size, and enforce it.
+>     
+>     Also had to turn MAX_FILTER_STR_VAL into an unsigned int, to keep the
+>     min() comparison of the string sizes of comparable types.
+>     
+>     Link: https://lore.kernel.org/all/CAHk-=wjREUihCGrtRBwfX47y_KrLCGjiq3t6QtoNJpmVrAEb1w@mail.gmail.com/
+>     Link: https://lkml.kernel.org/r/20211114132834.183429a4@rorschach.local.home
+>     
+>     Cc: Ingo Molnar <mingo@kernel.org>
+>     Cc: Andrew Morton <akpm@linux-foundation.org>
+>     Cc: Tom Zanussi <zanussi@kernel.org>
+>     Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+>     Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+>     Fixes: 63f84ae6b82b ("tracing/histogram: Do not copy the fixed-size char array field over the field size")
+>     Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+>     Signed-off-by: Sasha Levin <sashal@kernel.org>
+> 
+> Index: linux-test.git/include/linux/trace_events.h
+> ===================================================================
+> --- linux-test.git.orig/include/linux/trace_events.h
+> +++ linux-test.git/include/linux/trace_events.h
+> @@ -425,7 +425,7 @@ struct trace_event_file {
+>  
+>  #define PERF_MAX_TRACE_SIZE	2048
+>  
+> -#define MAX_FILTER_STR_VAL	256	/* Should handle KSYM_SYMBOL_LEN */
+> +#define MAX_FILTER_STR_VAL	256U	/* Should handle KSYM_SYMBOL_LEN */
+>  
+>  enum event_trigger_type {
+>  	ETT_NONE		= (0),
+> Index: linux-test.git/kernel/trace/trace_events_hist.c
+> ===================================================================
+> --- linux-test.git.orig/kernel/trace/trace_events_hist.c
+> +++ linux-test.git/kernel/trace/trace_events_hist.c
+> @@ -3521,8 +3521,10 @@ static inline void __update_field_vars(s
+>  		if (val->flags & HIST_FIELD_FL_STRING) {
+>  			char *str = elt_data->field_var_str[j++];
+>  			char *val_str = (char *)(uintptr_t)var_val;
+> +			unsigned int size;
+>  
+> -			strscpy(str, val_str, STR_VAR_LEN_MAX);
+> +			size = min(val->size, STR_VAR_LEN_MAX);
+> +			strscpy(str, val_str, size);
+>  			var_val = (u64)(uintptr_t)str;
+>  		}
+>  		tracing_map_set_var(elt, var_idx, var_val);
+> 
 
-The change in actypes.h would need to be submitted to the upstream
-ACPICA project via https://github.com/acpica/acpica/
+This doesn't apply for me, probably because other patches have been
+added to this queue already in this area.  Specifically 63f84ae6b82b
+("tracing/histogram: Do not copy the fixed-size char array field over
+the field size") has been backported, so maybe wait another 5.4 release
+cycle to submit this if you don't want to try to mess with the current
+queue?
 
-Thanks!
+thanks,
 
->  include/linux/container_of.h            |  6 +++---
->  include/linux/virtio_config.h           | 14 +++++++-------
->  12 files changed, 41 insertions(+), 29 deletions(-)
+greg k-h
