@@ -2,140 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C939459E73
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:43:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC4A459E7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:44:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235002AbhKWIqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 03:46:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232024AbhKWIqg (ORCPT
+        id S235030AbhKWIrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 03:47:41 -0500
+Received: from mail-ua1-f51.google.com ([209.85.222.51]:39828 "EHLO
+        mail-ua1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229617AbhKWIrk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 03:46:36 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB8BCC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 00:43:28 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mpROf-0007sO-28; Tue, 23 Nov 2021 09:43:25 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mpROe-000aYX-SB; Tue, 23 Nov 2021 09:43:24 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1mpROd-0001qe-Us; Tue, 23 Nov 2021 09:43:23 +0100
-Date:   Tue, 23 Nov 2021 09:43:21 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sherry Sun <sherry.sun@nxp.com>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com
-Subject: Re: [PATCH] tty: serial: imx: disable UCR4_OREN in .stop_rx()
-Message-ID: <20211123084321.gpblxmqddn3kl44y@pengutronix.de>
-References: <20211123070437.20153-1-sherry.sun@nxp.com>
- <20211123075122.2cwhrdwrsyjgebnk@pengutronix.de>
+        Tue, 23 Nov 2021 03:47:40 -0500
+Received: by mail-ua1-f51.google.com with SMTP id i6so42148527uae.6;
+        Tue, 23 Nov 2021 00:44:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GB53z3B/gqFRSO4IG+bzDbuA9R2agDBafBoJtXz3z38=;
+        b=M+/S+ON03qZqPXmDKZG6w2ShOC/OxJC0kHts1+lUHlhpW4PrBS/LEF60ns7XtFr+4p
+         EMg+WUrfnECfY51MMmCeciQ3ActY+CwYL6kjrOsGWuEkfTgeYiAtrEs5+y8eh9UQ5RxT
+         TgFxubiepyA0hN9fVXbbpPcogE4w94ujE6E94RoQwTvRXD29HxuPQQUCKqA3MoufnHFG
+         g6w0Q0lllBWDjU2NMNupODllnxsGsL2F5v4W2EDq1z5lVRmzB91mHbpGMSwtyGkzxtF9
+         1rLC+cnr0z9YU1QWWf/SotxhfUxBt1hNqhd+KclSYGhXk+jEOm2I+QsOuCqpKk6nqT6C
+         q1fA==
+X-Gm-Message-State: AOAM532Ft4My+mPtG2sELLYHZ3ab/ffIBMky9h1FvvDTz5dohsDUOW1n
+        L4BeFt58L7fbWsL+/HrwCpPBBA8PgHhVYg==
+X-Google-Smtp-Source: ABdhPJwZtjMZDbrfRR5yq/YRZg0/sBNm4oUuJiEJhPDkzuobl+M9KVSGqsB7UvX4FxmyDK8Vc8YP+A==
+X-Received: by 2002:a05:6102:c4e:: with SMTP id y14mr6443954vss.61.1637657071840;
+        Tue, 23 Nov 2021 00:44:31 -0800 (PST)
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com. [209.85.221.171])
+        by smtp.gmail.com with ESMTPSA id l28sm5911241vkn.45.2021.11.23.00.44.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Nov 2021 00:44:31 -0800 (PST)
+Received: by mail-vk1-f171.google.com with SMTP id s17so11947330vka.5;
+        Tue, 23 Nov 2021 00:44:31 -0800 (PST)
+X-Received: by 2002:a05:6122:7d4:: with SMTP id l20mr7126496vkr.26.1637657070961;
+ Tue, 23 Nov 2021 00:44:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="htaspexec67klvnz"
-Content-Disposition: inline
-In-Reply-To: <20211123075122.2cwhrdwrsyjgebnk@pengutronix.de>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20211122103032.517923-1-maz@kernel.org> <CAMuHMdX2ZRvDYA3idmw3nBcP6CO=2od6ZU-UeJo9vYsuB=fQNQ@mail.gmail.com>
+ <8735no70tt.wl-maz@kernel.org> <CAMuHMdVS67BLP2XEdD6ZvVBVE2x11gKnQa1TqG659HXPM5scqQ@mail.gmail.com>
+ <CAMuHMdWJhnXabKGpW7k944dzQHtwQtxw-yb2bRBsoaMw6N6nuA@mail.gmail.com> <87tug3clvc.wl-maz@kernel.org>
+In-Reply-To: <87tug3clvc.wl-maz@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 23 Nov 2021 09:44:19 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWGb2xik+94RVwtq8E6+9eN=HfQLX3a4sTjKQXR96Udkw@mail.gmail.com>
+Message-ID: <CAMuHMdWGb2xik+94RVwtq8E6+9eN=HfQLX3a4sTjKQXR96Udkw@mail.gmail.com>
+Subject: Re: [PATCH] of/irq: Add a quirk for controllers with their own
+ definition of interrupt-map
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        kernel-team@android.com, Rob Herring <robh@kernel.org>,
+        John Crispin <john@phrozen.org>, Biwen Li <biwen.li@nxp.com>,
+        Chris Brandt <chris.brandt@renesas.com>,
+        linux-renesas-soc@vger.kernel.org,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Marc,
 
---htaspexec67klvnz
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, Nov 23, 2021 at 9:33 AM Marc Zyngier <maz@kernel.org> wrote:
+> On Tue, 23 Nov 2021 07:57:48 +0000,
+> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > Summarized:
+> >   - Before the bad commit, and after your fix, irqc-rza1 is invoked,
+> >     and the number of interrupts seen is correct, but input events
+> >     are doubled.
+> >   - After the bad commit, irqc-rza1 is not invoked, and there is an
+> >     interrupt storm, but input events are OK.
+>
+> OK, that's reassuring, even if the "twice the events" stuff isn't what
+> you'd expect. We at least know this is a separate issue, and that this
+> patch on top of -rc1 brings you back to the 5.15 behaviour.
+>
+> I'd expect it to be the case for the other platforms as well.
 
-Hello again,
+OK.
 
-On Tue, Nov 23, 2021 at 08:51:22AM +0100, Uwe Kleine-K=F6nig wrote:
-> On Tue, Nov 23, 2021 at 03:04:37PM +0800, Sherry Sun wrote:
-> > From: Fugang Duan <fugang.duan@nxp.com>
-> >=20
-> > Disable UCR4_OREN bit in .stop_rx() to avoid endless
-> > interrupt happen while tty port is closing.
-> >=20
-> > Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
-> > Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
-> > ---
-> >  drivers/tty/serial/imx.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-> > index fb75e3e0d828..9ecaf051249d 100644
-> > --- a/drivers/tty/serial/imx.c
-> > +++ b/drivers/tty/serial/imx.c
-> > @@ -486,18 +486,21 @@ static void imx_uart_stop_tx(struct uart_port *po=
-rt)
-> >  static void imx_uart_stop_rx(struct uart_port *port)
-> >  {
-> >  	struct imx_port *sport =3D (struct imx_port *)port;
-> > -	u32 ucr1, ucr2;
-> > +	u32 ucr1, ucr2, ucr4;
-> > =20
-> >  	ucr1 =3D imx_uart_readl(sport, UCR1);
-> >  	ucr2 =3D imx_uart_readl(sport, UCR2);
-> > +	ucr4 =3D imx_uart_readl(sport, UCR4);
-> > =20
-> >  	if (sport->dma_is_enabled) {
-> >  		ucr1 &=3D ~(UCR1_RXDMAEN | UCR1_ATDMAEN);
-> >  	} else {
-> >  		ucr1 &=3D ~UCR1_RRDYEN;
-> >  		ucr2 &=3D ~UCR2_ATEN;
-> > +		ucr4 &=3D ~UCR4_OREN;
-> >  	}
-> >  	imx_uart_writel(sport, ucr1, UCR1);
-> > +	imx_uart_writel(sport, ucr4, UCR4);
->=20
-> I don't understand this yet, but I guess this is just a matter of
-> improving the commit log. How does the endless irq happen?
->=20
-> ... some time later after thinking and reading the driver source ...
->=20
-> Hmm, when the OR event is triggered the handler does
->=20
-> 	imx_uart_writel(sport, USR2_ORE, USR2);
->=20
-> and so clears the event. I would expect that this should be good enough
-> to prevent an irq storm even if the receiver is disabled. Doesn't acking
-> work with the receiver disabled?
+BTW, what would have been the correct way to do this for irqc-rza1?
+I think we're about to make the same mistake with RZ/G2L IRQC
+support[1]?
 
-One thing I forgot to mention:
+Thanks!
 
-If imx_uart_stop_rx() now clears UCR4_OREN, clearing in
-imx_uart_shutdown() should probably be dropped.
+[1] "[RFC PATCH v3 0/7] Renesas RZ/G2L IRQC support"
+https://lore.kernel.org/all/20211110225808.16388-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
 
-Best regards
-Uwe
+Gr{oetje,eeting}s,
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+                        Geert
 
---htaspexec67klvnz
-Content-Type: application/pgp-signature; name="signature.asc"
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmGcqaYACgkQwfwUeK3K
-7AnyRggAjPVE2oGVO6+Mju+sJmNwGsiBt73Tr9kixCSfdP+z/9Pmt1NLaOgNCCwT
-pqAHQP0GSiEfBosUIKpNCHVUn5uXkCnlXc7ri0KBGInCn5IJjHS9t5pjZtgKKqLL
-uR8ml+YQcLwRlJhbMadOaoQjWEJ23vHRp9MGty8ok6yYwFSG+uwyXKy+6C0XHB2Q
-setR+jgLKl8YFFVOYIyX3f9/AEXkDBwA/PexuAP+/J9sU0kbRoofEIQyCD7dlcTZ
-E5oul6qH2/g+uMEoa86ed9J6w4KyjuGug+Ev4QwiOO3H0ytBkNGPZmeUCEG0kPW8
-moDXyWwUONZNqgfzfwDPcwkZnvVClA==
-=+YlV
------END PGP SIGNATURE-----
-
---htaspexec67klvnz--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
