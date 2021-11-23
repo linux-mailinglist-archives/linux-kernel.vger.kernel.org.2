@@ -2,65 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64FA845A594
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:24:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C39E45A59C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 15:26:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237584AbhKWO15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 09:27:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237926AbhKWO1y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 09:27:54 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE145C061714
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 06:24:46 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id l22so91222741lfg.7
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 06:24:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=9ueNUB2dEeskDIOKGp+hkTTPhTGflizscQkYbtZWi48=;
-        b=kS1MTsRAujYqkU46GpewFb4W8qJ5vr5EiDxIiRx6qeD151aZEDf4BWZEsOv6ckNXcj
-         hP7D9KSs4ZnrO0p5g1fX2cB+buL3Qsv2amDp8COHZhyoq72AX1ZJ6HNnpzrwVMtU88mU
-         tND/oGdAKLB9+6f/Lof++ttalpBa4q3tkIT7N538QXBKUvfPfemN5kr5L73WLsRnKKfq
-         cKWj02XhNIYWipK8TjaC29z1R4HjWuMSxbhuj++g/4Y5Z9xiyb3diMcdKVqb7b3GQEEP
-         bHtKH0KL8SneDus3vKXygjWcqrMsoFBP+YDaFzlCOZwr6SGDTvvwz9dnGY0CV/Csc4WY
-         l4WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=9ueNUB2dEeskDIOKGp+hkTTPhTGflizscQkYbtZWi48=;
-        b=PL7mJocI8EPBEX/2dYc3m2PmkvbmwyAvsWUe73XvspQoPAU0HSJ4PG5TT2Tmu6uVJ1
-         L88LTn0GDa1Xfc5lmFCEMW4FgUpcrIYgiyWE9Wl/+Su5Fq/sRZUCe1FWTpqA41MTD9KF
-         ypHTNILIYl0FijKHSXfILKb4TZNh3qxv0ui8IZ06MVN90dxk8OREaGOIvE5HuomEmO97
-         GWi6seGRKP/rXAdCTFmH/KkocTrSnXPNNnuOQ2s8WQcXDZA4DqPNybVcUvulfmT9Vdbs
-         SQGnDSra47syvYkPkysxMbIW1XV1NS++0NKw4b+KO34yXGNYP4f7U7+8DzuPPiZiP8D4
-         Wv0A==
-X-Gm-Message-State: AOAM531ZV5AFAOQidyBm884mQ83RQmHCxio5Oui61BQ1tGkzf/KU3bGm
-        3Ph9EbyzXq/ROLcZ5070J/Ialhq4yEgIACW7hyk=
-X-Google-Smtp-Source: ABdhPJx4bBqGwXBDWYDHS1/+vydAUkC77YI8QQOMRFopq89L9QypxF1wTWRR2LU6w1Y1nIKiUBLQbUn80T4jDx6qskI=
-X-Received: by 2002:a19:740a:: with SMTP id v10mr5325112lfe.179.1637677485020;
- Tue, 23 Nov 2021 06:24:45 -0800 (PST)
+        id S238108AbhKWO3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 09:29:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235246AbhKWO3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 09:29:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33BB860E54;
+        Tue, 23 Nov 2021 14:26:02 +0000 (UTC)
+Date:   Tue, 23 Nov 2021 15:26:00 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Anders Roxell <anders.roxell@linaro.org>, shuah@kernel.org,
+        christian@brauner.io, nathan@kernel.org, ndesaulniers@google.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 1/2] selftests: cgroup: build error multiple outpt files
+Message-ID: <20211123142600.r5d52iwhbqhujiux@wittgenstein>
+References: <20211105162530.3307666-1-anders.roxell@linaro.org>
+ <61b21c4b-fc26-5e41-3aed-22a7e56b04ba@linuxfoundation.org>
 MIME-Version: 1.0
-Received: by 2002:a2e:b5dc:0:0:0:0:0 with HTTP; Tue, 23 Nov 2021 06:24:44
- -0800 (PST)
-Reply-To: douglasmomoh007@gmail.com
-From:   "Hon. Douglas Momoh" <kekererukaya6@gmail.com>
-Date:   Tue, 23 Nov 2021 15:24:44 +0100
-Message-ID: <CAAnXHzQ7GxWkt-fVj-Wy3omZmn6MdwveQW6zW_nQjNo=7X5hYQ@mail.gmail.com>
-Subject: Good Day
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <61b21c4b-fc26-5e41-3aed-22a7e56b04ba@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-A mail was sent to you sometime last week with the expectation of
-having a retune mail from you but to my surprise you never bothered to replied.
-Kindly reply for further explanations.
+On Fri, Nov 19, 2021 at 05:22:20PM -0700, Shuah Khan wrote:
+> On 11/5/21 10:25 AM, Anders Roxell wrote:
+> > When building selftests/cgroup: with clang the following error are seen:
+> > 
+> > clang -Wall -pthread    test_memcontrol.c cgroup_util.c ../clone3/clone3_selftests.h  -o /home/anders/.cache/tuxmake/builds/current/kselftest/cgroup/test_memcontrol
+> > clang: error: cannot specify -o when generating multiple output files
+> > make[3]: *** [../lib.mk:146: /home/anders/.cache/tuxmake/builds/current/kselftest/cgroup/test_memcontrol] Error 1
+> > 
+> > Rework to add the header files to LOCAL_HDRS before including ../lib.mk,
+> > since the dependency is evaluated in '$(OUTPUT)/%:%.c $(LOCAL_HDRS)' in
+> > file lib.mk.
+> > 
+> > Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> > ---
+> >   tools/testing/selftests/cgroup/Makefile | 12 +++++++-----
+> >   tools/testing/selftests/lib.mk          |  2 +-
+> >   2 files changed, 8 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/selftests/cgroup/Makefile
+> > index 59e222460581..745fe25fa0b9 100644
+> > --- a/tools/testing/selftests/cgroup/Makefile
+> > +++ b/tools/testing/selftests/cgroup/Makefile
+> > @@ -11,10 +11,12 @@ TEST_GEN_PROGS += test_core
+> >   TEST_GEN_PROGS += test_freezer
+> >   TEST_GEN_PROGS += test_kill
+> > +LOCAL_HDRS += $(selfdir)/clone3/clone3_selftests.h $(selfdir)/pidfd/pidfd.h
+> > +
+> 
+> This looks odd to me. Why are we introducing dependencies between tests?
+> clone3 includes in cgroup? Looks odd to me.
 
-Respectfully yours,
-Hon. Douglas Momoh.
+The cgroup tests need access to clone3() functionality in order to test
+CLONE_INTO_CGROUP which is more suited to be placed alongside the cgroup
+tests. There are a few other tests that include the clone3 header.
