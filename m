@@ -2,117 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E622459D97
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03865459D9B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 09:14:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231739AbhKWIRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 03:17:30 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:57331 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230447AbhKWIR2 (ORCPT
+        id S230516AbhKWIRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 03:17:50 -0500
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:35762 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229617AbhKWIRr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 03:17:28 -0500
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 57CDB22236;
-        Tue, 23 Nov 2021 09:14:19 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1637655259;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8YlTsZ1TQpMTDF60AMdfQkK5116GkhxBH8+vfDb1M1s=;
-        b=jdpRgLNMRWk4/kA5tgF9617poSyVMSIQieedRlkYAfssWL8h2rnzghWcjlfBhfzeufi4wW
-        xP0HUCx/ZEcxaMFUMaYr9ofvGy2+19S51NItOPpfSKwM1WtLdOQcmGHM2tnVlilh7AnfcD
-        kv4ri3lsa60HzH5lJILc9i3pP4d411Y=
+        Tue, 23 Nov 2021 03:17:47 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AN8ESHh024421;
+        Tue, 23 Nov 2021 02:14:28 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1637655268;
+        bh=y5EkiJ7SMkpoSDDEcOeXgHBrlYWqeQNdWDeIJEVvZYk=;
+        h=Subject:CC:References:From:Date:In-Reply-To;
+        b=mY19MsNzNTLzrQNmAD4U70WVMUmzGu2bPhSaBnORwJOzyAn2lRd35+qIZrpHgje9L
+         K+aFWfRsiiIrA7/B0C8OCETvcMbLK+rZ2JPhlZX7Bqjy67cTzPb1xNoQdAYGnvBTG9
+         RMsVJ7yBee1vEZds0EkmVk7rfAndG9pMLAI94TRA=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AN8ES1C006944
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 23 Nov 2021 02:14:28 -0600
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 23
+ Nov 2021 02:14:28 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 23 Nov 2021 02:14:28 -0600
+Received: from [10.250.232.185] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AN8EOPw107046;
+        Tue, 23 Nov 2021 02:14:25 -0600
+Subject: Re: [PATCH RFC v2 0/4] MUX: Add support for reading enable state from
+ DT
+CC:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Peter Rosin <peda@axentia.se>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-can@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>
+References: <20211122125624.6431-1-a-govindraju@ti.com>
+From:   Aswath Govindraju <a-govindraju@ti.com>
+Message-ID: <b9ad641d-e697-fcd7-a113-685d371bb0ba@ti.com>
+Date:   Tue, 23 Nov 2021 13:44:23 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20211122125624.6431-1-a-govindraju@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 23 Nov 2021 09:14:18 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Cc:     linux-mtd@lists.infradead.org,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: spi-nor: mt25qu: Ignore 6th ID byte
-In-Reply-To: <2bf37a35-1ccf-f4fa-c999-42b9154a2914@nokia.com>
-References: <20211119080402.20262-1-alexander.sverdlin@nokia.com>
- <9a158e2ef6635212c1e353590e3b773b@walle.cc>
- <1e133bc6-5edb-c4ce-ad44-3de77048acf2@nokia.com>
- <e9589af968d7b9dafbce17325dbf8472@walle.cc>
- <2bf37a35-1ccf-f4fa-c999-42b9154a2914@nokia.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <88db136a146edf53801d86509b52d40f@walle.cc>
-X-Sender: michael@walle.cc
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi All,
 
-Am 2021-11-23 08:45, schrieb Alexander Sverdlin:
-> On 22/11/2021 16:05, Michael Walle wrote:
->>>>> Ignore 6th ID byte, secure version of mt25qu256a has 0x73 as 6th 
->>>>> byte.
-
->> You don't have the non-security part by chance?
+On 22/11/21 6:26 pm, Aswath Govindraju wrote:
+> - The following series of patches add support for reading the state of the
+>   mux to be set for enabling given device.
+> - As these are RFC patches I have combined them into a single series for
+>   better understanding of the reason behind making this change.
 > 
-> Unfortunately no. And this is exactly the trigger for this patch:
-> one can get "secure" parts from Micron even though these "features" are 
-> not
-> required.
+> Changes since v1:
+> - Added support for reading the enable state from DT instead of hardcoding
+>   the state to be set to 1.
+> - Made relavent changes in the bindings
 > 
->> Mh, I'm undecided whether we should just duplicate the entry or if we
->> should ignore the last byte ("Device configuration information", where 
->> 00h
->> is standard). The commit which introduced the flash was 7f412111e276b.
->> Vingesh?
+> Link to v1,
+> - https://patchwork.kernel.org/project/linux-phy/list/?series=578863&state=*
 > 
-> Some people ask themselves why this table keeps growing if there is 
-> SFDP...
-> I see the point in fixups, but maybe at some point we will be able to 
-> support
-> some devices just out of the box?
-
-Are these features detectable by SFDP? Without knowing anything, as you 
-ignored
-my former question, I'd say no. So there will be two flashes, one with 
-these
-features and one without, both presumably have the same SFDP. Thus we'd 
-need
-these two entries anyway if we ever support these features. I get that 
-this
-might be under NDA, but then talk to Micron; I for myself can't get a 
-complete
-picture here.
-
->> Can you elaborate on the 0x73? Is that a bitmask? If it was an 
->> enumeration,
->> I'd assumed it would be 01h (or some smaller value).
+> Aswath Govindraju (4):
+>   dt-bindings: mux: Increase the number of arguments in mux-controls
+>   dt-bindings: phy: ti,tcan104x-can: Document mux-controls property
+>   mux: Add support for reading mux enable state from DT
+>   phy: phy-can-transceiver: Add support for setting mux
 > 
-> This "security addendum" where one need NDA just says "73h = Secure".
-> There is no explanation for it and no other variants.
 
-Ok.
+Thank you for the comments. I have made changes based on the comments
+received and posted a v3 of this series.
 
-> I'd really suggest to try to autodetect whatever features are going to 
-> be
-> supported from this chip and only duplicate the entry if this 
-> auto-detection
-> fails.
+Regards,
+Aswath
 
-There is a bigger patch series [1] from Tudor which you can try. You'd 
-need to
-respin your patch against that anyway.
+>  .../devicetree/bindings/mux/gpio-mux.yaml     |  2 +-
+>  .../bindings/mux/mux-controller.yaml          |  2 +-
+>  .../bindings/phy/ti,tcan104x-can.yaml         |  8 ++++++
+>  drivers/mux/core.c                            | 20 ++++++++++++--
+>  drivers/phy/phy-can-transceiver.c             | 26 +++++++++++++++++++
+>  include/linux/mux/consumer.h                  |  1 +
+>  include/linux/mux/driver.h                    |  1 +
+>  7 files changed, 56 insertions(+), 4 deletions(-)
+> 
 
--michael
-
-[1] 
-https://lore.kernel.org/linux-mtd/20211122095020.393346-1-tudor.ambarus@microchip.com/
