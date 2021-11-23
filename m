@@ -2,80 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F5E45A0BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 11:55:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D80C745A0B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 11:55:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235821AbhKWK66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 05:58:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235713AbhKWK6s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 05:58:48 -0500
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1186C06173E;
-        Tue, 23 Nov 2021 02:55:40 -0800 (PST)
-Received: from cap.home.8bytes.org (p549adbee.dip0.t-ipconnect.de [84.154.219.238])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id F1939DB4;
-        Tue, 23 Nov 2021 11:55:34 +0100 (CET)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        x86@kernel.org, Lu Baolu <baolu.lu@linux.intel.com>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Joerg Roedel <jroedel@suse.de>, stable@vger.kernel.org
-Subject: [PATCH 2/2] iommu/amd: Clarify AMD IOMMUv2 initialization messages
-Date:   Tue, 23 Nov 2021 11:55:07 +0100
-Message-Id: <20211123105507.7654-3-joro@8bytes.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211123105507.7654-1-joro@8bytes.org>
-References: <20211123105507.7654-1-joro@8bytes.org>
+        id S235673AbhKWK6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 05:58:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51268 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235659AbhKWK6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 05:58:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D405A60C4A;
+        Tue, 23 Nov 2021 10:55:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637664913;
+        bh=eqhK+BfzLKIaN05mKnLZSc5X1B6hXWBkWuce6lyOyBo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ry4bOjq4kxKuIwVnncrZTrqLqckPoAjYZhlJJxw61F7B7gFExhWinEcpHt4MB5Tdh
+         B1W1mTE4dcdFcBp+d0U++buajL9qlDyNBBaYMdB5fMOhYjBDw5w6h2xg1DpV/KuOKB
+         /YSRuIgJyZgAiu+wdmbjwKx9NO9fCcWK1BlbUzF6lH2+2X74YJKncOXcB88PF6gArr
+         ZAXZLA4BpT5fLrduP8Gu3uEVpAC2t+/0lGDUlVxFvRd41liv1QSZZ4mksqbBuEGozF
+         LdvLVfmPGg2YxkmGHVEsvkEUY9E/s9VksgJENCsbY/AR02a41ueTrmZr9DU6AMfdcg
+         4kRmxW/DrcO4Q==
+Date:   Tue, 23 Nov 2021 11:55:09 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Evan Green <evgreen@chromium.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Peter Korsgaard <peter.korsgaard@barco.com>,
+        Peter Rosin <peda@axentia.se>
+Subject: Re: [PATCH v1 1/3] i2c: mux: =?utf-8?Q?gpi?=
+ =?utf-8?B?bzrCoFJlcGxhY2U=?= custom acpi_get_local_address()
+Message-ID: <YZzIjQ/2InzXrNUJ@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Evan Green <evgreen@chromium.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Peter Korsgaard <peter.korsgaard@barco.com>,
+        Peter Rosin <peda@axentia.se>
+References: <20211115154201.46579-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="aGOO3k+AcxE+C/GK"
+Content-Disposition: inline
+In-Reply-To: <20211115154201.46579-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
 
-The messages printed on the initialization of the AMD IOMMUv2 driver
-have caused some confusion in the past. Clarify the messages to lower
-the confusion in the future.
+--aGOO3k+AcxE+C/GK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- drivers/iommu/amd/iommu_v2.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+On Mon, Nov 15, 2021 at 05:41:59PM +0200, Andy Shevchenko wrote:
+> Recently ACPI gained the acpi_get_local_address() API which may be used
+> instead of home grown i2c_mux_gpio_get_acpi_adr().
+>=20
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-diff --git a/drivers/iommu/amd/iommu_v2.c b/drivers/iommu/amd/iommu_v2.c
-index 13cbeb997cc1..58da08cc3d01 100644
---- a/drivers/iommu/amd/iommu_v2.c
-+++ b/drivers/iommu/amd/iommu_v2.c
-@@ -929,10 +929,8 @@ static int __init amd_iommu_v2_init(void)
- {
- 	int ret;
- 
--	pr_info("AMD IOMMUv2 driver by Joerg Roedel <jroedel@suse.de>\n");
--
- 	if (!amd_iommu_v2_supported()) {
--		pr_info("AMD IOMMUv2 functionality not available on this system\n");
-+		pr_info("AMD IOMMUv2 functionality not available on this system - This is not a bug.\n");
- 		/*
- 		 * Load anyway to provide the symbols to other modules
- 		 * which may use AMD IOMMUv2 optionally.
-@@ -947,6 +945,8 @@ static int __init amd_iommu_v2_init(void)
- 
- 	amd_iommu_register_ppr_notifier(&ppr_nb);
- 
-+	pr_info("AMD IOMMUv2 loaded and initialized\n");
-+
- 	return 0;
- 
- out:
--- 
-2.33.1
+Applied to for-next, thanks!
 
+
+--aGOO3k+AcxE+C/GK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmGcyI0ACgkQFA3kzBSg
+KbavDg/+PJUarACP3mbZue/S5aI1tey08A5XvV48cEM1DwqhVc1eGPViSExx1ji8
+SmwerqBWWV0a1FGkA+eqL7AiQdsRG3jS/dOKlqZ+1BkZiSaDd5DPL8qTB3Heli4Z
+4bzsdnEAETxhHV4IeR47DDmL65vai8ncvjQdFbzKOOTAIkm0+iHHYq4e+ykzeSyq
+SBZGCPmqBoCtaBjVWF8wwp3n6IAlm/B4IUxdblL72hm6huLyBloK/k5PNeqgopEK
+aIGFZjCSmT15lwkSwKzDXH7pmI0PVW59VNzdllQ3oYexHIYr/XeTShH9z5V0nGg3
+rIZ8T4BfSSw/4g5zljloYYVkHgfW2L/9oYboZVKyYrUiHzq0W7rLh1LkSyIX/R7o
+QnLl8Dg0MMHhkX3g83PYCMKiyCMsLykOcMJyZy/RXE5Qn/eeWayJ4Wv/tJ2QcuQx
+FtXe6kYtszO80+/cE2KlvQt5H9c9OHDLcIo1vVHfkm85wkpQMxeBVkRjH0K4+uXg
+RURBi7FXT/ZH20gyFzGZDRus2yt1r3lDA1l9LtZ5PKFRWzIFoejYQwE81X4P7TXJ
+FjSV9Eq8JdeDp2lZEPbL6UDRpdcL0nSJ+Xztn5rAWvyCYGOAHsngehhEy90n6Sxl
+r2uZdTKMOlJyFTaFNgRzgDPtXPXKCAWSqBplXEw2VJqqiz6WcAI=
+=Tt1c
+-----END PGP SIGNATURE-----
+
+--aGOO3k+AcxE+C/GK--
