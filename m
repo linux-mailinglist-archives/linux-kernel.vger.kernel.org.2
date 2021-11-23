@@ -2,583 +2,768 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A5045A206
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:54:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A83345A20B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 12:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236639AbhKWL5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 06:57:37 -0500
-Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:52084 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234531AbhKWL5f (ORCPT
+        id S236687AbhKWL54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 06:57:56 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:27472 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229955AbhKWL5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 06:57:35 -0500
-Received: from tomoyo.flets-east.jp ([114.149.34.46])
-        by smtp.orange.fr with ESMTPA
-        id pUMhmyepO2lVYpUNRmeiBM; Tue, 23 Nov 2021 12:54:27 +0100
-X-ME-Helo: tomoyo.flets-east.jp
-X-ME-Auth: MDU0YmViZGZmMDIzYiBlMiM2NTczNTRjNWZkZTMwOGRiOGQ4ODf3NWI1ZTMyMzdiODlhOQ==
-X-ME-Date: Tue, 23 Nov 2021 12:54:27 +0100
-X-ME-IP: 114.149.34.46
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Jimmy Assarsson <extja@kvaser.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Yasushi SHOJI <yashi@spacecubics.com>,
-        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
-        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Stephane Grosjean <s.grosjean@peak-system.com>
-Subject: [PATCH v1 2/2] can: do not increase rx_bytes statistics for RTR frames
-Date:   Tue, 23 Nov 2021 20:53:33 +0900
-Message-Id: <20211123115333.624335-3-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211123115333.624335-1-mailhol.vincent@wanadoo.fr>
-References: <20211123115333.624335-1-mailhol.vincent@wanadoo.fr>
+        Tue, 23 Nov 2021 06:57:54 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1ANAIf51009926;
+        Tue, 23 Nov 2021 06:54:46 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3cg6mm02wc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Nov 2021 06:54:45 -0500
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 1ANBsinI035306
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 23 Nov 2021 06:54:44 -0500
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Tue, 23 Nov 2021
+ 06:54:43 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
+ Transport; Tue, 23 Nov 2021 06:54:43 -0500
+Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.181])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 1ANBsf0g026107;
+        Tue, 23 Nov 2021 06:54:42 -0500
+From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
+To:     <jic23@kernel.org>, <robh+dt@kernel.org>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Subject: [PATCH v5 1/3] iio: frequency: admv1013: add support for ADMV1013
+Date:   Tue, 23 Nov 2021 13:53:34 +0200
+Message-ID: <20211123115336.65827-1-antoniu.miclaus@analog.com>
+X-Mailer: git-send-email 2.34.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: jcrFh0wx8sQc8zVMt3srxlqDd-ilxlTj
+X-Proofpoint-ORIG-GUID: jcrFh0wx8sQc8zVMt3srxlqDd-ilxlTj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-23_04,2021-11-23_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1015 mlxlogscore=999 impostorscore=0 mlxscore=0 spamscore=0
+ bulkscore=0 suspectscore=0 adultscore=0 malwarescore=0 priorityscore=1501
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111230066
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The actual payload length of the CAN Remote Transmission Request (RTR)
-frames is always 0, i.e. nothing is transmitted on the wire. However,
-those RTR frames still uses the DLC to indicate the length of the
-requested frame.
+The ADMV1013 is a wideband, microwave upconverter optimized
+for point to point microwave radio designs operating in the
+24 GHz to 44 GHz radio frequency (RF) range.
 
-As such, net_device_stats:rx_bytes should not be increased for the RTR
-frames.
+Datasheet:
+https://www.analog.com/media/en/technical-documentation/data-sheets/ADMV1013.pdf
 
-This patch fixes all the CAN drivers.
-
-CC: Jimmy Assarsson <extja@kvaser.com>
-CC: Marc Kleine-Budde <mkl@pengutronix.de>
-CC: Nicolas Ferre <nicolas.ferre@microchip.com>
-CC: Alexandre Belloni <alexandre.belloni@bootlin.com>
-CC: Ludovic Desroches <ludovic.desroches@microchip.com>
-CC: Chandrasekar Ramakrishnan <rcsekar@samsung.com>
-CC: Maxime Ripard <mripard@kernel.org>
-CC: Chen-Yu Tsai <wens@csie.org>
-CC: Jernej Skrabec <jernej.skrabec@gmail.com>
-CC: Yasushi SHOJI <yashi@spacecubics.com>
-CC: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-CC: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-CC: Michal Simek <michal.simek@xilinx.com>
-CC: Stephane Grosjean <s.grosjean@peak-system.com>
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
 ---
- drivers/net/can/at91_can.c                        | 3 ++-
- drivers/net/can/c_can/c_can_main.c                | 3 ++-
- drivers/net/can/cc770/cc770.c                     | 3 ++-
- drivers/net/can/dev/rx-offload.c                  | 3 ++-
- drivers/net/can/grcan.c                           | 3 ++-
- drivers/net/can/ifi_canfd/ifi_canfd.c             | 3 ++-
- drivers/net/can/janz-ican3.c                      | 3 ++-
- drivers/net/can/kvaser_pciefd.c                   | 3 ++-
- drivers/net/can/m_can/m_can.c                     | 3 ++-
- drivers/net/can/mscan/mscan.c                     | 3 ++-
- drivers/net/can/pch_can.c                         | 3 ++-
- drivers/net/can/peak_canfd/peak_canfd.c           | 3 ++-
- drivers/net/can/rcar/rcar_can.c                   | 3 ++-
- drivers/net/can/rcar/rcar_canfd.c                 | 3 ++-
- drivers/net/can/sja1000/sja1000.c                 | 3 ++-
- drivers/net/can/slcan.c                           | 3 ++-
- drivers/net/can/spi/hi311x.c                      | 3 ++-
- drivers/net/can/spi/mcp251x.c                     | 3 ++-
- drivers/net/can/sun4i_can.c                       | 3 ++-
- drivers/net/can/usb/ems_usb.c                     | 3 ++-
- drivers/net/can/usb/esd_usb2.c                    | 3 ++-
- drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 6 ++++--
- drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 3 ++-
- drivers/net/can/usb/mcba_usb.c                    | 3 ++-
- drivers/net/can/usb/peak_usb/pcan_usb.c           | 3 ++-
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c        | 8 ++++----
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c       | 9 +++++----
- drivers/net/can/usb/ucan.c                        | 3 ++-
- drivers/net/can/usb/usb_8dev.c                    | 8 ++++----
- drivers/net/can/xilinx_can.c                      | 8 +++++---
- 30 files changed, 72 insertions(+), 42 deletions(-)
+NOTE: This patch depends on
+https://patchwork.kernel.org/project/linux-iio/patch/20211119085627.6348-1-antoniu.miclaus@analog.com/
+changes in v5:
+ - use FIELD_GET/FIELD_PREP where possible
+ - fix very long lines
+ drivers/iio/frequency/Kconfig    |  11 +
+ drivers/iio/frequency/Makefile   |   1 +
+ drivers/iio/frequency/admv1013.c | 648 +++++++++++++++++++++++++++++++
+ 3 files changed, 660 insertions(+)
+ create mode 100644 drivers/iio/frequency/admv1013.c
 
-diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index 3cd872cf9be6..89b22c3f9a01 100644
---- a/drivers/net/can/at91_can.c
-+++ b/drivers/net/can/at91_can.c
-@@ -617,7 +617,8 @@ static void at91_read_msg(struct net_device *dev, unsigned int mb)
- 	at91_read_mb(dev, mb, cf);
+diff --git a/drivers/iio/frequency/Kconfig b/drivers/iio/frequency/Kconfig
+index 240b81502512..411b3b961e46 100644
+--- a/drivers/iio/frequency/Kconfig
++++ b/drivers/iio/frequency/Kconfig
+@@ -49,5 +49,16 @@ config ADF4371
  
- 	stats->rx_packets++;
--	stats->rx_bytes += cf->len;
-+	if (!(cf->can_id & CAN_RTR_FLAG))
-+		stats->rx_bytes += cf->len;
- 	netif_receive_skb(skb);
- 
- 	can_led_event(dev, CAN_LED_EVENT_RX);
-diff --git a/drivers/net/can/c_can/c_can_main.c b/drivers/net/can/c_can/c_can_main.c
-index 670754a12984..f2eb9ebc875f 100644
---- a/drivers/net/can/c_can/c_can_main.c
-+++ b/drivers/net/can/c_can/c_can_main.c
-@@ -406,7 +406,8 @@ static int c_can_read_msg_object(struct net_device *dev, int iface, u32 ctrl)
- 	}
- 
- 	stats->rx_packets++;
--	stats->rx_bytes += frame->len;
-+	if (!(frame->can_id & CAN_RTR_FLAG))
-+		stats->rx_bytes += frame->len;
- 
- 	netif_receive_skb(skb);
- 	return 0;
-diff --git a/drivers/net/can/cc770/cc770.c b/drivers/net/can/cc770/cc770.c
-index a5fd8ccedec2..7c703bcbb433 100644
---- a/drivers/net/can/cc770/cc770.c
-+++ b/drivers/net/can/cc770/cc770.c
-@@ -492,7 +492,8 @@ static void cc770_rx(struct net_device *dev, unsigned int mo, u8 ctrl1)
- 	}
- 
- 	stats->rx_packets++;
--	stats->rx_bytes += cf->len;
-+	if (!(id & CAN_RTR_FLAG))
-+		stats->rx_bytes += cf->len;
- 	netif_rx(skb);
- }
- 
-diff --git a/drivers/net/can/dev/rx-offload.c b/drivers/net/can/dev/rx-offload.c
-index bb47e9a49240..b10b73e5ed87 100644
---- a/drivers/net/can/dev/rx-offload.c
-+++ b/drivers/net/can/dev/rx-offload.c
-@@ -56,7 +56,8 @@ static int can_rx_offload_napi_poll(struct napi_struct *napi, int quota)
- 		work_done++;
- 		if (!(cf->can_id & CAN_ERR_MASK)) {
- 			stats->rx_packets++;
--			stats->rx_bytes += cf->len;
-+			if (!(cf->can_id & CAN_RTR_FLAG))
-+				stats->rx_bytes += cf->len;
- 		}
- 		netif_receive_skb(skb);
- 	}
-diff --git a/drivers/net/can/grcan.c b/drivers/net/can/grcan.c
-index 78e27940b2af..2f8a08321b41 100644
---- a/drivers/net/can/grcan.c
-+++ b/drivers/net/can/grcan.c
-@@ -1215,7 +1215,8 @@ static int grcan_receive(struct net_device *dev, int budget)
- 
- 		/* Update statistics and read pointer */
- 		stats->rx_packets++;
--		stats->rx_bytes += cf->len;
-+		if (!(cf->can_id & CAN_RTR_FLAG))
-+			stats->rx_bytes += cf->len;
- 		netif_receive_skb(skb);
- 
- 		rd = grcan_ring_add(rd, GRCAN_MSG_SIZE, dma->rx.size);
-diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
-index e8318e984bf2..1f90c829321e 100644
---- a/drivers/net/can/ifi_canfd/ifi_canfd.c
-+++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
-@@ -316,7 +316,8 @@ static void ifi_canfd_read_fifo(struct net_device *ndev)
- 	writel(rx_irq_mask, priv->base + IFI_CANFD_INTERRUPT);
- 
- 	stats->rx_packets++;
--	stats->rx_bytes += cf->len;
-+	if (!(cf->can_id & CAN_RTR_FLAG))
-+		stats->rx_bytes += cf->len;
- 
- 	netif_receive_skb(skb);
- }
-diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.c
-index 32006dbf5abd..5c589aa9dff8 100644
---- a/drivers/net/can/janz-ican3.c
-+++ b/drivers/net/can/janz-ican3.c
-@@ -1421,7 +1421,8 @@ static int ican3_recv_skb(struct ican3_dev *mod)
- 
- 	/* update statistics, receive the skb */
- 	stats->rx_packets++;
--	stats->rx_bytes += cf->len;
-+	if (!(cf->can_id & CAN_RTR_FLAG))
-+		stats->rx_bytes += cf->len;
- 	netif_receive_skb(skb);
- 
- err_noalloc:
-diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
-index 483fbd9e6952..88a570476500 100644
---- a/drivers/net/can/kvaser_pciefd.c
-+++ b/drivers/net/can/kvaser_pciefd.c
-@@ -1193,7 +1193,8 @@ static int kvaser_pciefd_handle_data_packet(struct kvaser_pciefd *pcie,
- 		ns_to_ktime(div_u64(p->timestamp * 1000,
- 				    pcie->freq_to_ticks_div));
- 
--	stats->rx_bytes += cf->len;
-+	if (!(cf->can_id & CAN_RTR_FLAG))
-+		stats->rx_bytes += cf->len;
- 	stats->rx_packets++;
- 
- 	return netif_rx(skb);
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index c33035e706bc..eedaf66bff31 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -524,7 +524,8 @@ static int m_can_read_fifo(struct net_device *dev, u32 rxfs)
- 	m_can_write(cdev, M_CAN_RXF0A, fgi);
- 
- 	stats->rx_packets++;
--	stats->rx_bytes += cf->len;
-+	if (!(cf->can_id & CAN_RTR_FLAG))
-+		stats->rx_bytes += cf->len;
- 
- 	timestamp = FIELD_GET(RX_BUF_RXTS_MASK, fifo_header.dlc);
- 
-diff --git a/drivers/net/can/mscan/mscan.c b/drivers/net/can/mscan/mscan.c
-index 9e1cce0260da..59b8284d00e5 100644
---- a/drivers/net/can/mscan/mscan.c
-+++ b/drivers/net/can/mscan/mscan.c
-@@ -404,7 +404,8 @@ static int mscan_rx_poll(struct napi_struct *napi, int quota)
- 		if (canrflg & MSCAN_RXF) {
- 			mscan_get_rx_frame(dev, frame);
- 			stats->rx_packets++;
--			stats->rx_bytes += frame->len;
-+			if (!(frame->can_id & CAN_RTR_FLAG))
-+				stats->rx_bytes += frame->len;
- 		} else if (canrflg & MSCAN_ERR_IF) {
- 			mscan_get_err_frame(dev, frame, canrflg);
- 		}
-diff --git a/drivers/net/can/pch_can.c b/drivers/net/can/pch_can.c
-index 6b45840db1f9..8fbe3560216b 100644
---- a/drivers/net/can/pch_can.c
-+++ b/drivers/net/can/pch_can.c
-@@ -692,7 +692,8 @@ static int pch_can_rx_normal(struct net_device *ndev, u32 obj_num, int quota)
- 		rcv_pkts++;
- 		stats->rx_packets++;
- 		quota--;
--		stats->rx_bytes += cf->len;
-+		if (!(cf->can_id & CAN_RTR_FLAG))
-+			stats->rx_bytes += cf->len;
- 		netif_receive_skb(skb);
- 
- 		pch_fifo_thresh(priv, obj_num);
-diff --git a/drivers/net/can/peak_canfd/peak_canfd.c b/drivers/net/can/peak_canfd/peak_canfd.c
-index d5b8bc6d2980..baae39fa14fc 100644
---- a/drivers/net/can/peak_canfd/peak_canfd.c
-+++ b/drivers/net/can/peak_canfd/peak_canfd.c
-@@ -315,7 +315,8 @@ static int pucan_handle_can_rx(struct peak_canfd_priv *priv,
- 	else
- 		memcpy(cf->data, msg->d, cf->len);
- 
--	stats->rx_bytes += cf->len;
-+	if (!(cf->can_id & CAN_RTR_FLAG))
-+		stats->rx_bytes += cf->len;
- 	stats->rx_packets++;
- 
- 	pucan_netif_rx(skb, msg->ts_low, msg->ts_high);
-diff --git a/drivers/net/can/rcar/rcar_can.c b/drivers/net/can/rcar/rcar_can.c
-index f408ed9a6ccd..237a97cd2f78 100644
---- a/drivers/net/can/rcar/rcar_can.c
-+++ b/drivers/net/can/rcar/rcar_can.c
-@@ -666,7 +666,8 @@ static void rcar_can_rx_pkt(struct rcar_can_priv *priv)
- 
- 	can_led_event(priv->ndev, CAN_LED_EVENT_RX);
- 
--	stats->rx_bytes += cf->len;
-+	if (!(cf->can_id & CAN_RTR_FLAG))
-+		stats->rx_bytes += cf->len;
- 	stats->rx_packets++;
- 	netif_receive_skb(skb);
- }
-diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index db9d62874e15..b1eded2f2c5d 100644
---- a/drivers/net/can/rcar/rcar_canfd.c
-+++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -1550,7 +1550,8 @@ static void rcar_canfd_rx_pkt(struct rcar_canfd_channel *priv)
- 
- 	can_led_event(priv->ndev, CAN_LED_EVENT_RX);
- 
--	stats->rx_bytes += cf->len;
-+	if (!(cf->can_id & CAN_RTR_FLAG))
-+		stats->rx_bytes += cf->len;
- 	stats->rx_packets++;
- 	netif_receive_skb(skb);
- }
-diff --git a/drivers/net/can/sja1000/sja1000.c b/drivers/net/can/sja1000/sja1000.c
-index a65546ca9461..d2e444968087 100644
---- a/drivers/net/can/sja1000/sja1000.c
-+++ b/drivers/net/can/sja1000/sja1000.c
-@@ -380,7 +380,8 @@ static void sja1000_rx(struct net_device *dev)
- 	sja1000_write_cmdreg(priv, CMD_RRB);
- 
- 	stats->rx_packets++;
--	stats->rx_bytes += cf->len;
-+	if (!(id & CAN_RTR_FLAG))
-+		stats->rx_bytes += cf->len;
- 	netif_rx(skb);
- 
- 	can_led_event(dev, CAN_LED_EVENT_RX);
-diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-index 9a4ebda30510..c53ad59763e0 100644
---- a/drivers/net/can/slcan.c
-+++ b/drivers/net/can/slcan.c
-@@ -218,7 +218,8 @@ static void slc_bump(struct slcan *sl)
- 	skb_put_data(skb, &cf, sizeof(struct can_frame));
- 
- 	sl->dev->stats.rx_packets++;
--	sl->dev->stats.rx_bytes += cf.len;
-+	if (!(cf.can_id & CAN_RTR_FLAG))
-+		sl->dev->stats.rx_bytes += cf.len;
- 	netif_rx_ni(skb);
- }
- 
-diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
-index 89d9c986a229..1e2929a9521b 100644
---- a/drivers/net/can/spi/hi311x.c
-+++ b/drivers/net/can/spi/hi311x.c
-@@ -350,7 +350,8 @@ static void hi3110_hw_rx(struct spi_device *spi)
- 		       frame->len);
- 
- 	priv->net->stats.rx_packets++;
--	priv->net->stats.rx_bytes += frame->len;
-+	if (!(frame->can_id & CAN_RTR_FLAG))
-+		priv->net->stats.rx_bytes += frame->len;
- 
- 	can_led_event(priv->net, CAN_LED_EVENT_RX);
- 
-diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-index 0579ab74f728..1f47c588b69f 100644
---- a/drivers/net/can/spi/mcp251x.c
-+++ b/drivers/net/can/spi/mcp251x.c
-@@ -736,7 +736,8 @@ static void mcp251x_hw_rx(struct spi_device *spi, int buf_idx)
- 	memcpy(frame->data, buf + RXBDAT_OFF, frame->len);
- 
- 	priv->net->stats.rx_packets++;
--	priv->net->stats.rx_bytes += frame->len;
-+	if (!(frame->can_id & CAN_RTR_FLAG))
-+		priv->net->stats.rx_bytes += frame->len;
- 
- 	can_led_event(priv->net, CAN_LED_EVENT_RX);
- 
-diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
-index 599174098883..cd3278e5d4f6 100644
---- a/drivers/net/can/sun4i_can.c
-+++ b/drivers/net/can/sun4i_can.c
-@@ -501,7 +501,8 @@ static void sun4i_can_rx(struct net_device *dev)
- 	sun4i_can_write_cmdreg(priv, SUN4I_CMD_RELEASE_RBUF);
- 
- 	stats->rx_packets++;
--	stats->rx_bytes += cf->len;
-+	if (!(id & CAN_RTR_FLAG))
-+		stats->rx_bytes += cf->len;
- 	netif_rx(skb);
- 
- 	can_led_event(dev, CAN_LED_EVENT_RX);
-diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
-index 7cf65936d02e..f4288f98c006 100644
---- a/drivers/net/can/usb/ems_usb.c
-+++ b/drivers/net/can/usb/ems_usb.c
-@@ -323,7 +323,8 @@ static void ems_usb_rx_can_msg(struct ems_usb *dev, struct ems_cpc_msg *msg)
- 	}
- 
- 	stats->rx_packets++;
--	stats->rx_bytes += cf->len;
-+	if (!(cf->can_id & CAN_RTR_FLAG))
-+		stats->rx_bytes += cf->len;
- 	netif_rx(skb);
- }
- 
-diff --git a/drivers/net/can/usb/esd_usb2.c b/drivers/net/can/usb/esd_usb2.c
-index 5f6915a27b3d..ac65ddfe814d 100644
---- a/drivers/net/can/usb/esd_usb2.c
-+++ b/drivers/net/can/usb/esd_usb2.c
-@@ -335,7 +335,8 @@ static void esd_usb2_rx_can_msg(struct esd_usb2_net_priv *priv,
- 		}
- 
- 		stats->rx_packets++;
--		stats->rx_bytes += cf->len;
-+		if (!(cf->can_id & CAN_RTR_FLAG))
-+			stats->rx_bytes += cf->len;
- 		netif_rx(skb);
- 	}
- 
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-index 3398da323126..adab5c2a8b99 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-@@ -1206,7 +1206,8 @@ static void kvaser_usb_hydra_rx_msg_std(const struct kvaser_usb *dev,
- 		memcpy(cf->data, cmd->rx_can.data, cf->len);
- 
- 	stats->rx_packets++;
--	stats->rx_bytes += cf->len;
-+	if (!(cf->can_id & CAN_RTR_FLAG))
-+		stats->rx_bytes += cf->len;
- 	netif_rx(skb);
- }
- 
-@@ -1284,7 +1285,8 @@ static void kvaser_usb_hydra_rx_msg_ext(const struct kvaser_usb *dev,
- 		memcpy(cf->data, cmd->rx_can.kcan_payload, cf->len);
- 
- 	stats->rx_packets++;
--	stats->rx_bytes += cf->len;
-+	if (!(cf->can_id & CAN_RTR_FLAG))
-+		stats->rx_bytes += cf->len;
- 	netif_rx(skb);
- }
- 
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-index 4aebaab9ea9c..14b445643554 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-@@ -1001,7 +1001,8 @@ static void kvaser_usb_leaf_rx_can_msg(const struct kvaser_usb *dev,
- 	}
- 
- 	stats->rx_packets++;
--	stats->rx_bytes += cf->len;
-+	if (!(cf->can_id & CAN_RTR_FLAG))
-+		stats->rx_bytes += cf->len;
- 	netif_rx(skb);
- }
- 
-diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
-index a1a154c08b7f..372f0a5ebb9f 100644
---- a/drivers/net/can/usb/mcba_usb.c
-+++ b/drivers/net/can/usb/mcba_usb.c
-@@ -458,7 +458,8 @@ static void mcba_usb_process_can(struct mcba_priv *priv,
- 	memcpy(cf->data, msg->data, cf->len);
- 
- 	stats->rx_packets++;
--	stats->rx_bytes += cf->len;
-+	if (!(cf->can_id & CAN_RTR_FLAG))
-+		stats->rx_bytes += cf->len;
- 
- 	can_led_event(priv->netdev, CAN_LED_EVENT_RX);
- 	netif_rx(skb);
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-index 21b06a738595..d1a4f847f310 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-@@ -684,7 +684,8 @@ static int pcan_usb_decode_data(struct pcan_usb_msg_context *mc, u8 status_len)
- 
- 	/* update statistics */
- 	mc->netdev->stats.rx_packets++;
--	mc->netdev->stats.rx_bytes += cf->len;
-+	if (!(cf->can_id & CAN_RTR_FLAG))
-+		mc->netdev->stats.rx_bytes += cf->len;
- 	/* push the skb */
- 	netif_rx(skb);
- 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index 185f5a98d217..65487ec33566 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -507,13 +507,13 @@ static int pcan_usb_fd_decode_canmsg(struct pcan_usb_fd_if *usb_if,
- 	if (rx_msg_flags & PUCAN_MSG_EXT_ID)
- 		cfd->can_id |= CAN_EFF_FLAG;
- 
--	if (rx_msg_flags & PUCAN_MSG_RTR)
-+	if (rx_msg_flags & PUCAN_MSG_RTR) {
- 		cfd->can_id |= CAN_RTR_FLAG;
--	else
-+	} else {
- 		memcpy(cfd->data, rm->d, cfd->len);
--
-+		netdev->stats.rx_bytes += cfd->len;
-+	}
- 	netdev->stats.rx_packets++;
--	netdev->stats.rx_bytes += cfd->len;
- 
- 	peak_usb_netif_rx_64(skb, le32_to_cpu(rm->ts_low),
- 			     le32_to_cpu(rm->ts_high));
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-index f6d19879bf40..69fdddcbba98 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-@@ -536,17 +536,18 @@ static int pcan_usb_pro_handle_canmsg(struct pcan_usb_pro_interface *usb_if,
- 	if (rx->flags & PCAN_USBPRO_EXT)
- 		can_frame->can_id |= CAN_EFF_FLAG;
- 
--	if (rx->flags & PCAN_USBPRO_RTR)
-+	if (rx->flags & PCAN_USBPRO_RTR) {
- 		can_frame->can_id |= CAN_RTR_FLAG;
--	else
-+	} else {
- 		memcpy(can_frame->data, rx->data, can_frame->len);
-+		netdev->stats.rx_bytes += can_frame->len;
-+	}
-+	netdev->stats.rx_packets++;
- 
- 	hwts = skb_hwtstamps(skb);
- 	peak_usb_get_ts_time(&usb_if->time_ref, le32_to_cpu(rx->ts32),
- 			     &hwts->hwtstamp);
- 
--	netdev->stats.rx_packets++;
--	netdev->stats.rx_bytes += can_frame->len;
- 	netif_rx(skb);
- 
- 	return 0;
-diff --git a/drivers/net/can/usb/ucan.c b/drivers/net/can/usb/ucan.c
-index d582c39fc8d0..388899019955 100644
---- a/drivers/net/can/usb/ucan.c
-+++ b/drivers/net/can/usb/ucan.c
-@@ -623,7 +623,8 @@ static void ucan_rx_can_msg(struct ucan_priv *up, struct ucan_message_in *m)
- 	/* don't count error frames as real packets */
- 	if (!(cf->can_id & CAN_ERR_FLAG)) {
- 		stats->rx_packets++;
--		stats->rx_bytes += cf->len;
-+		if (!(cf->can_id & CAN_RTR_FLAG))
-+			stats->rx_bytes += cf->len;
- 	}
- 
- 	/* pass it to Linux */
-diff --git a/drivers/net/can/usb/usb_8dev.c b/drivers/net/can/usb/usb_8dev.c
-index 040324362b26..14ae8ed85f80 100644
---- a/drivers/net/can/usb/usb_8dev.c
-+++ b/drivers/net/can/usb/usb_8dev.c
-@@ -474,13 +474,13 @@ static void usb_8dev_rx_can_msg(struct usb_8dev_priv *priv,
- 		if (msg->flags & USB_8DEV_EXTID)
- 			cf->can_id |= CAN_EFF_FLAG;
- 
--		if (msg->flags & USB_8DEV_RTR)
-+		if (msg->flags & USB_8DEV_RTR) {
- 			cf->can_id |= CAN_RTR_FLAG;
--		else
-+		} else {
- 			memcpy(cf->data, msg->data, cf->len);
--
-+			stats->rx_bytes += cf->len;
-+		}
- 		stats->rx_packets++;
--		stats->rx_bytes += cf->len;
- 		netif_rx(skb);
- 
- 		can_led_event(priv->netdev, CAN_LED_EVENT_RX);
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 275e240ab293..7d7239ec9920 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -787,9 +787,9 @@ static int xcan_rx(struct net_device *ndev, int frame_base)
- 			*(__be32 *)(cf->data) = cpu_to_be32(data[0]);
- 		if (cf->len > 4)
- 			*(__be32 *)(cf->data + 4) = cpu_to_be32(data[1]);
--	}
- 
--	stats->rx_bytes += cf->len;
-+		stats->rx_bytes += cf->len;
-+	}
- 	stats->rx_packets++;
- 	netif_receive_skb(skb);
- 
-@@ -871,7 +871,9 @@ static int xcanfd_rx(struct net_device *ndev, int frame_base)
- 			*(__be32 *)(cf->data + i) = cpu_to_be32(data[0]);
- 		}
- 	}
--	stats->rx_bytes += cf->len;
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called adf4371.
 +
-+	if (!(cf->can_id & CAN_RTR_FLAG))
-+		stats->rx_bytes += cf->len;
- 	stats->rx_packets++;
- 	netif_receive_skb(skb);
- 
++config ADMV1013
++	tristate "Analog Devices ADMV1013 Microwave Upconverter"
++	depends on SPI && COMMON_CLK
++	help
++	  Say yes here to build support for Analog Devices ADMV1013
++	  24 GHz to 44 GHz, Wideband, Microwave Upconverter.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called admv1013.
++
+ endmenu
+ endmenu
+diff --git a/drivers/iio/frequency/Makefile b/drivers/iio/frequency/Makefile
+index 518b1e50caef..559922a8196e 100644
+--- a/drivers/iio/frequency/Makefile
++++ b/drivers/iio/frequency/Makefile
+@@ -7,3 +7,4 @@
+ obj-$(CONFIG_AD9523) += ad9523.o
+ obj-$(CONFIG_ADF4350) += adf4350.o
+ obj-$(CONFIG_ADF4371) += adf4371.o
++obj-$(CONFIG_ADMV1013) += admv1013.o
+diff --git a/drivers/iio/frequency/admv1013.c b/drivers/iio/frequency/admv1013.c
+new file mode 100644
+index 000000000000..6cb92fb1ad8d
+--- /dev/null
++++ b/drivers/iio/frequency/admv1013.c
+@@ -0,0 +1,648 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * ADMV1013 driver
++ *
++ * Copyright 2021 Analog Devices Inc.
++ */
++
++#include <linux/bitfield.h>
++#include <linux/bits.h>
++#include <linux/clk.h>
++#include <linux/clkdev.h>
++#include <linux/clk-provider.h>
++#include <linux/device.h>
++#include <linux/iio/iio.h>
++#include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/notifier.h>
++#include <linux/property.h>
++#include <linux/regulator/consumer.h>
++#include <linux/spi/spi.h>
++#include <linux/units.h>
++
++#include <asm/unaligned.h>
++
++/* ADMV1013 Register Map */
++#define ADMV1013_REG_SPI_CONTROL		0x00
++#define ADMV1013_REG_ALARM			0x01
++#define ADMV1013_REG_ALARM_MASKS		0x02
++#define ADMV1013_REG_ENABLE			0x03
++#define ADMV1013_REG_LO_AMP_I			0x05
++#define ADMV1013_REG_LO_AMP_Q			0x06
++#define ADMV1013_REG_OFFSET_ADJUST_I		0x07
++#define ADMV1013_REG_OFFSET_ADJUST_Q		0x08
++#define ADMV1013_REG_QUAD			0x09
++#define ADMV1013_REG_VVA_TEMP_COMP		0x0A
++
++/* ADMV1013_REG_SPI_CONTROL Map */
++#define ADMV1013_PARITY_EN_MSK			BIT(15)
++#define ADMV1013_SPI_SOFT_RESET_MSK		BIT(14)
++#define ADMV1013_CHIP_ID_MSK			GENMASK(11, 4)
++#define ADMV1013_CHIP_ID			0xA
++#define ADMV1013_REVISION_ID_MSK		GENMASK(3, 0)
++
++/* ADMV1013_REG_ALARM Map */
++#define ADMV1013_PARITY_ERROR_MSK		BIT(15)
++#define ADMV1013_TOO_FEW_ERRORS_MSK		BIT(14)
++#define ADMV1013_TOO_MANY_ERRORS_MSK		BIT(13)
++#define ADMV1013_ADDRESS_RANGE_ERROR_MSK	BIT(12)
++
++/* ADMV1013_REG_ENABLE Map */
++#define ADMV1013_VGA_PD_MSK			BIT(15)
++#define ADMV1013_MIXER_PD_MSK			BIT(14)
++#define ADMV1013_QUAD_PD_MSK			GENMASK(13, 11)
++#define ADMV1013_BG_PD_MSK			BIT(10)
++#define ADMV1013_MIXER_IF_EN_MSK		BIT(7)
++#define ADMV1013_DET_EN_MSK			BIT(5)
++
++/* ADMV1013_REG_LO_AMP Map */
++#define ADMV1013_LOAMP_PH_ADJ_FINE_MSK		GENMASK(13, 7)
++#define ADMV1013_MIXER_VGATE_MSK		GENMASK(6, 0)
++
++/* ADMV1013_REG_OFFSET_ADJUST Map */
++#define ADMV1013_MIXER_OFF_ADJ_P_MSK		GENMASK(15, 9)
++#define ADMV1013_MIXER_OFF_ADJ_N_MSK		GENMASK(8, 2)
++
++/* ADMV1013_REG_QUAD Map */
++#define ADMV1013_QUAD_SE_MODE_MSK		GENMASK(9, 6)
++#define ADMV1013_QUAD_FILTERS_MSK		GENMASK(3, 0)
++
++/* ADMV1013_REG_VVA_TEMP_COMP Map */
++#define ADMV1013_VVA_TEMP_COMP_MSK		GENMASK(15, 0)
++
++/* ADMV1013 Miscellaneous Defines */
++#define ADMV1013_READ				BIT(7)
++#define ADMV1013_REG_ADDR_READ_MSK		GENMASK(6, 1)
++#define ADMV1013_REG_ADDR_WRITE_MSK		GENMASK(22, 17)
++#define ADMV1013_REG_DATA_MSK			GENMASK(16, 1)
++
++enum {
++	ADMV1013_RFMOD_I,
++	ADMV1013_RFMOD_Q
++};
++
++enum {
++	ADMV1013_SE_MODE_POS = 6,
++	ADMV1013_SE_MODE_NEG = 9,
++	ADMV1013_SE_MODE_DIFF = 12
++};
++
++static const char * const admv1013_modes[] = {
++	[0] = "iq",
++	[1] = "if"
++};
++
++struct admv1013_state {
++	struct spi_device	*spi;
++	struct clk		*clkin;
++	/* Protect against concurrent accesses to the device and to data */
++	struct mutex		lock;
++	struct regulator	*reg;
++	struct notifier_block	nb;
++	unsigned int		quad_se_mode;
++	bool			det_en;
++	u8			data[3] ____cacheline_aligned;
++};
++
++static int __admv1013_spi_read(struct admv1013_state *st, unsigned int reg,
++			       unsigned int *val)
++{
++	int ret;
++	struct spi_transfer t = {0};
++
++	st->data[0] = ADMV1013_READ | FIELD_PREP(ADMV1013_REG_ADDR_READ_MSK, reg);
++	st->data[1] = 0x0;
++	st->data[2] = 0x0;
++
++	t.rx_buf = &st->data[0];
++	t.tx_buf = &st->data[0];
++	t.len = 3;
++
++	ret = spi_sync_transfer(st->spi, &t, 1);
++	if (ret)
++		return ret;
++
++	*val = FIELD_GET(ADMV1013_REG_DATA_MSK, get_unaligned_be24(&st->data[0]));
++
++	return ret;
++}
++
++static int admv1013_spi_read(struct admv1013_state *st, unsigned int reg,
++			     unsigned int *val)
++{
++	int ret;
++
++	mutex_lock(&st->lock);
++	ret = __admv1013_spi_read(st, reg, val);
++	mutex_unlock(&st->lock);
++
++	return ret;
++}
++
++static int __admv1013_spi_write(struct admv1013_state *st,
++				unsigned int reg,
++				unsigned int val)
++{
++	put_unaligned_be24(FIELD_PREP(ADMV1013_REG_DATA_MSK, val) |
++			   FIELD_PREP(ADMV1013_REG_ADDR_WRITE_MSK, reg), &st->data[0]);
++
++	return spi_write(st->spi, &st->data[0], 3);
++}
++
++static int admv1013_spi_write(struct admv1013_state *st, unsigned int reg,
++			      unsigned int val)
++{
++	int ret;
++
++	mutex_lock(&st->lock);
++	ret = __admv1013_spi_write(st, reg, val);
++	mutex_unlock(&st->lock);
++
++	return ret;
++}
++
++static int __admv1013_spi_update_bits(struct admv1013_state *st, unsigned int reg,
++				      unsigned int mask, unsigned int val)
++{
++	int ret;
++	unsigned int data, temp;
++
++	ret = __admv1013_spi_read(st, reg, &data);
++	if (ret)
++		return ret;
++
++	temp = (data & ~mask) | (val & mask);
++
++	return __admv1013_spi_write(st, reg, temp);
++}
++
++static int admv1013_spi_update_bits(struct admv1013_state *st, unsigned int reg,
++				    unsigned int mask, unsigned int val)
++{
++	int ret;
++
++	mutex_lock(&st->lock);
++	ret = __admv1013_spi_update_bits(st, reg, mask, val);
++	mutex_unlock(&st->lock);
++
++	return ret;
++}
++
++static int admv1013_get_mode(struct iio_dev *indio_dev,
++			     const struct iio_chan_spec *chan)
++{
++	struct admv1013_state *st = iio_priv(indio_dev);
++	unsigned int data;
++	int ret;
++
++	ret = admv1013_spi_read(st, ADMV1013_REG_ENABLE, &data);
++	if (ret)
++		return ret;
++
++	data = FIELD_GET(ADMV1013_MIXER_IF_EN_MSK, data);
++
++	return data;
++}
++
++static int admv1013_set_mode(struct iio_dev *indio_dev,
++			     const struct iio_chan_spec *chan,
++			     unsigned int mode)
++{
++	struct admv1013_state *st = iio_priv(indio_dev);
++
++	return admv1013_spi_update_bits(st, ADMV1013_REG_ENABLE,
++					ADMV1013_MIXER_IF_EN_MSK,
++					FIELD_PREP(ADMV1013_MIXER_IF_EN_MSK, mode));
++}
++
++static ssize_t admv1013_read(struct iio_dev *indio_dev,
++			     uintptr_t private,
++			     const struct iio_chan_spec *chan,
++			     char *buf)
++{
++	struct admv1013_state *st = iio_priv(indio_dev);
++	unsigned int data, addr;
++	int ret;
++
++	if (chan->differential) {
++		switch ((u32)private) {
++		case ADMV1013_RFMOD_I:
++			addr = ADMV1013_REG_LO_AMP_I;
++			break;
++		case ADMV1013_RFMOD_Q:
++			addr = ADMV1013_REG_LO_AMP_Q;
++			break;
++		default:
++			return -EINVAL;
++		}
++
++		ret = admv1013_spi_read(st, addr, &data);
++		if (ret)
++			return ret;
++
++		data = FIELD_GET(ADMV1013_LOAMP_PH_ADJ_FINE_MSK, data);
++	} else {
++		switch ((u32)private) {
++		case ADMV1013_RFMOD_I:
++			addr = ADMV1013_REG_OFFSET_ADJUST_I;
++			break;
++		case ADMV1013_RFMOD_Q:
++			addr = ADMV1013_REG_OFFSET_ADJUST_Q;
++			break;
++		default:
++			return -EINVAL;
++		}
++		ret = admv1013_spi_read(st, addr, &data);
++
++		if (!chan->channel)
++			data = FIELD_GET(ADMV1013_MIXER_OFF_ADJ_P_MSK, data);
++		else
++			data = FIELD_GET(ADMV1013_MIXER_OFF_ADJ_N_MSK, data);
++	}
++
++	return sysfs_emit(buf, "%u\n", data);
++}
++
++static ssize_t admv1013_write(struct iio_dev *indio_dev,
++			      uintptr_t private,
++			      const struct iio_chan_spec *chan,
++			      const char *buf, size_t len)
++{
++	struct admv1013_state *st = iio_priv(indio_dev);
++	unsigned int data, addr, msk;
++	int ret;
++
++	ret = kstrtou32(buf, 10, &data);
++	if (ret)
++		return ret;
++
++	if (chan->differential) {
++		data = FIELD_PREP(ADMV1013_LOAMP_PH_ADJ_FINE_MSK, data);
++
++		switch ((u32)private) {
++		case ADMV1013_RFMOD_I:
++			ret = admv1013_spi_update_bits(st, ADMV1013_REG_LO_AMP_I,
++						       ADMV1013_LOAMP_PH_ADJ_FINE_MSK,
++						       data);
++			if (ret)
++				return ret;
++			break;
++		case ADMV1013_RFMOD_Q:
++			ret = admv1013_spi_update_bits(st, ADMV1013_REG_LO_AMP_Q,
++						       ADMV1013_LOAMP_PH_ADJ_FINE_MSK,
++						       data);
++			if (ret)
++				return ret;
++			break;
++		default:
++			return -EINVAL;
++		}
++	} else {
++		switch ((u32)private) {
++		case ADMV1013_RFMOD_I:
++			addr = ADMV1013_REG_OFFSET_ADJUST_I;
++			break;
++		case ADMV1013_RFMOD_Q:
++			addr = ADMV1013_REG_OFFSET_ADJUST_Q;
++			break;
++		default:
++			return -EINVAL;
++		}
++
++		if (!chan->channel) {
++			msk = ADMV1013_MIXER_OFF_ADJ_P_MSK;
++			data = FIELD_PREP(ADMV1013_MIXER_OFF_ADJ_P_MSK, data);
++		} else {
++			msk = ADMV1013_MIXER_OFF_ADJ_N_MSK;
++			data = FIELD_PREP(ADMV1013_MIXER_OFF_ADJ_N_MSK, data);
++		}
++
++		ret = admv1013_spi_update_bits(st, addr, msk, data);
++	}
++
++	return ret ? ret : len;
++}
++
++static int admv1013_update_quad_filters(struct admv1013_state *st)
++{
++	unsigned int filt_raw;
++	u64 rate = clk_get_rate(st->clkin);
++
++	if (rate >= (5400 * HZ_PER_MHZ) && rate <= (7000 * HZ_PER_MHZ))
++		filt_raw = 15;
++	else if (rate >= (5400 * HZ_PER_MHZ) && rate <= (8000 * HZ_PER_MHZ))
++		filt_raw = 10;
++	else if (rate >= (6600 * HZ_PER_MHZ) && rate <= (9200 * HZ_PER_MHZ))
++		filt_raw = 5;
++	else
++		filt_raw = 0;
++
++	return __admv1013_spi_update_bits(st, ADMV1013_REG_QUAD,
++					ADMV1013_QUAD_FILTERS_MSK,
++					FIELD_PREP(ADMV1013_QUAD_FILTERS_MSK, filt_raw));
++}
++
++static int admv1013_update_mixer_vgate(struct admv1013_state *st)
++{
++	unsigned int vcm, mixer_vgate;
++
++	vcm = regulator_get_voltage(st->reg);
++
++	if (vcm >= 0 && vcm < 1800000)
++		mixer_vgate = (2389 * vcm / 1000000 + 8100) / 100;
++	else if (vcm > 1800000 && vcm < 2600000)
++		mixer_vgate = (2375 * vcm / 1000000 + 125) / 100;
++	else
++		return -EINVAL;
++
++	return __admv1013_spi_update_bits(st, ADMV1013_REG_LO_AMP_I,
++				 ADMV1013_MIXER_VGATE_MSK,
++				 FIELD_PREP(ADMV1013_MIXER_VGATE_MSK, mixer_vgate));
++}
++
++static int admv1013_reg_access(struct iio_dev *indio_dev,
++			       unsigned int reg,
++			       unsigned int write_val,
++			       unsigned int *read_val)
++{
++	struct admv1013_state *st = iio_priv(indio_dev);
++
++	if (read_val)
++		return admv1013_spi_read(st, reg, read_val);
++	else
++		return admv1013_spi_write(st, reg, write_val);
++}
++
++static const struct iio_info admv1013_info = {
++	.debugfs_reg_access = &admv1013_reg_access,
++};
++
++static int admv1013_freq_change(struct notifier_block *nb, unsigned long action, void *data)
++{
++	struct admv1013_state *st = container_of(nb, struct admv1013_state, nb);
++	int ret;
++
++	if (action == POST_RATE_CHANGE) {
++		mutex_lock(&st->lock);
++		ret = notifier_from_errno(admv1013_update_quad_filters(st));
++		mutex_unlock(&st->lock);
++		return ret;
++	}
++
++	return NOTIFY_OK;
++}
++
++#define _ADMV1013_EXT_INFO(_name, _shared, _ident) { \
++		.name = _name, \
++		.read = admv1013_read, \
++		.write = admv1013_write, \
++		.private = _ident, \
++		.shared = _shared, \
++}
++
++static const struct iio_enum admv1013_mode_enum = {
++	.items = admv1013_modes,
++	.num_items = ARRAY_SIZE(admv1013_modes),
++	.get = admv1013_get_mode,
++	.set = admv1013_set_mode,
++};
++
++static const struct iio_chan_spec_ext_info admv1013_ext_info[] = {
++	_ADMV1013_EXT_INFO("i", IIO_SEPARATE, ADMV1013_RFMOD_I),
++	_ADMV1013_EXT_INFO("q", IIO_SEPARATE, ADMV1013_RFMOD_Q),
++	IIO_ENUM("freq_mode", IIO_SHARED_BY_ALL, &admv1013_mode_enum),
++	IIO_ENUM_AVAILABLE("freq_mode", IIO_SHARED_BY_ALL, &admv1013_mode_enum),
++	{ },
++};
++
++#define ADMV1013_CHAN_PHASE(_channel, _channel2, _admv1013_ext_info) {		\
++	.type = IIO_ALTVOLTAGE,					\
++	.output = 0,						\
++	.indexed = 1,						\
++	.channel2 = _channel2,					\
++	.channel = _channel,					\
++	.differential = 1,					\
++	.info_mask_separate = BIT(IIO_CHAN_INFO_PHASE),		\
++	.ext_info = _admv1013_ext_info,				\
++	}
++
++#define ADMV1013_CHAN_CALIB(_channel, _admv1013_ext_info) {\
++	.type = IIO_ALTVOLTAGE,					\
++	.output = 0,						\
++	.indexed = 1,						\
++	.channel = _channel,					\
++	.info_mask_separate = BIT(IIO_CHAN_INFO_PHASE),		\
++	.ext_info = _admv1013_ext_info,				\
++	}
++
++static const struct iio_chan_spec admv1013_channels[] = {
++	ADMV1013_CHAN_PHASE(0, 1, admv1013_ext_info),
++	ADMV1013_CHAN_CALIB(0, admv1013_ext_info),
++	ADMV1013_CHAN_CALIB(1, admv1013_ext_info),
++};
++
++static int admv1013_init(struct admv1013_state *st)
++{
++	int ret;
++	unsigned int data;
++	struct spi_device *spi = st->spi;
++
++	/* Perform a software reset */
++	ret = __admv1013_spi_update_bits(st, ADMV1013_REG_SPI_CONTROL,
++					 ADMV1013_SPI_SOFT_RESET_MSK,
++					 FIELD_PREP(ADMV1013_SPI_SOFT_RESET_MSK, 1));
++	if (ret)
++		return ret;
++
++	ret = __admv1013_spi_update_bits(st, ADMV1013_REG_SPI_CONTROL,
++					 ADMV1013_SPI_SOFT_RESET_MSK,
++					 FIELD_PREP(ADMV1013_SPI_SOFT_RESET_MSK, 0));
++	if (ret)
++		return ret;
++
++	ret = __admv1013_spi_read(st, ADMV1013_REG_SPI_CONTROL, &data);
++	if (ret)
++		return ret;
++
++	data = FIELD_GET(ADMV1013_CHIP_ID_MSK, data);
++	if (data != ADMV1013_CHIP_ID) {
++		dev_err(&spi->dev, "Invalid Chip ID.\n");
++		return -EINVAL;
++	}
++
++	ret = __admv1013_spi_write(st, ADMV1013_REG_VVA_TEMP_COMP, 0xE700);
++	if (ret)
++		return ret;
++
++	data = FIELD_PREP(ADMV1013_QUAD_SE_MODE_MSK, st->quad_se_mode);
++
++	ret = __admv1013_spi_update_bits(st, ADMV1013_REG_QUAD,
++					 ADMV1013_QUAD_SE_MODE_MSK, data);
++	if (ret)
++		return ret;
++
++	ret = admv1013_update_mixer_vgate(st);
++	if (ret)
++		return ret;
++
++	ret = admv1013_update_quad_filters(st);
++	if (ret)
++		return ret;
++
++	return __admv1013_spi_update_bits(st, ADMV1013_REG_ENABLE,
++					  ADMV1013_DET_EN_MSK,  st->det_en);
++}
++
++static void admv1013_clk_disable(void *data)
++{
++	clk_disable_unprepare(data);
++}
++
++static void admv1013_reg_disable(void *data)
++{
++	regulator_disable(data);
++}
++
++static void admv1013_powerdown(void *data)
++{
++	unsigned int enable_reg, enable_reg_msk;
++
++	/* Disable all components in the Enable Register */
++	enable_reg_msk = ADMV1013_VGA_PD_MSK |
++			ADMV1013_MIXER_PD_MSK |
++			ADMV1013_QUAD_PD_MSK |
++			ADMV1013_BG_PD_MSK |
++			ADMV1013_MIXER_IF_EN_MSK |
++			ADMV1013_DET_EN_MSK;
++
++	enable_reg = FIELD_PREP(ADMV1013_VGA_PD_MSK, 1) |
++			FIELD_PREP(ADMV1013_MIXER_PD_MSK, 1) |
++			FIELD_PREP(ADMV1013_QUAD_PD_MSK, 7) |
++			FIELD_PREP(ADMV1013_BG_PD_MSK, 1) |
++			FIELD_PREP(ADMV1013_MIXER_IF_EN_MSK, 0) |
++			FIELD_PREP(ADMV1013_DET_EN_MSK, 0);
++
++	admv1013_spi_update_bits(data, ADMV1013_REG_ENABLE, enable_reg_msk, enable_reg);
++}
++
++static int admv1013_properties_parse(struct admv1013_state *st)
++{
++	int ret;
++	const char *str;
++	struct spi_device *spi = st->spi;
++
++	st->det_en = device_property_read_bool(&spi->dev, "adi,detector-enable");
++
++	ret = device_property_read_string(&spi->dev, "adi,quad-se-mode", &str);
++	if (ret)
++		st->quad_se_mode = ADMV1013_SE_MODE_DIFF;
++
++	if (!strcmp(str, "diff"))
++		st->quad_se_mode = ADMV1013_SE_MODE_DIFF;
++	else if (!strcmp(str, "se-pos"))
++		st->quad_se_mode = ADMV1013_SE_MODE_POS;
++	else if (!strcmp(str, "se-neg"))
++		st->quad_se_mode = ADMV1013_SE_MODE_NEG;
++	else
++		return -EINVAL;
++
++	st->reg = devm_regulator_get(&spi->dev, "vcm");
++	if (IS_ERR(st->reg))
++		return dev_err_probe(&spi->dev, PTR_ERR(st->reg),
++				     "failed to get the common-mode voltage\n");
++
++	st->clkin = devm_clk_get(&spi->dev, "lo_in");
++	if (IS_ERR(st->clkin))
++		return dev_err_probe(&spi->dev, PTR_ERR(st->clkin),
++				     "failed to get the LO input clock\n");
++
++	return 0;
++}
++
++static int admv1013_probe(struct spi_device *spi)
++{
++	struct iio_dev *indio_dev;
++	struct admv1013_state *st;
++	int ret;
++
++	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
++	if (!indio_dev)
++		return -ENOMEM;
++
++	st = iio_priv(indio_dev);
++
++	indio_dev->info = &admv1013_info;
++	indio_dev->name = "admv1013";
++	indio_dev->channels = admv1013_channels;
++	indio_dev->num_channels = ARRAY_SIZE(admv1013_channels);
++
++	st->spi = spi;
++
++	ret = admv1013_properties_parse(st);
++	if (ret)
++		return ret;
++
++	ret = regulator_enable(st->reg);
++	if (ret) {
++		dev_err(&spi->dev, "Failed to enable specified Common-Mode Voltage!\n");
++		return ret;
++	}
++
++	ret = devm_add_action_or_reset(&spi->dev, admv1013_reg_disable,
++				       st->reg);
++	if (ret)
++		return ret;
++
++	ret = clk_prepare_enable(st->clkin);
++	if (ret)
++		return ret;
++
++	ret = devm_add_action_or_reset(&spi->dev, admv1013_clk_disable, st->clkin);
++	if (ret)
++		return ret;
++
++	st->nb.notifier_call = admv1013_freq_change;
++	ret = devm_clk_notifier_register(&spi->dev, st->clkin, &st->nb);
++	if (ret)
++		return ret;
++
++	mutex_init(&st->lock);
++
++	ret = admv1013_init(st);
++	if (ret) {
++		dev_err(&spi->dev, "admv1013 init failed\n");
++		return ret;
++	}
++
++	ret = devm_add_action_or_reset(&spi->dev, admv1013_powerdown, st);
++	if (ret)
++		return ret;
++
++	return devm_iio_device_register(&spi->dev, indio_dev);
++}
++
++static const struct spi_device_id admv1013_id[] = {
++	{ "admv1013", 0},
++	{}
++};
++MODULE_DEVICE_TABLE(spi, admv1013_id);
++
++static const struct of_device_id admv1013_of_match[] = {
++	{ .compatible = "adi,admv1013" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, admv1013_of_match);
++
++static struct spi_driver admv1013_driver = {
++	.driver = {
++		.name = "admv1013",
++		.of_match_table = admv1013_of_match,
++	},
++	.probe = admv1013_probe,
++	.id_table = admv1013_id,
++};
++module_spi_driver(admv1013_driver);
++
++MODULE_AUTHOR("Antoniu Miclaus <antoniu.miclaus@analog.com");
++MODULE_DESCRIPTION("Analog Devices ADMV1013");
++MODULE_LICENSE("GPL v2");
 -- 
-2.32.0
+2.34.0
 
