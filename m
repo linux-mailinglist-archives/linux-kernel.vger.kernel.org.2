@@ -2,215 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55558459FF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 11:18:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D5E459FEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 11:18:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235441AbhKWKVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 05:21:47 -0500
-Received: from mxout70.expurgate.net ([194.37.255.70]:44787 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235411AbhKWKVq (ORCPT
+        id S235407AbhKWKVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 05:21:40 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:51097 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231221AbhKWKVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 05:21:46 -0500
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.92)
-        (envelope-from <fe@dev.tdt.de>)
-        id 1mpSsk-0003nG-UH; Tue, 23 Nov 2021 11:18:34 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <fe@dev.tdt.de>)
-        id 1mpSsk-0000IK-AH; Tue, 23 Nov 2021 11:18:34 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id F3973240041;
-        Tue, 23 Nov 2021 11:18:33 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 8BF60240040;
-        Tue, 23 Nov 2021 11:18:33 +0100 (CET)
-Received: from localhost.localdomain (unknown [10.2.3.40])
-        by mail.dev.tdt.de (Postfix) with ESMTPSA id E3A4C20F00;
-        Tue, 23 Nov 2021 11:18:32 +0100 (CET)
-From:   Florian Eckert <fe@dev.tdt.de>
-To:     pavel@ucw.cz, robh+dt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v2 2/2] dt: bindings: KTD20xx: Introduce the ktd20xx family of RGB drivers
-Date:   Tue, 23 Nov 2021 11:18:26 +0100
-Message-ID: <20211123101826.9069-3-fe@dev.tdt.de>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211123101826.9069-1-fe@dev.tdt.de>
-References: <20211123101826.9069-1-fe@dev.tdt.de>
+        Tue, 23 Nov 2021 05:21:39 -0500
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-1-qLWDfLgOMIW-gPxbsDmEMw-1; Tue, 23 Nov 2021 10:18:28 +0000
+X-MC-Unique: qLWDfLgOMIW-gPxbsDmEMw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.26; Tue, 23 Nov 2021 10:18:27 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.026; Tue, 23 Nov 2021 10:18:27 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Vlastimil Babka' <vbabka@suse.cz>,
+        Christoph Lameter <cl@gentwo.org>
+CC:     Rustam Kovhaev <rkovhaev@gmail.com>,
+        "penberg@kernel.org" <penberg@kernel.org>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "djwong@kernel.org" <djwong@kernel.org>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "dvyukov@google.com" <dvyukov@google.com>
+Subject: RE: [PATCH v4] slob: add size header to all allocations
+Thread-Topic: [PATCH v4] slob: add size header to all allocations
+Thread-Index: AQHX344YYrlQE8gw8k+1+rn2N9Qq+awQ435Q
+Date:   Tue, 23 Nov 2021 10:18:27 +0000
+Message-ID: <69fc0cead9774dfdba816a8e25f30a53@AcuMS.aculab.com>
+References: <037227db-c869-7d9c-65e8-8f5f8682171d@suse.cz>
+ <20211122013026.909933-1-rkovhaev@gmail.com>
+ <alpine.DEB.2.22.394.2111221018070.202803@gentwo.de>
+ <3c996e22-034f-1013-3978-1f786aae38fb@suse.cz>
+ <alpine.DEB.2.22.394.2111221133110.204314@gentwo.de>
+ <148d2774-77b9-bb25-c132-80b00e16ea06@suse.cz>
+In-Reply-To: <148d2774-77b9-bb25-c132-80b00e16ea06@suse.cz>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-Content-Transfer-Encoding: quoted-printable
-X-purgate-ID: 151534::1637662714-00000A80-E2D6E2AE/0/0
-X-purgate-type: clean
-X-purgate: clean
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce the bindings for the Kinetic KTD2061/58/59/60RGB LED device
-driver. The KTD20xx can control RGB LEDs individually or as part of a
-control bank group.
-
-Signed-off-by: Florian Eckert <fe@dev.tdt.de>
----
- .../bindings/leds/leds-ktd20xx.yaml           | 123 ++++++++++++++++++
- MAINTAINERS                                   |   1 +
- 2 files changed, 124 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/leds/leds-ktd20xx.y=
-aml
-
-diff --git a/Documentation/devicetree/bindings/leds/leds-ktd20xx.yaml b/D=
-ocumentation/devicetree/bindings/leds/leds-ktd20xx.yaml
-new file mode 100644
-index 000000000000..b10b5fd507db
---- /dev/null
-+++ b/Documentation/devicetree/bindings/leds/leds-ktd20xx.yaml
-@@ -0,0 +1,123 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/leds/leds-ktd20xx.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: LED driver for KTD20xx RGB LED from Kinetic.
-+
-+maintainers:
-+  - Florian Eckert <fe@dev.tdt.de>
-+
-+description: |
-+  The KTD20XX is multi-channel, I2C RGB LED Drivers that can group RGB L=
-EDs into
-+  a LED group or control them individually.
-+
-+  The difference in these RGB LED drivers is I2C address number the devi=
-ce is
-+  listen on.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - kinetic,ktd20xx
-+
-+  reg:
-+    maxItems: 1
-+    description:
-+      I2C slave address
-+      ktd2061/58/59/60 0x68 0x69 0x6A 0x6B
-+
-+  '#address-cells':
-+    const: 1
-+
-+  '#size-cells':
-+    const: 0
-+
-+  'kinetic,color-current0':
-+    description:
-+      Specifies the current selection for the RGB color0.
-+      Value 1 must be the current value for the color red.
-+      Value 2 must be the current value for the color green.
-+      Value 3 must be the current value for the color blue.
-+      The current setting range is from 0mA to 24mA with 125uA steps.
-+    $ref: /schemas/types.yaml#/definitions/uint8-array
-+    items:
-+      - minItems: 3
-+      - maxItems: 3
-+
-+  'kinetic,color-current1':
-+    description:
-+      Specifies the current selection for the RGB color0.
-+      Value 1 must be the current value for the color red.
-+      Value 2 must be the current value for the color green.
-+      Value 3 must be the current value for the color blue.
-+      The current setting range is from 0mA to 24mA with 125uA steps.
-+    $ref: /schemas/types.yaml#/definitions/uint8-array
-+    items:
-+      - minItems: 3
-+      - maxItems: 3
-+
-+patternProperties:
-+  '^multi-led@[0-9a-f]$':
-+    type: object
-+    allOf:
-+      - $ref: leds-class-multicolor.yaml#
-+    properties:
-+      reg:
-+        minItems: 1
-+        maxItems: 12
-+        description:
-+          This property denotes the LED module number(s) that is used on=
- the
-+          for the child node.
-+      'kinetic,color-selection':
-+        description:
-+          Specifies the color selection for this LED.
-+          Value 1 selects the color register for color red.
-+          Value 2 selects the color register for color green.
-+          Value 3 selects the color register for color blue.
-+          The value can be either 0 or 1. If 0, the current for the colo=
-r
-+          from color register 0 is used. If 1, the current for the color
-+          from color register 1 is used.
-+     $ref: /schemas/types.yaml#/definitions/uint8-array
-+     items:
-+       - minItems: 3
-+       - maxItems: 3
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+   #include <dt-bindings/leds/common.h>
-+
-+   i2c {
-+       #address-cells =3D <1>;
-+       #size-cells =3D <0>;
-+
-+       led-controller@14 {
-+           compatible =3D "ti,lp5009";
-+           reg =3D <0x14>;
-+           #address-cells =3D <1>;
-+           #size-cells =3D <0>;
-+           color-current0 =3D [ 00 00 00 ] // Current for RGB is 0mA
-+           color-current1 =3D [ 28 28 28 ] // Current for RGB is 5mA
-+
-+           multi-led@0 {
-+               reg =3D <0x0>;
-+               color =3D <LED_COLOR_ID_RGB>;
-+               function =3D LED_FUNCTION_CHARGING;
-+                kinetic,color-selection =3D [ 00 01 00 ]; // Red=3D0mA G=
-reen=3D5mA Blue=3D0mA
-+          };
-+
-+          multi-led@2 {
-+            reg =3D <0x2>;
-+            color =3D <LED_COLOR_ID_RGB>;
-+            function =3D LED_FUNCTION_STANDBY;
-+         };
-+       };
-+    };
-+
-+...
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 736d564f7e93..125bae48c2d1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10607,6 +10607,7 @@ KTD20XX LED CONTROLLER DRIVER
- M:	Florian Eckert <fe@dev.tdt.de>
- L:	linux-leds@vger.kernel.org
- S:	Maintained
-+F:	Documentation/devicetree/bindings/leds/leds-ktd20xx.yaml
- F:	drivers/leds/leds-ktd20xx.c
-=20
- KTEST
---=20
-2.20.1
+RnJvbTogVmxhc3RpbWlsIEJhYmthDQo+IFNlbnQ6IDIyIE5vdmVtYmVyIDIwMjEgMTA6NDYNCj4g
+DQo+IE9uIDExLzIyLzIxIDExOjM2LCBDaHJpc3RvcGggTGFtZXRlciB3cm90ZToNCj4gPiBPbiBN
+b24sIDIyIE5vdiAyMDIxLCBWbGFzdGltaWwgQmFia2Egd3JvdGU6DQo+ID4NCj4gPj4gQnV0IGl0
+IHNlZW1zIHRoZXJlJ3Mgbm8gcmVhc29uIHdlIGNvdWxkbid0IGRvIGJldHRlcj8gSS5lLiB1c2Ug
+dGhlIHZhbHVlIG9mDQo+ID4+IFNMT0JfSERSX1NJWkUgb25seSB0byBhbGlnbiB0aGUgYmVnaW5u
+aW5nIG9mIGFjdHVhbCBvYmplY3QgKGFuZCBuYW1lIHRoZQ0KPiA+PiBkZWZpbmUgZGlmZmVyZW50
+IHRoYW4gU0xPQl9IRFJfU0laRSkuIEJ1dCB0aGUgc2l6ZSBvZiB0aGUgaGVhZGVyLCB3aGVyZSB3
+ZQ0KPiA+PiBzdG9yZSB0aGUgb2JqZWN0IGxlbmdodCBjb3VsZCBiZSBqdXN0IGEgbmF0aXZlIHdv
+cmQgLSA0IGJ5dGVzIG9uIDMyYml0LCA4IG9uDQo+ID4+IDY0Yml0LiBUaGUgYWRkcmVzcyBvZiB0
+aGUgaGVhZGVyIHNob3VsZG4ndCBoYXZlIGEgcmVhc29uIHRvIGJlIGFsc28gYWxpZ25lZA0KPiA+
+PiB0byBBUkNIX0tNQUxMT0NfTUlOQUxJR04gLyBBUkNIX1NMQUJfTUlOQUxJR04gYXMgb25seSBT
+TE9CIGl0c2VsZiBwcm9jZXNzZXMNCj4gPj4gaXQgYW5kIG5vdCB0aGUgc2xhYiBjb25zdW1lcnMg
+d2hpY2ggcmVseSBvbiB0aG9zZSBhbGlnbm1lbnRzPw0KPiA+DQo+ID4gV2VsbCB0aGUgYmVzdCB3
+YXkgd291bGQgYmUgdG8gcHV0IGl0IGF0IHRoZSBlbmQgb2YgdGhlIG9iamVjdCBpbiBvcmRlciB0
+bw0KPiA+IGF2b2lkIHRoZSBhbGlnbm1lbnQgcHJvYmxlbS4gVGhpcyBpcyBhIHBhcnRpY3VsYXIg
+aXNzdWUgd2l0aCBTTE9CIGJlY2F1c2UNCj4gPiBpdCBhbGxvd3MgbXVsdGlwbGUgdHlwZXMgb2Yg
+b2JqZWN0cyBpbiBhIHNpbmdsZSBwYWdlIGZyYW1lLg0KPiA+DQo+ID4gSWYgb25seSBvbmUgdHlw
+ZSBvZiBvYmplY3Qgd291bGQgYmUgYWxsb3dlZCB0aGVuIHRoZSBvYmplY3Qgc2l6ZSBldGMgY2Fu
+DQo+ID4gYmUgc3RvcmVkIGluIHRoZSBwYWdlIHN0cnVjdC4NCg0KT3IganVzdCBhIHNpbmdsZSBi
+eXRlIHRoYXQgaXMgdGhlIGluZGV4IG9mIHRoZSBhc3NvY2lhdGVkIGZyZWUgbGlzdCBzdHJ1Y3R1
+cmUuDQpGb3IgMzJiaXQgYW5kIGZvciB0aGUgc21hbGxlciBrbWFsbG9jKCkgYXJlYSBpdCBtYXkg
+YmUgcmVhc29uYWJsZSB0byBoYXZlDQphIHNlcGFyYXRlIGFycmF5IGluZGV4ZWQgYnkgdGhlIHBh
+Z2Ugb2YgdGhlIGFkZHJlc3MuDQoNCj4gPiBTbyBJIGd1ZXNzIHBsYWNlbWVudCBhdCB0aGUgYmVn
+aW5uaW5nIGNhbm5vdCBiZSBhdm9pZGVkLiBUaGF0IGluIHR1cm4gcnVucw0KPiA+IGludG8gdHJv
+dWJsZSB3aXRoIHRoZSBETUEgcmVxdWlyZW1lbnRzIG9uIHNvbWUgcGxhdGZvcm1zIHdoZXJlIHRo
+ZQ0KPiA+IGJlZ2lubmluZyBvZiB0aGUgb2JqZWN0IGhhcyB0byBiZSBjYWNoZSBsaW5lIGFsaWdu
+ZWQuDQo+IA0KPiBJdCdzIG5vIHByb2JsZW0gdG8gaGF2ZSB0aGUgcmVhbCBiZWdpbm5pbmcgb2Yg
+dGhlIG9iamVjdCBhbGlnbmVkLCBhbmQgdGhlDQo+IHByZXBlbmRlZCBoZWFkZXIgbm90Lg0KDQpJ
+J20gbm90IHN1cmUgdGhhdCBoZWxwcy4NClRoZSBoZWFkZXIgY2FuJ3Qgc2hhcmUgYSBjYWNoZSBs
+aW5lIHdpdGggdGhlIHByZXZpb3VzIGl0ZW0gKGJlY2F1c2UgaXQNCm1pZ2h0IGJlIG1hcHBlZCBm
+b3IgRE1BKSBzbyB3aWxsIGFsd2F5cyB0YWtlIGEgZnVsbCBjYWNoZSBsaW5lLg0KDQpUaGVyZSBt
+aWdodCBtZSBzb21lIHN0cmFuZ2Ugc2NoZW1lIHdoZXJlIHlvdSBwdXQgdGhlIHNpemUgYXQgdGhl
+IGVuZA0KYW5kIHRoZSBvZmZzZXQgb2YgdGhlICdsYXN0IGVuZCcgaW50byB0aGUgcGFnZSBzdHJ1
+Y3QuDQpUaGUgRE1BIEFQSSBzaG91bGQgbGV0IHlvdSBzYWZlbHkgcmVhZCB0aGUgc2l6ZSBmcm9t
+IGFuIGFsbG9jYXRlZA0KYnVmZmVyIC0gYnV0IHlvdSBjYW4ndCBtb2RpZnkgaXQuDQoNClRoZXJl
+IGlzIGFsc28gYWxsIHRoZSBjb2RlIHRoYXQgYWxsb2NhdGVzICdwb3dlciBvZiAyJyBzaXplZCBi
+dWZmZXJzDQp1bmRlciB0aGUgYXNzdW1wdGlvbiB0aGV5IGFyZSBlZmZpY2llbnQgLSBhcyBzb29u
+IGFzIHlvdSBhZGQgYSBzaXplDQpmaWVsZCB0aGF0IGFzc3VtcHRpb24ganVzdCBjYXVzZXMgdGhl
+IHNpemVzIG9mIGl0ZW0gdG8gKG9mdGVuKSBkb3VibGUuDQoNCglEYXZpZA0KDQo+IFRoZSBjb2Rl
+IGFscmVhZHkgZG9lcyB0aGF0IGJlZm9yZSB0aGlzIHBhdGNoIGZvciB0aGUNCj4ga21hbGxvYyBw
+b3dlci1vZi10d28gYWxpZ25tZW50cywgd2hlcmUgZS5nLiB0aGUgb2JqZWN0IGNhbiBiZSBhbGln
+bmVkIHRvIDI1Ng0KPiBieXRlcywgYnV0IHRoZSBwcmVwZW5kZWQgaGVhZGVyIHRvIGEgc21hbGxl
+ciBBUkNIX0tNQUxMT0NfTUlOQUxJR04gLw0KPiBBUkNIX1NMQUJfTUlOQUxJR04uDQo+IA0KPiA+
+IEkgZG9udCBrbm93IGJ1dCBpdCBzZWVtcyB0aGF0IG1ha2luZyBzbG9iIHRoYXQgc29waGlzdGlj
+YXRlZCBpcyBjb3VudGVyDQo+ID4gcHJvZHVjdGl2ZS4gUmVtb3ZlIFNMT0I/DQo+IA0KPiBJIHdv
+dWxkbid0IG1pbmQsIGJ1dCBzb21lYm9keSBtaWdodCA6KQ0KPiANCg0KLQ0KUmVnaXN0ZXJlZCBB
+ZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMs
+IE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
