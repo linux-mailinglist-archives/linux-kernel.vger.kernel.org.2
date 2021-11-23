@@ -2,71 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C003945A946
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:52:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1E545A949
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 17:52:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233044AbhKWQzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 11:55:14 -0500
-Received: from mga01.intel.com ([192.55.52.88]:21246 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230510AbhKWQzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 11:55:12 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="258933897"
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="258933897"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 08:51:59 -0800
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="456750297"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 08:51:57 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mpZ1O-009qLj-6M;
-        Tue, 23 Nov 2021 18:51:54 +0200
-Date:   Tue, 23 Nov 2021 18:51:53 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v1 1/2] spi: deduplicate spi_match_id() in
- __spi_register_driver()
-Message-ID: <YZ0cKQiMS/E8z7Jh@smile.fi.intel.com>
-References: <20211119173718.52938-1-andriy.shevchenko@linux.intel.com>
- <1572a2ff-dcfb-422f-c4c3-5a454a36d31d@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1572a2ff-dcfb-422f-c4c3-5a454a36d31d@nvidia.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S233491AbhKWQzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 11:55:46 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:52686 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229825AbhKWQzp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 11:55:45 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 32B331FD58;
+        Tue, 23 Nov 2021 16:52:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1637686355; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YAE9GMutJ4y4QSEVMvaF/1s6v5n7VJFmuzuv2HkXzkU=;
+        b=foDFfOERDf2ZANAXUgsXk7ltAXGsxPFbbc/bpg55D0X6G5X5YitFK0ZzE4p4ktlRbRbA7y
+        0P3tT0dhz1qwfO/TyXYl2nUBkLCBBLv76qyxARWgcEAVQt0ABApMAF7jCITWUOpwRrnZiL
+        jJn0Utfb+li45acqDlOClaGz0wAgD0U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1637686355;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YAE9GMutJ4y4QSEVMvaF/1s6v5n7VJFmuzuv2HkXzkU=;
+        b=jWoC58AFYXJTjETKZY+8Ox7IfOg0MK5p0GVz1K9h/FB2O5L9CXTghK8gmtzNQkKbMqkjml
+        VjOETtdD2C751pDg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id B3DCFA3B8B;
+        Tue, 23 Nov 2021 16:52:34 +0000 (UTC)
+Date:   Tue, 23 Nov 2021 17:52:34 +0100
+Message-ID: <s5hzgpu95m5.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Lucas Tanure <tanureal@opensource.cirrus.com>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        "Liam Girdwood" <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Kailang Yang <kailang@realtek.com>,
+        Shuming Fan <shumingf@realtek.com>,
+        "Pierre-Louis Bossart" <pierre-louis.bossart@linux.intel.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
+        Jeremy Szu <jeremy.szu@canonical.com>,
+        Hui Wang <hui.wang@canonical.com>,
+        Werner Sembach <wse@tuxedocomputers.com>,
+        Chris Chiu <chris.chiu@canonical.com>,
+        Cameron Berkenpas <cam@neo-zeon.de>,
+        Sami Loone <sami@loone.fi>, Elia Devito <eliadevito@gmail.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Jack Yu <jack.yu@realtek.com>, "Arnd Bergmann" <arnd@arndb.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
+        <alsa-devel@alsa-project.org>, <linux-acpi@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        <platform-driver-x86@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 10/11] hda: cs35l41: Add support for CS35L41 in HDA systems
+In-Reply-To: <20211123163149.1530535-11-tanureal@opensource.cirrus.com>
+References: <20211123163149.1530535-1-tanureal@opensource.cirrus.com>
+        <20211123163149.1530535-11-tanureal@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 03:22:38PM +0000, Jon Hunter wrote:
-> On 19/11/2021 17:37, Andy Shevchenko wrote:
-
-> Following this change I am seeing the following warnings again although most
-> of these have now been fixed ...
+On Tue, 23 Nov 2021 17:31:48 +0100,
+Lucas Tanure wrote:
 > 
->  WARNING KERN SPI driver mtd_dataflash has no spi_device_id for atmel,at45
->  WARNING KERN SPI driver mtd_dataflash has no spi_device_id for
-> atmel,dataflash
->  WARNING KERN SPI driver spi-nor has no spi_device_id for jedec,spi-nor
->  WARNING KERN SPI driver mmc_spi has no spi_device_id for mmc-spi-slot
->  WARNING KERN SPI driver cros-ec-spi has no spi_device_id for
-> google,cros-ec-spi
+> --- a/sound/pci/hda/Makefile
+> +++ b/sound/pci/hda/Makefile
+> @@ -13,25 +13,27 @@ snd-hda-codec-$(CONFIG_SND_HDA_INPUT_BEEP) += hda_beep.o
+>  CFLAGS_hda_controller.o := -I$(src)
+>  CFLAGS_hda_intel.o := -I$(src)
+>  
+> -snd-hda-codec-generic-objs :=	hda_generic.o
+> -snd-hda-codec-realtek-objs :=	patch_realtek.o
+> -snd-hda-codec-cmedia-objs :=	patch_cmedia.o
+> -snd-hda-codec-analog-objs :=	patch_analog.o
+> -snd-hda-codec-idt-objs :=	patch_sigmatel.o
+> -snd-hda-codec-si3054-objs :=	patch_si3054.o
+> -snd-hda-codec-cirrus-objs :=	patch_cirrus.o
+> -snd-hda-codec-cs8409-objs :=	patch_cs8409.o patch_cs8409-tables.o
+> -snd-hda-codec-ca0110-objs :=	patch_ca0110.o
+> -snd-hda-codec-ca0132-objs :=	patch_ca0132.o
+> -snd-hda-codec-conexant-objs :=	patch_conexant.o
+> -snd-hda-codec-via-objs :=	patch_via.o
+> -snd-hda-codec-hdmi-objs :=	patch_hdmi.o hda_eld.o
+> +snd-hda-codec-generic-objs :=		hda_generic.o
 
-> I have not looked any further yet, but this appears to cause the SPI ID
-> match to fail.
+You don't need to change other lines because of the newly added driver
+below...
 
-Looking into the code it should be harmless warning. I.o.w. it shouldn't
-prevent driver registration. In any case I'm about to send a fix, thanks
-for the report!
+> +snd-hda-codec-cs35l41-i2c-objs :=	cs35l41_hda_i2c.o cs35l41_hda.o ../../soc/codecs/cs35l41-lib.o
 
--- 
-With Best Regards,
-Andy Shevchenko
+Linking the object in a different level of directory is too ugly and
+would be problematic if multiple drivers want the cs35l41-lib stuff.
+IMO, it's better to make symbols in cs35l41-lib exported and select
+the corresponding Kconfig from HD-audio driver.
+
+And, snd-hda-codec-cs35l41-i2c is not really a codec driver.  It's
+rather some bridge for i2c over HD-audio.  So, better to avoid
+snd-hda-codec-* but have some different name.  Otherwise people may
+misunderstand.
+
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+(snip)
+> @@ -6497,6 +6502,98 @@ static void alc287_fixup_legion_15imhg05_speakers(struct hda_codec *codec,
+>  	}
+>  }
+>  
+> +static int comp_match_dev_name(struct device *dev, void *data)
+> +{
+> +	if (strcmp(dev_name(dev), data) == 0)
+> +		return 1;
+> +
+> +	return 0;
+> +}
+> +
+> +static int find_comp_by_dev_name(struct alc_spec *spec, const char *name)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < HDA_MAX_COMPONENTS; i++) {
+> +		if (strcmp(spec->comps[i].name, name) == 0)
+> +			return i;
+> +	}
+> +
+> +	return -ENODEV;
+> +}
+> +
+> +static int comp_bind(struct device *dev)
+> +{
+> +	struct hda_codec *codec = dev_to_hda_codec(dev);
+> +	struct alc_spec *spec = codec->spec;
+> +
+> +	return component_bind_all(dev, spec->comps);
+> +}
+> +
+> +static void comp_unbind(struct device *dev)
+> +{
+> +	struct hda_codec *codec = dev_to_hda_codec(dev);
+> +	struct alc_spec *spec = codec->spec;
+> +
+> +	component_unbind_all(dev, spec->comps);
+> +}
+> +
+> +static const struct component_master_ops comp_master_ops = {
+> +	.bind = comp_bind,
+> +	.unbind = comp_unbind,
+> +};
+> +
+> +void alc287_legion_16achg6_playback_hook(struct hda_pcm_stream *hinfo, struct hda_codec *codec,
+> +					 struct snd_pcm_substream *sub, int action)
+> +{
+> +	struct alc_spec *spec = codec->spec;
+> +	unsigned int rx_slot;
+> +	int i = 0;
+> +
+> +	switch (action) {
+> +	case HDA_GEN_PCM_ACT_PREPARE:
+> +		rx_slot = 0;
+> +		i = find_comp_by_dev_name(spec, "i2c-CLSA0100:00-cs35l41-hda.0");
+> +		if (i >= 0)
+> +			spec->comps[i].set_channel_map(spec->comps[i].dev, 0, NULL, 1, &rx_slot);
+> +
+> +		rx_slot = 1;
+> +		i = find_comp_by_dev_name(spec, "i2c-CLSA0100:00-cs35l41-hda.1");
+> +		if (i >= 0)
+> +			spec->comps[i].set_channel_map(spec->comps[i].dev, 0, NULL, 1, &rx_slot);
+> +		break;
+> +	}
+> +
+> +	for (i = 0; i < HDA_MAX_COMPONENTS; i++) {
+> +		if (spec->comps[i].dev)
+> +			spec->comps[i].playback_hook(spec->comps[i].dev, action);
+> +	}
+> +
+> +
+> +}
+> +
+> +static void alc287_fixup_legion_16achg6_speakers(struct hda_codec *codec,
+> +						 const struct hda_fixup *fix, int action)
+> +{
+> +	struct device *dev = hda_codec_dev(codec);
+> +	struct alc_spec *spec = codec->spec;
+> +	int ret;
+> +
+> +	switch (action) {
+> +	case HDA_FIXUP_ACT_PRE_PROBE:
+> +		component_match_add(dev, &spec->match, comp_match_dev_name,
+> +				    "i2c-CLSA0100:00-cs35l41-hda.0");
+> +		component_match_add(dev, &spec->match, comp_match_dev_name,
+> +				    "i2c-CLSA0100:00-cs35l41-hda.1");
+> +		ret = component_master_add_with_match(dev, &comp_master_ops, spec->match);
+> +		if (ret)
+> +			codec_err(codec, "Fail to register component aggregator %d\n", ret);
+> +		else
+> +			spec->gen.pcm_playback_hook = alc287_legion_16achg6_playback_hook;
+> +		break;
+> +	}
+> +}
+> +
+
+Those are needed only if the new cs35l41 stuff is enabled, so they can
+be wrapped with #if IS_REACHABLE(xxx).
 
 
+thanks,
+
+Takashi
