@@ -2,105 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D173645AE0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 22:08:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3949645AE0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Nov 2021 22:07:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240371AbhKWVLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 16:11:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240362AbhKWVLI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 16:11:08 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C982FC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 13:07:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GXpaNemCnFC8ht2JuQJCWh2b+ZgysnULCkNx6FKi5IQ=; b=q5jtrdUcL5aOe1PU2pXPvtPOm2
-        +Spezig55ZwXzQWztpQqYLzKqiAeF0mCKfuUyyMClUNFlza/ZgZmM0IQCoL1QmCE9uOIRtrVsGjjB
-        mepO4vflvk/nPBI47ujCz2uOMywG5AVuAJS5sWHMqgHbVBmtAdyCQG9MPPEUlxiDS1Y9GC1DdZI4D
-        5x98zGQ2Ap4Bsp3oRc0nnfpGNP324IQaw8IGDZeAsxjF0xt+8Ngxi6ggUj5PCVcMSjmP3sd9CXFxy
-        PVSgQsaB0sK5/SBE/KWzCzfRJcgTvct6+r5TUl1CsbhWx3pGFQ/N1AwT/jmW2VFnX6O6bCfN+mPru
-        7F64lxRQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mpd0M-0008gr-Gx; Tue, 23 Nov 2021 21:07:11 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 27225984951; Tue, 23 Nov 2021 22:07:05 +0100 (CET)
-Date:   Tue, 23 Nov 2021 22:07:05 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, rostedt@goodmis.org,
-        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        Barry Song <song.bao.hua@hisilicon.com>
-Subject: Re: [PATCH] sched/fair: Remove the cost of a redundant
- cpumask_next_wrap in select_idle_cpu
-Message-ID: <20211123210705.GD721624@worktop.programming.kicks-ass.net>
-References: <20211123112229.7812-1-21cnbao@gmail.com>
+        id S239878AbhKWVLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 16:11:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235483AbhKWVLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 16:11:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6925D6023D;
+        Tue, 23 Nov 2021 21:07:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637701671;
+        bh=fmNL3u7OnTxHOXgiEAfETI2VUP4gGL2FJ5fr15s9qbA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Rxsf9g172XeXrnTMElnISWoUxpvJaJP4/7s1u7MpinNCISK6oeUbHJW/lpgH8JGsB
+         puD4+oFyzmduElLopaiyTeolLisu1Xf48UOOd4Un7crdq7xpFMv57i1F0JviSNa/cZ
+         jcXfA0lzTIp+uyHcrihkikmb99s425RVXRl7DVQhONTi4A8d606fnVMK1Xr1srsjUQ
+         24+5RmfZXbOsHUaWs7Wi/yKoWYF0eePtcIGng1H8cU3Hgm+STQZLefqQwQUOisJ3Ro
+         PVh6ejIW8QkefCdwF19gP37QgiNPsfHFGc7TIbjDvT5LESWy4QMWr6vgzF/whZ+9pK
+         xlFCgZB5syF1Q==
+From:   Stefano Stabellini <sstabellini@kernel.org>
+To:     jgross@suse.com
+Cc:     boris.ostrovsky@oracle.com, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, sstabellini@kernel.org,
+        jbeulich@suse.com,
+        Stefano Stabellini <stefano.stabellini@xilinx.com>,
+        stable@vger.kernel.org
+Subject: [PATCH v4] xen: detect uninitialized xenbus in xenbus_init
+Date:   Tue, 23 Nov 2021 13:07:48 -0800
+Message-Id: <20211123210748.1910236-1-sstabellini@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211123112229.7812-1-21cnbao@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 07:22:29PM +0800, Barry Song wrote:
-> From: Barry Song <song.bao.hua@hisilicon.com>
-> 
-> This patch keeps the same scanning amount, but drops a redundant loop
-> of cpumask_next_wrap.
-> The original code did for_each_cpu_wrap(cpu, cpus, target + 1), then
-> checked --nr; this patch does --nr before doing the next loop, thus,
-> it can remove a cpumask_next_wrap() which costs a little bit.
-> 
-> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
-> ---
->  kernel/sched/fair.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index ff69f24..e2fb3e0 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6298,9 +6298,9 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
->  
->  		span_avg = sd->span_weight * avg_idle;
->  		if (span_avg > 4*avg_cost)
-> -			nr = div_u64(span_avg, avg_cost);
-> +			nr = div_u64(span_avg, avg_cost) - 1;
->  		else
-> -			nr = 4;
-> +			nr = 3;
->  
->  		time = cpu_clock(this);
->  	}
-> @@ -6312,11 +6312,11 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
->  				return i;
->  
->  		} else {
-> -			if (!--nr)
-> -				return -1;
->  			idle_cpu = __select_idle_cpu(cpu, p);
->  			if ((unsigned int)idle_cpu < nr_cpumask_bits)
->  				break;
-> +			if (!--nr)
-> +				return -1;
->  		}
->  	}
+From: Stefano Stabellini <stefano.stabellini@xilinx.com>
 
-That's just confusing code. Isn't it much clearer to write the whole
-thing like so ?
+If the xenstore page hasn't been allocated properly, reading the value
+of the related hvm_param (HVM_PARAM_STORE_PFN) won't actually return
+error. Instead, it will succeed and return zero. Instead of attempting
+to xen_remap a bad guest physical address, detect this condition and
+return early.
 
-	nr--;
-	for_each_cpu_wrap(cpu, cpus, target+1) {
-		...
-		if (!nr--)
-			return -1;
-	}
+Note that although a guest physical address of zero for
+HVM_PARAM_STORE_PFN is theoretically possible, it is not a good choice
+and zero has never been validly used in that capacity.
+
+Also recognize all bits set as an invalid value.
+
+For 32-bit Linux, any pfn above ULONG_MAX would get truncated. Pfns
+above ULONG_MAX should never be passed by the Xen tools to HVM guests
+anyway, so check for this condition and return early.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
+---
+Changes in v4:
+- say "all bits set" instead of INVALID_PFN
+- improve check
+
+Changes in v3:
+- improve in-code comment
+- improve check
+
+Changes in v2:
+- add check for ULLONG_MAX (unitialized)
+- add check for ULONG_MAX #if BITS_PER_LONG == 32 (actual error)
+- add pr_err error message
+
+ drivers/xen/xenbus/xenbus_probe.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+
+diff --git a/drivers/xen/xenbus/xenbus_probe.c b/drivers/xen/xenbus/xenbus_probe.c
+index 94405bb3829e..251b26439733 100644
+--- a/drivers/xen/xenbus/xenbus_probe.c
++++ b/drivers/xen/xenbus/xenbus_probe.c
+@@ -951,6 +951,29 @@ static int __init xenbus_init(void)
+ 		err = hvm_get_parameter(HVM_PARAM_STORE_PFN, &v);
+ 		if (err)
+ 			goto out_error;
++		/*
++		 * Uninitialized hvm_params are zero and return no error.
++		 * Although it is theoretically possible to have
++		 * HVM_PARAM_STORE_PFN set to zero on purpose, in reality it is
++		 * not zero when valid. If zero, it means that Xenstore hasn't
++		 * been properly initialized. Instead of attempting to map a
++		 * wrong guest physical address return error.
++		 *
++		 * Also recognize all bits set as an invalid value.
++		 */
++		if (!v || !~v) {
++			err = -ENOENT;
++			goto out_error;
++		}
++		/* Avoid truncation on 32-bit. */
++#if BITS_PER_LONG == 32
++		if (v > ULONG_MAX) {
++			pr_err("%s: cannot handle HVM_PARAM_STORE_PFN=%llx > ULONG_MAX\n",
++			       __func__, v);
++			err = -EINVAL;
++			goto out_error;
++		}
++#endif
+ 		xen_store_gfn = (unsigned long)v;
+ 		xen_store_interface =
+ 			xen_remap(xen_store_gfn << XEN_PAGE_SHIFT,
+-- 
+2.25.1
 
