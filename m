@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A4445C379
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:36:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF56245C5E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348237AbhKXNja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:39:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51968 "EHLO mail.kernel.org"
+        id S1353698AbhKXOB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:01:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348308AbhKXNgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:36:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43CB1611C1;
-        Wed, 24 Nov 2021 12:55:08 +0000 (UTC)
+        id S1355775AbhKXN6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:58:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5BD6633F1;
+        Wed, 24 Nov 2021 13:08:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758508;
-        bh=Tkgy7X/YSwzmyU69hy3WXXP89CKmLQ9twT6GnUtFRXQ=;
+        s=korg; t=1637759319;
+        bh=TJRAMVKcufpQ40vsuYDcXeBQm94pVP6SENhrKXNuClU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lo1ZhDUCgV35D6cHv7rby8S1yn+Ht0OMytZoUWimckYm3ATGDALyjMnWLUgloUkdJ
-         bAbLVbNIjz3CbDBFThld6d1SzQo0NtLjMfNOx8kXJCBuHq9D4mZj7DNv3WwQxIp84y
-         7WCr2ZXw/kXh2M3RPW7N4prC20f4qzAbP9sr0Dbw=
+        b=EYvLn2Y189YB+JshbU5AdTWSRa7Hs33yIs+mtIUNp1kGrFqMBK91YRCwZPijsbyG4
+         pdzFaXm45nJ4DGPfDb2Nd1t+y6LWKC9v6B6qa0lR/db6ksMG5yOsYrZQPWp67UICMR
+         l9qTCJNPbpEGppoUIjN5V7y28yt1tw1CcL5UZZhk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maher Sanalla <msanalla@nvidia.com>,
-        Mark Bloch <mbloch@nvidia.com>,
-        Jianbo Liu <jianbol@nvidia.com>, Roi Dayan <roid@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 093/154] net/mlx5: Lag, update tracker when state change event received
+        stable@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Subject: [PATCH 5.15 202/279] x86/sgx: Fix free page accounting
 Date:   Wed, 24 Nov 2021 12:58:09 +0100
-Message-Id: <20211124115705.313312831@linuxfoundation.org>
+Message-Id: <20211124115725.711942569@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,100 +41,167 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maher Sanalla <msanalla@nvidia.com>
+From: Reinette Chatre <reinette.chatre@intel.com>
 
-[ Upstream commit ae396d85c01c7bdc9eeceecde1f493d03f793465 ]
+commit ac5d272a0ad0419f52e08c91953356e32b075af7 upstream.
 
-Currently, In NETDEV_CHANGELOWERSTATE/NETDEV_CHANGEUPPERSTATE events
-handling, tracking is not fully completed if the LAG device is not ready
-at the time the events occur. But, we must keep track of the upper and
-lower states after receiving the events because RoCE needs this info in
-mlx5_lag_get_roce_netdev() - in order to return the corresponding port
-that its running on. Returning the wrong (not most recent) port will lead
-to gids table being incorrect.
+The SGX driver maintains a single global free page counter,
+sgx_nr_free_pages, that reflects the number of free pages available
+across all NUMA nodes. Correspondingly, a list of free pages is
+associated with each NUMA node and sgx_nr_free_pages is updated
+every time a page is added or removed from any of the free page
+lists. The main usage of sgx_nr_free_pages is by the reclaimer
+that runs when it (sgx_nr_free_pages) goes below a watermark
+to ensure that there are always some free pages available to, for
+example, support efficient page faults.
 
-For example: If during the attachment of a slave to the bond, the other
-non-attached port performs pci_reload, then the LAG device is not ready,
-but that should not result in dismissing attached slave tracker update
-automatically (which is performed in mlx5_handle_changelowerstate()), Since
-these events might not come later, which can lead to both bond ports
-having tx_enabled=0 - which is not a valid state of LAG bond.
+With sgx_nr_free_pages accessed and modified from a few places
+it is essential to ensure that these accesses are done safely but
+this is not the case. sgx_nr_free_pages is read without any
+protection and updated with inconsistent protection by any one
+of the spin locks associated with the individual NUMA nodes.
+For example:
 
-Fixes: 9b412cc35f00 ("net/mlx5e: Add LAG warning if bond slave is not lag master")
-Signed-off-by: Maher Sanalla <msanalla@nvidia.com>
-Reviewed-by: Mark Bloch <mbloch@nvidia.com>
-Reviewed-by: Jianbo Liu <jianbol@nvidia.com>
-Reviewed-by: Roi Dayan <roid@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+      CPU_A                                 CPU_B
+      -----                                 -----
+ spin_lock(&nodeA->lock);              spin_lock(&nodeB->lock);
+ ...                                   ...
+ sgx_nr_free_pages--;  /* NOT SAFE */  sgx_nr_free_pages--;
+
+ spin_unlock(&nodeA->lock);            spin_unlock(&nodeB->lock);
+
+Since sgx_nr_free_pages may be protected by different spin locks
+while being modified from different CPUs, the following scenario
+is possible:
+
+      CPU_A                                CPU_B
+      -----                                -----
+{sgx_nr_free_pages = 100}
+ spin_lock(&nodeA->lock);              spin_lock(&nodeB->lock);
+ sgx_nr_free_pages--;                  sgx_nr_free_pages--;
+ /* LOAD sgx_nr_free_pages = 100 */    /* LOAD sgx_nr_free_pages = 100 */
+ /* sgx_nr_free_pages--          */    /* sgx_nr_free_pages--          */
+ /* STORE sgx_nr_free_pages = 99 */    /* STORE sgx_nr_free_pages = 99 */
+ spin_unlock(&nodeA->lock);            spin_unlock(&nodeB->lock);
+
+In the above scenario, sgx_nr_free_pages is decremented from two CPUs
+but instead of sgx_nr_free_pages ending with a value that is two less
+than it started with, it was only decremented by one while the number
+of free pages were actually reduced by two. The consequence of
+sgx_nr_free_pages not being protected is that its value may not
+accurately reflect the actual number of free pages on the system,
+impacting the availability of free pages in support of many flows.
+
+The problematic scenario is when the reclaimer does not run because it
+believes there to be sufficient free pages while any attempt to allocate
+a page fails because there are no free pages available. In the SGX driver
+the reclaimer's watermark is only 32 pages so after encountering the
+above example scenario 32 times a user space hang is possible when there
+are no more free pages because of repeated page faults caused by no
+free pages made available.
+
+The following flow was encountered:
+asm_exc_page_fault
+ ...
+   sgx_vma_fault()
+     sgx_encl_load_page()
+       sgx_encl_eldu() // Encrypted page needs to be loaded from backing
+                       // storage into newly allocated SGX memory page
+         sgx_alloc_epc_page() // Allocate a page of SGX memory
+           __sgx_alloc_epc_page() // Fails, no free SGX memory
+           ...
+           if (sgx_should_reclaim(SGX_NR_LOW_PAGES)) // Wake reclaimer
+             wake_up(&ksgxd_waitq);
+           return -EBUSY; // Return -EBUSY giving reclaimer time to run
+       return -EBUSY;
+     return -EBUSY;
+   return VM_FAULT_NOPAGE;
+
+The reclaimer is triggered in above flow with the following code:
+
+static bool sgx_should_reclaim(unsigned long watermark)
+{
+        return sgx_nr_free_pages < watermark &&
+               !list_empty(&sgx_active_page_list);
+}
+
+In the problematic scenario there were no free pages available yet the
+value of sgx_nr_free_pages was above the watermark. The allocation of
+SGX memory thus always failed because of a lack of free pages while no
+free pages were made available because the reclaimer is never started
+because of sgx_nr_free_pages' incorrect value. The consequence was that
+user space kept encountering VM_FAULT_NOPAGE that caused the same
+address to be accessed repeatedly with the same result.
+
+Change the global free page counter to an atomic type that
+ensures simultaneous updates are done safely. While doing so, move
+the updating of the variable outside of the spin lock critical
+section to which it does not belong.
+
+Cc: stable@vger.kernel.org
+Fixes: 901ddbb9ecf5 ("x86/sgx: Add a basic NUMA allocation scheme to sgx_alloc_epc_page()")
+Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
+Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+Link: https://lkml.kernel.org/r/a95a40743bbd3f795b465f30922dde7f1ea9e0eb.1637004094.git.reinette.chatre@intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/lag.c | 28 +++++++++----------
- 1 file changed, 13 insertions(+), 15 deletions(-)
+ arch/x86/kernel/cpu/sgx/main.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag.c b/drivers/net/ethernet/mellanox/mlx5/core/lag.c
-index fe5476a76464f..11cc3ea5010aa 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lag.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lag.c
-@@ -365,6 +365,7 @@ static int mlx5_handle_changeupper_event(struct mlx5_lag *ldev,
- 	bool is_bonded, is_in_lag, mode_supported;
- 	int bond_status = 0;
- 	int num_slaves = 0;
-+	int changed = 0;
- 	int idx;
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -28,8 +28,7 @@ static DECLARE_WAIT_QUEUE_HEAD(ksgxd_wai
+ static LIST_HEAD(sgx_active_page_list);
+ static DEFINE_SPINLOCK(sgx_reclaimer_lock);
  
- 	if (!netif_is_lag_master(upper))
-@@ -401,27 +402,27 @@ static int mlx5_handle_changeupper_event(struct mlx5_lag *ldev,
- 	 */
- 	is_in_lag = num_slaves == MLX5_MAX_PORTS && bond_status == 0x3;
+-/* The free page list lock protected variables prepend the lock. */
+-static unsigned long sgx_nr_free_pages;
++static atomic_long_t sgx_nr_free_pages = ATOMIC_LONG_INIT(0);
  
--	if (!mlx5_lag_is_ready(ldev) && is_in_lag) {
--		NL_SET_ERR_MSG_MOD(info->info.extack,
--				   "Can't activate LAG offload, PF is configured with more than 64 VFs");
--		return 0;
--	}
--
- 	/* Lag mode must be activebackup or hash. */
- 	mode_supported = tracker->tx_type == NETDEV_LAG_TX_TYPE_ACTIVEBACKUP ||
- 			 tracker->tx_type == NETDEV_LAG_TX_TYPE_HASH;
+ /* Nodes with one or more EPC sections. */
+ static nodemask_t sgx_numa_mask;
+@@ -403,14 +402,15 @@ skip:
  
--	if (is_in_lag && !mode_supported)
--		NL_SET_ERR_MSG_MOD(info->info.extack,
--				   "Can't activate LAG offload, TX type isn't supported");
--
- 	is_bonded = is_in_lag && mode_supported;
- 	if (tracker->is_bonded != is_bonded) {
- 		tracker->is_bonded = is_bonded;
--		return 1;
-+		changed = 1;
+ 		spin_lock(&node->lock);
+ 		list_add_tail(&epc_page->list, &node->free_page_list);
+-		sgx_nr_free_pages++;
+ 		spin_unlock(&node->lock);
++		atomic_long_inc(&sgx_nr_free_pages);
  	}
- 
--	return 0;
-+	if (!is_in_lag)
-+		return changed;
-+
-+	if (!mlx5_lag_is_ready(ldev))
-+		NL_SET_ERR_MSG_MOD(info->info.extack,
-+				   "Can't activate LAG offload, PF is configured with more than 64 VFs");
-+	else if (!mode_supported)
-+		NL_SET_ERR_MSG_MOD(info->info.extack,
-+				   "Can't activate LAG offload, TX type isn't supported");
-+
-+	return changed;
  }
  
- static int mlx5_handle_changelowerstate_event(struct mlx5_lag *ldev,
-@@ -464,9 +465,6 @@ static int mlx5_lag_netdev_event(struct notifier_block *this,
+ static bool sgx_should_reclaim(unsigned long watermark)
+ {
+-	return sgx_nr_free_pages < watermark && !list_empty(&sgx_active_page_list);
++	return atomic_long_read(&sgx_nr_free_pages) < watermark &&
++	       !list_empty(&sgx_active_page_list);
+ }
  
- 	ldev    = container_of(this, struct mlx5_lag, nb);
+ static int ksgxd(void *p)
+@@ -471,9 +471,9 @@ static struct sgx_epc_page *__sgx_alloc_
  
--	if (!mlx5_lag_is_ready(ldev) && event == NETDEV_CHANGELOWERSTATE)
--		return NOTIFY_DONE;
--
- 	tracker = ldev->tracker;
+ 	page = list_first_entry(&node->free_page_list, struct sgx_epc_page, list);
+ 	list_del_init(&page->list);
+-	sgx_nr_free_pages--;
  
- 	switch (event) {
--- 
-2.33.0
-
+ 	spin_unlock(&node->lock);
++	atomic_long_dec(&sgx_nr_free_pages);
+ 
+ 	return page;
+ }
+@@ -625,9 +625,9 @@ void sgx_free_epc_page(struct sgx_epc_pa
+ 	spin_lock(&node->lock);
+ 
+ 	list_add_tail(&page->list, &node->free_page_list);
+-	sgx_nr_free_pages++;
+ 
+ 	spin_unlock(&node->lock);
++	atomic_long_inc(&sgx_nr_free_pages);
+ }
+ 
+ static bool __init sgx_setup_epc_section(u64 phys_addr, u64 size,
 
 
