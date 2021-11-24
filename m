@@ -2,43 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E284A45C5DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8BA45C11D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348122AbhKXOBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:01:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47006 "EHLO mail.kernel.org"
+        id S1346948AbhKXNPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:15:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355595AbhKXN6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:58:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8BD2633AB;
-        Wed, 24 Nov 2021 13:08:14 +0000 (UTC)
+        id S1348003AbhKXNMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:12:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 183CE6140B;
+        Wed, 24 Nov 2021 12:42:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759295;
-        bh=I3px0ThtByVFUoyLgYEukj5MNt/+zgZPoCr2cfEGi1s=;
+        s=korg; t=1637757753;
+        bh=Uf/Wcztr9Wvb/Kimt4by+bdPmpJPrLRDszZo1cXBh24=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PZSjyMWSvofzbs2S1zGFU64peuj0QSTCxAjz9RR+W3NcOA0IDLn0R0DJY8rCIsxNK
-         jYCZOpwJQzQlT3D+K+Y5ThQbs6aIfuZt3WzO4XbZpwdgE63uIsvFxCZ6SjwRdS44wi
-         dLFiXr3ougwERkR/3To/Boxk87CFDMvXGKT3A7kw=
+        b=M+3bbNYq2oXtV1HvY9Y3r9ydaK00nTp1lfNiCkeFZr73ygTI2FQ8bU2IabwB2z7w2
+         mjYTiQXZLebU6nWSKNgv5Z71pcz0r4T9tx22c2GPvXy4zpR0bmfdqo1Mf8NTXm7N3v
+         NYyRQ6fSHeNgw/SX/oN2576Yv4vTKgNCceCp9qBA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
-        Michal Maloszewski <michal.maloszewski@intel.com>,
-        Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>,
-        Witold Fijalkowski <witoldx.fijalkowski@intel.com>,
-        Jaroslaw Gawin <jaroslawx.gawin@intel.com>,
-        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-        Tony Brelinski <tony.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 161/279] i40e: Fix NULL ptr dereference on VSI filter sync
+        stable@vger.kernel.org, Chao Yu <chao@kernel.org>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: [PATCH 4.19 258/323] erofs: fix unsafe pagevec reuse of hooked pclusters
 Date:   Wed, 24 Nov 2021 12:57:28 +0100
-Message-Id: <20211124115724.331795155@linuxfoundation.org>
+Message-Id: <20211124115727.597633999@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,68 +39,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Maloszewski <michal.maloszewski@intel.com>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-[ Upstream commit 37d9e304acd903a445df8208b8a13d707902dea6 ]
+commit 86432a6dca9bed79111990851df5756d3eb5f57c upstream.
 
-Remove the reason of null pointer dereference in sync VSI filters.
-Added new I40E_VSI_RELEASING flag to signalize deleting and releasing
-of VSI resources to sync this thread with sync filters subtask.
-Without this patch it is possible to start update the VSI filter list
-after VSI is removed, that's causing a kernel oops.
+There are pclusters in runtime marked with Z_EROFS_PCLUSTER_TAIL
+before actual I/O submission. Thus, the decompression chain can be
+extended if the following pcluster chain hooks such tail pcluster.
 
-Fixes: 41c445ff0f48 ("i40e: main driver core")
-Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
-Signed-off-by: Michal Maloszewski <michal.maloszewski@intel.com>
-Reviewed-by: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
-Reviewed-by: Witold Fijalkowski <witoldx.fijalkowski@intel.com>
-Reviewed-by: Jaroslaw Gawin <jaroslawx.gawin@intel.com>
-Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Tested-by: Tony Brelinski <tony.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+As the related comment mentioned, if some page is made of a hooked
+pcluster and another followed pcluster, it can be reused for in-place
+I/O (since I/O should be submitted anyway):
+ _______________________________________________________________
+|  tail (partial) page |          head (partial) page           |
+|_____PRIMARY_HOOKED___|____________PRIMARY_FOLLOWED____________|
+
+However, it's by no means safe to reuse as pagevec since if such
+PRIMARY_HOOKED pclusters finally move into bypass chain without I/O
+submission. It's somewhat hard to reproduce with LZ4 and I just found
+it (general protection fault) by ro_fsstressing a LZMA image for long
+time.
+
+I'm going to actively clean up related code together with multi-page
+folio adaption in the next few months. Let's address it directly for
+easier backporting for now.
+
+Call trace for reference:
+  z_erofs_decompress_pcluster+0x10a/0x8a0 [erofs]
+  z_erofs_decompress_queue.isra.36+0x3c/0x60 [erofs]
+  z_erofs_runqueue+0x5f3/0x840 [erofs]
+  z_erofs_readahead+0x1e8/0x320 [erofs]
+  read_pages+0x91/0x270
+  page_cache_ra_unbounded+0x18b/0x240
+  filemap_get_pages+0x10a/0x5f0
+  filemap_read+0xa9/0x330
+  new_sync_read+0x11b/0x1a0
+  vfs_read+0xf1/0x190
+
+Link: https://lore.kernel.org/r/20211103182006.4040-1-xiang@kernel.org
+Fixes: 3883a79abd02 ("staging: erofs: introduce VLE decompression support")
+Cc: <stable@vger.kernel.org> # 4.19+
+Reviewed-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e.h      | 1 +
- drivers/net/ethernet/intel/i40e/i40e_main.c | 5 +++--
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ drivers/staging/erofs/unzip_pagevec.h |   13 ++++++++++---
+ drivers/staging/erofs/unzip_vle.c     |   17 +++++++++--------
+ 2 files changed, 19 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e.h b/drivers/net/ethernet/intel/i40e/i40e.h
-index 39fb3d57c0574..d7db443abeafa 100644
---- a/drivers/net/ethernet/intel/i40e/i40e.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e.h
-@@ -161,6 +161,7 @@ enum i40e_vsi_state_t {
- 	__I40E_VSI_OVERFLOW_PROMISC,
- 	__I40E_VSI_REINIT_REQUESTED,
- 	__I40E_VSI_DOWN_REQUESTED,
-+	__I40E_VSI_RELEASING,
- 	/* This must be last as it determines the size of the BITMAP */
- 	__I40E_VSI_STATE_SIZE__,
- };
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index e04b540cedc85..9777fa3535830 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -2623,7 +2623,8 @@ static void i40e_sync_filters_subtask(struct i40e_pf *pf)
+--- a/drivers/staging/erofs/unzip_pagevec.h
++++ b/drivers/staging/erofs/unzip_pagevec.h
+@@ -117,11 +117,18 @@ static inline void z_erofs_pagevec_ctor_
+ static inline bool
+ z_erofs_pagevec_ctor_enqueue(struct z_erofs_pagevec_ctor *ctor,
+ 			     struct page *page,
+-			     enum z_erofs_page_type type)
++			     enum z_erofs_page_type type,
++			     bool pvec_safereuse)
+ {
+-	if (unlikely(ctor->next == NULL && type))
+-		if (ctor->index + 1 == ctor->nr)
++	if (!ctor->next) {
++		/* some pages cannot be reused as pvec safely without I/O */
++		if (type == Z_EROFS_PAGE_TYPE_EXCLUSIVE && !pvec_safereuse)
++			type = Z_EROFS_VLE_PAGE_TYPE_TAIL_SHARED;
++
++		if (type != Z_EROFS_PAGE_TYPE_EXCLUSIVE &&
++		    ctor->index + 1 == ctor->nr)
+ 			return false;
++	}
  
- 	for (v = 0; v < pf->num_alloc_vsi; v++) {
- 		if (pf->vsi[v] &&
--		    (pf->vsi[v]->flags & I40E_VSI_FLAG_FILTER_CHANGED)) {
-+		    (pf->vsi[v]->flags & I40E_VSI_FLAG_FILTER_CHANGED) &&
-+		    !test_bit(__I40E_VSI_RELEASING, pf->vsi[v]->state)) {
- 			int ret = i40e_sync_vsi_filters(pf->vsi[v]);
+ 	if (unlikely(ctor->index >= ctor->nr))
+ 		z_erofs_pagevec_ctor_pagedown(ctor, false);
+--- a/drivers/staging/erofs/unzip_vle.c
++++ b/drivers/staging/erofs/unzip_vle.c
+@@ -228,10 +228,10 @@ static inline bool try_to_reuse_as_compr
+ }
  
- 			if (ret) {
-@@ -13771,7 +13772,7 @@ int i40e_vsi_release(struct i40e_vsi *vsi)
- 		dev_info(&pf->pdev->dev, "Can't remove PF VSI\n");
- 		return -ENODEV;
- 	}
+ /* callers must be with work->lock held */
+-static int z_erofs_vle_work_add_page(
+-	struct z_erofs_vle_work_builder *builder,
+-	struct page *page,
+-	enum z_erofs_page_type type)
++static int z_erofs_vle_work_add_page(struct z_erofs_vle_work_builder *builder,
++				     struct page *page,
++				     enum z_erofs_page_type type,
++				     bool pvec_safereuse)
+ {
+ 	int ret;
+ 
+@@ -241,9 +241,9 @@ static int z_erofs_vle_work_add_page(
+ 		try_to_reuse_as_compressed_page(builder, page))
+ 		return 0;
+ 
+-	ret = z_erofs_pagevec_ctor_enqueue(&builder->vector, page, type);
++	ret = z_erofs_pagevec_ctor_enqueue(&builder->vector, page, type,
++					   pvec_safereuse);
+ 	builder->work->vcnt += (unsigned)ret;
 -
-+	set_bit(__I40E_VSI_RELEASING, vsi->state);
- 	uplink_seid = vsi->uplink_seid;
- 	if (vsi->type != I40E_VSI_SRIOV) {
- 		if (vsi->netdev_registered) {
--- 
-2.33.0
-
+ 	return ret ? 0 : -EAGAIN;
+ }
+ 
+@@ -688,14 +688,15 @@ hitted:
+ 		tight &= builder_is_followed(builder);
+ 
+ retry:
+-	err = z_erofs_vle_work_add_page(builder, page, page_type);
++	err = z_erofs_vle_work_add_page(builder, page, page_type,
++					builder_is_followed(builder));
+ 	/* should allocate an additional staging page for pagevec */
+ 	if (err == -EAGAIN) {
+ 		struct page *const newpage =
+ 			__stagingpage_alloc(page_pool, GFP_NOFS);
+ 
+ 		err = z_erofs_vle_work_add_page(builder,
+-			newpage, Z_EROFS_PAGE_TYPE_EXCLUSIVE);
++			newpage, Z_EROFS_PAGE_TYPE_EXCLUSIVE, true);
+ 		if (likely(!err))
+ 			goto retry;
+ 	}
 
 
