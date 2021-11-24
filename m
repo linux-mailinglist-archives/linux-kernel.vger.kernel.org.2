@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F8345C671
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:06:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8811F45C3E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350130AbhKXOII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:08:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51016 "EHLO mail.kernel.org"
+        id S1351045AbhKXNoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:44:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356557AbhKXOE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:04:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D98E6335B;
-        Wed, 24 Nov 2021 13:11:29 +0000 (UTC)
+        id S1350364AbhKXNmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:42:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 295B86326F;
+        Wed, 24 Nov 2021 12:58:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759490;
-        bh=HtLgXUO4bcEZdiWz+WrqF/fvocMQ1RU/S8Yp2K/eZn0=;
+        s=korg; t=1637758682;
+        bh=zzSW0xQXM86OxivIEd5k1n4tau/wo13mnGujFeeRgIQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EjX5GZBFS8Uly9ZfSB5ZMSRd4YWrvBOAG5WinHD62rFdFEtth8JUiU8vkc5GjQrXt
-         4sUCAXsfPFpu1+NH8BiXLiT+d4nHBL6jBgqZhDKPrfo1RnKGlYAa7M5udfg/fx1A9D
-         PARN6qIkdZgf0MEYmtWKY+23F+dyUnOST+EkXDo8=
+        b=TUqYFsXMM98entRfzqDGNUMFD89o4EtRXt3UqmCTF+OwMeHnRSSNpmUwmJXhjYq6t
+         59kkw3vYRzqJPTSa9znvqTxF1KJKxn9q3wCM676+DS5FuwgvGEV+MXyxygzDh7kAnL
+         uqYoPsv9oaqGf4MB2uMBfgbFxmarOh0I94T+HSZ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Thomas Backlund <tmb@iki.fi>
-Subject: [PATCH 5.15 258/279] signal/powerpc: On swapcontext failure force SIGSEGV
-Date:   Wed, 24 Nov 2021 12:59:05 +0100
-Message-Id: <20211124115727.632627138@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 5.10 150/154] usb: max-3421: Use driver data instead of maintaining a list of bound devices
+Date:   Wed, 24 Nov 2021 12:59:06 +0100
+Message-Id: <20211124115707.329283471@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,70 +40,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric W. Biederman <ebiederm@xmission.com>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-commit 83a1f27ad773b1d8f0460d3a676114c7651918cc upstream.
+commit fc153aba3ef371d0d76eb88230ed4e0dee5b38f2 upstream.
 
-If the register state may be partial and corrupted instead of calling
-do_exit, call force_sigsegv(SIGSEGV).  Which properly kills the
-process with SIGSEGV and does not let any more userspace code execute,
-instead of just killing one thread of the process and potentially
-confusing everything.
+Instead of maintaining a single-linked list of devices that must be
+searched linearly in .remove() just use spi_set_drvdata() to remember the
+link between the spi device and the driver struct. Then the global list
+and the next member can be dropped.
 
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: linuxppc-dev@lists.ozlabs.org
-History-tree: git://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
-Fixes: 756f1ae8a44e ("PPC32: Rework signal code and add a swapcontext system call.")
-Fixes: 04879b04bf50 ("[PATCH] ppc64: VMX (Altivec) support & signal32 rework, from Ben Herrenschmidt")
-Link: https://lkml.kernel.org/r/20211020174406.17889-7-ebiederm@xmission.com
-Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
-Cc: Thomas Backlund <tmb@iki.fi>
+This simplifies the driver, reduces the memory footprint and the time to
+search the list. Also it makes obvious that there is always a corresponding
+driver struct for a given device in .remove(), so the error path for
+!max3421_hcd can be dropped, too.
+
+As a side effect this fixes a data inconsistency when .probe() races with
+itself for a second max3421 device in manipulating max3421_hcd_list. A
+similar race is fixed in .remove(), too.
+
+Fixes: 2d53139f3162 ("Add support for using a MAX3421E chip as a host driver.")
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Link: https://lore.kernel.org/r/20211018204028.2914597-1-u.kleine-koenig@pengutronix.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/kernel/signal_32.c |    6 ++++--
- arch/powerpc/kernel/signal_64.c |    9 ++++++---
- 2 files changed, 10 insertions(+), 5 deletions(-)
+ drivers/usb/host/max3421-hcd.c |   25 +++++--------------------
+ 1 file changed, 5 insertions(+), 20 deletions(-)
 
---- a/arch/powerpc/kernel/signal_32.c
-+++ b/arch/powerpc/kernel/signal_32.c
-@@ -1062,8 +1062,10 @@ SYSCALL_DEFINE3(swapcontext, struct ucon
- 	 * or if another thread unmaps the region containing the context.
- 	 * We kill the task with a SIGSEGV in this situation.
- 	 */
--	if (do_setcontext(new_ctx, regs, 0))
--		do_exit(SIGSEGV);
-+	if (do_setcontext(new_ctx, regs, 0)) {
-+		force_sigsegv(SIGSEGV);
-+		return -EFAULT;
-+	}
+--- a/drivers/usb/host/max3421-hcd.c
++++ b/drivers/usb/host/max3421-hcd.c
+@@ -125,8 +125,6 @@ struct max3421_hcd {
  
- 	set_thread_flag(TIF_RESTOREALL);
- 	return 0;
---- a/arch/powerpc/kernel/signal_64.c
-+++ b/arch/powerpc/kernel/signal_64.c
-@@ -703,15 +703,18 @@ SYSCALL_DEFINE3(swapcontext, struct ucon
- 	 * We kill the task with a SIGSEGV in this situation.
- 	 */
+ 	struct task_struct *spi_thread;
  
--	if (__get_user_sigset(&set, &new_ctx->uc_sigmask))
--		do_exit(SIGSEGV);
-+	if (__get_user_sigset(&set, &new_ctx->uc_sigmask)) {
-+		force_sigsegv(SIGSEGV);
-+		return -EFAULT;
-+	}
- 	set_current_blocked(&set);
+-	struct max3421_hcd *next;
+-
+ 	enum max3421_rh_state rh_state;
+ 	/* lower 16 bits contain port status, upper 16 bits the change mask: */
+ 	u32 port_status;
+@@ -174,8 +172,6 @@ struct max3421_ep {
+ 	u8 retransmit;			/* packet needs retransmission */
+ };
  
- 	if (!user_read_access_begin(new_ctx, ctx_size))
- 		return -EFAULT;
- 	if (__unsafe_restore_sigcontext(current, NULL, 0, &new_ctx->uc_mcontext)) {
- 		user_read_access_end();
--		do_exit(SIGSEGV);
-+		force_sigsegv(SIGSEGV);
-+		return -EFAULT;
+-static struct max3421_hcd *max3421_hcd_list;
+-
+ #define MAX3421_FIFO_SIZE	64
+ 
+ #define MAX3421_SPI_DIR_RD	0	/* read register from MAX3421 */
+@@ -1882,9 +1878,8 @@ max3421_probe(struct spi_device *spi)
  	}
- 	user_read_access_end();
+ 	set_bit(HCD_FLAG_POLL_RH, &hcd->flags);
+ 	max3421_hcd = hcd_to_max3421(hcd);
+-	max3421_hcd->next = max3421_hcd_list;
+-	max3421_hcd_list = max3421_hcd;
+ 	INIT_LIST_HEAD(&max3421_hcd->ep_list);
++	spi_set_drvdata(spi, max3421_hcd);
+ 
+ 	max3421_hcd->tx = kmalloc(sizeof(*max3421_hcd->tx), GFP_KERNEL);
+ 	if (!max3421_hcd->tx)
+@@ -1934,28 +1929,18 @@ error:
+ static int
+ max3421_remove(struct spi_device *spi)
+ {
+-	struct max3421_hcd *max3421_hcd = NULL, **prev;
+-	struct usb_hcd *hcd = NULL;
++	struct max3421_hcd *max3421_hcd;
++	struct usb_hcd *hcd;
+ 	unsigned long flags;
+ 
+-	for (prev = &max3421_hcd_list; *prev; prev = &(*prev)->next) {
+-		max3421_hcd = *prev;
+-		hcd = max3421_to_hcd(max3421_hcd);
+-		if (hcd->self.controller == &spi->dev)
+-			break;
+-	}
+-	if (!max3421_hcd) {
+-		dev_err(&spi->dev, "no MAX3421 HCD found for SPI device %p\n",
+-			spi);
+-		return -ENODEV;
+-	}
++	max3421_hcd = spi_get_drvdata(spi);
++	hcd = max3421_to_hcd(max3421_hcd);
+ 
+ 	usb_remove_hcd(hcd);
+ 
+ 	spin_lock_irqsave(&max3421_hcd->lock, flags);
+ 
+ 	kthread_stop(max3421_hcd->spi_thread);
+-	*prev = max3421_hcd->next;
+ 
+ 	spin_unlock_irqrestore(&max3421_hcd->lock, flags);
  
 
 
