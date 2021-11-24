@@ -2,155 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 658E045B8E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 12:10:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5953A45B8EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 12:10:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240026AbhKXLNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 06:13:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26677 "EHLO
+        id S240716AbhKXLOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 06:14:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:35397 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240818AbhKXLNP (ORCPT
+        by vger.kernel.org with ESMTP id S240066AbhKXLOC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 06:13:15 -0500
+        Wed, 24 Nov 2021 06:14:02 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637752205;
+        s=mimecast20190719; t=1637752252;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ADWToEtIWQw+24GlwPROw25DRFUtZ4xqccavANYkXhQ=;
-        b=iEFc3D3e/S/awT1w4+lMx6tDFmmQUx9/w7+xV893ORmzFOqbbjKJKyuFwFxK9/dSjF/7qe
-        NYbbVVwBceZhH2n3fSsTrGFPxaSgd/zA2jeKyqR0/0nOS8kJx+E/rU7r8nR42+jHYHHcy5
-        eFf51pdtvsDz+reAeMxCpLTf2ukV+Gs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=vpE3uP5Ts9fATTGHNvJfdwKZOAJEcAEIb3v/zQVqyQU=;
+        b=Zsy3OLR/G26sZ0cPW2ODZBnRGdC/4bBHKj2gwyQfCuN2xe0y/zYuZ4f+pJPtQuQrT1LZIH
+        mXMMe+vSC51yfAtgdrJnuNrfKg7FRzwMyQ49JJq+ynS8DYLRZWNgeoV4PhDqnn/UnuDf4i
+        xZH2V+XrvL6yPYEGfhkapZqX3XFcDqw=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-594-vJVsBQwrPcihdPXc1AdfdA-1; Wed, 24 Nov 2021 06:09:59 -0500
-X-MC-Unique: vJVsBQwrPcihdPXc1AdfdA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3914EBAF81;
-        Wed, 24 Nov 2021 11:09:57 +0000 (UTC)
-Received: from rhtmp (unknown [10.39.192.203])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CCC9219C46;
-        Wed, 24 Nov 2021 11:09:52 +0000 (UTC)
-Date:   Wed, 24 Nov 2021 12:09:50 +0100
-From:   Philipp Rudo <prudo@redhat.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     Michal =?UTF-8?B?U3VjaMOhbmVr?= <msuchanek@suse.de>,
-        Nayna <nayna@linux.vnet.ibm.com>, keyrings@vger.kernel.org,
-        Rob Herring <robh@kernel.org>, linux-s390@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Jessica Yu <jeyu@kernel.org>, linux-kernel@vger.kernel.org,
-        David Howells <dhowells@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Frank van der Linden <fllinden@amazon.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Daniel Axtens <dja@axtens.net>, buendgen@de.ibm.com
-Subject: Re: [PATCH 0/3] KEXEC_SIG with appended signature
-Message-ID: <20211124120950.57c10a9f@rhtmp>
-In-Reply-To: <01218c22a287665091f24c7023f4bcd42dbb2001.camel@linux.ibm.com>
-References: <cover.1635948742.git.msuchanek@suse.de>
-        <87czneeurr.fsf@dja-thinkpad.axtens.net>
-        <20211105131401.GL11195@kunlun.suse.cz>
-        <87a6ifehin.fsf@dja-thinkpad.axtens.net>
-        <20211108120500.GO11195@kunlun.suse.cz>
-        <56d2ae87-b9bf-c9fc-1395-db4769a424ea@linux.vnet.ibm.com>
-        <20211112083055.GA34414@kunlun.suse.cz>
-        <8cd90fea-05c9-b5f9-5e0c-84f98b2f55cd@linux.vnet.ibm.com>
-        <20211116095343.GG34414@kunlun.suse.cz>
-        <604dad24-5406-509c-d765-905d74880523@linux.vnet.ibm.com>
-        <20211119111823.GC34414@kunlun.suse.cz>
-        <01218c22a287665091f24c7023f4bcd42dbb2001.camel@linux.ibm.com>
-Organization: Red Hat inc.
+ us-mta-113-ZhJEHqlQMrOubed6yoDcmA-1; Wed, 24 Nov 2021 06:10:51 -0500
+X-MC-Unique: ZhJEHqlQMrOubed6yoDcmA-1
+Received: by mail-wm1-f72.google.com with SMTP id 205-20020a1c00d6000000b003335d1384f1so2829654wma.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 03:10:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=vpE3uP5Ts9fATTGHNvJfdwKZOAJEcAEIb3v/zQVqyQU=;
+        b=BDP2y6T4k6ivp43OMxLBS9d++OveiLIM+U6E1ylyPBW8H5SND8yFlanQ07pMkHnXL2
+         QRXGhD6ErvfH0LApjVL9/UetBpdTMUXBwnjcfGarZ2q8jOF35HrkcQ3+jcrOdOjKj+Is
+         DNTENXdzGbXyFTYY56cj7RVPWW5WwvEVv7iWa6aQmfpTGwiIOcpVTVgoOdQIwz6xhQvQ
+         wLkid2abUgC1uwcJTNZ9o8PJ5u8Y9xXaHMgohDTlszHZFHT8Na1qGFHSGsqnE87sEMiD
+         aIt7cwdLE+amAPTG+A3edWk3Z/aUZWc4YbOdMBeZ8lfF2lOyun9jV6Br5W8+N9uSnxuG
+         S90g==
+X-Gm-Message-State: AOAM531L5Z2gJzecaeXNownGDPUKy8LgruS3eNyellw9tjQpvuLH2l10
+        x4MRVfF2FltuhAIE8OUJ2vmhvZ5f0Lu39LmJFwzqcobc5x8iamhIUkzSzq8n11IrOqkKBA0g31H
+        NSJVEv/h9C4a8836PhVvTIy/9
+X-Received: by 2002:a5d:4107:: with SMTP id l7mr17164663wrp.209.1637752250458;
+        Wed, 24 Nov 2021 03:10:50 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy/35pNqxIt/3x1nXEuvBK3BdN1xHIMOgL0EuPUrA8pSNn6Wr5VuEfMwehTjz1oqeOxyanzyw==
+X-Received: by 2002:a5d:4107:: with SMTP id l7mr17164617wrp.209.1637752250154;
+        Wed, 24 Nov 2021 03:10:50 -0800 (PST)
+Received: from [192.168.3.132] (p5b0c6380.dip0.t-ipconnect.de. [91.12.99.128])
+        by smtp.gmail.com with ESMTPSA id 9sm19103331wry.0.2021.11.24.03.10.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Nov 2021 03:10:49 -0800 (PST)
+Message-ID: <f106fc33-4935-6f07-3e93-35bfd0d2434d@redhat.com>
+Date:   Wed, 24 Nov 2021 12:10:49 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] mm: Use BUG_ON instead of if condition followed by BUG
+Content-Language: en-US
+To:     cgel.zte@gmail.com, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        chiminghao <chi.minghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+References: <20211124030849.34998-1-chi.minghao@zte.com.cn>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20211124030849.34998-1-chi.minghao@zte.com.cn>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mimi,
+On 24.11.21 04:08, cgel.zte@gmail.com wrote:
+> From: chiminghao <chi.minghao@zte.com.cn>
 
-On Fri, 19 Nov 2021 13:16:20 -0500
-Mimi Zohar <zohar@linux.ibm.com> wrote:
+"mm/memory_hotplug: Use BUG_ON instead of if condition followed by BUG"
 
-> On Fri, 2021-11-19 at 12:18 +0100, Michal Such=C3=A1nek wrote:
-> > Maybe I was not clear enough. If you happen to focus on an architecture
-> > that supports IMA fully it's great.
-> >=20
-> > My point of view is maintaining multiple architectures. Both end users
-> > and people conecerend with security are rarely familiar with
-> > architecture specifics. Portability of documentation and debugging
-> > instructions across architectures is a concern.
-> >=20
-> > IMA has large number of options with varying availablitily across
-> > architectures for no apparent reason. The situation is complex and hard
-> > to grasp. =20
->=20
-> IMA measures, verifies, and audits the integrity of files based on a
-> system wide policy.  The known "good" integrity value may be stored in
-> the security.ima xattr or more recently as an appended signature.
->=20
-> With both IMA kexec appraise and measurement policy rules, not only is
-> the kernel image signature verified and the file hash included in the
-> IMA measurement list, but the signature used to verify the integrity of
-> the kexec kernel image is also included in the IMA measurement list
-> (ima_template=3Dima-sig).
->=20
-> Even without PECOFF support in IMA, IMA kexec measurement policy rules
-> can be defined to supplement the KEXEC_SIG signature verfication.
->
-> > In comparison the *_SIG options are widely available. The missing
-> > support for KEXEC_SIG on POWER is trivial to add by cut&paste from s390.
-> > With that all the documentation that exists already is also trivially
-> > applicable to POWER. Any additional code cleanup is a bonus but not
-> > really needed to enable the kexec lockdown on POWER. =20
->=20
-> Before lockdown was upstreamed, Matthew made sure that IMA signature
-> verification could co-exist.   Refer to commit 29d3c1c8dfe7 ("kexec:
-> Allow kexec_file() with appropriate IMA policy when locked down").   If
-> there is a problem with the downstream kexec lockdown patches, they
-> should be fixed.
->=20
-> The kexec kselftest might provide some insight into how the different
-> signature verification methods and lockdown co-exist.
->=20
-> As for adding KEXEC_SIG appended signature support on PowerPC based on
-> the s390 code, it sounds reasonable.
+Would be better
 
-Heiko contacted me as you apparently requested that someone from s390
-takes part in this discussion. I now spend over a day trying to make
-any sens from this discussion but failed. The way I see it is.
+> 
+> Fix the following coccinelle report:
+> ./mm/memory_hotplug.c:2210:2-5:
+> WARNING  Use BUG_ON instead of if condition followed by BUG.
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: chiminghao <chi.minghao@zte.com.cn>
+> ---
+>  mm/memory_hotplug.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 3de7933e5302..aecb12bb7513 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -2212,8 +2212,7 @@ void __remove_memory(u64 start, u64 size)
+>  	 * trigger BUG() if some memory is not offlined prior to calling this
+>  	 * function
+>  	 */
+> -	if (try_remove_memory(start, size))
+> -		BUG();
+> +	BUG_ON(try_remove_memory(start, size));
+>  }
+>  
+>  /*
+> 
 
-On one hand there is KEXEC_SIG which is specifically designed to verify
-the signatures of kernel images in kexec_file_load. From the beginning
-it was designed in a way that every architecture (in fact even every
-image type) can define its own callback function as needed. It's design
-is simple and easy to extend and thus was adopted by all architectures,
-except ppc, so far.
+Acked-by: David Hildenbrand <david@redhat.com>
 
-On the other hand there is IMA which is much more general and also
-includes the same functionality like KEXEC_SIG but only on some
-architectures in some special cases and without proper documentation.
 
-Now Michal wants to adapt KEXEC_SIG for ppc too so distros can rely on all
-architectures using the same mechanism and thus reduce maintenance cost.
-On the way there he even makes some absolutely reasonable improvements
-for everybody.
+-- 
+Thanks,
 
-Why is that so controversial? What is the real problem that should be
-discussed here?
-
-Thanks
-Philipp
+David / dhildenb
 
