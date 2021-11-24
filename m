@@ -2,155 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 620D845CDAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:11:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7A745CDB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:12:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245478AbhKXUPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 15:15:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42598 "EHLO
+        id S233519AbhKXUPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 15:15:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245315AbhKXUO5 (ORCPT
+        with ESMTP id S231365AbhKXUPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 15:14:57 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69DA4C061574;
-        Wed, 24 Nov 2021 12:11:47 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id t11so7868190ljh.6;
-        Wed, 24 Nov 2021 12:11:47 -0800 (PST)
+        Wed, 24 Nov 2021 15:15:51 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E52C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:12:41 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id u22so7858309lju.7
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:12:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
+        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Qo7LDGhCLw1C/RJQYl0tsOOlrBM+qKnIMUTYLFn/vQQ=;
-        b=Ni20t8kujf1xCNBvR2ocQhRylwmF7uC76Mvyh2gPUvifqSaIsGREt/f5hIqSG2wiTr
-         dQn3LVBT8cHVAJuVkMgFmh6gyr7erO0A06TE9ESc4A6eXZ1Z0meGe+5YVbaJaED8ir5m
-         NAih7dCQX5Fj1KRbouiuK8sU0D1u0lr7EKQRbFpxmNvMZ7hp+dD8deN/erEu8uilWZ/D
-         oC8XRNSeqfv4E4oZ/oM+OoZrQASYORbihsP98KJeL+MFf59FF1Xij+dPHsgNnXV3ofMU
-         InX63UB1ldeQYYH7W60vvf2oU7Ia3Hqa5+DS2fcdmpPvbsRr/qk2FBKwSr026AQQvJiI
-         ZAwQ==
+        bh=7soODcy9g9USyAcnsCV+bLWbMatBSsTCHZqUXUXsSj4=;
+        b=Yms4+zGyu39UCWV++S7CaSRQGeVCEmSMEz3gocFHBCOuDmBYty1vgMvqYewwqeLCZD
+         ZHm7NWjxJdoJbRuweJb9vapELXAsEGKkoWn1aDgKBAJeGd2m78XKk0S/SM3kBunfcD1m
+         VtKJpqOzOBLaIdndK9yi/b3IJuNSIWngX/Sy3hMrAf45dXw2U3t5jVMOL2DWILFp35z5
+         7ylFYlqWT4QPlJPjfwBcHkMA05BXDtRzaBXL2dGolvos7e6IS9ElM5A2tdISbioMLqZ2
+         S5ZcC/YKBthw2T3/qGwtjNIorvEXWqbSPNOvluDKt34zOzfdJnSfsEoCr0KaXYruj3x0
+         UoIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Qo7LDGhCLw1C/RJQYl0tsOOlrBM+qKnIMUTYLFn/vQQ=;
-        b=v2dz4FT/7lRDt+kA7zqKJ1V2+mA3R7nxx0kBiAbzakIA8Nvc2pwOMyEV9TCBp0JmUZ
-         s7/yP8in1djYpc5tl10djG5VIOcNGMrppMs7nbtbu+rAo1Nkv8Z1PWBmXogRRQ2eCL2d
-         9Taxp0jwTi6bBb3PjOUsjp9gSIfF3MvHmkhIwOWZaBwzomivuYvclkDQS30MTOh2Z85U
-         70XPa6M382PVGmu7Vf2m2sCJH0WosKOahDk8knUeRF1CGnp2tI5+BjA+q0lFzIxeXiRw
-         HtDsZBn67zglL4A2e5pVytP8/ngN7H6MYjOPJVN6Xej3ogFLhrZEly0+P+K0lahC5KAD
-         kEQA==
-X-Gm-Message-State: AOAM533Rb7j01ndrDvhbu1jDL0/ilq482HCI+HUpaFpHKCNMymfSEQAb
-        EjEJ6vCb+htJOwiyVeI0Nec=
-X-Google-Smtp-Source: ABdhPJzObzGBkOGhdbTxdRc7AS1CzlPcgd/68XPHDPyMtGRhoDIWH76itaokZ7li1Dq39AFb/lTryQ==
-X-Received: by 2002:a2e:2a43:: with SMTP id q64mr19178322ljq.102.1637784705684;
-        Wed, 24 Nov 2021 12:11:45 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id r25sm74076lfi.166.2021.11.24.12.11.44
+        bh=7soODcy9g9USyAcnsCV+bLWbMatBSsTCHZqUXUXsSj4=;
+        b=wXZoi00G24CqVU5YQ7bl344nwnpOUrAjl23UwkOr3zkr5cjkDi2WYr7+qHRrnhOjxq
+         9XbcNQb2f63nv/jjkZP9K96ag//+agKkFjfowYplAjpKCBkPVKT6HWUf1up3QS3SHhDA
+         1vq1TEVMs+aiIRh1XvyaXBCDkYtKA8F6V3+DWYajiBPqMu7DKj1/OTQQDlLPeXuwnNR5
+         OusMEDpiy88CFS/gLTeUIaCG2ChY/AUqHsk6540+Q2ux6DGV8h4wP6EBpN7uXMottSq4
+         X/S9zVLyYmsrtL6CnaLYZJX9OKwhs8VTVVkQCVWaoW0xscvAxAEmkhIEU7oegqXT+Dk1
+         X1NA==
+X-Gm-Message-State: AOAM532YQr1Q54sKrSQTD9XlYDcLL3iajaOkPbNgU3mEgdkd0r9WVKeo
+        AbRQuXDSNsZKGK34183qZUriwQ==
+X-Google-Smtp-Source: ABdhPJzgCSYUjymEFFnyubOSAooaM8Jh3QpVKGVONm86IcfnDTxWfeicEF/z4JhlZpaT4d0FbGn+qg==
+X-Received: by 2002:a2e:97c7:: with SMTP id m7mr19495389ljj.134.1637784759805;
+        Wed, 24 Nov 2021 12:12:39 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id y11sm87202ljh.54.2021.11.24.12.12.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 12:11:44 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Wed, 24 Nov 2021 21:11:42 +0100
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
-        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH v2 2/4] mm/vmalloc: add support for __GFP_NOFAIL
-Message-ID: <YZ6cfoQah8Wo1eSZ@pc638.lan>
-References: <20211122153233.9924-1-mhocko@kernel.org>
- <20211122153233.9924-3-mhocko@kernel.org>
- <YZ06nna7RirAI+vJ@pc638.lan>
- <20211123170238.f0f780ddb800f1316397f97c@linux-foundation.org>
+        Wed, 24 Nov 2021 12:12:39 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id D0083103635; Wed, 24 Nov 2021 23:12:38 +0300 (+03)
+Date:   Wed, 24 Nov 2021 23:12:38 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm: thp: update split_queue_len correctly
+Message-ID: <20211124201238.3xzpy2b5zcv7j23s@box.shutemov.name>
+References: <20211123190916.1738458-1-shakeelb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211123170238.f0f780ddb800f1316397f97c@linux-foundation.org>
+In-Reply-To: <20211123190916.1738458-1-shakeelb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 05:02:38PM -0800, Andrew Morton wrote:
-> On Tue, 23 Nov 2021 20:01:50 +0100 Uladzislau Rezki <urezki@gmail.com> wrote:
-> 
-> > On Mon, Nov 22, 2021 at 04:32:31PM +0100, Michal Hocko wrote:
-> > > From: Michal Hocko <mhocko@suse.com>
-> > > 
-> > > Dave Chinner has mentioned that some of the xfs code would benefit from
-> > > kvmalloc support for __GFP_NOFAIL because they have allocations that
-> > > cannot fail and they do not fit into a single page.
-> 
-> Perhaps we should tell xfs "no, do it internally".  Because this is a
-> rather nasty-looking thing - do we want to encourage other callsites to
-> start using it?
-> 
-> > > The large part of the vmalloc implementation already complies with the
-> > > given gfp flags so there is no work for those to be done. The area
-> > > and page table allocations are an exception to that. Implement a retry
-> > > loop for those.
-> > > 
-> > > Add a short sleep before retrying. 1 jiffy is a completely random
-> > > timeout. Ideally the retry would wait for an explicit event - e.g.
-> > > a change to the vmalloc space change if the failure was caused by
-> > > the space fragmentation or depletion. But there are multiple different
-> > > reasons to retry and this could become much more complex. Keep the retry
-> > > simple for now and just sleep to prevent from hogging CPUs.
-> > > 
-> 
-> Yes, the horse has already bolted.  But we didn't want that horse anyway ;)
-> 
-> I added GFP_NOFAIL back in the mesozoic era because quite a lot of
-> sites were doing open-coded try-forever loops.  I thought "hey, they
-> shouldn't be doing that in the first place, but let's at least
-> centralize the concept to reduce code size, code duplication and so
-> it's something we can now grep for".  But longer term, all GFP_NOFAIL
-> sites should be reworked to no longer need to do the retry-forever
-> thing.  In retrospect, this bright idea of mine seems to have added
-> license for more sites to use retry-forever.  Sigh.
-> 
-> > > +		if (nofail) {
-> > > +			schedule_timeout_uninterruptible(1);
-> > > +			goto again;
-> > > +		}
-> 
-> The idea behind congestion_wait() is to prevent us from having to
-> hard-wire delays like this.  congestion_wait(1) would sleep for up to
-> one millisecond, but will return earlier if reclaim events happened
-> which make it likely that the caller can now proceed with the
-> allocation event, successfully.
-> 
-> However it turns out that congestion_wait() was quietly broken at the
-> block level some time ago.  We could perhaps resurrect the concept at
-> another level - say by releasing congestion_wait() callers if an amount
-> of memory newly becomes allocatable.  This obviously asks for inclusion
-> of zone/node/etc info from the congestion_wait() caller.  But that's
-> just an optimization - if the newly-available memory isn't useful to
-> the congestion_wait() caller, they just fail the allocation attempts
-> and wait again.
-> 
-> > well that is sad...
-> > I have raised two concerns in our previous discussion about this change,
-> 
-> Can you please reiterate those concerns here?
->
-1. I proposed to repeat(if fails) in one solid place, i.e. get rid of
-duplication and spreading the logic across several places. This is about
-simplification.
+On Tue, Nov 23, 2021 at 11:09:16AM -0800, Shakeel Butt wrote:
+> The deferred THPs are split on memory pressure through shrinker
+> callback and splitting of THP during reclaim can fail for several
+> reasons like unable to lock the THP, under writeback or unexpected
+> number of pins on the THP. Such pages are put back on the deferred split
+> list for consideration later. However kernel does not update the
+> deferred queue size on putting back the pages whose split was failed.
+> This patch fixes that.
 
-2. Second one is about to do an unwinding and release everything what we
-have just accumulated in terms of memory consumption. The failure might
-occur, if so a condition we are in is a low memory one or high memory
-pressure. In this case, since we are about to sleep some milliseconds
-in order to repeat later, IMHO it makes sense to release memory:
+Hm. No. split_huge_page_to_list() updates the queue size on split success.
 
-- to prevent killing apps or possible OOM;
-- we can end up looping quite a lot of time or even forever if users do
-  nasty things with vmalloc API and __GFP_NOFAIL flag.
+NAK.
 
---
-Vlad Rezki
+-- 
+ Kirill A. Shutemov
