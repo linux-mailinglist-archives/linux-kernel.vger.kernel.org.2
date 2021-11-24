@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CBC545BB49
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:16:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C4745BAE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:12:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243690AbhKXMSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:18:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37610 "EHLO mail.kernel.org"
+        id S241679AbhKXMPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:15:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243034AbhKXMNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243036AbhKXMNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Nov 2021 07:13:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA14161131;
-        Wed, 24 Nov 2021 12:07:31 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D83066112D;
+        Wed, 24 Nov 2021 12:07:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755652;
-        bh=eLngJBpzQSIOzbGKE1HM+YWxlS/Q0K1g0EaMU5UuOUY=;
+        s=korg; t=1637755655;
+        bh=d9TS26GOOEKT3ntUV5tTPdcraKeZI2CzwpteWVyayus=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nake4SmzewpTPaOAv7jNQO9Q2wgtPGyAc3XyP46kX7omq9OO3f6zcNvJd2ba3lfaC
-         F9CONoJgVXE+XYMsFMW0Mf1KtKbG6UnrDM2vlEQyshmBZrpkF9F8mhEgg/PLgIxj16
-         4hNAEO7UhyTaTVtCLa64qq7L+ROBGYKdsNMj2SEo=
+        b=B5QeW+69yZgVSRvKqB+wAneoTxe8vLMPSt8mM7sTmtem1mVK2q5/KnY1aaRTmEL1V
+         57VcfeEE0RnAkyof1WaWJU96FfhmA8Idf3ggGlEvM+B5U2kVv/rwXe2glnZ6yEpaJ/
+         64rrb3/1cU0r9TmJMA+nObgd686/y6ppxSAgmlgs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bryan Pass <bryan.pass@gmail.com>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 4.9 010/207] media: ite-cir: IR receiver stop working after receive overflow
-Date:   Wed, 24 Nov 2021 12:54:41 +0100
-Message-Id: <20211124115704.288354540@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.9 011/207] ALSA: ua101: fix division by zero at probe
+Date:   Wed, 24 Nov 2021 12:54:42 +0100
+Message-Id: <20211124115704.320835750@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
 References: <20211124115703.941380739@linuxfoundation.org>
@@ -40,36 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Young <sean@mess.org>
+From: Johan Hovold <johan@kernel.org>
 
-commit fdc881783099c6343921ff017450831c8766d12a upstream.
+commit 55f261b73a7e1cb254577c3536cef8f415de220a upstream.
 
-On an Intel NUC6iSYK, no IR is reported after a receive overflow.
+Add the missing endpoint max-packet sanity check to probe() to avoid
+division by zero in alloc_stream_buffers() in case a malicious device
+has broken descriptors (or when doing descriptor fuzz testing).
 
-When a receiver overflow occurs, this condition is only cleared by
-reading the fifo. Make sure we read anything in the fifo.
+Note that USB core will reject URBs submitted for endpoints with zero
+wMaxPacketSize but that drivers doing packet-size calculations still
+need to handle this (cf. commit 2548288b4fb0 ("USB: Fix: Don't skip
+endpoint descriptors with maxpacket=0")).
 
-Fixes: 28c7afb07ccf ("media: ite-cir: check for receive overflow")
-Suggested-by: Bryan Pass <bryan.pass@gmail.com>
-Tested-by: Bryan Pass <bryan.pass@gmail.com>
-Cc: stable@vger.kernel.org>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 63978ab3e3e9 ("sound: add Edirol UA-101 support")
+Cc: stable@vger.kernel.org      # 2.6.34
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211026095401.26522-1-johan@kernel.org
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/rc/ite-cir.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/misc/ua101.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/media/rc/ite-cir.c
-+++ b/drivers/media/rc/ite-cir.c
-@@ -299,7 +299,7 @@ static irqreturn_t ite_cir_isr(int irq,
- 	}
+--- a/sound/usb/misc/ua101.c
++++ b/sound/usb/misc/ua101.c
+@@ -1032,7 +1032,7 @@ static int detect_usb_format(struct ua10
+ 		fmt_playback->bSubframeSize * ua->playback.channels;
  
- 	/* check for the receive interrupt */
--	if (iflags & ITE_IRQ_RX_FIFO) {
-+	if (iflags & (ITE_IRQ_RX_FIFO | ITE_IRQ_RX_FIFO_OVERRUN)) {
- 		/* read the FIFO bytes */
- 		rx_bytes =
- 			dev->params.get_rx_bytes(dev, rx_buf,
+ 	epd = &ua->intf[INTF_CAPTURE]->altsetting[1].endpoint[0].desc;
+-	if (!usb_endpoint_is_isoc_in(epd)) {
++	if (!usb_endpoint_is_isoc_in(epd) || usb_endpoint_maxp(epd) == 0) {
+ 		dev_err(&ua->dev->dev, "invalid capture endpoint\n");
+ 		return -ENXIO;
+ 	}
+@@ -1040,7 +1040,7 @@ static int detect_usb_format(struct ua10
+ 	ua->capture.max_packet_bytes = usb_endpoint_maxp(epd);
+ 
+ 	epd = &ua->intf[INTF_PLAYBACK]->altsetting[1].endpoint[0].desc;
+-	if (!usb_endpoint_is_isoc_out(epd)) {
++	if (!usb_endpoint_is_isoc_out(epd) || usb_endpoint_maxp(epd) == 0) {
+ 		dev_err(&ua->dev->dev, "invalid playback endpoint\n");
+ 		return -ENXIO;
+ 	}
 
 
