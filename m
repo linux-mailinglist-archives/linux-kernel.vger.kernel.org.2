@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3757145BD55
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:34:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B7645BFD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:59:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243794AbhKXMh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:37:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49474 "EHLO mail.kernel.org"
+        id S245509AbhKXNCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:02:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344256AbhKXMam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:30:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 076FF61131;
-        Wed, 24 Nov 2021 12:19:12 +0000 (UTC)
+        id S1345882AbhKXNAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:00:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA0D761989;
+        Wed, 24 Nov 2021 12:34:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756353;
-        bh=ORdil0lSCH5niHK5ARiMh6xV9T34JDvnkZDM1a6Q37c=;
+        s=korg; t=1637757255;
+        bh=gSKZ8ZQS1zDIh541hS5ZMLEVK9bKopB7UiB0BBGvPEQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rTsLS2PwHVk4v3jgyGWD3C8ykeOP7trl0W497HQxHt1p+SAt2CfLeFbqoIJOqlRYr
-         jyw2gnR5KipisJJ3I91q3bNWaA5pPkJMMfN63w5aSOC6Xk75snApr0+isnh4LR4kX4
-         k+2HczKWsgCFrr6rtn+zS7eYo1fEDrW9N4CKyxfE=
+        b=ouXyZz56OxIMCVQDAQ02gm2mvs49dCKgLtDLMX4p1O6ikvDf7sF5NyHW7EK3QiSmE
+         Wjis/BZmS5gTAOurmJpqgpNEDiKrfYBQO6fX8/FpgJqbGG79ZvxKNBMjAkP4I2V9I+
+         LlRwYIzExoU+SqkRamK67rL+SF92uNBQxSYX87JM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+ace149a75a9a0a399ac7@syzkaller.appspotmail.com,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.14 056/251] ALSA: mixer: fix deadlock in snd_mixer_oss_set_volume
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 108/323] leaking_addresses: Always print a trailing newline
 Date:   Wed, 24 Nov 2021 12:54:58 +0100
-Message-Id: <20211124115712.196279347@linuxfoundation.org>
+Message-Id: <20211124115722.609311087@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Kees Cook <keescook@chromium.org>
 
-commit 3ab7992018455ac63c33e9b3eaa7264e293e40f4 upstream.
+[ Upstream commit cf2a85efdade117e2169d6e26641016cbbf03ef0 ]
 
-In commit 411cef6adfb3 ("ALSA: mixer: oss: Fix racy access to slots")
-added mutex protection in snd_mixer_oss_set_volume(). Second
-mutex_lock() in same function looks like typo, fix it.
+For files that lack trailing newlines and match a leaking address (e.g.
+wchan[1]), the leaking_addresses.pl report would run together with the
+next line, making things look corrupted.
 
-Reported-by: syzbot+ace149a75a9a0a399ac7@syzkaller.appspotmail.com
-Fixes: 411cef6adfb3 ("ALSA: mixer: oss: Fix racy access to slots")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Link: https://lore.kernel.org/r/20211024140315.16704-1-paskripkin@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Unconditionally remove the newline on input, and write it back out on
+output.
+
+[1] https://lore.kernel.org/all/20210103142726.GC30643@xsang-OptiPlex-9020/
+
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20211008111626.151570317@infradead.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/oss/mixer_oss.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ scripts/leaking_addresses.pl | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/sound/core/oss/mixer_oss.c
-+++ b/sound/core/oss/mixer_oss.c
-@@ -328,7 +328,7 @@ static int snd_mixer_oss_set_volume(stru
- 	pslot->volume[1] = right;
- 	result = (left & 0xff) | ((right & 0xff) << 8);
-  unlock:
--	mutex_lock(&mixer->reg_mutex);
-+	mutex_unlock(&mixer->reg_mutex);
- 	return result;
- }
+diff --git a/scripts/leaking_addresses.pl b/scripts/leaking_addresses.pl
+index 6a897788f5a7e..6e4b0f7ae38cf 100755
+--- a/scripts/leaking_addresses.pl
++++ b/scripts/leaking_addresses.pl
+@@ -456,8 +456,9 @@ sub parse_file
  
+ 	open my $fh, "<", $file or return;
+ 	while ( <$fh> ) {
++		chomp;
+ 		if (may_leak_address($_)) {
+-			print $file . ': ' . $_;
++			printf("$file: $_\n");
+ 		}
+ 	}
+ 	close $fh;
+-- 
+2.33.0
+
 
 
