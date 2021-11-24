@@ -2,179 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AFCF45C891
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:23:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78AF245C85E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:15:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234954AbhKXP0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 10:26:19 -0500
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:35546 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbhKXP0S (ORCPT
+        id S233009AbhKXPSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 10:18:43 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:57104 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230158AbhKXPSl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 10:26:18 -0500
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20211124152307euoutp01a03e4635e2e5c8cdc5d5a2a0ed11f766~6hMLmplxd3044230442euoutp01C
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 15:23:07 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20211124152307euoutp01a03e4635e2e5c8cdc5d5a2a0ed11f766~6hMLmplxd3044230442euoutp01C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1637767387;
-        bh=2ynWpYwQ987eCbBiqQjZnbNjOsKl3jbANWvNadswtGo=;
-        h=Date:Subject:To:From:In-Reply-To:References:From;
-        b=mr1SAdAyR3hxxSQForY4AqlvBxnf95I0q13xeUQdkZeMF1OKENLnO35eTXE7uVnZ0
-         X2YWM47XOzyG3k5pK1O1voHDOfRcsYYazmPxHSJhyT7nC91xn/dGyKXFVWoKjUO2oY
-         d7xYnxL/IpDirKQpYMUZyTvaioH7okd9e/jknF9M=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20211124152306eucas1p180a26aa8b63b897fd27a63c67fc424ee~6hMLRUAdp3072530725eucas1p16;
-        Wed, 24 Nov 2021 15:23:06 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 4A.E7.10260.AD85E916; Wed, 24
-        Nov 2021 15:23:06 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20211124152306eucas1p115447d63dd410079cbbfd303d7ef1229~6hMKmi_8Z0295502955eucas1p1V;
-        Wed, 24 Nov 2021 15:23:06 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20211124152306eusmtrp2d4f19c5a1f3e99eec24f8a26c8eb1b3d~6hMKl4HPR0066700667eusmtrp2S;
-        Wed, 24 Nov 2021 15:23:06 +0000 (GMT)
-X-AuditID: cbfec7f5-bf3ff70000002814-11-619e58dab2b0
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 60.8E.09404.9D85E916; Wed, 24
-        Nov 2021 15:23:05 +0000 (GMT)
-Received: from [106.210.134.141] (unknown [106.210.134.141]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20211124152305eusmtip13a24ac24911721fb1fa37ff7f694a2ff~6hMKHIqUB3211932119eusmtip1a;
-        Wed, 24 Nov 2021 15:23:05 +0000 (GMT)
-Message-ID: <b378e3ab-3d1f-7509-b218-71377ef012b3@samsung.com>
-Date:   Wed, 24 Nov 2021 16:23:05 +0100
+        Wed, 24 Nov 2021 10:18:41 -0500
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AO8rHXf003816;
+        Wed, 24 Nov 2021 10:14:58 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3chj9csr87-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Nov 2021 10:14:58 -0500
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 1AOFEvV9004733
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 24 Nov 2021 10:14:57 -0500
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Wed, 24 Nov 2021 10:14:56 -0500
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Wed, 24 Nov 2021 10:14:56 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.858.5 via Frontend Transport;
+ Wed, 24 Nov 2021 10:14:56 -0500
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 1AOFEqcE000856;
+        Wed, 24 Nov 2021 10:14:53 -0500
+From:   <alexandru.tachici@analog.com>
+To:     <o.rempel@pengutronix.de>
+CC:     <alexandru.tachici@analog.com>, <andrew@lunn.ch>,
+        <davem@davemloft.net>, <devicetree@vger.kernel.org>,
+        <hkallweit1@gmail.com>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux@armlinux.org.uk>,
+        <netdev@vger.kernel.org>
+Subject: Re: [PATCH v3 3/8] net: phy: Add BaseT1 auto-negotiation registers
+Date:   Wed, 24 Nov 2021 17:24:53 +0200
+Message-ID: <20211124152453.21123-1-alexandru.tachici@analog.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211012071438.GB938@pengutronix.de>
+References: <20211012071438.GB938@pengutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0)
-        Gecko/20100101 Thunderbird/91.3.2
-Subject: Re: [PATCH] MAINTAINERS: Update email of Andrzej Hajda
-Content-Language: en-US
-To:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        =?UTF-8?Q?=c5=81ukasz_Stelmach?= <l.stelmach@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-In-Reply-To: <20211018211353.586986-1-andrzej.hajda@intel.com>
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprMKsWRmVeSWpSXmKPExsWy7djPc7q3IuYlGkzs1ra4v/gzi8WVr+/Z
-        LG4eWsFocXnXHDaLng1bWS3WHrnL7sDmsXjPSyaP+93HmTz6tqxi9Pi8SS6AJYrLJiU1J7Ms
-        tUjfLoErY91274IvYhUr/6xhbmDcI9zFyMEhIWAiMWseTxcjF4eQwApGid3rprNBOF8YJb6d
-        3s4C4XxmlPjaeJW1i5ETrONr60pWiMRyRoktK85AtXxklJh/tYsFpIpXwE7iwYH57CA2i4Cq
-        xPY3n5gh4oISJ2c+AasRFUiSmHBiNxPIHcIC9hL9n21BwswC4hK3nsxnApkpIvCVUWJl73yw
-        ejYBQ4neo32MIDYn0PwX03vZIRrkJZq3zmYGaZAQOMIh8esnxGIJAReJC88fMELYwhKvjm+B
-        istI/N8JsUFCoJlRomf3bXYIZwKjxP3jC6A6rCXunPvFBnIes4CmxPpd+hBhR4m/y6awQUKP
-        T+LGW0GII/gkJm2bzgwR5pXoaBOCqFaR+L1qOhOELSXR/eQ/C4TtITH71HrmCYyKs5CCZRaS
-        /2cheW0Wwg0LGFlWMYqnlhbnpqcWG+ellusVJ+YWl+al6yXn525iBKab0/+Of93BuOLVR71D
-        jEwcjIcYJTiYlUR4ry2ZnSjEm5JYWZValB9fVJqTWnyIUZqDRUmcV+RPQ6KQQHpiSWp2ampB
-        ahFMlomDU6qBqehd8NH7e5uNv0YKvj+7vba2fcaVoMW8Qmnm3CssGTkS765+/vAEW7tKrc2+
-        ezNrPExP3ZqrtmfdauOElnPuCxZULn92lfvWRfeze89eOR3qp6rtPjX+k833c7nBO2f15ZjK
-        iST5ePcrCt1NX7TIPCzOp4+V6ccalycvr0k0TDv/oO5lqvKKw7/OaxuuixY+qLP+SrrAbMci
-        rbjZxy2jG8OOlpuI58/mWfFv2sKWJb9ObVZhr1j3/136sSNWnv33lTxeGp+JSv2a+3xOS21F
-        rTWfUMmkaTIC1c6Bk0/3B4Xd0l077aV9ezXro1s7j13TN0r+slpWhyP48ykLu54DDgEXo75k
-        flvM3D1ThGWPkxJLcUaioRZzUXEiAMGt7yymAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprOIsWRmVeSWpSXmKPExsVy+t/xu7o3I+YlGmydbWVxf/FnFosrX9+z
-        Wdw8tILR4vKuOWwWPRu2slqsPXKX3YHNY/Gel0we97uPM3n0bVnF6PF5k1wAS5SeTVF+aUmq
-        QkZ+cYmtUrShhZGeoaWFnpGJpZ6hsXmslZGpkr6dTUpqTmZZapG+XYJexrrt3gVfxCpW/lnD
-        3MC4R7iLkZNDQsBE4mvrStYuRi4OIYGljBLLP29n62LkAEpIScxvUYKoEZb4c62LDaLmPaPE
-        1ulnWEESvAJ2Eg8OzGcHsVkEVCW2v/nEDBEXlDg58wkLiC0qkCTx9EAn2ExhAXuJ/s+2IGFm
-        AXGJW0/mM4HMFBH4ziix8NN/JogFExkl3uxsYgSpYhMwlOg92gdmcwItezG9lx1kELOAusT6
-        eUIQg+QlmrfOZp7AKDgLyepZSHbMQuiYhaRjASPLKkaR1NLi3PTcYiO94sTc4tK8dL3k/NxN
-        jMAY2nbs55YdjCtffdQ7xMjEwXiIUYKDWUmE99qS2YlCvCmJlVWpRfnxRaU5qcWHGE2B3p/I
-        LCWanA+M4rySeEMzA1NDEzNLA1NLM2MlcV7Pgo5EIYH0xJLU7NTUgtQimD4mDk6pBqaWUyaR
-        pff39TfLv5vPuldFZaZot9rN5nvhUjMmx7GvTDEPmJE1t+GpVIGoC4+M1K7/64y2ux0W2V0w
-        g/3MGdMfTPxHOBmveU2zutYWecjFz3f2vbRrBT5Lp1w+K5V3XWNy+f2+vUv7eHlPR2nwb4jP
-        9lv3cl3Ng4Disw3zDZgc15tnzWC3l1god0e2NMVp5td7u9Z3f3Y3Cv80Q2/z/aNhfLGq8s8P
-        fHl3+mBBZYuCw0M/4QKeng2dnDteitduZvuvkvSId9fxuuT6QuMJf97O41DcbX3MUSuES0/q
-        ocV6nZkhjRb8ghu/VSYUKbrdfqe55cXq0+Vvs5rKjn5157qUvyjr6ANGe22NjcJWvkosxRmJ
-        hlrMRcWJAOTfYh4qAwAA
-X-CMS-MailID: 20211124152306eucas1p115447d63dd410079cbbfd303d7ef1229
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20211018211442eucas1p1e5f7eb08c6b76c76dcfad2c2efc1da4e
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20211018211442eucas1p1e5f7eb08c6b76c76dcfad2c2efc1da4e
-References: <CGME20211018211442eucas1p1e5f7eb08c6b76c76dcfad2c2efc1da4e@eucas1p1.samsung.com>
-        <20211018211353.586986-1-andrzej.hajda@intel.com>
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: F7nQfJ2zPz8HfNaeNym8A094BGhRZ1mf
+X-Proofpoint-GUID: F7nQfJ2zPz8HfNaeNym8A094BGhRZ1mf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-24_04,2021-11-24_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
+ spamscore=0 priorityscore=1501 bulkscore=0 lowpriorityscore=0 phishscore=0
+ mlxlogscore=276 adultscore=0 mlxscore=0 impostorscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111240085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.10.2021 23:13, Andrzej Hajda wrote:
-> Beside updating email, the patch updates maintainers
-> of Samsung drivers.
-> 
-> Signed-off-by: Andrzej Hajda <andrzej.hajda@intel.com>
-> ---
->  .mailmap    |  1 +
->  MAINTAINERS | 13 ++++++++-----
->  2 files changed, 9 insertions(+), 5 deletions(-)
-> 
-> diff --git a/.mailmap b/.mailmap
-> index 4f6e37da60589..4283a86f70d26 100644
-> --- a/.mailmap
-> +++ b/.mailmap
-> @@ -40,6 +40,7 @@ Andrew Vasquez <andrew.vasquez@qlogic.com>
->  Andrey Konovalov <andreyknvl@gmail.com> <andreyknvl@google.com>
->  Andrey Ryabinin <ryabinin.a.a@gmail.com> <a.ryabinin@samsung.com>
->  Andrey Ryabinin <ryabinin.a.a@gmail.com> <aryabinin@virtuozzo.com>
-> +Andrzej Hajda <andrzej.hajda@intel.com> <a.hajda@samsung.com>
->  Andy Adamson <andros@citi.umich.edu>
->  Antoine Tenart <atenart@kernel.org> <antoine.tenart@bootlin.com>
->  Antoine Tenart <atenart@kernel.org> <antoine.tenart@free-electrons.com>
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 54cd05d3aab65..e3fadb4ebced3 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2546,7 +2546,7 @@ N:	s3c64xx
->  N:	s5pv210
->  
->  ARM/SAMSUNG S5P SERIES 2D GRAPHICS ACCELERATION (G2D) SUPPORT
-> -M:	Andrzej Hajda <a.hajda@samsung.com>
-> +M:	Łukasz Stelmach <l.stelmach@samsung.com>
->  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  L:	linux-media@vger.kernel.org
->  S:	Maintained
-> @@ -2570,7 +2570,8 @@ S:	Maintained
->  F:	drivers/media/platform/s5p-jpeg/
->  
->  ARM/SAMSUNG S5P SERIES Multi Format Codec (MFC) SUPPORT
-> -M:	Andrzej Hajda <a.hajda@samsung.com>
-> +M:	Marek Szyprowski <m.szyprowski@samsung.com>
-> +M:	Andrzej Hajda <andrzej.hajda@intel.com>
->  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  L:	linux-media@vger.kernel.org
->  S:	Maintained
-> @@ -6254,7 +6255,7 @@ F:	Documentation/devicetree/bindings/display/atmel/
->  F:	drivers/gpu/drm/atmel-hlcdc/
->  
->  DRM DRIVERS FOR BRIDGE CHIPS
-> -M:	Andrzej Hajda <a.hajda@samsung.com>
-> +M:	Andrzej Hajda <andrzej.hajda@intel.com>
->  M:	Neil Armstrong <narmstrong@baylibre.com>
->  M:	Robert Foss <robert.foss@linaro.org>
->  R:	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-> @@ -16748,13 +16749,15 @@ F:	Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml
->  F:	drivers/nfc/s3fwrn5
+> Hm.. MDIO_AN_T1_ADV_M_MST is T4 of Link codeword Base Page. The spec says:
+> "Transmitted Nonce Field (T[4:0]) is a 5-bit wide field whose lower 4
+> bits contains a random or pseudorandom number. A new value shall be
+> generated for each entry to the Ability Detect state"
+>
+> Should we actually do it?
 
->  SAMSUNG S5C73M3 CAMERA DRIVER
-> -M:	Andrzej Hajda <a.hajda@samsung.com>
-> +M:	Sylwester Nawrocki <s.nawrocki@samsung.com>
-> +M:	Andrzej Hajda <andrzej.hajda@intel.com>
->  L:	linux-media@vger.kernel.org
->  S:	Supported
->  F:	drivers/media/i2c/s5c73m3/*
->  SAMSUNG S5K5BAF CAMERA DRIVER
-> -M:	Andrzej Hajda <a.hajda@samsung.com>
-> +M:	Sylwester Nawrocki <s.nawrocki@samsung.com>
-> +M:	Andrzej Hajda <andrzej.hajda@intel.com>
->  L:	linux-media@vger.kernel.org
->  S:	Supported
->  F:	drivers/media/i2c/s5k5baf.c
+Managed to get some answears from the HW team:
 
-Acked-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Bits 7.515.3:0 correspond to the lower 4 bits of the Transmitted Nonce Field. We do not allow users to write these bits as they need to be controlled by the auto-negotiation (AN) sequencers in order to ensure that AN remains robust and reliable. However, the Transmitted Nonce value is readable via register 7.515. So we could call these bits out in the documentation and indicate that they are readonly.
+
+Bottom line is that the driver cannot and should not do anything with the lower 4 Transmitted Nonce bits. The PHY controls them.
+
+Also from 802.3 98.2.1.2.3 Transmitted Nonce Field:
+If the device has received a DME page with good CRC16 and the link partner has a Transmitted Nonce Field
+(T[4:0]) that matches the devices generated T[4:0], the device shall invert its T[0] bit and regenerate a new
+random value for T[3:1] and use that as its new T[4:0] value. Since the DME pages are exchanged in a halfduplex manner, it is possible to swap to a new T[4:0] value prior to transmitting the DME page. One device
+will always see a DME page with good CRC16 before the other device hence this swapping will guarantee
+that nonce_match will never be true.
+
+Seems that there must be hardware to deal with nonce collisions.
+
+Regards,
+Alexandru
