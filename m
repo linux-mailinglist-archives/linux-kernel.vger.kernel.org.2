@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09AF045C19F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:17:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A1D45C64F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:03:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346673AbhKXNUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:20:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35226 "EHLO mail.kernel.org"
+        id S1351790AbhKXOGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:06:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344482AbhKXNRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:17:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF8ED61AD2;
-        Wed, 24 Nov 2021 12:44:53 +0000 (UTC)
+        id S1353754AbhKXOCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:02:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02C5361A7B;
+        Wed, 24 Nov 2021 13:10:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757894;
-        bh=Pr1QA4m7BfgSC4xLBsZg+Lzl88qRi32rFeaykM3CsiQ=;
+        s=korg; t=1637759408;
+        bh=mIc9zoBwSAu9YM8iq3vde0cJhMvZvFexR1p/8EjIv8s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cmG5Sd7jSOps0CVcz7arf+e+tu0NgG7G/wuQ/Afwn7Rgqa7UWMUmesaNav32Ug9OX
-         v2zbymj0EFcoK99HlLXxuXkz0wjoPbRkFQKCUU4s6bDu4Jn+fjdDvvpHdAnK77L1hk
-         GCs9erJbuUhV8vqUPPf+imeJdLcCgX1thV6vLBJM=
+        b=ZjNB2hHqGqxYoiUOQYm++JiHsyhBE2fbKL9iMsVPVasWN7+3O1Z3eq2e2jxpLZMU8
+         rk9QB9UPAmKJYlbDNyCglnf9g666WBa3/ztVqc9+AIqxWKs1aMFpThyUmRhNY4X6ES
+         3dtBLTYRwY+QJ9kqhiDKcXPbvGU258+dnYpLWhKc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jonathan Davies <jonathan.davies@nutanix.com>,
-        Willem de Bruijn <willemb@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 294/323] net: virtio_net_hdr_to_skb: count transport header in UFO
-Date:   Wed, 24 Nov 2021 12:58:04 +0100
-Message-Id: <20211124115728.833416243@linuxfoundation.org>
+        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Quanyang Wang <quanyang.wang@windriver.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.15 198/279] kmap_local: dont assume kmap PTEs are linear arrays in memory
+Date:   Wed, 24 Nov 2021 12:58:05 +0100
+Message-Id: <20211124115725.572318724@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,75 +44,167 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Davies <jonathan.davies@nutanix.com>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-[ Upstream commit cf9acc90c80ecbee00334aa85d92f4e74014bcff ]
+commit 825c43f50e3aa811a291ffcb40e02fbf6d91ba86 upstream.
 
-virtio_net_hdr_to_skb does not set the skb's gso_size and gso_type
-correctly for UFO packets received via virtio-net that are a little over
-the GSO size. This can lead to problems elsewhere in the networking
-stack, e.g. ovs_vport_send dropping over-sized packets if gso_size is
-not set.
+The kmap_local conversion broke the ARM architecture, because the new
+code assumes that all PTEs used for creating kmaps form a linear array
+in memory, and uses array indexing to look up the kmap PTE belonging to
+a certain kmap index.
 
-This is due to the comparison
+On ARM, this cannot work, not only because the PTE pages may be
+non-adjacent in memory, but also because ARM/!LPAE interleaves hardware
+entries and extended entries (carrying software-only bits) in a way that
+is not compatible with array indexing.
 
-  if (skb->len - p_off > gso_size)
+Fortunately, this only seems to affect configurations with more than 8
+CPUs, due to the way the per-CPU kmap slots are organized in memory.
 
-not properly accounting for the transport layer header.
+Work around this by permitting an architecture to set a Kconfig symbol
+that signifies that the kmap PTEs do not form a lineary array in memory,
+and so the only way to locate the appropriate one is to walk the page
+tables.
 
-p_off includes the size of the transport layer header (thlen), so
-skb->len - p_off is the size of the TCP/UDP payload.
-
-gso_size is read from the virtio-net header. For UFO, fragmentation
-happens at the IP level so does not need to include the UDP header.
-
-Hence the calculation could be comparing a TCP/UDP payload length with
-an IP payload length, causing legitimate virtio-net packets to have
-lack gso_type/gso_size information.
-
-Example: a UDP packet with payload size 1473 has IP payload size 1481.
-If the guest used UFO, it is not fragmented and the virtio-net header's
-flags indicate that it is a GSO frame (VIRTIO_NET_HDR_GSO_UDP), with
-gso_size = 1480 for an MTU of 1500.  skb->len will be 1515 and p_off
-will be 42, so skb->len - p_off = 1473.  Hence the comparison fails, and
-shinfo->gso_size and gso_type are not set as they should be.
-
-Instead, add the UDP header length before comparing to gso_size when
-using UFO. In this way, it is the size of the IP payload that is
-compared to gso_size.
-
-Fixes: 6dd912f82680 ("net: check untrusted gso_size at kernel entry")
-Signed-off-by: Jonathan Davies <jonathan.davies@nutanix.com>
-Reviewed-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lore.kernel.org/linux-arm-kernel/20211026131249.3731275-1-ardb@kernel.org/
+Link: https://lkml.kernel.org/r/20211116094737.7391-1-ardb@kernel.org
+Fixes: 2a15ba82fa6c ("ARM: highmem: Switch to generic kmap atomic")
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Reported-by: Quanyang Wang <quanyang.wang@windriver.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/virtio_net.h | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ arch/arm/Kconfig |    1 +
+ mm/Kconfig       |    3 +++
+ mm/highmem.c     |   32 +++++++++++++++++++++-----------
+ 3 files changed, 25 insertions(+), 11 deletions(-)
 
-diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
-index 8f48264f5dab3..e7330a9a7d7dc 100644
---- a/include/linux/virtio_net.h
-+++ b/include/linux/virtio_net.h
-@@ -120,10 +120,15 @@ retry:
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -1455,6 +1455,7 @@ config HIGHMEM
+ 	bool "High Memory Support"
+ 	depends on MMU
+ 	select KMAP_LOCAL
++	select KMAP_LOCAL_NON_LINEAR_PTE_ARRAY
+ 	help
+ 	  The address space of ARM processors is only 4 Gigabytes large
+ 	  and it has to accommodate user address space, kernel address
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -887,6 +887,9 @@ config MAPPING_DIRTY_HELPERS
+ config KMAP_LOCAL
+ 	bool
  
- 	if (hdr->gso_type != VIRTIO_NET_HDR_GSO_NONE) {
- 		u16 gso_size = __virtio16_to_cpu(little_endian, hdr->gso_size);
-+		unsigned int nh_off = p_off;
- 		struct skb_shared_info *shinfo = skb_shinfo(skb);
- 
-+		/* UFO may not include transport header in gso_size. */
-+		if (gso_type & SKB_GSO_UDP)
-+			nh_off -= thlen;
++config KMAP_LOCAL_NON_LINEAR_PTE_ARRAY
++	bool
 +
- 		/* Too small packets are not really GSO ones. */
--		if (skb->len - p_off > gso_size) {
-+		if (skb->len - nh_off > gso_size) {
- 			shinfo->gso_size = gso_size;
- 			shinfo->gso_type = gso_type;
+ # struct io_mapping based helper.  Selected by drivers that need them
+ config IO_MAPPING
+ 	bool
+--- a/mm/highmem.c
++++ b/mm/highmem.c
+@@ -504,16 +504,22 @@ static inline int kmap_local_calc_idx(in
  
--- 
-2.33.0
-
+ static pte_t *__kmap_pte;
+ 
+-static pte_t *kmap_get_pte(void)
++static pte_t *kmap_get_pte(unsigned long vaddr, int idx)
+ {
++	if (IS_ENABLED(CONFIG_KMAP_LOCAL_NON_LINEAR_PTE_ARRAY))
++		/*
++		 * Set by the arch if __kmap_pte[-idx] does not produce
++		 * the correct entry.
++		 */
++		return virt_to_kpte(vaddr);
+ 	if (!__kmap_pte)
+ 		__kmap_pte = virt_to_kpte(__fix_to_virt(FIX_KMAP_BEGIN));
+-	return __kmap_pte;
++	return &__kmap_pte[-idx];
+ }
+ 
+ void *__kmap_local_pfn_prot(unsigned long pfn, pgprot_t prot)
+ {
+-	pte_t pteval, *kmap_pte = kmap_get_pte();
++	pte_t pteval, *kmap_pte;
+ 	unsigned long vaddr;
+ 	int idx;
+ 
+@@ -525,9 +531,10 @@ void *__kmap_local_pfn_prot(unsigned lon
+ 	preempt_disable();
+ 	idx = arch_kmap_local_map_idx(kmap_local_idx_push(), pfn);
+ 	vaddr = __fix_to_virt(FIX_KMAP_BEGIN + idx);
+-	BUG_ON(!pte_none(*(kmap_pte - idx)));
++	kmap_pte = kmap_get_pte(vaddr, idx);
++	BUG_ON(!pte_none(*kmap_pte));
+ 	pteval = pfn_pte(pfn, prot);
+-	arch_kmap_local_set_pte(&init_mm, vaddr, kmap_pte - idx, pteval);
++	arch_kmap_local_set_pte(&init_mm, vaddr, kmap_pte, pteval);
+ 	arch_kmap_local_post_map(vaddr, pteval);
+ 	current->kmap_ctrl.pteval[kmap_local_idx()] = pteval;
+ 	preempt_enable();
+@@ -560,7 +567,7 @@ EXPORT_SYMBOL(__kmap_local_page_prot);
+ void kunmap_local_indexed(void *vaddr)
+ {
+ 	unsigned long addr = (unsigned long) vaddr & PAGE_MASK;
+-	pte_t *kmap_pte = kmap_get_pte();
++	pte_t *kmap_pte;
+ 	int idx;
+ 
+ 	if (addr < __fix_to_virt(FIX_KMAP_END) ||
+@@ -585,8 +592,9 @@ void kunmap_local_indexed(void *vaddr)
+ 	idx = arch_kmap_local_unmap_idx(kmap_local_idx(), addr);
+ 	WARN_ON_ONCE(addr != __fix_to_virt(FIX_KMAP_BEGIN + idx));
+ 
++	kmap_pte = kmap_get_pte(addr, idx);
+ 	arch_kmap_local_pre_unmap(addr);
+-	pte_clear(&init_mm, addr, kmap_pte - idx);
++	pte_clear(&init_mm, addr, kmap_pte);
+ 	arch_kmap_local_post_unmap(addr);
+ 	current->kmap_ctrl.pteval[kmap_local_idx()] = __pte(0);
+ 	kmap_local_idx_pop();
+@@ -608,7 +616,7 @@ EXPORT_SYMBOL(kunmap_local_indexed);
+ void __kmap_local_sched_out(void)
+ {
+ 	struct task_struct *tsk = current;
+-	pte_t *kmap_pte = kmap_get_pte();
++	pte_t *kmap_pte;
+ 	int i;
+ 
+ 	/* Clear kmaps */
+@@ -635,8 +643,9 @@ void __kmap_local_sched_out(void)
+ 		idx = arch_kmap_local_map_idx(i, pte_pfn(pteval));
+ 
+ 		addr = __fix_to_virt(FIX_KMAP_BEGIN + idx);
++		kmap_pte = kmap_get_pte(addr, idx);
+ 		arch_kmap_local_pre_unmap(addr);
+-		pte_clear(&init_mm, addr, kmap_pte - idx);
++		pte_clear(&init_mm, addr, kmap_pte);
+ 		arch_kmap_local_post_unmap(addr);
+ 	}
+ }
+@@ -644,7 +653,7 @@ void __kmap_local_sched_out(void)
+ void __kmap_local_sched_in(void)
+ {
+ 	struct task_struct *tsk = current;
+-	pte_t *kmap_pte = kmap_get_pte();
++	pte_t *kmap_pte;
+ 	int i;
+ 
+ 	/* Restore kmaps */
+@@ -664,7 +673,8 @@ void __kmap_local_sched_in(void)
+ 		/* See comment in __kmap_local_sched_out() */
+ 		idx = arch_kmap_local_map_idx(i, pte_pfn(pteval));
+ 		addr = __fix_to_virt(FIX_KMAP_BEGIN + idx);
+-		set_pte_at(&init_mm, addr, kmap_pte - idx, pteval);
++		kmap_pte = kmap_get_pte(addr, idx);
++		set_pte_at(&init_mm, addr, kmap_pte, pteval);
+ 		arch_kmap_local_post_map(addr, pteval);
+ 	}
+ }
 
 
