@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 787D645B9D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:02:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6254D45BD9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242158AbhKXMFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:05:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59882 "EHLO mail.kernel.org"
+        id S245611AbhKXMjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:39:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232378AbhKXMEh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:04:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FF99600EF;
-        Wed, 24 Nov 2021 12:01:26 +0000 (UTC)
+        id S1343907AbhKXMfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:35:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84C6C61078;
+        Wed, 24 Nov 2021 12:21:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755287;
-        bh=Zfl6Mzx7Wck22GmN37gVFkiXUWqLneZp62EFCFkZ8Jo=;
+        s=korg; t=1637756482;
+        bh=Zy38W5CTpAEf7I4j0dbwM7jDtaDo09QRwcXNRYFKqro=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mCR37pbxCwhfincD2pKrnPuUWBOGGs5KvK3hDVnuzbBdfUpEHe28Z1rvSuvZhpjaP
-         NH/rbmh+J6pvykTZ+hq/bGMdNgpsU9kRU+VVsfWzPEQ9RouCkDr2JmyL96/4ov4u5s
-         jwcNFIM0loCWAir1Ji6SSDOyZfW0QxrhcRHd4VhU=
+        b=ZSlToPkquqj4ZqDNDuogtb0DP+o1bZBjagppUn0uANR7YRiJRXeLHl+/qRcb4VWmR
+         12PP1aVcZXY9TM6ioX5sgwPOxipD8Mm1YmUIhW8kgqJue9IxcS0nWFLhU0/jhHqwKC
+         6xM85sRlX4a9vjYMnV38pr4Mqc2uADs2m2Ntbphw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pekka Korpinen <pekka.korpinen@iki.fi>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.4 039/162] iio: dac: ad5446: Fix ad5622_write() return value
-Date:   Wed, 24 Nov 2021 12:55:42 +0100
-Message-Id: <20211124115659.610545265@linuxfoundation.org>
+        stable@vger.kernel.org, Vladimir Murzin <vladimir.murzin@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 101/251] ARM: 9136/1: ARMv7-M uses BE-8, not BE-32
+Date:   Wed, 24 Nov 2021 12:55:43 +0100
+Message-Id: <20211124115713.758655697@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pekka Korpinen <pekka.korpinen@iki.fi>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 558df982d4ead9cac628153d0d7b60feae05ddc8 upstream.
+[ Upstream commit 345dac33f58894a56d17b92a41be10e16585ceff ]
 
-On success i2c_master_send() returns the number of bytes written. The
-call from iio_write_channel_info(), however, expects the return value to
-be zero on success.
+When configuring the kernel for big-endian, we set either BE-8 or BE-32
+based on the CPU architecture level. Until linux-4.4, we did not have
+any ARMv7-M platform allowing big-endian builds, but now i.MX/Vybrid
+is in that category, adn we get a build error because of this:
 
-This bug causes incorrect consumption of the sysfs buffer in
-iio_write_channel_info(). When writing more than two characters to
-out_voltage0_raw, the ad5446 write handler is called multiple times
-causing unexpected behavior.
+arch/arm/kernel/module-plts.c: In function 'get_module_plt':
+arch/arm/kernel/module-plts.c:60:46: error: implicit declaration of function '__opcode_to_mem_thumb32' [-Werror=implicit-function-declaration]
 
-Fixes: 3ec36a2cf0d5 ("iio:ad5446: Add support for I2C based DACs")
-Signed-off-by: Pekka Korpinen <pekka.korpinen@iki.fi>
-Link: https://lore.kernel.org/r/20210929185755.2384-1-pekka.korpinen@iki.fi
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This comes down to picking the wrong default, ARMv7-M uses BE8
+like ARMv7-A does. Changing the default gets the kernel to compile
+and presumably works.
+
+https://lore.kernel.org/all/1455804123-2526139-2-git-send-email-arnd@arndb.de/
+
+Tested-by: Vladimir Murzin <vladimir.murzin@arm.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/dac/ad5446.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ arch/arm/mm/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iio/dac/ad5446.c
-+++ b/drivers/iio/dac/ad5446.c
-@@ -510,8 +510,15 @@ static int ad5622_write(struct ad5446_st
- {
- 	struct i2c_client *client = to_i2c_client(st->dev);
- 	__be16 data = cpu_to_be16(val);
-+	int ret;
+diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
+index 50e0b45a22dba..77fd4446b5fc8 100644
+--- a/arch/arm/mm/Kconfig
++++ b/arch/arm/mm/Kconfig
+@@ -757,7 +757,7 @@ config CPU_BIG_ENDIAN
+ config CPU_ENDIAN_BE8
+ 	bool
+ 	depends on CPU_BIG_ENDIAN
+-	default CPU_V6 || CPU_V6K || CPU_V7
++	default CPU_V6 || CPU_V6K || CPU_V7 || CPU_V7M
+ 	help
+ 	  Support for the BE-8 (big-endian) mode on ARMv6 and ARMv7 processors.
  
--	return i2c_master_send(client, (char *)&data, sizeof(data));
-+	ret = i2c_master_send(client, (char *)&data, sizeof(data));
-+	if (ret < 0)
-+		return ret;
-+	if (ret != sizeof(data))
-+		return -EIO;
-+
-+	return 0;
- }
- 
- /**
+-- 
+2.33.0
+
 
 
