@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C63C45C01B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:02:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0694F45C4C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:48:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346142AbhKXNE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:04:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40406 "EHLO mail.kernel.org"
+        id S1350100AbhKXNvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:51:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347843AbhKXNDY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:03:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1806761A08;
-        Wed, 24 Nov 2021 12:36:15 +0000 (UTC)
+        id S1351159AbhKXNq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:46:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7FAB63340;
+        Wed, 24 Nov 2021 13:01:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757376;
-        bh=UjEE8beu4uc3kygDBhs57AH5Cg+mxiuDTfjKyz0M0VY=;
+        s=korg; t=1637758872;
+        bh=dAm2WsqLF/8f/Uzm4+iGVYDQKbj5fpo0cPcL1hzI9xU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b1g3r7LxG3Qcaz3PN8lXrP6P923dGqmgRV4c3XK+0KMkDLR27BZ+wQsUXyN7LK5L6
-         ECrDrqjuwNH7mEk7dlGv3QYo6Q3kHJXkVQZSMf9OXX/X5BaYBw7A3DOSgWKCij0cCl
-         XO+EIfKMw7lj3tea//5hj+aAFfH7Dj07CrxmJT1o=
+        b=fXK4XITdccfo6KsOGlkv6W47xqlz8aPgfhRqEj8iwWu3vcG6hJPATvTr8zzjgZn2i
+         Uty6hAPhBcPzxNQUIMeaugCEFEM1m27yqFNL/7/6om++EDiKMLIBwLZBaibQnb4fvz
+         5vgFAsd8eILbrKOxgr2WO9BDbJVIiEDWK0DFBtk8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 146/323] memstick: avoid out-of-range warning
-Date:   Wed, 24 Nov 2021 12:55:36 +0100
-Message-Id: <20211124115723.856771791@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 050/279] HID: multitouch: disable sticky fingers for UPERFECT Y
+Date:   Wed, 24 Nov 2021 12:55:37 +0100
+Message-Id: <20211124115720.458118368@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +41,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: José Expósito <jose.exposito89@gmail.com>
 
-[ Upstream commit 4853396f03c3019eccf5cd113e464231e9ddf0b3 ]
+[ Upstream commit 08b9a61a87bc339a73c584d8924c86ab36d204a7 ]
 
-clang-14 complains about a sanity check that always passes when the
-page size is 64KB or larger:
+When a finger is on the screen, the UPERFECT Y portable touchscreen
+monitor reports a contact in the first place. However, after this
+initial report, contacts are not reported at the refresh rate of the
+screen as required by the Windows 8 specs.
 
-drivers/memstick/core/ms_block.c:1739:21: error: result of comparison of constant 65536 with expression of type 'unsigned short' is always false [-Werror,-Wtautological-constant-out-of-range-compare]
-        if (msb->page_size > PAGE_SIZE) {
-            ~~~~~~~~~~~~~~ ^ ~~~~~~~~~
+This behaviour triggers the release_timer, removing the fingers even
+though they are still present.
 
-This is fine, it will still work on all architectures, so just shut
-up that warning with a cast.
+To avoid it, add a new class, similar to MT_CLS_WIN_8 but without the
+MT_QUIRK_STICKY_FINGERS quirk for this device.
 
-Fixes: 0ab30494bc4f ("memstick: add support for legacy memorysticks")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20210927094520.696665-1-arnd@kernel.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Suggested-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Signed-off-by: José Expósito <jose.exposito89@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/memstick/core/ms_block.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hid/hid-ids.h        |  3 +++
+ drivers/hid/hid-multitouch.c | 13 +++++++++++++
+ 2 files changed, 16 insertions(+)
 
-diff --git a/drivers/memstick/core/ms_block.c b/drivers/memstick/core/ms_block.c
-index 8a02f11076f9a..7aab26128f6d9 100644
---- a/drivers/memstick/core/ms_block.c
-+++ b/drivers/memstick/core/ms_block.c
-@@ -1731,7 +1731,7 @@ static int msb_init_card(struct memstick_dev *card)
- 	msb->pages_in_block = boot_block->attr.block_size * 2;
- 	msb->block_size = msb->page_size * msb->pages_in_block;
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 29564b370341e..3706c635b12ee 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -1276,6 +1276,9 @@
+ #define	USB_DEVICE_ID_WEIDA_8752	0xC300
+ #define	USB_DEVICE_ID_WEIDA_8755	0xC301
  
--	if (msb->page_size > PAGE_SIZE) {
-+	if ((size_t)msb->page_size > PAGE_SIZE) {
- 		/* this isn't supported by linux at all, anyway*/
- 		dbg("device page %d size isn't supported", msb->page_size);
- 		return -EINVAL;
++#define USB_VENDOR_ID_WINBOND		0x0416
++#define USB_DEVICE_ID_TSTP_MTOUCH	0xc168
++
+ #define USB_VENDOR_ID_WISEGROUP		0x0925
+ #define USB_DEVICE_ID_SMARTJOY_PLUS	0x0005
+ #define USB_DEVICE_ID_SUPER_JOY_BOX_3	0x8888
+diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
+index 3ea7cb1cda84c..e1afddb7b33d8 100644
+--- a/drivers/hid/hid-multitouch.c
++++ b/drivers/hid/hid-multitouch.c
+@@ -193,6 +193,7 @@ static void mt_post_parse(struct mt_device *td, struct mt_application *app);
+ /* reserved					0x0014 */
+ #define MT_CLS_WIN_8_FORCE_MULTI_INPUT		0x0015
+ #define MT_CLS_WIN_8_DISABLE_WAKEUP		0x0016
++#define MT_CLS_WIN_8_NO_STICKY_FINGERS		0x0017
+ 
+ /* vendor specific classes */
+ #define MT_CLS_3M				0x0101
+@@ -294,6 +295,13 @@ static const struct mt_class mt_classes[] = {
+ 			MT_QUIRK_WIN8_PTP_BUTTONS |
+ 			MT_QUIRK_DISABLE_WAKEUP,
+ 		.export_all_inputs = true },
++	{ .name = MT_CLS_WIN_8_NO_STICKY_FINGERS,
++		.quirks = MT_QUIRK_ALWAYS_VALID |
++			MT_QUIRK_IGNORE_DUPLICATES |
++			MT_QUIRK_HOVERING |
++			MT_QUIRK_CONTACT_CNT_ACCURATE |
++			MT_QUIRK_WIN8_PTP_BUTTONS,
++		.export_all_inputs = true },
+ 
+ 	/*
+ 	 * vendor specific classes
+@@ -2120,6 +2128,11 @@ static const struct hid_device_id mt_devices[] = {
+ 		MT_USB_DEVICE(USB_VENDOR_ID_VTL,
+ 			USB_DEVICE_ID_VTL_MULTITOUCH_FF3F) },
+ 
++	/* Winbond Electronics Corp. */
++	{ .driver_data = MT_CLS_WIN_8_NO_STICKY_FINGERS,
++		HID_DEVICE(HID_BUS_ANY, HID_GROUP_MULTITOUCH_WIN_8,
++			   USB_VENDOR_ID_WINBOND, USB_DEVICE_ID_TSTP_MTOUCH) },
++
+ 	/* Wistron panels */
+ 	{ .driver_data = MT_CLS_NSMU,
+ 		MT_USB_DEVICE(USB_VENDOR_ID_WISTRON,
 -- 
 2.33.0
 
