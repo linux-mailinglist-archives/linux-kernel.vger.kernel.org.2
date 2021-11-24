@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B4145C546
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:53:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D76C45C0D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:08:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348980AbhKXNz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:55:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42970 "EHLO mail.kernel.org"
+        id S245157AbhKXNLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:11:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354651AbhKXNwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:52:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 367FE61A6F;
-        Wed, 24 Nov 2021 13:04:37 +0000 (UTC)
+        id S1348374AbhKXNJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:09:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED134613A6;
+        Wed, 24 Nov 2021 12:40:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759078;
-        bh=eKXlbd2Id4vgxya1/9v96wWMA8DhmUWWQS4UlHwGZ/4=;
+        s=korg; t=1637757625;
+        bh=uTUEgtGmdnuDM44r+Dbj6sUNCh0HtYOfDpYvHUjqdho=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MIUs3qWbCIGdfTmQJZHJe03mODfVlldetuKnlcbcXJpm0M5sSrLdHz5s5pjEYgmx+
-         bTpTB33PGwf12VB/PJLFtJpuSMgGvTCghQFRws+ubmHBozkMEIpcixu9VusFZ79V/N
-         Yeer41lJsHsuiHS9SnQ5flLGc9simT81eZu88S/0=
+        b=E4hxYZE+VXe06IR7d85nlApxcdsRufFQD88fxvdK53chWNhzBJV5lwHTU1go7+xm9
+         dNcnG1qlEHBmZlBIyEYssocHC8tDYFVeg85E0TSVxFpVDN2WsFyKwZdSHXdRZgs+Dd
+         oqE1Eay4huJmSm5O2wUIZc8Hi9+2RWMzCru81bos=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Quentin Perret <qperret@google.com>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 093/279] KVM: arm64: Fix host stage-2 finalization
-Date:   Wed, 24 Nov 2021 12:56:20 +0100
-Message-Id: <20211124115721.999821795@linuxfoundation.org>
+        stable@vger.kernel.org, Beomho Seo <beomho.seo@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Jakob Hauser <jahau@rocketmail.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: =?UTF-8?q?=5BPATCH=204=2E19=20191/323=5D=20=3D=3FUTF-8=3Fq=3Fpower=3A=3D20supply=3A=3D20rt5033=3D5Fbattery=3A=3D20Change=3D20voltage=3F=3D=20=3D=3FUTF-8=3Fq=3F=3D20values=3D20to=3D20=3DC2=3DB5V=3F=3D?=
+Date:   Wed, 24 Nov 2021 12:56:21 +0100
+Message-Id: <20211124115725.391756768@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,77 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quentin Perret <qperret@google.com>
+From: Jakob Hauser <jahau@rocketmail.com>
 
-[ Upstream commit 50a8d3315960c74095c59e204db44abd937d4b5d ]
+[ Upstream commit bf895295e9a73411889816f1a0c1f4f1a2d9c678 ]
 
-We currently walk the hypervisor stage-1 page-table towards the end of
-hyp init in nVHE protected mode and adjust the host page ownership
-attributes in its stage-2 in order to get a consistent state from both
-point of views. The walk is done on the entire hyp VA space, and expects
-to only ever find page-level mappings. While this expectation is
-reasonable in the half of hyp VA space that maps memory with a fixed
-offset (see the loop in pkvm_create_mappings_locked()), it can be
-incorrect in the other half where nothing prevents the usage of block
-mappings. For instance, on systems where memory is physically aligned at
-an address that happens to maps to a PMD aligned VA in the hyp_vmemmap,
-kvm_pgtable_hyp_map() will install block mappings when backing the
-hyp_vmemmap, which will later cause finalize_host_mappings() to fail.
-Furthermore, it should be noted that all pages backing the hyp_vmemmap
-are also mapped in the 'fixed offset range' of the hypervisor, which
-implies that finalize_host_mappings() will walk both aliases and update
-the host stage-2 attributes twice. The order in which this happens is
-unpredictable, though, since the hyp VA layout is highly dependent on
-the position of the idmap page, hence resulting in a fragile mess at
-best.
+Currently the rt5033_battery driver provides voltage values in mV. It
+should be µV as stated in Documentation/power/power_supply_class.rst.
 
-In order to fix all of this, let's restrict the finalization walk to
-only cover memory regions in the 'fixed-offset range' of the hyp VA
-space and nothing else. This not only fixes a correctness issue, but
-will also result in a slighlty faster hyp initialization overall.
-
-Fixes: 2c50166c62ba ("KVM: arm64: Mark host bss and rodata section as shared")
-Signed-off-by: Quentin Perret <qperret@google.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20211108154636.393384-1-qperret@google.com
+Fixes: b847dd96e659 ("power: rt5033_battery: Add RT5033 Fuel gauge device driver")
+Cc: Beomho Seo <beomho.seo@samsung.com>
+Cc: Chanwoo Choi <cw00.choi@samsung.com>
+Signed-off-by: Jakob Hauser <jahau@rocketmail.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kvm/hyp/nvhe/setup.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ drivers/power/supply/rt5033_battery.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kvm/hyp/nvhe/setup.c b/arch/arm64/kvm/hyp/nvhe/setup.c
-index 57c27846320f4..58ad9c5ba3112 100644
---- a/arch/arm64/kvm/hyp/nvhe/setup.c
-+++ b/arch/arm64/kvm/hyp/nvhe/setup.c
-@@ -177,7 +177,7 @@ static int finalize_host_mappings_walker(u64 addr, u64 end, u32 level,
+diff --git a/drivers/power/supply/rt5033_battery.c b/drivers/power/supply/rt5033_battery.c
+index 9310b85f3405e..7eec7014086d8 100644
+--- a/drivers/power/supply/rt5033_battery.c
++++ b/drivers/power/supply/rt5033_battery.c
+@@ -63,7 +63,7 @@ static int rt5033_battery_get_watt_prop(struct i2c_client *client,
+ 	regmap_read(battery->regmap, regh, &msb);
+ 	regmap_read(battery->regmap, regl, &lsb);
  
- 	phys = kvm_pte_to_phys(pte);
- 	if (!addr_is_memory(phys))
--		return 0;
-+		return -EINVAL;
+-	ret = ((msb << 4) + (lsb >> 4)) * 1250 / 1000;
++	ret = ((msb << 4) + (lsb >> 4)) * 1250;
  
- 	/*
- 	 * Adjust the host stage-2 mappings to match the ownership attributes
-@@ -206,8 +206,18 @@ static int finalize_host_mappings(void)
- 		.cb	= finalize_host_mappings_walker,
- 		.flags	= KVM_PGTABLE_WALK_LEAF,
- 	};
-+	int i, ret;
-+
-+	for (i = 0; i < hyp_memblock_nr; i++) {
-+		struct memblock_region *reg = &hyp_memory[i];
-+		u64 start = (u64)hyp_phys_to_virt(reg->base);
-+
-+		ret = kvm_pgtable_walk(&pkvm_pgtable, start, reg->size, &walker);
-+		if (ret)
-+			return ret;
-+	}
- 
--	return kvm_pgtable_walk(&pkvm_pgtable, 0, BIT(pkvm_pgtable.ia_bits), &walker);
-+	return 0;
+ 	return ret;
  }
- 
- void __noreturn __pkvm_init_finalise(void)
 -- 
 2.33.0
 
