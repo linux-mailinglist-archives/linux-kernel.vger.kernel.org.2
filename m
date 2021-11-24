@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF1E45BAF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:12:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 964BE45BFC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:58:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242703AbhKXMP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:15:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48678 "EHLO mail.kernel.org"
+        id S1345612AbhKXNBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:01:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243052AbhKXMNV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:13:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD9BC6112E;
-        Wed, 24 Nov 2021 12:07:37 +0000 (UTC)
+        id S1347176AbhKXM6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:58:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C8B5661872;
+        Wed, 24 Nov 2021 12:33:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755658;
-        bh=eMdFGeA6beNnLhX4dWjIaybXEdJWId6+fXHCILQan14=;
+        s=korg; t=1637757210;
+        bh=svtFdkae/ZD9yRAAJPa+Y8uFXyDBZcu1Qh/8cbt7Wvk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hHtiiQkUWBmfLhgGqfJLczj8xW3aNyHmC+meeOzNYfXd+pCqIUvdMahZFIdJUbLDv
-         kto/huaycplfuLu0Pik3NRODY+/8voyVfvGAdVccWGZcPBX6aWSHPHNr3n6H1ZdIyX
-         CTiDUD3J7crgp/gIa65uyTTMpcqa1svjDdMUDEZg=
+        b=HcuidLPvehsPlxnmEFoE/4Bh/35vygY6QjX7zUD602+cLPoa0qCLOkXigOtTSuy94
+         OLDp/0ukTF3BPVbb5WOG/bdoB7aXjqDJt2A/tH0T3GNBM472ZuuOmsFHhsSMycV5nZ
+         Q3+a1CdtCPiHOTRarrhQzrTfa7d9QWGxpTW5FXYk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.9 012/207] ALSA: 6fire: fix control and bulk message timeouts
-Date:   Wed, 24 Nov 2021 12:54:43 +0100
-Message-Id: <20211124115704.350114324@linuxfoundation.org>
+        stable@vger.kernel.org, Dirk Bender <d.bender@phytec.de>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 094/323] media: mt9p031: Fix corrupted frame after restarting stream
+Date:   Wed, 24 Nov 2021 12:54:44 +0100
+Message-Id: <20211124115722.128601837@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,63 +42,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Dirk Bender <d.bender@phytec.de>
 
-commit 9b371c6cc37f954360989eec41c2ddc5a6b83917 upstream.
+[ Upstream commit 0961ba6dd211a4a52d1dd4c2d59be60ac2dc08c7 ]
 
-USB control and bulk message timeouts are specified in milliseconds and
-should specifically not vary with CONFIG_HZ.
+To prevent corrupted frames after starting and stopping the sensor its
+datasheet specifies a specific pause sequence to follow:
 
-Fixes: c6d43ba816d1 ("ALSA: usb/6fire - Driver for TerraTec DMX 6Fire USB")
-Cc: stable@vger.kernel.org      # 2.6.39
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20211025121142.6531-2-johan@kernel.org
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Stopping:
+	Set Pause_Restart Bit -> Set Restart Bit -> Set Chip_Enable Off
+
+Restarting:
+	Set Chip_Enable On -> Clear Pause_Restart Bit
+
+The Restart Bit is cleared automatically and must not be cleared
+manually as this would cause undefined behavior.
+
+Signed-off-by: Dirk Bender <d.bender@phytec.de>
+Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/6fire/comm.c     |    2 +-
- sound/usb/6fire/firmware.c |    6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/media/i2c/mt9p031.c | 28 +++++++++++++++++++++++++++-
+ 1 file changed, 27 insertions(+), 1 deletion(-)
 
---- a/sound/usb/6fire/comm.c
-+++ b/sound/usb/6fire/comm.c
-@@ -99,7 +99,7 @@ static int usb6fire_comm_send_buffer(u8
- 	int actual_len;
- 
- 	ret = usb_interrupt_msg(dev, usb_sndintpipe(dev, COMM_EP),
--			buffer, buffer[1] + 2, &actual_len, HZ);
-+			buffer, buffer[1] + 2, &actual_len, 1000);
- 	if (ret < 0)
- 		return ret;
- 	else if (actual_len != buffer[1] + 2)
---- a/sound/usb/6fire/firmware.c
-+++ b/sound/usb/6fire/firmware.c
-@@ -166,7 +166,7 @@ static int usb6fire_fw_ezusb_write(struc
- 
- 	ret = usb_control_msg(device, usb_sndctrlpipe(device, 0), type,
- 			USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
--			value, 0, data, len, HZ);
-+			value, 0, data, len, 1000);
- 	if (ret < 0)
- 		return ret;
- 	else if (ret != len)
-@@ -179,7 +179,7 @@ static int usb6fire_fw_ezusb_read(struct
+diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
+index 715be3632b01a..eb08acf43e3a2 100644
+--- a/drivers/media/i2c/mt9p031.c
++++ b/drivers/media/i2c/mt9p031.c
+@@ -81,7 +81,9 @@
+ #define		MT9P031_PIXEL_CLOCK_INVERT		(1 << 15)
+ #define		MT9P031_PIXEL_CLOCK_SHIFT(n)		((n) << 8)
+ #define		MT9P031_PIXEL_CLOCK_DIVIDE(n)		((n) << 0)
+-#define MT9P031_FRAME_RESTART				0x0b
++#define MT9P031_RESTART					0x0b
++#define		MT9P031_FRAME_PAUSE_RESTART		(1 << 1)
++#define		MT9P031_FRAME_RESTART			(1 << 0)
+ #define MT9P031_SHUTTER_DELAY				0x0c
+ #define MT9P031_RST					0x0d
+ #define		MT9P031_RST_ENABLE			1
+@@ -448,9 +450,23 @@ static int mt9p031_set_params(struct mt9p031 *mt9p031)
+ static int mt9p031_s_stream(struct v4l2_subdev *subdev, int enable)
  {
- 	int ret = usb_control_msg(device, usb_rcvctrlpipe(device, 0), type,
- 			USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE, value,
--			0, data, len, HZ);
-+			0, data, len, 1000);
- 	if (ret < 0)
- 		return ret;
- 	else if (ret != len)
-@@ -194,7 +194,7 @@ static int usb6fire_fw_fpga_write(struct
+ 	struct mt9p031 *mt9p031 = to_mt9p031(subdev);
++	struct i2c_client *client = v4l2_get_subdevdata(subdev);
++	int val;
  	int ret;
  
- 	ret = usb_bulk_msg(device, usb_sndbulkpipe(device, FPGA_EP), data, len,
--			&actual_len, HZ);
-+			&actual_len, 1000);
+ 	if (!enable) {
++		/* enable pause restart */
++		val = MT9P031_FRAME_PAUSE_RESTART;
++		ret = mt9p031_write(client, MT9P031_RESTART, val);
++		if (ret < 0)
++			return ret;
++
++		/* enable restart + keep pause restart set */
++		val |= MT9P031_FRAME_RESTART;
++		ret = mt9p031_write(client, MT9P031_RESTART, val);
++		if (ret < 0)
++			return ret;
++
+ 		/* Stop sensor readout */
+ 		ret = mt9p031_set_output_control(mt9p031,
+ 						 MT9P031_OUTPUT_CONTROL_CEN, 0);
+@@ -470,6 +486,16 @@ static int mt9p031_s_stream(struct v4l2_subdev *subdev, int enable)
  	if (ret < 0)
  		return ret;
- 	else if (actual_len != len)
+ 
++	/*
++	 * - clear pause restart
++	 * - don't clear restart as clearing restart manually can cause
++	 *   undefined behavior
++	 */
++	val = MT9P031_FRAME_RESTART;
++	ret = mt9p031_write(client, MT9P031_RESTART, val);
++	if (ret < 0)
++		return ret;
++
+ 	return mt9p031_pll_enable(mt9p031);
+ }
+ 
+-- 
+2.33.0
+
 
 
