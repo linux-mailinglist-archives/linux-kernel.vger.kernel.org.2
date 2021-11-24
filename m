@@ -2,35 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A7545C25D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:24:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAD8045C3BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349030AbhKXN1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:27:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51680 "EHLO mail.kernel.org"
+        id S1345726AbhKXNmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:42:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348868AbhKXNZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:25:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 013BC61B67;
-        Wed, 24 Nov 2021 12:49:37 +0000 (UTC)
+        id S1350258AbhKXNji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:39:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A927361884;
+        Wed, 24 Nov 2021 12:56:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758178;
-        bh=3hASDUYPLjcaNZ3qvW+VwaDN0ZGKb2nxPc2pr74xnRQ=;
+        s=korg; t=1637758605;
+        bh=iPZqAwq281dPGItrKn315H2dtBSW/7NRTHTjnry0IrI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NK2ZaEK5Hp4FI1ZrJhmNchXfWjAF0d55jk8/L/IX0fOVrvH3KB6k/Sr2+yYmkMlhe
-         s00VkTsPgNFtj+P/Ut24L94WHEo3MH5HtwtaKqrmaxBW5ABIOZlzWmBrCNrF1qaPa0
-         Ri4wFonIl0//7ujo0DtfpDckk1ckX6o89cE1SyRc=
+        b=AgJWJExEcx0OgfybuLVrhprI6Ugvg4+U2nqd6iyo0X87rzic9vr81w92hd4EtJfWz
+         6MiNL5rU57Yn/vZ7blLUOAw4othoivbnQKGyCU9j5t4oBFqz4azjrj9pCcW6Ep+Bgt
+         NJbd2pvDSyLEKKBhd5UYl8qXzQvqGrY6fgP2oBkg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Schnelle <svens@stackframe.org>,
-        Helge Deller <deller@gmx.de>
-Subject: [PATCH 5.4 085/100] parisc/sticon: fix reverse colors
+        stable@vger.kernel.org, Rustam Kovhaev <rkovhaev@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Glauber Costa <glommer@parallels.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 125/154] mm: kmemleak: slob: respect SLAB_NOLEAKTRACE flag
 Date:   Wed, 24 Nov 2021 12:58:41 +0100
-Message-Id: <20211124115657.605227506@linuxfoundation.org>
+Message-Id: <20211124115706.333377140@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +48,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Schnelle <svens@stackframe.org>
+From: Rustam Kovhaev <rkovhaev@gmail.com>
 
-commit bec05f33ebc1006899c6d3e59a00c58881fe7626 upstream.
+commit 34dbc3aaf5d9e89ba6cc5e24add9458c21ab1950 upstream.
 
-sticon_build_attr() checked the reverse argument and flipped
-background and foreground color, but returned the non-reverse
-value afterwards. Fix this and also add two local variables
-for foreground and background color to make the code easier
-to read.
+When kmemleak is enabled for SLOB, system does not boot and does not
+print anything to the console.  At the very early stage in the boot
+process we hit infinite recursion from kmemleak_init() and eventually
+kernel crashes.
 
-Signed-off-by: Sven Schnelle <svens@stackframe.org>
+kmemleak_init() specifies SLAB_NOLEAKTRACE for KMEM_CACHE(), but
+kmem_cache_create_usercopy() removes it because CACHE_CREATE_MASK is not
+valid for SLOB.
+
+Let's fix CACHE_CREATE_MASK and make kmemleak work with SLOB
+
+Link: https://lkml.kernel.org/r/20211115020850.3154366-1-rkovhaev@gmail.com
+Fixes: d8843922fba4 ("slab: Ignore internal flags in cache creation")
+Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Pekka Enberg <penberg@kernel.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Glauber Costa <glommer@parallels.com>
 Cc: <stable@vger.kernel.org>
-Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/video/console/sticon.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ mm/slab.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/video/console/sticon.c
-+++ b/drivers/video/console/sticon.c
-@@ -291,13 +291,13 @@ static unsigned long sticon_getxy(struct
- static u8 sticon_build_attr(struct vc_data *conp, u8 color, u8 intens,
- 			    u8 blink, u8 underline, u8 reverse, u8 italic)
- {
--    u8 attr = ((color & 0x70) >> 1) | ((color & 7));
-+	u8 fg = color & 7;
-+	u8 bg = (color & 0x70) >> 4;
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -147,7 +147,7 @@ static inline slab_flags_t kmem_cache_fl
+ #define SLAB_CACHE_FLAGS (SLAB_NOLEAKTRACE | SLAB_RECLAIM_ACCOUNT | \
+ 			  SLAB_TEMPORARY | SLAB_ACCOUNT)
+ #else
+-#define SLAB_CACHE_FLAGS (0)
++#define SLAB_CACHE_FLAGS (SLAB_NOLEAKTRACE)
+ #endif
  
--    if (reverse) {
--	color = ((color >> 3) & 0x7) | ((color & 0x7) << 3);
--    }
--
--    return attr;
-+	if (reverse)
-+		return (fg << 3) | bg;
-+	else
-+		return (bg << 3) | fg;
- }
- 
- static void sticon_invert_region(struct vc_data *conp, u16 *p, int count)
+ /* Common flags available with current configuration */
 
 
