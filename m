@@ -2,419 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D6E45B968
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 12:43:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9812145B96B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 12:44:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241779AbhKXLqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 06:46:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40024 "EHLO
+        id S241324AbhKXLrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 06:47:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241756AbhKXLqT (ORCPT
+        with ESMTP id S231391AbhKXLrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 06:46:19 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EBE8C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 03:43:08 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id 77-20020a1c0450000000b0033123de3425so5171396wme.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 03:43:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Hwly1RCfwZ6v/FmR8kaOQU7+G0XGMvdAoue1GOwD+54=;
-        b=0dgl3TVCPXC7FfNjQVLR4CALFi3QR1/fcl83imQs7azrjAk+zCXCdcNMGi0MqjDSQx
-         bS8A3KMDHL8nT3VuAQIerWERvz3eCKZUXaeD9RuHoTJ97XtiAyJNDZSLpnQtLxvcAuwQ
-         ucF3rmtdINU1PFx80en5D1xeHEBwmK8uY/gwEYcxlP8+aWKsQ/ec3AepmfuF8r2o3MgY
-         07A6bbOpM2imqIojKIAmeNcWUg6eWQpMXMlfybLMIjfpTv0dIhCmX7zZucf47m9bjGhz
-         8zmqspPGYx+IWI4WgJ7FEfL2b9Z4FpA0zr3OetpCRdEbVniJLZ4qXFc+NrWXhC5IFs7s
-         ylMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Hwly1RCfwZ6v/FmR8kaOQU7+G0XGMvdAoue1GOwD+54=;
-        b=dcQ1MgsgAWD219G4SJooh3bpSCw7V+B1eihrSSbTYmcxI4VyNamPRxH1Oe4SxIlM0K
-         0mzmoye5JPzl2mLuODV+NLB6K0ops/sS2g9nWVZh9kds5CTwFvP/fl7OLXGUH7qjD05t
-         XXKWI0EgJGvWqRAMWmDHf8ILvAeIP0/gP4fDJnpsofKy5ZHB9BjSuJ38veX4c1tKoogI
-         /2KT7q6aFdtuSyk0wvtxzSEXfzxTjWvwuuMqNLEDqFsfsdhm39COx/L+RW7pFHf1qvK5
-         E3/wwd8yTzqIaNxJHzb1YdB6qlqO8Eb06olFDIN2ZC8V3tQeoDOo9NStqQiy3XHbVZYy
-         XL+Q==
-X-Gm-Message-State: AOAM533DcHxr8+a6digrHjWZgFQXkm+lMpjqnYvrV4fwog0tRshZ9Zsa
-        3xrebfrAzzjU+csSpyzVCNUERg==
-X-Google-Smtp-Source: ABdhPJw5D53wq06caOYuh+qCXHMnmggV5nAMrCEl5Yd7YfEj/ooB0oH20ldDcH/ISvA4qDE6xhlqWw==
-X-Received: by 2002:a05:600c:3b83:: with SMTP id n3mr13884065wms.116.1637754186581;
-        Wed, 24 Nov 2021 03:43:06 -0800 (PST)
-Received: from debian-brgl.home ([2a01:cb1d:334:ac00:7d50:ff5:f5c1:e225])
-        by smtp.gmail.com with ESMTPSA id s63sm5165173wme.22.2021.11.24.03.43.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 03:43:06 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Kent Gibson <warthog618@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [PATCH v10 5/5] selftests: gpio: add test cases for gpio-sim
-Date:   Wed, 24 Nov 2021 12:42:57 +0100
-Message-Id: <20211124114257.19878-6-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20211124114257.19878-1-brgl@bgdev.pl>
-References: <20211124114257.19878-1-brgl@bgdev.pl>
+        Wed, 24 Nov 2021 06:47:18 -0500
+Received: from lb2-smtp-cloud7.xs4all.net (lb2-smtp-cloud7.xs4all.net [IPv6:2001:888:0:108::2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11A4C061574;
+        Wed, 24 Nov 2021 03:44:07 -0800 (PST)
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id pqgzmeLNgCMnApqh2mvgKM; Wed, 24 Nov 2021 12:44:04 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1637754244; bh=+V7auKfyf1wKv90AUgg2SVaaY0W1hdiUsSSI5fceQ8M=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=clvZGTOPvxfxE8yIilR39u4+eLhAG+q1XpdcTUB+thgtT3aHvrXEl0f6uJHMpF4vz
+         7wxTixdz/dYHXjllj86eK46xLyk0C6n9KAx62EGIN50tTk/6FQwF6aD5I8nmQayeZj
+         fjxtpGFlv+191Sz3CQIFlRIkn6ukyqVHq15Ry/8kcqg3K1GRgHMTs+2pFrHVyTOy0X
+         ZQ3UVH8VcmZYQa+F8NMcu/3ZDAIclA64nItP/LFh2yiBeBCmh1diL6xJlVymsTtrTE
+         8yXY/x64z9hfX3iDlIG5PvpCPObGakpC62/bsesOBs1xef1gqNTPAmHpx2yFSRduk0
+         Bs8YCBhRfDReA==
+Subject: Re: [EXT] Re: [PATCH] media: docs: dev-decoder: add restrictions
+ about CAPTURE buffers
+To:     Alexandre Courbot <acourbot@chromium.org>,
+        Nicolas Dufresne <nicolas@ndufresne.ca>
+Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Ming Qian <ming.qian@nxp.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20211018091427.88468-1-acourbot@chromium.org>
+ <9cb4f64e2ec3959df44b71dd69ef95697920dc4b.camel@ndufresne.ca>
+ <AM6PR04MB634130FEB433CCA352CE98FBE7879@AM6PR04MB6341.eurprd04.prod.outlook.com>
+ <dc7496db-9ba3-fa7b-8563-1157b63c9b0d@linaro.org>
+ <b8f877c9ba2cbd0d6839ac86892725a41097391a.camel@ndufresne.ca>
+ <CAPBb6MVE3+=BXQver3FZtonHW-OoCvfhKeegWv+hE75cFJFTDA@mail.gmail.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <07d055d6-d139-24c2-3711-14726cd3e441@xs4all.nl>
+Date:   Wed, 24 Nov 2021 12:44:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <CAPBb6MVE3+=BXQver3FZtonHW-OoCvfhKeegWv+hE75cFJFTDA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfEsB7zSbcjGFaBA1qqESZWBe+FcBKKgCmPdVuk4GCaUu9gUbyNuDypE/XM2PD8kmJ+bKQgyL/rqKDMKTj0ELIHF4EsLX9TdYu2VIsr3GNpkwclzK5lWS
+ NQTFI4Q1MTIqnFEzKcW4k/T2E0/LPwUdpaiO5gy5ygplB+mQS0PrhiLByLQSoqbA0cFxagcudBbCkbwbSZ/OLqIUkeHnkD13xnUiTete1b9ddwqG7C3gEyyi
+ kN7uE9FbD4dkMmhIuvqL5KYKPsZISR+nrpMTlrNS95AQrY4gkESjtgSNquad+PlF97Ri6nPy7nGSS/bsT9RIb9Vvb1qqwUF1AwmQCDYCrCjZHpZzwFj/zZRF
+ AcTKDxQjvYRNMTP/B6XIW8QHjbM41eFMyizoy770/ec+E4yhlaOY1vz15FAIctIXablCh1n7FH+GIQ8mk3iqzM4VwlckHg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a set of tests for the new gpio-sim module. This is a pure shell
-test-suite and uses the helper programs available in the gpio selftests
-directory. These test-cases only test the functionalities exposed by the
-gpio-sim driver, not those handled by core gpiolib code.
+On 03/11/2021 23:58, Alexandre Courbot wrote:
+> Thanks for the comments. It looks like we are having a consensus that
+> the described behavior is the current (untold) expectation, and how a
+> client should behave if it wants to support all V4L2 decoders. OTOH it
+> would also be nice to be able to signal the client that CAPTURE
+> buffers are not used by the hardware and can thus be overwritten/freed
+> at will.
+> 
+> I have discussed a bit with Nicolas on IRC and we were wondering where
+> such a flag signaling that capability should be. We could have:
+> 
+> 1) Something global to the currently set format, i.e. maybe take some
+> space from the reserved area of v4l2_pix_format_mplane to add a flag.
+> The property would then be global to all buffers, and apply between
+> calls to STREAMON and STREAMOFF.
 
-Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
----
- tools/testing/selftests/gpio/Makefile    |   2 +-
- tools/testing/selftests/gpio/config      |   1 +
- tools/testing/selftests/gpio/gpio-sim.sh | 306 +++++++++++++++++++++++
- 3 files changed, 308 insertions(+), 1 deletion(-)
- create mode 100755 tools/testing/selftests/gpio/gpio-sim.sh
+VIDIOC_ENUM_FMT is already used to signal format flags, so it could be
+put there.
 
-diff --git a/tools/testing/selftests/gpio/Makefile b/tools/testing/selftests/gpio/Makefile
-index 293aa9749408..71b306602368 100644
---- a/tools/testing/selftests/gpio/Makefile
-+++ b/tools/testing/selftests/gpio/Makefile
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- 
--TEST_PROGS := gpio-mockup.sh
-+TEST_PROGS := gpio-mockup.sh gpio-sim.sh
- TEST_FILES := gpio-mockup-sysfs.sh
- TEST_GEN_PROGS_EXTENDED := gpio-mockup-cdev gpio-chip-info gpio-line-name
- CFLAGS += -O2 -g -Wall -I../../../../usr/include/
-diff --git a/tools/testing/selftests/gpio/config b/tools/testing/selftests/gpio/config
-index ce100342c20b..409a8532facc 100644
---- a/tools/testing/selftests/gpio/config
-+++ b/tools/testing/selftests/gpio/config
-@@ -1,3 +1,4 @@
- CONFIG_GPIOLIB=y
- CONFIG_GPIO_CDEV=y
- CONFIG_GPIO_MOCKUP=m
-+CONFIG_GPIO_SIM=m
-diff --git a/tools/testing/selftests/gpio/gpio-sim.sh b/tools/testing/selftests/gpio/gpio-sim.sh
-new file mode 100755
-index 000000000000..4d8759d29eac
---- /dev/null
-+++ b/tools/testing/selftests/gpio/gpio-sim.sh
-@@ -0,0 +1,306 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2021 Bartosz Golaszewski <brgl@bgdev.pl>
-+
-+BASE_DIR=`dirname $0`
-+CONFIGFS_DIR="/sys/kernel/config/gpio-sim"
-+MODULE="gpio-sim"
-+
-+fail() {
-+	echo "$*" >&2
-+	echo "GPIO $MODULE test FAIL"
-+	exit 1
-+}
-+
-+skip() {
-+	echo "$*" >&2
-+	echo "GPIO $MODULE test SKIP"
-+	exit 4
-+}
-+
-+remove_chip() {
-+	local CHIP=$1
-+
-+	LINES=`ls $CONFIGFS_DIR/$CHIP/ | egrep ^line`
-+	if [ "$?" == 0 ]; then
-+		for LINE in $LINES; do
-+			if [ -e $CONFIGFS_DIR/$CHIP/$LINE/hog ]; then
-+				rmdir $CONFIGFS_DIR/$CHIP/$LINE/hog || fail "Unable to remove the hog"
-+			fi
-+
-+			rmdir $CONFIGFS_DIR/$CHIP/$LINE || fail "Unable to remove the line"
-+		done
-+	fi
-+
-+	rmdir $CONFIGFS_DIR/$CHIP || fail "Unable to remove the chip"
-+}
-+
-+configfs_cleanup() {
-+	for CHIP in `ls $CONFIGFS_DIR/`; do
-+		remove_chip $CHIP
-+	done
-+}
-+
-+create_chip() {
-+	local CHIP=$1
-+	local CHIP_DIR="$CONFIGFS_DIR/$CHIP"
-+
-+	mkdir $CHIP_DIR
-+}
-+
-+set_label() {
-+	local CHIP=$1
-+	local LABEL=$2
-+
-+	echo $LABEL > $CONFIGFS_DIR/$CHIP/label || fail "Unable to set the chip label"
-+}
-+
-+set_num_lines() {
-+	local CHIP=$1
-+	local NUM_LINES=$2
-+
-+	echo $NUM_LINES > $CONFIGFS_DIR/$CHIP/num_lines || fail "Unable to set the number of lines"
-+}
-+
-+set_line_name() {
-+	local CHIP=$1
-+	local OFFSET=$2
-+	local NAME=$3
-+	local LINE_DIR=$CONFIGFS_DIR/$CHIP/line$OFFSET
-+
-+	test -d $LINE_DIR || mkdir $LINE_DIR
-+	echo $NAME > $LINE_DIR/name || fail "Unable to set the line name"
-+}
-+
-+enable_chip() {
-+	local CHIP=$1
-+
-+	echo 1 > $CONFIGFS_DIR/$CHIP/live || fail "Unable to enable the chip"
-+}
-+
-+disable_chip() {
-+	local CHIP=$1
-+
-+	echo 0 > $CONFIGFS_DIR/$CHIP/live || fail "Unable to disable the chip"
-+}
-+
-+configfs_chip_name() {
-+	local CHIP="$1"
-+
-+	cat $CONFIGFS_DIR/$CHIP/chip_name 2> /dev/null || return 1
-+}
-+
-+configfs_dev_name() {
-+	local CHIP="$1"
-+
-+	cat $CONFIGFS_DIR/$CHIP/dev_name 2> /dev/null || return 1
-+}
-+
-+get_chip_num_lines() {
-+	local CHIP="$1"
-+
-+	$BASE_DIR/gpio-chip-info /dev/`configfs_chip_name $CHIP` num-lines
-+}
-+
-+get_chip_label() {
-+	local CHIP="$1"
-+
-+	$BASE_DIR/gpio-chip-info /dev/`configfs_chip_name $CHIP` label
-+}
-+
-+get_line_name() {
-+	local CHIP="$1"
-+	local OFFSET="$2"
-+
-+	$BASE_DIR/gpio-line-name /dev/`configfs_chip_name $CHIP` $OFFSET
-+}
-+
-+sysfs_set_pull() {
-+	local CHIP="$1"
-+	local OFFSET="$2"
-+	local PULL="$3"
-+	local SYSFSPATH="/sys/devices/platform/`configfs_dev_name $CHIP`/sim_gpio$OFFSET/pull"
-+
-+	echo $PULL > $SYSFSPATH || fail "Unable to set line pull in sysfs"
-+}
-+
-+# Load the gpio-sim module. This will pull in configfs if needed too.
-+modprobe gpio-sim || skip "unable to load the gpio-sim module"
-+# Make sure configfs is mounted at /sys/kernel/config. Wait a bit if needed.
-+for IDX in `seq 5`; do
-+	if [ "$IDX" -eq "5" ]; then
-+		skip "configfs not mounted at /sys/kernel/config"
-+	fi
-+
-+	mountpoint -q /sys/kernel/config && break
-+	sleep 0.1
-+done
-+# If the module was already loaded: remove all previous chips
-+configfs_cleanup
-+
-+trap "exit 1" SIGTERM SIGINT
-+trap configfs_cleanup EXIT
-+
-+echo "1. chip_name and dev_name attributes"
-+
-+echo "1.1. Chip name is communicated to user"
-+create_chip chip
-+enable_chip chip
-+test -n `cat $CONFIGFS_DIR/chip/chip_name` || fail "chip_name doesn't work"
-+remove_chip chip
-+
-+echo "1.2. chip_name returns 'none' if the chip is still pending"
-+create_chip chip
-+test "`cat $CONFIGFS_DIR/chip/chip_name`" = "none" || fail "chip_name doesn't return 'none' for a pending chip"
-+remove_chip chip
-+
-+echo "1.3. Device name is communicated to user"
-+create_chip chip
-+enable_chip chip
-+test -n `cat $CONFIGFS_DIR/chip/dev_name` || fail "dev_name doesn't work"
-+remove_chip chip
-+
-+echo "2. Creating and configuring simulated chips"
-+
-+echo "2.1. Default number of lines is 1"
-+create_chip chip
-+enable_chip chip
-+test "`get_chip_num_lines chip`" = "1" || fail "default number of lines is not 1"
-+remove_chip chip
-+
-+echo "2.2. Number of lines can be specified"
-+create_chip chip
-+set_num_lines chip 16
-+enable_chip chip
-+test "`get_chip_num_lines chip`" = "16" || fail "number of lines is not 16"
-+remove_chip chip
-+
-+echo "2.3. Label can be set"
-+create_chip chip
-+set_label chip foobar
-+enable_chip chip
-+test "`get_chip_label chip`" = "foobar" || fail "label is incorrect"
-+remove_chip chip
-+
-+echo "2.4. Label can be left empty"
-+create_chip chip
-+enable_chip chip
-+test -z "`cat $CONFIGFS_DIR/chip/label`" || fail "label is not empty"
-+remove_chip chip
-+
-+echo "2.5. Line names can be configured"
-+create_chip chip
-+set_num_lines chip 16
-+set_line_name chip 0 foo
-+set_line_name chip 2 bar
-+enable_chip chip
-+test "`get_line_name chip 0`" = "foo" || fail "line name is incorrect"
-+test "`get_line_name chip 2`" = "bar" || fail "line name is incorrect"
-+remove_chip chip
-+
-+echo "2.6. Line config can remain unused if offset is greater than number of lines"
-+create_chip chip
-+set_num_lines chip 2
-+set_line_name chip 5 foobar
-+enable_chip chip
-+test "`get_line_name chip 0`" = "" || fail "line name is incorrect"
-+test "`get_line_name chip 1`" = "" || fail "line name is incorrect"
-+remove_chip chip
-+
-+echo "2.7. Line configfs directory names are sanitized"
-+create_chip chip
-+mkdir $CONFIGFS_DIR/chip/line12foobar 2> /dev/null && fail "invalid configfs line name accepted"
-+mkdir $CONFIGFS_DIR/chip/line_no_offset 2> /dev/null && fail "invalid configfs line name accepted"
-+remove_chip chip
-+
-+echo "2.8. Multiple chips can be created"
-+CHIPS="chip0 chip1 chip2"
-+for CHIP in $CHIPS; do
-+	create_chip $CHIP
-+	enable_chip $CHIP
-+done
-+for CHIP in $CHIPS; do
-+	remove_chip $CHIP
-+done
-+
-+echo "2.9. Can't modify settings when chip is live"
-+create_chip chip
-+enable_chip chip
-+echo foobar > $CONFIGFS_DIR/chip/label 2> /dev/null && fail "Setting label of a live chip should fail"
-+echo 8 > $CONFIGFS_DIR/chip/num_lines 2> /dev/null && fail "Setting number of lines of a live chip should fail"
-+remove_chip chip
-+
-+echo "2.10. Can't create line items when chip is live"
-+create_chip chip
-+enable_chip chip
-+mkdir $CONFIGFS_DIR/chip/line0 2> /dev/null && fail "Creating line item should fail"
-+remove_chip chip
-+
-+echo "2.11. Probe errors are propagated to user-space"
-+create_chip chip
-+set_num_lines chip 99999
-+echo 1 > $CONFIGFS_DIR/chip/live 2> /dev/null && fail "Probe error was not propagated"
-+remove_chip chip
-+
-+echo "3. Controlling simulated chips"
-+
-+echo "3.1. Pull can be set over sysfs"
-+create_chip chip
-+set_num_lines chip 8
-+enable_chip chip
-+sysfs_set_pull chip 0 pull-up
-+$BASE_DIR/gpio-mockup-cdev /dev/`configfs_chip_name chip` 0
-+test "$?" = "1" || fail "pull set incorrectly"
-+sysfs_set_pull chip 0 pull-down
-+$BASE_DIR/gpio-mockup-cdev /dev/`configfs_chip_name chip` 1
-+test "$?" = "0" || fail "pull set incorrectly"
-+remove_chip chip
-+
-+echo "3.2. Pull can be read from sysfs"
-+create_chip chip
-+set_num_lines chip 8
-+enable_chip chip
-+SYSFS_PATH=/sys/devices/platform/`configfs_dev_name chip`/sim_gpio0/pull
-+test `cat $SYSFS_PATH` = "pull-down" || fail "reading the pull failed"
-+sysfs_set_pull chip 0 pull-up
-+test `cat $SYSFS_PATH` = "pull-up" || fail "reading the pull failed"
-+remove_chip chip
-+
-+echo "3.3. Incorrect input in sysfs is rejected"
-+create_chip chip
-+set_num_lines chip 8
-+enable_chip chip
-+SYSFS_PATH="/sys/devices/platform/`configfs_dev_name chip`/sim_gpio0/pull"
-+echo foobar > $SYSFS_PATH 2> /dev/null && fail "invalid input not detected"
-+remove_chip chip
-+
-+echo "3.4. Can't write to value"
-+create_chip chip
-+enable_chip chip
-+SYSFS_PATH=/sys/devices/platform/`configfs_dev_name chip`/sim_gpio0/value
-+echo 1 > $SYSFS_PATH 2> /dev/null && fail "writing to 'value' succeeded unexpectedly"
-+remove_chip chip
-+
-+echo "4. Simulated GPIO chips are functional"
-+
-+echo "4.1. Values can be read from sysfs"
-+create_chip chip
-+set_num_lines chip 8
-+enable_chip chip
-+SYSFS_PATH="/sys/devices/platform/`configfs_dev_name chip`/sim_gpio0/value"
-+test `cat $SYSFS_PATH` = "0" || fail "incorrect value read from sysfs"
-+$BASE_DIR/gpio-mockup-cdev -s 1 /dev/`configfs_chip_name chip` 0 &
-+sleep 0.1 # FIXME Any better way?
-+test `cat $SYSFS_PATH` = "1" || fail "incorrect value read from sysfs"
-+kill $!
-+remove_chip chip
-+
-+echo "4.2. Bias settings work correctly"
-+create_chip chip
-+set_num_lines chip 8
-+enable_chip chip
-+$BASE_DIR/gpio-mockup-cdev -b pull-up /dev/`configfs_chip_name chip` 0
-+test `cat $SYSFS_PATH` = "1" || fail "bias setting does not work"
-+remove_chip chip
-+
-+echo "GPIO $MODULE test PASS"
--- 
-2.25.1
+Regards,
+
+	Hans
+
+> 
+> 2) An additional flag to the v4l2_buffer structure that would signal
+> whether the buffer is currently writable. This means the writable
+> property of buffers can be signaled on a finer grain (i.e. reference
+> frames would not be writable, but non-reference ones would be), and we
+> can even update the status of a given buffer after it is not used as a
+> reference (the client would have to QUERYBUF to get the updated status
+> though). OTOH a client that needs to know whether the buffers are
+> writable before streaming would need to query them all one-by-one.
+> 
+> I am not sure whether we need something as precise as 2), or whether
+> 1) would be enough and globally simpler. Any more thoughts?
+> 
+> Cheers,
+> Alex.
+> 
+> On Mon, Nov 1, 2021 at 11:52 PM Nicolas Dufresne <nicolas@ndufresne.ca> wrote:
+>>
+>> Le vendredi 29 octobre 2021 à 10:28 +0300, Stanimir Varbanov a écrit :
+>>>
+>>> On 10/29/21 5:10 AM, Ming Qian wrote:
+>>>>> -----Original Message-----
+>>>>> From: Nicolas Dufresne [mailto:nicolas@ndufresne.ca]
+>>>>> Sent: Tuesday, October 26, 2021 10:12 PM
+>>>>> To: Alexandre Courbot <acourbot@chromium.org>; Mauro Carvalho Chehab
+>>>>> <mchehab@kernel.org>; Hans Verkuil <hverkuil-cisco@xs4all.nl>; Tomasz Figa
+>>>>> <tfiga@chromium.org>
+>>>>> Cc: linux-media@vger.kernel.org; linux-kernel@vger.kernel.org
+>>>>> Subject: [EXT] Re: [PATCH] media: docs: dev-decoder: add restrictions about
+>>>>> CAPTURE buffers
+>>>>>
+>>>>> Caution: EXT Email
+>>>>>
+>>>>> Le lundi 18 octobre 2021 à 18:14 +0900, Alexandre Courbot a écrit :
+>>>>>> CAPTURE buffers might be read by the hardware after they are dequeued,
+>>>>>> which goes against the general idea that userspace has full control
+>>>>>> over dequeued buffers. Explain why and document the restrictions that
+>>>>>> this implies for userspace.
+>>>>>>
+>>>>>> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+>>>>>> ---
+>>>>>>  .../userspace-api/media/v4l/dev-decoder.rst     | 17
+>>>>> +++++++++++++++++
+>>>>>>  1 file changed, 17 insertions(+)
+>>>>>>
+>>>>>> diff --git a/Documentation/userspace-api/media/v4l/dev-decoder.rst
+>>>>>> b/Documentation/userspace-api/media/v4l/dev-decoder.rst
+>>>>>> index 5b9b83feeceb..3cf2b496f2d0 100644
+>>>>>> --- a/Documentation/userspace-api/media/v4l/dev-decoder.rst
+>>>>>> +++ b/Documentation/userspace-api/media/v4l/dev-decoder.rst
+>>>>>> @@ -752,6 +752,23 @@ available to dequeue. Specifically:
+>>>>>>       buffers are out-of-order compared to the ``OUTPUT`` buffers):
+>>>>> ``CAPTURE``
+>>>>>>       timestamps will not retain the order of ``OUTPUT`` timestamps.
+>>>>>>
+>>>>>> +.. note::
+>>>>>> +
+>>>>>> +   The backing memory of ``CAPTURE`` buffers that are used as reference
+>>>>> frames
+>>>>>> +   by the stream may be read by the hardware even after they are
+>>>>> dequeued.
+>>>>>> +   Consequently, the client should avoid writing into this memory while the
+>>>>>> +   ``CAPTURE`` queue is streaming. Failure to observe this may result in
+>>>>>> +   corruption of decoded frames.
+>>>>>> +
+>>>>>> +   Similarly, when using a memory type other than
+>>>>> ``V4L2_MEMORY_MMAP``, the
+>>>>>> +   client should make sure that each ``CAPTURE`` buffer is always queued
+>>>>> with
+>>>>>> +   the same backing memory for as long as the ``CAPTURE`` queue is
+>>>>> streaming.
+>>>>>> +   The reason for this is that V4L2 buffer indices can be used by drivers to
+>>>>>> +   identify frames. Thus, if the backing memory of a reference frame is
+>>>>>> +   submitted under a different buffer ID, the driver may misidentify it and
+>>>>>> +   decode a new frame into it while it is still in use, resulting in corruption
+>>>>>> +   of the following frames.
+>>>>>> +
+>>>>>
+>>>>> I think this is nice addition, but insufficient. We should extend the API with a
+>>>>> flags that let application know if the buffers are reference or secondary. For the
+>>>>> context, we have a mix of CODEC that will output usable reference frames and
+>>>>> needs careful manipulation and many other drivers where the buffers *maybe*
+>>>>> secondary, meaning they may have been post-processed and modifying these
+>>>>> in- place may have no impact.
+>>>>>
+>>>>> The problem is the "may", that will depends on the chosen CAPTURE format. I
+>>>>> believe we should flag this, this flag should be set by the driver, on CAPTURE
+>>>>> queue. The information is known after S_FMT, so Format Flag, Reqbufs
+>>>>> capabilities or querybuf flags are candidates. I think the buffer flags are the
+>>>>> best named flag, though we don't expect this to differ per buffer. Though,
+>>>>> userspace needs to call querybuf for all buf in order to export or map them.
+>>>>>
+>>>>> What userspace can do with this is to export the DMABuf as read-only, and
+>>>>> signal this internally in its own context. This is great to avoid any unwanted
+>>>>> side effect described here.
+>>>>
+>>>> I think a flag should be add to tell a buffer is reference or secondary.
+>>>> But for some codec, it's hard to determine the buffer flag when reqbufs.
+>>>> The buffer flag should be dynamically updated by driver.
+>>>> User can check the flag after dqbuf every time.
+>>>
+>>> +1
+>>>
+>>> I'm not familiar with stateless decoders where on the reqbuf time it
+>>> could work, debut for stateful coders it should be a dynamic flag on
+>>> every capture buffer.
+>>
+>> This isn't very clear request here, on which C structure to you say you would
+>> prefer this ?
+>>
+>> There is no difference for stateful/stateless for this regard. The capture
+>> format must have been configured prior to reqbuf, so nothing post S_FMT(CAPTURE)
+>> can every be very dynamic. I think the flag in S_FMT is miss-named and would
+>> create confusion. struct v4l2_reqbufs vs struc v4l2_buffer are equivalent. The
+>> seconds opens for flexibility.
+>>
+>> In fact, for some certain CODEC, there exist B-Frames that are never used as
+>> references, so these could indeed can be written to even if the buffer are not
+>> secondary. I think recommending to flag this in v4l2_buffer, and read through
+>> VIDIOC_QUERYBUF would be the best choice.
+>>
+>>>
+>>>>
+>>>>>
+>>>>>>  During the decoding, the decoder may initiate one of the special
+>>>>>> sequences, as  listed below. The sequences will result in the decoder
+>>>>>> returning all the  ``CAPTURE`` buffers that originated from all the
+>>>>>> ``OUTPUT`` buffers processed
+>>>>>
+>>>>
+>>>
+>>
+>>
 
