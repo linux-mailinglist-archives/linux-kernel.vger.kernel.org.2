@@ -2,94 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E9A45B5B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 08:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8FB445B5B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 08:40:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbhKXHne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 02:43:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42236 "EHLO
+        id S232822AbhKXHoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 02:44:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbhKXHnd (ORCPT
+        with ESMTP id S229623AbhKXHoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 02:43:33 -0500
-X-Greylist: delayed 159998 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 23 Nov 2021 23:40:24 PST
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12664C061574;
-        Tue, 23 Nov 2021 23:40:24 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 710453FA5E;
-        Wed, 24 Nov 2021 07:40:20 +0000 (UTC)
-Subject: Re: [PATCH] PCI: apple: Configure link speeds properly
-To:     Rob Herring <robh@kernel.org>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20211122111332.72264-1-marcan@marcan.st>
- <CAL_Jsq+vFbFN+WQhi3dRicW+kaP1Oi9JPSmnAFL7XAc0eCvgrA@mail.gmail.com>
-From:   Hector Martin <marcan@marcan.st>
-Message-ID: <8e881b80-614c-dccf-ddaf-895d1acf26c7@marcan.st>
-Date:   Wed, 24 Nov 2021 16:40:17 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 24 Nov 2021 02:44:04 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12459C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 23:40:54 -0800 (PST)
+Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1mpmtc-0002cq-I6; Wed, 24 Nov 2021 08:40:48 +0100
+Message-ID: <f9361bfa-4e5c-7095-48d4-2b3950c4b85e@leemhuis.info>
+Date:   Wed, 24 Nov 2021 08:40:47 +0100
 MIME-Version: 1.0
-In-Reply-To: <CAL_Jsq+vFbFN+WQhi3dRicW+kaP1Oi9JPSmnAFL7XAc0eCvgrA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: mm: 5.16 regression: reclaim_throttle leads to stall in near-OOM
+ conditions
+Content-Language: en-BS
+To:     Alexey Avramov <hakavlad@inbox.lv>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, mgorman@techsingularity.net,
+        mhocko@suse.com, vbabka@suse.cz, neilb@suse.de,
+        akpm@linux-foundation.org, corbet@lwn.net, riel@surriel.com,
+        hannes@cmpxchg.org, david@fromorbit.com, willy@infradead.org,
+        hdanton@sina.com, penguin-kernel@i-love.sakura.ne.jp,
+        oleksandr@natalenko.name, kernel@xanmod.org,
+        michael@michaellarabel.com, aros@gmx.com, hakavlad@gmail.com,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+References: <20211124011954.7cab9bb4@mail.inbox.lv>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <20211124011954.7cab9bb4@mail.inbox.lv>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1637739655;9aee9515;
+X-HE-SMSGID: 1mpmtc-0002cq-I6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/11/2021 11.23, Rob Herring wrote:
->> +#include "../pci.h"
->> +/* Apple PCIe is based on DesignWare IP and shares some registers */
->> +#include "dwc/pcie-designware.h"
+Hi, this is your Linux kernel regression tracker speaking.
+
+CCing regression mailing list, which should be in the loop for all
+regressions, as explained here:
+https://www.kernel.org/doc/html/latest/admin-guide/reporting-issues.html
+
+On 23.11.21 17:19, Alexey Avramov wrote:
+> I found stalls in near-OOM conditions with Linux 5.16. This is not the
+> hang-up that was reported by Artem S. Tashkinov in 2019 [1]. It's a *new* 
+> regression. I will demonstrate this with one simple experiment, which I
+> will reproduce with different kernels or settings.
 > 
-> I'm starting to regret this not being part of the DWC driver...
-
-Main issue is the DWC driver seems to have a pretty hard-coded 
-assumption of one port per controller, plus does a bunch of stuff 
-differently for the higher layers. It seems Apple used the DWC PHY/LTSSM 
-bits, then rolled their own upper layer.
-
->> +/* The offset of the PCIe capabilities structure in bridge config space */
->> +#define PCIE_CAP_BASE          0x70
+> With older versions of the kernel, running the `tail /dev/zero` command
+> usually quickly leads to OOM condition.
 > 
-> This offset is discoverable, so don't hardcode it.
+> I will run the command `for i in {1...3}; do tail /dev/zero; done` and log
+> PSI metrics (using psi2log script from nohang v0.2.0 [2]) and some values
+> from `/proc/meminfo` (using mem2log v0.1.0 [3]) while this command is
+> running. During the experiment a single tab browser will be kept opened in
+> which some video will be playing.
+> [...]
+TWIMC: To be sure this issue doesn't fall through the cracks unnoticed,
+I'm adding it to regzbot, my Linux kernel regression tracking bot:
 
-Sure, it just means I have to reinvent the PCI capability lookup wheel 
-again. I'd love to use the regular accessors, but the infrastructure 
-isn't up to the point where we can do that yet yere. DWC also reinvents 
-this wheel, but we can't reuse that code because it pokes these 
-registers through a separate reg range, not config space (even though it 
-seems like they should be the same thing? I'm not sure what's going on 
-in the DWC devices... for the Apple controller it's just the ECAM).
+#regzbot ^introduced v5.15..v5.16-rc1
+#regzbot title mm: reclaim_throttle leads to stall in near-OOM conditions
+#regzbot ignore-activity
 
->> +       max_gen = of_pci_get_max_link_speed(port->np);
->> +       if (max_gen < 0) {
->> +               dev_err(port->pcie->dev, "max link speed not specified\n");
-> 
-> Better to fail than limp along in gen1? Though you don't check the
-> return value...
-> 
-> Usually, the DT property is there to limit the speed when there's a
-> board limitation.
+Ciao, Thorsten, your Linux kernel regression tracker.
 
-The default *setting* is actually Gen4, but without 
-PCIE_LINK_WIDTH_SPEED_CONTROL poked it always trains at Gen1. Might make 
-more sense to only set the LNKCTL field if max-link-speed is specified, 
-and unconditionally poke that bit. That'll get us Gen4 by default (or 
-even presumably Gen5 in future controllers, if everything else stays 
-compatible).
+P.S.: If you want to know more about regzbot, check out its
+web-interface, the getting start guide, and/or the references documentation:
 
--- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+https://linux-regtracking.leemhuis.info/regzbot/
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
+
+The last two documents will explain how you can interact with regzbot
+yourself if your want to.
+
+Hint for the reporter: when reporting a regression it's in your interest
+to tell #regzbot about it in the report, as that will ensure the
+regression gets on the radar of regzbot and the regression tracker.
+That's in your interest, as they will make sure the report won't fall
+through the cracks unnoticed.
+
+Hint for developers: you normally don't need to care about regzbot, just
+fix the issue as you normally would. Just remember to include a 'Link:'
+tag to the report in the commit message, as explained in
+Documentation/process/submitting-patches.rst
+That aspect was recently was made more explicit in commit 1f57bd42b77c:
+https://git.kernel.org/linus/1f57bd42b77c
+
+P.P.S.: As a Linux kernel regression tracker I'm getting a lot of
+reports on my table. I can only look briefly into most of them.
+Unfortunately therefore I sometimes will get things wrong or miss
+something important. I hope that's not the case here; if you think it
+is, don't hesitate to tell me about it in a public reply. That's in
+everyone's interest, as what I wrote above might be misleading to
+everyone reading this; any suggestion I gave they thus might sent
+someone reading this down the wrong rabbit hole, which none of us wants.
+
+BTW, I have no personal interest in this issue, which is tracked using
+regzbot, my Linux kernel regression tracking bot
+(https://linux-regtracking.leemhuis.info/regzbot/). I'm only posting
+this mail to get things rolling again and hence don't need to be CC on
+all further activities wrt to this regression.
