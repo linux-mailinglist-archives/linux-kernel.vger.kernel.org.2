@@ -2,91 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C4D45CACF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:23:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3289D45CADC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:23:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237139AbhKXR0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 12:26:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60610 "EHLO
+        id S237309AbhKXR1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 12:27:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235332AbhKXR0R (ORCPT
+        with ESMTP id S237361AbhKXR1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 12:26:17 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3599AC061714;
-        Wed, 24 Nov 2021 09:23:08 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id k4so2397994plx.8;
-        Wed, 24 Nov 2021 09:23:08 -0800 (PST)
+        Wed, 24 Nov 2021 12:27:00 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F9C2C061714;
+        Wed, 24 Nov 2021 09:23:50 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id l25so13525432eda.11;
+        Wed, 24 Nov 2021 09:23:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=QiTyHkUZIqBSjf76CoNzhWCPjkxzgP2ltw+lvERaQfc=;
-        b=gIQIUS+DnyMAg+OzAshmIabHz7lFiOr6M+GiRZrrkQYqrb8H16C7+PdvGqB1YhdKkL
-         +TtDlO/FBG+dIfh4Vwz9fAyIDbo3XNbfYgJbYxwuzf50KMdZ9fGbTHzK7a+BkP97MyEt
-         EDjKSH6IcFKU43uiZTakC0K52JJoVl4cJKuUBseN0VDCyqQpzU7wNx8Cpl8VPzMFSVW5
-         Z2AOSsBFYdQ/b1MAYjqL8CDM9EyjSyCoHcIPu+4LGGsL2eWnV2OEk7upnEjMk6iMycqv
-         /Z/Zcr23inJI085PmJjas0oy0Dp85HAHL1WyO/3jm18QChxpm37LVRaomxkR5Ey5QUPW
-         PYwQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ccJMIpDP63AsSWP0+gJpsJishWCjmMXQ0SENwgrm5zo=;
+        b=LPQIsg+fnQjP+GIjcU+s2UMMyjwiLbLz29SB7qHmon0OqWk06zH7knq6feBANLCkBL
+         i+O6SprIXvZ/RMchNw5acYJ9uMkd508g1WcEDkla4Ao/ZDtmKCSaEIOCy2BS48JnD6eZ
+         eeJrqZuQva7WkELPIdub8lRIf/sL2XOOBWo1kY07QXJydijSe8PceQm7ghukbsZsXEvJ
+         uTIZScnEmTsw7dp6imxmSBAeZV7cV5J7Ob229ctIQbA9R+O2pki82r+BhKZf9nOgVP3w
+         p3BqEV6FrEZJK/3S3ghUyyumlvAqmGtD401bgDgsomSwG5ofZf3kcRFfKYo3ZIwOKFj9
+         TyLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=QiTyHkUZIqBSjf76CoNzhWCPjkxzgP2ltw+lvERaQfc=;
-        b=S14cRkE0Vp1by+GYd+gLrD7OYa74udKQz1SXH5E6g+jtm89a7XvdflYaaXHi9atkWo
-         je67sKToyYMYuHSvKiSPcibTsUgxC0Ir8EU/Y96AtFqyodcM4TLmYEtemlNHKuBTAA0r
-         5z+4ujlZvkaOVqxJJPVi3XhCWjZrcr+0k8ungsVxi48D2htlCiDYEJeb4DOICvsyqG1R
-         TNtTYnozGHmypr0Yc6G0f2YYX6RyJ9XMET10jdj5/rUjSflx8fO4Jx7EwXgRsbDA03gf
-         yY+XuMQ+GfP69QSTpluOXHhcdBlSfL/mqulz36exIMvyjhVW6InAfWUnAh9q0xbUtvZr
-         FvfA==
-X-Gm-Message-State: AOAM531Xdl3JHLom6L/UUlh4EM748tVRKEB4ZU2MGYHpqqOV9Z0Fkdcm
-        Xfnap+UxfC+IKGdCSvRJzYqPo328YxcDFVm9Ing=
-X-Google-Smtp-Source: ABdhPJxVJYth293hHFdkje+2jbyAyaCrgKxePGSUW56lTqHGsa9dLBxsub0uT5q/eaW2ohtUZrU66g==
-X-Received: by 2002:a17:903:124a:b0:143:a627:a992 with SMTP id u10-20020a170903124a00b00143a627a992mr20792427plh.32.1637774587212;
-        Wed, 24 Nov 2021 09:23:07 -0800 (PST)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id j15sm327382pfh.35.2021.11.24.09.23.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 09:23:06 -0800 (PST)
-Message-ID: <619e74fa.1c69fb81.e4dc8.1144@mx.google.com>
-Date:   Wed, 24 Nov 2021 09:23:06 -0800 (PST)
-X-Google-Original-Date: Wed, 24 Nov 2021 17:23:05 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 000/154] 5.10.82-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ccJMIpDP63AsSWP0+gJpsJishWCjmMXQ0SENwgrm5zo=;
+        b=IHZ6f1AsBxCJVo7eiA3vrh/2rJcXmVrGSvaPJXiLb+FfXIvSu5BtWlo0SkkipmxRj8
+         ndbrb60iaGVvXWb4we9k2wIiMUMf6VcD2ab4W72dGTPL5qEBexuIc5+5M/c12l6CmkQ4
+         5yyYSvAAia0arFGEmyTM6NrsghMOLwUjj+hz0YBAwUyph/wEmwIH/NJazaa4X1SEyreb
+         yPncQ9hwiqv5q6J5/SYJDHu/ZoIIlrz8YCkYwTMqzaRbEtNodcBdR1b5iuMYoiuBbK0R
+         7nMBsGTTddlfVNnw9aCg3d9N+cxVXpiESrVt2qAUTwbH5sMikwY9S8GefHqmfyUwuuRF
+         1Brg==
+X-Gm-Message-State: AOAM531Keb3aQc6LGUunFgj4SJiTrCfE0WCO6leVRD9mQOpRpOn4VDX0
+        yeb2Ik4/CGUPY0+1n6FudUB5dEHQfh3RGcT0bTk=
+X-Google-Smtp-Source: ABdhPJxCkUPK2xGVGQ8pQVAH6s4Q6tpFbqatbbYoPoAC/pb3AwqZ/UUH4ORYdYtNjszU1n1TDfxAVTzojZYvfCqJ1Zg=
+X-Received: by 2002:a05:6402:40d3:: with SMTP id z19mr28561357edb.185.1637774628721;
+ Wed, 24 Nov 2021 09:23:48 -0800 (PST)
+MIME-Version: 1.0
+References: <CAK8P3a3pQW59NVF=5P+ZiBjNJmnWh+iTZUHvqHBrXkHA6pMd4g@mail.gmail.com>
+ <20211124132112.11641-1-andrealmeid@collabora.com>
+In-Reply-To: <20211124132112.11641-1-andrealmeid@collabora.com>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Wed, 24 Nov 2021 09:23:37 -0800
+Message-ID: <CAMo8BfL18MQah-Bsf3NUUH+U5inLyErMfHoqr2vdwzUzCc=dyA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] futex: Wireup futex_waitv syscall
+To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Chris Zankel <chris@zankel.net>,
+        "open list:ALPHA PORT" <linux-alpha@vger.kernel.org>,
+        "open list:IA64 (Itanium) PL..." <linux-ia64@vger.kernel.org>,
+        "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        "open list:SUPERH" <linux-sh@vger.kernel.org>,
+        "open list:SPARC + UltraSPAR..." <sparclinux@vger.kernel.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        boqun.feng@gmail.com, Linux-Next <linux-next@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, longman@redhat.com,
+        Minchan Kim <minchan@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, naresh.kamboju@linaro.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rob Landley <rob@landley.net>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        umgwanakikbuti@gmail.com, Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 12:56:36 +0100, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.82 release.
-> There are 154 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.82-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Wed, Nov 24, 2021 at 5:21 AM Andr=C3=A9 Almeida <andrealmeid@collabora.c=
+om> wrote:
+>
+> Wireup futex_waitv syscall for all remaining archs.
+>
+> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@collabora.com>
+> ---
+>  arch/alpha/kernel/syscalls/syscall.tbl      | 1 +
+>  arch/ia64/kernel/syscalls/syscall.tbl       | 1 +
+>  arch/m68k/kernel/syscalls/syscall.tbl       | 1 +
+>  arch/microblaze/kernel/syscalls/syscall.tbl | 1 +
+>  arch/powerpc/kernel/syscalls/syscall.tbl    | 1 +
+>  arch/sh/kernel/syscalls/syscall.tbl         | 1 +
+>  arch/sparc/kernel/syscalls/syscall.tbl      | 1 +
+>  arch/xtensa/kernel/syscalls/syscall.tbl     | 1 +
+>  8 files changed, 8 insertions(+)
 
-5.10.82-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+For xtensa:
+Acked-by: Max Filippov <jcmvbkbc@gmail.com>
 
+--=20
+Thanks.
+-- Max
