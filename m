@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFC745BD4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:34:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1F745BFCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:59:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243689AbhKXMhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:37:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49352 "EHLO mail.kernel.org"
+        id S1347176AbhKXNBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:01:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344194AbhKXMai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:30:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 307436135E;
-        Wed, 24 Nov 2021 12:19:03 +0000 (UTC)
+        id S1345492AbhKXM7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:59:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E41356137A;
+        Wed, 24 Nov 2021 12:34:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756343;
-        bh=ppjQpJ3BT+IxHTPIg1arb5LdUzdb7vcG/rv012g1/8c=;
+        s=korg; t=1637757249;
+        bh=9nz0x7iTpe50Pw2n8ju7MYMoLXnaSly4sFR4aWZPcHY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u9Scknt1dU5Jg0k3xe2sgb97+SDHTjN+mAKUKqTnri2SlBJxFWEwo4Vb9KxVo2g0M
-         WjWA3U8kgU6ZWFkb3bepdJKJh4+uZG/czTRXyAbVcNH0SSF8CVCiXiJS/f+S9fh3ZG
-         lwOL/g49A4RSu1id7FNezBbjg/J+5k2M5Ujccte4=
+        b=X8gT7Byj9bmuqPEo7IN8LpISj7iCC5JGh1zUblIWcWAfmBOjxXKLiqxmmjuG+WJ8r
+         oHM5sGDmcch6TlgI9nvycUND8Kf3xpKCyuDI8DrAsUlPnQhzHdPc8JDM0S9YqDVJnO
+         udKPrxqHYp5ZhBGgZV/dT5LOJ3D1/6SoQCb3WYPI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiaoming Ni <nixiaoming@huawei.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.14 053/251] powerpc/85xx: Fix oops when mpc85xx_smp_guts_ids node cannot be found
-Date:   Wed, 24 Nov 2021 12:54:55 +0100
-Message-Id: <20211124115712.092461072@linuxfoundation.org>
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Tuo Li <islituo@gmail.com>, Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 106/323] ath: dfs_pattern_detector: Fix possible null-pointer dereference in channel_detector_create()
+Date:   Wed, 24 Nov 2021 12:54:56 +0100
+Message-Id: <20211124115722.541295204@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,37 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaoming Ni <nixiaoming@huawei.com>
+From: Tuo Li <islituo@gmail.com>
 
-commit 3c2172c1c47b4079c29f0e6637d764a99355ebcd upstream.
+[ Upstream commit 4b6012a7830b813799a7faf40daa02a837e0fd5b ]
 
-When the field described in mpc85xx_smp_guts_ids[] is not configured in
-dtb, the mpc85xx_setup_pmc() does not assign a value to the "guts"
-variable. As a result, the oops is triggered when
-mpc85xx_freeze_time_base() is executed.
+kzalloc() is used to allocate memory for cd->detectors, and if it fails,
+channel_detector_exit() behind the label fail will be called:
+  channel_detector_exit(dpd, cd);
 
-Fixes: 56f1ba280719 ("powerpc/mpc85xx: refactor the PM operations")
-Cc: stable@vger.kernel.org # v4.6+
-Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210929033646.39630-2-nixiaoming@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+In channel_detector_exit(), cd->detectors is dereferenced through:
+  struct pri_detector *de = cd->detectors[i];
+
+To fix this possible null-pointer dereference, check cd->detectors before
+the for loop to dereference cd->detectors.
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210805153854.154066-1-islituo@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/85xx/mpc85xx_pm_ops.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/wireless/ath/dfs_pattern_detector.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
---- a/arch/powerpc/platforms/85xx/mpc85xx_pm_ops.c
-+++ b/arch/powerpc/platforms/85xx/mpc85xx_pm_ops.c
-@@ -98,9 +98,8 @@ int __init mpc85xx_setup_pmc(void)
- 			pr_err("Could not map guts node address\n");
- 			return -ENOMEM;
- 		}
-+		qoriq_pm_ops = &mpc85xx_pm_ops;
+diff --git a/drivers/net/wireless/ath/dfs_pattern_detector.c b/drivers/net/wireless/ath/dfs_pattern_detector.c
+index a274eb0d19688..a0ad6e48a35b4 100644
+--- a/drivers/net/wireless/ath/dfs_pattern_detector.c
++++ b/drivers/net/wireless/ath/dfs_pattern_detector.c
+@@ -182,10 +182,12 @@ static void channel_detector_exit(struct dfs_pattern_detector *dpd,
+ 	if (cd == NULL)
+ 		return;
+ 	list_del(&cd->head);
+-	for (i = 0; i < dpd->num_radar_types; i++) {
+-		struct pri_detector *de = cd->detectors[i];
+-		if (de != NULL)
+-			de->exit(de);
++	if (cd->detectors) {
++		for (i = 0; i < dpd->num_radar_types; i++) {
++			struct pri_detector *de = cd->detectors[i];
++			if (de != NULL)
++				de->exit(de);
++		}
  	}
- 
--	qoriq_pm_ops = &mpc85xx_pm_ops;
--
- 	return 0;
- }
+ 	kfree(cd->detectors);
+ 	kfree(cd);
+-- 
+2.33.0
+
 
 
