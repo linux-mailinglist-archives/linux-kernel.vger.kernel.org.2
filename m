@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E80345BFC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74AAF45BB4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:16:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245595AbhKXNBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:01:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33424 "EHLO mail.kernel.org"
+        id S243724AbhKXMSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:18:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347181AbhKXM6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:58:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CBF961881;
-        Wed, 24 Nov 2021 12:33:35 +0000 (UTC)
+        id S243085AbhKXMNW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:13:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BAF7610FC;
+        Wed, 24 Nov 2021 12:07:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757216;
-        bh=MM9cwbHgrj77IxwphTaDtjRZFY/LPDOsxisHP0Wf3DI=;
+        s=korg; t=1637755667;
+        bh=dvSucQGTvpsVpAii89Sjq2DQOsG8yS50tjdCtj5BVcA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BZ/SpP7YUQz/M/bHJZ1gFkyITmEW7LnvMNSZC6pD8VAQe8enyGhJdDRVSApFcylIU
-         /v5S+uV0YzCau7kAPCOM9zAjP2yQtQ3nzh7I87InP+1h+uDDZy97H3qnLzW4iwl8v4
-         fqlpeaiqOScKahCITKXUTSK8Wj8xqmZVHlI7ClCk=
+        b=NThj3ZFG/N6N4aqgNwWzPypLLCW00x39/mQ3ygUTnjQFWE2G17jHcNFTqSbJmp7db
+         gDSrrVYSBZ97BtO/NhQxSjpk0gneVaogdVMy3ASklRbUEAwZrBbihOIKtmKoNEnB1D
+         f5PPyq2x+ls6YcJ2hA0iNZqf4tGjwCyPDKiykgZg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 096/323] media: uvcvideo: Set capability in s_param
+        stable@vger.kernel.org, Wang Wensheng <wangwensheng4@huawei.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.9 015/207] ALSA: timer: Fix use-after-free problem
 Date:   Wed, 24 Nov 2021 12:54:46 +0100
-Message-Id: <20211124115722.210863816@linuxfoundation.org>
+Message-Id: <20211124115704.442677579@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,47 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ricardo Ribalda <ribalda@chromium.org>
+From: Wang Wensheng <wangwensheng4@huawei.com>
 
-[ Upstream commit 97a2777a96070afb7da5d587834086c0b586c8cc ]
+commit c0317c0e87094f5b5782b6fdef5ae0a4b150496c upstream.
 
-Fixes v4l2-compliance:
+When the timer instance was add into ack_list but was not currently in
+process, the user could stop it via snd_timer_stop1() without delete it
+from the ack_list. Then the user could free the timer instance and when
+it was actually processed UAF occurred.
 
-Format ioctls (Input 0):
-                warn: v4l2-test-formats.cpp(1339): S_PARM is supported but doesn't report V4L2_CAP_TIMEPERFRAME
-                fail: v4l2-test-formats.cpp(1241): node->has_frmintervals && !cap->capability
+This issue could be reproduced via testcase snd_timer01 in ltp - running
+several instances of that testcase at the same time.
 
-Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+What I actually met was that the ack_list of the timer broken and the
+kernel went into deadloop with irqoff. That could be detected by
+hardlockup detector on board or when we run it on qemu, we could use gdb
+to dump the ack_list when the console has no response.
+
+To fix this issue, we delete the timer instance from ack_list and
+active_list unconditionally in snd_timer_stop1().
+
+Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20211103033517.80531-1-wangwensheng4@huawei.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/uvc/uvc_v4l2.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ sound/core/timer.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-index 2ca1e8ce6159d..e858f4f189ed9 100644
---- a/drivers/media/usb/uvc/uvc_v4l2.c
-+++ b/drivers/media/usb/uvc/uvc_v4l2.c
-@@ -474,10 +474,13 @@ static int uvc_v4l2_set_streamparm(struct uvc_streaming *stream,
- 	uvc_simplify_fraction(&timeperframe.numerator,
- 		&timeperframe.denominator, 8, 333);
- 
--	if (parm->type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
-+	if (parm->type == V4L2_BUF_TYPE_VIDEO_CAPTURE) {
- 		parm->parm.capture.timeperframe = timeperframe;
--	else
-+		parm->parm.capture.capability = V4L2_CAP_TIMEPERFRAME;
-+	} else {
- 		parm->parm.output.timeperframe = timeperframe;
-+		parm->parm.output.capability = V4L2_CAP_TIMEPERFRAME;
-+	}
- 
- 	return 0;
- }
--- 
-2.33.0
-
+--- a/sound/core/timer.c
++++ b/sound/core/timer.c
+@@ -581,13 +581,13 @@ static int snd_timer_stop1(struct snd_ti
+ 	if (!timer)
+ 		return -EINVAL;
+ 	spin_lock_irqsave(&timer->lock, flags);
++	list_del_init(&timeri->ack_list);
++	list_del_init(&timeri->active_list);
+ 	if (!(timeri->flags & (SNDRV_TIMER_IFLG_RUNNING |
+ 			       SNDRV_TIMER_IFLG_START))) {
+ 		result = -EBUSY;
+ 		goto unlock;
+ 	}
+-	list_del_init(&timeri->ack_list);
+-	list_del_init(&timeri->active_list);
+ 	if (timer->card && timer->card->shutdown)
+ 		goto unlock;
+ 	if (stop) {
 
 
