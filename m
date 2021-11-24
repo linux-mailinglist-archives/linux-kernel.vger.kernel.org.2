@@ -2,93 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9AFE45B778
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 10:31:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8F245B787
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 10:31:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236034AbhKXJeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 04:34:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235832AbhKXJeN (ORCPT
+        id S237032AbhKXJey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 04:34:54 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:59662 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236930AbhKXJel (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 04:34:13 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985E1C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 01:31:04 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id o4so2040540pfp.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 01:31:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=z4F4OVhEPHtBUs/B2Dvh/koKyjXjnSpyk1IgSQCoprs=;
-        b=dmoAaWmpb8pzJPtJD6+DrFhrpT1xQVc+aeA3ypRwH0SWGK8unzBv0cppKciVYnz1+H
-         06nEa6kovF5k+DiK6xkjJwMB7DxQcuOhxHU02gPk4Z7/8ljzV/i3FOO2movhmfoGJl4P
-         p8bHUW6O+Ra+7qV9Hi0NAXDJrNK93hxxwI5BOkztDZFOQuxuJRiayh4jv8n3drThcyxO
-         YBmHzauDqj0aefyn4W59b1V+wJSRlRbepYWpdHI/gspwYLZ9LJERPqQrvDucIofS+3kw
-         O6YDEusjbbFd/rsuwOYEsldqjyeB2tN2dZE86ZqDsUJEdQ8yf8OWjqtbxCUTWf/gKtOl
-         lTbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=z4F4OVhEPHtBUs/B2Dvh/koKyjXjnSpyk1IgSQCoprs=;
-        b=eF+S83ndv9ThlgZ0EPrSBzhm16twqBo0tsTEkAPy0lQbQ45AP35idHfKoBLWmT8il0
-         bY9uWKXu/gSLV2aWmdtNGYh2HgfsywAIp2n9WbMCto11dkqBIUS2HRrkHL0i4PEsRjFs
-         g/eF6gTizdtXcmSpvtlBIZ/mnxtqNn+Kr7Oof0pfHAAyxKd3t+FgF9q7qdPC6qFyvD2Q
-         SgdwqAToaVnIhSoF6QsM5ygejQFU/vW8CBno6voC8CegQGMskGeWNubDGnWmXytka7cU
-         2/9Fi8E6B4+/7OHvsoLeY6jkB54MHeC/cpRS2AgtYELf4GygaaNQj6RS2hLvUSPS9JIj
-         DbfQ==
-X-Gm-Message-State: AOAM533WV58aPnIeaGr+sB/WvegAVd5e+G1jQNvKQ0HyO2z85hrLhGN8
-        vuSgAhymLrCaYlzb7i0vf4U=
-X-Google-Smtp-Source: ABdhPJy/uxVmg1iIt/DewpBqRaNLb3QpUVpyeAvqGM8dtJ/P7UH8Bgr21aBdIMNydTssn39KzocZCg==
-X-Received: by 2002:a63:4b0e:: with SMTP id y14mr786839pga.162.1637746264203;
-        Wed, 24 Nov 2021 01:31:04 -0800 (PST)
-Received: from localhost.localdomain ([117.254.32.182])
-        by smtp.googlemail.com with ESMTPSA id z19sm16464799pfe.181.2021.11.24.01.31.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 01:31:03 -0800 (PST)
-From:   Ajith P V <ajithpv.linux@gmail.com>
-To:     gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
-        maco@android.com, joel@joelfernandes.org, christian@brauner.io,
-        hridya@google.com, surenb@google.com
-Cc:     linux-kernel@vger.kernel.org, Ajith P V <ajithpv.linux@gmail.com>
-Subject: [PATCH] binder: reframe comment to avoid warning
-Date:   Wed, 24 Nov 2021 15:00:02 +0530
-Message-Id: <20211124093002.9795-1-ajithpv.linux@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 24 Nov 2021 04:34:41 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id C85212193C;
+        Wed, 24 Nov 2021 09:31:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637746290; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=L6j6LEDVSUwaLm4GecVClWhiFQf3A7yswpF/3Msy3S0=;
+        b=HFH093Gq3HPtoLoK9FGfao01jmum3I5rgW5GdONDWqEEOQWszK0vySX+M2cn2GOFOySX43
+        W4pSM8Im5x81IGFxxEM3Q0J+9qETV+e95fSLRsibzh8JUEdE36xyUGRIqU3fDYUC4LXThz
+        YfbClVGA+r76WcY0fy4kC3jgaXMINVU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637746290;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=L6j6LEDVSUwaLm4GecVClWhiFQf3A7yswpF/3Msy3S0=;
+        b=LBzm5GAXO4gI2fWlLRSZWlBA7gf34GlPuoguDlNScNkMCWvzcpqi7quohKoHpuV+Zy0IEu
+        oiOOWDxHHjSuB8Aw==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id C442CA3B8C;
+        Wed, 24 Nov 2021 09:31:29 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id A14EC1E1328; Wed, 24 Nov 2021 10:31:29 +0100 (CET)
+Date:   Wed, 24 Nov 2021 10:31:29 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     akpm@linux-foundation.org, keescook@chromium.org,
+        yzaikin@google.com, nixiaoming@huawei.com, ebiederm@xmission.com,
+        peterz@infradead.org, gregkh@linuxfoundation.org, pjt@google.com,
+        liu.hailong6@zte.com.cn, andriy.shevchenko@linux.intel.com,
+        sre@kernel.org, penguin-kernel@i-love.sakura.ne.jp,
+        pmladek@suse.com, senozhatsky@chromium.org, wangqing@vivo.com,
+        bcrl@kvack.org, viro@zeniv.linux.org.uk, jack@suse.cz,
+        amir73il@gmail.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 9/9] dnotify: move dnotify sysctl to dnotify.c
+Message-ID: <20211124093129.GD8583@quack2.suse.cz>
+References: <20211123202347.818157-1-mcgrof@kernel.org>
+ <20211123202347.818157-10-mcgrof@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211123202347.818157-10-mcgrof@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-binder.c file comment produce warning with checkpatch as below:
-WARNING: waitqueue_active without comment
+On Tue 23-11-21 12:23:47, Luis Chamberlain wrote:
+> From: Xiaoming Ni <nixiaoming@huawei.com>
+> 
+> The kernel/sysctl.c is a kitchen sink where everyone leaves
+> their dirty dishes, this makes it very difficult to maintain.
+> 
+> To help with this maintenance let's start by moving sysctls to
+> places where they actually belong. The proc sysctl maintainers
+> do not want to know what sysctl knobs you wish to add for your own
+> piece of code, we just care about the core logic.
+> 
+> So move dnotify sysctls to dnotify.c and use the new
+> register_sysctl_init() to register the sysctl interface.
+> 
+> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+> [mcgrof: adjust the commit log to justify the move]
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 
-Placing the waitqueue_active comment just above waitqueue_active() avoid
-this warning.
+Looks sane. Feel free to add:
 
-Signed-off-by: Ajith P V <ajithpv.linux@gmail.com>
----
- drivers/android/binder.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Acked-by: Jan Kara <jack@suse.cz>
 
-diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-index 49fb74196d02..e1695535f252 100644
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -4424,10 +4424,12 @@ static int binder_thread_release(struct binder_proc *proc,
- 	/*
- 	 * If this thread used poll, make sure we remove the waitqueue
- 	 * from any epoll data structures holding it with POLLFREE.
--	 * waitqueue_active() is safe to use here because we're holding
--	 * the inner lock.
- 	 */
- 	if ((thread->looper & BINDER_LOOPER_STATE_POLL) &&
-+	    /*
-+	     * waitqueue_active() is safe to use here because we're holding
-+	     * the inner lock.
-+	     */
- 	    waitqueue_active(&thread->wait)) {
- 		wake_up_poll(&thread->wait, EPOLLHUP | POLLFREE);
- 	}
+								Honza
+
+> ---
+>  fs/notify/dnotify/dnotify.c | 21 ++++++++++++++++++++-
+>  include/linux/dnotify.h     |  1 -
+>  kernel/sysctl.c             | 10 ----------
+>  3 files changed, 20 insertions(+), 12 deletions(-)
+> 
+> diff --git a/fs/notify/dnotify/dnotify.c b/fs/notify/dnotify/dnotify.c
+> index e85e13c50d6d..2b04e2296fb6 100644
+> --- a/fs/notify/dnotify/dnotify.c
+> +++ b/fs/notify/dnotify/dnotify.c
+> @@ -19,7 +19,25 @@
+>  #include <linux/fdtable.h>
+>  #include <linux/fsnotify_backend.h>
+>  
+> -int dir_notify_enable __read_mostly = 1;
+> +static int dir_notify_enable __read_mostly = 1;
+> +#ifdef CONFIG_SYSCTL
+> +static struct ctl_table dnotify_sysctls[] = {
+> +	{
+> +		.procname	= "dir-notify-enable",
+> +		.data		= &dir_notify_enable,
+> +		.maxlen		= sizeof(int),
+> +		.mode		= 0644,
+> +		.proc_handler	= proc_dointvec,
+> +	},
+> +	{}
+> +};
+> +static void __init dnotify_sysctl_init(void)
+> +{
+> +	register_sysctl_init("fs", dnotify_sysctls);
+> +}
+> +#else
+> +#define dnotify_sysctl_init() do { } while (0)
+> +#endif
+>  
+>  static struct kmem_cache *dnotify_struct_cache __read_mostly;
+>  static struct kmem_cache *dnotify_mark_cache __read_mostly;
+> @@ -386,6 +404,7 @@ static int __init dnotify_init(void)
+>  	dnotify_group = fsnotify_alloc_group(&dnotify_fsnotify_ops);
+>  	if (IS_ERR(dnotify_group))
+>  		panic("unable to allocate fsnotify group for dnotify\n");
+> +	dnotify_sysctl_init();
+>  	return 0;
+>  }
+>  
+> diff --git a/include/linux/dnotify.h b/include/linux/dnotify.h
+> index 0aad774beaec..4f3b25d47436 100644
+> --- a/include/linux/dnotify.h
+> +++ b/include/linux/dnotify.h
+> @@ -29,7 +29,6 @@ struct dnotify_struct {
+>  			    FS_CREATE | FS_DN_RENAME |\
+>  			    FS_MOVED_FROM | FS_MOVED_TO)
+>  
+> -extern int dir_notify_enable;
+>  extern void dnotify_flush(struct file *, fl_owner_t);
+>  extern int fcntl_dirnotify(int, struct file *, unsigned long);
+>  
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> index 20326d67b814..7a90a12b9ea4 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -48,7 +48,6 @@
+>  #include <linux/times.h>
+>  #include <linux/limits.h>
+>  #include <linux/dcache.h>
+> -#include <linux/dnotify.h>
+>  #include <linux/syscalls.h>
+>  #include <linux/vmstat.h>
+>  #include <linux/nfs_fs.h>
+> @@ -3090,15 +3089,6 @@ static struct ctl_table fs_table[] = {
+>  		.proc_handler	= proc_dointvec,
+>  	},
+>  #endif
+> -#ifdef CONFIG_DNOTIFY
+> -	{
+> -		.procname	= "dir-notify-enable",
+> -		.data		= &dir_notify_enable,
+> -		.maxlen		= sizeof(int),
+> -		.mode		= 0644,
+> -		.proc_handler	= proc_dointvec,
+> -	},
+> -#endif
+>  #ifdef CONFIG_MMU
+>  #ifdef CONFIG_FILE_LOCKING
+>  	{
+> -- 
+> 2.33.0
+> 
 -- 
-2.17.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
