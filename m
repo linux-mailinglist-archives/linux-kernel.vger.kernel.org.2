@@ -2,103 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAAAD45D0AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 00:00:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81BC445D0BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 00:05:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346353AbhKXXDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 18:03:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbhKXXD3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 18:03:29 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27333C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 15:00:19 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id y13so17043664edd.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 15:00:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3I9PlA7fC8HgB2vr5zydxZ4zg5kA0COA3RvDIbE8i6k=;
-        b=akPSCYrD6EASyAHbxHctwYr0LW3XzQryE1WnwGL61n9RnWw1NkFmVSX0i9BtWuGZYh
-         3HsX+j15WJiusBmje+0ffkwgWfbwZl3OZuwQ+FeVw4qqieUoMRy3mrm7/NfOdIx1DyJ8
-         WJvl/rGNRCqOZGiGzEuCEgFc6r1TDjmx7J7Ok=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3I9PlA7fC8HgB2vr5zydxZ4zg5kA0COA3RvDIbE8i6k=;
-        b=M9TJGSauAAct6s3HDIurshrhgCaYd8VIUBikpLUWvbNiv6/IAuXNlVfEtHecOQpYJZ
-         9KCovfcs3TIrj/XuTPGaqKe+5HCdHLKBPX7QA3Kt5UmhKARx3tDK6n/U4Z1YlCGjHa5S
-         8ec4jBTfOqATBDiiTF++0+RRkwk88xHvHU3SSmv4Ip+9PDx5wuMYhzJlH8/Bc9HneWmR
-         OnvtkuGOs5X/tcJX6uSS43r7pSeI/zXFnJ1A14qwqHvtlMO1hWeLFmJClbh8f1pNW20H
-         kCetw1U+b4rYp/+E/aYs5bYIHoPwHY/sVbNw+g/x6BeCdyImUomCgqwWEJkb2yo2gG3c
-         cw+w==
-X-Gm-Message-State: AOAM531m0hgfEfhmNbf3xwyAb1WRitFhK1iGvycoFlb4XLKZlOoI1wxF
-        7wUKY5lVXVxdhnH0ZTqF/FQgL8i/B7Tizj2S
-X-Google-Smtp-Source: ABdhPJy8Ya6GpkY/+1+KVvSQRqWgjGZA+Ct9/Uc0yLcSf2V4aEhY0/TPG73jmOZr0qwOgj2b9e64jQ==
-X-Received: by 2002:a05:6402:51d2:: with SMTP id r18mr31517910edd.13.1637794817414;
-        Wed, 24 Nov 2021 15:00:17 -0800 (PST)
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com. [209.85.128.46])
-        by smtp.gmail.com with ESMTPSA id qf8sm590957ejc.8.2021.11.24.15.00.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 15:00:16 -0800 (PST)
-Received: by mail-wm1-f46.google.com with SMTP id p18so3901138wmq.5
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 15:00:16 -0800 (PST)
-X-Received: by 2002:a05:600c:4e07:: with SMTP id b7mr1159359wmq.8.1637794816000;
- Wed, 24 Nov 2021 15:00:16 -0800 (PST)
+        id S1352468AbhKXXIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 18:08:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51046 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352370AbhKXXIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 18:08:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B413610A1;
+        Wed, 24 Nov 2021 23:05:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637795107;
+        bh=wHpvNaIZ8v0pug4/Z5vHHcFvT4++TpzarXrssDbXZVs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=JGT8hJLa2T+zGc61SnGCNTlnCroqIHmL02VnEYJ8IKaHCz0ACCroW2zdcRzkCXRws
+         0yhPDJqQzRDta3EdUNkwNXJ1tA+JmTat7s/SaYhp8niRmbS2ULzqzQxxiJTHcIatYi
+         pfSDscfnre3vain3keXiz5NzW+riNSxKoXcdvnR4JrcS1lm49EA6zsvHNMwTfjx0ZA
+         OZL4AcSt9zmGWtDj0TfdNAnSqlTeye/2peXEkqzsYP0wsJfth+6Hrhp1wnakDGQQav
+         4dYLZR1Qauh3O7hRE+d0Ed3CDNPmq08Dk3DYv3xPES80YJSdSrAh1wnmYT0Z0be3lU
+         2rVuqxjXwmQxA==
+From:   =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Cc:     pali@kernel.org, stable@vger.kernel.org,
+        Wen Yang <wen.yang99@zte.com.cn>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
+Subject: [PATCH 4.19 01/20] PCI: aardvark: Fix a leaked reference by adding missing of_node_put()
+Date:   Thu, 25 Nov 2021 00:04:41 +0100
+Message-Id: <20211124230500.27109-2-kabel@kernel.org>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211124230500.27109-1-kabel@kernel.org>
+References: <20211124230500.27109-1-kabel@kernel.org>
 MIME-Version: 1.0
-References: <20211124192024.2408218-1-catalin.marinas@arm.com>
- <20211124192024.2408218-4-catalin.marinas@arm.com> <YZ6arlsi2L3LVbFO@casper.infradead.org>
-In-Reply-To: <YZ6arlsi2L3LVbFO@casper.infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 24 Nov 2021 15:00:00 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgHqjX3kenSk5_bCRM+ZC-tgndBMfbVVsbp0CwJf2DU-w@mail.gmail.com>
-Message-ID: <CAHk-=wgHqjX3kenSk5_bCRM+ZC-tgndBMfbVVsbp0CwJf2DU-w@mail.gmail.com>
-Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
- with sub-page faults
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Catalin talked about the other change, but this part:
+From: Wen Yang <wen.yang99@zte.com.cn>
 
-On Wed, Nov 24, 2021 at 12:04 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> (where __copy_to_user_nofault() is a new function that does exactly what
-> copy_to_user_nofault() does, but returns the number of bytes copied)
+commit 3842f5166bf1ef286fe7a39f262b5c9581308366 upstream.
 
-If we want the "how many bytes" part, then we should just make
-copy_to_user_nofault() have the same semantics as a plain
-copy_to_user().
+The call to of_get_next_child() returns a node pointer with refcount
+incremented thus it must be explicitly decremented after the last
+usage.
 
-IOW, change it to return "number of bytes not copied".
+irq_domain_add_linear() also calls of_node_get() to increase refcount,
+so irq_domain will not be affected when it is released.
 
-Lookin gat the current uses, such a change would be trivial. The only
-case that wants a 0/-EFAULT error is the bpf_probe_write_user(),
-everybody else already just wants "zero for success", so changing
-copy_to_user_nofault() would be trivial.
+Detected by coccinelle with the following warnings:
+  ./drivers/pci/controller/pci-aardvark.c:826:1-7: ERROR: missing of_node_put; acquired a node pointer with refcount incremented on line 798, but without a corresponding object release within this function.
 
-And it really is odd and very non-intuitive that
-copy_to_user_nofault() has a completely different return value from
-copy_to_user().
+Signed-off-by: Wen Yang <wen.yang99@zte.com.cn>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Marek Behún <kabel@kernel.org>
+---
+ drivers/pci/controller/pci-aardvark.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-So if _anybody_ wants a byte-count, that should just be fixed.
+diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+index 98fb3c1f45e4..3625d73e016a 100644
+--- a/drivers/pci/controller/pci-aardvark.c
++++ b/drivers/pci/controller/pci-aardvark.c
+@@ -754,6 +754,7 @@ static int advk_pcie_init_irq_domain(struct advk_pcie *pcie)
+ 	struct device_node *node = dev->of_node;
+ 	struct device_node *pcie_intc_node;
+ 	struct irq_chip *irq_chip;
++	int ret = 0;
+ 
+ 	raw_spin_lock_init(&pcie->irq_lock);
+ 
+@@ -768,8 +769,8 @@ static int advk_pcie_init_irq_domain(struct advk_pcie *pcie)
+ 	irq_chip->name = devm_kasprintf(dev, GFP_KERNEL, "%s-irq",
+ 					dev_name(dev));
+ 	if (!irq_chip->name) {
+-		of_node_put(pcie_intc_node);
+-		return -ENOMEM;
++		ret = -ENOMEM;
++		goto out_put_node;
+ 	}
+ 
+ 	irq_chip->irq_mask = advk_pcie_irq_mask;
+@@ -781,11 +782,13 @@ static int advk_pcie_init_irq_domain(struct advk_pcie *pcie)
+ 				      &advk_pcie_irq_domain_ops, pcie);
+ 	if (!pcie->irq_domain) {
+ 		dev_err(dev, "Failed to get a INTx IRQ domain\n");
+-		of_node_put(pcie_intc_node);
+-		return -ENOMEM;
++		ret = -ENOMEM;
++		goto out_put_node;
+ 	}
+ 
+-	return 0;
++out_put_node:
++	of_node_put(pcie_intc_node);
++	return ret;
+ }
+ 
+ static void advk_pcie_remove_irq_domain(struct advk_pcie *pcie)
+-- 
+2.32.0
 
-                    Linus
