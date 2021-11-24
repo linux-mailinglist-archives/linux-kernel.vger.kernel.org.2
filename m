@@ -2,112 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7220745D012
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:27:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FDF045D014
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:27:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344625AbhKXWaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 17:30:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344457AbhKXWaK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:30:10 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2A9C061574;
-        Wed, 24 Nov 2021 14:27:00 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8FB4290E;
-        Wed, 24 Nov 2021 23:26:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1637792818;
-        bh=MhpUrhVW+9QPh2Furlp0JZjdfxALMVDTKEaY5FshAys=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hUmZ+pWDZ5FtHXjmNnznCKybWeFSFPzvHPps2vGdP/FlVszrGZp8I8HxtB24JuZ4r
-         i5vsJkyBfJcKZpod6HdLyBkSZD4b/vPUhSlK0bcyuQfATxLTyzuzi2/67o/Vg55y0A
-         OPK3nwBV2eVFR1pMiIOzVedq4h7Ie0n89XA8vYik=
-Date:   Thu, 25 Nov 2021 00:26:35 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Vaibhav Hiremath <hvaibhav@ti.com>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Dominic Curran <dcurran@ti.com>,
-        David Cohen <dacohen@gmail.com>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] media: omap3isp: fix out-of-range warning
-Message-ID: <YZ68G09viJA/vkby@pendragon.ideasonboard.com>
-References: <20211124192430.74541-1-arnd@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211124192430.74541-1-arnd@kernel.org>
+        id S1344454AbhKXWbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 17:31:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40356 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243729AbhKXWbD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 17:31:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B424A6104F;
+        Wed, 24 Nov 2021 22:27:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1637792872;
+        bh=BKz9QA9JFTJnccEGqHOogfldMgA6v13NFeRxPimPlLk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=woHezK0AN+uT+ToPYnLfy98/iij0DyElM/2RoJrTntUaLhX+bcelCGpi/e9uUMKK4
+         SPEwWzOrEemU5eGIExvHugkjtdrsNnwt/qyNhVxvUHwYXA8Olh/IwGdd64nRU9tq80
+         CvqT+9Vzc7U1G6PGEOmhHEMv6ivqOI9P1KX2tNE8=
+Date:   Wed, 24 Nov 2021 14:27:51 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     cgel.zte@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, chiminghao <chi.minghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH] mm: Use BUG_ON instead of if condition followed by BUG
+Message-Id: <20211124142751.e48cdcc3aea9e0ef899f4347@linux-foundation.org>
+In-Reply-To: <YZ483gwnwTysPt0G@casper.infradead.org>
+References: <20211124030849.34998-1-chi.minghao@zte.com.cn>
+        <YZ483gwnwTysPt0G@casper.infradead.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Wed, 24 Nov 2021 13:23:42 +0000 Matthew Wilcox <willy@infradead.org> wrote:
 
-Thank you for the patch.
-
-On Wed, Nov 24, 2021 at 08:24:15PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+> On Wed, Nov 24, 2021 at 03:08:49AM +0000, cgel.zte@gmail.com wrote:
+> > From: chiminghao <chi.minghao@zte.com.cn>
+> > 
+> > Fix the following coccinelle report:
+> > ./mm/memory_hotplug.c:2210:2-5:
+> > WARNING  Use BUG_ON instead of if condition followed by BUG.
 > 
-> clang points out that the 8-bit height/width values never exceed
-> the range of that type when building with 'make W=1 LLVM=1':
+> What coccinelle script is reporting this?
 > 
-> drivers/media/platform/omap3isp/isph3a_af.c:173:6: error: result of comparison of constant 256 with expression of type '__u8' (aka 'unsigned char') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
->         if (IS_OUT_OF_BOUNDS(paxel_cfg->height, OMAP3ISP_AF_PAXEL_HEIGHT_MIN,
->             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/media/platform/omap3isp/isph3a_af.c:24:33: note: expanded from macro 'IS_OUT_OF_BOUNDS'
->         (((value) < (min)) || ((value) > (max)))
->                                ~~~~~~~ ^ ~~~~~
-> drivers/media/platform/omap3isp/isph3a_af.c:179:6: error: result of comparison of constant 256 with expression of type '__u8' (aka 'unsigned char') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
->         if (IS_OUT_OF_BOUNDS(paxel_cfg->width, OMAP3ISP_AF_PAXEL_WIDTH_MIN,
->             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/media/platform/omap3isp/isph3a_af.c:24:33: note: expanded from macro 'IS_OUT_OF_BOUNDS'
->         (((value) < (min)) || ((value) > (max)))
->                                ~~~~~~~ ^ ~~~~~
+> > -	if (try_remove_memory(start, size))
+> > -		BUG();
+> > +	BUG_ON(try_remove_memory(start, size));
 > 
-> Add a cast to 32-bit to avoid the warning. Checking just the lower bounds
-> would be sufficient as well, but it seems more consistent to use
-> the IS_OUT_OF_BOUNDS() check for all members.
+> I really, really, really do not like this.  For functions with
+> side-effects, this is bad style.  If it's a pure predicate, then
+> sure, but this is bad.
 
-Mauro has submitted a fix that handles the cast in the
-IS_OUT_OF_BOUNDS() macro, see
-https://lore.kernel.org/all/b70f819b11e024649f113be1158f34b24914a1ed.1637573097.git.mchehab+huawei@kernel.org/.
-
-> Fixes: 68e342b3068c ("[media] omap3isp: Statistics")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/media/platform/omap3isp/isph3a_af.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/platform/omap3isp/isph3a_af.c b/drivers/media/platform/omap3isp/isph3a_af.c
-> index a65cfdfa9637..c544d9c812b0 100644
-> --- a/drivers/media/platform/omap3isp/isph3a_af.c
-> +++ b/drivers/media/platform/omap3isp/isph3a_af.c
-> @@ -170,13 +170,13 @@ static int h3a_af_validate_params(struct ispstat *af, void *new_conf)
->  			     OMAP3ISP_AF_PAXEL_VERTICAL_COUNT_MAX))
->  		return -EINVAL;
->  
-> -	if (IS_OUT_OF_BOUNDS(paxel_cfg->height, OMAP3ISP_AF_PAXEL_HEIGHT_MIN,
-> +	if (IS_OUT_OF_BOUNDS((u32)paxel_cfg->height, OMAP3ISP_AF_PAXEL_HEIGHT_MIN,
->  			     OMAP3ISP_AF_PAXEL_HEIGHT_MAX) ||
->  	    paxel_cfg->height % 2)
->  		return -EINVAL;
->  
->  	/* Check width */
-> -	if (IS_OUT_OF_BOUNDS(paxel_cfg->width, OMAP3ISP_AF_PAXEL_WIDTH_MIN,
-> +	if (IS_OUT_OF_BOUNDS((u32)paxel_cfg->width, OMAP3ISP_AF_PAXEL_WIDTH_MIN,
->  			     OMAP3ISP_AF_PAXEL_WIDTH_MAX) ||
->  	    paxel_cfg->width % 2)
->  		return -EINVAL;
-
--- 
-Regards,
-
-Laurent Pinchart
+I don't like it either.  Yes, BUG() is special but it's such dangerous
+practice.  I'd vote to change coccinelle.
