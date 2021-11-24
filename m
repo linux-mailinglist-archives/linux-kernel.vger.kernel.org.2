@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD9445C5CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:59:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B1D445C249
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:24:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349195AbhKXOAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:00:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46150 "EHLO mail.kernel.org"
+        id S235382AbhKXN03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:26:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350739AbhKXN5h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:57:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0D86633BC;
-        Wed, 24 Nov 2021 13:07:52 +0000 (UTC)
+        id S1350020AbhKXNXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:23:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D0DE61B2D;
+        Wed, 24 Nov 2021 12:48:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759273;
-        bh=rHni45b9N8bbtKhNNzet3MwnCTEfRmZ0/6rtEHGNQyM=;
+        s=korg; t=1637758107;
+        bh=deIH0YXRzyXmDnM7tiGr+SnSPusFaQvf7yI468ANOEc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2GHHENUbwGtQexeJ5omUuPRJLeDwEDgmoh5XAddnhYEPJbyOJ3sB6+H+7CKBLb/nA
-         1p9b5tmvZFvoBiVLbB3si3ayZZdIBuPLxwS9lbnQ+IjpcllxMvpSxUFcWZyDt8ztPq
-         qQwMRS2gDiyyAU4GmU8EjZrvu6EgORuVO3SMxclc=
+        b=i1coVOv6WtO9k+ul4w3kFiIv+XihrPw0eO2n/DgW4oxCETS4kQ9X6czwhes8+hnKk
+         6mF91gnqypyT+61FBRO/oZMtxn4FGO5k603KBAvB/Owan0jaEi9OSTrJ88U4IiOqUn
+         zwIFDeWGhcDFO35GgQpoaz9jw67bHY50xdnw9dB0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        stable@vger.kernel.org, Artur Rojek <contact@artur-rojek.eu>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 185/279] s390/kexec: fix return code handling
+Subject: [PATCH 5.4 036/100] clk: ingenic: Fix bugs with divided dividers
 Date:   Wed, 24 Nov 2021 12:57:52 +0100
-Message-Id: <20211124115725.119795149@linuxfoundation.org>
+Message-Id: <20211124115656.041283669@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,78 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Carstens <hca@linux.ibm.com>
+From: Paul Cercueil <paul@crapouillou.net>
 
-[ Upstream commit 20c76e242e7025bd355619ba67beb243ba1a1e95 ]
+[ Upstream commit ed84ef1cd7eddf933d4ffce2caa8161d6f947245 ]
 
-kexec_file_add_ipl_report ignores that ipl_report_finish may fail and
-can return an error pointer instead of a valid pointer.
-Fix this and simplify by returning NULL in case of an error and let
-the only caller handle this case.
+Two fixes in one:
 
-Fixes: 99feaa717e55 ("s390/kexec_file: Create ipl report and pass to next kernel")
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+- In the "impose hardware constraints" block, the "logical" divider
+  value (aka. not translated to the hardware) was clamped to fit in the
+  register area, but this totally ignored the fact that the divider
+  value can itself have a fixed divider.
+
+- The code that made sure that the divider value returned by the
+  function was a multiple of its own fixed divider could result in a
+  wrong value being calculated, because it was rounded down instead of
+  rounded up.
+
+Fixes: 4afe2d1a6ed5 ("clk: ingenic: Allow divider value to be divided")
+Co-developed-by: Artur Rojek <contact@artur-rojek.eu>
+Signed-off-by: Artur Rojek <contact@artur-rojek.eu>
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Link: https://lore.kernel.org/r/20211001172033.122329-1-paul@crapouillou.net
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/ipl.c                | 3 ++-
- arch/s390/kernel/machine_kexec_file.c | 8 +++++++-
- 2 files changed, 9 insertions(+), 2 deletions(-)
+ drivers/clk/ingenic/cgu.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/s390/kernel/ipl.c b/arch/s390/kernel/ipl.c
-index e2cc35775b996..5ad1dde23dc59 100644
---- a/arch/s390/kernel/ipl.c
-+++ b/arch/s390/kernel/ipl.c
-@@ -2156,7 +2156,7 @@ void *ipl_report_finish(struct ipl_report *report)
- 
- 	buf = vzalloc(report->size);
- 	if (!buf)
--		return ERR_PTR(-ENOMEM);
-+		goto out;
- 	ptr = buf;
- 
- 	memcpy(ptr, report->ipib, report->ipib->hdr.len);
-@@ -2195,6 +2195,7 @@ void *ipl_report_finish(struct ipl_report *report)
+diff --git a/drivers/clk/ingenic/cgu.c b/drivers/clk/ingenic/cgu.c
+index 7490d4f4d9366..dff759c0f6193 100644
+--- a/drivers/clk/ingenic/cgu.c
++++ b/drivers/clk/ingenic/cgu.c
+@@ -426,15 +426,15 @@ ingenic_clk_calc_div(const struct ingenic_cgu_clk_info *clk_info,
  	}
  
- 	BUG_ON(ptr > buf + report->size);
-+out:
- 	return buf;
- }
+ 	/* Impose hardware constraints */
+-	div = min_t(unsigned, div, 1 << clk_info->div.bits);
+-	div = max_t(unsigned, div, 1);
++	div = clamp_t(unsigned int, div, clk_info->div.div,
++		      clk_info->div.div << clk_info->div.bits);
  
-diff --git a/arch/s390/kernel/machine_kexec_file.c b/arch/s390/kernel/machine_kexec_file.c
-index f9e4baa64b675..c1090f0b1f6a6 100644
---- a/arch/s390/kernel/machine_kexec_file.c
-+++ b/arch/s390/kernel/machine_kexec_file.c
-@@ -170,6 +170,7 @@ static int kexec_file_add_ipl_report(struct kimage *image,
- 	struct kexec_buf buf;
- 	unsigned long addr;
- 	void *ptr, *end;
-+	int ret;
+ 	/*
+ 	 * If the divider value itself must be divided before being written to
+ 	 * the divider register, we must ensure we don't have any bits set that
+ 	 * would be lost as a result of doing so.
+ 	 */
+-	div /= clk_info->div.div;
++	div = DIV_ROUND_UP(div, clk_info->div.div);
+ 	div *= clk_info->div.div;
  
- 	buf.image = image;
- 
-@@ -199,7 +200,10 @@ static int kexec_file_add_ipl_report(struct kimage *image,
- 		ptr += len;
- 	}
- 
-+	ret = -ENOMEM;
- 	buf.buffer = ipl_report_finish(data->report);
-+	if (!buf.buffer)
-+		goto out;
- 	buf.bufsz = data->report->size;
- 	buf.memsz = buf.bufsz;
- 
-@@ -209,7 +213,9 @@ static int kexec_file_add_ipl_report(struct kimage *image,
- 		data->kernel_buf + offsetof(struct lowcore, ipl_parmblock_ptr);
- 	*lc_ipl_parmblock_ptr = (__u32)buf.mem;
- 
--	return kexec_add_buffer(&buf);
-+	ret = kexec_add_buffer(&buf);
-+out:
-+	return ret;
- }
- 
- void *kexec_file_add_components(struct kimage *image,
+ 	return div;
 -- 
 2.33.0
 
