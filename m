@@ -2,129 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 208E945C6CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:08:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C86445C7A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355089AbhKXOLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:11:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53830 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356052AbhKXOIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:08:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B124C6135F;
-        Wed, 24 Nov 2021 13:59:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637762378;
-        bh=qRP+clj8R/VdWhftZ8Y8X7gwjyLiR1Ndt0XMFQ1d99I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qwjskdleu3wFs5Bp+wvn7/HQgcncwjzNLbZJvm05oYaNrcYQTwWP5OPt4NA+r19ce
-         xvpj4Ygu81mu+0T0HClP6KV/QWjpcF9snHTHoGaG5tUeLxnTTWkLES0g3C2OG9fyHP
-         3gdMDDzRgjs1FxHFxipNVT3bu4+1WLgAMlUBkLt05N30IajW10WzN8g5y+5eK5i725
-         UrYk6tfyltIEGHPLMkyi6LuRszHy8ZTAL81DcgYxpSc8FxYZIzgFUL244Ub8IMFPQK
-         iyz4glX1RQI/lDwdXU9D49kB+bXi/+6kFMsXGuBY9Lzmn68zgSqocZJHLF6A/zwCj2
-         E8n91Zb/v+PWQ==
-Date:   Wed, 24 Nov 2021 05:59:35 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Paul Walmsley <paul@pwsan.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Benoit Parrot <bparrot@ti.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Keerthy <j-keerthy@ti.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH 01/17] bitfield: Add non-constant field_{prep,get}()
- helpers
-Message-ID: <20211124055935.416dc472@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <05d4673a0343bfd83824d307e9cf8bf92e3814a6.camel@sipsolutions.net>
-References: <cover.1637592133.git.geert+renesas@glider.be>
-        <3a54a6703879d10f08cf0275a2a69297ebd2b1d4.1637592133.git.geert+renesas@glider.be>
-        <01b44b38c087c151171f8d45a2090474c2559306.camel@sipsolutions.net>
-        <20211122171739.03848154@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAMuHMdWAAGrQUZN18cnDTDUUhuPNTZTFkRMe2Sbf+s7CedPSxA@mail.gmail.com>
-        <637a4183861a1f2cdab52b7652bfa7ed33fbcdd2.camel@sipsolutions.net>
-        <20211123154922.600fd3b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <05d4673a0343bfd83824d307e9cf8bf92e3814a6.camel@sipsolutions.net>
+        id S1353618AbhKXOoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:44:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349862AbhKXOnz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:43:55 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D216C21AA77
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 06:04:54 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id fv9-20020a17090b0e8900b001a6a5ab1392so2832580pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 06:04:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LKK6ExNzSQzy0j7H6kvB9GSvV7uuA0xvCSvp04ywCxM=;
+        b=wq0g7u7qaPUTV/HImPQzef8z2eLsaWXYcsiZAYi753fzSsLFjYyly9AHClHd9U7ie1
+         4aFQyVax836p0JRlympP7qSa51wqP9Sb5d4/DObqA5oDiomBkNlv9W53bZFqAo+rY6Ke
+         RHNrmTQbePQ+Whu1W9AvoDCMgmhSq9ALLYzUD9y6bdoMAPfPkan/ToOBCHGeouPsCqbd
+         zFMw4JxBJGojrRwYAb25F+RVDIXSQGwAQWoVA0DhbhWSfOSD9NEth+8LRO3LFIpCRZ+j
+         sagw/7YTD2Xd/jQ0dwkUS+GLjCg8FT3RfRhEz+5QCJ7gdcq/CbhD3oqD/5LtHHkpZE2y
+         t/4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LKK6ExNzSQzy0j7H6kvB9GSvV7uuA0xvCSvp04ywCxM=;
+        b=zEXjsx1fw0QZDTSST0zIGoP1uADgHsJPXndL46ri3CG+gu9tfB025OT5vIH+42RqRj
+         nTLBLdcIZKPpTO6o5ZcCkf4dV+GPiOShJjQ9Z7/zpFm50YtCFnFk3J8Z2H9p+4IQy2uj
+         gFHL3jAKdZEzqKaWhapUfHYDi3lmokxPGvd0iuiyH6hdlgI0bg3XJ5ZSIKwFZCIp4KMb
+         rxl24+xRybpot/7XpBjnkycIgtR5TiuU7LFV3Y5KtOgcUzi/ytKzj/YhrqpBR/kT/1PA
+         3XEpCf0WQBudACco13kedxO35CGAmTeHXH/+dDNQzSXat4OQAs99ttGJzsvjz3x4G1zV
+         CtVQ==
+X-Gm-Message-State: AOAM5320Fv9He6YsrowdW4LtYLbTeFXZ7MtDpLFrCgIU97434xNhp4Qx
+        CBragdBwi9yIpUEkx6hWmrC2B3KkUX8o
+X-Google-Smtp-Source: ABdhPJz4gF1KEK89rws4cRqe6hwRhjQidhv10SVJBA+zplygTVNOUnNSjgqlYzxgjMr/tAWENJef6A==
+X-Received: by 2002:a17:902:7fc3:b0:144:e29c:228d with SMTP id t3-20020a1709027fc300b00144e29c228dmr18474667plb.4.1637762693629;
+        Wed, 24 Nov 2021 06:04:53 -0800 (PST)
+Received: from localhost.localdomain ([2409:4072:6d01:b1fa:45f8:8977:6ea4:8b04])
+        by smtp.gmail.com with ESMTPSA id q1sm17446019pfu.33.2021.11.24.06.04.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 06:04:53 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     lorenzo.pieralisi@arm.com, bhelgaas@google.com
+Cc:     svarbanov@mm-sol.com, bjorn.andersson@linaro.org, robh@kernel.org,
+        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] PCI: qcom: Fix warning generated due to the incorrect data type
+Date:   Wed, 24 Nov 2021 19:34:24 +0530
+Message-Id: <20211124140424.51675-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 09:03:24 +0100 Johannes Berg wrote:
-> On Tue, 2021-11-23 at 15:49 -0800, Jakub Kicinski wrote:
-> > > Indeed.
-> > > 
-> > > Also as I said in my other mail, the le32/be32/... variants are
-> > > tremendously useful, and they fundamentally cannot be expressed with the
-> > > FIELD_GET() or field_get() macros. IMHO this is a clear advantage to the  
-> > 
-> > Can you elaborate?  
-> 
-> Well, the way I see it, the only advantage of FIELD_GET() is that it
-> will auto-determine the type (based on the mask type.) This cannot work
-> if you need be/le conversions, because the be/le type annotations are
-> invisible to the compiler.
-> 
-> So obviously you could write a BE32_FIELD_GET(), but then really that's
-> equivalent to be32_get_bits() - note you you have to actually specify
-> the type in the macro name. I guess in theory you could make macros
-> where the type is an argument (like FIELD_GET_TYPE(be32, ...)), but I
-> don't see how that gains anything.
+Fix the below sparse warning due to the use of incorrect initializer
+data type (u16) for bdf_be variable that receives the return value of
+cpu_to_be16(). The correct type should be __be16.
 
-Ah, that's what you meant! Thanks for spelling it out.
+sparse warnings: (new ones prefixed by >>)
+>> drivers/pci/controller/dwc/pcie-qcom.c:1305:30: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned short [usertype] bdf_be @@     got restricted __be16 [usertype] @@
+   drivers/pci/controller/dwc/pcie-qcom.c:1305:30: sparse:     expected unsigned short [usertype] bdf_be
+   drivers/pci/controller/dwc/pcie-qcom.c:1305:30: sparse:     got restricted __be16 [usertype]
 
-FWIW I never found the be/le versions useful. Most of the time the data
-comes from bus accessors which swap or is unaligned so you have to do
-be/le_get_unaligned, which swaps. Plus if you access/set multiple
-fields you'd swap them one by one which seems wasteful.
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ drivers/pci/controller/dwc/pcie-qcom.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > > typed versions, and if you ask me we should get rid of the FIELD_GETand
-> > > FIELD_PREP entirely - difficult now, but at least let's not propagate
-> > > that?  
-> > 
-> > I don't see why.  
-> 
-> Just for being more regular, in the spirit of "there's exactly one
-> correct way of doing it" :)
+diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+index 8a7a300163e5..6c3b034e9946 100644
+--- a/drivers/pci/controller/dwc/pcie-qcom.c
++++ b/drivers/pci/controller/dwc/pcie-qcom.c
+@@ -1312,7 +1312,7 @@ static int qcom_pcie_config_sid_sm8250(struct qcom_pcie *pcie)
+ 
+ 	/* Look for an available entry to hold the mapping */
+ 	for (i = 0; i < nr_map; i++) {
+-		u16 bdf_be = cpu_to_be16(map[i].bdf);
++		__be16 bdf_be = cpu_to_be16(map[i].bdf);
+ 		u32 val;
+ 		u8 hash;
+ 
+-- 
+2.25.1
 
-Right now it seems the uppercase macros are more prevalent.
-
-Could just be because of the way the "swapping ones" are defined.
