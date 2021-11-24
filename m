@@ -2,83 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0016B45C8A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:28:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A3645C8A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236696AbhKXPbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 10:31:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235524AbhKXPbd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 10:31:33 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0FE2C061574;
-        Wed, 24 Nov 2021 07:28:22 -0800 (PST)
-Received: from Monstersaurus.ksquared.org.uk.beta.tailscale.net (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 79FC41B61;
-        Wed, 24 Nov 2021 16:28:19 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1637767699;
-        bh=02LZgwJVqB2VPnE+9BTLe+RNzrUDHc/3RCZ0fj/g6uU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GN723sZUzWCfsaGOQUEd/xt3fryZYQxAZbBo8aS0+87xv3t+fdtH0JUWb7+kfTd9u
-         eHU8DanbjnSrCK1IoqQtGbE9kbPTHvkK/sN1Q71bziZsX3nuqWdgkj1R2dciDvnuYT
-         hGOCXMDrFX8zfZnaptk9AlK/UoocZFbqzXhtxh84=
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-To:     linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Geert Uytterhoeven <geert@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Subject: [PATCH 2/2] arm64: dts: renesas: salvator-common: Merge hdmi0_con
-Date:   Wed, 24 Nov 2021 15:28:15 +0000
-Message-Id: <20211124152815.3926961-3-kieran.bingham+renesas@ideasonboard.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211124152815.3926961-1-kieran.bingham+renesas@ideasonboard.com>
-References: <20211124152815.3926961-1-kieran.bingham+renesas@ideasonboard.com>
+        id S236090AbhKXPdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 10:33:17 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:50248 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236235AbhKXPdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 10:33:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=0zu8tn9ID6lGE9Wj4S3+hQxg37uXJ+G7Hgh7Z/fOwio=; b=Uxsr5etidZqxHt8nHq80cd6Snu
+        Z74UakM3yLNj+6bfq0dJJlTr5bbsU+71jryH/6R7fVnFufcLXqAvHhgOBxXdJXZq8DT1rgMjDBJ0N
+        Lc6l+ENvyNzzKe2U9g0Zz/CxEB15ubVX/E1Al8rIPDPhYjKGNlBFQELT4ZSmWjlS9Xc4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mpuDc-00EWEE-3v; Wed, 24 Nov 2021 16:29:56 +0100
+Date:   Wed, 24 Nov 2021 16:29:56 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Dylan Hung <dylan_hung@aspeedtech.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Networking <netdev@vger.kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Russell King <linux@armlinux.org.uk>, hkallweit1@gmail.com,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Subject: Re: [PATCH] net:phy: Fix "Link is Down" issue
+Message-ID: <YZ5adFBpaJzPwfvc@lunn.ch>
+References: <20211124061057.12555-1-dylan_hung@aspeedtech.com>
+ <CACPK8Xc8aD8nY0M442=BdvrpRhYNS1HW7BNQgAQ+ExTfQMsMyQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACPK8Xc8aD8nY0M442=BdvrpRhYNS1HW7BNQgAQ+ExTfQMsMyQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The remote endpoint for the hdmi connector is specfied through a
-reference to the hdmi0_con endpoint, which is in the same file.
+> We should cc stable too.
 
-Simplify by specifying the remote-endpoint directly in the hdmi0_con
-endpoint.
+https://www.kernel.org/doc/html/v5.12/networking/netdev-FAQ.html#how-do-i-indicate-which-tree-net-vs-net-next-my-patch-should-be-in
 
-Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
----
- arch/arm64/boot/dts/renesas/salvator-common.dtsi | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/renesas/salvator-common.dtsi b/arch/arm64/boot/dts/renesas/salvator-common.dtsi
-index bf37777dca31..6092dc4531ad 100644
---- a/arch/arm64/boot/dts/renesas/salvator-common.dtsi
-+++ b/arch/arm64/boot/dts/renesas/salvator-common.dtsi
-@@ -97,6 +97,7 @@ hdmi0-out {
- 
- 		port {
- 			hdmi0_con: endpoint {
-+				remote-endpoint = <&rcar_dw_hdmi0_out>;
- 			};
- 		};
- 	};
-@@ -424,10 +425,6 @@ dw_hdmi0_snd_in: endpoint {
- 	};
- };
- 
--&hdmi0_con {
--	remote-endpoint = <&rcar_dw_hdmi0_out>;
--};
--
- #ifdef SOC_HAS_HDMI1
- &hdmi1 {
- 	status = "okay";
--- 
-2.30.2
-
+	Andrew
