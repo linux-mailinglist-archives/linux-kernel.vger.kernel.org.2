@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5442E45C5B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:57:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E1545C3A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349192AbhKXOAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:00:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44604 "EHLO mail.kernel.org"
+        id S1349182AbhKXNla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:41:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353201AbhKXN44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:56:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17CE9633BA;
-        Wed, 24 Nov 2021 13:07:27 +0000 (UTC)
+        id S1348855AbhKXNiF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:38:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 568D263210;
+        Wed, 24 Nov 2021 12:56:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759248;
-        bh=3DEEtA2d9eYMusYWKMLbgn+bfHLebArXs9TIeVEp3kA=;
+        s=korg; t=1637758572;
+        bh=QSqCYEMAf62OEoYS4OdQuGkXlIQKQh6bwBJcxa1BN2Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Npt0Q+9EaQ+NH63Gw4kn6FP5CR4CCE5qp4fV/R6E17B+/Pr3LDexT8LC0uSptQczE
-         P/sYsTbMBN3kCLvr4D7Rny1BkJm3pE6VQ4e4RGm76YYssjBmkuKaIonbvRNglz7KsQ
-         iur9aNfu5eIEZvVFuUwWtibYVmRmBjFVBGhkziiw=
+        b=mLUJL48Dj/akb9oZLjJaOVNKISyGkmsyJFUkTZLAD+ioivtsCleAqzsroZ7mKe1iT
+         kPtw6E6QzMLkVEF+ZsHQKO3ZyxHyX/sTsMKee/P8XZxO/PawuEP0ClJdR4D0VCWGKI
+         x87wC+z+VyiZ18R6KoHttxxUvqZ3DpYphxCcXuCI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
+        stable@vger.kernel.org, Arjun Roy <arjunroy@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 178/279] powerpc/pseries: rename numa_dist_table to form2_distances
-Date:   Wed, 24 Nov 2021 12:57:45 +0100
-Message-Id: <20211124115724.893956338@linuxfoundation.org>
+Subject: [PATCH 5.10 070/154] net-zerocopy: Refactor skb frag fast-forward op.
+Date:   Wed, 24 Nov 2021 12:57:46 +0100
+Message-Id: <20211124115704.584102373@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,77 +42,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Arjun Roy <arjunroy@google.com>
 
-[ Upstream commit 0bd81274e3f1195ee7c820ef02d62f31077c42c3 ]
+[ Upstream commit 7fba5309efe24e4f0284ef4b8663cdf401035e72 ]
 
-The name of the local variable holding the "form2" property address
-conflicts with the numa_distance_table global.
+Refactor skb frag fast-forwarding for tcp receive zerocopy. This is
+part of a patch set that introduces short-circuited hybrid copies
+for small receive operations, which results in roughly 33% fewer
+syscalls for small RPC scenarios.
 
-This patch does 's/numa_dist_table/form2_distances/g' over the function,
-which also renames numa_dist_table_length to form2_distances_length.
+skb_advance_to_frag(), given a skb and an offset into the skb,
+iterates from the first frag for the skb until we're at the frag
+specified by the offset. Assuming the offset provided refers to how
+many bytes in the skb are already read, the returned frag points to
+the next frag we may read from, while offset_frag is set to the number
+of bytes from this frag that we have already read.
 
-Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20211109064900.2041386-1-npiggin@gmail.com
+If frag is not null and offset_frag is equal to 0, then we may be able
+to map this frag's page into the process address space with
+vm_insert_page(). However, if offset_frag is not equal to 0, then we
+cannot do so.
+
+Signed-off-by: Arjun Roy <arjunroy@google.com>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Soheil Hassas Yeganeh <soheil@google.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/mm/numa.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ net/ipv4/tcp.c | 35 ++++++++++++++++++++++++++---------
+ 1 file changed, 26 insertions(+), 9 deletions(-)
 
-diff --git a/arch/powerpc/mm/numa.c b/arch/powerpc/mm/numa.c
-index 6f14c8fb6359d..53e9901409163 100644
---- a/arch/powerpc/mm/numa.c
-+++ b/arch/powerpc/mm/numa.c
-@@ -376,9 +376,9 @@ static void initialize_form2_numa_distance_lookup_table(void)
- {
- 	int i, j;
- 	struct device_node *root;
--	const __u8 *numa_dist_table;
-+	const __u8 *form2_distances;
- 	const __be32 *numa_lookup_index;
--	int numa_dist_table_length;
-+	int form2_distances_length;
- 	int max_numa_index, distance_index;
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index ba6e4c6db3b0a..b3721cff45023 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -1746,6 +1746,28 @@ int tcp_mmap(struct file *file, struct socket *sock,
+ }
+ EXPORT_SYMBOL(tcp_mmap);
  
- 	if (firmware_has_feature(FW_FEATURE_OPAL))
-@@ -392,20 +392,20 @@ static void initialize_form2_numa_distance_lookup_table(void)
- 	max_numa_index = of_read_number(&numa_lookup_index[0], 1);
- 
- 	/* first element of the array is the size and is encode-int */
--	numa_dist_table = of_get_property(root, "ibm,numa-distance-table", NULL);
--	numa_dist_table_length = of_read_number((const __be32 *)&numa_dist_table[0], 1);
-+	form2_distances = of_get_property(root, "ibm,numa-distance-table", NULL);
-+	form2_distances_length = of_read_number((const __be32 *)&form2_distances[0], 1);
- 	/* Skip the size which is encoded int */
--	numa_dist_table += sizeof(__be32);
-+	form2_distances += sizeof(__be32);
- 
--	pr_debug("numa_dist_table_len = %d, numa_dist_indexes_len = %d\n",
--		 numa_dist_table_length, max_numa_index);
-+	pr_debug("form2_distances_len = %d, numa_dist_indexes_len = %d\n",
-+		 form2_distances_length, max_numa_index);
- 
- 	for (i = 0; i < max_numa_index; i++)
- 		/* +1 skip the max_numa_index in the property */
- 		numa_id_index_table[i] = of_read_number(&numa_lookup_index[i + 1], 1);
- 
- 
--	if (numa_dist_table_length != max_numa_index * max_numa_index) {
-+	if (form2_distances_length != max_numa_index * max_numa_index) {
- 		WARN(1, "Wrong NUMA distance information\n");
- 		/* consider everybody else just remote. */
- 		for (i = 0;  i < max_numa_index; i++) {
-@@ -427,7 +427,7 @@ static void initialize_form2_numa_distance_lookup_table(void)
- 			int nodeA = numa_id_index_table[i];
- 			int nodeB = numa_id_index_table[j];
- 
--			numa_distance_table[nodeA][nodeB] = numa_dist_table[distance_index++];
-+			numa_distance_table[nodeA][nodeB] = form2_distances[distance_index++];
- 			pr_debug("dist[%d][%d]=%d ", nodeA, nodeB, numa_distance_table[nodeA][nodeB]);
++static skb_frag_t *skb_advance_to_frag(struct sk_buff *skb, u32 offset_skb,
++				       u32 *offset_frag)
++{
++	skb_frag_t *frag;
++
++	offset_skb -= skb_headlen(skb);
++	if ((int)offset_skb < 0 || skb_has_frag_list(skb))
++		return NULL;
++
++	frag = skb_shinfo(skb)->frags;
++	while (offset_skb) {
++		if (skb_frag_size(frag) > offset_skb) {
++			*offset_frag = offset_skb;
++			return frag;
++		}
++		offset_skb -= skb_frag_size(frag);
++		++frag;
++	}
++	*offset_frag = 0;
++	return frag;
++}
++
+ static int tcp_copy_straggler_data(struct tcp_zerocopy_receive *zc,
+ 				   struct sk_buff *skb, u32 copylen,
+ 				   u32 *offset, u32 *seq)
+@@ -1872,6 +1894,8 @@ static int tcp_zerocopy_receive(struct sock *sk,
+ 	curr_addr = address;
+ 	while (length + PAGE_SIZE <= zc->length) {
+ 		if (zc->recv_skip_hint < PAGE_SIZE) {
++			u32 offset_frag;
++
+ 			/* If we're here, finish the current batch. */
+ 			if (pg_idx) {
+ 				ret = tcp_zerocopy_vm_insert_batch(vma, pages,
+@@ -1892,16 +1916,9 @@ static int tcp_zerocopy_receive(struct sock *sk,
+ 				skb = tcp_recv_skb(sk, seq, &offset);
+ 			}
+ 			zc->recv_skip_hint = skb->len - offset;
+-			offset -= skb_headlen(skb);
+-			if ((int)offset < 0 || skb_has_frag_list(skb))
++			frags = skb_advance_to_frag(skb, offset, &offset_frag);
++			if (!frags || offset_frag)
+ 				break;
+-			frags = skb_shinfo(skb)->frags;
+-			while (offset) {
+-				if (skb_frag_size(frags) > offset)
+-					goto out;
+-				offset -= skb_frag_size(frags);
+-				frags++;
+-			}
  		}
- 	}
+ 		if (skb_frag_size(frags) != PAGE_SIZE || skb_frag_off(frags)) {
+ 			int remaining = zc->recv_skip_hint;
 -- 
 2.33.0
 
