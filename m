@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7BB45BD86
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE7845BB8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:18:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343604AbhKXMjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:39:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49470 "EHLO mail.kernel.org"
+        id S243416AbhKXMUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:20:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343711AbhKXMeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:34:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 257E5610CE;
-        Wed, 24 Nov 2021 12:20:59 +0000 (UTC)
+        id S243718AbhKXMPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:15:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F3FF610CA;
+        Wed, 24 Nov 2021 12:10:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756460;
-        bh=pOrxFxrKzxbVL3SNg/nmJ9I+n9m57O5vX32HBO8ZiTc=;
+        s=korg; t=1637755808;
+        bh=V7UmU5M+SBDr7VI4X2s/NYlrFzggs5XaFNUgQh2sRnw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZkCBPLjA8i7/5RIKxS1FZBk1fbLZ+/m1Q9SMnTU20q96wt2gUZ7Foihf/LAIEDLwT
-         PFcjYfSGqsJUNjb2fhnqT1MaE51y+lKuCMv/dt5j8WK//xowCzv2F4Xoqv1Kx2pnlg
-         rhgGZA+UuxacBpQwWJScR2wfBTZCNYfvW8M24ut8=
+        b=Ho1fy0MzocbsOASWwlYsMh7UC4muA+zXIzcVA/6x1d+Vz36LwBsSmRuT57I2haBoZ
+         lNTpmwf9TEN/h8bOZvwM578Ha6xqmA3POv7JO5RWHuSXs+vXMB3f/alj/HVLdiI2xY
+         ctYEQH8oqP0kvix6w/tpJTiK9Ve1MFz+EOJm66oA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 095/251] mwl8k: Fix use-after-free in mwl8k_fw_state_machine()
+Subject: [PATCH 4.9 066/207] media: uvcvideo: Set capability in s_param
 Date:   Wed, 24 Nov 2021 12:55:37 +0100
-Message-Id: <20211124115713.551168197@linuxfoundation.org>
+Message-Id: <20211124115706.063492020@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,59 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Ricardo Ribalda <ribalda@chromium.org>
 
-[ Upstream commit 257051a235c17e33782b6e24a4b17f2d7915aaec ]
+[ Upstream commit 97a2777a96070afb7da5d587834086c0b586c8cc ]
 
-When the driver fails to request the firmware, it calls its error
-handler. In the error handler, the driver detaches device from driver
-first before releasing the firmware, which can cause a use-after-free bug.
+Fixes v4l2-compliance:
 
-Fix this by releasing firmware first.
+Format ioctls (Input 0):
+                warn: v4l2-test-formats.cpp(1339): S_PARM is supported but doesn't report V4L2_CAP_TIMEPERFRAME
+                fail: v4l2-test-formats.cpp(1241): node->has_frmintervals && !cap->capability
 
-The following log reveals it:
-
-[    9.007301 ] BUG: KASAN: use-after-free in mwl8k_fw_state_machine+0x320/0xba0
-[    9.010143 ] Workqueue: events request_firmware_work_func
-[    9.010830 ] Call Trace:
-[    9.010830 ]  dump_stack_lvl+0xa8/0xd1
-[    9.010830 ]  print_address_description+0x87/0x3b0
-[    9.010830 ]  kasan_report+0x172/0x1c0
-[    9.010830 ]  ? mutex_unlock+0xd/0x10
-[    9.010830 ]  ? mwl8k_fw_state_machine+0x320/0xba0
-[    9.010830 ]  ? mwl8k_fw_state_machine+0x320/0xba0
-[    9.010830 ]  __asan_report_load8_noabort+0x14/0x20
-[    9.010830 ]  mwl8k_fw_state_machine+0x320/0xba0
-[    9.010830 ]  ? mwl8k_load_firmware+0x5f0/0x5f0
-[    9.010830 ]  request_firmware_work_func+0x172/0x250
-[    9.010830 ]  ? read_lock_is_recursive+0x20/0x20
-[    9.010830 ]  ? process_one_work+0x7a1/0x1100
-[    9.010830 ]  ? request_firmware_nowait+0x460/0x460
-[    9.010830 ]  ? __this_cpu_preempt_check+0x13/0x20
-[    9.010830 ]  process_one_work+0x9bb/0x1100
-
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1634356979-6211-1-git-send-email-zheyuma97@gmail.com
+Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/marvell/mwl8k.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/usb/uvc/uvc_v4l2.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/marvell/mwl8k.c b/drivers/net/wireless/marvell/mwl8k.c
-index e39aaee92addb..d5f766044221a 100644
---- a/drivers/net/wireless/marvell/mwl8k.c
-+++ b/drivers/net/wireless/marvell/mwl8k.c
-@@ -5788,8 +5788,8 @@ static void mwl8k_fw_state_machine(const struct firmware *fw, void *context)
- fail:
- 	priv->fw_state = FW_STATE_ERROR;
- 	complete(&priv->firmware_loading_complete);
--	device_release_driver(&priv->pdev->dev);
- 	mwl8k_release_firmware(priv);
-+	device_release_driver(&priv->pdev->dev);
- }
+diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+index 4a270f88aa18c..2b1e06e825f0d 100644
+--- a/drivers/media/usb/uvc/uvc_v4l2.c
++++ b/drivers/media/usb/uvc/uvc_v4l2.c
+@@ -451,10 +451,13 @@ static int uvc_v4l2_set_streamparm(struct uvc_streaming *stream,
+ 	uvc_simplify_fraction(&timeperframe.numerator,
+ 		&timeperframe.denominator, 8, 333);
  
- #define MAX_RESTART_ATTEMPTS 1
+-	if (parm->type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
++	if (parm->type == V4L2_BUF_TYPE_VIDEO_CAPTURE) {
+ 		parm->parm.capture.timeperframe = timeperframe;
+-	else
++		parm->parm.capture.capability = V4L2_CAP_TIMEPERFRAME;
++	} else {
+ 		parm->parm.output.timeperframe = timeperframe;
++		parm->parm.output.capability = V4L2_CAP_TIMEPERFRAME;
++	}
+ 
+ 	return 0;
+ }
 -- 
 2.33.0
 
