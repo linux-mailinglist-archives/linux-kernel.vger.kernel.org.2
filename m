@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D481F45C5B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:57:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 202F345C1DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350792AbhKXOAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:00:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44600 "EHLO mail.kernel.org"
+        id S1349681AbhKXNW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:22:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353200AbhKXN44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:56:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E803B6337D;
-        Wed, 24 Nov 2021 13:07:21 +0000 (UTC)
+        id S1348493AbhKXNUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:20:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4892461284;
+        Wed, 24 Nov 2021 12:46:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759242;
-        bh=dT//0w6GFNNI+kKFbzzw1+b4KhIWblGHWa1x70fP8ao=;
+        s=korg; t=1637758010;
+        bh=wnExJy9/nndD9vHwqpC9KLvlyOYpt/Izvjf+xuRNYmE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jwp/eEmU+z0+bWhuusdZdO+4bnELVBZgLsA5TBwGh+77H+cOxysAQuPprHIi3/ge1
-         jCky/CgY+Cucp2jtVLAH8g2r9LkW2c5CR2s7k8tUqqDTOTMW3qAUYOHc+r6Jk3b+VE
-         IEvTJuLReqiN2AtQ4uKhTWeKgxqNECv6JpsfxMYU=
+        b=kGN+hX4tqY3mlai00L6g3wztcQur5cwWLim+bCs88B7gYILNk0HVbGrF1wnB2chX5
+         79AAO0vW4HBqEtMoS0Z5XmN7YOtLOcZpLQa7U6OjN78YSJONEwT4Ds3otZA+JaA/BT
+         w+Jcsct1NPwOYhnkq2cuYMwMZ1bVgBaVtfd+q3p0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Daniel Axtens <dja@axtens.net>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 176/279] KVM: PPC: Book3S HV: Use GLOBAL_TOC for kvmppc_h_set_dabr/xdabr()
+        stable@vger.kernel.org, Anatolij Gustschin <agust@denx.de>,
+        Rob Herring <robh@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 027/100] powerpc/5200: dts: fix memory node unit name
 Date:   Wed, 24 Nov 2021 12:57:43 +0100
-Message-Id: <20211124115724.822884961@linuxfoundation.org>
+Message-Id: <20211124115655.737944776@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,62 +41,189 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Anatolij Gustschin <agust@denx.de>
 
-[ Upstream commit dae581864609d36fb58855fd59880b4941ce9d14 ]
+[ Upstream commit aed2886a5e9ffc8269a4220bff1e9e030d3d2eb1 ]
 
-kvmppc_h_set_dabr(), and kvmppc_h_set_xdabr() which jumps into
-it, need to use _GLOBAL_TOC to setup the kernel TOC pointer, because
-kvmppc_h_set_dabr() uses LOAD_REG_ADDR() to load dawr_force_enable.
+Fixes build warnings:
+Warning (unit_address_vs_reg): /memory: node has a reg or ranges property, but no unit name
 
-When called from hcall_try_real_mode() we have the kernel TOC in r2,
-established near the start of kvmppc_interrupt_hv(), so there is no
-issue.
-
-But they can also be called from kvmppc_pseries_do_hcall() which is
-module code, so the access ends up happening with the kvm-hv module's
-r2, which will not point at dawr_force_enable and could even cause a
-fault.
-
-With the current code layout and compilers we haven't observed a fault
-in practice, the load hits somewhere in kvm-hv.ko and silently returns
-some bogus value.
-
-Note that we we expect p8/p9 guests to use the DAWR, but SLOF uses
-h_set_dabr() to test if sc1 works correctly, see SLOF's
-lib/libhvcall/brokensc1.c.
-
-Fixes: c1fe190c0672 ("powerpc: Add force enable of DAWR on P9 option")
+Signed-off-by: Anatolij Gustschin <agust@denx.de>
+Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Reviewed-by: Daniel Axtens <dja@axtens.net>
-Link: https://lore.kernel.org/r/20210923151031.72408-1-mpe@ellerman.id.au
+Link: https://lore.kernel.org/r/20211013220532.24759-4-agust@denx.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kvm/book3s_hv_rmhandlers.S | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/powerpc/boot/dts/charon.dts    | 2 +-
+ arch/powerpc/boot/dts/digsy_mtc.dts | 2 +-
+ arch/powerpc/boot/dts/lite5200.dts  | 2 +-
+ arch/powerpc/boot/dts/lite5200b.dts | 2 +-
+ arch/powerpc/boot/dts/media5200.dts | 2 +-
+ arch/powerpc/boot/dts/mpc5200b.dtsi | 2 +-
+ arch/powerpc/boot/dts/o2d.dts       | 2 +-
+ arch/powerpc/boot/dts/o2d.dtsi      | 2 +-
+ arch/powerpc/boot/dts/o2dnt2.dts    | 2 +-
+ arch/powerpc/boot/dts/o3dnt.dts     | 2 +-
+ arch/powerpc/boot/dts/pcm032.dts    | 2 +-
+ arch/powerpc/boot/dts/tqm5200.dts   | 2 +-
+ 12 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/arch/powerpc/kvm/book3s_hv_rmhandlers.S b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-index eb776d0c5d8e9..32a4b4d412b92 100644
---- a/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-+++ b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-@@ -2005,7 +2005,7 @@ hcall_real_table:
- 	.globl	hcall_real_table_end
- hcall_real_table_end:
+diff --git a/arch/powerpc/boot/dts/charon.dts b/arch/powerpc/boot/dts/charon.dts
+index 408b486b13dff..cd589539f313f 100644
+--- a/arch/powerpc/boot/dts/charon.dts
++++ b/arch/powerpc/boot/dts/charon.dts
+@@ -35,7 +35,7 @@
+ 		};
+ 	};
  
--_GLOBAL(kvmppc_h_set_xdabr)
-+_GLOBAL_TOC(kvmppc_h_set_xdabr)
- EXPORT_SYMBOL_GPL(kvmppc_h_set_xdabr)
- 	andi.	r0, r5, DABRX_USER | DABRX_KERNEL
- 	beq	6f
-@@ -2015,7 +2015,7 @@ EXPORT_SYMBOL_GPL(kvmppc_h_set_xdabr)
- 6:	li	r3, H_PARAMETER
- 	blr
+-	memory {
++	memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x00000000 0x08000000>;	// 128MB
+ 	};
+diff --git a/arch/powerpc/boot/dts/digsy_mtc.dts b/arch/powerpc/boot/dts/digsy_mtc.dts
+index 0e5e9d3acf79f..19a14e62e65f4 100644
+--- a/arch/powerpc/boot/dts/digsy_mtc.dts
++++ b/arch/powerpc/boot/dts/digsy_mtc.dts
+@@ -16,7 +16,7 @@
+ 	model = "intercontrol,digsy-mtc";
+ 	compatible = "intercontrol,digsy-mtc";
  
--_GLOBAL(kvmppc_h_set_dabr)
-+_GLOBAL_TOC(kvmppc_h_set_dabr)
- EXPORT_SYMBOL_GPL(kvmppc_h_set_dabr)
- 	li	r5, DABRX_USER | DABRX_KERNEL
- 3:
+-	memory {
++	memory@0 {
+ 		reg = <0x00000000 0x02000000>;	// 32MB
+ 	};
+ 
+diff --git a/arch/powerpc/boot/dts/lite5200.dts b/arch/powerpc/boot/dts/lite5200.dts
+index cb2782dd6132c..e7b194775d783 100644
+--- a/arch/powerpc/boot/dts/lite5200.dts
++++ b/arch/powerpc/boot/dts/lite5200.dts
+@@ -32,7 +32,7 @@
+ 		};
+ 	};
+ 
+-	memory {
++	memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x00000000 0x04000000>;	// 64MB
+ 	};
+diff --git a/arch/powerpc/boot/dts/lite5200b.dts b/arch/powerpc/boot/dts/lite5200b.dts
+index 2b86c81f90485..547cbe726ff23 100644
+--- a/arch/powerpc/boot/dts/lite5200b.dts
++++ b/arch/powerpc/boot/dts/lite5200b.dts
+@@ -31,7 +31,7 @@
+ 		led4 { gpios = <&gpio_simple 2 1>; };
+ 	};
+ 
+-	memory {
++	memory@0 {
+ 		reg = <0x00000000 0x10000000>;	// 256MB
+ 	};
+ 
+diff --git a/arch/powerpc/boot/dts/media5200.dts b/arch/powerpc/boot/dts/media5200.dts
+index 61cae9dcddef4..f3188018faceb 100644
+--- a/arch/powerpc/boot/dts/media5200.dts
++++ b/arch/powerpc/boot/dts/media5200.dts
+@@ -32,7 +32,7 @@
+ 		};
+ 	};
+ 
+-	memory {
++	memory@0 {
+ 		reg = <0x00000000 0x08000000>;	// 128MB RAM
+ 	};
+ 
+diff --git a/arch/powerpc/boot/dts/mpc5200b.dtsi b/arch/powerpc/boot/dts/mpc5200b.dtsi
+index 648fe31795f49..8b796f3b11da7 100644
+--- a/arch/powerpc/boot/dts/mpc5200b.dtsi
++++ b/arch/powerpc/boot/dts/mpc5200b.dtsi
+@@ -33,7 +33,7 @@
+ 		};
+ 	};
+ 
+-	memory: memory {
++	memory: memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x00000000 0x04000000>;	// 64MB
+ 	};
+diff --git a/arch/powerpc/boot/dts/o2d.dts b/arch/powerpc/boot/dts/o2d.dts
+index 24a46f65e5299..e0a8d3034417f 100644
+--- a/arch/powerpc/boot/dts/o2d.dts
++++ b/arch/powerpc/boot/dts/o2d.dts
+@@ -12,7 +12,7 @@
+ 	model = "ifm,o2d";
+ 	compatible = "ifm,o2d";
+ 
+-	memory {
++	memory@0 {
+ 		reg = <0x00000000 0x08000000>;  // 128MB
+ 	};
+ 
+diff --git a/arch/powerpc/boot/dts/o2d.dtsi b/arch/powerpc/boot/dts/o2d.dtsi
+index 6661955a2be47..b55a9e5bd828c 100644
+--- a/arch/powerpc/boot/dts/o2d.dtsi
++++ b/arch/powerpc/boot/dts/o2d.dtsi
+@@ -19,7 +19,7 @@
+ 	model = "ifm,o2d";
+ 	compatible = "ifm,o2d";
+ 
+-	memory {
++	memory@0 {
+ 		reg = <0x00000000 0x04000000>;	// 64MB
+ 	};
+ 
+diff --git a/arch/powerpc/boot/dts/o2dnt2.dts b/arch/powerpc/boot/dts/o2dnt2.dts
+index eeba7f5507d5d..c2eedbd1f5fcb 100644
+--- a/arch/powerpc/boot/dts/o2dnt2.dts
++++ b/arch/powerpc/boot/dts/o2dnt2.dts
+@@ -12,7 +12,7 @@
+ 	model = "ifm,o2dnt2";
+ 	compatible = "ifm,o2d";
+ 
+-	memory {
++	memory@0 {
+ 		reg = <0x00000000 0x08000000>;  // 128MB
+ 	};
+ 
+diff --git a/arch/powerpc/boot/dts/o3dnt.dts b/arch/powerpc/boot/dts/o3dnt.dts
+index fd00396b0593e..e4c1bdd412716 100644
+--- a/arch/powerpc/boot/dts/o3dnt.dts
++++ b/arch/powerpc/boot/dts/o3dnt.dts
+@@ -12,7 +12,7 @@
+ 	model = "ifm,o3dnt";
+ 	compatible = "ifm,o2d";
+ 
+-	memory {
++	memory@0 {
+ 		reg = <0x00000000 0x04000000>;  // 64MB
+ 	};
+ 
+diff --git a/arch/powerpc/boot/dts/pcm032.dts b/arch/powerpc/boot/dts/pcm032.dts
+index c259c6b3ac5ab..5674f978b9830 100644
+--- a/arch/powerpc/boot/dts/pcm032.dts
++++ b/arch/powerpc/boot/dts/pcm032.dts
+@@ -22,7 +22,7 @@
+ 	model = "phytec,pcm032";
+ 	compatible = "phytec,pcm032";
+ 
+-	memory {
++	memory@0 {
+ 		reg = <0x00000000 0x08000000>;	// 128MB
+ 	};
+ 
+diff --git a/arch/powerpc/boot/dts/tqm5200.dts b/arch/powerpc/boot/dts/tqm5200.dts
+index 9ed0bc78967e1..5bb25a9e40a01 100644
+--- a/arch/powerpc/boot/dts/tqm5200.dts
++++ b/arch/powerpc/boot/dts/tqm5200.dts
+@@ -32,7 +32,7 @@
+ 		};
+ 	};
+ 
+-	memory {
++	memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x00000000 0x04000000>;	// 64MB
+ 	};
 -- 
 2.33.0
 
