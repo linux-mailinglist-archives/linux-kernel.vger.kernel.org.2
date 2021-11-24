@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB3245BE85
+	by mail.lfdr.de (Postfix) with ESMTP id 5883945BE86
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:46:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344427AbhKXMrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:47:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51026 "EHLO mail.kernel.org"
+        id S1345422AbhKXMrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:47:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243053AbhKXMoi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S245229AbhKXMoi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Nov 2021 07:44:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77EAD61279;
-        Wed, 24 Nov 2021 12:26:29 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8B986126A;
+        Wed, 24 Nov 2021 12:26:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756789;
-        bh=4FLFo4QtKGgZSNkxhZDuAi2pcLRTmHCDtelC4gPDTQ4=;
+        s=korg; t=1637756792;
+        bh=QnibGiVTccSNGE/fMZJz8aeFKBy1GIoooRfOS2TNRM8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JjzxFQo1l7ubTfLpXteN38zZ6DmgRW8tVasv3m6boKN4WFy0crgxPyoNxGhrb8ajk
-         b9IkRzPxQ67WW481kcIFJQKC0XqOP68Fx7zf3Y1UTETvM7JCfVxXIeH9TemWz6wA5H
-         nvG5KLzG+iySsAjqEvgf6mOT3v+wnNUVDyQdNLRI=
+        b=zM3Fe81BvdHHtzSh6Pe3Ei05Q7uas/5vNEEl30TzXLyyTBnvhXBqAF/5nsvWQc4M1
+         +dQpmP5IdMKmETEc+2AFX76PanzN+6ym2CNoRzciKMdXLXRCzd1K6KT+GfvAkjUeBd
+         tJUJyPXyCiua2ckZtuZh1DGBNFmV5ketxVCMjyO4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roger Quadros <rogerq@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Yang Yingliang <yangyingliang@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 206/251] ARM: dts: omap: fix gpmc,mux-add-data type
-Date:   Wed, 24 Nov 2021 12:57:28 +0100
-Message-Id: <20211124115717.422987600@linuxfoundation.org>
+Subject: [PATCH 4.14 207/251] usb: host: ohci-tmio: check return value after calling platform_get_resource()
+Date:   Wed, 24 Nov 2021 12:57:29 +0100
+Message-Id: <20211124115717.461909937@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
 References: <20211124115710.214900256@linuxfoundation.org>
@@ -40,50 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roger Quadros <rogerq@kernel.org>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 51b9e22ffd3c4c56cbb7caae9750f70e55ffa603 ]
+[ Upstream commit 9eff2b2e59fda25051ab36cd1cb5014661df657b ]
 
-gpmc,mux-add-data is not boolean.
+It will cause null-ptr-deref if platform_get_resource() returns NULL,
+we need check the return value.
 
-Fixes the below errors flagged by dtbs_check.
-
-"ethernet@4,0:gpmc,mux-add-data: True is not of type 'array'"
-
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20211011134920.118477-1-yangyingliang@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi         | 2 +-
- arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/host/ohci-tmio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi b/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi
-index 7f6aefd134514..e7534fe9c53cf 100644
---- a/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi
-+++ b/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi
-@@ -29,7 +29,7 @@
- 		compatible = "smsc,lan9221","smsc,lan9115";
- 		bank-width = <2>;
+diff --git a/drivers/usb/host/ohci-tmio.c b/drivers/usb/host/ohci-tmio.c
+index 0cf4b6dc89720..4c7846dc5eed1 100644
+--- a/drivers/usb/host/ohci-tmio.c
++++ b/drivers/usb/host/ohci-tmio.c
+@@ -199,7 +199,7 @@ static int ohci_hcd_tmio_drv_probe(struct platform_device *dev)
+ 	if (usb_disabled())
+ 		return -ENODEV;
  
--		gpmc,mux-add-data;
-+		gpmc,mux-add-data = <0>;
- 		gpmc,cs-on-ns = <0>;
- 		gpmc,cs-rd-off-ns = <42>;
- 		gpmc,cs-wr-off-ns = <36>;
-diff --git a/arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi b/arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi
-index 82e98ee3023ad..3dbeb7a6c569c 100644
---- a/arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi
-+++ b/arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi
-@@ -25,7 +25,7 @@
- 		compatible = "smsc,lan9221","smsc,lan9115";
- 		bank-width = <2>;
+-	if (!cell)
++	if (!cell || !regs || !config || !sram)
+ 		return -EINVAL;
  
--		gpmc,mux-add-data;
-+		gpmc,mux-add-data = <0>;
- 		gpmc,cs-on-ns = <0>;
- 		gpmc,cs-rd-off-ns = <42>;
- 		gpmc,cs-wr-off-ns = <36>;
+ 	if (irq < 0)
 -- 
 2.33.0
 
