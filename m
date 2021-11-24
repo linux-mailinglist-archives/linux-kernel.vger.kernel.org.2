@@ -2,74 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080CD45CB53
+	by mail.lfdr.de (Postfix) with ESMTP id 82BC345CB54
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:42:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349710AbhKXRpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 12:45:34 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:50987 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344775AbhKXRpU (ORCPT
+        id S1349742AbhKXRpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 12:45:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243013AbhKXRpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 12:45:20 -0500
-Received: by mail-il1-f198.google.com with SMTP id i3-20020a056e021b0300b0029eceae8532so2364670ilv.17
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 09:42:10 -0800 (PST)
+        Wed, 24 Nov 2021 12:45:23 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF75C061574;
+        Wed, 24 Nov 2021 09:42:13 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id r10-20020a056830080a00b0055c8fd2cebdso5429592ots.6;
+        Wed, 24 Nov 2021 09:42:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rBHCmKYn9Au95Mda45DZ+HbQaP/g8yd4RDuwat8Xen8=;
+        b=NSXlNH+98KDp/31wzCKWo2c8bjEEhMEiC63TegJABxcA5Q0srywTJtz/qz4rjGIZ5A
+         LSsZkXw/YZ3i7k0GPwvw34lcABE3qXEtd1G7S+smUiVITLbYCYIkm3RvhFTs+ZSvYnAw
+         4m3lvENV1HODK9gC0f+uT2PtbuWFQYGs192VrLjJFVcF6bpS2J8depiiuUjIqevwsa82
+         7+cebzf98wGGK3LxlBgEhwystAUP9eiIzyuVkZTo5Y03CeYwHn9ExpbX39ljNAFrkesS
+         SN3xwn908qGOft5eFQxv9gypBaouAOnW+RIhJvHJlYtAye7HLfYp0Wg6IW14P1WRW+ld
+         yYCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=h0kvn1BdxoP46i2HNoKMazuHRf6SKPJskeY6V4kDJOE=;
-        b=nv+hnc/qp97ULsFEyL6QRNZs2lL1S1O0zlngAl3JgRvSHMHWdPPC2YSndQdAPy1O2J
-         cbNAb3OUKl7mQqUgTphn+PAiL1L6MOJtRoX/b7yQodAGoVd5+2srVYRKiHYmN3KKfLZN
-         xueINB2TqHVhfB7cXwqgsFqN7o223nQOz6fqzhu58zn6TSQXZv7XjPtWVKRLBouNXkjX
-         ohNl31OrTCQGvMFsTFh3f77LoirXAPWnyN5xf6Ha7kliPV2E0SgysBVFTteTOyXbBGee
-         U5JbdIBME7oklf60b5INt/4hgpGCQnRhq7D6IRTOYT/ZJRWIX0x0gFtzVhAcmx+65kCj
-         T0LQ==
-X-Gm-Message-State: AOAM531tVRG4114zmaTNhneq8aGyAR5fXj6Vjzsg02clmcEjyWe7nezb
-        vTTC7fOpY8LeL9oKxKDVWoOjCHactGoe+5tEt64NcF1UmEXd
-X-Google-Smtp-Source: ABdhPJwb7HvyUqHy3UoRecfI82f0bvHWHU2TDeSHzrJEyGEuUEO081UcqCkKr9ePW6QOXrKgj7ioth7zzj1e0gFO8okXtgY78HTC
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=rBHCmKYn9Au95Mda45DZ+HbQaP/g8yd4RDuwat8Xen8=;
+        b=txXuVvSL1ULx11tGjE6RG/cnjpw9Gt1LeF/LmHR28FTMATJPX+/iiqhG7JAH7MAjKD
+         0JG6m7/Tre60KYPC2Rl08sh0JrQS01PoLdmkEqU0oWMCsXU9Pw7lVafXwEmueUk7EqZu
+         9lMCuSpfbslMafMAt6sU5LBnKHLUxnhkRh+X8OBSy856ss9Dji/5WKAO492ietblnRsk
+         vbfa5vcWl/VoIi0Ae1Vs6YbUPDg7QifCf0H//dM32i09Z8I7ffhQZEoRFjjkwPkToVex
+         NFRe97lBpe1NA2SZn6mDf7dAfPv4Dci7eH9MA9xtXhd6W2rjQWUJE768lf6IZNHe3XGs
+         sUPg==
+X-Gm-Message-State: AOAM530HwFNK4H7zAVDI35eW467m1gKtlWC0Ecf+jfYxTgQW1XA5NUbS
+        tpfLflq1hfUWHm5fq5JFT4M=
+X-Google-Smtp-Source: ABdhPJwC8hAjWV0l0BEfyBKmWMpE2YueMhvk31YgPR6hz38W7HtC/IWQs2KpJcvJB04eTSnGlLBARQ==
+X-Received: by 2002:a9d:24c3:: with SMTP id z61mr14855787ota.100.1637775733222;
+        Wed, 24 Nov 2021 09:42:13 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e21sm70210ote.72.2021.11.24.09.42.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 09:42:12 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 24 Nov 2021 09:42:11 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.14 000/251] 4.14.256-rc1 review
+Message-ID: <20211124174211.GA539814@roeck-us.net>
+References: <20211124115710.214900256@linuxfoundation.org>
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9cd4:: with SMTP id w20mr17292523iow.178.1637775730232;
- Wed, 24 Nov 2021 09:42:10 -0800 (PST)
-Date:   Wed, 24 Nov 2021 09:42:10 -0800
-In-Reply-To: <000000000000ba80b905cdcd8b19@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009f52f205d18c60a7@google.com>
-Subject: Re: [syzbot] WARNING: ODEBUG bug in batadv_v_ogm_free
-From:   syzbot <syzbot+0ef06384b5f39a16ebb9@syzkaller.appspotmail.com>
-To:     Jason@zx2c4.com, a@unstable.cc, amcohen@nvidia.com,
-        b.a.t.m.a.n@lists.open-mesh.org, davem@davemloft.net,
-        dsahern@kernel.org, edumazet@google.com, fw@strlen.de,
-        idosch@OSS.NVIDIA.COM, justin.iurman@uliege.be, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, mareklindner@neomailbox.ch,
-        netdev@vger.kernel.org, paskripkin@gmail.com,
-        praveen5582@gmail.com, sven@narfation.org, sw@simonwunderlich.de,
-        syzkaller-bugs@googlegroups.com, willemb@google.com,
-        yoshfuji@linux-ipv6.org, zxu@linkedin.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Wed, Nov 24, 2021 at 12:54:02PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.256 release.
+> There are 251 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
+> Anything received after that time might be too late.
+> 
 
-commit 6f68cd634856f8ca93bafd623ba5357e0f648c68
-Author: Pavel Skripkin <paskripkin@gmail.com>
-Date:   Sun Oct 24 13:13:56 2021 +0000
+Building s390:defconfig ... failed
+--------------
+Error log:
+mm/hugetlb.c: In function '__unmap_hugepage_range':
+mm/hugetlb.c:3411:4: error: implicit declaration of function 'tlb_flush_pmd_range'
 
-    net: batman-adv: fix error handling
+The problem also affects 'sh' builds, and possibly others.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=114e3c16b00000
-start commit:   cf52ad5ff16c Merge tag 'driver-core-5.15-rc6' of git://git..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9479508d7bb83ad9
-dashboard link: https://syzkaller.appspot.com/bug?extid=0ef06384b5f39a16ebb9
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17af7344b00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15dc02fb300000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: net: batman-adv: fix error handling
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Guenter
