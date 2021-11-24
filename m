@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2184945BC62
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29CCC45BB3A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343556AbhKXM3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:29:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41754 "EHLO mail.kernel.org"
+        id S235991AbhKXMRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:17:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245041AbhKXMYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:24:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE21F6108B;
-        Wed, 24 Nov 2021 12:15:08 +0000 (UTC)
+        id S242736AbhKXMLS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:11:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDA5761078;
+        Wed, 24 Nov 2021 12:06:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756109;
-        bh=yznRrrzCC1mHKhmefVH14Iy3uUMmCRt3MqZVyMl4NdI=;
+        s=korg; t=1637755574;
+        bh=eMa+hsfKj7QSRCx9j0xyGJ43a7AL2KrQMWu4SIAU+EE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eDh3O+RgzpJ7V82Hi/WANL7PA4KZ8xLqouEOI41p/Cbl70rwTOizwCccoDBb4DrwI
-         UtVcqQWdbN4NI9/+4vizZsZVRXtdwvD2ehzytgrDlgKuXvFysbSK+pZGkmfOveYz5A
-         zTaHQIjAE1/xxvsHT1aZY3YrIed0ozxTtZbtk0p8=
+        b=aeD3lCWxQYQGPSaZ2IhRzuelT84a2dofKk/e3ng8iuUqXOOWRrrew+OEWiwnO/2Ow
+         k4L58jG3AjVcCwCs/MKirA/Veblgoa87IS17ybQLdAd+nvJZr8r6FXYECsPrPeR5sv
+         fhM5MbBf3UPpgU9mXnVDsjiNPHfnPb/oTwrFBkFI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Lu Wei <luwei32@huawei.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Rich Felker <dalias@libc.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 176/207] maple: fix wrong return value of maple_bus_init().
-Date:   Wed, 24 Nov 2021 12:57:27 +0100
-Message-Id: <20211124115709.678003933@linuxfoundation.org>
+        stable@vger.kernel.org, Sven Schnelle <svens@stackframe.org>,
+        Helge Deller <deller@gmx.de>
+Subject: [PATCH 4.4 145/162] parisc/sticon: fix reverse colors
+Date:   Wed, 24 Nov 2021 12:57:28 +0100
+Message-Id: <20211124115702.970668842@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lu Wei <luwei32@huawei.com>
+From: Sven Schnelle <svens@stackframe.org>
 
-[ Upstream commit bde82ee391fa6d3ad054313c4aa7b726d32515ce ]
+commit bec05f33ebc1006899c6d3e59a00c58881fe7626 upstream.
 
-If KMEM_CACHE or maple_alloc_dev failed, the maple_bus_init() will return 0
-rather than error, because the retval is not changed after KMEM_CACHE or
-maple_alloc_dev failed.
+sticon_build_attr() checked the reverse argument and flipped
+background and foreground color, but returned the non-reverse
+value afterwards. Fix this and also add two local variables
+for foreground and background color to make the code easier
+to read.
 
-Fixes: 17be2d2b1c33 ("sh: Add maple bus support for the SEGA Dreamcast.")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Lu Wei <luwei32@huawei.com>
-Acked-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Signed-off-by: Rich Felker <dalias@libc.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Sven Schnelle <svens@stackframe.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/sh/maple/maple.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/video/console/sticon.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/sh/maple/maple.c b/drivers/sh/maple/maple.c
-index bec81c2404f78..1682fa3671bc3 100644
---- a/drivers/sh/maple/maple.c
-+++ b/drivers/sh/maple/maple.c
-@@ -835,8 +835,10 @@ static int __init maple_bus_init(void)
+--- a/drivers/video/console/sticon.c
++++ b/drivers/video/console/sticon.c
+@@ -316,13 +316,13 @@ static unsigned long sticon_getxy(struct
+ static u8 sticon_build_attr(struct vc_data *conp, u8 color, u8 intens,
+ 			    u8 blink, u8 underline, u8 reverse, u8 italic)
+ {
+-    u8 attr = ((color & 0x70) >> 1) | ((color & 7));
++	u8 fg = color & 7;
++	u8 bg = (color & 0x70) >> 4;
  
- 	maple_queue_cache = KMEM_CACHE(maple_buffer, SLAB_HWCACHE_ALIGN);
+-    if (reverse) {
+-	color = ((color >> 3) & 0x7) | ((color & 0x7) << 3);
+-    }
+-
+-    return attr;
++	if (reverse)
++		return (fg << 3) | bg;
++	else
++		return (bg << 3) | fg;
+ }
  
--	if (!maple_queue_cache)
-+	if (!maple_queue_cache) {
-+		retval = -ENOMEM;
- 		goto cleanup_bothirqs;
-+	}
- 
- 	INIT_LIST_HEAD(&maple_waitq);
- 	INIT_LIST_HEAD(&maple_sentq);
-@@ -849,6 +851,7 @@ static int __init maple_bus_init(void)
- 		if (!mdev[i]) {
- 			while (i-- > 0)
- 				maple_free_dev(mdev[i]);
-+			retval = -ENOMEM;
- 			goto cleanup_cache;
- 		}
- 		baseunits[i] = mdev[i];
--- 
-2.33.0
-
+ static void sticon_invert_region(struct vc_data *conp, u16 *p, int count)
 
 
