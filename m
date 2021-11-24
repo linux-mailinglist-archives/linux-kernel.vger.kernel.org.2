@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F39C45BA58
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:06:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 891B045BDEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:39:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242474AbhKXMJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:09:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33504 "EHLO mail.kernel.org"
+        id S243112AbhKXMm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:42:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242189AbhKXMHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:07:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC6E760174;
-        Wed, 24 Nov 2021 12:03:55 +0000 (UTC)
+        id S1345074AbhKXMjL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:39:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 315F1613A4;
+        Wed, 24 Nov 2021 12:23:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755436;
-        bh=kgM5a4OECnWlpLlyAAVznMsLRSNnkKqITK87Ez0ReNk=;
+        s=korg; t=1637756625;
+        bh=C/DPEWKLNeRyQ6toAfPs/SWx3vbwaJwS8Enxlvuq3w0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k5sqnTr1oEuSCoDA38BzJByVloWmjaUmeDOm7FC5YnCFTRjqQn5t28oKWhm/ncgYk
-         hBQqUGZ2L7U5QjaylSN6+y7pYZvl/wn2X5IWNHKzRzE3VjrbLUFv5gzsNcwMlgttfE
-         0d2y2N+i7Q85F5EmTPLqM1jvSKwNOKPwQfR3DAGQ=
+        b=BIkdnAoa4+qKYaaIXMOO4t1Odda6XSrf8a6udiWkaOphrPtARe/iTd736WhMrpvuf
+         a81wg18AldyLGPgoX6/+Q63FG8VPuaG6zRQvugdxNxq44D0m4FMl4/z84aCNmdAL+a
+         KDJ3Qdh45Fpd2UoEprujnaH2LiMsfWgjfXJAfR+0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jackie Liu <liuyun01@kylinos.cn>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        stable@vger.kernel.org, Daniel Palmer <daniel@0x0f.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 088/162] ARM: s3c: irq-s3c24xx: Fix return value check for s3c24xx_init_intc()
-Date:   Wed, 24 Nov 2021 12:56:31 +0100
-Message-Id: <20211124115701.173422827@linuxfoundation.org>
+Subject: [PATCH 4.14 150/251] serial: 8250_dw: Drop wrong use of ACPI_PTR()
+Date:   Wed, 24 Nov 2021 12:56:32 +0100
+Message-Id: <20211124115715.482134799@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,58 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jackie Liu <liuyun01@kylinos.cn>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 2aa717473ce96c93ae43a5dc8c23cedc8ce7dd9f ]
+[ Upstream commit ebabb77a2a115b6c5e68f7364b598310b5f61fb2 ]
 
-The s3c24xx_init_intc() returns an error pointer upon failure, not NULL.
-let's add an error pointer check in s3c24xx_handle_irq.
+ACPI_PTR() is more harmful than helpful. For example, in this case
+if CONFIG_ACPI=n, the ID table left unused which is not what we want.
 
-s3c_intc[0] is not NULL or ERR, we can simplify the code.
+Instead of adding ifdeffery here and there, drop ACPI_PTR().
 
-Fixes: 1f629b7a3ced ("ARM: S3C24XX: transform irq handling into a declarative form")
-Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
-Link: https://lore.kernel.org/r/20210901123557.1043953-1-liu.yun@linux.dev
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Fixes: 6a7320c4669f ("serial: 8250_dw: Add ACPI 5.0 support")
+Reported-by: Daniel Palmer <daniel@0x0f.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20211005134516.23218-1-andriy.shevchenko@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-s3c24xx.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+ drivers/tty/serial/8250/8250_dw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-s3c24xx.c b/drivers/irqchip/irq-s3c24xx.c
-index c71914e8f596c..cd7fdce98359f 100644
---- a/drivers/irqchip/irq-s3c24xx.c
-+++ b/drivers/irqchip/irq-s3c24xx.c
-@@ -368,11 +368,25 @@ static inline int s3c24xx_handle_intc(struct s3c_irq_intc *intc,
- asmlinkage void __exception_irq_entry s3c24xx_handle_irq(struct pt_regs *regs)
- {
- 	do {
--		if (likely(s3c_intc[0]))
--			if (s3c24xx_handle_intc(s3c_intc[0], regs, 0))
--				continue;
-+		/*
-+		 * For platform based machines, neither ERR nor NULL can happen here.
-+		 * The s3c24xx_handle_irq() will be set as IRQ handler iff this succeeds:
-+		 *
-+		 *    s3c_intc[0] = s3c24xx_init_intc()
-+		 *
-+		 * If this fails, the next calls to s3c24xx_init_intc() won't be executed.
-+		 *
-+		 * For DT machine, s3c_init_intc_of() could set the IRQ handler without
-+		 * setting s3c_intc[0] only if it was called with num_ctrl=0. There is no
-+		 * such code path, so again the s3c_intc[0] will have a valid pointer if
-+		 * set_handle_irq() is called.
-+		 *
-+		 * Therefore in s3c24xx_handle_irq(), the s3c_intc[0] is always something.
-+		 */
-+		if (s3c24xx_handle_intc(s3c_intc[0], regs, 0))
-+			continue;
- 
--		if (s3c_intc[2])
-+		if (!IS_ERR_OR_NULL(s3c_intc[2]))
- 			if (s3c24xx_handle_intc(s3c_intc[2], regs, 64))
- 				continue;
- 
+diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
+index 4ca46aa64699d..8db5883803c9a 100644
+--- a/drivers/tty/serial/8250/8250_dw.c
++++ b/drivers/tty/serial/8250/8250_dw.c
+@@ -683,7 +683,7 @@ static struct platform_driver dw8250_platform_driver = {
+ 		.name		= "dw-apb-uart",
+ 		.pm		= &dw8250_pm_ops,
+ 		.of_match_table	= dw8250_of_match,
+-		.acpi_match_table = ACPI_PTR(dw8250_acpi_match),
++		.acpi_match_table = dw8250_acpi_match,
+ 	},
+ 	.probe			= dw8250_probe,
+ 	.remove			= dw8250_remove,
 -- 
 2.33.0
 
