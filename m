@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA1DC45CA43
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:42:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6489645CA80
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:01:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235201AbhKXQp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:45:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233813AbhKXQp1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:45:27 -0500
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C2DC061714
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 08:42:17 -0800 (PST)
-Received: by mail-ua1-x933.google.com with SMTP id a14so6508624uak.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 08:42:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5R6IHrrJZEwUVoXpTtYS2PUjhcdwGv4YOZvYHY1k68o=;
-        b=RVXX/GG4EzkWVeqnrRga8LF891j5wdFRx5Peo0g1y/FoS3gqW1o4yi5TS2MSmmc8xB
-         NS73/8W1n0RMEXgnVFysTcJp9zEW9pMBIj6r2x/0E2FZVOUNrZbdSUK5B5wmUI8MgI5c
-         yYzTwEaYRo1+D0ShURJSDX+zviGsTEhXpLG5fgIxC+YlbUqoODGPYs6/EZuAkQV/ZD0O
-         uTM4/go4ARX0Zyomvq4IJV6Fm0ozsOpX5NyD56cZ5QUnW0FK2LW1AyPEcvEWZvOvGBXR
-         KrRXXcY4h71uwJHiK9IgkhEElCArWfl7he88vaSnKzH8djsM/tJz36yNd2b4ZBCZvKW/
-         HSjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5R6IHrrJZEwUVoXpTtYS2PUjhcdwGv4YOZvYHY1k68o=;
-        b=QlCu22AjZ2mxgAmzasUK/TrPu/BIUBI+2YeoPJmhYAXpxa8PbItMyvVGQE+DHDs9Fz
-         u76Qa6/HB3hubVfifTP+rrExs2M1Wl68dqWRi0XGxi2Po/UhICgltngwdiLoZPSZCQjV
-         GoG51xEKysjpDYKDbGYATiHc62ijIml62btGzJZBcnDuD6VecgYDn32uK0KO1JiJkp/S
-         rdph1GACAADCytnaNjlaFUVKTnHsRmuayN6HX997ht/njc3VqlT/tQKrsWTl7g2aX3ZO
-         LRN7r2lIJA8QY30lMvnWqcef4sGyZsOWwCmZUIyaAKWgxzvduTgEgYJ2yxRBNtGRVall
-         PiSQ==
-X-Gm-Message-State: AOAM530i0sD4/HoVvc+R/3SnKLkcs/jB31XdJiqDd+HN45PgL5hqOy3v
-        ZldRf6k8/FzZWoIutQHJ4ReHwhcKbGWMUtudPpw=
-X-Google-Smtp-Source: ABdhPJxFX5pY9EJ9pVkIUOB7kNrAGhD/+ruY3ovxmzYR/XNuheAOTA2GwqZb4BBdrOAHXSTSF2bwYhA+/NDH/4r1Erg=
-X-Received: by 2002:ab0:39cb:: with SMTP id g11mr12509774uaw.53.1637772136639;
- Wed, 24 Nov 2021 08:42:16 -0800 (PST)
+        id S1349343AbhKXRES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 12:04:18 -0500
+Received: from mga05.intel.com ([192.55.52.43]:59471 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233492AbhKXREO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 12:04:14 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="321556790"
+X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
+   d="scan'208";a="321556790"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 08:43:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
+   d="scan'208";a="554251783"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 24 Nov 2021 08:43:55 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mpvND-00053o-6N; Wed, 24 Nov 2021 16:43:55 +0000
+Date:   Thu, 25 Nov 2021 00:43:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [intel-tdx:guest 113/144] arch/x86/boot/compressed/misc.c:443:17:
+ warning: cast from pointer to integer of different size
+Message-ID: <202111250023.2nQP8Msm-lkp@intel.com>
 MIME-Version: 1.0
-References: <20211124142530.366-1-i.bornyakov@metrotek.ru>
-In-Reply-To: <20211124142530.366-1-i.bornyakov@metrotek.ru>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Wed, 24 Nov 2021 13:42:05 -0300
-Message-ID: <CAOMZO5BF5Npq8Exf6Gr9Pzxx2-Bk8oFfCnPuCGpQDKs-YixhsA@mail.gmail.com>
-Subject: Re: [PATCH] bus: imx-weim: optionally enable continuous burst clock
-To:     Ivan Bornyakov <i.bornyakov@metrotek.ru>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, system@metrotek.ru
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ivan,
+tree:   https://github.com/intel/tdx.git guest
+head:   41fe88a1b3c28543f49fa6ed9e0e9b6650ed7614
+commit: f6aa202e95b516db1b1b365f08a338387a3b78d7 [113/144] x86/boot/compressed: Handle unaccepted memory
+config: i386-randconfig-c021-20211122 (https://download.01.org/0day-ci/archive/20211125/202111250023.2nQP8Msm-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel/tdx/commit/f6aa202e95b516db1b1b365f08a338387a3b78d7
+        git remote add intel-tdx https://github.com/intel/tdx.git
+        git fetch --no-tags intel-tdx guest
+        git checkout f6aa202e95b516db1b1b365f08a338387a3b78d7
+        # save the config file to linux build tree
+        make W=1 ARCH=i386 
 
-On Wed, Nov 24, 2021 at 11:39 AM Ivan Bornyakov <i.bornyakov@metrotek.ru> wrote:
->
-> To enable continuous burst clock, add "fsl,continuous-burst-clk" along
-> with "fsl,burst-clk-enable" property to the weim bus's devicetree node.
->
-> Example:
-> weim: weim@21b8000 {
->         compatible = "fsl,imx6ul-weim", "fsl,imx6q-weim";
->         reg = <0x021b8000 0x4000>;
->         clocks = <&clks 143>;
->         #address-cells = <2>;
->         #size-cells = <1>;
->         ranges = <0 0 0x50000000 0x08000000>;
->         fsl,weim-cs-gpr = <&gpr>;
->         fsl,burst-clk-enable;
->         fsl,continuous-burst-clk;
->
->         client-device@0 {
->                 ...
->         };
-> };
->
-> Signed-off-by: Ivan Bornyakov <i.bornyakov@metrotek.ru>
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Please also send a patch that documents the new property in the bindings doc:
-Documentation/devicetree/bindings/bus/imx-weim.txt
+All warnings (new ones prefixed by >>):
 
-Thanks
+   arch/x86/boot/compressed/misc.c: In function 'extract_kernel':
+>> arch/x86/boot/compressed/misc.c:443:17: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+     443 |   accept_memory((phys_addr_t)output,
+         |                 ^
+   arch/x86/boot/compressed/misc.c:444:10: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+     444 |          (phys_addr_t)output + needed_size);
+         |          ^
+
+
+vim +443 arch/x86/boot/compressed/misc.c
+
+   437	
+   438		debug_putstr("\nDecompressing Linux... ");
+   439	
+   440		if (IS_ENABLED(CONFIG_UNACCEPTED_MEMORY) &&
+   441		    boot_params->unaccepted_memory) {
+   442			debug_putstr("Accepting memory... ");
+ > 443			accept_memory((phys_addr_t)output,
+   444				      (phys_addr_t)output + needed_size);
+   445		}
+   446	
+   447		__decompress(input_data, input_len, NULL, NULL, output, output_len,
+   448				NULL, error);
+   449		parse_elf(output);
+   450		handle_relocations(output, output_len, virt_addr);
+   451		debug_putstr("done.\nBooting the kernel.\n");
+   452	
+   453		/* Disable exception handling before booting the kernel */
+   454		cleanup_exception_handling();
+   455	
+   456		return output;
+   457	}
+   458	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
