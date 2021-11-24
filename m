@@ -2,212 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0528D45C925
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:48:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE0545C927
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242159AbhKXPvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 10:51:40 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:38338 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232464AbhKXPvi (ORCPT
+        id S242191AbhKXPwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 10:52:05 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:57400 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232688AbhKXPwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 10:51:38 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AOE3rGw013979;
-        Wed, 24 Nov 2021 16:48:23 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=YJViYSYT8xJ5MsOzsjGblfYI64RbOm4dpXAg04uu3as=;
- b=zmZUI4AQXDqMF8XkfsnZpmOhxHC6v3W97nfzMh+1jCj+PNmTUVVcIQR3qJs0uH+g/br7
- jb1AIceTF0fXvevKa1Sd0HbYTHsRPjlk0X6lyeyB8k8PsaSAQ6Ble5pCu3IrmQEdz71V
- cZp1CPbtynAbieLwKEgLI4Gjx+kHW40g0FCQpSzfJJ8uHpib+cj42wycsEgyKrBJiJty
- CGyaR2mv2vNPqkNVOm5w90WIWWmbIO3T1Pa/l0asn6335TbSo8esAbLhKa77jYfO06E+
- Pw65tmmP0lZD7Y9IciMQtd/E2kOoLjAUO7T62oZdWK8B+xcFHkpAR6FzllfCNyQZXFeV Jw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3chdr0byae-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Nov 2021 16:48:23 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 69C8610002A;
-        Wed, 24 Nov 2021 16:48:21 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D12602A4D7D;
-        Wed, 24 Nov 2021 16:48:21 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.45) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.26; Wed, 24 Nov
- 2021 16:48:21 +0100
-Subject: Re: [PATCH] rpmsg: virtio: don't let virtio core to validate used
- length
-To:     Jason Wang <jasowang@redhat.com>
-CC:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20211122160812.25125-1-arnaud.pouliquen@foss.st.com>
- <20211123011340-mutt-send-email-mst@kernel.org>
- <43894114-6d25-98fa-a89f-b720749ba910@foss.st.com>
- <CACGkMEtC9sD2MX20Q3C3ecWH_TXCQMTS1qDLevKhuv=dyR14sQ@mail.gmail.com>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <9dfb7cb7-d4b8-095f-c863-bedbb6b80c4c@foss.st.com>
-Date:   Wed, 24 Nov 2021 16:48:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 24 Nov 2021 10:52:03 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 4E2C21FD2F;
+        Wed, 24 Nov 2021 15:48:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637768932; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=1cpS9WLkafUTWfWpKQaff/p3/s6mJTk8B5Fq1cl8zNI=;
+        b=oaGTGXXFGdznXQyZ4LhIyDftIkyJ03l2Slt8fm+1a92KrIC2dFoIL5Q8RwD8UAELAT94Pz
+        hY8Oo/A0EFxnC3edMllAqblRxwU1DR6UV03CywIGS44VRWjhRa0hxJ75Jse5Tg++n/BppO
+        B2M7Ikcv7LlWnXS8aOsErXXxqQmO8O4=
+Received: from alley.suse.cz (unknown [10.100.224.162])
+        by relay2.suse.de (Postfix) with ESMTP id C5756A3B81;
+        Wed, 24 Nov 2021 15:48:51 +0000 (UTC)
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
+        Petr Mladek <pmladek@suse.com>
+Subject: [RFC] printk: More consistent loglevel for continuous lines
+Date:   Wed, 24 Nov 2021 16:48:38 +0100
+Message-Id: <20211124154838.5415-1-pmladek@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <CACGkMEtC9sD2MX20Q3C3ecWH_TXCQMTS1qDLevKhuv=dyR14sQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-24_06,2021-11-24_01,2020-04-07_01
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+pr_cont() tries to append the message to the previous one. It works
+when the last message in the logbuffer was added by the same process
+and IRQ context. Otherwise, it is stored as a new message with
+the default message loglevel.
 
+CONFIG_MESSAGE_LOGLEVEL_DEFAULT is "4" by default. It means that
+the non-appendable pieces are printed with KERN_WARNING.
 
-On 11/24/21 3:12 AM, Jason Wang wrote:
-> On Tue, Nov 23, 2021 at 9:31 PM Arnaud POULIQUEN
-> <arnaud.pouliquen@foss.st.com> wrote:
->>
->> Hello Mickael, Jason,
->>
->> On 11/23/21 7:15 AM, Michael S. Tsirkin wrote:
->>> On Mon, Nov 22, 2021 at 05:08:12PM +0100, Arnaud Pouliquen wrote:
->>>> For RX virtqueue, the used length is validated in all the three paths
->>>> (big, small and mergeable). For control vq, we never tries to use used
->>>> length. So this patch forbids the core to validate the used length.
->>>
->>> Jason commented on this. This is copy paste from virtio net
->>> where the change was merely an optimization.
->>>
->>
->> Right, I did it too fast last night (European time) to share the regression as
->> soon as possible.
->> For that, I copied and pasted the first commit I found related to the problem.
->> Need to rework this.
->>
->>>> Without patch the rpmsg client sample does not work.
->>>
->>> Hmm that's not enough of a description. Could you please
->>> provide more detail? Does rpmsg device set used length to a
->>> value > dma read buffer size? what kind of error message
->>> do you get? what are the plans to fix the device?
->>
->> Let's me explain the context.
->> I run the rpmsg client sample test to communicate with a remote processor
->> that runs a Zephyr FW designed to answer to the Linux kernel driver sample.
->>
->> The Zephyr is relying on OpenAMP library to implement the RPMsg and VirtIO layers.
->>
->> In TX direction (Linux to Zephyr) 8 buffers of 512 bytes are allocated.
->> The first 8 RPMsg sent are OK. But when virtio loop back the the TX buffer index
->> 0 (so already used and free one time) the following error occurs in
->> virtqueue_get_buf_ctx_split[1]:
->> " virtio_rpmsg_bus virtio0: output:used len 28 is larger than in buflen 0"
->>
->> I have investigated the problem further today. Here is my analysis
->>
->> rpmsg_send_offchannel_raw
->> -> virtqueue_add_outbuf
->>    -> virtqueue_add
->>       -> virtqueue_add_split
->>          Here we use the "out_sgs" (in_sgs == 0)
->>          buflen is not incremented in loop [2]
->>          We don't enter in loop [3] as "in_sgs == 0"
->>          consequence is that vq->buflen[head] is set to 0 [4]
->>
->> [1]
->> https://elixir.bootlin.com/linux/v5.16-rc2/source/drivers/virtio/virtio_ring.c#L799
->> [2]
->> https://elixir.bootlin.com/linux/v5.16-rc2/source/drivers/virtio/virtio_ring.c#L551
->> [3]
->> https://elixir.bootlin.com/linux/v5.16-rc2/source/drivers/virtio/virtio_ring.c#L567
->> [4]
->> https://elixir.bootlin.com/linux/v5.16-rc2/source/drivers/virtio/virtio_ring.c#L622
->>
->>
->> An alternative to fix the issue is to set buflen in loop 2, but I'm not enough
->> expert to ensure that this will not have any side effect...
->>
->> @@ -559,10 +559,11 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
->>                          * table since it use stream DMA mapping.
->>                          */
->>                         i = virtqueue_add_desc_split(_vq, desc, i, addr, sg->length,
->>                                                      VRING_DESC_F_NEXT,
->>                                                      indirect);
->> +                       buflen += sg->length;
-> 
-> This is not what spec what:
-> 
-> "Each entry in the ring is a pair: id indicates the head entry of the
-> descriptor chain describing the buffer (this matches an entry placed
-> in the available ring by the guest earlier), and len the total of
-> bytes written into the buffer."
-> 
-> For TX, the used length should be 0.
-> 
->>                 }
->>         }
->>         for (; n < (out_sgs + in_sgs); n++) {
->>
->> So can you tell me if you prefer me to send a V2 updating the commit message or
->> a new message to fix virtio_ring (or both)?
-> 
-> See above, for the driver side, the suppress_used_validation is
-> sufficient. For the device side, it needs to be fixed (0 for TX used
-> length) too.
+Many people monitor only more serial messages, including warnings.
+They are confused when they see partial messages that do not make
+any sense without the context. They even do not have any chance
+to see the context when it is filtered by console_loglevel.
 
-I confirm that set len to 0 in virtq_used_elem struct, when release the
-in-buffer on device (remote processor) side, fixes the issue.
+The commit 4bcc595ccd80decb424509 ("printk: reinstate KERN_CONT for
+printing continuation lines") added possibility to define a particular
+loglevel together with KERN_CONT, for example:
 
-Need to improve the behaviour in OpenAMP lib but for legacy support of the
-different Virtio libraries the suppress_used_validation seems necessary. I will
-send a V2 with an update of the commit message
+   pr_cont(KERN_INFO "more bla bla");
 
-Thanks,
-Arnaud
+It has been added in v4.9-rc1, 5 years ago. But it seems that nobody
+has used it since then. It is possible that people do not know about
+it or nobody cared enough.
 
-> 
-> Thanks
-> 
->>
->> Thanks,
->> Arnaud
->>
->>>
->>>> Fixes: 939779f5152d ("virtio_ring: validate used buffer length")
->>>>
->>>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->>>> Cc: Jason Wang <jasowang@redhat.com>
->>>> Cc: Michael S. Tsirkin <mst@redhat.com>
->>>> ---
->>>> base-commit: fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf
->>>> ---
->>>>  drivers/rpmsg/virtio_rpmsg_bus.c | 1 +
->>>>  1 file changed, 1 insertion(+)
->>>>
->>>> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
->>>> index 9c112aa65040..5f73f19c2c38 100644
->>>> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
->>>> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
->>>> @@ -1054,6 +1054,7 @@ static struct virtio_driver virtio_ipc_driver = {
->>>>      .feature_table_size = ARRAY_SIZE(features),
->>>>      .driver.name    = KBUILD_MODNAME,
->>>>      .driver.owner   = THIS_MODULE,
->>>> +    .suppress_used_validation = true,
->>>>      .id_table       = id_table,
->>>>      .probe          = rpmsg_probe,
->>>>      .remove         = rpmsg_remove,
->>>> --
->>>> 2.17.1
->>>
->>
-> 
+Anyway, it looks a bit non-practical to update all existing pr_cont()
+callers:
+
+	$> git grep "pr_cont" | wc -l
+	2054
+
+There seems to be much easier solution. We could remember the last
+used loglevel per-context and use it for the continuous lines.
+
+Note that it does not help when another message is printed between
+the pieces in the same context, for example, a nested warning.
+In this case, the explicit log level would work better. But the saved
+loglevel should be good enough in most cases because pr_cont() is often
+used in a relatively simple self-contained code. Also the same
+caller is easy to detect when CONFIG_PRINTK_CALLER is enabled.
+
+Is it worth it?
+
+On one hand, printk() is the best effort approach. Messages are lost
+when the logbuffer is overwritten before they are read by userspace
+log daemons and shown on consoles. The continuous lines are even less
+reliable. Only the last messages can be appended. Any temporary buffering
+might cause losing the messages when the system crashes.
+
+On the other hand, we have already accepted a lot of complexity by
+introducing the record based logbuffer format. It was because
+people wanted to have as consistent messages as possible.
+
+pr_cont() is heavily used and removes ugly twists in the callers' code.
+Some code complexity is acceptable on the printk() side.
+
+The proposed solution is self-contained and quite trivial. It looks
+worth trying.
+
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+---
+ include/linux/sched.h  |  4 +++
+ kernel/printk/printk.c | 74 ++++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 76 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 78c351e35fec..4a23f3341d29 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1140,6 +1140,10 @@ struct task_struct {
+ 	int				softirq_disable_cnt;
+ #endif
+ 
++#ifdef CONFIG_PRINTK
++	u8				printk_loglevel;
++#endif
++
+ #ifdef CONFIG_LOCKDEP
+ # define MAX_LOCK_DEPTH			48UL
+ 	u64				curr_chain_key;
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 57b132b658e1..b644dee8f897 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -2021,6 +2021,62 @@ static inline u32 printk_caller_id(void)
+ 		0x80000000 + raw_smp_processor_id();
+ }
+ 
++/* Support to use the loglevel of the last message for continuous lines. */
++#ifdef CONFIG_HAVE_NMI
++#define PRINTK_IRQ_CTX_NUM	3
++#else
++#define PRINTK_IRQ_CTX_NUM	2
++#endif
++
++static DEFINE_PER_CPU(u8, printk_loglevel_irq_ctx[PRINTK_IRQ_CTX_NUM]);
++static u8 printk_loglevel_irq_ctx_early[PRINTK_IRQ_CTX_NUM];
++
++/* Return pointer where the loglevel is stored for the current context. */
++static u8 *printk_loglevel_ctx_var(void)
++{
++	unsigned char irq_ctx_level = interrupt_context_level();
++
++	/* normal process context */
++	if (irq_ctx_level == 0)
++		return &current->printk_loglevel;
++
++	/* IRQ context */
++	if (WARN_ON_ONCE(irq_ctx_level > PRINTK_IRQ_CTX_NUM))
++		return NULL;
++
++	if (printk_percpu_data_ready())
++		return this_cpu_ptr(&printk_loglevel_irq_ctx[irq_ctx_level - 1]);
++	else
++		return &printk_loglevel_irq_ctx_early[irq_ctx_level - 1];
++}
++
++static void printk_write_loglevel_ctx(int loglevel)
++{
++	u8 *loglevel_var = printk_loglevel_ctx_var();
++
++	if (!loglevel_var)
++		return;
++
++	/*
++	 * Remember only the really used loglevels that can be stored
++	 * within 3 bytes in struct printk_info.
++	 */
++	if (WARN_ON_ONCE(loglevel != LOG_LEVEL(loglevel)))
++		return;
++
++	*loglevel_var = loglevel;
++}
++
++static u8 printk_read_loglevel_ctx(void)
++{
++	u8 *loglevel_var = printk_loglevel_ctx_var();
++
++	if (!loglevel_var)
++		return LOGLEVEL_DEFAULT;
++
++	return *loglevel_var;
++}
++
+ /**
+  * printk_parse_prefix - Parse level and control flags.
+  *
+@@ -2066,6 +2122,21 @@ u16 printk_parse_prefix(const char *text, int *level,
+ 	return prefix_len;
+ }
+ 
++static int printk_sanitize_loglevel(int loglevel, enum printk_info_flags flags)
++{
++	/* For continuous lines, fallback to the previously used loglevel. */
++	if (flags & LOG_CONT && loglevel == LOGLEVEL_DEFAULT)
++		loglevel = printk_read_loglevel_ctx();
++
++	if (loglevel == LOGLEVEL_DEFAULT)
++		loglevel = default_message_loglevel;
++
++	/* Remember the really used loglevel for this context. */
++	printk_write_loglevel_ctx(loglevel);
++
++	return loglevel;
++}
++
+ __printf(5, 0)
+ static u16 printk_sprint(char *text, u16 size, int facility,
+ 			 enum printk_info_flags *flags, const char *fmt,
+@@ -2142,8 +2213,7 @@ int vprintk_store(int facility, int level,
+ 	if (facility == 0)
+ 		printk_parse_prefix(&prefix_buf[0], &level, &flags);
+ 
+-	if (level == LOGLEVEL_DEFAULT)
+-		level = default_message_loglevel;
++	level = printk_sanitize_loglevel(level, flags);
+ 
+ 	if (dev_info)
+ 		flags |= LOG_NEWLINE;
+-- 
+2.26.2
+
