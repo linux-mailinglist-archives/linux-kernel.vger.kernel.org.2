@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F55D45C4C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF95145C031
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343558AbhKXNvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:51:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39964 "EHLO mail.kernel.org"
+        id S1347336AbhKXNFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:05:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347422AbhKXNqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:46:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8691F6332D;
-        Wed, 24 Nov 2021 13:01:00 +0000 (UTC)
+        id S1347980AbhKXNDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:03:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A0D761074;
+        Wed, 24 Nov 2021 12:36:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758861;
-        bh=wUtuqPafkjHuIBSa8o+gQLFE+TdhXk32F5NW/Iv+NVQ=;
+        s=korg; t=1637757392;
+        bh=K15zpbvGvoOyEAgc1q267wln0cn4CGaE1QidG057S7k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vAgS4LzP9J8pcP6mfzbCVeEJ8WSM1uXSu5g8aTullH81VsmtEKErjAUbMzBf+l0nc
-         YrsoSto47p7Bwb5MT5G7GoLnabEQgncwJ78UkJORBc+s20xseBffz/Kjx99ZmWmpFA
-         QFsOOyU4Q2lOhKSUQIe7TKfLxMwGwZkbthuM7FdA=
+        b=Msc1K9FuVuul39x5cwRyRKk+6ag04Dil+/DdMW9jHe43RyUdeHEMCgUug/MT++64L
+         O6BXyietc+yoivZFvvw2RTwWXSKhVNKEm7rAohnEjh8VvQT9I8Esi1557Q4NkXXsbb
+         RkrsiGft389WlS70aNXni8MUxIy8HiK8ZKr5sg4E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Sven Peter <sven@svenpeter.dev>,
+        stable@vger.kernel.org, Stephen Suryaputra <ssuryaextr@gmail.com>,
+        Antonio Quartulli <a@unstable.cc>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 021/279] usb: typec: tipd: Remove WARN_ON in tps6598x_block_read
-Date:   Wed, 24 Nov 2021 12:55:08 +0100
-Message-Id: <20211124115719.482553672@linuxfoundation.org>
+Subject: [PATCH 4.19 119/323] gre/sit: Dont generate link-local addr if addr_gen_mode is IN6_ADDR_GEN_MODE_NONE
+Date:   Wed, 24 Nov 2021 12:55:09 +0100
+Message-Id: <20211124115722.962396664@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Peter <sven@svenpeter.dev>
+From: Stephen Suryaputra <ssuryaextr@gmail.com>
 
-[ Upstream commit b7a0a63f3fed57d413bb857de164ea9c3984bc4e ]
+[ Upstream commit 61e18ce7348bfefb5688a8bcd4b4d6b37c0f9b2a ]
 
-Calling tps6598x_block_read with a higher than allowed len can be
-handled by just returning an error. There's no need to crash systems
-with panic-on-warn enabled.
+When addr_gen_mode is set to IN6_ADDR_GEN_MODE_NONE, the link-local addr
+should not be generated. But it isn't the case for GRE (as well as GRE6)
+and SIT tunnels. Make it so that tunnels consider the addr_gen_mode,
+especially for IN6_ADDR_GEN_MODE_NONE.
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Sven Peter <sven@svenpeter.dev>
-Link: https://lore.kernel.org/r/20210914140235.65955-3-sven@svenpeter.dev
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Do this in add_v4_addrs() to cover both GRE and SIT only if the addr
+scope is link.
+
+Signed-off-by: Stephen Suryaputra <ssuryaextr@gmail.com>
+Acked-by: Antonio Quartulli <a@unstable.cc>
+Link: https://lore.kernel.org/r/20211020200618.467342-1-ssuryaextr@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/typec/tipd/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ipv6/addrconf.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-index ea4cc0a6e40cc..97f50f301f13b 100644
---- a/drivers/usb/typec/tipd/core.c
-+++ b/drivers/usb/typec/tipd/core.c
-@@ -117,7 +117,7 @@ tps6598x_block_read(struct tps6598x *tps, u8 reg, void *val, size_t len)
- 	u8 data[TPS_MAX_LEN + 1];
- 	int ret;
+diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
+index 76c097552ea74..9d8b791f63efc 100644
+--- a/net/ipv6/addrconf.c
++++ b/net/ipv6/addrconf.c
+@@ -3054,6 +3054,9 @@ static void sit_add_v4_addrs(struct inet6_dev *idev)
+ 	memcpy(&addr.s6_addr32[3], idev->dev->dev_addr, 4);
  
--	if (WARN_ON(len + 1 > sizeof(data)))
-+	if (len + 1 > sizeof(data))
- 		return -EINVAL;
- 
- 	if (!tps->i2c_protocol)
+ 	if (idev->dev->flags&IFF_POINTOPOINT) {
++		if (idev->cnf.addr_gen_mode == IN6_ADDR_GEN_MODE_NONE)
++			return;
++
+ 		addr.s6_addr32[0] = htonl(0xfe800000);
+ 		scope = IFA_LINK;
+ 		plen = 64;
 -- 
 2.33.0
 
