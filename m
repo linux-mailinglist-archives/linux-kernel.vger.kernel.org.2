@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685C745BDE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:39:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0C345B9F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343982AbhKXMl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:41:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40402 "EHLO mail.kernel.org"
+        id S237325AbhKXMG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:06:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344778AbhKXMim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:38:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C87561214;
-        Wed, 24 Nov 2021 12:23:21 +0000 (UTC)
+        id S242110AbhKXMFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:05:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C362961059;
+        Wed, 24 Nov 2021 12:01:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756602;
-        bh=PKTNeAXmqIrg25qHd2zISqRL9T6mCltyFgjlhaQuQqk=;
+        s=korg; t=1637755313;
+        bh=/0LBGR/tDVCf/txDBVm2oikXt0vZaDQ4+mz7fcuQWJw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gifZeMwMCfe3vEvIRYygLdhkkyU80+UoDpd20cc5vBruXeKq6bttsZZTV+Dzt040l
-         1Vv5fLko3kIbYwxf9xFm6ZRF7a3DoOfwGjKv3TidOLnDGkoV1VDO/E/yRwJCAsAT0f
-         +o2TAYNPa7kY+hJpUiC/TtDtkLxCaKukJ6HoBj/s=
+        b=oi9CKHUhfWPqzdoWlGeIbiCotHxZ+/AyppNKxfE/tAMK1YD6fOr100lwNEs/UmoyV
+         EBqwGFULhjuh9u0uBELfU5VYO4l31UcEot0Rbg8V5Ml5+WslHiYERcUMX/EEusyt5X
+         334TsM+PoaESCBefW9V/ketqqvDn5+4sfiKa79WM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Kees Cook <keescook@chromium.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Michael Wang <yun.wang@linux.alibaba.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 109/251] media: si470x: Avoid card name truncation
+Subject: [PATCH 4.4 048/162] x86: Increase exception stack sizes
 Date:   Wed, 24 Nov 2021 12:55:51 +0100
-Message-Id: <20211124115714.025892898@linuxfoundation.org>
+Message-Id: <20211124115659.894440854@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit 2908249f3878a591f7918368fdf0b7b0a6c3158c ]
+[ Upstream commit 7fae4c24a2b84a66c7be399727aca11e7a888462 ]
 
-The "card" string only holds 31 characters (and the terminating NUL).
-In order to avoid truncation, use a shorter card description instead of
-the current result, "Silicon Labs Si470x FM Radio Re".
+It turns out that a single page of stack is trivial to overflow with
+all the tracing gunk enabled. Raise the exception stacks to 2 pages,
+which is still half the interrupt stacks, which are at 4 pages.
 
-Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Fixes: 78656acdcf48 ("V4L/DVB (7038): USB radio driver for Silicon Labs Si470x FM Radio Receivers")
-Fixes: cc35bbddfe10 ("V4L/DVB (12416): radio-si470x: add i2c driver for si470x")
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reported-by: Michael Wang <yun.wang@linux.alibaba.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/YUIO9Ye98S5Eb68w@hirez.programming.kicks-ass.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/radio/si470x/radio-si470x-i2c.c | 2 +-
- drivers/media/radio/si470x/radio-si470x-usb.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/include/asm/page_64_types.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/radio/si470x/radio-si470x-i2c.c b/drivers/media/radio/si470x/radio-si470x-i2c.c
-index 5275356143429..7e7fa23e17961 100644
---- a/drivers/media/radio/si470x/radio-si470x-i2c.c
-+++ b/drivers/media/radio/si470x/radio-si470x-i2c.c
-@@ -20,7 +20,7 @@
+diff --git a/arch/x86/include/asm/page_64_types.h b/arch/x86/include/asm/page_64_types.h
+index fb1251946b45e..67a140d77f336 100644
+--- a/arch/x86/include/asm/page_64_types.h
++++ b/arch/x86/include/asm/page_64_types.h
+@@ -15,7 +15,7 @@
+ #define THREAD_SIZE  (PAGE_SIZE << THREAD_SIZE_ORDER)
+ #define CURRENT_MASK (~(THREAD_SIZE - 1))
  
- /* driver definitions */
- #define DRIVER_AUTHOR "Joonyoung Shim <jy0922.shim@samsung.com>";
--#define DRIVER_CARD "Silicon Labs Si470x FM Radio Receiver"
-+#define DRIVER_CARD "Silicon Labs Si470x FM Radio"
- #define DRIVER_DESC "I2C radio driver for Si470x FM Radio Receivers"
- #define DRIVER_VERSION "1.0.2"
+-#define EXCEPTION_STACK_ORDER (0 + KASAN_STACK_ORDER)
++#define EXCEPTION_STACK_ORDER (1 + KASAN_STACK_ORDER)
+ #define EXCEPTION_STKSZ (PAGE_SIZE << EXCEPTION_STACK_ORDER)
  
-diff --git a/drivers/media/radio/si470x/radio-si470x-usb.c b/drivers/media/radio/si470x/radio-si470x-usb.c
-index aec528f52ca12..95581a8476191 100644
---- a/drivers/media/radio/si470x/radio-si470x-usb.c
-+++ b/drivers/media/radio/si470x/radio-si470x-usb.c
-@@ -25,7 +25,7 @@
- 
- /* driver definitions */
- #define DRIVER_AUTHOR "Tobias Lorenz <tobias.lorenz@gmx.net>"
--#define DRIVER_CARD "Silicon Labs Si470x FM Radio Receiver"
-+#define DRIVER_CARD "Silicon Labs Si470x FM Radio"
- #define DRIVER_DESC "USB radio driver for Si470x FM Radio Receivers"
- #define DRIVER_VERSION "1.0.10"
- 
+ #define DEBUG_STACK_ORDER (EXCEPTION_STACK_ORDER + 1)
 -- 
 2.33.0
 
