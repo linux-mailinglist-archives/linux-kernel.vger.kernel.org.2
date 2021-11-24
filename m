@@ -2,217 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B29ED45B118
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 02:19:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F7A45B11B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 02:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233199AbhKXBWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 20:22:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41518 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229586AbhKXBWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 20:22:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5346160F5B;
-        Wed, 24 Nov 2021 01:19:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637716753;
-        bh=+eAMlPxbAMpmUM1vrLqrEV0szMpwU9SyCqtGZy/+OT0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FLUAhJbdIUbifaR0KUbJSCUw8pqHSkWPwtiBAr1yHcFO8uEteIFap1QzZRZf551V+
-         aML3+T/lDHF+9g6//3pPCo5gLppFLg7+U0dItZ1e/KRrKrku/9PPTX99LgnnawbMpC
-         bJY9JLHNt/kChBTm/qnrgvV3fsMI6w7QFzd/Ka+sPg03wqZGj1i2nzmtilsfdLGyj0
-         O5XjZYx0CXSWiF5ubb2wWXX88CBPNwYc9hWn86xkiZWKCHO8bB2CIISrTwlpv4cuV0
-         MGHSXcpp2prYsqqzHt7T0BueMAqYtrLplNPf9Xe8j9pGKQl8H9f+qBFdQyudkXR8yN
-         ajIbarT1/X2nA==
-Date:   Tue, 23 Nov 2021 17:19:12 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        NeilBrown <neilb@suse.de>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Rik van Riel <riel@surriel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/8] mm/vmscan: Throttle reclaim when no progress is
- being made
-Message-ID: <20211124011912.GA265983@magnolia>
-References: <20211022144651.19914-1-mgorman@techsingularity.net>
- <20211022144651.19914-4-mgorman@techsingularity.net>
+        id S233412AbhKXBYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 20:24:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhKXBYT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 20:24:19 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01187C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 17:21:11 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id n15-20020a17090a160f00b001a75089daa3so3614567pja.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 17:21:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=YWhfXghFABBf6LlzYG/IR3Fhic7MRtqIGQdOLTKrXVE=;
+        b=iPL6f1ta8Zk4Rgns3gYDGX2HCPBucC+HsKJ9sBfiB6xRYXuBeNg7O17b0abuLiQ3K/
+         By8hpZZIBi20BIf2uHf50yii/tgdmeoJQLVydkJH9igBZ5UAT3dbXb83WwuVMwddK0VU
+         M+yAvp8SWVHyVseHHU6rL9nFuGL9qa/iecpI5sJCA3kVz8cebhmkyCmvAHsvij98D642
+         H4Isl3WAxl4GEZamLp55c4EhpwK7WM3HwSvSy7XTKF6kdT8xAYyKmvoNtSiMbIp0gg8/
+         EpIbxekSGivUdkBLuAkVLn8lWAdfz6nibrTfRcZC8tx2uutjd9eQDHS8zhndI/OV1z3A
+         8+LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=YWhfXghFABBf6LlzYG/IR3Fhic7MRtqIGQdOLTKrXVE=;
+        b=ZG8rMnkPSMWBkKIyQ6ouNKUACt8Lid8iJYeY1Vf6V3Grj52U2o0eznn5ZE0XKOSa2K
+         6al1glmpS7OAZ/MfZ//y36reVDwcZ1x52wlLezhI3rpZv9sZ4l/AS5iCRPgXkuvR0E2L
+         mZr7gO08fNg5iREeu7J8R+wcuTRPhRT/xEmYlmlhl0OLkYvRszl2nDdVjb4EiYHr+u1f
+         u470crPtGFoQ/4DgS4Zxl21jgwBm8ZLtSp9ckdcY0xH4ERW3pNalE+kpre2mEnFVcKGE
+         UobIXYuDnd+0FREJSoAkkQtfKIcdFlkrEpaX+dt21q69oMS0IR4xRcwy4WtheVXa4/P6
+         x4RA==
+X-Gm-Message-State: AOAM533e4Mx3Q5e/9uEQQSlJ4FQxV9+8ekaFsexN8h+xh+UsZVDeWf1A
+        O0F08XkBwaxvquH1e2FX8GE=
+X-Google-Smtp-Source: ABdhPJy/J/RK9A40Yb7QBrfJ9alSUNT/XI6lqXUx5Jkgigh4rEfY2mk36NRctgnOp08zkW1MXKt3IA==
+X-Received: by 2002:a17:90b:388f:: with SMTP id mu15mr9487208pjb.30.1637716870561;
+        Tue, 23 Nov 2021 17:21:10 -0800 (PST)
+Received: from localhost.localdomain ([43.128.78.144])
+        by smtp.gmail.com with ESMTPSA id oj11sm2596074pjb.46.2021.11.23.17.21.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 17:21:10 -0800 (PST)
+Date:   Wed, 24 Nov 2021 09:21:03 +0800
+From:   Aili Yao <yaoaili126@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        bsegall@google.com, mgorman@suse.de, linux-kernel@vger.kernel.org,
+        yaoaili@kingsoft.com
+Subject: Re: [PATCH] sched/isolation: delete redundant
+ housekeeping_overridden check
+Message-ID: <20211124092103.64e93376@gmail.com>
+In-Reply-To: <20211123123852.11a84a9e@gandalf.local.home>
+References: <20211123154535.48be4399@gmail.com>
+        <20211123123852.11a84a9e@gandalf.local.home>
+Organization: ksyun
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211022144651.19914-4-mgorman@techsingularity.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 03:46:46PM +0100, Mel Gorman wrote:
-> Memcg reclaim throttles on congestion if no reclaim progress is made.
-> This makes little sense, it might be due to writeback or a host of
-> other factors.
+On Tue, 23 Nov 2021 12:38:52 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> On Tue, 23 Nov 2021 15:45:35 +0800
+> Aili Yao <yaoaili126@gmail.com> wrote:
 > 
-> For !memcg reclaim, it's messy. Direct reclaim primarily is throttled
-> in the page allocator if it is failing to make progress. Kswapd
-> throttles if too many pages are under writeback and marked for
-> immediate reclaim.
+> > From: Aili Yao <yaoaili@kingsoft.com>
+> > 
+> > housekeeping_test_cpu is only called by housekeeping_cpu(),
+> > and in housekeeping_cpu(), there is already one same check;
+> > 
+> > So delete the redundant check.
+> > 
+> > Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
+> > ---
+> >  kernel/sched/isolation.c | 5 ++---
+> >  1 file changed, 2 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+> > index 7f06eaf..5c4d533 100644
+> > --- a/kernel/sched/isolation.c
+> > +++ b/kernel/sched/isolation.c
+> > @@ -56,9 +56,8 @@ void housekeeping_affine(struct task_struct *t, enum
+> > hk_flags flags) 
+> >  bool housekeeping_test_cpu(int cpu, enum hk_flags flags)
+> >  {
+> > -	if (static_branch_unlikely(&housekeeping_overridden))
+> > -		if (housekeeping_flags & flags)
+> > -			return cpumask_test_cpu(cpu,
+> > housekeeping_mask);  
 > 
-> This patch explicitly throttles if reclaim is failing to make progress.
+> Not only is your email client broken, you don't seem to understand what
+> static_branch_unlikely() is.
 
-Hi Mel,
+Yes, My mail client is not properly configured, sorry for that, I will make it work.
 
-Ever since Christoph broke swapfiles, I've been carrying around a little
-fstest in my dev tree[1] that tries to exercise paging things in and out
-of a swapfile.  Sadly I've been trapped in about three dozen customer
-escalations for over a month, which means I haven't been able to do much
-upstream in weeks.  Like submit this test upstream. :(
+And Yes again, I have limited knowledge about static key, But still don't understand why we
+need two same check(jump or nop instruction?) here, could you be kindly to explain this?
 
-Now that I've finally gotten around to trying out a 5.16-rc2 build, I
-notice that the runtime of this test has gone from ~5s to 2 hours.
-Among other things that it does, the test sets up a cgroup with a memory
-controller limiting the memory usage to 25MB, then runs a program that
-tries to dirty 50MB of memory.  There's 2GB of memory in the VM, so
-we're not running reclaim globally, but the cgroup gets throttled very
-severely.
-
-AFAICT the system is mostly idle, but it's difficult to tell because ps
-and top also get stuck waiting for this cgroup for whatever reason.  My
-uninformed spculation is that usemem_and_swapoff takes a page fault
-while dirtying the 50MB memory buffer, prepares to pull a page in from
-swap, tries to evict another page to stay under the memcg limit, but
-that decides that it's making no progress and calls
-reclaim_throttle(..., VMSCAN_THROTTLE_NOPROGRESS).
-
-The sleep is uninterruptible, so I can't even kill -9 fstests to shut it
-down.  Eventually we either finish the test or (for the mlock part) the
-OOM killer actually kills the process, but this takes a very long time.
-
-Any thoughts?  For now I can just hack around this by skipping
-reclaim_throttle if cgroup_reclaim() == true, but that's probably not
-the correct fix. :)
-
---D
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfstests-dev.git/commit/?h=test-swapfile-io&id=0d0ad843cea366d0ab0a7d8d984e5cd1deba5b43
-
-> 
-> [vbabka@suse.cz: Remove redundant code]
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  include/linux/mmzone.h        |  1 +
->  include/trace/events/vmscan.h |  4 +++-
->  mm/memcontrol.c               | 10 +---------
->  mm/vmscan.c                   | 28 ++++++++++++++++++++++++++++
->  4 files changed, 33 insertions(+), 10 deletions(-)
-> 
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 9ccd8d95291b..00e305cfb3ec 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -276,6 +276,7 @@ enum lru_list {
->  enum vmscan_throttle_state {
->  	VMSCAN_THROTTLE_WRITEBACK,
->  	VMSCAN_THROTTLE_ISOLATED,
-> +	VMSCAN_THROTTLE_NOPROGRESS,
->  	NR_VMSCAN_THROTTLE,
->  };
->  
-> diff --git a/include/trace/events/vmscan.h b/include/trace/events/vmscan.h
-> index d4905bd9e9c4..f25a6149d3ba 100644
-> --- a/include/trace/events/vmscan.h
-> +++ b/include/trace/events/vmscan.h
-> @@ -29,11 +29,13 @@
->  
->  #define _VMSCAN_THROTTLE_WRITEBACK	(1 << VMSCAN_THROTTLE_WRITEBACK)
->  #define _VMSCAN_THROTTLE_ISOLATED	(1 << VMSCAN_THROTTLE_ISOLATED)
-> +#define _VMSCAN_THROTTLE_NOPROGRESS	(1 << VMSCAN_THROTTLE_NOPROGRESS)
->  
->  #define show_throttle_flags(flags)						\
->  	(flags) ? __print_flags(flags, "|",					\
->  		{_VMSCAN_THROTTLE_WRITEBACK,	"VMSCAN_THROTTLE_WRITEBACK"},	\
-> -		{_VMSCAN_THROTTLE_ISOLATED,	"VMSCAN_THROTTLE_ISOLATED"}	\
-> +		{_VMSCAN_THROTTLE_ISOLATED,	"VMSCAN_THROTTLE_ISOLATED"},	\
-> +		{_VMSCAN_THROTTLE_NOPROGRESS,	"VMSCAN_THROTTLE_NOPROGRESS"}	\
->  		) : "VMSCAN_THROTTLE_NONE"
->  
->  
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 6da5020a8656..8b33152c9b85 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -3465,19 +3465,11 @@ static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
->  
->  	/* try to free all pages in this cgroup */
->  	while (nr_retries && page_counter_read(&memcg->memory)) {
-> -		int progress;
-> -
->  		if (signal_pending(current))
->  			return -EINTR;
->  
-> -		progress = try_to_free_mem_cgroup_pages(memcg, 1,
-> -							GFP_KERNEL, true);
-> -		if (!progress) {
-> +		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL, true))
->  			nr_retries--;
-> -			/* maybe some writeback is necessary */
-> -			congestion_wait(BLK_RW_ASYNC, HZ/10);
-> -		}
-> -
->  	}
->  
->  	return 0;
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 1e54e636b927..0450f6867d61 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -3323,6 +3323,33 @@ static inline bool compaction_ready(struct zone *zone, struct scan_control *sc)
->  	return zone_watermark_ok_safe(zone, 0, watermark, sc->reclaim_idx);
->  }
->  
-> +static void consider_reclaim_throttle(pg_data_t *pgdat, struct scan_control *sc)
-> +{
-> +	/* If reclaim is making progress, wake any throttled tasks. */
-> +	if (sc->nr_reclaimed) {
-> +		wait_queue_head_t *wqh;
-> +
-> +		wqh = &pgdat->reclaim_wait[VMSCAN_THROTTLE_NOPROGRESS];
-> +		if (waitqueue_active(wqh))
-> +			wake_up(wqh);
-> +
-> +		return;
-> +	}
-> +
-> +	/*
-> +	 * Do not throttle kswapd on NOPROGRESS as it will throttle on
-> +	 * VMSCAN_THROTTLE_WRITEBACK if there are too many pages under
-> +	 * writeback and marked for immediate reclaim at the tail of
-> +	 * the LRU.
-> +	 */
-> +	if (current_is_kswapd())
-> +		return;
-> +
-> +	/* Throttle if making no progress at high prioities. */
-> +	if (sc->priority < DEF_PRIORITY - 2)
-> +		reclaim_throttle(pgdat, VMSCAN_THROTTLE_NOPROGRESS, HZ/10);
-> +}
-> +
->  /*
->   * This is the direct reclaim path, for page-allocating processes.  We only
->   * try to reclaim pages from zones which will satisfy the caller's allocation
-> @@ -3407,6 +3434,7 @@ static void shrink_zones(struct zonelist *zonelist, struct scan_control *sc)
->  			continue;
->  		last_pgdat = zone->zone_pgdat;
->  		shrink_node(zone->zone_pgdat, sc);
-> +		consider_reclaim_throttle(zone->zone_pgdat, sc);
->  	}
->  
->  	/*
-> -- 
-> 2.31.1
-> 
+A lot Thanks!
+Aili Yao
