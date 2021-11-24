@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9175445BBCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:22:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DEB745BBD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244558AbhKXMXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:23:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36508 "EHLO mail.kernel.org"
+        id S244705AbhKXMYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:24:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243808AbhKXMSw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:18:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28C4F60F5D;
-        Wed, 24 Nov 2021 12:11:55 +0000 (UTC)
+        id S243826AbhKXMSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:18:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96AF461059;
+        Wed, 24 Nov 2021 12:11:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755915;
-        bh=VeERWnquwe8O+0h2BDEK+eSK5eTtMoGrfLxGq49TWzk=;
+        s=korg; t=1637755918;
+        bh=6Xjl0fvTVaxVWqAhEJYCvBXzA2KCthtw7ddZwQC8MZk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E405x4+Rib1MJo3hwQ6//WAIdbEVhYuvaH8nI6yzRGggunOM2Q9QxLgNDvaqVklp7
-         eFT3gYw6waaw2mAOoEX/23G9e3TvinwIgh1nWoQDdms2xfpwlitQwNKCRUGDkaYBCt
-         GfKICv6mkSZ+r0E9vdWTle5XQm1nz4LjhRGfsOmo=
+        b=LI14xU44NDZHRTMvBgX9/J++3K/C7JPbl8A0+uY8JimNc4/wEQsn4F5T/OdNVxP86
+         OLvpI6qz3ALOZAJb3AyN4KopQoIBOVyNlX4yg8DXPBNCwnsYvh5jcigDV4nMnnRTou
+         XUdtRDys5G+k673dtSPCX6kM6ueZ1sMyvnBgSB5E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tor Vic <torvic9@mailbox.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 105/207] platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning
-Date:   Wed, 24 Nov 2021 12:56:16 +0100
-Message-Id: <20211124115707.470017060@linuxfoundation.org>
+Subject: [PATCH 4.9 106/207] mwifiex: Send DELBA requests according to spec
+Date:   Wed, 24 Nov 2021 12:56:17 +0100
+Message-Id: <20211124115707.498887947@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
 References: <20211124115703.941380739@linuxfoundation.org>
@@ -42,48 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Jonas Dreßler <verdre@v0yd.nl>
 
-[ Upstream commit fd96e35ea7b95f1e216277805be89d66e4ae962d ]
+[ Upstream commit cc8a8bc37466f79b24d972555237f3d591150602 ]
 
-A new warning in clang points out a use of bitwise OR with boolean
-expressions in this driver:
+While looking at on-air packets using Wireshark, I noticed we're never
+setting the initiator bit when sending DELBA requests to the AP: While
+we set the bit on our del_ba_param_set bitmask, we forget to actually
+copy that bitmask over to the command struct, which means we never
+actually set the initiator bit.
 
-drivers/platform/x86/thinkpad_acpi.c:9061:11: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
-        else if ((strlencmp(cmd, "level disengaged") == 0) |
-                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                                                           ||
-drivers/platform/x86/thinkpad_acpi.c:9061:11: note: cast one or both operands to int to silence this warning
-1 error generated.
+Fix that and copy the bitmask over to the host_cmd_ds_11n_delba command
+struct.
 
-This should clearly be a logical OR so change it to fix the warning.
-
-Fixes: fe98a52ce754 ("ACPI: thinkpad-acpi: add sysfs support to fan subdriver")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1476
-Reported-by: Tor Vic <torvic9@mailbox.org>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Link: https://lore.kernel.org/r/20211018182537.2316800-1-nathan@kernel.org
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Fixes: 5e6e3a92b9a4 ("wireless: mwifiex: initial commit for Marvell mwifiex driver")
+Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
+Acked-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20211016153244.24353-5-verdre@v0yd.nl
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/thinkpad_acpi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/marvell/mwifiex/11n.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index 84bfecded84d9..9c929b5ce58e2 100644
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -8884,7 +8884,7 @@ static int fan_write_cmd_level(const char *cmd, int *rc)
+diff --git a/drivers/net/wireless/marvell/mwifiex/11n.c b/drivers/net/wireless/marvell/mwifiex/11n.c
+index c174e79e6df2b..b70eac7d2dd79 100644
+--- a/drivers/net/wireless/marvell/mwifiex/11n.c
++++ b/drivers/net/wireless/marvell/mwifiex/11n.c
+@@ -630,14 +630,15 @@ int mwifiex_send_delba(struct mwifiex_private *priv, int tid, u8 *peer_mac,
+ 	uint16_t del_ba_param_set;
  
- 	if (strlencmp(cmd, "level auto") == 0)
- 		level = TP_EC_FAN_AUTO;
--	else if ((strlencmp(cmd, "level disengaged") == 0) |
-+	else if ((strlencmp(cmd, "level disengaged") == 0) ||
- 			(strlencmp(cmd, "level full-speed") == 0))
- 		level = TP_EC_FAN_FULLSPEED;
- 	else if (sscanf(cmd, "level %d", &level) != 1)
+ 	memset(&delba, 0, sizeof(delba));
+-	delba.del_ba_param_set = cpu_to_le16(tid << DELBA_TID_POS);
+ 
+-	del_ba_param_set = le16_to_cpu(delba.del_ba_param_set);
++	del_ba_param_set = tid << DELBA_TID_POS;
++
+ 	if (initiator)
+ 		del_ba_param_set |= IEEE80211_DELBA_PARAM_INITIATOR_MASK;
+ 	else
+ 		del_ba_param_set &= ~IEEE80211_DELBA_PARAM_INITIATOR_MASK;
+ 
++	delba.del_ba_param_set = cpu_to_le16(del_ba_param_set);
+ 	memcpy(&delba.peer_mac_addr, peer_mac, ETH_ALEN);
+ 
+ 	/* We don't wait for the response of this command */
 -- 
 2.33.0
 
