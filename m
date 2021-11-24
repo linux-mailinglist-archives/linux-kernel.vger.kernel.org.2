@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9260945B9A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:01:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB6045BB26
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:14:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241991AbhKXMDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:03:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58544 "EHLO mail.kernel.org"
+        id S242604AbhKXMQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:16:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241944AbhKXMDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:03:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54B2860FBF;
-        Wed, 24 Nov 2021 12:00:23 +0000 (UTC)
+        id S243423AbhKXMOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:14:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4190A6108F;
+        Wed, 24 Nov 2021 12:08:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755223;
-        bh=F1ERx63qDf/ivTGkbgRwAP5ePGateUto2IvphXWFpfM=;
+        s=korg; t=1637755725;
+        bh=goLH+zDirGBuw9U04IOpnl9PZoD1BMOzb/miVVV89RA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KFG1egR7VsDcqxg8LBoYGLYqQUTOGdmWmOKQPjJxJxaNWmhHiyNIlAYAc66EiCYDQ
-         foSSVjSXpRpix5jpiho7wRw3T5cjTsv+fwl6TrPT6KdIIjsTnkL3CNj2ViDlIpploO
-         zQu0XXTDIcx1F9t0eoxRpUOv8g6nD+wpX1n/rMnQ=
+        b=DmJx7VSDl9KHyg/RjPJXK0FDUfI58omCcUTkjjQeyKwQGlFvmjjMtR+Y9t8PkFcEC
+         6lbJZP3+FLJi5zvy+OjBOB+EJRsFrHFzK6tHCjP+uOJP/TudujCwQ1hhiWMC1bYY3Y
+         DmTXtrXq5f6Dlz/HJwPXgDI8RZ/8scyllBh8NRKw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Walt Jr. Brake" <mr.yming81@gmail.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 4.4 003/162] xhci: Fix USB 3.1 enumeration issues by increasing roothub power-on-good delay
+        stable@vger.kernel.org, Ingmar Klein <ingmar_klein@web.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH 4.9 035/207] PCI: Mark Atheros QCA6174 to avoid bus reset
 Date:   Wed, 24 Nov 2021 12:55:06 +0100
-Message-Id: <20211124115658.443872039@linuxfoundation.org>
+Message-Id: <20211124115705.081694972@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,58 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Ingmar Klein <ingmar_klein@web.de>
 
-commit e1959faf085b004e6c3afaaaa743381f00e7c015 upstream.
+commit e3f4bd3462f6f796594ecc0dda7144ed2d1e5a26 upstream.
 
-Some USB 3.1 enumeration issues were reported after the hub driver removed
-the minimum 100ms limit for the power-on-good delay.
+When passing the Atheros QCA6174 through to a virtual machine, the VM hangs
+at the point where the ath10k driver loads.
 
-Since commit 90d28fb53d4a ("usb: core: reduce power-on-good delay time of
-root hub") the hub driver sets the power-on-delay based on the
-bPwrOn2PwrGood value in the hub descriptor.
+Add a quirk to avoid bus resets on this device, which avoids the hang.
 
-xhci driver has a 20ms bPwrOn2PwrGood value for both roothubs based
-on xhci spec section 5.4.8, but it's clearly not enough for the
-USB 3.1 devices, causing enumeration issues.
-
-Tests indicate full 100ms delay is needed.
-
-Reported-by: Walt Jr. Brake <mr.yming81@gmail.com>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Fixes: 90d28fb53d4a ("usb: core: reduce power-on-good delay time of root hub")
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20211105160036.549516-1-mathias.nyman@linux.intel.com
+[bhelgaas: commit log]
+Link: https://lore.kernel.org/r/08982e05-b6e8-5a8d-24ab-da1488ee50a8@web.de
+Signed-off-by: Ingmar Klein <ingmar_klein@web.de>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Pali Rohár <pali@kernel.org>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci-hub.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/pci/quirks.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/host/xhci-hub.c
-+++ b/drivers/usb/host/xhci-hub.c
-@@ -156,7 +156,6 @@ static void xhci_common_hub_descriptor(s
- {
- 	u16 temp;
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -3370,6 +3370,7 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_A
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003c, quirk_no_bus_reset);
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0033, quirk_no_bus_reset);
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0034, quirk_no_bus_reset);
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003e, quirk_no_bus_reset);
  
--	desc->bPwrOn2PwrGood = 10;	/* xhci section 5.4.9 says 20ms max */
- 	desc->bHubContrCurrent = 0;
- 
- 	desc->bNbrPorts = ports;
-@@ -190,6 +189,7 @@ static void xhci_usb2_hub_descriptor(str
- 	desc->bDescriptorType = USB_DT_HUB;
- 	temp = 1 + (ports / 8);
- 	desc->bDescLength = USB_DT_HUB_NONVAR_SIZE + 2 * temp;
-+	desc->bPwrOn2PwrGood = 10;	/* xhci section 5.4.8 says 20ms */
- 
- 	/* The Device Removable bits are reported on a byte granularity.
- 	 * If the port doesn't exist within that byte, the bit is set to 0.
-@@ -240,6 +240,7 @@ static void xhci_usb3_hub_descriptor(str
- 	xhci_common_hub_descriptor(xhci, desc, ports);
- 	desc->bDescriptorType = USB_DT_SS_HUB;
- 	desc->bDescLength = USB_DT_SS_HUB_SIZE;
-+	desc->bPwrOn2PwrGood = 50;	/* usb 3.1 may fail if less than 100ms */
- 
- 	/* header decode latency should be zero for roothubs,
- 	 * see section 4.23.5.2.
+ /*
+  * Some TI KeyStone C667X devices do not support bus/hot reset.  The PCIESS
 
 
