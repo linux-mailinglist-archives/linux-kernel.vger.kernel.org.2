@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 305A845C142
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:13:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C092B45C581
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:56:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347490AbhKXNP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:15:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52064 "EHLO mail.kernel.org"
+        id S1355604AbhKXN6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:58:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348017AbhKXNMP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:12:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3948F61241;
-        Wed, 24 Nov 2021 12:42:30 +0000 (UTC)
+        id S1352366AbhKXNy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:54:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E45561504;
+        Wed, 24 Nov 2021 13:06:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757750;
-        bh=TWKIcLk6ahcvQz2WQDufqyNtj8pR42nGeM2bvmPsr68=;
+        s=korg; t=1637759175;
+        bh=QmJe54iRhzz0vAi7dCGLFqgX+U7Ar1Wycuxbr4Ur1Kc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eug1KiMkZuqxORF2YqHnLGcK46eh7MfClwyttm0mWHgSnMvAbccso09atPHFlTJQG
-         +HEN24Sz03g3i60La3thMO8KKUdbaZZ683L8fmBgJlxoOsZCZ7nJ/Y1HNEnRuy3frC
-         rr20+NzQ0vi/tnyvRtvaykYoa0XNTNkHGbDonMUE=
+        b=DchSgYfmKUZvKbhJ08uDIS7umbDMJ/4m88r+b+YGMrlSgRmo8mjHegh+a/2LVhE7C
+         UpGQwKDHaZ7wlJ4LEn8kORK6113UcJ7I7CisCNvXQB8CjammHQ6edmvEvJbxHb/Uos
+         lJN52YQHhKQDuFkw+k2BBpkewqVRza8XF4DTvxI8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Kiselev <bigunclemax@gmail.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org,
+        Nicholas Nunley <nicholas.d.nunley@intel.com>,
+        Tony Brelinski <tony.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 221/323] net: davinci_emac: Fix interrupt pacing disable
+Subject: [PATCH 5.15 124/279] iavf: check for null in iavf_fix_features
 Date:   Wed, 24 Nov 2021 12:56:51 +0100
-Message-Id: <20211124115726.394339072@linuxfoundation.org>
+Message-Id: <20211124115723.092541936@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,57 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Kiselev <bigunclemax@gmail.com>
+From: Nicholas Nunley <nicholas.d.nunley@intel.com>
 
-[ Upstream commit d52bcb47bdf971a59a2467975d2405fcfcb2fa19 ]
+[ Upstream commit 8a4a126f4be88eb8b5f00a165ab58c35edf4ef76 ]
 
-This patch allows to use 0 for `coal->rx_coalesce_usecs` param to
-disable rx irq coalescing.
+If the driver has lost contact with the PF then it enters a disabled state
+and frees adapter->vf_res. However, ndo_fix_features can still be called on
+the interface, so we need to check for this condition first. Since we have
+no information on the features at this time simply leave them unmodified
+and return.
 
-Previously we could enable rx irq coalescing via ethtool
-(For ex: `ethtool -C eth0 rx-usecs 2000`) but we couldn't disable
-it because this part rejects 0 value:
-
-       if (!coal->rx_coalesce_usecs)
-               return -EINVAL;
-
-Fixes: 84da2658a619 ("TI DaVinci EMAC : Implement interrupt pacing functionality.")
-Signed-off-by: Maxim Kiselev <bigunclemax@gmail.com>
-Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Link: https://lore.kernel.org/r/20211101152343.4193233-1-bigunclemax@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: c4445aedfe09 ("i40evf: Fix VLAN features")
+Signed-off-by: Nicholas Nunley <nicholas.d.nunley@intel.com>
+Tested-by: Tony Brelinski <tony.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ti/davinci_emac.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/intel/iavf/iavf_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/ti/davinci_emac.c b/drivers/net/ethernet/ti/davinci_emac.c
-index 56130cf293f37..566da1e3cfbcc 100644
---- a/drivers/net/ethernet/ti/davinci_emac.c
-+++ b/drivers/net/ethernet/ti/davinci_emac.c
-@@ -426,8 +426,20 @@ static int emac_set_coalesce(struct net_device *ndev,
- 	u32 int_ctrl, num_interrupts = 0;
- 	u32 prescale = 0, addnl_dvdr = 1, coal_intvl = 0;
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
+index cada4e0e40b48..12976ccca1b6e 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_main.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
+@@ -3442,7 +3442,8 @@ static netdev_features_t iavf_fix_features(struct net_device *netdev,
+ {
+ 	struct iavf_adapter *adapter = netdev_priv(netdev);
  
--	if (!coal->rx_coalesce_usecs)
--		return -EINVAL;
-+	if (!coal->rx_coalesce_usecs) {
-+		priv->coal_intvl = 0;
-+
-+		switch (priv->version) {
-+		case EMAC_VERSION_2:
-+			emac_ctrl_write(EMAC_DM646X_CMINTCTRL, 0);
-+			break;
-+		default:
-+			emac_ctrl_write(EMAC_CTRL_EWINTTCNT, 0);
-+			break;
-+		}
-+
-+		return 0;
-+	}
- 
- 	coal_intvl = coal->rx_coalesce_usecs;
- 
+-	if (!(adapter->vf_res->vf_cap_flags & VIRTCHNL_VF_OFFLOAD_VLAN))
++	if (adapter->vf_res &&
++	    !(adapter->vf_res->vf_cap_flags & VIRTCHNL_VF_OFFLOAD_VLAN))
+ 		features &= ~(NETIF_F_HW_VLAN_CTAG_TX |
+ 			      NETIF_F_HW_VLAN_CTAG_RX |
+ 			      NETIF_F_HW_VLAN_CTAG_FILTER);
 -- 
 2.33.0
 
