@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86ED445C074
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:06:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D76045C50B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:52:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242718AbhKXNIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:08:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45544 "EHLO mail.kernel.org"
+        id S1347993AbhKXNyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:54:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245736AbhKXNGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:06:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C77306120F;
-        Wed, 24 Nov 2021 12:38:02 +0000 (UTC)
+        id S1351521AbhKXNtp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:49:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8317F63354;
+        Wed, 24 Nov 2021 13:03:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757483;
-        bh=A77G4u4pmOFAdYrQuB1nlLzVjBYUtrkuUAW8zbTov0A=;
+        s=korg; t=1637759011;
+        bh=/unO2jc1AdsvwpIESGe4u7Z/eL4XQ2jr6rO8abw0EsA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cwaQvtSospn/Ajnr96gi9Tz5l29gXFAQiMoCRKuDYhj5ecg9Q/KaWOkFwKz0Vzbc1
-         57ahKugf3loCrWMYF0/je0j+VkuNkBb2IreeiKVwQjaLnneRSDUBctQ9Xw/B7SKIHX
-         +r7qJ6XGpPB05SgrrjY3IpkRA7TsqycAqT++qOmU=
+        b=cDifJ6xrVdPiC+TY+7Gz07kDPeFRzZ4QsGsRd43IHpf00zvI7BDxmjPOVG+qJpxta
+         petQx5UO5FIdbw+WLUuUs0VOHj5csXr/JT1b6v4U099KwZRUdyzkupMe4jDXjb3Ocb
+         6O/LC934yr2tNrq3e+bMdlBNCgnONCTEkifsLAEA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>,
-        k2ci robot <kernel-bot@kylinos.cn>,
-        Jackie Liu <liuyun01@kylinos.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 182/323] MIPS: loongson64: make CPU_LOONGSON64 depends on MIPS_FP_SUPPORT
-Date:   Wed, 24 Nov 2021 12:56:12 +0100
-Message-Id: <20211124115725.092189531@linuxfoundation.org>
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Takashi YOSHII <takasi-y@ops.dti.ne.jp>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rich Felker <dalias@libc.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 086/279] sh: math-emu: drop unused functions
+Date:   Wed, 24 Nov 2021 12:56:13 +0100
+Message-Id: <20211124115721.687678169@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +43,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jackie Liu <liuyun01@kylinos.cn>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 7f3b3c2bfa9c93ab9b5595543496f570983dc330 ]
+[ Upstream commit e25c252a9b033523c626f039d4b9a304f12f6775 ]
 
-mach/loongson64 fails to build when the FPU support is disabled:
+Delete ieee_fpe_handler() since it is not used. After that is done,
+delete denormal_to_double() since it is not used:
 
-arch/mips/loongson64/cop2-ex.c:45:15: error: implicit declaration of function ‘__is_fpu_owner’; did you mean ‘is_fpu_owner’? [-Werror=implicit-function-declaration]
-arch/mips/loongson64/cop2-ex.c:98:30: error: ‘struct thread_struct’ has no member named ‘fpu’
-arch/mips/loongson64/cop2-ex.c:99:30: error: ‘struct thread_struct’ has no member named ‘fpu’
-arch/mips/loongson64/cop2-ex.c:131:43: error: ‘struct thread_struct’ has no member named ‘fpu’
-arch/mips/loongson64/cop2-ex.c:137:38: error: ‘struct thread_struct’ has no member named ‘fpu’
-arch/mips/loongson64/cop2-ex.c:203:30: error: ‘struct thread_struct’ has no member named ‘fpu’
-arch/mips/loongson64/cop2-ex.c:219:30: error: ‘struct thread_struct’ has no member named ‘fpu’
-arch/mips/loongson64/cop2-ex.c:283:38: error: ‘struct thread_struct’ has no member named ‘fpu’
-arch/mips/loongson64/cop2-ex.c:301:38: error: ‘struct thread_struct’ has no member named ‘fpu’
+.../arch/sh/math-emu/math.c:505:12: error: 'ieee_fpe_handler' defined but not used [-Werror=unused-function]
+  505 | static int ieee_fpe_handler(struct pt_regs *regs)
 
-Fixes: ef2f826c8f2f ("MIPS: Loongson-3: Enable the COP2 usage")
-Suggested-by: Huacai Chen <chenhuacai@kernel.org>
-Reviewed-by: Huacai Chen <chenhuacai@kernel.org>
-Reported-by: k2ci robot <kernel-bot@kylinos.cn>
-Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+.../arch/sh/math-emu/math.c:477:13: error: 'denormal_to_double' defined but not used [-Werror=unused-function]
+  477 | static void denormal_to_double(struct sh_fpu_soft_struct *fpu, int n)
+
+Fixes: 7caf62de25554da3 ("sh: remove unused do_fpu_error")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Takashi YOSHII <takasi-y@ops.dti.ne.jp>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Rich Felker <dalias@libc.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/sh/math-emu/math.c | 103 ----------------------------------------
+ 1 file changed, 103 deletions(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index cc8c8d22afaf5..fb8554c41e803 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -1375,6 +1375,7 @@ config CPU_LOONGSON3
- 	select WEAK_REORDERING_BEYOND_LLSC
- 	select MIPS_PGD_C0_CONTEXT
- 	select MIPS_L1_CACHE_SHIFT_6
-+	select MIPS_FP_SUPPORT
- 	select GPIOLIB
- 	select SWIOTLB
- 	help
+diff --git a/arch/sh/math-emu/math.c b/arch/sh/math-emu/math.c
+index e8be0eca0444a..615ba932c398e 100644
+--- a/arch/sh/math-emu/math.c
++++ b/arch/sh/math-emu/math.c
+@@ -467,109 +467,6 @@ static int fpu_emulate(u16 code, struct sh_fpu_soft_struct *fregs, struct pt_reg
+ 		return id_sys(fregs, regs, code);
+ }
+ 
+-/**
+- *	denormal_to_double - Given denormalized float number,
+- *	                     store double float
+- *
+- *	@fpu: Pointer to sh_fpu_soft structure
+- *	@n: Index to FP register
+- */
+-static void denormal_to_double(struct sh_fpu_soft_struct *fpu, int n)
+-{
+-	unsigned long du, dl;
+-	unsigned long x = fpu->fpul;
+-	int exp = 1023 - 126;
+-
+-	if (x != 0 && (x & 0x7f800000) == 0) {
+-		du = (x & 0x80000000);
+-		while ((x & 0x00800000) == 0) {
+-			x <<= 1;
+-			exp--;
+-		}
+-		x &= 0x007fffff;
+-		du |= (exp << 20) | (x >> 3);
+-		dl = x << 29;
+-
+-		fpu->fp_regs[n] = du;
+-		fpu->fp_regs[n+1] = dl;
+-	}
+-}
+-
+-/**
+- *	ieee_fpe_handler - Handle denormalized number exception
+- *
+- *	@regs: Pointer to register structure
+- *
+- *	Returns 1 when it's handled (should not cause exception).
+- */
+-static int ieee_fpe_handler(struct pt_regs *regs)
+-{
+-	unsigned short insn = *(unsigned short *)regs->pc;
+-	unsigned short finsn;
+-	unsigned long nextpc;
+-	int nib[4] = {
+-		(insn >> 12) & 0xf,
+-		(insn >> 8) & 0xf,
+-		(insn >> 4) & 0xf,
+-		insn & 0xf};
+-
+-	if (nib[0] == 0xb ||
+-	    (nib[0] == 0x4 && nib[2] == 0x0 && nib[3] == 0xb)) /* bsr & jsr */
+-		regs->pr = regs->pc + 4;
+-
+-	if (nib[0] == 0xa || nib[0] == 0xb) { /* bra & bsr */
+-		nextpc = regs->pc + 4 + ((short) ((insn & 0xfff) << 4) >> 3);
+-		finsn = *(unsigned short *) (regs->pc + 2);
+-	} else if (nib[0] == 0x8 && nib[1] == 0xd) { /* bt/s */
+-		if (regs->sr & 1)
+-			nextpc = regs->pc + 4 + ((char) (insn & 0xff) << 1);
+-		else
+-			nextpc = regs->pc + 4;
+-		finsn = *(unsigned short *) (regs->pc + 2);
+-	} else if (nib[0] == 0x8 && nib[1] == 0xf) { /* bf/s */
+-		if (regs->sr & 1)
+-			nextpc = regs->pc + 4;
+-		else
+-			nextpc = regs->pc + 4 + ((char) (insn & 0xff) << 1);
+-		finsn = *(unsigned short *) (regs->pc + 2);
+-	} else if (nib[0] == 0x4 && nib[3] == 0xb &&
+-		 (nib[2] == 0x0 || nib[2] == 0x2)) { /* jmp & jsr */
+-		nextpc = regs->regs[nib[1]];
+-		finsn = *(unsigned short *) (regs->pc + 2);
+-	} else if (nib[0] == 0x0 && nib[3] == 0x3 &&
+-		 (nib[2] == 0x0 || nib[2] == 0x2)) { /* braf & bsrf */
+-		nextpc = regs->pc + 4 + regs->regs[nib[1]];
+-		finsn = *(unsigned short *) (regs->pc + 2);
+-	} else if (insn == 0x000b) { /* rts */
+-		nextpc = regs->pr;
+-		finsn = *(unsigned short *) (regs->pc + 2);
+-	} else {
+-		nextpc = regs->pc + 2;
+-		finsn = insn;
+-	}
+-
+-	if ((finsn & 0xf1ff) == 0xf0ad) { /* fcnvsd */
+-		struct task_struct *tsk = current;
+-
+-		if ((tsk->thread.xstate->softfpu.fpscr & (1 << 17))) {
+-			/* FPU error */
+-			denormal_to_double (&tsk->thread.xstate->softfpu,
+-					    (finsn >> 8) & 0xf);
+-			tsk->thread.xstate->softfpu.fpscr &=
+-				~(FPSCR_CAUSE_MASK | FPSCR_FLAG_MASK);
+-			task_thread_info(tsk)->status |= TS_USEDFPU;
+-		} else {
+-			force_sig_fault(SIGFPE, FPE_FLTINV,
+-					(void __user *)regs->pc);
+-		}
+-
+-		regs->pc = nextpc;
+-		return 1;
+-	}
+-
+-	return 0;
+-}
+-
+ /**
+  * fpu_init - Initialize FPU registers
+  * @fpu: Pointer to software emulated FPU registers.
 -- 
 2.33.0
 
