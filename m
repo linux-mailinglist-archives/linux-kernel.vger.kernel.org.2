@@ -2,41 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550D845BAB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:12:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C2D45BAB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:12:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232779AbhKXMOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:14:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34838 "EHLO mail.kernel.org"
+        id S242775AbhKXMOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:14:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241239AbhKXMKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:10:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E5A0610CE;
-        Wed, 24 Nov 2021 12:06:07 +0000 (UTC)
+        id S240896AbhKXMKk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:10:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1973C610FB;
+        Wed, 24 Nov 2021 12:06:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755568;
-        bh=XMYwm58uhkqcSDfJic5WpKnfPDqX8zy5kJlsZo3SvZU=;
+        s=korg; t=1637755571;
+        bh=Q5Rl8Pphjgz4d5Yz33eFNuGAleun2LGmGGye7LQbJLg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d+ps1bDIGHGkYkJHuVNGD/d+ZcuKAFMA3t9Bpp7Z7iuGKLG35NGhgT04W3GwJDxJD
-         MhCx2CaRNHS1+xwuezsy1RZ8q+nFYa0CoWql6Fip6MBmQM7sMFDui5AgJpQBmyjSmj
-         iN5zVhJL3QgMbRmztTWruzMKN9tMgOFp3COPsKr4=
+        b=cgFcQrA0oVMb5EVt7UN+8IOBL95vGT2oXVTb5mJ3K7/etG3IFz+LkqUURilB45efj
+         fC35dZx6nAVBArl3ryv8OpSglx6vEehQu17GlB6OHOiitgBRLyn/junNT2MHTFdaRv
+         89kNsV18fFUkqd4lqBqLowX0xOh3GheehxxC4+58=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rustam Kovhaev <rkovhaev@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Glauber Costa <glommer@parallels.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.4 143/162] mm: kmemleak: slob: respect SLAB_NOLEAKTRACE flag
-Date:   Wed, 24 Nov 2021 12:57:26 +0100
-Message-Id: <20211124115702.909797382@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Murphy <lists@colorremedies.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Chris Murphy <chris@colorremedies.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 4.4 144/162] btrfs: fix memory ordering between normal and ordered work functions
+Date:   Wed, 24 Nov 2021 12:57:27 +0100
+Message-Id: <20211124115702.940515815@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
 References: <20211124115658.328640564@linuxfoundation.org>
@@ -48,51 +42,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rustam Kovhaev <rkovhaev@gmail.com>
+From: Nikolay Borisov <nborisov@suse.com>
 
-commit 34dbc3aaf5d9e89ba6cc5e24add9458c21ab1950 upstream.
+commit 45da9c1767ac31857df572f0a909fbe88fd5a7e9 upstream.
 
-When kmemleak is enabled for SLOB, system does not boot and does not
-print anything to the console.  At the very early stage in the boot
-process we hit infinite recursion from kmemleak_init() and eventually
-kernel crashes.
+Ordered work functions aren't guaranteed to be handled by the same thread
+which executed the normal work functions. The only way execution between
+normal/ordered functions is synchronized is via the WORK_DONE_BIT,
+unfortunately the used bitops don't guarantee any ordering whatsoever.
 
-kmemleak_init() specifies SLAB_NOLEAKTRACE for KMEM_CACHE(), but
-kmem_cache_create_usercopy() removes it because CACHE_CREATE_MASK is not
-valid for SLOB.
+This manifested as seemingly inexplicable crashes on ARM64, where
+async_chunk::inode is seen as non-null in async_cow_submit which causes
+submit_compressed_extents to be called and crash occurs because
+async_chunk::inode suddenly became NULL. The call trace was similar to:
 
-Let's fix CACHE_CREATE_MASK and make kmemleak work with SLOB
+    pc : submit_compressed_extents+0x38/0x3d0
+    lr : async_cow_submit+0x50/0xd0
+    sp : ffff800015d4bc20
 
-Link: https://lkml.kernel.org/r/20211115020850.3154366-1-rkovhaev@gmail.com
-Fixes: d8843922fba4 ("slab: Ignore internal flags in cache creation")
-Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-Cc: Christoph Lameter <cl@linux.com>
-Cc: Pekka Enberg <penberg@kernel.org>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Glauber Costa <glommer@parallels.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+    <registers omitted for brevity>
+
+    Call trace:
+     submit_compressed_extents+0x38/0x3d0
+     async_cow_submit+0x50/0xd0
+     run_ordered_work+0xc8/0x280
+     btrfs_work_helper+0x98/0x250
+     process_one_work+0x1f0/0x4ac
+     worker_thread+0x188/0x504
+     kthread+0x110/0x114
+     ret_from_fork+0x10/0x18
+
+Fix this by adding respective barrier calls which ensure that all
+accesses preceding setting of WORK_DONE_BIT are strictly ordered before
+setting the flag. At the same time add a read barrier after reading of
+WORK_DONE_BIT in run_ordered_work which ensures all subsequent loads
+would be strictly ordered after reading the bit. This in turn ensures
+are all accesses before WORK_DONE_BIT are going to be strictly ordered
+before any access that can occur in ordered_func.
+
+Reported-by: Chris Murphy <lists@colorremedies.com>
+Fixes: 08a9ff326418 ("btrfs: Added btrfs_workqueue_struct implemented ordered execution based on kernel workqueue")
+CC: stable@vger.kernel.org # 4.4+
+Link: https://bugzilla.redhat.com/show_bug.cgi?id=2011928
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Tested-by: Chris Murphy <chris@colorremedies.com>
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/slab.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/async-thread.c |   14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -133,7 +133,7 @@ static inline unsigned long kmem_cache_f
- #define SLAB_CACHE_FLAGS (SLAB_NOLEAKTRACE | SLAB_RECLAIM_ACCOUNT | \
- 			  SLAB_TEMPORARY | SLAB_NOTRACK)
- #else
--#define SLAB_CACHE_FLAGS (0)
-+#define SLAB_CACHE_FLAGS (SLAB_NOLEAKTRACE)
- #endif
+--- a/fs/btrfs/async-thread.c
++++ b/fs/btrfs/async-thread.c
+@@ -261,6 +261,13 @@ static void run_ordered_work(struct __bt
+ 				  ordered_list);
+ 		if (!test_bit(WORK_DONE_BIT, &work->flags))
+ 			break;
++		/*
++		 * Orders all subsequent loads after reading WORK_DONE_BIT,
++		 * paired with the smp_mb__before_atomic in btrfs_work_helper
++		 * this guarantees that the ordered function will see all
++		 * updates from ordinary work function.
++		 */
++		smp_rmb();
  
- #define CACHE_CREATE_MASK (SLAB_CORE_FLAGS | SLAB_DEBUG_FLAGS | SLAB_CACHE_FLAGS)
+ 		/*
+ 		 * we are going to call the ordered done function, but
+@@ -310,6 +317,13 @@ static void normal_work_helper(struct bt
+ 	thresh_exec_hook(wq);
+ 	work->func(work);
+ 	if (need_order) {
++		/*
++		 * Ensures all memory accesses done in the work function are
++		 * ordered before setting the WORK_DONE_BIT. Ensuring the thread
++		 * which is going to executed the ordered work sees them.
++		 * Pairs with the smp_rmb in run_ordered_work.
++		 */
++		smp_mb__before_atomic();
+ 		set_bit(WORK_DONE_BIT, &work->flags);
+ 		run_ordered_work(wq);
+ 	}
 
 
