@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1052F45BC56
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:28:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1D345BE82
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:46:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243469AbhKXM1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:27:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36602 "EHLO mail.kernel.org"
+        id S1344382AbhKXMro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:47:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243571AbhKXMXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:23:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF9C7610FB;
-        Wed, 24 Nov 2021 12:13:58 +0000 (UTC)
+        id S1344173AbhKXMop (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:44:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 556776140A;
+        Wed, 24 Nov 2021 12:26:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756039;
-        bh=piXX3gWPNpYFsdBBmwN9e8w0U+qxHyb0K69J3h53m34=;
+        s=korg; t=1637756794;
+        bh=SnkH1IHw/xrUjZIfbxlnv8eDZcZIaUiTxKYPPCRzwiw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UVUN/ahQCqmjVNs0GQWPe02bRf4o4EBc4bUbc2OXjGrYqVGRwOytowYn3lj3UlL2g
-         0uIOmrEqgFyxCQf5OHUOADdQSkHasyKTNSoSb7dMjs+ZIWFm3E8AUy7DQ2FAgSnvHq
-         h0cXLd0kmvnoUm89Y54JbyF+w8ulavUAeCMxPPAY=
+        b=yv5eh7Hlh+u3zynp+1tkwVh2vAL3EqXMIe82IVVPLipyo99KbrRdicPNWe1fIQvfs
+         kygGojYNqSyTnON8zikVVmHxWbKXjhzhDH1TjcA0LHhacfG17qtTFz1Pvt+NSyoPMJ
+         6+ZUuRgHe1nQRPugwERTXnZV9ab8fIv+JMXZo6DU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Henry Burns <henryburns@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Quinn Tran <qutran@marvell.com>,
+        Nilesh Javali <njavali@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 148/207] mm/zsmalloc.c: close race window between zs_pool_dec_isolated() and zs_unregister_migration()
+Subject: [PATCH 4.14 177/251] scsi: qla2xxx: Turn off target reset during issue_lip
 Date:   Wed, 24 Nov 2021 12:56:59 +0100
-Message-Id: <20211124115708.807769572@linuxfoundation.org>
+Message-Id: <20211124115716.418328225@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,62 +43,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Quinn Tran <qutran@marvell.com>
 
-[ Upstream commit afe8605ca45424629fdddfd85984b442c763dc47 ]
+[ Upstream commit 0b7a9fd934a68ebfc1019811b7bdc1742072ad7b ]
 
-There is one possible race window between zs_pool_dec_isolated() and
-zs_unregister_migration() because wait_for_isolated_drain() checks the
-isolated count without holding class->lock and there is no order inside
-zs_pool_dec_isolated().  Thus the below race window could be possible:
+When user uses issue_lip to do link bounce, driver sends additional target
+reset to remote device before resetting the link. The target reset would
+affect other paths with active I/Os. This patch will remove the unnecessary
+target reset.
 
-  zs_pool_dec_isolated		zs_unregister_migration
-    check pool->destroying != 0
-				  pool->destroying = true;
-				  smp_mb();
-				  wait_for_isolated_drain()
-				    wait for pool->isolated_pages == 0
-    atomic_long_dec(&pool->isolated_pages);
-    atomic_long_read(&pool->isolated_pages) == 0
-
-Since we observe the pool->destroying (false) before atomic_long_dec()
-for pool->isolated_pages, waking pool->migration_wait up is missed.
-
-Fix this by ensure checking pool->destroying happens after the
-atomic_long_dec(&pool->isolated_pages).
-
-Link: https://lkml.kernel.org/r/20210708115027.7557-1-linmiaohe@huawei.com
-Fixes: 701d678599d0 ("mm/zsmalloc.c: fix race condition in zs_destroy_pool")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: Henry Burns <henryburns@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Link: https://lore.kernel.org/r/20211026115412.27691-4-njavali@marvell.com
+Fixes: 5854771e314e ("[SCSI] qla2xxx: Add ISPFX00 specific bus reset routine")
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Quinn Tran <qutran@marvell.com>
+Signed-off-by: Nilesh Javali <njavali@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/zsmalloc.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/scsi/qla2xxx/qla_gbl.h |  2 --
+ drivers/scsi/qla2xxx/qla_mr.c  | 23 -----------------------
+ drivers/scsi/qla2xxx/qla_os.c  | 27 ++-------------------------
+ 3 files changed, 2 insertions(+), 50 deletions(-)
 
-diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
-index 2b7bfd97587a0..b5c1cd4ba2a15 100644
---- a/mm/zsmalloc.c
-+++ b/mm/zsmalloc.c
-@@ -1962,10 +1962,11 @@ static inline void zs_pool_dec_isolated(struct zs_pool *pool)
- 	VM_BUG_ON(atomic_long_read(&pool->isolated_pages) <= 0);
- 	atomic_long_dec(&pool->isolated_pages);
- 	/*
--	 * There's no possibility of racing, since wait_for_isolated_drain()
--	 * checks the isolated count under &class->lock after enqueuing
--	 * on migration_wait.
-+	 * Checking pool->destroying must happen after atomic_long_dec()
-+	 * for pool->isolated_pages above. Paired with the smp_mb() in
-+	 * zs_unregister_migration().
- 	 */
-+	smp_mb__after_atomic();
- 	if (atomic_long_read(&pool->isolated_pages) == 0 && pool->destroying)
- 		wake_up_all(&pool->migration_wait);
+diff --git a/drivers/scsi/qla2xxx/qla_gbl.h b/drivers/scsi/qla2xxx/qla_gbl.h
+index 89706341514e2..a9df91f7c1543 100644
+--- a/drivers/scsi/qla2xxx/qla_gbl.h
++++ b/drivers/scsi/qla2xxx/qla_gbl.h
+@@ -132,7 +132,6 @@ extern int ql2xasynctmfenable;
+ extern int ql2xgffidenable;
+ extern int ql2xenabledif;
+ extern int ql2xenablehba_err_chk;
+-extern int ql2xtargetreset;
+ extern int ql2xdontresethba;
+ extern uint64_t ql2xmaxlun;
+ extern int ql2xmdcapmask;
+@@ -724,7 +723,6 @@ extern void qlafx00_abort_iocb(srb_t *, struct abort_iocb_entry_fx00 *);
+ extern void qlafx00_fxdisc_iocb(srb_t *, struct fxdisc_entry_fx00 *);
+ extern void qlafx00_timer_routine(scsi_qla_host_t *);
+ extern int qlafx00_rescan_isp(scsi_qla_host_t *);
+-extern int qlafx00_loop_reset(scsi_qla_host_t *vha);
+ 
+ /* qla82xx related functions */
+ 
+diff --git a/drivers/scsi/qla2xxx/qla_mr.c b/drivers/scsi/qla2xxx/qla_mr.c
+index e23a3d4c36f39..66ee206026612 100644
+--- a/drivers/scsi/qla2xxx/qla_mr.c
++++ b/drivers/scsi/qla2xxx/qla_mr.c
+@@ -739,29 +739,6 @@ qlafx00_lun_reset(fc_port_t *fcport, uint64_t l, int tag)
+ 	return qla2x00_async_tm_cmd(fcport, TCF_LUN_RESET, l, tag);
  }
+ 
+-int
+-qlafx00_loop_reset(scsi_qla_host_t *vha)
+-{
+-	int ret;
+-	struct fc_port *fcport;
+-	struct qla_hw_data *ha = vha->hw;
+-
+-	if (ql2xtargetreset) {
+-		list_for_each_entry(fcport, &vha->vp_fcports, list) {
+-			if (fcport->port_type != FCT_TARGET)
+-				continue;
+-
+-			ret = ha->isp_ops->target_reset(fcport, 0, 0);
+-			if (ret != QLA_SUCCESS) {
+-				ql_dbg(ql_dbg_taskm, vha, 0x803d,
+-				    "Bus Reset failed: Reset=%d "
+-				    "d_id=%x.\n", ret, fcport->d_id.b24);
+-			}
+-		}
+-	}
+-	return QLA_SUCCESS;
+-}
+-
+ int
+ qlafx00_iospace_config(struct qla_hw_data *ha)
+ {
+diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
+index ea60c6e603c06..d0f52c123bfb3 100644
+--- a/drivers/scsi/qla2xxx/qla_os.c
++++ b/drivers/scsi/qla2xxx/qla_os.c
+@@ -188,12 +188,6 @@ MODULE_PARM_DESC(ql2xdbwr,
+ 		" 0 -- Regular doorbell.\n"
+ 		" 1 -- CAMRAM doorbell (faster).\n");
+ 
+-int ql2xtargetreset = 1;
+-module_param(ql2xtargetreset, int, S_IRUGO);
+-MODULE_PARM_DESC(ql2xtargetreset,
+-		 "Enable target reset."
+-		 "Default is 1 - use hw defaults.");
+-
+ int ql2xgffidenable;
+ module_param(ql2xgffidenable, int, S_IRUGO);
+ MODULE_PARM_DESC(ql2xgffidenable,
+@@ -1652,27 +1646,10 @@ int
+ qla2x00_loop_reset(scsi_qla_host_t *vha)
+ {
+ 	int ret;
+-	struct fc_port *fcport;
+ 	struct qla_hw_data *ha = vha->hw;
+ 
+-	if (IS_QLAFX00(ha)) {
+-		return qlafx00_loop_reset(vha);
+-	}
+-
+-	if (ql2xtargetreset == 1 && ha->flags.enable_target_reset) {
+-		list_for_each_entry(fcport, &vha->vp_fcports, list) {
+-			if (fcport->port_type != FCT_TARGET)
+-				continue;
+-
+-			ret = ha->isp_ops->target_reset(fcport, 0, 0);
+-			if (ret != QLA_SUCCESS) {
+-				ql_dbg(ql_dbg_taskm, vha, 0x802c,
+-				    "Bus Reset failed: Reset=%d "
+-				    "d_id=%x.\n", ret, fcport->d_id.b24);
+-			}
+-		}
+-	}
+-
++	if (IS_QLAFX00(ha))
++		return QLA_SUCCESS;
+ 
+ 	if (ha->flags.enable_lip_full_login && !IS_CNA_CAPABLE(ha)) {
+ 		atomic_set(&vha->loop_state, LOOP_DOWN);
 -- 
 2.33.0
 
