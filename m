@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD74345C019
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:02:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15EFF45C4A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:47:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345979AbhKXNEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:04:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39966 "EHLO mail.kernel.org"
+        id S1354209AbhKXNup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:50:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347787AbhKXNDS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:03:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1774A611EE;
-        Wed, 24 Nov 2021 12:36:12 +0000 (UTC)
+        id S1348530AbhKXNpl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:45:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E252611EF;
+        Wed, 24 Nov 2021 13:00:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757373;
-        bh=hjf3xry4z7OF52jAyoBoSTE4cJQO9+JN5+oo556tKqA=;
+        s=korg; t=1637758848;
+        bh=W+AmS8/JMVZC3xZfY0CjrOobJuawsCHHZdpidwTZVCI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wGy4LTwelpBrpz6aIKg6Mk66/BJ+d9qNHV8uc4dUYK0Eoxw+V8RyBqXi8OaPm181F
-         iIJO6ZcG384h+mKfpbVQYMe6BsWqapAaHX6Qx00Sl8gld0aQrmSxSzdNEHjpIz7iTR
-         l7ZspZA1Psuz7itnM6y4Psa5zQCnupokh802emEk=
+        b=tRrdjX89WpwzczkC0KqphONT287nj24y2zpjVw2l+kokcM+ugn8DHD9Loobp50yI+
+         71oIpwR50icY2MEMTworSUanTBu2oLjNsvvXVVMx6VHdofnjiL4gcW6tHLPJdFAYqv
+         Ts3XNgC5NEvGTmxVUarVDuBcuwsrhlno22fWmJ2g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 145/323] mmc: sdhci-omap: Fix NULL pointer exception if regulator is not configured
+Subject: [PATCH 5.15 048/279] firmware_loader: fix pre-allocated buf built-in firmware use
 Date:   Wed, 24 Nov 2021 12:55:35 +0100
-Message-Id: <20211124115723.817043671@linuxfoundation.org>
+Message-Id: <20211124115720.388915305@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +39,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Luis Chamberlain <mcgrof@kernel.org>
 
-[ Upstream commit 8e0e7bd38b1ec7f9e5d18725ad41828be4e09859 ]
+[ Upstream commit f7a07f7b96033df7709042ff38e998720a3f7119 ]
 
-If sdhci-omap is configured for an unused device instance and the device
-is not set as disabled, we can get a NULL pointer dereference:
+The firmware_loader can be used with a pre-allocated buffer
+through the use of the API calls:
 
-Unable to handle kernel NULL pointer dereference at virtual address
-00000045
-...
-(regulator_set_voltage) from [<c07d7008>] (mmc_regulator_set_ocr+0x44/0xd0)
-(mmc_regulator_set_ocr) from [<c07e2d80>] (sdhci_set_ios+0xa4/0x490)
-(sdhci_set_ios) from [<c07ea690>] (sdhci_omap_set_ios+0x124/0x160)
-(sdhci_omap_set_ios) from [<c07c8e94>] (mmc_power_up.part.0+0x3c/0x154)
-(mmc_power_up.part.0) from [<c07c9d20>] (mmc_start_host+0x88/0x9c)
-(mmc_start_host) from [<c07cad34>] (mmc_add_host+0x58/0x7c)
-(mmc_add_host) from [<c07e2574>] (__sdhci_add_host+0xf0/0x22c)
-(__sdhci_add_host) from [<c07eaf68>] (sdhci_omap_probe+0x318/0x72c)
-(sdhci_omap_probe) from [<c06a39d8>] (platform_probe+0x58/0xb8)
+  o request_firmware_into_buf()
+  o request_partial_firmware_into_buf()
 
-AFAIK we are not seeing this with the devices configured in the mainline
-kernel but this can cause issues for folks bringing up their boards.
+If the firmware was built-in and present, our current check
+for if the built-in firmware fits into the pre-allocated buffer
+does not return any errors, and we proceed to tell the caller
+that everything worked fine. It's a lie and no firmware would
+end up being copied into the pre-allocated buffer. So if the
+caller trust the result it may end up writing a bunch of 0's
+to a device!
 
-Fixes: 7d326930d352 ("mmc: sdhci-omap: Add OMAP SDHCI driver")
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Link: https://lore.kernel.org/r/20210921110029.21944-2-tony@atomide.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fix this by making the function that checks for the pre-allocated
+buffer return non-void. Since the typical use case is when no
+pre-allocated buffer is provided make this return successfully
+for that case. If the built-in firmware does *not* fit into the
+pre-allocated buffer size return a failure as we should have
+been doing before.
+
+I'm not aware of users of the built-in firmware using the API
+calls with a pre-allocated buffer, as such I doubt this fixes
+any real life issue. But you never know... perhaps some oddball
+private tree might use it.
+
+In so far as upstream is concerned this just fixes our code for
+correctness.
+
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Link: https://lore.kernel.org/r/20210917182226.3532898-2-mcgrof@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/sdhci-omap.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/base/firmware_loader/main.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mmc/host/sdhci-omap.c b/drivers/mmc/host/sdhci-omap.c
-index 05ade7a2dd243..f5bff9e710fb2 100644
---- a/drivers/mmc/host/sdhci-omap.c
-+++ b/drivers/mmc/host/sdhci-omap.c
-@@ -690,7 +690,8 @@ static void sdhci_omap_set_power(struct sdhci_host *host, unsigned char mode,
- {
- 	struct mmc_host *mmc = host->mmc;
+diff --git a/drivers/base/firmware_loader/main.c b/drivers/base/firmware_loader/main.c
+index bdbedc6660a87..ef904b8b112e6 100644
+--- a/drivers/base/firmware_loader/main.c
++++ b/drivers/base/firmware_loader/main.c
+@@ -100,12 +100,15 @@ static struct firmware_cache fw_cache;
+ extern struct builtin_fw __start_builtin_fw[];
+ extern struct builtin_fw __end_builtin_fw[];
  
--	mmc_regulator_set_ocr(mmc, mmc->supply.vmmc, vdd);
-+	if (!IS_ERR(mmc->supply.vmmc))
-+		mmc_regulator_set_ocr(mmc, mmc->supply.vmmc, vdd);
+-static void fw_copy_to_prealloc_buf(struct firmware *fw,
++static bool fw_copy_to_prealloc_buf(struct firmware *fw,
+ 				    void *buf, size_t size)
+ {
+-	if (!buf || size < fw->size)
+-		return;
++	if (!buf)
++		return true;
++	if (size < fw->size)
++		return false;
+ 	memcpy(buf, fw->data, fw->size);
++	return true;
  }
  
- static int sdhci_omap_enable_dma(struct sdhci_host *host)
+ static bool fw_get_builtin_firmware(struct firmware *fw, const char *name,
+@@ -117,9 +120,7 @@ static bool fw_get_builtin_firmware(struct firmware *fw, const char *name,
+ 		if (strcmp(name, b_fw->name) == 0) {
+ 			fw->size = b_fw->size;
+ 			fw->data = b_fw->data;
+-			fw_copy_to_prealloc_buf(fw, buf, size);
+-
+-			return true;
++			return fw_copy_to_prealloc_buf(fw, buf, size);
+ 		}
+ 	}
+ 
 -- 
 2.33.0
 
