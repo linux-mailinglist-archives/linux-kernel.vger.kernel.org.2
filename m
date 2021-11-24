@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9111545C3B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9177E45C5B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:57:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348896AbhKXNl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:41:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50198 "EHLO mail.kernel.org"
+        id S1348430AbhKXOAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:00:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350310AbhKXNhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:37:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4254961CA7;
-        Wed, 24 Nov 2021 12:55:30 +0000 (UTC)
+        id S1353221AbhKXN5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:57:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A974663376;
+        Wed, 24 Nov 2021 13:07:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758531;
-        bh=V37YXSTRTJuhr5I3SJxGqUuy8UJNrqwk2gvu4yDbt8w=;
+        s=korg; t=1637759261;
+        bh=1BR1KiWgKdQru8Ox3rkSKOenlRu3vXL5XHclqlCFkqg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nNBtCpQhgTXcW9tU6qtEQ1GEBLRcW30MG+Vdb9xjS6DjjIdaxjjCuvJWkPaqokSnJ
-         NJsvW+okxOHjgzr/QgRn90K1vUQSXLQeW8zm/GB7Q2oSBAdnDu+X+JOaQ9SuPCMa2Q
-         TimClgXIo2ZVE4j3rMl8RcsqWW3deK8F3zta1Iko=
+        b=GWON/CHjcg/Q3R/jLKLmpoBeh79u9j5yEBImp6CZda71eU756u4v5NaFIadvA5w2F
+         G2UWV4eUhAuzMJWvakT4sLasiFEj/GqV/8WBPbPi0LfO9W58wOHKJWG+NhYzNNu9gd
+         HbNSmdexKkOclp20Gd9MNgvIqClHY5bfipuXoP1k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 073/154] net: ipa: disable HOLB drop when updating timer
+Subject: [PATCH 5.15 182/279] perf/x86/intel/uncore: Fix filter_tid mask for CHA events on Skylake Server
 Date:   Wed, 24 Nov 2021 12:57:49 +0100
-Message-Id: <20211124115704.694646085@linuxfoundation.org>
+Message-Id: <20211124115725.027599941@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Elder <elder@linaro.org>
+From: Alexander Antonov <alexander.antonov@linux.intel.com>
 
-[ Upstream commit 816316cacad2b5abd5b41423cf04e4845239abd4 ]
+[ Upstream commit e324234e0aa881b7841c7c713306403e12b069ff ]
 
-The head-of-line blocking timer should only be modified when
-head-of-line drop is disabled.
+According Uncore Reference Manual: any of the CHA events may be filtered
+by Thread/Core-ID by using tid modifier in CHA Filter 0 Register.
+Update skx_cha_hw_config() to follow Uncore Guide.
 
-One of the steps in recovering from a modem crash is to enable
-dropping of packets with timeout of 0 (immediate).  We don't know
-how the modem configured its endpoints, so before we program the
-timer, we need to ensure HOL_BLOCK is disabled.
-
-Fixes: 84f9bd12d46db ("soc: qcom: ipa: IPA endpoints")
-Signed-off-by: Alex Elder <elder@linaro.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: cd34cd97b7b4 ("perf/x86/intel/uncore: Add Skylake server uncore support")
+Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+Link: https://lore.kernel.org/r/20211115090334.3789-2-alexander.antonov@linux.intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ipa/ipa_endpoint.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/events/intel/uncore_snbep.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/net/ipa/ipa_endpoint.c
-+++ b/drivers/net/ipa/ipa_endpoint.c
-@@ -703,6 +703,7 @@ static void ipa_endpoint_init_hol_block_
- 	u32 offset;
- 	u32 val;
+diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
+index eb2c6cea9d0d5..e5ee6bb62ef50 100644
+--- a/arch/x86/events/intel/uncore_snbep.c
++++ b/arch/x86/events/intel/uncore_snbep.c
+@@ -3608,6 +3608,9 @@ static int skx_cha_hw_config(struct intel_uncore_box *box, struct perf_event *ev
+ 	struct hw_perf_event_extra *reg1 = &event->hw.extra_reg;
+ 	struct extra_reg *er;
+ 	int idx = 0;
++	/* Any of the CHA events may be filtered by Thread/Core-ID.*/
++	if (event->hw.config & SNBEP_CBO_PMON_CTL_TID_EN)
++		idx = SKX_CHA_MSR_PMON_BOX_FILTER_TID;
  
-+	/* This should only be changed when HOL_BLOCK_EN is disabled */
- 	offset = IPA_REG_ENDP_INIT_HOL_BLOCK_TIMER_N_OFFSET(endpoint_id);
- 	val = ipa_reg_init_hol_block_timer_val(ipa, microseconds);
- 	iowrite32(val, ipa->reg_virt + offset);
-@@ -730,6 +731,7 @@ void ipa_endpoint_modem_hol_block_clear_
- 		if (endpoint->toward_ipa || endpoint->ee_id != GSI_EE_MODEM)
- 			continue;
- 
-+		ipa_endpoint_init_hol_block_enable(endpoint, false);
- 		ipa_endpoint_init_hol_block_timer(endpoint, 0);
- 		ipa_endpoint_init_hol_block_enable(endpoint, true);
- 	}
+ 	for (er = skx_uncore_cha_extra_regs; er->msr; er++) {
+ 		if (er->event != (event->hw.config & er->config_mask))
+-- 
+2.33.0
+
 
 
