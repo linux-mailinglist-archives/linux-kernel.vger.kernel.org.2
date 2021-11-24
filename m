@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC6545B9F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:05:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB88F45BDE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:39:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242155AbhKXMGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:06:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60438 "EHLO mail.kernel.org"
+        id S243927AbhKXMmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:42:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242112AbhKXMFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:05:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5499060FE7;
-        Wed, 24 Nov 2021 12:01:55 +0000 (UTC)
+        id S1344943AbhKXMjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:39:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4ED216109E;
+        Wed, 24 Nov 2021 12:23:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755315;
-        bh=6q7xx1nxJjIt/5Z8wfWInI+bhoQRRwMKuFLZOJkW9jE=;
+        s=korg; t=1637756604;
+        bh=g1efMLriyyWJo9DmvRT5ySnhOS8DWU62R55Zz4X0PgU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GYhp9X6SaBAxROKpCYb9HQXMVoe4P3PuZzE5ZS96mQJ37Z49nd+yj2oqy7ZVieOrm
-         uwm3d3bLwOmYVRW5Pz1BWJgkKlvpZt22kJaXBOZbkHGqOVdV+w2dfek63MUQ0Y9mnL
-         obWcPxRorfE7UYuajq5kelMuBM4pxflnQiB8euwA=
+        b=SyByvQbE9qZh213ArUhGFhpdmMJnzw839qzP1dUs9LZgu3L6UB8jK6wp0MH/PxnwB
+         Hgk+GgkxyUQiT+xEheMOVI/v03J5BGfXuuwE11UYnyz2oqO/dYGjKslLhIu0JeqIQ2
+         40ikNeOhiZZLIbVTl6WmTvfFJU3I0TMK+IQCn5zw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dirk Bender <d.bender@phytec.de>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 049/162] media: mt9p031: Fix corrupted frame after restarting stream
+Subject: [PATCH 4.14 110/251] media: cx23885: Fix snd_card_free call on null card pointer
 Date:   Wed, 24 Nov 2021 12:55:52 +0100
-Message-Id: <20211124115659.924621141@linuxfoundation.org>
+Message-Id: <20211124115714.061250673@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,86 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dirk Bender <d.bender@phytec.de>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 0961ba6dd211a4a52d1dd4c2d59be60ac2dc08c7 ]
+[ Upstream commit 7266dda2f1dfe151b12ef0c14eb4d4e622fb211c ]
 
-To prevent corrupted frames after starting and stopping the sensor its
-datasheet specifies a specific pause sequence to follow:
+Currently a call to snd_card_new that fails will set card with a NULL
+pointer, this causes a null pointer dereference on the error cleanup
+path when card it passed to snd_card_free. Fix this by adding a new
+error exit path that does not call snd_card_free and exiting via this
+new path.
 
-Stopping:
-	Set Pause_Restart Bit -> Set Restart Bit -> Set Chip_Enable Off
+Addresses-Coverity: ("Explicit null dereference")
 
-Restarting:
-	Set Chip_Enable On -> Clear Pause_Restart Bit
-
-The Restart Bit is cleared automatically and must not be cleared
-manually as this would cause undefined behavior.
-
-Signed-off-by: Dirk Bender <d.bender@phytec.de>
-Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Fixes: 9e44d63246a9 ("[media] cx23885: Add ALSA support")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/mt9p031.c | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
+ drivers/media/pci/cx23885/cx23885-alsa.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
-index 0db15f528ac1c..fb60c9f42cb60 100644
---- a/drivers/media/i2c/mt9p031.c
-+++ b/drivers/media/i2c/mt9p031.c
-@@ -81,7 +81,9 @@
- #define		MT9P031_PIXEL_CLOCK_INVERT		(1 << 15)
- #define		MT9P031_PIXEL_CLOCK_SHIFT(n)		((n) << 8)
- #define		MT9P031_PIXEL_CLOCK_DIVIDE(n)		((n) << 0)
--#define MT9P031_FRAME_RESTART				0x0b
-+#define MT9P031_RESTART					0x0b
-+#define		MT9P031_FRAME_PAUSE_RESTART		(1 << 1)
-+#define		MT9P031_FRAME_RESTART			(1 << 0)
- #define MT9P031_SHUTTER_DELAY				0x0c
- #define MT9P031_RST					0x0d
- #define		MT9P031_RST_ENABLE			1
-@@ -448,9 +450,23 @@ static int mt9p031_set_params(struct mt9p031 *mt9p031)
- static int mt9p031_s_stream(struct v4l2_subdev *subdev, int enable)
- {
- 	struct mt9p031 *mt9p031 = to_mt9p031(subdev);
-+	struct i2c_client *client = v4l2_get_subdevdata(subdev);
-+	int val;
- 	int ret;
+diff --git a/drivers/media/pci/cx23885/cx23885-alsa.c b/drivers/media/pci/cx23885/cx23885-alsa.c
+index d8c3637e492e3..a7f34af6c65b0 100644
+--- a/drivers/media/pci/cx23885/cx23885-alsa.c
++++ b/drivers/media/pci/cx23885/cx23885-alsa.c
+@@ -560,7 +560,7 @@ struct cx23885_audio_dev *cx23885_audio_register(struct cx23885_dev *dev)
+ 			   SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1,
+ 			THIS_MODULE, sizeof(struct cx23885_audio_dev), &card);
+ 	if (err < 0)
+-		goto error;
++		goto error_msg;
  
- 	if (!enable) {
-+		/* enable pause restart */
-+		val = MT9P031_FRAME_PAUSE_RESTART;
-+		ret = mt9p031_write(client, MT9P031_RESTART, val);
-+		if (ret < 0)
-+			return ret;
-+
-+		/* enable restart + keep pause restart set */
-+		val |= MT9P031_FRAME_RESTART;
-+		ret = mt9p031_write(client, MT9P031_RESTART, val);
-+		if (ret < 0)
-+			return ret;
-+
- 		/* Stop sensor readout */
- 		ret = mt9p031_set_output_control(mt9p031,
- 						 MT9P031_OUTPUT_CONTROL_CEN, 0);
-@@ -470,6 +486,16 @@ static int mt9p031_s_stream(struct v4l2_subdev *subdev, int enable)
- 	if (ret < 0)
- 		return ret;
+ 	chip = (struct cx23885_audio_dev *) card->private_data;
+ 	chip->dev = dev;
+@@ -586,6 +586,7 @@ struct cx23885_audio_dev *cx23885_audio_register(struct cx23885_dev *dev)
  
-+	/*
-+	 * - clear pause restart
-+	 * - don't clear restart as clearing restart manually can cause
-+	 *   undefined behavior
-+	 */
-+	val = MT9P031_FRAME_RESTART;
-+	ret = mt9p031_write(client, MT9P031_RESTART, val);
-+	if (ret < 0)
-+		return ret;
-+
- 	return mt9p031_pll_enable(mt9p031);
- }
+ error:
+ 	snd_card_free(card);
++error_msg:
+ 	pr_err("%s(): Failed to register analog audio adapter\n",
+ 	       __func__);
  
 -- 
 2.33.0
