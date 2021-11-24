@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 414B145C1E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:21:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5442E45C5B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349813AbhKXNXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:23:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39544 "EHLO mail.kernel.org"
+        id S1349192AbhKXOAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:00:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347723AbhKXNUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:20:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 445A861B00;
-        Wed, 24 Nov 2021 12:46:55 +0000 (UTC)
+        id S1353201AbhKXN44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:56:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17CE9633BA;
+        Wed, 24 Nov 2021 13:07:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758015;
-        bh=w5Xb6WCzlZ8aPhmrZpZHwKQX/kb2t2tuhtwlxNHDG2k=;
+        s=korg; t=1637759248;
+        bh=3DEEtA2d9eYMusYWKMLbgn+bfHLebArXs9TIeVEp3kA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Omo/wJkppYZQ8lJwHMOPiC1Faxv/mAhQowXbitD2gEHbhXxpPbpR5IJgVU2zht5yR
-         f7ZZh1j5309kuakzs0Lwd0U9zQT6njXmX1m3cGoL+pqNYQichH9M/oNmnzHNSCnFZX
-         FKfBh1+Y9GtWdlUu2WSa+st+iQyeM668rxeZn2cs=
+        b=Npt0Q+9EaQ+NH63Gw4kn6FP5CR4CCE5qp4fV/R6E17B+/Pr3LDexT8LC0uSptQczE
+         P/sYsTbMBN3kCLvr4D7Rny1BkJm3pE6VQ4e4RGm76YYssjBmkuKaIonbvRNglz7KsQ
+         iur9aNfu5eIEZvVFuUwWtibYVmRmBjFVBGhkziiw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 029/100] powerpc/dcr: Use cmplwi instead of 3-argument cmpli
+Subject: [PATCH 5.15 178/279] powerpc/pseries: rename numa_dist_table to form2_distances
 Date:   Wed, 24 Nov 2021 12:57:45 +0100
-Message-Id: <20211124115655.800279735@linuxfoundation.org>
+Message-Id: <20211124115724.893956338@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,61 +40,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-[ Upstream commit fef071be57dc43679a32d5b0e6ee176d6f12e9f2 ]
+[ Upstream commit 0bd81274e3f1195ee7c820ef02d62f31077c42c3 ]
 
-In dcr-low.S we use cmpli with three arguments, instead of four
-arguments as defined in the ISA:
+The name of the local variable holding the "form2" property address
+conflicts with the numa_distance_table global.
 
-	cmpli	cr0,r3,1024
+This patch does 's/numa_dist_table/form2_distances/g' over the function,
+which also renames numa_dist_table_length to form2_distances_length.
 
-This appears to be a PPC440-ism, looking at the "PPC440x5 CPU Core
-User’s Manual" it shows cmpli having no L field, but implied to be 0 due
-to the core being 32-bit. It mentions that the ISA defines four
-arguments and recommends using cmplwi.
-
-It also corresponds to the old POWER instruction set, which had no L
-field there, a reserved bit instead.
-
-dcr-low.S is only built 32-bit, because it is only built when
-DCR_NATIVE=y, which is only selected by 40x and 44x. Looking at the
-generated code (with gcc/gas) we see cmplwi as expected.
-
-Although gas is happy with the 3-argument version when building for
-32-bit, the LLVM assembler is not and errors out with:
-
-  arch/powerpc/sysdev/dcr-low.S:27:10: error: invalid operand for instruction
-   cmpli 0,%r3,1024; ...
-           ^
-
-Switch to the cmplwi extended opcode, which avoids any confusion when
-reading the ISA, fixes the issue with the LLVM assembler, and also means
-the code could be built 64-bit in future (though that's very unlikely).
-
-Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-BugLink: https://github.com/ClangBuiltLinux/linux/issues/1419
-Link: https://lore.kernel.org/r/20211014024424.528848-1-mpe@ellerman.id.au
+Link: https://lore.kernel.org/r/20211109064900.2041386-1-npiggin@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/sysdev/dcr-low.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/mm/numa.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/arch/powerpc/sysdev/dcr-low.S b/arch/powerpc/sysdev/dcr-low.S
-index efeeb1b885a17..329b9c4ae5429 100644
---- a/arch/powerpc/sysdev/dcr-low.S
-+++ b/arch/powerpc/sysdev/dcr-low.S
-@@ -11,7 +11,7 @@
- #include <asm/export.h>
+diff --git a/arch/powerpc/mm/numa.c b/arch/powerpc/mm/numa.c
+index 6f14c8fb6359d..53e9901409163 100644
+--- a/arch/powerpc/mm/numa.c
++++ b/arch/powerpc/mm/numa.c
+@@ -376,9 +376,9 @@ static void initialize_form2_numa_distance_lookup_table(void)
+ {
+ 	int i, j;
+ 	struct device_node *root;
+-	const __u8 *numa_dist_table;
++	const __u8 *form2_distances;
+ 	const __be32 *numa_lookup_index;
+-	int numa_dist_table_length;
++	int form2_distances_length;
+ 	int max_numa_index, distance_index;
  
- #define DCR_ACCESS_PROLOG(table) \
--	cmpli	cr0,r3,1024;	 \
-+	cmplwi	cr0,r3,1024;	 \
- 	rlwinm  r3,r3,4,18,27;   \
- 	lis     r5,table@h;      \
- 	ori     r5,r5,table@l;   \
+ 	if (firmware_has_feature(FW_FEATURE_OPAL))
+@@ -392,20 +392,20 @@ static void initialize_form2_numa_distance_lookup_table(void)
+ 	max_numa_index = of_read_number(&numa_lookup_index[0], 1);
+ 
+ 	/* first element of the array is the size and is encode-int */
+-	numa_dist_table = of_get_property(root, "ibm,numa-distance-table", NULL);
+-	numa_dist_table_length = of_read_number((const __be32 *)&numa_dist_table[0], 1);
++	form2_distances = of_get_property(root, "ibm,numa-distance-table", NULL);
++	form2_distances_length = of_read_number((const __be32 *)&form2_distances[0], 1);
+ 	/* Skip the size which is encoded int */
+-	numa_dist_table += sizeof(__be32);
++	form2_distances += sizeof(__be32);
+ 
+-	pr_debug("numa_dist_table_len = %d, numa_dist_indexes_len = %d\n",
+-		 numa_dist_table_length, max_numa_index);
++	pr_debug("form2_distances_len = %d, numa_dist_indexes_len = %d\n",
++		 form2_distances_length, max_numa_index);
+ 
+ 	for (i = 0; i < max_numa_index; i++)
+ 		/* +1 skip the max_numa_index in the property */
+ 		numa_id_index_table[i] = of_read_number(&numa_lookup_index[i + 1], 1);
+ 
+ 
+-	if (numa_dist_table_length != max_numa_index * max_numa_index) {
++	if (form2_distances_length != max_numa_index * max_numa_index) {
+ 		WARN(1, "Wrong NUMA distance information\n");
+ 		/* consider everybody else just remote. */
+ 		for (i = 0;  i < max_numa_index; i++) {
+@@ -427,7 +427,7 @@ static void initialize_form2_numa_distance_lookup_table(void)
+ 			int nodeA = numa_id_index_table[i];
+ 			int nodeB = numa_id_index_table[j];
+ 
+-			numa_distance_table[nodeA][nodeB] = numa_dist_table[distance_index++];
++			numa_distance_table[nodeA][nodeB] = form2_distances[distance_index++];
+ 			pr_debug("dist[%d][%d]=%d ", nodeA, nodeB, numa_distance_table[nodeA][nodeB]);
+ 		}
+ 	}
 -- 
 2.33.0
 
