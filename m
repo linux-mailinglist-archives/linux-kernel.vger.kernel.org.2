@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E21545C3B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA26D45C3B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350691AbhKXNmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:42:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55788 "EHLO mail.kernel.org"
+        id S1353392AbhKXNmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:42:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350394AbhKXNji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1350396AbhKXNji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Nov 2021 08:39:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FBCF63231;
-        Wed, 24 Nov 2021 12:56:50 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25ECD63223;
+        Wed, 24 Nov 2021 12:56:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758611;
-        bh=QNmNlGbItnQwTF/I01u34QXi8OEmR0WdhO+uw//JHJg=;
+        s=korg; t=1637758614;
+        bh=rn73AdGcGaX5Os3QDjogHxyvGRBt43TMtF83jGr8dpE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YMbKgWrKQqedlXDR4+JqEilOe75g7D4MALj63xS14jqKqzyUbUw0TC4zF7S9m4Dao
-         D/zW5zkQO5st9NVKcTagxJbAJSPTKU9ykxSmsv2mkO0X1fbvCSOPw/mr75LEbXGVi5
-         BD5B/lvJZtUmAHXnYQrppjp6dcJO3z3jVm3g0UcY=
+        b=wPpXx6+Nzz03moReIHF1wA/yR5Oe9ky0A9ZCnDyveczJhF0Pp12yb0bfqhnRlid5h
+         RYUxXq9E9zypTR6aIW/uU4DefLiP8NbYEwpNpJ45c9xYGAFbEuFKRD4xMcj0Ab8DHj
+         Zhyn1blx83rLKBVgrmk/hYLiI+iww5DTY1pLlyFQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wei Liu <wei.liu@kernel.org>
-Subject: [PATCH 5.10 126/154] x86/hyperv: Fix NULL deref in set_hv_tscchange_cb() if Hyper-V setup fails
-Date:   Wed, 24 Nov 2021 12:58:42 +0100
-Message-Id: <20211124115706.372150617@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.10 127/154] powerpc/8xx: Fix pinned TLBs with CONFIG_STRICT_KERNEL_RWX
+Date:   Wed, 24 Nov 2021 12:58:43 +0100
+Message-Id: <20211124115706.403334906@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
 References: <20211124115702.361983534@linuxfoundation.org>
@@ -40,57 +40,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-commit daf972118c517b91f74ff1731417feb4270625a4 upstream.
+commit 1e35eba4055149c578baf0318d2f2f89ea3c44a0 upstream.
 
-Check for a valid hv_vp_index array prior to derefencing hv_vp_index when
-setting Hyper-V's TSC change callback.  If Hyper-V setup failed in
-hyperv_init(), the kernel will still report that it's running under
-Hyper-V, but will have silently disabled nearly all functionality.
+As spotted and explained in commit c12ab8dbc492 ("powerpc/8xx: Fix
+Oops with STRICT_KERNEL_RWX without DEBUG_RODATA_TEST"), the selection
+of STRICT_KERNEL_RWX without selecting DEBUG_RODATA_TEST has spotted
+the lack of the DIRTY bit in the pinned kernel data TLBs.
 
-  BUG: kernel NULL pointer dereference, address: 0000000000000010
-  #PF: supervisor read access in kernel mode
-  #PF: error_code(0x0000) - not-present page
-  PGD 0 P4D 0
-  Oops: 0000 [#1] SMP
-  CPU: 4 PID: 1 Comm: swapper/0 Not tainted 5.15.0-rc2+ #75
-  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-  RIP: 0010:set_hv_tscchange_cb+0x15/0xa0
-  Code: <8b> 04 82 8b 15 12 17 85 01 48 c1 e0 20 48 0d ee 00 01 00 f6 c6 08
-  ...
-  Call Trace:
-   kvm_arch_init+0x17c/0x280
-   kvm_init+0x31/0x330
-   vmx_init+0xba/0x13a
-   do_one_initcall+0x41/0x1c0
-   kernel_init_freeable+0x1f2/0x23b
-   kernel_init+0x16/0x120
-   ret_from_fork+0x22/0x30
+This problem should have been detected a lot earlier if things had
+been working as expected. But due to an incredible level of chance or
+mishap, this went undetected because of a set of bugs: In fact the
+DTLBs were not pinned, because instead of setting the reserve bit
+in MD_CTR, it was set in MI_CTR that is the register for ITLBs.
 
-Fixes: 93286261de1b ("x86/hyperv: Reenlightenment notifications support")
-Cc: stable@vger.kernel.org
-Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Link: https://lore.kernel.org/r/20211104182239.1302956-2-seanjc@google.com
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
+But then, another huge bug was there: the physical address was
+reset to 0 at the boundary between RO and RW areas, leading to the
+same physical space being mapped at both 0xc0000000 and 0xc8000000.
+This had by miracle no consequence until now because the entry was
+not really pinned so it was overwritten soon enough to go undetected.
+
+Of course, now that we really pin the DTLBs, it must be fixed as well.
+
+Fixes: f76c8f6d257c ("powerpc/8xx: Add function to set pinned TLBs")
+Cc: stable@vger.kernel.org # v5.8+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Depends-on: c12ab8dbc492 ("powerpc/8xx: Fix Oops with STRICT_KERNEL_RWX without DEBUG_RODATA_TEST")
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/a21e9a057fe2d247a535aff0d157a54eefee017a.1636963688.git.christophe.leroy@csgroup.eu
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/hyperv/hv_init.c |    3 +++
- 1 file changed, 3 insertions(+)
+ arch/powerpc/kernel/head_8xx.S |   13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -176,6 +176,9 @@ void set_hv_tscchange_cb(void (*cb)(void
- 		return;
- 	}
+--- a/arch/powerpc/kernel/head_8xx.S
++++ b/arch/powerpc/kernel/head_8xx.S
+@@ -766,6 +766,7 @@ _GLOBAL(mmu_pin_tlb)
+ #ifdef CONFIG_PIN_TLB_DATA
+ 	LOAD_REG_IMMEDIATE(r6, PAGE_OFFSET)
+ 	LOAD_REG_IMMEDIATE(r7, MI_SVALID | MI_PS8MEG | _PMD_ACCESSED)
++	li	r8, 0
+ #ifdef CONFIG_PIN_TLB_IMMR
+ 	li	r0, 3
+ #else
+@@ -774,26 +775,26 @@ _GLOBAL(mmu_pin_tlb)
+ 	mtctr	r0
+ 	cmpwi	r4, 0
+ 	beq	4f
+-	LOAD_REG_IMMEDIATE(r8, 0xf0 | _PAGE_RO | _PAGE_SPS | _PAGE_SH | _PAGE_PRESENT)
+ 	LOAD_REG_ADDR(r9, _sinittext)
  
-+	if (!hv_vp_index)
-+		return;
-+
- 	hv_reenlightenment_cb = cb;
- 
- 	/* Make sure callback is registered before we write to MSRs */
+ 2:	ori	r0, r6, MD_EVALID
++	ori	r12, r8, 0xf0 | _PAGE_RO | _PAGE_SPS | _PAGE_SH | _PAGE_PRESENT
+ 	mtspr	SPRN_MD_CTR, r5
+ 	mtspr	SPRN_MD_EPN, r0
+ 	mtspr	SPRN_MD_TWC, r7
+-	mtspr	SPRN_MD_RPN, r8
++	mtspr	SPRN_MD_RPN, r12
+ 	addi	r5, r5, 0x100
+ 	addis	r6, r6, SZ_8M@h
+ 	addis	r8, r8, SZ_8M@h
+ 	cmplw	r6, r9
+ 	bdnzt	lt, 2b
+-
+-4:	LOAD_REG_IMMEDIATE(r8, 0xf0 | _PAGE_DIRTY | _PAGE_SPS | _PAGE_SH | _PAGE_PRESENT)
++4:
+ 2:	ori	r0, r6, MD_EVALID
++	ori	r12, r8, 0xf0 | _PAGE_DIRTY | _PAGE_SPS | _PAGE_SH | _PAGE_PRESENT
+ 	mtspr	SPRN_MD_CTR, r5
+ 	mtspr	SPRN_MD_EPN, r0
+ 	mtspr	SPRN_MD_TWC, r7
+-	mtspr	SPRN_MD_RPN, r8
++	mtspr	SPRN_MD_RPN, r12
+ 	addi	r5, r5, 0x100
+ 	addis	r6, r6, SZ_8M@h
+ 	addis	r8, r8, SZ_8M@h
+@@ -814,7 +815,7 @@ _GLOBAL(mmu_pin_tlb)
+ #endif
+ #if defined(CONFIG_PIN_TLB_IMMR) || defined(CONFIG_PIN_TLB_DATA)
+ 	lis	r0, (MD_RSV4I | MD_TWAM)@h
+-	mtspr	SPRN_MI_CTR, r0
++	mtspr	SPRN_MD_CTR, r0
+ #endif
+ 	mtspr	SPRN_SRR1, r10
+ 	mtspr	SPRN_SRR0, r11
 
 
