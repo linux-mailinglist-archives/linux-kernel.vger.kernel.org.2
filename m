@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5318B45BA49
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:06:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 856C845BBD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:22:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242460AbhKXMJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:09:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33882 "EHLO mail.kernel.org"
+        id S243560AbhKXMYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:24:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242282AbhKXMGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:06:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F242660FBF;
-        Wed, 24 Nov 2021 12:03:29 +0000 (UTC)
+        id S243359AbhKXMUU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:20:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE52A6115A;
+        Wed, 24 Nov 2021 12:12:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755410;
-        bh=SVJ1+bjXfGnfETTDv75CBkHb2qQU6zm3q6RJWGvy200=;
+        s=korg; t=1637755951;
+        bh=9hcVoHnet9o4cijpbk5/Dyv0jCYduv85YT/cabmNmCE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jpak3Rj909j5S1oO6P5tj0AjDNpRWLyMoJnrqu6oCp+EBvhzvD8Ry21d0ndFpBh1g
-         2UX/sj2aZlFVQhxYjrWdRDoiHRQh6Ds3qtjt+Eu+dKQta4kldEJfrdi1PeIRHgU+KA
-         eNPAw2imjXqxLbJjbrfjfCk2nw8lSQAMDt/j+azw=
+        b=KzFbjdnOFvcBIO7d3LTQZmP+Jb2h6bBHdcwLcN83hTBDiGM+glUad5QlFih2LU+i2
+         EUknTDapOPFK8PRu2lJV4gUp3/6BLK1wJ01oX6U9/+tj/diYYcIy+iUBHQoJTvt24F
+         NZho3uezXwQph7jnFf971jAc87YC7JNtroxQxG1s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+93dba5b91f0fed312cbd@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Casey Schaufler <casey@schaufler-ca.com>,
+        stable@vger.kernel.org, Finn Thain <fthain@linux-m68k.org>,
+        Tong Zhang <ztong0001@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 084/162] smackfs: use netlbl_cfg_cipsov4_del() for deleting cipso_v4_doi
-Date:   Wed, 24 Nov 2021 12:56:27 +0100
-Message-Id: <20211124115701.039259914@linuxfoundation.org>
+Subject: [PATCH 4.9 117/207] scsi: dc395: Fix error case unwinding
+Date:   Wed, 24 Nov 2021 12:56:28 +0100
+Message-Id: <20211124115707.852526834@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit 0934ad42bb2c5df90a1b9de690f93de735b622fe ]
+[ Upstream commit cbd9a3347c757383f3d2b50cf7cfd03eb479c481 ]
 
-syzbot is reporting UAF at cipso_v4_doi_search() [1], for smk_cipso_doi()
-is calling kfree() without removing from the cipso_v4_doi_list list after
-netlbl_cfg_cipsov4_map_add() returned an error. We need to use
-netlbl_cfg_cipsov4_del() in order to remove from the list and wait for
-RCU grace period before kfree().
+dc395x_init_one()->adapter_init() might fail. In this case, the acb is
+already cleaned up by adapter_init(), no need to do that in
+adapter_uninit(acb) again.
 
-Link: https://syzkaller.appspot.com/bug?extid=93dba5b91f0fed312cbd [1]
-Reported-by: syzbot <syzbot+93dba5b91f0fed312cbd@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Fixes: 6c2e8ac0953fccdd ("netlabel: Update kernel configuration API")
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+[    1.252251] dc395x: adapter init failed
+[    1.254900] RIP: 0010:adapter_uninit+0x94/0x170 [dc395x]
+[    1.260307] Call Trace:
+[    1.260442]  dc395x_init_one.cold+0x72a/0x9bb [dc395x]
+
+Link: https://lore.kernel.org/r/20210907040702.1846409-1-ztong0001@gmail.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reviewed-by: Finn Thain <fthain@linux-m68k.org>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/smack/smackfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/dc395x.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
-index 40c8b2b8a4722..ce30b61c56171 100644
---- a/security/smack/smackfs.c
-+++ b/security/smack/smackfs.c
-@@ -740,7 +740,7 @@ static void smk_cipso_doi(void)
- 	if (rc != 0) {
- 		printk(KERN_WARNING "%s:%d map add rc = %d\n",
- 		       __func__, __LINE__, rc);
--		kfree(doip);
-+		netlbl_cfg_cipsov4_del(doip->doi, &nai);
- 		return;
+diff --git a/drivers/scsi/dc395x.c b/drivers/scsi/dc395x.c
+index 830b2d2dcf206..8490d0ff04ca7 100644
+--- a/drivers/scsi/dc395x.c
++++ b/drivers/scsi/dc395x.c
+@@ -4809,6 +4809,7 @@ static int dc395x_init_one(struct pci_dev *dev, const struct pci_device_id *id)
+ 	/* initialise the adapter and everything we need */
+  	if (adapter_init(acb, io_port_base, io_port_len, irq)) {
+ 		dprintkl(KERN_INFO, "adapter init failed\n");
++		acb = NULL;
+ 		goto fail;
  	}
- }
+ 
 -- 
 2.33.0
 
