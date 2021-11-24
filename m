@@ -2,151 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C65245D025
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:40:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC30145D028
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:40:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345657AbhKXWnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 17:43:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48380 "EHLO
+        id S1345880AbhKXWny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 17:43:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345880AbhKXWnO (ORCPT
+        with ESMTP id S230098AbhKXWnx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:43:14 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8915AC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 14:40:04 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637793601;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=9iMOTHSqzICObi0azMH+EBP1xAS5vBxdMtZ45eIzj4o=;
-        b=ftyByuGWCGKn2Tix85hg8CIMG/LxI7ryl8ZbDr/6dDhzmtVfAcQhV7DrvVqSEYHa0arKk/
-        bYrzduXz0FUoxvJH5uZAN3yTToFyNyCgSYx18lSpScm9Sy2HH3ERjR2gjptYWPBa+OCKhH
-        xSrTh4etiTfdquWlNkHzGDk+jKGiBbk4wEk8o9Xy+nTj10rpBdgEUaXyAC/stxHzM46UKH
-        oSbrXac8KkYTge4C04aIsBvrKCbmXltMMGKcYTBTT0e95HnhOTBldN+dfiEAcDVsQw7T5T
-        8GIf+xP3PHrDDucc2AI0Sd4Alz0UGva94rz3ZHPDWKtEAUSXNcS4UyAsn2Zx2w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637793602;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=9iMOTHSqzICObi0azMH+EBP1xAS5vBxdMtZ45eIzj4o=;
-        b=sqO0tnRF+i2X5LoYKH+yeDCbw5gj9hMpmH9A87+OA1kzc863NvN0tTuFjuyfLNDCCHqOBH
-        k1V19IsxlSU0arDg==
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        alsa-devel@alsa-project.org
-Subject: ALSA: hda: Make proper use of timecounter
-Date:   Wed, 24 Nov 2021 23:40:01 +0100
-Message-ID: <871r35kwji.ffs@tglx>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Wed, 24 Nov 2021 17:43:53 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB19C06173E
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 14:40:42 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id l3-20020a170902f68300b00142892d0a86so1360859plg.13
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 14:40:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=rbJ9JO3IuNN6r3UIfB5u88Bz2IUK6aXonS1RTuRnAxM=;
+        b=DPNV8qDJ1EE0FeYK7irTV3MIdUWT3kaFlvTvXfmqq0eLDPdBfeQDaMsNvrM+4+LC+n
+         Gi5qCDDkEnKqDpB4+YpoNMHSBbMKEEPeXOVNHMwbmcypCPowNj61m2aCibmhLqalqOcL
+         tNtHS2yrvfprijNWNZh5q/vUkI2+GXK3TN06Y4vbij8FOq4xKgsWs1DPIrpLADeoA+cC
+         +gcGweO1m57DVK/LOR4o+qGpBjKlfpT733uPdXjyHeIiU507vuFtYS6A6MCnr3llUqCO
+         lJN9mg7D6tKoxR1+b3X4aBHH77B2uEHDnXqpqYfZ02rSElCKAzBWUTlkpbgBaFzuZNR3
+         WRwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=rbJ9JO3IuNN6r3UIfB5u88Bz2IUK6aXonS1RTuRnAxM=;
+        b=YbDL2uwDn+zz3eLg/QJsSMVAc6Qqy5FXgfaNtYo/0tMGJhS2gxMiy4AWO7Jx/Z4EjY
+         AUOavqzZeDl3JY8H6+Y1TY9yVcytc9V9NbvkTBoAPnu6OOS9b4QompE4wcUl7Yt6ZNYo
+         Mdh3nQhoq5uDmtsCOsKpMIcqlVl5uY2Iu68HSum6zI1BbDaV0WBYqR+UeZ5hk3F+gDww
+         WxBL9BloSHA5cKVmzEDnSRpm3wRFQ/zGfuZR2UTEunEvpkqnQlcYfphWcqqAEKHGT/oR
+         3u51guwOqdQM6oaxgXc/8NZJaJjjGSWbBEzOa8n1Zb44WiFdeyVgJA9DaiLGoaW43z1y
+         c8RQ==
+X-Gm-Message-State: AOAM530uRB4+/eCoa031EXnM8f7Ug2AFDO8c6PjCDppD3Ml/hJdEoiJ8
+        //KicKzx3dRxlMebRluLLuIiWkJcMao=
+X-Google-Smtp-Source: ABdhPJwQjuN1Ii/V1y0uJ0mrubcan8tzthwSuRjHOasm3tRxdaoO5Qn+J0Jc8/G843jmWlq5GR1C8dpoyZM=
+X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:a4ad:5772:64a6:6abd])
+ (user=badhri job=sendgmr) by 2002:a17:90a:1913:: with SMTP id
+ 19mr767222pjg.174.1637793642259; Wed, 24 Nov 2021 14:40:42 -0800 (PST)
+Date:   Wed, 24 Nov 2021 14:40:36 -0800
+Message-Id: <20211124224036.734679-1-badhri@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+Subject: [PATCH v1] usb: typec: tcpm: Wait in SNK_DEBOUNCED until disconnect
+From:   Badhri Jagan Sridharan <badhri@google.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kyle Tso <kyletso@google.com>, stable@vger.kernel.org,
+        Badhri Jagan Sridharan <badhri@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HDA uses a timecounter to read a hardware clock running at 24 MHz. The
-conversion factor is set with a mult value of 125 and a shift value of 0,
-which is not converting the hardware clock to nanoseconds, it is converting
-to 1/3 nanoseconds because the conversion factor from 24Mhz to nanoseconds
-is 125/3. The usage sites divide the "nanoseconds" value returned by
-timecounter_read() by 3 to get a real nanoseconds value.
+Stub from the spec:
+"4.5.2.2.4.2 Exiting from AttachWait.SNK State
+A Sink shall transition to Unattached.SNK when the state of both
+the CC1 and CC2 pins is SNK.Open for at least tPDDebounce.
+A DRP shall transition to Unattached.SRC when the state of both
+the CC1 and CC2 pins is SNK.Open for at least tPDDebounce."
 
-There is a lengthy comment in azx_timecounter_init() explaining this
-choice. That comment makes blatantly wrong assumptions about how
-timecounters work and what can overflow.
+This change makes TCPM to wait in SNK_DEBOUNCED state until
+CC1 and CC2 pins is SNK.Open for at least tPDDebounce. Previously,
+TCPM resets the port if vbus is not present in PD_T_PS_SOURCE_ON.
+This causes TCPM to loop continuously when connected to a
+faulty power source that does not present vbus. Waiting in
+SNK_DEBOUNCED also ensures that TCPM is adherant to
+"4.5.2.2.4.2 Exiting from AttachWait.SNK State" requirements.
 
-The comment says:
+[ 6169.280751] CC1: 0 -> 0, CC2: 0 -> 5 [state TOGGLING, polarity 0, connected]
+[ 6169.280759] state change TOGGLING -> SNK_ATTACH_WAIT [rev2 NONE_AMS]
+[ 6169.280771] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 170 ms [rev2 NONE_AMS]
+[ 6169.282427] CC1: 0 -> 0, CC2: 5 -> 5 [state SNK_ATTACH_WAIT, polarity 0, connected]
+[ 6169.450825] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 170 ms]
+[ 6169.450834] pending state change SNK_DEBOUNCED -> PORT_RESET @ 480 ms [rev2 NONE_AMS]
+[ 6169.930892] state change SNK_DEBOUNCED -> PORT_RESET [delayed 480 ms]
+[ 6169.931296] disable vbus discharge ret:0
+[ 6169.931301] Setting usb_comm capable false
+[ 6169.932783] Setting voltage/current limit 0 mV 0 mA
+[ 6169.932802] polarity 0
+[ 6169.933706] Requesting mux state 0, usb-role 0, orientation 0
+[ 6169.936689] cc:=0
+[ 6169.936812] pending state change PORT_RESET -> PORT_RESET_WAIT_OFF @ 100 ms [rev2 NONE_AMS]
+[ 6169.937157] CC1: 0 -> 0, CC2: 5 -> 0 [state PORT_RESET, polarity 0, disconnected]
+[ 6170.036880] state change PORT_RESET -> PORT_RESET_WAIT_OFF [delayed 100 ms]
+[ 6170.036890] state change PORT_RESET_WAIT_OFF -> SNK_UNATTACHED [rev2 NONE_AMS]
+[ 6170.036896] Start toggling
+[ 6170.041412] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
+[ 6170.042973] CC1: 0 -> 0, CC2: 0 -> 5 [state TOGGLING, polarity 0, connected]
+[ 6170.042976] state change TOGGLING -> SNK_ATTACH_WAIT [rev2 NONE_AMS]
+[ 6170.042981] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 170 ms [rev2 NONE_AMS]
+[ 6170.213014] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 170 ms]
+[ 6170.213019] pending state change SNK_DEBOUNCED -> PORT_RESET @ 480 ms [rev2 NONE_AMS]
+[ 6170.693068] state change SNK_DEBOUNCED -> PORT_RESET [delayed 480 ms]
+[ 6170.693304] disable vbus discharge ret:0
+[ 6170.693308] Setting usb_comm capable false
+[ 6170.695193] Setting voltage/current limit 0 mV 0 mA
+[ 6170.695210] polarity 0
+[ 6170.695990] Requesting mux state 0, usb-role 0, orientation 0
+[ 6170.701896] cc:=0
+[ 6170.702181] pending state change PORT_RESET -> PORT_RESET_WAIT_OFF @ 100 ms [rev2 NONE_AMS]
+[ 6170.703343] CC1: 0 -> 0, CC2: 5 -> 0 [state PORT_RESET, polarity 0, disconnected]
 
-     * Applying the 1/3 factor as part of the multiplication
-     * requires at least 20 bits for a decent precision, however
-     * overflows occur after about 4 hours or less, not a option.
-
-timecounters operate on time deltas between two readouts of a clock and use
-the mult/shift pair to calculate a precise nanoseconds value:
-
-    delta_nsec = (delta_clock * mult) >> shift;
-
-The fractional part is also taken into account and preserved to prevent
-accumulated rounding errors. For details see cyclecounter_cyc2ns().
-
-The mult/shift pair has to be chosen so that the multiplication of the
-maximum expected delta value does not result in a 64bit overflow. As the
-counter wraps around on 32bit, the maximum observable delta between two
-reads is (1 << 32) - 1 which is about 178.9 seconds.
-
-That in turn means the maximum multiplication factor which fits into an u32
-will not cause a 64bit overflow ever because it's guaranteed that:
-
-     ((1 << 32) - 1) ^ 2 < (1 << 64)
-
-The resulting correct multiplication factor is 2796202667 and the shift
-value is 26, i.e. 26 bit precision. The overflow of the multiplication
-would happen exactly at a clock readout delta of 6597069765 which is way
-after the wrap around of the hardware clock at around 274.8 seconds which
-is off from the claimed 4 hours by more than an order of magnitude.
-
-If the counter ever wraps around the last read value then the calculation
-is off by the number of wrap arounds times 178.9 seconds because the
-overflow cannot be observed.
-
-Use clocks_calc_mult_shift(), which calculates the most accurate mult/shift
-pair based on the given clock frequency, and remove the bogus comment along
-with the divisions at the readout sites.
-
-Fixes: 5d890f591d15 ("ALSA: hda: support for wallclock timestamps")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Fixes: f0690a25a140b8 ("staging: typec: USB Type-C Port Manager (tcpm)")
+Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 ---
- sound/hda/hdac_stream.c           |   14 ++++----------
- sound/pci/hda/hda_controller.c    |    1 -
- sound/soc/intel/skylake/skl-pcm.c |    1 -
- 3 files changed, 4 insertions(+), 12 deletions(-)
+ drivers/usb/typec/tcpm/tcpm.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
---- a/sound/hda/hdac_stream.c
-+++ b/sound/hda/hdac_stream.c
-@@ -534,17 +534,11 @@ static void azx_timecounter_init(struct
- 	cc->mask = CLOCKSOURCE_MASK(32);
- 
- 	/*
--	 * Converting from 24 MHz to ns means applying a 125/3 factor.
--	 * To avoid any saturation issues in intermediate operations,
--	 * the 125 factor is applied first. The division is applied
--	 * last after reading the timecounter value.
--	 * Applying the 1/3 factor as part of the multiplication
--	 * requires at least 20 bits for a decent precision, however
--	 * overflows occur after about 4 hours or less, not a option.
-+	 * Calculate the optimal mult/shift values. The counter wraps
-+	 * around after ~178.9 seconds.
- 	 */
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index 7f2f3ff1b391..6010b9901126 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -4110,11 +4110,7 @@ static void run_state_machine(struct tcpm_port *port)
+ 				       tcpm_try_src(port) ? SRC_TRY
+ 							  : SNK_ATTACHED,
+ 				       0);
+-		else
+-			/* Wait for VBUS, but not forever */
+-			tcpm_set_state(port, PORT_RESET, PD_T_PS_SOURCE_ON);
+ 		break;
 -
--	cc->mult = 125; /* saturation after 195 years */
--	cc->shift = 0;
-+	clocks_calc_mult_shift(&cc->mult, &cc->shift, 24000000,
-+			       NSEC_PER_SEC, 178);
- 
- 	nsec = 0; /* audio time is elapsed time since trigger */
- 	timecounter_init(tc, cc, nsec);
---- a/sound/pci/hda/hda_controller.c
-+++ b/sound/pci/hda/hda_controller.c
-@@ -504,7 +504,6 @@ static int azx_get_time_info(struct snd_
- 		snd_pcm_gettime(substream->runtime, system_ts);
- 
- 		nsec = timecounter_read(&azx_dev->core.tc);
--		nsec = div_u64(nsec, 3); /* can be optimized */
- 		if (audio_tstamp_config->report_delay)
- 			nsec = azx_adjust_codec_delay(substream, nsec);
- 
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1251,7 +1251,6 @@ static int skl_platform_soc_get_time_inf
- 		snd_pcm_gettime(substream->runtime, system_ts);
- 
- 		nsec = timecounter_read(&hstr->tc);
--		nsec = div_u64(nsec, 3); /* can be optimized */
- 		if (audio_tstamp_config->report_delay)
- 			nsec = skl_adjust_codec_delay(substream, nsec);
- 
+ 	case SRC_TRY:
+ 		port->try_src_count++;
+ 		tcpm_set_cc(port, tcpm_rp_cc(port));
+-- 
+2.34.0.rc2.393.gf8c9666880-goog
+
