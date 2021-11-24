@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34DD745C4FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A15445C0DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355146AbhKXNyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:54:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40040 "EHLO mail.kernel.org"
+        id S1347921AbhKXNMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:12:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351479AbhKXNt3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:49:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4069463350;
-        Wed, 24 Nov 2021 13:03:06 +0000 (UTC)
+        id S243743AbhKXNJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:09:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D41C0613A9;
+        Wed, 24 Nov 2021 12:40:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758986;
-        bh=v1akiUXj8LsSQmdh3OqTi3Z69kNDwRgeMPeEqKCasug=;
+        s=korg; t=1637757634;
+        bh=e0FtJO+qPc+zP0fT+2xfhd/MVzw2GLG+qAZAxEdy1ko=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dkNuhqE+BBymxnEoZWaU66KV1TfO32L+VWsrj2JrPViuyNvIVcraqc5badiFTJM4w
-         VXe4xCsipPECMiVI6gbpj8pV3gF39F8Jm1UwSY2R0O8egdfYJIVr7FQ2Ee8FLVNwRp
-         SMdOxbOqcy7kE/HwajuKAOtcR5WIwW455NOSz3iQ=
+        b=IVpvHbSBubZTrcSZHT4jFnyyclqn86LWhQOdxW8Bo5sE/uSOuBQaBehzhpHSpkTyC
+         gmpexxghucJILDU9T9Pc1bbKTT+W8MNqBaEhcU7d/ePPrlE9qMW/do9YXmWdaTXDPh
+         YBq+i5rnVnw9jqI6YbDO1BZrzzO+0mV8efIUXawA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jing-Ting Wu <jing-ting.wu@mediatek.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
+        stable@vger.kernel.org,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 096/279] sched/core: Mitigate race cpus_share_cache()/update_top_cache_domain()
-Date:   Wed, 24 Nov 2021 12:56:23 +0100
-Message-Id: <20211124115722.092518718@linuxfoundation.org>
+Subject: [PATCH 4.19 194/323] ASoC: cs42l42: Correct some register default values
+Date:   Wed, 24 Nov 2021 12:56:24 +0100
+Message-Id: <20211124115725.488825877@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,58 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Donnefort <vincent.donnefort@arm.com>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-[ Upstream commit 42dc938a590c96eeb429e1830123fef2366d9c80 ]
+[ Upstream commit d591d4b32aa9552af14a0c7c586a2d3fe9ecc6e0 ]
 
-Nothing protects the access to the per_cpu variable sd_llc_id. When testing
-the same CPU (i.e. this_cpu == that_cpu), a race condition exists with
-update_top_cache_domain(). One scenario being:
+Some registers had wrong default values in cs42l42_reg_defaults[].
 
-              CPU1                            CPU2
-  ==================================================================
-
-  per_cpu(sd_llc_id, CPUX) => 0
-                                    partition_sched_domains_locked()
-      				      detach_destroy_domains()
-  cpus_share_cache(CPUX, CPUX)          update_top_cache_domain(CPUX)
-    per_cpu(sd_llc_id, CPUX) => 0
-                                          per_cpu(sd_llc_id, CPUX) = CPUX
-    per_cpu(sd_llc_id, CPUX) => CPUX
-    return false
-
-ttwu_queue_cond() wouldn't catch smp_processor_id() == cpu and the result
-is a warning triggered from ttwu_queue_wakelist().
-
-Avoid a such race in cpus_share_cache() by always returning true when
-this_cpu == that_cpu.
-
-Fixes: 518cd6234178 ("sched: Only queue remote wakeups when crossing cache boundaries")
-Reported-by: Jing-Ting Wu <jing-ting.wu@mediatek.com>
-Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lore.kernel.org/r/20211104175120.857087-1-vincent.donnefort@arm.com
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
+Link: https://lore.kernel.org/r/20211015133619.4698-4-rf@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/core.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/cs42l42.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index aea60eae21a7f..2c34c7bd559f2 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3707,6 +3707,9 @@ out:
- 
- bool cpus_share_cache(int this_cpu, int that_cpu)
- {
-+	if (this_cpu == that_cpu)
-+		return true;
-+
- 	return per_cpu(sd_llc_id, this_cpu) == per_cpu(sd_llc_id, that_cpu);
- }
- 
+diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
+index 4cb3e11c66af7..f9d6534d4632d 100644
+--- a/sound/soc/codecs/cs42l42.c
++++ b/sound/soc/codecs/cs42l42.c
+@@ -95,7 +95,7 @@ static const struct reg_default cs42l42_reg_defaults[] = {
+ 	{ CS42L42_ASP_RX_INT_MASK,		0x1F },
+ 	{ CS42L42_ASP_TX_INT_MASK,		0x0F },
+ 	{ CS42L42_CODEC_INT_MASK,		0x03 },
+-	{ CS42L42_SRCPL_INT_MASK,		0xFF },
++	{ CS42L42_SRCPL_INT_MASK,		0x7F },
+ 	{ CS42L42_VPMON_INT_MASK,		0x01 },
+ 	{ CS42L42_PLL_LOCK_INT_MASK,		0x01 },
+ 	{ CS42L42_TSRS_PLUG_INT_MASK,		0x0F },
+@@ -132,7 +132,7 @@ static const struct reg_default cs42l42_reg_defaults[] = {
+ 	{ CS42L42_MIXER_CHA_VOL,		0x3F },
+ 	{ CS42L42_MIXER_ADC_VOL,		0x3F },
+ 	{ CS42L42_MIXER_CHB_VOL,		0x3F },
+-	{ CS42L42_EQ_COEF_IN0,			0x22 },
++	{ CS42L42_EQ_COEF_IN0,			0x00 },
+ 	{ CS42L42_EQ_COEF_IN1,			0x00 },
+ 	{ CS42L42_EQ_COEF_IN2,			0x00 },
+ 	{ CS42L42_EQ_COEF_IN3,			0x00 },
 -- 
 2.33.0
 
