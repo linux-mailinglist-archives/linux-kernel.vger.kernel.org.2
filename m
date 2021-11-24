@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D0145C2ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:31:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B54BE45C0C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:08:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349601AbhKXNeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:34:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56156 "EHLO mail.kernel.org"
+        id S1347715AbhKXNLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:11:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350909AbhKXNa7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:30:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B06BE61BCF;
-        Wed, 24 Nov 2021 12:52:32 +0000 (UTC)
+        id S1348258AbhKXNJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:09:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74EDF61108;
+        Wed, 24 Nov 2021 12:40:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758353;
-        bh=rEvDH9e3e1/shQ8LDA401Gfc3RUsnKGokhs7qjYwDd0=;
+        s=korg; t=1637757601;
+        bh=NVwK9rmwOkaWKU+PtcmZJbazzyE992r6mKYsXThB8h4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E50QpNS0iVKcKyOiiZ5mK8P5yR4GN5xAeSOPRMsy+/8XSYaqedOkmtkhj+/FNV7y6
-         TaRZOZMdE8wpLIqcQR7HLYUsSMVVwPm8UaID5uhaj3QXHh+XmwnUIYLYe71qlTlJUa
-         I2wy8GlxzAqp/ZMnBo2Pjp7azQ1EEs1Ic2QEzF18=
+        b=nbaz6nUE3e2WjCc9kl9fDkU4aHGwAXfbd0nd3K2C9k2iEZbuvNEVL9qOh2tjKJFZR
+         iIUvZff4x7qlLxEdya+JWVMgtgcdfkJgWr+psQz5FUeaPVBX5P/FKnnFPCa+srB8Vt
+         GpjEPypOegOyJeulr3cvU6lPbbrwvK0fL6+2DBq8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Guillaume Gardet <guillaume.gardet@arm.com>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Heiko Stuebner <heiko@sntech.de>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 009/154] arm64: dts: rockchip: Disable CDN DP on Pinebook Pro
+Subject: [PATCH 4.19 215/323] watchdog: f71808e_wdt: fix inaccurate report in WDIOC_GETTIMEOUT
 Date:   Wed, 24 Nov 2021 12:56:45 +0100
-Message-Id: <20211124115702.684005156@linuxfoundation.org>
+Message-Id: <20211124115726.193942967@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Brugger <mbrugger@suse.com>
+From: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-[ Upstream commit 2513fa5c25d42f55ca5f0f0ab247af7c9fbfa3b1 ]
+[ Upstream commit 164483c735190775f29d0dcbac0363adc51a068d ]
 
-The CDN DP needs a PHY and a extcon to work correctly. But no extcon is
-provided by the device-tree, which leads to an error:
-cdn-dp fec00000.dp: [drm:cdn_dp_probe [rockchipdrm]] *ERROR* missing extcon or phy
-cdn-dp: probe of fec00000.dp failed with error -22
+The fintek watchdog timer can configure timeouts of second granularity
+only up to 255 seconds. Beyond that, the timeout needs to be configured
+with minute granularity. WDIOC_GETTIMEOUT should report the actual
+timeout configured, not just echo back the timeout configured by the
+user. Do so.
 
-Disable the CDN DP to make graphic work on the Pinebook Pro.
-
-Reported-by: Guillaume Gardet <guillaume.gardet@arm.com>
-Signed-off-by: Matthias Brugger <mbrugger@suse.com>
-Link: https://lore.kernel.org/r/20210715164101.11486-1-matthias.bgg@kernel.org
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Fixes: 96cb4eb019ce ("watchdog: f71808e_wdt: new watchdog driver for Fintek F71808E and F71882FG")
+Suggested-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Link: https://lore.kernel.org/r/5e17960fe8cc0e3cb2ba53de4730b75d9a0f33d5.1628525954.git-series.a.fatoum@pengutronix.de
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/watchdog/f71808e_wdt.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts b/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
-index 219b7507a10fb..4297c1db5a413 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
-@@ -379,10 +379,6 @@
- 	};
- };
+diff --git a/drivers/watchdog/f71808e_wdt.c b/drivers/watchdog/f71808e_wdt.c
+index 5d0ea419070dc..6b751d1aab084 100644
+--- a/drivers/watchdog/f71808e_wdt.c
++++ b/drivers/watchdog/f71808e_wdt.c
+@@ -237,15 +237,17 @@ static int watchdog_set_timeout(int timeout)
  
--&cdn_dp {
--	status = "okay";
--};
--
- &cpu_b0 {
- 	cpu-supply = <&vdd_cpu_b>;
- };
+ 	mutex_lock(&watchdog.lock);
+ 
+-	watchdog.timeout = timeout;
+ 	if (timeout > 0xff) {
+ 		watchdog.timer_val = DIV_ROUND_UP(timeout, 60);
+ 		watchdog.minutes_mode = true;
++		timeout = watchdog.timer_val * 60;
+ 	} else {
+ 		watchdog.timer_val = timeout;
+ 		watchdog.minutes_mode = false;
+ 	}
+ 
++	watchdog.timeout = timeout;
++
+ 	mutex_unlock(&watchdog.lock);
+ 
+ 	return 0;
 -- 
 2.33.0
 
