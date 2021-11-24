@@ -2,75 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0C545CBB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B25345CBB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350175AbhKXSDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 13:03:40 -0500
-Received: from foss.arm.com ([217.140.110.172]:41660 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241542AbhKXSDj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 13:03:39 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 46B781FB;
-        Wed, 24 Nov 2021 10:00:29 -0800 (PST)
-Received: from [10.57.56.56] (unknown [10.57.56.56])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9CDBA3F66F;
-        Wed, 24 Nov 2021 10:00:27 -0800 (PST)
-Message-ID: <e95f682b-a9b4-d946-c6fc-e59aba624466@arm.com>
-Date:   Wed, 24 Nov 2021 18:00:23 +0000
+        id S1350187AbhKXSE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 13:04:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241542AbhKXSE1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 13:04:27 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 708DCC061574;
+        Wed, 24 Nov 2021 10:01:17 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id o20so14006268eds.10;
+        Wed, 24 Nov 2021 10:01:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FgvkuWffJgeKcOJSjzRnBTmZU44ZLWgvH/oAgfUpzLw=;
+        b=qBUNVYjBN3se9gCpBMIxTja97ivHMWOHBrldWl9xs+HerYFhCWuk1xIGM/PeMMM7be
+         WIuXtnMWVZQq4SPAMjHsgfxHdKbwP342UDX0Hl3nM6IYyN5IZMfgu2AFYYzwIKE0HujD
+         LLUesToo4JOgKjwWkBoAyYLukmZLotOpGKZEKcLYp4ZgDFwseE2yf4gLcysU2iMdA7ip
+         aiqrhG10qzD9yHRVAbsnYpdK2JUwjRyVBNgz/gMn4GW+gIqisGZyyjvf/rXyIxfALjzc
+         bkSY7IdWlb4s+/p7Oj5ll0XTfh+sMbA9/ejl4Qnd5sHdbTE3ykXcj0mEsS27RknRdyFk
+         KeLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FgvkuWffJgeKcOJSjzRnBTmZU44ZLWgvH/oAgfUpzLw=;
+        b=atq3kGWm69dqhEV0CHMv4Jk7NYKhp0GPuAgjwJQ7NA9C5VRHUZLIbBUY/zgiqxgjyc
+         4TkVrkNAMoX/qFjlUs5BZTLlrnZhSAHuaefb9/XCwrt58ysp3/Gb916h7zXe442CMCJS
+         3ryxhkCkw0I766C82ZOeDbTLMu89V74q9UoQnC2LB7Qv4OepynXMMxH6v9ZbHRDLp/Z2
+         XRKouMlaO30ThQyYDgaJRIdFORPPDIyRrPM4Zl/1A5+NrnfEWWEAYul1NuU6t8k4tzOH
+         C4LC6G28igCLcxs5XR9e4N1ncR1DUUhweMancvCYE9M3x5Wp7p0J0mTja9er/LDInatL
+         E94Q==
+X-Gm-Message-State: AOAM531E4zwJkbpr83npWJrX6yc7OB5I5MJIiLDWvI4o75t/xm8S76se
+        z28XrprsP6NiKV8JsrY+gIXNLethGCKSem31qBC0AA62DwtyIw==
+X-Google-Smtp-Source: ABdhPJxLQZJ2EiGGfF/xxNojY/VMnqAS1LZSiaNfLCBq9AToXimWYVKWVuKP9E57DbMYIYtJXQPrUE6I0Z+bgJ0kW3A=
+X-Received: by 2002:a05:6402:3551:: with SMTP id f17mr27901870edd.129.1637776875909;
+ Wed, 24 Nov 2021 10:01:15 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [PATCH 9/9] iommu: Move flush queue data into iommu_dma_cookie
-Content-Language: en-GB
-To:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
-        will@kernel.org
-Cc:     iommu@lists.linux-foundation.org, suravee.suthikulpanit@amd.com,
-        baolu.lu@linux.intel.com, willy@infradead.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1637671820.git.robin.murphy@arm.com>
- <49bfd9636fd21c4b40e07558db6bfbbf82a449ac.1637674723.git.robin.murphy@arm.com>
- <9dece0b8-2832-f467-91f3-f63ef0f70d16@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <9dece0b8-2832-f467-91f3-f63ef0f70d16@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20211124110308.2053-1-urezki@gmail.com> <20211124110308.2053-6-urezki@gmail.com>
+ <20211124095803.2702bc89@gandalf.local.home>
+In-Reply-To: <20211124095803.2702bc89@gandalf.local.home>
+From:   Uladzislau Rezki <urezki@gmail.com>
+Date:   Wed, 24 Nov 2021 19:01:04 +0100
+Message-ID: <CA+KHdyWg=4i5xu7oRDqi5cFJ6_PjwghrVR3L0mN-PwQ7YwCmZg@mail.gmail.com>
+Subject: Re: [PATCH 5/9] x86/mm: Switch to kvfree_rcu() API
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-24 17:25, John Garry wrote:
-> On 23/11/2021 14:10, Robin Murphy wrote:
->> ruct iommu_dma_msi_page {
->>       struct list_head    list;
->> @@ -41,7 +43,19 @@ struct iommu_dma_cookie {
->>       enum iommu_dma_cookie_type    type;
->>       union {
->>           /* Full allocator for IOMMU_DMA_IOVA_COOKIE */
->> -        struct iova_domain    iovad;
->> +        struct {
->> +            struct iova_domain    iovad;
->> +
->> +            struct iova_fq __percpu *fq;    /* Flush queue */
->> +            /* Number of TLB flushes that have been started */
->> +            atomic64_t        fq_flush_start_cnt;
->> +            /* Number of TLB flushes that have been finished */
->> +            atomic64_t        fq_flush_finish_cnt;
->> +            /* Timer to regularily empty the flush queues */
->> +            struct timer_list    fq_timer;
->> +            /* 1 when timer is active, 0 when not */
->> +            atomic_t        fq_timer_on;
-> 
-> I thought that putting all the FQ stuff in its own structure would be 
-> neater, but that's just personal preference.
+>
+> This is the first I've seen kvfree_rcu() (that I actually noticed/remember,
+> I'm sure I probably was Cc'd on some patches). And I find the comment
+> around it very confusing:
+>
+> Specifically:
+>
+>
+>  *     kvfree_rcu(ptr);
+>  *
+>  * where @ptr is a pointer to kvfree().
+>
+> The above suggests that you should pass a pointer to the actual function
+> kvfree to kvfree_rcu(), which is not what I believe is to be done.
+>
+>   i.e.  kvfree_rcu(kvfree) ???
+>
+> Perhaps rewrite that to say:
+>
+>  * where @ptr is the pointer to be freed by kvfree().
+>
+> ?
+Indeed. I will fix that by sending a patch to change a description to
+be less confusing :)
 
-But look, it is! ;)
+>
+> Other than that, the patch looks fine to me.
+>
+> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+>
+I will place your "Acked-by" to 9/9 one.
 
-The iova_domain is still a fundamental part of the flush queue built 
-around it; the rest of the machinery can't stand in isolation. It's just 
-an anonymous structure because I don't feel like needlessly cluttering 
-up the code with "cookie->fq.fq" silliness.
+Thanks!
 
-Cheers,
-Robin.
+-- 
+Uladzislau Rezki
