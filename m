@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D6845C2A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 776CD45C2A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:28:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346404AbhKXNbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:31:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60596 "EHLO mail.kernel.org"
+        id S1349524AbhKXNbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:31:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350756AbhKXN2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:28:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3867B610E6;
-        Wed, 24 Nov 2021 12:51:08 +0000 (UTC)
+        id S1350774AbhKXN2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:28:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 302A561167;
+        Wed, 24 Nov 2021 12:51:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758268;
-        bh=HpeFUNsbzxu0oeLBzGfrdJpJldVwpo7oeRiX/ogBVrQ=;
+        s=korg; t=1637758271;
+        bh=ISt9HPXrYaaW0N82FruUv60OvQHSwzSStOJjuRQJ4DE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D8iE0VperazG6uZmgK24MWNSzvzAyXsnz+zOACoaQisGTGwES3KbFeTQybC2rpmf0
-         p6MrawvliMP6MMiwlSEekS/GPQT3gWBBX0B3+fMdTUibKGSvWPcrSWOmRNLTncBSIC
-         eou11cLZ5efonBS/qpglqCeAbRTbHcf3FCpfyeAk=
+        b=1WqHnhO4/nWvRRxqiIWv9SOb2L/wexmqMb3iFvgMOvE0piMQB91mF5Dlp7/hX8SDd
+         C9suq2vXGoPLLm8sSYh7Jz5Cev9DQ9JgUO6ydne/GY5pjaOIobZUwTXf3sme5D+jjT
+         I0smx0W3ngRJUGvz0OQ/YxdXAFyYSlLpHCbwk1p0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
+        stable@vger.kernel.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Sven Peter <sven@svenpeter.dev>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 014/154] usb: musb: tusb6010: check return value after calling platform_get_resource()
-Date:   Wed, 24 Nov 2021 12:56:50 +0100
-Message-Id: <20211124115702.843378695@linuxfoundation.org>
+Subject: [PATCH 5.10 015/154] usb: typec: tipd: Remove WARN_ON in tps6598x_block_read
+Date:   Wed, 24 Nov 2021 12:56:51 +0100
+Message-Id: <20211124115702.874451845@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
 References: <20211124115702.361983534@linuxfoundation.org>
@@ -39,37 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Sven Peter <sven@svenpeter.dev>
 
-[ Upstream commit 14651496a3de6807a17c310f63c894ea0c5d858e ]
+[ Upstream commit b7a0a63f3fed57d413bb857de164ea9c3984bc4e ]
 
-It will cause null-ptr-deref if platform_get_resource() returns NULL,
-we need check the return value.
+Calling tps6598x_block_read with a higher than allowed len can be
+handled by just returning an error. There's no need to crash systems
+with panic-on-warn enabled.
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20210915034925.2399823-1-yangyingliang@huawei.com
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Sven Peter <sven@svenpeter.dev>
+Link: https://lore.kernel.org/r/20210914140235.65955-3-sven@svenpeter.dev
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/musb/tusb6010.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/usb/typec/tps6598x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/musb/tusb6010.c b/drivers/usb/musb/tusb6010.c
-index 0c2afed4131bc..038307f661985 100644
---- a/drivers/usb/musb/tusb6010.c
-+++ b/drivers/usb/musb/tusb6010.c
-@@ -1103,6 +1103,11 @@ static int tusb_musb_init(struct musb *musb)
+diff --git a/drivers/usb/typec/tps6598x.c b/drivers/usb/typec/tps6598x.c
+index 30bfc314b743c..6cb5c8e2c8535 100644
+--- a/drivers/usb/typec/tps6598x.c
++++ b/drivers/usb/typec/tps6598x.c
+@@ -109,7 +109,7 @@ tps6598x_block_read(struct tps6598x *tps, u8 reg, void *val, size_t len)
+ 	u8 data[TPS_MAX_LEN + 1];
+ 	int ret;
  
- 	/* dma address for async dma */
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!mem) {
-+		pr_debug("no async dma resource?\n");
-+		ret = -ENODEV;
-+		goto done;
-+	}
- 	musb->async = mem->start;
+-	if (WARN_ON(len + 1 > sizeof(data)))
++	if (len + 1 > sizeof(data))
+ 		return -EINVAL;
  
- 	/* dma address for sync dma */
+ 	if (!tps->i2c_protocol)
 -- 
 2.33.0
 
