@@ -2,112 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 598C045B166
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 02:52:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E0E45B16D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 02:53:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237797AbhKXBzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 20:55:38 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:28098 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237665AbhKXBzc (ORCPT
+        id S238818AbhKXBzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 20:55:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238267AbhKXBzk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 20:55:32 -0500
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HzP8C3dCPz1DJcH;
-        Wed, 24 Nov 2021 09:49:47 +0800 (CST)
-Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 24 Nov 2021 09:52:19 +0800
-Received: from DESKTOP-27KDQMV.china.huawei.com (10.174.148.223) by
- dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 24 Nov 2021 09:52:18 +0800
-From:   "Longpeng(Mike)" <longpeng2@huawei.com>
-To:     <mst@redhat.com>, <jasowang@redhat.com>
-CC:     <sgarzare@redhat.com>, <mgurtovoy@nvidia.com>, <parav@nvidia.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <arei.gonglei@huawei.com>,
-        Longpeng <longpeng2@huawei.com>, <stable@vger.kernel.org>
-Subject: [PATCH v2] vdpa_sim: avoid putting an uninitialized iova_domain
-Date:   Wed, 24 Nov 2021 09:52:15 +0800
-Message-ID: <20211124015215.119-1-longpeng2@huawei.com>
-X-Mailer: git-send-email 2.25.0.windows.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.148.223]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml100016.china.huawei.com (7.185.36.216)
-X-CFilter-Loop: Reflected
+        Tue, 23 Nov 2021 20:55:40 -0500
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA40C061714
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 17:52:30 -0800 (PST)
+Received: by mail-pf1-x44a.google.com with SMTP id c21-20020a62e815000000b004a29ebf0aa7so596222pfi.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 17:52:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=qCgAZNpP6++lkRf299wPMYpVTG2XAg9F0zJlPBozgfc=;
+        b=lxcz1JpCdJmaW4PoJnXX8Ah9Gc0QjezdvkAHkm3dM71bXub7gTnuP4HqTSEmPxmdtO
+         sF4Y3OID/zrpf4G+TNhQ4A+cCKN/zm+8WEdOMq8Sr5MSOM0vRuZxVnkkPJAeikU+AyK7
+         z11RsztYfHJARjz9Ft30deTwOj4jGzCHtoW+eRNkBBroODSwA3834oWKfzWxw/lQCXCC
+         g/ZzESwEU/LJx+IeQwNBWNQSFeq7upn90A/ykS6/tsWHDwtNmBB8ttvY8iRyDlKai/YH
+         YGnvcvKbY+UtMPSWU4eufgb3Siu3CPSgvX0yYuM4piDATqat31mh8azUhZZQzOSesDuX
+         YI5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=qCgAZNpP6++lkRf299wPMYpVTG2XAg9F0zJlPBozgfc=;
+        b=SJ32qcBc9Xo5kZbbT8O1pBVkb/6IMPE8h2/wMceQ5bSuZHvb+a9aVncHAxX7O3JT+y
+         olxE2ZXPFqy6NFh9zmDpUliflWmQMFzHfXcqZ9BYX/6xHNnI4rNkYIhqwNFMXGo7aQAZ
+         NX0cbmvFbn/gCi4AXe5hq+u/mFqIs8/L34kjHTcsr9LD6gIWvryDll2Yo2xuEA57VBSA
+         sLvVwDD+zCQjzCNEueo5wsGc0kvBAXB3gus2V0BdCT6uP4p4Pkzi1c+SX+6HP9qZVI8e
+         7d2HBnfJp+XVkBq8XtvZazGPgICHbxjuWrZmDVKcx2aRLu+2yiwiERWKBALPHRNNZ3pB
+         K9xQ==
+X-Gm-Message-State: AOAM530KbwPNNHyYzRBIrsJWhh4R/t/HyUrz/TLizstZJFug80fzBhdb
+        b5F9q0wrhrV1dOR68jmPMfsMqwa6xpnQ
+X-Google-Smtp-Source: ABdhPJybnLxu/eQaljlooi+bWcg8G7+Nsyjo1JQW75DRvy8cdgfxPy3CLCXnRekJAXy4p2rinnXWzLMOKoDP
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:dbab:a6fe:1e3a:91fa])
+ (user=irogers job=sendgmr) by 2002:aa7:9903:0:b0:49f:e368:4fc3 with SMTP id
+ z3-20020aa79903000000b0049fe3684fc3mr2189795pff.1.1637718750203; Tue, 23 Nov
+ 2021 17:52:30 -0800 (PST)
+Date:   Tue, 23 Nov 2021 17:52:26 -0800
+Message-Id: <20211124015226.3317994-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+Subject: [PATCH v2] perf metric: Reduce multiplexing with duration_time
+From:   Ian Rogers <irogers@google.com>
+To:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     eranian@google.com, Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Longpeng <longpeng2@huawei.com>
+It is common to use the same counters with and without
+duration_time. The ID sharing code treats duration_time as if it
+were a hardware event placed in the same group. This causes
+unnecessary multiplexing such as in the following example where
+l3_cache_access isn't shared:
 
-The system will crash if we put an uninitialized iova_domain, this
-could happen when an error occurs before initializing the iova_domain
-in vdpasim_create().
+$ perf stat -M l3 -a sleep 1
 
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-...
-RIP: 0010:__cpuhp_state_remove_instance+0x96/0x1c0
-...
-Call Trace:
- <TASK>
- put_iova_domain+0x29/0x220
- vdpasim_free+0xd1/0x120 [vdpa_sim]
- vdpa_release_dev+0x21/0x40 [vdpa]
- device_release+0x33/0x90
- kobject_release+0x63/0x160
- vdpasim_create+0x127/0x2a0 [vdpa_sim]
- vdpasim_net_dev_add+0x7d/0xfe [vdpa_sim_net]
- vdpa_nl_cmd_dev_add_set_doit+0xe1/0x1a0 [vdpa]
- genl_family_rcv_msg_doit+0x112/0x140
- genl_rcv_msg+0xdf/0x1d0
- ...
+ Performance counter stats for 'system wide':
 
-So we must make sure the iova_domain is already initialized before
-put it.
+         3,117,007      l3_cache_miss             #    199.5 MB/s  l3_rd_bw
+                                                  #     43.6 %  l3_hits
+                                                  #     56.4 %  l3_miss               (50.00%)
+         5,526,447      l3_cache_access                                               (50.00%)
+         5,392,435      l3_cache_access           # 5389191.2 access/s  l3_access_rate  (50.00%)
+     1,000,601,901 ns   duration_time
 
-In addition, we may get the following warning in this case:
-WARNING: ... drivers/iommu/iova.c:344 iova_cache_put+0x58/0x70
+       1.000601901 seconds time elapsed
 
-So we must make sure the iova_cache_put() is invoked only if the
-iova_cache_get() is already invoked. Let's fix it together.
+Fix this by placing duration_time in all groups unless metric
+sharing has been disabled on the command line:
 
-Cc: stable@vger.kernel.org
-Fixes: 4080fc106750 ("vdpa_sim: use iova module to allocate IOVA addresses")
-Signed-off-by: Longpeng <longpeng2@huawei.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+$ perf stat -M l3 -a sleep 1
+
+ Performance counter stats for 'system wide':
+
+         3,597,972      l3_cache_miss             #    230.3 MB/s  l3_rd_bw
+                                                  #     48.0 %  l3_hits
+                                                  #     52.0 %  l3_miss
+         6,914,459      l3_cache_access           # 6909935.9 access/s  l3_access_rate
+     1,000,654,579 ns   duration_time
+
+       1.000654579 seconds time elapsed
+
+$ perf stat --metric-no-merge -M l3 -a sleep 1
+
+ Performance counter stats for 'system wide':
+
+         3,501,834      l3_cache_miss             #     53.5 %  l3_miss               (24.99%)
+         6,548,173      l3_cache_access                                               (24.99%)
+         3,417,622      l3_cache_miss             #     45.7 %  l3_hits               (25.04%)
+         6,294,062      l3_cache_access                                               (25.04%)
+         5,923,238      l3_cache_access           # 5919688.1 access/s  l3_access_rate  (24.99%)
+     1,000,599,683 ns   duration_time
+         3,607,486      l3_cache_miss             #    230.9 MB/s  l3_rd_bw           (49.97%)
+
+       1.000599683 seconds time elapsed
+
+v2. Doesn't count duration_time in the metric_list_cmp function that
+    sorts larger metrics first. Without this a metric with duration_time
+    and an event is sorted the same as a metric with two events,
+    possibly not allowing the first metric to share with the second.
+
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
-Changes v2 -> v1:
- - add "Fixes" tag [Parav, Jason]
+ tools/perf/util/metricgroup.c | 42 +++++++++++++++++++++++++++--------
+ 1 file changed, 33 insertions(+), 9 deletions(-)
 
----
- drivers/vdpa/vdpa_sim/vdpa_sim.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-index 5f484ff..41b0cd1 100644
---- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-@@ -591,8 +591,11 @@ static void vdpasim_free(struct vdpa_device *vdpa)
- 		vringh_kiov_cleanup(&vdpasim->vqs[i].in_iov);
- 	}
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index fffe02aae3ed..51c99cb08abf 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -1115,13 +1115,27 @@ static int metricgroup__add_metric_sys_event_iter(const struct pmu_event *pe,
+ 	return ret;
+ }
  
--	put_iova_domain(&vdpasim->iova);
--	iova_cache_put();
-+	if (vdpa_get_dma_dev(vdpa)) {
-+		put_iova_domain(&vdpasim->iova);
-+		iova_cache_put();
-+	}
++/**
++ * metric_list_cmp - list_sort comparator that sorts metrics with more events to
++ *                   the front. duration_time is excluded from the count.
++ */
+ static int metric_list_cmp(void *priv __maybe_unused, const struct list_head *l,
+ 			   const struct list_head *r)
+ {
+ 	const struct metric *left = container_of(l, struct metric, nd);
+ 	const struct metric *right = container_of(r, struct metric, nd);
++	struct expr_id_data *data;
++	int left_count, right_count;
 +
- 	kvfree(vdpasim->buffer);
- 	if (vdpasim->iommu)
- 		vhost_iotlb_free(vdpasim->iommu);
++	left_count = hashmap__size(left->pctx->ids);
++	if (!expr__get_id(left->pctx, "duration_time", &data))
++		left_count--;
++
++	right_count = hashmap__size(right->pctx->ids);
++	if (!expr__get_id(right->pctx, "duration_time", &data))
++		right_count--;
+ 
+-	return hashmap__size(right->pctx->ids) - hashmap__size(left->pctx->ids);
++	return right_count - left_count;
+ }
+ 
+ /**
+@@ -1299,14 +1313,16 @@ static int build_combined_expr_ctx(const struct list_head *metric_list,
+ /**
+  * parse_ids - Build the event string for the ids and parse them creating an
+  *             evlist. The encoded metric_ids are decoded.
++ * @metric_no_merge: is metric sharing explicitly disabled.
+  * @fake_pmu: used when testing metrics not supported by the current CPU.
+  * @ids: the event identifiers parsed from a metric.
+  * @modifier: any modifiers added to the events.
+  * @has_constraint: false if events should be placed in a weak group.
+  * @out_evlist: the created list of events.
+  */
+-static int parse_ids(struct perf_pmu *fake_pmu, struct expr_parse_ctx *ids,
+-		     const char *modifier, bool has_constraint, struct evlist **out_evlist)
++static int parse_ids(bool metric_no_merge, struct perf_pmu *fake_pmu,
++		     struct expr_parse_ctx *ids, const char *modifier,
++		     bool has_constraint, struct evlist **out_evlist)
+ {
+ 	struct parse_events_error parse_error;
+ 	struct evlist *parsed_evlist;
+@@ -1314,12 +1330,19 @@ static int parse_ids(struct perf_pmu *fake_pmu, struct expr_parse_ctx *ids,
+ 	int ret;
+ 
+ 	*out_evlist = NULL;
+-	if (hashmap__size(ids->ids) == 0) {
++	if (!metric_no_merge || hashmap__size(ids->ids) == 0) {
+ 		char *tmp;
+ 		/*
+-		 * No ids/events in the expression parsing context. Events may
+-		 * have been removed because of constant evaluation, e.g.:
+-		 *  event1 if #smt_on else 0
++		 * We may fail to share events between metrics because
++		 * duration_time isn't present in one metric. For example, a
++		 * ratio of cache misses doesn't need duration_time but the same
++		 * events may be used for a misses per second. Events without
++		 * sharing implies multiplexing, that is best avoided, so place
++		 * duration_time in every group.
++		 *
++		 * Also, there may be no ids/events in the expression parsing
++		 * context because of constant evaluation, e.g.:
++		 *    event1 if #smt_on else 0
+ 		 * Add a duration_time event to avoid a parse error on an empty
+ 		 * string.
+ 		 */
+@@ -1387,7 +1410,8 @@ static int parse_groups(struct evlist *perf_evlist, const char *str,
+ 		ret = build_combined_expr_ctx(&metric_list, &combined);
+ 
+ 		if (!ret && combined && hashmap__size(combined->ids)) {
+-			ret = parse_ids(fake_pmu, combined, /*modifier=*/NULL,
++			ret = parse_ids(metric_no_merge, fake_pmu, combined,
++					/*modifier=*/NULL,
+ 					/*has_constraint=*/true,
+ 					&combined_evlist);
+ 		}
+@@ -1435,7 +1459,7 @@ static int parse_groups(struct evlist *perf_evlist, const char *str,
+ 			}
+ 		}
+ 		if (!metric_evlist) {
+-			ret = parse_ids(fake_pmu, m->pctx, m->modifier,
++			ret = parse_ids(metric_no_merge, fake_pmu, m->pctx, m->modifier,
+ 					m->has_constraint, &m->evlist);
+ 			if (ret)
+ 				goto out;
 -- 
-1.8.3.1
+2.34.0.rc2.393.gf8c9666880-goog
 
