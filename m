@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC92B45B4C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 07:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A38C745B4C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 07:58:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240259AbhKXHBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 02:01:34 -0500
-Received: from mx24.baidu.com ([111.206.215.185]:56306 "EHLO baidu.com"
+        id S240119AbhKXHB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 02:01:28 -0500
+Received: from mx22.baidu.com ([220.181.50.185]:56212 "EHLO baidu.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239534AbhKXHBd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 02:01:33 -0500
-Received: from BJHW-Mail-Ex05.internal.baidu.com (unknown [10.127.64.15])
-        by Forcepoint Email with ESMTPS id B2AE8152CDE187DC7208;
-        Wed, 24 Nov 2021 14:58:00 +0800 (CST)
+        id S239700AbhKXHB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 02:01:27 -0500
+Received: from BJHW-Mail-Ex06.internal.baidu.com (unknown [10.127.64.16])
+        by Forcepoint Email with ESMTPS id BA2035FABF978EA0ECC0;
+        Wed, 24 Nov 2021 14:58:05 +0800 (CST)
 Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BJHW-Mail-Ex05.internal.baidu.com (10.127.64.15) with Microsoft SMTP Server
+ BJHW-Mail-Ex06.internal.baidu.com (10.127.64.16) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.20; Wed, 24 Nov 2021 14:58:00 +0800
+ 15.1.2308.20; Wed, 24 Nov 2021 14:58:05 +0800
 Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
  BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.20; Wed, 24 Nov 2021 14:58:00 +0800
+ 15.1.2308.20; Wed, 24 Nov 2021 14:58:05 +0800
 From:   Cai Huoqing <caihuoqing@baidu.com>
 To:     <caihuoqing@baidu.com>
 CC:     Rob Herring <robh+dt@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-staging@lists.linux.dev>
-Subject: [PATCH 2/3] dt-bindings: staging: Add the binding documentation for ZHOUYI AI accelerator
-Date:   Wed, 24 Nov 2021 14:57:39 +0800
-Message-ID: <20211124065743.421-3-caihuoqing@baidu.com>
+Subject: [PATCH 3/3] MAINTAINERS: Add the driver info of the ZHOUYI AI accelerator
+Date:   Wed, 24 Nov 2021 14:57:40 +0800
+Message-ID: <20211124065743.421-4-caihuoqing@baidu.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211124065743.421-1-caihuoqing@baidu.com>
 References: <20211124065743.421-1-caihuoqing@baidu.com>
@@ -45,81 +45,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 ZHOUYI NPU is an AI accelerator chip which is integrated into ARM SOC,
 such as Allwinner R329 SOC.
-Add the binding documentation for ZHOUYI AI accelerator.
+Add the driver info of ZHOUYI NPU to MAINTAINERS file.
 
 Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 ---
- .../bindings/staging/arm,zynpu.yaml           | 61 +++++++++++++++++++
- 1 file changed, 61 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/staging/arm,zynpu.yaml
+ MAINTAINERS | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/staging/arm,zynpu.yaml b/Documentation/devicetree/bindings/staging/arm,zynpu.yaml
-new file mode 100644
-index 000000000000..d452c08ab4a3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/staging/arm,zynpu.yaml
-@@ -0,0 +1,61 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/staging/arm,zynpu.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/MAINTAINERS b/MAINTAINERS
+index f32c7d733255..5d231aadaa3e 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -18163,6 +18163,12 @@ M:	Forest Bond <forest@alittletooquiet.net>
+ S:	Odd Fixes
+ F:	drivers/staging/vt665?/
+ 
++STAGING - ARM ZHOUYI NPU SUPPORT
++M:	Cai Huoqing <caihuoqing@baidu.com>
++L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
++S:	Maintained
++F:	drivers/staging/zynpu/
 +
-+title: ARM ZHOUYI AI accelerator bindings
-+
-+maintainers:
-+  - Cai Huoqing <caihuoqing@baidu.com>
-+
-+description:
-+  Supports ZHOUYI AI accelerator in ARM SOC.
-+
-+properties:
-+  compatible:
-+    const: armchina,zhouyi-v1
-+
-+  reg:
-+    maxItems: 1
-+
-+  device_type:
-+    const: zynpu
-+
-+  cma-reserved-bytes:
-+    default: 0
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 3
-+
-+required:
-+  - compatible
-+  - reg
-+  - device_type
-+  - cma-reserved-bytes
-+  - interrupts
-+  - clocks
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    soc {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+        zynpu@03050000 {
-+            compatible = "armchina,zhouyi-v1";
-+            reg = <0x0 0x03050000 0x0 0x1000>;
-+            device_type = "zynpu";
-+            cma-reserved-bytes = <0x2600000>;
-+            interrupts = <GIC_SPI 64 IRQ_TYPE_EDGE_RISING>;
-+            clocks = <&clk_zynpu>,
-+                     <&clk_pll_zynpu>,
-+                     <&clk_zynpu_slv>;
-+        };
-+    };
-+...
+ STAGING SUBSYSTEM
+ M:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+ L:	linux-staging@lists.linux.dev
 -- 
 2.25.1
 
