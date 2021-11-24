@@ -2,150 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A6E45CE33
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:39:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1AF45CE34
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:40:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238197AbhKXUm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 15:42:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:34871 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237496AbhKXUmz (ORCPT
+        id S238284AbhKXUnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 15:43:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238210AbhKXUnJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 15:42:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637786384;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dC1QYD3NyFjEmuqvZfKv1zs/1/64EChxP+RokAn3IHE=;
-        b=cpdQGwGCcX9XTdZWR+m8dLmpbitEGwA3oeTQsXLly7IsrMGrYnV40F7dVt7X8sOvlcqjKa
-        LCcamr2otB63l8wQJjHwj7CRfiXnPyvqbCFv7lN9vb2yJpd6qU09wXhfeZNB8jHU1m9gYh
-        xwUXAIn3MlXyuRGqp86c78gusv025dU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-343-nT4qftA5MT-dbcwyPLL8KQ-1; Wed, 24 Nov 2021 15:39:41 -0500
-X-MC-Unique: nT4qftA5MT-dbcwyPLL8KQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 54ED8192FDA0;
-        Wed, 24 Nov 2021 20:39:40 +0000 (UTC)
-Received: from t480s.redhat.com (unknown [10.39.194.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 50A4A10114AE;
-        Wed, 24 Nov 2021 20:39:23 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Dave Young <dyoung@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Philipp Rudo <prudo@redhat.com>
-Subject: [PATCH for 4.9-stable] proc/vmcore: fix clearing user buffer by properly using clear_user()
-Date:   Wed, 24 Nov 2021 21:39:22 +0100
-Message-Id: <20211124203922.26422-1-david@redhat.com>
-In-Reply-To: <163758401712010@kroah.com>
-References: <163758401712010@kroah.com>
+        Wed, 24 Nov 2021 15:43:09 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F20C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:39:59 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id y26so10387315lfa.11
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:39:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g5VSIqo187ofnG6oLTBIpD4H2Ww6hZPMwkppZyEmnx4=;
+        b=PESpG4LoJzAR9EvE5Dqxk58ExAN5Ngc11Ri7JLjBo+nhWqnIW4ABrPvIzUUCCkiJQd
+         jRik3dQlaqjHoELfFEclCQOi/ofOWlyLOXgvutkm4k25bSNpTElaU3XiEtQYX8WYYZAn
+         a9+0vJfMFapz6tXc3xEQ+/IljoWax39s1YGfNstOlgnWX1qNaIi9zU1YxUs0NCJkWmse
+         qAqozGs+4UIrvg9DWFhGEEFHTqDl4b49jdUdgz3tnVvEbs4HIbQAOohuRm7AQoQh8AjS
+         yGsrqhvPKBrDiG/lt1TBfoXCx5u9gmM2i3UpNTzFOJviLqFdaor4pxeGbPLKRjzirC7O
+         /fdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g5VSIqo187ofnG6oLTBIpD4H2Ww6hZPMwkppZyEmnx4=;
+        b=Gyun073+qlnxn56wK5CHIOQIaLUheLqRmZQXK8+tmQYT8WWpOGA2Ti21U1VTSxUW7d
+         lqNavWm3BbT2dtQLfDZDJL+XZOIgjnMa9lcPn8BqjTDHFwcKgFtMiDYNNNWctFAjpiKd
+         SD8z8IMPbd9b8geelg9aQ4WT+gyFrjau0d5mhpOlz1x11rH2/anJLRMsl2cC9Hk7qJNy
+         AL7fifvfGS4sqyZYiqLZkkxviqwJLXr3o15yPCoDiYhwx8Nq+IPaJ9r9lkHYxTZ+S+Bt
+         +P1+xnlxHiURG4Np6hZ0SwpPZiLCU3XVNLX1MOqjlGeiYuBBZEsTa68788DSG4BJxMZ6
+         CrQA==
+X-Gm-Message-State: AOAM532QMgtsoJtd5JC0WAWh6QXW/txzuMtjJmPp4W3e0DI1yZBjbdcX
+        VIeixT45GPvJ53eVaAI92LL1D0Fo5w6DFRm3UMzWSA==
+X-Google-Smtp-Source: ABdhPJztquOdJSyB66C4CiTz44OHKSboHYCy4PfJZYVeI8vJOG4d0f7b4WEw5nmBC+Lzmfq7tCx+RO7zvJZ7d75kypw=
+X-Received: by 2002:a19:7709:: with SMTP id s9mr18452579lfc.682.1637786397187;
+ Wed, 24 Nov 2021 12:39:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20211123191737.1296541-1-tkjos@google.com> <20211123191737.1296541-4-tkjos@google.com>
+ <20211124110949.GF6514@kadam>
+In-Reply-To: <20211124110949.GF6514@kadam>
+From:   Todd Kjos <tkjos@google.com>
+Date:   Wed, 24 Nov 2021 12:39:44 -0800
+Message-ID: <CAHRSSEzPXwho9OBhbMFbizTgkJkFUvaQQbqN2RmK_KF8cXhofQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] binder: defer copies of pre-patched txn data
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     gregkh@linuxfoundation.org, christian@brauner.io, arve@android.com,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        maco@google.com, joel@joelfernandes.org, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit c1e63117711977cc4295b2ce73de29dd17066c82 upstream.
+On Wed, Nov 24, 2021 at 3:10 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> On Tue, Nov 23, 2021 at 11:17:37AM -0800, Todd Kjos wrote:
+> > +/**
+> > + * binder_do_deferred_txn_copies() - copy and fixup scatter-gather data
+> > + * @alloc:   binder_alloc associated with @buffer
+> > + * @buffer:  binder buffer in target process
+> > + * @sgc_head:        list_head of scatter-gather copy list
+> > + * @pf_head: list_head of pointer fixup list
+> > + *
+> > + * Processes all elements of @sgc_head, applying fixups from @pf_head
+> > + * and copying the scatter-gather data from the source process' user
+> > + * buffer to the target's buffer. It is expected that the list creation
+> > + * and processing all occurs during binder_transaction() so these lists
+> > + * are only accessed in local context.
+> > + *
+> > + * Return: 0=success, else -errno
+>       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> This function is supposed to return negatives on error.
+>
+> > + */
+> > +static int binder_do_deferred_txn_copies(struct binder_alloc *alloc,
+> > +                                      struct binder_buffer *buffer,
+> > +                                      struct list_head *sgc_head,
+> > +                                      struct list_head *pf_head)
+> > +{
+> > +     int ret = 0;
+> > +     struct list_head *entry, *tmp;
+> > +     struct binder_ptr_fixup *pf =
+> > +             list_first_entry_or_null(pf_head, struct binder_ptr_fixup,
+> > +                                      node);
+> > +
+> > +     list_for_each_safe(entry, tmp, sgc_head) {
+> > +             size_t bytes_copied = 0;
+> > +             struct binder_sg_copy *sgc =
+> > +                     container_of(entry, struct binder_sg_copy, node);
+> > +
+> > +             while (bytes_copied < sgc->length) {
+> > +                     size_t copy_size;
+> > +                     size_t bytes_left = sgc->length - bytes_copied;
+> > +                     size_t offset = sgc->offset + bytes_copied;
+> > +
+> > +                     /*
+> > +                      * We copy up to the fixup (pointed to by pf)
+> > +                      */
+> > +                     copy_size = pf ? min(bytes_left, (size_t)pf->offset - offset)
+> > +                                    : bytes_left;
+> > +                     if (!ret && copy_size)
+> > +                             ret = binder_alloc_copy_user_to_buffer(
+>                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> "ret" is the number of bytes remaining to be copied.
 
-To clear a user buffer we cannot simply use memset, we have to use
-clear_user().  With a virtio-mem device that registers a vmcore_cb and
-has some logically unplugged memory inside an added Linux memory block,
-I can easily trigger a BUG by copying the vmcore via "cp":
+Good catch. Thanks. Will fix.
 
-  systemd[1]: Starting Kdump Vmcore Save Service...
-  kdump[420]: Kdump is using the default log level(3).
-  kdump[453]: saving to /sysroot/var/crash/127.0.0.1-2021-11-11-14:59:22/
-  kdump[458]: saving vmcore-dmesg.txt to /sysroot/var/crash/127.0.0.1-2021-11-11-14:59:22/
-  kdump[465]: saving vmcore-dmesg.txt complete
-  kdump[467]: saving vmcore
-  BUG: unable to handle page fault for address: 00007f2374e01000
-  #PF: supervisor write access in kernel mode
-  #PF: error_code(0x0003) - permissions violation
-  PGD 7a523067 P4D 7a523067 PUD 7a528067 PMD 7a525067 PTE 800000007048f867
-  Oops: 0003 [#1] PREEMPT SMP NOPTI
-  CPU: 0 PID: 468 Comm: cp Not tainted 5.15.0+ #6
-  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-27-g64f37cc530f1-prebuilt.qemu.org 04/01/2014
-  RIP: 0010:read_from_oldmem.part.0.cold+0x1d/0x86
-  Code: ff ff ff e8 05 ff fe ff e9 b9 e9 7f ff 48 89 de 48 c7 c7 38 3b 60 82 e8 f1 fe fe ff 83 fd 08 72 3c 49 8d 7d 08 4c 89 e9 89 e8 <49> c7 45 00 00 00 00 00 49 c7 44 05 f8 00 00 00 00 48 83 e7 f81
-  RSP: 0018:ffffc9000073be08 EFLAGS: 00010212
-  RAX: 0000000000001000 RBX: 00000000002fd000 RCX: 00007f2374e01000
-  RDX: 0000000000000001 RSI: 00000000ffffdfff RDI: 00007f2374e01008
-  RBP: 0000000000001000 R08: 0000000000000000 R09: ffffc9000073bc50
-  R10: ffffc9000073bc48 R11: ffffffff829461a8 R12: 000000000000f000
-  R13: 00007f2374e01000 R14: 0000000000000000 R15: ffff88807bd421e8
-  FS:  00007f2374e12140(0000) GS:ffff88807f000000(0000) knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 00007f2374e01000 CR3: 000000007a4aa000 CR4: 0000000000350eb0
-  Call Trace:
-   read_vmcore+0x236/0x2c0
-   proc_reg_read+0x55/0xa0
-   vfs_read+0x95/0x190
-   ksys_read+0x4f/0xc0
-   do_syscall_64+0x3b/0x90
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+>
+> > +                                             alloc, buffer,
+> > +                                             offset,
+> > +                                             sgc->uaddr + bytes_copied,
+> > +                                             copy_size);
+> > +                     bytes_copied += copy_size;
+> > +                     if (copy_size != bytes_left) {
+> > +                             BUG_ON(!pf);
+> > +                             /* we stopped at a fixup offset */
+> > +                             if (pf->skip_size) {
+> > +                                     /*
+> > +                                      * we are just skipping. This is for
+> > +                                      * BINDER_TYPE_FDA where the translated
+> > +                                      * fds will be fixed up when we get
+> > +                                      * to target context.
+> > +                                      */
+> > +                                     bytes_copied += pf->skip_size;
+> > +                             } else {
+> > +                                     /* apply the fixup indicated by pf */
+> > +                                     if (!ret)
+> > +                                             ret = binder_alloc_copy_to_buffer(
+> > +                                                     alloc, buffer,
+> > +                                                     pf->offset,
+> > +                                                     &pf->fixup_data,
+> > +                                                     sizeof(pf->fixup_data));
+> > +                                     bytes_copied += sizeof(pf->fixup_data);
+> > +                             }
+> > +                             list_del(&pf->node);
+> > +                             kfree(pf);
+> > +                             pf = list_first_entry_or_null(pf_head,
+> > +                                             struct binder_ptr_fixup, node);
+> > +                     }
+> > +             }
+> > +             list_del(&sgc->node);
+> > +             kfree(sgc);
+> > +     }
+> > +     BUG_ON(!list_empty(pf_head));
+> > +     BUG_ON(!list_empty(sgc_head));
+> > +
+> > +     return ret;
+> > +}
+> > +
+> > +/**
+> > + * binder_cleanup_deferred_txn_lists() - free specified lists
+> > + * @sgc_head:        list_head of scatter-gather copy list
+> > + * @pf_head: list_head of pointer fixup list
+> > + *
+> > + * Called to clean up @sgc_head and @pf_head if there is an
+> > + * error.
+> > + */
+> > +static void binder_cleanup_deferred_txn_lists(struct list_head *sgc_head,
+> > +                                           struct list_head *pf_head)
+> > +{
+> > +     struct list_head *entry, *tmp;
+> > +
+> > +     list_for_each_safe(entry, tmp, sgc_head) {
+> > +             struct binder_sg_copy *sgc =
+> > +                     container_of(entry, struct binder_sg_copy, node);
+> > +             list_del(&sgc->node);
+> > +             kfree(sgc);
+> > +     }
+> > +     list_for_each_safe(entry, tmp, pf_head) {
+> > +             struct binder_ptr_fixup *pf =
+> > +                     container_of(entry, struct binder_ptr_fixup, node);
+> > +             list_del(&pf->node);
+> > +             kfree(pf);
+> > +     }
+> > +}
+> > +
+> > +/**
+> > + * binder_defer_copy() - queue a scatter-gather buffer for copy
+> > + * @sgc_head:        list_head of scatter-gather copy list
+> > + * @offset:  binder buffer offset in target process
+> > + * @uaddr:   user address in source process
+> > + * @length:  bytes to copy
+> > + *
+> > + * Specify a scatter-gather block to be copied. The actual copy must
+> > + * be deferred until all the needed fixups are identified and queued.
+> > + * Then the copy and fixups are done together so un-translated values
+> > + * from the source are never visible in the target buffer.
+> > + *
+> > + * We are guaranteed that repeated calls to this function will have
+> > + * monotonically increasing @offset values so the list will naturally
+> > + * be ordered.
+> > + *
+> > + * Return: 0=success, else -errno
+> > + */
+> > +static int binder_defer_copy(struct list_head *sgc_head, binder_size_t offset,
+> > +                          const void __user *uaddr, size_t length)
+> > +{
+> > +     struct binder_sg_copy *bc = kzalloc(sizeof(*bc), GFP_KERNEL);
+> > +
+> > +     if (!bc)
+> > +             return -ENOMEM;
+> > +
+> > +     bc->offset = offset;
+> > +     bc->uaddr = uaddr;
+> > +     bc->length = length;
+> > +     INIT_LIST_HEAD(&bc->node);
+> > +
+> > +     /*
+> > +      * We are guaranteed that the deferred copies are in-order
+> > +      * so just add to the tail.
+> > +      */
+> > +     list_add_tail(&bc->node, sgc_head);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +/**
+> > + * binder_add_fixup() - queue a fixup to be applied to sg copy
+> > + * @pf_head: list_head of binder ptr fixup list
+> > + * @offset:  binder buffer offset in target process
+> > + * @fixup:   bytes to be copied for fixup
+> > + * @skip_size:       bytes to skip when copying (fixup will be applied later)
+> > + *
+> > + * Add the specified fixup to a list ordered by @offset. When copying
+> > + * the scatter-gather buffers, the fixup will be copied instead of
+> > + * data from the source buffer. For BINDER_TYPE_FDA fixups, the fixup
+> > + * will be applied later (in target process context), so we just skip
+> > + * the bytes specified by @skip_size. If @skip_size is 0, we copy the
+> > + * value in @fixup.
+> > + *
+> > + * This function is called *mostly* in @offset order, but there are
+> > + * exceptions. Since out-of-order inserts are relatively uncommon,
+> > + * we insert the new element by searching backward from the tail of
+> > + * the list.
+> > + *
+> > + * Return: 0=success, else -errno
+> > + */
+> > +static int binder_add_fixup(struct list_head *pf_head, binder_size_t offset,
+> > +                         binder_uintptr_t fixup, size_t skip_size)
+> > +{
+> > +     struct binder_ptr_fixup *pf = kzalloc(sizeof(*pf), GFP_KERNEL);
+> > +     struct list_head *tmp;
+> > +
+> > +     if (!pf)
+> > +             return -ENOMEM;
+> > +
+> > +     pf->offset = offset;
+> > +     pf->fixup_data = fixup;
+> > +     pf->skip_size = skip_size;
+> > +     INIT_LIST_HEAD(&pf->node);
+> > +
+> > +     /* Fixups are *mostly* added in-order, but there are some
+> > +      * exceptions. Look backwards through list for insertion point.
+> > +      */
+> > +     if (!list_empty(pf_head)) {
+>
+> This condition is not required.  If list is empty we add it to the tail,
+> but when there is only one item on the list, the first and last item are
+> going to be the same.
 
-Some x86-64 CPUs have a CPU feature called "Supervisor Mode Access
-Prevention (SMAP)", which is used to detect wrong access from the kernel
-to user buffers like this: SMAP triggers a permissions violation on
-wrong access.  In the x86-64 variant of clear_user(), SMAP is properly
-handled via clac()+stac().
+Good point.
 
-To fix, properly use clear_user() when we're dealing with a user buffer.
+>
+> > +             list_for_each_prev(tmp, pf_head) {
+> > +                     struct binder_ptr_fixup *tmppf =
+> > +                             list_entry(tmp, struct binder_ptr_fixup, node);
+> > +
+> > +                     if (tmppf->offset < pf->offset) {
+> > +                             list_add(&pf->node, tmp);
+> > +                             return 0;
+> > +                     }
+> > +             }
+> > +             /*
+> > +              * if we get here, then the new offset is the lowest so
+> > +              * insert at the head
+> > +              */
+> > +             list_add(&pf->node, pf_head);
+> > +             return 0;
+> > +     }
+> > +     list_add_tail(&pf->node, pf_head);
+> > +     return 0;
+> > +}
+> > +
+>
+> regards,
+> dan carpenter
 
-Link: https://lkml.kernel.org/r/20211112092750.6921-1-david@redhat.com
-Fixes: 997c136f518c ("fs/proc/vmcore.c: add hook to read_from_oldmem() to check for non-ram pages")
-Signed-off-by: David Hildenbrand <david@redhat.com>
-Acked-by: Baoquan He <bhe@redhat.com>
-Cc: Dave Young <dyoung@redhat.com>
-Cc: Baoquan He <bhe@redhat.com>
-Cc: Vivek Goyal <vgoyal@redhat.com>
-Cc: Philipp Rudo <prudo@redhat.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- fs/proc/vmcore.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+Dan, Thanks for the detailed review on all 3 patches.
 
-diff --git a/fs/proc/vmcore.c b/fs/proc/vmcore.c
-index 8e8012769f3e..e8b40835770c 100644
---- a/fs/proc/vmcore.c
-+++ b/fs/proc/vmcore.c
-@@ -105,14 +105,19 @@ static ssize_t read_from_oldmem(char *buf, size_t count,
- 			nr_bytes = count;
- 
- 		/* If pfn is not ram, return zeros for sparse dump files */
--		if (pfn_is_ram(pfn) == 0)
--			memset(buf, 0, nr_bytes);
--		else {
-+		if (pfn_is_ram(pfn) == 0) {
-+			tmp = 0;
-+			if (!userbuf)
-+				memset(buf, 0, nr_bytes);
-+			else if (clear_user(buf, nr_bytes))
-+				tmp = -EFAULT;
-+		} else {
- 			tmp = copy_oldmem_page(pfn, buf, nr_bytes,
- 						offset, userbuf);
--			if (tmp < 0)
--				return tmp;
- 		}
-+		if (tmp < 0)
-+			return tmp;
-+
- 		*ppos += nr_bytes;
- 		count -= nr_bytes;
- 		buf += nr_bytes;
--- 
-2.31.1
-
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
