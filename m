@@ -2,422 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01BAB45B5F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 08:53:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3CE45B601
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 08:55:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240669AbhKXH4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 02:56:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240440AbhKXH4q (ORCPT
+        id S240734AbhKXH6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 02:58:13 -0500
+Received: from mail-ua1-f50.google.com ([209.85.222.50]:45687 "EHLO
+        mail-ua1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240787AbhKXH6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 02:56:46 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BFCC061714
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 23:53:37 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1mpn5z-0000rb-9a; Wed, 24 Nov 2021 08:53:35 +0100
-Subject: Re: [PATCH v4 5/5] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-To:     Jonathan Corbet <corbet@lwn.net>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Cc:     kernel@pengutronix.de, David Gstir <david@sigma-star.at>,
-        Tim Harvey <tharvey@gateworks.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        Richard Weinberger <richard@nod.at>,
-        Franck LENORMAND <franck.lenormand@nxp.com>,
-        Sumit Garg <sumit.garg@linaro.org>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-References: <cover.8f40b6d1b93adc80aed2cac29a134f7a7fb5ee98.1633946449.git-series.a.fatoum@pengutronix.de>
- <a0f1d14af8ac8bae16dd29ad1073f7143ba28f26.1633946449.git-series.a.fatoum@pengutronix.de>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <4a3a9f12-1588-81f2-1471-5faae4b660d3@pengutronix.de>
-Date:   Wed, 24 Nov 2021 08:53:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 24 Nov 2021 02:58:10 -0500
+Received: by mail-ua1-f50.google.com with SMTP id ay21so3211352uab.12;
+        Tue, 23 Nov 2021 23:55:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0LH7GHwypdqECJDJt33mxQUYL2fd1nbGQFpgPpXM1f4=;
+        b=P9ORsKoJ6H0imFki3EVwOyqwCMERvJ5VnD0C1gYJZ/X19ZS4FU92RcC4B2yMa2iNXf
+         vZ78s4HCfYIXfuEnw6LFN9HyiKRXSfcSm0b2vLoEVjjhxOim7xuJEEJOVfvrAmuykqvv
+         ipUxVyOhxli/1Y94s9yCT8PQ5UCOriQV6lMcYjV8YFVBI8Y0Agd8o2xbXksPct2ChdH8
+         +B3I8mrVukWsWdJXNVPww7FB49oaLrfaoi9PG3FHTaYjRUQrw+ni/eonn7ccc8m4MDZ5
+         opXk7fyyaOhreIPAHqyYI8wamW8lrdvD0O/DD975EefVnam0bC2a+7kG66LNccI/GuVl
+         Oy2A==
+X-Gm-Message-State: AOAM531X2dMNvSe3QMK+s72VBaDQ2nBogxH9PsbNeff8lVe5fd9mQOEO
+        Cljreff14atEWUeVmFRfjEuDBepPXIU4Uw==
+X-Google-Smtp-Source: ABdhPJzp6ng2HbJ2pGqyhHv31tPcFARkED9Q2uWFL6sWsE2lB+DG+Ao5sofG1K4hejA088BOSgzWmg==
+X-Received: by 2002:a67:c304:: with SMTP id r4mr20611969vsj.2.1637740500386;
+        Tue, 23 Nov 2021 23:55:00 -0800 (PST)
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com. [209.85.222.45])
+        by smtp.gmail.com with ESMTPSA id i24sm7592785vkk.5.2021.11.23.23.54.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Nov 2021 23:54:59 -0800 (PST)
+Received: by mail-ua1-f45.google.com with SMTP id p2so3205132uad.11;
+        Tue, 23 Nov 2021 23:54:59 -0800 (PST)
+X-Received: by 2002:a9f:3e01:: with SMTP id o1mr7144916uai.89.1637740499142;
+ Tue, 23 Nov 2021 23:54:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <a0f1d14af8ac8bae16dd29ad1073f7143ba28f26.1633946449.git-series.a.fatoum@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20211122103032.517923-1-maz@kernel.org> <CAMuHMdX2ZRvDYA3idmw3nBcP6CO=2od6ZU-UeJo9vYsuB=fQNQ@mail.gmail.com>
+ <8735no70tt.wl-maz@kernel.org> <CAMuHMdVS67BLP2XEdD6ZvVBVE2x11gKnQa1TqG659HXPM5scqQ@mail.gmail.com>
+ <CAMuHMdWJhnXabKGpW7k944dzQHtwQtxw-yb2bRBsoaMw6N6nuA@mail.gmail.com>
+ <87tug3clvc.wl-maz@kernel.org> <CAMuHMdWGb2xik+94RVwtq8E6+9eN=HfQLX3a4sTjKQXR96Udkw@mail.gmail.com>
+ <87r1b7ck40.wl-maz@kernel.org>
+In-Reply-To: <87r1b7ck40.wl-maz@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 24 Nov 2021 08:54:48 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWd9mJe8hGNdH5VR-qJOxgfT4YtFfOmQA=uV4QPsvpqtA@mail.gmail.com>
+Message-ID: <CAMuHMdWd9mJe8hGNdH5VR-qJOxgfT4YtFfOmQA=uV4QPsvpqtA@mail.gmail.com>
+Subject: Re: [PATCH] of/irq: Add a quirk for controllers with their own
+ definition of interrupt-map
+To:     Marc Zyngier <maz@kernel.org>,
+        Chris Brandt <chris.brandt@renesas.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Rob Herring <robh@kernel.org>, John Crispin <john@phrozen.org>,
+        Biwen Li <biwen.li@nxp.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Jarkko, Mimi and James,
+Hi Marc,
 
-On 11.10.21 12:02, Ahmad Fatoum wrote:
-> The Cryptographic Acceleration and Assurance Module (CAAM) is an IP core
-> built into many newer i.MX and QorIQ SoCs by NXP.
-> 
-> The CAAM does crypto acceleration, hardware number generation and
-> has a blob mechanism for encapsulation/decapsulation of sensitive material.
-> 
-> This blob mechanism depends on a device specific random 256-bit One Time
-> Programmable Master Key that is fused in each SoC at manufacturing
-> time. This key is unreadable and can only be used by the CAAM for AES
-> encryption/decryption of user data.
-> 
-> This makes it a suitable backend (source) for kernel trusted keys.
-> 
-> Previous commits generalized trusted keys to support multiple backends
-> and added an API to access the CAAM blob mechanism. Based on these,
-> provide the necessary glue to use the CAAM for trusted keys.
-> 
-> Reviewed-by: David Gstir <david@sigma-star.at>
-> Tested-By: Tim Harvey <tharvey@gateworks.com>
-> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+On Tue, Nov 23, 2021 at 10:11 AM Marc Zyngier <maz@kernel.org> wrote:
+> On Tue, 23 Nov 2021 08:44:19 +0000,
+> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Tue, Nov 23, 2021 at 9:33 AM Marc Zyngier <maz@kernel.org> wrote:
+> > > On Tue, 23 Nov 2021 07:57:48 +0000,
+> > > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > Summarized:
+> > > >   - Before the bad commit, and after your fix, irqc-rza1 is invoked,
+> > > >     and the number of interrupts seen is correct, but input events
+> > > >     are doubled.
+> > > >   - After the bad commit, irqc-rza1 is not invoked, and there is an
+> > > >     interrupt storm, but input events are OK.
+> > >
+> > > OK, that's reassuring, even if the "twice the events" stuff isn't what
+> > > you'd expect. We at least know this is a separate issue, and that this
+> > > patch on top of -rc1 brings you back to the 5.15 behaviour.
+> > >
+> > > I'd expect it to be the case for the other platforms as well.
+> >
+> > OK.
+> >
+> > BTW, what would have been the correct way to do this for irqc-rza1?
+> > I think we're about to make the same mistake with RZ/G2L IRQC
+> > support[1]?
+>
+> Indeed, and I was about to look into it.
+>
+> There are multiple ways to skin this cat, including renaming
+> 'interrupt-map' to 'my-own-private-interrupt-map'. Or use something
+> akin the new 'msi-range' (which we could call interrupt-range), and
+> replace:
 
-Is there anything I can do to make this patch more palatable to you?
+"interrupt-ranges" (with trailing "S"), cfr. "msi-ranges"?
 
-Thanks,
-Ahmad
+>   interrupt-map = <0 0 &gic GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
+>                   <1 0 &gic GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
+>                   <2 0 &gic GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
+>                   <3 0 &gic GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
+>                   <4 0 &gic GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
+>                   <5 0 &gic GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>,
+>                   <6 0 &gic GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>,
+>                   <7 0 &gic GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
+>
+> with:
+>
+>   interrupt-range = <&gic GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH 0 8>;
+>
+> which reads as "base interrupt spec", "start pin", "count".  This
+> gives you almost the same level of information, and doesn't interfere
+> with the rest of the DT properties. Parsing it is also much simpler.
 
-> ---
-> To: Jonathan Corbet <corbet@lwn.net>
-> To: David Howells <dhowells@redhat.com>
-> To: Jarkko Sakkinen <jarkko@kernel.org>
-> To: James Bottomley <jejb@linux.ibm.com>
-> To: Mimi Zohar <zohar@linux.ibm.com>
-> Cc: James Morris <jmorris@namei.org>
-> Cc: "Serge E. Hallyn" <serge@hallyn.com>
-> Cc: "Horia Geantă" <horia.geanta@nxp.com>
-> Cc: Aymen Sghaier <aymen.sghaier@nxp.com>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Udit Agarwal <udit.agarwal@nxp.com>
-> Cc: Eric Biggers <ebiggers@kernel.org>
-> Cc: Jan Luebbe <j.luebbe@pengutronix.de>
-> Cc: David Gstir <david@sigma-star.at>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Franck LENORMAND <franck.lenormand@nxp.com>
-> Cc: Sumit Garg <sumit.garg@linaro.org>
-> Cc: keyrings@vger.kernel.org
-> Cc: linux-crypto@vger.kernel.org
-> Cc: linux-doc@vger.kernel.org
-> Cc: linux-integrity@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-security-module@vger.kernel.org
-> ---
->  Documentation/admin-guide/kernel-parameters.txt   |  1 +-
->  Documentation/security/keys/trusted-encrypted.rst | 42 ++++++++-
->  MAINTAINERS                                       |  9 ++-
->  include/keys/trusted_caam.h                       | 11 ++-
->  security/keys/trusted-keys/Kconfig                | 11 +-
->  security/keys/trusted-keys/Makefile               |  2 +-
->  security/keys/trusted-keys/trusted_caam.c         | 74 ++++++++++++++++-
->  security/keys/trusted-keys/trusted_core.c         |  6 +-
->  8 files changed, 152 insertions(+), 4 deletions(-)
->  create mode 100644 include/keys/trusted_caam.h
->  create mode 100644 security/keys/trusted-keys/trusted_caam.c
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index d5969452f063..0ed1165e0f55 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -5767,6 +5767,7 @@
->  			sources:
->  			- "tpm"
->  			- "tee"
-> +			- "caam"
->  			If not specified then it defaults to iterating through
->  			the trust source list starting with TPM and assigns the
->  			first trust source as a backend which is initialized
-> diff --git a/Documentation/security/keys/trusted-encrypted.rst b/Documentation/security/keys/trusted-encrypted.rst
-> index 1d4b4b8f12f0..ad66573ca6fd 100644
-> --- a/Documentation/security/keys/trusted-encrypted.rst
-> +++ b/Documentation/security/keys/trusted-encrypted.rst
-> @@ -35,6 +35,13 @@ safe.
->           Rooted to Hardware Unique Key (HUK) which is generally burnt in on-chip
->           fuses and is accessible to TEE only.
->  
-> +     (3) CAAM (Cryptographic Acceleration and Assurance Module: IP on NXP SoCs)
-> +
-> +         When High Assurance Boot (HAB) is enabled and the CAAM is in secure
-> +         mode, trust is rooted to the OTPMK, a never-disclosed 256-bit key
-> +         randomly generated and fused into each SoC at manufacturing time.
-> +         Otherwise, a common fixed test key is used instead.
-> +
->    *  Execution isolation
->  
->       (1) TPM
-> @@ -46,6 +53,10 @@ safe.
->           Customizable set of operations running in isolated execution
->           environment verified via Secure/Trusted boot process.
->  
-> +     (3) CAAM
-> +
-> +         Fixed set of operations running in isolated execution environment.
-> +
->    * Optional binding to platform integrity state
->  
->       (1) TPM
-> @@ -63,6 +74,11 @@ safe.
->           Relies on Secure/Trusted boot process for platform integrity. It can
->           be extended with TEE based measured boot process.
->  
-> +     (3) CAAM
-> +
-> +         Relies on the High Assurance Boot (HAB) mechanism of NXP SoCs
-> +         for platform integrity.
-> +
->    *  Interfaces and APIs
->  
->       (1) TPM
-> @@ -74,10 +90,13 @@ safe.
->           TEEs have well-documented, standardized client interface and APIs. For
->           more details refer to ``Documentation/staging/tee.rst``.
->  
-> +     (3) CAAM
-> +
-> +         Interface is specific to silicon vendor.
->  
->    *  Threat model
->  
-> -     The strength and appropriateness of a particular TPM or TEE for a given
-> +     The strength and appropriateness of a particular trust source for a given
->       purpose must be assessed when using them to protect security-relevant data.
->  
->  
-> @@ -104,8 +123,14 @@ selected trust source:
->       from platform specific hardware RNG or a software based Fortuna CSPRNG
->       which can be seeded via multiple entropy sources.
->  
-> +  *  CAAM: Kernel RNG
-> +
-> +     The normal kernel random number generator is used. To seed it from the
-> +     CAAM HWRNG, enable CRYPTO_DEV_FSL_CAAM_RNG_API and ensure the device
-> +     can be probed.
-> +
->  Optionally, users may specify ``trusted.kernel_rng=1`` on the kernel
-> -command-line to override the used RNG with the kernel's random number pool.
-> +command-line to force use of the kernel's random number pool.
->  
->  Encrypted Keys
->  --------------
-> @@ -192,6 +217,19 @@ Usage::
->  specific to TEE device implementation.  The key length for new keys is always
->  in bytes. Trusted Keys can be 32 - 128 bytes (256 - 1024 bits).
->  
-> +Trusted Keys usage: CAAM
-> +------------------------
-> +
-> +Usage::
-> +
-> +    keyctl add trusted name "new keylen" ring
-> +    keyctl add trusted name "load hex_blob" ring
-> +    keyctl print keyid
-> +
-> +"keyctl print" returns an ASCII hex copy of the sealed key, which is in format
-> +specific to CAAM device implementation.  The key length for new keys is always
-> +in bytes. Trusted Keys can be 32 - 128 bytes (256 - 1024 bits).
-> +
->  Encrypted Keys usage
->  --------------------
->  
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index a4a0c2baaf27..2c6514759222 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -10364,6 +10364,15 @@ S:	Supported
->  F:	include/keys/trusted_tee.h
->  F:	security/keys/trusted-keys/trusted_tee.c
->  
-> +KEYS-TRUSTED-CAAM
-> +M:	Ahmad Fatoum <a.fatoum@pengutronix.de>
-> +R:	Pengutronix Kernel Team <kernel@pengutronix.de>
-> +L:	linux-integrity@vger.kernel.org
-> +L:	keyrings@vger.kernel.org
-> +S:	Supported
-> +F:	include/keys/trusted_caam.h
-> +F:	security/keys/trusted-keys/trusted_caam.c
-> +
->  KEYS/KEYRINGS
->  M:	David Howells <dhowells@redhat.com>
->  M:	Jarkko Sakkinen <jarkko@kernel.org>
-> diff --git a/include/keys/trusted_caam.h b/include/keys/trusted_caam.h
-> new file mode 100644
-> index 000000000000..2fba0996b0b0
-> --- /dev/null
-> +++ b/include/keys/trusted_caam.h
-> @@ -0,0 +1,11 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (C) 2021 Pengutronix, Ahmad Fatoum <kernel@pengutronix.de>
-> + */
-> +
-> +#ifndef __CAAM_TRUSTED_KEY_H
-> +#define __CAAM_TRUSTED_KEY_H
-> +
-> +extern struct trusted_key_ops caam_trusted_key_ops;
-> +
-> +#endif
-> diff --git a/security/keys/trusted-keys/Kconfig b/security/keys/trusted-keys/Kconfig
-> index fc4abd581abb..dbfdd8536468 100644
-> --- a/security/keys/trusted-keys/Kconfig
-> +++ b/security/keys/trusted-keys/Kconfig
-> @@ -24,6 +24,15 @@ config TRUSTED_KEYS_TEE
->  	  Enable use of the Trusted Execution Environment (TEE) as trusted
->  	  key backend.
->  
-> -if !TRUSTED_KEYS_TPM && !TRUSTED_KEYS_TEE
-> +config TRUSTED_KEYS_CAAM
-> +	bool "CAAM-based trusted keys"
-> +	depends on CRYPTO_DEV_FSL_CAAM_JR >= TRUSTED_KEYS
-> +	select CRYPTO_DEV_FSL_CAAM_BLOB_GEN
-> +	default y
-> +	help
-> +	  Enable use of NXP's Cryptographic Accelerator and Assurance Module
-> +	  (CAAM) as trusted key backend.
-> +
-> +if !TRUSTED_KEYS_TPM && !TRUSTED_KEYS_TEE && !TRUSTED_KEYS_CAAM
->  comment "No trust source selected!"
->  endif
-> diff --git a/security/keys/trusted-keys/Makefile b/security/keys/trusted-keys/Makefile
-> index 2e2371eae4d5..735aa0bc08ef 100644
-> --- a/security/keys/trusted-keys/Makefile
-> +++ b/security/keys/trusted-keys/Makefile
-> @@ -12,3 +12,5 @@ trusted-$(CONFIG_TRUSTED_KEYS_TPM) += trusted_tpm2.o
->  trusted-$(CONFIG_TRUSTED_KEYS_TPM) += tpm2key.asn1.o
->  
->  trusted-$(CONFIG_TRUSTED_KEYS_TEE) += trusted_tee.o
-> +
-> +trusted-$(CONFIG_TRUSTED_KEYS_CAAM) += trusted_caam.o
-> diff --git a/security/keys/trusted-keys/trusted_caam.c b/security/keys/trusted-keys/trusted_caam.c
-> new file mode 100644
-> index 000000000000..01adfd18adda
-> --- /dev/null
-> +++ b/security/keys/trusted-keys/trusted_caam.c
-> @@ -0,0 +1,74 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) 2021 Pengutronix, Ahmad Fatoum <kernel@pengutronix.de>
-> + */
-> +
-> +#include <keys/trusted_caam.h>
-> +#include <keys/trusted-type.h>
-> +#include <linux/build_bug.h>
-> +#include <linux/key-type.h>
-> +#include <soc/fsl/caam-blob.h>
-> +
-> +static struct caam_blob_priv *blobifier;
-> +
-> +#define KEYMOD "kernel:trusted"
-> +
-> +static_assert(MAX_KEY_SIZE + CAAM_BLOB_OVERHEAD <= CAAM_BLOB_MAX_LEN);
-> +static_assert(MAX_BLOB_SIZE <= CAAM_BLOB_MAX_LEN);
-> +
-> +static int trusted_caam_seal(struct trusted_key_payload *p, char *datablob)
-> +{
-> +	int length = p->key_len + CAAM_BLOB_OVERHEAD;
-> +	int ret;
-> +
-> +	ret = caam_encap_blob(blobifier, KEYMOD, p->key, p->blob, length);
-> +	if (ret)
-> +		return ret;
-> +
-> +	p->blob_len = length;
-> +	return 0;
-> +}
-> +
-> +static int trusted_caam_unseal(struct trusted_key_payload *p, char *datablob)
-> +{
-> +	int length = p->blob_len;
-> +	int ret;
-> +
-> +	ret = caam_decap_blob(blobifier, KEYMOD, p->blob, p->key, length);
-> +	if (ret)
-> +		return ret;
-> +
-> +	p->key_len = length - CAAM_BLOB_OVERHEAD;
-> +	return 0;
-> +}
-> +
-> +static int trusted_caam_init(void)
-> +{
-> +	int ret;
-> +
-> +	blobifier = caam_blob_gen_init();
-> +	if (IS_ERR(blobifier)) {
-> +		pr_err("Job Ring Device allocation for transform failed\n");
-> +		return PTR_ERR(blobifier);
-> +	}
-> +
-> +	ret = register_key_type(&key_type_trusted);
-> +	if (ret)
-> +		caam_blob_gen_exit(blobifier);
-> +
-> +	return ret;
-> +}
-> +
-> +static void trusted_caam_exit(void)
-> +{
-> +	unregister_key_type(&key_type_trusted);
-> +	caam_blob_gen_exit(blobifier);
-> +}
-> +
-> +struct trusted_key_ops caam_trusted_key_ops = {
-> +	.migratable = 0, /* non-migratable */
-> +	.init = trusted_caam_init,
-> +	.seal = trusted_caam_seal,
-> +	.unseal = trusted_caam_unseal,
-> +	.exit = trusted_caam_exit,
-> +};
-> diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
-> index d2b7626cde8b..305e44651180 100644
-> --- a/security/keys/trusted-keys/trusted_core.c
-> +++ b/security/keys/trusted-keys/trusted_core.c
-> @@ -9,6 +9,7 @@
->  #include <keys/user-type.h>
->  #include <keys/trusted-type.h>
->  #include <keys/trusted_tee.h>
-> +#include <keys/trusted_caam.h>
->  #include <keys/trusted_tpm.h>
->  #include <linux/capability.h>
->  #include <linux/err.h>
-> @@ -29,7 +30,7 @@ MODULE_PARM_DESC(kernel_rng, "Generate key material from kernel RNG");
->  
->  static char *trusted_key_source;
->  module_param_named(source, trusted_key_source, charp, 0);
-> -MODULE_PARM_DESC(source, "Select trusted keys source (tpm or tee)");
-> +MODULE_PARM_DESC(source, "Select trusted keys source (tpm, tee or caam)");
->  
->  static const struct trusted_key_source trusted_key_sources[] = {
->  #if defined(CONFIG_TRUSTED_KEYS_TPM)
-> @@ -38,6 +39,9 @@ static const struct trusted_key_source trusted_key_sources[] = {
->  #if defined(CONFIG_TRUSTED_KEYS_TEE)
->  	{ "tee", &trusted_key_tee_ops },
->  #endif
-> +#if defined(CONFIG_TRUSTED_KEYS_CAAM)
-> +	{ "caam", &caam_trusted_key_ops },
-> +#endif
->  };
->  
->  DEFINE_STATIC_CALL_NULL(trusted_key_init, *trusted_key_sources[0].ops->init);
-> 
+And in the non-consecutive case, you need multiple ranges, right?
 
+> But that's up to you, really.
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Chris: do you think we can still do this for RZ/A, or do we have too
+many users in the wild using the upstream code?
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
