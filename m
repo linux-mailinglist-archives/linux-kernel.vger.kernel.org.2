@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E18F745C1B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:18:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9533245C39F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347637AbhKXNVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:21:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36592 "EHLO mail.kernel.org"
+        id S1353290AbhKXNlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:41:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346667AbhKXNRu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:17:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C65B60F5D;
-        Wed, 24 Nov 2021 12:45:32 +0000 (UTC)
+        id S1352826AbhKXNiH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:38:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D09286322F;
+        Wed, 24 Nov 2021 12:56:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757933;
-        bh=qXO9zL7DKiI5S+DRKbWnkzpbkmi8Mg1ocP4lt6h76Jw=;
+        s=korg; t=1637758581;
+        bh=HLusY3OAlwfPZfrj2gsEVHEuC4rUfqSD/1AL2edvMLs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T8rolWEGYJPNdmEID/mFcHEUwKEWPaaTUQClaU7tR7LMO6m8uM4vIS1x2PHDlCGys
-         +nDQ4x5C/w9pyerDUf4P/uZumXRw/+MsnJtQlZC9x9FHt1fYDte+LgtphWeYTP1Mxa
-         nHSMHibV8yUV0U5On0B/TpvKdA+CeRpiYQ43Ab6U=
+        b=Qft//d90G7ku7nwo5kdAUQNonUIuk6TxgemYkWb7KzEU5XoF6sGyPT9Qbv4zAANl/
+         aOlGUCmWxxmFA5HjqJZF8TmxIVNQv/ebNkeF1JDerIfKHOWIsAsmKq+sezQqba00BK
+         vojCz0IAbrTTxPj/Me2U9gYK9AgyjgHg6mxVtjUU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nadav Amit <namit@vmware.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 323/323] hugetlbfs: flush TLBs correctly after huge_pmd_unshare
+        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 117/154] s390/kexec: fix return code handling
 Date:   Wed, 24 Nov 2021 12:58:33 +0100
-Message-Id: <20211124115729.826426341@linuxfoundation.org>
+Message-Id: <20211124115706.067443478@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,100 +39,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nadav Amit <namit@vmware.com>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-commit a4a118f2eead1d6c49e00765de89878288d4b890 upstream.
+[ Upstream commit 20c76e242e7025bd355619ba67beb243ba1a1e95 ]
 
-When __unmap_hugepage_range() calls to huge_pmd_unshare() succeed, a TLB
-flush is missing.  This TLB flush must be performed before releasing the
-i_mmap_rwsem, in order to prevent an unshared PMDs page from being
-released and reused before the TLB flush took place.
+kexec_file_add_ipl_report ignores that ipl_report_finish may fail and
+can return an error pointer instead of a valid pointer.
+Fix this and simplify by returning NULL in case of an error and let
+the only caller handle this case.
 
-Arguably, a comprehensive solution would use mmu_gather interface to
-batch the TLB flushes and the PMDs page release, however it is not an
-easy solution: (1) try_to_unmap_one() and try_to_migrate_one() also call
-huge_pmd_unshare() and they cannot use the mmu_gather interface; and (2)
-deferring the release of the page reference for the PMDs page until
-after i_mmap_rwsem is dropeed can confuse huge_pmd_unshare() into
-thinking PMDs are shared when they are not.
-
-Fix __unmap_hugepage_range() by adding the missing TLB flush, and
-forcing a flush when unshare is successful.
-
-Fixes: 24669e58477e ("hugetlb: use mmu_gather instead of a temporary linked list for accumulating pages)" # 3.6
-Signed-off-by: Nadav Amit <namit@vmware.com>
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Aneesh Kumar K.V <aneesh.kumar@linux.vnet.ibm.com>
-Cc: KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 99feaa717e55 ("s390/kexec_file: Create ipl report and pass to next kernel")
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/asm-generic/tlb.h |    6 ++++++
- mm/hugetlb.c              |   23 +++++++++++++++++++----
- 2 files changed, 25 insertions(+), 4 deletions(-)
+ arch/s390/kernel/ipl.c                |    3 ++-
+ arch/s390/kernel/machine_kexec_file.c |    8 +++++++-
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
---- a/include/asm-generic/tlb.h
-+++ b/include/asm-generic/tlb.h
-@@ -205,6 +205,12 @@ static inline void tlb_remove_check_page
- #define tlb_end_vma	__tlb_end_vma
- #endif
+--- a/arch/s390/kernel/ipl.c
++++ b/arch/s390/kernel/ipl.c
+@@ -2156,7 +2156,7 @@ void *ipl_report_finish(struct ipl_repor
  
-+static inline void tlb_flush_pmd_range(struct mmu_gather *tlb,
-+				unsigned long address, unsigned long size)
-+{
-+	__tlb_adjust_range(tlb, address, size);
-+}
-+
- #ifndef __tlb_remove_tlb_entry
- #define __tlb_remove_tlb_entry(tlb, ptep, address) do { } while (0)
- #endif
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -3425,6 +3425,7 @@ void __unmap_hugepage_range(struct mmu_g
- 	unsigned long sz = huge_page_size(h);
- 	unsigned long mmun_start = start;	/* For mmu_notifiers */
- 	unsigned long mmun_end   = end;		/* For mmu_notifiers */
-+	bool force_flush = false;
+ 	buf = vzalloc(report->size);
+ 	if (!buf)
+-		return ERR_PTR(-ENOMEM);
++		goto out;
+ 	ptr = buf;
  
- 	WARN_ON(!is_vm_hugetlb_page(vma));
- 	BUG_ON(start & ~huge_page_mask(h));
-@@ -3451,10 +3452,8 @@ void __unmap_hugepage_range(struct mmu_g
- 		ptl = huge_pte_lock(h, mm, ptep);
- 		if (huge_pmd_unshare(mm, &address, ptep)) {
- 			spin_unlock(ptl);
--			/*
--			 * We just unmapped a page of PMDs by clearing a PUD.
--			 * The caller's TLB flush range should cover this area.
--			 */
-+			tlb_flush_pmd_range(tlb, address & PUD_MASK, PUD_SIZE);
-+			force_flush = true;
- 			continue;
- 		}
- 
-@@ -3511,6 +3510,22 @@ void __unmap_hugepage_range(struct mmu_g
+ 	memcpy(ptr, report->ipib, report->ipib->hdr.len);
+@@ -2195,6 +2195,7 @@ void *ipl_report_finish(struct ipl_repor
  	}
- 	mmu_notifier_invalidate_range_end(mm, mmun_start, mmun_end);
- 	tlb_end_vma(tlb, vma);
-+
-+	/*
-+	 * If we unshared PMDs, the TLB flush was not recorded in mmu_gather. We
-+	 * could defer the flush until now, since by holding i_mmap_rwsem we
-+	 * guaranteed that the last refernece would not be dropped. But we must
-+	 * do the flushing before we return, as otherwise i_mmap_rwsem will be
-+	 * dropped and the last reference to the shared PMDs page might be
-+	 * dropped as well.
-+	 *
-+	 * In theory we could defer the freeing of the PMD pages as well, but
-+	 * huge_pmd_unshare() relies on the exact page_count for the PMD page to
-+	 * detect sharing, so we cannot defer the release of the page either.
-+	 * Instead, do flush now.
-+	 */
-+	if (force_flush)
-+		tlb_flush_mmu_tlbonly(tlb);
+ 
+ 	BUG_ON(ptr > buf + report->size);
++out:
+ 	return buf;
  }
  
- void __unmap_hugepage_range_final(struct mmu_gather *tlb,
+--- a/arch/s390/kernel/machine_kexec_file.c
++++ b/arch/s390/kernel/machine_kexec_file.c
+@@ -170,6 +170,7 @@ static int kexec_file_add_ipl_report(str
+ 	struct kexec_buf buf;
+ 	unsigned long addr;
+ 	void *ptr, *end;
++	int ret;
+ 
+ 	buf.image = image;
+ 
+@@ -199,7 +200,10 @@ static int kexec_file_add_ipl_report(str
+ 		ptr += len;
+ 	}
+ 
++	ret = -ENOMEM;
+ 	buf.buffer = ipl_report_finish(data->report);
++	if (!buf.buffer)
++		goto out;
+ 	buf.bufsz = data->report->size;
+ 	buf.memsz = buf.bufsz;
+ 
+@@ -209,7 +213,9 @@ static int kexec_file_add_ipl_report(str
+ 		data->kernel_buf + offsetof(struct lowcore, ipl_parmblock_ptr);
+ 	*lc_ipl_parmblock_ptr = (__u32)buf.mem;
+ 
+-	return kexec_add_buffer(&buf);
++	ret = kexec_add_buffer(&buf);
++out:
++	return ret;
+ }
+ 
+ void *kexec_file_add_components(struct kimage *image,
 
 
