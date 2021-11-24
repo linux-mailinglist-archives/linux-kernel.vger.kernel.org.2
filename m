@@ -2,470 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3842245CE84
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC6245CE90
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245295AbhKXU7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 15:59:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:42275 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244393AbhKXU7R (ORCPT
+        id S245412AbhKXVEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 16:04:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236826AbhKXVEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 15:59:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637787366;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/yH2tEOPG3Ul9vdPrtND/5A4t8ZhOw75oQyfcGIZR9Q=;
-        b=MZyUSDCMk95yb6gvBolPwX7e8vl33uCWpD9vteytVyZH3IVfF9xIZInL23W/J8BLC0uJSJ
-        YiUqS6xXbty/EpEkrtbD95wUWZkm69y8OxJF3sndxYz7W19GNZkK/9klt4ROrcYAJquOvb
-        zGIcYseeUrPG8w4pi7D/c0RnvWNAUDQ=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-377-fOAEVwZpPwOJaSmHL0eTQA-1; Wed, 24 Nov 2021 15:56:05 -0500
-X-MC-Unique: fOAEVwZpPwOJaSmHL0eTQA-1
-Received: by mail-qk1-f200.google.com with SMTP id v13-20020a05620a440d00b00468380f4407so3349021qkp.17
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:56:05 -0800 (PST)
+        Wed, 24 Nov 2021 16:04:06 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53562C061574;
+        Wed, 24 Nov 2021 13:00:56 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id f18so10597051lfv.6;
+        Wed, 24 Nov 2021 13:00:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qaoJkMeXPkR0BGEoEzEzXJ+WhWde+8pbrmsidqSiUJo=;
+        b=JGYHWs/R8PY5ztykaUrRyRJX9PIgwQHaURxYUoztWB8CUwTI4HllXDDvJuMM6cUp+h
+         cW3QWJhL5YR74XOFA7f2jvdkLzq8uRkbM/GBDCUsj1XspavqLbSKpf3JVIMlMd6Ar8Z4
+         wseUJxSAPLUTl2R7Vhdm87L+ppLcHs6Bggx9Ut6ocqq8u/PnojJ6MzCR6QKuYRLgvRhX
+         AEg487zGQCcU0UJFbeAcpAWAHzZWenx2lsVmjo4OpfmKG5RT83LPsgW0T09tkEwrW/DR
+         f0mlD/I1J1iUcH2gHwTZ0V84wwgfGd3hf+ExeT+irD/3kfDwz/Px3jxH0RDzWEMMRTTp
+         LbDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/yH2tEOPG3Ul9vdPrtND/5A4t8ZhOw75oQyfcGIZR9Q=;
-        b=SlD74aYZRon4mEhXzjpUeD4tqHWL+MVu7P7teknIgxr2elilVFQKvkl7Sx0PDhxS8h
-         9gqs6xQ0OzredhXh2PJiXDmpaNXs9Z3g1y2/8CaJK2QuEPxWa1opl9umm70O4pZ2Fz6k
-         Ew2X9HRU9jPMu009Y2it837E0FF7ejxoNLwjKDGyvhTZyc2nuoG8efOXadF30CjFxTCH
-         zfMux5xBkjVCUY+AADfODHQFW02A8FUKBQhoI+srxuRhnqLf3wXpchuBAQ8P6EhjiUt0
-         elhas34HHvJScCUp7wI0rY0spMOj8mPSRJi4wITAIB4QEzRXDkfVR7OTyy+X+otm59VY
-         fMVg==
-X-Gm-Message-State: AOAM531eyobVTycbu5n6N+BxdOhVowxMs2Z/iSe+/4uSyunIx8Fz72Er
-        GhcQq+ZstfCOLtvNcdPM3q31LJUFh5f8dZASnq/rDAt/of1dAVfmH/NPxg6v/uLV3YaIjTUiJyR
-        XE9xYdms2c9oGLHnw8xAnMhoQ
-X-Received: by 2002:a05:6214:240e:: with SMTP id fv14mr2707968qvb.56.1637787364927;
-        Wed, 24 Nov 2021 12:56:04 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwo5Z4keP+dp+ooaDojGXV11tfUi4BuECjORc43yL/8zU6RuXZIws3zHvJvOevJINWkmw+R6A==
-X-Received: by 2002:a05:6214:240e:: with SMTP id fv14mr2707924qvb.56.1637787364528;
-        Wed, 24 Nov 2021 12:56:04 -0800 (PST)
-Received: from bfoster (c-24-61-119-116.hsd1.ma.comcast.net. [24.61.119.116])
-        by smtp.gmail.com with ESMTPSA id e17sm504781qtw.18.2021.11.24.12.56.03
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qaoJkMeXPkR0BGEoEzEzXJ+WhWde+8pbrmsidqSiUJo=;
+        b=1gc2nbiAx33EKaFNAel+S4EcHotQBj0D9G8jcsPtgC7KBAVRNd1ZrQi+ggIhu4NYef
+         IahF2+plvRllvG6hr88hB3ZlCTS0ONDETxp67TyLSv8+LJFzmQ/a5glgYDdns+Na4jWZ
+         pAyTlGdpZnzFotb91WYg1jMZxAvMIt1Hj1JeNAeoLl7rsT1qOdR4NXOqZV/csO99riTW
+         kT889sCftHz58G2QLZ95DxG/jTe/c0Qv4TNxKvBEnuMl/91dcvMw2haYKesyLTfzsprO
+         z75V9gl3WjPTaUnj5BYYx9JHWGvQ4o0uX26h3Vmx2d808/mVXWTDe/sirMchUVFtWq8U
+         2TAQ==
+X-Gm-Message-State: AOAM5335Xuy6XwmGzHIted1vr6eBusknxe7VquPNmvh4id6QfjoQ4QSY
+        jT/n7tJUHocaYqZ8Xz+BKMQ=
+X-Google-Smtp-Source: ABdhPJzm2XueRJMyvOOETL3cKYsehnqw110+VCiQKIIpY/m7d4OcUvEOyqKbp38DkizXnHziQgWjZQ==
+X-Received: by 2002:a05:6512:1104:: with SMTP id l4mr17749271lfg.181.1637787654296;
+        Wed, 24 Nov 2021 13:00:54 -0800 (PST)
+Received: from localhost.localdomain (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
+        by smtp.gmail.com with ESMTPSA id 18sm79939ljr.17.2021.11.24.13.00.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 12:56:03 -0800 (PST)
-Date:   Wed, 24 Nov 2021 15:56:01 -0500
-From:   Brian Foster <bfoster@redhat.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Ian Kent <raven@themaw.net>, Miklos Szeredi <miklos@szeredi.hu>,
-        xfs <linux-xfs@vger.kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] xfs: make sure link path does not go away at access
-Message-ID: <YZ6m4ZyUDt5SaICI@bfoster>
-References: <f8425d1270fe011897e7e14eaa6ba8a77c1ed077.camel@themaw.net>
- <20211116030120.GQ449541@dread.disaster.area>
- <YZPVSTDIWroHNvFS@bfoster>
- <20211117002251.GR449541@dread.disaster.area>
- <YZVQUSCWWgOs+cRB@bfoster>
- <20211117214852.GU449541@dread.disaster.area>
- <YZf+lRsb0lBWdYgN@bfoster>
- <20211122000851.GE449541@dread.disaster.area>
- <YZvvP9RFXi3/jX0q@bfoster>
- <20211122232657.GF449541@dread.disaster.area>
+        Wed, 24 Nov 2021 13:00:53 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        David Heidelberg <david@ixit.cz>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Anton Bambura <jenneron@protonmail.com>,
+        Antoni Aloy Torrens <aaloytorrens@gmail.com>,
+        Nikola Milosavljevic <mnidza@outlook.com>,
+        Ion Agorria <ion@agorria.com>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Ihor Didenko <tailormoon@rambler.ru>,
+        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Raffaele Tranquillini <raffaele.tranquillini@gmail.com>,
+        Jasper Korten <jja2000@gmail.com>,
+        Thomas Graichen <thomas.graichen@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 00/14] NVIDIA Tegra ARM32 device-tree patches for 5.17 (new devices and more)
+Date:   Wed, 24 Nov 2021 23:59:08 +0300
+Message-Id: <20211124205922.11930-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211122232657.GF449541@dread.disaster.area>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 10:26:57AM +1100, Dave Chinner wrote:
-> On Mon, Nov 22, 2021 at 02:27:59PM -0500, Brian Foster wrote:
-> > On Mon, Nov 22, 2021 at 11:08:51AM +1100, Dave Chinner wrote:
-> > > On Fri, Nov 19, 2021 at 02:44:21PM -0500, Brian Foster wrote:
-> > > > In
-> > > > any event, another experiment I ran in light of the above results that
-> > > > might be similar was to put the inode queueing component of
-> > > > destroy_inode() behind an rcu callback. This reduces the single threaded
-> > > > perf hit from the previous approach by about 50%. So not entirely
-> > > > baseline performance, but it's back closer to baseline if I double the
-> > > > throttle threshold (and actually faster at 4x). Perhaps my crude
-> > > > prototype logic could be optimized further to not rely on percpu
-> > > > threshold changes to match the baseline.
-> > > > 
-> > > > My overall takeaway from these couple hacky experiments is that the
-> > > > unconditional synchronous rcu wait is indeed probably too heavy weight,
-> > > > as you point out. The polling or callback (or perhaps your separate
-> > > > queue) approach seems to be in the ballpark of viability, however,
-> > > > particularly when we consider the behavior of scaled or mixed workloads
-> > > > (since inactive queue processing seems to be size driven vs. latency
-> > > > driven).
-> > > > 
-> > > > So I dunno.. if you consider the various severity and complexity
-> > > > tradeoffs, this certainly seems worth more consideration to me. I can
-> > > > think of other potentially interesting ways to experiment with
-> > > > optimizing the above or perhaps tweak queueing to better facilitate
-> > > > taking advantage of grace periods, but it's not worth going too far down
-> > > > that road if you're wedded to the "busy inodes" approach.
-> > > 
-> > > I'm not wedded to "busy inodes" but, as your experiments are
-> > > indicating, trying to handle rcu grace periods into the deferred
-> > > inactivation path isn't completely mitigating the impact of having
-> > > to wait for a grace period for recycling of inodes.
-> > > 
-> > 
-> > What I'm seeing so far is that the impact seems to be limited to the
-> > single threaded workload and largely mitigated by an increase in the
-> > percpu throttle limit. IOW, it's not completely free right out of the
-> > gate, but the impact seems isolated and potentially mitigated by
-> > adjustment of the pipeline.
-> > 
-> > I realize the throttle is a percpu value, so that is what has me
-> > wondering about some potential for gains in efficiency to try and get
-> > more of that single-threaded performance back in other ways, or perhaps
-> > enhancements that might be more broadly beneficial to deferred
-> > inactivations in general (i.e. some form of adaptive throttling
-> > thresholds to balance percpu thresholds against a global threshold).
-> 
-> I ran experiments on queue depth early on. Once we go over a few
-> tens of inodes we start to lose the "hot cache" effect and
-> performance starts to go backwards. By queue depths of hundreds,
-> we've lost all the hot cache and nothing else gets that performance
-> back because we can't avoid the latency of all the memory writes
-> from cache eviction and the followup memory loads that result.
-> 
+In this patchset you will find:
 
-Admittedly my testing is simple/crude as I'm just exploring the
-potential viability of a concept, not fine tuning a workload, etc. That
-said, I'm curious to know what your tests for this look like because I
-suspect I'm running into different conditions. My tests frequently hit
-the percpu throttle threshold (256 inodes), which is beyond your ideal
-tens of inodes range (and probably more throttle limited than cpu cache
-limited).
+  - New device-trees of ASUS Transformer and Pegatron Chagall tablets.
 
-> Making the per-cpu queues longer or shorter based on global state
-> won't gain us anything. ALl it will do is slow down local operations
-> that don't otherwise need slowing down....
-> 
+  - New device-tree of Nyan Big Chromebook variant that has 1080p display
+    panel.
 
-This leaves out context. The increase in throttle threshold mitigates
-the delays I've introduced via the rcu callback. That happens to produce
-observable results comparable to my baseline test, but it's more of a
-measure of the impact of the delay than a direct proposal. If there's a
-more fine grained test worth running here (re: above), please describe
-it.
+  - Enabled video decoder on Tegra114.
 
-> > > I suspect a rethink on the inode recycling mechanism is needed. THe
-> > > way it is currently implemented was a brute force solution - it is
-> > > simple and effective. However, we need more nuance in the recycling
-> > > logic now.  That is, if we are recycling an inode that is clean, has
-> > > nlink >=1 and has not been unlinked, it means the VFS evicted it too
-> > > soon and we are going to re-instantiate it as the identical inode
-> > > that was evicted from cache.
-> > > 
-> > 
-> > Probably. How advantageous is inode memory reuse supposed to be in the
-> > first place? I've more considered it a necessary side effect of broader
-> > architecture (i.e. deferred reclaim, etc.) as opposed to a primary
-> > optimization.
-> 
-> Yes, it's an architectural feature resulting from the filesystem
-> inode life cycle being different to the VFS inode life cycle. This
-> was inherited from Irix - it had separate inactivation vs reclaim
-> states and action steps for vnodes - inactivation occurred when the
-> vnode refcount went to zero, reclaim occurred when the vnode was to
-> be freed.
-> 
-> Architecturally, Linux doesn't have this two-step infrastructure; it
-> just has evict() that runs everything when the inode needs to be
-> reclaimed. Hence we hide the two-phase reclaim architecture of XFS
-> behind that, and so we always had this troublesome impedence
-> mismatch on Linux.
-> 
+  - Minor cleanup of Nexus7 device-tree.
 
-Ok, that was generally how I viewed it.
+  - Renamed clocks and regulator nodes. I'm sending this patch second time
+    because previously there was no good reason given about why not to apply
+    it. Please apply it this time.
 
-> Thinking a bit about this, maybe there is a more integrated way to
-> handle this life cycle impedence mismatch by making the way we
-> interact with the linux inode cache to be more ...  Irix like. Linux
-> does actually give us a a callback when the last reference to an
-> inode goes away: .drop_inode()
-> 
-> i.e. Maybe we should look to triggering inactivation work from
-> ->drop_inode instead of ->destroy_inode and hence always leaving
-> unreferenced, reclaimable inodes in the VFS cache on the LRU. i.e.
-> rather than hiding the two-phase XFS inode inactivation+reclaim
-> algorithm from the VFS, move it up into the VFS.  If we prevent
-> inodes from being reclaimed from the LRU until they have finished
-> inactivation and are clean (easy enough just by marking the inode as
-> dirty), that would allow us to immediately reclaim and free inodes
-> in evict() context. Integration with __wait_on_freeing_inode() would
-> like solve the RCU reuse/recycling issues.
-> 
+Changelog:
 
-Hmm.. this is the point where we decide whether the inode remains
-cached, which is currently basically whether the inode has a link count
-or not. That makes me curious what (can) happens with an
-unlinked/inactivated inode on the lru. I'm not sure any other fs' do
-anything like that currently..?
+v2: - Svyatoslav and Maxim made couple corrections to regulators, comments
+      and default brightness of the device-trees.
 
-> There's more to it than just this, but perhaps the longer term
-> direction should be closer integration with the Linux inode cache
-> life cycle rather than trying to solve all these problems underneath
-> the VFS cache whilst still trying to play by it's rules...
-> 
+    - Added thermtrip node to transformers DT as we now have PMIC fix for
+      it [1], it works properly now.
 
-Yeah. Caching logic details aside, I think that makes sense.
+      [1] https://patchwork.ozlabs.org/project/linux-tegra/patch/20211124190104.23554-1-digetx@gmail.com/
 
-> > I still see reuse occur with deferred inactivation, we
-> > just end up cycling through the same set of inodes as they fall through
-> > the queue rather than recycling the same one over and over. I'm sort of
-> > wondering what the impact would be if we didn't do this at all (for the
-> > new allocation case at least).
-> 
-> We end up with a larger pool of free inodes in the finobt. This is
-> basically what my "busy inode check" proposal is based on - inodes
-> that we can't allocate without recycling just remain on the finobt
-> for longer before they can be used. This would be awful if we didn't
-> have the finobt to efficiently locate free inodes - the finobt
-> record iteration makes it pretty low overhead to scan inodes here.
-> 
+    - Changed sound card model names to make them per-device and consistent
+      with the names that other Tegra DTs already use in upstream. This will
+      prevent potential ABI breakages in the future if we will find that sound
+      of some device needs extra differentiation.
 
-I get the idea. That last bit is what I'm skeptical about. The finobt is
-based on the premise that free inode lookup becomes a predictable tree
-lookup instead of the old searching algorithm on the inobt, which we
-still support and can be awful in its own right under worst case
-conditions. I agree that this would be bad on the inobt (which raises
-the question on how we'd provide these recycling correctness guarantees
-on !finobt fs'). What I'm more concerned about is whether this could
-make finobt enabled fs' (transiently) just as poor as the old algo under
-certain workloads/conditions.
+Anton Bambura (3):
+  ARM: tegra: Add labels to tegra114.dtsi
+  ARM: tegra: Add device-tree for ASUS Transformer Pad TF701T
+  ARM: tegra: Enable video decoder on Tegra114
 
-I think there needs to be at least some high level description of the
-search algorithm before we can sufficiently reason about it's behavior..
+David Heidelberg (3):
+  dt-bindings: ARM: tegra: Document Pegatron Chagall
+  ARM: tegra: Name clock and regulator nodes according to DT-schema
+  ARM: tegra: nexus7: Drop clock-frequency from NFC node
 
-> > > So how much re-initialisation do we actually need for that inode?
-> > > Almost everything in the inode is still valid; the problems come
-> > > from inode_init_always() resetting the entire internal inode state
-> > > and XFS then having to set them up again.  The internal state is
-> > > already largely correct when we start recycling, and the identity of
-> > > the recycled inode does not change when nlink >= 1. Hence eliding
-> > > inode_init_always() would also go a long way to avoiding the need
-> > > for a RCU grace period to pass before we can make the inode visible
-> > > to the VFS again.
-> > > 
-> > > If we can do that, then the only indoes that need a grace period
-> > > before they can be recycled are unlinked inodes as they change
-> > > identity when being recycled. That identity change absolutely
-> > > requires a grace period to expire before the new instantiation can
-> > > be made visible.  Given the arbitrary delay that this can introduce
-> > > for an inode allocation operation, it seems much better suited to
-> > > detecting busy inodes than waiting for a global OS state change to
-> > > occur...
-> > > 
-> > 
-> > Maybe..? The experiments I've been doing are aimed at simplicity and
-> > reducing the scope of the changes. Part of the reason for this is tbh
-> > I'm not totally convinced we really need to do anything more complex
-> > than preserve the inline symlink buffer one way or another (for example,
-> > see the rfc patch below for an alternative to the inline symlink rcuwalk
-> > disable patch). Maybe we should consider something like this anyways.
-> > 
-> > With busy inodes, we need to alter inode allocation to some degree to
-> > accommodate. We can have (tens of?) thousands of inodes under the grace
-> > period at any time based on current batching behavior, so it's not
-> > totally evident to me that we won't end up with some of the same
-> > fundamental issues to deal with here, just needing to be accommodated in
-> > the inode allocation algorithm rather than the teardown sequence.
-> 
-> Sure, but the purpose of the allocation selection
-> policy is to select the best inode to allocate for the current
-> context.  The cost of not being able to use an inode immediately
-> needs to be factored into that allocation policy. i.e. if the
-> selected inode has an associated delay with it before it can be
-> reused and other free inodes don't, then we should not be selecting
-> the inode with a delay associcated with it.
-> 
+Dmitry Osipenko (1):
+  ARM: tegra: Add device-tree for 1080p version of Nyan Big
 
-We still have to find those "no delay" inodes. AFAICT the worst case
-conditions on the system I've been playing with can have something like
-20k free && busy inodes. That could cover all or most of the finobt at
-the time of an inode allocation. What happens from there depends on the
-search algorithm.
+Michał Mirosław (1):
+  ARM: tegra: Add device-tree for ASUS Transformer Pad TF300T
 
-> This is exactly the reasoning and logic we use for busy extents.  We
-> only take the blocking penalty for resolving busy extent state if we
-> run out of free extents to search before we've found an allocation
-> candidate. I think it makes sense for inode allocation, too.
-> 
+Nikola Milosavljevic (1):
+  ARM: tegra: Add device-tree for ASUS Transformer EeePad TF101
 
-Sure, the idea makes sense and it's worth looking into. But there are
-enough contextual differences that I wouldn't just assume the same logic
-translates over to the finobt without potential for performance impact.
-For example, extent allocation has some advantages with things like
-delalloc (physical block allocation occurs async from buffered write
-syscall time) and the fact that metadata allocs can reuse busy blocks.
-The finobt only tracks existing chunks with free inodes, so it's easily
-possible to have conditions where the finobt is 100% (or majority)
-populated with busy inodes (whether it be one inode or several
-thousand).
+Svyatoslav Ryhel (5):
+  dt-bindings: ARM: tegra: Document ASUS Transformers
+  ARM: tegra: Add device-tree for ASUS Transformer Prime TF201
+  ARM: tegra: Add device-tree for ASUS Transformer Pad TF300TG
+  ARM: tegra: Add device-tree for ASUS Transformer Infinity TF700T
+  ARM: tegra: Add device-tree for Pegatron Chagall tablet
 
-This raises questions like at what point does search cost become a
-factor? At what point and with what frequency do we suffer the blocking
-penalty? Do we opt to allocate new chunks based on gp state? Something
-else? We don't need to answer these questions here (this thread is long
-enough :P). I'm just trying to say that it's one thing to consider the
-approach a viable option, but it isn't automatically preferable just
-because we use it for extents. Further details beyond "detect busy
-inodes" would be nice to objectively reason about.
+ .../devicetree/bindings/arm/tegra.yaml        |   19 +
+ arch/arm/boot/dts/Makefile                    |   10 +-
+ arch/arm/boot/dts/tegra114-asus-tf701t.dts    |  833 +++++
+ arch/arm/boot/dts/tegra114-dalmore.dts        |   16 +-
+ arch/arm/boot/dts/tegra114-roth.dts           |   14 +-
+ arch/arm/boot/dts/tegra114-tn7.dts            |    8 +-
+ arch/arm/boot/dts/tegra114.dtsi               |   90 +-
+ arch/arm/boot/dts/tegra124-jetson-tk1.dts     |   26 +-
+ arch/arm/boot/dts/tegra124-nyan-big-fhd.dts   |   11 +
+ arch/arm/boot/dts/tegra124-nyan.dtsi          |   28 +-
+ arch/arm/boot/dts/tegra124-venice2.dts        |   28 +-
+ .../boot/dts/tegra20-acer-a500-picasso.dts    |   12 +-
+ arch/arm/boot/dts/tegra20-asus-tf101.dts      | 1191 +++++++
+ arch/arm/boot/dts/tegra20-harmony.dts         |   16 +-
+ arch/arm/boot/dts/tegra20-medcom-wide.dts     |    8 +-
+ arch/arm/boot/dts/tegra20-paz00.dts           |    6 +-
+ arch/arm/boot/dts/tegra20-plutux.dts          |    8 +-
+ arch/arm/boot/dts/tegra20-seaboard.dts        |   16 +-
+ arch/arm/boot/dts/tegra20-tamonten.dtsi       |    4 +-
+ arch/arm/boot/dts/tegra20-tec.dts             |    8 +-
+ arch/arm/boot/dts/tegra20-trimslice.dts       |   12 +-
+ arch/arm/boot/dts/tegra20-ventana.dts         |   12 +-
+ .../boot/dts/tegra30-asus-lvds-display.dtsi   |   46 +
+ .../tegra30-asus-nexus7-grouper-common.dtsi   |   10 +-
+ ...egra30-asus-nexus7-grouper-maxim-pmic.dtsi |    4 +-
+ .../tegra30-asus-nexus7-grouper-ti-pmic.dtsi  |    2 +-
+ .../boot/dts/tegra30-asus-nexus7-grouper.dtsi |    1 -
+ .../boot/dts/tegra30-asus-nexus7-tilapia.dtsi |    2 -
+ arch/arm/boot/dts/tegra30-asus-tf201.dts      |  623 ++++
+ arch/arm/boot/dts/tegra30-asus-tf300t.dts     | 1030 ++++++
+ arch/arm/boot/dts/tegra30-asus-tf300tg.dts    | 1072 +++++++
+ arch/arm/boot/dts/tegra30-asus-tf700t.dts     |  807 +++++
+ .../dts/tegra30-asus-transformer-common.dtsi  | 1739 ++++++++++
+ arch/arm/boot/dts/tegra30-beaver.dts          |   20 +-
+ arch/arm/boot/dts/tegra30-cardhu-a02.dts      |   12 +-
+ arch/arm/boot/dts/tegra30-cardhu-a04.dts      |   14 +-
+ arch/arm/boot/dts/tegra30-cardhu.dtsi         |   28 +-
+ .../arm/boot/dts/tegra30-pegatron-chagall.dts | 2806 +++++++++++++++++
+ 38 files changed, 10406 insertions(+), 186 deletions(-)
+ create mode 100644 arch/arm/boot/dts/tegra114-asus-tf701t.dts
+ create mode 100644 arch/arm/boot/dts/tegra124-nyan-big-fhd.dts
+ create mode 100644 arch/arm/boot/dts/tegra20-asus-tf101.dts
+ create mode 100644 arch/arm/boot/dts/tegra30-asus-lvds-display.dtsi
+ create mode 100644 arch/arm/boot/dts/tegra30-asus-tf201.dts
+ create mode 100644 arch/arm/boot/dts/tegra30-asus-tf300t.dts
+ create mode 100644 arch/arm/boot/dts/tegra30-asus-tf300tg.dts
+ create mode 100644 arch/arm/boot/dts/tegra30-asus-tf700t.dts
+ create mode 100644 arch/arm/boot/dts/tegra30-asus-transformer-common.dtsi
+ create mode 100644 arch/arm/boot/dts/tegra30-pegatron-chagall.dts
 
-> > --- 8< ---
-> > 
-> > diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-> > index 64b9bf334806..058e3fc69ff7 100644
-> > --- a/fs/xfs/xfs_inode.c
-> > +++ b/fs/xfs/xfs_inode.c
-> > @@ -2644,7 +2644,7 @@ xfs_ifree(
-> >  	 * already been freed by xfs_attr_inactive.
-> >  	 */
-> >  	if (ip->i_df.if_format == XFS_DINODE_FMT_LOCAL) {
-> > -		kmem_free(ip->i_df.if_u1.if_data);
-> > +		kfree_rcu(ip->i_df.if_u1.if_data);
-> >  		ip->i_df.if_u1.if_data = NULL;
-> 
-> That would need to be rcu_assign_pointer(ip->i_df.if_u1.if_data,
-> NULL) to put the correct memory barriers in place, right? Also, I
-> think ip->i_df.if_u1.if_data needs to be set to NULL before calling
-> kfree_rcu() so racing lookups will always see NULL before
-> the object is freed.
-> 
-
-I think rcu_assign_pointer() is intended to be paired with the
-associated rcu deref and for scenarios like making sure an object isn't
-made available until it's completely initialized (i.e. such as for rcu
-protected list traversals, etc.).
-
-With regard to ordering, we no longer access if_data in rcuwalk mode
-with this change. Thus I think all we need here is the
-WRITE_ONCE(i_link, NULL) that pairs with the READ_ONCE() in the vfs, and
-that happens earlier in xfs_inactive_symlink() before we rcu free the
-memory here. With that, ISTM a racing lookup should either see an rcu
-protected i_link or NULL, the latter of which calls into ->get_link()
-and triggers refwalk mode. Hm?
-
-> But again, as I asked up front, why do we even need to free this
-> memory buffer here? It will be freed in xfs_inode_free_callback()
-> after the current RCU grace period expires, so what do we gain by
-> freeing it separately here?
-> 
-
-One prevented memory leak? ;)
-
-It won't be freed in xfs_inode_free_callback() because we change the
-data fork format type (and clear i_mode) in this path. Perhaps that
-could use an audit, but that's a separate issue.
-
-> >  		ip->i_df.if_bytes = 0;
-> >  	}
-> > diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> > index a607d6aca5c4..e98d7f10ba7d 100644
-> > --- a/fs/xfs/xfs_iops.c
-> > +++ b/fs/xfs/xfs_iops.c
-> > @@ -511,27 +511,6 @@ xfs_vn_get_link(
-> >  	return ERR_PTR(error);
-> >  }
-> >  
-> > -STATIC const char *
-> > -xfs_vn_get_link_inline(
-> > -	struct dentry		*dentry,
-> > -	struct inode		*inode,
-> > -	struct delayed_call	*done)
-> > -{
-> > -	struct xfs_inode	*ip = XFS_I(inode);
-> > -	char			*link;
-> > -
-> > -	ASSERT(ip->i_df.if_format == XFS_DINODE_FMT_LOCAL);
-> > -
-> > -	/*
-> > -	 * The VFS crashes on a NULL pointer, so return -EFSCORRUPTED if
-> > -	 * if_data is junk.
-> > -	 */
-> > -	link = ip->i_df.if_u1.if_data;
-> > -	if (XFS_IS_CORRUPT(ip->i_mount, !link))
-> > -		return ERR_PTR(-EFSCORRUPTED);
-> > -	return link;
-> > -}
-> > -
-> >  static uint32_t
-> >  xfs_stat_blksize(
-> >  	struct xfs_inode	*ip)
-> > @@ -1250,14 +1229,6 @@ static const struct inode_operations xfs_symlink_inode_operations = {
-> >  	.update_time		= xfs_vn_update_time,
-> >  };
-> >  
-> > -static const struct inode_operations xfs_inline_symlink_inode_operations = {
-> > -	.get_link		= xfs_vn_get_link_inline,
-> > -	.getattr		= xfs_vn_getattr,
-> > -	.setattr		= xfs_vn_setattr,
-> > -	.listxattr		= xfs_vn_listxattr,
-> > -	.update_time		= xfs_vn_update_time,
-> > -};
-> > -
-> >  /* Figure out if this file actually supports DAX. */
-> >  static bool
-> >  xfs_inode_supports_dax(
-> > @@ -1409,9 +1380,8 @@ xfs_setup_iops(
-> >  		break;
-> >  	case S_IFLNK:
-> >  		if (ip->i_df.if_format == XFS_DINODE_FMT_LOCAL)
-> > -			inode->i_op = &xfs_inline_symlink_inode_operations;
-> > -		else
-> > -			inode->i_op = &xfs_symlink_inode_operations;
-> > +			inode->i_link = ip->i_df.if_u1.if_data;
-> > +		inode->i_op = &xfs_symlink_inode_operations;
-> 
-> This still needs corruption checks - ip->i_df.if_u1.if_data can be
-> null if there's some kind of inode corruption detected.
-> 
-
-It's fine for i_link to be NULL. We'd just fall into the get_link() call
-and have to handle it there like the current callback does.
-
-However, this does need to restore some of the code removed from
-xfs_vn_get_link() in commit 30ee052e12b9 ("xfs: optimize inline
-symlinks") to handle the local format case. If if_data can be NULL we'll
-obviously need to handle it there anyways.
-
-If there's no fundamental objection I'll address these issues, give it
-some proper testing and send a real patch..
-
-Brian
-
-> >  		break;
-> >  	default:
-> >  		inode->i_op = &xfs_inode_operations;
-> > diff --git a/fs/xfs/xfs_symlink.c b/fs/xfs/xfs_symlink.c
-> > index fc2c6a404647..20ec2f450c56 100644
-> > --- a/fs/xfs/xfs_symlink.c
-> > +++ b/fs/xfs/xfs_symlink.c
-> > @@ -497,6 +497,7 @@ xfs_inactive_symlink(
-> >  	 * do here in that case.
-> >  	 */
-> >  	if (ip->i_df.if_format == XFS_DINODE_FMT_LOCAL) {
-> > +		WRITE_ONCE(VFS_I(ip)->i_link, NULL);
-> 
-> Again, rcu_assign_pointer(), yes?
-> 
-> >  		xfs_iunlock(ip, XFS_ILOCK_EXCL);
-> >  		return 0;
-> >  	}
-> > 
-> > 
-> 
-> -- 
-> Dave Chinner
-> david@fromorbit.com
-> 
+-- 
+2.33.1
 
