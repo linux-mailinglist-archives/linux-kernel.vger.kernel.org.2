@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A0E45C386
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:37:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB67545C195
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:16:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348958AbhKXNkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:40:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50284 "EHLO mail.kernel.org"
+        id S1346740AbhKXNT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:19:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350317AbhKXNhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:37:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1BC361378;
-        Wed, 24 Nov 2021 12:55:48 +0000 (UTC)
+        id S1345768AbhKXNQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:16:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6082E61ADF;
+        Wed, 24 Nov 2021 12:44:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758549;
-        bh=WEVZUvHmBJsxKPIbF2aCUI0W2bYQ5ImxzUSlJSrtJZg=;
+        s=korg; t=1637757892;
+        bh=3hASDUYPLjcaNZ3qvW+VwaDN0ZGKb2nxPc2pr74xnRQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SFXsy47ED52a8CDatPO3KxrPVRTYfx52YLS0OdAPZy5QdwWARmmd6oYYBuArofhn0
-         ENVpv0z032jUAqZn04mVyYTmCkqiKJKUTftAhp4YwIQ4sWEWoh6ZlTYPWATRBJje5P
-         c6YpDwDgAEKWmSEnZi2Xy53pUbKpQzaZSJYmKCRk=
+        b=I27UupydoYsX7E4TR12W87CYQ/Cdf22MD0Y1KiycYdes3h5sDpHBDzPGkfwhaSBx7
+         2shFoy1b40AJw0KKyX6L4rqYyRd/qyHoQmNaC4BIK87f1D+Q2viHBuiWu+rrlv56D4
+         2RjuFIjO1RDFft6RFUCNWsYTz2WR3q6gi1LWxdBk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
-        Jedrzej Jagielski <jedrzej.jagielski@intel.com>,
-        Tony Brelinski <tony.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 105/154] i40e: Fix creation of first queue by omitting it if is not power of two
+        stable@vger.kernel.org, Sven Schnelle <svens@stackframe.org>,
+        Helge Deller <deller@gmx.de>
+Subject: [PATCH 4.19 311/323] parisc/sticon: fix reverse colors
 Date:   Wed, 24 Nov 2021 12:58:21 +0100
-Message-Id: <20211124115705.686027004@linuxfoundation.org>
+Message-Id: <20211124115729.427625105@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,116 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jedrzej Jagielski <jedrzej.jagielski@intel.com>
+From: Sven Schnelle <svens@stackframe.org>
 
-[ Upstream commit 2e6d218c1ec6fb9cd70693b78134cbc35ae0b5a9 ]
+commit bec05f33ebc1006899c6d3e59a00c58881fe7626 upstream.
 
-Reject TCs creation with proper message if the first queue
-assignment is not equal to the power of two.
-The first queue number was checked too late in the second queue
-iteration, if second queue was configured at all. Now if first queue value
-is not a power of two, then trying to create qdisc will be rejected.
+sticon_build_attr() checked the reverse argument and flipped
+background and foreground color, but returned the non-reverse
+value afterwards. Fix this and also add two local variables
+for foreground and background color to make the code easier
+to read.
 
-Fixes: 8f88b3034db3 ("i40e: Add infrastructure for queue channel support")
-Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
-Signed-off-by: Jedrzej Jagielski <jedrzej.jagielski@intel.com>
-Tested-by: Tony Brelinski <tony.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Sven Schnelle <svens@stackframe.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_main.c | 59 +++++++--------------
- 1 file changed, 19 insertions(+), 40 deletions(-)
+ drivers/video/console/sticon.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 7f224dbe9c0ae..8cb80798efb2b 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -5753,24 +5753,6 @@ static void i40e_remove_queue_channels(struct i40e_vsi *vsi)
- 	INIT_LIST_HEAD(&vsi->ch_list);
+--- a/drivers/video/console/sticon.c
++++ b/drivers/video/console/sticon.c
+@@ -291,13 +291,13 @@ static unsigned long sticon_getxy(struct
+ static u8 sticon_build_attr(struct vc_data *conp, u8 color, u8 intens,
+ 			    u8 blink, u8 underline, u8 reverse, u8 italic)
+ {
+-    u8 attr = ((color & 0x70) >> 1) | ((color & 7));
++	u8 fg = color & 7;
++	u8 bg = (color & 0x70) >> 4;
+ 
+-    if (reverse) {
+-	color = ((color >> 3) & 0x7) | ((color & 0x7) << 3);
+-    }
+-
+-    return attr;
++	if (reverse)
++		return (fg << 3) | bg;
++	else
++		return (bg << 3) | fg;
  }
  
--/**
-- * i40e_is_any_channel - channel exist or not
-- * @vsi: ptr to VSI to which channels are associated with
-- *
-- * Returns true or false if channel(s) exist for associated VSI or not
-- **/
--static bool i40e_is_any_channel(struct i40e_vsi *vsi)
--{
--	struct i40e_channel *ch, *ch_tmp;
--
--	list_for_each_entry_safe(ch, ch_tmp, &vsi->ch_list, list) {
--		if (ch->initialized)
--			return true;
--	}
--
--	return false;
--}
--
- /**
-  * i40e_get_max_queues_for_channel
-  * @vsi: ptr to VSI to which channels are associated with
-@@ -6276,26 +6258,15 @@ int i40e_create_queue_channel(struct i40e_vsi *vsi,
- 	/* By default we are in VEPA mode, if this is the first VF/VMDq
- 	 * VSI to be added switch to VEB mode.
- 	 */
--	if ((!(pf->flags & I40E_FLAG_VEB_MODE_ENABLED)) ||
--	    (!i40e_is_any_channel(vsi))) {
--		if (!is_power_of_2(vsi->tc_config.tc_info[0].qcount)) {
--			dev_dbg(&pf->pdev->dev,
--				"Failed to create channel. Override queues (%u) not power of 2\n",
--				vsi->tc_config.tc_info[0].qcount);
--			return -EINVAL;
--		}
- 
--		if (!(pf->flags & I40E_FLAG_VEB_MODE_ENABLED)) {
--			pf->flags |= I40E_FLAG_VEB_MODE_ENABLED;
-+	if (!(pf->flags & I40E_FLAG_VEB_MODE_ENABLED)) {
-+		pf->flags |= I40E_FLAG_VEB_MODE_ENABLED;
- 
--			if (vsi->type == I40E_VSI_MAIN) {
--				if (pf->flags & I40E_FLAG_TC_MQPRIO)
--					i40e_do_reset(pf, I40E_PF_RESET_FLAG,
--						      true);
--				else
--					i40e_do_reset_safe(pf,
--							   I40E_PF_RESET_FLAG);
--			}
-+		if (vsi->type == I40E_VSI_MAIN) {
-+			if (pf->flags & I40E_FLAG_TC_MQPRIO)
-+				i40e_do_reset(pf, I40E_PF_RESET_FLAG, true);
-+			else
-+				i40e_do_reset_safe(pf, I40E_PF_RESET_FLAG);
- 		}
- 		/* now onwards for main VSI, number of queues will be value
- 		 * of TC0's queue count
-@@ -7622,12 +7593,20 @@ config_tc:
- 			    vsi->seid);
- 		need_reset = true;
- 		goto exit;
--	} else {
--		dev_info(&vsi->back->pdev->dev,
--			 "Setup channel (id:%u) utilizing num_queues %d\n",
--			 vsi->seid, vsi->tc_config.tc_info[0].qcount);
-+	} else if (enabled_tc &&
-+		   (!is_power_of_2(vsi->tc_config.tc_info[0].qcount))) {
-+		netdev_info(netdev,
-+			    "Failed to create channel. Override queues (%u) not power of 2\n",
-+			    vsi->tc_config.tc_info[0].qcount);
-+		ret = -EINVAL;
-+		need_reset = true;
-+		goto exit;
- 	}
- 
-+	dev_info(&vsi->back->pdev->dev,
-+		 "Setup channel (id:%u) utilizing num_queues %d\n",
-+		 vsi->seid, vsi->tc_config.tc_info[0].qcount);
-+
- 	if (pf->flags & I40E_FLAG_TC_MQPRIO) {
- 		if (vsi->mqprio_qopt.max_rate[0]) {
- 			u64 max_tx_rate = vsi->mqprio_qopt.max_rate[0];
--- 
-2.33.0
-
+ static void sticon_invert_region(struct vc_data *conp, u16 *p, int count)
 
 
