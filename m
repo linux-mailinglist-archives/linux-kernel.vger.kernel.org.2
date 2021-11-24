@@ -2,277 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EE1745B764
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 10:25:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF1945B76C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 10:29:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233911AbhKXJ2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 04:28:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhKXJ2m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 04:28:42 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808B8C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 01:25:33 -0800 (PST)
-Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=regzbot.fritz.box); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1mpoWw-0000Gx-EJ; Wed, 24 Nov 2021 10:25:30 +0100
-From:   "Regzbot (on behalf of Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux regressions mailing list <regressions@lists.linux.dev>
-Cc:     Regzbot <regressions@leemhuis.info>
-Subject: Linux regressions report for mainline [2021-11-24]
-Date:   Wed, 24 Nov 2021 09:25:29 +0000
-Message-Id: <163774583541.221636.5062449110647587402@leemhuis.info>
-X-Mailer: git-send-email 2.31.1
-Content-Type: text/plain; charset="utf-8"
+        id S234883AbhKXJct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 04:32:49 -0500
+Received: from mail-eopbgr80082.outbound.protection.outlook.com ([40.107.8.82]:5858
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234162AbhKXJcr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 04:32:47 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Iy0jxjFmX0prS8quYTsABw502qd4/REDPROg2+l9hOp9w7790/ek5qdmd72nAnfL02q+ZI8H5Qd/XhNcdfr6gd2jZaDHBoLdFhV0w8/ZCS348o0CC5URLNCXzmCw7DzW5E7kHy72sQESsMQoyh3IaUsyJVsC0JaU4ZfYJpBBu77RKl7IqQT2H4AP6qoZ7kD1US3HK31FSvXgZ5Mw8hw05YyAze5xiMtd1gQFuL9hN2vL37ZiLd9WRnaQibfQjAK/WziRkCw/f68jzQZWcjN7S7kXY5g8s2r3ZHp3r9+VKO9NejQZEVFlrQklWvODHCrFVMNORo8Wdeqhd8PbMvwmVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HybfJPAxXalIZ6lK0Rfnp8Wyy25/dq4oJnyyQIcHGzs=;
+ b=FKs/dm7PV861Jpy1GXYfwwqeFDuZHzacLbYO4JwjOK9XuHPN2LSePZTRnzNy1utvSBytCnP7IvcEylKXUc8jXpl24rR1+sz9LJKMzfwn4Jozp6NslrgkoCMhnH8uz+WntCQ08cIgTLxwKZdgaQi4w3En6QkCtIkDFaxZwgk8DFCDmkbhm1OuBv3s97JbF0Jdj/eYBu1PGuvighofG7jLrqyLBS5mJ+wm3yGXf5VwJ6T1yLBhgjRFdtNXHCWobwl0JuqNTvyMp7rw1YGnuLfAJf/GuX9/OBIMH16NOorsWuCMBWmg4pkXh/eQdDa+QS6kGq9Ws9fBD6tU70vEgdDU7g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=diasemi.com; dmarc=pass action=none header.from=diasemi.com;
+ dkim=pass header.d=diasemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HybfJPAxXalIZ6lK0Rfnp8Wyy25/dq4oJnyyQIcHGzs=;
+ b=lpYG0UEl0OaQ1HI0oL3RYmVySDsTUPtKk4lzJqZMoAQu2oPceyXiXaPDLybp7FpRNjINttH5auGL8lTgjBHeaUTUPSMleV3Gv/dffcdBuy9ATOZa0ukSDCHHxgzOIJ7f/uipGKp6cE8sXsDHOHkCJMrWczkrz5f5V29O1DOR6rQ=
+Received: from DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:255::23)
+ by DB9PR10MB4847.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:2c3::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Wed, 24 Nov
+ 2021 09:29:34 +0000
+Received: from DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::852d:c54f:8414:3276]) by DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::852d:c54f:8414:3276%3]) with mapi id 15.20.4734.020; Wed, 24 Nov 2021
+ 09:29:34 +0000
+From:   Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+To:     Andrej Picej <andrej.picej@norik.com>,
+        Support Opensource <Support.Opensource@diasemi.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] mfd: da9062: support SMBus and I2C mode
+Thread-Topic: [PATCH] mfd: da9062: support SMBus and I2C mode
+Thread-Index: AQHX4P+4418yiCfgqU6JR0rlSMaXYawSaU4Q
+Date:   Wed, 24 Nov 2021 09:29:34 +0000
+Message-ID: <DB9PR10MB4652104D30E34113D35CB09B80619@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+References: <20211124065119.2514872-1-andrej.picej@norik.com>
+In-Reply-To: <20211124065119.2514872-1-andrej.picej@norik.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=diasemi.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1f0df6ce-e92d-4486-740f-08d9af2ced83
+x-ms-traffictypediagnostic: DB9PR10MB4847:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-microsoft-antispam-prvs: <DB9PR10MB484754BEE639D52D7380F037A7619@DB9PR10MB4847.EURPRD10.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:142;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: aJsv4eNrHhn+M2eUuUcR81WUlKaLw+dE44oKGVMk1QP6oN1URWIavWnCs+qOUjxBDGS2U8c7YFohzbhilEtxsUbOaEfpMBlaplRs/v/eWuN3pFJMPieQV4rsoL6wtwQnrSaRyVA1PGey/5hArLnb4AToCfwyGbvESQ8LpcqkZeZRQO2kzJ2J11+rXv09sRpdnHv/MwsC/1FO5hRcHTkFgu5ltvJnrHfkzs1ymUUVrGE05ZTzpyu49cU2FrJec5MNj2GpvlD1zMK5IkQwk8YQDR3iMQKEFD+Lwaufu9fiyAMAhDfJh9dAlG/RyHuuf9i4yn18Theyw2PQYQNGFHFC2hc0swRJg1RGsf6r/oLrNfJqOV+mzblPYRJB+8Af/nnh0s7NtWIIm4a6uEQjDxvS/JnYuz9FDeJrXMZr41t3KL49w+d9VEsbhb0Xw5alRdyZZbU8h4shyTwiGqXn+IbMuDU7Vli09XE7msBJPrAfS6Meq1MCmLC4N0s1gl1yR9KZV0qTw9DVk+UdW6NmDd91C3tm9akdV84fn0uCJV6zFEbJ5Z/2252ikyvYem3TnmEtpphRz9R1F5MNVDFo+ar5ynYwwEqLLswESeyK1hpjQKuV5TSXrTzms3hHEQff0tRRrYyRAcsted++M6q/H7QJy+5bXJrDuK0MbLlHjc089RPq/5jIl6eJAUiFPhJWLaVCOV7sYqf09MyekjLZ6+D2xA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(33656002)(2906002)(4326008)(6506007)(9686003)(38070700005)(26005)(186003)(66476007)(66446008)(64756008)(52536014)(86362001)(508600001)(71200400001)(66946007)(558084003)(8676002)(8936002)(7696005)(316002)(122000001)(55016003)(76116006)(5660300002)(110136005)(53546011)(66556008)(38100700002)(55236004);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?AoGhPrPtriX+vfQgvkSs24ujLWB6Tc3eLx2NV7D9eIN+HyNQDnA2haOM9shj?=
+ =?us-ascii?Q?wO9b7l43nsNo6vPPqjLTaK90YNHbRvLligiIBRoTRAGi/93iycOh7WKjtrzF?=
+ =?us-ascii?Q?pPoUQ1000BHU3q6vLHFJok6wp42H3NSf6xNiWXKDgyYOyq0WlDh03iwVHtOn?=
+ =?us-ascii?Q?vvFNGhmfAFN/kv07E+7DECrkJ3YB6uGJCFv6NdBYKOuRxcRBASotYu6bAeYA?=
+ =?us-ascii?Q?es2p1DM2tR/2LFF8cpwTYTMUmNOal27+IFAspuIKn1TYKELVQkFBD/NGsFTg?=
+ =?us-ascii?Q?6MlMeWD3uwvrc2Jq+So6MCW04PY60fJohBjl5S8BmOOwQJJD3nNAKh6qEQvR?=
+ =?us-ascii?Q?GJTe9UK/p9oYmlFqoiwvVJgc5YY9XMsxrNJSRt6zeLeR+f+tSkpfTsEReJ1u?=
+ =?us-ascii?Q?dv1jtj+/L9Qn4/l7g3xR5E+w9Aoon0AOjT2PhcoDnf/YLUD55Xcnlrg/wsws?=
+ =?us-ascii?Q?8qfO0Hpq1etciqe/zuHcIFhEuWG7l1CdvbR1/xKussCsLOhNL25Ye/WIATrq?=
+ =?us-ascii?Q?7GjFdDSpp3vfLgted7dtm0j2AovtIyyKATsjGdYMlbTX4oYc5NSMA5bJo6s8?=
+ =?us-ascii?Q?lgyHgRh4wqT5Jyo6kC6Y21XJlHjf/EXEtSxJZ68dUTo2KPG3e7ZAxbTSRhkr?=
+ =?us-ascii?Q?a6BBJvf5PjU611UsQeaM1Fb7GwvtEn7+Ah/ixgl8zTW8doNjaH7Gcb27lvF1?=
+ =?us-ascii?Q?CF9jKPXyMVXP1c9d4LYSeUJ7pcWPL5tZssiWiVvTYHaYvYc8T7mh4oOkOLNN?=
+ =?us-ascii?Q?iRcybsibNbD8P7oF4pREA+Sy9nAk1JzA7UK0+jmE/AkjAKjwKg46LoPZGR7j?=
+ =?us-ascii?Q?UR7SqtbTydKg6eL9nWRP7lxLoP9BeTiwbDAtiaU+J/sSYIt/7598fQzuQ8oK?=
+ =?us-ascii?Q?lLyhAOM4BaKo4d12mzZ533kP8OivoydavFj2rPUIPhx2QXeIdT9K3irZ2LZm?=
+ =?us-ascii?Q?/5m41VF8LLax2yvXGmGYW77fJp3UAgT7ULGiM8SJzxYA9g9avzfIHtyhAV1q?=
+ =?us-ascii?Q?X2haK8MK0sEzLTyURe/8URCwH9ccOjz+EblITDxEej/0pHjoMR1kx3Kc5tcM?=
+ =?us-ascii?Q?oRgRE/PeOGG7bmgdmIPuP4HcJPUTOc4xOOE/7c6FYjCB+ppt5OCeeXvDZkOZ?=
+ =?us-ascii?Q?4XIP/8yRrkLQY1NtQbpNKhOnyf92KFhrr7WHU6ufB4bBW3tRlx7liwoniE5B?=
+ =?us-ascii?Q?mGPq4A9lP7eEUDIWR/bGEWrHF25zRv8cgHdQnnfhYxXc+c+Q8GShYwhOBdso?=
+ =?us-ascii?Q?6yOhgplqYtWo+LFyHilpyeMc6v3BbhewxRxMiUn85ibmtXNk4stfjUTHtgxw?=
+ =?us-ascii?Q?2Czp0mRs4M5pqXe32mDfBhIhYP0rII6nUuB3fuTrJbpfVWm5kbXcaw/T7Al/?=
+ =?us-ascii?Q?rcnqM1sHo0XSIoyZC+qFAY6wqe18QdysU62KPn0/eq8hvaCJcOuRb9wnLxRt?=
+ =?us-ascii?Q?/9v7k58VE2DTINUkiThW7pZ8Dz4tDY4gAJnCFWf2kUEICToWJWvAiJw+l6mq?=
+ =?us-ascii?Q?ODWgHa1CoiD3cnL0Ixvj9CAKjMnW3kh6N2yTvHrK+LwKXEKP+t/kVMQSoVew?=
+ =?us-ascii?Q?cnLuktuZGmsdKENpr0b42s/zoMCl5jbMqEer75pE17Q3DJXRfKuBuUITmhxS?=
+ =?us-ascii?Q?hZWuM/Qkt6L1afP8308z0t1hT+UoJyjub/9YiNWP/SVYXqNKSDTDhBf+gDOk?=
+ =?us-ascii?Q?Mf4A+g=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1637745933;a95da33d;
-X-HE-SMSGID: 1mpoWw-0000Gx-EJ
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1f0df6ce-e92d-4486-740f-08d9af2ced83
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2021 09:29:34.7096
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Zc4Ty557f2FdY6/20bwWUVCUbp3qhV5ptNmzklCcHiyJyrRiPRsVtSgiszy8P1RvV9DJOP8z8vOCyV1u/vBj6slFrlEsXJQIUQEXPId4G2M=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR10MB4847
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Regzbot (for Thorsten Leemhuis) <regressions@leemhuis.info>
+On 24 November 2021 06:51, Andrej Picej wrote:
 
-Hi, this is regzbot, the Linux kernel regression tracking bot.
+> Enable the I2C bus mode if I2C_FUNC_I2C is set. Based on da6093 commit:
+> "586478bfc9f7 mfd: da9063: Support SMBus and I2C mode"
+>=20
+> Signed-off-by: Andrej Picej <andrej.picej@norik.com>
 
-Currently I'm aware of 15 regressions in linux-mainline. Find the
-current status below and the latest on the web:
-
-https://linux-regtracking.leemhuis.info/regzbot/mainline/
-
-Bye bye, hope to see you soon for the next report.
-   Regzbot (on behalf of Thorsten Leemhuis)
-
-
-========================================================
-current cycle (v5.15.. aka v5.16-rc), culprit identified
-========================================================
-
-
-Regression in v5.16-rc1: Timeout in mlx5_health_wait_pci_up() may try to wait 245 million years
------------------------------------------------------------------------------------------------
-https://lore.kernel.org/regressions/15db9c1d11d32fb16269afceb527b5d743177ac4.camel@linux.ibm.com
-By Niklas Schnelle, 4 days ago; 3 activities, latest 3 days ago.
-Introduced in 32def4120e48 (v5.16-rc1)
-https://linux-regtracking.leemhuis.info/regzbot/regression/15db9c1d11d32fb16269afceb527b5d743177ac4.camel@linux.ibm.com
-
-
-=========================================================================================
-previous cycle (v5.14..v5.15), culprit identified, with activity in the past three months
-=========================================================================================
-
-
-CONFIG_SYSFB_SIMPLEFB breaks console scrolling
-----------------------------------------------
-https://lore.kernel.org/lkml/e50d5ad5-19fd-07ae-41e4-5a2d26a98bcf@afaics.de
-By Harald Dunkel, 8 days ago; 1 activities, latest 8 days ago.
-Introduced in 8633ef82f101 (v5.15-rc1)
-https://linux-regtracking.leemhuis.info/regzbot/regression/e50d5ad5-19fd-07ae-41e4-5a2d26a98bcf@afaics.de
-
-
-==================================================================================
-older cycles (..v5.14), culprit identified, with activity in the past three months
-==================================================================================
-
-
-wireless AP (Raspberry Pi with rt2x00usb) crashes every hour or so
-------------------------------------------------------------------
-https://lore.kernel.org/lkml/20211118132556.GD334428@darkstar.musicnaut.iki.fi
-By Aaro Koskinen, 5 days ago; 5 activities, latest 1 days ago.
-Introduced in 03c3911d2d67 (v5.14-rc1)
-https://linux-regtracking.leemhuis.info/regzbot/regression/20211118132556.GD334428@darkstar.musicnaut.iki.fi
-
-Latest activity with a patch:
-* [PATCH 5.16] mac80211: fix rate control for retransmitted frames
-  https://lore.kernel.org/linux-wireless/20211122204323.9787-1-nbd@nbd.name
-  1 days ago, by Felix Fietkau; thread monitored.
-
-
-Bluetooth: Query LE tx power on startup broke Bluetooth on MacBookPro16,1
--------------------------------------------------------------------------
-https://lore.kernel.org/regressions/4970a940-211b-25d6-edab-21a815313954@protonmail.com
-By Orlando Chamberlain, 56 days ago; 30 activities, latest 4 days ago.
-Introduced in 7c395ea521e6 (v5.11-rc1)
-https://linux-regtracking.leemhuis.info/regzbot/regression/4970a940-211b-25d6-edab-21a815313954@protonmail.com
-
-Latest activity with a patch:
-* Re: [PATCHv2] Bluetooth: quirk disabling LE Read Transmit Power
-  https://lore.kernel.org/lkml/CABBYNZLjSfcG_KqTEbL6NOSvHhA5-b1t_S=3FQP4=GwW21kuzg@mail.gmail.com
-  18 days ago, by Luiz Augusto von Dentz
-
-Noteworthy links:
-* Re: [PATCH] Bluetooth: add quirk disabling query LE tx power
-  https://lore.kernel.org/lkml/43fb97ad-69eb-95ad-d50a-b8f1113dbee6@leemhuis.info
-  54 days ago, by Thorsten Leemhuis; thread monitored.
-* [PATCHv2] Bluetooth: quirk disabling LE Read Transmit Power
-  https://lore.kernel.org/lkml/20211001083412.3078-1-redecorating@protonmail.com
-  54 days ago, by Orlando Chamberlain; thread monitored.
-
-
-Re: rt2x00 regression
----------------------
-https://lore.kernel.org/regressions/87czop5j33.fsf@tynnyri.adurom.net
-By Kalle Valo, 54 days ago; 16 activities, latest 4 days ago.
-Introduced in e383c70474db (v5.2-rc1)
-https://linux-regtracking.leemhuis.info/regzbot/regression/87czop5j33.fsf@tynnyri.adurom.net
-
-Latest activity with a patch:
-* [PATCH] rt2x00: do not mark device gone on EPROTO errors during start
-  https://lore.kernel.org/regressions/20211111141003.GA134627@wp.pl
-  12 days ago, by Stanislaw Gruszka
-
-Noteworthy links:
-* rt2x00 regression
-  https://lore.kernel.org/linux-wireless/bff7d309-a816-6a75-51b6-5928ef4f7a8c@exuvo.se
-  789 days ago, by Anton Olsson; thread monitored.
-
-
-PCIe regression on APM Merlin (aarch64 dev platform) preventing NVME initialization
------------------------------------------------------------------------------------
-https://lore.kernel.org/linux-pci/CA%2Benf=v9rY_xnZML01oEgKLmvY1NGBUUhnSJaETmXtDtXfaczA@mail.gmail.com
-By Stéphane Graber, 5 days ago; 4 activities, latest 5 days ago.
-Introduced in 6dce5aa59e0b (v5.5-rc1)
-https://linux-regtracking.leemhuis.info/regzbot/regression/CA%2Benf=v9rY_xnZML01oEgKLmvY1NGBUUhnSJaETmXtDtXfaczA@mail.gmail.com
-
-Latest activity with a patch:
-* Re: PCIe regression on APM Merlin (aarch64 dev platform) preventing NVME initialization
-  https://lore.kernel.org/linux-pci/CAL_JsqKrfpDtQZMMuhA_tURit6fO82FzPbKA40o6_8jWRewm8g@mail.gmail.com
-  5 days ago, by Rob Herring
-
-
-mhi: ath11k resume fails on some devices
-----------------------------------------
-https://lore.kernel.org/regressions/871r5p0x2u.fsf@codeaurora.org
-By Kalle Valo, 69 days ago; 23 activities, latest 5 days ago.
-Introduced in 020d3b26c07a (v5.13-rc1)
-https://linux-regtracking.leemhuis.info/regzbot/regression/871r5p0x2u.fsf@codeaurora.org
-
-
-bug: usb: gadget: FSL_UDC_CORE Corrupted request list leads to unrecoverable loop.
-----------------------------------------------------------------------------------
-https://lore.kernel.org/linuxppc-dev/MWHPR2201MB152074F47BF142189365627B91879@MWHPR2201MB1520.namprd22.prod.outlook.com
-By Eugene Bordenkircher, 25 days ago; 7 activities, latest 7 days ago.
-Introduced in f79a60b8785 (v3.4-rc4)
-https://linux-regtracking.leemhuis.info/regzbot/regression/MWHPR2201MB152074F47BF142189365627B91879@MWHPR2201MB1520.namprd22.prod.outlook.com
-
-Noteworthy links:
-* https://lore.kernel.org/all/CADRPPNSrhiwr8jmBb2h4cFYqHtuDKK8rL0i6Bkg7+xEyXJPATA@mail.gmail.com/
-  22 days ago, by Thorsten Leemhuis
-* https://lore.kernel.org/all/2c275adc278477e1e512ea6ecc0c1f4dcc46969d.camel@infinera.com/
-  22 days ago, by Thorsten Leemhuis
-
-
-Bug in Memory Layout of rx_desc for QCA6174
--------------------------------------------
-https://lore.kernel.org/ath10k/CAH4F6usFu8-A6k5Z7rU9__iENcSC6Zr-NtRhh_aypR74UvN1uQ@mail.gmail.com
-By Francesco Magliocca, 159 days ago; 5 activities, latest 24 days ago.
-Introduced in e3def6f7ddf8 (v4.16-rc1)
-https://linux-regtracking.leemhuis.info/regzbot/regression/CAH4F6usFu8-A6k5Z7rU9__iENcSC6Zr-NtRhh_aypR74UvN1uQ@mail.gmail.com
-
-Noteworthy links:
-* Bug in Memory Layout of rx_desc for QCA6174
-  https://lore.kernel.org/ath10k/CAH4F6uvX=xtTnBDaj1BVHSx_FDSUbpc4TRC2DGTHBmGJSD2oEA@mail.gmail.com
-  25 days ago, by Francesco Magliocca; thread monitored.
-
-
-====================================================
-current cycle (v5.15.. aka v5.16-rc), unkown culprit
-====================================================
-
-
-mm: reclaim_throttle leads to stall in near-OOM conditions
-----------------------------------------------------------
-https://lore.kernel.org/lkml/20211124011954.7cab9bb4@mail.inbox.lv
-By Alexey Avramov, 0 days ago; 1 activities, latest 0 days ago.
-Introduced in v5.15..v5.16-rc1
-https://linux-regtracking.leemhuis.info/regzbot/regression/20211124011954.7cab9bb4@mail.inbox.lv
-
-
-mm: LTP/memcg testcase regression induced by 8cd7c588decf..66ce520bb7c2 series
-------------------------------------------------------------------------------
-https://lore.kernel.org/lkml/99e779783d6c7fce96448a3402061b9dc1b3b602.camel@gmx.de
-By Mike Galbraith, 2 days ago; 8 activities, latest 0 days ago.
-Introduced in 8cd7c588decf..66ce520bb7c2 (v5.15..v5.16-rc1)
-https://linux-regtracking.leemhuis.info/regzbot/regression/99e779783d6c7fce96448a3402061b9dc1b3b602.camel@gmx.de
-
-
-====================================================================================
-previous cycle (v5.14..v5.15), unkown culprit, with activity in the past three weeks
-====================================================================================
-
-
-Kernel 5.15 reboots / freezes upon ifup/ifdown
-----------------------------------------------
-https://lore.kernel.org/stable/924175a188159f4e03bd69908a91e606b574139b.camel@gmx.de
-By Stefan Dietrich, 0 days ago; 5 activities, latest 0 days ago.
-Introduced in v5.14..v5.15
-https://linux-regtracking.leemhuis.info/regzbot/regression/924175a188159f4e03bd69908a91e606b574139b.camel@gmx.de
-
-
-kernel 5.15.1: AMD RX 6700 XT - Fails to resume after screen blank
-------------------------------------------------------------------
-https://lore.kernel.org/stable/dbadfe41-24bf-5811-cf38-74973df45214@badpenguin.co.uk
-By Mark Boddington, 13 days ago; 7 activities, latest 11 days ago.
-Introduced in v5.14..v5.15
-https://linux-regtracking.leemhuis.info/regzbot/regression/dbadfe41-24bf-5811-cf38-74973df45214@badpenguin.co.uk
-
-
-=============================================================================
-older cycles (..v5.14), unkown culprit, with activity in the past three weeks
-=============================================================================
-
-
-Ralink RT2800 kernel deference issue since kernel 5.14
-------------------------------------------------------
-https://lore.kernel.org/linux-wireless/c07b4142fb725ed87a2cef530bae9ee7@lost-in-the-void.net
-By Robert W, 11 days ago; 5 activities, latest 1 days ago.
-Introduced in v5.13..v5.14
-https://linux-regtracking.leemhuis.info/regzbot/regression/c07b4142fb725ed87a2cef530bae9ee7@lost-in-the-void.net
-
-Latest activity with a patch:
-* [PATCH 5.16] mac80211: fix rate control for retransmitted frames
-  https://lore.kernel.org/linux-wireless/20211122204323.9787-1-nbd@nbd.name
-  1 days ago, by Felix Fietkau; thread monitored.
-
-
-====================================================================
-all others with unkown culprit and activity in the past three months
-====================================================================
-
-
-idle power increased from ~20 to ~28 watts
-------------------------------------------
-https://lore.kernel.org/lkml/c11d94b4-1701-4e26-efd1-42038342c4aa@kaputniks.org
-By Idzibear, 22 days ago; 3 activities, latest 22 days ago.
-Introduced in v5.14..v5.15
-https://linux-regtracking.leemhuis.info/regzbot/regression/c11d94b4-1701-4e26-efd1-42038342c4aa@kaputniks.org
-
-
-=============
-End of report
-=============
-
--- 
-P.S.: Wanna know more about regzbot or how to use it to track regressions
-for your subsystem? Then check out the getting started guide or the
-reference documentation:
-
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
-
-The short version: if you see a regression report you want to see
-tracked, just send a reply to the report where you Cc
-regressions@lists.linux.dev with a line like this:
-
-#regzbot introduced: v5.13..v5.14-rc1
-
-If you want to fix a tracked regression, just do what is expected
-anyway: add a 'Link:' tag with the url to the report, e.g.:
-
-Link: https://lore.kernel.org/all/30th.anniversary.repost@klaava.Helsinki.FI/
+Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
