@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE88445BB56
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:16:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5281845BB80
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:17:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243824AbhKXMSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:18:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49258 "EHLO mail.kernel.org"
+        id S243369AbhKXMUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:20:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243131AbhKXMNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:13:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C07961139;
-        Wed, 24 Nov 2021 12:07:55 +0000 (UTC)
+        id S242517AbhKXMPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:15:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB1AE6104F;
+        Wed, 24 Nov 2021 12:09:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755675;
-        bh=k/qGnVM1aa5UVjy82Ga2yJkGshjLU7Q6dmKkkVmu5iY=;
+        s=korg; t=1637755799;
+        bh=oMbY2XtJRieODH4sotdFeYzvnaoS12QxEHFHSuuwwJI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SB5ECht9tKYYTP5fPYQW3Uk3/MGuzAkOM1vAkjXsM3AIab+uBoUietABt7PejNlFt
-         24efzMyMlanmOQtE+ZxUMM6ykgbv04mFqni1VSxeurYKhArEYlHtyjpIjAeAlkN8Xn
-         QDtBX3gvbSHxnzb8L8BdOOKsEbHCKiDqGxP5dGsQ=
+        b=tAuYVgolr0T/B5vbUzCmstiqz4G9EpAl2zEMCrUxHn2axGXYWPhGJN/E+0UzSBJ25
+         Ri/BpxaTJfeL1hpvdgASjQ8WMpeUvuaQOz1xWjwaas2mPFDerF0NsyahpOoUqnqe6f
+         NMQJvWwU37vUpky9l02s34jo2PoVJ85WeaXYWri4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.9 018/207] x86/irq: Ensure PI wakeup handler is unregistered before module unload
-Date:   Wed, 24 Nov 2021 12:54:49 +0100
-Message-Id: <20211124115704.560465623@linuxfoundation.org>
+        stable@vger.kernel.org, Erik Ekman <erik@kryo.se>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 019/207] sfc: Dont use netif_info before net_device setup
+Date:   Wed, 24 Nov 2021 12:54:50 +0100
+Message-Id: <20211124115704.590650150@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
 References: <20211124115703.941380739@linuxfoundation.org>
@@ -39,43 +41,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Erik Ekman <erik@kryo.se>
 
-commit 6ff53f6a438f72998f56e82e76694a1df9d1ea2c upstream.
+[ Upstream commit bf6abf345dfa77786aca554bc58c64bd428ecb1d ]
 
-Add a synchronize_rcu() after clearing the posted interrupt wakeup handler
-to ensure all readers, i.e. in-flight IRQ handlers, see the new handler
-before returning to the caller.  If the caller is an exiting module and
-is unregistering its handler, failure to wait could result in the IRQ
-handler jumping into an unloaded module.
+Use pci_info instead to avoid unnamed/uninitialized noise:
 
-The registration path doesn't require synchronization, as it's the
-caller's responsibility to not generate interrupts it cares about until
-after its handler is registered.
+[197088.688729] sfc 0000:01:00.0: Solarflare NIC detected
+[197088.690333] sfc 0000:01:00.0: Part Number : SFN5122F
+[197088.729061] sfc 0000:01:00.0 (unnamed net_device) (uninitialized): no SR-IOV VFs probed
+[197088.729071] sfc 0000:01:00.0 (unnamed net_device) (uninitialized): no PTP support
 
-Fixes: f6b3c72c2366 ("x86/irq: Define a global vector for VT-d Posted-Interrupts")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20211009001107.3936588-2-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Inspired by fa44821a4ddd ("sfc: don't use netif_info et al before
+net_device is registered") from Heiner Kallweit.
+
+Signed-off-by: Erik Ekman <erik@kryo.se>
+Acked-by: Martin Habets <habetsm.xilinx@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/irq.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/sfc/ptp.c         | 4 ++--
+ drivers/net/ethernet/sfc/siena_sriov.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
---- a/arch/x86/kernel/irq.c
-+++ b/arch/x86/kernel/irq.c
-@@ -284,8 +284,10 @@ void kvm_set_posted_intr_wakeup_handler(
- {
- 	if (handler)
- 		kvm_posted_intr_wakeup_handler = handler;
--	else
-+	else {
- 		kvm_posted_intr_wakeup_handler = dummy_handler;
-+		synchronize_rcu();
-+	}
- }
- EXPORT_SYMBOL_GPL(kvm_set_posted_intr_wakeup_handler);
+diff --git a/drivers/net/ethernet/sfc/ptp.c b/drivers/net/ethernet/sfc/ptp.c
+index 04cbff7f1b23d..a48ff6fc66b44 100644
+--- a/drivers/net/ethernet/sfc/ptp.c
++++ b/drivers/net/ethernet/sfc/ptp.c
+@@ -494,7 +494,7 @@ static int efx_ptp_get_attributes(struct efx_nic *efx)
+ 	} else if (rc == -EINVAL) {
+ 		fmt = MC_CMD_PTP_OUT_GET_ATTRIBUTES_SECONDS_NANOSECONDS;
+ 	} else if (rc == -EPERM) {
+-		netif_info(efx, probe, efx->net_dev, "no PTP support\n");
++		pci_info(efx->pci_dev, "no PTP support\n");
+ 		return rc;
+ 	} else {
+ 		efx_mcdi_display_error(efx, MC_CMD_PTP, sizeof(inbuf),
+@@ -613,7 +613,7 @@ static int efx_ptp_disable(struct efx_nic *efx)
+ 	 * should only have been called during probe.
+ 	 */
+ 	if (rc == -ENOSYS || rc == -EPERM)
+-		netif_info(efx, probe, efx->net_dev, "no PTP support\n");
++		pci_info(efx->pci_dev, "no PTP support\n");
+ 	else if (rc)
+ 		efx_mcdi_display_error(efx, MC_CMD_PTP,
+ 				       MC_CMD_PTP_IN_DISABLE_LEN,
+diff --git a/drivers/net/ethernet/sfc/siena_sriov.c b/drivers/net/ethernet/sfc/siena_sriov.c
+index da7b94f346049..30d58f72725df 100644
+--- a/drivers/net/ethernet/sfc/siena_sriov.c
++++ b/drivers/net/ethernet/sfc/siena_sriov.c
+@@ -1059,7 +1059,7 @@ void efx_siena_sriov_probe(struct efx_nic *efx)
+ 		return;
  
+ 	if (efx_siena_sriov_cmd(efx, false, &efx->vi_scale, &count)) {
+-		netif_info(efx, probe, efx->net_dev, "no SR-IOV VFs probed\n");
++		pci_info(efx->pci_dev, "no SR-IOV VFs probed\n");
+ 		return;
+ 	}
+ 	if (count > 0 && count > max_vfs)
+-- 
+2.33.0
+
 
 
