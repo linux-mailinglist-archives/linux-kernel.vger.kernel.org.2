@@ -2,178 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC3345C735
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:25:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B286145C076
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346811AbhKXO2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:28:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352387AbhKXO2G (ORCPT
+        id S244649AbhKXNJT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Nov 2021 08:09:19 -0500
+Received: from mail4.swissbit.com ([176.95.1.100]:56766 "EHLO
+        mail4.swissbit.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347321AbhKXNG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:28:06 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36766C08EC3D
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 04:52:31 -0800 (PST)
-Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1mprlF-0004DR-BH; Wed, 24 Nov 2021 13:52:29 +0100
-Message-ID: <4f03875f-36ad-bbdb-2948-976af6bdcdc2@leemhuis.info>
-Date:   Wed, 24 Nov 2021 13:52:28 +0100
+        Wed, 24 Nov 2021 08:06:29 -0500
+X-Greylist: delayed 627 seconds by postgrey-1.27 at vger.kernel.org; Wed, 24 Nov 2021 08:06:28 EST
+Received: from mail4.swissbit.com (localhost [127.0.0.1])
+        by DDEI (Postfix) with ESMTP id 6349B12309D;
+        Wed, 24 Nov 2021 13:52:49 +0100 (CET)
+Received: from mail4.swissbit.com (localhost [127.0.0.1])
+        by DDEI (Postfix) with ESMTP id 50F3412135E;
+        Wed, 24 Nov 2021 13:52:49 +0100 (CET)
+X-TM-AS-ERS: 10.149.2.84-127.5.254.253
+X-TM-AS-SMTP: 1.0 ZXguc3dpc3NiaXQuY29t Y2xvZWhsZUBoeXBlcnN0b25lLmNvbQ==
+X-DDEI-TLS-USAGE: Used
+Received: from ex.swissbit.com (SBDEEX02.sbitdom.lan [10.149.2.84])
+        by mail4.swissbit.com (Postfix) with ESMTPS;
+        Wed, 24 Nov 2021 13:52:49 +0100 (CET)
+Received: from sbdeex02.sbitdom.lan (10.149.2.84) by sbdeex02.sbitdom.lan
+ (10.149.2.84) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Wed, 24 Nov
+ 2021 13:52:48 +0100
+Received: from sbdeex02.sbitdom.lan ([fe80::e0eb:ade8:2d90:1f74]) by
+ sbdeex02.sbitdom.lan ([fe80::e0eb:ade8:2d90:1f74%8]) with mapi id
+ 15.02.0986.014; Wed, 24 Nov 2021 13:52:48 +0100
+From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
+To:     Jaehoon Chung <jh80.chung@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        John Keeping <john@metanate.com>
+CC:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] mmc: dw_mmc: use standard "mmc" alias stem
+Thread-Topic: [PATCH 2/2] mmc: dw_mmc: use standard "mmc" alias stem
+Thread-Index: AQHX2xySGVxdpK/hyE2/b74u5aNE2qwRezsAgADwPwCAAEFK9g==
+Date:   Wed, 24 Nov 2021 12:52:48 +0000
+Message-ID: <3b78d0e4656f4df6bf548cd9f7557ec0@hyperstone.com>
+References: <20211116190244.1417591-1-john@metanate.com>
+        <20211116190244.1417591-3-john@metanate.com>
+        <CGME20211123193506epcas1p49d0d0a2d66c6e560ee26077da9c0202b@epcas1p4.samsung.com>
+        <CAPDyKFp1zMBUfK7LteW0yEfTpqtU+P+EybLsJBFx_r54HwFdMg@mail.gmail.com>,<315972c2-2253-ad10-b712-2d2c96b3da26@samsung.com>
+In-Reply-To: <315972c2-2253-ad10-b712-2d2c96b3da26@samsung.com>
+Accept-Language: en-US, de-DE
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.154.1.4]
+Content-Type: text/plain;
+        charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: Linux regressions report for mainline [2021-11-24]
-Content-Language: en-BS
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux regressions mailing list <regressions@lists.linux.dev>
-References: <163774583541.221636.5062449110647587402@leemhuis.info>
- <ed60649f-db15-db1d-f7b5-a0878f639d64@leemhuis.info>
- <YZ4b7N4OTjypAtc7@kroah.com>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <YZ4b7N4OTjypAtc7@kroah.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1637758351;de8f5a43;
-X-HE-SMSGID: 1mprlF-0004DR-BH
+X-TMASE-Version: DDEI-5.1-8.6.1018-26548.007
+X-TMASE-Result: 10--1.407700-10.000000
+X-TMASE-MatchedRID: 6E41RGmUyPrUL3YCMmnG4gCNFKULxGCZW6IdALvH8VNwE7NCfvba3GUS
+        rm6wRiNd2cNhLWr7qILpLYFxODRuvjM9BBRuZZ1vB8FxO/BQHsIfQ0DEYgUiKqq9wgXVNwtgdIJ
+        YUTzuXUUHATBTVJGV5ZSttLtHP+zpmaTQpcNd9EZLQaU8f2RHcsuCYrT3WeZNIyM6bqaAlyvx/h
+        K2QE5rfkjQI6DCLKphKsS+56gpTfPUPdM50hQuqtjoQZHeT+6KaVixrzjDaFMvfU/riSJXkSRHy
+        YWCHVT1kPI1/ZdqoS3Yx3U2V+RyvEaLFcw9F5OfR4PPMO+JjQ5BmlBF/IJ0fJj+eLysI+/go8WM
+        kQWv6iUig6xaCvyzXY6HM5rqDwqtGLbAfzBTMDNxtffbMaCwB3yI7GSJwtUAUqUQlXIvT29q3RL
+        sD9jjz0MMprcbiest
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
+X-TMASE-INERTIA: 0-0;;;;
+X-TMASE-XGENCLOUD: 0417d7b1-9dd2-4d05-8304-a21658566d83-0-0-200-0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.11.21 12:03, Greg KH wrote:
-> On Wed, Nov 24, 2021 at 11:01:52AM +0100, Thorsten Leemhuis wrote:
->> Lo! This was the first report sent by regzbot, my Linux kernel
->> regression tracking bot, so I guess it might be a good idea to highlight
->> a few of it's aspects:
->>
->> On 24.11.21 10:25, Regzbot (on behalf of Thorsten Leemhuis) wrote:
->>> From: Regzbot (for Thorsten Leemhuis) <regressions@leemhuis.info>
->>>
->>> Hi, this is regzbot, the Linux kernel regression tracking bot.
->>>
->>> Currently I'm aware of 15 regressions in linux-mainline. Find the
->>> current status below and the latest on the web:
->>>
->>> https://linux-regtracking.leemhuis.info/regzbot/mainline/
->>>
->>> Bye bye, hope to see you soon for the next report.
->>>    Regzbot (on behalf of Thorsten Leemhuis)
->>
->> >From now on I plan to make regzbot send such reports on Monday mornings,
->> e.g. usually a few hours after Linus released a new RC.
->>
->> Let me know what you think about the format.
->>
->> A few random thoughts and explanations about the current format:
->>
->> - next weeks report will highlight regressions that get added to regzbot
->> over the next few days
->>
->> - I chose to categorize the regressions by identification status and by
->> version line. Those where the culprit is identified come first, as they
->> are the ones which most of the time can be solved by reverting the culprit
->>
->> - the entries in each section are ordered by time of last activity,
->> which makes it easy to spot those where nothing happened recently, as
->> they are near the end of a section.
->>
->> - the webui (https://linux-regtracking.leemhuis.info/regzbot/mainline/ )
->> links to the latest five activities regzbot noticed (an activity most of
->> the time will be a mail send in reply to the report or a related thread
->> that regzbot monitors). I for now chose to not do that in the report, as
->> it would make it much longer and might be something that spam filters
->> consider suspicious.
->>
->> That's it from my side. Let me know what you think.
-> 
-> I like it,
+Sorry for hijacking this thread.
 
-Glad to hear. Many thx for the feedback!
 
-> but as a maintainer, I find this hard to know what to do with
-> it.
+From: Jaehoon Chung <jh80.chung@samsung.com>
+Sent: Wednesday, November 24, 2021 10:54 AM
+To: Ulf Hansson; John Keeping
+Cc: linux-mmc@vger.kernel.org; linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] mmc: dw_mmc: use standard "mmc" alias stem
 
-Well, I designed this a bit more for the tree maintainer, so Linus can:
+>>> The old "mshc" lookup is kept for backwards compatibility.
+>> 
+>> The mshc alias is really weird!
+>> 
+>> It looks like some leftover from when the dw_mmc controller supported
+>> multiple slots. This support was dropped a long time ago, simply
+>> because it never really worked - and it was not worth trying to. Only
+>> one slot per controller is supported.
+>
+>As Ulf mentioned, dw_mmc controller can be supported multiple slot.
+>But I didn't see its case to use multiple slot. And I had been done to drop a long time ago.
+>
+>mshc was used because of Mobile Storage Host Controller.
 
-(1) see when things are not moving forward as quickly as he'd like to
-and get involved in the discussions or revert a commit
+I assume this means you are open to a rework for dw_mmc?
+I have a bigger patch for dw_mmc that I work on myself.
+I removed the slot functionality at the start because there is no way for me to verify that I did not break this feature in the meantime.
+But if it never worked and there is no platform for it, then removing this is fine for everyone?
+Otherwise I probably would submit my rework for staging.
 
-(2) decide if he wants to release another rc or the final
+Regards,
+Christian=
+Hyperstone GmbH | Reichenaustr. 39a  | 78467 Konstanz
+Managing Director: Dr. Jan Peter Berns.
+Commercial register of local courts: Freiburg HRB381782
 
-> As a maintainer, I want to be reminded of what regressions have been
-> reported for my subsystem, so I know what to do and who to go poke about
-> them.
-> 
-> I could dig through the list and try to see if these are relevant to me,
-> but it's not always obvious.
-
-Yeah, that true. :-/
-
-> How about something like "one email per issue" as a response from the
-> first report, that would cc: the needed maintainers (or people from
-> MAINTAINERS, you should be able to get that automatically from
-> get_maintainer.pl) and the subsystem mailing list (again from
-> get_maintainers.pl), so that I am constantly reminded that "you need to
-> get this fixed!".
-
-I'll keep this idea in mind. But that would result in a lot of mails.
-That's something I like to avoid, as we all get enough mails already: if
-regzbot starts to spam people, then some people might set up a mental or
-procmail filter to ignore all of them.
-
-That's why I settled on a different strategy:
-
-> Pester me, it's my job as a maintainer to get regressions resolved.
-
-I'm pestering developers and maintainers already, but I do it only when
-it seems to be needed. And I do it manually for now; I intend to make
-regzbot do it automatically sooner or later, but first I want to get a
-better feeling when it's appropriate to pester people without getting
-them quickly annoyed -- e.g. after what time and in which situations.
-
-Here for example I asked why a patch didn't proceed, and got a reply
-from the maintainer:
-https://lore.kernel.org/regressions/cfac5f5c-83d7-e0d9-5368-07ca041ebaed@leemhuis.info/
-Seems the patch still didn't get any farther, so I guess it soon time
-for me to poke again.
-
-In another thread two pokes both helped to get things rolling again, but
-seems I soon need to send a third one, as it seems no one really feels
-responsible:
-https://lore.kernel.org/lkml/40550C00-4EE5-480F-AFD4-A2ACA01F9DBB@live.com/
-
-Those are just two examples, I poked a few more discussions already and
-it most of the time helped.
-
-IOW: for now I'm trying the strategy "only send mails when its needed".
-
-But this made me aware that I should teach regzbot one thing: if the
-culprit is known, it should check if everyone in the SOB chain of the
-change is CCed to the discussion on the regression.
-
->  If
-> I see a long list with no names on it, It's easier for me to just ignore
-> :)>
-> Anyway, I know that's more work for you, don't do it if you don't want
-> to, but as you have individual items in your database already, maybe it
-> is easy to do,
-
-Not really, as for now regzbot doesn't assign regressions to a
-subsystem. I could add that, but how to fill and maintain that
-association? When the culprit is known, regzbot should be able to fill
-it automatically using the SOB chain or the path of the merge. But if
-it's not, it becomes something that some human would need to do
-manually. I really tried hard to avoid anything that requires manual
-work, as it always hard to make people do it :-/
-
-That being said: I'm pretty sure I sooner or later will make regzbot
-store a association to a subsystem.
-
-> I don't know.  Thanks again for doing this work, it's
-> great to see happen.
-
-thx again!
-
-Ciao, Thorsten
