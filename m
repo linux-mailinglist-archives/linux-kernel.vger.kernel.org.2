@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E17345C2D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:29:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9EF145C2DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:30:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346126AbhKXNcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:32:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60408 "EHLO mail.kernel.org"
+        id S1346499AbhKXNdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:33:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351256AbhKXNaZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:30:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2CBB615A7;
-        Wed, 24 Nov 2021 12:52:01 +0000 (UTC)
+        id S1348658AbhKXNap (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:30:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E74E061BC2;
+        Wed, 24 Nov 2021 12:52:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758322;
-        bh=OXA71uP9NRZyclYMUe01xxTp0HU8RDER5d0J8mQ1w9A=;
+        s=korg; t=1637758341;
+        bh=ZqJljDphuKdeHOn5RS+GpUkZPitLaXlIykVrdPvKGsg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pjcqfW6RbkROTHNIOEW3chG982Yrci0BDyJY4IGuH/Gmc/VKrreoE/BsYBxMzZuhG
-         CIWrMcjBdbu1pq5Gr9rXhVfwBTGchUhj5YVwnky/CS4RnhcHjTWylDIa2X6mvKu/+S
-         JkW/aerIXi0PPffPUihAUa499p2+Fqof+DxUgBCw=
+        b=uAR2AS8rT1CX+Hdm7nwujWFuK55IclYxYcFmxcUMw8FFgpk/NopFfvKruP+Oxmtm5
+         TUhHjWg6hcBbiMul13WoB6Pj27cK9Gp3Ql2ir28bQYgBTVg8XPrp9oLlW0C+BLe1Nt
+         dfKREAdGnha8AUoxdKDQhcOxD/4D7ncGthRK9QVk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
         Jernej Skrabec <jernej.skrabec@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 004/154] arm64: dts: allwinner: h5: Fix GPU thermal zone node name
-Date:   Wed, 24 Nov 2021 12:56:40 +0100
-Message-Id: <20211124115702.506236915@linuxfoundation.org>
+Subject: [PATCH 5.10 005/154] arm64: dts: allwinner: a100: Fix thermal zone node name
+Date:   Wed, 24 Nov 2021 12:56:41 +0100
+Message-Id: <20211124115702.539550607@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
 References: <20211124115702.361983534@linuxfoundation.org>
@@ -42,29 +42,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Maxime Ripard <maxime@cerno.tech>
 
-[ Upstream commit 94a0f2b0e4e0953d8adf319c44244ef7a57de32c ]
+[ Upstream commit 5c34c4e46e601554bfa370b23c8ae3c3c734e9f7 ]
 
-The GPU thermal zone is named gpu_thermal. However, the underscore is
-an invalid character for a node name and the thermal zone binding
-explicitly requires that zones are called *-thermal. Let's fix it.
+The thermal zones one the A100 are called $device-thermal-zone.
+
+However, the thermal zone binding explicitly requires that zones are
+called *-thermal. Let's fix it.
 
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-Link: https://lore.kernel.org/r/20210901091852.479202-48-maxime@cerno.tech
+Link: https://lore.kernel.org/r/20210901091852.479202-50-maxime@cerno.tech
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi
-index 10489e5086956..0ee8a5adf02b0 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h5.dtsi
-@@ -204,7 +204,7 @@
- 			};
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi
+index cc321c04f1219..f6d7d7f7fdabe 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a100.dtsi
+@@ -343,19 +343,19 @@
+ 	};
+ 
+ 	thermal-zones {
+-		cpu-thermal-zone {
++		cpu-thermal {
+ 			polling-delay-passive = <0>;
+ 			polling-delay = <0>;
+ 			thermal-sensors = <&ths 0>;
  		};
  
--		gpu_thermal {
+-		ddr-thermal-zone {
++		ddr-thermal {
+ 			polling-delay-passive = <0>;
+ 			polling-delay = <0>;
+ 			thermal-sensors = <&ths 2>;
+ 		};
+ 
+-		gpu-thermal-zone {
 +		gpu-thermal {
  			polling-delay-passive = <0>;
  			polling-delay = <0>;
