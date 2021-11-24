@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BDEA45C330
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:33:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECB445C124
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:12:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347191AbhKXNgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:36:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50282 "EHLO mail.kernel.org"
+        id S1347021AbhKXNPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:15:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351806AbhKXNdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:33:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A046561BE3;
-        Wed, 24 Nov 2021 12:53:38 +0000 (UTC)
+        id S1348101AbhKXNMc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:12:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 923BA61A87;
+        Wed, 24 Nov 2021 12:42:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758419;
-        bh=vzrUnavhNb9I4a04LkggQmVUP+tiz/IchngyYaKx/dY=;
+        s=korg; t=1637757766;
+        bh=r1WmjwjlC6jxKn/YidomiPIH0ZoPKcK7bHjyxb/w5Fo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wdqp8fW/Uf+u9LcIkNSOnq/nefKNY3N0tWe/QInnh4O/Ou+zLAyTb9ad3R/fcgM50
-         MDYuGII3/6ci21WuUKMJEceCgpJw6mcplnGBFhE57x7WL+T2s3EDUAQyh93KaAX17W
-         CzN8/U3wz/JXuKmFNoOzVPOgGLVzjNoHxcsKlMpE=
+        b=NOmjYxf7cA3pHMOVIf4YGs8FBVQbzyDHzR/hb7wM3A1MNtX/QVjx+KOkwxHp8+HEG
+         4RmCXMxB09bohT98bHNz++n1aaqxrpzzUsfozodgo0FfQ+NosJw21MyVdH2JeQY7sX
+         gxlcYwQv7Q+p5ylKfh4QC2glL1kQnq0ReuysjdH0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Laibin Qiu <qiulaibin@huawei.com>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Yang Yingliang <yangyingliang@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 063/154] blkcg: Remove extra blkcg_bio_issue_init
-Date:   Wed, 24 Nov 2021 12:57:39 +0100
-Message-Id: <20211124115704.356983029@linuxfoundation.org>
+Subject: [PATCH 4.19 270/323] usb: host: ohci-tmio: check return value after calling platform_get_resource()
+Date:   Wed, 24 Nov 2021 12:57:40 +0100
+Message-Id: <20211124115727.985767242@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,145 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laibin Qiu <qiulaibin@huawei.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit b781d8db580c058ecd54ed7d5dde7f8270b25f5b ]
+[ Upstream commit 9eff2b2e59fda25051ab36cd1cb5014661df657b ]
 
-KASAN reports a use-after-free report when doing block test:
+It will cause null-ptr-deref if platform_get_resource() returns NULL,
+we need check the return value.
 
-==================================================================
-[10050.967049] BUG: KASAN: use-after-free in
-submit_bio_checks+0x1539/0x1550
-
-[10050.977638] Call Trace:
-[10050.978190]  dump_stack+0x9b/0xce
-[10050.979674]  print_address_description.constprop.6+0x3e/0x60
-[10050.983510]  kasan_report.cold.9+0x22/0x3a
-[10050.986089]  submit_bio_checks+0x1539/0x1550
-[10050.989576]  submit_bio_noacct+0x83/0xc80
-[10050.993714]  submit_bio+0xa7/0x330
-[10050.994435]  mpage_readahead+0x380/0x500
-[10050.998009]  read_pages+0x1c1/0xbf0
-[10051.002057]  page_cache_ra_unbounded+0x4c2/0x6f0
-[10051.007413]  do_page_cache_ra+0xda/0x110
-[10051.008207]  force_page_cache_ra+0x23d/0x3d0
-[10051.009087]  page_cache_sync_ra+0xca/0x300
-[10051.009970]  generic_file_buffered_read+0xbea/0x2130
-[10051.012685]  generic_file_read_iter+0x315/0x490
-[10051.014472]  blkdev_read_iter+0x113/0x1b0
-[10051.015300]  aio_read+0x2ad/0x450
-[10051.023786]  io_submit_one+0xc8e/0x1d60
-[10051.029855]  __se_sys_io_submit+0x125/0x350
-[10051.033442]  do_syscall_64+0x2d/0x40
-[10051.034156]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-[10051.048733] Allocated by task 18598:
-[10051.049482]  kasan_save_stack+0x19/0x40
-[10051.050263]  __kasan_kmalloc.constprop.1+0xc1/0xd0
-[10051.051230]  kmem_cache_alloc+0x146/0x440
-[10051.052060]  mempool_alloc+0x125/0x2f0
-[10051.052818]  bio_alloc_bioset+0x353/0x590
-[10051.053658]  mpage_alloc+0x3b/0x240
-[10051.054382]  do_mpage_readpage+0xddf/0x1ef0
-[10051.055250]  mpage_readahead+0x264/0x500
-[10051.056060]  read_pages+0x1c1/0xbf0
-[10051.056758]  page_cache_ra_unbounded+0x4c2/0x6f0
-[10051.057702]  do_page_cache_ra+0xda/0x110
-[10051.058511]  force_page_cache_ra+0x23d/0x3d0
-[10051.059373]  page_cache_sync_ra+0xca/0x300
-[10051.060198]  generic_file_buffered_read+0xbea/0x2130
-[10051.061195]  generic_file_read_iter+0x315/0x490
-[10051.062189]  blkdev_read_iter+0x113/0x1b0
-[10051.063015]  aio_read+0x2ad/0x450
-[10051.063686]  io_submit_one+0xc8e/0x1d60
-[10051.064467]  __se_sys_io_submit+0x125/0x350
-[10051.065318]  do_syscall_64+0x2d/0x40
-[10051.066082]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-[10051.067455] Freed by task 13307:
-[10051.068136]  kasan_save_stack+0x19/0x40
-[10051.068931]  kasan_set_track+0x1c/0x30
-[10051.069726]  kasan_set_free_info+0x1b/0x30
-[10051.070621]  __kasan_slab_free+0x111/0x160
-[10051.071480]  kmem_cache_free+0x94/0x460
-[10051.072256]  mempool_free+0xd6/0x320
-[10051.072985]  bio_free+0xe0/0x130
-[10051.073630]  bio_put+0xab/0xe0
-[10051.074252]  bio_endio+0x3a6/0x5d0
-[10051.074984]  blk_update_request+0x590/0x1370
-[10051.075870]  scsi_end_request+0x7d/0x400
-[10051.076667]  scsi_io_completion+0x1aa/0xe50
-[10051.077503]  scsi_softirq_done+0x11b/0x240
-[10051.078344]  blk_mq_complete_request+0xd4/0x120
-[10051.079275]  scsi_mq_done+0xf0/0x200
-[10051.080036]  virtscsi_vq_done+0xbc/0x150
-[10051.080850]  vring_interrupt+0x179/0x390
-[10051.081650]  __handle_irq_event_percpu+0xf7/0x490
-[10051.082626]  handle_irq_event_percpu+0x7b/0x160
-[10051.083527]  handle_irq_event+0xcc/0x170
-[10051.084297]  handle_edge_irq+0x215/0xb20
-[10051.085122]  asm_call_irq_on_stack+0xf/0x20
-[10051.085986]  common_interrupt+0xae/0x120
-[10051.086830]  asm_common_interrupt+0x1e/0x40
-
-==================================================================
-
-Bio will be checked at beginning of submit_bio_noacct(). If bio needs
-to be throttled, it will start the timer and stop submit bio directly.
-Bio will submit in blk_throtl_dispatch_work_fn() when the timer expires.
-But in the current process, if bio is throttled, it will still set bio
-issue->value by blkcg_bio_issue_init(). This is redundant and may cause
-the above use-after-free.
-
-CPU0                                   CPU1
-submit_bio
-submit_bio_noacct
-  submit_bio_checks
-    blk_throtl_bio()
-      <=mod_timer(&sq->pending_timer
-                                      blk_throtl_dispatch_work_fn
-                                        submit_bio_noacct() <= bio have
-                                        throttle tag, will throw directly
-                                        and bio issue->value will be set
-                                        here
-
-                                      bio_endio()
-                                      bio_put()
-                                      bio_free() <= free this bio
-
-    blkcg_bio_issue_init(bio)
-      <= bio has been freed and
-      will lead to UAF
-  return BLK_QC_T_NONE
-
-Fix this by remove extra blkcg_bio_issue_init.
-
-Fixes: e439bedf6b24 (blkcg: consolidate bio_issue_init() to be a part of core)
-Signed-off-by: Laibin Qiu <qiulaibin@huawei.com>
-Link: https://lore.kernel.org/r/20211112093354.3581504-1-qiulaibin@huawei.com
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20211011134920.118477-1-yangyingliang@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-core.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/usb/host/ohci-tmio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index fbc39756f37de..26664f2a139eb 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -897,10 +897,8 @@ static noinline_for_stack bool submit_bio_checks(struct bio *bio)
- 	if (unlikely(!current->io_context))
- 		create_task_io_context(current, GFP_ATOMIC, q->node);
+diff --git a/drivers/usb/host/ohci-tmio.c b/drivers/usb/host/ohci-tmio.c
+index 983a00e2988dc..702d78e0d903a 100644
+--- a/drivers/usb/host/ohci-tmio.c
++++ b/drivers/usb/host/ohci-tmio.c
+@@ -196,7 +196,7 @@ static int ohci_hcd_tmio_drv_probe(struct platform_device *dev)
+ 	if (usb_disabled())
+ 		return -ENODEV;
  
--	if (blk_throtl_bio(bio)) {
--		blkcg_bio_issue_init(bio);
-+	if (blk_throtl_bio(bio))
- 		return false;
--	}
+-	if (!cell)
++	if (!cell || !regs || !config || !sram)
+ 		return -EINVAL;
  
- 	blk_cgroup_bio_start(bio);
- 	blkcg_bio_issue_init(bio);
+ 	if (irq < 0)
 -- 
 2.33.0
 
