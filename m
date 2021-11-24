@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 541B645C362
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:34:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECB0245C653
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:04:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352458AbhKXNiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:38:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46292 "EHLO mail.kernel.org"
+        id S1351859AbhKXOG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:06:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352457AbhKXNgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:36:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3861261C32;
-        Wed, 24 Nov 2021 12:54:50 +0000 (UTC)
+        id S1353751AbhKXOCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:02:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D728B61A81;
+        Wed, 24 Nov 2021 13:10:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758490;
-        bh=9E/5LVHUBUrhqFl3d0NRmKrKFLVng70JmW3JgCy9bB0=;
+        s=korg; t=1637759405;
+        bh=cX5CyYvbcEYag1cmPgNea++N9v20C836Mt7qe6OHTUQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2mrkTSxHyttfDVariCPvImdEHeotmDzI846bOG7e5+yzvz7uATkV5vB7UqCtHXowe
-         q8cpoBLYdeuvDj+AD3lIdyQE95PQ2znM0jZI7HhpyL/QIprrNqVgk5Jx4KDFmdRoP6
-         2V3y+MDpBZftSZYXihgBr+enAw4crLwdrcLuCqg4=
+        b=wQiGqSTMTOEk7OkqnjMiw3xcoy9kpT2vpWqRUdrFUlbOVjnvlt/Wk+6J075rmoWll
+         XkIqEwSJ9knPgSPc4jPwN0JpOHirzLqRQr/FGBzAWm7OBKx57s57I9BDxBftgjfP3X
+         xH81yZkTOTfUrqje+O394fR262ldWCDjALrzLPZY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.i.king@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 088/154] MIPS: generic/yamon-dt: fix uninitialized variable error
+        stable@vger.kernel.org, Mina Almasry <almasrymina@google.com>,
+        James Houghton <jthoughton@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Wei Xu <weixugc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.15 197/279] hugetlb, userfaultfd: fix reservation restore on userfaultfd error
 Date:   Wed, 24 Nov 2021 12:58:04 +0100
-Message-Id: <20211124115705.157611492@linuxfoundation.org>
+Message-Id: <20211124115725.541561611@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +43,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.i.king@googlemail.com>
+From: Mina Almasry <almasrymina@google.com>
 
-[ Upstream commit 255e51da15baed47531beefd02f222e4dc01f1c1 ]
+commit cc30042df6fcc82ea18acf0dace831503e60a0b7 upstream.
 
-In the case where fw_getenv returns an error when fetching values
-for ememsizea and memsize then variable phys_memsize is not assigned
-a variable and will be uninitialized on a zero check of phys_memsize.
-Fix this by initializing phys_memsize to zero.
+Currently in the is_continue case in hugetlb_mcopy_atomic_pte(), if we
+bail out using "goto out_release_unlock;" in the cases where idx >=
+size, or !huge_pte_none(), the code will detect that new_pagecache_page
+== false, and so call restore_reserve_on_error().  In this case I see
+restore_reserve_on_error() delete the reservation, and the following
+call to remove_inode_hugepages() will increment h->resv_hugepages
+causing a 100% reproducible leak.
 
-Cleans up cppcheck error:
-arch/mips/generic/yamon-dt.c:100:7: error: Uninitialized variable: phys_memsize [uninitvar]
+We should treat the is_continue case similar to adding a page into the
+pagecache and set new_pagecache_page to true, to indicate that there is
+no reservation to restore on the error path, and we need not call
+restore_reserve_on_error().  Rename new_pagecache_page to
+page_in_pagecache to make that clear.
 
-Fixes: f41d2430bbd6 ("MIPS: generic/yamon-dt: Support > 256MB of RAM")
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lkml.kernel.org/r/20211117193825.378528-1-almasrymina@google.com
+Fixes: c7b1850dfb41 ("hugetlb: don't pass page cache pages to restore_reserve_on_error")
+Signed-off-by: Mina Almasry <almasrymina@google.com>
+Reported-by: James Houghton <jthoughton@google.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Wei Xu <weixugc@google.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/mips/generic/yamon-dt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/hugetlb.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/generic/yamon-dt.c b/arch/mips/generic/yamon-dt.c
-index a3aa22c77cadc..a07a5edbcda78 100644
---- a/arch/mips/generic/yamon-dt.c
-+++ b/arch/mips/generic/yamon-dt.c
-@@ -75,7 +75,7 @@ static unsigned int __init gen_fdt_mem_array(
- __init int yamon_dt_append_memory(void *fdt,
- 				  const struct yamon_mem_region *regions)
- {
--	unsigned long phys_memsize, memsize;
-+	unsigned long phys_memsize = 0, memsize;
- 	__be32 mem_array[2 * MAX_MEM_ARRAY_ENTRIES];
- 	unsigned int mem_entries;
- 	int i, err, mem_off;
--- 
-2.33.0
-
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -5236,13 +5236,14 @@ int hugetlb_mcopy_atomic_pte(struct mm_s
+ 	int ret = -ENOMEM;
+ 	struct page *page;
+ 	int writable;
+-	bool new_pagecache_page = false;
++	bool page_in_pagecache = false;
+ 
+ 	if (is_continue) {
+ 		ret = -EFAULT;
+ 		page = find_lock_page(mapping, idx);
+ 		if (!page)
+ 			goto out;
++		page_in_pagecache = true;
+ 	} else if (!*pagep) {
+ 		/* If a page already exists, then it's UFFDIO_COPY for
+ 		 * a non-missing case. Return -EEXIST.
+@@ -5330,7 +5331,7 @@ int hugetlb_mcopy_atomic_pte(struct mm_s
+ 		ret = huge_add_to_page_cache(page, mapping, idx);
+ 		if (ret)
+ 			goto out_release_nounlock;
+-		new_pagecache_page = true;
++		page_in_pagecache = true;
+ 	}
+ 
+ 	ptl = huge_pte_lockptr(h, dst_mm, dst_pte);
+@@ -5394,7 +5395,7 @@ out_release_unlock:
+ 	if (vm_shared || is_continue)
+ 		unlock_page(page);
+ out_release_nounlock:
+-	if (!new_pagecache_page)
++	if (!page_in_pagecache)
+ 		restore_reserve_on_error(h, dst_vma, dst_addr, page);
+ 	put_page(page);
+ 	goto out;
 
 
