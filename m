@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8C445C38E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:37:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C464545C18F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:16:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350851AbhKXNk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:40:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50294 "EHLO mail.kernel.org"
+        id S1346656AbhKXNT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:19:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350316AbhKXNhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:37:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6962617E4;
-        Wed, 24 Nov 2021 12:55:45 +0000 (UTC)
+        id S1347901AbhKXNQC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:16:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C4F761411;
+        Wed, 24 Nov 2021 12:44:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758546;
-        bh=XAOwsrDqY+NaFcu7HWhx920pdcuNspL5g6BEq/cOASs=;
+        s=korg; t=1637757888;
+        bh=jWsCta6kK+DLAHPbBw9dqqO9O9iUoX/YFJwdV1TM2vg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZRwjJFm85f+nh8rJwn6SeAfAjCBUxOdGBxL5wX+bd1HPi5wyU1a8eaYKHhJ8VQiWv
-         bya1cXJsx+ssIpJjDUwuDLBjpvpokZL8rJqaMB+Qz/FdFIm2LxXiWqLYkAwCx9KZ3H
-         0cbpYezmlVd8hO0sDSaufcv9cLpdnEECWML3q9yQ=
+        b=pI9I23Hv/wMVq3pnS6YI2c6By/QSrkuDYKgdNtLoLo+QjC9Oq5PwQYN0bKUH6ZGUz
+         5/S2+GOPl/et8NvFs8dkYTQceVUc/I2LLWZSaFq5AatKxouNKOZtp1JJslG0SHjWZv
+         h5huaWhD2N4xdRPi2j8q/KQEInABnSVFdAu2ktGI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
-        Karen Sornek <karen.sornek@intel.com>,
-        Tony Brelinski <tony.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 104/154] i40e: Fix warning message and call stack during rmmod i40e driver
+        stable@vger.kernel.org, Chris Murphy <lists@colorremedies.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Chris Murphy <chris@colorremedies.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 4.19 310/323] btrfs: fix memory ordering between normal and ordered work functions
 Date:   Wed, 24 Nov 2021 12:58:20 +0100
-Message-Id: <20211124115705.654879255@linuxfoundation.org>
+Message-Id: <20211124115729.381261038@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,163 +42,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Karen Sornek <karen.sornek@intel.com>
+From: Nikolay Borisov <nborisov@suse.com>
 
-[ Upstream commit 3a3b311e3881172fc8e019b6508f04bc40c92d9d ]
+commit 45da9c1767ac31857df572f0a909fbe88fd5a7e9 upstream.
 
-Restore part of reset functionality used when reset is called
-from the VF to reset itself. Without this fix warning message
-is displayed when VF is being removed via sysfs.
+Ordered work functions aren't guaranteed to be handled by the same thread
+which executed the normal work functions. The only way execution between
+normal/ordered functions is synchronized is via the WORK_DONE_BIT,
+unfortunately the used bitops don't guarantee any ordering whatsoever.
 
-Fix the crash of the VF during reset by ensuring
-that the PF receives the reset message successfully.
-Refactor code to use one function instead of two.
+This manifested as seemingly inexplicable crashes on ARM64, where
+async_chunk::inode is seen as non-null in async_cow_submit which causes
+submit_compressed_extents to be called and crash occurs because
+async_chunk::inode suddenly became NULL. The call trace was similar to:
 
-Fixes: 5c3c48ac6bf5 ("i40e: implement virtual device interface")
-Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
-Signed-off-by: Karen Sornek <karen.sornek@intel.com>
-Tested-by: Tony Brelinski <tony.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+    pc : submit_compressed_extents+0x38/0x3d0
+    lr : async_cow_submit+0x50/0xd0
+    sp : ffff800015d4bc20
+
+    <registers omitted for brevity>
+
+    Call trace:
+     submit_compressed_extents+0x38/0x3d0
+     async_cow_submit+0x50/0xd0
+     run_ordered_work+0xc8/0x280
+     btrfs_work_helper+0x98/0x250
+     process_one_work+0x1f0/0x4ac
+     worker_thread+0x188/0x504
+     kthread+0x110/0x114
+     ret_from_fork+0x10/0x18
+
+Fix this by adding respective barrier calls which ensure that all
+accesses preceding setting of WORK_DONE_BIT are strictly ordered before
+setting the flag. At the same time add a read barrier after reading of
+WORK_DONE_BIT in run_ordered_work which ensures all subsequent loads
+would be strictly ordered after reading the bit. This in turn ensures
+are all accesses before WORK_DONE_BIT are going to be strictly ordered
+before any access that can occur in ordered_func.
+
+Reported-by: Chris Murphy <lists@colorremedies.com>
+Fixes: 08a9ff326418 ("btrfs: Added btrfs_workqueue_struct implemented ordered execution based on kernel workqueue")
+CC: stable@vger.kernel.org # 4.4+
+Link: https://bugzilla.redhat.com/show_bug.cgi?id=2011928
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Tested-by: Chris Murphy <chris@colorremedies.com>
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- .../ethernet/intel/i40e/i40e_virtchnl_pf.c    | 53 ++++++++-----------
- 1 file changed, 21 insertions(+), 32 deletions(-)
+ fs/btrfs/async-thread.c |   14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-index 7cf572d8bd140..41c0a103119c1 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-@@ -130,17 +130,18 @@ void i40e_vc_notify_vf_reset(struct i40e_vf *vf)
- /***********************misc routines*****************************/
+--- a/fs/btrfs/async-thread.c
++++ b/fs/btrfs/async-thread.c
+@@ -270,6 +270,13 @@ static void run_ordered_work(struct __bt
+ 				  ordered_list);
+ 		if (!test_bit(WORK_DONE_BIT, &work->flags))
+ 			break;
++		/*
++		 * Orders all subsequent loads after reading WORK_DONE_BIT,
++		 * paired with the smp_mb__before_atomic in btrfs_work_helper
++		 * this guarantees that the ordered function will see all
++		 * updates from ordinary work function.
++		 */
++		smp_rmb();
  
- /**
-- * i40e_vc_disable_vf
-+ * i40e_vc_reset_vf
-  * @vf: pointer to the VF info
-- *
-- * Disable the VF through a SW reset.
-+ * @notify_vf: notify vf about reset or not
-+ * Reset VF handler.
-  **/
--static inline void i40e_vc_disable_vf(struct i40e_vf *vf)
-+static void i40e_vc_reset_vf(struct i40e_vf *vf, bool notify_vf)
- {
- 	struct i40e_pf *pf = vf->pf;
- 	int i;
- 
--	i40e_vc_notify_vf_reset(vf);
-+	if (notify_vf)
-+		i40e_vc_notify_vf_reset(vf);
- 
- 	/* We want to ensure that an actual reset occurs initiated after this
- 	 * function was called. However, we do not want to wait forever, so
-@@ -158,9 +159,14 @@ static inline void i40e_vc_disable_vf(struct i40e_vf *vf)
- 		usleep_range(10000, 20000);
+ 		/*
+ 		 * we are going to call the ordered done function, but
+@@ -355,6 +362,13 @@ static void normal_work_helper(struct bt
+ 	thresh_exec_hook(wq);
+ 	work->func(work);
+ 	if (need_order) {
++		/*
++		 * Ensures all memory accesses done in the work function are
++		 * ordered before setting the WORK_DONE_BIT. Ensuring the thread
++		 * which is going to executed the ordered work sees them.
++		 * Pairs with the smp_rmb in run_ordered_work.
++		 */
++		smp_mb__before_atomic();
+ 		set_bit(WORK_DONE_BIT, &work->flags);
+ 		run_ordered_work(wq, work);
  	}
- 
--	dev_warn(&vf->pf->pdev->dev,
--		 "Failed to initiate reset for VF %d after 200 milliseconds\n",
--		 vf->vf_id);
-+	if (notify_vf)
-+		dev_warn(&vf->pf->pdev->dev,
-+			 "Failed to initiate reset for VF %d after 200 milliseconds\n",
-+			 vf->vf_id);
-+	else
-+		dev_dbg(&vf->pf->pdev->dev,
-+			"Failed to initiate reset for VF %d after 200 milliseconds\n",
-+			vf->vf_id);
- }
- 
- /**
-@@ -2054,20 +2060,6 @@ err:
- 	return ret;
- }
- 
--/**
-- * i40e_vc_reset_vf_msg
-- * @vf: pointer to the VF info
-- *
-- * called from the VF to reset itself,
-- * unlike other virtchnl messages, PF driver
-- * doesn't send the response back to the VF
-- **/
--static void i40e_vc_reset_vf_msg(struct i40e_vf *vf)
--{
--	if (test_bit(I40E_VF_STATE_ACTIVE, &vf->vf_states))
--		i40e_reset_vf(vf, false);
--}
--
- /**
-  * i40e_vc_config_promiscuous_mode_msg
-  * @vf: pointer to the VF info
-@@ -2563,8 +2555,7 @@ static int i40e_vc_request_queues_msg(struct i40e_vf *vf, u8 *msg)
- 	} else {
- 		/* successful request */
- 		vf->num_req_queues = req_pairs;
--		i40e_vc_notify_vf_reset(vf);
--		i40e_reset_vf(vf, false);
-+		i40e_vc_reset_vf(vf, true);
- 		return 0;
- 	}
- 
-@@ -3777,8 +3768,7 @@ static int i40e_vc_add_qch_msg(struct i40e_vf *vf, u8 *msg)
- 	vf->num_req_queues = 0;
- 
- 	/* reset the VF in order to allocate resources */
--	i40e_vc_notify_vf_reset(vf);
--	i40e_reset_vf(vf, false);
-+	i40e_vc_reset_vf(vf, true);
- 
- 	return I40E_SUCCESS;
- 
-@@ -3818,8 +3808,7 @@ static int i40e_vc_del_qch_msg(struct i40e_vf *vf, u8 *msg)
- 	}
- 
- 	/* reset the VF in order to allocate resources */
--	i40e_vc_notify_vf_reset(vf);
--	i40e_reset_vf(vf, false);
-+	i40e_vc_reset_vf(vf, true);
- 
- 	return I40E_SUCCESS;
- 
-@@ -3881,7 +3870,7 @@ int i40e_vc_process_vf_msg(struct i40e_pf *pf, s16 vf_id, u32 v_opcode,
- 		i40e_vc_notify_vf_link_state(vf);
- 		break;
- 	case VIRTCHNL_OP_RESET_VF:
--		i40e_vc_reset_vf_msg(vf);
-+		i40e_vc_reset_vf(vf, false);
- 		ret = 0;
- 		break;
- 	case VIRTCHNL_OP_CONFIG_PROMISCUOUS_MODE:
-@@ -4135,7 +4124,7 @@ int i40e_ndo_set_vf_mac(struct net_device *netdev, int vf_id, u8 *mac)
- 	/* Force the VF interface down so it has to bring up with new MAC
- 	 * address
- 	 */
--	i40e_vc_disable_vf(vf);
-+	i40e_vc_reset_vf(vf, true);
- 	dev_info(&pf->pdev->dev, "Bring down and up the VF interface to make this change effective.\n");
- 
- error_param:
-@@ -4199,7 +4188,7 @@ int i40e_ndo_set_vf_port_vlan(struct net_device *netdev, int vf_id,
- 		/* duplicate request, so just return success */
- 		goto error_pvid;
- 
--	i40e_vc_disable_vf(vf);
-+	i40e_vc_reset_vf(vf, true);
- 	/* During reset the VF got a new VSI, so refresh a pointer. */
- 	vsi = pf->vsi[vf->lan_vsi_idx];
- 	/* Locked once because multiple functions below iterate list */
-@@ -4582,7 +4571,7 @@ int i40e_ndo_set_vf_trust(struct net_device *netdev, int vf_id, bool setting)
- 		goto out;
- 
- 	vf->trusted = setting;
--	i40e_vc_disable_vf(vf);
-+	i40e_vc_reset_vf(vf, true);
- 	dev_info(&pf->pdev->dev, "VF %u is now %strusted\n",
- 		 vf_id, setting ? "" : "un");
- 
--- 
-2.33.0
-
 
 
