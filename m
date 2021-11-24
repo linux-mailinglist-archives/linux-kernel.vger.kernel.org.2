@@ -2,707 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB8C45B793
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 10:37:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A1F45B79A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 10:39:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232828AbhKXJkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 04:40:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbhKXJkP (ORCPT
+        id S236930AbhKXJma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 04:42:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30657 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229646AbhKXJm1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 04:40:15 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC2D2C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 01:37:05 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id z5so7608715edd.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 01:37:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=LLsVfz2xkbVPHDb84dKuTA3CwlaBQFpehIHi1Zr5R0Q=;
-        b=ZbyrQva0VrcsjKblyf76l9JraOi8y4+WxsI8wvaFZOiSCWYGktp62tkcF9yw8LKwoA
-         J+v0IbD48bUQ5bfuSh9Ql638U0A106v+yLdzE2zDQzXAHIVIxorIPK5vjl3bNLS7s+Kc
-         2gHecZzhN78Hf2C8lCHrfYizFabhqlgMrhqP1QvyyFGJmQxHn2HzkDLDUQs0MlwIlAIx
-         WupMc+U5u8xRBVB6wEqvRxMtMxsrkEG2ypTlwhWyr4LsXeBb6MHxSk/ISSzsdx4pqZPQ
-         L1zsw+eF02YYGWyaKM6EQuytLUfP5MIwLi1eDg3NjySsDp77L1J+gxZpriRxHWHHExOn
-         LhJw==
+        Wed, 24 Nov 2021 04:42:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637746757;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zCwgu/iN8UvUnRGDuVKX8IG1jfgLBB20Ll53mZjRXog=;
+        b=Z4VAc+5lRZZHA/7zFIcPtT9uTDkOeAWCU5zNKLawSx5FJ0EsJM7IBjWVN1aCmvs7xn1OCZ
+        u3kt2mQ5+at2CAeKHlv6fyZPn/FKTusxpXe7NI0iwoL6amj/IBsQAQTIZQ6p100fpu/8WE
+        0jUOFoBZg8TUPppRdrnCebbqGjVJT/w=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-552-skC2DLrTM7i75CUQ-BowQQ-1; Wed, 24 Nov 2021 04:39:15 -0500
+X-MC-Unique: skC2DLrTM7i75CUQ-BowQQ-1
+Received: by mail-pg1-f197.google.com with SMTP id z10-20020a63e10a000000b003216c70bef7so527509pgh.10
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 01:39:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=LLsVfz2xkbVPHDb84dKuTA3CwlaBQFpehIHi1Zr5R0Q=;
-        b=TAeAsgbw618JI7eF1EaHeDFuPZHVzDmBXTBf8c8zTs2w+dZDSKD3x26rpy7pEYcsDS
-         NLCAraDICd4aLEZd6PE8TAZ3X8HIlUfyN9MYijP9SyqFhm+Nz8eeD3SPrSEOYehffPt3
-         2oEqXFq6UDq3ZKIBzt5FBlLVT3a9xQqYbYOOc0I9fD6VuZP/HD7s8zPxWKy3uzw6o9IL
-         oz7iFBIAsVs61HepZykIZPH//cb/LpqkJ9Ph+YrVmSqm8bhM05aKA2W+sH/xqdmnOTQv
-         263Zqho5897lVtxSascyDSXxFOB95PAWyjhTuKTJ51vJ+e6VST2H3kMP5UgLpQP7UOzi
-         WYJQ==
-X-Gm-Message-State: AOAM530Op+4p/DzeD5ty5JQk0tS00lEIJnkoSNxPInc8U3/D112my7aB
-        RI7Glp9chtOXsCVuIdYNTC8=
-X-Google-Smtp-Source: ABdhPJzjPOcr9hn6QajFZRQC0lV9ke1gNzpP/dT9k94n/HrEMrDj0wtrJihV4XeVbWHNGZLHaP082Q==
-X-Received: by 2002:a05:6402:51c7:: with SMTP id r7mr22010474edd.359.1637746623898;
-        Wed, 24 Nov 2021 01:37:03 -0800 (PST)
-Received: from [192.168.1.7] ([212.22.223.21])
-        by smtp.gmail.com with ESMTPSA id gn16sm6607235ejc.67.2021.11.24.01.37.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 01:37:03 -0800 (PST)
-Subject: Re: [PATCH V2 3/4] xen/unpopulated-alloc: Add mechanism to use Xen
- resource
-To:     Juergen Gross <jgross@suse.com>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Julien Grall <julien@xen.org>
-References: <1635264312-3796-1-git-send-email-olekstysh@gmail.com>
- <1635264312-3796-4-git-send-email-olekstysh@gmail.com>
- <alpine.DEB.2.21.2110280920110.20134@sstabellini-ThinkPad-T480s>
- <1d122e60-df9c-2ac6-8148-f6a836b9e51d@gmail.com>
- <alpine.DEB.2.22.394.2111181642340.1412361@ubuntu-linux-20-04-desktop>
- <f1f1025b-911d-3d27-f408-9c042bc4fca4@gmail.com>
- <alpine.DEB.2.22.394.2111191809100.1412361@ubuntu-linux-20-04-desktop>
- <76163855-c5eb-05db-2f39-3c6bfee46345@gmail.com>
- <d0b851a5-6546-3958-7d4c-9436f574d62e@suse.com>
-From:   Oleksandr <olekstysh@gmail.com>
-Message-ID: <600c9307-2717-3223-5bd0-fa0530e9e5af@gmail.com>
-Date:   Wed, 24 Nov 2021 11:37:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zCwgu/iN8UvUnRGDuVKX8IG1jfgLBB20Ll53mZjRXog=;
+        b=axoLaUZguY7lqhfaUBoeT+NS8kQxOb04TeXSjZaG9IeqNo2XBe+yD5mjYiHhmt0u4A
+         ad2iqtiNE0K4HomdEC+ZuzIUrjQEkGPaQurvZrVs2I+8fGYyXKF5mF5wrmbRtuNWqRbE
+         GrQW2nWVu8RmjrvLSZqY5pIa+sORCMDy0xCRqKUm+9qRH9S8ITemo4gBtwPSj9ByXdAu
+         q6rKzDUYvFyohHHJ1vfzm0RZvjkMvI2FTVO/EAQmoMmgIq8zC7wjdM78FzsK0zNurqMQ
+         G1la1Nmp27b7lCAQFY2nsRqcymppJjNtW/g3W33KCJAA6wziIWy3cExaEz91px7GL0Ov
+         1KVg==
+X-Gm-Message-State: AOAM530Mr0RBasSLvLLI1VQDEz8BblNHaIlIrZ9ktzSAGSCnB/6x1DoU
+        YPRjSOE2qCA+Ry1NuGnHETTlV17BM/SzS6ya/8tnKwUcKksCID2aAeZoNFeBq17/O6NJn5f588I
+        f6XDlk809mbyYbr9VovuSmMwRNG/z+qJHRkk18Sov
+X-Received: by 2002:a17:90b:1648:: with SMTP id il8mr13216911pjb.246.1637746754558;
+        Wed, 24 Nov 2021 01:39:14 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxhgOpc9n7O9Tx8Ko4L88LDtDV7faKx0HMHpbcxk55uIjDBqdstpusSYpNDQs7xPMtMbZ1FoZSqrENpQtmautA=
+X-Received: by 2002:a17:90b:1648:: with SMTP id il8mr13216878pjb.246.1637746754313;
+ Wed, 24 Nov 2021 01:39:14 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <d0b851a5-6546-3958-7d4c-9436f574d62e@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20211123191238.12472-1-jose.exposito89@gmail.com>
+In-Reply-To: <20211123191238.12472-1-jose.exposito89@gmail.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Wed, 24 Nov 2021 10:39:02 +0100
+Message-ID: <CAO-hwJLB8h6fQRF8UjN3rER_6xS2Shi3ffEr92PhkVCijtYRpQ@mail.gmail.com>
+Subject: Re: [PATCH 0/1] Do not map BTN_RIGHT/MIDDLE on buttonpads
+To:     =?UTF-8?B?Sm9zw6kgRXhww7NzaXRv?= <jose.exposito89@gmail.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Peter Hutterer <peter.hutterer@who-t.net>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jos=C3=A9,
 
-On 24.11.21 07:16, Juergen Gross wrote:
-
-Hi Juergen
-
-> On 23.11.21 17:46, Oleksandr wrote:
->>
->> On 20.11.21 04:19, Stefano Stabellini wrote:
->>
->> Hi Stefano, Juergen, all
->>
->>
->>> Juergen please see the bottom of the email
->>>
->>> On Fri, 19 Nov 2021, Oleksandr wrote:
->>>> On 19.11.21 02:59, Stefano Stabellini wrote:
->>>>> On Tue, 9 Nov 2021, Oleksandr wrote:
->>>>>> On 28.10.21 19:37, Stefano Stabellini wrote:
->>>>>>
->>>>>> Hi Stefano
->>>>>>
->>>>>> I am sorry for the late response.
->>>>>>
->>>>>>> On Tue, 26 Oct 2021, Oleksandr Tyshchenko wrote:
->>>>>>>> From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
->>>>>>>>
->>>>>>>> The main reason of this change is that unpopulated-alloc
->>>>>>>> code cannot be used in its current form on Arm, but there
->>>>>>>> is a desire to reuse it to avoid wasting real RAM pages
->>>>>>>> for the grant/foreign mappings.
->>>>>>>>
->>>>>>>> The problem is that system "iomem_resource" is used for
->>>>>>>> the address space allocation, but the really unallocated
->>>>>>>> space can't be figured out precisely by the domain on Arm
->>>>>>>> without hypervisor involvement. For example, not all device
->>>>>>>> I/O regions are known by the time domain starts creating
->>>>>>>> grant/foreign mappings. And following the advise from
->>>>>>>> "iomem_resource" we might end up reusing these regions by
->>>>>>>> a mistake. So, the hypervisor which maintains the P2M for
->>>>>>>> the domain is in the best position to provide unused regions
->>>>>>>> of guest physical address space which could be safely used
->>>>>>>> to create grant/foreign mappings.
->>>>>>>>
->>>>>>>> Introduce new helper arch_xen_unpopulated_init() which purpose
->>>>>>>> is to create specific Xen resource based on the memory regions
->>>>>>>> provided by the hypervisor to be used as unused space for Xen
->>>>>>>> scratch pages.
->>>>>>>>
->>>>>>>> If arch doesn't implement arch_xen_unpopulated_init() to
->>>>>>>> initialize Xen resource the default "iomem_resource" will be used.
->>>>>>>> So the behavior on x86 won't be changed.
->>>>>>>>
->>>>>>>> Also fall back to allocate xenballooned pages (steal real RAM
->>>>>>>> pages) if we do not have any suitable resource to work with and
->>>>>>>> as the result we won't be able to provide unpopulated pages.
->>>>>>>>
->>>>>>>> Signed-off-by: Oleksandr Tyshchenko 
->>>>>>>> <oleksandr_tyshchenko@epam.com>
->>>>>>>> ---
->>>>>>>> Changes RFC -> V2:
->>>>>>>>       - new patch, instead of
->>>>>>>>        "[RFC PATCH 2/2] xen/unpopulated-alloc: Query hypervisor to
->>>>>>>> provide
->>>>>>>> unallocated space"
->>>>>>>> ---
->>>>>>>>     drivers/xen/unpopulated-alloc.c | 89
->>>>>>>> +++++++++++++++++++++++++++++++++++++++--
->>>>>>>>     include/xen/xen.h               |  2 +
->>>>>>>>     2 files changed, 88 insertions(+), 3 deletions(-)
->>>>>>>>
->>>>>>>> diff --git a/drivers/xen/unpopulated-alloc.c
->>>>>>>> b/drivers/xen/unpopulated-alloc.c
->>>>>>>> index a03dc5b..1f1d8d8 100644
->>>>>>>> --- a/drivers/xen/unpopulated-alloc.c
->>>>>>>> +++ b/drivers/xen/unpopulated-alloc.c
->>>>>>>> @@ -8,6 +8,7 @@
->>>>>>>>       #include <asm/page.h>
->>>>>>>>     +#include <xen/balloon.h>
->>>>>>>>     #include <xen/page.h>
->>>>>>>>     #include <xen/xen.h>
->>>>>>>>     @@ -15,13 +16,29 @@ static DEFINE_MUTEX(list_lock);
->>>>>>>>     static struct page *page_list;
->>>>>>>>     static unsigned int list_count;
->>>>>>>>     +static struct resource *target_resource;
->>>>>>>> +static struct resource xen_resource = {
->>>>>>>> +    .name = "Xen unused space",
->>>>>>>> +};
->>>>>>>> +
->>>>>>>> +/*
->>>>>>>> + * If arch is not happy with system "iomem_resource" being 
->>>>>>>> used for
->>>>>>>> + * the region allocation it can provide it's own view by 
->>>>>>>> initializing
->>>>>>>> + * "xen_resource" with unused regions of guest physical 
->>>>>>>> address space
->>>>>>>> + * provided by the hypervisor.
->>>>>>>> + */
->>>>>>>> +int __weak arch_xen_unpopulated_init(struct resource *res)
->>>>>>>> +{
->>>>>>>> +    return -ENOSYS;
->>>>>>>> +}
->>>>>>>> +
->>>>>>>>     static int fill_list(unsigned int nr_pages)
->>>>>>>>     {
->>>>>>>>         struct dev_pagemap *pgmap;
->>>>>>>> -    struct resource *res;
->>>>>>>> +    struct resource *res, *tmp_res = NULL;
->>>>>>>>         void *vaddr;
->>>>>>>>         unsigned int i, alloc_pages = round_up(nr_pages,
->>>>>>>> PAGES_PER_SECTION);
->>>>>>>> -    int ret = -ENOMEM;
->>>>>>>> +    int ret;
->>>>>>>>           res = kzalloc(sizeof(*res), GFP_KERNEL);
->>>>>>>>         if (!res)
->>>>>>>> @@ -30,7 +47,7 @@ static int fill_list(unsigned int nr_pages)
->>>>>>>>         res->name = "Xen scratch";
->>>>>>>>         res->flags = IORESOURCE_MEM | IORESOURCE_BUSY;
->>>>>>>>     -    ret = allocate_resource(&iomem_resource, res,
->>>>>>>> +    ret = allocate_resource(target_resource, res,
->>>>>>>>                     alloc_pages * PAGE_SIZE, 0, -1,
->>>>>>>>                     PAGES_PER_SECTION * PAGE_SIZE, NULL,
->>>>>>>> NULL);
->>>>>>>>         if (ret < 0) {
->>>>>>>> @@ -38,6 +55,31 @@ static int fill_list(unsigned int nr_pages)
->>>>>>>>             goto err_resource;
->>>>>>>>         }
->>>>>>>>     +    /*
->>>>>>>> +     * Reserve the region previously allocated from Xen resource
->>>>>>>> to avoid
->>>>>>>> +     * re-using it by someone else.
->>>>>>>> +     */
->>>>>>>> +    if (target_resource != &iomem_resource) {
->>>>>>>> +        tmp_res = kzalloc(sizeof(*tmp_res), GFP_KERNEL);
->>>>>>>> +        if (!res) {
->>>>>>>> +            ret = -ENOMEM;
->>>>>>>> +            goto err_insert;
->>>>>>>> +        }
->>>>>>>> +
->>>>>>>> +        tmp_res->name = res->name;
->>>>>>>> +        tmp_res->start = res->start;
->>>>>>>> +        tmp_res->end = res->end;
->>>>>>>> +        tmp_res->flags = res->flags;
->>>>>>>> +
->>>>>>>> +        ret = insert_resource(&iomem_resource, tmp_res);
->>>>>>>> +        if (ret < 0) {
->>>>>>>> +            pr_err("Cannot insert IOMEM resource [%llx -
->>>>>>>> %llx]\n",
->>>>>>>> +                   tmp_res->start, tmp_res->end);
->>>>>>>> +            kfree(tmp_res);
->>>>>>>> +            goto err_insert;
->>>>>>>> +        }
->>>>>>>> +    }
->>>>>>> I am a bit confused.. why do we need to do this? Who could be
->>>>>>> erroneously re-using the region? Are you saying that the next time
->>>>>>> allocate_resource is called it could find the same region again? It
->>>>>>> doesn't seem possible?
->>>>>> No, as I understand the allocate_resource() being called for the 
->>>>>> same root
->>>>>> resource won't provide the same region... We only need to do this 
->>>>>> (insert
->>>>>> the
->>>>>> region into "iomem_resource") if we allocated it from our *internal*
->>>>>> "xen_resource", as *global* "iomem_resource" (which is used 
->>>>>> everywhere) is
->>>>>> not
->>>>>> aware of that region has been already allocated. So inserting a 
->>>>>> region
->>>>>> here we
->>>>>> reserving it, otherwise it could be reused elsewhere.
->>>>> But elsewhere where?
->>>> I think, theoretically everywhere where 
->>>> allocate_resource(&iomem_resource,
->>>> ...) is called.
->>>>
->>>>
->>>>> Let's say that allocate_resource allocates a range from xen_resource.
->>>>>   From reading the code, it doesn't look like iomem_resource would 
->>>>> have
->>>>> that range because the extended regions described under 
->>>>> /hypervisor are
->>>>> not added automatically to iomem_resource.
->>>>>
->>>>> So what if we don't call insert_resource? Nothing could allocate the
->>>>> same range because iomem_resource doesn't have it at all and
->>>>> xen_resource is not used anywhere if not here.
->>>>>
->>>>> What am I missing?
->>>>
->>>> Below my understanding which, of course, might be wrong.
->>>>
->>>> If we don't claim resource by calling insert_resource (or even
->>>> request_resource) here then the same range could be allocated 
->>>> everywhere where
->>>> allocate_resource(&iomem_resource, ...) is called.
->>>> I don't see what prevents the same range from being allocated. Why 
->>>> actually
->>>> allocate_resource(&iomem_resource, ...) can't provide the same 
->>>> range if it is
->>>> free (not-reserved-yet) from it's PoV? The comment above 
->>>> allocate_resource()
->>>> says "allocate empty slot in the resource tree given range & 
->>>> alignment". So
->>>> this "empty slot" could be exactly the same range.
->>>>
->>>> I experimented with that a bit trying to call
->>>> allocate_resource(&iomem_resource, ...) several times in another 
->>>> place to see
->>>> what ranges it returns in both cases (w/ and w/o calling 
->>>> insert_resource
->>>> here). So an experiment confirmed (of course, if I made it 
->>>> correctly) that the
->>>> same range could be allocated if we didn't call insert_resource() 
->>>> here. And as
->>>> I understand there is nothing strange here, as iomem_resource 
->>>> covers all
->>>> address space initially (0, -1) and everything *not* 
->>>> inserted/requested (in
->>>> other words, reserved) yet is considered as free and could be 
->>>> provided if fits
->>>> constraints. Or I really missed something?
->>> Thanks for the explanation! It was me that didn't know that
->>> iomem_resource covers all the address space initially. I thought it was
->>> populated only with actual iomem ranges. Now it makes sense, thanks!
->>>
->>>
->>>> It feels to me that it would be better to call request_resource() 
->>>> instead of
->>>> insert_resource(). It seems, that if no conflict happens both 
->>>> functions will
->>>> behave in same way, but in case of conflict if the conflicting 
->>>> resource
->>>> entirely fit the new resource the former will return an error. I 
->>>> think, this
->>>> way we will be able to detect that a range we are trying to reserve 
->>>> is already
->>>> present and bail out early.
->>>>
->>>>
->>>>> Or maybe it is the other way around: core Linux code assumes 
->>>>> everything
->>>>> is described in iomem_resource so something under kernel/ or mm/ 
->>>>> would
->>>>> crash if we start using a page pointing to an address missing from
->>>>> iomem_resource?
->>>>>>>>         pgmap = kzalloc(sizeof(*pgmap), GFP_KERNEL);
->>>>>>>>         if (!pgmap) {
->>>>>>>>             ret = -ENOMEM;
->>>>>>>> @@ -95,12 +137,40 @@ static int fill_list(unsigned int nr_pages)
->>>>>>>>     err_memremap:
->>>>>>>>         kfree(pgmap);
->>>>>>>>     err_pgmap:
->>>>>>>> +    if (tmp_res) {
->>>>>>>> +        release_resource(tmp_res);
->>>>>>>> +        kfree(tmp_res);
->>>>>>>> +    }
->>>>>>>> +err_insert:
->>>>>>>>         release_resource(res);
->>>>>>>>     err_resource:
->>>>>>>>         kfree(res);
->>>>>>>>         return ret;
->>>>>>>>     }
->>>>>>>>     +static void unpopulated_init(void)
->>>>>>>> +{
->>>>>>>> +    static bool inited = false;
->>>>>>> initialized = false
->>>>>> ok.
->>>>>>
->>>>>>
->>>>>>>> +    int ret;
->>>>>>>> +
->>>>>>>> +    if (inited)
->>>>>>>> +        return;
->>>>>>>> +
->>>>>>>> +    /*
->>>>>>>> +     * Try to initialize Xen resource the first and fall back to
->>>>>>>> default
->>>>>>>> +     * resource if arch doesn't offer one.
->>>>>>>> +     */
->>>>>>>> +    ret = arch_xen_unpopulated_init(&xen_resource);
->>>>>>>> +    if (!ret)
->>>>>>>> +        target_resource = &xen_resource;
->>>>>>>> +    else if (ret == -ENOSYS)
->>>>>>>> +        target_resource = &iomem_resource;
->>>>>>>> +    else
->>>>>>>> +        pr_err("Cannot initialize Xen resource\n");
->>>>>>>> +
->>>>>>>> +    inited = true;
->>>>>>>> +}
->>>>>>> Would it make sense to call unpopulated_init from an init function,
->>>>>>> rather than every time xen_alloc_unpopulated_pages is called?
->>>>>> Good point, thank you. Will do. To be honest, I also don't like the
->>>>>> current
->>>>>> approach much.
->>>>>>
->>>>>>
->>>>>>>>     /**
->>>>>>>>      * xen_alloc_unpopulated_pages - alloc unpopulated pages
->>>>>>>>      * @nr_pages: Number of pages
->>>>>>>> @@ -112,6 +182,16 @@ int xen_alloc_unpopulated_pages(unsigned int
->>>>>>>> nr_pages, struct page **pages)
->>>>>>>>         unsigned int i;
->>>>>>>>         int ret = 0;
->>>>>>>>     +    unpopulated_init();
->>>>>>>> +
->>>>>>>> +    /*
->>>>>>>> +     * Fall back to default behavior if we do not have any
->>>>>>>> suitable
->>>>>>>> resource
->>>>>>>> +     * to allocate required region from and as the result we 
->>>>>>>> won't
->>>>>>>> be able
->>>>>>>> to
->>>>>>>> +     * construct pages.
->>>>>>>> +     */
->>>>>>>> +    if (!target_resource)
->>>>>>>> +        return alloc_xenballooned_pages(nr_pages, pages);
->>>>>>> The commit message says that the behavior on x86 doesn't change 
->>>>>>> but this
->>>>>>> seems to be a change that could impact x86?
->>>>>> I don't think, however I didn't tested on x86 and might be wrong, 
->>>>>> but
->>>>>> according to the current patch, on x86 the "target_resource" is 
->>>>>> always
->>>>>> valid
->>>>>> and points to the "iomem_resource" as arch_xen_unpopulated_init() 
->>>>>> is not
->>>>>> implemented. So there won't be any fallback to use
->>>>>> alloc_(free)_xenballooned_pages() here and fill_list() will 
->>>>>> behave as
->>>>>> usual.
->>>>>    If target_resource is always valid, then we don't need this 
->>>>> special
->>>>> check. In fact, the condition should never be true.
->>>>
->>>> The target_resource is always valid and points to the 
->>>> "iomem_resource" on x86
->>>> (this is equivalent to the behavior before this patch).
->>>> On Arm target_resource might be NULL if arch_xen_unpopulated_init() 
->>>> failed,
->>>> for example, if no extended regions reported by the hypervisor.
->>>> We cannot use "iomem_resource" on Arm, only a resource constructed 
->>>> from
->>>> extended regions. This is why I added that check (and fallback to 
->>>> xenballooned
->>>> pages).
->>>> What I was thinking is that in case of using old Xen (although we 
->>>> would need
->>>> to balloon out RAM pages) we still would be able to keep working, 
->>>> so no need
->>>> to disable CONFIG_XEN_UNPOPULATED_ALLOC on such setups.
->>>>>> You raised a really good question, on Arm we need a fallback to 
->>>>>> balloon
->>>>>> out
->>>>>> RAM pages again if hypervisor doesn't provide extended regions 
->>>>>> (we run on
->>>>>> old
->>>>>> version, no unused regions with reasonable size, etc), so I 
->>>>>> decided to put
->>>>>> a
->>>>>> fallback code here, an indicator of the failure is invalid
->>>>>> "target_resource".
->>>>> I think it is unnecessary as we already assume today that
->>>>> &iomem_resource is always available.
->>>>>> I noticed the patch which is about to be upstreamed that removes
->>>>>> alloc_(free)xenballooned_pages API [1]. Right now I have no idea 
->>>>>> how/where
->>>>>> this fallback could be implemented as this is under build option 
->>>>>> control
->>>>>> (CONFIG_XEN_UNPOPULATED_ALLOC). So the API with the same name is 
->>>>>> either
->>>>>> used
->>>>>> for unpopulated pages (if set) or ballooned pages (if not set). I 
->>>>>> would
->>>>>> appreciate suggestions regarding that. I am wondering would it be 
->>>>>> possible
->>>>>> and
->>>>>> correctly to have both mechanisms (unpopulated and ballooned) 
->>>>>> enabled by
->>>>>> default and some init code to decide which one to use at runtime 
->>>>>> or some
->>>>>> sort?
->>>>> I would keep it simple and remove the fallback from this patch. So:
->>>>>
->>>>> - if not CONFIG_XEN_UNPOPULATED_ALLOC, then balloon
->>>>> - if CONFIG_XEN_UNPOPULATED_ALLOC, then
->>>>>       - xen_resource if present
->>>>>       - otherwise iomem_resource
->>>> Unfortunately, we cannot use iomem_resource on Arm safely, either 
->>>> xen_resource
->>>> or fail (if no fallback exists).
->>>>
->>>>
->>>>> The xen_resource/iomem_resource config can be done at init time using
->>>>> target_resource. At runtime, target_resource is always != NULL so we
->>>>> just go ahead and use it.
->>>>
->>>> Thank you for the suggestion. OK, let's keep it simple and drop 
->>>> fallback
->>>> attempts for now. With one remark:
->>>> We will make CONFIG_XEN_UNPOPULATED_ALLOC disabled by default on 
->>>> Arm in next
->>>> patch. So by default everything will behave as usual on Arm 
->>>> (balloon out RAM
->>>> pages),
->>>> if user knows for sure that Xen reports extended regions, he/she 
->>>> can enable
->>>> the config. This way we won't break anything. What do you think?
->>> Actually after reading your replies and explanation I changed 
->>> opinion: I
->>> think we do need the fallback because Linux cannot really assume that
->>> it is running on "new Xen" so it definitely needs to keep working if
->>> CONFIG_XEN_UNPOPULATED_ALLOC is enabled and the extended regions are 
->>> not
->>> advertised.
->>>
->>> I think we'll have to roll back some of the changes introduced by
->>> 121f2faca2c0a. That's because even if CONFIG_XEN_UNPOPULATED_ALLOC is
->>> enabled we cannot know if we can use unpopulated-alloc or whether we
->>> have to use alloc_xenballooned_pages until we parse the /hypervisor 
->>> node
->>> in device tree at runtime.
->>
->> Exactly!
->>
->>
->>>
->>> In short, we cannot switch between unpopulated-alloc and
->>> alloc_xenballooned_pages at build time, we have to do it at runtime
->>> (boot time).
->>
->> +1
->>
->>
->> I created a patch to partially revert 121f2faca2c0a "xen/balloon: 
->> rename alloc/free_xenballooned_pages".
->>
->> If there is no objections I will add it to V3 (which is almost ready, 
->> except the fallback bits). Could you please tell me what do you think?
->>
->>
->>  From dc79bcd425358596d95e715a8bd8b81deaaeb703 Mon Sep 17 00:00:00 2001
->> From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
->> Date: Tue, 23 Nov 2021 18:14:41 +0200
->> Subject: [PATCH] xen/balloon: Bring alloc(free)_xenballooned_pages 
->> helpers
->>   back
->>
->> This patch rolls back some of the changes introduced by commit
->> 121f2faca2c0a "xen/balloon: rename alloc/free_xenballooned_pages"
->> in order to make possible to still allocate xenballooned pages
->> if CONFIG_XEN_UNPOPULATED_ALLOC is enabled.
->>
->> On Arm the unpopulated pages will be allocated on top of extended
->> regions provided by Xen via device-tree (the subsequent patches
->> will add required bits to support unpopulated-alloc feature on Arm).
->> The problem is that extended regions feature has been introduced
->> into Xen quite recently (during 4.16 release cycle). So this
->> effectively means that Linux must only use unpopulated-alloc on Arm
->> if it is running on "new Xen" which advertises these regions.
->> But, it will only be known after parsing the "hypervisor" node
->> at boot time, so before doing that we cannot assume anything.
->>
->> In order to keep working if CONFIG_XEN_UNPOPULATED_ALLOC is enabled
->> and the extended regions are not advertised (Linux is running on
->> "old Xen", etc) we need the fallback to alloc_xenballooned_pages().
->>
->> This way we wouldn't reduce the amount of memory usable (wasting
->> RAM pages) for any of the external mappings anymore (and eliminate
->> XSA-300) with "new Xen", but would be still functional ballooning
->> out RAM pages with "old Xen".
->>
->> Also rename alloc(free)_xenballooned_pages to 
->> xen_alloc(free)_ballooned_pages.
->>
->> Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
->> ---
->>   drivers/xen/balloon.c | 20 +++++++++-----------
->>   include/xen/balloon.h |  3 +++
->>   include/xen/xen.h     |  6 ++++++
->>   3 files changed, 18 insertions(+), 11 deletions(-)
->>
->> diff --git a/drivers/xen/balloon.c b/drivers/xen/balloon.c
->> index ba2ea11..a2c4fc49 100644
->> --- a/drivers/xen/balloon.c
->> +++ b/drivers/xen/balloon.c
->> @@ -581,7 +581,6 @@ void balloon_set_new_target(unsigned long target)
->>   }
->>   EXPORT_SYMBOL_GPL(balloon_set_new_target);
->>
->> -#ifndef CONFIG_XEN_UNPOPULATED_ALLOC
->>   static int add_ballooned_pages(unsigned int nr_pages)
->>   {
->>       enum bp_state st;
->> @@ -610,12 +609,12 @@ static int add_ballooned_pages(unsigned int 
->> nr_pages)
->>   }
->>
->>   /**
->> - * xen_alloc_unpopulated_pages - get pages that have been ballooned out
->> + * xen_alloc_ballooned_pages - get pages that have been ballooned out
->>    * @nr_pages: Number of pages to get
->>    * @pages: pages returned
->>    * @return 0 on success, error otherwise
->>    */
->> -int xen_alloc_unpopulated_pages(unsigned int nr_pages, struct page 
->> **pages)
->> +int xen_alloc_ballooned_pages(unsigned int nr_pages, struct page 
->> **pages)
->>   {
->>       unsigned int pgno = 0;
->>       struct page *page;
->> @@ -652,23 +651,23 @@ int xen_alloc_unpopulated_pages(unsigned int 
->> nr_pages, struct page **pages)
->>       return 0;
->>    out_undo:
->>       mutex_unlock(&balloon_mutex);
->> -    xen_free_unpopulated_pages(pgno, pages);
->> +    xen_free_ballooned_pages(pgno, pages);
->>       /*
->> -     * NB: free_xenballooned_pages will only subtract pgno pages, 
->> but since
->> +     * NB: xen_free_ballooned_pages will only subtract pgno pages, 
->> but since
->>        * target_unpopulated is incremented with nr_pages at the start 
->> we need
->>        * to remove the remaining ones also, or accounting will be 
->> screwed.
->>        */
->>       balloon_stats.target_unpopulated -= nr_pages - pgno;
->>       return ret;
->>   }
->> -EXPORT_SYMBOL(xen_alloc_unpopulated_pages);
->> +EXPORT_SYMBOL(xen_alloc_ballooned_pages);
->>
->>   /**
->> - * xen_free_unpopulated_pages - return pages retrieved with 
->> get_ballooned_pages
->> + * xen_free_ballooned_pages - return pages retrieved with 
->> get_ballooned_pages
->>    * @nr_pages: Number of pages
->>    * @pages: pages to return
->>    */
->> -void xen_free_unpopulated_pages(unsigned int nr_pages, struct page 
->> **pages)
->> +void xen_free_ballooned_pages(unsigned int nr_pages, struct page 
->> **pages)
->>   {
->>       unsigned int i;
->>
->> @@ -687,9 +686,9 @@ void xen_free_unpopulated_pages(unsigned int 
->> nr_pages, struct page **pages)
->>
->>       mutex_unlock(&balloon_mutex);
->>   }
->> -EXPORT_SYMBOL(xen_free_unpopulated_pages);
->> +EXPORT_SYMBOL(xen_free_ballooned_pages);
->>
->> -#if defined(CONFIG_XEN_PV)
->> +#if defined(CONFIG_XEN_PV) && !defined(CONFIG_XEN_UNPOPULATED_ALLOC)
->>   static void __init balloon_add_region(unsigned long start_pfn,
->>                         unsigned long pages)
->>   {
->> @@ -712,7 +711,6 @@ static void __init balloon_add_region(unsigned 
->> long start_pfn,
->>       balloon_stats.total_pages += extra_pfn_end - start_pfn;
->>   }
->>   #endif
->> -#endif
->>
->>   static int __init balloon_init(void)
->>   {
->> diff --git a/include/xen/balloon.h b/include/xen/balloon.h
->> index e93d4f0..f78a6cc 100644
->> --- a/include/xen/balloon.h
->> +++ b/include/xen/balloon.h
->> @@ -26,6 +26,9 @@ extern struct balloon_stats balloon_stats;
->>
->>   void balloon_set_new_target(unsigned long target);
->>
->> +int xen_alloc_ballooned_pages(unsigned int nr_pages, struct page 
->> **pages);
->> +void xen_free_ballooned_pages(unsigned int nr_pages, struct page 
->> **pages);
->> +
->>   #ifdef CONFIG_XEN_BALLOON
->>   void xen_balloon_init(void);
->>   #else
->> diff --git a/include/xen/xen.h b/include/xen/xen.h
->> index 9f031b5..410e3e4 100644
->> --- a/include/xen/xen.h
->> +++ b/include/xen/xen.h
->> @@ -52,7 +52,13 @@ bool xen_biovec_phys_mergeable(const struct 
->> bio_vec *vec1,
->>   extern u64 xen_saved_max_mem_size;
->>   #endif
->>
->> +#ifdef CONFIG_XEN_UNPOPULATED_ALLOC
->>   int xen_alloc_unpopulated_pages(unsigned int nr_pages, struct page 
->> **pages);
->>   void xen_free_unpopulated_pages(unsigned int nr_pages, struct page 
->> **pages);
->> +#else
->> +#define xen_alloc_unpopulated_pages xen_alloc_ballooned_pages
->> +#define xen_free_unpopulated_pages xen_free_ballooned_pages
+On Tue, Nov 23, 2021 at 8:12 PM Jos=C3=A9 Exp=C3=B3sito <jose.exposito89@gm=
+ail.com> wrote:
 >
-> Could you please make those inline functions instead?
+> Hi all,
+>
+> Historically, libinput has relayed on the INPUT_PROP_BUTTONPAD property
+> to detect buttonpads.
+>
+> Since buttonpads are expected to have only one button (BTN_LEFT),
+> recently we added a new rule to detect buttonpads: Where a touchpad
+> maps the BTN_RIGHT bit, libinput assumes it is NOT a buttonpad.
+>
+> However, this change leaded to several false possitives, so we ended up
+> reverting it. For more context:
+> https://gitlab.freedesktop.org/libinput/libinput/-/issues/704
+>
+> And for a full list of affected hardware, HID reports and bug reports
+> please see:
+> https://gitlab.freedesktop.org/libinput/libinput/-/merge_requests/726
+>
+> My understanding is that buttonpads should not map BTN_RIGHT and/or
+> BTN_MIDDLE and to avoid it I would like to fix the required drivers.
 
-Sure, will make.
+As long as udev intrinsic is happy with it (and it correctly tags the
+touchpad as ID_INPUT_something), I'm fine with it.
 
+Also, you might want to point at the specification regarding button
+pads: https://docs.microsoft.com/en-us/windows-hardware/design/component-gu=
+idelines/touchpad-windows-precision-touchpad-collection#device-capabilities=
+-feature-report
+
+The way I read it: if the device exports the Button type value
+feature, and it is 0 or 1 (click-pad or pressure-pad), there should
+not be discrete buttons.
 
 >
+> One option to fix it (this patch) is to clear the bits that might have
+> been added because of the HID descriptor on every driver.
+> However, since this code will be common to all drivers, I would like to
+> ask if you consider it worth it to add a function to handle adding
+> properties.
 >
-> Other than that I'm fine with the approach.
-
-Great, thank you!
-
-
+> A function similar to input_set_capability but for props could be added
+> in input.h/c:
+>
+>     /**
+>      * input_set_property - add a property to the device
+>      * @dev: device to add the property to
+>      * @property: type of the property (INPUT_PROP_POINTER, INPUT_PROP_DI=
+RECT...)
+>      *
+>      * In addition to setting up corresponding bit in dev->propbit the fu=
+nction
+>      * might add or remove related capabilities.
+>      */
+>     void input_set_property(struct input_dev *dev, unsigned int property)
+>     {
+>             switch (property) {
+>             case INPUT_PROP_POINTER:
+>             case INPUT_PROP_DIRECT:
+>             case INPUT_PROP_SEMI_MT:
+>             case INPUT_PROP_TOPBUTTONPAD:
+>             case INPUT_PROP_POINTING_STICK:
+>             case INPUT_PROP_ACCELEROMETER:
+>                     break;
+>
+>             case INPUT_PROP_BUTTONPAD:
+>                     input_set_capability(dev, EV_KEY, BTN_LEFT);
+>                     __clear_bit(BTN_RIGHT, dev->keybit);
+>                     __clear_bit(BTN_MIDDLE, dev->keybit);
+>                     break;
+>
+>             default:
+>                     pr_err("%s: unknown property %u\n", __func__, propert=
+y);
+>                     dump_stack();
+>                     return;
+>             }
+>
+>             __set_bit(property, dev->propbit);
+>     }
+>     EXPORT_SYMBOL(input_set_property);
 >
 >
-> Juergen
+> Which approach do you think is the best?
 
--- 
-Regards,
+I think it depends if you plan on fixing just hid-multitouch or the others.
+If you have more than one driver, then yes, adding a new symbol in
+hid-input.c makes sense. If not, then you are just exposing a new
+function we won't know if there are users and we won't be able to
+change without care.
 
-Oleksandr Tyshchenko
+Cheers,
+Benjamin
+
+>
+> Thank you very much in advance,
+> Jose
+>
+>
+> Jos=C3=A9 Exp=C3=B3sito (1):
+>   HID: multitouch: only map BTN_LEFT on buttonpads
+>
+>  drivers/hid/hid-multitouch.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> --
+> 2.25.1
+>
 
