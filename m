@@ -2,85 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4979B45C9E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:23:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3EA45CA67
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242127AbhKXQ0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:26:07 -0500
-Received: from foss.arm.com ([217.140.110.172]:40688 "EHLO foss.arm.com"
+        id S242767AbhKXQyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:54:06 -0500
+Received: from mga09.intel.com ([134.134.136.24]:36014 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241485AbhKXQ0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:26:05 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1DEF91FB;
-        Wed, 24 Nov 2021 08:22:55 -0800 (PST)
-Received: from [10.57.29.198] (unknown [10.57.29.198])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6F9A13F66F;
-        Wed, 24 Nov 2021 08:22:53 -0800 (PST)
-Subject: Re: [PATCH] base: arch_topology: Use policy->max to calculate
- freq_factor
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     Thara Gopinath <thara.gopinath@linaro.org>, rafael@kernel.org
-Cc:     sudeep.holla@arm.com, gregkh@linuxfoundation.org,
-        bjorn.andersson@linaro.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20211115201010.68567-1-thara.gopinath@linaro.org>
- <bce694fc-432c-846b-bd96-592368d12e20@arm.com>
-Message-ID: <37941182-4f0f-0d3c-1831-83ca9765feb6@arm.com>
-Date:   Wed, 24 Nov 2021 16:22:51 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S232378AbhKXQyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 11:54:05 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="235137833"
+X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
+   d="scan'208";a="235137833"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 08:23:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
+   d="scan'208";a="607236318"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 24 Nov 2021 08:23:54 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mpv3q-00052E-4l; Wed, 24 Nov 2021 16:23:54 +0000
+Date:   Thu, 25 Nov 2021 00:23:18 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: [bvanassche:ufs-2021-11-19 2/20] ERROR: modpost:
+ "scsi_track_queue_full" [drivers/scsi/esp_scsi.ko] undefined!
+Message-ID: <202111250006.O4xNT4Hd-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <bce694fc-432c-846b-bd96-592368d12e20@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://github.com/bvanassche/linux ufs-2021-11-19
+head:   833ecbf340f5b323aea907ead44c623753ec8aef
+commit: b7ee0146fa715887ce78a2cf87b3e7cf8fb36894 [2/20] scsi: core: Unexport scsi_track_queue_full()
+config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20211125/202111250006.O4xNT4Hd-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/bvanassche/linux/commit/b7ee0146fa715887ce78a2cf87b3e7cf8fb36894
+        git remote add bvanassche https://github.com/bvanassche/linux
+        git fetch --no-tags bvanassche ufs-2021-11-19
+        git checkout b7ee0146fa715887ce78a2cf87b3e7cf8fb36894
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=m68k 
 
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-On 11/17/21 10:12 AM, Lukasz Luba wrote:
-> 
-> 
-> On 11/15/21 8:10 PM, Thara Gopinath wrote:
->> cpuinfo.max_freq can reflect boost frequency if enabled during boot.  
->> Since
->> we don't consider boost frequencies while calculating cpu capacities, use
->> policy->max to populate the freq_factor during boot up.
->>
->> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
->> ---
->>   drivers/base/arch_topology.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
->> index 43407665918f..df818b439bc3 100644
->> --- a/drivers/base/arch_topology.c
->> +++ b/drivers/base/arch_topology.c
->> @@ -334,7 +334,7 @@ init_cpu_capacity_callback(struct notifier_block *nb,
->>       cpumask_andnot(cpus_to_visit, cpus_to_visit, policy->related_cpus);
->>       for_each_cpu(cpu, policy->related_cpus)
->> -        per_cpu(freq_factor, cpu) = policy->cpuinfo.max_freq / 1000;
->> +        per_cpu(freq_factor, cpu) = policy->max / 1000;
->>       if (cpumask_empty(cpus_to_visit)) {
->>           topology_normalize_cpu_scale();
->>
-> 
-> LGTM
-> 
-> Reviewed-by: Lukasz Luba <lukasz.luba@armc.com>
+All errors (new ones prefixed by >>, old ones prefixed by <<):
 
-Rafael, Thara, please ignore for a while this review.
-We are going to do full investigation of this boost frequency,
-capacity, schedutil util-to-freq mapping with cpuinfo.max_freq.
-The code pointed by Rafael in that sched_util function
-already has issue [1]. We have to figure out the consistent
-solution for all platforms.
+>> ERROR: modpost: "scsi_track_queue_full" [drivers/scsi/esp_scsi.ko] undefined!
 
-Regards,
-Lukasz
-
-[1] 
-https://elixir.bootlin.com/linux/v5.16-rc2/source/kernel/sched/cpufreq_schedutil.c#L152
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
