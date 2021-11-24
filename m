@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC7345C1CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:19:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EE745C16D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:16:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345670AbhKXNVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:21:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36410 "EHLO mail.kernel.org"
+        id S1343900AbhKXNR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:17:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349388AbhKXNTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:19:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8388C61AF7;
-        Wed, 24 Nov 2021 12:46:20 +0000 (UTC)
+        id S1347338AbhKXNPY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:15:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 398BA6128C;
+        Wed, 24 Nov 2021 12:44:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757981;
-        bh=yRU2nC94K7wNrUtgKiFvZusWJJCgd3iynH7iUVZAMW8=;
+        s=korg; t=1637757845;
+        bh=sQQuDsAz4XaUdqpfDeZQWEr/ejmbJZi8Sa5xGXMaYqc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IoBlAAKxinG1f7q5bS+qg0z0zplK7RUHXBtv//Af2hcq+9irJ6371aZuUjtHILbjj
-         /Z3lQ/+c/UjzKMeQ2B071yvBC/x8m6nvVfZVGc2hMQ/DAcBI13Rrmhj2i1/EoV3xh0
-         bWx/Xexd/ruScxMmlUirsW8/s1W7PKWzHBGhM7N0=
+        b=TEl10ycUmZp6qzyvZBSGoKIdCjV/Ljr3FX5Y9sMKRfhJ1yN5UCSvkf5BhJ4/OQk+g
+         GOfxdTJ2PiRJxpFcSJQVW8FyGR1wCkUqOcDNuEqZmmtOMy/QQ0laobsP7Z+ieAPfK5
+         wozl4qHoRF58CDUP0KKrA+n5a751QBgAEG1eExJ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roger Quadros <rogerq@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
+        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 017/100] ARM: dts: omap: fix gpmc,mux-add-data type
+Subject: [PATCH 4.19 263/323] usb: musb: tusb6010: check return value after calling platform_get_resource()
 Date:   Wed, 24 Nov 2021 12:57:33 +0100
-Message-Id: <20211124115655.418167683@linuxfoundation.org>
+Message-Id: <20211124115727.765642455@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roger Quadros <rogerq@kernel.org>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 51b9e22ffd3c4c56cbb7caae9750f70e55ffa603 ]
+[ Upstream commit 14651496a3de6807a17c310f63c894ea0c5d858e ]
 
-gpmc,mux-add-data is not boolean.
+It will cause null-ptr-deref if platform_get_resource() returns NULL,
+we need check the return value.
 
-Fixes the below errors flagged by dtbs_check.
-
-"ethernet@4,0:gpmc,mux-add-data: True is not of type 'array'"
-
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20210915034925.2399823-1-yangyingliang@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi         | 2 +-
- arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/musb/tusb6010.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi b/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi
-index 7f6aefd134514..e7534fe9c53cf 100644
---- a/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi
-+++ b/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi
-@@ -29,7 +29,7 @@
- 		compatible = "smsc,lan9221","smsc,lan9115";
- 		bank-width = <2>;
+diff --git a/drivers/usb/musb/tusb6010.c b/drivers/usb/musb/tusb6010.c
+index 4ecfbf6bb1fa8..902507da8aa85 100644
+--- a/drivers/usb/musb/tusb6010.c
++++ b/drivers/usb/musb/tusb6010.c
+@@ -1103,6 +1103,11 @@ static int tusb_musb_init(struct musb *musb)
  
--		gpmc,mux-add-data;
-+		gpmc,mux-add-data = <0>;
- 		gpmc,cs-on-ns = <0>;
- 		gpmc,cs-rd-off-ns = <42>;
- 		gpmc,cs-wr-off-ns = <36>;
-diff --git a/arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi b/arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi
-index e5da3bc6f1050..218a10c0d8159 100644
---- a/arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi
-+++ b/arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi
-@@ -22,7 +22,7 @@
- 		compatible = "smsc,lan9221","smsc,lan9115";
- 		bank-width = <2>;
+ 	/* dma address for async dma */
+ 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!mem) {
++		pr_debug("no async dma resource?\n");
++		ret = -ENODEV;
++		goto done;
++	}
+ 	musb->async = mem->start;
  
--		gpmc,mux-add-data;
-+		gpmc,mux-add-data = <0>;
- 		gpmc,cs-on-ns = <0>;
- 		gpmc,cs-rd-off-ns = <42>;
- 		gpmc,cs-wr-off-ns = <36>;
+ 	/* dma address for sync dma */
 -- 
 2.33.0
 
