@@ -2,72 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F129145C999
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 415DB45C99B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:12:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344634AbhKXQO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:14:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232257AbhKXQOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:14:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A84B60C3F;
-        Wed, 24 Nov 2021 16:11:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637770305;
-        bh=USFeZV28Xq2t1uNJPsCTQ3agCxkQa3LOCoMk8M+8K3w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EHTcBr3b6IPQjy8hnIfacV2jNgtZyXuUCLJ1199oBHQZWTBlX+erGdXvrn3GcgM7U
-         ZKxAsCK10A93Fmwr9Sq7++8RH7ixQlGOPBN0OsJ9jRm01dNKiVO/Bnp8buzLy74Tpz
-         u8eJPNRpSdKe/LSJPz8pLy4LsxExUwR5yxNlPp/8=
-Date:   Wed, 24 Nov 2021 17:11:43 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/154] 5.10.82-rc1 review
-Message-ID: <YZ5kP+zKBE7wGyoV@kroah.com>
-References: <20211124115702.361983534@linuxfoundation.org>
- <20211124135311.GA29193@duo.ucw.cz>
+        id S1348095AbhKXQPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:15:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233027AbhKXQPm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 11:15:42 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFF9FC061746;
+        Wed, 24 Nov 2021 08:12:32 -0800 (PST)
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637770349;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=V+peSXz08GsQ8hQqxg4MLbOHFdMUhs3OGWXG8JXJBIw=;
+        b=ovaBNK9j3Z3udpAcDw8HFOhWX1o4ee8YoUkLzdhAQa1eKUyvk8H+yLgfb1PbUpOZcBO30+
+        9eEQ1Ycy5cbTfdn+WSoBRBRTVznb78M5iCTAeU0oEUSffJMl9t35U4E8lBip6htEi6T81r
+        D5uW/LIoVa8CCuWU7uZm5O5kd4V4Qh5cQ8SD19K2D1Ea+LR2ztJmQbc2qwqsD7vq7leCW3
+        fo+l/WuhiA2mV67+JqHh06GXN5TQkfaFSAXfxUgiaci7GajrLaKANV2HKxGpPybD0+ygGO
+        ktb8rJID07e7jnoywgMapt7cO4f0luBTQOMEZzQNR3c+vE+3QoWUAT5fVA92eQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637770349;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=V+peSXz08GsQ8hQqxg4MLbOHFdMUhs3OGWXG8JXJBIw=;
+        b=fBj6wR4/p873SH7+mQx9Owx0s748fBtU+1BdKtWXzJOA4E0C2CsDhpwyabZLim/DAdSSON
+        qoPclu7+lDOCFqCQ==
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>, Daniel Wagner <wagi@monom.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        "Srivatsa S . Bhat" <srivatsa@csail.mit.edu>,
+        Clark Williams <williams@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        bigeasy@linutronix.de
+Subject: Re: [PATCH RT 09/10] drm/i915/gt: Queue and wait for the irq_work item.
+Date:   Wed, 24 Nov 2021 17:12:18 +0100
+Message-Id: <20211124161221.2224005-1-bigeasy@linutronix.de>
+In-Reply-To: <20211123103755.12d4b776@gandalf.local.home>
+References: <20211123103755.12d4b776@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211124135311.GA29193@duo.ucw.cz>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 02:53:11PM +0100, Pavel Machek wrote:
-> Hi!
-> 
-> > This is the start of the stable review cycle for the 5.10.82 release.
-> > There are 154 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> 
-> CIP is running tests here:
-> 
-> https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-5.10.y
-> 
-> And there's a build failure in CIP testing there:
-> 
->   CC      drivers/mmc/core/sdio_ops.o
-> 5040drivers/cpuidle/cpuidle-tegra.c: In function 'tegra_cpuidle_probe':
-> 5041drivers/cpuidle/cpuidle-tegra.c:349:38: error: 'TEGRA_SUSPEND_NOT_READY' undeclared (first use in this function); did you mean 'TEGRA_SUSPEND_NONE'?
-> 5042  if (tegra_pmc_get_suspend_mode() == TEGRA_SUSPEND_NOT_READY)
-> 5043                                      ^~~~~~~~~~~~~~~~~~~~~~~
-> 5044                                      TEGRA_SUSPEND_NONE
-> 5045drivers/cpuidle/cpuidle-tegra.c:349:38: note: each undeclared identifier is reported only once for each function it appears in
-> 5046  CC      drivers/gpu/drm/drm_dma.o
-> 5047scripts/Makefile.build:280: recipe for target 'drivers/cpuidle/cpuidle-tegra.o' failed
-> 5048scripts/Makefile.build:497: recipe for target 'drivers/cpuidle' failed
-> 5049make[2]: *** [drivers/cpuidle/cpuidle-tegra.o] Error 1
-> 5050make[1]: *** [drivers/cpuidle] Error 2
-> 5051make[1]: *** Waiting for unfinished jobs....
-> 5052  CC      drivers/cpufreq/raspberrypi-cpufreq.o
+On 2021-11-23 10:37:55 [-0500], Steven Rostedt wrote:
+> Is there something else missing here, as this gives the following rejects=
+ in
+> irq_work.c:
 
-Will go drop that patch, thanks.
+Yeah, there is this irq-work in v5.10-RT and this slightly different
+thing that managed upstream while upstream managed to alter their code,
+too  :)
 
-greg k-h
+Please find attached as a reply to this email the backported patches:
+   [PATCH RT 1/3] irq_work: Allow irq_work_sync() to sleep if irq_work() no
+   [PATCH RT 2/3] irq_work: Handle some irq_work in a per-CPU thread on
+   [PATCH RT 3/3] irq_work: Also rcuwait for !IRQ_WORK_HARD_IRQ on
+
+which apply here on top of v5.10.78-rt55.
+
+Sebastian
+
