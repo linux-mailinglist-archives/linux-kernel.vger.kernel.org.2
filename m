@@ -2,45 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F0D45C3E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 469B345C5FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:02:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348521AbhKXNo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:44:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60382 "EHLO mail.kernel.org"
+        id S1348706AbhKXOEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:04:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353299AbhKXNlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:41:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DE0D63215;
-        Wed, 24 Nov 2021 12:57:44 +0000 (UTC)
+        id S245166AbhKXOAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:00:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1150632E4;
+        Wed, 24 Nov 2021 13:09:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758664;
-        bh=NA99eEMow0OfPpIBDMQOgHWGdklPE8DajvkLsx30RI8=;
+        s=korg; t=1637759382;
+        bh=cw1RtDyMxMLEBiBDx79B+Nz3HhjXEgotB9mhf9BNzBc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2vgIBoa1AwaJ1J7Aee5xSLybDzSk/3KCwfDydSDDM0TfFvHtyhJ7s7g/vkpX5RQFF
-         GIFJ/SZNTXdTKWMbZpt8s907cfokC9Yhpf8YN6OeIZDlrIgZqWxtzzjOfyj26LQKVR
-         5pPinG+tAkAQnPMczRGYX3yV61xSpMOrCl6MZI10=
+        b=JAUSg2Wk6qkTLi0YAcIz8/usPX2DZd6pr+dRqYKdGnNz19c5NfM/74rpy78dUH9Ig
+         NSVqIq6Dtx6eDAx39hqBcZk6TFwJkAP8Ra2Z8l1LRBkzckElLKgomfPcyCvz8ARx+7
+         JmTLWL44Z8LSZDrOq5XBV/h703HEsz6iCK4ydbvg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sohaib Mohamed <sohaib.amhmd@gmail.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Hitoshi Mitake <h.mitake@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Paul Russel <rusty@rustcorp.com.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Pierre Gondois <pierre.gondois@arm.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 112/154] perf bench: Fix two memory leaks detected with ASan
+        stable@vger.kernel.org,
+        Alexander Egorenkov <egorenar@linux.ibm.com>,
+        Marc Hartmayer <mhartmay@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 5.15 221/279] s390/dump: fix copying to user-space of swapped kdump oldmem
 Date:   Wed, 24 Nov 2021 12:58:28 +0100
-Message-Id: <20211124115705.904754996@linuxfoundation.org>
+Message-Id: <20211124115726.369085216@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,56 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sohaib Mohamed <sohaib.amhmd@gmail.com>
+From: Alexander Egorenkov <egorenar@linux.ibm.com>
 
-[ Upstream commit 92723ea0f11d92496687db8c9725248e9d1e5e1d ]
+commit 3b90954419d4c05651de9cce6d7632bcf6977678 upstream.
 
-ASan reports memory leaks while running:
+This commit fixes a bug introduced by commit e9e7870f90e3 ("s390/dump:
+introduce boot data 'oldmem_data'").
+OLDMEM_BASE was mistakenly replaced by oldmem_data.size instead of
+oldmem_data.start.
 
-  $ perf bench sched all
+This bug caused the following error during kdump:
+kdump.sh[878]: No program header covering vaddr 0x3434f5245found kexec bug?
 
-Fixes: e27454cc6352c422 ("perf bench: Add sched-messaging.c: Benchmark for scheduler and IPC mechanisms based on hackbench")
-Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
-Acked-by: Ian Rogers <irogers@google.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Hitoshi Mitake <h.mitake@gmail.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Paul Russel <rusty@rustcorp.com.au>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Pierre Gondois <pierre.gondois@arm.com>
-Link: http://lore.kernel.org/lkml/20211110022012.16620-1-sohaib.amhmd@gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: e9e7870f90e3 ("s390/dump: introduce boot data 'oldmem_data'")
+Cc: stable@vger.kernel.org # 5.15+
+Signed-off-by: Alexander Egorenkov <egorenar@linux.ibm.com>
+Reviewed-by: Marc Hartmayer <mhartmay@linux.ibm.com>
+Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/bench/sched-messaging.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/s390/kernel/crash_dump.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/bench/sched-messaging.c b/tools/perf/bench/sched-messaging.c
-index cecce93ccc636..9ce72fa873768 100644
---- a/tools/perf/bench/sched-messaging.c
-+++ b/tools/perf/bench/sched-messaging.c
-@@ -223,6 +223,8 @@ static unsigned int group(pthread_t *pth,
- 		snd_ctx->out_fds[i] = fds[1];
- 		if (!thread_mode)
- 			close(fds[0]);
-+
-+		free(ctx);
- 	}
- 
- 	/* Now we have all the fds, fork the senders */
-@@ -239,6 +241,8 @@ static unsigned int group(pthread_t *pth,
- 		for (i = 0; i < num_fds; i++)
- 			close(snd_ctx->out_fds[i]);
- 
-+	free(snd_ctx);
-+
- 	/* Return number of children to reap */
- 	return num_fds * 2;
- }
--- 
-2.33.0
-
+--- a/arch/s390/kernel/crash_dump.c
++++ b/arch/s390/kernel/crash_dump.c
+@@ -191,8 +191,8 @@ static int copy_oldmem_user(void __user
+ 				return rc;
+ 		} else {
+ 			/* Check for swapped kdump oldmem areas */
+-			if (oldmem_data.start && from - oldmem_data.size < oldmem_data.size) {
+-				from -= oldmem_data.size;
++			if (oldmem_data.start && from - oldmem_data.start < oldmem_data.size) {
++				from -= oldmem_data.start;
+ 				len = min(count, oldmem_data.size - from);
+ 			} else if (oldmem_data.start && from < oldmem_data.size) {
+ 				len = min(count, oldmem_data.size - from);
 
 
