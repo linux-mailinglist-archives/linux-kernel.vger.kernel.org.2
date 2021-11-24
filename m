@@ -2,74 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3334745CFEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:15:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D8A45CFF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:16:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244865AbhKXWSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 17:18:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344119AbhKXWSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:18:16 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 16D4F61039;
-        Wed, 24 Nov 2021 22:15:05 +0000 (UTC)
-Date:   Wed, 24 Nov 2021 17:15:03 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Tao Zhou <tao.zhou@linux.dev>, Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V7 05/14] rtla/osnoise: Add the hist mode
-Message-ID: <20211124171503.584c8dd2@gandalf.local.home>
-In-Reply-To: <20211124171212.537b43c3@gandalf.local.home>
-References: <cover.1635535309.git.bristot@kernel.org>
-        <1d9826696a1e8c3584158c0dd570b8b22db708db.1635535309.git.bristot@kernel.org>
-        <20211124171212.537b43c3@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S245411AbhKXWTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 17:19:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:50056 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245131AbhKXWTl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 17:19:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637792190;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EEVhKDq1EhBHdoS7pTs0RLbzDWey60atk3W5DA5v0B4=;
+        b=OSyF49HBsRBesjnwLpONI2KlKEDOWpy69mX8OXVZYMSAD5PwrVyygjSVVr+H2RaPXoIRW6
+        WGqHU7BcTZQPx26kJ4loOyXZdQ44kfYnyS9W0hEmdAZmTqISWgbb7cnjJFShFTucchodyT
+        lwvgvkcdp+nHjbvMCRQOZOif6JrjtQo=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-391-PfJnu084NsiP49zjO3HVIw-1; Wed, 24 Nov 2021 17:16:29 -0500
+X-MC-Unique: PfJnu084NsiP49zjO3HVIw-1
+Received: by mail-lf1-f71.google.com with SMTP id m2-20020a056512014200b0041042b64791so2079380lfo.6
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 14:16:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EEVhKDq1EhBHdoS7pTs0RLbzDWey60atk3W5DA5v0B4=;
+        b=YvRRW6P4YyVfXY0ZsXrjewzK1oOyW/wB2zsfG8NQlfykrq4HyWV7hNKdnNbFXL76hg
+         H2qJZe0QYqV5wKgZkH/KEuPQc4ZGpY1DaHD+M+xXnB7M//fHw4Lw0KcDahNs1Ku2XzFq
+         FoCWcRmToXNpEQP+cgIKOE4D67yKpsm7EUPco142lLS4VaYR4q7UWgS6FtKAaAy86k/2
+         EEZHpUchEq/YOWPUreY9Zk5VqnPf6iP0bPY2NMW4k5XJFXOYab5p4zl38JeI/eGnw8FW
+         4T2QhDJ28xtwmttrtPMDMyilYmG9aj6oBWnKQJN/t1hSMlNaTWefr44bejOgv5GuDf8u
+         BS5g==
+X-Gm-Message-State: AOAM530U06OSUlrsjPQt18kcWDYux2nFbI9g2pUIU/FJXtuz++ZY2L7C
+        xhfCer6gUp+0XS7HDkcJ/s4dPfar742HGXmY1JK8KQlzr01RIy7n63BRm6d/QDk3aUkbMw/mQmO
+        l30HUaihlwkEJa4yuR5Ej+76AQIcClhCED4l1pvjb
+X-Received: by 2002:a05:6512:3096:: with SMTP id z22mr18777544lfd.124.1637792187777;
+        Wed, 24 Nov 2021 14:16:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy3HKmtNAafBBlI7bMVT3RazivdW2g2TUcEskctZmuEaRpOF7Jx2bvW50+8WUNSPiqnQC6nZn8f0zY2CSibUtA=
+X-Received: by 2002:a05:6512:3096:: with SMTP id z22mr18777505lfd.124.1637792187488;
+ Wed, 24 Nov 2021 14:16:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210903152430.244937-1-nitesh@redhat.com> <CAFki+L=9Hw-2EONFEX6b7k6iRX_yLx1zcS+NmWsDSuBWg8w-Qw@mail.gmail.com>
+ <87bl29l5c6.ffs@tglx>
+In-Reply-To: <87bl29l5c6.ffs@tglx>
+From:   Nitesh Lal <nilal@redhat.com>
+Date:   Wed, 24 Nov 2021 17:16:16 -0500
+Message-ID: <CAFki+Lmrv-UjZpuTQWr9c-Rymfm-tuCw9WpwmHgyfjVhJgp--g@mail.gmail.com>
+Subject: Re: [PATCH v6 00/14] genirq: Cleanup the abuse of irq_set_affinity_hint()
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>
+Cc:     Juri Lelli <juri.lelli@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        davem@davemloft.net, ajit.khaparde@broadcom.com,
+        sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
+        huangguangbin2@huawei.com, huangdaode@huawei.com,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Alex Belits <abelits@marvell.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, rostedt@goodmis.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ingo Molnar <mingo@kernel.org>, jbrandeb@kernel.org,
+        akpm@linuxfoundation.org, sfr@canb.auug.org.au,
+        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
+        chris.friesen@windriver.com, Marc Zyngier <maz@kernel.org>,
+        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com,
+        Stefan Assmann <sassmann@redhat.com>,
+        Tomas Henzl <thenzl@redhat.com>, james.smart@broadcom.com,
+        Ken Cox <jkc@redhat.com>, faisal.latif@intel.com,
+        shiraz.saleem@intel.com, tariqt@nvidia.com,
+        Alaa Hleihel <ahleihel@redhat.com>,
+        Kamal Heib <kheib@redhat.com>, borisp@nvidia.com,
+        saeedm@nvidia.com,
+        "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        Al Stone <ahs3@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
+        bjorn.andersson@linaro.org, chunkuang.hu@kernel.org,
+        yongqiang.niu@mediatek.com, baolin.wang7@gmail.com,
+        Petr Oros <poros@redhat.com>, Ming Lei <minlei@redhat.com>,
+        Ewan Milne <emilne@redhat.com>, jejb@linux.ibm.com,
+        kabel@kernel.org, Viresh Kumar <viresh.kumar@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>, kashyap.desai@broadcom.com,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        shivasharan.srikanteshwara@broadcom.com,
+        sathya.prakash@broadcom.com,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        suganath-prabu.subramani@broadcom.com, ley.foon.tan@intel.com,
+        jbrunet@baylibre.com, johannes@sipsolutions.net,
+        snelson@pensando.io, lewis.hanly@microchip.com, benve@cisco.com,
+        _govind@gmx.com, jassisinghbrar@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 17:12:12 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Wed, Nov 24, 2021 at 2:30 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Nitesh,
+>
+> On Mon, Sep 13 2021 at 10:34, Nitesh Lal wrote:
+> > On Fri, Sep 3, 2021 at 11:25 AM Nitesh Narayan Lal <nitesh@redhat.com> wrote:
+> >>
+> >> The drivers currently rely on irq_set_affinity_hint() to either set the
+> >> affinity_hint that is consumed by the userspace and/or to enforce a custom
+> >> affinity.
+> >>
+> >> irq_set_affinity_hint() as the name suggests is originally introduced to
+> >> only set the affinity_hint to help the userspace in guiding the interrupts
+> >> and not the affinity itself. However, since the commit
+> >>
+> >>         e2e64a932556 "genirq: Set initial affinity in irq_set_affinity_hint()"
+>
+> sorry for ignoring this. It fell through the cracks.
 
-> > +	/*
-> > +	 * Set the size of the bucket.
-> > +	 */
-> > +	bucket_size = params->output_divisor * params->bucket_size;
-> > +	snprintf(buff, sizeof(buff), "duration.buckets=%d", bucket_size);
-> > +
-> > +	data->trace_hist = tracefs_hist_alloc(tool->trace.tep, "osnoise", "sample_threshold",
-> > +			buff, TRACEFS_HIST_KEY_NORMAL);  
-> 
-> FYI, we changed the API (haven't tagged it yet, so we can do that :-) and
-> the above needs to be:
-> 
-> 	data->trace_hist = tracefs_hist1d_alloc(tool->trace.tep, "osnoise", "sample_threshold",
 
-Or do you think that 1d should be the default, and we have:
+No worries, thank you for reviewing.
 
-	tracefs_hist_alloc()	-- 1d histogram
-	tracefs_hist_alloc_2d()	-- 2d histogram
-	tracefs_hist_alloc_nd()	-- Nd histogram?
+>
+>
+> >> Thomas Gleixner (1):
+> >>   genirq: Provide new interfaces for affinity hints
+>
+> Did I actually write this?
 
-??
 
-We haven't tagged it yet, so we could change it again (and then your code
-will work as is).
+Yeap, the idea and the initial patch came from you. :)
 
--- Steve
+>
+>
+> > Any suggestions on what should be the next steps here? Unfortunately, I haven't
+> > been able to get any reviews on the following two patches:
+> >   be2net: Use irq_update_affinity_hint
+> >   hinic: Use irq_set_affinity_and_hint
+> >
+> > One option would be to proceed with the remaining patches and I can try
+> > posting these two again when I post patches for the remaining drivers?
+>
+> The more general question is whether I should queue all the others or
+> whether some subsystem would prefer to pull in a tagged commit on top of
+> rc1. I'm happy to carry them all of course.
+>
+
+I am fine either way.
+In the past, while I was asking for more testing help I was asked if the
+SCSI changes are part of Martins's scsi-fixes tree as that's something
+Broadcom folks test to check for regression.
+So, maybe Martin can pull this up?
+
+-- 
+Thanks
+Nitesh
+
