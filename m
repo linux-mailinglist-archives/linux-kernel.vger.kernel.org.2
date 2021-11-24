@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F3845BA4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:06:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97B7645BBE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:22:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236255AbhKXMJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:09:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33944 "EHLO mail.kernel.org"
+        id S244881AbhKXMZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:25:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242309AbhKXMGq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:06:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7708261055;
-        Wed, 24 Nov 2021 12:03:35 +0000 (UTC)
+        id S243324AbhKXMUp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:20:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EDD6611B0;
+        Wed, 24 Nov 2021 12:12:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755416;
-        bh=vRyTEL1LINPZO/gtL8Ft7H3B7xLPtHKyy48P/wJMfi4=;
+        s=korg; t=1637755962;
+        bh=cROOCRFi8kNEWkFex36JA+IT0AjCTWiBtubAa6sI2bA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2p8vAav2mlX/mlnY+ZnC9vDaeOOS+GM8wDSdc5QyUh9HTHPRpgrscXaIV3yVqpWQf
-         zyuuiTZNhxm3NtzyhBevTNiK55zGop8ZUHVWBhU9F5Grmrt90+w+2LIlFxjX8QDYwd
-         cDWHcvoDli2ypnKyBpKQ8Etzj9bm+98YT/+XfLDY=
+        b=08DmGd0wkbpaSFHKAWNQZ2hdVsB+UK0lJ/dd1s0buR7QYLXpjWPxoCFVbINeb7qlv
+         Mll3yNAj9VGfvRDpTA8kDmRgQZr+G6Ilx2l3nGuZpmTsCHbK9JQXrQjryGROe+pb3j
+         VK4k7VO74Eq78CZx26Llz8g6fYQnFjUAE288G+s8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Dongliang Mu <mudongliangabcd@gmail.com>,
+        Dave Kleikamp <dave.kleikamp@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 086/162] libertas: Fix possible memory leak in probe and disconnect
-Date:   Wed, 24 Nov 2021 12:56:29 +0100
-Message-Id: <20211124115701.100970049@linuxfoundation.org>
+Subject: [PATCH 4.9 119/207] JFS: fix memleak in jfs_mount
+Date:   Wed, 24 Nov 2021 12:56:30 +0100
+Message-Id: <20211124115707.913721262@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,70 +40,156 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Dongliang Mu <mudongliangabcd@gmail.com>
 
-[ Upstream commit 9692151e2fe7a326bafe99836fd1f20a2cc3a049 ]
+[ Upstream commit c48a14dca2cb57527dde6b960adbe69953935f10 ]
 
-I got memory leak as follows when doing fault injection test:
+In jfs_mount, when diMount(ipaimap2) fails, it goes to errout35. However,
+the following code does not free ipaimap2 allocated by diReadSpecial.
 
-unreferenced object 0xffff88812c7d7400 (size 512):
-  comm "kworker/6:1", pid 176, jiffies 4295003332 (age 822.830s)
-  hex dump (first 32 bytes):
-    00 68 1e 04 81 88 ff ff 01 00 00 00 00 00 00 00  .h..............
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8167939c>] slab_post_alloc_hook+0x9c/0x490
-    [<ffffffff8167f627>] kmem_cache_alloc_trace+0x1f7/0x470
-    [<ffffffffa02c9873>] if_usb_probe+0x63/0x446 [usb8xxx]
-    [<ffffffffa022668a>] usb_probe_interface+0x1aa/0x3c0 [usbcore]
-    [<ffffffff82b59630>] really_probe+0x190/0x480
-    [<ffffffff82b59a19>] __driver_probe_device+0xf9/0x180
-    [<ffffffff82b59af3>] driver_probe_device+0x53/0x130
-    [<ffffffff82b5a075>] __device_attach_driver+0x105/0x130
-    [<ffffffff82b55949>] bus_for_each_drv+0x129/0x190
-    [<ffffffff82b593c9>] __device_attach+0x1c9/0x270
-    [<ffffffff82b5a250>] device_initial_probe+0x20/0x30
-    [<ffffffff82b579c2>] bus_probe_device+0x142/0x160
-    [<ffffffff82b52e49>] device_add+0x829/0x1300
-    [<ffffffffa02229b1>] usb_set_configuration+0xb01/0xcc0 [usbcore]
-    [<ffffffffa0235c4e>] usb_generic_driver_probe+0x6e/0x90 [usbcore]
-    [<ffffffffa022641f>] usb_probe_device+0x6f/0x130 [usbcore]
+Fix this by refactoring the error handling code of jfs_mount. To be
+specific, modify the lable name and free ipaimap2 when the above error
+ocurrs.
 
-cardp is missing being freed in the error handling path of the probe
-and the path of the disconnect, which will cause memory leak.
-
-This patch adds the missing kfree().
-
-Fixes: 876c9d3aeb98 ("[PATCH] Marvell Libertas 8388 802.11b/g USB driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20211020120345.2016045-3-wanghai38@huawei.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/libertas/if_usb.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/jfs/jfs_mount.c | 51 ++++++++++++++++++++--------------------------
+ 1 file changed, 22 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/net/wireless/libertas/if_usb.c b/drivers/net/wireless/libertas/if_usb.c
-index d271eaf1f9499..1793611a380c8 100644
---- a/drivers/net/wireless/libertas/if_usb.c
-+++ b/drivers/net/wireless/libertas/if_usb.c
-@@ -291,6 +291,7 @@ err_add_card:
- 	if_usb_reset_device(cardp);
- dealloc:
- 	if_usb_free(cardp);
-+	kfree(cardp);
+diff --git a/fs/jfs/jfs_mount.c b/fs/jfs/jfs_mount.c
+index 103788ecc28c1..0c2aabba1fdbb 100644
+--- a/fs/jfs/jfs_mount.c
++++ b/fs/jfs/jfs_mount.c
+@@ -93,14 +93,14 @@ int jfs_mount(struct super_block *sb)
+ 	 * (initialize mount inode from the superblock)
+ 	 */
+ 	if ((rc = chkSuper(sb))) {
+-		goto errout20;
++		goto out;
+ 	}
  
- error:
- 	return r;
-@@ -317,6 +318,7 @@ static void if_usb_disconnect(struct usb_interface *intf)
+ 	ipaimap = diReadSpecial(sb, AGGREGATE_I, 0);
+ 	if (ipaimap == NULL) {
+ 		jfs_err("jfs_mount: Failed to read AGGREGATE_I");
+ 		rc = -EIO;
+-		goto errout20;
++		goto out;
+ 	}
+ 	sbi->ipaimap = ipaimap;
  
- 	/* Unlink and free urb */
- 	if_usb_free(cardp);
-+	kfree(cardp);
+@@ -111,7 +111,7 @@ int jfs_mount(struct super_block *sb)
+ 	 */
+ 	if ((rc = diMount(ipaimap))) {
+ 		jfs_err("jfs_mount: diMount(ipaimap) failed w/rc = %d", rc);
+-		goto errout21;
++		goto err_ipaimap;
+ 	}
  
- 	usb_set_intfdata(intf, NULL);
- 	usb_put_dev(interface_to_usbdev(intf));
+ 	/*
+@@ -120,7 +120,7 @@ int jfs_mount(struct super_block *sb)
+ 	ipbmap = diReadSpecial(sb, BMAP_I, 0);
+ 	if (ipbmap == NULL) {
+ 		rc = -EIO;
+-		goto errout22;
++		goto err_umount_ipaimap;
+ 	}
+ 
+ 	jfs_info("jfs_mount: ipbmap:0x%p", ipbmap);
+@@ -132,7 +132,7 @@ int jfs_mount(struct super_block *sb)
+ 	 */
+ 	if ((rc = dbMount(ipbmap))) {
+ 		jfs_err("jfs_mount: dbMount failed w/rc = %d", rc);
+-		goto errout22;
++		goto err_ipbmap;
+ 	}
+ 
+ 	/*
+@@ -151,7 +151,7 @@ int jfs_mount(struct super_block *sb)
+ 		if (!ipaimap2) {
+ 			jfs_err("jfs_mount: Failed to read AGGREGATE_I");
+ 			rc = -EIO;
+-			goto errout35;
++			goto err_umount_ipbmap;
+ 		}
+ 		sbi->ipaimap2 = ipaimap2;
+ 
+@@ -163,7 +163,7 @@ int jfs_mount(struct super_block *sb)
+ 		if ((rc = diMount(ipaimap2))) {
+ 			jfs_err("jfs_mount: diMount(ipaimap2) failed, rc = %d",
+ 				rc);
+-			goto errout35;
++			goto err_ipaimap2;
+ 		}
+ 	} else
+ 		/* Secondary aggregate inode table is not valid */
+@@ -180,7 +180,7 @@ int jfs_mount(struct super_block *sb)
+ 		jfs_err("jfs_mount: Failed to read FILESYSTEM_I");
+ 		/* open fileset secondary inode allocation map */
+ 		rc = -EIO;
+-		goto errout40;
++		goto err_umount_ipaimap2;
+ 	}
+ 	jfs_info("jfs_mount: ipimap:0x%p", ipimap);
+ 
+@@ -190,41 +190,34 @@ int jfs_mount(struct super_block *sb)
+ 	/* initialize fileset inode allocation map */
+ 	if ((rc = diMount(ipimap))) {
+ 		jfs_err("jfs_mount: diMount failed w/rc = %d", rc);
+-		goto errout41;
++		goto err_ipimap;
+ 	}
+ 
+-	goto out;
++	return rc;
+ 
+ 	/*
+ 	 *	unwind on error
+ 	 */
+-      errout41:		/* close fileset inode allocation map inode */
++err_ipimap:
++	/* close fileset inode allocation map inode */
+ 	diFreeSpecial(ipimap);
+-
+-      errout40:		/* fileset closed */
+-
++err_umount_ipaimap2:
+ 	/* close secondary aggregate inode allocation map */
+-	if (ipaimap2) {
++	if (ipaimap2)
+ 		diUnmount(ipaimap2, 1);
++err_ipaimap2:
++	/* close aggregate inodes */
++	if (ipaimap2)
+ 		diFreeSpecial(ipaimap2);
+-	}
+-
+-      errout35:
+-
+-	/* close aggregate block allocation map */
++err_umount_ipbmap:	/* close aggregate block allocation map */
+ 	dbUnmount(ipbmap, 1);
++err_ipbmap:		/* close aggregate inodes */
+ 	diFreeSpecial(ipbmap);
+-
+-      errout22:		/* close aggregate inode allocation map */
+-
++err_umount_ipaimap:	/* close aggregate inode allocation map */
+ 	diUnmount(ipaimap, 1);
+-
+-      errout21:		/* close aggregate inodes */
++err_ipaimap:		/* close aggregate inodes */
+ 	diFreeSpecial(ipaimap);
+-      errout20:		/* aggregate closed */
+-
+-      out:
+-
++out:
+ 	if (rc)
+ 		jfs_err("Mount JFS Failure: %d", rc);
+ 
 -- 
 2.33.0
 
