@@ -2,122 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BC4C45CBD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:06:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E3E45CBD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350604AbhKXSJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 13:09:50 -0500
-Received: from mail-wm1-f49.google.com ([209.85.128.49]:46008 "EHLO
-        mail-wm1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350720AbhKXSHP (ORCPT
+        id S243814AbhKXSKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 13:10:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351267AbhKXSI4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 13:07:15 -0500
-Received: by mail-wm1-f49.google.com with SMTP id g191-20020a1c9dc8000000b0032fbf912885so2794938wme.4
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:04:04 -0800 (PST)
+        Wed, 24 Nov 2021 13:08:56 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62676C061399
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:04:42 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id g14so14208696edb.8
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:04:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxtx.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o4pcYLzRiFXgODRmqJpRApo0JQqGz6PeqKc5/Q3/c2Y=;
+        b=NmEPfl2wDAhDoFRA7Rl3HPVjtun+4o2+Ufli0ATYaUg3efHOQDitlgMJqmgkznje/U
+         1Ta2cgQtZesQxOMsoNSHMhw6isOA09i+536PIzDrtONWqDATLj55KdAGQFUamXnvSxI9
+         zLT2q2xcLkdpeVYnfNoOP6NDMvcf3lpyEqs94=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=12nEyDPdQY104trlboJVHkikF9Dqv57os2czAFrCZIo=;
-        b=Llv+hZqljkrkl5Liownvp2gL1SFWYvPXAj/i/0LBH0iEynKgr3dEkVFVfyV0SPFWjt
-         zA4TKks5xhJ+zPhe+Et9+9pCmliiwMLgCLSrteuye2gkah3IW3E4wL3kJ6GKVlp7JDhQ
-         n1kewzgYgdMcHajh8BlXdmUoA9Ia2i+w5XkOsAxtSEQeGRdopyqpFLKO+CsdcRBkUNGd
-         Je5sTd+cLqP7sVr/pu307keGPuTs70xy2zCQvAuwy6WtAJi2SGWPSq3mbbgmM8oybYUA
-         EqJZCPnErs0T9A8EsKvBAOylF3XVzwYGT6fCyUsuyOXjNmHpGT3aCPefrRQZMHkpmQhC
-         IAXA==
-X-Gm-Message-State: AOAM5332VLI2t+/Mit2w6fbdSSnBh4OUAfRI1CFwlkhZybcLqGFHmp08
-        zVx3u8QzRuJNrsX6+ylfs0c=
-X-Google-Smtp-Source: ABdhPJw1n+UVyU6j0GU6WvHoGyUBZQxkTlsL7kk+SxeJSHAJbtKfJomtiuBkh6LclpXUFjH5xvacGA==
-X-Received: by 2002:a05:600c:202:: with SMTP id 2mr18093671wmi.134.1637777044293;
-        Wed, 24 Nov 2021 10:04:04 -0800 (PST)
-Received: from ?IPV6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id y7sm472211wrw.55.2021.11.24.10.04.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 10:04:03 -0800 (PST)
-Message-ID: <d42117da-f6a4-053b-c498-5686cc06aca4@kernel.org>
-Date:   Wed, 24 Nov 2021 19:04:02 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o4pcYLzRiFXgODRmqJpRApo0JQqGz6PeqKc5/Q3/c2Y=;
+        b=SslFvA1acqcpm7wZ7ptqQ3cMil+MpJA1wd9wk5A9f6x/3EytU1Lb/u0FoUQ9yiKvEX
+         YLvdr/Z0nQkPCgHKkziKtyfIzUYZtVc7gRn1A2cNWQuvod9t/0Mw5OPlqpRkQqLZautG
+         Pt2N+sO0jovzBi1GcZ+DofO9harSD8tKhJtfNU2+NjNzmzR2bZU97aycGUhBOGctFhWv
+         G260zXqDUw+8wfRSzgLRiXqcqyf3A6ow4SNZluOMG/ByJuxzdZc8ubyI+Dl/+jxY/Z26
+         sZrfuYbxRzhfHWiacF80AFjKdP1OuQFj5VbHj6Dk3vEX6XDEG6JZQBM8UIkipe2RnwsL
+         Yp5Q==
+X-Gm-Message-State: AOAM531+Tdx51L/OxLi1TZO1i5l+tSITetQR/j17pqEmki1mlvHfqKQi
+        JGzh3mzlt0e0KZ8t9UU55s6OsBOEKdevk7pj9n7bBp8R0KI=
+X-Google-Smtp-Source: ABdhPJzpcafQIlNcLwu3OzPBZJUzh8rDyCni+prznPFIY3EHy28pXMGu4oXxA14zxwjFPMfFFBe0hn7gIEkQupjhBng=
+X-Received: by 2002:a17:906:4e42:: with SMTP id g2mr22798958ejw.230.1637777078574;
+ Wed, 24 Nov 2021 10:04:38 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] kasan: distinguish kasan report from generic BUG()
-Content-Language: en-US
-To:     Jiri Kosina <jikos@kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <nycvar.YFH.7.76.2111241839590.16505@cbobk.fhfr.pm>
-From:   Jiri Slaby <jirislaby@kernel.org>
-In-Reply-To: <nycvar.YFH.7.76.2111241839590.16505@cbobk.fhfr.pm>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211115165428.722074685@linuxfoundation.org> <20211115165430.669780058@linuxfoundation.org>
+ <CAFxkdAqahwaN0u6u34d4CrMW7rYL=6TpWk1CcOn+uGQdEgkuTQ@mail.gmail.com>
+ <CAOssrKd4gHrKNNttZZey9orZ=F+msx4Axa6Mi_XgZw-9M39h-Q@mail.gmail.com>
+ <CAFxkdAqU0peBNm_SB3En99bU+o=a+05t-Bwyds0AUFb+2W=CFw@mail.gmail.com> <CAOssrKez1mnF4rWRvWgk4LJ2iDfX8xkpMKvgprFt+-ARs83=nA@mail.gmail.com>
+In-Reply-To: <CAOssrKez1mnF4rWRvWgk4LJ2iDfX8xkpMKvgprFt+-ARs83=nA@mail.gmail.com>
+From:   Justin Forbes <jmforbes@linuxtx.org>
+Date:   Wed, 24 Nov 2021 12:04:26 -0600
+Message-ID: <CAFxkdApnvRNRU6vZ6qxtuCW78RoLuOMqaxSv+BXj9dX5DXxQyw@mail.gmail.com>
+Subject: Re: [PATCH 5.15 056/917] fuse: fix page stealing
+To:     Miklos Szeredi <mszeredi@redhat.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>,
+        Frank Dinoff <fdinoff@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24. 11. 21, 18:41, Jiri Kosina wrote:
-> From: Jiri Kosina <jkosina@suse.cz>
-> 
-> The typical KASAN report always begins with
-> 
-> 	BUG: KASAN: ....
-> 
-> in kernel log. That 'BUG:' prefix creates a false impression that it's an
-> actual BUG() codepath being executed, and as such things like
-> 'panic_on_oops' etc. would work on it as expected; but that's obviously
-> not the case.
-> 
-> Switch the order of prefixes to make this distinction clear and avoid
-> confusion.
+On Wed, Nov 24, 2021 at 3:23 AM Miklos Szeredi <mszeredi@redhat.com> wrote:
+>
+> On Wed, Nov 24, 2021 at 1:40 AM Justin Forbes <jmforbes@linuxtx.org> wrote:
+> > Thanks, did a scratch build for that and dropped it in the bug. Only
+> > one user has reported back, but the report was that it did not fix the
+> > issue.  I have also gotten confirmation now that the issue is occuring
+> > with 5.16-rc2.
+>
+> Okay.
+>
+> Morning light brings clarity to the mind.  Here's a patch that should
+> definitely fix this bug, as well as the very unlikely race of the page
+> being truncated from the page cache before pipe_buf_release() is
+> called.
+>
+> Please test.
 
-Thinking about it more in the scope of panic_on_oops above: wouldn't it 
-make more sense to emit "KASAN: WARNING:" instead? All that provided the 
-fact the code explicitly does "if (panic_on_warn) { panic(); }"?
+Thanks, did a scratch build. and multiple users have reported back
+saying that this patch does in fact fix the issue.
 
-> Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-> ---
->   mm/kasan/report.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index 0bc10f452f7e..ead714c844e9 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -86,7 +86,7 @@ __setup("kasan_multi_shot", kasan_set_multi_shot);
->   
->   static void print_error_description(struct kasan_access_info *info)
->   {
-> -	pr_err("BUG: KASAN: %s in %pS\n",
-> +	pr_err("KASAN: BUG: %s in %pS\n",
->   		kasan_get_bug_type(info), (void *)info->ip);
->   	if (info->access_size)
->   		pr_err("%s of size %zu at addr %px by task %s/%d\n",
-> @@ -366,7 +366,7 @@ void kasan_report_invalid_free(void *object, unsigned long ip)
->   #endif /* IS_ENABLED(CONFIG_KUNIT) */
->   
->   	start_report(&flags);
-> -	pr_err("BUG: KASAN: double-free or invalid-free in %pS\n", (void *)ip);
-> +	pr_err("KASAN: BUG: double-free or invalid-free in %pS\n", (void *)ip);
->   	kasan_print_tags(tag, object);
->   	pr_err("\n");
->   	print_address_description(object, tag);
-> @@ -386,7 +386,7 @@ void kasan_report_async(void)
->   #endif /* IS_ENABLED(CONFIG_KUNIT) */
->   
->   	start_report(&flags);
-> -	pr_err("BUG: KASAN: invalid-access\n");
-> +	pr_err("KASAN: BUG: invalid-access\n");
->   	pr_err("Asynchronous mode enabled: no access details available\n");
->   	pr_err("\n");
->   	dump_stack_lvl(KERN_ERR);
-> 
-> 
-
-
--- 
-js
-suse labs
+Justin
