@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A18E45BB4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26EAA45BD01
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:32:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243860AbhKXMSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:18:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42356 "EHLO mail.kernel.org"
+        id S1343844AbhKXMeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:34:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243175AbhKXMN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:13:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D763A61153;
-        Wed, 24 Nov 2021 12:08:00 +0000 (UTC)
+        id S1343895AbhKXMaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:30:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13F2361283;
+        Wed, 24 Nov 2021 12:18:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755681;
-        bh=7kceqMDPmmIt7D3kVKnMRxAcHzsQJ5L5lGKetNWDrjs=;
+        s=korg; t=1637756304;
+        bh=cLl/rtu4p4mSIH13ArTByTfbVw84WaA10LmdcbrOgMI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kZp31IFHlIDKYVZiz1eVdfpxwf0PgufAmP3yJlbzBQ9oNH+adJ3W2IjDufeHXVkIu
-         pUdj2AK5INZD5q6i8vR+fN4zvCTIkSYPBuzqaUI2QN4k6p7P6hSdoxJXbwFXBxcRw0
-         YjlwExbz/eI/xWE+TSkcJw5DJYxWGO55JX/PezrM=
+        b=PI9M1TN7AmSXK4tN+/65HLewQmkbHrBnqdvlXI82JaQF402/UjwvATQR2zLBeeZEO
+         KTqBoNGtQTAjnKm7yHgIapU6yg8lN6PKZTU/r8DQSX6zznYYNRGeTuhEnOdIzFs5z/
+         JStG+S+gYFyPAlmVbtL+k5BVOnbKiM8IZ0FjTkyc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Walt Jr. Brake" <mr.yming81@gmail.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 4.9 003/207] xhci: Fix USB 3.1 enumeration issues by increasing roothub power-on-good delay
+        stable@vger.kernel.org, Zev Weiss <zev@bewilderbeest.net>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.14 032/251] hwmon: (pmbus/lm25066) Add offset coefficients
 Date:   Wed, 24 Nov 2021 12:54:34 +0100
-Message-Id: <20211124115704.055132125@linuxfoundation.org>
+Message-Id: <20211124115711.354805206@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,58 +39,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Zev Weiss <zev@bewilderbeest.net>
 
-commit e1959faf085b004e6c3afaaaa743381f00e7c015 upstream.
+commit ae59dc455a78fb73034dd1fbb337d7e59c27cbd8 upstream.
 
-Some USB 3.1 enumeration issues were reported after the hub driver removed
-the minimum 100ms limit for the power-on-good delay.
+With the exception of the lm5066i, all the devices handled by this
+driver had been missing their offset ('b') coefficients for direct
+format readings.
 
-Since commit 90d28fb53d4a ("usb: core: reduce power-on-good delay time of
-root hub") the hub driver sets the power-on-delay based on the
-bPwrOn2PwrGood value in the hub descriptor.
-
-xhci driver has a 20ms bPwrOn2PwrGood value for both roothubs based
-on xhci spec section 5.4.8, but it's clearly not enough for the
-USB 3.1 devices, causing enumeration issues.
-
-Tests indicate full 100ms delay is needed.
-
-Reported-by: Walt Jr. Brake <mr.yming81@gmail.com>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Fixes: 90d28fb53d4a ("usb: core: reduce power-on-good delay time of root hub")
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20211105160036.549516-1-mathias.nyman@linux.intel.com
+Cc: stable@vger.kernel.org
+Fixes: 58615a94f6a1 ("hwmon: (pmbus/lm25066) Add support for LM25056")
+Fixes: e53e6497fc9f ("hwmon: (pmbus/lm25066) Refactor device specific coefficients")
+Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+Link: https://lore.kernel.org/r/20210928092242.30036-2-zev@bewilderbeest.net
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci-hub.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/hwmon/pmbus/lm25066.c |   23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
---- a/drivers/usb/host/xhci-hub.c
-+++ b/drivers/usb/host/xhci-hub.c
-@@ -174,7 +174,6 @@ static void xhci_common_hub_descriptor(s
- {
- 	u16 temp;
- 
--	desc->bPwrOn2PwrGood = 10;	/* xhci section 5.4.9 says 20ms max */
- 	desc->bHubContrCurrent = 0;
- 
- 	desc->bNbrPorts = ports;
-@@ -208,6 +207,7 @@ static void xhci_usb2_hub_descriptor(str
- 	desc->bDescriptorType = USB_DT_HUB;
- 	temp = 1 + (ports / 8);
- 	desc->bDescLength = USB_DT_HUB_NONVAR_SIZE + 2 * temp;
-+	desc->bPwrOn2PwrGood = 10;	/* xhci section 5.4.8 says 20ms */
- 
- 	/* The Device Removable bits are reported on a byte granularity.
- 	 * If the port doesn't exist within that byte, the bit is set to 0.
-@@ -258,6 +258,7 @@ static void xhci_usb3_hub_descriptor(str
- 	xhci_common_hub_descriptor(xhci, desc, ports);
- 	desc->bDescriptorType = USB_DT_SS_HUB;
- 	desc->bDescLength = USB_DT_SS_HUB_SIZE;
-+	desc->bPwrOn2PwrGood = 50;	/* usb 3.1 may fail if less than 100ms */
- 
- 	/* header decode latency should be zero for roothubs,
- 	 * see section 4.23.5.2.
+--- a/drivers/hwmon/pmbus/lm25066.c
++++ b/drivers/hwmon/pmbus/lm25066.c
+@@ -69,22 +69,27 @@ static struct __coeff lm25066_coeff[6][P
+ 	[lm25056] = {
+ 		[PSC_VOLTAGE_IN] = {
+ 			.m = 16296,
++			.b = 1343,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN] = {
+ 			.m = 13797,
++			.b = -1833,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN_L] = {
+ 			.m = 6726,
++			.b = -537,
+ 			.R = -2,
+ 		},
+ 		[PSC_POWER] = {
+ 			.m = 5501,
++			.b = -2908,
+ 			.R = -3,
+ 		},
+ 		[PSC_POWER_L] = {
+ 			.m = 26882,
++			.b = -5646,
+ 			.R = -4,
+ 		},
+ 		[PSC_TEMPERATURE] = {
+@@ -96,26 +101,32 @@ static struct __coeff lm25066_coeff[6][P
+ 	[lm25066] = {
+ 		[PSC_VOLTAGE_IN] = {
+ 			.m = 22070,
++			.b = -1800,
+ 			.R = -2,
+ 		},
+ 		[PSC_VOLTAGE_OUT] = {
+ 			.m = 22070,
++			.b = -1800,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN] = {
+ 			.m = 13661,
++			.b = -5200,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN_L] = {
+ 			.m = 6852,
++			.b = -3100,
+ 			.R = -2,
+ 		},
+ 		[PSC_POWER] = {
+ 			.m = 736,
++			.b = -3300,
+ 			.R = -2,
+ 		},
+ 		[PSC_POWER_L] = {
+ 			.m = 369,
++			.b = -1900,
+ 			.R = -2,
+ 		},
+ 		[PSC_TEMPERATURE] = {
+@@ -155,26 +166,32 @@ static struct __coeff lm25066_coeff[6][P
+ 	[lm5064] = {
+ 		[PSC_VOLTAGE_IN] = {
+ 			.m = 4611,
++			.b = -642,
+ 			.R = -2,
+ 		},
+ 		[PSC_VOLTAGE_OUT] = {
+ 			.m = 4621,
++			.b = 423,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN] = {
+ 			.m = 10742,
++			.b = 1552,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN_L] = {
+ 			.m = 5456,
++			.b = 2118,
+ 			.R = -2,
+ 		},
+ 		[PSC_POWER] = {
+ 			.m = 1204,
++			.b = 8524,
+ 			.R = -3,
+ 		},
+ 		[PSC_POWER_L] = {
+ 			.m = 612,
++			.b = 11202,
+ 			.R = -3,
+ 		},
+ 		[PSC_TEMPERATURE] = {
+@@ -184,26 +201,32 @@ static struct __coeff lm25066_coeff[6][P
+ 	[lm5066] = {
+ 		[PSC_VOLTAGE_IN] = {
+ 			.m = 4587,
++			.b = -1200,
+ 			.R = -2,
+ 		},
+ 		[PSC_VOLTAGE_OUT] = {
+ 			.m = 4587,
++			.b = -2400,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN] = {
+ 			.m = 10753,
++			.b = -1200,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN_L] = {
+ 			.m = 5405,
++			.b = -600,
+ 			.R = -2,
+ 		},
+ 		[PSC_POWER] = {
+ 			.m = 1204,
++			.b = -6000,
+ 			.R = -3,
+ 		},
+ 		[PSC_POWER_L] = {
+ 			.m = 605,
++			.b = -8000,
+ 			.R = -3,
+ 		},
+ 		[PSC_TEMPERATURE] = {
 
 
