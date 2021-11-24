@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F64445BD3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA0A45BE72
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:46:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344188AbhKXMgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:36:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42106 "EHLO mail.kernel.org"
+        id S1343812AbhKXMq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:46:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243662AbhKXM0S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:26:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8F996121D;
-        Wed, 24 Nov 2021 12:16:13 +0000 (UTC)
+        id S1345715AbhKXMoD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:44:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E5696124D;
+        Wed, 24 Nov 2021 12:26:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756174;
-        bh=9L5S1wNQqgRAGnTg268+P/TH/VccBWxuhv9lCpuuxG8=;
+        s=korg; t=1637756761;
+        bh=gFkHNSAYPKPl1wN+NS84UXxXrBHMmrC26H9QTnQrHF0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JnV/Wz8hq0yfrgurIwoE3L3JbGQVDlO6AB/vEH1f6QMg+OiAqrObsFD3qZQP802k5
-         AmOmK3NnOhDtFat/21uUUS6C7PU0e1MG36rNL8NoccSYEB47MCf44HJJQIGcoaNBHs
-         GvmdZgi2r4zZ0JWAnbDxCvcsyAHQVJ0PNyU0boHU=
+        b=LIyj6f5luIcnCgJqIYm2abnfiIUVCvM/T4NPz3hjnlHTF6kGlkyLqqseRnKf5EVZO
+         d7vSg7mc+7wCAQR5vlXwEYjPmNuYgqzGm5lqI46ruH9NqznT5imqP0PRqyOMGWP12K
+         0C0kIqaZuyftmUS6yDYbJRpnGbYz/HkfDhEbM3AI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 167/207] usb: host: ohci-tmio: check return value after calling platform_get_resource()
+        stable@vger.kernel.org, Cornelia Huck <cohuck@redhat.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH 4.14 196/251] s390/cio: check the subchannel validity for dev_busid
 Date:   Wed, 24 Nov 2021 12:57:18 +0100
-Message-Id: <20211124115709.408750070@linuxfoundation.org>
+Message-Id: <20211124115717.084019018@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Vineeth Vijayan <vneethv@linux.ibm.com>
 
-[ Upstream commit 9eff2b2e59fda25051ab36cd1cb5014661df657b ]
+commit a4751f157c194431fae9e9c493f456df8272b871 upstream.
 
-It will cause null-ptr-deref if platform_get_resource() returns NULL,
-we need check the return value.
+Check the validity of subchanel before reading other fields in
+the schib.
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20211011134920.118477-1-yangyingliang@huawei.com
+Fixes: d3683c055212 ("s390/cio: add dev_busid sysfs entry for each subchannel")
+CC: <stable@vger.kernel.org>
+Reported-by: Cornelia Huck <cohuck@redhat.com>
+Signed-off-by: Vineeth Vijayan <vneethv@linux.ibm.com>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Link: https://lore.kernel.org/r/20211105154451.847288-1-vneethv@linux.ibm.com
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/ohci-tmio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/s390/cio/css.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/host/ohci-tmio.c b/drivers/usb/host/ohci-tmio.c
-index 9c9e97294c18d..4d42ae3b2fd6d 100644
---- a/drivers/usb/host/ohci-tmio.c
-+++ b/drivers/usb/host/ohci-tmio.c
-@@ -199,7 +199,7 @@ static int ohci_hcd_tmio_drv_probe(struct platform_device *dev)
- 	if (usb_disabled())
- 		return -ENODEV;
+--- a/drivers/s390/cio/css.c
++++ b/drivers/s390/cio/css.c
+@@ -337,8 +337,8 @@ static ssize_t dev_busid_show(struct dev
+ 	struct subchannel *sch = to_subchannel(dev);
+ 	struct pmcw *pmcw = &sch->schib.pmcw;
  
--	if (!cell)
-+	if (!cell || !regs || !config || !sram)
- 		return -EINVAL;
- 
- 	if (irq < 0)
--- 
-2.33.0
-
+-	if ((pmcw->st == SUBCHANNEL_TYPE_IO ||
+-	     pmcw->st == SUBCHANNEL_TYPE_MSG) && pmcw->dnv)
++	if ((pmcw->st == SUBCHANNEL_TYPE_IO && pmcw->dnv) ||
++	    (pmcw->st == SUBCHANNEL_TYPE_MSG && pmcw->w))
+ 		return sysfs_emit(buf, "0.%x.%04x\n", sch->schid.ssid,
+ 				  pmcw->dev);
+ 	else
 
 
