@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3232C45CFB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:06:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1274D45CFAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:06:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352160AbhKXWKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 17:10:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40872 "EHLO
+        id S1351951AbhKXWJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 17:09:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344965AbhKXWJr (ORCPT
+        with ESMTP id S1345341AbhKXWJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:09:47 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5811CC061574;
-        Wed, 24 Nov 2021 14:06:37 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id i63so8427458lji.3;
-        Wed, 24 Nov 2021 14:06:37 -0800 (PST)
+        Wed, 24 Nov 2021 17:09:48 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C23C061758;
+        Wed, 24 Nov 2021 14:06:38 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id t26so10920046lfk.9;
+        Wed, 24 Nov 2021 14:06:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1JU496kEAul2Xrq2ly7/mGbdp4YdTxxslXy87kjnkVE=;
-        b=UqwzU78ytiFl6/Y/ntkoBchG3Lc6SXt6mrHGgPBCHW5nh9kTIg+ls1wTiTKE4yID3C
-         we6f23L5TPwplR8LoL/OQ9Cp5QLkkALk6tyAMys6W6VkLak7/ZwmqIqbKtayFHFkxD31
-         LnTAE+RnHWBlZOGQrmklnFF1nUKQDd82jjO7PCZVmrcNOMS3Fz6Lvt3wSV0a+bSf4gOe
-         VfNb0TCxamCV9LKcR2Rrf05Elmd04arCw0ITH9RiP7vPHuhjMzO4bisyW1gmlkl64Ctv
-         GC8BtGu6I+eOvvfVohuGYchkVfQ5MRCz2ObBvNX7O4YGCtPv6Wug/RWU1+ySuc8hlE+c
-         EWGQ==
+        bh=c5Fktc8z3pKDnGBiR9xJxzlv3HvufbR7qsaFtUM4qP0=;
+        b=J+ph0bGfDz+0f3SGqVBhKJcKJtE145w0Qd6X3dDnesGFzTRO3D1oKZZSXP/i31IGrL
+         p1luco5cjM6V7Cg8Ikv1d/qcpY5z9yIUKJG+CTO0D7xvFfh5tPLkhUIV92H0l1HkZ7pB
+         vEZkYlEuWq5wqgJtgjc4Sfx61LwcS3Yf0NrKKwdJicwDHo0atAO2jNPn1mctE6+eQID5
+         38nBlkG/XgtkZR+0ETbCCuqvYOykfTMwvVp8lRlO5cjYyCElqzRbF0YQUHnhAIgdM8lo
+         qzgD5yJd/FI6D/F7JpmnzqTjwHkYOgiZamAhCDdQz+r20/xvJwhCv96wID4QmvMihIKs
+         FD6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1JU496kEAul2Xrq2ly7/mGbdp4YdTxxslXy87kjnkVE=;
-        b=6CQDvTixX5Ah+hxa/0FLLsK+zxmFYkEJkIQ9BDO6ac2ZMoujRnJo+fmAEJtIDLxVj+
-         3m593VLGKnGuwd6KZw0uGpS8KFzruXVDOf854K1Y2oHtmJ7tG3ImJNnk1a1Nk7jwtuvu
-         rdle+V5o+6I9jOwooaA8KmbNOoKQJtIUfiZksfr+an5KlQbteEBbTT0d5osrezP0TqEJ
-         c2DoSVazonqau1Nc2lwlHnx/iNjC3sK+9sJFfEaDPw1a9dKdUcv/ihVXffZ66YovApKl
-         557bBPh+c5sFIVEe9ZLe9BCJB/CDgtpokMqHJgRceraJbFSSXcPnh+3EzPPnpt/LPSPu
-         FA7A==
-X-Gm-Message-State: AOAM533J6BF1CcwWC6dtb+DxxYHboCiXioYm2AaT3V3wkJXhodyAn8HL
-        A6cM/n1VYWKmW1l4tZFEDIKFd6AmP0g=
-X-Google-Smtp-Source: ABdhPJyzNTbRmF53l+Iw649bJHHzEY01rJ+pkrDrJDSRRi2322Eki64x9PXyd93QePOA6hecAJIOhA==
-X-Received: by 2002:a2e:9450:: with SMTP id o16mr19173212ljh.444.1637791595711;
-        Wed, 24 Nov 2021 14:06:35 -0800 (PST)
+        bh=c5Fktc8z3pKDnGBiR9xJxzlv3HvufbR7qsaFtUM4qP0=;
+        b=ZuR9VT4CJTIi8by7byaDbAtgEh9KWs9AO6qziUBrVpggyyuA7DDbRNN+quEufpqKQs
+         QPEW4GtvJGUKOFYM/u/Td6JAjm9BPb/CZd3fzsU54GuOwcFFVNZgT14/Q0YE9thL7gNa
+         O/S+xpPMJYt0I3MNy1dIN/VNS10xA8DgUrzogR/iYLT/y6fJ7Z9epShdZHy0UKFQG/Xj
+         9mc06nurUE+71gqPsKychcMHuuSRTMNHi2dTyCHarbCW+vQCEDjgNt24RZAm5aDNXOSL
+         64AT9ok0Xlzvsl99ZwAQWjMu5rFG4m1ZK8kSCDA1T7Tr4Hc75BB2Byjs1Qzxm20z7nR2
+         Elhg==
+X-Gm-Message-State: AOAM53242RVWJlGr4COucllNsMrZ8ZjzsYPivL1LaplK7T8ksFNiYl10
+        K7H/L6oRdyve0IIAS6VFukM=
+X-Google-Smtp-Source: ABdhPJwux3qwntifRbiT4YwO9EgIoEEHEAiuyxDM9ZVeZbtEWZwxZ2RjX4+Z+AMZAYBRz8ID00EvdQ==
+X-Received: by 2002:a05:6512:3ba6:: with SMTP id g38mr18521398lfv.330.1637791596481;
+        Wed, 24 Nov 2021 14:06:36 -0800 (PST)
 Received: from localhost.localdomain (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
-        by smtp.gmail.com with ESMTPSA id w17sm93266ljh.15.2021.11.24.14.06.34
+        by smtp.gmail.com with ESMTPSA id w17sm93266ljh.15.2021.11.24.14.06.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 14:06:35 -0800 (PST)
+        Wed, 24 Nov 2021 14:06:36 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -58,9 +58,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
 Cc:     linux-tegra@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
         alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org
-Subject: [PATCH v1 06/20] ASoC: tegra20: spdif: Support device-tree
-Date:   Thu, 25 Nov 2021 01:00:43 +0300
-Message-Id: <20211124220057.15763-7-digetx@gmail.com>
+Subject: [PATCH v1 07/20] ASoC: tegra20: spdif: Set FIFO trigger level
+Date:   Thu, 25 Nov 2021 01:00:44 +0300
+Message-Id: <20211124220057.15763-8-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211124220057.15763-1-digetx@gmail.com>
 References: <20211124220057.15763-1-digetx@gmail.com>
@@ -70,49 +70,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tegra20 S/PDIF driver was added in a pre-DT era and was never used since
-that time. Revive driver by adding device-tree support.
+Program FIFO trigger level properly to fix x4 accelerated playback.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- sound/soc/tegra/tegra20_spdif.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ sound/soc/tegra/tegra20_spdif.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
-index 57a6c576b91f..bd81df5378d1 100644
+index bd81df5378d1..6650875d2555 100644
 --- a/sound/soc/tegra/tegra20_spdif.c
 +++ b/sound/soc/tegra/tegra20_spdif.c
-@@ -10,6 +10,7 @@
- #include <linux/device.h>
- #include <linux/io.h>
- #include <linux/module.h>
-+#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-@@ -332,10 +333,17 @@ static const struct dev_pm_ops tegra20_spdif_pm_ops = {
- 			   tegra20_spdif_runtime_resume, NULL)
- };
+@@ -70,6 +70,14 @@ static int tegra20_spdif_hw_params(struct snd_pcm_substream *substream,
  
-+static const struct of_device_id tegra20_spdif_of_match[] = {
-+	{ .compatible = "nvidia,tegra20-spdif", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, tegra20_spdif_of_match);
+ 	regmap_update_bits(spdif->regmap, TEGRA20_SPDIF_CTRL, mask, val);
+ 
++	/*
++	 * FIFO trigger level must be bigger than DMA burst or equal to it,
++	 * otherwise data is discarded on overflow.
++	 */
++	regmap_update_bits(spdif->regmap, TEGRA20_SPDIF_DATA_FIFO_CSR,
++			   TEGRA20_SPDIF_DATA_FIFO_CSR_TX_ATN_LVL_MASK,
++			   TEGRA20_SPDIF_DATA_FIFO_CSR_TX_ATN_LVL_TU4_WORD_FULL);
 +
- static struct platform_driver tegra20_spdif_driver = {
- 	.driver = {
- 		.name = DRV_NAME,
- 		.pm = &tegra20_spdif_pm_ops,
-+		.of_match_table = tegra20_spdif_of_match,
- 	},
- 	.probe = tegra20_spdif_platform_probe,
- 	.remove = tegra20_spdif_platform_remove,
-@@ -346,4 +354,3 @@ module_platform_driver(tegra20_spdif_driver);
- MODULE_AUTHOR("Stephen Warren <swarren@nvidia.com>");
- MODULE_DESCRIPTION("Tegra20 SPDIF ASoC driver");
- MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:" DRV_NAME);
+ 	switch (params_rate(params)) {
+ 	case 32000:
+ 		spdifclock = 4096000;
 -- 
 2.33.1
 
