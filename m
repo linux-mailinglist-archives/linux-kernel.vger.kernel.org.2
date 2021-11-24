@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A9A45C00A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:01:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1A645C009
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:01:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345068AbhKXNEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:04:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41108 "EHLO mail.kernel.org"
+        id S1345046AbhKXNET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:04:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346583AbhKXNCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1346807AbhKXNCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Nov 2021 08:02:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 74EC66120E;
-        Wed, 24 Nov 2021 12:35:42 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BA04619E9;
+        Wed, 24 Nov 2021 12:35:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757343;
-        bh=mZ0916M+tLlbHotbAInE5xo1EVF4XTAH17VkF6SyygE=;
+        s=korg; t=1637757346;
+        bh=7NmHKJhBuQmvjxD9pIk7Xc7mYPo+QYRzuSCsYcyqECk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WuVn2bon0PbIF7Hopbrm8zUhIaxxiXLysvskc3ObaVynfHoK7U87X5A03jCqNznBj
-         NqnrbGtsHnk2m1BW8JW1jvJXZfBmg/6mvXpC2ImCa/HV57kd1OpR1gAimh1Lx9SEoT
-         DMKN4ea0WVJlmGR3rbUQylm7oHvb6SLPYsjStCMk=
+        b=V4Vhp0jfTodNrUyQ2ggRPvcW6N64r/XwlM6ByL8ROzJSOYH6wG8k+VjvnNgZKza5k
+         mVkG9MA7PX8SzhWU2FwmCgZZJ2+yDz8kNAIlhNlMBj5Hv2ZZ0uH6mvRsSBUZwiWgIZ
+         4vO82kc3/EWeUoqLf2bfJ3ZzF3O4TDmn5sGdDSJw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anel Orazgaliyeva <anelkz@amazon.de>,
-        Aman Priyadarshi <apeureka@amazon.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 136/323] cpuidle: Fix kobject memory leaks in error paths
-Date:   Wed, 24 Nov 2021 12:55:26 +0100
-Message-Id: <20211124115723.522771321@linuxfoundation.org>
+Subject: [PATCH 4.19 137/323] media: em28xx: Dont use ops->suspend if it is NULL
+Date:   Wed, 24 Nov 2021 12:55:27 +0100
+Message-Id: <20211124115723.553657243@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
 References: <20211124115718.822024889@linuxfoundation.org>
@@ -41,68 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anel Orazgaliyeva <anelkz@amazon.de>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit e5f5a66c9aa9c331da5527c2e3fd9394e7091e01 ]
+[ Upstream commit 51fa3b70d27342baf1ea8aaab3e96e5f4f26d5b2 ]
 
-Commit c343bf1ba5ef ("cpuidle: Fix three reference count leaks")
-fixes the cleanup of kobjects; however, it removes kfree() calls
-altogether, leading to memory leaks.
+The call to ops->suspend for the dev->dev_next case can currently
+trigger a call on a null function pointer if ops->suspend is null.
+Skip over the use of function ops->suspend if it is null.
 
-Fix those and also defer the initialization of dev->kobj_dev until
-after the error check, so that we do not end up with a dangling
-pointer.
+Addresses-Coverity: ("Dereference after null check")
 
-Fixes: c343bf1ba5ef ("cpuidle: Fix three reference count leaks")
-Signed-off-by: Anel Orazgaliyeva <anelkz@amazon.de>
-Suggested-by: Aman Priyadarshi <apeureka@amazon.de>
-[ rjw: Subject edits ]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: be7fd3c3a8c5 ("media: em28xx: Hauppauge DualHD second tuner functionality")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpuidle/sysfs.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/media/usb/em28xx/em28xx-core.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/cpuidle/sysfs.c b/drivers/cpuidle/sysfs.c
-index 66979dc336807..d9b917529abaf 100644
---- a/drivers/cpuidle/sysfs.c
-+++ b/drivers/cpuidle/sysfs.c
-@@ -468,6 +468,7 @@ static int cpuidle_add_state_sysfs(struct cpuidle_device *device)
- 					   &kdev->kobj, "state%d", i);
- 		if (ret) {
- 			kobject_put(&kobj->kobj);
-+			kfree(kobj);
- 			goto error_state;
- 		}
- 		cpuidle_add_s2idle_attr_group(kobj);
-@@ -599,6 +600,7 @@ static int cpuidle_add_driver_sysfs(struct cpuidle_device *dev)
- 				   &kdev->kobj, "driver");
- 	if (ret) {
- 		kobject_put(&kdrv->kobj);
-+		kfree(kdrv);
- 		return ret;
+diff --git a/drivers/media/usb/em28xx/em28xx-core.c b/drivers/media/usb/em28xx/em28xx-core.c
+index d0f95a5cb4d23..437651307056f 100644
+--- a/drivers/media/usb/em28xx/em28xx-core.c
++++ b/drivers/media/usb/em28xx/em28xx-core.c
+@@ -1151,8 +1151,9 @@ int em28xx_suspend_extension(struct em28xx *dev)
+ 	dev_info(&dev->intf->dev, "Suspending extensions\n");
+ 	mutex_lock(&em28xx_devlist_mutex);
+ 	list_for_each_entry(ops, &em28xx_extension_devlist, next) {
+-		if (ops->suspend)
+-			ops->suspend(dev);
++		if (!ops->suspend)
++			continue;
++		ops->suspend(dev);
+ 		if (dev->dev_next)
+ 			ops->suspend(dev->dev_next);
  	}
- 
-@@ -685,7 +687,6 @@ int cpuidle_add_sysfs(struct cpuidle_device *dev)
- 	if (!kdev)
- 		return -ENOMEM;
- 	kdev->dev = dev;
--	dev->kobj_dev = kdev;
- 
- 	init_completion(&kdev->kobj_unregister);
- 
-@@ -693,9 +694,11 @@ int cpuidle_add_sysfs(struct cpuidle_device *dev)
- 				   "cpuidle");
- 	if (error) {
- 		kobject_put(&kdev->kobj);
-+		kfree(kdev);
- 		return error;
- 	}
- 
-+	dev->kobj_dev = kdev;
- 	kobject_uevent(&kdev->kobj, KOBJ_ADD);
- 
- 	return 0;
 -- 
 2.33.0
 
