@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3086E45BB9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:18:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A84F45B9F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:05:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243891AbhKXMVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:21:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41248 "EHLO mail.kernel.org"
+        id S231881AbhKXMGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:06:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242149AbhKXMQo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:16:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE57F6108E;
-        Wed, 24 Nov 2021 12:10:29 +0000 (UTC)
+        id S242014AbhKXMFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:05:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9226560FBF;
+        Wed, 24 Nov 2021 12:02:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755830;
-        bh=F3dmZxdvQ2jpzrZHz4xGkd3iVO1+ehXqGikQQadSO3s=;
+        s=korg; t=1637755332;
+        bh=wKf7Pz+0LZqRhIO3/hWgsFlqJ9rItfBLVB0y+M/r+pY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tRqgeHxuozms7tZpfcBRni++9y+5MIKcNUFKJD3IWTw3+EzsywHi8YPl8xHtKizWS
-         XsIWwcWVsqEJPcPQxDxfYFQcRA8p55aeKNtor9Xi1hy1dI1ReLPzqcInwuUl2FnJc4
-         ZA3JwL2DxOlwG68JMOdnr3bKQyQ7AX6NgehPuBdw=
+        b=oRDCi41bJUqACSSUVKqErsuVkuhIlWL2zTfohEO0arJr1OqC004ILhyXD65V0vkcl
+         voKTZhXOInfmZtDxB2N0ActRQu1cED/F61igV5XDQg9mRESY6m4o4fXD23DaO32BUk
+         a2Q92eib0i6/WYN9TNhT9siuKLrMxJ1ARZPzNix0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 056/207] Bluetooth: sco: Fix lock_sock() blockage by memcpy_from_msg()
+        stable@vger.kernel.org, Zev Weiss <zev@bewilderbeest.net>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.4 024/162] hwmon: (pmbus/lm25066) Add offset coefficients
 Date:   Wed, 24 Nov 2021 12:55:27 +0100
-Message-Id: <20211124115705.743486922@linuxfoundation.org>
+Message-Id: <20211124115659.112446097@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,96 +39,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Zev Weiss <zev@bewilderbeest.net>
 
-[ Upstream commit 99c23da0eed4fd20cae8243f2b51e10e66aa0951 ]
+commit ae59dc455a78fb73034dd1fbb337d7e59c27cbd8 upstream.
 
-The sco_send_frame() also takes lock_sock() during memcpy_from_msg()
-call that may be endlessly blocked by a task with userfaultd
-technique, and this will result in a hung task watchdog trigger.
+With the exception of the lm5066i, all the devices handled by this
+driver had been missing their offset ('b') coefficients for direct
+format readings.
 
-Just like the similar fix for hci_sock_sendmsg() in commit
-92c685dc5de0 ("Bluetooth: reorganize functions..."), this patch moves
-the  memcpy_from_msg() out of lock_sock() for addressing the hang.
-
-This should be the last piece for fixing CVE-2021-3640 after a few
-already queued fixes.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: 58615a94f6a1 ("hwmon: (pmbus/lm25066) Add support for LM25056")
+Fixes: e53e6497fc9f ("hwmon: (pmbus/lm25066) Refactor device specific coefficients")
+Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+Link: https://lore.kernel.org/r/20210928092242.30036-2-zev@bewilderbeest.net
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/bluetooth/sco.c | 24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+ drivers/hwmon/pmbus/lm25066.c |   23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
-index 77f88c7df6053..b3b4ffaa394f6 100644
---- a/net/bluetooth/sco.c
-+++ b/net/bluetooth/sco.c
-@@ -254,7 +254,8 @@ static int sco_connect(struct hci_dev *hdev, struct sock *sk)
- 	return err;
- }
- 
--static int sco_send_frame(struct sock *sk, struct msghdr *msg, int len)
-+static int sco_send_frame(struct sock *sk, void *buf, int len,
-+			  unsigned int msg_flags)
- {
- 	struct sco_conn *conn = sco_pi(sk)->conn;
- 	struct sk_buff *skb;
-@@ -266,15 +267,11 @@ static int sco_send_frame(struct sock *sk, struct msghdr *msg, int len)
- 
- 	BT_DBG("sk %p len %d", sk, len);
- 
--	skb = bt_skb_send_alloc(sk, len, msg->msg_flags & MSG_DONTWAIT, &err);
-+	skb = bt_skb_send_alloc(sk, len, msg_flags & MSG_DONTWAIT, &err);
- 	if (!skb)
- 		return err;
- 
--	if (memcpy_from_msg(skb_put(skb, len), msg, len)) {
--		kfree_skb(skb);
--		return -EFAULT;
--	}
--
-+	memcpy(skb_put(skb, len), buf, len);
- 	hci_send_sco(conn->hcon, skb);
- 
- 	return len;
-@@ -693,6 +690,7 @@ static int sco_sock_sendmsg(struct socket *sock, struct msghdr *msg,
- 			    size_t len)
- {
- 	struct sock *sk = sock->sk;
-+	void *buf;
- 	int err;
- 
- 	BT_DBG("sock %p, sk %p", sock, sk);
-@@ -704,14 +702,24 @@ static int sco_sock_sendmsg(struct socket *sock, struct msghdr *msg,
- 	if (msg->msg_flags & MSG_OOB)
- 		return -EOPNOTSUPP;
- 
-+	buf = kmalloc(len, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	if (memcpy_from_msg(buf, msg, len)) {
-+		kfree(buf);
-+		return -EFAULT;
-+	}
-+
- 	lock_sock(sk);
- 
- 	if (sk->sk_state == BT_CONNECTED)
--		err = sco_send_frame(sk, msg, len);
-+		err = sco_send_frame(sk, buf, len, msg->msg_flags);
- 	else
- 		err = -ENOTCONN;
- 
- 	release_sock(sk);
-+	kfree(buf);
- 	return err;
- }
- 
--- 
-2.33.0
-
+--- a/drivers/hwmon/pmbus/lm25066.c
++++ b/drivers/hwmon/pmbus/lm25066.c
+@@ -69,22 +69,27 @@ static struct __coeff lm25066_coeff[5][P
+ 	[lm25056] = {
+ 		[PSC_VOLTAGE_IN] = {
+ 			.m = 16296,
++			.b = 1343,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN] = {
+ 			.m = 13797,
++			.b = -1833,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN_L] = {
+ 			.m = 6726,
++			.b = -537,
+ 			.R = -2,
+ 		},
+ 		[PSC_POWER] = {
+ 			.m = 5501,
++			.b = -2908,
+ 			.R = -3,
+ 		},
+ 		[PSC_POWER_L] = {
+ 			.m = 26882,
++			.b = -5646,
+ 			.R = -4,
+ 		},
+ 		[PSC_TEMPERATURE] = {
+@@ -96,26 +101,32 @@ static struct __coeff lm25066_coeff[5][P
+ 	[lm25066] = {
+ 		[PSC_VOLTAGE_IN] = {
+ 			.m = 22070,
++			.b = -1800,
+ 			.R = -2,
+ 		},
+ 		[PSC_VOLTAGE_OUT] = {
+ 			.m = 22070,
++			.b = -1800,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN] = {
+ 			.m = 13661,
++			.b = -5200,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN_L] = {
+ 			.m = 6852,
++			.b = -3100,
+ 			.R = -2,
+ 		},
+ 		[PSC_POWER] = {
+ 			.m = 736,
++			.b = -3300,
+ 			.R = -2,
+ 		},
+ 		[PSC_POWER_L] = {
+ 			.m = 369,
++			.b = -1900,
+ 			.R = -2,
+ 		},
+ 		[PSC_TEMPERATURE] = {
+@@ -155,26 +166,32 @@ static struct __coeff lm25066_coeff[5][P
+ 	[lm5064] = {
+ 		[PSC_VOLTAGE_IN] = {
+ 			.m = 4611,
++			.b = -642,
+ 			.R = -2,
+ 		},
+ 		[PSC_VOLTAGE_OUT] = {
+ 			.m = 4621,
++			.b = 423,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN] = {
+ 			.m = 10742,
++			.b = 1552,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN_L] = {
+ 			.m = 5456,
++			.b = 2118,
+ 			.R = -2,
+ 		},
+ 		[PSC_POWER] = {
+ 			.m = 1204,
++			.b = 8524,
+ 			.R = -3,
+ 		},
+ 		[PSC_POWER_L] = {
+ 			.m = 612,
++			.b = 11202,
+ 			.R = -3,
+ 		},
+ 		[PSC_TEMPERATURE] = {
+@@ -184,26 +201,32 @@ static struct __coeff lm25066_coeff[5][P
+ 	[lm5066] = {
+ 		[PSC_VOLTAGE_IN] = {
+ 			.m = 4587,
++			.b = -1200,
+ 			.R = -2,
+ 		},
+ 		[PSC_VOLTAGE_OUT] = {
+ 			.m = 4587,
++			.b = -2400,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN] = {
+ 			.m = 10753,
++			.b = -1200,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN_L] = {
+ 			.m = 5405,
++			.b = -600,
+ 			.R = -2,
+ 		},
+ 		[PSC_POWER] = {
+ 			.m = 1204,
++			.b = -6000,
+ 			.R = -3,
+ 		},
+ 		[PSC_POWER_L] = {
+ 			.m = 605,
++			.b = -8000,
+ 			.R = -3,
+ 		},
+ 		[PSC_TEMPERATURE] = {
 
 
