@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3D945BBAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:19:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6961C45BDB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:38:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243095AbhKXMWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:22:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48530 "EHLO mail.kernel.org"
+        id S1344354AbhKXMk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:40:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243182AbhKXMR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:17:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2502461139;
-        Wed, 24 Nov 2021 12:11:15 +0000 (UTC)
+        id S1344467AbhKXMgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:36:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 349BC61179;
+        Wed, 24 Nov 2021 12:22:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755876;
-        bh=pBkYxER+EN8Hfyz1ekNpIL6qF5G0qTENbmrLuw+4EUM=;
+        s=korg; t=1637756531;
+        bh=Jey8LXnTxV2gww1EzOJecaYvVkiugyene7Ru5HblbCU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=clNzSjnevnYr96cs/g7mbRRe+F/4uhC5ETUqAWPJ0S7OX7S92cqYMSyke0pn5dYfk
-         ldmRp1celpHis4bVhE/CZmiaE+ejyGmW1XmtcaBj8Q1gOhrwC8yqdhOOM3v8rizIV+
-         58gd3FqEwhSjUVmt7aPnGdUA9/xtq7oeLRt7mVRk=
+        b=DSU1c1FEwUUZ0u0MLznckZXcFuht0oXjebIyeqKpdwtUjZB0SZzjiV7qbW0GjfpBU
+         UWYd3VWI594TedB5OkjFfO+6moHO+WRODMjhsxtJsOHl/g4wrLCeQp6MzgDjxGFEJU
+         Cehoqkewg1uSFrJmj4to0c0I/IAelSbywbqnj6rg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+2cd8c5db4a85f0a04142@syzkaller.appspotmail.com
-Subject: [PATCH 4.9 089/207] media: dvb-usb: fix ununit-value in az6027_rc_query
-Date:   Wed, 24 Nov 2021 12:56:00 +0100
-Message-Id: <20211124115706.955344889@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 119/251] memstick: jmb38x_ms: use appropriate free function in jmb38x_ms_alloc_host()
+Date:   Wed, 24 Nov 2021 12:56:01 +0100
+Message-Id: <20211124115714.370437885@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,35 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit afae4ef7d5ad913cab1316137854a36bea6268a5 ]
+[ Upstream commit beae4a6258e64af609ad5995cc6b6056eb0d898e ]
 
-Syzbot reported ununit-value bug in az6027_rc_query(). The problem was
-in missing state pointer initialization. Since this function does nothing
-we can simply initialize state to REMOTE_NO_KEY_PRESSED.
+The "msh" pointer is device managed, meaning that memstick_alloc_host()
+calls device_initialize() on it.  That means that it can't be free
+using kfree() but must instead be freed with memstick_free_host().
+Otherwise it leads to a tiny memory leak of device resources.
 
-Reported-and-tested-by: syzbot+2cd8c5db4a85f0a04142@syzkaller.appspotmail.com
-
-Fixes: 76f9a820c867 ("V4L/DVB: AZ6027: Initial import of the driver")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 60fdd931d577 ("memstick: add support for JMicron jmb38x MemoryStick host controller")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/20211011123912.GD15188@kili
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/dvb-usb/az6027.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/memstick/host/jmb38x_ms.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/usb/dvb-usb/az6027.c b/drivers/media/usb/dvb-usb/az6027.c
-index 2e711362847e4..382c8075ef524 100644
---- a/drivers/media/usb/dvb-usb/az6027.c
-+++ b/drivers/media/usb/dvb-usb/az6027.c
-@@ -394,6 +394,7 @@ static struct rc_map_table rc_map_az6027_table[] = {
- /* remote control stuff (does not work with my box) */
- static int az6027_rc_query(struct dvb_usb_device *d, u32 *event, int *state)
- {
-+	*state = REMOTE_NO_KEY_PRESSED;
- 	return 0;
+diff --git a/drivers/memstick/host/jmb38x_ms.c b/drivers/memstick/host/jmb38x_ms.c
+index 08fa6400d2558..ba6cd576e9979 100644
+--- a/drivers/memstick/host/jmb38x_ms.c
++++ b/drivers/memstick/host/jmb38x_ms.c
+@@ -905,7 +905,7 @@ static struct memstick_host *jmb38x_ms_alloc_host(struct jmb38x_ms *jm, int cnt)
+ 
+ 	iounmap(host->addr);
+ err_out_free:
+-	kfree(msh);
++	memstick_free_host(msh);
+ 	return NULL;
  }
  
 -- 
