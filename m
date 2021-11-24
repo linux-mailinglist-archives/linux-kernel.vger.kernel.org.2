@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C0445C204
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0675445C5DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:59:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347433AbhKXNYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:24:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45098 "EHLO mail.kernel.org"
+        id S1349759AbhKXOBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:01:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348795AbhKXNWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:22:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1B9D61B1E;
-        Wed, 24 Nov 2021 12:47:48 +0000 (UTC)
+        id S1355726AbhKXN6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:58:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38D24633E8;
+        Wed, 24 Nov 2021 13:08:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758069;
-        bh=xLZ9d8b+uT2ykv3DXJMHab5d2GuEU/VFya9yXeEiLkc=;
+        s=korg; t=1637759312;
+        bh=pFh54qme3lcq761ZJBOlSU3ubo7CiHWEsnmN+kg03L8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a9IBHLYFdDajrultJE9YkRQ0S4JzVEw+eN8YGBPKLAK3Fj2k5p+1BR0v0BrohGQLY
-         XzmhDGWqjRAJF46GRrE8mTk8EJt3j3taVEK1ICkDCdzdjmyaCMWbgL9GJqilpDmrkl
-         dWJWdFnMkvudZ5GmgxDYs4YzMY6XJGCIui065zBk=
+        b=gW3pL806nW3+89RMXktcjwG3KwkZckreYZFGIjvPFu0zMeKpf5pElTR2zSTMNOTOc
+         YJwyNsRjqCrBiNGS3MUW7EpHYblKUWOU9WzfWaJtZKoXap61GCnKxK8aNWXJUWlR9H
+         qBvettdJof2m/mA/wcZPQ3CoQGIL9QVMCpAp+GSw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jacob Keller <jacob.e.keller@intel.com>,
-        Tony Brelinski <tony.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 051/100] iavf: prevent accidental free of filter structure
+        stable@vger.kernel.org, SeongJae Park <sj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.15 200/279] mm/damon/dbgfs: fix missed use of damon_dbgfs_lock
 Date:   Wed, 24 Nov 2021 12:58:07 +0100
-Message-Id: <20211124115656.538196688@linuxfoundation.org>
+Message-Id: <20211124115725.646670755@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +40,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jacob Keller <jacob.e.keller@intel.com>
+From: SeongJae Park <sj@kernel.org>
 
-[ Upstream commit 4f0400803818f2642f066d3eacaf013f23554cc7 ]
+commit d78f3853f831eee46c6dbe726debf3be9e9c0d05 upstream.
 
-In iavf_config_clsflower, the filter structure could be accidentally
-released at the end, if iavf_parse_cls_flower or iavf_handle_tclass ever
-return a non-zero but positive value.
+DAMON debugfs is supposed to protect dbgfs_ctxs, dbgfs_nr_ctxs, and
+dbgfs_dirs using damon_dbgfs_lock.  However, some of the code is
+accessing the variables without the protection.  This fixes it by
+protecting all such accesses.
 
-In this case, the function continues through to the end, and will call
-kfree() on the filter structure even though it has been added to the
-linked list.
-
-This can actually happen because iavf_parse_cls_flower will return
-a positive IAVF_ERR_CONFIG value instead of the traditional negative
-error codes.
-
-Fix this by ensuring that the kfree() check and error checks are
-similar. Use the more idiomatic "if (err)" to catch all non-zero error
-codes.
-
-Fixes: 0075fa0fadd0 ("i40evf: Add support to apply cloud filters")
-Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
-Tested-by: Tony Brelinski <tony.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lkml.kernel.org/r/20211110145758.16558-3-sj@kernel.org
+Fixes: 75c1c2b53c78 ("mm/damon/dbgfs: support multiple contexts")
+Signed-off-by: SeongJae Park <sj@kernel.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/iavf/iavf_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ mm/damon/dbgfs.c |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
-index 43afe887cac9e..6f6cd013eef3e 100644
---- a/drivers/net/ethernet/intel/iavf/iavf_main.c
-+++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
-@@ -3033,11 +3033,11 @@ static int iavf_configure_clsflower(struct iavf_adapter *adapter,
- 	/* start out with flow type and eth type IPv4 to begin with */
- 	filter->f.flow_type = VIRTCHNL_TCP_V4_FLOW;
- 	err = iavf_parse_cls_flower(adapter, cls_flower, filter);
--	if (err < 0)
-+	if (err)
- 		goto err;
+--- a/mm/damon/dbgfs.c
++++ b/mm/damon/dbgfs.c
+@@ -538,12 +538,14 @@ static ssize_t dbgfs_monitor_on_write(st
+ 		return -EINVAL;
+ 	}
  
- 	err = iavf_handle_tclass(adapter, tc, filter);
--	if (err < 0)
-+	if (err)
- 		goto err;
++	mutex_lock(&damon_dbgfs_lock);
+ 	if (!strncmp(kbuf, "on", count))
+ 		err = damon_start(dbgfs_ctxs, dbgfs_nr_ctxs);
+ 	else if (!strncmp(kbuf, "off", count))
+ 		err = damon_stop(dbgfs_ctxs, dbgfs_nr_ctxs);
+ 	else
+ 		err = -EINVAL;
++	mutex_unlock(&damon_dbgfs_lock);
  
- 	/* add filter to the list */
--- 
-2.33.0
-
+ 	if (err)
+ 		ret = err;
+@@ -596,15 +598,16 @@ static int __init __damon_dbgfs_init(voi
+ 
+ static int __init damon_dbgfs_init(void)
+ {
+-	int rc;
++	int rc = -ENOMEM;
+ 
++	mutex_lock(&damon_dbgfs_lock);
+ 	dbgfs_ctxs = kmalloc(sizeof(*dbgfs_ctxs), GFP_KERNEL);
+ 	if (!dbgfs_ctxs)
+-		return -ENOMEM;
++		goto out;
+ 	dbgfs_ctxs[0] = dbgfs_new_ctx();
+ 	if (!dbgfs_ctxs[0]) {
+ 		kfree(dbgfs_ctxs);
+-		return -ENOMEM;
++		goto out;
+ 	}
+ 	dbgfs_nr_ctxs = 1;
+ 
+@@ -615,6 +618,8 @@ static int __init damon_dbgfs_init(void)
+ 		pr_err("%s: dbgfs init failed\n", __func__);
+ 	}
+ 
++out:
++	mutex_unlock(&damon_dbgfs_lock);
+ 	return rc;
+ }
+ 
 
 
