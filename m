@@ -2,34 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C14E745BAF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:12:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B82EC45BFC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:58:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242885AbhKXMPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:15:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41248 "EHLO mail.kernel.org"
+        id S1346521AbhKXNB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:01:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243087AbhKXMNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:13:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AF4D61106;
-        Wed, 24 Nov 2021 12:07:48 +0000 (UTC)
+        id S1347179AbhKXM6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:58:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4764E610F7;
+        Wed, 24 Nov 2021 12:33:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755669;
-        bh=nKt1Gv8ZQqOklNDOPok7pw8BAWUNwYZP3tCtS8Ja66k=;
+        s=korg; t=1637757218;
+        bh=Z3ct+PXhYfibFj8MIozC60owx8+WE18i9w1P3KpE2z4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WDjkIJ3ch/tIjbyPSqngpijmWfiwWqI5Tv2gw+2am5B+/xfNnbvbH/yCPt9ZQ7AHS
-         rwyN6PDqWaLVkRDgb3KoreZcd51itVMdnEW6KU5iCZdodoWk8HHIK1fp0wBMbbM8nM
-         Pm2yKo4BOKxXock6zFT1etnpeaALfpqVAvBqwrq8=
+        b=N1ZAcivKR/2ZHwEyTi+ToJKFp+Ua0F0gBCsA4CJbVaNAaywDp6B3J/CshqbBPQ7zS
+         b3B76RWk3VgbYatnujnQNCDz6pgJGqLo0awKot4r0qbzTb8X6tUTXF8annaB36CnWT
+         nUQJoc/XlacEuj1uDqoLPKou7p3Eu/CgHD3hcyUE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.9 016/207] ALSA: timer: Unconditionally unlink slave instances, too
+        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 097/323] media: uvcvideo: Return -EIO for control errors
 Date:   Wed, 24 Nov 2021 12:54:47 +0100
-Message-Id: <20211124115704.480484876@linuxfoundation.org>
+Message-Id: <20211124115722.243777251@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,55 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Ricardo Ribalda <ribalda@chromium.org>
 
-commit ffdd98277f0a1d15a67a74ae09bee713df4c0dbc upstream.
+[ Upstream commit ffccdde5f0e17d2f0d788a9d831a027187890eaa ]
 
-Like the previous fix (commit c0317c0e8709 "ALSA: timer: Fix
-use-after-free problem"), we have to unlink slave timer instances
-immediately at snd_timer_stop(), too.  Otherwise it may leave a stale
-entry in the list if the slave instance is freed before actually
-running.
+The device is doing something unexpected with the control. Either because
+the protocol is not properly implemented or there has been a HW error.
 
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20211105091517.21733-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes v4l2-compliance:
+
+Control ioctls (Input 0):
+                fail: v4l2-test-controls.cpp(448): s_ctrl returned an error (22)
+        test VIDIOC_G/S_CTRL: FAIL
+                fail: v4l2-test-controls.cpp(698): s_ext_ctrls returned an error (22)
+        test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
+
+Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/timer.c |   13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ drivers/media/usb/uvc/uvc_video.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/sound/core/timer.c
-+++ b/sound/core/timer.c
-@@ -622,23 +622,22 @@ static int snd_timer_stop1(struct snd_ti
- static int snd_timer_stop_slave(struct snd_timer_instance *timeri, bool stop)
- {
- 	unsigned long flags;
-+	bool running;
- 
- 	spin_lock_irqsave(&slave_active_lock, flags);
--	if (!(timeri->flags & SNDRV_TIMER_IFLG_RUNNING)) {
--		spin_unlock_irqrestore(&slave_active_lock, flags);
--		return -EBUSY;
--	}
-+	running = timeri->flags & SNDRV_TIMER_IFLG_RUNNING;
- 	timeri->flags &= ~SNDRV_TIMER_IFLG_RUNNING;
- 	if (timeri->timer) {
- 		spin_lock(&timeri->timer->lock);
- 		list_del_init(&timeri->ack_list);
- 		list_del_init(&timeri->active_list);
--		snd_timer_notify1(timeri, stop ? SNDRV_TIMER_EVENT_STOP :
--				  SNDRV_TIMER_EVENT_PAUSE);
-+		if (running)
-+			snd_timer_notify1(timeri, stop ? SNDRV_TIMER_EVENT_STOP :
-+					  SNDRV_TIMER_EVENT_PAUSE);
- 		spin_unlock(&timeri->timer->lock);
- 	}
- 	spin_unlock_irqrestore(&slave_active_lock, flags);
--	return 0;
-+	return running ? 0 : -EBUSY;
- }
- 
- /*
+diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+index 56b058d60a0dc..9c26e586bb01d 100644
+--- a/drivers/media/usb/uvc/uvc_video.c
++++ b/drivers/media/usb/uvc/uvc_video.c
+@@ -117,6 +117,11 @@ int uvc_query_ctrl(struct uvc_device *dev, u8 query, u8 unit,
+ 	case 5: /* Invalid unit */
+ 	case 6: /* Invalid control */
+ 	case 7: /* Invalid Request */
++		/*
++		 * The firmware has not properly implemented
++		 * the control or there has been a HW error.
++		 */
++		return -EIO;
+ 	case 8: /* Invalid value within range */
+ 		return -EINVAL;
+ 	default: /* reserved or unknown */
+-- 
+2.33.0
+
 
 
