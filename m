@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5813645BDDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:39:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2671A45BA1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:05:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244695AbhKXMla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:41:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38572 "EHLO mail.kernel.org"
+        id S233408AbhKXMHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:07:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245242AbhKXMiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:38:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37583610A2;
-        Wed, 24 Nov 2021 12:22:49 +0000 (UTC)
+        id S241859AbhKXMGB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:06:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DF0260F5D;
+        Wed, 24 Nov 2021 12:02:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756570;
-        bh=+p9cF7cIvcAoBhovFZAVohTbuxYMQ/HOYFWd1NO5DC8=;
+        s=korg; t=1637755371;
+        bh=c7KWpxIHQbMYFhVSIUaJMdOW3tWHzN28Rb559zei8tU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WGejtlcThD3NkCtUDHEG2StoXDI2bcSaZoveZRdhynDSeJoHhkLBV7hrs7VhOkCvQ
-         m6pc/rS4rYzV3pSJLj/ZIgiTW2MbYvMNqEDU576OM1VOjBtrijspkLmyiTfxSwsZMf
-         H8D3j6tpMPPFtLix5upodq9azAT0CwPpNUR7QipQ=
+        b=eQJJyZhQPxdA5xrQPyHjsLejpZwOZZK9cjubHyY3nASHOBmnQajPOs9EAAaCL61JI
+         C9B8OiLPyLzAtw7yjfjeZ1pcq7XgU9pdv3yhTJdhcRIz+Ay/f5tbA0wabGnxCfYrsQ
+         NREYkTYKzVXeJ2gBU/xe0aG+x9uY3E+ACEdXdRNI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 131/251] irq: mips: avoid nested irq_enter()
-Date:   Wed, 24 Nov 2021 12:56:13 +0100
-Message-Id: <20211124115714.799127795@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+2cd8c5db4a85f0a04142@syzkaller.appspotmail.com
+Subject: [PATCH 4.4 071/162] media: dvb-usb: fix ununit-value in az6027_rc_query
+Date:   Wed, 24 Nov 2021 12:56:14 +0100
+Message-Id: <20211124115700.621237824@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Rutland <mark.rutland@arm.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit c65b52d02f6c1a06ddb20cba175ad49eccd6410d ]
+[ Upstream commit afae4ef7d5ad913cab1316137854a36bea6268a5 ]
 
-As bcm6345_l1_irq_handle() is a chained irqchip handler, it will be
-invoked within the context of the root irqchip handler, which must have
-entered IRQ context already.
+Syzbot reported ununit-value bug in az6027_rc_query(). The problem was
+in missing state pointer initialization. Since this function does nothing
+we can simply initialize state to REMOTE_NO_KEY_PRESSED.
 
-When bcm6345_l1_irq_handle() calls arch/mips's do_IRQ() , this will nest
-another call to irq_enter(), and the resulting nested increment to
-`rcu_data.dynticks_nmi_nesting` will cause rcu_is_cpu_rrupt_from_idle()
-to fail to identify wakeups from idle, resulting in failure to preempt,
-and RCU stalls.
+Reported-and-tested-by: syzbot+2cd8c5db4a85f0a04142@syzkaller.appspotmail.com
 
-Chained irqchip handlers must invoke IRQ handlers by way of thee core
-irqchip code, i.e. generic_handle_irq() or generic_handle_domain_irq()
-and should not call do_IRQ(), which is intended only for root irqchip
-handlers.
-
-Fix bcm6345_l1_irq_handle() by calling generic_handle_irq() directly.
-
-Fixes: c7c42ec2baa1de7a ("irqchips/bmips: Add bcm6345-l1 interrupt controller")
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Reviewed-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>
+Fixes: 76f9a820c867 ("V4L/DVB: AZ6027: Initial import of the driver")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-bcm6345-l1.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/usb/dvb-usb/az6027.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/irqchip/irq-bcm6345-l1.c b/drivers/irqchip/irq-bcm6345-l1.c
-index 43f8abe40878a..31ea6332ecb83 100644
---- a/drivers/irqchip/irq-bcm6345-l1.c
-+++ b/drivers/irqchip/irq-bcm6345-l1.c
-@@ -143,7 +143,7 @@ static void bcm6345_l1_irq_handle(struct irq_desc *desc)
- 		for_each_set_bit(hwirq, &pending, IRQS_PER_WORD) {
- 			irq = irq_linear_revmap(intc->domain, base + hwirq);
- 			if (irq)
--				do_IRQ(irq);
-+				generic_handle_irq(irq);
- 			else
- 				spurious_interrupt();
- 		}
+diff --git a/drivers/media/usb/dvb-usb/az6027.c b/drivers/media/usb/dvb-usb/az6027.c
+index 92e47d6c3ee3e..c58fb74c3cd73 100644
+--- a/drivers/media/usb/dvb-usb/az6027.c
++++ b/drivers/media/usb/dvb-usb/az6027.c
+@@ -394,6 +394,7 @@ static struct rc_map_table rc_map_az6027_table[] = {
+ /* remote control stuff (does not work with my box) */
+ static int az6027_rc_query(struct dvb_usb_device *d, u32 *event, int *state)
+ {
++	*state = REMOTE_NO_KEY_PRESSED;
+ 	return 0;
+ }
+ 
 -- 
 2.33.0
 
