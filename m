@@ -2,355 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4521C45B3AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 05:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D28CB45B3AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 05:52:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231607AbhKXE4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 23:56:53 -0500
-Received: from out01.mta.xmission.com ([166.70.13.231]:38922 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbhKXE4w (ORCPT
+        id S231338AbhKXEza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 23:55:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229681AbhKXEz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 23:56:52 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52]:33450)
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mpkHp-005N71-8W; Tue, 23 Nov 2021 21:53:37 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:38058 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mpkHn-006EeM-QR; Tue, 23 Nov 2021 21:53:36 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     akpm@linux-foundation.org, keescook@chromium.org,
-        yzaikin@google.com, nixiaoming@huawei.com, peterz@infradead.org,
-        gregkh@linuxfoundation.org, pjt@google.com,
-        liu.hailong6@zte.com.cn, andriy.shevchenko@linux.intel.com,
-        sre@kernel.org, penguin-kernel@i-love.sakura.ne.jp,
-        pmladek@suse.com, senozhatsky@chromium.org, wangqing@vivo.com,
-        bcrl@kvack.org, viro@zeniv.linux.org.uk, jack@suse.cz,
-        amir73il@gmail.com, linux-fsdevel@vger.kernel.org,
+        Tue, 23 Nov 2021 23:55:29 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE86C061574;
+        Tue, 23 Nov 2021 20:52:20 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id o4so1439286pfp.13;
+        Tue, 23 Nov 2021 20:52:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=YCo7A+Vzp21Xzm6FNF5XCbTAVfXkpJNZHlPe+Xeivp8=;
+        b=Q4GKIRZIDXau2T3nOWtCeqnxC0X1UWezCtBl0r2brCo/+qyKT9i5xnWPr9uUORZPuO
+         MQTISveAgLvckQ0UseIWTxQTjsYHM3FlDgKZaCZUjiD02cKr2rEdH+My5qtpbT9A7cIW
+         7uddZvG2VYPKdLb1beHgNqiLaVutUI4+qlubtQuB0mcX+uyXrQZZ/KNTxdjvZmDT4Gcx
+         NCCX6Hcpd0XtY6qgN2oEPMoqeynus2DeejQaY7SRJdM4ZwQOpNxPNMEgd2JNApv4TpQU
+         jf0zU3QNs1SamCMhDmXLVH1os/P3nBZfLLtlU52TCuG7LIL51xdXRp59wSTqokTy+G91
+         TTiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=YCo7A+Vzp21Xzm6FNF5XCbTAVfXkpJNZHlPe+Xeivp8=;
+        b=rIJIJUTVS9rN+4PLElgNBRF2FGfYI4UM6xaYCiBsh7IdMmIwvv11PYRU+LP2iYMTP2
+         mSk0Gq1SMZfpp3wJ2/nbP3TwblDYfCu64VJvsuHKUYDU2u02wVGFzeHAF/clCDNwrN+D
+         FBInuZEoXugs7/EnheIyCa10f31lDVWkMLH6MHmSGxGIXAMwwdpGNDZ5CsDl0fvwr1ig
+         lqLoJNyMbtbNqra6dSB3PI7bfN+EL0UGPLuo0LTPomL5aSSOTVjqvFvVf5Qr/b7yF3+m
+         3Ooa+Y6hv1Zlt3zS1m5UsftAXnYy8yI8JZ6qh79ujgXaN3Lcm6InAR8JDGvy2m0g7daX
+         UFlw==
+X-Gm-Message-State: AOAM533Z9+Fk1+8WPGmsOdEMn1HN5MR2jb197Kq1+pjkqGARgZYcIfId
+        a/UPyX97eT4oVoU5jfWhV28jZmisCe48Kg==
+X-Google-Smtp-Source: ABdhPJyg5eLjfLLcchqkhKaf3WMhlJ/DxdNC/7bucldHQvDLFv5/JIuz5qJBpS30GII4rjFUi70wQg==
+X-Received: by 2002:a63:1ca:: with SMTP id 193mr8035249pgb.88.1637729539560;
+        Tue, 23 Nov 2021 20:52:19 -0800 (PST)
+Received: from [10.1.1.26] (222-155-5-102-adsl.sparkbb.co.nz. [222.155.5.102])
+        by smtp.gmail.com with ESMTPSA id ml24sm2834281pjb.16.2021.11.23.20.52.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 23 Nov 2021 20:52:19 -0800 (PST)
+Subject: Re: [PATCH] pata_falcon: Add missing __iomem annotations
+To:     Finn Thain <fthain@linux-m68k.org>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>
+References: <44e0213a681f3c8ee4c6ab2ef9d61ce3ac00e368.1637727935.git.fthain@linux-m68k.org>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20211123202347.818157-1-mcgrof@kernel.org>
-        <20211123202347.818157-3-mcgrof@kernel.org>
-Date:   Tue, 23 Nov 2021 22:51:47 -0600
-In-Reply-To: <20211123202347.818157-3-mcgrof@kernel.org> (Luis Chamberlain's
-        message of "Tue, 23 Nov 2021 12:23:40 -0800")
-Message-ID: <87k0gygnq4.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <f420bff8-855a-aabe-924c-6d1b74f11001@gmail.com>
+Date:   Wed, 24 Nov 2021 17:52:04 +1300
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mpkHn-006EeM-QR;;;mid=<87k0gygnq4.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18ekv6XuYbHi1dh2QcgbGqyi2zi7VU2Y6Q=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.7 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,LotsOfNums_01,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,XMBody_17,XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.0 XMBody_17 BODY: Spammy words in all caps
-        *  0.7 XMSubLong Long Subject
-        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Luis Chamberlain <mcgrof@kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 804 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 11 (1.4%), b_tie_ro: 10 (1.2%), parse: 1.43
-        (0.2%), extract_message_metadata: 18 (2.2%), get_uri_detail_list: 4.4
-        (0.5%), tests_pri_-1000: 17 (2.1%), tests_pri_-950: 1.23 (0.2%),
-        tests_pri_-900: 1.06 (0.1%), tests_pri_-90: 80 (9.9%), check_bayes: 78
-        (9.7%), b_tokenize: 17 (2.1%), b_tok_get_all: 13 (1.6%), b_comp_prob:
-        4.4 (0.5%), b_tok_touch_all: 39 (4.9%), b_finish: 0.90 (0.1%),
-        tests_pri_0: 653 (81.1%), check_dkim_signature: 0.68 (0.1%),
-        check_dkim_adsp: 3.2 (0.4%), poll_dns_idle: 0.03 (0.0%), tests_pri_10:
-        3.1 (0.4%), tests_pri_500: 15 (1.9%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v2 2/9] sysctl: Move some boundary constants from sysctl.c to sysctl_vals
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+In-Reply-To: <44e0213a681f3c8ee4c6ab2ef9d61ce3ac00e368.1637727935.git.fthain@linux-m68k.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Luis Chamberlain <mcgrof@kernel.org> writes:
+Hi Finn,
 
-> From: Xiaoming Ni <nixiaoming@huawei.com>
+thanks for your patch!
+
+On 24/11/21 17:25, Finn Thain wrote:
+> The zero day bot reported some sparse complaints in pata_falcon.c. E.g.
 >
-> sysctl has helpers which let us specify boundary values for a min or
-> max int value. Since these are used for a boundary check only they don't
-> change, so move these variables to sysctl_vals to avoid adding duplicate
-> variables. This will help with our cleanup of kernel/sysctl.c.
+> drivers/ata/pata_falcon.c:58:41: warning: cast removes address space '__iomem' of expression
+> drivers/ata/pata_falcon.c:58:41: warning: incorrect type in argument 1 (different address spaces)
+> drivers/ata/pata_falcon.c:58:41:    expected unsigned short volatile [noderef] [usertype] __iomem *port
+> drivers/ata/pata_falcon.c:58:41:    got unsigned short [usertype] *
+>
+> The same thing shows up in 8 places, all told. Avoid this by use of
+> __iomem type casts.
 
-Ouch.
+Seeing as data_addr was explicitly typed as __iomem, your fix is clearly 
+correct. Bit embarrassing to have missed that (I remember adding __iomem 
+annotations elsewhere at some stage).
 
-I kind of, sort of, have to protest.
+If you think there's any need to test this change, say so.
 
-Where the macros that use sysctl_vals don't have a type they have caused
-mysterious code breakage because people did not realize they can not be
-used with sysctls that take a long instead of an int.
+Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
 
-This came up with when the internal storage for ucounts see
-kernel/ucount.c changed from an int to a long.  We were quite a while
-tracking what was going on until we realized that the code could not use
-SYSCTL_ZERO and SYSCTL_INT_MAX and that we had to defined our own that
-were long.
-
-So before we extend something like this can we please change the
-macro naming convention so that it includes the size of the type
-we want.
-
-
-I am also not a fan of sysctl_vals living in proc_sysctl.  They
-have nothing to do with the code in that file.  They would do much
-better in kernel/sysctl.c close to the helpers that use them.
-
-Eric
-
-
-> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> [mcgrof: major rebase]
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+>
+> Cc: Michael Schmitz <schmitzmic@gmail.com>
+> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 > ---
->  fs/proc/proc_sysctl.c  |  2 +-
->  include/linux/sysctl.h | 12 +++++++++---
->  kernel/sysctl.c        | 44 ++++++++++++++++++------------------------
->  3 files changed, 29 insertions(+), 29 deletions(-)
+>  drivers/ata/pata_falcon.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
 >
-> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-> index b4950843d90a..6d462644bb00 100644
-> --- a/fs/proc/proc_sysctl.c
-> +++ b/fs/proc/proc_sysctl.c
-> @@ -26,7 +26,7 @@ static const struct file_operations proc_sys_dir_file_operations;
->  static const struct inode_operations proc_sys_dir_operations;
->  
->  /* shared constants to be used in various sysctls */
-> -const int sysctl_vals[] = { 0, 1, INT_MAX };
-> +const int sysctl_vals[] = { -1, 0, 1, 2, 4, 100, 200, 1000, INT_MAX };
->  EXPORT_SYMBOL(sysctl_vals);
->  
->  /* Support for permanently empty directories */
-> diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
-> index d3ab7969b6b5..718492057c70 100644
-> --- a/include/linux/sysctl.h
-> +++ b/include/linux/sysctl.h
-> @@ -38,9 +38,15 @@ struct ctl_table_header;
->  struct ctl_dir;
->  
->  /* Keep the same order as in fs/proc/proc_sysctl.c */
-> -#define SYSCTL_ZERO	((void *)&sysctl_vals[0])
-> -#define SYSCTL_ONE	((void *)&sysctl_vals[1])
-> -#define SYSCTL_INT_MAX	((void *)&sysctl_vals[2])
-> +#define SYSCTL_NEG_ONE			((void *)&sysctl_vals[0])
-> +#define SYSCTL_ZERO			((void *)&sysctl_vals[1])
-> +#define SYSCTL_ONE			((void *)&sysctl_vals[2])
-> +#define SYSCTL_TWO			((void *)&sysctl_vals[3])
-> +#define SYSCTL_FOUR			((void *)&sysctl_vals[4])
-> +#define SYSCTL_ONE_HUNDRED		((void *)&sysctl_vals[5])
-> +#define SYSCTL_TWO_HUNDRED		((void *)&sysctl_vals[6])
-> +#define SYSCTL_ONE_THOUSAND		((void *)&sysctl_vals[7])
-> +#define SYSCTL_INT_MAX			((void *)&sysctl_vals[8])
->  
->  extern const int sysctl_vals[];
->  
-> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> index 857c1ccad9e8..3097f0286504 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -113,15 +113,9 @@
->  static int sixty = 60;
->  #endif
->  
-> -static int __maybe_unused neg_one = -1;
-> -static int __maybe_unused two = 2;
-> -static int __maybe_unused four = 4;
->  static unsigned long zero_ul;
->  static unsigned long one_ul = 1;
->  static unsigned long long_max = LONG_MAX;
-> -static int one_hundred = 100;
-> -static int two_hundred = 200;
-> -static int one_thousand = 1000;
->  #ifdef CONFIG_PRINTK
->  static int ten_thousand = 10000;
->  #endif
-> @@ -1962,7 +1956,7 @@ static struct ctl_table kern_table[] = {
->  		.maxlen		= sizeof(int),
->  		.mode		= 0644,
->  		.proc_handler	= proc_dointvec_minmax,
-> -		.extra1		= &neg_one,
-> +		.extra1		= SYSCTL_NEG_ONE,
->  		.extra2		= SYSCTL_ONE,
->  	},
->  #endif
-> @@ -2304,7 +2298,7 @@ static struct ctl_table kern_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= proc_dointvec_minmax_sysadmin,
->  		.extra1		= SYSCTL_ZERO,
-> -		.extra2		= &two,
-> +		.extra2		= SYSCTL_TWO,
->  	},
->  #endif
->  	{
-> @@ -2564,7 +2558,7 @@ static struct ctl_table kern_table[] = {
->  		.maxlen		= sizeof(int),
->  		.mode		= 0644,
->  		.proc_handler	= proc_dointvec_minmax,
-> -		.extra1		= &neg_one,
-> +		.extra1		= SYSCTL_NEG_ONE,
->  	},
->  #endif
->  #ifdef CONFIG_RT_MUTEXES
-> @@ -2626,7 +2620,7 @@ static struct ctl_table kern_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= perf_cpu_time_max_percent_handler,
->  		.extra1		= SYSCTL_ZERO,
-> -		.extra2		= &one_hundred,
-> +		.extra2		= SYSCTL_ONE_HUNDRED,
->  	},
->  	{
->  		.procname	= "perf_event_max_stack",
-> @@ -2644,7 +2638,7 @@ static struct ctl_table kern_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= perf_event_max_stack_handler,
->  		.extra1		= SYSCTL_ZERO,
-> -		.extra2		= &one_thousand,
-> +		.extra2		= SYSCTL_ONE_THOUSAND,
->  	},
->  #endif
->  	{
-> @@ -2675,7 +2669,7 @@ static struct ctl_table kern_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= bpf_unpriv_handler,
->  		.extra1		= SYSCTL_ZERO,
-> -		.extra2		= &two,
-> +		.extra2		= SYSCTL_TWO,
->  	},
->  	{
->  		.procname	= "bpf_stats_enabled",
-> @@ -2729,7 +2723,7 @@ static struct ctl_table vm_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= overcommit_policy_handler,
->  		.extra1		= SYSCTL_ZERO,
-> -		.extra2		= &two,
-> +		.extra2		= SYSCTL_TWO,
->  	},
->  	{
->  		.procname	= "panic_on_oom",
-> @@ -2738,7 +2732,7 @@ static struct ctl_table vm_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= proc_dointvec_minmax,
->  		.extra1		= SYSCTL_ZERO,
-> -		.extra2		= &two,
-> +		.extra2		= SYSCTL_TWO,
->  	},
->  	{
->  		.procname	= "oom_kill_allocating_task",
-> @@ -2783,7 +2777,7 @@ static struct ctl_table vm_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= dirty_background_ratio_handler,
->  		.extra1		= SYSCTL_ZERO,
-> -		.extra2		= &one_hundred,
-> +		.extra2		= SYSCTL_ONE_HUNDRED,
->  	},
->  	{
->  		.procname	= "dirty_background_bytes",
-> @@ -2800,7 +2794,7 @@ static struct ctl_table vm_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= dirty_ratio_handler,
->  		.extra1		= SYSCTL_ZERO,
-> -		.extra2		= &one_hundred,
-> +		.extra2		= SYSCTL_ONE_HUNDRED,
->  	},
->  	{
->  		.procname	= "dirty_bytes",
-> @@ -2840,7 +2834,7 @@ static struct ctl_table vm_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= proc_dointvec_minmax,
->  		.extra1		= SYSCTL_ZERO,
-> -		.extra2		= &two_hundred,
-> +		.extra2		= SYSCTL_TWO_HUNDRED,
->  	},
->  #ifdef CONFIG_HUGETLB_PAGE
->  	{
-> @@ -2897,7 +2891,7 @@ static struct ctl_table vm_table[] = {
->  		.mode		= 0200,
->  		.proc_handler	= drop_caches_sysctl_handler,
->  		.extra1		= SYSCTL_ONE,
-> -		.extra2		= &four,
-> +		.extra2		= SYSCTL_FOUR,
->  	},
->  #ifdef CONFIG_COMPACTION
->  	{
-> @@ -2914,7 +2908,7 @@ static struct ctl_table vm_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= compaction_proactiveness_sysctl_handler,
->  		.extra1		= SYSCTL_ZERO,
-> -		.extra2		= &one_hundred,
-> +		.extra2		= SYSCTL_ONE_HUNDRED,
->  	},
->  	{
->  		.procname	= "extfrag_threshold",
-> @@ -2959,7 +2953,7 @@ static struct ctl_table vm_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= watermark_scale_factor_sysctl_handler,
->  		.extra1		= SYSCTL_ONE,
-> -		.extra2		= &one_thousand,
-> +		.extra2		= SYSCTL_ONE_THOUSAND,
->  	},
->  	{
->  		.procname	= "percpu_pagelist_high_fraction",
-> @@ -3038,7 +3032,7 @@ static struct ctl_table vm_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= sysctl_min_unmapped_ratio_sysctl_handler,
->  		.extra1		= SYSCTL_ZERO,
-> -		.extra2		= &one_hundred,
-> +		.extra2		= SYSCTL_ONE_HUNDRED,
->  	},
->  	{
->  		.procname	= "min_slab_ratio",
-> @@ -3047,7 +3041,7 @@ static struct ctl_table vm_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= sysctl_min_slab_ratio_sysctl_handler,
->  		.extra1		= SYSCTL_ZERO,
-> -		.extra2		= &one_hundred,
-> +		.extra2		= SYSCTL_ONE_HUNDRED,
->  	},
->  #endif
->  #ifdef CONFIG_SMP
-> @@ -3337,7 +3331,7 @@ static struct ctl_table fs_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= proc_dointvec_minmax,
->  		.extra1		= SYSCTL_ZERO,
-> -		.extra2		= &two,
-> +		.extra2		= SYSCTL_TWO,
->  	},
->  	{
->  		.procname	= "protected_regular",
-> @@ -3346,7 +3340,7 @@ static struct ctl_table fs_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= proc_dointvec_minmax,
->  		.extra1		= SYSCTL_ZERO,
-> -		.extra2		= &two,
-> +		.extra2		= SYSCTL_TWO,
->  	},
->  	{
->  		.procname	= "suid_dumpable",
-> @@ -3355,7 +3349,7 @@ static struct ctl_table fs_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= proc_dointvec_minmax_coredump,
->  		.extra1		= SYSCTL_ZERO,
-> -		.extra2		= &two,
-> +		.extra2		= SYSCTL_TWO,
->  	},
->  #if defined(CONFIG_BINFMT_MISC) || defined(CONFIG_BINFMT_MISC_MODULE)
->  	{
+> diff --git a/drivers/ata/pata_falcon.c b/drivers/ata/pata_falcon.c
+> index 121635aa8c00..e2a88edd9dbf 100644
+> --- a/drivers/ata/pata_falcon.c
+> +++ b/drivers/ata/pata_falcon.c
+> @@ -55,14 +55,14 @@ static unsigned int pata_falcon_data_xfer(struct ata_queued_cmd *qc,
+>  	/* Transfer multiple of 2 bytes */
+>  	if (rw == READ) {
+>  		if (swap)
+> -			raw_insw_swapw((u16 *)data_addr, (u16 *)buf, words);
+> +			raw_insw_swapw((u16 __iomem *)data_addr, (u16 *)buf, words);
+>  		else
+> -			raw_insw((u16 *)data_addr, (u16 *)buf, words);
+> +			raw_insw((u16 __iomem *)data_addr, (u16 *)buf, words);
+>  	} else {
+>  		if (swap)
+> -			raw_outsw_swapw((u16 *)data_addr, (u16 *)buf, words);
+> +			raw_outsw_swapw((u16 __iomem *)data_addr, (u16 *)buf, words);
+>  		else
+> -			raw_outsw((u16 *)data_addr, (u16 *)buf, words);
+> +			raw_outsw((u16 __iomem *)data_addr, (u16 *)buf, words);
+>  	}
+>
+>  	/* Transfer trailing byte, if any. */
+> @@ -74,16 +74,16 @@ static unsigned int pata_falcon_data_xfer(struct ata_queued_cmd *qc,
+>
+>  		if (rw == READ) {
+>  			if (swap)
+> -				raw_insw_swapw((u16 *)data_addr, (u16 *)pad, 1);
+> +				raw_insw_swapw((u16 __iomem *)data_addr, (u16 *)pad, 1);
+>  			else
+> -				raw_insw((u16 *)data_addr, (u16 *)pad, 1);
+> +				raw_insw((u16 __iomem *)data_addr, (u16 *)pad, 1);
+>  			*buf = pad[0];
+>  		} else {
+>  			pad[0] = *buf;
+>  			if (swap)
+> -				raw_outsw_swapw((u16 *)data_addr, (u16 *)pad, 1);
+> +				raw_outsw_swapw((u16 __iomem *)data_addr, (u16 *)pad, 1);
+>  			else
+> -				raw_outsw((u16 *)data_addr, (u16 *)pad, 1);
+> +				raw_outsw((u16 __iomem *)data_addr, (u16 *)pad, 1);
+>  		}
+>  		words++;
+>  	}
+>
