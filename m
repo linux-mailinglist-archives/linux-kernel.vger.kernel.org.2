@@ -2,197 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E0245B1F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 03:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01BF445B200
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 03:18:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240709AbhKXCUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 21:20:38 -0500
-Received: from mga05.intel.com ([192.55.52.43]:59594 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240702AbhKXCUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 21:20:36 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="321419767"
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="321419767"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 18:17:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="538468408"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 23 Nov 2021 18:17:23 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mphqd-0004B2-15; Wed, 24 Nov 2021 02:17:23 +0000
-Date:   Wed, 24 Nov 2021 10:17:02 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Trevor Wu <trevor.wu@mediatek.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: sound/soc/mediatek/common/mtk-btcvsd.c:1367:30: sparse: sparse:
- incorrect type in assignment (different address spaces)
-Message-ID: <202111241027.0fQlO8F3-lkp@intel.com>
+        id S240726AbhKXCV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 21:21:29 -0500
+Received: from mail-sgaapc01on2109.outbound.protection.outlook.com ([40.107.215.109]:24097
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234152AbhKXCV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 21:21:27 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KsA4jwVCp+olCB8sFPgag37T+o7JSBbgwZ8TieNMg3ouW3zXsgl8mwCN6KLbcVLjswaPWFSpUQgYFFnqTpsJb54apzguQ+4EoS6BJrDMjkIA2sTGrggov0DCUwvJhdklOR5z8ljstIfBm7Rl7R68bGAmjv0/+1Z9XnXqXQgeGh5qazVdBnkWeAB4hEMpXOyfXRJaOcTnqjCaqGxWvzF4HUTXjBv5pRuq4fAD0aCiA/M4xQV1cmgnxpDJITuD5XHBOyv71QMip870KP+hkBQgi6t0+URvCfdYYOwM95wFLgRi/KbCULgjKjO8DnUIsPVHO10i+hdf2b/6fNNjHu80Eg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FQmZqyMh2r6ajGLA6zxiLWBrIUDDjpXNnuTnpGRETG8=;
+ b=C7tykBB/Kst6nO4az9cXsCFrFmJfWxfe7dUN1PEj1HPp8UtdJtDRlzfZr+7L1lP4gg9uQT2o778ukAjxgrshWpU7Lyc+1LHArp8vKkJj/iRSgq0gS/96SnbgvBvrSgoqjqn2phYHDEE94Yz/RtgYZzBVr36/fb6b7FmAexE0ie++8Zd1Pvm5XUq0VBlMihmkoB/MHjuEgFC7bQzqByzIaAKCpbU+Rrd4uZzqYWfugJTiiW9io+BUm7bfxLl8fjO8XP9MhWxf+Z1k0uzyUhYT0X88rjoyHrwuCls7Q7QK8P0TEytNFIHIUi7JrO02cYDudovUyUNBqiAtsksCXZ86fA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FQmZqyMh2r6ajGLA6zxiLWBrIUDDjpXNnuTnpGRETG8=;
+ b=hq72znyqgn1c8f3w9nmDZ0JedbeTgrzkCO9Q2+ipS/5Cwt1qStliSmMCRzw41xZtwGJTuOtWiUwFE3UImn6SGJqIwQLFeqUB29z6ZPF6/PbMoICavdI5/ASp7JPaTTr6fB7rgyRcScCE3dxo4Sbo/tgnDMm8JYGj70+RfE0Ebdo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from PSAPR06MB4021.apcprd06.prod.outlook.com (2603:1096:301:37::11)
+ by PS2PR06MB2502.apcprd06.prod.outlook.com (2603:1096:300:4a::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.20; Wed, 24 Nov
+ 2021 02:18:12 +0000
+Received: from PSAPR06MB4021.apcprd06.prod.outlook.com
+ ([fe80::395a:f2d7:d67f:b385]) by PSAPR06MB4021.apcprd06.prod.outlook.com
+ ([fe80::395a:f2d7:d67f:b385%4]) with mapi id 15.20.4713.025; Wed, 24 Nov 2021
+ 02:18:12 +0000
+From:   Bernard Zhao <bernard@vivo.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Bernard Zhao <bernard@vivo.com>
+Subject: [PATCH] net/netfilter: remove useless type conversion to bool
+Date:   Tue, 23 Nov 2021 18:18:00 -0800
+Message-Id: <20211124021801.223309-1-bernard@vivo.com>
+X-Mailer: git-send-email 2.33.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR02CA0173.apcprd02.prod.outlook.com
+ (2603:1096:201:1f::33) To PSAPR06MB4021.apcprd06.prod.outlook.com
+ (2603:1096:301:37::11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: from ubuntu.localdomain (203.90.234.87) by HK2PR02CA0173.apcprd02.prod.outlook.com (2603:1096:201:1f::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19 via Frontend Transport; Wed, 24 Nov 2021 02:18:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 06099841-9e2d-456a-9cee-08d9aef0aa17
+X-MS-TrafficTypeDiagnostic: PS2PR06MB2502:
+X-Microsoft-Antispam-PRVS: <PS2PR06MB25023BD1471A87CCE39A91EFDF619@PS2PR06MB2502.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1201;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Wp45HhNCnZEi1J6cRdl43j96JPddwsRZ/z6dAxWO5ApBfvTNBHVTpjIE0sf15HevyhtV9u1NSR3K3VR6BWcfLfIzVdF9iiCXw8tuolIVwPBHtXJllAINIwuTQ1yN9rMqJd3VatZuqrp5aSFT8YXQa/SWkjtluMGihnXU4nRFCt5njErATUDtqRqEcIMr7Aa7EOojw4pM3CeH1wEze0FnxFlYv6zDXdwHmVc+ukhoVf0IxcQmN2n+MAwXQ9ow1OTN0Xgz9uKLJjdpBjpVFXtfQVJOqsNVFCwZzwASoWYt1CbDIvfyqC2pjSCFi8kpgs79SHwI/L1aKkV86DEOlWP+mDQii1egPjB3BL94VGxfdTBz0nfBQ8VaKyW+t8gUbXLfwVHXL71AI+L9HqnynxCc2XtkX3TknODzt4Gd8zyCP/gCRC7YY7URkQqlD0+0AYrIyL7LQG7ygdS4K7vVnWbIcecf7l2+7+NqUu5uWNAWdR16dLty+AK+QhoLAtG6g8PBUdiTN0djbIXSTC0kjpSzhoHjFvg7YE0ReV2MoOnxRCsv3ZyxvNmH1O6SUAY13trM9B3BdHVlEo5DW9bFjngsUBSlN4PnVs/t5chU2W4dhV71A1yXTFbnD1xiQShz4uBrwtxQQKba3WH/+lQWb8lluWYuJV2wwYvQ3XHyI1OCsoQ2vNj/84EYK4UbCQ3xs7tr5b9erANoTgH34WpbRBhhkQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PSAPR06MB4021.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2906002)(6506007)(4744005)(86362001)(26005)(1076003)(107886003)(6512007)(83380400001)(6666004)(66556008)(4326008)(66946007)(2616005)(52116002)(6486002)(66476007)(186003)(38350700002)(316002)(8676002)(38100700002)(956004)(508600001)(8936002)(5660300002)(36756003)(110136005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JPKURGaLRjS08gKaUgjq/0ecU1pH6oo6IothekEnNS4j7UuleuQU/9bABHS7?=
+ =?us-ascii?Q?P7HYhsFYQojUNL6QI/6HXtekC0y4UCugwxyuyFg0Cc+hlBySF+bnAnthzHXU?=
+ =?us-ascii?Q?rDPaCRs10lU1gPohcQG/TDg/j8MwTN0xzb1/zxOW/t2hNpN0RiBs//Y4LMck?=
+ =?us-ascii?Q?DMQCNt7bbBqVw4FP5F6ir5fOJtgLF95sJiNP/j2v86FH0Cu6qKxp8W7781/e?=
+ =?us-ascii?Q?SVEFkiltQhvfz+RxKJ8UEMiws8FS1ymBgeqt+A/nE1Jj0GCdG1OtYAzhyiLm?=
+ =?us-ascii?Q?cKEMGjzMIgGxVFI/uCK69YqdJmYWlyFvt9Ch05GMJy9Nd4KbW3xCcehInd0b?=
+ =?us-ascii?Q?hQlORpJDoT7mofUOL0uOJ4DYhLhqrh3zlXDgIQuLZPGmb6wo1I1BI7LRLrc7?=
+ =?us-ascii?Q?dWyC69arfr78u4QVzBJqUvABY+YiR8cwip5FNftjjCGeMWRJNvxoG7DxoIjT?=
+ =?us-ascii?Q?dsYlzgq/Se3Yv/Zr0d8JjMbRN/7m4CPIigU2/fQcbwA628EdmcGqB8AH/lCT?=
+ =?us-ascii?Q?ogQMKxHaBTEVEEF/otctMmJnCPS6F9AenrQlLwvUKuLiSuCjbit3kCIMce11?=
+ =?us-ascii?Q?0IBnBi6aV9gXMdn4Hs5DKs1uxSaLuFY7gGLDRtcX2IqblK8zybD+BiDN8fcY?=
+ =?us-ascii?Q?cPmF5uGDiDFNvF3k3gDfXet3KUY3GWHlXOv5hlSA41CXjJ/i1cMh6SC2po/W?=
+ =?us-ascii?Q?VIMwJmiG9/ThiKvfNv8e1aUX2fEDs7pZ6J8FEBfJVhg8QFh0OsjRUYQAGFpF?=
+ =?us-ascii?Q?i8KPOy37lCfToNXyUXnDGzcdNAp2bKEhElSux7KkbzObVx8B5IyTrxGtM1DN?=
+ =?us-ascii?Q?an4wBjnxEAQLtMI4v2X6YJmSOim1WSo5tbgco7ntxPW7rrkCMwE3Bp59gT1b?=
+ =?us-ascii?Q?j1oq+qznM11FmkTASU1D4MrHbzJqQv/vxBPvojjSeI3hSZ0roYeUGFiYQImf?=
+ =?us-ascii?Q?7TksUJHWJV/l52m01T58IU6i4DaEPHnN7XGqb9E3qqwqF4CSAAag28hy2PKl?=
+ =?us-ascii?Q?BC1D/58jdVOqEs2yZzTsL3/cLf7meYsh+N0B3DdwjeBVuPpxj+9NxhVixhld?=
+ =?us-ascii?Q?T5OSdZLTfU4uBh0MGZeujjy5oH+g0bM92d/rO3jlRVeo0MF03MGAmpjgaMK2?=
+ =?us-ascii?Q?B/qldDmodblaj/soALzMkjOCQ7zRsQ4nKnOH2zYnbDYxIC0EiLvByui5fCtF?=
+ =?us-ascii?Q?fjWoe4TLlckeqpwHzYhMZJqoobIu9uu3BzRjljQYef5/mcXc0h99nvnE/syn?=
+ =?us-ascii?Q?rQqDuOym1u3VcGUvCg+AyXt6FQ3dogC9kIWKotm2AUcTxZ4o6t9Wgb0Sbbo9?=
+ =?us-ascii?Q?+1GwRWyjTPM9ZHwnmJVkR2+FWLue7mhelb4+dhhUa1oAQJx/bzP8DNflvB/N?=
+ =?us-ascii?Q?C4rxxXtYuDKOM31MWLcPH/MW2OZetGdKRFt/E6iVBVrRHIUVc5njrxfs8JTV?=
+ =?us-ascii?Q?B1sotPwS319uN2RA8PNJMdwQgtS9R9WDa8BWYfmdmL2+bWo3+XePJMh7s66H?=
+ =?us-ascii?Q?aY0SKDI/Pqjx6xWyPCC1d7Y+aAYph/jFysvBTwrgF3ZAg5fXgehdIXNILHQ2?=
+ =?us-ascii?Q?jRnD6ZPSMgWRqhEpjvX/5wUYQVoLRracqEdMNUqUF5CFUFb/yrt0fR0TUeKz?=
+ =?us-ascii?Q?rDtkt2UYRB38nN1DN5vNBpY=3D?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 06099841-9e2d-456a-9cee-08d9aef0aa17
+X-MS-Exchange-CrossTenant-AuthSource: PSAPR06MB4021.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2021 02:18:12.3104
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zlpEsHl57IRdOAjuWtZl88K+Gy/7Ejt9SmtIAPRsNt+beu72i/iZkEOaAhrZDtre3+/j/C08O+9OqUWVQ1VMmA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PS2PR06MB2502
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   5d9f4cf36721aba199975a9be7863a3ff5cd4b59
-commit: 6746cc858259985a945a07075a19ec4d24352407 ASoC: mediatek: mt8195: add platform driver
-date:   3 months ago
-config: alpha-randconfig-s032-20211117 (https://download.01.org/0day-ci/archive/20211124/202111241027.0fQlO8F3-lkp@intel.com/config.gz)
-compiler: alpha-linux-gcc (GCC) 11.2.0
-reproduce:
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # apt-get install sparse
-        # sparse version: v0.6.4-dirty
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6746cc858259985a945a07075a19ec4d24352407
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout 6746cc858259985a945a07075a19ec4d24352407
-        # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=alpha 
+dying is bool, the type conversion to true/false value is not
+needed.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-
-sparse warnings: (new ones prefixed by >>)
->> sound/soc/mediatek/common/mtk-btcvsd.c:1367:30: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned int [usertype] *bt_reg_pkt_r @@     got void [noderef] __iomem * @@
-   sound/soc/mediatek/common/mtk-btcvsd.c:1367:30: sparse:     expected unsigned int [usertype] *bt_reg_pkt_r
-   sound/soc/mediatek/common/mtk-btcvsd.c:1367:30: sparse:     got void [noderef] __iomem *
->> sound/soc/mediatek/common/mtk-btcvsd.c:1369:30: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned int [usertype] *bt_reg_pkt_w @@     got void [noderef] __iomem * @@
-   sound/soc/mediatek/common/mtk-btcvsd.c:1369:30: sparse:     expected unsigned int [usertype] *bt_reg_pkt_w
-   sound/soc/mediatek/common/mtk-btcvsd.c:1369:30: sparse:     got void [noderef] __iomem *
->> sound/soc/mediatek/common/mtk-btcvsd.c:1371:28: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned int [usertype] *bt_reg_ctl @@     got void [noderef] __iomem * @@
-   sound/soc/mediatek/common/mtk-btcvsd.c:1371:28: sparse:     expected unsigned int [usertype] *bt_reg_ctl
-   sound/soc/mediatek/common/mtk-btcvsd.c:1371:28: sparse:     got void [noderef] __iomem *
-
-vim +1367 sound/soc/mediatek/common/mtk-btcvsd.c
-
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1281  
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1282  static int mtk_btcvsd_snd_probe(struct platform_device *pdev)
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1283  {
-b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1284  	int ret;
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1285  	int irq_id;
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1286  	u32 offset[5] = {0, 0, 0, 0, 0};
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1287  	struct mtk_btcvsd_snd *btcvsd;
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1288  	struct device *dev = &pdev->dev;
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1289  
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1290  	/* init btcvsd private data */
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1291  	btcvsd = devm_kzalloc(dev, sizeof(*btcvsd), GFP_KERNEL);
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1292  	if (!btcvsd)
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1293  		return -ENOMEM;
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1294  	platform_set_drvdata(pdev, btcvsd);
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1295  	btcvsd->dev = dev;
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1296  
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1297  	/* init tx/rx */
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1298  	btcvsd->rx = devm_kzalloc(btcvsd->dev, sizeof(*btcvsd->rx), GFP_KERNEL);
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1299  	if (!btcvsd->rx)
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1300  		return -ENOMEM;
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1301  
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1302  	btcvsd->tx = devm_kzalloc(btcvsd->dev, sizeof(*btcvsd->tx), GFP_KERNEL);
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1303  	if (!btcvsd->tx)
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1304  		return -ENOMEM;
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1305  
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1306  	spin_lock_init(&btcvsd->tx_lock);
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1307  	spin_lock_init(&btcvsd->rx_lock);
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1308  
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1309  	init_waitqueue_head(&btcvsd->tx_wait);
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1310  	init_waitqueue_head(&btcvsd->rx_wait);
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1311  
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1312  	mtk_btcvsd_snd_tx_init(btcvsd);
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1313  	mtk_btcvsd_snd_rx_init(btcvsd);
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1314  
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1315  	/* irq */
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1316  	irq_id = platform_get_irq(pdev, 0);
-cf9441adb1a355 Stephen Boyd       2019-07-30  1317  	if (irq_id <= 0)
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1318  		return irq_id < 0 ? irq_id : -ENXIO;
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1319  
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1320  	ret = devm_request_irq(dev, irq_id, mtk_btcvsd_snd_irq_handler,
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1321  			       IRQF_TRIGGER_LOW, "BTCVSD_ISR_Handle",
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1322  			       (void *)btcvsd);
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1323  	if (ret) {
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1324  		dev_err(dev, "could not request_irq for BTCVSD_ISR_Handle\n");
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1325  		return ret;
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1326  	}
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1327  
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1328  	btcvsd->irq_id = irq_id;
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1329  
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1330  	/* iomap */
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1331  	btcvsd->bt_pkv_base = of_iomap(dev->of_node, 0);
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1332  	if (!btcvsd->bt_pkv_base) {
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1333  		dev_err(dev, "iomap bt_pkv_base fail\n");
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1334  		return -EIO;
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1335  	}
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1336  
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1337  	btcvsd->bt_sram_bank2_base = of_iomap(dev->of_node, 1);
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1338  	if (!btcvsd->bt_sram_bank2_base) {
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1339  		dev_err(dev, "iomap bt_sram_bank2_base fail\n");
-b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1340  		ret = -EIO;
-b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1341  		goto unmap_pkv_err;
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1342  	}
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1343  
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1344  	btcvsd->infra = syscon_regmap_lookup_by_phandle(dev->of_node,
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1345  							"mediatek,infracfg");
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1346  	if (IS_ERR(btcvsd->infra)) {
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1347  		dev_err(dev, "cannot find infra controller: %ld\n",
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1348  			PTR_ERR(btcvsd->infra));
-b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1349  		ret = PTR_ERR(btcvsd->infra);
-b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1350  		goto unmap_bank2_err;
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1351  	}
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1352  
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1353  	/* get offset */
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1354  	ret = of_property_read_u32_array(dev->of_node, "mediatek,offset",
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1355  					 offset,
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1356  					 ARRAY_SIZE(offset));
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1357  	if (ret) {
-766cc4965a3a2a Colin Ian King     2019-02-04  1358  		dev_warn(dev, "%s(), get offset fail, ret %d\n", __func__, ret);
-b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1359  		goto unmap_bank2_err;
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1360  	}
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1361  	btcvsd->infra_misc_offset = offset[0];
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1362  	btcvsd->conn_bt_cvsd_mask = offset[1];
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1363  	btcvsd->cvsd_mcu_read_offset = offset[2];
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1364  	btcvsd->cvsd_mcu_write_offset = offset[3];
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1365  	btcvsd->cvsd_packet_indicator = offset[4];
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1366  
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30 @1367  	btcvsd->bt_reg_pkt_r = btcvsd->bt_pkv_base +
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1368  			       btcvsd->cvsd_mcu_read_offset;
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30 @1369  	btcvsd->bt_reg_pkt_w = btcvsd->bt_pkv_base +
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1370  			       btcvsd->cvsd_mcu_write_offset;
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30 @1371  	btcvsd->bt_reg_ctl = btcvsd->bt_pkv_base +
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1372  			     btcvsd->cvsd_packet_indicator;
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1373  
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1374  	/* init state */
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1375  	mtk_btcvsd_snd_set_state(btcvsd, btcvsd->tx, BT_SCO_STATE_IDLE);
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1376  	mtk_btcvsd_snd_set_state(btcvsd, btcvsd->rx, BT_SCO_STATE_IDLE);
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1377  
-b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1378  	ret = devm_snd_soc_register_component(dev, &mtk_btcvsd_snd_platform,
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1379  					      NULL, 0);
-b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1380  	if (ret)
-b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1381  		goto unmap_bank2_err;
-b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1382  
-b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1383  	return 0;
-b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1384  
-b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1385  unmap_bank2_err:
-b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1386  	iounmap(btcvsd->bt_sram_bank2_base);
-b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1387  unmap_pkv_err:
-b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1388  	iounmap(btcvsd->bt_pkv_base);
-b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1389  	return ret;
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1390  }
-4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1391  
-
-:::::: The code at line 1367 was first introduced by commit
-:::::: 4bd8597dc36c376a2bb1ef2c72984615bdeb68de ASoC: mediatek: add btcvsd driver
-
-:::::: TO: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-:::::: CC: Mark Brown <broonie@kernel.org>
-
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ net/netfilter/nf_conntrack_netlink.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
+index f1e5443fe7c7..a6503bd188e3 100644
+--- a/net/netfilter/nf_conntrack_netlink.c
++++ b/net/netfilter/nf_conntrack_netlink.c
+@@ -1748,7 +1748,7 @@ ctnetlink_dump_list(struct sk_buff *skb, struct netlink_callback *cb, bool dying
+ 			res = ctnetlink_fill_info(skb, NETLINK_CB(cb->skb).portid,
+ 						  cb->nlh->nlmsg_seq,
+ 						  NFNL_MSG_TYPE(cb->nlh->nlmsg_type),
+-						  ct, dying ? true : false, 0);
++						  ct, dying, 0);
+ 			if (res < 0) {
+ 				if (!atomic_inc_not_zero(&ct->ct_general.use))
+ 					continue;
+-- 
+2.33.1
+
