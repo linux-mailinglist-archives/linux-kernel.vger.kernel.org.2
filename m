@@ -2,177 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CFBC45CA21
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0790145CA26
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:34:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349021AbhKXQgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:36:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49208 "EHLO
+        id S1349049AbhKXQhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:37:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233433AbhKXQgD (ORCPT
+        with ESMTP id S242469AbhKXQhb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:36:03 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6915C061574;
-        Wed, 24 Nov 2021 08:32:52 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id z8so6639219ljz.9;
-        Wed, 24 Nov 2021 08:32:52 -0800 (PST)
+        Wed, 24 Nov 2021 11:37:31 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 402BEC061746
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 08:34:21 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id b40so8728749lfv.10
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 08:34:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hWdL3+sC7Y3WgMzxQgq49FXg8O3lrY2U4JGqRbZI6tg=;
-        b=gujWqpLYZ0ok4buE3cVMLWfC5uFpJyuXa42ARhUlnN4O23+qlO+EmYtRvyX/8c+8Cd
-         T5a1dyyYrYP3SiqkVxU+nFVwtXCc1qsYP3l3IZjhohQlobFIZT7KVzpd/uD0tmpe0CvO
-         aeCfiRXxliyhrHPinovV+UTXQVe/RaMFEMYjCu0hyn3k5BUgAGEZ29zDCOQVjlqJOFhL
-         TZBbWI9gTerbMrFWXfehbYHCPQb+K2zUVIW0lpbY8uZKY04odxTxEAVckbrorzsLNVGk
-         sCA4pYJSO2cZ60LDY064M6AwjoFewiMlf4tsmpailAug/kWALkfi3+l95LwEP1w10SMT
-         n/NQ==
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zPOV/LNYwYTsmB7mQfhpRU+MWIN56vkkbdkQqLN+cvk=;
+        b=bJ63a2e3Wy0M/xAdLhyaS4w9SbJ0nm2ErOeirbaa8ttvAjUGrt3n+uoQrwtA8+hWfd
+         ssH9Z9lR1kI0OAKzPImESpcPZ8IZcoCaIkI8XQf5BKZmLZ7exvaa2/Mz/BeEQRf6oo0i
+         HmYXatM1v2rz+lybQ4T/PYzN4LzvdDECznQdU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hWdL3+sC7Y3WgMzxQgq49FXg8O3lrY2U4JGqRbZI6tg=;
-        b=fipxd/uz398YZdkpw4O+SS+yHayRaMRrULaIWRHtxQwOSBRL1BF4m6a4Q8cbC9bYZ1
-         RFQrAJzAiZR5x9GifNrlQq0whLDtnKoIG6ztNFXp3IQNGR4pX1s9vb9PkZZo3PaiWYxu
-         rqD7d9IvgMWURXMEH81xcClIn04tbjpTMzLaqIKp0vP9W7gN6Y6yRQef9ropRTSW0YFP
-         1/8GtVs+BiaF6AJCrRzpVUq27gxv16Kadf9JJOeZCK5QMbvwUpJhR/8bIn8OF4q79X8/
-         luQbF7RBnZcKg9Za+cScUhLoqnD1HLzrZ8AZFJQO3WC6440t0QDWJvkm8c0vUWRkjAhl
-         G0Zg==
-X-Gm-Message-State: AOAM532bE9Gd3EdlbEqf+xZArj4r/9RRulwp1IgwY2x7pjOB3VObWBHb
-        uPW2/SnM2Ptz5q/RQBr09JGsKzRdEmU=
-X-Google-Smtp-Source: ABdhPJzQ2dc3wLXSWKQBFY+mHq5x3ddsPjsCSkkhRryLlNJ0eKxp2Ar8mZbKuizWCxiSq5j6WRb8tw==
-X-Received: by 2002:a2e:2a43:: with SMTP id q64mr17358890ljq.102.1637771570838;
-        Wed, 24 Nov 2021 08:32:50 -0800 (PST)
-Received: from [192.168.2.145] (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
-        by smtp.googlemail.com with ESMTPSA id m14sm31645ljg.2.2021.11.24.08.32.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 08:32:50 -0800 (PST)
-Subject: Re: [PATCH v2 01/11] ASoC: tegra20-spdif: stop setting slave_id
-To:     Arnd Bergmann <arnd@kernel.org>, Vinod Koul <vkoul@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Andy Gross <agross@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Scott Branden <sbranden@broadcom.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        alsa-devel@alsa-project.org, bcm-kernel-feedback-list@broadcom.com,
-        dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-tegra@vger.kernel.org
-References: <20211122222203.4103644-1-arnd@kernel.org>
- <20211122222203.4103644-2-arnd@kernel.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <1dbe0c9f-e209-49e1-f05c-765d9f9b91eb@gmail.com>
-Date:   Wed, 24 Nov 2021 19:32:48 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zPOV/LNYwYTsmB7mQfhpRU+MWIN56vkkbdkQqLN+cvk=;
+        b=b64ysyxqy2RZrrT7V2iJ16jQpZFJIGHJFAdDCHRREXkE0ahmcGUUjhpnqjNVpKX8pz
+         5ljXsu+zhOJ2ZseBWng0n+QNGsGd7bC1XkXJauROqSGw3dS+HBnF2Uy0xvy+PvzKSgHg
+         NyIoNqrEvD05H3kIT+ncjCPiRyxO7bMg3wB9uytUUkyjJWkcEakJ6HthBiQZZAzqV0r3
+         TdFoYn9oIDLZ36MXRHAMfM2Of340STFydN+hx+OL6xnC9TwYUAY2lpJXRPNEWS/hJRAW
+         AitwHw7+YIIpLXXVl/ak1/OedF1ZnEc2+eJWtwsXX2eh2Chqrkf4TccUcsOrAXI7puJX
+         k5kA==
+X-Gm-Message-State: AOAM531ApdnTlHn3lYeeTKY2BPCW9xeshfwY8ty+/H8sUU37vgEdES1Z
+        3IOOfkhPecE7LoEn7+216vho3ORBeW/XArtodvb2eA==
+X-Google-Smtp-Source: ABdhPJxll5plpSGM9GkzJLSlx7bxnJPHlV7QraqV5JuIj+jX+jjAxnkuvJ3L3Cz96Fx4R8waIVALa7LdANrfPhP7N5g=
+X-Received: by 2002:a19:6b08:: with SMTP id d8mr16476607lfa.39.1637771659326;
+ Wed, 24 Nov 2021 08:34:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211122222203.4103644-2-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
+ <20211123163955.154512-22-alexandr.lobakin@intel.com> <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net>
+In-Reply-To: <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Wed, 24 Nov 2021 16:34:08 +0000
+Message-ID: <CACAyw9998vkRPX3vZxf8cC6ivVfTFDJPY11Cz08ZUSTLf_s7=A@mail.gmail.com>
+Subject: Re: [PATCH v2 net-next 21/26] ice: add XDP and XSK generic
+ per-channel statistics
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yajun Deng <yajun.deng@linux.dev>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Andrei Vagin <avagin@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Networking <netdev@vger.kernel.org>, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-23.11.2021 01:21, Arnd Bergmann пишет:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The DMA resource is never set up anywhere, and passing this as slave_id
-> has not been the proper procedure in a long time.
-> 
-> As a preparation for removing all slave_id references from the ALSA code,
-> remove this one.
-> 
-> According to Dmitry Osipenko, this driver has never been used and
-> the mechanism for configuring DMA would not work as it is implemented,
-> so this part will get rewritten when the driver gets put into use
-> again in the future.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  sound/soc/tegra/tegra20_spdif.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
-> index 9fdc82d58db3..1c3385da6f82 100644
-> --- a/sound/soc/tegra/tegra20_spdif.c
-> +++ b/sound/soc/tegra/tegra20_spdif.c
-> @@ -284,7 +284,6 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
->  	spdif->playback_dma_data.addr = mem->start + TEGRA20_SPDIF_DATA_OUT;
->  	spdif->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
->  	spdif->playback_dma_data.maxburst = 4;
-> -	spdif->playback_dma_data.slave_id = dmareq->start;
->  
->  	pm_runtime_enable(&pdev->dev);
->  
-> 
+Daniel asked me to share my opinion, as Cloudflare has an XDP load
+balancer as well.
 
-Thanks, Arnd!
+On Wed, 24 Nov 2021 at 00:53, Daniel Borkmann <daniel@iogearbox.net> wrote:
 
-The commit message is correct, however you could remove even more code
-here. But there is no need to make a v3 just because this patch because
-I already prepared patchset that revives this S/PDIF driver and enables
-HDMI audio on Tegra20. I'll take care of cleaning up the whole code of
-this driver.
+> I'm just taking our XDP L4LB in Cilium as an example: there we already count errors and
+> export them via per-cpu map that eventually lead to XDP_DROP cases including the /reason/
+> which caused the XDP_DROP (e.g. Prometheus can then scrape these insights from all the
+> nodes in the cluster). Given the different action codes are very often application specific,
+> there's not much debugging that you can do when /only/ looking at `ip link xdpstats` to
+> gather insight on *why* some of these actions were triggered (e.g. fib lookup failure, etc).
 
-diff --git a/sound/soc/tegra/tegra20_spdif.c
-b/sound/soc/tegra/tegra20_spdif.c
-index 7751575cd6d6..1c3385da6f82 100644
---- a/sound/soc/tegra/tegra20_spdif.c
-+++ b/sound/soc/tegra/tegra20_spdif.c
-@@ -251,7 +251,7 @@ static const struct regmap_config
-tegra20_spdif_regmap_config = {
- static int tegra20_spdif_platform_probe(struct platform_device *pdev)
- {
- 	struct tegra20_spdif *spdif;
--	struct resource *mem, *dmareq;
-+	struct resource *mem;
- 	void __iomem *regs;
- 	int ret;
+Agreed. For our purpose we often want to know whether a specific
+program has been invoked. Per-channel or per device stats don't help
+us much since we have a chain of programs (not using libxdp though).
+My colleague Arthur has written xdpcap [1], which gives per-action,
+per-program counters. This way we can correlate an action with a
+packet and a program.
 
-@@ -273,12 +273,6 @@ static int tegra20_spdif_platform_probe(struct
-platform_device *pdev)
- 	if (IS_ERR(regs))
- 		return PTR_ERR(regs);
+> If really of interest, then maybe libxdp could have such per-action counters as opt-in in
+> its call chain..
 
--	dmareq = platform_get_resource(pdev, IORESOURCE_DMA, 0);
--	if (!dmareq) {
--		dev_err(&pdev->dev, "No DMA resource\n");
--		return -ENODEV;
--	}
--
- 	spdif->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
- 					    &tegra20_spdif_regmap_config);
- 	if (IS_ERR(spdif->regmap)) {
-@@ -290,7 +284,6 @@ static int tegra20_spdif_platform_probe(struct
-platform_device *pdev)
- 	spdif->playback_dma_data.addr = mem->start + TEGRA20_SPDIF_DATA_OUT;
- 	spdif->playback_dma_data.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
- 	spdif->playback_dma_data.maxburst = 4;
--	spdif->playback_dma_data.slave_id = dmareq->start;
+We could also make it part of BPF_ENABLE_STATS, it's kind of coarse
+grained though.
 
- 	pm_runtime_enable(&pdev->dev);
+> In the case of ice_run_xdp() today, we already bump total_rx_bytes/total_rx_pkts under
+> XDP and update ice_update_rx_ring_stats(). I do see the case for XDP_TX and XDP_REDIRECT
+> where we run into driver-specific errors that are /outside of the reach/ of the BPF prog.
+> For example, we've been running into errors from XDP_TX in ice_xmit_xdp_ring() in the
+> past during testing, and were able to pinpoint the location as xdp_ring->tx_stats.tx_busy
+> was increasing. These things are useful and would make sense to standardize for XDP context.
 
+I'd like to see more tracepoints like trace_xdp_exception, personally.
+We can use things like bpftrace for exploration and ebpf_exporter [2]
+to generate alerts much more easily than something wired into
+iproute2.
 
+Best
+Lorenz
+
+1: https://github.com/cloudflare/xdpcap
+2: https://github.com/cloudflare/ebpf_exporter
+
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
