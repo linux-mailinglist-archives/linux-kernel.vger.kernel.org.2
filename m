@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B98545C27C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:27:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFD645C3D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345463AbhKXN3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:29:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48362 "EHLO mail.kernel.org"
+        id S1350982AbhKXNm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:42:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245119AbhKXN0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:26:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2083361B7D;
-        Wed, 24 Nov 2021 12:49:50 +0000 (UTC)
+        id S1349057AbhKXNkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:40:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14A9D630ED;
+        Wed, 24 Nov 2021 12:56:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758191;
-        bh=IChdICO7ulAYaMVi903v/b+GU4v/VY3L7zqB89TEH+A=;
+        s=korg; t=1637758620;
+        bh=/shuj1JJUYEOLCvHE5CF2Jks4GmenQynGZ8qEF6Oxjw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uPMVX0kJyglDQakAcwFsAbSvq8NhEypzqS5cO2NWWzW7GzqZkQTDJPvkYs/W2mS5k
-         ObAKOZOqqSCPf3hLWaWJdZuX3Oz+tGd3b3myaEgE/mFqBDi3g5wUKTk8Dw34ApDHqI
-         81gmrO+n6snlg3TCv/Rj5xUbzVhw7wMjqueEoJ/0=
+        b=ohLUEBI6p41Q3vAE79tEtxQH/80ZkTXlWyPUdeJqu8v7XzBkOLqAkGnyJ7Jg2LDGe
+         R4EbgGwn9H/lGJ+jQD7ELkJcXkDxkU3uDUNQTzyLPXGa513J0ZVoH7GpcYI3mJdwie
+         RDJsNIgmmlQ0+54cDLii28Cd3u5qogDF5az/J7lk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeremy Cline <jcline@redhat.com>,
-        Lyude Paul <lyude@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
-        Karol Herbst <kherbst@redhat.com>
-Subject: [PATCH 5.4 088/100] drm/nouveau: use drm_dev_unplug() during device removal
-Date:   Wed, 24 Nov 2021 12:58:44 +0100
-Message-Id: <20211124115657.697208287@linuxfoundation.org>
+        stable@vger.kernel.org, Baoquan He <bhe@redhat.com>,
+        Philipp Rudo <prudo@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 5.10 129/154] s390/kexec: fix memory leak of ipl report buffer
+Date:   Wed, 24 Nov 2021 12:58:45 +0100
+Message-Id: <20211124115706.469513675@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +40,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeremy Cline <jcline@redhat.com>
+From: Baoquan He <bhe@redhat.com>
 
-commit aff2299e0d81b26304ccc6a1ec0170e437f38efc upstream.
+commit 4aa9340584e37debef06fa99b56d064beb723891 upstream.
 
-Nouveau does not currently support hot-unplugging, but it still makes
-sense to switch from drm_dev_unregister() to drm_dev_unplug().
-drm_dev_unplug() calls drm_dev_unregister() after marking the device as
-unplugged, but only after any device critical sections are finished.
+unreferenced object 0x38000195000 (size 4096):
+  comm "kexec", pid 8548, jiffies 4294953647 (age 32443.270s)
+  hex dump (first 32 bytes):
+    00 00 00 c8 20 00 00 00 00 00 00 c0 02 80 00 00  .... ...........
+    40 40 40 40 40 40 40 40 00 00 00 00 00 00 00 00  @@@@@@@@........
+  backtrace:
+    [<0000000011a2f199>] __vmalloc_node_range+0xc0/0x140
+    [<0000000081fa2752>] vzalloc+0x5a/0x70
+    [<0000000063a4c92d>] ipl_report_finish+0x2c/0x180
+    [<00000000553304da>] kexec_file_add_ipl_report+0xf4/0x150
+    [<00000000862d033f>] kexec_file_add_components+0x124/0x160
+    [<000000000d2717bb>] arch_kexec_kernel_image_load+0x62/0x90
+    [<000000002e0373b6>] kimage_file_alloc_init+0x1aa/0x2e0
+    [<0000000060f2d14f>] __do_sys_kexec_file_load+0x17c/0x2c0
+    [<000000008c86fe5a>] __s390x_sys_kexec_file_load+0x40/0x50
+    [<000000001fdb9dac>] __do_syscall+0x1bc/0x1f0
+    [<000000003ee4258d>] system_call+0x78/0xa0
 
-Since nouveau isn't using drm_dev_enter() and drm_dev_exit(), there are
-no critical sections so this is nearly functionally equivalent. However,
-the DRM layer does check to see if the device is unplugged, and if it is
-returns appropriate error codes.
-
-In the future nouveau can add critical sections in order to truly
-support hot-unplugging.
-
-Cc: stable@vger.kernel.org # 5.4+
-Signed-off-by: Jeremy Cline <jcline@redhat.com>
-Reviewed-by: Lyude Paul <lyude@redhat.com>
-Reviewed-by: Ben Skeggs <bskeggs@redhat.com>
-Tested-by: Karol Herbst <kherbst@redhat.com>
-Signed-off-by: Karol Herbst <kherbst@redhat.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201125202648.5220-2-jcline@redhat.com
-Link: https://gitlab.freedesktop.org/drm/nouveau/-/merge_requests/14
+Signed-off-by: Baoquan He <bhe@redhat.com>
+Reviewed-by: Philipp Rudo <prudo@redhat.com>
+Fixes: 99feaa717e55 ("s390/kexec_file: Create ipl report and pass to next kernel")
+Cc: <stable@vger.kernel.org> # v5.2: 20c76e242e70: s390/kexec: fix return code handling
+Cc: <stable@vger.kernel.org> # v5.2
+Link: https://lore.kernel.org/r/20211116033101.GD21646@MiWiFi-R3L-srv
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/nouveau/nouveau_drm.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/s390/include/asm/kexec.h         |    6 ++++++
+ arch/s390/kernel/machine_kexec_file.c |   10 ++++++++++
+ 2 files changed, 16 insertions(+)
 
---- a/drivers/gpu/drm/nouveau/nouveau_drm.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_drm.c
-@@ -779,7 +779,7 @@ nouveau_drm_device_remove(struct drm_dev
- 	struct nvkm_client *client;
- 	struct nvkm_device *device;
+--- a/arch/s390/include/asm/kexec.h
++++ b/arch/s390/include/asm/kexec.h
+@@ -74,6 +74,12 @@ void *kexec_file_add_components(struct k
+ int arch_kexec_do_relocs(int r_type, void *loc, unsigned long val,
+ 			 unsigned long addr);
  
--	drm_dev_unregister(dev);
-+	drm_dev_unplug(dev);
++#define ARCH_HAS_KIMAGE_ARCH
++
++struct kimage_arch {
++	void *ipl_buf;
++};
++
+ extern const struct kexec_file_ops s390_kexec_image_ops;
+ extern const struct kexec_file_ops s390_kexec_elf_ops;
  
- 	dev->irq_enabled = false;
- 	client = nvxx_client(&drm->client.base);
+--- a/arch/s390/kernel/machine_kexec_file.c
++++ b/arch/s390/kernel/machine_kexec_file.c
+@@ -12,6 +12,7 @@
+ #include <linux/kexec.h>
+ #include <linux/module_signature.h>
+ #include <linux/verification.h>
++#include <linux/vmalloc.h>
+ #include <asm/boot_data.h>
+ #include <asm/ipl.h>
+ #include <asm/setup.h>
+@@ -206,6 +207,7 @@ static int kexec_file_add_ipl_report(str
+ 		goto out;
+ 	buf.bufsz = data->report->size;
+ 	buf.memsz = buf.bufsz;
++	image->arch.ipl_buf = buf.buffer;
+ 
+ 	data->memsz += buf.memsz;
+ 
+@@ -327,3 +329,11 @@ int arch_kexec_kernel_image_probe(struct
+ 
+ 	return kexec_image_probe_default(image, buf, buf_len);
+ }
++
++int arch_kimage_file_post_load_cleanup(struct kimage *image)
++{
++	vfree(image->arch.ipl_buf);
++	image->arch.ipl_buf = NULL;
++
++	return kexec_image_post_load_cleanup_default(image);
++}
 
 
