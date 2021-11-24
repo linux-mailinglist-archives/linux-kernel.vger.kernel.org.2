@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D3745C3D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A3F45C28F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:27:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347963AbhKXNoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:44:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60380 "EHLO mail.kernel.org"
+        id S1351257AbhKXNaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:30:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353298AbhKXNlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:41:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 126356325D;
-        Wed, 24 Nov 2021 12:57:46 +0000 (UTC)
+        id S1350640AbhKXN1j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:27:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7F8561BA1;
+        Wed, 24 Nov 2021 12:50:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758667;
-        bh=f+T4R/0FH+Wc1dERMs6RxatyqZry0QIjNYBTxm448SQ=;
+        s=korg; t=1637758236;
+        bh=1fqUQicOj+Ghb+8xStnz1O2G6mG9oDB090J+hxHsS4A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iEukMsVsO0BjR+bDjD4OwmPnFq2NMOW1+7zZTceUz3jy6Ccjx7fb6fBlmHTTtWezo
-         p4/iGru/7RKgKGqttsenfFtmppzh02VXESawrLTKeVq2AsD1AZUsiPUy75NmzuGyGz
-         DODPYTegqKy5fKdka/zKauTacJRSz8LYgkCJSLBY=
+        b=c5p0MbQ3or8DBC9SsLzhGDKHH/0n+k67+yhYJ4UfkPYBL0EKExbnFdvcFgD6fPCZc
+         xCaAdDyvUshLExdrqPAdV25Q8Z+bLz8mM8bTcZZFUpj1CTkTiI5iSKglYzvt6pOpXV
+         Iz9y6q7VENYVr7S2duK8EpQAfyLfxPPYrl11w4Qs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Daniel Axtens <dja@axtens.net>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 113/154] KVM: PPC: Book3S HV: Use GLOBAL_TOC for kvmppc_h_set_dabr/xdabr()
+        stable@vger.kernel.org,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 073/100] perf/x86/intel/uncore: Fix filter_tid mask for CHA events on Skylake Server
 Date:   Wed, 24 Nov 2021 12:58:29 +0100
-Message-Id: <20211124115705.943481634@linuxfoundation.org>
+Message-Id: <20211124115657.220528466@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,62 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Alexander Antonov <alexander.antonov@linux.intel.com>
 
-[ Upstream commit dae581864609d36fb58855fd59880b4941ce9d14 ]
+[ Upstream commit e324234e0aa881b7841c7c713306403e12b069ff ]
 
-kvmppc_h_set_dabr(), and kvmppc_h_set_xdabr() which jumps into
-it, need to use _GLOBAL_TOC to setup the kernel TOC pointer, because
-kvmppc_h_set_dabr() uses LOAD_REG_ADDR() to load dawr_force_enable.
+According Uncore Reference Manual: any of the CHA events may be filtered
+by Thread/Core-ID by using tid modifier in CHA Filter 0 Register.
+Update skx_cha_hw_config() to follow Uncore Guide.
 
-When called from hcall_try_real_mode() we have the kernel TOC in r2,
-established near the start of kvmppc_interrupt_hv(), so there is no
-issue.
-
-But they can also be called from kvmppc_pseries_do_hcall() which is
-module code, so the access ends up happening with the kvm-hv module's
-r2, which will not point at dawr_force_enable and could even cause a
-fault.
-
-With the current code layout and compilers we haven't observed a fault
-in practice, the load hits somewhere in kvm-hv.ko and silently returns
-some bogus value.
-
-Note that we we expect p8/p9 guests to use the DAWR, but SLOF uses
-h_set_dabr() to test if sc1 works correctly, see SLOF's
-lib/libhvcall/brokensc1.c.
-
-Fixes: c1fe190c0672 ("powerpc: Add force enable of DAWR on P9 option")
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Reviewed-by: Daniel Axtens <dja@axtens.net>
-Link: https://lore.kernel.org/r/20210923151031.72408-1-mpe@ellerman.id.au
+Fixes: cd34cd97b7b4 ("perf/x86/intel/uncore: Add Skylake server uncore support")
+Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+Link: https://lore.kernel.org/r/20211115090334.3789-2-alexander.antonov@linux.intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kvm/book3s_hv_rmhandlers.S | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/events/intel/uncore_snbep.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/powerpc/kvm/book3s_hv_rmhandlers.S b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-index db78123166a8b..b1d9afffd8419 100644
---- a/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-+++ b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-@@ -2539,7 +2539,7 @@ hcall_real_table:
- 	.globl	hcall_real_table_end
- hcall_real_table_end:
+diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
+index 9096a1693942d..b2cc97f7c2a5c 100644
+--- a/arch/x86/events/intel/uncore_snbep.c
++++ b/arch/x86/events/intel/uncore_snbep.c
+@@ -3479,6 +3479,9 @@ static int skx_cha_hw_config(struct intel_uncore_box *box, struct perf_event *ev
+ 	struct hw_perf_event_extra *reg1 = &event->hw.extra_reg;
+ 	struct extra_reg *er;
+ 	int idx = 0;
++	/* Any of the CHA events may be filtered by Thread/Core-ID.*/
++	if (event->hw.config & SNBEP_CBO_PMON_CTL_TID_EN)
++		idx = SKX_CHA_MSR_PMON_BOX_FILTER_TID;
  
--_GLOBAL(kvmppc_h_set_xdabr)
-+_GLOBAL_TOC(kvmppc_h_set_xdabr)
- EXPORT_SYMBOL_GPL(kvmppc_h_set_xdabr)
- 	andi.	r0, r5, DABRX_USER | DABRX_KERNEL
- 	beq	6f
-@@ -2549,7 +2549,7 @@ EXPORT_SYMBOL_GPL(kvmppc_h_set_xdabr)
- 6:	li	r3, H_PARAMETER
- 	blr
- 
--_GLOBAL(kvmppc_h_set_dabr)
-+_GLOBAL_TOC(kvmppc_h_set_dabr)
- EXPORT_SYMBOL_GPL(kvmppc_h_set_dabr)
- 	li	r5, DABRX_USER | DABRX_KERNEL
- 3:
+ 	for (er = skx_uncore_cha_extra_regs; er->msr; er++) {
+ 		if (er->event != (event->hw.config & er->config_mask))
 -- 
 2.33.0
 
