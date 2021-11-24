@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B7345C00B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:01:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A33B45B9FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345119AbhKXNE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:04:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41112 "EHLO mail.kernel.org"
+        id S229896AbhKXMGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:06:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346114AbhKXNCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:02:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9F716117A;
-        Wed, 24 Nov 2021 12:35:32 +0000 (UTC)
+        id S232580AbhKXMFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:05:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F6D9600EF;
+        Wed, 24 Nov 2021 12:02:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757333;
-        bh=2vXNAOMZNI0ZRvHjroL+2tM1qJvlSSylceOHL8Q+7CA=;
+        s=korg; t=1637755324;
+        bh=c/A9rEv6MEbfdXuo8hHkDH6YxoXTEtFVR+YJmv66wck=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1CwynYw2Rva0YUIaI/3nZf17VJ4svmfHz5n9c+kwnqZ0sTO+QdZBnMrueW2CTVeCz
-         O9F06z7ryHdYSWeEcnSk72G6dmGR4zEbEvsGWIp9m5dNZU0q28WjgD/R4mXQ+FLSEZ
-         L7sS9nv2PxW1djYUYA+RdY8wtjDU8yg4ag9/SatY=
+        b=zsJkNbOc03Wuopw3/T+lvpX+p+4AnqsKF97IsnMgBGMuG0FimxNpnH/SrXWs+ikre
+         WMu0Cv1hQGp3r/c/e8zlLBWEA6tWuGygyZW+xwjs28p5qqMH4rYGTu6PGo/8KTFFRv
+         V+p5TCGPgfly04/EustVHHlAEOpHgOoo/V8PyW3o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Kees Cook <keescook@chromium.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Thomas Perrot <thomas.perrot@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 134/323] media: si470x: Avoid card name truncation
+Subject: [PATCH 4.4 021/162] spi: spl022: fix Microwire full duplex mode
 Date:   Wed, 24 Nov 2021 12:55:24 +0100
-Message-Id: <20211124115723.451422346@linuxfoundation.org>
+Message-Id: <20211124115659.019104477@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Thomas Perrot <thomas.perrot@bootlin.com>
 
-[ Upstream commit 2908249f3878a591f7918368fdf0b7b0a6c3158c ]
+[ Upstream commit d81d0e41ed5fe7229a2c9a29d13bad288c7cf2d2 ]
 
-The "card" string only holds 31 characters (and the terminating NUL).
-In order to avoid truncation, use a shorter card description instead of
-the current result, "Silicon Labs Si470x FM Radio Re".
+There are missing braces in the function that verify controller parameters,
+then an error is always returned when the parameter to select Microwire
+frames operation is used on devices allowing it.
 
-Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Fixes: 78656acdcf48 ("V4L/DVB (7038): USB radio driver for Silicon Labs Si470x FM Radio Receivers")
-Fixes: cc35bbddfe10 ("V4L/DVB (12416): radio-si470x: add i2c driver for si470x")
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Thomas Perrot <thomas.perrot@bootlin.com>
+Link: https://lore.kernel.org/r/20211022142104.1386379-1-thomas.perrot@bootlin.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/radio/si470x/radio-si470x-i2c.c | 2 +-
- drivers/media/radio/si470x/radio-si470x-usb.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/spi/spi-pl022.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/radio/si470x/radio-si470x-i2c.c b/drivers/media/radio/si470x/radio-si470x-i2c.c
-index aa12fd2663895..cc68bdac0c367 100644
---- a/drivers/media/radio/si470x/radio-si470x-i2c.c
-+++ b/drivers/media/radio/si470x/radio-si470x-i2c.c
-@@ -20,7 +20,7 @@
- 
- /* driver definitions */
- #define DRIVER_AUTHOR "Joonyoung Shim <jy0922.shim@samsung.com>";
--#define DRIVER_CARD "Silicon Labs Si470x FM Radio Receiver"
-+#define DRIVER_CARD "Silicon Labs Si470x FM Radio"
- #define DRIVER_DESC "I2C radio driver for Si470x FM Radio Receivers"
- #define DRIVER_VERSION "1.0.2"
- 
-diff --git a/drivers/media/radio/si470x/radio-si470x-usb.c b/drivers/media/radio/si470x/radio-si470x-usb.c
-index 19e381dd58089..ba43a727c0b95 100644
---- a/drivers/media/radio/si470x/radio-si470x-usb.c
-+++ b/drivers/media/radio/si470x/radio-si470x-usb.c
-@@ -25,7 +25,7 @@
- 
- /* driver definitions */
- #define DRIVER_AUTHOR "Tobias Lorenz <tobias.lorenz@gmx.net>"
--#define DRIVER_CARD "Silicon Labs Si470x FM Radio Receiver"
-+#define DRIVER_CARD "Silicon Labs Si470x FM Radio"
- #define DRIVER_DESC "USB radio driver for Si470x FM Radio Receivers"
- #define DRIVER_VERSION "1.0.10"
- 
+diff --git a/drivers/spi/spi-pl022.c b/drivers/spi/spi-pl022.c
+index 5e5fd77e27119..e294f21db2068 100644
+--- a/drivers/spi/spi-pl022.c
++++ b/drivers/spi/spi-pl022.c
+@@ -1710,12 +1710,13 @@ static int verify_controller_parameters(struct pl022 *pl022,
+ 				return -EINVAL;
+ 			}
+ 		} else {
+-			if (chip_info->duplex != SSP_MICROWIRE_CHANNEL_FULL_DUPLEX)
++			if (chip_info->duplex != SSP_MICROWIRE_CHANNEL_FULL_DUPLEX) {
+ 				dev_err(&pl022->adev->dev,
+ 					"Microwire half duplex mode requested,"
+ 					" but this is only available in the"
+ 					" ST version of PL022\n");
+-			return -EINVAL;
++				return -EINVAL;
++			}
+ 		}
+ 	}
+ 	return 0;
 -- 
 2.33.0
 
