@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D55445C3EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9A945C6B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:07:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351073AbhKXNol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:44:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34752 "EHLO mail.kernel.org"
+        id S1351285AbhKXOKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:10:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344551AbhKXNmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:42:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B4E96328B;
-        Wed, 24 Nov 2021 12:58:14 +0000 (UTC)
+        id S1351734AbhKXOGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:06:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DCBC61A8C;
+        Wed, 24 Nov 2021 13:12:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758694;
-        bh=sXOgTOAj1t81oWB7sL+Gbffblj/VmaIpUcgMltDWyd0=;
+        s=korg; t=1637759563;
+        bh=dKaYYIVMpX/0XKkjaoH7bSiik9pm5y0edqovy2lDJC8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iiZSQaQBl4a4NEDBCq6LY8CeQ4XYUeEBMlrVDXD7NLryBYeA3uHTbuNX1StdLHi+m
-         fj40MwjPDzMutRZYAhG9pBc4Qh53PLLeJXdKc9VRDXMkJUHkRlOEvs2Pd/AduqAA7m
-         a5n7BGFtYgZNozxRUyQ0WbS/+Zwwz52V8Q6/NbDs=
+        b=egpKmPUYN3xrwsViYBNWhw0UjvOt0JL1pyM/Efb8b1JJHucftSjelgveHcci0Woi6
+         Vikfb52g6VSw7BvQuZZTT4CqJtok6yyne1WJM2ZBfMhJf5vcV19eO1Q8ogsSNcqmRm
+         FBoAJoBm+jhrOBuJrXpHKQwoxhoIXzMm45/VXQzw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Borislav Petkov <bp@suse.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH 5.10 154/154] x86/Kconfig: Fix an unused variable error in dell-smm-hwmon
-Date:   Wed, 24 Nov 2021 12:59:10 +0100
-Message-Id: <20211124115707.456833096@linuxfoundation.org>
+        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Thomas Backlund <tmb@iki.fi>
+Subject: [PATCH 5.15 264/279] signal: Replace force_sigsegv(SIGSEGV) with force_fatal_sig(SIGSEGV)
+Date:   Wed, 24 Nov 2021 12:59:11 +0100
+Message-Id: <20211124115727.823982416@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,47 +41,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Eric W. Biederman <ebiederm@xmission.com>
 
-commit ef775a0e36c6a81c5b07cb228c02f967133fe768 upstream.
+commit e21294a7aaae32c5d7154b187113a04db5852e37 upstream.
 
-When CONFIG_PROC_FS is not set, there is a build warning (turned
-into an error):
+Now that force_fatal_sig exists it is unnecessary and a bit confusing
+to use force_sigsegv in cases where the simpler force_fatal_sig is
+wanted.  So change every instance we can to make the code clearer.
 
-  ../drivers/hwmon/dell-smm-hwmon.c: In function 'i8k_init_procfs':
-  ../drivers/hwmon/dell-smm-hwmon.c:624:24: error: unused variable 'data' [-Werror=unused-variable]
-    struct dell_smm_data *data = dev_get_drvdata(dev);
-
-Make I8K depend on PROC_FS and HWMON (instead of selecting HWMON -- it
-is strongly preferred to not select entire subsystems).
-
-Build tested in all possible combinations of SENSORS_DELL_SMM, I8K, and
-PROC_FS.
-
-Fixes: 039ae58503f3 ("hwmon: Allow to compile dell-smm-hwmon driver without /proc/i8k")
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Guenter Roeck <linux@roeck-us.net>
-Acked-by: Pali Rohár <pali@kernel.org>
-Link: https://lkml.kernel.org/r/20210910071921.16777-1-rdunlap@infradead.org
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reviewed-by: Philippe Mathieu-Daudé <f4bug@amsat.org>
+Link: https://lkml.kernel.org/r/877de7jrev.fsf@disp2133
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Thomas Backlund <tmb@iki.fi>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/Kconfig |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arc/kernel/process.c       |    2 +-
+ arch/m68k/kernel/traps.c        |    2 +-
+ arch/powerpc/kernel/signal_32.c |    2 +-
+ arch/powerpc/kernel/signal_64.c |    4 ++--
+ arch/s390/kernel/traps.c        |    2 +-
+ arch/um/kernel/trap.c           |    2 +-
+ arch/x86/kernel/vm86_32.c       |    2 +-
+ fs/exec.c                       |    2 +-
+ 8 files changed, 9 insertions(+), 9 deletions(-)
 
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1266,7 +1266,8 @@ config TOSHIBA
+--- a/arch/arc/kernel/process.c
++++ b/arch/arc/kernel/process.c
+@@ -294,7 +294,7 @@ int elf_check_arch(const struct elf32_hd
+ 	eflags = x->e_flags;
+ 	if ((eflags & EF_ARC_OSABI_MSK) != EF_ARC_OSABI_CURRENT) {
+ 		pr_err("ABI mismatch - you need newer toolchain\n");
+-		force_sigsegv(SIGSEGV);
++		force_fatal_sig(SIGSEGV);
+ 		return 0;
+ 	}
  
- config I8K
- 	tristate "Dell i8k legacy laptop support"
--	select HWMON
-+	depends on HWMON
-+	depends on PROC_FS
- 	select SENSORS_DELL_SMM
- 	help
- 	  This option enables legacy /proc/i8k userspace interface in hwmon
+--- a/arch/m68k/kernel/traps.c
++++ b/arch/m68k/kernel/traps.c
+@@ -1145,7 +1145,7 @@ asmlinkage void set_esp0(unsigned long s
+  */
+ asmlinkage void fpsp040_die(void)
+ {
+-	force_sigsegv(SIGSEGV);
++	force_fatal_sig(SIGSEGV);
+ }
+ 
+ #ifdef CONFIG_M68KFPU_EMU
+--- a/arch/powerpc/kernel/signal_32.c
++++ b/arch/powerpc/kernel/signal_32.c
+@@ -1063,7 +1063,7 @@ SYSCALL_DEFINE3(swapcontext, struct ucon
+ 	 * We kill the task with a SIGSEGV in this situation.
+ 	 */
+ 	if (do_setcontext(new_ctx, regs, 0)) {
+-		force_sigsegv(SIGSEGV);
++		force_fatal_sig(SIGSEGV);
+ 		return -EFAULT;
+ 	}
+ 
+--- a/arch/powerpc/kernel/signal_64.c
++++ b/arch/powerpc/kernel/signal_64.c
+@@ -704,7 +704,7 @@ SYSCALL_DEFINE3(swapcontext, struct ucon
+ 	 */
+ 
+ 	if (__get_user_sigset(&set, &new_ctx->uc_sigmask)) {
+-		force_sigsegv(SIGSEGV);
++		force_fatal_sig(SIGSEGV);
+ 		return -EFAULT;
+ 	}
+ 	set_current_blocked(&set);
+@@ -713,7 +713,7 @@ SYSCALL_DEFINE3(swapcontext, struct ucon
+ 		return -EFAULT;
+ 	if (__unsafe_restore_sigcontext(current, NULL, 0, &new_ctx->uc_mcontext)) {
+ 		user_read_access_end();
+-		force_sigsegv(SIGSEGV);
++		force_fatal_sig(SIGSEGV);
+ 		return -EFAULT;
+ 	}
+ 	user_read_access_end();
+--- a/arch/s390/kernel/traps.c
++++ b/arch/s390/kernel/traps.c
+@@ -84,7 +84,7 @@ static void default_trap_handler(struct
+ {
+ 	if (user_mode(regs)) {
+ 		report_user_fault(regs, SIGSEGV, 0);
+-		force_sigsegv(SIGSEGV);
++		force_fatal_sig(SIGSEGV);
+ 	} else
+ 		die(regs, "Unknown program exception");
+ }
+--- a/arch/um/kernel/trap.c
++++ b/arch/um/kernel/trap.c
+@@ -158,7 +158,7 @@ static void bad_segv(struct faultinfo fi
+ 
+ void fatal_sigsegv(void)
+ {
+-	force_sigsegv(SIGSEGV);
++	force_fatal_sig(SIGSEGV);
+ 	do_signal(&current->thread.regs);
+ 	/*
+ 	 * This is to tell gcc that we're not returning - do_signal
+--- a/arch/x86/kernel/vm86_32.c
++++ b/arch/x86/kernel/vm86_32.c
+@@ -162,7 +162,7 @@ Efault_end:
+ 	user_access_end();
+ Efault:
+ 	pr_alert("could not access userspace vm86 info\n");
+-	force_sigsegv(SIGSEGV);
++	force_fatal_sig(SIGSEGV);
+ 	goto exit_vm86;
+ }
+ 
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1852,7 +1852,7 @@ out:
+ 	 * SIGSEGV.
+ 	 */
+ 	if (bprm->point_of_no_return && !fatal_signal_pending(current))
+-		force_sigsegv(SIGSEGV);
++		force_fatal_sig(SIGSEGV);
+ 
+ out_unmark:
+ 	current->fs->in_exec = 0;
 
 
